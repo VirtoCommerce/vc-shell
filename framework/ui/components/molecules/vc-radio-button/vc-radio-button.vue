@@ -9,8 +9,9 @@
         :checked="checked"
         :disabled="resolvedDisabled"
         :aria-invalid="invalid || undefined"
+        :aria-required="ariaRequired"
         :aria-describedby="ariaDescribedBy"
-        :class="{ 'vc-radio-button_error': invalid }"
+        :class="{ 'vc-radio-button--error': invalid }"
         tabindex="0"
         @change="onChange"
       />
@@ -21,7 +22,7 @@
       name="slide-up"
       mode="out-in"
     >
-      <div v-if="errorMessage">
+      <div v-if="invalid && errorMessage">
         <slot name="error">
           <VcHint
             :id="errorId"
@@ -75,7 +76,12 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 
-const { fieldId: radioId, errorId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } = useFormField(props);
+defineSlots<{
+  error: (props: Record<string, never>) => any;
+}>();
+
+const { fieldId: radioId, errorId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 
 const checked = computed(() => {
   return props.modelValue != null && (props.binary ? !!props.modelValue : isEqual(props.modelValue, props.value));
@@ -175,7 +181,7 @@ function onChange() {
       @apply tw-ring-[3px] tw-ring-[color:var(--radio-focus-ring-color)] tw-outline-none;
     }
 
-    &.vc-radio-button_error {
+    &.vc-radio-button--error {
       border-color: var(--radio-error);
       @apply tw-ring-[3px] tw-ring-[color:var(--radio-error-ring-color)];
     }
@@ -185,17 +191,5 @@ function onChange() {
     @apply tw-mt-1 [--hint-error-color:var(--radio-error)];
   }
 
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    @apply tw-transition-all tw-duration-[250ms] tw-ease-out;
-  }
-
-  .slide-up-enter-from {
-    @apply tw-opacity-0 tw-translate-y-[5px];
-  }
-
-  .slide-up-leave-to {
-    @apply tw-opacity-0 tw--translate-y-[5px];
-  }
 }
 </style>

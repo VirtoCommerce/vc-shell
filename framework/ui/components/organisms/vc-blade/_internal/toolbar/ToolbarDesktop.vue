@@ -56,7 +56,7 @@
 
 <script lang="ts" setup>
 import { ref, toRef, toValue, watch, nextTick } from "vue";
-import { VcDropdown } from "@ui/components";
+import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";

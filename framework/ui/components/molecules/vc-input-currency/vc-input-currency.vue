@@ -49,110 +49,41 @@ import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
 import { unref, watch } from "vue";
 import { VcInputDropdown } from "@ui/components/molecules/vc-input-dropdown";
 import { type OptionProp } from "@ui/components/molecules/vc-select";
+import type { IFormFieldProps } from "@ui/types";
 
-export interface Props {
-  /**
-   * Model of the currency component; Use with a listener for 'update:price' event OR use v-model:price directive
-   */
+export interface Props extends IFormFieldProps {
+  /** Model of the currency component; Use with a listener for 'update:price' event OR use v-model:price directive */
   modelValue: number | null | undefined;
-  /**
-   * Input label text
-   */
-  label?: string;
-  /**
-   * Input placeholder text
-   */
+  /** Input placeholder text */
   placeholder?: string;
-  /**
-   * Input description (hint) text below input component
-   */
+  /** Input description (hint) text below input component */
   hint?: string;
-  /**
-   * Appends clearable icon when a value is set;
-   * When clicked, model becomes null
-   */
+  /** Appends clearable icon when a value is set; When clicked, model becomes null */
   clearable?: boolean;
-  /**
-   * Prefix
-   */
+  /** Prefix */
   prefix?: string;
-  /**
-   * Suffix
-   */
+  /** Suffix */
   suffix?: string;
-  /**
-   * Used to specify the name of the control; If not specified, it takes the value 'Field'
-   */
-  name?: string;
-  /**
-   * Signals the user a process is in progress by displaying a spinner
-   */
+  /** Signals the user a process is in progress by displaying a spinner */
   loading?: boolean;
-  /**
-   * Debounce amount (in milliseconds) for search input
-   * Default: 0
-   */
+  /** Debounce amount (in milliseconds) for search input. Default: 0 */
   debounce?: string | number;
-  /**
-   * Put component in disabled mode
-   */
-  disabled?: boolean;
-  /**
-   * Focus field on initial component render
-   */
+  /** Focus field on initial component render */
   autofocus?: boolean;
-  /**
-   * Does field have validation errors?
-   */
-  error?: boolean;
-  /**
-   * Validation error message (gets displayed only if 'error' is set to 'true')
-   */
-  errorMessage?: string;
-  /**
-   * Specify a max length of model
-   * Default value: 1024
-   */
+  /** Specify a max length of model. Default value: 1024 */
   maxlength?: string | number;
-  /**
-   * Input tooltip information
-   */
-  tooltip?: string;
-  /**
-   * Input required state
-   */
-  required?: boolean;
-  /**
-   * Option label
-   */
+  /** Option label */
   option?: string;
-  /**
-   * Available options that the user can select from.
-   * Default value: []
-   */
+  /** Available options that the user can select from. Default value: [] */
   options?: unknown[];
-  /**
-   * Property of option which holds the 'value'
-   * Default value: id
-   * @param option The current option being processed
-   * @returns Value of the current option
-   */
+  /** Property of option which holds the 'value'. Default value: id */
   optionValue?: OptionProp<unknown>;
-  /**
-   * Property of option which holds the 'label'
-   * Default value: title
-   * @param option The current option being processed
-   * @returns Label of the current option
-   */
+  /** Property of option which holds the 'label'. Default value: title */
   optionLabel?: OptionProp<unknown>;
-  /**
-   * Currency sign display settings
-   */
+  /** Currency sign display settings */
   currencyDisplay?: `${CurrencyDisplay}`;
   precision?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
-  /**
-   * Enable search in dropdown
-   */
+  /** Enable search in dropdown */
   searchable?: boolean;
 }
 

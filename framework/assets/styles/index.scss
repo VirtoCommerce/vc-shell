@@ -86,3 +86,19 @@ textarea {
     background-color: var(--scroll-thumb-hover);
   }
 }
+
+// Shared slide-up transition for form field error/hint appearance
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
+}

@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { computed, toValue, type MaybeRef } from "vue";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { formatBadgeCount } from "@shared/utilities/formatBadgeCount";
 
 export interface WidgetDropdownItemProps {

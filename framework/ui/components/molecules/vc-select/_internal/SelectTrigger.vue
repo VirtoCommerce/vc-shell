@@ -48,6 +48,7 @@
                     :aria-controls="isOpened ? listboxId : undefined"
                     :aria-labelledby="label ? labelId : undefined"
                     :aria-describedby="ariaDescribedBy"
+                    :aria-required="ariaRequired"
                     :aria-invalid="error || undefined"
                     @click.stop="toggleDropdown"
                     @keydown.enter.stop="toggleDropdown"
@@ -181,12 +182,12 @@
               name="slide-up"
               mode="out-in"
             >
-              <div v-if="error">
+              <div v-if="error && errorMessage">
                 <slot name="error">
                   <VcHint
-                    v-if="errorMessage"
                     :id="errorId"
                     class="vc-select__error-message"
+                    :error="true"
                   >
                     {{ errorMessage }}
                   </VcHint>
@@ -250,6 +251,7 @@ defineProps<{
   labelId: string;
   label?: string;
   ariaDescribedBy?: string;
+  ariaRequired?: boolean | undefined;
   errorId: string;
   hintId: string;
   toggleDropdown: () => void;

@@ -2,13 +2,13 @@
   <div
     class="vc-multivalue"
     :class="[
-      `vc-multivalue_${type}`,
+      `vc-multivalue--${type}`,
       {
-        'vc-multivalue_opened': isOpened,
-        'vc-multivalue_error': invalid,
-        'vc-multivalue_disabled': resolvedDisabled,
-        'vc-multivalue_focused': isFocused,
-        'vc-multivalue_has-hint-or-error': invalid || hint,
+        'vc-multivalue--opened': isOpened,
+        'vc-multivalue--error': invalid,
+        'vc-multivalue--disabled': resolvedDisabled,
+        'vc-multivalue--focused': isFocused,
+        'vc-multivalue--has-hint-or-error': invalid || hint,
       },
     ]"
   >
@@ -50,6 +50,7 @@
       :label-id="label ? labelId : undefined"
       :listbox-id="listboxId"
       :aria-described-by="ariaDescribedBy"
+      :aria-required="ariaRequired"
       @remove="removeAtIndex"
       @toggle-dropdown="toggleDropdown"
       @input-submit="onInputSubmit"
@@ -121,6 +122,7 @@
           <VcHint
             :id="errorId"
             class="vc-multivalue__error"
+            :error="true"
           >
             {{ errorMessage }}
           </VcHint>
@@ -198,7 +200,8 @@ defineSlots<{
   append: (props: any) => any;
 }>();
 
-const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
+const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 const listboxId = computed(() => `${fieldId.value}-listbox`);
 
 // --- Sub-component refs ---
@@ -328,8 +331,8 @@ function onSearch(event: Event) {
 }
 
 .vc-multivalue {
-  &_date,
-  &_datetime-local {
+  &--date,
+  &--datetime-local {
     @apply tw-max-w-[220px];
 
     .vc-app_mobile & {
@@ -468,21 +471,21 @@ function onSearch(event: Event) {
   }
 
   // Focus state
-  &_focused &__field-wrapper {
+  &--focused &__field-wrapper {
     @apply tw-border-[color:var(--multivalue-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--multivalue-focus-ring-color)]
       tw-outline-none;
   }
 
   // Opened state
-  &_opened &__field-wrapper {
+  &--opened &__field-wrapper {
     @apply tw-border-[color:var(--multivalue-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--multivalue-focus-ring-color)]
       tw-outline-none;
   }
 
   // Error state
-  &_error &__field-wrapper {
+  &--error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--multivalue-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--multivalue-error-ring-color)];
   }
@@ -496,17 +499,17 @@ function onSearch(event: Event) {
   }
 
   // Disabled state
-  &_disabled &__field-wrapper {
+  &--disabled &__field-wrapper {
     @apply tw-opacity-50;
   }
 
-  &_disabled &__field-wrapper,
-  &_disabled &__input {
+  &--disabled &__field-wrapper,
+  &--disabled &__input {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
   // Hint/error spacing
-  &_has-hint-or-error {
+  &--has-hint-or-error {
     @apply tw-pb-5;
   }
 
@@ -520,21 +523,6 @@ function onSearch(event: Event) {
     @apply tw-opacity-0 tw-absolute tw-w-0 tw-h-0 tw-pointer-events-none;
   }
 
-  // Slide-up transition
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    transition: all 0.25s ease-out;
-  }
-
-  .slide-up-enter-from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  .slide-up-leave-to {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
 }
 
 // Dropdown enter/leave transition

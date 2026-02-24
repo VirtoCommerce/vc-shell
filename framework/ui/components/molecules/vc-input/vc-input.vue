@@ -36,12 +36,12 @@
     v-else
     class="vc-input"
     :class="[
-      `vc-input_${type}`,
+      `vc-input--${type}`,
       {
-        'vc-input_clearable': clearable,
-        'vc-input_error': invalid,
-        'vc-input_disabled': resolvedDisabled,
-        'vc-input_focused': isFocused,
+        'vc-input--clearable': clearable,
+        'vc-input--error': invalid,
+        'vc-input--disabled': resolvedDisabled,
+        'vc-input--focused': isFocused,
       },
     ]"
   >
@@ -49,6 +49,7 @@
     <VcLabel
       v-if="label"
       :id="labelId"
+      :html-for="inputId"
       class="vc-input__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -119,6 +120,7 @@
                 :maxlength="maxlength"
                 :autofocus="autofocus"
                 :aria-invalid="invalid || undefined"
+                :aria-required="ariaRequired"
                 :aria-describedby="ariaDescribedBy"
                 :aria-labelledby="label ? labelId : undefined"
                 class="vc-input__input"
@@ -136,47 +138,44 @@
               {{ suffix }}
             </div>
 
-            <div
+            <button
               v-if="clearable && mutatedModel && !resolvedDisabled && type !== 'password'"
+              type="button"
               class="vc-input__clear"
-              tabindex="0"
+              aria-label="Clear"
               @click="onReset"
-              @keydown.enter="onReset"
-              @keydown.space="onReset"
             >
               <VcIcon
                 size="xs"
                 icon="lucide-x"
               ></VcIcon>
-            </div>
+            </button>
 
-            <div
+            <button
               v-if="type === 'password' && internalType === 'password'"
+              type="button"
               class="vc-input__showhide"
-              tabindex="0"
+              aria-label="Show password"
               @click="internalType = 'text'"
-              @keydown.enter="internalType = 'text'"
-              @keydown.space="internalType = 'text'"
             >
               <VcIcon
                 size="s"
                 icon="lucide-eye-off"
               ></VcIcon>
-            </div>
+            </button>
 
-            <div
+            <button
               v-if="type === 'password' && internalType === 'text'"
+              type="button"
               class="vc-input__showhide"
-              tabindex="0"
+              aria-label="Hide password"
               @click="internalType = 'password'"
-              @keydown.enter="internalType = 'password'"
-              @keydown.space="internalType = 'password'"
             >
               <VcIcon
                 size="s"
                 icon="lucide-eye"
               ></VcIcon>
-            </div>
+            </button>
           </div>
 
           <div
@@ -222,6 +221,7 @@
           <VcHint
             :id="errorId"
             class="vc-input__hint-error"
+            :error="true"
             >{{ errorMessage }}</VcHint
           >
         </slot>
@@ -408,7 +408,8 @@ defineSlots<{
   hint: (props: any) => any;
 }>();
 
-const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } = useFormField(props);
+const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 
 let emitTimer: NodeJS.Timeout;
 let emitValueFn;
@@ -636,11 +637,13 @@ function handleFocus() {
   }
 
   &__clear {
-    @apply tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
+    @apply tw-border-none tw-bg-transparent tw-outline-none tw-p-0 tw-cursor-pointer
+      tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
   }
 
   &__showhide {
-    @apply tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
+    @apply tw-border-none tw-bg-transparent tw-outline-none tw-p-0 tw-cursor-pointer
+      tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
   }
 
   &__loading {
@@ -700,30 +703,30 @@ function handleFocus() {
     @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm tw-mt-1;
   }
 
-  &_error &__field-wrapper {
+  &--error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--input-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--input-error-ring-color)];
   }
 
-  &_error &__field input {
+  &--error &__field input {
     @apply tw-text-[color:var(--input-text-color-error)];
   }
 
-  &_disabled input {
+  &--disabled input {
     @apply tw-text-[color:var(--input-disabled-text-color)] tw-pointer-events-none;
   }
 
-  &_disabled &__field-wrapper {
+  &--disabled &__field-wrapper {
     @apply tw-opacity-50;
   }
 
-  &_disabled &__field-wrapper,
-  &_disabled &__field,
-  &_disabled input {
+  &--disabled &__field-wrapper,
+  &--disabled &__field,
+  &--disabled input {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
-  &_focused &__field-wrapper {
+  &--focused &__field-wrapper {
     @apply tw-border-[color:var(--input-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--input-focus-ring-color)]
       tw-outline-none;
@@ -735,19 +738,5 @@ function handleFocus() {
       tw-ring-[3px] tw-ring-[color:var(--input-error-ring-color)];
   }
 
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    transition: all 0.25s ease-out;
-  }
-
-  .slide-up-enter-from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  .slide-up-leave-to {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
 }
 </style>

@@ -9,6 +9,7 @@
     :aria-controls="isDictionaryMode && isOpened ? listboxId : undefined"
     :aria-labelledby="labelId"
     :aria-describedby="ariaDescribedBy"
+    :aria-required="ariaRequired"
     :aria-invalid="error || undefined"
   >
     <div
@@ -96,6 +97,7 @@
             :type="htmlInputType"
             :disabled="disabled"
             :aria-invalid="error || undefined"
+            :aria-required="ariaRequired"
             :aria-labelledby="labelId"
             :aria-describedby="ariaDescribedBy"
             tabindex="0"
@@ -169,6 +171,7 @@ defineProps<{
   labelId?: string;
   listboxId?: string;
   ariaDescribedBy?: string;
+  ariaRequired?: boolean | undefined;
 }>();
 
 const emit = defineEmits<{

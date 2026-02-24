@@ -10,6 +10,7 @@
   >
     <VcLabel
       v-if="label"
+      :html-for="checkboxId"
       class="vc-checkbox__label"
       :required="required"
       :error="invalid"
@@ -35,6 +36,7 @@
         :true-value="trueValue"
         :false-value="falseValue"
         :aria-invalid="invalid || undefined"
+        :aria-required="ariaRequired"
         :aria-describedby="ariaDescribedBy"
         tabindex="0"
       />
@@ -82,7 +84,7 @@
       name="slide-up"
       mode="out-in"
     >
-      <div v-if="errorMessage">
+      <div v-if="invalid && errorMessage">
         <slot name="error">
           <VcHint
             :id="errorId"
@@ -133,7 +135,8 @@ defineSlots<{
   icon: (props: Record<string, never>) => any;
 }>();
 
-const { fieldId: checkboxId, errorId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } = useFormField(props);
+const { fieldId: checkboxId, errorId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 
 const checkboxRef = ref<HTMLInputElement | null>(null);
 
@@ -312,18 +315,6 @@ onMounted(() => {
     opacity: var(--checkbox-disabled-opacity);
   }
 
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    @apply tw-transition-all tw-duration-[250ms] tw-ease-out;
-  }
-
-  .slide-up-enter-from {
-    @apply tw-opacity-0 tw-translate-y-[5px];
-  }
-
-  .slide-up-leave-to {
-    @apply tw-opacity-0 tw--translate-y-[5px];
-  }
 }
 
 @keyframes checkbox-check-in {

@@ -174,6 +174,11 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
    * Initialization and event processing
    */
   const initKeyboardNavigation = (el: HTMLElement) => {
+    // Clean up previous listener to avoid double-registration
+    // (onMounted may have auto-attached to a global containerSelector match)
+    if (container.value) {
+      container.value.removeEventListener("keydown", handleKeyDown);
+    }
     container.value = el;
     el.addEventListener("keydown", handleKeyDown);
   };

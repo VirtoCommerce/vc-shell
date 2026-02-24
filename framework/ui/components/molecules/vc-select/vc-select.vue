@@ -3,12 +3,12 @@
     ref="selectRootRef"
     class="vc-select"
     :class="{
-      'vc-select_opened': isOpened,
-      'vc-select_error': invalid,
-      'vc-select_disabled': resolvedDisabled,
-      'vc-select_has-hint-or-error': invalid || hint,
-      'vc-select_no-outline': !outline,
-      'vc-select_focused': isFocused,
+      'vc-select--opened': isOpened,
+      'vc-select--error': invalid,
+      'vc-select--disabled': resolvedDisabled,
+      'vc-select--has-hint-or-error': invalid || hint,
+      'vc-select--no-outline': !outline,
+      'vc-select--focused': isFocused,
     }"
   >
     <!-- Select label -->
@@ -54,6 +54,7 @@
         :label-id="labelId"
         :label="label"
         :aria-described-by="ariaDescribedBy"
+        :aria-required="ariaRequired"
         :error-id="errorId"
         :hint-id="hintId"
         :toggle-dropdown="toggleDropdown"
@@ -202,11 +203,6 @@ defineSlots<{
    */
   append: (props: any) => any;
   /**
-   * What should the menu display after filtering options and none are left to be displayed
-   * @param scope
-   */
-  "no-option": (props: any) => any;
-  /**
    * Slot for errors
    */
   error: (props: any) => any;
@@ -332,7 +328,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: "global" });
 
-const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaDescribedBy } =
+const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
   useFormField(props);
 const listboxId = computed(() => `${fieldId.value}-listbox`);
 
@@ -457,6 +453,10 @@ const keyboardNavigation = useKeyboardNavigation({
   onEscape: () => {
     isOpened.value = false;
     emit("close");
+    nextTick(() => {
+      const toggleEl = selectTriggerRef.value?.toggleRef?.querySelector('[role="combobox"]') as HTMLElement | null;
+      toggleEl?.focus();
+    });
   },
 });
 
@@ -574,7 +574,7 @@ watch(
 }
 
 .vc-select {
-  &_no-outline {
+  &--no-outline {
     .vc-select__chevron-container {
       display: none;
     }
@@ -792,55 +792,41 @@ watch(
     @apply tw-block tw-h-[1px]; /* Ensures it's in layout flow for intersection observer */
   }
 
-  &.vc-select_opened &__chevron {
+  &.vc-select--opened &__chevron {
     @apply tw-rotate-180 tw-opacity-100;
   }
 
-  &.vc-select_opened &__field-wrapper {
+  &.vc-select--opened &__field-wrapper {
     @apply tw-border-[color:var(--select-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--select-focus-ring-color)]
       tw-outline-none;
   }
 
-  &.vc-select_error &__field-wrapper {
+  &.vc-select--error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--select-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--select-error-ring-color)];
   }
 
-  &.vc-select_disabled &__field-wrapper {
+  &.vc-select--disabled &__field-wrapper {
     @apply tw-opacity-50;
   }
 
-  &.vc-select_disabled &__field-wrapper,
-  &.vc-select_disabled &__field,
-  &.vc-select_disabled &__input {
+  &.vc-select--disabled &__field-wrapper,
+  &.vc-select--disabled &__field,
+  &.vc-select--disabled &__input {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
-  &_focused .vc-select__field-wrapper {
+  &--focused .vc-select__field-wrapper {
     @apply tw-border-[color:var(--select-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--select-focus-ring-color)]
       tw-outline-none;
   }
 
-  &.vc-select_has-hint-or-error {
+  &.vc-select--has-hint-or-error {
     @apply tw-pb-5;
   }
 
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    transition: all 0.25s ease-out;
-  }
-
-  .slide-up-enter-from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  .slide-up-leave-to {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
 }
 
 // Dropdown enter/leave transition (fade + scale)

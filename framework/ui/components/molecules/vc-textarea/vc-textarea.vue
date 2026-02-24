@@ -2,15 +2,16 @@
   <div
     class="vc-textarea"
     :class="{
-      'vc-textarea_error': invalid,
-      'vc-textarea_disabled': resolvedDisabled,
-      'vc-textarea_focused': isFocused,
+      'vc-textarea--error': invalid,
+      'vc-textarea--disabled': resolvedDisabled,
+      'vc-textarea--focus': isFocused,
     }"
   >
     <!-- Textarea label -->
     <VcLabel
       v-if="label"
       :id="labelId"
+      :html-for="textareaId"
       class="vc-textarea__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -37,6 +38,7 @@
         :disabled="resolvedDisabled"
         :maxlength="maxlength"
         :aria-invalid="invalid || undefined"
+        :aria-required="ariaRequired"
         :aria-describedby="ariaDescribedBy"
         :aria-labelledby="label ? labelId : undefined"
         tabindex="0"
@@ -109,7 +111,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { fieldId: textareaId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
+const { fieldId: textareaId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 
 const textareaRef = ref<HTMLTextAreaElement>();
 const isFocused = ref(false);
@@ -164,12 +167,12 @@ defineExpose({
     }
   }
 
-  &_error &__field-wrapper {
+  &--error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--textarea-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--textarea-error-ring-color)];
   }
 
-  &_error &__field-wrapper textarea {
+  &--error &__field-wrapper textarea {
     @apply tw-text-[color:var(--textarea-text-color-error)];
   }
 
@@ -200,16 +203,16 @@ defineExpose({
     }
   }
 
-  &_disabled &__field-wrapper {
+  &--disabled &__field-wrapper {
     @apply tw-opacity-50;
   }
 
-  &_disabled &__field-wrapper,
-  &_disabled &__field {
+  &--disabled &__field-wrapper,
+  &--disabled &__field {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
-  &_focused &__field-wrapper {
+  &--focus &__field-wrapper {
     @apply tw-border-[color:var(--textarea-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--textarea-focus-ring-color)]
       tw-outline-none;
@@ -221,17 +224,5 @@ defineExpose({
       tw-ring-[3px] tw-ring-[color:var(--textarea-error-ring-color)];
   }
 
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    @apply tw-transition-all tw-duration-[250ms] tw-ease-out;
-  }
-
-  .slide-up-enter-from {
-    @apply tw-opacity-0 tw-translate-y-[5px];
-  }
-
-  .slide-up-leave-to {
-    @apply tw-opacity-0 tw--translate-y-[5px];
-  }
 }
 </style>

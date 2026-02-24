@@ -3,9 +3,9 @@
     class="vc-color-input"
     :class="[
       {
-        'vc-color-input_error': invalid,
-        'vc-color-input_disabled': resolvedDisabled,
-        'vc-color-input_focused': isFocused,
+        'vc-color-input--error': invalid,
+        'vc-color-input--disabled': resolvedDisabled,
+        'vc-color-input--focused': isFocused,
       },
     ]"
   >
@@ -13,6 +13,7 @@
     <VcLabel
       v-if="label"
       :id="labelId"
+      :html-for="inputId"
       class="vc-color-input__label"
       :required="required"
       :multilanguage="multilanguage"
@@ -46,6 +47,7 @@
             :name="name"
             :autofocus="autofocus"
             :aria-invalid="invalid || undefined"
+            :aria-required="ariaRequired"
             :aria-describedby="ariaDescribedBy"
             :aria-labelledby="label ? labelId : undefined"
             class="vc-color-input__input"
@@ -108,9 +110,8 @@
       name="slide-up"
       mode="out-in"
     >
-      <div v-if="error">
+      <div v-if="invalid && errorMessage">
         <VcHint
-          v-if="errorMessage"
           :id="errorId"
           class="vc-color-input__hint-error"
           :error="true"
@@ -154,7 +155,8 @@ const props = withDefaults(defineProps<VcColorInputProps>(), {
 
 const emit = defineEmits<VcColorInputEmits>();
 
-const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaDescribedBy } = useFormField(props);
+const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
+  useFormField(props);
 
 // State
 const isFocused = ref(false);
@@ -365,44 +367,30 @@ defineExpose({ focus });
     @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm tw-mt-1;
   }
 
-  &_error &__field-wrapper {
+  &--error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--input-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--input-error-ring-color)];
   }
 
-  &_error &__field input {
+  &--error &__field input {
     @apply tw-text-[color:var(--input-text-color-error)];
   }
 
-  &_disabled &__field-wrapper {
+  &--disabled &__field-wrapper {
     @apply tw-opacity-50;
   }
 
-  &_disabled &__field-wrapper,
-  &_disabled &__field,
-  &_disabled input {
+  &--disabled &__field-wrapper,
+  &--disabled &__field,
+  &--disabled input {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
-  &_focused &__field-wrapper {
+  &--focused &__field-wrapper {
     @apply tw-border-[color:var(--input-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--input-focus-ring-color)]
       tw-outline-none;
   }
 
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    transition: all 0.25s ease-out;
-  }
-
-  .slide-up-enter-from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  .slide-up-leave-to {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
 }
 </style>

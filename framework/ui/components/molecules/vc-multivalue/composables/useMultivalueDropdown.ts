@@ -98,6 +98,9 @@ export function useMultivalueDropdown(options: UseMultivalueDropdownOptions) {
     isFocused.value = false;
     keyboardNavigation.cleanupKeyboardNavigation();
     options.emit.close();
+    nextTick(() => {
+      dropdownToggleRef.value?.focus();
+    });
   }
 
   function toggleDropdown() {

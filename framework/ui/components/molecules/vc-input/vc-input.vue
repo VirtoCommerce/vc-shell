@@ -737,19 +737,5 @@ function handleFocus() {
       tw-ring-[3px] tw-ring-[color:var(--input-error-ring-color)];
   }
 
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    transition: all 0.25s ease-out;
-  }
-
-  .slide-up-enter-from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  .slide-up-leave-to {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
 }
 </style>

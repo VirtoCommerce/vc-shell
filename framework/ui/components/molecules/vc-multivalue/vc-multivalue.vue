@@ -523,21 +523,6 @@ function onSearch(event: Event) {
     @apply tw-opacity-0 tw-absolute tw-w-0 tw-h-0 tw-pointer-events-none;
   }
 
-  // Slide-up transition
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    transition: all 0.25s ease-out;
-  }
-
-  .slide-up-enter-from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  .slide-up-leave-to {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
 }
 
 // Dropdown enter/leave transition

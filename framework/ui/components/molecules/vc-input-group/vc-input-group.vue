@@ -168,17 +168,5 @@ provide(InputGroupContextKey, {
     @apply tw-opacity-50;
   }
 
-  .slide-up-enter-active,
-  .slide-up-leave-active {
-    @apply tw-transition-all tw-duration-[250ms] tw-ease-out;
-  }
-
-  .slide-up-enter-from {
-    @apply tw-opacity-0 tw-translate-y-[5px];
-  }
-
-  .slide-up-leave-to {
-    @apply tw-opacity-0 tw--translate-y-[5px];
-  }
 }
 </style>

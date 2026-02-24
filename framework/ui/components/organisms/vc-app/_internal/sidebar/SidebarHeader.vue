@@ -29,6 +29,23 @@
       </template>
     </div>
 
+    <button
+      v-if="expanded && !isMobile"
+      class="sidebar-header__notification-bell"
+      @click="$emit('toggle-notifications', $event)"
+    >
+      <div class="sidebar-header__notification-bell-wrap">
+        <VcIcon
+          icon="lucide-bell"
+          size="m"
+        />
+        <div
+          v-if="hasUnread"
+          class="sidebar-header__accent"
+        />
+      </div>
+    </button>
+
     <div
       v-if="$slots.actions"
       class="sidebar-header__actions"
@@ -98,6 +115,7 @@ withDefaults(defineProps<Props>(), {
 defineEmits<{
   (e: "logo:click"): void;
   (e: "toggle-menu", event: MouseEvent): void;
+  (e: "toggle-notifications", event: MouseEvent): void;
 }>();
 
 const hasUnread = inject(ShellIndicatorsKey, ref(false));
@@ -155,6 +173,14 @@ const hasUnread = inject(ShellIndicatorsKey, ref(false));
 
   &__blade-title {
     @apply tw-text-lg tw-font-bold tw-text-[var(--app-bar-header-blade-title)];
+  }
+
+  &__notification-bell {
+    @apply tw-cursor-pointer tw-relative;
+
+    &-wrap {
+      @apply tw-relative;
+    }
   }
 
   &__menu-button {

@@ -46,6 +46,7 @@ interface Apps {
       id: string;
       url: string;
       version?: string;
+      hash?: string;
     }[];
   };
 }
@@ -107,9 +108,9 @@ function loadCSS(url: string): Promise<void> {
   });
 }
 
-async function loadVersionInfo(url: string): Promise<VersionInfo | null> {
+async function loadVersionInfo(url: string, options?: RequestInit): Promise<VersionInfo | null> {
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, options);
     if (!response.ok) {
       logger.warn(`Failed to load version info: ${response.statusText}`);
       return null;
@@ -121,12 +122,37 @@ async function loadVersionInfo(url: string): Promise<VersionInfo | null> {
   }
 }
 
+function sanitizeFileToken(value: string): string {
+  const safeValue = value.replace(/[^a-zA-Z0-9._-]/g, "_");
+  return safeValue || "unknown";
+}
+
+function appendQueryParam(url: string, key: string, value: string): string {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}${key}=${encodeURIComponent(value)}`;
+}
+
+function hashString(value: string): string {
+  // Fast deterministic hash for cache keys in browser runtime.
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i++) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(16);
+}
+
+function normalizeModuleUrl(url: string): string {
+  return url.replace(/^([^/])/, "/$1").replace(/([^/])$/, "$1/");
+}
+
 interface ModuleConfig {
   baseUrl: string;
   manifestFileName: string;
   entryPointKey: string;
   frameworkVersion: string;
   skipVersionCheck?: boolean;
+  forceFreshAssets?: boolean;
 }
 
 const DEFAULT_CONFIG: Partial<ModuleConfig> = {
@@ -134,6 +160,7 @@ const DEFAULT_CONFIG: Partial<ModuleConfig> = {
   entryPointKey: "isEntry",
   skipVersionCheck: false,
   frameworkVersion: "1.1.0",
+  forceFreshAssets: true,
 };
 
 function checkVersionCompatibility(
@@ -246,8 +273,14 @@ export function useDynamicModules(
 
   async function load() {
     try {
-      const appsUrl = finalConfig.baseUrl + "apps.json";
-      const modules: Apps[] = await fetch(appsUrl).then((res) => res.json());
+      const shouldForceFreshAssets = finalConfig.forceFreshAssets !== false;
+      const requestTimestamp = Date.now().toString();
+      const fetchOptions: RequestInit | undefined = shouldForceFreshAssets ? { cache: "no-store" } : undefined;
+      const withCacheBust = (url: string, cacheKey?: string) =>
+        shouldForceFreshAssets ? appendQueryParam(url, "v", cacheKey ?? requestTimestamp) : url;
+
+      const appsUrl = withCacheBust(finalConfig.baseUrl + "apps.json");
+      const modules: Apps[] = await fetch(appsUrl, fetchOptions).then((res) => res.json());
 
       const module = modules.find((module) => module[appName]);
 
@@ -262,17 +295,44 @@ export function useDynamicModules(
             return null;
           }
 
-          const moduleUrl = module.url.replace(/^([^/])/, "/$1").replace(/([^/])$/, "$1/");
+          const moduleUrl = normalizeModuleUrl(module.url);
+          const manifestRequestCacheKey = module.hash || module.version || requestTimestamp;
+          const manifestCandidates = [
+            ...(module.hash ? [`manifest.${sanitizeFileToken(module.hash)}.json`] : []),
+            ...(module.version ? [`manifest.${sanitizeFileToken(module.version)}.json`] : []),
+            finalConfig.manifestFileName,
+          ];
           try {
-            const response = await fetch(moduleUrl + finalConfig.manifestFileName);
-            if (!response.ok) {
-              throw new Error(`Failed to load manifest for module '{ ${module.id} }': ${response.statusText}`);
+            let manifest: Manifest | null = null;
+            let moduleCacheKey = manifestRequestCacheKey;
+
+            for (const manifestFileName of manifestCandidates) {
+              const manifestUrl = withCacheBust(moduleUrl + manifestFileName, manifestRequestCacheKey);
+              const response = await fetch(manifestUrl, fetchOptions);
+              if (response.ok) {
+                const manifestText = await response.text();
+                manifest = JSON.parse(manifestText) as Manifest;
+                moduleCacheKey = module.hash || hashString(manifestText) || requestTimestamp;
+                break;
+              }
+
+              if (response.status !== 404) {
+                logger.warn(
+                  `Failed to load manifest '${manifestFileName}' for module '{ ${module.id} }': ${response.statusText}`,
+                );
+              }
             }
+
+            if (!manifest) {
+              throw new Error(`Failed to load manifest for module '{ ${module.id} }'`);
+            }
+
             return {
               moduleId: module.id,
               moduleUrl,
               moduleVersion: module.version,
-              manifest: (await response.json()) as Manifest,
+              moduleCacheKey,
+              manifest,
             };
           } catch (error) {
             logger.error("Error loading module manifest:", error);
@@ -286,56 +346,60 @@ export function useDynamicModules(
         );
 
         // Parallel loading of all modules
-        const moduleLoadPromises = validManifests.map(async ({ moduleId, moduleUrl, manifest, moduleVersion }) => {
-          try {
-            const entry = Object.values(manifest).find((file) => (file as ModuleManifest).isEntry);
-            if (!entry) {
-              throw new Error(`Entry file not found for module ${moduleId}`);
+        const moduleLoadPromises = validManifests.map(
+          async ({ moduleId, moduleUrl, manifest, moduleVersion, moduleCacheKey }) => {
+            try {
+              const entry = Object.values(manifest).find((file) => (file as ModuleManifest).isEntry);
+              if (!entry) {
+                throw new Error(`Entry file not found for module ${moduleId}`);
+              }
+
+              const versionFile = Object.values(manifest).find((file) => (file as VersionManifest).isVersionInfo) as
+                | VersionManifest
+                | undefined;
+
+              // Load version info and CSS in parallel
+              const [versionInfoFromFile] = await Promise.all([
+                versionFile
+                  ? loadVersionInfo(withCacheBust(moduleUrl + versionFile.file, moduleCacheKey), fetchOptions)
+                  : Promise.resolve(null),
+                // Load CSS files in parallel
+                Promise.all(
+                  Object.values(manifest)
+                    .filter((file) => file.file.endsWith(".css"))
+                    .map((file) => loadCSS(withCacheBust(moduleUrl + file.file, moduleCacheKey))),
+                ).catch((error) => {
+                  logger.error(`Failed to load styles for module ${moduleId}:`, error);
+                }),
+              ]);
+
+              if (versionInfoFromFile) {
+                logger.info(`Loaded version info for module ${moduleId}: v${versionInfoFromFile.version}`);
+              }
+
+              // Import module
+              await import(/* @vite-ignore */ withCacheBust(moduleUrl + entry.file, moduleCacheKey));
+
+              return {
+                moduleId,
+                moduleUrl,
+                moduleVersion,
+                versionInfoFromFile,
+                success: true,
+              };
+            } catch (error) {
+              logger.error(`Failed to load module ${moduleId}:`, error);
+              return {
+                moduleId,
+                moduleUrl,
+                moduleVersion,
+                versionInfoFromFile: null,
+                success: false,
+                error,
+              };
             }
-
-            const versionFile = Object.values(manifest).find((file) => (file as VersionManifest).isVersionInfo) as
-              | VersionManifest
-              | undefined;
-
-            // Load version info and CSS in parallel
-            const [versionInfoFromFile] = await Promise.all([
-              versionFile ? loadVersionInfo(moduleUrl + versionFile.file) : Promise.resolve(null),
-              // Load CSS files in parallel
-              Promise.all(
-                Object.values(manifest)
-                  .filter((file) => file.file.endsWith(".css"))
-                  .map((file) => loadCSS(moduleUrl + file.file)),
-              ).catch((error) => {
-                logger.error(`Failed to load styles for module ${moduleId}:`, error);
-              }),
-            ]);
-
-            if (versionInfoFromFile) {
-              logger.info(`Loaded version info for module ${moduleId}: v${versionInfoFromFile.version}`);
-            }
-
-            // Import module
-            await import(/* @vite-ignore */ moduleUrl + entry.file);
-
-            return {
-              moduleId,
-              moduleUrl,
-              moduleVersion,
-              versionInfoFromFile,
-              success: true,
-            };
-          } catch (error) {
-            logger.error(`Failed to load module ${moduleId}:`, error);
-            return {
-              moduleId,
-              moduleUrl,
-              moduleVersion,
-              versionInfoFromFile: null,
-              success: false,
-              error,
-            };
-          }
-        });
+          },
+        );
 
         // Wait for all modules to be loaded
         const moduleLoadResults = await Promise.all(moduleLoadPromises);

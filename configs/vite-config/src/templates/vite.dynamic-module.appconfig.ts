@@ -1,8 +1,8 @@
 import { defineConfig, UserConfig } from "vite";
-import { resolve, join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { resolve, join } from "node:path";
 import { cwd } from "node:process";
 import fs from "node:fs";
+import { createHash } from "node:crypto";
 import vue from "@vitejs/plugin-vue";
 
 // Default external dependencies
@@ -16,6 +16,11 @@ const DEFAULT_EXTERNALS = [
   "@vueuse/core",
   "@vc-shell/framework",
 ];
+
+function sanitizeFileToken(value: string): string {
+  const safeValue = value.replace(/[^a-zA-Z0-9._-]/g, "_");
+  return safeValue || "unknown";
+}
 
 /**
  * Creates a Vite configuration for building dynamic modules
@@ -54,7 +59,6 @@ export default function dynamicModuleConfiguration(
 
   // Merge default externals with custom ones
   const allExternals = [...DEFAULT_EXTERNALS, ...externals, /node_modules/];
-  console.log(resolve(cwd(), entry), cwd(), entry);
   return defineConfig({
     build: {
       manifest: "manifest.json",
@@ -63,13 +67,17 @@ export default function dynamicModuleConfiguration(
       minify: false,
       lib: {
         entry: resolve(cwd(), entry),
-        fileName: (format, name) => `${name}.js`,
+        fileName: (_, name) => `${name}.js`,
         formats: ["umd"],
         name: uniqueModuleName,
       },
       outDir: join(cwd(), outDir),
       rollupOptions: {
         output: {
+          // Hash-based names prevent stale assets even when semantic version is unchanged.
+          entryFileNames: "[name]-[hash].js",
+          chunkFileNames: "[name]-[hash].js",
+          assetFileNames: "[name]-[hash].[ext]",
           globals: {
             vue: "Vue",
             "vue-router": "VueRouter",
@@ -148,9 +156,12 @@ export default function dynamicModuleConfiguration(
               // Read generated manifest
               const manifestContent = await fs.promises.readFile(manifestPath, "utf-8");
               const manifest = JSON.parse(manifestContent);
+              const manifestHash = sanitizeFileToken(createHash("sha256").update(manifestContent).digest("hex").slice(0, 12));
+              const hashedManifestFileName = `manifest.${manifestHash}.json`;
+              const hashedManifestPath = join(cwd(), outDir, hashedManifestFileName);
 
               // Add file with metadata about version
-              const versionFileName = "version.json";
+              const versionFileName = `version.${manifestHash}.json`;
               const versionFilePath = join(cwd(), outDir, versionFileName);
 
               // Create information about version
@@ -165,6 +176,13 @@ export default function dynamicModuleConfiguration(
               // Write file with version
               await fs.promises.writeFile(versionFilePath, JSON.stringify(versionInfo, null, 2));
 
+              // Remove stale version metadata records from previous builds.
+              for (const key of Object.keys(manifest)) {
+                if (manifest[key]?.isVersionInfo) {
+                  delete manifest[key];
+                }
+              }
+
               // Add information about version file to manifest
               manifest[versionFileName] = {
                 file: versionFileName,
@@ -172,10 +190,17 @@ export default function dynamicModuleConfiguration(
                 isVersionInfo: true, // Add special marker
               };
 
-              // Write updated manifest
-              await fs.promises.writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+              const serializedManifest = JSON.stringify(manifest, null, 2);
 
-              console.log(`✓ Version information added to manifest: ${manifestPath}`);
+              // Write updated default manifest for backward compatibility
+              await fs.promises.writeFile(manifestPath, serializedManifest);
+
+              // Write hash-based manifest for deployments that expose build hash in apps.json.
+              await fs.promises.writeFile(hashedManifestPath, serializedManifest);
+
+              console.log(
+                `✓ Version information added to manifests: ${manifestPath}, ${hashedManifestFileName}`,
+              );
             } catch (error) {
               console.error("Error updating manifest with version info:", error);
             }

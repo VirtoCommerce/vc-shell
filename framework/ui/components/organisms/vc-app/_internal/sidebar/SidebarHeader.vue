@@ -36,12 +36,25 @@
       @click="$emit('toggle-notifications', $event)"
     >
       <div class="sidebar-header__notification-bell-wrap">
-        <VcIcon
-          icon="lucide-bell"
-          size="m"
-        />
+        <Transition
+          name="burger-fade"
+          mode="out-in"
+        >
+          <VcIcon
+            v-if="isNotificationsOpen"
+            key="close"
+            icon="lucide-x"
+            size="m"
+          />
+          <VcIcon
+            v-else
+            key="bell"
+            icon="lucide-bell"
+            size="m"
+          />
+        </Transition>
         <div
-          v-if="hasUnread"
+          v-if="hasUnread && !isNotificationsOpen"
           class="sidebar-header__accent"
         />
       </div>
@@ -77,10 +90,6 @@
             size="m"
           />
         </Transition>
-        <div
-          v-if="hasUnread && !isMenuOpen"
-          class="sidebar-header__accent"
-        />
       </div>
     </button>
   </div>
@@ -96,6 +105,7 @@ export interface Props {
   expanded?: boolean;
   showBurger?: boolean;
   isMenuOpen?: boolean;
+  isNotificationsOpen?: boolean;
   isVisible?: boolean;
   isMobile?: boolean;
   mobileTitle?: string;
@@ -106,6 +116,7 @@ withDefaults(defineProps<Props>(), {
   expanded: true,
   showBurger: false,
   isMenuOpen: false,
+  isNotificationsOpen: false,
   isVisible: true,
   isMobile: false,
   mobileTitle: "",

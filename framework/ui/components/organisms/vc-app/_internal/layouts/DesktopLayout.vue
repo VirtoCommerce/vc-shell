@@ -46,6 +46,7 @@
           :expanded="sidebar.isExpanded.value"
           :show-burger="sidebar.isExpanded.value"
           :is-menu-open="sidebar.isMenuOpen.value"
+          :is-notifications-open="isNotificationsOpen"
           class="desktop-layout__header"
           @logo:click="$emit('logo:click')"
           @toggle-menu="handleToggleMenu"
@@ -109,7 +110,6 @@
     :anchor-ref="notificationAnchorRef"
     placement="right-start"
     width="320px"
-    :title="$t('COMPONENTS.NOTIFICATION_DROPDOWN.TITLE')"
   >
     <NotificationDropdown />
   </VcDropdownPanel>

@@ -102,11 +102,40 @@ const meta = {
         defaultValue: { summary: "undefined" },
       },
     },
-    error: {
-      description: "Slot for custom error message",
+    disabled: {
+      description: "Whether the file upload is disabled",
+      control: "boolean",
       table: {
-        category: "Slots",
-        type: { summary: "VNode | string" },
+        category: "State",
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    required: {
+      description: "Whether the field is required",
+      control: "boolean",
+      table: {
+        category: "Validation",
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    error: {
+      description: "External error flag (also available as slot)",
+      control: "boolean",
+      table: {
+        category: "Validation",
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
+      },
+    },
+    errorMessage: {
+      description: "Error message text — also sets error state when truthy",
+      control: "text",
+      table: {
+        category: "Validation",
+        type: { summary: "string" },
+        defaultValue: { summary: "undefined" },
       },
     },
   },
@@ -352,9 +381,9 @@ export const CustomText: Story = {
 };
 
 /**
- * You can show error messages using the error slot.
+ * You can show custom error messages using the error slot.
  */
-export const WithError: Story = {
+export const WithErrorSlot: Story = {
   args: {
     variant: "file-upload",
   },
@@ -387,6 +416,53 @@ export const WithError: Story = {
             </div>
           </template>
         </VcFileUpload>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * The component can be disabled, preventing all interactions.
+ */
+export const Disabled: Story = {
+  args: {
+    variant: "file-upload",
+    disabled: true,
+  },
+  render: (args) => ({
+    components: { VcFileUpload },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div class="tw-p-4 tw-max-w-md">
+        <VcFileUpload
+          v-bind="args"
+        />
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Error state can be driven by the errorMessage prop (from IFormFieldProps),
+ * in addition to vee-validate rules or the error slot.
+ */
+export const WithErrorMessage: Story = {
+  args: {
+    variant: "file-upload",
+    errorMessage: "Maximum file size exceeded (5 MB)",
+  },
+  render: (args) => ({
+    components: { VcFileUpload },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div class="tw-p-4 tw-max-w-md">
+        <VcFileUpload
+          v-bind="args"
+        />
       </div>
     `,
   }),

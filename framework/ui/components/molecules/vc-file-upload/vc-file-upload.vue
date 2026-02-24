@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-file-upload__container"
-    :class="{ 'vc-file-upload__container--error': !!errorMessage }"
+    :class="{ 'vc-file-upload__container--error': !!resolvedErrorMessage }"
   >
     <div
       v-loading="loading"
@@ -10,6 +10,7 @@
         `vc-file-upload__drop-zone--${variant}`,
         {
           'vc-file-upload__drop-zone--dragging': isDragging,
+          'vc-file-upload__drop-zone--disabled': resolvedDisabled,
         },
       ]"
       @drop.stop.prevent="onDrop"
@@ -20,9 +21,11 @@
       @dragenter.stop.prevent
       @dragleave.stop.prevent="dragLeave"
       role="button"
-      tabindex="0"
+      :tabindex="resolvedDisabled ? -1 : 0"
       :aria-label="customText?.dragHere || 'Upload files'"
       :aria-describedby="ariaDescribedBy"
+      :aria-disabled="resolvedDisabled || undefined"
+      :aria-required="ariaRequired"
       @keydown.enter="toggleUploader"
       @keydown.space.prevent="toggleUploader"
     >
@@ -50,7 +53,8 @@
         hidden
         :accept="accept"
         :multiple="multiple"
-        :name="name"
+        :name="resolvedName"
+        :disabled="resolvedDisabled"
         @change="upload"
       />
     </div>
@@ -58,14 +62,14 @@
       name="slide-up"
       mode="out-in"
     >
-      <div v-if="errorMessage">
+      <div v-if="resolvedErrorMessage">
         <slot name="error">
           <VcHint
             :id="errorId"
             class="vc-file-upload__error"
             :error="true"
           >
-            {{ errorMessage }}
+            {{ resolvedErrorMessage }}
           </VcHint>
         </slot>
       </div>
@@ -74,19 +78,22 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { getCurrentInstance, ref, unref, computed, useId } from "vue";
+import { ref, unref, computed } from "vue";
 import { useField } from "vee-validate";
-import { VcIcon, VcLink, VcHint } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcLink } from "@ui/components/atoms/vc-link";
+import { VcHint } from "@ui/components/atoms/vc-hint";
 import { useI18n } from "vue-i18n";
 import { IValidationRules } from "@core/types";
+import { useFormField } from "@ui/composables/useFormField";
+import type { IFormFieldProps } from "@ui/types/form-field";
 
-export interface Props {
+export interface Props extends IFormFieldProps {
   variant?: "gallery" | "file-upload";
   loading?: boolean;
   accept?: string;
   multiple?: boolean;
   rules?: keyof IValidationRules | IValidationRules;
-  name?: string;
   icon?: string;
   customText?: {
     dragHere: string;
@@ -112,25 +119,46 @@ defineSlots<{
 
 const { t } = useI18n({ useScope: "global" });
 
-const instance = getCurrentInstance();
+const {
+  fieldId,
+  errorId,
+  resolvedDisabled,
+  resolvedName,
+  ariaRequired,
+  groupContext,
+} = useFormField(props);
+
 const internalRules = unref(props.rules) || "";
 const isDragging = ref(false);
 
-const { errorMessage, handleChange, validate } = useField(
-  `${props.name === "Gallery" ? instance?.uid : props.name}`,
+const { errorMessage: veeErrorMessage, handleChange, validate } = useField(
+  `${props.name === "Gallery" ? fieldId.value : props.name}`,
   internalRules as IValidationRules,
 );
 
-const uploader = ref<HTMLInputElement | null>(null);
+const resolvedErrorMessage = computed(
+  () => props.errorMessage || veeErrorMessage.value,
+);
 
-const uid = useId();
-const errorId = computed(() => `vc-file-upload-${uid}-error`);
 const ariaDescribedBy = computed(() => {
-  if (errorMessage.value) return errorId.value;
-  return undefined;
+  const ids = new Set<string>();
+
+  if (groupContext?.describedBy.value) {
+    groupContext.describedBy.value.split(/\s+/).forEach((id) => ids.add(id));
+  }
+
+  if (resolvedErrorMessage.value) {
+    ids.add(errorId.value);
+  }
+
+  return ids.size ? Array.from(ids).join(" ") : undefined;
 });
 
+const uploader = ref<HTMLInputElement | null>(null);
+
 const upload = async (event: Event) => {
+  if (resolvedDisabled.value) return;
+
   await handleChange(event.target);
 
   const isValid = await validate();
@@ -146,6 +174,7 @@ const upload = async (event: Event) => {
 };
 
 function toggleUploader() {
+  if (resolvedDisabled.value) return;
   if (uploader.value) {
     uploader.value.value = "";
     uploader.value.click();
@@ -153,6 +182,7 @@ function toggleUploader() {
 }
 
 function onDrop(event: DragEvent) {
+  if (resolvedDisabled.value) return;
   dragLeave();
   const fileList = event.dataTransfer?.files;
 
@@ -162,6 +192,7 @@ function onDrop(event: DragEvent) {
 }
 
 function dragOver() {
+  if (resolvedDisabled.value) return;
   isDragging.value = true;
 }
 
@@ -215,6 +246,10 @@ function dragLeave() {
     &--dragging {
       @apply tw-bg-[color:var(--file-upload-drag-bg)] tw-border-solid tw-cursor-copy
         tw-border-[color:var(--file-upload-border-color-dragover)];
+    }
+
+    &--disabled {
+      @apply tw-opacity-50 tw-pointer-events-none tw-cursor-default;
     }
 
     &:hover {

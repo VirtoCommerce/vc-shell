@@ -57,7 +57,7 @@
               >
                 <img
                   v-if="app.iconUrl"
-                  :src="app.iconUrl"
+                  :src="normalizeIconUrl(app.iconUrl)"
                   :alt="app.title || app.id || 'app icon'"
                   class="app-hub-content__item-icon app-hub-content__item-icon--tile"
                 />
@@ -311,6 +311,14 @@ onBeforeUnmount(() => {
   resolveScrollViewport(appsScrollContainerRef.value)?.removeEventListener("scroll", handleAppsScroll);
   resolveScrollViewport(widgetsScrollContainerRef.value)?.removeEventListener("scroll", handleWidgetsScroll);
 });
+
+function normalizeIconUrl(url: string): string {
+  if (!url || url.startsWith("/") || url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) {
+    return url;
+  }
+
+  return `/${url}`;
+}
 
 function isAppActive(app: AppDescriptor): boolean {
   if (typeof window === "undefined") {

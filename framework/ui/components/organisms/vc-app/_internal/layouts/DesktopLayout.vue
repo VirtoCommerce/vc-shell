@@ -49,6 +49,7 @@
           class="desktop-layout__header"
           @logo:click="$emit('logo:click')"
           @toggle-menu="handleToggleMenu"
+          @toggle-notifications="handleToggleNotifications"
         />
       </slot>
 
@@ -102,6 +103,16 @@
       />
     </template>
   </AppHubPopover>
+
+  <VcDropdownPanel
+    v-model:show="isNotificationsOpen"
+    :anchor-ref="notificationAnchorRef"
+    placement="right-start"
+    width="320px"
+    :title="$t('COMPONENTS.NOTIFICATION_DROPDOWN.TITLE')"
+  >
+    <NotificationDropdown />
+  </VcDropdownPanel>
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
@@ -116,6 +127,8 @@ import SidebarHeader from "@ui/components/organisms/vc-app/_internal/sidebar/Sid
 import SidebarContent from "@ui/components/organisms/vc-app/_internal/sidebar/SidebarContent.vue";
 import SidebarCollapseButton from "@ui/components/organisms/vc-app/_internal/sidebar/SidebarCollapseButton.vue";
 import AppHubPopover from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppHubPopover.vue";
+import { NotificationDropdown } from "@shared/components";
+import { VcDropdownPanel } from "@ui/components";
 
 export interface Props {
   logo?: string;
@@ -151,6 +164,8 @@ const sidebar = useSidebarState();
 const isEmbedded = inject(EmbeddedModeKey, false);
 const route = useRoute();
 const appHubAnchorRef = ref<HTMLElement | null>(null);
+const isNotificationsOpen = ref(false);
+const notificationAnchorRef = ref<HTMLElement | null>(null);
 
 const showHeader = computed(() => !isEmbedded);
 
@@ -160,6 +175,7 @@ watch(
     if (sidebar.isMenuOpen.value) {
       sidebar.closeMenu();
     }
+    isNotificationsOpen.value = false;
   },
 );
 
@@ -173,7 +189,23 @@ const handleToggleMenu = (event: MouseEvent) => {
     return;
   }
 
+  // Close notifications when opening AppHub
+  isNotificationsOpen.value = false;
+
   sidebar.openMenu();
+};
+
+const handleToggleNotifications = (event: MouseEvent) => {
+  if (event.currentTarget instanceof HTMLElement) {
+    notificationAnchorRef.value = event.currentTarget;
+  }
+
+  isNotificationsOpen.value = !isNotificationsOpen.value;
+
+  // Close AppHub when opening notifications
+  if (isNotificationsOpen.value && sidebar.isMenuOpen.value) {
+    sidebar.closeMenu();
+  }
 };
 
 const handleAppHubVisibility = (value: boolean) => {

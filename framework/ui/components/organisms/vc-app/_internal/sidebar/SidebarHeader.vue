@@ -29,69 +29,73 @@
       </template>
     </div>
 
-    <button
-      v-if="expanded && !isMobile"
-      class="sidebar-header__notification-bell"
-      aria-label="Notifications"
-      @click="$emit('toggle-notifications', $event)"
-    >
-      <div class="sidebar-header__notification-bell-wrap">
-        <Transition
-          name="burger-fade"
-          mode="out-in"
-        >
-          <VcIcon
-            v-if="isNotificationsOpen"
-            key="close"
-            icon="lucide-x"
-            size="m"
-          />
-          <VcIcon
-            v-else
-            key="bell"
-            icon="lucide-bell"
-            size="m"
-          />
-        </Transition>
-        <div
-          v-if="hasUnread && !isNotificationsOpen"
-          class="sidebar-header__accent"
-        />
-      </div>
-    </button>
-
     <div
-      v-if="$slots.actions"
-      class="sidebar-header__actions"
+      v-if="expanded && !isMobile"
+      class="sidebar-header__toolbar"
     >
-      <slot name="actions" />
-    </div>
+      <button
+        class="sidebar-header__notification-bell"
+        aria-label="Notifications"
+        @click="$emit('toggle-notifications', $event)"
+      >
+        <div class="sidebar-header__notification-bell-wrap">
+          <Transition
+            name="burger-fade"
+            mode="out-in"
+          >
+            <VcIcon
+              v-if="isNotificationsOpen"
+              key="close"
+              icon="lucide-x"
+              size="m"
+            />
+            <VcIcon
+              v-else
+              key="bell"
+              icon="lucide-bell"
+              size="m"
+            />
+          </Transition>
+          <div
+            v-if="hasUnread && !isNotificationsOpen"
+            class="sidebar-header__accent"
+          />
+        </div>
+      </button>
 
-    <button
-      v-if="expanded && showBurger"
-      class="sidebar-header__menu-button"
-      @click="$emit('toggle-menu', $event)"
-    >
-      <div class="sidebar-header__menu-button-wrap">
-        <Transition
-          name="burger-fade"
-          mode="out-in"
-        >
-          <VcIcon
-            v-if="isMenuOpen"
-            key="close"
-            icon="lucide-x"
-            size="m"
-          />
-          <VcIcon
-            v-else
-            key="burger"
-            icon="lucide-menu"
-            size="m"
-          />
-        </Transition>
+      <div
+        v-if="$slots.actions"
+        class="sidebar-header__actions"
+      >
+        <slot name="actions" />
       </div>
-    </button>
+
+      <button
+        v-if="showBurger"
+        class="sidebar-header__menu-button"
+        @click="$emit('toggle-menu', $event)"
+      >
+        <div class="sidebar-header__menu-button-wrap">
+          <Transition
+            name="burger-fade"
+            mode="out-in"
+          >
+            <VcIcon
+              v-if="isMenuOpen"
+              key="close"
+              icon="lucide-x"
+              size="m"
+            />
+            <VcIcon
+              v-else
+              key="burger"
+              icon="lucide-menu"
+              size="m"
+            />
+          </Transition>
+        </div>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -176,6 +180,10 @@ const hasUnread = inject(ShellIndicatorsKey, ref(false));
     @apply tw-block tw-absolute tw-right-[-7px] tw-top-[-5px]
       tw-w-[5px] tw-h-[5px] tw-rounded-full tw-z-[1]
       tw-bg-[var(--app-bar-accent-color,var(--danger-500))];
+  }
+
+  &__toolbar {
+    @apply tw-flex tw-items-center tw-gap-3;
   }
 
   &__actions {

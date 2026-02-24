@@ -1,6 +1,5 @@
 <template>
   <div
-    ref="hubContentRef"
     class="app-hub-content"
     :class="{ 'app-hub-content--mobile': mobile }"
   >
@@ -32,30 +31,6 @@
           <span class="app-hub-content__section-title">
             {{ $t("COMPONENTS.ORGANISMS.VC_APP.INTERNAL.APP_HUB.APPLICATIONS") }}
           </span>
-
-          <VcButtonGroup
-            v-if="showApplicationsViewToggle"
-            attached
-            size="sm"
-            class="app-hub-content__view-mode"
-          >
-            <VcButton
-              data-test-id="app-hub-view-list"
-              icon="lucide-list"
-              variant="secondary"
-              :selected="applicationsViewMode === 'list'"
-              :aria-label="$t('COMPONENTS.ORGANISMS.VC_APP.INTERNAL.APP_HUB.LIST_VIEW')"
-              @click="setApplicationsViewMode('list')"
-            />
-            <VcButton
-              data-test-id="app-hub-view-tiles"
-              icon="lucide-layout-grid"
-              variant="secondary"
-              :selected="applicationsViewMode === 'tiles'"
-              :aria-label="$t('COMPONENTS.ORGANISMS.VC_APP.INTERNAL.APP_HUB.TILE_VIEW')"
-              @click="setApplicationsViewMode('tiles')"
-            />
-          </VcButtonGroup>
         </header>
 
         <VcScrollableContainer
@@ -66,59 +41,38 @@
             name="applications"
             :apps-list="filteredApps"
             :switch-app="handleSwitchApp"
-            :view-mode="applicationsViewMode"
-            :set-view-mode="setApplicationsViewMode"
           >
             <div
               v-if="filteredApps.length"
-              class="app-hub-content__apps-list"
-              :class="{ 'app-hub-content__apps-list--tiles': isApplicationsTilesView }"
+              class="app-hub-content__apps-list app-hub-content__apps-list--tiles"
             >
               <button
                 v-for="app in visibleApps"
                 :key="app.id || app.title"
                 type="button"
                 :data-test-id="getAppTestId(app)"
-                class="app-hub-content__item app-hub-content__item--app"
-                :class="{
-                  'app-hub-content__item--active': isAppActive(app),
-                  'app-hub-content__item--app-tile': isApplicationsTilesView,
-                }"
+                class="app-hub-content__item app-hub-content__item--app app-hub-content__item--app-tile"
+                :class="{ 'app-hub-content__item--active': isAppActive(app) }"
                 @click="handleSwitchApp(app)"
               >
                 <img
                   v-if="app.iconUrl"
                   :src="app.iconUrl"
                   :alt="app.title || app.id || 'app icon'"
-                  class="app-hub-content__item-icon"
-                  :class="{ 'app-hub-content__item-icon--tile': isApplicationsTilesView }"
+                  class="app-hub-content__item-icon app-hub-content__item-icon--tile"
                 />
                 <VcIcon
                   v-else
                   icon="lucide-grid-2x2"
-                  :size="isApplicationsTilesView ? 'm' : 's'"
-                  class="app-hub-content__item-icon app-hub-content__item-icon--fallback"
-                  :class="{ 'app-hub-content__item-icon--tile': isApplicationsTilesView }"
+                  size="m"
+                  class="app-hub-content__item-icon app-hub-content__item-icon--fallback app-hub-content__item-icon--tile"
                 />
 
-                <div
-                  class="app-hub-content__item-content"
-                  :class="{ 'app-hub-content__item-content--center': isApplicationsTilesView }"
-                >
+                <div class="app-hub-content__item-content app-hub-content__item-content--center">
                   <div
-                    class="app-hub-content__item-title"
-                    :class="{
-                      'app-hub-content__item-title--app': true,
-                      'app-hub-content__item-title--center': isApplicationsTilesView,
-                    }"
+                    class="app-hub-content__item-title app-hub-content__item-title--app app-hub-content__item-title--center"
                   >
                     {{ app.title || app.id }}
-                  </div>
-                  <div
-                    v-if="!isApplicationsTilesView && app.description"
-                    class="app-hub-content__item-subtitle"
-                  >
-                    {{ app.description }}
                   </div>
                 </div>
               </button>
@@ -134,81 +88,82 @@
       </section>
 
       <section class="app-hub-content__section app-hub-content__section--widgets">
-        <header class="app-hub-content__section-header">
-          <span class="app-hub-content__section-title">
-            {{ $t("COMPONENTS.ORGANISMS.VC_APP.INTERNAL.APP_HUB.WIDGETS") }}
-          </span>
-        </header>
-
-        <VcScrollableContainer
-          ref="widgetsScrollContainerRef"
-          class="app-hub-content__scroll"
-        >
-          <div
-            v-if="filteredWidgets.length"
-            class="app-hub-content__list"
-          >
-            <button
-              v-for="widget in visibleWidgets"
-              :key="widget.id"
-              type="button"
-              :data-widget-id="widget.id"
-              class="app-hub-content__item app-hub-content__item--widget"
-              :class="{ 'app-hub-content__item--active': isWidgetActive(widget.id) }"
-              @click="handleWidgetClick(widget, $event)"
-            >
-              <div class="app-hub-content__widget-icon-wrap">
+        <div class="app-hub-content__widgets-inner">
+          <!-- Active widget content (inline) -->
+          <template v-if="!mobile && isAnyWidgetVisible && currentWidget?.component">
+            <header class="app-hub-content__section-header app-hub-content__section-header--back">
+              <button
+                class="app-hub-content__back-button"
+                @click="hideAllWidgets"
+              >
                 <VcIcon
-                  :icon="widget.icon || 'lucide-layout-grid'"
-                  size="s"
-                  class="app-hub-content__item-icon app-hub-content__item-icon--fallback"
+                  icon="lucide-arrow-left"
+                  size="xs"
                 />
-                <span
-                  v-if="isBadgeActive(widget)"
-                  class="app-hub-content__widget-badge"
-                />
+                <span class="app-hub-content__back-title">{{ getWidgetTitle(currentWidget) }}</span>
+              </button>
+            </header>
+            <VcScrollableContainer class="app-hub-content__widget-inline-body">
+              <AppBarWidgetContent />
+            </VcScrollableContainer>
+          </template>
+
+          <!-- Widget list (default) -->
+          <template v-else>
+            <header class="app-hub-content__section-header">
+              <span class="app-hub-content__section-title">
+                {{ $t("COMPONENTS.ORGANISMS.VC_APP.INTERNAL.APP_HUB.WIDGETS") }}
+              </span>
+            </header>
+
+            <VcScrollableContainer
+              ref="widgetsScrollContainerRef"
+              class="app-hub-content__scroll"
+            >
+              <div
+                v-if="filteredWidgets.length"
+                class="app-hub-content__list"
+              >
+                <button
+                  v-for="widget in visibleWidgets"
+                  :key="widget.id"
+                  type="button"
+                  :data-widget-id="widget.id"
+                  class="app-hub-content__item app-hub-content__item--widget"
+                  :class="{ 'app-hub-content__item--active': isWidgetActive(widget.id) }"
+                  @click="handleWidgetClick(widget)"
+                >
+                  <div class="app-hub-content__widget-icon-wrap">
+                    <VcIcon
+                      :icon="widget.icon || 'lucide-layout-grid'"
+                      size="s"
+                      class="app-hub-content__item-icon app-hub-content__item-icon--fallback"
+                    />
+                    <span
+                      v-if="isBadgeActive(widget)"
+                      class="app-hub-content__widget-badge"
+                    />
+                  </div>
+
+                  <div class="app-hub-content__item-content">
+                    <div class="app-hub-content__item-title">
+                      {{ getWidgetTitle(widget) }}
+                    </div>
+                  </div>
+                </button>
               </div>
 
-              <div class="app-hub-content__item-content">
-                <div class="app-hub-content__item-title">
-                  {{ getWidgetTitle(widget) }}
-                </div>
+              <div
+                v-else
+                class="app-hub-content__empty"
+              >
+                {{ $t("COMPONENTS.ORGANISMS.VC_APP.INTERNAL.APP_HUB.NO_WIDGETS") }}
               </div>
-            </button>
-          </div>
-
-          <div
-            v-else
-            class="app-hub-content__empty"
-          >
-            {{ $t("COMPONENTS.ORGANISMS.VC_APP.INTERNAL.APP_HUB.NO_WIDGETS") }}
-          </div>
-        </VcScrollableContainer>
+            </VcScrollableContainer>
+          </template>
+        </div>
       </section>
     </div>
-
-    <VcDropdownPanel
-      v-if="!mobile && currentWidget?.component"
-      v-model:show="isDesktopWidgetFlyoutVisible"
-      :anchor-ref="desktopWidgetAnchorRef"
-      placement="right-start"
-      width="320px"
-      max-width="min(320px, calc(100vw - 24px))"
-      :max-height="520"
-      :content-scrollable="false"
-    >
-      <div class="app-hub-content__flyout-header">
-        <span class="app-hub-content__flyout-title">{{ getWidgetTitle(currentWidget) }}</span>
-        <VcButton
-          icon="material-close"
-          text
-          @click="hideAllWidgets"
-        />
-      </div>
-      <div class="app-hub-content__flyout-body">
-        <AppBarWidgetContent />
-      </div>
-    </VcDropdownPanel>
 
     <Transition name="app-hub-content-flyout">
       <div
@@ -232,12 +187,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, ref, toRef, useSlots, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, toRef, useSlots, watch } from "vue";
 import type { AppDescriptor } from "@core/api/platform";
 import type { AppBarWidget } from "@core/services";
 import { useAppBarWidget } from "@core/composables";
-import { VcButton, VcButtonGroup, VcDropdownPanel, VcIcon, VcInput, VcScrollableContainer } from "@ui/components";
-import { useAppHub, type ApplicationsViewMode } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppHub";
+import { hasUnreadNotifications } from "@core/composables/useNotifications";
+import { VcButton, VcIcon, VcInput, VcScrollableContainer } from "@ui/components";
+import { useAppHub } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppHub";
 import { useAppBarWidgets } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarWidgets";
 import AppBarWidgetContent from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppBarWidgetContent.vue";
 
@@ -257,44 +213,27 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
-  applications?: (props: {
-    appsList: AppDescriptor[];
-    switchApp: (app: AppDescriptor) => void;
-    viewMode: ApplicationsViewMode;
-    setViewMode: (mode: ApplicationsViewMode) => void;
-  }) => unknown;
+  applications?: (props: { appsList: AppDescriptor[]; switchApp: (app: AppDescriptor) => void }) => unknown;
 }>();
 
 const slots = useSlots();
 const hasCustomApplicationsSlot = computed(() => typeof slots.applications === "function");
-const hubContentRef = ref<HTMLElement | null>(null);
-const desktopWidgetAnchorRef = ref<HTMLElement | null>(null);
 const appsScrollContainerRef = ref<InstanceType<typeof VcScrollableContainer> | null>(null);
 const widgetsScrollContainerRef = ref<InstanceType<typeof VcScrollableContainer> | null>(null);
 
 const { items } = useAppBarWidget();
-const { currentWidget, hideAllWidgets, isAnyWidgetVisible, toggleWidget } = useAppBarWidgets();
+const { currentWidget, hideAllWidgets, isAnyWidgetVisible, toggleWidget, showWidget } = useAppBarWidgets();
 
 const PROGRESSIVE_RENDER_THRESHOLD = 120;
 const INITIAL_RENDER_BATCH_SIZE = 120;
 const RENDER_BATCH_SIZE = 80;
 const LOAD_MORE_TRIGGER_OFFSET = 120;
 
-const {
-  searchQuery,
-  filteredApps,
-  filteredWidgets,
-  applicationsViewMode,
-  isApplicationsTilesView,
-  showApplicationsViewToggle,
-  setApplicationsViewMode,
-  getWidgetTitle,
-} = useAppHub({
+const { searchQuery, filteredApps, filteredWidgets, getWidgetTitle } = useAppHub({
   appsList: toRef(props, "appsList"),
   widgets: items,
   showApplications: toRef(props, "showApplications"),
   mobile: toRef(props, "mobile"),
-  hasCustomApplicationsSlot,
 });
 
 const appsRenderLimit = ref(INITIAL_RENDER_BATCH_SIZE);
@@ -322,17 +261,6 @@ const visibleWidgets = computed(() => {
   }
 
   return filteredWidgets.value.slice(0, widgetsRenderLimit.value);
-});
-
-const isDesktopWidgetFlyoutVisible = computed({
-  get: () => {
-    return !props.mobile && isAnyWidgetVisible.value && !!currentWidget.value?.component && !!desktopWidgetAnchorRef.value;
-  },
-  set: (value: boolean) => {
-    if (!value) {
-      hideAllWidgets();
-    }
-  },
 });
 
 watch(
@@ -380,25 +308,11 @@ watch(
   { immediate: true },
 );
 
-watch(
-  [() => currentWidget.value?.id, () => filteredWidgets.value.map((widget) => widget.id).join("|"), () => props.mobile],
-  ([activeWidgetId]) => {
-    if (props.mobile || !activeWidgetId) {
-      desktopWidgetAnchorRef.value = null;
-      return;
-    }
-
-    const anchor = resolveWidgetAnchor(activeWidgetId);
-    if (anchor) {
-      desktopWidgetAnchorRef.value = anchor;
-      return;
-    }
-
-    if (isAnyWidgetVisible.value) {
-      hideAllWidgets();
-    }
-  },
-);
+onMounted(() => {
+  if (!props.mobile && hasUnreadNotifications.value) {
+    showWidget("notifications");
+  }
+});
 
 onBeforeUnmount(() => {
   resolveScrollViewport(appsScrollContainerRef.value)?.removeEventListener("scroll", handleAppsScroll);
@@ -468,25 +382,12 @@ function handleWidgetsScroll(): void {
   });
 }
 
-function handleWidgetClick(widget: AppBarWidget, event: Event): void {
-  if (!props.mobile && event.currentTarget instanceof HTMLElement) {
-    desktopWidgetAnchorRef.value = event.currentTarget;
-  }
-
+function handleWidgetClick(widget: AppBarWidget): void {
   if (widget.component) {
     toggleWidget(widget.id);
   }
 
   widget.onClick?.();
-}
-
-function resolveWidgetAnchor(widgetId: string): HTMLElement | null {
-  if (!hubContentRef.value) {
-    return null;
-  }
-
-  const escapedId = widgetId.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-  return hubContentRef.value.querySelector<HTMLElement>(`[data-widget-id="${escapedId}"]`);
 }
 
 function maybeExtendRenderLimit(params: {
@@ -555,7 +456,6 @@ function isBadgeActive(widget: AppBarWidget): boolean {
 <style lang="scss">
 :root {
   --app-hub-panel-width: 580px;
-  --app-hub-panel-max-height: min(50vh, 400px);
   --app-hub-search-padding: 12px;
   --app-hub-divider-color: var(--neutrals-200);
   --app-hub-item-bg-hover: var(--secondary-100);
@@ -566,11 +466,23 @@ function isBadgeActive(widget: AppBarWidget): boolean {
   --app-hub-item-icon-active: var(--primary-500);
 }
 
+// The parent .vc-dropdown-panel__content is flex:1 + overflow:hidden but NOT
+// a flex container, so percentage/flex heights inside it don't resolve.
+// Make it a flex container so .app-hub-content can use flex:1 + min-height:0
+// to receive the bounded height from floating-ui's maxHeight.
+.vc-dropdown-panel__content:has(> .app-hub-content) {
+  display: flex;
+  flex-direction: column;
+}
+
 .app-hub-content {
-  @apply tw-relative tw-flex tw-flex-col;
+  @apply tw-relative tw-flex tw-flex-col tw-overflow-hidden;
   width: var(--app-hub-panel-width);
-  height: var(--app-hub-panel-max-height);
   max-width: calc(100vw - 32px);
+  // 0 1 auto = content-sized (panel shrinks to fit apps), but can shrink
+  // below content when viewport is short (enables scroll via min-height:0).
+  flex: 0 1 auto;
+  min-height: 0;
 
   &--mobile {
     @apply tw-w-full tw-max-w-full tw-h-auto;
@@ -582,7 +494,8 @@ function isBadgeActive(widget: AppBarWidget): boolean {
   }
 
   &__sections {
-    @apply tw-grid tw-gap-0 tw-min-h-0 tw-flex-1;
+    @apply tw-grid tw-gap-0 tw-min-h-0;
+    flex: 0 1 auto;
     grid-template-columns: minmax(0, 1fr) 220px;
 
     &--single {
@@ -616,12 +529,23 @@ function isBadgeActive(widget: AppBarWidget): boolean {
     }
 
     &--widgets {
-      @apply tw-bg-[var(--app-bar-background)];
+      @apply tw-bg-[var(--app-bar-background)] tw-relative;
     }
+  }
+
+  // Absolutely positioned inner wrapper — removes the widgets column
+  // from the grid row's intrinsic height calculation so only the apps
+  // column drives the panel height. Content scrolls within.
+  &__widgets-inner {
+    @apply tw-absolute tw-inset-0 tw-flex tw-flex-col tw-overflow-hidden;
   }
 
   &__section-header {
     @apply tw-flex tw-items-center tw-justify-between tw-gap-2 tw-px-3 tw-pt-3 tw-pb-2;
+
+    &--back {
+      @apply tw-px-2 tw-pt-2 tw-pb-1;
+    }
   }
 
   &__section-title {
@@ -737,6 +661,23 @@ function isBadgeActive(widget: AppBarWidget): boolean {
   &__widget-badge {
     @apply tw-absolute -tw-right-[2px] -tw-top-[2px] tw-w-[6px] tw-h-[6px] tw-rounded-full;
     background-color: var(--danger-500);
+  }
+
+  &__back-button {
+    @apply tw-flex tw-items-center tw-gap-1.5 tw-px-1.5 tw-py-1 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-transition-colors tw-duration-150;
+    color: var(--app-hub-item-title);
+
+    &:hover {
+      background: var(--app-hub-item-bg-hover);
+    }
+  }
+
+  &__back-title {
+    @apply tw-truncate;
+  }
+
+  &__widget-inline-body {
+    @apply tw-flex tw-flex-col tw-flex-1 tw-min-h-0 tw-overflow-hidden;
   }
 
   &__flyout {

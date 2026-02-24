@@ -36,27 +36,35 @@
       <slot name="actions" />
     </div>
 
-    <Transition
-      name="burger-fade"
-      mode="out-in"
+    <button
+      v-if="expanded && showBurger"
+      class="sidebar-header__menu-button"
+      @click="$emit('toggle-menu', $event)"
     >
-      <button
-        v-if="expanded && showBurger"
-        class="sidebar-header__menu-button"
-        @click="$emit('toggle-menu', $event)"
-      >
-        <div class="sidebar-header__menu-button-wrap">
+      <div class="sidebar-header__menu-button-wrap">
+        <Transition
+          name="burger-fade"
+          mode="out-in"
+        >
           <VcIcon
-            :icon="MenuBurgerIcon"
-            size="xs"
+            v-if="isMenuOpen"
+            key="close"
+            icon="lucide-x"
+            size="m"
           />
-          <div
-            v-if="hasUnread"
-            class="sidebar-header__accent"
+          <VcIcon
+            v-else
+            key="burger"
+            icon="lucide-menu"
+            size="m"
           />
-        </div>
-      </button>
-    </Transition>
+        </Transition>
+        <div
+          v-if="hasUnread && !isMenuOpen"
+          class="sidebar-header__accent"
+        />
+      </div>
+    </button>
   </div>
 </template>
 
@@ -70,6 +78,7 @@ export interface Props {
   logo?: string;
   expanded?: boolean;
   showBurger?: boolean;
+  isMenuOpen?: boolean;
   isVisible?: boolean;
   isMobile?: boolean;
   mobileTitle?: string;
@@ -79,6 +88,7 @@ export interface Props {
 withDefaults(defineProps<Props>(), {
   expanded: true,
   showBurger: false,
+  isMenuOpen: false,
   isVisible: true,
   isMobile: false,
   mobileTitle: "",
@@ -158,11 +168,18 @@ const hasUnread = inject(ShellIndicatorsKey, ref(false));
 
 .burger-fade-enter-active,
 .burger-fade-leave-active {
-  transition: opacity 0.1s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
 }
 
-.burger-fade-enter-from,
+.burger-fade-enter-from {
+  opacity: 0;
+  transform: rotate(90deg);
+}
+
 .burger-fade-leave-to {
   opacity: 0;
+  transform: rotate(-90deg);
 }
 </style>

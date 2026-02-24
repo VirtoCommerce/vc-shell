@@ -5,7 +5,7 @@
     placement="right-start"
     width="560px"
     max-width="calc(100vw - 24px)"
-    :max-height="560"
+    :max-height="9999"
     :content-scrollable="false"
   >
     <AppHubContent

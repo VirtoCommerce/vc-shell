@@ -45,6 +45,7 @@
           :logo="logo"
           :expanded="sidebar.isExpanded.value"
           :show-burger="sidebar.isExpanded.value"
+          :is-menu-open="sidebar.isMenuOpen.value"
           class="desktop-layout__header"
           @logo:click="$emit('logo:click')"
           @toggle-menu="handleToggleMenu"

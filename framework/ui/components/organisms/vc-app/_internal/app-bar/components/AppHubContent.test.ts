@@ -66,7 +66,6 @@ function mountHub(options?: { apps?: AppDescriptor[]; widgets?: registerAppBarWi
 
 describe("AppHubContent", () => {
   beforeEach(() => {
-    localStorage.removeItem("vc_app_hub_applications_view_mode");
     document.body.innerHTML = "";
   });
 
@@ -135,8 +134,8 @@ describe("AppHubContent", () => {
     expect(wrapper.text()).toContain("Import App");
   });
 
-  it("uses tiles mode automatically when application count is high", () => {
-    const apps = Array.from({ length: 14 }, (_, index) => ({
+  it("always renders applications in tiles mode", () => {
+    const apps = Array.from({ length: 3 }, (_, index) => ({
       id: `app-${index + 1}`,
       title: `App ${index + 1}`,
     })) as AppDescriptor[];
@@ -155,26 +154,6 @@ describe("AppHubContent", () => {
     const wrapper = mountHub({ apps });
 
     expect(wrapper.findAll(".app-hub-content__item--app")).toHaveLength(120);
-  });
-
-  it("persists manually selected application view mode", async () => {
-    const apps = Array.from({ length: 3 }, (_, index) => ({
-      id: `app-${index + 1}`,
-      title: `App ${index + 1}`,
-    })) as AppDescriptor[];
-
-    const wrapper = mountHub({ apps });
-
-    expect(wrapper.find(".app-hub-content__apps-list--tiles").exists()).toBe(false);
-
-    await wrapper.find("[data-test-id='app-hub-view-tiles']").trigger("click");
-
-    expect(wrapper.find(".app-hub-content__apps-list--tiles").exists()).toBe(true);
-
-    wrapper.unmount();
-
-    const remounted = mountHub({ apps });
-    expect(remounted.find(".app-hub-content__apps-list--tiles").exists()).toBe(true);
   });
 
   it("renders separate scroll containers for applications and widgets", () => {

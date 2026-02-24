@@ -3,7 +3,6 @@ import { provideAppBarMobileButtonsService } from "@core/composables/useAppBarMo
 import { provideGlobalSearch } from "@core/composables/useGlobalSearch";
 import { provideDashboardService } from "@core/composables/useDashboard";
 import {
-  AppBarWidgetServiceKey,
   SettingsMenuServiceKey,
   EmbeddedModeKey,
   DynamicModulesKey,
@@ -19,7 +18,6 @@ import { LogoutButton } from "@shared/components/logout-button";
 import { provideAiAgentService } from "@core/plugins/ai-agent";
 import type { IAiAgentConfig } from "@core/plugins/ai-agent";
 import type { BladeRoutesRecord } from "@shared/components";
-import type { registerAppBarWidgetOptions } from "@core/services/app-bar-menu-service";
 import type { AppBarButtonContent } from "@core/services/app-bar-mobile-buttons-service";
 import type { RegisterSettingsMenuItemOptions } from "@core/services/settings-menu-service";
 
@@ -33,7 +31,6 @@ export interface ShellBootstrapOptions {
 
 export function useShellBootstrap(options: ShellBootstrapOptions) {
   // 1a. App-level services (created by framework plugin install)
-  const appBarWidgetService = inject(AppBarWidgetServiceKey)!;
   const settingsMenuService = inject(SettingsMenuServiceKey)!;
 
   // 1b. Component-scoped services (created here for VcApp descendants)
@@ -61,7 +58,6 @@ export function useShellBootstrap(options: ShellBootstrapOptions) {
   // 4. Register default shell UI
   useShellDefaults({
     isEmbedded: options.isEmbedded,
-    registerWidget: appBarWidgetService.register,
     registerMobileButton: mobileButtons.register,
     registerSettingsMenuItem: settingsMenuService.register,
   });
@@ -70,21 +66,11 @@ export function useShellBootstrap(options: ShellBootstrapOptions) {
 // ── Internal: default UI element registration ─────────────────────
 interface ShellDefaultsContext {
   isEmbedded: boolean;
-  registerWidget: (options: registerAppBarWidgetOptions) => string;
   registerMobileButton: (button: AppBarButtonContent) => void;
   registerSettingsMenuItem: (options: RegisterSettingsMenuItemOptions) => string;
 }
 
 function useShellDefaults(ctx: ShellDefaultsContext) {
-  // Notification widget
-  ctx.registerWidget({
-    id: "notifications",
-    component: NotificationDropdown,
-    icon: "lucide-bell",
-    order: 10,
-    badge: () => hasUnreadNotifications.value,
-  });
-
   if (!ctx.isEmbedded) {
     ctx.registerMobileButton({
       id: "notifications",

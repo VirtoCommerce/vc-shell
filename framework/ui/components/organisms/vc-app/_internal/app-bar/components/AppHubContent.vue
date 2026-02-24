@@ -187,11 +187,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, toRef, useSlots, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, ref, toRef, useSlots, watch } from "vue";
 import type { AppDescriptor } from "@core/api/platform";
 import type { AppBarWidget } from "@core/services";
 import { useAppBarWidget } from "@core/composables";
-import { hasUnreadNotifications } from "@core/composables/useNotifications";
 import { VcButton, VcIcon, VcInput, VcScrollableContainer } from "@ui/components";
 import { useAppHub } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppHub";
 import { useAppBarWidgets } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarWidgets";
@@ -222,7 +221,7 @@ const appsScrollContainerRef = ref<InstanceType<typeof VcScrollableContainer> | 
 const widgetsScrollContainerRef = ref<InstanceType<typeof VcScrollableContainer> | null>(null);
 
 const { items } = useAppBarWidget();
-const { currentWidget, hideAllWidgets, isAnyWidgetVisible, toggleWidget, showWidget } = useAppBarWidgets();
+const { currentWidget, hideAllWidgets, isAnyWidgetVisible, toggleWidget } = useAppBarWidgets();
 
 const PROGRESSIVE_RENDER_THRESHOLD = 120;
 const INITIAL_RENDER_BATCH_SIZE = 120;
@@ -307,12 +306,6 @@ watch(
   },
   { immediate: true },
 );
-
-onMounted(() => {
-  if (!props.mobile && hasUnreadNotifications.value) {
-    showWidget("notifications");
-  }
-});
 
 onBeforeUnmount(() => {
   resolveScrollViewport(appsScrollContainerRef.value)?.removeEventListener("scroll", handleAppsScroll);

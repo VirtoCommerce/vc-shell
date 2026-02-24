@@ -2,9 +2,9 @@
   <div
     class="vc-textarea"
     :class="{
-      'vc-textarea_error': invalid,
-      'vc-textarea_disabled': resolvedDisabled,
-      'vc-textarea_focus': isFocused,
+      'vc-textarea--error': invalid,
+      'vc-textarea--disabled': resolvedDisabled,
+      'vc-textarea--focus': isFocused,
     }"
   >
     <!-- Textarea label -->
@@ -167,12 +167,12 @@ defineExpose({
     }
   }
 
-  &_error &__field-wrapper {
+  &--error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--textarea-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--textarea-error-ring-color)];
   }
 
-  &_error &__field-wrapper textarea {
+  &--error &__field-wrapper textarea {
     @apply tw-text-[color:var(--textarea-text-color-error)];
   }
 
@@ -203,16 +203,16 @@ defineExpose({
     }
   }
 
-  &_disabled &__field-wrapper {
+  &--disabled &__field-wrapper {
     @apply tw-opacity-50;
   }
 
-  &_disabled &__field-wrapper,
-  &_disabled &__field {
+  &--disabled &__field-wrapper,
+  &--disabled &__field {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
-  &_focus &__field-wrapper {
+  &--focus &__field-wrapper {
     @apply tw-border-[color:var(--textarea-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--textarea-focus-ring-color)]
       tw-outline-none;

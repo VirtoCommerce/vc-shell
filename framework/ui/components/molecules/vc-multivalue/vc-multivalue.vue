@@ -2,13 +2,13 @@
   <div
     class="vc-multivalue"
     :class="[
-      `vc-multivalue_${type}`,
+      `vc-multivalue--${type}`,
       {
-        'vc-multivalue_opened': isOpened,
-        'vc-multivalue_error': invalid,
-        'vc-multivalue_disabled': resolvedDisabled,
-        'vc-multivalue_focused': isFocused,
-        'vc-multivalue_has-hint-or-error': invalid || hint,
+        'vc-multivalue--opened': isOpened,
+        'vc-multivalue--error': invalid,
+        'vc-multivalue--disabled': resolvedDisabled,
+        'vc-multivalue--focused': isFocused,
+        'vc-multivalue--has-hint-or-error': invalid || hint,
       },
     ]"
   >
@@ -331,8 +331,8 @@ function onSearch(event: Event) {
 }
 
 .vc-multivalue {
-  &_date,
-  &_datetime-local {
+  &--date,
+  &--datetime-local {
     @apply tw-max-w-[220px];
 
     .vc-app_mobile & {
@@ -471,21 +471,21 @@ function onSearch(event: Event) {
   }
 
   // Focus state
-  &_focused &__field-wrapper {
+  &--focused &__field-wrapper {
     @apply tw-border-[color:var(--multivalue-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--multivalue-focus-ring-color)]
       tw-outline-none;
   }
 
   // Opened state
-  &_opened &__field-wrapper {
+  &--opened &__field-wrapper {
     @apply tw-border-[color:var(--multivalue-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--multivalue-focus-ring-color)]
       tw-outline-none;
   }
 
   // Error state
-  &_error &__field-wrapper {
+  &--error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--multivalue-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--multivalue-error-ring-color)];
   }
@@ -499,17 +499,17 @@ function onSearch(event: Event) {
   }
 
   // Disabled state
-  &_disabled &__field-wrapper {
+  &--disabled &__field-wrapper {
     @apply tw-opacity-50;
   }
 
-  &_disabled &__field-wrapper,
-  &_disabled &__input {
+  &--disabled &__field-wrapper,
+  &--disabled &__input {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
   // Hint/error spacing
-  &_has-hint-or-error {
+  &--has-hint-or-error {
     @apply tw-pb-5;
   }
 

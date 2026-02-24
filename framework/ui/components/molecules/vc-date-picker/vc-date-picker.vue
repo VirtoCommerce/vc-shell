@@ -3,9 +3,9 @@
     class="vc-date-picker"
     :class="[
       {
-        'vc-date-picker_error': invalid,
-        'vc-date-picker_disabled': resolvedDisabled,
-        'vc-date-picker_focused': isFocused,
+        'vc-date-picker--error': invalid,
+        'vc-date-picker--disabled': resolvedDisabled,
+        'vc-date-picker--focused': isFocused,
       },
     ]"
   >
@@ -294,21 +294,21 @@ function handleFocus() {
     @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm tw-mt-1;
   }
 
-  &_error &__field-wrapper {
+  &--error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--input-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--input-error-ring-color)];
   }
 
-  &_disabled &__field-wrapper {
+  &--disabled &__field-wrapper {
     @apply tw-opacity-50;
   }
 
-  &_disabled &__field-wrapper,
-  &_disabled &__field {
+  &--disabled &__field-wrapper,
+  &--disabled &__field {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
-  &_focused &__field-wrapper {
+  &--focused &__field-wrapper {
     @apply tw-border-[color:var(--input-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--input-focus-ring-color)]
       tw-outline-none;

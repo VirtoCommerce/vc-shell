@@ -3,12 +3,12 @@
     ref="selectRootRef"
     class="vc-select"
     :class="{
-      'vc-select_opened': isOpened,
-      'vc-select_error': invalid,
-      'vc-select_disabled': resolvedDisabled,
-      'vc-select_has-hint-or-error': invalid || hint,
-      'vc-select_no-outline': !outline,
-      'vc-select_focused': isFocused,
+      'vc-select--opened': isOpened,
+      'vc-select--error': invalid,
+      'vc-select--disabled': resolvedDisabled,
+      'vc-select--has-hint-or-error': invalid || hint,
+      'vc-select--no-outline': !outline,
+      'vc-select--focused': isFocused,
     }"
   >
     <!-- Select label -->
@@ -574,7 +574,7 @@ watch(
 }
 
 .vc-select {
-  &_no-outline {
+  &--no-outline {
     .vc-select__chevron-container {
       display: none;
     }
@@ -792,38 +792,38 @@ watch(
     @apply tw-block tw-h-[1px]; /* Ensures it's in layout flow for intersection observer */
   }
 
-  &.vc-select_opened &__chevron {
+  &.vc-select--opened &__chevron {
     @apply tw-rotate-180 tw-opacity-100;
   }
 
-  &.vc-select_opened &__field-wrapper {
+  &.vc-select--opened &__field-wrapper {
     @apply tw-border-[color:var(--select-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--select-focus-ring-color)]
       tw-outline-none;
   }
 
-  &.vc-select_error &__field-wrapper {
+  &.vc-select--error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--select-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--select-error-ring-color)];
   }
 
-  &.vc-select_disabled &__field-wrapper {
+  &.vc-select--disabled &__field-wrapper {
     @apply tw-opacity-50;
   }
 
-  &.vc-select_disabled &__field-wrapper,
-  &.vc-select_disabled &__field,
-  &.vc-select_disabled &__input {
+  &.vc-select--disabled &__field-wrapper,
+  &.vc-select--disabled &__field,
+  &.vc-select--disabled &__input {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
-  &_focused .vc-select__field-wrapper {
+  &--focused .vc-select__field-wrapper {
     @apply tw-border-[color:var(--select-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--select-focus-ring-color)]
       tw-outline-none;
   }
 
-  &.vc-select_has-hint-or-error {
+  &.vc-select--has-hint-or-error {
     @apply tw-pb-5;
   }
 

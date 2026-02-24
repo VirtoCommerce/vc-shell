@@ -3,9 +3,9 @@
     class="vc-color-input"
     :class="[
       {
-        'vc-color-input_error': invalid,
-        'vc-color-input_disabled': resolvedDisabled,
-        'vc-color-input_focused': isFocused,
+        'vc-color-input--error': invalid,
+        'vc-color-input--disabled': resolvedDisabled,
+        'vc-color-input--focused': isFocused,
       },
     ]"
   >
@@ -367,26 +367,26 @@ defineExpose({ focus });
     @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm tw-mt-1;
   }
 
-  &_error &__field-wrapper {
+  &--error &__field-wrapper {
     @apply tw-border tw-border-solid tw-border-[color:var(--input-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--input-error-ring-color)];
   }
 
-  &_error &__field input {
+  &--error &__field input {
     @apply tw-text-[color:var(--input-text-color-error)];
   }
 
-  &_disabled &__field-wrapper {
+  &--disabled &__field-wrapper {
     @apply tw-opacity-50;
   }
 
-  &_disabled &__field-wrapper,
-  &_disabled &__field,
-  &_disabled input {
+  &--disabled &__field-wrapper,
+  &--disabled &__field,
+  &--disabled input {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
   }
 
-  &_focused &__field-wrapper {
+  &--focused &__field-wrapper {
     @apply tw-border-[color:var(--input-border-color-focus)]
       tw-ring-[3px] tw-ring-[color:var(--input-focus-ring-color)]
       tw-outline-none;

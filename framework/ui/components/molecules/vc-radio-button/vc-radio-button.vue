@@ -11,7 +11,7 @@
         :aria-invalid="invalid || undefined"
         :aria-required="ariaRequired"
         :aria-describedby="ariaDescribedBy"
-        :class="{ 'vc-radio-button_error': invalid }"
+        :class="{ 'vc-radio-button--error': invalid }"
         tabindex="0"
         @change="onChange"
       />
@@ -181,7 +181,7 @@ function onChange() {
       box-shadow: 0 0 0 3px var(--radio-focus-ring-color);
     }
 
-    &.vc-radio-button_error {
+    &.vc-radio-button--error {
       border-color: var(--radio-error);
       box-shadow: 0 0 0 3px var(--radio-error-ring-color);
     }

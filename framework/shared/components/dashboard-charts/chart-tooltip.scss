@@ -1,0 +1,48 @@
+.dashboard-chart-tooltip {
+  @apply tw-rounded-lg tw-px-3 tw-py-2 tw-text-xs tw-shadow-lg;
+  background: var(--additional-50, #fff);
+  border: 1px solid var(--neutrals-200, #e5e7eb);
+
+  &__title {
+    @apply tw-font-medium tw-mb-1.5;
+    color: var(--neutrals-950);
+  }
+
+  &__items {
+    @apply tw-flex tw-flex-col tw-gap-1;
+  }
+
+  &__item {
+    @apply tw-flex tw-items-center tw-gap-2;
+  }
+
+  &__indicator {
+    @apply tw-w-2 tw-h-2 tw-rounded-full tw-flex-shrink-0;
+  }
+
+  &__label {
+    color: var(--neutrals-500);
+  }
+
+  &__value {
+    @apply tw-ml-auto tw-font-semibold;
+    color: var(--neutrals-950);
+  }
+}
+
+// Reset Unovis default tooltip container styles.
+// We render fully custom tooltip markup inside this host.
+.dashboard-chart-tooltip-host {
+  --vis-tooltip-padding: 0;
+  --vis-tooltip-border-color: transparent;
+  --vis-tooltip-background-color: transparent;
+  --vis-tooltip-box-shadow: none;
+  --vis-tooltip-backdrop-filter: none;
+
+  @apply tw-p-0;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}

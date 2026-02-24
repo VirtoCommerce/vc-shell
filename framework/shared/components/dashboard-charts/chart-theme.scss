@@ -1,0 +1,19 @@
+// Map vc-shell design tokens to Unovis CSS variables.
+// Unovis reads --vis-color0..--vis-color9 for data series colors.
+@use "./chart-tooltip";
+
+:root {
+  --vis-color0: var(--primary-500);
+  --vis-color1: var(--success-500);
+  --vis-color2: var(--warning-500);
+  --vis-color3: var(--danger-500);
+  --vis-color4: var(--info-500, #6366f1);
+  --vis-color5: var(--secondary-500, #8b5cf6);
+  --vis-color6: var(--primary-300);
+  --vis-color7: var(--success-300);
+  --vis-color8: var(--warning-300);
+  --vis-color9: var(--danger-300);
+
+  // Unovis default font inherits from body
+  --vis-font-family: inherit;
+}

@@ -61,6 +61,8 @@
     "@tiptap/pm": "^3.4.2",
     "@tiptap/starter-kit": "^3.4.2",
     "@tiptap/vue-3": "^3.4.2",
+    "@unovis/ts": "^1.6.4",
+    "@unovis/vue": "^1.6.4",
     "@vee-validate/i18n": "^4.12.4",
     "@vee-validate/rules": "^4.12.4",
     "@vuepic/vue-datepicker": "^11.0.2",

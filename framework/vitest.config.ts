@@ -30,6 +30,11 @@ export default defineConfig({
     environment: "jsdom",
     coverage: {
       reporter: ["text", "json", "html"],
+      thresholds: {
+        lines: 30,
+        functions: 25,
+        branches: 50,
+      },
     },
     include: ["**/*.{test,spec}.{js,ts,jsx,tsx}"],
   },

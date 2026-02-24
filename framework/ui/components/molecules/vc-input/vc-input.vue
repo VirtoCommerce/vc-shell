@@ -221,6 +221,7 @@
           <VcHint
             :id="errorId"
             class="vc-input__hint-error"
+            :error="true"
             >{{ errorMessage }}</VcHint
           >
         </slot>

@@ -30,7 +30,7 @@
         <rect x="2" y="10.5" width="12" height="1.5" rx="0.75"/>
       </svg>
     </div>
-    <TransitionGroup tag="div" name="vc-table-col-swap" class="vc-table-composition__row-transition-wrapper" :class="{ 'vc-table-composition__row-transition-wrapper--no-filler': hasFlexColumns }">
+    <TransitionGroup tag="div" :name="isColumnReordering ? 'vc-table-col-swap' : ''" class="vc-table-composition__row-transition-wrapper" :class="{ 'vc-table-composition__row-transition-wrapper--no-filler': hasFlexColumns }">
       <slot />
     </TransitionGroup>
     <!-- Row actions slot - rendered outside TransitionGroup for proper positioning -->
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { computed, inject, ref, TransitionGroup, type Ref } from "vue";
-import { TableContextKey, HasFlexColumnsKey } from "@ui/components/organisms/vc-table/keys";
+import { TableContextKey, HasFlexColumnsKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-table/keys";
 
 const props = withDefaults(
   defineProps<{
@@ -98,6 +98,7 @@ const emit = defineEmits<{
 
 const tableContext = inject(TableContextKey, null);
 const hasFlexColumns = inject(HasFlexColumnsKey, ref(false));
+const isColumnReordering = inject(IsColumnReorderingKey, ref(false));
 const isDragging = ref(false);
 
 const isClickable = computed(() => {

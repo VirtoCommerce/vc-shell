@@ -5,3 +5,4 @@ import type { ColumnCollector } from "@ui/components/organisms/vc-table/utils/Co
 export const TableContextKey: InjectionKey<TableContext> = Symbol("TableContext");
 export const ColumnCollectorKey: InjectionKey<ColumnCollector> = Symbol("ColumnCollector");
 export const HasFlexColumnsKey: InjectionKey<Ref<boolean>> = Symbol("HasFlexColumns");
+export const IsColumnReorderingKey: InjectionKey<Ref<boolean>> = Symbol("IsColumnReordering");

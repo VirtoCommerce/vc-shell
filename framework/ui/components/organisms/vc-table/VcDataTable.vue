@@ -360,7 +360,7 @@ import {
   useDataTableState,
 } from "@ui/components/organisms/vc-table/composables";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
-import { ColumnCollectorKey, HasFlexColumnsKey } from "@ui/components/organisms/vc-table/keys";
+import { ColumnCollectorKey, HasFlexColumnsKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-table/keys";
 import { IsMobileKey } from "@framework/injection-keys";
 import type { VcColumnProps, VcDataTableExtendedProps, FilterValue, EditChange, TableAction } from "@ui/components/organisms/vc-table/types";
 
@@ -1369,6 +1369,7 @@ const { handleResizeStart } = useTableColumnsResize({
 });
 
 const {
+  isDragging: isColumnReordering,
   handleDragStart: handleColumnDragStart,
   handleDragOver: handleColumnDragOver,
   handleDrop: handleColumnDrop,
@@ -1376,6 +1377,9 @@ const {
   columns: cols.columnWidths,
   onReorderEnd: (colsData) => emit("column-reorder", { columns: colsData }),
 });
+
+// Provide column reordering state so TableRow enables FLIP animation only during drag
+provide(IsColumnReorderingKey, isColumnReordering);
 
 // ============================================================================
 // Event Handlers

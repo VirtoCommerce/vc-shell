@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ref, effectScope } from "vue";
 
 // ── Mocks for all service providers ────────────────────────────────
-const mockRegisterWidget = vi.fn();
 const mockRegisterMobileButton = vi.fn();
 const mockRegisterSettingsMenuItem = vi.fn();
 const mockProvide = vi.fn();
@@ -14,7 +13,6 @@ vi.mock("vue", async (importOriginal) => {
     ...actual,
     provide: (...args: unknown[]) => mockProvide(...args),
     inject: (key: unknown) => {
-      if (key === AppBarWidgetServiceKey) return { register: mockRegisterWidget };
       if (key === SettingsMenuServiceKey) return { register: mockRegisterSettingsMenuItem };
       return undefined;
     },
@@ -65,7 +63,6 @@ vi.mock("../../../../../core/plugins/ai-agent", () => ({
 // ── Import after mocks ─────────────────────────────────────────────
 import { useShellBootstrap, type ShellBootstrapOptions } from "@ui/components/organisms/vc-app/composables/useShellBootstrap";
 import {
-  AppBarWidgetServiceKey,
   SettingsMenuServiceKey,
   EmbeddedModeKey,
   DynamicModulesKey,
@@ -95,20 +92,12 @@ describe("useShellBootstrap", () => {
     (hasUnreadNotifications as unknown as { value: boolean }).value = false;
   });
 
-  describe("default notifications widget", () => {
-    it("registers notification-dropdown to app-bar", () => {
-      bootstrapInScope(createOptions());
-
-      expect(mockRegisterWidget).toHaveBeenCalledWith(
-        expect.objectContaining({ id: "notification-dropdown", icon: "lucide-bell", order: 10 }),
-      );
-    });
-
-    it("registers notification-dropdown to mobile-topbar when not embedded", () => {
+  describe("default notifications mobile button", () => {
+    it("registers notifications to mobile-topbar when not embedded", () => {
       bootstrapInScope(createOptions({ isEmbedded: false }));
 
       expect(mockRegisterMobileButton).toHaveBeenCalledWith(
-        expect.objectContaining({ id: "notification-dropdown", isVisible: true }),
+        expect.objectContaining({ id: "notifications", isVisible: true }),
       );
     });
 

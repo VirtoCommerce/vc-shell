@@ -32,6 +32,7 @@
     <button
       v-if="expanded && !isMobile"
       class="sidebar-header__notification-bell"
+      aria-label="Notifications"
       @click="$emit('toggle-notifications', $event)"
     >
       <div class="sidebar-header__notification-bell-wrap">
@@ -88,7 +89,6 @@
 <script lang="ts" setup>
 import { inject, ref } from "vue";
 import { VcIcon } from "@ui/components";
-import { MenuBurgerIcon } from "@ui/components/atoms/vc-icon/icons";
 import { ShellIndicatorsKey } from "@framework/injection-keys";
 
 export interface Props {

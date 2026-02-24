@@ -1,3 +1,20 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [1.2.4-beta.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.3...v1.2.4-beta.4) (2026-02-24)
+
+### Bug Fixes
+
+- **app-hub:** improve panel sizing and widget scroll behavior ([72fc8df](https://github.com/VirtoCommerce/vc-shell/commit/72fc8dfc838141eab0734c4dbbc29098ad530707))
+
+### Features
+
+- **dashboard-charts:** add chart components with Unovis integration ([559917c](https://github.com/VirtoCommerce/vc-shell/commit/559917c1e65e48713555bd8d62c022f10a534af5))
+- **dynamic-modules:** add hash-based cache busting for module assets ([eb47537](https://github.com/VirtoCommerce/vc-shell/commit/eb475375fad72f4c00016e0e8d9298cdbc44a321))
+- **storybook:** enrich VcApp stories with mock data and widgets ([9e3e0db](https://github.com/VirtoCommerce/vc-shell/commit/9e3e0db835f7e84c1a7ca649454cde5cad28cdd2))
+
 ## [1.2.4-beta.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.2...v1.2.4-beta.3) (2026-02-20)
 
 ### Features

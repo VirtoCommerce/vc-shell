@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.2.4-beta.3",
+  "version": "1.2.4-beta.4",
   "type": "module",
   "main": "./dist/framework.js",
   "types": "./dist/index.d.ts",

@@ -36,6 +36,7 @@ export default defineConfig({
         branches: 50,
       },
     },
+    setupFiles: ["./vitest-axe.setup.ts"],
     include: ["**/*.{test,spec}.{js,ts,jsx,tsx}"],
   },
   resolve: {

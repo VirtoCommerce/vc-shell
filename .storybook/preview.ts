@@ -87,6 +87,14 @@ const preview: Preview = {
         date: /Date$/,
       },
     },
+    a11y: {
+      config: {
+        rules: [
+          // Storybook decorators add extra wrapper elements that break landmark rules
+          { id: "region", enabled: false },
+        ],
+      },
+    },
   },
 
   tags: ["autodocs"]

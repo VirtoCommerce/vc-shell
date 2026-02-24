@@ -78,7 +78,7 @@ interface ShellDefaultsContext {
 function useShellDefaults(ctx: ShellDefaultsContext) {
   // Notification widget
   ctx.registerWidget({
-    id: "notification-dropdown",
+    id: "notifications",
     component: NotificationDropdown,
     icon: "lucide-bell",
     order: 10,
@@ -87,7 +87,7 @@ function useShellDefaults(ctx: ShellDefaultsContext) {
 
   if (!ctx.isEmbedded) {
     ctx.registerMobileButton({
-      id: "notification-dropdown",
+      id: "notifications",
       component: NotificationDropdown,
       icon: "lucide-bell",
       order: 10,
@@ -97,10 +97,18 @@ function useShellDefaults(ctx: ShellDefaultsContext) {
 
   // Settings menu items
   ctx.registerSettingsMenuItem({ id: "theme-selector", component: ThemeSelector, group: "preferences", order: 10 });
-  ctx.registerSettingsMenuItem({ id: "language-selector", component: LanguageSelector, group: "preferences", order: 20 });
+  ctx.registerSettingsMenuItem({
+    id: "language-selector",
+    component: LanguageSelector,
+    group: "preferences",
+    order: 20,
+  });
   ctx.registerSettingsMenuItem({ id: "change-password", component: ChangePasswordButton, group: "account", order: 30 });
   ctx.registerSettingsMenuItem({ id: "logout", component: LogoutButton, group: "account", order: 100 });
 
   // Shell indicator state for SidebarHeader
-  provide(ShellIndicatorsKey, computed(() => hasUnreadNotifications.value));
+  provide(
+    ShellIndicatorsKey,
+    computed(() => hasUnreadNotifications.value),
+  );
 }

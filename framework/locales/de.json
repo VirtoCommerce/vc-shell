@@ -243,11 +243,11 @@
   },
   "LOGIN": {
     "TITLE": "Willkommen zurück",
-    "SUBTITLE": "Melden Sie sich bei Ihrem Konto an",
+    "SUBTITLE": "Melden Sie sich bei Ihrem Konto an, um fortzufahren",
     "FIELDS": {
       "LOGIN": {
-        "LABEL": "Benutzername",
-        "PLACEHOLDER": "Geben Sie Ihren Benutzernamen ein"
+        "LABEL": "E-Mail",
+        "PLACEHOLDER": "Geben Sie Ihre E-Mail-Adresse ein"
       },
       "PASSWORD": {
         "LABEL": "Passwort",
@@ -261,7 +261,7 @@
     },
     "FORGOT_PASSWORD_BUTTON": "Passwort vergessen?",
     "BUTTON": "Anmelden",
-    "OR": "Oder fortfahren mit",
+    "OR": "oder",
     "FORGOT_BUTTON": "Absenden",
     "BACK_BUTTON": "Zurück",
     "BUTTON_OK": "Ok",

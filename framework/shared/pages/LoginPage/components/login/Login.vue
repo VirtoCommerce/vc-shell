@@ -6,7 +6,22 @@
     :subtitle="subtitle || $t('LOGIN.SUBTITLE')"
     class="vc-login-page"
   >
-    <VcForm @submit.prevent="login">
+    <!-- SSO Providers -->
+    <div
+      v-if="loginProviders && loginProviders.length"
+      class="vc-login-page__providers"
+    >
+      <ExternalProviders :providers="loginProviders" />
+
+      <div class="vc-login-page__separator-line">
+        {{ $t("LOGIN.OR") }}
+      </div>
+    </div>
+
+    <VcForm
+      @submit.prevent="login"
+      class="tw-gap-5"
+    >
       <Field
         v-slot="{ errorMessage, handleChange, errors }"
         :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
@@ -17,7 +32,6 @@
         <VcInput
           ref="loginField"
           v-model="form.username"
-          class="tw-mb-4"
           :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
           :placeholder="$t('LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
           required
@@ -26,19 +40,6 @@
           @update:model-value="handleChange"
         />
       </Field>
-
-      <div class="tw-flex tw-items-center tw-justify-between tw-mb-2">
-        <label class="tw-text-sm tw-font-semibold">
-          {{ $t("LOGIN.FIELDS.PASSWORD.LABEL") }}
-        </label>
-        <VcButton
-          variant="link"
-          type="button"
-          @click="goToForgotPassword"
-        >
-          {{ $t("LOGIN.FORGOT_PASSWORD_BUTTON") }}
-        </VcButton>
-      </div>
 
       <Field
         v-slot="{ errorMessage, handleChange, errors }"
@@ -50,7 +51,7 @@
         <VcInput
           ref="passwordField"
           v-model="form.password"
-          class="tw-mb-6"
+          :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
           :placeholder="$t('LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
           type="password"
           required
@@ -70,25 +71,22 @@
       >
         {{ $t("LOGIN.BUTTON") }}
       </VcButton>
+
+      <VcButton
+        variant="link"
+        class="tw-w-full tw-justify-center"
+        type="button"
+        @click="goToForgotPassword"
+      >
+        {{ $t("LOGIN.FORGOT_PASSWORD_BUTTON") }}
+      </VcButton>
     </VcForm>
-
-    <!-- SSO Providers -->
-    <div
-      v-if="loginProviders && loginProviders.length"
-      class="vc-login-page__separator"
-    >
-      <div class="vc-login-page__separator-line">
-        {{ $t("LOGIN.OR") }}
-      </div>
-
-      <ExternalProviders :providers="loginProviders" />
-    </div>
 
     <!-- Plugin extension point -->
     <ExtensionPoint
       name="auth:after-form"
       separator
-      separator-class="tw-border-t tw-border-[color:var(--login-separator)] tw-border-solid tw-mb-4"
+      separator-class="tw-border-t tw-border-[color:var(--login-separator)] tw-border-solid tw-pb-5"
       wrapper-class="vc-login-page__separator"
     />
 
@@ -197,14 +195,14 @@ logger.debug("Init login-page");
 
 .vc-login-page {
   &__separator {
-    @apply tw-mt-6;
+    @apply tw-mt-5;
   }
 
   &__separator-line {
     @apply tw-flex tw-items-center tw-text-center tw-text-xs tw-text-[color:var(--login-separator-text)]
       before:tw-content-[''] before:tw-flex-1 before:tw-border-b before:tw-border-b-[color:var(--login-separator)] before:tw-mr-3
       after:tw-content-[''] after:tw-flex-1 after:tw-border-b after:tw-border-b-[color:var(--login-separator)] after:tw-ml-3;
-    @apply tw-mb-4;
+    @apply tw-my-4;
   }
 }
 </style>

@@ -243,11 +243,11 @@
   },
   "LOGIN": {
     "TITLE": "Welcome back",
-    "SUBTITLE": "Sign in to your account",
+    "SUBTITLE": "Sign in to your account to continue",
     "FIELDS": {
       "LOGIN": {
-        "LABEL": "Username",
-        "PLACEHOLDER": "Enter your username"
+        "LABEL": "Email",
+        "PLACEHOLDER": "Enter your email"
       },
       "PASSWORD": {
         "LABEL": "Password",
@@ -259,9 +259,9 @@
         "PLACEHOLDER": "Please enter your email"
       }
     },
-    "FORGOT_PASSWORD_BUTTON": "Forgot your password?",
+    "FORGOT_PASSWORD_BUTTON": "Forgot password?",
     "BUTTON": "Sign in",
-    "OR": "Or continue with",
+    "OR": "or",
     "FORGOT_BUTTON": "Submit",
     "BACK_BUTTON": "Back",
     "BUTTON_OK": "Ok",

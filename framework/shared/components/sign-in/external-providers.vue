@@ -1,5 +1,5 @@
 <template>
-  <div class="tw-flex tw-justify-center tw-mt-4 tw-flex-col tw-gap-2">
+  <div class="tw-flex tw-justify-center tw-flex-col tw-gap-4">
     <ExternalProvider
       v-for="provider in providers"
       :key="provider.authenticationType"

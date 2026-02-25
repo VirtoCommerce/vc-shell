@@ -1,25 +1,23 @@
 <template>
-  <div
+  <span
+    v-if="current"
+    class="vc-breadcrumbs-item vc-breadcrumbs-item--current"
+    :class="{ 'vc-breadcrumbs-item--light': variant === 'light' }"
+    aria-current="page"
+  >
+    <VcIcon v-if="icon" class="vc-breadcrumbs-item__icon" :icon="icon" size="s" />
+    <span class="vc-breadcrumbs-item__title" :title="resolvedTitle">{{ resolvedTitle }}</span>
+  </span>
+  <button
+    v-else
+    type="button"
     class="vc-breadcrumbs-item"
-    :class="{
-      'vc-breadcrumbs-item--current': current,
-      'vc-breadcrumbs-item--light': variant === 'light',
-    }"
+    :class="{ 'vc-breadcrumbs-item--light': variant === 'light' }"
     @click="onClick"
   >
-    <VcIcon
-      v-if="icon"
-      class="vc-breadcrumbs-item__icon"
-      :icon="icon"
-      size="s"
-    />
-    <div
-      class="vc-breadcrumbs-item__title"
-      :title="resolvedTitle"
-    >
-      {{ resolvedTitle }}
-    </div>
-  </div>
+    <VcIcon v-if="icon" class="vc-breadcrumbs-item__icon" :icon="icon" size="s" />
+    <span class="vc-breadcrumbs-item__title" :title="resolvedTitle">{{ resolvedTitle }}</span>
+  </button>
 </template>
 
 <script lang="ts" setup>
@@ -90,5 +88,11 @@ function onClick(): void {
   &:hover {
     @apply tw-text-[color:var(--breadcrumbs-item-text-color-hover)];
   }
+}
+
+button.vc-breadcrumbs-item {
+  @apply tw-appearance-none tw-border-0 tw-bg-transparent tw-p-0 tw-cursor-pointer;
+  font: inherit;
+  color: inherit;
 }
 </style>

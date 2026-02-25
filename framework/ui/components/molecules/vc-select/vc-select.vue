@@ -690,6 +690,14 @@ watch(
     @apply tw-text-[color:var(--select-clear-color)] tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)];
   }
 
+  &__chip-remove {
+    @apply tw-appearance-none tw-border-0 tw-bg-transparent tw-p-0 tw-cursor-pointer tw-flex tw-items-center tw-rounded-full;
+
+    &:focus-visible {
+      @apply tw-outline-none tw-ring-2 tw-ring-[color:var(--select-focus-ring-color)];
+    }
+  }
+
   &__clear {
     @apply tw-cursor-pointer tw-flex tw-items-center tw-pl-3 tw-text-[color:var(--select-clear-color)] hover:tw-text-[color:var(--select-clear-color-hover)];
   }

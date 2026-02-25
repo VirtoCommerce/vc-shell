@@ -84,13 +84,21 @@
                                 <template v-else>
                                   <span>{{ getOptionLabel(item.opt) }}</span>
                                 </template>
-                                <VcIcon
+                                <button
                                   v-if="!disabled"
-                                  class="vc-select__icon-remove"
-                                  icon="lucide-x"
-                                  size="xs"
+                                  type="button"
+                                  class="vc-select__chip-remove"
+                                  :aria-label="`Remove ${getOptionLabel(item.opt) || ''}`"
+                                  tabindex="0"
                                   @click.stop="$emit('removeAtIndex', item.index)"
-                                ></VcIcon>
+                                  @keydown.enter.stop.prevent="$emit('removeAtIndex', item.index)"
+                                >
+                                  <VcIcon
+                                    class="vc-select__icon-remove"
+                                    icon="lucide-x"
+                                    size="xs"
+                                  />
+                                </button>
                               </div>
                             </slot>
                           </template>

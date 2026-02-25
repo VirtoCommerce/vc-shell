@@ -152,28 +152,15 @@
             </button>
 
             <button
-              v-if="type === 'password' && internalType === 'password'"
+              v-if="type === 'password'"
               type="button"
               class="vc-input__showhide"
-              aria-label="Show password"
-              @click="internalType = 'text'"
+              :aria-label="internalType === 'password' ? 'Show password' : 'Hide password'"
+              @click="internalType = internalType === 'password' ? 'text' : 'password'"
             >
               <VcIcon
                 size="s"
-                icon="lucide-eye-off"
-              ></VcIcon>
-            </button>
-
-            <button
-              v-if="type === 'password' && internalType === 'text'"
-              type="button"
-              class="vc-input__showhide"
-              aria-label="Hide password"
-              @click="internalType = 'password'"
-            >
-              <VcIcon
-                size="s"
-                icon="lucide-eye"
+                :icon="internalType === 'password' ? 'lucide-eye-off' : 'lucide-eye'"
               ></VcIcon>
             </button>
           </div>

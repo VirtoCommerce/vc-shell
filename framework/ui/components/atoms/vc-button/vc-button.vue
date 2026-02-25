@@ -5,6 +5,7 @@
     :disabled="disabled || loading"
     :aria-label="ariaLabel"
     :aria-busy="loading || undefined"
+    :aria-pressed="selected || undefined"
     @click="onClick"
   >
     <!-- Loading: spinner replaces icon; shown inline next to text -->
@@ -223,6 +224,21 @@ function onClick(e: Event): void {
 $variants: primary, secondary, danger, warning, success, info, outline, ghost, link;
 
 .vc-button {
+  position: relative;
+
+  // Expand touch target to 44px minimum for WCAG 2.5.8 compliance
+  // Uses ::after pseudo-element to extend hit area without affecting visual size
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    min-width: 44px;
+    min-height: 44px;
+    width: 100%;
+    height: 100%;
+  }
+
   &__icon + &__title {
     @apply tw-ml-2 tw-text-left;
   }

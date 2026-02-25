@@ -62,4 +62,14 @@ describe("VcButton", () => {
     const wrapper = mountButton({ variant: "danger" }, { default: "Delete" });
     expect(wrapper.find("button").classes()).toContain("vc-button-danger");
   });
+
+  it("sets aria-pressed when selected", () => {
+    const w = mountButton({ selected: true });
+    expect(w.find("button").attributes("aria-pressed")).toBe("true");
+  });
+
+  it("does not set aria-pressed when not selected", () => {
+    const w = mountButton({});
+    expect(w.find("button").attributes("aria-pressed")).toBeUndefined();
+  });
 });

@@ -278,7 +278,7 @@ const handleFilterClear = (col: ColumnInstance) => {
   height: 36px;
   border-radius: 16px 0 0 16px;
 
-  background: var(--neutrals-200, #e5e5e5);
+  background: var(--neutrals-200);
   box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
 
@@ -292,7 +292,7 @@ const handleFilterClear = (col: ColumnInstance) => {
   &:hover,
   &--active {
     transform: translateY(-50%) translateX(0);
-    background: var(--primary-50, #eff6ff);
+    background: var(--primary-50);
 
     .vc-col-switcher-trigger__chevron {
       opacity: 0;
@@ -307,10 +307,10 @@ const handleFilterClear = (col: ColumnInstance) => {
 
   // Active state (panel open): stronger primary accent
   &--active {
-    background: var(--primary-100, #dbeafe);
+    background: var(--primary-100);
 
     .vc-col-switcher-trigger__action {
-      color: var(--primary-700, #1d4ed8);
+      color: var(--primary-700);
     }
   }
 
@@ -323,7 +323,7 @@ const handleFilterClear = (col: ColumnInstance) => {
     align-items: center;
     justify-content: flex-start;
     padding-left: 3px;
-    color: var(--neutrals-500, #737373);
+    color: var(--neutrals-500);
     opacity: 1;
     transition: opacity 0.2s ease;
     pointer-events: none; // chevron is decorative, clicks go to container
@@ -337,8 +337,8 @@ const handleFilterClear = (col: ColumnInstance) => {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: var(--primary-100, #dbeafe);
-    color: var(--primary-600, #2563eb);
+    background: var(--primary-100);
+    color: var(--primary-600);
     opacity: 0;
     transition: opacity 0.2s ease;
     pointer-events: none; // hidden until hover

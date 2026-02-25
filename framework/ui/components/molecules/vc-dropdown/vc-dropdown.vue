@@ -456,6 +456,9 @@ onBeforeUnmount(() => {
   --vc-dropdown-accent: var(--neutrals-100);
   --vc-dropdown-accent-foreground: var(--neutrals-900);
   --vc-dropdown-divider: var(--neutrals-200);
+  --vc-dropdown-trigger-focus-ring-width: 2px;
+  --vc-dropdown-trigger-focus-ring-offset: 1px;
+  --vc-dropdown-trigger-focus-ring-color: var(--primary-300);
 
   @apply tw-relative tw-flex tw-w-full tw-h-full;
 
@@ -463,7 +466,10 @@ onBeforeUnmount(() => {
     @apply tw-flex tw-items-center tw-justify-center;
 
     &:focus-visible {
-      @apply tw-outline-none tw-ring-2 tw-ring-primary-500 tw-ring-offset-1;
+      @apply tw-outline-none
+        tw-ring-[length:var(--vc-dropdown-trigger-focus-ring-width)]
+        tw-ring-offset-[length:var(--vc-dropdown-trigger-focus-ring-offset)]
+        tw-ring-[color:var(--vc-dropdown-trigger-focus-ring-color)];
     }
   }
 

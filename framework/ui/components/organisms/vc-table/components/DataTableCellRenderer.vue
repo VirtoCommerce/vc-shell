@@ -129,7 +129,7 @@
  * Extracted from VcDataTable.vue to reduce template complexity.
  */
 import { computed } from "vue";
-import * as _ from "lodash-es";
+import { get } from "lodash-es";
 import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 import TableCheckbox from "@ui/components/organisms/vc-table/components/TableCheckbox.vue";
 import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
@@ -263,7 +263,7 @@ const isInlineEditing = computed(() => {
 
 // Get cell value using lodash _.get for nested fields
 const cellValue = computed(() => {
-  return _.get(props.item, fieldName.value || "");
+  return get(props.item, fieldName.value || "");
 });
 
 // Currency for money cells

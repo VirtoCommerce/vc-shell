@@ -389,11 +389,11 @@ onBeforeUnmount(() => {
 
   &__trigger {
     @apply tw-w-6 tw-h-6;
-    color: var(--neutrals-400, #9ca3af);
+    color: var(--neutrals-400);
 
     &--active {
-      color: var(--primary-500, #3b82f6);
-      background-color: var(--primary-100, #dbeafe);
+      color: var(--primary-500);
+      background-color: var(--primary-100);
     }
   }
 

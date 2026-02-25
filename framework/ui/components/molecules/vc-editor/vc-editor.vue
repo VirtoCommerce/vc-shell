@@ -562,7 +562,7 @@ async function handleImageSelection(event: Event) {
   --vc-editor-background-disabled: var(--neutrals-200);
   --vc-editor-focus-border: var(--primary-500);
   --vc-editor-focus-shadow: var(--primary-500);
-  --vc-editor-focus-ring-color: rgba(59, 130, 246, 0.3);
+  --vc-editor-focus-ring-color: color-mix(in srgb, var(--primary-500) 30%, transparent);
   --vc-editor-error-border: var(--danger-500);
   --vc-editor-error-text: var(--danger-500);
   --vc-editor-error-ring-color: rgba(239, 68, 68, 0.2);

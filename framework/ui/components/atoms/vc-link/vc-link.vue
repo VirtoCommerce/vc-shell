@@ -41,7 +41,7 @@ function onClickFn(): void {
   --link-text-color-hover: var(--primary-400);
   --link-text-color-active: var(--primary-700);
   --link-text-color-disabled: var(--neutrals-300);
-  --link-focus-ring-color: rgba(59, 130, 246, 0.3);
+  --link-focus-ring-color: color-mix(in srgb, var(--primary-500) 30%, transparent);
 }
 
 .vc-link {

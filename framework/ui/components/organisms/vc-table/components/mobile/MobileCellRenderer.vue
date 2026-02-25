@@ -30,7 +30,7 @@
  * Does not support editing, selection, or special columns (those are handled separately).
  */
 import { computed } from "vue";
-import * as _ from "lodash-es";
+import { get } from "lodash-es";
 import type { MobileColumnConfig } from "@ui/components/organisms/vc-table/types";
 import DynamicCellRenderer from "@ui/components/organisms/vc-table/components/cells/DynamicCellRenderer.vue";
 import { SlotProxy } from "@ui/components/organisms/vc-table/components/_internal/SlotProxy";
@@ -49,7 +49,7 @@ const fieldName = computed(() => props.config.field || props.config.id);
 
 // Get cell value using lodash _.get for nested fields
 const cellValue = computed(() => {
-  return _.get(props.item, fieldName.value || "");
+  return get(props.item, fieldName.value || "");
 });
 
 // Currency for money cells

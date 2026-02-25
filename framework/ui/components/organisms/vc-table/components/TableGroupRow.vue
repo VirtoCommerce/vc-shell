@@ -73,14 +73,14 @@ const handleClick = (event: MouseEvent) => {
 <style lang="scss">
 .vc-table-composition__group-header {
   @apply tw-relative tw-flex tw-items-center tw-w-full;
-  background-color: var(--vc-table-group-header-bg, #f3f4f6);
-  border-bottom: 1px solid var(--table-border-color, #e5e7eb);
+  background-color: var(--vc-table-group-header-bg, var(--neutrals-50));
+  border-bottom: 1px solid var(--table-border-color, var(--neutrals-200));
 
   &--expandable {
     @apply tw-cursor-pointer;
 
     &:hover {
-      background-color: var(--vc-table-group-header-bg-hover, #e5e7eb);
+      background-color: var(--vc-table-group-header-bg-hover, var(--neutrals-200));
     }
   }
 
@@ -94,12 +94,12 @@ const handleClick = (event: MouseEvent) => {
 
   &-key {
     @apply tw-font-semibold tw-text-sm;
-    color: var(--vc-table-group-header-text, #374151);
+    color: var(--vc-table-group-header-text, var(--neutrals-700));
   }
 
   &-count {
     @apply tw-text-sm;
-    color: var(--vc-table-group-header-count, #6b7280);
+    color: var(--vc-table-group-header-count, var(--neutrals-500));
   }
 }
 
@@ -107,16 +107,16 @@ const handleClick = (event: MouseEvent) => {
   @apply tw-flex tw-items-center tw-justify-center tw-w-6 tw-h-6 tw-rounded tw-border-0 tw-p-0;
   @apply tw-transition-colors tw-duration-150;
   background-color: transparent;
-  color: var(--vc-table-group-toggle-color, #6b7280);
+  color: var(--vc-table-group-toggle-color, var(--neutrals-500));
 
   &:hover {
     background-color: var(--vc-table-group-toggle-bg-hover, rgba(0, 0, 0, 0.05));
-    color: var(--vc-table-group-toggle-color-hover, #374151);
+    color: var(--vc-table-group-toggle-color-hover, var(--neutrals-700));
   }
 
   &:focus {
     @apply tw-outline-none;
-    box-shadow: 0 0 0 2px var(--primary-200, #bfdbfe);
+    box-shadow: 0 0 0 2px var(--primary-200);
   }
 
   &-icon {

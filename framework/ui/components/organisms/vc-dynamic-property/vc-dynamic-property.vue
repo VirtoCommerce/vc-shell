@@ -348,7 +348,7 @@ import { ref, onMounted, computed, Ref, watch } from "vue";
 import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import { VcSelect, VcInput, VcTextarea, VcSwitch } from "@ui/components";
-import * as _ from "lodash-es";
+import { cloneDeep } from "lodash-es";
 import { convertColorNameToHex } from "@shared/utilities";
 
 type IValidationRules = {
@@ -422,7 +422,7 @@ const measureUnit = ref<Record<string, any>>();
 watch(
   () => props.property,
   (newVal) => {
-    internalProperty.value = _.cloneDeep(newVal);
+    internalProperty.value = cloneDeep(newVal);
   },
   {
     deep: true,
@@ -433,7 +433,7 @@ watch(
 watch(
   () => props.modelValue,
   (newVal) => {
-    internalModel.value = _.cloneDeep(newVal);
+    internalModel.value = cloneDeep(newVal);
   },
   {
     deep: true,

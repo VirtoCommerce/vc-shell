@@ -99,21 +99,21 @@ const cancelText = computed(() => {
 <style lang="scss">
 .vc-table-select-all-bar {
   @apply tw-flex tw-items-center tw-justify-between tw-flex-wrap tw-gap-2 tw-px-4 tw-py-2.5;
-  background-color: var(--table-select-bar-bg, var(--warning-50, #fef3c7));
-  border-bottom: 1px solid var(--table-select-bar-border, var(--warning-300, #fcd34d));
+  background-color: var(--table-select-bar-bg, var(--warning-50));
+  border-bottom: 1px solid var(--table-select-bar-border, var(--warning-300));
 
   &__text {
     @apply tw-text-sm;
-    color: var(--table-select-bar-text, var(--warning-800, #92400e));
+    color: var(--table-select-bar-text, var(--warning-800));
   }
 
   &__select-all-link {
     @apply tw-underline;
-    color: var(--table-select-bar-link, var(--primary-700, #0369a1));
+    color: var(--table-select-bar-link, var(--primary-700));
   }
 
   &__clear {
-    color: var(--table-select-bar-clear, var(--danger-600, #dc2626));
+    color: var(--table-select-bar-clear, var(--danger-600));
   }
 }
 

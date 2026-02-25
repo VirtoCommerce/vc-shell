@@ -139,7 +139,7 @@ const handleReset = () => {
 
   &__checkbox {
     @apply tw-cursor-pointer;
-    accent-color: var(--primary-500, #3b82f6);
+    accent-color: var(--primary-500);
   }
 
   &__label {

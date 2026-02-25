@@ -298,10 +298,10 @@ const handleDrop = (event: DragEvent) => {
   &--dragging {
     @apply tw-relative;
     z-index: 10 !important;
-    background-color: var(--primary-50, #eff6ff) !important;
+    background-color: var(--primary-50) !important;
     box-shadow:
       0 4px 12px -2px rgba(0, 0, 0, 0.12),
-      0 0 0 1px var(--primary-200, #bfdbfe) !important;
+      0 0 0 1px var(--primary-200) !important;
     border-radius: 6px !important;
     transform: scale(1.01) !important;
     cursor: grabbing !important;

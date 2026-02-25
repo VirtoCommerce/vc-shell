@@ -377,7 +377,7 @@ onBeforeUnmount(() => {
     }
 
     &--more {
-      color: var(--neutrals-500, #888);
+      color: var(--neutrals-500);
     }
   }
 
@@ -401,15 +401,15 @@ onBeforeUnmount(() => {
   &__dropdown-item {
     @apply tw-flex tw-items-center tw-gap-3 tw-px-3 tw-py-2 tw-cursor-pointer tw-transition-colors;
     @apply tw-text-sm;
-    color: var(--neutrals-900, #333);
+    color: var(--neutrals-900);
 
     &:hover:not(&--disabled) {
-      background-color: var(--neutrals-100, #f5f5f5);
+      background-color: var(--neutrals-100);
     }
 
     &:focus-visible {
       @apply tw-outline-none;
-      background-color: var(--neutrals-100, #f5f5f5);
+      background-color: var(--neutrals-100);
     }
 
     &--disabled {

@@ -48,7 +48,7 @@ defineEmits<{
   --vc-button-bg-active: var(--primary-100);
   --vc-button-bg-disabled: transparent;
   --vc-button-border-radius: 6px;
-  --vc-editor-focus-ring-color: rgba(59, 130, 246, 0.3);
+  --vc-editor-focus-ring-color: color-mix(in srgb, var(--primary-500) 30%, transparent);
 }
 
 .vc-editor-button {

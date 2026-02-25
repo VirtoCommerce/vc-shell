@@ -102,7 +102,7 @@ const handleActionClick = (action: TableAction) => {
 
 .vc-table-composition__action-icon {
   @apply tw-flex tw-items-center tw-justify-center tw-w-8 tw-h-8 tw-rounded tw-cursor-pointer tw-transition-colors;
-  color: var(--table-actions-icon-color, #333);
+  color: var(--table-actions-icon-color, var(--neutrals-900));
   font-size: 14px;
 
   &:hover:not(&--disabled) {

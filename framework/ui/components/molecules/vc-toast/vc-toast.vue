@@ -287,7 +287,7 @@ function onMouseLeave() {
     }
   }
 
-  .vc-app_mobile {
+  .vc-app--mobile {
     @apply tw-max-w-[90%];
   }
 }

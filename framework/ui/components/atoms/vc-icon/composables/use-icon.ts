@@ -109,10 +109,10 @@ export function useIcon(options: UseIconOptions) {
     const sizeValue = unref(size);
     const variantValue = unref(variant);
 
-    const classes = ["vc-icon", `vc-icon_${sizeValue}`];
+    const classes = ["vc-icon", `vc-icon--${sizeValue}`];
 
     if (variantValue) {
-      classes.push(`vc-icon_${variantValue}`);
+      classes.push(`vc-icon--${variantValue}`);
     }
 
     // Add a class to determine the icon type, so that icons can be styled by type

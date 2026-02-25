@@ -335,7 +335,7 @@ function onSearch(event: Event) {
   &--datetime-local {
     @apply tw-max-w-[220px];
 
-    .vc-app_mobile & {
+    .vc-app--mobile & {
       @apply tw-max-w-full;
     }
   }

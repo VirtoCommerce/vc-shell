@@ -87,11 +87,11 @@ const buttonClass = computed(() => {
     "vc-button",
     {
       [`vc-button-${props.variant}`]: props.variant,
-      [`vc-button_${effectiveSize.value}`]: effectiveSize.value,
-      "vc-button_selected": props.selected,
-      "vc-button_text": props.text,
-      "vc-button_disabled": props.disabled || props.loading,
-      "vc-button_loading": props.loading,
+      [`vc-button--${effectiveSize.value}`]: effectiveSize.value,
+      "vc-button--selected": props.selected,
+      "vc-button--text": props.text,
+      "vc-button--disabled": props.disabled || props.loading,
+      "vc-button--loading": props.loading,
     },
   ];
 });
@@ -243,7 +243,7 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
     @apply tw-ml-2 tw-text-left;
   }
 
-  &_loading {
+  &--loading {
     @apply tw-cursor-wait #{!important};
   }
 
@@ -275,7 +275,7 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
       }
 
       // text modifier — ghost-like appearance (backward compat)
-      &.vc-button_text {
+      &.vc-button--text {
         @apply tw-border-none tw-bg-transparent
           tw-text-[color:var(--button-#{$variant}-background-color)]
           hover:tw-text-[color:var(--button-#{$variant}-background-color-hover)]
@@ -289,31 +289,31 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
         }
       }
 
-      &.vc-button_selected {
+      &.vc-button--selected {
         @apply tw-bg-[color:var(--button-#{$variant}-background-color-hover)];
 
-        &.vc-button_text {
+        &.vc-button--text {
           @apply tw-bg-[color:var(--button-#{$variant}-background-color-hover)] tw-bg-opacity-[0.07] tw-p-1;
         }
       }
 
       // Size: sm — h-8 px-3 text-xs (no vertical padding)
-      &.vc-button_sm {
+      &.vc-button--sm {
         @apply tw-h-[var(--button-sm-height)] tw-px-[var(--button-sm-padding-hor)] tw-py-0 tw-text-xs #{!important};
       }
 
       // Size: default — h-9 px-4 py-2
-      &.vc-button_default {
+      &.vc-button--default {
         @apply tw-h-[var(--button-default-height)] tw-py-[var(--button-default-padding-vert)] tw-px-[var(--button-default-padding-hor)] tw-text-sm tw-leading-4;
       }
 
       // Size: lg — h-10 px-6 (no vertical padding)
-      &.vc-button_lg {
+      &.vc-button--lg {
         @apply tw-h-[var(--button-lg-height)] tw-px-[var(--button-lg-padding-hor)] tw-py-0 tw-text-sm tw-leading-4 #{!important};
       }
 
       // Size: icon — h-9 w-9 square
-      &.vc-button_icon {
+      &.vc-button--icon {
         @apply tw-h-[var(--button-icon-size)] tw-w-[var(--button-icon-size)] tw-p-0 #{!important};
       }
 
@@ -324,17 +324,17 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
   }
 
   // Special hover overrides for structural variants (bg change, not just opacity)
-  &.vc-button-secondary:hover:not(:disabled):not(.vc-button_text) {
+  &.vc-button-secondary:hover:not(:disabled):not(.vc-button--text) {
     @apply tw-opacity-100 tw-bg-[color:var(--button-secondary-background-color-hover)]
       tw-border-[color:var(--button-secondary-border-color-hover)];
   }
 
-  &.vc-button-outline:hover:not(:disabled):not(.vc-button_text) {
+  &.vc-button-outline:hover:not(:disabled):not(.vc-button--text) {
     @apply tw-opacity-100 tw-bg-[color:var(--button-outline-background-color-hover)]
       tw-border-[color:var(--button-outline-border-color-hover)];
   }
 
-  &.vc-button-ghost:hover:not(:disabled):not(.vc-button_text) {
+  &.vc-button-ghost:hover:not(:disabled):not(.vc-button--text) {
     @apply tw-opacity-100 tw-bg-[color:var(--button-ghost-background-color-hover)];
   }
 
@@ -342,7 +342,7 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
     // Link variant: no padding, no min-height — behaves like inline text
     @apply tw-p-0 tw-h-auto tw-min-h-0 #{!important};
 
-    &:hover:not(:disabled):not(.vc-button_text) {
+    &:hover:not(:disabled):not(.vc-button--text) {
       @apply tw-opacity-100;
 
       // Underline only on text, not icon — prevents split underline with icon+text

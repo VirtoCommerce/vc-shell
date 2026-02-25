@@ -130,7 +130,7 @@ export const MobileView: Story = {
     template: `
       <div>
         <p class="tw-mb-2 tw-text-sm">Simulating mobile view with grid layout</p>
-        <div class="vc-app_mobile">
+        <div class="vc-app--mobile">
           <vc-row v-bind="args" class="tw-gap-2">
             <div v-for="i in 4" :key="i" class="tw-p-4 tw-bg-gray-100 tw-rounded tw-flex tw-items-center tw-justify-center">
               Item {{ i }}

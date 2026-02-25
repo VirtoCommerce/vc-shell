@@ -20,7 +20,7 @@ defineSlots<{
   @apply tw-flex tw-flex-nowrap tw-items-stretch;
   gap: var(--row-gap);
 
-  .vc-app_mobile & {
+  .vc-app--mobile & {
     @apply tw-grid;
   }
 }

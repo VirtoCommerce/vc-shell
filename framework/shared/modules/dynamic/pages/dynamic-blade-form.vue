@@ -544,11 +544,11 @@ defineExpose({
     @apply tw-text-[color:var(--dynamic-form-decline-color)] tw-mr-3;
   }
 
-  .vc-app_mobile &__inner {
+  .vc-app--mobile &__inner {
     @apply tw-flex-col;
   }
 
-  .vc-app_mobile &__content {
+  .vc-app--mobile &__content {
     @apply tw-border-r-0 tw-border-b tw-border-solid tw-border-b-[--dynamic-form-mobile-border] tw-overflow-visible;
   }
 }

@@ -3,8 +3,8 @@
     v-on-click-outside="onClose"
     class="vc-gallery-item"
     :class="{
-      'vc-gallery-item_readonly': readonly,
-      'vc-gallery-item_hover': hover,
+      'vc-gallery-item--readonly': readonly,
+      'vc-gallery-item--hover': hover,
     }"
     @tap.stop="hover = !hover"
   >
@@ -128,7 +128,7 @@ function onClose() {
   }
 
   &:hover &__overlay,
-  .vc-app_touch &__hover &__overlay {
+  .vc-app_touch &--hover &__overlay {
     @apply tw-opacity-100;
   }
 

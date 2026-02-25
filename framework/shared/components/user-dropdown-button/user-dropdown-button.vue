@@ -113,7 +113,7 @@ function handleClick() {
     }
   }
 
-  .vc-app_mobile & {
+  .vc-app--mobile & {
     @apply tw-w-full #{!important};
   }
 

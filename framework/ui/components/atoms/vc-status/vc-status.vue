@@ -2,10 +2,10 @@
   <div
     class="vc-status"
     :class="[
-      `vc-status_${variant}`,
+      `vc-status--${variant}`,
       {
-        'vc-status_extended': extend,
-        'vc-status_dot': dot,
+        'vc-status--extended': extend,
+        'vc-status--dot': dot,
       },
     ]"
     role="status"
@@ -86,12 +86,12 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
   @apply tw-flex tw-items-center tw-justify-center tw-flex-row tw-relative;
   @apply tw-border-[length:var(--status-border-width)] tw-bg-[color:var(--status-bg-color)] tw-border-[color:var(--status-border-color)];
 
-  &.vc-status_dot {
+  &.vc-status--dot {
     @apply tw-p-0 tw-w-[var(--status-dot-size)] tw-h-[var(--status-dot-size)] tw-max-w-[var(--status-dot-size)] tw-rounded-full tw-border-0 #{!important};
   }
 
   @each $variant in $variants {
-    &.vc-status_#{$variant} {
+    &.vc-status--#{$variant} {
       @apply tw-bg-[color:var(--status-bg-color)] tw-max-w-fit;
       @apply tw-border-[color:var(--status-border-color)] #{!important};
 
@@ -99,14 +99,14 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
         @apply tw-content-[''] tw-bg-[color:var(--status-#{$variant}-main-color)] tw-w-2 tw-h-2 tw-rounded-full tw-mr-2 tw-shrink-0;
       }
 
-      &.vc-status_dot {
+      &.vc-status--dot {
         @apply tw-bg-[color:var(--status-#{$variant}-main-color)];
         &::before {
           @apply tw-content-none;
         }
       }
 
-      &.vc-status_extended {
+      &.vc-status--extended {
         @apply tw-whitespace-normal tw-rounded-[var(--status-border-radius-extended)] tw-justify-start;
         @apply tw-max-w-full tw-p-[var(--status-padding-extended)] tw-bg-[color:var(--status-#{$variant}-bg-color)] tw-border-none;
 
@@ -123,7 +123,7 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
 
   &__content {
     @apply tw-truncate tw-text-[color:var(--status-text-color)] tw-font-medium;
-    .vc-status_dot & {
+    .vc-status--dot & {
       @apply tw-hidden;
     }
   }

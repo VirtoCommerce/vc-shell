@@ -9,7 +9,7 @@
     ref="appRootRef"
     class="vc-app"
     :class="{
-      'vc-app_mobile': $isMobile.value,
+      'vc-app--mobile': $isMobile.value,
     }"
   >
     <div class="vc-app__main-content">
@@ -217,7 +217,7 @@ useShellBootstrap({
   &__workspace {
     @apply tw-w-full tw-overflow-hidden tw-flex tw-grow tw-basis-0 tw-relative;
 
-    .vc-app_mobile & {
+    .vc-app--mobile & {
       @apply tw-p-0;
     }
   }

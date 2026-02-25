@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-card"
-    :class="[{ 'vc-card_collapsable': isCollapsable }, `vc-card_${variant}`]"
+    :class="[{ 'vc-card--collapsable': isCollapsable }, `vc-card--${variant}`]"
   >
     <div
       v-if="header"
@@ -161,7 +161,7 @@ $variants: success, danger;
     @apply tw-flex tw-items-center;
   }
 
-  &_collapsable &__header {
+  &--collapsable &__header {
     @apply tw-cursor-pointer tw-select-none;
 
     &:hover {
@@ -204,7 +204,7 @@ $variants: success, danger;
   }
 
   @each $variant in $variants {
-    &_#{$variant} {
+    &--#{$variant} {
       .vc-card__header {
         @apply tw-bg-[color:var(--card-header-background-#{$variant})];
       }

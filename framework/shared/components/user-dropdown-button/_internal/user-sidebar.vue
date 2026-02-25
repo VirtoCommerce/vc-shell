@@ -41,7 +41,7 @@ const isDesktop = inject(IsDesktopKey, ref(false));
     @apply tw-w-full tw-flex tw-flex-col;
   }
 
-  .vc-app_mobile & {
+  .vc-app--mobile & {
     &__menu {
       @apply tw-static tw-shadow-none #{!important};
     }

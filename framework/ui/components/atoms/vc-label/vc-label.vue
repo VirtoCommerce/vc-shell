@@ -3,7 +3,7 @@
     :is="htmlFor ? 'label' : 'div'"
     class="vc-label"
     :class="{
-      'vc-label_error': error,
+      'vc-label--error': error,
     }"
     :for="htmlFor || undefined"
   >
@@ -124,7 +124,7 @@ defineSlots<{
     @apply tw-text-[color:var(--label-lang-color)] tw-shrink-0 tw-text-xs tw-font-normal tw-bg-neutrals-100 tw-rounded tw-px-1.5 tw-py-0.5;
   }
 
-  &_error &__text {
+  &--error &__text {
     @apply tw-text-[color:var(--label-error-color)];
   }
 }

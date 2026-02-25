@@ -30,9 +30,9 @@ provide(ButtonGroupKey, {
 const groupClass = computed(() => [
   "vc-button-group",
   {
-    "vc-button-group_horizontal": props.orientation === "horizontal",
-    "vc-button-group_vertical": props.orientation === "vertical",
-    "vc-button-group_attached": props.attached,
+    "vc-button-group--horizontal": props.orientation === "horizontal",
+    "vc-button-group--vertical": props.orientation === "vertical",
+    "vc-button-group--attached": props.attached,
   },
 ]);
 </script>
@@ -41,18 +41,18 @@ const groupClass = computed(() => [
 .vc-button-group {
   @apply tw-inline-flex tw-gap-2;
 
-  &_vertical {
+  &--vertical {
     @apply tw-flex-col;
   }
 
   // Attached mode — buttons touch, shared borders, connected radii
   // Selectors use `> *` to handle both direct .vc-button children
   // and wrapped buttons (e.g. inside VcTooltip or other wrappers).
-  &_attached {
+  &--attached {
     @apply tw-gap-0;
 
     // Horizontal attached
-    &.vc-button-group_horizontal {
+    &.vc-button-group--horizontal {
       // All buttons inside lose rounding
       .vc-button {
         @apply tw-rounded-none;
@@ -77,7 +77,7 @@ const groupClass = computed(() => [
     }
 
     // Vertical attached
-    &.vc-button-group_vertical {
+    &.vc-button-group--vertical {
       .vc-button {
         @apply tw-rounded-none;
       }

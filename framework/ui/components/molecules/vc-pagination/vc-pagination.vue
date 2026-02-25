@@ -10,7 +10,7 @@
         v-if="effectiveShowFirstLast"
         type="button"
         class="vc-pagination__item"
-        :class="{ 'vc-pagination__item_disabled': localCurrentPage === 1 }"
+        :class="{ 'vc-pagination__item--disabled': localCurrentPage === 1 }"
         :disabled="localCurrentPage === 1"
         aria-label="First page"
         @click="setPage(1)"
@@ -25,7 +25,7 @@
       <button
         type="button"
         class="vc-pagination__item"
-        :class="{ 'vc-pagination__item_disabled': localCurrentPage === 1 }"
+        :class="{ 'vc-pagination__item--disabled': localCurrentPage === 1 }"
         :disabled="localCurrentPage === 1"
         aria-label="Previous page"
         @click="setPage(localCurrentPage - 1)"
@@ -42,8 +42,8 @@
         type="button"
         class="vc-pagination__item"
         :class="{
-          'vc-pagination__item_current': page === localCurrentPage,
-          'vc-pagination__item_hover': page !== localCurrentPage,
+          'vc-pagination__item--current': page === localCurrentPage,
+          'vc-pagination__item--hover': page !== localCurrentPage,
         }"
         :aria-current="page === localCurrentPage ? 'page' : undefined"
         :aria-label="`Page ${page}`"
@@ -56,7 +56,7 @@
       <button
         type="button"
         class="vc-pagination__item"
-        :class="{ 'vc-pagination__item_disabled': localCurrentPage === pages }"
+        :class="{ 'vc-pagination__item--disabled': localCurrentPage === pages }"
         :disabled="localCurrentPage === pages"
         aria-label="Next page"
         @click="setPage(localCurrentPage + 1)"
@@ -72,7 +72,7 @@
         v-if="effectiveShowFirstLast"
         type="button"
         class="vc-pagination__item"
-        :class="{ 'vc-pagination__item_disabled': localCurrentPage === pages }"
+        :class="{ 'vc-pagination__item--disabled': localCurrentPage === pages }"
         :disabled="localCurrentPage === pages"
         aria-label="Last page"
         @click="setPage(pages)"
@@ -221,21 +221,21 @@ const pagesToShow = computed(() => {
       @apply tw-ring-[3px] tw-ring-[color:var(--pagination-focus-ring-color)] tw-outline-none;
     }
 
-    &_current,
-    &_current:hover {
+    &--current,
+    &--current:hover {
       @apply tw-bg-[color:var(--pagination-item-background-color-current)]
       tw-text-[color:var(--pagination-item-color-current)]
       tw-cursor-auto;
     }
 
     &:disabled,
-    &_disabled {
+    &--disabled {
       @apply tw-bg-[color:var(--pagination-item-background-color-disabled)]
       tw-text-[color:var(--pagination-item-color-disabled)]
       tw-cursor-not-allowed tw-opacity-50;
     }
 
-    &_hover {
+    &--hover {
       @apply hover:tw-bg-[color:var(--pagination-item-background-color-hover)]
     hover:tw-text-[color:var(--pagination-item-color-hover)] tw-cursor-pointer;
     }

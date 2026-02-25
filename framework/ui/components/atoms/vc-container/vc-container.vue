@@ -4,8 +4,8 @@
     :class="[
       'vc-container',
       {
-        'vc-container_shadow': shadow && scroll,
-        'vc-container_nopadding': noPadding,
+        'vc-container--shadow': shadow && scroll,
+        'vc-container--nopadding': noPadding,
       },
     ]"
     :aria-label="ariaLabel"
@@ -79,7 +79,7 @@ defineExpose({
   border-radius: var(--container-border-radius);
   gap: var(--container-gap);
 
-  &_shadow {
+  &--shadow {
     @apply tw-shadow-[--container-shadow];
   }
 
@@ -89,7 +89,7 @@ defineExpose({
     padding: var(--container-padding);
   }
 
-  &_nopadding &__inner {
+  &--nopadding &__inner {
     padding: 0;
   }
 }

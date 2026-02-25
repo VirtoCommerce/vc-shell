@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="useContainer"
-    :class="['vc-icon-container', `vc-icon-container_${size}`]"
+    :class="['vc-icon-container', `vc-icon-container--${size}`]"
     :style="containerStyle"
     :aria-hidden="ariaLabel ? undefined : 'true'"
     :aria-label="ariaLabel || undefined"
@@ -12,8 +12,8 @@
       :is="renderComponent"
       :class="[
         'vc-icon',
-        `vc-icon_${size}`,
-        variant ? `vc-icon_${variant}` : '',
+        `vc-icon--${size}`,
+        variant ? `vc-icon--${variant}` : '',
         !isCustomIcon && !isMaterialIcon && !isLucideIcon && !isBootstrapIcon && !isFontAwesomeIcon
           ? (icon as string).toLowerCase()
           : '',
@@ -28,8 +28,8 @@
     v-else
     :class="[
       'vc-icon',
-      `vc-icon_${size}`,
-      variant ? `vc-icon_${variant}` : '',
+      `vc-icon--${size}`,
+      variant ? `vc-icon--${variant}` : '',
       !isCustomIcon && !isMaterialIcon && !isLucideIcon && !isBootstrapIcon && !isFontAwesomeIcon
         ? (icon as string).toLowerCase()
         : '',
@@ -444,44 +444,44 @@ const svgPath = computed(() => {
 }
 
 /* Size classes - these use CSS variables */
-.vc-icon_xs {
+.vc-icon--xs {
   font-size: var(--icon-size-xs);
 }
 
-.vc-icon_s {
+.vc-icon--s {
   font-size: var(--icon-size-s);
 }
 
-.vc-icon_m {
+.vc-icon--m {
   font-size: var(--icon-size-m);
 }
 
-.vc-icon_l {
+.vc-icon--l {
   font-size: var(--icon-size-l);
 }
 
-.vc-icon_xl {
+.vc-icon--xl {
   font-size: var(--icon-size-xl);
 }
 
-.vc-icon_xxl {
+.vc-icon--xxl {
   font-size: var(--icon-size-xxl);
 }
 
-.vc-icon_xxxl {
+.vc-icon--xxxl {
   font-size: var(--icon-size-xxxl);
 }
 
 /* Variants */
-.vc-icon_warning {
+.vc-icon--warning {
   color: var(--icon-color-warning);
 }
 
-.vc-icon_danger {
+.vc-icon--danger {
   color: var(--icon-color-danger);
 }
 
-.vc-icon_success {
+.vc-icon--success {
   color: var(--icon-color-success);
 }
 
@@ -495,43 +495,43 @@ const svgPath = computed(() => {
   font-size: inherit; /* Inherit font-size from the parent */
 }
 
-.vc-icon-container_xs {
+.vc-icon-container--xs {
   min-width: calc(var(--icon-size-xs) * 1.33);
   min-height: calc(var(--icon-size-xs) * 1.33);
   font-size: var(--icon-size-xs); /* Set font-size for the container */
 }
 
-.vc-icon-container_s {
+.vc-icon-container--s {
   min-width: calc(var(--icon-size-s) * 1.33);
   min-height: calc(var(--icon-size-s) * 1.33);
   font-size: var(--icon-size-s); /* Set font-size for the container */
 }
 
-.vc-icon-container_m {
+.vc-icon-container--m {
   min-width: calc(var(--icon-size-m) * 1.33);
   min-height: calc(var(--icon-size-m) * 1.33);
   font-size: var(--icon-size-m); /* Set font-size for the container */
 }
 
-.vc-icon-container_l {
+.vc-icon-container--l {
   min-width: calc(var(--icon-size-l) * 1.33);
   min-height: calc(var(--icon-size-l) * 1.33);
   font-size: var(--icon-size-l); /* Set font-size for the container */
 }
 
-.vc-icon-container_xl {
+.vc-icon-container--xl {
   min-width: calc(var(--icon-size-xl) * 1.33);
   min-height: calc(var(--icon-size-xl) * 1.33);
   font-size: var(--icon-size-xl); /* Set font-size for the container */
 }
 
-.vc-icon-container_xxl {
+.vc-icon-container--xxl {
   min-width: calc(var(--icon-size-xxl) * 1.33);
   min-height: calc(var(--icon-size-xxl) * 1.33);
   font-size: var(--icon-size-xxl); /* Set font-size for the container */
 }
 
-.vc-icon-container_xxxl {
+.vc-icon-container--xxxl {
   min-width: calc(var(--icon-size-xxxl) * 1.33);
   min-height: calc(var(--icon-size-xxxl) * 1.33);
   font-size: var(--icon-size-xxxl); /* Set font-size for the container */

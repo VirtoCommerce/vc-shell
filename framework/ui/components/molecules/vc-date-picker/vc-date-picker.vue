@@ -324,7 +324,7 @@ function handleFocus() {
     @apply tw-w-full tw-h-full tw-flex tw-items-center;
   }
 
-  .vc-app_mobile & {
+  .vc-app--mobile & {
     & > div {
       @apply tw-w-auto tw-h-auto tw-flex-auto tw-items-center;
     }

@@ -270,7 +270,7 @@ const contentRef = ref<HTMLElement | null>(null);
 
 }
 
-.vc-app_mobile .vc-blade {
+.vc-app--mobile .vc-blade {
   @apply tw-m-0 tw-rounded-none;
 }
 </style>

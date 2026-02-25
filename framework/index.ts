@@ -16,6 +16,7 @@ import * as locales from "@locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
 import { useAppInsights, AppInsightsOptionsKey } from "@core/composables/useAppInsights";
 import { setupGlobalErrorHandlers } from "@core/plugins/global-error-handler";
+import { useConnectionStatus } from "@core/composables/useConnectionStatus";
 
 // Import Blade Registry
 import { createBladeRegistry, BladeRegistryKey, IBladeRegistryInstance } from "@core/composables/useBladeRegistry";
@@ -358,6 +359,11 @@ export default {
     installPlugins(app, args);
     setupApplicationInsights(app, args);
     setupGlobalErrorHandlers(app);
+
+    if (typeof window !== "undefined") {
+      app.runWithContext(() => useConnectionStatus());
+    }
+
     setupRouterGuards(args.router);
   },
 } as VcShellFrameworkPlugin;

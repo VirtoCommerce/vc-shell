@@ -22,5 +22,6 @@ export * from "@core/composables/useToolbar";
 export * from "@core/composables/useDynamicProperties";
 export * from "@core/composables/useBlade";
 export * from "@core/composables/useSidebarState";
+export * from "@core/composables/useConnectionStatus";
 // useBladeSelection and useAiAgent are now part of the ai-agent plugin
 // export * from "./core/plugins/ai-agent";

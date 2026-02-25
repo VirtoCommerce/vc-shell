@@ -1,66 +1,35 @@
 <template>
   <!-- Error banner -->
   <Transition name="banner-reveal">
-    <div
-      v-if="hasError"
-      class="vc-blade-status-banners__error"
-      role="alert"
-    >
+    <div v-if="hasError" class="vc-blade-status-banners__error" role="alert">
       <div class="vc-blade-status-banners__error-accent" />
 
       <!-- Collapsed header row -->
-      <div
-        class="vc-blade-status-banners__error-header"
-        @click="expanded = !expanded"
-      >
-        <VcIcon
-          size="s"
-          icon="fas fa-exclamation-circle"
-          class="vc-blade-status-banners__error-icon"
-        />
+      <div class="vc-blade-status-banners__error-header" @click="toggle">
+        <VcIcon size="s" icon="fas fa-exclamation-circle" class="vc-blade-status-banners__error-icon" />
         <span class="vc-blade-status-banners__error-text">{{ shortErrorMessage }}</span>
-        <VcIcon
-          size="xs"
-          :icon="expanded ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"
-          class="vc-blade-status-banners__error-chevron"
-        />
+        <VcIcon size="xs" :icon="isExpanded ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"
+          class="vc-blade-status-banners__error-chevron" />
       </div>
 
-      <!-- Expandable details -->
-      <Transition name="details-expand">
-        <div
-          v-if="expanded"
-          class="vc-blade-status-banners__error-details"
-        >
+      <!-- Expandable details (useCollapsible: measured max-height transition) -->
+      <div ref="contentRef" class="vc-blade-status-banners__error-details-wrapper" :style="wrapperStyle">
+        <div class="vc-blade-status-banners__error-details">
           <pre class="vc-blade-status-banners__error-details-text">{{ errorDetails }}</pre>
-          <button
-            class="vc-blade-status-banners__error-copy"
-            :title="t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR')"
-            @click.stop="handleCopy"
-          >
-            <VcIcon
-              size="xs"
-              :icon="copied ? 'fas fa-check' : 'fas fa-copy'"
-            />
+          <button class="vc-blade-status-banners__error-copy"
+            :title="t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR')" @click.stop="handleCopy">
+            <VcIcon size="xs" :icon="copied ? 'fas fa-check' : 'fas fa-copy'" />
           </button>
         </div>
-      </Transition>
+      </div>
     </div>
   </Transition>
 
   <!-- Unsaved changes banner -->
   <Transition name="banner-reveal">
-    <div
-      v-if="modified"
-      class="vc-blade-status-banners__unsaved"
-      role="status"
-    >
+    <div v-if="modified" class="vc-blade-status-banners__unsaved" role="status">
       <div class="vc-blade-status-banners__unsaved-accent" />
-      <VcIcon
-        size="s"
-        icon="fas fa-pen"
-        class="vc-blade-status-banners__unsaved-icon"
-      />
+      <VcIcon size="s" icon="fas fa-pen" class="vc-blade-status-banners__unsaved-icon" />
       <span class="vc-blade-status-banners__unsaved-text">
         {{ t("COMPONENTS.ORGANISMS.VC_BLADE.UNSAVED_CHANGES") }}
       </span>
@@ -72,6 +41,7 @@
 import { inject, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { useCollapsible } from "@ui/composables/useCollapsible";
 import { BladeInstance } from "@framework/injection-keys";
 import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 import { useBladeError } from "@ui/components/organisms/vc-blade/_internal/composables/useBladeError";
@@ -86,7 +56,7 @@ const blade = inject(BladeInstance, DEFAULT_BLADE_INSTANCE);
 const { t } = useI18n({ useScope: "global" });
 const { hasError, shortErrorMessage, errorDetails, copyError } = useBladeError(blade);
 
-const expanded = ref(false);
+const { contentRef, isExpanded, wrapperStyle, toggle } = useCollapsible();
 const copied = ref(false);
 
 async function handleCopy() {
@@ -101,50 +71,27 @@ async function handleCopy() {
 </script>
 
 <style lang="scss">
-// ── Banner entrance/exit ──────────────────────────────────────────────
+// ── Banner entrance/exit (opacity + translateY, GPU-accelerated) ─────
 .banner-reveal-enter-active {
-  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.25s ease-out 0.05s;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out;
 }
 
 .banner-reveal-leave-active {
-  transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1) 0.05s,
-              opacity 0.15s ease-in;
+  transition:
+    opacity 0.15s ease-in,
+    transform 0.15s ease-in;
 }
 
-.banner-reveal-enter-from,
+.banner-reveal-enter-from {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
 .banner-reveal-leave-to {
-  max-height: 0;
   opacity: 0;
-  overflow: hidden;
-}
-
-.banner-reveal-enter-to,
-.banner-reveal-leave-from {
-  max-height: 200px;
-  opacity: 1;
-}
-
-// ── Details expand/collapse ───────────────────────────────────────────
-.details-expand-enter-active {
-  transition: max-height 0.25s ease-out, opacity 0.2s ease-out 0.05s;
-}
-
-.details-expand-leave-active {
-  transition: max-height 0.2s ease-in 0.05s, opacity 0.15s ease-in;
-}
-
-.details-expand-enter-from,
-.details-expand-leave-to {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-
-.details-expand-enter-to,
-.details-expand-leave-from {
-  max-height: 120px;
-  opacity: 1;
+  transform: translateY(-4px);
 }
 
 // ── Error banner ──────────────────────────────────────────────────────
@@ -185,30 +132,39 @@ async function handleCopy() {
     color: var(--danger-400);
   }
 
-  &__error-details {
-    @apply tw-relative tw-mx-3 tw-mb-2 tw-rounded;
+  &__error-details-wrapper {
     @apply tw-overflow-hidden;
-    background: var(--danger-100);
+    transition: max-height 0.25s ease;
+  }
+
+  &__error-details {
+    @apply tw-relative tw-rounded tw-overflow-hidden;
+    margin: 0 12px 8px;
+    background: var(--neutrals-50);
+    border: 1px solid var(--neutrals-200);
   }
 
   &__error-details-text {
-    @apply tw-text-[11px] tw-leading-relaxed tw-p-2 tw-pr-8;
+    @apply tw-text-[11px] tw-leading-relaxed tw-p-3 tw-pr-9;
     @apply tw-whitespace-pre-wrap tw-break-words tw-overflow-y-auto;
     @apply tw-m-0;
-    max-height: 100px;
-    color: var(--danger-700);
+    max-height: 120px;
+    color: var(--neutrals-700);
     font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
   }
 
   &__error-copy {
-    @apply tw-absolute tw-top-1 tw-right-1 tw-p-1 tw-rounded;
-    @apply tw-border-0 tw-cursor-pointer tw-bg-transparent;
-    color: var(--danger-400);
-    transition: color 0.15s ease, background-color 0.15s ease;
+    @apply tw-absolute tw-top-2 tw-right-2 tw-p-1 tw-rounded;
+    @apply tw-border-0 tw-cursor-pointer;
+    background: var(--neutrals-100);
+    color: var(--neutrals-500);
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
 
     &:hover {
-      color: var(--danger-700);
-      background: var(--danger-200);
+      color: var(--neutrals-800);
+      background: var(--neutrals-200);
     }
   }
 

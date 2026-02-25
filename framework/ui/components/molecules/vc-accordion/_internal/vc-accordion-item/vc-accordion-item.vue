@@ -31,7 +31,6 @@
 
     <div
       :id="panelId"
-      ref="contentWrapperRef"
       role="region"
       :aria-labelledby="triggerId"
       class="vc-accordion-item__content-wrapper"
@@ -52,9 +51,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, useId } from "vue";
-import { useResizeObserver } from "@vueuse/core";
+import { watch, useId } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { useCollapsible } from "@ui/composables/useCollapsible";
 
 export interface Props {
   title?: string;
@@ -91,36 +90,16 @@ const uid = useId();
 const triggerId = `vc-accordion-trigger-${uid}`;
 const panelId = `vc-accordion-panel-${uid}`;
 
-const contentRef = ref<HTMLElement>();
-const contentWrapperRef = ref<HTMLElement>();
-const contentHeight = ref(0);
-const isExpandedInternal = ref(props.isExpanded);
-
-const hasOverflow = computed(() => {
-  return contentHeight.value > props.collapsedHeight;
-});
-
-const hasScrollInExpandedState = computed(() => {
-  return props.maxExpandedHeight !== undefined && contentHeight.value > props.maxExpandedHeight;
-});
-
-const contentWrapperStyle = computed(() => {
-  if (isExpandedInternal.value) {
-    // If maxExpandedHeight is set and content exceeds it, limit to maxExpandedHeight
-    if (props.maxExpandedHeight !== undefined && contentHeight.value > props.maxExpandedHeight) {
-      return {
-        maxHeight: `${props.maxExpandedHeight}px`,
-      };
-    }
-    // Otherwise use full content height
-    return {
-      maxHeight: `${contentHeight.value}px`,
-    };
-  } else {
-    return {
-      maxHeight: props.collapsedHeight > 0 ? `${props.collapsedHeight}px` : "0px",
-    };
-  }
+const {
+  contentRef,
+  isExpanded: isExpandedInternal,
+  hasOverflow,
+  hasScroll: hasScrollInExpandedState,
+  wrapperStyle: contentWrapperStyle,
+} = useCollapsible({
+  collapsedHeight: props.collapsedHeight,
+  maxExpandedHeight: props.maxExpandedHeight,
+  expanded: props.isExpanded,
 });
 
 function toggle() {
@@ -129,22 +108,12 @@ function toggle() {
   emit("update:isExpanded", isExpandedInternal.value);
 }
 
-function updateContentHeight() {
-  if (contentRef.value) {
-    contentHeight.value = contentRef.value.scrollHeight;
-  }
-}
-
 watch(
   () => props.isExpanded,
   (newValue) => {
     isExpandedInternal.value = newValue;
   },
 );
-
-useResizeObserver(contentRef, () => {
-  updateContentHeight();
-});
 </script>
 
 <style lang="scss">

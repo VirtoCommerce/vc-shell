@@ -15,6 +15,7 @@ import Vue3TouchEvents from "vue3-touch-events";
 import * as locales from "@locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
 import { useAppInsights, AppInsightsOptionsKey } from "@core/composables/useAppInsights";
+import { setupGlobalErrorHandlers } from "@core/plugins/global-error-handler";
 
 // Import Blade Registry
 import { createBladeRegistry, BladeRegistryKey, IBladeRegistryInstance } from "@core/composables/useBladeRegistry";
@@ -356,6 +357,7 @@ export default {
     createAndProvideServices(app);
     installPlugins(app, args);
     setupApplicationInsights(app, args);
+    setupGlobalErrorHandlers(app);
     setupRouterGuards(args.router);
   },
 } as VcShellFrameworkPlugin;

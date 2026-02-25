@@ -9,7 +9,6 @@ export * from "@ui/components/molecules/vc-date-picker";
 export * from "@ui/components/molecules/vc-color-input";
 export * from "@ui/components/molecules/vc-toast";
 export * from "@ui/components/molecules/vc-pagination";
-export * from "@ui/components/molecules/vc-paginator";
 export * from "@ui/components/molecules/vc-rating";
 export * from "@ui/components/molecules/vc-select";
 export * from "@ui/components/molecules/vc-slider";

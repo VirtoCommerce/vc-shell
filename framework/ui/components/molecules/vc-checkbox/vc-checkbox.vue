@@ -43,25 +43,29 @@
 
       <span class="vc-checkbox__custom-input">
         <slot name="icon">
-          <svg
-            v-if="checked && !indeterminate"
-            class="vc-checkbox__check-icon"
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M9.90927 3.80151C10.3113 3.3995 10.9631 3.3995 11.3651 3.80151C11.7671 4.20352 11.7671 4.85531 11.3651 5.25732L6.35527 10.2671C5.95326 10.6691 5.30148 10.6691 4.89947 10.2671L2.63476 8.00241C2.23275 7.6004 2.23275 6.94862 2.63476 6.54661C3.03677 6.14459 3.68856 6.14459 4.09057 6.54661L5.62737 8.08341L9.90927 3.80151Z"
-              fill="var(--additional-50)"
-            />
-          </svg>
+          <Transition name="vc-checkbox-check">
+            <svg
+              v-if="checked && !indeterminate"
+              class="vc-checkbox__check-icon"
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.90927 3.80151C10.3113 3.3995 10.9631 3.3995 11.3651 3.80151C11.7671 4.20352 11.7671 4.85531 11.3651 5.25732L6.35527 10.2671C5.95326 10.6691 5.30148 10.6691 4.89947 10.2671L2.63476 8.00241C2.23275 7.6004 2.23275 6.94862 2.63476 6.54661C3.03677 6.14459 3.68856 6.14459 4.09057 6.54661L5.62737 8.08341L9.90927 3.80151Z"
+                fill="var(--additional-50)"
+              />
+            </svg>
+          </Transition>
 
-          <span
-            v-if="indeterminate"
-            class="vc-checkbox__indeterminate-line"
-          ></span>
+          <Transition name="vc-checkbox-check">
+            <span
+              v-if="indeterminate"
+              class="vc-checkbox__indeterminate-line"
+            ></span>
+          </Transition>
         </slot>
       </span>
 
@@ -278,7 +282,6 @@ onMounted(() => {
 
   &__check-icon {
     @apply tw-w-full tw-h-full;
-    animation: checkbox-check-in var(--checkbox-transition-duration) ease-out;
   }
 
   &__indeterminate-line {
@@ -329,5 +332,24 @@ onMounted(() => {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+@keyframes checkbox-check-out {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.vc-checkbox-check-enter-active {
+  animation: checkbox-check-in var(--checkbox-transition-duration, 200ms) ease-out;
+}
+
+.vc-checkbox-check-leave-active {
+  animation: checkbox-check-out calc(var(--checkbox-transition-duration, 200ms) * 0.6) ease-in;
 }
 </style>

@@ -1,19 +1,11 @@
-import { computed, defineComponent, h, type ComputedRef } from "vue";
+import { computed, type ComputedRef } from "vue";
 import type { IBladeInstance } from "@shared/components/blade-navigation/types";
-import { usePopup } from "@shared";
-import { useI18n } from "vue-i18n";
-import { VcLink } from "@ui/components/atoms/vc-link";
-import vcPopupError from "@shared/components/common/popup/vc-popup-error.vue";
 
 /**
- * Encapsulates blade error state and the "error details" popup logic.
- *
- * Extracts three computeds and the `usePopup` setup that were previously
- * inline in vc-blade.vue's `<script setup>`.
+ * Encapsulates blade error state: reactive computeds for the banner
+ * and a helper to copy full error details to clipboard.
  */
 export function useBladeError(blade: ComputedRef<IBladeInstance>) {
-  const { t } = useI18n({ useScope: "global" });
-
   const error = computed(() => blade.value.error ?? null);
 
   const hasError = computed(() => Boolean(error.value));
@@ -33,32 +25,20 @@ export function useBladeError(blade: ComputedRef<IBladeInstance>) {
     return String(err);
   });
 
-  const { open } = usePopup({
-    component: vcPopupError,
-    slots: {
-      default: errorDetails,
-      header: defineComponent({
-        render: () =>
-          h("div", [
-            t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
-            " ",
-            h(
-              VcLink,
-              { onClick: () => navigator.clipboard.writeText(errorDetails.value) },
-              `(${t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR")})`,
-            ),
-          ]),
-      }),
-    },
-  });
-
-  function openErrorDetails() {
-    open();
+  async function copyError(): Promise<boolean> {
+    try {
+      const text = [shortErrorMessage.value, errorDetails.value].filter(Boolean).join("\n\n");
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   return {
     hasError,
     shortErrorMessage,
-    openErrorDetails,
+    errorDetails,
+    copyError,
   };
 }

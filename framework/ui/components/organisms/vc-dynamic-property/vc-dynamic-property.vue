@@ -298,7 +298,7 @@
       ></VcInput>
     </template>
     <template
-      v-if="computedProperty.valueType === 'Color' && computedProperty.dictionary && !computedProperty.multivalue"
+      v-else-if="computedProperty.valueType === 'Color' && computedProperty.dictionary && !computedProperty.multivalue"
     >
       <VcSelect
         v-bind="$attrs"

@@ -360,9 +360,10 @@ import {
   useDataTableState,
 } from "@ui/components/organisms/vc-table/composables";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
-import { ColumnCollectorKey, HasFlexColumnsKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-table/keys";
+import { ColumnCollectorKey, FilterContextKey, HasFlexColumnsKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-table/keys";
 import { IsMobileKey } from "@framework/injection-keys";
-import type { VcColumnProps, VcDataTableExtendedProps, FilterValue, EditChange, TableAction } from "@ui/components/organisms/vc-table/types";
+import type { VcColumnProps, VcDataTableExtendedProps, FilterValue, EditChange, TableAction, SortMeta } from "@ui/components/organisms/vc-table/types";
+import type { DataTablePersistedState } from "@ui/components/organisms/vc-table/composables";
 
 const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
   items: () => [],
@@ -418,50 +419,119 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
 });
 
 // Emits
-const emit = defineEmits([
-  "update:selection",
-  "update:selectAll",
-  "row-select",
-  "row-unselect",
-  "row-select-all",
-  "row-unselect-all",
-  "update:editingRows",
-  "cell-edit-init",
-  "cell-edit-complete",
-  "cell-edit-cancel",
-  "row-edit-init",
-  "row-edit-save",
-  "row-edit-cancel",
-  "update:sortField",
-  "update:sortOrder",
-  "update:multiSortMeta",
-  "sort",
-  "row-click",
-  "row-reorder",
-  "row-action",
-  "update:expandedRows",
-  "row-expand",
-  "row-collapse",
-  "column-resize-end",
-  "column-reorder",
-  "state-save",
-  "state-restore",
-  "filter",
-  "update:expandedRowGroups",
-  "rowgroup-expand",
-  "rowgroup-collapse",
-  "pull-refresh",
-  "select-all",
-  "update:selectAllActive",
-  "row-add",
-  "row-remove",
-  "edit-save",
-  "edit-cancel",
-  "pagination-click",
-  "load-more",
-  "update:searchValue",
-  "search",
-]);
+const emit = defineEmits<{
+  // === Selection ===
+  /** v-model update for selected item(s) */
+  "update:selection": [value: T | T[]];
+  /** v-model update for the "select all" checkbox state */
+  "update:selectAll": [value: boolean];
+  /** Emitted when a row is selected (click or checkbox) */
+  "row-select": [event: { data: T; originalEvent: Event }];
+  /** Emitted when a row is deselected */
+  "row-unselect": [event: { data: T; originalEvent: Event }];
+  /** Emitted when "select all" selects all visible rows */
+  "row-select-all": [event: { data: T[]; originalEvent: Event }];
+  /** Emitted when "select all" deselects all visible rows */
+  "row-unselect-all": [event: { data: T[]; originalEvent: Event }];
+  /** Emitted when the "select all" banner mode changes */
+  "select-all": [event: { selected: boolean }];
+  /** v-model update for "select all" active state (includes non-visible items) */
+  "update:selectAllActive": [value: boolean];
+
+  // === Editing ===
+  /** v-model update for currently editing rows */
+  "update:editingRows": [value: T[]];
+  /** Emitted when a cell enters edit mode */
+  "cell-edit-init": [event: { data: T; field: string; index: number }];
+  /** Emitted when a cell edit is completed (value committed) */
+  "cell-edit-complete": [event: { data: T; field: string; newValue: unknown; index: number }];
+  /** Emitted when a cell edit is cancelled */
+  "cell-edit-cancel": [event: { data: T; field: string; index: number }];
+  /** Emitted when row edit mode is initiated */
+  "row-edit-init": [event: { data: T; index: number }];
+  /** Emitted when row edits are saved */
+  "row-edit-save": [event: { data: T; newData: T; index: number }];
+  /** Emitted when row edits are cancelled */
+  "row-edit-cancel": [event: { data: T; index: number }];
+
+  // === Inline Edit (bulk editing mode) ===
+  /** Emitted when inline edit changes are saved */
+  "edit-save": [event: { changes: EditChange<T>[] }];
+  /** Emitted when inline editing is cancelled */
+  "edit-cancel": [];
+  /** Emitted when a new row is being added via inline edit */
+  "row-add": [event: { defaults: Record<string, unknown>; cancel: () => void }];
+  /** Emitted when a row is being removed via inline edit */
+  "row-remove": [event: { data: T; index: number; cancel: () => void }];
+
+  // === Sorting ===
+  /** v-model update for the sorted field name */
+  "update:sortField": [value: string];
+  /** v-model update for the sort direction */
+  "update:sortOrder": [value: number];
+  /** v-model update for multi-sort metadata */
+  "update:multiSortMeta": [value: SortMeta[]];
+  /** Emitted when sort changes — use for backend sorting */
+  sort: [event: { sortField?: string; sortOrder?: number; multiSortMeta?: SortMeta[] }];
+
+  // === Filtering ===
+  /** Emitted when filter values change — flat payload ready for backend API */
+  filter: [event: { filters: Record<string, unknown>; filteredValue: T[] }];
+
+  // === Row Interactions ===
+  /** Emitted when a row is clicked */
+  "row-click": [event: { data: T; index: number; originalEvent: Event }];
+  /** Emitted when a row action button/menu item is activated */
+  "row-action": [event: { action: TableAction; item: T; index: number }];
+
+  // === Reorder ===
+  /** Emitted when rows are reordered via drag-and-drop */
+  "row-reorder": [event: { dragIndex: number; dropIndex: number; value: T[] }];
+  /** Emitted when a column resize operation ends */
+  "column-resize-end": [event: { columns: { id: string; width: number }[] }];
+  /** Emitted when columns are reordered via drag-and-drop */
+  "column-reorder": [event: { columns: { id: string; [key: string]: unknown }[] }];
+
+  // === State ===
+  /** Emitted when table state is saved to storage */
+  "state-save": [state: DataTablePersistedState];
+  /** Emitted when table state is restored from storage */
+  "state-restore": [state: DataTablePersistedState];
+
+  // === Expandable Rows ===
+  /** v-model update for currently expanded rows */
+  "update:expandedRows": [value: T[]];
+  /** Emitted when a row is expanded */
+  "row-expand": [event: { data: T; originalEvent: Event }];
+  /** Emitted when a row is collapsed */
+  "row-collapse": [event: { data: T; originalEvent: Event }];
+
+  // === Row Grouping ===
+  /** v-model update for currently expanded row groups */
+  "update:expandedRowGroups": [value: string[]];
+  /** Emitted when a row group is expanded */
+  "rowgroup-expand": [event: { data: string; originalEvent: Event }];
+  /** Emitted when a row group is collapsed */
+  "rowgroup-collapse": [event: { data: string; originalEvent: Event }];
+
+  // === Pull-to-Refresh ===
+  /** Emitted when user triggers pull-to-refresh on mobile */
+  "pull-refresh": [];
+
+  // === Infinite Scroll ===
+  /** Emitted when user scrolls near the bottom of the table */
+  "load-more": [];
+
+  // === Pagination ===
+  /** Emitted when a page button is clicked in the built-in pagination */
+  "pagination-click": [page: number];
+
+  // === Search ===
+  /** v-model update for search input value */
+  "update:searchValue": [value: string];
+  /** Emitted (debounced) when search value changes — use for backend filtering */
+  search: [value: string];
+}>();
 
 defineOptions({ inheritAttrs: false });
 
@@ -994,7 +1064,7 @@ const {
   },
 });
 
-provide("$filterContext", {
+provide(FilterContextKey, {
   filterValues,
   updateFilter,
   clearFilter,

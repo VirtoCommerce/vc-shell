@@ -20,26 +20,20 @@
 <script lang="ts" setup>
 import { VcIcon } from "@ui/components/atoms";
 
-defineProps({
-  icon: {
-    type: String,
-    required: true,
-  },
-  active: {
-    type: Boolean,
-    default: undefined,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  ariaLabel: {
-    type: String,
-    default: undefined,
-  },
+interface Props {
+  icon: string;
+  active?: boolean;
+  disabled?: boolean;
+  ariaLabel?: string;
+}
+
+withDefaults(defineProps<Props>(), {
+  disabled: false,
 });
 
-defineEmits(["action"]);
+defineEmits<{
+  action: [];
+}>();
 </script>
 
 <style lang="scss">

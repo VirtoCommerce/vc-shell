@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import VcIconTest from "@ui/components/atoms/vc-icon/vc-icon-test.vue";
-import VcIconExamples from "@ui/components/atoms/vc-icon/vc-icon-examples.vue";
 
 /**
  * # VcIcon Component
@@ -680,24 +678,6 @@ export const StatusIcons: Story = {
       },
     },
   },
-};
-
-export const IconTest: Story = {
-  render: () => ({
-    components: { VcIcon, VcIconTest },
-    template: `
-      <VcIconTest />
-    `,
-  }),
-};
-
-export const IconExamples: Story = {
-  render: () => ({
-    components: { VcIcon, VcIconExamples },
-    template: `
-      <VcIconExamples />
-    `,
-  }),
 };
 
 // Add a new story for CSS styling demonstration

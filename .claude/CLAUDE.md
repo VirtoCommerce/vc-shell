@@ -74,7 +74,6 @@ Active development area. Two table implementations coexist:
 |-----------|------|------|
 | `VcDataTable` | `framework/ui/components/organisms/vc-table/VcDataTable.vue` | New compositional table |
 | `VcTableAdapter` | `framework/ui/components/organisms/vc-table/VcTableAdapter.vue` | Adapter: wraps VcDataTable with legacy VcTable API |
-| `vc-table.vue` | `framework/ui/components/organisms/vc-table/vc-table.vue` | Legacy table (exported as `VcTableLegacy`) |
 
 Sub-components are in `vc-table/components/`, composables in `vc-table/composables/`. Check these directories before building new table features — most functionality already exists (column switching, global filters, cell renderers, search header, row actions, virtual scroll, etc.).
 

@@ -49,24 +49,81 @@ export function registerInterceptors(router: Router) {
         }
       });
     } else {
-      const response = await originalFetch(...args);
+      const [resource, init] = args;
 
-      /**
-       * If the response is unauthorized, logout the user
-       */
-      if (response.status === 401) {
-        //logout user
-        if (isAuthenticated.value) {
-          signOut().then(() => {
-            redirect(router);
-            notification.error(
-              "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
-            );
-          });
+      function isApiRequest(input: RequestInfo | URL): boolean {
+        const raw = typeof input === "string"
+          ? input
+          : input instanceof Request
+            ? input.url
+            : input.toString();
+
+        try {
+          const url = new URL(raw, window.location.origin);
+          return url.origin === window.location.origin && url.pathname.startsWith("/api/");
+        } catch {
+          return false;
         }
       }
 
-      return response;
+      // Scope hardening only to platform API calls
+      if (!isApiRequest(resource)) {
+        return originalFetch(...args);
+      }
+
+      if (!navigator.onLine) {
+        logger.warn("Request blocked: browser is offline", resource);
+        return Promise.reject(new Error("Network unavailable. Please check your connection."));
+      }
+
+      // Always enforce timeout, but preserve external cancellation semantics
+      const controller = new AbortController();
+      let didTimeout = false;
+      const timeoutId = setTimeout(() => {
+        didTimeout = true;
+        controller.abort();
+      }, 30000);
+
+      const externalSignal = init?.signal;
+      const abortFromExternal = () => controller.abort();
+      if (externalSignal?.aborted) {
+        abortFromExternal();
+      } else if (externalSignal) {
+        externalSignal.addEventListener("abort", abortFromExternal, { once: true });
+      }
+
+      try {
+        const response = await originalFetch(resource, {
+          ...(init || {}),
+          signal: controller.signal,
+        });
+
+        /**
+         * If the response is unauthorized, logout the user
+         */
+        if (response.status === 401) {
+          if (isAuthenticated.value) {
+            signOut().then(() => {
+              redirect(router);
+              notification.error(
+                "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
+              );
+            });
+          }
+        }
+
+        return response;
+      } catch (e) {
+        if (didTimeout) {
+          throw new Error("Request timed out. Please try again.");
+        }
+        throw e;
+      } finally {
+        clearTimeout(timeoutId);
+        if (externalSignal) {
+          externalSignal.removeEventListener("abort", abortFromExternal);
+        }
+      }
     }
   };
 

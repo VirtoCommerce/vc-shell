@@ -4,3 +4,5 @@ export * from "@core/utilities/camelize";
 export * from "@core/utilities/generateId";
 export * from "@core/utilities/logger";
 export * from "@core/utilities/errorTypes";
+export * from "@core/utilities/error";
+export * from "@core/utilities/pendingErrorNotifications";

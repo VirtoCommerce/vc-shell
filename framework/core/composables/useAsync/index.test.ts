@@ -58,8 +58,8 @@ describe("useAsync", () => {
     // Before timer fires, notification not yet shown
     expect(notification.error).not.toHaveBeenCalled();
 
-    // After timer fires, notification appears
-    vi.runAllTimers();
+    // After timer fires (+ microtask flush for dynamic import), notification appears
+    await vi.runAllTimersAsync();
     expect(notification.error).toHaveBeenCalledWith(
       "notify me",
       expect.objectContaining({ notificationId: expect.any(String) }),
@@ -82,7 +82,7 @@ describe("useAsync", () => {
     const cancelled = cancelPendingErrorNotification(caughtError);
     expect(cancelled).toBe(true);
 
-    vi.runAllTimers();
+    await vi.runAllTimersAsync();
     expect(notification.error).not.toHaveBeenCalled();
   });
 
@@ -94,7 +94,7 @@ describe("useAsync", () => {
       { notify: false },
     );
     await expect(action()).rejects.toThrow();
-    vi.runAllTimers();
+    await vi.runAllTimersAsync();
     expect(notification.error).not.toHaveBeenCalled();
   });
 

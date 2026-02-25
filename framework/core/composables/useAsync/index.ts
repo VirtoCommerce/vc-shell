@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { readonly, ref, type Ref, type DeepReadonly } from "vue";
 import { HasLoading } from "@core/composables/useLoading";
-import { notification } from "@shared/components/notifications/core/notification";
 import { parseError, DisplayableError } from "@core/utilities/error";
 import { setPendingErrorNotification } from "@core/utilities/pendingErrorNotifications";
 import { createLogger } from "@core/utilities";
+
+// Lazy-resolved reference to the notification singleton.
+// We avoid a top-level import of `@shared/components/notifications/core/notification`
+// because that module transitively pulls in UI components (@ui/components) which
+// import from @core/composables — creating a circular dependency at module load time.
+let _notification: typeof import("@shared/components/notifications/core/notification").notification | undefined;
 
 const logger = createLogger("use-async");
 
@@ -56,8 +61,12 @@ export function useAsync<Payload = void, Result = void>(
 
         // Defer notification so ErrorInterceptor can cancel it
         // when onErrorCaptured fires (synchronously, before setTimeout(0) callback)
-        const timerId = setTimeout(() => {
-          notification.error(parsed.message, {
+        const timerId = setTimeout(async () => {
+          if (!_notification) {
+            const mod = await import("@shared/components/notifications/core/notification");
+            _notification = mod.notification;
+          }
+          _notification.error(parsed.message, {
             timeout: notifyTimeout,
             notificationId: notifId,
           });

@@ -3,9 +3,12 @@
  * and ErrorInterceptor to cancel it when the same error is caught for blade banner display.
  *
  * This decouples the two modules — neither imports the other directly.
+ *
+ * IMPORTANT: This module must NOT have top-level imports from @shared/components
+ * because it is transitively imported by useAsync (in the @core/composables barrel),
+ * and @shared/components/notifications pulls in @ui/components which imports from
+ * @core/composables — creating a circular dependency.
  */
-
-import { notification } from "@shared/components/notifications/core/notification";
 
 interface PendingNotification {
   timerId: ReturnType<typeof setTimeout>;
@@ -36,7 +39,13 @@ export function cancelPendingErrorNotification(error: unknown): boolean {
     const entry = pending.get(error);
     if (entry) {
       clearTimeout(entry.timerId);
-      notification.remove(entry.notifId);
+      // Lazy import to avoid circular dependency at module load time.
+      // In practice, clearTimeout above is sufficient since the deferred
+      // setTimeout(0) hasn't fired yet when this runs synchronously from
+      // ErrorInterceptor's onErrorCaptured. The remove() is a safety net.
+      import("@shared/components/notifications/core/notification").then(({ notification }) => {
+        notification.remove(entry.notifId);
+      });
       pending.delete(error);
       return true;
     }

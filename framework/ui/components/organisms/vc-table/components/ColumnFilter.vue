@@ -133,7 +133,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, watch, nextTick, onBeforeUnmount } from "vue";
 import { VcInput, VcSelect } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
 import type { FilterType, FilterOption, FilterValue } from "@ui/components/organisms/vc-table/types";
@@ -257,9 +257,7 @@ const toggleOverlay = () => {
   isOpen.value = !isOpen.value;
 
   if (isOpen.value) {
-    initLocalState();
     nextTick(() => {
-      updateOverlayPosition();
       // Focus first focusable element inside the overlay (works for all filter types)
       nextTick(() => {
         const firstFocusable = overlayRef.value?.querySelector<HTMLElement>(
@@ -362,23 +360,39 @@ const handleClickOutside = (event: MouseEvent) => {
   closeOverlay();
 };
 
-// Sync active state: re-init when overlay reopens
-watch(isOpen, (opened) => {
-  if (opened) {
-    initLocalState();
-  }
-});
+let overlayListenersAttached = false;
 
-onMounted(() => {
+const attachOverlayListeners = () => {
+  if (overlayListenersAttached || typeof window === "undefined" || typeof document === "undefined") return;
   document.addEventListener("click", handleClickOutside);
   window.addEventListener("resize", updateOverlayPosition);
   window.addEventListener("scroll", updateOverlayPosition, true);
-});
+  overlayListenersAttached = true;
+};
 
-onBeforeUnmount(() => {
+const detachOverlayListeners = () => {
+  if (!overlayListenersAttached || typeof window === "undefined" || typeof document === "undefined") return;
   document.removeEventListener("click", handleClickOutside);
   window.removeEventListener("resize", updateOverlayPosition);
   window.removeEventListener("scroll", updateOverlayPosition, true);
+  overlayListenersAttached = false;
+};
+
+// Sync active state: re-init when overlay reopens and attach listeners lazily.
+watch(isOpen, (opened) => {
+  if (opened) {
+    initLocalState();
+    attachOverlayListeners();
+    nextTick(() => {
+      updateOverlayPosition();
+    });
+  } else {
+    detachOverlayListeners();
+  }
+});
+
+onBeforeUnmount(() => {
+  detachOverlayListeners();
 });
 </script>
 

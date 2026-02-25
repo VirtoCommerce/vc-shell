@@ -105,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount, inject, nextTick } from "vue";
+import { ref, computed, watch, onBeforeUnmount, inject, nextTick } from "vue";
 import { offset, flip, shift } from "@floating-ui/vue";
 import { VcIcon, VcButton } from "@ui/components/atoms";
 import type { TableAction } from "@ui/components/organisms/vc-table/types";
@@ -304,12 +304,30 @@ const handleEscape = (event: KeyboardEvent) => {
   }
 };
 
-onMounted(() => {
+let escapeListenerAttached = false;
+
+const attachEscapeListener = () => {
+  if (escapeListenerAttached || typeof document === "undefined") return;
   document.addEventListener("keydown", handleEscape);
+  escapeListenerAttached = true;
+};
+
+const detachEscapeListener = () => {
+  if (!escapeListenerAttached || typeof document === "undefined") return;
+  document.removeEventListener("keydown", handleEscape);
+  escapeListenerAttached = false;
+};
+
+watch(isOpen, (opened) => {
+  if (opened) {
+    attachEscapeListener();
+  } else {
+    detachEscapeListener();
+  }
 });
 
 onBeforeUnmount(() => {
-  document.removeEventListener("keydown", handleEscape);
+  detachEscapeListener();
 });
 </script>
 

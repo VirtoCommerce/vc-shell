@@ -102,3 +102,9 @@ textarea {
   opacity: 0;
   transform: translateY(-5px);
 }
+
+// Visual hint when browser is offline (class toggled by useConnectionStatus)
+html.vc-offline .vc-app {
+  filter: grayscale(30%);
+  transition: filter 0.3s ease;
+}

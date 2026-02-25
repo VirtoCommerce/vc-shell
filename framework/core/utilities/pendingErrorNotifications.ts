@@ -36,8 +36,18 @@ export function setPendingErrorNotification(
  */
 export function cancelPendingErrorNotification(error: unknown): boolean {
   if (error && typeof error === "object") {
-    const entry = pending.get(error);
-    if (entry) {
+    // Try direct lookup first, then fall back to originalError.
+    // useErrorHandler wraps errors via parseError() → DisplayableError,
+    // so the watch receives a different object than what useAsync stored.
+    const directEntry = pending.get(error);
+    const originalError =
+      "originalError" in error && error.originalError && typeof error.originalError === "object"
+        ? (error.originalError as object)
+        : undefined;
+    const entry = directEntry ?? (originalError ? pending.get(originalError) : undefined);
+    const key = directEntry ? error : originalError;
+
+    if (entry && key) {
       clearTimeout(entry.timerId);
       // Lazy import to avoid circular dependency at module load time.
       // In practice, clearTimeout above is sufficient since the deferred
@@ -46,7 +56,7 @@ export function cancelPendingErrorNotification(error: unknown): boolean {
       import("@shared/components/notifications/core/notification").then(({ notification }) => {
         notification.remove(entry.notifId);
       });
-      pending.delete(error);
+      pending.delete(key);
       return true;
     }
   }

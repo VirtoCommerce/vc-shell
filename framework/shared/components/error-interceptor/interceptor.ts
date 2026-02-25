@@ -35,21 +35,24 @@ export default defineComponent({
     },
   },
   setup(props, { slots }) {
-    const { error, reset } = useErrorHandler(props.capture);
-
-    // Propagate errors to blade.error when used inside a blade context
+    // Inject blade context BEFORE registering onErrorCaptured so we can
+    // stop error propagation when inside a blade (prevents duplicate toast
+    // from the global error handler).
     const descriptor = inject(BladeDescriptorKey, undefined);
     const bladeStack = inject(BladeStackKey, undefined);
+    const hasBlade = !!(descriptor && bladeStack);
 
-    if (descriptor && bladeStack) {
+    const { error, reset } = useErrorHandler(hasBlade || props.capture);
+
+    if (hasBlade) {
       watch(error, (newError) => {
-        const bladeId = descriptor.value.id;
+        const bladeId = descriptor!.value.id;
         if (newError) {
           // Cancel any deferred useAsync toast — blade banner replaces it
           cancelPendingErrorNotification(newError);
-          bladeStack.setBladeError(bladeId, newError);
+          bladeStack!.setBladeError(bladeId, newError);
         } else {
-          bladeStack.clearBladeError(bladeId);
+          bladeStack!.clearBladeError(bladeId);
         }
       });
     }

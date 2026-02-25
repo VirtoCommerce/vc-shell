@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useAsync } from "./index";
-import { DisplayableError } from "@core/utilities/error";
+import { DisplayableError, parseError } from "@core/utilities/error";
 import { cancelPendingErrorNotification } from "@core/utilities/pendingErrorNotifications";
 
 vi.mock("@shared/components/notifications/core/notification", () => ({
@@ -80,6 +80,29 @@ describe("useAsync", () => {
 
     // Simulate what ErrorInterceptor does — cancel before timer fires
     const cancelled = cancelPendingErrorNotification(caughtError);
+    expect(cancelled).toBe(true);
+
+    await vi.runAllTimersAsync();
+    expect(notification.error).not.toHaveBeenCalled();
+  });
+
+  it("should cancel via DisplayableError.originalError (real ErrorInterceptor flow)", async () => {
+    const { action } = useAsync(async () => {
+      throw new Error("wrapped-cancel");
+    });
+
+    let caughtError: unknown;
+    try {
+      await action();
+    } catch (e) {
+      caughtError = e;
+    }
+
+    // useErrorHandler wraps the error via parseError() → DisplayableError.
+    // The watch in ErrorInterceptor receives this wrapped object, not the original.
+    const wrappedError = parseError(caughtError);
+
+    const cancelled = cancelPendingErrorNotification(wrappedError);
     expect(cancelled).toBe(true);
 
     await vi.runAllTimersAsync();

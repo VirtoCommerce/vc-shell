@@ -2,8 +2,6 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcFileUpload } from "@ui/components/molecules/vc-file-upload";
 import { ref } from "vue";
 
-const VARIANT = ["gallery", "file-upload"];
-
 /**
  * `VcFileUpload` is a component for uploading files with support for
  * drag-and-drop and browsing from file system.
@@ -13,7 +11,6 @@ const meta = {
   component: VcFileUpload,
   tags: ["autodocs"],
   args: {
-    variant: "gallery",
     loading: false,
     accept: ".jpg, .png, .jpeg, .webp, .heic, .svg",
     multiple: false,
@@ -21,16 +18,6 @@ const meta = {
     icon: "material-cloud_upload",
   },
   argTypes: {
-    variant: {
-      description: "Display mode for the file upload component",
-      control: "radio",
-      options: VARIANT,
-      table: {
-        category: "Appearance",
-        type: { summary: VARIANT.join(" | ") },
-        defaultValue: { summary: "gallery" },
-      },
-    },
     onUpload: {
       description: "Event emitted when files are uploaded",
       table: {
@@ -145,7 +132,7 @@ const meta = {
         component: `
 The VcFileUpload component provides functionality for uploading files with the following features:
 
-- Two display variants: gallery view (square) and standard file upload (full width)
+- Full-width layout, sized by its container
 - Support for drag and drop file uploads
 - File type filtering through the accept property
 - Multiple file upload support
@@ -159,7 +146,6 @@ The VcFileUpload component provides functionality for uploading files with the f
 \`\`\`vue
 <template>
   <VcFileUpload
-    variant="gallery"
     accept=".jpg, .png"
     :multiple="true"
     @upload="handleUpload"
@@ -183,13 +169,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Gallery variant provides a square upload area, suitable for image uploads
- * and grid layouts.
+ * Default full-width upload area, sized by its container.
  */
-export const Gallery: Story = {
-  args: {
-    variant: "gallery",
-  },
+export const Default: Story = {
+  args: {},
   render: (args) => ({
     components: { VcFileUpload },
     setup() {
@@ -214,13 +197,11 @@ export const Gallery: Story = {
 };
 
 /**
- * File upload variant provides a wider upload area that spans the full width
- * of its container, suitable for form integrations.
+ * Full-width upload area constrained by a max-width container,
+ * suitable for form integrations.
  */
 export const FileUpload: Story = {
-  args: {
-    variant: "file-upload",
-  },
+  args: {},
   render: (args) => ({
     components: { VcFileUpload },
     setup() {
@@ -250,7 +231,6 @@ export const FileUpload: Story = {
  */
 export const Loading: Story = {
   args: {
-    variant: "gallery",
     loading: true,
   },
   render: (args) => ({
@@ -282,7 +262,6 @@ export const Loading: Story = {
  */
 export const RestrictedFileTypes: Story = {
   args: {
-    variant: "file-upload",
     accept: ".pdf, .doc, .docx",
   },
   render: (args) => ({
@@ -314,7 +293,6 @@ export const RestrictedFileTypes: Story = {
  */
 export const MultipleFiles: Story = {
   args: {
-    variant: "file-upload",
     multiple: true,
   },
   render: (args) => ({
@@ -351,7 +329,6 @@ export const MultipleFiles: Story = {
  */
 export const CustomText: Story = {
   args: {
-    variant: "gallery",
     customText: {
       dragHere: "Drop your files here",
       browse: "Select files",
@@ -384,9 +361,7 @@ export const CustomText: Story = {
  * You can show custom error messages using the error slot.
  */
 export const WithErrorSlot: Story = {
-  args: {
-    variant: "file-upload",
-  },
+  args: {},
   render: (args) => ({
     components: { VcFileUpload },
     setup() {
@@ -426,7 +401,6 @@ export const WithErrorSlot: Story = {
  */
 export const Disabled: Story = {
   args: {
-    variant: "file-upload",
     disabled: true,
   },
   render: (args) => ({
@@ -450,7 +424,6 @@ export const Disabled: Story = {
  */
 export const WithErrorMessage: Story = {
   args: {
-    variant: "file-upload",
     errorMessage: "Maximum file size exceeded (5 MB)",
   },
   render: (args) => ({
@@ -473,7 +446,6 @@ export const WithErrorMessage: Story = {
  */
 export const CustomIcon: Story = {
   args: {
-    variant: "gallery",
     icon: "bi-file-earmark-upload",
   },
   render: (args) => ({

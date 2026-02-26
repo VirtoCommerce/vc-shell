@@ -6,13 +6,10 @@
     <div
       v-loading="loading"
       class="vc-file-upload__drop-zone"
-      :class="[
-        `vc-file-upload__drop-zone--${variant}`,
-        {
-          'vc-file-upload__drop-zone--dragging': isDragging,
-          'vc-file-upload__drop-zone--disabled': resolvedDisabled,
-        },
-      ]"
+      :class="{
+        'vc-file-upload__drop-zone--dragging': isDragging,
+        'vc-file-upload__drop-zone--disabled': resolvedDisabled,
+      }"
       @drop.stop.prevent="onDrop"
       @drag.stop.prevent
       @dragstart.stop.prevent
@@ -89,7 +86,6 @@ import { useFormField } from "@ui/composables/useFormField";
 import type { IFormFieldProps } from "@ui/types/form-field";
 
 export interface Props extends IFormFieldProps {
-  variant?: "gallery" | "file-upload";
   loading?: boolean;
   accept?: string;
   multiple?: boolean;
@@ -106,7 +102,6 @@ export interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  variant: "gallery",
   accept: ".jpg, .png, .jpeg, .webp, .heic, .svg",
   name: "Gallery",
   icon: "lucide-cloud-upload",
@@ -228,20 +223,12 @@ function dragLeave() {
   }
 
   &__drop-zone {
-    @apply tw-relative tw-h-40 tw-box-border tw-border tw-border-dashed tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center
+    @apply tw-relative tw-w-full tw-h-40 tw-box-border tw-border tw-border-dashed tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center
       tw-border-[color:var(--file-upload-border-color)]
       tw-rounded-[var(--file-upload-border-radius)]
       tw-transition-[color,border-color,box-shadow] tw-duration-200
       tw-bg-[color:var(--file-upload-background-color)]
       tw-outline-none;
-
-    &--gallery {
-      @apply tw-w-40 tw-h-40;
-    }
-
-    &--file-upload {
-      @apply tw-w-full;
-    }
 
     &--dragging {
       @apply tw-bg-[color:var(--file-upload-drag-bg)] tw-border-solid tw-cursor-copy

@@ -9,58 +9,75 @@
     @keydown.passive="handleKeyDown"
   >
     <template #header>
-      <div>
-        <span>{{ currentImage.name }} (</span>
+      <div class="vc-gallery-preview__header">
+        <span class="vc-gallery-preview__filename">{{ currentImage.name }}</span>
         <VcLink @click="copyLink(currentImage.url ?? '')">
           {{ t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_PREVIEW.COPY_IMAGE_LINK") }}
         </VcLink>
-        <span>)</span>
       </div>
     </template>
     <template #content>
       <div class="vc-gallery-preview__content">
         <div class="vc-gallery-preview__image-container">
-          <div
-            class="vc-gallery-preview__image-handler"
-            :style="imageHandler"
-          ></div>
+          <!-- Crossfade transition -->
+          <Transition
+            name="vc-gallery-preview-fade"
+            mode="out-in"
+          >
+            <img
+              :key="localIndex"
+              :src="currentImage.url"
+              :alt="currentImage.altText || currentImage.name || ''"
+              class="vc-gallery-preview__image"
+            />
+          </Transition>
+
+          <!-- Nav buttons — visible on hover -->
           <button
             v-if="localIndex > 0"
-            class="vc-gallery-preview__nav-btn vc-gallery-preview__nav-btn_left"
+            class="vc-gallery-preview__nav-btn vc-gallery-preview__nav-btn--left"
             @click="localIndex--"
           >
             <VcIcon
               icon="material-arrow_back"
-              size="xl"
-            ></VcIcon>
+              size="l"
+            />
           </button>
           <button
             v-if="localIndex < images.length - 1"
-            class="vc-gallery-preview__nav-btn vc-gallery-preview__nav-btn_right"
+            class="vc-gallery-preview__nav-btn vc-gallery-preview__nav-btn--right"
             @click="localIndex++"
           >
             <VcIcon
               icon="material-arrow_forward"
-              size="xl"
-            ></VcIcon>
+              size="l"
+            />
           </button>
         </div>
-        <div class="vc-gallery-preview__thumbnails">
-          <div
-            v-for="(item, i) in images"
-            :key="i"
-            class="vc-gallery-preview__thumbnail"
-            :class="{ 'vc-gallery-preview__thumbnail_current': i === localIndex }"
-          >
-            <VcImage
-              :src="item.url"
-              size="xl"
-              background="contain"
-              :bordered="true"
-              :clickable="true"
+
+        <!-- Thumbnail strip -->
+        <div
+          v-if="images.length > 1"
+          class="vc-gallery-preview__thumbnails"
+        >
+          <div class="vc-gallery-preview__thumb-strip">
+            <button
+              v-for="(item, i) in images"
+              :key="i"
+              class="vc-gallery-preview__thumb"
+              :class="{ 'vc-gallery-preview__thumb--active': i === localIndex }"
               @click="localIndex = i"
-            ></VcImage>
+            >
+              <img
+                :src="item.url"
+                :alt="item.name || ''"
+                class="vc-gallery-preview__thumb-img"
+              />
+            </button>
           </div>
+          <span class="vc-gallery-preview__counter">
+            {{ localIndex + 1 }} / {{ images.length }}
+          </span>
         </div>
       </div>
     </template>
@@ -69,7 +86,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { VcPopup, VcLink, VcIcon, VcImage } from "@ui/components";
+import { VcPopup, VcLink, VcIcon } from "@ui/components";
 import { ICommonAsset } from "@core/types";
 import { useI18n } from "vue-i18n";
 
@@ -91,21 +108,11 @@ const props = withDefaults(defineProps<Props>(), {
 const { t } = useI18n({ useScope: "global" });
 const localIndex = ref(props.index);
 
-const imageHandler = computed(() => {
-  if (currentImage.value.url) {
-    return `background: url(${CSS.escape(currentImage.value.url)}) center / contain no-repeat`;
-  }
-  return undefined;
-});
-
 const currentImage = computed(() => props.images[localIndex.value]);
 
 const copyLink = (link: string) => {
-  if (link.charAt(0) === "/") {
-    navigator.clipboard?.writeText(`${location.origin}${link}`);
-  } else {
-    navigator.clipboard?.writeText(link);
-  }
+  const fullLink = link.charAt(0) === "/" ? `${location.origin}${link}` : link;
+  navigator.clipboard?.writeText(fullLink);
 };
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -119,48 +126,113 @@ function handleKeyDown(event: KeyboardEvent) {
 
 <style lang="scss">
 :root {
-  --gallery-preview-btn-bg-color: var(--secondary-50);
-  --gallery-preview-btn-icon-color: var(--secondary-400);
-  --gallery-preview-btn-shadow-color: var(--neutrals-950);
-  --gallery-preview-btn-shadow: 0 0 20px rgb(from var(--gallery-preview-btn-shadow-color) r g b / 15%);
-  --gallery-preview-overlay-color: var(--primary-400);
+  --gallery-preview-bg: rgba(0, 0, 0, 0.95);
+  --gallery-preview-nav-size: 40px;
+  --gallery-preview-nav-bg: rgba(255, 255, 255, 0.9);
+  --gallery-preview-nav-icon: var(--secondary-600);
+  --gallery-preview-nav-shadow: 0 2px 12px rgb(0 0 0 / 0.2);
+  --gallery-preview-thumb-ring: var(--primary-400);
+  --gallery-preview-counter-color: var(--secondary-400);
 }
 
 .vc-gallery-preview {
+  &__header {
+    @apply tw-flex tw-items-center tw-gap-2;
+  }
+
+  &__filename {
+    @apply tw-font-medium;
+  }
+
   &__content {
     @apply tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center;
+    background: var(--gallery-preview-bg);
   }
 
   &__image-container {
-    @apply tw-box-border tw-p-5 tw-grow tw-basis-0 tw-w-full tw-relative;
+    @apply tw-grow tw-basis-0 tw-w-full tw-p-6 tw-relative tw-flex tw-items-center tw-justify-center;
   }
 
-  &__image-handler {
-    @apply tw-w-full tw-h-full tw-box-border;
+  &__image {
+    @apply tw-max-w-full tw-max-h-full tw-object-contain tw-select-none;
   }
 
   &__nav-btn {
-    @apply tw-absolute tw-top-2/4 tw-h-[72px] tw-w-[72px] tw-flex tw-items-center tw-justify-center tw-rounded-full tw-bg-[var(--gallery-preview-btn-bg-color)] tw-cursor-pointer tw-text-[color:var(--gallery-preview-btn-icon-color)] hover:[box-shadow:var(--gallery-preview-btn-shadow)];
+    @apply tw-absolute tw-top-1/2 -tw-translate-y-1/2
+      tw-flex tw-items-center tw-justify-center
+      tw-rounded-full tw-cursor-pointer tw-border-0
+      tw-opacity-0 tw-transition-opacity tw-duration-200;
+    width: var(--gallery-preview-nav-size);
+    height: var(--gallery-preview-nav-size);
+    background: var(--gallery-preview-nav-bg);
+    color: var(--gallery-preview-nav-icon);
+    box-shadow: var(--gallery-preview-nav-shadow);
+    backdrop-filter: blur(8px);
 
-    &_left {
-      @apply tw-left-[25px];
+    &--left {
+      @apply tw-left-4;
     }
 
-    &_right {
-      @apply tw-right-[25px];
+    &--right {
+      @apply tw-right-4;
+    }
+
+    &:hover {
+      @apply tw-opacity-100;
+    }
+  }
+
+  &__image-container:hover &__nav-btn {
+    @apply tw-opacity-100;
+  }
+
+  @media (hover: none) {
+    &__nav-btn {
+      @apply tw-opacity-100;
     }
   }
 
   &__thumbnails {
-    @apply tw-p-4 tw-pb-[40px] tw-max-w-full tw-overflow-x-auto tw-box-border tw-shrink tw-flex;
+    @apply tw-flex tw-items-center tw-gap-4 tw-px-4 tw-pb-4 tw-pt-2 tw-w-full tw-box-border;
   }
 
-  &__thumbnail {
-    @apply tw-m-1 tw-opacity-60;
+  &__thumb-strip {
+    @apply tw-flex tw-gap-2 tw-overflow-x-auto tw-flex-1;
+    -webkit-overflow-scrolling: touch;
+  }
 
-    &_current {
-      @apply tw-opacity-100 tw-relative after:tw-content-[''] after:tw-bg-[var(--gallery-preview-overlay-color)] after:tw-h-1 after:tw-w-full after:tw-rounded-[5px] after:tw-absolute after:tw-left-0 after:-tw-bottom-[12px];
+  &__thumb {
+    @apply tw-shrink-0 tw-w-16 tw-h-16 tw-rounded-md tw-overflow-hidden
+      tw-cursor-pointer tw-border-2 tw-border-solid tw-border-transparent
+      tw-opacity-50 tw-transition-all tw-duration-200 tw-p-0 tw-bg-transparent;
+
+    &--active {
+      @apply tw-opacity-100;
+      border-color: var(--gallery-preview-thumb-ring);
+      transform: scale(1.05);
+    }
+
+    &:hover {
+      @apply tw-opacity-80;
     }
   }
+
+  &__thumb-img {
+    @apply tw-w-full tw-h-full tw-object-cover;
+  }
+
+  &__counter {
+    @apply tw-text-sm tw-shrink-0 tw-tabular-nums;
+    color: var(--gallery-preview-counter-color);
+  }
+}
+
+.vc-gallery-preview-fade-enter-active,
+.vc-gallery-preview-fade-leave-active {
+  transition: opacity 200ms ease;
+}
+.vc-gallery-preview-fade-enter-from,
+.vc-gallery-preview-fade-leave-to {
+  opacity: 0;
 }
 </style>

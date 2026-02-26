@@ -362,7 +362,7 @@ import {
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 import { ColumnCollectorKey, FilterContextKey, HasFlexColumnsKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-table/keys";
 import { IsMobileKey } from "@framework/injection-keys";
-import type { VcColumnProps, VcDataTableExtendedProps, FilterValue, EditChange, TableAction, SortMeta } from "@ui/components/organisms/vc-table/types";
+import type { VcColumnProps, VcDataTableExtendedProps, FilterValue, EditChange, TableAction, SortMeta, MobileSwipeAction } from "@ui/components/organisms/vc-table/types";
 import type { DataTablePersistedState } from "@ui/components/organisms/vc-table/composables";
 
 const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
@@ -482,7 +482,7 @@ const emit = defineEmits<{
   /** Emitted when a row is clicked */
   "row-click": [event: { data: T; index: number; originalEvent: Event }];
   /** Emitted when a row action button/menu item is activated */
-  "row-action": [event: { action: TableAction; item: T; index: number }];
+  "row-action": [event: { action: TableAction | MobileSwipeAction<T>; item: T; index: number }];
 
   // === Reorder ===
   /** Emitted when rows are reordered via drag-and-drop */
@@ -1568,7 +1568,7 @@ const handleMobileRowSelect = (item: T, index: number) => {
 };
 
 const handleMobileRowAction = (
-  action: { id: string; clickHandler?: (item: T, index: number) => void },
+  action: MobileSwipeAction<T>,
   item: T,
   index: number,
 ) => {

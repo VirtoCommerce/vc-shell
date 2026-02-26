@@ -32,66 +32,66 @@
     @drop.prevent="onGlobalDrop"
   >
     <template v-if="hasImages || !disabled">
-      <div
-        :ref="(el) => { if (el) reorder.galleryRef.value = el as HTMLElement }"
+      <TransitionGroup
+        tag="div"
+        :name="reorder.isDragging.value ? 'vc-gallery-swap' : ''"
+        :ref="(comp: any) => { if (comp?.$el) reorder.galleryRef.value = comp.$el }"
         class="vc-gallery__grid"
       >
-        <TransitionGroup :name="reorder.isDragging.value ? 'vc-gallery-swap' : ''">
-          <!-- Image tiles -->
-          <div
-            v-for="(image, i) in localImages"
-            :key="`img_${image.id || i}`"
-            class="vc-gallery__item"
-            :class="{ 'vc-gallery__item--dragging': reorder.isDragging.value && reorder.draggedId.value === image.id }"
-            @mousedown="reorder.reorderHandlers.onItemMouseDown"
-            @dragstart="reorder.reorderHandlers.onItemDragStart($event, image)"
-            @dragover="reorder.reorderHandlers.onItemDragOver"
-            @dragleave="reorder.reorderHandlers.onItemDragLeave"
-            @drop="reorder.reorderHandlers.onItemDrop"
-            @dragend="reorder.reorderHandlers.onItemDragEnd"
+        <!-- Image tiles -->
+        <div
+          v-for="(image, i) in localImages"
+          :key="`img_${image.id || i}`"
+          class="vc-gallery__item"
+          :class="{ 'vc-gallery__item--dragging': reorder.isDragging.value && reorder.draggedId.value === image.id }"
+          @mousedown="reorder.reorderHandlers.onItemMouseDown"
+          @dragstart="reorder.reorderHandlers.onItemDragStart($event, image)"
+          @dragover="reorder.reorderHandlers.onItemDragOver"
+          @dragleave="reorder.reorderHandlers.onItemDragLeave"
+          @drop="reorder.reorderHandlers.onItemDrop"
+          @dragend="reorder.reorderHandlers.onItemDragEnd"
+        >
+          <slot
+            name="item"
+            :image="image"
+            :index="i"
+            :actions="{
+              preview: () => preview.openPreview(i),
+              edit: () => emit('edit', image),
+              remove: () => emit('remove', image),
+            }"
           >
-            <slot
-              name="item"
+            <VcGalleryItem
               :image="image"
-              :index="i"
-              :actions="{
-                preview: () => preview.openPreview(i),
-                edit: () => emit('edit', image),
-                remove: () => emit('remove', image),
-              }"
-            >
-              <VcGalleryItem
-                :image="image"
-                :readonly="disabled"
-                :actions="itemActions"
-                :disable-drag="reorder.disableDrag.value"
-                :image-fit="imagefit"
-                @preview="preview.openPreview(i)"
-                @edit="emit('edit', $event)"
-                @remove="emit('remove', $event)"
-              />
-            </slot>
-          </div>
-
-          <!-- Upload tile (when images exist) -->
-          <div
-            v-if="!disabled && hasImages"
-            key="__upload__"
-            class="vc-gallery__upload-tile"
-          >
-            <VcFileUpload
-              class="vc-gallery__upload-zone"
-              :icon="uploadIcon"
-              :multiple="multiple"
-              :rules="rules"
-              :name="name"
-              :loading="loading"
-              :accept="accept"
-              @upload="upload.onUpload"
+              :readonly="disabled"
+              :actions="itemActions"
+              :disable-drag="reorder.disableDrag.value"
+              :image-fit="imagefit"
+              @preview="preview.openPreview(i)"
+              @edit="emit('edit', $event)"
+              @remove="emit('remove', $event)"
             />
-          </div>
-        </TransitionGroup>
-      </div>
+          </slot>
+        </div>
+
+        <!-- Upload tile (when images exist) -->
+        <div
+          v-if="!disabled && hasImages"
+          key="__upload__"
+          class="vc-gallery__upload-tile"
+        >
+          <VcFileUpload
+            class="vc-gallery__upload-zone"
+            :icon="uploadIcon"
+            :multiple="multiple"
+            :rules="rules"
+            :name="name"
+            :loading="loading"
+            :accept="accept"
+            @upload="upload.onUpload"
+          />
+        </div>
+      </TransitionGroup>
     </template>
 
     <!-- Empty state / Full-width upload -->

@@ -34,7 +34,7 @@ export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalle
   function getItemIndex(itemEl: HTMLElement): number {
     const grid = galleryRef.value;
     if (!grid) return -1;
-    const items = Array.from(grid.querySelectorAll(":scope > .vc-gallery__item"));
+    const items = Array.from(grid.children).filter((el) => el.classList.contains("vc-gallery__item"));
     return items.indexOf(itemEl);
   }
 
@@ -76,13 +76,25 @@ export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalle
     const dropIndex = getItemIndex(dropItem);
     if (dropIndex < 0 || dropIndex === draggedIndex) return;
 
-    // 50% horizontal threshold — only swap when cursor crosses the middle
+    // 2D dominant-axis threshold — works for both same-row and cross-row swaps
     const rect = dropItem.getBoundingClientRect();
-    const middleX = rect.left + rect.width / 2;
-    const movingRight = dropIndex > draggedIndex;
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const movingForward = dropIndex > draggedIndex;
 
-    if (movingRight && event.clientX < middleX) return;
-    if (!movingRight && event.clientX > middleX) return;
+    // Normalise distances so X and Y are comparable regardless of cell aspect ratio
+    const dx = Math.abs(event.clientX - centerX) / rect.width;
+    const dy = Math.abs(event.clientY - centerY) / rect.height;
+
+    if (dx >= dy) {
+      // Horizontal dominant — use X threshold
+      if (movingForward && event.clientX < centerX) return;
+      if (!movingForward && event.clientX > centerX) return;
+    } else {
+      // Vertical dominant — use Y threshold
+      if (movingForward && event.clientY < centerY) return;
+      if (!movingForward && event.clientY > centerY) return;
+    }
 
     // Live-swap: reorder array so TransitionGroup FLIP-animates items
     const arr = [...images.value];

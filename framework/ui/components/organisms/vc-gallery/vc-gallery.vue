@@ -291,9 +291,9 @@ function onGlobalDrop(event: DragEvent) {
 .vc-gallery {
   @apply tw-relative;
 
-  &--sm &__grid { grid-template-columns: repeat(auto-fill, minmax(120px, 160px)); }
-  &--md &__grid { grid-template-columns: repeat(auto-fill, minmax(160px, 200px)); }
-  &--lg &__grid { grid-template-columns: repeat(auto-fill, minmax(200px, 260px)); }
+  &--sm &__grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+  &--md &__grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  &--lg &__grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 
   &__grid {
     display: grid;
@@ -318,10 +318,22 @@ function onGlobalDrop(event: DragEvent) {
     }
   }
 
+  &__upload-tile .vc-file-upload__container {
+    @apply tw-h-full;
+  }
+
   &__upload-tile .vc-file-upload__drop-zone {
-    @apply tw-border-0 tw-h-full tw-w-full tw-rounded-none;
+    @apply tw-border-0 tw-h-full tw-w-full tw-rounded-none tw-p-2;
     min-height: unset;
     background: transparent;
+  }
+
+  &__upload-tile .vc-file-upload__text {
+    @apply tw-hidden;
+  }
+
+  &__upload-tile .vc-file-upload__icon {
+    @apply tw-text-2xl;
   }
 
   &__empty-upload {

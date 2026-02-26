@@ -1,7 +1,10 @@
+import { ref } from "vue";
 import type { Meta, StoryFn } from "@storybook/vue3-vite";
 import { VcGallery } from "@ui/components/organisms/vc-gallery";
+import { VcPopupContainer } from "@shared/components";
+import type { ICommonAsset } from "@core/types";
 
-const sampleImages = [
+const sampleImages: ICommonAsset[] = [
   { title: "Mountain", name: "mountain.jpg", url: "https://picsum.photos/seed/mountain/400", sortOrder: 0, id: "1" },
   { title: "Ocean", name: "ocean.jpg", url: "https://picsum.photos/seed/ocean/400", sortOrder: 1, id: "2" },
   { title: "Forest", name: "forest.jpg", url: "https://picsum.photos/seed/forest/400", sortOrder: 2, id: "3" },
@@ -13,7 +16,6 @@ export default {
   title: "organisms/VcGallery",
   component: VcGallery,
   args: {
-    images: sampleImages,
     size: "md",
     gap: 8,
     imagefit: "contain",
@@ -26,9 +28,28 @@ export default {
 } satisfies Meta<typeof VcGallery>;
 
 const Template: StoryFn = (args) => ({
-  components: { VcGallery },
-  setup: () => ({ args }),
-  template: '<div class="tw-p-4"><VcGallery v-bind="args" /></div>',
+  components: { VcGallery, VcPopupContainer },
+  setup() {
+    const images = ref<ICommonAsset[]>([...sampleImages]);
+    const onSort = (sorted: ICommonAsset[]) => {
+      images.value = sorted;
+    };
+    const onRemove = (image: ICommonAsset) => {
+      images.value = images.value.filter((img) => img.id !== image.id);
+    };
+    return { args, images, onSort, onRemove };
+  },
+  template: `
+    <div class="tw-p-4" style="max-width: 800px;">
+      <VcGallery
+        v-bind="args"
+        :images="images"
+        @sort="onSort"
+        @remove="onRemove"
+      />
+      <VcPopupContainer />
+    </div>
+  `,
 });
 
 export const Default = Template.bind({});
@@ -45,11 +66,29 @@ CoverFit.args = { imagefit: "cover" };
 export const Disabled = Template.bind({});
 Disabled.args = { disabled: true };
 
-export const Empty = Template.bind({});
-Empty.args = { images: [] };
+export const Empty: StoryFn = (args) => ({
+  components: { VcGallery },
+  setup: () => ({ args }),
+  template: '<div class="tw-p-4" style="max-width: 800px;"><VcGallery v-bind="args" :images="[]" /></div>',
+});
 
 export const SingleImage = Template.bind({});
-SingleImage.args = { images: [sampleImages[0]] };
+SingleImage.args = {};
+SingleImage.decorators = [
+  () => ({
+    components: { VcGallery, VcPopupContainer },
+    setup() {
+      const images = ref<ICommonAsset[]>([sampleImages[0]]);
+      return { images };
+    },
+    template: `
+      <div class="tw-p-4" style="max-width: 800px;">
+        <VcGallery :images="images" />
+        <VcPopupContainer />
+      </div>
+    `,
+  }),
+];
 
 export const Loading = Template.bind({});
 Loading.args = { loading: true };

@@ -22,6 +22,7 @@
     class="vc-gallery"
     :class="{
       'vc-gallery--drag-over': isDragOver,
+      'vc-gallery--reordering': reorder.isDragging.value,
       [`vc-gallery--${size}`]: true,
     }"
     :style="{ '--gallery-gap': `${gap}px` }"
@@ -35,63 +36,62 @@
         :ref="(el) => { if (el) reorder.galleryRef.value = el as HTMLElement }"
         class="vc-gallery__grid"
       >
-        <!-- Image tiles -->
-        <div
-          v-for="(image, i) in localImages"
-          :key="`img_${image.id || i}`"
-          class="vc-gallery__item"
-          @mousedown="reorder.reorderHandlers.onItemMouseDown"
-          @dragstart="reorder.reorderHandlers.onItemDragStart($event, image)"
-          @dragover="reorder.reorderHandlers.onItemDragOver"
-          @dragleave="reorder.reorderHandlers.onItemDragLeave"
-          @drop="reorder.reorderHandlers.onItemDrop($event, image)"
-        >
-          <slot
-            name="item"
-            :image="image"
-            :index="i"
-            :actions="{
-              preview: () => preview.openPreview(i),
-              edit: () => emit('edit', image),
-              remove: () => emit('remove', image),
-            }"
+        <TransitionGroup :name="reorder.isDragging.value ? 'vc-gallery-swap' : ''">
+          <!-- Image tiles -->
+          <div
+            v-for="(image, i) in localImages"
+            :key="`img_${image.id || i}`"
+            class="vc-gallery__item"
+            :class="{ 'vc-gallery__item--dragging': reorder.isDragging.value && reorder.draggedId.value === image.id }"
+            @mousedown="reorder.reorderHandlers.onItemMouseDown"
+            @dragstart="reorder.reorderHandlers.onItemDragStart($event, image)"
+            @dragover="reorder.reorderHandlers.onItemDragOver"
+            @dragleave="reorder.reorderHandlers.onItemDragLeave"
+            @drop="reorder.reorderHandlers.onItemDrop"
+            @dragend="reorder.reorderHandlers.onItemDragEnd"
           >
-            <VcGalleryItem
+            <slot
+              name="item"
               :image="image"
-              :readonly="disabled"
-              :actions="itemActions"
-              :disable-drag="reorder.disableDrag.value"
-              :image-fit="imagefit"
-              @preview="preview.openPreview(i)"
-              @edit="emit('edit', $event)"
-              @remove="emit('remove', $event)"
+              :index="i"
+              :actions="{
+                preview: () => preview.openPreview(i),
+                edit: () => emit('edit', image),
+                remove: () => emit('remove', image),
+              }"
+            >
+              <VcGalleryItem
+                :image="image"
+                :readonly="disabled"
+                :actions="itemActions"
+                :disable-drag="reorder.disableDrag.value"
+                :image-fit="imagefit"
+                @preview="preview.openPreview(i)"
+                @edit="emit('edit', $event)"
+                @remove="emit('remove', $event)"
+              />
+            </slot>
+          </div>
+
+          <!-- Upload tile (when images exist) -->
+          <div
+            v-if="!disabled && hasImages"
+            key="__upload__"
+            class="vc-gallery__upload-tile"
+          >
+            <VcFileUpload
+              class="vc-gallery__upload-zone"
+              :icon="uploadIcon"
+              :multiple="multiple"
+              :rules="rules"
+              :name="name"
+              :loading="loading"
+              :accept="accept"
+              @upload="upload.onUpload"
             />
-          </slot>
-        </div>
-
-        <!-- Upload tile (when images exist) -->
-        <div
-          v-if="!disabled && hasImages"
-          class="vc-gallery__upload-tile"
-        >
-          <VcFileUpload
-            class="vc-gallery__upload-zone"
-            :icon="uploadIcon"
-            :multiple="multiple"
-            :rules="rules"
-            :name="name"
-            :loading="loading"
-            :accept="accept"
-            @upload="upload.onUpload"
-          />
-        </div>
+          </div>
+        </TransitionGroup>
       </div>
-
-      <!-- Reorder indicator line -->
-      <div
-        :ref="(el) => { if (el) reorder.reorderLineRef.value = el as HTMLElement }"
-        class="vc-gallery__reorder-line"
-      />
     </template>
 
     <!-- Empty state / Full-width upload -->
@@ -279,8 +279,6 @@ function onGlobalDrop(event: DragEvent) {
 <style lang="scss">
 :root {
   --gallery-gap: 8px;
-  --gallery-reorder-color: var(--primary-400);
-  --gallery-reorder-glow: 0 0 8px var(--primary-400);
   --gallery-upload-border: var(--secondary-300);
   --gallery-upload-border-hover: var(--primary-400);
   --gallery-upload-bg-hover: var(--primary-50);
@@ -348,11 +346,24 @@ function onGlobalDrop(event: DragEvent) {
     @apply tw-flex tw-justify-center tw-p-5 tw-h-full tw-items-center;
   }
 
-  &__reorder-line {
-    @apply tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden tw-rounded-sm;
-    width: 3px;
-    background: var(--gallery-reorder-color);
-    box-shadow: var(--gallery-reorder-glow);
+  &__item--dragging .vc-gallery-item {
+    box-shadow:
+      0 8px 24px -4px rgba(0, 0, 0, 0.15),
+      0 0 0 2px var(--primary-400) !important;
+    cursor: grabbing !important;
+  }
+
+  &--reordering .vc-gallery-item {
+    @media (hover: hover) {
+      &:hover {
+        transform: none;
+        box-shadow: var(--gallery-tile-shadow);
+      }
+
+      &:hover .vc-gallery-item__tray {
+        @apply tw-translate-y-full;
+      }
+    }
   }
 
   &__drop-overlay {
@@ -364,5 +375,15 @@ function onGlobalDrop(event: DragEvent) {
     backdrop-filter: blur(4px);
     color: var(--gallery-drop-overlay-border);
   }
+}
+
+// FLIP animation for live-swap reorder
+.vc-gallery-swap-move {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.vc-gallery-swap-enter-active,
+.vc-gallery-swap-leave-active {
+  transition: none !important;
 }
 </style>

@@ -28,17 +28,13 @@ describe("useGalleryReorder", () => {
     expect(disableDrag.value).toBe(true);
   });
 
-  it("reorderArray moves element correctly", () => {
+  it("returns isDragging and draggedId refs", () => {
     const images = ref<ICommonAsset[]>([
-      { name: "a", sortOrder: 0 },
-      { name: "b", sortOrder: 1 },
-      { name: "c", sortOrder: 2 },
+      { name: "a.png", sortOrder: 0 },
+      { name: "b.png", sortOrder: 1 },
     ]);
-    const onSort = vi.fn();
-    const { reorderArray } = useGalleryReorder(images, { disabled: ref(false), onSort });
-
-    reorderArray(images.value, 0, 2);
-
-    expect(images.value.map((i) => i.name)).toEqual(["b", "c", "a"]);
+    const { isDragging, draggedId } = useGalleryReorder(images, { disabled: ref(false), onSort: vi.fn() });
+    expect(isDragging.value).toBe(false);
+    expect(draggedId.value).toBeUndefined();
   });
 });

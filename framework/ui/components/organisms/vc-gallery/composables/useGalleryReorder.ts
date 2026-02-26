@@ -6,32 +6,21 @@ interface UseGalleryReorderOptions {
   onSort: (sorted: ICommonAsset[]) => void;
 }
 
+// Transparent 1x1 GIF hides the browser's default drag ghost
+const TRANSPARENT_GIF = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+const SWAP_THROTTLE_MS = 50;
+
 export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalleryReorderOptions) {
-  const draggedItem = ref<ICommonAsset>();
-  const draggedElement = ref<HTMLElement>();
-  const dropPosition = ref<number>();
-  const reorderLineRef = ref<HTMLElement>();
   const galleryRef = ref<HTMLElement>();
+  const isDragging = ref(false);
+  const draggedId = ref<string>();
 
   const disableDrag = computed(() => toValue(options.disabled) || toValue(images).length <= 1);
 
-  function reorderArray(value: unknown[], from: number, to: number) {
-    if (value && from !== to) {
-      if (to >= value.length) {
-        to %= value.length;
-        from %= value.length;
-      }
-      value.splice(to, 0, value.splice(from, 1)[0]);
-    }
-  }
-
-  function updateOrder() {
-    const sorted = toValue(images).map((item, index) => {
-      item.sortOrder = index;
-      return item;
-    });
-    options.onSort(sorted);
-  }
+  let draggedIndex = -1;
+  let lastSwapTime = 0;
+  let snapshotBeforeDrag: ICommonAsset[] = [];
+  let dropCommitted = false;
 
   function findGalleryItem(element: HTMLElement): HTMLElement | null {
     if (element.classList.contains("vc-gallery__item")) return element;
@@ -40,6 +29,13 @@ export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalle
       parent = parent.parentElement;
     }
     return parent;
+  }
+
+  function getItemIndex(itemEl: HTMLElement): number {
+    const grid = galleryRef.value;
+    if (!grid) return -1;
+    const items = Array.from(grid.querySelectorAll(":scope > .vc-gallery__item"));
+    return items.indexOf(itemEl);
   }
 
   function onItemMouseDown(event: MouseEvent) {
@@ -51,79 +47,91 @@ export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalle
 
   function onItemDragStart(event: DragEvent, item: ICommonAsset) {
     if (disableDrag.value) return;
-    draggedItem.value = item;
-    draggedElement.value = event.target as HTMLElement;
+
+    // Hide default browser ghost
+    const img = new Image();
+    img.src = TRANSPARENT_GIF;
+    event.dataTransfer?.setDragImage(img, 0, 0);
     event.dataTransfer?.setData("text", "gallery_reorder");
+
+    draggedId.value = item.id;
+    draggedIndex = images.value.findIndex((i) => i.id === item.id);
+    snapshotBeforeDrag = [...images.value];
+    dropCommitted = false;
+    isDragging.value = true;
   }
 
   function onItemDragOver(event: DragEvent) {
-    // CRITICAL: preventDefault() MUST be called before any early return.
-    // The browser requires it on every dragover event for the drop event to fire.
+    // CRITICAL: Must call before any early return or drop never fires
     event.preventDefault();
 
+    if (disableDrag.value || !isDragging.value || draggedIndex < 0) return;
+
+    const now = Date.now();
+    if (now - lastSwapTime < SWAP_THROTTLE_MS) return;
+
     const dropItem = findGalleryItem(event.target as HTMLElement);
-    if (disableDrag.value || !draggedItem.value || !dropItem) return;
+    if (!dropItem) return;
 
-    const containerOffset = galleryRef.value?.getBoundingClientRect();
-    const dropItemOffset = dropItem.getBoundingClientRect();
+    const dropIndex = getItemIndex(dropItem);
+    if (dropIndex < 0 || dropIndex === draggedIndex) return;
 
-    if (draggedElement.value !== dropItem && containerOffset) {
-      const elementStyle = getComputedStyle(dropItem);
-      const dropItemOffsetWidth = dropItem.offsetWidth + parseFloat(elementStyle.marginLeft);
-      const targetLeft = dropItemOffset.left - containerOffset.left;
-      const columnCenter = dropItemOffset.left + dropItemOffsetWidth / 2;
+    // 50% horizontal threshold — only swap when cursor crosses the middle
+    const rect = dropItem.getBoundingClientRect();
+    const middleX = rect.left + rect.width / 2;
+    const movingRight = dropIndex > draggedIndex;
 
-      if (reorderLineRef.value) {
-        reorderLineRef.value.style.top = dropItemOffset.top - containerOffset.top + "px";
-        reorderLineRef.value.style.height = dropItem.offsetHeight + "px";
+    if (movingRight && event.clientX < middleX) return;
+    if (!movingRight && event.clientX > middleX) return;
 
-        if (event.pageX > columnCenter) {
-          reorderLineRef.value.style.left = targetLeft + dropItemOffsetWidth + "px";
-          dropPosition.value = 1;
-        } else {
-          reorderLineRef.value.style.left = targetLeft - parseFloat(elementStyle.marginLeft) + "px";
-          dropPosition.value = -1;
-        }
+    // Live-swap: reorder array so TransitionGroup FLIP-animates items
+    const arr = [...images.value];
+    const [moved] = arr.splice(draggedIndex, 1);
+    arr.splice(dropIndex, 0, moved);
+    images.value = arr;
 
-        reorderLineRef.value.style.display = "block";
-      }
-    }
+    draggedIndex = dropIndex;
+    lastSwapTime = now;
   }
 
   function onItemDragLeave() {
-    if (disableDrag.value || !draggedItem.value || !reorderLineRef.value) return;
-    reorderLineRef.value.style.display = "none";
+    // No-op — live-swap provides visual feedback instead of a line indicator
   }
 
-  function onItemDrop(event: DragEvent, item: ICommonAsset) {
+  function onItemDrop(event: DragEvent) {
     event.preventDefault();
-    if (!draggedItem.value) return;
+    if (!isDragging.value) return;
 
-    const currentImages = toValue(images);
-    const dragIndex = currentImages.indexOf(draggedItem.value);
-    const dropIndex = currentImages.indexOf(item);
+    dropCommitted = true;
 
-    let allowDrop = dragIndex !== dropIndex;
+    // Commit: assign sortOrder and emit
+    const sorted = images.value.map((img, index) => ({
+      ...img,
+      sortOrder: index,
+    }));
+    options.onSort(sorted);
+    cleanup(event);
+  }
 
-    if (
-      allowDrop &&
-      ((dropIndex - dragIndex === 1 && dropPosition.value === -1) ||
-        (dropIndex - dragIndex === -1 && dropPosition.value === 1))
-    ) {
-      allowDrop = false;
+  function onItemDragEnd(event: DragEvent) {
+    if (isDragging.value && !dropCommitted) {
+      // Drop cancelled or dropped outside — restore original order
+      images.value = [...snapshotBeforeDrag];
     }
+    cleanup(event);
+  }
 
-    if (allowDrop) {
-      reorderArray(currentImages, dragIndex, dropIndex);
-      updateOrder();
-    }
+  function cleanup(event?: DragEvent) {
+    // Reset draggable on the source element
+    const target = event?.target as HTMLElement | null;
+    if (target) target.draggable = false;
 
-    if (reorderLineRef.value && draggedElement.value) {
-      reorderLineRef.value.style.display = "none";
-      draggedElement.value.draggable = false;
-      draggedItem.value = undefined;
-      dropPosition.value = undefined;
-    }
+    isDragging.value = false;
+    draggedId.value = undefined;
+    draggedIndex = -1;
+    snapshotBeforeDrag = [];
+    dropCommitted = false;
+    lastSwapTime = 0;
   }
 
   const reorderHandlers = {
@@ -132,13 +140,14 @@ export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalle
     onItemDragOver,
     onItemDragLeave,
     onItemDrop,
+    onItemDragEnd,
   };
 
   return {
-    reorderLineRef,
     galleryRef,
     reorderHandlers,
     disableDrag,
-    reorderArray,
+    isDragging,
+    draggedId,
   };
 }

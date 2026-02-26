@@ -1,158 +1,225 @@
 <template>
   <div
     class="vc-banner"
-    :class="[`vc-banner_${variant}`]"
-    :role="variant === 'danger' || variant === 'warning' ? 'alert' : 'region'"
-    :aria-label="variant === 'danger' ? 'Error' : variant === 'warning' ? 'Warning' : 'Information'"
+    :class="[
+      `vc-banner--${normalizedVariant}`,
+      {
+        'vc-banner--title-only': isTitleOnly,
+        'vc-banner--collapsed': isCollapsed,
+      },
+    ]"
+    :role="normalizedVariant === 'danger' || normalizedVariant === 'warning' ? 'alert' : 'region'"
+    :aria-label="normalizedVariant === 'danger' ? 'Error' : normalizedVariant === 'warning' ? 'Warning' : 'Information'"
   >
-    <div class="vc-banner__container">
-      <VcIcon
-        v-if="icon"
-        :icon="icon"
-        :size="iconSize"
-        :variant="iconVariant"
-        class="vc-banner__icon"
-        aria-hidden="true"
-      />
-      <div class="vc-banner__wrapper">
-        <div class="vc-banner__title">
-          <slot name="title"></slot>
-        </div>
-        <div
-          ref="contentRef"
-          class="vc-banner__content"
-          :class="[
-            {
-              'vc-banner__content--collapsed': !isExpanded,
-              'vc-banner__content--expanded': isExpanded,
-            },
-          ]"
-        >
+    <VcIcon
+      v-if="icon"
+      :icon="icon"
+      :size="iconSize"
+      :variant="iconVariant"
+      class="vc-banner__icon"
+      aria-hidden="true"
+    />
+    <div class="vc-banner__body">
+      <div v-if="hasTitle" class="vc-banner__title">
+        <slot name="title"></slot>
+      </div>
+      <div
+        v-if="hasContent"
+        class="vc-banner__content-wrapper"
+        :style="wrapperStyle"
+      >
+        <div ref="contentRef" class="vc-banner__content">
           <slot name="default"></slot>
         </div>
-        <div v-if="hasOverflow">
-          <slot
-            name="trigger"
-            :is-expanded="isExpanded"
-            :toggle="toggle"
+      </div>
+      <div v-if="showTrigger" class="vc-banner__trigger">
+        <slot
+          name="trigger"
+          :is-expanded="isExpanded"
+          :toggle="toggle"
+        >
+          <button
+            type="button"
+            class="vc-banner__trigger-button"
+            :aria-expanded="isExpanded"
+            @click="toggle"
           >
-            <VcButton
-              class="tw-self-end tw-mt-1"
-              text
-              size="sm"
-              :aria-expanded="isExpanded"
-              @click="toggle"
-            >
-              {{ isExpanded ? $t("COMPONENTS.ATOMS.VC_BANNER.SHOW_LESS") : $t("COMPONENTS.ATOMS.VC_BANNER.SHOW_MORE") }}
-            </VcButton>
-          </slot>
-        </div>
+            {{ isExpanded ? $t("COMPONENTS.ATOMS.VC_BANNER.SHOW_LESS") : $t("COMPONENTS.ATOMS.VC_BANNER.SHOW_MORE") }}
+          </button>
+        </slot>
       </div>
     </div>
   </div>
 </template>
+
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { VcIcon } from "..";
+import { computed, useSlots } from "vue";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { useCollapsible } from "@ui/composables/useCollapsible";
 
-// TODO: Add to docs
-
-type StatusVariant = "info" | "warning" | "danger" | "success" | "light-danger" | "info-dark" | "primary";
+export type CurrentBannerVariant = "info" | "warning" | "danger" | "success";
+/**
+ * @deprecated Use current variants: "info" | "warning" | "danger" | "success".
+ */
+export type LegacyBannerVariant = "light-danger" | "info-dark" | "primary";
+export type BannerVariant = CurrentBannerVariant | LegacyBannerVariant;
 
 export interface Props {
-  variant?: StatusVariant;
+  /**
+   * @deprecated Legacy variants ("light-danger", "info-dark", "primary") are supported for backward compatibility
+   * and mapped to modern variants ("danger", "info", "info").
+   */
+  variant?: BannerVariant;
   icon?: string;
   iconSize?: InstanceType<typeof VcIcon>["$props"]["size"];
   iconVariant?: InstanceType<typeof VcIcon>["$props"]["variant"];
+  collapsedHeight?: number;
 }
 
 defineSlots<{
   title: (props: any) => any;
   default: (props: any) => any;
-  trigger: (props: any) => any;
+  trigger: (props: { isExpanded: boolean; toggle: () => void }) => any;
 }>();
 
 const props = withDefaults(defineProps<Props>(), {
   variant: "info",
-  iconSize: "xxl",
+  iconSize: "l",
+  collapsedHeight: 100,
 });
 
-/** Maximum height in pixels before content is collapsed */
-const COLLAPSED_MAX_HEIGHT = 100;
+const slots = useSlots();
+const { contentRef, isExpanded, hasOverflow, wrapperStyle, toggle } = useCollapsible({
+  collapsedHeight: props.collapsedHeight,
+});
 
-const contentRef = ref<HTMLDivElement>();
-const isExpanded = ref(false);
-const hasOverflow = ref(false);
-
-const toggle = () => {
-  isExpanded.value = !isExpanded.value;
-};
-
-const checkOverflow = () => {
-  if (contentRef.value) {
-    hasOverflow.value = contentRef.value.scrollHeight > COLLAPSED_MAX_HEIGHT;
+function normalizeVariant(variant: BannerVariant): CurrentBannerVariant {
+  switch (variant) {
+    case "light-danger":
+      return "danger";
+    case "info-dark":
+    case "primary":
+      return "info";
+    default:
+      return variant;
   }
-};
+}
 
-onMounted(() => {
-  checkOverflow();
-});
+const normalizedVariant = computed<CurrentBannerVariant>(() => normalizeVariant(props.variant));
+const hasTitle = computed(() => Boolean(slots.title));
+const hasContent = computed(() => Boolean(slots.default));
+const isTitleOnly = computed(() => hasTitle.value && !hasContent.value);
+const showTrigger = computed(() => hasContent.value && hasOverflow.value);
+const isCollapsed = computed(() => showTrigger.value && !isExpanded.value);
+
+if (import.meta.env?.DEV) {
+  if (props.variant === "light-danger" || props.variant === "info-dark" || props.variant === "primary") {
+    console.warn(
+      `[VcBanner] variant "${props.variant}" is deprecated. Use "${normalizeVariant(props.variant)}" instead.`,
+    );
+  }
+}
 </script>
 
 <style lang="scss">
-:root {
-  --banner-text-color: var(--neutrals-700);
-  --banner-border-radius: 6px;
-  --banner-padding: 12px;
-}
-$variants: info, warning, danger, success, light-danger, info-dark, primary;
+@use "sass:map";
+
+$banner-variants: (
+  info: (bg: var(--neutrals-50), border: var(--info-100), accent: var(--info-500)),
+  warning: (bg: var(--neutrals-50), border: var(--warning-100), accent: var(--warning-500)),
+  danger: (bg: var(--neutrals-50), border: var(--danger-100), accent: var(--danger-500)),
+  success: (bg: var(--neutrals-50), border: var(--success-100), accent: var(--success-500)),
+);
 
 .vc-banner {
-  @apply tw-whitespace-normal tw-justify-start tw-max-w-full tw-border-none;
-  border-radius: var(--banner-border-radius);
-  padding: var(--banner-padding);
+  @apply tw-relative tw-flex tw-items-start tw-gap-3 tw-overflow-hidden tw-rounded-md tw-border tw-border-solid tw-py-3 tw-pr-3 tw-pl-4;
+  --vc-banner-accent: var(--info-500);
 
-  @each $variant in $variants {
-    &.vc-banner_#{$variant} {
-      background-color: var(--status-#{$variant}-bg-color);
-      color: var(--status-#{$variant}-color);
-      border-left: 3px solid var(--status-#{$variant}-main-color);
+  &::before {
+    content: "";
+    @apply tw-absolute tw-left-0 tw-top-0 tw-bottom-0;
+    width: 3px;
+    background-color: var(--vc-banner-accent);
+  }
 
-      .vc-banner__content {
-        color: var(--status-#{$variant}-color);
-      }
+  @each $name, $colors in $banner-variants {
+    &.vc-banner--#{$name} {
+      --vc-banner-accent: #{map.get($colors, accent)};
+      background-color: #{map.get($colors, bg)};
+      border-color: #{map.get($colors, border)};
     }
   }
 
-  &__wrapper {
-    @apply tw-flex tw-flex-col tw-text-start tw-min-w-0;
-  }
+  &.vc-banner--title-only {
+    @apply tw-items-center;
 
-  &__container {
-    @apply tw-flex tw-flex-row tw-items-start;
-  }
-
-  &__title {
-    @apply tw-font-semibold tw-text-sm;
-  }
-
-  &__content {
-    @apply tw-overflow-hidden tw-text-[color:var(--banner-text-color)] tw-font-normal tw-text-sm tw-leading-relaxed;
-    transition: max-height 200ms ease-out;
-
-    &--collapsed {
-      max-height: 100px;
-      @apply tw-line-clamp-4;
-    }
-
-    &--expanded {
-      max-height: 2000px;
+    .vc-banner__icon {
+      @apply tw-mt-0;
     }
   }
 
   &__icon {
-    @apply tw-mr-3 tw-shrink-0;
+    @apply tw-mt-0.5 tw-shrink-0;
+    color: var(--vc-banner-accent);
+  }
+
+  &__body {
+    @apply tw-flex tw-flex-col tw-min-w-0 tw-flex-1;
+  }
+
+  &__title {
+    @apply tw-text-sm tw-font-medium tw-leading-5;
+    color: var(--neutrals-900);
+  }
+
+  &__content-wrapper {
+    @apply tw-relative tw-overflow-hidden;
+    transition: max-height 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: max-height;
+
+    &::after {
+      content: "";
+      @apply tw-pointer-events-none tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-8;
+      background: linear-gradient(to bottom, rgb(250 250 250 / 0), var(--neutrals-50));
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+  }
+
+  &__content {
+    @apply tw-text-sm tw-leading-5;
+    color: var(--neutrals-700);
+  }
+
+  &__title + &__content-wrapper {
+    @apply tw-mt-0.5;
+  }
+
+  &.vc-banner--collapsed {
+    .vc-banner__content-wrapper::after {
+      opacity: 1;
+    }
+  }
+
+  &__trigger {
+    @apply tw-mt-1;
+  }
+
+  &__trigger-button {
+    @apply tw-inline-flex tw-cursor-pointer tw-items-center tw-border-0 tw-bg-transparent tw-p-0 tw-text-sm tw-font-medium tw-leading-5;
+    color: var(--vc-banner-accent);
+    transition: color 0.15s ease;
+
+    &:hover {
+      @apply tw-underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--vc-banner-accent);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
   }
 }
 </style>

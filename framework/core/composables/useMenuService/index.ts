@@ -3,6 +3,7 @@ import {
   MenuService,
   createMenuService,
   addMenuItem,
+  removeRegisteredMenuItem,
   setMenuBadge,
   getMenuBadge,
   removeMenuBadge,
@@ -39,4 +40,4 @@ export function useMenuService(): MenuService {
   return service;
 }
 
-export { addMenuItem, setMenuBadge, getMenuBadge, removeMenuBadge, getMenuBadges };
+export { addMenuItem, removeRegisteredMenuItem, setMenuBadge, getMenuBadge, removeMenuBadge, getMenuBadges };

@@ -34,6 +34,18 @@ export function addMenuItem(item: MenuItem): void {
 }
 
 /**
+ * Removes a previously registered menu item from the bus store and all live services.
+ * Works both before and after the service is initialized.
+ *
+ * The caller must provide the same identity fields used during registration
+ * (typically routeId, or url, or explicit id).
+ */
+export function removeRegisteredMenuItem(item: MenuItem): void {
+  menuServiceBus.removePreregistered((stored) => isSameMenuItem(stored, item));
+  menuServiceBus.broadcast((service) => service.removeMenuItem(item));
+}
+
+/**
  * Sets a badge for a menu item by its routeId (blade name) or groupId.
  * Can be called at any time, even after menu registration.
  * @param id - routeId for menu items, groupId for groups

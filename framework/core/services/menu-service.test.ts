@@ -265,4 +265,47 @@ describe("menu-service", () => {
       expect(service.menuItems.value).toHaveLength(2);
     });
   });
+
+  describe("removeRegisteredMenuItem", () => {
+    it("cleans bus store so replay does not resurrect item", async () => {
+      const { addMenuItem, removeRegisteredMenuItem, createMenuService } = await loadMenuServiceModule();
+
+      addMenuItem({ title: "Temp", priority: 1, url: "/temp" } as any);
+      removeRegisteredMenuItem({ url: "/temp" } as any);
+
+      const service = createMenuService();
+      expect(service.menuItems.value).toHaveLength(0);
+    });
+
+    it("propagates removal to live service instances", async () => {
+      const { addMenuItem, removeRegisteredMenuItem, createMenuService } = await loadMenuServiceModule();
+
+      addMenuItem({ title: "Live", priority: 1, url: "/live", routeId: "Live" } as any);
+      const service = createMenuService();
+      expect(service.menuItems.value).toHaveLength(1);
+
+      removeRegisteredMenuItem({ routeId: "Live" } as any);
+      expect(service.menuItems.value).toHaveLength(0);
+    });
+
+    it("removes grouped item from bus store without affecting siblings", async () => {
+      const { addMenuItem, removeRegisteredMenuItem, createMenuService } = await loadMenuServiceModule();
+
+      addMenuItem({
+        title: "Users", priority: 1, url: "/users", routeId: "Users",
+        groupConfig: { id: "admin", title: "Admin", icon: "fas fa-shield" },
+      } as any);
+      addMenuItem({
+        title: "Roles", priority: 2, url: "/roles", routeId: "Roles",
+        groupConfig: { id: "admin", title: "Admin" },
+      } as any);
+
+      removeRegisteredMenuItem({ routeId: "Users" } as any);
+
+      const service = createMenuService();
+      expect(service.menuItems.value).toHaveLength(1);
+      expect(service.menuItems.value[0].children).toHaveLength(1);
+      expect(service.menuItems.value[0].children![0].title).toBe("Roles");
+    });
+  });
 });

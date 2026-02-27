@@ -8,14 +8,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import moment from "moment";
+import { formatDateWithPattern } from "@core/utilities/date";
 
 const props = defineProps<{
   /** The date value to display (Date, string, or number) */
   value?: unknown;
   /** Format variant: 'date', 'time', or 'date-time' */
   variant?: "date" | "time" | "date-time";
-  /** Custom moment.js format string (overrides variant) */
+  /** Custom date format string (moment.js tokens auto-converted) */
   format?: string;
 }>();
 
@@ -25,11 +25,9 @@ const locale = window.navigator.language;
 const formatted = computed(() => {
   if (!props.value) return "";
 
-  // Custom moment format
+  // Custom date format
   if (props.format) {
-    return moment(props.value as string | number | Date)
-      .locale(locale)
-      .format(props.format);
+    return formatDateWithPattern(props.value as string | number | Date, props.format, locale);
   }
 
   // Native locale formatting

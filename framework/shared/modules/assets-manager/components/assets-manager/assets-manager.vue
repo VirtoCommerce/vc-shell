@@ -125,7 +125,7 @@
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                   <VcHint>{{ t("ASSETS_MANAGER.TABLE.HEADER.CREATED_DATE") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
-                    {{ item.createdDate && moment(item.createdDate).fromNow() }}
+                    {{ item.createdDate && formatDateRelative(item.createdDate) }}
                   </div>
                 </div>
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
@@ -156,7 +156,7 @@
 import { ICommonAsset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "@core/types";
 import { ref, computed, onMounted, unref, watch, Ref } from "vue";
 import { useI18n } from "vue-i18n";
-import moment from "moment";
+import { formatDateRelative } from "@core/utilities/date";
 import { isImage, getFileThumbnail, readableSize } from "@shared/utilities/assets";
 import * as _ from "lodash-es";
 import { IParentCallArgs, useBladeNavigation } from "@shared/components";

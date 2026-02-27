@@ -39,7 +39,7 @@
                     <VcCol>
                       <VcLabel>{{ t("ASSETS.PAGES.DETAILS.FIELDS.CREATED_DATE") }}</VcLabel>
                       <VcHint class="tw-text-s">{{
-                        (defaultAsset.createdDate && moment(defaultAsset.createdDate).fromNow()) || "N/A"
+                        formatDateRelative(defaultAsset.createdDate) || "N/A"
                       }}</VcHint>
                     </VcCol>
                     <VcCol class="tw-w-full">
@@ -119,7 +119,7 @@ import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcBlade, VcContainer, VcForm, VcImage, VcInput, VcTextarea } from "@ui/components";
 import { isImage, getFileThumbnail, readableSize } from "@shared/utilities/assets";
-import moment from "moment";
+import { formatDateRelative } from "@core/utilities/date";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 
 export interface Props {

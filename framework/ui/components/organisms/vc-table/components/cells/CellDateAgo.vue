@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import moment from "moment";
+import { formatDateRelative } from "@core/utilities/date";
 
 const props = defineProps<{
   /** The date value to display as relative time (e.g., '2 hours ago') */
@@ -32,7 +32,7 @@ const titleText = computed(() => {
 
 const agoText = computed(() => {
   if (!props.value) return "";
-  return moment(props.value as string | number | Date).fromNow();
+  return formatDateRelative(props.value as string | number | Date);
 });
 </script>
 

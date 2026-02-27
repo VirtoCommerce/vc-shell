@@ -21,7 +21,7 @@
   <template v-if="type === 'date-ago'">
     <div class="vc-field-type">
       <div class="vc-field-type__text-wrap">
-        <p class="vc-field-type__text">{{ value instanceof Date ? (moment(value).fromNow() ?? "N/A") : value }}</p>
+        <p class="vc-field-type__text">{{ value instanceof Date ? (formatDateRelative(value) ?? "N/A") : value }}</p>
       </div>
     </div>
   </template>
@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import moment from "moment";
+import { formatDateRelative } from "@core/utilities/date";
 
 export interface Props {
   type: "text" | "date" | "date-ago" | "link" | "email";

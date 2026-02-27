@@ -269,7 +269,8 @@
     "BACK_BUTTON": "Zurück",
     "BUTTON_OK": "Ok",
     "RESET_EMAIL_TEXT": "Wir senden Ihnen eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
-    "RESET_EMAIL_SENT": "Eine E-Mail mit Anweisungen wurde an Sie gesendet."
+    "RESET_EMAIL_SENT": "Eine E-Mail mit Anweisungen wurde an Sie gesendet.",
+    "SSO_NO_PROVIDERS_ERROR": "SSO-Authentifizierung ist nicht konfiguriert. Bitte wenden Sie sich an Ihren Administrator."
   },
   "FORGOT_PASSWORD": {
     "TITLE": "Passwort zurücksetzen",

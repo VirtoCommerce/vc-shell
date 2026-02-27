@@ -13,89 +13,102 @@
     >
       <ExternalProviders :providers="loginProviders" />
 
-      <div class="vc-login-page__separator-line">
+      <div
+        v-if="!ssoOnly"
+        class="vc-login-page__separator-line"
+      >
         {{ $t("LOGIN.OR") }}
       </div>
     </div>
 
-    <VcForm
-      @submit.prevent="login"
-      class="tw-gap-5"
-    >
-      <Field
-        v-slot="{ errorMessage, handleChange, errors }"
-        :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
-        name="username"
-        :model-value="form.username"
-        rules="required"
-      >
-        <VcInput
-          ref="loginField"
-          v-model="form.username"
-          :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
-          :placeholder="$t('LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
-          required
-          :error="!!errors.length"
-          :error-message="errorMessage"
-          @update:model-value="handleChange"
-        />
-      </Field>
-
-      <Field
-        v-slot="{ errorMessage, handleChange, errors }"
-        :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
-        name="password"
-        :model-value="form.password"
-        rules="required"
-      >
-        <VcInput
-          ref="passwordField"
-          v-model="form.password"
-          :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
-          :placeholder="$t('LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
-          type="password"
-          required
-          :error="!!errors.length"
-          :error-message="errorMessage"
-          @keyup.enter="login"
-          @update:model-value="handleChange"
-        />
-      </Field>
-
-      <VcButton
-        variant="primary"
-        class="tw-w-full"
-        :disabled="!isValid"
-        :loading="loading"
-        @click="login"
-      >
-        {{ $t("LOGIN.BUTTON") }}
-      </VcButton>
-
-      <VcButton
-        variant="link"
-        class="tw-w-full tw-justify-center"
-        type="button"
-        @click="goToForgotPassword"
-      >
-        {{ $t("LOGIN.FORGOT_PASSWORD_BUTTON") }}
-      </VcButton>
-    </VcForm>
-
-    <!-- Plugin extension point -->
-    <ExtensionPoint
-      name="auth:after-form"
-      separator
-      separator-class="tw-border-t tw-border-[color:var(--login-separator)] tw-border-solid tw-pb-5"
-      wrapper-class="vc-login-page__separator"
-    />
-
+    <!-- SSO-only error: no providers configured -->
     <VcHint
-      v-if="!signInResult.succeeded"
+      v-if="ssoOnly && providersLoaded && !loginProviders?.length"
       class="tw-mt-4 tw-text-danger-500"
     >
-      {{ signInResult.error }}
+      {{ $t("LOGIN.SSO_NO_PROVIDERS_ERROR") }}
     </VcHint>
+
+    <template v-if="!ssoOnly">
+      <VcForm
+        @submit.prevent="login"
+        class="tw-gap-5"
+      >
+        <Field
+          v-slot="{ errorMessage, handleChange, errors }"
+          :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
+          name="username"
+          :model-value="form.username"
+          rules="required"
+        >
+          <VcInput
+            ref="loginField"
+            v-model="form.username"
+            :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
+            :placeholder="$t('LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
+            required
+            :error="!!errors.length"
+            :error-message="errorMessage"
+            @update:model-value="handleChange"
+          />
+        </Field>
+
+        <Field
+          v-slot="{ errorMessage, handleChange, errors }"
+          :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
+          name="password"
+          :model-value="form.password"
+          rules="required"
+        >
+          <VcInput
+            ref="passwordField"
+            v-model="form.password"
+            :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
+            :placeholder="$t('LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
+            type="password"
+            required
+            :error="!!errors.length"
+            :error-message="errorMessage"
+            @keyup.enter="login"
+            @update:model-value="handleChange"
+          />
+        </Field>
+
+        <VcButton
+          variant="primary"
+          class="tw-w-full"
+          :disabled="!isValid"
+          :loading="loading"
+          @click="login"
+        >
+          {{ $t("LOGIN.BUTTON") }}
+        </VcButton>
+
+        <VcButton
+          variant="link"
+          class="tw-w-full tw-justify-center"
+          type="button"
+          @click="goToForgotPassword"
+        >
+          {{ $t("LOGIN.FORGOT_PASSWORD_BUTTON") }}
+        </VcButton>
+      </VcForm>
+
+      <!-- Plugin extension point -->
+      <ExtensionPoint
+        name="auth:after-form"
+        separator
+        separator-class="tw-border-t tw-border-[color:var(--login-separator)] tw-border-solid tw-pb-5"
+        wrapper-class="vc-login-page__separator"
+      />
+
+      <VcHint
+        v-if="!signInResult.succeeded"
+        class="tw-mt-4 tw-text-danger-500"
+      >
+        {{ signInResult.error }}
+      </VcHint>
+    </template>
   </VcAuthLayout>
 </template>
 
@@ -119,6 +132,7 @@ export interface Props {
   background?: string;
   title?: string;
   subtitle?: string;
+  ssoOnly?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -132,9 +146,11 @@ const { signIn, loading, user } = useUserManagement();
 const { getProviders } = useExternalProvider();
 const isValid = useIsFormValid();
 const loginProviders = ref<ExternalSignInProviderInfo[]>();
+const providersLoaded = ref(false);
 
 onMounted(async () => {
   loginProviders.value = await getProviders();
+  providersLoaded.value = true;
 });
 
 const customization = computed(() => ({
@@ -172,8 +188,10 @@ const login = async () => {
     signInResult.value.error = "The login or password is incorrect.";
   } else if (signInResult.value.status) {
     signInResult.value.error = "Authentication error (code: " + signInResult.value.status + ").";
-  } else {
+  } else if (signInResult.value.error) {
     signInResult.value.error = "Authentication error: " + signInResult.value.error;
+  } else {
+    signInResult.value.error = "The login or password is incorrect.";
   }
 
   form.password = "";

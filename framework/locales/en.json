@@ -269,7 +269,8 @@
     "BACK_BUTTON": "Back",
     "BUTTON_OK": "Ok",
     "RESET_EMAIL_TEXT": "We will send you an email with instructions on how to reset your password.",
-    "RESET_EMAIL_SENT": "Email with instructions has been sent to you."
+    "RESET_EMAIL_SENT": "Email with instructions has been sent to you.",
+    "SSO_NO_PROVIDERS_ERROR": "SSO authentication is not configured. Please contact your administrator."
   },
   "FORGOT_PASSWORD": {
     "TITLE": "Reset your password",

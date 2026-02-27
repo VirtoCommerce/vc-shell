@@ -181,6 +181,10 @@ export function _createInternalUserLogic(): IUserInternalAPI {
       const result = await securityClient.login(new LoginRequest({ userName: username, password }));
       logger.debug("signIn - Cookie login completed:", result);
 
+      if (!result.succeeded) {
+        return result;
+      }
+
       // Then get OAuth token for API calls (direct fetch, bypasses API client)
       // Request offline_access scope to get refresh_token for automatic token renewal
       logger.debug("signIn - Requesting token...");
@@ -207,7 +211,19 @@ export function _createInternalUserLogic(): IUserInternalAPI {
       throw { succeeded: false };
     } catch (e: any) {
       logger.error("signIn failed:", e);
-      return { succeeded: false, error: e.message, status: e.status };
+
+      // Extract human-readable error from ApiException.response (raw JSON from server)
+      let error = e.message;
+      if (e.response) {
+        try {
+          const body = JSON.parse(e.response);
+          error = body.errorDescription || body.errors?.[0]?.description || body.error || error;
+        } catch {
+          // response is not JSON, keep e.message
+        }
+      }
+
+      return { succeeded: false, error, status: e.status };
     } finally {
       loading.value = false;
     }

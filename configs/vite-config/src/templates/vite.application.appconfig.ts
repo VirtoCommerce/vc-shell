@@ -181,7 +181,6 @@ export default defineConfig({
       "@vueuse/core",
       "@vueuse/integrations",
       "lodash-es",
-      "moment",
       "@headlessui/vue",
       "vee-validate",
     ],

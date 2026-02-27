@@ -115,4 +115,100 @@ describe("menu-service", () => {
     menuServiceBus.dispose(service);
     expect(menuServiceBus.instanceCount).toBe(0);
   });
+
+  describe("identity and deduplication", () => {
+    it("removeMenuItem matches finalized item from menuItems.value against raw storage", async () => {
+      // This is the critical scenario: user gets item from menuItems.value
+      // (which has been through finalizeMenuItems) and passes it to removeMenuItem.
+      // Must work even though finalized item may have extra fields.
+      const { createMenuService } = await loadMenuServiceModule();
+      const service = createMenuService();
+
+      service.addMenuItem({ title: "A", priority: 1, url: "/a" } as any);
+      service.addMenuItem({ title: "B", priority: 2, url: "/b" } as any);
+
+      const firstItem = service.menuItems.value[0];
+      service.removeMenuItem(firstItem);
+
+      expect(service.menuItems.value).toHaveLength(1);
+      expect(service.menuItems.value[0].title).toBe("B");
+    });
+
+    it("removeMenuItem matches by id when both items have explicit id", async () => {
+      const { createMenuService } = await loadMenuServiceModule();
+      const service = createMenuService();
+
+      service.addMenuItem({ title: "A", priority: 1, id: 10, url: "/a" } as any);
+      service.addMenuItem({ title: "B", priority: 2, id: 20, url: "/b" } as any);
+
+      service.removeMenuItem({ id: 10 } as any);
+
+      expect(service.menuItems.value).toHaveLength(1);
+      expect(service.menuItems.value[0].title).toBe("B");
+    });
+
+    it("removeMenuItem matches by url when both items have url (no routeId)", async () => {
+      const { createMenuService } = await loadMenuServiceModule();
+      const service = createMenuService();
+
+      service.addMenuItem({ title: "Orders", priority: 1, url: "/orders" } as any);
+      service.addMenuItem({ title: "Products", priority: 2, url: "/products" } as any);
+
+      service.removeMenuItem({ url: "/orders" } as any);
+
+      expect(service.menuItems.value).toHaveLength(1);
+      expect(service.menuItems.value[0].title).toBe("Products");
+    });
+
+    it("removeMenuItem matches by routeId", async () => {
+      const { createMenuService } = await loadMenuServiceModule();
+      const service = createMenuService();
+
+      service.addMenuItem({ title: "Orders", priority: 1, url: "/orders", routeId: "Orders" } as any);
+      service.addMenuItem({ title: "Products", priority: 2, url: "/products", routeId: "Products" } as any);
+
+      service.removeMenuItem({ routeId: "Orders" } as any);
+
+      expect(service.menuItems.value).toHaveLength(1);
+      expect(service.menuItems.value[0].title).toBe("Products");
+    });
+
+    it("group children with identical routeId+url are deduplicated (last wins)", async () => {
+      const { createMenuService } = await loadMenuServiceModule();
+      const service = createMenuService();
+
+      service.addMenuItem({
+        title: "Users", priority: 1, url: "/users", routeId: "Users",
+        groupConfig: { id: "admin", title: "Admin", icon: "fas fa-shield" },
+      } as any);
+      service.addMenuItem({
+        title: "Users Updated", priority: 1, url: "/users", routeId: "Users",
+        groupConfig: { id: "admin", title: "Admin" },
+      } as any);
+
+      expect(service.menuItems.value).toHaveLength(1);
+      expect(service.menuItems.value[0].children).toHaveLength(1);
+      expect(service.menuItems.value[0].children![0].title).toBe("Users Updated");
+    });
+
+    it("groupConfig updates group properties on second registration", async () => {
+      const { createMenuService } = await loadMenuServiceModule();
+      const service = createMenuService();
+
+      service.addMenuItem({
+        title: "Item A", priority: 1, url: "/a", routeId: "A",
+        groupConfig: { id: "grp", title: "Old Title", icon: "old-icon", priority: 10 },
+      } as any);
+      service.addMenuItem({
+        title: "Item B", priority: 2, url: "/b", routeId: "B",
+        groupConfig: { id: "grp", title: "New Title", icon: "new-icon", priority: 5 },
+      } as any);
+
+      const group = service.menuItems.value[0];
+      expect(group.title).toBe("New Title");
+      expect(group.groupIcon).toBe("new-icon");
+      expect(group.priority).toBe(5);
+      expect(group.children).toHaveLength(2);
+    });
+  });
 });

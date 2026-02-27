@@ -40,9 +40,26 @@ export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalle
 
   function onItemMouseDown(event: MouseEvent) {
     const target = event.currentTarget as HTMLElement | null;
-    if (!disableDrag.value && target) {
-      target.draggable = true;
+    if (!target) return;
+
+    if (disableDrag.value || event.button !== 0) {
+      target.draggable = false;
+      return;
     }
+
+    const source = event.target;
+    const sourceElement = source instanceof Element ? source : null;
+    const fromDragHandle = !!sourceElement?.closest(".vc-gallery-item__drag-handle");
+    const fromInteractiveControl = !!sourceElement?.closest("button, a, input, textarea, select, [role='button']");
+
+    // Enable drag only from explicit handle to avoid hijacking action button clicks.
+    target.draggable = fromDragHandle && !fromInteractiveControl;
+  }
+
+  function onItemMouseUp(event: MouseEvent) {
+    const target = event.currentTarget as HTMLElement | null;
+    if (!target || isDragging.value) return;
+    target.draggable = false;
   }
 
   function onItemDragStart(event: DragEvent, item: ICommonAsset) {
@@ -148,6 +165,7 @@ export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalle
 
   const reorderHandlers = {
     onItemMouseDown,
+    onItemMouseUp,
     onItemDragStart,
     onItemDragOver,
     onItemDragLeave,

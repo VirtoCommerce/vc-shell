@@ -35,7 +35,11 @@
       <TransitionGroup
         tag="div"
         :name="reorder.isDragging.value ? 'vc-gallery-swap' : ''"
-        :ref="(comp: any) => { if (comp?.$el) reorder.galleryRef.value = comp.$el }"
+        :ref="
+          (comp: any) => {
+            if (comp?.$el) reorder.galleryRef.value = comp.$el;
+          }
+        "
         class="vc-gallery__grid"
       >
         <!-- Image tiles -->
@@ -45,6 +49,8 @@
           class="vc-gallery__item"
           :class="{ 'vc-gallery__item--dragging': reorder.isDragging.value && reorder.draggedId.value === image.id }"
           @mousedown="reorder.reorderHandlers.onItemMouseDown"
+          @mouseup="reorder.reorderHandlers.onItemMouseUp"
+          @mouseleave="reorder.reorderHandlers.onItemMouseUp"
           @dragstart="reorder.reorderHandlers.onItemDragStart($event, image)"
           @dragover="reorder.reorderHandlers.onItemDragOver"
           @dragleave="reorder.reorderHandlers.onItemDragLeave"
@@ -88,6 +94,7 @@
             :name="name"
             :loading="loading"
             :accept="accept"
+            :custom-text="uploadCustomText"
             @upload="upload.onUpload"
           />
         </div>
@@ -105,6 +112,7 @@
             :name="name"
             :loading="loading"
             :accept="accept"
+            :custom-text="uploadCustomText"
             @upload="upload.onUpload"
           />
         </div>
@@ -132,7 +140,10 @@
       v-if="isDragOver && !disabled"
       class="vc-gallery__drop-overlay"
     >
-      <VcIcon icon="lucide-cloud-upload" size="xxl" />
+      <VcIcon
+        icon="lucide-cloud-upload"
+        size="xxl"
+      />
       <span>{{ t("COMPONENTS.ORGANISMS.VC_GALLERY.DROP_TO_UPLOAD") }}</span>
     </div>
   </div>
@@ -196,15 +207,16 @@ const { t } = useI18n({ useScope: "global" });
 // Deprecation warnings (dev only)
 if (import.meta.env?.DEV) {
   if (props.variant && props.variant !== "gallery") {
-    console.warn(
-      `[VcGallery] prop "variant" is deprecated. Use <VcImageUpload> component for single-image uploads.`,
-    );
+    console.warn(`[VcGallery] prop "variant" is deprecated. Use <VcImageUpload> component for single-image uploads.`);
   }
   if (props.hideAfterUpload) {
     console.warn(`[VcGallery] prop "hideAfterUpload" is deprecated. Use <VcImageUpload> instead.`);
   }
   if (props.customText) {
     console.warn(`[VcGallery] prop "customText" is deprecated. Use <VcImageUpload> instead.`);
+  }
+  if (props.uploadIcon && props.uploadIcon !== "lucide-cloud-upload") {
+    console.warn(`[VcGallery] prop "uploadIcon" is deprecated. Use #empty slot for custom upload UI.`);
   }
   if (props.label) {
     console.warn(`[VcGallery] prop "label" is deprecated. Use external <VcLabel> instead.`);
@@ -234,6 +246,10 @@ watch(
 );
 
 const hasImages = computed(() => localImages.value.length > 0);
+const uploadCustomText = computed(() => ({
+  dragHere: t("COMPONENTS.ORGANISMS.VC_GALLERY.DRAG_IMAGES_HERE"),
+  browse: t("COMPONENTS.ORGANISMS.VC_GALLERY.BROWSE_IMAGES"),
+}));
 
 // Composables
 const reorder = useGalleryReorder(localImages, {
@@ -279,6 +295,8 @@ function onGlobalDrop(event: DragEvent) {
 <style lang="scss">
 :root {
   --gallery-gap: 8px;
+  --gallery-tile-min: 160px;
+  --gallery-tile-max: 200px;
   --gallery-upload-border: var(--secondary-300);
   --gallery-upload-border-hover: var(--primary-400);
   --gallery-upload-bg-hover: var(--primary-50);
@@ -289,12 +307,29 @@ function onGlobalDrop(event: DragEvent) {
 .vc-gallery {
   @apply tw-relative;
 
-  &--sm &__grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-  &--md &__grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-  &--lg &__grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  &--sm {
+    --gallery-tile-min: 120px;
+    --gallery-tile-max: 160px;
+  }
+
+  &--md {
+    --gallery-tile-min: 160px;
+    --gallery-tile-max: 200px;
+  }
+
+  &--lg {
+    --gallery-tile-min: 200px;
+    --gallery-tile-max: 260px;
+  }
+
+  &--drag-over {
+    @apply tw-rounded-lg tw-ring-2 tw-ring-[var(--gallery-drop-overlay-border)];
+    background: var(--gallery-upload-bg-hover);
+  }
 
   &__grid {
     display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--gallery-tile-min), var(--gallery-tile-max)));
     gap: var(--gallery-gap);
     @apply tw-relative;
   }
@@ -304,11 +339,7 @@ function onGlobalDrop(event: DragEvent) {
   }
 
   &__upload-tile {
-    @apply tw-aspect-square tw-rounded-lg
-      tw-border-2 tw-border-dashed
-      tw-border-[var(--gallery-upload-border)]
-      tw-transition-all tw-duration-200
-      tw-overflow-hidden;
+    @apply tw-aspect-square tw-rounded-lg tw-border-2 tw-border-dashed tw-border-[var(--gallery-upload-border)] tw-transition-all tw-duration-200 tw-overflow-hidden;
 
     &:hover {
       border-color: var(--gallery-upload-border-hover);
@@ -321,13 +352,17 @@ function onGlobalDrop(event: DragEvent) {
   }
 
   &__upload-tile .vc-file-upload__drop-zone {
-    @apply tw-border-0 tw-h-full tw-w-full tw-rounded-none tw-p-2;
+    @apply tw-border-0 tw-h-full tw-w-full tw-rounded-none tw-p-2 tw-justify-center;
     min-height: unset;
     background: transparent;
   }
 
   &__upload-tile .vc-file-upload__text {
-    @apply tw-hidden;
+    @apply tw-mt-2 tw-text-[11px] tw-leading-4 tw-whitespace-normal;
+  }
+
+  &__upload-tile .vc-file-upload__link {
+    @apply tw-text-[11px] tw-whitespace-normal;
   }
 
   &__upload-tile .vc-file-upload__icon {
@@ -367,9 +402,7 @@ function onGlobalDrop(event: DragEvent) {
   }
 
   &__drop-overlay {
-    @apply tw-absolute tw-inset-0 tw-z-10
-      tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2
-      tw-rounded-lg tw-pointer-events-none;
+    @apply tw-absolute tw-inset-0 tw-z-10 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-rounded-lg tw-pointer-events-none;
     background: var(--gallery-drop-overlay-bg);
     border: 2px solid var(--gallery-drop-overlay-border);
     backdrop-filter: blur(4px);

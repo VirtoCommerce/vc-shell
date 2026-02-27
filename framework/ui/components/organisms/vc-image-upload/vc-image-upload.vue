@@ -36,6 +36,7 @@
         <div class="vc-image-upload__actions">
           <button
             v-if="previewable"
+            type="button"
             class="vc-image-upload__action-btn"
             :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.FULLSCREEN')"
             @click="onPreviewClick"
@@ -47,6 +48,7 @@
           </button>
           <button
             v-if="removable && !disabled"
+            type="button"
             class="vc-image-upload__action-btn vc-image-upload__action-btn--danger"
             :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.DELETE')"
             @click="emit('remove', image)"

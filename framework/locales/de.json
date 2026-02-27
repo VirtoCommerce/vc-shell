@@ -68,7 +68,10 @@
             "COPY_IMAGE_LINK": "Bildlink kopieren"
           }
         },
-        "GALLERY_IS_EMPTY": "Galerie ist leer"
+        "GALLERY_IS_EMPTY": "Galerie ist leer",
+        "DROP_TO_UPLOAD": "Zum Hochladen ablegen",
+        "DRAG_IMAGES_HERE": "Bilder hierher ziehen oder",
+        "BROWSE_IMAGES": "Dateien durchsuchen"
       },
       "VC_APP": {
         "INTERNAL": {

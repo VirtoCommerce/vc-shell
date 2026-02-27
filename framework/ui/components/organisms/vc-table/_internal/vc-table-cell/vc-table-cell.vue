@@ -70,7 +70,7 @@
         v-if="value"
         class="vc-table-cell__date-ago-content"
       >
-        {{ moment(value).fromNow() }}
+        {{ formatDateRelative(value) }}
       </div>
       <div
         v-else
@@ -90,7 +90,7 @@
           v-if="cell.format"
           class="vc-table-cell__date-content"
         >
-          {{ moment(value).locale(locale).format(cell.format) }}
+          {{ formatDateWithPattern(value, cell.format, locale) }}
         </div>
         <template v-else>
           <div
@@ -279,7 +279,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed } from "vue";
-import moment from "moment";
+import { formatDateRelative, formatDateWithPattern } from "@core/utilities/date";
 import * as _ from "lodash-es";
 import htmlTruncate from "truncate-html";
 import * as DOMPurify from "dompurify";

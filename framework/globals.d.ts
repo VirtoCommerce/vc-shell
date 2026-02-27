@@ -5,7 +5,6 @@ import * as vueRouter from "vue-router";
 import * as veeValidate from "vee-validate";
 import * as vueI18n from "vue-i18n";
 import * as VueUse from "@vueuse/core";
-import moment from "moment";
 import * as _ from "lodash";
 import type { Component } from "vue";
 
@@ -25,7 +24,6 @@ declare global {
     VueRouter: typeof vueRouter;
     VeeValidate: typeof veeValidate;
     VueI18n: typeof vueI18n;
-    moment: moment;
     VcShellFramework: any;
     VueUse: typeof VueUse;
     _: any;

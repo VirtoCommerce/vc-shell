@@ -125,7 +125,6 @@ if (typeof window !== "undefined") {
   };
   window.Vue = Vue;
   window.VueRouter = VueRouter;
-  window.moment = corePlugins.moment;
   window.VueI18n = VueI18n;
   window._ = _;
   window.VueUse = VueUse;

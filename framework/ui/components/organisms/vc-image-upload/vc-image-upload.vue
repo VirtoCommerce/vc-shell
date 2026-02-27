@@ -1,45 +1,38 @@
 <template>
   <div class="vc-image-upload">
-    <!-- Has image: show preview + actions -->
+    <!-- Has image: gallery-style tile -->
     <div
       v-if="image?.url"
-      class="vc-image-upload__preview"
+      v-on-click-outside="deactivate"
+      class="vc-image-upload__tile"
+      :class="{ 'vc-image-upload__tile--active': isActive }"
+      @click="onTileClick"
     >
-      <div class="vc-image-upload__image-wrapper">
-        <img
-          :src="image.url"
-          :alt="image.altText || image.name || ''"
-          class="vc-image-upload__image"
-          :class="{ 'vc-image-upload__image--loaded': imageState.isLoaded.value }"
-          @load="imageState.onLoad"
-          @error="imageState.onError"
-          @click="onPreviewClick"
-        />
-        <div
-          v-if="!imageState.isLoaded.value"
-          class="vc-image-upload__skeleton"
-        />
-      </div>
-      <div class="vc-image-upload__info">
-        <span
-          class="vc-image-upload__filename"
-          :title="image.name"
-        >
-          {{ image.name }}
-        </span>
-        <span
-          v-if="image.readableSize"
-          class="vc-image-upload__filesize"
-        >
-          {{ image.readableSize }}
-        </span>
-        <div class="vc-image-upload__actions">
+      <!-- Skeleton shimmer -->
+      <div
+        v-if="!imageState.isLoaded.value"
+        class="vc-image-upload__skeleton"
+      />
+
+      <!-- Image -->
+      <img
+        :src="image.url"
+        :alt="image.altText || image.name || ''"
+        class="vc-image-upload__image"
+        :class="{ 'vc-image-upload__image--loaded': imageState.isLoaded.value }"
+        @load="imageState.onLoad"
+        @error="imageState.onError"
+      />
+
+      <!-- Slide-up tray -->
+      <div class="vc-image-upload__tray">
+        <div class="vc-image-upload__tray-actions">
           <button
             v-if="previewable"
             type="button"
             class="vc-image-upload__action-btn"
             :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.FULLSCREEN')"
-            @click="onPreviewClick"
+            @click.stop="onPreviewClick"
           >
             <VcIcon
               icon="material-open_in_full"
@@ -51,13 +44,19 @@
             type="button"
             class="vc-image-upload__action-btn vc-image-upload__action-btn--danger"
             :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.DELETE')"
-            @click="emit('remove', image)"
+            @click.stop="emit('remove', image)"
           >
             <VcIcon
               icon="material-delete"
               size="s"
             />
           </button>
+        </div>
+        <div
+          class="vc-image-upload__tray-name"
+          :title="image.name"
+        >
+          {{ image.name }}
         </div>
       </div>
     </div>
@@ -86,7 +85,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, toRef } from "vue";
+import { computed, ref, toRef } from "vue";
+import { vOnClickOutside } from "@vueuse/components";
 import type { ICommonAsset, IValidationRules } from "@core/types";
 import { VcFileUpload } from "@ui/components/molecules/vc-file-upload";
 import { VcHint } from "@ui/components/atoms/vc-hint";
@@ -125,6 +125,7 @@ const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
 
 const imageState = useImageLoad(toRef(() => props.image?.url));
+const isActive = ref(false);
 
 const imagesArray = computed(() => (props.image ? [props.image] : []));
 const preview = useGalleryPreview(imagesArray);
@@ -140,33 +141,36 @@ function onPreviewClick() {
     preview.openPreview(0);
   }
 }
+
+function onTileClick() {
+  if (window.matchMedia("(hover: none)").matches) {
+    isActive.value = !isActive.value;
+  }
+}
+
+function deactivate() {
+  isActive.value = false;
+}
 </script>
 
 <style lang="scss">
-:root {
-  --image-upload-radius: 8px;
-  --image-upload-border: var(--secondary-200);
-  --image-upload-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
-  --image-upload-action-color: var(--secondary-600);
-  --image-upload-action-hover: var(--primary-500);
-  --image-upload-action-danger: var(--danger-500);
-}
-
 .vc-image-upload {
-  &__preview {
-    @apply tw-flex tw-items-start tw-gap-3 tw-p-3
-      tw-border tw-border-solid tw-rounded-lg;
-    border-color: var(--image-upload-border);
-    border-radius: var(--image-upload-radius);
-    box-shadow: var(--image-upload-shadow);
-  }
+  /* Constrain single-image tile to a reasonable max size */
+  max-width: 200px;
 
-  &__image-wrapper {
-    @apply tw-relative tw-shrink-0;
+  &__tile {
+    @apply tw-relative tw-overflow-hidden tw-box-border tw-border tw-border-solid
+      tw-bg-[var(--base-1,#fff)]
+      tw-border-[var(--gallery-tile-border)]
+      tw-rounded-[var(--gallery-tile-radius)]
+      tw-aspect-square
+      tw-transition-all tw-duration-200 tw-ease-out;
+    box-shadow: var(--gallery-tile-shadow);
+    -webkit-mask-image: radial-gradient(white, black);
   }
 
   &__image {
-    @apply tw-w-20 tw-h-20 tw-rounded-md tw-object-cover tw-cursor-pointer
+    @apply tw-w-full tw-h-full tw-block tw-object-cover
       tw-opacity-0 tw-transition-opacity tw-duration-300;
 
     &--loaded {
@@ -175,53 +179,73 @@ function onPreviewClick() {
   }
 
   &__skeleton {
-    @apply tw-w-20 tw-h-20 tw-rounded-md tw-absolute tw-inset-0;
+    @apply tw-absolute tw-inset-0;
     background: linear-gradient(
       90deg,
-      var(--gallery-skeleton-from, #f0f0f0) 25%,
-      var(--gallery-skeleton-to, #e0e0e0) 50%,
-      var(--gallery-skeleton-from, #f0f0f0) 75%
+      var(--gallery-skeleton-from) 25%,
+      var(--gallery-skeleton-to) 50%,
+      var(--gallery-skeleton-from) 75%
     );
     background-size: 200% 100%;
     animation: gallery-shimmer 1.5s infinite ease-in-out;
   }
 
-  &__info {
-    @apply tw-flex tw-flex-col tw-gap-1 tw-min-w-0;
+  &__tray {
+    @apply tw-absolute tw-bottom-0 tw-left-0 tw-right-0
+      tw-flex tw-items-center tw-gap-1 tw-px-2 tw-py-1.5
+      tw-translate-y-full tw-transition-transform tw-duration-200 tw-ease-out;
+    background: var(--gallery-tray-bg);
+    backdrop-filter: blur(var(--gallery-tray-blur)) saturate(1.5);
   }
 
-  &__filename {
-    @apply tw-text-sm tw-font-medium tw-truncate;
-  }
-
-  &__filesize {
-    @apply tw-text-xs;
-    color: var(--secondary-400);
-  }
-
-  &__actions {
-    @apply tw-flex tw-gap-1 tw-mt-1;
+  &__tray-actions {
+    @apply tw-flex tw-gap-1 tw-shrink-0;
   }
 
   &__action-btn {
     @apply tw-flex tw-items-center tw-justify-center tw-w-7 tw-h-7
       tw-rounded tw-cursor-pointer tw-transition-colors tw-duration-150
       tw-border-0 tw-bg-transparent;
-    color: var(--image-upload-action-color);
+    color: var(--gallery-action-btn-color);
 
     &:hover {
-      color: var(--image-upload-action-hover);
+      color: var(--gallery-action-btn-hover);
       @apply tw-bg-[var(--primary-50)];
     }
 
     &--danger:hover {
-      color: var(--image-upload-action-danger);
+      color: var(--gallery-action-btn-danger);
       @apply tw-bg-[var(--danger-50)];
     }
+  }
+
+  &__tray-name {
+    @apply tw-truncate tw-text-xs tw-ml-auto;
+    color: var(--gallery-action-btn-color);
+  }
+
+  @media (hover: hover) {
+    &__tile:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--gallery-tile-shadow-hover);
+    }
+
+    &__tile:hover &__tray {
+      @apply tw-translate-y-0;
+    }
+  }
+
+  &__tile--active &__tray {
+    @apply tw-translate-y-0;
   }
 
   &__empty {
     @apply tw-flex tw-justify-center tw-p-5 tw-items-center;
   }
+}
+
+@keyframes gallery-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 </style>

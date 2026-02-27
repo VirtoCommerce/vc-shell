@@ -42,6 +42,7 @@
       <div class="vc-gallery-item__tray-actions">
         <button
           v-if="actions?.preview !== false"
+          type="button"
           class="vc-gallery-item__action-btn"
           :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.FULLSCREEN')"
           @click.stop="$emit('preview', image)"
@@ -50,6 +51,7 @@
         </button>
         <button
           v-if="!readonly && actions?.edit !== false"
+          type="button"
           class="vc-gallery-item__action-btn"
           :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.EDIT')"
           @click.stop="$emit('edit', image)"
@@ -58,6 +60,7 @@
         </button>
         <button
           v-if="!readonly && actions?.remove !== false"
+          type="button"
           class="vc-gallery-item__action-btn vc-gallery-item__action-btn--danger"
           :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.DELETE')"
           @click.stop="$emit('remove', image)"
@@ -147,6 +150,8 @@ function deactivate() {
     tw-aspect-square
     tw-transition-all tw-duration-200 tw-ease-out;
   box-shadow: var(--gallery-tile-shadow);
+  /* Force proper border-radius clipping when transform is applied on hover */
+  -webkit-mask-image: radial-gradient(white, black);
 
   &__image {
     @apply tw-w-full tw-h-full tw-block tw-opacity-0 tw-transition-opacity tw-duration-300;

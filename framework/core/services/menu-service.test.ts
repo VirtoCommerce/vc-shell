@@ -240,5 +240,29 @@ describe("menu-service", () => {
       expect(group.priority).toBe(5);
       expect(group.children).toHaveLength(2);
     });
+
+    it("standalone items with same routeId but different url are deduplicated (last wins)", async () => {
+      const { createMenuService } = await loadMenuServiceModule();
+      const service = createMenuService();
+
+      service.addMenuItem({ title: "V1", priority: 1, url: "/old-path", routeId: "Orders" } as any);
+      service.addMenuItem({ title: "V2", priority: 2, url: "/new-path", routeId: "Orders" } as any);
+
+      // routeId is highest-priority identity field on both items
+      expect(service.menuItems.value).toHaveLength(1);
+      expect(service.menuItems.value[0].title).toBe("V2");
+      expect(service.menuItems.value[0].url).toBe("/new-path");
+    });
+
+    it("standalone items with same url but different routeId coexist", async () => {
+      const { createMenuService } = await loadMenuServiceModule();
+      const service = createMenuService();
+
+      service.addMenuItem({ title: "PageA", priority: 1, url: "/shared", routeId: "RouteA" } as any);
+      service.addMenuItem({ title: "PageB", priority: 2, url: "/shared", routeId: "RouteB" } as any);
+
+      // routeId is compared before url when both routeId are present
+      expect(service.menuItems.value).toHaveLength(2);
+    });
   });
 });

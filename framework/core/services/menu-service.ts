@@ -1,4 +1,4 @@
-import { Component, ref, type Ref } from "vue";
+import { type Component, ref, type Ref } from "vue";
 import * as _ from "lodash-es";
 import type { MenuItem, MenuItemBadgeConfig } from "@core/types";
 import { createPreregistrationBus } from "@core/services/_internal";
@@ -158,7 +158,6 @@ function addItemToGroup(item: MenuItem, groups: Map<string, MenuItem>): void {
 
   const groupItem = {
     ..._.omit(item, ["group", "groupIcon", "groupPriority", "groupConfig"]),
-    title: item.title,
   } as MenuItem;
 
   const existing = groups.get(info.groupId);

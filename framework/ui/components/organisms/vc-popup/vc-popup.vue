@@ -1,13 +1,14 @@
 <template>
   <TransitionRoot
     appear
-    show
+    :show="isVisible"
     as="template"
   >
     <Dialog
       as="div"
       class="vc-popup"
-      @close="closeModal"
+      @close="handleDialogDismiss"
+      @keydown.esc="handleEscapeKeydown"
     >
       <TransitionChild
         as="template"
@@ -26,6 +27,7 @@
         :class="{
           'vc-popup__container--desktop': !isMobileView,
           'vc-popup__container--mobile': isMobileView,
+          'vc-popup__container--fullscreen': isFullscreen,
         }"
       >
         <div class="vc-popup__center">
@@ -56,12 +58,13 @@
                 <slot name="header">{{ title }}</slot>
 
                 <button
+                  v-if="closable"
+                  type="button"
                   class="vc-popup__close-btn"
-                  aria-label="Close dialog"
-                  @click="closeModal"
+                  :aria-label="$t('COMPONENTS.ORGANISMS.VC_POPUP.CLOSE')"
+                  @click="closeFromAction"
                 >
                   <svg
-                    v-if="closable"
                     width="12"
                     height="12"
                     viewBox="0 0 12 12"
@@ -103,11 +106,11 @@
               >
                 <slot
                   name="footer"
-                  :close="closeModal"
+                  :close="closeFromAction"
                 >
                   <VcButton
                     class="vc-popup__close-button"
-                    @click="closeModal"
+                    @click="closeFromAction"
                   >
                     {{ $t("COMPONENTS.ORGANISMS.VC_POPUP.CLOSE") }}
                   </VcButton>
@@ -122,27 +125,37 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { Ref, computed, inject } from "vue";
+import { computed, inject, ref } from "vue";
 import { IsMobileKey } from "@framework/injection-keys";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 
+export type PopupVariant = "default" | "error" | "warning" | "success" | "info";
+export type PopupCloseReason = "overlay" | "escape" | "action";
+
 export interface Props {
+  modelValue?: boolean;
   title?: string;
   closable?: boolean;
-  variant?: "default" | "error" | "warning" | "success" | "info";
+  variant?: PopupVariant;
   isMobileFullscreen?: boolean;
   isFullscreen?: boolean;
   modalWidth?: string;
+  closeOnOverlay?: boolean;
+  closeOnEscape?: boolean;
 }
 
 interface Emits {
-  (event: "close"): void;
+  (event: "close", reason?: PopupCloseReason): void;
+  (event: "update:modelValue", value: boolean): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  modelValue: undefined,
   closable: true,
   variant: "default",
   modalWidth: "tw-max-w-md",
+  closeOnOverlay: undefined,
+  closeOnEscape: undefined,
 });
 
 const emit = defineEmits<Emits>();
@@ -153,47 +166,78 @@ defineSlots<{
   footer: (props: { close: () => void }) => any;
 }>();
 
-const isMobile = inject(IsMobileKey)!;
+const isMobile = inject(IsMobileKey, ref(false));
+const pendingDismissReason = ref<PopupCloseReason | null>(null);
+
+const variantMeta: Record<Exclude<PopupVariant, "default">, { icon: string; className: string }> = {
+  warning: { icon: "material-warning", className: "vc-popup__icon--warning" },
+  error: { icon: "material-error", className: "vc-popup__icon--error" },
+  success: { icon: "material-check_circle", className: "vc-popup__icon--success" },
+  info: { icon: "material-info", className: "vc-popup__icon--info" },
+};
+
+const isVisible = computed(() => props.modelValue ?? true);
+const canCloseOnOverlay = computed(() => props.closeOnOverlay ?? props.closable);
+const canCloseOnEscape = computed(() => props.closeOnEscape ?? props.closable);
 
 const icon = computed(() => {
-  switch (props.variant) {
-    case "warning":
-      return "material-warning";
-    case "error":
-      return "material-error";
-    case "success":
-      return "material-check_circle";
-    case "info":
-      return "material-info";
-    default:
-      return "";
+  if (props.variant === "default") {
+    return "";
   }
+
+  return variantMeta[props.variant].icon;
 });
 
 const iconStyle = computed(() => {
-  switch (props.variant) {
-    case "warning":
-      return "vc-popup__icon--warning";
-    case "error":
-      return "vc-popup__icon--error";
-    case "success":
-      return "vc-popup__icon--success";
-    case "info":
-      return "vc-popup__icon--info";
-    default:
-      return "";
+  if (props.variant === "default") {
+    return "";
   }
+
+  return variantMeta[props.variant].className;
 });
 
 const isMobileView = computed(() => isMobile.value && props.isMobileFullscreen);
 
-function closeModal() {
-  emit("close");
+function emitClose(reason: PopupCloseReason): void {
+  emit("update:modelValue", false);
+  emit("close", reason);
+}
+
+function closeFromAction(): void {
+  if (!props.closable) {
+    return;
+  }
+
+  emitClose("action");
+}
+
+function handleEscapeKeydown(): void {
+  pendingDismissReason.value = "escape";
+}
+
+function handleDialogDismiss(): void {
+  const reason = pendingDismissReason.value ?? "overlay";
+  pendingDismissReason.value = null;
+
+  if (reason === "overlay" && !canCloseOnOverlay.value) {
+    return;
+  }
+
+  if (reason === "escape" && !canCloseOnEscape.value) {
+    return;
+  }
+
+  emitClose(reason);
 }
 </script>
 
 <style lang="scss">
 :root {
+  --vc-popup-border-radius: var(--popup-border-radius, 6px);
+  --vc-popup-shadow: var(--popup-shadow, 0 24px 48px rgb(15 23 42 / 0.2));
+  --vc-popup-overlay-blur: var(--popup-overlay-blur, 3px);
+
+  // Deprecated aliases (prefer --vc-popup-* variables for new themes)
   --popup-close-btn-bg: var(--neutrals-100);
   --popup-close-btn-bg-hover: color-mix(in srgb, var(--popup-close-btn-bg), #000 5%);
   --popup-header-color: var(--primary-700);
@@ -210,7 +254,10 @@ function closeModal() {
 
 .vc-popup {
   &__overlay {
-    @apply tw-fixed tw-inset-0 tw-bg-black/50 tw-backdrop-blur-[3px];
+    @apply tw-fixed tw-inset-0;
+    background: var(--popup-overlay);
+    backdrop-filter: blur(var(--vc-popup-overlay-blur));
+    -webkit-backdrop-filter: blur(var(--vc-popup-overlay-blur));
   }
 
   &__container {
@@ -223,6 +270,10 @@ function closeModal() {
     &--mobile {
       @apply tw-p-0;
     }
+
+    &--fullscreen {
+      @apply tw-p-0 tw-overflow-hidden;
+    }
   }
 
   &__center {
@@ -230,7 +281,10 @@ function closeModal() {
   }
 
   &__panel {
-    @apply tw-w-full tw-transform tw-overflow-hidden tw-rounded-[5px] tw-bg-[var(--popup-bg)] tw-text-left tw-align-middle tw-shadow-xl tw-transition-all;
+    @apply tw-w-full tw-transform tw-overflow-hidden tw-text-left tw-align-middle tw-transition-all;
+    border-radius: var(--vc-popup-border-radius);
+    background: var(--popup-bg);
+    box-shadow: var(--vc-popup-shadow);
 
     &--desktop {
       @apply tw-flex tw-flex-col [max-height:calc(100vh-40px)];
@@ -241,16 +295,16 @@ function closeModal() {
     }
 
     &--fullscreen {
-      @apply tw-h-screen #{!important};
+      @apply tw-h-[100dvh] tw-max-h-[100dvh] tw-w-screen tw-max-w-none tw-rounded-none #{!important};
     }
   }
 
   &__title {
-    @apply tw-text-lg tw-font-semibold tw-leading-5 tw-text-[var(--popup-header-color)] tw-flex tw-px-6 tw-py-5;
+    @apply tw-text-lg tw-font-semibold tw-leading-5 tw-text-[var(--popup-header-color)] tw-flex tw-items-center tw-gap-4 tw-px-6 tw-py-5;
   }
 
   &__close-btn {
-    @apply tw-h-[26px] tw-w-[26px] tw-bg-[var(--popup-close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ml-auto hover:tw-bg-[var(--popup-close-btn-bg-hover)] tw-outline-none;
+    @apply tw-h-[26px] tw-w-[26px] tw-bg-[var(--popup-close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ml-auto tw-shrink-0 hover:tw-bg-[var(--popup-close-btn-bg-hover)] tw-outline-none tw-ring-offset-2 tw-ring-offset-transparent focus-visible:tw-ring-2 focus-visible:tw-ring-[var(--primary-300)];
   }
 
   &__content {

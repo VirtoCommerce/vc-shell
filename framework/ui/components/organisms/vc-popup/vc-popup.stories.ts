@@ -7,7 +7,17 @@ import VcIcon from "@ui/components/atoms/vc-icon/vc-icon.vue";
 const meta = {
   title: "Organisms/VcPopup",
   component: VcPopup,
+  tags: ["autodocs"],
   argTypes: {
+    modelValue: {
+      description:
+        "Optional controlled visibility state. If omitted, popup visibility is controlled externally (e.g. with `v-if`).",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean | undefined" },
+        category: "Props",
+      },
+    },
     title: {
       description: "The title of the popup. Can be overridden by the header slot.",
       control: "text",
@@ -62,10 +72,33 @@ const meta = {
         category: "Props",
       },
     },
+    closeOnOverlay: {
+      description: "Controls close-on-overlay behavior. If undefined, inherits `closable`.",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean | undefined" },
+        defaultValue: { summary: "undefined" },
+        category: "Props",
+      },
+    },
+    closeOnEscape: {
+      description: "Controls close-on-Escape behavior. If undefined, inherits `closable`.",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean | undefined" },
+        defaultValue: { summary: "undefined" },
+        category: "Props",
+      },
+    },
     // Events
     onClose: {
       action: "close",
       description: "Emitted when the popup is requested to close (e.g. by clicking the close button or pressing Esc).",
+      table: { category: "Events" },
+    },
+    "onUpdate:modelValue": {
+      action: "update:modelValue",
+      description: "Emitted by controlled popup mode when visibility changes.",
       table: { category: "Events" },
     },
     // Slots
@@ -83,12 +116,15 @@ const meta = {
     },
   },
   args: {
+    modelValue: undefined,
     title: "Default Popup Title",
     closable: true,
     variant: "default",
     isMobileFullscreen: false,
     isFullscreen: false,
     modalWidth: "tw-max-w-md",
+    closeOnOverlay: undefined,
+    closeOnEscape: undefined,
   },
   parameters: {
     docs: {
@@ -102,6 +138,8 @@ It supports different variants, fullscreen modes, and customization through prop
 - Support for different visual variants (default, error, warning, success, info).
 - Optional fullscreen mode for mobile and desktop.
 - Control over closability.
+- Optional controlled visibility via \`v-model\`.
+- Fine-grained dismiss behavior: \`closeOnOverlay\`, \`closeOnEscape\`.
 - Custom modal width using Tailwind CSS classes.
 - Slots for header, content, and footer customization.
 
@@ -109,6 +147,7 @@ It supports different variants, fullscreen modes, and customization through prop
 
 \`\`\`vue
 <VcPopup
+  v-model="isOpen"
   title="My Popup"
   :closable="true"
   variant="info"
@@ -392,6 +431,73 @@ export const CustomHeader: Story = {
       description: {
         story:
           "Shows how to use the `header` slot to provide a fully custom header for the VcPopup. This will replace the default title rendering.",
+      },
+    },
+  },
+};
+
+/**
+ * Controlled popup with explicit dismiss rules.
+ * Demonstrates `v-model`, `closeOnOverlay`, and `closeOnEscape`.
+ */
+export const ControlledDismissRules: Story = {
+  render: (args) => ({
+    components: { VcPopup, VcButton },
+    setup() {
+      const isOpen = ref(false);
+      const closeReason = ref("none");
+
+      const openPopup = () => {
+        isOpen.value = true;
+        closeReason.value = "none";
+      };
+
+      const onClose = (reason?: string) => {
+        closeReason.value = reason ?? "unknown";
+        args.onClose?.(reason);
+      };
+
+      const onUpdateModelValue = (value: boolean) => {
+        isOpen.value = value;
+        args["onUpdate:modelValue"]?.(value);
+      };
+
+      return { args, isOpen, closeReason, openPopup, onClose, onUpdateModelValue };
+    },
+    template: `
+      <div class="tw-flex tw-flex-col tw-gap-4">
+        <div class="tw-text-sm tw-text-neutrals-600">Last close reason: {{ closeReason }}</div>
+        <VcButton @click="openPopup">Open Controlled Popup</VcButton>
+        <VcPopup
+          v-bind="args"
+          v-model="isOpen"
+          @close="onClose"
+          @update:modelValue="onUpdateModelValue"
+        >
+          <template #content>
+            <p class="tw-p-4">This popup is controlled with <strong>v-model</strong>.</p>
+            <p class="tw-p-4">Overlay and Escape dismiss can be turned on/off independently.</p>
+          </template>
+          <template #footer="{ close }">
+            <div class="tw-flex tw-justify-end tw-w-full">
+              <VcButton @click="close">Close by action</VcButton>
+            </div>
+          </template>
+        </VcPopup>
+      </div>
+    `,
+  }),
+  args: {
+    title: "Controlled Popup",
+    closable: true,
+    closeOnOverlay: false,
+    closeOnEscape: false,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Shows controlled mode with `v-model`. In this example, overlay and Escape dismiss are disabled while action-button close remains available.",
       },
     },
   },

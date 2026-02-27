@@ -1,9 +1,13 @@
 <template>
-  <VcPopup
+  <VcPopupBase
     variant="warning"
-    is-mobile-fullscreen
+    mode="confirm"
+    :confirm-label="$t('COMPONENTS.ORGANISMS.VC_POPUP.CONFIRM')"
+    :cancel-label="$t('COMPONENTS.ORGANISMS.VC_POPUP.CANCEL')"
+    confirm-as-text
     :title="title"
     @close="$emit('close')"
+    @confirm="$emit('confirm')"
   >
     <template
       v-if="$slots.header"
@@ -11,26 +15,12 @@
     >
       <slot name="header" />
     </template>
-    <template #content>
-      <slot />
-    </template>
-
-    <template #footer="{ close }">
-      <div class="tw-flex tw-flex-auto tw-justify-end tw-gap-6">
-        <VcButton
-          text
-          class="!tw-text-[var(--confirm-button-color)]"
-          @click="$emit('confirm')"
-          >{{ $t("COMPONENTS.ORGANISMS.VC_POPUP.CONFIRM") }}</VcButton
-        >
-        <VcButton @click="close">{{ $t("COMPONENTS.ORGANISMS.VC_POPUP.CANCEL") }}</VcButton>
-      </div>
-    </template>
-  </VcPopup>
+    <slot />
+  </VcPopupBase>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import VcPopup from "@ui/components/organisms/vc-popup/vc-popup.vue";
+import VcPopupBase from "@shared/components/common/popup/vc-popup-base.vue";
 
 export interface Props {
   title?: string;
@@ -50,9 +40,3 @@ defineSlots<{
   default: (props: any) => any;
 }>();
 </script>
-
-<style lang="scss">
-:root {
-  --confirm-button-color: var(--secondary-700);
-}
-</style>

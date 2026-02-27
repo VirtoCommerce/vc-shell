@@ -1,7 +1,8 @@
 <template>
-  <VcPopup
+  <VcPopupBase
     variant="info"
-    is-mobile-fullscreen
+    mode="acknowledge"
+    :action-label="$t('COMPONENTS.ORGANISMS.VC_POPUP.OK')"
     :title="title"
     @close="$emit('close')"
   >
@@ -11,24 +12,12 @@
     >
       <slot name="header" />
     </template>
-    <template #content>
-      <slot />
-    </template>
-
-    <template #footer="{ close }">
-      <div class="tw-flex tw-flex-auto tw-justify-end">
-        <VcButton
-          class="tw-ml-auto"
-          @click="close"
-          >{{ $t("COMPONENTS.ORGANISMS.VC_POPUP.OK") }}</VcButton
-        >
-      </div>
-    </template>
-  </VcPopup>
+    <slot />
+  </VcPopupBase>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import VcPopup from "@ui/components/organisms/vc-popup/vc-popup.vue";
+import VcPopupBase from "@shared/components/common/popup/vc-popup-base.vue";
 
 export interface Props {
   title?: string;
@@ -47,9 +36,3 @@ defineSlots<{
   default: (props: any) => any;
 }>();
 </script>
-
-<style lang="scss">
-:root {
-  --confirm-button-color: var(--secondary-700);
-}
-</style>

@@ -42,67 +42,80 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
 ): IUsePopup {
   const { t } = useI18n({ useScope: "global" });
   const popupInstance = usePopupInternal();
-  let rawPopup: UsePopupProps<DefineComponent> & UsePopupInternal;
+  let rawPopup: (UsePopupProps<DefineComponent> & UsePopupInternal) | undefined;
 
   if (options) {
     rawPopup = createInstance(unref(options));
   }
 
   watch(
-    () => options,
+    () => (options ? unref(options) : undefined),
     (newVal) => {
       if (newVal) {
-        rawPopup = createInstance(unref(newVal));
+        rawPopup = createInstance(newVal);
       }
     },
     { deep: true },
   );
 
-  function destroy(confirmation: UsePopupProps<DefineComponent>): void {
+  function destroy(confirmation?: Partial<UsePopupProps<DefineComponent> & UsePopupInternal>): void {
+    if (!confirmation) {
+      return;
+    }
+
     const popupInstanceInternal = usePopupInternal();
     const index = popupInstanceInternal?.popups?.findIndex((x) =>
       _.isEqualWith(x, confirmation, (val) => val.component),
     );
 
-    if (index !== -1) popupInstanceInternal?.popups?.splice(index, 1);
+    if (typeof index === "number" && index !== -1) {
+      popupInstanceInternal?.popups?.splice(index, 1);
+    }
+  }
+
+  function resolveInstance(customInstance?: UsePopupProps<DefineComponent>): UsePopupProps<DefineComponent> | undefined {
+    return rawPopup ?? customInstance;
+  }
+
+  function pushInstance(popup?: UsePopupProps<DefineComponent>) {
+    if (!popup) {
+      return;
+    }
+
+    destroy(popup);
+    popupInstance?.popups?.push(popup);
   }
 
   async function open(customInstance?: UsePopupProps<DefineComponent>) {
-    let activeInstance;
     await nextTick();
-    if (popupInstance) {
-      activeInstance = popupInstance;
-    }
-
-    destroy(rawPopup || customInstance);
-
-    activeInstance?.popups?.push(rawPopup || customInstance);
+    pushInstance(resolveInstance(customInstance));
   }
 
   function close(customInstance?: UsePopupProps<DefineComponent>) {
-    let activeInstance;
-    if (popupInstance) {
-      activeInstance = popupInstance;
+    const instanceToClose = resolveInstance(customInstance);
+    if (!instanceToClose) {
+      return;
     }
-    const index = activeInstance?.popups.indexOf(rawPopup || customInstance);
-    if (index !== undefined && index !== -1) activeInstance?.popups?.splice(index, 1);
+
+    const index = popupInstance?.popups.indexOf(instanceToClose);
+    if (typeof index === "number" && index !== -1) {
+      popupInstance?.popups?.splice(index, 1);
+    }
   }
 
-  async function showConfirmation(message: string | Ref<string>): Promise<boolean> {
-    let resolvePromise: (value: boolean | PromiseLike<boolean>) => void;
-    const confirmation = createInstance({
-      component: vcPopupWarning,
+  function showSimplePopup(
+    component: ComponentPublicInstanceConstructor<any>,
+    title: string,
+    message: string | Ref<string>,
+  ): UsePopupProps<DefineComponent> & UsePopupInternal {
+    const popup = createInstance({
+      component,
       props: {
-        title: t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.CONFIRMATION"),
+        title,
       },
       emits: {
         onClose() {
-          resolvePromise(false);
-          close(confirmation);
-        },
-        onConfirm() {
-          resolvePromise(true);
-          close(confirmation);
+          close(popup);
         },
       },
       slots: {
@@ -110,68 +123,58 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
       },
     });
 
-    destroy(confirmation);
+    pushInstance(popup);
+    return popup;
+  }
 
-    popupInstance.popups.push(confirmation);
-
+  function showConfirmation(message: string | Ref<string>): Promise<boolean> {
     return new Promise((resolve) => {
-      resolvePromise = resolve;
+      const confirmation = createInstance({
+        component: vcPopupWarning,
+        props: {
+          title: t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.CONFIRMATION"),
+        },
+        emits: {
+          onClose() {
+            resolve(false);
+            close(confirmation);
+          },
+          onConfirm() {
+            resolve(true);
+            close(confirmation);
+          },
+        },
+        slots: {
+          default: message,
+        },
+      });
+
+      pushInstance(confirmation);
     });
   }
 
   function showError(message: string | Ref<string>) {
-    const confirmation = createInstance({
-      component: vcPopupError,
-      props: {
-        title: t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.ERROR"),
-      },
-      emits: {
-        onClose() {
-          close(confirmation);
-        },
-      },
-      slots: {
-        default: message,
-      },
-    });
-
-    destroy(confirmation);
-
-    popupInstance.popups.push(confirmation);
+    showSimplePopup(vcPopupError, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.ERROR"), message);
   }
 
   function showInfo(message: string | Ref<string>) {
-    const confirmation = createInstance({
-      component: vcPopupInfo,
-      props: {
-        title: t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.INFO"),
-      },
-      emits: {
-        onClose() {
-          close(confirmation);
-        },
-      },
-      slots: {
-        default: message,
-      },
-    });
-
-    destroy(confirmation);
-
-    popupInstance.popups.push(confirmation);
+    showSimplePopup(vcPopupInfo, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.INFO"), message);
   }
 
   function createInstance<T extends ComponentPublicInstanceConstructor<any> = typeof VcPopup>(
     options: UsePopupProps<T>,
   ) {
-    return (
-      options &&
-      (reactive({
-        ...createComponent(options),
-        close: close,
-        open: open,
-      }) as unknown as UsePopupProps<DefineComponent> & UsePopupInternal)
-    );
+    const popup = reactive({
+      ...createComponent(options),
+      id: Symbol("vc-popup-instance"),
+      close: () => undefined,
+      open: () => undefined,
+    }) as unknown as UsePopupProps<DefineComponent> & UsePopupInternal;
+
+    popup.close = () => close(popup);
+    popup.open = () => open(popup);
+
+    return popup;
   }
 
   return {

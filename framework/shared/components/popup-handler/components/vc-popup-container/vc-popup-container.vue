@@ -1,8 +1,8 @@
 <template>
   <component
     :is="popup.component"
-    v-for="popup in popupPlugin?.popups"
-    :key="popup.id"
+    v-for="(popup, index) in popupPlugin?.popups"
+    :key="popup.id ?? index"
     v-bind="{ ...popup.props, ...popup.emits }"
     @close="() => popup.close?.()"
   >

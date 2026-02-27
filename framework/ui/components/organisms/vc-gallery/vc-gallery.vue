@@ -102,22 +102,21 @@
     </template>
 
     <!-- Empty state / Full-width upload -->
-    <template v-if="!hasImages && !disabled">
-      <slot name="empty">
-        <div class="vc-gallery__empty-upload">
-          <VcFileUpload
-            :icon="uploadIcon"
-            :multiple="multiple"
-            :rules="rules"
-            :name="name"
-            :loading="loading"
-            :accept="accept"
-            :custom-text="uploadCustomText"
-            @upload="upload.onUpload"
-          />
-        </div>
-      </slot>
-    </template>
+    <div
+      v-if="!hasImages && !disabled"
+      class="vc-gallery__empty-upload"
+    >
+      <VcFileUpload
+        :icon="uploadIcon"
+        :multiple="multiple"
+        :rules="rules"
+        :name="name"
+        :loading="loading"
+        :accept="accept"
+        :custom-text="uploadCustomText"
+        @upload="upload.onUpload"
+      />
+    </div>
 
     <!-- Disabled + no images -->
     <div
@@ -274,7 +273,8 @@ function onGlobalDragEnter(event: DragEvent) {
   }
 }
 
-function onGlobalDragLeave() {
+function onGlobalDragLeave(event: DragEvent) {
+  if (!event.dataTransfer?.types.includes("Files")) return;
   dragCounter--;
   if (dragCounter <= 0) {
     isDragOver.value = false;

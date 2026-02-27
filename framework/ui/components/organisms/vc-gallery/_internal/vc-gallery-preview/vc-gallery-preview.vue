@@ -102,7 +102,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { VcPopup, VcIcon } from "@ui/components";
-import { ICommonAsset } from "@core/types";
+import type { ICommonAsset } from "@core/types";
 import { useI18n } from "vue-i18n";
 
 export interface Props {

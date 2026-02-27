@@ -17,12 +17,13 @@ export function useGalleryUpload(images: Ref<ICommonAsset[]>, options: UseGaller
       let fileName = file.name;
 
       if (existingNames.includes(fileName)) {
-        const baseName = fileName.replace(/\.[^/.]+$/, "");
-        const ext = fileName.split(".").pop();
+        const dotIndex = fileName.lastIndexOf(".");
+        const baseName = dotIndex > 0 ? fileName.slice(0, dotIndex) : fileName;
+        const ext = dotIndex > 0 ? fileName.slice(dotIndex) : "";
         let index = 1;
 
         while (existingNames.includes(fileName)) {
-          fileName = `${baseName}_${index}.${ext}`;
+          fileName = `${baseName}_${index}${ext}`;
           index++;
         }
       }

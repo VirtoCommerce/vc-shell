@@ -81,7 +81,7 @@
 <script lang="ts" setup>
 import { ref, toRef } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { ICommonAsset } from "@core/types";
+import type { ICommonAsset } from "@core/types";
 import { VcIcon } from "@ui/components";
 import { useI18n } from "vue-i18n";
 import { useImageLoad } from "../../composables/useImageLoad";

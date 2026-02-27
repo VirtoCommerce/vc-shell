@@ -191,6 +191,36 @@ describe("menu-service", () => {
       expect(service.menuItems.value[0].children![0].title).toBe("Users Updated");
     });
 
+    it("identity is symmetric — determined by highest-priority field on each item independently", async () => {
+      const { createMenuService } = await loadMenuServiceModule();
+      const service = createMenuService();
+
+      service.addMenuItem({ title: "Page", priority: 1, url: "/page", routeId: "PageRoute" } as any);
+
+      // Removing by url alone won't match — stored item's identity is route:PageRoute, not url:/page
+      service.removeMenuItem({ url: "/page" } as any);
+      expect(service.menuItems.value).toHaveLength(1); // still there
+
+      // Removing by routeId matches
+      service.removeMenuItem({ routeId: "PageRoute" } as any);
+      expect(service.menuItems.value).toHaveLength(0);
+    });
+
+    it("finalized items without explicit id have id undefined", async () => {
+      // Documents the auto-id removal. External consumers of menuItems.value
+      // should use routeId/url/title as fallback identifiers.
+      const { createMenuService } = await loadMenuServiceModule();
+      const service = createMenuService();
+
+      service.addMenuItem({ title: "Orders", priority: 1, url: "/orders", routeId: "Orders" } as any);
+
+      const item = service.menuItems.value[0];
+      expect(item.id).toBeUndefined();
+      expect(item.routeId).toBe("Orders");
+      expect(item.url).toBe("/orders");
+      expect(item.title).toBe("Orders");
+    });
+
     it("groupConfig updates group properties on second registration", async () => {
       const { createMenuService } = await loadMenuServiceModule();
       const service = createMenuService();

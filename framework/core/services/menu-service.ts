@@ -4,12 +4,17 @@ import type { MenuItem, MenuItemBadgeConfig } from "@core/types";
 import { createUnrefFn, useArrayFind } from "@vueuse/core";
 import { createPreregistrationBus } from "@core/services/_internal";
 
-function menuItemKey(item: MenuItem): string {
+/**
+ * Canonical identity key for a menu item. Single source of truth.
+ * Priority: id → routeId → url → groupConfig.id+title → group+title → deep hash.
+ * isSameMenuItem is derived from this function.
+ */
+function menuItemIdentity(item: MenuItem): string {
   if (item.id !== undefined) return `id:${String(item.id)}`;
   if (item.routeId) return `route:${item.routeId}`;
   if (item.url) return `url:${item.url}`;
-  if (item.groupConfig?.id && item.title) return `gc:${item.groupConfig.id}:${item.title}`;
-  if (item.group && item.title) return `g:${item.group}:${item.title}`;
+  if (item.groupConfig?.id) return `gc:${item.groupConfig.id}:${item.title}`;
+  if (item.group) return `g:${item.group}:${item.title}`;
   return `hash:${JSON.stringify(_.omit(item, "title"))}`;
 }
 
@@ -18,7 +23,7 @@ const preregisteredMenuBadges: Ref<Map<string, MenuItemBadgeConfig>> = ref(new M
 
 export const menuServiceBus = createPreregistrationBus<MenuItem, MenuService>({
   name: "menu-service",
-  getKey: menuItemKey,
+  getKey: menuItemIdentity,
   registerIntoService: (service, item) => service.addMenuItem(item),
 });
 
@@ -86,28 +91,16 @@ export interface MenuService {
 const DEFAULT_PRIORITY = Infinity;
 const DEFAULT_GROUP_PRIORITY = Infinity;
 
+/**
+ * Checks if two menu items represent the same logical item.
+ * Derived from menuItemIdentity — single source of truth.
+ *
+ * Note: This is symmetric — both items are compared by their
+ * highest-priority identity field. Passing a partial item (e.g. only url)
+ * will only match items whose highest-priority field is also url.
+ */
 function isSameMenuItem(left: MenuItem, right: MenuItem): boolean {
-  if (left.id !== undefined && right.id !== undefined) {
-    return String(left.id) === String(right.id);
-  }
-
-  if (left.routeId && right.routeId) {
-    return left.routeId === right.routeId;
-  }
-
-  if (left.url && right.url) {
-    return left.url === right.url;
-  }
-
-  if (left.groupConfig?.id && right.groupConfig?.id) {
-    return left.groupConfig.id === right.groupConfig.id && left.title === right.title;
-  }
-
-  if (left.group && right.group) {
-    return left.group === right.group && left.title === right.title;
-  }
-
-  return _.isEqual(_.omit(left, "title"), _.omit(right, "title"));
+  return menuItemIdentity(left) === menuItemIdentity(right);
 }
 
 /**
@@ -270,9 +263,7 @@ export function createMenuService(): MenuService {
       .map(
         (item): MenuItem => ({
           ...item,
-          title: item.title,
-          id: item.id || createItemId(item.title),
-          children: item.children?.sort(sortByGroupPriority),
+          children: item.children ? [...item.children].sort(sortByGroupPriority) : undefined,
         }),
       )
       .sort(sortByPriority);

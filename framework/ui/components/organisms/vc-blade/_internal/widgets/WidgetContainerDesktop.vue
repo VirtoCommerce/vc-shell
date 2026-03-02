@@ -104,6 +104,13 @@ function handleTriggerClick(widget: IWidget) {
     @apply tw-flex tw-flex-row tw-gap-1;
   }
 
+  // Suppress widget's own hover inside dropdown — the dropdown item wrapper provides hover feedback
+  .vc-dropdown__item {
+    --widget-bg-hover-color: transparent;
+    --widget-icon-hover-color: var(--widget-icon-color);
+    --widget-title-hover-color: var(--widget-title-color);
+  }
+
   &__more {
     @apply tw-flex tw-items-center tw-justify-center tw-px-2 tw-h-full tw-cursor-pointer;
     color: var(--blade-toolbar-icon-color);

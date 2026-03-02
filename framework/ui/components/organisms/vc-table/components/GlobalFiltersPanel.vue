@@ -1,5 +1,7 @@
 <template>
+  <!-- Desktop: dropdown panel anchored to the button -->
   <VcDropdownPanel
+    v-if="!isMobile"
     :show="show"
     :anchor-ref="anchorRef"
     :title="$t('COMPONENTS.ORGANISMS.VC_TABLE.GLOBAL_FILTERS.TITLE')"
@@ -97,23 +99,128 @@
       </VcButton>
     </template>
   </VcDropdownPanel>
+
+  <!-- Mobile: bottom-sheet sidebar -->
+  <VcSidebar
+    v-else
+    :model-value="show"
+    position="bottom"
+    size="sm"
+    draggable
+    drag-handle
+    :close-button="false"
+    :inset="false"
+    :title="$t('COMPONENTS.ORGANISMS.VC_TABLE.GLOBAL_FILTERS.TITLE')"
+    @update:model-value="emit('update:show', $event)"
+  >
+    <!-- Filters list (same content as desktop) -->
+    <div class="vc-global-filters-panel__content">
+      <div
+        v-for="filter in filters"
+        :key="filter.id"
+        class="vc-global-filters-panel__filter"
+      >
+        <label class="vc-global-filters-panel__label">{{ filter.label }}</label>
+
+        <slot
+          v-if="$slots[`filter-${filter.id}`]"
+          :name="`filter-${filter.id}`"
+          :value="localValues[filter.id]"
+          :update-value="(val: unknown) => updateFilterValue(filter.id, val)"
+        />
+
+        <VcInput
+          v-else-if="getType(filter.id) === 'text'"
+          :model-value="localValues[filter.id] as string"
+          :placeholder="filter.placeholder ?? ''"
+          size="small"
+          @update:model-value="updateFilterValue(filter.id, $event)"
+        />
+
+        <VcSelect
+          v-else-if="getType(filter.id) === 'select'"
+          :model-value="localValues[filter.id]"
+          :options="getFilterOptions(filter.filter)"
+          option-value="value"
+          option-label="label"
+          size="small"
+          :placeholder="filter.placeholder ?? ''"
+          :multiple="isMultipleSelect(filter.filter)"
+          clearable
+          emit-value
+          @update:model-value="updateFilterValue(filter.id, $event)"
+        />
+
+        <div
+          v-else-if="getType(filter.id) === 'dateRange'"
+          class="vc-global-filters-panel__range"
+        >
+          <div class="vc-global-filters-panel__range-field">
+            <span class="vc-global-filters-panel__range-label">
+              {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_FILTER.FROM") }}
+            </span>
+            <VcInput
+              :model-value="getDateRangeStart(filter.id)"
+              type="date"
+              size="small"
+              @update:model-value="updateDateRangeStart(filter, $event)"
+            />
+          </div>
+          <div class="vc-global-filters-panel__range-field">
+            <span class="vc-global-filters-panel__range-label">
+              {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_FILTER.TO") }}
+            </span>
+            <VcInput
+              :model-value="getDateRangeEnd(filter.id)"
+              type="date"
+              size="small"
+              @update:model-value="updateDateRangeEnd(filter, $event)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <template #footer>
+      <div class="vc-global-filters-panel__footer-actions">
+        <VcButton
+          variant="outline"
+          size="sm"
+          @click="clearAll"
+        >
+          {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_FILTER.CLEAR") }}
+        </VcButton>
+        <VcButton
+          variant="primary"
+          size="sm"
+          @click="applyAll"
+        >
+          {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_FILTER.APPLY") }}
+        </VcButton>
+      </div>
+    </template>
+  </VcSidebar>
 </template>
 
 <script setup lang="ts">
 /**
- * GlobalFiltersPanel - Dropdown panel with global filters
+ * GlobalFiltersPanel - Responsive filter panel
  *
- * Displays a list of configurable filters with Apply/Clear buttons.
+ * Desktop: floating VcDropdownPanel anchored to the filter button.
+ * Mobile: VcSidebar bottom sheet with drag-to-dismiss.
+ *
  * Supports text, select (single/multi), and dateRange filter types.
  * Custom filter UI can be provided via named slots.
- * Uses VcDropdownPanel for positioning and backdrop.
  */
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, inject } from "vue";
 import { VcDropdownPanel } from "@ui/components/molecules";
 import { VcInput, VcSelect } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
+import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import type { GlobalFilterConfig } from "@ui/components/organisms/vc-table/types";
 import { useColumnFilter } from "@ui/components/organisms/vc-table/composables/useColumnFilter";
+import { IsMobileKey } from "@framework/injection-keys";
 
 interface Props {
   /** List of filter configurations (id, label, type, options) */
@@ -140,6 +247,8 @@ const emit = defineEmits<{
   /** Emitted when Clear is clicked */
   clear: [];
 }>();
+
+const isMobile = inject(IsMobileKey, ref(false));
 
 // Use the same helpers as ColumnFilter
 const { getFilterType, getFilterOptions, isMultipleSelect, getRangeFields } = useColumnFilter();
@@ -324,5 +433,8 @@ const clearAll = () => {
     @apply tw-block tw-text-xs tw-text-neutrals-500;
   }
 
+  &__footer-actions {
+    @apply tw-flex tw-justify-end tw-gap-2 tw-px-4 tw-py-3;
+  }
 }
 </style>

@@ -226,7 +226,7 @@ useShellBootstrap({
     @apply tw-p-0 tw-mb-2 tw-w-full tw-h-auto;
   }
 
-  &_mobile {
+  &--mobile {
     .vc-app__main-content {
       @apply tw-flex-col;
     }

@@ -7,19 +7,8 @@ import { generateId, createLogger } from "@core/utilities";
 
 const logger = createLogger("notification-container");
 
-export interface PendingNotification {
-  notificationId: string | number;
-  notificationProps: NotificationOptions;
-  position: NotificationPosition;
-}
-
-interface PendingContainer {
-  items: PendingNotification[];
-}
-
 interface IUseContainer {
   defaultOptions: NotificationOptions;
-  pending: PendingContainer;
   notificationContainers: Record<NotificationPosition, Ref<NotificationOptions[]>>;
   actions: {
     add(options: NotificationOptions): void;
@@ -37,8 +26,6 @@ interface IUseContainer {
   hasNotification(notificationId: string | number): boolean;
 }
 
-const pending = reactive<PendingContainer>({ items: [] });
-
 // Create containers for each position
 const notificationContainers: Record<NotificationPosition, Ref<NotificationOptions[]>> = {
   "top-center": ref([]),
@@ -55,7 +42,6 @@ export function useContainer(): IUseContainer {
   const defaultOptions = reactive<NotificationOptions>({
     timeout: 3000,
     pauseOnHover: true,
-    limit: 3,
     position: "top-center",
   });
 
@@ -66,17 +52,6 @@ export function useContainer(): IUseContainer {
 
   function getNotificationsByPosition(position: NotificationPosition) {
     return notificationContainers[position].value;
-  }
-
-  function existPendingItem() {
-    return pending.items.length > 0;
-  }
-
-  function appendFromPending() {
-    if (pending.items.length > 0) {
-      const append = pending.items.shift();
-      if (append?.notificationProps) appendInstance(append?.notificationProps);
-    }
   }
 
   function getNotification(notificationId: string | number) {
@@ -145,17 +120,6 @@ export function useContainer(): IUseContainer {
       const position = options.position || (defaultOptions.position as NotificationPosition);
       const containers = notificationContainers[position];
 
-      // Check the limit for this position
-      if (options.limit && containers.value.length >= options.limit) {
-        // Add to the waiting queue
-        pending.items.push({
-          notificationId: options.notificationId || generateId(),
-          notificationProps: options,
-          position,
-        });
-        return;
-      }
-
       if (!containers.value.find((item) => item.notificationId === options.notificationId)) {
         nextTick(() => {
           containers.value.push(options);
@@ -187,21 +151,9 @@ export function useContainer(): IUseContainer {
             positionToRemoveFrom
           ].value.filter((item) => item.notificationId !== id);
 
-          // If container is empty and there are no pending notifications for this position - remove it
-          const hasPendingForPosition = pending.items.some((item) => item.position === positionToRemoveFrom);
-
-          if (notificationContainers[positionToRemoveFrom].value.length === 0 && !hasPendingForPosition) {
+          // If container is empty, unmount it
+          if (notificationContainers[positionToRemoveFrom].value.length === 0) {
             unmountComponent(positionToRemoveFrom);
-          }
-
-          // Check pending notifications for this position
-          const pendingForPosition = pending.items.find((item) => item.position === positionToRemoveFrom);
-          if (pendingForPosition) {
-            const index = pending.items.indexOf(pendingForPosition);
-            const item = pending.items.splice(index, 1)[0];
-            if (item?.notificationProps) {
-              appendInstance(item.notificationProps);
-            }
           }
 
           // Call the onClose callback
@@ -220,70 +172,26 @@ export function useContainer(): IUseContainer {
       Object.values(notificationContainers).forEach((container) => {
         container.value = [];
       });
-      pending.items = [];
     },
 
     dismiss(notificationId: string | number) {
-      if (notificationId) {
-        // Find the notification among all containers
-        let found = false;
-        let foundPosition: NotificationPosition | undefined;
+      if (!notificationId) return;
 
-        Object.values(notificationContainers).forEach((container) => {
-          container.value.forEach((item) => {
-            if (item.notificationId === notificationId) {
-              found = true;
-              foundPosition =
-                (item.position as NotificationPosition) || (defaultOptions.position as NotificationPosition);
-
-              // Find the toast element - it has class vc-notification within the notification container
-              const nodeId = String(notificationId);
-              const node = document.getElementById(nodeId);
-
-              if (node) {
-                // Add exit animation class based on position
-                const exitClass = `notification-exit-${foundPosition}`;
-                node.classList.add(exitClass);
-
-                // Set explicit styles for animation
-                node.style.transition = "opacity 300ms ease-out, transform 300ms ease-out";
-                node.style.opacity = "0";
-
-                // Apply transform based on position for exit animation
-                switch (foundPosition) {
-                  case "top-center":
-                    node.style.transform = "translateY(-30px)";
-                    break;
-                  case "top-right":
-                    node.style.transform = "translate(30px, -30px)";
-                    break;
-                  case "top-left":
-                    node.style.transform = "translate(-30px, -30px)";
-                    break;
-                  case "bottom-center":
-                    node.style.transform = "translateY(30px)";
-                    break;
-                  case "bottom-right":
-                    node.style.transform = "translate(30px, 30px)";
-                    break;
-                  case "bottom-left":
-                    node.style.transform = "translate(-30px, 30px)";
-                    break;
-                  default:
-                    node.style.transform = "translateY(-30px)";
-                }
-
-                // Remove the notification after animation completes
-                setTimeout(() => {
-                  actions.remove(notificationId);
-                }, 300);
-              } else {
-                // If node not found, remove immediately
-                actions.remove(notificationId);
-              }
-            }
-          });
+      // Mark the notification as dismissing — VcToast watches this flag
+      // and handles its own exit animation, then emits 'close' when done.
+      let found = false;
+      Object.values(notificationContainers).forEach((container) => {
+        container.value.forEach((item) => {
+          if (item.notificationId === notificationId) {
+            item.dismissing = true;
+            found = true;
+          }
         });
+      });
+
+      // If notification wasn't found (already removed or never existed), no-op
+      if (!found) {
+        logger.debug(`dismiss: notification ${notificationId} not found`);
       }
     },
 
@@ -372,7 +280,6 @@ export function useContainer(): IUseContainer {
 
   return {
     defaultOptions,
-    pending,
     notificationContainers,
     actions,
     getAllNotifications,
@@ -382,26 +289,4 @@ export function useContainer(): IUseContainer {
     generateNotificationId: generateId,
     hasNotification,
   };
-}
-
-// Function, defining exit animation for each position
-function getExitTransform(position: NotificationPosition): string {
-  const distance = "var(--notification-slide-distance)";
-
-  switch (position) {
-    case "top-center":
-      return `translateY(calc(-1 * ${distance})) scale(0.95)`;
-    case "top-right":
-      return `translate(${distance}, calc(-1 * ${distance})) scale(0.95)`;
-    case "top-left":
-      return `translate(calc(-1 * ${distance}), calc(-1 * ${distance})) scale(0.95)`;
-    case "bottom-center":
-      return `translateY(${distance}) scale(0.95)`;
-    case "bottom-right":
-      return `translate(${distance}, ${distance}) scale(0.95)`;
-    case "bottom-left":
-      return `translate(calc(-1 * ${distance}), ${distance}) scale(0.95)`;
-    default:
-      return "translateY(-20px) scale(0.95)";
-  }
 }

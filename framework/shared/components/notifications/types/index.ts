@@ -6,7 +6,6 @@ import { VNode, DefineComponent } from "vue";
 export type NotificationType = "success" | "error" | "warning" | "default";
 
 export interface NotificationOptions {
-  limit?: number;
   pauseOnHover?: boolean;
   timeout?: number | boolean;
   content?: Content;
@@ -18,10 +17,9 @@ export interface NotificationOptions {
   payload?: string | Record<string, any>;
   updateId?: string | number;
   position?: NotificationPosition;
+  /** Set by `actions.dismiss()` to trigger exit animation in VcToast */
+  dismissing?: boolean;
 }
-
-// Now InternalNotificationOptions doesn't need closeNotification
-export type InternalNotificationOptions = NotificationOptions;
 
 // Adding a new type for notification positioning
 export type NotificationPosition =

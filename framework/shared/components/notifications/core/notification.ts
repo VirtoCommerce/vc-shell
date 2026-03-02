@@ -1,5 +1,5 @@
 import { mergeProps } from "vue";
-import { Content, InternalNotificationOptions, NotificationOptions, NotificationPosition } from "@shared/components/notifications/types";
+import { Content, NotificationOptions, NotificationPosition } from "@shared/components/notifications/types";
 import { useContainer } from "@shared/components/notifications/composables/useContainer";
 import { createLogger } from "@core/utilities";
 
@@ -7,7 +7,6 @@ const logger = createLogger("notification");
 
 const {
   defaultOptions,
-  pending,
   actions,
   getNotification,
   getAllNotifications,
@@ -16,40 +15,11 @@ const {
   hasNotification,
 } = useContainer();
 
-function checkPending(limit?: number, position?: NotificationPosition) {
-  // If position is not specified, use the default position
-  const posToCheck = position || (defaultOptions.position as NotificationPosition);
-  const limitCount = limit ?? 0;
-
-  // Check the limit for a specific position
-  const visibleCount = getAllNotifications().filter(
-    (notification) => (notification.position || defaultOptions.position) === posToCheck,
-  ).length;
-
-  return (
-    limitCount > 0 && visibleCount + pending.items.filter((item) => item.position === posToCheck).length >= limitCount
-  );
-}
-
-function resolvePending(options: InternalNotificationOptions) {
-  const position = options.position || (defaultOptions.position as NotificationPosition);
-
-  if (checkPending(options.limit, position) && options.notificationId) {
-    pending.items.push({
-      notificationId: options.notificationId,
-      notificationProps: options,
-      position,
-    });
-    return true;
-  }
-  return false;
-}
-
-function showNotification(content: Content, options: InternalNotificationOptions) {
+function showNotification(content: Content, options: NotificationOptions) {
   options = mergeProps(
     defaultOptions as Record<string, unknown>,
     options as Record<string, unknown>,
-  ) as InternalNotificationOptions;
+  ) as NotificationOptions;
 
   if (
     !options.notificationId ||
@@ -63,18 +33,6 @@ function showNotification(content: Content, options: InternalNotificationOptions
     content,
   };
 
-  // If this is an update (has updateId), don't check the limit and don't add to the waiting queue
-  if (options.updateId) {
-    appendInstance(options);
-    return options.notificationId;
-  }
-
-  // If the notification has been added to the queue, just return the ID
-  if (resolvePending(options)) {
-    return options.notificationId;
-  }
-
-  // Otherwise, display it
   appendInstance(options);
   return options.notificationId;
 }
@@ -189,9 +147,6 @@ notification.clearPosition = (position: NotificationPosition) => {
       actions.dismiss(item.notificationId);
     }
   });
-
-  // Remove pending notifications for this position
-  pending.items = pending.items.filter((item) => item.position !== position);
 };
 
 // Useful debugging method
@@ -238,15 +193,8 @@ notification.debug = () => {
     items.forEach((item) => logger.debug(`  - ${item.id} (${item.type}): ${item.content}`));
   });
 
-  // Collect statistics on pending notifications
-  logger.debug(`Pending notifications: ${pending.items.length}`);
-  pending.items.forEach((item) => {
-    logger.debug(`  - ${item.notificationId} (position: ${item.position})`);
-  });
-
   return {
     active: getAllNotifications(),
-    pending: pending.items,
     defaultOptions,
   };
 };

@@ -109,6 +109,7 @@ import { ref, computed, watch, onBeforeUnmount, inject, nextTick } from "vue";
 import { offset, flip, shift } from "@floating-ui/vue";
 import { VcIcon, VcButton } from "@ui/components/atoms";
 import type { TableAction } from "@ui/components/organisms/vc-table/types";
+import { TableContextKey } from "@ui/components/organisms/vc-table/keys";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
 
 const props = withDefaults(
@@ -155,9 +156,7 @@ const emit = defineEmits<{
 }>();
 
 // Inject table context for auto-detecting hover state
-const tableContext = inject<{
-  selectedRowIndex: { value: number | undefined };
-} | null>("tableContext", null);
+const tableContext = inject(TableContextKey, null);
 
 const isOpen = ref(false);
 const isBackdropVisible = ref(false);

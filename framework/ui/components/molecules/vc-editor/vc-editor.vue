@@ -452,11 +452,18 @@ function toggleSideBySideView() {
   editorMode.value = editorMode.value === "split" ? "editor" : "split";
 }
 
+// Guard flag: prevents emitting update:modelValue when content is set
+// programmatically from prop watcher (e.g., language switch), not from user input.
+let settingContentFromProp = false;
+
 const editor = useEditor({
   content: props.modelValue,
   editable: !props.disabled,
   extensions: extensions.value,
   onUpdate: ({ editor: tipTapEditor }) => {
+    // Skip emit when content was set programmatically from prop change
+    if (settingContentFromProp) return;
+
     // Always output in Markdown by default, unless HTML is detected
     const output =
       detectedType.value === "html"
@@ -489,7 +496,9 @@ watch(
         : (editor.value.storage as any).markdown?.getMarkdown?.() || editor.value.getHTML();
 
     if (editorContent !== value) {
+      settingContentFromProp = true;
       editor.value.commands.setContent(value || "");
+      settingContentFromProp = false;
     }
   },
 );

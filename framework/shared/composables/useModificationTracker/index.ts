@@ -1,5 +1,22 @@
 import { ref, watch, Ref, computed, DeepReadonly, unref, isRef } from "vue";
-import { cloneDeep, isEqual } from "lodash-es";
+import { cloneDeep, isEqualWith } from "lodash-es";
+
+/**
+ * Custom comparator for deep equality that treats null, undefined, and ""
+ * as semantically equivalent "empty" values.
+ * This prevents false modification detection when APIs return null
+ * but local state uses undefined or empty strings (common with language switching).
+ */
+function isEmpty(value: unknown): boolean {
+  return value === null || value === undefined || value === "";
+}
+
+function semanticEqual(a: unknown, b: unknown): boolean {
+  return isEqualWith(a, b, (valA: unknown, valB: unknown) => {
+    if (isEmpty(valA) && isEmpty(valB)) return true;
+    return undefined; // fall back to default deep comparison
+  });
+}
 
 /**
  * Return values from useModificationTracker.
@@ -51,7 +68,7 @@ export function useModificationTracker<T>(initialValueProp: T | Ref<T>): UseModi
       (newExternalInitialValue) => {
         // When the external initialValueProp (Ref) changes,
         // we need to decide if we should update currentValue.
-        const wasModified = !isEqual(currentValue.value, pristineValue.value);
+        const wasModified = !semanticEqual(currentValue.value, pristineValue.value);
 
         // Always update the "pristine" value (pristineValue), to reflect the new external source.
         pristineValue.value = cloneDeep(newExternalInitialValue);
@@ -73,7 +90,7 @@ export function useModificationTracker<T>(initialValueProp: T | Ref<T>): UseModi
   watch(
     [currentValue, pristineValue], // Track changes in currentValue or pristineValue
     ([newCurrentVal, newPristineVal]) => {
-      isModified.value = !isEqual(newCurrentVal, newPristineVal);
+      isModified.value = !semanticEqual(newCurrentVal, newPristineVal);
     },
     { deep: true },
   );

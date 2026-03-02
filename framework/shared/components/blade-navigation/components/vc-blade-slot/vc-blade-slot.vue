@@ -3,26 +3,21 @@
     :capture="true"
   >
     <template #default="{ error: interceptorError, reset: resetInterceptor }">
-      <Transition
-        name="blade-slide"
-        appear
-      >
-        <component
-          :is="bladeComponent"
-          v-if="bladeComponent"
-          v-show="visible"
-          ref="bladeInstanceRef"
-          :param="descriptor.param"
-          :options="descriptor.options"
-          :closable="closable"
-          :expanded="expanded"
-          @close:blade="onCloseBlade"
-          @parent:call="onParentCall"
-          @expand:blade="onExpand"
-          @collapse:blade="onCollapse"
-          @vue:unmounted="resetInterceptor"
-        />
-      </Transition>
+      <component
+        :is="bladeComponent"
+        v-if="bladeComponent"
+        v-show="visible"
+        ref="bladeInstanceRef"
+        :param="descriptor.param"
+        :options="descriptor.options"
+        :closable="closable"
+        :expanded="expanded"
+        @close:blade="onCloseBlade"
+        @parent:call="onParentCall"
+        @expand:blade="onExpand"
+        @collapse:blade="onCollapse"
+        @vue:unmounted="resetInterceptor"
+      />
     </template>
   </ErrorInterceptor>
 </template>
@@ -141,27 +136,3 @@ function onCollapse(): void {
   maximized.value = false;
 }
 </script>
-
-<style lang="scss">
-.blade-slide-enter-active {
-  transition:
-    opacity 0.25s ease-out,
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.blade-slide-enter-from {
-  opacity: 0;
-  transform: translateX(24px);
-}
-
-.blade-slide-leave-active {
-  transition:
-    opacity 0.15s ease-in,
-    transform 0.15s ease-in;
-}
-
-.blade-slide-leave-to {
-  opacity: 0;
-  transform: translateX(24px);
-}
-</style>

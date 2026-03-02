@@ -624,7 +624,10 @@ async function generateApiClient(): Promise<void> {
     const parsedArgs = mri(process.argv.slice(2)) as ApiClientArgs;
 
     // Get values from environment variables first, then from CLI arguments
-    const platformUrl = process.env.APP_PLATFORM_URL ?? parsedArgs.APP_PLATFORM_URL;
+    const rawPlatformUrl = process.env.APP_PLATFORM_URL ?? parsedArgs.APP_PLATFORM_URL;
+    // Ensure trailing slash so NSwag config.nswag URL concatenation produces valid URIs
+    // e.g. "https://localhost:5001" + "docs/..." → "https://localhost:5001docs/..." (invalid port)
+    const platformUrl = rawPlatformUrl?.endsWith("/") ? rawPlatformUrl : rawPlatformUrl ? `${rawPlatformUrl}/` : rawPlatformUrl;
     const platformModules = process.env.APP_PLATFORM_MODULES ?? parsedArgs.APP_PLATFORM_MODULES;
     const apiClientDirectory = process.env.APP_API_CLIENT_DIRECTORY ?? parsedArgs.APP_API_CLIENT_DIRECTORY;
     const packageName = process.env.APP_PACKAGE_NAME ?? parsedArgs.APP_PACKAGE_NAME;

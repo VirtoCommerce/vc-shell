@@ -17,7 +17,7 @@ interface ApiClientArgs {
   APP_PACKAGE_VERSION?: string;
   APP_OUT_DIR?: string;
   APP_BUILD_DIR?: string;
-  RUNTIME?: string;
+  RUNTIME?: "Net80" | "Net90" | "Net100" | (string & {});
   SKIP_BUILD?: boolean;
   VERBOSE?: boolean;
   APP_TYPE_STYLE?: "Class" | "Interface";
@@ -632,6 +632,18 @@ async function generateApiClient(): Promise<void> {
     const outDir = process.env.APP_OUT_DIR ?? parsedArgs.APP_OUT_DIR ?? "./";
     const buildDir = process.env.APP_BUILD_DIR ?? parsedArgs.APP_BUILD_DIR ?? "dist";
     const runtime = process.env.RUNTIME ?? parsedArgs.RUNTIME ?? "Net80";
+
+    // Validate RUNTIME parameter
+    const knownRuntimes = ["Net80", "Net90", "Net100"];
+    if (!knownRuntimes.includes(runtime)) {
+      console.warn(
+        "api-client-generator %s Unknown RUNTIME value: %s. Known values: %s. Proceeding anyway — NSwag will report an error if the runtime is unsupported.",
+        chalk.yellow("warning"),
+        chalk.whiteBright(runtime),
+        chalk.whiteBright(knownRuntimes.join(", ")),
+      );
+    }
+
     const skipBuild = process.env.SKIP_BUILD === "true" || parsedArgs.SKIP_BUILD === true;
     const verbose = process.env.VERBOSE === "true" || parsedArgs.VERBOSE === true;
     const typeStyle = (process.env.APP_TYPE_STYLE ?? parsedArgs.APP_TYPE_STYLE ?? "Class") as "Class" | "Interface";

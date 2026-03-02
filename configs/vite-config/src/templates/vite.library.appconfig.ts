@@ -4,12 +4,19 @@ import path from "node:path";
 // import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
-  // plugins: [
-  //   visualizer({
-  //     open: true,
-  //     filename: "dist/stats-shell.html",
-  //   }) as PluginOption,
-  // ],
+  plugins: [
+    {
+      name: "vc-remove-empty-chunks",
+      generateBundle(_, bundle) {
+        for (const key of Object.keys(bundle)) {
+          const chunk = bundle[key];
+          if (chunk.type === "chunk" && chunk.code.trim().length === 0) {
+            delete bundle[key];
+          }
+        }
+      },
+    },
+  ],
   resolve: {
     dedupe: ["@intlify", "vue", "@vue/runtime-core", "vue-i18n"],
   },

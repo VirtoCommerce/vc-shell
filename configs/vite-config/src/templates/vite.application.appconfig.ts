@@ -127,6 +127,17 @@ export default defineConfig({
   envPrefix: "APP_",
   base: appBasePath,
   plugins: [
+    {
+      name: "vc-remove-empty-chunks",
+      generateBundle(_, bundle) {
+        for (const key of Object.keys(bundle)) {
+          const chunk = bundle[key];
+          if (chunk.type === "chunk" && chunk.code.trim().length === 0) {
+            delete bundle[key];
+          }
+        }
+      },
+    },
     mkcert({ hosts: ["localhost", "127.0.0.1"] }),
     vue(),
     checker({

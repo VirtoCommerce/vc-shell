@@ -61,6 +61,19 @@ export default getLibraryConfiguration({
           return;
         }
 
+        // Suppress empty chunk warnings (files already removed by vc-remove-empty-chunks plugin)
+        if (warning.code === "EMPTY_BUNDLE") return;
+
+        // notification.ts is intentionally dynamically imported in useAsync/pendingErrorNotifications
+        // to break circular dependency, but also statically imported elsewhere — Vite warns about this
+        if (
+          warning.plugin === "vite:reporter" &&
+          typeof warning.message === "string" &&
+          warning.message.includes("dynamic import will not move module into another chunk")
+        ) {
+          return;
+        }
+
         // Show warning by default
         if (defaultHandler) defaultHandler(warning);
       },

@@ -10,7 +10,7 @@ export async function resolveLocale(localeCode: string): Promise<Locale> {
     return localeCache.get(localeCode)!;
   }
   try {
-    const mod = await import(`date-fns/locale/${localeCode}`);
+    const mod = await import(/* @vite-ignore */ `date-fns/locale/${localeCode}`);
     const dateFnsKey = localeCode.replace("-", "");
     const locale = mod.default ?? mod[dateFnsKey] ?? enUS;
     localeCache.set(localeCode, locale);
@@ -19,7 +19,7 @@ export async function resolveLocale(localeCode: string): Promise<Locale> {
     const base = localeCode.split("-")[0];
     if (base !== localeCode) {
       try {
-        const mod = await import(`date-fns/locale/${base}`);
+        const mod = await import(/* @vite-ignore */ `date-fns/locale/${base}`);
         const locale = mod.default ?? mod[base] ?? enUS;
         localeCache.set(localeCode, locale);
         return locale;

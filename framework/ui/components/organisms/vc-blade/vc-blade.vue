@@ -198,6 +198,7 @@ const contentRef = ref<HTMLElement | null>(null);
 
   &__back-button {
     @apply tw-mr-[14px];
+    flex: none;
   }
 
   &--mobile {

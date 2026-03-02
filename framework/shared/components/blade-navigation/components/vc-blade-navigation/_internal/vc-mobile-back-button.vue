@@ -2,6 +2,7 @@
   <VcBreadcrumbs
     v-on-click-outside="hideBreadcrumbs"
     :items="breadcrumbs"
+    collapsed
   >
     <template #trigger="{ click }">
       <OnLongPress

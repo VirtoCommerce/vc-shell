@@ -178,6 +178,17 @@ const handlePointerDownOutside = (e: PointerEvent) => {
       return;
     }
   }
+  // Handle teleported child dropdowns (e.g. VcSelect dropdown inside this panel).
+  // VcSelect teleports its dropdown to <body>, so it's outside our DOM tree.
+  // We identify ownership via the ARIA contract: the dropdown has id="listboxId"
+  // and the trigger inside our panel has aria-controls="listboxId".
+  const selectDropdown = target.closest?.(".vc-select__dropdown");
+  if (selectDropdown && floatingRef.value) {
+    const listboxId = selectDropdown.getAttribute("id");
+    if (listboxId && floatingRef.value.querySelector(`[aria-controls="${listboxId}"]`)) {
+      return;
+    }
+  }
   close();
 };
 

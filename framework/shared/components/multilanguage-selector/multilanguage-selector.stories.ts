@@ -33,7 +33,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Compact language selector used in details blades (offers/products). Stories mirror the vendor-portal behavior with language switching and disabled state.",
+          "Compact language selector used in details blades (offers/products). Shows a circular flag button that opens a dropdown with language options. Active language is indicated with a checkmark.",
       },
     },
   },
@@ -60,7 +60,7 @@ export const Interactive: Story = {
           :model-value="selected"
           @update:model-value="selected = $event"
         />
-        <span class="tw-text-sm tw-text-neutrals-700">Current language: {{ selectedLabel }}</span>
+        <span class="tw-text-sm tw-text-[color:var(--neutrals-700)]">Current language: {{ selectedLabel }}</span>
       </div>
     `,
   }),
@@ -83,7 +83,7 @@ export const Disabled: Story = {
           :model-value="selected"
           @update:model-value="selected = $event"
         />
-        <span class="tw-text-sm tw-text-neutrals-500">Readonly mode</span>
+        <span class="tw-text-sm tw-text-[color:var(--neutrals-500)]">Readonly mode</span>
       </div>
     `,
   }),

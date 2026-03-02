@@ -102,7 +102,7 @@ defineExpose({
     font-size: var(--scroll-arrow-size);
 
     &--hidden {
-      @apply tw-opacity-0 tw-pointer-events-none;
+      @apply tw-opacity-0 tw-pointer-events-none tw-h-0 tw-py-0 tw-overflow-hidden;
     }
   }
 

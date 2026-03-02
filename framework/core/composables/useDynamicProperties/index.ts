@@ -272,11 +272,12 @@ export const useDynamicProperties = <
     property: TProperty,
     value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[],
     dictionary: TPropertyDictionaryItem[],
+    locale?: string,
   ): void {
     const dict = dictionary.map((x) => new PropertyDictionaryItemConstructor(x));
 
     if (isMultilanguageProperty(property)) {
-      handleMultilanguageDictionary(property, value, dict);
+      handleMultilanguageDictionary(property, value, dict, locale);
     } else {
       handleSingleLanguageDictionary(property, value, dict);
     }
@@ -286,11 +287,12 @@ export const useDynamicProperties = <
     property: TProperty,
     value: string | TPropertyValue[] | (TPropertyDictionaryItem & { value: string })[],
     dict: TPropertyDictionaryItem[],
+    locale?: string,
   ): void {
     if (Array.isArray(value)) {
       handleMultilanguageMultivalueDictionary(property, value as (TPropertyDictionaryItem & { value: string })[], dict);
     } else {
-      handleMultilanguageSingleValueDictionary(property, value as string, dict);
+      handleMultilanguageSingleValueDictionary(property, value as string, dict, locale);
     }
   }
 
@@ -323,10 +325,16 @@ export const useDynamicProperties = <
     property: TProperty,
     value: string,
     dict: TPropertyDictionaryItem[],
+    locale?: string,
   ): void {
     const dictionaryItem = dict.find((x) => x.id === value);
 
-    if (dictionaryItem?.localizedValues) {
+    if (!dictionaryItem) {
+      property.values = [];
+      return;
+    }
+
+    if (dictionaryItem.localizedValues?.length) {
       property.values = dictionaryItem.localizedValues.map((locValue) =>
         createPropertyValue({
           propertyId: dictionaryItem.propertyId,
@@ -338,7 +346,23 @@ export const useDynamicProperties = <
         } as Partial<TPropertyValue>),
       );
     } else {
-      property.values = [];
+      // Fallback: localizedValues is missing or empty (e.g. improperly created on platform side).
+      // Use existing language codes from property.values, or fall back to current locale.
+      const existingLanguageCodes = [
+        ...new Set((property.values ?? []).map((v) => v.languageCode).filter(Boolean)),
+      ];
+      const languageCodes = existingLanguageCodes.length > 0 ? existingLanguageCodes : locale ? [locale] : [];
+
+      property.values = languageCodes.map((langCode) =>
+        createPropertyValue({
+          propertyId: dictionaryItem.propertyId,
+          alias: dictionaryItem.alias,
+          languageCode: langCode,
+          value: dictionaryItem.alias,
+          valueId: dictionaryItem.id,
+          colorCode: dictionaryItem.colorCode,
+        } as Partial<TPropertyValue>),
+      );
     }
   }
 
@@ -528,7 +552,7 @@ export const useDynamicProperties = <
     }
 
     if (dictionary?.length) {
-      setDictionaryPropertyValue(property, value, dictionary);
+      setDictionaryPropertyValue(property, value, dictionary, locale);
       return;
     }
 

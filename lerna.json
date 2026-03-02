@@ -16,6 +16,7 @@
   ],
   "command": {
     "version": {
+      "tagVersionPrefix": "v",
       "conventionalCommits": true,
       "changelogPreset": {
         "name": "angular",

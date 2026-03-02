@@ -7,7 +7,7 @@
   >
     <!-- Request form -->
     <template v-if="!forgotPasswordRequestSent">
-      <VcForm @submit.prevent="forgot">
+      <VcForm @submit="forgot">
         <Field
           v-slot="{ errorMessage, handleChange, errors }"
           :label="t('FORGOT_PASSWORD.FIELDS.EMAIL.LABEL')"

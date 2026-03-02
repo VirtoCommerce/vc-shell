@@ -31,7 +31,7 @@
 
     <template v-if="!ssoOnly">
       <VcForm
-        @submit.prevent="login"
+        @submit="login"
         class="tw-gap-5"
       >
         <Field

@@ -96,6 +96,14 @@
         </div>
       </button>
     </div>
+
+    <!-- Mobile actions (rendered outside desktop toolbar) -->
+    <div
+      v-if="isMobile && $slots.actions"
+      class="sidebar-header__actions"
+    >
+      <slot name="actions" />
+    </div>
   </div>
 </template>
 

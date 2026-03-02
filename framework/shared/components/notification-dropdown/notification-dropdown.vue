@@ -5,6 +5,7 @@
     :empty-text="t('COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY')"
     max-height="auto"
     :padded="false"
+    :close-on-click-outside="false"
   >
     <template #item="{ item }">
       <NotificationItem

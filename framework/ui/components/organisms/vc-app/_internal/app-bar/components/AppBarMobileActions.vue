@@ -18,30 +18,32 @@
       />
     </div>
 
-    <Transition name="overlay">
-      <AppBarOverlay
-        v-if="isAnyActionVisible && currentAction?.component"
-        :is-sidebar-mode="props.isSidebarMode"
-        :expanded="props.expanded"
-      >
-        <component
-          :is="currentAction?.component"
-          v-bind="currentAction?.props || {}"
-          v-on-click-outside="[handleClose, { ignore: ['.app-bar-mobile-actions__button'] }]"
-          @close="handleClose()"
-        />
-      </AppBarOverlay>
-    </Transition>
+    <VcSidebar
+      :model-value="isAnyActionVisible && !!currentAction?.component"
+      position="bottom"
+      size="sm"
+      draggable
+      drag-handle
+      :close-button="false"
+      :inset="false"
+      @update:model-value="!$event && handleClose()"
+    >
+      <component
+        :is="currentAction?.component"
+        v-if="currentAction?.component"
+        v-bind="currentAction?.props || {}"
+        @close="handleClose()"
+      />
+    </VcSidebar>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { VcButton } from "@ui/components";
 import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons";
-import AppBarOverlay from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppBarOverlay.vue";
+import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { useAppBarMobileActions } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarMobileActions";
 import { type MaybeRef, watch } from "vue";
-import { vOnClickOutside } from "@vueuse/components";
 import type { AppBarButtonContent } from "@core/services";
 import { useRoute } from "vue-router";
 export interface Props {
@@ -77,17 +79,12 @@ const handleButtonClick = (button: AppBarButtonContent) => {
   }
 };
 
-const resolveActionToClose = (value?: AppBarButtonContent | Event) => {
-  if (value && typeof value === "object" && "id" in value) {
-    return value as AppBarButtonContent;
-  }
-
-  return currentAction.value ?? undefined;
-};
-
 const handleClose = (value?: AppBarButtonContent | Event) => {
-  const actionToClose = resolveActionToClose(value);
-  actionToClose?.onClose?.();
+  if (value && typeof value === "object" && "id" in value) {
+    (value as AppBarButtonContent).onClose?.();
+  } else {
+    currentAction.value?.onClose?.();
+  }
   hideAllActions();
 };
 

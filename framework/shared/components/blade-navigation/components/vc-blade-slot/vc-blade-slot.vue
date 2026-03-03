@@ -1,7 +1,5 @@
 <template>
-  <ErrorInterceptor
-    :capture="true"
-  >
+  <ErrorInterceptor :capture="true">
     <template #default="{ error: interceptorError, reset: resetInterceptor }">
       <component
         :is="bladeComponent"
@@ -18,17 +16,6 @@
         @collapse:blade="onCollapse"
         @vue:unmounted="resetInterceptor"
       />
-      <!-- Progressive loading: skeleton placeholder for blades not yet registered -->
-      <VcBlade
-        v-else
-        v-show="visible"
-        :loading="true"
-        :closable="closable"
-        :expanded="expanded"
-        @close="onCloseBlade"
-        @expand="onExpand"
-        @collapse="onCollapse"
-      />
     </template>
   </ErrorInterceptor>
 </template>
@@ -36,7 +23,6 @@
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, provide, ref, watch, watchEffect } from "vue";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
-import { VcBlade } from "@ui/components/organisms/vc-blade";
 import { BladeInstance as BladeInstanceKey, BLADE_BACK_BUTTON } from "@framework/injection-keys";
 import { ErrorInterceptor } from "@shared/components/error-interceptor";
 import { useBladeMessaging } from "@shared/components/blade-navigation/composables/useBladeMessaging";
@@ -94,24 +80,31 @@ provide(
 );
 
 // Provide back button component
-provide(BLADE_BACK_BUTTON, computed(() => props.backButton));
+provide(
+  BLADE_BACK_BUTTON,
+  computed(() => props.backButton),
+);
 
 // ── Auto-register exposed methods with BladeMessaging ───────────────────────
 // Bridges defineExpose() (old API) → exposeToChildren() (new BladeMessaging)
 const messaging = useBladeMessaging();
 
-watch(bladeInstanceRef, (instance) => {
-  if (!instance) return;
-  const methods: Record<string, (...args: any[]) => any> = {};
-  for (const key of Object.keys(instance)) {
-    if (typeof instance[key] === "function") {
-      methods[key] = instance[key];
+watch(
+  bladeInstanceRef,
+  (instance) => {
+    if (!instance) return;
+    const methods: Record<string, (...args: any[]) => any> = {};
+    for (const key of Object.keys(instance)) {
+      if (typeof instance[key] === "function") {
+        methods[key] = instance[key];
+      }
     }
-  }
-  if (Object.keys(methods).length > 0) {
-    messaging.exposeToChildren(props.descriptor.id, methods);
-  }
-}, { flush: "post" });
+    if (Object.keys(methods).length > 0) {
+      messaging.exposeToChildren(props.descriptor.id, methods);
+    }
+  },
+  { flush: "post" },
+);
 
 // Clean up exposed methods when blade is removed from the stack.
 // Hidden blades (v-show via replaceCurrentBlade) stay mounted — their methods persist.

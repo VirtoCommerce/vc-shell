@@ -128,6 +128,19 @@ export default defineConfig({
   base: appBasePath,
   plugins: [
     {
+      name: "vc-preloader",
+      transformIndexHtml(html) {
+        const preloader = `<style>
+  .vc-preloader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#DBE4EC;z-index:9998}
+  .vc-preloader__bar{width:140px;height:4px;border-radius:9999px;background:#D2EAF5;overflow:hidden;position:relative}
+  .vc-preloader__fill{position:absolute;top:0;left:0;height:100%;width:40%;border-radius:9999px;background:linear-gradient(90deg,#D2EAF5,#319ED4);animation:vc-bar-sweep 1.5s ease-in-out infinite}
+  @keyframes vc-bar-sweep{0%{left:-40%}100%{left:100%}}
+</style>
+<div class="vc-preloader"><div class="vc-preloader__bar"><div class="vc-preloader__fill"></div></div></div>`;
+        return html.replace('<div id="app"></div>', `<div id="app">${preloader}</div>`);
+      },
+    },
+    {
       name: "vc-remove-empty-chunks",
       generateBundle(_, bundle) {
         for (const key of Object.keys(bundle)) {

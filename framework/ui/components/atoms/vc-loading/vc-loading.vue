@@ -8,17 +8,10 @@
     :aria-busy="active"
     aria-live="polite"
   >
-    <div class="vc-loading-overlay__content">
-      <span class="vc-loading-overlay__main-marker"></span>
-      <div class="vc-loading-overlay__markers">
-        <span
-          v-for="item in 3"
-          :key="`marker_${item}`"
-          class="vc-loading-overlay__marker"
-        ></span>
-      </div>
-      <span class="tw-sr-only">{{ active ? 'Loading...' : '' }}</span>
+    <div class="vc-loading-overlay__bar">
+      <div class="vc-loading-overlay__bar-fill"></div>
     </div>
+    <span class="tw-sr-only">{{ active ? 'Loading...' : '' }}</span>
   </div>
 </template>
 
@@ -32,14 +25,16 @@ defineProps<Props>();
 
 <style lang="scss">
 :root {
-  --loading-marker-color: var(--primary-500);
+  --loading-bar-color: var(--primary-500);
+  --loading-bar-track: var(--primary-100);
   --loading-overlay-bg: rgba(255, 255, 255, 0.6);
-  --loading-marker-size: 16px;
+  --loading-bar-width: 140px;
+  --loading-bar-height: 4px;
   --loading-z-index: 9998;
 }
 
 .vc-loading-overlay {
-  @apply tw-absolute tw-items-center tw-justify-center tw-flex-col tw-w-full tw-h-full tw-box-border tw-hidden;
+  @apply tw-absolute tw-items-center tw-justify-center tw-w-full tw-h-full tw-box-border tw-hidden;
   z-index: var(--loading-z-index);
 
   &--active {
@@ -48,24 +43,29 @@ defineProps<Props>();
     background-color: var(--loading-overlay-bg);
   }
 
-  &__content {
-    @apply tw-relative tw-w-36 tw-h-10 tw-z-[1];
+  &__bar {
+    width: var(--loading-bar-width);
+    height: var(--loading-bar-height);
+    border-radius: 9999px;
+    background: var(--loading-bar-track);
+    overflow: hidden;
+    position: relative;
   }
 
-  &__main-marker {
-    @apply tw-absolute tw-top-3 tw-left-4 tw-bg-[color:var(--loading-marker-color)] tw-rounded-full tw-translate-x-0 tw-animate-loadingMarker;
-    width: var(--loading-marker-size);
-    height: var(--loading-marker-size);
+  &__bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 40%;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, var(--loading-bar-track), var(--loading-bar-color));
+    animation: vc-bar-sweep 1.5s ease-in-out infinite;
   }
+}
 
-  &__markers {
-    @apply tw-translate-x-0 tw-mt-3 tw-ml-8 tw-animate-loadingMarkers;
-  }
-
-  &__marker {
-    @apply tw-block tw-float-left tw-bg-[color:var(--loading-marker-color)] tw-rounded-full tw-ml-4;
-    width: var(--loading-marker-size);
-    height: var(--loading-marker-size);
-  }
+@keyframes vc-bar-sweep {
+  0% { left: -40%; }
+  100% { left: 100%; }
 }
 </style>

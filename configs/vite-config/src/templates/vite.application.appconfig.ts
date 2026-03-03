@@ -4,7 +4,7 @@ import { loadEnv, defineConfig, ProxyOptions, type PluginOption, normalizePath, 
 import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 import { checker } from "vite-plugin-checker";
-// import { visualizer } from "rollup-plugin-visualizer";
+import { visualizer } from "rollup-plugin-visualizer";
 
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
 const version = JSON.parse(packageJson.toString()).version || 0;
@@ -156,10 +156,16 @@ export default defineConfig({
     checker({
       vueTsc: true,
     }),
-    // visualizer({
-    //   open: true,
-    //   filename: "dist/stats.html",
-    // }) as PluginOption,
+    ...(process.env.ANALYZE
+      ? [
+          visualizer({
+            filename: "stats.html",
+            template: "treemap",
+            gzipSize: true,
+            open: false,
+          }) as PluginOption,
+        ]
+      : []),
   ],
   define: {
     "import.meta.env.PACKAGE_VERSION": `"${version}"`,

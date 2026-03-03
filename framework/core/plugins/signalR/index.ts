@@ -11,6 +11,10 @@ const logger = createLogger("signalR");
 const { addNotification } = useNotifications();
 const currentCreator = ref<string | undefined>();
 
+let mountComplete = false;
+let pendingStart = false;
+let _startFn: (() => void) | null = null;
+
 export const updateSignalRCreatorSymbol: InjectionKey<(creator: string | undefined) => void> =
   Symbol("updateSignalRCreator");
 
@@ -48,6 +52,10 @@ export const signalR = {
         .build();
 
     const start = () => {
+      if (!mountComplete) {
+        pendingStart = true;
+        return;
+      }
       connection
         .start()
         .then(() => {
@@ -59,6 +67,8 @@ export const signalR = {
           setTimeout(() => start(), 5000);
         });
     };
+
+    _startFn = start;
 
     async function stop() {
       await connection.stop();
@@ -91,6 +101,7 @@ export const signalR = {
           start();
         } else {
           reconnect = false;
+          pendingStart = false; // Cancel any pending deferred start
           await stop();
         }
       },
@@ -105,3 +116,11 @@ export const signalR = {
     });
   },
 };
+
+export function notifyMountComplete(): void {
+  mountComplete = true;
+  if (pendingStart && _startFn) {
+    pendingStart = false;
+    _startFn();
+  }
+}

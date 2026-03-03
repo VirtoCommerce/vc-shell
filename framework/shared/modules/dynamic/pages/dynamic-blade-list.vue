@@ -152,7 +152,7 @@ import { DynamicGridSchema, ListContentSchema, SettingsSchema } from "@shared/mo
 import { IsBladeEditableKey } from "@shared/modules/dynamic/keys";
 import useFilterBuilder from "@shared/modules/dynamic/composables/useFilterBuilder";
 import { useTableTemplates } from "@shared/modules/dynamic/composables";
-import { useFunctions } from "@core/composables";
+import { useFunctions } from "@core/composables/useFunctions";
 import { IActionBuilderResult, ITableColumns } from "@core/types";
 import { useToolbarReducer } from "@shared/modules/dynamic/composables/useToolbarReducer";
 import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
@@ -162,7 +162,7 @@ import type { IParentCallArgs } from "@shared/components/blade-navigation/types"
 import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
 import { safeIn } from "@shared/modules/dynamic/helpers/safeIn";
 import { useWidgets } from "@core/composables/useWidgets";
-import { useBlade } from "@core/composables";
+import { useBlade } from "@core/composables/useBlade";
 
 export interface Props {
   expanded?: boolean;

@@ -272,6 +272,7 @@ export function useDynamicModules(
   const loadedModulesWithVersions = new Map<string, string>();
 
   async function load() {
+    performance.mark("vc:modules-start");
     try {
       const shouldForceFreshAssets = finalConfig.forceFreshAssets !== false;
       const requestTimestamp = Date.now().toString();
@@ -602,6 +603,7 @@ export function useDynamicModules(
       ...window.VcShellDynamicModules,
     };
     app.provide(DynamicModulesKey, app.config.globalProperties.$dynamicModules);
+    performance.mark("vc:modules-done");
   }
 
   return {

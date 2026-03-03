@@ -5,6 +5,7 @@ import * as components from "@ui/components";
 import * as directives from "@core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import { i18n, permissions, signalR } from "@core/plugins";
+import { notifyMountComplete } from "@core/plugins/signalR";
 import { aiAgentPlugin, type AiAgentPluginOptions } from "@core/plugins/ai-agent";
 import { BladeVNode, SharedModule, notification } from "@shared";
 import * as sharedPages from "@shared/pages/plugin";
@@ -62,7 +63,6 @@ import {
 import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
 import "@fortawesome/fontawesome-free/css/solid.min.css";
 import "bootstrap-icons/font/bootstrap-icons.min.css";
-import * as icons from "lucide-vue-next";
 import "@material-symbols/font-300/index.css";
 
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
@@ -163,11 +163,6 @@ function registerComponentsAndDirectives(app: App) {
     app.component(name, component as Component);
   });
 
-  // Lucide Icons
-  Object.entries(icons).forEach(([key, value]) => {
-    app.component(key, value as Component);
-  });
-
   Object.entries(directives).forEach(([directiveName, directive]) => {
     app.directive(directiveName, directive);
   });
@@ -239,7 +234,7 @@ function installPlugins(app: App, args: FrameworkInstallArgs) {
   app.use(aiAgentPlugin, args.aiAgent);
 }
 
-function setupApplicationInsights(app: App, args: FrameworkInstallArgs) {
+function provideApplicationInsightsOptions(app: App, args: FrameworkInstallArgs) {
   if (!args.applicationInsights?.instrumentationKey) return;
 
   const aiOptions: AppInsightsPluginOptions = {
@@ -254,9 +249,33 @@ function setupApplicationInsights(app: App, args: FrameworkInstallArgs) {
     cloudRoleInstance: args.applicationInsights?.cloudRoleInstance,
   };
 
-  app.use(AppInsightsPlugin, aiOptions);
+  // Provide options synchronously so components can inject at setup time
+  // (useErrorHandler -> useAppInsights -> inject(AppInsightsOptionsKey))
   app.provide(AppInsightsOptionsKey, aiOptions);
+}
 
+function installApplicationInsightsDeferred(app: App, args: FrameworkInstallArgs) {
+  if (!args.applicationInsights?.instrumentationKey) return;
+
+  const aiOptions: AppInsightsPluginOptions = {
+    appInsightsConfig: {
+      config: {
+        instrumentationKey: args.applicationInsights.instrumentationKey,
+      },
+    },
+    trackAppErrors: true,
+    appName: args.applicationInsights?.appName,
+    cloudRole: args.applicationInsights?.cloudRole,
+    cloudRoleInstance: args.applicationInsights?.cloudRoleInstance,
+  };
+
+  // Install the SDK plugin (may start telemetry collection)
+  app.use(AppInsightsPlugin, aiOptions);
+
+  // Register router hooks for page tracking.
+  // Note: the initial navigation's page-view may not be tracked since
+  // router.isReady() may resolve before these hooks are registered.
+  // This is an acceptable trade-off for removing SDK init from critical path.
   app.runWithContext(() => {
     const { setupPageTracking } = useAppInsights();
 
@@ -356,7 +375,10 @@ export default {
     setupLegacyGlobals(app);
     createAndProvideServices(app);
     installPlugins(app, args);
-    setupApplicationInsights(app, args);
+
+    // Provide AppInsights options synchronously (components inject at setup time)
+    provideApplicationInsightsOptions(app, args);
+
     setupGlobalErrorHandlers(app);
 
     if (typeof window !== "undefined") {
@@ -364,6 +386,16 @@ export default {
     }
 
     setupRouterGuards(args.router);
+
+    // Defer non-critical plugins to post-paint.
+    // setTimeout(fn, 0) yields to the browser's rendering pipeline —
+    // the browser paints before executing the next macrotask.
+    setTimeout(() => {
+      performance.mark("vc:deferred-plugins-start");
+      notifyMountComplete(); // Trigger deferred SignalR connection
+      installApplicationInsightsDeferred(app, args); // AppInsights SDK + router hooks
+      performance.mark("vc:deferred-plugins-done");
+    }, 0);
   },
 } as VcShellFrameworkPlugin;
 

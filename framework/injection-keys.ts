@@ -41,6 +41,12 @@ export const ToolbarServiceKey: InjectionKey<IToolbarService> = Symbol("ToolbarS
 export const DynamicModulesKey: InjectionKey<typeof window.VcShellDynamicModules | undefined> =
   Symbol("DynamicModules");
 
+// Module loading completion state (Phase 2: two-phase bootstrap)
+export const ModulesReadyKey: InjectionKey<Ref<boolean>> = Symbol("ModulesReady");
+
+// Module loading total failure state (Phase 2: all modules failed to load)
+export const ModulesLoadErrorKey: InjectionKey<Ref<boolean>> = Symbol("ModulesLoadError");
+
 // App root element key (for scoped Teleport targets)
 export const AppRootElementKey: InjectionKey<Ref<HTMLElement | undefined>> = Symbol("AppRootElement");
 

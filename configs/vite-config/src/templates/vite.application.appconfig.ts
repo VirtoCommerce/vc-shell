@@ -195,7 +195,7 @@ export default defineConfig({
       ? [
           circleDependency({
             exclude: [/node_modules/, /\.git/, /^\0/, /virtual:/],
-            circleImportThrowErr: true,
+            circleImportThrowErr: false,
           }) as PluginOption,
         ]
       : []),

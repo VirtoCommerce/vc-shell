@@ -191,7 +191,10 @@ import { computed, nextTick, onBeforeUnmount, ref, toRef, useSlots, watch } from
 import type { AppDescriptor } from "@core/api/platform";
 import type { AppBarWidget } from "@core/services";
 import { useAppBarWidget } from "@core/composables";
-import { VcButton, VcIcon, VcInput, VcScrollableContainer } from "@ui/components";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcInput } from "@ui/components/molecules/vc-input";
+import { VcScrollableContainer } from "@ui/components/atoms/vc-scrollable-container";
 import { useAppHub } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppHub";
 import { useAppBarWidgets } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarWidgets";
 import AppBarWidgetContent from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppBarWidgetContent.vue";

@@ -43,7 +43,7 @@
 import { ref, watch } from "vue";
 import { ITableColumns } from "@core/types";
 import { TableColPartial } from "@ui/components/organisms/vc-table/types";
-import { VcDropdown } from "@ui/components";
+import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 
 export interface Props {
   items: TableColPartial[];

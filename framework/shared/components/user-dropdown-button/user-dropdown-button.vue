@@ -56,7 +56,7 @@ import { CloseSettingsMenuKey } from "@framework/injection-keys";
 import { default as UserInfo } from "@shared/components/user-dropdown-button/_internal/user-info.vue";
 import { default as UserSidebar } from "@shared/components/user-dropdown-button/_internal/user-sidebar.vue";
 import { SettingsMenu } from "@shared/components/settings-menu";
-import { VcDropdownPanel } from "@ui/components";
+import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
 import { useSidebarState } from "@core/composables/useSidebarState";
 
 export interface Props {

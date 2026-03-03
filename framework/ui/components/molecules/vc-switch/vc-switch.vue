@@ -71,7 +71,8 @@
 
 <script lang="ts" setup>
 import { computed, onMounted } from "vue";
-import { VcLabel, VcHint } from "@ui/components";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcHint } from "@ui/components/atoms/vc-hint";
 import { useFormField } from "@ui/composables/useFormField";
 import type { IFormFieldProps } from "@ui/types";
 

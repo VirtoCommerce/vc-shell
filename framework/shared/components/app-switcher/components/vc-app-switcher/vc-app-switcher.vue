@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { AppDescriptor } from "@core/api/platform";
-import { VcDropdown } from "@ui/components";
+import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 
 export interface Props {
   appsList: AppDescriptor[];

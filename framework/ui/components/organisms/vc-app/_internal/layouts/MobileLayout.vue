@@ -215,7 +215,7 @@ import AppBarMobileActions from "@ui/components/organisms/vc-app/_internal/app-b
 import MenuSidebar from "@ui/components/organisms/vc-app/_internal/app-bar/components/MenuSidebar.vue";
 import AppHubContent from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppHubContent.vue";
 import VcAppMenu from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenu.vue";
-import { VcScrollableContainer } from "@ui/components";
+import { VcScrollableContainer } from "@ui/components/atoms/vc-scrollable-container";
 
 export interface Props {
   logo?: string;

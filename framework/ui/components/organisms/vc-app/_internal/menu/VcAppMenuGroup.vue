@@ -86,7 +86,7 @@ import { useLocalStorage } from "@vueuse/core";
 import { useRoute } from "vue-router";
 import { usePermissions } from "@core/composables";
 import type { MenuItem, MenuItemBadgeConfig } from "@core/types";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import VcAppMenuItem from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenuItem.vue";
 import { stripTenantPrefix } from "@ui/components/organisms/vc-app/_internal/menu/composables/useMenuActiveState";
 

@@ -4,7 +4,7 @@ import { MultivalueField } from "@shared/modules/dynamic/components/factories";
 import componentProps from "@shared/modules/dynamic/components/fields/props";
 import ValidationField from "@shared/modules/dynamic/components/fields/ValidationField";
 import { MultivalueSchema } from "@shared/modules/dynamic/types";
-import { VcMultivalue } from "@ui/components";
+import { VcMultivalue } from "@ui/components/molecules/vc-multivalue";
 import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 type TScope = Parameters<ComponentSlots<typeof VcMultivalue>["option"]>["0"] &

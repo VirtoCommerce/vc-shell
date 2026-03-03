@@ -97,7 +97,8 @@ import {
   CoreBladeExposed,
 } from "@shared";
 import SchemaRender from "@shared/modules/dynamic/components/SchemaRender";
-import { VcDropdown, VcImage } from "@ui/components";
+import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
+import { VcImage } from "@ui/components/atoms/vc-image";
 import { useToolbarReducer } from "@shared/modules/dynamic/composables/useToolbarReducer";
 import { useBeforeUnload } from "@core/composables/useBeforeUnload";
 import { useLanguages, useNotifications, useBlade } from "@core/composables";

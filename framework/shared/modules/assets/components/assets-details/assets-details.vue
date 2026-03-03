@@ -117,7 +117,12 @@
 import { ICommonAsset, IBladeToolbar } from "@core/types";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { VcBlade, VcContainer, VcForm, VcImage, VcInput, VcTextarea } from "@ui/components";
+import { VcBlade } from "@ui/components/organisms/vc-blade";
+import { VcContainer } from "@ui/components/atoms/vc-container";
+import { VcForm } from "@ui/components/molecules/vc-form";
+import { VcImage } from "@ui/components/atoms/vc-image";
+import { VcInput } from "@ui/components/molecules/vc-input";
+import { VcTextarea } from "@ui/components/molecules/vc-textarea";
 import { isImage, getFileThumbnail, readableSize } from "@shared/utilities/assets";
 import { formatDateRelative } from "@core/utilities/date";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";

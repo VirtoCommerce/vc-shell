@@ -12,59 +12,73 @@
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
   >
-    <!-- Init blade header -->
-    <BladeHeader
-      v-if="!($isMobile.value && blades.length === 1 && !$slots['actions'])"
-      class="vc-blade__header"
-      :closable="closable"
-      :icon="icon"
-      :title="title"
-      :subtitle="subtitle"
-      :modified="modified"
-      @close="$emit('close')"
-      @expand="$emit('expand')"
-      @collapse="$emit('collapse')"
-    >
-      <template #prepend>
-        <component
-          :is="backButton"
-          v-if="backButton && $isMobile.value"
-          class="vc-blade__back-button"
-        />
-
-        <div
-          v-if="blade.breadcrumbs?.length && $isDesktop.value"
-          class="vc-blade__breadcrumbs"
-        >
-          <VcBreadcrumbs :items="blade.breadcrumbs" collapsed>
-            <template #trigger="{ click, isActive }">
-              <VcButton
-                text
-                icon="lucide-ellipsis-vertical"
-                icon-size="xl"
-                class="vc-blade__breadcrumbs-button"
-                :class="{
-                  'vc-blade__breadcrumbs-button--active': isActive,
-                }"
-                @click="click"
-              />
-            </template>
-          </VcBreadcrumbs>
-        </div>
-      </template>
-
-      <template
-        v-if="$slots['actions']"
-        #actions
+    <!-- Header zone -->
+    <template v-if="!($isMobile.value && blades.length === 1 && !$slots['actions'])">
+      <BladeHeaderSkeleton
+        v-if="loading"
+        class="vc-blade__header"
+      />
+      <BladeHeader
+        v-else
+        class="vc-blade__header"
+        :closable="closable"
+        :icon="icon"
+        :title="title"
+        :subtitle="subtitle"
+        :modified="modified"
+        @close="$emit('close')"
+        @expand="$emit('expand')"
+        @collapse="$emit('collapse')"
       >
-        <slot name="actions"></slot>
-      </template>
-    </BladeHeader>
+        <template #prepend>
+          <component
+            :is="backButton"
+            v-if="backButton && $isMobile.value"
+            class="vc-blade__back-button"
+          />
 
-    <BladeStatusBanners :modified="modified" />
+          <div
+            v-if="blade.breadcrumbs?.length && $isDesktop.value"
+            class="vc-blade__breadcrumbs"
+          >
+            <VcBreadcrumbs :items="blade.breadcrumbs" collapsed>
+              <template #trigger="{ click, isActive }">
+                <VcButton
+                  text
+                  icon="lucide-ellipsis-vertical"
+                  icon-size="xl"
+                  class="vc-blade__breadcrumbs-button"
+                  :class="{
+                    'vc-blade__breadcrumbs-button--active': isActive,
+                  }"
+                  @click="click"
+                />
+              </template>
+            </VcBreadcrumbs>
+          </div>
+        </template>
 
-    <!-- Set up blade toolbar -->
+        <template
+          v-if="$slots['actions']"
+          #actions
+        >
+          <slot name="actions"></slot>
+        </template>
+      </BladeHeader>
+    </template>
+
+    <BladeStatusBanners
+      v-if="!loading"
+      :modified="modified"
+    />
+
+    <!-- Toolbar zone -->
+    <BladeToolbarSkeleton
+      v-if="loading"
+      class="vc-blade__toolbar"
+    />
     <BladeToolbar
+      v-else
       class="vc-blade__toolbar"
       :items="toolbarItems"
     >
@@ -73,7 +87,10 @@
       </template>
     </BladeToolbar>
 
+    <!-- Content zone -->
+    <BladeContentSkeleton v-if="loading" />
     <div
+      v-else
       ref="contentRef"
       class="vc-blade__content"
     >
@@ -99,7 +116,10 @@ import { ref, inject } from "vue";
 import { IBladeToolbar } from "@core/types";
 import { useBladeNavigation } from "@shared";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
+import BladeHeaderSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeHeaderSkeleton.vue";
 import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";
+import BladeToolbarSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeToolbarSkeleton.vue";
+import BladeContentSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeContentSkeleton.vue";
 import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { BladeInstance, BLADE_BACK_BUTTON } from "@framework/injection-keys";
@@ -115,6 +135,8 @@ export interface Props {
   closable?: boolean;
   toolbarItems?: IBladeToolbar[];
   modified?: boolean;
+  /** When true, shows skeleton placeholders for all blade zones */
+  loading?: boolean;
 }
 
 export interface Emits {

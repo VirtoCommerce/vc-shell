@@ -1,7 +1,8 @@
 import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import SettingsMenuItem from "@shared/components/settings-menu-item/settings-menu-item.vue";
-import { VcDropdownPanel, VcIcon } from "@ui/components";
+import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 const meta = {
   title: "Shared/SettingsMenuItem",

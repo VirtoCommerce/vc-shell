@@ -77,7 +77,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, type PropType } from "vue";
-import { VcDropdown } from "@ui/components";
+import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useI18n } from "vue-i18n";
 

@@ -26,7 +26,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { onLongPress } from "@vueuse/core";
-import { VcButton } from "@ui/components";
+import { VcButton } from "@ui/components/atoms/vc-button";
 import VcBreadcrumbs from "@ui/components/molecules/vc-breadcrumbs/vc-breadcrumbs.vue";
 import type { Breadcrumbs } from "@ui/types";
 import { OnLongPress, vOnClickOutside } from "@vueuse/components";

@@ -229,7 +229,9 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed, ref, unref, watch } from "vue";
-import { VcLabel, VcIcon, VcHint } from "@ui/components";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcHint } from "@ui/components/atoms/vc-hint";
 import { VcDatePicker } from "@ui/components/molecules/vc-date-picker";
 import { VcColorInput } from "@ui/components/molecules/vc-color-input";
 import { useFormField } from "@ui/composables/useFormField";

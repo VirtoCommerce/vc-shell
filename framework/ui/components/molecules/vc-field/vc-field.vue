@@ -42,7 +42,8 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { VcLabel, VcCol } from "@ui/components";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcCol } from "@ui/components/atoms/vc-col";
 import VcFieldType from "@ui/components/molecules/vc-field/_internal/vc-field-type/vc-field-type.vue";
 
 export interface Props {

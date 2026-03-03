@@ -69,7 +69,8 @@
 
 <script lang="ts" setup>
 import { computed, provide, toRef, useId } from "vue";
-import { VcHint, VcLabel } from "@ui/components";
+import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcLabel } from "@ui/components/atoms/vc-label";
 import { InputGroupContextKey } from "@ui/components/molecules/vc-input-group/context";
 
 export interface Props {

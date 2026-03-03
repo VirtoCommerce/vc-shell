@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 defineProps<{
   collapsed?: boolean;

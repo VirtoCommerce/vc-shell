@@ -29,7 +29,7 @@
 <script lang="ts" setup>
 import { computed, watch } from "vue";
 import type { AppDescriptor } from "@core/api/platform";
-import { VcDropdownPanel } from "@ui/components";
+import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
 import { useAppBarWidgets } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarWidgets";
 import AppHubContent from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppHubContent.vue";
 

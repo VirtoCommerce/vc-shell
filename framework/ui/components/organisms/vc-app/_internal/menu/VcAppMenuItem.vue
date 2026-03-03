@@ -66,7 +66,8 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import type { Component } from "vue";
-import { VcIcon, VcBadge } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcBadge } from "@ui/components/atoms/vc-badge";
 import { useBadge } from "@ui/components/organisms/vc-app/_internal/menu/composables/useBadge";
 import type { MenuItemBadgeConfig } from "@core/types";
 

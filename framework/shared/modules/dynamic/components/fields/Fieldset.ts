@@ -1,7 +1,8 @@
 import { h, toRefs, ExtractPropTypes, toValue } from "vue";
 import componentProps from "@shared/modules/dynamic/components/fields/props";
 import * as _ from "lodash-es";
-import { VcCol, VcRow } from "@ui/components";
+import { VcCol } from "@ui/components/atoms/vc-col";
+import { VcRow } from "@ui/components/atoms/vc-row";
 import { FieldsetSchema } from "@shared/modules/dynamic/types";
 import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 

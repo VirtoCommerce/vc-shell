@@ -134,7 +134,9 @@
 <script lang="ts" setup>
 import { ref, watch, nextTick } from "vue";
 import { useFormField } from "@ui/composables/useFormField";
-import { VcLabel, VcIcon, VcHint } from "@ui/components";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcHint } from "@ui/components/atoms/vc-hint";
 import { convertColorNameToHex, isValidHexColor, normalizeHexColor } from "@shared/utilities";
 import type { ITextFieldProps } from "@ui/types";
 

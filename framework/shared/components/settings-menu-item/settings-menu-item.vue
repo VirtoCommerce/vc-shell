@@ -58,7 +58,8 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { Component, ref } from "vue";
-import { VcIcon, VcImage } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcImage } from "@ui/components/atoms/vc-image";
 
 interface Props {
   title?: string;

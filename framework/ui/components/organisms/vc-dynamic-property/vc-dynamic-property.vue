@@ -347,7 +347,10 @@
 import { ref, onMounted, computed, Ref, watch } from "vue";
 import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
-import { VcSelect, VcInput, VcTextarea, VcSwitch } from "@ui/components";
+import { VcSelect } from "@ui/components/molecules/vc-select";
+import { VcInput } from "@ui/components/molecules/vc-input";
+import { VcTextarea } from "@ui/components/molecules/vc-textarea";
+import { VcSwitch } from "@ui/components/molecules/vc-switch";
 import { cloneDeep } from "lodash-es";
 import { convertColorNameToHex } from "@shared/utilities";
 

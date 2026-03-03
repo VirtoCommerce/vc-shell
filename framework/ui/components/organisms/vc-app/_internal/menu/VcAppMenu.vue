@@ -66,12 +66,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref } from "vue";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useMenuService, usePermissions } from "@core/composables";
 import type { MenuItem } from "@core/types";
-import { ModulesReadyKey } from "@framework/injection-keys";
-import { VcContainer } from "@ui/components";
+import { VcContainer } from "@ui/components/atoms/vc-container";
 import VcAppMenuGroup from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenuGroup.vue";
 import VcAppMenuItem from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenuItem.vue";
 import { stripTenantPrefix } from "@ui/components/organisms/vc-app/_internal/menu/composables/useMenuActiveState";
@@ -92,13 +91,6 @@ const route = useRoute();
 const { menuItems } = useMenuService();
 const { hasAccess } = usePermissions();
 
-// Phase 2: batch reveal -- snapshot framework-level items at setup time.
-// At this point, only items added before mount exist (e.g., Dashboard from bootstrap()).
-// Module items will be added asynchronously during load() -- we freeze the snapshot
-// so they don't appear incrementally.
-const modulesReady = inject(ModulesReadyKey, ref(true));
-const preModuleSnapshot = ref([...menuItems.value]);
-
 const hasAccessToItem = (item: MenuItem): boolean => hasAccess(item.permissions);
 
 const accessibleChildren = (item: MenuItem): MenuItem[] => {
@@ -106,10 +98,8 @@ const accessibleChildren = (item: MenuItem): MenuItem[] => {
 };
 
 const visibleMenuItems = computed(() => {
-  // Phase 2: when modules are loading, show only pre-mount framework items (batch reveal)
-  const sourceItems = modulesReady.value ? menuItems.value : preModuleSnapshot.value;
-
-  return sourceItems.filter((item) => {
+  // Progressive reveal: items appear as modules install and register them
+  return menuItems.value.filter((item) => {
     if (!hasAccessToItem(item)) {
       return false;
     }

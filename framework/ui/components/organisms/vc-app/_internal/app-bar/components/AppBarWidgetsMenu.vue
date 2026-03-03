@@ -62,7 +62,7 @@
 
 <script lang="ts" setup>
 import AppBarWidgetItem from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppBarWidgetItem.vue";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useAppBarWidget } from "@core/composables";
 import type { AppBarWidget } from "@core/services";
 

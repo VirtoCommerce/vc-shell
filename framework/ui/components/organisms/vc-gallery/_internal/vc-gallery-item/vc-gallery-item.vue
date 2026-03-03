@@ -82,7 +82,7 @@
 import { ref, toRef } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import type { ICommonAsset } from "@core/types";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useI18n } from "vue-i18n";
 import { useImageLoad } from "../../composables/useImageLoad";
 

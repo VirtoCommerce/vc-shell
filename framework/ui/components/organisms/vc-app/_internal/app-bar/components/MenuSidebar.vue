@@ -66,7 +66,8 @@
 <script lang="ts" setup>
 import { computed, inject, ref, useSlots, type MaybeRef, type Ref } from "vue";
 import { EmbeddedModeKey, IsDesktopKey } from "@framework/injection-keys";
-import { VcButton, VcSidebar } from "@ui/components";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 
 const props = defineProps<{
   isOpened: boolean;

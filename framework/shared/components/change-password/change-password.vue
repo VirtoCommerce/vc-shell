@@ -135,7 +135,11 @@
 <script lang="ts" setup>
 import { nextTick, reactive, computed } from "vue";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
-import { VcInput, VcHint, VcButton, VcPopup, VcForm } from "@ui/components";
+import { VcInput } from "@ui/components/molecules/vc-input";
+import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcPopup } from "@ui/components/organisms/vc-popup";
+import { VcForm } from "@ui/components/molecules/vc-form";
 import { IIdentityError } from "@core/api/platform";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useI18n } from "vue-i18n";

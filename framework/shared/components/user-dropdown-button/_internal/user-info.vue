@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useUserManagement } from "@core/composables/useUserManagement";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export interface Props {
   avatarUrl?: string;

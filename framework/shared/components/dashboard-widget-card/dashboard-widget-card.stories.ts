@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { VcButton } from "@ui/components";
+import { VcButton } from "@ui/components/atoms/vc-button";
 import DashboardWidgetCard from "@shared/components/dashboard-widget-card/dashboard-widget-card.vue";
 import DashboardStatItem from "@shared/components/dashboard-widget-card/dashboard-stat-item.vue";
 import DashboardFeedList from "@shared/components/dashboard-widget-card/dashboard-feed-list.vue";

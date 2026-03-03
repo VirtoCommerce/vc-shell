@@ -19,7 +19,11 @@ import {
 import * as _ from "lodash-es";
 import { Checkbox, InputField, Switch, SelectField, RadioButton } from "@shared/modules/dynamic/components/factories";
 import { AsyncAction } from "@core/composables/useAsync";
-import { VcButton, VcCol, VcContainer, VcLabel, VcRow } from "@ui/components";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcCol } from "@ui/components/atoms/vc-col";
+import { VcContainer } from "@ui/components/atoms/vc-container";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcRow } from "@ui/components/atoms/vc-row";
 import { useI18n } from "vue-i18n";
 import { FilterBase, FilterCheckbox, FilterDateInput, FilterRadio, FilterSelect, FilterSwitch } from "@shared/modules/dynamic/types";
 

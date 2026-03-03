@@ -4,7 +4,7 @@ import { SelectField } from "@shared/modules/dynamic/components/factories";
 import componentProps from "@shared/modules/dynamic/components/fields/props";
 import ValidationField from "@shared/modules/dynamic/components/fields/ValidationField";
 import { SelectSchema } from "@shared/modules/dynamic/types";
-import { VcSelect } from "@ui/components";
+import { VcSelect } from "@ui/components/molecules/vc-select";
 import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 
 type TScope =

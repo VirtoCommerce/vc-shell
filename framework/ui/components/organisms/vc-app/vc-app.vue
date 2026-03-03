@@ -86,34 +86,9 @@
           v-if="isAuthenticated"
           class="vc-app__workspace"
         >
-          <!-- Phase 2: loading state while dynamic modules install -->
-          <div
-            v-if="!modulesReady"
-            class="vc-app__modules-loading"
-          >
-            <VcLoading active />
-            <p class="vc-app__modules-loading-text">Loading modules...</p>
-          </div>
-          <!-- Phase 2: error state when ALL modules fail to load -->
-          <div
-            v-else-if="modulesLoadError"
-            class="vc-app__modules-error"
-          >
-            <VcIcon
-              icon="fas fa-exclamation-triangle"
-              size="xl"
-            />
-            <p class="vc-app__modules-error-title">Failed to load modules</p>
-            <p class="vc-app__modules-error-text">
-              Unable to load application modules. Please check your connection and try refreshing the page.
-            </p>
-          </div>
-          <!-- Normal workspace when modules are ready -->
-          <template v-else>
-            <VcBladeNavigation />
-            <!-- AI Agent Panel (shown when plugin is installed) -->
-            <VcAiAgentPanel v-if="aiAgentConfig?.url" />
-          </template>
+          <VcBladeNavigation />
+          <!-- AI Agent Panel (shown when plugin is installed) -->
+          <VcAiAgentPanel v-if="aiAgentConfig?.url" />
         </div>
       </slot>
 
@@ -123,7 +98,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { inject, provide, ref, computed } from "vue";
+import { inject, provide, ref, watch } from "vue";
 import DesktopLayout from "@ui/components/organisms/vc-app/_internal/layouts/DesktopLayout.vue";
 import MobileLayout from "@ui/components/organisms/vc-app/_internal/layouts/MobileLayout.vue";
 import { VcPopupContainer, BladeRoutesRecord } from "@shared/components";
@@ -132,8 +107,9 @@ import type { MenuItem } from "@core/types";
 import type { SidebarStateReturn } from "@core/composables/useSidebarState";
 import { VcAiAgentPanel } from "@core/plugins/ai-agent";
 import type { IAiAgentConfig } from "@core/plugins/ai-agent";
+import { notification } from "@shared";
 import { useRoute } from "vue-router";
-import { AppRootElementKey, DynamicModulesKey, BladeRoutesKey, ModulesReadyKey, ModulesLoadErrorKey } from "@framework/injection-keys";
+import { AppRootElementKey, DynamicModulesKey, BladeRoutesKey, ModulesLoadErrorKey } from "@framework/injection-keys";
 import { createLogger } from "@core/utilities";
 import { provideSidebarState } from "@core/composables/useSidebarState";
 import { provideAppBarState } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarState";
@@ -201,13 +177,9 @@ const dynamicModules = inject(DynamicModulesKey, undefined);
 const aiAgentConfig = inject<IAiAgentConfig | undefined>("aiAgentConfig", undefined);
 const aiAgentAddGlobalToolbarButton = inject<boolean>("aiAgentAddGlobalToolbarButton", true);
 
-// Phase 2: module loading completion and error state
-// Default ref(true) = backward-compatible: no dynamic modules means immediately ready
+// Module load error state for notification toast
 // Default ref(false) = backward-compatible: no dynamic modules means no error
-const modulesReadyRef = inject(ModulesReadyKey, ref(true));
-const modulesReady = computed(() => modulesReadyRef.value);
-const modulesLoadErrorRef = inject(ModulesLoadErrorKey, ref(false));
-const modulesLoadError = computed(() => modulesLoadErrorRef.value);
+const modulesLoadError = inject(ModulesLoadErrorKey, ref(false));
 
 // Bootstrap: provide services + register default shell UI
 useShellBootstrap({
@@ -216,6 +188,16 @@ useShellBootstrap({
   dynamicModules,
   aiAgentConfig,
   aiAgentAddGlobalToolbarButton,
+});
+
+// Progressive loading: show error as notification toast instead of blocking overlay
+watch(modulesLoadError, (hasError) => {
+  if (hasError) {
+    notification.error(
+      "Unable to load application modules. Please check your connection and try refreshing the page.",
+      { timeout: 10000 },
+    );
+  }
 });
 </script>
 
@@ -255,28 +237,6 @@ useShellBootstrap({
     }
   }
 
-  &__modules-loading {
-    @apply tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-h-full tw-gap-4;
-
-    &-text {
-      @apply tw-text-sm tw-font-normal;
-      color: var(--neutrals-500);
-    }
-  }
-
-  &__modules-error {
-    @apply tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-h-full tw-gap-3;
-
-    &-title {
-      @apply tw-text-lg tw-font-semibold;
-      color: var(--base-text-color, var(--neutrals-800));
-    }
-
-    &-text {
-      @apply tw-text-sm tw-font-normal tw-text-center tw-max-w-md;
-      color: var(--neutrals-500);
-    }
-  }
 
   &__user-dropdown-button {
     @apply tw-p-0 tw-mb-2 tw-w-full tw-h-auto;

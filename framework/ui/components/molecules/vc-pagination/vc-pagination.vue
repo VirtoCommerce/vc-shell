@@ -89,7 +89,7 @@
 <script lang="ts" setup>
 import { ref, computed, inject, type Ref, watch } from "vue";
 import { IsMobileKey } from "@framework/injection-keys";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export interface Props {
   expanded?: boolean;

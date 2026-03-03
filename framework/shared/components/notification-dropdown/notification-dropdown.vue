@@ -22,7 +22,7 @@ import NotificationItem from "@shared/components/notification-dropdown/_internal
 import { useI18n } from "vue-i18n";
 import { useNotifications } from "@core/composables";
 import { NotificationTemplatesSymbol } from "@framework/injection-keys";
-import { VcDropdown } from "@ui/components";
+import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 
 const notificationTemplates = inject(NotificationTemplatesSymbol);
 

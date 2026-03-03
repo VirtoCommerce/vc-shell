@@ -3,7 +3,7 @@ import { Component, ExtractPropTypes, computed, h, onMounted, ref, unref } from 
 import componentProps from "@shared/modules/dynamic/components/fields/props";
 import { StatusSchema } from "@shared/modules/dynamic/types";
 import { StatusField } from "@shared/modules/dynamic/components/factories";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
 import VcButton from "@ui/components/atoms/vc-button/vc-button.vue";
 

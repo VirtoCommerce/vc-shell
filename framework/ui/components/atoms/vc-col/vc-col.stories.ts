@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcCol } from "@ui/components/atoms/vc-col";
 import { VcRow } from "@ui/components/atoms/vc-row";
-import { VcImage } from "@ui/components";
+import { VcImage } from "@ui/components/atoms/vc-image";
 
 /**
  * `VcCol` is a layout component that creates a vertical column for content.

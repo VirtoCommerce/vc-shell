@@ -92,7 +92,7 @@
 <script lang="ts" setup>
 import { ref, watch, onBeforeUnmount, nextTick } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useTeleportTarget } from "@ui/composables";
 
 const props = defineProps<{

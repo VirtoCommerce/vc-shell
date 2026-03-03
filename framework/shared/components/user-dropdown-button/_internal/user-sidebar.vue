@@ -21,7 +21,7 @@ import { inject, ref, type Ref } from "vue";
 import { IsDesktopKey } from "@framework/injection-keys";
 import { IMenuItem } from "@core/types";
 import { SettingsMenu } from "@shared/components/settings-menu";
-import { VcSidebar } from "@ui/components";
+import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 
 defineProps<{
   isOpened: boolean;

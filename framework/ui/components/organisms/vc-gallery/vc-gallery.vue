@@ -151,7 +151,9 @@
 <script lang="ts" setup>
 import { computed, ref, watch, toValue } from "vue";
 import type { ICommonAsset, IValidationRules } from "@core/types";
-import { VcFileUpload, VcHint, VcIcon } from "@ui/components";
+import { VcFileUpload } from "@ui/components/molecules/vc-file-upload";
+import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcImageUpload from "@ui/components/organisms/vc-image-upload/vc-image-upload.vue";
 import { useGalleryReorder } from "./composables/useGalleryReorder";

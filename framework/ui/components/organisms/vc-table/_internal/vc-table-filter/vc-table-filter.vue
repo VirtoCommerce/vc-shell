@@ -69,7 +69,7 @@ import { IsMobileKey } from "@framework/injection-keys";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcBadge } from "@ui/components/atoms/vc-badge";
 import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
-import { VcSidebar } from "@ui/components";
+import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { useFloatingPosition } from "@ui/composables";
 
 export interface Props {

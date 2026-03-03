@@ -1,7 +1,8 @@
-import { VNode } from "vue";
-import _Slider from "@ui/components/molecules/vc-slider/vc-slider.vue";
+import { defineAsyncComponent, type VNode } from "vue";
 
-export const VcSlider = _Slider as typeof _Slider & {
+type VcSliderComponent = typeof import("./vc-slider.vue")["default"];
+
+type VcSliderSlots = {
   new (): {
     $slots: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,3 +12,10 @@ export const VcSlider = _Slider as typeof _Slider & {
     };
   };
 };
+
+export const VcSlider = defineAsyncComponent({
+  loader: () => import("./vc-slider.vue"),
+  delay: 200,
+  timeout: 10000,
+  suspensible: false,
+}) as VcSliderComponent & VcSliderSlots;

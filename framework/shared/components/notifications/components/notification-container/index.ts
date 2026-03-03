@@ -1,4 +1,5 @@
-import { VcToast, VcIcon } from "@ui/components";
+import { VcToast } from "@ui/components/molecules/vc-toast";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { PropType, computed, defineComponent, h, ref, toRaw } from "vue";
 import { Content, NotificationType, NotificationPosition } from "@shared/components/notifications/types";
 import { useContainer } from "@shared/components/notifications/composables/useContainer";

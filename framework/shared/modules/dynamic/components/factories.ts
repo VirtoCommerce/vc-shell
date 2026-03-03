@@ -23,27 +23,25 @@ import {
 } from "@shared/modules/dynamic/types/models";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { markRaw } from "vue";
-import {
-  VcButton,
-  VcCard,
-  VcCheckbox,
-  VcDynamicProperty,
-  VcEditor,
-  VcField,
-  VcGallery,
-  VcImage,
-  VcInput,
-  VcInputCurrency,
-  VcSelect,
-  VcStatus,
-  VcVideo,
-  VcTextarea,
-  VcMultivalue,
-  VcSwitch,
-  VcTable,
-  VcRating,
-  VcRadioButton,
-} from "@ui/components";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcCard } from "@ui/components/atoms/vc-card";
+import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
+import { VcDynamicProperty } from "@ui/components/organisms/vc-dynamic-property";
+import { VcEditor } from "@ui/components/molecules/vc-editor";
+import { VcField } from "@ui/components/molecules/vc-field";
+import { VcGallery } from "@ui/components/organisms/vc-gallery";
+import { VcImage } from "@ui/components/atoms/vc-image";
+import { VcInput } from "@ui/components/molecules/vc-input";
+import { VcInputCurrency } from "@ui/components/molecules/vc-input-currency";
+import { VcSelect } from "@ui/components/molecules/vc-select";
+import { VcStatus } from "@ui/components/atoms/vc-status";
+import { VcVideo } from "@ui/components/atoms/vc-video";
+import { VcTextarea } from "@ui/components/molecules/vc-textarea";
+import { VcMultivalue } from "@ui/components/molecules/vc-multivalue";
+import { VcSwitch } from "@ui/components/molecules/vc-switch";
+import { VcTable } from "@ui/components/organisms/vc-table";
+import { VcRating } from "@ui/components/molecules/vc-rating";
+import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
 
 export const ControlBaseProps = ({
   rules = undefined,

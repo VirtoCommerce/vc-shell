@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 export interface Props {
   status?: boolean;
 }

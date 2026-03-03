@@ -147,7 +147,8 @@
 <script lang="ts" setup generic="T extends { id?: string; colorCode?: string }">
 import { ref, computed, watchEffect } from "vue";
 import { useFormField } from "@ui/composables/useFormField";
-import { VcLabel, VcHint } from "@ui/components";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcHint } from "@ui/components/atoms/vc-hint";
 import MultivalueTrigger from "@ui/components/molecules/vc-multivalue/_internal/MultivalueTrigger.vue";
 import MultivalueDropdown from "@ui/components/molecules/vc-multivalue/_internal/MultivalueDropdown.vue";
 import { useMultivalueMode, type MultivalueType } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueMode";

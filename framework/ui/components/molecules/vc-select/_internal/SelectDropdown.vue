@@ -103,7 +103,8 @@
 <script lang="ts" setup>
 import { ref, computed, watch, nextTick } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import { VcIcon, VcScrollableContainer } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcScrollableContainer } from "@ui/components/atoms/vc-scrollable-container";
 import { useI18n } from "vue-i18n";
 import { useTeleportTarget } from "@ui/composables";
 

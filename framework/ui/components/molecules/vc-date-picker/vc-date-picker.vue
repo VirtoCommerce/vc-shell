@@ -127,7 +127,9 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import { useFormField } from "@ui/composables/useFormField";
-import { VcLabel, VcIcon, VcHint } from "@ui/components";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcHint } from "@ui/components/atoms/vc-hint";
 import VueDatePicker, { VueDatePickerProps, ModelValue } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import type { ITextFieldProps } from "@ui/types";

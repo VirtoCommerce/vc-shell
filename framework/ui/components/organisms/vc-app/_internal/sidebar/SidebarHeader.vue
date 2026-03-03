@@ -109,7 +109,7 @@
 
 <script lang="ts" setup>
 import { inject, ref } from "vue";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { ShellIndicatorsKey } from "@framework/injection-keys";
 
 export interface Props {

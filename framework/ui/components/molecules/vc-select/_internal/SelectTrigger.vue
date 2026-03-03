@@ -229,7 +229,8 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { VcHint, VcIcon } from "@ui/components";
+import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useI18n } from "vue-i18n";
 
 defineProps<{

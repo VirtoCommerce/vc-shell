@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import { computed, inject, ref, type Ref } from "vue";
 import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
-import { VcSidebar } from "@ui/components";
+import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 
 export interface Props {
   position?: "left" | "right";

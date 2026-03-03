@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcRow } from "@ui/components/atoms/vc-row";
-import { VcImage } from "@ui/components";
+import { VcImage } from "@ui/components/atoms/vc-image";
 
 /**
  * `VcRow` is a layout component that arranges its children in a horizontal row.

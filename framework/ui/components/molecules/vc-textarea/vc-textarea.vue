@@ -81,7 +81,8 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { ref } from "vue";
-import { VcHint, VcLabel } from "@ui/components";
+import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcLabel } from "@ui/components/atoms/vc-label";
 import { useFormField } from "@ui/composables/useFormField";
 import type { IFormFieldProps } from "@ui/types";
 

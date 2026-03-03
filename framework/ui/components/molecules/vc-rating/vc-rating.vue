@@ -58,7 +58,8 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VNode } from "vue";
-import { VcLabel, VcIcon } from "@ui/components";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export interface Props {
   label?: string;

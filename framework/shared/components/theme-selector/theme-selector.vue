@@ -33,7 +33,7 @@ import { useTheme } from "@core/composables/useTheme";
 import { ref } from "vue";
 import { notification } from "..";
 import { SettingsMenuItem } from "@shared/components/settings-menu-item";
-import { VcDropdownPanel } from "@ui/components";
+import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
 import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
 
 const { currentThemeKey, currentLocalizedName, themes, setTheme } = useTheme();

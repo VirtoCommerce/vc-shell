@@ -1,18 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  VcButton,
-  VcCard,
-  VcField,
-  VcGallery,
-  VcIcon,
-  VcImage,
-  VcInput,
-  VcMultivalue,
-  VcRating,
-  VcStatus,
-  VcPagination,
-  VcInputCurrency,
-} from "@ui/components";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcCard } from "@ui/components/atoms/vc-card";
+import { VcField } from "@ui/components/molecules/vc-field";
+import { VcGallery } from "@ui/components/organisms/vc-gallery";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcImage } from "@ui/components/atoms/vc-image";
+import { VcInput } from "@ui/components/molecules/vc-input";
+import { VcMultivalue } from "@ui/components/molecules/vc-multivalue";
+import { VcRating } from "@ui/components/molecules/vc-rating";
+import { VcStatus } from "@ui/components/atoms/vc-status";
+import { VcPagination } from "@ui/components/molecules/vc-pagination";
+import { VcInputCurrency } from "@ui/components/molecules/vc-input-currency";
 import type { IActionBuilderResult, ITableColumns, IValidationRules, MenuItemConfig } from "@core/types";
 import type { ComponentProps } from "@shared/utilities/vueUtils";
 

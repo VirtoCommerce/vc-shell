@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { computed, toValue } from "vue";
 import type { Breadcrumbs } from "../../../../../types/index";
-import { VcIcon } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export interface Props extends Breadcrumbs {
   current: boolean;

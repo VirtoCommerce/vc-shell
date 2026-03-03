@@ -176,7 +176,8 @@ import { format } from "prettier/standalone";
 import * as prettierPluginHtml from "prettier/parser-html";
 // eslint-disable-next-line import/no-named-as-default
 import DOMPurify from "dompurify";
-import { VcLabel, VcHint } from "@ui/components";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcHint } from "@ui/components/atoms/vc-hint";
 import VcEditorToolbar from "@ui/components/molecules/vc-editor/_internal/vc-editor-toolbar.vue";
 import VcEditorButton from "@ui/components/molecules/vc-editor/_internal/vc-editor-button.vue";
 import type { CustomToolbarItem } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";

@@ -112,7 +112,8 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { unref } from "vue";
-import { VcSelect, VcInput } from "@ui/components";
+import { VcSelect } from "@ui/components/molecules/vc-select";
+import { VcInput } from "@ui/components/molecules/vc-input";
 import { type OptionProp } from "@ui/components/molecules/vc-select";
 
 export interface Props {

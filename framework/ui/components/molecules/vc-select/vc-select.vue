@@ -161,7 +161,7 @@
 import { ref, computed, watch, watchEffect, nextTick, toRefs } from "vue";
 import { useFormField } from "@ui/composables/useFormField";
 import { useIntersectionObserver } from "@vueuse/core";
-import { VcLabel } from "@ui/components";
+import { VcLabel } from "@ui/components/atoms/vc-label";
 import { useI18n } from "vue-i18n";
 import { useKeyboardNavigation } from "@core/composables/useKeyboardNavigation";
 import {

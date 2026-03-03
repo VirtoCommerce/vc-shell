@@ -44,7 +44,8 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { VcIcon, VcTooltip } from "@ui/components";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
 
 export interface Props {
   /**

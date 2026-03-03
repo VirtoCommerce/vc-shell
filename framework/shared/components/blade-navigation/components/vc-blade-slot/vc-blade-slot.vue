@@ -18,6 +18,17 @@
         @collapse:blade="onCollapse"
         @vue:unmounted="resetInterceptor"
       />
+      <!-- Progressive loading: skeleton placeholder for blades not yet registered -->
+      <VcBlade
+        v-else
+        v-show="visible"
+        :loading="true"
+        :closable="closable"
+        :expanded="expanded"
+        @close="onCloseBlade"
+        @expand="onExpand"
+        @collapse="onCollapse"
+      />
     </template>
   </ErrorInterceptor>
 </template>
@@ -25,6 +36,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, provide, ref, watch, watchEffect } from "vue";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
+import { VcBlade } from "@ui/components/organisms/vc-blade";
 import { BladeInstance as BladeInstanceKey, BLADE_BACK_BUTTON } from "@framework/injection-keys";
 import { ErrorInterceptor } from "@shared/components/error-interceptor";
 import { useBladeMessaging } from "@shared/components/blade-navigation/composables/useBladeMessaging";

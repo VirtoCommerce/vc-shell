@@ -128,7 +128,7 @@ import SidebarContent from "@ui/components/organisms/vc-app/_internal/sidebar/Si
 import SidebarCollapseButton from "@ui/components/organisms/vc-app/_internal/sidebar/SidebarCollapseButton.vue";
 import AppHubPopover from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppHubPopover.vue";
 import { NotificationDropdown } from "@shared/components";
-import { VcDropdownPanel } from "@ui/components";
+import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
 
 export interface Props {
   logo?: string;

@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcButton } from "@ui/components";
+import { VcButton } from "@ui/components/atoms/vc-button";
 import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { useAppBarMobileActions } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarMobileActions";

@@ -41,7 +41,7 @@
 <script lang="ts" setup>
 import { inject, ref, onMounted, nextTick } from "vue";
 import VcAppMenu from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenu.vue";
-import { VcScrollableContainer } from "@ui/components";
+import { VcScrollableContainer } from "@ui/components/atoms/vc-scrollable-container";
 import { UserDropdownButton } from "@shared/components";
 import { EmbeddedModeKey } from "@framework/injection-keys";
 import type { MenuItem } from "@core/types";

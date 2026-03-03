@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcSlider } from ".";
-import { VcImage, VcIcon } from "@ui/components";
+import { VcImage } from "@ui/components/atoms/vc-image";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 /**
  * VcSlider component is used to create a content carousel with customizable number of slides,

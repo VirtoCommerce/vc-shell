@@ -33,7 +33,7 @@ import { useI18n } from "vue-i18n";
 import { useLanguages } from "@core/composables";
 import { ref, computed } from "vue";
 import { SettingsMenuItem } from "@shared/components/settings-menu-item";
-import { VcDropdownPanel } from "@ui/components";
+import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
 import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
 
 interface ILanguage {

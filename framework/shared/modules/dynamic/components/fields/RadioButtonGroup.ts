@@ -7,7 +7,8 @@ import { RadioButton } from "@shared/modules/dynamic/components/factories";
 import { RadioButtonSchema } from "@shared/modules/dynamic/types";
 import { getModel } from "@shared/modules/dynamic/helpers/getters";
 import * as _ from "lodash-es";
-import { VcLabel, VcHint } from "@ui/components";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcHint } from "@ui/components/atoms/vc-hint";
 
 export default {
   name: "RadioButtonGroup",

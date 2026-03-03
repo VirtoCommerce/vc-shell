@@ -1,5 +1,5 @@
 import { MaybeRef } from "vue";
-import * as components from "@ui/components";
+import type * as components from "@ui/components";
 
 export type { IFormFieldProps, ITextFieldProps } from "./form-field";
 

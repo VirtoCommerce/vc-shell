@@ -191,16 +191,14 @@ export default defineConfig({
     checker({
       vueTsc: true,
     }),
-    // TODO: Enable after resolving 288 circular dependencies in framework barrel exports
-    // See: core/types ↔ blade-navigation/types, ui/components → core/composables → ui/ cycles
-    // ...(mode === "production"
-    //   ? [
-    //       circleDependency({
-    //         exclude: [/node_modules/, /\.git/, /^\0/, /virtual:/],
-    //         circleImportThrowErr: true,
-    //       }) as PluginOption,
-    //     ]
-    //   : []),
+    ...(mode === "production"
+      ? [
+          circleDependency({
+            exclude: [/node_modules/, /\.git/, /^\0/, /virtual:/],
+            circleImportThrowErr: true,
+          }) as PluginOption,
+        ]
+      : []),
     ...(process.env.ANALYZE
       ? [
           visualizer({

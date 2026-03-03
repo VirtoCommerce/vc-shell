@@ -1,4 +1,4 @@
-import { useAppBarWidget } from "@core/composables";
+import { useAppBarWidget } from "@core/composables/useAppBarWidget";
 import { useToggleableContent } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useToggleableContent";
 import { useAppBarState } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarState";
 

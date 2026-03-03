@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs } from "vue";
-import { AsyncAction, IUseDynamicProperties } from "@core/composables";
+import { AsyncAction } from "@core/composables/useAsync";
+import { IUseDynamicProperties } from "@core/composables/useDynamicProperties";
 import { SettingsDetails, SettingsGrid, SettingsSchema } from "@shared/modules/dynamic/types";
 import type {
   AssetsHandler,

@@ -12,7 +12,7 @@ import { i18n } from "@core/plugins/i18n";
 import { methodHandler } from "@shared/modules/dynamic/helpers/methodHandler";
 import { toRefs } from "@vueuse/core";
 import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
-import { usePermissions } from "@core/composables";
+import { usePermissions } from "@core/composables/usePermissions";
 
 const { hasAccess } = usePermissions();
 

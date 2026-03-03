@@ -18,7 +18,7 @@ import {
 } from "vue";
 import * as _ from "lodash-es";
 import { Checkbox, InputField, Switch, SelectField, RadioButton } from "@shared/modules/dynamic/components/factories";
-import { AsyncAction } from "@core/composables";
+import { AsyncAction } from "@core/composables/useAsync";
 import { VcButton, VcCol, VcContainer, VcLabel, VcRow } from "@ui/components";
 import { useI18n } from "vue-i18n";
 import { FilterBase, FilterCheckbox, FilterDateInput, FilterRadio, FilterSelect, FilterSwitch } from "@shared/modules/dynamic/types";

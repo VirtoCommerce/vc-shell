@@ -1,5 +1,5 @@
 import { ref, watch, onUnmounted } from "vue";
-import { useNotifications } from "@core/composables";
+import { useNotifications } from "@core/composables/useNotifications";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useAppSwitcher } from "@shared/components/app-switcher/composables/useAppSwitcher";
 

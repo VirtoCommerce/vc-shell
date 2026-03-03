@@ -1,7 +1,7 @@
 import { computed, ref, type Ref } from "vue";
 import type { AppDescriptor } from "@core/api/platform";
 import type { AppBarWidget } from "@core/services";
-import { usePermissions } from "@core/composables";
+import { usePermissions } from "@core/composables/usePermissions";
 
 export interface UseAppHubOptions {
   appsList: Ref<AppDescriptor[]>;

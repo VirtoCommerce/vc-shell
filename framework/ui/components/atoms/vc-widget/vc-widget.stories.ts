@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcWidget } from "@ui/components/atoms/vc-widget";
-import { provideWidgetService } from "@core/composables";
+import { provideWidgetService } from "@core/composables/useWidgets";
 
 /**
  * `VcWidget` is a component that represents a clickable widget with an icon, title, and optional badge.

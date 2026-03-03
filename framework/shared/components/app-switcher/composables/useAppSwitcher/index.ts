@@ -1,6 +1,6 @@
 import { computed, Ref, ref } from "vue";
 import { AppDescriptor, AppsClient } from "@core/api/platform";
-import { usePermissions } from "@core/composables";
+import { usePermissions } from "@core/composables/usePermissions";
 import { notification } from "@shared/components/notifications";
 import { i18n } from "@core/plugins";
 import { createLogger } from "@core/utilities";

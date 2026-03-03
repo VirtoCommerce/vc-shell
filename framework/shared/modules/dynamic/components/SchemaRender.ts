@@ -19,7 +19,7 @@ import { methodHandler } from "@shared/modules/dynamic/helpers/methodHandler";
 import { toValue } from "@vueuse/core";
 import { safeIn } from "@shared/modules/dynamic/helpers/safeIn";
 import { unrefNested } from "@shared/modules/dynamic/helpers/unrefNested";
-import { usePermissions } from "@core/composables";
+import { usePermissions } from "@core/composables/usePermissions";
 
 const schemeRenderProps = {
   context: {

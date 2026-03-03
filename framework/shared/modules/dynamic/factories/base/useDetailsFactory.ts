@@ -1,7 +1,8 @@
 import { ComputedRef, MaybeRef, computed, ref, watch } from "vue";
 import * as _ from "lodash-es";
 import { useForm, useIsFormValid } from "vee-validate";
-import { useAsync, useLoading } from "@core/composables";
+import { useAsync } from "@core/composables/useAsync";
+import { useLoading } from "@core/composables/useLoading";
 import type { ItemId, IValidationState, UseDetails } from "@shared/modules/dynamic/factories/types";
 import { createUnrefFn } from "@vueuse/core";
 

@@ -1,5 +1,7 @@
 import { type ComputedRef, type Ref, computed, inject, onBeforeUnmount, ref, watch } from "vue";
-import { useBlade, usePermissions, useToolbar } from "@core/composables";
+import { useBlade } from "@core/composables/useBlade";
+import { usePermissions } from "@core/composables/usePermissions";
+import { useToolbar } from "@core/composables/useToolbar";
 import type { IBladeToolbar } from "@core/types";
 import { FALLBACK_BLADE_ID } from "@core/constants";
 import type { IToolbarItem } from "@core/services";

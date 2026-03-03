@@ -250,8 +250,18 @@ export function _createInternalUserLogic(): IUserInternalAPI {
 
     try {
       loading.value = true;
-      user.value = await securityClient.getCurrentUser();
-      await getAccessToken();
+      performance.mark("vc:auth-start");
+
+      // getCurrentUser() and getAccessToken() have no data dependency.
+      // getAccessToken() reads from localStorage (sync ~0ms) or refreshes via /connect/token.
+      // Running in parallel saves one sequential round-trip on token refresh paths.
+      const [userDetail] = await Promise.all([
+        securityClient.getCurrentUser(),
+        getAccessToken(),
+      ]);
+
+      user.value = userDetail;
+      performance.mark("vc:auth-done");
       logger.debug("User details loaded:", user.value);
     } catch (e: any) {
       logger.error("loadUser failed:", e);

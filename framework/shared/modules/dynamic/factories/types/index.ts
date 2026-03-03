@@ -2,7 +2,7 @@
 import { ComputedRef, MaybeRef, Ref, UnwrapNestedRefs } from "vue";
 import { AsyncAction, IUseDynamicProperties } from "@core/composables";
 import { SettingsDetails, SettingsGrid, SettingsSchema } from "@shared/modules/dynamic/types";
-import {
+import type {
   AssetsHandler,
   IActionBuilderResult,
   IBladeToolbar,

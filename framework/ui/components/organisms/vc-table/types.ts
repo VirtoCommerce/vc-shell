@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComputedRef, Ref, VNode } from "vue";
-import { IActionBuilderResult, ITableColumns } from "@core/types";
+import type { IActionBuilderResult, ITableColumns } from "@core/types";
 import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 
 // Re-export types used by compositional components

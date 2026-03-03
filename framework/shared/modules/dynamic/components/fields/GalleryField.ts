@@ -1,7 +1,7 @@
 import { Component, ExtractPropTypes, computed, h, markRaw, ref, toRefs, toValue, unref, watch } from "vue";
 import { Gallery } from "@shared/modules/dynamic/components/factories";
 import componentProps from "@shared/modules/dynamic/components/fields/props";
-import { ICommonAsset } from "@core/types";
+import type { ICommonAsset } from "@core/types";
 import { useBladeNavigation, usePopup } from "@shared/components";
 import { useI18n } from "vue-i18n";
 import { default as AssetsDetails } from "@shared/modules/assets/components/assets-details/assets-details.vue";

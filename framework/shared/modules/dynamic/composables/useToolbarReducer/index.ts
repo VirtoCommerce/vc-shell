@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IBladeToolbar } from "@core/types";
+import type { IBladeToolbar } from "@core/types";
 import * as _ from "lodash-es";
 import { SettingsSchema, ToolbarSchema } from "@shared/modules/dynamic/types";
 import { BaseBladeScope, DetailsBladeContext, ListBladeContext } from "@shared/modules/dynamic/factories/types";

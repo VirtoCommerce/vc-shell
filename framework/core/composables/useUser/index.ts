@@ -12,7 +12,7 @@ import {
   LoginRequest,
   SignInResult,
 } from "@core/api/platform";
-import { RequestPasswordResult } from "@core/types";
+import type { RequestPasswordResult } from "@core/types";
 import { createSharedComposable } from "@vueuse/core";
 import { useExternalProvider } from "@shared/components/sign-in/useExternalProvider";
 import { createLogger } from "@core/utilities";

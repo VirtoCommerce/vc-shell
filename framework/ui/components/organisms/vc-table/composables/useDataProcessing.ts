@@ -101,7 +101,7 @@ function compareValues(value1: unknown, value2: unknown, nullSortOrder: number):
 /**
  * Main composable for data processing
  */
-export function useDataProcessing<T extends Record<string, unknown>>(
+export function useDataProcessing<T extends Record<string, any>>(
   options: UseDataProcessingOptions<T>
 ): UseDataProcessingReturn<T> {
   const {

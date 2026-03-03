@@ -92,7 +92,7 @@ export interface UseTableSelectionV2Return<T> {
   getSelectionState: () => { selected: T[]; isSelectAll: boolean; count: number };
 }
 
-export function useTableSelectionV2<T extends Record<string, unknown>>(
+export function useTableSelectionV2<T extends Record<string, any>>(
   options: UseTableSelectionV2Options<T>
 ): UseTableSelectionV2Return<T> {
   const {

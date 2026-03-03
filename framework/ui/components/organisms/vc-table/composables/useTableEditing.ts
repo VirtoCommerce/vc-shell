@@ -108,7 +108,7 @@ export interface UseTableEditingReturn<T> {
   cancelRowEdit: (item: T, rowIndex: number) => RowEditEvent<T>;
 }
 
-export function useTableEditing<T extends Record<string, unknown>>(
+export function useTableEditing<T extends Record<string, any>>(
   options: UseTableEditingOptions<T>
 ): UseTableEditingReturn<T> {
   const { editMode, editingRows, getItemKey } = options;

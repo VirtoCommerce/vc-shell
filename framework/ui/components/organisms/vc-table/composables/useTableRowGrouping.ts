@@ -122,7 +122,7 @@ export interface UseTableRowGroupingReturn<T> {
  * });
  * ```
  */
-export function useTableRowGrouping<T extends Record<string, unknown>>(
+export function useTableRowGrouping<T extends Record<string, any>>(
   options: RowGroupingOptions<T>,
 ): UseTableRowGroupingReturn<T> {
   const {

@@ -39,7 +39,7 @@ export interface UseTableExpansionReturn<T> {
   collapseAll: () => void;
 }
 
-export function useTableExpansion<T extends Record<string, unknown>>(
+export function useTableExpansion<T extends Record<string, any>>(
   options: UseTableExpansionOptions<T>
 ): UseTableExpansionReturn<T> {
   const { expandedRows, getItemKey } = options;

@@ -87,6 +87,7 @@
     "vue-router": "^4.2.5",
     "vue3-application-insights": "^1.1.0",
     "vue3-touch-events": "^4.1.8",
+    "web-vitals": "^5.1.0",
     "whatwg-fetch": "^3.6.19"
   },
   "devDependencies": {

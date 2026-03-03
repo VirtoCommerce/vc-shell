@@ -1,7 +1,6 @@
-# Change Log
+## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-03)
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+**Note:** Version bump only for package @vc-shell/framework
 
 ## [1.2.4-beta.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.3...v1.2.4-beta.4) (2026-02-24)
 

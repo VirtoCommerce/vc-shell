@@ -1,6 +1,6 @@
 import { ref, computed, provide, inject } from "vue";
 import type { Ref, ComputedRef, InjectionKey } from "vue";
-import { useMenuExpanded } from "@shared/composables";
+import { useMenuExpanded } from "@shared/composables/useMenuExpanded";
 
 export interface SidebarState {
   /** Sidebar is pinned open by user (persisted to localStorage) */

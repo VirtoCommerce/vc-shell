@@ -16,7 +16,7 @@
       <slot></slot>
     </div>
 
-    <teleport :to="teleportTarget" defer>
+    <teleport :to="teleportTarget">
       <Transition name="vc-tooltip-fade">
         <div
           v-if="tooltipVisible && !disabled && $slots['tooltip']"

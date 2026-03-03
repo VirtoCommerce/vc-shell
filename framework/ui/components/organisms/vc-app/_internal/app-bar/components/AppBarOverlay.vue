@@ -1,5 +1,5 @@
 <template>
-  <Teleport v-if="appRootEl" :to="appRootEl" defer>
+  <Teleport v-if="appRootEl" :to="appRootEl">
     <div
       class="app-bar-overlay"
       :class="{

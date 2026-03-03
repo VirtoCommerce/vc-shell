@@ -19,7 +19,7 @@
         @mouseenter="tooltipVisible = true"
         @mouseleave="tooltipVisible = false"
       >
-        <teleport :to="teleportTarget" defer>
+        <teleport :to="teleportTarget">
           <span
             v-if="tooltipVisible"
             ref="tooltipRef"

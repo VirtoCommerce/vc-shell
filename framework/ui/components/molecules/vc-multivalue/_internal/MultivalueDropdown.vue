@@ -1,5 +1,5 @@
 <template>
-  <teleport :to="teleportTarget" defer>
+  <teleport :to="teleportTarget">
     <Transition name="multivalue-dropdown">
       <div
         v-if="isOpened"

@@ -6,14 +6,14 @@ import { createHash } from "node:crypto";
 import vue from "@vitejs/plugin-vue";
 
 // Default external dependencies
-const DEFAULT_EXTERNALS = [
+const DEFAULT_EXTERNALS: (string | RegExp)[] = [
   "vue",
   "vue-router",
   "vee-validate",
   "vue-i18n",
   "lodash-es",
   "@vueuse/core",
-  "@vc-shell/framework",
+  /^@vc-shell\/framework(\/|$)/,
 ];
 
 function sanitizeFileToken(value: string): string {

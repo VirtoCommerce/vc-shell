@@ -6,6 +6,8 @@ import { readFileSync } from "node:fs";
 import { resolve, join, dirname } from "node:path";
 import { cwd } from "node:process";
 import dynamicModuleConfiguration from "@vite-config/templates/vite.dynamic-module.appconfig";
+import modulesLibraryConfiguration from "@vite-config/templates/vite.modules-library.appconfig";
+import type { ModulesLibraryOptions } from "@vite-config/templates/vite.modules-library.appconfig";
 import { DynamicModuleOptions } from "@vite-config/types";
 
 const packageJson = fs.readFileSync(cwd() + "/package.json");
@@ -103,6 +105,13 @@ function getDynamicModuleConfiguration(options: DynamicModuleOptions) {
   return mergeConfig(baseConfig, options);
 }
 
-export type { DynamicModuleOptions, CompatibilityOptions } from "@vite-config/types";
+function getModulesLibraryConfiguration(options: ModulesLibraryOptions = {}) {
+  console.log(`Building modules library ${name} v.${version} ...`);
+  const baseConfig = modulesLibraryConfiguration(options);
+  return mergeConfig(baseConfig, options as UserConfig);
+}
 
-export { getLibraryConfiguration, getApplicationConfiguration, getDynamicModuleConfiguration };
+export type { DynamicModuleOptions, CompatibilityOptions } from "@vite-config/types";
+export type { ModulesLibraryOptions } from "@vite-config/templates/vite.modules-library.appconfig";
+
+export { getLibraryConfiguration, getApplicationConfiguration, getDynamicModuleConfiguration, getModulesLibraryConfiguration };

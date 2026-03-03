@@ -133,6 +133,11 @@ const meta = {
       control: "boolean",
       table: { category: "State" },
     },
+    loading: {
+      description: "Shows skeleton placeholders for all blade zones while data is loading",
+      control: "boolean",
+      table: { category: "State" },
+    },
     toolbarItems: {
       description: "Array of toolbar button definitions",
       control: "object",
@@ -393,6 +398,78 @@ export const CustomWidth: Story = {
           @close="() => {}"
         >
           <div class="tw-p-4 tw-text-xs tw-text-gray-600">width: "60%" (string → CSS value)</div>
+        </VcBlade>
+      </div>
+    `,
+  }),
+};
+
+export const Loading: Story = {
+  args: {
+    title: "Products",
+    subtitle: "Manage your catalog",
+    icon: "fas fa-box",
+    width: 500,
+    loading: true,
+  },
+  render: (args) => ({
+    components: { VcBlade },
+    setup() {
+      provideMockBladeContext();
+      return { args };
+    },
+    template: `
+      <VcBlade v-bind="args" @close="() => {}">
+        <div class="tw-p-6">
+          <p class="tw-text-sm tw-text-gray-600">This content is hidden while loading=true.</p>
+        </div>
+      </VcBlade>
+    `,
+  }),
+};
+
+export const LoadingToggle: Story = {
+  args: {
+    title: "Order Details",
+    subtitle: "ORD-12345",
+    icon: "fas fa-file-alt",
+    width: 500,
+    toolbarItems: createToolbarItems(3),
+  },
+  render: (args) => ({
+    components: { VcBlade },
+    setup() {
+      provideMockBladeContext();
+      const loading = ref(true);
+      const toggle = () => { loading.value = !loading.value; };
+      return { args, loading, toggle };
+    },
+    template: `
+      <div>
+        <button
+          class="tw-mb-4 tw-px-3 tw-py-1.5 tw-text-sm tw-rounded tw-border tw-cursor-pointer"
+          :class="loading ? 'tw-bg-blue-600 tw-text-white tw-border-blue-600' : 'tw-bg-white tw-text-gray-700 tw-border-gray-300'"
+          @click="toggle"
+        >
+          {{ loading ? 'Loading...' : 'Loaded — click to reload' }}
+        </button>
+        <VcBlade v-bind="args" :loading="loading" @close="() => {}">
+          <div class="tw-p-6">
+            <div class="tw-space-y-3">
+              <div class="tw-flex tw-justify-between tw-text-sm">
+                <span class="tw-text-gray-500">Status:</span>
+                <span class="tw-font-semibold tw-text-green-600">Processing</span>
+              </div>
+              <div class="tw-flex tw-justify-between tw-text-sm">
+                <span class="tw-text-gray-500">Total:</span>
+                <span class="tw-font-semibold">$149.99</span>
+              </div>
+              <div class="tw-flex tw-justify-between tw-text-sm">
+                <span class="tw-text-gray-500">Customer:</span>
+                <span>Alice Johnson</span>
+              </div>
+            </div>
+          </div>
         </VcBlade>
       </div>
     `,

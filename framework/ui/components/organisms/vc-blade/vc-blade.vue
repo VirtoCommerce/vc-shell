@@ -12,14 +12,14 @@
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
   >
-    <!-- Header zone -->
+    <!-- Header zone: v-show keeps BladeHeader mounted to avoid Teleport unmount bug -->
     <template v-if="!($isMobile.value && blades.length === 1 && !$slots['actions'])">
       <BladeHeaderSkeleton
-        v-if="loading"
+        v-if="showSkeleton"
         class="vc-blade__header"
       />
       <BladeHeader
-        v-else
+        v-show="!showSkeleton"
         class="vc-blade__header"
         :closable="closable"
         :icon="icon"
@@ -41,7 +41,10 @@
             v-if="blade.breadcrumbs?.length && $isDesktop.value"
             class="vc-blade__breadcrumbs"
           >
-            <VcBreadcrumbs :items="blade.breadcrumbs" collapsed>
+            <VcBreadcrumbs
+              :items="blade.breadcrumbs"
+              collapsed
+            >
               <template #trigger="{ click, isActive }">
                 <VcButton
                   text
@@ -68,13 +71,13 @@
     </template>
 
     <BladeStatusBanners
-      v-if="!loading"
+      v-if="!showSkeleton"
       :modified="modified"
     />
 
     <!-- Toolbar zone -->
     <BladeToolbarSkeleton
-      v-if="loading"
+      v-if="showSkeleton"
       class="vc-blade__toolbar"
     />
     <BladeToolbar
@@ -88,7 +91,7 @@
     </BladeToolbar>
 
     <!-- Content zone -->
-    <BladeContentSkeleton v-if="loading" />
+    <BladeContentSkeleton v-if="showSkeleton" />
     <div
       v-else
       ref="contentRef"
@@ -112,9 +115,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, inject } from "vue";
+import { ref, inject, computed, onMounted, nextTick } from "vue";
 import { IBladeToolbar } from "@core/types";
-import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
+import { useBladeNavigation } from "@shared";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
 import BladeHeaderSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeHeaderSkeleton.vue";
 import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";
@@ -149,12 +152,23 @@ defineOptions({
   inheritAttrs: false,
 });
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   width: "30%",
   closable: true,
   toolbarItems: () => [],
   modified: undefined,
 });
+
+// Prevent flash of empty content on initial render.
+// useAsync starts with loading=false; the action (setting true) runs in onMounted.
+// Without this guard, VcBlade renders real (empty) content for 1 frame before skeleton appears.
+const isInitializing = ref(props.loading !== undefined);
+onMounted(() => {
+  nextTick(() => {
+    isInitializing.value = false;
+  });
+});
+const showSkeleton = computed(() => Boolean(props.loading) || isInitializing.value);
 
 const slots = defineSlots<{
   actions(): void;
@@ -216,7 +230,8 @@ const contentRef = ref<HTMLElement | null>(null);
   @apply tw-relative tw-flex tw-shrink-0 tw-flex-col tw-overflow-hidden;
   @apply tw-bg-[color:var(--blade-background-color)] tw-border tw-border-solid tw-border-[--blade-border-color];
   // Use shared transition timing for synchronized animations with AI panel
-  transition: width var(--app-panel-transition-duration, 0.3s) var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
+  transition: width var(--app-panel-transition-duration, 0.3s)
+    var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
 
   &__back-button {
     @apply tw-mr-[14px];
@@ -245,7 +260,6 @@ const contentRef = ref<HTMLElement | null>(null);
       @apply tw-hidden;
     }
   }
-
 
   &__toolbar {
     @apply tw-shrink-0;
@@ -290,7 +304,6 @@ const contentRef = ref<HTMLElement | null>(null);
       }
     }
   }
-
 }
 
 .vc-app--mobile .vc-blade {

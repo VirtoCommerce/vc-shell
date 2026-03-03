@@ -1,6 +1,6 @@
-import { App, Plugin } from "vue";
+import { App, Plugin, ref } from "vue";
 import { Router } from "vue-router";
-import { DynamicModulesKey } from "@framework/injection-keys";
+import { DynamicModulesKey, ModulesReadyKey, ModulesLoadErrorKey } from "@framework/injection-keys";
 import * as semver from "semver";
 import { notification } from "@shared/components/notifications/core";
 import { createLogger } from "@core/utilities";
@@ -271,8 +271,15 @@ export function useDynamicModules(
   const loadedModules = new Set<string>();
   const loadedModulesWithVersions = new Map<string, string>();
 
+  // Progressive loading state — provided before mount so descendants can inject during setup
+  const modulesReady = ref(false);
+  const modulesLoadError = ref(false);
+  app.provide(ModulesReadyKey, modulesReady);
+  app.provide(ModulesLoadErrorKey, modulesLoadError);
+
   async function load() {
     performance.mark("vc:modules-start");
+    let loadFailed = false;
     try {
       const shouldForceFreshAssets = finalConfig.forceFreshAssets !== false;
       const requestTimestamp = Date.now().toString();
@@ -596,6 +603,7 @@ export function useDynamicModules(
       }
     } catch (error) {
       logger.error("Failed to load modules:", error);
+      loadFailed = true;
     }
 
     app.config.globalProperties.$dynamicModules = {
@@ -604,6 +612,16 @@ export function useDynamicModules(
     };
     app.provide(DynamicModulesKey, app.config.globalProperties.$dynamicModules);
     performance.mark("vc:modules-done");
+
+    // Signal completion to the component tree
+    modulesReady.value = true;
+    if (loadFailed) {
+      modulesLoadError.value = true;
+    } else {
+      // Re-resolve the current route now that module routes/blades are registered
+      router.replace(router.currentRoute.value.fullPath);
+    }
+    performance.mark("vc:modules-installed");
   }
 
   return {

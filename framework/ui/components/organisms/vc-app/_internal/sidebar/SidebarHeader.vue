@@ -17,7 +17,7 @@
           @click="$emit('logo:click')"
         />
         <div
-          v-if="hasUnread && !expanded"
+          v-if="hasUnread && !expanded && !isMobile"
           class="sidebar-header__accent sidebar-header__accent--logo"
         />
       </div>

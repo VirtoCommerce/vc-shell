@@ -9,6 +9,7 @@ export interface AppBarButtonContent {
   order?: number;
   onClose?: () => void;
   isVisible?: MaybeRef<boolean> | ComputedRef<boolean>;
+  badge?: MaybeRef<boolean> | ComputedRef<boolean>;
 }
 
 export interface IAppBarMobileButtonsService {

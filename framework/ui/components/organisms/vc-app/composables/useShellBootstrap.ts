@@ -78,6 +78,7 @@ function useShellDefaults(ctx: ShellDefaultsContext) {
       icon: "lucide-bell",
       order: 10,
       isVisible: true,
+      badge: computed(() => hasUnreadNotifications.value),
     });
   }
 

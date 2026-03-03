@@ -89,9 +89,13 @@ export const withMobileView: Decorator = (story, context) => {
         });
       }
 
-      // Also provide via inject for components that use inject
+      // Also provide via inject for components that use inject.
+      // Both Symbol keys (new code) and string keys (legacy compat) are needed
+      // because some components (e.g. MenuSidebar) inject via string "isMobile".
       provide(IsMobileKey, ref(true));
       provide(IsDesktopKey, ref(false));
+      provide("isMobile", ref(true));
+      provide("isDesktop", ref(false));
 
       return { args: context.args };
     },

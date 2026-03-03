@@ -1,5 +1,5 @@
 import type { Meta, StoryFn } from "@storybook/vue3-vite";
-import { computed, onUnmounted, provide, ref } from "vue";
+import { computed, onMounted, onUnmounted, provide, ref } from "vue";
 import { useRoute } from "vue-router";
 import VcApp from "@ui/components/organisms/vc-app/vc-app.vue";
 import { useMenuService, useAppBarWidget } from "@core/composables";
@@ -266,7 +266,14 @@ export const Mobile: StoryFn = () => {
 
   return {
     components: { VcApp },
-    setup: () => useStorySetup(),
+    setup: () => {
+      const storySetup = useStorySetup();
+      // Provide sidebar state at story level so VcApp reuses it via inject
+      const sidebar = provideSidebarState();
+      // Auto-open the mobile slide-out menu so the story showcases the full mobile UI
+      onMounted(() => sidebar.openMenu());
+      return storySetup;
+    },
     template: `
       <div style="height: 600px;">
         <VcApp

@@ -5945,7 +5945,7 @@ __metadata:
     chalk: "npm:^2.4.2"
     cross-spawn: "npm:^7.0.3"
     mri: "npm:^1.2.0"
-    nswag: "npm:^14.5.0"
+    nswag: "npm:^14.6.3"
     typescript: "npm:^5.8.3"
     vite: "npm:^6.3.3"
     vite-plugin-dts: "npm:^3.6.4"
@@ -15922,7 +15922,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nswag@npm:^14.5.0":
+"nswag@npm:^14.6.3":
   version: 14.6.3
   resolution: "nswag@npm:14.6.3"
   bin:

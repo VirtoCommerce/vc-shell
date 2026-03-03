@@ -12,10 +12,10 @@ import {
   InjectionKey,
   ComputedRef,
 } from "vue";
-import { ComponentPublicInstanceConstructor } from "@shared/utilities/vueUtils";
-import { MenuItemConfig } from "@core/types";
-import { Breadcrumbs } from "@ui/types";
-import { DisplayableError } from "@core/utilities/error";
+import type { ComponentPublicInstanceConstructor } from "@shared/utilities/vueUtils";
+import type { MenuItemConfig } from "@core/types";
+import type { Breadcrumbs } from "@ui/types";
+import type { DisplayableError } from "@core/utilities/error";
 
 export type CoreBladeComponentProps = {
   expanded?: boolean;

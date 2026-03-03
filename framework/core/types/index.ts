@@ -1,7 +1,7 @@
 import { Component, ComputedRef, Ref } from "vue";
-import { CoreBladeExposed } from "@shared";
-import { ComponentPublicInstanceConstructor } from "@shared/utilities";
-import { IBladeInstance } from "@shared/components/blade-navigation/types";
+import type { CoreBladeExposed } from "@shared/components/blade-navigation/types";
+import type { ComponentPublicInstanceConstructor } from "@shared/utilities/vueUtils";
+import type { IBladeInstance } from "@shared/components/blade-navigation/types";
 
 // AI Agent types are now part of the ai-agent plugin
 // export * from "./plugins/ai-agent/types";

@@ -11,6 +11,7 @@
     "lint": "eslint --fix --cache 'framework/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
     "build": "yarn workspaces foreach -v --worktree --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/framework,@vc-shell/release-config}' run build",
+    "build:analyze": "ANALYZE=true yarn build",
     "build-framework": "yarn workspace @vc-shell/framework run build",
     "build-cli:config": "yarn workspace @vc-shell/config-generator run build",
     "build-cli:api-client": "yarn workspace @vc-shell/api-client-generator run build",

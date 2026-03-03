@@ -486,7 +486,7 @@ function isBadgeActive(widget: AppBarWidget): boolean {
   min-height: 0;
 
   &--mobile {
-    @apply tw-w-full tw-max-w-full tw-h-auto;
+    @apply tw-w-full tw-max-w-full tw-h-auto tw-overflow-visible;
   }
 
   &__search {
@@ -509,6 +509,17 @@ function isBadgeActive(widget: AppBarWidget): boolean {
       .app-hub-content__section--apps,
       .app-hub-content__section--widgets {
         min-height: 0;
+      }
+
+      .app-hub-content__section--apps {
+        @apply tw-border-r-0 tw-border-b tw-border-solid;
+        border-color: var(--app-hub-divider-color);
+      }
+
+      // In mobile flex-column layout, widgets-inner must NOT be absolute
+      // (absolute is only for the desktop two-column grid where apps drive row height).
+      .app-hub-content__widgets-inner {
+        @apply tw-relative tw-inset-auto;
       }
 
       .app-hub-content__section--widgets .app-hub-content__scroll {

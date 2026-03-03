@@ -45,12 +45,9 @@
         </div>
 
         <template v-if="isMobile">
-          <VcScrollableContainer
-            ref="scrollContainer"
-            class="menu-sidebar__navmenu-container"
-          >
+          <div class="menu-sidebar__navmenu-container">
             <slot name="navmenu" />
-          </VcScrollableContainer>
+          </div>
 
           <div class="menu-sidebar__user">
             <slot name="user-dropdown" />
@@ -67,9 +64,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref, watch, nextTick, useSlots, type MaybeRef, type Ref } from "vue";
+import { computed, inject, ref, useSlots, type MaybeRef, type Ref } from "vue";
 import { EmbeddedModeKey, IsDesktopKey } from "@framework/injection-keys";
-import { VcButton, VcScrollableContainer, VcSidebar } from "@ui/components";
+import { VcButton, VcSidebar } from "@ui/components";
 
 const props = defineProps<{
   isOpened: boolean;
@@ -93,18 +90,7 @@ const isMobile = inject<Ref<boolean>>("isMobile", ref(false));
 const isDesktop = inject(IsDesktopKey, ref(false));
 const slots = useSlots();
 
-const scrollContainer = ref<InstanceType<typeof VcScrollableContainer> | null>(null);
 const showHeader = computed(() => !isEmbedded && (isDesktop.value || Boolean(slots.widgets)));
-
-// Recalculate scroll state when sidebar opens
-watch(
-  () => props.isOpened,
-  (opened) => {
-    if (opened) {
-      nextTick(() => scrollContainer.value?.updateScrollState());
-    }
-  },
-);
 
 const wrapperComponent = computed(() => (isMobile.value ? VcSidebar : "div"));
 
@@ -166,20 +152,6 @@ const wrapperProps = computed<Record<string, unknown>>(() => {
 
   &__navmenu-container {
     @apply tw-flex-auto tw-min-h-0;
-
-    .vc-scrollable-container__viewport {
-      padding: 0 var(--app-bar-padding);
-    }
-
-    // Make nested containers transparent — the viewport is the sole scroll viewport
-    .vc-app-menu,
-    .vc-container {
-      @apply tw-h-auto tw-overflow-visible;
-    }
-
-    .vc-container__inner {
-      @apply tw-overflow-visible;
-    }
   }
 
   &__user {

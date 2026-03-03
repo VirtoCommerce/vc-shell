@@ -78,6 +78,10 @@
           "VC_APP_BAR": {
             "BACK": "Back"
           },
+          "MOBILE_LAYOUT": {
+            "TAB_MENU": "Menu",
+            "TAB_HUB": "Hub"
+          },
           "APP_HUB": {
             "SEARCH_PLACEHOLDER": "Search applications and widgets",
             "APPLICATIONS": "Applications",

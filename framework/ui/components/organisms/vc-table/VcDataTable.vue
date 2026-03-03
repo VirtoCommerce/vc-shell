@@ -1,7 +1,7 @@
 <template>
   <div
     ref="tableRootRef"
-    v-loading:49="loading"
+    v-loading:49="loading && !showSkeleton"
     class="vc-data-table"
     :aria-busy="loading || undefined"
   >
@@ -134,6 +134,11 @@
         <DataTableBody
           :items="displayItems"
           :loading="loading"
+          :skeleton-rows="props.skeletonRows"
+          :columns="safeColumns"
+          :get-column-width="cols.getEffectiveColumnWidth"
+          :get-cell-style="cols.getCellStyle"
+          :show-selection-cell="hasSelectionColumn && !isSelectionViaColumn"
           :empty-title="emptyTitle"
           :empty-description="emptyDescription"
           :loading-text="loadingText"
@@ -575,6 +580,19 @@ const { t } = useI18n({ useScope: "global" });
 const emptyTitle = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY_TITLE"));
 const emptyDescription = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY_DESCRIPTION"));
 const loadingText = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.LOADING"));
+
+/** Track whether data has ever been loaded — distinguishes initial load from refresh */
+const hasLoadedOnce = ref(false);
+watch(
+  () => props.items,
+  (items) => {
+    if (items && items.length > 0) hasLoadedOnce.value = true;
+  },
+  { immediate: true },
+);
+
+/** True when skeleton should show instead of spinner overlay */
+const showSkeleton = computed(() => props.loading && !hasLoadedOnce.value);
 
 const paginationRangeText = computed(() => {
   const p = props.pagination;
@@ -1685,6 +1703,11 @@ onBeforeUnmount(() => {
 
   &__loading {
     @apply tw-flex tw-items-center tw-justify-center tw-p-8 tw-text-neutrals-500;
+  }
+
+  // Hide spinner overlay when skeleton is showing (initial load)
+  &--skeleton-active .vc-loading-overlay {
+    display: none !important;
   }
 
   &__row--dragging {

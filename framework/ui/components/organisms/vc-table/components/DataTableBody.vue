@@ -13,12 +13,16 @@
       </slot>
     </template>
 
-    <!-- Loading state -->
+    <!-- Loading state — skeleton rows matching column layout -->
     <template v-else-if="loading && items.length === 0">
       <slot name="loading">
-        <div class="vc-data-table__loading">
-          <span>{{ loadingText }}</span>
-        </div>
+        <TableSkeletonRows
+          :columns="columns"
+          :rows="skeletonRows"
+          :get-column-width="getColumnWidth"
+          :get-cell-style="getCellStyle"
+          :show-selection-cell="showSelectionCell"
+        />
       </slot>
     </template>
 
@@ -119,6 +123,7 @@ import type { VcColumnProps } from "@ui/components/organisms/vc-table/types";
 import type { GroupedData } from "@ui/components/organisms/vc-table/composables/useTableRowGrouping";
 import DataTableRow from "@ui/components/organisms/vc-table/components/DataTableRow.vue";
 import TableEmpty from "@ui/components/organisms/vc-table/components/TableEmpty.vue";
+import TableSkeletonRows from "@ui/components/organisms/vc-table/components/_internal/TableSkeletonRows.vue";
 
 /**
  * Base item type — actual generic enforcement happens in VcDataTable.
@@ -167,8 +172,18 @@ const props = defineProps<{
   emptyTitle?: string;
   /** Empty state description */
   emptyDescription?: string;
-  /** Loading text */
+  /** Loading text (kept for custom loading slot consumers) */
   loadingText?: string;
+  /** Number of skeleton rows to show during loading */
+  skeletonRows?: number;
+  /** Visible columns (for skeleton rendering) */
+  columns: ColumnInstance[];
+  /** Column width resolver (for skeleton rendering) */
+  getColumnWidth: (col: VcColumnProps) => string | undefined;
+  /** Cell style resolver (for skeleton rendering) */
+  getCellStyle: (col: VcColumnProps) => object | undefined;
+  /** Whether selection cell (checkbox) is shown */
+  showSelectionCell?: boolean;
 
   // === Grouping ===
   /** Whether grouping is enabled */
@@ -232,6 +247,12 @@ const emit = defineEmits<{
   /** Row drop */
   "row-drop": [event: DragEvent];
 }>();
+
+// ============================================================================
+// Skeleton helpers
+// ============================================================================
+
+const skeletonRows = computed(() => props.skeletonRows ?? 20);
 
 // ============================================================================
 // Grouping computed helpers
@@ -308,9 +329,6 @@ const handleRowDrop = (e: DragEvent) => emit("row-drop", e);
   @apply tw-flex tw-flex-col tw-overflow-y-auto tw-flex-auto tw-min-h-0;
 }
 
-.vc-data-table__loading {
-  @apply tw-p-4 tw-text-center tw-text-neutrals-500;
-}
 
 .vc-data-table__rows-container {
   @apply tw-flex tw-flex-col;

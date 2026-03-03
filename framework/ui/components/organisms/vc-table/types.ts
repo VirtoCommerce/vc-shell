@@ -424,6 +424,8 @@ export interface VcDataTableProps<T = any> {
   // === Loading ===
   /** Show loading overlay on the table */
   loading?: boolean;
+  /** Number of skeleton rows shown during initial loading (default: 5) */
+  skeletonRows?: number;
 
   // === Row Actions ===
   /** Per-row function returning action items (buttons/menu items) for the row */

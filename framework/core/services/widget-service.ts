@@ -1,5 +1,5 @@
 import { Component, ref, ComponentInternalInstance, ComputedRef, Ref } from "vue";
-import { IBladeInstance } from "@shared/components/blade-navigation/types";
+import type { IBladeInstance } from "@shared/components/blade-navigation/types";
 import { cloneDeep } from "lodash-es";
 import { createBladeScopedRegistry, createPreregistrationBus } from "@core/services/_internal";
 import { createLogger } from "@core/utilities";

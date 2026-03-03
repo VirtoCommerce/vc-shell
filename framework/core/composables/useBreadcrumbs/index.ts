@@ -1,4 +1,4 @@
-import { Breadcrumbs } from "@ui/types";
+import type { Breadcrumbs } from "@ui/types";
 import { ComputedRef, computed, shallowRef } from "vue";
 import { createLogger } from "@core/utilities";
 

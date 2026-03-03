@@ -1,7 +1,7 @@
 import { App, Component, inject, resolveComponent } from "vue";
 import { i18n } from "@core/plugins/i18n";
 import { Router } from "vue-router";
-import { BladeInstanceConstructor } from "@shared/components/blade-navigation/types";
+import type { BladeInstanceConstructor } from "@shared/components/blade-navigation/types";
 import { kebabToPascal, createLogger } from "@core/utilities";
 import { addMenuItem, useMenuService, useNotifications } from "@core/composables";
 import * as _ from "lodash-es";

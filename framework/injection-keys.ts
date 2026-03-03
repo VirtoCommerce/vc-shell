@@ -1,7 +1,7 @@
 import { InjectionKey, ComputedRef, type Component, type Ref } from "vue";
-import { BladeVNode, IBladeInstance } from "@shared/components/blade-navigation/types";
-import type { BladeRoutesRecord } from "@shared/components";
-import { NotificationTemplateConstructor } from "@core/types";
+import type { BladeVNode, IBladeInstance } from "@shared/components/blade-navigation/types";
+import type { BladeRoutesRecord } from "@shared/components/blade-navigation/types";
+import type { NotificationTemplateConstructor } from "@core/types";
 import { IToolbarService } from "@core/services/toolbar-service";
 import { IAiAgentService } from "@core/plugins/ai-agent/types";
 

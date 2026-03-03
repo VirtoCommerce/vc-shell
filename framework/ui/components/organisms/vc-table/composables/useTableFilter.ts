@@ -25,6 +25,7 @@ export function useFilterState(options: UseFilterStateOptions = {}) {
       ...filterValues.value,
       [field]: value,
     };
+    notifyChange();
   };
 
   const updateRangeFilter = (rangeFields: [string, string], value: { start?: string; end?: string }) => {
@@ -34,6 +35,7 @@ export function useFilterState(options: UseFilterStateOptions = {}) {
       ...filterValues.value,
       [key]: value as FilterValue,
     };
+    notifyChange();
   };
 
   const clearFilter = (field: string) => {
@@ -46,17 +48,19 @@ export function useFilterState(options: UseFilterStateOptions = {}) {
       }
     }
     filterValues.value = newValues;
+    notifyChange();
   };
 
   const clearAllFilters = () => {
     filterValues.value = {};
+    notifyChange();
   };
 
   /**
    * Build flat payload for backend.
    * Expands dateRange composite keys to separate fields.
    */
-  const buildPayload = (): Record<string, unknown> => {
+  function buildPayload(): Record<string, unknown> {
     const payload: Record<string, unknown> = {};
 
     for (const [key, value] of Object.entries(filterValues.value)) {
@@ -78,7 +82,13 @@ export function useFilterState(options: UseFilterStateOptions = {}) {
     }
 
     return payload;
-  };
+  }
+
+  function notifyChange() {
+    if (options.onFilterChange) {
+      options.onFilterChange(buildPayload());
+    }
+  }
 
   const isObjectWithValues = (val: unknown): boolean => {
     if (typeof val !== "object" || val === null || Array.isArray(val)) return false;

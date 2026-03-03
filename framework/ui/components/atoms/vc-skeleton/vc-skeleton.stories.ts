@@ -10,12 +10,35 @@ const meta = {
   component: VcSkeleton,
   tags: ["autodocs"],
   argTypes: {
+    variant: {
+      control: "select",
+      options: ["text", "circle", "block"],
+      description: "Shape variant: text rows, circle, or rectangular block",
+      table: {
+        type: { summary: '"text" | "circle" | "block"' },
+        defaultValue: { summary: '"text"' },
+      },
+    },
     rows: {
       control: { type: "number", min: 1, max: 20 },
-      description: "Number of skeleton rows",
+      description: "Number of skeleton rows (only for variant='text')",
       table: {
         type: { summary: "number" },
         defaultValue: { summary: "1" },
+      },
+    },
+    width: {
+      control: "text",
+      description: "Custom width (number → px, string → as-is). For circle/block variants.",
+      table: {
+        type: { summary: "string | number" },
+      },
+    },
+    height: {
+      control: "text",
+      description: "Custom height (number → px, string → as-is). For circle/block variants.",
+      table: {
+        type: { summary: "string | number" },
       },
     },
     animated: {
@@ -23,11 +46,12 @@ const meta = {
       description: "Enables pulse animation",
       table: {
         type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
+        defaultValue: { summary: "true" },
       },
     },
   },
   args: {
+    variant: "text",
     rows: 1,
     animated: true,
   },
@@ -145,7 +169,30 @@ export const ListSkeleton: Story = {
 };
 
 /**
- * Customization of different skeleton shapes via CSS classes and styles.
+ * Circle variant — useful for avatar or icon placeholders.
+ */
+export const Circle: Story = {
+  args: {
+    variant: "circle",
+    width: 48,
+    height: 48,
+  },
+};
+
+/**
+ * Block variant — rectangular placeholder with custom dimensions.
+ * Great for buttons, titles, images.
+ */
+export const Block: Story = {
+  args: {
+    variant: "block",
+    width: "200px",
+    height: "32px",
+  },
+};
+
+/**
+ * Different skeleton shapes composed using variant, width, and height props.
  */
 export const CustomShapes: Story = {
   render: (args) => ({
@@ -154,11 +201,45 @@ export const CustomShapes: Story = {
       return { args };
     },
     template: `
-      <div class="tw-flex tw-flex-wrap tw-gap-6">
-        <div class="tw-w-[100px] tw-h-[100px] tw-bg-[--neutrals-200] tw-rounded-full"></div>
-        <div class="tw-w-[100px] tw-h-[100px] tw-bg-[--neutrals-200] tw-rounded-lg"></div>
-        <div class="tw-w-[150px] tw-h-[60px] tw-bg-[--neutrals-200] tw-rounded-2xl"></div>
-        <div class="tw-w-[200px] tw-h-5 tw-bg-[--neutrals-200] tw-rounded"></div>
+      <div class="tw-flex tw-flex-wrap tw-gap-6 tw-items-center">
+        <vc-skeleton variant="circle" :width="100" :height="100" />
+        <vc-skeleton variant="block" :width="100" :height="100" />
+        <vc-skeleton variant="block" width="150px" height="60px" />
+        <vc-skeleton variant="block" width="200px" height="20px" />
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Blade-like skeleton layout combining all variants.
+ */
+export const BladeSkeletonExample: Story = {
+  render: (args) => ({
+    components: { VcSkeleton },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div class="tw-border tw-rounded-lg tw-overflow-hidden tw-w-[500px]">
+        <!-- Header skeleton -->
+        <div class="tw-flex tw-items-center tw-gap-3 tw-px-6 tw-py-4 tw-border-b">
+          <vc-skeleton variant="circle" :width="24" :height="24" />
+          <div class="tw-flex-1 tw-flex tw-flex-col tw-gap-1">
+            <vc-skeleton variant="block" width="40%" height="16px" />
+            <vc-skeleton variant="block" width="25%" height="12px" />
+          </div>
+        </div>
+        <!-- Toolbar skeleton -->
+        <div class="tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-3 tw-border-b tw-bg-[--neutrals-50]">
+          <vc-skeleton variant="block" :width="60" :height="32" />
+          <vc-skeleton variant="block" :width="60" :height="32" />
+          <vc-skeleton variant="block" :width="60" :height="32" />
+        </div>
+        <!-- Content skeleton -->
+        <div class="tw-p-6">
+          <vc-skeleton :rows="6" animated />
+        </div>
       </div>
     `,
   }),

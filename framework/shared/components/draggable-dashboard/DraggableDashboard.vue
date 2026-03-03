@@ -21,8 +21,14 @@
  * - Accessibility support (a11y)
  * - Optional widget resizing
  */
-import { ref } from "vue";
-import GridstackDashboard from "@shared/components/draggable-dashboard/GridstackDashboard.vue";
+import { defineAsyncComponent, ref } from "vue";
+
+const GridstackDashboard = defineAsyncComponent({
+  loader: () => import("@shared/components/draggable-dashboard/GridstackDashboard.vue"),
+  delay: 200,
+  timeout: 10000,
+  suspensible: false,
+}) as typeof import("@shared/components/draggable-dashboard/GridstackDashboard.vue")["default"];
 
 // Props
 interface Props {

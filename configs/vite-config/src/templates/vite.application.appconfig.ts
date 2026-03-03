@@ -4,6 +4,7 @@ import { loadEnv, defineConfig, ProxyOptions, type PluginOption, normalizePath, 
 import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 import { checker } from "vite-plugin-checker";
+import circleDependency from "vite-plugin-circular-dependency";
 import { visualizer } from "rollup-plugin-visualizer";
 
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
@@ -41,6 +42,40 @@ const frameworkUiPath = `${normalizedFrameworkPath}/ui`;
 const frameworkSharedPath = `${normalizedFrameworkPath}/shared`;
 const frameworkAssetsPath = `${normalizedFrameworkPath}/assets`;
 const frameworkLocalesPath = `${normalizedFrameworkPath}/locales`;
+
+const styleImportPattern = /\.(css|scss|sass|less|styl)(?:$|\?)/i;
+
+const matchesAny = (value: string, patterns: RegExp[]) => patterns.some((pattern) => pattern.test(value));
+
+const frameworkVendorChunks: Array<{ chunk: string; patterns: RegExp[] }> = [
+  { chunk: "vc-shell-vendor-lucide", patterns: [/\/vendor-lucide(?:-|\.|$)/] },
+  {
+    chunk: "vc-shell-vendor-tiptap",
+    patterns: [/\/vendor-(?:tiptap|prosemirror|parse5)(?:-|\.|$)/],
+  },
+  { chunk: "vc-shell-vendor-charts", patterns: [/\/vendor-(?:unovis|d3)(?:-|\.|$)/] },
+  { chunk: "vc-shell-vendor-gridstack", patterns: [/\/vendor-gridstack(?:-|\.|$)/] },
+  { chunk: "vc-shell-vendor-swiper", patterns: [/\/vendor-swiper(?:-|\.|$)/] },
+];
+
+const appVendorChunks: Array<{ chunk: string; patterns: RegExp[] }> = [
+  { chunk: "vc-shell-vendor-lucide", patterns: [/\/node_modules\/lucide-vue-next\//] },
+  {
+    chunk: "vc-shell-vendor-tiptap",
+    patterns: [
+      /\/node_modules\/@tiptap\//,
+      /\/node_modules\/prosemirror-/,
+      /\/node_modules\/tiptap-markdown\//,
+      /\/node_modules\/parse5\//,
+    ],
+  },
+  {
+    chunk: "vc-shell-vendor-charts",
+    patterns: [/\/node_modules\/@unovis\//, /\/node_modules\/d3-/],
+  },
+  { chunk: "vc-shell-vendor-gridstack", patterns: [/\/node_modules\/gridstack\//] },
+  { chunk: "vc-shell-vendor-swiper", patterns: [/\/node_modules\/swiper\//] },
+];
 
 const appBasePath = process.env.APP_BASE_PATH || "/";
 const appBasePathWithSlash = appBasePath.endsWith("/") ? appBasePath : `${appBasePath}/`;
@@ -97,7 +132,7 @@ if (process.env.APP_PLATFORM_URL) {
 
 let frameworkAliases: Alias[] | undefined;
 
-if (mode === "development" && isMonorepo) {
+if (isMonorepo) {
   // IMPORTANT: Order matters — first match wins in @rollup/plugin-alias.
   // Use regex for @vc-shell/framework to prevent Vite's object-to-array
   // normalization from stripping trailing slashes and creating duplicate entries.
@@ -156,6 +191,16 @@ export default defineConfig({
     checker({
       vueTsc: true,
     }),
+    // TODO: Enable after resolving 288 circular dependencies in framework barrel exports
+    // See: core/types ↔ blade-navigation/types, ui/components → core/composables → ui/ cycles
+    // ...(mode === "production"
+    //   ? [
+    //       circleDependency({
+    //         exclude: [/node_modules/, /\.git/, /^\0/, /virtual:/],
+    //         circleImportThrowErr: true,
+    //       }) as PluginOption,
+    //     ]
+    //   : []),
     ...(process.env.ANALYZE
       ? [
           visualizer({
@@ -200,6 +245,23 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 8080,
     proxy: proxyConfig,
+    // Pre-transform frequently-used framework files to prevent transform waterfalls on first page load.
+    // Only in monorepo mode — npm-mode consuming apps use pre-compiled dist chunks.
+    ...(isMonorepo
+      ? {
+          warmup: {
+            clientFiles: [
+              frameworkIndexPath,
+              `${frameworkCorePath}/composables/index.ts`,
+              `${frameworkCorePath}/plugins/index.ts`,
+              `${frameworkSharedPath}/components/blade-navigation/**/*.vue`,
+              `${frameworkSharedPath}/components/blade-navigation/**/*.ts`,
+              `${frameworkUiPath}/components/organisms/vc-app/vc-app.vue`,
+              `${frameworkUiPath}/components/organisms/vc-blade/**/*.vue`,
+            ],
+          },
+        }
+      : {}),
   },
   optimizeDeps: {
     exclude: ["@vc-shell/framework"],
@@ -259,6 +321,14 @@ export default defineConfig({
           // Normalize path for cross-platform compatibility
           const normalizedId = id.replace(/\\/g, "/");
 
+          if (
+            styleImportPattern.test(normalizedId) ||
+            normalizedId.includes("/css/") ||
+            normalizedId.includes("/styles/")
+          ) {
+            return undefined;
+          }
+
           // PRIORITY: Handle API clients first (before any other logic)
           if (normalizedId.includes("/api_client/") && (normalizedId.endsWith(".ts") || normalizedId.endsWith(".js"))) {
             const fullPath = normalizedId.split("/").pop();
@@ -290,6 +360,11 @@ export default defineConfig({
 
             // Handle framework vendor chunks
             if (normalizedId.includes("/vendor-")) {
+              const groupedFrameworkVendor = frameworkVendorChunks.find(({ patterns }) => matchesAny(normalizedId, patterns));
+              if (groupedFrameworkVendor) {
+                return groupedFrameworkVendor.chunk;
+              }
+
               const filename = normalizedId.split("/").pop() || "";
               const vendorMatch = filename.match(/vendor-([^-]+)/);
               if (vendorMatch) {
@@ -304,6 +379,11 @@ export default defineConfig({
 
           // Each node_modules library gets its own chunk (application vendors)
           if (normalizedId.includes("node_modules")) {
+            const groupedAppVendor = appVendorChunks.find(({ patterns }) => matchesAny(normalizedId, patterns));
+            if (groupedAppVendor) {
+              return groupedAppVendor.chunk;
+            }
+
             // Extract library name from path
             const parts = normalizedId.split("node_modules/")[1].split("/");
             let libName = parts[0];

@@ -10,7 +10,7 @@ import type {
   ICommonAsset,
   ITableColumns,
 } from "@core/types";
-import { useBladeNavigation } from "@shared/components";
+import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
 import { FormContext } from "vee-validate";
 import { Breadcrumbs } from "@ui/types";
 import { DynamicBladeForm, DynamicBladeList } from "@shared/modules/dynamic/pages";

@@ -9,7 +9,7 @@ import { AppsClient, SecurityClient, PushNotificationClient } from "@core/api/pl
 import { useUserManagement } from "@core/composables/useUserManagement";
 import type { MenuItem } from "@core/types";
 import { AppRootElementKey, BladeRoutesKey } from "@framework/injection-keys";
-import { VcPopupContainer } from "@shared/components";
+import { VcPopupContainer } from "@shared/components/popup-handler";
 import {
   VcAppDesktopLayout,
   VcAppMobileLayout,

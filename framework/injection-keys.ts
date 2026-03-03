@@ -5,16 +5,14 @@ import type { NotificationTemplateConstructor } from "@core/types";
 import { IToolbarService } from "@core/services/toolbar-service";
 import { IAiAgentService } from "@core/plugins/ai-agent/types";
 
-import {
-  IWidgetService,
-  IDashboardService,
-  GlobalSearchState,
-  MenuService,
-  ISettingsMenuService,
-  IAppBarWidgetService,
-  IAppBarMobileButtonsService,
-  ILanguageService,
-} from "@core/services";
+import type { IWidgetService } from "@core/services/widget-service";
+import type { IDashboardService } from "@core/services/dashboard-service";
+import type { GlobalSearchState } from "@core/services/global-search-service";
+import type { MenuService } from "@core/services/menu-service";
+import type { ISettingsMenuService } from "@core/services/settings-menu-service";
+import type { IAppBarWidgetService } from "@core/services/app-bar-menu-service";
+import type { IAppBarMobileButtonsService } from "@core/services/app-bar-mobile-buttons-service";
+import type { ILanguageService } from "@core/services/language-service";
 
 // Blade navigation keys
 export const NavigationViewLocationKey: InjectionKey<BladeVNode> = Symbol("NavigationViewLocation");

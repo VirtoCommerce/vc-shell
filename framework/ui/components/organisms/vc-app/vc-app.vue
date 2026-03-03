@@ -101,13 +101,14 @@
 import { inject, provide, ref, watch } from "vue";
 import DesktopLayout from "@ui/components/organisms/vc-app/_internal/layouts/DesktopLayout.vue";
 import MobileLayout from "@ui/components/organisms/vc-app/_internal/layouts/MobileLayout.vue";
-import { VcPopupContainer, BladeRoutesRecord } from "@shared/components";
+import { VcPopupContainer } from "@shared/components/popup-handler";
+import type { BladeRoutesRecord } from "@shared/components/blade-navigation/types";
 import type { AppDescriptor } from "@core/api/platform";
 import type { MenuItem } from "@core/types";
 import type { SidebarStateReturn } from "@core/composables/useSidebarState";
 import { VcAiAgentPanel } from "@core/plugins/ai-agent";
 import type { IAiAgentConfig } from "@core/plugins/ai-agent";
-import { notification } from "@shared";
+import { notification } from "@shared/components/notifications/core/notification";
 import { useRoute } from "vue-router";
 import { AppRootElementKey, DynamicModulesKey, BladeRoutesKey, ModulesLoadErrorKey } from "@framework/injection-keys";
 import { createLogger } from "@core/utilities";

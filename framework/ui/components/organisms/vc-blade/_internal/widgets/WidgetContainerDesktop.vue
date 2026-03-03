@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import { ref, computed, toValue, type Ref, type ComputedRef } from "vue";
-import { IWidget } from "@core/services";
+import { IWidget } from "@core/services/widget-service";
 import { useWidgets } from "@core/composables";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";

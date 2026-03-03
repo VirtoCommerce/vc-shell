@@ -189,7 +189,7 @@
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeUnmount, ref, toRef, useSlots, watch } from "vue";
 import type { AppDescriptor } from "@core/api/platform";
-import type { AppBarWidget } from "@core/services";
+import type { AppBarWidget } from "@core/services/app-bar-menu-service";
 import { useAppBarWidget } from "@core/composables";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcIcon } from "@ui/components/atoms/vc-icon";

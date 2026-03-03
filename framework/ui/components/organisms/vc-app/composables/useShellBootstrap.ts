@@ -10,14 +10,14 @@ import {
   InternalRoutesKey,
 } from "@framework/injection-keys";
 import { hasUnreadNotifications } from "@core/composables/useNotifications";
-import { NotificationDropdown } from "@shared/components";
+import { NotificationDropdown } from "@shared/components/notification-dropdown";
 import { LanguageSelector } from "@shared/components/language-selector";
 import { ThemeSelector } from "@shared/components/theme-selector";
 import { ChangePasswordButton } from "@shared/components/change-password-button";
 import { LogoutButton } from "@shared/components/logout-button";
 import { provideAiAgentService } from "@core/plugins/ai-agent";
 import type { IAiAgentConfig } from "@core/plugins/ai-agent";
-import type { BladeRoutesRecord } from "@shared/components";
+import type { BladeRoutesRecord } from "@shared/components/blade-navigation/types";
 import type { AppBarButtonContent } from "@core/services/app-bar-mobile-buttons-service";
 import type { RegisterSettingsMenuItemOptions } from "@core/services/settings-menu-service";
 

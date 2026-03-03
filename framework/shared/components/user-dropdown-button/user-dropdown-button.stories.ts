@@ -5,7 +5,7 @@ import { ThemeSelector } from "@shared/components/theme-selector";
 import { LanguageSelector } from "@shared/components/language-selector";
 import { ChangePasswordButton } from "@shared/components/change-password-button";
 import { LogoutButton } from "@shared/components/logout-button";
-import { VcPopupContainer } from "@shared/components";
+import { VcPopupContainer } from "@shared/components/popup-handler";
 import { withMobileView } from "../../../../.storybook/decorators";
 import { provideSettingsMenu } from "@core/composables/useSettingsMenu";
 import { provideSidebarState } from "@core/composables/useSidebarState";

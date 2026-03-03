@@ -1,6 +1,6 @@
 import { computed, inject, onMounted, onUnmounted, watch, toValue, Ref, ComputedRef } from "vue";
 import { WidgetServiceKey, BladeInstance } from "@framework/injection-keys";
-import { IWidget } from "@core/services";
+import { IWidget } from "@core/services/widget-service";
 import { useBlade } from "@core/composables/useBlade";
 import { createLogger } from "@core/utilities";
 

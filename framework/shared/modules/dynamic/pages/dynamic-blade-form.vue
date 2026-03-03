@@ -87,22 +87,21 @@ import {
 import { DynamicDetailsSchema, FormContentSchema, SettingsSchema } from "@shared/modules/dynamic/types";
 import { IsBladeEditableKey } from "@shared/modules/dynamic/keys";
 import { reactiveComputed, toReactive, useMounted } from "@vueuse/core";
-import {
+import type {
   DetailsBladeContext,
   DetailsBaseBladeScope,
-  IParentCallArgs,
   UseDetails,
-  usePopup,
-  useBladeNavigation,
-  CoreBladeExposed,
-} from "@shared";
+} from "@shared/modules/dynamic/factories/types";
+import type { IParentCallArgs, CoreBladeExposed } from "@shared/components/blade-navigation/types";
+import { usePopup } from "@shared/components/popup-handler/composables/usePopup";
+import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
 import SchemaRender from "@shared/modules/dynamic/components/SchemaRender";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcImage } from "@ui/components/atoms/vc-image";
 import { useToolbarReducer } from "@shared/modules/dynamic/composables/useToolbarReducer";
 import { useBeforeUnload } from "@core/composables/useBeforeUnload";
 import { useLanguages, useNotifications, useBlade } from "@core/composables";
-import { notification } from "@shared/components";
+import { notification } from "@shared/components/notifications/core/notification";
 import { useWidgets } from "@core/composables/useWidgets";
 import { BladeInstance } from "@framework/injection-keys";
 

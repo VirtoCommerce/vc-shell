@@ -17,7 +17,7 @@ import { useWidgets } from "@core/composables/useWidgets";
 import WidgetContainerDesktop from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerDesktop.vue";
 import WidgetContainerMobile from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerMobile.vue";
 import { BladeInstance } from "@framework/injection-keys";
-import { IWidget } from "@core/services";
+import { IWidget } from "@core/services/widget-service";
 import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 import { resolveVisibility } from "@ui/components/organisms/vc-blade/utils";
 

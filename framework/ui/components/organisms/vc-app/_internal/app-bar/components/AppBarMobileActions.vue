@@ -49,7 +49,7 @@ import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { useAppBarMobileActions } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarMobileActions";
 import { type MaybeRef, toValue, watch } from "vue";
-import type { AppBarButtonContent } from "@core/services";
+import type { AppBarButtonContent } from "@core/services/app-bar-mobile-buttons-service";
 import { useRoute } from "vue-router";
 export interface Props {
   isSidebarMode: boolean;

@@ -159,7 +159,8 @@ import { useI18n } from "vue-i18n";
 import { formatDateRelative } from "@core/utilities/date";
 import { isImage, getFileThumbnail, readableSize } from "@shared/utilities/assets";
 import * as _ from "lodash-es";
-import { IParentCallArgs, useBladeNavigation } from "@shared/components";
+import type { IParentCallArgs } from "@shared/components/blade-navigation/types";
+import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("assets-manager");

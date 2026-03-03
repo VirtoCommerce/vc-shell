@@ -1,5 +1,6 @@
 import { Router } from "vue-router";
-import { App } from "vue";
+import { App, inject, ref } from "vue";
+import type { Ref } from "vue";
 import * as components from "@shared/components/blade-navigation/components";
 import { BladeNavigationPlugin, BladeStackKey, BladeMessagingKey } from "@shared/components/blade-navigation/types";
 import { createBladeStack } from "@shared/components/blade-navigation/composables/useBladeStack";
@@ -8,6 +9,7 @@ import { parseBladeUrl, buildUrlFromStack } from "@shared/components/blade-navig
 import { restoreFromUrl } from "@shared/components/blade-navigation/utils/restoreFromUrl";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
+import { ModulesReadyKey } from "@framework/injection-keys";
 
 // Declare globally
 declare module "@vue/runtime-core" {
@@ -113,6 +115,17 @@ export const VcBladeNavigationComponent = {
     // Fires on: direct URL entry, deep links, back/forward (popstate)
     // The adapter's router.push()/replace() also triggers this, but
     // restoreFromUrl is idempotent — if stack already matches URL, it's a no-op.
+
+    // Lazy injection: modulesReady is provided by the app after plugin install,
+    // but before the first navigation. Cached after first access.
+    let modulesReadyRef: Ref<boolean> | undefined;
+    function getModulesReady(): boolean {
+      if (!modulesReadyRef) {
+        modulesReadyRef = app.runWithContext(() => inject(ModulesReadyKey, ref(true)));
+      }
+      return modulesReadyRef.value;
+    }
+
     router.beforeEach(async (to) => {
       // Only process routes under the root (App) route
       if (!to.matched.some((r) => r.meta?.root)) return;
@@ -132,7 +145,10 @@ export const VcBladeNavigationComponent = {
       }
 
       // Restore blade stack from URL (idempotent — skips if already matching)
-      const needsUrlCleanup = await restoreFromUrl(bladeStack, bladeRegistry, parsed);
+      // Pass modulesLoading so unresolved blades show skeleton placeholders
+      const needsUrlCleanup = await restoreFromUrl(bladeStack, bladeRegistry, parsed, {
+        modulesLoading: !getModulesReady(),
+      });
 
       // If a non-routable blade was in the URL, clean up to match actual stack
       if (needsUrlCleanup) {

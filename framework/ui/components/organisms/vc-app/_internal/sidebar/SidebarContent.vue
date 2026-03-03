@@ -42,7 +42,7 @@
 import { inject, ref, onMounted, nextTick } from "vue";
 import VcAppMenu from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenu.vue";
 import { VcScrollableContainer } from "@ui/components/atoms/vc-scrollable-container";
-import { UserDropdownButton } from "@shared/components";
+import { UserDropdownButton } from "@shared/components/user-dropdown-button";
 import { EmbeddedModeKey } from "@framework/injection-keys";
 import type { MenuItem } from "@core/types";
 

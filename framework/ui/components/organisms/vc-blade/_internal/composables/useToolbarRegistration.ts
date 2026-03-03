@@ -4,7 +4,7 @@ import { usePermissions } from "@core/composables/usePermissions";
 import { useToolbar } from "@core/composables/useToolbar";
 import type { IBladeToolbar } from "@core/types";
 import { FALLBACK_BLADE_ID } from "@core/constants";
-import type { IToolbarItem } from "@core/services";
+import type { IToolbarItem } from "@core/services/toolbar-service";
 import { resolveVisibility, resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
 
 const PROP_ITEM_ID_PREFIX = "prop_toolbar_item_";

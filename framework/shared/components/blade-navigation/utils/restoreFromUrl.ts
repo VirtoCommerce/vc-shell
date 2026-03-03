@@ -1,5 +1,10 @@
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
-import type { IBladeStack, ParsedBladeUrl } from "@shared/components/blade-navigation/types";
+import type { BladeDescriptor, IBladeStack, ParsedBladeUrl } from "@shared/components/blade-navigation/types";
+
+export interface RestoreFromUrlOptions {
+  /** When true, unresolved blades show skeleton placeholders instead of being skipped */
+  modulesLoading?: boolean;
+}
 
 /**
  * Restore the blade stack from a parsed URL.
@@ -8,6 +13,12 @@ import type { IBladeStack, ParsedBladeUrl } from "@shared/components/blade-navig
  * Resolves URL segments to blade names via BladeRegistry, then opens
  * workspace + child blade.
  *
+ * When `options.modulesLoading` is true and a blade can't be resolved,
+ * placeholder descriptors are added to the stack so VcBladeSlot renders
+ * loading skeletons. When modules finish loading and `router.replace()`
+ * re-triggers the guard, restoreFromUrl runs again and replaces the
+ * pending descriptors with real ones.
+ *
  * Returns `true` if the URL contained segments for a non-routable blade
  * that was skipped — the caller should clean up the URL to match the
  * actual blade stack state.
@@ -15,12 +26,14 @@ import type { IBladeStack, ParsedBladeUrl } from "@shared/components/blade-navig
  * @param bladeStack - The BladeStack to populate
  * @param bladeRegistry - Registry for resolving URLs → blade names
  * @param parsed - Parsed URL segments
+ * @param options - Progressive loading options
  * @returns `true` if the URL needs cleanup (non-routable blade was skipped)
  */
 export async function restoreFromUrl(
   bladeStack: IBladeStack,
   bladeRegistry: IBladeRegistry,
   parsed: ParsedBladeUrl,
+  options?: RestoreFromUrlOptions,
 ): Promise<boolean> {
   // Skip if no workspace URL to restore
   if (!parsed.workspaceUrl) return false;
@@ -28,6 +41,28 @@ export async function restoreFromUrl(
   // Find workspace blade by URL segment
   const workspaceMatch = bladeRegistry.getBladeByRoute(parsed.workspaceUrl);
   if (!workspaceMatch) {
+    // Modules still loading — show skeleton placeholders for the expected blades
+    if (options?.modulesLoading) {
+      // Only set pending descriptors if stack doesn't already have them
+      const hasPending = bladeStack.blades.value.some((b) => b.name.startsWith("__pending_"));
+      if (!hasPending) {
+        const pending: BladeDescriptor[] = [
+          { id: "__pending_0", name: "__pending_workspace", visible: true },
+        ];
+        if (parsed.bladeUrl) {
+          pending.push({
+            id: "__pending_1",
+            name: "__pending_blade",
+            param: parsed.param,
+            parentId: "__pending_0",
+            visible: true,
+          });
+        }
+        bladeStack._restoreStack(pending);
+      }
+      return false;
+    }
+
     console.warn(
       `[restoreFromUrl] No workspace blade found for URL segment '${parsed.workspaceUrl}'`,
     );

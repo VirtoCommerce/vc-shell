@@ -59,7 +59,7 @@ import { computed, ref } from "vue";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
-import { IWidget } from "@core/services";
+import { IWidget } from "@core/services/widget-service";
 
 interface Props {
   widgets: IWidget[];

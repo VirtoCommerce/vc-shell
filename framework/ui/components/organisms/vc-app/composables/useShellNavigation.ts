@@ -1,5 +1,5 @@
 import { useRoute, useRouter } from "vue-router";
-import { useBladeNavigation } from "@shared/components";
+import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
 import { createLogger } from "@core/utilities";
 import type { MenuItem } from "@core/types";
 

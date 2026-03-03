@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    v-loading="loading"
+    :loading="loading"
     :title="title"
     :expanded="expanded"
     :closable="closable"

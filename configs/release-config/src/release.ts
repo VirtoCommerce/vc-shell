@@ -45,6 +45,7 @@ export async function release(config: ReleaseConfig): Promise<void> {
     tagVersionPrefix = "v",
     customHooks,
     updateRootVersion: shouldUpdateRootVersion = true,
+    forcePublish: shouldForcePublish = false,
   } = config;
 
   if (packages.length === 0) {
@@ -109,7 +110,7 @@ export async function release(config: ReleaseConfig): Promise<void> {
   const lernaArgs = buildLernaVersionArgs(releaseTypeArgs, {
     tagVersionPrefix,
     isDryRun,
-    forcePublish: !!args.force,
+    forcePublish: shouldForcePublish || !!args.force,
   });
 
   const versionsBefore = captureVersionsBefore(packages);

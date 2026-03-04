@@ -14,6 +14,8 @@ const packages: PackageConfig[] = [
 release({
   packages,
   tagVersionPrefix: "v",
+  // Keep all published packages on the same version for each release.
+  forcePublish: true,
   customHooks: async () => {
     await updateBoilerplatePkgVersions();
     await updateAppsDependencies();

@@ -19,6 +19,8 @@ export interface ReleaseConfig {
   customHooks?: (version: string) => void | Promise<void>;
   /** Whether to sync root package.json version with packages (default true). */
   updateRootVersion?: boolean;
+  /** Whether to version every package on each release (default false). */
+  forcePublish?: boolean;
 }
 
 export interface ChangelogGeneratorOptions {

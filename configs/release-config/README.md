@@ -13,6 +13,7 @@ Release management system powered by Lerna for VC-Shell monorepo.
 - **Root package versioning** - root package.json stays synchronized
 - **Apps synchronization** - automatic @vc-shell/* dependency updates in apps/
 - **Initial changelog generation** - create changelogs from entire git history
+- **Lockstep mode** - optional `forcePublish: true` bumps every package on each release
 - **Backward compatible** - maintains existing release script API
 
 ## Usage
@@ -24,6 +25,7 @@ import { release } from "@vc-shell/release-config";
 
 release({
   packages: [".", "framework", "cli/*", "configs/*"],
+  forcePublish: true,
   toTag: (version) => `v${version}`,
   bumpVersion: async (pkgName, version) => {
     // Optional: custom version bump logic (Lerna handles this automatically)
@@ -44,7 +46,7 @@ release({
 **Version bump:**
 4. Lerna analyzes git history using conventional commits
 5. Determines which packages changed
-6. Updates all package versions (fixed versioning)
+6. Updates all package versions (or all packages when `forcePublish: true`)
 7. Generates CHANGELOG.md for each package
 8. Synchronizes internal dependencies automatically
 9. Creates git commit and tag

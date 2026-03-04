@@ -5003,3 +5003,176 @@ SearchWithGlobalFilters.parameters = {
     },
   },
 };
+
+/**
+ * Empty state using the declarative `emptyState` prop (TableStateConfig).
+ * Shown when `items` is empty and there is no active search or filters.
+ */
+export const EmptyStateConfig: StoryFn = () => ({
+  components: { VcDataTable, VcColumn },
+  setup() {
+    const actionClicked = ref(false);
+    const emptyState = {
+      icon: "fas fa-box-open",
+      title: "No products yet",
+      description: "Your product catalog is empty. Add your first product to get started.",
+      actionLabel: "Add Product",
+      actionHandler: () => {
+        actionClicked.value = true;
+      },
+    };
+    return { products: [] as Product[], emptyState, actionClicked };
+  },
+  template: `
+    <div style="height: 400px">
+      <div v-if="actionClicked" class="tw-mb-2 tw-p-2 tw-bg-success-50 tw-rounded tw-text-sm tw-text-success-700">
+        Action button clicked!
+      </div>
+      <VcDataTable :items="products" :empty-state="emptyState">
+        <VcColumn id="name" field="name" title="Name" />
+        <VcColumn id="price" field="price" title="Price" type="money" />
+        <VcColumn id="stock" field="stock" title="Stock" type="number" />
+        <VcColumn id="status" field="status" title="Status" />
+      </VcDataTable>
+    </div>
+  `,
+});
+EmptyStateConfig.parameters = {
+  docs: {
+    description: {
+      story:
+        "Demonstrates the declarative `emptyState` prop (`TableStateConfig`) — " +
+        "icon, title, description, and an optional action button. " +
+        "Shown when `items` is an empty array and no search/filter is active.",
+    },
+  },
+};
+
+/**
+ * Not Found state using the declarative `notFoundState` prop (TableStateConfig).
+ * Shown when `items` is empty AND there is an active search or filter.
+ * The table uses `searchable` with a pre-filled search value to trigger the not-found state.
+ */
+export const NotFoundStateConfig: StoryFn = () => ({
+  components: { VcDataTable, VcColumn },
+  setup() {
+    const searchValue = ref("nonexistent product xyz");
+    const actionClicked = ref(false);
+
+    const notFoundState = {
+      icon: "fas fa-search",
+      title: "No results found",
+      description: "We couldn't find any products matching your search. Try adjusting your query.",
+      actionLabel: "Clear Search",
+      actionHandler: () => {
+        searchValue.value = "";
+        actionClicked.value = true;
+      },
+    };
+
+    const emptyState = {
+      icon: "fas fa-box-open",
+      title: "No products yet",
+      description: "Your product catalog is empty.",
+    };
+
+    return { products: [] as Product[], searchValue, notFoundState, emptyState, actionClicked };
+  },
+  template: `
+    <div style="height: 400px">
+      <div v-if="actionClicked" class="tw-mb-2 tw-p-2 tw-bg-success-50 tw-rounded tw-text-sm tw-text-success-700">
+        Search cleared! (In a real app, items would reload and show the empty state instead.)
+      </div>
+      <VcDataTable
+        :items="products"
+        searchable
+        v-model:search-value="searchValue"
+        search-placeholder="Search products..."
+        :not-found-state="notFoundState"
+        :empty-state="emptyState"
+      >
+        <VcColumn id="name" field="name" title="Name" />
+        <VcColumn id="price" field="price" title="Price" type="money" />
+        <VcColumn id="stock" field="stock" title="Stock" type="number" />
+        <VcColumn id="status" field="status" title="Status" />
+      </VcDataTable>
+    </div>
+  `,
+});
+NotFoundStateConfig.parameters = {
+  docs: {
+    description: {
+      story:
+        "Demonstrates the `notFoundState` prop — shown instead of `emptyState` when items " +
+        "is empty AND there is an active search query or filters. " +
+        "The action button clears the search. Both `emptyState` and `notFoundState` " +
+        "can be provided simultaneously — the table picks the right one based on context.",
+    },
+  },
+};
+
+/**
+ * Both empty and not-found states — interactive demo.
+ * Search to switch between the two states.
+ */
+export const EmptyVsNotFound: StoryFn = () => ({
+  components: { VcDataTable, VcColumn },
+  setup() {
+    const searchValue = ref("");
+
+    const emptyState = {
+      icon: "fas fa-box-open",
+      title: "No products yet",
+      description: "Your catalog is empty. Add your first product to get started.",
+      actionLabel: "Add Product",
+      actionHandler: () => alert("Add product clicked!"),
+    };
+
+    const notFoundState = {
+      icon: "fas fa-search",
+      title: "Nothing matches your search",
+      description: "Try a different search term or clear the search field.",
+      actionLabel: "Clear Search",
+      actionHandler: () => {
+        searchValue.value = "";
+      },
+    };
+
+    return { products: [] as Product[], searchValue, emptyState, notFoundState };
+  },
+  template: `
+    <div style="height: 450px">
+      <div class="tw-mb-4 tw-p-3 tw-bg-gradient-to-r tw-from-accent-50 tw-to-primary-50 tw-rounded-lg tw-text-sm">
+        <p class="tw-font-semibold tw-mb-1">Empty vs Not Found</p>
+        <p class="tw-text-neutrals-600">
+          Type anything in the search bar to switch from <strong>empty state</strong> to <strong>not found state</strong>.
+          Clear the search to go back to empty state.
+        </p>
+      </div>
+      <VcDataTable
+        :items="products"
+        searchable
+        v-model:search-value="searchValue"
+        search-placeholder="Type to trigger not-found state..."
+        :empty-state="emptyState"
+        :not-found-state="notFoundState"
+      >
+        <VcColumn id="name" field="name" title="Name" />
+        <VcColumn id="price" field="price" title="Price" type="money" />
+        <VcColumn id="stock" field="stock" title="Stock" type="number" />
+        <VcColumn id="status" field="status" title="Status" />
+      </VcDataTable>
+    </div>
+  `,
+});
+EmptyVsNotFound.parameters = {
+  docs: {
+    description: {
+      story:
+        "Interactive demo showing the difference between empty and not-found states. " +
+        "With an empty search field the table shows the `emptyState` config. " +
+        "Type anything in the search bar to see the `notFoundState` config instead. " +
+        "The table automatically switches between the two based on whether a search/filter is active.",
+    },
+  },
+};

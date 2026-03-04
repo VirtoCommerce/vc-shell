@@ -28,6 +28,8 @@ export interface ChangelogGeneratorOptions {
   rootDir?: string;
   generateRoot?: boolean;
   includeRootHeader?: boolean;
+  /** Git tag prefix used to identify release tags (default "v"). */
+  tagVersionPrefix?: string;
 }
 
 export interface RootChangelogOptions {

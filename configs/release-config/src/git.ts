@@ -222,6 +222,7 @@ export function getAllVersionTags(prefix: string): string[] {
 /**
  * Given a version string, finds the immediately preceding version TAG.
  * Uses semver sorting on all tags matching the prefix.
+ * Works even when the target tag does not exist yet (e.g. during dry-run).
  * Example: getPreviousVersionTag("1.2.4-beta.5", "v") → "v1.2.4-beta.4"
  */
 export function getPreviousVersionTag(version: string, prefix: string): string | null {
@@ -229,13 +230,28 @@ export function getPreviousVersionTag(version: string, prefix: string): string |
   const targetTag = `${prefix}${version}`;
 
   const idx = allTags.indexOf(targetTag);
-  if (idx === -1) {
-    console.warn(chalk.yellow(`  getPreviousVersionTag: tag "${targetTag}" not found in git tags`));
+  if (idx !== -1) {
+    if (idx >= allTags.length - 1) return null;
+    return allTags[idx + 1];
+  }
+
+  const targetVersion = valid(version);
+  if (!targetVersion) {
+    console.warn(chalk.yellow(`  getPreviousVersionTag: invalid version "${version}"`));
     return null;
   }
-  if (idx >= allTags.length - 1) return null;
 
-  return allTags[idx + 1];
+  for (const tag of allTags) {
+    const tagVersion = valid(tag.startsWith(prefix) ? tag.slice(prefix.length) : tag);
+    if (!tagVersion) continue;
+
+    // Tags are sorted newest-first; the first strictly older tag is the predecessor.
+    if (rcompare(targetVersion, tagVersion) < 0) {
+      return tag;
+    }
+  }
+
+  return null;
 }
 
 /**

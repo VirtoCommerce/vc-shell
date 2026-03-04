@@ -6,7 +6,7 @@ type DateInput = string | number | Date | null | undefined;
 
 function toDate(value: DateInput): Date | null {
   if (value == null || value === "") return null;
-  if (value instanceof Date) return value;
+  if (value instanceof Date) return isNaN(value.getTime()) ? null : value;
   const d = new Date(value);
   return isNaN(d.getTime()) ? null : d;
 }

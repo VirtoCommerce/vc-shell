@@ -18,6 +18,9 @@ export function buildLernaVersionArgs(
 ): string[] {
   const args = ["lerna", "version", ...releaseTypeArgs];
 
+  // Always generate changelogs from conventional commits
+  args.push("--conventional-commits");
+
   // Critical: tell Lerna which tag prefix to use (prevents cross-project tag conflicts)
   args.push("--tag-version-prefix", options.tagVersionPrefix);
 

@@ -3,6 +3,14 @@ import path from "node:path";
 import chalk from "chalk";
 import { rcompare, valid } from "semver";
 import type { PackageConfig, RootChangelogOptions } from "@release-config/types";
+import {
+  getRepoUrl,
+  isAncestorOfHead,
+  getMergeBase,
+  tagExists,
+  getConventionalCommitsInRange,
+  type ConventionalCommit,
+} from "@release-config/git";
 
 // ── Lerna boilerplate cleanup ──────────────────────────────────────────
 
@@ -220,5 +228,226 @@ export function generateRootChangelog(options: RootChangelogOptions, dryRun = fa
     console.log(chalk.green("  Generated root CHANGELOG.md with package grouping"));
   } else {
     console.log(chalk.yellow(`  [dry-run] Would write root CHANGELOG.md (${allVersions.length} versions)`));
+  }
+}
+
+// ── Backfill empty versions ─────────────────────────────────────────────
+
+/** Changelog-worthy commit types and their headings */
+const CHANGELOG_TYPES: Record<string, string> = {
+  feat: "Features",
+  fix: "Bug Fixes",
+  perf: "Performance Improvements",
+  revert: "Reverts",
+};
+
+/**
+ * Resolves the effective commit ref for a version tag, handling cases
+ * where the tag is not an ancestor of HEAD (e.g., after force-push/rebase).
+ */
+function resolveVersionRef(tag: string): string | null {
+  if (!tagExists(tag)) return null;
+  if (isAncestorOfHead(tag)) return tag;
+  return getMergeBase(tag, "HEAD");
+}
+
+/**
+ * Formats conventional commits as markdown changelog entries.
+ */
+function formatCommitsAsChangelog(commits: ConventionalCommit[], repoUrl: string | null): string {
+  const grouped: Record<string, ConventionalCommit[]> = {};
+
+  for (const commit of commits) {
+    const heading = CHANGELOG_TYPES[commit.type];
+    if (!heading) continue;
+    if (!grouped[heading]) grouped[heading] = [];
+    grouped[heading].push(commit);
+  }
+
+  if (Object.keys(grouped).length === 0) return "";
+
+  let content = "";
+  const order = ["Features", "Bug Fixes", "Performance Improvements", "Reverts"];
+
+  for (const heading of order) {
+    const group = grouped[heading];
+    if (!group || group.length === 0) continue;
+
+    content += `### ${heading}\n\n`;
+    for (const c of group) {
+      const hashLink = repoUrl
+        ? `([${c.shortHash}](${repoUrl}/commit/${c.hash}))`
+        : `(${c.shortHash})`;
+      content += c.scope
+        ? `- **${c.scope}:** ${c.subject} ${hashLink}\n`
+        : `- ${c.subject} ${hashLink}\n`;
+    }
+    content += "\n";
+  }
+
+  return content.trim();
+}
+
+/**
+ * Scans package changelogs for "Version bump only" entries and fills them
+ * with actual conventional commit content from git history.
+ *
+ * Handles non-ancestor tags (after rebase/force-push) by resolving via merge-base.
+ * Deduplicates against commits already present in the changelog.
+ */
+export function backfillEmptyVersions(
+  packages: PackageConfig[],
+  tagPrefix: string,
+  dryRun = false,
+): void {
+  console.log(chalk.cyan("\nBackfilling empty changelog versions...\n"));
+
+  const repoUrl = getRepoUrl();
+  let backfilled = 0;
+
+  for (const pkg of packages) {
+    const changelogPath = path.join(pkg.path, "CHANGELOG.md");
+    if (!existsSync(changelogPath)) continue;
+
+    let content = readFileSync(changelogPath, "utf-8");
+
+    // Collect all versions in order (newest first)
+    const allVersions: string[] = [];
+    for (const m of content.matchAll(/^##\s+\[?([\d.a-z-]+)\]?/gm)) {
+      allVersions.push(m[1]);
+    }
+
+    const bumpPattern = /^(##\s+\[?([\d.a-z-]+)\]?[^\n]*\n)\n\*\*Note:\*\*\s+Version bump only[^\n]*/gm;
+
+    let modified = false;
+
+    content = content.replace(bumpPattern, (match, header: string, version: string) => {
+      const idx = allVersions.indexOf(version);
+      if (idx === -1) return match;
+
+      // "from" = older version's tag
+      const olderVersion = idx < allVersions.length - 1 ? allVersions[idx + 1] : null;
+      if (!olderVersion) return match;
+
+      const fromRef = resolveVersionRef(`${tagPrefix}${olderVersion}`);
+      if (!fromRef) return match;
+
+      // "to" = this version's tag (or next newer version's tag, or HEAD)
+      let toRef = resolveVersionRef(`${tagPrefix}${version}`);
+      if (!toRef) {
+        const newerVersion = idx > 0 ? allVersions[idx - 1] : null;
+        toRef = newerVersion ? resolveVersionRef(`${tagPrefix}${newerVersion}`) : null;
+        if (!toRef) toRef = "HEAD";
+      }
+
+      if (fromRef === toRef) return match;
+
+      const commits = getConventionalCommitsInRange(fromRef, toRef, pkg.path);
+
+      // Dedup: skip commits whose short hash already appears in the changelog
+      const unique = commits.filter((c) => !content.includes(c.shortHash));
+      const formatted = formatCommitsAsChangelog(unique, repoUrl);
+      if (!formatted) return match;
+
+      modified = true;
+      backfilled++;
+      console.log(chalk.gray(`  Backfilled ${pkg.name} v${version} (${unique.length} commits)`));
+      return `${header}\n${formatted}`;
+    });
+
+    if (modified && !dryRun) {
+      writeFileSync(changelogPath, content, "utf-8");
+    }
+  }
+
+  if (backfilled > 0) {
+    console.log(chalk.green(`  Backfilled ${backfilled} empty changelog version(s)`));
+  } else {
+    console.log(chalk.gray("  No empty versions to backfill"));
+  }
+}
+
+/**
+ * Removes duplicate commit entries across changelog versions.
+ * Each commit should only appear in the oldest version that contains it.
+ * This handles cases where Lerna attributes commits to a new version
+ * that were already recorded in backfilled older versions.
+ */
+export function deduplicateChangelog(packages: PackageConfig[], dryRun = false): void {
+  for (const pkg of packages) {
+    const changelogPath = path.join(pkg.path, "CHANGELOG.md");
+    if (!existsSync(changelogPath)) continue;
+
+    const content = readFileSync(changelogPath, "utf-8");
+
+    // Split into version sections
+    const sections: { header: string; body: string }[] = [];
+    const versionRegex = /^(##\s+\[?[\d.a-z-]+\]?[^\n]*)\n/gm;
+    let lastIdx = 0;
+    let lastHeader = "";
+
+    for (const m of content.matchAll(versionRegex)) {
+      if (lastHeader) {
+        sections.push({ header: lastHeader, body: content.substring(lastIdx, m.index) });
+      }
+      lastHeader = m[1];
+      lastIdx = m.index! + m[0].length;
+    }
+    if (lastHeader) {
+      sections.push({ header: lastHeader, body: content.substring(lastIdx) });
+    }
+
+    if (sections.length < 2) continue;
+
+    // Collect commit hashes from older sections (index 1+)
+    const hashPattern = /\[([a-f0-9]{7})\]\(/g;
+    const olderHashes = new Set<string>();
+
+    for (let i = 1; i < sections.length; i++) {
+      for (const m of sections[i].body.matchAll(hashPattern)) {
+        olderHashes.add(m[1]);
+      }
+    }
+
+    if (olderHashes.size === 0) continue;
+
+    // Remove duplicate lines from newest section (index 0)
+    const originalBody = sections[0].body;
+    const filteredLines = originalBody.split("\n").filter((line) => {
+      if (!line.startsWith("- ")) return true;
+      const lineHash = line.match(/\[([a-f0-9]{7})\]\(/);
+      return !lineHash || !olderHashes.has(lineHash[1]);
+    });
+
+    const newBody = filteredLines.join("\n");
+    if (newBody === originalBody) continue;
+
+    sections[0].body = newBody;
+
+    // Rebuild the file
+    let rebuilt = "";
+    for (const s of sections) {
+      rebuilt += `${s.header}\n${s.body}`;
+    }
+    rebuilt = rebuilt.replace(/\n{3,}/g, "\n\n").trim() + "\n";
+
+    // Check if the newest section is now empty of real content
+    const newestContent = sections[0].body.replace(/###[^\n]*/g, "").trim();
+    if (!newestContent) {
+      // Replace body with bump note
+      rebuilt = rebuilt.replace(
+        sections[0].body,
+        "\n**Note:** Version bump only for package\n\n",
+      );
+    }
+
+    if (!dryRun) {
+      writeFileSync(changelogPath, rebuilt, "utf-8");
+    }
+
+    const removed = originalBody.split("\n").length - filteredLines.length;
+    if (removed > 0) {
+      console.log(chalk.gray(`  Deduplicated ${pkg.name}: removed ${removed} duplicate entries`));
+    }
   }
 }

@@ -1,7 +1,5 @@
 import { sync } from "cross-spawn";
-import { existsSync } from "node:fs";
 import chalk from "chalk";
-import type { PackageConfig } from "@release-config/types";
 
 /**
  * Finds the last git tag matching `<prefix><majorMinor>.*`.
@@ -20,6 +18,114 @@ export function findLastMatchingTag(majorMinor: string, tagPrefix: string): stri
 }
 
 /**
+ * Gets the repo URL for changelog commit links.
+ */
+export function getRepoUrl(): string | null {
+  const result = sync("git", ["remote", "get-url", "origin"], {
+    stdio: "pipe",
+    encoding: "utf-8",
+  });
+  if (result.status === 0 && result.stdout) {
+    return result.stdout
+      .toString()
+      .trim()
+      .replace(/\.git$/, "")
+      .replace(/^git@github\.com:/, "https://github.com/");
+  }
+  return null;
+}
+
+/**
+ * Checks if a git tag exists.
+ */
+export function tagExists(tag: string): boolean {
+  const result = sync("git", ["rev-parse", "--verify", `refs/tags/${tag}`], {
+    stdio: "pipe",
+  });
+  return result.status === 0;
+}
+
+/**
+ * Checks if a ref (tag/commit) is an ancestor of HEAD.
+ */
+export function isAncestorOfHead(ref: string): boolean {
+  const result = sync("git", ["merge-base", "--is-ancestor", ref, "HEAD"], {
+    stdio: "pipe",
+  });
+  return result.status === 0;
+}
+
+/**
+ * Gets the merge base between two refs.
+ */
+export function getMergeBase(ref1: string, ref2: string): string | null {
+  const result = sync("git", ["merge-base", ref1, ref2], {
+    stdio: "pipe",
+    encoding: "utf-8",
+  });
+  if (result.status === 0 && result.stdout) {
+    return result.stdout.toString().trim();
+  }
+  return null;
+}
+
+export interface ConventionalCommit {
+  hash: string;
+  shortHash: string;
+  type: string;
+  scope: string | null;
+  subject: string;
+  breaking: boolean;
+}
+
+/**
+ * Gets conventional commits in a range, optionally filtered by path.
+ */
+export function getConventionalCommitsInRange(
+  from: string,
+  to: string,
+  commitPath?: string,
+): ConventionalCommit[] {
+  const gitArgs = ["log", "--format=%H %s", `${from}..${to}`];
+  if (commitPath) {
+    gitArgs.push("--", commitPath);
+  }
+
+  const result = sync("git", gitArgs, {
+    stdio: "pipe",
+    encoding: "utf-8",
+  });
+
+  if (result.status !== 0 || !result.stdout) return [];
+
+  const commits: ConventionalCommit[] = [];
+  const lines = result.stdout.toString().trim().split("\n").filter(Boolean);
+  const pattern = /^(\w+)(?:\(([^)]+)\))?(!)?\s*:\s*(.+)$/;
+
+  for (const line of lines) {
+    const spaceIdx = line.indexOf(" ");
+    if (spaceIdx === -1) continue;
+
+    const hash = line.substring(0, spaceIdx);
+    const message = line.substring(spaceIdx + 1);
+    const match = message.match(pattern);
+
+    if (match) {
+      commits.push({
+        hash,
+        shortHash: hash.substring(0, 7),
+        type: match[1],
+        scope: match[2] || null,
+        subject: match[4],
+        breaking: !!match[3],
+      });
+    }
+  }
+
+  return commits;
+}
+
+/**
  * Gets the latest tag on current HEAD (created by Lerna).
  */
 export function getLatestTag(): string | null {
@@ -35,24 +141,13 @@ export function getLatestTag(): string | null {
 }
 
 /**
- * Returns paths that should be staged after post-lerna modifications.
- * Replaces the unsafe `git add -A` with targeted file staging.
- */
-export function getReleaseStagePaths(packages: PackageConfig[]): string[] {
-  const paths = ["package.json", "yarn.lock", "CHANGELOG.md"];
-  for (const pkg of packages) {
-    paths.push(`${pkg.path}/package.json`);
-    paths.push(`${pkg.path}/CHANGELOG.md`);
-  }
-  return paths.filter((p) => existsSync(p));
-}
-
-/**
- * Stages specified paths and amends the last commit (created by Lerna).
+ * Stages all modified tracked files and amends the last commit (created by Lerna).
+ * Uses `git add -u` to capture all release changes including custom hook modifications
+ * (e.g. boilerplate template versions, app dependency updates).
  * Exits on failure.
  */
-export function stageAndAmendCommit(paths: string[]): void {
-  const addResult = sync("git", ["add", ...paths], { stdio: "inherit" });
+export function stageAndAmendCommit(): void {
+  const addResult = sync("git", ["add", "-u"], { stdio: "inherit" });
   if (addResult.status !== 0) {
     console.error(chalk.red("\nFailed to stage changes\n"));
     process.exit(1);

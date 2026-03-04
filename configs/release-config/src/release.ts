@@ -18,11 +18,15 @@ import {
   getNewVersionIfChanged,
   logDiagnostics,
 } from "@release-config/lerna";
-import { enhancePackageChangelogs, generateRootChangelog } from "@release-config/changelog";
+import {
+  enhancePackageChangelogs,
+  generateRootChangelog,
+  backfillEmptyVersions,
+  deduplicateChangelog,
+} from "@release-config/changelog";
 import {
   findLastMatchingTag,
   getLatestTag,
-  getReleaseStagePaths,
   stageAndAmendCommit,
   recreateAnnotatedTag,
   pushToRemote,
@@ -66,7 +70,7 @@ export async function release(config: ReleaseConfig): Promise<void> {
   const releaseTypeArgs: string[] = [];
 
   if (releaseType === "auto") {
-    releaseTypeArgs.push("--conventional-commits");
+    // --conventional-commits is now always added via buildLernaVersionArgs
   } else if (releaseType === "prerelease") {
     const result = await promptPrereleaseId(currentVersion);
     if (!result) return cancelled();
@@ -139,6 +143,8 @@ export async function release(config: ReleaseConfig): Promise<void> {
 
   // Enhance changelogs
   enhancePackageChangelogs(packages, isDryRun);
+  backfillEmptyVersions(packages, tagVersionPrefix, isDryRun);
+  deduplicateChangelog(packages, isDryRun);
   generateRootChangelog({ packages }, isDryRun);
 
   // ── Git: amend, tag, push ────────────────────────────────────────────
@@ -149,8 +155,7 @@ export async function release(config: ReleaseConfig): Promise<void> {
       process.exit(1);
     }
 
-    const paths = getReleaseStagePaths(packages);
-    stageAndAmendCommit(paths);
+    stageAndAmendCommit();
     recreateAnnotatedTag(tag);
     pushToRemote(tag);
 

@@ -9,7 +9,7 @@
       :selection="internalSelection"
       :is-row-selectable="rowSelectable"
       :row-actions="effectiveRowActions"
-      :row-class="rowClassWithHighlight"
+      :active-item-id="selectedItemId ? toValue(selectedItemId) : undefined"
       :loading="loadingValue"
       :resizable-columns="props.resizableColumns"
       :reorderable-columns="props.reorderableColumns"
@@ -383,16 +383,6 @@ const effectiveRowActions = computed<((item: T) => TableAction<T>[]) | undefined
   return (item: T) => (props.itemActionBuilder!(item) ?? []) as TableAction<T>[];
 });
 
-// Row class: apply highlight for selectedItemId
-const rowClassWithHighlight = computed(() => {
-  const selectedId = toValue(props.selectedItemId);
-  if (!selectedId) return undefined;
-  return (data: T) => {
-    const rowId = String((data as any).id ?? "");
-    return rowId === selectedId ? "vc-data-table__row--highlighted" : "";
-  };
-});
-
 // Pagination
 const paginationConfig = computed<DataTablePagination | undefined>(() => {
   if (props.footer === false || !props.pages) return undefined;
@@ -617,11 +607,5 @@ function handleAddRow(event: { defaults: Record<string, unknown>; cancel: () => 
       color: var(--primary-700);
     }
   }
-}
-
-/* Row highlight for selectedItemId support.
- * No !important — allows hover (higher specificity) to override naturally. */
-.vc-data-table__row--highlighted {
-  background-color: var(--primary-50);
 }
 </style>

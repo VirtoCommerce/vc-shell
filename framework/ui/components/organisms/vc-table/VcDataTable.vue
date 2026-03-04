@@ -570,6 +570,8 @@ defineSlots<{
   }) => VNode[];
   /** Custom content for expanded rows */
   expansion?: (props: { data: T; index: number }) => VNode[];
+  /** Custom not-found state content (shown when search yields no results) */
+  "not-found"?: () => VNode[];
   /** Custom empty state content */
   empty?: () => VNode[];
   /** Custom loading state content */

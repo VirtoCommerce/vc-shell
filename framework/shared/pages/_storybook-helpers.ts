@@ -52,7 +52,7 @@ export function patchUserManagement() {
   userManagement.validateToken = async () => true;
   userManagement.validatePassword = async () => new IdentityResult({ succeeded: true, errors: [] });
   userManagement.resetPasswordByToken = async () => new SecurityResult({ succeeded: true, errors: [] });
-  userManagement.requestPasswordReset = async () => ({});
+  userManagement.requestPasswordReset = async () => ({ succeeded: true });
   userManagement.changeUserPassword = async () => new SecurityResult({ succeeded: true, errors: [] });
 
   for (const name of ["Login", "ForgotPassword", "ChangePassword"] as const) {

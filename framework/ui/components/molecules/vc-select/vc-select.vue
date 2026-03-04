@@ -767,7 +767,7 @@ watch(
   }
 
   &__no-options-text {
-    @apply tw-m-4 tw-text-lg tw-font-medium;
+    @apply tw-m-4 tw-text-sm tw-font-normal tw-text-[color:var(--select-placeholder-color)];
   }
 
   &__option {

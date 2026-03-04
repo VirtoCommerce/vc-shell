@@ -400,6 +400,8 @@ export interface VcDataTableProps<T = any> {
   rowClass?: (data: T) => string | object;
   /** Per-row function returning inline styles */
   rowStyle?: (data: T) => object;
+  /** ID of the currently active (highlighted) row — use with `v-model:activeItemId` */
+  activeItemId?: string;
   /** Visual table variant */
   variant?: "default" | "striped" | "bordered";
 

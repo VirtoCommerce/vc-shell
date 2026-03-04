@@ -9,6 +9,8 @@ import {
   getMergeBase,
   tagExists,
   getConventionalCommitsInRange,
+  getAllVersionTags,
+  getPreviousVersionTag,
   type ConventionalCommit,
 } from "@release-config/git";
 
@@ -311,34 +313,21 @@ export function backfillEmptyVersions(
 
     let content = readFileSync(changelogPath, "utf-8");
 
-    // Collect all versions in order (newest first)
-    const allVersions: string[] = [];
-    for (const m of content.matchAll(/^##\s+\[?([\d.a-z-]+)\]?/gm)) {
-      allVersions.push(m[1]);
-    }
-
     const bumpPattern = /^(##\s+\[?([\d.a-z-]+)\]?[^\n]*\n)\n\*\*Note:\*\*\s+Version bump only[^\n]*/gm;
 
     let modified = false;
 
     content = content.replace(bumpPattern, (match, header: string, version: string) => {
-      const idx = allVersions.indexOf(version);
-      if (idx === -1) return match;
+      // Use git tags (not CHANGELOG entries) to find the correct previous version
+      const prevTag = getPreviousVersionTag(version, tagPrefix);
+      if (!prevTag) return match;
 
-      // "from" = older version's tag
-      const olderVersion = idx < allVersions.length - 1 ? allVersions[idx + 1] : null;
-      if (!olderVersion) return match;
-
-      const fromRef = resolveVersionRef(`${tagPrefix}${olderVersion}`);
+      const fromRef = resolveVersionRef(prevTag);
       if (!fromRef) return match;
 
-      // "to" = this version's tag (or next newer version's tag, or HEAD)
+      // "to" = this version's tag (or HEAD as fallback)
       let toRef = resolveVersionRef(`${tagPrefix}${version}`);
-      if (!toRef) {
-        const newerVersion = idx > 0 ? allVersions[idx - 1] : null;
-        toRef = newerVersion ? resolveVersionRef(`${tagPrefix}${newerVersion}`) : null;
-        if (!toRef) toRef = "HEAD";
-      }
+      if (!toRef) toRef = "HEAD";
 
       if (fromRef === toRef) return match;
 
@@ -449,5 +438,195 @@ export function deduplicateChangelog(packages: PackageConfig[], dryRun = false):
     if (removed > 0) {
       console.log(chalk.gray(`  Deduplicated ${pkg.name}: removed ${removed} duplicate entries`));
     }
+  }
+}
+
+// ── Insert missing version entries ──────────────────────────────────────
+
+/**
+ * Inserts missing version entries into package CHANGELOGs.
+ *
+ * In Lerna fixed-mode, packages with no changes sometimes don't get
+ * a CHANGELOG entry even though a version tag exists. This function
+ * compares git tags with CHANGELOG headers and inserts missing entries
+ * with a "Version bump only" placeholder, so that `backfillEmptyVersions`
+ * can then attempt to fill them with actual commits.
+ */
+export function insertMissingVersionEntries(
+  packages: PackageConfig[],
+  tagPrefix: string,
+  dryRun = false,
+): void {
+  console.log(chalk.cyan("\nInserting missing version entries...\n"));
+
+  const allTags = getAllVersionTags(tagPrefix);
+  // Extract version strings from tags
+  const allTagVersions = allTags
+    .map((t) => (t.startsWith(tagPrefix) ? t.slice(tagPrefix.length) : t))
+    .filter((v) => valid(v));
+
+  let inserted = 0;
+
+  for (const pkg of packages) {
+    const changelogPath = path.join(pkg.path, "CHANGELOG.md");
+    if (!existsSync(changelogPath)) continue;
+
+    let content = readFileSync(changelogPath, "utf-8");
+
+    // Collect versions already present in CHANGELOG
+    const existingVersions = new Set<string>();
+    for (const m of content.matchAll(/^##\s+\[?([\d.a-z-]+)\]?/gim)) {
+      existingVersions.add(m[1]);
+    }
+
+    // Find versions present in git tags but missing from CHANGELOG
+    const missingVersions = allTagVersions.filter((v) => !existingVersions.has(v));
+    if (missingVersions.length === 0) continue;
+
+    // Insert each missing version in the correct position (sorted descending)
+    for (const missingVer of missingVersions) {
+      // Find the first existing version header that is OLDER than missingVer
+      // and insert before it (so the missing version appears above the older one)
+      const versionHeaderRegex = /^##\s+\[?([\d.a-z-]+)\]?[^\n]*/gim;
+      let insertIdx = -1;
+
+      for (const m of content.matchAll(versionHeaderRegex)) {
+        const existingVer = m[1];
+        if (valid(existingVer) && valid(missingVer)) {
+          // If missingVer is newer than existingVer, insert before it (CHANGELOG is newest-first)
+          if (rcompare(missingVer, existingVer) > 0) {
+            insertIdx = m.index!;
+            break;
+          }
+        }
+      }
+
+      const newEntry = `## ${missingVer}\n\n**Note:** Version bump only for package\n\n`;
+
+      if (insertIdx !== -1) {
+        content = content.substring(0, insertIdx) + newEntry + content.substring(insertIdx);
+      } else {
+        // All existing versions are newer — append at the end
+        content = content.trimEnd() + "\n\n" + newEntry;
+      }
+
+      inserted++;
+      console.log(chalk.gray(`  Inserted missing ${pkg.name} v${missingVer}`));
+    }
+
+    content = content.replace(/\n{3,}/g, "\n\n").trimEnd() + "\n";
+
+    if (!dryRun) {
+      writeFileSync(changelogPath, content, "utf-8");
+    }
+  }
+
+  if (inserted > 0) {
+    console.log(chalk.green(`  Inserted ${inserted} missing version entries`));
+  } else {
+    console.log(chalk.gray("  No missing version entries to insert"));
+  }
+}
+
+// ── Supplement incomplete versions ──────────────────────────────────────
+
+/**
+ * Supplements version sections that have SOME content but are missing commits
+ * present in the git tag range.
+ *
+ * For each version section with content, compares commit short hashes in the
+ * CHANGELOG against commits in the actual git range (previous_tag..version_tag).
+ * Appends any missing commits to the existing section.
+ *
+ * This handles the case where Lerna recorded some commits but the tag includes
+ * additional commits made after the CHANGELOG was generated (e.g. post-release
+ * fixes amended into the release commit).
+ */
+export function supplementIncompleteVersions(
+  packages: PackageConfig[],
+  tagPrefix: string,
+  dryRun = false,
+): void {
+  console.log(chalk.cyan("\nSupplementing incomplete changelog versions...\n"));
+
+  const repoUrl = getRepoUrl();
+  let supplemented = 0;
+
+  for (const pkg of packages) {
+    const changelogPath = path.join(pkg.path, "CHANGELOG.md");
+    if (!existsSync(changelogPath)) continue;
+
+    let content = readFileSync(changelogPath, "utf-8");
+    let modified = false;
+
+    // Parse version sections
+    const versionRegex = /^(##\s+\[?([\d.a-z-]+)\]?[^\n]*)\n/gm;
+    const sections: { header: string; version: string; startIdx: number; endIdx: number }[] = [];
+
+    for (const m of content.matchAll(versionRegex)) {
+      sections.push({
+        header: m[1],
+        version: m[2],
+        startIdx: m.index!,
+        endIdx: m.index! + m[0].length,
+      });
+    }
+
+    // Process sections from last to first (so index shifts don't affect earlier sections)
+    for (let i = sections.length - 1; i >= 0; i--) {
+      const section = sections[i];
+      const sectionEnd = i < sections.length - 1 ? sections[i + 1].startIdx : content.length;
+      const sectionBody = content.substring(section.endIdx, sectionEnd);
+
+      // Skip "Version bump only" sections (handled by backfillEmptyVersions)
+      if (sectionBody.includes("Version bump only")) continue;
+      // Skip empty sections
+      if (!sectionBody.trim()) continue;
+
+      // Find git range for this version
+      const prevTag = getPreviousVersionTag(section.version, tagPrefix);
+      if (!prevTag) continue;
+
+      const fromRef = resolveVersionRef(prevTag);
+      if (!fromRef) continue;
+
+      let toRef = resolveVersionRef(`${tagPrefix}${section.version}`);
+      if (!toRef) continue;
+
+      if (fromRef === toRef) continue;
+
+      const commits = getConventionalCommitsInRange(fromRef, toRef, pkg.path);
+      // Find commits not already in this section (by short hash)
+      const missingCommits = commits.filter((c) => !sectionBody.includes(c.shortHash));
+
+      if (missingCommits.length === 0) continue;
+
+      const formatted = formatCommitsAsChangelog(missingCommits, repoUrl);
+      if (!formatted) continue;
+
+      // Append missing commits to the section body
+      const trimmedBody = sectionBody.trimEnd();
+      const newSectionBody = trimmedBody + "\n\n" + formatted + "\n\n";
+      content = content.substring(0, section.endIdx) + newSectionBody + content.substring(sectionEnd);
+
+      modified = true;
+      supplemented++;
+      console.log(
+        chalk.gray(`  Supplemented ${pkg.name} v${section.version} (+${missingCommits.length} commits)`),
+      );
+    }
+
+    if (modified) {
+      content = content.replace(/\n{3,}/g, "\n\n").trimEnd() + "\n";
+      if (!dryRun) {
+        writeFileSync(changelogPath, content, "utf-8");
+      }
+    }
+  }
+
+  if (supplemented > 0) {
+    console.log(chalk.green(`  Supplemented ${supplemented} incomplete changelog version(s)`));
+  } else {
+    console.log(chalk.gray("  No incomplete versions to supplement"));
   }
 }

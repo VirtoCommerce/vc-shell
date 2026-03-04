@@ -23,10 +23,13 @@ import {
   generateRootChangelog,
   backfillEmptyVersions,
   deduplicateChangelog,
+  insertMissingVersionEntries,
+  supplementIncompleteVersions,
 } from "@release-config/changelog";
 import {
   findLastMatchingTag,
   getLatestTag,
+  getHeadCommitMessage,
   stageAndAmendCommit,
   recreateAnnotatedTag,
   pushToRemote,
@@ -143,7 +146,9 @@ export async function release(config: ReleaseConfig): Promise<void> {
 
   // Enhance changelogs
   enhancePackageChangelogs(packages, isDryRun);
+  insertMissingVersionEntries(packages, tagVersionPrefix, isDryRun);
   backfillEmptyVersions(packages, tagVersionPrefix, isDryRun);
+  supplementIncompleteVersions(packages, tagVersionPrefix, isDryRun);
   deduplicateChangelog(packages, isDryRun);
   generateRootChangelog({ packages }, isDryRun);
 
@@ -152,6 +157,21 @@ export async function release(config: ReleaseConfig): Promise<void> {
     const tag = getLatestTag();
     if (!tag) {
       console.error(chalk.red("\nCould not determine the git tag created by Lerna\n"));
+      process.exit(1);
+    }
+
+    // Validate HEAD is the release commit before amending
+    const headMessage = getHeadCommitMessage();
+    const expectedPrefix = `release: ${tagVersionPrefix}`;
+    if (!headMessage || !headMessage.startsWith(expectedPrefix)) {
+      console.error(
+        chalk.red(
+          `\nTag validation failed: HEAD commit message "${headMessage}" ` +
+            `does not match expected pattern "${expectedPrefix}*".\n` +
+            `This may indicate extra commits were made after Lerna's release commit.\n` +
+            `Aborting to prevent amending/tagging the wrong commit.\n`,
+        ),
+      );
       process.exit(1);
     }
 

@@ -1,5 +1,6 @@
 import { sync } from "cross-spawn";
 import chalk from "chalk";
+import { rcompare, valid } from "semver";
 
 /**
  * Finds the last git tag matching `<prefix><majorMinor>.*`.
@@ -189,4 +190,65 @@ export function pushToRemote(tag: string): void {
     console.error(chalk.red("\nFailed to push tag\n"));
     process.exit(1);
   }
+}
+
+/**
+ * Returns all version tags matching the given prefix, sorted by semver descending.
+ * Example: getAllVersionTags("v") → ["v1.2.4-beta.6", "v1.2.4-beta.5", ...]
+ */
+export function getAllVersionTags(prefix: string): string[] {
+  const result = sync("git", ["tag", "-l", `${prefix}*`], {
+    stdio: "pipe",
+    encoding: "utf-8",
+  });
+
+  if (result.status !== 0 || !result.stdout) return [];
+
+  const tags = result.stdout
+    .toString()
+    .trim()
+    .split("\n")
+    .filter(Boolean);
+
+  // Sort by semver descending; extract version part after prefix
+  return tags.sort((a, b) => {
+    const va = valid(a.startsWith(prefix) ? a.slice(prefix.length) : a);
+    const vb = valid(b.startsWith(prefix) ? b.slice(prefix.length) : b);
+    if (va && vb) return rcompare(va, vb);
+    return b.localeCompare(a);
+  });
+}
+
+/**
+ * Given a version string, finds the immediately preceding version TAG.
+ * Uses semver sorting on all tags matching the prefix.
+ * Example: getPreviousVersionTag("1.2.4-beta.5", "v") → "v1.2.4-beta.4"
+ */
+export function getPreviousVersionTag(version: string, prefix: string): string | null {
+  const allTags = getAllVersionTags(prefix);
+  const targetTag = `${prefix}${version}`;
+
+  const idx = allTags.indexOf(targetTag);
+  if (idx === -1) {
+    console.warn(chalk.yellow(`  getPreviousVersionTag: tag "${targetTag}" not found in git tags`));
+    return null;
+  }
+  if (idx >= allTags.length - 1) return null;
+
+  return allTags[idx + 1];
+}
+
+/**
+ * Gets the commit message of HEAD.
+ */
+export function getHeadCommitMessage(): string | null {
+  const result = sync("git", ["log", "-1", "--format=%s"], {
+    stdio: "pipe",
+    encoding: "utf-8",
+  });
+
+  if (result.status === 0 && result.stdout) {
+    return result.stdout.toString().trim();
+  }
+  return null;
 }

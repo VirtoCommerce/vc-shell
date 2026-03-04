@@ -167,7 +167,6 @@ function handleItemClick(item: IBladeToolbar) {
   --blade-toolbar-mobile-pill-bg-color: var(--primary-500);
   --blade-toolbar-mobile-toggle-border-color: var(--primary-200);
   --blade-toolbar-mobile-toggle-icon-color: var(--additional-50);
-  --blade-toolbar-mobile-overlay-bg-color: var(--additional-950);
   --blade-toolbar-mobile-action-bg: var(--surface-color);
   --blade-toolbar-mobile-action-text: var(--neutrals-800);
   // Circle button colors

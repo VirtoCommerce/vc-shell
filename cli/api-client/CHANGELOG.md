@@ -1,6 +1,16 @@
-## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-03)
+## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
 
 **Note:** Version bump only for package @vc-shell/api-client-generator
+
+## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-03)
+
+### Features
+
+- **api-client:** support .NET 9/10 runtimes, bump nswag to 14.6.3 ([7ef1a23](https://github.com/VirtoCommerce/vc-shell/commit/7ef1a234a935bc528d3501723070d3166bfbe2aa))
+
+### Bug Fixes
+
+- **api-client:** ensure trailing slash on platform URL to prevent invalid URI error ([af09115](https://github.com/VirtoCommerce/vc-shell/commit/af09115ec7ea7420020042918ab2be1263bd8651))
 
 ## [1.2.4-beta.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.2...v1.2.4-beta.3) (2026-02-20)
 

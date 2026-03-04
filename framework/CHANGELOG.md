@@ -1,3 +1,24 @@
+## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
+
+### Bug Fixes
+
+- **core data-fns:** improve `toDate` utility to validate Date objects ([302a5e9](https://github.com/VirtoCommerce/vc-shell/commit/302a5e924cc30d290f3cfb22b03ace93113f73fc))
+- resolve TypeScript build errors in storybook helpers and VcDataTable slots ([24fc068](https://github.com/VirtoCommerce/vc-shell/commit/24fc0687bc92f3dfd7cebd2a1f67a6a90330e516))
+- **vc-select:** tone down no-options empty state text styling ([37a35e9](https://github.com/VirtoCommerce/vc-shell/commit/37a35e96d466c221fe5e0e8a50179f76ae98b204))
+- **vc-table:** consistent null-guarding in handleRowClick activeItemId toggle ([acb5479](https://github.com/VirtoCommerce/vc-shell/commit/acb5479b1d960f777da703c75006361ba43b09cb))
+- **vc-table:** separate active row highlight from checkbox selection ([55d26b4](https://github.com/VirtoCommerce/vc-shell/commit/55d26b455d7e01ca07d53a0350201d163050e0aa))
+
+### Features
+
+- **storybook:** add auth page stories for Login, ForgotPassword, ResetPassword, ChangePassword, Invite ([1c1940f](https://github.com/VirtoCommerce/vc-shell/commit/1c1940f50b5a366549012cc4a81ed85797110b4a))
+- **theme:** add global overlay, shadow, surface, and glass design tokens ([3509103](https://github.com/VirtoCommerce/vc-shell/commit/3509103ba47172ce8201c491934ebe79dddb5a26))
+- **vc-data-table:** refactor table empty and not-found states with new `TableStateConfig` props, enhance `TableEmpty` component, and improve `formatDate` utility to handle invalid dates ([32283c5](https://github.com/VirtoCommerce/vc-shell/commit/32283c5c715d1742c8ffb395de5dd689a27f0437))
+- **vc-table:** add ActiveItemHighlight storybook story ([6e36b12](https://github.com/VirtoCommerce/vc-shell/commit/6e36b1240d30ab53603a52ccbc1f1d9db38671f3))
+- **vc-table:** add activeItemId prop and emit to BaseVcDataTable ([033cada](https://github.com/VirtoCommerce/vc-shell/commit/033cada35d31a48b55cbc57e29a116753b4a111b))
+- **vc-table:** add activeItemId to VcDataTableProps type ([aa18ec7](https://github.com/VirtoCommerce/vc-shell/commit/aa18ec7e112ee4709ef877e2084a7bd087294d5a))
+- **vc-table:** add empty and not-found state storybook stories ([753f703](https://github.com/VirtoCommerce/vc-shell/commit/753f703a9d4b7bfd3b2b6e5adc256792df69d254))
+- **vc-table:** wire activeItemId into VcDataTable for row highlighting ([87f0b78](https://github.com/VirtoCommerce/vc-shell/commit/87f0b789ffbc64b008af491ac9d928e722dcafe3))
+
 ## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-03)
 
 **Note:** Version bump only for package @vc-shell/framework

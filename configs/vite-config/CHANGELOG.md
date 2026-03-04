@@ -1,3 +1,7 @@
+## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
+
+**Note:** Version bump only for package @vc-shell/config-generator
+
 ## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-03)
 
 **Note:** Version bump only for package @vc-shell/config-generator

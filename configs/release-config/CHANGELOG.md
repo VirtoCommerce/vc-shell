@@ -1,6 +1,14 @@
+## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
+
+### Bug Fixes
+
+- **release-config:** generate changelogs for all release types and backfill empty versions ([d82147d](https://github.com/VirtoCommerce/vc-shell/commit/d82147d23469c912ca3de24a4157298736107c83))
+
 ## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-03)
 
-**Note:** Version bump only for package @vc-shell/release-config
+### Bug Fixes
+
+- **dynamic-properties:** handle missing localizedValues in multilanguage dictionary select ([b1a0445](https://github.com/VirtoCommerce/vc-shell/commit/b1a0445e55b9672d98b1c4edb2d0a7b57465dda4))
 
 ## [1.2.4-beta.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.2...v1.2.4-beta.3) (2026-02-20)
 

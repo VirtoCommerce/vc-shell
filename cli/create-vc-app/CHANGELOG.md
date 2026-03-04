@@ -1,6 +1,12 @@
-## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-03)
+## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app
+
+## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-03)
+
+### Bug Fixes
+
+- **cli:** use :loading prop instead of v-loading directive in blade templates ([99ca705](https://github.com/VirtoCommerce/vc-shell/commit/99ca705cadf1e4686ea26cc576537c6f9aa9060e))
 
 ## [1.2.4-beta.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.2...v1.2.4-beta.3) (2026-02-20)
 
@@ -82,7 +88,9 @@
 
 ## [1.1.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.88...v1.1.89) (2025-10-08)
 
-**Note:** Version bump only for package
+### Features
+
+- **create-vc-app:** enhance module functionality with new features and localization improvements ([7042215](https://github.com/VirtoCommerce/vc-shell/commit/7042215352e358961c5515dbbde39ba2ce058802))
 
 ## [1.1.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.87...v1.1.88) (2025-10-07)
 

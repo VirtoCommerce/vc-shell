@@ -267,6 +267,15 @@ export const baseVcDataTableProps = {
     default: undefined,
   },
 
+  /**
+   * ID of the currently active (highlighted) row.
+   * Use v-model:activeItemId for two-way binding.
+   */
+  activeItemId: {
+    type: String,
+    default: undefined,
+  },
+
   // ============================================================================
   // COLUMN FEATURES
   // ============================================================================
@@ -499,6 +508,7 @@ export const vcDataTableEmits = [
   "filter",
 
   // Row interactions
+  "update:activeItemId",
   "row-click",
   "row-dblclick",
   "row-contextmenu",

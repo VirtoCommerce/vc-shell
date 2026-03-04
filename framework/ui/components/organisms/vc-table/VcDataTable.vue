@@ -1415,7 +1415,7 @@ const getRowProps = (item: T, index: number) => ({
 
   // Selection
   isSelected: selection.isSelected(item) ||
-    (props.activeItemId != null && String(getItemKey(item, index)) === String(props.activeItemId)),
+    (props.activeItemId != null && getItemKey(item, index) === String(props.activeItemId)),
   isSelectable: selection.canSelect(item),
   selectionMode: effectiveSelectionMode.value,
   showSelectionCell: hasSelectionColumn.value && !isSelectionViaColumn.value,
@@ -1499,7 +1499,8 @@ const handleRowSelectionChange = (item: T, eventOrValue?: Event | boolean) => {
 
 const handleRowClick = (item: T, index: number, event: Event) => {
   const itemKey = getItemKey(item, index);
-  emit("update:activeItemId", itemKey === String(props.activeItemId) ? undefined : itemKey);
+  const isSameItem = props.activeItemId != null && itemKey === String(props.activeItemId);
+  emit("update:activeItemId", isSameItem ? undefined : itemKey);
   emit("row-click", { data: item, index, originalEvent: event });
   const target = event.target as HTMLElement;
   const isCheckboxClick = target.tagName === "INPUT" && target.getAttribute("type") === "checkbox";

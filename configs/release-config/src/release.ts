@@ -20,11 +20,8 @@ import {
 } from "@release-config/lerna";
 import {
   enhancePackageChangelogs,
+  ensureCurrentVersionEntries,
   generateRootChangelog,
-  backfillEmptyVersions,
-  deduplicateChangelog,
-  insertMissingVersionEntries,
-  supplementIncompleteVersions,
 } from "@release-config/changelog";
 import {
   findLastMatchingTag,
@@ -147,10 +144,7 @@ export async function release(config: ReleaseConfig): Promise<void> {
 
   // Enhance changelogs
   enhancePackageChangelogs(packages, isDryRun);
-  insertMissingVersionEntries(packages, tagVersionPrefix, isDryRun);
-  backfillEmptyVersions(packages, tagVersionPrefix, isDryRun);
-  supplementIncompleteVersions(packages, tagVersionPrefix, isDryRun);
-  deduplicateChangelog(packages, isDryRun);
+  ensureCurrentVersionEntries(packages, newVersion, isDryRun);
   generateRootChangelog({ packages }, isDryRun);
 
   // ── Git: amend, tag, push ────────────────────────────────────────────

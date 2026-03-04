@@ -68,6 +68,57 @@ export function enhancePackageChangelogs(packages: PackageConfig[], dryRun = fal
   }
 }
 
+/**
+ * Ensures each package has an entry for the current release version.
+ * If Lerna skipped a package because it had no direct changes, we still add
+ * a placeholder section for the version so lockstep releases stay aligned.
+ */
+export function ensureCurrentVersionEntries(
+  packages: PackageConfig[],
+  version: string,
+  dryRun = false,
+): void {
+  console.log(chalk.cyan(`\nEnsuring current version entries for ${version}...\n`));
+
+  let inserted = 0;
+
+  for (const pkg of packages) {
+    const changelogPath = path.join(pkg.path, "CHANGELOG.md");
+    if (!existsSync(changelogPath)) continue;
+
+    let content = readFileSync(changelogPath, "utf-8");
+    const versionRegex = new RegExp(`^##\\s+\\[?${version.replace(/\./g, "\\.")}\\]?\\b`, "m");
+
+    if (versionRegex.test(content)) continue;
+
+    const newEntry = `## ${version}\n\n**Note:** Version bump only for package\n\n`;
+    const firstVersionHeader = content.match(/^##\s+\[?[\d.a-z-]+\]?[^\n]*/m);
+
+    if (firstVersionHeader && firstVersionHeader.index !== undefined) {
+      content =
+        content.substring(0, firstVersionHeader.index) +
+        newEntry +
+        content.substring(firstVersionHeader.index);
+    } else if (content.trim()) {
+      content = content.trimEnd() + "\n\n" + newEntry;
+    } else {
+      content = newEntry;
+    }
+
+    inserted++;
+
+    if (!dryRun) {
+      writeFileSync(changelogPath, content, "utf-8");
+    }
+  }
+
+  if (inserted > 0) {
+    console.log(chalk.green(`  Inserted ${inserted} current version entr${inserted === 1 ? "y" : "ies"}`));
+  } else {
+    console.log(chalk.gray("  All packages already have a current version entry"));
+  }
+}
+
 // ── Changelog parsing ──────────────────────────────────────────────────
 
 interface ParsedChangelog {

@@ -139,8 +139,11 @@
           :get-column-width="cols.getEffectiveColumnWidth"
           :get-cell-style="cols.getCellStyle"
           :show-selection-cell="hasSelectionColumn && !isSelectionViaColumn"
-          :empty-title="emptyTitle"
-          :empty-description="emptyDescription"
+          :empty-icon="resolvedEmptyIcon"
+          :empty-title="resolvedEmptyTitle"
+          :empty-description="resolvedEmptyDescription"
+          :empty-action-label="resolvedEmptyActionLabel"
+          :empty-action-handler="resolvedEmptyActionHandler"
           :loading-text="loadingText"
           :grouping-enabled="rowGrouping.isGroupingEnabled.value"
           :grouped-data="rowGrouping.groupedData.value"
@@ -213,10 +216,11 @@
             />
           </template>
           <template
-            v-if="$slots.empty"
+            v-if="$slots['not-found'] || $slots.empty"
             #empty
           >
-            <slot name="empty" />
+            <slot v-if="isNotFoundState && $slots['not-found']" name="not-found" />
+            <slot v-else name="empty" />
           </template>
           <template
             v-if="$slots.loading"
@@ -283,12 +287,16 @@
         @refresh="emit('pull-refresh')"
       >
         <template #empty>
-          <slot name="empty">
-            <TableEmpty
-              :title="emptyTitle"
-              :description="emptyDescription"
-            />
-          </slot>
+          <slot v-if="isNotFoundState && $slots['not-found']" name="not-found" />
+          <slot v-else-if="$slots.empty" name="empty" />
+          <TableEmpty
+            v-else
+            :icon="resolvedEmptyIcon"
+            :title="resolvedEmptyTitle"
+            :description="resolvedEmptyDescription"
+            :action-label="resolvedEmptyActionLabel"
+            :action-handler="resolvedEmptyActionHandler"
+          />
         </template>
       </DataTableMobileView>
     </div>
@@ -367,7 +375,7 @@ import {
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 import { ColumnCollectorKey, FilterContextKey, HasFlexColumnsKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-table/keys";
 import { IsMobileKey } from "@framework/injection-keys";
-import type { VcColumnProps, VcDataTableExtendedProps, FilterValue, EditChange, TableAction, SortMeta, MobileSwipeAction } from "@ui/components/organisms/vc-table/types";
+import type { VcColumnProps, VcDataTableExtendedProps, FilterValue, EditChange, TableAction, SortMeta, MobileSwipeAction, TableStateConfig } from "@ui/components/organisms/vc-table/types";
 import type { DataTablePersistedState } from "@ui/components/organisms/vc-table/composables";
 
 const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
@@ -420,6 +428,8 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
   searchable: false,
   searchValue: undefined,
   searchPlaceholder: "Search...",
+  emptyState: undefined,
+  notFoundState: undefined,
   searchDebounce: 300,
   activeItemId: undefined,
 });
@@ -582,6 +592,34 @@ const { t } = useI18n({ useScope: "global" });
 
 const emptyTitle = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY_TITLE"));
 const emptyDescription = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY_DESCRIPTION"));
+const notFoundTitle = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_FOUND_TITLE"));
+const notFoundDescription = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_FOUND_DESCRIPTION"));
+
+/** Detect not-found state: items empty + active search or filters */
+const isNotFoundState = computed(
+  () => displayItems.value.length === 0 && !props.loading && (internalSearchValue.value !== "" || hasActiveFilters.value),
+);
+
+/** Resolved title/description/icon/action for the current empty-like state */
+const resolvedEmptyIcon = computed(() =>
+  isNotFoundState.value ? props.notFoundState?.icon : props.emptyState?.icon,
+);
+const resolvedEmptyTitle = computed(() =>
+  isNotFoundState.value
+    ? (props.notFoundState?.title ?? notFoundTitle.value)
+    : (props.emptyState?.title ?? emptyTitle.value),
+);
+const resolvedEmptyDescription = computed(() =>
+  isNotFoundState.value
+    ? (props.notFoundState?.description ?? notFoundDescription.value)
+    : (props.emptyState?.description ?? emptyDescription.value),
+);
+const resolvedEmptyActionLabel = computed(() =>
+  isNotFoundState.value ? props.notFoundState?.actionLabel : props.emptyState?.actionLabel,
+);
+const resolvedEmptyActionHandler = computed(() =>
+  isNotFoundState.value ? props.notFoundState?.actionHandler : props.emptyState?.actionHandler,
+);
 const loadingText = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.LOADING"));
 
 /** Track whether data has ever been loaded — distinguishes initial load from refresh */
@@ -1414,8 +1452,8 @@ const getRowProps = (item: T, index: number) => ({
   columns: safeColumns.value,
 
   // Selection
-  isSelected: selection.isSelected(item) ||
-    (props.activeItemId != null && getItemKey(item, index) === String(props.activeItemId)),
+  isSelected: selection.isSelected(item),
+  isActive: props.activeItemId != null && getItemKey(item, index) === String(props.activeItemId),
   isSelectable: selection.canSelect(item),
   selectionMode: effectiveSelectionMode.value,
   showSelectionCell: hasSelectionColumn.value && !isSelectionViaColumn.value,

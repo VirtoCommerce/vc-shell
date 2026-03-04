@@ -3,7 +3,7 @@
     role="row"
     class="vc-table-composition__row"
     :class="{
-      'vc-table-composition__row--selected': selected,
+      'vc-table-composition__row--selected': selected || active,
       'vc-table-composition__row--clickable': isClickable,
       'vc-table-composition__row--header': variant === 'header',
       'vc-table-composition__row--dragging': isDragging,
@@ -48,6 +48,10 @@ const props = withDefaults(
      * Whether the row is selected
      */
     selected?: boolean;
+    /**
+     * Whether the row is the active (highlighted) row — visual only, does not affect checkbox
+     */
+    active?: boolean;
     /**
      * Row variant
      */

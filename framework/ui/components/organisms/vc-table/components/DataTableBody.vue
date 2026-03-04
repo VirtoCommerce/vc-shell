@@ -7,8 +7,11 @@
     <template v-if="items.length === 0 && !loading">
       <slot name="empty">
         <TableEmpty
+          :icon="emptyIcon"
           :title="emptyTitle"
           :description="emptyDescription"
+          :action-label="emptyActionLabel"
+          :action-handler="emptyActionHandler"
         />
       </slot>
     </template>
@@ -141,6 +144,7 @@ export interface RowProps<T> {
   index: number;
   columns: ColumnInstance[];
   isSelected: boolean;
+  isActive: boolean;
   isSelectable: boolean;
   selectionMode?: "single" | "multiple";
   showSelectionCell: boolean;
@@ -172,6 +176,12 @@ const props = defineProps<{
   emptyTitle?: string;
   /** Empty state description */
   emptyDescription?: string;
+  /** Empty state icon */
+  emptyIcon?: string;
+  /** Empty state action button label */
+  emptyActionLabel?: string;
+  /** Empty state action button handler */
+  emptyActionHandler?: () => void;
   /** Loading text (kept for custom loading slot consumers) */
   loadingText?: string;
   /** Number of skeleton rows to show during loading */

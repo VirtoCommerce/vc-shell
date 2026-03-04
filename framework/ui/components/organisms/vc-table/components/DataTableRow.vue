@@ -19,6 +19,7 @@
     <TableRow
       v-if="!groupingEnabled || !expandableRowGroups || isGroupRowExpanded"
       :selected="isSelected"
+      :active="isActive"
       :reorderable="reorderable"
       :show-drag-handle="showDragHandle"
       :index="index"
@@ -154,6 +155,8 @@ const props = defineProps<{
   // === Selection ===
   /** Whether this row is selected */
   isSelected?: boolean;
+  /** Whether this row is the active (highlighted) row */
+  isActive?: boolean;
   /** Whether this row can be selected */
   isSelectable?: boolean;
   /** Selection mode: 'single' or 'multiple' */

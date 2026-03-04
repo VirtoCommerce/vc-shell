@@ -5,7 +5,6 @@ import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 import { checker } from "vite-plugin-checker";
 import circleDependency from "vite-plugin-circular-dependency";
-import { visualizer } from "rollup-plugin-visualizer";
 
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
 const version = JSON.parse(packageJson.toString()).version || 0;
@@ -201,12 +200,14 @@ export default defineConfig({
       : []),
     ...(process.env.ANALYZE
       ? [
-          visualizer({
-            filename: "stats.html",
-            template: "treemap",
-            gzipSize: true,
-            open: false,
-          }) as PluginOption,
+          await import("rollup-plugin-visualizer").then(({ visualizer }) =>
+            visualizer({
+              filename: "stats.html",
+              template: "treemap",
+              gzipSize: true,
+              open: false,
+            }),
+          ) as PluginOption,
         ]
       : []),
   ],

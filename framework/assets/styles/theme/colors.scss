@@ -109,4 +109,30 @@
   --info-800: #245269;
   --info-900: #15313F;
   --info-950: #0E212A;
+
+  // ─── Overlay Tokens ──────────────────────────────────────────────
+  // Base color for overlay scrim (light frosted glass)
+  --overlay-color: var(--additional-50);
+  --overlay-bg: rgb(from var(--overlay-color) r g b / 75%);
+  --overlay-blur: 4px;
+
+  // ─── Shadow Tokens ───────────────────────────────────────────────
+  // Derived from neutrals — adapts to palette automatically
+  --shadow-color: var(--neutrals-950);
+  --shadow-sm: 0 12px 28px rgb(from var(--shadow-color) r g b / 10%);
+  --shadow-md: 0 24px 48px rgb(from var(--shadow-color) r g b / 16%),
+               0 8px 20px rgb(from var(--shadow-color) r g b / 10%);
+  --shadow-lg: 0 28px 64px rgb(from var(--shadow-color) r g b / 22%),
+               0 10px 24px rgb(from var(--shadow-color) r g b / 16%);
+
+  // ─── Surface Tokens ──────────────────────────────────────────────
+  --surface-color: var(--additional-50);
+  --surface-elevated: color-mix(in srgb, var(--surface-color) 92%, white 8%);
+  --surface-border: color-mix(in srgb, var(--neutrals-300) 72%, white 28%);
+
+  // ─── Frosted Glass ───────────────────────────────────────────────
+  // Used for sticky headers/footers that need to blur content behind
+  // Apply as: backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+  --glass-blur: 6px;
+  --glass-saturate: 140%;
 }

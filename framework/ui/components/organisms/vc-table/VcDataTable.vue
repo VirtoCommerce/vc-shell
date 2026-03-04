@@ -152,7 +152,7 @@
           :get-item-group-key="rowGrouping.getItemGroupKey"
           :get-global-index="getGlobalIndex"
           :get-item-key="getItemKey"
-          :get-row-props="(getRowProps as any)"
+          :get-row-props="getRowProps as any"
           @scroll="handleContentScroll"
           @group-toggle="(key, e) => rowGrouping.toggleGroupExpansion(key, e!)"
           @row-click="handleRowClick"
@@ -219,8 +219,14 @@
             v-if="$slots['not-found'] || $slots.empty"
             #empty
           >
-            <slot v-if="isNotFoundState && $slots['not-found']" name="not-found" />
-            <slot v-else name="empty" />
+            <slot
+              v-if="isNotFoundState && $slots['not-found']"
+              name="not-found"
+            />
+            <slot
+              v-else
+              name="empty"
+            />
           </template>
           <template
             v-if="$slots.loading"
@@ -287,8 +293,14 @@
         @refresh="emit('pull-refresh')"
       >
         <template #empty>
-          <slot v-if="isNotFoundState && $slots['not-found']" name="not-found" />
-          <slot v-else-if="$slots.empty" name="empty" />
+          <slot
+            v-if="isNotFoundState && $slots['not-found']"
+            name="not-found"
+          />
+          <slot
+            v-else-if="$slots.empty"
+            name="empty"
+          />
           <TableEmpty
             v-else
             :icon="resolvedEmptyIcon"
@@ -373,9 +385,23 @@ import {
   useDataTableState,
 } from "@ui/components/organisms/vc-table/composables";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
-import { ColumnCollectorKey, FilterContextKey, HasFlexColumnsKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-table/keys";
+import {
+  ColumnCollectorKey,
+  FilterContextKey,
+  HasFlexColumnsKey,
+  IsColumnReorderingKey,
+} from "@ui/components/organisms/vc-table/keys";
 import { IsMobileKey } from "@framework/injection-keys";
-import type { VcColumnProps, VcDataTableExtendedProps, FilterValue, EditChange, TableAction, SortMeta, MobileSwipeAction, TableStateConfig } from "@ui/components/organisms/vc-table/types";
+import type {
+  VcColumnProps,
+  VcDataTableExtendedProps,
+  FilterValue,
+  EditChange,
+  TableAction,
+  SortMeta,
+  MobileSwipeAction,
+  TableStateConfig,
+} from "@ui/components/organisms/vc-table/types";
 import type { DataTablePersistedState } from "@ui/components/organisms/vc-table/composables";
 
 const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
@@ -397,7 +423,7 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
   size: "normal",
   variant: "default",
   resizableColumns: true,
-  reorderableColumns: false,
+  reorderableColumns: true,
   reorderableRows: false,
   showAllColumns: true,
   scrollable: false,
@@ -423,7 +449,7 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
   infiniteScroll: false,
   infiniteScrollDistance: 100,
   globalFilters: undefined,
-  columnSwitcher: false,
+  columnSwitcher: true,
   stateStorage: "local",
   searchable: false,
   searchValue: undefined,
@@ -599,13 +625,12 @@ const notFoundDescription = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_
 
 /** Detect not-found state: items empty + active search or filters */
 const isNotFoundState = computed(
-  () => displayItems.value.length === 0 && !props.loading && (internalSearchValue.value !== "" || hasActiveFilters.value),
+  () =>
+    displayItems.value.length === 0 && !props.loading && (internalSearchValue.value !== "" || hasActiveFilters.value),
 );
 
 /** Resolved title/description/icon/action for the current empty-like state */
-const resolvedEmptyIcon = computed(() =>
-  isNotFoundState.value ? props.notFoundState?.icon : props.emptyState?.icon,
-);
+const resolvedEmptyIcon = computed(() => (isNotFoundState.value ? props.notFoundState?.icon : props.emptyState?.icon));
 const resolvedEmptyTitle = computed(() =>
   isNotFoundState.value
     ? (props.notFoundState?.title ?? notFoundTitle.value)
@@ -1632,11 +1657,7 @@ const handleMobileRowSelect = (item: T, index: number) => {
   handleRowSelectionChange(item);
 };
 
-const handleMobileRowAction = (
-  action: MobileSwipeAction<T>,
-  item: T,
-  index: number,
-) => {
+const handleMobileRowAction = (action: MobileSwipeAction<T>, item: T, index: number) => {
   // Execute the action's click handler if provided
   if (action.clickHandler) {
     action.clickHandler(item, index);

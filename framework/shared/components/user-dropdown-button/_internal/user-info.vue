@@ -5,11 +5,15 @@
       class="vc-user-info__avatar"
       :style="imageHandler"
     ></div>
-    <VcIcon
+    <div
       v-else
-      icon="material-account_circle"
-      class="vc-user-info__icon"
-    />
+      class="vc-user-info__avatar-fallback"
+    >
+      <VcIcon
+        icon="lucide-circle-user"
+        size="l"
+      />
+    </div>
     <Transition name="opacity">
       <div
         v-show="isExpanded || $isMobile.value"
@@ -59,21 +63,26 @@ const imageHandler = computed(() => {
 
 <style lang="scss">
 :root {
-  --user-info-avatar-width: 38px;
-  --user-info-avatar-height: 38px;
+  --user-info-avatar-size: 32px;
 }
 
 .vc-user-info {
-  @apply tw-flex tw-items-center tw-gap-3 tw-truncate tw-w-full;
+  @apply tw-flex tw-items-center tw-gap-2.5 tw-truncate tw-w-full;
   @apply tw-overflow-visible #{!important};
 
   &__avatar {
-    @apply tw-rounded-full tw-overflow-hidden tw-w-[var(--user-info-avatar-width)] tw-h-[var(--user-info-avatar-height)] tw-bg-[color:var(--user-dropdown-account-info-role-color)]
-    tw-bg-cover tw-bg-center tw-shrink-0;
+    @apply tw-rounded-lg tw-overflow-hidden tw-bg-cover tw-bg-center tw-shrink-0;
+    width: var(--user-info-avatar-size);
+    height: var(--user-info-avatar-size);
+    background-color: var(--user-dropdown-account-info-role-color);
   }
 
-  &__icon {
-    @apply tw-text-[color:var(--user-dropdown-button-color)] tw-text-[length:var(--user-info-avatar-height)] tw-shrink-0 tw-w-[var(--user-info-avatar-width)] tw-h-[var(--user-info-avatar-height)] #{!important};
+  &__avatar-fallback {
+    @apply tw-rounded-lg tw-shrink-0 tw-flex tw-items-center tw-justify-center;
+    width: var(--user-info-avatar-size);
+    height: var(--user-info-avatar-size);
+    background: var(--neutrals-100, #f5f5f5);
+    color: var(--neutrals-400, #a3a3a3);
   }
 
   &__info {
@@ -81,11 +90,15 @@ const imageHandler = computed(() => {
   }
 
   &__name {
-    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-name-color)] tw-max-w-[250px] tw-truncate tw-w-full tw-text-left;
+    @apply tw-font-semibold tw-truncate tw-w-full tw-text-left tw-max-w-[250px];
+    font-size: 13px;
+    color: var(--neutrals-800, #262626);
   }
 
   &__role {
-    @apply tw-text-sm tw-text-[color:var(--user-dropdown-account-info-role-color)] tw-truncate tw-text-left tw-w-full tw-max-w-[250px];
+    @apply tw-truncate tw-text-left tw-w-full tw-max-w-[250px];
+    font-size: 11px;
+    color: var(--neutrals-400, #a3a3a3);
   }
 }
 

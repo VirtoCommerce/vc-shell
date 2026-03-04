@@ -7,10 +7,21 @@ import { rcompare, valid } from "semver";
  * Returns the tag string or null if none found.
  */
 export function findLastMatchingTag(majorMinor: string, tagPrefix: string): string | null {
-  const result = sync("git", ["describe", "--tags", "--abbrev=0", "--match", `${tagPrefix}${majorMinor}.*`], {
-    stdio: "pipe",
-    encoding: "utf-8",
-  });
+  const result = sync(
+    "git",
+    [
+      "describe",
+      "--tags",
+      "--abbrev=0",
+      "--first-parent",
+      "--match",
+      `${tagPrefix}${majorMinor}.*`,
+    ],
+    {
+      stdio: "pipe",
+      encoding: "utf-8",
+    },
+  );
 
   if (result.status === 0 && result.stdout) {
     return result.stdout.toString().trim();

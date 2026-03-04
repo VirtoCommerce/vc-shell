@@ -45,7 +45,16 @@ export function buildLernaVersionArgs(
  */
 export function runLernaVersion(args: string[]): void {
   console.log(chalk.cyan(`\nRunning: npx ${args.join(" ")}\n`));
-  const result = sync("npx", args, { stdio: "inherit" });
+  const result = sync("npx", args, {
+    stdio: "inherit",
+    env: {
+      ...process.env,
+      // Lerna v8+ resolves projects through Nx and can accidentally bind to a parent workspace
+      // when the releasable app lives inside a larger monorepo. Pin the workspace root to the
+      // current project so changed packages are detected correctly.
+      NX_WORKSPACE_ROOT_PATH: process.env.NX_WORKSPACE_ROOT_PATH || process.cwd(),
+    },
+  });
 
   if (result.status !== 0) {
     console.error(chalk.red("\nRelease process failed\n"));

@@ -1,3 +1,7 @@
+## [1.2.4-beta.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.6...v1.2.4-beta.7) (2026-03-04)
+
+**Note:** Version bump only for package @vc-shell/create-vc-app
+
 ## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
 
 **Note:** Version bump only for package
@@ -1145,7 +1149,7 @@
 
 ### Features
 
-- **dynamic:** refactoring of scope, composable args interface, dynamic hint for some components BREAKING CHANGE: change scope in composables to be plain object instead refs. Also, if you want to extend scope, use lodash's merge method like: _.merge(scope, {}) ([e6b8099](https://github.com/VirtoCommerce/vc-shell/commit/e6b8099a120cef9429896904947e13fdae670541))
+- **dynamic:** refactoring of scope, composable args interface, dynamic hint for some components BREAKING CHANGE: change scope in composables to be plain object instead refs. Also, if you want to extend scope, use lodash's merge method like: \_.merge(scope, {}) ([e6b8099](https://github.com/VirtoCommerce/vc-shell/commit/e6b8099a120cef9429896904947e13fdae670541))
 
 ## [1.0.222](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.221...v1.0.222) (2024-05-28)
 

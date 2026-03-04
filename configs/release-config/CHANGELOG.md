@@ -1,3 +1,32 @@
+## [1.2.4-beta.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.6...v1.2.4-beta.7) (2026-03-04)
+
+### Features
+
+- improve `getPreviousVersionTag` to find previous version by semver comparison, supporting non-existent target tags ([58d2873](https://github.com/VirtoCommerce/vc-shell/commit/58d28739950ae31631c432db82ab671ffc44544a))
+
+### Bug Fixes
+
+- **release:** preserve package changes in root changelog ([a738adf](https://github.com/VirtoCommerce/vc-shell/commit/a738adffaa292b7fd0170a6d7b2e9f8d824a9936))
+- **release:** keep root changelog stable in dry runs ([13730dd](https://github.com/VirtoCommerce/vc-shell/commit/13730ddf2dad1f08a4ade09fade22c1d07c3f773))
+- **release:** force publish all packages by default ([278877c](https://github.com/VirtoCommerce/vc-shell/commit/278877c8c6089d918fcb02d35474859cd10d924c))
+- **release-config:** fix changelog generation using git tags instead of CHANGELOG entries ([74d8c2c](https://github.com/VirtoCommerce/vc-shell/commit/74d8c2cd852e2a8f100fad65e7e7b6a353c9f8f9))
+
+### Code Refactoring
+
+- capture conventional-changelog output directly from stdout and enhance error logging ([fa8c12a](https://github.com/VirtoCommerce/vc-shell/commit/fa8c12ad4a7464ec7d7e2e2d85c2ef342a07dce0))
+
+
+### Bug Fixes
+
+- **release-config:** fix changelog generation using git tags instead of CHANGELOG entries ([74d8c2c](https://github.com/VirtoCommerce/vc-shell/commit/74d8c2cd852e2a8f100fad65e7e7b6a353c9f8f9))
+- **release:** force publish all packages by default ([278877c](https://github.com/VirtoCommerce/vc-shell/commit/278877c8c6089d918fcb02d35474859cd10d924c))
+- **release:** keep root changelog stable in dry runs ([13730dd](https://github.com/VirtoCommerce/vc-shell/commit/13730ddf2dad1f08a4ade09fade22c1d07c3f773))
+- **release:** preserve package changes in root changelog ([a738adf](https://github.com/VirtoCommerce/vc-shell/commit/a738adffaa292b7fd0170a6d7b2e9f8d824a9936))
+
+### Features
+
+- improve `getPreviousVersionTag` to find previous version by semver comparison, supporting non-existent target tags ([58d2873](https://github.com/VirtoCommerce/vc-shell/commit/58d28739950ae31631c432db82ab671ffc44544a))
+
 ## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
 
 ### Bug Fixes

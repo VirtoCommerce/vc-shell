@@ -1,10 +1,33 @@
-# CHANGELOG
+## [1.2.4-beta.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.6...v1.2.4-beta.7) (2026-03-04)
 
-All notable changes to this monorepo will be documented in this file.
+### Release Config (@vc-shell/release-config)
+
+### Features
+- improve `getPreviousVersionTag` to find previous version by semver comparison, supporting non-existent target tags ([58d2873](https://github.com/VirtoCommerce/vc-shell/commit/58d28739950ae31631c432db82ab671ffc44544a))
+### Bug Fixes
+- **release:** preserve package changes in root changelog ([a738adf](https://github.com/VirtoCommerce/vc-shell/commit/a738adffaa292b7fd0170a6d7b2e9f8d824a9936))
+- **release:** keep root changelog stable in dry runs ([13730dd](https://github.com/VirtoCommerce/vc-shell/commit/13730ddf2dad1f08a4ade09fade22c1d07c3f773))
+- **release:** force publish all packages by default ([278877c](https://github.com/VirtoCommerce/vc-shell/commit/278877c8c6089d918fcb02d35474859cd10d924c))
+- **release-config:** fix changelog generation using git tags instead of CHANGELOG entries ([74d8c2c](https://github.com/VirtoCommerce/vc-shell/commit/74d8c2cd852e2a8f100fad65e7e7b6a353c9f8f9))
+### Code Refactoring
+- capture conventional-changelog output directly from stdout and enhance error logging ([fa8c12a](https://github.com/VirtoCommerce/vc-shell/commit/fa8c12ad4a7464ec7d7e2e2d85c2ef342a07dce0))
+### Bug Fixes
+- **release-config:** fix changelog generation using git tags instead of CHANGELOG entries ([74d8c2c](https://github.com/VirtoCommerce/vc-shell/commit/74d8c2cd852e2a8f100fad65e7e7b6a353c9f8f9))
+- **release:** force publish all packages by default ([278877c](https://github.com/VirtoCommerce/vc-shell/commit/278877c8c6089d918fcb02d35474859cd10d924c))
+- **release:** keep root changelog stable in dry runs ([13730dd](https://github.com/VirtoCommerce/vc-shell/commit/13730ddf2dad1f08a4ade09fade22c1d07c3f773))
+- **release:** preserve package changes in root changelog ([a738adf](https://github.com/VirtoCommerce/vc-shell/commit/a738adffaa292b7fd0170a6d7b2e9f8d824a9936))
+### Features
+- improve `getPreviousVersionTag` to find previous version by semver comparison, supporting non-existent target tags ([58d2873](https://github.com/VirtoCommerce/vc-shell/commit/58d28739950ae31631c432db82ab671ffc44544a))
+
+### Vite Config (@vc-shell/config-generator)
+
+### Code Refactoring
+- dynamically import `rollup-plugin-visualizer` to conditionally load it when analysis is enabled ([57f5182](https://github.com/VirtoCommerce/vc-shell/commit/57f5182496b5d2a9897f6e1f70522177782316c7))
+**Note:** Version bump only for package @vc-shell/config-generator
 
 ## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-data-table:** refactor table empty and not-found states with new `TableStateConfig` props, enhance `TableEmpty` component, and improve `formatDate` utility to handle invalid dates ([32283c5](https://github.com/VirtoCommerce/vc-shell/commit/32283c5c715d1742c8ffb395de5dd689a27f0437))
@@ -36,7 +59,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **modularity:** signal module load completion via injection keys ([9f9e0ae](https://github.com/VirtoCommerce/vc-shell/commit/9f9e0aec5174579e7ba75f19984fbdac8cb7e549))
@@ -63,14 +86,14 @@ All notable changes to this monorepo will be documented in this file.
 - **vc-image-upload:** add single-image upload component New VcImageUpload for avatar/logo use-cases, extracted from gallery's variant="file-upload" mode. Supports preview, remove, validation rules. Legacy gallery shim renders VcImageUpload when variant="file-upload". ([0fb3e12](https://github.com/VirtoCommerce/vc-shell/commit/0fb3e12c1ec4936bf7dcf003311aec52c6425c0d))
 - **vc-gallery:** redesign with CSS Grid, slide-up tray and dark preview Rewrite gallery layout using CSS Grid with responsive auto-fill/minmax and semantic size presets (sm/md/lg). Redesign tile hover with slide-up frosted-glass action tray, add skeleton shimmer loading states, dark preview lightbox with crossfade transitions. Old props deprecated with runtime warnings. Remove gallery-specific variant from VcFileUpload. ([c62d727](https://github.com/VirtoCommerce/vc-shell/commit/c62d727a534528d11ffa6e2762dba371b759b2ec))
 - **vc-gallery:** extract composables with unit tests Extract reorder, upload, preview, and image-loading logic from monolithic vc-gallery.vue into dedicated composables for better testability and reuse. ([dc52944](https://github.com/VirtoCommerce/vc-shell/commit/dc52944ec9e5a2972571422d5cafeb84abab638b))
-- **ui:** UX polish and export normalization - VcCheckbox: add check-out exit animation via <Transition> wrapper   (scale-down + fade with asymmetric 60% faster exit timing) - Blade slot: add slide-in transition (opacity + translateX) with   appear for new blade opening - VcPaginator, VcInputDropdown: remove duplicate default exports,   keep only named exports for consistency ([931e1a1](https://github.com/VirtoCommerce/vc-shell/commit/931e1a1b423d0b4470600369afa8dab1980889dd))
-- **core:** add offline guard and 30s timeout to fetch interceptor API requests (/api/*) now fail fast with a friendly error when the browser is offline and abort after 30s timeout. Non-API requests bypass these guards entirely. External AbortSignal composition is preserved so component-level cancellation still works. ([12c7519](https://github.com/VirtoCommerce/vc-shell/commit/12c75193b96ae5b3abf9564fe5066196685ec830))
+- **ui:** UX polish and export normalization - VcCheckbox: add check-out exit animation via <Transition> wrapper (scale-down + fade with asymmetric 60% faster exit timing) - Blade slot: add slide-in transition (opacity + translateX) with appear for new blade opening - VcPaginator, VcInputDropdown: remove duplicate default exports, keep only named exports for consistency ([931e1a1](https://github.com/VirtoCommerce/vc-shell/commit/931e1a1b423d0b4470600369afa8dab1980889dd))
+- **core:** add offline guard and 30s timeout to fetch interceptor API requests (/api/\*) now fail fast with a friendly error when the browser is offline and abort after 30s timeout. Non-API requests bypass these guards entirely. External AbortSignal composition is preserved so component-level cancellation still works. ([12c7519](https://github.com/VirtoCommerce/vc-shell/commit/12c75193b96ae5b3abf9564fe5066196685ec830))
 - **core:** add useConnectionStatus composable for network awareness Singleton composable backed by VueUse useNetwork(). On offline transition: shows persistent warning notification, adds html.vc-offline CSS class. On online transition: removes notification and CSS class. Initialized in framework install() via app.runWithContext(). ([77246b1](https://github.com/VirtoCommerce/vc-shell/commit/77246b1c1509e611cda1dda9589d5e14a1431e62))
 - **core:** add global error handlers for unhandled errors and rejections Adds setupGlobalErrorHandlers plugin that chains into app.config.errorHandler and registers window-level listeners for unhandledrejection and error events. Includes time-based deduplication (3s window) and idempotency guard to prevent duplicate listeners on repeated framework installs. Wired into framework install() after setupApplicationInsights. ([3c27dcf](https://github.com/VirtoCommerce/vc-shell/commit/3c27dcf778a4910507c74646086390bc9673d931))
 - **shared:** wire ErrorInterceptor to blade.error and cancel deferred toasts ErrorInterceptor now injects BladeDescriptorKey + BladeStackKey to propagate caught errors to blade.error for red banner display. When catching an error, it also cancels any pending useAsync deferred toast via cancelPendingErrorNotification, preventing duplicate banner+toast for load errors. Degrades gracefully outside blade context. ([d7f02f6](https://github.com/VirtoCommerce/vc-shell/commit/d7f02f61fdc980dd32afc2b1ad9a228900dee78c))
 - **core:** add error ref and deferred notification to useAsync useAsync now returns an `error` ref (DisplayableError | null) that is set on failure and cleared on next invocation. Notifications are enabled by default but deferred via setTimeout(0) so ErrorInterceptor can cancel them when it catches the same error for blade banner display. This prevents duplicate toast+banner for load errors while still showing toasts for save/delete errors caught by module try/catch. ([82e0167](https://github.com/VirtoCommerce/vc-shell/commit/82e01675223339982ea9292588e92fc594410a1d))
 - **core:** export parseError/DisplayableError and add pending notification utility Exports parseError and DisplayableError from the utilities barrel so they can be consumed by useAsync. Adds a shared WeakMap-based utility (pendingErrorNotifications) that decouples useAsync deferred toasts from ErrorInterceptor's cancellation logic. ([f710aab](https://github.com/VirtoCommerce/vc-shell/commit/f710aab3a4b0489c3e3b294f26d7e2e76881e0f7))
-- **shell:** unify notification bell with AppHub pattern - Bell icon transitions to X when notifications panel is open   (same rotation animation as burger menu) - Remove title/header from notification VcDropdownPanel   (consistent with AppHub's headerless popover) - Remove unread red dot from burger button   (notifications indicator now belongs to bell only) ([6ac1547](https://github.com/VirtoCommerce/vc-shell/commit/6ac1547824b0132043e025d01a94c13d921250e1))
+- **shell:** unify notification bell with AppHub pattern - Bell icon transitions to X when notifications panel is open (same rotation animation as burger menu) - Remove title/header from notification VcDropdownPanel (consistent with AppHub's headerless popover) - Remove unread red dot from burger button (notifications indicator now belongs to bell only) ([6ac1547](https://github.com/VirtoCommerce/vc-shell/commit/6ac1547824b0132043e025d01a94c13d921250e1))
 - **shell:** remove notifications widget from AppHub Notifications are now accessed via the standalone bell icon in the sidebar header. Remove widget registration, auto-open on unread logic, and clean up unused imports. ([5b9811f](https://github.com/VirtoCommerce/vc-shell/commit/5b9811f942125c7085ad958128cd14917760a8fd))
 - **shell:** wire notification bell popover in DesktopLayout Add VcDropdownPanel with NotificationDropdown anchored to the bell button. Implements mutual exclusion: opening bell closes AppHub and vice versa. Closes on route change. ([c0fccca](https://github.com/VirtoCommerce/vc-shell/commit/c0fcccae35d69bf0b722616eba3fba9cf4a17ef0))
 - **shell:** add notification bell button to SidebarHeader Add a bell icon button between logo and burger menu in the sidebar header. Visible when sidebar is expanded, shows unread indicator dot. ([02fbe5e](https://github.com/VirtoCommerce/vc-shell/commit/02fbe5e566f629bb011ebddfcf4b6eeb2730ce16))
@@ -97,15 +120,15 @@ All notable changes to this monorepo will be documented in this file.
 - **vc-gallery:** fix cross-row drag reorder in CSS Grid layout ([2407d2d](https://github.com/VirtoCommerce/vc-shell/commit/2407d2db0ac02bf4d1042d7e3a487336c68b6677))
 - **vc-gallery:** fix stories interactivity and upload tile layout ([30f0a02](https://github.com/VirtoCommerce/vc-shell/commit/30f0a021d8b504e48790b7bf888ddf9bb4545f6f))
 - **vc-table:** optimize global listeners and filter state callback ([94b73a0](https://github.com/VirtoCommerce/vc-shell/commit/94b73a0f7521c983863219ab47d9a6713d67ae70))
-- **ui:** CSS consistency and tree-shaking improvements - VcDropdown: replace hardcoded focus ring with CSS custom properties - Table components: remove wrong Tailwind blue hex fallbacks (~31 instances   across DataTableHeader, ColumnFilter, TableSelectAllBar, TableGroupRow,   GlobalFiltersButton, TableRowActions, TableColumnSwitcher, TableHead,   TableRow, TableActions) - VcLink, VcEditor: replace rgba(59,130,246,0.3) with color-mix(var(--primary-500)) - Replace wholesale lodash-es imports with selective imports in   vc-dynamic-property, DataTableCellRenderer, MobileCellRenderer ([a459728](https://github.com/VirtoCommerce/vc-shell/commit/a459728462063138fe7227c1080adeb94a9bac95))
+- **ui:** CSS consistency and tree-shaking improvements - VcDropdown: replace hardcoded focus ring with CSS custom properties - Table components: remove wrong Tailwind blue hex fallbacks (~31 instances across DataTableHeader, ColumnFilter, TableSelectAllBar, TableGroupRow, GlobalFiltersButton, TableRowActions, TableColumnSwitcher, TableHead, TableRow, TableActions) - VcLink, VcEditor: replace rgba(59,130,246,0.3) with color-mix(var(--primary-500)) - Replace wholesale lodash-es imports with selective imports in vc-dynamic-property, DataTableCellRenderer, MobileCellRenderer ([a459728](https://github.com/VirtoCommerce/vc-shell/commit/a459728462063138fe7227c1080adeb94a9bac95))
 - **ui:** accessibility fixes - Add 44px touch target via ::after pseudo-element on VcButton (WCAG 2.5.8) - Replace <div> with semantic <button>/<span> in VcBreadcrumbsItem - Wrap VcSelect chip remove icon in accessible <button> with aria-label - Add aria-pressed for VcButton selected state with tests - Consolidate VcInput password toggle into single button ([97fb917](https://github.com/VirtoCommerce/vc-shell/commit/97fb917d8c8f6003e1074379d35d9e2397d237e6))
-- **shared:** prevent duplicate toast+banner on blade load errors Two root causes fixed: 1. WeakMap reference mismatch: useAsync stores original Error in WeakMap    but useErrorHandler wraps it via parseError() → DisplayableError.    cancelPendingErrorNotification now falls back to originalError lookup. 2. Error propagation: ErrorInterceptor inside a blade context now stops    error propagation (capture=true), preventing the global error handler    from showing a duplicate toast for errors already shown as blade banner. ([89a021c](https://github.com/VirtoCommerce/vc-shell/commit/89a021c63944c3ac4e9ecc2c0ce8d90ffde8339f))
+- **shared:** prevent duplicate toast+banner on blade load errors Two root causes fixed: 1. WeakMap reference mismatch: useAsync stores original Error in WeakMap but useErrorHandler wraps it via parseError() → DisplayableError. cancelPendingErrorNotification now falls back to originalError lookup. 2. Error propagation: ErrorInterceptor inside a blade context now stops error propagation (capture=true), preventing the global error handler from showing a duplicate toast for errors already shown as blade banner. ([89a021c](https://github.com/VirtoCommerce/vc-shell/commit/89a021c63944c3ac4e9ecc2c0ce8d90ffde8339f))
 - **core:** resolve circular dependencies via lazy notification imports useAsync and pendingErrorNotifications had top-level imports of @shared/components/notifications/core/notification which transitively pulled in @ui/components → @core/composables, creating circular deps. Replace with dynamic imports that resolve lazily at call time. Remove barrel re-exports of pendingErrorNotifications and useConnectionStatus that also triggered circular chains. Update useAsync tests to use vi.runAllTimersAsync() for microtask flush after dynamic import. ([16a99ec](https://github.com/VirtoCommerce/vc-shell/commit/16a99ec8554ffd989e99b2e3c71b2d22ef56d7de))
 - **table:** disable FLIP animation on cells during container resize TransitionGroup with name="vc-table-col-swap" in TableRow applied FLIP move animations on every re-render where cell positions changed, not just during column reorder. When blades narrow, flex cells shift and any coinciding Vue re-render triggered a 250ms sliding animation, causing visible horizontal "jumping" of rows. Conditionally enable the TransitionGroup name only during actual column drag-and-drop reorder via provided IsColumnReorderingKey. ([40eee44](https://github.com/VirtoCommerce/vc-shell/commit/40eee44eabd287256dffa414b10169665597b38c))
 - **shell:** normalize icon paths in AppHub Add normalizeIconUrl — if iconUrl does not start with / or http, a leading slash is prepended so the path resolves from the domain root. Fixes display of application icons with relative paths (e.g. Modules/…). ([c3e2b40](https://github.com/VirtoCommerce/vc-shell/commit/c3e2b400c5d97fc4bbc7e8b7d3482cb582d82a2f))
 - **shell:** group bell and burger icons in sidebar header toolbar Wrap notification bell, actions slot, and burger button in a shared toolbar container with gap-3 spacing. Prevents justify-between from spreading icons across the full header width. ([33d350a](https://github.com/VirtoCommerce/vc-shell/commit/33d350a141e928add771650125d74755f81feca9))
 - **shell:** update tests and cleanup for notification bell feature - Remove widget registration test (widget no longer registered) - Fix mobile button test to use correct ID "notifications" - Clean up unused mockRegisterWidget and AppBarWidgetServiceKey - Remove unused MenuBurgerIcon import from SidebarHeader - Add aria-label to notification bell button ([ab75831](https://github.com/VirtoCommerce/vc-shell/commit/ab758316b982c5ac137285cb6a1c1cb1f4437517))
-- **ui:** improve accessibility, type safety, and code quality across UI kit - Add aria-required to useFormField and all 9 form components (WCAG 1.3.1) - Add aria-label to VcPopup close button, use currentColor for SVG fill - Add html-for to VcLabel in VcInput, VcTextarea, VcColorInput, VcCheckbox, VcSwitch - Standardize error display guards to `invalid && errorMessage` in VcDatePicker,   VcColorInput, VcCheckbox, VcRadioButton (fixes VcDatePicker never showing errors) - Replace div-based clear/toggle buttons with semantic <button> in VcInput - Add defineSlots to VcSwitch and VcRadioButton for slot type inference - Remove dead "no-option" slot from VcSelect defineSlots - Add focus return to trigger on Escape in VcSelect and VcMultivalue (WCAG 2.4.3) - Deprecate VcSwitch tooltip prop with dev-only console.warn - Add missing :error="true" on VcHint in SelectTrigger and VcMultivalue - Extend IFormFieldProps in VcInputCurrency (removes 7 duplicate prop declarations) - Fix useKeyboardNavigation double-registration when initKeyboardNavigation   is called after onMounted auto-attach - Break circular imports in vc-blade by using direct component import paths   instead of @ui/components barrel - Delete unused useDataTableOrchestrator.ts (516 lines dead code) ([f212649](https://github.com/VirtoCommerce/vc-shell/commit/f212649f80f6abe5d37a065bbf0663a948029361))
+- **ui:** improve accessibility, type safety, and code quality across UI kit - Add aria-required to useFormField and all 9 form components (WCAG 1.3.1) - Add aria-label to VcPopup close button, use currentColor for SVG fill - Add html-for to VcLabel in VcInput, VcTextarea, VcColorInput, VcCheckbox, VcSwitch - Standardize error display guards to `invalid && errorMessage` in VcDatePicker, VcColorInput, VcCheckbox, VcRadioButton (fixes VcDatePicker never showing errors) - Replace div-based clear/toggle buttons with semantic <button> in VcInput - Add defineSlots to VcSwitch and VcRadioButton for slot type inference - Remove dead "no-option" slot from VcSelect defineSlots - Add focus return to trigger on Escape in VcSelect and VcMultivalue (WCAG 2.4.3) - Deprecate VcSwitch tooltip prop with dev-only console.warn - Add missing :error="true" on VcHint in SelectTrigger and VcMultivalue - Extend IFormFieldProps in VcInputCurrency (removes 7 duplicate prop declarations) - Fix useKeyboardNavigation double-registration when initKeyboardNavigation is called after onMounted auto-attach - Break circular imports in vc-blade by using direct component import paths instead of @ui/components barrel - Delete unused useDataTableOrchestrator.ts (516 lines dead code) ([f212649](https://github.com/VirtoCommerce/vc-shell/commit/f212649f80f6abe5d37a065bbf0663a948029361))
 ### Performance Improvements
 - **dashboard:** lazy-load chart components and GridstackDashboard ([4f628dc](https://github.com/VirtoCommerce/vc-shell/commit/4f628dc1d172c6a888330bb70e373b835bd35153))
 ### Documentation
@@ -138,17 +161,17 @@ All notable changes to this monorepo will be documented in this file.
 - **ui:** extract useCollapsible composable from VcAccordionItem ([fcc1be4](https://github.com/VirtoCommerce/vc-shell/commit/fcc1be43afeda42f60e96068bf4b9ece960f6148))
 - **ui:** redesign BladeStatusBanners with inline expand details ([27cb2cf](https://github.com/VirtoCommerce/vc-shell/commit/27cb2cfc25c5bbde553800337bd3e06a506dd28d))
 - **ui:** remove VcPaginator component exports and source ([caf2cd9](https://github.com/VirtoCommerce/vc-shell/commit/caf2cd962ff3727b52adb0db8d3d3d9f5e0a0293))
-- **ui:** BEM modifier migration from _ to -- Standardize BEM modifier separator across all components: - vc-button, vc-button-group: _loading/_text/_selected etc → --loading/--text/--selected - vc-icon, use-icon: _size/_color modifiers → --size/--color - vc-label, vc-container, vc-card, vc-status: all _ modifiers → -- - vc-pagination: __item_current/disabled → __item--current/--disabled - vc-gallery-item: _readonly/_hover → --readonly/--hover - vc-app_mobile → vc-app--mobile across 12 files (app, row, blade, toast, date-picker, multivalue, dynamic-blade-form, user-dropdown) ([a3fcdb8](https://github.com/VirtoCommerce/vc-shell/commit/a3fcdb85a5c18bbf46bc7619338ff4fd6a368228))
+- **ui:** BEM modifier migration from _ to -- Standardize BEM modifier separator across all components: - vc-button, vc-button-group: \_loading/\_text/\_selected etc → --loading/--text/--selected - vc-icon, use-icon: \_size/\_color modifiers → --size/--color - vc-label, vc-container, vc-card, vc-status: all _ modifiers → -- - vc-pagination: **item_current/disabled → **item--current/--disabled - vc-gallery-item: \_readonly/\_hover → --readonly/--hover - vc-app_mobile → vc-app--mobile across 12 files (app, row, blade, toast, date-picker, multivalue, dynamic-blade-form, user-dropdown) ([a3fcdb8](https://github.com/VirtoCommerce/vc-shell/commit/a3fcdb85a5c18bbf46bc7619338ff4fd6a368228))
 - **ui:** critical type safety and architecture fixes - Type all 43 VcDataTable emit events with Vue 3.3 tuple syntax - Migrate vc-editor-button from runtime to TypeScript defineProps - Replace string injection key "$filterContext" with typed FilterContextKey Symbol - Fix stray v-if → v-else-if in VcDynamicProperty Color+dictionary branch ([628851b](https://github.com/VirtoCommerce/vc-shell/commit/628851b8807a1b05d40a8097c3c7cd881861022b))
-- **ui:** extract shared slide-up transition CSS to global styles Move duplicated .slide-up-* transition classes from 12 component <style> blocks into framework/assets/styles/index.scss. ([df62fa4](https://github.com/VirtoCommerce/vc-shell/commit/df62fa44b5697b8cf468cc10f74425a58abbd0ff))
-- **ui:** standardize BEM modifier separator from _ to -- Migrate 7 form components to canonical BEM double-dash modifier convention: VcInput, VcSelect, VcTextarea, VcDatePicker, VcColorInput, VcMultivalue, VcRadioButton - Template class bindings: vc-component_modifier → vc-component--modifier - SCSS selectors: &_modifier → &--modifier - Eliminates visual ambiguity between _modifier and __element ([1030e3f](https://github.com/VirtoCommerce/vc-shell/commit/1030e3f4c3557c3d8bf04caa5aa969171b71dc7c))
+- **ui:** extract shared slide-up transition CSS to global styles Move duplicated .slide-up-\* transition classes from 12 component <style> blocks into framework/assets/styles/index.scss. ([df62fa4](https://github.com/VirtoCommerce/vc-shell/commit/df62fa44b5697b8cf468cc10f74425a58abbd0ff))
+- **ui:** standardize BEM modifier separator from \_ to -- Migrate 7 form components to canonical BEM double-dash modifier convention: VcInput, VcSelect, VcTextarea, VcDatePicker, VcColorInput, VcMultivalue, VcRadioButton - Template class bindings: vc-component_modifier → vc-component--modifier - SCSS selectors: &\_modifier → &--modifier - Eliminates visual ambiguity between \_modifier and \_\_element ([1030e3f](https://github.com/VirtoCommerce/vc-shell/commit/1030e3f4c3557c3d8bf04caa5aa969171b71dc7c))
 - **ui:** migrate VcFileUpload to useFormField and IFormFieldProps - Extend Props with IFormFieldProps (adds label, tooltip, disabled, required, error, errorMessage) - Use useFormField for ARIA IDs, InputGroup integration, resolved disabled/name - Dual error source: external errorMessage prop takes priority over vee-validate - Add disabled state with CSS modifier and JS guards - Replace barrel imports with direct paths - Remove getCurrentInstance dependency - Add Disabled and WithErrorMessage stories ([17eed7c](https://github.com/VirtoCommerce/vc-shell/commit/17eed7c0c754069d603d897586e9ca64559f49d5))
 ### Tests
 - **auth:** add failing tests for parallelized loadUser() ([0e9b7c6](https://github.com/VirtoCommerce/vc-shell/commit/0e9b7c6b144660597aa17366a1155243908461c5))
 - **menu-service:** add VcAppMenu smoke test for items without explicit id ([e9492ae](https://github.com/VirtoCommerce/vc-shell/commit/e9492ae598117965737354a4d05d28d6a43f20ac))
 - **menu-service:** add comprehensive identity and deduplication tests ([3b9a738](https://github.com/VirtoCommerce/vc-shell/commit/3b9a738573ad132f1674f254911d66c3add8b8dc))
 - **a11y:** add Storybook addon-a11y and axe-core vitest integration - Install @storybook/addon-a11y for interactive accessibility panel in Storybook UI - Add axe-core based toHaveNoViolations custom vitest matcher - Wire addon-a11y/preview annotations into Storybook vitest setup - Add a11y tests for VcButton, VcInput, VcTextarea, VcCheckbox (15 tests) ([57313dc](https://github.com/VirtoCommerce/vc-shell/commit/57313dc5d0803cae5f7bc28fd0fed8af198d3437))
-- **ui:** add ARIA propagation tests for VcInput, VcCheckbox, VcButton, VcSelect - 45 new tests covering aria-required, aria-invalid, aria-describedby,   aria-labelledby, label association, disabled state, error display - Fix VcInput missing :error="true" on error VcHint (role="alert") - Add coverage thresholds to vitest.config.ts (30% lines, 25% functions, 50% branches) ([188f88f](https://github.com/VirtoCommerce/vc-shell/commit/188f88f918b75214bdae82ae92077bf31d2967c6))
+- **ui:** add ARIA propagation tests for VcInput, VcCheckbox, VcButton, VcSelect - 45 new tests covering aria-required, aria-invalid, aria-describedby, aria-labelledby, label association, disabled state, error display - Fix VcInput missing :error="true" on error VcHint (role="alert") - Add coverage thresholds to vitest.config.ts (30% lines, 25% functions, 50% branches) ([188f88f](https://github.com/VirtoCommerce/vc-shell/commit/188f88f918b75214bdae82ae92077bf31d2967c6))
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
@@ -167,7 +190,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **dynamic-properties:** handle missing localizedValues in multilanguage dictionary select ([b1a0445](https://github.com/VirtoCommerce/vc-shell/commit/b1a0445e55b9672d98b1c4edb2d0a7b57465dda4))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - **vite-config:** add modules-library build configuration ([cce505f](https://github.com/VirtoCommerce/vc-shell/commit/cce505f77b6ada4d5488410d11b62b78396961d3))
@@ -181,7 +204,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.2.4-beta.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.3...v1.2.4-beta.4) (2026-02-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **storybook:** enrich VcApp stories with mock data and widgets ([9e3e0db](https://github.com/VirtoCommerce/vc-shell/commit/9e3e0db835f7e84c1a7ca649454cde5cad28cdd2))
@@ -193,14 +216,14 @@ All notable changes to this monorepo will be documented in this file.
 - **ui:** standardize focus and error ring styles across form controls ([73932a1](https://github.com/VirtoCommerce/vc-shell/commit/73932a1d2ea36a143e2a7606144b7787e5557363))
 - **login:** redesign form layout and update copy ([0206517](https://github.com/VirtoCommerce/vc-shell/commit/02065178c3998081ad88369288a38858c4c79dae))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - **dynamic-modules:** add hash-based cache busting for module assets ([eb47537](https://github.com/VirtoCommerce/vc-shell/commit/eb475375fad72f4c00016e0e8d9298cdbc44a321))
 
 ## [1.2.4-beta.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.2...v1.2.4-beta.3) (2026-02-20)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **app-hub:** add App Hub with search, app switcher, and widgets panel ([8a92ecc](https://github.com/VirtoCommerce/vc-shell/commit/8a92ecc10336dde2cef16a99ffa8f9b04c4554ba))
@@ -226,28 +249,28 @@ All notable changes to this monorepo will be documented in this file.
 ### Code Refactoring
 - configure path aliases and migrate imports ([bfffc3c](https://github.com/VirtoCommerce/vc-shell/commit/bfffc3cbe8029cf875e49941061b582825cad9a6))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Code Refactoring
 - configure path aliases and migrate imports ([bfffc3c](https://github.com/VirtoCommerce/vc-shell/commit/bfffc3cbe8029cf875e49941061b582825cad9a6))
 
 ## [1.2.4-beta.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.1...v1.2.4-beta.2) (2026-02-16)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **modularity:** update notification import path ([f2ac212](https://github.com/VirtoCommerce/vc-shell/commit/f2ac212317517c10f0dba7cd97f893741dedf14e))
 
 ## [1.2.4-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.0...v1.2.4-beta.1) (2026-02-16)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - clean up code and remove redundant lines in useBladeRegistry, vc-button, and vc-link components ([8167a0a](https://github.com/VirtoCommerce/vc-shell/commit/8167a0ac571f392885c744f3e248a4258a99a7c3))
 
 ## [1.2.4-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3-beta.1...v1.2.4-beta.0) (2026-02-16)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **locales:** add table, toolbar and multivalue translations ([e43be52](https://github.com/VirtoCommerce/vc-shell/commit/e43be52a95545b7f079d9e8dabde53c2e78cd636))
@@ -285,16 +308,9 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - **router:** update routes to include ForgotPassword and adjust background handling ([900c45d](https://github.com/VirtoCommerce/vc-shell/commit/900c45d9cc2812622ccdd369da209c516a66c75f))
 
-## [1.2.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.2...v1.2.3) (2026-01-12)
-
-### Framework (@vc-shell/framework)
-
-### Features
-- **menu:** implement badge functionality for menu items ([f20bf71](https://github.com/VirtoCommerce/vc-shell/commit/f20bf718a0ae62126ad08dacb95d14c22e24a705))
-
 ## [1.2.3-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3...v1.2.3-beta.1) (2026-01-26)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - enhance AI agent panel with internationalization and UI improvements ([cdf0b7a](https://github.com/VirtoCommerce/vc-shell/commit/cdf0b7af14c02a51ffc261f9bac5c3da7916bf65))
@@ -312,9 +328,23 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - integrate AI agent plugin into VC-Shell framework ([706f015](https://github.com/VirtoCommerce/vc-shell/commit/706f015f436ecc4ca19831e7159213b0759df6bc))
 
+## [1.2.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.2...v1.2.3) (2026-01-12)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Features
+- **menu:** implement badge functionality for menu items ([f20bf71](https://github.com/VirtoCommerce/vc-shell/commit/f20bf718a0ae62126ad08dacb95d14c22e24a705))
+
+## [1.2.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3-beta.0...v1.2.2) (2026-01-12)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Features
+- **menu:** implement badge functionality for menu items ([34f3fe8](https://github.com/VirtoCommerce/vc-shell/commit/34f3fe8b7c68f1987bbf90ac7c6ca9156d60e27a))
+
 ## [1.2.3-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.14...v1.2.3-beta.0) (2025-12-26)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - enhance AI agent context management and configuration ([a98c7ed](https://github.com/VirtoCommerce/vc-shell/commit/a98c7ed2a2b54977f02e620493873ca2abacd47a))
@@ -341,34 +371,6 @@ All notable changes to this monorepo will be documented in this file.
 ### Bug Fixes
 - update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
 
-## [1.2.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3-beta.0...v1.2.2) (2026-01-12)
-
-### Framework (@vc-shell/framework)
-
-### Features
-- **menu:** implement badge functionality for menu items ([34f3fe8](https://github.com/VirtoCommerce/vc-shell/commit/34f3fe8b7c68f1987bbf90ac7c6ca9156d60e27a))
-
-## [1.2.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.0...v1.2.1) (2025-11-13)
-
-### Framework (@vc-shell/framework)
-
-### Bug Fixes
-- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
-
-### Release Config (@vc-shell/release-config)
-
-### Bug Fixes
-- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
-
-## [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.2...v1.2.0) (2025-11-13)
-
-### Framework (@vc-shell/framework)
-
-### Features
-- **ui:** add VcAccordion component with customizable items and storybook documentation ([cc40911](https://github.com/VirtoCommerce/vc-shell/commit/cc409114b0e52008e24a7cfe59204949295a6307))
-### Bug Fixes
-- handle boolean property values correctly in useDynamicProperties and vc-dynamic-property ([5286329](https://github.com/VirtoCommerce/vc-shell/commit/5286329598f6701ebb457b1bfec5aee872834204))
-
 ## [1.1.99-alpha.14](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.13...v1.1.99-alpha.14) (2025-11-27)
 
 **Note:** Version bump only for package
@@ -387,7 +389,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.99-alpha.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.9...v1.1.99-alpha.10) (2025-11-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - enhance type safety and improve documentation in composables ([3323d86](https://github.com/VirtoCommerce/vc-shell/commit/3323d86b0049a01628846daeab8ca1d24bed92f3))
@@ -418,7 +420,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.99-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.1.99-alpha.3) (2025-11-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - integrate custom authentication provider checks in useSettings and useExternalProvider ([64bced4](https://github.com/VirtoCommerce/vc-shell/commit/64bced453e364958807ca5746b0babc8aa581490))
@@ -458,7 +460,7 @@ All notable changes to this monorepo will be documented in this file.
 - **release:** disable Lerna push to avoid double CI runs ([78aef0a](https://github.com/VirtoCommerce/vc-shell/commit/78aef0aebd10c5089df0cb96d35591d57bdbcee6))
 - **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
@@ -467,6 +469,27 @@ All notable changes to this monorepo will be documented in this file.
 
 ### Features
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
+
+## [1.2.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.0...v1.2.1) (2025-11-13)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Bug Fixes
+- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
+
+### Release Config (@vc-shell/release-config)
+
+### Bug Fixes
+- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
+
+## [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.2...v1.2.0) (2025-11-13)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Features
+- **ui:** add VcAccordion component with customizable items and storybook documentation ([cc40911](https://github.com/VirtoCommerce/vc-shell/commit/cc409114b0e52008e24a7cfe59204949295a6307))
+### Bug Fixes
+- handle boolean property values correctly in useDynamicProperties and vc-dynamic-property ([5286329](https://github.com/VirtoCommerce/vc-shell/commit/5286329598f6701ebb457b1bfec5aee872834204))
 
 ## [1.1.99-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.1...v1.1.99-alpha.2) (2025-11-07)
 
@@ -490,7 +513,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.98-rc.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.1.98-rc.5) (2025-11-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - integrate custom authentication provider checks in useSettings and useExternalProvider ([64bced4](https://github.com/VirtoCommerce/vc-shell/commit/64bced453e364958807ca5746b0babc8aa581490))
@@ -523,7 +546,7 @@ All notable changes to this monorepo will be documented in this file.
 - **release:** disable Lerna push to avoid double CI runs ([78aef0a](https://github.com/VirtoCommerce/vc-shell/commit/78aef0aebd10c5089df0cb96d35591d57bdbcee6))
 - **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
@@ -554,7 +577,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.98-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.97...v1.1.98-rc.0) (2025-10-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **locales:** add newline for better readability in localization check output ([2ecdede](https://github.com/VirtoCommerce/vc-shell/commit/2ecdede43d7f76421944954484b5c313ffe40b7a))
@@ -570,28 +593,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.97](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.96...v1.1.97) (2025-10-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Styles
 - **vc-multivalue, vc-dynamic-property:** unify color square border styles for consistency ([9b55e72](https://github.com/VirtoCommerce/vc-shell/commit/9b55e72139968e088cc9ba3abe0977693162bbc3))
 
 ## [1.1.96](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.95...v1.1.96) (2025-10-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-multivalue, vc-dynamic-property:** add support for multivalue color properties ([2dbc590](https://github.com/VirtoCommerce/vc-shell/commit/2dbc5905eb072bf0aaaa7b5f4998cf9ad49fab0b))
 
 ## [1.1.95](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.94...v1.1.95) (2025-10-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **color-utils:** replace color-namer with Canvas API for color conversion ([61fa71e](https://github.com/VirtoCommerce/vc-shell/commit/61fa71e908115ed1f6231ede8ae8054448428406))
 
 ## [1.1.94](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.93...v1.1.94) (2025-10-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-dynamic-property:** enhance color handling ([479b8fc](https://github.com/VirtoCommerce/vc-shell/commit/479b8fcb0eecb2ac2180ff6a2481c7b14e0c20c6))
@@ -600,21 +623,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.93](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.92...v1.1.93) (2025-10-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **color-picker:** add color utilities and integrate color selection in vc-input component ([f284c1d](https://github.com/VirtoCommerce/vc-shell/commit/f284c1d8bcd13caf3b82e382e22d3f2962cb87e4))
 
 ## [1.1.92](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91...v1.1.92) (2025-10-17)
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Bug Fixes
 - **vite-config:** remove deprecated vue-router path resolution from appconfig ([5743e12](https://github.com/VirtoCommerce/vc-shell/commit/5743e129b667192a23b894421b54b851d48dffa2))
 
 ## [1.1.91](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.5...v1.1.91) (2025-10-17)
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Bug Fixes
 - **vite-config:** update vue-router path resolution to use absolute path from node_modules ([5418c14](https://github.com/VirtoCommerce/vc-shell/commit/5418c142daa1e9940a0a9a670b3f66f085165e03))
@@ -629,7 +652,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.91-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.3...v1.1.91-alpha.4) (2025-10-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **locales:** add newline for better readability in localization check output ([ee8c2fd](https://github.com/VirtoCommerce/vc-shell/commit/ee8c2fd873f2c4a0a8c4d574c2c8b715215fbe4d))
@@ -653,7 +676,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.91-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.1) (2025-10-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - integrate custom authentication provider checks in useSettings and useExternalProvider ([64bced4](https://github.com/VirtoCommerce/vc-shell/commit/64bced453e364958807ca5746b0babc8aa581490))
@@ -673,7 +696,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
@@ -694,7 +717,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.88...v1.1.89) (2025-10-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **useExternalProvider:** update signIn and signOut methods to return promises ([76e8b97](https://github.com/VirtoCommerce/vc-shell/commit/76e8b978c29a58a68124d742b309f2d457d9fb44))
@@ -713,17 +736,17 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.87...v1.1.88) (2025-10-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-dynamic-property:** add color type dictionary select ([4a21112](https://github.com/VirtoCommerce/vc-shell/commit/4a211124acd4b66d0f4b9f37fc4cb33c70b69a5d))
 
 ## [1.1.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.86...v1.1.87) (2025-10-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
-- **vc-dynamic-property, input:** color type in dynamic propery and input  VM-1645 ([1ff529e](https://github.com/VirtoCommerce/vc-shell/commit/1ff529eab6e560a21cb64a5de6a28f11c80b4b30))
+- **vc-dynamic-property, input:** color type in dynamic propery and input VM-1645 ([1ff529e](https://github.com/VirtoCommerce/vc-shell/commit/1ff529eab6e560a21cb64a5de6a28f11c80b4b30))
 ### Code Refactoring
 - **vc-tooltip:** expand placement prop options for enhanced positioning flexibility ([65fcfff](https://github.com/VirtoCommerce/vc-shell/commit/65fcfffd871839c7d205e387440e4f8f15e8d9a5))
 
@@ -734,14 +757,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.85...v1.1.86) (2025-10-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **assets-details, assets-manager:** add hiddenFields option to manage visibility of asset fields for improved flexibility ([84d8635](https://github.com/VirtoCommerce/vc-shell/commit/84d8635fa3664e76b2c3eb660ad94b4ea3c75723))
 
 ## [1.1.85](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84...v1.1.85) (2025-10-03)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **useMenuExpanded:** correct app name extraction logic for dynamic storage key generation ([3cdaeab](https://github.com/VirtoCommerce/vc-shell/commit/3cdaeabf7bf1192a641cb5150a9a8b5b8f34efcf))
@@ -756,14 +779,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.84](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.84-alpha.0...v1.1.84) (2025-09-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-select:** enhance option value retrieval to support primitive types and improve label filtering ([90c9530](https://github.com/VirtoCommerce/vc-shell/commit/90c9530c66e31df7216db9b873fba275c566d8f7))
 
 ## [1.1.84-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83...v1.1.84-alpha.0) (2025-09-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-select:** add fallback visibility check for iframe support in dropdown component ([dd3fc7d](https://github.com/VirtoCommerce/vc-shell/commit/dd3fc7d498c1a0d694804332c3fac3513bb4e78f))
@@ -774,7 +797,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **login:** add localization support for "OR" text in login components ([6ed87e6](https://github.com/VirtoCommerce/vc-shell/commit/6ed87e67963acfaf681ca472e577c3bb79d4f9de))
@@ -793,7 +816,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **useModificationTracker:** add pristineValue reference to track original state ([adaf67d](https://github.com/VirtoCommerce/vc-shell/commit/adaf67d34ceac0b7b490c2906a7b3f25b57c32e1))
@@ -807,21 +830,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.81](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.80...v1.1.81) (2025-09-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **assets-manager:** improve title handling and error management in upload functions ([331bcaa](https://github.com/VirtoCommerce/vc-shell/commit/331bcaab197ea9261ec90787ae6f5b94d2572b5a))
 
 ## [1.1.80](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.79...v1.1.80) (2025-09-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-editor:** export ToolbarNames type for better accessibility in toolbar components ([e24ba37](https://github.com/VirtoCommerce/vc-shell/commit/e24ba37bd33059dfbe7a8d285c75e4e9724ca329))
 
 ## [1.1.79](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.78...v1.1.79) (2025-09-18)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-field:** update copy button icon dynamically on copy action ([fe47e62](https://github.com/VirtoCommerce/vc-shell/commit/fe47e62a591df136800f4e5e8872e5392f8fb7df))
@@ -829,7 +852,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.78](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.77...v1.1.78) (2025-09-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dashboard:** enhance widget placement logic to handle new widgets without collisions ([1faf444](https://github.com/VirtoCommerce/vc-shell/commit/1faf444cb7c919c7a0ddb4447e7dab560c8f0e93))
@@ -853,7 +876,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.75](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.74...v1.1.75) (2025-09-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-editor:** enhance editor with custom toolbar buttons and font size selector ([a4b0e6e](https://github.com/VirtoCommerce/vc-shell/commit/a4b0e6eac49880b58d7373c134cb42151f4df4a6))
@@ -862,7 +885,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.74](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.73...v1.1.74) (2025-09-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-input-dropdown:** conditionally render button based on options availability ([9182d1f](https://github.com/VirtoCommerce/vc-shell/commit/9182d1f50356df76bfb0b6e2840a73d3d4537a6e))
@@ -876,21 +899,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.71...v1.1.72) (2025-08-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - update max height for generic dropdown ([37abe30](https://github.com/VirtoCommerce/vc-shell/commit/37abe30c5994a622798af3919e70f06aca72d482))
 
 ## [1.1.71](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.70...v1.1.71) (2025-08-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - update event binding for menu item click in useAppSlots composable ([c45e045](https://github.com/VirtoCommerce/vc-shell/commit/c45e045bb10ffc0603d61f79b6ae2de1f7d36d5a))
 
 ## [1.1.70](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.69...v1.1.70) (2025-08-20)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - VCST-3680 embedded mode fixes ([2f6a82f](https://github.com/VirtoCommerce/vc-shell/commit/2f6a82f60b4cbb179f00e36bbbbe59d3fe438dd0))
@@ -901,21 +924,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.68](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.67...v1.1.68) (2025-07-31)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - change widget registration to use reactive instead of markRaw for widget state management ([ec67316](https://github.com/VirtoCommerce/vc-shell/commit/ec67316c77c61266e8fc715acdd78a62dc0e1e95))
 
 ## [1.1.67](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.66...v1.1.67) (2025-07-31)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - add !important to width properties for maximized blade component ([aee8edc](https://github.com/VirtoCommerce/vc-shell/commit/aee8edc7d67b534b4a43e5ca2c15875f4a8bb1bf))
 
 ## [1.1.66](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.65...v1.1.66) (2025-07-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **generic-dropdown:** improve height applying ([8a39233](https://github.com/VirtoCommerce/vc-shell/commit/8a3923316f6ae488d08ad0e585d1b417d1eaaa5b))
@@ -927,33 +950,33 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.64](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.63...v1.1.64) (2025-07-25)
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Bug Fixes
 - remove intlify and vue-i18n from CSS chunk splitting logic ([a1c14c0](https://github.com/VirtoCommerce/vc-shell/commit/a1c14c0f8eae1126aef6ddcbd146533ac60360a3))
 
 ## [1.1.63](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.62...v1.1.63) (2025-07-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - migrate language management from composable to service pattern ([23fb0cd](https://github.com/VirtoCommerce/vc-shell/commit/23fb0cd5f8fc032e92aea0d0bbbb44c617ce4605))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Bug Fixes
 - **vite-config:** dedupe and externalize vue-i18n ([98c7def](https://github.com/VirtoCommerce/vc-shell/commit/98c7def46db6f21866125946607bbb25c447ebad))
 
 ## [1.1.62](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.61...v1.1.62) (2025-07-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - move menu item translation from service to component level ([d81f6c3](https://github.com/VirtoCommerce/vc-shell/commit/d81f6c35337674ceeb95d1d81e06fe3d3a85f1dd))
 
 ## [1.1.61](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.60...v1.1.61) (2025-07-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - add embedded mode support ([647253b](https://github.com/VirtoCommerce/vc-shell/commit/647253be9bcd5c1b347fd1727cfef9810e9d0d5f))
@@ -972,21 +995,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.59](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.58...v1.1.59) (2025-07-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **icon-components:** revert, material symbols size optimization ([c4b8771](https://github.com/VirtoCommerce/vc-shell/commit/c4b87712503d6bca3edf94efecd2585d7643472c))
 
 ## [1.1.58](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.57...v1.1.58) (2025-07-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **widget-service:** update widget registration to use markRaw for reactivity ([a3022d3](https://github.com/VirtoCommerce/vc-shell/commit/a3022d372a4f34472562eae3b36a7297b172cd47))
 
 ## [1.1.57](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.56...v1.1.57) (2025-07-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **widget-service:** add methods to retrieve all external widgets and clone widgets for improved widget management ([2806152](https://github.com/VirtoCommerce/vc-shell/commit/2806152873d85bbee9877ef2ead9d2ceabcca0a6))
@@ -998,14 +1021,14 @@ All notable changes to this monorepo will be documented in this file.
 - **composables:** remove unused useBladeMultilanguage composable ([5ba38e8](https://github.com/VirtoCommerce/vc-shell/commit/5ba38e8aa81595a08052df23cc7962c69c9f6801))
 - **vc-table:** update header slot type to use a function for improved flexibility ([4920b7c](https://github.com/VirtoCommerce/vc-shell/commit/4920b7c37ed657dcd87588f462bccd27d00cae4f))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Code Refactoring
 - **vite-config:** optimize production build settings by removing console statements and adjusting esbuild drop options ([b9f1a2f](https://github.com/VirtoCommerce/vc-shell/commit/b9f1a2fa970bd895f68f92140a9136ffb709b240))
 
 ## [1.1.56](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.55...v1.1.56) (2025-07-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-editor:** update list styles for unordered and ordered lists in the editor component ([2dd3fc2](https://github.com/VirtoCommerce/vc-shell/commit/2dd3fc22e9fef098c800ebe93c5e3e5f5e760333))
@@ -1014,7 +1037,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.55](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.54...v1.1.55) (2025-07-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **widget-service:** add external widget registration functionality and enhance widget management ([cd35c9b](https://github.com/VirtoCommerce/vc-shell/commit/cd35c9b50bf44af8f466dc6a2d4ce29ad01e9514))
@@ -1037,19 +1060,19 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.52](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.51...v1.1.52) (2025-07-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **vc-fontawesome-icon:** update icon name processing to use pre-processed value for improved clarity ([ce8cde0](https://github.com/VirtoCommerce/vc-shell/commit/ce8cde02060ee705c3366f991a358f47f84d7a2c))
 
 ## [1.1.51](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.50...v1.1.51) (2025-07-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **loader:** improve dynamic module registration logic and enhance error handling during module loading ([c21873f](https://github.com/VirtoCommerce/vc-shell/commit/c21873f1acecec3dc540137e21bdae45ff0eda80))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Code Refactoring
 - **vite-config:** enhance dynamic module registration and improve chunking logic for CSS files ([80c83b2](https://github.com/VirtoCommerce/vc-shell/commit/80c83b2ade7e4141447712e604045c6a82b32aff))
@@ -1063,7 +1086,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.49](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.48...v1.1.49) (2025-07-02)
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Bug Fixes
 - **vite-config:** correct path for framework CSS in application configuration ([95d9a60](https://github.com/VirtoCommerce/vc-shell/commit/95d9a6083072fdc953b09f44092d8f0d594a1c6a))
@@ -1078,26 +1101,26 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.46](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.45...v1.1.46) (2025-07-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic-module:** enhance UMD name generation and improve logging for dynamic module loading ([8d43f21](https://github.com/VirtoCommerce/vc-shell/commit/8d43f216e6ec3f9f61ab93953f297d80832f9ed7))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - **dynamic-module:** enhance UMD name generation and improve logging for dynamic module loading ([8d43f21](https://github.com/VirtoCommerce/vc-shell/commit/8d43f216e6ec3f9f61ab93953f297d80832f9ed7))
 
 ## [1.1.45](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.44...v1.1.45) (2025-07-01)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **loader:** implement parallel loading of dynamic modules and improve error handling ([cf93200](https://github.com/VirtoCommerce/vc-shell/commit/cf93200d4e7e42f8163db09096eec1a24d4600d2))
 - **vc-editor:** migrate to Tiptap editor, enhance functionality with new toolbar and button components ([2b77c73](https://github.com/VirtoCommerce/vc-shell/commit/2b77c734cee3bae8c3d01dd50207e9052c298ac8))
 - remove icon packs in favor of iconify lib ([983f7fc](https://github.com/VirtoCommerce/vc-shell/commit/983f7fc6252816dc9cafbd2defc7eb5292947b96))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - **vite-config:** enhansed chunking config ([6e8dde4](https://github.com/VirtoCommerce/vc-shell/commit/6e8dde4c6fc2be14bcf39ffb8f6ac6e75ff609a7))
@@ -1108,28 +1131,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.43](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.42...v1.1.43) (2025-06-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-select:** set default value for generic parameter P to undefined ([ed13c91](https://github.com/VirtoCommerce/vc-shell/commit/ed13c91a9f09d799df72baa62d1694c893c0e231))
 
 ## [1.1.42](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.41...v1.1.42) (2025-06-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-select:** fix generic type ([95d78ac](https://github.com/VirtoCommerce/vc-shell/commit/95d78aca9c2fbd68d3116f24f2e8130236dbc56e))
 
 ## [1.1.41](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.40...v1.1.41) (2025-06-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **blade-navigation:** update onParentCall method to streamline parent method invocation and enhance error handling ([71a82c8](https://github.com/VirtoCommerce/vc-shell/commit/71a82c8416d42fe61e8bedb30f5a2bf979b1899e))
 
 ## [1.1.40](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.39...v1.1.40) (2025-06-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-widget-container:** set default visibility to true when isVisible is undefined ([09775ed](https://github.com/VirtoCommerce/vc-shell/commit/09775eda9f68b620cfec78206289c135dd9ba4cd))
@@ -1140,14 +1163,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.38](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.37...v1.1.38) (2025-06-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **useAsync:** correct payload handling in innerAction call to ensure proper execution ([8c1d238](https://github.com/VirtoCommerce/vc-shell/commit/8c1d2386e34b2f70523e4527f77a387ecc203876))
 
 ## [1.1.37](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.36...v1.1.37) (2025-06-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **global style:** update base styles with Roboto font and tailwind configurations ([51722bf](https://github.com/VirtoCommerce/vc-shell/commit/51722bff7933816d2cbab9fecb7a7c05fcb8d2d3))
@@ -1157,14 +1180,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.36](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.35...v1.1.36) (2025-06-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **composables:** add useTableSort composable for table sorting functionality ([1e4d768](https://github.com/VirtoCommerce/vc-shell/commit/1e4d768b22436ff7da4cad922b25da5b45dee7f9))
 
 ## [1.1.35](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.34...v1.1.35) (2025-06-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **error-handling:** enhance error handling by introducing DisplayableError type and improving error processing logic ([f1a98c1](https://github.com/VirtoCommerce/vc-shell/commit/f1a98c17b054df9a9a56f0731139969be4ddda0d))
@@ -1192,7 +1215,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.31](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.30...v1.1.31) (2025-06-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dashboard:** enhance useDashboardDragAndDrop composable with TypeScript return type and improved setGridContainer function ([65a726f](https://github.com/VirtoCommerce/vc-shell/commit/65a726f65d396f073a21f3502fba7e62e2ce4f03))
@@ -1230,28 +1253,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.29](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.28...v1.1.29) (2025-06-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-input-dropdown, vc-select:** enhance dropdown and select components with toggle state management for improved user experience ([af3ff4f](https://github.com/VirtoCommerce/vc-shell/commit/af3ff4fef54d07e2861d6b7cc8facdf741e50b35))
 
 ## [1.1.28](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.27...v1.1.28) (2025-06-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **modularity:** enhance Blade registration with inject support and improve route handling for workspace components ([1d5a8e3](https://github.com/VirtoCommerce/vc-shell/commit/1d5a8e386168079bd56e9cd633edf79a3c086ce1))
 
 ## [1.1.27](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.26...v1.1.27) (2025-06-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-input-dropdown:** add toggle button to dropdown component for improved user interaction ([1289dd5](https://github.com/VirtoCommerce/vc-shell/commit/1289dd5fbc7c2adcddd69184e8eb0792c7121c97))
 
 ## [1.1.26](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.25...v1.1.26) (2025-06-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **global-search:** add useGlobalSearch composable and Global Search Service documentation for enhanced search functionality across the application ([e53be10](https://github.com/VirtoCommerce/vc-shell/commit/e53be1095b2b7067dc3ad9ce9f1ab23aafaa57a2))
@@ -1272,21 +1295,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.25](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.24...v1.1.25) (2025-05-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **vc-icon:** simplify Font Awesome icon class selectors ([1bb3991](https://github.com/VirtoCommerce/vc-shell/commit/1bb3991c10bbb0ff499b813eff2acb77d7b3fb9b))
 
 ## [1.1.24](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.23...v1.1.24) (2025-05-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **useDynamicProperties:** export SetPropertyValueParams interface for better accessibility in dynamic properties management ([bddd03f](https://github.com/VirtoCommerce/vc-shell/commit/bddd03f08fd0bb15754109064887ef22c7acf542))
 
 ## [1.1.23](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.22...v1.1.23) (2025-05-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **blade-registry:** integrate Blade Registry into the application, enhance error handling for main route validation, and update notification component types for improved type safety ([2535a78](https://github.com/VirtoCommerce/vc-shell/commit/2535a78be870edaf4f563aa69dd0f76b2a6729a5))
@@ -1296,28 +1319,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.22](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.21...v1.1.22) (2025-05-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **useKeyboardNavigation:** add validation for focused index and improve focus handling ([9f403f1](https://github.com/VirtoCommerce/vc-shell/commit/9f403f181d27497e9090ac52f6c256e2de387c3f))
 
 ## [1.1.21](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.20...v1.1.21) (2025-05-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **useKeyboardNavigation:** remove unused key navigation cases and clean up code ([7966e0c](https://github.com/VirtoCommerce/vc-shell/commit/7966e0c52d855692fa25697c5ebbd0ff5861ab3f))
 
 ## [1.1.20](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.19...v1.1.20) (2025-05-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-select:** enhance dropdown close logic and improve option loading handling ([c0ef43d](https://github.com/VirtoCommerce/vc-shell/commit/c0ef43d9c2a2175f65d2c74dcd98578e17f79c07))
 
 ## [1.1.19](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.18...v1.1.19) (2025-05-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-select:** update loading logic and add default option loading state ([d02ffa4](https://github.com/VirtoCommerce/vc-shell/commit/d02ffa4ffb226830ee1291e9e74d36bb87040611))
@@ -1332,28 +1355,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.16](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.15...v1.1.16) (2025-05-26)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - add Measure type to vc-dynamic-property ([14ef021](https://github.com/VirtoCommerce/vc-shell/commit/14ef021634b7f6c135bfa5851b3170e4680d125d))
 
 ## [1.1.15](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.14...v1.1.15) (2025-05-23)
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Code Refactoring
 - **types:** remove apps property from CompatibilityOptions interface to streamline compatibility checks ([dad92f9](https://github.com/VirtoCommerce/vc-shell/commit/dad92f9414b073824d20688a28fd5ed862bccbd5))
 
 ## [1.1.14](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.13...v1.1.14) (2025-05-23)
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Code Refactoring
 - **dynamic-module:** simplify compatibility checks by removing app compatibility validation ([7649ed4](https://github.com/VirtoCommerce/vc-shell/commit/7649ed4ec707907563b514c0c8c2b313db3eb4f2))
 
 ## [1.1.13](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.12...v1.1.13) (2025-05-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **loader:** remove app version compatibility checks and simplify error handling for module compatibility ([cd7ac50](https://github.com/VirtoCommerce/vc-shell/commit/cd7ac509c8fe103dd97b82bb578d09bf02b71490))
@@ -1364,7 +1387,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.10...v1.1.11) (2025-05-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-select:** add loading and no options messages for improved user experience ([aa65256](https://github.com/VirtoCommerce/vc-shell/commit/aa65256b99238e6d7feae24177c4304eb25d1153))
@@ -1378,7 +1401,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.9...v1.1.10) (2025-05-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic-properties:** add useDynamicProperties composable for managing dynamic property values and dictionaries ([5af9e0b](https://github.com/VirtoCommerce/vc-shell/commit/5af9e0bd27dd9930589166e17ef234fd8dae5998))
@@ -1387,14 +1410,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.9](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.8...v1.1.9) (2025-05-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **widget-service:** replace ConcreteComponent with Component type for improved type consistency ([2fed433](https://github.com/VirtoCommerce/vc-shell/commit/2fed4333998f256f375355246f1107f73dceed10))
 
 ## [1.1.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.7...v1.1.8) (2025-05-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-badge:** adjust badge dimensions in story and update visibility condition for content ([41d30de](https://github.com/VirtoCommerce/vc-shell/commit/41d30de789b199bebf94a73eb2dc42790ffdf3c8))
@@ -1410,14 +1433,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.6...v1.1.7) (2025-05-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - update VcInputDropdown modelValue type and enhance vc-input-currency component integration ([fb52a80](https://github.com/VirtoCommerce/vc-shell/commit/fb52a804778eba2cc3774f4d2ad1bf966fec3581))
 
 ## [1.1.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.5...v1.1.6) (2025-05-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - VcInputDropdown component, replace VcSelect with VcInputDropdown and update related stories ([08f3c72](https://github.com/VirtoCommerce/vc-shell/commit/08f3c72d1cdee3a82868db5238c7e9879914cc8c))
@@ -1431,14 +1454,14 @@ All notable changes to this monorepo will be documented in this file.
 ### Code Refactoring
 - remove version confirmation prompt from release configuration ([1edf27a](https://github.com/VirtoCommerce/vc-shell/commit/1edf27ac84b2515e709c6732fb3e0ef324dbb4d4))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - add Vite configuration generator for dynamic modules with compatibility options ([0a4822e](https://github.com/VirtoCommerce/vc-shell/commit/0a4822e219f2fa120b476f420badf6b068891fdb))
 
 ## [1.1.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.4...v1.1.5) (2025-05-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - implement module versioning and compatibility checks in the modularity plugin ([19c9553](https://github.com/VirtoCommerce/vc-shell/commit/19c95534c4ca0f6041015a0489dab7eabc1a322a))
@@ -1453,7 +1476,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.3...v1.1.4) (2025-04-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - add custom position to VcBadge in vc-widget component ([0d42845](https://github.com/VirtoCommerce/vc-shell/commit/0d4284515b8c3c777380b7a3b7cac2b54f63731e))
@@ -1466,7 +1489,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.342...v1.1.2) (2025-04-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
@@ -1526,7 +1549,7 @@ All notable changes to this monorepo will be documented in this file.
 - first release
 - first release
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
@@ -1561,7 +1584,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.341...v1.1.0) (2025-04-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
@@ -1620,7 +1643,7 @@ All notable changes to this monorepo will be documented in this file.
 - first release
 - first release
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
@@ -1645,60 +1668,56 @@ All notable changes to this monorepo will be documented in this file.
 - menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
 ### BREAKING CHANGES
 - first release
-
-## [1.1.0-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...v1.1.0-alpha.2) (2025-02-25)
-
-### Framework (@vc-shell/framework)
-
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
-### API Client Generator (@vc-shell/api-client-generator)
-
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
-### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
-### Release Config (@vc-shell/release-config)
-
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
-### Vite Config (@vc-shell/vite-config)
-
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
-### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
-## [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.327...v1.1.0-alpha.1) (2024-11-13)
-
-**Note:** Version bump only for package
 
 ## [1.0.342](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.1...v1.0.342) (2025-04-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **global style:** update base styles with Roboto font and tailwind configurations ([51722bf](https://github.com/VirtoCommerce/vc-shell/commit/51722bff7933816d2cbab9fecb7a7c05fcb8d2d3))
 
 ## [1.0.341](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0-alpha.2...v1.0.341) (2025-03-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **global style:** update base styles with Roboto font and tailwind configurations ([51722bf](https://github.com/VirtoCommerce/vc-shell/commit/51722bff7933816d2cbab9fecb7a7c05fcb8d2d3))
 
+## [1.1.0-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...v1.1.0-alpha.2) (2025-02-25)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Features
+- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
+
+### API Client Generator (@vc-shell/api-client-generator)
+
+### Features
+- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
+
+### Create VC App (@vc-shell/create-vc-app)
+
+### Features
+- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
+
+### Release Config (@vc-shell/release-config)
+
+### Features
+- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
+
+### Vite Config (@vc-shell/config-generator)
+
+### Features
+- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
+
+### TypeScript Config (@vc-shell/ts-config)
+
+### Features
+- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
+
 ## [1.0.340](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.339...v1.0.340) (2025-02-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-app:** add logo append slot to app bar and app components ([74018b3](https://github.com/VirtoCommerce/vc-shell/commit/74018b34dd10127e62413f00bc75c34254067b4d))
@@ -1710,14 +1729,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.339](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.338...v1.0.339) (2025-02-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **modularity:** improve extension type handling and type safety ([06ea8ad](https://github.com/VirtoCommerce/vc-shell/commit/06ea8ad060f51330dba6778b4fea77d98029c1d0))
 
 ## [1.0.338](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.337...v1.0.338) (2025-02-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **login:** add support for after-form extensions ([6addffd](https://github.com/VirtoCommerce/vc-shell/commit/6addffdc05384cafd360c1f147d227e0691b407c))
@@ -1732,7 +1751,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.336](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.335...v1.0.336) (2025-01-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **useAssets:** add configurable asset key for removal ([2abe831](https://github.com/VirtoCommerce/vc-shell/commit/2abe8310b4a1b203aa5cc811422cc7ad6430e2a5))
@@ -1745,42 +1764,42 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.334](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.333...v1.0.334) (2025-01-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - locale typo fix ([af3e87a](https://github.com/VirtoCommerce/vc-shell/commit/af3e87ab0135816f91961c23cb5c0881720d2c04))
 
 ## [1.0.333](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.332...v1.0.333) (2025-01-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **vc-table:** noHeaderCheckbox hide only checkbox ([99f072a](https://github.com/VirtoCommerce/vc-shell/commit/99f072a19e0d8f46fe8a9bc317553591aa360b61))
 
 ## [1.0.332](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.331...v1.0.332) (2025-01-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - param clearing fix ([d906aa1](https://github.com/VirtoCommerce/vc-shell/commit/d906aa173cc3d87f8a29460e0654e5b0d41bae72))
 
 ## [1.0.331](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.330...v1.0.331) (2025-01-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **vc-table:** noHeaderCheckbox prop ([5447efa](https://github.com/VirtoCommerce/vc-shell/commit/5447efaed36772a9421791aded9e1bbaddeeb892))
 
 ## [1.0.330](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.329...v1.0.330) (2024-12-19)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **navigation:** param reset fix ([1ff50cc](https://github.com/VirtoCommerce/vc-shell/commit/1ff50ccd22b09263799ebf8741132eb379b396b0))
 
 ## [1.0.329](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.328...v1.0.329) (2024-12-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vc-1504 blade error content copy ([bba7a11](https://github.com/VirtoCommerce/vc-shell/commit/bba7a116ac3b23c40b6157de1fc01fc41b09adbd))
@@ -1789,6 +1808,10 @@ All notable changes to this monorepo will be documented in this file.
 - signalR creator injection key ([192caa1](https://github.com/VirtoCommerce/vc-shell/commit/192caa145f39775bca5e69231ba9e400431a474e))
 
 ## [1.0.328](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0-alpha.1...v1.0.328) (2024-11-14)
+
+**Note:** Version bump only for package
+
+## [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.327...v1.1.0-alpha.1) (2024-11-13)
 
 **Note:** Version bump only for package
 
@@ -1802,14 +1825,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.325](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.324...v1.0.325) (2024-11-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **core:** sso fixes ([decbec2](https://github.com/VirtoCommerce/vc-shell/commit/decbec29ae48deca6183e8f92e1155f5faced943))
 
 ## [1.0.324](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.323...v1.0.324) (2024-11-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **core:** dynamic loader fix ([503408c](https://github.com/VirtoCommerce/vc-shell/commit/503408c68852d2660b6ecaf06f0b818ece474d69))
@@ -1820,7 +1843,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.322](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.321...v1.0.322) (2024-11-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **signalR:** creator update method ([6e78664](https://github.com/VirtoCommerce/vc-shell/commit/6e78664f71201b60069d1dd806db8491fd656db5))
@@ -1833,14 +1856,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.321](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.320...v1.0.321) (2024-10-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **shared:** clear param fix ([eeca977](https://github.com/VirtoCommerce/vc-shell/commit/eeca97759c2d5e5de91c85d24a71795739cf7336))
 
 ## [1.0.320](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.319...v1.0.320) (2024-10-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shared:** user email tooltip ([4f69f57](https://github.com/VirtoCommerce/vc-shell/commit/4f69f5764c4fba0f5f6a4753d79d308b8021c12b))
@@ -1850,35 +1873,35 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.319](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.318...v1.0.319) (2024-10-18)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **navigation:** fix param ([2e07a2d](https://github.com/VirtoCommerce/vc-shell/commit/2e07a2d6c5343b1ad3b2efc858d9d86ef1db316c))
 
 ## [1.0.318](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.317...v1.0.318) (2024-10-18)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - refactored multilanguage selector ([fef81c0](https://github.com/VirtoCommerce/vc-shell/commit/fef81c0d647465a3c81b667fc2df54ffce6d2f84))
 
 ## [1.0.317](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.316...v1.0.317) (2024-10-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** added support of loader method ([2166d1b](https://github.com/VirtoCommerce/vc-shell/commit/2166d1b55fbed6b18653d1fa012fa5d1319c777f))
 
 ## [1.0.316](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.315...v1.0.316) (2024-10-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-multivalue prevent symbols in num/int ([3b83ca5](https://github.com/VirtoCommerce/vc-shell/commit/3b83ca56202fdc1f630e1d8ecd79b621c75e6bf6))
 
 ## [1.0.315](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.314...v1.0.315) (2024-10-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shared:** user info in mobile user sidebar ([2b49635](https://github.com/VirtoCommerce/vc-shell/commit/2b496353667ca20795bf33cb5ea68dfa20ac11be))
@@ -1889,21 +1912,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.314](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.313...v1.0.314) (2024-10-16)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** normaliza data in isModified calculation ([2389032](https://github.com/VirtoCommerce/vc-shell/commit/238903269ae31ce62169260f7c164ac580d4f519))
 
 ## [1.0.313](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.312...v1.0.313) (2024-10-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** logo height fix ([b24bb02](https://github.com/VirtoCommerce/vc-shell/commit/b24bb0237cdb770a94d5df7f8be4c397ace4d159))
 
 ## [1.0.312](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.311...v1.0.312) (2024-10-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** user info as sidebar ([f04c8c6](https://github.com/VirtoCommerce/vc-shell/commit/f04c8c66f8010cfc7bcec93c67f272859530b65e))
@@ -1912,7 +1935,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.311](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.310...v1.0.311) (2024-10-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-table scroll to top on page change, column switcher modes ([3c7c353](https://github.com/VirtoCommerce/vc-shell/commit/3c7c3533abf5f3f03fada20d5a9693f135517ad6))
@@ -1925,7 +1948,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.310](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.309...v1.0.310) (2024-10-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** user dropdown button full name ([44f411f](https://github.com/VirtoCommerce/vc-shell/commit/44f411fc30be3c859416eb232efa633200f05b71))
@@ -1933,28 +1956,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.309](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.308...v1.0.309) (2024-10-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** mixin in list ([c6d954d](https://github.com/VirtoCommerce/vc-shell/commit/c6d954d77643d303fde3333352b023891f5222ef))
 
 ## [1.0.308](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.307...v1.0.308) (2024-10-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **core:** dynamic module add fix ([9d458ca](https://github.com/VirtoCommerce/vc-shell/commit/9d458ca08da8ad2bab835caa803f89b10b096ef8))
 
 ## [1.0.307](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.306...v1.0.307) (2024-10-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **UI:** vc-table flex important ([ebc01dc](https://github.com/VirtoCommerce/vc-shell/commit/ebc01dccecf20ba182300a86010acc1882b0ec17))
 
 ## [1.0.306](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.305...v1.0.306) (2024-10-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - md-editor-v3 instead quill, info popup, clickable form table ([aebb563](https://github.com/VirtoCommerce/vc-shell/commit/aebb563e4dd7819a3ae91eb7ce2cc5629234a9ab))
@@ -1965,7 +1988,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.304](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.303...v1.0.304) (2024-10-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **shared:** notification flex container ([e253f8c](https://github.com/VirtoCommerce/vc-shell/commit/e253f8cceebac0e0324befef121b9a03830518b8))
@@ -2000,7 +2023,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.296](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.295...v1.0.296) (2024-10-01)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - providers ([f47bab9](https://github.com/VirtoCommerce/vc-shell/commit/f47bab93feaaddc717617d79537bb41dbc14e55f))
@@ -2011,7 +2034,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.294](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.293...v1.0.294) (2024-10-01)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** mixin support, refactor of module registering ([70589c9](https://github.com/VirtoCommerce/vc-shell/commit/70589c9a9044af31ffbbb66189bd96456a3e5d0c))
@@ -2033,7 +2056,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.291](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.290...v1.0.291) (2024-09-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - support of css theming ([dba4097](https://github.com/VirtoCommerce/vc-shell/commit/dba409744b57dd1a999e009700e3b356fe230969))
@@ -2043,28 +2066,28 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - support of css theming ([dba4097](https://github.com/VirtoCommerce/vc-shell/commit/dba409744b57dd1a999e009700e3b356fe230969))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - support of css theming ([dba4097](https://github.com/VirtoCommerce/vc-shell/commit/dba409744b57dd1a999e009700e3b356fe230969))
 
 ## [1.0.290](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.289...v1.0.290) (2024-09-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shared:** user-dropdown-button - add baseMenuItemsHandler prop and handle default menu items ([e5f4017](https://github.com/VirtoCommerce/vc-shell/commit/e5f40174dae9445ed074493d824e3c95c37c7150))
 
 ## [1.0.289](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.288...v1.0.289) (2024-09-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **dynamic:** add isWidgetView to ListComposableArgs interface ([1a3b1b2](https://github.com/VirtoCommerce/vc-shell/commit/1a3b1b2017ec2b089e745a1121a34a24ff6c1d34))
 
 ## [1.0.288](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.287...v1.0.288) (2024-09-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - improve headerCheckbox calculation in vc-table.vue ([10caec1](https://github.com/VirtoCommerce/vc-shell/commit/10caec1ad2b7aa6a017f8db84e9cf6dd1d956048))
@@ -2084,7 +2107,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.284](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.283...v1.0.284) (2024-09-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** dynamic-blade-list grid component ability to config externally ([692d354](https://github.com/VirtoCommerce/vc-shell/commit/692d354302452be5b90454377144c0ca0bb515fd))
@@ -2097,7 +2120,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.282](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.281...v1.0.282) (2024-08-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** vc-table expandable header slot ([9a3cd40](https://github.com/VirtoCommerce/vc-shell/commit/9a3cd407d3ba1125c38f3d7a7a296923a1a5a8be))
@@ -2105,21 +2128,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.281](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.280...v1.0.281) (2024-08-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-1464 bgimage for change password page ([5259707](https://github.com/VirtoCommerce/vc-shell/commit/525970745a95e94483ace2cfad507b67e49892ac))
 
 ## [1.0.280](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.279...v1.0.280) (2024-08-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-1464 expired password change form ([4645cba](https://github.com/VirtoCommerce/vc-shell/commit/4645cba7ecc1844b9cd12bb95baf760871b44053))
 
 ## [1.0.279](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.278...v1.0.279) (2024-08-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **create-vc-app:** update currency option in details.vue and dynamic-blade-list.vue ([40a363a](https://github.com/VirtoCommerce/vc-shell/commit/40a363a292457d0f74e961a342909ed6f425d3b4))
@@ -2131,7 +2154,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.278](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.277...v1.0.278) (2024-08-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-app-menu-link truncating ([e7fe836](https://github.com/VirtoCommerce/vc-shell/commit/e7fe836e8e28d9ec92469f8bdf7dc8353104363f))
@@ -2143,14 +2166,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.277](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.276...v1.0.277) (2024-08-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** adjust min-width and max-width for dp--tp-wrap to prevent timepicker overflow ([b606d9a](https://github.com/VirtoCommerce/vc-shell/commit/b606d9a9ad3026a38d7230550b8ed71194b18d54))
 
 ## [1.0.276](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.275...v1.0.276) (2024-08-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-table highlight multiselected rows vm-1431 ([67dde13](https://github.com/VirtoCommerce/vc-shell/commit/67dde13314a4e8ae906f737dea03c10fa39e5273))
@@ -2162,28 +2185,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.274](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.273...v1.0.274) (2024-08-19)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
-- **ui:** vc-pagination pagesToShow  logic refactor ([92153d8](https://github.com/VirtoCommerce/vc-shell/commit/92153d8a91990274682fca1490cdc5a9cc9e784a))
+- **ui:** vc-pagination pagesToShow logic refactor ([92153d8](https://github.com/VirtoCommerce/vc-shell/commit/92153d8a91990274682fca1490cdc5a9cc9e784a))
 
 ## [1.0.273](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.272...v1.0.273) (2024-08-16)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - remove vcmp locales, scope variables to mayberef ([a2c29d1](https://github.com/VirtoCommerce/vc-shell/commit/a2c29d1cf60d065f8dd38fdea731455fbb5ce1ec))
 
 ## [1.0.272](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.271...v1.0.272) (2024-08-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** TableSchema interface fix ([d3c4c40](https://github.com/VirtoCommerce/vc-shell/commit/d3c4c4061f285db8b8c26f7bcf0dfc1d6956fb23))
 
 ## [1.0.271](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.270...v1.0.271) (2024-08-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui,dynamic:** vc-table external access to selectedIds, searchValue ([33ddec1](https://github.com/VirtoCommerce/vc-shell/commit/33ddec108d88cb118f29102de11d55a7111eb838))
@@ -2198,21 +2221,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.268](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.267...v1.0.268) (2024-08-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-763 display user role ([6d98e13](https://github.com/VirtoCommerce/vc-shell/commit/6d98e1364d003156d71db73a12ce2ee529d41eee))
 
 ## [1.0.267](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.266...v1.0.267) (2024-08-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-pagination show jump if pages > 5 ([1523282](https://github.com/VirtoCommerce/vc-shell/commit/1523282abd92d4af4a346b2529f2437172a22e00))
 
 ## [1.0.266](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.265...v1.0.266) (2024-08-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** improved vc-pagination vm-1430 ([2119b72](https://github.com/VirtoCommerce/vc-shell/commit/2119b72fbd232bdaca9adc0ecb7693aee3a6ac42))
@@ -2227,7 +2250,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.263](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.262...v1.0.263) (2024-07-31)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** sanitize vc-editor content to prevent XSS attacks ([0b625f9](https://github.com/VirtoCommerce/vc-shell/commit/0b625f93e26a576ebf04141246b9d8e2ae659c3c))
@@ -2242,28 +2265,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.260](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.259...v1.0.260) (2024-07-26)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-select truncating ([ba67161](https://github.com/VirtoCommerce/vc-shell/commit/ba6716135fa55e17c5670964efef70e01d94c195))
 
 ## [1.0.259](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.258...v1.0.259) (2024-07-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** editable blade condition fix ([c446afa](https://github.com/VirtoCommerce/vc-shell/commit/c446afaf736db86a9b4e0618d200376fae242fff))
 
 ## [1.0.258](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.257...v1.0.258) (2024-07-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** grid blade editable table ([5b41467](https://github.com/VirtoCommerce/vc-shell/commit/5b414675c1148fb8652c0125253a882b1f9a665e))
 
 ## [1.0.257](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.256...v1.0.257) (2024-07-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **core:** memoize opened nested nav groups ([20942b0](https://github.com/VirtoCommerce/vc-shell/commit/20942b0ffbe440cbf607e821314078aa1972083c))
@@ -2271,28 +2294,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.256](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.255...v1.0.256) (2024-07-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **core:** fix useDynamicModules error ([f85b5ec](https://github.com/VirtoCommerce/vc-shell/commit/f85b5ecf0d9b39c66b1389796ad453aaae3800da))
 
 ## [1.0.255](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.254...v1.0.255) (2024-07-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **core:** useDynamicModules fix ([b38d966](https://github.com/VirtoCommerce/vc-shell/commit/b38d9668b410d7bbb0d798f2218f2b6051416cc9))
 
 ## [1.0.254](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.253...v1.0.254) (2024-07-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - dynamic module loader ([4d15575](https://github.com/VirtoCommerce/vc-shell/commit/4d15575bb5448e16b4034782bafc7097189742f1))
 
 ## [1.0.253](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.252...v1.0.253) (2024-07-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shared:** update login logic to redirect to the previous page after successful login ([8701044](https://github.com/VirtoCommerce/vc-shell/commit/8701044315a7b13609474e00e83a069d542bb256))
@@ -2322,21 +2345,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.247](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.246...v1.0.247) (2024-07-01)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **useAppInsights:** add return if appInsights is not active ([5724a14](https://github.com/VirtoCommerce/vc-shell/commit/5724a1437f95e726216079f7a77b976434436b51))
 
 ## [1.0.246](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.245...v1.0.246) (2024-06-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - add useAppInsights composable for application insights pageview logging ([7c030d6](https://github.com/VirtoCommerce/vc-shell/commit/7c030d6947529a93f0476adc9d59b94336c3580b))
 
 ## [1.0.245](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.244...v1.0.245) (2024-06-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** fix vc-table cell hover behavior and cell opacity ([8548032](https://github.com/VirtoCommerce/vc-shell/commit/85480323eadc982344684be5c57e1f900659eb80))
@@ -2353,7 +2376,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.244](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.243...v1.0.244) (2024-06-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
@@ -2373,7 +2396,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
@@ -2392,7 +2415,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.240](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.239...v1.0.240) (2024-06-18)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** add delay for menu opening ([276f31d](https://github.com/VirtoCommerce/vc-shell/commit/276f31d99c7a58a3610b3b36fe2188902bd3e6e4))
@@ -2401,14 +2424,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.239](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.238...v1.0.239) (2024-06-18)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** fixed flickering when hover on tooltip ([df11271](https://github.com/VirtoCommerce/vc-shell/commit/df112712cd8542a6a69fd0f3eda38d3040936df1))
 
 ## [1.0.238](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.237...v1.0.238) (2024-06-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - improve loading directive with dynamic z-index support ([c3c8c63](https://github.com/VirtoCommerce/vc-shell/commit/c3c8c63fa48facf640e182405938bb83f5b5087b))
@@ -2420,14 +2443,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.237](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.236...v1.0.237) (2024-06-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-1348 avatar for user ([9caf962](https://github.com/VirtoCommerce/vc-shell/commit/9caf962bd881611744ea1849155475b897049df6))
 
 ## [1.0.236](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.235...v1.0.236) (2024-06-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** improve menu item styling and behavior ([6b56988](https://github.com/VirtoCommerce/vc-shell/commit/6b569881ef7b4e91dc32adf71380bb3c15f7be75))
@@ -2438,7 +2461,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.235](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.234...v1.0.235) (2024-06-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** add custom gallery file upload text ([1e5e02a](https://github.com/VirtoCommerce/vc-shell/commit/1e5e02aaa6f7c110015b85874a81c52e0b5da978))
@@ -2459,7 +2482,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.233](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.232...v1.0.233) (2024-06-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** add custom gallery upload icon ([8e029f5](https://github.com/VirtoCommerce/vc-shell/commit/8e029f55b84240665b2516ae6f21c688d1e1ac6b))
@@ -2475,7 +2498,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.232](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.231...v1.0.232) (2024-06-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - prevent entering negative numbers in vc-input-currency and vc-input components ([b82a9e4](https://github.com/VirtoCommerce/vc-shell/commit/b82a9e47c26d06c80eb5806aad8d99fdf9043cc1))
@@ -2485,28 +2508,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.231](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.230...v1.0.231) (2024-06-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vc-input-currency decimal precision ([c278a90](https://github.com/VirtoCommerce/vc-shell/commit/c278a90248888bd63f275908d5379a3fdcd7fc0a))
 
 ## [1.0.230](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.229...v1.0.230) (2024-06-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - refactor InputCurrency component to handle currency display option ([f11a193](https://github.com/VirtoCommerce/vc-shell/commit/f11a193289c0992444ff11e3c0c16970693c5bb0))
 
 ## [1.0.229](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.228...v1.0.229) (2024-06-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** permissions prop in controls/toolbar ([5230a23](https://github.com/VirtoCommerce/vc-shell/commit/5230a235acd049cb19613a3ac855f26b3bffb146))
 
 ## [1.0.228](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.227...v1.0.228) (2024-06-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - **dynamic:** update useDetailsFactory to use modified flag instead of dirty flag ([317fcb4](https://github.com/VirtoCommerce/vc-shell/commit/317fcb499df7f4897a681fe27873ed7c5eca73c6))
@@ -2518,14 +2541,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.227](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.226...v1.0.227) (2024-06-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-table add last column resizer ([f63a7a0](https://github.com/VirtoCommerce/vc-shell/commit/f63a7a010366fd55fc0add08701d0d983fe4280a))
 
 ## [1.0.226](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.225...v1.0.226) (2024-06-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** add onBlur event handler to dynamic form controls ([1543d4f](https://github.com/VirtoCommerce/vc-shell/commit/1543d4f7816a3e5c67ea842c0a545b9d14e0e72b))
@@ -2535,14 +2558,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.225](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.224...v1.0.225) (2024-06-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - update useDetailsFactory to reset dirty validation state ([a037847](https://github.com/VirtoCommerce/vc-shell/commit/a03784713e504231a13171a46a06ffa61b9cb117))
 
 ## [1.0.224](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.223...v1.0.224) (2024-06-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** possibility to override default grid sorting ([0afecfb](https://github.com/VirtoCommerce/vc-shell/commit/0afecfb53cd114f099dd9296c47270031be72a4f))
@@ -2559,26 +2582,26 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.223](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.222...v1.0.223) (2024-05-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
-- **dynamic:** refactoring of scope, composable args interface, dynamic hint for some components BREAKING CHANGE: change scope in composables to be plain object instead refs. Also, if you want to extend scope, use lodash's merge method like: _.merge(scope, {}) ([e6b8099](https://github.com/VirtoCommerce/vc-shell/commit/e6b8099a120cef9429896904947e13fdae670541))
+- **dynamic:** refactoring of scope, composable args interface, dynamic hint for some components BREAKING CHANGE: change scope in composables to be plain object instead refs. Also, if you want to extend scope, use lodash's merge method like: \_.merge(scope, {}) ([e6b8099](https://github.com/VirtoCommerce/vc-shell/commit/e6b8099a120cef9429896904947e13fdae670541))
 
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
-- **dynamic:** refactoring of scope, composable args interface, dynamic hint for some components BREAKING CHANGE: change scope in composables to be plain object instead refs. Also, if you want to extend scope, use lodash's merge method like: _.merge(scope, {}) ([e6b8099](https://github.com/VirtoCommerce/vc-shell/commit/e6b8099a120cef9429896904947e13fdae670541))
+- **dynamic:** refactoring of scope, composable args interface, dynamic hint for some components BREAKING CHANGE: change scope in composables to be plain object instead refs. Also, if you want to extend scope, use lodash's merge method like: \_.merge(scope, {}) ([e6b8099](https://github.com/VirtoCommerce/vc-shell/commit/e6b8099a120cef9429896904947e13fdae670541))
 
 ## [1.0.222](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.221...v1.0.222) (2024-05-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - Update Table component to use bladeContext in template rendering ([b600fb1](https://github.com/VirtoCommerce/vc-shell/commit/b600fb1fcb89a4bf647887c3fad3bfc863e22169))
 
 ## [1.0.221](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.220...v1.0.221) (2024-05-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** Add hint text to input fields ([31b3ded](https://github.com/VirtoCommerce/vc-shell/commit/31b3ded3e7685085b9d9c9e398bddb7b9e7264e8))
@@ -2588,7 +2611,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.220](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.219...v1.0.220) (2024-05-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** Add support of footer template in dynamic views ([137c49a](https://github.com/VirtoCommerce/vc-shell/commit/137c49a6788dc68bd73766af6439ba4713ba05bf))
@@ -2608,14 +2631,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.217](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.216...v1.0.217) (2024-05-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - message about edited blade is not displayed, fixed ([6b8e3a3](https://github.com/VirtoCommerce/vc-shell/commit/6b8e3a3f2245c442df7da788d7e6b0627cbcd79c))
 
 ## [1.0.216](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.215...v1.0.216) (2024-05-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** support of blade modified state ([a2f9764](https://github.com/VirtoCommerce/vc-shell/commit/a2f97645f9512b36337483815073ca0c799bf341))
@@ -2633,26 +2656,26 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.215](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.214...v1.0.215) (2024-05-20)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **navigation:** support of blade replacing, permissions check on generateRoute ([40d934c](https://github.com/VirtoCommerce/vc-shell/commit/40d934c056bebc1a023cc1498d40a2c672ec43dd))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - **vite-config:** add hash to app build to prevent caching ([aafe494](https://github.com/VirtoCommerce/vc-shell/commit/aafe4945bca52a62520217ea8948abe6f442614b))
 
 ## [1.0.214](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.213...v1.0.214) (2024-05-16)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** has unsaved changes banner, updated switch ([5caa82b](https://github.com/VirtoCommerce/vc-shell/commit/5caa82bc68b599feeb205395aa55850230851f66))
 
 ## [1.0.213](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.212...v1.0.213) (2024-05-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** factories sync methods, types update, grid item click separate method ([87cf7b8](https://github.com/VirtoCommerce/vc-shell/commit/87cf7b85e26c3304c9fe631697a897c27b5a7fae))
@@ -2662,21 +2685,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.212](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.211...v1.0.212) (2024-05-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - fix param type ([059d80c](https://github.com/VirtoCommerce/vc-shell/commit/059d80c924f5a18fe9457994c49b77249c8a7890))
 
 ## [1.0.211](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.210...v1.0.211) (2024-05-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - fix grid selection persistance on child blade close ([5e5ee3f](https://github.com/VirtoCommerce/vc-shell/commit/5e5ee3f70b27bed8c983dab092b610cf2cb78db7))
 
 ## [1.0.210](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.209...v1.0.210) (2024-05-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - remove auto-open blade on param change, as it can lead to unpredictable behavior ([898e0d9](https://github.com/VirtoCommerce/vc-shell/commit/898e0d9ffc5812b71e8215a355c9ad0918c48dfe))
@@ -2688,7 +2711,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.209](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.208...v1.0.209) (2024-05-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - img extensions, renaming vm-1315 ([cd02d04](https://github.com/VirtoCommerce/vc-shell/commit/cd02d04d924f9049521b2f116e0ed192f29ce981))
@@ -2705,7 +2728,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.207](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.206...v1.0.207) (2024-04-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-1309 decode uri asset file name ([cf290f6](https://github.com/VirtoCommerce/vc-shell/commit/cf290f624b81f6a4a61ab4a092b2f784e9c350b6))
@@ -2721,7 +2744,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.204](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.203...v1.0.204) (2024-04-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **navigation:** fixed loss of instance when opening the same workspace ([dda83bc](https://github.com/VirtoCommerce/vc-shell/commit/dda83bc4fd0a8b4583d0c9f607d0ba678fe3c0ff))
@@ -2733,14 +2756,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.203](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.202...v1.0.203) (2024-04-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - error fix ([2a106ba](https://github.com/VirtoCommerce/vc-shell/commit/2a106ba9ed958d6b1081d4c5c65324260b80f13a))
 
 ## [1.0.202](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.201...v1.0.202) (2024-04-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** saveChanges response (#207) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
@@ -2762,7 +2785,7 @@ All notable changes to this monorepo will be documented in this file.
 ### Features
 - **dynamic:** saveChanges response (#207) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
 
-### Vite Config (@vc-shell/vite-config)
+### Vite Config (@vc-shell/config-generator)
 
 ### Features
 - **dynamic:** saveChanges response (#207) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
@@ -2774,21 +2797,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.201](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.200...v1.0.201) (2024-04-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** saveChanges response ([9d3f909](https://github.com/VirtoCommerce/vc-shell/commit/9d3f9091e15dad0498c680f7835a96c3e0fb5cac))
 
 ## [1.0.200](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.199...v1.0.200) (2024-04-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-multivalue input on blur, removed arrows with number type ([ff0b293](https://github.com/VirtoCommerce/vc-shell/commit/ff0b29305dd495f2f9577b34c122d33fb67596d0))
 
 ## [1.0.199](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.198...v1.0.199) (2024-04-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-multivalue integer type, loading state ([0535b21](https://github.com/VirtoCommerce/vc-shell/commit/0535b21b9c0bae213572b0320b28eac649df27bb))
@@ -2800,21 +2823,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.198](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.197...v1.0.198) (2024-04-16)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - blade navigation breadcrumbs, useDynamicViewsUtils composable ([506cee1](https://github.com/VirtoCommerce/vc-shell/commit/506cee114479717b2745c8f85968249959eb16af))
 
 ## [1.0.197](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.196...v1.0.197) (2024-04-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - instance removal fix ([9eeb850](https://github.com/VirtoCommerce/vc-shell/commit/9eeb850603b18fcd3e6dc7b03a9bfe3ceb224680))
 
 ## [1.0.196](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.195...v1.0.196) (2024-04-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-table mobile view hidden fix ([d5d0353](https://github.com/VirtoCommerce/vc-shell/commit/d5d035352bd5afcb3ae5c5e07a332d06bc34a72e))
@@ -2825,7 +2848,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.194](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.193...v1.0.194) (2024-04-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** added vee-validate's errorBag into validationState object ([164be3c](https://github.com/VirtoCommerce/vc-shell/commit/164be3cacd3c76ae4043a79825604dea9026de2f))
@@ -2834,14 +2857,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.193](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.192...v1.0.193) (2024-04-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **navigation:** query params ([f7b13ce](https://github.com/VirtoCommerce/vc-shell/commit/f7b13ce28eb4dbd8c6d81b3b3c2bd57faad59abf))
 
 ## [1.0.192](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.191...v1.0.192) (2024-04-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **navigation:** better work with custom app param, preserve blades where it's possible ([49d3ae8](https://github.com/VirtoCommerce/vc-shell/commit/49d3ae8b40178fb6d29d6b8f54880a2f5e0e21c4))
@@ -2850,14 +2873,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.191](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.190...v1.0.191) (2024-04-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** support fetched data in filters ([c6c133d](https://github.com/VirtoCommerce/vc-shell/commit/c6c133d8224d6905a3a4a3d45ef474c3dabd56f3))
 
 ## [1.0.190](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.189...v1.0.190) (2024-04-03)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui/vc-editor:** no change emit on component mount ([cf1af9a](https://github.com/VirtoCommerce/vc-shell/commit/cf1af9a4978688e93fb4b22707cafdd14a970752))
@@ -2876,42 +2899,42 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.189](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.188...v1.0.189) (2024-03-26)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **storybook:** dynamic views components and some components refactoring ([19f9d20](https://github.com/VirtoCommerce/vc-shell/commit/19f9d2055d76166a8b38be0149346c0bec12ad77))
 
 ## [1.0.188](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.187...v1.0.188) (2024-03-19)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** isDirty reset in useDetailsFactory ([bf7341e](https://github.com/VirtoCommerce/vc-shell/commit/bf7341ece299dac32784222aeee72f2ef9c7ead6))
 
 ## [1.0.187](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.186...v1.0.187) (2024-03-19)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** confirmation logics refactor, sort in list priority change ([c98d639](https://github.com/VirtoCommerce/vc-shell/commit/c98d639878599932630b0b868f9dca536710b6b6))
 
 ## [1.0.186](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.185...v1.0.186) (2024-03-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - administrator full access on permissions check ([9f96645](https://github.com/VirtoCommerce/vc-shell/commit/9f96645ae03c0920e83d2a8ecca5b3f565a910b9))
 
 ## [1.0.185](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.184...v1.0.185) (2024-03-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** table width fix, hover with date on date-ago ([a249e0c](https://github.com/VirtoCommerce/vc-shell/commit/a249e0cff939cf9ef555b93373b62980cfed4182))
 
 ## [1.0.184](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.183...v1.0.184) (2024-03-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Reverts
 - tailwind package remove and config change ([2bf54da](https://github.com/VirtoCommerce/vc-shell/commit/2bf54dad5e9d02a49396e0031e24c01ec045c797))
@@ -2922,21 +2945,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.182](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.181...v1.0.182) (2024-03-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **framework:** storybook, component fixes ([965b242](https://github.com/VirtoCommerce/vc-shell/commit/965b242d6afccd325fa09f8315b52cbe7c58527c))
 
 ## [1.0.181](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.180...v1.0.181) (2024-03-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-select initial multiple fix ([edcb55c](https://github.com/VirtoCommerce/vc-shell/commit/edcb55c172ea4ffc63110360ca4fefa446d2a10a))
 
 ## [1.0.180](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.179...v1.0.180) (2024-03-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **navigation:** fixed multiple close confirmations, component update in vue router instance ([966e779](https://github.com/VirtoCommerce/vc-shell/commit/966e7796ff190110a583e674da149b56634264c3))
@@ -2945,14 +2968,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.179](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.178...v1.0.179) (2024-03-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui/dynamic:** components update, multiple in dynamic select, fixed close blade confirmation ([ced10db](https://github.com/VirtoCommerce/vc-shell/commit/ced10db4f2b3db555716e14159203aec4b048885))
 
 ## [1.0.178](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.177...v1.0.178) (2024-03-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - shell locales moved to locales, expose locales ([9d6099e](https://github.com/VirtoCommerce/vc-shell/commit/9d6099ed2d43dba38a71a5e868ed335cf2bd8170))
@@ -2964,21 +2987,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.177](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.176...v1.0.177) (2024-03-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-breadcrumbs key fix ([192debc](https://github.com/VirtoCommerce/vc-shell/commit/192debc1791beca4e8bd253362584736dfb1de0e))
 
 ## [1.0.176](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.175...v1.0.176) (2024-03-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** bladeContext exposure to list composable ([37a30c9](https://github.com/VirtoCommerce/vc-shell/commit/37a30c91239b60f2c5d7b9d859d6f48962627ee5))
 
 ## [1.0.175](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.174...v1.0.175) (2024-03-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **core:** Update signalR plugin to accept options, SendSystemEvents connection ([7cc96d5](https://github.com/VirtoCommerce/vc-shell/commit/7cc96d5c783207b94b0657c2467203ccea4a55a5))
@@ -2992,7 +3015,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.174](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.173...v1.0.174) (2024-03-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** disabled method for actions ([a575064](https://github.com/VirtoCommerce/vc-shell/commit/a5750642339e0fedf3e937370361968eea144368))
@@ -3010,7 +3033,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.171](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.170...v1.0.171) (2024-03-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** add useNotifications and notification component to form blade ([578bb19](https://github.com/VirtoCommerce/vc-shell/commit/578bb192c8edac55054ca5b72d74f0c900e5dadf))
@@ -3021,7 +3044,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.170](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.169...v1.0.170) (2024-02-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **framework:** removed redundant localizations, moved to app ([9eb0ca7](https://github.com/VirtoCommerce/vc-shell/commit/9eb0ca789f75e4959e9d3d61eaebb2f8723511df))
@@ -3035,14 +3058,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.169](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.168...v1.0.169) (2024-02-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** id style path notation in overrides ([edd8a3b](https://github.com/VirtoCommerce/vc-shell/commit/edd8a3ba6289c9364c548d2fe80cdda1bf3cfa0d))
 
 ## [1.0.168](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.167...v1.0.168) (2024-02-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** card visibility fix ([8f224c9](https://github.com/VirtoCommerce/vc-shell/commit/8f224c95549c9aea60b62521143ed7698b22721b))
@@ -3050,21 +3073,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.167](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.166...v1.0.167) (2024-02-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-select fix search in array ([c172fac](https://github.com/VirtoCommerce/vc-shell/commit/c172fac5b892d804d61f5eca37cbccf2a795026b))
 
 ## [1.0.166](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.165...v1.0.166) (2024-02-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** vc-select search fix ([d1de088](https://github.com/VirtoCommerce/vc-shell/commit/d1de08889c64526ed24496e0ee32437bd853e9e4))
 
 ## [1.0.165](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.164...v1.0.165) (2024-02-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** useBreadcrumbs composable and support in dynamic views, exposing more methods ([c1ccdea](https://github.com/VirtoCommerce/vc-shell/commit/c1ccdea065000345b9ee7e9334839179a0d30661))
@@ -3073,77 +3096,77 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.164](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.163...v1.0.164) (2024-02-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** Add i18n support to StatusField component and fix Quill editor issue ([7749feb](https://github.com/VirtoCommerce/vc-shell/commit/7749feba938b8011220c6139908daa7e68df5bcd))
 
 ## [1.0.163](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.162...v1.0.163) (2024-02-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** update class property to classNames ([4297cb0](https://github.com/VirtoCommerce/vc-shell/commit/4297cb088be767b42a892a078c450d54a571ad32))
 
 ## [1.0.162](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.161...v1.0.162) (2024-02-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** horizontalSeparator in fieldset ([e2f63cf](https://github.com/VirtoCommerce/vc-shell/commit/e2f63cfccb859ae15c217f8e3e9b4e1b71d294da))
 
 ## [1.0.161](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.160...v1.0.161) (2024-02-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - filter reset condition, return reactive filter ([68af932](https://github.com/VirtoCommerce/vc-shell/commit/68af9323e0d3d2edc58560487e8c66a817b34ceb))
 
 ## [1.0.160](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.159...v1.0.160) (2024-02-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - filter reset ([49aec1b](https://github.com/VirtoCommerce/vc-shell/commit/49aec1b7ee488d86f0248a10e933fd132bf6ec10))
 
 ## [1.0.159](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.158...v1.0.159) (2024-02-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** blade navigation bug and update dynamic filter checkbox data structure ([ae97351](https://github.com/VirtoCommerce/vc-shell/commit/ae97351548d65b9f1eca44fc54e13495446ecf12))
 
 ## [1.0.158](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.157...v1.0.158) (2024-02-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** reactivity losing fixes ([2f129ee](https://github.com/VirtoCommerce/vc-shell/commit/2f129ee993200f8aa0ac651d1a0adc94f1834a67))
 
 ## [1.0.157](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.156...v1.0.157) (2024-02-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **framework:** useFilterBuilder localization update ([75a387d](https://github.com/VirtoCommerce/vc-shell/commit/75a387db7da5e07d3e6538b9217d2e1b270b694d))
 
 ## [1.0.156](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.155...v1.0.156) (2024-02-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - localization ([8de6e9f](https://github.com/VirtoCommerce/vc-shell/commit/8de6e9f406487f7457327561547efc414b327729))
 
 ## [1.0.155](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.154...v1.0.155) (2024-02-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** titles in mobile ([91cca71](https://github.com/VirtoCommerce/vc-shell/commit/91cca71f8a6be855243b822242f7be33bcc562db))
 
 ## [1.0.154](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.153...v1.0.154) (2024-02-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** components fixes and refactors ([01ba0fe](https://github.com/VirtoCommerce/vc-shell/commit/01ba0fed91973c9624ca5e66e56750b5336fe6aa))
@@ -3160,21 +3183,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.153](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.152...v1.0.153) (2024-01-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** menu permissions hide fix ([43a0e98](https://github.com/VirtoCommerce/vc-shell/commit/43a0e98db361bdcb296239fd6fc6e3bc967a6246))
 
 ## [1.0.152](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.151...v1.0.152) (2024-01-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** redirect to root fix ([cfd7e43](https://github.com/VirtoCommerce/vc-shell/commit/cfd7e43903cd46af87b31106b4a0fcadfc24cddd))
 
 ## [1.0.151](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.150...v1.0.151) (2024-01-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **framework:** added support of URL with base param ([fe9649e](https://github.com/VirtoCommerce/vc-shell/commit/fe9649e7348032fd8f9e0253d9688f6d93057c96))
@@ -3183,14 +3206,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.150](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.149...v1.0.150) (2024-01-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **framework:** possibility to disable menu ([65b1eb0](https://github.com/VirtoCommerce/vc-shell/commit/65b1eb0ad71026e992a7bcecb0a7616415115a6e))
 
 ## [1.0.149](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.148...v1.0.149) (2024-01-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** updateActiveWidgetCount event ([808d31d](https://github.com/VirtoCommerce/vc-shell/commit/808d31df475e3c29386d7742fbc5f6ee7645a9bc))
@@ -3219,7 +3242,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.146](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.145...v1.0.146) (2024-01-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** modified as base disabled state in saveChanges method ([9895efb](https://github.com/VirtoCommerce/vc-shell/commit/9895efb16aa70f1b1d5e90359084a25c7237a56e))
@@ -3227,14 +3250,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.145](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.144...v1.0.145) (2024-01-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shell:** base navigator.language i18n locale ([8a59a63](https://github.com/VirtoCommerce/vc-shell/commit/8a59a636643f94ffac282ac37514a4f253007c7a))
 
 ## [1.0.144](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.143...v1.0.144) (2024-01-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **shell:** removed common pages locales ([e8d54e5](https://github.com/VirtoCommerce/vc-shell/commit/e8d54e5bea8746a678e17b6a79ebbdc59da6e3c3))
@@ -3246,7 +3269,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.143](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.142...v1.0.143) (2024-01-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** table columns localized titles support ([dfccb58](https://github.com/VirtoCommerce/vc-shell/commit/dfccb58492ad126402858974d84a50f3dbf09152))
@@ -3259,35 +3282,35 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.142](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.141...v1.0.142) (2024-01-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **shell:** navigation slash duplication fix ([370fe03](https://github.com/VirtoCommerce/vc-shell/commit/370fe0398ef6626c541a4af5b2f7895fad49b874))
 
 ## [1.0.141](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.140...v1.0.141) (2024-01-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** using locale key as blade title ([057a188](https://github.com/VirtoCommerce/vc-shell/commit/057a188dbb9d73611e609d7fd6064502a1f95560))
 
 ## [1.0.140](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.139...v1.0.140) (2024-01-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - condition in getOptions ([c363f13](https://github.com/VirtoCommerce/vc-shell/commit/c363f134da870341e4840d132f1d5d5e9a0fa2d7))
 
 ## [1.0.139](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.138...v1.0.139) (2024-01-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shell:** update optionsGetter signature in vc-dynamic-property.vue ([0c71460](https://github.com/VirtoCommerce/vc-shell/commit/0c71460d2d3c785cd5d8fe2b0b58ebc2c3020248))
 
 ## [1.0.138](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.137...v1.0.138) (2024-01-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shell:** navigation menu slot in vc-app ([fc0c185](https://github.com/VirtoCommerce/vc-shell/commit/fc0c185b42ee34f39bee0cd14c2633416ea6d0c5))
@@ -3296,7 +3319,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.137](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.136...v1.0.137) (2024-01-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** refactored condition on route leave ([25f23e5](https://github.com/VirtoCommerce/vc-shell/commit/25f23e5311c4754e26c125f1ea717fe6d196a79b))
@@ -3304,14 +3327,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.136](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.135...v1.0.136) (2024-01-03)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** nested fields context reactivity fix ([9613105](https://github.com/VirtoCommerce/vc-shell/commit/9613105f6c1b4c7dc47b386203603763c75595b1))
 
 ## [1.0.135](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.134...v1.0.135) (2024-01-03)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** remove unused emitValue and emitLabel properties from MultivalueField.ts ([3edcf8b](https://github.com/VirtoCommerce/vc-shell/commit/3edcf8b3402a9379913d8f75baf815dc1c557fbe))
@@ -3321,7 +3344,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.134](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.133...v1.0.134) (2023-12-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shell:** refactor vc-notification component styling to support scrolling ([93345c5](https://github.com/VirtoCommerce/vc-shell/commit/93345c59d415d27dee20e3abc6642b3f2ea07da1))
@@ -3329,14 +3352,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.133](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.132...v1.0.133) (2023-12-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shell:** useMenuService permissions ([73ca465](https://github.com/VirtoCommerce/vc-shell/commit/73ca4650e2b4458e47b78c2a99e50003ce02c6bd))
 
 ## [1.0.132](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.131...v1.0.132) (2023-12-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shell:** added exposed component to toolbar:user-dropdown slot ([f136903](https://github.com/VirtoCommerce/vc-shell/commit/f1369035b3be01e11a167a1a29b6aa968913d130))
@@ -3362,7 +3385,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **shell:** interceptor method name fix ([293ba14](https://github.com/VirtoCommerce/vc-shell/commit/293ba14952c779141b6be417653e317afd2e98e9))
@@ -3373,18 +3396,18 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.129](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.128...v1.0.129) (2023-12-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **shell:** vc-card/vc-blade css update ([3f59f36](https://github.com/VirtoCommerce/vc-shell/commit/3f59f363b09777591f5d99a13127c7aab7142234))
-- **shell:** new navigation  menu css styles ([d6acd52](https://github.com/VirtoCommerce/vc-shell/commit/d6acd529fdeb57f47f91a982039edc8ece9cab4e))
+- **shell:** new navigation menu css styles ([d6acd52](https://github.com/VirtoCommerce/vc-shell/commit/d6acd529fdeb57f47f91a982039edc8ece9cab4e))
 - **shell:** Add postcss.config.cjs and notification components ([03418b8](https://github.com/VirtoCommerce/vc-shell/commit/03418b81b224d5a324698208f18160c9a309066d))
 - **shell:** auto global components ([5f40f38](https://github.com/VirtoCommerce/vc-shell/commit/5f40f385ba0d291af633de0e89b0c97d84059446))
 - **shell:** add router guards and HTTP interceptors to shell init file ([986148b](https://github.com/VirtoCommerce/vc-shell/commit/986148b44591417abcc397245a8259aa6e2af632))
 - **shell:** add usepopupinternal function and destroy method in usepopup composable ([119d15b](https://github.com/VirtoCommerce/vc-shell/commit/119d15bfd1d926336de44f3f0fd24672f337c7f1))
 - **shell:** add format fallback messages option to i18n plugin ([fe1135e](https://github.com/VirtoCommerce/vc-shell/commit/fe1135e7da33e080b25f3afe8c0d1190b8784af5))
 - **shell:** notifications templates improvements ([1a74a07](https://github.com/VirtoCommerce/vc-shell/commit/1a74a078df0ad004c90cdfec351644cb622d221d))
-- **dynamic:** added new validation methods from vee-validate, dynamic pages errors prevent,  fixes ([931440b](https://github.com/VirtoCommerce/vc-shell/commit/931440bc5ad218328274a6a832babdf9ae3fba74))
+- **dynamic:** added new validation methods from vee-validate, dynamic pages errors prevent, fixes ([931440b](https://github.com/VirtoCommerce/vc-shell/commit/931440bc5ad218328274a6a832babdf9ae3fba74))
 - **shell:** update common pages to new auth flow ([99364c2](https://github.com/VirtoCommerce/vc-shell/commit/99364c2db150c0496414c9215858a5653a7d938b))
 - **shell:** signalR connecting only when user authorized ([f9572de](https://github.com/VirtoCommerce/vc-shell/commit/f9572de42a4d38c3da858c6117804742f3cd37db))
 - **shell:** refactored useUser composable, 401 interceptor, get rid of tokens in some composables ([967626b](https://github.com/VirtoCommerce/vc-shell/commit/967626b4266b5b6271f4bc9f2b1eea8d6d7075e1))
@@ -3431,42 +3454,42 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** ability to add custom visibility method to columns schema ([68922fd](https://github.com/VirtoCommerce/vc-shell/commit/68922fda60310f1f85d5c34122248693897354e4))
 
 ## [1.0.127](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.126...v1.0.127) (2023-12-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** props pass to created component instance ([29331fb](https://github.com/VirtoCommerce/vc-shell/commit/29331fb60bacf142d48eccc1af117a0b8fc299dd))
 
 ## [1.0.126](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.125...v1.0.126) (2023-11-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **dynamic:** multivalueschema emitValue emitLabel type ([ecd5f61](https://github.com/VirtoCommerce/vc-shell/commit/ecd5f61fe3afbfc9c9685d6596223936f20e7e4c))
 
 ## [1.0.125](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.124...v1.0.125) (2023-11-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** vc-multivalue component for dynamic views ([9b9befc](https://github.com/VirtoCommerce/vc-shell/commit/9b9befc7b2caa3413c6af317322394e79f0cc9ad))
 
 ## [1.0.124](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.123...v1.0.124) (2023-11-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **framework:** Fix defaultValue assignment in vc-select.vue ([516a749](https://github.com/VirtoCommerce/vc-shell/commit/516a74980fb3c52ec1a322f19233fc5298a0f0fd))
 
 ## [1.0.123](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.122...v1.0.123) (2023-11-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **dynamic:** blade as dashboard widget ([fa660f5](https://github.com/VirtoCommerce/vc-shell/commit/fa660f5a1dd16e9fa805c6a4ae0bb2a9dc7e6a7b))
@@ -3477,7 +3500,7 @@ All notable changes to this monorepo will be documented in this file.
 - **framework:** vc-table pullToReload fix ([10007c5](https://github.com/VirtoCommerce/vc-shell/commit/10007c53f2a278a629efc780243c2abadb642cfa))
 ### Code Refactoring
 - **framework:** types change ([364fc8b](https://github.com/VirtoCommerce/vc-shell/commit/364fc8b1bccd888247daba8bfc98432fba12676f))
-- useAssets composable, assets-* components, gallery components ([1e83bf4](https://github.com/VirtoCommerce/vc-shell/commit/1e83bf4ae0570ed7afbe2323641cdd738d31dc88))
+- useAssets composable, assets-\* components, gallery components ([1e83bf4](https://github.com/VirtoCommerce/vc-shell/commit/1e83bf4ae0570ed7afbe2323641cdd738d31dc88))
 
 ## [1.0.122](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.121...v1.0.122) (2023-11-14)
 
@@ -3485,7 +3508,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.121](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.120...v1.0.121) (2023-11-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - strict type check in framework custom property binding in dynamic views Textfield dynamic component dynamic blade mounted state pass to composables ([4e46e67](https://github.com/VirtoCommerce/vc-shell/commit/4e46e679154da42b4f0194c193708ee581be2f1b))
@@ -3497,7 +3520,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.120](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.119...v1.0.120) (2023-11-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Reverts
 - vc-table TableItem type ([6b09d1f](https://github.com/VirtoCommerce/vc-shell/commit/6b09d1f5387fb26f34d1fdd7b3715c1404f54c9d))
@@ -3516,7 +3539,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.119](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.118...v1.0.119) (2023-11-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **framework:** vc-label truncate css ([78e34d3](https://github.com/VirtoCommerce/vc-shell/commit/78e34d30dbed8432ff5717d3e02df6c9a4f1eaa9))
@@ -3532,7 +3555,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.118](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.117...v1.0.118) (2023-11-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **@vc-shell/framework:** reorderable table in dynamic views ([eae2236](https://github.com/VirtoCommerce/vc-shell/commit/eae2236119cac231ed846bb32d0b9f6e50a7cc11))
@@ -3546,7 +3569,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.117](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.116...v1.0.117) (2023-11-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **@vc-shell/framework:** isWorkspace blade option ([8647e66](https://github.com/VirtoCommerce/vc-shell/commit/8647e66ab6eed51efbfcb1e8f01323fba5dd7579))
@@ -3560,7 +3583,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.115](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.114...v1.0.115) (2023-11-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **@vc-shell/framework:** updated tsconfigs ([921d000](https://github.com/VirtoCommerce/vc-shell/commit/921d000de8a0ca1b3eed4712eb5cc87e6d6a6616))
@@ -3592,14 +3615,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.114](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.113...v1.0.114) (2023-10-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-1215 expose in dynamic blade ([58cf7ef](https://github.com/VirtoCommerce/vc-shell/commit/58cf7effba8b48865373ce444fc2c7902ae16669))
 
 ## [1.0.113](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.111...v1.0.113) (2023-10-25)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **@vc-shell/api-client:** Replace .env variables to command line args ([4bcfade](https://github.com/VirtoCommerce/vc-shell/commit/4bcfade6f0eee7f6e2b74ed898d5b90da1198da8))
@@ -3618,7 +3641,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.111](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.110...v1.0.111) (2023-10-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - dynamic modules ([ed4af3a](https://github.com/VirtoCommerce/vc-shell/commit/ed4af3ad65e47b0d633d6e2eb23e9c90d73ff50d))
@@ -3637,7 +3660,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.110](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.109...v1.0.110) (2023-10-16)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-1215 vc-video ([52680f6](https://github.com/VirtoCommerce/vc-shell/commit/52680f6f2bd649d7226818f6432e605502ab9eab))
@@ -3676,7 +3699,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.102](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.101...v1.0.102) (2023-09-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - escape images url ([7bc4f95](https://github.com/VirtoCommerce/vc-shell/commit/7bc4f95a6718300d0fa158d17c08ef6bc3b61429))
@@ -3691,14 +3714,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.99](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.98...v1.0.99) (2023-09-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - encode/decode image url ([d0b32b1](https://github.com/VirtoCommerce/vc-shell/commit/d0b32b1d46a58eb3814ce0086244375df90c5f24))
 
 ## [1.0.98](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.97...v1.0.98) (2023-09-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - decode image url ([8ce7dbf](https://github.com/VirtoCommerce/vc-shell/commit/8ce7dbfeb9c8c675fe971a134736743357cdc9b7))
@@ -3713,14 +3736,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.95](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.94...v1.0.95) (2023-08-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - controls for multilang properties ([b07940d](https://github.com/VirtoCommerce/vc-shell/commit/b07940d02f97387929c0081b033f87185fa375b9))
 
 ## [1.0.94](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.93...v1.0.94) (2023-08-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - mltilang label, remove mltilang in vc-editor ([f3411bd](https://github.com/VirtoCommerce/vc-shell/commit/f3411bdde6bb61751a89ffa253c038aadfe22e36))
@@ -3744,14 +3767,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.89...v1.0.90) (2023-07-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - editor update on status change/val rule fix ([ad269a4](https://github.com/VirtoCommerce/vc-shell/commit/ad269a4a74a5d5539aa08d353367b11ecbf6b99b))
 
 ## [1.0.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.88...v1.0.89) (2023-07-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Code Refactoring
 - api (#188) ([139a9f4](https://github.com/VirtoCommerce/vc-shell/commit/139a9f4509df648dbd21c42f3247b94c03c745fc))
@@ -3763,7 +3786,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.87...v1.0.88) (2023-06-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - azure ([419830f](https://github.com/VirtoCommerce/vc-shell/commit/419830f01ea3e8d0c93779ebfb8725a7af551e9e))
@@ -3771,7 +3794,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.86...v1.0.87) (2023-06-26)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - navigation exact blade ([7a20053](https://github.com/VirtoCommerce/vc-shell/commit/7a20053705a5e98eeb9bdf3768ab45be113ba66a))
@@ -3782,7 +3805,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.85](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.84...v1.0.85) (2023-06-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - check permissions plugin ([cc65272](https://github.com/VirtoCommerce/vc-shell/commit/cc65272d933e29f427b1403df2bdd627b15dd1e6))
@@ -3822,14 +3845,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.77](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.76...v1.0.77) (2023-06-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - base url ([848feb7](https://github.com/VirtoCommerce/vc-shell/commit/848feb7e607cdfc6eb230e3c392ed4ca92457596))
 
 ## [1.0.76](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.75...v1.0.76) (2023-06-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - azure login ([bd2d822](https://github.com/VirtoCommerce/vc-shell/commit/bd2d8221f0e3a286fa944da4c7be7eda81786588))
@@ -3837,14 +3860,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.75](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.74...v1.0.75) (2023-06-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - forgotPassword condition ([428a339](https://github.com/VirtoCommerce/vc-shell/commit/428a33950bd2aa43b04a5112682032e6fddd7d2e))
 
 ## [1.0.74](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.73...v1.0.74) (2023-06-21)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - pass platformUrl to shell ([6265790](https://github.com/VirtoCommerce/vc-shell/commit/62657901ae6738883ed785e4f54507db85ba7d66))
@@ -3857,14 +3880,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.73](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.72...v1.0.73) (2023-06-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - vc-select generic ([8aca326](https://github.com/VirtoCommerce/vc-shell/commit/8aca3260cc1d5912f5c8063314d820b14078373e))
 
 ## [1.0.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.71...v1.0.72) (2023-06-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - blade nav last state, permissions ([d98144a](https://github.com/VirtoCommerce/vc-shell/commit/d98144a2e5f2b4241543f7624fc7d811aa3f951f))
@@ -3875,7 +3898,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.71](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.70...v1.0.71) (2023-06-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - error slot removed from blades ([9135daa](https://github.com/VirtoCommerce/vc-shell/commit/9135daa186236c6ee9b95ebe786b4fc532828bfb))
@@ -3884,9 +3907,9 @@ All notable changes to this monorepo will be documented in this file.
 - common pages moved to shell ([fca5967](https://github.com/VirtoCommerce/vc-shell/commit/fca5967bfa8fdfee09c043dfc565e8aa2534ada1))
 - select-all ([3e30fef](https://github.com/VirtoCommerce/vc-shell/commit/3e30fefb71f0e5319724f0487c4c01f049ae19ff))
 ### Bug Fixes
-- *ui* vc-popup condition fix ([f0a3866](https://github.com/VirtoCommerce/vc-shell/commit/f0a3866325b12bf4fbc7d68eb83d1692d4cb7cca))
+- _ui_ vc-popup condition fix ([f0a3866](https://github.com/VirtoCommerce/vc-shell/commit/f0a3866325b12bf4fbc7d68eb83d1692d4cb7cca))
 - navigation prevention fix ([fd94904](https://github.com/VirtoCommerce/vc-shell/commit/fd94904dc94d076dd690c41c18417e5e80dd2cc5))
-- *ui* vc-button text style ([58545cc](https://github.com/VirtoCommerce/vc-shell/commit/58545cc7955549a877e48cb8451e751490c564b3))
+- _ui_ vc-button text style ([58545cc](https://github.com/VirtoCommerce/vc-shell/commit/58545cc7955549a877e48cb8451e751490c564b3))
 - required blade in IBladeEvent interface ([b5197b2](https://github.com/VirtoCommerce/vc-shell/commit/b5197b26994291cb3cb8955626e7fff5154e2e73))
 ### Reverts
 - required blade in IBladeEvent ([61b1223](https://github.com/VirtoCommerce/vc-shell/commit/61b1223a3b4ce8a131a0ac58ec6c65ca18a053e8))
@@ -3909,7 +3932,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.70](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.69...v1.0.70) (2023-05-18)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - notifications template ([1af7c34](https://github.com/VirtoCommerce/vc-shell/commit/1af7c34e228a8c7f8f0cdffd4edce4ff00b5882c))
@@ -3943,7 +3966,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.69](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.68...v1.0.69) (2023-04-26)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - transition to yarn berry monorepo ([73a4da7](https://github.com/VirtoCommerce/vc-shell/commit/73a4da7905fffa030501175d76aeaa0f4caae99a))
@@ -3957,7 +3980,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.68](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.67...v1.0.68) (2023-04-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - blade error popup ([2ba0140](https://github.com/VirtoCommerce/vc-shell/commit/2ba0140bd2f79b5848ee5c5b096b02908135cdbe))
@@ -3982,49 +4005,49 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.67](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.66...v1.0.67) (2023-04-18)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - base prop in app-switcher ([b797317](https://github.com/VirtoCommerce/vc-shell/commit/b797317c72b89fca50814c5c84ca472640e3bf04))
 
 ## [1.0.66](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.65...v1.0.66) (2023-04-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - navigation fix ([5a0fd23](https://github.com/VirtoCommerce/vc-shell/commit/5a0fd23969922026b9fad467004dca89d4a9d105))
 
 ## [1.0.65](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.64...v1.0.65) (2023-04-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - navigation fix ([7e062d9](https://github.com/VirtoCommerce/vc-shell/commit/7e062d9cab016faa2a6341961f0c857d930d016b))
 
 ## [1.0.64](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.63...v1.0.64) (2023-04-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - querystring alias ([723bc10](https://github.com/VirtoCommerce/vc-shell/commit/723bc103687d07c350dd4a9720fe674a50e0e131))
 
 ## [1.0.63](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.62...v1.0.63) (2023-04-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - bulk delete in vc-table ([56e8a43](https://github.com/VirtoCommerce/vc-shell/commit/56e8a43dd079654a6ee6d45c1a543b9bbb591f36))
 
 ## [1.0.62](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.61...v1.0.62) (2023-04-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Reverts
 - vc-table without bulk delete ([ca2865b](https://github.com/VirtoCommerce/vc-shell/commit/ca2865bea4c5b9b72fc7b704dfc229f0762fa149))
 
 ## [1.0.61](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.60...v1.0.61) (2023-04-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - updated lerna and scripts ([0c73bc7](https://github.com/VirtoCommerce/vc-shell/commit/0c73bc70ed62932baf03d9e028f3d59dad056bf5))
@@ -4052,7 +4075,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.60](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.59...v1.0.60) (2023-03-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - pk-223 ([c93149c](https://github.com/VirtoCommerce/vc-shell/commit/c93149c4bf65d3a536d4a69b8905671b2a80eb30))
@@ -4061,7 +4084,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.59](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.58...v1.0.59) (2023-03-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - pk-217 ([198e733](https://github.com/VirtoCommerce/vc-shell/commit/198e733b4e3fb91082a1fd74d65dacabe7305f82))
@@ -4077,7 +4100,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.58](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.57...v1.0.58) (2023-03-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - assets manager/assets module, table fix ([e0d7e57](https://github.com/VirtoCommerce/vc-shell/commit/e0d7e572b2b8fa979895a4d6ab411cd82562e90f))
@@ -4086,7 +4109,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.57](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.56...v1.0.57) (2023-03-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - added row reordering to vc-table ([85188f7](https://github.com/VirtoCommerce/vc-shell/commit/85188f75270386d577210df077d479a678ecafe6))
@@ -4103,7 +4126,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.56](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.55...v1.0.56) (2023-03-20)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - new toolbar in vc-editor, image-loader ([72a48fe](https://github.com/VirtoCommerce/vc-shell/commit/72a48fe6372851cff0e73ee73dca715dbca04539))
@@ -4119,14 +4142,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.55](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.54...v1.0.55) (2023-03-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - table sorting/drag'n'drop/column edit ([e542e5c](https://github.com/VirtoCommerce/vc-shell/commit/e542e5c62f589d6d6a4e5d011289a0845bf1326b))
 
 ## [1.0.54](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.53...v1.0.54) (2023-03-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - global components refactoring, removed logger, new development flow, removed unnecessary deps ([e50bf7b](https://github.com/VirtoCommerce/vc-shell/commit/e50bf7b7b12287d278432a705971c761f847e16a))
@@ -4141,14 +4164,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.53](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.52...v1.0.53) (2023-03-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - types fix/revert unwanted changes ([bf00500](https://github.com/VirtoCommerce/vc-shell/commit/bf00500be7ecdfea1f190556f2d933c2173e66c9))
 
 ## [1.0.52](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.51...v1.0.52) (2023-03-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - fully typed components ([8776b3c](https://github.com/VirtoCommerce/vc-shell/commit/8776b3cae31c4014a7e12167ba345c1c2a2bdceb))
@@ -4162,14 +4185,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.51](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.50...v1.0.51) (2023-03-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - shared tailwind styles ([9f9be99](https://github.com/VirtoCommerce/vc-shell/commit/9f9be99aa0709d7f5e3a056e7298cb64af8940ef))
 
 ## [1.0.50](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.49...v1.0.50) (2023-03-01)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - fully typed components ([8776b3c](https://github.com/VirtoCommerce/vc-shell/commit/8776b3cae31c4014a7e12167ba345c1c2a2bdceb))
@@ -4181,7 +4204,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.49](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.48...v1.0.49) (2023-02-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - removed peer deps ([87312c4](https://github.com/VirtoCommerce/vc-shell/commit/87312c4f11ca4009e17e1f60793a63eed9142b59))
@@ -4197,7 +4220,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.48](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.47...v1.0.48) (2023-02-27)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **moment:** add precise duration formatting (#156) ([ab24d01](https://github.com/VirtoCommerce/vc-shell/commit/ab24d01380605a2c55b243853395574c1e4cf111))
@@ -4206,7 +4229,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.47](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.46...v1.0.47) (2023-02-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - fixed types ([88c89e2](https://github.com/VirtoCommerce/vc-shell/commit/88c89e20430bbd727827ba82ca3427f11aff0c1c))
@@ -4218,14 +4241,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.46](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.45...v1.0.46) (2023-02-16)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - tailwind blade fix ([ffdbf5a](https://github.com/VirtoCommerce/vc-shell/commit/ffdbf5a8ee00d4fb2a77d185b271dfbf048e9961))
 
 ## [1.0.45](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.44...v1.0.45) (2023-02-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - version up ([dd20390](https://github.com/VirtoCommerce/vc-shell/commit/dd203905f203990f31e1dd57c16ed6fe43ac0b4b))
@@ -4239,7 +4262,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.44](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.43...v1.0.44) (2023-02-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - version (#153) ([2a9b571](https://github.com/VirtoCommerce/vc-shell/commit/2a9b57151e66df6608e13dd101ce0844fe315f7e))
@@ -4250,21 +4273,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.42](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.41...v1.0.42) (2023-02-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - add composables for popular code duplicates (#152) ([da9d3f3](https://github.com/VirtoCommerce/vc-shell/commit/da9d3f300e43d536c563bb5ca1214ec8b54fefa3))
 
 ## [1.0.41](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.40...v1.0.41) (2023-01-20)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - extended customization ([07275b8](https://github.com/VirtoCommerce/vc-shell/commit/07275b862e8fddfe01ab9ceabca85f4e1449cace))
 
 ## [1.0.40](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.39...v1.0.40) (2023-01-17)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - extended customization ([f67cefc](https://github.com/VirtoCommerce/vc-shell/commit/f67cefcd836868cf2e24df3313eb3edc3bfd2635))
@@ -4277,7 +4300,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.39](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.38...v1.0.39) (2022-12-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - completed validation refactoring ([5d673fc](https://github.com/VirtoCommerce/vc-shell/commit/5d673fc2a3fdf8cc239171bf94b70ca621268a8e))
@@ -4288,7 +4311,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.38](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.37...v1.0.38) (2022-12-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - navigation and component types, fixes and improvements ([de303e0](https://github.com/VirtoCommerce/vc-shell/commit/de303e0519e9212e692501132257903e88572d4f))
@@ -4321,7 +4344,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.35](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.34...v1.0.35) (2022-11-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - remove unwanted gitHead ([3ec4f11](https://github.com/VirtoCommerce/vc-shell/commit/3ec4f115d030375da0b1675be645bad43ee9c544))
@@ -4333,7 +4356,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.34](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.33...v1.0.34) (2022-11-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - request refactoring ([415131a](https://github.com/VirtoCommerce/vc-shell/commit/415131a5874ed14886ffb6398e2cad9606162fbf))
@@ -4344,7 +4367,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.33](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.32...v1.0.33) (2022-10-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - vuedraggable fix ([cbeeaae](https://github.com/VirtoCommerce/vc-shell/commit/cbeeaae13805b4b933b1bdb696585eb208aed445))
@@ -4352,7 +4375,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.32](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.31...v1.0.32) (2022-10-20)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - api client generation ([a8919a0](https://github.com/VirtoCommerce/vc-shell/commit/a8919a014f17bd1a737b6f4ff151fbdb4ced3ebb))
@@ -4363,7 +4386,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.30](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.29...v1.0.30) (2022-10-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - full lib content to npm ([28cc487](https://github.com/VirtoCommerce/vc-shell/commit/28cc4874abb7806e073c976cd12baf1f8bd22f1a))
@@ -4375,7 +4398,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.29](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.28...v1.0.29) (2022-10-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - rating component (#136) ([f3ea347](https://github.com/VirtoCommerce/vc-shell/commit/f3ea3478eecd2e5f4bcc058c9569597b6c5c77ff))
@@ -4383,7 +4406,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.28](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.27...v1.0.28) (2022-10-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - merge autosave ([8cb20db](https://github.com/VirtoCommerce/vc-shell/commit/8cb20dbd45e990cadcf8eb3b28e4bf463135c397))
@@ -4392,21 +4415,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.27](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.26...v1.0.27) (2022-10-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - fix sharing auth data ([6493fc1](https://github.com/VirtoCommerce/vc-shell/commit/6493fc1691925e9dc91061428f42c3e8fbfbe35a))
 
 ## [1.0.26](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.25...v1.0.26) (2022-10-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - local storage auth key ([5d999d6](https://github.com/VirtoCommerce/vc-shell/commit/5d999d60cf465bca29db559a9ea9312857f9ecb2))
 
 ## [1.0.25](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.24...v1.0.25) (2022-10-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - share auth data between platform manager and custom apps ([c466d00](https://github.com/VirtoCommerce/vc-shell/commit/c466d00b341e8e3d9dc7d6861449daad64d9b1c7))
@@ -4417,7 +4440,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.23](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.22...v1.0.23) (2022-10-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - rename virto-shell -> virtocommerce ([ba74f8f](https://github.com/VirtoCommerce/vc-shell/commit/ba74f8fb7fcb61744f2348e8521dfae77775418b))
@@ -4434,7 +4457,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.21](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.20...v1.0.21) (2022-09-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/vc-shell/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
@@ -4455,7 +4478,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.17](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.16...v1.0.17) (2022-08-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - permissions fix ([d53c3c3](https://github.com/VirtoCommerce/vc-shell/commit/d53c3c39196e9a8aa5dac6b223bbfb81b5a5f54c))
@@ -4466,7 +4489,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.14](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.13...v1.0.14) (2022-08-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - version up ([85d5ab5](https://github.com/VirtoCommerce/vc-shell/commit/85d5ab59926cc4fe8c2e6464a0d6cb1e849c975d))
@@ -4498,7 +4521,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.13](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.12...v1.0.13) (2022-07-14)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - product details improvements (#120) ([199455c](https://github.com/VirtoCommerce/vc-shell/commit/199455c88ff1b932d2ab5e79a0f40485cdb5e181))
@@ -4510,7 +4533,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [1.0.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.10...v1.0.11) (2022-07-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - org page ([9aa669f](https://github.com/VirtoCommerce/vc-shell/commit/9aa669f2430857f1d599e8b57425ad2ba7d8758a))
@@ -4586,7 +4609,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.1.14](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.13...v0.1.14) (2022-04-15)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - cli config generation lib ([4630d4f](https://github.com/VirtoCommerce/vc-shell/commit/4630d4f055e8300eaf69d8e0f5ac94fa31c91703))
@@ -4650,7 +4673,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.123](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.122...v0.0.123) (2022-03-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - dynamic name fix ([b083495](https://github.com/VirtoCommerce/vc-shell/commit/b0834951087f720562f28fc78a28a69ea0e65cb9))
@@ -4739,7 +4762,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.101](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.100...v0.0.101) (2021-12-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - **ui:** deps ([3b5a375](https://github.com/VirtoCommerce/vc-shell/commit/3b5a375f5794cf1c87d042f0e541f3badfe66f47))
@@ -4782,7 +4805,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.91](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.90...v0.0.91) (2021-12-03)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-271 removed currency sign ([579257b](https://github.com/VirtoCommerce/vc-shell/commit/579257bab5ba9b44cb59590f6c989cbb81c16444))
@@ -4797,14 +4820,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.89](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.88...v0.0.89) (2021-12-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - vm-100 tooltip disabled state ([f7c5527](https://github.com/VirtoCommerce/vc-shell/commit/f7c55271dafb439a44a59683389c007a92f7ae2b))
 
 ## [0.0.88](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.87...v0.0.88) (2021-12-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-100 fix: vm-336 ([3533d23](https://github.com/VirtoCommerce/vc-shell/commit/3533d234d4ded877fb3eecaa3046d2738fda2d8c))
@@ -4823,14 +4846,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.86](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.85...v0.0.86) (2021-12-01)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - build failure ([9911a30](https://github.com/VirtoCommerce/vc-shell/commit/9911a307973c6a55b324f857a577afec4c54a669))
 
 ## [0.0.85](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.84...v0.0.85) (2021-12-01)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - vm-346, vm-280, vm-267 ([5859b36](https://github.com/VirtoCommerce/vc-shell/commit/5859b36b1e88414e83a36589b3ae0c4f95763d93))
@@ -4838,49 +4861,49 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.84](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.83...v0.0.84) (2021-11-26)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - signalr push notifications ([3a4e327](https://github.com/VirtoCommerce/vc-shell/commit/3a4e32707147ae36f91648242d7db12d83ee367e))
 
 ## [0.0.83](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.82...v0.0.83) (2021-11-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - dynamic property select search ([02b7726](https://github.com/VirtoCommerce/vc-shell/commit/02b77266eed60282fe2cb6591344d77439f287ce))
 
 ## [0.0.82](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.81...v0.0.82) (2021-11-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - signalr integration (WIP) ([1db00e8](https://github.com/VirtoCommerce/vc-shell/commit/1db00e835c2a6a62338d62934da317aa8c1ddf98))
 
 ## [0.0.81](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.80...v0.0.81) (2021-11-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - vm-320, 330, 331, 332, 333 ([21a8fa5](https://github.com/VirtoCommerce/vc-shell/commit/21a8fa54ec28a854b3ad039a47340f058ed52706))
 
 ## [0.0.80](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.79...v0.0.80) (2021-11-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vc-widget disabled state, vc-gallery disabled state, vc-table row highlight ([a87dc75](https://github.com/VirtoCommerce/vc-shell/commit/a87dc7544d89cec7bc7f6de50d2c9d5185db0fe7))
 
 ## [0.0.79](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.78...v0.0.79) (2021-11-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - download invoice + some minor UI bug fixes ([bbb6cca](https://github.com/VirtoCommerce/vc-shell/commit/bbb6cca09895d24420d7184354efaf8f7db7722f))
 
 ## [0.0.78](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.77...v0.0.78) (2021-11-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - multivalue fields, table cell templates ([0096eda](https://github.com/VirtoCommerce/vc-shell/commit/0096eda8c565db8d69255d0c7232469dce5a658e))
@@ -4891,14 +4914,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.76](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.75...v0.0.76) (2021-11-18)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - offer tier prices ([f19f6e9](https://github.com/VirtoCommerce/vc-shell/commit/f19f6e9ce2a9927f2a6b5b4d64f9dfd9b8ee93a0))
 
 ## [0.0.75](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.74...v0.0.75) (2021-11-18)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - properties validation ([6ae2d66](https://github.com/VirtoCommerce/vc-shell/commit/6ae2d668814ea02ee81d459b75e218a9a18f8e4b))
@@ -4911,7 +4934,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.73](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.71...v0.0.73) (2021-11-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - tier prices for offer ([1531a61](https://github.com/VirtoCommerce/vc-shell/commit/1531a6152ff1023a41c92f84ceb6cf01e8d1b115))
@@ -4922,14 +4945,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.70](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.69...v0.0.70) (2021-11-08)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-283, vm-284, vm-285, vm-286, vm-287, vm-288, vm-289, vm-290, vm-291, vm-292, vm-293 ([55541a8](https://github.com/VirtoCommerce/vc-shell/commit/55541a8fa355999cdc9a222d2e79723e387b618e))
 
 ## [0.0.69](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.68...v0.0.69) (2021-11-03)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - dynamic select properties ([b19e44e](https://github.com/VirtoCommerce/vc-shell/commit/b19e44e09cb7ddb430d31069ffb1d6d9b78e6822))
@@ -4940,42 +4963,42 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.67](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.66...v0.0.67) (2021-11-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - mobile dashboard, image dnd upload ([eae8508](https://github.com/VirtoCommerce/vc-shell/commit/eae85084a41dad38dc2d5dea26aedc53ebd5a2e1))
 
 ## [0.0.66](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.65...v0.0.66) (2021-11-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - new product details ui, vc-card collapsable ([3f2d1b4](https://github.com/VirtoCommerce/vc-shell/commit/3f2d1b4eaeacfb032399b7fd8abedf252d7693a7))
 
 ## [0.0.65](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.64...v0.0.65) (2021-11-01)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - new dashboard ([28c7d82](https://github.com/VirtoCommerce/vc-shell/commit/28c7d824b49147be20215301f091253467e35b16))
 
 ## [0.0.64](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.63...v0.0.64) (2021-10-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - active row highlight ([cc4f7f9](https://github.com/VirtoCommerce/vc-shell/commit/cc4f7f90d0aad690aa9cac5f1e52b5c027964ed4))
 
 ## [0.0.63](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.62...v0.0.63) (2021-10-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - filter counter ([15c6bab](https://github.com/VirtoCommerce/vc-shell/commit/15c6babdf294591c627ad27df570507a3585f57b))
 
 ## [0.0.62](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.61...v0.0.62) (2021-10-28)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - filters ([2a89cf8](https://github.com/VirtoCommerce/vc-shell/commit/2a89cf872729667cbaa1c9457eadb0fbee2a0018))
@@ -4983,28 +5006,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.61](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.60...v0.0.61) (2021-10-26)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - dashboard ([683f65a](https://github.com/VirtoCommerce/vc-shell/commit/683f65ac6d01b974dc05d931f62277891688ef1f))
 
 ## [0.0.60](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.59...v0.0.60) (2021-10-22)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - order details page ([b8fe53d](https://github.com/VirtoCommerce/vc-shell/commit/b8fe53d7282a6e0381af5eedbf272001a63b3ba9))
 
 ## [0.0.59](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.58...v0.0.59) (2021-10-20)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - seller accept invitation form ([8f5d5b9](https://github.com/VirtoCommerce/vc-shell/commit/8f5d5b9cae6a0c057b1831a48fc41fae13792f00))
 
 ## [0.0.58](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.57...v0.0.58) (2021-10-20)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - orders edit and additional components ([e8cf8a3](https://github.com/VirtoCommerce/vc-shell/commit/e8cf8a3333664c8d326fdd5df28a2fd9981c550a))
@@ -5016,21 +5039,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.56](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.55...v0.0.56) (2021-10-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - password field unhide ([2e6deb0](https://github.com/VirtoCommerce/vc-shell/commit/2e6deb01657515c3128ec62c287ecbda5ef92e9e))
 
 ## [0.0.55](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.54...v0.0.55) (2021-10-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - new icons, ptr improvements, offers list ptr ([fe0438b](https://github.com/VirtoCommerce/vc-shell/commit/fe0438b6c43b9a0d4baa52293e619c645c2f6f8d))
 
 ## [0.0.54](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.53...v0.0.54) (2021-10-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - some smooth animations ([79f2aad](https://github.com/VirtoCommerce/vc-shell/commit/79f2aadac40f91ef76f9efc484d37184a47c2b95))
@@ -5039,7 +5062,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.53](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.52...v0.0.53) (2021-10-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - scroll ptr, menu styling ([4eff9a0](https://github.com/VirtoCommerce/vc-shell/commit/4eff9a0fffc9feef8dbad433d210f0537702efd2))
@@ -5054,7 +5077,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.50](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.49...v0.0.50) (2021-10-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - list mobile actions ([c269a88](https://github.com/VirtoCommerce/vc-shell/commit/c269a88b9ca304520b9157a51ccd4c602fd0059b))
@@ -5062,7 +5085,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.49](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.48...v0.0.49) (2021-10-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - mobile extended actions, vendor-portal detached ([c92a317](https://github.com/VirtoCommerce/vc-shell/commit/c92a31743ded9788c939641ccff9922328b6f2f6))
@@ -5073,7 +5096,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.47](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.46...v0.0.47) (2021-10-06)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - filters and swipe actions ([a463ad5](https://github.com/VirtoCommerce/vc-shell/commit/a463ad59519925ea5fd1ee2f90d45e85d5ef2008))
@@ -5084,7 +5107,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.45](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.44...v0.0.45) (2021-09-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - validation ([43a7ab9](https://github.com/VirtoCommerce/vc-shell/commit/43a7ab96c5dd302f5960a6b2e55f5460a547d82c))
@@ -5093,7 +5116,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.44](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.43...v0.0.44) (2021-09-29)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vc-select update ([5188c4b](https://github.com/VirtoCommerce/vc-shell/commit/5188c4bc60df3cac4a446d95d70d384903090171))
@@ -5107,7 +5130,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.43](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.42...v0.0.43) (2021-09-24)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - product list update on changes ([198731f](https://github.com/VirtoCommerce/vc-shell/commit/198731ff5b8b5a0539ccca5c4998bb02f2d5b4fb))
@@ -5122,21 +5145,21 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.41](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.40...v0.0.41) (2021-09-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - apply new statuses matrix ([31f2ab0](https://github.com/VirtoCommerce/vc-shell/commit/31f2ab0fa9ee28491cb43d993a56be2a86ff835e))
 
 ## [0.0.40](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.39...v0.0.40) (2021-09-23)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - product list connect to Api ([53bb711](https://github.com/VirtoCommerce/vc-shell/commit/53bb7119dd0603cb136024a35ff66cb47cfd8248))
 
 ## [0.0.39](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.38...v0.0.39) (2021-09-13)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-94 - gallery component ([ee288e2](https://github.com/VirtoCommerce/vc-shell/commit/ee288e2107771e8ae6787fbd3bdbf03fd4ef3b4a))
@@ -5145,7 +5168,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.38](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.37...v0.0.38) (2021-09-09)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - repository-level storybook ([436addd](https://github.com/VirtoCommerce/vc-shell/commit/436addda5f2b546e780ae895f9316b52447b5fc1))
@@ -5153,28 +5176,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.37](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.36...v0.0.37) (2021-09-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-20 offers list ([ebafb36](https://github.com/VirtoCommerce/vc-shell/commit/ebafb36bb151f28f4415e5ebb4223d029514e90a))
 
 ## [0.0.36](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.35...v0.0.36) (2021-09-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-97 extended products ([496db62](https://github.com/VirtoCommerce/vc-shell/commit/496db62414726df80561945f80d8957c543c00c3))
 
 ## [0.0.35](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.34...v0.0.35) (2021-09-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-97 extended products ([cab5998](https://github.com/VirtoCommerce/vc-shell/commit/cab5998e2254a2c5d810e3e0e28dc3dc4b8ed8e0))
 
 ## [0.0.34](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.33...v0.0.34) (2021-09-07)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-97 extended products ([b617328](https://github.com/VirtoCommerce/vc-shell/commit/b617328ccac90cf84b59d7f31f901b51ad2f41ff))
@@ -5184,7 +5207,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.33](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.32...v0.0.33) (2021-09-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-14 - multiple components improved ([41cd1a3](https://github.com/VirtoCommerce/vc-shell/commit/41cd1a305740d9dafa5e621c607583e0f18c6e48))
@@ -5192,7 +5215,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.32](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.31...v0.0.32) (2021-08-31)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-35 table sorting ([e26abf5](https://github.com/VirtoCommerce/vc-shell/commit/e26abf5eb21fe928d379282c1df5269c82b9b877))
@@ -5204,14 +5227,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.31](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.30...v0.0.31) (2021-08-30)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - vm-31 table display ([ebb2924](https://github.com/VirtoCommerce/vc-shell/commit/ebb292476ddf010d69fac361eef9ffb8045fdc0a))
 
 ## [0.0.30](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.29...v0.0.30) (2021-08-26)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** component relocation ([54caaea](https://github.com/VirtoCommerce/vc-shell/commit/54caaeaf105a6582917db29fa5d8bb34a0f16f62))
@@ -5230,7 +5253,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.29](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.28...v0.0.29) (2021-08-20)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **core:** additional dependencies for API connecton ([6d77562](https://github.com/VirtoCommerce/vc-shell/commit/6d77562d0509544248e2d9494f89ec4960b6d52a))
@@ -5240,7 +5263,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.28](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.27...v0.0.28) (2021-08-19)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **app-demo-manager:** order blade ([72e2efe](https://github.com/VirtoCommerce/vc-shell/commit/72e2efe64aea0fdecf7ddfcd9cfc6766eafa89c0))
@@ -5255,28 +5278,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.25](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.24...v0.0.25) (2021-08-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - sample workspace with blade ([1c772fc](https://github.com/VirtoCommerce/vc-shell/commit/1c772fcfa09311f38dfb68c4c16345caf2372d38))
 
 ## [0.0.24](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.23...v0.0.24) (2021-08-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** some codestyle improvements ([443fcc4](https://github.com/VirtoCommerce/vc-shell/commit/443fcc4b4e0e9030365cf0eb5d0325358cd88f1d))
 
 ## [0.0.23](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.22...v0.0.23) (2021-08-12)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-icon component update ([1c7d84f](https://github.com/VirtoCommerce/vc-shell/commit/1c7d84f01dbe782d7709779becb9bd3ae646ef31))
 
 ## [0.0.22](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.21...v0.0.22) (2021-08-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-tooltip component ([82face9](https://github.com/VirtoCommerce/vc-shell/commit/82face9ce96889aad8dfc83cba4db059997c76c0))
@@ -5288,14 +5311,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.21](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.20...v0.0.21) (2021-08-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** storybook static assets ([6794188](https://github.com/VirtoCommerce/vc-shell/commit/679418826ba785a817e0c5b33950564ed64cc73f))
 
 ## [0.0.20](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.19...v0.0.20) (2021-08-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-breadcrumbs-item component ([062d653](https://github.com/VirtoCommerce/vc-shell/commit/062d6532c8bfd07bf170d63e7224ea606b92e637))
@@ -5310,14 +5333,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.19](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.18...v0.0.19) (2021-08-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-blade-header component ([80207b2](https://github.com/VirtoCommerce/vc-shell/commit/80207b2a2f7c417cbf572230f4eaf36513ec7f40))
 
 ## [0.0.18](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.17...v0.0.18) (2021-08-11)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-thumbnail component ([fa00029](https://github.com/VirtoCommerce/vc-shell/commit/fa00029729c20ec4c5e73862f13df6200e7cfb02))
@@ -5326,14 +5349,14 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.17](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.16...v0.0.17) (2021-08-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - login component style minor update ([244e147](https://github.com/VirtoCommerce/vc-shell/commit/244e1476f610dc28ceb5d7582573a33491fbb2c5))
 
 ## [0.0.16](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.15...v0.0.16) (2021-08-10)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - **ui:** vc-button component ([98fa9c3](https://github.com/VirtoCommerce/vc-shell/commit/98fa9c35309ff80a8c8f190bba1e73b7edd22e85))
@@ -5350,28 +5373,28 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.14](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.13...v0.0.14) (2021-08-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - workspace layout WIP ([1edc014](https://github.com/VirtoCommerce/vc-shell/commit/1edc014b320c1f57b7a83d2bc7150f3a834d7724))
 
 ## [0.0.13](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.12...v0.0.13) (2021-08-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - login form ([8acb2c6](https://github.com/VirtoCommerce/vc-shell/commit/8acb2c6bc58c1c9355293a1c514a0a777e7fc65c))
 
 ## [0.0.12](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.11...v0.0.12) (2021-08-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Bug Fixes
 - storybook build pipeline ([c27dba0](https://github.com/VirtoCommerce/vc-shell/commit/c27dba0e054e85a8a7f5539d2e09f864cd3dfd50))
 
 ## [0.0.11](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.10...v0.0.11) (2021-08-05)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - login form and route guarding ([78813af](https://github.com/VirtoCommerce/vc-shell/commit/78813afc10753f4972d2e120c3ea48295131b2ed))
@@ -5383,7 +5406,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.9](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.8...v0.0.9) (2021-08-04)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/vc-shell/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
@@ -5392,7 +5415,7 @@ All notable changes to this monorepo will be documented in this file.
 
 ## [0.0.8](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.7...v0.0.8) (2021-08-02)
 
-### Framework (@vc-shell/framework)
+### VC-Shell Framework (@vc-shell/framework)
 
 ### Features
 - new folder structure ([caa6712](https://github.com/VirtoCommerce/vc-shell/commit/caa67129423a8cde15212961ee0cbfed9ac08b53))

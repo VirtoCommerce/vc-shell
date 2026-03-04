@@ -18,9 +18,9 @@
 
   <!-- Expander column body (expand/collapse button) -->
   <template v-else-if="column.props.expander">
-    <button
-      type="button"
-      class="vc-cell-renderer__expander-btn"
+    <VcButton
+      variant="ghost"
+      size="icon-sm"
       :data-is-expanded="isExpanded"
       @click.stop="$emit('expand-toggle', $event)"
     >
@@ -28,7 +28,7 @@
         :class="isExpanded ? expandedIcon : collapsedIcon"
         class="vc-cell-renderer__expander-icon"
       />
-    </button>
+    </VcButton>
   </template>
 
   <!-- Row reorder column: empty placeholder (handle is rendered by TableRow) -->
@@ -40,29 +40,29 @@
   <template v-else-if="column.props.rowEditor">
     <div class="vc-cell-renderer__row-editor">
       <template v-if="isRowEditing">
-        <button
-          type="button"
-          class="vc-cell-renderer__row-editor-btn vc-cell-renderer__row-editor-btn--save"
+        <VcButton
+          variant="success"
+          size="icon-sm"
           @click.stop="$emit('row-save')"
         >
           ✓
-        </button>
-        <button
-          type="button"
-          class="vc-cell-renderer__row-editor-btn vc-cell-renderer__row-editor-btn--cancel"
+        </VcButton>
+        <VcButton
+          variant="danger"
+          size="icon-sm"
           @click.stop="$emit('row-cancel')"
         >
           ✕
-        </button>
+        </VcButton>
       </template>
       <template v-else>
-        <button
-          type="button"
-          class="vc-cell-renderer__row-editor-btn vc-cell-renderer__row-editor-btn--edit"
+        <VcButton
+          variant="outline"
+          size="icon-sm"
           @click.stop="$emit('row-edit')"
         >
           ✎
-        </button>
+        </VcButton>
       </template>
     </div>
   </template>
@@ -133,6 +133,7 @@ import { get } from "lodash-es";
 import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 import TableCheckbox from "@ui/components/organisms/vc-table/components/TableCheckbox.vue";
 import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
+import { VcButton } from "@ui/components/atoms/vc-button";
 import DynamicCellRenderer from "@ui/components/organisms/vc-table/components/cells/DynamicCellRenderer.vue";
 import { SlotProxy } from "@ui/components/organisms/vc-table/components/_internal/SlotProxy";
 
@@ -346,12 +347,6 @@ const handleCellBlur = (_payload: { row: number | undefined; field: string }) =>
     @apply focus:tw-border-primary-500 focus:tw-ring-1 focus:tw-ring-primary-200;
   }
 
-  &__expander-btn {
-    @apply tw-flex tw-items-center tw-justify-center tw-w-6 tw-h-6 tw-rounded tw-cursor-pointer tw-transition-colors;
-    @apply tw-bg-transparent tw-border-0;
-    @apply hover:tw-bg-neutrals-100;
-  }
-
   &__expander-icon {
     @apply tw-text-neutrals-500 tw-text-xs;
   }
@@ -363,34 +358,6 @@ const handleCellBlur = (_payload: { row: number | undefined; field: string }) =>
 
   &__row-editor {
     @apply tw-flex tw-gap-1 tw-justify-center tw-items-center;
-  }
-
-  &__row-editor-btn {
-    @apply tw-w-7 tw-h-7 tw-flex tw-items-center tw-justify-center tw-rounded tw-border tw-cursor-pointer tw-transition-colors;
-
-    &--edit {
-      @apply tw-border-neutrals-300 tw-bg-additional-50 tw-text-neutrals-600;
-
-      &:hover {
-        @apply tw-bg-neutrals-100 tw-border-neutrals-400;
-      }
-    }
-
-    &--save {
-      @apply tw-border-success-300 tw-bg-success-50 tw-text-success-600;
-
-      &:hover {
-        @apply tw-bg-success-100 tw-border-success-400;
-      }
-    }
-
-    &--cancel {
-      @apply tw-border-danger-300 tw-bg-danger-50 tw-text-danger-600;
-
-      &:hover {
-        @apply tw-bg-danger-100 tw-border-danger-400;
-      }
-    }
   }
 }
 </style>

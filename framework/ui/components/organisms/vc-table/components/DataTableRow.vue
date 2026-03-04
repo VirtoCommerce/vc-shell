@@ -40,6 +40,7 @@
       <TableCell
         v-if="showSelectionCell"
         class="vc-data-table__selection-cell"
+        :line-clamp="0"
         @click.stop
       >
         <TableCheckbox

@@ -5694,7 +5694,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@npm:^1.2.4-beta.8, @vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@npm:^1.2.4-beta.8":
+  version: 1.2.4-beta.8
+  resolution: "@vc-shell/api-client-generator@npm:1.2.4-beta.8"
+  dependencies:
+    chalk: "npm:^2.4.2"
+    cross-spawn: "npm:^7.0.3"
+    mri: "npm:^1.2.0"
+    nswag: "npm:^14.6.3"
+    vite: "npm:^6.3.3"
+    vite-plugin-dts: "npm:^3.6.4"
+  bin:
+    api-client-generator: dist/api-client-generator.js
+  checksum: 10/9ac9cad71bf340aa2d786ad4265a561210a269d0e0758b642eb20a4eb48cc4fac4f4a70a6b7f49f6490b1393c595c5a81e88b193502c1b4d4550ec871ec689f6
+  languageName: node
+  linkType: hard
+
+"@vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -5712,7 +5728,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@npm:^1.2.4-beta.8, @vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
+"@vc-shell/config-generator@npm:^1.2.4-beta.8":
+  version: 1.2.4-beta.8
+  resolution: "@vc-shell/config-generator@npm:1.2.4-beta.8"
+  dependencies:
+    "@vitejs/plugin-vue": "npm:^5.2.3"
+    vite: "npm:^6.3.3"
+    vite-plugin-checker: "npm:^0.9.1"
+    vite-plugin-circular-dependency: "npm:^0.5.0"
+    vite-plugin-mkcert: "npm:^1.17.1"
+    vue: "npm:^3.5.13"
+  checksum: 10/112199367839e663072d0e386d397eb12be08287570235241e8529208b597b6e16db58ed6e679ad6a2d90c67c8017e3f7fdf4d33c807ee00ff7af37a7ef649ee
+  languageName: node
+  linkType: hard
+
+"@vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:configs/vite-config"
   dependencies:
@@ -5751,7 +5781,65 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@npm:^1.2.4-beta.8, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@npm:^1.2.4-beta.8":
+  version: 1.2.4-beta.8
+  resolution: "@vc-shell/framework@npm:1.2.4-beta.8"
+  dependencies:
+    "@floating-ui/dom": "npm:^1.7.4"
+    "@floating-ui/vue": "npm:^1.0.6"
+    "@fontsource/plus-jakarta-sans": "npm:^5.1.0"
+    "@fortawesome/fontawesome-free": "npm:^6.7.2"
+    "@headlessui/vue": "npm:^1.7.19"
+    "@material-symbols/font-300": "npm:^0.32.0"
+    "@microsoft/signalr": "npm:^8.0.0"
+    "@tiptap/core": "npm:^3.4.2"
+    "@tiptap/extension-font-size": "npm:^3.0.0-next.3"
+    "@tiptap/extension-image": "npm:^3.4.2"
+    "@tiptap/extension-link": "npm:^3.4.2"
+    "@tiptap/extension-placeholder": "npm:^3.4.2"
+    "@tiptap/extension-table": "npm:^3.4.2"
+    "@tiptap/extension-table-cell": "npm:^3.4.2"
+    "@tiptap/extension-table-header": "npm:^3.4.2"
+    "@tiptap/extension-table-row": "npm:^3.4.2"
+    "@tiptap/extension-text-style": "npm:^3.4.2"
+    "@tiptap/extension-underline": "npm:^3.4.2"
+    "@tiptap/extensions": "npm:^3.4.2"
+    "@tiptap/pm": "npm:^3.4.2"
+    "@tiptap/starter-kit": "npm:^3.4.2"
+    "@tiptap/vue-3": "npm:^3.4.2"
+    "@unovis/ts": "npm:^1.6.4"
+    "@unovis/vue": "npm:^1.6.4"
+    "@vee-validate/i18n": "npm:^4.12.4"
+    "@vee-validate/rules": "npm:^4.12.4"
+    "@vuepic/vue-datepicker": "npm:^11.0.2"
+    "@vueuse/components": "npm:^10.7.1"
+    "@vueuse/core": "npm:^10.7.1"
+    "@vueuse/integrations": "npm:^10.7.1"
+    bootstrap-icons: "npm:^1.11.3"
+    core-js: "npm:^3.35.0"
+    date-fns: "npm:^4.1.0"
+    dompurify: "npm:^3.0.11"
+    gridstack: "npm:^12.4.2"
+    iso-639-1: "npm:^3.1.0"
+    lucide-vue-next: "npm:^0.503.0"
+    normalize.css: "npm:^8.0.1"
+    swiper: "npm:^11.2.10"
+    tiptap-markdown: "npm:^0.9.0"
+    truncate-html: "npm:^1.1.1"
+    vee-validate: "npm:^4.12.4"
+    vue: "npm:^3.5.13"
+    vue-currency-input: "npm:^3.0.5"
+    vue-i18n: "npm:^11.1.11"
+    vue-router: "npm:^4.2.5"
+    vue3-application-insights: "npm:^1.1.0"
+    vue3-touch-events: "npm:^4.1.8"
+    web-vitals: "npm:^5.1.0"
+    whatwg-fetch: "npm:^3.6.19"
+  checksum: 10/8383c90b5d572d39011f9026ac69baff59773992799cf8f4ea5b47b209bd346789f0c360547822de732dc632082ab9144996d0ed972892ea8327fcca0e0712d4
+  languageName: node
+  linkType: hard
+
+"@vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -5828,7 +5916,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/release-config@npm:^1.2.4-beta.8, @vc-shell/release-config@workspace:configs/release-config":
+"@vc-shell/release-config@npm:^1.2.4-beta.8":
+  version: 1.2.4-beta.8
+  resolution: "@vc-shell/release-config@npm:1.2.4-beta.8"
+  dependencies:
+    chalk: "npm:^2.4.2"
+    conventional-changelog-cli: "npm:^5.0.0"
+    cross-spawn: "npm:^7.0.3"
+    lerna: "npm:^9.0.0"
+    mri: "npm:^1.2.0"
+    prompts: "npm:^2.4.2"
+    semver: "npm:^7.5.4"
+  bin:
+    vc-generate-changelogs: dist/cli-generate-changelogs.js
+  checksum: 10/5d369039ce1ad9f49276c0781a24978dbe3e7315c01bc1177bb2d68e4f9e7311e240e53a0be5f5dbe21ee391cc3c155c445bba961cfa471eef37aa15e48640ab
+  languageName: node
+  linkType: hard
+
+"@vc-shell/release-config@workspace:configs/release-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/release-config@workspace:configs/release-config"
   dependencies:
@@ -5926,7 +6031,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@npm:^1.2.4-beta.8, @vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
+"@vc-shell/ts-config@npm:^1.2.4-beta.8":
+  version: 1.2.4-beta.8
+  resolution: "@vc-shell/ts-config@npm:1.2.4-beta.8"
+  checksum: 10/666b4be8557dd580483d05921bfabb3b63ee1216a079098902f5b465044fbeb976515cae0a96d8b4eb1feb7d10e2f29df6421c82e794e573cff190b067912c10
+  languageName: node
+  linkType: hard
+
+"@vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/ts-config@workspace:configs/ts-config"
   languageName: unknown

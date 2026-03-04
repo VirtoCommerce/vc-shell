@@ -1830,6 +1830,12 @@ onBeforeUnmount(() => {
     min-width: 40px;
     max-width: 40px;
     width: 40px;
+    // Override overflow:hidden from TableHead/TableCell so checkbox
+    // focus ring (box-shadow 3px) is fully visible within the 40px cell
+    &,
+    .vc-table-composition__cell-content {
+      overflow: visible;
+    }
   }
 
   &__pagination {

@@ -123,7 +123,8 @@ export async function release(config: ReleaseConfig): Promise<void> {
 
   // Update root package.json
   if (shouldUpdateRootVersion) {
-    updateRootVersion(newVersion, isDryRun);
+    // Dry-run still updates files so the user can review the exact release output.
+    updateRootVersion(newVersion, false);
   }
 
   // Custom hooks (e.g. update boilerplate deps)
@@ -143,9 +144,9 @@ export async function release(config: ReleaseConfig): Promise<void> {
   }
 
   // Enhance changelogs
-  enhancePackageChangelogs(packages, isDryRun);
-  ensureCurrentVersionEntries(packages, newVersion, isDryRun);
-  generateRootChangelog({ packages }, isDryRun);
+  enhancePackageChangelogs(packages, false);
+  ensureCurrentVersionEntries(packages, newVersion, false);
+  generateRootChangelog({ packages }, false);
 
   // ── Git: amend, tag, push ────────────────────────────────────────────
   if (!isDryRun) {

@@ -179,16 +179,36 @@ function parseChangelogVersions(content: string): ParsedChangelog {
 // ── Version sorting ────────────────────────────────────────────────────
 
 /**
- * Sorts version strings in descending order using semver.rcompare.
- * Falls back to string comparison for non-semver strings.
+ * Sorts version strings in descending order by release date when available.
+ * Falls back to semver.rcompare, then string comparison.
  */
-export function sortVersionsDescending(versions: string[]): string[] {
+export function sortVersionsDescending(
+  versions: string[],
+  versionHeaders?: Record<string, string>,
+): string[] {
   return [...versions].sort((a, b) => {
+    const aDate = extractReleaseDate(versionHeaders?.[a]);
+    const bDate = extractReleaseDate(versionHeaders?.[b]);
+
+    if (aDate !== null && bDate !== null && aDate !== bDate) {
+      return bDate - aDate;
+    }
+
     if (valid(a) && valid(b)) {
       return rcompare(a, b);
     }
     return b.localeCompare(a);
   });
+}
+
+function extractReleaseDate(header?: string): number | null {
+  if (!header) return null;
+
+  const match = header.match(/\((\d{4}-\d{2}-\d{2})\)\s*$/);
+  if (!match) return null;
+
+  const timestamp = Date.parse(`${match[1]}T00:00:00Z`);
+  return Number.isNaN(timestamp) ? null : timestamp;
 }
 
 // ── Root changelog generation ──────────────────────────────────────────
@@ -234,7 +254,7 @@ export function generateRootChangelog(options: RootChangelogOptions, dryRun = fa
     rootContent = `# CHANGELOG\n\nAll notable changes to this monorepo will be documented in this file.\n\n`;
   }
 
-  const allVersions = sortVersionsDescending(Object.keys(versionChanges));
+  const allVersions = sortVersionsDescending(Object.keys(versionChanges), versionHeaders);
 
   for (const version of allVersions) {
     const changes = versionChanges[version];

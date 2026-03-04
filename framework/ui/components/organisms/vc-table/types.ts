@@ -69,6 +69,20 @@ export interface TableEmptyAction {
   clickHandler?: () => void;
 }
 
+/** Configuration for empty/not-found state with icon, text, and optional action button */
+export interface TableStateConfig {
+  /** Icon name (e.g. "lucide-package-open", "material-shopping_cart") */
+  icon?: string;
+  /** Title text */
+  title?: string;
+  /** Description text below the title */
+  description?: string;
+  /** Action button label — renders VcButton when provided */
+  actionLabel?: string;
+  /** Action button click handler */
+  actionHandler?: () => void;
+}
+
 export type { MaybeRef } from "vue";
 
 /** Shared props for editable cell formatters (CellDefault, CellNumber, CellMoney) */
@@ -536,6 +550,12 @@ export interface VcDataTableExtendedProps<T = any> extends VcDataTableProps<T> {
    * useful when the table is narrowed (e.g. a second blade opens).
    */
   showAllColumns?: boolean;
+  /** Empty state configuration (shown when items array is empty and no search/filters are active).
+   *  Overrides default i18n title/description. Use `#empty` slot for fully custom rendering. */
+  emptyState?: TableStateConfig;
+  /** Not-found state configuration (shown when items array is empty AND search/filters are active).
+   *  Overrides default i18n title/description. Use `#not-found` slot for fully custom rendering. */
+  notFoundState?: TableStateConfig;
 }
 
 /** VcDataTable Emits — all events emitted by VcDataTable */

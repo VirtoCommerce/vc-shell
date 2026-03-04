@@ -11,28 +11,34 @@
         </div>
       </slot>
     </div>
-    <div v-if="$slots.action" class="vc-table-composition__empty-action">
-      <slot name="action" />
+    <div v-if="actionLabel || $slots.action" class="vc-table-composition__empty-action">
+      <slot name="action">
+        <VcButton
+          v-if="actionLabel"
+          variant="primary"
+          @click="actionHandler?.()"
+        >
+          {{ actionLabel }}
+        </VcButton>
+      </slot>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { VcIcon } from "@ui/components/atoms";
+import { VcIcon, VcButton } from "@ui/components/atoms";
 
 defineProps<{
-  /**
-   * Icon to display
-   */
+  /** Icon to display */
   icon?: string;
-  /**
-   * Title text
-   */
+  /** Title text */
   title?: string;
-  /**
-   * Description text
-   */
+  /** Description text */
   description?: string;
+  /** Action button label — renders VcButton when provided */
+  actionLabel?: string;
+  /** Action button click handler */
+  actionHandler?: () => void;
 }>();
 </script>
 

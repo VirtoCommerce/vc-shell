@@ -123,6 +123,8 @@
         "EMPTY_TITLE": "Keine Daten",
         "EMPTY_DESCRIPTION": "Keine Elemente zum Anzeigen",
         "NOT_FOUND": "Nichts gefunden.",
+        "NOT_FOUND_TITLE": "Keine Ergebnisse gefunden",
+        "NOT_FOUND_DESCRIPTION": "Passen Sie Ihre Suche oder Filter an",
         "TOTALS": "Gesamt:",
         "ACTIONS": "Aktionen",
         "NOT_SET": "Nicht festgelegt",

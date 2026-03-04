@@ -28,6 +28,8 @@
       :pagination="paginationConfig"
       :add-row="addRowConfig"
       :variant="props.variant"
+      :empty-state="mappedEmptyState"
+      :not-found-state="mappedNotFoundState"
       @sort="handleSort"
       @update:selection="handleSelectionUpdate"
       @row-click="handleRowClick"
@@ -107,52 +109,12 @@
         />
       </template>
 
-      <!-- Empty / NotFound -->
-      <template #empty>
-        <template v-if="isNotFoundState && ($slots.notfound || props.notfound)">
-          <slot name="notfound">
-            <div
-              v-if="props.notfound"
-              class="vc-table-adapter__empty-state"
-            >
-              <VcIcon
-                v-if="props.notfound.icon"
-                :icon="props.notfound.icon"
-                size="xxl"
-              />
-              <p class="vc-table-adapter__empty-text">{{ toValue(props.notfound.text) }}</p>
-              <a
-                v-if="props.notfound.action"
-                class="vc-table-adapter__empty-action"
-                @click="props.notfound.clickHandler?.()"
-              >
-                {{ toValue(props.notfound.action) }}
-              </a>
-            </div>
-          </slot>
-        </template>
-        <template v-else>
-          <slot name="empty">
-            <div
-              v-if="props.empty"
-              class="vc-table-adapter__empty-state"
-            >
-              <VcIcon
-                v-if="props.empty.icon"
-                :icon="props.empty.icon"
-                size="xxl"
-              />
-              <p class="vc-table-adapter__empty-text">{{ toValue(props.empty.text) }}</p>
-              <a
-                v-if="props.empty.action"
-                class="vc-table-adapter__empty-action"
-                @click="props.empty.clickHandler?.()"
-              >
-                {{ toValue(props.empty.action) }}
-              </a>
-            </div>
-          </slot>
-        </template>
+      <!-- Empty / NotFound — delegate rendering to VcDataTable via props, passthrough custom slots -->
+      <template v-if="$slots.notfound" #not-found>
+        <slot name="notfound" />
+      </template>
+      <template v-if="$slots.empty" #empty>
+        <slot name="empty" />
       </template>
 
       <!-- Loading -->
@@ -200,8 +162,7 @@ import VcDataTable from "@ui/components/organisms/vc-table/VcDataTable.vue";
 import VcColumn from "@ui/components/organisms/vc-table/components/VcColumn.vue";
 import { GlobalFiltersButton } from "@ui/components/organisms/vc-table/components";
 import { VcDropdownPanel } from "@ui/components/molecules";
-import { VcIcon } from "@ui/components/atoms";
-import type { TableAction, TableEmptyAction, DataTablePagination, AddRowConfig } from "@ui/components/organisms/vc-table/types";
+import type { TableAction, TableEmptyAction, DataTablePagination, AddRowConfig, TableStateConfig } from "@ui/components/organisms/vc-table/types";
 import type { ITableColumns, IActionBuilderResult } from "@core/types";
 
 // ============================================================================
@@ -406,6 +367,27 @@ const isNotFoundState = computed(
   () => props.items.length === 0 && (!!props.searchValue || (props.activeFilterCount ?? 0) > 0),
 );
 
+/** Map legacy TableEmptyAction → TableStateConfig for VcDataTable */
+const mappedEmptyState = computed<TableStateConfig | undefined>(() => {
+  if (!props.empty) return undefined;
+  return {
+    icon: props.empty.icon,
+    title: typeof props.empty.text === "string" ? props.empty.text : toValue(props.empty.text),
+    actionLabel: props.empty.action ? (typeof props.empty.action === "string" ? props.empty.action : toValue(props.empty.action)) : undefined,
+    actionHandler: props.empty.clickHandler,
+  };
+});
+
+const mappedNotFoundState = computed<TableStateConfig | undefined>(() => {
+  if (!props.notfound) return undefined;
+  return {
+    icon: props.notfound.icon,
+    title: typeof props.notfound.text === "string" ? props.notfound.text : toValue(props.notfound.text),
+    actionLabel: props.notfound.action ? (typeof props.notfound.action === "string" ? props.notfound.action : toValue(props.notfound.action)) : undefined,
+    actionHandler: props.notfound.clickHandler,
+  };
+});
+
 // Loading: unwrap MaybeRef
 const loadingValue = computed(() => toValue(props.loading) ?? false);
 
@@ -588,24 +570,5 @@ function handleAddRow(event: { defaults: Record<string, unknown>; cancel: () => 
 <style lang="scss">
 .vc-table-adapter {
   @apply tw-flex tw-flex-col tw-grow tw-basis-0 tw-overflow-hidden;
-
-  &__empty-state {
-    @apply tw-flex tw-flex-col tw-items-center tw-justify-center tw-py-8 tw-gap-3;
-    color: var(--neutrals-500);
-  }
-
-  &__empty-text {
-    @apply tw-text-sm tw-text-center;
-    color: var(--neutrals-600);
-  }
-
-  &__empty-action {
-    @apply tw-text-sm tw-cursor-pointer tw-underline;
-    color: var(--primary-500);
-
-    &:hover {
-      color: var(--primary-700);
-    }
-  }
 }
 </style>

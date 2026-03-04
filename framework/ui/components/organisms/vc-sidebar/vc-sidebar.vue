@@ -563,10 +563,10 @@ defineExpose({
   --vc-sidebar-bg-elevated: color-mix(in srgb, var(--additional-50) 90%, white 10%);
   --vc-sidebar-title-color: var(--additional-950);
   --vc-sidebar-subtitle-color: var(--neutrals-600);
-  --vc-sidebar-overlay-color: rgb(15 23 42 / 0.38);
+  --vc-sidebar-overlay-color: var(--overlay-bg);
   --vc-sidebar-close-color: var(--neutrals-600);
-  --vc-sidebar-border-color: color-mix(in srgb, var(--neutrals-300) 72%, white 28%);
-  --vc-sidebar-shadow: 0 24px 48px rgb(15 23 42 / 0.16), 0 8px 20px rgb(15 23 42 / 0.1);
+  --vc-sidebar-border-color: var(--surface-border);
+  --vc-sidebar-shadow: var(--shadow-md);
   --vc-sidebar-radius: 16px;
   --vc-sidebar-inset-gap: 12px;
   --vc-sidebar-header-height: 72px;
@@ -575,7 +575,9 @@ defineExpose({
   @apply tw-fixed tw-inset-0 tw-pointer-events-none;
 
   &__overlay {
-    @apply tw-absolute tw-inset-0 tw-backdrop-blur-[4px] tw-pointer-events-auto;
+    @apply tw-absolute tw-inset-0 tw-pointer-events-auto;
+    backdrop-filter: blur(var(--overlay-blur));
+    -webkit-backdrop-filter: blur(var(--overlay-blur));
     background: var(--vc-sidebar-overlay-color);
   }
 
@@ -616,13 +618,11 @@ defineExpose({
 
     &--elevated {
       background: var(--vc-sidebar-bg-elevated);
-      box-shadow:
-        0 28px 64px rgb(15 23 42 / 0.22),
-        0 10px 24px rgb(15 23 42 / 0.16);
+      box-shadow: var(--shadow-lg);
     }
 
     &--minimal {
-      box-shadow: 0 12px 28px rgb(15 23 42 / 0.1);
+      box-shadow: var(--shadow-sm);
       border-color: color-mix(in srgb, var(--neutrals-200) 86%, white 14%);
     }
 
@@ -668,7 +668,8 @@ defineExpose({
     @apply tw-border-b-[color:var(--vc-sidebar-border-color)] tw-sticky tw-top-0 tw-z-[1];
     min-height: var(--vc-sidebar-header-height);
     background: inherit;
-    backdrop-filter: saturate(140%) blur(6px);
+    backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+    -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
   }
 
   &__title-wrap {
@@ -725,7 +726,8 @@ defineExpose({
     @apply tw-mt-auto tw-sticky tw-bottom-0 tw-z-[1] tw-border-t tw-border-solid tw-border-t-[color:var(--vc-sidebar-border-color)];
     min-height: var(--vc-sidebar-footer-height);
     background: inherit;
-    backdrop-filter: saturate(140%) blur(6px);
+    backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+    -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
   }
 }
 

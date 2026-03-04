@@ -421,6 +421,7 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
   searchValue: undefined,
   searchPlaceholder: "Search...",
   searchDebounce: 300,
+  activeItemId: undefined,
 });
 
 // Emits
@@ -484,6 +485,8 @@ const emit = defineEmits<{
   filter: [event: { filters: Record<string, unknown>; filteredValue: T[] }];
 
   // === Row Interactions ===
+  /** v-model update for active (highlighted) row ID */
+  "update:activeItemId": [value: string | undefined];
   /** Emitted when a row is clicked */
   "row-click": [event: { data: T; index: number; originalEvent: Event }];
   /** Emitted when a row action button/menu item is activated */
@@ -1411,7 +1414,8 @@ const getRowProps = (item: T, index: number) => ({
   columns: safeColumns.value,
 
   // Selection
-  isSelected: selection.isSelected(item),
+  isSelected: selection.isSelected(item) ||
+    (props.activeItemId != null && String(getItemKey(item, index)) === String(props.activeItemId)),
   isSelectable: selection.canSelect(item),
   selectionMode: effectiveSelectionMode.value,
   showSelectionCell: hasSelectionColumn.value && !isSelectionViaColumn.value,
@@ -1494,6 +1498,8 @@ const handleRowSelectionChange = (item: T, eventOrValue?: Event | boolean) => {
 };
 
 const handleRowClick = (item: T, index: number, event: Event) => {
+  const itemKey = getItemKey(item, index);
+  emit("update:activeItemId", itemKey === String(props.activeItemId) ? undefined : itemKey);
   emit("row-click", { data: item, index, originalEvent: event });
   const target = event.target as HTMLElement;
   const isCheckboxClick = target.tagName === "INPUT" && target.getAttribute("type") === "checkbox";

@@ -168,11 +168,9 @@ function handleItemClick(item: IBladeToolbar) {
   --blade-toolbar-mobile-toggle-border-color: var(--primary-200);
   --blade-toolbar-mobile-toggle-icon-color: var(--additional-50);
   --blade-toolbar-mobile-overlay-bg-color: var(--additional-950);
-  --blade-toolbar-mobile-action-bg: var(--additional-50);
+  --blade-toolbar-mobile-action-bg: var(--surface-color);
   --blade-toolbar-mobile-action-text: var(--neutrals-800);
-  --blade-toolbar-mobile-backdrop-blur: 12px;
-  // Circle button colors (same as ToolbarCircleButton — must be defined here
-  // because ToolbarCircleButton doesn't mount on mobile)
+  // Circle button colors
   --blade-toolbar-circle-button-text-color: var(--additional-50);
   --blade-toolbar-circle-button-bg-color: var(--neutrals-500);
   --blade-toolbar-circle-button-main-bg-color: var(--primary-500);
@@ -189,9 +187,9 @@ $touch-min: 44px;
   // ── Backdrop ──────────────────────────────────────────────────────────
   &__backdrop {
     @apply tw-fixed tw-inset-0 tw-z-[55];
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(var(--blade-toolbar-mobile-backdrop-blur));
-    -webkit-backdrop-filter: blur(var(--blade-toolbar-mobile-backdrop-blur));
+    background: var(--overlay-bg);
+    backdrop-filter: blur(var(--overlay-blur));
+    -webkit-backdrop-filter: blur(var(--overlay-blur));
   }
 
   // ── Menu container ────────────────────────────────────────────────────
@@ -223,21 +221,25 @@ $touch-min: 44px;
     gap: 12px;
     padding: 4px 4px 4px 16px;
     min-height: $touch-min;
-    border: none;
+    border: 1px solid var(--surface-border);
     border-radius: 28px;
-    background: var(--blade-toolbar-mobile-action-bg);
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.1),
-      0 1px 3px rgba(0, 0, 0, 0.06);
+    background: color-mix(in srgb, var(--blade-toolbar-mobile-action-bg) 92%, transparent);
+    backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+    -webkit-backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+    box-shadow: var(--shadow-sm);
     cursor: pointer;
 
-    // Initial state (hidden)
     opacity: 0;
     transform: translateY(16px);
     transition:
       opacity 0.28s $spring,
       transform 0.28s $spring;
-    // transition-delay set via inline style
+
+    &:hover:not(:disabled) {
+      background: var(--blade-toolbar-mobile-action-bg);
+      box-shadow: var(--shadow-md);
+      transition-duration: 0.15s;
+    }
 
     &:active:not(:disabled) {
       transform: scale(0.96) !important;
@@ -249,7 +251,6 @@ $touch-min: 44px;
       cursor: default;
     }
 
-    // Focus-visible ring for keyboard navigation
     &:focus-visible {
       outline: 2px solid var(--blade-toolbar-mobile-pill-bg-color);
       outline-offset: 2px;
@@ -291,9 +292,7 @@ $touch-min: 44px;
     color: var(--blade-toolbar-mobile-toggle-icon-color);
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.16),
-      0 1px 4px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-sm);
 
     &:active {
       transform: scale(0.92);
@@ -321,9 +320,7 @@ $touch-min: 44px;
     border-radius: calc(#{$touch-min} / 2);
     background: var(--blade-toolbar-mobile-pill-bg-color);
     overflow: hidden;
-    box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.16),
-      0 1px 4px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-sm);
   }
 
   &__pill-action {

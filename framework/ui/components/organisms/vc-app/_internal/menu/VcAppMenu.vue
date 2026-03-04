@@ -136,8 +136,7 @@ const isItemActive = (url?: string): boolean => {
   --app-menu-close-color: var(--app-menu-burger-color, var(--primary-500));
   --app-menu-burger-color: var(--primary-500);
 
-  --app-backdrop-overlay-bg: var(--additional-50);
-  --app-backdrop-overlay: rgb(from var(--app-backdrop-overlay-bg) r g b / 75%);
+  --app-backdrop-overlay: var(--overlay-bg);
 
   --app-backdrop-shadow-color: var(--additional-950);
   --app-backdrop-shadow:

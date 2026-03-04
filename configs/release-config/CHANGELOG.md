@@ -1,3 +1,12 @@
+## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
+
+### Code Refactoring
+
+- enhance git and lerna integration for better versioning ([2864ce9](https://github.com/VirtoCommerce/vc-shell/commit/2864ce93ac21ef00aff8b337332dc918114ac571))
+
+
+**Note:** Version bump only for package @vc-shell/release-config
+
 ## [1.2.4-beta.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.6...v1.2.4-beta.7) (2026-03-04)
 
 ### Features
@@ -14,7 +23,6 @@
 ### Code Refactoring
 
 - capture conventional-changelog output directly from stdout and enhance error logging ([fa8c12a](https://github.com/VirtoCommerce/vc-shell/commit/fa8c12ad4a7464ec7d7e2e2d85c2ef342a07dce0))
-
 
 ### Bug Fixes
 

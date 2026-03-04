@@ -1,9 +1,12 @@
+## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
+
+**Note:** Version bump only for package @vc-shell/config-generator
+
 ## [1.2.4-beta.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.6...v1.2.4-beta.7) (2026-03-04)
 
 ### Code Refactoring
 
 - dynamically import `rollup-plugin-visualizer` to conditionally load it when analysis is enabled ([57f5182](https://github.com/VirtoCommerce/vc-shell/commit/57f5182496b5d2a9897f6e1f70522177782316c7))
-
 
 **Note:** Version bump only for package @vc-shell/config-generator
 

@@ -1,3 +1,13 @@
+## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
+
+### Code Refactoring
+
+- improve code readability and component properties in VcDataTable ([08a822f](https://github.com/VirtoCommerce/vc-shell/commit/08a822f2525687ad4987e242f3a99774f946a826))
+- streamline component exports and remove async component definitions ([fb1d76c](https://github.com/VirtoCommerce/vc-shell/commit/fb1d76c9ac8a1974472e1c43ab3c09d41a0b5ee3))
+
+
+**Note:** Version bump only for package @vc-shell/framework
+
 ## [1.2.4-beta.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.6...v1.2.4-beta.7) (2026-03-04)
 
 **Note:** Version bump only for package @vc-shell/framework

@@ -40,27 +40,25 @@ export async function generateInitialChangelogs(options: ChangelogGeneratorOptio
         "conventional-changelog",
         "-p",
         "conventionalcommits",
-        "-i",
-        changelogPath,
-        "-s",
         "-r",
         "0",
         "--commit-path",
         path.join(rootDir, pkg.path),
       ],
-      { stdio: "inherit", cwd: rootDir },
+      { stdio: "pipe", encoding: "utf-8", cwd: rootDir },
     );
 
-    if (result.status === 0) {
-      if (existsSync(changelogPath)) {
-        let content = readFileSync(changelogPath, "utf-8");
-        content = cleanChangelogContent(content);
-        content = addVersionBumpNotes(content);
-        content = content.trim() + "\n";
-        writeFileSync(changelogPath, content, "utf-8");
-      }
+    if (result.status === 0 && result.stdout) {
+      let content = result.stdout.toString();
+      content = cleanChangelogContent(content);
+      content = addVersionBumpNotes(content);
+      content = content.trim() + "\n";
+      writeFileSync(changelogPath, content, "utf-8");
       console.log(chalk.green(`  Generated ${changelogPath}`));
     } else {
+      if (result.stderr) {
+        process.stderr.write(result.stderr.toString());
+      }
       console.log(chalk.red(`  Failed to generate ${changelogPath}`));
     }
   }

@@ -234,8 +234,8 @@ function handleDialogDismiss(): void {
 <style lang="scss">
 :root {
   --vc-popup-border-radius: var(--popup-border-radius, 6px);
-  --vc-popup-shadow: var(--popup-shadow, 0 24px 48px rgb(15 23 42 / 0.2));
-  --vc-popup-overlay-blur: var(--popup-overlay-blur, 3px);
+  --vc-popup-shadow: var(--popup-shadow, var(--shadow-md));
+  --vc-popup-overlay-blur: var(--popup-overlay-blur, var(--overlay-blur));
 
   // Deprecated aliases (prefer --vc-popup-* variables for new themes)
   --popup-close-btn-bg: var(--neutrals-100);
@@ -247,8 +247,7 @@ function handleDialogDismiss(): void {
   --popup-success-icon-color: var(--success-500);
   --popup-info-icon-color: var(--info-500);
   --popup-footer-separator: var(--neutrals-200);
-  --popup-overlay-color: var(--additional-50);
-  --popup-overlay: rgb(from var(--popup-overlay-color) r g b / 75%);
+  --popup-overlay: var(--popup-overlay-override, var(--overlay-bg));
   --popup-bg: var(--additional-50);
 }
 

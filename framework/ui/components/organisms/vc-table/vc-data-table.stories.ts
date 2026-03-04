@@ -495,6 +495,38 @@ export const SingleSelection: StoryFn = () => ({
   `,
 });
 
+export const ActiveItemHighlight: StoryFn = () => ({
+  components: { VcDataTable, VcColumn },
+  setup() {
+    const activeId = ref<string | undefined>(undefined);
+
+    return { products: mockProducts, activeId };
+  },
+  template: `
+    <div style="height: 400px">
+      <p class="tw-mb-2">Active row ID: {{ activeId ?? 'None' }}
+        <button class="tw-ml-2 tw-text-sm tw-underline" @click="activeId = undefined">Clear</button>
+      </p>
+      <VcDataTable
+        :items="products"
+        v-model:active-item-id="activeId"
+      >
+        <VcColumn id="name" field="name" title="Name" />
+        <VcColumn id="price" field="price" title="Price" type="money" />
+        <VcColumn id="stock" field="stock" title="Stock" type="number" />
+        <VcColumn id="status" field="status" title="Status" />
+      </VcDataTable>
+    </div>
+  `,
+});
+ActiveItemHighlight.parameters = {
+  docs: {
+    description: {
+      story: "Click a row to highlight it as active. Click again to deselect. Use `v-model:active-item-id` for two-way binding — the table automatically highlights the row matching the given ID and updates the value on row click.",
+    },
+  },
+};
+
 /**
  * VcDataTable with single selection via VcColumn (radio button style)
  */

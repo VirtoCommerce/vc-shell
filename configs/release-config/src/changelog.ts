@@ -14,6 +14,9 @@ import {
   type ConventionalCommit,
 } from "@release-config/git";
 
+const VERSION_HEADER_LINE = /^#{1,2}\s+(?:\[)?(\d[\da-z.-]*)(?:\])?/i;
+const VERSION_BUMP_NOTE_LINE = /\*\*Note:\*\*\s+Version bump only[^\n]*/gi;
+
 // ── Lerna boilerplate cleanup ──────────────────────────────────────────
 
 /**
@@ -40,8 +43,8 @@ export function cleanChangelogContent(content: string): string {
  */
 export function addVersionBumpNotes(content: string): string {
   return content.replace(
-    /^(##\s+\[[^\]]+\][^\n]*\n)\n(##\s+\[|$)/gm,
-    "$1\n**Note:** Version bump only for package\n\n$2",
+    /^(#{1,2}\s+(?:\[[^\]]+\]|\d[\da-z.-]*)[^\n]*\n)\n(?=#{1,2}\s+(?:\[|\d)|$)/gim,
+    "$1\n**Note:** Version bump only for package\n\n",
   );
 }
 
@@ -60,6 +63,7 @@ export function enhancePackageChangelogs(packages: PackageConfig[], dryRun = fal
     let content = readFileSync(changelogPath, "utf-8");
     content = cleanChangelogContent(content);
     content = addVersionBumpNotes(content);
+    content = dedupeVersionSections(content);
     content = content.trim() + "\n";
 
     if (!dryRun) {
@@ -87,12 +91,13 @@ export function ensureCurrentVersionEntries(
     if (!existsSync(changelogPath)) continue;
 
     let content = readFileSync(changelogPath, "utf-8");
-    const versionRegex = new RegExp(`^##\\s+\\[?${version.replace(/\./g, "\\.")}\\]?\\b`, "m");
+    const escapedVersion = version.replace(/\./g, "\\.");
+    const versionRegex = new RegExp(`^#{1,2}\\s+\\[?${escapedVersion}\\]?\\b`, "m");
 
     if (versionRegex.test(content)) continue;
 
     const newEntry = `## ${version}\n\n**Note:** Version bump only for package\n\n`;
-    const firstVersionHeader = content.match(/^##\s+\[?[\d.a-z-]+\]?[^\n]*/m);
+    const firstVersionHeader = content.match(/^#{1,2}\s+\[?\d[\da-z.-]*\]?[^\n]*/m);
 
     if (firstVersionHeader && firstVersionHeader.index !== undefined) {
       content =
@@ -119,13 +124,154 @@ export function ensureCurrentVersionEntries(
   }
 }
 
+/**
+ * Replaces "Version bump only" current sections with git-derived changelog
+ * entries when a package had only non-default conventional commit types
+ * (e.g. refactor/docs/build) that Lerna omitted from the package changelog.
+ */
+export function supplementCurrentVersionEntries(
+  packages: PackageConfig[],
+  version: string,
+  tagVersionPrefix = "v",
+  dryRun = false,
+): void {
+  console.log(chalk.cyan(`\nSupplementing current version entries for ${version}...\n`));
+
+  const previousTag = getPreviousVersionTag(version, tagVersionPrefix);
+  if (!previousTag) {
+    console.log(chalk.gray("  No previous release tag found; skipping current version supplementation"));
+    return;
+  }
+
+  const repoUrl = getRepoUrl();
+  let supplemented = 0;
+
+  for (const pkg of packages) {
+    const changelogPath = path.join(pkg.path, "CHANGELOG.md");
+    if (!existsSync(changelogPath)) continue;
+
+    const commits = getConventionalCommitsInRange(previousTag, "HEAD", pkg.path);
+    const formatted = formatCommitsAsChangelog(commits, repoUrl);
+    if (!formatted) continue;
+
+    const content = readFileSync(changelogPath, "utf-8");
+    const nextContent = replaceVersionBumpOnlySection(content, version, formatted);
+    if (nextContent === content) continue;
+
+    supplemented++;
+
+    if (!dryRun) {
+      writeFileSync(changelogPath, nextContent, "utf-8");
+    }
+  }
+
+  if (supplemented > 0) {
+    console.log(chalk.green(`  Supplemented ${supplemented} current version entr${supplemented === 1 ? "y" : "ies"}`));
+  } else {
+    console.log(chalk.gray("  No current version entries needed supplementation"));
+  }
+}
+
 // ── Changelog parsing ──────────────────────────────────────────────────
 
 interface ParsedChangelog {
   /** Map of version string → content lines (without the ## header) */
   versionContent: Record<string, string>;
-  /** Map of version string → original header text (without "## " prefix) */
+  /** Map of version string → original header text (without markdown heading prefix) */
   versionHeaders: Record<string, string>;
+}
+
+function isVersionBumpOnly(content: string): boolean {
+  return content.replace(VERSION_BUMP_NOTE_LINE, "").trim().length === 0;
+}
+
+function saveParsedVersionContent(
+  versionContent: Record<string, string>,
+  version: string | null,
+  contentLines: string[],
+): void {
+  if (!version || contentLines.length === 0) return;
+
+  const nextContent = contentLines.join("\n").trim();
+  if (!nextContent) return;
+
+  const existingContent = versionContent[version];
+  if (!existingContent || (isVersionBumpOnly(existingContent) && !isVersionBumpOnly(nextContent))) {
+    versionContent[version] = nextContent;
+  }
+}
+
+interface ChangelogSection {
+  version: string;
+  lines: string[];
+}
+
+function dedupeVersionSections(content: string): string {
+  const lines = content.split("\n");
+  const prelude: string[] = [];
+  const sections: ChangelogSection[] = [];
+  const sectionIndexByVersion = new Map<string, number>();
+
+  let currentSection: ChangelogSection | null = null;
+
+  const commitSection = () => {
+    if (!currentSection) return;
+
+    const currentBody = currentSection.lines.slice(1).join("\n").trim();
+    const existingIndex = sectionIndexByVersion.get(currentSection.version);
+
+    if (existingIndex === undefined) {
+      sectionIndexByVersion.set(currentSection.version, sections.length);
+      sections.push(currentSection);
+      currentSection = null;
+      return;
+    }
+
+    const existingSection = sections[existingIndex];
+    const existingBody = existingSection.lines.slice(1).join("\n").trim();
+
+    if (isVersionBumpOnly(existingBody) && !isVersionBumpOnly(currentBody)) {
+      sections[existingIndex] = currentSection;
+    }
+
+    currentSection = null;
+  };
+
+  for (const line of lines) {
+    const versionMatch = line.match(VERSION_HEADER_LINE);
+
+    if (versionMatch) {
+      commitSection();
+      currentSection = { version: versionMatch[1], lines: [line] };
+      continue;
+    }
+
+    if (currentSection) {
+      currentSection.lines.push(line);
+    } else {
+      prelude.push(line);
+    }
+  }
+
+  commitSection();
+
+  return [...prelude, ...sections.flatMap((section) => section.lines)].join("\n");
+}
+
+function replaceVersionBumpOnlySection(content: string, version: string, replacementBody: string): string {
+  const escapedVersion = version.replace(/\./g, "\\.");
+  const sectionRegex = new RegExp(
+    `(^#{1,2}\\s+\\[?${escapedVersion}\\]?[^\\n]*\\n)([\\s\\S]*?)(?=^#{1,2}\\s+\\[?\\d[\\da-z.-]*\\]?|$)`,
+    "m",
+  );
+
+  return content.replace(sectionRegex, (match, header: string, body: string) => {
+    if (!isVersionBumpOnly(body)) {
+      return match;
+    }
+
+    return `${header}\n${replacementBody.trim()}\n\n`;
+  });
 }
 
 /**
@@ -140,20 +286,17 @@ function parseChangelogVersions(content: string): ParsedChangelog {
   let currentContent: string[] = [];
 
   for (const line of lines) {
-    const versionMatch = line.match(/^##\s+(?:\[)?([\d.a-z-]+)(?:\])?(?:\s+\([^)]+\))?/i);
+    const versionMatch = line.match(VERSION_HEADER_LINE);
 
     if (versionMatch) {
-      // Save previous version
-      if (currentVersion && currentContent.length > 0) {
-        versionContent[currentVersion] = currentContent.join("\n").trim();
-      }
+      saveParsedVersionContent(versionContent, currentVersion, currentContent);
 
       currentVersion = versionMatch[1];
       currentContent = [];
 
       // Store original header (first one wins)
       if (!versionHeaders[currentVersion]) {
-        versionHeaders[currentVersion] = line.replace(/^##\s+/, "");
+        versionHeaders[currentVersion] = line.replace(/^#{1,2}\s+/, "");
       }
     } else if (currentVersion && line.trim() !== "") {
       // Skip Lerna boilerplate lines
@@ -169,9 +312,7 @@ function parseChangelogVersions(content: string): ParsedChangelog {
   }
 
   // Save last version
-  if (currentVersion && currentContent.length > 0) {
-    versionContent[currentVersion] = currentContent.join("\n").trim();
-  }
+  saveParsedVersionContent(versionContent, currentVersion, currentContent);
 
   return { versionContent, versionHeaders };
 }
@@ -260,11 +401,9 @@ export function generateRootChangelog(options: RootChangelogOptions, dryRun = fa
     const changes = versionChanges[version];
 
     // Check if version has real changes (not just "Version bump only")
-    const hasRealChanges = Object.values(changes).some((content) => {
-      if (!content || !content.trim()) return false;
-      const withoutNotes = content.replace(/\*\*Note:\*\*\s+Version bump only[^\n]*/gi, "").trim();
-      return withoutNotes.length > 0;
-    });
+    const hasRealChanges = Object.values(changes).some(
+      (content) => Boolean(content?.trim()) && !isVersionBumpOnly(content),
+    );
 
     const versionHeader = versionHeaders[version] || version;
     rootContent += `## ${versionHeader}\n\n`;
@@ -279,8 +418,7 @@ export function generateRootChangelog(options: RootChangelogOptions, dryRun = fa
     for (const pkg of packages) {
       const pkgContent = changes[pkg.displayName];
       if (pkgContent && pkgContent.trim()) {
-        const withoutNotes = pkgContent.replace(/\*\*Note:\*\*\s+Version bump only[^\n]*/gi, "").trim();
-        if (withoutNotes.length > 0) {
+        if (!isVersionBumpOnly(pkgContent)) {
           addedAnyPackage = true;
           rootContent += `### ${pkg.displayName}\n\n`;
           rootContent += `${pkgContent}\n\n`;
@@ -312,6 +450,12 @@ const CHANGELOG_TYPES: Record<string, string> = {
   fix: "Bug Fixes",
   perf: "Performance Improvements",
   revert: "Reverts",
+  docs: "Documentation",
+  style: "Styles",
+  refactor: "Code Refactoring",
+  test: "Tests",
+  build: "Build System",
+  ci: "Continuous Integration",
 };
 
 /**
@@ -340,7 +484,18 @@ function formatCommitsAsChangelog(commits: ConventionalCommit[], repoUrl: string
   if (Object.keys(grouped).length === 0) return "";
 
   let content = "";
-  const order = ["Features", "Bug Fixes", "Performance Improvements", "Reverts"];
+  const order = [
+    "Features",
+    "Bug Fixes",
+    "Performance Improvements",
+    "Reverts",
+    "Documentation",
+    "Styles",
+    "Code Refactoring",
+    "Tests",
+    "Build System",
+    "Continuous Integration",
+  ];
 
   for (const heading of order) {
     const group = grouped[heading];

@@ -21,6 +21,7 @@ import {
 import {
   enhancePackageChangelogs,
   ensureCurrentVersionEntries,
+  supplementCurrentVersionEntries,
   generateRootChangelog,
 } from "@release-config/changelog";
 import {
@@ -146,6 +147,7 @@ export async function release(config: ReleaseConfig): Promise<void> {
   // Enhance changelogs
   enhancePackageChangelogs(packages, false);
   ensureCurrentVersionEntries(packages, newVersion, false);
+  supplementCurrentVersionEntries(packages, newVersion, tagVersionPrefix, false);
   generateRootChangelog({ packages }, false);
 
   // ── Git: amend, tag, push ────────────────────────────────────────────

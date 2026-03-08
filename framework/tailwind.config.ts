@@ -12,6 +12,7 @@ export default {
   theme: {
     fontFamily: {
       jakarta: ["Plus Jakarta Sans", "sans-serif"],
+      lato: ["Lato", "sans-serif"],
     },
     fontSize: {
       xxs: [

@@ -1,5 +1,8 @@
 <template>
-  <VcMenu :loading="loading">
+  <VcMenu
+    :loading="loading"
+    class="main-menu"
+  >
     <VcMenuGroup
       v-for="section in menu"
       :key="section.id"
@@ -23,6 +26,7 @@
             :key="child.id"
             :icon="child.icon"
             :title="child.label"
+            :active="child.id === activeItemId"
             nested
             @click="child.url && emit('itemClick', { id: child.id, url: child.url })"
           />
@@ -32,6 +36,7 @@
           v-else
           :icon="item.icon"
           :title="item.label"
+          :active="item.id === activeItemId"
           @click="item.url && emit('itemClick', { id: item.id, url: item.url })"
         />
       </template>
@@ -46,6 +51,7 @@ import type { MenuSection } from "../types";
 interface Props {
   menu: MenuSection[];
   loading?: boolean;
+  activeItemId?: string;
 }
 
 defineProps<Props>();
@@ -54,3 +60,10 @@ const emit = defineEmits<{
   itemClick: [item: { id: string; url: string }];
 }>();
 </script>
+
+<style lang="scss" scoped>
+.main-menu {
+  font-family: "Lato", sans-serif;
+  @apply tw-pl-3;
+}
+</style>

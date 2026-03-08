@@ -119,7 +119,7 @@ const skeletonSections = [
 
 <style lang="scss">
 .vc-menu {
-  @apply tw-h-full tw-pl-3 tw-font-lato;
+  @apply tw-h-full;
 
   &__items {
     @apply tw-flex tw-flex-col tw-h-full;

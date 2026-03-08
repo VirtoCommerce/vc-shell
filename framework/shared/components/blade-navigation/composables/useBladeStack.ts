@@ -17,8 +17,12 @@ function generateBladeId(): string {
  * All mutations go through explicit actions — no direct VNode manipulation.
  *
  * @param bladeRegistry - Registry for resolving blade names → components
+ * @internal
  */
-export function createBladeStack(bladeRegistry: IBladeRegistry): IBladeStack {
+export function createBladeStack(
+  bladeRegistry: IBladeRegistry,
+  hasAccess?: (permissions: string | string[] | undefined) => boolean,
+): IBladeStack {
   // ── Internal State ────────────────────────────────────────────────────────
   const _blades = ref<BladeDescriptor[]>([]);
 
@@ -91,8 +95,15 @@ export function createBladeStack(bladeRegistry: IBladeRegistry): IBladeStack {
     if (currentWorkspace?.name === event.name) return;
 
     // Validate blade exists in registry
-    if (!bladeRegistry.getBlade(event.name)) {
+    const bladeData = bladeRegistry.getBlade(event.name);
+    if (!bladeData) {
       throw new Error(`[BladeStack] Blade '${event.name}' not found in registry`);
+    }
+
+    // Permission check (workspace only)
+    if (hasAccess && bladeData.permissions && !hasAccess(bladeData.permissions)) {
+      console.warn(`[BladeStack] Access denied to workspace '${event.name}'`);
+      return;
     }
 
     // Close all existing blades (no guards — workspace switch is unconditional)
@@ -323,6 +334,7 @@ export function createBladeStack(bladeRegistry: IBladeRegistry): IBladeStack {
 /**
  * Composable for accessing the BladeStack from within a component.
  * Must be used after BladeStack is provided via BladeStackKey.
+ * @internal
  */
 export function useBladeStack(): IBladeStack {
   const stack = inject(BladeStackKey);

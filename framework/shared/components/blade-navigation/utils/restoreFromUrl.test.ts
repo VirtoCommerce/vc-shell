@@ -5,10 +5,19 @@ import { createBladeStack } from "@shared/components/blade-navigation/composable
 import type { IBladeRegistry, IBladeRegistrationData } from "@core/composables/useBladeRegistry";
 import type { IBladeStack, ParsedBladeUrl } from "@shared/components/blade-navigation/types";
 
+// Mock notification to avoid ResizeObserver errors in jsdom
+vi.mock("@shared/components/notifications", () => ({
+  notification: {
+    error: vi.fn(),
+    success: vi.fn(),
+    warning: vi.fn(),
+  },
+}));
+
 // ── Mock registry ──────────────────────────────────────────────────────────────
 
 function createMockRegistry(
-  blades: Record<string, { route?: string; isWorkspace?: boolean; routable?: boolean }> = {},
+  blades: Record<string, { route?: string; isWorkspace?: boolean; routable?: boolean; permissions?: string | string[] }> = {},
 ): IBladeRegistry {
   const map = new Map<string, IBladeRegistrationData>(
     Object.entries(blades).map(([name, data]) => [
@@ -18,6 +27,7 @@ function createMockRegistry(
         route: data.route,
         isWorkspace: data.isWorkspace ?? false,
         routable: data.routable,
+        permissions: data.permissions,
       },
     ]),
   );
@@ -242,6 +252,116 @@ describe("restoreFromUrl", () => {
       // Workspace should be opened, but non-routable child should NOT be
       expect(stack.blades.value).toHaveLength(1);
       expect(stack.workspace.value?.name).toBe("Orders");
+    });
+  });
+
+  // ── Permission enforcement (Guard 3) ────────────────────────────────────
+
+  describe("permission enforcement", () => {
+    let protectedRegistry: IBladeRegistry;
+    let mockRouter: { replace: ReturnType<typeof vi.fn>; getRoutes: ReturnType<typeof vi.fn> };
+
+    beforeEach(() => {
+      protectedRegistry = createMockRegistry({
+        Orders: { route: "/orders", isWorkspace: true, permissions: "order:read" },
+        Products: { route: "/products", isWorkspace: true },
+        OrderDetails: { route: "/order", routable: true },
+      });
+      mockRouter = {
+        replace: vi.fn(),
+        getRoutes: vi.fn().mockReturnValue([
+          { name: "App", meta: { root: true }, path: "/" },
+        ]),
+      };
+    });
+
+    it("blocks workspace when hasAccess returns false", async () => {
+      const hasAccess = vi.fn().mockReturnValue(false);
+      const permStack = createBladeStack(protectedRegistry);
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await restoreFromUrl(
+        permStack, protectedRegistry,
+        { workspaceUrl: "orders" },
+        hasAccess,
+        mockRouter as any,
+      );
+
+      expect(result).toBe(false);
+      expect(permStack.blades.value).toHaveLength(0);
+      expect(hasAccess).toHaveBeenCalledWith("order:read");
+      expect(mockRouter.replace).toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Access denied"),
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("allows workspace when hasAccess returns true", async () => {
+      const hasAccess = vi.fn().mockReturnValue(true);
+      const permStack = createBladeStack(protectedRegistry);
+
+      const result = await restoreFromUrl(
+        permStack, protectedRegistry,
+        { workspaceUrl: "orders" },
+        hasAccess,
+        mockRouter as any,
+      );
+
+      expect(result).toBe(false);
+      expect(permStack.blades.value).toHaveLength(1);
+      expect(permStack.workspace.value?.name).toBe("Orders");
+      expect(hasAccess).toHaveBeenCalledWith("order:read");
+    });
+
+    it("skips permission check when blade has no permissions", async () => {
+      const hasAccess = vi.fn().mockReturnValue(true);
+      const permStack = createBladeStack(protectedRegistry);
+
+      const result = await restoreFromUrl(
+        permStack, protectedRegistry,
+        { workspaceUrl: "products" },
+        hasAccess,
+        mockRouter as any,
+      );
+
+      expect(result).toBe(false);
+      expect(permStack.blades.value).toHaveLength(1);
+      expect(permStack.workspace.value?.name).toBe("Products");
+      expect(hasAccess).not.toHaveBeenCalled();
+    });
+
+    it("works without hasAccess (backward compatible)", async () => {
+      const permStack = createBladeStack(protectedRegistry);
+
+      const result = await restoreFromUrl(
+        permStack, protectedRegistry,
+        { workspaceUrl: "orders" },
+      );
+
+      expect(result).toBe(false);
+      expect(permStack.blades.value).toHaveLength(1);
+      expect(permStack.workspace.value?.name).toBe("Orders");
+    });
+
+    it("redirects to main route on denial", async () => {
+      const hasAccess = vi.fn().mockReturnValue(false);
+      const permStack = createBladeStack(protectedRegistry);
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      await restoreFromUrl(
+        permStack, protectedRegistry,
+        { workspaceUrl: "orders" },
+        hasAccess,
+        mockRouter as any,
+      );
+
+      expect(mockRouter.replace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: "App" }),
+      );
+
+      vi.restoreAllMocks();
     });
   });
 });

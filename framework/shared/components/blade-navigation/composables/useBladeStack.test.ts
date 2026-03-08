@@ -7,12 +7,17 @@ import type { IBladeStack } from "@shared/components/blade-navigation/types";
 // ── Mock registry ──────────────────────────────────────────────────────────────
 
 function createMockRegistry(
-  blades: Record<string, { route?: string }> = {},
+  blades: Record<string, { route?: string; isWorkspace?: boolean; permissions?: string | string[] }> = {},
 ): IBladeRegistry {
   const map = new Map(
     Object.entries(blades).map(([name, data]) => [
       name,
-      { component: {} as any, route: data.route, isWorkspace: false },
+      {
+        component: {} as any,
+        route: data.route,
+        isWorkspace: data.isWorkspace ?? false,
+        permissions: data.permissions,
+      },
     ]),
   );
 
@@ -415,6 +420,61 @@ describe("createBladeStack", () => {
       expect(stack.blades.value).toHaveLength(2);
       expect(stack.workspace.value?.name).toBe("Products");
       expect(stack.blades.value[1].param).toBe("p1");
+    });
+  });
+
+  // ── workspace permissions ─────────────────────────────────────────────────
+
+  describe("workspace permissions", () => {
+    it("blocks openWorkspace when hasAccess returns false", async () => {
+      const registry = createMockRegistry({
+        Orders: { route: "/orders", isWorkspace: true, permissions: "order:read" },
+      });
+      const hasAccess = vi.fn().mockReturnValue(false);
+      const permStack = createBladeStack(registry, hasAccess);
+
+      await permStack.openWorkspace({ name: "Orders" });
+
+      expect(permStack.blades.value).toEqual([]);
+      expect(hasAccess).toHaveBeenCalledWith("order:read");
+    });
+
+    it("allows openWorkspace when hasAccess returns true", async () => {
+      const registry = createMockRegistry({
+        Orders: { route: "/orders", isWorkspace: true, permissions: "order:read" },
+      });
+      const hasAccess = vi.fn().mockReturnValue(true);
+      const permStack = createBladeStack(registry, hasAccess);
+
+      await permStack.openWorkspace({ name: "Orders" });
+
+      expect(permStack.blades.value).toHaveLength(1);
+      expect(permStack.blades.value[0].name).toBe("Orders");
+      expect(hasAccess).toHaveBeenCalledWith("order:read");
+    });
+
+    it("allows openWorkspace when blade has no permissions defined", async () => {
+      const registry = createMockRegistry({
+        Orders: { route: "/orders", isWorkspace: true },
+      });
+      const hasAccess = vi.fn().mockReturnValue(true);
+      const permStack = createBladeStack(registry, hasAccess);
+
+      await permStack.openWorkspace({ name: "Orders" });
+
+      expect(permStack.blades.value).toHaveLength(1);
+      expect(hasAccess).not.toHaveBeenCalled();
+    });
+
+    it("allows openWorkspace when hasAccess is not provided", async () => {
+      const registry = createMockRegistry({
+        Orders: { route: "/orders", isWorkspace: true, permissions: "order:read" },
+      });
+      const permStack = createBladeStack(registry);
+
+      await permStack.openWorkspace({ name: "Orders" });
+
+      expect(permStack.blades.value).toHaveLength(1);
     });
   });
 });

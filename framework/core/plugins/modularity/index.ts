@@ -1,4 +1,5 @@
 import { App, Component, inject, resolveComponent } from "vue";
+import { NotificationTemplatesKey } from "@framework/injection-keys";
 import { i18n } from "@core/plugins/i18n";
 import { Router } from "vue-router";
 import type { BladeInstanceConstructor } from "@shared/components/blade-navigation/types";
@@ -10,33 +11,6 @@ import { notification } from "@shared/components/notifications/core";
 import { BladeRegistryKey, IBladeRegistrationData, IBladeRegistryInstance } from "@core/composables/useBladeRegistry";
 
 const logger = createLogger("modularity");
-
-export function createModule(components: { [key: string]: BladeInstanceConstructor }, locales?: unknown) {
-  return {
-    install(app: App): void {
-      // Register components
-      Object.entries(components).forEach(([componentName, component]) => {
-        // Check if the component is already registered
-        if (app.component(componentName)) {
-          // Remove the existing component
-          // Note: Vue does not provide a method to remove a component, so we can overwrite it
-          logger.warn(
-            `Component ${componentName} is already registered. It will be overwritten with the new component.`,
-          );
-        }
-        app.component(componentName, component);
-      });
-
-      // Load locales
-      if (locales) {
-        Object.entries(locales).forEach(([key, message]) => {
-          // Merge locale messages, overwriting existing ones
-          i18n.global.mergeLocaleMessage(key, message);
-        });
-      }
-    },
-  };
-}
 
 /**
  * Options for createAppModule.
@@ -110,6 +84,7 @@ export function createAppModule(
             registerBladeWithRegistry(page.name, {
               component: page,
               isWorkspace: page.isWorkspace || false,
+              permissions: page.permissions,
             });
           } else {
             logger.warn(
@@ -128,6 +103,7 @@ export function createAppModule(
             route: page.url,
             isWorkspace: page.isWorkspace || false,
             routable: page.routable !== false,
+            permissions: page.permissions,
           });
 
           // Note: No router.addRoute() — blades are NOT Vue Router pages.
@@ -168,19 +144,21 @@ export function createAppModule(
       });
 
       if (notificationTemplates) {
-        // Register notification templates
-        Object.entries(notificationTemplates).forEach(([, template]) => {
-          // Remove existing template if it exists
-          if (app.config.globalProperties.notificationTemplates) {
-            const existingIndex = app.config.globalProperties.notificationTemplates.findIndex(
-              (t: Component & { notifyType: string }) => t.notifyType === template.notifyType,
+        // Register notification templates via DI only — no globalProperties (FR-3.5)
+        const templateRegistry = app.runWithContext(() =>
+          inject<(Component & { notifyType?: string })[]>(NotificationTemplatesKey),
+        );
+        if (templateRegistry) {
+          Object.entries(notificationTemplates).forEach(([, template]) => {
+            const existingIndex = templateRegistry.findIndex(
+              (t: Component & { notifyType?: string }) => t.notifyType === template.notifyType,
             );
             if (existingIndex !== -1) {
-              app.config.globalProperties.notificationTemplates.splice(existingIndex, 1);
+              templateRegistry.splice(existingIndex, 1);
             }
-          }
-          app.config.globalProperties.notificationTemplates?.push(template);
-        });
+            templateRegistry.push(template);
+          });
+        }
       }
 
       if (moduleComponents) {
@@ -205,4 +183,5 @@ export function createAppModule(
   };
 }
 
-export * from "@core/plugins/modularity/loader";
+export { dynamicModulesPlugin } from "./loader-mf";
+export type { DynamicModulesPluginOptions, ModuleRegistryEntry } from "./loader-mf";

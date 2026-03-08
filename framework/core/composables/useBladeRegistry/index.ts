@@ -12,7 +12,7 @@ export interface IBladeRegistrationData {
   route?: string;
   isWorkspace?: boolean;
   routable?: boolean;
-  // ... other metadata
+  permissions?: string | string[];
 }
 
 /**
@@ -23,7 +23,7 @@ export const BladeRegistryKey = Symbol("BladeRegistry");
 /**
  * Public interface for blade registry
  */
-export interface IBladeRegistry {
+export interface UseBladeRegistryReturn {
   /** Readonly map of all registered blades */
   readonly registeredBladesMap: ComputedRef<ReadonlyMap<string, IBladeRegistrationData>>;
   /** Get blade registration data by name */
@@ -34,10 +34,13 @@ export interface IBladeRegistry {
   getBladeByRoute: (route: string) => { name: string; data: IBladeRegistrationData } | undefined;
 }
 
+/** @deprecated Use UseBladeRegistryReturn instead */
+export type IBladeRegistry = UseBladeRegistryReturn;
+
 /**
  * Extended interface for blade registry instance with internal registration function
  */
-export interface IBladeRegistryInstance extends IBladeRegistry {
+export interface IBladeRegistryInstance extends UseBladeRegistryReturn {
   _registerBladeFn: (name: string, registrationData: IBladeRegistrationData, allowOverwrite?: boolean) => void;
 }
 
@@ -197,10 +200,12 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
     return { name, data };
   }
 
-  // Cache the readonly map to avoid recreating it on every access
-  const readonlyBladesMap = computed(() => vueReadonly(registeredBladesInternal.value));
+  // Cache the readonly map — computed is inherently read-only
+  const readonlyBladesMap = computed<ReadonlyMap<string, IBladeRegistrationData>>(
+    () => registeredBladesInternal.value,
+  );
 
-  const registryApi: IBladeRegistry = {
+  const registryApi: UseBladeRegistryReturn = {
     registeredBladesMap: readonlyBladesMap,
     getBlade,
     getBladeComponent,
@@ -220,8 +225,8 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
  * @returns Blade registry interface
  * @throws Error if registry is not available
  */
-export function useBladeRegistry(): IBladeRegistry {
-  const registry = inject<IBladeRegistry>(BladeRegistryKey);
+export function useBladeRegistry(): UseBladeRegistryReturn {
+  const registry = inject<UseBladeRegistryReturn>(BladeRegistryKey);
   if (!registry) {
     throw new Error(
       "useBladeRegistry must be used after createBladeRegistry is called and provided with BladeRegistryKey.",

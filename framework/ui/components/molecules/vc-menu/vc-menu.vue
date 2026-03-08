@@ -6,32 +6,62 @@
       class="vc-menu__skeleton"
     >
       <div
-        v-for="section in 3"
-        :key="section"
+        v-for="(section, sIdx) in skeletonSections"
+        :key="sIdx"
         class="vc-menu__skeleton-section"
       >
-        <VcSkeleton
-          variant="block"
-          :width="sectionWidths[section - 1]"
-          height="16"
-        />
-        <div class="vc-menu__skeleton-items">
-          <div
-            v-for="item in (section === 1 ? 3 : 2)"
-            :key="item"
-            class="vc-menu__skeleton-item"
+        <!-- Section header -->
+        <div class="tw-flex tw-items-center tw-h-[30px] tw-px-1.5">
+          <VcSkeleton
+            variant="block"
+            :width="section.titleWidth"
+            :height="12"
+          />
+        </div>
+
+        <!-- Items -->
+        <div class="tw-flex tw-flex-col tw-gap-1">
+          <template
+            v-for="(item, iIdx) in section.items"
+            :key="iIdx"
           >
-            <VcSkeleton
-              variant="circle"
-              :width="18"
-              :height="18"
-            />
-            <VcSkeleton
-              variant="block"
-              :width="itemWidths[(section - 1) * 3 + item - 1] ?? '60%'"
-              height="14"
-            />
-          </div>
+            <!-- Group/item row: icon + text -->
+            <div class="tw-flex tw-items-center tw-gap-1.5 tw-h-7 tw-px-1.5">
+              <VcSkeleton
+                variant="circle"
+                :width="18"
+                :height="18"
+              />
+              <VcSkeleton
+                variant="block"
+                :width="item.width"
+                :height="14"
+              />
+            </div>
+
+            <!-- Nested children -->
+            <div
+              v-if="item.children"
+              class="tw-flex tw-flex-col tw-gap-1 tw-pl-3"
+            >
+              <div
+                v-for="(child, cIdx) in item.children"
+                :key="cIdx"
+                class="tw-flex tw-items-center tw-gap-1.5 tw-h-6 tw-px-1.5"
+              >
+                <VcSkeleton
+                  variant="circle"
+                  :width="16"
+                  :height="16"
+                />
+                <VcSkeleton
+                  variant="block"
+                  :width="child.width"
+                  :height="12"
+                />
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -69,16 +99,27 @@ defineSlots<{
   default: () => unknown;
 }>();
 
-provide(VcMenuExpandedKey, computed(() => props.expanded));
+provide(
+  VcMenuExpandedKey,
+  computed(() => props.expanded),
+);
 
-// Skeleton variation widths for natural look
-const sectionWidths = ["40%", "55%", "35%"];
-const itemWidths = ["70%", "55%", "65%", "50%", "60%", "45%", "55%", "70%", "50%"];
+// Skeleton layout mimicking a realistic menu structure
+const skeletonSections = [
+  {
+    titleWidth: 70,
+    items: [{ width: 90, children: [{ width: 65 }, { width: 80 }] }, { width: 75 }, { width: 100 }],
+  },
+  {
+    titleWidth: 55,
+    items: [{ width: 85 }, { width: 110, children: [{ width: 70 }, { width: 55 }] }],
+  },
+];
 </script>
 
 <style lang="scss">
 .vc-menu {
-  @apply tw-h-full;
+  @apply tw-h-full tw-pl-3 tw-font-lato;
 
   &__items {
     @apply tw-flex tw-flex-col tw-h-full;
@@ -86,19 +127,11 @@ const itemWidths = ["70%", "55%", "65%", "50%", "60%", "45%", "55%", "70%", "50%
   }
 
   &__skeleton {
-    @apply tw-flex tw-flex-col tw-gap-5 tw-p-2;
+    @apply tw-flex tw-flex-col tw-gap-5 tw-py-2 tw-pr-2;
   }
 
-  &__skeleton-section {
-    @apply tw-flex tw-flex-col tw-gap-2;
-  }
-
-  &__skeleton-items {
-    @apply tw-flex tw-flex-col tw-gap-[6px] tw-pl-1;
-  }
-
-  &__skeleton-item {
-    @apply tw-flex tw-items-center tw-gap-2;
+  &__skeleton-section + &__skeleton-section {
+    @apply tw-border-t tw-border-neutrals-100 tw-pt-5;
   }
 }
 </style>

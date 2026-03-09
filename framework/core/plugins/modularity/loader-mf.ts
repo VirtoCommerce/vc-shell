@@ -247,11 +247,11 @@ export const dynamicModulesPlugin: Plugin = {
       modulesReady.value = true;
 
       // Re-resolve current route so module-registered routes take effect.
-      // This requires the router to have a catch-all/fallback route that does not
-      // permanently redirect, so newly registered module routes can be found.
-      const currentPath = options.router.currentRoute.value.fullPath;
-      if (currentPath !== "/") {
-        options.router.replace(currentPath);
+      // Read fullPath AFTER modules install (not before) to avoid stale path
+      // if user navigated during async loading.
+      const resolvedPath = options.router.currentRoute.value.fullPath;
+      if (resolvedPath !== "/") {
+        options.router.replace(resolvedPath);
       }
 
       performance.mark("vc:modules-done");

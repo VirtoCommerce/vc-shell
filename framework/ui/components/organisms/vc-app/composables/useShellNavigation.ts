@@ -12,7 +12,7 @@ const logger = createLogger("useShellNavigation");
 export function useShellNavigation() {
   const router = useRouter();
   const route = useRoute();
-  const { openBlade, closeBlade, resolveBladeByName, goToRoot } = useBladeNavigation();
+  const { openBlade, closeBlade, resolveBladeByName } = useBladeNavigation();
   const routes = router.getRoutes();
 
   const handleMenuItemClick = (item: MenuItem) => {
@@ -47,10 +47,10 @@ export function useShellNavigation() {
   };
 
   const openRoot = async () => {
-    const isPrevented = await closeBlade(1);
-    if (!isPrevented) {
-      router.push(goToRoot());
-    }
+    // closeBlade(1) closes all blades above the workspace and syncs the URL.
+    // No additional router.push needed — the workspace stays in the stack
+    // and the URL is already updated by syncUrlReplace() inside closeBlade.
+    await closeBlade(1);
   };
 
   return { handleMenuItemClick, openRoot };

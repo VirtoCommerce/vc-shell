@@ -7,6 +7,7 @@
     <Dialog
       as="div"
       class="vc-popup"
+      :aria-labelledby="popupTitleId"
       @close="handleDialogDismiss"
       @keydown.esc="handleEscapeKeydown"
     >
@@ -52,6 +53,7 @@
               ]"
             >
               <DialogTitle
+                :id="popupTitleId"
                 as="h3"
                 class="vc-popup__title"
               >
@@ -125,7 +127,7 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, inject, ref } from "vue";
+import { computed, inject, ref, getCurrentInstance } from "vue";
 import { IsMobileKey } from "@framework/injection-keys";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 
@@ -165,6 +167,9 @@ defineSlots<{
   content: (props: any) => any;
   footer: (props: { close: () => void }) => any;
 }>();
+
+const instanceUid = getCurrentInstance()?.uid ?? 0;
+const popupTitleId = `vc-popup-title-${instanceUid}`;
 
 const isMobile = inject(IsMobileKey, ref(false));
 const pendingDismissReason = ref<PopupCloseReason | null>(null);

@@ -1,5 +1,9 @@
 <template>
-  <div class="vc-blade-navigation tw-flex tw-flex-col tw-grow tw-basis-0 tw-min-w-0 tw-overflow-hidden">
+  <div
+    class="vc-blade-navigation tw-flex tw-flex-col tw-grow tw-basis-0 tw-min-w-0 tw-overflow-hidden"
+    role="region"
+    :aria-label="t('COMPONENTS.BLADE_NAVIGATION.ARIA_LABEL')"
+  >
     <!-- Non-blade routes (Dashboard, etc.) -->
     <RouterView v-if="!hasBlades" />
 
@@ -30,6 +34,7 @@
 
 <script lang="ts" setup>
 import { computed, h, inject, Ref, toRef } from "vue";
+import { useI18n } from "vue-i18n";
 import { IsMobileKey } from "@framework/injection-keys";
 import { RouterView, useRouter } from "vue-router";
 import { watchDebounced } from "@vueuse/core";
@@ -41,6 +46,8 @@ import { createUrlSync } from "@shared/components/blade-navigation/utils/urlSync
 import { useBreadcrumbs } from "@core/composables/useBreadcrumbs";
 import { AiAgentServiceKey } from "@framework/injection-keys";
 import type { BladeDescriptor, IParentCallArgs } from "@shared/components/blade-navigation/types";
+
+const { t } = useI18n();
 
 const bladeStack = useBladeStack();
 const messaging = useBladeMessaging();

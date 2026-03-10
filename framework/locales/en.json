@@ -93,6 +93,9 @@
           }
         }
       },
+      "BLADE_NAVIGATION": {
+        "ARIA_LABEL": "Blade navigation"
+      },
       "VC_BLADE": {
         "SEE_DETAILS": "See details",
         "UNSAVED_CHANGES": "Has unsaved changes",
@@ -102,7 +105,8 @@
         },
         "MORE": "More",
         "TOOLBAR": "Toolbar actions",
-        "CLOSE_MENU": "Close menu"
+        "CLOSE_MENU": "Close menu",
+        "PANEL": "Panel"
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Has unsaved changes",

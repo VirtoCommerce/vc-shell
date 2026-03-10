@@ -2,6 +2,7 @@
   <div
     ref="bladeRef"
     class="vc-blade"
+    role="region"
     :class="[
       $attrs.class,
       {
@@ -11,6 +12,8 @@
       },
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
+    :aria-labelledby="props.title && !showSkeleton ? bladeTitleId : undefined"
+    :aria-label="(!props.title || showSkeleton) ? $t('COMPONENTS.VC_BLADE.PANEL') : undefined"
   >
     <!-- Header zone: v-show keeps BladeHeader mounted to avoid Teleport unmount bug -->
     <template v-if="!($isMobile.value && blades.length === 1 && !$slots['actions'])">
@@ -26,6 +29,7 @@
         :title="title"
         :subtitle="subtitle"
         :modified="modified"
+        :title-id="bladeTitleId"
         @close="$emit('close')"
         @expand="$emit('expand')"
         @collapse="$emit('collapse')"
@@ -115,7 +119,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, inject, computed, onMounted, nextTick } from "vue";
+import { ref, inject, computed, onMounted, nextTick, getCurrentInstance } from "vue";
 import { IBladeToolbar } from "@core/types";
 import { useBladeNavigation } from "@shared";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
@@ -158,6 +162,9 @@ const props = withDefaults(defineProps<Props>(), {
   toolbarItems: () => [],
   modified: undefined,
 });
+
+const instanceUid = getCurrentInstance()?.uid ?? 0;
+const bladeTitleId = `blade-title-${instanceUid}`;
 
 // Prevent flash of empty content on initial render.
 // useAsync starts with loading=false; the action (setting true) runs in onMounted.

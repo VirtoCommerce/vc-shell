@@ -28,7 +28,6 @@
     "check-locales": "tsx framework/scripts/check-locales.mts",
     "prepare": "husky install",
     "pre-commit": "yarn check-locales",
-    "serve:oneshell": "yarn workspace one-shell-app serve",
     "generate-changelogs": "tsx scripts/generate-initial-changelogs.ts"
   },
   "workspaces": [
@@ -38,9 +37,7 @@
     "configs/*"
   ],
   "resolutions": {
-    "one-shell-app": "portal:/Users/symbot/DEV/vc-module-one-shell-app/src/VirtoCommerce.OneShell.Web/App",
-    "@module-federation/dts-plugin@npm:^2.0.1": "patch:@module-federation/dts-plugin@npm%3A2.1.0#~/.yarn/patches/@module-federation-dts-plugin-npm-2.1.0-ec9fb2d285.patch",
-    "@module-federation/dts-plugin@npm:2.1.0": "patch:@module-federation/dts-plugin@npm%3A2.1.0#~/.yarn/patches/@module-federation-dts-plugin-npm-2.1.0-ec9fb2d285.patch"
+    "@module-federation/dts-plugin": "2.0.1"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.0.1",

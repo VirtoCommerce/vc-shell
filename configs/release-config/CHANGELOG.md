@@ -1,9 +1,21 @@
+# [2.0.0-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.0) (2026-03-10)
+
+### Features
+
+- **release-config:** enhance stageAndAmendCommit to accept explicit files ([3088f43](https://github.com/VirtoCommerce/vc-shell/commit/3088f432f07dbef60931ec6f180f8e28ef0f809a))
+- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
+
+
+### Features
+
+- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
+- **release-config:** enhance stageAndAmendCommit to accept explicit files ([3088f43](https://github.com/VirtoCommerce/vc-shell/commit/3088f432f07dbef60931ec6f180f8e28ef0f809a))
+
 ## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
 
 ### Code Refactoring
 
 - enhance git and lerna integration for better versioning ([2864ce9](https://github.com/VirtoCommerce/vc-shell/commit/2864ce93ac21ef00aff8b337332dc918114ac571))
-
 
 **Note:** Version bump only for package @vc-shell/release-config
 

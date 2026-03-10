@@ -1,10 +1,75 @@
+# [2.0.0-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.0) (2026-03-10)
+
+### Features
+
+- **a11y:** add ARIA attributes to blades, popups, and blade navigation ([12454c6](https://github.com/VirtoCommerce/vc-shell/commit/12454c628683d36fba9efea6e24224d1e0a029e4))
+- **ai-agent:** add embedded mode support with iframe messaging ([d605a2d](https://github.com/VirtoCommerce/vc-shell/commit/d605a2dedaf223718a0dccd6eaad94fbeddae1c0))
+- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
+- **blade-nav:** enforce workspace permissions in BladeStack ([edfe789](https://github.com/VirtoCommerce/vc-shell/commit/edfe7898828eaf1c2fde5abc00a7c13b1bdc9a2f))
+- add Lato font family ([8384890](https://github.com/VirtoCommerce/vc-shell/commit/83848902a6b83122663070e9056863d85ae7f11f))
+- **vc-menu:** add loading prop with skeleton placeholders ([d0bb25c](https://github.com/VirtoCommerce/vc-shell/commit/d0bb25c345c977fbb32e1492c74db4bfdcc94413))
+- **vc-menu-group:** add section variant, grid animation, chevron transition ([c5f04f1](https://github.com/VirtoCommerce/vc-shell/commit/c5f04f1fd2f0df3bcf3749feb8cbb32e1295eca8))
+- **vc-menu:** add loading and variant to type definitions ([4d64610](https://github.com/VirtoCommerce/vc-shell/commit/4d646106ef86e74bf9761ebbb461b8200c749b64))
+
+### Bug Fixes
+
+- **ui:** improve collapsed sidebar UX and embedded AI agent context ([c87e16d](https://github.com/VirtoCommerce/vc-shell/commit/c87e16df0b70069f919ea20676f3aa3b66d447d9))
+- **shell-nav:** logo click navigates to main route without clearing stack ([f9f8f78](https://github.com/VirtoCommerce/vc-shell/commit/f9f8f785153bc0e4027f4553fce7c070ea43aa14))
+- **shell-nav:** openRoot no longer clears blade stack ([547ae53](https://github.com/VirtoCommerce/vc-shell/commit/547ae5363b7b96d30cc2ad65fc9ec97191116f26))
+- **vc-menu:** move font and padding to app level, add activeItemId ([3018007](https://github.com/VirtoCommerce/vc-shell/commit/30180073b684ebd5c6f77df62fde1bd740b32720))
+- **notifications:** fix toast width, centering, expand/collapse UX ([a5a5423](https://github.com/VirtoCommerce/vc-shell/commit/a5a54239ec9e3b3ebe897a25fb0657397d123fdb))
+
+### Documentation
+
+- **vc-menu:** update stories with sections, nesting, loading, badges ([4426976](https://github.com/VirtoCommerce/vc-shell/commit/44269767f013f769bb6f4ae4e8362075e93ba9f1))
+
+### Styles
+
+- **vc-menu-item:** update design tokens to match Figma mockup ([0c634cf](https://github.com/VirtoCommerce/vc-shell/commit/0c634cf5cef63201d264b36b7d880adfc07175a8))
+
+### Code Refactoring
+
+- **table:** extract orchestration logic into useDataTableOrchestrator ([86e946e](https://github.com/VirtoCommerce/vc-shell/commit/86e946e559749dc53d71e7fb7da52471ece0ec3c))
+- **navigation:** improve blade stack management and extension points ([6817743](https://github.com/VirtoCommerce/vc-shell/commit/6817743aa38efed0c9d98496c8adaa032a458548))
+- **ui:** standardize component prop/emit types and remove any usage ([a7a587a](https://github.com/VirtoCommerce/vc-shell/commit/a7a587a5848dbb9acbfce6d9235e4b0e196b4a18))
+- **core:** standardize composable return types with *Return naming convention ([f84452b](https://github.com/VirtoCommerce/vc-shell/commit/f84452bc23d523bdc252d70f2e6d22a3b6fd1d07))
+- **loader-mf:** clarify route re-resolution happens after module installation ([6b7bbd3](https://github.com/VirtoCommerce/vc-shell/commit/6b7bbd3d732c6c8f017c016013dd8004cc7f6dcb))
+- **loader-mf:** consume SHARED_DEP_NAMES from shared-deps.ts, fix stale comment ([b2eb9f8](https://github.com/VirtoCommerce/vc-shell/commit/b2eb9f829204c636bb214962ea6f38cec79b2af2))
+- **vc-menu:** rework skeleton and migrate main-menu to VcMenu ([5066677](https://github.com/VirtoCommerce/vc-shell/commit/50666775cb8e2d7f8f2bfa1078aa602482e64c52))
+- enhance VcDataTable and related components for improved accessibility and styling ([4cc8ce2](https://github.com/VirtoCommerce/vc-shell/commit/4cc8ce2d0e721e0d574f68e8ca0d829533fc1d90))
+- replace native checkbox in TableCheckbox with VcCheckbox ([e0a0be2](https://github.com/VirtoCommerce/vc-shell/commit/e0a0be282d53b4a42fbde0f2e99f7a842714dc0a))
+- replace native buttons in table components with VcButton ([5ec395e](https://github.com/VirtoCommerce/vc-shell/commit/5ec395e163eb4d08240f513ee0fda93ce5e829e7))
+
+### Tests
+
+- add unit and accessibility tests across framework ([59086a9](https://github.com/VirtoCommerce/vc-shell/commit/59086a90690a13bfb186685bc423b73cfb406dc8))
+
+
+### Bug Fixes
+
+- **notifications:** fix toast width, centering, expand/collapse UX ([a5a5423](https://github.com/VirtoCommerce/vc-shell/commit/a5a54239ec9e3b3ebe897a25fb0657397d123fdb))
+- **shell-nav:** logo click navigates to main route without clearing stack ([f9f8f78](https://github.com/VirtoCommerce/vc-shell/commit/f9f8f785153bc0e4027f4553fce7c070ea43aa14))
+- **shell-nav:** openRoot no longer clears blade stack ([547ae53](https://github.com/VirtoCommerce/vc-shell/commit/547ae5363b7b96d30cc2ad65fc9ec97191116f26))
+- **ui:** improve collapsed sidebar UX and embedded AI agent context ([c87e16d](https://github.com/VirtoCommerce/vc-shell/commit/c87e16df0b70069f919ea20676f3aa3b66d447d9))
+- **vc-menu:** move font and padding to app level, add activeItemId ([3018007](https://github.com/VirtoCommerce/vc-shell/commit/30180073b684ebd5c6f77df62fde1bd740b32720))
+
+### Features
+
+- **a11y:** add ARIA attributes to blades, popups, and blade navigation ([12454c6](https://github.com/VirtoCommerce/vc-shell/commit/12454c628683d36fba9efea6e24224d1e0a029e4))
+- add Lato font family ([8384890](https://github.com/VirtoCommerce/vc-shell/commit/83848902a6b83122663070e9056863d85ae7f11f))
+- **ai-agent:** add embedded mode support with iframe messaging ([d605a2d](https://github.com/VirtoCommerce/vc-shell/commit/d605a2dedaf223718a0dccd6eaad94fbeddae1c0))
+- **blade-nav:** enforce workspace permissions in BladeStack ([edfe789](https://github.com/VirtoCommerce/vc-shell/commit/edfe7898828eaf1c2fde5abc00a7c13b1bdc9a2f))
+- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
+- **vc-menu-group:** add section variant, grid animation, chevron transition ([c5f04f1](https://github.com/VirtoCommerce/vc-shell/commit/c5f04f1fd2f0df3bcf3749feb8cbb32e1295eca8))
+- **vc-menu:** add loading and variant to type definitions ([4d64610](https://github.com/VirtoCommerce/vc-shell/commit/4d646106ef86e74bf9761ebbb461b8200c749b64))
+- **vc-menu:** add loading prop with skeleton placeholders ([d0bb25c](https://github.com/VirtoCommerce/vc-shell/commit/d0bb25c345c977fbb32e1492c74db4bfdcc94413))
+
 ## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
 
 ### Code Refactoring
 
 - improve code readability and component properties in VcDataTable ([08a822f](https://github.com/VirtoCommerce/vc-shell/commit/08a822f2525687ad4987e242f3a99774f946a826))
 - streamline component exports and remove async component definitions ([fb1d76c](https://github.com/VirtoCommerce/vc-shell/commit/fb1d76c9ac8a1974472e1c43ab3c09d41a0b5ee3))
-
 
 **Note:** Version bump only for package @vc-shell/framework
 

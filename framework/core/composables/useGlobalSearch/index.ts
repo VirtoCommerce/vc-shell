@@ -3,6 +3,8 @@ import { GlobalSearchKey } from "@framework/injection-keys";
 import { GlobalSearchState, createGlobalSearchService } from "@core/services/global-search-service";
 import { createLogger, InjectionError } from "@core/utilities";
 
+export type UseGlobalSearchReturn = GlobalSearchState;
+
 const logger = createLogger("use-global-search");
 
 export function provideGlobalSearch(): GlobalSearchState {
@@ -24,7 +26,7 @@ export function provideGlobalSearch(): GlobalSearchState {
   return state;
 }
 
-export function useGlobalSearch(): GlobalSearchState {
+export function useGlobalSearch(): UseGlobalSearchReturn {
   const state = inject<GlobalSearchState>(GlobalSearchKey);
 
   if (!state) {

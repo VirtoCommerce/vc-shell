@@ -51,7 +51,7 @@ export interface IBaseMeasurementDictionaryItem {
   id?: string | null;
 }
 
-export interface IUseDynamicProperties<
+export interface UseDynamicPropertiesReturn<
   TProperty extends IBaseProperty<TPropertyValue>,
   TPropertyValue extends IBasePropertyValue,
   TPropertyDictionaryItem extends IBasePropertyDictionaryItem,
@@ -72,6 +72,16 @@ export interface IUseDynamicProperties<
   setPropertyValue: (data: SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDictionaryItem>) => void;
   loadMeasurements(measureId: string, keyword?: string, locale?: string): Promise<TMeasurement[] | undefined>;
 }
+
+/** @deprecated Use UseDynamicPropertiesReturn instead */
+export type IUseDynamicProperties<
+  TProperty extends IBaseProperty<TPropertyValue>,
+  TPropertyValue extends IBasePropertyValue,
+  TPropertyDictionaryItem extends IBasePropertyDictionaryItem,
+  TPropertyDictionaryItemSearchCriteria extends IBasePropertyDictionaryItemSearchCriteria,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TMeasurement extends IBaseMeasurementDictionaryItem = Record<string, any>,
+> = UseDynamicPropertiesReturn<TProperty, TPropertyValue, TPropertyDictionaryItem, TPropertyDictionaryItemSearchCriteria, TMeasurement>;
 
 export interface SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDictionaryItem> {
   property: TProperty;
@@ -128,7 +138,7 @@ export const useDynamicProperties = <
   PropertyValueConstructor: new (data?: Partial<TPropertyValue>) => TPropertyValue,
   PropertyDictionaryItemConstructor: new (data?: Partial<TPropertyDictionaryItem>) => TPropertyDictionaryItem,
   searchMeasurementFunction?: (measureId: string, locale?: string) => Promise<TMeasurement[] | undefined>,
-): IUseDynamicProperties<TProperty, TPropertyValue, TPropertyDictionaryItem, TPropertyDictionaryItemSearchCriteria> => {
+): UseDynamicPropertiesReturn<TProperty, TPropertyValue, TPropertyDictionaryItem, TPropertyDictionaryItemSearchCriteria> => {
   // === ASYNC OPERATIONS ===
 
   const { loading: dictionaryItemsLoading, action: searchDictionaryItems } = useAsync<

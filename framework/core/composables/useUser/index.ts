@@ -46,7 +46,7 @@ export interface IUserInternalAPI {
   isAuthenticated: ComputedRef<boolean>;
 }
 
-export interface IAppUserAPI {
+export interface UseUserReturn {
   user: ComputedRef<UserDetail | undefined>;
   loading: ComputedRef<boolean>;
   isAuthenticated: ComputedRef<boolean>;
@@ -55,6 +55,9 @@ export interface IAppUserAPI {
   signOut: () => Promise<void>;
   getAccessToken: () => Promise<string | null>;
 }
+
+/** @deprecated Use UseUserReturn instead */
+export type IAppUserAPI = UseUserReturn;
 
 const user: Ref<UserDetail | undefined> = ref();
 
@@ -392,7 +395,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
   };
 }
 
-export const useUser = createSharedComposable((): IAppUserAPI => {
+export const useUser = createSharedComposable((): UseUserReturn => {
   const internals = _createInternalUserLogic();
   return {
     user: internals.user,

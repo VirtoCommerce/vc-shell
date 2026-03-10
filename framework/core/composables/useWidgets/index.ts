@@ -9,6 +9,8 @@ import {
 import { WidgetServiceKey } from "@framework/injection-keys";
 import { createLogger, InjectionError } from "@core/utilities";
 
+export type UseWidgetsReturn = IWidgetService;
+
 const logger = createLogger("use-widgets");
 
 export function provideWidgetService(): IWidgetService {
@@ -27,7 +29,7 @@ export function provideWidgetService(): IWidgetService {
   return service;
 }
 
-export function useWidgets(): IWidgetService {
+export function useWidgets(): UseWidgetsReturn {
   const service = inject(WidgetServiceKey);
   if (!service) {
     logger.error("Widget service not found in current context. Injection chain:", getCurrentInstance());

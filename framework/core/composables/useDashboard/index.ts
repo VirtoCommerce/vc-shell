@@ -4,6 +4,8 @@ import {
   registerDashboardWidget,
   dashboardBus,
 } from "@core/services/dashboard-service";
+
+export type UseDashboardReturn = IDashboardService;
 import { provide, inject, getCurrentScope, onScopeDispose } from "vue";
 import { DashboardServiceKey } from "@framework/injection-keys";
 import { usePermissions } from "@core/composables/usePermissions";
@@ -39,7 +41,7 @@ export function provideDashboardService(): IDashboardService {
   return service;
 }
 
-export function useDashboard(): IDashboardService {
+export function useDashboard(): UseDashboardReturn {
   const service = inject(DashboardServiceKey);
   if (!service) {
     logger.error("Dashboard service not found");

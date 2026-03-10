@@ -8,12 +8,15 @@ const logger = createLogger("use-assets");
 /** Maximum number of concurrent uploads */
 const MAX_CONCURRENT_UPLOADS = 4;
 
-export interface IUseAssets {
+export interface UseAssetsReturn {
   upload: (files: FileList, uploadPath: string, startingSortOrder?: number) => Promise<ICommonAsset[]>;
   remove: (filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[];
   edit: (updatedFiles: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[];
   loading: ComputedRef<boolean>;
 }
+
+/** @deprecated Use UseAssetsReturn instead */
+export type IUseAssets = UseAssetsReturn;
 
 /**
  * Uploads a single file and returns the asset
@@ -69,7 +72,7 @@ async function processBatched<T, R>(
   return results;
 }
 
-export function useAssets(): IUseAssets {
+export function useAssets(): UseAssetsReturn {
   const loading = ref(false);
 
   async function upload(files: FileList, uploadPath: string, startingSortOrder?: number): Promise<ICommonAsset[]> {

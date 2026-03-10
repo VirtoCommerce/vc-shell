@@ -1,11 +1,15 @@
 import { Ref, ref } from "vue";
 import { useUserManagement } from "@core/composables/useUserManagement";
 
-interface IUsePermissions {
+export interface UsePermissionsReturn {
   hasAccess(permissions: string | string[] | undefined): boolean;
 }
+
+/** @deprecated Use UsePermissionsReturn instead */
+export type IUsePermissions = UsePermissionsReturn;
+
 const userPermissions: Ref<string[]> = ref([]);
-export function usePermissions(): IUsePermissions {
+export function usePermissions(): UsePermissionsReturn {
   const { user } = useUserManagement();
 
   if (user.value) {

@@ -3,6 +3,8 @@ import { createSettingsMenuService, ISettingsMenuService, settingsMenuBus } from
 import { SettingsMenuServiceKey } from "@framework/injection-keys";
 import { createLogger, InjectionError } from "@core/utilities";
 
+export type UseSettingsMenuReturn = ISettingsMenuService;
+
 const logger = createLogger("use-settings-menu");
 
 export function provideSettingsMenu(): ISettingsMenuService {
@@ -21,7 +23,7 @@ export function provideSettingsMenu(): ISettingsMenuService {
   return settingsMenuService;
 }
 
-export function useSettingsMenu(): ISettingsMenuService {
+export function useSettingsMenu(): UseSettingsMenuReturn {
   const settingsMenuService = inject(SettingsMenuServiceKey);
   if (!settingsMenuService) {
     logger.error("Settings menu service not found");

@@ -6,10 +6,13 @@ import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-error-handler");
 
-interface IUseErrorHandler {
+export interface UseErrorHandlerReturn {
   error: Ref<DisplayableError | null>;
   reset(): void;
 }
+
+/** @deprecated Use UseErrorHandlerReturn instead */
+export type IUseErrorHandler = UseErrorHandlerReturn;
 
 /**
  * A composable to handle and normalize errors within a component's lifecycle.
@@ -19,7 +22,7 @@ interface IUseErrorHandler {
  * @param capture - If true, prevents the error from propagating further up the component tree.
  * @returns An object with the reactive error and a reset function.
  */
-export function useErrorHandler(capture?: boolean): IUseErrorHandler {
+export function useErrorHandler(capture?: boolean): UseErrorHandlerReturn {
   const error = ref<DisplayableError | null>(null);
   const instance = getCurrentInstance();
   const { appInsights } = useAppInsights();

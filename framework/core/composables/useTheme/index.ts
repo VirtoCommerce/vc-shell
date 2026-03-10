@@ -17,7 +17,7 @@ export interface DisplayTheme {
   name: string; // localized name
 }
 
-export interface IUseTheme {
+export interface UseThemeReturn {
   themes: Ref<DisplayTheme[]>;
   currentThemeKey: Ref<string>;
   currentLocalizedName: Ref<string>;
@@ -27,10 +27,13 @@ export interface IUseTheme {
   setTheme: (themeKey: string) => void;
 }
 
+/** @deprecated Use UseThemeReturn instead */
+export type IUseTheme = UseThemeReturn;
+
 // Initialize with a default "light" theme, assuming a convention for its localization key.
 const _themeRegistry: Ref<ThemeDefinition[]> = ref([{ key: "light", localizationKey: "CORE.THEMES.LIGHT" }]);
 
-export const useTheme = (): IUseTheme => {
+export const useTheme = (): UseThemeReturn => {
   const { t } = i18n.global;
 
   function register(themesToAdd: ThemeDefinition | ThemeDefinition[]) {

@@ -4,13 +4,16 @@ import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-breadcrumbs");
 
-export interface IUseBreadcrumbs {
+export interface UseBreadcrumbsReturn {
   breadcrumbs: ComputedRef<Breadcrumbs[]>;
   push: (breadcrumb: Breadcrumbs) => void;
   remove: (ids: string[]) => void;
 }
 
-export function useBreadcrumbs(): IUseBreadcrumbs {
+/** @deprecated Use UseBreadcrumbsReturn instead */
+export type IUseBreadcrumbs = UseBreadcrumbsReturn;
+
+export function useBreadcrumbs(): UseBreadcrumbsReturn {
   const items = shallowRef<Breadcrumbs[]>([]);
 
   /**

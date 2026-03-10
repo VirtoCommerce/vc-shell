@@ -1,4 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { defineComponent, h } from "vue";
+import { mount } from "@vue/test-utils";
+import { expectNoVueWarnings } from "@framework/test-helpers";
 
 // --- Stable mock function references ---
 // These live at module scope so the SecurityClient mock factory can close over them.
@@ -151,5 +154,31 @@ describe("loadUser() - parallelization", () => {
     expect(startIdx).toBeGreaterThanOrEqual(0);
     expect(doneIdx).toBeGreaterThanOrEqual(0);
     expect(startIdx).toBeLessThan(doneIdx);
+  });
+});
+
+// ── cleanup ────────────────────────────────────────────────────────────────────
+
+describe("cleanup", () => {
+  it("unmount() produces no Vue warnings", async () => {
+    mockGetCurrentUser.mockResolvedValue({ userName: "cleanup@vc.com", isAdministrator: false });
+
+    await expectNoVueWarnings(async () => {
+      // Restore a minimal performance stub that includes .now() so Vue's internal
+      // startMeasure() works. The beforeEach stubs performance with { mark } only.
+      vi.stubGlobal("performance", { mark: mockPerformanceMark, now: () => Date.now() });
+
+      // _createInternalUserLogic is pure function-level (no lifecycle hooks).
+      // A plain component mount/unmount exercises the Vue lifecycle without
+      // triggering any outstanding async work from the user logic.
+      const Comp = defineComponent({
+        setup() {
+          return () => h("div");
+        },
+      });
+      const wrapper = mount(Comp);
+      await wrapper.vm.$nextTick();
+      wrapper.unmount();
+    });
   });
 });

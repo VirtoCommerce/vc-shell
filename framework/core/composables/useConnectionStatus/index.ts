@@ -11,11 +11,14 @@ const OFFLINE_NOTIFICATION_ID = "vc-framework-offline-status";
 const _isSetup = ref(false);
 const _isOnline = ref(true);
 
-export interface UseConnectionStatus {
+export interface UseConnectionStatusReturn {
   isOnline: Readonly<typeof _isOnline>;
 }
 
-export function useConnectionStatus(): UseConnectionStatus {
+/** @deprecated Use UseConnectionStatusReturn instead */
+export type UseConnectionStatus = UseConnectionStatusReturn;
+
+export function useConnectionStatus(): UseConnectionStatusReturn {
   if (!_isSetup.value && typeof window !== "undefined") {
     _isSetup.value = true;
 

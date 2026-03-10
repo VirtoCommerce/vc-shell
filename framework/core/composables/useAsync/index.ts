@@ -29,16 +29,19 @@ export interface UseAsyncOptions {
   notifyTimeout?: number;
 }
 
-export interface UseAsync<Payload = void, Result = void> extends HasLoading {
+export interface UseAsyncReturn<Payload = void, Result = void> extends HasLoading {
   action: AsyncAction<Payload, Result>;
   /** Reactive error state — set on failure, cleared on next invocation */
   error: DeepReadonly<Ref<DisplayableError | null>>;
 }
 
+/** @deprecated Use UseAsyncReturn instead */
+export type UseAsync<Payload = void, Result = void> = UseAsyncReturn<Payload, Result>;
+
 export function useAsync<Payload = void, Result = void>(
   innerAction: AsyncAction<Payload, Result>,
   options?: UseAsyncOptions,
-): UseAsync<Payload, Result> {
+): UseAsyncReturn<Payload, Result> {
   const loading = ref(false);
   const error = ref<DisplayableError | null>(null);
 

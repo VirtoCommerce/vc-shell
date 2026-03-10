@@ -11,7 +11,11 @@ export interface UseExternalWidgetsOptions {
   bladeData: Ref<Record<string, unknown>> | ComputedRef<Record<string, unknown>>;
 }
 
-export function useExternalWidgets(options: UseExternalWidgetsOptions) {
+export interface UseExternalWidgetsReturn {
+  registeredExternalWidgetIds: ComputedRef<string[]>;
+}
+
+export function useExternalWidgets(options: UseExternalWidgetsOptions): UseExternalWidgetsReturn {
   const { bladeId, bladeData } = options;
 
   const widgetService = inject(WidgetServiceKey);

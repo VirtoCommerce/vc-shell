@@ -5,7 +5,7 @@ import { SecurityResult, IdentityResult, LoginType, UserDetail, SignInResult } f
 import type { RequestPasswordResult } from "@core/types";
 
 // Interface for the API exposed by useUserManagement (for framework/admin use)
-export interface IUserManagementAPI {
+export interface UseUserManagementReturn {
   user: ComputedRef<UserDetail | undefined>;
   loading: ComputedRef<boolean>;
   isAdministrator: ComputedRef<boolean | undefined>;
@@ -23,7 +23,10 @@ export interface IUserManagementAPI {
   signOut: () => Promise<void>;
 }
 
-export const useUserManagement = createSharedComposable((): IUserManagementAPI => {
+/** @deprecated Use UseUserManagementReturn instead */
+export type IUserManagementAPI = UseUserManagementReturn;
+
+export const useUserManagement = createSharedComposable((): UseUserManagementReturn => {
   // Utilize the same internal logic instance
   const internals: IUserInternalAPI = _createInternalUserLogic();
 

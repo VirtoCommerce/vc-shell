@@ -12,13 +12,16 @@ interface IUISetting {
   role?: string;
 }
 
-interface IUseSettings {
+export interface UseSettingsReturn {
   readonly uiSettings: Ref<IUISetting>;
   readonly loading: ComputedRef<boolean>;
   applySettings: (args: { logo?: string; title?: string; avatar?: string; role?: string }) => void;
 }
 
-export function useSettings(): IUseSettings {
+/** @deprecated Use UseSettingsReturn instead */
+export type IUseSettings = UseSettingsReturn;
+
+export function useSettings(): UseSettingsReturn {
   const uiSettings = ref<IUISetting | undefined>();
   const customSettingsApplied = ref(false);
 

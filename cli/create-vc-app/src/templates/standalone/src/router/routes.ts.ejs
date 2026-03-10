@@ -30,6 +30,11 @@ export const routes: RouteRecordRaw[] = [
       {
         name: "Dashboard",
         path: "",
+<% if (tenantRoutes) { %>
+        alias: `/:tenantId(${tenantIdRegex})?`,
+<% } else { %>
+        alias: "/",
+<% } %>
         component: Dashboard,
       },
 <% } %>

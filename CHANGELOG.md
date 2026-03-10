@@ -1,3 +1,18 @@
+## [2.0.0-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2026-03-10)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Code Refactoring
+- extract blade router guard into standalone utility ([7e2a590](https://github.com/VirtoCommerce/vc-shell/commit/7e2a5900d521131e578205b31be734d975b72ff3))
+**Note:** Version bump only for package @vc-shell/framework
+
+### Vite Config (@vc-shell/config-generator)
+
+### Bug Fixes
+- pin @module-federation/dts-plugin to 2.0.1 to fix ESM/CJS fs-extra crash ([a41d233](https://github.com/VirtoCommerce/vc-shell/commit/a41d2335761e723eda33b45dbb45ef3e70752bf7))
+### Bug Fixes
+- pin @module-federation/dts-plugin to 2.0.1 to fix ESM/CJS fs-extra crash ([a41d233](https://github.com/VirtoCommerce/vc-shell/commit/a41d2335761e723eda33b45dbb45ef3e70752bf7))
+
 ## [2.0.0-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2026-03-10)
 
 ### VC-Shell Framework (@vc-shell/framework)

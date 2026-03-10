@@ -103,6 +103,8 @@ jobs:
       - name: Build
         run: |
           yarn storybook-build
+        env:
+          NODE_OPTIONS: '--max-old-space-size=6144'
 
       - name: BUILD_STATE::successful
         if: success()

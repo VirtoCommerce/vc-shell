@@ -1,3 +1,7 @@
+# [2.0.0-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2026-03-10)
+
+**Note:** Version bump only for package @vc-shell/ts-config
+
 # [2.0.0-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2026-03-10)
 
 **Note:** Version bump only for package @vc-shell/ts-config

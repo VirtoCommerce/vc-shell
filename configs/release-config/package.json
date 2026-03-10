@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/release-config",
-  "version": "2.0.0-alpha.5",
+  "version": "2.0.0-alpha.6",
   "type": "module",
   "main": "dist/release-config.js",
   "types": "./dist/src/index.d.ts",

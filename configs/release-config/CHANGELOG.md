@@ -1,3 +1,9 @@
+# [2.0.0-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2026-03-10)
+
+### Bug Fixes
+
+- use lookahead anchor in changelog version section regex ([95696e6](https://github.com/VirtoCommerce/vc-shell/commit/95696e6b1289d3e5f65f5f4ee262744fef800a4c))
+
 # [2.0.0-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2026-03-10)
 
 **Note:** Version bump only for package @vc-shell/release-config

@@ -1,3 +1,15 @@
+## [2.0.0-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2026-03-10)
+
+### Release Config (@vc-shell/release-config)
+
+### Bug Fixes
+- use lookahead anchor in changelog version section regex ([95696e6](https://github.com/VirtoCommerce/vc-shell/commit/95696e6b1289d3e5f65f5f4ee262744fef800a4c))
+
+### Vite Config (@vc-shell/config-generator)
+
+### Bug Fixes
+- strip shared dep styles from dynamic module builds ([4bb592e](https://github.com/VirtoCommerce/vc-shell/commit/4bb592e5c101bf23259b929b00776144810d182c))
+
 ## [2.0.0-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2026-03-10)
 
 ### VC-Shell Framework (@vc-shell/framework)

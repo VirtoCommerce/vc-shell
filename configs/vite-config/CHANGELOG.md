@@ -1,9 +1,14 @@
+# [2.0.0-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2026-03-10)
+
+### Bug Fixes
+
+- strip shared dep styles from dynamic module builds ([4bb592e](https://github.com/VirtoCommerce/vc-shell/commit/4bb592e5c101bf23259b929b00776144810d182c))
+
 # [2.0.0-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2026-03-10)
 
 ### Bug Fixes
 
 - pin @module-federation/dts-plugin to 2.0.1 to fix ESM/CJS fs-extra crash ([a41d233](https://github.com/VirtoCommerce/vc-shell/commit/a41d2335761e723eda33b45dbb45ef3e70752bf7))
-
 
 ### Bug Fixes
 

@@ -1,9 +1,12 @@
+# [2.0.0-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2026-03-10)
+
+**Note:** Version bump only for package @vc-shell/framework
+
 # [2.0.0-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2026-03-10)
 
 ### Code Refactoring
 
 - extract blade router guard into standalone utility ([7e2a590](https://github.com/VirtoCommerce/vc-shell/commit/7e2a5900d521131e578205b31be734d975b72ff3))
-
 
 **Note:** Version bump only for package @vc-shell/framework
 

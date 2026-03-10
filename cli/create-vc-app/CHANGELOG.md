@@ -1,3 +1,8 @@
+# [2.0.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.0...v2.0.0-alpha.1) (2026-03-10)
+
+**Note:** Version bump only for package @vc-shell/create-vc-app
+
+
 # [2.0.0-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.0) (2026-03-10)
 
 ### Features
@@ -12,7 +17,6 @@
 ### Code Refactoring
 
 - **create-vc-app:** remove legacy v1 templates and update entry point ([8204599](https://github.com/VirtoCommerce/vc-shell/commit/820459901f57aa80da4d7f0e00f5931f79f05c58))
-
 
 ### Bug Fixes
 

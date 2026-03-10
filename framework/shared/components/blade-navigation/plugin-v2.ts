@@ -110,6 +110,7 @@ export const VcBladeNavigationComponent = {
       router.addRoute(mainRoute.name as string, {
         path: ":pathMatch(.*)*",
         component: { render: () => null },
+        meta: { bladeCatchAll: true },
       });
     }
 
@@ -120,6 +121,18 @@ export const VcBladeNavigationComponent = {
     router.beforeEach(async (to) => {
       // Only process routes under the root (App) route
       if (!to.matched.some((r) => r.meta?.root)) return;
+
+      // Only run blade restoration when the URL matches the blade catch-all route.
+      // Real Vue Router child routes (e.g. "Platform", "Dashboard") should be
+      // handled by Vue Router normally — not interpreted as blade URL segments.
+      const isBladeCatchAll = to.matched.some((r) => r.meta?.bladeCatchAll);
+      if (!isBladeCatchAll) {
+        // Clear any open blades so the page renders without stale blade state
+        if (bladeStack.blades.value.length > 0) {
+          bladeStack._restoreStack([]);
+        }
+        return;
+      }
 
       // Extract tenant prefix from route params (first param, typically sellerId)
       const tenantPrefix = (Object.values(to.params)?.[0] as string) || "";

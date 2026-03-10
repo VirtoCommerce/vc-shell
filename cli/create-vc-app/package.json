@@ -13,6 +13,7 @@
     "postbuild": "shx cp -R src/templates dist/"
   },
   "devDependencies": {
+    "@types/ejs": "^3.1.5",
     "@types/prompts": "^2.4.4",
     "@vc-shell/ts-config": "workspace:*",
     "copyfiles": "^2.4.1",
@@ -21,8 +22,10 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "chalk": "^2.4.2",
+    "ejs": "^3.1.10",
+    "magicast": "^0.3.5",
     "mri": "^1.2.0",
+    "picocolors": "^1.1.1",
     "prompts": "^2.4.2",
     "tslib": "^2.5.3",
     "vite": "^6.3.3",

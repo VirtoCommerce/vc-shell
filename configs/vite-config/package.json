@@ -27,6 +27,9 @@
     "tsc-alias": "^1.8.8",
     "typescript": "^5.8.3"
   },
+  "resolutions": {
+    "@module-federation/dts-plugin": "2.0.1"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

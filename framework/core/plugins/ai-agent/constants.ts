@@ -40,6 +40,24 @@ export const CHAT_TO_SHELL_MESSAGE_TYPES = {
 } as const;
 
 /**
+ * Message types for Embedded App -> Host Shell communication
+ */
+export const EMBEDDED_TO_HOST_MESSAGE_TYPES = {
+  EMBEDDED_APP_READY: "EMBEDDED_APP_READY",
+  AI_TOGGLE_PANEL: "AI_TOGGLE_PANEL",
+  AI_CONTEXT_UPDATE: "AI_CONTEXT_UPDATE",
+  AI_CONTEXT_CLEAR: "AI_CONTEXT_CLEAR",
+} as const;
+
+/**
+ * Message types for Host Shell -> Embedded App communication
+ */
+export const HOST_TO_EMBEDDED_MESSAGE_TYPES = {
+  EMBEDDED_HOST_READY: "EMBEDDED_HOST_READY",
+  AI_CHAT_MESSAGE: "AI_CHAT_MESSAGE",
+} as const;
+
+/**
  * Default suggestions when no custom suggestions provided
  */
 export const DEFAULT_SUGGESTIONS: ISuggestion[] = [

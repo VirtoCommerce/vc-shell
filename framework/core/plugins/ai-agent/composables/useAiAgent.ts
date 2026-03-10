@@ -1,6 +1,6 @@
 import { inject, provide } from "vue";
 import { createAiAgentService, type IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
-import { AiAgentServiceKey, LanguageServiceKey, ToolbarServiceKey } from "@framework/injection-keys";
+import { AiAgentServiceKey, EmbeddedModeKey, LanguageServiceKey, ToolbarServiceKey } from "@framework/injection-keys";
 import type {
   IAiAgentService,
   IAiAgentConfig,
@@ -10,7 +10,11 @@ import type {
 import { createLogger, InjectionError } from "@core/utilities";
 import { useUser } from "@core/composables/useUser";
 import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
-import { AI_AGENT_TOOLBAR_BUTTON_ID, AI_AGENT_TOOLBAR_BUTTON_ICON, AI_AGENT_TOOLBAR_BUTTON_TITLE } from "@core/plugins/ai-agent/constants";
+import {
+  AI_AGENT_TOOLBAR_BUTTON_ID,
+  AI_AGENT_TOOLBAR_BUTTON_ICON,
+  AI_AGENT_TOOLBAR_BUTTON_TITLE,
+} from "@core/plugins/ai-agent/constants";
 import type { IToolbarService } from "@core/services/toolbar-service";
 
 const logger = createLogger("use-ai-agent");
@@ -26,6 +30,7 @@ export interface ProvideAiAgentServiceOptions {
    * Default: true
    */
   addGlobalToolbarButton?: boolean;
+  isEmbedded?: boolean;
 }
 
 /**
@@ -38,6 +43,7 @@ export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): I
   const languageService = inject(LanguageServiceKey);
   const { user, getAccessToken } = useUser();
   const { blades, openBlade, resolveBladeByName } = useBladeNavigation();
+  const isEmbedded = options?.isEmbedded;
 
   // Create the service
   const service = createAiAgentService({
@@ -83,6 +89,7 @@ export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): I
       }
     },
     initialConfig: options?.config,
+    isEmbedded,
   });
 
   provide(AiAgentServiceKey, service);

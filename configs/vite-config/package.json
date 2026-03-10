@@ -12,7 +12,7 @@
     "build": "tsc && tsc-alias"
   },
   "dependencies": {
-    "@module-federation/vite": "^1.12.0",
+    "@module-federation/vite": "^1.12.2",
     "@vitejs/plugin-vue": "^5.2.3",
     "vite": "^6.3.3",
     "vite-plugin-checker": "^0.9.1",
@@ -26,9 +26,6 @@
     "rollup-plugin-visualizer": "^6.0.3",
     "tsc-alias": "^1.8.8",
     "typescript": "^5.8.3"
-  },
-  "resolutions": {
-    "@module-federation/dts-plugin": "2.0.1"
   },
   "publishConfig": {
     "access": "public",

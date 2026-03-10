@@ -121,9 +121,6 @@
     "vue-component-type-helpers": "^2.2.10",
     "vue-tsc": "^2.2.10"
   },
-  "resolutions": {
-    "@module-federation/dts-plugin": "2.0.1"
-  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

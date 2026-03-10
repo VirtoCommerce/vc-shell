@@ -5,8 +5,6 @@ import { mergeConfig, UserConfig, AliasOptions } from "vite";
 import { readFileSync } from "node:fs";
 import { resolve, join, dirname } from "node:path";
 import { cwd } from "node:process";
-import dynamicModuleConfiguration from "@vite-config/templates/vite.dynamic-module.appconfig";
-import { getHostFederationConfig } from "@vite-config/templates/vite.host.appconfig";
 import modulesLibraryConfiguration from "@vite-config/templates/vite.modules-library.appconfig";
 import type { ModulesLibraryOptions } from "@vite-config/templates/vite.modules-library.appconfig";
 import { DynamicModuleOptions } from "@vite-config/types";
@@ -95,13 +93,14 @@ const getPackageJson = () => {
  * });
  * ```
  */
-function getDynamicModuleConfiguration(options: DynamicModuleOptions) {
+async function getDynamicModuleConfiguration(options: DynamicModuleOptions) {
   console.log(`Building dynamic module with options:`, options);
   const pkg = getPackageJson();
   const name = pkg.name;
   const version = pkg.version;
   console.log(`Module: ${name}@${version}`);
 
+  const { default: dynamicModuleConfiguration } = await import("@vite-config/templates/vite.dynamic-module.appconfig");
   const baseConfig = dynamicModuleConfiguration(pkg, options);
   return mergeConfig(baseConfig, options);
 }
@@ -115,5 +114,10 @@ function getModulesLibraryConfiguration(options: ModulesLibraryOptions = {}) {
 export type { DynamicModuleOptions, CompatibilityOptions } from "@vite-config/types";
 export type { ModulesLibraryOptions } from "@vite-config/templates/vite.modules-library.appconfig";
 export type { HostFederationOptions } from "@vite-config/templates/vite.host.appconfig";
+
+async function getHostFederationConfig(...args: Parameters<typeof import("@vite-config/templates/vite.host.appconfig").getHostFederationConfig>) {
+  const { getHostFederationConfig: fn } = await import("@vite-config/templates/vite.host.appconfig");
+  return fn(...args);
+}
 
 export { getLibraryConfiguration, getApplicationConfiguration, getDynamicModuleConfiguration, getModulesLibraryConfiguration, getHostFederationConfig };

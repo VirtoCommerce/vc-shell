@@ -43,6 +43,7 @@ export function getHostFederationConfig(
           ...DEFAULT_SHARED,
           ...options?.sharedDeps,
         },
+        dts: false,
       }),
     ],
   };

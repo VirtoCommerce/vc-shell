@@ -1,78 +1,60 @@
 <template>
-  <div
+  <VcMenu
     v-if="visibleMenuItems.length"
+    :expanded="expanded"
     class="vc-app-menu"
+    :class="{ 'vc-app-menu--collapsed': !expanded }"
   >
-    <VcContainer
-      :no-padding="true"
-      class="vc-app-menu__container"
+    <template
+      v-for="item in visibleMenuItems"
+      :key="item.id ?? item.routeId ?? item.url ?? item.title"
     >
-      <div class="vc-app-menu__items">
+      <!-- Group items (have children) -->
+      <VcMenuGroup
+        v-if="accessibleChildren(item).length"
+        :data-test-id="item.routeId"
+        :group-id="getGroupId(item)"
+        :icon="item.groupIcon || item.icon"
+        :title="$t(item.title)"
+        :badge="resolvedBadges.get(item.routeId ?? item.groupId ?? '')"
+      >
         <template
-          v-for="item in visibleMenuItems"
-          :key="item.id ?? item.routeId ?? item.url ?? item.title"
+          v-for="child in accessibleChildren(item)"
+          :key="child.routeId || child.url || child.id || child.title"
         >
-          <!-- Group items (have children) -->
-          <VcAppMenuGroup
-            v-if="item.children?.length"
-            :data-test-id="item.routeId"
-            :group-id="getGroupId(item)"
-            :icon="item.groupIcon || item.icon"
-            :title="item.title"
-            :children="accessibleChildren(item)"
-            :expanded="expanded"
-            :badge="item.badge"
-            :route-id="item.routeId"
-            @item:click="handleItemClick"
+          <VcMenuItem
+            :data-test-id="child.routeId"
+            :icon="child.icon"
+            :title="$t(child.title)"
+            :badge="resolvedBadges.get(child.routeId ?? child.groupId ?? '')"
+            :active="isItemActive(child.url)"
+            nested
+            @click="handleItemClick(child)"
           />
-
-          <!-- Standalone items -->
-          <template v-else>
-            <router-link
-              v-if="item.url"
-              :to="item.url"
-              custom
-            >
-              <VcAppMenuItem
-                :data-test-id="item.routeId"
-                :icon="item.groupIcon || item.icon"
-                :title="item.title"
-                :expanded="expanded"
-                :badge="item.badge"
-                :route-id="item.routeId"
-                :group-id="item.groupId"
-                :is-active="isItemActive(item.url)"
-                @click="handleItemClick(item)"
-              />
-            </router-link>
-
-            <VcAppMenuItem
-              v-else
-              :data-test-id="item.routeId"
-              :icon="item.groupIcon || item.icon"
-              :title="item.title"
-              :expanded="expanded"
-              :badge="item.badge"
-              :route-id="item.routeId"
-              :group-id="item.groupId"
-              :is-active="isItemActive(item.url)"
-              @click="handleItemClick(item)"
-            />
-          </template>
         </template>
-      </div>
-    </VcContainer>
-  </div>
+      </VcMenuGroup>
+
+      <!-- Standalone items -->
+      <VcMenuItem
+        v-else
+        :data-test-id="item.routeId"
+        :icon="item.groupIcon || item.icon"
+        :title="$t(item.title)"
+        :badge="resolvedBadges.get(item.routeId ?? item.groupId ?? '')"
+        :active="isItemActive(item.url)"
+        @click="handleItemClick(item)"
+      />
+    </template>
+  </VcMenu>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, isRef, unref, type Ref } from "vue";
 import { useRoute } from "vue-router";
 import { useMenuService, usePermissions } from "@core/composables";
-import type { MenuItem } from "@core/types";
-import { VcContainer } from "@ui/components/atoms/vc-container";
-import VcAppMenuGroup from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenuGroup.vue";
-import VcAppMenuItem from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenuItem.vue";
+import type { MenuItem, MenuItemBadgeConfig, MenuItemBadge } from "@core/types";
+import { VcMenu, VcMenuItem, VcMenuGroup } from "@ui/components/molecules/vc-menu";
+import type { VcMenuItemBadge } from "@ui/components/molecules/vc-menu";
 import { stripTenantPrefix } from "@ui/components/organisms/vc-app/_internal/menu/composables/useMenuActiveState";
 
 export interface Props {
@@ -88,7 +70,7 @@ const emit = defineEmits<{
 }>();
 
 const route = useRoute();
-const { menuItems } = useMenuService();
+const { menuItems, menuBadges } = useMenuService();
 const { hasAccess } = usePermissions();
 
 const hasAccessToItem = (item: MenuItem): boolean => hasAccess(item.permissions);
@@ -98,16 +80,9 @@ const accessibleChildren = (item: MenuItem): MenuItem[] => {
 };
 
 const visibleMenuItems = computed(() => {
-  // Progressive reveal: items appear as modules install and register them
   return menuItems.value.filter((item) => {
-    if (!hasAccessToItem(item)) {
-      return false;
-    }
-
-    if (item.children?.length) {
-      return accessibleChildren(item).length > 0;
-    }
-
+    if (!hasAccessToItem(item)) return false;
+    if (item.children?.length) return accessibleChildren(item).length > 0;
     return true;
   });
 });
@@ -125,34 +100,90 @@ const isItemActive = (url?: string): boolean => {
   const path = stripTenantPrefix(route);
   return path === url || path.startsWith(url + "/");
 };
+
+/**
+ * Resolve a raw MenuItemBadgeConfig (which may contain Ref, ComputedRef, or function)
+ * into a simple VcMenuItemBadge with plain values.
+ */
+function resolveRawBadge(config: MenuItemBadgeConfig): VcMenuItemBadge | undefined {
+  let badge: MenuItemBadge;
+  if (typeof config === "object" && !isRef(config) && "content" in config) {
+    badge = config as MenuItemBadge;
+  } else {
+    badge = { content: config as MenuItemBadge["content"] };
+  }
+
+  let rawContent: string | number | undefined;
+  if (typeof badge.content === "function") {
+    rawContent = badge.content();
+  } else if (isRef(badge.content)) {
+    rawContent = unref(badge.content as Ref<string | number | undefined>);
+  } else {
+    rawContent = badge.content;
+  }
+
+  // Truncate > 99
+  let content: string | number | undefined = rawContent;
+  if (typeof rawContent === "number" && rawContent > 99) {
+    content = "99+";
+  } else if (typeof rawContent === "string") {
+    const num = parseInt(rawContent, 10);
+    if (!isNaN(num) && num > 99) content = "99+";
+  }
+
+  const isDot = badge.isDot ?? false;
+  const isVisible = isDot || (content != null && content !== "" && content !== 0);
+  if (!isVisible) return undefined;
+
+  return {
+    content,
+    variant: badge.variant ?? "primary",
+    isDot,
+  };
+}
+
+/**
+ * Reactive map of all resolved badges keyed by routeId/groupId.
+ * Reads from both item.badge config and the menuBadges registry.
+ * Recomputes when menuItems or menuBadges change.
+ */
+const resolvedBadges = computed(() => {
+  const result = new Map<string, VcMenuItemBadge>();
+
+  const resolveForItem = (item: MenuItem) => {
+    const id = item.routeId ?? item.groupId;
+    if (!id) return;
+
+    // Priority: direct badge config > registry by routeId > registry by groupId
+    let config: MenuItemBadgeConfig | undefined = item.badge;
+    if (!config && item.routeId) config = menuBadges.value.get(item.routeId);
+    if (!config && item.groupId) config = menuBadges.value.get(item.groupId);
+    if (!config) return;
+
+    const resolved = resolveRawBadge(config);
+    if (resolved) result.set(id, resolved);
+  };
+
+  for (const item of menuItems.value) {
+    resolveForItem(item);
+    if (item.children) {
+      for (const child of item.children) {
+        resolveForItem(child);
+      }
+    }
+  }
+
+  return result;
+});
 </script>
 
 <style lang="scss">
-:root {
-  --app-menu-background: var(--primary-50);
-  --app-menu-background-color: var(--app-bar-background, var(--neutrals-50));
-  --app-menu-version-color: var(--neutrals-400);
-
-  --app-menu-close-color: var(--app-menu-burger-color, var(--primary-500));
-  --app-menu-burger-color: var(--primary-500);
-
-  --app-backdrop-overlay: var(--overlay-bg);
-
-  --app-backdrop-shadow-color: var(--additional-950);
-  --app-backdrop-shadow:
-    0 -6px 6px var(--additional-50),
-    1px 1px 22px rgb(from var(--notification-dropdown-shadow-color) r g b / 7%);
-}
-
 .vc-app-menu {
-  @apply tw-h-full;
+  @apply tw-pl-3;
+  transition: padding var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease);
 
-  &__container {
-    @apply tw-grow tw-basis-0;
-  }
-
-  &__items {
-    @apply tw-gap-1 tw-flex tw-flex-col tw-h-full;
+  &--collapsed {
+    @apply tw-pl-1 tw-pr-1;
   }
 }
 </style>

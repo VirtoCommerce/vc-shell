@@ -1,7 +1,9 @@
 <template>
   <VcMenu
     :loading="loading"
+    :expanded="expanded"
     class="main-menu"
+    :class="{ 'main-menu--collapsed': !expanded }"
   >
     <VcMenuGroup
       v-for="section in menu"
@@ -51,10 +53,13 @@ import type { MenuSection } from "../types";
 interface Props {
   menu: MenuSection[];
   loading?: boolean;
+  expanded?: boolean;
   activeItemId?: string;
 }
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+  expanded: true,
+});
 
 const emit = defineEmits<{
   itemClick: [item: { id: string; url: string }];
@@ -63,7 +68,11 @@ const emit = defineEmits<{
 
 <style lang="scss" scoped>
 .main-menu {
-  font-family: "Lato", sans-serif;
   @apply tw-pl-3;
+  transition: padding var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease);
+
+  &--collapsed {
+    @apply tw-pl-1 tw-pr-1;
+  }
 }
 </style>

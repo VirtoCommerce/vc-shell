@@ -3,7 +3,7 @@
     class="vc-menu-item"
     @click="$emit('click')"
   >
-    <VcTooltip>
+    <VcTooltip :placement="menuExpanded ? 'bottom' : 'right'">
       <template
         v-if="!menuExpanded"
         #tooltip
@@ -130,16 +130,16 @@ const badgeVisible = computed(() => {
 :root {
   --vc-menu-item-height: 28px;
   --vc-menu-item-padding-x: 6px;
-  --vc-menu-item-border-radius: 4px;
+  --vc-menu-item-border-radius: 6px 0 0 6px;
   --vc-menu-item-icon-size: 18px;
   --vc-menu-item-icon-gap: 6px;
   --vc-menu-item-text-color: var(--neutrals-700);
-  --vc-menu-item-icon-color: var(--neutrals-600);
-  --vc-menu-item-icon-color-active: var(--primary-700);
+  --vc-menu-item-icon-color: var(--secondary-700);
+  --vc-menu-item-icon-color-active: var(--secondary-700);
   --vc-menu-item-hover-bg: var(--neutrals-100);
   --vc-menu-item-active-bg: var(--secondary-100);
   --vc-menu-item-active-text-color: var(--neutrals-700);
-  --vc-menu-item-active-icon-color: var(--primary-700);
+  --vc-menu-item-active-icon-color: var(--secondary-700);
 
   // Nested sub-items (L3)
   --vc-menu-subitem-height: 24px;
@@ -152,7 +152,6 @@ const badgeVisible = computed(() => {
 
   &:hover .vc-menu-item__content:not(.vc-menu-item__content--active) {
     background: var(--vc-menu-item-hover-bg);
-    opacity: 0.5;
     border-radius: var(--vc-menu-item-border-radius);
 
     .vc-menu-item__title {
@@ -168,9 +167,13 @@ const badgeVisible = computed(() => {
     @apply tw-flex tw-items-center tw-w-full tw-border-none tw-flex-nowrap
       tw-box-border tw-cursor-pointer tw-relative tw-select-none;
     height: var(--vc-menu-item-height);
-    padding: 0 var(--vc-menu-item-padding-x);
+    padding: 0 10px 0 var(--vc-menu-item-padding-x);
     gap: var(--vc-menu-item-icon-gap);
     border-radius: var(--vc-menu-item-border-radius);
+    transition:
+      padding var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease),
+      gap var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease),
+      background 0.15s ease;
 
     &--active {
       background: var(--vc-menu-item-active-bg);
@@ -184,6 +187,40 @@ const badgeVisible = computed(() => {
       }
     }
 
+    // Collapsed state: center icon by collapsing title width (smooth transition)
+    &--collapsed {
+      @apply tw-relative tw-justify-center;
+      padding: 0;
+      gap: 0;
+      height: var(--vc-menu-item-height);
+      border-radius: 6px;
+
+      .vc-menu-item__icon {
+        width: 20px;
+      }
+
+      // Collapse title so justify-center works immediately (not after v-show delay)
+      .vc-menu-item__title {
+        @apply tw-w-0 tw-overflow-hidden tw-opacity-0;
+        flex: 0 0 0px;
+      }
+
+      &.vc-menu-item__content--active {
+        border-radius: 6px;
+
+        // Active indicator: accent bar on the left
+        &::after {
+          content: "";
+          @apply tw-absolute tw-left-[-4px] tw-top-1/2;
+          transform: translateY(-50%);
+          width: 3px;
+          height: 18px;
+          border-radius: 0 3px 3px 0;
+          background: var(--primary-500);
+        }
+      }
+    }
+
     &--nested {
       height: var(--vc-menu-subitem-height);
       padding-left: var(--vc-menu-subitem-padding-left);
@@ -192,12 +229,55 @@ const badgeVisible = computed(() => {
         width: var(--vc-menu-subitem-icon-size);
       }
 
-      &.vc-menu-item__content--collapsed {
-        @apply tw-pl-2;
-      }
-
       &.vc-menu-item__content--active {
         @apply tw-font-medium;
+        background: transparent;
+
+        &::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          left: 8px;
+          background: var(--vc-menu-item-active-bg);
+          border-radius: var(--vc-menu-group-active-radius, 6px) 0 0 var(--vc-menu-group-active-radius, 6px);
+          pointer-events: none;
+        }
+
+        .vc-menu-item__icon,
+        .vc-menu-item__title {
+          position: relative;
+          z-index: 1;
+        }
+      }
+
+      // Collapsed + nested: behave like a regular collapsed item
+      &.vc-menu-item__content--collapsed {
+        @apply tw-justify-center;
+        padding: 0;
+        gap: 0;
+        height: var(--vc-menu-item-height);
+
+        .vc-menu-item__icon {
+          width: var(--vc-menu-subitem-icon-size);
+        }
+
+        &.vc-menu-item__content--active {
+          background: var(--vc-menu-item-active-bg);
+
+          &::before {
+            display: none;
+          }
+
+          &::after {
+            content: "";
+            @apply tw-absolute tw-left-[-4px] tw-top-1/2;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 14px;
+            border-radius: 0 3px 3px 0;
+            background: var(--primary-500);
+          }
+        }
       }
     }
   }
@@ -222,9 +302,13 @@ const badgeVisible = computed(() => {
 
   &__title {
     @apply tw-text-[color:var(--vc-menu-item-text-color)] tw-truncate
-      tw-text-sm tw-font-normal tw-leading-[16px] tw-normal-case
-      [transition:color_0.2s_ease]
+      tw-text-sm tw-font-normal tw-normal-case
       tw-opacity-100 tw-w-full tw-flex tw-justify-between tw-items-center;
+    transition:
+      color 0.2s ease,
+      width var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease),
+      flex var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease),
+      opacity var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease);
   }
 
   &__title-text {

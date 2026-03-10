@@ -34,6 +34,7 @@ defineEmits<{
   background-color: var(--app-bar-background);
   border: 1px solid var(--app-bar-border);
   opacity: 0;
+  pointer-events: none;
   transition: opacity var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
 
   &__wrap {

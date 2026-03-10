@@ -147,6 +147,12 @@ defineExpose({
 }
 
 .vc-menu-group {
+  // Default (non-section) groups: flex column with 4px gap between header and children
+  &:not(&--section) {
+    @apply tw-flex tw-flex-col;
+    gap: 4px;
+  }
+
   // Chevron transition (shared by both variants)
   &__chevron {
     @apply tw-text-[color:var(--vc-menu-item-icon-color)] tw-ml-auto tw-shrink-0;
@@ -166,16 +172,60 @@ defineExpose({
     &--open {
       grid-template-rows: 1fr;
     }
+
+    // When sidebar collapsed: always show children (no expand/collapse toggle)
+    &--collapsed {
+      grid-template-rows: 1fr;
+    }
   }
 
   &__children {
     @apply tw-overflow-hidden tw-min-h-0 tw-flex tw-flex-col tw-gap-[2px];
   }
 
+  // In collapsed mode, allow overflow for active indicators (::after at left: -4px)
+  &__children-wrapper--collapsed > &__children {
+    @apply tw-overflow-visible;
+  }
+
+  // Nested group children (L3) get wider gap
+  &:not(&--section) > &__children-wrapper > &__children {
+    @apply tw-gap-[4px];
+  }
+
+  // Active group header: border-radius left only + wider right padding (Figma spec)
+  // Applies when group has explicit `active` prop
+  > .vc-menu-item .vc-menu-item__content--active {
+    border-radius: var(--vc-menu-group-active-radius) 0 0
+      var(--vc-menu-group-active-radius);
+    padding-right: 10px;
+  }
+
+  // Auto-highlight group header when any child item is active
+  &:has(.vc-menu-group__children .vc-menu-item__content--active)
+    > .vc-menu-item
+    .vc-menu-item__content:not(.vc-menu-item__content--active) {
+    background: var(--vc-menu-item-active-bg);
+    border-radius: var(--vc-menu-group-active-radius) 0 0
+      var(--vc-menu-group-active-radius);
+    padding-right: 10px;
+
+    // Collapsed: symmetric radius, no indicator (indicator is on the active child)
+    &.vc-menu-item__content--collapsed {
+      border-radius: 6px;
+      padding-right: 0;
+    }
+  }
+
   // ── Section variant (L1) ──────────────────────────────────
   &--section {
-    // Divider between sections (not first)
-    & + & {
+    // Section chevron inherits section text color, not item icon color
+    .vc-menu-group__chevron {
+      @apply tw-text-[color:var(--vc-menu-section-text-color)];
+    }
+
+    // Divider between sections (not first, only when expanded)
+    & + &:not(:has(> .vc-menu-group__section-header--hidden)) {
       border-top: 1px solid var(--vc-menu-section-divider-color);
       @apply tw-pt-3 tw-mt-3;
     }
@@ -185,7 +235,7 @@ defineExpose({
     @apply tw-flex tw-items-center tw-w-full tw-cursor-pointer
       tw-border-none tw-bg-transparent tw-select-none tw-outline-none;
     height: var(--vc-menu-section-height);
-    padding: 0 var(--vc-menu-item-padding-x, 6px);
+    padding: 0 10px 0 var(--vc-menu-item-padding-x, 6px);
     gap: 8px;
 
     &--hidden {

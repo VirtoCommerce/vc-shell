@@ -260,8 +260,13 @@ function dedupeVersionSections(content: string): string {
 
 function replaceVersionBumpOnlySection(content: string, version: string, replacementBody: string): string {
   const escapedVersion = version.replace(/\./g, "\\.");
+  // NOTE: (?![\s\S]) is used instead of $ because the "m" flag makes $ match
+  // end-of-line rather than end-of-string. With $, the non-greedy [\s\S]*?
+  // captures an empty body on the blank line after the header, causing the
+  // replacement to INSERT content before the existing section instead of
+  // replacing it — leading to duplicate entries.
   const sectionRegex = new RegExp(
-    `(^#{1,2}\\s+\\[?${escapedVersion}\\]?[^\\n]*\\n)([\\s\\S]*?)(?=^#{1,2}\\s+\\[?\\d[\\da-z.-]*\\]?|$)`,
+    `(^#{1,2}\\s+\\[?${escapedVersion}\\]?[^\\n]*\\n)([\\s\\S]*?)(?=^#{1,2}\\s+\\[?\\d[\\da-z.-]*\\]?|(?![\\s\\S]))`,
     "m",
   );
 

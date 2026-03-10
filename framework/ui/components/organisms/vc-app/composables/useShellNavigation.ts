@@ -1,5 +1,6 @@
 import { useRoute, useRouter } from "vue-router";
 import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
+import { navigateToMainRoute } from "@shared/components/blade-navigation/utils/navigateToMainRoute";
 import { createLogger } from "@core/utilities";
 import type { MenuItem } from "@core/types";
 
@@ -47,10 +48,9 @@ export function useShellNavigation() {
   };
 
   const openRoot = async () => {
-    // closeBlade(1) closes all blades above the workspace and syncs the URL.
-    // No additional router.push needed — the workspace stays in the stack
-    // and the URL is already updated by syncUrlReplace() inside closeBlade.
+    // Close all child blades above the workspace, then navigate to main route.
     await closeBlade(1);
+    navigateToMainRoute(router, route.params as Record<string, string>);
   };
 
   return { handleMenuItemClick, openRoot };

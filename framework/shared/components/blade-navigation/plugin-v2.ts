@@ -128,9 +128,11 @@ export const VcBladeNavigationComponent = {
       const parsed = parseBladeUrl(to.path, tenantPrefix);
 
       if (!parsed.workspaceUrl) {
-        // No workspace in URL (e.g. Dashboard at "/") — clear any existing blade stack
-        if (bladeStack.blades.value.length > 0) {
-          bladeStack._restoreStack([]);
+        // No workspace in URL (e.g. navigating to "/") — keep workspace, close children.
+        // Clearing the entire stack would leave a blank page.
+        if (bladeStack.blades.value.length > 1) {
+          // Keep only the workspace (first blade)
+          bladeStack._restoreStack([bladeStack.blades.value[0]]);
         }
         return;
       }

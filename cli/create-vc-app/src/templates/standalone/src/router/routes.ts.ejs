@@ -1,0 +1,98 @@
+import { RouteRecordRaw } from "vue-router";
+import App from "../pages/App.vue";
+<% if (dashboard) { %>
+import Dashboard from "../pages/Dashboard.vue";
+<% } %>
+import { Invite, Login, ResetPassword, ForgotPassword, ChangePasswordPage } from "@vc-shell/framework";
+// eslint-disable-next-line import/no-unresolved
+import whiteLogoImage from "/assets/logo-white.svg";
+// eslint-disable-next-line import/no-unresolved
+import bgImage from "/assets/background.jpg";
+
+<% if (tenantRoutes) { %>
+const tenantIdRegex = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+<% } %>
+
+export const routes: RouteRecordRaw[] = [
+  {
+<% if (tenantRoutes) { %>
+    path: `/:tenantId(${tenantIdRegex})?`,
+<% } else { %>
+    path: "/",
+<% } %>
+    component: App,
+    name: "App",
+    meta: {
+      root: true,
+    },
+    children: [
+<% if (dashboard) { %>
+      {
+        name: "Dashboard",
+        path: "",
+        component: Dashboard,
+      },
+<% } %>
+    ],
+<% if (tenantRoutes) { %>
+    beforeEnter: (to) => {
+      const { tenantId } = to.params;
+      if (!tenantId || new RegExp(tenantIdRegex).test(tenantId as string)) {
+        return true;
+      }
+      return { path: "/" };
+    },
+<% } %>
+  },
+  {
+    name: "Login",
+    path: "/login",
+    component: Login,
+    props: () => ({
+      logo: whiteLogoImage,
+      title: "<%- AppNameSentenceCase %>",
+    }),
+  },
+  {
+    name: "Invite",
+    path: "/invite",
+    component: Invite,
+    props: (_route) => ({
+      userId: _route.query.userId,
+      token: _route.query.token,
+      userName: _route.query.userName,
+      logo: whiteLogoImage,
+    }),
+  },
+  {
+    name: "ResetPassword",
+    path: "/resetpassword",
+    component: ResetPassword,
+    props: (_route) => ({
+      userId: _route.query.userId,
+      token: _route.query.token,
+      userName: _route.query.userName,
+      logo: whiteLogoImage,
+    }),
+  },
+  {
+    name: "ForgotPassword",
+    path: "/forgot-password",
+    component: ForgotPassword,
+    props: () => ({
+      logo: whiteLogoImage,
+    }),
+  },
+  {
+    name: "ChangePassword",
+    path: "/changepassword",
+    component: ChangePasswordPage,
+    meta: {
+      forced: true,
+    },
+    props: (_route) => ({
+      forced: _route.meta.forced,
+      logo: whiteLogoImage,
+    }),
+  },
+];

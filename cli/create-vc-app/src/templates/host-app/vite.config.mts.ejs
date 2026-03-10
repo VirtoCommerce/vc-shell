@@ -1,0 +1,7 @@
+import { getApplicationConfiguration, getHostFederationConfig } from "@vc-shell/config-generator";
+import { mergeConfig } from "vite";
+
+export default mergeConfig(
+  getApplicationConfiguration(),
+  getHostFederationConfig(),
+);

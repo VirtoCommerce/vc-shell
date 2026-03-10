@@ -1,0 +1,111 @@
+<template>
+  <VcBlade
+    :title="title"
+    :toolbar-items="bladeToolbar"
+    :loading="loading"
+    :expanded="expanded"
+    :closable="closable"
+    width="70%"
+    @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
+  >
+    <VcContainer>
+      <VcForm>
+        <!-- Add your form fields here -->
+        <VcInput
+          v-model="item.name"
+          :label="'Name'"
+          required
+        />
+      </VcForm>
+    </VcContainer>
+  </VcBlade>
+</template>
+
+<script setup lang="ts">
+import {
+  VcBlade,
+  VcContainer,
+  VcForm,
+  VcInput,
+  useBladeNavigation,
+  useModificationTracker,
+  usePopup,
+  useBeforeUnload,
+  type IBladeToolbar,
+  type IParentCallArgs,
+} from "@vc-shell/framework";
+import { ref, computed, onMounted } from "vue";
+import use<%- ModuleNamePascalCase %>Details from "../composables/useDetails";
+
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
+
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
+  (event: "close:blade"): void;
+}
+
+defineOptions({
+  url: "/<%- ModuleName %>-details",
+  name: "<%- ModuleNamePascalCase %>Details",
+});
+
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
+});
+
+const emit = defineEmits<Emits>();
+
+const { onBeforeClose } = useBladeNavigation();
+const { showConfirmation } = usePopup();
+
+const { item, loading, getItem, saveItem } = use<%- ModuleNamePascalCase %>Details();
+const { isModified, resetModificationState } = useModificationTracker(item);
+
+const title = computed(() => {
+  return props.param
+    ? String(item.value?.name || "<%- ModuleNameSentenceCase %> Details")
+    : "New <%- ModuleNameSentenceCase %>";
+});
+
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "save",
+    title: "Save",
+    icon: "lucide-save",
+    disabled: computed(() => !isModified.value),
+    async clickHandler() {
+      await saveItem();
+      resetModificationState();
+      emit("parent:call", { method: "reload" });
+    },
+  },
+]);
+
+onMounted(async () => {
+  if (props.param) {
+    await getItem(props.param);
+  }
+});
+
+onBeforeClose(async () => {
+  if (isModified.value) {
+    return await showConfirmation("You have unsaved changes. Are you sure you want to close?");
+  }
+});
+
+useBeforeUnload(computed(() => isModified.value));
+
+defineExpose({
+  title,
+});
+</script>

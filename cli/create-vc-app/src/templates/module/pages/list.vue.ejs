@@ -1,0 +1,117 @@
+<template>
+  <VcBlade
+    :title="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.TITLE')"
+    :toolbar-items="bladeToolbar"
+    :loading="loading"
+    :expanded="expanded"
+    :closable="closable"
+    width="50%"
+    @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
+  >
+    <VcDataTable
+      :items="data"
+      :total-count="totalCount"
+      :current-page="currentPage"
+      :search-value="searchQuery"
+      :state-key="'<%- ModuleNameScreamingSnake %>'"
+      @search:change="(val: string) => { searchQuery = val; getItems(); }"
+      @item-click="openDetails"
+      @pagination-click="(page: number) => { currentPage = page; getItems(); }"
+    >
+      <!-- Add your columns here -->
+      <VcColumn id="name" :header="'Name'" sortable />
+      <VcColumn id="createdDate" :header="'Created'" type="datetime" sortable />
+    </VcDataTable>
+  </VcBlade>
+</template>
+
+<script setup lang="ts">
+import {
+  VcBlade,
+  VcDataTable,
+  VcColumn,
+  useBladeNavigation,
+  type IBladeToolbar,
+  type IParentCallArgs,
+} from "@vc-shell/framework";
+import { ref, computed, markRaw } from "vue";
+import use<%- ModuleNamePascalCase %>List from "../composables/useList";
+import Details from "./details.vue";
+
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: Record<string, unknown>;
+}
+
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
+  (event: "close:blade"): void;
+}
+
+defineOptions({
+  url: "/<%- ModuleName %>",
+  name: "<%- ModuleNamePascalCase %>List",
+  isWorkspace: true,
+  menuItem: {
+    title: "<%- ModuleNameScreamingSnake %>.MENU.TITLE",
+    icon: "lucide-box",
+    priority: 10,
+  },
+});
+
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+});
+
+defineEmits<Emits>();
+
+const { openBlade } = useBladeNavigation();
+
+const {
+  data,
+  loading,
+  totalCount,
+  currentPage,
+  searchQuery,
+  getItems,
+} = use<%- ModuleNamePascalCase %>List();
+
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "refresh",
+    title: "Refresh",
+    icon: "lucide-refresh-cw",
+    clickHandler: () => getItems(),
+  },
+  {
+    id: "add",
+    title: "Add",
+    icon: "lucide-plus",
+    clickHandler: () => openDetails(),
+  },
+]);
+
+function openDetails(item?: { id?: string }) {
+  openBlade({
+    blade: markRaw(Details),
+    param: item?.id,
+    onClose() {
+      getItems();
+    },
+  });
+}
+
+getItems();
+
+defineExpose({
+  title: computed(() => "<%- ModuleNameSentenceCase %>"),
+  reload: getItems,
+});
+</script>

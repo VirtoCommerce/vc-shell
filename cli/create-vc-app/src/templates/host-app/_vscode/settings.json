@@ -1,0 +1,14 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "files.eol": "\r\n",
+  "eslint.validate": [
+    "vue",
+    "javascript"
+  ],
+  "i18n-ally.localesPaths": [
+    "src/locales",
+  ],
+  "typescript.preferences.importModuleSpecifier": "relative",
+}

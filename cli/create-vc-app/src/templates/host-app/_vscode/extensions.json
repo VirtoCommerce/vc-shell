@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint",
+    "csstools.postcss",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "vue.volar",
+    "lokalise.i18n-ally"
+  ],
+  "unwantedRecommendations": [
+    "octref.vetur"
+  ]
+}

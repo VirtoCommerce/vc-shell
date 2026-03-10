@@ -1,3 +1,7 @@
+# [2.0.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.0...v2.0.0-alpha.1) (2026-03-10)
+
+**Note:** Version bump only for package @vc-shell/config-generator
+
 # [2.0.0-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.0) (2026-03-10)
 
 ### Features
@@ -12,7 +16,6 @@
 ### Documentation
 
 - **vite-config:** clarify build-time vs runtime MF roles in getHostFederationConfig ([cf2f9b7](https://github.com/VirtoCommerce/vc-shell/commit/cf2f9b7dfd358aa192fac580c2697205f4649984))
-
 
 ### Bug Fixes
 

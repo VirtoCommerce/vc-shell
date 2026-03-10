@@ -1,7 +1,26 @@
+## [2.0.0-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.2) (2026-03-10)
+
+### VC-Shell Framework (@vc-shell/framework)
+
+### Code Refactoring
+- remove unused components and update package resolutions ([26ff398](https://github.com/VirtoCommerce/vc-shell/commit/26ff398739d75b23f7f700542920a117e0022ff3))
+**Note:** Version bump only for package @vc-shell/framework
+
+### Create VC App (@vc-shell/create-vc-app)
+
+### Code Refactoring
+- remove unused components and update package resolutions ([26ff398](https://github.com/VirtoCommerce/vc-shell/commit/26ff398739d75b23f7f700542920a117e0022ff3))
+**Note:** Version bump only for package @vc-shell/create-vc-app
+
+### Vite Config (@vc-shell/config-generator)
+
+### Code Refactoring
+- remove unused components and update package resolutions ([26ff398](https://github.com/VirtoCommerce/vc-shell/commit/26ff398739d75b23f7f700542920a117e0022ff3))
+**Note:** Version bump only for package @vc-shell/config-generator
+
 ## [2.0.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.0...v2.0.0-alpha.1) (2026-03-10)
 
 **Note:** Version bump only for package
-
 
 ## [2.0.0-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.0) (2026-03-10)
 
@@ -30,7 +49,7 @@
 - **table:** extract orchestration logic into useDataTableOrchestrator ([86e946e](https://github.com/VirtoCommerce/vc-shell/commit/86e946e559749dc53d71e7fb7da52471ece0ec3c))
 - **navigation:** improve blade stack management and extension points ([6817743](https://github.com/VirtoCommerce/vc-shell/commit/6817743aa38efed0c9d98496c8adaa032a458548))
 - **ui:** standardize component prop/emit types and remove any usage ([a7a587a](https://github.com/VirtoCommerce/vc-shell/commit/a7a587a5848dbb9acbfce6d9235e4b0e196b4a18))
-- **core:** standardize composable return types with *Return naming convention ([f84452b](https://github.com/VirtoCommerce/vc-shell/commit/f84452bc23d523bdc252d70f2e6d22a3b6fd1d07))
+- **core:** standardize composable return types with \*Return naming convention ([f84452b](https://github.com/VirtoCommerce/vc-shell/commit/f84452bc23d523bdc252d70f2e6d22a3b6fd1d07))
 - **loader-mf:** clarify route re-resolution happens after module installation ([6b7bbd3](https://github.com/VirtoCommerce/vc-shell/commit/6b7bbd3d732c6c8f017c016013dd8004cc7f6dcb))
 - **loader-mf:** consume SHARED_DEP_NAMES from shared-deps.ts, fix stale comment ([b2eb9f8](https://github.com/VirtoCommerce/vc-shell/commit/b2eb9f829204c636bb214962ea6f38cec79b2af2))
 - **vc-menu:** rework skeleton and migrate main-menu to VcMenu ([5066677](https://github.com/VirtoCommerce/vc-shell/commit/50666775cb8e2d7f8f2bfa1078aa602482e64c52))

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("@module-federation/vite", () => ({
   federation: vi.fn((config: any) => ({ name: "mf-plugin", _config: config })),
@@ -9,6 +9,7 @@ vi.mock("@vitejs/plugin-vue", () => ({
 }));
 
 import dynamicModuleConfiguration from "./vite.dynamic-module.appconfig";
+import { SHARED_DEP_NAMES } from "./shared-deps";
 
 describe("dynamicModuleConfiguration (MF)", () => {
   const pkg = { name: "reviews", version: "1.0.0" };
@@ -72,5 +73,111 @@ describe("dynamicModuleConfiguration (MF)", () => {
     const mfPlugin = (config.plugins as any[]).find((p: any) => p._config);
     expect(mfPlugin._config.exposes["./custom"]).toBe("./src/custom.ts");
     expect(mfPlugin._config.exposes["./module"]).toBeUndefined();
+  });
+});
+
+describe("stripExternalStyles transform", () => {
+  let stripPlugin: any;
+
+  beforeEach(() => {
+    const config = dynamicModuleConfiguration(
+      { name: "test-module", version: "1.0.0" },
+      {},
+    );
+    stripPlugin = config.plugins
+      ?.flat()
+      .find((p: any) => p?.name === "strip-external-styles");
+    stripPlugin.buildStart.call({});
+  });
+
+  it("strips CSS from shared dep in node_modules", () => {
+    const result = stripPlugin.transform(
+      "body{}",
+      `${process.cwd()}/node_modules/@vc-shell/framework/assets/styles/index.css`,
+    );
+    expect(result).toEqual({ code: "", map: null });
+  });
+
+  it("strips Vue SFC style from shared dep in node_modules", () => {
+    const result = stripPlugin.transform(
+      ".comp{}",
+      `${process.cwd()}/node_modules/@vc-shell/framework/ui/Component.vue?type=style&index=0`,
+    );
+    expect(result).toEqual({ code: "", map: null });
+  });
+
+  it("strips SCSS from scoped shared dep", () => {
+    const result = stripPlugin.transform(
+      "$var: red;",
+      `${process.cwd()}/node_modules/@vc-shell/framework/assets/theme.scss`,
+    );
+    expect(result).toEqual({ code: "", map: null });
+  });
+
+  it("strips CSS from non-scoped shared dep (e.g. vue-i18n)", () => {
+    const result = stripPlugin.transform(
+      "div{}",
+      `${process.cwd()}/node_modules/vue-i18n/dist/style.css`,
+    );
+    expect(result).toEqual({ code: "", map: null });
+  });
+
+  it("keeps CSS from non-shared npm package", () => {
+    const result = stripPlugin.transform(
+      ".picker{}",
+      `${process.cwd()}/node_modules/some-datepicker/dist/style.css`,
+    );
+    expect(result).toBeNull();
+  });
+
+  it("keeps module's own CSS in src/", () => {
+    const result = stripPlugin.transform(
+      ".my{}",
+      `${process.cwd()}/src/components/MyComponent.scss`,
+    );
+    expect(result).toBeNull();
+  });
+
+  it("keeps module's own Vue SFC style", () => {
+    const result = stripPlugin.transform(
+      ".my{}",
+      `${process.cwd()}/src/components/MyComponent.vue?type=style&index=0`,
+    );
+    expect(result).toBeNull();
+  });
+
+  it("strips CSS from path outside project root (symlink/portal scenario)", () => {
+    const result = stripPlugin.transform(
+      ".ext{}",
+      `/some/other/project/node_modules/some-private-pkg/dist/style.css`,
+    );
+    expect(result).toEqual({ code: "", map: null });
+  });
+
+  it("keeps Vue SFC style from non-shared dep in node_modules", () => {
+    const result = stripPlugin.transform(
+      ".picker{}",
+      `${process.cwd()}/node_modules/some-datepicker/SomeComponent.vue?type=style&index=0`,
+    );
+    expect(result).toBeNull();
+  });
+
+  it("returns null for non-style files", () => {
+    const result = stripPlugin.transform(
+      "export default {}",
+      `${process.cwd()}/node_modules/@vc-shell/framework/index.ts`,
+    );
+    expect(result).toBeNull();
+  });
+
+  it("strips all shared deps from SHARED_DEP_NAMES", () => {
+    expect(SHARED_DEP_NAMES.length).toBeGreaterThan(0);
+    for (const dep of SHARED_DEP_NAMES) {
+      const result = stripPlugin.transform(
+        "body{}",
+        `${process.cwd()}/node_modules/${dep}/dist/style.css`,
+      );
+      expect(result).toEqual({ code: "", map: null });
+    }
   });
 });

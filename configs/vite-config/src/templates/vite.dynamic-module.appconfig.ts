@@ -1,21 +1,23 @@
 import vue from "@vitejs/plugin-vue";
 import { federation } from "@module-federation/vite";
 import type { Plugin, UserConfig } from "vite";
-import { REMOTE_SHARED } from "./shared-deps";
+import { REMOTE_SHARED, SHARED_DEP_NAMES } from "./shared-deps";
 import type { DynamicModuleOptions } from "@vite-config/types";
 import { cwd } from "node:process";
 import { resolve } from "node:path";
 import { realpathSync } from "node:fs";
 
 /**
- * Strips CSS/style from ALL files outside the module's own source directory.
+ * Strips CSS/style from shared dependencies and files outside the module root.
  * Remote MF modules should not emit CSS from shared deps (framework, vue, etc.)
  * because the host app already provides all base styles, component CSS, and fonts.
  *
- * Works regardless of how deps are resolved (node_modules, portal:, link:, etc.)
+ * Uses SHARED_DEP_NAMES as the single source of truth — the same list that
+ * controls JS sharing also controls CSS exclusion.
  */
 function stripExternalStyles(): Plugin {
   let normalizedRoot: string;
+  const sharedDepPatterns = SHARED_DEP_NAMES.map(name => `/node_modules/${name}/`);
 
   return {
     name: "strip-external-styles",
@@ -30,22 +32,30 @@ function stripExternalStyles(): Plugin {
       }
     },
     transform(code, id) {
-      // Normalize the incoming id as well to handle symlinked deps
+      const isStyleFile = /\.(css|scss|sass|less|styl)$/.test(id) || /type=style/.test(id);
+      if (!isStyleFile) return null;
+
+      // Normalize the incoming id to handle symlinked deps
       let normalizedId: string;
       try {
         // Strip query params (e.g. ?type=style) before resolving
         const idPath = id.split("?")[0];
         normalizedId = realpathSync(idPath);
       } catch {
-        normalizedId = id;
+        normalizedId = id.split("?")[0];
       }
 
-      if (/type=style/.test(id) && !normalizedId.startsWith(normalizedRoot)) {
+      // Rule 1: Strip styles from shared dependencies
+      if (sharedDepPatterns.some(p => normalizedId.includes(p))) {
         return { code: "", map: null };
       }
-      if (/\.(css|scss|sass|less|styl)$/.test(id) && !normalizedId.startsWith(normalizedRoot)) {
+
+      // Rule 2: Strip styles from files outside the module root (symlink/portal scenario)
+      if (!normalizedId.startsWith(normalizedRoot)) {
         return { code: "", map: null };
       }
+
+      // Rule 3: Keep everything else (module's own styles)
       return null;
     },
   };

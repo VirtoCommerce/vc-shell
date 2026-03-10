@@ -4,8 +4,7 @@ import * as components from "@shared/components/blade-navigation/components";
 import { BladeNavigationPlugin, BladeStackKey, BladeMessagingKey } from "@shared/components/blade-navigation/types";
 import { createBladeStack } from "@shared/components/blade-navigation/composables/useBladeStack";
 import { createBladeMessaging } from "@shared/components/blade-navigation/composables/useBladeMessaging";
-import { parseBladeUrl, buildUrlFromStack } from "@shared/components/blade-navigation/utils/urlSync";
-import { restoreFromUrl } from "@shared/components/blade-navigation/utils/restoreFromUrl";
+import { bladeRouterGuard } from "@shared/components/blade-navigation/utils/bladeRouterGuard";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 import { usePermissions } from "@core/composables/usePermissions";
@@ -118,45 +117,6 @@ export const VcBladeNavigationComponent = {
     // Fires on: direct URL entry, deep links, back/forward (popstate)
     // The adapter's router.push()/replace() also triggers this, but
     // restoreFromUrl is idempotent — if stack already matches URL, it's a no-op.
-    router.beforeEach(async (to) => {
-      // Only process routes under the root (App) route
-      if (!to.matched.some((r) => r.meta?.root)) return;
-
-      // Only run blade restoration when the URL matches the blade catch-all route.
-      // Real Vue Router child routes (e.g. "Platform", "Dashboard") should be
-      // handled by Vue Router normally — not interpreted as blade URL segments.
-      const isBladeCatchAll = to.matched.some((r) => r.meta?.bladeCatchAll);
-      if (!isBladeCatchAll) {
-        // Clear any open blades so the page renders without stale blade state
-        if (bladeStack.blades.value.length > 0) {
-          bladeStack._restoreStack([]);
-        }
-        return;
-      }
-
-      // Extract tenant prefix from route params (first param, typically sellerId)
-      const tenantPrefix = (Object.values(to.params)?.[0] as string) || "";
-
-      // Parse the URL path into blade segments
-      const parsed = parseBladeUrl(to.path, tenantPrefix);
-
-      if (!parsed.workspaceUrl) {
-        // No workspace in URL (e.g. navigating to "/") — clear the blade stack.
-        // The app shell renders its own default view (e.g. dashboard) when the stack is empty.
-        if (bladeStack.blades.value.length > 0) {
-          bladeStack._restoreStack([]);
-        }
-        return;
-      }
-
-      // Restore blade stack from URL (idempotent — skips if already matching)
-      const needsUrlCleanup = await restoreFromUrl(bladeStack, bladeRegistry, parsed, hasAccess, router);
-
-      // If a non-routable blade was in the URL, clean up to match actual stack
-      if (needsUrlCleanup) {
-        const { path, query } = buildUrlFromStack(tenantPrefix, bladeStack.blades.value);
-        return { path, query, replace: true };
-      }
-    });
+    router.beforeEach((to) => bladeRouterGuard(to, bladeStack, bladeRegistry, hasAccess, router));
   },
 };

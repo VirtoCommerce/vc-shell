@@ -17,7 +17,12 @@ import * as VeeValidate from "vee-validate";
 import * as LodashEs from "lodash-es";
 import * as VueuseCore from "@vueuse/core";
 import * as Framework from "@vc-shell/framework";
-import { SHARED_DEP_NAMES } from "../../../../configs/vite-config/src/templates/shared-deps";
+
+// Read versions from package.json to avoid rollup warnings about missing named exports
+import vueI18nPkg from "vue-i18n/package.json";
+import lodashEsPkg from "lodash-es/package.json";
+import vueusePkg from "@vueuse/core/package.json";
+import vueRouterPkg from "vue-router/package.json";
 
 const logger = createLogger("module-loader-mf");
 
@@ -25,13 +30,13 @@ const REGISTRY_URL = "/api/frontend-modules";
 const frameworkVersion: string = packageJson.version;
 
 const SHARED_LIBS: Record<string, { lib: () => unknown; version: string; requiredVersion: string }> = {
-  vue:                    { lib: () => Vue,         version: Vue.version,                                    requiredVersion: "^3.4.0" },
-  "vue-router":           { lib: () => VueRouter,   version: (VueRouter as any).version ?? "4.0.0",         requiredVersion: "^4.0.0" },
-  "vue-i18n":             { lib: () => VueI18n,     version: (VueI18n as any).version ?? "9.0.0",           requiredVersion: "^9.0.0" },
-  "vee-validate":         { lib: () => VeeValidate, version: (VeeValidate as any).version ?? "4.0.0",       requiredVersion: "^4.0.0" },
-  "lodash-es":            { lib: () => LodashEs,    version: (LodashEs as any).VERSION ?? "4.0.0",          requiredVersion: "^4.0.0" },
-  "@vueuse/core":         { lib: () => VueuseCore,  version: (VueuseCore as any).version ?? "10.0.0",       requiredVersion: "^10.0.0" },
-  "@vc-shell/framework":  { lib: () => Framework,   version: frameworkVersion,                               requiredVersion: `^${frameworkVersion}` },
+  vue:                    { lib: () => Vue,         version: Vue.version,               requiredVersion: "^3.4.0" },
+  "vue-router":           { lib: () => VueRouter,   version: vueRouterPkg.version,      requiredVersion: "^4.0.0" },
+  "vue-i18n":             { lib: () => VueI18n,     version: vueI18nPkg.version,        requiredVersion: "^9.0.0" },
+  "vee-validate":         { lib: () => VeeValidate, version: (VeeValidate as any).version ?? "4.0.0", requiredVersion: "^4.0.0" },
+  "lodash-es":            { lib: () => LodashEs,    version: lodashEsPkg.version,       requiredVersion: "^4.0.0" },
+  "@vueuse/core":         { lib: () => VueuseCore,  version: vueusePkg.version,         requiredVersion: "^10.0.0" },
+  "@vc-shell/framework":  { lib: () => Framework,   version: frameworkVersion,           requiredVersion: `^${frameworkVersion}` },
 };
 
 export interface ModuleRegistryEntry {
@@ -39,8 +44,8 @@ export interface ModuleRegistryEntry {
   entry: string;
   version: string;
   compatibleWith?: {
-    framework?: string;
-    modules?: Record<string, string>;
+    dependencies?: Record<string, string>;
+    requires?: Record<string, string>;
   };
 }
 
@@ -122,11 +127,19 @@ export const dynamicModulesPlugin: Plugin = {
     try {
       performance.mark("vc:modules-start");
 
-      // 1. Build registry URL with appName and frameworkVersion query params
-      const url = `${REGISTRY_URL}?appName=${encodeURIComponent(options.appName)}&frameworkVersion=${encodeURIComponent(frameworkVersion)}`;
+      // 1. Build provides dictionary from shared libs versions
+      const provides: Record<string, string> = {};
+      for (const [name, entry] of Object.entries(SHARED_LIBS)) {
+        provides[name] = entry.version;
+      }
 
-      // 2. Fetch module registry from API
-      const response = await fetch(url, { credentials: "same-origin" });
+      // 2. Fetch module registry from API (POST with appName + provides)
+      const response = await fetch(REGISTRY_URL, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ appName: options.appName, provides }),
+      });
       if (!response.ok) {
         throw new Error(`Registry fetch failed: ${response.status} ${response.statusText}`);
       }
@@ -141,10 +154,15 @@ export const dynamicModulesPlugin: Plugin = {
 
       // 3. Client-side compatibility filter (safety net — server already filters)
       const compatible = modules.filter((mod) => {
-        if (!mod.compatibleWith?.framework) {
+        const deps = mod.compatibleWith?.dependencies;
+        if (!deps) {
           return true;
         }
-        const range = humanizeRange(mod.compatibleWith.framework);
+        const fwRange = deps["@vc-shell/framework"];
+        if (!fwRange) {
+          return true;
+        }
+        const range = humanizeRange(fwRange);
         // Prerelease versions (e.g. 1.2.4-beta.8) are less than the release (1.2.4)
         // in semver, which would incorrectly exclude them from ranges like >=1.2.4.
         // Coerce to release version so prereleases are treated as compatible.
@@ -168,12 +186,7 @@ export const dynamicModulesPlugin: Plugin = {
 
       // 4. Initialize MF runtime with all remotes and shared deps
       const shared: Record<string, any> = {};
-      for (const name of SHARED_DEP_NAMES) {
-        const entry = SHARED_LIBS[name];
-        if (!entry) {
-          logger.warn(`Shared dep "${name}" declared in SHARED_DEP_NAMES but not in SHARED_LIBS. Skipping.`);
-          continue;
-        }
+      for (const [name, entry] of Object.entries(SHARED_LIBS)) {
         shared[name] = {
           version: entry.version,
           lib: entry.lib,

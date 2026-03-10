@@ -176,7 +176,7 @@ describe("dynamicModulesPlugin", () => {
     );
   });
 
-  it("builds fetch URL with appName and frameworkVersion from package.json", async () => {
+  it("sends POST request with appName and provides dictionary", async () => {
     const { app, router } = createTestApp();
 
     (global.fetch as any).mockResolvedValue({
@@ -190,9 +190,20 @@ describe("dynamicModulesPlugin", () => {
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      "/api/frontend-modules?appName=test-app&frameworkVersion=1.2.4",
-      { credentials: "same-origin" },
+      "/api/frontend-modules",
+      expect.objectContaining({
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      }),
     );
+
+    // Verify the body contains appName and provides with framework version
+    const callArgs = (global.fetch as any).mock.calls[0];
+    const body = JSON.parse(callArgs[1].body);
+    expect(body.appName).toBe("test-app");
+    expect(body.provides).toBeDefined();
+    expect(body.provides["@vc-shell/framework"]).toBe("1.2.4");
   });
 
   it("filters incompatible modules by framework version (client-side)", async () => {
@@ -203,7 +214,7 @@ describe("dynamicModulesPlugin", () => {
         id: "old-module",
         entry: "/modules/old/remoteEntry.js",
         version: "0.1.0",
-        compatibleWith: { framework: "^2.0.0" },
+        compatibleWith: { dependencies: { "@vc-shell/framework": "^2.0.0" } },
       },
     ];
 
@@ -461,7 +472,7 @@ describe("dynamicModulesPlugin", () => {
           id: "nuget-range",
           entry: "/nr/remoteEntry.js",
           version: "1.0.0",
-          compatibleWith: { framework: "[1.0.0,2.0.0)" },
+          compatibleWith: { dependencies: { "@vc-shell/framework": "[1.0.0,2.0.0)" } },
         },
       ];
 
@@ -492,7 +503,7 @@ describe("dynamicModulesPlugin", () => {
           id: "nuget-exclusive",
           entry: "/ne/remoteEntry.js",
           version: "1.0.0",
-          compatibleWith: { framework: "(1.0.0,2.0.0]" },
+          compatibleWith: { dependencies: { "@vc-shell/framework": "(1.0.0,2.0.0]" } },
         },
       ];
 
@@ -521,7 +532,7 @@ describe("dynamicModulesPlugin", () => {
           id: "nuget-open",
           entry: "/no/remoteEntry.js",
           version: "1.0.0",
-          compatibleWith: { framework: "[1.2.4,]" },
+          compatibleWith: { dependencies: { "@vc-shell/framework": "[1.2.4,]" } },
         },
       ];
 
@@ -550,7 +561,7 @@ describe("dynamicModulesPlugin", () => {
           id: "npm-range",
           entry: "/npm/remoteEntry.js",
           version: "1.0.0",
-          compatibleWith: { framework: "^1.2.0" },
+          compatibleWith: { dependencies: { "@vc-shell/framework": "^1.2.0" } },
         },
       ];
 
@@ -579,7 +590,7 @@ describe("dynamicModulesPlugin", () => {
           id: "gte-range",
           entry: "/gte/remoteEntry.js",
           version: "1.0.0",
-          compatibleWith: { framework: ">=1.0.0" },
+          compatibleWith: { dependencies: { "@vc-shell/framework": ">=1.0.0" } },
         },
       ];
 

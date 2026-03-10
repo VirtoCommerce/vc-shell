@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as pages from "@shared/modules/dynamic/pages";
-import { App, Component, SetupContext, defineComponent, watch } from "vue";
+import { App, Component, SetupContext, defineComponent, inject } from "vue";
 import { DynamicSchema, OverridesSchema } from "@shared/modules/dynamic/types";
 import * as _ from "lodash-es";
 import { handleOverrides } from "@shared/modules/dynamic/helpers/override";
@@ -11,18 +10,27 @@ import { notification } from "@shared/components/notifications/core/notification
 import { createAppModule } from "@core/plugins";
 import { ComponentProps } from "@shared/utilities/vueUtils";
 import { Router } from "vue-router";
+import { DynamicModuleRegistryStateKey, type DynamicModuleRegistryState } from "@framework/injection-keys";
+
+/** Generic composable function signature used in dynamic module registration. */
+type ComposableFn = (...args: unknown[]) => unknown;
+
+/** Map of named composable functions provided to a dynamic blade. */
+type ComposableMap = { [key: string]: ComposableFn };
+
+/** Mixin function array used to extend a dynamic blade's setup. */
+type MixinFnArray = ComposableFn[];
 
 interface Registered {
   component: BladeInstanceConstructor;
   name: string;
   model: DynamicSchema;
-  composables: { [key: string]: (...args: any[]) => any };
-  mixin?: ((...args: any[]) => any)[];
+  composables: ComposableMap;
+  mixin?: MixinFnArray;
 }
 
-const registeredModules: { [key: string]: Registered } = {};
-const installedBladeIds = new Set<string>();
-const registeredSchemas: { [key: string]: DynamicSchema } = {};
+// Note: registeredModules, installedBladeIds, registeredSchemas are no longer
+// module-level singletons. They are injected per-app via DynamicModuleRegistryStateKey.
 
 const createAppModuleWrapper = (args: {
   bladeName: string;
@@ -45,16 +53,16 @@ const createAppModuleWrapper = (args: {
 };
 
 const createBladeInstanceConstructor = (
-  bladeComponent: any,
+  bladeComponent: BladeInstanceConstructor,
   bladeName: string,
   json: DynamicSchema,
   args: {
     moduleUid: string;
-    composables?: { [key: string]: (...args: any[]) => any };
-    mixin?: ((...args: any[]) => any)[];
+    composables?: ComposableMap;
+    mixin?: MixinFnArray;
   },
-  existingComposables?: { [key: string]: (...args: any[]) => any },
-  existingMixins?: ((...args: any[]) => any)[],
+  existingComposables?: ComposableMap,
+  existingMixins?: MixinFnArray,
 ) => {
   return defineComponent({
     ...bladeComponent,
@@ -79,7 +87,8 @@ const createBladeInstanceConstructor = (
                 : args.mixin?.length
                   ? args.mixin
                   : undefined,
-            } as any),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Object.assign result does not satisfy ComponentProps<T>; cast required for Vue internal API compatibility
+            } as Record<string, unknown>) as any,
           ),
           ctx,
         )) ??
@@ -91,12 +100,13 @@ const register = (
   args: {
     app: App;
     component: BladeInstanceConstructor;
-    composables: { [key: string]: (...args: any[]) => any } | undefined;
-    mixin?: ((...args: any[]) => any)[];
+    composables: ComposableMap | undefined;
+    mixin?: MixinFnArray;
     json: DynamicSchema;
     options?: { router: Router };
     moduleUid: string;
   },
+  registry: DynamicModuleRegistryState,
   appModuleContent?:
     | {
         locales?: { [key: string]: object };
@@ -106,13 +116,14 @@ const register = (
     | undefined,
 ): Registered => {
   const { app, component, json, options } = args;
+  const { registeredModules, installedBladeIds: _installedBladeIds } = registry;
   const bladeId = json.settings.id;
   const bladeName = kebabToPascal(bladeId);
 
   if (registeredModules[bladeName]) {
     // Module already registered, updating it
-    updateBlade(bladeName, json, args, appModuleContent);
-    return registeredModules[bladeName];
+    updateBlade(bladeName, json, args, registry, appModuleContent);
+    return registeredModules[bladeName] as Registered;
   }
 
   const bladeComponent = _.cloneDeep(component);
@@ -153,12 +164,13 @@ const updateBlade = (
   args: {
     app: App;
     component: BladeInstanceConstructor;
-    composables?: { [key: string]: (...args: any[]) => any };
-    mixin?: ((...args: any[]) => any)[];
+    composables?: ComposableMap;
+    mixin?: MixinFnArray;
     json: DynamicSchema;
     options?: { router: Router };
     moduleUid: string;
   },
+  registry: DynamicModuleRegistryState,
   appModuleContent?:
     | {
         locales?: { [key: string]: object };
@@ -167,7 +179,8 @@ const updateBlade = (
       }
     | undefined,
 ) => {
-  const existingModule = registeredModules[moduleName];
+  const { registeredModules } = registry;
+  const existingModule = registeredModules[moduleName] as Registered | undefined;
 
   if (existingModule) {
     // Updating blade model
@@ -201,15 +214,15 @@ const updateBlade = (
 
 export function createDynamicAppModule(args: {
   schema?: { [key: string]: DynamicSchema };
-  composables?: { [key: string]: (...args: any[]) => any };
-  mixin?: { [x: string]: ((...args: any[]) => any)[] };
+  composables?: ComposableMap;
+  mixin?: { [x: string]: MixinFnArray };
   overrides?: OverridesSchema;
   moduleComponents?: { [key: string]: Component };
   locales?: { [key: string]: object };
   notificationTemplates?: { [key: string]: Component };
 }): {
   install(
-    app: App<any>,
+    app: App,
     options?:
       | {
           router: Router;
@@ -217,48 +230,87 @@ export function createDynamicAppModule(args: {
       | undefined,
   ): void;
 } {
-  let schemaCopy: { [key: string]: DynamicSchema & { moduleUid: string } } = {};
+  // Capture provided schemas early (before install) for validation purposes.
+  // Actual registration into the per-app registry happens inside install().
+  let earlySchema: { [key: string]: DynamicSchema & { moduleUid: string } } = {};
 
   if (args.schema && Object.keys(args.schema).length > 0) {
     const moduleUid = _.uniqueId("module_");
     Object.entries(args.schema).forEach(([, schema]) => {
       if (schema.settings && schema.settings.id) {
-        schemaCopy[schema.settings.id] = { ..._.cloneDeep(schema), moduleUid };
-        registeredSchemas[schema.settings.id] = schemaCopy[schema.settings.id];
+        earlySchema[schema.settings.id] = { ..._.cloneDeep(schema), moduleUid };
       }
     });
-  } else {
-    // Use registered schemas if new ones are not provided
-    schemaCopy = _.cloneDeep({ ...registeredSchemas }) as { [key: string]: DynamicSchema & { moduleUid: string } };
   }
 
-  if (args.overrides) {
-    schemaCopy = handleOverrides(args.overrides, schemaCopy) as {
+  // Pre-apply overrides to the early schema copy for validation
+  if (args.overrides && Object.keys(earlySchema).length > 0) {
+    earlySchema = handleOverrides(args.overrides, earlySchema) as {
       [key: string]: DynamicSchema & { moduleUid: string };
     };
-
     const newUid = _.uniqueId("module_");
-    const newSchemas = Object.entries(schemaCopy).reduce(
+    earlySchema = Object.entries(earlySchema).reduce(
       (acc, [key, schema]) => {
         acc[key] = { ...schema, moduleUid: newUid };
         return acc;
       },
       {} as { [key: string]: DynamicSchema & { moduleUid: string } },
     );
-
-    Object.assign(registeredSchemas, newSchemas);
   }
 
-  // Validation
-  const moduleInitializer = _.findKey(schemaCopy, (o) => o.settings.isWorkspace);
-  const everyHasTemplate = _.every(Object.values(schemaCopy), (o) => o?.settings?.component);
-
-  if (!everyHasTemplate) handleError("component", schemaCopy, "must be included in 'settings' of each file");
-  if (!moduleInitializer)
-    handleError("isWorkspace", schemaCopy, "must be included in one of the files to initialize the module workspace");
+  // Validation (only when schema was provided; overrides-only modules skip this)
+  if (Object.keys(earlySchema).length > 0) {
+    const everyHasTemplate = _.every(Object.values(earlySchema), (o) => o?.settings?.component);
+    const moduleInitializer = _.findKey(earlySchema, (o) => o.settings.isWorkspace);
+    if (!everyHasTemplate) handleError("component", earlySchema, "must be included in 'settings' of each file");
+    if (!moduleInitializer)
+      handleError("isWorkspace", earlySchema, "must be included in one of the files to initialize the module workspace");
+  }
 
   return {
     install(app: App, options: { router: Router }) {
+      // Inject per-app registry (provided by framework install before dynamic modules run)
+      const registry = app.runWithContext(() =>
+        inject<DynamicModuleRegistryState>(DynamicModuleRegistryStateKey),
+      );
+      if (!registry) {
+        throw new Error(
+          "[vc-shell] DynamicModuleRegistryState not found. " +
+            "Ensure the framework plugin is installed before dynamic modules.",
+        );
+      }
+      const { registeredModules, installedBladeIds, registeredSchemas } = registry;
+
+      // Build schemaCopy inside install() so we can use the per-app registeredSchemas
+      let schemaCopy: { [key: string]: DynamicSchema & { moduleUid: string } };
+
+      if (args.schema && Object.keys(args.schema).length > 0) {
+        schemaCopy = { ...earlySchema };
+        // Register provided schemas into the per-app registry
+        Object.entries(schemaCopy).forEach(([key, schema]) => {
+          registeredSchemas[key] = schema;
+        });
+      } else {
+        // Use the per-app registered schemas if no new schemas provided
+        schemaCopy = _.cloneDeep({ ...registeredSchemas }) as { [key: string]: DynamicSchema & { moduleUid: string } };
+      }
+
+      if (args.overrides) {
+        schemaCopy = handleOverrides(args.overrides, schemaCopy) as {
+          [key: string]: DynamicSchema & { moduleUid: string };
+        };
+        const newUid = _.uniqueId("module_");
+        const newSchemas = Object.entries(schemaCopy).reduce(
+          (acc, [key, schema]) => {
+            acc[key] = { ...schema, moduleUid: newUid };
+            return acc;
+          },
+          {} as { [key: string]: DynamicSchema & { moduleUid: string } },
+        );
+        Object.assign(registeredSchemas, newSchemas);
+        schemaCopy = newSchemas;
+      }
+
       const bladePages = { ...pages };
       const appModuleContent = {
         locales: args?.locales,
@@ -270,14 +322,14 @@ export function createDynamicAppModule(args: {
         const composable = schemaCopy[bladeId]?.settings.composable;
 
         const composableFn = Object.values(registeredModules).find((module) => {
-          return module.composables?.[composable];
+          return (module as Registered).composables?.[composable];
         });
 
         if (!composableFn) {
           return args.composables;
         }
 
-        return composableFn?.composables;
+        return (composableFn as Registered)?.composables;
       };
 
       Object.entries(schemaCopy).forEach(([, JsonSchema], index) => {
@@ -296,13 +348,19 @@ export function createDynamicAppModule(args: {
 
         if (installedBladeIds.has(bladeId)) {
           // Blade already installed, updating it
-          updateBlade(kebabToPascal(bladeId), JsonSchema, registerArgs, index === 0 ? appModuleContent : undefined);
+          updateBlade(
+            kebabToPascal(bladeId),
+            JsonSchema,
+            registerArgs,
+            registry,
+            index === 0 ? appModuleContent : undefined,
+          );
           return;
         }
 
         installedBladeIds.add(bladeId);
 
-        register(registerArgs, index === 0 ? appModuleContent : undefined);
+        register(registerArgs, registry, index === 0 ? appModuleContent : undefined);
       });
     },
   };

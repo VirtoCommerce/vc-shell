@@ -18,36 +18,23 @@ export interface CompatibilityOptions {
 }
 
 /**
- * Dynamic module configuration options
+ * Dynamic module configuration options (Module Federation)
  */
 export interface DynamicModuleOptions extends UserConfig {
   /**
    * Entry point for the module
-   * @default "./index.ts"
+   * @default "./src/modules/index.ts"
    */
   entry?: string;
 
   /**
-   * Output directory for the module
-   * @default "dist/packages/modules"
+   * Custom MF exposes map. Overrides default `{ "./module": entry }`.
    */
-  outDir?: string;
+  exposes?: Record<string, string>;
 
   /**
-   * Module name for UMD build
-   * @default Derived from package name
+   * Compatibility constraints (metadata only — not used during build).
+   * Used by the runtime registry API for version filtering.
    */
-  moduleName?: string;
-
-  /**
-   * Compatibility constraints for the module
-   * @required Both framework and apps fields are required
-   */
-  compatibility: CompatibilityOptions;
-
-  /**
-   * Additional external dependencies
-   * @default []
-   */
-  externals?: string[];
+  compatibility?: CompatibilityOptions;
 }

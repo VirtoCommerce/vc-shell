@@ -23,5 +23,3 @@ export * from "@shared/components/draggable-dashboard";
 export * from "@shared/components/dashboard-widget-card";
 export * from "@shared/components/dashboard-charts";
 export * from "@shared/components/multilanguage-selector";
-// ai-agent-panel is now part of the ai-agent plugin
-// export * from "./core/plugins/ai-agent";

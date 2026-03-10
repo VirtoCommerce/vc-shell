@@ -48,8 +48,10 @@ export function useShellNavigation() {
   };
 
   const openRoot = async () => {
-    // Close all child blades above the workspace, then navigate to main route.
-    await closeBlade(1);
+    // Close entire blade stack (including workspace) and navigate to main route.
+    // Workspaces are managed by BladeStack, not Vue Router — clearing the stack
+    // returns to the app shell's default view (e.g. dashboard).
+    await closeBlade(0);
     navigateToMainRoute(router, route.params as Record<string, string>);
   };
 

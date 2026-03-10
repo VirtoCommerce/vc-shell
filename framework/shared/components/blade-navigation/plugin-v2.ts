@@ -128,11 +128,10 @@ export const VcBladeNavigationComponent = {
       const parsed = parseBladeUrl(to.path, tenantPrefix);
 
       if (!parsed.workspaceUrl) {
-        // No workspace in URL (e.g. navigating to "/") — keep workspace, close children.
-        // Clearing the entire stack would leave a blank page.
-        if (bladeStack.blades.value.length > 1) {
-          // Keep only the workspace (first blade)
-          bladeStack._restoreStack([bladeStack.blades.value[0]]);
+        // No workspace in URL (e.g. navigating to "/") — clear the blade stack.
+        // The app shell renders its own default view (e.g. dashboard) when the stack is empty.
+        if (bladeStack.blades.value.length > 0) {
+          bladeStack._restoreStack([]);
         }
         return;
       }

@@ -82,6 +82,7 @@ export type BladeInstanceConstructor<T extends Component = Component> = Extracto
 } & ComponentOptionsBase<any, any, any, any, ComponentOptionsMixin, ComponentOptionsMixin, any, any, any> &
   CoreBladeAdditionalSettings;
 
+/** @deprecated This interface will be replaced in a future version. Avoid new usages. */
 export interface IBladeEvent<T extends Component = Component> {
   blade: BladeInstanceConstructor<T> | { name: string } | undefined;
   options?: Record<string, any>;

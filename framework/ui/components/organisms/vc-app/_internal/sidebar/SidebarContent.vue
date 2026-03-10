@@ -91,11 +91,8 @@ const handleMenuItemClick = (item: MenuItem) => {
   &__menu {
     @apply tw-flex-grow tw-min-h-0;
 
-    .vc-scrollable-container__viewport {
-      padding: 0 var(--app-bar-padding);
-    }
-
     // Make nested containers transparent — the viewport is the sole scroll viewport
+    .vc-menu,
     .vc-app-menu,
     .vc-container {
       @apply tw-h-auto tw-overflow-visible;

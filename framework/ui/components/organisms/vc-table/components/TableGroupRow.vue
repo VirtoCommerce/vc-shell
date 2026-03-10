@@ -63,8 +63,8 @@ const emit = defineEmits<{
   click: [event: MouseEvent];
 }>();
 
-const handleToggle = (event: MouseEvent) => {
-  emit("toggle", event);
+const handleToggle = (event: Event) => {
+  emit("toggle", event as MouseEvent);
 };
 
 const handleClick = (event: MouseEvent) => {

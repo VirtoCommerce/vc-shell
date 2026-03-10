@@ -40,4 +40,47 @@ describe("useFilterState", () => {
 
     expect(onFilterChange).toHaveBeenLastCalledWith({});
   });
+
+  it("updateFilter with empty string clears the field from the payload (empty values excluded)", () => {
+    const onFilterChange = vi.fn();
+    const { updateFilter } = useFilterState({ onFilterChange });
+
+    updateFilter("name", "Alice");
+    expect(onFilterChange).toHaveBeenLastCalledWith({ name: "Alice" });
+
+    // Setting to empty string — isValueEmpty() returns true, field excluded from payload
+    updateFilter("name", "");
+    expect(onFilterChange).toHaveBeenLastCalledWith({});
+  });
+
+  it("multiple updateFilter calls accumulate all fields in the payload", () => {
+    const onFilterChange = vi.fn();
+    const { updateFilter } = useFilterState({ onFilterChange });
+
+    updateFilter("name", "Alice");
+    updateFilter("status", "active");
+    updateFilter("email", "alice@example.com");
+
+    expect(onFilterChange).toHaveBeenLastCalledWith({
+      name: "Alice",
+      status: "active",
+      email: "alice@example.com",
+    });
+    expect(onFilterChange).toHaveBeenCalledTimes(3);
+  });
+
+  it("clearFilter on a non-existent key is a no-op and does not throw", () => {
+    const onFilterChange = vi.fn();
+    const { updateFilter, clearFilter } = useFilterState({ onFilterChange });
+
+    updateFilter("name", "Alice");
+    onFilterChange.mockClear();
+
+    // Clear a key that was never set — should not throw
+    expect(() => clearFilter("nonExistentKey")).not.toThrow();
+
+    // onFilterChange still called with current state (unchanged)
+    expect(onFilterChange).toHaveBeenCalledTimes(1);
+    expect(onFilterChange).toHaveBeenLastCalledWith({ name: "Alice" });
+  });
 });

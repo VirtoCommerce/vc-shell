@@ -315,7 +315,7 @@
 
     <!-- Pagination / Total counter (outside scroll area, works for both desktop and mobile) -->
     <div
-      v-if="props.pagination"
+      v-if="props.pagination && props.pagination.pages > 0"
       ref="paginationRef"
       class="vc-data-table__pagination"
     >
@@ -349,8 +349,11 @@
  *
  * Refactored to use composables for better code organization.
  * Inspired by PrimeVue DataTable architecture.
+ *
+ * Orchestration logic (sub-composable wiring, watchers, event handlers, derived
+ * computeds) is extracted into useDataTableOrchestrator for independent testability.
  */
-import { ref, computed, provide, watch, onBeforeUnmount, toRef, useSlots, inject, type Ref, type VNode } from "vue";
+import { ref, computed, provide, watch, onBeforeUnmount, useSlots, inject, type Ref, type VNode } from "vue";
 import { useElementSize } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import {
@@ -369,21 +372,7 @@ import {
   TableSelectAllBar,
 } from "@ui/components/organisms/vc-table/components";
 import { VcPagination } from "@ui/components/molecules";
-import {
-  useTableRowReorder,
-  useTableColumnsResize,
-  useTableColumnsReorder,
-  useFilterState,
-  useColumnFilter,
-  useTableSort,
-  useTableEditing,
-  useTableExpansion,
-  useTableSelectionV2,
-  useTableColumns,
-  useTableRowGrouping,
-  useTableInlineEdit,
-  useDataTableState,
-} from "@ui/components/organisms/vc-table/composables";
+import { useDataTableOrchestrator } from "@ui/components/organisms/vc-table/composables/useDataTableOrchestrator";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 import {
   ColumnCollectorKey,
@@ -837,170 +826,142 @@ const getItemKey = (item: T, index: number): string => {
 };
 
 // ============================================================================
-// Selection Composable
+// DOM Refs (declared early — passed to orchestrator for column resize)
 // ============================================================================
 
-const selection = useTableSelectionV2({
-  items: toRef(props, "items"),
-  selection: toRef(props, "selection"),
-  selectionMode: computed(() => effectiveSelectionMode.value),
-  isRowSelectable: (item: T) => (props.isRowSelectable ? props.isRowSelectable(item) : true),
-  dataKey: props.dataKey,
+const tableRootRef = ref<HTMLElement | null>(null);
+const tableContainerRef = ref<HTMLElement | null>(null);
+const paginationRef = ref<HTMLElement | null>(null);
+
+// ============================================================================
+// Orchestrator — wires all sub-composables, watchers, and event handlers
+// ============================================================================
+
+const {
+  // Sub-composable instances
+  selection,
+  sort,
+  editing,
+  expansion,
+  rowGrouping,
+  inlineEdit,
+  cols,
+  statePersistence,
+
+  // Column filter helpers
+  filterValues,
+  updateFilter,
+  clearFilter,
+  clearAllFilters,
+  hasActiveFilters,
+  activeFilterCount,
+
+  // Column filter template helpers
+  showColumnFilter,
+  getColumnFilterType,
+  getColumnFilterOptions,
+  isColumnFilterMultiple,
+  getColumnRangeFields,
+  getColumnFilterValue,
+  handleColumnFilterApply,
+  handleColumnFilterClear,
+  emitFilterPayload,
+
+  // Global filter payload (owned by component UI state; orchestrator wires it)
+  globalFilterPayload,
+
+  // Resize / reorder
+  handleResizeStart,
+  isColumnReordering,
+  handleColumnDragStart,
+  handleColumnDragOver,
+  handleColumnDrop,
+
+  // Row reorder state
+  draggedRow,
+  onRowMouseDown,
+  onRowDragStart,
+  onRowDragOver,
+  onRowDragLeave,
+  onRowDragEnd,
+  onRowDrop,
+
+  // Derived computeds
+  displayItems,
+  getGlobalIndex,
+  effectiveSelectionMode,
+  hasSelectionColumn,
+  isSelectionViaColumn,
+  isRowReorderEnabled,
+  showRowDragHandle,
+  hasExpanderColumn,
+  computedVariant,
+  switcherColumns,
+  switcherVisibleColumnIds,
+  safeColumns,
+  isInlineEditing,
+
+  // Expansion helper
+  isRowExpanded,
+
+  // Event handlers
+  handleSort,
+  handleSelectAllChange,
+  handleRowSelectionChange,
+  handleRowClick,
+  handleAddRow,
+  handleRemoveRow,
+  handleColumnVisibilityChange,
+  handleCellClick,
+  handleCellEditComplete,
+  handleCellEditCancel,
+  handleCellValueChange,
+  handleExpandToggle,
+  handleStartRowEdit,
+  handleSaveRowEdit,
+  handleCancelRowEdit,
+  handleRowAction,
+  handleMobileRowClick,
+  handleMobileRowSelect,
+  handleMobileRowAction,
+} = useDataTableOrchestrator<T>({
+  props,
+  emit: emit as any,
+  visibleColumns,
+  declaredColumns,
+  hiddenColumnIds,
+  shownDataDiscoveredColumnIds,
+  dataDiscoveredColumns,
   getItemKey,
-  totalCount: toRef(props, "totalCount") as Ref<number | undefined>,
-  selectAllActive: toRef(props, "selectAllActive") as Ref<boolean | undefined>,
-  onSelectAllChange: (active: boolean) => {
-    emit("update:selectAllActive", active);
-    emit("select-all", { selected: active });
-  },
+  tableContainerRef,
 });
 
-// Watch for selection changes and emit
-watch(
-  () => selection.internalSelection.value,
-  (newSelection) => {
-    emit("update:selection", effectiveSelectionMode.value === "single" ? newSelection[0] : newSelection);
-  },
-  { deep: true },
-);
-
-// ============================================================================
-// Sort Composable
-// ============================================================================
-
-const sort = useTableSort({
-  sortField: toRef(props, "sortField"),
-  sortOrder: toRef(props, "sortOrder") as any,
-  sortMode: toRef(props, "sortMode") as any,
-  multiSortMeta: toRef(props, "multiSortMeta") as any,
-  removableSort: toRef(props, "removableSort"),
-  onSort: (event) => {
-    if (event.sortField !== undefined) emit("update:sortField", event.sortField);
-    if (event.sortOrder !== undefined) emit("update:sortOrder", event.sortOrder);
-    if (event.multiSortMeta !== undefined) emit("update:multiSortMeta", event.multiSortMeta);
-    emit("sort", event);
-  },
+// Provide filter context (values returned by orchestrator, provide() here per plan rules)
+provide(FilterContextKey, {
+  filterValues,
+  updateFilter,
+  clearFilter,
+  clearAllFilters,
+  hasActiveFilters,
+  activeFilterCount,
 });
 
-// ============================================================================
-// Editing Composable
-// ============================================================================
+// Provide hasFlexColumns for TableRow filler control
+provide(HasFlexColumnsKey, cols.hasFlexColumns);
 
-const editing = useTableEditing({
-  editMode: toRef(props, "editMode") as any,
-  editingRows: toRef(props, "editingRows") as any,
-  dataKey: props.dataKey,
-  getItemKey,
-});
+// Provide column reordering state so TableRow enables FLIP animation only during drag
+provide(IsColumnReorderingKey, isColumnReordering);
 
 // ============================================================================
-// Expansion Composable
+// Pagination handler (UI-level, stays in component)
 // ============================================================================
 
-const expansion = useTableExpansion({
-  expandedRows: toRef(props, "expandedRows") as any,
-  getItemKey,
-});
-
-// Use a regular ref with array of keys for proper reactivity
-const expandedKeysArray = ref<string[]>([]);
-
-// Watch for expansion changes, update local ref and emit
-watch(
-  () => expansion.internalExpandedRows.value,
-  (newExpanded) => {
-    // Update array of expanded keys
-    const newKeys = newExpanded.map((item) => getItemKey(item, 0));
-
-    // Only update if keys actually changed (prevent infinite loop)
-    const currentKeys = expandedKeysArray.value.join(",");
-    const newKeysStr = newKeys.join(",");
-    if (currentKeys !== newKeysStr) {
-      expandedKeysArray.value = newKeys;
-      emit("update:expandedRows", newExpanded);
-    }
-  },
-  { deep: true, immediate: true },
-);
-
-// Helper to check if row is expanded
-const isRowExpanded = (item: T): boolean => {
-  const key = getItemKey(item, 0);
-  return expandedKeysArray.value.includes(key);
-};
-
-// ============================================================================
-// Row Grouping Composable
-// ============================================================================
-
-const rowGrouping = useTableRowGrouping({
-  items: toRef(props, "items") as any,
-  groupRowsBy: toRef(props, "groupRowsBy") as any,
-  rowGroupMode: toRef(props, "rowGroupMode") as any,
-  expandableRowGroups: toRef(props, "expandableRowGroups") as any,
-  expandedRowGroups: toRef(props, "expandedRowGroups") as any,
-  onExpandedRowGroupsChange: (groups) => emit("update:expandedRowGroups", groups),
-  onRowGroupExpand: (event) => emit("rowgroup-expand", event),
-  onRowGroupCollapse: (event) => emit("rowgroup-collapse", event),
-});
-
-// ============================================================================
-// Inline Edit Composable (Row CRUD)
-// ============================================================================
-
-const inlineEdit = useTableInlineEdit({
-  items: toRef(props, "items") as Ref<T[]>,
-  rules: props.validationRules as Record<string, (value: unknown, row: T) => string | true> | undefined,
-  onSave: (changes) => {
-    emit("edit-save", { changes: changes as EditChange<T>[] });
-  },
-  onCancel: () => {
-    emit("edit-cancel");
-  },
-});
-
-// Computed for inline editing state (for use in template)
-// editMode="inline" makes all editable cells always active (legacy compatibility)
-const isInlineEditing = computed(() => inlineEdit.isEditing.value || props.editMode === "inline");
-
-// Row CRUD handlers
-const handleAddRow = (defaults?: Partial<T>) => {
-  let cancelled = false;
-  const event = {
-    defaults: defaults ?? {},
-    cancel: () => {
-      cancelled = true;
-    },
-  };
-  emit("row-add", event);
-  if (!cancelled) {
-    inlineEdit.addRow(event.defaults as Partial<T>);
-  }
-};
-
-const handleRemoveRow = (rowIndex: number) => {
-  if (rowIndex < 0 || rowIndex >= props.items.length) return;
-  let cancelled = false;
-  const event = {
-    data: props.items[rowIndex],
-    index: rowIndex,
-    cancel: () => {
-      cancelled = true;
-    },
-  };
-  emit("row-remove", event);
-  if (!cancelled) {
-    inlineEdit.removeRow(rowIndex);
-  }
-};
-
-// Pagination handler
 const handlePaginationClick = (page: number) => {
   emit("pagination-click", page);
 };
 
 // ============================================================================
-// Search
+// Search (UI state stays in component)
 // ============================================================================
 
 const internalSearchValue = ref(props.searchValue ?? "");
@@ -1072,181 +1033,9 @@ const handleRowMouseEnter = (_index: number) => {};
 const handleRowMouseLeave = () => {};
 
 // ============================================================================
-// Selection Column Detection
+// Global Filter UI State (UI-level state, component-owned)
 // ============================================================================
 
-const selectionColumn = computed<ColumnInstance | null>(() => {
-  // Use visibleColumns which works with slot-based extraction
-  return visibleColumns.value.find((col) => col.props.selectionMode !== undefined) || null;
-});
-
-const hasSelectionColumn = computed(() => props.selectionMode !== undefined || selectionColumn.value !== null);
-const effectiveSelectionMode = computed<"single" | "multiple" | undefined>(() => {
-  if (props.selectionMode) return props.selectionMode;
-  return selectionColumn.value?.props.selectionMode;
-});
-const isSelectionViaColumn = computed(() => selectionColumn.value !== null);
-const computedVariant = computed(() => {
-  if (props.striped) return "striped";
-  if (props.bordered) return "bordered";
-  return props.variant;
-});
-
-// ============================================================================
-// Row Reorder
-// ============================================================================
-
-const rowReorderColumn = computed<ColumnInstance | null>(() => {
-  // Use visibleColumns which works with slot-based extraction
-  return visibleColumns.value.find((col) => col.props.rowReorder === true) || null;
-});
-
-const isRowReorderEnabled = computed(() => props.reorderableRows || rowReorderColumn.value !== null);
-const showRowDragHandle = computed(() => rowReorderColumn.value !== null);
-
-const itemsRef = toRef(props, "items");
-const {
-  draggedRow,
-  pendingReorder,
-  reorderedItems,
-  onRowMouseDown,
-  onRowDragStart,
-  onRowDragOver,
-  onRowDragLeave,
-  onRowDragEnd,
-  onRowDrop,
-} = useTableRowReorder(itemsRef, (event) => emit("row-reorder", event));
-
-// ============================================================================
-// Expander Column Detection
-// ============================================================================
-
-const expanderColumn = computed<ColumnInstance | null>(() => {
-  // Use visibleColumns which works with slot-based extraction
-  return visibleColumns.value.find((col) => col.props.expander === true) || null;
-});
-
-const hasExpanderColumn = computed(() => expanderColumn.value !== null);
-
-// ============================================================================
-// Filtering
-// ============================================================================
-
-// Column filter helpers (declarative `filter` prop API)
-const colFilter = useColumnFilter();
-
-const {
-  filterValues,
-  updateFilter,
-  updateRangeFilter,
-  clearFilter,
-  clearAllFilters,
-  buildPayload,
-  hasActiveFilters,
-  activeFilterCount,
-} = useFilterState({
-  onFilterChange: (payload) => {
-    emit("filter", { filters: payload, filteredValue: props.items });
-  },
-});
-
-provide(FilterContextKey, {
-  filterValues,
-  updateFilter,
-  clearFilter,
-  clearAllFilters,
-  hasActiveFilters,
-  activeFilterCount,
-});
-
-// Template helpers that bridge VcColumn instances → ColumnFilter props
-const showColumnFilter = (col: ColumnInstance): boolean => {
-  return colFilter.hasFilter(col.props.filter);
-};
-
-const getColumnFilterField = (col: ColumnInstance): string => {
-  return col.props.filterField || colFilter.getFilterField(col.props.id, col.props.filter);
-};
-
-const getColumnFilterType = (col: ColumnInstance) => {
-  return colFilter.getFilterType(col.props.filter);
-};
-
-const getColumnFilterOptions = (col: ColumnInstance) => {
-  return colFilter.getFilterOptions(col.props.filter);
-};
-
-const isColumnFilterMultiple = (col: ColumnInstance): boolean => {
-  return colFilter.isMultipleSelect(col.props.filter);
-};
-
-const getColumnRangeFields = (col: ColumnInstance) => {
-  return colFilter.getRangeFields(col.props.filter);
-};
-
-const getColumnFilterValue = (col: ColumnInstance): FilterValue => {
-  const field = getColumnFilterField(col);
-  // For dateRange, reconstruct { start, end } from range key
-  if (getColumnFilterType(col) === "dateRange") {
-    const rangeFields = getColumnRangeFields(col);
-    if (rangeFields) {
-      const key = `__range__${rangeFields[0]}__${rangeFields[1]}`;
-      return filterValues.value[key] ?? null;
-    }
-  }
-  return filterValues.value[field] ?? null;
-};
-
-const handleColumnFilterApply = (col: ColumnInstance, payload: Record<string, unknown>) => {
-  const filterType = getColumnFilterType(col);
-  const field = getColumnFilterField(col);
-
-  if (filterType === "dateRange") {
-    const rangeFields = getColumnRangeFields(col);
-    if (rangeFields) {
-      const start = payload[rangeFields[0]] as string | undefined;
-      const end = payload[rangeFields[1]] as string | undefined;
-      updateRangeFilter(rangeFields, { start, end });
-    }
-  } else {
-    const value = payload[field];
-    updateFilter(field, value as FilterValue);
-  }
-
-  // Emit combined payload
-  emitFilterPayload();
-};
-
-const handleColumnFilterClear = (col: ColumnInstance) => {
-  const field = getColumnFilterField(col);
-  const filterType = getColumnFilterType(col);
-
-  if (filterType === "dateRange") {
-    const rangeFields = getColumnRangeFields(col);
-    if (rangeFields) {
-      const key = `__range__${rangeFields[0]}__${rangeFields[1]}`;
-      clearFilter(key);
-    }
-  } else {
-    clearFilter(field);
-  }
-
-  // Emit combined payload
-  emitFilterPayload();
-};
-
-/** Emit the combined column + global filter payload */
-const emitFilterPayload = () => {
-  const payload = buildPayload();
-  // Merge global filter payload (if any)
-  if (globalFilterPayload.value) {
-    Object.assign(payload, globalFilterPayload.value);
-  }
-  emit("filter", { filters: payload, filteredValue: props.items });
-};
-
-// Global filter state
-const globalFilterPayload = ref<Record<string, unknown> | null>(null);
 const showGlobalFiltersPanel = ref(false);
 const globalFilterValues = ref<Record<string, unknown>>({});
 const globalFiltersButtonRef = ref<InstanceType<typeof GlobalFiltersButton> | null>(null);
@@ -1292,181 +1081,8 @@ const handleGlobalFilterClear = () => {
 };
 
 // ============================================================================
-// Display Items
-// ============================================================================
-
-// Display items: items come pre-filtered from the backend
-// Only row-reorder dragging changes display order locally
-const displayItems = computed<T[]>(() => {
-  // During drag or waiting for parent to update items after drop
-  if ((draggedRow.value !== undefined || pendingReorder.value) && isRowReorderEnabled.value) {
-    return [...(reorderedItems.value as T[])];
-  }
-
-  return props.items ?? [];
-});
-
-// Helper to get global index of an item (for grouped mode)
-const getGlobalIndex = (item: T): number => {
-  return displayItems.value.indexOf(item);
-};
-
-// ============================================================================
-// Column Helpers (via composable)
-// ============================================================================
-
-const cols = useTableColumns({
-  visibleColumns,
-  resizableColumns: props.resizableColumns,
-  reorderableColumns: props.reorderableColumns,
-  hasSelectionColumn,
-  isSelectionViaColumn,
-});
-
-// Provide hasFlexColumns for TableRow filler control
-provide(HasFlexColumnsKey, cols.hasFlexColumns);
-
-// ============================================================================
-// Column Switcher
-// ============================================================================
-
-// Stable set of data-discovered column IDs.
-// Uses a string key watcher so the Set is only re-created when actual IDs change
-// (avoids false triggers from new array references in the computed source).
-const dataDiscoveredIds = ref<Set<string>>(new Set());
-watch(
-  () => dataDiscoveredColumns.value.map((c) => c.props.id).join(","),
-  () => {
-    dataDiscoveredIds.value = new Set(dataDiscoveredColumns.value.map((c) => c.props.id));
-  },
-  { immediate: true },
-);
-
-const switcherColumns = computed(() => {
-  // Declared columns (excluding statically hidden and special columns)
-  const declared = declaredColumns.value
-    .filter((col) => col.props.visible !== false)
-    .filter((col) => !cols.isSpecialColumn(col.props))
-    .map((col) => ({
-      id: col.props.id,
-      label: col.props.title || col.props.field || col.props.id,
-      visible: !hiddenColumnIds.value.has(col.props.id),
-      defaultVisible: true,
-    }));
-
-  // Data-discovered columns (from items keys, default hidden)
-  const discovered = dataDiscoveredColumns.value.map((col) => ({
-    id: col.props.id,
-    label: col.props.title || col.props.id,
-    visible: !hiddenColumnIds.value.has(col.props.id),
-    defaultVisible: false,
-  }));
-
-  return [...declared, ...discovered];
-});
-
-const switcherVisibleColumnIds = computed(() => {
-  return switcherColumns.value.filter((c) => c.visible).map((c) => c.id);
-});
-
-// ============================================================================
-// State Persistence
-// ============================================================================
-
-const statePersistence = useDataTableState({
-  stateKey: toRef(props, "stateKey"),
-  stateStorage: computed(() => props.stateStorage ?? "local"),
-  columnWidths: cols.columnWidths,
-  hiddenColumnIds,
-  shownColumnIds: shownDataDiscoveredColumnIds,
-  onStateSave: (state) => emit("state-save", state),
-  onStateRestore: (state) => emit("state-restore", state),
-});
-
-// Initialize hiddenColumnIds with data-discovered columns (they start hidden).
-// Keep hidden IDs for columns that temporarily disappear between different
-// datasets/views (e.g. products vs catalog). This preserves per-view visibility.
-watch(
-  dataDiscoveredIds,
-  (newIds, oldIds) => {
-    const updatedHidden = new Set(hiddenColumnIds.value);
-    const updatedShown = new Set(shownDataDiscoveredColumnIds.value);
-    let hiddenChanged = false;
-    let shownChanged = false;
-
-    // Newly discovered auto columns are hidden by default, unless user
-    // explicitly enabled them earlier (persisted in shownDataDiscoveredColumnIds).
-    for (const id of newIds) {
-      if ((!oldIds || !oldIds.has(id)) && !updatedHidden.has(id) && !updatedShown.has(id)) {
-        updatedHidden.add(id);
-        hiddenChanged = true;
-      }
-    }
-
-    // If a key becomes a declared column (no longer auto-discovered), drop it
-    // from auto-column state sets. Do not remove IDs that simply disappeared
-    // due to switching datasets/views.
-    if (oldIds) {
-      const declaredIds = new Set(declaredColumns.value.map((col) => col.props.id));
-      for (const id of oldIds) {
-        if (!newIds.has(id) && declaredIds.has(id)) {
-          if (updatedHidden.delete(id)) {
-            hiddenChanged = true;
-          }
-          if (updatedShown.delete(id)) {
-            shownChanged = true;
-          }
-        }
-      }
-    }
-
-    if (hiddenChanged) {
-      hiddenColumnIds.value = updatedHidden;
-    }
-    if (shownChanged) {
-      shownDataDiscoveredColumnIds.value = updatedShown;
-    }
-  },
-  { immediate: true },
-);
-
-const handleColumnVisibilityChange = (visibleIds: string[]) => {
-  const visibleSet = new Set(visibleIds);
-  const allToggleableIds = switcherColumns.value.map((c) => c.id);
-  const discoveredToggleableIds = switcherColumns.value.filter((c) => c.defaultVisible === false).map((c) => c.id);
-
-  // Preserve hidden IDs that are not part of the current switcher view.
-  // This prevents losing hidden preferences when switching datasets/views.
-  const toggleableSet = new Set(allToggleableIds);
-  const discoveredSet = new Set(discoveredToggleableIds);
-  const newHidden = new Set<string>([...hiddenColumnIds.value].filter((id) => !toggleableSet.has(id)));
-  const newShown = new Set<string>([...shownDataDiscoveredColumnIds.value].filter((id) => !discoveredSet.has(id)));
-
-  for (const id of allToggleableIds) {
-    if (!visibleSet.has(id)) {
-      newHidden.add(id);
-    }
-  }
-
-  for (const id of discoveredToggleableIds) {
-    if (visibleSet.has(id)) {
-      newShown.add(id);
-    }
-  }
-
-  hiddenColumnIds.value = newHidden;
-  shownDataDiscoveredColumnIds.value = newShown;
-};
-
-// Safe columns getter with null-check protection for template iteration
-const safeColumns = computed(() => {
-  return cols.orderedVisibleColumns.value.filter(
-    (col): col is ColumnInstance => col != null && col.props != null && col.props.id != null,
-  );
-});
-
-// ============================================================================
 // Row Props Builder (for DataTableRow component)
+// Uses orchestrator outputs + DOM refs + UI state — stays in component
 // ============================================================================
 
 /**
@@ -1513,166 +1129,6 @@ const getRowProps = (item: T, index: number) => ({
   // Custom class
   rowClass: [{ "vc-data-table__row--dragging": draggedRow.value === index }, props.rowClass?.(item)],
 });
-
-const { handleResizeStart } = useTableColumnsResize({
-  columns: cols.columnWidths,
-  minColumnWidth: 60,
-  getColumnElement: (id) => cols.headerRefs.get(id) ?? null,
-  getAllColumnElements: (id) => {
-    if (!tableContainerRef.value) return null;
-    return tableContainerRef.value.querySelectorAll(`[data-column-id="${id}"]`);
-  },
-  onResizeEnd: (colsData) => emit("column-resize-end", { columns: colsData }),
-});
-
-const {
-  isDragging: isColumnReordering,
-  handleDragStart: handleColumnDragStart,
-  handleDragOver: handleColumnDragOver,
-  handleDrop: handleColumnDrop,
-} = useTableColumnsReorder({
-  columns: cols.columnWidths,
-  onReorderEnd: (colsData) => emit("column-reorder", { columns: colsData }),
-});
-
-// Provide column reordering state so TableRow enables FLIP animation only during drag
-provide(IsColumnReorderingKey, isColumnReordering);
-
-// ============================================================================
-// Event Handlers
-// ============================================================================
-
-const handleSort = (col: VcColumnProps, event?: MouseEvent) => {
-  sort.handleSort(cols.getSortField(col), event);
-};
-
-const handleSelectAllChange = (value: boolean) => {
-  const result = selection.handleSelectAllChange(value);
-  if (value) emit("row-select-all", result);
-  else emit("row-unselect-all", result);
-  emit("update:selectAll", value);
-};
-
-const handleRowSelectionChange = (item: T, eventOrValue?: Event | boolean) => {
-  const wasSelected = selection.isSelected(item);
-  const result = selection.handleRowSelectionChange(item, eventOrValue);
-  if (result) {
-    if (wasSelected) emit("row-unselect", result);
-    else emit("row-select", result);
-  }
-};
-
-const handleRowClick = (item: T, index: number, event: Event) => {
-  const itemKey = getItemKey(item, index);
-  const isSameItem = props.activeItemId != null && itemKey === String(props.activeItemId);
-  emit("update:activeItemId", isSameItem ? undefined : itemKey);
-  emit("row-click", { data: item, index, originalEvent: event });
-  const target = event.target as HTMLElement;
-  const isCheckboxClick = target.tagName === "INPUT" && target.getAttribute("type") === "checkbox";
-  if (effectiveSelectionMode.value === "single" && !isCheckboxClick) {
-    handleRowSelectionChange(item, event);
-  }
-};
-
-const handleCellClick = (item: T, field: string, rowIndex: number, col: ColumnInstance) => {
-  if (
-    props.editMode === "cell" &&
-    (col.slots.editor || col.props.editable) &&
-    !editing.isCellEditing(rowIndex, field)
-  ) {
-    const event = editing.startCellEdit(item, field, rowIndex);
-    emit("cell-edit-init", event);
-  }
-};
-
-const handleCellEditComplete = (item: T, field: string, rowIndex: number, newValue: unknown) => {
-  // Close the editor and emit the event
-  // This is called from focusout on the editor wrapper or Enter key
-  const event = editing.completeCellEdit(item, field, rowIndex, newValue);
-  emit("cell-edit-complete", { data: item, field, newValue: event.newValue, index: rowIndex });
-
-  // If inline editing is active, also update the inlineEdit composable
-  if (inlineEdit.isEditing.value) {
-    inlineEdit.updateCell(rowIndex, field, newValue);
-  }
-};
-
-const handleCellEditCancel = (item: T, field: string, rowIndex: number) => {
-  // Cancel editing - discard changes
-  editing.cancelCellEdit(item, field, rowIndex);
-  emit("cell-edit-cancel", { data: item, field, index: rowIndex });
-};
-
-/**
- * Handle cell value change during editing (for inline edit dirty tracking).
- * Called on every keystroke/input change, not just on blur.
- */
-const handleCellValueChange = (field: string, rowIndex: number, newValue: unknown) => {
-  // If inline editing is active, update the inlineEdit composable immediately
-  if (inlineEdit.isEditing.value) {
-    inlineEdit.updateCell(rowIndex, field, newValue);
-  }
-};
-
-const handleExpandToggle = (item: T, index: number, event: Event) => {
-  const wasExpanded = expansion.isRowExpanded(item, index);
-  const result = expansion.toggleRowExpansion(item, index, event);
-  if (wasExpanded) emit("row-collapse", result);
-  else emit("row-expand", result);
-};
-
-const handleStartRowEdit = (item: T, index: number) => {
-  const event = editing.startRowEdit(item, index);
-  emit("update:editingRows", editing.internalEditingRows.value);
-  emit("row-edit-init", event);
-};
-
-const handleSaveRowEdit = (item: T, index: number) => {
-  const event = editing.saveRowEdit(item, index);
-  emit("update:editingRows", editing.internalEditingRows.value);
-  emit("row-edit-save", event);
-};
-
-const handleCancelRowEdit = (item: T, index: number) => {
-  const event = editing.cancelRowEdit(item, index);
-  emit("update:editingRows", editing.internalEditingRows.value);
-  emit("row-edit-cancel", event);
-};
-
-const handleRowAction = (action: TableAction, item: T, index: number) => {
-  // Call the action's click handler with item and index (matching legacy vc-table behavior)
-  action.clickHandler?.(item, index);
-  emit("row-action", { action, item, index });
-};
-
-// ============================================================================
-// Mobile View Event Handlers
-// ============================================================================
-
-const handleMobileRowClick = (item: T, index: number) => {
-  emit("row-click", { data: item, index, originalEvent: new Event("click") });
-};
-
-const handleMobileRowSelect = (item: T, index: number) => {
-  handleRowSelectionChange(item);
-};
-
-const handleMobileRowAction = (action: MobileSwipeAction<T>, item: T, index: number) => {
-  // Execute the action's click handler if provided
-  if (action.clickHandler) {
-    action.clickHandler(item, index);
-  }
-  // Also emit the row-action event for parent components
-  emit("row-action", { action, item, index });
-};
-
-// ============================================================================
-// Refs & Lifecycle
-// ============================================================================
-
-const tableRootRef = ref<HTMLElement | null>(null);
-const tableContainerRef = ref<HTMLElement | null>(null);
-const paginationRef = ref<HTMLElement | null>(null);
 
 // ============================================================================
 // Adaptive Pagination

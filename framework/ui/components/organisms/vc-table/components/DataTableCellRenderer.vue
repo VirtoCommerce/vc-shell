@@ -9,7 +9,7 @@
     />
     <VcRadioButton
       v-else
-      :model-value="isSelected"
+      :model-value="isSelected ?? false"
       :value="true"
       :disabled="!isSelectable"
       @update:model-value="$emit('selection-change', true)"

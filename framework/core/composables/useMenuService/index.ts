@@ -13,6 +13,8 @@ import {
 import { MenuServiceKey } from "@framework/injection-keys";
 import { createLogger, InjectionError } from "@core/utilities";
 
+export type UseMenuServiceReturn = MenuService;
+
 const logger = createLogger("use-menu-service");
 
 export function provideMenuService(): MenuService {

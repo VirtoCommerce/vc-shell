@@ -16,6 +16,16 @@ export interface UseToolbarOptions {
   autoCleanup?: boolean;
 }
 
+export interface UseToolbarReturn {
+  registerToolbarItem: (toolbarItem: IToolbarItem, targetBladeId?: string) => void;
+  unregisterToolbarItem: (toolbarItemId: string, targetBladeId?: string) => void;
+  updateToolbarItem: (id: string, toolbarItem: Partial<IToolbarItem>, targetBladeId?: string) => void;
+  getToolbarItems: (targetBladeId?: string) => IToolbarItem[];
+  clearBladeToolbarItems: (targetBladeId?: string) => void;
+  isToolbarItemRegistered: IToolbarService["isToolbarItemRegistered"];
+  registeredToolbarItems: IToolbarService["registeredToolbarItems"];
+}
+
 export function provideToolbarService(): IToolbarService {
   const existingService = inject(ToolbarServiceKey, null);
   if (existingService) {
@@ -36,7 +46,7 @@ export function provideToolbarService(): IToolbarService {
  * Composable for working with the toolbar
  * @returns Methods for managing toolbar buttons
  */
-export function useToolbar(options: UseToolbarOptions = {}) {
+export function useToolbar(options: UseToolbarOptions = {}): UseToolbarReturn {
   const { autoCleanup = true } = options;
 
   // Try to get the service from dependency injection

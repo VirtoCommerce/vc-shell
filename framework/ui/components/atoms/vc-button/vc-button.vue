@@ -219,6 +219,9 @@ function onClick(e: Event): void {
 
   // icon: h-9 w-9 square
   --button-icon-size: 36px;
+
+  // icon-sm: h-6 w-6 compact square (24px, for table cells)
+  --button-icon-sm-size: 24px;
 }
 
 $variants: primary, secondary, danger, warning, success, info, outline, ghost, link;
@@ -315,6 +318,11 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
       // Size: icon — h-9 w-9 square
       &.vc-button--icon {
         @apply tw-h-[var(--button-icon-size)] tw-w-[var(--button-icon-size)] tw-p-0 #{!important};
+      }
+
+      // Size: icon-sm — h-6 w-6 compact square (24px, for table cells)
+      &.vc-button--icon-sm {
+        @apply tw-h-[var(--button-icon-sm-size)] tw-w-[var(--button-icon-sm-size)] tw-p-0 #{!important};
       }
 
       .vc-button__icon + .vc-button__title {

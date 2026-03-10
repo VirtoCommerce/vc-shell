@@ -6,6 +6,7 @@ import { readFileSync } from "node:fs";
 import { resolve, join, dirname } from "node:path";
 import { cwd } from "node:process";
 import dynamicModuleConfiguration from "@vite-config/templates/vite.dynamic-module.appconfig";
+import { getHostFederationConfig } from "@vite-config/templates/vite.host.appconfig";
 import modulesLibraryConfiguration from "@vite-config/templates/vite.modules-library.appconfig";
 import type { ModulesLibraryOptions } from "@vite-config/templates/vite.modules-library.appconfig";
 import { DynamicModuleOptions } from "@vite-config/types";
@@ -113,5 +114,6 @@ function getModulesLibraryConfiguration(options: ModulesLibraryOptions = {}) {
 
 export type { DynamicModuleOptions, CompatibilityOptions } from "@vite-config/types";
 export type { ModulesLibraryOptions } from "@vite-config/templates/vite.modules-library.appconfig";
+export type { HostFederationOptions } from "@vite-config/templates/vite.host.appconfig";
 
-export { getLibraryConfiguration, getApplicationConfiguration, getDynamicModuleConfiguration, getModulesLibraryConfiguration };
+export { getLibraryConfiguration, getApplicationConfiguration, getDynamicModuleConfiguration, getModulesLibraryConfiguration, getHostFederationConfig };

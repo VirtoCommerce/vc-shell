@@ -9,6 +9,7 @@ import { BladeMessagingKey } from "@shared/components/blade-navigation/types";
  * Child blades call parent methods via direct ID lookup (no tree walking).
  *
  * @param bladeStack - BladeStack for looking up blade descriptors by ID
+ * @internal
  */
 export function createBladeMessaging(bladeStack: IBladeStack): IBladeMessaging {
   // bladeId → Record of method name → function
@@ -69,6 +70,7 @@ export function createBladeMessaging(bladeStack: IBladeStack): IBladeMessaging {
 /**
  * Composable for accessing BladeMessaging from within a component.
  * Must be used after BladeMessaging is provided via BladeMessagingKey.
+ * @internal
  */
 export function useBladeMessaging(): IBladeMessaging {
   const messaging = inject(BladeMessagingKey);

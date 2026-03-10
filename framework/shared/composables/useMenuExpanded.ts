@@ -1,5 +1,12 @@
 import { useLocalStorage } from "@vueuse/core";
-import { ref, onScopeDispose } from "vue";
+import { ref, onScopeDispose, type Ref } from "vue";
+
+export interface UseMenuExpandedReturn {
+  isExpanded: Ref<boolean>;
+  toggleExpanded: () => void;
+  isHoverExpanded: Ref<boolean>;
+  toggleHoverExpanded: (shouldExpand?: boolean) => void;
+}
 
 const STORAGE_KEY_PREFIX = "VC_APP_MENU_EXPANDED";
 const HOVER_DELAY = 200;
@@ -15,7 +22,7 @@ function getStorageKey(): string {
   return `${STORAGE_KEY_PREFIX}_${appName}`;
 }
 
-export const useMenuExpanded = () => {
+export const useMenuExpanded = (): UseMenuExpandedReturn => {
   const isExpanded = useLocalStorage(getStorageKey(), true);
   const isHoverExpanded = ref(false);
 

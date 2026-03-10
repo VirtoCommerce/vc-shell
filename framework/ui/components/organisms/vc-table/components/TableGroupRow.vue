@@ -10,10 +10,10 @@
   >
     <div class="vc-table-composition__group-header-content">
       <!-- Expand/Collapse toggle button -->
-      <button
+      <VcButton
         v-if="expandable"
-        type="button"
-        class="vc-table-composition__group-toggle"
+        variant="ghost"
+        size="icon-sm"
         :aria-expanded="expanded"
         :aria-label="expanded ? 'Collapse group' : 'Expand group'"
         @click.stop="handleToggle"
@@ -29,7 +29,7 @@
         >
           <path d="M6 4l4 4-4 4V4z" />
         </svg>
-      </button>
+      </VcButton>
 
       <!-- Group header content slot or default -->
       <div class="vc-table-composition__group-header-label">
@@ -43,6 +43,8 @@
 </template>
 
 <script setup lang="ts">
+import { VcButton } from "@ui/components/atoms/vc-button";
+
 defineProps<{
   /** The group key (value of the grouping field) */
   groupKey: string;
@@ -61,8 +63,8 @@ const emit = defineEmits<{
   click: [event: MouseEvent];
 }>();
 
-const handleToggle = (event: MouseEvent) => {
-  emit("toggle", event);
+const handleToggle = (event: Event) => {
+  emit("toggle", event as MouseEvent);
 };
 
 const handleClick = (event: MouseEvent) => {
@@ -103,28 +105,11 @@ const handleClick = (event: MouseEvent) => {
   }
 }
 
-.vc-table-composition__group-toggle {
-  @apply tw-flex tw-items-center tw-justify-center tw-w-6 tw-h-6 tw-rounded tw-border-0 tw-p-0;
-  @apply tw-transition-colors tw-duration-150;
-  background-color: transparent;
-  color: var(--vc-table-group-toggle-color, var(--neutrals-500));
+.vc-table-composition__group-toggle-icon {
+  @apply tw-transition-transform tw-duration-200;
 
-  &:hover {
-    background-color: var(--vc-table-group-toggle-bg-hover, rgba(0, 0, 0, 0.05));
-    color: var(--vc-table-group-toggle-color-hover, var(--neutrals-700));
-  }
-
-  &:focus {
-    @apply tw-outline-none;
-    box-shadow: 0 0 0 2px var(--primary-200);
-  }
-
-  &-icon {
-    @apply tw-transition-transform tw-duration-200;
-
-    &--expanded {
-      transform: rotate(90deg);
-    }
+  &--expanded {
+    transform: rotate(90deg);
   }
 }
 </style>

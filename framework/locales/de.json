@@ -93,6 +93,9 @@
           }
         }
       },
+      "BLADE_NAVIGATION": {
+        "ARIA_LABEL": "Blade-Navigation"
+      },
       "VC_BLADE": {
         "SEE_DETAILS": "Details anzeigen",
         "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",
@@ -102,7 +105,8 @@
         },
         "MORE": "Mehr",
         "TOOLBAR": "Toolbar-Aktionen",
-        "CLOSE_MENU": "Menü schließen"
+        "CLOSE_MENU": "Menü schließen",
+        "PANEL": "Panel"
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",

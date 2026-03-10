@@ -4,13 +4,16 @@ export interface IAuthApiBase {
   getBaseUrl(defaultUrl: string, baseUrl: string): string;
 }
 
-interface UseApiClient<ApiClient extends IAuthApiBase> {
+export interface UseApiClientReturn<ApiClient extends IAuthApiBase> {
   getApiClient: () => Promise<ApiClient>;
 }
 
+/** @deprecated Use UseApiClientReturn instead */
+export type UseApiClient<ApiClient extends IAuthApiBase> = UseApiClientReturn<ApiClient>;
+
 export function useApiClient<ApiClient extends IAuthApiBase>(
   c: new (baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) => ApiClient,
-): UseApiClient<ApiClient> {
+): UseApiClientReturn<ApiClient> {
   async function getApiClient() {
     const client = new c();
     return client;

@@ -48,6 +48,7 @@
       <div class="vc-blade-header__wrapper">
         <div class="vc-blade-header__content">
           <div
+            :id="titleId"
             class="vc-blade-header__title"
             :class="{
               'vc-blade-header__title-no-subtitle': !subtitle,
@@ -117,6 +118,8 @@ export interface Props {
   subtitle?: string;
   icon?: string;
   modified?: boolean;
+  /** Id to apply to the title element, for aria-labelledby linking from VcBlade */
+  titleId?: string;
 }
 const props = defineProps<Props>();
 

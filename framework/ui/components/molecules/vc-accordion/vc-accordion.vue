@@ -26,8 +26,8 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed } from "vue";
+import type { VNode, Component } from "vue";
 import VcAccordionItem from "@ui/components/molecules/vc-accordion/_internal/vc-accordion-item/vc-accordion-item.vue";
-import type { Component } from "vue";
 
 export interface AccordionItem {
   id?: string | number;
@@ -39,34 +39,34 @@ export interface AccordionItem {
   disabled?: boolean;
 }
 
-export interface Props {
+export interface VcAccordionProps {
   items?: AccordionItem[];
   modelValue?: (string | number) | (string | number)[];
   multiple?: boolean;
-  variant?: "default" | "bordered" | "separated";
+  variant?: "default" | "bordered" | "separated" | "ghost";
   collapsedHeight?: number;
   maxExpandedHeight?: number;
 }
 
-export interface Emits {
+export interface VcAccordionEmits {
   (event: "update:modelValue", value: (string | number) | (string | number)[]): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VcAccordionProps>(), {
   items: () => [],
   multiple: false,
   variant: "default",
   collapsedHeight: 0,
 });
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<VcAccordionEmits>();
 
 defineOptions({
   name: "VcAccordion",
 });
 
 defineSlots<{
-  default: (props?: any) => any;
+  default: (props?: Record<string, never>) => VNode[];
 }>();
 
 const expandedItems = ref<(string | number)[]>([]);
@@ -170,6 +170,20 @@ watch(
 
     .vc-accordion__item {
       border: 1px solid var(--accordion-item-border-color);
+    }
+  }
+
+  &--ghost {
+    gap: 0;
+
+    .vc-accordion-item {
+      --accordion-item-border-radius: 0;
+      --accordion-item-header-background: transparent;
+      --accordion-item-header-background-hover: transparent;
+      --accordion-item-icon-margin-left: 0;
+      --accordion-item-content-padding: 0;
+      --accordion-item-content-background: transparent;
+      --accordion-item-transition-duration: 200ms;
     }
   }
 }

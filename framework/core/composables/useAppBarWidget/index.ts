@@ -3,6 +3,8 @@ import { createAppBarWidgetService, IAppBarWidgetService, appBarWidgetBus } from
 import { AppBarWidgetServiceKey } from "@framework/injection-keys";
 import { createLogger, InjectionError } from "@core/utilities";
 
+export type UseAppBarWidgetReturn = IAppBarWidgetService;
+
 const logger = createLogger("use-app-bar-widget");
 
 export function provideAppBarWidget(): IAppBarWidgetService {
@@ -21,7 +23,7 @@ export function provideAppBarWidget(): IAppBarWidgetService {
   return service;
 }
 
-export function useAppBarWidget(): IAppBarWidgetService {
+export function useAppBarWidget(): UseAppBarWidgetReturn {
   const service = inject(AppBarWidgetServiceKey);
   if (!service) {
     logger.error("AppBarWidgetService not found");

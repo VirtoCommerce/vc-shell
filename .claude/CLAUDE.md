@@ -108,6 +108,7 @@ Sub-components are in `vc-table/components/`, composables in `vc-table/composabl
 - Map to VcDataTable's built-in features rather than reimplementing from scratch.
 - When fixing bugs, check `git log --oneline -15` early — regressions from recent commits are common.
 - After editing code, verify with `cd framework && npx tsc --noEmit` to catch TypeScript errors immediately.
+- After completing a task or during planning, verify no circular dependencies or barrel import cycles are introduced. Use `npx madge --circular --extensions ts,vue framework/` or manual inspection of import chains.
 
 ## Debugging Tips
 

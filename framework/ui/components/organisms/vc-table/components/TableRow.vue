@@ -9,7 +9,10 @@
       'vc-table-composition__row--dragging': isDragging,
       'vc-table-composition__row--reorderable': reorderable,
     }"
+    :tabindex="isClickable ? 0 : undefined"
     @click="handleClick"
+    @keydown.enter.prevent="isClickable && handleClick($event as unknown as MouseEvent)"
+    @keydown.space.prevent="handleSpacePress($event)"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
     @mousedown="handleMouseDown"
@@ -98,6 +101,8 @@ const emit = defineEmits<{
   dragend: [event: DragEvent];
   /** Drop on row */
   drop: [event: DragEvent];
+  /** Space pressed on focusable row (for selection toggle, distinct from click) */
+  "space-press": [event: KeyboardEvent];
 }>();
 
 const tableContext = inject(TableContextKey, null);
@@ -111,6 +116,12 @@ const isClickable = computed(() => {
 
 const handleClick = (event: MouseEvent) => {
   emit("click", event);
+};
+
+const handleSpacePress = (event: KeyboardEvent) => {
+  if (isClickable.value) {
+    emit("space-press", event);
+  }
 };
 
 const handleMouseEnter = () => {

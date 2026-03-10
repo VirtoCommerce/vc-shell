@@ -6,7 +6,10 @@ import { createLogger, InjectionError } from "@core/utilities";
 const logger = createLogger("use-languages");
 let fallbackLanguageService: ILanguageService | null = null;
 
-export interface IUseLanguages extends ILanguageService {}
+export interface UseLanguagesReturn extends ILanguageService {}
+
+/** @deprecated Use UseLanguagesReturn instead */
+export type IUseLanguages = UseLanguagesReturn;
 
 function getOrCreateFallbackLanguageService(): ILanguageService {
   if (!fallbackLanguageService) {
@@ -32,7 +35,7 @@ export function provideLanguages(): ILanguageService {
   return service;
 }
 
-export function useLanguages(): IUseLanguages {
+export function useLanguages(): UseLanguagesReturn {
   if (!hasInjectionContext()) {
     return getOrCreateFallbackLanguageService();
   }

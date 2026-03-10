@@ -3,8 +3,8 @@
   <VcDatePicker
     v-if="type === 'date' || type === 'datetime-local'"
     v-bind="$props"
-    @update:model-value="(v: any) => emit('update:modelValue', v)"
-    @blur="(v: any) => emit('blur', v)"
+    @update:model-value="(v: ModelValue) => emit('update:modelValue', v)"
+    @blur="(v: Event) => emit('blur', v)"
     @focus="emit('focus')"
   />
   <!-- Backward compat delegation: color type -->
@@ -26,8 +26,8 @@
     :multilanguage="multilanguage"
     :current-language="currentLanguage"
     :name="name"
-    @update:model-value="(v: any) => emit('update:modelValue', v)"
-    @blur="(v: any) => emit('blur', v)"
+    @update:model-value="(v: string | null) => emit('update:modelValue', v)"
+    @blur="(v: Event) => emit('blur', v)"
     @focus="emit('focus')"
   />
 
@@ -226,9 +226,8 @@
     </Transition>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, unref, watch } from "vue";
+import { computed, ref, unref, watch, type VNode } from "vue";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcHint } from "@ui/components/atoms/vc-hint";
@@ -370,31 +369,31 @@ defineSlots<{
      * Field placeholder text
      */
     placeholder: string | undefined;
-  }) => any;
+  }) => VNode[];
   /**
    * Prepend outer field
    */
-  prepend: (props: { focus: () => void }) => any;
+  prepend: (props: { focus: () => void }) => VNode[];
   /**
    * Prepend inner field
    */
-  "prepend-inner": (props: { focus: () => void }) => any;
+  "prepend-inner": (props: { focus: () => void }) => VNode[];
   /**
    * Append to inner field
    */
-  "append-inner": (props: { focus: () => void }) => any;
+  "append-inner": (props: { focus: () => void }) => VNode[];
   /**
    * Append outer field
    */
-  append: (props: { focus: () => void }) => any;
+  append: (props: { focus: () => void }) => VNode[];
   /**
    * Slot for errors
    */
-  error: (props: any) => any;
+  error: (props: Record<string, never>) => VNode[];
   /**
    * Slot for hint text
    */
-  hint: (props: any) => any;
+  hint: (props: Record<string, never>) => VNode[];
 }>();
 
 const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =

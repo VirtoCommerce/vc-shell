@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.2.4-beta.8",
+  "version": "2.0.0-alpha.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "check-locales": "tsx framework/scripts/check-locales.mts",
     "prepare": "husky install",
     "pre-commit": "yarn check-locales",
+    "serve:oneshell": "yarn workspace one-shell-app serve",
     "generate-changelogs": "tsx scripts/generate-initial-changelogs.ts"
   },
   "workspaces": [
@@ -36,6 +37,11 @@
     "cli/*",
     "configs/*"
   ],
+  "resolutions": {
+    "one-shell-app": "portal:/Users/symbot/DEV/vc-module-one-shell-app/src/VirtoCommerce.OneShell.Web/App",
+    "@module-federation/dts-plugin@npm:^2.0.1": "patch:@module-federation/dts-plugin@npm%3A2.1.0#~/.yarn/patches/@module-federation-dts-plugin-npm-2.1.0-ec9fb2d285.patch",
+    "@module-federation/dts-plugin@npm:2.1.0": "patch:@module-federation/dts-plugin@npm%3A2.1.0#~/.yarn/patches/@module-federation-dts-plugin-npm-2.1.0-ec9fb2d285.patch"
+  },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.0.1",
     "@commitlint/cli": "^18.4.3",
@@ -61,7 +67,7 @@
     "adm-zip": "^0.5.10",
     "autoprefixer": "^10.4.16",
     "chalk": "^5.3.0",
-    "conventional-changelog-cli": "^4.1.0",
+    "conventional-changelog-cli": "^5.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.35.0",
     "eslint-define-config": "^2.1.0",
@@ -107,7 +113,7 @@
   },
   "dependencies": {
     "cross-spawn": "^7.0.3",
-    "semver": "^7.7.1"
+    "semver": "^7.7.4"
   },
   "lint-staged": {
     "*.{js,ts,vue}": [

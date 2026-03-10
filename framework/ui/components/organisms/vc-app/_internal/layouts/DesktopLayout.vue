@@ -12,19 +12,13 @@
     class="desktop-layout"
     :class="{
       'desktop-layout--collapsed': !sidebar.isPinned.value,
-      'desktop-layout--hover-expanded': sidebar.isHoverExpanded.value && !sidebar.isPinned.value,
-      'desktop-layout--hover-collapsed': !sidebar.isHoverExpanded.value && !sidebar.isPinned.value,
     }"
-    @mouseenter="!sidebar.isPinned.value && sidebar.setHoverExpanded(true)"
-    @mouseleave="!sidebar.isPinned.value && sidebar.setHoverExpanded(false)"
   >
     <div
       class="desktop-layout__wrap"
       :class="{
         'desktop-layout__wrap--collapsed': !sidebar.isPinned.value,
         'desktop-layout__wrap--expanded': sidebar.isPinned.value,
-        'desktop-layout__wrap--hover-expanded': sidebar.isHoverExpanded.value && !sidebar.isPinned.value,
-        'desktop-layout__wrap--hover-collapsed': !sidebar.isHoverExpanded.value && !sidebar.isPinned.value,
       }"
     >
       <!-- Collapse/expand pin button (visible on hover) -->
@@ -281,22 +275,15 @@ const handleSwitchApp = (app: AppDescriptor) => {
   // Show collapse button on hover
   &:hover .sidebar-collapse-button {
     @apply tw-opacity-100;
+    pointer-events: auto;
   }
 
   &--collapsed {
     width: var(--app-bar-collapsed-width);
+    box-shadow: 1px 0 0 0 var(--app-bar-border);
     transition:
-      width var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function),
-      transform var(--app-bar-hover-transition-duration) var(--app-bar-hover-transition-timing-function);
-  }
-
-  &--hover-expanded {
-    width: var(--app-bar-width) !important;
-    transition-duration: var(--app-bar-hover-transition-duration);
-  }
-
-  &--hover-collapsed {
-    transition-duration: var(--app-bar-hover-leave-duration);
+      width var(--app-bar-transition-duration) var(--app-bar-hover-transition-timing-function),
+      transform var(--app-bar-transition-duration) var(--app-bar-hover-transition-timing-function);
   }
 
   &__spacer {
@@ -321,17 +308,6 @@ const handleSwitchApp = (app: AppDescriptor) => {
       width: var(--app-bar-width);
     }
 
-    &--hover-expanded {
-      @apply tw-fixed tw-top-0 tw-left-0 tw-h-full tw-z-[100];
-      width: var(--app-bar-width) !important;
-      box-shadow: var(--app-bar-shadow);
-      background-color: var(--app-bar-background);
-      transition-duration: var(--app-bar-hover-transition-duration);
-    }
-
-    &--hover-collapsed {
-      transition-duration: var(--app-bar-hover-leave-duration);
-    }
   }
 
   &__header {

@@ -1,5 +1,9 @@
+import type { Router } from "vue-router";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { IBladeStack, ParsedBladeUrl } from "@shared/components/blade-navigation/types";
+import { navigateToMainRoute } from "./navigateToMainRoute";
+import { notification } from "@shared/components/notifications";
+import { i18n } from "@core/plugins";
 
 /**
  * Restore the blade stack from a parsed URL.
@@ -15,30 +19,48 @@ import type { IBladeStack, ParsedBladeUrl } from "@shared/components/blade-navig
  * @param bladeStack - The BladeStack to populate
  * @param bladeRegistry - Registry for resolving URLs → blade names
  * @param parsed - Parsed URL segments
+ * @param hasAccess - Optional permission check function
+ * @param router - Optional router for redirecting on access denial
  * @returns `true` if the URL needs cleanup (non-routable blade was skipped)
  */
 export async function restoreFromUrl(
   bladeStack: IBladeStack,
   bladeRegistry: IBladeRegistry,
   parsed: ParsedBladeUrl,
+  hasAccess?: (permissions: string | string[] | undefined) => boolean,
+  router?: Router,
 ): Promise<boolean> {
   // Skip if no workspace URL to restore
   if (!parsed.workspaceUrl) return false;
 
   // Find workspace blade by URL segment
   const workspaceMatch = bladeRegistry.getBladeByRoute(parsed.workspaceUrl);
+
+  // Guard 1: blade not found
   if (!workspaceMatch) {
     console.warn(
       `[restoreFromUrl] No workspace blade found for URL segment '${parsed.workspaceUrl}'`,
     );
+    if (router) navigateToMainRoute(router);
     return false;
   }
 
-  // Check if workspace is actually marked as workspace
+  // Guard 2: not a workspace
   if (!workspaceMatch.data.isWorkspace) {
     console.warn(
       `[restoreFromUrl] Blade '${workspaceMatch.name}' matched URL '${parsed.workspaceUrl}' but is not a workspace`,
     );
+    if (router) navigateToMainRoute(router);
+    return false;
+  }
+
+  // Guard 3: permissions
+  // Note: openWorkspace() also checks permissions as a safety net (defense-in-depth),
+  // but we check here first to redirect and show toast before the workspace is opened.
+  if (hasAccess && workspaceMatch.data.permissions && !hasAccess(workspaceMatch.data.permissions)) {
+    console.warn(`[restoreFromUrl] Access denied to workspace '${workspaceMatch.name}'`);
+    notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), { timeout: 3000 });
+    if (router) navigateToMainRoute(router);
     return false;
   }
 

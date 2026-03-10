@@ -33,6 +33,7 @@ export default getLibraryConfiguration({
     vue(),
     checker({
       vueTsc: true,
+      enableBuild: false,
     }),
     libAssetsPlugin(),
   ],
@@ -41,11 +42,17 @@ export default getLibraryConfiguration({
     cssCodeSplit: true,
     sourcemap: mode === "development",
     lib: {
-      entry: path.resolve(frameworkRoot, "index.ts"),
+      entry: {
+        framework: path.resolve(frameworkRoot, "index.ts"),
+      },
       formats: ["es"],
     },
     rollupOptions: {
       external: ["vue", "vue-router", "vee-validate", "@vc-shell/config-generator"],
+      output: {
+        entryFileNames: "[name].js",
+        chunkFileNames: "[name]-[hash].js",
+      },
       onwarn(warning, defaultHandler) {
         // Ignore all warnings with strings /*#__PURE__*/
         if (

@@ -118,15 +118,39 @@ watch(
 
 <style lang="scss">
 :root {
+  // Border & shape
   --accordion-item-border-color: var(--neutrals-200);
+  --accordion-item-border-radius: 6px;
+
+  // Header
+  --accordion-item-header-padding: 12px 16px;
   --accordion-item-header-background: var(--additional-50);
   --accordion-item-header-background-hover: var(--neutrals-50);
   --accordion-item-header-color: var(--secondary-950);
+  --accordion-item-header-font-size: 14px;
+  --accordion-item-header-font-weight: 500;
+  --accordion-item-header-line-height: 20px;
+  --accordion-item-header-text-transform: none;
+  --accordion-item-header-gap: 0;
+
+  // Icon
+  --accordion-item-icon-margin-left: 12px;
+  --accordion-item-icon-size: 20px;
+
+  // Content
+  --accordion-item-content-padding: 16px;
   --accordion-item-content-background: var(--additional-50);
   --accordion-item-content-color: var(--secondary-950);
+  --accordion-item-content-font-size: 14px;
+  --accordion-item-content-line-height: 20px;
+
+  // Animation
   --accordion-item-transition-duration: 300ms;
-  --accordion-item-border-radius: 6px;
+
+  // Fade overlay
   --accordion-item-fade-height: 60px;
+
+  // Focus
   --accordion-item-focus-ring-color: var(--primary-100);
 }
 
@@ -139,9 +163,14 @@ watch(
   &__header {
     @apply tw-flex tw-items-center tw-justify-between tw-w-full;
     @apply tw-border-none tw-outline-none tw-select-none tw-text-left;
-    padding: 12px 16px;
+    padding: var(--accordion-item-header-padding);
+    gap: var(--accordion-item-header-gap);
     background: var(--accordion-item-header-background);
     color: var(--accordion-item-header-color);
+    font-size: var(--accordion-item-header-font-size);
+    font-weight: var(--accordion-item-header-font-weight);
+    line-height: var(--accordion-item-header-line-height);
+    text-transform: var(--accordion-item-header-text-transform);
     transition: background-color var(--accordion-item-transition-duration) ease;
     border-radius: inherit;
 
@@ -164,13 +193,13 @@ watch(
 
   &__title {
     flex: 1;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 20px;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
   }
 
   &__icon {
-    margin-left: 12px;
+    margin-left: var(--accordion-item-icon-margin-left);
     transition: transform var(--accordion-item-transition-duration) ease;
     flex-shrink: 0;
 
@@ -204,9 +233,9 @@ watch(
   &__content {
     background: var(--accordion-item-content-background);
     color: var(--accordion-item-content-color);
-    padding: 16px;
-    font-size: 14px;
-    line-height: 20px;
+    padding: var(--accordion-item-content-padding);
+    font-size: var(--accordion-item-content-font-size);
+    line-height: var(--accordion-item-content-line-height);
   }
 
   &--disabled {

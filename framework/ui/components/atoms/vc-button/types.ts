@@ -16,6 +16,7 @@ export type ButtonSize =
   | "default"
   | "lg"
   | "icon"
+  | "icon-sm"
   // Legacy aliases (backward compat)
   | "xs"
   | "base";

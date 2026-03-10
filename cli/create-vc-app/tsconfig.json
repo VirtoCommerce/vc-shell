@@ -9,6 +9,6 @@
       "@create-vc-app/package.json": ["./package.json"]
     }
   },
-  "include": ["src/index.ts"],
+  "include": ["src/index.ts", "src/engine", "src/types.ts", "src/output.ts", "src/init.ts", "src/commands"],
   "exclude": ["node_modules", "dist", "./src/templates"]
 }

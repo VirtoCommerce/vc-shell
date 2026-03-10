@@ -1,212 +1,79 @@
-import { defineConfig, UserConfig } from "vite";
-import { resolve, join } from "node:path";
-import { cwd } from "node:process";
-import fs from "node:fs";
-import { createHash } from "node:crypto";
 import vue from "@vitejs/plugin-vue";
-
-// Default external dependencies
-const DEFAULT_EXTERNALS: (string | RegExp)[] = [
-  "vue",
-  "vue-router",
-  "vee-validate",
-  "vue-i18n",
-  "lodash-es",
-  "@vueuse/core",
-  /^@vc-shell\/framework(\/|$)/,
-];
-
-function sanitizeFileToken(value: string): string {
-  const safeValue = value.replace(/[^a-zA-Z0-9._-]/g, "_");
-  return safeValue || "unknown";
-}
+import { federation } from "@module-federation/vite";
+import type { Plugin, UserConfig } from "vite";
+import { REMOTE_SHARED } from "./shared-deps";
+import type { DynamicModuleOptions } from "@vite-config/types";
+import { cwd } from "node:process";
+import { resolve } from "node:path";
+import { realpathSync } from "node:fs";
 
 /**
- * Creates a Vite configuration for building dynamic modules
+ * Strips CSS/style from ALL files outside the module's own source directory.
+ * Remote MF modules should not emit CSS from shared deps (framework, vue, etc.)
+ * because the host app already provides all base styles, component CSS, and fonts.
+ *
+ * Works regardless of how deps are resolved (node_modules, portal:, link:, etc.)
  */
-export default function dynamicModuleConfiguration(
-  pkg: { name: string; version: string; dependencies?: Record<string, string> },
-  options: UserConfig & {
-    entry?: string;
-    outDir?: string;
-    moduleName?: string;
-    compatibility: {
-      framework: string;
-      modules?: Record<string, string>;
-    };
-    externals?: string[];
-  },
-) {
-  const { name, version, dependencies = {} } = pkg;
+function stripExternalStyles(): Plugin {
+  let normalizedRoot: string;
 
-  // Validate required compatibility settings
-  if (!options.compatibility || !options.compatibility.framework) {
-    throw new Error("Required compatibility options are missing. You must specify compatibility.framework value.");
-  }
-
-  // Extract customization options with defaults
-  const {
-    entry = "./index.ts",
-    outDir = "dist/packages/modules",
-    moduleName = "VcShellDynamicModules",
-    compatibility,
-    externals = [],
-  } = options;
-
-  // Generate unique UMD name based on package name to avoid conflicts
-  const uniqueModuleName = `VcShellModule_${name.replace(/[^a-zA-Z0-9]/g, "_")}`;
-
-  // Merge default externals with custom ones
-  const allExternals = [...DEFAULT_EXTERNALS, ...externals, /node_modules/];
-  return defineConfig({
-    build: {
-      manifest: "manifest.json",
-      copyPublicDir: false,
-      sourcemap: true,
-      minify: false,
-      lib: {
-        entry: resolve(cwd(), entry),
-        fileName: (_, name) => `${name}.js`,
-        formats: ["umd"],
-        name: uniqueModuleName,
-      },
-      outDir: join(cwd(), outDir),
-      rollupOptions: {
-        output: {
-          // Hash-based names prevent stale assets even when semantic version is unchanged.
-          entryFileNames: "[name]-[hash].js",
-          chunkFileNames: "[name]-[hash].js",
-          assetFileNames: "[name]-[hash].[ext]",
-          globals: {
-            vue: "Vue",
-            "vue-router": "VueRouter",
-            "vee-validate": "VeeValidate",
-            "vue-i18n": "VueI18n",
-            "lodash-es": "_",
-            "@vueuse/core": "VueUse",
-            "@vc-shell/framework": "VcShellFramework",
-          },
-          // Add version information to generated code
-          banner: () => {
-            const versionInfo = {
-              version,
-              compatibleWith: {
-                framework: compatibility.framework,
-                modules: compatibility.modules || {},
-              },
-            };
-
-            return `
-              /* Module Version Info */
-              (function() {
-                if (typeof window !== 'undefined') {
-                  window.__VC_SHELL_MODULE_VERSION_INFO__ = window.__VC_SHELL_MODULE_VERSION_INFO__ || {};
-                  window.__VC_SHELL_MODULE_VERSION_INFO__["${name}"] = ${JSON.stringify(versionInfo)};
-                }
-              })();
-            `;
-          },
-          // Add footer to properly register module in global scope
-          footer: () => {
-            return `
-              /* Module Registration */
-              (function() {
-                if (typeof window !== 'undefined' && typeof ${uniqueModuleName} !== 'undefined') {
-                  // Ensure global object exists
-                  if (!window.VcShellDynamicModules) {
-                    window.VcShellDynamicModules = {};
-                  }
-
-                  // Register module with unique name to avoid conflicts
-                  window.VcShellDynamicModules["${name}"] = ${uniqueModuleName};
-                  console.log('Registered module: ${name}');
-
-                  // Dispatch custom event to notify that module is registered
-                  if (typeof CustomEvent !== 'undefined') {
-                    window.dispatchEvent(new CustomEvent('vc-shell-module-registered', {
-                      detail: { moduleName: '${name}', moduleObject: ${uniqueModuleName} }
-                    }));
-                  }
-
-                  // For debugging: log the current state
-                  console.log('Current VcShellDynamicModules:', Object.keys(window.VcShellDynamicModules));
-                }
-              })();
-            `;
-          },
-        },
-        external: allExternals,
-      },
+  return {
+    name: "strip-external-styles",
+    enforce: "pre",
+    buildStart() {
+      // Resolve symlinks once at build start, not at import time.
+      // This handles yarn link, portal:, and other symlink scenarios.
+      try {
+        normalizedRoot = realpathSync(resolve(cwd()));
+      } catch {
+        normalizedRoot = resolve(cwd());
+      }
     },
+    transform(code, id) {
+      // Normalize the incoming id as well to handle symlinked deps
+      let normalizedId: string;
+      try {
+        // Strip query params (e.g. ?type=style) before resolving
+        const idPath = id.split("?")[0];
+        normalizedId = realpathSync(idPath);
+      } catch {
+        normalizedId = id;
+      }
+
+      if (/type=style/.test(id) && !normalizedId.startsWith(normalizedRoot)) {
+        return { code: "", map: null };
+      }
+      if (/\.(css|scss|sass|less|styl)$/.test(id) && !normalizedId.startsWith(normalizedRoot)) {
+        return { code: "", map: null };
+      }
+      return null;
+    },
+  };
+}
+
+export default function dynamicModuleConfiguration(
+  pkg: { name: string; version: string },
+  options: DynamicModuleOptions,
+): UserConfig {
+  const entry = options.entry ?? "./src/modules/index.ts";
+
+  return {
     plugins: [
+      stripExternalStyles(),
       vue(),
-      {
-        name: "module-version-plugin",
-        apply: "build",
-        enforce: "post",
-
-        // Modify manifest.json after it is created
-        closeBundle: async () => {
-          const manifestPath = join(cwd(), outDir, "manifest.json");
-
-          if (fs.existsSync(manifestPath)) {
-            try {
-              // Read generated manifest
-              const manifestContent = await fs.promises.readFile(manifestPath, "utf-8");
-              const manifest = JSON.parse(manifestContent);
-              const manifestHash = sanitizeFileToken(createHash("sha256").update(manifestContent).digest("hex").slice(0, 12));
-              const hashedManifestFileName = `manifest.${manifestHash}.json`;
-              const hashedManifestPath = join(cwd(), outDir, hashedManifestFileName);
-
-              // Add file with metadata about version
-              const versionFileName = `version.${manifestHash}.json`;
-              const versionFilePath = join(cwd(), outDir, versionFileName);
-
-              // Create information about version
-              const versionInfo = {
-                version,
-                compatibleWith: {
-                  framework: compatibility.framework,
-                  modules: compatibility.modules || {},
-                },
-              };
-
-              // Write file with version
-              await fs.promises.writeFile(versionFilePath, JSON.stringify(versionInfo, null, 2));
-
-              // Remove stale version metadata records from previous builds.
-              for (const key of Object.keys(manifest)) {
-                if (manifest[key]?.isVersionInfo) {
-                  delete manifest[key];
-                }
-              }
-
-              // Add information about version file to manifest
-              manifest[versionFileName] = {
-                file: versionFileName,
-                src: versionFileName,
-                isVersionInfo: true, // Add special marker
-              };
-
-              const serializedManifest = JSON.stringify(manifest, null, 2);
-
-              // Write updated default manifest for backward compatibility
-              await fs.promises.writeFile(manifestPath, serializedManifest);
-
-              // Write hash-based manifest for deployments that expose build hash in apps.json.
-              await fs.promises.writeFile(hashedManifestPath, serializedManifest);
-
-              console.log(
-                `✓ Version information added to manifests: ${manifestPath}, ${hashedManifestFileName}`,
-              );
-            } catch (error) {
-              console.error("Error updating manifest with version info:", error);
-            }
-          } else {
-            console.warn(`Manifest file not found at ${manifestPath}`);
-          }
+      federation({
+        name: pkg.name,
+        filename: "remoteEntry.js",
+        exposes: options.exposes ?? {
+          "./module": entry,
         },
-      },
+        shared: { ...REMOTE_SHARED },
+        dts: false,
+      }),
     ],
-  });
+    build: {
+      target: "esnext",
+      outDir: "dist",
+    },
+  };
 }

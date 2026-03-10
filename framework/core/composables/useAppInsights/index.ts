@@ -6,7 +6,7 @@ import { ApplicationInsights, Snippet } from "@microsoft/applicationinsights-web
 
 export const AppInsightsOptionsKey: InjectionKey<AppInsightsPluginOptions> = Symbol("AppInsightsOptions");
 
-export interface IUseAppInsights {
+export interface UseAppInsightsReturn {
   setupPageTracking: {
     beforeEach: (route: { name: string }) => void;
     afterEach: (route: { name: string; fullPath: string }) => void;
@@ -14,7 +14,10 @@ export interface IUseAppInsights {
   appInsights: ApplicationInsights;
 }
 
-export function useAppInsights(): IUseAppInsights {
+/** @deprecated Use UseAppInsightsReturn instead */
+export type IUseAppInsights = UseAppInsightsReturn;
+
+export function useAppInsights(): UseAppInsightsReturn {
   const appInsights = useInsights();
   const { user } = useUserManagement();
   const appInsightsOptions = inject(AppInsightsOptionsKey, undefined);

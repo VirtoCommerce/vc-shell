@@ -78,9 +78,8 @@
     </Transition>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, type VNode } from "vue";
 import { VcHint } from "@ui/components/atoms/vc-hint";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { useFormField } from "@ui/composables/useFormField";
@@ -101,8 +100,8 @@ export interface Emits {
 }
 
 defineSlots<{
-  error: (props: any) => any;
-  hint: (props: any) => any;
+  error: (props: Record<string, never>) => VNode[];
+  hint: (props: Record<string, never>) => VNode[];
 }>();
 
 const props = withDefaults(defineProps<Props>(), {

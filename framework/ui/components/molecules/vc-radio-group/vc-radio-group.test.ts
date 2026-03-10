@@ -48,4 +48,38 @@ describe("VcRadioGroup", () => {
     expect(radios[1].attributes("name")).toBe("shipping-speed");
     expect(radios[0].attributes("aria-describedby")).toContain(describedBy);
   });
+
+  describe("v-model contract", () => {
+    it("checks the radio matching modelValue", () => {
+      const wrapper = mount(VcRadioGroup as any, {
+        props: {
+          modelValue: "a",
+          name: "test-group",
+          options: [
+            { label: "A", value: "a" },
+            { label: "B", value: "b" },
+          ],
+        },
+      });
+      const radios = wrapper.findAll('input[type="radio"]');
+      expect((radios[0].element as HTMLInputElement).checked).toBe(true);
+      expect((radios[1].element as HTMLInputElement).checked).toBe(false);
+    });
+
+    it("emits update:modelValue with the selected value on radio change", async () => {
+      const wrapper = mount(VcRadioGroup as any, {
+        props: {
+          modelValue: "a",
+          name: "test-group",
+          options: [
+            { label: "A", value: "a" },
+            { label: "B", value: "b" },
+          ],
+        },
+      });
+      const radios = wrapper.findAll('input[type="radio"]');
+      await radios[1].setValue(true);
+      expect(wrapper.emitted("update:modelValue")?.[0]).toEqual(["b"]);
+    });
+  });
 });

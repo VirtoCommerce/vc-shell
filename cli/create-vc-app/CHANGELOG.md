@@ -1,3 +1,28 @@
+# [2.0.0-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.0) (2026-03-10)
+
+### Features
+
+- **create-vc-app:** add v2 templates for all project types ([60f38b7](https://github.com/VirtoCommerce/vc-shell/commit/60f38b7b6228846929730a79b01ecc61ba201144))
+- **create-vc-app:** add v2 foundation — types, helpers, template engine, codegen, commands ([5c52c34](https://github.com/VirtoCommerce/vc-shell/commit/5c52c349655f19872adbd0c7e5deee6c9e49a5c5))
+
+### Bug Fixes
+
+- **create-vc-app:** add missing alias to Dashboard route in standalone template ([90d31a4](https://github.com/VirtoCommerce/vc-shell/commit/90d31a40a2c4ba8fcc0a426ea132eb2e03c26e3a))
+
+### Code Refactoring
+
+- **create-vc-app:** remove legacy v1 templates and update entry point ([8204599](https://github.com/VirtoCommerce/vc-shell/commit/820459901f57aa80da4d7f0e00f5931f79f05c58))
+
+
+### Bug Fixes
+
+- **create-vc-app:** add missing alias to Dashboard route in standalone template ([90d31a4](https://github.com/VirtoCommerce/vc-shell/commit/90d31a40a2c4ba8fcc0a426ea132eb2e03c26e3a))
+
+### Features
+
+- **create-vc-app:** add v2 foundation — types, helpers, template engine, codegen, commands ([5c52c34](https://github.com/VirtoCommerce/vc-shell/commit/5c52c349655f19872adbd0c7e5deee6c9e49a5c5))
+- **create-vc-app:** add v2 templates for all project types ([60f38b7](https://github.com/VirtoCommerce/vc-shell/commit/60f38b7b6228846929730a79b01ecc61ba201144))
+
 ## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app

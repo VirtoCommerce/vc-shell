@@ -13,7 +13,7 @@
       :modules="modules"
       :space-between="spaceBetweenSlides"
       :navigation="navigation ? buttonsList : false"
-      :slides-per-view="slidesPerView as any"
+      :slides-per-view="(slidesPerView as number | 'auto' | undefined)"
       :observer="true"
       :observe-parents="true"
     >

@@ -14,11 +14,9 @@
         :key="column.id"
         class="vc-column-switcher-panel__item"
       >
-        <input
-          type="checkbox"
-          :checked="isColumnVisible(column.id)"
-          class="vc-column-switcher-panel__checkbox"
-          @change="toggleColumn(column.id)"
+        <VcCheckbox
+          :model-value="isColumnVisible(column.id)"
+          @update:model-value="toggleColumn(column.id)"
         />
         <span class="vc-column-switcher-panel__label">
           {{ column.label || column.id }}
@@ -55,6 +53,7 @@
  */
 import { VcDropdownPanel } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
+import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
 
 interface Column {
   id: string;
@@ -135,11 +134,6 @@ const handleReset = () => {
     &:hover {
       @apply tw-bg-neutrals-50;
     }
-  }
-
-  &__checkbox {
-    @apply tw-cursor-pointer;
-    accent-color: var(--primary-500);
   }
 
   &__label {

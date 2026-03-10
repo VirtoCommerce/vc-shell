@@ -4,14 +4,12 @@
     ref="toastRef"
     class="vc-notification"
     :class="[`vc-notification--${type || 'default'}`]"
-    :style="{ ...stackingStyle, ...swipeStyle }"
     :data-mounted="mounted"
     :data-removed="removed"
-    :data-position="position || 'top-center'"
+    :data-y-position="yPosition"
     :data-front="isFront"
     :data-expanded="expanded ?? true"
-    :data-stacked="isStacked"
-    :data-hidden="isHidden"
+    :data-visible="isVisible"
     :data-swiping="isSwiping"
     :data-swiped-out="swipedOut"
     :role="type === 'error' ? 'alert' : 'status'"
@@ -70,12 +68,16 @@ export interface Props {
   limit?: number;
   position?: NotificationPosition;
   dismissing?: boolean;
-  /** Index of this toast in the position stack (0 = oldest) */
+  /** Sonner-style index: 0 = front (newest), higher = older */
   toastIndex?: number;
   /** Total number of toasts in the position stack */
   toastsCount?: number;
   /** Whether the toast group is expanded (hovered or single toast) */
   expanded?: boolean;
+  /** Max visible toasts in collapsed stack */
+  visibleToasts?: number;
+  /** Callback to report measured height to container */
+  onReportHeight?: (id: string | number, height: number) => void;
 }
 
 const emit = defineEmits<{
@@ -97,40 +99,20 @@ const toastRef = ref<HTMLElement | null>(null);
 const mounted = ref(false);
 const removed = ref(false);
 
-// Stacking: is this the front (newest) toast?
-const isFront = computed(
-  () => props.toastIndex === undefined || props.toastsCount === undefined || props.toastIndex === props.toastsCount - 1,
-);
+// Sonner: remove from DOM while CSS exit transition is still running
+const TIME_BEFORE_UNMOUNT = 200;
 
-// How many toasts are in front of this one (used for scale/opacity calculation)
-const behindCount = computed(() => {
-  if (props.toastIndex === undefined || props.toastsCount === undefined) return 0;
-  return props.toastsCount - 1 - props.toastIndex;
+// Position
+const yPosition = computed(() => {
+  const pos = props.position || "top-center";
+  return pos.startsWith("top") ? "top" : "bottom";
 });
 
-// Whether this toast should show in stacked (collapsed) mode
-const isStacked = computed(() => !isFront.value && !props.expanded);
+// Stacking (sonner-style: index 0 = front)
+const isFront = computed(() => (props.toastIndex ?? 0) === 0);
+const isVisible = computed(() => (props.toastIndex ?? 0) < (props.visibleToasts ?? 3));
 
-// Toasts deeper than 2 behind are invisible (limits visual clutter)
-const isHidden = computed(() => behindCount.value > 2 && !props.expanded);
-
-// CSS variables for stacking depth + z-index ordering
-const stackingStyle = computed(() => {
-  const styles: Record<string, string | number> = {};
-
-  // z-index: front toast gets highest value
-  if (props.toastsCount !== undefined && props.toastIndex !== undefined && props.toastsCount > 1) {
-    styles["z-index"] = props.toastsCount - behindCount.value;
-  }
-
-  if (isStacked.value) {
-    styles["--toast-behind-count"] = behindCount.value;
-  }
-
-  return styles;
-});
-
-// Timer type for improved type safety
+// Timer
 interface NotificationTimer {
   pause: () => void;
   resume: () => void;
@@ -140,86 +122,23 @@ interface NotificationTimer {
 
 const timer = ref<NotificationTimer | null>(null);
 
-// Transition duration must match CSS --notification-transition-duration
-const TRANSITION_DURATION = 400;
-
-/**
- * Two-phase Sonner-style exit:
- *  Phase 1 — CSS-driven opacity + transform slide (400ms)
- *  Phase 2 — JS-driven height collapse so remaining toasts reposition smoothly
- *
- * Phases are sequential because translateY(-100%) conflicts with height: 0
- * (percentage is relative to element height — collapsing height makes the
- * slide distance shrink to 0).
- */
-function exitAndEmit(el: HTMLElement) {
-  // Phase 1: wait for the CSS opacity transition to finish
-  let phase1Done = false;
-
-  const startPhase2 = () => {
-    if (phase1Done) return;
-    phase1Done = true;
-    el.removeEventListener("transitionend", onPhase1End);
-
-    // Phase 2: collapse height for smooth remaining-toast repositioning
-    const currentHeight = el.offsetHeight;
-    // Switch to a short collapse-only transition
-    el.style.transition = "height 200ms ease, padding 200ms ease, margin 200ms ease";
-    el.style.height = `${currentHeight}px`;
-    void el.offsetHeight; // eslint-disable-line no-unused-expressions -- force reflow
-
-    el.style.height = "0";
-    el.style.minHeight = "0";
-    el.style.paddingTop = "0";
-    el.style.paddingBottom = "0";
-    el.style.marginTop = "0";
-    el.style.marginBottom = "0";
-
-    let phase2Done = false;
-    const finish = () => {
-      if (phase2Done) return;
-      phase2Done = true;
-      el.removeEventListener("transitionend", onPhase2End);
-      emit("close", props.notificationId);
-    };
-    const onPhase2End = (e: TransitionEvent) => {
-      if (e.target === el && e.propertyName === "height") finish();
-    };
-    el.addEventListener("transitionend", onPhase2End);
-    setTimeout(finish, 250); // fallback
-  };
-
-  const onPhase1End = (e: TransitionEvent) => {
-    // Wait specifically for opacity to finish (400ms) — ignore box-shadow (200ms)
-    if (e.target === el && e.propertyName === "opacity") {
-      startPhase2();
-    }
-  };
-  el.addEventListener("transitionend", onPhase1End);
-  // Fallback if transitionend doesn't fire (e.g. reduced motion, detached element)
-  setTimeout(startPhase2, TRANSITION_DURATION + 50);
-}
-
 function handleClose() {
-  if (removed.value) return; // prevent double-close
+  if (removed.value) return;
   removed.value = true;
   timer.value?.clear();
 
-  const el = toastRef.value;
-  if (el) {
-    exitAndEmit(el);
-  } else {
+  // Pure CSS exit — data-removed="true" triggers CSS transition.
+  // After TIME_BEFORE_UNMOUNT, emit close to remove from reactive list.
+  setTimeout(() => {
     emit("close", props.notificationId);
-  }
+  }, TIME_BEFORE_UNMOUNT);
 }
 
-// Watch for programmatic dismissal via the `dismissing` flag
+// Watch for programmatic dismissal
 watch(
   () => props.dismissing,
   (val) => {
-    if (val) {
-      handleClose();
-    }
+    if (val) handleClose();
   },
 );
 
@@ -227,46 +146,38 @@ watch(
   timeout as Ref<number | boolean>,
   (newVal) => {
     if (newVal) {
-      timer.value = Timer(() => {
-        handleClose();
-      }, props.timeout as number);
-
+      timer.value = Timer(() => handleClose(), props.timeout as number);
       timer.value.start();
     }
   },
   { immediate: true },
 );
 
-// Report front toast height to parent (toast group) for stacking constraint
+// Report height to container
 const resizeObserver = ref<ResizeObserver | null>(null);
 
-function updateFrontHeight() {
-  if (isFront.value && toastRef.value && !removed.value) {
-    const parent = toastRef.value.parentElement;
-    if (parent) {
-      parent.style.setProperty("--front-toast-height", `${toastRef.value.offsetHeight}px`);
-    }
+function reportHeight() {
+  if (toastRef.value && props.notificationId !== undefined && !removed.value) {
+    const el = toastRef.value;
+    const originalHeight = el.style.height;
+    el.style.height = "auto";
+    const height = el.getBoundingClientRect().height;
+    el.style.height = originalHeight;
+    props.onReportHeight?.(props.notificationId, height);
   }
 }
 
-watch(isFront, (val) => {
-  if (val) updateFrontHeight();
-});
-
 onMounted(() => {
-  // Double-rAF ensures the browser has painted the initial (unmounted) state
-  // before we flip to mounted, triggering the CSS transition
+  // Double-rAF ensures browser paints initial (unmounted) state before transition
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       mounted.value = true;
-      // Measure after mount for accurate height
-      updateFrontHeight();
+      reportHeight();
     });
   });
 
-  // Track height changes (e.g. content resize) for front toast
   if (toastRef.value) {
-    resizeObserver.value = new ResizeObserver(() => updateFrontHeight());
+    resizeObserver.value = new ResizeObserver(() => reportHeight());
     resizeObserver.value.observe(toastRef.value);
   }
 });
@@ -296,12 +207,7 @@ function Timer(callback: (...args: unknown[]) => unknown, delay: number): Notifi
     window.clearTimeout(timerId);
   }
 
-  return {
-    pause,
-    resume,
-    start,
-    clear,
-  };
+  return { pause, resume, start, clear };
 }
 
 onBeforeUnmount(() => {
@@ -322,31 +228,21 @@ function onMouseLeave() {
 }
 
 // --- Swipe-to-dismiss ---
-const SWIPE_THRESHOLD = 150; // px to trigger dismiss
-const SWIPE_START_THRESHOLD = 10; // px to determine swipe vs click
+const SWIPE_THRESHOLD = 45;
 
 const swipeStartX = ref(0);
 const swipeStartY = ref(0);
-const swipeAmountX = ref(0);
 const isSwiping = ref(false);
 const swipedOut = ref(false);
-
-const swipeStyle = computed(() => {
-  if (swipeAmountX.value === 0 && !swipedOut.value) return {};
-  const opacity = swipedOut.value ? 0 : Math.max(0, 1 - (Math.abs(swipeAmountX.value) / SWIPE_THRESHOLD) * 0.5);
-  return {
-    transform: `translateX(${swipeAmountX.value}px)`,
-    opacity: String(opacity),
-  };
-});
+const dragStartTime = ref(0);
 
 function onPointerDown(e: PointerEvent) {
   if (removed.value || swipedOut.value) return;
-  // Don't start swipe on dismiss button
   if ((e.target as HTMLElement)?.closest(".vc-notification__dismiss-button")) return;
 
   swipeStartX.value = e.clientX;
   swipeStartY.value = e.clientY;
+  dragStartTime.value = Date.now();
   isSwiping.value = false;
 
   const el = toastRef.value;
@@ -362,18 +258,11 @@ function onPointerMove(e: PointerEvent) {
   const deltaX = e.clientX - swipeStartX.value;
   const deltaY = e.clientY - swipeStartY.value;
 
-  // Determine if horizontal swipe (not vertical scroll)
   if (!isSwiping.value) {
-    if (Math.abs(deltaX) > SWIPE_START_THRESHOLD && Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (Math.abs(deltaX) > 1 && Math.abs(deltaX) > Math.abs(deltaY)) {
       isSwiping.value = true;
-      // Disable CSS transition for responsive tracking
-      if (toastRef.value) {
-        toastRef.value.style.transition = "none";
-      }
-      // Pause timer during swipe
       timer.value?.pause();
-    } else if (Math.abs(deltaY) > SWIPE_START_THRESHOLD) {
-      // Vertical scroll — abort swipe tracking
+    } else if (Math.abs(deltaY) > 1) {
       swipeStartX.value = 0;
       swipeStartY.value = 0;
       return;
@@ -382,7 +271,7 @@ function onPointerMove(e: PointerEvent) {
     }
   }
 
-  swipeAmountX.value = deltaX;
+  toastRef.value?.style.setProperty("--swipe-amount-x", `${deltaX}px`);
 }
 
 function onPointerUp(e: PointerEvent) {
@@ -391,31 +280,30 @@ function onPointerUp(e: PointerEvent) {
     if (el.hasPointerCapture(e.pointerId)) {
       el.releasePointerCapture(e.pointerId);
     }
-    // Restore CSS transitions
-    el.style.transition = "";
   }
 
   if (!isSwiping.value) {
-    swipeAmountX.value = 0;
+    toastRef.value?.style.setProperty("--swipe-amount-x", "0px");
     swipeStartX.value = 0;
     swipeStartY.value = 0;
     return;
   }
 
-  if (Math.abs(swipeAmountX.value) >= SWIPE_THRESHOLD) {
-    // Fling off-screen
-    removed.value = true; // prevent other close paths (timer, dismissing watcher)
+  const swipeAmountX = parseFloat(
+    toastRef.value?.style.getPropertyValue("--swipe-amount-x")?.replace("px", "") || "0",
+  );
+  const timeTaken = Date.now() - dragStartTime.value;
+  const velocity = Math.abs(swipeAmountX) / timeTaken;
+
+  if (Math.abs(swipeAmountX) >= SWIPE_THRESHOLD || velocity > 0.11) {
+    removed.value = true;
     timer.value?.clear();
     swipedOut.value = true;
-    const direction = swipeAmountX.value > 0 ? 1 : -1;
-    swipeAmountX.value = direction * window.innerWidth;
-
-    // Remove after swipe fling completes (200ms transition + buffer)
-    setTimeout(() => emit("close", props.notificationId), 250);
+    const direction = swipeAmountX > 0 ? 1 : -1;
+    toastRef.value?.style.setProperty("--swipe-amount-x", `${direction * window.innerWidth}px`);
+    setTimeout(() => emit("close", props.notificationId), TIME_BEFORE_UNMOUNT);
   } else {
-    // Spring back
-    swipeAmountX.value = 0;
-    // Resume timer if not dismissed
+    toastRef.value?.style.setProperty("--swipe-amount-x", "0px");
     timer.value?.resume();
   }
 
@@ -445,10 +333,6 @@ function onPointerUp(e: PointerEvent) {
   --notification-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   --notification-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 
-  /* Transition timing (Sonner-style) */
-  --notification-transition-duration: 400ms;
-  --notification-transition-timing: cubic-bezier(0.21, 1.02, 0.73, 1);
-
   /* Focus */
   --notification-focus-ring-color: var(--primary-100);
 
@@ -457,76 +341,100 @@ function onPointerUp(e: PointerEvent) {
 }
 
 .vc-notification {
-  @apply tw-flex tw-items-center tw-box-border tw-relative;
+  @apply tw-flex tw-items-center tw-box-border;
   @apply tw-border tw-border-solid tw-overflow-hidden tw-py-3 tw-px-4;
-  @apply tw-max-w-[600px] tw-justify-between;
+  @apply tw-justify-between;
+  width: var(--width, 356px);
+  max-width: 600px;
   background-color: var(--notification-background);
   border-color: var(--notification-border-color);
   border-radius: var(--notification-border-radius);
   box-shadow: var(--notification-shadow);
   border-left: var(--notification-accent-width) solid var(--notification-info);
+
+  /* Sonner: absolute positioning, transform via --y variable */
+  position: absolute;
+  z-index: var(--z-index);
+  opacity: 0;
+  transform: var(--y);
+  will-change: transform, opacity;
+  touch-action: none;
+  overflow-wrap: anywhere;
   pointer-events: all;
 
-  /* Sonner-style: start invisible, transitions driven by data attributes */
-  opacity: 0;
-  will-change: transform, opacity;
-  transition:
-    opacity var(--notification-transition-duration) var(--notification-transition-timing),
-    transform var(--notification-transition-duration) var(--notification-transition-timing),
-    height var(--notification-transition-duration) var(--notification-transition-timing),
-    padding var(--notification-transition-duration) var(--notification-transition-timing),
-    margin var(--notification-transition-duration) var(--notification-transition-timing),
-    border-width var(--notification-transition-duration) var(--notification-transition-timing),
-    box-shadow 200ms ease;
+  /* Compute lift-amount from inherited --lift and --gap */
+  --lift-amount: calc(var(--lift, 1) * var(--gap, 14px));
 
-  /* Initial off-screen positions (unmounted state) */
-  &[data-position="top-center"] {
-    transform: translateY(-100%);
-  }
-  &[data-position="top-right"] {
-    transform: translateX(calc(100% + 1em));
-  }
-  &[data-position="top-left"] {
-    transform: translateX(calc(-100% - 1em));
-  }
-  &[data-position="bottom-center"] {
-    transform: translateY(100%);
-  }
-  &[data-position="bottom-right"] {
-    transform: translateX(calc(100% + 1em));
-  }
-  &[data-position="bottom-left"] {
-    transform: translateX(calc(-100% - 1em));
+  /* Sonner transition: standard ease (NOT bouncy) */
+  transition: transform 400ms, opacity 400ms, box-shadow 200ms;
+
+  /* Position anchor + initial off-screen --y */
+  &[data-y-position="top"] {
+    top: 0;
+    --y: translateY(-100%);
+    --lift: 1;
   }
 
-  /* Mounted: slide into view */
+  &[data-y-position="bottom"] {
+    bottom: 0;
+    --y: translateY(100%);
+    --lift: -1;
+  }
+
+  /* Mounted: enter animation */
   &[data-mounted="true"] {
+    --y: translateY(0);
     opacity: 1;
-    transform: translateY(0) translateX(0);
   }
 
-  /* Removed: slide back out (overrides mounted) */
-  &[data-removed="true"] {
-    opacity: 0;
+  /* Collapsed stacking: back toasts */
+  &[data-expanded="false"][data-front="false"] {
+    --y: translateY(calc(var(--lift-amount) * var(--toasts-before)))
+         scale(calc(-1 * var(--toasts-before) * 0.05 + 1));
+    height: var(--front-toast-height);
+  }
 
-    &[data-position="top-center"] {
-      transform: translateY(-100%);
-    }
-    &[data-position="top-right"] {
-      transform: translateX(calc(100% + 1em));
-    }
-    &[data-position="top-left"] {
-      transform: translateX(calc(-100% - 1em));
-    }
-    &[data-position="bottom-center"] {
-      transform: translateY(100%);
-    }
-    &[data-position="bottom-right"] {
-      transform: translateX(calc(100% + 1em));
-    }
-    &[data-position="bottom-left"] {
-      transform: translateX(calc(-100% - 1em));
-    }
+  /* Hide content of collapsed back toasts */
+  &[data-expanded="false"][data-front="false"] > * {
+    opacity: 0;
+  }
+
+  /* Content opacity transition */
+  > * {
+    transition: opacity 400ms;
+  }
+
+  /* Expanded: each toast at computed offset */
+  &[data-mounted="true"][data-expanded="true"] {
+    --y: translateY(calc(var(--lift, 1) * var(--offset)));
+    height: var(--initial-height);
+  }
+
+  /* Not visible: beyond visible limit */
+  &[data-visible="false"] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* --- Exit animations (sonner-style, context-dependent) --- */
+
+  /* Front toast exit: slide away from viewport */
+  &[data-removed="true"][data-front="true"][data-swiped-out="false"] {
+    --y: translateY(calc(var(--lift, 1) * -100%));
+    opacity: 0;
+  }
+
+  /* Back toast exit (expanded): slide away from current offset */
+  &[data-removed="true"][data-front="false"][data-swiped-out="false"][data-expanded="true"] {
+    --y: translateY(calc(var(--lift, 1) * var(--offset) + var(--lift, 1) * -100%));
+    opacity: 0;
+  }
+
+  /* Back toast exit (collapsed): sink away */
+  &[data-removed="true"][data-front="false"][data-swiped-out="false"][data-expanded="false"] {
+    --y: translateY(40%);
+    opacity: 0;
+    transition: transform 500ms, opacity 200ms;
   }
 
   /* Hover effect */
@@ -581,69 +489,42 @@ function onPointerUp(e: PointerEvent) {
     }
   }
 
-  .vc-app--mobile {
-    @apply tw-max-w-[90%];
-  }
-
-  /* Stacking: Sonner deck-of-cards — back toasts are absolute, constrained height, peek offset */
-  &[data-stacked="true"][data-mounted="true"] {
+  /* Expanded hover gap pseudo — extends hit area between toasts */
+  &[data-expanded="true"]::after {
+    content: '';
     position: absolute;
     left: 0;
-    right: 0;
-    height: var(--front-toast-height, auto);
-    overflow: hidden;
-    opacity: calc(1 - var(--toast-behind-count, 0) * 0.12);
-    pointer-events: none;
-
-    /* Top positions: peek below front toast */
-    &[data-position^="top"] {
-      top: 0;
-      transform: translateY(calc(var(--toast-behind-count, 0) * 14px))
-                 scale(calc(1 - var(--toast-behind-count, 0) * 0.05));
-      transform-origin: top center;
-    }
-
-    /* Bottom positions: peek above front toast */
-    &[data-position^="bottom"] {
-      bottom: 0;
-      transform: translateY(calc(var(--toast-behind-count, 0) * -14px))
-                 scale(calc(1 - var(--toast-behind-count, 0) * 0.05));
-      transform-origin: bottom center;
-    }
-  }
-
-  /* Toasts deeper than 2 behind are invisible */
-  &[data-hidden="true"] {
-    opacity: 0 !important;
-    pointer-events: none;
-  }
-
-  /* Front/expanded: normal flow, full interactivity */
-  &[data-front="true"][data-mounted="true"],
-  &[data-stacked="false"][data-mounted="true"] {
-    pointer-events: all;
+    height: calc(var(--gap, 14px) + 1px);
+    bottom: 100%;
+    width: 100%;
   }
 
   /* Swipe-to-dismiss */
-  touch-action: pan-y; /* Allow vertical scroll, capture horizontal */
-  cursor: grab;
-
   &[data-swiping="true"] {
+    transform: var(--y) translateX(var(--swipe-amount-x, 0px));
+    transition: none;
     cursor: grabbing;
     user-select: none;
   }
 
   &[data-swiped-out="true"] {
-    transition: transform 200ms ease-out, opacity 200ms ease-out,
-      height var(--notification-transition-duration) var(--notification-transition-timing),
-      padding var(--notification-transition-duration) var(--notification-transition-timing),
-      margin var(--notification-transition-duration) var(--notification-transition-timing) !important;
     pointer-events: none;
   }
 
-  /* Reduced motion: instant transitions */
+  /* Swiping pseudo — extends hit area to prevent accidental mouse-leave */
+  &[data-swiping="true"]::before {
+    content: '';
+    position: absolute;
+    left: -100%;
+    right: -100%;
+    height: 100%;
+    z-index: -1;
+  }
+
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    transition-duration: 0.01ms !important;
+    transition: none !important;
+    animation: none !important;
   }
 }
 </style>

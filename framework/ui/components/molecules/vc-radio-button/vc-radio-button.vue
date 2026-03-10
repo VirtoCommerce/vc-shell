@@ -37,23 +37,22 @@
   </div>
 </template>
 
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { isEqual } from "lodash-es";
-import { computed } from "vue";
+import { computed, type VNode } from "vue";
 import { VcHint } from "@ui/components/atoms/vc-hint";
 import { useFormField } from "@ui/composables/useFormField";
 import type { IFormFieldProps } from "@ui/types";
 
-export interface Props extends IFormFieldProps {
+export interface VcRadioButtonProps extends IFormFieldProps {
   /**
    * Value of the radio button.
    */
-  value: any;
+  value: string | number | boolean;
   /**
    * Value binding of the radio button.
    */
-  modelValue: any;
+  modelValue: string | number | boolean;
   /**
    * Allows to select a boolean value.
    */
@@ -64,20 +63,20 @@ export interface Props extends IFormFieldProps {
   checked?: boolean;
 }
 
-export interface Emits {
+export interface VcRadioButtonEmits {
   /**
    * Emits when the radio button is changed.
    */
-  (event: "update:modelValue", value: any): void;
+  (event: "update:modelValue", value: string | number | boolean): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VcRadioButtonProps>(), {
   name: "RadioField",
 });
-const emit = defineEmits<Emits>();
+const emit = defineEmits<VcRadioButtonEmits>();
 
 defineSlots<{
-  error: (props: Record<string, never>) => any;
+  error: (props: Record<string, never>) => VNode[];
 }>();
 
 const { fieldId: radioId, errorId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =

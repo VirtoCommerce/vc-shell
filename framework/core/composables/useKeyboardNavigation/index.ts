@@ -1,6 +1,6 @@
 import { onMounted, onBeforeUnmount, ref } from "vue";
 
-interface UseKeyboardNavigationOptions {
+export interface UseKeyboardNavigationOptions {
   containerSelector?: string;
   itemSelector?: string;
   onEnter?: (element: HTMLElement) => void;
@@ -8,12 +8,23 @@ interface UseKeyboardNavigationOptions {
   loop?: boolean;
 }
 
+export interface UseKeyboardNavigationReturn {
+  initKeyboardNavigation: (el: HTMLElement) => void;
+  cleanupKeyboardNavigation: () => void;
+  focusNextElement: () => void;
+  focusPreviousElement: () => void;
+  focusFirstElement: () => void;
+  focusLastElement: () => void;
+  setFocusedIndex: (index: number) => void;
+  getFocusedIndex: () => number;
+}
+
 /**
  * Hook for implementing standard keyboard navigation inside components
  * @param options Options for configuring navigation
  * @returns Object with methods for managing focus
  */
-export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}) {
+export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}): UseKeyboardNavigationReturn {
   const {
     containerSelector = '[role="menu"]',
     itemSelector = '[tabindex="0"]',

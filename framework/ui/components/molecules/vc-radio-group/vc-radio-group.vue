@@ -29,48 +29,41 @@
   </VcInputGroup>
 </template>
 
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed, useId } from "vue";
 import { VcInputGroup } from "@ui/components/molecules/vc-input-group";
 import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
+import type { IFormFieldProps } from "@ui/types/form-field";
 
 export interface RadioGroupOption {
   label: string;
-  value: any;
+  value: string | number | boolean;
   disabled?: boolean;
 }
 
-export interface Props {
-  modelValue: any;
+export interface VcRadioGroupProps extends IFormFieldProps {
+  modelValue: string | number | boolean;
   options?: RadioGroupOption[];
-  label?: string;
-  tooltip?: string;
   hint?: string;
-  error?: boolean;
-  errorMessage?: string;
-  required?: boolean;
-  disabled?: boolean;
   orientation?: "vertical" | "horizontal";
-  name?: string;
 }
 
-export interface Emits {
-  (event: "update:modelValue", value: any): void;
+export interface VcRadioGroupEmits {
+  (event: "update:modelValue", value: string | number | boolean): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VcRadioGroupProps>(), {
   options: () => [],
   orientation: "vertical",
 });
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<VcRadioGroupEmits>();
 
 const uid = useId();
 const generatedName = computed(() => `vc-radio-group-${uid}`);
 const resolvedName = computed(() => props.name || generatedName.value);
 
-function onUpdate(value: any) {
+function onUpdate(value: string | number | boolean) {
   emit("update:modelValue", value);
 }
 

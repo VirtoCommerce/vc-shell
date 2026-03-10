@@ -1,6 +1,6 @@
 import type { RouteLocationNormalized, Router } from "vue-router";
-import * as VueRouter from "vue-router";
 import { App, Component } from "vue";
+import type { NotificationTemplateConstructor } from "@core/types";
 import * as components from "@ui/components";
 import * as directives from "@core/directives";
 import { useBreakpoints } from "@vueuse/core";
@@ -28,11 +28,6 @@ import * as coreApiPlatform from "@core/api/platform";
 import * as coreUtilities from "@core/utilities";
 import * as coreConstants from "@core/constants";
 import * as shared from "@shared";
-import * as Vue from "vue";
-import * as VueI18n from "vue-i18n";
-import * as VueUse from "@vueuse/core";
-import * as _ from "lodash-es";
-import * as VeeValidate from "vee-validate";
 import "normalize.css";
 import "./assets/styles/fonts.scss";
 import "./assets/styles/index.scss";
@@ -58,6 +53,7 @@ import {
   IsTabletKey,
   IsTouchKey,
   BladeRoutesKey,
+  DynamicModuleRegistryStateKey,
 } from "@framework/injection-keys";
 
 import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
@@ -110,26 +106,22 @@ export interface VcShellFrameworkPlugin {
   install(app: App, args: FrameworkInstallArgs): void;
 }
 
-// globals
-if (typeof window !== "undefined") {
-  window.VcShellFramework = {
-    ...window.VcShellFramework,
-    ...components,
-    ...coreComposables,
-    ...corePlugins,
-    ...coreApiPlatform,
-    ...coreUtilities,
-    ...coreConstants,
-    ...shared,
-    ...directives,
-  };
-  window.Vue = Vue;
-  window.VueRouter = VueRouter;
-  window.VueI18n = VueI18n;
-  window._ = _;
-  window.VueUse = VueUse;
-  window.VeeValidate = VeeValidate;
+
+// ── Dev-mode string key deprecation warnings ─────────────────────────
+
+const _warnedStringKeys = new Set<string>();
+
+function warnStringKey(key: string, replacement: string): void {
+  if (import.meta.env.DEV && !_warnedStringKeys.has(key)) {
+    _warnedStringKeys.add(key);
+    console.warn(
+      `[vc-shell] inject("${key}") is deprecated. Use ${replacement} from @vc-shell/framework instead.`,
+    );
+  }
 }
+
+/** @internal — exported for testing only */
+export { warnStringKey as _warnStringKey, _warnedStringKeys };
 
 // ── Install helpers ──────────────────────────────────────────────────
 
@@ -188,26 +180,33 @@ function setupBreakpoints(app: App) {
   app.provide(IsTouchKey, app.config.globalProperties.$isTouch);
 
   // String keys (backward compatibility for external apps/modules)
+  warnStringKey("isMobile", "IsMobileKey");
   app.provide("isMobile", app.config.globalProperties.$isMobile);
+  warnStringKey("isDesktop", "IsDesktopKey");
   app.provide("isDesktop", app.config.globalProperties.$isDesktop);
+  warnStringKey("isPhone", "IsPhoneKey");
   app.provide("isPhone", app.config.globalProperties.$isPhone);
+  warnStringKey("isTablet", "IsTabletKey");
   app.provide("isTablet", app.config.globalProperties.$isTablet);
+  warnStringKey("isTouch", "IsTouchKey");
   app.provide("isTouch", app.config.globalProperties.$isTouch);
 }
 
 function setupLegacyGlobals(app: App) {
   // Pages
   app.config.globalProperties.pages = [];
+  warnStringKey("pages", "a typed injection key");
   app.provide("pages", app.config.globalProperties.pages);
 
   // Blade routes
   app.config.globalProperties.bladeRoutes = [];
   app.provide(BladeRoutesKey, app.config.globalProperties.bladeRoutes);
+  warnStringKey("bladeRoutes", "BladeRoutesKey");
   app.provide("bladeRoutes", app.config.globalProperties.bladeRoutes);
 
-  // Notification templates
-  app.config.globalProperties.notificationTemplates = [];
-  app.provide(NotificationTemplatesKey, app.config.globalProperties.notificationTemplates);
+  // Notification templates — pure DI, no globalProperties (FR-3.5)
+  const notificationTemplates: NotificationTemplateConstructor[] = [];
+  app.provide(NotificationTemplatesKey, notificationTemplates);
 }
 
 function createAndProvideServices(app: App) {
@@ -219,6 +218,14 @@ function createAndProvideServices(app: App) {
 
   const bladeRegistryInstance: IBladeRegistryInstance = createBladeRegistry(app);
   app.provide(BladeRegistryKey, bladeRegistryInstance);
+
+  // Pre-provide per-app dynamic module registry — must be provided before any
+  // dynamic module's install() runs so inject() finds it (FR-3.2).
+  app.provide(DynamicModuleRegistryStateKey, {
+    registeredModules: {},
+    installedBladeIds: new Set<string>(),
+    registeredSchemas: {},
+  });
 }
 
 function installPlugins(app: App, args: FrameworkInstallArgs) {

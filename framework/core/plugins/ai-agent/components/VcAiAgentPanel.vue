@@ -29,13 +29,14 @@
 
 <script lang="ts" setup>
 import { computed, onUnmounted, inject } from "vue";
-import { AiAgentServiceKey } from "@framework/injection-keys";
+import { AiAgentServiceKey, EmbeddedModeKey } from "@framework/injection-keys";
 import type { IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
 import VcAiAgentHeader from "@core/plugins/ai-agent/components/_internal/VcAiAgentHeader.vue";
 import VcAiAgentIframe from "@core/plugins/ai-agent/components/_internal/VcAiAgentIframe.vue";
 
 // Inject AI agent service
 const aiAgentService = inject(AiAgentServiceKey) as IAiAgentServiceInternal | undefined;
+const isEmbedded = inject(EmbeddedModeKey, false);
 
 if (!aiAgentService) {
   console.error("[VcAiAgentPanel] AiAgentService not provided");
@@ -45,7 +46,7 @@ if (!aiAgentService) {
 const config = computed(
   () => aiAgentService?.config.value ?? { url: "", title: "AI Assistant", width: 362, expandedWidth: 500 },
 );
-const isOpen = computed(() => aiAgentService?.isOpen.value ?? false);
+const isOpen = computed(() => !isEmbedded && (aiAgentService?.isOpen.value ?? false));
 const isExpanded = computed(() => aiAgentService?.isExpanded.value ?? false);
 const totalItemsCount = computed(() => aiAgentService?.totalItemsCount.value ?? 0);
 

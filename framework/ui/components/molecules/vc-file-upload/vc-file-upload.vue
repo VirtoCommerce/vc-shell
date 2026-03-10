@@ -73,9 +73,8 @@
     </Transition>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { ref, unref, computed } from "vue";
+import { ref, unref, computed, type VNode } from "vue";
 import { useField } from "vee-validate";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcLink } from "@ui/components/atoms/vc-link";
@@ -109,7 +108,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 defineSlots<{
-  error: (props: any) => any;
+  error: (props: Record<string, never>) => VNode[];
 }>();
 
 const { t } = useI18n({ useScope: "global" });

@@ -8,6 +8,7 @@ import {
   DynamicModulesKey,
   ShellIndicatorsKey,
   InternalRoutesKey,
+  type DynamicModuleRegistry,
 } from "@framework/injection-keys";
 import { hasUnreadNotifications } from "@core/composables/useNotifications";
 import { NotificationDropdown } from "@shared/components/notification-dropdown";
@@ -24,7 +25,7 @@ import type { RegisterSettingsMenuItemOptions } from "@core/services/settings-me
 export interface ShellBootstrapOptions {
   isEmbedded: boolean;
   internalRoutes?: BladeRoutesRecord[];
-  dynamicModules?: typeof window.VcShellDynamicModules;
+  dynamicModules?: DynamicModuleRegistry;
   aiAgentConfig?: IAiAgentConfig;
   aiAgentAddGlobalToolbarButton?: boolean;
 }
@@ -52,6 +53,7 @@ export function useShellBootstrap(options: ShellBootstrapOptions) {
     provideAiAgentService({
       config: options.aiAgentConfig,
       addGlobalToolbarButton: options.aiAgentAddGlobalToolbarButton ?? true,
+      isEmbedded: options.isEmbedded,
     });
   }
 

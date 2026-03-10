@@ -20,6 +20,7 @@ import {
   IPreviewChangesPayload,
   IDownloadFilePayload,
   ISuggestion,
+  IAiChatMessagePayload,
 } from "@core/plugins/ai-agent/types";
 import { DEFAULT_AI_AGENT_CONFIG } from "@core/plugins/ai-agent/constants";
 
@@ -43,6 +44,8 @@ export interface CreateAiAgentServiceOptions {
   reloadBlade?: () => void;
   /** Initial configuration */
   initialConfig?: Partial<IAiAgentConfig>;
+  /** Whether the app is running in embedded mode (inside OneShell iframe) */
+  isEmbedded?: boolean;
 }
 
 /**
@@ -119,7 +122,7 @@ function downloadFile(payload: IDownloadFilePayload): void {
  * Creates an AI agent service for managing the AI panel state and communication.
  */
 export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiAgentServiceInternal {
-  const { userGetter, bladeGetter, localeGetter, tokenGetter, navigateToBlade, reloadBlade, initialConfig } = options;
+  const { userGetter, bladeGetter, localeGetter, tokenGetter, navigateToBlade, reloadBlade, initialConfig, isEmbedded } = options;
 
   // State
   const panelState = ref<AiAgentPanelState>("closed");
@@ -231,6 +234,11 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
       items: context.value.items,
     }),
     async () => {
+      if (isEmbedded) {
+        const payload = await buildInitContextPayload();
+        sendToParent({ type: "AI_CONTEXT_UPDATE", payload });
+        return;
+      }
       if (isOpen.value && isInitialized.value && iframeRef.value?.contentWindow) {
         const payload = await buildUpdateContextPayload();
         sendRawMessage({ type: "UPDATE_CONTEXT", payload });
@@ -276,6 +284,10 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
    * Open the AI panel
    */
   const openPanel = (): void => {
+    if (isEmbedded) {
+      sendToParent({ type: "AI_TOGGLE_PANEL" });
+      return;
+    }
     if (panelState.value === "closed") {
       panelState.value = "open";
       logger.debug("Panel opened");
@@ -286,6 +298,10 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
    * Close the AI panel
    */
   const closePanel = (): void => {
+    if (isEmbedded) {
+      sendToParent({ type: "AI_TOGGLE_PANEL" });
+      return;
+    }
     panelState.value = "closed";
     // Reset initialized state since iframe will be destroyed (v-if in panel component)
     // Next time panel opens, iframe will send CHAT_READY and we'll send INIT_CONTEXT again
@@ -298,6 +314,10 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
    * Toggle panel open/close
    */
   const togglePanel = (): void => {
+    if (isEmbedded) {
+      sendToParent({ type: "AI_TOGGLE_PANEL" });
+      return;
+    }
     if (panelState.value === "closed") {
       openPanel();
     } else {
@@ -346,6 +366,18 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
     const targetOrigin = config.value.allowedOrigins?.[0] || "*";
     iframeRef.value.contentWindow.postMessage(message, targetOrigin);
     logger.debug(`Message sent: ${message.type}`, message.payload);
+  };
+
+  /**
+   * Send message to parent window (embedded mode transport)
+   */
+  const sendToParent = (message: { type: string; payload?: unknown }): void => {
+    if (!window.parent || window.parent === window) {
+      logger.warn("Cannot send to parent: not in iframe");
+      return;
+    }
+    window.parent.postMessage(message, "*");
+    logger.debug(`Embedded message sent to parent: ${message.type}`);
   };
 
   /**
@@ -402,6 +434,9 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
     if (items.length === 0 && !suggestions) {
       // Remove context for this blade when cleared
       bladeContexts.value.delete(targetBladeId);
+      if (isEmbedded) {
+        sendToParent({ type: "AI_CONTEXT_CLEAR" });
+      }
       logger.debug(`Context cleared for blade: ${targetBladeId}`);
     } else {
       // Set context for this blade
@@ -450,6 +485,60 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
 
     // Handle chatbot protocol messages
     switch (message.type) {
+      case "AI_CHAT_MESSAGE": {
+        if (isEmbedded) {
+          const chatMessage = message.payload as IAiChatMessagePayload;
+          if (chatMessage?.type) {
+            switch (chatMessage.type) {
+              case "PREVIEW_CHANGES": {
+                const previewPayload = chatMessage.payload as IPreviewChangesPayload;
+                previewChangesHandlers.forEach((handler) => {
+                  try { handler(previewPayload); } catch (error) { logger.error("Error in preview handler:", error); }
+                });
+                break;
+              }
+              case "NAVIGATE_TO_APP": {
+                const navPayload = chatMessage.payload as INavigateToAppPayload;
+                if (navigateToBlade && navPayload?.bladeName) {
+                  navigateToBlade(navPayload.bladeName, navPayload.param, navPayload.options);
+                }
+                break;
+              }
+              case "RELOAD_BLADE":
+                if (reloadBlade) reloadBlade();
+                break;
+              case "DOWNLOAD_FILE": {
+                const dlPayload = chatMessage.payload as IDownloadFilePayload;
+                if (dlPayload) downloadFile(dlPayload);
+                break;
+              }
+              case "APPLY_CHANGES": {
+                const changesPayload = chatMessage.payload as IApplyChangesPayload;
+                logger.debug("Apply changes:", changesPayload?.changes);
+                break;
+              }
+              case "CHAT_ERROR": {
+                const errPayload = chatMessage.payload as IChatErrorPayload;
+                logger.error(`Chatbot error [${errPayload?.code}]: ${errPayload?.message}`);
+                break;
+              }
+              default:
+                break;
+            }
+
+            const normalized: IAiAgentMessage = {
+              type: chatMessage.type as AiAgentMessageType,
+              payload: chatMessage.payload,
+              timestamp: Date.now(),
+            };
+            messageHandlers.forEach((handler) => {
+              try { handler(normalized); } catch (e) { logger.error("Handler error:", e); }
+            });
+          }
+        }
+        return;
+      }
+
       case "CHAT_READY":
         if (iframeRef.value?.contentWindow) {
           isInitialized.value = true;
@@ -493,21 +582,21 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
 
       case "PREVIEW_CHANGES": {
         const previewPayload = message.payload as IPreviewChangesPayload;
-        console.log("[AI-AGENT-SERVICE] PREVIEW_CHANGES received", {
+        logger.debug("PREVIEW_CHANGES received", {
           handlersCount: previewChangesHandlers.size,
           payloadDataKeys: previewPayload?.data ? Object.keys(previewPayload.data) : [],
           changedFields: previewPayload?.changedFields,
           payloadPreview: JSON.stringify(previewPayload).substring(0, 500),
         });
         if (previewChangesHandlers.size === 0) {
-          console.warn("[AI-AGENT-SERVICE] No preview changes handlers registered!");
+          logger.warn("No preview changes handlers registered!");
         }
         previewChangesHandlers.forEach((handler) => {
           try {
-            console.log("[AI-AGENT-SERVICE] Calling preview changes handler");
+            logger.debug("Calling preview changes handler");
             handler(previewPayload);
           } catch (error) {
-            console.error("[AI-AGENT-SERVICE] Error in preview changes handler:", error);
+            logger.error("Error in preview changes handler:", error);
           }
         });
         break;
@@ -556,6 +645,15 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
   // Auto-register listener when service is created
   _startListening();
   logger.debug("AI Agent Service initialized, listener auto-registered");
+
+  // In embedded mode, notify parent that app is ready
+  if (isEmbedded) {
+    sendToParent({
+      type: "EMBEDDED_APP_READY",
+      payload: { supportedFeatures: ["ai-agent"] },
+    });
+    logger.info("Embedded mode: sent EMBEDDED_APP_READY to parent");
+  }
 
   return {
     // State

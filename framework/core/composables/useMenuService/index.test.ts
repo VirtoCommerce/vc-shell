@@ -4,6 +4,7 @@ import { mount } from "@vue/test-utils";
 import { MenuServiceKey } from "@framework/injection-keys";
 import { provideMenuService, useMenuService } from "@core/composables/useMenuService";
 import { createMenuService } from "@core/services/menu-service";
+import { expectNoVueWarnings } from "@framework/test-helpers";
 
 describe("useMenuService", () => {
   it("throws InjectionError when no service is provided", () => {
@@ -82,5 +83,30 @@ describe("provideMenuService", () => {
     mount(GrandParent);
 
     expect(firstResult).toBe(secondResult);
+  });
+});
+
+// ── cleanup ────────────────────────────────────────────────────────────────────
+
+describe("cleanup", () => {
+  it("unmount() produces no Vue warnings", async () => {
+    const service = createMenuService();
+
+    await expectNoVueWarnings(async () => {
+      const Comp = defineComponent({
+        setup() {
+          useMenuService();
+          return () => h("div");
+        },
+      });
+
+      const wrapper = mount(Comp, {
+        global: {
+          provide: { [MenuServiceKey as symbol]: service },
+        },
+      });
+      await wrapper.vm.$nextTick();
+      wrapper.unmount();
+    });
   });
 });

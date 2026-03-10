@@ -14,27 +14,22 @@
         size="l"
       />
     </div>
-    <Transition name="opacity">
-      <div
-        v-show="isExpanded || $isMobile.value"
-        class="vc-user-info__info"
-      >
-        <div class="vc-user-info__name">
-          {{ name || (user && "fullName" in user && user.fullName) || user?.userName }}
-        </div>
-        <div class="vc-user-info__role">
-          {{
-            role
-              ? $te(`SHELL.USER.ROLE.${role}`)
-                ? $t(`SHELL.USER.ROLE.${role}`)
-                : role
-              : user?.isAdministrator
-                ? $t("SHELL.USER.ROLE.ADMINISTRATOR")
-                : ""
-          }}
-        </div>
+    <div class="vc-user-info__info">
+      <div class="vc-user-info__name">
+        {{ name || (user && "fullName" in user && user.fullName) || user?.userName }}
       </div>
-    </Transition>
+      <div class="vc-user-info__role">
+        {{
+          role
+            ? $te(`SHELL.USER.ROLE.${role}`)
+              ? $t(`SHELL.USER.ROLE.${role}`)
+              : role
+            : user?.isAdministrator
+              ? $t("SHELL.USER.ROLE.ADMINISTRATOR")
+              : ""
+        }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -67,8 +62,9 @@ const imageHandler = computed(() => {
 }
 
 .vc-user-info {
-  @apply tw-flex tw-items-center tw-gap-2.5 tw-truncate tw-w-full;
+  @apply tw-flex tw-items-center tw-gap-2.5 tw-truncate;
   @apply tw-overflow-visible #{!important};
+  transition: gap var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease);
 
   &__avatar {
     @apply tw-rounded-lg tw-overflow-hidden tw-bg-cover tw-bg-center tw-shrink-0;
@@ -87,6 +83,10 @@ const imageHandler = computed(() => {
 
   &__info {
     @apply tw-grow tw-basis-0 tw-overflow-hidden tw-flex tw-flex-col tw-items-start;
+    transition:
+      width var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease),
+      flex var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease),
+      opacity var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease);
   }
 
   &__name {

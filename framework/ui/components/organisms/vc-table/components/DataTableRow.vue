@@ -26,6 +26,7 @@
       :clickable="true"
       :class="rowClass"
       @click="handleRowClick"
+      @space-press="handleRowSpacePress"
       @mouseenter="handleRowMouseEnter"
       @mouseleave="handleRowMouseLeave"
       @mousedown="handleMouseDown"
@@ -40,6 +41,7 @@
       <TableCell
         v-if="showSelectionCell"
         class="vc-data-table__selection-cell"
+        :line-clamp="0"
         @click.stop
       >
         <TableCheckbox
@@ -50,10 +52,10 @@
         />
         <VcRadioButton
           v-else
-          :model-value="isSelected"
+          :model-value="isSelected ?? false"
           :value="true"
           :disabled="!isSelectable"
-          @update:model-value="handleSelectionChange"
+          @update:model-value="handleSelectionChange($event === true)"
         />
       </TableCell>
 
@@ -277,6 +279,13 @@ const handleRowClick = (event: MouseEvent) => {
     return;
   }
   emit("click", event);
+};
+
+const handleRowSpacePress = (_event: KeyboardEvent) => {
+  // Space routes to selection toggle only — never triggers row click / blade navigation
+  if (props.selectionMode === "multiple" && props.showSelectionCell) {
+    emit("selection-change", !props.isSelected);
+  }
 };
 
 const handleRowMouseEnter = () => {

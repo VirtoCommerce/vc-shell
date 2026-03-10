@@ -35,6 +35,9 @@ vc-shell/
 - `yarn storybook-serve` - Run Storybook dev server (port 6006)
 - `yarn storybook-build` - Build Storybook static
 
+## Do NOT Touch
+- `shared/modules/dynamic/` — legacy code used by client projects, will be removed in the future. Never modify.
+
 ## Code Conventions
 - Vue 3 Composition API with `<script setup>`
 - TypeScript strict mode

@@ -197,7 +197,7 @@ describe("useShellBootstrap", () => {
     it("provides DynamicModulesKey when dynamicModules is defined", () => {
       const modules = { testModule: {} };
       bootstrapInScope(
-        createOptions({ dynamicModules: modules as unknown as typeof window.VcShellDynamicModules }),
+        createOptions({ dynamicModules: modules }),
       );
 
       expect(mockProvide).toHaveBeenCalledWith(DynamicModulesKey, modules);

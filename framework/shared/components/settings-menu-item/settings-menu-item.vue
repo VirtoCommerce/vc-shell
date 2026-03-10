@@ -108,7 +108,7 @@ defineExpose({ triggerRef });
   --menu-item-border-color: var(--neutrals-200);
   --menu-item-bg: transparent;
   --menu-item-bg-hover: var(--neutrals-100);
-  --menu-item-icon-color: var(--neutrals-600);
+  --menu-item-icon-color: var(--secondary-700);
   --menu-item-bg-active: var(--neutrals-100);
   --menu-item-value-color: var(--neutrals-500);
   --menu-item-chevron-color: var(--neutrals-400);

@@ -14,6 +14,7 @@ export type WebVitalsCallback = (metric: IWebVitalsMetric) => void;
  * Call once per app session, typically after app.mount().
  *
  * @param callback - Optional custom handler. Defaults to console.warn in dev mode.
+ * @returns void — side-effect only composable
  */
 export function useWebVitals(callback?: WebVitalsCallback): void {
   const defaultCallback: WebVitalsCallback = (metric) => {

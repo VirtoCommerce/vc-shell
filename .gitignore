@@ -88,3 +88,5 @@ docs/plans
 # Git worktrees
 .worktrees/
 .planning/
+.worktrees
+.planning

@@ -35,9 +35,25 @@ export const AppBarMobileButtonsServiceKey: InjectionKey<IAppBarMobileButtonsSer
 export const LanguageServiceKey: InjectionKey<ILanguageService> = Symbol("LanguageService");
 export const ToolbarServiceKey: InjectionKey<IToolbarService> = Symbol("ToolbarService");
 
+/**
+ * Registry of dynamic modules available via provide/inject.
+ * Consumers can extend this interface via declaration merging:
+ *
+ * @example
+ * ```typescript
+ * declare module '@vc-shell/framework' {
+ *   interface DynamicModuleRegistry {
+ *     myModule: MyModuleApi;
+ *   }
+ * }
+ * ```
+ */
+export interface DynamicModuleRegistry {
+  [key: string]: unknown;
+}
+
 // Module keys
-export const DynamicModulesKey: InjectionKey<typeof window.VcShellDynamicModules | undefined> =
-  Symbol("DynamicModules");
+export const DynamicModulesKey: InjectionKey<DynamicModuleRegistry | undefined> = Symbol("DynamicModules");
 
 // Module loading completion state (Phase 2: two-phase bootstrap)
 export const ModulesReadyKey: InjectionKey<Ref<boolean>> = Symbol("ModulesReady");
@@ -71,10 +87,31 @@ export const InternalRoutesKey: InjectionKey<BladeRoutesRecord[]> = Symbol("Inte
 // Settings menu close callback
 export const CloseSettingsMenuKey: InjectionKey<() => void> = Symbol("CloseSettingsMenu");
 
+// Dynamic module registry state (per-app, provided by framework install)
+import type { DynamicSchema } from "@shared/modules/dynamic/types";
+
+/** Registered dynamic blade entry. Mirrors the Registered interface in dynamic/index.ts. */
+export interface DynamicRegisteredEntry {
+  component: unknown;
+  name: string;
+  model: DynamicSchema;
+  composables: { [key: string]: (...args: unknown[]) => unknown };
+  mixin?: ((...args: unknown[]) => unknown)[];
+}
+
+export interface DynamicModuleRegistryState {
+  registeredModules: { [key: string]: DynamicRegisteredEntry };
+  installedBladeIds: Set<string>;
+  registeredSchemas: { [key: string]: DynamicSchema };
+}
+
+export const DynamicModuleRegistryStateKey: InjectionKey<DynamicModuleRegistryState> =
+  Symbol("DynamicModuleRegistryState");
+
 // Legacy aliases (deprecated - use the new *Key exports instead)
 /** @deprecated Use NavigationViewLocationKey instead */
 export const navigationViewLocation = NavigationViewLocationKey;
-/** @deprecated Use BladeInstanceKey instead */
+/** @deprecated Use BladeInstanceKey instead. */
 export const BladeInstance = BladeInstanceKey;
 /** @deprecated Use NotificationTemplatesKey instead */
 export const NotificationTemplatesSymbol = NotificationTemplatesKey;

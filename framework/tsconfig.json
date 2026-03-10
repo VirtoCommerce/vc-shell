@@ -23,6 +23,7 @@
   },
   "include": [
     "*.ts",
+    "package.json",
     "typings",
     "core/**/*.ts",
     "core/api/*.ts",
@@ -41,6 +42,7 @@
   ],
   "exclude": [
     "**/*.spec.ts",
+    "**/*.test.ts",
     "vitest.config.ts",
     // TODO: fix this
     "**/*.stories.ts"

@@ -24,9 +24,12 @@ export interface SidebarActions {
   closeMenu: () => void;
 }
 
-export type SidebarStateReturn = SidebarState & SidebarActions;
+export type UseSidebarStateReturn = SidebarState & SidebarActions;
 
-const SIDEBAR_STATE_KEY: InjectionKey<SidebarStateReturn> = Symbol("SidebarState");
+/** @deprecated Use UseSidebarStateReturn instead */
+export type SidebarStateReturn = UseSidebarStateReturn;
+
+const SIDEBAR_STATE_KEY: InjectionKey<UseSidebarStateReturn> = Symbol("SidebarState");
 
 /**
  * Provides sidebar state to the component tree. Must be called once in VcApp setup.
@@ -34,7 +37,7 @@ const SIDEBAR_STATE_KEY: InjectionKey<SidebarStateReturn> = Symbol("SidebarState
  * Internally delegates to useMenuExpanded() for shared reactive state,
  * ensuring UserDropdownButton (which uses useMenuExpanded directly) stays in sync.
  */
-export function provideSidebarState(): SidebarStateReturn {
+export function provideSidebarState(): UseSidebarStateReturn {
   const existing = inject(SIDEBAR_STATE_KEY, null);
   if (existing) return existing;
 
@@ -62,7 +65,7 @@ export function provideSidebarState(): SidebarStateReturn {
     isMenuOpen.value = false;
   };
 
-  const instance: SidebarStateReturn = {
+  const instance: UseSidebarStateReturn = {
     isPinned,
     isHoverExpanded,
     isMenuOpen,
@@ -81,7 +84,7 @@ export function provideSidebarState(): SidebarStateReturn {
  * Access sidebar state from any descendant of VcApp.
  * Throws if called outside the VcApp component tree.
  */
-export function useSidebarState(): SidebarStateReturn {
+export function useSidebarState(): UseSidebarStateReturn {
   const injected = inject(SIDEBAR_STATE_KEY);
   if (!injected) {
     throw new Error("useSidebarState() requires provideSidebarState() in a parent component");

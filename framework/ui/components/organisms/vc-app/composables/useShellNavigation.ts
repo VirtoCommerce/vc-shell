@@ -1,5 +1,6 @@
 import { useRoute, useRouter } from "vue-router";
 import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
+import { navigateToMainRoute } from "@shared/components/blade-navigation/utils/navigateToMainRoute";
 import { createLogger } from "@core/utilities";
 import type { MenuItem } from "@core/types";
 
@@ -12,7 +13,7 @@ const logger = createLogger("useShellNavigation");
 export function useShellNavigation() {
   const router = useRouter();
   const route = useRoute();
-  const { openBlade, closeBlade, resolveBladeByName, goToRoot } = useBladeNavigation();
+  const { openBlade, closeBlade, resolveBladeByName } = useBladeNavigation();
   const routes = router.getRoutes();
 
   const handleMenuItemClick = (item: MenuItem) => {
@@ -47,10 +48,11 @@ export function useShellNavigation() {
   };
 
   const openRoot = async () => {
-    const isPrevented = await closeBlade(1);
-    if (!isPrevented) {
-      router.push(goToRoot());
-    }
+    // Close entire blade stack (including workspace) and navigate to main route.
+    // Workspaces are managed by BladeStack, not Vue Router — clearing the stack
+    // returns to the app shell's default view (e.g. dashboard).
+    await closeBlade(0);
+    navigateToMainRoute(router, route.params as Record<string, string>);
   };
 
   return { handleMenuItemClick, openRoot };

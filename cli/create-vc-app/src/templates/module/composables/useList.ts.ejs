@@ -1,0 +1,43 @@
+import { ref, type Ref } from "vue";
+import { useAsync, useLoading } from "@vc-shell/framework";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function use<%- ModuleNamePascalCase %>List() {
+  const data: Ref<Record<string, any>[]> = ref([]);
+  const totalCount = ref(0);
+  const currentPage = ref(1);
+  const searchQuery = ref("");
+
+  const { loading: itemsLoading, action: fetchItems } = useAsync(async () => {
+    // TODO: Replace with real API call
+    // const result = await apiClient.search({
+    //   keyword: searchQuery.value,
+    //   skip: (currentPage.value - 1) * 20,
+    //   take: 20,
+    // });
+    // data.value = result.results ?? [];
+    // totalCount.value = result.totalCount ?? 0;
+  });
+
+  const { loading: deleteLoading, action: removeItems } = useAsync(async (ids?: string[]) => {
+    // TODO: Replace with real API call
+    // await Promise.all((ids ?? []).map((id) => apiClient.delete(id)));
+    // await fetchItems();
+  });
+
+  const loading = useLoading(itemsLoading, deleteLoading);
+
+  async function getItems() {
+    await fetchItems();
+  }
+
+  return {
+    data,
+    loading,
+    totalCount,
+    currentPage,
+    searchQuery,
+    getItems,
+    removeItems,
+  };
+}

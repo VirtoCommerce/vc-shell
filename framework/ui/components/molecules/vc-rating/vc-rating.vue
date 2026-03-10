@@ -55,25 +55,23 @@
     </div>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VNode } from "vue";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import type { IFormFieldProps } from "@ui/types/form-field";
 
-export interface Props {
-  label?: string;
+export interface VcRatingProps extends IFormFieldProps {
   placeholder?: string;
-  tooltip?: string;
   modelValue: number;
   max?: number;
   variant?: "stars" | "star-and-text" | "text";
 }
 
-withDefaults(defineProps<Props>(), { max: 5, variant: "stars" });
+withDefaults(defineProps<VcRatingProps>(), { max: 5, variant: "stars" });
 
 defineSlots<{
-  details: (props: any) => VNode[];
+  details: (props: Record<string, never>) => VNode[];
 }>();
 </script>
 

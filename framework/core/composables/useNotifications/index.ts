@@ -10,7 +10,7 @@ const notificationsClient = new PushNotificationClient();
 /** Notification types excluded from the dropdown history list. */
 const EXCLUDED_NOTIFICATION_TYPES = ["IndexProgressPushNotification"];
 
-interface INotifications {
+export interface UseNotificationsReturn {
   readonly notifications: ComputedRef<PushNotification[]>;
   readonly moduleNotifications: ComputedRef<PushNotification[]>;
   loadFromHistory(take?: number): Promise<void>;
@@ -19,6 +19,9 @@ interface INotifications {
   markAllAsRead(): void;
   setNotificationHandler(handler: (notification: PushNotification) => void): void;
 }
+
+/** @deprecated Use UseNotificationsReturn instead */
+export type INotifications = UseNotificationsReturn;
 
 /**
  * All notifications loaded from history and received via push.
@@ -53,7 +56,7 @@ let subscriberCounter = 0;
  * When `notifyType` is provided, registers a subscriber that receives
  * real-time notifications of that type and cleans up on unmount.
  */
-export function useNotifications(notifyType?: string | string[]): INotifications {
+export function useNotifications(notifyType?: string | string[]): UseNotificationsReturn {
   if (notifyType) {
     const types = Array.isArray(notifyType) ? notifyType : [notifyType];
 

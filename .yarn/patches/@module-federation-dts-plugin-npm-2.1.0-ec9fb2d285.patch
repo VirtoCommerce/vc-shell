@@ -1,0 +1,29 @@
+diff --git a/dist/esm/expose-rpc-DMhY1i8A.mjs b/dist/esm/expose-rpc-DMhY1i8A.mjs
+index 94198ec0ef8a66c167d8b1b31a1f8acb024aa1e8..08185d86655edb4ebac8d2271755095e8971abad 100644
+--- a/dist/esm/expose-rpc-DMhY1i8A.mjs
++++ b/dist/esm/expose-rpc-DMhY1i8A.mjs
+@@ -1,7 +1,8 @@
+ import { a as MF_SERVER_IDENTIFIER, n as ActionKind, o as UpdateMode, r as DEFAULT_TAR_NAME, t as Action } from "./Action-DNNg2YDh.mjs";
+ import { a as getIdentifier, c as logger$1, i as getFreePort, l as LogKind, n as UpdateKind, o as getIPV4, r as fib, s as fileLog, t as Broker, u as APIKind } from "./Broker-BU4gToNr.mjs";
+ import { createRequire } from "node:module";
+-import fse, { ensureDirSync, existsSync, writeFileSync } from "fs-extra";
++import fse from "fs-extra";
++const { ensureDirSync, existsSync, writeFileSync } = fse;
+ import path, { dirname, extname, isAbsolute, join, normalize, relative, resolve, sep } from "path";
+ import fs, { existsSync as existsSync$1 } from "fs";
+ import { utils } from "@module-federation/managers";
+diff --git a/dist/esm/index.mjs b/dist/esm/index.mjs
+index 5ec42554c1e1d9b7ddba02d5b6e5c6a8fbd6fc2d..790ae86e8d0dde914aca9fc06326516e1ccc6911 100644
+--- a/dist/esm/index.mjs
++++ b/dist/esm/index.mjs
+@@ -3,8 +3,9 @@ import { s as WEB_CLIENT_OPTIONS_IDENTIFIER } from "./Action-DNNg2YDh.mjs";
+ import { c as logger$1, o as getIPV4 } from "./Broker-BU4gToNr.mjs";
+ import { a as createRpcWorker, n as generateTypesInChildProcess, t as consumeTypes } from "./consumeTypes-D51rVbSt.mjs";
+ import "./core.mjs";
+-import * as fse$1 from "fs-extra";
++
+ import fse from "fs-extra";
++const fse$1 = fse;
+ import * as path$1 from "path";
+ import path from "path";
+ import fs from "fs";

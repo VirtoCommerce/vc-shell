@@ -8,6 +8,7 @@ import { parseBladeUrl, buildUrlFromStack } from "@shared/components/blade-navig
 import { restoreFromUrl } from "@shared/components/blade-navigation/utils/restoreFromUrl";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
+import { usePermissions } from "@core/composables/usePermissions";
 
 // Declare globally
 declare module "@vue/runtime-core" {
@@ -87,8 +88,11 @@ export const VcBladeNavigationComponent = {
       return;
     }
 
-    // Create BladeStack
-    const bladeStack = createBladeStack(bladeRegistry);
+    // Get permission checker for workspace access control
+    const { hasAccess } = app.runWithContext(() => usePermissions());
+
+    // Create BladeStack with permission enforcement
+    const bladeStack = createBladeStack(bladeRegistry, hasAccess);
     app.provide(BladeStackKey, bladeStack);
     bladeStackInstance = bladeStack;
 
@@ -124,7 +128,8 @@ export const VcBladeNavigationComponent = {
       const parsed = parseBladeUrl(to.path, tenantPrefix);
 
       if (!parsed.workspaceUrl) {
-        // No workspace in URL (e.g. Dashboard at "/") — clear any existing blade stack
+        // No workspace in URL (e.g. navigating to "/") — clear the blade stack.
+        // The app shell renders its own default view (e.g. dashboard) when the stack is empty.
         if (bladeStack.blades.value.length > 0) {
           bladeStack._restoreStack([]);
         }
@@ -132,7 +137,7 @@ export const VcBladeNavigationComponent = {
       }
 
       // Restore blade stack from URL (idempotent — skips if already matching)
-      const needsUrlCleanup = await restoreFromUrl(bladeStack, bladeRegistry, parsed);
+      const needsUrlCleanup = await restoreFromUrl(bladeStack, bladeRegistry, parsed, hasAccess, router);
 
       // If a non-routable blade was in the URL, clean up to match actual stack
       if (needsUrlCleanup) {

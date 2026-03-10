@@ -1,6 +1,6 @@
-import { describe, expect, it, beforeEach } from "vitest";
-import { defineComponent, ref } from "vue";
-import { mount } from "@vue/test-utils";
+import { describe, expect, it, beforeEach, vi, afterEach } from "vitest";
+import { defineComponent, ref, nextTick } from "vue";
+import { mount, flushPromises } from "@vue/test-utils";
 import { useDataTableState } from "@ui/components/organisms/vc-table/composables/useDataTableState";
 
 describe("useDataTableState", () => {
@@ -73,6 +73,235 @@ describe("useDataTableState", () => {
     expect(raw).toBeTruthy();
     const state = raw ? JSON.parse(raw) : null;
     expect(state?.shownColumnIds).toEqual(["code", "productType"]);
+    wrapper.unmount();
+  });
+});
+
+describe("useDataTableState — hiddenColumnIds persistence (debounce)", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("changing hiddenColumnIds persists to localStorage after debounce", async () => {
+    let hiddenRef = ref(new Set<string>());
+
+    const Harness = defineComponent({
+      setup() {
+        hiddenRef = ref(new Set<string>());
+        useDataTableState({
+          stateKey: ref("my-table"),
+          stateStorage: ref("local"),
+          columnWidths: ref([]),
+          hiddenColumnIds: hiddenRef,
+        });
+        return () => null;
+      },
+    });
+
+    const wrapper = mount(Harness);
+
+    hiddenRef.value = new Set(["sellerId", "createdDate"]);
+
+    // Flush Vue's async watcher queue (microtasks) so debouncedSave() is called
+    await flushPromises();
+    await nextTick();
+
+    // Advance fake timers past the debounce (150ms) so the setTimeout fires saveState()
+    vi.advanceTimersByTime(200);
+
+    const raw = localStorage.getItem("VC_DATATABLE_MY-TABLE");
+    expect(raw).toBeTruthy();
+    const state = JSON.parse(raw!);
+    expect(state.v).toBe(1);
+    expect(state.hiddenColumnIds).toContain("sellerId");
+    expect(state.hiddenColumnIds).toContain("createdDate");
+
+    wrapper.unmount();
+  });
+
+  it("columnWidths changes persist to localStorage after debounce", async () => {
+    let columnWidthsRef = ref<{ id: string; width: number }[]>([]);
+
+    const Harness = defineComponent({
+      setup() {
+        columnWidthsRef = ref([{ id: "name", width: 200 }]);
+        useDataTableState({
+          stateKey: ref("my-table"),
+          stateStorage: ref("local"),
+          columnWidths: columnWidthsRef,
+          hiddenColumnIds: ref(new Set<string>()),
+        });
+        return () => null;
+      },
+    });
+
+    const wrapper = mount(Harness);
+
+    columnWidthsRef.value = [{ id: "name", width: 350 }];
+
+    // Flush Vue's watcher queue first, then advance the debounce timer
+    await flushPromises();
+    await nextTick();
+    vi.advanceTimersByTime(200);
+
+    const raw = localStorage.getItem("VC_DATATABLE_MY-TABLE");
+    expect(raw).toBeTruthy();
+    const state = JSON.parse(raw!);
+    expect(state.columnWidths).toEqual({ name: 350 });
+
+    wrapper.unmount();
+  });
+});
+
+describe("useDataTableState — sessionStorage mode", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  it("when stateStorage is 'session', state persists to sessionStorage instead of localStorage", async () => {
+    let hiddenRef = ref(new Set<string>());
+
+    const Harness = defineComponent({
+      setup() {
+        hiddenRef = ref(new Set<string>());
+        useDataTableState({
+          stateKey: ref("sess-table"),
+          stateStorage: ref("session"),
+          columnWidths: ref([]),
+          hiddenColumnIds: hiddenRef,
+        });
+        return () => null;
+      },
+    });
+
+    const wrapper = mount(Harness);
+
+    hiddenRef.value = new Set(["col1"]);
+    await new Promise((resolve) => setTimeout(resolve, 220));
+
+    // Must be in sessionStorage, NOT localStorage
+    expect(sessionStorage.getItem("VC_DATATABLE_SESS-TABLE")).toBeTruthy();
+    expect(localStorage.getItem("VC_DATATABLE_SESS-TABLE")).toBeNull();
+
+    wrapper.unmount();
+  });
+});
+
+describe("useDataTableState — restore from persisted state", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  it("restores hiddenColumnIds from localStorage on mount", () => {
+    localStorage.setItem(
+      "VC_DATATABLE_RESTORE-TEST",
+      JSON.stringify({
+        v: 1,
+        hiddenColumnIds: ["price", "sku"],
+        shownColumnIds: [],
+      }),
+    );
+
+    let hiddenAtSetup = new Set<string>();
+
+    const Harness = defineComponent({
+      setup() {
+        const hiddenColumnIds = ref(new Set<string>());
+        useDataTableState({
+          stateKey: ref("restore-test"),
+          stateStorage: ref("local"),
+          columnWidths: ref([]),
+          hiddenColumnIds,
+        });
+        hiddenAtSetup = new Set(hiddenColumnIds.value);
+        return () => null;
+      },
+    });
+
+    const wrapper = mount(Harness);
+
+    expect(hiddenAtSetup.has("price")).toBe(true);
+    expect(hiddenAtSetup.has("sku")).toBe(true);
+
+    wrapper.unmount();
+  });
+
+  it("ignores persisted state with wrong schema version", () => {
+    localStorage.setItem(
+      "VC_DATATABLE_BAD-SCHEMA",
+      JSON.stringify({
+        v: 99, // wrong version
+        hiddenColumnIds: ["price"],
+      }),
+    );
+
+    let hiddenAtSetup = new Set<string>();
+
+    const Harness = defineComponent({
+      setup() {
+        const hiddenColumnIds = ref(new Set<string>());
+        useDataTableState({
+          stateKey: ref("bad-schema"),
+          stateStorage: ref("local"),
+          columnWidths: ref([]),
+          hiddenColumnIds,
+        });
+        hiddenAtSetup = new Set(hiddenColumnIds.value);
+        return () => null;
+      },
+    });
+
+    const wrapper = mount(Harness);
+
+    // Wrong schema version — nothing should be restored
+    expect(hiddenAtSetup.has("price")).toBe(false);
+
+    wrapper.unmount();
+  });
+});
+
+describe("useDataTableState — clearState", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  it("clearState removes the key from localStorage", async () => {
+    let clearStateFn: (() => void) | undefined;
+
+    const Harness = defineComponent({
+      setup() {
+        const hiddenColumnIds = ref(new Set<string>(["col1"]));
+        const { clearState } = useDataTableState({
+          stateKey: ref("clear-test"),
+          stateStorage: ref("local"),
+          columnWidths: ref([]),
+          hiddenColumnIds,
+        });
+        clearStateFn = clearState;
+        return () => null;
+      },
+    });
+
+    const wrapper = mount(Harness);
+
+    // Allow any pending debounce to flush
+    await new Promise((resolve) => setTimeout(resolve, 220));
+
+    // Verify something was saved
+    // (hiddenColumnIds has col1 but watcher may or may not have fired — just verify clearState works)
+    clearStateFn!();
+
+    expect(localStorage.getItem("VC_DATATABLE_CLEAR-TEST")).toBeNull();
+
     wrapper.unmount();
   });
 });

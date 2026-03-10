@@ -173,7 +173,7 @@ export async function release(config: ReleaseConfig): Promise<void> {
       process.exit(1);
     }
 
-    stageAndAmendCommit();
+    stageAndAmendCommit(["package.json", "CHANGELOG.md"]);
     recreateAnnotatedTag(tag);
     pushToRemote(tag);
 

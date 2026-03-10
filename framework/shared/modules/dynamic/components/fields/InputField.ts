@@ -44,8 +44,8 @@ export default {
         slots: Object.entries(slotsMap).reduce(
           (acc, [key, value]) => {
             if (props.element[key as keyof InputSchema]) {
-              acc[value as keyof InputSchema] = () =>
-                nodeBuilder({
+              acc[value as keyof InputSchema] = () => {
+                const node = nodeBuilder({
                   controlSchema: props.element[key as keyof InputSchema] as ControlSchema,
                   parentId: `${(props.element[key as keyof InputSchema] as ControlSchema).id}`,
                   internalContext: props.fieldContext ?? {},
@@ -53,10 +53,12 @@ export default {
                   currentLocale: props.currentLocale ?? "en-US",
                   formData: props.formData,
                 });
+                return node ? [node] : [];
+              };
             }
             return acc;
           },
-          {} as Record<keyof InputSchema, () => VNode | false>,
+          {} as Record<keyof InputSchema, () => VNode[]>,
         ),
       });
 

@@ -109,35 +109,18 @@
     </template>
   </VcSelect>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { unref } from "vue";
 import { VcSelect } from "@ui/components/molecules/vc-select";
 import { VcInput } from "@ui/components/molecules/vc-input";
 import { type OptionProp } from "@ui/components/molecules/vc-select";
+import type { ITextFieldProps } from "@ui/types/form-field";
 
-export interface Props {
+export interface VcInputDropdownProps extends ITextFieldProps {
   /**
    * Model of the input component
    */
   modelValue: string | number | Date | null | undefined;
-  /**
-   * Input label text
-   */
-  label?: string;
-  /**
-   * Input placeholder text
-   */
-  placeholder?: string;
-  /**
-   * Input description (hint) text below input component
-   */
-  hint?: string;
-  /**
-   * Appends clearable icon when a value is set;
-   * When clicked, model becomes null
-   */
-  clearable?: boolean;
   /**
    * Prefix
    */
@@ -147,47 +130,15 @@ export interface Props {
    */
   suffix?: string;
   /**
-   * Used to specify the name of the control; If not specified, it takes the value 'Field'
-   */
-  name?: string;
-  /**
-   * Signals the user a process is in progress by displaying a spinner
-   */
-  loading?: boolean;
-  /**
    * Debounce amount (in milliseconds) for search input
    * Default: 0
    */
   debounce?: string | number;
   /**
-   * Put component in disabled mode
-   */
-  disabled?: boolean;
-  /**
-   * Focus field on initial component render
-   */
-  autofocus?: boolean;
-  /**
-   * Does field have validation errors?
-   */
-  error?: boolean;
-  /**
-   * Validation error message (gets displayed only if 'error' is set to 'true')
-   */
-  errorMessage?: string;
-  /**
    * Specify a max length of model
    * Default value: 1024
    */
   maxlength?: string | number;
-  /**
-   * Input tooltip information
-   */
-  tooltip?: string;
-  /**
-   * Input required state
-   */
-  required?: boolean;
   /**
    * Default selected option from dropdown
    */
@@ -220,18 +171,16 @@ export interface Props {
    * Default: text
    */
   inputType?: "text" | "password" | "email" | "tel" | "number" | "integer" | "url" | "time" | "date" | "datetime-local";
-  multilanguage?: boolean;
-  currentLanguage?: string;
 }
 
-export interface Emits {
+export interface VcInputDropdownEmits {
   (event: "update:model-value", value: string | number | Date | null | undefined): void;
   (event: "update:option", value: unknown): void;
   (event: "change", value: unknown): void;
   (event: "blur", value: Event): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VcInputDropdownProps>(), {
   debounce: 0,
   searchable: false,
   inputType: "text",
@@ -250,19 +199,19 @@ defineSlots<{
   /**
    * Slot for custom append-inner content
    */
-  "append-inner": (props: any) => any;
+  "append-inner": (props: Record<string, never>) => unknown;
   /**
    * Slot for custom prepend-inner content
    */
-  "prepend-inner": (props: any) => any;
+  "prepend-inner": (props: Record<string, never>) => unknown;
   /**
    * Slot for custom append content
    */
-  append: (props: any) => any;
+  append: (props: Record<string, never>) => unknown;
   /**
    * Slot for custom prepend content
    */
-  prepend: (props: any) => any;
+  prepend: (props: Record<string, never>) => unknown;
   /**
    * Slot for custom input control
    */
@@ -277,11 +226,11 @@ defineSlots<{
     //todo: Create generic component
     opt: unknown;
     selected: boolean;
-    toggleOption: (opt: any) => void;
+    toggleOption: (opt: unknown) => void;
   }) => unknown;
 }>();
 
-defineEmits<Emits>();
+defineEmits<VcInputDropdownEmits>();
 </script>
 
 <style lang="scss">

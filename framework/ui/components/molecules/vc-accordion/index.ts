@@ -4,7 +4,13 @@ import _AccordionItem from "@ui/components/molecules/vc-accordion/_internal/vc-a
 export const VcAccordion = _Accordion as typeof _Accordion;
 export const VcAccordionItem = _AccordionItem as typeof _AccordionItem;
 
-export type { AccordionItem, Props as AccordionProps, Emits as AccordionEmits } from "@ui/components/molecules/vc-accordion/vc-accordion.vue";
+export type { AccordionItem, VcAccordionProps, VcAccordionEmits } from "@ui/components/molecules/vc-accordion/vc-accordion.vue";
+
+/** @deprecated Use VcAccordionProps instead */
+export type { VcAccordionProps as AccordionProps } from "@ui/components/molecules/vc-accordion/vc-accordion.vue";
+/** @deprecated Use VcAccordionEmits instead */
+export type { VcAccordionEmits as AccordionEmits } from "@ui/components/molecules/vc-accordion/vc-accordion.vue";
+
 export type {
   Props as AccordionItemProps,
   Emits as AccordionItemEmits,

@@ -1,8 +1,8 @@
 export * from "@ui/components/molecules/vc-accordion";
 export * from "@ui/components/molecules/vc-breadcrumbs";
-export * from "@ui/components/molecules/vc-editor";
 export * from "@ui/components/molecules/vc-form";
 export * from "@ui/components/molecules/vc-file-upload";
+export * from "@ui/components/molecules/vc-editor";
 export * from "@ui/components/molecules/vc-input";
 export * from "@ui/components/molecules/vc-input-currency";
 export * from "@ui/components/molecules/vc-date-picker";
@@ -24,3 +24,4 @@ export * from "@ui/components/molecules/vc-input-dropdown";
 export * from "@ui/components/molecules/vc-switch";
 export * from "@ui/components/molecules/vc-dropdown-panel";
 export * from "@ui/components/molecules/vc-dropdown";
+export * from "@ui/components/molecules/vc-menu";

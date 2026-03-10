@@ -108,7 +108,7 @@ import type { Placement } from "@floating-ui/vue";
 export type DropdownRole = "menu" | "listbox";
 export type DropdownCloseReason = "outside" | "escape" | "action";
 
-export interface Props<T> {
+export interface VcDropdownProps<T> {
   modelValue?: boolean;
   items?: T[];
   emptyText?: string;
@@ -133,7 +133,7 @@ export interface Props<T> {
   padded?: boolean;
 }
 
-const props = withDefaults(defineProps<Props<T>>(), {
+const props = withDefaults(defineProps<VcDropdownProps<T>>(), {
   modelValue: false,
   items: () => [],
   emptyText: "",

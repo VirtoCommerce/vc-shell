@@ -46,7 +46,7 @@ import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcCol } from "@ui/components/atoms/vc-col";
 import VcFieldType from "@ui/components/molecules/vc-field/_internal/vc-field-type/vc-field-type.vue";
 
-export interface Props {
+export interface VcFieldProps {
   /**
    * Field label text
    */
@@ -62,8 +62,7 @@ export interface Props {
   /**
    * Field content
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modelValue?: any;
+  modelValue?: string | number | Date;
   /**
    * Add button for field content copying
    */
@@ -78,7 +77,7 @@ export interface Props {
   aspectRatio?: [number, number];
 }
 
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<VcFieldProps>(), {
   type: "text",
   orientation: "vertical",
   aspectRatio: () => [1, 1],
@@ -86,8 +85,8 @@ withDefaults(defineProps<Props>(), {
 
 const copyIcon = ref("lucide-copy");
 
-function copy(value: string) {
-  navigator.clipboard?.writeText(value);
+function copy(value: string | number | Date | undefined) {
+  navigator.clipboard?.writeText(String(value ?? ""));
   copyIcon.value = "lucide-check";
   setTimeout(() => {
     copyIcon.value = "lucide-copy";

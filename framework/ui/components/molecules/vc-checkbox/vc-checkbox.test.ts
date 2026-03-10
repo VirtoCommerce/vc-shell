@@ -72,4 +72,17 @@ describe("VcCheckbox", () => {
     expect(wrapper.find("input").attributes("disabled")).toBeDefined();
     expect(wrapper.find(".vc-checkbox--disabled").exists()).toBe(true);
   });
+
+  describe("v-model contract", () => {
+    it("renders modelValue=true as a checked checkbox", () => {
+      const wrapper = mountCheckbox({ modelValue: true });
+      expect((wrapper.find('input[type="checkbox"]').element as HTMLInputElement).checked).toBe(true);
+    });
+
+    it("emits update:modelValue with toggled value on change", async () => {
+      const wrapper = mountCheckbox({ modelValue: false });
+      await wrapper.find("input").setValue(true);
+      expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([true]);
+    });
+  });
 });

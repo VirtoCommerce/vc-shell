@@ -14,7 +14,7 @@
     v-else
     :class="['vc-lucide-icon', !hasCustomSize && `vc-lucide-icon--${size}`]"
   >
-    <i class="vc-lucide-icon__fallback">❓</i>
+    <i class="vc-lucide-icon__fallback"></i>
   </span>
 </template>
 
@@ -56,7 +56,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   size: "m",
-  strokeWidth: 1.5,
+  strokeWidth: 2,
 });
 
 // Check if using custom size to conditionally apply CSS class

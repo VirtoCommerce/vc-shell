@@ -120,9 +120,10 @@ const skeletonSections = [
 <style lang="scss">
 .vc-menu {
   @apply tw-h-full;
+  font-family: "Lato", sans-serif;
 
   &__items {
-    @apply tw-flex tw-flex-col tw-h-full;
+    @apply tw-flex tw-flex-col tw-h-full tw-pb-4;
     gap: var(--vc-menu-gap, 2px);
   }
 

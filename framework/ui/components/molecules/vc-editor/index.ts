@@ -4,3 +4,4 @@ export type {
   CustomToolbarDropdown,
   CustomToolbarItem,
 } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
+export type { VcEditorProps, VcEditorEmits, ToolbarNames } from "@ui/components/molecules/vc-editor/vc-editor.vue";

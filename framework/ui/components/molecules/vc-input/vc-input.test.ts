@@ -111,4 +111,17 @@ describe("VcInput", () => {
     const toggleBtn = wrapper.find('button[aria-label="Show password"]');
     expect(toggleBtn.exists()).toBe(true);
   });
+
+  describe("v-model contract", () => {
+    it("renders modelValue in the input", () => {
+      const wrapper = mountInput({ modelValue: "hello" });
+      expect((wrapper.find("input").element as HTMLInputElement).value).toBe("hello");
+    });
+
+    it("emits update:modelValue on user input", async () => {
+      const wrapper = mountInput({ modelValue: "" });
+      await wrapper.find("input").setValue("typed text");
+      expect(wrapper.emitted("update:modelValue")?.[0]).toEqual(["typed text"]);
+    });
+  });
 });

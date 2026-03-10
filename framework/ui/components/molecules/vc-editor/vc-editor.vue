@@ -156,7 +156,6 @@
     </Transition>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { ref, watch, onBeforeUnmount, computed } from "vue";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
@@ -171,6 +170,7 @@ import { Image } from "@tiptap/extension-image";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Markdown } from "tiptap-markdown";
+import type { Extension } from "@tiptap/core";
 import { FontSize } from "@ui/components/molecules/vc-editor/_internal/extensions/font-size";
 import { format } from "prettier/standalone";
 import * as prettierPluginHtml from "prettier/parser-html";
@@ -181,6 +181,7 @@ import { VcHint } from "@ui/components/atoms/vc-hint";
 import VcEditorToolbar from "@ui/components/molecules/vc-editor/_internal/vc-editor-toolbar.vue";
 import VcEditorButton from "@ui/components/molecules/vc-editor/_internal/vc-editor-button.vue";
 import type { CustomToolbarItem } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
+import type { IFormFieldProps } from "@ui/types/form-field";
 
 // Export types for external use
 export type { CustomToolbarItem, CustomToolbarButton, CustomToolbarDropdown } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
@@ -203,34 +204,29 @@ export type ToolbarNames =
   | "fontSize"
   | "separator";
 
-export interface Props {
+export interface VcEditorProps extends IFormFieldProps {
   placeholder?: string;
   modelValue?: string;
-  required?: boolean;
-  disabled?: boolean;
-  label?: string;
-  tooltip?: string;
-  errorMessage?: string;
   assetsFolder?: string;
   multilanguage?: boolean;
   currentLanguage?: string;
   maxlength?: number;
   toolbar?: ToolbarNames[];
-  extensions?: any[];
+  extensions?: Extension[];
   customButtons?: CustomToolbarItem[];
 }
 
-export interface Emits {
+export interface VcEditorEmits {
   (event: "update:modelValue", value?: string): void;
   (event: "upload-image"): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VcEditorProps>(), {
   modelValue: "",
   disabled: false,
 });
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<VcEditorEmits>();
 
 const isFocused = ref(false);
 const isFullscreen = ref(false);
@@ -321,8 +317,8 @@ function detectContentType(content: string): "html" | "markdown" {
   return "markdown";
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const extensions = computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const baseExtensions: any[] = [
     StarterKit,
     Underline,

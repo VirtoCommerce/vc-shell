@@ -60,8 +60,7 @@ import { formatDateRelative } from "@core/utilities/date";
 
 export interface Props {
   type: "text" | "date" | "date-ago" | "link" | "email";
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+  value: string | number | Date | undefined;
 }
 
 export interface Emits {
@@ -73,7 +72,7 @@ defineEmits<Emits>();
 const props = defineProps<Props>();
 
 function onLinkClick() {
-  location.href = props.value;
+  location.href = String(props.value ?? "");
 }
 </script>
 

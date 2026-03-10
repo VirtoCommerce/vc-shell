@@ -31,52 +31,45 @@
   </VcInputGroup>
 </template>
 
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed, useId } from "vue";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
 import { VcInputGroup } from "@ui/components/molecules/vc-input-group";
+import type { IFormFieldProps } from "@ui/types/form-field";
 
 export interface CheckboxGroupOption {
   label: string;
-  value: any;
+  value: string | number | boolean;
   disabled?: boolean;
 }
 
-export interface Props {
-  modelValue?: any[];
+export interface VcCheckboxGroupProps extends IFormFieldProps {
+  modelValue?: (string | number | boolean)[];
   options?: CheckboxGroupOption[];
-  label?: string;
-  tooltip?: string;
   hint?: string;
-  error?: boolean;
-  errorMessage?: string;
-  required?: boolean;
-  disabled?: boolean;
   orientation?: "vertical" | "horizontal";
-  name?: string;
   size?: "s" | "m" | "l";
 }
 
-export interface Emits {
-  (event: "update:modelValue", value: any[]): void;
+export interface VcCheckboxGroupEmits {
+  (event: "update:modelValue", value: (string | number | boolean)[]): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VcCheckboxGroupProps>(), {
   modelValue: () => [],
   options: () => [],
   orientation: "vertical",
   size: "s",
 });
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<VcCheckboxGroupEmits>();
 
 const uid = useId();
 const generatedName = computed(() => `vc-checkbox-group-${uid}`);
 const resolvedName = computed(() => props.name || generatedName.value);
 const normalizedModelValue = computed(() => (Array.isArray(props.modelValue) ? props.modelValue : []));
 
-function onUpdate(value: any) {
+function onUpdate(value: boolean | any[]) {
   if (Array.isArray(value)) {
     emit("update:modelValue", value);
     return;

@@ -156,9 +156,21 @@ export function getLatestTag(): string | null {
  * Stages all modified tracked files and amends the last commit (created by Lerna).
  * Uses `git add -u` to capture all release changes including custom hook modifications
  * (e.g. boilerplate template versions, app dependency updates).
+ *
+ * @param explicitFiles - Files to stage explicitly before `git add -u`.
+ *   Explicit `git add` ensures these files are staged even when `assume-unchanged`
+ *   or `skip-worktree` bits are set, or when `git add -u` misses them for any reason.
  * Exits on failure.
  */
-export function stageAndAmendCommit(): void {
+export function stageAndAmendCommit(explicitFiles?: string[]): void {
+  if (explicitFiles?.length) {
+    const explicitResult = sync("git", ["add", "--", ...explicitFiles], { stdio: "inherit" });
+    if (explicitResult.status !== 0) {
+      console.error(chalk.red("\nFailed to stage explicit files\n"));
+      process.exit(1);
+    }
+  }
+
   const addResult = sync("git", ["add", "-u"], { stdio: "inherit" });
   if (addResult.status !== 0) {
     console.error(chalk.red("\nFailed to stage changes\n"));

@@ -7,19 +7,14 @@ import { gt as isVersionGreater } from "semver";
 export async function updateBoilerplatePkgVersions() {
   const version = fs.readJsonSync("package.json").version;
 
-  const boilerplatePkgPath = "cli/create-vc-app/src/templates/base/_package.json";
-  const boilerplatePkg = fs.readJsonSync(boilerplatePkgPath);
+  // v2 templates: each project type has its own _package.json.ejs
+  const templatePkgPaths = [
+    "cli/create-vc-app/src/templates/standalone/_package.json.ejs",
+    "cli/create-vc-app/src/templates/host-app/_package.json.ejs",
+    "cli/create-vc-app/src/templates/dynamic-module/_package.json.ejs",
+  ];
 
-  // Update @vc-shell/* framework packages
-  ["@vc-shell/api-client-generator", "@vc-shell/ts-config", "@vc-shell/release-config"].forEach(
-    (dep) => (boilerplatePkg.devDependencies[dep] = "^" + version),
-  );
-  ["@vc-shell/config-generator", "@vc-shell/framework"].forEach(
-    (dep) => (boilerplatePkg.dependencies[dep] = "^" + version),
-  );
-
-  // Sync common dependency versions from apps/ (if exists)
-  // Update existing dependencies if apps have newer versions
+  // Find a reference app to sync common dependency versions from
   const appsDirectory = path.resolve("apps");
   let matchedAppPackage:
     | { dependencies?: Record<string, string>; devDependencies?: Record<string, string> }
@@ -52,47 +47,64 @@ export async function updateBoilerplatePkgVersions() {
     }
   }
 
-  // Sync common dependency versions (not @vc-shell/* or @vcmp-*)
-  if (matchedAppPackage) {
-    const syncCommonDependencies = (
-      targetDeps: Record<string, string> | undefined,
-      sourceDeps: Record<string, string> | undefined,
-    ) => {
-      if (!targetDeps || !sourceDeps) {
+  const syncCommonDependencies = (
+    targetDeps: Record<string, string> | undefined,
+    sourceDeps: Record<string, string> | undefined,
+  ) => {
+    if (!targetDeps || !sourceDeps) {
+      return;
+    }
+
+    Object.keys(targetDeps).forEach((dep) => {
+      if (dep.startsWith("@vc-shell/") || dep.startsWith("@vcmp-")) {
         return;
       }
 
-      // Only update existing dependencies in scaffold
-      Object.keys(targetDeps).forEach((dep) => {
-        // Skip @vc-shell/* (managed by framework version)
-        // Skip @vcmp-* (marketplace-specific, not needed in scaffold)
-        if (dep.startsWith("@vc-shell/") || dep.startsWith("@vcmp-")) {
-          return;
-        }
+      if (sourceDeps[dep]) {
+        const targetVersion = targetDeps[dep].replace(/^[\^~]/, "");
+        const sourceVersion = sourceDeps[dep].replace(/^[\^~]/, "");
 
-        // If dependency exists in app, compare versions
-        if (sourceDeps[dep]) {
-          const targetVersion = targetDeps[dep].replace(/^[\^~]/, ""); // Remove ^ or ~
-          const sourceVersion = sourceDeps[dep].replace(/^[\^~]/, "");
-
-          try {
-            // Update if app has newer version
-            if (isVersionGreater(sourceVersion, targetVersion)) {
-              targetDeps[dep] = sourceDeps[dep];
-            }
-          } catch {
-            // If version comparison fails, keep current version
+        try {
+          if (isVersionGreater(sourceVersion, targetVersion)) {
+            targetDeps[dep] = sourceDeps[dep];
           }
+        } catch {
+          // If version comparison fails, keep current version
         }
-      });
-    };
+      }
+    });
+  };
 
-    syncCommonDependencies(boilerplatePkg.dependencies, matchedAppPackage.dependencies);
-    syncCommonDependencies(boilerplatePkg.devDependencies, matchedAppPackage.devDependencies);
+  for (const pkgPath of templatePkgPaths) {
+    if (!fs.existsSync(pkgPath)) {
+      continue;
+    }
+
+    const boilerplatePkg = fs.readJsonSync(pkgPath);
+
+    // Update @vc-shell/* framework packages (only if present in this template)
+    ["@vc-shell/api-client-generator", "@vc-shell/ts-config", "@vc-shell/release-config"].forEach(
+      (dep) => {
+        if (boilerplatePkg.devDependencies?.[dep]) {
+          boilerplatePkg.devDependencies[dep] = "^" + version;
+        }
+      },
+    );
+    ["@vc-shell/config-generator", "@vc-shell/framework"].forEach((dep) => {
+      if (boilerplatePkg.dependencies?.[dep]) {
+        boilerplatePkg.dependencies[dep] = "^" + version;
+      }
+    });
+
+    // Sync common dependency versions from reference app
+    if (matchedAppPackage) {
+      syncCommonDependencies(boilerplatePkg.dependencies, matchedAppPackage.dependencies);
+      syncCommonDependencies(boilerplatePkg.devDependencies, matchedAppPackage.devDependencies);
+    }
+
+    writeFileSync(pkgPath, JSON.stringify(boilerplatePkg, null, 2) + "\n");
+    console.log(`  ✓ Updated ${path.basename(path.dirname(pkgPath))} template to ^${version}`);
   }
-
-  writeFileSync(boilerplatePkgPath, JSON.stringify(boilerplatePkg, null, 2) + "\n");
-  console.log(`  ✓ Updated boilerplate template to ^${version}`);
 }
 
 // Updates @vc-shell/* dependencies in all apps to match current framework version

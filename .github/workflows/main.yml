@@ -26,9 +26,8 @@ jobs:
       contains(github.event.head_commit.message, 'chore: release')
     env:
       GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-      VERSION_SUFFIX: ''
-      ARTIFACT_URL: ''
       GITHUB_USER: '${{ github.repository_owner }}'
+      VERSION_SUFFIX: ''
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       NPM_TAG: 'latest'
 
@@ -83,14 +82,6 @@ jobs:
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-    - name: Clean git state
-      if: success()
-      run: |
-        # Reset any changes to yarn.lock that might have occurred during install
-        git checkout -- yarn.lock || true
-        # Ensure clean working directory for Lerna
-        git status --porcelain
-
     - name: Determine npm tag
       if: success()
       run: |
@@ -99,16 +90,10 @@ jobs:
         echo "Version: $VERSION → npm tag: $NPM_TAG"
         echo "NPM_TAG=$NPM_TAG" >> $GITHUB_ENV
 
-    - name: Publish with Lerna
+    - name: Publish packages to npm
       if: success()
       run: |
-        echo "Publishing packages with Lerna using tag: $NPM_TAG"
-        # Lerna automatically:
-        # - Detects changed packages from package.json
-        # - Uses the specified npm tag for all packages
-        # - Handles dependencies between packages
-        # - Excludes private packages and root package
-        npx lerna publish from-package --yes --no-git-reset --no-private --npm-tag="$NPM_TAG"
+        yarn publish:packages --tag "$NPM_TAG"
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 

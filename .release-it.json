@@ -6,7 +6,7 @@
     "requireUpstream": true,
     "requireCommits": true,
     "tagName": "v${version}",
-    "commitMessage": "chore(release): v${version}",
+    "commitMessage": "release: v${version}",
     "tagAnnotation": "v${version}"
   },
   "npm": {

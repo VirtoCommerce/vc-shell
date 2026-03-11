@@ -1,3 +1,26 @@
+# Changelog
+
+# [2.0.0-alpha.7](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) (2026-03-11)
+
+
+### Bug Fixes
+
+* remove duplicate changelog entries caused by multiline regex bug ([2f27d4c](https://github.com/VirtoCommerce/vc-shell/commit/2f27d4c2ca81452ddc1042af47a4648348e7e323))
+* **vc-gallery:** handle undefined images prop on mount ([4338c8e](https://github.com/VirtoCommerce/vc-shell/commit/4338c8ea035e37b3eba8a909310b6146948a3527))
+
+
+### Code Refactoring
+
+* remove legacy dynamic views module ([3a673a8](https://github.com/VirtoCommerce/vc-shell/commit/3a673a89156c36ef1e1908f80e012104f36fa54e))
+
+
+### BREAKING CHANGES
+
+* removed createDynamicAppModule,
+useDetailsFactory, useListFactory, DynamicBladeList,
+DynamicBladeForm, DynamicModuleRegistryState and
+all dynamic schema types from the framework.
+
 ## [2.0.0-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2026-03-10)
 
 ### Release Config (@vc-shell/release-config)

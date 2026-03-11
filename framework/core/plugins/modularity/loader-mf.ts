@@ -16,8 +16,6 @@ import * as VueI18n from "vue-i18n";
 import * as VeeValidate from "vee-validate";
 import * as LodashEs from "lodash-es";
 import * as VueuseCore from "@vueuse/core";
-import * as Framework from "@vc-shell/framework";
-
 // Read versions from package.json to avoid rollup warnings about missing named exports
 import vueI18nPkg from "vue-i18n/package.json";
 import lodashEsPkg from "lodash-es/package.json";
@@ -29,14 +27,13 @@ const logger = createLogger("module-loader-mf");
 const REGISTRY_URL = "/api/frontend-modules";
 const frameworkVersion: string = packageJson.version;
 
-const SHARED_LIBS: Record<string, { lib: () => unknown; version: string; requiredVersion: string }> = {
+const SHARED_LIBS_STATIC: Record<string, { lib: () => unknown; version: string; requiredVersion: string }> = {
   vue:                    { lib: () => Vue,         version: Vue.version,               requiredVersion: "^3.4.0" },
   "vue-router":           { lib: () => VueRouter,   version: vueRouterPkg.version,      requiredVersion: "^4.0.0" },
   "vue-i18n":             { lib: () => VueI18n,     version: vueI18nPkg.version,        requiredVersion: "^9.0.0" },
   "vee-validate":         { lib: () => VeeValidate, version: (VeeValidate as any).version ?? "4.0.0", requiredVersion: "^4.0.0" },
   "lodash-es":            { lib: () => LodashEs,    version: lodashEsPkg.version,       requiredVersion: "^4.0.0" },
   "@vueuse/core":         { lib: () => VueuseCore,  version: vueusePkg.version,         requiredVersion: "^10.0.0" },
-  "@vc-shell/framework":  { lib: () => Framework,   version: frameworkVersion,           requiredVersion: `^${frameworkVersion}` },
 };
 
 export interface ModuleRegistryEntry {
@@ -127,6 +124,14 @@ export const dynamicModulesPlugin: Plugin = {
     try {
       performance.mark("vc:modules-start");
 
+      // Lazy-load the framework namespace to avoid circular dependency
+      // (loader-mf.ts is part of the framework it provides to MF remotes)
+      const Framework = await import("@vc-shell/framework");
+      const SHARED_LIBS: Record<string, { lib: () => unknown; version: string; requiredVersion: string }> = {
+        ...SHARED_LIBS_STATIC,
+        "@vc-shell/framework": { lib: () => Framework, version: frameworkVersion, requiredVersion: `^${frameworkVersion}` },
+      };
+
       // 1. Build provides dictionary from shared libs versions
       const provides: Record<string, string> = {};
       for (const [name, entry] of Object.entries(SHARED_LIBS)) {
@@ -140,6 +145,12 @@ export const dynamicModulesPlugin: Plugin = {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ appName: options.appName, provides }),
       });
+      if (response.status === 401 || response.status === 403) {
+        logger.info("Not authenticated — skipping dynamic modules.");
+        modulesReady.value = true;
+        performance.mark("vc:modules-done");
+        return;
+      }
       if (!response.ok) {
         throw new Error(`Registry fetch failed: ${response.status} ${response.statusText}`);
       }

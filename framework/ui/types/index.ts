@@ -1,17 +1,9 @@
 import { MaybeRef } from "vue";
-import type * as components from "@ui/components";
 
 export type { IFormFieldProps, ITextFieldProps } from "./form-field";
 
-// Declare all components globally
-
-type TGlobalComponents<T> = {
-  [x in keyof T]: T[x];
-};
-declare module "vue" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface GlobalComponents extends TGlobalComponents<typeof components> {}
-}
+// GlobalComponents augmentation moved to ./global-components.ts
+// to break circular dependency (ui/types → ui/components → ... → ui/types)
 
 export interface Breadcrumbs {
   icon?: string;

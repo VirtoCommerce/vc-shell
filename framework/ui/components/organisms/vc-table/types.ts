@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ComputedRef, Ref, VNode } from "vue";
+import type { ComponentInternalInstance, ComputedRef, Ref, Slots, VNode } from "vue";
 import type { IActionBuilderResult, ITableColumns } from "@core/types";
-import type { ColumnInstance } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 
 // Re-export types used by compositional components
 export type { IActionBuilderResult, ITableColumns };
@@ -9,8 +8,12 @@ export type { IActionBuilderResult, ITableColumns };
 // Re-export row grouping types from composable
 export type { GroupedData, RowGroupingOptions, UseTableRowGroupingReturn } from "@ui/components/organisms/vc-table/composables/useTableRowGrouping";
 
-// Re-export ColumnInstance for external use
-export type { ColumnInstance };
+// ColumnInstance moved here from ColumnCollector.ts to break circular dependency
+export interface ColumnInstance {
+  instance: ComponentInternalInstance;
+  props: VcColumnProps;
+  slots: Slots;
+}
 
 /** Extended action type for table-specific functionality (row actions, context menus) */
 export interface TableAction<T = {}> extends IActionBuilderResult<T> {

@@ -15,13 +15,10 @@
  */
 
 import type { ComponentInternalInstance, Slots, VNode } from "vue";
-import type { VcColumnProps } from "@ui/components/organisms/vc-table/types";
+import type { VcColumnProps, ColumnInstance } from "@ui/components/organisms/vc-table/types";
 
-export interface ColumnInstance {
-  instance: ComponentInternalInstance;
-  props: VcColumnProps;
-  slots: Slots;
-}
+// Re-export for backward compatibility (ColumnInstance now lives in types.ts)
+export type { ColumnInstance };
 
 export class ColumnCollector {
   private columns: Map<ComponentInternalInstance, ColumnInstance> = new Map();

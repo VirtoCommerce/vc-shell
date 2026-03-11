@@ -1,8 +1,7 @@
 import { VcToast } from "@ui/components/molecules/vc-toast";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { PropType, computed, defineComponent, h, ref, toRaw, reactive } from "vue";
-import { Content, NotificationType, NotificationPosition } from "@shared/components/notifications/types";
-import { useContainer } from "@shared/components/notifications/composables/useContainer";
+import { PropType, computed, defineComponent, h, ref, toRaw, reactive, inject } from "vue";
+import { Content, NotificationType, NotificationPosition, NotificationContainerStateKey } from "@shared/components/notifications/types";
 
 const GAP = 14;
 const VISIBLE_TOASTS = 3;
@@ -64,7 +63,7 @@ const NotificationContainer = defineComponent({
     },
   },
   setup(props) {
-    const { notificationContainers, actions } = useContainer();
+    const { notificationContainers, actions } = inject(NotificationContainerStateKey)!;
     const notificationsList = computed(() => {
       return notificationContainers[props.position as NotificationPosition].value || [];
     });

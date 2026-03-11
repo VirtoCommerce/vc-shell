@@ -1,11 +1,8 @@
-import { inject, type ComputedRef } from "vue";
-import { TableContextKey } from "@ui/components/organisms/vc-table/keys";
+import { inject } from "vue";
+import { TableContextKey, type TableContext } from "@ui/components/organisms/vc-table/keys";
 
-export interface TableContext<T = any> {
-  selectedRowIndex: ComputedRef<number | undefined>;
-  setSelectedRowIndex: (index: number | undefined) => void;
-  variant: ComputedRef<string | undefined>;
-}
+// Re-export for backward compatibility (TableContext now lives in keys.ts)
+export type { TableContext };
 
 /**
  * Hook to access table context from child components

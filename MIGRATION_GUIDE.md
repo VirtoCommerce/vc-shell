@@ -449,7 +449,7 @@ The new approach uses a single `<DraggableDashboard />` component that automatic
     **Example of registering a widget in a module's `index.ts`:**
     ```typescript
     import * as components from "./components";
-    import { createDynamicAppModule, registerDashboardWidget } from "@vc-shell/framework";
+    import { createAppModule, registerDashboardWidget } from "@vc-shell/framework";
     import { markRaw } from "vue";
 
     registerDashboardWidget({
@@ -459,13 +459,101 @@ The new approach uses a single `<DraggableDashboard />` component that automatic
       size: { width: 6, height: 6 }, // Initial size in the grid
     });
 
-    export default createDynamicAppModule({
+    export default createAppModule({
       // ... rest of the module configuration
     });
     ```
     You must do this for all modules that provide dashboard widgets. This decouples the dashboard page from specific widget implementations, making the system fully modular.
 
-## 9. Registering Widgets in Blades
+## 9. Removal of Dynamic Views Module (`shared/modules/dynamic`)
+
+The legacy **Dynamic Views** system — a schema-driven UI that rendered blades from JSON schemas — has been completely removed from the framework. This is a **breaking change** for any module that relied on `createDynamicAppModule()`.
+
+### What Was Removed
+
+The following exports no longer exist in `@vc-shell/framework`:
+
+| Category | Removed exports |
+|----------|----------------|
+| **Module factory** | `createDynamicAppModule` |
+| **Blade factories** | `useDetailsFactory`, `useListFactory` |
+| **Blade pages** | `DynamicBladeList`, `DynamicBladeForm` |
+| **Schema types** | `DynamicSchema`, `DynamicGridSchema`, `DynamicDetailsSchema`, `ControlSchema`, `FormContentSchema`, `ListContentSchema`, `SettingsSchema`, `OverridesSchema`, and all field schema types (`InputSchema`, `SelectSchema`, `CardSchema`, etc.) |
+| **Composables** | `useDynamicViewsUtils`, `useToolbarReducer`, `useTableTemplates`, `useFilterBuilder` |
+| **Components** | `SchemaRender`, all field renderers (InputField, SelectField, Card, Fieldset, etc.) |
+| **Injection keys** | `DynamicModuleRegistryStateKey`, `DynamicModuleRegistryState`, `DynamicRegisteredEntry` |
+
+### Migration Steps
+
+Modules that used `createDynamicAppModule()` must be rewritten to use direct Vue component registration via `createAppModule()`.
+
+**Old Approach (Removed):**
+```typescript
+// module/index.ts
+import { createDynamicAppModule } from "@vc-shell/framework";
+import * as schema from "./schema";
+import * as composables from "./composables";
+import * as locales from "./locales";
+
+export default createDynamicAppModule({
+  schema,
+  composables,
+  locales,
+});
+```
+
+**New Approach:**
+```typescript
+// module/index.ts
+import { createAppModule } from "@vc-shell/framework";
+import * as pages from "./pages";
+import * as locales from "./locales";
+
+export default createAppModule(pages, locales);
+```
+
+Instead of JSON schemas describing blade content, you now write standard Vue `<script setup>` components that use framework UI components directly (`VcInput`, `VcSelect`, `VcCard`, `VcTable`, etc.).
+
+**Old JSON schema approach:**
+```json
+{
+  "settings": {
+    "id": "product-details",
+    "component": "DynamicBladeForm",
+    "composable": "useProductDetails"
+  },
+  "content": [{
+    "id": "productForm",
+    "component": "vc-form",
+    "children": [
+      { "id": "name", "component": "vc-input", "property": "name", "label": "Name" },
+      { "id": "category", "component": "vc-select", "property": "categoryId", "label": "Category" }
+    ]
+  }]
+}
+```
+
+**New Vue component approach:**
+```vue
+<!-- pages/product-details.vue -->
+<template>
+  <VcBlade title="Product Details" :toolbar-items="bladeToolbar">
+    <VcForm>
+      <VcInput v-model="item.name" label="Name" />
+      <VcSelect v-model="item.categoryId" label="Category" :options="categories" />
+    </VcForm>
+  </VcBlade>
+</template>
+
+<script setup lang="ts">
+import { VcBlade, VcForm, VcInput, VcSelect } from "@vc-shell/framework";
+// ... composable logic directly in the component
+</script>
+```
+
+This migration eliminates the indirection layer of JSON schemas and gives you full TypeScript type safety, IDE autocompletion, and standard Vue tooling support.
+
+## 10. Registering Widgets in Blades
 
 The method for registering widgets for blades has been completely redesigned. Instead of using the `#widgets` slot in `vc-blade`, you must now use the `useWidgets` composable for programmatic registration.
 

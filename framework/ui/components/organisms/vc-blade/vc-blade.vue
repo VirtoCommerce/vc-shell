@@ -121,7 +121,7 @@
 <script lang="ts" setup>
 import { ref, inject, computed, onMounted, nextTick, getCurrentInstance } from "vue";
 import { IBladeToolbar } from "@core/types";
-import { useBladeNavigation } from "@shared";
+import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
 import BladeHeaderSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeHeaderSkeleton.vue";
 import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";

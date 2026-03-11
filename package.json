@@ -26,9 +26,9 @@
     "diff": "lerna diff",
     "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --",
     "check-locales": "tsx framework/scripts/check-locales.mts",
+    "check-circular": "madge --circular framework/",
     "prepare": "husky install",
     "pre-commit": "yarn check-locales",
-    "serve:oneshell": "yarn workspace one-shell-app serve",
     "generate-changelogs": "tsx scripts/generate-initial-changelogs.ts"
   },
   "workspaces": [

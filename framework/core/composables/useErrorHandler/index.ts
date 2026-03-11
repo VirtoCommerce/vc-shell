@@ -1,5 +1,5 @@
 import { onErrorCaptured, getCurrentInstance, ref, Ref, nextTick } from "vue";
-import { useAppInsights } from "..";
+import { useAppInsights } from "@core/composables/useAppInsights";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { DisplayableError, parseError } from "@core/utilities/error";
 import { createLogger } from "@core/utilities";

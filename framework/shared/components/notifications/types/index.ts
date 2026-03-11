@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { VNode, DefineComponent } from "vue";
+import { VNode, DefineComponent, InjectionKey, Ref } from "vue";
 
 export type NotificationType = "success" | "error" | "warning" | "default";
 
@@ -31,3 +31,13 @@ export type NotificationPosition =
   | "bottom-left";
 
 export type Content = string | VNode | DefineComponent<{}, {}, any>;
+
+export interface NotificationContainerState {
+  notificationContainers: Record<NotificationPosition, Ref<NotificationOptions[]>>;
+  actions: {
+    remove(id: string | number): void;
+    clear(): void;
+  };
+}
+
+export const NotificationContainerStateKey: InjectionKey<NotificationContainerState> = Symbol("NotificationContainerState");

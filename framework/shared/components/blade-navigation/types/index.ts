@@ -13,7 +13,7 @@ import {
   ComputedRef,
 } from "vue";
 import type { ComponentPublicInstanceConstructor } from "@shared/utilities/vueUtils";
-import type { MenuItemConfig } from "@core/types";
+import type { MenuItemConfig } from "@core/types/menu-types";
 import type { Breadcrumbs } from "@ui/types";
 import type { DisplayableError } from "@core/utilities/error";
 

@@ -1,7 +1,13 @@
 import type { InjectionKey, Ref, ComputedRef } from "vue";
-import type { TableContext } from "@ui/components/organisms/vc-table/composables/useTableContext";
 import type { ColumnCollector } from "@ui/components/organisms/vc-table/utils/ColumnCollector";
 import type { FilterValue } from "@ui/components/organisms/vc-table/types";
+
+// TableContext moved here from useTableContext.ts to break circular dependency
+export interface TableContext<T = any> {
+  selectedRowIndex: ComputedRef<number | undefined>;
+  setSelectedRowIndex: (index: number | undefined) => void;
+  variant: ComputedRef<string | undefined>;
+}
 
 export const TableContextKey: InjectionKey<TableContext> = Symbol("TableContext");
 export const ColumnCollectorKey: InjectionKey<ColumnCollector> = Symbol("ColumnCollector");

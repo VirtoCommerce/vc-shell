@@ -312,10 +312,9 @@ const handleCellBlur = (_payload: { row: number | undefined; field: string }) =>
   &__body-slot {
     @apply tw-w-full tw-min-w-0 tw-overflow-hidden;
 
-    // Ensure custom slot roots can shrink with the cell width.
-    // This fixes truncation/clamp behavior for components that set intrinsic width (e.g. max-content/fit-content).
+    // Constrain custom slot roots to cell width for truncation/clamp,
+    // without forcing stretch — components with intrinsic sizes (e.g. VcImage) keep their own width.
     > * {
-      width: 100% !important;
       min-width: 0 !important;
       max-width: 100% !important;
     }

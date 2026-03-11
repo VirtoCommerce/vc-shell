@@ -1,6 +1,5 @@
 import { createApp, nextTick, reactive, ref, Ref } from "vue";
-import { NotificationOptions, NotificationPosition } from "@shared/components/notifications/types";
-import { NotificationContainer } from "@shared/components/notifications/components";
+import { NotificationOptions, NotificationPosition, NotificationContainerStateKey } from "@shared/components/notifications/types";
 import { useInstance } from "@shared/components/notifications/composables/useInstance";
 import * as _ from "lodash-es";
 import { generateId, createLogger } from "@core/utilities";
@@ -84,7 +83,7 @@ export function useContainer(): IUseContainer {
     return renderRoot;
   }
 
-  function appendInstance(options: NotificationOptions) {
+  async function appendInstance(options: NotificationOptions) {
     // Determine the notification position
     const position = options.position || (defaultOptions.position as NotificationPosition);
 
@@ -94,10 +93,15 @@ export function useContainer(): IUseContainer {
     if (!existingInstance) {
       // Create a new root element for the position
       const dom = generateRoot(position);
+      // Lazy import to break circular dependency (NotificationContainer → useContainer)
+      const { default: NotificationContainer } = await import(
+        "@shared/components/notifications/components/notification-container"
+      );
       const instance = createApp(NotificationContainer, {
         ...(options as Record<string, unknown>),
         position, // Pass the position to the component
       });
+      instance.provide(NotificationContainerStateKey, { notificationContainers, actions });
       instance.mount(dom);
       saveInstance(instance, dom.id, position);
     }

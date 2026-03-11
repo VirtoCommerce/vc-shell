@@ -1,0 +1,5 @@
+{
+  "tsConfig": "framework/tsconfig.json",
+  "fileExtensions": ["ts", "vue"],
+  "excludeRegExp": ["dist", "node_modules", "\\.stories\\.", "\\.test\\.", "\\.spec\\."]
+}

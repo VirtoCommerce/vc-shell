@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Content, NotificationType, NotificationPosition } from "@shared/components/notifications";
+import type { Content, NotificationType, NotificationPosition } from "@shared/components/notifications/types";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { Ref, computed, onMounted, onBeforeUnmount, ref, toRefs, watch } from "vue";
 

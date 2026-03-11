@@ -1,4 +1,4 @@
-import { i18n } from "..";
+import { i18n } from "@core/plugins/i18n";
 import { defineRule } from "vee-validate";
 import { all } from "@vee-validate/rules";
 

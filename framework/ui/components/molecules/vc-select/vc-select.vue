@@ -261,7 +261,7 @@ defineSlots<{
 const props = withDefaults(
   defineProps<
     IFormFieldProps & {
-      modelValue?: any;
+      modelValue?: Option | Option[] | string | string[] | null;
       mapOptions?: boolean;
       hint?: string;
       prefix?: string;

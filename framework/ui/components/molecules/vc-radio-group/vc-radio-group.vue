@@ -29,27 +29,27 @@
   </VcInputGroup>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends string | number | boolean = string">
 import { computed, useId } from "vue";
 import { VcInputGroup } from "@ui/components/molecules/vc-input-group";
 import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
 import type { IFormFieldProps } from "@ui/types/form-field";
 
-export interface RadioGroupOption {
+export interface RadioGroupOption<V = string | number | boolean> {
   label: string;
-  value: string | number | boolean;
+  value: V;
   disabled?: boolean;
 }
 
 export interface VcRadioGroupProps extends IFormFieldProps {
-  modelValue: string | number | boolean;
-  options?: RadioGroupOption[];
+  modelValue?: T;
+  options?: RadioGroupOption<T>[];
   hint?: string;
   orientation?: "vertical" | "horizontal";
 }
 
 export interface VcRadioGroupEmits {
-  (event: "update:modelValue", value: string | number | boolean): void;
+  (event: "update:modelValue", value: T): void;
 }
 
 const props = withDefaults(defineProps<VcRadioGroupProps>(), {
@@ -63,11 +63,11 @@ const uid = useId();
 const generatedName = computed(() => `vc-radio-group-${uid}`);
 const resolvedName = computed(() => props.name || generatedName.value);
 
-function onUpdate(value: string | number | boolean) {
+function onUpdate(value: T) {
   emit("update:modelValue", value);
 }
 
-function getOptionKey(option: RadioGroupOption, index: number) {
+function getOptionKey(option: RadioGroupOption<T>, index: number) {
   if (typeof option.value === "string" || typeof option.value === "number") {
     return `${option.value}`;
   }

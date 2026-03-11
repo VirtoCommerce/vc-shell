@@ -37,7 +37,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends string | number | boolean = string">
 import { isEqual } from "lodash-es";
 import { computed, type VNode } from "vue";
 import { VcHint } from "@ui/components/atoms/vc-hint";
@@ -48,26 +48,22 @@ export interface VcRadioButtonProps extends IFormFieldProps {
   /**
    * Value of the radio button.
    */
-  value: string | number | boolean;
+  value?: T;
   /**
    * Value binding of the radio button.
    */
-  modelValue: string | number | boolean;
+  modelValue?: T;
   /**
    * Allows to select a boolean value.
    */
   binary?: boolean;
-  /**
-   * Specifies that the radio button should be selected.
-   */
-  checked?: boolean;
 }
 
 export interface VcRadioButtonEmits {
   /**
    * Emits when the radio button is changed.
    */
-  (event: "update:modelValue", value: string | number | boolean): void;
+  (event: "update:modelValue", value: T): void;
 }
 
 const props = withDefaults(defineProps<VcRadioButtonProps>(), {
@@ -90,7 +86,7 @@ function onChange() {
   if (!resolvedDisabled.value) {
     const model = props.binary ? !checked.value : props.value;
 
-    emit("update:modelValue", model);
+    emit("update:modelValue", model as T);
   }
 }
 </script>

@@ -1,3 +1,2 @@
-import _Checkbox from "@ui/components/molecules/vc-checkbox/vc-checkbox.vue";
-
-export const VcCheckbox = _Checkbox as typeof _Checkbox;
+export { default as VcCheckbox } from "@ui/components/molecules/vc-checkbox/vc-checkbox.vue";
+export type { VcCheckboxProps, VcCheckboxEmits } from "@ui/components/molecules/vc-checkbox/vc-checkbox.vue";

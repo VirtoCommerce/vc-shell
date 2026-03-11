@@ -63,7 +63,7 @@ import type { IFormFieldProps } from "@ui/types/form-field";
 
 export interface VcRatingProps extends IFormFieldProps {
   placeholder?: string;
-  modelValue: number;
+  modelValue?: number;
   max?: number;
   variant?: "stars" | "star-and-text" | "text";
 }

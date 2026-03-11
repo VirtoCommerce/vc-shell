@@ -31,28 +31,28 @@
   </VcInputGroup>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends string | number | boolean = string">
 import { computed, useId } from "vue";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
 import { VcInputGroup } from "@ui/components/molecules/vc-input-group";
 import type { IFormFieldProps } from "@ui/types/form-field";
 
-export interface CheckboxGroupOption {
+export interface CheckboxGroupOption<V = string | number | boolean> {
   label: string;
-  value: string | number | boolean;
+  value: V;
   disabled?: boolean;
 }
 
 export interface VcCheckboxGroupProps extends IFormFieldProps {
-  modelValue?: (string | number | boolean)[];
-  options?: CheckboxGroupOption[];
+  modelValue?: T[];
+  options?: CheckboxGroupOption<T>[];
   hint?: string;
   orientation?: "vertical" | "horizontal";
   size?: "s" | "m" | "l";
 }
 
 export interface VcCheckboxGroupEmits {
-  (event: "update:modelValue", value: (string | number | boolean)[]): void;
+  (event: "update:modelValue", value: T[]): void;
 }
 
 const props = withDefaults(defineProps<VcCheckboxGroupProps>(), {
@@ -69,16 +69,16 @@ const generatedName = computed(() => `vc-checkbox-group-${uid}`);
 const resolvedName = computed(() => props.name || generatedName.value);
 const normalizedModelValue = computed(() => (Array.isArray(props.modelValue) ? props.modelValue : []));
 
-function onUpdate(value: boolean | any[]) {
+function onUpdate(value: boolean | T[]) {
   if (Array.isArray(value)) {
-    emit("update:modelValue", value);
+    emit("update:modelValue", value as T[]);
     return;
   }
 
   emit("update:modelValue", normalizedModelValue.value);
 }
 
-function getOptionKey(option: CheckboxGroupOption, index: number) {
+function getOptionKey(option: CheckboxGroupOption<T>, index: number) {
   if (typeof option.value === "string" || typeof option.value === "number") {
     return `${option.value}`;
   }

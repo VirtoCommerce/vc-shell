@@ -102,17 +102,16 @@
     </Transition>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup>
-import { MaybeRef, computed, unref, ref, watch, onMounted } from "vue";
+<script lang="ts" setup generic="T extends string | number | boolean = boolean">
+import { computed, ref, watch, onMounted, type VNode } from "vue";
 import { VcHint } from "@ui/components/atoms/vc-hint";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { useFormField } from "@ui/composables/useFormField";
 import type { IFormFieldProps } from "@ui/types";
 
-export interface Props extends IFormFieldProps {
-  modelValue: MaybeRef<boolean | any[]>;
-  value?: any;
+export interface VcCheckboxProps extends IFormFieldProps {
+  modelValue?: boolean | T[];
+  value?: T;
   trueValue?: boolean;
   falseValue?: boolean;
   size?: "s" | "m" | "l";
@@ -120,23 +119,23 @@ export interface Props extends IFormFieldProps {
   indeterminate?: boolean;
 }
 
-export interface Emits {
-  (event: "update:modelValue", value: boolean | any[]): void;
+export interface VcCheckboxEmits {
+  (event: "update:modelValue", value: boolean | T[]): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VcCheckboxProps>(), {
   name: "Field",
   trueValue: true,
   falseValue: false,
   size: "s",
   indeterminate: false,
 });
-const emit = defineEmits<Emits>();
+const emit = defineEmits<VcCheckboxEmits>();
 
 defineSlots<{
-  default: (props: Record<string, never>) => any;
-  error: (props: Record<string, never>) => any;
-  icon: (props: Record<string, never>) => any;
+  default: (props: Record<string, never>) => VNode[];
+  error: (props: Record<string, never>) => VNode[];
+  icon: (props: Record<string, never>) => VNode[];
 }>();
 
 const { fieldId: checkboxId, errorId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
@@ -146,17 +145,17 @@ const checkboxRef = ref<HTMLInputElement | null>(null);
 
 const model = computed({
   get() {
-    return unref(props.modelValue);
+    return props.modelValue;
   },
   set(newValue) {
-    emit("update:modelValue", newValue as boolean | any[]);
+    emit("update:modelValue", newValue as boolean | T[]);
   },
 });
 
 const checked = computed(() => {
-  const modelVal = unref(props.modelValue);
+  const modelVal = props.modelValue;
   if (Array.isArray(modelVal)) {
-    return modelVal.includes(props.value);
+    return modelVal.includes(props.value as T);
   }
   return modelVal === props.trueValue;
 });

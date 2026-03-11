@@ -95,7 +95,7 @@ jobs:
       run: |
         yarn publish:packages --tag "$NPM_TAG"
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     - name: Verify npm dist tags
       if: success()

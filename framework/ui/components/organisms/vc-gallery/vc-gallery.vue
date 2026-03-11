@@ -149,7 +149,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch, toValue } from "vue";
+import { computed, ref, watch } from "vue";
 import type { ICommonAsset, IValidationRules } from "@core/types";
 import { VcFileUpload } from "@ui/components/molecules/vc-file-upload";
 import { VcHint } from "@ui/components/atoms/vc-hint";
@@ -241,7 +241,7 @@ const localImages = ref<ICommonAsset[]>([]);
 watch(
   () => props.images,
   (newVal) => {
-    localImages.value = [...toValue(newVal)];
+    localImages.value = [...(newVal ?? [])];
   },
   { deep: true, immediate: true },
 );

@@ -5,10 +5,8 @@
 ### Bug Fixes
 - use lookahead anchor in changelog version section regex ([95696e6](https://github.com/VirtoCommerce/vc-shell/commit/95696e6b1289d3e5f65f5f4ee262744fef800a4c))
 
-### Vite Config (@vc-shell/config-generator)
-
-### Bug Fixes
 - strip shared dep styles from dynamic module builds ([4bb592e](https://github.com/VirtoCommerce/vc-shell/commit/4bb592e5c101bf23259b929b00776144810d182c))
+### Vite Config (@vc-shell/config-generator)
 
 ## [2.0.0-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2026-03-10)
 
@@ -22,15 +20,11 @@
 
 ### Bug Fixes
 - pin @module-federation/dts-plugin to 2.0.1 to fix ESM/CJS fs-extra crash ([a41d233](https://github.com/VirtoCommerce/vc-shell/commit/a41d2335761e723eda33b45dbb45ef3e70752bf7))
-### Bug Fixes
-- pin @module-federation/dts-plugin to 2.0.1 to fix ESM/CJS fs-extra crash ([a41d233](https://github.com/VirtoCommerce/vc-shell/commit/a41d2335761e723eda33b45dbb45ef3e70752bf7))
 
 ## [2.0.0-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2026-03-10)
 
 ### VC-Shell Framework (@vc-shell/framework)
 
-### Features
-- add blade catch-all route handling in VcBladeNavigationComponent ([cb7920a](https://github.com/VirtoCommerce/vc-shell/commit/cb7920a3563d9224a160c00f728b5e5a84277f7f))
 ### Features
 - add blade catch-all route handling in VcBladeNavigationComponent ([cb7920a](https://github.com/VirtoCommerce/vc-shell/commit/cb7920a3563d9224a160c00f728b5e5a84277f7f))
 
@@ -48,15 +42,7 @@
 
 ### Create VC App (@vc-shell/create-vc-app)
 
-### Code Refactoring
-- remove unused components and update package resolutions ([26ff398](https://github.com/VirtoCommerce/vc-shell/commit/26ff398739d75b23f7f700542920a117e0022ff3))
-**Note:** Version bump only for package @vc-shell/create-vc-app
-
 ### Vite Config (@vc-shell/config-generator)
-
-### Code Refactoring
-- remove unused components and update package resolutions ([26ff398](https://github.com/VirtoCommerce/vc-shell/commit/26ff398739d75b23f7f700542920a117e0022ff3))
-**Note:** Version bump only for package @vc-shell/config-generator
 
 ## [2.0.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.0...v2.0.0-alpha.1) (2026-03-10)
 
@@ -75,14 +61,22 @@
 - **vc-menu:** add loading prop with skeleton placeholders ([d0bb25c](https://github.com/VirtoCommerce/vc-shell/commit/d0bb25c345c977fbb32e1492c74db4bfdcc94413))
 - **vc-menu-group:** add section variant, grid animation, chevron transition ([c5f04f1](https://github.com/VirtoCommerce/vc-shell/commit/c5f04f1fd2f0df3bcf3749feb8cbb32e1295eca8))
 - **vc-menu:** add loading and variant to type definitions ([4d64610](https://github.com/VirtoCommerce/vc-shell/commit/4d646106ef86e74bf9761ebbb461b8200c749b64))
+- **create-vc-app:** add v2 templates for all project types ([60f38b7](https://github.com/VirtoCommerce/vc-shell/commit/60f38b7b6228846929730a79b01ecc61ba201144))
+- **create-vc-app:** add v2 foundation — types, helpers, template engine, codegen, commands ([5c52c34](https://github.com/VirtoCommerce/vc-shell/commit/5c52c349655f19872adbd0c7e5deee6c9e49a5c5))
+- **create-vc-app:** add missing alias to Dashboard route in standalone template ([90d31a4](https://github.com/VirtoCommerce/vc-shell/commit/90d31a40a2c4ba8fcc0a426ea132eb2e03c26e3a))
+- **release-config:** enhance stageAndAmendCommit to accept explicit files ([3088f43](https://github.com/VirtoCommerce/vc-shell/commit/3088f432f07dbef60931ec6f180f8e28ef0f809a))
+- **shared-deps:** export SHARED_DEP_NAMES as single source of truth for MF shared deps ([18f68ef](https://github.com/VirtoCommerce/vc-shell/commit/18f68efda491d7e595acfb4b1a547d82658967f2))
+- **vite-config:** normalize symlinked paths in stripExternalStyles via realpathSync ([6f825aa](https://github.com/VirtoCommerce/vc-shell/commit/6f825aa66b2bb209dba6a7497a3af4de981022d8))
 ### Bug Fixes
 - **ui:** improve collapsed sidebar UX and embedded AI agent context ([c87e16d](https://github.com/VirtoCommerce/vc-shell/commit/c87e16df0b70069f919ea20676f3aa3b66d447d9))
 - **shell-nav:** logo click navigates to main route without clearing stack ([f9f8f78](https://github.com/VirtoCommerce/vc-shell/commit/f9f8f785153bc0e4027f4553fce7c070ea43aa14))
 - **shell-nav:** openRoot no longer clears blade stack ([547ae53](https://github.com/VirtoCommerce/vc-shell/commit/547ae5363b7b96d30cc2ad65fc9ec97191116f26))
 - **vc-menu:** move font and padding to app level, add activeItemId ([3018007](https://github.com/VirtoCommerce/vc-shell/commit/30180073b684ebd5c6f77df62fde1bd740b32720))
 - **notifications:** fix toast width, centering, expand/collapse UX ([a5a5423](https://github.com/VirtoCommerce/vc-shell/commit/a5a54239ec9e3b3ebe897a25fb0657397d123fdb))
+- **vite-config:** clarify build-time vs runtime MF roles in getHostFederationConfig ([cf2f9b7](https://github.com/VirtoCommerce/vc-shell/commit/cf2f9b7dfd358aa192fac580c2697205f4649984))
 ### Documentation
 - **vc-menu:** update stories with sections, nesting, loading, badges ([4426976](https://github.com/VirtoCommerce/vc-shell/commit/44269767f013f769bb6f4ae4e8362075e93ba9f1))
+- **create-vc-app:** remove legacy v1 templates and update entry point ([8204599](https://github.com/VirtoCommerce/vc-shell/commit/820459901f57aa80da4d7f0e00f5931f79f05c58))
 ### Styles
 - **vc-menu-item:** update design tokens to match Figma mockup ([0c634cf](https://github.com/VirtoCommerce/vc-shell/commit/0c634cf5cef63201d264b36b7d880adfc07175a8))
 ### Code Refactoring
@@ -98,60 +92,11 @@
 - replace native buttons in table components with VcButton ([5ec395e](https://github.com/VirtoCommerce/vc-shell/commit/5ec395e163eb4d08240f513ee0fda93ce5e829e7))
 ### Tests
 - add unit and accessibility tests across framework ([59086a9](https://github.com/VirtoCommerce/vc-shell/commit/59086a90690a13bfb186685bc423b73cfb406dc8))
-### Bug Fixes
-- **notifications:** fix toast width, centering, expand/collapse UX ([a5a5423](https://github.com/VirtoCommerce/vc-shell/commit/a5a54239ec9e3b3ebe897a25fb0657397d123fdb))
-- **shell-nav:** logo click navigates to main route without clearing stack ([f9f8f78](https://github.com/VirtoCommerce/vc-shell/commit/f9f8f785153bc0e4027f4553fce7c070ea43aa14))
-- **shell-nav:** openRoot no longer clears blade stack ([547ae53](https://github.com/VirtoCommerce/vc-shell/commit/547ae5363b7b96d30cc2ad65fc9ec97191116f26))
-- **ui:** improve collapsed sidebar UX and embedded AI agent context ([c87e16d](https://github.com/VirtoCommerce/vc-shell/commit/c87e16df0b70069f919ea20676f3aa3b66d447d9))
-- **vc-menu:** move font and padding to app level, add activeItemId ([3018007](https://github.com/VirtoCommerce/vc-shell/commit/30180073b684ebd5c6f77df62fde1bd740b32720))
-### Features
-- **a11y:** add ARIA attributes to blades, popups, and blade navigation ([12454c6](https://github.com/VirtoCommerce/vc-shell/commit/12454c628683d36fba9efea6e24224d1e0a029e4))
-- add Lato font family ([8384890](https://github.com/VirtoCommerce/vc-shell/commit/83848902a6b83122663070e9056863d85ae7f11f))
-- **ai-agent:** add embedded mode support with iframe messaging ([d605a2d](https://github.com/VirtoCommerce/vc-shell/commit/d605a2dedaf223718a0dccd6eaad94fbeddae1c0))
-- **blade-nav:** enforce workspace permissions in BladeStack ([edfe789](https://github.com/VirtoCommerce/vc-shell/commit/edfe7898828eaf1c2fde5abc00a7c13b1bdc9a2f))
-- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
-- **vc-menu-group:** add section variant, grid animation, chevron transition ([c5f04f1](https://github.com/VirtoCommerce/vc-shell/commit/c5f04f1fd2f0df3bcf3749feb8cbb32e1295eca8))
-- **vc-menu:** add loading and variant to type definitions ([4d64610](https://github.com/VirtoCommerce/vc-shell/commit/4d646106ef86e74bf9761ebbb461b8200c749b64))
-- **vc-menu:** add loading prop with skeleton placeholders ([d0bb25c](https://github.com/VirtoCommerce/vc-shell/commit/d0bb25c345c977fbb32e1492c74db4bfdcc94413))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **create-vc-app:** add v2 templates for all project types ([60f38b7](https://github.com/VirtoCommerce/vc-shell/commit/60f38b7b6228846929730a79b01ecc61ba201144))
-- **create-vc-app:** add v2 foundation — types, helpers, template engine, codegen, commands ([5c52c34](https://github.com/VirtoCommerce/vc-shell/commit/5c52c349655f19872adbd0c7e5deee6c9e49a5c5))
-### Bug Fixes
-- **create-vc-app:** add missing alias to Dashboard route in standalone template ([90d31a4](https://github.com/VirtoCommerce/vc-shell/commit/90d31a40a2c4ba8fcc0a426ea132eb2e03c26e3a))
-### Code Refactoring
-- **create-vc-app:** remove legacy v1 templates and update entry point ([8204599](https://github.com/VirtoCommerce/vc-shell/commit/820459901f57aa80da4d7f0e00f5931f79f05c58))
-### Bug Fixes
-- **create-vc-app:** add missing alias to Dashboard route in standalone template ([90d31a4](https://github.com/VirtoCommerce/vc-shell/commit/90d31a40a2c4ba8fcc0a426ea132eb2e03c26e3a))
-### Features
-- **create-vc-app:** add v2 foundation — types, helpers, template engine, codegen, commands ([5c52c34](https://github.com/VirtoCommerce/vc-shell/commit/5c52c349655f19872adbd0c7e5deee6c9e49a5c5))
-- **create-vc-app:** add v2 templates for all project types ([60f38b7](https://github.com/VirtoCommerce/vc-shell/commit/60f38b7b6228846929730a79b01ecc61ba201144))
 
 ### Release Config (@vc-shell/release-config)
 
-### Features
-- **release-config:** enhance stageAndAmendCommit to accept explicit files ([3088f43](https://github.com/VirtoCommerce/vc-shell/commit/3088f432f07dbef60931ec6f180f8e28ef0f809a))
-- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
-### Features
-- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
-- **release-config:** enhance stageAndAmendCommit to accept explicit files ([3088f43](https://github.com/VirtoCommerce/vc-shell/commit/3088f432f07dbef60931ec6f180f8e28ef0f809a))
-
 ### Vite Config (@vc-shell/config-generator)
-
-### Features
-- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
-- **shared-deps:** export SHARED_DEP_NAMES as single source of truth for MF shared deps ([18f68ef](https://github.com/VirtoCommerce/vc-shell/commit/18f68efda491d7e595acfb4b1a547d82658967f2))
-### Bug Fixes
-- **vite-config:** normalize symlinked paths in stripExternalStyles via realpathSync ([6f825aa](https://github.com/VirtoCommerce/vc-shell/commit/6f825aa66b2bb209dba6a7497a3af4de981022d8))
-### Documentation
-- **vite-config:** clarify build-time vs runtime MF roles in getHostFederationConfig ([cf2f9b7](https://github.com/VirtoCommerce/vc-shell/commit/cf2f9b7dfd358aa192fac580c2697205f4649984))
-### Bug Fixes
-- **vite-config:** normalize symlinked paths in stripExternalStyles via realpathSync ([6f825aa](https://github.com/VirtoCommerce/vc-shell/commit/6f825aa66b2bb209dba6a7497a3af4de981022d8))
-### Features
-- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
-- **shared-deps:** export SHARED_DEP_NAMES as single source of truth for MF shared deps ([18f68ef](https://github.com/VirtoCommerce/vc-shell/commit/18f68efda491d7e595acfb4b1a547d82658967f2))
 
 ## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
 
@@ -162,11 +107,8 @@
 - streamline component exports and remove async component definitions ([fb1d76c](https://github.com/VirtoCommerce/vc-shell/commit/fb1d76c9ac8a1974472e1c43ab3c09d41a0b5ee3))
 **Note:** Version bump only for package @vc-shell/framework
 
-### Release Config (@vc-shell/release-config)
-
-### Code Refactoring
 - enhance git and lerna integration for better versioning ([2864ce9](https://github.com/VirtoCommerce/vc-shell/commit/2864ce93ac21ef00aff8b337332dc918114ac571))
-**Note:** Version bump only for package @vc-shell/release-config
+### Release Config (@vc-shell/release-config)
 
 ## [1.2.4-beta.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.6...v1.2.4-beta.7) (2026-03-04)
 
@@ -181,19 +123,8 @@
 - **release-config:** fix changelog generation using git tags instead of CHANGELOG entries ([74d8c2c](https://github.com/VirtoCommerce/vc-shell/commit/74d8c2cd852e2a8f100fad65e7e7b6a353c9f8f9))
 ### Code Refactoring
 - capture conventional-changelog output directly from stdout and enhance error logging ([fa8c12a](https://github.com/VirtoCommerce/vc-shell/commit/fa8c12ad4a7464ec7d7e2e2d85c2ef342a07dce0))
-### Bug Fixes
-- **release-config:** fix changelog generation using git tags instead of CHANGELOG entries ([74d8c2c](https://github.com/VirtoCommerce/vc-shell/commit/74d8c2cd852e2a8f100fad65e7e7b6a353c9f8f9))
-- **release:** force publish all packages by default ([278877c](https://github.com/VirtoCommerce/vc-shell/commit/278877c8c6089d918fcb02d35474859cd10d924c))
-- **release:** keep root changelog stable in dry runs ([13730dd](https://github.com/VirtoCommerce/vc-shell/commit/13730ddf2dad1f08a4ade09fade22c1d07c3f773))
-- **release:** preserve package changes in root changelog ([a738adf](https://github.com/VirtoCommerce/vc-shell/commit/a738adffaa292b7fd0170a6d7b2e9f8d824a9936))
-### Features
-- improve `getPreviousVersionTag` to find previous version by semver comparison, supporting non-existent target tags ([58d2873](https://github.com/VirtoCommerce/vc-shell/commit/58d28739950ae31631c432db82ab671ffc44544a))
-
-### Vite Config (@vc-shell/config-generator)
-
-### Code Refactoring
 - dynamically import `rollup-plugin-visualizer` to conditionally load it when analysis is enabled ([57f5182](https://github.com/VirtoCommerce/vc-shell/commit/57f5182496b5d2a9897f6e1f70522177782316c7))
-**Note:** Version bump only for package @vc-shell/config-generator
+### Vite Config (@vc-shell/config-generator)
 
 ## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
 
@@ -214,6 +145,7 @@
 - **vc-select:** tone down no-options empty state text styling ([37a35e9](https://github.com/VirtoCommerce/vc-shell/commit/37a35e96d466c221fe5e0e8a50179f76ae98b204))
 - **vc-table:** separate active row highlight from checkbox selection ([55d26b4](https://github.com/VirtoCommerce/vc-shell/commit/55d26b455d7e01ca07d53a0350201d163050e0aa))
 - **vc-table:** consistent null-guarding in handleRowClick activeItemId toggle ([acb5479](https://github.com/VirtoCommerce/vc-shell/commit/acb5479b1d960f777da703c75006361ba43b09cb))
+- **release-config:** generate changelogs for all release types and backfill empty versions ([d82147d](https://github.com/VirtoCommerce/vc-shell/commit/d82147d23469c912ca3de24a4157298736107c83))
 ### Code Refactoring
 - **user-info:** update avatar fallback and typography to match new design ([adac87c](https://github.com/VirtoCommerce/vc-shell/commit/adac87ca9d8dab841885a21d20c6a1fac5b5d662))
 - **vc-table:** delegate row highlighting from VcTableAdapter to VcDataTable activeItemId ([2e82f83](https://github.com/VirtoCommerce/vc-shell/commit/2e82f8337463a7ac16702928e83890f07a841eaa))
@@ -223,9 +155,6 @@
 - **vc-sidebar:** use global design tokens for overlay, shadow, glass ([4522c3c](https://github.com/VirtoCommerce/vc-shell/commit/4522c3c23e4096546ae430ce7c62330ffab29fdd))
 
 ### Release Config (@vc-shell/release-config)
-
-### Bug Fixes
-- **release-config:** generate changelogs for all release types and backfill empty versions ([d82147d](https://github.com/VirtoCommerce/vc-shell/commit/d82147d23469c912ca3de24a4157298736107c83))
 
 ## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-04)
 
@@ -267,6 +196,16 @@
 - **shell:** remove notifications widget from AppHub Notifications are now accessed via the standalone bell icon in the sidebar header. Remove widget registration, auto-open on unread logic, and clean up unused imports. ([5b9811f](https://github.com/VirtoCommerce/vc-shell/commit/5b9811f942125c7085ad958128cd14917760a8fd))
 - **shell:** wire notification bell popover in DesktopLayout Add VcDropdownPanel with NotificationDropdown anchored to the bell button. Implements mutual exclusion: opening bell closes AppHub and vice versa. Closes on route change. ([c0fccca](https://github.com/VirtoCommerce/vc-shell/commit/c0fcccae35d69bf0b722616eba3fba9cf4a17ef0))
 - **shell:** add notification bell button to SidebarHeader Add a bell icon button between logo and burger menu in the sidebar header. Visible when sidebar is expanded, shows unread indicator dot. ([02fbe5e](https://github.com/VirtoCommerce/vc-shell/commit/02fbe5e566f629bb011ebddfcf4b6eeb2730ce16))
+- **api-client:** support .NET 9/10 runtimes, bump nswag to 14.6.3 ([7ef1a23](https://github.com/VirtoCommerce/vc-shell/commit/7ef1a234a935bc528d3501723070d3166bfbe2aa))
+- **api-client:** ensure trailing slash on platform URL to prevent invalid URI error ([af09115](https://github.com/VirtoCommerce/vc-shell/commit/af09115ec7ea7420020042918ab2be1263bd8651))
+- **cli:** use :loading prop instead of v-loading directive in blade templates ([99ca705](https://github.com/VirtoCommerce/vc-shell/commit/99ca705cadf1e4686ea26cc576537c6f9aa9060e))
+- **dynamic-properties:** handle missing localizedValues in multilanguage dictionary select ([b1a0445](https://github.com/VirtoCommerce/vc-shell/commit/b1a0445e55b9672d98b1c4edb2d0a7b57465dda4))
+- **vite-config:** add modules-library build configuration ([cce505f](https://github.com/VirtoCommerce/vc-shell/commit/cce505f77b6ada4d5488410d11b62b78396961d3))
+- re-enable circular dependency detection in production builds ([a139829](https://github.com/VirtoCommerce/vc-shell/commit/a139829f54e40e7ff987eee1effdfbe88c90343b))
+- **vite-config:** add Vite server.warmup for monorepo dev server pre-transform ([c80ea68](https://github.com/VirtoCommerce/vc-shell/commit/c80ea688203f21dcd37a2e506f3be4218d15810d))
+- **vite-config:** env-gate rollup-plugin-visualizer in shared Vite config ([fec0276](https://github.com/VirtoCommerce/vc-shell/commit/fec02761cf27ec379049944c04c19258e8a028a3))
+- set circular dependency plugin to warn mode instead of throwing ([69d5cff](https://github.com/VirtoCommerce/vc-shell/commit/69d5cffe8cada7ad3808dc44764df76c9bbe10e7))
+- **build:** suppress empty chunk, mixed import, and date-fns locale warnings ([d973302](https://github.com/VirtoCommerce/vc-shell/commit/d97330264de9f0f03474d919fcee971c6864989c))
 ### Bug Fixes
 - **vc-table:** relax generic constraint from Record<string, unknown> to Record<string, any> ([615733b](https://github.com/VirtoCommerce/vc-shell/commit/615733b77df77b0f6be55d7677089909b0c5e208))
 - **teleport:** remove defer attribute that prevented rendering inside skeleton-guarded blades ([5be89d3](https://github.com/VirtoCommerce/vc-shell/commit/5be89d34165862939fcb44d5d7b7f3fed1cb77f1))
@@ -345,32 +284,11 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- **api-client:** support .NET 9/10 runtimes, bump nswag to 14.6.3 ([7ef1a23](https://github.com/VirtoCommerce/vc-shell/commit/7ef1a234a935bc528d3501723070d3166bfbe2aa))
-### Bug Fixes
-- **api-client:** ensure trailing slash on platform URL to prevent invalid URI error ([af09115](https://github.com/VirtoCommerce/vc-shell/commit/af09115ec7ea7420020042918ab2be1263bd8651))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Bug Fixes
-- **cli:** use :loading prop instead of v-loading directive in blade templates ([99ca705](https://github.com/VirtoCommerce/vc-shell/commit/99ca705cadf1e4686ea26cc576537c6f9aa9060e))
 
 ### Release Config (@vc-shell/release-config)
 
-### Bug Fixes
-- **dynamic-properties:** handle missing localizedValues in multilanguage dictionary select ([b1a0445](https://github.com/VirtoCommerce/vc-shell/commit/b1a0445e55b9672d98b1c4edb2d0a7b57465dda4))
-
 ### Vite Config (@vc-shell/config-generator)
-
-### Features
-- **vite-config:** add modules-library build configuration ([cce505f](https://github.com/VirtoCommerce/vc-shell/commit/cce505f77b6ada4d5488410d11b62b78396961d3))
-- re-enable circular dependency detection in production builds ([a139829](https://github.com/VirtoCommerce/vc-shell/commit/a139829f54e40e7ff987eee1effdfbe88c90343b))
-- **vite-config:** add Vite server.warmup for monorepo dev server pre-transform ([c80ea68](https://github.com/VirtoCommerce/vc-shell/commit/c80ea688203f21dcd37a2e506f3be4218d15810d))
-- **vite-config:** env-gate rollup-plugin-visualizer in shared Vite config ([fec0276](https://github.com/VirtoCommerce/vc-shell/commit/fec02761cf27ec379049944c04c19258e8a028a3))
-- **vc-loading:** replace dots loader with bar sweep and add instant preloader ([019e8d6](https://github.com/VirtoCommerce/vc-shell/commit/019e8d6fb5736f766bdba2841c3b5cf7f00b3b77))
-### Bug Fixes
-- set circular dependency plugin to warn mode instead of throwing ([69d5cff](https://github.com/VirtoCommerce/vc-shell/commit/69d5cffe8cada7ad3808dc44764df76c9bbe10e7))
-- **build:** suppress empty chunk, mixed import, and date-fns locale warnings ([d973302](https://github.com/VirtoCommerce/vc-shell/commit/d97330264de9f0f03474d919fcee971c6864989c))
 
 ## [1.2.4-beta.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.3...v1.2.4-beta.4) (2026-02-24)
 
@@ -388,9 +306,6 @@
 
 ### Vite Config (@vc-shell/config-generator)
 
-### Features
-- **dynamic-modules:** add hash-based cache busting for module assets ([eb47537](https://github.com/VirtoCommerce/vc-shell/commit/eb475375fad72f4c00016e0e8d9298cdbc44a321))
-
 ## [1.2.4-beta.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.2...v1.2.4-beta.3) (2026-02-20)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -406,23 +321,11 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Code Refactoring
-- configure path aliases and migrate imports ([bfffc3c](https://github.com/VirtoCommerce/vc-shell/commit/bfffc3cbe8029cf875e49941061b582825cad9a6))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Code Refactoring
-- configure path aliases and migrate imports ([bfffc3c](https://github.com/VirtoCommerce/vc-shell/commit/bfffc3cbe8029cf875e49941061b582825cad9a6))
 
 ### Release Config (@vc-shell/release-config)
 
-### Code Refactoring
-- configure path aliases and migrate imports ([bfffc3c](https://github.com/VirtoCommerce/vc-shell/commit/bfffc3cbe8029cf875e49941061b582825cad9a6))
-
 ### Vite Config (@vc-shell/config-generator)
-
-### Code Refactoring
-- configure path aliases and migrate imports ([bfffc3c](https://github.com/VirtoCommerce/vc-shell/commit/bfffc3cbe8029cf875e49941061b582825cad9a6))
 
 ## [1.2.4-beta.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.1...v1.2.4-beta.2) (2026-02-16)
 
@@ -466,6 +369,7 @@
 - **composables:** implement 3-state sort cycling and fix adaptive items ([484f51f](https://github.com/VirtoCommerce/vc-shell/commit/484f51f31bc76e1178bda09a9fb4765743426d23))
 - **ui-components:** improve accessibility and fix type errors ([d874e75](https://github.com/VirtoCommerce/vc-shell/commit/d874e75e57c34124431c817851dfdc210d05dfd3))
 - **vc-date-picker:** improve internal value type handling ([7a282a1](https://github.com/VirtoCommerce/vc-shell/commit/7a282a110cf749fbb7ee0f2b1eeb99f1f0fa70c3))
+- **router:** update routes to include ForgotPassword and adjust background handling ([900c45d](https://github.com/VirtoCommerce/vc-shell/commit/900c45d9cc2812622ccdd369da209c516a66c75f))
 ### Code Refactoring
 - **shared:** migrate GenericDropdown to VcDropdown and update exports ([dcdbb91](https://github.com/VirtoCommerce/vc-shell/commit/dcdbb916410ecf537343da76d9f60045bf4f6e89))
 - **vc-multivalue:** extract composables and sub-components ([2336673](https://github.com/VirtoCommerce/vc-shell/commit/2336673cacd5cfb5d9243393dd074c80fcc9864e))
@@ -474,9 +378,6 @@
 - **vc-table:** migrate to VcDataTable and enhance API ([3e64a1f](https://github.com/VirtoCommerce/vc-shell/commit/3e64a1ffa49c0dc7aab39463d8310da60cfc5b54))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Bug Fixes
-- **router:** update routes to include ForgotPassword and adjust background handling ([900c45d](https://github.com/VirtoCommerce/vc-shell/commit/900c45d9cc2812622ccdd369da209c516a66c75f))
 
 ## [1.2.3-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3...v1.2.3-beta.1) (2026-01-26)
 
@@ -494,9 +395,6 @@
 - implement centralized logging across composables, components and services ([e27cae6](https://github.com/VirtoCommerce/vc-shell/commit/e27cae64e59b3f8231812297322543e0c5434096))
 
 ### API Client Generator (@vc-shell/api-client-generator)
-
-### Features
-- integrate AI agent plugin into VC-Shell framework ([706f015](https://github.com/VirtoCommerce/vc-shell/commit/706f015f436ecc4ca19831e7159213b0759df6bc))
 
 ## [1.2.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.2...v1.2.3) (2026-01-12)
 
@@ -521,6 +419,8 @@
 - integrate AI agent plugin into VC-Shell framework ([706f015](https://github.com/VirtoCommerce/vc-shell/commit/706f015f436ecc4ca19831e7159213b0759df6bc))
 - enhance framework with AI agent integration ([dcb1fef](https://github.com/VirtoCommerce/vc-shell/commit/dcb1fef55f25755d1903c26f18f6cca588eab286))
 - **ui:** add VcAccordion component with customizable items and storybook documentation ([cc40911](https://github.com/VirtoCommerce/vc-shell/commit/cc409114b0e52008e24a7cfe59204949295a6307))
+- **release:** add --force-publish flag to enable versioning of all packages ([a3e6274](https://github.com/VirtoCommerce/vc-shell/commit/a3e62740ca6761be23727daf01896643fe6c02a0))
+- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
 ### Bug Fixes
 - improve error handling and token refresh logic in useUser composable ([2900d9c](https://github.com/VirtoCommerce/vc-shell/commit/2900d9cc2b4465d9457c3e57338a915fe6a3a3e6))
 - adjust AI agent panel configuration and styling ([ebdd57a](https://github.com/VirtoCommerce/vc-shell/commit/ebdd57ac50342cacf79968253d8240c685062d89))
@@ -531,15 +431,7 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- integrate AI agent plugin into VC-Shell framework ([706f015](https://github.com/VirtoCommerce/vc-shell/commit/706f015f436ecc4ca19831e7159213b0759df6bc))
-
 ### Release Config (@vc-shell/release-config)
-
-### Features
-- **release:** add --force-publish flag to enable versioning of all packages ([a3e6274](https://github.com/VirtoCommerce/vc-shell/commit/a3e62740ca6761be23727daf01896643fe6c02a0))
-### Bug Fixes
-- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
 
 ## [1.1.99-alpha.14](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.13...v1.1.99-alpha.14) (2025-11-27)
 
@@ -596,6 +488,16 @@
 - integrate custom authentication provider checks in useSettings and useExternalProvider ([64bced4](https://github.com/VirtoCommerce/vc-shell/commit/64bced453e364958807ca5746b0babc8aa581490))
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 - **auth:** introduce customizable authentication provider system with PlatformAuthProvider and authProviderManager for enhanced flexibility ([424af98](https://github.com/VirtoCommerce/vc-shell/commit/424af98fe04f60b54cc2baf1db1c6d3dc184f9bc))
+- add comprehensive AI guides and prompts for VC-Shell framework ([15f3d8d](https://github.com/VirtoCommerce/vc-shell/commit/15f3d8d5b52f3a0ac7a5a753f639d74406f92e77))
+- add comprehensive documentation and CLI enhancements for create-vc-app ([b03ebb3](https://github.com/VirtoCommerce/vc-shell/commit/b03ebb3c50923c11c57f3fef609b8a8ab6873670))
+- update template path in getTemplateRoot function for correct template resolution ([9072ae4](https://github.com/VirtoCommerce/vc-shell/commit/9072ae4d74abbaa2fceec382a4b5042fa8747ae5))
+- correct template path in create-app workflow for accurate template rendering ([3974046](https://github.com/VirtoCommerce/vc-shell/commit/3974046b5a753e00e199c93d44da020c83942af3))
+- **ai-codegen:** improve code quality and project organization ([b5dcaef](https://github.com/VirtoCommerce/vc-shell/commit/b5dcaef03900d9d717721114da3995875da10774))
+- **release-config:** improve root changelog generation to exclude empty version bumps ([19ac0ee](https://github.com/VirtoCommerce/vc-shell/commit/19ac0ee6536b6172088c919a5ce2d10ab4718863))
+- **release-config:** enhance changelog cleanup and add version bump notes for empty versions ([cd2b9b0](https://github.com/VirtoCommerce/vc-shell/commit/cd2b9b0250018f4a26a65c41a31d308b3dc6aa51))
+- **release-config:** clean up comments and formatting in release.ts for improved clarity ([2a1130d](https://github.com/VirtoCommerce/vc-shell/commit/2a1130d7cc89a69069ca959f0647fb84ce1924c2))
+- **release:** disable Lerna push to avoid double CI runs ([78aef0a](https://github.com/VirtoCommerce/vc-shell/commit/78aef0aebd10c5089df0cb96d35591d57bdbcee6))
+- **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
 ### Bug Fixes
 - **locales:** add newline for better readability in localization check output ([ee8c2fd](https://github.com/VirtoCommerce/vc-shell/commit/ee8c2fd873f2c4a0a8c4d574c2c8b715215fbe4d))
 ### Code Refactoring
@@ -604,41 +506,15 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-
 ### Create VC App (@vc-shell/create-vc-app)
 
-### Features
-- add comprehensive AI guides and prompts for VC-Shell framework ([15f3d8d](https://github.com/VirtoCommerce/vc-shell/commit/15f3d8d5b52f3a0ac7a5a753f639d74406f92e77))
-- add comprehensive documentation and CLI enhancements for create-vc-app ([b03ebb3](https://github.com/VirtoCommerce/vc-shell/commit/b03ebb3c50923c11c57f3fef609b8a8ab6873670))
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-### Bug Fixes
-- update template path in getTemplateRoot function for correct template resolution ([9072ae4](https://github.com/VirtoCommerce/vc-shell/commit/9072ae4d74abbaa2fceec382a4b5042fa8747ae5))
-- correct template path in create-app workflow for accurate template rendering ([3974046](https://github.com/VirtoCommerce/vc-shell/commit/3974046b5a753e00e199c93d44da020c83942af3))
 ### Documentation
 - update ([f71f076](https://github.com/VirtoCommerce/vc-shell/commit/f71f076ee32f25804237b5604068ff00e46bc706))
-### Code Refactoring
-- **ai-codegen:** improve code quality and project organization ([b5dcaef](https://github.com/VirtoCommerce/vc-shell/commit/b5dcaef03900d9d717721114da3995875da10774))
-
 ### Release Config (@vc-shell/release-config)
-
-### Bug Fixes
-- **release-config:** improve root changelog generation to exclude empty version bumps ([19ac0ee](https://github.com/VirtoCommerce/vc-shell/commit/19ac0ee6536b6172088c919a5ce2d10ab4718863))
-- **release-config:** enhance changelog cleanup and add version bump notes for empty versions ([cd2b9b0](https://github.com/VirtoCommerce/vc-shell/commit/cd2b9b0250018f4a26a65c41a31d308b3dc6aa51))
-- **release-config:** clean up comments and formatting in release.ts for improved clarity ([2a1130d](https://github.com/VirtoCommerce/vc-shell/commit/2a1130d7cc89a69069ca959f0647fb84ce1924c2))
-- **release:** disable Lerna push to avoid double CI runs ([78aef0a](https://github.com/VirtoCommerce/vc-shell/commit/78aef0aebd10c5089df0cb96d35591d57bdbcee6))
-- **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
 
 ### Vite Config (@vc-shell/config-generator)
 
-### Features
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-
 ### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
 ## [1.2.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.0...v1.2.1) (2025-11-13)
 
@@ -648,9 +524,6 @@
 - update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
 
 ### Release Config (@vc-shell/release-config)
-
-### Bug Fixes
-- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
 
 ## [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.2...v1.2.0) (2025-11-13)
 
@@ -689,6 +562,13 @@
 - integrate custom authentication provider checks in useSettings and useExternalProvider ([64bced4](https://github.com/VirtoCommerce/vc-shell/commit/64bced453e364958807ca5746b0babc8aa581490))
 - update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 - **auth:** introduce customizable authentication provider system with PlatformAuthProvider and authProviderManager for enhanced flexibility ([424af98](https://github.com/VirtoCommerce/vc-shell/commit/424af98fe04f60b54cc2baf1db1c6d3dc184f9bc))
+- add comprehensive AI guides and prompts for VC-Shell framework ([15f3d8d](https://github.com/VirtoCommerce/vc-shell/commit/15f3d8d5b52f3a0ac7a5a753f639d74406f92e77))
+- add comprehensive documentation and CLI enhancements for create-vc-app ([b03ebb3](https://github.com/VirtoCommerce/vc-shell/commit/b03ebb3c50923c11c57f3fef609b8a8ab6873670))
+- **release-config:** improve root changelog generation to exclude empty version bumps ([19ac0ee](https://github.com/VirtoCommerce/vc-shell/commit/19ac0ee6536b6172088c919a5ce2d10ab4718863))
+- **release-config:** enhance changelog cleanup and add version bump notes for empty versions ([cd2b9b0](https://github.com/VirtoCommerce/vc-shell/commit/cd2b9b0250018f4a26a65c41a31d308b3dc6aa51))
+- **release-config:** clean up comments and formatting in release.ts for improved clarity ([2a1130d](https://github.com/VirtoCommerce/vc-shell/commit/2a1130d7cc89a69069ca959f0647fb84ce1924c2))
+- **release:** disable Lerna push to avoid double CI runs ([78aef0a](https://github.com/VirtoCommerce/vc-shell/commit/78aef0aebd10c5089df0cb96d35591d57bdbcee6))
+- **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
 ### Bug Fixes
 - **locales:** add newline for better readability in localization check output ([ee8c2fd](https://github.com/VirtoCommerce/vc-shell/commit/ee8c2fd873f2c4a0a8c4d574c2c8b715215fbe4d))
 ### Code Refactoring
@@ -697,34 +577,13 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- add comprehensive AI guides and prompts for VC-Shell framework ([15f3d8d](https://github.com/VirtoCommerce/vc-shell/commit/15f3d8d5b52f3a0ac7a5a753f639d74406f92e77))
-- add comprehensive documentation and CLI enhancements for create-vc-app ([b03ebb3](https://github.com/VirtoCommerce/vc-shell/commit/b03ebb3c50923c11c57f3fef609b8a8ab6873670))
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
 ### Release Config (@vc-shell/release-config)
 
-### Bug Fixes
-- **release-config:** improve root changelog generation to exclude empty version bumps ([19ac0ee](https://github.com/VirtoCommerce/vc-shell/commit/19ac0ee6536b6172088c919a5ce2d10ab4718863))
-- **release-config:** enhance changelog cleanup and add version bump notes for empty versions ([cd2b9b0](https://github.com/VirtoCommerce/vc-shell/commit/cd2b9b0250018f4a26a65c41a31d308b3dc6aa51))
-- **release-config:** clean up comments and formatting in release.ts for improved clarity ([2a1130d](https://github.com/VirtoCommerce/vc-shell/commit/2a1130d7cc89a69069ca959f0647fb84ce1924c2))
-- **release:** disable Lerna push to avoid double CI runs ([78aef0a](https://github.com/VirtoCommerce/vc-shell/commit/78aef0aebd10c5089df0cb96d35591d57bdbcee6))
-- **release:** add automatic push after amend to sync commits and tags ([0aa84c4](https://github.com/VirtoCommerce/vc-shell/commit/0aa84c4f4791533f3423f49c06910becf224b1a4))
-
 ### Vite Config (@vc-shell/config-generator)
 
-### Features
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-
 ### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
 ## [1.1.98-rc.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.3...v1.1.98-rc.4) (2025-10-24)
 
@@ -752,14 +611,12 @@
 ### Bug Fixes
 - **locales:** add newline for better readability in localization check output ([2ecdede](https://github.com/VirtoCommerce/vc-shell/commit/2ecdede43d7f76421944954484b5c313ffe40b7a))
 
-### Release Config (@vc-shell/release-config)
-
-### Bug Fixes
 - **release-config:** improve root changelog generation to exclude empty version bumps ([b02c775](https://github.com/VirtoCommerce/vc-shell/commit/b02c7755d239be2b2a372722d4e851e1ad6ffdd6))
 - **release-config:** enhance changelog cleanup and add version bump notes for empty versions ([b4632c8](https://github.com/VirtoCommerce/vc-shell/commit/b4632c8881d12e5f577a7af5d2452879a3535eba))
 - **release-config:** clean up comments and formatting in release.ts for improved clarity ([e42e568](https://github.com/VirtoCommerce/vc-shell/commit/e42e5689ac696406c8ba001f1b557ce7ae61fa21))
 - **release:** disable Lerna push to avoid double CI runs ([fe9fd18](https://github.com/VirtoCommerce/vc-shell/commit/fe9fd18c3d77196568c05446e307e325cb017125))
 - **release:** add automatic push after amend to sync commits and tags ([7dfacf5](https://github.com/VirtoCommerce/vc-shell/commit/7dfacf53a560be083b993d7217c088a6b98eb2e6))
+### Release Config (@vc-shell/release-config)
 
 ## [1.1.97](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.96...v1.1.97) (2025-10-24)
 
@@ -827,11 +684,9 @@
 ### Bug Fixes
 - **locales:** add newline for better readability in localization check output ([ee8c2fd](https://github.com/VirtoCommerce/vc-shell/commit/ee8c2fd873f2c4a0a8c4d574c2c8b715215fbe4d))
 
-### Release Config (@vc-shell/release-config)
-
-### Bug Fixes
 - **release-config:** clean up comments and formatting in release.ts for improved clarity ([2a1130d](https://github.com/VirtoCommerce/vc-shell/commit/2a1130d7cc89a69069ca959f0647fb84ce1924c2))
 - **release:** disable Lerna push to avoid double CI runs ([78aef0a](https://github.com/VirtoCommerce/vc-shell/commit/78aef0aebd10c5089df0cb96d35591d57bdbcee6))
+### Release Config (@vc-shell/release-config)
 
 ## [1.1.91-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.2...v1.1.91-alpha.3) (2025-10-14)
 
@@ -858,23 +713,11 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
 ### Vite Config (@vc-shell/config-generator)
 
-### Features
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-
 ### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
 
 ## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
@@ -892,13 +735,11 @@
 ### Code Refactoring
 - **useExternalProvider:** update signIn and signOut methods to return promises ([76e8b97](https://github.com/VirtoCommerce/vc-shell/commit/76e8b978c29a58a68124d742b309f2d457d9fb44))
 
+- **api-client:** add .NET 8 runtime support with ability to override ([96846ba](https://github.com/VirtoCommerce/vc-shell/commit/96846bae5e901df1326510d4f7cfb42453c8f157))
 ### API Client Generator (@vc-shell/api-client-generator)
 
 ### Bug Fixes
 - **api-client:** update runtime configuration and enhance error handling in API client generation process ([c9a762a](https://github.com/VirtoCommerce/vc-shell/commit/c9a762ac4e4d120d66b0ab3a16ebfe9078f33fdd))
-### Code Refactoring
-- **api-client:** add .NET 8 runtime support with ability to override ([96846ba](https://github.com/VirtoCommerce/vc-shell/commit/96846bae5e901df1326510d4f7cfb42453c8f157))
-
 ### Create VC App (@vc-shell/create-vc-app)
 
 ### Features
@@ -973,6 +814,7 @@
 - **login:** add localization support for "OR" text in login components ([6ed87e6](https://github.com/VirtoCommerce/vc-shell/commit/6ed87e67963acfaf681ca472e577c3bb79d4f9de))
 - **vc-form:** implement submit event emission in form component ([31019a0](https://github.com/VirtoCommerce/vc-shell/commit/31019a078cb3e3caede67bf8396dc0d985015f6c))
 - **notification-template:** add click event emission to notification template component ([b313b7c](https://github.com/VirtoCommerce/vc-shell/commit/b313b7c0c1ba8aaef4eacd104338a8348a5b8d40))
+- **create-vc-app:** add type definitions for internationalization properties in Vue components ([c215a55](https://github.com/VirtoCommerce/vc-shell/commit/c215a558a113dfc48b53667a6f32ab2537f311f0))
 ### Bug Fixes
 - **vc-select:** update model value type definition to support multiple option formats ([92c70f0](https://github.com/VirtoCommerce/vc-shell/commit/92c70f04448ab1de015cd68c2dd782355a40d9fe))
 - **loader:** enhance version compatibility checks to include prerelease versions ([d1af321](https://github.com/VirtoCommerce/vc-shell/commit/d1af32163d34e4540b49df5d0ed9de71cc5ef0c2))
@@ -980,9 +822,6 @@
 - **ExtensionSlot:** clean up template and script structure for improved readability ([397c1a3](https://github.com/VirtoCommerce/vc-shell/commit/397c1a3045515d379b5e4f5e972db6b01da42c24))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **create-vc-app:** add type definitions for internationalization properties in Vue components ([c215a55](https://github.com/VirtoCommerce/vc-shell/commit/c215a558a113dfc48b53667a6f32ab2537f311f0))
 
 ## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
 
@@ -1026,15 +865,13 @@
 
 ### Features
 - **dashboard:** enhance widget placement logic to handle new widgets without collisions ([1faf444](https://github.com/VirtoCommerce/vc-shell/commit/1faf444cb7c919c7a0ddb4447e7dab560c8f0e93))
+- **locales:** add dashboard menu translation to English locale ([710ea73](https://github.com/VirtoCommerce/vc-shell/commit/710ea732a7fa79ad84f637634e3ca8f0c77bb097))
 ### Bug Fixes
 - **vc-radio-button:** prevent radio button from shrinking by adding flex-shrink property ([276bd6a](https://github.com/VirtoCommerce/vc-shell/commit/276bd6ac81b74b3d93d8652d75e88b32fae10c38))
 ### Code Refactoring
 - **vc-field:** simplify label styling and enhance vertical layout with gap utility ([0441d57](https://github.com/VirtoCommerce/vc-shell/commit/0441d573b96b67758063f3a97780e42af378215d))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **locales:** add dashboard menu translation to English locale ([710ea73](https://github.com/VirtoCommerce/vc-shell/commit/710ea732a7fa79ad84f637634e3ca8f0c77bb097))
 
 ## [1.1.77](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.76...v1.1.77) (2025-09-11)
 
@@ -1191,10 +1028,8 @@
 - **composables:** remove unused useBladeMultilanguage composable ([5ba38e8](https://github.com/VirtoCommerce/vc-shell/commit/5ba38e8aa81595a08052df23cc7962c69c9f6801))
 - **vc-table:** update header slot type to use a function for improved flexibility ([4920b7c](https://github.com/VirtoCommerce/vc-shell/commit/4920b7c37ed657dcd87588f462bccd27d00cae4f))
 
-### Vite Config (@vc-shell/config-generator)
-
-### Code Refactoring
 - **vite-config:** optimize production build settings by removing console statements and adjusting esbuild drop options ([b9f1a2f](https://github.com/VirtoCommerce/vc-shell/commit/b9f1a2fa970bd895f68f92140a9136ffb709b240))
+### Vite Config (@vc-shell/config-generator)
 
 ## [1.1.56](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.55...v1.1.56) (2025-07-08)
 
@@ -1242,10 +1077,8 @@
 ### Code Refactoring
 - **loader:** improve dynamic module registration logic and enhance error handling during module loading ([c21873f](https://github.com/VirtoCommerce/vc-shell/commit/c21873f1acecec3dc540137e21bdae45ff0eda80))
 
-### Vite Config (@vc-shell/config-generator)
-
-### Code Refactoring
 - **vite-config:** enhance dynamic module registration and improve chunking logic for CSS files ([80c83b2](https://github.com/VirtoCommerce/vc-shell/commit/80c83b2ade7e4141447712e604045c6a82b32aff))
+### Vite Config (@vc-shell/config-generator)
 
 ## [1.1.50](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.49...v1.1.50) (2025-07-02)
 
@@ -1278,9 +1111,6 @@
 
 ### Vite Config (@vc-shell/config-generator)
 
-### Features
-- **dynamic-module:** enhance UMD name generation and improve logging for dynamic module loading ([8d43f21](https://github.com/VirtoCommerce/vc-shell/commit/8d43f216e6ec3f9f61ab93953f297d80832f9ed7))
-
 ## [1.1.45](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.44...v1.1.45) (2025-07-01)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -1290,10 +1120,8 @@
 - **vc-editor:** migrate to Tiptap editor, enhance functionality with new toolbar and button components ([2b77c73](https://github.com/VirtoCommerce/vc-shell/commit/2b77c734cee3bae8c3d01dd50207e9052c298ac8))
 - remove icon packs in favor of iconify lib ([983f7fc](https://github.com/VirtoCommerce/vc-shell/commit/983f7fc6252816dc9cafbd2defc7eb5292947b96))
 
-### Vite Config (@vc-shell/config-generator)
-
-### Features
 - **vite-config:** enhansed chunking config ([6e8dde4](https://github.com/VirtoCommerce/vc-shell/commit/6e8dde4c6fc2be14bcf39ffb8f6ac6e75ff609a7))
+### Vite Config (@vc-shell/config-generator)
 
 ## [1.1.44](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.43...v1.1.44) (2025-06-30)
 
@@ -1395,6 +1223,7 @@
 - **vc-card:** enhance VcCard component by adding v-bind for attribute inheritance and defining component options ([12d0096](https://github.com/VirtoCommerce/vc-shell/commit/12d0096809ce46cbff1cdf30c8b4f44d6f69a8ad))
 - **vc-banner:** add VcBanner component for displaying contextual information with expandable content ([5fa7b4f](https://github.com/VirtoCommerce/vc-shell/commit/5fa7b4f77117a02aa559a48dc1f020414c380720))
 - **error-handling:** implement DisplayableError class and enhance useErrorHandler for better error normalization and handling ([a68473b](https://github.com/VirtoCommerce/vc-shell/commit/a68473b98726d436d3ab272e0afee9db2d92174b))
+- **api-client:** add APP_TYPE_STYLE argument for customizable DTO type generation in API client ([4ae0edd](https://github.com/VirtoCommerce/vc-shell/commit/4ae0edd272a580972adacf86a4da4929ef1c056a))
 ### Bug Fixes
 - **types:** update error property in IBladeInstance to allow undefined value ([c2f0fb5](https://github.com/VirtoCommerce/vc-shell/commit/c2f0fb58513e15ffadc581f2b75d43618c3b6f10))
 - **useLanguages:** add validation to getFlag function to handle empty language input ([853325e](https://github.com/VirtoCommerce/vc-shell/commit/853325ecc55e5e26f2e90021f8b4b7d7b6415142))
@@ -1405,9 +1234,6 @@
 - **settings-menu-service:** rename SettingsMenuItem to ISettingsMenuItem for consistency and update related types ([9d66c06](https://github.com/VirtoCommerce/vc-shell/commit/9d66c06f34b9cf33e4151431cdf33057ac981e8c))
 
 ### API Client Generator (@vc-shell/api-client-generator)
-
-### Features
-- **api-client:** add APP_TYPE_STYLE argument for customizable DTO type generation in API client ([4ae0edd](https://github.com/VirtoCommerce/vc-shell/commit/4ae0edd272a580972adacf86a4da4929ef1c056a))
 
 ### Create VC App (@vc-shell/create-vc-app)
 
@@ -1459,9 +1285,6 @@
 - **theme:** update theme management to support localization and improve theme registration logic ([0d78946](https://github.com/VirtoCommerce/vc-shell/commit/0d78946fb8a98414e67626cd46b46d51ae78987a))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Code Refactoring
-- **theme:** update theme management to support localization and improve theme registration logic ([0d78946](https://github.com/VirtoCommerce/vc-shell/commit/0d78946fb8a98414e67626cd46b46d51ae78987a))
 
 ## [1.1.25](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.24...v1.1.25) (2025-05-30)
 
@@ -1564,10 +1387,8 @@
 ### Code Refactoring
 - **user-dropdown-button:** enhance styling ([b8a73a8](https://github.com/VirtoCommerce/vc-shell/commit/b8a73a83183f41372bce83e9e3e63ce6a0aa1697))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-### Code Refactoring
 - **api-client:** enhance export path normalization and standardize export key generation for improved module handling ([d565b42](https://github.com/VirtoCommerce/vc-shell/commit/d565b42ed158572314cd8304a3eb8462e69449b4))
+### API Client Generator (@vc-shell/api-client-generator)
 
 ## [1.1.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.9...v1.1.10) (2025-05-22)
 
@@ -1615,19 +1436,15 @@
 ### Features
 - VcInputDropdown component, replace VcSelect with VcInputDropdown and update related stories ([08f3c72](https://github.com/VirtoCommerce/vc-shell/commit/08f3c72d1cdee3a82868db5238c7e9879914cc8c))
 - enhance module compatibility checks with error notifications ([4f9c44e](https://github.com/VirtoCommerce/vc-shell/commit/4f9c44ec73e3e83a31d5099ec641c761b5e96167))
+- add Vite configuration generator for dynamic modules with compatibility options ([0a4822e](https://github.com/VirtoCommerce/vc-shell/commit/0a4822e219f2fa120b476f420badf6b068891fdb))
 ### Code Refactoring
 - update slot definitions in multiple components ti fix vue-component-meta ([982825a](https://github.com/VirtoCommerce/vc-shell/commit/982825a168ad768eed0812ee2951c8a07400657e))
 - update Storybook preview configuration and adjust vc-icon story title ([4853499](https://github.com/VirtoCommerce/vc-shell/commit/485349939565f8cce9cbf5b03dd9e670f91b246f))
 
+- remove version confirmation prompt from release configuration ([1edf27a](https://github.com/VirtoCommerce/vc-shell/commit/1edf27ac84b2515e709c6732fb3e0ef324dbb4d4))
 ### Release Config (@vc-shell/release-config)
 
-### Code Refactoring
-- remove version confirmation prompt from release configuration ([1edf27a](https://github.com/VirtoCommerce/vc-shell/commit/1edf27ac84b2515e709c6732fb3e0ef324dbb4d4))
-
 ### Vite Config (@vc-shell/config-generator)
-
-### Features
-- add Vite configuration generator for dynamic modules with compatibility options ([0a4822e](https://github.com/VirtoCommerce/vc-shell/commit/0a4822e219f2fa120b476f420badf6b068891fdb))
 
 ## [1.1.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.4...v1.1.5) (2025-05-07)
 
@@ -1668,82 +1485,25 @@
 - redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
 - redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
 - partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
+- enhance release process with npm tag detection and commit message generation ([fbc92b6](https://github.com/VirtoCommerce/vc-shell/commit/fbc92b62922a5ba118a87507293334fa5138b9f1))
+- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
 ### Code Refactoring
 - menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
+- first release
+- first release
 ### BREAKING CHANGES
 - first release
 - first release
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
-- first release ([5c3c607](https://github.com/VirtoCommerce/vc-shell/commit/5c3c607269a3b33478a4bf23b6486ca8b01157a2))
-- first release ([6685f10](https://github.com/VirtoCommerce/vc-shell/commit/6685f10f98982038206a55b637dc14628a341088))
-- redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
-- redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-### Code Refactoring
-- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
-### BREAKING CHANGES
-- first release
-- first release
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
-- first release ([5c3c607](https://github.com/VirtoCommerce/vc-shell/commit/5c3c607269a3b33478a4bf23b6486ca8b01157a2))
-- first release ([6685f10](https://github.com/VirtoCommerce/vc-shell/commit/6685f10f98982038206a55b637dc14628a341088))
-- redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
-- redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-### Code Refactoring
-- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
-### BREAKING CHANGES
-- first release
-- first release
 
 ### Release Config (@vc-shell/release-config)
 
-### Features
-- enhance release process with npm tag detection and commit message generation ([fbc92b6](https://github.com/VirtoCommerce/vc-shell/commit/fbc92b62922a5ba118a87507293334fa5138b9f1))
-- first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
-- first release ([5c3c607](https://github.com/VirtoCommerce/vc-shell/commit/5c3c607269a3b33478a4bf23b6486ca8b01157a2))
-- redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
-- redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-### Code Refactoring
-- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
-### BREAKING CHANGES
-- first release
-- first release
-
 ### Vite Config (@vc-shell/config-generator)
 
-### Features
-- first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
-- first release ([5c3c607](https://github.com/VirtoCommerce/vc-shell/commit/5c3c607269a3b33478a4bf23b6486ca8b01157a2))
-- redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
-- redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-### Code Refactoring
-- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
-### BREAKING CHANGES
-- first release
-- first release
-
 ### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
-- redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
-- redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-### Code Refactoring
-- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
-### BREAKING CHANGES
-- first release
 
 ## [1.1.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0...v1.1.1) (2025-04-29)
 
@@ -1771,73 +1531,13 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
-- first release ([5c3c607](https://github.com/VirtoCommerce/vc-shell/commit/5c3c607269a3b33478a4bf23b6486ca8b01157a2))
-- first release ([6685f10](https://github.com/VirtoCommerce/vc-shell/commit/6685f10f98982038206a55b637dc14628a341088))
-- redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
-- redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-### Code Refactoring
-- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
-### BREAKING CHANGES
-- first release
-- first release
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
-- first release ([5c3c607](https://github.com/VirtoCommerce/vc-shell/commit/5c3c607269a3b33478a4bf23b6486ca8b01157a2))
-- first release ([6685f10](https://github.com/VirtoCommerce/vc-shell/commit/6685f10f98982038206a55b637dc14628a341088))
-- redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
-- redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-### Code Refactoring
-- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
-### BREAKING CHANGES
-- first release
-- first release
 
 ### Release Config (@vc-shell/release-config)
 
-### Features
-- first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
-- first release ([5c3c607](https://github.com/VirtoCommerce/vc-shell/commit/5c3c607269a3b33478a4bf23b6486ca8b01157a2))
-- redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
-- redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-### Code Refactoring
-- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
-### BREAKING CHANGES
-- first release
-- first release
-
 ### Vite Config (@vc-shell/config-generator)
 
-### Features
-- first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
-- first release ([5c3c607](https://github.com/VirtoCommerce/vc-shell/commit/5c3c607269a3b33478a4bf23b6486ca8b01157a2))
-- redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
-- redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-### Code Refactoring
-- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
-### BREAKING CHANGES
-- first release
-- first release
-
 ### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- first release ([b94bf6d](https://github.com/VirtoCommerce/vc-shell/commit/b94bf6db1020fdc904c3bc8d9a9181e9becef7fe))
-- redesign alpha5 ([ac430b8](https://github.com/VirtoCommerce/vc-shell/commit/ac430b80f684d3b920c35778a83c33ec387b2484))
-- redesign alpha4 wip ([ac48f52](https://github.com/VirtoCommerce/vc-shell/commit/ac48f526f61e85518a238e1e6b49047ff3fcc786))
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-### Code Refactoring
-- menu service and new SVG icons, alpha6 ([df10c9f](https://github.com/VirtoCommerce/vc-shell/commit/df10c9f54678c4a5f0a9752d9889d4acc2d4a29e))
-### BREAKING CHANGES
-- first release
 
 ## [1.0.342](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.1...v1.0.342) (2025-04-29)
 
@@ -1862,28 +1562,13 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
 
 ### Release Config (@vc-shell/release-config)
 
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
 ### Vite Config (@vc-shell/config-generator)
 
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
 ### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
 
 ## [1.0.340](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.339...v1.0.340) (2025-02-06)
 
@@ -2019,10 +1704,8 @@
 - **signalR:** creator update method ([6e78664](https://github.com/VirtoCommerce/vc-shell/commit/6e78664f71201b60069d1dd806db8491fd656db5))
 - **core:** push subscription, setNotificationHandler as watcher replacement ([8c726fc](https://github.com/VirtoCommerce/vc-shell/commit/8c726fc315d52958201107cfdd101dbbf698c697))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-### Features
 - **api-client:** skip build arg ([f67a69f](https://github.com/VirtoCommerce/vc-shell/commit/f67a69fc0b09129a5b2e7ec51039bcc2ba435ea1))
+### API Client Generator (@vc-shell/api-client-generator)
 
 ## [1.0.321](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.320...v1.0.321) (2024-10-23)
 
@@ -2233,13 +1916,7 @@
 
 ### Create VC App (@vc-shell/create-vc-app)
 
-### Features
-- support of css theming ([dba4097](https://github.com/VirtoCommerce/vc-shell/commit/dba409744b57dd1a999e009700e3b356fe230969))
-
 ### Vite Config (@vc-shell/config-generator)
-
-### Features
-- support of css theming ([dba4097](https://github.com/VirtoCommerce/vc-shell/commit/dba409744b57dd1a999e009700e3b356fe230969))
 
 ## [1.0.290](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.289...v1.0.290) (2024-09-13)
 
@@ -2319,9 +1996,6 @@
 
 ### Create VC App (@vc-shell/create-vc-app)
 
-### Bug Fixes
-- **create-vc-app:** update currency option in details.vue and dynamic-blade-list.vue ([40a363a](https://github.com/VirtoCommerce/vc-shell/commit/40a363a292457d0f74e961a342909ed6f425d3b4))
-
 ## [1.0.278](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.277...v1.0.278) (2024-08-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -2329,10 +2003,8 @@
 ### Bug Fixes
 - **ui:** vc-app-menu-link truncating ([e7fe836](https://github.com/VirtoCommerce/vc-shell/commit/e7fe836e8e28d9ec92469f8bdf7dc8353104363f))
 
-### Create VC App (@vc-shell/create-vc-app)
-
-### Bug Fixes
 - **create-vc-app:** add shims and change sample constants ([bfdc2d6](https://github.com/VirtoCommerce/vc-shell/commit/bfdc2d6bb50b17d88387b2f71aef8c8c931c3452))
+### Create VC App (@vc-shell/create-vc-app)
 
 ## [1.0.277](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.276...v1.0.277) (2024-08-22)
 
@@ -2541,9 +2213,6 @@
 
 ### Create VC App (@vc-shell/create-vc-app)
 
-### Features
-- **api-client-generator:** build api after generation, tsconfig/package.json creation, new args ([de115fe](https://github.com/VirtoCommerce/vc-shell/commit/de115fe05c9849dcdbbd9bd072a51472103e33a1))
-
 ## [1.0.244](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.243...v1.0.244) (2024-06-24)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -2553,23 +2222,11 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
 
 ### Release Config (@vc-shell/release-config)
 
-### Features
-- application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
-
 ### Vite Config (@vc-shell/config-generator)
-
-### Features
-- application insights logger ([536db4d](https://github.com/VirtoCommerce/vc-shell/commit/536db4db35c91f4fb566717d2d6c536e48aacc95))
 
 ## [1.0.243](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.242...v1.0.243) (2024-06-21)
 
@@ -2759,9 +2416,6 @@
 
 ### Create VC App (@vc-shell/create-vc-app)
 
-### Features
-- **dynamic:** refactoring of scope, composable args interface, dynamic hint for some components BREAKING CHANGE: change scope in composables to be plain object instead refs. Also, if you want to extend scope, use lodash's merge method like: \_.merge(scope, {}) ([e6b8099](https://github.com/VirtoCommerce/vc-shell/commit/e6b8099a120cef9429896904947e13fdae670541))
-
 ## [1.0.222](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.221...v1.0.222) (2024-05-28)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -2831,10 +2485,8 @@
 ### Features
 - **navigation:** support of blade replacing, permissions check on generateRoute ([40d934c](https://github.com/VirtoCommerce/vc-shell/commit/40d934c056bebc1a023cc1498d40a2c672ec43dd))
 
-### Vite Config (@vc-shell/config-generator)
-
-### Features
 - **vite-config:** add hash to app build to prevent caching ([aafe494](https://github.com/VirtoCommerce/vc-shell/commit/aafe4945bca52a62520217ea8948abe6f442614b))
+### Vite Config (@vc-shell/config-generator)
 
 ## [1.0.214](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.213...v1.0.214) (2024-05-16)
 
@@ -2875,9 +2527,6 @@
 - remove auto-open blade on param change, as it can lead to unpredictable behavior ([898e0d9](https://github.com/VirtoCommerce/vc-shell/commit/898e0d9ffc5812b71e8215a355c9ad0918c48dfe))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Bug Fixes
-- remove auto-open blade on param change, as it can lead to unpredictable behavior ([898e0d9](https://github.com/VirtoCommerce/vc-shell/commit/898e0d9ffc5812b71e8215a355c9ad0918c48dfe))
 
 ## [1.0.209](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.208...v1.0.209) (2024-05-07)
 
@@ -2942,28 +2591,13 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- **dynamic:** saveChanges response (#207) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **dynamic:** saveChanges response (#207) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
 
 ### Release Config (@vc-shell/release-config)
 
-### Features
-- **dynamic:** saveChanges response (#207) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
-
 ### Vite Config (@vc-shell/config-generator)
 
-### Features
-- **dynamic:** saveChanges response (#207) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
-
 ### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- **dynamic:** saveChanges response (#207) ([a05313b](https://github.com/VirtoCommerce/vc-shell/commit/a05313bd0fc5b25b927570c31e14aea69c4a5ddd))
 
 ## [1.0.201](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.200...v1.0.201) (2024-04-23)
 
@@ -3056,6 +2690,7 @@
 - **ui/vc-editor:** no change emit on component mount ([cf1af9a](https://github.com/VirtoCommerce/vc-shell/commit/cf1af9a4978688e93fb4b22707cafdd14a970752))
 - **ui/vc-table:** auto mobile view, html cell, all cols in dropdown selector, state save refactor ([d4034a7](https://github.com/VirtoCommerce/vc-shell/commit/d4034a70887bdbefd6a26f514145f14e86a1331e))
 - **dynamic:** added maxlength prop for inputs, storybook update ([b7fb253](https://github.com/VirtoCommerce/vc-shell/commit/b7fb253fe31a8de78b31a01393f7b38c9772a24e))
+- **create-vc-app:** updated scaffold app, new prompts and removed redundant mocks ([e7a5b98](https://github.com/VirtoCommerce/vc-shell/commit/e7a5b98e8dcaf417841819677b0f4af0ee8ca0a9))
 ### Bug Fixes
 - windows build with cross-spawn, other small changes ([a8e576d](https://github.com/VirtoCommerce/vc-shell/commit/a8e576d8556cebb7dd648de68954f87989b7f3ca))
 - **ui/vc-blade-header:** fixed line height ([c3df1e2](https://github.com/VirtoCommerce/vc-shell/commit/c3df1e2bbb96f87c15ba17961a88542502a8ab36))
@@ -3063,9 +2698,6 @@
 - **ui/vc-textarea:** prop name change ([e529af9](https://github.com/VirtoCommerce/vc-shell/commit/e529af90d6d399117f0f16b448f5e47a5b1394ed))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **create-vc-app:** updated scaffold app, new prompts and removed redundant mocks ([e7a5b98](https://github.com/VirtoCommerce/vc-shell/commit/e7a5b98e8dcaf417841819677b0f4af0ee8ca0a9))
 
 ## [1.0.189](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.188...v1.0.189) (2024-03-26)
 
@@ -3152,9 +2784,6 @@
 
 ### Create VC App (@vc-shell/create-vc-app)
 
-### Features
-- shell locales moved to locales, expose locales ([9d6099e](https://github.com/VirtoCommerce/vc-shell/commit/9d6099ed2d43dba38a71a5e868ed335cf2bd8170))
-
 ## [1.0.177](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.176...v1.0.177) (2024-03-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -3175,13 +2804,11 @@
 
 ### Features
 - **core:** Update signalR plugin to accept options, SendSystemEvents connection ([7cc96d5](https://github.com/VirtoCommerce/vc-shell/commit/7cc96d5c783207b94b0657c2467203ccea4a55a5))
+- **create-vc-app:** remove redundant and dupe code, decouple mocks, remove demo mode from configs ([2b3fd6b](https://github.com/VirtoCommerce/vc-shell/commit/2b3fd6b945c21b5a3f4a177a7e6a183662eb480d))
 ### Bug Fixes
 - **dynamic:** remove table actions from widgetView ([e51fb3f](https://github.com/VirtoCommerce/vc-shell/commit/e51fb3f8e63c56ed0146f61a036581a45f386830))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **create-vc-app:** remove redundant and dupe code, decouple mocks, remove demo mode from configs ([2b3fd6b](https://github.com/VirtoCommerce/vc-shell/commit/2b3fd6b945c21b5a3f4a177a7e6a183662eb480d))
 
 ## [1.0.174](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.173...v1.0.174) (2024-03-06)
 
@@ -3221,10 +2848,8 @@
 - **shared:** field validation improvements ([e36f900](https://github.com/VirtoCommerce/vc-shell/commit/e36f9009940b5b91d4a20552dd033b854ef30af6))
 - **dynamic:** support of table actions, improved mobile swipe ([ccd4553](https://github.com/VirtoCommerce/vc-shell/commit/ccd4553a58ac3093fc8108351e09d5152349b2fb))
 
-### Create VC App (@vc-shell/create-vc-app)
-
-### Features
 - **create-vc-app:** updated localizations ([ebb3839](https://github.com/VirtoCommerce/vc-shell/commit/ebb38390b1208da522281efd8a6e54f027d12b9d))
+### Create VC App (@vc-shell/create-vc-app)
 
 ## [1.0.169](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.168...v1.0.169) (2024-02-23)
 
@@ -3343,13 +2968,11 @@
 - **framework:** ability to add html in popup slot, fixed inferring of emits types ([cf52cf7](https://github.com/VirtoCommerce/vc-shell/commit/cf52cf741ed09c652755f9a78eb4c8ec732b9e8e))
 - **framework:** Refactor useMenuServiceFn and add inGroupPriority to MenuItemConfig ([c6ef313](https://github.com/VirtoCommerce/vc-shell/commit/c6ef313d6619b761ea624655eb0ffcea0cc37679))
 - **dynamic:** updated/new components, fixes and improvements ([6c2a746](https://github.com/VirtoCommerce/vc-shell/commit/6c2a74601ae21ba9377bd59ea34279583a424d20))
+- **create-vc-app:** updated configs and locales ([e46ccf6](https://github.com/VirtoCommerce/vc-shell/commit/e46ccf680a12e82400ec03c3d7c72e4f5e3c2c68))
 ### Bug Fixes
 - **framework:** fixed parent blade calling ([ab59609](https://github.com/VirtoCommerce/vc-shell/commit/ab59609d615534a3dc9cc617d080886970d8040a))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **create-vc-app:** updated configs and locales ([e46ccf6](https://github.com/VirtoCommerce/vc-shell/commit/e46ccf680a12e82400ec03c3d7c72e4f5e3c2c68))
 
 ## [1.0.153](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.152...v1.0.153) (2024-01-29)
 
@@ -3389,15 +3012,12 @@
 - **dynamic:** updateActiveWidgetCount event ([808d31d](https://github.com/VirtoCommerce/vc-shell/commit/808d31df475e3c29386d7742fbc5f6ee7645a9bc))
 - **framework:** updated navigation, added routable config for blades ([7c538c6](https://github.com/VirtoCommerce/vc-shell/commit/7c538c6dfab70cc6c85dd453e516d84395e1166c))
 - **framework:** updated localization setup, i18n locales config, dynamic modules localization ([209b92f](https://github.com/VirtoCommerce/vc-shell/commit/209b92fe2bf95379d908064d553ab59e16928569))
+- **create-vc-app:** update package.json and useList composable ([f1ccde1](https://github.com/VirtoCommerce/vc-shell/commit/f1ccde11a9e1e2f91af1a4b82e2c4a072996e008))
 ### Bug Fixes
 - **framework:** fix ui styling issues in multiple components ([61f56d6](https://github.com/VirtoCommerce/vc-shell/commit/61f56d603b15f385c32d0270c939d539b606b37c))
 - **dynamic:** fixed overrides remove order ([a3e5980](https://github.com/VirtoCommerce/vc-shell/commit/a3e59801c1d8fd963cb5f4fe4e445dab0e2d5d32))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **create-vc-app:** update package.json and useList composable ([f1ccde1](https://github.com/VirtoCommerce/vc-shell/commit/f1ccde11a9e1e2f91af1a4b82e2c4a072996e008))
-- **framework:** updated localization setup, i18n locales config, dynamic modules localization ([209b92f](https://github.com/VirtoCommerce/vc-shell/commit/209b92fe2bf95379d908064d553ab59e16928569))
 
 ## [1.0.148](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.147...v1.0.148) (2024-01-16)
 
@@ -3446,9 +3066,6 @@
 - locales moved to app scope ([ee08999](https://github.com/VirtoCommerce/vc-shell/commit/ee089996fd204ada7b8320218680d47f3418dc68))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- locales moved to app scope ([ee08999](https://github.com/VirtoCommerce/vc-shell/commit/ee089996fd204ada7b8320218680d47f3418dc68))
 
 ## [1.0.142](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.141...v1.0.142) (2024-01-10)
 
@@ -3533,25 +3150,19 @@
 
 ### Features
 - **shell:** added exposed component to toolbar:user-dropdown slot ([f136903](https://github.com/VirtoCommerce/vc-shell/commit/f1369035b3be01e11a167a1a29b6aa968913d130))
+- **create-vc-app:** strict types ([f336f8d](https://github.com/VirtoCommerce/vc-shell/commit/f336f8daaddd5268f0c68a625bcb1dc7719f542f))
+- **ts-config:** always strict ([09ba244](https://github.com/VirtoCommerce/vc-shell/commit/09ba2444add7e9717e0cc097141f16585b490b23))
 ### Bug Fixes
 - **shell:** vc-select fixed generic ([b1f9f88](https://github.com/VirtoCommerce/vc-shell/commit/b1f9f88adde894dbbb7dc766179c3c95a8c22ce3))
+- **api-client-generator:** add @ts-nocheck to every generated api-client ([ec63e8d](https://github.com/VirtoCommerce/vc-shell/commit/ec63e8dadb252ae29294632357bced6725d5c8c9))
 ### Code Refactoring
 - **shell:** refactor Vue imports and some types ([cf2617c](https://github.com/VirtoCommerce/vc-shell/commit/cf2617c22c96ba43448d46120f02731be7fddcd6))
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Bug Fixes
-- **api-client-generator:** add @ts-nocheck to every generated api-client ([ec63e8d](https://github.com/VirtoCommerce/vc-shell/commit/ec63e8dadb252ae29294632357bced6725d5c8c9))
-
 ### Create VC App (@vc-shell/create-vc-app)
 
-### Features
-- **create-vc-app:** strict types ([f336f8d](https://github.com/VirtoCommerce/vc-shell/commit/f336f8daaddd5268f0c68a625bcb1dc7719f542f))
-
 ### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- **ts-config:** always strict ([09ba244](https://github.com/VirtoCommerce/vc-shell/commit/09ba2444add7e9717e0cc097141f16585b490b23))
 
 ## [1.0.131](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.130...v1.0.131) (2023-12-28)
 
@@ -3584,6 +3195,10 @@
 - **shell:** useMenuService, auto add modules to navigation menu ([d3ff217](https://github.com/VirtoCommerce/vc-shell/commit/d3ff21717bc272414bfbcd9c5c8a5cc1a18ddb6d))
 - **shell:** improved blade navigation, based on Vue router ([841fa0b](https://github.com/VirtoCommerce/vc-shell/commit/841fa0bbf233ec785f97764752f14cb41b438345))
 - **shell:** useBeforeUnload composable for onbeforeunload event handling ([129a109](https://github.com/VirtoCommerce/vc-shell/commit/129a1092ed54ea1277c42afac332446d4b55c65b))
+- **api-client:** update dependencies and build configuration ([cfb7929](https://github.com/VirtoCommerce/vc-shell/commit/cfb7929c703622daddd5152eff95d58582d2a662))
+- **create-vc-app:** build as es6 module ([0452713](https://github.com/VirtoCommerce/vc-shell/commit/04527133e1e6351f1d5f6440b50e57b2b6fa1966))
+- **sample:** update dependencies in package.json ([5c3e4a0](https://github.com/VirtoCommerce/vc-shell/commit/5c3e4a0ada021acc60480f1f57a0f599fa11a2db))
+- **configs:** update release-config package.json and utils.ts ([cd932ce](https://github.com/VirtoCommerce/vc-shell/commit/cd932cea266840df372dbddd9d0cfd339a54ed51))
 ### Bug Fixes
 - **dynamic:** small calculateColumns fix ([38a5d76](https://github.com/VirtoCommerce/vc-shell/commit/38a5d764711386e6a18458f54dfe5f7f93a23e23))
 - **shell:** navigation glitch fix ([bc9d784](https://github.com/VirtoCommerce/vc-shell/commit/bc9d78406630fab1d7e31d649a1b04c32bac9ac3))
@@ -3602,25 +3217,11 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- **api-client:** update dependencies and build configuration ([cfb7929](https://github.com/VirtoCommerce/vc-shell/commit/cfb7929c703622daddd5152eff95d58582d2a662))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **create-vc-app:** build as es6 module ([0452713](https://github.com/VirtoCommerce/vc-shell/commit/04527133e1e6351f1d5f6440b50e57b2b6fa1966))
-### Bug Fixes
-- **sample:** update dependencies in package.json ([5c3e4a0](https://github.com/VirtoCommerce/vc-shell/commit/5c3e4a0ada021acc60480f1f57a0f599fa11a2db))
 
 ### Release Config (@vc-shell/release-config)
 
-### Features
-- **configs:** update release-config package.json and utils.ts ([cd932ce](https://github.com/VirtoCommerce/vc-shell/commit/cd932cea266840df372dbddd9d0cfd339a54ed51))
-
 ### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- **configs:** update release-config package.json and utils.ts ([cd932ce](https://github.com/VirtoCommerce/vc-shell/commit/cd932cea266840df372dbddd9d0cfd339a54ed51))
 
 ## [1.0.128](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.127...v1.0.128) (2023-12-14)
 
@@ -3684,9 +3285,6 @@
 - strict type check in framework custom property binding in dynamic views Textfield dynamic component dynamic blade mounted state pass to composables ([4e46e67](https://github.com/VirtoCommerce/vc-shell/commit/4e46e679154da42b4f0194c193708ee581be2f1b))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- strict type check in framework custom property binding in dynamic views Textfield dynamic component dynamic blade mounted state pass to composables ([4e46e67](https://github.com/VirtoCommerce/vc-shell/commit/4e46e679154da42b4f0194c193708ee581be2f1b))
 
 ## [1.0.120](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.119...v1.0.120) (2023-11-09)
 
@@ -3758,30 +3356,17 @@
 ### Features
 - **@vc-shell/framework:** updated tsconfigs ([921d000](https://github.com/VirtoCommerce/vc-shell/commit/921d000de8a0ca1b3eed4712eb5cc87e6d6a6616))
 - **@vc-shell/create-vc-app:** changed boilerplate ([740915b](https://github.com/VirtoCommerce/vc-shell/commit/740915baea40f4ac25375679dac9e9a209ae1937))
+- release-config and ts-config packages ([c901ebf](https://github.com/VirtoCommerce/vc-shell/commit/c901ebffa19569f647a351de484e3d807425b920))
 ### Bug Fixes
 - **@vc-shell/framework:** vc-select slot fix ([62953b9](https://github.com/VirtoCommerce/vc-shell/commit/62953b94bbbb7e081c813177c45e8ae49183b1c8))
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- **@vc-shell/framework:** updated tsconfigs ([921d000](https://github.com/VirtoCommerce/vc-shell/commit/921d000de8a0ca1b3eed4712eb5cc87e6d6a6616))
-- **@vc-shell/create-vc-app:** changed boilerplate ([740915b](https://github.com/VirtoCommerce/vc-shell/commit/740915baea40f4ac25375679dac9e9a209ae1937))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **@vc-shell/framework:** updated tsconfigs ([921d000](https://github.com/VirtoCommerce/vc-shell/commit/921d000de8a0ca1b3eed4712eb5cc87e6d6a6616))
-- **@vc-shell/create-vc-app:** changed boilerplate ([740915b](https://github.com/VirtoCommerce/vc-shell/commit/740915baea40f4ac25375679dac9e9a209ae1937))
 
 ### Release Config (@vc-shell/release-config)
 
-### Features
-- release-config and ts-config packages ([c901ebf](https://github.com/VirtoCommerce/vc-shell/commit/c901ebffa19569f647a351de484e3d807425b920))
-
 ### TypeScript Config (@vc-shell/ts-config)
-
-### Features
-- release-config and ts-config packages ([c901ebf](https://github.com/VirtoCommerce/vc-shell/commit/c901ebffa19569f647a351de484e3d807425b920))
 
 ## [1.0.114](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.113...v1.0.114) (2023-10-25)
 
@@ -3801,13 +3386,7 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- **@vc-shell/api-client:** Replace .env variables to command line args ([4bcfade](https://github.com/VirtoCommerce/vc-shell/commit/4bcfade6f0eee7f6e2b74ed898d5b90da1198da8))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- **@vc-shell/api-client:** Replace .env variables to command line args ([4bcfade](https://github.com/VirtoCommerce/vc-shell/commit/4bcfade6f0eee7f6e2b74ed898d5b90da1198da8))
 
 ## [1.0.111](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.110...v1.0.111) (2023-10-17)
 
@@ -3824,9 +3403,6 @@
 - override ts-ignore toSpliced ([c360888](https://github.com/VirtoCommerce/vc-shell/commit/c3608889c4bc987f475f9d25a9149aad4b59bac6))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- dynamic modules ([ed4af3a](https://github.com/VirtoCommerce/vc-shell/commit/ed4af3ad65e47b0d633d6e2eb23e9c90d73ff50d))
 
 ## [1.0.110](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.109...v1.0.110) (2023-10-16)
 
@@ -3951,9 +3527,6 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Code Refactoring
-- api (#188) ([139a9f4](https://github.com/VirtoCommerce/vc-shell/commit/139a9f4509df648dbd21c42f3247b94c03c745fc))
-
 ## [1.0.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.87...v1.0.88) (2023-06-27)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -3981,9 +3554,6 @@
 - check permissions plugin ([cc65272](https://github.com/VirtoCommerce/vc-shell/commit/cc65272d933e29f427b1403df2bdd627b15dd1e6))
 
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Bug Fixes
-- check permissions plugin ([cc65272](https://github.com/VirtoCommerce/vc-shell/commit/cc65272d933e29f427b1403df2bdd627b15dd1e6))
 
 ## [1.0.84](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.83...v1.0.84) (2023-06-23)
 
@@ -4045,9 +3615,6 @@
 
 ### Create VC App (@vc-shell/create-vc-app)
 
-### Bug Fixes
-- pass platformUrl to shell ([6265790](https://github.com/VirtoCommerce/vc-shell/commit/62657901ae6738883ed785e4f54507db85ba7d66))
-
 ## [1.0.73](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.72...v1.0.73) (2023-06-08)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -4076,6 +3643,8 @@
 - refactored vc-button ([b66d081](https://github.com/VirtoCommerce/vc-shell/commit/b66d081b79c32fd9a726bf686ec94070debd7f63))
 - common pages moved to shell ([fca5967](https://github.com/VirtoCommerce/vc-shell/commit/fca5967bfa8fdfee09c043dfc565e8aa2534ada1))
 - select-all ([3e30fef](https://github.com/VirtoCommerce/vc-shell/commit/3e30fefb71f0e5319724f0487c4c01f049ae19ff))
+- **cli** create-vc-app scaffolding tool ([e6428ae](https://github.com/VirtoCommerce/vc-shell/commit/e6428ae654ba180971c6ab58f9abfa2452ca0e9b))
+- fixed create-vc-app template ([f433fea](https://github.com/VirtoCommerce/vc-shell/commit/f433feaf4b75badeea427b61061a08b9a6056c8a))
 ### Bug Fixes
 - _ui_ vc-popup condition fix ([f0a3866](https://github.com/VirtoCommerce/vc-shell/commit/f0a3866325b12bf4fbc7d68eb83d1692d4cb7cca))
 - navigation prevention fix ([fd94904](https://github.com/VirtoCommerce/vc-shell/commit/fd94904dc94d076dd690c41c18417e5e80dd2cc5))
@@ -4089,16 +3658,7 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- common pages moved to shell ([fca5967](https://github.com/VirtoCommerce/vc-shell/commit/fca5967bfa8fdfee09c043dfc565e8aa2534ada1))
-
 ### Create VC App (@vc-shell/create-vc-app)
-
-### Features
-- azure active directory signin ([46cee05](https://github.com/VirtoCommerce/vc-shell/commit/46cee052064434bdd143d744ca7557f5c0fd7e84))
-- **cli** create-vc-app scaffolding tool ([e6428ae](https://github.com/VirtoCommerce/vc-shell/commit/e6428ae654ba180971c6ab58f9abfa2452ca0e9b))
-### Bug Fixes
-- fixed create-vc-app template ([f433fea](https://github.com/VirtoCommerce/vc-shell/commit/f433feaf4b75badeea427b61061a08b9a6056c8a))
 
 ## [1.0.70](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.69...v1.0.70) (2023-05-18)
 
@@ -4129,11 +3689,6 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- eslint vue3-recommended/deps up ([b695f9b](https://github.com/VirtoCommerce/vc-shell/commit/b695f9b40e53ea73fdf0b672956e11c29f8c5de7))
-### Bug Fixes
-- other fixes/refactors and types updated ([46ebd82](https://github.com/VirtoCommerce/vc-shell/commit/46ebd823234741b1e0f8c987b5bcdd65808dbd7a))
-
 ## [1.0.69](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.68...v1.0.69) (2023-04-26)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -4143,8 +3698,6 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- transition to yarn berry monorepo ([73a4da7](https://github.com/VirtoCommerce/vc-shell/commit/73a4da7905fffa030501175d76aeaa0f4caae99a))
 ### Bug Fixes
 - fixed api-generation ([1e39974](https://github.com/VirtoCommerce/vc-shell/commit/1e39974ec27fa2ab2a3d5346c590be30f5d689d3))
 
@@ -4169,9 +3722,6 @@
 - error interceptor ([5973936](https://github.com/VirtoCommerce/vc-shell/commit/5973936e1d85d8678e73a5e695fd91d0d77b9331))
 
 ### API Client Generator (@vc-shell/api-client-generator)
-
-### Reverts
-- version ([9c36dfd](https://github.com/VirtoCommerce/vc-shell/commit/9c36dfd1b91d391763ae7576be6c2eedd65a4828))
 
 ## [1.0.67](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.66...v1.0.67) (2023-04-18)
 
@@ -4238,11 +3788,6 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- updated lerna and scripts ([0c73bc7](https://github.com/VirtoCommerce/vc-shell/commit/0c73bc70ed62932baf03d9e028f3d59dad056bf5))
-### Bug Fixes
-- deps revert ([6068096](https://github.com/VirtoCommerce/vc-shell/commit/6068096bdef9a3021208399a048e36d027304e89))
-
 ## [1.0.60](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.59...v1.0.60) (2023-03-30)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -4291,9 +3836,6 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Bug Fixes
-- some fixes and up version ([ee3d33f](https://github.com/VirtoCommerce/vc-shell/commit/ee3d33f68015cf13cc250346a89c538a0218361b))
-
 ## [1.0.56](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.55...v1.0.56) (2023-03-20)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -4329,9 +3871,6 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- deps new versions, vc-shell as ES module, config builder refactoring, new logger ([2cee26c](https://github.com/VirtoCommerce/vc-shell/commit/2cee26c6017b449481dd5c3562043b116a95387f))
-
 ## [1.0.53](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.52...v1.0.53) (2023-03-02)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -4349,9 +3888,6 @@
 - routing fix ([86f38c6](https://github.com/VirtoCommerce/vc-shell/commit/86f38c6a3c0ce2461fd0c49bd446f5c94c359d61))
 
 ### API Client Generator (@vc-shell/api-client-generator)
-
-### Bug Fixes
-- routing fix ([86f38c6](https://github.com/VirtoCommerce/vc-shell/commit/86f38c6a3c0ce2461fd0c49bd446f5c94c359d61))
 
 ## [1.0.51](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.50...v1.0.51) (2023-03-02)
 
@@ -4406,9 +3942,6 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Bug Fixes
-- fixed types ([88c89e2](https://github.com/VirtoCommerce/vc-shell/commit/88c89e20430bbd727827ba82ca3427f11aff0c1c))
-
 ## [1.0.46](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.45...v1.0.46) (2023-02-16)
 
 ### VC-Shell Framework (@vc-shell/framework)
@@ -4426,9 +3959,6 @@
 - list price column in offers ([e03af66](https://github.com/VirtoCommerce/vc-shell/commit/e03af662dfcff71b2cd1a98fdd2a684baa922317))
 
 ### API Client Generator (@vc-shell/api-client-generator)
-
-### Features
-- version up ([dd20390](https://github.com/VirtoCommerce/vc-shell/commit/dd203905f203990f31e1dd57c16ed6fe43ac0b4b))
 
 ## [1.0.44](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.43...v1.0.44) (2023-02-08)
 
@@ -4501,9 +4031,6 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Features
-- merged framework library ([46a2691](https://github.com/VirtoCommerce/vc-shell/commit/46a26910b5c437fddec8d280445209999ff77240))
-
 ## [1.0.37](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.36...v1.0.37) (2022-11-22)
 
 **Note:** Version bump only for package
@@ -4520,9 +4047,6 @@
 - remove unwanted gitHead ([3ec4f11](https://github.com/VirtoCommerce/vc-shell/commit/3ec4f115d030375da0b1675be645bad43ee9c544))
 
 ### API Client Generator (@vc-shell/api-client-generator)
-
-### Bug Fixes
-- remove unwanted gitHead ([3ec4f11](https://github.com/VirtoCommerce/vc-shell/commit/3ec4f115d030375da0b1675be645bad43ee9c544))
 
 ## [1.0.34](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.33...v1.0.34) (2022-11-15)
 
@@ -4562,9 +4086,6 @@
 - full lib content to npm ([28cc487](https://github.com/VirtoCommerce/vc-shell/commit/28cc4874abb7806e073c976cd12baf1f8bd22f1a))
 
 ### API Client Generator (@vc-shell/api-client-generator)
-
-### Features
-- full lib content to npm ([28cc487](https://github.com/VirtoCommerce/vc-shell/commit/28cc4874abb7806e073c976cd12baf1f8bd22f1a))
 
 ## [1.0.29](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.28...v1.0.29) (2022-10-14)
 
@@ -4618,9 +4139,6 @@
 
 ### API Client Generator (@vc-shell/api-client-generator)
 
-### Bug Fixes
-- rename virto-shell -> virtocommerce ([ba74f8f](https://github.com/VirtoCommerce/vc-shell/commit/ba74f8fb7fcb61744f2348e8521dfae77775418b))
-
 ## [1.0.22](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.21...v1.0.22) (2022-09-29)
 
 **Note:** Version bump only for package
@@ -4634,9 +4152,6 @@
 - vm-741 893 1005 1019 1021 513 978 914 920 828 963 755 ([b8b2cda](https://github.com/VirtoCommerce/vc-shell/commit/b8b2cdaedf32128b35c04d85689eb3203057b7d0))
 
 ### API Client Generator (@vc-shell/api-client-generator)
-
-### Features
-- vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/vc-shell/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
 
 ## [1.0.20](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.19...v1.0.20) (2022-09-06)
 
@@ -4675,19 +4190,11 @@
 - shorter human-readable names ([23033f7](https://github.com/VirtoCommerce/vc-shell/commit/23033f77aa6f6788b4e2ef1353a3c14cc6fe7392))
 - merge main branch ([2af0145](https://github.com/VirtoCommerce/vc-shell/commit/2af0145f565a1fefd9d55995bb7d4793a666e33a))
 
-### API Client Generator (@vc-shell/api-client-generator)
-
-### Features
-- version up ([85d5ab5](https://github.com/VirtoCommerce/vc-shell/commit/85d5ab59926cc4fe8c2e6464a0d6cb1e849c975d))
-- generate API clients from command line ([d8c1870](https://github.com/VirtoCommerce/vc-shell/commit/d8c1870aa38f4376181a584c3259aae3f547d792))
-### Bug Fixes
 - nswag output ([09df7dd](https://github.com/VirtoCommerce/vc-shell/commit/09df7dd986feea1eb113d0d0d3307d31e13e4b23))
 - small fixes ([48db643](https://github.com/VirtoCommerce/vc-shell/commit/48db643b9bb4a19dfff03d5c326c359530beb377))
-- refactoring ([d20e1cd](https://github.com/VirtoCommerce/vc-shell/commit/d20e1cd36cf7e85e4dc7ca89a1599194619d353a))
 - readme, add prerequisite ([50ba1fb](https://github.com/VirtoCommerce/vc-shell/commit/50ba1fb2f06be28a15ded7f27a65a843661c2c0a))
-- baseUrl ([7306cf9](https://github.com/VirtoCommerce/vc-shell/commit/7306cf9f3218f6cbab639a460b982e4bd7e1220c))
 - config ([a32eae3](https://github.com/VirtoCommerce/vc-shell/commit/a32eae37557a43ce28b615d0a55e2a7b571c9186))
-- shorter human-readable names ([23033f7](https://github.com/VirtoCommerce/vc-shell/commit/23033f77aa6f6788b4e2ef1353a3c14cc6fe7392))
+### API Client Generator (@vc-shell/api-client-generator)
 
 ## [1.0.13](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.12...v1.0.13) (2022-07-14)
 

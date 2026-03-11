@@ -16,10 +16,6 @@
 
 - add blade catch-all route handling in VcBladeNavigationComponent ([cb7920a](https://github.com/VirtoCommerce/vc-shell/commit/cb7920a3563d9224a160c00f728b5e5a84277f7f))
 
-### Features
-
-- add blade catch-all route handling in VcBladeNavigationComponent ([cb7920a](https://github.com/VirtoCommerce/vc-shell/commit/cb7920a3563d9224a160c00f728b5e5a84277f7f))
-
 # [2.0.0-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) (2026-03-10)
 
 **Note:** Version bump only for package @vc-shell/framework
@@ -81,25 +77,6 @@
 ### Tests
 
 - add unit and accessibility tests across framework ([59086a9](https://github.com/VirtoCommerce/vc-shell/commit/59086a90690a13bfb186685bc423b73cfb406dc8))
-
-### Bug Fixes
-
-- **notifications:** fix toast width, centering, expand/collapse UX ([a5a5423](https://github.com/VirtoCommerce/vc-shell/commit/a5a54239ec9e3b3ebe897a25fb0657397d123fdb))
-- **shell-nav:** logo click navigates to main route without clearing stack ([f9f8f78](https://github.com/VirtoCommerce/vc-shell/commit/f9f8f785153bc0e4027f4553fce7c070ea43aa14))
-- **shell-nav:** openRoot no longer clears blade stack ([547ae53](https://github.com/VirtoCommerce/vc-shell/commit/547ae5363b7b96d30cc2ad65fc9ec97191116f26))
-- **ui:** improve collapsed sidebar UX and embedded AI agent context ([c87e16d](https://github.com/VirtoCommerce/vc-shell/commit/c87e16df0b70069f919ea20676f3aa3b66d447d9))
-- **vc-menu:** move font and padding to app level, add activeItemId ([3018007](https://github.com/VirtoCommerce/vc-shell/commit/30180073b684ebd5c6f77df62fde1bd740b32720))
-
-### Features
-
-- **a11y:** add ARIA attributes to blades, popups, and blade navigation ([12454c6](https://github.com/VirtoCommerce/vc-shell/commit/12454c628683d36fba9efea6e24224d1e0a029e4))
-- add Lato font family ([8384890](https://github.com/VirtoCommerce/vc-shell/commit/83848902a6b83122663070e9056863d85ae7f11f))
-- **ai-agent:** add embedded mode support with iframe messaging ([d605a2d](https://github.com/VirtoCommerce/vc-shell/commit/d605a2dedaf223718a0dccd6eaad94fbeddae1c0))
-- **blade-nav:** enforce workspace permissions in BladeStack ([edfe789](https://github.com/VirtoCommerce/vc-shell/commit/edfe7898828eaf1c2fde5abc00a7c13b1bdc9a2f))
-- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
-- **vc-menu-group:** add section variant, grid animation, chevron transition ([c5f04f1](https://github.com/VirtoCommerce/vc-shell/commit/c5f04f1fd2f0df3bcf3749feb8cbb32e1295eca8))
-- **vc-menu:** add loading and variant to type definitions ([4d64610](https://github.com/VirtoCommerce/vc-shell/commit/4d646106ef86e74bf9761ebbb461b8200c749b64))
-- **vc-menu:** add loading prop with skeleton placeholders ([d0bb25c](https://github.com/VirtoCommerce/vc-shell/commit/d0bb25c345c977fbb32e1492c74db4bfdcc94413))
 
 ## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
 

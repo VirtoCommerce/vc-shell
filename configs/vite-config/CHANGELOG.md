@@ -10,10 +10,6 @@
 
 - pin @module-federation/dts-plugin to 2.0.1 to fix ESM/CJS fs-extra crash ([a41d233](https://github.com/VirtoCommerce/vc-shell/commit/a41d2335761e723eda33b45dbb45ef3e70752bf7))
 
-### Bug Fixes
-
-- pin @module-federation/dts-plugin to 2.0.1 to fix ESM/CJS fs-extra crash ([a41d233](https://github.com/VirtoCommerce/vc-shell/commit/a41d2335761e723eda33b45dbb45ef3e70752bf7))
-
 # [2.0.0-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2026-03-10)
 
 **Note:** Version bump only for package @vc-shell/config-generator
@@ -48,15 +44,6 @@
 ### Documentation
 
 - **vite-config:** clarify build-time vs runtime MF roles in getHostFederationConfig ([cf2f9b7](https://github.com/VirtoCommerce/vc-shell/commit/cf2f9b7dfd358aa192fac580c2697205f4649984))
-
-### Bug Fixes
-
-- **vite-config:** normalize symlinked paths in stripExternalStyles via realpathSync ([6f825aa](https://github.com/VirtoCommerce/vc-shell/commit/6f825aa66b2bb209dba6a7497a3af4de981022d8))
-
-### Features
-
-- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
-- **shared-deps:** export SHARED_DEP_NAMES as single source of truth for MF shared deps ([18f68ef](https://github.com/VirtoCommerce/vc-shell/commit/18f68efda491d7e595acfb4b1a547d82658967f2))
 
 ## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
 

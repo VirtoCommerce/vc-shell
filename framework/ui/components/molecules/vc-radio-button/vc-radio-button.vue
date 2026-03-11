@@ -44,32 +44,25 @@ import { VcHint } from "@ui/components/atoms/vc-hint";
 import { useFormField } from "@ui/composables/useFormField";
 import type { IFormFieldProps } from "@ui/types";
 
-export interface VcRadioButtonProps extends IFormFieldProps {
-  /**
-   * Value of the radio button.
-   */
-  value?: T;
-  /**
-   * Value binding of the radio button.
-   */
-  modelValue?: T;
-  /**
-   * Allows to select a boolean value.
-   */
-  binary?: boolean;
-}
-
-export interface VcRadioButtonEmits {
-  /**
-   * Emits when the radio button is changed.
-   */
+const props = withDefaults(
+  defineProps<
+    IFormFieldProps & {
+      /** Value of the radio button. */
+      value?: T;
+      /** Value binding of the radio button. */
+      modelValue?: T;
+      /** Allows to select a boolean value. */
+      binary?: boolean;
+    }
+  >(),
+  {
+    name: "RadioField",
+  },
+);
+const emit = defineEmits<{
+  /** Emits when the radio button is changed. */
   (event: "update:modelValue", value: T): void;
-}
-
-const props = withDefaults(defineProps<VcRadioButtonProps>(), {
-  name: "RadioField",
-});
-const emit = defineEmits<VcRadioButtonEmits>();
+}>();
 
 defineSlots<{
   error: (props: Record<string, never>) => VNode[];

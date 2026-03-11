@@ -69,7 +69,7 @@
             <!-- Select filter -->
             <div v-else-if="filterType === 'select'" class="vc-column-filter__input-wrapper">
               <VcSelect
-                :model-value="localValue"
+                :model-value="localValue as string | string[] | null"
                 :options="filterOptions || []"
                 option-value="value"
                 option-label="label"

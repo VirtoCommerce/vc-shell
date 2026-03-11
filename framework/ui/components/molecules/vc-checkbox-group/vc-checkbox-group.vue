@@ -43,26 +43,27 @@ export interface CheckboxGroupOption<V = string | number | boolean> {
   disabled?: boolean;
 }
 
-export interface VcCheckboxGroupProps extends IFormFieldProps {
-  modelValue?: T[];
-  options?: CheckboxGroupOption<T>[];
-  hint?: string;
-  orientation?: "vertical" | "horizontal";
-  size?: "s" | "m" | "l";
-}
+const props = withDefaults(
+  defineProps<
+    IFormFieldProps & {
+      modelValue?: T[];
+      options?: CheckboxGroupOption<T>[];
+      hint?: string;
+      orientation?: "vertical" | "horizontal";
+      size?: "s" | "m" | "l";
+    }
+  >(),
+  {
+    modelValue: () => [],
+    options: () => [],
+    orientation: "vertical",
+    size: "s",
+  },
+);
 
-export interface VcCheckboxGroupEmits {
+const emit = defineEmits<{
   (event: "update:modelValue", value: T[]): void;
-}
-
-const props = withDefaults(defineProps<VcCheckboxGroupProps>(), {
-  modelValue: () => [],
-  options: () => [],
-  orientation: "vertical",
-  size: "s",
-});
-
-const emit = defineEmits<VcCheckboxGroupEmits>();
+}>();
 
 const uid = useId();
 const generatedName = computed(() => `vc-checkbox-group-${uid}`);

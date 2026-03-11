@@ -41,23 +41,24 @@ export interface RadioGroupOption<V = string | number | boolean> {
   disabled?: boolean;
 }
 
-export interface VcRadioGroupProps extends IFormFieldProps {
-  modelValue?: T;
-  options?: RadioGroupOption<T>[];
-  hint?: string;
-  orientation?: "vertical" | "horizontal";
-}
+const props = withDefaults(
+  defineProps<
+    IFormFieldProps & {
+      modelValue?: T;
+      options?: RadioGroupOption<T>[];
+      hint?: string;
+      orientation?: "vertical" | "horizontal";
+    }
+  >(),
+  {
+    options: () => [],
+    orientation: "vertical",
+  },
+);
 
-export interface VcRadioGroupEmits {
+const emit = defineEmits<{
   (event: "update:modelValue", value: T): void;
-}
-
-const props = withDefaults(defineProps<VcRadioGroupProps>(), {
-  options: () => [],
-  orientation: "vertical",
-});
-
-const emit = defineEmits<VcRadioGroupEmits>();
+}>();
 
 const uid = useId();
 const generatedName = computed(() => `vc-radio-group-${uid}`);

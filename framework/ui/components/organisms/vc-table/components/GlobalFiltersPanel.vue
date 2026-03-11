@@ -38,7 +38,7 @@
         <!-- Select filter -->
         <VcSelect
           v-else-if="getType(filter.id) === 'select'"
-          :model-value="localValues[filter.id]"
+          :model-value="localValues[filter.id] as string | string[] | null"
           :options="getFilterOptions(filter.filter)"
           option-value="value"
           option-label="label"
@@ -139,7 +139,7 @@
 
         <VcSelect
           v-else-if="getType(filter.id) === 'select'"
-          :model-value="localValues[filter.id]"
+          :model-value="localValues[filter.id] as string | string[] | null"
           :options="getFilterOptions(filter.filter)"
           option-value="value"
           option-label="label"

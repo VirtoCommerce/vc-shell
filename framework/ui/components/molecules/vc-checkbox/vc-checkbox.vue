@@ -109,28 +109,29 @@ import { VcLabel } from "@ui/components/atoms/vc-label";
 import { useFormField } from "@ui/composables/useFormField";
 import type { IFormFieldProps } from "@ui/types";
 
-export interface VcCheckboxProps extends IFormFieldProps {
-  modelValue?: boolean | T[];
-  value?: T;
-  trueValue?: boolean;
-  falseValue?: boolean;
-  size?: "s" | "m" | "l";
-  outline?: boolean;
-  indeterminate?: boolean;
-}
-
-export interface VcCheckboxEmits {
+const props = withDefaults(
+  defineProps<
+    IFormFieldProps & {
+      modelValue?: boolean | T[];
+      value?: T;
+      trueValue?: boolean;
+      falseValue?: boolean;
+      size?: "s" | "m" | "l";
+      outline?: boolean;
+      indeterminate?: boolean;
+    }
+  >(),
+  {
+    name: "Field",
+    trueValue: true,
+    falseValue: false,
+    size: "s",
+    indeterminate: false,
+  },
+);
+const emit = defineEmits<{
   (event: "update:modelValue", value: boolean | T[]): void;
-}
-
-const props = withDefaults(defineProps<VcCheckboxProps>(), {
-  name: "Field",
-  trueValue: true,
-  falseValue: false,
-  size: "s",
-  indeterminate: false,
-});
-const emit = defineEmits<VcCheckboxEmits>();
+}>();
 
 defineSlots<{
   default: (props: Record<string, never>) => VNode[];

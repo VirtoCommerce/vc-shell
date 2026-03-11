@@ -82,18 +82,17 @@ export async function updateBoilerplatePkgVersions() {
 
     const boilerplatePkg = fs.readJsonSync(pkgPath);
 
-    // Update @vc-shell/* framework packages (only if present in this template)
-    ["@vc-shell/api-client-generator", "@vc-shell/ts-config", "@vc-shell/release-config"].forEach(
-      (dep) => {
-        if (boilerplatePkg.devDependencies?.[dep]) {
-          boilerplatePkg.devDependencies[dep] = "^" + version;
-        }
-      },
-    );
-    ["@vc-shell/config-generator", "@vc-shell/framework"].forEach((dep) => {
-      if (boilerplatePkg.dependencies?.[dep]) {
-        boilerplatePkg.dependencies[dep] = "^" + version;
+    // Update all @vc-shell/* dependencies to keep generated templates in sync with monorepo releases.
+    ["dependencies", "devDependencies"].forEach((depType) => {
+      if (!boilerplatePkg[depType]) {
+        return;
       }
+
+      Object.keys(boilerplatePkg[depType]).forEach((dep) => {
+        if (dep.startsWith("@vc-shell/")) {
+          boilerplatePkg[depType][dep] = "^" + version;
+        }
+      });
     });
 
     // Sync common dependency versions from reference app

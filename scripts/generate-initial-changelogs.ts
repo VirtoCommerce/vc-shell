@@ -1,33 +1,14 @@
-import { generateInitialChangelogs, PackageConfig } from "@vc-shell/release-config";
+import { generatePackageChangelogs, generateRootChangelog } from "./release-workflow";
 
 /**
- * Generates complete CHANGELOG.md files from all commits for each package
- * Used for initial changelog initialization when migrating to the new system
+ * Regenerates complete CHANGELOG.md files from all commits.
  */
 
-const packages: PackageConfig[] = [
-  { name: "framework", path: "framework", displayName: "Framework (@vc-shell/framework)" },
-  {
-    name: "cli/api-client",
-    path: "cli/api-client",
-    displayName: "API Client Generator (@vc-shell/api-client-generator)",
-  },
-  { name: "cli/create-vc-app", path: "cli/create-vc-app", displayName: "Create VC App (@vc-shell/create-vc-app)" },
-  {
-    name: "configs/release-config",
-    path: "configs/release-config",
-    displayName: "Release Config (@vc-shell/release-config)",
-  },
-  { name: "configs/vite-config", path: "configs/vite-config", displayName: "Vite Config (@vc-shell/vite-config)" },
-  { name: "configs/ts-config", path: "configs/ts-config", displayName: "TypeScript Config (@vc-shell/ts-config)" },
-];
-
-generateInitialChangelogs({
-  packages,
-  rootDir: process.cwd(),
-  generateRoot: true,
-  includeRootHeader: true,
-}).catch((error: unknown) => {
-  console.error("\n❌ Error generating changelogs:", error);
+try {
+  generatePackageChangelogs(0);
+  generateRootChangelog(0);
+  console.log("\nFull changelog regeneration completed");
+} catch (error: unknown) {
+  console.error("\nError generating changelogs:", error);
   process.exit(1);
-});
+}

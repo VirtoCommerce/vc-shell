@@ -68,7 +68,7 @@ Other prefixes are up to your discretion. Suggested prefixes are `docs`, `chore`
 
 ### Scope
 
-The scope could be any valid lerna package name (located inside `packages` folder). For example `shell`, `ui-kit`, `api-client`, etc...
+The scope could be any valid workspace package name. For example `shell`, `ui-kit`, `api-client`, etc...
 
 ### Subject
 

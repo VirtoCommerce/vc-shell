@@ -122,7 +122,6 @@ jobs:
         PACKAGES=(
           "@vc-shell/framework"
           "@vc-shell/ts-config"
-          "@vc-shell/release-config"
           "@vc-shell/create-vc-app"
           "@vc-shell/config-generator"
           "@vc-shell/api-client-generator"

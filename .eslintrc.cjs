@@ -43,7 +43,6 @@ module.exports = {
           ["@assets", "./framework/assets"],
           ["@locales", "./framework/locales"],
           ["@vite-config", "./configs/vite-config/src"],
-          ["@release-config", "./configs/release-config/src"],
           ["@api-client-generator", "./cli/api-client/src"],
           ["@create-vc-app", "./cli/create-vc-app/src"],
         ],

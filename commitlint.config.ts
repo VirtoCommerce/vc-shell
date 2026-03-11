@@ -3,7 +3,6 @@ import { RuleConfigSeverity } from "@commitlint/types";
 
 const Configuration: UserConfig = {
   extends: ["@commitlint/config-conventional"],
-  parserPreset: "conventional-changelog-angular",
   formatter: "@commitlint/format",
   rules: {
     "subject-case": [2, "never", ["upper-case", "pascal-case", "start-case"]],

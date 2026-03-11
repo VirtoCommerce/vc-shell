@@ -87,26 +87,6 @@ export const InternalRoutesKey: InjectionKey<BladeRoutesRecord[]> = Symbol("Inte
 // Settings menu close callback
 export const CloseSettingsMenuKey: InjectionKey<() => void> = Symbol("CloseSettingsMenu");
 
-// Dynamic module registry state (per-app, provided by framework install)
-import type { DynamicSchema } from "@shared/modules/dynamic/types";
-
-/** Registered dynamic blade entry. Mirrors the Registered interface in dynamic/index.ts. */
-export interface DynamicRegisteredEntry {
-  component: unknown;
-  name: string;
-  model: DynamicSchema;
-  composables: { [key: string]: (...args: unknown[]) => unknown };
-  mixin?: ((...args: unknown[]) => unknown)[];
-}
-
-export interface DynamicModuleRegistryState {
-  registeredModules: { [key: string]: DynamicRegisteredEntry };
-  installedBladeIds: Set<string>;
-  registeredSchemas: { [key: string]: DynamicSchema };
-}
-
-export const DynamicModuleRegistryStateKey: InjectionKey<DynamicModuleRegistryState> =
-  Symbol("DynamicModuleRegistryState");
 
 // Legacy aliases (deprecated - use the new *Key exports instead)
 /** @deprecated Use NavigationViewLocationKey instead */

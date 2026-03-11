@@ -53,7 +53,6 @@ import {
   IsTabletKey,
   IsTouchKey,
   BladeRoutesKey,
-  DynamicModuleRegistryStateKey,
 } from "@framework/injection-keys";
 
 import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
@@ -219,13 +218,6 @@ function createAndProvideServices(app: App) {
   const bladeRegistryInstance: IBladeRegistryInstance = createBladeRegistry(app);
   app.provide(BladeRegistryKey, bladeRegistryInstance);
 
-  // Pre-provide per-app dynamic module registry — must be provided before any
-  // dynamic module's install() runs so inject() finds it (FR-3.2).
-  app.provide(DynamicModuleRegistryStateKey, {
-    registeredModules: {},
-    installedBladeIds: new Set<string>(),
-    registeredSchemas: {},
-  });
 }
 
 function installPlugins(app: App, args: FrameworkInstallArgs) {

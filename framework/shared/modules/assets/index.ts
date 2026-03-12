@@ -1,4 +1,4 @@
-import { createAppModule } from "@core/plugins/modularity";
+import { defineAppModule } from "@core/plugins/modularity";
 import * as components from "@shared/modules/assets/components";
 
 declare module "@vue/runtime-core" {
@@ -7,6 +7,6 @@ declare module "@vue/runtime-core" {
   }
 }
 
-export const AssetsDetailsModule = createAppModule(components);
+export const AssetsDetailsModule = defineAppModule({ blades: components });
 
 export default components;

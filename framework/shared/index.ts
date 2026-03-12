@@ -1,7 +1,6 @@
 import { Router } from "vue-router";
 import { App } from "vue";
 import { AssetsDetailsModule } from "@shared/modules/assets";
-import { VcAppSwitcherComponent } from "@shared/components/app-switcher";
 import { VcBladeNavigationComponent } from "@shared/components/blade-navigation";
 import { AssetsManagerModule } from "@shared/modules/assets-manager";
 import { VcPopupHandler } from "@shared/components/popup-handler";
@@ -12,7 +11,6 @@ export const SharedModule = {
       .use(AssetsDetailsModule)
       .use(AssetsManagerModule)
       .use(VcBladeNavigationComponent, { router: args.router })
-      .use(VcAppSwitcherComponent)
       .use(VcPopupHandler);
   },
 };

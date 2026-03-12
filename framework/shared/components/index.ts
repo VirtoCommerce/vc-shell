@@ -1,4 +1,3 @@
-export * from "@shared/components/app-switcher";
 export * from "@shared/components/blade-navigation";
 export * from "@shared/components/notifications";
 export * from "@shared/components/error-interceptor";

@@ -7,8 +7,7 @@ import { useBreakpoints } from "@vueuse/core";
 import { i18n, permissions, signalR } from "@core/plugins";
 import { notifyMountComplete } from "@core/plugins/signalR";
 import { aiAgentPlugin, type AiAgentPluginOptions } from "@core/plugins/ai-agent";
-import { BladeVNode, SharedModule, notification } from "@shared";
-import * as sharedPages from "@shared/pages/plugin";
+import { SharedModule, notification } from "@shared";
 import { registerInterceptors } from "@core/interceptors";
 import { usePermissions } from "@core/composables/usePermissions";
 import { useUserManagement } from "@core/composables/useUserManagement";
@@ -226,10 +225,6 @@ function installPlugins(app: App, args: FrameworkInstallArgs) {
   app.use(permissions);
   app.use<[]>(Vue3TouchEvents);
 
-  Object.values(sharedPages).forEach((page) => {
-    app.use(page);
-  });
-
   app.use(aiAgentPlugin, args.aiAgent);
 }
 
@@ -336,20 +331,6 @@ function setupRouterGuards(router: Router) {
     }
   });
 
-  // Check if user trying to access not workspace pages as workspace pages.
-  // Redirect to main page if not.
-  router.beforeEach((to) => {
-    const blade = to.matched?.[1]?.components?.default as BladeVNode | Component;
-
-    if (blade && "type" in blade && blade?.type?.isBlade && !blade?.type?.isWorkspace) {
-      const routes = router.getRoutes();
-      const mainRoute = routes.find((route) => route.meta?.root);
-      const mainRouteAlias = routes.find((route) => route.aliasOf?.path === mainRoute?.path) ?? mainRoute;
-      const param = getParam(to);
-
-      return { name: mainRouteAlias?.name, params: param };
-    }
-  });
 }
 
 // ── Plugin entry point ───────────────────────────────────────────────

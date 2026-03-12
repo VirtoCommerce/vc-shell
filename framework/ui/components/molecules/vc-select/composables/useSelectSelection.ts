@@ -6,8 +6,9 @@ interface UseSelectSelectionOptions<Option> {
   multiple: () => boolean | undefined;
   emitValue: () => boolean;
   mapOptions: () => boolean;
-  optionsList: Ref<Option[]>;
-  defaultValue: Ref<Option[]>;
+  displayItems: Ref<Option[]> | ComputedRef<Option[]>;
+  resolvedDefaults: Ref<Option[]>;
+  cachedItems: Readonly<Ref<Option[]>>;
   getOptionValue: ComputedRef<(opt: Option) => any>;
   getOptionLabel: ComputedRef<(opt: Option) => any>;
   getOption: (value: Option, valueCache: Option[], defaultValues: Option[], optionsList: Option[]) => Option;
@@ -33,12 +34,18 @@ export function useSelectSelection<Option>(opts: UseSelectSelectionOptions<Optio
           : [opts.modelValue()]
         : [];
 
-    if (opts.mapOptions() === true && Array.isArray(opts.optionsList.value) === true) {
+    if (opts.mapOptions() === true && Array.isArray(opts.displayItems.value) === true) {
       const cache = opts.mapOptions() === true && innerValueCache !== undefined ? innerValueCache : [];
 
-      const values = val.map((v: Option) =>
-        opts.getOption(v, cache, opts.defaultValue.value, opts.optionsList.value),
-      );
+      const values = val.map((v: Option) => {
+        const found = opts.getOption(v, cache, opts.resolvedDefaults.value, opts.displayItems.value);
+        // If not found in displayItems (search active), try cachedItems
+        if (found === v && opts.cachedItems.value.length > 0) {
+          const fromCache = opts.getOption(v, cache, opts.resolvedDefaults.value, opts.cachedItems.value);
+          if (fromCache !== v) return fromCache;
+        }
+        return found;
+      });
 
       return opts.modelValue() === null && mapNull === true ? values.filter((v: Option) => v !== null) : values;
     }
@@ -82,7 +89,7 @@ export function useSelectSelection<Option>(opts: UseSelectSelectionOptions<Optio
   const hasValue = computed(() => opts.fieldValueIsFilled(innerValue.value));
 
   const optionScope = computed(() => {
-    return opts.optionsList.value.map((opt, i) => {
+    return opts.displayItems.value.map((opt, i) => {
       return {
         index: i,
         opt,

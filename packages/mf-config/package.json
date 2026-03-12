@@ -1,0 +1,23 @@
+{
+  "name": "@vc-shell/mf-config",
+  "description": "Module Federation shared dependency catalog for VC Shell",
+  "version": "2.0.0-alpha.7",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && tsc-alias"
+  },
+  "devDependencies": {
+    "@vc-shell/ts-config": "workspace:*",
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.8.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

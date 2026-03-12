@@ -4594,7 +4594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.7.1":
+"@types/semver@npm:^7.5.0, @types/semver@npm:^7.7.1":
   version: 7.7.1
   resolution: "@types/semver@npm:7.7.1"
   checksum: 10/8f09e7e6ca3ded67d78ba7a8f7535c8d9cf8ced83c52e7f3ac3c281fe8c689c3fe475d199d94390dc04fc681d51f2358b430bb7b2e21c62de24f2bee2c719068
@@ -5229,7 +5229,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@npm:^2.0.0-alpha.6, @vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@npm:^2.0.0-alpha.7, @vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -5247,12 +5247,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@npm:^2.0.0-alpha.6, @vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
+"@vc-shell/config-generator@npm:^2.0.0-alpha.7, @vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:configs/vite-config"
   dependencies:
     "@module-federation/dts-plugin": "npm:2.0.1"
     "@module-federation/vite": "npm:^1.12.2"
+    "@vc-shell/mf-config": "workspace:*"
     "@vc-shell/ts-config": "workspace:*"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     http-proxy-middleware: "npm:^3.0.2"
@@ -5291,7 +5292,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@npm:^2.0.0-alpha.6, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@npm:^2.0.0-alpha.7, @vc-shell/framework@workspace:*, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -5305,7 +5306,6 @@ __metadata:
     "@laynezh/vite-plugin-lib-assets": "npm:v1.1.0"
     "@material-symbols/font-300": "npm:^0.32.0"
     "@microsoft/signalr": "npm:^8.0.0"
-    "@module-federation/enhanced": "npm:^2.1.0"
     "@tiptap/core": "npm:^3.4.2"
     "@tiptap/extension-font-size": "npm:^3.0.0-next.3"
     "@tiptap/extension-image": "npm:^3.4.2"
@@ -5375,6 +5375,45 @@ __metadata:
       optional: false
     vue-router:
       optional: false
+  languageName: unknown
+  linkType: soft
+
+"@vc-shell/mf-config@workspace:*, @vc-shell/mf-config@workspace:packages/mf-config":
+  version: 0.0.0-use.local
+  resolution: "@vc-shell/mf-config@workspace:packages/mf-config"
+  dependencies:
+    "@vc-shell/ts-config": "workspace:*"
+    tsc-alias: "npm:^1.8.8"
+    typescript: "npm:^5.8.3"
+  languageName: unknown
+  linkType: soft
+
+"@vc-shell/mf-host@npm:^2.0.0-alpha.7, @vc-shell/mf-host@workspace:packages/mf-host":
+  version: 0.0.0-use.local
+  resolution: "@vc-shell/mf-host@workspace:packages/mf-host"
+  dependencies:
+    "@module-federation/enhanced": "npm:^2.1.0"
+    "@types/semver": "npm:^7.5.0"
+    "@vc-shell/framework": "workspace:*"
+    "@vc-shell/ts-config": "workspace:*"
+    "@vueuse/core": "npm:^10.7.1"
+    lodash-es: "npm:^4.17.21"
+    semver: "npm:^7.6.2"
+    tsc-alias: "npm:^1.8.8"
+    typescript: "npm:^5.8.3"
+    vee-validate: "npm:^4.12.4"
+    vitest: "npm:^3.2.4"
+    vue: "npm:^3.5.13"
+    vue-i18n: "npm:^11.3.0"
+    vue-router: "npm:^4.5.0"
+  peerDependencies:
+    "@vc-shell/framework": ^2.0.0-alpha.7
+    "@vueuse/core": ^10.0.0
+    lodash-es: ^4.0.0
+    vee-validate: ^4.0.0
+    vue: ^3.4.0
+    vue-i18n: ^9.0.0
+    vue-router: ^4.0.0
   languageName: unknown
   linkType: soft
 
@@ -5455,7 +5494,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@npm:^2.0.0-alpha.6, @vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
+"@vc-shell/ts-config@npm:^2.0.0-alpha.7, @vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/ts-config@workspace:configs/ts-config"
   languageName: unknown
@@ -6385,10 +6424,11 @@ __metadata:
     "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.4.0"
     "@typescript-eslint/parser": "npm:^7.4.0"
-    "@vc-shell/api-client-generator": "npm:^2.0.0-alpha.6"
-    "@vc-shell/config-generator": "npm:^2.0.0-alpha.6"
-    "@vc-shell/framework": "npm:^2.0.0-alpha.6"
-    "@vc-shell/ts-config": "npm:^2.0.0-alpha.6"
+    "@vc-shell/api-client-generator": "npm:^2.0.0-alpha.7"
+    "@vc-shell/config-generator": "npm:^2.0.0-alpha.7"
+    "@vc-shell/framework": "npm:^2.0.0-alpha.7"
+    "@vc-shell/mf-host": "npm:^2.0.0-alpha.7"
+    "@vc-shell/ts-config": "npm:^2.0.0-alpha.7"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
     "@vue/eslint-config-typescript": "npm:^13.0.0"
@@ -16736,7 +16776,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.6, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.3, semver@npm:^7.7.1, semver@npm:^7.7.3, semver@npm:^7.7.4":
+"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.6, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.2, semver@npm:^7.6.3, semver@npm:^7.7.1, semver@npm:^7.7.3, semver@npm:^7.7.4":
   version: 7.7.4
   resolution: "semver@npm:7.7.4"
   bin:
@@ -19106,7 +19146,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:^3.0.0, vitest@npm:^3.1.2":
+"vitest@npm:^3.0.0, vitest@npm:^3.1.2, vitest@npm:^3.2.4":
   version: 3.2.4
   resolution: "vitest@npm:3.2.4"
   dependencies:
@@ -19298,7 +19338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-i18n@npm:^11.1.11":
+"vue-i18n@npm:^11.1.11, vue-i18n@npm:^11.3.0":
   version: 11.3.0
   resolution: "vue-i18n@npm:11.3.0"
   dependencies:
@@ -19331,7 +19371,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-router@npm:^4.2.5, vue-router@npm:^4.6.3":
+"vue-router@npm:^4.2.5, vue-router@npm:^4.5.0, vue-router@npm:^4.6.3":
   version: 4.6.4
   resolution: "vue-router@npm:4.6.4"
   dependencies:

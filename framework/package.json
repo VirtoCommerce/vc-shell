@@ -15,6 +15,7 @@
       "import": "./dist/framework.js",
       "types": "./dist/index.d.ts"
     },
+    "./package.json": "./package.json",
     "./dist/index.css": "./dist/framework.css",
     "./dist/locales/*": "./dist/locales/*",
     "./tailwind.config": "./tailwind.config.ts"
@@ -42,7 +43,6 @@
     "@headlessui/vue": "^1.7.19",
     "@material-symbols/font-300": "^0.32.0",
     "@microsoft/signalr": "^8.0.0",
-    "@module-federation/enhanced": "^2.1.0",
     "@tiptap/core": "^3.4.2",
     "@tiptap/extension-font-size": "^3.0.0-next.3",
     "@tiptap/extension-image": "^3.4.2",

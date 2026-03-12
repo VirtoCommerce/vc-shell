@@ -10,7 +10,7 @@ describe("package.json metadata", () => {
   // FR-1.1: exports map has only explicit named entries
   it("exports map contains only expected explicit entries", () => {
     const keys = Object.keys(pkg.exports);
-    const allowed = [".", "./dist/index.css", "./dist/locales/*", "./tailwind.config"];
+    const allowed = [".", "./package.json", "./dist/index.css", "./dist/locales/*", "./tailwind.config"];
     for (const key of keys) {
       expect(allowed).toContain(key);
     }

@@ -9,23 +9,21 @@ The Modularity Plugin provides:
 
 Dynamic modules are loaded at runtime using [Module Federation](https://module-federation.io/). The host app fetches a module registry from the server API, then loads each remote module as an ES module via `loadRemote()`.
 
+The MF runtime loader lives in a separate package: **`@vc-shell/mf-host`**.
+
 ### Host App Setup
 
 ```typescript
 // main.ts
-import { dynamicModulesPlugin } from "@vc-shell/framework";
+import { registerRemoteModules } from "@vc-shell/mf-host";
 
-app.use(dynamicModulesPlugin, {
-  router,
-  appName: "vendor-portal",
-  registryUrl: "/api/marketplace/frontend-modules",
-  frameworkVersion: "2.0.0", // optional -- enables compatibility filtering
-});
+// Fire-and-forget — sets ModulesReadyKey/ModulesLoadErrorKey when complete
+registerRemoteModules(app, { router, appName: "vendor-portal" });
 ```
 
-The plugin:
-1. Fetches the module registry from `registryUrl`
-2. Filters modules by framework version compatibility (if `frameworkVersion` provided)
+The function:
+1. Fetches the module registry from `/api/frontend-modules`
+2. Filters modules by framework version compatibility
 3. Registers all compatible remotes via MF runtime
 4. Loads and installs each module as a Vue plugin
 5. Sets `ModulesReadyKey` to `true` when complete (or `ModulesLoadErrorKey` on failure)

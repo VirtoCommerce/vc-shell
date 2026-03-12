@@ -182,6 +182,3 @@ export function createAppModule(
     },
   };
 }
-
-export { dynamicModulesPlugin } from "./loader-mf";
-export type { DynamicModulesPluginOptions, ModuleRegistryEntry } from "./loader-mf";

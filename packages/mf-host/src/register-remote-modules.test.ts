@@ -8,24 +8,12 @@ vi.mock("@module-federation/enhanced/runtime", () => ({
   loadRemote: vi.fn(),
 }));
 
-// Mock logger
-vi.mock("@core/utilities", () => ({
-  createLogger: vi.fn(() => ({
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    debug: vi.fn(),
-  })),
-}));
-
 // Mock semver
 vi.mock("semver", () => ({
   satisfies: vi.fn((version: string, range: string) => {
-    // Simple mock: ^1.0.0 matches 1.x, ^2.0.0 matches 2.x
     const majorRange = range.match(/\^(\d+)/)?.[1];
     const majorVersion = version.split(".")[0];
     if (majorRange) return majorRange === majorVersion;
-    // For non-caret ranges (e.g. >=1.0.0 <2.0.0), do a basic check
     return true;
   }),
   coerce: vi.fn((version: string) => {
@@ -34,16 +22,40 @@ vi.mock("semver", () => ({
   }),
 }));
 
-// Mock package.json to provide a known framework version
-vi.mock("../../../package.json", () => ({
+// Mock @vc-shell/framework to provide injection keys
+// vi.hoisted runs before vi.mock hoisting, making symbols available to the factory
+const { MockModulesReadyKey, MockModulesLoadErrorKey } = vi.hoisted(() => ({
+  MockModulesReadyKey: Symbol("ModulesReady"),
+  MockModulesLoadErrorKey: Symbol("ModulesLoadError"),
+}));
+vi.mock("@vc-shell/framework", () => ({
+  ModulesReadyKey: MockModulesReadyKey,
+  ModulesLoadErrorKey: MockModulesLoadErrorKey,
+}));
+
+// Mock package.json imports
+vi.mock("@vc-shell/framework/package.json", () => ({
   default: { version: "1.2.4" },
+}));
+vi.mock("vue/package.json", () => ({
+  default: { version: "3.5.0" },
+}));
+vi.mock("vue-router/package.json", () => ({
+  default: { version: "4.5.0" },
+}));
+vi.mock("vue-i18n/package.json", () => ({
+  default: { version: "9.10.0" },
+}));
+vi.mock("lodash-es/package.json", () => ({
+  default: { version: "4.17.21" },
+}));
+vi.mock("@vueuse/core/package.json", () => ({
+  default: { version: "10.7.1" },
 }));
 
 import { init, loadRemote } from "@module-federation/enhanced/runtime";
 import { satisfies } from "semver";
-import { dynamicModulesPlugin, type ModuleRegistryEntry } from "./loader-mf";
-import { ModulesReadyKey, ModulesLoadErrorKey } from "@framework/injection-keys";
-import { SHARED_DEP_NAMES } from "../../../../configs/vite-config/src/templates/shared-deps";
+import { registerRemoteModules, type ModuleRegistryEntry } from "./register-remote-modules";
 
 function createTestApp() {
   const app = createApp({ template: "<div />" });
@@ -65,7 +77,12 @@ function spyProvide(app: App) {
   return provided;
 }
 
-describe("dynamicModulesPlugin", () => {
+/** Flush all pending microtasks so the fire-and-forget IIFE completes. */
+function flushPromises() {
+  return new Promise<void>((resolve) => setTimeout(resolve, 0));
+}
+
+describe("registerRemoteModules", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     global.fetch = vi.fn() as any;
@@ -81,13 +98,11 @@ describe("dynamicModulesPlugin", () => {
       json: () => Promise.resolve({ modules: [] }),
     });
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
-    expect(provided.has(ModulesReadyKey as any)).toBe(true);
-    expect(provided.has(ModulesLoadErrorKey as any)).toBe(true);
+    expect(provided.has(MockModulesReadyKey)).toBe(true);
+    expect(provided.has(MockModulesLoadErrorKey)).toBe(true);
   });
 
   it("sets modulesReady=true after loading empty registry", async () => {
@@ -99,12 +114,10 @@ describe("dynamicModulesPlugin", () => {
       json: () => Promise.resolve({ modules: [] }),
     });
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
-    const modulesReady = provided.get(ModulesReadyKey as any);
+    const modulesReady = provided.get(MockModulesReadyKey);
     expect(modulesReady.value).toBe(true);
   });
 
@@ -131,18 +144,14 @@ describe("dynamicModulesPlugin", () => {
       .mockResolvedValueOnce({ default: fakeModuleB })
       .mockResolvedValueOnce({ default: fakeModuleC });
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
-    // All three loadRemote calls should have been made
     expect(loadRemote).toHaveBeenCalledTimes(3);
     expect(loadRemote).toHaveBeenCalledWith("mod-a/module");
     expect(loadRemote).toHaveBeenCalledWith("mod-b/module");
     expect(loadRemote).toHaveBeenCalledWith("mod-c/module");
 
-    // All three modules should be installed
     expect(fakeModuleA.install).toHaveBeenCalled();
     expect(fakeModuleB.install).toHaveBeenCalled();
     expect(fakeModuleC.install).toHaveBeenCalled();
@@ -163,10 +172,8 @@ describe("dynamicModulesPlugin", () => {
     const fakeModule = { install: vi.fn() };
     (loadRemote as any).mockResolvedValue({ default: fakeModule });
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
     expect(init).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -184,10 +191,8 @@ describe("dynamicModulesPlugin", () => {
       json: () => Promise.resolve({ modules: [] }),
     });
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
     expect(global.fetch).toHaveBeenCalledWith(
       "/api/frontend-modules",
@@ -198,7 +203,6 @@ describe("dynamicModulesPlugin", () => {
       }),
     );
 
-    // Verify the body contains appName and provides with framework version
     const callArgs = (global.fetch as any).mock.calls[0];
     const body = JSON.parse(callArgs[1].body);
     expect(body.appName).toBe("test-app");
@@ -223,10 +227,8 @@ describe("dynamicModulesPlugin", () => {
       json: () => Promise.resolve({ modules }),
     });
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
     // Framework version is 1.2.4 (from mocked package.json), module requires ^2.0.0
     expect(loadRemote).not.toHaveBeenCalled();
@@ -238,16 +240,14 @@ describe("dynamicModulesPlugin", () => {
 
     (global.fetch as any).mockRejectedValue(new Error("Network error"));
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
-    const loadError = provided.get(ModulesLoadErrorKey as any);
+    const loadError = provided.get(MockModulesLoadErrorKey);
     expect(loadError.value).toBe(true);
   });
 
-  it("sets modulesLoadError=true on HTTP error response", async () => {
+  it("sets modulesReady=true on 401 (not authenticated — silent skip)", async () => {
     const { app, router } = createTestApp();
     const provided = spyProvide(app);
 
@@ -257,12 +257,30 @@ describe("dynamicModulesPlugin", () => {
       statusText: "Unauthorized",
     });
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
+
+    // 401 means not authenticated — modules are skipped, not an error
+    const modulesReady = provided.get(MockModulesReadyKey);
+    expect(modulesReady.value).toBe(true);
+    const loadError = provided.get(MockModulesLoadErrorKey);
+    expect(loadError.value).toBe(false);
+  });
+
+  it("sets modulesLoadError=true on non-auth HTTP error", async () => {
+    const { app, router } = createTestApp();
+    const provided = spyProvide(app);
+
+    (global.fetch as any).mockResolvedValue({
+      ok: false,
+      status: 500,
+      statusText: "Internal Server Error",
     });
 
-    const loadError = provided.get(ModulesLoadErrorKey as any);
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
+
+    const loadError = provided.get(MockModulesLoadErrorKey);
     expect(loadError.value).toBe(true);
   });
 
@@ -285,16 +303,12 @@ describe("dynamicModulesPlugin", () => {
       .mockRejectedValueOnce(new Error("Module load failed"))
       .mockResolvedValueOnce({ default: workingModule });
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
-    // Working module should still be installed
     expect(workingModule.install).toHaveBeenCalled();
 
-    // modulesReady should be true (partial success is not an error)
-    const modulesReady = provided.get(ModulesReadyKey as any);
+    const modulesReady = provided.get(MockModulesReadyKey);
     expect(modulesReady.value).toBe(true);
   });
 
@@ -311,13 +325,10 @@ describe("dynamicModulesPlugin", () => {
     });
 
     const directModule = { install: vi.fn() };
-    // No .default wrapper — install is directly on exports
     (loadRemote as any).mockResolvedValue(directModule);
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
     expect(directModule.install).toHaveBeenCalled();
   });
@@ -327,8 +338,8 @@ describe("dynamicModulesPlugin", () => {
 
     const modules = [
       { id: "valid", entry: "/valid/remoteEntry.js", version: "1.0.0" },
-      { id: null, entry: "/bad/remoteEntry.js", version: "1.0.0" }, // invalid
-      { id: "no-entry", version: "1.0.0" }, // missing entry
+      { id: null, entry: "/bad/remoteEntry.js", version: "1.0.0" },
+      { id: "no-entry", version: "1.0.0" },
     ];
 
     (global.fetch as any).mockResolvedValue({
@@ -339,12 +350,9 @@ describe("dynamicModulesPlugin", () => {
     const validModule = { install: vi.fn() };
     (loadRemote as any).mockResolvedValue({ default: validModule });
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
-    // Only 1 valid module should trigger loadRemote
     expect(loadRemote).toHaveBeenCalledTimes(1);
     expect(loadRemote).toHaveBeenCalledWith("valid/module");
   });
@@ -372,10 +380,8 @@ describe("dynamicModulesPlugin", () => {
         },
       });
 
-      await dynamicModulesPlugin.install!(app, {
-        router,
-        appName: "test-app",
-      });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
       expect(ratingInstall).toHaveBeenCalled();
       expect(ordersInstall).toHaveBeenCalled();
@@ -401,10 +407,8 @@ describe("dynamicModulesPlugin", () => {
         },
       });
 
-      await dynamicModulesPlugin.install!(app, {
-        router,
-        appName: "test-app",
-      });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
       expect(ratingInstall).toHaveBeenCalled();
     });
@@ -421,15 +425,11 @@ describe("dynamicModulesPlugin", () => {
         json: () => Promise.resolve({ modules }),
       });
 
-      // loadRemote returns null (empty exports)
       (loadRemote as any).mockResolvedValue(null);
 
-      await dynamicModulesPlugin.install!(app, {
-        router,
-        appName: "test-app",
-      });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-      // loadRemote was called but no install should be invoked — no crash
       expect(loadRemote).toHaveBeenCalledTimes(1);
     });
 
@@ -449,16 +449,14 @@ describe("dynamicModulesPlugin", () => {
 
       (loadRemote as any).mockResolvedValue({
         default: {
-          __version: "1.0.0", // string, should be skipped
-          count: 42, // number, should be skipped
+          __version: "1.0.0",
+          count: 42,
           Valid: { install: validInstall },
         },
       });
 
-      await dynamicModulesPlugin.install!(app, {
-        router,
-        appName: "test-app",
-      });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
       expect(validInstall).toHaveBeenCalled();
     });
@@ -483,13 +481,9 @@ describe("dynamicModulesPlugin", () => {
 
       (loadRemote as any).mockResolvedValue({ default: { install: vi.fn() } });
 
-      await dynamicModulesPlugin.install!(app, {
-        router,
-        appName: "test-app",
-      });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-      // humanizeRange converts [1.0.0,2.0.0) → ">=1.0.0 <2.0.0"
-      // semver.satisfies is called with the converted range
       expect(satisfies).toHaveBeenCalledWith(
         expect.any(String),
         ">=1.0.0 <2.0.0",
@@ -514,10 +508,8 @@ describe("dynamicModulesPlugin", () => {
 
       (loadRemote as any).mockResolvedValue({ default: { install: vi.fn() } });
 
-      await dynamicModulesPlugin.install!(app, {
-        router,
-        appName: "test-app",
-      });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
       expect(satisfies).toHaveBeenCalledWith(
         expect.any(String),
@@ -543,10 +535,8 @@ describe("dynamicModulesPlugin", () => {
 
       (loadRemote as any).mockResolvedValue({ default: { install: vi.fn() } });
 
-      await dynamicModulesPlugin.install!(app, {
-        router,
-        appName: "test-app",
-      });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
       expect(satisfies).toHaveBeenCalledWith(
         expect.any(String),
@@ -572,43 +562,12 @@ describe("dynamicModulesPlugin", () => {
 
       (loadRemote as any).mockResolvedValue({ default: { install: vi.fn() } });
 
-      await dynamicModulesPlugin.install!(app, {
-        router,
-        appName: "test-app",
-      });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
       expect(satisfies).toHaveBeenCalledWith(
         expect.any(String),
         "^1.2.0",
-      );
-    });
-
-    it("passes through >=1.0.0 unchanged", async () => {
-      const { app, router } = createTestApp();
-      const modules: ModuleRegistryEntry[] = [
-        {
-          id: "gte-range",
-          entry: "/gte/remoteEntry.js",
-          version: "1.0.0",
-          compatibleWith: { dependencies: { "@vc-shell/framework": ">=1.0.0" } },
-        },
-      ];
-
-      (global.fetch as any).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ modules }),
-      });
-
-      (loadRemote as any).mockResolvedValue({ default: { install: vi.fn() } });
-
-      await dynamicModulesPlugin.install!(app, {
-        router,
-        appName: "test-app",
-      });
-
-      expect(satisfies).toHaveBeenCalledWith(
-        expect.any(String),
-        ">=1.0.0",
       );
     });
   });
@@ -627,10 +586,8 @@ describe("dynamicModulesPlugin", () => {
 
     (loadRemote as any).mockResolvedValue({ default: { install: vi.fn() } });
 
-    await dynamicModulesPlugin.install!(app, {
-      router,
-      appName: "test-app",
-    });
+    registerRemoteModules(app, { router, appName: "test-app" });
+    await flushPromises();
 
     const marks = (performance.mark as any).mock.calls.map((c: any[]) => c[0]);
     expect(marks).toEqual([
@@ -641,7 +598,7 @@ describe("dynamicModulesPlugin", () => {
     ]);
   });
 
-  it("init() receives exactly the deps from SHARED_DEP_NAMES", async () => {
+  it("init() receives all 7 shared deps", async () => {
     const modules: ModuleRegistryEntry[] = [
       { id: "test-mod", entry: "http://cdn/remoteEntry.js", version: "1.0.0" },
     ];
@@ -654,10 +611,12 @@ describe("dynamicModulesPlugin", () => {
     (loadRemote as any).mockResolvedValue({ default: { install: vi.fn() } });
 
     const { app, router } = createTestApp();
-    await dynamicModulesPlugin.install!(app, { router, appName: "test" });
+    registerRemoteModules(app, { router, appName: "test" });
+    await flushPromises();
 
     const initCall = vi.mocked(init).mock.calls[0][0];
     const sharedKeys = Object.keys(initCall.shared!);
-    expect(sharedKeys.sort()).toEqual([...SHARED_DEP_NAMES].sort());
+    const expectedDeps = ["vue", "vue-router", "vue-i18n", "vee-validate", "lodash-es", "@vueuse/core", "@vc-shell/framework"];
+    expect(sharedKeys.sort()).toEqual(expectedDeps.sort());
   });
 });

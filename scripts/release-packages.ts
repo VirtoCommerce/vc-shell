@@ -30,4 +30,14 @@ export const releasePackages: ReleasePackageConfig[] = [
     packageName: "@vc-shell/ts-config",
     displayName: "TypeScript Config (@vc-shell/ts-config)",
   },
+  {
+    path: "packages/mf-config",
+    packageName: "@vc-shell/mf-config",
+    displayName: "MF Config (@vc-shell/mf-config)",
+  },
+  {
+    path: "packages/mf-host",
+    packageName: "@vc-shell/mf-host",
+    displayName: "MF Host (@vc-shell/mf-host)",
+  },
 ];

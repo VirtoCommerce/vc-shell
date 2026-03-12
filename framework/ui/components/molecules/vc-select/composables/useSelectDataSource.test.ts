@@ -90,4 +90,191 @@ describe("useSelectDataSource", () => {
       expect(ds.filterString.value).toBeUndefined();
     });
   });
+
+  describe("search", () => {
+    it("async search sets searchResults via API", async () => {
+      const baseItems = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }];
+      const searchItems = [{ id: "1", name: "Alpha" }];
+      const loader = vi.fn()
+        .mockResolvedValueOnce({ results: baseItems, totalCount: 2 })
+        .mockResolvedValueOnce({ results: searchItems, totalCount: 1 });
+      const emitSearch = vi.fn();
+      const ds = createDataSource({ options: () => loader, debounce: () => 0, emit: { search: emitSearch } });
+
+      await ds.open();
+      const event = { target: { value: "Alpha" } } as unknown as Event;
+      ds.onInput(event);
+      await flushPromises();
+
+      expect(loader).toHaveBeenCalledTimes(2);
+      expect(loader).toHaveBeenLastCalledWith("Alpha");
+      expect(ds.displayItems.value).toEqual(searchItems);
+      expect(emitSearch).toHaveBeenCalledWith("Alpha");
+    });
+
+    it("client-side search filters cachedItems by label", async () => {
+      const items = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }, { id: "3", name: "Alphabet" }];
+      const ds = createDataSource({ options: () => items });
+
+      await ds.open();
+      const event = { target: { value: "Alph" } } as unknown as Event;
+      ds.onInput(event);
+      await nextTick();
+
+      expect(ds.displayItems.value).toEqual([
+        { id: "1", name: "Alpha" },
+        { id: "3", name: "Alphabet" },
+      ]);
+    });
+
+    it("clearSearch restores cachedItems without API call", async () => {
+      const baseItems = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }];
+      const searchItems = [{ id: "1", name: "Alpha" }];
+      const loader = vi.fn()
+        .mockResolvedValueOnce({ results: baseItems, totalCount: 2 })
+        .mockResolvedValueOnce({ results: searchItems, totalCount: 1 });
+      const ds = createDataSource({ options: () => loader, debounce: () => 0 });
+
+      await ds.open();
+      const event = { target: { value: "Alpha" } } as unknown as Event;
+      ds.onInput(event);
+      await flushPromises();
+
+      ds.clearSearch();
+
+      expect(loader).toHaveBeenCalledTimes(2); // no 3rd call
+      expect(ds.displayItems.value).toEqual(baseItems);
+      expect(ds.filterString.value).toBeUndefined();
+    });
+  });
+
+  describe("loadMore()", () => {
+    it("appends new page to cachedItems", async () => {
+      const page1 = [{ id: "1", name: "Alpha" }];
+      const page2 = [{ id: "2", name: "Beta" }];
+      const loader = vi.fn()
+        .mockResolvedValueOnce({ results: page1, totalCount: 2 })
+        .mockResolvedValueOnce({ results: page2, totalCount: 2 });
+      const ds = createDataSource({ options: () => loader });
+
+      await ds.open();
+      expect(ds.hasMore.value).toBe(true);
+
+      await ds.loadMore();
+      expect(ds.displayItems.value).toEqual([...page1, ...page2]);
+      expect(ds.hasMore.value).toBe(false);
+    });
+
+    it("deduplicates by getOptionValue", async () => {
+      const page1 = [{ id: "1", name: "Alpha" }];
+      const page2 = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }];
+      const loader = vi.fn()
+        .mockResolvedValueOnce({ results: page1, totalCount: 3 })
+        .mockResolvedValueOnce({ results: page2, totalCount: 3 });
+      const ds = createDataSource({ options: () => loader });
+
+      await ds.open();
+      await ds.loadMore();
+
+      expect(ds.displayItems.value).toEqual([
+        { id: "1", name: "Alpha" },
+        { id: "2", name: "Beta" },
+      ]);
+    });
+
+    it("cached pages survive close/open cycle", async () => {
+      const page1 = [{ id: "1", name: "Alpha" }];
+      const page2 = [{ id: "2", name: "Beta" }];
+      const loader = vi.fn()
+        .mockResolvedValueOnce({ results: page1, totalCount: 2 })
+        .mockResolvedValueOnce({ results: page2, totalCount: 2 });
+      const ds = createDataSource({ options: () => loader });
+
+      await ds.open();
+      await ds.loadMore();
+      ds.close();
+      await ds.open();
+
+      expect(loader).toHaveBeenCalledTimes(2); // no 3rd call
+      expect(ds.displayItems.value).toEqual([...page1, ...page2]);
+    });
+  });
+
+  describe("resolve()", () => {
+    it("fetches uncached IDs via loader", async () => {
+      const loader = vi.fn().mockResolvedValue({
+        results: [{ id: "5", name: "Epsilon" }],
+        totalCount: 1,
+      });
+      const ds = createDataSource({ options: () => loader });
+
+      const resolved = await ds.resolve(["5"]);
+
+      expect(resolved).toEqual([{ id: "5", name: "Epsilon" }]);
+      expect(loader).toHaveBeenCalledWith(undefined, undefined, ["5"]);
+    });
+
+    it("uses resolveCache on second call — no API", async () => {
+      const loader = vi.fn().mockResolvedValue({
+        results: [{ id: "5", name: "Epsilon" }],
+        totalCount: 1,
+      });
+      const ds = createDataSource({ options: () => loader });
+
+      await ds.resolve(["5"]);
+      const resolved2 = await ds.resolve(["5"]);
+
+      expect(loader).toHaveBeenCalledTimes(1);
+      expect(resolved2).toEqual([{ id: "5", name: "Epsilon" }]);
+    });
+
+    it("finds items in cachedItems without API call", async () => {
+      const items = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }];
+      const loader = vi.fn()
+        .mockResolvedValueOnce({ results: items, totalCount: 2 });
+      const ds = createDataSource({ options: () => loader });
+
+      await ds.open();
+      loader.mockClear();
+
+      const resolved = await ds.resolve(["1"]);
+
+      expect(loader).not.toHaveBeenCalled();
+      expect(resolved).toEqual([{ id: "1", name: "Alpha" }]);
+    });
+
+    it("partial cache hit — only fetches missing", async () => {
+      const items = [{ id: "1", name: "Alpha" }];
+      const loader = vi.fn()
+        .mockResolvedValueOnce({ results: items, totalCount: 1 })
+        .mockResolvedValueOnce({ results: [{ id: "3", name: "Gamma" }], totalCount: 1 });
+      const ds = createDataSource({ options: () => loader });
+
+      await ds.open();
+      const resolved = await ds.resolve(["1", "3"]);
+
+      expect(loader).toHaveBeenLastCalledWith(undefined, undefined, ["3"]);
+      expect(resolved).toEqual([
+        { id: "1", name: "Alpha" },
+        { id: "3", name: "Gamma" },
+      ]);
+    });
+  });
+
+  describe("refresh()", () => {
+    it("clears cache and reloads from API", async () => {
+      const items1 = [{ id: "1", name: "Alpha" }];
+      const items2 = [{ id: "1", name: "Alpha Updated" }];
+      const loader = vi.fn()
+        .mockResolvedValueOnce({ results: items1, totalCount: 1 })
+        .mockResolvedValueOnce({ results: items2, totalCount: 1 });
+      const ds = createDataSource({ options: () => loader });
+
+      await ds.open();
+      await ds.refresh();
+
+      expect(loader).toHaveBeenCalledTimes(2);
+      expect(ds.displayItems.value).toEqual(items2);
+    });
+  });
 });

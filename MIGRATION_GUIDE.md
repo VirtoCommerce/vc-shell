@@ -623,3 +623,144 @@ onBeforeUnmount(() => {
 </script>
 ```
 This new approach replaces the old declarative system and should be applied to all blades that use custom widgets.
+
+---
+
+## 11. Migrating to Vue 3.5.30, Vue Router 5, vue-tsc 3
+
+This section covers the migration of applications consuming `@vc-shell/framework` to the latest dependency versions.
+
+### 11.1 Version Summary
+
+| Package | Old | New | Type |
+|---------|-----|-----|------|
+| `vue` | ^3.5.13 | ^3.5.30 | Minor (no breaking changes) |
+| `vue-router` | ^4.x | ^5.0.3 | **Major** |
+| `vue-tsc` | ^2.2.10 | ^3.2.5 | **Major** |
+
+### 11.2 Updating `package.json`
+
+Update the following dependencies in your application's `package.json`:
+
+```diff
+ "dependencies": {
+-  "@vc-shell/framework": "^2.0.0-alpha.6",
++  "@vc-shell/framework": "^2.0.0-alpha.9",
+-  "vue": "^3.5.13",
++  "vue": "^3.5.30",
+-  "vue-router": "^4.2.5",
++  "vue-router": "^5.0.3",
+ },
+ "devDependencies": {
+-  "vue-tsc": "^2.2.10",
++  "vue-tsc": "^3.2.5",
+ }
+```
+
+Then run:
+
+```bash
+yarn install
+```
+
+### 11.3 Vue Router 5
+
+Vue Router 5 is a **transition release** with **no breaking changes** for apps not using `unplugin-vue-router`. Your existing router code (`createRouter`, `createWebHashHistory`, `useRoute`, `useRouter`, `router.addRoute`, navigation guards) will work without modifications.
+
+Official migration guide: https://router.vuejs.org/guide/migration/v4-to-v5
+
+#### Deprecated API: `next()` callback in navigation guards
+
+The `next()` callback pattern in `beforeEach` / `beforeResolve` guards still works in v5, but is **deprecated and will be removed in v6**. Migrate now to avoid future breakage.
+
+```typescript
+// DEPRECATED — will break in vue-router 6
+router.beforeEach(async (to, from, next) => {
+  if (!isAuthenticated()) {
+    next({ name: "Login" });
+  } else {
+    next();
+  }
+});
+
+// RECOMMENDED — return-based style
+router.beforeEach(async (to) => {
+  if (!isAuthenticated()) {
+    return { name: "Login" };
+  }
+  // returning undefined (or nothing) means "allow navigation"
+});
+```
+
+**How to find usages in your app:**
+
+```bash
+# Search for next() callback pattern
+grep -rn "beforeEach.*next" src/
+grep -rn "beforeResolve.*next" src/
+```
+
+#### No other changes required
+
+- `createRouter`, `createWebHashHistory`, `createWebHashHistory` — unchanged
+- `useRoute()`, `useRouter()` — unchanged
+- `RouteLocationNormalized`, `RouteRecordRaw`, `NavigationFailure` — unchanged
+- `router.addRoute()`, `router.beforeEach()` — unchanged
+- `<router-view>`, `<router-link>` — unchanged
+
+### 11.4 vue-tsc 3
+
+vue-tsc v3 is part of Vue Language Tools v3 (Volar). Key changes:
+
+#### TypeScript requirement
+
+vue-tsc 3 requires **TypeScript >= 5.0**. If your project uses `typescript: ^5.8.3` (as recommended), you are already compatible.
+
+#### Potential new type errors
+
+vue-tsc 3 may surface new TypeScript errors in `.vue` files due to improved type inference. Common cases:
+
+1. **`ComponentCustomProperties` augmentations** — if your `shims-vue.d.ts` augments `@vue/runtime-core`, verify it still works. Known issue: [vuejs/language-tools#5464](https://github.com/vuejs/language-tools/issues/5464).
+
+2. **Template type inference** — stricter checking in templates may flag previously undetected issues. Run `vue-tsc --noEmit` and fix any errors.
+
+3. **`v-for` numeric keys** — vue-tsc 3.2+ automatically treats `number` keys as strings. If you relied on numeric key types in `v-for`, this may cause new errors.
+
+#### Build script compatibility
+
+The `vue-tsc` CLI interface is unchanged. Your existing scripts work as-is:
+
+```json
+{
+  "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
+  "type-check": "vue-tsc --noEmit"
+}
+```
+
+#### vite-plugin-checker
+
+If you use `vite-plugin-checker` with `vueTsc: true`, verify it works with vue-tsc 3. If the dev server shows errors, update `vite-plugin-checker` to the latest version or temporarily disable the vue-tsc checker.
+
+### 11.5 Migration Checklist
+
+```
+Phase 1 — Update dependencies
+  [ ] Update vue, vue-router, vue-tsc, @vc-shell/* versions in package.json
+  [ ] Run yarn install
+
+Phase 2 — Type checking (vue-tsc 3)
+  [ ] Run: npx vue-tsc --noEmit
+  [ ] Fix any new TypeScript errors
+  [ ] Run: yarn build:types (if applicable)
+
+Phase 3 — Migrate deprecated API (Vue Router 5)
+  [ ] Search for next() callback in navigation guards
+  [ ] Rewrite to return-based style
+
+Phase 4 — Verify
+  [ ] Run dev server: yarn serve
+  [ ] Test login/logout flow
+  [ ] Test blade navigation
+  [ ] Test route guards and redirects
+  [ ] Run production build: yarn build
+```

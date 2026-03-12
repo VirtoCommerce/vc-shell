@@ -1,7 +1,7 @@
 import { ref, type App, type Plugin } from "vue";
 import type { Router } from "vue-router";
 import * as semver from "semver";
-import { init, loadRemote } from "@module-federation/enhanced/runtime";
+import { createInstance, loadRemote } from "@module-federation/enhanced/runtime";
 
 // Shared deps — statically imported. No circular dependency because
 // this package is separate from @vc-shell/framework.
@@ -177,7 +177,7 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
           shareConfig: { singleton: true, requiredVersion: entry.requiredVersion },
         };
       }
-      init({
+      createInstance({
         name: "host",
         remotes: compatible.map((mod) => ({ name: mod.id, entry: mod.entry, type: "module" as const })),
         shared,

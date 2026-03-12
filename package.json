@@ -10,7 +10,7 @@
     "postinstall": "husky install",
     "lint": "eslint --fix --cache 'framework/**/*.{ts,vue}' 'cli/**/*.{ts,vue}' 'configs/**/*.{ts,vue}' 'packages/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
-    "build": "yarn workspaces foreach -v --worktree --topological --from '{@vc-shell/mf-config,@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/framework,@vc-shell/mf-host}' run build",
+    "build": "yarn workspaces foreach -v --worktree --topological-dev --from '{@vc-shell/mf-config,@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/framework,@vc-shell/mf-host}' run build",
     "build:analyze": "ANALYZE=true yarn build",
     "build-framework": "yarn workspace @vc-shell/framework run build",
     "build-cli:config": "yarn workspace @vc-shell/config-generator run build",
@@ -104,10 +104,10 @@
     "vite-plugin-checker": "^0.9.1",
     "vite-plugin-mkcert": "^1.17.1",
     "vitest": "^3.1.2",
-    "vue": "^3.5.13",
-    "vue-component-meta": "^2.2.8",
+    "vue": "^3.5.30",
+    "vue-component-meta": "^3.2.5",
     "vue-eslint-parser": "^10.2.0",
-    "vue-tsc": "^2.2.10"
+    "vue-tsc": "^3.2.5"
   },
   "dependencies": {
     "cross-spawn": "^7.0.3",

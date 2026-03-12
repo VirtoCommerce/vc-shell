@@ -303,23 +303,19 @@ function setupRouterGuards(router: Router) {
 
   // Check if user is authenticated and redirect to login page if not.
   // TODO add check if app has login page
-  router.beforeEach(async (to, _, next) => {
+  router.beforeEach(async (to) => {
     const { isAuthenticated } = useUserManagement();
 
     if (to.meta.root === true) {
       try {
         if (!isAuthenticated.value) {
           localStorage.setItem("redirectAfterLogin", to.fullPath);
-          next({ name: "Login" });
-        } else {
-          next();
+          return { name: "Login" };
         }
       } catch (e) {
         localStorage.setItem("redirectAfterLogin", to.fullPath);
-        next({ name: "Login" });
+        return { name: "Login" };
       }
-    } else {
-      next();
     }
   });
 

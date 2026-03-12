@@ -118,8 +118,8 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.3",
     "vitest": "^3.0.0",
-    "vue-component-type-helpers": "^2.2.10",
-    "vue-tsc": "^2.2.10"
+    "vue-component-type-helpers": "^3.2.5",
+    "vue-tsc": "^3.2.5"
   },
   "publishConfig": {
     "access": "public",

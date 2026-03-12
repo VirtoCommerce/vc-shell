@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && tsc-alias"
+    "build": "echo 'Building @vc-shell/config-generator...' && tsc -b --clean && tsc && tsc-alias && echo '@vc-shell/config-generator built.'"
   },
   "dependencies": {
     "@module-federation/dts-plugin": "2.0.1",
@@ -20,7 +20,7 @@
     "vite-plugin-checker": "^0.9.1",
     "vite-plugin-circular-dependency": "^0.5.0",
     "vite-plugin-mkcert": "^1.17.1",
-    "vue": "^3.5.13"
+    "vue": "^3.5.30"
   },
   "devDependencies": {
     "@vc-shell/ts-config": "workspace:*",

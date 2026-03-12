@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && tsc-alias"
+    "build": "echo 'Building @vc-shell/mf-config...' && tsc -b --clean && tsc && tsc-alias && echo '@vc-shell/mf-config built.'"
   },
   "devDependencies": {
     "@vc-shell/ts-config": "workspace:*",

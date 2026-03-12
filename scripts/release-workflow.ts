@@ -147,6 +147,16 @@ export function syncWorkspacePackageVersions(version: string) {
     }
 
     packageJson.version = version;
+
+    // Update @vc-shell/* peerDependencies to match the new version
+    if (packageJson.peerDependencies) {
+      for (const dep of Object.keys(packageJson.peerDependencies)) {
+        if (dep.startsWith("@vc-shell/")) {
+          packageJson.peerDependencies[dep] = `^${version}`;
+        }
+      }
+    }
+
     writeJsonFile(packageJsonPath, packageJson);
 
     console.log(`  + ${pkg.displayName}`);

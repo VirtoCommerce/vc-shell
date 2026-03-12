@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build": "tsc -b --clean && tsc && tsc-alias",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -18,13 +18,13 @@
     "semver": "^7.6.2"
   },
   "peerDependencies": {
-    "@vc-shell/framework": "^2.0.0-alpha.7",
+    "@vc-shell/framework": "^2.0.0-alpha.8",
     "@vueuse/core": "^10.0.0",
     "lodash-es": "^4.0.0",
     "vee-validate": "^4.0.0",
     "vue": "^3.4.0",
     "vue-i18n": "^9.0.0",
-    "vue-router": "^4.0.0"
+    "vue-router": "^4.0.0 || ^5.0.0"
   },
   "devDependencies": {
     "@types/semver": "^7.5.0",
@@ -36,9 +36,9 @@
     "typescript": "^5.8.3",
     "vee-validate": "^4.12.4",
     "vitest": "^3.2.4",
-    "vue": "^3.5.13",
+    "vue": "^3.5.30",
     "vue-i18n": "^11.3.0",
-    "vue-router": "^4.5.0"
+    "vue-router": "^5.0.3"
   },
   "publishConfig": {
     "access": "public",

@@ -1,6 +1,5 @@
 import type { RouteLocationNormalized, Router } from "vue-router";
 import { App, Component } from "vue";
-import type { NotificationTemplateConstructor } from "@core/types";
 import * as components from "@ui/components";
 import * as directives from "@core/directives";
 import { useBreakpoints } from "@vueuse/core";
@@ -202,9 +201,9 @@ function setupLegacyGlobals(app: App) {
   warnStringKey("bladeRoutes", "BladeRoutesKey");
   app.provide("bladeRoutes", app.config.globalProperties.bladeRoutes);
 
-  // Notification templates — pure DI, no globalProperties (FR-3.5)
-  const notificationTemplates: NotificationTemplateConstructor[] = [];
-  app.provide(NotificationTemplatesKey, notificationTemplates);
+  // Legacy notification templates — empty array for backwards compat
+  // New code uses useNotificationStore().registry
+  app.provide(NotificationTemplatesKey, []);
 }
 
 function createAndProvideServices(app: App) {
@@ -382,6 +381,19 @@ export * from "@ui/components";
 export * from "@ui/types";
 
 export * from "@core/composables";
+
+// Notifications (new API)
+export { useBladeNotifications, useNotificationStore } from "./core/notifications";
+export type {
+  Severity,
+  ToastConfig,
+  NotificationTypeConfig,
+  ModuleNotificationsConfig,
+  NotificationAction,
+  BladeNotificationOptions,
+  BladeNotificationReturn,
+} from "./core/notifications";
+
 export * from "@core/directives";
 export * from "@core/types";
 export * from "@core/plugins";

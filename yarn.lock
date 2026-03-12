@@ -5543,6 +5543,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@vc-shell/mf-module@workspace:packages/mf-module":
+  version: 0.0.0-use.local
+  resolution: "@vc-shell/mf-module@workspace:packages/mf-module"
+  dependencies:
+    "@module-federation/vite": "npm:^1.12.2"
+    "@vc-shell/mf-config": "workspace:*"
+    "@vc-shell/ts-config": "workspace:*"
+    "@vitejs/plugin-vue": "npm:^5.2.3"
+    tsc-alias: "npm:^1.8.8"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.0.0"
+    vitest: "npm:^3.2.4"
+    vue: "npm:^3.5.30"
+  peerDependencies:
+    "@vitejs/plugin-vue": ^5.0.0
+    vite: ^5.0.0 || ^6.0.0
+  languageName: unknown
+  linkType: soft
+
 "@vc-shell/root@workspace:.":
   version: 0.0.0-use.local
   resolution: "@vc-shell/root@workspace:."

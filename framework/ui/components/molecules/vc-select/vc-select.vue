@@ -48,8 +48,8 @@
         :error="invalid"
         :error-message="errorMessage"
         :hint="hint"
-        :list-loading="listLoading"
-        :default-option-loading="defaultOptionLoading"
+        :list-loading="dataSource.loading.value || dataSource.searchLoading.value"
+        :default-option-loading="dataSource.defaultOptionLoading.value"
         :listbox-id="listboxId"
         :label-id="labelId"
         :label="label"
@@ -129,11 +129,11 @@
         :dropdown-style="dropdownStyle"
         :searchable="searchable"
         :option-scope="optionScope"
-        :list-loading="listLoading"
-        :options-list-length="optionsList.length"
-        :has-next-page="hasNextPage"
+        :list-loading="dataSource.loading.value || dataSource.searchLoading.value"
+        :options-list-length="dataSource.displayItems.value.length"
+        :has-next-page="dataSource.hasMore.value"
         :dropdown-toggle-ref="selectTriggerRef?.toggleRef ?? null"
-        @input="onInput"
+        @input="dataSource.onInput"
         @click-outside="onClickOutside"
       >
         <template
@@ -158,7 +158,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number } | undefined = undefined">
-import { ref, computed, watch, watchEffect, nextTick, toRefs } from "vue";
+import { ref, computed, watch, watchEffect, nextTick } from "vue";
 import { useFormField } from "@ui/composables/useFormField";
 import { useIntersectionObserver } from "@vueuse/core";
 import { VcLabel } from "@ui/components/atoms/vc-label";
@@ -171,9 +171,7 @@ import {
 import type { IFormFieldProps } from "@ui/types";
 import { useSelectVisibility } from "@ui/components/molecules/vc-select/composables/useSelectVisibility";
 import { useSelectDropdown } from "@ui/components/molecules/vc-select/composables/useSelectDropdown";
-import { useSelectDefaultValue } from "@ui/components/molecules/vc-select/composables/useSelectDefaultValue";
-import { useSelectOptions } from "@ui/components/molecules/vc-select/composables/useSelectOptions";
-import { useSelectSearch } from "@ui/components/molecules/vc-select/composables/useSelectSearch";
+import { useSelectDataSource } from "@ui/components/molecules/vc-select/composables/useSelectDataSource";
 import { useSelectSelection } from "@ui/components/molecules/vc-select/composables/useSelectSelection";
 import SelectTrigger from "@ui/components/molecules/vc-select/_internal/SelectTrigger.vue";
 import SelectDropdown from "@ui/components/molecules/vc-select/_internal/SelectDropdown.vue";
@@ -332,8 +330,6 @@ const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedNa
   useFormField(props);
 const listboxId = computed(() => `${fieldId.value}-listbox`);
 
-const { modelValue } = toRefs(props);
-
 // --- Subcomponent refs ---
 const selectTriggerRef = ref<InstanceType<typeof SelectTrigger> | null>(null);
 const selectDropdownRef = ref<InstanceType<typeof SelectDropdown> | null>(null);
@@ -366,43 +362,12 @@ watchEffect(() => {
   dropdownRef.value = selectDropdownRef.value?.dropdownElRef ?? null;
 });
 
-const filterString = ref<string | undefined>();
-
-const { defaultValue, defaultOptionLoading } = useSelectDefaultValue<Option>({
-  modelValue,
-  isSelectVisible,
-  emitValue: () => props.emitValue ?? true,
-  multiple: () => props.multiple,
-  mapOptions: () => props.mapOptions ?? true,
+const dataSource = useSelectDataSource<Option>({
   options: () => props.options as any,
   getOptionValue,
-});
-
-const {
-  optionsList,
-  optionsTemp,
-  totalItems,
-  listLoading,
-  hasNextPage,
-  loadOptionsForOpenDropdown,
-  onLoadMore,
-  onDropdownClose,
-} = useSelectOptions<Option>({
-  options: () => props.options as any,
-  filterString,
-  isOpened,
-  isSelectVisible,
-});
-
-const { searchRef, onInput, clearSearch } = useSelectSearch<Option>({
-  debounce: () => props.debounce ?? 500,
-  options: () => props.options as any,
-  optionsList,
-  optionsTemp,
-  totalItems,
-  listLoading,
-  filterString,
   getOptionLabel,
+  isSelectVisible,
+  debounce: () => props.debounce ?? 500,
   emit: {
     search: (val: string) => emit("search", val),
   },
@@ -413,8 +378,9 @@ const { selectedScope, hasValue, optionScope, toggleOption, removeAtIndex, onRes
   multiple: () => props.multiple,
   emitValue: () => props.emitValue ?? true,
   mapOptions: () => props.mapOptions ?? true,
-  optionsList,
-  defaultValue,
+  displayItems: dataSource.displayItems,
+  resolvedDefaults: dataSource.resolvedDefaults,
+  cachedItems: dataSource.cachedItems,
   getOptionValue,
   getOptionLabel,
   getOption,
@@ -435,8 +401,8 @@ const viewportRoot = computed(() => selectDropdownRef.value?.viewportRef ?? null
 useIntersectionObserver(
   loadMoreEl,
   ([{ isIntersecting }]) => {
-    if (isIntersecting && hasNextPage.value) {
-      onLoadMore();
+    if (isIntersecting && dataSource.hasMore.value) {
+      dataSource.loadMore();
     }
   },
   { threshold: 1, root: viewportRoot },
@@ -469,53 +435,59 @@ function onClickOutside() {
 // --- Orchestration watchers ---
 
 // When dropdown opens/closes: load options, init keyboard nav, focus
-watch(
-  [isOpened, isSelectVisible],
-  async ([newIsOpened, newIsSelectVisible]) => {
-    if (newIsOpened && newIsSelectVisible) {
-      const needsLoad =
-        optionsList.value.length === 0 ||
-        (props.options && typeof props.options === "function" && filterString.value && !listLoading.value);
+watch(isOpened, async (newIsOpened) => {
+  if (newIsOpened) {
+    await dataSource.open();
 
-      if (needsLoad) {
-        if (props.options && typeof props.options === "function") {
-          await loadOptionsForOpenDropdown();
-        } else if (props.options && Array.isArray(props.options)) {
-          optionsList.value = [...props.options] as Option[];
-          optionsTemp.value = optionsList.value;
-          totalItems.value = optionsList.value.length;
-        }
-      }
+    nextTick(() => {
+      popper.update();
+      const dropdownEl = selectDropdownRef.value?.dropdownElRef;
+      const searchInput = selectDropdownRef.value?.searchInputRef;
 
-      nextTick(() => {
-        popper.update();
-        const dropdownEl = selectDropdownRef.value?.dropdownElRef;
-        const searchInput = selectDropdownRef.value?.searchInputRef;
+      if (dropdownEl) {
+        keyboardNavigation.initKeyboardNavigation(dropdownEl);
+        if (props.searchable && searchInput) {
+          searchInput.focus();
+        } else {
+          const firstFocusable = dropdownEl.querySelector(
+            '.vc-select__option[tabindex="0"], .vc-select__search-input[tabindex="0"]',
+          ) as HTMLElement | null;
 
-        if (dropdownEl) {
-          keyboardNavigation.initKeyboardNavigation(dropdownEl);
-          if (props.searchable && searchInput) {
-            searchInput.focus();
+          if (firstFocusable) {
+            firstFocusable.focus();
           } else {
-            const firstFocusable = dropdownEl.querySelector(
-              '.vc-select__option[tabindex="0"], .vc-select__search-input[tabindex="0"]',
-            ) as HTMLElement | null;
-
-            if (firstFocusable) {
-              firstFocusable.focus();
-            } else {
-              keyboardNavigation.focusFirstElement();
-            }
+            keyboardNavigation.focusFirstElement();
           }
         }
-      });
-    } else if (!newIsOpened) {
-      keyboardNavigation.cleanupKeyboardNavigation();
-      clearSearch();
-      await onDropdownClose();
+      }
+    });
+  } else {
+    keyboardNavigation.cleanupKeyboardNavigation();
+    dataSource.close();
+  }
+});
+
+// Resolve selected values when modelValue changes
+watch(
+  () => props.modelValue,
+  async (currentModelVal) => {
+    if (currentModelVal == null || (Array.isArray(currentModelVal) && currentModelVal.length === 0)) {
+      dataSource.resolvedDefaults.value = [];
+      return;
+    }
+
+    const emitVal = props.emitValue ?? true;
+    const mapOpt = props.mapOptions ?? true;
+
+    if (emitVal && mapOpt) {
+      const ids = Array.isArray(currentModelVal) ? currentModelVal : [currentModelVal];
+      const stringIds = ids.filter((id) => id != null).map(String);
+      if (stringIds.length > 0) {
+        await dataSource.resolve(stringIds);
+      }
     }
   },
-  { immediate: false },
+  { immediate: true },
 );
 </script>
 

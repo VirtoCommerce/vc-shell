@@ -143,6 +143,27 @@ describe("NotificationStore", () => {
     });
   });
 
+  describe("ingest with toast", () => {
+    it("calls toastController.handle when type is registered", () => {
+      const handleSpy = vi.fn();
+      store = createNotificationStore({ toastHandle: handleSpy });
+      store.registerType("TestEvent", { severity: "info", toast: { mode: "auto" } });
+      store.ingest(makePush());
+      expect(handleSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ id: "test-1" }),
+        expect.objectContaining({ severity: "info" }),
+        expect.any(Function), // markAsRead
+      );
+    });
+
+    it("does not call toastController when type is not registered", () => {
+      const handleSpy = vi.fn();
+      store = createNotificationStore({ toastHandle: handleSpy });
+      store.ingest(makePush());
+      expect(handleSpy).not.toHaveBeenCalled();
+    });
+  });
+
   describe("getByType", () => {
     it("returns history items filtered by notifyType", () => {
       store.ingest(makePush({ id: "1", notifyType: "A" }));

@@ -6,16 +6,23 @@ import {
   NotificationSubscription,
   EXCLUDED_NOTIFICATION_TYPES,
 } from "./types";
+import { createToastController } from "./toast-controller";
 
 const logger = createLogger("notification-store");
 
-export function createNotificationStore() {
+export interface NotificationStoreOptions {
+  /** Injected toast handler. Defaults to createToastController().handle */
+  toastHandle?: (msg: PushNotification, config: NotificationTypeConfig, markAsRead: (msg: PushNotification) => void) => void;
+}
+
+export function createNotificationStore(options?: NotificationStoreOptions) {
   const registry = new Map<string, NotificationTypeConfig>();
   const history = ref<PushNotification[]>([]);
   const realtime = ref<PushNotification[]>([]);
   const subscribers = new Map<number, NotificationSubscription>();
   let subscriberCounter = 0;
 
+  const toastHandle = options?.toastHandle ?? createToastController().handle;
   const notificationsClient = new PushNotificationClient();
 
   // --- Computed ---
@@ -62,7 +69,13 @@ export function createNotificationStore() {
       realtime.value.push(new PushNotification(message));
     }
 
-    // Notify subscribers
+    // Toast (Level 1: always-on)
+    const config = message.notifyType ? registry.get(message.notifyType) : undefined;
+    if (config && message.isNew) {
+      toastHandle(message, config, markAsRead);
+    }
+
+    // Notify subscribers (Level 2: blade-level)
     if (message.isNew && message.notifyType) {
       for (const sub of subscribers.values()) {
         if (!sub.types.includes(message.notifyType)) continue;

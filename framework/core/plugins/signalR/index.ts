@@ -1,14 +1,14 @@
 import { App, watch, ref, InjectionKey } from "vue";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { PushNotification } from "@core/api/platform";
-import { useNotifications } from "@core/composables/useNotifications";
+import { useNotificationStore } from "@core/notifications";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useCypressSignalRMock } from "cypress-signalr-mock";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("signalR");
 
-const { addNotification } = useNotifications();
+const store = useNotificationStore();
 const currentCreator = ref<string | undefined>();
 
 let mountComplete = false;
@@ -27,7 +27,7 @@ function setupSystemEventsHandler(connection: any, creator?: string) {
     logger.debug("Setup handler for creator: ", creator);
     connection.on("SendSystemEvents", (message: PushNotification) => {
       if (message.creator === creator) {
-        addNotification(message);
+        store.ingest(message);
       }
     });
   }
@@ -79,7 +79,7 @@ export const signalR = {
     });
 
     connection.on("Send", (message: PushNotification) => {
-      addNotification(message);
+      store.ingest(message);
     });
 
     // Watch for changes in the creator

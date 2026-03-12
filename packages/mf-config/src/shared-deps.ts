@@ -9,11 +9,11 @@ export interface SharedDepConfig {
  * Base shared dependency definitions for Module Federation.
  * Both host and remote use the same dep list with singleton negotiation.
  */
-const SHARED_DEPS_BASE: Record<string, Omit<SharedDepConfig, "import">> = {
+export const SHARED_DEPS_BASE: Record<string, Omit<SharedDepConfig, "import">> = {
   vue: { singleton: true, requiredVersion: "^3.4.0" },
-  "vue-router": { singleton: true, requiredVersion: "^4.0.0" },
-  "vue-i18n": { singleton: true, requiredVersion: "^9.0.0" },
-  "vee-validate": { singleton: true },
+  "vue-router": { singleton: true, requiredVersion: "^4.0.0 || ^5.0.0" },
+  "vue-i18n": { singleton: true, requiredVersion: "^9.0.0 || ^11.0.0" },
+  "vee-validate": { singleton: true, requiredVersion: "^4.12.0" },
   "lodash-es": { singleton: true },
   "@vueuse/core": { singleton: true },
   "@vc-shell/framework": { singleton: true },

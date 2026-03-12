@@ -764,3 +764,68 @@ Phase 4 — Verify
   [ ] Test route guards and redirects
   [ ] Run production build: yarn build
 ```
+
+## Migrating to `defineAppModule`
+
+### Overview
+
+`createAppModule()` is now **deprecated**. Use `defineAppModule()` instead. The old function continues to work as an adapter but will be removed in a future major version.
+
+### What changed
+
+| Before | After |
+|--------|-------|
+| `createAppModule(pages, locales, templates)` | `defineAppModule({ blades, locales, notificationTemplates })` |
+| Positional arguments | Named options object |
+| Mutates component objects (`isBlade`, `moduleUid`, etc.) | No mutation — metadata stored in BladeRegistry |
+| `moduleComponents` parameter (4th arg) | Removed — register components via direct import |
+| `moduleOptions` / `dependsOn` (5th arg) | Removed — unused |
+
+### Migration steps
+
+**Step 1: Replace `createAppModule` with `defineAppModule`**
+
+Before:
+```ts
+import { createAppModule } from "@vc-shell/framework";
+import * as pages from "./pages";
+import * as locales from "./locales";
+
+export default createAppModule(pages, locales);
+```
+
+After:
+```ts
+import { defineAppModule } from "@vc-shell/framework";
+import * as blades from "./pages";
+import * as locales from "./locales";
+
+export default defineAppModule({
+  blades,
+  locales,
+});
+```
+
+**Step 2: If you used `notificationTemplates` (3rd argument)**
+
+Before:
+```ts
+export default createAppModule(pages, locales, notificationTemplates);
+```
+
+After:
+```ts
+export default defineAppModule({
+  blades: pages,
+  locales,
+  notificationTemplates,
+});
+```
+
+**Step 3: If you used `moduleComponents` (4th argument)**
+
+This parameter has been removed. Register components via direct import instead of global registration. If you absolutely need global registration, use `app.component()` directly in your module's `install()` function.
+
+### No action required
+
+If you are using `createAppModule()` in external modules, **no immediate action is needed**. The function continues to work identically via the legacy adapter. Migration is recommended but not required until the next major version.

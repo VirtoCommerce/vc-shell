@@ -274,6 +274,7 @@ export default defineConfig({
       "lodash-es",
       "@headlessui/vue",
       "vee-validate",
+      "@vc-shell/mf-host > @module-federation/runtime",
     ],
     esbuildOptions: {
       target: ["esnext", "safari14"],

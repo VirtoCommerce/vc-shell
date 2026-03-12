@@ -1,7 +1,8 @@
 import { ref, type App, type Plugin } from "vue";
 import type { Router } from "vue-router";
 import * as semver from "semver";
-import { createInstance, loadRemote } from "@module-federation/enhanced/runtime";
+import { createInstance } from "@module-federation/runtime";
+import { SHARED_DEPS_BASE } from "@vc-shell/mf-config";
 
 // Shared deps — statically imported. No circular dependency because
 // this package is separate from @vc-shell/framework.
@@ -23,17 +24,25 @@ import frameworkPkg from "@vc-shell/framework/package.json";
 
 const REGISTRY_URL = "/api/frontend-modules";
 
-// IMPORTANT: Keep this list in sync with @vc-shell/mf-config/src/shared-deps.ts (SHARED_DEPS_BASE).
-// Both files define the same 7 shared deps — mf-config for build-time, this for runtime.
-const SHARED_LIBS: Record<string, { lib: () => unknown; version: string; requiredVersion: string }> = {
-  vue:                    { lib: () => Vue,         version: vuePkg.version,                                   requiredVersion: "^3.4.0" },
-  "vue-router":           { lib: () => VueRouter,   version: vueRouterPkg.version,                             requiredVersion: "^4.0.0" },
-  "vue-i18n":             { lib: () => VueI18n,     version: vueI18nPkg.version,                               requiredVersion: "^9.0.0" },
-  "vee-validate":         { lib: () => VeeValidate, version: (VeeValidate as any).version ?? "4.0.0",          requiredVersion: "^4.0.0" },
-  "lodash-es":            { lib: () => LodashEs,    version: lodashEsPkg.version,                              requiredVersion: "^4.0.0" },
-  "@vueuse/core":         { lib: () => VueuseCore,  version: vueusePkg.version,                                requiredVersion: "^10.0.0" },
-  "@vc-shell/framework":  { lib: () => Framework,   version: frameworkPkg.version,                             requiredVersion: `^${frameworkPkg.version}` },
+const RUNTIME_LIBS: Record<string, { lib: () => unknown; version: string }> = {
+  vue:                   { lib: () => Vue,         version: vuePkg.version },
+  "vue-router":          { lib: () => VueRouter,   version: vueRouterPkg.version },
+  "vue-i18n":            { lib: () => VueI18n,     version: vueI18nPkg.version },
+  "vee-validate":        { lib: () => VeeValidate, version: (VeeValidate as any).version ?? "4.0.0" },
+  "lodash-es":           { lib: () => LodashEs,    version: lodashEsPkg.version },
+  "@vueuse/core":        { lib: () => VueuseCore,  version: vueusePkg.version },
+  "@vc-shell/framework": { lib: () => Framework,   version: frameworkPkg.version },
 };
+
+const SHARED_LIBS = Object.fromEntries(
+  Object.entries(SHARED_DEPS_BASE).map(([name, config]) => {
+    const runtime = RUNTIME_LIBS[name];
+    if (!runtime) {
+      throw new Error(`[mf-host] Missing runtime mapping for shared dep "${name}". Update RUNTIME_LIBS.`);
+    }
+    return [name, { ...runtime, requiredVersion: config.requiredVersion ?? "*" }];
+  }),
+);
 
 // --- Types ---
 
@@ -177,7 +186,7 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
           shareConfig: { singleton: true, requiredVersion: entry.requiredVersion },
         };
       }
-      createInstance({
+      const mfInstance = createInstance({
         name: "host",
         remotes: compatible.map((mod) => ({ name: mod.id, entry: mod.entry, type: "module" as const })),
         shared,
@@ -185,7 +194,7 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
 
       // 5. Load all in parallel
       const results = await Promise.allSettled(
-        compatible.map(async (mod) => ({ mod, exports: await loadRemote(`${mod.id}/module`) })),
+        compatible.map(async (mod) => ({ mod, exports: await mfInstance.loadRemote(`${mod.id}/module`) })),
       );
 
       performance.mark("vc:modules-loaded");

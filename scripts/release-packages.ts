@@ -40,4 +40,9 @@ export const releasePackages: ReleasePackageConfig[] = [
     packageName: "@vc-shell/mf-host",
     displayName: "MF Host (@vc-shell/mf-host)",
   },
+  {
+    path: "packages/mf-module",
+    packageName: "@vc-shell/mf-module",
+    displayName: "MF Module (@vc-shell/mf-module)",
+  },
 ];

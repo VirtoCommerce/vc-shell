@@ -9,7 +9,7 @@
   >
     <template #default="{ errors, errorMessage }">
       <VcInput
-        :model-value="value"
+        :model-value="value as string | null"
         class="vc-table-cell-default__input"
         :error="errors.length > 0"
         :error-message="isMobile ? errorMessage : undefined"

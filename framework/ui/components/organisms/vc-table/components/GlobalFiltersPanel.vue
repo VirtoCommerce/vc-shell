@@ -323,24 +323,26 @@ const getDateRangeEnd = (filterId: string): string => {
   return "";
 };
 
-const updateDateRangeStart = (filter: GlobalFilterConfig, value: string) => {
+const updateDateRangeStart = (filter: GlobalFilterConfig, value: string | number | Date | null | undefined) => {
   const current = localValues.value[filter.id] as { start?: string; end?: string } | null;
+  const str = value != null ? String(value) : undefined;
   localValues.value = {
     ...localValues.value,
     [filter.id]: {
-      start: value || undefined,
+      start: str || undefined,
       end: current?.end,
     },
   };
 };
 
-const updateDateRangeEnd = (filter: GlobalFilterConfig, value: string) => {
+const updateDateRangeEnd = (filter: GlobalFilterConfig, value: string | number | Date | null | undefined) => {
   const current = localValues.value[filter.id] as { start?: string; end?: string } | null;
+  const str = value != null ? String(value) : undefined;
   localValues.value = {
     ...localValues.value,
     [filter.id]: {
       start: current?.start,
-      end: value || undefined,
+      end: str || undefined,
     },
   };
 };

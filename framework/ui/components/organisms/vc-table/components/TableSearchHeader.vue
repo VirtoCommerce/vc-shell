@@ -132,7 +132,7 @@ const slots = useSlots();
 const searchInputRef = ref<InstanceType<typeof VcInput> | null>(null);
 const isFilterOpen = ref(false);
 
-const handleInput = (value: string | number | null | undefined) => {
+const handleInput = (value: string | number | Date | null | undefined) => {
   emit("update:modelValue", (value as string) ?? "");
 };
 

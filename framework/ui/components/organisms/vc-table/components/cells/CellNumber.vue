@@ -9,7 +9,7 @@
   >
     <template #default="{ errors, errorMessage }">
       <VcInput
-        :model-value="value"
+        :model-value="value as number | null"
         class="vc-table-cell-number__input"
         type="number"
         :error="errors.length > 0"

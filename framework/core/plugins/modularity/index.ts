@@ -108,7 +108,9 @@ export function defineAppModule(options: DefineAppModuleOptions) {
               ? component.notifyType
               : [component.notifyType];
 
-            if (notifyTypes.length > 0) {
+            // Skip if notifications config already handles these types
+            const unhandledTypes = notifyTypes.filter((t) => !store.registry.has(t));
+            if (unhandledTypes.length > 0) {
               // Permanent subscription — no cleanup needed (app lifetime)
               store.subscribe({
                 types: notifyTypes,

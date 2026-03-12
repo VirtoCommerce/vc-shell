@@ -40,6 +40,7 @@ export const signalR = {
     },
   ) {
     currentCreator.value = options?.creator;
+    const store = useNotificationStore();
     const { isAuthenticated } = useUserManagement();
     let reconnect = false;
     const connection =
@@ -78,7 +79,7 @@ export const signalR = {
     });
 
     connection.on("Send", (message: PushNotification) => {
-      useNotificationStore().ingest(message);
+      store.ingest(message);
     });
 
     // Watch for changes in the creator

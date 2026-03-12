@@ -40,10 +40,6 @@ export interface NotificationSubscription {
 export interface BladeNotificationOptions<T extends PushNotification = PushNotification> {
   types: string[];
   filter?: (msg: T) => boolean;
-  toast?: {
-    mode?: "auto" | "progress" | "silent";
-    completedType?: (msg: T) => "success" | "error";
-  };
   onMessage?: (msg: T) => void;
 }
 

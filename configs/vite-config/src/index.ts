@@ -2,12 +2,9 @@ import applicationConfiguration from "@vite-config/templates/vite.application.ap
 import libraryConfiguration from "@vite-config/templates/vite.library.appconfig";
 import * as fs from "node:fs";
 import { mergeConfig, UserConfig, AliasOptions } from "vite";
-import { readFileSync } from "node:fs";
-import { resolve, join, dirname } from "node:path";
 import { cwd } from "node:process";
 import modulesLibraryConfiguration from "@vite-config/templates/vite.modules-library.appconfig";
 import type { ModulesLibraryOptions } from "@vite-config/templates/vite.modules-library.appconfig";
-import type { DynamicModuleOptions } from "@vite-config/types";
 
 const packageJson = fs.readFileSync(cwd() + "/package.json");
 const name = JSON.parse(packageJson.toString()).name;
@@ -63,55 +60,12 @@ function toAliasArray(alias: AliasOptions) {
   return Object.entries(alias).map(([find, replacement]) => ({ find, replacement }));
 }
 
-// Get package.json from current working directory
-const getPackageJson = () => {
-  try {
-    const packageJsonPath = join(cwd(), "package.json");
-    return JSON.parse(readFileSync(packageJsonPath, "utf-8"));
-  } catch (error) {
-    console.error("Error reading package.json:", error);
-    return { name: "unknown-module", version: "0.0.0", dependencies: {} };
-  }
-};
-
-/**
- * Generate a Vite configuration for a dynamic module
- *
- * @param options - Custom configuration options
- * @returns Vite configuration
- *
- * @example
- * ```js
- * // vite.config.js
- * import { getDynamicModuleConfiguration } from '@vc-shell/dynamic-modules-config';
- *
- * export default getDynamicModuleConfiguration({
- *   // Custom configuration options
- *   compatibility: {
- *     framework: '^1.1.0',
- *   }
- * });
- * ```
- */
-async function getDynamicModuleConfiguration(options: DynamicModuleOptions) {
-  console.log(`Building dynamic module with options:`, options);
-  const pkg = getPackageJson();
-  const name = pkg.name;
-  const version = pkg.version;
-  console.log(`Module: ${name}@${version}`);
-
-  const { default: dynamicModuleConfiguration } = await import("@vite-config/templates/vite.dynamic-module.appconfig");
-  const baseConfig = dynamicModuleConfiguration(pkg, options);
-  return mergeConfig(baseConfig, options);
-}
-
 function getModulesLibraryConfiguration(options: ModulesLibraryOptions = {}) {
   console.log(`Building modules library ${name} v.${version} ...`);
   const baseConfig = modulesLibraryConfiguration(options);
   return mergeConfig(baseConfig, options as UserConfig);
 }
 
-export type { DynamicModuleOptions, CompatibilityOptions } from "@vite-config/types";
 export type { ModulesLibraryOptions } from "@vite-config/templates/vite.modules-library.appconfig";
 
-export { getLibraryConfiguration, getApplicationConfiguration, getDynamicModuleConfiguration, getModulesLibraryConfiguration };
+export { getLibraryConfiguration, getApplicationConfiguration, getModulesLibraryConfiguration };

@@ -12,9 +12,6 @@
     "build": "echo 'Building @vc-shell/config-generator...' && tsc -b --clean && tsc && tsc-alias && echo '@vc-shell/config-generator built.'"
   },
   "dependencies": {
-    "@module-federation/dts-plugin": "2.0.1",
-    "@module-federation/vite": "^1.12.2",
-    "@vc-shell/mf-config": "workspace:*",
     "@vitejs/plugin-vue": "^5.2.3",
     "vite": "^6.3.3",
     "vite-plugin-checker": "^0.9.1",

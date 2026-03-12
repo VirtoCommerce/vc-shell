@@ -1,5 +1,13 @@
 # Changelog
 
+# [2.0.0-alpha.9](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.8...v2.0.0-alpha.9) (2026-03-12)
+
+
+### Bug Fixes
+
+* topological build order, deprecation fixes, and dependency updates ([bf01eaf](https://github.com/VirtoCommerce/vc-shell/commit/bf01eaf7574eda5ae393941b553cbea5918a768f))
+* **ui:** replace VcInput discriminated union Props with single interface ([b25b153](https://github.com/VirtoCommerce/vc-shell/commit/b25b153eb81a13f879bfd2d14be63c333ea3f9a6))
+
 # [2.0.0-alpha.8](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.7...v2.0.0-alpha.8) (2026-03-12)
 
 

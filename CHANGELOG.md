@@ -1,5 +1,21 @@
 # Changelog
 
+# [2.0.0-alpha.8](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.7...v2.0.0-alpha.8) (2026-03-12)
+
+
+### Bug Fixes
+
+* add promise deduplication to loadUser() to prevent concurrent duplicate API calls ([ec83ab6](https://github.com/VirtoCommerce/vc-shell/commit/ec83ab6298648c5386467fcb88624e8154379f4b))
+* **ci:** add --worktree flag to publish:packages script ([23fe555](https://github.com/VirtoCommerce/vc-shell/commit/23fe55561048bbc6c1aa1b5b053a3f8779a4aa9d))
+* **ci:** use YARN_NPM_AUTH_TOKEN for yarn npm publish ([47f169b](https://github.com/VirtoCommerce/vc-shell/commit/47f169b6dd94acce84f77253d5f85174612cd692))
+* resolve vue-tsc build errors for generic components ([a8955e5](https://github.com/VirtoCommerce/vc-shell/commit/a8955e5ada0940345f149298653dd4bd96c6a574))
+
+
+### Features
+
+* **mf:** extract Module Federation loader into @vc-shell/mf-config and @vc-shell/mf-host ([9b079c2](https://github.com/VirtoCommerce/vc-shell/commit/9b079c27bc1497d89849b909f62c1403eff0c9b4))
+* **vc-select:** add useSelectDataSource composable with cache layer ([4f4e724](https://github.com/VirtoCommerce/vc-shell/commit/4f4e7246cd40cc09623e0f283ea32032f9ee0da1))
+
 # [2.0.0-alpha.7](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) (2026-03-11)
 
 

@@ -20,9 +20,11 @@ export interface UseNotificationsReturn {
 export type INotifications = UseNotificationsReturn;
 
 /** @deprecated Use useNotificationStore().hasUnread instead */
-export const hasUnreadNotifications = computed(
-  () => useNotificationStore().hasUnread.value,
-);
+export const hasUnreadNotifications = {
+  get value() {
+    return useNotificationStore().hasUnread.value;
+  },
+};
 
 /**
  * @deprecated Use `useBladeNotifications()` for blade-level subscriptions

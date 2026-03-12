@@ -8,7 +8,6 @@ import { createLogger } from "@core/utilities";
 
 const logger = createLogger("signalR");
 
-const store = useNotificationStore();
 const currentCreator = ref<string | undefined>();
 
 let mountComplete = false;
@@ -27,7 +26,7 @@ function setupSystemEventsHandler(connection: any, creator?: string) {
     logger.debug("Setup handler for creator: ", creator);
     connection.on("SendSystemEvents", (message: PushNotification) => {
       if (message.creator === creator) {
-        store.ingest(message);
+        useNotificationStore().ingest(message);
       }
     });
   }
@@ -79,7 +78,7 @@ export const signalR = {
     });
 
     connection.on("Send", (message: PushNotification) => {
-      store.ingest(message);
+      useNotificationStore().ingest(message);
     });
 
     // Watch for changes in the creator

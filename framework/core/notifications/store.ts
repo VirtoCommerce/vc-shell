@@ -48,12 +48,13 @@ export function createNotificationStore(options?: NotificationStoreOptions) {
     }
 
     // Upsert into history
+    let effectiveIsNew = message.isNew;
     const existingIdx = history.value.findIndex((x) => x.id === message.id);
     if (existingIdx !== -1) {
       const existing = history.value[existingIdx];
-      const preservedIsNew = existing.isNew;
+      effectiveIsNew = existing.isNew; // preserve read state
       Object.assign(existing, message);
-      existing.isNew = preservedIsNew;
+      existing.isNew = effectiveIsNew;
     } else {
       history.value.push(new PushNotification(message));
     }
@@ -62,21 +63,20 @@ export function createNotificationStore(options?: NotificationStoreOptions) {
     const existingRtIdx = realtime.value.findIndex((x) => x.id === message.id);
     if (existingRtIdx !== -1) {
       const existingRt = realtime.value[existingRtIdx];
-      const preservedIsNew = existingRt.isNew;
       Object.assign(existingRt, message);
-      existingRt.isNew = preservedIsNew;
+      existingRt.isNew = effectiveIsNew;
     } else {
       realtime.value.push(new PushNotification(message));
     }
 
-    // Toast (Level 1: always-on)
+    // Toast (Level 1: always-on) — use stored isNew, not incoming
     const config = message.notifyType ? registry.get(message.notifyType) : undefined;
-    if (config && message.isNew) {
+    if (config && effectiveIsNew) {
       toastHandle(message, config, markAsRead);
     }
 
-    // Notify subscribers (Level 2: blade-level)
-    if (message.isNew && message.notifyType) {
+    // Notify subscribers (Level 2: blade-level) — use stored isNew
+    if (effectiveIsNew && message.notifyType) {
       for (const sub of subscribers.values()) {
         if (!sub.types.includes(message.notifyType)) continue;
         if (sub.filter && !sub.filter(message)) continue;

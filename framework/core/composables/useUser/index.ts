@@ -248,31 +248,43 @@ export function _createInternalUserLogic(): IUserInternalAPI {
     }
   }
 
+  let loadUserPromise: Promise<UserDetail> | null = null;
+
   async function loadUser(): Promise<UserDetail> {
-    logger.debug("loadUser - Entry point");
-
-    try {
-      loading.value = true;
-      performance.mark("vc:auth-start");
-
-      // getCurrentUser() and getAccessToken() have no data dependency.
-      // getAccessToken() reads from localStorage (sync ~0ms) or refreshes via /connect/token.
-      // Running in parallel saves one sequential round-trip on token refresh paths.
-      const [userDetail] = await Promise.all([
-        securityClient.getCurrentUser(),
-        getAccessToken(),
-      ]);
-
-      user.value = userDetail;
-      performance.mark("vc:auth-done");
-      logger.debug("User details loaded:", user.value);
-    } catch (e: any) {
-      logger.error("loadUser failed:", e);
-    } finally {
-      loading.value = false;
+    // Deduplicate concurrent calls — reuse the in-flight promise
+    if (loadUserPromise) {
+      return loadUserPromise;
     }
 
-    return { ...user.value } as UserDetail;
+    loadUserPromise = (async () => {
+      logger.debug("loadUser - Entry point");
+
+      try {
+        loading.value = true;
+        performance.mark("vc:auth-start");
+
+        // getCurrentUser() and getAccessToken() have no data dependency.
+        // getAccessToken() reads from localStorage (sync ~0ms) or refreshes via /connect/token.
+        // Running in parallel saves one sequential round-trip on token refresh paths.
+        const [userDetail] = await Promise.all([
+          securityClient.getCurrentUser(),
+          getAccessToken(),
+        ]);
+
+        user.value = userDetail;
+        performance.mark("vc:auth-done");
+        logger.debug("User details loaded:", user.value);
+      } catch (e: any) {
+        logger.error("loadUser failed:", e);
+      } finally {
+        loading.value = false;
+        loadUserPromise = null;
+      }
+
+      return { ...user.value } as UserDetail;
+    })();
+
+    return loadUserPromise;
   }
 
   async function requestPasswordReset(loginOrEmail: string): Promise<RequestPasswordResult> {

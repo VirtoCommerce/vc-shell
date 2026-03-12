@@ -1,10 +1,10 @@
 import { App, Component, inject, resolveComponent } from "vue";
-import { NotificationTemplatesKey } from "@framework/injection-keys";
 import { i18n } from "@core/plugins/i18n";
 import type { BladeInstanceConstructor } from "@shared/components/blade-navigation/types";
 import { createLogger } from "@core/utilities";
 import { addMenuItem } from "@core/composables/useMenuService";
-import { useNotifications } from "@core/composables/useNotifications";
+import { useNotificationStore } from "@core/notifications";
+import type { ModuleNotificationsConfig } from "@core/notifications";
 import { notification } from "@shared/components/notifications/core";
 import { BladeRegistryKey, IBladeRegistryInstance } from "@core/composables/useBladeRegistry";
 
@@ -18,8 +18,10 @@ export interface DefineAppModuleOptions {
   blades?: Record<string, BladeInstanceConstructor>;
   /** Locales for vue-i18n merge */
   locales?: Record<string, object>;
-  /** Notification templates */
+  /** @deprecated Use `notifications` instead */
   notificationTemplates?: Record<string, Component & { notifyType?: string }>;
+  /** Notification type configurations (new API) */
+  notifications?: ModuleNotificationsConfig;
 }
 
 /**
@@ -34,7 +36,7 @@ export interface DefineAppModuleOptions {
  * ```
  */
 export function defineAppModule(options: DefineAppModuleOptions) {
-  const { blades, locales, notificationTemplates } = options;
+  const { blades, locales, notificationTemplates, notifications } = options;
 
   return {
     install(app: App): void {
@@ -74,8 +76,32 @@ export function defineAppModule(options: DefineAppModuleOptions) {
         }
       }
 
-      // Step 2: Notification subscriptions (separate from blade registration)
+      // Step 2: Register notification types (new API)
+      if (notifications) {
+        const store = useNotificationStore();
+        for (const [type, config] of Object.entries(notifications)) {
+          store.registerType(type, config);
+        }
+      }
+
+      // Step 3: Legacy notification support (deprecated)
+      if (!notifications && notificationTemplates) {
+        const store = useNotificationStore();
+        for (const template of Object.values(notificationTemplates)) {
+          const type = template.notifyType;
+          if (type) {
+            store.registerType(type, {
+              template: template as Component,
+              severity: "info",
+              toast: { mode: "auto" },
+            });
+          }
+        }
+      }
+
+      // Step 3b: Legacy blade notifyType compat shim (deprecated)
       if (blades) {
+        const store = useNotificationStore();
         for (const component of Object.values(blades)) {
           if (component.notifyType) {
             const notifyTypes = Array.isArray(component.notifyType)
@@ -83,36 +109,28 @@ export function defineAppModule(options: DefineAppModuleOptions) {
               : [component.notifyType];
 
             if (notifyTypes.length > 0) {
-              const { markAsRead, setNotificationHandler } = useNotifications(notifyTypes);
-
-              setNotificationHandler((message) => {
-                if (message.title) {
-                  notification(message.title, {
-                    onClose() {
-                      markAsRead(message);
-                    },
-                  });
-                }
+              // Permanent subscription — no cleanup needed (app lifetime)
+              store.subscribe({
+                types: notifyTypes,
+                handler: (message) => {
+                  if (message.title) {
+                    notification(message.title, {
+                      onClose() {
+                        store.markAsRead(message);
+                      },
+                    });
+                  }
+                },
               });
-            }
-          }
-        }
-      }
 
-      // Step 3: Notification templates
-      if (notificationTemplates) {
-        const templateRegistry = app.runWithContext(() =>
-          inject<(Component & { notifyType?: string })[]>(NotificationTemplatesKey),
-        );
-        if (templateRegistry) {
-          for (const template of Object.values(notificationTemplates)) {
-            const existingIndex = templateRegistry.findIndex(
-              (t: Component & { notifyType?: string }) => t.notifyType === template.notifyType,
-            );
-            if (existingIndex !== -1) {
-              templateRegistry.splice(existingIndex, 1);
+              if (import.meta.env.DEV) {
+                logger.warn(
+                  `[vc-shell] notifyType on blade "${component.name}" is deprecated. ` +
+                  `Use useBladeNotifications() inside the blade instead. ` +
+                  `See: MIGRATION_GUIDE.md#notifications`,
+                );
+              }
             }
-            templateRegistry.push(template);
           }
         }
       }

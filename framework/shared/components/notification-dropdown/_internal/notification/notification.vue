@@ -32,12 +32,11 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { PushNotification } from "@core/api/platform";
-import { NotificationTemplateConstructor } from "@core/types";
+import { useNotificationStore } from "@core/notifications";
 import { NotificationTemplate } from "@shared/components/notification-template";
 
 export interface Props {
   notification: PushNotification;
-  templates: NotificationTemplateConstructor[];
 }
 
 export interface Emits {
@@ -47,10 +46,27 @@ export interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const currentTemplate = computed(() => props.templates?.find((x) => x?.notifyType === props.notification.notifyType));
+const store = useNotificationStore();
+
+const currentTemplate = computed(() => {
+  const type = props.notification.notifyType;
+  if (!type) return undefined;
+  return store.registry.get(type)?.template;
+});
+
+const severity = computed(() => {
+  const type = props.notification.notifyType;
+  if (!type) return "info";
+  const config = store.registry.get(type);
+  if (!config) return "info";
+  return typeof config.severity === "function"
+    ? config.severity(props.notification)
+    : config.severity;
+});
 
 const templateProps = computed(() => ({
   notification: props.notification,
+  severity: severity.value,
 }));
 
 const handleClick = () => {

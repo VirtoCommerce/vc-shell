@@ -553,7 +553,149 @@ import { VcBlade, VcForm, VcInput, VcSelect } from "@vc-shell/framework";
 
 This migration eliminates the indirection layer of JSON schemas and gives you full TypeScript type safety, IDE autocompletion, and standard Vue tooling support.
 
-## 10. Registering Widgets in Blades
+## 10. Replacing `useBladeNavigation()` with `useBlade()`
+
+### Overview
+
+**`useBladeNavigation()` is deprecated.** Replace all usages with `useBlade()`.
+
+The new `useBlade()` is a single composable that replaces **all** previous blade navigation patterns:
+
+| Old (deprecated) | New |
+|-------------------|-----|
+| `useBladeNavigation()` | `useBlade()` |
+| `useBladeContext()` | `useBlade()` |
+| `useBlade()` (legacy, returned `ComputedRef`) | `useBlade()` (new, returns destructured API) |
+
+**Key difference:** the old `useBladeNavigation()` required wrapping blade names in `{ blade: resolveBladeByName("X") }` or `{ blade: { name: "X" } }`. The new `useBlade().openBlade()` takes `{ name: "X" }` directly — simpler and cleaner.
+
+`useBlade()` works **everywhere** — inside blades, in dashboard cards, notification templates, and standalone composables. Inside a blade it provides the full API (identity, guards, communication). Outside a blade, `openBlade()` works normally; blade-specific methods (`closeSelf`, `callParent`, etc.) throw a descriptive runtime error.
+
+### Quick Reference: `useBladeNavigation()` → `useBlade()`
+
+| `useBladeNavigation()` (deprecated) | `useBlade()` (new) |
+|--------------------------------------|---------------------|
+| `const { openBlade } = useBladeNavigation()` | `const { openBlade } = useBlade()` |
+| `const { openBlade, onBeforeClose } = useBladeNavigation()` | `const { openBlade, onBeforeClose } = useBlade()` |
+| `openBlade({ blade: resolveBladeByName("X")!, param })` | `openBlade({ name: "X", param })` |
+| `openBlade({ blade: { name: "X" }, options })` | `openBlade({ name: "X", options })` |
+| `openBlade({ blade: markRaw(Component), param })` | `openBlade({ name: "ComponentName", param })` |
+| `onParentCall({ method: "reload" })` | `callParent("reload")` |
+| `onParentCall({ method: "fn", args: val })` | `callParent("fn", val)` |
+| `resolveBladeByName("X")` | Not needed — pass `name` directly |
+
+Also replaces legacy patterns:
+
+| Legacy pattern | `useBlade()` (new) |
+|----------------|---------------------|
+| `const blade = useBlade()` + `blade.value.id` | `const { id } = useBlade()` + `id.value` |
+| `const { openBlade } = useBladeContext()` | `const { openBlade } = useBlade()` |
+| `inject(BladeInstance)` for blade ID | `const { id } = useBlade()` |
+
+### Behavior by context
+
+| Method | Inside blade | Outside blade |
+|--------|-------------|---------------|
+| `openBlade()` | Opens child (parentId auto-set) + URL sync | Opens blade (no parentId) + URL sync |
+| `closeSelf()` | Closes current blade | Throws: "requires blade context" |
+| `closeChildren()` | Closes all children of current blade | Throws: "requires blade context" |
+| `id`, `param`, etc. | ComputedRef with value | Throws on `.value` access |
+| `callParent()` | Calls parent method | Throws |
+
+### Migration Examples
+
+**Inside a blade (detail/list page):**
+
+```ts
+// Before — two composables
+const blade = useBlade();
+const { openBlade, onBeforeClose } = useBladeNavigation();
+registerWidget(myWidget, blade?.value.id ?? "");
+
+// After — single composable
+const { id: bladeId, openBlade, onBeforeClose } = useBlade();
+registerWidget(myWidget, bladeId.value);
+```
+
+**Outside a blade (dashboard card):**
+
+```ts
+// Before
+import { useBladeNavigation } from "@vc-shell/framework";
+const { openBlade, resolveBladeByName } = useBladeNavigation();
+openBlade({ blade: resolveBladeByName("OrderDetails")!, param: orderId });
+
+// After
+import { useBlade } from "@vc-shell/framework";
+const { openBlade } = useBlade();
+openBlade({ name: "OrderDetails", param: orderId });
+```
+
+**Notification template:**
+
+```ts
+// Before
+const { openBlade, resolveBladeByName } = useBladeNavigation();
+openBlade({ blade: resolveBladeByName("ProductDetails")!, param: productId });
+
+// After
+const { openBlade } = useBlade();
+openBlade({ name: "ProductDetails", param: productId });
+```
+
+**Parent-child communication:**
+
+```ts
+// Before
+const { onParentCall } = useBladeNavigation();
+onParentCall({ method: "reload" });
+onParentCall({ method: "onItemClick", args: item, callback: (result) => { ... } });
+
+// After
+const { callParent } = useBlade();
+await callParent("reload");
+const result = await callParent("onItemClick", item);
+```
+
+**Close children:**
+
+```ts
+// New method — closes all child blades of the current blade
+const { closeChildren } = useBlade();
+await closeChildren(); // respects onBeforeClose guards
+```
+
+### `onBeforeClose` boolean inversion
+
+The guard boolean semantics are **inverted** between the legacy and new API:
+
+| Legacy `useBladeNavigation().onBeforeClose` | New `useBlade().onBeforeClose` |
+|---------------------------------------------|-------------------------------|
+| `return false` → **prevent** close | `return true` → **prevent** close |
+| `return true` / `undefined` → allow close | `return false` / `undefined` → allow close |
+
+```ts
+// Before (legacy)
+onBeforeClose(async () => {
+  if (isModified.value) {
+    return await showConfirmation(msg); // true=allow, false=prevent
+  }
+});
+
+// After (new API — invert the result)
+onBeforeClose(async () => {
+  if (isModified.value) {
+    return !(await showConfirmation(msg)); // true=prevent, false=allow
+  }
+});
+```
+
+### Backward compatibility
+
+- **`useBladeNavigation()`** continues to work as a deprecated adapter. No immediate migration required.
+- **`useBladeContext()`** continues to work as a deprecated alias for `useBlade()`.
+
+## 11. Registering Widgets in Blades
 
 The method for registering widgets for blades has been completely redesigned. Instead of using the `#widgets` slot in `vc-blade`, you must now use the `useWidgets` composable for programmatic registration.
 
@@ -587,38 +729,31 @@ Widgets must now be registered programmatically inside the `<script setup>` of y
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, inject } from "vue";
+import { onBeforeUnmount } from "vue";
 import { useWidgets, type IWidget, useBlade } from "@vc-shell/framework";
 import MyWidget from "../components/MyWidget.vue";
 
-// 1. Inject the instance of the current blade to get its ID
-const blade = useBlade();
+// 1. Get the current blade's ID via useBlade()
+const { id: bladeId } = useBlade();
 
 // 2. Get the functions for widget registration
 const { registerWidget, unregisterWidget } = useWidgets();
 
-// 3. Define the widget as an IWidget object
-const myWidget: IWidget = {
-  id: "MyWidget",
-  component: MyWidget,
-  // Pass props to the widget
-  props: {
-    item: item.value, // assuming 'item' is a ref or computed
-  }
-};
+// 3. Register the widget for the current blade
+registerWidget(
+  {
+    id: "MyWidget",
+    component: MyWidget,
+    props: {
+      item: item.value, // assuming 'item' is a ref or computed
+    },
+  },
+  bladeId.value,
+);
 
-// 4. Register the widget for the current blade on mount
-onMounted(() => {
-  if (blade?.value.id) {
-    registerWidget(myWidget, blade.value.id);
-  }
-});
-
-// 5. Unregister on unmount to prevent memory leaks
+// 4. Unregister on unmount to prevent memory leaks
 onBeforeUnmount(() => {
-  if (blade?.value.id) {
-    unregisterWidget(myWidget.id, blade.value.id);
-  }
+  unregisterWidget("MyWidget", bladeId.value);
 });
 </script>
 ```
@@ -626,11 +761,11 @@ This new approach replaces the old declarative system and should be applied to a
 
 ---
 
-## 11. Migrating to Vue 3.5.30, Vue Router 5, vue-tsc 3
+## 12. Migrating to Vue 3.5.30, Vue Router 5, vue-tsc 3
 
 This section covers the migration of applications consuming `@vc-shell/framework` to the latest dependency versions.
 
-### 11.1 Version Summary
+### 12.1 Version Summary
 
 | Package | Old | New | Type |
 |---------|-----|-----|------|
@@ -638,7 +773,7 @@ This section covers the migration of applications consuming `@vc-shell/framework
 | `vue-router` | ^4.x | ^5.0.3 | **Major** |
 | `vue-tsc` | ^2.2.10 | ^3.2.5 | **Major** |
 
-### 11.2 Updating `package.json`
+### 12.2 Updating `package.json`
 
 Update the following dependencies in your application's `package.json`:
 
@@ -663,7 +798,7 @@ Then run:
 yarn install
 ```
 
-### 11.3 Vue Router 5
+### 12.3 Vue Router 5
 
 Vue Router 5 is a **transition release** with **no breaking changes** for apps not using `unplugin-vue-router`. Your existing router code (`createRouter`, `createWebHashHistory`, `useRoute`, `useRouter`, `router.addRoute`, navigation guards) will work without modifications.
 
@@ -708,7 +843,7 @@ grep -rn "beforeResolve.*next" src/
 - `router.addRoute()`, `router.beforeEach()` — unchanged
 - `<router-view>`, `<router-link>` — unchanged
 
-### 11.4 vue-tsc 3
+### 12.4 vue-tsc 3
 
 vue-tsc v3 is part of Vue Language Tools v3 (Volar). Key changes:
 
@@ -741,7 +876,7 @@ The `vue-tsc` CLI interface is unchanged. Your existing scripts work as-is:
 
 If you use `vite-plugin-checker` with `vueTsc: true`, verify it works with vue-tsc 3. If the dev server shows errors, update `vite-plugin-checker` to the latest version or temporarily disable the vue-tsc checker.
 
-### 11.5 Migration Checklist
+### 12.5 Migration Checklist
 
 ```
 Phase 1 — Update dependencies

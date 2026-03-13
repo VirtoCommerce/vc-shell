@@ -31,8 +31,8 @@ The `VcIcon` component is a versatile and flexible icon component that provides 
   <!-- Lucide Icon -->
   <VcIcon icon="lucide-home" />
   
-  <!-- Font Awesome Icon -->
-  <VcIcon icon="fas fa-home" />
+  <!-- Font Awesome Icon (legacy) -->
+  <VcIcon icon="fa-home" />
   
   <!-- Custom SVG Component -->
   <VcIcon :icon="HomeIcon" />
@@ -82,7 +82,7 @@ Use the `variant` prop to apply predefined colors for status indicators:
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `icon` | `string \| Component` | `"fas fa-square-full"` | The icon to display. Can be a string identifier or a component instance |
+| `icon` | `string \| Component` | `"lucide-square"` | The icon to display. Can be a string identifier or a component instance |
 | `size` | `"xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl" \| "xxxl"` | `"m"` | Predefined size of the icon |
 | `variant` | `"warning" \| "danger" \| "success"` | `undefined` | Color variant for status indication |
 | `useContainer` | `boolean` | `true` | Whether to wrap the icon in a container for consistent spacing |
@@ -123,7 +123,7 @@ The `VcIcon` component supports inheriting size from CSS styles. This allows you
 <template>
   <!-- Setting size through parent element -->
   <div class="custom-icon-parent">
-    <VcIcon icon="fas fa-star" />
+    <VcIcon icon="lucide-star" />
   </div>
 
   <!-- Inline styles -->

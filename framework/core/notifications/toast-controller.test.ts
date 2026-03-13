@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { createToastController } from "./toast-controller";
+import { createToastController, type IToastController } from "./toast-controller";
 import { PushNotification } from "@core/api/platform";
 import { NotificationTypeConfig } from "./types";
 
@@ -28,7 +28,7 @@ function makePush(overrides: Partial<PushNotification> = {}): PushNotification {
 }
 
 describe("ToastController", () => {
-  let controller: ReturnType<typeof createToastController>;
+  let controller: IToastController;
 
   beforeEach(() => {
     vi.clearAllMocks();

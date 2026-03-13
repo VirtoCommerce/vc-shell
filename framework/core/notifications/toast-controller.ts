@@ -33,7 +33,15 @@ function resolveToastKey(
 const defaultIsComplete = (msg: PushNotification) =>
   !!(msg as PushNotificationRecord).finished;
 
-export function createToastController() {
+export interface IToastController {
+  handle(
+    message: PushNotification,
+    config: NotificationTypeConfig,
+    markAsReadFn?: (msg: PushNotification) => void,
+  ): void;
+}
+
+export function createToastController(): IToastController {
   const activeToasts = new Map<string, ActiveToast>();
 
   function handle(
@@ -122,4 +130,3 @@ export function createToastController() {
   return { handle };
 }
 
-export type ToastController = ReturnType<typeof createToastController>;

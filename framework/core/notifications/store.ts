@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { type Ref, type ComputedRef, ref, computed } from "vue";
 import { PushNotification, PushNotificationClient, PushNotificationSearchCriteria } from "@core/api/platform";
 import { createLogger } from "@core/utilities";
 import {
@@ -15,7 +15,31 @@ export interface NotificationStoreOptions {
   toastHandle?: (msg: PushNotification, config: NotificationTypeConfig, markAsRead: (msg: PushNotification) => void) => void;
 }
 
-export function createNotificationStore(options?: NotificationStoreOptions) {
+export interface NotificationStore {
+  // State
+  readonly registry: Map<string, NotificationTypeConfig>;
+  readonly history: Ref<PushNotification[]>;
+  readonly realtime: Ref<PushNotification[]>;
+
+  // Computed
+  readonly unreadCount: ComputedRef<number>;
+  readonly hasUnread: ComputedRef<boolean>;
+
+  // Actions
+  registerType(type: string, config: NotificationTypeConfig): void;
+  ingest(message: PushNotification): void;
+  markAsRead(message: PushNotification): void;
+  markAllAsRead(): Promise<void>;
+  loadHistory(take?: number): Promise<void>;
+  subscribe(opts: {
+    types: string[];
+    filter?: (msg: PushNotification) => boolean;
+    handler?: (msg: PushNotification) => void;
+  }): () => void;
+  getByType(type: string): PushNotification[];
+}
+
+export function createNotificationStore(options?: NotificationStoreOptions): NotificationStore {
   const registry = new Map<string, NotificationTypeConfig>();
   const history = ref<PushNotification[]>([]);
   const realtime = ref<PushNotification[]>([]);
@@ -167,4 +191,3 @@ export function createNotificationStore(options?: NotificationStoreOptions) {
   };
 }
 
-export type NotificationStore = ReturnType<typeof createNotificationStore>;

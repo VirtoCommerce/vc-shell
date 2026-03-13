@@ -1,7 +1,7 @@
 export { useNotificationStore } from "./composables/useNotificationStore";
 export { useBladeNotifications } from "./composables/useBladeNotifications";
-export { createNotificationStore } from "./store";
-export { createToastController } from "./toast-controller";
+export { createNotificationStore, type NotificationStore } from "./store";
+export { createToastController, type IToastController } from "./toast-controller";
 export type {
   Severity,
   ToastConfig,

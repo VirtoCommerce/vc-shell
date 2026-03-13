@@ -104,6 +104,7 @@
     :anchor-ref="notificationAnchorRef"
     placement="right-start"
     width="320px"
+    :content-scrollable="false"
   >
     <NotificationDropdown />
   </VcDropdownPanel>

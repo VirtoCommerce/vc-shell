@@ -77,6 +77,7 @@
         <VcButton
           variant="primary"
           class="tw-w-full"
+          icon="lucide-log-in"
           :disabled="!isValid"
           :loading="loading"
           @click="login"

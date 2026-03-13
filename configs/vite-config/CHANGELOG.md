@@ -1,3 +1,10 @@
+# [2.0.0-alpha.10](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) (2026-03-13)
+
+
+### Features
+
+* **mf-host:** add mfHostConfig() vite helper for optimizeDeps ([501841d](https://github.com/VirtoCommerce/vc-shell/commit/501841d457ad9f3c671c41723b65045fae075d28))
+* **mf-host:** import shared deps from mf-config instead of duplicating ([51d2df1](https://github.com/VirtoCommerce/vc-shell/commit/51d2df126ac45ca388c7eb5ce8943fc324938a25))
 # [2.0.0-alpha.9](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.8...v2.0.0-alpha.9) (2026-03-12)
 
 

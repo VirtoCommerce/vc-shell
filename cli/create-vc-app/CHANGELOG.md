@@ -1,3 +1,9 @@
+# [2.0.0-alpha.10](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) (2026-03-13)
+
+
+### Bug Fixes
+
+* **create-vc-app:** update templates to use @vc-shell/mf-host and @vc-shell/mf-module ([ba86a3e](https://github.com/VirtoCommerce/vc-shell/commit/ba86a3e9cab2e73269b6b56215282c5f3fc6535c))
 # [2.0.0-alpha.9](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.8...v2.0.0-alpha.9) (2026-03-12)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app

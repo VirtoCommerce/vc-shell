@@ -1,5 +1,46 @@
 # Changelog
 
+# [2.0.0-alpha.10](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) (2026-03-13)
+
+
+* feat!(blade): unify useBlade() API, deprecate useBladeNavigation() and useBladeContext() ([d07d829](https://github.com/VirtoCommerce/vc-shell/commit/d07d829b34720797e99f860014a835906ae11cd6))
+
+
+### Bug Fixes
+
+* **create-vc-app:** update templates to use @vc-shell/mf-host and @vc-shell/mf-module ([ba86a3e](https://github.com/VirtoCommerce/vc-shell/commit/ba86a3e9cab2e73269b6b56215282c5f3fc6535c))
+* **mf-module:** add exports field for proper ESM resolution ([a951353](https://github.com/VirtoCommerce/vc-shell/commit/a951353743aa0d583c7cb206b6a84be3781b8477))
+* **notifications:** address architectural review findings ([4429f1c](https://github.com/VirtoCommerce/vc-shell/commit/4429f1ccf77830d3d36efa537d93c4c463ffaced))
+* **notifications:** address code review findings ([1104f68](https://github.com/VirtoCommerce/vc-shell/commit/1104f681ed26d775632b769e618b623d81480078))
+* **notifications:** remove broken hasUnreadNotifications, add loadHistory tests ([9f25854](https://github.com/VirtoCommerce/vc-shell/commit/9f2585430b6eba78920e1037951a39a77b26205a))
+* **notifications:** replace VcDropdown with VcScrollableContainer in dropdown ([d635694](https://github.com/VirtoCommerce/vc-shell/commit/d6356940fca5ad450cf4b592d283021468d6f08d))
+* **vc-button:** rename icon class to BEM modifier and reduce icon-title gap ([ba2297d](https://github.com/VirtoCommerce/vc-shell/commit/ba2297d5c06de19c8a40df1207f13587991a8a08))
+* **vc-select:** resolve primitive modelValue when emitValue is false ([3cc38ac](https://github.com/VirtoCommerce/vc-shell/commit/3cc38acd4dbccd788575aab6218897ab33ab67f8))
+
+
+### Features
+
+* **icons:** migrate from FontAwesome and Material to Lucide icons ([1165217](https://github.com/VirtoCommerce/vc-shell/commit/1165217459ccac086aa5eab381deb43be46d7746))
+* **mf-host:** add mfHostConfig() vite helper for optimizeDeps ([501841d](https://github.com/VirtoCommerce/vc-shell/commit/501841d457ad9f3c671c41723b65045fae075d28))
+* **mf-host:** import shared deps from mf-config instead of duplicating ([51d2df1](https://github.com/VirtoCommerce/vc-shell/commit/51d2df126ac45ca388c7eb5ce8943fc324938a25))
+* **mf-host:** import shared deps from mf-config instead of duplicating ([8b0a1fe](https://github.com/VirtoCommerce/vc-shell/commit/8b0a1fe5a5426678c0f4b2b3148fc54fa08be45e))
+* **mf-module:** create package for remote module build config ([5cde74b](https://github.com/VirtoCommerce/vc-shell/commit/5cde74b8c7e6369da79d98c5d43edbc451681744))
+* **modularity,dropdown:** support notifications config in defineAppModule, use store in dropdown ([eb96c22](https://github.com/VirtoCommerce/vc-shell/commit/eb96c228b0e8f8d5efa6bd5d31cd8f3e70ae3dc8))
+* **notifications:** add barrel exports for notifications module ([f10526f](https://github.com/VirtoCommerce/vc-shell/commit/f10526ffe639700a82c96d73b533f3ef78c9b9c9))
+* **notifications:** add core types for notification system redesign ([402cbbc](https://github.com/VirtoCommerce/vc-shell/commit/402cbbc83de926aa7cd025173c7c838eb3c0b3a4))
+* **notifications:** add NotificationStore with types and tests ([921fd84](https://github.com/VirtoCommerce/vc-shell/commit/921fd8461416e02234b4bce9eb299b1767660ad4))
+* **notifications:** add ToastController with progress/auto/silent modes ([9eb6268](https://github.com/VirtoCommerce/vc-shell/commit/9eb62687245bd63788d76d67e7185237c6c3e9e8))
+* **notifications:** add useBladeNotifications composable with auto-cleanup ([af18fd8](https://github.com/VirtoCommerce/vc-shell/commit/af18fd869d2b4874732592292dda0fa46578d07e))
+* **notifications:** add useNotificationStore singleton composable ([596d1d6](https://github.com/VirtoCommerce/vc-shell/commit/596d1d677cd72b6f6e4a6e24583d3a6d8cc4152a))
+* **notifications:** integrate ToastController into store.ingest and wire SignalR ([8c7be3e](https://github.com/VirtoCommerce/vc-shell/commit/8c7be3ea06a94341a82f9741e34d5e4a2eccb4a2))
+
+
+### BREAKING CHANGES
+
+* `useBladeNavigation()` and `useBladeContext()` are removed.
+Use `useBlade()` everywhere. The old `useBlade()` that returned `ComputedRef<IBladeInstance>`
+is replaced with a new API returning destructured properties and methods.
+
 # [2.0.0-alpha.9](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.8...v2.0.0-alpha.9) (2026-03-12)
 
 

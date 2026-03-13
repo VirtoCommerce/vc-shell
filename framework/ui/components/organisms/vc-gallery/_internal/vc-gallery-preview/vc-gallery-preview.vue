@@ -8,7 +8,7 @@
     <template #header>
       <div class="vc-gallery-preview__header">
         <VcIcon
-          icon="material-image"
+          icon="lucide-image"
           size="m"
           class="vc-gallery-preview__header-icon"
         />
@@ -25,7 +25,7 @@
           @click="onCopyLink"
         >
           <VcIcon
-            :icon="copied ? 'material-check' : 'material-link'"
+            :icon="copied ? 'lucide-check' : 'lucide-link'"
             size="s"
           />
         </button>
@@ -55,7 +55,7 @@
             class="vc-gallery-preview__nav vc-gallery-preview__nav--prev"
             @click="localIndex--"
           >
-            <VcIcon icon="material-chevron_left" size="l" />
+            <VcIcon icon="lucide-chevron-left" size="l" />
           </button>
 
           <!-- Nav: next -->
@@ -65,7 +65,7 @@
             class="vc-gallery-preview__nav vc-gallery-preview__nav--next"
             @click="localIndex++"
           >
-            <VcIcon icon="material-chevron_right" size="l" />
+            <VcIcon icon="lucide-chevron-right" size="l" />
           </button>
         </div>
 
@@ -232,7 +232,7 @@ onBeforeUnmount(() => {
   }
 
   /* Copied state: icon turns green */
-  &__action-btn .vc-icon--material-check {
+  &__action-btn .vc-icon--lucide-check {
     color: var(--gp-copied-color);
   }
 

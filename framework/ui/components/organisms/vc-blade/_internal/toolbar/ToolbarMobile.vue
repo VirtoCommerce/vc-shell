@@ -63,7 +63,7 @@
         @click="closeMenu"
       >
         <VcIcon
-          icon="material-close"
+          icon="lucide-x"
           size="s"
         />
       </button>
@@ -98,7 +98,7 @@
           @click="openMenu"
         >
           <VcIcon
-            icon="material-keyboard_arrow_up"
+            icon="lucide-chevron-up"
             size="xs"
           />
         </button>

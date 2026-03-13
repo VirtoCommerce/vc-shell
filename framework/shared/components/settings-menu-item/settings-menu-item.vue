@@ -43,7 +43,7 @@
 
           <VcIcon
             v-if="showChevron"
-            icon="fas fa-chevron-right"
+            icon="lucide-chevron-right"
             size="xs"
             class="vc-menu-item__chevron"
           />

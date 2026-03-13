@@ -18,7 +18,7 @@
           >
             <div class="tw-flex tw-flex-row tw-items-center tw-text-[color:var(--change-password-text-color)]">
               <VcIcon
-                icon="material-lightbulb"
+                icon="lucide-lightbulb"
                 size="l"
                 class="tw-mr-3"
               />

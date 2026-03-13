@@ -27,7 +27,7 @@
         >
           <VcButton
             icon-class="menu-sidebar__close-button-icon"
-            icon="material-close"
+            icon="lucide-x"
             text
             @click.stop="$emit('update:is-opened', false)"
           />

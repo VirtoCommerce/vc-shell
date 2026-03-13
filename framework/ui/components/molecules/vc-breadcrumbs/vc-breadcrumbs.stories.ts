@@ -51,7 +51,7 @@ const meta = {
       {
         id: "0",
         title: "Home",
-        icon: "fas fa-home",
+        icon: "lucide-house",
       },
       {
         id: "1",
@@ -87,7 +87,7 @@ The VcBreadcrumbs component provides navigation hierarchy with these features:
 
 <script setup lang="ts">
 const breadcrumbItems = [
-  { id: "home", title: "Home", icon: "fas fa-home" },
+  { id: "home", title: "Home", icon: "lucide-house" },
   { id: "products", title: "Products" },
   { id: "category", title: "Electronics" }
 ];
@@ -225,7 +225,7 @@ export const ManyItems: Story = {
       {
         id: "0",
         title: "Home",
-        icon: "fas fa-home",
+        icon: "lucide-house",
       },
       {
         id: "1",
@@ -305,11 +305,11 @@ export const WithUseBreadcrumbs: Story = {
       }
 
       const pages: Page[] = [
-        { id: "home", title: "Home", icon: "fas fa-home" },
-        { id: "products", title: "Products", icon: "fas fa-box" },
-        { id: "categories", title: "Categories", icon: "fas fa-layer-group" },
-        { id: "electronics", title: "Electronics", icon: "fas fa-laptop" },
-        { id: "offers", title: "Special Offers", icon: "fas fa-tag" },
+        { id: "home", title: "Home", icon: "lucide-house" },
+        { id: "products", title: "Products", icon: "lucide-box" },
+        { id: "categories", title: "Categories", icon: "lucide-layers" },
+        { id: "electronics", title: "Electronics", icon: "lucide-laptop" },
+        { id: "offers", title: "Special Offers", icon: "lucide-tag" },
       ];
 
       // Function to simulate navigation and add a breadcrumb
@@ -406,7 +406,7 @@ export const WithClickHandlers: Story = {
         {
           id: "0",
           title: "Home",
-          icon: "fas fa-home",
+          icon: "lucide-house",
           clickHandler: (id: string) => {
             console.log(`Navigating to Home, id: ${id}`);
             alert(`Navigating to: Home`);
@@ -453,7 +453,7 @@ export const WithCustomTrigger: Story = {
       {
         id: "0",
         title: "Home",
-        icon: "fas fa-home",
+        icon: "lucide-house",
       },
       {
         id: "1",

@@ -52,7 +52,7 @@ const meta = {
     },
   },
   args: {
-    icon: "material-home",
+    icon: "lucide-home",
     size: "m",
     useContainer: true,
   },
@@ -78,9 +78,9 @@ export const Basic: Story = {
           <h2 class="tw-text-xl tw-font-bold tw-mb-4 tw-border-b tw-pb-2">Icon Libraries</h2>
           <div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 tw-gap-6">
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-              <VcIcon icon="material-home" size="xl" />
+              <VcIcon icon="lucide-home" size="xl" />
               <span class="tw-text-sm tw-mt-2">Material Icons</span>
-              <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">material-home</code>
+              <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">lucide-home</code>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
               <VcIcon icon="bi-house" size="xl" />
@@ -93,9 +93,9 @@ export const Basic: Story = {
               <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">lucide-home</code>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-              <VcIcon icon="fas fa-home" size="xl" />
+              <VcIcon icon="lucide-house" size="xl" />
               <span class="tw-text-sm tw-mt-2">Font Awesome</span>
-              <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">fas fa-home</code>
+              <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">lucide-house</code>
             </div>
           </div>
         </section>
@@ -104,21 +104,21 @@ export const Basic: Story = {
           <h2 class="tw-text-xl tw-font-bold tw-mb-4 tw-border-b tw-pb-2">Status Variants</h2>
           <div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 tw-gap-6">
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-              <VcIcon icon="material-star" size="xl" />
+              <VcIcon icon="lucide-star" size="xl" />
               <span class="tw-text-sm tw-mt-2">Default</span>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-              <VcIcon icon="material-check_circle" variant="success" size="xl" />
+              <VcIcon icon="lucide-circle-check" variant="success" size="xl" />
               <span class="tw-text-sm tw-mt-2">Success</span>
               <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">variant="success"</code>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-              <VcIcon icon="material-warning" variant="warning" size="xl" />
+              <VcIcon icon="lucide-triangle-alert" variant="warning" size="xl" />
               <span class="tw-text-sm tw-mt-2">Warning</span>
               <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">variant="warning"</code>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-              <VcIcon icon="material-error" variant="danger" size="xl" />
+              <VcIcon icon="lucide-circle-alert" variant="danger" size="xl" />
               <span class="tw-text-sm tw-mt-2">Danger</span>
               <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">variant="danger"</code>
             </div>
@@ -150,49 +150,49 @@ export const Sizes: Story = {
           <h2 class="tw-text-xl tw-font-bold tw-mb-4 tw-border-b tw-pb-2">Predefined Sizes</h2>
           <div class="tw-flex tw-flex-wrap tw-items-end tw-justify-center tw-gap-8">
             <div class="tw-flex tw-flex-col tw-items-center">
-              <VcIcon icon="material-star" size="xs" />
+              <VcIcon icon="lucide-star" size="xs" />
               <div class="tw-mt-2 tw-text-center">
                 <span class="tw-text-sm tw-block">xs</span>
                 <span class="tw-text-xs tw-text-gray-500 tw-block">12px</span>
               </div>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center">
-              <VcIcon icon="material-star" size="s" />
+              <VcIcon icon="lucide-star" size="s" />
               <div class="tw-mt-2 tw-text-center">
                 <span class="tw-text-sm tw-block">s</span>
                 <span class="tw-text-xs tw-text-gray-500 tw-block">14px</span>
               </div>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center">
-              <VcIcon icon="material-star" size="m" />
+              <VcIcon icon="lucide-star" size="m" />
               <div class="tw-mt-2 tw-text-center">
                 <span class="tw-text-sm tw-block">m (default)</span>
                 <span class="tw-text-xs tw-text-gray-500 tw-block">18px</span>
               </div>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center">
-              <VcIcon icon="material-star" size="l" />
+              <VcIcon icon="lucide-star" size="l" />
               <div class="tw-mt-2 tw-text-center">
                 <span class="tw-text-sm tw-block">l</span>
                 <span class="tw-text-xs tw-text-gray-500 tw-block">20px</span>
               </div>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center">
-              <VcIcon icon="material-star" size="xl" />
+              <VcIcon icon="lucide-star" size="xl" />
               <div class="tw-mt-2 tw-text-center">
                 <span class="tw-text-sm tw-block">xl</span>
                 <span class="tw-text-xs tw-text-gray-500 tw-block">22px</span>
               </div>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center">
-              <VcIcon icon="material-star" size="xxl" />
+              <VcIcon icon="lucide-star" size="xxl" />
               <div class="tw-mt-2 tw-text-center">
                 <span class="tw-text-sm tw-block">xxl</span>
                 <span class="tw-text-xs tw-text-gray-500 tw-block">30px</span>
               </div>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center">
-              <VcIcon icon="material-star" size="xxxl" />
+              <VcIcon icon="lucide-star" size="xxxl" />
               <div class="tw-mt-2 tw-text-center">
                 <span class="tw-text-sm tw-block">xxxl</span>
                 <span class="tw-text-xs tw-text-gray-500 tw-block">64px</span>
@@ -204,7 +204,7 @@ export const Sizes: Story = {
         <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm tw-mt-8">
           <h2 class="tw-text-xl tw-font-bold tw-mb-4 tw-border-b tw-pb-2">Custom Size</h2>
           <div class="tw-flex tw-flex-col tw-items-center">
-            <VcIcon icon="material-star" :custom-size="48" />
+            <VcIcon icon="lucide-star" :custom-size="48" />
             <div class="tw-mt-3 tw-text-center">
               <span class="tw-text-sm tw-block">Custom Size (48px)</span>
               <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">:custom-size="48"</code>
@@ -243,20 +243,20 @@ export const MaterialIcons: Story = {
 
         <div class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-4 tw-gap-4">
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="material-home" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">material-home</code>
+            <VcIcon icon="lucide-home" size="xl" />
+            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-home</code>
           </div>
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="material-settings" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">material-settings</code>
+            <VcIcon icon="lucide-settings" size="xl" />
+            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-settings</code>
           </div>
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="material-person" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">material-person</code>
+            <VcIcon icon="lucide-user" size="xl" />
+            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-user</code>
           </div>
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="material-shopping_cart" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">material-shopping_cart</code>
+            <VcIcon icon="lucide-shopping-cart" size="xl" />
+            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-shopping-cart</code>
           </div>
         </div>
       </div>
@@ -376,20 +376,20 @@ export const FontAwesomeIcons: Story = {
 
         <div class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-4 tw-gap-4">
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="fas fa-home" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">fas fa-home</code>
+            <VcIcon icon="lucide-house" size="xl" />
+            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-house</code>
           </div>
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="fas fa-cog" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">fas fa-cog</code>
+            <VcIcon icon="lucide-settings" size="xl" />
+            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-settings</code>
           </div>
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="fas fa-user" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">fas fa-user</code>
+            <VcIcon icon="lucide-user" size="xl" />
+            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-user</code>
           </div>
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="fas fa-shopping-cart" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">fas fa-shopping-cart</code>
+            <VcIcon icon="lucide-shopping-cart" size="xl" />
+            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-shopping-cart</code>
           </div>
         </div>
       </div>
@@ -410,7 +410,7 @@ export const FontAwesomeIcons: Story = {
  */
 export const CustomSvgIcon: Story = {
   args: {
-    icon: "material-search",
+    icon: "lucide-search",
     size: "l",
   },
   parameters: {
@@ -428,7 +428,7 @@ export const CustomSvgIcon: Story = {
  */
 export const MaterialOutlined: Story = {
   args: {
-    icon: "material-shopping_bag",
+    icon: "lucide-shopping-bag",
     size: "l",
   },
   parameters: {
@@ -482,7 +482,7 @@ export const LucideIcon: Story = {
  */
 export const VariantSuccess: Story = {
   args: {
-    icon: "material-check_circle",
+    icon: "lucide-circle-check",
     size: "l",
     variant: "success",
   },
@@ -501,7 +501,7 @@ export const VariantSuccess: Story = {
  */
 export const VariantWarning: Story = {
   args: {
-    icon: "material-error_outline",
+    icon: "lucide-triangle-alert",
     size: "l",
     variant: "warning",
   },
@@ -520,7 +520,7 @@ export const VariantWarning: Story = {
  */
 export const VariantDanger: Story = {
   args: {
-    icon: "material-cancel",
+    icon: "lucide-circle-x",
     size: "l",
     variant: "danger",
   },
@@ -549,7 +549,7 @@ export const AllSizes: Story = {
         <h3 class="tw-text-lg tw-font-medium">Available Sizes</h3>
         <div class="tw-flex tw-items-end tw-gap-6">
           <div v-for="size in sizes" :key="size" class="tw-flex tw-flex-col tw-items-center tw-gap-2">
-            <VcIcon :icon="args.icon || 'material-shopping_cart'" :size="size" />
+            <VcIcon :icon="args.icon || 'lucide-shopping-cart'" :size="size" />
             <span class="tw-text-xs">{{size}}</span>
           </div>
         </div>
@@ -581,7 +581,7 @@ export const AllVariants: Story = {
         <h3 class="tw-text-lg tw-font-medium">Available Variants</h3>
         <div class="tw-flex tw-gap-6">
           <div v-for="(variant, index) in variants" :key="index" class="tw-flex tw-flex-col tw-items-center tw-gap-2">
-            <VcIcon :icon="args.icon || 'material-local_shipping'" :variant="variant" size="l" />
+            <VcIcon :icon="args.icon || 'lucide-truck'" :variant="variant" size="l" />
             <span class="tw-text-xs">{{variant || 'default'}}</span>
           </div>
         </div>
@@ -606,14 +606,14 @@ export const EcommerceIcons: Story = {
     components: { VcIcon },
     setup() {
       const ecommerceIcons = [
-        { icon: "material-shopping_cart", label: "Cart" },
-        { icon: "material-account_circle", label: "Account" },
-        { icon: "material-favorite", label: "Wishlist" },
-        { icon: "material-local_shipping", label: "Shipping" },
-        { icon: "material-inventory", label: "Products" },
-        { icon: "material-search", label: "Search" },
-        { icon: "material-payments", label: "Payment" },
-        { icon: "material-receipt_long", label: "Orders" },
+        { icon: "lucide-shopping-cart", label: "Cart" },
+        { icon: "lucide-circle-user-round", label: "Account" },
+        { icon: "lucide-heart", label: "Wishlist" },
+        { icon: "lucide-truck", label: "Shipping" },
+        { icon: "lucide-package", label: "Products" },
+        { icon: "lucide-search", label: "Search" },
+        { icon: "lucide-credit-card", label: "Payment" },
+        { icon: "lucide-receipt", label: "Orders" },
       ];
       return { icons: ecommerceIcons, args };
     },
@@ -647,14 +647,14 @@ export const StatusIcons: Story = {
     components: { VcIcon },
     setup() {
       const statusIcons = [
-        { icon: "material-check_circle", variant: "success", label: "In Stock" },
-        { icon: "material-error_outline", variant: "warning", label: "Low Stock" },
-        { icon: "material-cancel", variant: "danger", label: "Out of Stock" },
-        { icon: "material-local_shipping", variant: "success", label: "Shipped" },
-        { icon: "material-schedule", variant: "warning", label: "Processing" },
-        { icon: "material-inventory_2", variant: undefined, label: "New Arrival" },
-        { icon: "material-verified", variant: "success", label: "Verified" },
-        { icon: "material-percent", variant: undefined, label: "On Sale" },
+        { icon: "lucide-circle-check", variant: "success", label: "In Stock" },
+        { icon: "lucide-triangle-alert", variant: "warning", label: "Low Stock" },
+        { icon: "lucide-circle-x", variant: "danger", label: "Out of Stock" },
+        { icon: "lucide-truck", variant: "success", label: "Shipped" },
+        { icon: "lucide-clock", variant: "warning", label: "Processing" },
+        { icon: "lucide-package", variant: undefined, label: "New Arrival" },
+        { icon: "lucide-badge-check", variant: "success", label: "Verified" },
+        { icon: "lucide-percent", variant: undefined, label: "On Sale" },
       ];
       return { icons: statusIcons, args };
     },
@@ -691,15 +691,15 @@ export const WithCssStyled: Story = {
           <h3 class="tw-text-lg tw-font-semibold tw-mb-4 tw-border-b tw-pb-2">CSS vs. Preset Sizes</h3>
           <div class="tw-flex tw-justify-center tw-gap-8">
             <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
-                <VcIcon icon="fas fa-star" size="xs" style="font-size: 30px;"/>
+                <VcIcon icon="lucide-star" size="xs" style="font-size: 30px;"/>
               <span class="tw-text-sm">size="xs" + container (30px)</span>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
-                <VcIcon icon="fas fa-star" size="m" style="font-size: 30px;"/>
+                <VcIcon icon="lucide-star" size="m" style="font-size: 30px;"/>
               <span class="tw-text-sm">size="m" + container (30px)</span>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
-                <VcIcon icon="fas fa-star" size="xl" style="font-size: 30px;"/>
+                <VcIcon icon="lucide-star" size="xl" style="font-size: 30px;"/>
               <span class="tw-text-sm">size="xl" + container (30px)</span>
             </div>
           </div>
@@ -735,22 +735,22 @@ export const ColorVariants: Story = {
       <div class="tw-p-6 tw-max-w-4xl tw-mx-auto">
         <div class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-4 tw-gap-4">
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="material-check_circle" size="xl" />
+            <VcIcon icon="lucide-circle-check" size="xl" />
             <span class="tw-text-sm tw-mt-2">Default</span>
             <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">No variant</code>
           </div>
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="material-check_circle" variant="success" size="xl" />
+            <VcIcon icon="lucide-circle-check" variant="success" size="xl" />
             <span class="tw-text-sm tw-mt-2">Success</span>
             <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">variant="success"</code>
           </div>
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="material-warning" variant="warning" size="xl" />
+            <VcIcon icon="lucide-triangle-alert" variant="warning" size="xl" />
             <span class="tw-text-sm tw-mt-2">Warning</span>
             <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">variant="warning"</code>
           </div>
           <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="material-error" variant="danger" size="xl" />
+            <VcIcon icon="lucide-circle-alert" variant="danger" size="xl" />
             <span class="tw-text-sm tw-mt-2">Danger</span>
             <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">variant="danger"</code>
           </div>
@@ -792,15 +792,15 @@ export const CssStyling: Story = {
           <h2 class="tw-text-xl tw-font-bold tw-mb-4 tw-border-b tw-pb-2">Direct Styling</h2>
           <div class="tw-grid tw-grid-cols-3 tw-gap-4">
             <div class="tw-flex tw-flex-col tw-items-center">
-              <VcIcon icon="material-star" style="color: #3498db;" />
+              <VcIcon icon="lucide-star" style="color: #3498db;" />
               <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">color: #3498db</code>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center">
-              <VcIcon icon="material-star" style="color: #e74c3c;" />
+              <VcIcon icon="lucide-star" style="color: #e74c3c;" />
               <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">color: #e74c3c</code>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center">
-              <VcIcon icon="material-star" style="color: #2ecc71;" />
+              <VcIcon icon="lucide-star" style="color: #2ecc71;" />
               <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">color: #2ecc71</code>
             </div>
           </div>

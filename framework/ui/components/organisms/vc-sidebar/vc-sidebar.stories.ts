@@ -116,7 +116,7 @@ export const ElevatedPanel: Story = {
             </div>
             <VcButton @click="opened = true">
               <span class="tw-flex tw-items-center tw-gap-2">
-                <VcIcon icon="material-tune" size="m" />
+                <VcIcon icon="lucide-sliders-horizontal" size="m" />
                 Open settings
               </span>
             </VcButton>
@@ -224,7 +224,7 @@ export const BottomSheet: Story = {
       <div class="tw-min-h-screen tw-bg-neutrals-100 tw-p-10">
         <VcButton @click="opened = true">
           <span class="tw-flex tw-items-center tw-gap-2">
-            <VcIcon icon="material-more_horiz" size="m" />
+            <VcIcon icon="lucide-ellipsis" size="m" />
             Open bottom sheet
           </span>
         </VcButton>

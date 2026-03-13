@@ -140,7 +140,7 @@ export const LineChart: Story = {
       return { revenueData, revenueConfig, monthLabels };
     },
     template: `
-      <DashboardWidgetCard header="Revenue Trend" icon="material-trending_up">
+      <DashboardWidgetCard header="Revenue Trend" icon="lucide-trending-up">
         <template #stats>
           <DashboardStatItem value="$83,800" label="Total revenue" />
           <DashboardStatItem value="+18%" label="vs last period" variant="success" />
@@ -171,7 +171,7 @@ export const MultiLineChart: Story = {
       return { revenueData, revenueConfig, monthLabels };
     },
     template: `
-      <DashboardWidgetCard header="Revenue & Orders" icon="material-analytics">
+      <DashboardWidgetCard header="Revenue & Orders" icon="lucide-chart-line">
         <template #content>
           <div class="tw-px-4 tw-py-3" style="height: 400px;">
             <DashboardLineChart
@@ -197,7 +197,7 @@ export const BarChart: Story = {
       return { salesByCategory, salesConfig, categoryLabels };
     },
     template: `
-      <DashboardWidgetCard header="Sales by Category" icon="material-bar_chart">
+      <DashboardWidgetCard header="Sales by Category" icon="lucide-chart-bar">
         <template #content>
           <div class="tw-px-4 tw-py-3" style="height: 400px;">
             <DashboardBarChart
@@ -335,7 +335,7 @@ export const InteractiveRangeAndTooltips: Story = {
           </label>
         </div>
 
-        <DashboardWidgetCard :header="'Revenue by Period (' + rangeLabel + ')'" icon="material-timeline">
+        <DashboardWidgetCard :header="'Revenue by Period (' + rangeLabel + ')'" icon="lucide-chart-spline">
           <template #content>
             <div class="tw-px-4 tw-py-3" style="height: 340px;">
               <DashboardLineChart
@@ -354,7 +354,7 @@ export const InteractiveRangeAndTooltips: Story = {
           </template>
         </DashboardWidgetCard>
 
-        <DashboardWidgetCard :header="'Channel Performance (' + rangeLabel + ')'" icon="material-stacked_bar_chart">
+        <DashboardWidgetCard :header="'Channel Performance (' + rangeLabel + ')'" icon="lucide-chart-bar-stacked">
           <template #content>
             <div class="tw-px-4 tw-py-3" style="height: 340px;">
               <DashboardBarChart
@@ -373,7 +373,7 @@ export const InteractiveRangeAndTooltips: Story = {
           </template>
         </DashboardWidgetCard>
 
-        <DashboardWidgetCard header="Status Breakdown" icon="material-donut_large">
+        <DashboardWidgetCard header="Status Breakdown" icon="lucide-chart-pie">
           <template #content>
             <div class="tw-px-4 tw-py-3" style="height: 320px;">
               <DashboardDonutChart

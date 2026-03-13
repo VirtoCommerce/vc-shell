@@ -82,14 +82,14 @@
             class="vc-blade-header__button"
             @click="onCollapse"
           >
-            <VcIcon icon="material-minimize" />
+            <VcIcon icon="lucide-minus" />
           </div>
           <div
             v-else
             class="vc-blade-header__button"
             @click="onExpand"
           >
-            <VcIcon icon="material-toolbar" />
+            <VcIcon icon="lucide-panel-top" />
           </div>
         </template>
         <div
@@ -97,7 +97,7 @@
           class="vc-blade-header__button"
           @click="onClose"
         >
-          <VcIcon icon="material-close" />
+          <VcIcon icon="lucide-x" />
         </div>
       </div>
     </div>

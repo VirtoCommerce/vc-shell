@@ -541,7 +541,7 @@ export const WithPrependInner: Story = {
           @update:modelValue="(val) => console.log('Value updated:', val)"
         >
           <template #prepend-inner>
-            <VcIcon icon="material-search" />
+            <VcIcon icon="lucide-search" />
           </template>
         </vc-input>
         <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
@@ -576,7 +576,7 @@ export const WithAppendInner: Story = {
           <template #append-inner>
             <VcIcon
               v-if="value"
-              icon="material-close"
+              icon="lucide-x"
               class="tw-cursor-pointer tw-text-gray-500 hover:tw-text-gray-700"
               @click="clearField"
             />
@@ -726,7 +726,7 @@ export const CustomErrorSlot: Story = {
         >
           <template #error>
             <div class="tw-flex tw-items-center tw-mt-1 tw-text-red-600">
-              <VcIcon icon="material-error" class="tw-mr-1" />
+              <VcIcon icon="lucide-circle-alert" class="tw-mr-1" />
               <span>This is a custom error message with an icon</span>
             </div>
           </template>
@@ -760,7 +760,7 @@ export const CustomHintSlot: Story = {
         >
           <template #hint>
             <div class="tw-flex tw-items-center tw-mt-1 tw-text-gray-600">
-              <VcIcon icon="material-info" class="tw-mr-1" />
+              <VcIcon icon="lucide-info" class="tw-mr-1" />
               <span>Username must be at least 5 characters long</span>
             </div>
           </template>

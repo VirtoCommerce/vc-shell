@@ -1,7 +1,7 @@
 <template>
   <SettingsMenuItem
     ref="menuItemRef"
-    icon="material-palette"
+    icon="lucide-palette"
     :title="$t('COMPONENTS.THEME_SELECTOR.THEME_SELECTOR')"
     :value="currentLocalizedName"
     :show-chevron="true"

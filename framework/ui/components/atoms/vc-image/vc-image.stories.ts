@@ -83,7 +83,7 @@ const meta = {
       control: "text",
       table: {
         type: { summary: "string" },
-        defaultValue: { summary: "'material-image'" },
+        defaultValue: { summary: "'lucide-image'" },
       },
     },
     onClick: {

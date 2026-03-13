@@ -21,7 +21,7 @@
           #append-inner
         >
           <VcIcon
-            icon="material-error"
+            icon="lucide-circle-alert"
             class="vc-table-cell-default__error-icon"
           />
         </template>

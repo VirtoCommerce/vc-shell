@@ -26,8 +26,8 @@ export function useToolbarRegistration(items: Ref<IBladeToolbar[]>) {
     updateToolbarItem,
   } = useToolbar({ autoCleanup: false });
 
-  const blade = useBlade();
-  const bladeId = computed(() => (blade.value?.id ?? FALLBACK_BLADE_ID).toLowerCase());
+  const { id: currentBladeId } = useBlade();
+  const bladeId = computed(() => (currentBladeId.value ?? FALLBACK_BLADE_ID).toLowerCase());
 
   const isMobile = inject<ComputedRef<boolean>>(
     "isMobile",
@@ -89,7 +89,7 @@ export function useToolbarRegistration(items: Ref<IBladeToolbar[]>) {
       .filter(
         (item) =>
           hasAccess(item.permissions) &&
-          resolveVisibility(item.isVisible, blade.value) &&
+          resolveVisibility(item.isVisible) &&
           (isMobile.value ? !resolveReactiveBoolean(item.disabled) : true),
       )
       .sort((a, b) => {

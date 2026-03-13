@@ -56,16 +56,16 @@ function provideMockBladeContext(overrides: Partial<IBladeInstance> = {}) {
 
 function createToolbarItems(count = 3): IBladeToolbar[] {
   const configs = [
-    { id: "save", icon: "fas fa-save", title: "Save" },
-    { id: "delete", icon: "fas fa-trash", title: "Delete" },
-    { id: "refresh", icon: "fas fa-sync-alt", title: "Refresh" },
-    { id: "copy", icon: "fas fa-copy", title: "Copy" },
-    { id: "paste", icon: "fas fa-paste", title: "Paste" },
-    { id: "undo", icon: "fas fa-undo", title: "Undo" },
-    { id: "redo", icon: "fas fa-redo", title: "Redo" },
-    { id: "export", icon: "fas fa-file-export", title: "Export" },
-    { id: "import", icon: "fas fa-file-import", title: "Import" },
-    { id: "settings", icon: "fas fa-cog", title: "Settings" },
+    { id: "save", icon: "lucide-save", title: "Save" },
+    { id: "delete", icon: "lucide-trash-2", title: "Delete" },
+    { id: "refresh", icon: "lucide-refresh-cw", title: "Refresh" },
+    { id: "copy", icon: "lucide-copy", title: "Copy" },
+    { id: "paste", icon: "lucide-clipboard-paste", title: "Paste" },
+    { id: "undo", icon: "lucide-undo-2", title: "Undo" },
+    { id: "redo", icon: "lucide-redo-2", title: "Redo" },
+    { id: "export", icon: "lucide-file-output", title: "Export" },
+    { id: "import", icon: "lucide-file-input", title: "Import" },
+    { id: "settings", icon: "lucide-settings", title: "Settings" },
   ];
 
   return configs.slice(0, count).map((config) => ({
@@ -155,7 +155,7 @@ export const Default: Story = {
   args: {
     title: "Products",
     subtitle: "Manage your catalog",
-    icon: "fas fa-box",
+    icon: "lucide-box",
     width: 500,
     closable: true,
     expandable: true,
@@ -181,7 +181,7 @@ export const WithToolbar: Story = {
   args: {
     title: "Order Details",
     subtitle: "ORD-12345",
-    icon: "fas fa-file-alt",
+    icon: "lucide-file-text",
     width: 500,
     toolbarItems: createToolbarItems(3),
   },
@@ -218,7 +218,7 @@ export const Modified: Story = {
   args: {
     title: "Edit Product",
     subtitle: "SKU-98765",
-    icon: "fas fa-edit",
+    icon: "lucide-pencil",
     width: 500,
     modified: true,
     toolbarItems: createToolbarItems(2),
@@ -243,7 +243,7 @@ export const Modified: Story = {
 export const WithError: Story = {
   args: {
     title: "Failed Blade",
-    icon: "fas fa-exclamation-triangle",
+    icon: "lucide-triangle-alert",
     width: 500,
     toolbarItems: createToolbarItems(1),
   },
@@ -270,7 +270,7 @@ export const WithActions: Story = {
   args: {
     title: "Products",
     subtitle: "12 items",
-    icon: "fas fa-box",
+    icon: "lucide-box",
     width: 500,
   },
   render: (args) => ({
@@ -298,7 +298,7 @@ export const Expanded: Story = {
   args: {
     title: "Full Width Blade",
     subtitle: "Expanded to fill space",
-    icon: "fas fa-expand",
+    icon: "lucide-maximize",
     expanded: true,
     toolbarItems: createToolbarItems(3),
   },
@@ -324,7 +324,7 @@ export const NotClosable: Story = {
   args: {
     title: "Dashboard",
     subtitle: "Home workspace",
-    icon: "fas fa-home",
+    icon: "lucide-house",
     width: 500,
     closable: false,
   },
@@ -349,7 +349,7 @@ export const Mobile: Story = {
   args: {
     title: "Mobile Blade",
     subtitle: "Responsive layout",
-    icon: "fas fa-mobile-alt",
+    icon: "lucide-smartphone",
     toolbarItems: createToolbarItems(4),
   },
   decorators: [withMobileView],
@@ -384,7 +384,7 @@ export const CustomWidth: Story = {
       <div style="display: flex; gap: 2px; height: 300px; width: 100%;">
         <VcBlade
           title="Narrow (300px)"
-          icon="fas fa-compress"
+          icon="lucide-minimize"
           :width="300"
           @close="() => {}"
         >
@@ -393,7 +393,7 @@ export const CustomWidth: Story = {
 
         <VcBlade
           title="Wide (60%)"
-          icon="fas fa-expand-arrows-alt"
+          icon="lucide-maximize-2"
           width="60%"
           @close="() => {}"
         >
@@ -408,7 +408,7 @@ export const Loading: Story = {
   args: {
     title: "Products",
     subtitle: "Manage your catalog",
-    icon: "fas fa-box",
+    icon: "lucide-box",
     width: 500,
     loading: true,
   },
@@ -432,7 +432,7 @@ export const LoadingToggle: Story = {
   args: {
     title: "Order Details",
     subtitle: "ORD-12345",
-    icon: "fas fa-file-alt",
+    icon: "lucide-file-text",
     width: 500,
     toolbarItems: createToolbarItems(3),
   },
@@ -480,7 +480,7 @@ export const ToolbarOverflow: Story = {
   args: {
     title: "Many Actions",
     subtitle: "Toolbar overflow demo",
-    icon: "fas fa-tools",
+    icon: "lucide-wrench",
     width: 400,
     toolbarItems: createToolbarItems(10),
   },

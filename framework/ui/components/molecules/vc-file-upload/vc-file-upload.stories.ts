@@ -15,7 +15,7 @@ const meta = {
     accept: ".jpg, .png, .jpeg, .webp, .heic, .svg",
     multiple: false,
     name: "fileUpload",
-    icon: "material-cloud_upload",
+    icon: "lucide-cloud-upload",
   },
   argTypes: {
     onUpload: {
@@ -77,7 +77,7 @@ const meta = {
       table: {
         category: "Appearance",
         type: { summary: "string" },
-        defaultValue: { summary: "material-cloud_upload" },
+        defaultValue: { summary: "lucide-cloud-upload" },
       },
     },
     customText: {

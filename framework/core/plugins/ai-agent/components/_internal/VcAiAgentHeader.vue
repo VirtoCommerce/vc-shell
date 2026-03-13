@@ -19,7 +19,7 @@
         title="Collapse"
         @click="$emit('collapse')"
       >
-        <VcIcon icon="material-minimize" />
+        <VcIcon icon="lucide-minus" />
       </div>
       <div
         v-else
@@ -27,14 +27,14 @@
         title="Expand"
         @click="$emit('expand')"
       >
-        <VcIcon icon="material-toolbar" />
+        <VcIcon icon="lucide-panel-top" />
       </div>
       <div
         class="vc-ai-agent-header__button"
         title="Close"
         @click="$emit('close')"
       >
-        <VcIcon icon="material-close" />
+        <VcIcon icon="lucide-x" />
       </div>
     </div>
   </div>

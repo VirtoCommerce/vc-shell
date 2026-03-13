@@ -37,7 +37,7 @@
                     #append-inner
                   >
                     <VcIcon
-                      icon="material-error"
+                      icon="lucide-circle-alert"
                       class="vc-table-cell__error-icon"
                     ></VcIcon>
                   </template>
@@ -180,7 +180,7 @@
                   #append-inner
                 >
                   <VcIcon
-                    icon="material-error"
+                    icon="lucide-circle-alert"
                     class="vc-table-cell__error-icon"
                   ></VcIcon>
                 </template>
@@ -252,7 +252,7 @@
                   #append-inner
                 >
                   <VcIcon
-                    icon="material-error"
+                    icon="lucide-circle-alert"
                     class="vc-table-cell__error-icon"
                   ></VcIcon>
                 </template>

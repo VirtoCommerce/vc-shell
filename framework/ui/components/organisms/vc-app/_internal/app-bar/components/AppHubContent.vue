@@ -173,7 +173,7 @@
         <div class="app-hub-content__flyout-header">
           <span class="app-hub-content__flyout-title">{{ getWidgetTitle(currentWidget) }}</span>
           <VcButton
-            icon="material-close"
+            icon="lucide-x"
             text
             @click="hideAllWidgets"
           />

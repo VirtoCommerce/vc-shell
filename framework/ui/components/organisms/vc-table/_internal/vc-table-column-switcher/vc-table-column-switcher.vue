@@ -13,7 +13,7 @@
         <VcButton
           size="xs"
           icon-size="l"
-          icon="material-view_column"
+          icon="lucide-columns-3"
           class="vc-table-column-switcher__toggle-button"
           @click="isActive = !isActive"
         ></VcButton>
@@ -22,7 +22,7 @@
       <template #item="{ item }">
         <div class="vc-table-column-switcher__item">
           <VcIcon
-            :icon="item.visible ? 'material-check' : ''"
+            :icon="item.visible ? 'lucide-check' : ''"
             size="s"
             class="vc-table-column-switcher__item-icon"
           />

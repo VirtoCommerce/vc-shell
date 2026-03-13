@@ -35,7 +35,7 @@ export interface DataTableRowActionItem<T = unknown> {
   id: string;
   /** Display title shown in button tooltip or dropdown menu */
   title?: string;
-  /** Icon CSS class (e.g. `"fas fa-edit"`) */
+  /** Icon class (e.g. `"lucide-pencil"`) */
   icon?: string;
   /** Visual variant for color styling */
   variant?: "danger" | "success" | "warning" | "info";
@@ -74,7 +74,7 @@ export interface TableEmptyAction {
 
 /** Configuration for empty/not-found state with icon, text, and optional action button */
 export interface TableStateConfig {
-  /** Icon name (e.g. "lucide-package-open", "material-shopping_cart") */
+  /** Icon name (e.g. "lucide-package-open", "lucide-shopping-cart") */
   icon?: string;
   /** Title text */
   title?: string;
@@ -466,9 +466,9 @@ export interface VcDataTableProps<T = any> {
   // === Expandable Rows ===
   /** Currently expanded rows — use with `v-model:expandedRows` */
   expandedRows?: T[];
-  /** Icon CSS class for expanded row toggle (default: `"fas fa-chevron-down"`) */
+  /** Icon class for expanded row toggle (default: `"lucide-chevron-down"`) */
   expandedRowIcon?: string;
-  /** Icon CSS class for collapsed row toggle (default: `"fas fa-chevron-right"`) */
+  /** Icon class for collapsed row toggle (default: `"lucide-chevron-right"`) */
   collapsedRowIcon?: string;
 
   // === Row Grouping ===
@@ -739,7 +739,7 @@ export interface MobileSwipeAction<T = unknown> {
   id: string;
   /** Display title */
   title: string;
-  /** Icon class (e.g., "fas fa-edit") */
+  /** Icon class (e.g., "lucide-pencil") */
   icon: string;
   /** Action type for styling */
   type?: "danger" | "success" | "warning" | "default";
@@ -827,7 +827,7 @@ export interface AddRowConfig {
   position?: "header" | "footer" | "none";
   /** Button label (default: i18n "Add row") */
   label?: string;
-  /** Button icon (default: "fas fa-plus") */
+  /** Button icon (default: "lucide-plus") */
   icon?: string;
 }
 

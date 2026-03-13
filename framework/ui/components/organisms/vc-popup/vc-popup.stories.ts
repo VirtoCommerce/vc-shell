@@ -411,7 +411,7 @@ export const CustomHeader: Story = {
         <VcPopup v-if="showPopup" v-bind="args" @close="closePopup" >
           <template #header>
             <div class="tw-flex tw-items-center tw-gap-2">
-              <VcIcon icon="material-settings" class="tw-text-blue-500" />
+              <VcIcon icon="lucide-settings" class="tw-text-blue-500" />
               <span class="tw-font-bold tw-text-blue-500">Custom Settings Panel</span>
             </div>
           </template>

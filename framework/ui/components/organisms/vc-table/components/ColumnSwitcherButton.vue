@@ -2,7 +2,7 @@
   <VcButton
     variant="secondary"
     size="sm"
-    icon="fas fa-columns"
+    icon="lucide-columns-3"
     :disabled="disabled"
     @click="$emit('click', $event)"
   >

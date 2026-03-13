@@ -187,12 +187,12 @@ export const CustomNavigation: Story = {
         </template>
         <template v-slot:prevBtn>
           <button class="tw-bg-blue-500 tw-text-white tw-p-2 tw-rounded-full">
-            <vc-icon icon="fas fa-arrow-left"></vc-icon>
+            <vc-icon icon="lucide-arrow-left"></vc-icon>
           </button>
         </template>
         <template v-slot:nextBtn>
           <button class="tw-bg-blue-500 tw-text-white tw-p-2 tw-rounded-full">
-            <vc-icon icon="fas fa-arrow-right"></vc-icon>
+            <vc-icon icon="lucide-arrow-right"></vc-icon>
           </button>
         </template>
       </vc-slider>

@@ -32,7 +32,7 @@
       class="vc-gallery-item__drag-handle"
     >
       <VcIcon
-        icon="material-drag_indicator"
+        icon="lucide-grip-vertical"
         size="s"
       />
     </div>
@@ -47,7 +47,7 @@
           :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.FULLSCREEN')"
           @click.stop="$emit('preview', image)"
         >
-          <VcIcon icon="material-open_in_full" size="s" />
+          <VcIcon icon="lucide-maximize" size="s" />
         </button>
         <button
           v-if="!readonly && actions?.edit !== false"
@@ -56,7 +56,7 @@
           :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.EDIT')"
           @click.stop="$emit('edit', image)"
         >
-          <VcIcon icon="material-edit" size="s" />
+          <VcIcon icon="lucide-pencil" size="s" />
         </button>
         <button
           v-if="!readonly && actions?.remove !== false"
@@ -65,7 +65,7 @@
           :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.DELETE')"
           @click.stop="$emit('remove', image)"
         >
-          <VcIcon icon="material-delete" size="s" />
+          <VcIcon icon="lucide-trash-2" size="s" />
         </button>
       </div>
       <div

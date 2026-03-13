@@ -18,7 +18,7 @@ describe("ToolbarBaseButton", () => {
 
     const wrapper = mount(ToolbarBaseButton as any, {
       props: {
-        icon: "material-add",
+        icon: "lucide-plus",
         title: "Create",
         disabled: computed(() => true),
         onClick,
@@ -42,7 +42,7 @@ describe("ToolbarBaseButton", () => {
 
     const wrapper = mount(ToolbarBaseButton as any, {
       props: {
-        icon: "material-add",
+        icon: "lucide-plus",
         title: "Create",
         disabled: false,
         onClick,
@@ -64,7 +64,7 @@ describe("ToolbarBaseButton", () => {
 
     const wrapper = mount(ToolbarBaseButton as any, {
       props: {
-        icon: "material-add",
+        icon: "lucide-plus",
         title,
       },
     });

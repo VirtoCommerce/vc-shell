@@ -76,7 +76,7 @@
                   @click="closeByReason('action')"
                 >
                   <VcIcon
-                    icon="material-close"
+                    icon="lucide-x"
                     size="m"
                   />
                 </button>

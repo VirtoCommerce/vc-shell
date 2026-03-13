@@ -740,7 +740,7 @@ export const CustomizingWithSlots: Story = {
               </div>
               <VcIcon
                 v-if="selected"
-                icon="material-check"
+                icon="lucide-check"
                 class="tw-text-green-600"
                 size="s"
               />
@@ -749,7 +749,7 @@ export const CustomizingWithSlots: Story = {
 
           <!-- Adding content inside the field -->
           <template #prepend-inner>
-            <VcIcon icon="material-search" class="tw-mr-2" size="s" />
+            <VcIcon icon="lucide-search" class="tw-mr-2" size="s" />
           </template>
 
           <!-- Adding content outside the field -->
@@ -765,7 +765,7 @@ export const CustomizingWithSlots: Story = {
           <!-- Custom "no options" message -->
           <template #no-options>
             <div class="tw-text-center tw-py-3 tw-text-gray-500">
-              <VcIcon icon="material-error" class="tw-mb-2" />
+              <VcIcon icon="lucide-circle-alert" class="tw-mb-2" />
               <p>No matching options found</p>
             </div>
           </template>
@@ -773,7 +773,7 @@ export const CustomizingWithSlots: Story = {
           <!-- Custom hint -->
           <template #hint>
             <div class="tw-flex tw-items-center tw-text-blue-600">
-              <VcIcon icon="material-info" class="tw-mr-1" size="xs" />
+              <VcIcon icon="lucide-info" class="tw-mr-1" size="xs" />
               <span>Select multiple options as needed</span>
             </div>
           </template>
@@ -811,7 +811,7 @@ export const CustomControl: Story = {
               @click="toggleHandler"
             >
               <div class="tw-flex tw-items-center">
-                <VcIcon icon="fas fa-list-ul" class="tw-mr-2" size="s" />
+                <VcIcon icon="lucide-list" class="tw-mr-2" size="s" />
                 <span v-if="value">Option {{ value }} selected</span>
                 <span v-else class="tw-text-gray-500">Click to select an option</span>
               </div>
@@ -951,10 +951,10 @@ export const CustomOptionSlot: Story = {
     searchable: true,
     clearable: true,
     options: [
-      { id: 1, title: "Draft", color: "gray", icon: "fas fa-pencil-alt" },
-      { id: 2, title: "Published", color: "green", icon: "material-check_circle" },
-      { id: 3, title: "Archived", color: "amber", icon: "fas fa-archive" },
-      { id: 4, title: "Deleted", color: "red", icon: "material-delete" },
+      { id: 1, title: "Draft", color: "gray", icon: "lucide-pencil" },
+      { id: 2, title: "Published", color: "green", icon: "lucide-circle-check" },
+      { id: 3, title: "Archived", color: "amber", icon: "lucide-archive" },
+      { id: 4, title: "Deleted", color: "red", icon: "lucide-trash-2" },
     ],
   },
   render: (args) => ({
@@ -996,7 +996,7 @@ export const CustomOptionSlot: Story = {
               </div>
               <VcIcon
                 v-if="selected"
-                icon="material-check"
+                icon="lucide-check"
                 class="tw-text-green-600"
                 size="s"
               />
@@ -1079,7 +1079,7 @@ export const CustomSelectedItemSlot: Story = {
               </div>
               <VcIcon
                 v-if="selected"
-                icon="material-check"
+                icon="lucide-check"
                 class="tw-text-green-600"
                 size="s"
               />
@@ -1134,7 +1134,7 @@ export const InnerSlots: Story = {
           <!-- Adding a search icon at the beginning of the field -->
           <template #prepend-inner>
             <div class="tw-flex tw-items-center tw-text-gray-500">
-              <VcIcon icon="material-search" size="s" />
+              <VcIcon icon="lucide-search" size="s" />
             </div>
           </template>
 
@@ -1145,7 +1145,7 @@ export const InnerSlots: Story = {
               class="tw-flex tw-items-center tw-text-gray-400 hover:tw-text-gray-700 tw-cursor-pointer"
               @click.stop="resetValue"
             >
-              <VcIcon icon="material-cancel" size="s" />
+              <VcIcon icon="lucide-circle-x" size="s" />
             </div>
       </template>
         </VcSelect>
@@ -1205,7 +1205,7 @@ export const OuterSlots: Story = {
             <!-- Adding a button after the select -->
       <template #append>
               <button class="tw-flex tw-items-center tw-bg-blue-500 tw-text-white tw-px-4 tw-h-[36px] tw-rounded-r hover:tw-bg-blue-600">
-                <VcIcon icon="fas fa-exchange-alt" size="s" class="tw-mr-1" />
+                <VcIcon icon="lucide-arrow-left-right" size="s" class="tw-mr-1" />
                 Convert
               </button>
       </template>
@@ -1238,7 +1238,7 @@ export const OuterSlots: Story = {
           <!-- Adding a search button after the field -->
           <template #append>
             <button class="tw-px-4 tw-flex tw-items-center tw-bg-primary-500 tw-text-white tw-h-[36px] tw-rounded-r hover:tw-bg-primary-600">
-              <VcIcon icon="material-search" size="s" class="tw-mr-1" />
+              <VcIcon icon="lucide-search" size="s" class="tw-mr-1" />
               Search
             </button>
           </template>
@@ -1299,7 +1299,7 @@ export const CustomMessagingSlots: Story = {
           <!-- Custom error message with icon and formatting -->
       <template #error>
             <div class="tw-flex tw-items-start tw-mt-1 tw-p-2 tw-bg-red-50 tw-border tw-border-red-200 tw-rounded">
-              <VcIcon icon="fas fa-exclamation-triangle" class="tw-text-red-500 tw-mr-2 tw-mt-0.5" size="s" />
+              <VcIcon icon="lucide-triangle-alert" class="tw-text-red-500 tw-mr-2 tw-mt-0.5" size="s" />
               <div>
                 <p class="tw-text-red-700 tw-font-medium">Category selection required</p>
                 <p class="tw-text-red-600 tw-text-xs">Please select a product category to continue with your submission.</p>
@@ -1310,7 +1310,7 @@ export const CustomMessagingSlots: Story = {
           <!-- Custom hint with additional help information -->
       <template #hint>
             <div class="tw-flex tw-items-start tw-mt-1 tw-p-2 tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded">
-              <VcIcon icon="material-info" class="tw-text-blue-500 tw-mr-2 tw-mt-0.5" size="s" />
+              <VcIcon icon="lucide-info" class="tw-text-blue-500 tw-mr-2 tw-mt-0.5" size="s" />
               <div>
                 <p class="tw-text-blue-700 tw-font-medium">Choosing the right category</p>
                 <p class="tw-text-blue-600 tw-text-xs">The category helps determine which department will process your request.</p>
@@ -1366,7 +1366,7 @@ export const CustomNoOptionsSlot: Story = {
           <template #no-options>
             <div class="tw-py-4 tw-px-3 tw-text-center">
               <VcIcon
-                icon="material-search"
+                icon="lucide-search"
                 class="tw-text-gray-400 tw-mb-2 tw-text-2xl"
               />
               <p class="tw-text-gray-600 tw-font-medium">No matching products found</p>
@@ -1406,13 +1406,13 @@ export const ComprehensiveSlotExample: Story = {
     multiple: true,
     clearable: true,
     options: [
-      { id: 1, title: "Electronics", icon: "fas fa-microchip", level: "Enterprise", color: "#0078d7" },
-      { id: 2, title: "Industrial", icon: "fas fa-industry", level: "Mid-Market", color: "#e07c24" },
-      { id: 3, title: "Office Supplies", icon: "fas fa-paperclip", level: "SMB", color: "#009688" },
-      { id: 4, title: "Medical Equipment", icon: "fas fa-medkit", level: "Enterprise", color: "#e91e63" },
-      { id: 5, title: "Construction", icon: "fas fa-hard-hat", level: "Mid-Market", color: "#ffc107" },
-      { id: 6, title: "Food & Beverage", icon: "fas fa-utensils", level: "SMB", color: "#8bc34a" },
-      { id: 7, title: "Automotive", icon: "fas fa-car", level: "Mid-Market", color: "#3f51b5" },
+      { id: 1, title: "Electronics", icon: "lucide-cpu", level: "Enterprise", color: "#0078d7" },
+      { id: 2, title: "Industrial", icon: "lucide-factory", level: "Mid-Market", color: "#e07c24" },
+      { id: 3, title: "Office Supplies", icon: "lucide-paperclip", level: "SMB", color: "#009688" },
+      { id: 4, title: "Medical Equipment", icon: "lucide-briefcase-medical", level: "Enterprise", color: "#e91e63" },
+      { id: 5, title: "Construction", icon: "lucide-hard-hat", level: "Mid-Market", color: "#ffc107" },
+      { id: 6, title: "Food & Beverage", icon: "lucide-utensils", level: "SMB", color: "#8bc34a" },
+      { id: 7, title: "Automotive", icon: "lucide-car", level: "Mid-Market", color: "#3f51b5" },
     ],
   },
   render: (args) => ({
@@ -1456,7 +1456,7 @@ export const ComprehensiveSlotExample: Story = {
               <!-- Custom header -->
               <div class="tw-bg-gray-50 tw-px-3 tw-py-2 tw-border-b tw-border-gray-300 tw-flex tw-justify-between tw-items-center">
                 <div class="tw-flex tw-items-center">
-                  <VcIcon icon="fas fa-tags" class="tw-text-gray-600 tw-mr-2" size="s" />
+                  <VcIcon icon="lucide-tags" class="tw-text-gray-600 tw-mr-2" size="s" />
                   <span class="tw-font-medium tw-text-gray-700">B2B Category Selector</span>
                 </div>
                 <div class="tw-flex tw-space-x-2">
@@ -1549,7 +1549,7 @@ export const ComprehensiveSlotExample: Story = {
               >
                 <VcIcon
                   v-if="selected"
-                  icon="material-check"
+                  icon="lucide-check"
                   class="tw-text-white"
                   size="xs"
                 />
@@ -1560,7 +1560,7 @@ export const ComprehensiveSlotExample: Story = {
           <!-- Custom no-options message -->
           <template #no-options>
             <div class="tw-p-4 tw-text-center tw-border-t tw-border-gray-200">
-              <VcIcon icon="material-search" class="tw-text-gray-400 tw-mb-2" />
+              <VcIcon icon="lucide-search" class="tw-text-gray-400 tw-mb-2" />
               <p class="tw-text-gray-600">No matching categories found</p>
               <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Try searching for other product types or industries</p>
             </div>
@@ -1569,7 +1569,7 @@ export const ComprehensiveSlotExample: Story = {
           <!-- Custom hint -->
           <template #hint>
             <div class="tw-flex tw-items-start tw-mt-2">
-              <VcIcon icon="fas fa-lightbulb" class="tw-text-yellow-500 tw-mr-2 tw-mt-0.5" size="s" />
+              <VcIcon icon="lucide-lightbulb" class="tw-text-yellow-500 tw-mr-2 tw-mt-0.5" size="s" />
               <div class="tw-text-sm tw-text-gray-600">
                 Select the product categories available in your marketplace to help buyers find relevant offerings.
               </div>

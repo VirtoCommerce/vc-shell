@@ -38,7 +38,7 @@ Disabled.args = {
 export const CustomPlaceholder = Template.bind({});
 CustomPlaceholder.args = {
   placeholder: { text: "Drag your photo here", link: "or click to browse" },
-  icon: "material-camera",
+  icon: "lucide-camera",
 };
 
 export const WithValidation = Template.bind({});

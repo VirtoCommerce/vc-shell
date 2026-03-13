@@ -179,7 +179,7 @@ export const Extended: Story = {
     template: `
       <vc-status v-bind="args">
         <div class="tw-flex tw-flex-row tw-items-center">
-          <VcIcon icon="material-warning" size="xl" variant="danger" class="tw-mr-3" />
+          <VcIcon icon="lucide-triangle-alert" size="xl" variant="danger" class="tw-mr-3" />
           <div>
             <h3 class="tw-font-bold">Error Status</h3>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque tortor id lacus viverra, ut mollis libero auctor.</p>

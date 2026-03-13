@@ -33,7 +33,7 @@
             :class="{ 'vc-blade-toolbar-desktop__more--active': isActive }"
             @click="isMenuOpen = !isMenuOpen"
           >
-            <VcIcon icon="material-more" />
+            <VcIcon icon="lucide-ellipsis" />
             <span
               v-if="isExpanded"
               class="vc-blade-toolbar-desktop__more-text"

@@ -41,7 +41,7 @@
         <div class="tw-text-center">
           <VcButton
             variant="link"
-            icon="fas fa-arrow-left"
+            icon="lucide-arrow-left"
             icon-size="xs"
             type="button"
             @click="goBack"

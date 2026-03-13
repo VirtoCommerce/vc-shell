@@ -36,7 +36,7 @@ export const Basic: Story = {
  */
 export const WithValue: Story = {
   args: {
-    icon: "material-palette",
+    icon: "lucide-palette",
     title: "Theme",
     value: "Light",
     showChevron: true,
@@ -59,7 +59,7 @@ export const WithChevron: Story = {
  */
 export const Active: Story = {
   args: {
-    icon: "material-palette",
+    icon: "lucide-palette",
     title: "Theme",
     value: "Light",
     showChevron: true,
@@ -76,13 +76,13 @@ export const FullMenu: Story = {
     template: `
       <div style="padding: 4px 0;">
         <SettingsMenuItem
-          icon="material-palette"
+          icon="lucide-palette"
           title="Theme selector"
           value="Light"
           :show-chevron="true"
         />
         <SettingsMenuItem
-          icon="material-language"
+          icon="lucide-languages"
           title="Language selector"
           value="English"
           :show-chevron="true"
@@ -123,7 +123,7 @@ export const CascadingSubMenu: Story = {
       <div style="padding: 4px 0;">
         <SettingsMenuItem
           ref="menuItemRef"
-          icon="material-palette"
+          icon="lucide-palette"
           title="Theme selector"
           :value="currentThemeName()"
           :show-chevron="true"
@@ -131,7 +131,7 @@ export const CascadingSubMenu: Story = {
           @trigger:click="isSubMenuOpen = !isSubMenuOpen"
         />
         <SettingsMenuItem
-          icon="material-language"
+          icon="lucide-languages"
           title="Language selector"
           value="English"
           :show-chevron="true"
@@ -179,7 +179,7 @@ export const CascadingSubMenu: Story = {
             >
               <VcIcon
                 v-if="theme.key === selectedTheme"
-                icon="fas fa-check"
+                icon="lucide-check"
                 size="xs"
                 style="color: var(--additional-950); width: 14px; flex-shrink: 0; font-size: 10px;"
               />

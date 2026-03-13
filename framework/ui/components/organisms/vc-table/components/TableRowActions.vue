@@ -48,7 +48,7 @@
         @mousedown.stop
       >
         <VcIcon
-          icon="fas fa-ellipsis-vertical"
+          icon="lucide-ellipsis-vertical"
           size="s"
         />
       </button>

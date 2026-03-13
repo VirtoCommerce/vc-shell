@@ -34,7 +34,7 @@
     >
       <template #prepend-inner="{ focus }">
         <VcIcon
-          icon="material-search"
+          icon="lucide-search"
           class="vc-table-base-header__search-icon"
           @click="focus?.()"
         ></VcIcon>

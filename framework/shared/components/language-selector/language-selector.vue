@@ -1,7 +1,7 @@
 <template>
   <SettingsMenuItem
     ref="menuItemRef"
-    icon="material-language"
+    icon="lucide-languages"
     :title="$t('COMPONENTS.LANGUAGE_SELECTOR.TITLE')"
     :value="currentLanguageName"
     :show-chevron="true"

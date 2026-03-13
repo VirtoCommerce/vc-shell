@@ -74,7 +74,7 @@ const meta = {
     },
   },
   args: {
-    icon: "material-save",
+    icon: "lucide-save",
     title: "Saved",
     value: 12,
     disabled: false,
@@ -225,7 +225,7 @@ export const Expanded: Story = {
  */
 export const DifferentIcon: Story = {
   args: {
-    icon: "fas fa-bell",
+    icon: "lucide-bell",
     title: "Notifications",
     value: 5,
   },
@@ -255,11 +255,11 @@ export const SidebarLayout: Story = {
     components: { VcWidget },
     setup() {
       const widgets = [
-        { icon: "fas fa-home", title: "Dashboard", value: null },
-        { icon: "fas fa-envelope", title: "Messages", value: 3 },
-        { icon: "fas fa-bell", title: "Notifications", value: 12 },
-        { icon: "fas fa-user", title: "Profile", value: null },
-        { icon: "fas fa-cog", title: "Settings", value: 1 },
+        { icon: "lucide-house", title: "Dashboard", value: null },
+        { icon: "lucide-mail", title: "Messages", value: 3 },
+        { icon: "lucide-bell", title: "Notifications", value: 12 },
+        { icon: "lucide-user", title: "Profile", value: null },
+        { icon: "lucide-settings", title: "Settings", value: 1 },
       ];
 
       return { widgets };

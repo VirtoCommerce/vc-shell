@@ -24,21 +24,21 @@ const actionItems: ActionItem[] = [
     title: "Open project",
     description: "Navigate to the selected project details",
     shortcut: "O",
-    icon: "material-folder_open",
+    icon: "lucide-folder-open",
   },
   {
     id: "duplicate",
     title: "Duplicate",
     description: "Create a copy with the same configuration",
     shortcut: "D",
-    icon: "material-file_copy",
+    icon: "lucide-files",
   },
   {
     id: "archive",
     title: "Archive",
     description: "Hide from active workspace without deleting",
     shortcut: "A",
-    icon: "material-inventory_2",
+    icon: "lucide-package",
   },
   {
     id: "delete",
@@ -46,7 +46,7 @@ const actionItems: ActionItem[] = [
     description: "Permanently remove this project",
     shortcut: "Del",
     danger: true,
-    icon: "material-delete_outline",
+    icon: "lucide-trash-2",
   },
 ];
 
@@ -219,9 +219,9 @@ export const ActionMenu: Story = {
           <template #trigger="{ isActive, toggle }">
             <VcButton variant="secondary" @click="toggle">
               <span class="tw-flex tw-items-center tw-gap-2">
-                <VcIcon icon="material-more_horiz" size="m" />
+                <VcIcon icon="lucide-ellipsis" size="m" />
                 Actions
-                <VcIcon :icon="isActive ? 'material-expand_less' : 'material-expand_more'" size="m" />
+                <VcIcon :icon="isActive ? 'lucide-chevron-up' : 'lucide-chevron-down'" size="m" />
               </span>
             </VcButton>
           </template>
@@ -295,9 +295,9 @@ export const WorkspaceSwitcher: Story = {
           <template #trigger="{ isActive, toggle }">
             <VcButton variant="outline" @click="toggle">
               <span class="tw-flex tw-items-center tw-gap-2">
-                <VcIcon icon="material-layers" size="m" />
+                <VcIcon icon="lucide-layers" size="m" />
                 {{ getTitle(activeWorkspaceId) }}
-                <VcIcon :icon="isActive ? 'material-expand_less' : 'material-expand_more'" size="m" />
+                <VcIcon :icon="isActive ? 'lucide-chevron-up' : 'lucide-chevron-down'" size="m" />
               </span>
             </VcButton>
           </template>
@@ -314,7 +314,7 @@ export const WorkspaceSwitcher: Story = {
               </div>
               <VcIcon
                 v-if="item.id === activeWorkspaceId"
-                icon="material-check"
+                icon="lucide-check"
                 size="s"
                 class="tw-text-primary-600"
               />
@@ -364,9 +364,9 @@ export const ScrollableList: Story = {
           <template #trigger="{ isActive, toggle }">
             <VcButton variant="ghost" @click="toggle">
               <span class="tw-flex tw-items-center tw-gap-2">
-                <VcIcon icon="material-filter_list" size="m" />
+                <VcIcon icon="lucide-list-filter" size="m" />
                 Audience segments
-                <VcIcon :icon="isActive ? 'material-expand_less' : 'material-expand_more'" size="m" />
+                <VcIcon :icon="isActive ? 'lucide-chevron-up' : 'lucide-chevron-down'" size="m" />
               </span>
             </VcButton>
           </template>

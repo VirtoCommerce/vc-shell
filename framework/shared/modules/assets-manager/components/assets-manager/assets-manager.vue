@@ -38,7 +38,7 @@
           <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
             <template v-if="!readonly">
               <VcIcon
-                icon="material-cloud_upload"
+                icon="lucide-cloud-upload"
                 class="tw-text-[100px] tw-text-[color:var(--assets-manager-empty-icon-color)]"
               ></VcIcon>
               <div class="tw-m-4 tw-text-l tw-font-medium tw-text-center">
@@ -218,7 +218,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "add",
     title: computed(() => t("ASSETS_MANAGER.TOOLBAR.ADD")),
-    icon: "material-add",
+    icon: "lucide-plus",
     clickHandler() {
       toggleUploader();
     },
@@ -228,7 +228,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "delete",
     title: computed(() => t("ASSETS_MANAGER.TOOLBAR.DELETE")),
-    icon: "material-delete",
+    icon: "lucide-trash-2",
     async clickHandler() {
       if (props.options.assetsRemoveHandler && typeof props.options.assetsRemoveHandler === "function") {
         defaultAssets.value = await props.options.assetsRemoveHandler(selectedItems.value);
@@ -416,7 +416,7 @@ const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
   const result: IActionBuilderResult<ICommonAsset>[] = [];
 
   result.push({
-    icon: "material-delete",
+    icon: "lucide-trash-2",
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.DELETE")),
     type: "danger",
     async clickHandler(item: ICommonAsset) {

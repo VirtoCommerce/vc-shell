@@ -60,7 +60,7 @@ const OrdersWorkspace = defineComponent({
     const toolbarItems = [
       {
         id: "refresh",
-        icon: "fas fa-sync-alt",
+        icon: "lucide-refresh-cw",
         title: "Refresh",
         clickHandler: () => {
           /* demo noop */
@@ -78,7 +78,7 @@ const OrdersWorkspace = defineComponent({
   template: `
     <VcBlade
       title="Orders"
-      icon="fas fa-file-alt"
+      icon="lucide-file-text"
       :closable="closable"
       :expanded="expanded"
       :toolbar-items="toolbarItems"
@@ -128,7 +128,7 @@ const OrderDetails = defineComponent({
     const toolbarItems = [
       {
         id: "save",
-        icon: "fas fa-save",
+        icon: "lucide-save",
         title: "Save",
         clickHandler: () => {
           /* demo noop */
@@ -136,7 +136,7 @@ const OrderDetails = defineComponent({
       },
       {
         id: "delete",
-        icon: "fas fa-trash",
+        icon: "lucide-trash-2",
         title: "Delete",
         clickHandler: () => {
           /* demo noop */
@@ -162,7 +162,7 @@ const OrderDetails = defineComponent({
   template: `
     <VcBlade
       :title="title"
-      icon="fas fa-file-invoice"
+      icon="lucide-file-text"
       :closable="closable"
       :expanded="expanded"
       :toolbar-items="toolbarItems"
@@ -232,7 +232,7 @@ const CustomerDetails = defineComponent({
   template: `
     <VcBlade
       :title="title"
-      icon="fas fa-user"
+      icon="lucide-user"
       :closable="closable"
       :expanded="expanded"
       @close="$emit('close:blade')"
@@ -282,7 +282,7 @@ const ProductsWorkspace = defineComponent({
   template: `
     <VcBlade
       title="Products"
-      icon="fas fa-box"
+      icon="lucide-box"
       :closable="closable"
       :expanded="expanded"
       @close="$emit('close:blade')"

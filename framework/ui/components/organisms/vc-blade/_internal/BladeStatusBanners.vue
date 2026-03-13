@@ -6,9 +6,9 @@
 
       <!-- Collapsed header row -->
       <div class="vc-blade-status-banners__error-header" @click="toggle">
-        <VcIcon size="s" icon="fas fa-exclamation-circle" class="vc-blade-status-banners__error-icon" />
+        <VcIcon size="s" icon="lucide-circle-alert" class="vc-blade-status-banners__error-icon" />
         <span class="vc-blade-status-banners__error-text">{{ shortErrorMessage }}</span>
-        <VcIcon size="xs" :icon="isExpanded ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"
+        <VcIcon size="xs" :icon="isExpanded ? 'lucide-chevron-up' : 'lucide-chevron-down'"
           class="vc-blade-status-banners__error-chevron" />
       </div>
 
@@ -18,7 +18,7 @@
           <pre class="vc-blade-status-banners__error-details-text">{{ errorDetails }}</pre>
           <button class="vc-blade-status-banners__error-copy"
             :title="t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR')" @click.stop="handleCopy">
-            <VcIcon size="xs" :icon="copied ? 'fas fa-check' : 'fas fa-copy'" />
+            <VcIcon size="xs" :icon="copied ? 'lucide-check' : 'lucide-copy'" />
           </button>
         </div>
       </div>
@@ -29,7 +29,7 @@
   <Transition name="banner-reveal">
     <div v-if="modified" class="vc-blade-status-banners__unsaved" role="status">
       <div class="vc-blade-status-banners__unsaved-accent" />
-      <VcIcon size="s" icon="fas fa-pen" class="vc-blade-status-banners__unsaved-icon" />
+      <VcIcon size="s" icon="lucide-pencil" class="vc-blade-status-banners__unsaved-icon" />
       <span class="vc-blade-status-banners__unsaved-text">
         {{ t("COMPONENTS.ORGANISMS.VC_BLADE.UNSAVED_CHANGES") }}
       </span>

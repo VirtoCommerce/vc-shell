@@ -8,7 +8,7 @@
       ref="triggerRef"
       variant="ghost"
       size="icon"
-      icon="fas fa-filter"
+      icon="lucide-funnel"
       icon-size="xs"
       class="vc-column-filter__trigger"
       :class="{ 'vc-column-filter__trigger--active': hasActiveFilter }"

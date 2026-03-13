@@ -181,7 +181,7 @@ export const CustomHeader: Story = {
 export const Minimal: Story = {
   args: {
     header: "Rating & Reviews",
-    icon: "material-star_outline",
+    icon: "lucide-star",
   },
   render: (args) => ({
     components: { DashboardWidgetCard },

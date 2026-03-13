@@ -16,7 +16,7 @@
         <slot name="empty">
           <div class="vc-data-table-mobile-view__empty-content">
             <VcIcon
-              :icon="empty?.icon || 'material-inbox'"
+              :icon="empty?.icon || 'lucide-inbox'"
               class="vc-data-table-mobile-view__empty-icon"
             />
             <p class="vc-data-table-mobile-view__empty-text">
@@ -176,7 +176,7 @@ function getItemActions(item: T): MobileSwipeAction<T>[] {
   return actions.map((action) => ({
     id: action.id || String(unref(action.title)),
     title: String(unref(action.title)),
-    icon: action.icon || "material-more_horiz",
+    icon: action.icon || "lucide-ellipsis",
     type: mapActionType(action.variant),
     disabled: action.disabled,
     clickHandler: (actionItem: T, index: number) => {

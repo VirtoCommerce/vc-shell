@@ -175,10 +175,10 @@ const isMobile = inject(IsMobileKey, ref(false));
 const pendingDismissReason = ref<PopupCloseReason | null>(null);
 
 const variantMeta: Record<Exclude<PopupVariant, "default">, { icon: string; className: string }> = {
-  warning: { icon: "material-warning", className: "vc-popup__icon--warning" },
-  error: { icon: "material-error", className: "vc-popup__icon--error" },
-  success: { icon: "material-check_circle", className: "vc-popup__icon--success" },
-  info: { icon: "material-info", className: "vc-popup__icon--info" },
+  warning: { icon: "lucide-triangle-alert", className: "vc-popup__icon--warning" },
+  error: { icon: "lucide-circle-alert", className: "vc-popup__icon--error" },
+  success: { icon: "lucide-circle-check", className: "vc-popup__icon--success" },
+  info: { icon: "lucide-info", className: "vc-popup__icon--info" },
 };
 
 const isVisible = computed(() => props.modelValue ?? true);

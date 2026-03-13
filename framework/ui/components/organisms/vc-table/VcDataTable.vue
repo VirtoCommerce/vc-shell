@@ -419,8 +419,8 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
   scrollHeight: undefined,
   loading: false,
   expandedRows: () => [],
-  expandedRowIcon: "fas fa-chevron-down",
-  collapsedRowIcon: "fas fa-chevron-right",
+  expandedRowIcon: "lucide-chevron-down",
+  collapsedRowIcon: "lucide-chevron-right",
   groupRowsBy: undefined,
   rowGroupMode: "subheader",
   expandableRowGroups: false,
@@ -1017,7 +1017,7 @@ if (import.meta.env.DEV) {
 const showAddRowButton = computed(() => props.addRow?.enabled === true);
 const addRowPosition = computed(() => props.addRow?.position ?? "footer");
 const addRowLabel = computed(() => props.addRow?.label ?? "Add row");
-const addRowIcon = computed(() => props.addRow?.icon ?? "fas fa-plus");
+const addRowIcon = computed(() => props.addRow?.icon ?? "lucide-plus");
 
 // ============================================================================
 // Row Hover for Actions

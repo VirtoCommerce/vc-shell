@@ -156,7 +156,7 @@ export const WithHeader: Story = {
  */
 export const WithIcon: Story = {
   args: {
-    icon: "material-warehouse",
+    icon: "lucide-warehouse",
   },
   render: (args) => ({
     components: { VcCard, VcInput },

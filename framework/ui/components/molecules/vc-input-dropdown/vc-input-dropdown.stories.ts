@@ -453,7 +453,7 @@ export const WithObjectOptions: Story = {
               @click.stop.prevent="toggleHandler"
             >
               <span>{{ selectedOption.label }}</span>
-              <VcIcon icon="material-keyboard_arrow_down" size="s" class="tw-ml-1" />
+              <VcIcon icon="lucide-chevron-down" size="s" class="tw-ml-1" />
             </button>
           </template>
         </VcInputDropdown>
@@ -542,7 +542,7 @@ export const CurrencyInput: Story = {
               @click.stop.prevent="toggleHandler"
             >
               <span>{{ currentCurrency.symbol }} {{ currency }}</span>
-              <VcIcon icon="material-keyboard_arrow_down" size="s" class="tw-ml-1" />
+              <VcIcon icon="lucide-chevron-down" size="s" class="tw-ml-1" />
             </button>
           </template>
         </VcInputDropdown>
@@ -639,7 +639,7 @@ export const WithCustomInput: Story = {
               <VcButton size="xs" variety="secondary" @click="setToday">Today</VcButton>
 
               <VcIcon
-                icon="material-calendar_today"
+                icon="lucide-calendar"
                 class="tw-text-gray-500"
                 size="s"
               />

@@ -16,7 +16,7 @@ describe("app-bar-menu-service", () => {
     const firstService = createAppBarWidgetService();
     const secondService = createAppBarWidgetService();
 
-    firstService.register({ id: "widget-1", icon: "material-home" });
+    firstService.register({ id: "widget-1", icon: "lucide-home" });
 
     expect(firstService.items.value).toHaveLength(1);
     expect(secondService.items.value).toHaveLength(0);

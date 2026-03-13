@@ -59,7 +59,7 @@ export interface Props {
   /**
    * Icon to display. Can be a string identifier or a component instance.
    * For string identifiers, use the following format:
-   * - "fa-*" or "fas fa-*" for Font Awesome icons (e.g. "fas fa-home")
+   * - "fa-*" or "fas fa-*" for Font Awesome icons (e.g. "fa-home")
    * - "bi-*" for Bootstrap icons (e.g. "bi-house")
    * - "material-*" for Material icons (e.g. "material-home")
    * - "lucide-*" for Lucide icons (e.g. "lucide-home")
@@ -105,7 +105,7 @@ export interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  icon: "fas fa-square-full",
+  icon: "lucide-square",
   size: "m",
   useContainer: true,
   basePath: "/assets/icons",

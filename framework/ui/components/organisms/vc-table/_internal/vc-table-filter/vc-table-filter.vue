@@ -52,7 +52,7 @@
             </div>
             <VcIcon
               class="vc-table-filter__panel-close"
-              icon="material-close"
+              icon="lucide-x"
               @click="closePanel"
             />
           </div>

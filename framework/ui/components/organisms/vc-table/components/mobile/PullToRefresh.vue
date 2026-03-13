@@ -114,9 +114,9 @@ const isActive = computed(() => {
 
 const indicatorIcon = computed(() => {
   if (props.refreshing) {
-    return "fas fa-sync";
+    return "lucide-refresh-cw";
   }
-  return "fas fa-arrow-down";
+  return "lucide-arrow-down";
 });
 
 const iconClasses = computed(() => ({

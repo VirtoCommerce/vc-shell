@@ -333,20 +333,20 @@ export const baseVcDataTableProps = {
 
   /**
    * Icon class for expanded row toggler
-   * @default "fas fa-chevron-down"
+   * @default "lucide-chevron-down"
    */
   expandedRowIcon: {
     type: String,
-    default: "fas fa-chevron-down",
+    default: "lucide-chevron-down",
   },
 
   /**
    * Icon class for collapsed row toggler
-   * @default "fas fa-chevron-right"
+   * @default "lucide-chevron-right"
    */
   collapsedRowIcon: {
     type: String,
-    default: "fas fa-chevron-right",
+    default: "lucide-chevron-right",
   },
 
   // ============================================================================

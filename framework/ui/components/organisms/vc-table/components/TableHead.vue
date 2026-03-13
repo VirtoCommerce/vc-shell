@@ -31,10 +31,10 @@
       </span>
       <VcIcon
         v-if="sortDirection"
-        :icon="sortDirection === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"
+        :icon="sortDirection === 'asc' ? 'lucide-arrow-up' : 'lucide-arrow-down'"
         size="xs"
       />
-      <VcIcon v-else icon="fas fa-sort" size="xs" class="tw-opacity-30" />
+      <VcIcon v-else icon="lucide-arrow-up-down" size="xs" class="tw-opacity-30" />
     </div>
     <!-- AG Grid / TanStack style resizer -->
     <div

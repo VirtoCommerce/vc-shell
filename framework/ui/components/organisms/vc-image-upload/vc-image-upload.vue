@@ -35,7 +35,7 @@
             @click.stop="onPreviewClick"
           >
             <VcIcon
-              icon="material-open_in_full"
+              icon="lucide-maximize"
               size="s"
             />
           </button>
@@ -47,7 +47,7 @@
             @click.stop="emit('remove', image)"
           >
             <VcIcon
-              icon="material-delete"
+              icon="lucide-trash-2"
               size="s"
             />
           </button>

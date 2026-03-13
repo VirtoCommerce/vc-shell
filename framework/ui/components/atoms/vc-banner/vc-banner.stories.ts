@@ -24,7 +24,7 @@ const meta = {
       },
     },
     icon: {
-      description: "Icon identifier (e.g. `fas fa-info-circle`, `material-warning`)",
+      description: "Icon identifier (e.g. `lucide-info`, `lucide-triangle-alert`)",
       control: "text",
       table: {
         type: { summary: "string" },
@@ -66,7 +66,7 @@ const meta = {
   },
   args: {
     variant: "info",
-    icon: "fas fa-info-circle",
+    icon: "lucide-info",
     iconSize: "l",
   },
   parameters: {
@@ -116,10 +116,10 @@ export const AllVariants: Story = {
     components: { VcBanner },
     setup() {
       const variants = [
-        { variant: "info", icon: "fas fa-info-circle", title: "Information", text: "This is an informational message for the user." },
-        { variant: "success", icon: "fas fa-check-circle", title: "Success", text: "The operation completed successfully." },
-        { variant: "warning", icon: "fas fa-exclamation-triangle", title: "Warning", text: "Please review before proceeding with this action." },
-        { variant: "danger", icon: "fas fa-exclamation-circle", title: "Error", text: "Something went wrong. Please try again later." },
+        { variant: "info", icon: "lucide-info", title: "Information", text: "This is an informational message for the user." },
+        { variant: "success", icon: "lucide-circle-check", title: "Success", text: "The operation completed successfully." },
+        { variant: "warning", icon: "lucide-triangle-alert", title: "Warning", text: "Please review before proceeding with this action." },
+        { variant: "danger", icon: "lucide-circle-alert", title: "Error", text: "Something went wrong. Please try again later." },
       ] as const;
       return { variants };
     },
@@ -145,7 +145,7 @@ export const AllVariants: Story = {
 export const TitleOnly: Story = {
   args: {
     variant: "warning",
-    icon: "fas fa-exclamation-triangle",
+    icon: "lucide-triangle-alert",
   },
   render: (args) => ({
     components: { VcBanner },
@@ -166,7 +166,7 @@ export const TitleOnly: Story = {
 export const DescriptionOnly: Story = {
   args: {
     variant: "success",
-    icon: "fas fa-check-circle",
+    icon: "lucide-circle-check",
   },
   render: (args) => ({
     components: { VcBanner },
@@ -209,7 +209,7 @@ export const NoIcon: Story = {
 export const DeclineReason: Story = {
   args: {
     variant: "danger",
-    icon: "material-error",
+    icon: "lucide-circle-alert",
     iconSize: "l",
     iconVariant: "danger",
   },
@@ -233,7 +233,7 @@ export const DeclineReason: Story = {
 export const CollapsibleContent: Story = {
   args: {
     variant: "danger",
-    icon: "fas fa-exclamation-circle",
+    icon: "lucide-circle-alert",
     collapsedHeight: 60,
   },
   render: (args) => ({

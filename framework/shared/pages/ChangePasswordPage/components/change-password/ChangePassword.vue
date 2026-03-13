@@ -16,7 +16,7 @@
       >
         <div class="tw-flex tw-flex-row tw-items-center tw-text-neutrals-800">
           <VcIcon
-            icon="material-lightbulb"
+            icon="lucide-lightbulb"
             size="l"
             class="tw-mr-3"
           />

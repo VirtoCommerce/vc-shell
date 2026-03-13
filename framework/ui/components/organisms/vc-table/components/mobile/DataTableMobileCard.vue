@@ -119,7 +119,7 @@
         class="vc-data-table-mobile-card__action vc-data-table-mobile-card__action--more"
         @click.stop="handleMoreClick"
       >
-        <VcIcon icon="material-pending" />
+        <VcIcon icon="lucide-clock" />
         <span class="vc-data-table-mobile-card__action-title">{{ moreLabel }}</span>
       </button>
 

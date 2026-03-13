@@ -18,7 +18,7 @@ import { useIcon } from "@ui/components/atoms/vc-icon/composables";
 
 interface Props {
   /**
-   * Font Awesome icon class name (e.g. "fas fa-user" or "fa-user")
+   * Font Awesome icon class name (e.g. "fas fa-user" or "fa-user"). Legacy support only.
    */
   icon: string;
 

@@ -53,7 +53,7 @@
                           >
                         </div>
                         <VcButton
-                          icon="material-content_copy"
+                          icon="lucide-copy"
                           icon-size="m"
                           class="tw-ml-2"
                           text
@@ -182,7 +182,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
-    icon: "material-save",
+    icon: "lucide-save",
     async clickHandler() {
       if (props.options?.assetEditHandler && typeof props.options?.assetEditHandler === "function") {
         await props.options?.assetEditHandler(defaultAsset.value);
@@ -194,7 +194,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "delete",
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
-    icon: "material-delete",
+    icon: "lucide-trash-2",
     async clickHandler() {
       if (props.options?.assetRemoveHandler && typeof props.options?.assetRemoveHandler === "function") {
         await props.options?.assetRemoveHandler(defaultAsset.value);

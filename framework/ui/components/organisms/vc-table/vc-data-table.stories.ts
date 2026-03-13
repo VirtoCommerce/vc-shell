@@ -1417,8 +1417,8 @@ export const ExpandableRowsCustomIcons: StoryFn = () => ({
       <VcDataTable
         :items="products"
         v-model:expanded-rows="expandedRows"
-        expanded-row-icon="fas fa-minus"
-        collapsed-row-icon="fas fa-plus"
+        expanded-row-icon="lucide-minus"
+        collapsed-row-icon="lucide-plus"
       >
         <VcColumn id="expander" :expander="true" />
         <VcColumn id="name" field="name" title="Name" />
@@ -1817,7 +1817,7 @@ export const WithRowActions: StoryFn = () => ({
 
     const getRowActions = (item: Product) => [
       {
-        icon: "fas fa-eye",
+        icon: "lucide-eye",
         title: "View",
         clickHandler: () => {
           eventLog.value.unshift(`View: ${item.name}`);
@@ -1825,7 +1825,7 @@ export const WithRowActions: StoryFn = () => ({
         },
       },
       {
-        icon: "fas fa-edit",
+        icon: "lucide-pencil",
         title: "Edit",
         clickHandler: () => {
           eventLog.value.unshift(`Edit: ${item.name}`);
@@ -1833,7 +1833,7 @@ export const WithRowActions: StoryFn = () => ({
         },
       },
       {
-        icon: "fas fa-copy",
+        icon: "lucide-copy",
         title: "Duplicate",
         clickHandler: () => {
           const newProduct = {
@@ -1847,7 +1847,7 @@ export const WithRowActions: StoryFn = () => ({
         },
       },
       {
-        icon: "fas fa-archive",
+        icon: "lucide-archive",
         title: "Archive",
         clickHandler: () => {
           eventLog.value.unshift(`Archived: ${item.name}`);
@@ -1855,7 +1855,7 @@ export const WithRowActions: StoryFn = () => ({
         },
       },
       {
-        icon: "fas fa-trash",
+        icon: "lucide-trash-2",
         title: "Delete",
         variant: "danger" as const,
         clickHandler: () => {
@@ -1923,17 +1923,17 @@ export const WithRowActionsDropdown: StoryFn = () => ({
 
     const getRowActions = (item: Product) => [
       {
-        icon: "fas fa-eye",
+        icon: "lucide-eye",
         title: "View details",
         clickHandler: () => alert(`View: ${item.name}`),
       },
       {
-        icon: "fas fa-edit",
+        icon: "lucide-pencil",
         title: "Edit",
         clickHandler: () => alert(`Edit: ${item.name}`),
       },
       {
-        icon: "fas fa-copy",
+        icon: "lucide-copy",
         title: "Duplicate",
         clickHandler: () => {
           const newProduct = {
@@ -1945,13 +1945,13 @@ export const WithRowActionsDropdown: StoryFn = () => ({
         },
       },
       {
-        icon: "fas fa-archive",
+        icon: "lucide-archive",
         title: "Archive",
         disabled: item.stock === 0,
         clickHandler: () => alert(`Archive: ${item.name}`),
       },
       {
-        icon: "fas fa-trash",
+        icon: "lucide-trash-2",
         title: "Delete",
         variant: "danger" as const,
         clickHandler: () => {
@@ -2816,7 +2816,7 @@ export const MobileWithSwipeActions: StoryFn = () => ({
 
     const getRowActions = (item: Product) => [
       {
-        icon: "fas fa-edit",
+        icon: "lucide-pencil",
         title: "Edit",
         type: "success" as const,
         clickHandler: () => {
@@ -2825,7 +2825,7 @@ export const MobileWithSwipeActions: StoryFn = () => ({
         },
       },
       {
-        icon: "fas fa-trash",
+        icon: "lucide-trash-2",
         title: "Delete",
         type: "danger" as const,
         clickHandler: () => {
@@ -2883,7 +2883,7 @@ export const MobileWithManyActions: StoryFn = () => ({
 
     const getRowActions = (item: Product) => [
       {
-        icon: "fas fa-eye",
+        icon: "lucide-eye",
         title: "View",
         clickHandler: () => {
           eventLog.value.unshift(`View: ${item.name}`);
@@ -2891,7 +2891,7 @@ export const MobileWithManyActions: StoryFn = () => ({
         },
       },
       {
-        icon: "fas fa-edit",
+        icon: "lucide-pencil",
         title: "Edit",
         type: "success" as const,
         clickHandler: () => {
@@ -2900,7 +2900,7 @@ export const MobileWithManyActions: StoryFn = () => ({
         },
       },
       {
-        icon: "fas fa-copy",
+        icon: "lucide-copy",
         title: "Duplicate",
         clickHandler: () => {
           eventLog.value.unshift(`Duplicate: ${item.name}`);
@@ -2908,7 +2908,7 @@ export const MobileWithManyActions: StoryFn = () => ({
         },
       },
       {
-        icon: "fas fa-archive",
+        icon: "lucide-archive",
         title: "Archive",
         type: "warning" as const,
         clickHandler: () => {
@@ -2917,7 +2917,7 @@ export const MobileWithManyActions: StoryFn = () => ({
         },
       },
       {
-        icon: "fas fa-trash",
+        icon: "lucide-trash-2",
         title: "Delete",
         type: "danger" as const,
         clickHandler: () => {
@@ -3781,7 +3781,7 @@ export const AddRemoveRows: StoryFn = () => ({
       {
         id: "delete",
         title: "Delete",
-        icon: "fas fa-trash",
+        icon: "lucide-trash-2",
         variant: "danger" as const,
         clickHandler: () => {
           tableRef.value?.removeRow(index);
@@ -3824,7 +3824,7 @@ export const AddRemoveRows: StoryFn = () => ({
         <VcDataTable
           ref="tableRef"
           :items="items"
-          :add-row="{ enabled: true, position: 'footer', label: 'Add Product', icon: 'fas fa-plus' }"
+          :add-row="{ enabled: true, position: 'footer', label: 'Add Product', icon: 'lucide-plus' }"
           :row-actions="getRowActions"
           @row-add="handleRowAdd"
           @row-remove="handleRowRemove"
@@ -5013,7 +5013,7 @@ export const EmptyStateConfig: StoryFn = () => ({
   setup() {
     const actionClicked = ref(false);
     const emptyState = {
-      icon: "fas fa-box-open",
+      icon: "lucide-package-open",
       title: "No products yet",
       description: "Your product catalog is empty. Add your first product to get started.",
       actionLabel: "Add Product",
@@ -5060,7 +5060,7 @@ export const NotFoundStateConfig: StoryFn = () => ({
     const actionClicked = ref(false);
 
     const notFoundState = {
-      icon: "fas fa-search",
+      icon: "lucide-search",
       title: "No results found",
       description: "We couldn't find any products matching your search. Try adjusting your query.",
       actionLabel: "Clear Search",
@@ -5071,7 +5071,7 @@ export const NotFoundStateConfig: StoryFn = () => ({
     };
 
     const emptyState = {
-      icon: "fas fa-box-open",
+      icon: "lucide-package-open",
       title: "No products yet",
       description: "Your product catalog is empty.",
     };
@@ -5121,7 +5121,7 @@ export const EmptyVsNotFound: StoryFn = () => ({
     const searchValue = ref("");
 
     const emptyState = {
-      icon: "fas fa-box-open",
+      icon: "lucide-package-open",
       title: "No products yet",
       description: "Your catalog is empty. Add your first product to get started.",
       actionLabel: "Add Product",
@@ -5129,7 +5129,7 @@ export const EmptyVsNotFound: StoryFn = () => ({
     };
 
     const notFoundState = {
-      icon: "fas fa-search",
+      icon: "lucide-search",
       title: "Nothing matches your search",
       description: "Try a different search term or clear the search field.",
       actionLabel: "Clear Search",

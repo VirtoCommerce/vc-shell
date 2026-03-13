@@ -16,7 +16,7 @@ import { computed, inject, toValue } from "vue";
 import { useWidgets } from "@core/composables/useWidgets";
 import WidgetContainerDesktop from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerDesktop.vue";
 import WidgetContainerMobile from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerMobile.vue";
-import { BladeInstance } from "@framework/injection-keys";
+import { BladeInstanceKey } from "@framework/injection-keys";
 import { IWidget } from "@core/services/widget-service";
 import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 import { resolveVisibility } from "@ui/components/organisms/vc-blade/utils";
@@ -30,9 +30,10 @@ const normalizedBladeId = computed(() => props.bladeId.toLowerCase());
 const widgetService = useWidgets();
 const widgets = computed(() => widgetService.getWidgets(normalizedBladeId.value));
 
-const bladeInstance = inject(BladeInstance, DEFAULT_BLADE_INSTANCE);
+const bladeInstance = inject(BladeInstanceKey, DEFAULT_BLADE_INSTANCE);
 
 const visibleWidgets = computed(() =>
   widgets.value.filter((widget: IWidget) => resolveVisibility(widget.isVisible, toValue(bladeInstance))),
 );
 </script>
+

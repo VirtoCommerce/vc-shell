@@ -203,6 +203,8 @@ export interface IBladeStack {
   closeBlade(bladeId: string): Promise<boolean>;
   /** Replace the current active blade with a different one */
   replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void>;
+  /** Close all children of a blade (deepest first, respecting guards) */
+  closeChildren(parentId: string): Promise<void>;
 
   /**
    * Register a before-close guard for a blade.

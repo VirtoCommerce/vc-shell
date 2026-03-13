@@ -52,6 +52,7 @@ export function createMockBladeStack(): IBladeStack {
     openBlade: vi.fn().mockResolvedValue(undefined),
     openWorkspace: vi.fn().mockResolvedValue(undefined),
     closeBlade: vi.fn().mockResolvedValue(false),
+    closeChildren: vi.fn().mockResolvedValue(undefined),
     replaceCurrentBlade: vi.fn().mockResolvedValue(undefined),
     registerBeforeClose: vi.fn(),
     setBladeError: vi.fn(),
@@ -84,7 +85,7 @@ export interface BladeContextOverrides {
  *
  * @example
  * const { result, mockStack } = mountWithBladeContext(
- *   () => useBladeContext(),
+ *   () => useBlade(),
  *   { descriptor: { id: "blade-42" } }
  * );
  * expect(result.id.value).toBe("blade-42");
@@ -117,6 +118,46 @@ export function mountWithBladeContext<T>(setupFn: () => T, overrides?: BladeCont
   const Outer = defineComponent({
     setup() {
       provide(BladeDescriptorKey, mockDescriptor);
+      provide(BladeStackKey, mockStack);
+      provide(BladeMessagingKey, mockMessaging);
+      return () => h(Inner);
+    },
+  });
+  const wrapper = mount(Outer);
+  return { result: result!, wrapper, mockStack, mockMessaging };
+}
+
+// ── No-blade-context wrapper ────────────────────────────────────────────────
+
+/**
+ * Mounts a component WITHOUT blade descriptor but WITH BladeStack/Messaging
+ * provided via a parent component. Simulates a component inside the app
+ * (where the plugin is installed) but outside any VcBladeSlot.
+ *
+ * Use this to test composables that should work outside blade context
+ * (e.g. useBlade() called from a dashboard card).
+ *
+ * @example
+ * const { result, mockStack } = mountWithoutBladeContext(() => useBlade());
+ * // openBlade works, closeSelf throws
+ */
+export function mountWithoutBladeContext<T>(
+  setupFn: () => T,
+  overrides?: { stack?: IBladeStack; messaging?: IBladeMessaging },
+) {
+  const mockStack = overrides?.stack ?? createMockBladeStack();
+  const mockMessaging = overrides?.messaging ?? createMockBladeMessaging();
+
+  let result: T;
+  const Inner = defineComponent({
+    setup() {
+      result = setupFn();
+      return () => h("div");
+    },
+  });
+  const Outer = defineComponent({
+    setup() {
+      // Provide stack and messaging but NOT BladeDescriptorKey
       provide(BladeStackKey, mockStack);
       provide(BladeMessagingKey, mockMessaging);
       return () => h(Inner);

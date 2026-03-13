@@ -11,7 +11,7 @@
       >
         <VcButton
           ref="buttonRef"
-          icon="material-arrow_back"
+          icon="lucide-arrow-left"
           icon-class="tw-text-neutrals-500"
           icon-size="l"
           text

@@ -20,11 +20,7 @@
         :expanded="descriptor.id === activeBlade?.id"
         :visible="isBladeVisible(descriptor, index)"
         :breadcrumbs="breadcrumbs.slice(0, index)"
-        :back-button="
-          bladeCount > 1
-            ? mobileBackButtonFor(index)
-            : undefined
-        "
+        :back-button="bladeCount > 1 ? mobileBackButtonFor(index) : undefined"
         @close="onClose"
         @parent-call="onParentCall"
       />

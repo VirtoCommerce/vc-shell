@@ -1,5 +1,5 @@
 import { useRoute, useRouter } from "vue-router";
-import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
+import { useBlade } from "@core/composables/useBlade";
 import { navigateToMainRoute } from "@shared/components/blade-navigation/utils/navigateToMainRoute";
 import { createLogger } from "@core/utilities";
 import type { MenuItem } from "@core/types";
@@ -13,19 +13,14 @@ const logger = createLogger("useShellNavigation");
 export function useShellNavigation() {
   const router = useRouter();
   const route = useRoute();
-  const { openBlade, closeBlade, resolveBladeByName } = useBladeNavigation();
+  const { openBlade } = useBlade();
   const routes = router.getRoutes();
 
   const handleMenuItemClick = (item: MenuItem) => {
     logger.debug("handleMenuItemClick() called");
 
     if (item.routeId) {
-      const bladeComponent = resolveBladeByName(item.routeId);
-      if (bladeComponent) {
-        openBlade({ blade: bladeComponent }, true);
-      } else {
-        logger.error(`Blade component with routeId '${item.routeId}' not found.`);
-      }
+      openBlade({ name: item.routeId, isWorkspace: true });
     } else if (!item.routeId && item.url) {
       const itemUrl = item.url;
       // Match by exact path OR by comparing static (non-param) segments against item.url
@@ -48,10 +43,7 @@ export function useShellNavigation() {
   };
 
   const openRoot = async () => {
-    // Close entire blade stack (including workspace) and navigate to main route.
-    // Workspaces are managed by BladeStack, not Vue Router — clearing the stack
-    // returns to the app shell's default view (e.g. dashboard).
-    await closeBlade(0);
+    // Navigate to main route — workspace cleanup is handled by BladeStack
     navigateToMainRoute(router, route.params as Record<string, string>);
   };
 

@@ -134,7 +134,7 @@ export function createBladeStack(
       throw new Error(`[BladeStack] Blade '${event.name}' not found in registry`);
     }
 
-    const parentId = event.parentId ?? activeBlade.value?.id;
+    const parentId = event.parentId ?? activeBlade.value?.id ?? workspace.value?.id;
     if (!parentId) {
       throw new Error("[BladeStack] Cannot open blade: no parent blade found");
     }
@@ -208,9 +208,7 @@ export function createBladeStack(
     return false;
   }
 
-  async function replaceCurrentBlade(
-    event: BladeOpenEvent & { parentId?: string },
-  ): Promise<void> {
+  async function replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
     const current = activeBlade.value;
     if (!current) {
       throw new Error("[BladeStack] No active blade to replace");
@@ -257,6 +255,24 @@ export function createBladeStack(
     if (event.onClose) _onCloseCallbacks.set(descriptor.id, event.onClose);
 
     event.onOpen?.();
+  }
+
+  // ── Close Children ──────────────────────────────────────────────────────
+
+  async function closeChildren(parentId: string): Promise<void> {
+    const parentIndex = _blades.value.findIndex((b) => b.id === parentId);
+    if (parentIndex === -1) return;
+
+    const children = _blades.value.slice(parentIndex + 1);
+    if (children.length === 0) return;
+
+    // Check guards (deepest first)
+    const prevented = await _checkGuards(children);
+    if (prevented) return;
+
+    // Cleanup and remove
+    _closeBladesCleanup(children);
+    _blades.value = _blades.value.slice(0, parentIndex + 1);
   }
 
   // ── Guards ────────────────────────────────────────────────────────────────
@@ -321,6 +337,7 @@ export function createBladeStack(
     openWorkspace,
     openBlade,
     closeBlade,
+    closeChildren,
     replaceCurrentBlade,
     registerBeforeClose,
     unregisterBeforeClose,
@@ -339,9 +356,7 @@ export function createBladeStack(
 export function useBladeStack(): IBladeStack {
   const stack = inject(BladeStackKey);
   if (!stack) {
-    throw new Error(
-      "[useBladeStack] BladeStack not found. Ensure BladeNavigationPlugin is installed.",
-    );
+    throw new Error("[useBladeStack] BladeStack not found. Ensure BladeNavigationPlugin is installed.");
   }
   return stack;
 }

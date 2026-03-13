@@ -1,5 +1,5 @@
 import { computed, inject, onMounted, onUnmounted, watch, toValue, Ref, ComputedRef } from "vue";
-import { WidgetServiceKey, BladeInstance } from "@framework/injection-keys";
+import { WidgetServiceKey } from "@framework/injection-keys";
 import { IWidget } from "@core/services/widget-service";
 import { useBlade } from "@core/composables/useBlade";
 import { createLogger } from "@core/utilities";
@@ -19,15 +19,15 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions): UseExter
   const { bladeId, bladeData } = options;
 
   const widgetService = inject(WidgetServiceKey);
-  const blade = useBlade();
+  const { id: currentBladeId } = useBlade();
 
   // Normalize bladeId to lowercase for consistency
-  const normalizedBladeId = computed(() => blade?.value.id?.toLowerCase() ?? "");
+  const normalizedBladeId = computed(() => currentBladeId.value?.toLowerCase() ?? "");
 
   const registeredExternalWidgetIds = new Set<string>();
 
   const registerExternalWidgets = () => {
-    if (!widgetService || !blade?.value.id) {
+    if (!widgetService || !currentBladeId.value) {
       logger.warn("Widget service or blade instance not available");
       return;
     }
@@ -61,7 +61,7 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions): UseExter
   };
 
   const updateWidgetProps = () => {
-    if (!widgetService || !blade?.value.id) return;
+    if (!widgetService || !currentBladeId.value) return;
 
     registeredExternalWidgetIds.forEach((widgetId) => {
       const widget = widgetService.getWidgets(normalizedBladeId.value).find((w) => w.id === widgetId);
@@ -71,7 +71,7 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions): UseExter
           const resolvedProps = widgetService.resolveWidgetProps(widget, toValue(bladeData));
           widgetService.updateWidget({
             id: widget.id,
-            bladeId: blade.value.id,
+            bladeId: currentBladeId.value,
             widget: { props: resolvedProps },
           });
         } catch (error) {

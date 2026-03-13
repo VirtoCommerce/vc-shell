@@ -279,7 +279,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   async function closeBlade(index: number): Promise<boolean> {
     warnDeprecated(
       "closeBlade(index)",
-      "useBladeContext().closeSelf()",
+      "useBlade().closeSelf()",
     );
     const bladeId = getBladeIdByIndex(index);
     if (!bladeId) {
@@ -326,7 +326,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   ): Promise<void> {
     warnDeprecated(
       "onParentCall(args, index)",
-      "useBladeContext().callParent(method, args)",
+      "useBlade().callParent(method, args)",
     );
 
     let callerId: string | undefined;
@@ -368,7 +368,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   ): void {
     warnDeprecated(
       "onBeforeClose(cb)",
-      "useBladeContext().onBeforeClose(guard)",
+      "useBlade().onBeforeClose(guard)",
     );
 
     const bladeId = getCurrentBladeId();

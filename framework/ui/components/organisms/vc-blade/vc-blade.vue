@@ -121,7 +121,7 @@
 <script lang="ts" setup>
 import { ref, inject, computed, onMounted, nextTick, getCurrentInstance } from "vue";
 import { IBladeToolbar } from "@core/types";
-import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
+import { BladeStackKey } from "@shared/components/blade-navigation/types";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
 import BladeHeaderSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeHeaderSkeleton.vue";
 import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";
@@ -180,34 +180,6 @@ const showSkeleton = computed(() => Boolean(props.loading) || isInitializing.val
 const slots = defineSlots<{
   actions(): void;
   default(): void;
-  /**
-   * @deprecated
-   * Use `useWidgets` composable instead
-   * @example
-   * // Register widget in blade:
-   * const blade = useBlade();
-   * const widgetService = useWidgets();
-   * widgetService.registerWidget({
-   *   id: "widget-id",
-   *   component: () => import("./MyWidget.vue"),
-   *   props: {
-   *     myProp: '123',
-   *    },
-   *   events: {
-   *     "onChangeProp": (val: unknown) => {
-   *       console.log(val);
-   *     },
-   *   },
-   * }, blade.id);
-   *
-   * // Clear widgets on blade unmount:
-   * onBeforeUnmount(() => {
-   *   if (blade?.value.id) {
-   *     widgetService.clearBladeWidgets(blade.value.id);
-   *   }
-   * });
-   */
-  widgets(): void;
 }>();
 
 const emit = defineEmits<Emits>();
@@ -216,7 +188,8 @@ const blade = inject(BladeInstance, DEFAULT_BLADE_INSTANCE);
 
 const backButton = inject(BLADE_BACK_BUTTON);
 
-const { blades } = useBladeNavigation();
+const bladeStack = inject(BladeStackKey);
+const blades = computed(() => bladeStack?.blades.value ?? []);
 
 const bladeRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);

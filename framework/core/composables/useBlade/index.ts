@@ -1,178 +1,243 @@
-import { inject, computed, type ComputedRef } from "vue";
-import { BladeInstance } from "@framework/injection-keys";
+import { inject, computed, getCurrentInstance, type ComputedRef } from "vue";
 import {
     BladeDescriptorKey,
     BladeStackKey,
     BladeMessagingKey,
 } from "@shared/components/blade-navigation/types";
 import type {
-    BladeDescriptor,
     BladeOpenEvent,
     IBladeStack,
-    IBladeMessaging,
-    IBladeInstance,
 } from "@shared/components/blade-navigation/types";
+import {
+    bladeStackInstance,
+    bladeMessagingInstance,
+    bladeNavigationInstance,
+} from "@shared/components/blade-navigation/plugin-v2";
+import { createUrlSync } from "@shared/components/blade-navigation/utils/urlSync";
 
-/** Type alias for the return value of useBlade() */
-export type UseBladeReturn = ComputedRef<IBladeInstance>;
-
-export interface UseBladeContextReturn {
-  // Identity (read-only)
+export interface UseBladeReturn {
+  // Identity (read-only) — runtime error outside blade context
   readonly id: ComputedRef<string>;
   readonly param: ComputedRef<string | undefined>;
   readonly options: ComputedRef<Record<string, unknown> | undefined>;
   readonly query: ComputedRef<Record<string, string> | undefined>;
   readonly closable: ComputedRef<boolean>;
   readonly expanded: ComputedRef<boolean>;
-  // Actions
-  openBlade(event: BladeOpenEvent): Promise<void>;
+  // Navigation — works everywhere
+  openBlade(event: BladeOpenEvent & { isWorkspace?: boolean }): Promise<void>;
+  // Actions — runtime error outside blade context
   closeSelf(): Promise<boolean>;
+  closeChildren(): Promise<void>;
   replaceWith(event: BladeOpenEvent): Promise<void>;
-  // Communication
+  // Communication — runtime error outside blade context
   callParent<T = unknown>(method: string, args?: unknown): Promise<T>;
   exposeToChildren(methods: Record<string, (...args: unknown[]) => unknown>): void;
-  // Guards
+  // Guards — runtime error outside blade context
   onBeforeClose(guard: () => Promise<boolean>): void;
-  // Error management
+  // Error management — runtime error outside blade context
   setError(error: unknown): void;
   clearError(): void;
 }
 
-/**
- * Composable for accessing the current blade instance (legacy API).
- *
- * Returns a ComputedRef<IBladeInstance> — the same type as before.
- * For the new extended API with actions (openBlade, closeSelf, etc.),
- * use `useBladeContext()` instead.
- *
- * @deprecated Use useBladeContext() instead.
- * @returns The current blade instance (ComputedRef)
- */
-export function useBlade(): UseBladeReturn {
-    const blade = inject(BladeInstance);
+const CONTEXT_ERROR_SUFFIX =
+    "useBlade() was called outside a blade. Navigation methods (openBlade) work everywhere, " +
+    "but blade-specific methods require the component to be rendered inside VcBladeSlot.";
 
-    if (!blade) {
-        throw new Error(
-            "[vc-shell] useBlade() called outside blade context. " +
-            "Wrap your component with VcBlade or use useBladeContext() inside a blade.",
-        );
-    }
-    return blade;
+function requireContext(method: string): never {
+    throw new Error(
+        `[vc-shell] ${method} requires blade context.\n${CONTEXT_ERROR_SUFFIX}`,
+    );
 }
 
 /**
- * Extended blade context composable (new API).
+ * Unified blade composable — works **everywhere**.
  *
- * Provides identity (id, param, options), actions (openBlade, closeSelf),
- * communication (callParent, exposeToChildren), guards, and error management.
+ * Inside a blade (rendered by VcBladeSlot): full API — identity, navigation,
+ * communication, guards, error management.
  *
- * Must be called inside a component rendered by VcBladeSlot (new render layer).
- * Falls back gracefully when BladeDescriptor is not yet provided (old render layer).
+ * Outside a blade (dashboard cards, notification templates, composables):
+ * navigation methods (openBlade) work via singletons; blade-specific methods
+ * throw a descriptive runtime error on invocation.
  *
- * @example
+ * @example Inside blade
  * ```ts
- * const { param, options, openBlade, closeSelf, callParent } = useBladeContext();
+ * const { id, param, openBlade, closeSelf, callParent } = useBlade();
  * openBlade({ name: "OrderDetails", param: orderId });
  * const result = await callParent("reload");
  * closeSelf();
  * ```
+ *
+ * @example Outside blade (dashboard card)
+ * ```ts
+ * const { openBlade } = useBlade();
+ * openBlade({ name: "OrderDetails", param: orderId });
+ * ```
  */
-export function useBladeContext(): UseBladeContextReturn {
-    const _descriptor = inject(BladeDescriptorKey);
-    const _bladeStack = inject(BladeStackKey);
-    const _messaging = inject(BladeMessagingKey);
+export function useBlade(): UseBladeReturn {
+    // Navigation — always available via inject (preferred) or singletons (fallback)
+    const _stack: IBladeStack | undefined =
+        (getCurrentInstance() ? inject(BladeStackKey, undefined) : undefined)
+        ?? bladeStackInstance;
+    const _messaging =
+        (getCurrentInstance() ? inject(BladeMessagingKey, undefined) : undefined)
+        ?? bladeMessagingInstance;
 
-    if (!_descriptor || !_bladeStack || !_messaging) {
+    if (!_stack || !_messaging) {
         throw new Error(
-            "[vc-shell] useBladeContext() called outside blade context. " +
-            "Ensure the component is rendered inside VcBladeSlot.",
+            "[vc-shell] useBlade() failed: BladeStack or BladeMessaging not available. " +
+            "Ensure BladeNavigationPlugin (plugin-v2) is installed.",
         );
     }
 
-    // Assign to non-optional consts after the guard (TypeScript narrows)
-    const descriptor = _descriptor;
-    const bladeStack = _bladeStack;
+    // After the guard above, these are guaranteed non-null
+    const bladeStack = _stack;
     const messaging = _messaging;
 
-    // ── Identity (read-only) ────────────────────────────────────────────────
-    const id = computed(() => descriptor.value.id);
-    const param = computed(() => descriptor.value.param);
-    const options = computed(() => descriptor.value.options);
-    const query = computed(() => descriptor.value.query);
-    const closable = computed(() => descriptor.value.parentId !== undefined);
-    const expanded = computed(() => {
-        const active = bladeStack.activeBlade.value;
-        return active?.id === descriptor.value.id;
-    });
+    // Blade context — optional (via inject, no error if missing)
+    const descriptor = getCurrentInstance()
+        ? inject(BladeDescriptorKey, undefined)
+        : undefined;
 
-    // ── Actions ─────────────────────────────────────────────────────────────
+    // ── URL sync (lazy — only created if router available) ────────────────────
+    let _urlSync: ReturnType<typeof createUrlSync> | undefined;
 
-    async function openBlade(event: BladeOpenEvent): Promise<void> {
-        return bladeStack.openBlade({
-            ...event,
-            parentId: descriptor.value.id, // auto-set parent
-        });
+    function getUrlSync() {
+        if (_urlSync) return _urlSync;
+        const router = bladeNavigationInstance?.router;
+        if (router) {
+            _urlSync = createUrlSync(router, bladeStack);
+        }
+        return _urlSync;
     }
 
+    // ── Identity (read-only) ────────────────────────────────────────────────
+    const id = computed(() => {
+        if (!descriptor) requireContext("id");
+        return descriptor!.value.id;
+    });
+    const param = computed(() => {
+        if (!descriptor) requireContext("param");
+        return descriptor!.value.param;
+    });
+    const options = computed(() => {
+        if (!descriptor) requireContext("options");
+        return descriptor!.value.options;
+    });
+    const query = computed(() => {
+        if (!descriptor) requireContext("query");
+        return descriptor!.value.query;
+    });
+    const closable = computed(() => {
+        if (!descriptor) requireContext("closable");
+        return descriptor!.value.parentId !== undefined;
+    });
+    const expanded = computed(() => {
+        if (!descriptor) requireContext("expanded");
+        const active = bladeStack.activeBlade.value;
+        return active?.id === descriptor!.value.id;
+    });
+
+    // ── Navigation (works everywhere) ─────────────────────────────────────
+
+    async function openBlade(event: BladeOpenEvent & { isWorkspace?: boolean }): Promise<void> {
+        const { isWorkspace, ...bladeEvent } = event;
+
+        if (isWorkspace) {
+            // Workspace: close all blades, open as root
+            await bladeStack.openWorkspace(bladeEvent);
+        } else {
+            const parentId = descriptor?.value.id;
+            if (parentId) {
+                // Inside blade: open as child
+                await bladeStack.openBlade({ ...bladeEvent, parentId });
+            } else {
+                // Outside blade: open with active blade as parent (or workspace)
+                await bladeStack.openBlade(bladeEvent);
+            }
+        }
+
+        // URL sync
+        const openedBlade = bladeStack.activeBlade.value;
+        if (openedBlade?.url) {
+            getUrlSync()?.syncUrlPush();
+        }
+    }
+
+    // ── Actions ──────────────────────────────────────────────────────────────
+
     async function closeSelf(): Promise<boolean> {
-        return bladeStack.closeBlade(descriptor.value.id);
+        if (!descriptor) requireContext("closeSelf()");
+        const result = await bladeStack.closeBlade(descriptor!.value.id);
+        if (!result) {
+            // Blade was closed — sync URL
+            getUrlSync()?.syncUrlReplace();
+        }
+        return result;
+    }
+
+    async function closeChildren(): Promise<void> {
+        if (!descriptor) requireContext("closeChildren()");
+        await bladeStack.closeChildren(descriptor!.value.id);
+        getUrlSync()?.syncUrlReplace();
     }
 
     async function replaceWith(event: BladeOpenEvent): Promise<void> {
-        return bladeStack.replaceCurrentBlade({
+        if (!descriptor) requireContext("replaceWith()");
+        await bladeStack.replaceCurrentBlade({
             ...event,
-            parentId: descriptor.value.parentId,
+            parentId: descriptor!.value.parentId,
         });
+        const openedBlade = bladeStack.activeBlade.value;
+        if (openedBlade?.url) {
+            getUrlSync()?.syncUrlPush();
+        }
     }
 
     // ── Communication ───────────────────────────────────────────────────────
 
     async function callParent<T = unknown>(method: string, args?: unknown): Promise<T> {
-        return messaging.callParent<T>(descriptor.value.id, method, args);
+        if (!descriptor) requireContext("callParent()");
+        return messaging.callParent<T>(descriptor!.value.id, method, args);
     }
 
     function exposeToChildren(methods: Record<string, (...args: unknown[]) => unknown>): void {
-        messaging.exposeToChildren(descriptor.value.id, methods);
+        if (!descriptor) requireContext("exposeToChildren()");
+        messaging.exposeToChildren(descriptor!.value.id, methods);
     }
 
     // ── Guards ───────────────────────────────────────────────────────────────
 
     function onBeforeClose(guard: () => Promise<boolean>): void {
-        bladeStack.registerBeforeClose(descriptor.value.id, guard);
+        if (!descriptor) requireContext("onBeforeClose()");
+        bladeStack.registerBeforeClose(descriptor!.value.id, guard);
     }
 
     // ── Error management ────────────────────────────────────────────────────
 
     function setError(error: unknown): void {
-        bladeStack.setBladeError(descriptor.value.id, error);
+        if (!descriptor) requireContext("setError()");
+        bladeStack.setBladeError(descriptor!.value.id, error);
     }
 
     function clearError(): void {
-        bladeStack.clearBladeError(descriptor.value.id);
+        if (!descriptor) requireContext("clearError()");
+        bladeStack.clearBladeError(descriptor!.value.id);
     }
 
     return {
-        // Identity
         id,
         param,
         options,
         query,
         closable,
         expanded,
-
-        // Actions
         openBlade,
         closeSelf,
+        closeChildren,
         replaceWith,
-
-        // Communication
         callParent,
         exposeToChildren,
-
-        // Guards
         onBeforeClose,
-
-        // Error management
         setError,
         clearError,
     };

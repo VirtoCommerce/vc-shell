@@ -67,7 +67,7 @@ provide(
 provide(
   BladeInstanceKey,
   computed<IBladeInstance>(() => ({
-    id: props.descriptor.name.toLowerCase(),
+    id: props.descriptor.id,
     param: props.descriptor.param,
     options: props.descriptor.options,
     expandable: props.closable, // expandable when there are multiple blades

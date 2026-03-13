@@ -192,6 +192,33 @@ describe("NotificationStore", () => {
     });
   });
 
+  describe("loadHistory", () => {
+    it("populates history from API response", async () => {
+      const notifications = [
+        new PushNotification({ id: "h-1", title: "First", isNew: true }),
+        new PushNotification({ id: "h-2", title: "Second", isNew: false }),
+      ];
+      mockSearchPushNotification.mockResolvedValueOnce({ notifyEvents: notifications });
+
+      await store.loadHistory(5);
+
+      expect(mockSearchPushNotification).toHaveBeenCalledWith(
+        expect.objectContaining({ take: 5 }),
+      );
+      expect(store.history.value).toHaveLength(2);
+      expect(store.history.value[0].id).toBe("h-1");
+      expect(store.history.value[1].id).toBe("h-2");
+    });
+
+    it("sets empty array when notifyEvents is undefined", async () => {
+      mockSearchPushNotification.mockResolvedValueOnce({ notifyEvents: undefined });
+
+      await store.loadHistory();
+
+      expect(store.history.value).toHaveLength(0);
+    });
+  });
+
   describe("getByType", () => {
     it("returns history items filtered by notifyType", () => {
       store.ingest(makePush({ id: "1", notifyType: "A" }));

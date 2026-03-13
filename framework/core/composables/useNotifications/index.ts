@@ -20,14 +20,6 @@ export interface UseNotificationsReturn {
 export type INotifications = UseNotificationsReturn;
 
 /**
- * @deprecated Use `useNotificationStore().hasUnread` inside a component setup instead.
- * This module-scope computed creates a detached store (no app context for inject).
- */
-export const hasUnreadNotifications = computed(
-  () => useNotificationStore().hasUnread.value,
-);
-
-/**
  * @deprecated Use `useBladeNotifications()` for blade-level subscriptions
  * or `useNotificationStore()` for direct store access.
  */

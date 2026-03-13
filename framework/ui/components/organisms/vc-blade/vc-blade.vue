@@ -13,7 +13,7 @@
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
     :aria-labelledby="props.title && !showSkeleton ? bladeTitleId : undefined"
-    :aria-label="(!props.title || showSkeleton) ? $t('COMPONENTS.VC_BLADE.PANEL') : undefined"
+    :aria-label="!props.title || showSkeleton ? $t('COMPONENTS.VC_BLADE.PANEL') : undefined"
   >
     <!-- Header zone: v-show keeps BladeHeader mounted to avoid Teleport unmount bug -->
     <template v-if="!($isMobile.value && blades.length === 1 && !$slots['actions'])">
@@ -90,7 +90,7 @@
       :items="toolbarItems"
     >
       <template #widgets-container>
-        <WidgetContainer :blade-id="blade?.id ?? ''" />
+        <WidgetContainer :blade-id="bladeId" />
       </template>
     </BladeToolbar>
 
@@ -119,9 +119,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, inject, computed, onMounted, nextTick, getCurrentInstance } from "vue";
+import { ref, inject, computed, onMounted, nextTick, watch, getCurrentInstance } from "vue";
 import { IBladeToolbar } from "@core/types";
-import { BladeStackKey } from "@shared/components/blade-navigation/types";
+import { useBladeNavigation, useBladeStack } from "@shared/components/blade-navigation/composables";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
 import BladeHeaderSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeHeaderSkeleton.vue";
 import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";
@@ -129,9 +129,10 @@ import BladeToolbarSkeleton from "@ui/components/organisms/vc-blade/_internal/Bl
 import BladeContentSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeContentSkeleton.vue";
 import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
-import { BladeInstance, BLADE_BACK_BUTTON } from "@framework/injection-keys";
+import { BladeInstance, BLADE_BACK_BUTTON, BladeBackButtonKey, BladeInstanceKey } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
+import { useBlade } from "../../../../core/composables";
 
 export interface Props {
   icon?: string;
@@ -166,16 +167,7 @@ const props = withDefaults(defineProps<Props>(), {
 const instanceUid = getCurrentInstance()?.uid ?? 0;
 const bladeTitleId = `blade-title-${instanceUid}`;
 
-// Prevent flash of empty content on initial render.
-// useAsync starts with loading=false; the action (setting true) runs in onMounted.
-// Without this guard, VcBlade renders real (empty) content for 1 frame before skeleton appears.
-const isInitializing = ref(props.loading !== undefined);
-onMounted(() => {
-  nextTick(() => {
-    isInitializing.value = false;
-  });
-});
-const showSkeleton = computed(() => Boolean(props.loading) || isInitializing.value);
+const showSkeleton = computed(() => Boolean(props.loading));
 
 const slots = defineSlots<{
   actions(): void;
@@ -184,12 +176,13 @@ const slots = defineSlots<{
 
 const emit = defineEmits<Emits>();
 
-const blade = inject(BladeInstance, DEFAULT_BLADE_INSTANCE);
+const { id: bladeId } = useBlade();
 
-const backButton = inject(BLADE_BACK_BUTTON);
+const blade = inject(BladeInstanceKey, DEFAULT_BLADE_INSTANCE);
 
-const bladeStack = inject(BladeStackKey);
-const blades = computed(() => bladeStack?.blades.value ?? []);
+const backButton = inject(BladeBackButtonKey);
+
+const { blades } = useBladeStack();
 
 const bladeRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);

@@ -6,6 +6,9 @@
         'vc-notification-template__container--mobile': $isMobile.value,
       }"
     >
+      <div v-if="icon" class="vc-notification-template__icon-container" :style="{ backgroundColor: color }">
+        <VcIcon :icon="icon" size="s" />
+      </div>
       <div class="vc-notification-template__content">
         <p
           class="vc-notification-template__title"
@@ -30,10 +33,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { IPushNotification } from "@core/api/platform";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export interface Props {
   title: string;
   notification: IPushNotification;
+  icon?: string;
+  color?: string;
+  severity?: string;
 }
 export interface Emits {
   (e: "click"): void;

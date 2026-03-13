@@ -829,3 +829,155 @@ This parameter has been removed. Register components via direct import instead o
 ### No action required
 
 If you are using `createAppModule()` in external modules, **no immediate action is needed**. The function continues to work identically via the legacy adapter. Migration is recommended but not required until the next major version.
+
+## Notifications System Redesign
+
+### Overview
+
+The notification system has been redesigned with a unified `NotificationStore`. All old APIs continue to work via deprecated wrappers but will be removed in a future major version.
+
+### Quick Reference
+
+| Before | After |
+|---|---|
+| `createAppModule(pages, locales, templates)` | `defineAppModule({ blades, locales, notifications: { ... } })` |
+| `useNotifications(type)` | `useBladeNotifications({ types: [...] })` |
+| `setNotificationHandler(fn)` | `onMessage` option in `useBladeNotifications` |
+| `moduleNotifications` watch | `messages` computed from `useBladeNotifications` |
+| `notifyType` in `defineOptions` on blades | Remove — use `useBladeNotifications` explicitly |
+| `notifyType` in `defineOptions` on templates | Remove — bind via module config `notifications` |
+| `hasUnreadNotifications` import | `useNotificationStore().hasUnread` |
+
+### Step 1: Module Registration
+
+**Before:**
+```ts
+import * as notificationTemplates from "./components/notifications";
+export default createAppModule(pages, locales, notificationTemplates);
+```
+
+**After:**
+```ts
+import { MyEventTemplate } from "./components/notifications/MyEventTemplate.vue";
+
+export default defineAppModule({
+  blades: pages,
+  locales,
+  notifications: {
+    MyDomainEvent: {
+      template: MyEventTemplate,
+      severity: "info",
+      toast: { mode: "auto" },
+    },
+  },
+});
+```
+
+### Step 2: Remove `notifyType` from Blade `defineOptions`
+
+**Before:**
+```ts
+defineOptions({
+  name: "MyBlade",
+  notifyType: "MyDomainEvent",  // implicit subscription
+});
+```
+
+**After:**
+```ts
+defineOptions({
+  name: "MyBlade",
+  // notifyType removed — use useBladeNotifications() if needed
+});
+```
+
+### Step 3: Replace `useNotifications` in Blades
+
+**Before:**
+```ts
+const { markAsRead, setNotificationHandler } = useNotifications("MyDomainEvent");
+
+setNotificationHandler((message) => {
+  if (message.title) {
+    notification.success(message.title, {
+      onClose() { markAsRead(message); },
+    });
+  }
+});
+```
+
+**After:**
+```ts
+const { messages } = useBladeNotifications({
+  types: ["MyDomainEvent"],
+  onMessage: () => reloadData(),
+});
+// Toast and markAsRead are handled automatically by module config
+```
+
+### Step 4: Replace `moduleNotifications` Watch (Progress Pattern)
+
+**Before:**
+```ts
+const { moduleNotifications, markAsRead } = useNotifications("MyProgressEvent");
+const notificationId = ref();
+
+watch(moduleNotifications, (newVal) => {
+  newVal.forEach((message) => {
+    if (!message.finished) {
+      if (!notificationId.value) {
+        notificationId.value = notification(message.title, { timeout: false });
+      } else {
+        notification.update(notificationId.value, { content: message.title });
+      }
+    } else {
+      notification.update(notificationId.value, {
+        timeout: 5000, type: "success",
+        onClose() { markAsRead(message); notificationId.value = undefined; },
+      });
+    }
+  });
+}, { deep: true });
+```
+
+**After:**
+```ts
+// Module config handles the progress toast automatically:
+// notifications: { MyProgressEvent: { severity: "info", toast: { mode: "progress" } } }
+
+useBladeNotifications({
+  types: ["MyProgressEvent"],
+  filter: (msg) => msg.entityId === props.param,
+  onMessage: (msg) => refreshData(msg),
+});
+```
+
+### Step 5: Remove `notifyType` from Template Components
+
+**Before:**
+```vue
+<script setup>
+defineOptions({
+  inheritAttrs: false,
+  notifyType: "MyDomainEvent",  // static property on constructor
+});
+</script>
+```
+
+**After:**
+```vue
+<script setup>
+// notifyType removed — binding is in module config
+defineProps<{ notification: PushNotification; severity?: string }>();
+</script>
+```
+
+### Migration Order
+
+Each step can be done independently per module. The module works at every stage:
+
+1. **No changes needed** — deprecated wrappers handle everything
+2. Replace `createAppModule` → `defineAppModule({ notifications })`
+3. Remove `notifyType` from blade `defineOptions`
+4. Replace `useNotifications` → `useBladeNotifications` in blades
+5. Remove `notifyType` from template `defineOptions`

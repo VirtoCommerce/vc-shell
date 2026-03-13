@@ -1,74 +1,130 @@
-import { describe, it, expect } from "vitest";
-import { NotificationTemplatesKey } from "@framework/injection-keys";
-import type { NotificationTemplateConstructor } from "@core/types";
+import { describe, it, expect, vi } from "vitest";
+import { mount } from "@vue/test-utils";
+import { defineComponent, h, nextTick } from "vue";
+import { createNotificationStore } from "@core/notifications";
+import { NotificationStoreKey } from "@framework/injection-keys";
+import { PushNotification } from "@core/api/platform";
+import { createI18n } from "vue-i18n";
 
-/**
- * Tests for FR-3.5: notification templates use provide/inject exclusively.
- */
-
-describe("notification templates DI (FR-3.5)", () => {
-  it("notification templates are registered via provide/inject only", () => {
-    // The registry array is created locally then provided — no globalProperties involved.
-    const registry: NotificationTemplateConstructor[] = [];
-    const template = { name: "T", notifyType: "Foo" } as unknown as NotificationTemplateConstructor;
-
-    registry.push(template);
-
-    // Verify the registry (which is what gets provided via NotificationTemplatesKey) contains the template
-    expect(registry).toHaveLength(1);
-    expect(registry[0].notifyType).toBe("Foo");
-  });
-
-  it("no globalProperties.notificationTemplates access exists", () => {
-    // Statically verified: grep for globalProperties.notificationTemplates in framework source
-    // (excluding test files) returns zero results — documented here as a contract assertion.
-    expect(true).toBe(true);
-  });
-
-  it("notification-dropdown receives templates via inject", async () => {
-    // Verify that NotificationTemplatesKey and NotificationTemplatesSymbol are the same symbol
-    // (injection-keys.ts re-exports the symbol as an alias; both sides must match)
-    const { NotificationTemplatesKey: key, NotificationTemplatesSymbol: sym } = await import(
-      "@framework/injection-keys"
-    );
-    expect(key).toBe(sym);
-  });
-
-  it("module notification templates are pushed via app.runWithContext inject", () => {
-    // Simulate the createAppModule deduplication logic that uses the injected registry
-    const registry: NotificationTemplateConstructor[] = [];
-
-    function simulateModuleRegister(
-      templateRegistry: NotificationTemplateConstructor[],
-      templates: { [key: string]: { name: string; notifyType?: string } },
-    ) {
-      Object.entries(templates).forEach(([, template]) => {
-        const existingIndex = templateRegistry.findIndex(
-          (t) => t.notifyType === template.notifyType,
+// Mock VcDropdown to avoid full component tree
+vi.mock("@ui/components/molecules/vc-dropdown", () => ({
+  VcDropdown: defineComponent({
+    name: "VcDropdown",
+    props: ["modelValue", "items", "emptyText", "maxHeight", "padded", "closeOnClickOutside"],
+    setup(props, { slots }) {
+      return () =>
+        h("div", { class: "vc-dropdown" },
+          props.items?.map((item: any, idx: number) =>
+            slots.item?.({ item }) ?? h("div", { key: idx }, item.title),
+          ),
         );
-        if (existingIndex !== -1) {
-          templateRegistry.splice(existingIndex, 1);
-        }
-        templateRegistry.push(template as unknown as NotificationTemplateConstructor);
-      });
-    }
+    },
+  }),
+}));
 
-    const templateV1 = { name: "V1", notifyType: "OrderUpdated" };
-    const templateV2 = { name: "V2", notifyType: "OrderUpdated" };
-    const templateOther = { name: "Other", notifyType: "ShipmentUpdated" };
+// Mock internal notification component
+vi.mock("@shared/components/notification-dropdown/_internal/notification/notification.vue", () => ({
+  default: defineComponent({
+    name: "NotificationItem",
+    props: ["notification"],
+    setup(props) {
+      return () => h("div", { class: "notification-item", "data-testid": props.notification?.id }, props.notification?.title);
+    },
+  }),
+}));
 
-    simulateModuleRegister(registry, { templateV1 });
-    expect(registry).toHaveLength(1);
-    expect(registry[0].name).toBe("V1");
+// Mock lodash-es orderBy
+vi.mock("lodash-es", () => ({
+  orderBy: (arr: any[], keys: string[], dirs: string[]) => {
+    return [...arr].sort((a, b) => {
+      const aVal = a[keys[0]];
+      const bVal = b[keys[0]];
+      return dirs[0] === "desc" ? (bVal > aVal ? 1 : -1) : (aVal > bVal ? 1 : -1);
+    });
+  },
+}));
 
-    // Re-registering same notifyType replaces the old entry
-    simulateModuleRegister(registry, { templateV2 });
-    expect(registry).toHaveLength(1);
-    expect(registry[0].name).toBe("V2");
+function makePush(overrides: Partial<PushNotification> = {}): PushNotification {
+  return new PushNotification({
+    id: "n-1",
+    notifyType: "TestEvent",
+    title: "Test Notification",
+    isNew: true,
+    created: new Date(),
+    ...overrides,
+  });
+}
 
-    // Adding a different notifyType appends
-    simulateModuleRegister(registry, { templateOther });
-    expect(registry).toHaveLength(2);
-    expect(registry[1].notifyType).toBe("ShipmentUpdated");
+describe("notification-dropdown ↔ store integration", () => {
+  it("renders notifications ingested into the store", async () => {
+    const store = createNotificationStore();
+    vi.spyOn(store, "markAllAsRead").mockResolvedValue(undefined as any);
+
+    const i18n = createI18n({
+      legacy: false,
+      locale: "en",
+      messages: { en: { COMPONENTS: { NOTIFICATION_DROPDOWN: { EMPTY: "No notifications" } } } },
+    });
+
+    const NotificationDropdown = (
+      await import("./notification-dropdown.vue")
+    ).default;
+
+    const wrapper = mount(NotificationDropdown, {
+      global: {
+        plugins: [i18n],
+        provide: {
+          [NotificationStoreKey as symbol]: store,
+        },
+      },
+    });
+
+    // Initially empty
+    expect(wrapper.findAll(".notification-item")).toHaveLength(0);
+
+    // Ingest a notification
+    store.ingest(makePush({ id: "n-1", title: "First" }));
+    await nextTick();
+
+    expect(wrapper.findAll(".notification-item")).toHaveLength(1);
+    expect(wrapper.find("[data-testid='n-1']").text()).toBe("First");
+
+    // Ingest a second one
+    store.ingest(makePush({ id: "n-2", title: "Second" }));
+    await nextTick();
+
+    expect(wrapper.findAll(".notification-item")).toHaveLength(2);
+
+    wrapper.unmount();
+  });
+
+  it("calls markAllAsRead on unmount when there are unread notifications", async () => {
+    const store = createNotificationStore();
+    vi.spyOn(store, "markAllAsRead").mockResolvedValue(undefined as any);
+
+    const i18n = createI18n({
+      legacy: false,
+      locale: "en",
+      messages: { en: { COMPONENTS: { NOTIFICATION_DROPDOWN: { EMPTY: "No notifications" } } } },
+    });
+
+    const NotificationDropdown = (
+      await import("./notification-dropdown.vue")
+    ).default;
+
+    const wrapper = mount(NotificationDropdown, {
+      global: {
+        plugins: [i18n],
+        provide: {
+          [NotificationStoreKey as symbol]: store,
+        },
+      },
+    });
+
+    store.ingest(makePush({ id: "n-1", isNew: true }));
+    await nextTick();
+
+    wrapper.unmount();
+    expect(store.markAllAsRead).toHaveBeenCalled();
   });
 });

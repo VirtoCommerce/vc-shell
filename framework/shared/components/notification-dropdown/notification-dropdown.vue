@@ -8,33 +8,30 @@
     :close-on-click-outside="false"
   >
     <template #item="{ item }">
-      <NotificationItem
-        :notification="item"
-        :templates="notificationTemplates || []"
-      />
+      <NotificationItem :notification="item" />
     </template>
   </VcDropdown>
 </template>
 
 <script lang="ts" setup>
-import { inject, onBeforeUnmount } from "vue";
+import { computed, onBeforeUnmount } from "vue";
 import NotificationItem from "@shared/components/notification-dropdown/_internal/notification/notification.vue";
 import { useI18n } from "vue-i18n";
-import { useNotifications } from "@core/composables";
-import { NotificationTemplatesSymbol } from "@framework/injection-keys";
+import { useNotificationStore } from "@core/notifications";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
+import { orderBy } from "lodash-es";
 
-const notificationTemplates = inject(NotificationTemplatesSymbol);
+const store = useNotificationStore();
 
 const { t } = useI18n({ useScope: "global" });
-const { notifications, markAllAsRead } = useNotifications();
 
-// Mark notifications as read when the panel closes (unmounts),
-// so the user can see the unread state while browsing.
+const notifications = computed(() =>
+  orderBy(store.history.value, ["created"], ["desc"]),
+);
+
 onBeforeUnmount(() => {
-  if (notifications.value.some((x) => x.isNew)) {
-    markAllAsRead();
+  if (store.history.value.some((x) => x.isNew)) {
+    store.markAllAsRead();
   }
 });
 </script>
-

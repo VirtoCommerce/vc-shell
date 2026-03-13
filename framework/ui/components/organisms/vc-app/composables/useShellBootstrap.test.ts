@@ -32,8 +32,9 @@ vi.mock("../../../../../core/composables/useDashboard", () => ({
   provideDashboardService: vi.fn(),
 }));
 
-vi.mock("../../../../../core/composables/useNotifications", () => ({
-  hasUnreadNotifications: ref(false),
+const mockHasUnread = ref(false);
+vi.mock("../../../../../core/notifications", () => ({
+  useNotificationStore: () => ({ hasUnread: mockHasUnread }),
 }));
 
 vi.mock("../../../../../shared/components", () => ({
@@ -69,7 +70,6 @@ import {
   ShellIndicatorsKey,
   InternalRoutesKey,
 } from "@framework/injection-keys";
-import { hasUnreadNotifications } from "@core/composables/useNotifications";
 
 // ── Helpers ─────────────────────────────────────────────────────────
 function createOptions(overrides: Partial<ShellBootstrapOptions> = {}): ShellBootstrapOptions {
@@ -89,7 +89,7 @@ function bootstrapInScope(options: ShellBootstrapOptions) {
 describe("useShellBootstrap", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (hasUnreadNotifications as unknown as { value: boolean }).value = false;
+    mockHasUnread.value = false;
   });
 
   describe("default notifications mobile button", () => {
@@ -148,7 +148,7 @@ describe("useShellBootstrap", () => {
       );
       expect(provideCall![1].value).toBe(false);
 
-      (hasUnreadNotifications as unknown as { value: boolean }).value = true;
+      mockHasUnread.value = true;
       expect(provideCall![1].value).toBe(true);
     });
   });

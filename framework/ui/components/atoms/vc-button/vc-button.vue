@@ -17,7 +17,7 @@
     />
     <VcIcon
       v-else-if="icon"
-      :class="['vc-button__icon', iconClass]"
+      :class="['vc-button--icon', iconClass]"
       :icon="icon"
       :size="iconSize"
     />
@@ -201,7 +201,6 @@ function onClick(e: Event): void {
   --button-focus-ring-width: 2px;
   --button-focus-ring-offset: 2px;
 
-
   --button-border-radius: 6px;
 
   // sm: h-8 px-3 text-xs (no vertical padding, fixed height)
@@ -325,8 +324,8 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
         @apply tw-h-[var(--button-icon-sm-size)] tw-w-[var(--button-icon-sm-size)] tw-p-0 #{!important};
       }
 
-      .vc-button__icon + .vc-button__title {
-        @apply tw-ml-2;
+      .vc-button--icon + .vc-button__title {
+        @apply tw-ml-1;
       }
     }
   }

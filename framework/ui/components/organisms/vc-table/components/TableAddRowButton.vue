@@ -33,7 +33,7 @@ const props = withDefaults(
   }>(),
   {
     label: undefined,
-    icon: "fas fa-plus",
+    icon: "lucide-plus",
   }
 );
 

@@ -2,13 +2,16 @@
   <VcButton
     variant="secondary"
     size="sm"
-    icon="fas fa-filter"
+    icon="lucide-funnel"
     :selected="activeCount > 0"
     :disabled="disabled"
     @click="$emit('click', $event)"
   >
     <span class="vc-global-filters-button__label">{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.GLOBAL_FILTERS.BUTTON") }}</span>
-    <span v-if="activeCount > 0" class="vc-global-filters-button__badge">
+    <span
+      v-if="activeCount > 0"
+      class="vc-global-filters-button__badge"
+    >
       {{ activeCount }}
     </span>
   </VcButton>
@@ -33,7 +36,7 @@ withDefaults(
   {
     activeCount: 0,
     disabled: false,
-  }
+  },
 );
 
 defineEmits<{

@@ -6,7 +6,10 @@
     >
       <!-- Toolbar row: actions + filters on the left, search on the right -->
       <div class="vc-table-search-header__toolbar">
-        <div v-if="$slots.actions" class="vc-table-search-header__actions">
+        <div
+          v-if="$slots.actions"
+          class="vc-table-search-header__actions"
+        >
           <slot name="actions" />
         </div>
 
@@ -17,7 +20,7 @@
           <VcButton
             variant="outline"
             size="sm"
-            icon="fas fa-filter"
+            icon="lucide-funnel"
             :disabled="disableFilter"
             :class="{ 'vc-table-search-header__filter-button--active': isFilterOpen || activeFilterCount > 0 }"
             @click="toggleFilter"
@@ -36,7 +39,10 @@
         <div class="vc-table-search-header__spacer" />
 
         <!-- Compact search input (right-aligned, hidden when searchable is false) -->
-        <div v-if="searchable" class="vc-table-search-header__search">
+        <div
+          v-if="searchable"
+          class="vc-table-search-header__search"
+        >
           <VcInput
             ref="searchInputRef"
             :model-value="modelValue"
@@ -47,7 +53,7 @@
           >
             <template #prepend-inner>
               <VcIcon
-                icon="fas fa-search"
+                icon="lucide-search"
                 size="s"
                 class="vc-table-search-header__search-icon"
               />
@@ -62,7 +68,10 @@
           v-if="isFilterOpen && $slots.filters"
           class="vc-table-search-header__filter-panel"
         >
-          <slot name="filters" :close-panel="closeFilter" />
+          <slot
+            name="filters"
+            :close-panel="closeFilter"
+          />
         </div>
       </Transition>
     </div>
@@ -168,7 +177,6 @@ defineExpose({
   }
 
   &__search {
-    @apply tw-flex-shrink-0;
     max-width: 240px;
     width: 100%;
   }

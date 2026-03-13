@@ -15,7 +15,7 @@
       <slot name="action">
         <VcButton
           v-if="actionLabel"
-          variant="primary"
+          variant="outline"
           @click="actionHandler?.()"
         >
           {{ actionLabel }}

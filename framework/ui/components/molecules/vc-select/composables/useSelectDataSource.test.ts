@@ -243,6 +243,64 @@ describe("useSelectDataSource", () => {
       expect(resolved).toEqual([{ id: "1", name: "Alpha" }]);
     });
 
+    it("falls back to loading first page when ids-based call returns no matching items", async () => {
+      const firstPage = [
+        { id: "1", name: "Alpha" },
+        { id: "2", name: "Beta" },
+        { id: "3", name: "Gamma" },
+      ];
+      // Loader ignores ids param — returns first page for any call
+      const loader = vi.fn().mockResolvedValue({
+        results: firstPage,
+        totalCount: 10,
+      });
+      const ds = createDataSource({ options: () => loader });
+
+      // Resolve id "3" which IS on the first page but API doesn't support ids filtering
+      const resolved = await ds.resolve(["3"]);
+
+      // Call 1: resolve ids-based call (returns first page, "3" happens to be there)
+      // Since "3" is in the first-page results from the ids call, it should be found
+      expect(resolved).toEqual([{ id: "3", name: "Gamma" }]);
+    });
+
+    it("falls back to open() when ids-based call does not return the requested item", async () => {
+      const firstPage = [
+        { id: "1", name: "Alpha" },
+        { id: "2", name: "Beta" },
+        { id: "3", name: "Gamma" },
+      ];
+      // ids-based call returns empty (API doesn't support ids), first-page call returns items
+      const loader = vi.fn()
+        .mockResolvedValueOnce({ results: [], totalCount: 0 }) // ids-based call
+        .mockResolvedValueOnce({ results: firstPage, totalCount: 3 }); // fallback open()
+      const ds = createDataSource({ options: () => loader });
+
+      const resolved = await ds.resolve(["2"]);
+
+      expect(loader).toHaveBeenCalledTimes(2);
+      // First call: ids-based
+      expect(loader).toHaveBeenNthCalledWith(1, undefined, undefined, ["2"]);
+      // Second call: fallback open() loads first page
+      expect(loader).toHaveBeenNthCalledWith(2, undefined, 0);
+      expect(resolved).toEqual([{ id: "2", name: "Beta" }]);
+      // cachedItems also populated by fallback
+      expect(ds.displayItems.value).toEqual(firstPage);
+    });
+
+    it("does not fallback to open() when ids-based call succeeds", async () => {
+      const loader = vi.fn().mockResolvedValue({
+        results: [{ id: "5", name: "Epsilon" }],
+        totalCount: 1,
+      });
+      const ds = createDataSource({ options: () => loader });
+
+      await ds.resolve(["5"]);
+
+      // Only one call — no fallback needed
+      expect(loader).toHaveBeenCalledTimes(1);
+    });
+
     it("partial cache hit — only fetches missing", async () => {
       const items = [{ id: "1", name: "Alpha" }];
       const loader = vi.fn()

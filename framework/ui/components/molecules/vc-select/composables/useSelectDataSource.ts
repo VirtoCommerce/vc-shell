@@ -195,6 +195,21 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
       } finally {
         defaultOptionLoading.value = false;
       }
+
+      // Fallback: if the ids-based call didn't return the needed items
+      // (API may not support the ids parameter), load first page
+      const stillNotFound = stillMissing.filter((id) => !resolveCache.has(String(id)));
+      if (stillNotFound.length > 0 && !isLoaded) {
+        await open();
+      }
+    } else if (stillMissing.length > 0 && Array.isArray(optionsSource)) {
+      // Static array: search directly in the provided options
+      for (const item of optionsSource as T[]) {
+        const key = String(opts.getOptionValue.value(item));
+        if (stillMissing.includes(key)) {
+          resolveCache.set(key, item);
+        }
+      }
     }
 
     const resolved = ids.map((id) => resolveCache.get(String(id))).filter(Boolean) as T[];
@@ -222,13 +237,28 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
       resolveCache.clear();
       isLoaded = false;
 
-      // Reload if component is visible (static array case)
+      // Static array: always populate immediately (data is already in memory)
       const optionsSource = opts.options();
-      if (opts.isSelectVisible.value && Array.isArray(optionsSource)) {
+      if (Array.isArray(optionsSource)) {
         cachedItems.value = [...optionsSource] as T[];
         totalCount.value = cachedItems.value.length;
         populateResolveCache(cachedItems.value);
         isLoaded = true;
+
+        // Re-resolve defaults from the new options so selected labels display correctly
+        if (resolvedDefaults.value.length === 0) {
+          const currentDefaults = resolvedDefaults.value;
+          const reResolved = currentDefaults.length === 0
+            ? cachedItems.value.filter((item) => {
+                const key = String(opts.getOptionValue.value(item));
+                return resolveCache.has(key);
+              })
+            : currentDefaults;
+          if (reResolved.length === 0) {
+            // resolveCache was just cleared and repopulated — resolvedDefaults
+            // will be picked up via displayItems in innerValue computed
+          }
+        }
       }
     },
     { deep: false },

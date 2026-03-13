@@ -479,11 +479,19 @@ watch(
     const emitVal = props.emitValue ?? true;
     const mapOpt = props.mapOptions ?? true;
 
-    if (emitVal && mapOpt) {
-      const ids = Array.isArray(currentModelVal) ? currentModelVal : [currentModelVal];
-      const stringIds = ids.filter((id) => id != null).map(String);
-      if (stringIds.length > 0) {
-        await dataSource.resolve(stringIds);
+    if (mapOpt) {
+      const values = Array.isArray(currentModelVal) ? currentModelVal : [currentModelVal];
+
+      // When emitValue is true, modelValue is always a primitive ID — resolve all.
+      // When emitValue is false, modelValue should be a full object, but initial data
+      // from the backend often provides just a primitive ID — resolve those too.
+      const toResolve = emitVal ? values : values.filter((v) => v != null && typeof v !== "object");
+
+      if (toResolve.length > 0) {
+        const stringIds = toResolve.filter((id) => id != null).map(String);
+        if (stringIds.length > 0) {
+          await dataSource.resolve(stringIds);
+        }
       }
     }
   },

@@ -19,7 +19,10 @@ export interface UseNotificationsReturn {
 /** @deprecated Use UseNotificationsReturn instead */
 export type INotifications = UseNotificationsReturn;
 
-/** @deprecated Use useNotificationStore().hasUnread instead */
+/**
+ * @deprecated Use `useNotificationStore().hasUnread` inside a component setup instead.
+ * This module-scope computed creates a detached store (no app context for inject).
+ */
 export const hasUnreadNotifications = computed(
   () => useNotificationStore().hasUnread.value,
 );

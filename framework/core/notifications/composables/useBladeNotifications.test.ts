@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { effectScope } from "vue";
+import { createApp, effectScope } from "vue";
 import { useBladeNotifications } from "./useBladeNotifications";
-import { _resetNotificationStore, useNotificationStore } from "./useNotificationStore";
+import { createNotificationStore, NotificationStore } from "../store";
+import { NotificationStoreKey } from "@framework/injection-keys";
 import { PushNotification } from "@core/api/platform";
 
 // Mock toast to avoid side effects
@@ -27,95 +28,105 @@ function makePush(overrides: Partial<PushNotification> = {}): PushNotification {
 }
 
 describe("useBladeNotifications", () => {
+  let store: NotificationStore;
+  let app: ReturnType<typeof createApp>;
+
   beforeEach(() => {
-    _resetNotificationStore();
+    store = createNotificationStore();
+    app = createApp({ render: () => null });
+    app.provide(NotificationStoreKey, store);
   });
 
   it("returns messages filtered by types", () => {
-    const store = useNotificationStore();
     store.ingest(makePush({ id: "1", notifyType: "A" }));
     store.ingest(makePush({ id: "2", notifyType: "B" }));
 
-    const scope = effectScope();
-    scope.run(() => {
-      const { messages } = useBladeNotifications({ types: ["A"] });
-      expect(messages.value).toHaveLength(1);
-      expect(messages.value[0].notifyType).toBe("A");
+    app.runWithContext(() => {
+      const scope = effectScope();
+      scope.run(() => {
+        const { messages } = useBladeNotifications({ types: ["A"] });
+        expect(messages.value).toHaveLength(1);
+        expect(messages.value[0].notifyType).toBe("A");
+      });
+      scope.stop();
     });
-    scope.stop();
   });
 
   it("applies custom filter", () => {
-    const store = useNotificationStore();
     store.ingest(makePush({ id: "1", notifyType: "A", title: "Match" }));
     store.ingest(makePush({ id: "2", notifyType: "A", title: "NoMatch" }));
 
-    const scope = effectScope();
-    scope.run(() => {
-      const { messages } = useBladeNotifications({
-        types: ["A"],
-        filter: (msg) => msg.title === "Match",
+    app.runWithContext(() => {
+      const scope = effectScope();
+      scope.run(() => {
+        const { messages } = useBladeNotifications({
+          types: ["A"],
+          filter: (msg) => msg.title === "Match",
+        });
+        expect(messages.value).toHaveLength(1);
       });
-      expect(messages.value).toHaveLength(1);
+      scope.stop();
     });
-    scope.stop();
   });
 
   it("calls onMessage when new notification arrives", () => {
-    const store = useNotificationStore();
     const onMessage = vi.fn();
 
-    const scope = effectScope();
-    scope.run(() => {
-      useBladeNotifications({ types: ["TestEvent"], onMessage });
-    });
+    app.runWithContext(() => {
+      const scope = effectScope();
+      scope.run(() => {
+        useBladeNotifications({ types: ["TestEvent"], onMessage });
+      });
 
-    store.ingest(makePush());
-    expect(onMessage).toHaveBeenCalledWith(expect.objectContaining({ id: "test-1" }));
-    scope.stop();
+      store.ingest(makePush());
+      expect(onMessage).toHaveBeenCalledWith(expect.objectContaining({ id: "test-1" }));
+      scope.stop();
+    });
   });
 
   it("unsubscribes on scope dispose", () => {
-    const store = useNotificationStore();
     const onMessage = vi.fn();
 
-    const scope = effectScope();
-    scope.run(() => {
-      useBladeNotifications({ types: ["TestEvent"], onMessage });
+    app.runWithContext(() => {
+      const scope = effectScope();
+      scope.run(() => {
+        useBladeNotifications({ types: ["TestEvent"], onMessage });
+      });
+
+      store.ingest(makePush({ id: "1" }));
+      expect(onMessage).toHaveBeenCalledTimes(1);
+
+      scope.stop();
     });
-
-    store.ingest(makePush({ id: "1" }));
-    expect(onMessage).toHaveBeenCalledTimes(1);
-
-    scope.stop();
 
     store.ingest(makePush({ id: "2" }));
     expect(onMessage).toHaveBeenCalledTimes(1); // no new call
   });
 
   it("returns unreadCount for matching types", () => {
-    const store = useNotificationStore();
-
-    const scope = effectScope();
-    scope.run(() => {
-      const { unreadCount } = useBladeNotifications({ types: ["A"] });
-      store.ingest(makePush({ id: "1", notifyType: "A" }));
-      store.ingest(makePush({ id: "2", notifyType: "B" }));
-      expect(unreadCount.value).toBe(1);
+    app.runWithContext(() => {
+      const scope = effectScope();
+      scope.run(() => {
+        const { unreadCount } = useBladeNotifications({ types: ["A"] });
+        store.ingest(makePush({ id: "1", notifyType: "A" }));
+        store.ingest(makePush({ id: "2", notifyType: "B" }));
+        expect(unreadCount.value).toBe(1);
+      });
+      scope.stop();
     });
-    scope.stop();
   });
 
   it("markAsRead delegates to store", () => {
-    const store = useNotificationStore();
     store.ingest(makePush());
 
-    const scope = effectScope();
-    scope.run(() => {
-      const { markAsRead, messages } = useBladeNotifications({ types: ["TestEvent"] });
-      markAsRead(messages.value[0]);
-      expect(store.history.value[0].isNew).toBe(false);
+    app.runWithContext(() => {
+      const scope = effectScope();
+      scope.run(() => {
+        const { markAsRead, messages } = useBladeNotifications({ types: ["TestEvent"] });
+        markAsRead(messages.value[0]);
+        expect(store.history.value[0].isNew).toBe(false);
+      });
+      scope.stop();
     });
-    scope.stop();
   });
 });

@@ -10,7 +10,7 @@ import {
   InternalRoutesKey,
   type DynamicModuleRegistry,
 } from "@framework/injection-keys";
-import { hasUnreadNotifications } from "@core/composables/useNotifications";
+import { useNotificationStore } from "@core/notifications";
 import { NotificationDropdown } from "@shared/components/notification-dropdown";
 import { LanguageSelector } from "@shared/components/language-selector";
 import { ThemeSelector } from "@shared/components/theme-selector";
@@ -73,6 +73,8 @@ interface ShellDefaultsContext {
 }
 
 function useShellDefaults(ctx: ShellDefaultsContext) {
+  const notificationStore = useNotificationStore();
+
   if (!ctx.isEmbedded) {
     ctx.registerMobileButton({
       id: "notifications",
@@ -80,7 +82,7 @@ function useShellDefaults(ctx: ShellDefaultsContext) {
       icon: "lucide-bell",
       order: 10,
       isVisible: true,
-      badge: computed(() => hasUnreadNotifications.value),
+      badge: notificationStore.hasUnread,
     });
   }
 
@@ -96,8 +98,5 @@ function useShellDefaults(ctx: ShellDefaultsContext) {
   ctx.registerSettingsMenuItem({ id: "logout", component: LogoutButton, group: "account", order: 100 });
 
   // Shell indicator state for SidebarHeader
-  provide(
-    ShellIndicatorsKey,
-    computed(() => hasUnreadNotifications.value),
-  );
+  provide(ShellIndicatorsKey, notificationStore.hasUnread);
 }

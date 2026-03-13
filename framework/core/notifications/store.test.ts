@@ -2,6 +2,22 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { createNotificationStore } from "./store";
 import { PushNotification } from "@core/api/platform";
 
+// Shared mock fns — can be reconfigured per test
+const mockMarkAllAsRead = vi.fn().mockResolvedValue({ notifyEvents: [] });
+const mockSearchPushNotification = vi.fn().mockResolvedValue({ notifyEvents: [] });
+
+// Mock PushNotificationClient to avoid real HTTP calls
+vi.mock("@core/api/platform", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@core/api/platform")>();
+  return {
+    ...actual,
+    PushNotificationClient: class MockPushNotificationClient {
+      markAllAsRead = mockMarkAllAsRead;
+      searchPushNotification = mockSearchPushNotification;
+    },
+  };
+});
+
 function makePush(overrides: Partial<PushNotification> = {}): PushNotification {
   return new PushNotification({
     id: "test-1",
@@ -119,11 +135,23 @@ describe("NotificationStore", () => {
   });
 
   describe("markAllAsRead", () => {
-    it("sets all isNew to false", () => {
+    it("sets all isNew to false on success", async () => {
       store.ingest(makePush({ id: "1" }));
       store.ingest(makePush({ id: "2" }));
-      store.markAllAsRead();
+      await store.markAllAsRead();
       expect(store.history.value.every((n) => !n.isNew)).toBe(true);
+    });
+
+    it("rolls back isNew on server failure", async () => {
+      mockMarkAllAsRead.mockRejectedValueOnce(new Error("server error"));
+
+      store.ingest(makePush({ id: "a", isNew: true }));
+      store.ingest(makePush({ id: "b", isNew: false }));
+
+      await expect(store.markAllAsRead()).rejects.toThrow("server error");
+      // Rolled back: "a" was true, "b" was false
+      expect(store.history.value.find((x) => x.id === "a")!.isNew).toBe(true);
+      expect(store.history.value.find((x) => x.id === "b")!.isNew).toBe(false);
     });
   });
 

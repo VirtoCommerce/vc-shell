@@ -2,6 +2,9 @@ import { PushNotification } from "@core/api/platform";
 import { notification } from "@shared/components/notifications/core";
 import { NotificationTypeConfig, Severity, SEVERITY_TIMEOUTS } from "./types";
 
+/** PushNotification with dynamic properties (subclasses add extra fields at runtime via constructor) */
+type PushNotificationRecord = PushNotification & Record<string, unknown>;
+
 interface ActiveToast {
   toastId: string | number;
 }
@@ -21,14 +24,14 @@ function resolveToastKey(
 ): string {
   const type = msg.notifyType ?? "unknown";
   if (config.groupBy) {
-    const groupValue = (msg as Record<string, any>)[config.groupBy] ?? "default";
+    const groupValue = (msg as PushNotificationRecord)[config.groupBy] ?? "default";
     return `${type}::${groupValue}`;
   }
   return `${type}::${msg.id}`;
 }
 
 const defaultIsComplete = (msg: PushNotification) =>
-  !!(msg as Record<string, any>).finished;
+  !!(msg as PushNotificationRecord).finished;
 
 export function createToastController() {
   const activeToasts = new Map<string, ActiveToast>();

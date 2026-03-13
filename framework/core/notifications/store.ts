@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import { PushNotification, PushNotificationClient } from "@core/api/platform";
+import { PushNotification, PushNotificationClient, PushNotificationSearchCriteria } from "@core/api/platform";
 import { createLogger } from "@core/utilities";
 import {
   NotificationTypeConfig,
@@ -94,16 +94,26 @@ export function createNotificationStore(options?: NotificationStoreOptions) {
   }
 
   async function markAllAsRead() {
-    history.value.forEach((x) => {
-      x.isNew = false;
-    });
-    realtime.value.forEach((x) => {
-      x.isNew = false;
-    });
+    // Snapshot current read state for rollback (history and realtime can diverge after loadHistory)
+    const prevHistory = history.value.map((x) => ({ id: x.id, isNew: x.isNew }));
+    const prevRealtime = realtime.value.map((x) => ({ id: x.id, isNew: x.isNew }));
+
+    // Optimistic local update
+    history.value.forEach((x) => { x.isNew = false; });
+    realtime.value.forEach((x) => { x.isNew = false; });
 
     try {
       await notificationsClient.markAllAsRead();
     } catch (e) {
+      // Rollback on server failure
+      for (const prev of prevHistory) {
+        const item = history.value.find((x) => x.id === prev.id);
+        if (item) item.isNew = prev.isNew;
+      }
+      for (const prev of prevRealtime) {
+        const rt = realtime.value.find((x) => x.id === prev.id);
+        if (rt) rt.isNew = prev.isNew;
+      }
       logger.error("markAllAsRead failed:", e);
       throw e;
     }
@@ -111,16 +121,9 @@ export function createNotificationStore(options?: NotificationStoreOptions) {
 
   async function loadHistory(take = 10) {
     try {
-      const result = await fetch("/api/platform/pushnotifications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json-patch+json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ take }),
-      });
-      const response = await result.text();
-      history.value = (JSON.parse(response).notifyEvents as PushNotification[]) ?? [];
+      const criteria = new PushNotificationSearchCriteria({ take });
+      const result = await notificationsClient.searchPushNotification(criteria);
+      history.value = result.notifyEvents ?? [];
     } catch (e) {
       logger.error("loadHistory failed:", e);
       throw e;

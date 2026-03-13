@@ -16,6 +16,7 @@ import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-in
 import { useAppInsights, AppInsightsOptionsKey } from "@core/composables/useAppInsights";
 import { setupGlobalErrorHandlers } from "@core/plugins/global-error-handler";
 import { useConnectionStatus } from "@core/composables/useConnectionStatus";
+import { createNotificationStore } from "@core/notifications";
 
 // Import Blade Registry
 import { createBladeRegistry, BladeRegistryKey, IBladeRegistryInstance } from "@core/composables/useBladeRegistry";
@@ -41,6 +42,7 @@ import {
   AppBarWidgetServiceKey,
   MenuServiceKey,
   NotificationTemplatesKey,
+  NotificationStoreKey,
   SettingsMenuServiceKey,
   ToolbarServiceKey,
   WidgetServiceKey,
@@ -212,10 +214,10 @@ function createAndProvideServices(app: App) {
   app.provide(AppBarWidgetServiceKey, createAppBarWidgetService());
   app.provide(MenuServiceKey, createMenuService());
   app.provide(SettingsMenuServiceKey, createSettingsMenuService());
+  app.provide(NotificationStoreKey, createNotificationStore());
 
   const bladeRegistryInstance: IBladeRegistryInstance = createBladeRegistry(app);
   app.provide(BladeRegistryKey, bladeRegistryInstance);
-
 }
 
 function installPlugins(app: App, args: FrameworkInstallArgs) {

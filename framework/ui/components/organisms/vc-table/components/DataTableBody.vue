@@ -40,6 +40,7 @@
         v-for="(item, index) in iterationItems"
         :key="getItemKey(item, index)"
         v-bind="getRowProps(item, getEffectiveIndex(item, index))"
+        :is-new-row="newRowIndices?.has(getEffectiveIndex(item, index))"
         :grouping-enabled="groupingEnabled"
         :group-key="groupingEnabled ? getGroupKey(item) : undefined"
         :is-first-in-group="groupingEnabled ? isFirstInGroup(index) : false"
@@ -212,6 +213,8 @@ const props = defineProps<{
   getItemKey: (item: Item, index: number) => string | number;
   /** Function to build row props */
   getRowProps: (item: Item, index: number) => RowProps<Item>;
+  /** Set of indices of newly added rows */
+  newRowIndices?: Set<number>;
 }>();
 
 // Emits - matches DataTableRow emit signatures

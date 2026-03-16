@@ -781,6 +781,9 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
    * Called on every keystroke/input change, not just on blur.
    */
   const handleCellValueChange = (field: string, rowIndex: number, newValue: unknown) => {
+    // Clear new row flag on first interaction
+    inlineEdit.clearNewRowFlag(rowIndex);
+
     // If inline editing is active, update the inlineEdit composable immediately
     if (inlineEdit.isEditing.value) {
       inlineEdit.updateCell(rowIndex, field, newValue);

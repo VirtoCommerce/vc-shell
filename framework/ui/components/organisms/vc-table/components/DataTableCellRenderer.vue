@@ -116,6 +116,7 @@
     :currency="currency"
     :format="column.props.format"
     :variant="dateVariant"
+    :validate-on-mount="isNewRow && column.props.editable"
     @update="handleCellUpdate"
     @blur="handleCellBlur"
   />
@@ -160,6 +161,8 @@ const props = defineProps<{
   expandedIcon?: string;
   /** Icon for collapsed state */
   collapsedIcon?: string;
+  /** Whether this row is newly added (for eager validation) */
+  isNewRow?: boolean;
 }>();
 
 const emit = defineEmits<{

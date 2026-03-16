@@ -42,10 +42,11 @@ export interface UseBladeWidgetsReturn {
  * ```
  */
 export function useBladeWidgets(widgets: WidgetDeclaration[]): UseBladeWidgetsReturn {
-  const widgetService = inject(WidgetServiceKey);
-  if (!widgetService) {
+  const _service = inject(WidgetServiceKey);
+  if (!_service) {
     throw new InjectionError("WidgetService");
   }
+  const widgetService = _service;
 
   const descriptor = inject(BladeDescriptorKey, undefined);
   if (!descriptor) {

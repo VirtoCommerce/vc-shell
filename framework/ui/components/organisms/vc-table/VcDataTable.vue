@@ -318,7 +318,7 @@
 
     <!-- Pagination / Total counter (outside scroll area, works for both desktop and mobile) -->
     <div
-      v-if="props.pagination && props.pagination.pages > 0 && props.items.length > 0"
+      v-if="props.pagination && props.pagination.pages > 0"
       ref="paginationRef"
       class="vc-data-table__pagination"
     >

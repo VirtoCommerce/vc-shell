@@ -15,6 +15,7 @@ export * from "@core/composables/useBreadcrumbs";
 export * from "@core/composables/useAppInsights";
 export * from "@core/composables/useTheme";
 export * from "@core/composables/useWidgets";
+export * from "@core/composables/useWidget";
 export * from "@core/composables/useDashboard";
 export * from "@core/composables/useAppBarWidget";
 export * from "@core/composables/useSettingsMenu";

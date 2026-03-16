@@ -12,6 +12,7 @@ export interface IWidgetEvents {
   [key: string]: Set<WidgetEventHandler>;
 }
 
+/** @deprecated Use `useWidget().setTrigger()` instead of `defineExpose()` for widget refresh contracts. */
 export interface IExposedWidget {
   id?: string;
   [key: string]: unknown;
@@ -47,6 +48,7 @@ export interface IWidget {
   config?: IWidgetConfig;
   events?: Record<string, unknown>;
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
+  /** @deprecated Use `useWidget().setTrigger({ onRefresh })` inside the widget instead. */
   updateFunctionName?: string;
   /** Optional trigger contract for lightweight overflow rendering */
   trigger?: IWidgetTrigger;

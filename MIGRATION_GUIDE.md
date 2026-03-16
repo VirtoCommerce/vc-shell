@@ -697,67 +697,105 @@ onBeforeClose(async () => {
 
 ## 11. Registering Widgets in Blades
 
-The method for registering widgets for blades has been completely redesigned. Instead of using the `#widgets` slot in `vc-blade`, you must now use the `useWidgets` composable for programmatic registration.
+The widget registration system has been redesigned for better developer experience. There are now two composables that replace manual lifecycle management.
 
 ### Old Approach (Deprecated)
 
-Widgets were passed directly into the `#widgets` slot of the `vc-blade` component.
-
-**Example:**
+**Slot-based (removed):**
 ```vue
 <template>
-  <VcBlade ... >
+  <VcBlade>
     <template #widgets="{ isExpanded }">
       <MyWidget :is-expanded="isExpanded" />
     </template>
   </VcBlade>
 </template>
 ```
-This method is no longer supported, as the `widgets` slot has been removed from `vc-blade`.
 
-### New Approach (with `useWidgets`)
-
-Widgets must now be registered programmatically inside the `<script setup>` of your blade component using `useWidgets`. `vc-blade` now contains an internal container that automatically displays all widgets registered for it.
-
-**Migration Example:**
-```vue
-<!-- MyBlade.vue -->
-<template>
-  <vc-blade>
-    <!-- Main blade content -->
-  </vc-blade>
-</template>
-
-<script setup lang="ts">
-import { onBeforeUnmount } from "vue";
-import { useWidgets, type IWidget, useBlade } from "@vc-shell/framework";
-import MyWidget from "../components/MyWidget.vue";
-
-// 1. Get the current blade's ID via useBlade()
+**Manual `registerWidget` / `unregisterWidget` (deprecated):**
+```ts
+const { registerWidget, unregisterWidget } = useWidgets();
 const { id: bladeId } = useBlade();
 
-// 2. Get the functions for widget registration
-const { registerWidget, unregisterWidget } = useWidgets();
+registerWidget({ id: "MyWidget", component: MyWidget, props: { item },
+  updateFunctionName: "updateCount" }, bladeId.value);
+registerWidget({ id: "OtherWidget", component: OtherWidget, props: { item } }, bladeId.value);
 
-// 3. Register the widget for the current blade
-registerWidget(
-  {
-    id: "MyWidget",
-    component: MyWidget,
-    props: {
-      item: item.value, // assuming 'item' is a ref or computed
-    },
-  },
-  bladeId.value,
-);
-
-// 4. Unregister on unmount to prevent memory leaks
-onBeforeUnmount(() => {
+onUnmounted(() => {
   unregisterWidget("MyWidget", bladeId.value);
+  unregisterWidget("OtherWidget", bladeId.value);
 });
-</script>
 ```
-This new approach replaces the old declarative system and should be applied to all blades that use custom widgets.
+
+**`defineExpose` for widget refresh (deprecated):**
+```ts
+// Inside widget component
+defineExpose({
+  updateCount: () => { populateCounter(); },
+});
+```
+
+### New Approach
+
+#### Blade side: `useBladeWidgets()`
+
+Replaces manual `registerWidget` + `unregisterWidget` + `useBlade().id` boilerplate. Automatically registers widgets on mount and unregisters on unmount.
+
+```ts
+import { useBladeWidgets } from "@vc-shell/framework";
+
+const { refreshAll } = useBladeWidgets([
+  { id: "OffersWidget", component: OffersWidget, props: { item },
+    isVisible: computed(() => !!props.param) },
+  { id: "VideosWidget", component: VideosWidget, props: { item, disabled },
+    isVisible: computed(() => !!props.param) },
+  { id: "AssetsWidget", component: AssetsWidget, props: { item, disabled },
+    isVisible: computed(() => !!props.param),
+    events: { "onUpdate:modelValue": (v) => { item.value = v } } },
+]);
+
+// After save — refresh all widgets
+async function reload() {
+  await fetchProduct();
+  refreshAll(); // calls trigger.onRefresh on all widgets
+}
+```
+
+#### Widget side: `useWidget()`
+
+Replaces `defineExpose` + `updateFunctionName` pattern. Widgets register their own refresh/badge contracts.
+
+```ts
+import { useWidget } from "@vc-shell/framework";
+
+const { setTrigger } = useWidget();
+
+setTrigger({
+  badge: count,              // reactive ref — shown in widget container
+  onRefresh: populateCounter, // called by refresh()/refreshAll() from blade
+});
+```
+
+#### Two levels of updates
+
+1. **Reactive props** — blade updates `item` ref → widget reacts via `watch` automatically (light updates)
+2. **Explicit `refresh()` / `refreshAll()`** — for heavy cases where widget needs to re-fetch from API
+
+### Migration Steps
+
+1. **Replace `registerWidget` / `unregisterWidget` calls** in your blade with a single `useBladeWidgets([...])` call
+2. **Remove `onUnmounted` cleanup** — `useBladeWidgets` handles it automatically
+3. **Remove `useBlade().id` / `bladeId.value`** — `useBladeWidgets` gets blade ID automatically
+4. **Replace `defineExpose({ updateFn })` in widgets** with `useWidget().setTrigger({ onRefresh: updateFn })`
+5. **Remove `updateFunctionName`** from widget declarations — use `setTrigger` instead
+6. **Replace `updateActiveWidget()`** calls with `refresh(widgetId)` or `refreshAll()`
+
+### Backward Compatibility
+
+- Old `registerWidget()` + `unregisterWidget()` continue to work
+- `updateFunctionName` + `defineExpose` — deprecated but not broken
+- `trigger.onRefresh` has priority over `defineExpose` in `updateActiveWidget()`
+- Migration is gradual — old and new patterns coexist in the same blade
 
 ---
 

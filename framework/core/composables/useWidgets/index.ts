@@ -29,6 +29,10 @@ export function provideWidgetService(): IWidgetService {
   return service;
 }
 
+/**
+ * Returns the WidgetService instance. For blade-level widget registration,
+ * prefer `useBladeWidgets()` which handles lifecycle automatically.
+ */
 export function useWidgets(): UseWidgetsReturn {
   const service = inject(WidgetServiceKey);
   if (!service) {

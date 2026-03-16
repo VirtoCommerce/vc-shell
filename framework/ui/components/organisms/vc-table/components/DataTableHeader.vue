@@ -1,6 +1,6 @@
 <template>
   <TableHeader>
-    <TableRow variant="header" :show-drag-handle="showDragHandle">
+    <TableRow variant="header" :show-drag-handle="showDragHandle" :actions-position="actionsPosition">
       <!-- Selection column (only if NOT defined via VcColumn) -->
       <TableHead
         v-if="showSelectionCell"
@@ -80,9 +80,10 @@
           </div>
         </template>
       </TableHead>
-      <!-- Column switcher peek-tab (absolute-positioned, slides in on hover) -->
-      <template v-if="showColumnSwitcher" #actions>
+      <!-- Actions slot: provides spacer in column mode + column switcher when enabled -->
+      <template v-if="showColumnSwitcher || actionsPosition === 'column'" #actions>
         <div
+          v-if="showColumnSwitcher"
           class="vc-col-switcher-trigger"
           :class="{ 'vc-col-switcher-trigger--active': columnSwitcherActive }"
           role="button"
@@ -200,6 +201,8 @@ const props = defineProps<{
   showColumnSwitcher?: boolean;
   /** Whether the column switcher panel is currently open */
   columnSwitcherActive?: boolean;
+  /** Position of row actions: 'overlay' (default) or 'column' (fixed right column) */
+  actionsPosition?: "overlay" | "column";
 }>();
 
 // Emits

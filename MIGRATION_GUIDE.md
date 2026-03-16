@@ -797,6 +797,22 @@ setTrigger({
 - `trigger.onRefresh` has priority over `defineExpose` in `updateActiveWidget()`
 - Migration is gradual — old and new patterns coexist in the same blade
 
+### `useWidgets()` is now internal API
+
+`useWidgets()` has been moved to internal framework API. It is still available as a **deprecated re-export** — existing code will continue to work, but IDE will show a deprecation warning.
+
+```ts
+// Before — still works but deprecated
+import { useWidgets } from "@vc-shell/framework";
+const { registerWidget, unregisterWidget } = useWidgets();
+
+// After — use useBladeWidgets instead
+import { useBladeWidgets } from "@vc-shell/framework";
+const { refreshAll } = useBladeWidgets([...]);
+```
+
+If your code only uses `useWidgets()` to call `updateActiveWidget()`, replace it with `refreshAll()` from `useBladeWidgets`.
+
 ---
 
 ## 12. Migrating to Vue 3.5.30, Vue Router 5, vue-tsc 3

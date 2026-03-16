@@ -66,8 +66,13 @@ export async function bladeRouterGuard(
     return undefined;
   }
 
+  // Preserve route params (e.g. sellerId) so fallback redirects keep the tenant prefix
+  const routeParams = Object.fromEntries(
+    Object.entries(to.params).filter(([, v]) => typeof v === "string"),
+  ) as Record<string, string>;
+
   // Restore blade stack from URL (idempotent — skips if already matching)
-  const needsUrlCleanup = await restoreFromUrl(bladeStack, bladeRegistry, parsed, hasAccess, router);
+  const needsUrlCleanup = await restoreFromUrl(bladeStack, bladeRegistry, parsed, hasAccess, router, routeParams);
 
   // If a non-routable blade was in the URL, clean up to match actual stack
   if (needsUrlCleanup) {

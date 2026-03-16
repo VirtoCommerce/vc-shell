@@ -21,6 +21,7 @@ import { i18n } from "@core/plugins";
  * @param parsed - Parsed URL segments
  * @param hasAccess - Optional permission check function
  * @param router - Optional router for redirecting on access denial
+ * @param routeParams - Route params to preserve on redirect (e.g. sellerId for tenant prefix)
  * @returns `true` if the URL needs cleanup (non-routable blade was skipped)
  */
 export async function restoreFromUrl(
@@ -29,6 +30,7 @@ export async function restoreFromUrl(
   parsed: ParsedBladeUrl,
   hasAccess?: (permissions: string | string[] | undefined) => boolean,
   router?: Router,
+  routeParams?: Record<string, string>,
 ): Promise<boolean> {
   // Skip if no workspace URL to restore
   if (!parsed.workspaceUrl) return false;
@@ -41,7 +43,7 @@ export async function restoreFromUrl(
     console.warn(
       `[restoreFromUrl] No workspace blade found for URL segment '${parsed.workspaceUrl}'`,
     );
-    if (router) navigateToMainRoute(router);
+    if (router) navigateToMainRoute(router, routeParams);
     return false;
   }
 
@@ -50,7 +52,7 @@ export async function restoreFromUrl(
     console.warn(
       `[restoreFromUrl] Blade '${workspaceMatch.name}' matched URL '${parsed.workspaceUrl}' but is not a workspace`,
     );
-    if (router) navigateToMainRoute(router);
+    if (router) navigateToMainRoute(router, routeParams);
     return false;
   }
 
@@ -60,7 +62,7 @@ export async function restoreFromUrl(
   if (hasAccess && workspaceMatch.data.permissions && !hasAccess(workspaceMatch.data.permissions)) {
     console.warn(`[restoreFromUrl] Access denied to workspace '${workspaceMatch.name}'`);
     notification.error(i18n.global.t("PERMISSION_MESSAGES.ACCESS_RESTRICTED"), { timeout: 3000 });
-    if (router) navigateToMainRoute(router);
+    if (router) navigateToMainRoute(router, routeParams);
     return false;
   }
 

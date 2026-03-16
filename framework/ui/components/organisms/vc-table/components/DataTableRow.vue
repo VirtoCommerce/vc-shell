@@ -83,6 +83,7 @@
           :is-expanded="isExpanded"
           :expanded-icon="expandedIcon"
           :collapsed-icon="collapsedIcon"
+          :is-new-row="isNewRow"
           @selection-change="handleCellSelectionChange"
           @expand-toggle="handleExpandToggle"
           @row-edit="handleRowEdit"
@@ -193,6 +194,8 @@ const props = defineProps<{
   isInlineEditing?: boolean;
   /** Function to check if a specific cell is being edited */
   isCellEditing: (rowIndex: number, field: string) => boolean;
+  /** Whether this row is newly added (for eager validation) */
+  isNewRow?: boolean;
 
   // === Actions ===
   /** Whether this row has actions to display */

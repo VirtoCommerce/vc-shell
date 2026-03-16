@@ -105,6 +105,8 @@ const props = defineProps<{
   format?: string;
   /** Date variant (date, time, date-time) */
   variant?: "date" | "time" | "date-time";
+  /** Whether to trigger validation on mount (for new rows) */
+  validateOnMount?: boolean;
 }>();
 
 defineEmits<{
@@ -144,6 +146,9 @@ const cellProps = computed(() => {
     baseProps.fieldId = props.fieldId;
     baseProps.rules = props.rules;
     baseProps.rowIndex = props.rowIndex;
+    if (props.validateOnMount) {
+      baseProps.validateOnMount = true;
+    }
   }
 
   // Add type-specific props

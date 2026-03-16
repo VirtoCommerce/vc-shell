@@ -117,6 +117,7 @@
           :is-filter-multiple="isColumnFilterMultiple"
           :get-range-fields="getColumnRangeFields"
           :get-filter-value="getColumnFilterValue"
+          :is-editing="isInlineEditing"
           :show-column-switcher="!!columnSwitcher"
           :column-switcher-active="showColumnSwitcherPanel"
           @select-all="handleSelectAllChange"
@@ -152,6 +153,7 @@
           :get-item-group-key="rowGrouping.getItemGroupKey"
           :get-global-index="getGlobalIndex"
           :get-item-key="getItemKey"
+          :new-row-indices="inlineEdit.newRowIndices.value"
           :get-row-props="getRowProps as any"
           @scroll="handleContentScroll"
           @group-toggle="(key, e) => rowGrouping.toggleGroupExpansion(key, e!)"
@@ -1185,7 +1187,6 @@ defineExpose({
   isEditing: inlineEdit.isEditing,
   isValid: inlineEdit.isValid,
   isDirty: inlineEdit.isDirty,
-  getCellError: inlineEdit.getCellError,
   pendingChanges: inlineEdit.pendingChanges,
 
   // State persistence API

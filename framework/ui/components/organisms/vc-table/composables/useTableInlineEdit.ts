@@ -79,10 +79,21 @@ export function useTableInlineEdit<T extends Record<string, any>>(
   // - meta.valid for validation state
   // - errors for error messages
   // - setFieldError for setting custom validation errors
-  const { meta, resetForm, setFieldValue, setFieldError, errors: veeErrors } = useForm();
+  const { meta, resetForm, setFieldValue, errors: veeErrors, validate } = useForm();
 
   // Track which cells have been modified (for pendingChanges calculation)
   const modifiedCells = ref<Map<string, unknown>>(new Map());
+
+  // Track indices of newly added rows (for eager validation on mount)
+  const newRowIndices = ref<Set<number>>(new Set());
+
+  const clearNewRowFlag = (rowIndex: number) => {
+    if (newRowIndices.value.has(rowIndex)) {
+      const next = new Set(newRowIndices.value);
+      next.delete(rowIndex);
+      newRowIndices.value = next;
+    }
+  };
 
   const cellKey = (rowIndex: number, field: string) => `${rowIndex}:${field}`;
 
@@ -108,9 +119,9 @@ export function useTableInlineEdit<T extends Record<string, any>>(
   };
 
   const saveChanges = async () => {
-    // Run all validations first
-    validateAll();
-    if (!isValid.value) return;
+    // Run all validations via VeeValidate form context
+    const { valid } = await validate();
+    if (!valid) return;
 
     if (onSave) {
       await onSave(pendingChanges.value);
@@ -143,9 +154,6 @@ export function useTableInlineEdit<T extends Record<string, any>>(
     // This marks the form as dirty via VeeValidate's internal mechanism
     setFieldValue(key, value);
 
-    // Validate with custom rules
-    validateCell(rowIndex, field, value, row);
-
     onCellUpdate?.(rowIndex, field, value, row);
   };
 
@@ -159,37 +167,6 @@ export function useTableInlineEdit<T extends Record<string, any>>(
   };
 
   // --- Validation ---
-
-  const validateCell = (rowIndex: number, field: string, value: unknown, row: T) => {
-    const key = cellKey(rowIndex, field);
-    const rule = rules?.[field];
-
-    if (rule) {
-      const result = rule(value, row);
-      if (result !== true) {
-        // Set error via VeeValidate
-        setFieldError(key, result);
-        return;
-      }
-    }
-    // Clear error via VeeValidate (passing undefined clears the error)
-    setFieldError(key, undefined);
-  };
-
-  const validateAll = () => {
-    if (!rules) return;
-    for (let i = 0; i < items.value.length; i++) {
-      const row = items.value[i];
-      for (const field of Object.keys(rules)) {
-        validateCell(i, field, row[field], row);
-      }
-    }
-  };
-
-  const getCellError = (rowIndex: number, field: string): string | undefined => {
-    const key = cellKey(rowIndex, field);
-    return veeErrors.value[key];
-  };
 
   // Use VeeValidate's meta.valid for validation state
   const isValid = computed(() => meta.value.valid);
@@ -226,6 +203,11 @@ export function useTableInlineEdit<T extends Record<string, any>>(
   const addRow = (defaults?: Partial<T>) => {
     const newRow = (defaults ?? {}) as T;
     items.value.push(newRow);
+
+    const newIndex = items.value.length - 1;
+    const next = new Set(newRowIndices.value);
+    next.add(newIndex);
+    newRowIndices.value = next;
   };
 
   const removeRow = (rowIndex: number) => {
@@ -243,18 +225,13 @@ export function useTableInlineEdit<T extends Record<string, any>>(
     }
     modifiedCells.value = newModified;
 
-    // Note: VeeValidate errors are keyed by the old cell keys.
-    // After row removal, we need to re-validate to update error keys.
-    // For simplicity, we clear all errors and re-validate modified cells.
-    resetForm({ values: {}, errors: {} });
-    for (const [key] of newModified.entries()) {
-      const [rowStr, field] = key.split(":");
-      const idx = parseInt(rowStr, 10);
-      const row = items.value[idx];
-      if (row) {
-        validateCell(idx, field, row[field], row);
-      }
+    // Rebuild newRowIndices — shift indices above removed row
+    const newNewRowIndices = new Set<number>();
+    for (const idx of newRowIndices.value) {
+      if (idx === rowIndex) continue;
+      newNewRowIndices.add(idx > rowIndex ? idx - 1 : idx);
     }
+    newRowIndices.value = newNewRowIndices;
   };
 
   // --- Head props helper ---
@@ -269,8 +246,8 @@ export function useTableInlineEdit<T extends Record<string, any>>(
    */
   const getCellEditProps = (rowIndex: number, field: string, cellRules?: Record<string, unknown>) => ({
     editable: isEditing.value,
-    fieldId: `items[${rowIndex}].${field}`,
-    fieldName: `items[${rowIndex}].${field}`,
+    fieldId: field,
+    fieldName: `${field}_${rowIndex}`,
     label: field,
     rowIndex,
     rules: cellRules,
@@ -278,11 +255,7 @@ export function useTableInlineEdit<T extends Record<string, any>>(
       updateCell(rowIndex, payload.field, payload.value);
     },
     onBlur: (_payload: { row: number | undefined; field: string }) => {
-      // Trigger validation on blur
-      const row = items.value[rowIndex];
-      if (row) {
-        validateCell(rowIndex, field, row[field], row);
-      }
+      // No manual validation needed — Field handles it
     },
   });
 
@@ -296,11 +269,12 @@ export function useTableInlineEdit<T extends Record<string, any>>(
     isCellDirty,
     isDirty,
     errors: veeErrors,
-    getCellError,
     isValid,
     pendingChanges,
     addRow,
     removeRow,
     getCellEditProps,
+    newRowIndices,
+    clearNewRowFlag,
   };
 }

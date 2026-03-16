@@ -1,5 +1,6 @@
 <template>
   <Field
+    ref="fieldRef"
     v-slot="{ errors, errorMessage }"
     :label="label"
     :name="fieldName"
@@ -23,10 +24,11 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
 import { Field } from "vee-validate";
 import VcTooltip from "@ui/components/atoms/vc-tooltip/vc-tooltip.vue";
 
-defineProps<{
+const props = defineProps<{
   /** Label for the editable field (used for validation) */
   label: string;
   /** Field name for validation */
@@ -35,7 +37,17 @@ defineProps<{
   modelValue?: unknown;
   /** Validation rules for the field */
   rules?: Record<string, unknown>;
+  /** Trigger validation immediately on mount (for new rows) */
+  validateOnMount?: boolean;
 }>();
+
+const fieldRef = ref<InstanceType<typeof Field> | null>(null);
+
+onMounted(() => {
+  if (props.validateOnMount) {
+    fieldRef.value?.validate();
+  }
+});
 </script>
 
 <style lang="scss">

@@ -39,17 +39,31 @@ export interface IWidgetTrigger {
   disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
 }
 
+/** Fields present only on headless widgets (kind: "headless") */
+export interface IHeadlessWidgetFields {
+  icon: string;
+  badge?: Ref<number | string> | ComputedRef<number | string>;
+  loading?: Ref<boolean> | ComputedRef<boolean>;
+  onClick?: () => void;
+  onRefresh?: () => void | Promise<void>;
+}
+
 export interface IWidget {
   id: string;
+  /** Discriminant: "headless" = framework renders VcWidget; "component" = user SFC */
+  kind: "headless" | "component";
   title?: string;
-  component: Component;
+  component?: Component;
   props?: Record<string, unknown>;
   config?: IWidgetConfig;
   events?: Record<string, unknown>;
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
+  /** @deprecated Use `useWidget().setTrigger({ onRefresh })` inside the widget instead. */
   updateFunctionName?: string;
   /** Optional trigger contract for lightweight overflow rendering */
   trigger?: IWidgetTrigger;
+  /** Headless-only fields (icon, badge, loading, onClick, onRefresh) */
+  headless?: IHeadlessWidgetFields;
 }
 
 export interface IWidgetRegistration {
@@ -240,7 +254,10 @@ export function createWidgetService(): IWidgetService {
   };
 
   const service: IWidgetService = {
-    registerWidget: (widget, bladeId) => bladeRegistry.register(widget, bladeId),
+    registerWidget: (widget, bladeId) => {
+      const normalized: IWidget = { ...widget, kind: widget.kind ?? "component" };
+      bladeRegistry.register(normalized, bladeId);
+    },
     unregisterWidget: (widgetId, bladeId) => bladeRegistry.unregister(widgetId, bladeId),
     getWidgets: (bladeId) => bladeRegistry.get(bladeId),
     clearBladeWidgets: (bladeId) => bladeRegistry.clear(bladeId),

@@ -24,6 +24,7 @@
       :show-drag-handle="showDragHandle"
       :index="index"
       :clickable="true"
+      :actions-position="actionsPosition"
       :class="rowClass"
       @click="handleRowClick"
       @space-press="handleRowSpacePress"
@@ -200,6 +201,8 @@ const props = defineProps<{
   // === Actions ===
   /** Whether this row has actions to display */
   hasActions?: boolean;
+  /** Position of row actions: overlay (absolute) or column (fixed zone) */
+  actionsPosition?: "overlay" | "column";
 
   // === Column helpers ===
   /** Function to get effective column width */

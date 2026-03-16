@@ -2,7 +2,10 @@
   <div
     v-show="isDropdownMode || isActionsVisible || isOpen"
     class="vc-table-row-actions"
-    :class="{ 'vc-table-row-actions--dropdown-mode': isDropdownMode }"
+    :class="{
+      'vc-table-row-actions--dropdown-mode': isDropdownMode,
+      'vc-table-row-actions--column': position === 'column',
+    }"
     @click.stop
   >
     <!-- Quick action buttons (first N actions) - only in inline mode -->
@@ -142,11 +145,19 @@ const props = withDefaults(
      * @default 'inline'
      */
     mode?: "inline" | "dropdown";
+    /**
+     * Position of row actions:
+     * - 'overlay': Actions float over the row on hover (default)
+     * - 'column': Actions render in a fixed zone, always visible
+     * @default 'overlay'
+     */
+    position?: "overlay" | "column";
   }>(),
   {
     maxQuickActions: 4,
     visible: undefined, // undefined means auto-detect from context
     mode: "inline",
+    position: "overlay",
   },
 );
 
@@ -170,6 +181,11 @@ const isActionsVisible = computed(() => {
   // Must have actions to show
   if (!props.actions?.length) {
     return false;
+  }
+
+  // Column mode: always visible
+  if (props.position === "column") {
+    return true;
   }
 
   // If visible prop is explicitly set, use it
@@ -352,6 +368,26 @@ onBeforeUnmount(() => {
   pointer-events: auto;
   top: 50%;
   transform: translateY(-50%);
+
+  // Column mode: static positioning, always visible, transparent background
+  &--column {
+    @apply tw-relative tw-px-1;
+    background: transparent;
+    box-shadow: none;
+    top: auto;
+    transform: none;
+
+    .vc-table-composition__row--clickable:hover & {
+      animation: none;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .vc-table-composition__row--selected & {
+      background: transparent;
+      box-shadow: none;
+    }
+  }
 
   // Dropdown mode: static positioning, always visible
   &--dropdown-mode {

@@ -161,6 +161,7 @@ export interface RowProps<T> {
   isInlineEditing: boolean;
   isCellEditing: (rowIndex: number, field: string) => boolean; // Match DataTableRow signature
   hasActions: boolean;
+  actionsPosition: "overlay" | "column";
   getColumnWidth: (colProps: VcColumnProps) => string | undefined;
   getCellAlign: (colProps: VcColumnProps) => "left" | "center" | "right" | undefined;
   getCellStyle: (colProps: VcColumnProps) => Record<string, string> | object | undefined;

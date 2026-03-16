@@ -206,6 +206,7 @@
               :actions="rowActions(item)"
               :row-index="index"
               :mode="rowActionsMode"
+              :position="rowActionsPosition"
               :max-quick-actions="maxQuickActions"
               @action="(action) => handleRowAction(action, item, index)"
             />
@@ -317,7 +318,7 @@
 
     <!-- Pagination / Total counter (outside scroll area, works for both desktop and mobile) -->
     <div
-      v-if="props.pagination && props.pagination.pages > 0"
+      v-if="props.pagination && props.pagination.pages > 0 && props.items.length > 0"
       ref="paginationRef"
       class="vc-data-table__pagination"
     >
@@ -428,6 +429,7 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
   expandableRowGroups: false,
   expandedRowGroups: undefined,
   rowActionsMode: "inline",
+  rowActionsPosition: "overlay",
   maxQuickActions: 4,
   pullToRefresh: false,
   pullToRefreshText: undefined,
@@ -1122,6 +1124,7 @@ const getRowProps = (item: T, index: number) => ({
 
   // Actions
   hasActions: !!props.rowActions,
+  actionsPosition: props.rowActionsPosition ?? "overlay",
 
   // Column helpers
   getColumnWidth: cols.getEffectiveColumnWidth,

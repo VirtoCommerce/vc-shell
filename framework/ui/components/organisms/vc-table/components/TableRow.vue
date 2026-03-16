@@ -36,8 +36,16 @@
     <TransitionGroup tag="div" :name="isColumnReordering ? 'vc-table-col-swap' : ''" class="vc-table-composition__row-transition-wrapper" :class="{ 'vc-table-composition__row-transition-wrapper--no-filler': hasFlexColumns }">
       <slot />
     </TransitionGroup>
-    <!-- Row actions slot - rendered outside TransitionGroup for proper positioning -->
-    <slot name="actions" />
+    <!-- Row actions: overlay mode (absolute positioned, current behavior) -->
+    <slot v-if="actionsPosition !== 'column'" name="actions" />
+
+    <!-- Row actions: column mode (fixed zone, always visible) -->
+    <div
+      v-if="actionsPosition === 'column'"
+      class="vc-table-composition__row-actions-column"
+    >
+      <slot name="actions" />
+    </div>
   </div>
 </template>
 
@@ -75,6 +83,10 @@ const props = withDefaults(
      * Whether the row is clickable (adds cursor pointer and hover styles)
      */
     clickable?: boolean;
+    /**
+     * Position of row actions: overlay (absolute) or column (fixed zone)
+     */
+    actionsPosition?: "overlay" | "column";
   }>(),
   {
     reorderable: false,
@@ -279,6 +291,11 @@ const handleDrop = (event: DragEvent) => {
     &--no-filler::after {
       display: none;
     }
+  }
+
+  &-actions-column {
+    @apply tw-flex tw-items-center tw-justify-end tw-flex-shrink-0;
+    min-width: 40px;
   }
 }
 

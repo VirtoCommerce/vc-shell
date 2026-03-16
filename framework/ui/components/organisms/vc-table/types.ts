@@ -457,6 +457,13 @@ export interface VcDataTableProps<T = any> {
    */
   rowActionsMode?: "inline" | "dropdown";
   /**
+   * Position of row actions:
+   * - `"overlay"`: Actions float over the row on hover (default, current behavior)
+   * - `"column"`: Actions render in a fixed zone to the right, always visible
+   * @default "overlay"
+   */
+  rowActionsPosition?: "overlay" | "column";
+  /**
    * Maximum number of quick action buttons to show in inline mode.
    * Actions beyond this limit go into the overflow dropdown.
    * @default 4

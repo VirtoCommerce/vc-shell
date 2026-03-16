@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { computed, getCurrentInstance, useAttrs } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { useWidgets } from "@core/composables";
+import { useWidgets } from "@core/composables/useWidgets";
 import { createLogger } from "@core/utilities";
 import { formatBadgeCount } from "@shared/utilities/formatBadgeCount";
 

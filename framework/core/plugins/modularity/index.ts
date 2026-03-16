@@ -163,6 +163,7 @@ export function createAppModule(
   pages: Record<string, BladeInstanceConstructor>,
   locales?: Record<string, object>,
   notificationTemplates?: Record<string, Component & { notifyType?: string }>,
+  components?: Record<string, Component>
 ) {
   return defineAppModule({
     blades: pages,

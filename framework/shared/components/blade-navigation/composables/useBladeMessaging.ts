@@ -40,16 +40,12 @@ export function createBladeMessaging(bladeStack: IBladeStack): IBladeMessaging {
     // Look up the parent's exposed methods
     const parentMethods = _exposedMethods.get(callerBlade.parentId);
     if (!parentMethods) {
-      throw new Error(
-        `[BladeMessaging] Parent blade '${callerBlade.parentId}' has no exposed methods`,
-      );
+      return undefined as T;
     }
 
     const fn = parentMethods[method];
     if (typeof fn !== "function") {
-      throw new Error(
-        `[BladeMessaging] Method '${method}' not found on parent blade '${callerBlade.parentId}'`,
-      );
+      return undefined as T;
     }
 
     // Call the method and return the result

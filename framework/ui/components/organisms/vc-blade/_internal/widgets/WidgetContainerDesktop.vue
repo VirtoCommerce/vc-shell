@@ -42,9 +42,8 @@
             :disabled="resolveDisabled(item.trigger.disabled)"
             @click="handleTriggerClick(item)"
           />
-          <WidgetProvider :widget-id="item.id">
+          <WidgetProvider v-else :widget-id="item.id">
             <component
-              v-else
               :is="item.component"
               class="tw-w-full"
               v-bind="item.props || {}"

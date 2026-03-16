@@ -103,8 +103,9 @@ export function useModificationTracker<T>(initialValueProp: T | Ref<T>): UseModi
     } else {
       pristineValue.value = cloneDeep(currentValue.value);
     }
-    // isModified will be updated by the watcher above, but for immediate synchronization you can do this:
-    // isModified.value = false; // This will happen automatically due to the watch on [currentValue, pristineValue]
+    // Synchronously reset so that code running in the same tick (e.g. onBeforeClose)
+    // sees the updated value before the deep watcher fires.
+    isModified.value = false;
   };
 
   return {

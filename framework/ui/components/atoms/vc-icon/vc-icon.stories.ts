@@ -4,13 +4,12 @@ import { VcIcon } from "@ui/components/atoms/vc-icon";
 /**
  * # VcIcon Component
  *
- * The VcIcon component is a versatile icon component supporting multiple icon libraries:
- * - Material Symbols
- * - Bootstrap Icons
- * - Lucide Icons
- * - Font Awesome
- * - Custom SVG Icons
- * - Custom Vue Components
+ * The VcIcon component renders icons from multiple libraries.
+ *
+ * **Lucide Icons** are the standard — use the `lucide-` prefix (e.g. `lucide-home`).
+ *
+ * Legacy icon libraries (FontAwesome, Bootstrap, Material) are **deprecated** and will
+ * emit console warnings in development. Migrate to Lucide equivalents.
  */
 const meta = {
   title: "Atoms/VcIcon",
@@ -19,14 +18,16 @@ const meta = {
     docs: {
       description: {
         component:
-          "The VcIcon component provides unified access to multiple icon libraries including Material Symbols, Bootstrap Icons, Lucide Icons, Font Awesome, custom SVG icons, and Vue component icons.",
+          "Unified icon component. **Standard: Lucide Icons** (`lucide-*` prefix). " +
+          "Legacy support for FontAwesome (`fa-*`), Bootstrap (`bi-*`), Material (`material-*`), SVG sprites (`svg:`), " +
+          "and direct Vue component instances. Legacy libraries are deprecated — migrate to Lucide.",
       },
     },
   },
   argTypes: {
     icon: {
       control: "text",
-      description: "The icon to display. Can be a string identifier or a component instance",
+      description: "The icon to display. Use `lucide-{name}` format (e.g. `lucide-home`)",
     },
     size: {
       control: "select",
@@ -40,7 +41,7 @@ const meta = {
     },
     useContainer: {
       control: "boolean",
-      description: "Whether to wrap the icon in a container for consistent spacing",
+      description: "[Deprecated] Whether to wrap the icon in a container for consistent spacing",
     },
     customSize: {
       control: "number",
@@ -54,7 +55,7 @@ const meta = {
   args: {
     icon: "lucide-home",
     size: "m",
-    useContainer: true,
+    useContainer: false,
   },
 } satisfies Meta<typeof VcIcon>;
 
@@ -62,7 +63,7 @@ export default meta;
 type Story = StoryObj<typeof VcIcon>;
 
 /**
- * Default usage of the VcIcon component with different icon libraries
+ * Standard usage with Lucide icons — the recommended icon library.
  */
 export const Basic: Story = {
   render: (args) => ({
@@ -72,30 +73,30 @@ export const Basic: Story = {
     },
     template: `
       <div class="tw-p-6 tw-max-w-4xl tw-mx-auto">
-        <h1 class="tw-text-2xl tw-font-bold tw-mb-6">Basic Icon Usage</h1>
+        <h1 class="tw-text-2xl tw-font-bold tw-mb-6">Lucide Icons (Standard)</h1>
 
         <section class="tw-mb-8 tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
-          <h2 class="tw-text-xl tw-font-bold tw-mb-4 tw-border-b tw-pb-2">Icon Libraries</h2>
+          <h2 class="tw-text-xl tw-font-bold tw-mb-4 tw-border-b tw-pb-2">Common Icons</h2>
           <div class="tw-grid tw-grid-cols-2 md:tw-grid-cols-4 tw-gap-6">
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
               <VcIcon icon="lucide-home" size="xl" />
-              <span class="tw-text-sm tw-mt-2">Material Icons</span>
+              <span class="tw-text-sm tw-mt-2">Home</span>
               <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">lucide-home</code>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-              <VcIcon icon="bi-house" size="xl" />
-              <span class="tw-text-sm tw-mt-2">Bootstrap Icons</span>
-              <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">bi-house</code>
+              <VcIcon icon="lucide-settings" size="xl" />
+              <span class="tw-text-sm tw-mt-2">Settings</span>
+              <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">lucide-settings</code>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-              <VcIcon icon="lucide-home" size="xl" />
-              <span class="tw-text-sm tw-mt-2">Lucide Icons</span>
-              <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">lucide-home</code>
+              <VcIcon icon="lucide-user" size="xl" />
+              <span class="tw-text-sm tw-mt-2">User</span>
+              <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">lucide-user</code>
             </div>
             <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-              <VcIcon icon="lucide-house" size="xl" />
-              <span class="tw-text-sm tw-mt-2">Font Awesome</span>
-              <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">lucide-house</code>
+              <VcIcon icon="lucide-shopping-cart" size="xl" />
+              <span class="tw-text-sm tw-mt-2">Cart</span>
+              <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">lucide-shopping-cart</code>
             </div>
           </div>
         </section>
@@ -130,14 +131,14 @@ export const Basic: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Basic usage of the VcIcon component with different icon libraries and status variants.",
+        story: "Standard usage with Lucide icons and status variants.",
       },
     },
   },
 };
 
 /**
- * Different icon sizes
+ * All predefined sizes from xs (12px) to xxxl (64px).
  */
 export const Sizes: Story = {
   render: () => ({
@@ -210,9 +211,6 @@ export const Sizes: Story = {
               <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">:custom-size="48"</code>
             </div>
           </div>
-          <p class="tw-text-sm tw-text-gray-600 tw-text-center tw-mt-4">
-            The custom-size prop allows you to specify any size in pixels
-          </p>
         </section>
       </div>
     `,
@@ -220,113 +218,24 @@ export const Sizes: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "VcIcon comes with seven predefined sizes: xs, s, m, l, xl, xxl, and xxxl. You can also specify a custom size in pixels.",
+        story: "Seven predefined sizes (xs through xxxl) plus custom pixel sizes via `:custom-size`.",
       },
     },
   },
 };
 
 /**
- * Material Icons example with detailed options
- */
-export const MaterialIcons: Story = {
-  render: () => ({
-    components: { VcIcon },
-    template: `
-      <div class="tw-p-6 tw-max-w-4xl tw-mx-auto">
-        <h1 class="tw-text-2xl tw-font-bold tw-mb-6">Material Icons</h1>
-        <p class="tw-mb-4 tw-text-gray-600">
-          Material Icons are Google's official icon set following the Material Design guidelines.
-          Use the prefix "material-" followed by the icon name.
-        </p>
-
-        <div class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-4 tw-gap-4">
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-home" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-home</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-settings" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-settings</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-user" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-user</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-shopping-cart" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-shopping-cart</code>
-          </div>
-        </div>
-      </div>
-    `,
-  }),
-  parameters: {
-    docs: {
-      description: {
-        story: "Material Icons are Google's official icon set. Use the prefix 'material-' followed by the icon name.",
-      },
-    },
-  },
-};
-
-/**
- * Bootstrap Icons example
- */
-export const BootstrapIcons: Story = {
-  render: () => ({
-    components: { VcIcon },
-    template: `
-      <div class="tw-p-6 tw-max-w-4xl tw-mx-auto">
-        <h1 class="tw-text-2xl tw-font-bold tw-mb-6">Bootstrap Icons</h1>
-        <p class="tw-mb-4 tw-text-gray-600">
-          Bootstrap Icons are free, high-quality, open source icons.
-          Use the prefix "bi-" followed by the icon name.
-        </p>
-
-        <div class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-4 tw-gap-4">
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="bi-house" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">bi-house</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="bi-gear" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">bi-gear</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="bi-person" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">bi-person</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="bi-cart" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">bi-cart</code>
-          </div>
-        </div>
-      </div>
-    `,
-  }),
-  parameters: {
-    docs: {
-      description: {
-        story: "Bootstrap Icons are free, high-quality icons. Use the prefix 'bi-' followed by the icon name.",
-      },
-    },
-  },
-};
-
-/**
- * Lucide Icons example
+ * Lucide Icons — the standard icon library.
  */
 export const LucideIcons: Story = {
   render: () => ({
     components: { VcIcon },
     template: `
       <div class="tw-p-6 tw-max-w-4xl tw-mx-auto">
-        <h1 class="tw-text-2xl tw-font-bold tw-mb-6">Lucide Icons</h1>
+        <h1 class="tw-text-2xl tw-font-bold tw-mb-6">Lucide Icons (Standard)</h1>
         <p class="tw-mb-4 tw-text-gray-600">
-          Lucide is a community-developed icon library with clean, consistent design.
-          Use the prefix "lucide-" followed by the icon name.
+          Lucide is the standard icon library. Use the prefix <code>lucide-</code> followed by the icon name.
+          Browse all icons at <a href="https://lucide.dev/icons" class="tw-text-blue-600 tw-underline" target="_blank">lucide.dev/icons</a>.
         </p>
 
         <div class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-4 tw-gap-4">
@@ -353,43 +262,140 @@ export const LucideIcons: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "Lucide is a community-developed icon library with clean, consistent design. Use the prefix 'lucide-' followed by the icon name.",
+        story: "Lucide is the standard icon library. Use `lucide-{name}` format.",
       },
     },
   },
 };
 
 /**
- * Font Awesome Icons example
+ * Deprecated legacy icon libraries. These still work but emit console warnings in development.
+ * Open the browser console to see deprecation messages.
  */
-export const FontAwesomeIcons: Story = {
+export const LegacyDeprecated: Story = {
   render: () => ({
     components: { VcIcon },
     template: `
       <div class="tw-p-6 tw-max-w-4xl tw-mx-auto">
-        <h1 class="tw-text-2xl tw-font-bold tw-mb-6">Font Awesome Icons</h1>
-        <p class="tw-mb-4 tw-text-gray-600">
-          Font Awesome is a popular icon set with thousands of icons.
-          Use the prefix "fas fa-" for solid icons, "far fa-" for regular icons, etc.
-        </p>
+        <h1 class="tw-text-2xl tw-font-bold tw-mb-6">Legacy Icons (Deprecated)</h1>
 
-        <div class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-4 tw-gap-4">
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-house" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-house</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-settings" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-settings</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-user" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-user</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-shopping-cart" size="xl" />
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-2">lucide-shopping-cart</code>
+        <div class="tw-bg-yellow-50 tw-border tw-border-yellow-200 tw-rounded-lg tw-p-4 tw-mb-6">
+          <p class="tw-text-yellow-800">
+            <strong>Deprecated:</strong> FontAwesome, Bootstrap, and Material icons are deprecated.
+            They still render correctly but emit console warnings in development mode.
+            Migrate to Lucide equivalents.
+          </p>
+        </div>
+
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-6">
+          <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
+            <h2 class="tw-text-lg tw-font-bold tw-mb-3">Bootstrap Icons</h2>
+            <p class="tw-text-sm tw-text-gray-500 tw-mb-3">Prefix: <code>bi-</code></p>
+            <div class="tw-flex tw-flex-col tw-gap-3">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <VcIcon icon="bi-house" size="l" />
+                <code class="tw-text-xs">bi-house</code>
+                <span class="tw-text-xs tw-text-gray-400">-></span>
+                <code class="tw-text-xs tw-text-green-600">lucide-house</code>
+              </div>
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <VcIcon icon="bi-gear" size="l" />
+                <code class="tw-text-xs">bi-gear</code>
+                <span class="tw-text-xs tw-text-gray-400">-></span>
+                <code class="tw-text-xs tw-text-green-600">lucide-settings</code>
+              </div>
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <VcIcon icon="bi-person" size="l" />
+                <code class="tw-text-xs">bi-person</code>
+                <span class="tw-text-xs tw-text-gray-400">-></span>
+                <code class="tw-text-xs tw-text-green-600">lucide-user</code>
+              </div>
+            </div>
+          </section>
+
+          <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
+            <h2 class="tw-text-lg tw-font-bold tw-mb-3">Font Awesome</h2>
+            <p class="tw-text-sm tw-text-gray-500 tw-mb-3">Prefix: <code>fa-</code> or <code>fas fa-</code></p>
+            <div class="tw-flex tw-flex-col tw-gap-3">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <VcIcon icon="fa-home" size="l" />
+                <code class="tw-text-xs">fa-home</code>
+                <span class="tw-text-xs tw-text-gray-400">-></span>
+                <code class="tw-text-xs tw-text-green-600">lucide-home</code>
+              </div>
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <VcIcon icon="fa-user" size="l" />
+                <code class="tw-text-xs">fa-user</code>
+                <span class="tw-text-xs tw-text-gray-400">-></span>
+                <code class="tw-text-xs tw-text-green-600">lucide-user</code>
+              </div>
+            </div>
+          </section>
+
+          <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
+            <h2 class="tw-text-lg tw-font-bold tw-mb-3">Material Icons</h2>
+            <p class="tw-text-sm tw-text-gray-500 tw-mb-3">Prefix: <code>material-</code></p>
+            <div class="tw-flex tw-flex-col tw-gap-3">
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <VcIcon icon="material-home" size="l" />
+                <code class="tw-text-xs">material-home</code>
+                <span class="tw-text-xs tw-text-gray-400">-></span>
+                <code class="tw-text-xs tw-text-green-600">lucide-home</code>
+              </div>
+              <div class="tw-flex tw-items-center tw-gap-2">
+                <VcIcon icon="material-settings" size="l" />
+                <code class="tw-text-xs">material-settings</code>
+                <span class="tw-text-xs tw-text-gray-400">-></span>
+                <code class="tw-text-xs tw-text-green-600">lucide-settings</code>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <p class="tw-text-sm tw-text-gray-500 tw-mt-4 tw-text-center">
+          Open the browser console to see deprecation warnings for each legacy icon above.
+        </p>
+      </div>
+    `,
+  }),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Legacy icon libraries (FontAwesome, Bootstrap, Material) are **deprecated**. " +
+          "They still render but emit `console.warn` in DEV mode. Open browser console to see the warnings. " +
+          "Migrate to Lucide equivalents shown in green.",
+      },
+    },
+  },
+};
+
+/**
+ * Common e-commerce icons used throughout interfaces.
+ */
+export const EcommerceIcons: Story = {
+  render: () => ({
+    components: { VcIcon },
+    setup() {
+      const ecommerceIcons = [
+        { icon: "lucide-shopping-cart", label: "Cart" },
+        { icon: "lucide-circle-user-round", label: "Account" },
+        { icon: "lucide-heart", label: "Wishlist" },
+        { icon: "lucide-truck", label: "Shipping" },
+        { icon: "lucide-package", label: "Products" },
+        { icon: "lucide-search", label: "Search" },
+        { icon: "lucide-credit-card", label: "Payment" },
+        { icon: "lucide-receipt", label: "Orders" },
+      ];
+      return { icons: ecommerceIcons };
+    },
+    template: `
+      <div class="tw-flex tw-flex-col tw-gap-4">
+        <h3 class="tw-text-lg tw-font-medium">Common E-commerce Icons</h3>
+        <div class="tw-grid tw-grid-cols-4 tw-gap-4">
+          <div v-for="item in icons" :key="item.icon" class="tw-flex tw-flex-col tw-items-center tw-gap-2 tw-p-4 tw-border tw-border-gray-200 tw-rounded">
+            <VcIcon :icon="item.icon" size="xl" />
+            <span class="tw-text-sm">{{item.label}}</span>
           </div>
         </div>
       </div>
@@ -398,144 +404,54 @@ export const FontAwesomeIcons: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "Font Awesome is a popular icon set. Use the prefix 'fas fa-' for solid icons, 'far fa-' for regular icons, etc.",
+        story: "Common e-commerce icons: cart, account, wishlist, shipping, products, search, payment, and orders.",
       },
     },
   },
 };
 
 /**
- * Example of using a custom SVG component directly passed as a prop.
+ * Status icons with color variants for product/order states.
  */
-export const CustomSvgIcon: Story = {
-  args: {
-    icon: "lucide-search",
-    size: "l",
-  },
+export const StatusIcons: Story = {
+  render: () => ({
+    components: { VcIcon },
+    setup() {
+      const statusIcons = [
+        { icon: "lucide-circle-check", variant: "success", label: "In Stock" },
+        { icon: "lucide-triangle-alert", variant: "warning", label: "Low Stock" },
+        { icon: "lucide-circle-x", variant: "danger", label: "Out of Stock" },
+        { icon: "lucide-truck", variant: "success", label: "Shipped" },
+        { icon: "lucide-clock", variant: "warning", label: "Processing" },
+        { icon: "lucide-package", variant: undefined, label: "New Arrival" },
+        { icon: "lucide-badge-check", variant: "success", label: "Verified" },
+        { icon: "lucide-percent", variant: undefined, label: "On Sale" },
+      ];
+      return { icons: statusIcons };
+    },
+    template: `
+      <div class="tw-flex tw-flex-col tw-gap-4">
+        <h3 class="tw-text-lg tw-font-medium">Product & Order Status Icons</h3>
+        <div class="tw-grid tw-grid-cols-4 tw-gap-4">
+          <div v-for="item in icons" :key="item.icon" class="tw-flex tw-items-center tw-gap-2 tw-p-4 tw-border tw-border-gray-200 tw-rounded-lg tw-shadow-sm">
+            <VcIcon :icon="item.icon" :variant="item.variant" size="l" />
+            <span class="tw-text-sm">{{item.label}}</span>
+          </div>
+        </div>
+      </div>
+    `,
+  }),
   parameters: {
     docs: {
       description: {
-        story:
-          "Custom SVG components can be imported and passed directly to the `icon` prop. Search functionality is essential for product discovery in e-commerce.",
+        story: "Status icons with color variants for product availability and order state indication.",
       },
     },
   },
 };
 
 /**
- * Example of using Material Design icon with outlined style.
- */
-export const MaterialOutlined: Story = {
-  args: {
-    icon: "lucide-shopping-bag",
-    size: "l",
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Material Design icons with 'outlined' style have hollow interiors. The shopping bag icon is commonly used for orders and purchases in e-commerce applications.",
-      },
-    },
-  },
-};
-
-/**
- * Example of Bootstrap Icon usage.
- */
-export const BootstrapIcon: Story = {
-  args: {
-    icon: "bi-cart",
-    size: "l",
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Bootstrap icons can be used with the 'bi-' prefix. The cart icon is universal in e-commerce interfaces.",
-      },
-    },
-  },
-};
-
-/**
- * Example of Lucide Icon usage.
- */
-export const LucideIcon: Story = {
-  args: {
-    icon: "lucide-shopping-bag",
-    size: "l",
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Lucide icons can be used with the 'lucide-' prefix. These modern icons work well in clean e-commerce designs.",
-      },
-    },
-  },
-};
-
-/**
- * Example of an icon with the success variant.
- */
-export const VariantSuccess: Story = {
-  args: {
-    icon: "lucide-circle-check",
-    size: "l",
-    variant: "success",
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "The success variant applies a success/confirmation color to the icon. Useful for confirming completed orders or successful payments.",
-      },
-    },
-  },
-};
-
-/**
- * Example of an icon with the warning variant.
- */
-export const VariantWarning: Story = {
-  args: {
-    icon: "lucide-triangle-alert",
-    size: "l",
-    variant: "warning",
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "The warning variant applies a warning color to the icon. Use for indicating low stock or potential issues with orders.",
-      },
-    },
-  },
-};
-
-/**
- * Example of an icon with the danger variant.
- */
-export const VariantDanger: Story = {
-  args: {
-    icon: "lucide-circle-x",
-    size: "l",
-    variant: "danger",
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "The danger variant applies an error/danger color to the icon. Useful for error states or cancellation actions in the checkout process.",
-      },
-    },
-  },
-};
-
-/**
- * Example showing all sizes of the same icon.
+ * All sizes comparison from xs to xxxl.
  */
 export const AllSizes: Story = {
   render: (args) => ({
@@ -559,15 +475,14 @@ export const AllSizes: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "Comparison of all available icon sizes from xs to xxxl. Choose the appropriate size based on where the icon appears in your interface.",
+        story: "Visual comparison of all seven predefined sizes.",
       },
     },
   },
 };
 
 /**
- * Example showing all variants of the same icon.
+ * All color variants comparison.
  */
 export const AllVariants: Story = {
   render: (args) => ({
@@ -591,197 +506,14 @@ export const AllVariants: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "Comparison of all available color variants: default, warning, danger, and success. The shipping icon demonstrates how status variations can indicate different delivery states.",
+        story: "Color variants: default, warning, danger, and success.",
       },
     },
   },
 };
 
 /**
- * Common e-commerce icons used throughout interfaces.
- */
-export const EcommerceIcons: Story = {
-  render: (args) => ({
-    components: { VcIcon },
-    setup() {
-      const ecommerceIcons = [
-        { icon: "lucide-shopping-cart", label: "Cart" },
-        { icon: "lucide-circle-user-round", label: "Account" },
-        { icon: "lucide-heart", label: "Wishlist" },
-        { icon: "lucide-truck", label: "Shipping" },
-        { icon: "lucide-package", label: "Products" },
-        { icon: "lucide-search", label: "Search" },
-        { icon: "lucide-credit-card", label: "Payment" },
-        { icon: "lucide-receipt", label: "Orders" },
-      ];
-      return { icons: ecommerceIcons, args };
-    },
-    template: `
-      <div class="tw-flex tw-flex-col tw-gap-4">
-        <h3 class="tw-text-lg tw-font-medium">Common E-commerce Icons</h3>
-        <div class="tw-grid tw-grid-cols-4 tw-gap-4">
-          <div v-for="item in icons" :key="item.icon" class="tw-flex tw-flex-col tw-items-center tw-gap-2 tw-p-4 tw-border tw-border-gray-200 tw-rounded">
-            <VcIcon :icon="item.icon" size="xl" />
-            <span class="tw-text-sm">{{item.label}}</span>
-          </div>
-        </div>
-      </div>
-    `,
-  }),
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "A collection of commonly used icons in e-commerce interfaces. These represent core functionality like cart, account, wishlist, shipping, products, search, payment, and orders.",
-      },
-    },
-  },
-};
-
-/**
- * Interactive state icons used to indicate product or order status.
- */
-export const StatusIcons: Story = {
-  render: (args) => ({
-    components: { VcIcon },
-    setup() {
-      const statusIcons = [
-        { icon: "lucide-circle-check", variant: "success", label: "In Stock" },
-        { icon: "lucide-triangle-alert", variant: "warning", label: "Low Stock" },
-        { icon: "lucide-circle-x", variant: "danger", label: "Out of Stock" },
-        { icon: "lucide-truck", variant: "success", label: "Shipped" },
-        { icon: "lucide-clock", variant: "warning", label: "Processing" },
-        { icon: "lucide-package", variant: undefined, label: "New Arrival" },
-        { icon: "lucide-badge-check", variant: "success", label: "Verified" },
-        { icon: "lucide-percent", variant: undefined, label: "On Sale" },
-      ];
-      return { icons: statusIcons, args };
-    },
-    template: `
-      <div class="tw-flex tw-flex-col tw-gap-4">
-        <h3 class="tw-text-lg tw-font-medium">Product & Order Status Icons</h3>
-        <div class="tw-grid tw-grid-cols-4 tw-gap-4">
-          <div v-for="item in icons" :key="item.icon" class="tw-flex tw-items-center tw-gap-2 tw-p-4 tw-border tw-border-gray-200 tw-rounded-lg tw-shadow-sm">
-            <VcIcon :icon="item.icon" :variant="item.variant" size="l" />
-            <span class="tw-text-sm">{{item.label}}</span>
-          </div>
-        </div>
-      </div>
-    `,
-  }),
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Status icons with appropriate color variants to indicate product availability, order status, and other state information in e-commerce applications.",
-      },
-    },
-  },
-};
-
-// Add a new story for CSS styling demonstration
-export const WithCssStyled: Story = {
-  name: "With External CSS Styles",
-  render: () => ({
-    components: { VcIcon },
-    template: `
-      <div class="tw-p-6 tw-max-w-4xl tw-mx-auto tw-space-y-8">
-        <section class="tw-border tw-border-gray-200 tw-rounded-lg tw-p-5 tw-shadow-sm">
-          <h3 class="tw-text-lg tw-font-semibold tw-mb-4 tw-border-b tw-pb-2">CSS vs. Preset Sizes</h3>
-          <div class="tw-flex tw-justify-center tw-gap-8">
-            <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
-                <VcIcon icon="lucide-star" size="xs" style="font-size: 30px;"/>
-              <span class="tw-text-sm">size="xs" + container (30px)</span>
-            </div>
-            <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
-                <VcIcon icon="lucide-star" size="m" style="font-size: 30px;"/>
-              <span class="tw-text-sm">size="m" + container (30px)</span>
-            </div>
-            <div class="tw-flex tw-flex-col tw-items-center tw-gap-2">
-                <VcIcon icon="lucide-star" size="xl" style="font-size: 30px;"/>
-              <span class="tw-text-sm">size="xl" + container (30px)</span>
-            </div>
-          </div>
-          <p class="tw-text-sm tw-text-gray-600 tw-text-center tw-mt-4">
-            When both preset size and CSS font-size are used, CSS size takes precedence
-          </p>
-        </section>
-      </div>
-    `,
-    data() {
-      return {
-        isHovered: false,
-      };
-    },
-  }),
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Examples of styling icons with CSS. This demonstrates how icons can inherit font size from parent elements, have direct styling applied, and even dynamic styling with hover effects.",
-      },
-    },
-  },
-};
-
-/**
- * Color variants for status indication
- */
-export const ColorVariants: Story = {
-  render: () => ({
-    components: { VcIcon },
-    template: `
-      <div class="tw-p-6 tw-max-w-4xl tw-mx-auto">
-        <div class="tw-grid tw-grid-cols-2 sm:tw-grid-cols-4 tw-gap-4">
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-circle-check" size="xl" />
-            <span class="tw-text-sm tw-mt-2">Default</span>
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">No variant</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-circle-check" variant="success" size="xl" />
-            <span class="tw-text-sm tw-mt-2">Success</span>
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">variant="success"</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-triangle-alert" variant="warning" size="xl" />
-            <span class="tw-text-sm tw-mt-2">Warning</span>
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">variant="warning"</code>
-          </div>
-          <div class="tw-flex tw-flex-col tw-items-center tw-bg-gray-50 tw-p-4 tw-rounded-lg">
-            <VcIcon icon="lucide-circle-alert" variant="danger" size="xl" />
-            <span class="tw-text-sm tw-mt-2">Danger</span>
-            <code class="tw-text-xs tw-bg-gray-100 tw-p-1 tw-rounded tw-mt-1">variant="danger"</code>
-          </div>
-        </div>
-
-        <div class="tw-mt-6 tw-bg-blue-50 tw-p-4 tw-rounded-lg">
-          <p class="tw-text-blue-800">
-            <strong>Note:</strong> Color variants use CSS variables for theming. The values are defined in the root styles:
-            <br />
-            <code>--icon-color-success: var(--success-500)</code>
-            <br />
-            <code>--icon-color-danger: var(--danger-500)</code>
-            <br />
-            <code>--icon-color-warning: var(--warning-500)</code>
-          </p>
-        </div>
-      </div>
-    `,
-  }),
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "The VcIcon component supports three color variants for status indication: success (green), warning (yellow), and danger (red).",
-      },
-    },
-  },
-};
-
-/**
- * CSS styling example
+ * Direct CSS styling examples.
  */
 export const CssStyling: Story = {
   render: () => ({
@@ -811,7 +543,7 @@ export const CssStyling: Story = {
   parameters: {
     docs: {
       description: {
-        story: " Icons can be styled with CSS.",
+        story: "Icons can be styled with inline CSS for custom colors.",
       },
     },
   },

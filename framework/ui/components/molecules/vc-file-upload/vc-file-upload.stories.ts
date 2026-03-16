@@ -446,7 +446,7 @@ export const WithErrorMessage: Story = {
  */
 export const CustomIcon: Story = {
   args: {
-    icon: "bi-file-earmark-upload",
+    icon: "lucide-file-up",
   },
   render: (args) => ({
     components: { VcFileUpload },

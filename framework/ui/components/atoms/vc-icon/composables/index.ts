@@ -1,2 +1,2 @@
-export * from "@ui/components/atoms/vc-icon/composables/use-icon";
-export * from "@ui/components/atoms/vc-icon/composables/use-icon-type";
+// Icon composables removed — sizing is handled via CSS classes.
+export {};

@@ -2,6 +2,7 @@
   <component
     :is="resolvedIconComponent"
     v-if="resolvedIconComponent"
+    :stroke-width="props.strokeWidth"
     :class="[
       'vc-lucide-icon',
       !hasCustomSize && `vc-lucide-icon--${size}`,
@@ -19,10 +20,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, onMounted, ref } from "vue";
-import type { IconSize, IconVariant } from "@ui/components/atoms/vc-icon/types";
+import { computed, markRaw } from "vue";
 import type { Component } from "vue";
-import { useIcon } from "@ui/components/atoms/vc-icon/composables";
+import type { IconSize, IconVariant } from "@ui/components/atoms/vc-icon/types";
+import * as LucideIcons from "lucide-vue-next";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("vc-lucide-icon");
@@ -62,30 +63,18 @@ const props = withDefaults(defineProps<Props>(), {
 // Check if using custom size to conditionally apply CSS class
 const hasCustomSize = computed(() => typeof props.customSize === "number" && props.customSize > 0);
 
-// Component reference for Lucide icon
-const resolvedIconComponent = ref<Component | null>(null);
-
-// Use the shared icon composable for consistent scaling
-const { iconStyle } = useIcon({
-  type: "lucide",
-  size: props.size,
-  variant: props.variant,
-  customSize: props.customSize,
-});
-
-// Normalize the icon name for Lucide
+// Normalize the icon name for Lucide: "lucide-arrow-right" → "ArrowRightIcon"
 const normalizedIconName = computed(() => {
   if (!props.icon) return "HelpCircleIcon";
 
-  // Handle removal of lucide- prefix
   let name = props.icon;
   if (name.startsWith("lucide-")) {
     name = name.substring(7);
   }
 
-  // Ensure name ends with 'Icon'
-  if (!name.endsWith("Icon")) {
-    name = `${name}Icon`;
+  // Strip trailing "Icon" or "icon" suffix (case-insensitive) to avoid double-suffix
+  if (name.toLowerCase().endsWith("icon")) {
+    name = name.slice(0, -4);
   }
 
   // Convert to PascalCase if kebab-case
@@ -96,43 +85,32 @@ const normalizedIconName = computed(() => {
       .join("");
   }
 
-  // Ensure first letter is capitalized
-  return name.charAt(0).toUpperCase() + name.slice(1);
+  // Ensure first letter is capitalized and append Icon suffix
+  return name.charAt(0).toUpperCase() + name.slice(1) + "Icon";
 });
 
-// Combine the shared icon styles with Lucide-specific settings
+// Synchronous component resolution from static import
+const resolvedIconComponent = computed(() => {
+  const iconName = normalizedIconName.value;
+  const icon = (LucideIcons as Record<string, unknown>)[iconName];
+
+  if (!icon || (typeof icon !== "object" && typeof icon !== "function")) {
+    logger.warn(`Lucide icon not found: ${iconName}`);
+    return null;
+  }
+
+  return markRaw(icon as Component);
+});
+
+// Computed styles: customSize override only (strokeWidth is passed as a prop to Lucide component)
 const computedStyle = computed(() => {
-  const styles = { ...iconStyle.value };
-
-  if (props.strokeWidth) {
-    styles.strokeWidth = props.strokeWidth.toString();
+  if (hasCustomSize.value && props.customSize) {
+    return {
+      width: `${props.customSize}px`,
+      height: `${props.customSize}px`,
+    };
   }
-
-  // If using custom size, make sure size is applied with !important
-  if (hasCustomSize.value) {
-    if (styles.width) styles.width = `${styles.width.replace("px", "")}px !important`;
-    if (styles.height) styles.height = `${styles.height.replace("px", "")}px !important`;
-  }
-
-  return styles;
-});
-
-// Dynamically import the Lucide icon
-onMounted(async () => {
-  try {
-    // Import from lucide-vue-next
-    const module = await import("lucide-vue-next");
-
-    // Get the icon component safely with type checking
-    const iconName = normalizedIconName.value;
-    if (module && typeof module === "object" && iconName in module) {
-      resolvedIconComponent.value = markRaw(module[iconName as keyof typeof module] as Component);
-    } else {
-      logger.warn(`Lucide icon not found: ${iconName}`);
-    }
-  } catch (error) {
-    logger.error(`Error loading Lucide icon: ${normalizedIconName.value}`, error);
-  }
+  return {};
 });
 </script>
 

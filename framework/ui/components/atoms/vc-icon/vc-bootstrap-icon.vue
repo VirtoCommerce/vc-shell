@@ -6,18 +6,18 @@
       iconClass,
       variant ? `vc-bootstrap-icon--${variant}` : '',
     ]"
-    :style="mergedStyle"
+    :style="customSizeStyle"
     aria-hidden="true"
   ></i>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import type { IconSize, IconVariant } from "@ui/components/atoms/vc-icon/types";
-import { useIcon } from "@ui/components/atoms/vc-icon/composables";
 
 interface Props {
   /**
+   * @deprecated Bootstrap icons are deprecated. Use Lucide icons instead (e.g. "lucide-house").
    * Bootstrap icon name (e.g. "bi-house" or "house")
    */
   icon: string;
@@ -45,24 +45,20 @@ const props = withDefaults(defineProps<Props>(), {
 // Check if using custom size to conditionally apply CSS class
 const hasCustomSize = computed(() => typeof props.customSize === "number" && props.customSize > 0);
 
-// Use the shared icon composable for consistent scaling
-const { iconStyle } = useIcon({
-  type: "bootstrap",
-  size: props.size,
-  variant: props.variant,
-  customSize: props.customSize,
-});
+// Direct custom size style — no scaling factors
+const customSizeStyle = computed(() =>
+  props.customSize ? { fontSize: `${props.customSize}px` } : undefined,
+);
 
-// Create the merged style with !important to override any CSS classes
-const mergedStyle = computed(() => {
-  const styles = { ...iconStyle.value };
-
-  // If using custom size, make sure fontSize is applied with !important
-  if (hasCustomSize.value && styles.fontSize) {
-    styles.fontSize = `${styles.fontSize.replace("px", "")}px !important`;
+// Deprecation warning (dev-only)
+onMounted(() => {
+  if (import.meta.env.DEV) {
+    console.warn(
+      `[VcIcon] Bootstrap icon "${props.icon}" is deprecated. ` +
+        `Migrate to Lucide: use "lucide-{name}" instead (e.g. "lucide-house" instead of "bi-house"). ` +
+        `See https://lucide.dev/icons for available icons.`,
+    );
   }
-
-  return styles;
 });
 
 // Compute proper Bootstrap icon class

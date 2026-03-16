@@ -15,7 +15,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import type { IconSize, IconVariant } from "@ui/components/atoms/vc-icon/types";
-import { useIcon } from "@ui/components/atoms/vc-icon/composables";
 
 defineOptions({
   inheritAttrs: false,
@@ -61,14 +60,6 @@ const props = withDefaults(defineProps<Props>(), {
 // Check if using custom size to conditionally apply CSS class
 const hasCustomSize = computed(() => typeof props.customSize === "number" && props.customSize > 0);
 
-// Use the shared icon composable for consistent scaling
-const { iconStyle } = useIcon({
-  type: "svg",
-  size: props.size,
-  variant: props.variant,
-  customSize: props.customSize,
-});
-
 // Compute the full path to the icon
 const resolvedIconPath = computed(() => {
   // Check if the icon is already a complete path
@@ -88,18 +79,17 @@ const resolvedIconPath = computed(() => {
   return `${props.basePath}/${props.icon}`;
 });
 
-// Combine the shared icon styles with SVG-specific settings
+// Direct style computation — no scaling factors
 const computedStyle = computed(() => {
-  const styles = { ...iconStyle.value };
+  const styles: Record<string, string> = {};
+
+  if (props.customSize) {
+    styles.width = `${props.customSize}px`;
+    styles.height = `${props.customSize}px`;
+  }
 
   if (props.strokeWidth) {
     styles.strokeWidth = `${props.strokeWidth}`;
-  }
-
-  // If using custom size, make sure size is applied with !important
-  if (hasCustomSize.value) {
-    if (styles.width) styles.width = `${styles.width.replace("px", "")}px !important`;
-    if (styles.height) styles.height = `${styles.height.replace("px", "")}px !important`;
   }
 
   return styles;

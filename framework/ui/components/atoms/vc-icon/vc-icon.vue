@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, resolveComponent } from "vue";
+import { computed, markRaw, onMounted, resolveComponent } from "vue";
 import type { Component } from "vue";
 import VcMaterialIcon from "@ui/components/atoms/vc-icon/vc-material-icon.vue";
 import VcBootstrapIcon from "@ui/components/atoms/vc-icon/vc-bootstrap-icon.vue";
@@ -81,8 +81,9 @@ export interface Props {
   variant?: IconVariant;
 
   /**
+   * @deprecated The container wrapper is deprecated and will be removed in a future version.
+   * Icons render correctly without a container. Remove this prop from your usage.
    * Whether to wrap the icon in a fixed-size container.
-   * The container is slightly larger than the icon to provide proper spacing.
    */
   useContainer?: boolean;
 
@@ -107,8 +108,18 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
   icon: "lucide-square",
   size: "m",
-  useContainer: true,
+  useContainer: false,
   basePath: "/assets/icons",
+});
+
+// Deprecation warning for useContainer (dev-only)
+onMounted(() => {
+  if (import.meta.env.DEV && props.useContainer) {
+    console.warn(
+      '[VcIcon] The "useContainer" prop is deprecated and will be removed in a future version. ' +
+        "Remove it from your usage — the icon renders correctly without a container wrapper.",
+    );
+  }
 });
 
 // Sizes in px for each size value
@@ -279,27 +290,14 @@ const calculatedSize = computed(() => {
   return sizeMap[props.size];
 });
 
-// Icon styles
+// Icon styles — sizing is now handled by sub-components and CSS classes.
+// This computed only provides styles for the wrapper element level.
 const iconStyle = computed(() => {
   const styles: Record<string, string> = {};
 
-  // If the size is set through customSize, apply it directly
-  if (props.customSize) {
-    // For text icons (FontAwesome, Bootstrap, Material) use font-size
-    if (isFontAwesomeIcon.value || isBootstrapIcon.value || isMaterialIcon.value) {
-      styles.fontSize = `${props.customSize}px`;
-    }
-
-    // For SVG and component icons, set explicit width and height
-    if (isCustomIcon.value || isLucideIcon.value || isSvgIcon.value) {
-      styles.width = `${props.customSize}px`;
-      styles.height = `${props.customSize}px`;
-    }
-  } else {
-    // For text icons, set font-size: inherit to inherit from the container
-    if (isFontAwesomeIcon.value || isBootstrapIcon.value || isMaterialIcon.value || isLucideIcon.value) {
-      styles.fontSize = "inherit";
-    }
+  if (isCustomIcon.value && props.customSize) {
+    styles.width = `${props.customSize}px`;
+    styles.height = `${props.customSize}px`;
   }
 
   return styles;
@@ -377,8 +375,7 @@ const componentProps = computed(() => {
       icon: svgPath.value,
       size: props.size,
       variant: props.variant,
-      strokeWidth: 1.5,
-      customSize: props.customSize, // Set custom size without scaling
+      customSize: props.customSize,
       basePath: props.basePath,
     };
   }

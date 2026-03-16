@@ -6,7 +6,7 @@
       !hasCustomSize && `vc-material-icon--${size}`,
       variant ? `vc-material-icon--${variant}` : '',
     ]"
-    :style="iconStyle"
+    :style="customSizeStyle"
     aria-hidden="true"
   >
     {{ icon }}
@@ -14,12 +14,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import type { IconSize, IconVariant } from "@ui/components/atoms/vc-icon/types";
-import { useIcon } from "@ui/components/atoms/vc-icon/composables";
 
 interface Props {
   /**
+   * @deprecated Material icons are deprecated. Use Lucide icons instead (e.g. "lucide-settings").
    * Material icon name (e.g., "home", "settings", "account_circle")
    */
   icon: string;
@@ -52,11 +52,20 @@ const props = withDefaults(defineProps<Props>(), {
 
 const hasCustomSize = computed(() => typeof props.customSize === "number" && props.customSize > 0);
 
-const { iconStyle } = useIcon({
-  type: "material",
-  size: props.size,
-  variant: props.variant,
-  customSize: props.customSize,
+// Direct custom size style — no scaling factors, no transform: scale()
+const customSizeStyle = computed(() =>
+  props.customSize ? { fontSize: `${props.customSize}px` } : undefined,
+);
+
+// Deprecation warning (dev-only)
+onMounted(() => {
+  if (import.meta.env.DEV) {
+    console.warn(
+      `[VcIcon] Material icon "${props.icon}" is deprecated. ` +
+        `Migrate to Lucide: use "lucide-{name}" instead (e.g. "lucide-settings" instead of "material-settings"). ` +
+        `See https://lucide.dev/icons for available icons.`,
+    );
+  }
 });
 </script>
 

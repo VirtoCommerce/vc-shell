@@ -1,5 +1,5 @@
 import { ref, computed, Ref, toRaw } from "vue";
-import { useForm } from "vee-validate";
+import { useForm, useFormContext } from "vee-validate";
 
 /**
  * Safe deep clone that handles Date objects and other non-serializable types.
@@ -73,13 +73,22 @@ export function useTableInlineEdit<T extends Record<string, any>>(
   // Snapshot of original values before editing started (deep clone)
   let snapshot: T[] = [];
 
-  // VeeValidate form for dirty/valid tracking and error management
-  // We use useForm to leverage VeeValidate's built-in:
-  // - meta.dirty for dirty state tracking
-  // - meta.valid for validation state
-  // - errors for error messages
-  // - setFieldError for setting custom validation errors
-  const { meta, resetForm, setFieldValue, errors: veeErrors, validate } = useForm();
+  // VeeValidate form context:
+  // If a parent form exists (e.g. blade's useForm), reuse it so <Field>
+  // components register with the parent — blade.meta.valid then reflects
+  // table cell errors. Only create own form when no parent exists.
+  const parentForm = useFormContext();
+  const ownForm = parentForm ? undefined : useForm();
+  const activeForm = (parentForm ?? ownForm)!;
+  const { meta, setFieldValue, errors: veeErrors, validate } = activeForm;
+
+  // resetForm is only safe on our own form — resetting the parent
+  // would wipe non-table fields (blade inputs, etc.).
+  const safeResetForm = () => {
+    if (ownForm) {
+      ownForm.resetForm();
+    }
+  };
 
   // Track which cells have been modified (for pendingChanges calculation)
   const modifiedCells = ref<Map<string, unknown>>(new Map());
@@ -102,7 +111,7 @@ export function useTableInlineEdit<T extends Record<string, any>>(
   const startEditing = () => {
     snapshot = items.value.map((item) => safeClone(item));
     // Reset VeeValidate form state - this clears dirty, errors, and resets to initial state
-    resetForm();
+    safeResetForm();
     // Clear modified cells tracking
     modifiedCells.value = new Map();
     isEditing.value = true;
@@ -112,7 +121,7 @@ export function useTableInlineEdit<T extends Record<string, any>>(
     // Restore original values
     items.value.splice(0, items.value.length, ...snapshot.map((s) => safeClone(s)));
     // Reset VeeValidate form state
-    resetForm();
+    safeResetForm();
     modifiedCells.value = new Map();
     isEditing.value = false;
     onCancel?.();
@@ -129,7 +138,7 @@ export function useTableInlineEdit<T extends Record<string, any>>(
 
     // Commit: clear dirty state, update snapshot
     snapshot = items.value.map((item) => safeClone(item));
-    resetForm();
+    safeResetForm();
     modifiedCells.value = new Map();
     isEditing.value = false;
   };

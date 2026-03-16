@@ -1,8 +1,9 @@
-import { inject, computed, getCurrentInstance, type ComputedRef } from "vue";
+import { inject, computed, getCurrentInstance, provide, ref, isRef, type ComputedRef, type MaybeRef } from "vue";
 import {
     BladeDescriptorKey,
     BladeStackKey,
     BladeMessagingKey,
+    BladeDataKey,
 } from "@shared/components/blade-navigation/types";
 import type {
     BladeOpenEvent,
@@ -23,6 +24,8 @@ export interface UseBladeReturn {
   readonly query: ComputedRef<Record<string, string> | undefined>;
   readonly closable: ComputedRef<boolean>;
   readonly expanded: ComputedRef<boolean>;
+  readonly name: ComputedRef<string>;
+  provideBladeData(data: MaybeRef<Record<string, unknown>>): void;
   // Navigation — works everywhere
   openBlade(event: BladeOpenEvent & { isWorkspace?: boolean }): Promise<void>;
   // Actions — runtime error outside blade context
@@ -136,6 +139,28 @@ export function useBlade(): UseBladeReturn {
         const active = bladeStack.activeBlade.value;
         return active?.id === descriptor!.value.id;
     });
+    const name = computed(() => {
+        if (!descriptor) requireContext("name");
+        return descriptor!.value.name;
+    });
+
+    // ── Blade Data ──────────────────────────────────────────────────────────
+
+    let _bladeDataProvided = false;
+
+    function provideBladeData(data: MaybeRef<Record<string, unknown>>): void {
+        if (_bladeDataProvided) {
+            console.warn(
+                "[vc-shell] provideBladeData() called more than once in the same blade. " +
+                "Only the first call takes effect.",
+            );
+            return;
+        }
+        _bladeDataProvided = true;
+
+        const reactiveData = isRef(data) ? data : ref(data);
+        provide(BladeDataKey, reactiveData);
+    }
 
     // ── Navigation (works everywhere) ─────────────────────────────────────
 
@@ -231,6 +256,8 @@ export function useBlade(): UseBladeReturn {
         query,
         closable,
         expanded,
+        name,
+        provideBladeData,
         openBlade,
         closeSelf,
         closeChildren,

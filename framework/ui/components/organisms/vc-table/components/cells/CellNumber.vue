@@ -6,6 +6,7 @@
     :field-name="fieldName || ''"
     :model-value="value"
     :rules="rules"
+    :validate-on-mount="validateOnMount"
   >
     <template #default="{ errors, errorMessage }">
       <VcInput
@@ -60,6 +61,8 @@ const props = defineProps<{
   rules?: Record<string, unknown>;
   /** Row index for blur event payload */
   rowIndex?: number;
+  /** Trigger validation immediately on mount (for new rows) */
+  validateOnMount?: boolean;
 }>();
 
 const emit = defineEmits<{

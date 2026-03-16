@@ -57,7 +57,7 @@
               {{ col.props.title }}
               <span
                 v-if="isEditing && col.props.rules?.required"
-                class="tw-text-[color:var(--danger-500)] tw-ml-0.5"
+                class="tw-text-danger-500 tw-ml-0.5"
                 aria-hidden="true"
               >*</span>
             </span>

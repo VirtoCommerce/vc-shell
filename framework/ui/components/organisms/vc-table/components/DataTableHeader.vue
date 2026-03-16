@@ -53,7 +53,14 @@
         <!-- Default header content -->
         <template v-else>
           <div class="vc-data-table__header-content">
-            <span class="vc-data-table__header-title">{{ col.props.title }}</span>
+            <span class="vc-data-table__header-title">
+              {{ col.props.title }}
+              <span
+                v-if="isEditing && col.props.rules?.required"
+                class="tw-text-[color:var(--danger-500)] tw-ml-0.5"
+                aria-hidden="true"
+              >*</span>
+            </span>
             <ColumnFilter
               v-if="showFilter(col)"
               :field="col.props.filterField || col.props.field || col.props.id"
@@ -183,6 +190,9 @@ const props = defineProps<{
   getFilterValue: (col: ColumnInstance) => FilterValue;
 
   // === Column switcher ===
+  /** Whether the table is in inline editing mode */
+  isEditing?: boolean;
+
   /** Whether to show drag handle spacer (aligns header with body rows that have drag handles) */
   showDragHandle?: boolean;
 

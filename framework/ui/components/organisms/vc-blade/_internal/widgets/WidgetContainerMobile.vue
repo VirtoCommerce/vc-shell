@@ -7,15 +7,19 @@
       ref="containerRef"
       class="vc-widget-container-mobile__content"
     >
-      <component
-        :is="widget.component"
+      <WidgetProvider
         v-for="widget in visibleItems"
         :key="widget.id"
-        v-bind="widget.props || {}"
-        :data-item-key="widget.id"
         :widget-id="widget.id"
-        v-on="widget.events || {}"
-      />
+      >
+        <component
+          :is="widget.component"
+          v-bind="widget.props || {}"
+          :data-item-key="widget.id"
+          :widget-id="widget.id"
+          v-on="widget.events || {}"
+        />
+      </WidgetProvider>
 
       <div
         v-if="showMoreButton"
@@ -38,17 +42,21 @@
       @update:model-value="showOverflow = $event"
     >
       <div class="vc-widget-container-mobile__overflow-list">
-        <component
-          :is="item.component"
+        <WidgetProvider
           v-for="item in hiddenItems"
           :key="item.id"
-          class="tw-w-full"
-          v-bind="item.props || {}"
-          horizontal
           :widget-id="item.id"
-          v-on="item.events || {}"
-          @click="showOverflow = false"
-        />
+        >
+          <component
+            :is="item.component"
+            class="tw-w-full"
+            v-bind="item.props || {}"
+            horizontal
+            :widget-id="item.id"
+            v-on="item.events || {}"
+            @click="showOverflow = false"
+          />
+        </WidgetProvider>
       </div>
     </VcSidebar>
   </div>
@@ -60,6 +68,7 @@ import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { IWidget } from "@core/services/widget-service";
+import WidgetProvider from "./WidgetProvider.vue";
 
 interface Props {
   widgets: IWidget[];

@@ -39,6 +39,9 @@ export const AppBarMobileButtonsServiceKey: InjectionKey<IAppBarMobileButtonsSer
 export const LanguageServiceKey: InjectionKey<ILanguageService> = Symbol("LanguageService");
 export const ToolbarServiceKey: InjectionKey<IToolbarService> = Symbol("ToolbarService");
 
+// Widget identity key (provided by WidgetProvider, consumed by useWidget)
+export const WidgetIdKey: InjectionKey<string> = Symbol("WidgetId");
+
 /**
  * Registry of dynamic modules available via provide/inject.
  * Consumers can extend this interface via declaration merging:

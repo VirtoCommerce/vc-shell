@@ -1,14 +1,18 @@
 <template>
   <div class="vc-widget-container-desktop">
     <div class="vc-widget-container-desktop__content">
-      <component
-        :is="widget.component"
+      <WidgetProvider
         v-for="widget in displayedItems"
         :key="widget.id"
-        v-bind="widget.props || {}"
         :widget-id="widget.id"
-        v-on="widget.events || {}"
-      />
+      >
+        <component
+          :is="widget.component"
+          v-bind="widget.props || {}"
+          :widget-id="widget.id"
+          v-on="widget.events || {}"
+        />
+      </WidgetProvider>
 
       <VcDropdown
         v-if="showMoreButton"
@@ -38,16 +42,18 @@
             :disabled="resolveDisabled(item.trigger.disabled)"
             @click="handleTriggerClick(item)"
           />
-          <component
-            v-else
-            :is="item.component"
-            class="tw-w-full"
-            v-bind="item.props || {}"
-            horizontal
-            :widget-id="item.id"
-            v-on="item.events || {}"
-            @click="showToolbar = false"
-          />
+          <WidgetProvider :widget-id="item.id">
+            <component
+              v-else
+              :is="item.component"
+              class="tw-w-full"
+              v-bind="item.props || {}"
+              horizontal
+              :widget-id="item.id"
+              v-on="item.events || {}"
+              @click="showToolbar = false"
+            />
+          </WidgetProvider>
         </template>
       </VcDropdown>
     </div>
@@ -61,6 +67,7 @@ import { useWidgets } from "@core/composables";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import WidgetDropdownItem from "./WidgetDropdownItem.vue";
+import WidgetProvider from "./WidgetProvider.vue";
 
 interface Props {
   widgets: IWidget[];

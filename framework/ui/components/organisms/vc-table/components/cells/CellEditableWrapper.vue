@@ -44,7 +44,10 @@ const props = defineProps<{
 const fieldRef = ref<InstanceType<typeof Field> | null>(null);
 
 onMounted(() => {
-  if (props.validateOnMount) {
+  // Validate on mount when explicitly requested (new rows) OR
+  // when field is empty and has validation rules (catches required fields)
+  const isEmpty = props.modelValue === undefined || props.modelValue === null || props.modelValue === "";
+  if (props.validateOnMount || (isEmpty && props.rules)) {
     fieldRef.value?.validate();
   }
 });

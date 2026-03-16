@@ -54,12 +54,12 @@
         <template v-else>
           <div class="vc-data-table__header-content">
             <span class="vc-data-table__header-title">
-              {{ col.props.title }}
               <span
                 v-if="isEditing && col.props.rules?.required"
-                class="tw-text-danger-500 tw-ml-0.5"
+                class="tw-text-danger-500 tw-mr-0.5"
                 aria-hidden="true"
               >*</span>
+              {{ col.props.title }}
             </span>
             <ColumnFilter
               v-if="showFilter(col)"

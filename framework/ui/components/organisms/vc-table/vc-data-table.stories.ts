@@ -1984,6 +1984,129 @@ export const WithRowActionsDropdown: StoryFn = () => ({
   `,
 });
 
+/**
+ * Row Actions in Column Position (Inline Mode)
+ *
+ * Actions render in a dedicated fixed zone to the right of the row.
+ * Always visible — no hover required. Uses inline mode (quick action buttons).
+ */
+export const WithRowActionsInlineColumn: StoryFn = () => ({
+  components: { VcDataTable, VcColumn },
+  setup() {
+    const products = ref([...mockProducts]);
+    const eventLog = ref<string[]>([]);
+
+    const getRowActions = (item: Product) => [
+      {
+        icon: "lucide-eye",
+        title: "View",
+        clickHandler: () => {
+          eventLog.value.unshift(`View: ${item.name}`);
+          if (eventLog.value.length > 5) eventLog.value.pop();
+        },
+      },
+      {
+        icon: "lucide-pencil",
+        title: "Edit",
+        clickHandler: () => {
+          eventLog.value.unshift(`Edit: ${item.name}`);
+          if (eventLog.value.length > 5) eventLog.value.pop();
+        },
+      },
+      {
+        icon: "lucide-trash-2",
+        title: "Delete",
+        variant: "danger" as const,
+        clickHandler: () => {
+          products.value = products.value.filter((p) => p.id !== item.id);
+          eventLog.value.unshift(`Deleted: ${item.name}`);
+          if (eventLog.value.length > 5) eventLog.value.pop();
+        },
+      },
+    ];
+
+    return { products, eventLog, getRowActions };
+  },
+  template: `
+    <div style="height: 500px">
+      <p class="tw-mb-4 tw-text-sm tw-text-neutrals-500">
+        Actions are always visible in a dedicated column — no hover needed.
+      </p>
+      <div class="tw-mb-2">
+        <span v-for="(event, i) in eventLog" :key="i" class="tw-text-sm tw-mr-2">{{ event }}</span>
+      </div>
+      <VcDataTable
+        :items="products"
+        :row-actions="getRowActions"
+        row-actions-mode="inline"
+        row-actions-position="column"
+        :max-quick-actions="3"
+      >
+        <VcColumn id="name" field="name" title="Name" />
+        <VcColumn id="price" field="price" title="Price" type="money" />
+        <VcColumn id="stock" field="stock" title="Stock" type="number" />
+        <VcColumn id="status" field="status" title="Status" />
+      </VcDataTable>
+    </div>
+  `,
+});
+
+/**
+ * Row Actions Dropdown in Column Position
+ *
+ * Three-dot menu in a dedicated column, always visible.
+ * Combines dropdown mode with column position.
+ */
+export const WithRowActionsDropdownColumn: StoryFn = () => ({
+  components: { VcDataTable, VcColumn },
+  setup() {
+    const products = ref([...mockProducts]);
+
+    const getRowActions = (item: Product) => [
+      {
+        icon: "lucide-eye",
+        title: "View details",
+        clickHandler: () => alert(`View: ${item.name}`),
+      },
+      {
+        icon: "lucide-pencil",
+        title: "Edit",
+        clickHandler: () => alert(`Edit: ${item.name}`),
+      },
+      {
+        icon: "lucide-trash-2",
+        title: "Delete",
+        variant: "danger" as const,
+        clickHandler: () => {
+          if (confirm(`Delete ${item.name}?`)) {
+            products.value = products.value.filter((p) => p.id !== item.id);
+          }
+        },
+      },
+    ];
+
+    return { products, getRowActions };
+  },
+  template: `
+    <div style="height: 400px">
+      <p class="tw-mb-4 tw-text-sm tw-text-neutrals-500">
+        Three-dot menu always visible in dedicated column. Click to open dropdown.
+      </p>
+      <VcDataTable
+        :items="products"
+        :row-actions="getRowActions"
+        row-actions-mode="dropdown"
+        row-actions-position="column"
+      >
+        <VcColumn id="name" field="name" title="Name" />
+        <VcColumn id="price" field="price" title="Price" type="money" />
+        <VcColumn id="stock" field="stock" title="Stock" type="number" />
+        <VcColumn id="status" field="status" title="Status" />
+      </VcDataTable>
+    </div>
+  `,
+});
+
 // =============================================================================
 // LINE CLAMP
 // =============================================================================

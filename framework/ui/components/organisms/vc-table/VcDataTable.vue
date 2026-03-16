@@ -120,6 +120,7 @@
           :is-editing="isInlineEditing"
           :show-column-switcher="!!columnSwitcher"
           :column-switcher-active="showColumnSwitcherPanel"
+          :actions-position="rowActionsPosition"
           @select-all="handleSelectAllChange"
           @sort="handleSort"
           @resize-start="handleResizeStart"

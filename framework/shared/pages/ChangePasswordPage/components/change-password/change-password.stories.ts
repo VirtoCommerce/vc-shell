@@ -2,8 +2,9 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import ChangePassword from "./ChangePassword.vue";
 import { mockPlatformApiFetch, patchUserManagement } from "@shared/pages/_storybook-helpers";
 
+/** Change password page with current/new/confirm fields and real-time validation. */
 const meta = {
-  title: "Shared/Pages/ChangePassword",
+  title: "Shared/Pages/ChangePasswordPage",
   component: ChangePassword,
   tags: ["autodocs"],
   decorators: [

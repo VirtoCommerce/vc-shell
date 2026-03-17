@@ -14,6 +14,9 @@ const makeNotification = (overrides: Partial<IPushNotification> = {}): IPushNoti
   ...overrides,
 });
 
+/**
+ * Base template for rendering individual push notifications.
+ */
 const meta = {
   title: "Shared/NotificationTemplate",
   component: NotificationTemplate,

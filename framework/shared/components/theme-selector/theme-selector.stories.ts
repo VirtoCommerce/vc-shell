@@ -5,6 +5,9 @@ import { useTheme } from "@core/composables/useTheme";
 
 const STORY_THEMES = [{ key: "green" }, { key: "dark" }] as const;
 
+/**
+ * Settings menu entry for switching the application theme.
+ */
 const meta = {
   title: "Shared/ThemeSelector",
   component: ThemeSelector,

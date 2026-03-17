@@ -51,7 +51,7 @@ function mountWithBlade(
 }
 
 describe("useBladeWidgets", () => {
-  it("registers all widgets on mount with kind='headless'", () => {
+  it("registers all widgets on mount with headless fields", () => {
     const registerWidget = vi.fn();
     const service = createMockWidgetService({ registerWidget });
 
@@ -65,11 +65,11 @@ describe("useBladeWidgets", () => {
 
     expect(registerWidget).toHaveBeenCalledTimes(2);
     expect(registerWidget).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "W1", kind: "headless" }),
+      expect.objectContaining({ id: "W1", headless: expect.objectContaining({ icon: "lucide-tag" }) }),
       "blade-1",
     );
     expect(registerWidget).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "W2", kind: "headless" }),
+      expect.objectContaining({ id: "W2", headless: expect.objectContaining({ icon: "lucide-star" }) }),
       "blade-1",
     );
   });
@@ -113,7 +113,6 @@ describe("useBladeWidgets", () => {
     expect(registerWidget).toHaveBeenCalledWith(
       expect.objectContaining({
         id: "W1",
-        kind: "headless",
         headless: expect.objectContaining({ icon: "lucide-tag", badge, onClick }),
       }),
       "blade-1",
@@ -146,7 +145,7 @@ describe("useBladeWidgets", () => {
   it("refresh() calls trigger.onRefresh on specific widget", () => {
     const onRefresh = vi.fn();
     const getWidgets = vi.fn(() => [
-      { id: "W1", kind: "headless" as const, trigger: { onRefresh } },
+      { id: "W1", trigger: { onRefresh } },
     ]);
     const service = createMockWidgetService({ getWidgets });
 
@@ -164,9 +163,9 @@ describe("useBladeWidgets", () => {
     const onRefresh1 = vi.fn();
     const onRefresh2 = vi.fn();
     const getWidgets = vi.fn(() => [
-      { id: "W1", kind: "headless" as const, trigger: { onRefresh: onRefresh1 } },
-      { id: "W2", kind: "headless" as const, trigger: { onRefresh: onRefresh2 } },
-      { id: "W3", kind: "headless" as const },
+      { id: "W1", trigger: { onRefresh: onRefresh1 } },
+      { id: "W2", trigger: { onRefresh: onRefresh2 } },
+      { id: "W3" },
     ]);
     const service = createMockWidgetService({ getWidgets });
 

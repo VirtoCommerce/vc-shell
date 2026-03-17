@@ -3,6 +3,9 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import LanguageSelector from "@shared/components/language-selector/language-selector.vue";
 import { useLanguages } from "@core/composables/useLanguages";
 
+/**
+ * Settings menu entry for switching the application language.
+ */
 const meta = {
   title: "Shared/LanguageSelector",
   component: LanguageSelector,

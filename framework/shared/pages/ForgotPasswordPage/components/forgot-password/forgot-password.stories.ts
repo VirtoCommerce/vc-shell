@@ -2,8 +2,9 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import ForgotPassword from "./ForgotPassword.vue";
 import { mockPlatformApiFetch, patchUserManagement } from "@shared/pages/_storybook-helpers";
 
+/** Forgot password page with email input and success confirmation state. */
 const meta = {
-  title: "Shared/Pages/ForgotPassword",
+  title: "Shared/Pages/ForgotPasswordPage",
   component: ForgotPassword,
   tags: ["autodocs"],
   decorators: [

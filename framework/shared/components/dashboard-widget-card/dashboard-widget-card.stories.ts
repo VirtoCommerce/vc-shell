@@ -13,6 +13,9 @@ const rows = [
   { name: "Enamel Outdoor Set", status: "Published", date: "9 hours ago" },
 ];
 
+/**
+ * Dashboard widget card with optional stats, actions, and footer slots.
+ */
 const meta = {
   title: "Shared/DashboardWidgetCard",
   component: DashboardWidgetCard,

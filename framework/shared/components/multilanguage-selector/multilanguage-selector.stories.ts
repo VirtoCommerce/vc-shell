@@ -11,8 +11,11 @@ const languageOptions = [
   { value: "fr-FR", label: "Français", flag: frFlag },
 ];
 
+/**
+ * Compact language selector with flag icons for detail blades.
+ */
 const meta = {
-  title: "Shared/VcLanguageSelector",
+  title: "Shared/MultilanguageSelector",
   component: VcLanguageSelector,
   tags: ["autodocs"],
   decorators: [

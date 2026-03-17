@@ -28,6 +28,9 @@ function patchLogoutFlow() {
   });
 }
 
+/**
+ * Settings menu action that signs the user out and redirects to login.
+ */
 const meta = {
   title: "Shared/LogoutButton",
   component: LogoutButton,

@@ -2,8 +2,9 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import Login from "./Login.vue";
 import { mockPlatformApiFetch, patchUserManagement } from "@shared/pages/_storybook-helpers";
 
+/** Login page with credentials form, SSO providers, and forgot-password navigation. */
 const meta = {
-  title: "Shared/Pages/Login",
+  title: "Shared/Pages/LoginPage",
   component: Login,
   tags: ["autodocs"],
   decorators: [

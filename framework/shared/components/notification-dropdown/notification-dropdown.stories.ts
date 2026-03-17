@@ -57,6 +57,9 @@ const OfferNotificationTemplate = defineComponent({
 
 OfferNotificationTemplate.notifyType = "OfferCreatedDomainEvent";
 
+/**
+ * Notification dropdown panel showing push notification history.
+ */
 const meta = {
   title: "Shared/NotificationDropdown",
   component: NotificationDropdown,

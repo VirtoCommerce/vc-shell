@@ -4,9 +4,13 @@ import SettingsMenuItem from "@shared/components/settings-menu-item/settings-men
 import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 
+/**
+ * Individual menu item used inside the settings menu with optional icon, value, and chevron.
+ */
 const meta = {
   title: "Shared/SettingsMenuItem",
   component: SettingsMenuItem,
+  tags: ["autodocs"],
   decorators: [
     () => ({
       template: `
@@ -16,6 +20,14 @@ const meta = {
       `,
     }),
   ],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "Reusable settings menu item with icon, title, optional current value, and chevron indicator. Supports click/hover triggers and cascading sub-menu patterns.",
+      },
+    },
+  },
 } satisfies Meta<typeof SettingsMenuItem>;
 
 export default meta;

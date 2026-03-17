@@ -95,6 +95,9 @@ function ensureLoginRoute() {
   }
 }
 
+/**
+ * User account button in the shell sidebar that opens the settings menu.
+ */
 const meta = {
   title: "Shared/UserDropdownButton",
   component: UserDropdownButton,

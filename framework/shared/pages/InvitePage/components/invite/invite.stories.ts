@@ -4,8 +4,9 @@ import Invite from "./Invite.vue";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { mockPlatformApiFetch, patchUserManagement } from "@shared/pages/_storybook-helpers";
 
+/** Invitation acceptance page with token validation and password setup. */
 const meta = {
-  title: "Shared/Pages/Invite",
+  title: "Shared/Pages/InvitePage",
   component: Invite,
   tags: ["autodocs"],
   decorators: [

@@ -71,6 +71,9 @@ function registerGroupedItems() {
   });
 }
 
+/**
+ * Settings menu container that groups registered items by group and sorts by order.
+ */
 const meta = {
   title: "Shared/SettingsMenu",
   component: SettingsMenu,

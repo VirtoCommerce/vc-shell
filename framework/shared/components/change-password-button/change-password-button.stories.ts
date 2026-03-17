@@ -28,6 +28,9 @@ function patchUserManagement() {
   });
 }
 
+/**
+ * Settings menu action that opens the change-password popup.
+ */
 const meta = {
   title: "Shared/ChangePasswordButton",
   component: ChangePasswordButton,

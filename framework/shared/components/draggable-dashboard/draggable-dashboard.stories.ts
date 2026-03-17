@@ -124,6 +124,9 @@ function registerStoryWidgets() {
   });
 }
 
+/**
+ * Gridstack-powered dashboard with drag-and-drop widget arrangement.
+ */
 const meta = {
   title: "Shared/DraggableDashboard",
   component: DraggableDashboard,

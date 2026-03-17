@@ -4,8 +4,9 @@ import ResetPassword from "./ResetPassword.vue";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { mockPlatformApiFetch, patchUserManagement } from "@shared/pages/_storybook-helpers";
 
+/** Reset password page reached via email link with token validation. */
 const meta = {
-  title: "Shared/Pages/ResetPassword",
+  title: "Shared/Pages/ResetPasswordPage",
   component: ResetPassword,
   tags: ["autodocs"],
   decorators: [

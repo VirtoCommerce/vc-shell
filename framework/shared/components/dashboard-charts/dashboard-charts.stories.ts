@@ -107,6 +107,9 @@ type PeriodOption = (typeof periodOptions)[number]["id"];
 
 // --- Stories ---
 
+/**
+ * Dashboard chart components (line, bar, donut) built on Unovis.
+ */
 const meta = {
   title: "Shared/DashboardCharts",
   tags: ["autodocs"],

@@ -12,6 +12,7 @@ export interface HeadlessWidgetDeclaration {
   title: string;
   badge?: Ref<number | string> | ComputedRef<number | string>;
   loading?: Ref<boolean> | ComputedRef<boolean>;
+  disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
   isVisible?: ComputedRef<boolean> | Ref<boolean> | boolean;
   onClick?: () => void;
   onRefresh?: () => void | Promise<void>;
@@ -95,13 +96,13 @@ function buildWidget(decl: HeadlessWidgetDeclaration): IWidget {
     icon: decl.icon,
     badge: decl.badge,
     loading: decl.loading,
+    disabled: decl.disabled,
     onClick: decl.onClick,
     onRefresh: decl.onRefresh,
   };
 
   return {
     id: decl.id,
-    kind: "headless",
     title: decl.title,
     isVisible: decl.isVisible,
     headless,

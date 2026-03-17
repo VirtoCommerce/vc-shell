@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ref, computed, defineComponent, h } from "vue";
+import { ref, computed, defineComponent, h, type ComputedRef } from "vue";
 import { mount } from "@vue/test-utils";
 import { defineBladeContext, injectBladeContext } from "./useBladeContext";
 
@@ -7,7 +7,7 @@ describe("defineBladeContext / injectBladeContext", () => {
   it("provides and injects blade context", () => {
     const item = ref({ id: "123" });
     const disabled = computed(() => false);
-    let injected: Record<string, unknown> | undefined;
+    let injected: ComputedRef<Record<string, unknown>> | undefined;
 
     const Child = defineComponent({
       setup() {
@@ -26,8 +26,8 @@ describe("defineBladeContext / injectBladeContext", () => {
     mount(Parent);
 
     expect(injected).toBeDefined();
-    expect(injected!.item).toBe(item);
-    expect(injected!.disabled).toBe(disabled);
+    expect(injected!.value.item).toBe(item);
+    expect(injected!.value.disabled).toBe(disabled);
   });
 
   it("throws InjectionError when no context provided", () => {
@@ -48,7 +48,7 @@ describe("defineBladeContext / injectBladeContext", () => {
     const GrandChild = defineComponent({
       setup() {
         const ctx = injectBladeContext();
-        injectedItem = ctx.item;
+        injectedItem = ctx.value.item;
         return () => h("div");
       },
     });

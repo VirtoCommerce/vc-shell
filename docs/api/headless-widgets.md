@@ -15,7 +15,7 @@ External widgets from other modules (e.g., messenger widget) remain SFC-based.
 ## Quick Start
 
 ```ts
-import { useBladeWidgets, guarded } from "@vc-shell/framework";
+import { useBladeWidgets } from "@vc-shell/framework";
 
 // Inside a blade's <script setup>
 const { refreshAll } = useBladeWidgets([
@@ -24,9 +24,7 @@ const { refreshAll } = useBladeWidgets([
     icon: "lucide-tag",
     title: "PRODUCTS.WIDGETS.OFFERS.TITLE",
     badge: offersCount,           // Ref<number> — reactive badge
-    onClick: guarded((release) =>
-      openBlade({ name: "OffersList", onClose: release }),
-    ),
+    onClick: () => openBlade({ name: "OffersList" }),
     onRefresh: loadOffers,
   },
   {
@@ -72,34 +70,6 @@ Alternatively accepts `ComponentWidgetDeclaration[]` for legacy SFC widgets.
 | `isVisible` | `ComputedRef<boolean> \| Ref<boolean> \| boolean` | No | Controls visibility |
 | `onClick` | `() => void` | No | Click handler |
 | `onRefresh` | `() => void \| Promise<void>` | No | Called by `refresh()`/`refreshAll()` |
-
-### `guarded(handler)`
-
-Wraps a click handler to prevent double-clicks. The handler receives a `release` callback that must be called to unlock (typically on blade close).
-
-```ts
-import { guarded } from "@vc-shell/framework";
-
-const onClick = guarded((release) => {
-  openBlade({
-    name: "OffersList",
-    onClose: release,  // unlock when blade closes
-  });
-});
-
-onClick();  // handler fires
-onClick();  // blocked — blade is still open
-// user closes blade → release() called
-onClick();  // handler fires again
-```
-
-**Parameters:**
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `handler` | `(release: () => void) => void` | Function that receives a release callback |
-
-**Returns:** `() => void` — guarded click handler
 
 ## Architecture
 
@@ -171,7 +141,7 @@ modules/products/
 
 ```ts
 // useProductWidgets.ts
-import { useBladeWidgets, guarded } from "@vc-shell/framework";
+import { useBladeWidgets } from "@vc-shell/framework";
 import { useOfferCount } from "./useOfferCount";
 
 interface UseProductWidgetsOptions {
@@ -192,9 +162,7 @@ export function useProductWidgets(options: UseProductWidgetsOptions) {
       title: "PRODUCTS.WIDGETS.OFFERS.TITLE",
       badge: offersCount,
       onRefresh: refreshOffers,
-      onClick: guarded((release) =>
-        openBlade({ name: "OffersList", onClose: release }),
-      ),
+      onClick: () => openBlade({ name: "OffersList" }),
       isVisible,
     },
   ]);
@@ -268,7 +236,6 @@ All public API is available from `@vc-shell/framework`:
 ```ts
 import {
   useBladeWidgets,
-  guarded,
   type HeadlessWidgetDeclaration,
   type ComponentWidgetDeclaration,
   type WidgetDeclaration,        // deprecated alias for ComponentWidgetDeclaration

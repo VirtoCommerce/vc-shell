@@ -53,9 +53,12 @@
           :more-label="moreLabel"
           :action-sheet-title="actionSheetTitle"
           :cancel-label="cancelLabel"
+          :is-inline-editing="isInlineEditing"
+          :is-new-row="newRowIndices?.has(index)"
           @click="handleRowClick"
           @select="handleRowSelect"
           @action="handleAction"
+          @cell-value-change="(field, value) => emit('cell-value-change', field, index, value)"
         />
       </div>
     </div>
@@ -111,6 +114,10 @@ const props = withDefaults(
     pullToRefresh?: boolean;
     /** Custom text for pull-to-refresh states */
     pullToRefreshText?: PullToRefreshTextConfig;
+    /** Whether inline editing is active */
+    isInlineEditing?: boolean;
+    /** Set of new row indices */
+    newRowIndices?: Set<number>;
   }>(),
   {
     selection: () => [],
@@ -126,6 +133,8 @@ const props = withDefaults(
     cancelLabel: "Cancel",
     pullToRefresh: false,
     pullToRefreshText: undefined,
+    isInlineEditing: false,
+    newRowIndices: undefined,
   }
 );
 
@@ -138,6 +147,8 @@ const emit = defineEmits<{
   action: [action: MobileSwipeAction<T>, item: T, index: number];
   /** Pull-to-refresh triggered */
   refresh: [];
+  /** Cell value changed during editing */
+  "cell-value-change": [field: string, index: number, value: unknown];
 }>();
 
 // Provide swipe context for cards

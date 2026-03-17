@@ -48,6 +48,10 @@
             :config="layout.image"
             :item="item"
             :index="index"
+            :is-inline-editing="isInlineEditing"
+            :unique-field-name="`${layout.image.field || layout.image.id}_${index}`"
+            :validate-on-mount="isNewRow && layout.image.column.props.editable"
+            @update="handleCellUpdate(layout.image, $event)"
           />
         </div>
 
@@ -62,6 +66,10 @@
               :config="layout.title"
               :item="item"
               :index="index"
+              :is-inline-editing="isInlineEditing"
+              :unique-field-name="`${layout.title.field || layout.title.id}_${index}`"
+              :validate-on-mount="isNewRow && layout.title.column.props.editable"
+              @update="handleCellUpdate(layout.title, $event)"
             />
           </div>
 
@@ -84,6 +92,10 @@
                   :config="field"
                   :item="item"
                   :index="index"
+                  :is-inline-editing="isInlineEditing"
+                  :unique-field-name="`${field.field || field.id}_${index}`"
+                  :validate-on-mount="isNewRow && field.column.props.editable"
+                  @update="handleCellUpdate(field, $event)"
                 />
               </span>
             </div>
@@ -99,6 +111,10 @@
                 :config="status"
                 :item="item"
                 :index="index"
+                :is-inline-editing="isInlineEditing"
+                :unique-field-name="`${status.field || status.id}_${index}`"
+                :validate-on-mount="isNewRow && status.column.props.editable"
+                @update="handleCellUpdate(status, $event)"
               />
             </template>
           </div>
@@ -164,7 +180,7 @@
  */
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import type { MobileCardLayout, MobileSwipeAction } from "@ui/components/organisms/vc-table/types";
+import type { MobileCardLayout, MobileSwipeAction, MobileColumnConfig } from "@ui/components/organisms/vc-table/types";
 import { useTableSwipe } from "@ui/components/organisms/vc-table/composables/useTableSwipe";
 import MobileCellRenderer from "@ui/components/organisms/vc-table/components/mobile/MobileCellRenderer.vue";
 import MobileActionSheet from "@ui/components/organisms/vc-table/components/mobile/MobileActionSheet.vue";
@@ -195,11 +211,17 @@ const props = withDefaults(
     actionSheetTitle?: string;
     /** Cancel button label */
     cancelLabel?: string;
+    /** Whether inline editing is active */
+    isInlineEditing?: boolean;
+    /** Whether this is a new row (for eager validation) */
+    isNewRow?: boolean;
   }>(),
   {
     actions: () => [],
     selectionMode: undefined,
     anySelected: false,
+    isInlineEditing: false,
+    isNewRow: false,
     dataKey: "id",
     moreLabel: "More",
     actionSheetTitle: "Actions",
@@ -214,7 +236,13 @@ const emit = defineEmits<{
   select: [item: T, index: number];
   /** Action was triggered */
   action: [action: MobileSwipeAction<T>, item: T, index: number];
+  /** Cell value changed during editing */
+  "cell-value-change": [field: string, value: unknown];
 }>();
+
+function handleCellUpdate(config: MobileColumnConfig, payload: { field: string; value: unknown }) {
+  emit("cell-value-change", config.field || config.id, payload.value);
+}
 
 // Refs
 const containerRef = ref<HTMLElement | null>(null);

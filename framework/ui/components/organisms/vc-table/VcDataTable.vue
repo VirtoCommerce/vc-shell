@@ -291,10 +291,13 @@
         :data-key="dataKey"
         :pull-to-refresh="pullToRefresh"
         :pull-to-refresh-text="pullToRefreshText"
+        :is-inline-editing="isInlineEditing"
+        :new-row-indices="inlineEdit.newRowIndices.value"
         @click="handleMobileRowClick"
         @select="handleMobileRowSelect"
         @action="handleMobileRowAction"
         @refresh="emit('pull-refresh')"
+        @cell-value-change="(field, index, value) => handleCellValueChange(field, index, value)"
       >
         <template #empty>
           <slot

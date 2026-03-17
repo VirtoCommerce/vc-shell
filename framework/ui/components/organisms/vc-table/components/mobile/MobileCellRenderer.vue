@@ -16,9 +16,18 @@
     v-else
     :type="config.type || 'text'"
     :value="cellValue"
+    :editable="isInlineEditing && config.column.props.editable"
+    :label="config.column.props.title || fieldName"
+    :field-name="uniqueFieldName"
+    :field-id="fieldName"
+    :rules="config.column.props.rules"
+    :row-index="index"
     :currency="currency"
     :format="config.column.props.format"
     :variant="dateVariant"
+    :validate-on-mount="validateOnMount"
+    @update="$emit('update', $event)"
+    @blur="$emit('blur', $event)"
   />
 </template>
 
@@ -42,6 +51,17 @@ const props = defineProps<{
   item: T;
   /** Row index */
   index: number;
+  /** Whether inline editing is active */
+  isInlineEditing?: boolean;
+  /** Unique field name for VeeValidate */
+  uniqueFieldName?: string;
+  /** Whether to validate on mount */
+  validateOnMount?: boolean;
+}>();
+
+defineEmits<{
+  (e: "update", payload: { field: string; value: unknown }): void;
+  (e: "blur", payload: { row: number | undefined; field: string }): void;
 }>();
 
 // Field name from column

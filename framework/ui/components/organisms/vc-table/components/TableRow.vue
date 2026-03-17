@@ -199,7 +199,7 @@ const handleDrop = (event: DragEvent) => {
 
 <style lang="scss">
 .vc-table-composition__row {
-  @apply tw-relative tw-flex tw-items-center tw-gap-0 tw-py-1 tw-px-4 tw-transition-colors;
+  @apply tw-relative tw-flex tw-items-center tw-gap-2 tw-py-1 tw-px-4 tw-transition-colors;
   // Width is determined by flex children, min-width ensures row fills container
   min-width: 100%;
   min-height: 53px;
@@ -278,10 +278,13 @@ const handleDrop = (event: DragEvent) => {
     // Filler pseudo-element absorbs leftover space when ALL columns have fixed widths.
     // Columns with width use flex: 0 1 auto (no grow, can shrink), and this filler fills
     // any remaining width — preventing visual jumps after resize.
+    // Filler absorbs leftover space when all columns have fixed widths.
+    // Negative margin compensates the inherited gap (tw-gap-2 = 0.5rem).
     &::after {
       content: "";
       flex: 1 1 0;
       min-width: 0;
+      margin-left: -0.5rem;
     }
 
     // When flex-grow columns exist, disable the filler so it doesn't compete for space

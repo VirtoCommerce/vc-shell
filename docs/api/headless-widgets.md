@@ -228,6 +228,48 @@ Some widgets are display-only (no blade to open):
 | **Use case** | Blade-local, standard VcWidget visual | External modules, custom UI |
 | **i18n** | Framework translates title key | Widget handles own translation |
 | **Registration** | `useBladeWidgets([...])` | `registerExternalWidget(...)` |
+| **Data access** | Closures (same setup scope) | `injectBladeContext()` |
+
+## Blade Context
+
+External widgets need data from the blade they're embedded in. Since modules are isolated, this is solved via `defineBladeContext` / `injectBladeContext` — a typed provide/inject pair.
+
+### Blade side
+
+```ts
+// ProductDetailsBase.vue — <script setup>
+const item = ref<Product>();
+const disabled = computed(() => !item.value);
+
+// Expose data for external widgets / extensions
+defineBladeContext({ item, disabled });
+```
+
+### External widget side
+
+```ts
+// MessageWidget.vue (in messenger module) — <script setup>
+const ctx = injectBladeContext();
+const item = ctx.item as Ref<Product>;
+```
+
+### Registration (no config needed)
+
+```ts
+registerExternalWidget({
+  id: "messenger-widget",
+  component: MessageWidget,
+  targetBlades: ["ProductDetails"],
+  // Widget injects data internally — no config/requiredData/propsResolver
+});
+```
+
+### Notes
+
+- `defineBladeContext` must be called in blade's `<script setup>`
+- `injectBladeContext` throws if no context is found (missing context = developer error)
+- No type safety at the module boundary (modules are isolated). Widget casts to expected shape.
+- Not limited to widgets — extensions, nested components, anything inside blade scope can use `injectBladeContext`
 
 ## Exports
 
@@ -236,9 +278,9 @@ All public API is available from `@vc-shell/framework`:
 ```ts
 import {
   useBladeWidgets,
+  defineBladeContext,
+  injectBladeContext,
   type HeadlessWidgetDeclaration,
-  type ComponentWidgetDeclaration,
-  type WidgetDeclaration,        // deprecated alias for ComponentWidgetDeclaration
   type UseBladeWidgetsReturn,
 } from "@vc-shell/framework";
 ```

@@ -86,13 +86,13 @@
 
 <script setup lang="ts">
 import { ref, computed, toValue, type Ref, type ComputedRef } from "vue";
-import { useI18n } from "vue-i18n";
 import { IWidget } from "@core/services/widget-service";
 import { useWidgets } from "@core/composables";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcWidget } from "@ui/components/atoms/vc-widget";
 import WidgetDropdownItem from "./WidgetDropdownItem.vue";
+import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
 
 interface Props {
   widgets: IWidget[];
@@ -100,9 +100,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { t } = useI18n({ useScope: "global" });
 const showToolbar = ref(false);
 const widgetService = useWidgets();
+const { resolveBadge, resolveLoading, resolveTitle, handleHeadlessClick } = useHeadlessWidgetHelpers();
 
 const displayedItems = computed(() => props.widgets.slice(0, 3));
 const overflowItems = computed(() => props.widgets.slice(3));
@@ -111,28 +111,6 @@ const showMoreButton = computed(() => props.widgets.length > 3);
 function resolveDisabled(disabled: Ref<boolean> | ComputedRef<boolean> | boolean | undefined): boolean {
   if (disabled === undefined) return false;
   return typeof disabled === "boolean" ? disabled : toValue(disabled);
-}
-
-function resolveBadge(widget: IWidget): string | number | undefined {
-  const badge = widget.headless?.badge;
-  if (badge === undefined) return undefined;
-  return toValue(badge);
-}
-
-function resolveLoading(widget: IWidget): boolean {
-  const loading = widget.headless?.loading;
-  if (loading === undefined) return false;
-  return toValue(loading);
-}
-
-function resolveTitle(widget: IWidget): string {
-  const title = widget.title ?? "";
-  return widget.kind === "headless" ? t(title) : title;
-}
-
-function handleHeadlessClick(widget: IWidget) {
-  widgetService.setActiveWidget({ widgetId: widget.id });
-  widget.headless?.onClick?.();
 }
 
 function handleTriggerClick(widget: IWidget) {

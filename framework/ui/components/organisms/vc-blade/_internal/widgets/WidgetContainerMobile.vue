@@ -84,14 +84,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toValue } from "vue";
-import { useI18n } from "vue-i18n";
+import { computed, ref } from "vue";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcWidget } from "@ui/components/atoms/vc-widget";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { IWidget } from "@core/services/widget-service";
-import { useWidgets } from "@core/composables/useWidgets";
+import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
 
 interface Props {
   widgets: IWidget[];
@@ -99,11 +98,10 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { t } = useI18n({ useScope: "global" });
 const containerRef = ref<HTMLElement | null>(null);
 const showOverflow = ref(false);
-const widgetService = useWidgets();
 const isAnyVisible = computed(() => props.widgets.length > 0);
+const { resolveBadge, resolveLoading, resolveTitle, handleHeadlessClick } = useHeadlessWidgetHelpers();
 
 const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>({
   containerRef,
@@ -112,28 +110,6 @@ const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>(
   moreButtonWidth: 70,
   initialItemWidth: 80,
 });
-
-function resolveBadge(widget: IWidget): string | number | undefined {
-  const badge = widget.headless?.badge;
-  if (badge === undefined) return undefined;
-  return toValue(badge);
-}
-
-function resolveLoading(widget: IWidget): boolean {
-  const loading = widget.headless?.loading;
-  if (loading === undefined) return false;
-  return toValue(loading);
-}
-
-function resolveTitle(widget: IWidget): string {
-  const title = widget.title ?? "";
-  return widget.kind === "headless" ? t(title) : title;
-}
-
-function handleHeadlessClick(widget: IWidget) {
-  widgetService.setActiveWidget({ widgetId: widget.id });
-  widget.headless?.onClick?.();
-}
 </script>
 
 <style lang="scss">

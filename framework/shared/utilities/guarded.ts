@@ -19,6 +19,7 @@ export function guarded(handler: (release: () => void) => void): () => void {
     if (locked) return;
     locked = true;
     handler(() => {
+      if (!locked) return;
       locked = false;
     });
   };

@@ -34,7 +34,7 @@ describe("VcGalleryItem actions", () => {
       },
     });
 
-    const buttons = wrapper.findAll(".vc-gallery-item__action-btn");
+    const buttons = wrapper.findAll(".vc-image-tile-action");
     expect(buttons.length).toBe(3);
 
     await buttons[0].trigger("click");

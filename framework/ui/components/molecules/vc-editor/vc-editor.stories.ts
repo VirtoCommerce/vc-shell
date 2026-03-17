@@ -3,8 +3,12 @@ import { VcEditor, type CustomToolbarButton, type CustomToolbarDropdown } from "
 import { ref, defineComponent, h } from "vue";
 import type { Editor } from "@tiptap/vue-3";
 
+/**
+ * `VcEditor` is a rich Markdown editor built on top of tiptap with image upload,
+ * customizable toolbar, and error handling support.
+ */
 const meta = {
-  title: "molecules/VcEditor",
+  title: "Molecules/VcEditor",
   component: VcEditor,
   tags: ["autodocs"],
   args: {

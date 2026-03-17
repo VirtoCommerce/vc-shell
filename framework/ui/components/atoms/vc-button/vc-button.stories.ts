@@ -137,6 +137,16 @@ const meta = {
     size: "default",
     iconSize: "s",
   },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "A versatile button component for triggering actions. Supports 9 variants (5 filled + 4 structural), " +
+          "multiple sizes, loading state with spinner, icon support, and accessible focus-visible rings. " +
+          "Legacy size aliases (`xs`, `base`) and the `text` prop are preserved for backward compatibility.",
+      },
+    },
+  },
 } satisfies Meta<typeof VcButton>;
 
 export default meta;

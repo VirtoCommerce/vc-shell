@@ -85,6 +85,14 @@ const meta = {
   },
   parameters: {
     layout: "fullscreen",
+    docs: {
+      description: {
+        component:
+          "A modern overlay panel for contextual workflows and settings. Supports animated transitions (left, right, bottom), " +
+          "visual variants (default, elevated, minimal), responsive sizing, scroll locking, focus trapping, " +
+          "and keyboard dismiss via Escape. Includes header with title/subtitle, actions slot, and footer slot.",
+      },
+    },
   },
 } satisfies Meta<typeof VcSidebar>;
 

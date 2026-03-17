@@ -7,7 +7,7 @@ import { VcMultivalue } from ".";
  * from a predefined list.
  */
 const meta = {
-  title: "molecules/VcMultivalue",
+  title: "Molecules/VcMultivalue",
   component: VcMultivalue,
   tags: ["autodocs"],
   args: {

@@ -8,7 +8,7 @@ import { notification } from "@shared/components/notifications";
  * It supports different types (success, error, warning, info) and configurable timeout behavior.
  */
 const meta = {
-  title: "molecules/VcToast",
+  title: "Molecules/VcToast",
   component: VcToast,
   tags: ["autodocs"],
   args: {

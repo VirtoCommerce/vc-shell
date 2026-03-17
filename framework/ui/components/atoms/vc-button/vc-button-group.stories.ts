@@ -37,6 +37,16 @@ const meta = {
       },
     },
   },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "A container component that groups multiple VcButton instances together with consistent spacing. " +
+          "Supports horizontal and vertical orientations, attached mode for visually joined buttons, " +
+          "and size propagation to all child buttons via provide/inject.",
+      },
+    },
+  },
 } satisfies Meta<typeof VcButtonGroup>;
 
 export default meta;

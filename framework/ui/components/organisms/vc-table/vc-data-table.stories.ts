@@ -5,9 +5,25 @@ import { VcInput, VcSelect } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
 import { withMobileView } from "../../../../../.storybook/decorators";
 
+/**
+ * `VcDataTable` is the primary data table component with a declarative column API.
+ * Columns are defined via `<VcColumn>` slots, supporting sorting, filtering,
+ * inline editing, row selection, drag-and-drop reorder, and virtual scrolling.
+ */
 export default {
-  title: "organisms/VcTable/Declarative API (VcDataTable)",
+  title: "Organisms/VcDataTable",
   component: VcDataTable,
+  tags: ["autodocs"],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "A compositional data table with declarative column definitions via VcColumn slots. " +
+          "Supports sorting, filtering, inline cell editing, row selection, drag-and-drop row reorder, " +
+          "column resize and reorder, virtual scrolling, mobile card view, and state persistence.",
+      },
+    },
+  },
 } as Meta;
 
 interface Product {

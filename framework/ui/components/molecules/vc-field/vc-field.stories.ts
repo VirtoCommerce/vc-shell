@@ -8,7 +8,7 @@ const ORIENTATION = ["vertical", "horizontal"];
  * `VcField` is a component used to display labeled information, supporting various content types and layouts.
  */
 const meta = {
-  title: "molecules/VcField",
+  title: "Molecules/VcField",
   component: VcField,
   tags: ["autodocs"],
   args: {

@@ -90,6 +90,14 @@ const meta = {
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
+    docs: {
+      description: {
+        component:
+          "The primary container for content in the VC Shell admin panel. Blades are stacked panels (inspired by Azure Portal) " +
+          "that support headers with icon and title, toolbars with adaptive overflow into a 'More' dropdown, widget containers, " +
+          "error and unsaved-changes banners, loading skeleton states, and responsive mobile/desktop layouts.",
+      },
+    },
   },
   decorators: [withVcApp],
   argTypes: {

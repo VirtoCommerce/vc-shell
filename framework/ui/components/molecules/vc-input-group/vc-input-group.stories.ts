@@ -100,6 +100,14 @@ const meta = {
     role: "group",
     name: "customer-profile",
   },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "VcInputGroup is a semantic wrapper for related form controls. It renders a native fieldset with legend, supports vertical and horizontal orientations, and propagates disabled/error states to all grouped controls.",
+      },
+    },
+  },
 } satisfies Meta<typeof VcInputGroup>;
 
 export default meta;

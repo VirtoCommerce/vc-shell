@@ -168,9 +168,24 @@ function useStorySetup() {
   return { logo: MOCK_LOGO };
 }
 
+/**
+ * `VcApp` is the top-level application shell that assembles sidebar navigation,
+ * app bar, workspace area, and all framework services into a complete admin UI.
+ */
 const meta: Meta = {
-  title: "organisms/VcApp",
+  title: "Organisms/VcApp",
   component: VcApp,
+  tags: ["autodocs"],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "The top-level application shell component. Assembles sidebar navigation, app bar widgets, workspace area, " +
+          "and notification system into a complete admin interface. Supports expanded/collapsed sidebar, mobile layout, " +
+          "and full customization via slots for menu, header, and footer.",
+      },
+    },
+  },
   decorators: [
     // Save/restore localStorage to prevent stories from leaking state
     (story) => {

@@ -2,6 +2,10 @@ import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcMenu, VcMenuItem, VcMenuGroup } from ".";
 
+/**
+ * `VcMenu` is a compositional menu component for building navigation sidebars with
+ * section groups, 3-level nesting, animated expand/collapse, loading skeletons, and badge support.
+ */
 const meta = {
   title: "Molecules/VcMenu",
   component: VcMenu,

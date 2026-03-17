@@ -2,6 +2,10 @@ import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcAccordion, VcAccordionItem } from ".";
 
+/**
+ * `VcAccordion` is a flexible accordion component that supports collapsible content sections
+ * with smooth animations, customizable collapsed heights, and multiple visual variants.
+ */
 const meta = {
   title: "Molecules/VcAccordion",
   component: VcAccordion,

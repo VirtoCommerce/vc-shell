@@ -7,9 +7,9 @@ import { ref } from "vue";
  * and currency selection capabilities.
  */
 const meta = {
-  title: "molecules/VcInputCurrency",
+  title: "Molecules/VcInputCurrency",
   component: VcInputCurrency,
-  //tags: ["autodocs"],
+  tags: ["autodocs"],
   args: {
     label: "Amount",
     placeholder: "Enter amount",

@@ -8,7 +8,7 @@ import { VcIcon } from "@ui/components/atoms/vc-icon";
  * navigation, and overflow options.
  */
 const meta = {
-  title: "molecules/VcSlider",
+  title: "Molecules/VcSlider",
   component: VcSlider,
   tags: ["autodocs"],
   args: {

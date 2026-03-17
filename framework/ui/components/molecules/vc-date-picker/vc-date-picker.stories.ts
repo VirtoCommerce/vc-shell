@@ -2,6 +2,10 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcDatePicker } from "@ui/components/molecules/vc-date-picker";
 import { ref } from "vue";
 
+/**
+ * `VcDatePicker` is a standalone date picker component that wraps the VueDatePicker library
+ * with standard field chrome including label, error, and hint support.
+ */
 const meta = {
   title: "Molecules/VcDatePicker",
   component: VcDatePicker,

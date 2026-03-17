@@ -306,8 +306,23 @@ const ProductsWorkspace = defineComponent({
 
 // ── Story Meta ─────────────────────────────────────────────────────────────────
 
+/**
+ * `VcBladeNavigation` manages a stack of blade panels with workspace switching,
+ * parent-child relationships, inter-blade messaging, close guards, and error handling.
+ */
 export default {
-  title: "Blade Navigation/v2 BladeStack",
+  title: "Organisms/VcBladeNavigation",
+  tags: ["autodocs"],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "The blade navigation container that manages a stack of blade panels. Supports workspace switching, " +
+          "parent-child blade relationships, inter-blade messaging (IPC), close guards to prevent unsaved data loss, " +
+          "error state management, and automatic 2-visible stacking for deep navigation.",
+      },
+    },
+  },
 } as Meta;
 
 // ── Main Interactive Story ─────────────────────────────────────────────────────

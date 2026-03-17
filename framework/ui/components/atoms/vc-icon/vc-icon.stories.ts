@@ -14,6 +14,7 @@ import { VcIcon } from "@ui/components/atoms/vc-icon";
 const meta = {
   title: "Atoms/VcIcon",
   component: VcIcon,
+  tags: ["autodocs"],
   parameters: {
     docs: {
       description: {

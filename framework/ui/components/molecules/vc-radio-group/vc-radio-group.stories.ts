@@ -92,6 +92,14 @@ const meta = {
     options,
     orientation: "vertical",
   },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "VcRadioGroup wraps radio controls into an accessible fieldset with radiogroup role. It supports options-driven rendering, vertical and horizontal orientations, disabled items, and group-level validation.",
+      },
+    },
+  },
 } satisfies Meta<typeof VcRadioGroup>;
 
 export default meta;

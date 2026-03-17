@@ -102,6 +102,14 @@ const meta = {
     orientation: "vertical",
     size: "s",
   },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "VcCheckboxGroup wraps checkbox controls into an accessible fieldset. It supports options-driven rendering, vertical and horizontal orientations, disabled items, and group-level validation with error messages.",
+      },
+    },
+  },
 } satisfies Meta<typeof VcCheckboxGroup>;
 
 export default meta;

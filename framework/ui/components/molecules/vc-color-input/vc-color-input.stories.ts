@@ -2,6 +2,10 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcColorInput } from "@ui/components/molecules/vc-color-input";
 import { ref } from "vue";
 
+/**
+ * `VcColorInput` is a standalone color input component that combines a text input for hex values
+ * with a color swatch square that opens the native color picker.
+ */
 const meta = {
   title: "Molecules/VcColorInput",
   component: VcColorInput,

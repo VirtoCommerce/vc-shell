@@ -50,6 +50,6 @@ const displayLabel = computed(() =>
 <style lang="scss">
 .vc-table-add-row {
   @apply tw-py-3 tw-px-4 tw-border-t;
-  border-color: var(--table-border-color);
+  border-color: var(--table-border-color, var(--neutrals-200));
 }
 </style>

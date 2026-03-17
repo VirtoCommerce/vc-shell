@@ -7,15 +7,29 @@
       ref="containerRef"
       class="vc-widget-container-mobile__content"
     >
-      <component
-        :is="widget.component"
+      <template
         v-for="widget in visibleItems"
         :key="widget.id"
-        v-bind="widget.props || {}"
-        :data-item-key="widget.id"
-        :widget-id="widget.id"
-        v-on="widget.events || {}"
-      />
+      >
+        <VcWidget
+          v-if="widget.kind === 'headless'"
+          v-loading:500="resolveLoading(widget)"
+          :icon="widget.headless?.icon"
+          :title="resolveTitle(widget)"
+          :value="resolveBadge(widget)"
+          :data-item-key="widget.id"
+          :widget-id="widget.id"
+          @click="handleHeadlessClick(widget)"
+        />
+        <component
+          v-else
+          :is="widget.component"
+          v-bind="widget.props || {}"
+          :data-item-key="widget.id"
+          :widget-id="widget.id"
+          v-on="widget.events || {}"
+        />
+      </template>
 
       <div
         v-if="showMoreButton"
@@ -38,28 +52,46 @@
       @update:model-value="showOverflow = $event"
     >
       <div class="vc-widget-container-mobile__overflow-list">
-        <component
-          :is="item.component"
+        <template
           v-for="item in hiddenItems"
           :key="item.id"
-          class="tw-w-full"
-          v-bind="item.props || {}"
-          horizontal
-          :widget-id="item.id"
-          v-on="item.events || {}"
-          @click="showOverflow = false"
-        />
+        >
+          <VcWidget
+            v-if="item.kind === 'headless'"
+            v-loading:500="resolveLoading(item)"
+            class="tw-w-full"
+            :icon="item.headless?.icon"
+            :title="resolveTitle(item)"
+            :value="resolveBadge(item)"
+            :widget-id="item.id"
+            horizontal
+            @click="handleHeadlessClick(item); showOverflow = false"
+          />
+          <component
+            v-else
+            :is="item.component"
+            class="tw-w-full"
+            v-bind="item.props || {}"
+            horizontal
+            :widget-id="item.id"
+            v-on="item.events || {}"
+            @click="showOverflow = false"
+          />
+        </template>
       </div>
     </VcSidebar>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, toValue } from "vue";
+import { useI18n } from "vue-i18n";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcWidget } from "@ui/components/atoms/vc-widget";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { IWidget } from "@core/services/widget-service";
+import { useWidgets } from "@core/composables/useWidgets";
 
 interface Props {
   widgets: IWidget[];
@@ -67,8 +99,10 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { t } = useI18n({ useScope: "global" });
 const containerRef = ref<HTMLElement | null>(null);
 const showOverflow = ref(false);
+const widgetService = useWidgets();
 const isAnyVisible = computed(() => props.widgets.length > 0);
 
 const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>({
@@ -78,6 +112,28 @@ const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>(
   moreButtonWidth: 70,
   initialItemWidth: 80,
 });
+
+function resolveBadge(widget: IWidget): string | number | undefined {
+  const badge = widget.headless?.badge;
+  if (badge === undefined) return undefined;
+  return toValue(badge);
+}
+
+function resolveLoading(widget: IWidget): boolean {
+  const loading = widget.headless?.loading;
+  if (loading === undefined) return false;
+  return toValue(loading);
+}
+
+function resolveTitle(widget: IWidget): string {
+  const title = widget.title ?? "";
+  return widget.kind === "headless" ? t(title) : title;
+}
+
+function handleHeadlessClick(widget: IWidget) {
+  widgetService.setActiveWidget({ widgetId: widget.id });
+  widget.headless?.onClick?.();
+}
 </script>
 
 <style lang="scss">

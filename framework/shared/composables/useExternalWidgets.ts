@@ -48,6 +48,7 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions): UseExter
 
       const newWidget: IWidget = {
         ...widgetClone,
+        kind: "component",
         props: widgetService.resolveWidgetProps(widgetClone, toValue(bladeData)),
       };
 

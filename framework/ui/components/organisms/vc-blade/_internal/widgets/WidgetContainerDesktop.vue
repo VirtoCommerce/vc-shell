@@ -1,14 +1,30 @@
 <template>
   <div class="vc-widget-container-desktop">
     <div class="vc-widget-container-desktop__content">
-      <component
-        :is="widget.component"
+      <template
         v-for="widget in displayedItems"
         :key="widget.id"
-        v-bind="widget.props || {}"
-        :widget-id="widget.id"
-        v-on="widget.events || {}"
-      />
+      >
+        <!-- Headless: framework renders VcWidget from config -->
+        <VcWidget
+          v-if="widget.kind === 'headless'"
+          v-loading:500="resolveLoading(widget)"
+          :icon="widget.headless?.icon"
+          :title="resolveTitle(widget)"
+          :value="resolveBadge(widget)"
+          :widget-id="widget.id"
+          @click="handleHeadlessClick(widget)"
+        />
+
+        <!-- Component-based: external widgets / legacy -->
+        <component
+          v-else
+          :is="widget.component"
+          v-bind="widget.props || {}"
+          :widget-id="widget.id"
+          v-on="widget.events || {}"
+        />
+      </template>
 
       <VcDropdown
         v-if="showMoreButton"
@@ -30,24 +46,38 @@
         </template>
 
         <template #item="{ item }">
-          <WidgetDropdownItem
-            v-if="item.trigger"
-            :icon="item.trigger.icon"
-            :title="item.trigger.title || item.title || ''"
-            :badge="item.trigger.badge"
-            :disabled="resolveDisabled(item.trigger.disabled)"
-            @click="handleTriggerClick(item)"
-          />
-          <component
-            v-else
-            :is="item.component"
-            class="tw-w-full"
-            v-bind="item.props || {}"
-            horizontal
-            :widget-id="item.id"
-            v-on="item.events || {}"
-            @click="showToolbar = false"
-          />
+          <template v-if="item.kind === 'headless'">
+            <VcWidget
+              v-loading:500="resolveLoading(item)"
+              class="tw-w-full"
+              :icon="item.headless?.icon"
+              :title="resolveTitle(item)"
+              :value="resolveBadge(item)"
+              :widget-id="item.id"
+              horizontal
+              @click="handleHeadlessClick(item); showToolbar = false"
+            />
+          </template>
+          <template v-else-if="item.trigger">
+            <WidgetDropdownItem
+              :icon="item.trigger.icon"
+              :title="item.trigger.title || item.title || ''"
+              :badge="item.trigger.badge"
+              :disabled="resolveDisabled(item.trigger.disabled)"
+              @click="handleTriggerClick(item)"
+            />
+          </template>
+          <template v-else>
+            <component
+              :is="item.component"
+              class="tw-w-full"
+              v-bind="item.props || {}"
+              horizontal
+              :widget-id="item.id"
+              v-on="item.events || {}"
+              @click="showToolbar = false"
+            />
+          </template>
         </template>
       </VcDropdown>
     </div>
@@ -56,10 +86,12 @@
 
 <script setup lang="ts">
 import { ref, computed, toValue, type Ref, type ComputedRef } from "vue";
+import { useI18n } from "vue-i18n";
 import { IWidget } from "@core/services/widget-service";
 import { useWidgets } from "@core/composables";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcWidget } from "@ui/components/atoms/vc-widget";
 import WidgetDropdownItem from "./WidgetDropdownItem.vue";
 
 interface Props {
@@ -68,6 +100,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { t } = useI18n({ useScope: "global" });
 const showToolbar = ref(false);
 const widgetService = useWidgets();
 
@@ -78,6 +111,28 @@ const showMoreButton = computed(() => props.widgets.length > 3);
 function resolveDisabled(disabled: Ref<boolean> | ComputedRef<boolean> | boolean | undefined): boolean {
   if (disabled === undefined) return false;
   return typeof disabled === "boolean" ? disabled : toValue(disabled);
+}
+
+function resolveBadge(widget: IWidget): string | number | undefined {
+  const badge = widget.headless?.badge;
+  if (badge === undefined) return undefined;
+  return toValue(badge);
+}
+
+function resolveLoading(widget: IWidget): boolean {
+  const loading = widget.headless?.loading;
+  if (loading === undefined) return false;
+  return toValue(loading);
+}
+
+function resolveTitle(widget: IWidget): string {
+  const title = widget.title ?? "";
+  return widget.kind === "headless" ? t(title) : title;
+}
+
+function handleHeadlessClick(widget: IWidget) {
+  widgetService.setActiveWidget({ widgetId: widget.id });
+  widget.headless?.onClick?.();
 }
 
 function handleTriggerClick(widget: IWidget) {

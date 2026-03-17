@@ -315,6 +315,14 @@
           />
         </template>
       </DataTableMobileView>
+
+      <!-- Add Row Button (mobile) -->
+      <TableAddRowButton
+        v-if="showAddRowButton"
+        :label="addRowLabel"
+        :icon="addRowIcon"
+        @add="handleAddRow()"
+      />
     </div>
 
     <!-- Pagination / Total counter (outside scroll area, works for both desktop and mobile) -->

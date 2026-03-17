@@ -101,6 +101,16 @@ Sub-components are in `vc-table/components/`, composables in `vc-table/composabl
 - **VcTableAdapter sort prop**: Parent passes `:sort-expression` but adapter prop is `sort` — `props.sort` is always undefined. `lastSortField` ref is the essential fallback.
 - **No horizontal scrollbar**: `.vc-table-composition` uses `overflow: hidden`, not `auto`.
 
+## Storybook Story Standard
+
+All story files must follow `.storybook/STORY_STANDARD.md`. Key rules:
+- Import from `@storybook/vue3-vite` (NOT `@storybook/vue3`)
+- Use `satisfies Meta<typeof Component>` + `StoryObj`
+- Follow the tiered system: Tier 1 (simple atoms, 3+ stories), Tier 2 (interactive, 6+ stories), Tier 3 (organisms, 10+ stories)
+- Assessment protocol: score existing stories before any changes — >=80% = preserve, 40-79% = augment, <40% = generate from scratch
+- Never delete/rename existing stories. Append only.
+- Each component has a co-located `.docs.md` file with usage guide.
+
 ## Implementation Guidelines
 
 - Prefer simple, minimal fixes. Do not over-engineer. Only modify code related to the task at hand.

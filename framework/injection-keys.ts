@@ -94,6 +94,9 @@ export const InternalRoutesKey: InjectionKey<BladeRoutesRecord[]> = Symbol("Inte
 // Settings menu close callback
 export const CloseSettingsMenuKey: InjectionKey<() => void> = Symbol("CloseSettingsMenu");
 
+// Blade context (data exposed by blade for external widgets / extensions)
+export const BladeContextKey: InjectionKey<Record<string, unknown>> = Symbol("BladeContext");
+
 
 // Legacy aliases (deprecated - use the new *Key exports instead)
 /** @deprecated Use NavigationViewLocationKey instead */

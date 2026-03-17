@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { ref, computed, provide, nextTick } from "vue";
+import { describe, it, expect, vi } from "vitest";
+import { ref, computed } from "vue";
 import { mount } from "@vue/test-utils";
 import { WidgetServiceKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@shared/components/blade-navigation/types";
 import { useBladeWidgets } from "./useBladeWidgets";
 import type { IWidgetService } from "@core/services/widget-service";
-import type { WidgetDeclaration, HeadlessWidgetDeclaration } from "./useBladeWidgets";
+import type { HeadlessWidgetDeclaration } from "./useBladeWidgets";
 
 function createMockWidgetService(overrides: Partial<IWidgetService> = {}): IWidgetService {
   return {
@@ -50,45 +50,39 @@ function mountWithBlade(
   });
 }
 
-const FakeComponent = { template: "<div />" };
-
 describe("useBladeWidgets", () => {
-  it("registers all widgets on mount", () => {
+  it("registers all widgets on mount with kind='headless'", () => {
     const registerWidget = vi.fn();
     const service = createMockWidgetService({ registerWidget });
 
-    const widgets: WidgetDeclaration[] = [
-      { id: "W1", component: FakeComponent, props: { item: ref({}) } },
-      { id: "W2", component: FakeComponent },
-    ];
-
     mountWithBlade(
-      () => useBladeWidgets(widgets),
+      () => useBladeWidgets([
+        { id: "W1", icon: "lucide-tag", title: "Widget 1", badge: ref(5) },
+        { id: "W2", icon: "lucide-star", title: "Widget 2" },
+      ]),
       { widgetService: service, bladeId: "blade-1" },
     );
 
     expect(registerWidget).toHaveBeenCalledTimes(2);
     expect(registerWidget).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "W1" }),
+      expect.objectContaining({ id: "W1", kind: "headless" }),
       "blade-1",
     );
     expect(registerWidget).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "W2" }),
+      expect.objectContaining({ id: "W2", kind: "headless" }),
       "blade-1",
     );
   });
 
-  it("unregisters all widgets on unmount", async () => {
+  it("unregisters all widgets on unmount", () => {
     const unregisterWidget = vi.fn();
     const service = createMockWidgetService({ unregisterWidget });
 
-    const widgets: WidgetDeclaration[] = [
-      { id: "W1", component: FakeComponent },
-      { id: "W2", component: FakeComponent },
-    ];
-
     const wrapper = mountWithBlade(
-      () => useBladeWidgets(widgets),
+      () => useBladeWidgets([
+        { id: "W1", icon: "lucide-tag", title: "Widget 1" },
+        { id: "W2", icon: "lucide-star", title: "Widget 2" },
+      ]),
       { widgetService: service, bladeId: "blade-1" },
     );
 
@@ -99,16 +93,66 @@ describe("useBladeWidgets", () => {
     expect(unregisterWidget).toHaveBeenCalledWith("W2", "blade-1");
   });
 
+  it("passes headless fields (icon, badge, onClick) to registerWidget", () => {
+    const registerWidget = vi.fn();
+    const service = createMockWidgetService({ registerWidget });
+    const badge = ref(5);
+    const onClick = vi.fn();
+
+    mountWithBlade(
+      () => useBladeWidgets([{
+        id: "W1",
+        icon: "lucide-tag",
+        title: "Test Widget",
+        badge,
+        onClick,
+      }]),
+      { widgetService: service, bladeId: "blade-1" },
+    );
+
+    expect(registerWidget).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: "W1",
+        kind: "headless",
+        headless: expect.objectContaining({ icon: "lucide-tag", badge, onClick }),
+      }),
+      "blade-1",
+    );
+  });
+
+  it("wires onRefresh as trigger.onRefresh", () => {
+    const registerWidget = vi.fn();
+    const service = createMockWidgetService({ registerWidget });
+    const onRefresh = vi.fn();
+
+    mountWithBlade(
+      () => useBladeWidgets([{
+        id: "W1",
+        icon: "lucide-star",
+        title: "Refresh Widget",
+        onRefresh,
+      }]),
+      { widgetService: service, bladeId: "blade-1" },
+    );
+
+    expect(registerWidget).toHaveBeenCalledWith(
+      expect.objectContaining({
+        trigger: expect.objectContaining({ onRefresh }),
+      }),
+      "blade-1",
+    );
+  });
+
   it("refresh() calls trigger.onRefresh on specific widget", () => {
     const onRefresh = vi.fn();
     const getWidgets = vi.fn(() => [
-      { id: "W1", component: FakeComponent, trigger: { onRefresh } },
+      { id: "W1", kind: "headless" as const, trigger: { onRefresh } },
     ]);
     const service = createMockWidgetService({ getWidgets });
 
     let result: ReturnType<typeof useBladeWidgets> | undefined;
     mountWithBlade(
-      () => { result = useBladeWidgets([{ id: "W1", component: FakeComponent }]); },
+      () => { result = useBladeWidgets([{ id: "W1", icon: "lucide-star", title: "Test" }]); },
       { widgetService: service, bladeId: "blade-1" },
     );
 
@@ -120,18 +164,18 @@ describe("useBladeWidgets", () => {
     const onRefresh1 = vi.fn();
     const onRefresh2 = vi.fn();
     const getWidgets = vi.fn(() => [
-      { id: "W1", component: FakeComponent, trigger: { onRefresh: onRefresh1 } },
-      { id: "W2", component: FakeComponent, trigger: { onRefresh: onRefresh2 } },
-      { id: "W3", component: FakeComponent },
+      { id: "W1", kind: "headless" as const, trigger: { onRefresh: onRefresh1 } },
+      { id: "W2", kind: "headless" as const, trigger: { onRefresh: onRefresh2 } },
+      { id: "W3", kind: "headless" as const },
     ]);
     const service = createMockWidgetService({ getWidgets });
 
     let result: ReturnType<typeof useBladeWidgets> | undefined;
     mountWithBlade(
       () => { result = useBladeWidgets([
-        { id: "W1", component: FakeComponent },
-        { id: "W2", component: FakeComponent },
-        { id: "W3", component: FakeComponent },
+        { id: "W1", icon: "lucide-star", title: "T1", onRefresh: onRefresh1 },
+        { id: "W2", icon: "lucide-tag", title: "T2", onRefresh: onRefresh2 },
+        { id: "W3", icon: "lucide-link", title: "T3" },
       ]); },
       { widgetService: service, bladeId: "blade-1" },
     );
@@ -141,123 +185,21 @@ describe("useBladeWidgets", () => {
     expect(onRefresh2).toHaveBeenCalledOnce();
   });
 
-  it("passes isVisible and events to registerWidget", () => {
+  it("passes isVisible to registerWidget", () => {
     const registerWidget = vi.fn();
     const service = createMockWidgetService({ registerWidget });
     const isVisible = computed(() => true);
-    const events = { onUpdate: vi.fn() };
 
     mountWithBlade(
       () => useBladeWidgets([
-        { id: "W1", component: FakeComponent, isVisible, events },
+        { id: "W1", icon: "lucide-star", title: "Test", isVisible },
       ]),
       { widgetService: service },
     );
 
     expect(registerWidget).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "W1", isVisible, events }),
+      expect.objectContaining({ id: "W1", isVisible }),
       expect.any(String),
     );
-  });
-
-  describe("headless declarations", () => {
-    it("registers headless widget with kind='headless' and headless fields", () => {
-      const registerWidget = vi.fn();
-      const service = createMockWidgetService({ registerWidget });
-      const badge = ref(5);
-      const onClick = vi.fn();
-
-      const widgets: HeadlessWidgetDeclaration[] = [
-        {
-          id: "W1",
-          icon: "lucide-tag",
-          title: "Test Widget",
-          badge,
-          onClick,
-        },
-      ];
-
-      mountWithBlade(
-        () => useBladeWidgets(widgets),
-        { widgetService: service, bladeId: "blade-1" },
-      );
-
-      expect(registerWidget).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: "W1",
-          kind: "headless",
-          headless: expect.objectContaining({
-            icon: "lucide-tag",
-            badge,
-            onClick,
-          }),
-        }),
-        "blade-1",
-      );
-    });
-
-    it("registers headless widget with onRefresh as trigger.onRefresh", () => {
-      const registerWidget = vi.fn();
-      const service = createMockWidgetService({ registerWidget });
-      const onRefresh = vi.fn();
-
-      mountWithBlade(
-        () => useBladeWidgets([{
-          id: "W1",
-          icon: "lucide-star",
-          title: "Refresh Widget",
-          onRefresh,
-        }]),
-        { widgetService: service, bladeId: "blade-1" },
-      );
-
-      expect(registerWidget).toHaveBeenCalledWith(
-        expect.objectContaining({
-          trigger: expect.objectContaining({ onRefresh }),
-        }),
-        "blade-1",
-      );
-    });
-
-    it("refreshAll calls onRefresh on headless widgets via trigger", () => {
-      const onRefresh = vi.fn();
-      const getWidgets = vi.fn(() => [
-        { id: "W1", kind: "headless" as const, trigger: { onRefresh } },
-      ]);
-      const service = createMockWidgetService({ getWidgets });
-
-      let result: ReturnType<typeof useBladeWidgets> | undefined;
-      mountWithBlade(
-        () => { result = useBladeWidgets([{
-          id: "W1",
-          icon: "lucide-star",
-          title: "Test",
-          onRefresh,
-        }]); },
-        { widgetService: service, bladeId: "blade-1" },
-      );
-
-      result!.refreshAll();
-      expect(onRefresh).toHaveBeenCalledOnce();
-    });
-
-    it("accepts array of headless declarations", () => {
-      const registerWidget = vi.fn();
-      const service = createMockWidgetService({ registerWidget });
-
-      mountWithBlade(
-        () => useBladeWidgets([
-          { id: "W1", icon: "lucide-star", title: "Headless 1" },
-          { id: "W2", icon: "lucide-tag", title: "Headless 2", badge: ref(3) },
-        ]),
-        { widgetService: service, bladeId: "blade-1" },
-      );
-
-      expect(registerWidget).toHaveBeenCalledTimes(2);
-      expect(registerWidget).toHaveBeenCalledWith(
-        expect.objectContaining({ kind: "headless" }),
-        expect.any(String),
-      );
-    });
   });
 });

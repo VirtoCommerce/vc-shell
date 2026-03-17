@@ -7,19 +7,29 @@
       ref="containerRef"
       class="vc-widget-container-mobile__content"
     >
-      <WidgetProvider
+      <template
         v-for="widget in visibleItems"
         :key="widget.id"
-        :widget-id="widget.id"
       >
+        <VcWidget
+          v-if="widget.kind === 'headless'"
+          v-loading:500="resolveLoading(widget)"
+          :icon="widget.headless?.icon"
+          :title="resolveTitle(widget)"
+          :value="resolveBadge(widget)"
+          :data-item-key="widget.id"
+          :widget-id="widget.id"
+          @click="handleHeadlessClick(widget)"
+        />
         <component
+          v-else
           :is="widget.component"
           v-bind="widget.props || {}"
           :data-item-key="widget.id"
           :widget-id="widget.id"
           v-on="widget.events || {}"
         />
-      </WidgetProvider>
+      </template>
 
       <div
         v-if="showMoreButton"
@@ -42,12 +52,23 @@
       @update:model-value="showOverflow = $event"
     >
       <div class="vc-widget-container-mobile__overflow-list">
-        <WidgetProvider
+        <template
           v-for="item in hiddenItems"
           :key="item.id"
-          :widget-id="item.id"
         >
+          <VcWidget
+            v-if="item.kind === 'headless'"
+            v-loading:500="resolveLoading(item)"
+            class="tw-w-full"
+            :icon="item.headless?.icon"
+            :title="resolveTitle(item)"
+            :value="resolveBadge(item)"
+            :widget-id="item.id"
+            horizontal
+            @click="handleHeadlessClick(item); showOverflow = false"
+          />
           <component
+            v-else
             :is="item.component"
             class="tw-w-full"
             v-bind="item.props || {}"
@@ -56,7 +77,7 @@
             v-on="item.events || {}"
             @click="showOverflow = false"
           />
-        </WidgetProvider>
+        </template>
       </div>
     </VcSidebar>
   </div>
@@ -66,9 +87,10 @@
 import { computed, ref } from "vue";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcWidget } from "@ui/components/atoms/vc-widget";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { IWidget } from "@core/services/widget-service";
-import WidgetProvider from "./WidgetProvider.vue";
+import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
 
 interface Props {
   widgets: IWidget[];
@@ -79,6 +101,7 @@ const props = defineProps<Props>();
 const containerRef = ref<HTMLElement | null>(null);
 const showOverflow = ref(false);
 const isAnyVisible = computed(() => props.widgets.length > 0);
+const { resolveBadge, resolveLoading, resolveTitle, handleHeadlessClick } = useHeadlessWidgetHelpers();
 
 const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>({
   containerRef,

@@ -77,17 +77,22 @@
           <div
             v-if="layout.fields.length > 0"
             class="vc-data-table-mobile-card__fields"
+            :class="{ 'vc-data-table-mobile-card__fields--editing': isInlineEditing }"
           >
             <div
               v-for="field in layout.fields"
               :key="field.id"
               class="vc-data-table-mobile-card__field"
+              :class="{ 'vc-data-table-mobile-card__field--editing': isInlineEditing }"
             >
               <span
                 v-if="field.label"
                 class="vc-data-table-mobile-card__field-label"
               >{{ field.label }}:</span>
-              <span class="vc-data-table-mobile-card__field-value">
+              <span
+                class="vc-data-table-mobile-card__field-value"
+                :class="{ 'vc-data-table-mobile-card__field-value--editing': isInlineEditing }"
+              >
                 <MobileCellRenderer
                   :config="field"
                   :item="item"
@@ -629,10 +634,20 @@ onBeforeUnmount(() => {
   // Fields - 2-column grid with labels
   &__fields {
     @apply tw-grid tw-grid-cols-2 tw-gap-x-4 tw-gap-y-1 tw-text-sm;
+
+    // In editing mode, switch to single column for input + error space
+    &--editing {
+      @apply tw-grid-cols-1 tw-gap-y-3;
+    }
   }
 
   &__field {
     @apply tw-flex tw-flex-wrap tw-items-baseline tw-gap-1 tw-min-w-0;
+
+    // In editing mode, stack label above input
+    &--editing {
+      @apply tw-flex-col tw-items-stretch;
+    }
   }
 
   &__field-label {
@@ -641,6 +656,11 @@ onBeforeUnmount(() => {
 
   &__field-value {
     @apply tw-font-medium tw-text-[var(--mobile-card-text)] tw-truncate;
+
+    // In editing mode, allow overflow for error messages
+    &--editing {
+      @apply tw-overflow-visible tw-whitespace-normal;
+    }
   }
 
   // Statuses - row of badges at bottom

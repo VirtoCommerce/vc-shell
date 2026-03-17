@@ -47,9 +47,17 @@ export function useExternalWidgets(options: UseExternalWidgetsOptions): UseExter
       const widgetClone = widgetService.cloneWidget(externalWidget);
 
       const newWidget: IWidget = {
-        ...widgetClone,
+        id: widgetClone.id,
         kind: "component",
-        props: widgetService.resolveWidgetProps(widgetClone, toValue(bladeData)),
+        component: widgetClone.component,
+        config: widgetClone.config,
+        isVisible: widgetClone.isVisible,
+        title: widgetClone.title,
+        updateFunctionName: widgetClone.updateFunctionName,
+        props: widgetService.resolveWidgetProps(
+          { ...widgetClone, kind: "component" } as IWidget,
+          toValue(bladeData),
+        ),
       };
 
       try {

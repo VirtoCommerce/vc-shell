@@ -26,6 +26,9 @@
 import { ref, watch } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import VcAiAgentLoader from "@core/plugins/ai-agent/components/_internal/VcAiAgentLoader.vue";
+import { createLogger } from "@core/utilities";
+
+const logger = createLogger("ai-agent-iframe");
 
 const props = defineProps<{
   url: string;
@@ -49,7 +52,7 @@ watch(iframeRef, (iframe) => {
 const onLoad = () => {
   // Hide loader after iframe loads
   isLoading.value = false;
-  console.debug("[VcAiAgentIframe] Iframe loaded");
+  logger.debug("Iframe loaded");
 };
 
 // Reset loading state when URL changes

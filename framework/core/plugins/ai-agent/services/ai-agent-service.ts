@@ -107,7 +107,18 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
 
   // --- Wiring: connect modules together ---
 
-  // CHAT_READY → send INIT_CONTEXT
+  // Shared helper: flush pending INIT_CONTEXT when iframe becomes available
+  const flushPendingInit = async () => {
+    if (transport.pendingInitContext.value && transport.iframeRef.value?.contentWindow) {
+      transport.pendingInitContext.value = false;
+      panel.isInitialized.value = true;
+      const payload = await contextManager.buildInitPayload();
+      transport.sendToIframe({ type: "INIT_CONTEXT", payload });
+      logger.debug("Flushed pending INIT_CONTEXT");
+    }
+  };
+
+  // CHAT_READY → send INIT_CONTEXT (or mark pending if iframe ref not yet available)
   transport.onChatReady(() => {
     if (transport.iframeRef.value?.contentWindow) {
       panel.isInitialized.value = true;
@@ -118,27 +129,11 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
     } else {
       transport.pendingInitContext.value = true;
       logger.info("Chatbot ready, iframe ref not available yet — pending INIT_CONTEXT");
-      setTimeout(() => {
-        if (transport.pendingInitContext.value && transport.iframeRef.value?.contentWindow) {
-          transport.pendingInitContext.value = false;
-          panel.isInitialized.value = true;
-          contextManager.buildInitPayload().then((payload) => {
-            transport.sendToIframe({ type: "INIT_CONTEXT", payload });
-          });
-        }
-      }, 100);
     }
   });
 
-  // Watch iframe ref — send pending INIT_CONTEXT when available
-  watch(transport.iframeRef, async (iframe) => {
-    if (iframe?.contentWindow && transport.pendingInitContext.value) {
-      transport.pendingInitContext.value = false;
-      panel.isInitialized.value = true;
-      const payload = await contextManager.buildInitPayload();
-      transport.sendToIframe({ type: "INIT_CONTEXT", payload });
-    }
-  });
+  // Watch iframe ref — flush pending INIT_CONTEXT when iframe becomes available
+  watch(transport.iframeRef, () => flushPendingInit());
 
   // Watch context changes → UPDATE_CONTEXT (normal) or AI_CONTEXT_UPDATE (embedded)
   watch(
@@ -165,13 +160,7 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
   // _setIframeRef with pending context check
   const _setIframeRef = (iframe: HTMLIFrameElement | null) => {
     transport.setIframeRef(iframe);
-    if (iframe?.contentWindow && transport.pendingInitContext.value) {
-      transport.pendingInitContext.value = false;
-      panel.isInitialized.value = true;
-      contextManager.buildInitPayload().then((payload) => {
-        transport.sendToIframe({ type: "INIT_CONTEXT", payload });
-      });
-    }
+    flushPendingInit();
   };
 
   // _setContextData with embedded clear notification

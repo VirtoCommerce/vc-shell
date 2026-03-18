@@ -119,30 +119,27 @@ describe("createBladeMessaging", () => {
       ).rejects.toThrow("not found in stack");
     });
 
-    it("throws when caller has no parent", async () => {
-      // Workspace has no parent
+    it("returns undefined when caller has no parent", async () => {
+      // Workspace has no parent — callParent gracefully returns undefined
       const wsId = stack.workspace.value!.id;
-      await expect(
-        messaging.callParent(wsId, "reload"),
-      ).rejects.toThrow("has no parent");
+      const result = await messaging.callParent(wsId, "reload");
+      expect(result).toBeUndefined();
     });
 
-    it("throws when parent has no exposed methods", async () => {
+    it("returns undefined when parent has no exposed methods", async () => {
       // Child tries to call parent but parent hasn't exposed anything
       const childId = stack.blades.value[1].id;
-      await expect(
-        messaging.callParent(childId, "reload"),
-      ).rejects.toThrow("no exposed methods");
+      const result = await messaging.callParent(childId, "reload");
+      expect(result).toBeUndefined();
     });
 
-    it("throws when method not found on parent", async () => {
+    it("returns undefined when method not found on parent", async () => {
       const wsId = stack.workspace.value!.id;
       messaging.exposeToChildren(wsId, { reload: vi.fn() });
 
       const childId = stack.blades.value[1].id;
-      await expect(
-        messaging.callParent(childId, "nonExistentMethod"),
-      ).rejects.toThrow("not found on parent");
+      const result = await messaging.callParent(childId, "nonExistentMethod");
+      expect(result).toBeUndefined();
     });
   });
 
@@ -156,9 +153,8 @@ describe("createBladeMessaging", () => {
       messaging.cleanup(wsId);
 
       const childId = stack.blades.value[1].id;
-      await expect(
-        messaging.callParent(childId, "reload"),
-      ).rejects.toThrow("no exposed methods");
+      const result = await messaging.callParent(childId, "reload");
+      expect(result).toBeUndefined();
     });
 
     it("cleanup for non-existent blade is a no-op", () => {

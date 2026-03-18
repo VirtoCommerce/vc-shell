@@ -34,7 +34,8 @@ export function createBladeMessaging(bladeStack: IBladeStack): IBladeMessaging {
     }
 
     if (!callerBlade.parentId) {
-      throw new Error(`[BladeMessaging] Blade '${callerBladeId}' has no parent`);
+      console.warn(`[BladeMessaging] Blade '${callerBladeId}' has no parent — callParent() ignored.`);
+      return undefined as T;
     }
 
     // Look up the parent's exposed methods

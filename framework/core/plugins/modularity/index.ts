@@ -40,6 +40,8 @@ export function defineAppModule(options: DefineAppModuleOptions) {
 
   return {
     install(app: App): void {
+      const store = useNotificationStore();
+
       // Step 1: Blade registration (only if blades provided)
       if (blades && Object.keys(blades).length > 0) {
         const bladeRegistry = app.runWithContext(() => inject<IBladeRegistryInstance>(BladeRegistryKey));
@@ -65,7 +67,7 @@ export function defineAppModule(options: DefineAppModuleOptions) {
               app.runWithContext(() => {
                 addMenuItem({
                   ...component.menuItem!,
-                  icon: resolveComponent(component.menuItem!.icon as string),
+                  icon: component.menuItem!.icon,
                   url: component.url!,
                   routeId: name,
                   permissions: component.permissions || component.menuItem!.permissions,
@@ -78,7 +80,6 @@ export function defineAppModule(options: DefineAppModuleOptions) {
 
       // Step 2: Register notification types (new API)
       if (notifications) {
-        const store = useNotificationStore();
         for (const [type, config] of Object.entries(notifications)) {
           store.registerType(type, config);
         }
@@ -86,13 +87,11 @@ export function defineAppModule(options: DefineAppModuleOptions) {
 
       // Step 3: Legacy notification support (deprecated)
       if (!notifications && notificationTemplates) {
-        const store = useNotificationStore();
         for (const template of Object.values(notificationTemplates)) {
           const type = template.notifyType;
           if (type) {
             store.registerType(type, {
               template: template as Component,
-              severity: "info",
               toast: { mode: "auto" },
             });
           }
@@ -101,7 +100,6 @@ export function defineAppModule(options: DefineAppModuleOptions) {
 
       // Step 3b: Legacy blade notifyType compat shim (deprecated)
       if (blades) {
-        const store = useNotificationStore();
         for (const component of Object.values(blades)) {
           if (component.notifyType) {
             const notifyTypes = Array.isArray(component.notifyType)

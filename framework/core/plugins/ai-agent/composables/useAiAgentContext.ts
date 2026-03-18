@@ -1,6 +1,6 @@
 import { inject, ref, computed, watch, onUnmounted, type Ref, type ComputedRef } from "vue";
-import { mergeWith, isPlainObject } from "lodash-es";
 import { AiAgentServiceKey, BladeInstanceKey } from "@framework/injection-keys";
+import { deepMergeChanges } from "@core/plugins/ai-agent/utils/deep-merge-changes";
 import type { IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
 import type {
   ISuggestion,
@@ -12,52 +12,6 @@ import type {
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-ai-agent-context");
-
-/**
- * Custom merge function for AI agent preview changes.
- * Handles sparse arrays where null means "skip this index".
- *
- * @example
- * // Nested objects - deep merge
- * deepMergeChanges({seo: {title: "Old", desc: "Desc"}}, {seo: {title: "New"}})
- * // → {seo: {title: "New", desc: "Desc"}}
- *
- * @example
- * // Sparse arrays - null skips index
- * deepMergeChanges({items: [{a:1}, {b:2}]}, {items: [null, {c:3}]})
- * // → {items: [{a:1}, {b:2, c:3}]}
- */
-function deepMergeChanges<T extends object>(target: T, source: object): T {
-  const customizer = (targetVal: unknown, sourceVal: unknown): unknown => {
-    // If source value is null/undefined, keep target value (skip this index/field)
-    if (sourceVal === null || sourceVal === undefined) {
-      return targetVal;
-    }
-
-    // If both are arrays, merge by index with sparse array support
-    if (Array.isArray(targetVal) && Array.isArray(sourceVal)) {
-      const result = [...targetVal];
-      sourceVal.forEach((item, index) => {
-        if (item !== null && item !== undefined) {
-          if (isPlainObject(item) && isPlainObject(result[index])) {
-            // Recursively merge objects in array
-            result[index] = deepMergeChanges(result[index] as object, item);
-          } else {
-            // Replace primitive or non-object values
-            result[index] = item;
-          }
-        }
-        // null/undefined in source array = skip this index
-      });
-      return result;
-    }
-
-    // For objects, let mergeWith handle recursively with this customizer
-    return undefined;
-  };
-
-  return mergeWith({}, target, source, customizer);
-}
 
 /**
  * Checks if the ref value is an array
@@ -159,6 +113,7 @@ export function useAiAgentContext<
         isActive: computed(() => false),
         changedFields: computed(() => []),
       },
+      clearPreview: () => {},
     };
   }
 
@@ -171,19 +126,17 @@ export function useAiAgentContext<
   // Always sends an array to the service, normalizing single objects
   // Context is bound to specific blade ID
   const updateContextData = () => {
-    const items = normalizeToArray(dataRef.value).map((item) => ({
-      id: item.id,
-      objectType: item.objectType,
-      name: item.name,
-    }));
+    const raw = normalizeToArray(dataRef.value);
+    const items =
+      detectedContextType === "details"
+        ? raw.map((item) => ({ ...item }))
+        : raw.map((item) => ({ id: item.id, objectType: item.objectType, name: item.name }));
     service._setContextData(items, detectedContextType, suggestions, bladeId.value);
-    console.log(
-      `[USE-AI-AGENT-CONTEXT] Context updated: ${items.length} items, type: ${detectedContextType}, blade: ${bladeId.value}`,
-    );
+    logger.debug(`Context updated: ${items.length} items, type: ${detectedContextType}, blade: ${bladeId.value}`);
   };
 
   // Log that the handler is being registered
-  console.log("[USE-AI-AGENT-CONTEXT] Registering PREVIEW_CHANGES handler for blade:", bladeId.value);
+  logger.debug("Registering PREVIEW_CHANGES handler for blade:", bladeId.value);
 
   // Watch dataRef for changes and update context
   const stopWatch = watch(
@@ -202,7 +155,7 @@ export function useAiAgentContext<
   // Handle PREVIEW_CHANGES messages
   // Applies changes to the target object (single ref or first item in array)
   const unsubscribe = service._onPreviewChanges((payload: IPreviewChangesPayload) => {
-    console.log("[USE-AI-AGENT-CONTEXT] PREVIEW_CHANGES handler called", {
+    logger.debug("PREVIEW_CHANGES handler called", {
       bladeId: bladeId.value,
       payloadKeys: Object.keys(payload.data || {}),
       changedFields: payload.changedFields,
@@ -212,7 +165,7 @@ export function useAiAgentContext<
 
     const target = getTargetForChanges(dataRef);
     if (!target) {
-      console.warn("[USE-AI-AGENT-CONTEXT] Cannot apply preview changes: no data in dataRef", {
+      logger.warn("Cannot apply preview changes: no data in dataRef", {
         bladeId: bladeId.value,
         dataRefValue: dataRef?.value,
       });
@@ -222,7 +175,7 @@ export function useAiAgentContext<
     const targetObj = target as Record<string, unknown>;
     const updatedData = payload.data;
 
-    console.log("[USE-AI-AGENT-CONTEXT] Applying preview changes", {
+    logger.debug("Applying preview changes", {
       bladeId: bladeId.value,
       targetObjKeys: Object.keys(targetObj),
       updatedDataKeys: Object.keys(updatedData),
@@ -240,7 +193,7 @@ export function useAiAgentContext<
       targetObj[key] = mergedResult[key as keyof typeof mergedResult];
     });
 
-    console.log("[USE-AI-AGENT-CONTEXT] Deep merge completed", {
+    logger.debug("Deep merge completed", {
       bladeId: bladeId.value,
       resultPreview: JSON.stringify(targetObj).substring(0, 500),
     });
@@ -249,7 +202,7 @@ export function useAiAgentContext<
     isPreviewActive.value = true;
     changedFieldsList.value = payload.changedFields || Object.keys(updatedData);
 
-    console.log("[USE-AI-AGENT-CONTEXT] Preview changes applied successfully", {
+    logger.debug("Preview changes applied successfully", {
       bladeId: bladeId.value,
       changedFields: changedFieldsList.value,
       isPreviewActive: isPreviewActive.value,
@@ -271,15 +224,17 @@ export function useAiAgentContext<
       isActive: computed(() => isPreviewActive.value),
       changedFields: computed(() => changedFieldsList.value),
     },
+    clearPreview: () => {
+      isPreviewActive.value = false;
+      changedFieldsList.value = [];
+      logger.debug("Preview state cleared manually");
+    },
   };
 }
 
 /**
- * Clears the preview state manually.
- * Useful when user saves or discards changes.
+ * @deprecated Use the `clearPreview()` method returned by useAiAgentContext() instead.
  */
-export function clearPreviewState(previewState: UseAiAgentContextReturn["previewState"]): void {
-  // This is a helper for external clearing if needed
-  // The actual state is cleared when dataRef changes
-  logger.debug("Preview state cleared manually");
+export function clearPreviewState(_previewState: UseAiAgentContextReturn["previewState"]): void {
+  console.warn("[ai-agent] clearPreviewState() is deprecated. Use clearPreview() from useAiAgentContext() return value instead.");
 }

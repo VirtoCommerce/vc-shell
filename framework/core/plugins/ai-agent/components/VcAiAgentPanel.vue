@@ -52,7 +52,7 @@ const totalItemsCount = computed(() => aiAgentService?.totalItemsCount.value ?? 
 
 // Panel style with dynamic width
 const panelStyle = computed(() => ({
-  width: isExpanded.value ? "50%" : `${config.value.width ?? 362}px`,
+  width: isExpanded.value ? `${config.value.expandedWidth ?? 500}px` : `${config.value.width ?? 362}px`,
 }));
 
 // Panel control methods

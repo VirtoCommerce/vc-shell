@@ -54,19 +54,8 @@ const currentTemplate = computed(() => {
   return store.registry.get(type)?.template;
 });
 
-const severity = computed(() => {
-  const type = props.notification.notifyType;
-  if (!type) return "info";
-  const config = store.registry.get(type);
-  if (!config) return "info";
-  return typeof config.severity === "function"
-    ? config.severity(props.notification)
-    : config.severity;
-});
-
 const templateProps = computed(() => ({
   notification: props.notification,
-  severity: severity.value,
 }));
 
 const handleClick = () => {
@@ -81,6 +70,11 @@ const handleClick = () => {
 
 .vc-notification-item {
   @apply tw-flex tw-items-start tw-p-3 tw-w-full tw-gap-2 tw-cursor-pointer;
+  border-bottom: 1px solid var(--neutrals-100);
+
+  &:last-child {
+    border-bottom: none;
+  }
 
   &__unread-dot {
     @apply tw-w-2 tw-h-2 tw-rounded-full tw-shrink-0 tw-mt-1.5;

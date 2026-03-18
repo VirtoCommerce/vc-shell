@@ -37,8 +37,7 @@ describe("ToastController", () => {
 
   describe("auto mode", () => {
     const config: NotificationTypeConfig = {
-      severity: "info",
-      toast: { mode: "auto" },
+      toast: { mode: "auto", severity: "info" },
     };
 
     it("shows a toast with severity-based timeout", () => {
@@ -51,8 +50,7 @@ describe("ToastController", () => {
 
     it("uses warning timeout for warning severity", () => {
       const warnConfig: NotificationTypeConfig = {
-        severity: "warning",
-        toast: { mode: "auto" },
+        toast: { mode: "auto", severity: "warning" },
       };
       controller.handle(makePush(), warnConfig);
       expect(notification).toHaveBeenCalledWith(
@@ -63,8 +61,7 @@ describe("ToastController", () => {
 
     it("uses persistent (false) for error severity", () => {
       const errConfig: NotificationTypeConfig = {
-        severity: "error",
-        toast: { mode: "auto" },
+        toast: { mode: "auto", severity: "error" },
       };
       controller.handle(makePush(), errConfig);
       expect(notification).toHaveBeenCalledWith(
@@ -76,8 +73,7 @@ describe("ToastController", () => {
 
   describe("progress mode", () => {
     const config: NotificationTypeConfig = {
-      severity: "info",
-      toast: { mode: "progress" },
+      toast: { mode: "progress", severity: "info" },
     };
 
     it("creates persistent toast on first message", () => {
@@ -99,9 +95,9 @@ describe("ToastController", () => {
 
     it("completes toast when isComplete returns true", () => {
       const progressConfig: NotificationTypeConfig = {
-        severity: "info",
         toast: {
           mode: "progress",
+          severity: "info",
           isComplete: (msg) => !!(msg as any).finished,
           completedType: () => "success",
         },
@@ -121,7 +117,6 @@ describe("ToastController", () => {
   describe("silent mode", () => {
     it("does not show any toast", () => {
       const config: NotificationTypeConfig = {
-        severity: "info",
         toast: { mode: "silent" },
       };
       controller.handle(makePush(), config);
@@ -132,7 +127,6 @@ describe("ToastController", () => {
   describe("toast: false", () => {
     it("does not show any toast", () => {
       const config: NotificationTypeConfig = {
-        severity: "info",
         toast: false,
       };
       controller.handle(makePush(), config);
@@ -143,7 +137,6 @@ describe("ToastController", () => {
   describe("toast key strategy", () => {
     it("uses notifyType + message.id when no groupBy", () => {
       const config: NotificationTypeConfig = {
-        severity: "info",
         toast: { mode: "progress" },
       };
       controller.handle(makePush({ id: "a" }), config);
@@ -154,7 +147,6 @@ describe("ToastController", () => {
 
     it("uses notifyType + groupBy field when groupBy set", () => {
       const config: NotificationTypeConfig = {
-        severity: "info",
         toast: { mode: "progress" },
         groupBy: "profileId",
       };

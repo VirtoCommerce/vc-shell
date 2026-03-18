@@ -1,11 +1,13 @@
 # VcGallery
 
-A responsive multi-image gallery with drag-and-drop reorder, file upload, lightbox preview, and per-image actions.
+A responsive multi-image gallery with drag-and-drop reorder, file upload, lightbox preview, and per-image actions. VcGallery renders images in a CSS grid that auto-fills based on the container width, with a built-in upload zone tile at the end of the grid. It is the standard component for managing collections of images such as product photos, media libraries, and document attachments.
 
-## When to use
+## When to Use
 
-- Use **VcGallery** for multi-image fields (product images, media libraries).
+- Use **VcGallery** for multi-image fields (product images, media libraries, banner collections).
+- Use when you need drag-and-drop reordering of images.
 - For single-image upload (avatar, logo), use **VcImageUpload** instead.
+- When NOT to use: for non-image file lists; for single image fields.
 
 ## Props
 
@@ -42,12 +44,13 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 
 ## Features
 
-- **Drag-and-drop reorder** -- Drag tiles to reorder. Emits `sort` with the new array.
-- **External file drop** -- Drop files from the OS onto the gallery to upload.
-- **Lightbox preview** -- Click a tile to open a full-screen preview carousel.
-- **Responsive grid** -- Auto-fill grid adapts to container width using CSS grid.
+- **Drag-and-drop reorder** -- Drag tiles to reorder. Emits `sort` with the new array. The dragged tile shows a ghost preview during the drag operation.
+- **External file drop** -- Drop files from the OS onto the gallery to upload. The entire gallery acts as a drop target with visual feedback.
+- **Lightbox preview** -- Click a tile to open a full-screen preview carousel. Navigate between images with arrow keys or swipe gestures.
+- **Responsive grid** -- Auto-fill grid adapts to container width using CSS grid with `auto-fill` and `minmax()`.
+- **Per-tile actions** -- Each tile shows preview, edit, and remove buttons on hover. Disable individual actions via the `itemActions` prop.
 
-## Usage
+## Basic Usage
 
 ```vue
 <VcGallery
@@ -61,3 +64,108 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
   @remove="handleRemove"
 />
 ```
+
+## Recipe: Product Image Gallery in a Blade
+
+```vue
+<script setup lang="ts">
+import { ref } from "vue";
+import type { ICommonAsset } from "@vc-shell/framework";
+
+const images = ref<ICommonAsset[]>([]);
+
+async function handleUpload(files: FileList, startingSortOrder?: number) {
+  for (const file of Array.from(files)) {
+    const uploaded = await api.uploadImage(file);
+    uploaded.sortOrder = startingSortOrder ?? images.value.length;
+    images.value.push(uploaded);
+  }
+}
+
+function handleSort(sorted: ICommonAsset[]) {
+  images.value = sorted;
+}
+
+function handleEdit(image: ICommonAsset) {
+  // Open an image editor blade
+  openBlade({ component: ImageEditorBlade, param: image.id });
+}
+
+function handleRemove(image: ICommonAsset) {
+  images.value = images.value.filter((i) => i.url !== image.url);
+}
+</script>
+
+<template>
+  <VcBlade title="Product Images">
+    <VcGallery
+      :images="images"
+      multiple
+      accept=".jpg,.png,.webp"
+      :rules="{ fileWeight: 2000 }"
+      size="lg"
+      imagefit="cover"
+      @upload="handleUpload"
+      @sort="handleSort"
+      @edit="handleEdit"
+      @remove="handleRemove"
+    />
+    <VcHint class="tw-mt-2">
+      Drag images to reorder. The first image is used as the primary thumbnail.
+    </VcHint>
+  </VcBlade>
+</template>
+```
+
+## Recipe: Read-Only Gallery (Disabled)
+
+```vue
+<VcGallery
+  :images="order.attachments"
+  disabled
+  :item-actions="{ preview: true, edit: false, remove: false }"
+  size="sm"
+>
+  <template #empty>
+    <div class="tw-text-center tw-text-gray-400 tw-py-8">
+      No attachments for this order.
+    </div>
+  </template>
+</VcGallery>
+```
+
+## Recipe: Custom Tile with Footer Info
+
+```vue
+<VcGallery :images="mediaLibrary" @upload="handleUpload" @remove="handleRemove">
+  <template #footer="{ images }">
+    <VcHint>{{ images.length }} image(s) uploaded</VcHint>
+  </template>
+</VcGallery>
+```
+
+## Common Mistakes
+
+- **Not handling `sort` event** -- If you skip the `sort` handler, the visual reorder will not persist. Always update your data array in the `sort` handler.
+- **Forgetting `multiple` prop** -- By default, the file picker allows only one file. Set `multiple` to let users select several files at once.
+- **Large files without validation** -- Always set `rules` with a `fileWeight` limit (in KB) to prevent users from uploading oversized images that slow down the application.
+
+## Tips
+
+- The `size` prop controls tile dimensions: `"sm"` is good for compact grids (e.g., thumbnails in a sidebar), `"md"` is the standard, and `"lg"` works well for hero image management.
+- Use `imagefit="cover"` for photo galleries where cropping is acceptable, and `"contain"` for logos or icons where the full image must be visible.
+- The upload zone tile always appears at the end of the grid when the gallery is not disabled. It accepts both click and drag-and-drop interactions.
+- The `startingSortOrder` parameter in the `upload` event tells you where the new files should be inserted in the sort order. Use it to maintain correct ordering when appending new images.
+
+## Accessibility
+
+- Tiles are keyboard-navigable with Tab and action buttons are focusable
+- Lightbox preview supports keyboard navigation (arrow keys, Escape to close)
+- The upload zone is accessible via keyboard (Enter/Space to open file picker)
+- Drag-and-drop reorder requires mouse/touch; provide an alternative reorder mechanism for keyboard-only users if needed
+
+## Related Components
+
+- **VcImageUpload** -- single-image upload component
+- **VcImageTile** -- the internal tile component used for each image
+- **VcLabel** / **VcHint** -- use alongside VcGallery for field labeling

@@ -5,6 +5,8 @@ export type Severity = "info" | "warning" | "error" | "critical";
 
 export interface ToastConfig {
   mode: "auto" | "progress" | "silent";
+  /** Toast severity. Controls timeout and toast type. Default: "info" */
+  severity?: Severity | ((msg: PushNotification) => Severity);
   timeout?: number;
   /** For progress mode: determines when the operation is complete. Default: (msg) => !!(msg as any).finished */
   isComplete?: (msg: PushNotification) => boolean;
@@ -14,7 +16,6 @@ export interface ToastConfig {
 
 export interface NotificationTypeConfig {
   template?: Component;
-  severity: Severity | ((msg: PushNotification) => Severity);
   toast: ToastConfig | false;
   groupBy?: string;
 }

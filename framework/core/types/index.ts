@@ -212,7 +212,7 @@ export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {
   routeId?: string;
   title: string;
   url?: string;
-  groupIcon?: string | Component;
+  groupIcon?: string;
   groupId?: string;
   children?: MenuItem[];
   permissions?: string | string[];

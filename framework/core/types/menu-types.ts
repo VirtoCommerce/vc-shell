@@ -44,13 +44,13 @@ export interface MenuItemConfig {
   /**
    * Menu item icon.
    */
-  icon: string | Component;
+  icon: string;
   /**
    * Menu group icon.
    *
    * @deprecated Use groupConfig.icon instead for better robustness
    */
-  groupIcon?: string | Component;
+  groupIcon?: string;
   /**
    * Menu item group. Is used to group menu items with it's provided name.
    *
@@ -67,7 +67,7 @@ export interface MenuItemConfig {
   groupConfig?: {
     id: string;
     title?: string;
-    icon?: string | Component | undefined;
+    icon?: string | undefined;
     priority?: number;
     permissions?: string | string[];
     /**

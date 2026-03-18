@@ -6,8 +6,8 @@
         'vc-notification-template__container--mobile': $isMobile.value,
       }"
     >
-      <div v-if="icon" class="vc-notification-template__icon-container" :style="{ backgroundColor: color }">
-        <VcIcon :icon="icon" size="s" />
+      <div class="vc-notification-template__icon-container" :style="{ backgroundColor: color ?? 'var(--primary-500)' }">
+        <VcIcon :icon="icon ?? 'lucide-bell'" size="s" />
       </div>
       <div class="vc-notification-template__content">
         <p
@@ -97,7 +97,7 @@ const pushTime = computed(() => {
   @apply tw-w-full;
 
   &__container {
-    @apply tw-flex tw-flex-row tw-justify-between tw-grow tw-basis-0;
+    @apply tw-flex tw-flex-row tw-grow tw-basis-0;
 
     &--mobile {
       @apply tw-flex-col-reverse;
@@ -115,7 +115,7 @@ const pushTime = computed(() => {
 
   &__title {
     @apply tw-text-[color:var(--notification-template-text-color)] tw-text-xs tw-leading-[19px]
-      tw-font-bold tw-m-0 tw-text-wrap;
+      tw-font-medium tw-m-0 tw-text-wrap;
     word-break: break-word;
   }
 
@@ -125,6 +125,10 @@ const pushTime = computed(() => {
     &--mobile {
       @apply tw-mb-2 tw-justify-end;
     }
+  }
+
+  &__content {
+    @apply tw-flex-1 tw-min-w-0;
   }
 
   &__content-body {

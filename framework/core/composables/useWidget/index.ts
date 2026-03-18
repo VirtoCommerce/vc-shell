@@ -12,16 +12,13 @@ export interface UseWidgetReturn {
 }
 
 /**
+ * @deprecated Use headless widgets via `useBladeWidgets()` instead. This composable
+ * is only needed for legacy SFC widgets that register trigger contracts manually.
+ *
  * Widget-side composable — auto-discovers widget identity from WidgetProvider
  * and provides `setTrigger()` to register refresh/badge contracts.
  *
  * Must be called inside a component wrapped by WidgetProvider (inside a blade).
- *
- * @example
- * ```ts
- * const { setTrigger } = useWidget();
- * setTrigger({ badge: count, onRefresh: fetchData });
- * ```
  */
 export function useWidget(): UseWidgetReturn {
   const widgetId = inject(WidgetIdKey);

@@ -1,12 +1,13 @@
 # VcVideo
 
-An embedded video player that renders an iframe for external video sources (YouTube, Vimeo, etc.) with an optional label and tooltip. Shows a placeholder icon when no source is provided.
+An embedded video player that renders an iframe for external video sources (YouTube, Vimeo, etc.) with an optional label and tooltip. When no source URL is provided, the component displays a centered film icon placeholder instead of a blank space, giving users a clear visual cue that a video can be attached.
 
 ## When to Use
 
 - Embed product or tutorial videos in blade detail views
 - Display instructional content alongside form fields
-- When NOT to use: native HTML5 video playback from local files (use a plain `<video>` element)
+- Show a placeholder for an optional video field that has not been filled yet
+- When NOT to use: native HTML5 video playback from local files (use a plain `<video>` element); audio-only content (use an `<audio>` element)
 
 ## Basic Usage
 
@@ -51,6 +52,41 @@ When `source` is not provided, VcVideo renders a centered film icon placeholder 
 <VcVideo label="Video Not Available" />
 ```
 
+### Conditional Video in a Product Blade
+
+```vue
+<template>
+  <VcBlade title="Product Details">
+    <VcInput label="Video URL" v-model="product.videoUrl" placeholder="https://youtube.com/embed/..." />
+    <VcVideo
+      :source="product.videoUrl"
+      label="Product Video"
+      tooltip="Paste a YouTube or Vimeo embed URL above"
+    />
+  </VcBlade>
+</template>
+```
+
+## Recipe: Side-by-Side Video and Description
+
+```vue
+<template>
+  <VcRow class="tw-gap-4">
+    <VcCol :size="1">
+      <VcVideo
+        :source="tutorial.embedUrl"
+        :label="tutorial.title"
+      />
+    </VcCol>
+    <VcCol :size="1">
+      <h3 class="tw-font-medium tw-mb-2">{{ tutorial.title }}</h3>
+      <p class="tw-text-sm tw-text-gray-600">{{ tutorial.description }}</p>
+      <VcHint>Duration: {{ tutorial.duration }}</VcHint>
+    </VcCol>
+  </VcRow>
+</template>
+```
+
 ## CSS Custom Properties
 
 | Variable | Default | Description |
@@ -59,6 +95,14 @@ When `source` is not provided, VcVideo renders a centered film icon placeholder 
 | `--video-placeholder-bg` | `var(--neutrals-100)` | Placeholder background |
 | `--video-border-radius` | `6px` | Container corner radius |
 | `--video-border-color` | `var(--neutrals-200)` | Container border color |
+
+## Tips
+
+- Always use the **embed** URL format, not the standard watch URL. For YouTube, use `https://www.youtube.com/embed/VIDEO_ID` instead of `https://www.youtube.com/watch?v=VIDEO_ID`.
+- The iframe has `loading="lazy"`, so videos below the fold are not loaded until the user scrolls to them. This keeps initial page load fast.
+- The `sandbox` attribute restricts iframe capabilities to `allow-scripts allow-same-origin allow-presentation allow-popups` for security. If your video host requires additional permissions, you may need a custom wrapper.
+- The iframe renders at a fixed height of 300px. To customize the height, override the iframe styles via a scoped CSS rule targeting `.vc-video__container iframe`.
+- The placeholder has a height of 200px so the layout does not collapse when no source is provided.
 
 ## Accessibility
 
@@ -71,3 +115,4 @@ When `source` is not provided, VcVideo renders a centered film icon placeholder 
 
 - [VcLabel](../vc-label/) -- used internally for the label with tooltip
 - [VcIcon](../vc-icon/) -- renders the placeholder film icon
+- [VcRow](../vc-row/) / [VcCol](../vc-col/) -- layout primitives for placing video alongside other content

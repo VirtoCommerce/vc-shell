@@ -1,6 +1,6 @@
 import { PushNotification } from "@core/api/platform";
 import { notification } from "@shared/components/notifications/core";
-import { NotificationTypeConfig, Severity, SEVERITY_TIMEOUTS } from "./types";
+import { NotificationTypeConfig, Severity, SEVERITY_TIMEOUTS, ToastConfig } from "./types";
 
 /** PushNotification with dynamic properties (subclasses add extra fields at runtime via constructor) */
 type PushNotificationRecord = PushNotification & Record<string, unknown>;
@@ -10,12 +10,13 @@ interface ActiveToast {
 }
 
 function resolveSeverity(
-  config: NotificationTypeConfig,
+  toast: ToastConfig,
   msg: PushNotification,
 ): Severity {
-  return typeof config.severity === "function"
-    ? config.severity(msg)
-    : config.severity;
+  if (!toast.severity) return "info";
+  return typeof toast.severity === "function"
+    ? toast.severity(msg)
+    : toast.severity;
 }
 
 function resolveToastKey(
@@ -52,7 +53,7 @@ export function createToastController(): IToastController {
     if (!config.toast) return;
     if (config.toast.mode === "silent") return;
 
-    const severity = resolveSeverity(config, message);
+    const severity = resolveSeverity(config.toast, message);
 
     if (config.toast.mode === "auto") {
       handleAuto(message, severity, config, markAsReadFn);

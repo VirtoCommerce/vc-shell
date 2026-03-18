@@ -1,28 +1,21 @@
-import { computed, ref, shallowRef, watch, type ShallowRef } from "vue";
-import { cloneDeep } from "lodash-es";
+import { ref, computed, watch, type ShallowRef } from "vue";
 import { createLogger } from "@core/utilities";
-import {
+import type {
   IAiAgentService,
   IAiAgentConfig,
   IAiAgentContext,
-  IAiAgentMessage,
-  AiAgentPanelState,
   AiAgentMessageType,
+  IAiAgentMessage,
+  IPreviewChangesPayload,
+  ISuggestion,
   AiAgentContextType,
   IAiAgentBladeContext,
   IAiAgentUserContext,
-  IInitContextPayload,
-  IUpdateContextPayload,
-  IChatBladeContext,
-  INavigateToAppPayload,
-  IApplyChangesPayload,
-  IChatErrorPayload,
-  IPreviewChangesPayload,
-  IDownloadFilePayload,
-  ISuggestion,
-  IAiChatMessagePayload,
 } from "@core/plugins/ai-agent/types";
 import { DEFAULT_AI_AGENT_CONFIG } from "@core/plugins/ai-agent/constants";
+import { createPanelController } from "./panel-controller";
+import { createContextManager } from "./context-manager";
+import { createMessageTransport } from "./message-transport";
 
 const logger = createLogger("ai-agent-service");
 
@@ -56,8 +49,6 @@ export interface IAiAgentServiceInternal extends IAiAgentService {
   iframeRef: ShallowRef<HTMLIFrameElement | null>;
   /** Set the iframe reference (called by component) */
   _setIframeRef: (iframe: HTMLIFrameElement | null) => void;
-  /** Handle incoming postMessage events (called by component) */
-  _handleIncomingMessage: (event: MessageEvent) => void;
   /** Start listening for postMessage events */
   _startListening: () => void;
   /** Stop listening for postMessage events */
@@ -74,581 +65,134 @@ export interface IAiAgentServiceInternal extends IAiAgentService {
 }
 
 /**
- * Convert internal blade context to chatbot format
- */
-function toBladeContext(blade: IAiAgentBladeContext | null): IChatBladeContext {
-  if (!blade) {
-    return { id: "unknown", name: "unknown", title: "Unknown" };
-  }
-  return {
-    id: blade.id,
-    name: blade.name,
-    title: blade.title || blade.name,
-    param: blade.param,
-  };
-}
-
-/**
- * Download a file from base64 content
- */
-function downloadFile(payload: IDownloadFilePayload): void {
-  const { filename, contentType, content } = payload;
-
-  try {
-    const byteCharacters = atob(content);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: contentType });
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    logger.debug(`File downloaded: ${filename}`);
-  } catch (error) {
-    logger.error("Failed to download file:", error);
-  }
-}
-
-/**
- * Creates an AI agent service for managing the AI panel state and communication.
+ * Creates an AI agent service by composing panel-controller, context-manager, and message-transport.
  */
 export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiAgentServiceInternal {
-  const { userGetter, bladeGetter, localeGetter, tokenGetter, navigateToBlade, reloadBlade, initialConfig, isEmbedded } = options;
+  const {
+    userGetter,
+    bladeGetter,
+    localeGetter,
+    tokenGetter,
+    navigateToBlade,
+    reloadBlade,
+    initialConfig,
+    isEmbedded = false,
+  } = options;
 
-  // State
-  const panelState = ref<AiAgentPanelState>("closed");
   const config = ref<IAiAgentConfig>({ ...DEFAULT_AI_AGENT_CONFIG, ...initialConfig });
-  const iframeRef: ShallowRef<HTMLIFrameElement | null> = shallowRef(null);
-  const isInitialized = ref(false);
-  const isListenerRegistered = ref(false);
-  const pendingInitContext = ref(false);
 
-  // Context data from useAiAgentContext - stored per blade
-  // Key is blade id, value is context for that blade
-  const bladeContexts = ref<
-    Map<
-      string,
-      {
-        items: Record<string, unknown>[];
-        type: AiAgentContextType;
-        suggestions?: ISuggestion[];
-      }
-    >
-  >(new Map());
+  // Compose sub-modules
+  const panel = createPanelController();
 
-  // Get context for the active blade (last in the navigation stack)
-  const getActiveBladeContext = () => {
-    const activeBlade = bladeGetter();
-    if (!activeBlade) return { items: [], type: "list" as AiAgentContextType, suggestions: undefined };
+  const contextManager = createContextManager({
+    userGetter,
+    bladeGetter,
+    localeGetter,
+    tokenGetter,
+  });
 
-    const bladeContext = bladeContexts.value.get(activeBlade.id);
-    return bladeContext || { items: [], type: "list" as AiAgentContextType, suggestions: undefined };
-  };
+  const transport = createMessageTransport({
+    getConfig: () => config.value,
+    isEmbedded,
+    navigateToBlade,
+    reloadBlade,
+  });
 
-  // Computed accessors for backward compatibility
-  const contextItems = computed(() => getActiveBladeContext().items);
-  const contextType = computed(() => getActiveBladeContext().type);
-  const contextSuggestions = computed(() => getActiveBladeContext().suggestions);
-
-  // Message handlers registry
-  const messageHandlers = new Set<(event: IAiAgentMessage) => void>();
-  const previewChangesHandlers = new Set<(payload: IPreviewChangesPayload) => void>();
-
-  // Computed: is panel open
-  const isOpen = computed(() => panelState.value !== "closed");
-
-  // Computed: is panel expanded
-  const isExpanded = computed(() => panelState.value === "expanded");
-
-  // Computed: total items count
-  const totalItemsCount = computed(() => contextItems.value.length);
-
-  // Computed: current context (reactive)
+  // Context computed (no timestamp — clean dependency tracking)
   const context = computed<IAiAgentContext>(() => ({
     user: userGetter(),
     currentBlade: bladeGetter(),
-    items: contextItems.value,
-    timestamp: Date.now(),
+    items: contextManager.contextItems.value,
   }));
 
-  /**
-   * Build INIT_CONTEXT payload for chatbot
-   * Uses cloneDeep to ensure data is fully serializable (postMessage cannot clone Vue proxies)
-   * Fetches fresh access token (with automatic refresh if expired)
-   *
-   * tenantId priority:
-   * 1. config.tenantId (configured by app via VirtoShellFramework options)
-   * 2. organization_id from JWT (deprecated fallback)
-   */
-  const buildInitContextPayload = async (): Promise<IInitContextPayload> => {
-    const accessToken = tokenGetter ? ((await tokenGetter()) ?? undefined) : undefined;
-    return {
-      userId: userGetter()?.id || "",
-      locale: localeGetter(),
-      blade: toBladeContext(bladeGetter()),
-      contextType: contextType.value,
-      items: cloneDeep(contextItems.value),
-      suggestions: contextSuggestions.value ? cloneDeep(contextSuggestions.value) : undefined,
-      accessToken,
-    };
-  };
+  // --- Wiring: connect modules together ---
 
-  /**
-   * Build UPDATE_CONTEXT payload for chatbot
-   * Uses cloneDeep to ensure data is fully serializable (postMessage cannot clone Vue proxies)
-   * Fetches fresh access token (with automatic refresh if expired)
-   *
-   * tenantId priority:
-   * 1. config.tenantId (configured by app via VirtoShellFramework options)
-   * 2. organization_id from JWT (deprecated fallback)
-   */
-  const buildUpdateContextPayload = async (): Promise<IUpdateContextPayload> => {
-    const accessToken = tokenGetter ? ((await tokenGetter()) ?? undefined) : undefined;
-    return {
-      blade: toBladeContext(bladeGetter()),
-      contextType: contextType.value,
-      items: cloneDeep(contextItems.value),
-      suggestions: contextSuggestions.value ? cloneDeep(contextSuggestions.value) : undefined,
-      locale: localeGetter(),
-      accessToken,
-    };
-  };
+  // CHAT_READY → send INIT_CONTEXT
+  transport.onChatReady(() => {
+    if (transport.iframeRef.value?.contentWindow) {
+      panel.isInitialized.value = true;
+      contextManager.buildInitPayload().then((payload) => {
+        transport.sendToIframe({ type: "INIT_CONTEXT", payload });
+        logger.info("Chatbot ready, sent INIT_CONTEXT");
+      });
+    } else {
+      transport.pendingInitContext.value = true;
+      logger.info("Chatbot ready, iframe ref not available yet — pending INIT_CONTEXT");
+      setTimeout(() => {
+        if (transport.pendingInitContext.value && transport.iframeRef.value?.contentWindow) {
+          transport.pendingInitContext.value = false;
+          panel.isInitialized.value = true;
+          contextManager.buildInitPayload().then((payload) => {
+            transport.sendToIframe({ type: "INIT_CONTEXT", payload });
+          });
+        }
+      }, 100);
+    }
+  });
 
-  // Internal functions defined below, forward-declared here for watchers
-  let sendRawMessage: (message: { type: string; payload?: unknown }) => void;
-  let _handleIncomingMessage: (event: MessageEvent) => void;
+  // Watch iframe ref — send pending INIT_CONTEXT when available
+  watch(transport.iframeRef, async (iframe) => {
+    if (iframe?.contentWindow && transport.pendingInitContext.value) {
+      transport.pendingInitContext.value = false;
+      panel.isInitialized.value = true;
+      const payload = await contextManager.buildInitPayload();
+      transport.sendToIframe({ type: "INIT_CONTEXT", payload });
+    }
+  });
 
-  // Watch for context changes and send UPDATE_CONTEXT to chatbot
+  // Watch context changes → UPDATE_CONTEXT (normal) or AI_CONTEXT_UPDATE (embedded)
   watch(
-    () => ({
-      currentBlade: context.value.currentBlade,
-      items: context.value.items,
-    }),
+    () => ({ currentBlade: context.value.currentBlade, items: context.value.items }),
     async () => {
       if (isEmbedded) {
-        const payload = await buildInitContextPayload();
-        sendToParent({ type: "AI_CONTEXT_UPDATE", payload });
+        const payload = await contextManager.buildInitPayload();
+        transport.sendToParent({ type: "AI_CONTEXT_UPDATE", payload });
         return;
       }
-      if (isOpen.value && isInitialized.value && iframeRef.value?.contentWindow) {
-        const payload = await buildUpdateContextPayload();
-        sendRawMessage({ type: "UPDATE_CONTEXT", payload });
+      if (panel.isOpen.value && panel.isInitialized.value && transport.iframeRef.value?.contentWindow) {
+        const payload = await contextManager.buildUpdatePayload();
+        transport.sendToIframe({ type: "UPDATE_CONTEXT", payload });
       }
     },
     { deep: true },
   );
 
-  // Watch for iframe ref changes - send pending INIT_CONTEXT when iframe becomes available
-  watch(iframeRef, async (iframe) => {
-    if (iframe?.contentWindow && pendingInitContext.value) {
-      logger.debug("Iframe became available, sending pending INIT_CONTEXT");
-      pendingInitContext.value = false;
-      isInitialized.value = true;
-      const payload = await buildInitContextPayload();
-      sendRawMessage({ type: "INIT_CONTEXT", payload });
-    }
-  });
+  // Panel control — delegate to parent in embedded mode
+  const openPanel = () => (isEmbedded ? transport.sendToParent({ type: "AI_TOGGLE_PANEL" }) : panel.open());
+  const closePanel = () => (isEmbedded ? transport.sendToParent({ type: "AI_TOGGLE_PANEL" }) : panel.close());
+  const togglePanel = () => (isEmbedded ? transport.sendToParent({ type: "AI_TOGGLE_PANEL" }) : panel.toggle());
 
-  /**
-   * Start listening for messages (called by component on mount)
-   */
-  const _startListening = (): void => {
-    if (!isListenerRegistered.value) {
-      window.addEventListener("message", _handleIncomingMessage);
-      isListenerRegistered.value = true;
-      logger.debug("Message listener registered");
-    }
-  };
-
-  /**
-   * Stop listening for messages (called by component on unmount)
-   */
-  const _stopListening = (): void => {
-    if (isListenerRegistered.value) {
-      window.removeEventListener("message", _handleIncomingMessage);
-      isListenerRegistered.value = false;
-      logger.debug("Message listener unregistered");
-    }
-  };
-
-  /**
-   * Open the AI panel
-   */
-  const openPanel = (): void => {
-    if (isEmbedded) {
-      sendToParent({ type: "AI_TOGGLE_PANEL" });
-      return;
-    }
-    if (panelState.value === "closed") {
-      panelState.value = "open";
-      logger.debug("Panel opened");
-    }
-  };
-
-  /**
-   * Close the AI panel
-   */
-  const closePanel = (): void => {
-    if (isEmbedded) {
-      sendToParent({ type: "AI_TOGGLE_PANEL" });
-      return;
-    }
-    panelState.value = "closed";
-    // Reset initialized state since iframe will be destroyed (v-if in panel component)
-    // Next time panel opens, iframe will send CHAT_READY and we'll send INIT_CONTEXT again
-    isInitialized.value = false;
-    pendingInitContext.value = false;
-    logger.debug("Panel closed, reset initialized state");
-  };
-
-  /**
-   * Toggle panel open/close
-   */
-  const togglePanel = (): void => {
-    if (isEmbedded) {
-      sendToParent({ type: "AI_TOGGLE_PANEL" });
-      return;
-    }
-    if (panelState.value === "closed") {
-      openPanel();
-    } else {
-      closePanel();
-    }
-  };
-
-  /**
-   * Expand the panel to larger width
-   */
-  const expandPanel = (): void => {
-    if (panelState.value === "open") {
-      panelState.value = "expanded";
-      logger.debug("Panel expanded");
-    }
-  };
-
-  /**
-   * Collapse panel to normal width
-   */
-  const collapsePanel = (): void => {
-    if (panelState.value === "expanded") {
-      panelState.value = "open";
-      logger.debug("Panel collapsed");
-    }
-  };
-
-  /**
-   * Update configuration
-   */
-  const setConfig = (newConfig: Partial<IAiAgentConfig>): void => {
-    config.value = { ...config.value, ...newConfig };
-    logger.debug("Config updated", newConfig);
-  };
-
-  /**
-   * Send raw message to iframe (chatbot protocol format)
-   * Payload data should already be unwrapped from Vue proxies via toRaw() in build*Payload functions
-   */
-  sendRawMessage = (message: { type: string; payload?: unknown }): void => {
-    if (!iframeRef.value?.contentWindow) {
-      logger.warn("Cannot send message: iframe not available");
-      return;
-    }
-
-    const targetOrigin = config.value.allowedOrigins?.[0] || "*";
-    iframeRef.value.contentWindow.postMessage(message, targetOrigin);
-    logger.debug(`Message sent: ${message.type}`, message.payload);
-  };
-
-  /**
-   * Send message to parent window (embedded mode transport)
-   */
-  const sendToParent = (message: { type: string; payload?: unknown }): void => {
-    if (!window.parent || window.parent === window) {
-      logger.warn("Cannot send to parent: not in iframe");
-      return;
-    }
-    window.parent.postMessage(message, "*");
-    logger.debug(`Embedded message sent to parent: ${message.type}`);
-  };
-
-  /**
-   * Send message to AI agent iframe (public API)
-   */
-  const sendMessage = (type: AiAgentMessageType, payload: unknown): void => {
-    sendRawMessage({ type, payload });
-  };
-
-  /**
-   * Register message handler, returns unsubscribe function
-   */
-  const onMessage = (handler: (event: IAiAgentMessage) => void): (() => void) => {
-    messageHandlers.add(handler);
-    return () => {
-      messageHandlers.delete(handler);
-    };
-  };
-
-  /**
-   * Set the iframe reference (called by component)
-   */
-  const _setIframeRef = (iframe: HTMLIFrameElement | null): void => {
-    iframeRef.value = iframe;
-    logger.debug("Iframe ref set:", iframe ? "available" : "null");
-
-    // Immediately check for pending context (in case watch doesn't fire)
-    if (iframe?.contentWindow && pendingInitContext.value) {
-      logger.debug("Iframe ref set with pending context - sending INIT_CONTEXT immediately");
-      pendingInitContext.value = false;
-      isInitialized.value = true;
-      buildInitContextPayload().then((payload) => {
-        sendRawMessage({ type: "INIT_CONTEXT", payload });
+  // _setIframeRef with pending context check
+  const _setIframeRef = (iframe: HTMLIFrameElement | null) => {
+    transport.setIframeRef(iframe);
+    if (iframe?.contentWindow && transport.pendingInitContext.value) {
+      transport.pendingInitContext.value = false;
+      panel.isInitialized.value = true;
+      contextManager.buildInitPayload().then((payload) => {
+        transport.sendToIframe({ type: "INIT_CONTEXT", payload });
       });
     }
   };
 
-  /**
-   * Set context data for a specific blade (called by useAiAgentContext)
-   * If bladeId is not provided, uses the current active blade
-   */
+  // _setContextData with embedded clear notification
   const _setContextData = (
     items: Record<string, unknown>[],
     type: AiAgentContextType,
     suggestions?: ISuggestion[],
     bladeId?: string,
-  ): void => {
-    const targetBladeId = bladeId || bladeGetter()?.id;
-    if (!targetBladeId) {
-      logger.warn("Cannot set context data: no blade id available");
-      return;
-    }
-
-    if (items.length === 0 && !suggestions) {
-      // Remove context for this blade when cleared
-      bladeContexts.value.delete(targetBladeId);
-      if (isEmbedded) {
-        sendToParent({ type: "AI_CONTEXT_CLEAR" });
-      }
-      logger.debug(`Context cleared for blade: ${targetBladeId}`);
-    } else {
-      // Set context for this blade
-      bladeContexts.value.set(targetBladeId, { items, type, suggestions });
-      logger.debug(`Context set for blade: ${targetBladeId}, items: ${items.length}, type: ${type}`);
+  ) => {
+    const { cleared } = contextManager.setContextData(items, type, suggestions, bladeId);
+    if (isEmbedded && cleared) {
+      transport.sendToParent({ type: "AI_CONTEXT_CLEAR" });
     }
   };
 
-  /**
-   * Register preview changes handler
-   */
-  const _onPreviewChanges = (handler: (payload: IPreviewChangesPayload) => void): (() => void) => {
-    previewChangesHandlers.add(handler);
-    return () => {
-      previewChangesHandlers.delete(handler);
-    };
-  };
+  // Auto-start listener
+  transport.startListening();
 
-  /**
-   * Handle incoming postMessage events (called by component)
-   */
-  _handleIncomingMessage = (event: MessageEvent): void => {
-    // Log all incoming messages for debugging
-    if (event.data?.type) {
-      logger.debug("Raw message event received:", {
-        origin: event.origin,
-        type: event.data.type,
-        hasIframe: !!iframeRef.value,
-      });
-    }
-
-    // Validate origin if configured
-    const allowedOrigins = config.value.allowedOrigins || ["*"];
-    if (!allowedOrigins.includes("*") && !allowedOrigins.includes(event.origin)) {
-      logger.warn(`Message from unauthorized origin: ${event.origin}`);
-      return;
-    }
-
-    // Validate message structure
-    const message = event.data;
-    if (!message?.type || typeof message.type !== "string") {
-      return;
-    }
-
-    logger.debug(`Message received: ${message.type}`, message.payload);
-
-    // Handle chatbot protocol messages
-    switch (message.type) {
-      case "AI_CHAT_MESSAGE": {
-        if (isEmbedded) {
-          const chatMessage = message.payload as IAiChatMessagePayload;
-          if (chatMessage?.type) {
-            switch (chatMessage.type) {
-              case "PREVIEW_CHANGES": {
-                const previewPayload = chatMessage.payload as IPreviewChangesPayload;
-                previewChangesHandlers.forEach((handler) => {
-                  try { handler(previewPayload); } catch (error) { logger.error("Error in preview handler:", error); }
-                });
-                break;
-              }
-              case "NAVIGATE_TO_APP": {
-                const navPayload = chatMessage.payload as INavigateToAppPayload;
-                if (navigateToBlade && navPayload?.bladeName) {
-                  navigateToBlade(navPayload.bladeName, navPayload.param, navPayload.options);
-                }
-                break;
-              }
-              case "RELOAD_BLADE":
-                if (reloadBlade) reloadBlade();
-                break;
-              case "DOWNLOAD_FILE": {
-                const dlPayload = chatMessage.payload as IDownloadFilePayload;
-                if (dlPayload) downloadFile(dlPayload);
-                break;
-              }
-              case "APPLY_CHANGES": {
-                const changesPayload = chatMessage.payload as IApplyChangesPayload;
-                logger.debug("Apply changes:", changesPayload?.changes);
-                break;
-              }
-              case "CHAT_ERROR": {
-                const errPayload = chatMessage.payload as IChatErrorPayload;
-                logger.error(`Chatbot error [${errPayload?.code}]: ${errPayload?.message}`);
-                break;
-              }
-              default:
-                break;
-            }
-
-            const normalized: IAiAgentMessage = {
-              type: chatMessage.type as AiAgentMessageType,
-              payload: chatMessage.payload,
-              timestamp: Date.now(),
-            };
-            messageHandlers.forEach((handler) => {
-              try { handler(normalized); } catch (e) { logger.error("Handler error:", e); }
-            });
-          }
-        }
-        return;
-      }
-
-      case "CHAT_READY":
-        if (iframeRef.value?.contentWindow) {
-          isInitialized.value = true;
-          buildInitContextPayload().then((payload) => {
-            sendRawMessage({ type: "INIT_CONTEXT", payload });
-            logger.info("Chatbot ready, sent INIT_CONTEXT");
-          });
-        } else {
-          pendingInitContext.value = true;
-          logger.info("Chatbot ready, but iframe ref not available yet - pending INIT_CONTEXT");
-
-          // Fallback: retry after short delay in case iframeRef was set but watch didn't fire
-          setTimeout(() => {
-            if (pendingInitContext.value && iframeRef.value?.contentWindow) {
-              logger.debug("Fallback: sending pending INIT_CONTEXT after timeout");
-              pendingInitContext.value = false;
-              isInitialized.value = true;
-              buildInitContextPayload().then((payload) => {
-                sendRawMessage({ type: "INIT_CONTEXT", payload });
-              });
-            }
-          }, 100);
-        }
-        break;
-
-      case "NAVIGATE_TO_APP": {
-        const navPayload = message.payload as INavigateToAppPayload;
-        if (navigateToBlade && navPayload?.bladeName) {
-          navigateToBlade(navPayload.bladeName, navPayload.param, navPayload.options);
-          logger.debug(`Navigation requested to: ${navPayload.bladeName}`);
-        }
-        break;
-      }
-
-      case "RELOAD_BLADE":
-        if (reloadBlade) {
-          reloadBlade();
-          logger.debug("Blade reload requested");
-        }
-        break;
-
-      case "PREVIEW_CHANGES": {
-        const previewPayload = message.payload as IPreviewChangesPayload;
-        logger.debug("PREVIEW_CHANGES received", {
-          handlersCount: previewChangesHandlers.size,
-          payloadDataKeys: previewPayload?.data ? Object.keys(previewPayload.data) : [],
-          changedFields: previewPayload?.changedFields,
-          payloadPreview: JSON.stringify(previewPayload).substring(0, 500),
-        });
-        if (previewChangesHandlers.size === 0) {
-          logger.warn("No preview changes handlers registered!");
-        }
-        previewChangesHandlers.forEach((handler) => {
-          try {
-            logger.debug("Calling preview changes handler");
-            handler(previewPayload);
-          } catch (error) {
-            logger.error("Error in preview changes handler:", error);
-          }
-        });
-        break;
-      }
-
-      case "DOWNLOAD_FILE": {
-        const downloadPayload = message.payload as IDownloadFilePayload;
-        if (downloadPayload) {
-          downloadFile(downloadPayload);
-        }
-        break;
-      }
-
-      case "APPLY_CHANGES": {
-        const changesPayload = message.payload as IApplyChangesPayload;
-        logger.debug("Apply changes requested:", changesPayload?.changes);
-        break;
-      }
-
-      case "CHAT_ERROR": {
-        const errorPayload = message.payload as IChatErrorPayload;
-        logger.error(`Chatbot error [${errorPayload?.code}]: ${errorPayload?.message}`);
-        break;
-      }
-
-      default:
-        break;
-    }
-
-    // Notify all registered handlers
-    const normalizedMessage: IAiAgentMessage = {
-      type: message.type,
-      payload: message.payload,
-      timestamp: Date.now(),
-    };
-
-    messageHandlers.forEach((handler) => {
-      try {
-        handler(normalizedMessage);
-      } catch (error) {
-        logger.error("Error in message handler:", error);
-      }
-    });
-  };
-
-  // Auto-register listener when service is created
-  _startListening();
-  logger.debug("AI Agent Service initialized, listener auto-registered");
-
-  // In embedded mode, notify parent that app is ready
+  // Embedded: notify parent
   if (isEmbedded) {
-    sendToParent({
+    transport.sendToParent({
       type: "EMBEDDED_APP_READY",
       payload: { supportedFeatures: ["ai-agent"] },
     });
@@ -657,34 +201,37 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
 
   return {
     // State
-    panelState,
+    panelState: panel.panelState,
     config,
     context,
-    isOpen,
-    isExpanded,
-    totalItemsCount,
+    isOpen: computed(() => !isEmbedded && panel.isOpen.value),
+    isExpanded: panel.isExpanded,
+    totalItemsCount: contextManager.totalItemsCount,
 
     // Panel control
     openPanel,
     closePanel,
     togglePanel,
-    expandPanel,
-    collapsePanel,
+    expandPanel: () => panel.expand(),
+    collapsePanel: () => panel.collapse(),
 
     // Configuration
-    setConfig,
+    setConfig: (newConfig: Partial<IAiAgentConfig>) => {
+      config.value = { ...config.value, ...newConfig };
+    },
 
     // Communication
-    sendMessage,
-    onMessage,
+    sendMessage: (type: AiAgentMessageType, payload: unknown) => {
+      transport.sendToIframe({ type, payload });
+    },
+    onMessage: transport.onMessage,
 
-    // Internal (for component use)
-    iframeRef,
+    // Internal API
+    iframeRef: transport.iframeRef,
     _setIframeRef,
-    _handleIncomingMessage,
-    _startListening,
-    _stopListening,
+    _startListening: transport.startListening,
+    _stopListening: transport.stopListening,
     _setContextData,
-    _onPreviewChanges,
+    _onPreviewChanges: transport.onPreviewChanges,
   };
 }

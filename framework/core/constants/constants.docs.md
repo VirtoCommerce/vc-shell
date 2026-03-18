@@ -2,6 +2,18 @@
 
 Default values and configuration constants exported from `@vc-shell/framework` via `core/constants/index.ts`.
 
+## Overview
+
+Magic numbers scattered across a codebase make maintenance difficult and create inconsistencies. The vc-shell framework centralizes all layout dimensions, timing values, breakpoints, z-index layers, and component default props into a single constants module.
+
+These constants are organized into three categories:
+- **Top-level exports** -- standalone constants like `FALLBACK_BLADE_ID`
+- **`UI_CONSTANTS`** -- layout, timing, and threshold values used by the framework's UI layer
+- **`COMPONENT_DEFAULTS`** -- default prop values for each component type, accessible via `getComponentDefaults()`
+- **`languageToCountryMap`** -- locale-to-country code mapping for flag resolution
+
+All constants are importable from `@vc-shell/framework`.
+
 ## Top-Level Exports
 
 | Constant | Value | Description |
@@ -92,3 +104,82 @@ A `Record<string, string>` mapping ISO 639-1 language codes to ISO 3166-1 alpha-
 | Helper | Signature | Description |
 |--------|-----------|-------------|
 | `getComponentDefaults` | `<K extends keyof ComponentDefaults>(componentName: K) => ComponentDefaults[K]` | Type-safe accessor for component default values |
+
+## Usage Examples
+
+### Using UI constants in a composable
+
+```typescript
+import { UI_CONSTANTS } from "@vc-shell/framework";
+
+function useCustomDebounce() {
+  // Use the framework's standard debounce delay
+  const debouncedSearch = useDebounceFn(
+    (query: string) => performSearch(query),
+    UI_CONSTANTS.DEBOUNCE_DEFAULT_MS,
+  );
+  return { debouncedSearch };
+}
+```
+
+### Using component defaults
+
+```typescript
+import { getComponentDefaults } from "@vc-shell/framework";
+
+// Get all default props for a select component
+const selectDefaults = getComponentDefaults("select");
+console.log(selectDefaults.debounce);   // 500
+console.log(selectDefaults.pageSize);   // 20
+console.log(selectDefaults.searchable); // true
+```
+
+### Using z-index layers in custom components
+
+```typescript
+import { UI_CONSTANTS } from "@vc-shell/framework";
+
+// Ensure custom dropdowns sit at the right z-index layer
+const dropdownStyle = computed(() => ({
+  zIndex: UI_CONSTANTS.Z_INDEX.DROPDOWN,
+}));
+```
+
+### Using breakpoints for responsive logic
+
+```typescript
+import { UI_CONSTANTS } from "@vc-shell/framework";
+
+const isMobile = computed(() =>
+  windowWidth.value < UI_CONSTANTS.BREAKPOINTS.MD,
+);
+```
+
+### Using the language-to-country map
+
+```typescript
+import { languageToCountryMap } from "@vc-shell/framework";
+
+function getFlagUrl(locale: string): string {
+  const country = languageToCountryMap[locale] ?? "us";
+  return `https://flagcdn.com/w20/${country}.png`;
+}
+```
+
+## Tip: Override Defaults at the Component Level
+
+Component defaults serve as fallback values. Any prop explicitly set on a component instance takes precedence over `COMPONENT_DEFAULTS`. You do not need to modify the constants to change behavior for a single instance:
+
+```vue
+<!-- Uses default pageSize of 20 -->
+<VcDataTable :items="items" :columns="columns" />
+
+<!-- Overrides to 50 rows per page -->
+<VcDataTable :items="items" :columns="columns" :page-size="50" />
+```
+
+## Related
+
+- `framework/core/constants/ui.ts` -- UI_CONSTANTS definition
+- `framework/core/constants/defaults.ts` -- COMPONENT_DEFAULTS and getComponentDefaults
+- `framework/core/constants/locale.ts` -- languageToCountryMap

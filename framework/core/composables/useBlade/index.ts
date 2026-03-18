@@ -25,6 +25,7 @@ export interface UseBladeReturn {
   readonly closable: ComputedRef<boolean>;
   readonly expanded: ComputedRef<boolean>;
   readonly name: ComputedRef<string>;
+  /** @deprecated Use `defineBladeContext()` instead */
   provideBladeData(data: MaybeRef<Record<string, unknown>>): void;
   // Navigation — works everywhere
   openBlade(event: BladeOpenEvent & { isWorkspace?: boolean }): Promise<void>;

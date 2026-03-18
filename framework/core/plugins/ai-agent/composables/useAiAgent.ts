@@ -206,16 +206,8 @@ export function useAiAgent(): UseAiAgentReturn {
 }
 
 /**
- * Creates a toolbar button configuration for opening the AI agent.
- * Can be used directly in blade toolbar definitions.
- *
- * @example
- * ```typescript
- * const bladeToolbar = [
- *   createAiAgentToolbarButton(),
- *   // ... other toolbar items
- * ];
- * ```
+ * @deprecated The AI toolbar button is registered automatically by provideAiAgentService().
+ * If you need a custom button, use useAiAgent().togglePanel directly.
  */
 export function createAiAgentToolbarButton(options?: { title?: string; icon?: string }) {
   return {
@@ -223,16 +215,7 @@ export function createAiAgentToolbarButton(options?: { title?: string; icon?: st
     icon: options?.icon ?? "lucide-sparkles",
     title: options?.title ?? "AI Assistant",
     clickHandler: () => {
-      try {
-        const service = inject(AiAgentServiceKey);
-        if (service) {
-          service.togglePanel();
-        } else {
-          logger.warn("AiAgentService not available for toolbar button");
-        }
-      } catch (e) {
-        logger.error("Failed to toggle AI panel:", e);
-      }
+      console.warn("[ai-agent] createAiAgentToolbarButton is deprecated. Use useAiAgent().togglePanel instead.");
     },
   };
 }

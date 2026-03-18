@@ -55,6 +55,8 @@ export interface UseAiAgentContextReturn {
     isActive: ComputedRef<boolean>;
     changedFields: ComputedRef<string[]>;
   };
+  /** Clears preview state (call after save/discard) */
+  clearPreview: () => void;
 }
 
 // ============================================
@@ -118,8 +120,6 @@ export interface IAiAgentContext {
   currentBlade: IAiAgentBladeContext | null;
   /** Data items (from useAiAgentContext) */
   items: Record<string, unknown>[];
-  /** Timestamp of context generation */
-  timestamp: number;
 }
 
 /**

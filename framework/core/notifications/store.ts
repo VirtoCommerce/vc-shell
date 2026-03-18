@@ -1,18 +1,18 @@
 import { type Ref, type ComputedRef, ref, computed } from "vue";
 import { PushNotification, PushNotificationClient, PushNotificationSearchCriteria } from "@core/api/platform";
 import { createLogger } from "@core/utilities";
-import {
-  NotificationTypeConfig,
-  NotificationSubscription,
-  EXCLUDED_NOTIFICATION_TYPES,
-} from "./types";
+import { NotificationTypeConfig, NotificationSubscription, EXCLUDED_NOTIFICATION_TYPES } from "./types";
 import { createToastController } from "./toast-controller";
 
 const logger = createLogger("notification-store");
 
 export interface NotificationStoreOptions {
   /** Injected toast handler. Defaults to createToastController().handle */
-  toastHandle?: (msg: PushNotification, config: NotificationTypeConfig, markAsRead: (msg: PushNotification) => void) => void;
+  toastHandle?: (
+    msg: PushNotification,
+    config: NotificationTypeConfig,
+    markAsRead: (msg: PushNotification) => void,
+  ) => void;
 }
 
 export interface NotificationStore {
@@ -51,9 +51,7 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
 
   // --- Computed ---
 
-  const unreadCount = computed(() =>
-    history.value.filter((n) => n.isNew).length,
-  );
+  const unreadCount = computed(() => history.value.filter((n) => n.isNew).length);
 
   const hasUnread = computed(() => unreadCount.value > 0);
 
@@ -64,10 +62,7 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
   }
 
   function ingest(message: PushNotification) {
-    if (
-      message.notifyType &&
-      EXCLUDED_NOTIFICATION_TYPES.includes(message.notifyType)
-    ) {
+    if (message.notifyType && EXCLUDED_NOTIFICATION_TYPES.includes(message.notifyType)) {
       return;
     }
 
@@ -118,28 +113,20 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
   }
 
   async function markAllAsRead() {
-    // Snapshot current read state for rollback (history and realtime can diverge after loadHistory)
-    const prevHistory = history.value.map((x) => ({ id: x.id, isNew: x.isNew }));
-    const prevRealtime = realtime.value.map((x) => ({ id: x.id, isNew: x.isNew }));
-
-    // Optimistic local update
-    history.value.forEach((x) => { x.isNew = false; });
-    realtime.value.forEach((x) => { x.isNew = false; });
+    // Local update — always applied regardless of server response
+    history.value.forEach((x) => {
+      x.isNew = false;
+    });
+    realtime.value.forEach((x) => {
+      x.isNew = false;
+    });
 
     try {
       await notificationsClient.markAllAsRead();
     } catch (e) {
-      // Rollback on server failure
-      for (const prev of prevHistory) {
-        const item = history.value.find((x) => x.id === prev.id);
-        if (item) item.isNew = prev.isNew;
-      }
-      for (const prev of prevRealtime) {
-        const rt = realtime.value.find((x) => x.id === prev.id);
-        if (rt) rt.isNew = prev.isNew;
-      }
+      // Server failure is non-critical — local state stays "read"
+      // Next loadHistory() will reconcile with server state
       logger.error("markAllAsRead failed:", e);
-      throw e;
     }
   }
 
@@ -190,4 +177,3 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
     getByType,
   };
 }
-

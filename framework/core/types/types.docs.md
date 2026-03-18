@@ -4,7 +4,9 @@ Shared TypeScript interfaces and types used across the vc-shell framework for va
 
 ## Overview
 
-These types form the contract between framework services, UI components, and consuming modules. They are re-exported from `@vc-shell/framework`.
+These types form the contract between framework services, UI components, and consuming modules. They define the shape of data structures used throughout the application: how menu items are configured, how table columns are defined, what toolbar buttons look like, and how services communicate.
+
+All types are re-exported from `@vc-shell/framework`, so module developers import them directly from the framework package.
 
 **Files:** `index.ts`, `menu-types.ts`, `services.ts`
 
@@ -72,6 +74,110 @@ These types form the contract between framework services, UI components, and con
 | `NotificationTemplateConstructor` | Component constructor with a `notifyType` static field. |
 | `IActionBuilderResult<T>` | Row action definition: `icon`, `title`, `type` (danger/success/warning/info), `clickHandler`. |
 | `RequestPasswordResult` | Password reset result: `succeeded`, `error`, `errorCode`. |
+
+## Usage Examples
+
+### Defining table columns
+
+```typescript
+import type { ITableColumns } from "@vc-shell/framework";
+
+const columns: ITableColumns[] = [
+  {
+    id: "name",
+    title: "Product Name",
+    sortable: true,
+    type: "text",
+  },
+  {
+    id: "price",
+    title: "Price",
+    type: "money",
+    sortable: true,
+    width: 120,
+  },
+  {
+    id: "image",
+    title: "Image",
+    type: "image",
+    width: 80,
+  },
+  {
+    id: "status",
+    title: "Status",
+    type: "status",
+    width: 100,
+    filter: {
+      options: [
+        { value: "active", label: "Active" },
+        { value: "draft", label: "Draft" },
+        { value: "archived", label: "Archived" },
+      ],
+    },
+  },
+  {
+    id: "createdDate",
+    title: "Created",
+    type: "date-time",
+    sortable: true,
+    width: 150,
+  },
+];
+```
+
+### Configuring toolbar buttons
+
+```typescript
+import type { IBladeToolbar } from "@vc-shell/framework";
+
+const toolbarItems: IBladeToolbar[] = [
+  {
+    id: "save",
+    title: "Save",
+    icon: "lucide-save",
+    clickHandler: async () => await saveProduct(),
+    permissions: "product:update",
+  },
+  {
+    id: "delete",
+    title: "Delete",
+    icon: "lucide-trash",
+    clickHandler: () => confirmDelete(),
+    permissions: ["product:delete", "product:manage"],
+    isVisible: computed(() => !isNewProduct.value),
+  },
+];
+```
+
+### Registering menu items
+
+```typescript
+import type { MenuItemConfig } from "@vc-shell/framework";
+
+const menuConfig: MenuItemConfig = {
+  title: "Orders",
+  icon: "lucide-shopping-cart",
+  priority: 10,
+  permissions: ["order:read"],
+  group: "Commerce",
+  badge: {
+    content: computed(() => pendingOrderCount.value),
+    variant: "warning",
+  },
+};
+```
+
+## Tip: ITableColumnsBase type field
+
+The `type` field in `ITableColumnsBase` uses `"date-time"` (with hyphen), but the VcColumn component uses `"datetime"` (no hyphen). The VcTableAdapter handles this mapping automatically. If you use VcDataTable directly with VcColumn slot syntax, use `"datetime"`:
+
+```vue
+<!-- VcColumn uses "datetime" -->
+<VcColumn id="created" title="Created" type="datetime" />
+
+<!-- ITableColumnsBase uses "date-time" -->
+<!-- { id: "created", title: "Created", type: "date-time" } -->
+```
 
 ## Related
 

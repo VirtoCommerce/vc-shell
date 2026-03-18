@@ -4,7 +4,7 @@ import * as components from "@ui/components";
 import * as directives from "@core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import { i18n, permissions, signalR } from "@core/plugins";
-import { notifyMountComplete } from "@core/plugins/signalR";
+// import { notifyMountComplete } from "@core/plugins/signalR";
 import { aiAgentPlugin, type AiAgentPluginOptions } from "@core/plugins/ai-agent";
 import { SharedModule, notification } from "@shared";
 import { registerInterceptors } from "@core/interceptors";
@@ -16,17 +16,12 @@ import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-in
 import { useAppInsights, AppInsightsOptionsKey } from "@core/composables/useAppInsights";
 import { setupGlobalErrorHandlers } from "@core/plugins/global-error-handler";
 import { useConnectionStatus } from "@core/composables/useConnectionStatus";
-import { createNotificationStore } from "@core/notifications";
+import { useNotificationStore } from "@core/notifications";
 
 // Import Blade Registry
 import { createBladeRegistry, BladeRegistryKey, IBladeRegistryInstance } from "@core/composables/useBladeRegistry";
 
 import * as coreComposables from "@core/composables";
-import * as corePlugins from "@core/plugins";
-import * as coreApiPlatform from "@core/api/platform";
-import * as coreUtilities from "@core/utilities";
-import * as coreConstants from "@core/constants";
-import * as shared from "@shared";
 import "normalize.css";
 import "./assets/styles/fonts.scss";
 import "./assets/styles/index.scss";
@@ -64,11 +59,6 @@ type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 
 interface FrameworkInstallArgs {
   router: Router;
-  /**
-   * @deprecated `platformUrl` key will be removed in the next versions.
-   * Use 'APP_PLATFORM_URL' environment variable instead while on development.
-   */
-  platformUrl?: string;
   i18n?: {
     locale: string;
     fallbackLocale: string;
@@ -105,7 +95,6 @@ export interface VcShellFrameworkPlugin {
   install(app: App, args: FrameworkInstallArgs): void;
 }
 
-
 // ── Dev-mode string key deprecation warnings ─────────────────────────
 
 const _warnedStringKeys = new Set<string>();
@@ -113,9 +102,7 @@ const _warnedStringKeys = new Set<string>();
 function warnStringKey(key: string, replacement: string): void {
   if (import.meta.env.DEV && !_warnedStringKeys.has(key)) {
     _warnedStringKeys.add(key);
-    console.warn(
-      `[vc-shell] inject("${key}") is deprecated. Use ${replacement} from @vc-shell/framework instead.`,
-    );
+    console.warn(`[vc-shell] inject("${key}") is deprecated. Use ${replacement} from @vc-shell/framework instead.`);
   }
 }
 
@@ -214,7 +201,7 @@ function createAndProvideServices(app: App) {
   app.provide(AppBarWidgetServiceKey, createAppBarWidgetService());
   app.provide(MenuServiceKey, createMenuService());
   app.provide(SettingsMenuServiceKey, createSettingsMenuService());
-  app.provide(NotificationStoreKey, createNotificationStore());
+  app.provide(NotificationStoreKey, useNotificationStore());
 
   const bladeRegistryInstance: IBladeRegistryInstance = createBladeRegistry(app);
   app.provide(BladeRegistryKey, bladeRegistryInstance);
@@ -331,7 +318,6 @@ function setupRouterGuards(router: Router) {
       return Object.keys(param)[0] ? `/${Object.values(param)[0]}` + from.path : from.path;
     }
   });
-
 }
 
 // ── Plugin entry point ───────────────────────────────────────────────
@@ -339,9 +325,7 @@ function setupRouterGuards(router: Router) {
 export default {
   install(app: App, args: FrameworkInstallArgs): void {
     // Register base theme
-    coreComposables.useTheme().register([
-      { key: "light", localizationKey: "core.themes.light" },
-    ]);
+    coreComposables.useTheme().register([{ key: "light", localizationKey: "core.themes.light" }]);
 
     // HTTP Interceptors
     window.fetch = registerInterceptors(args.router);
@@ -369,7 +353,7 @@ export default {
     // the browser paints before executing the next macrotask.
     setTimeout(() => {
       performance.mark("vc:deferred-plugins-start");
-      notifyMountComplete(); // Trigger deferred SignalR connection
+      // notifyMountComplete(); // Trigger deferred SignalR connection
       installApplicationInsightsDeferred(app, args); // AppInsights SDK + router hooks
       performance.mark("vc:deferred-plugins-done");
     }, 0);

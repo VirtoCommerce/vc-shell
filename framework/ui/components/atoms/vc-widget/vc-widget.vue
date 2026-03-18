@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-widget"
-    :data-widget-id="actualWidgetId"
+    :data-widget-id="widgetId"
     :data-widget-name="title"
     :class="[
       { 'vc-widget--expanded': isExpanded },
@@ -45,13 +45,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, getCurrentInstance, useAttrs } from "vue";
+import { computed } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { useWidgets } from "@core/composables/useWidgets";
-import { createLogger } from "@core/utilities";
 import { formatBadgeCount } from "@shared/utilities/formatBadgeCount";
-
-const logger = createLogger("vc-widget");
 
 export interface Props {
   icon?: string;
@@ -60,6 +56,7 @@ export interface Props {
   disabled?: boolean;
   isExpanded?: boolean;
   horizontal?: boolean;
+  widgetId?: string;
 }
 
 const props = defineProps<Props>();
@@ -67,26 +64,8 @@ const emit = defineEmits<{
   (event: "click"): void;
 }>();
 
-const instance = getCurrentInstance();
-const attrs = useAttrs();
-const widgetService = useWidgets();
-
-// Get widgetId from attributes passed by the parent container
-const actualWidgetId = computed(() => (attrs.widgetId || attrs["widget-id"]) as string | undefined);
-
 function onClick() {
   if (props.disabled) return;
-
-  if (actualWidgetId.value) {
-    // Pass exposed if available (legacy path), omit if not (trigger path)
-    widgetService.setActiveWidget({
-      widgetId: actualWidgetId.value,
-      exposed: instance?.parent?.exposed ?? null,
-    });
-  } else {
-    logger.warn("widgetId is missing from attrs. Widget activation might not work as expected.");
-  }
-
   emit("click");
 }
 

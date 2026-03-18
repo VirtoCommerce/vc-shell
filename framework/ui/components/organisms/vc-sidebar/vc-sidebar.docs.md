@@ -1,6 +1,6 @@
 # VcSidebar
 
-A slide-over panel for contextual workflows, settings, and detail views. Supports left, right, and bottom positions with animated transitions, focus trapping, scroll locking, and swipe-to-dismiss gestures.
+A slide-over panel for contextual workflows, settings, and detail views. Supports left, right, and bottom positions with animated transitions, focus trapping, scroll locking, and swipe-to-dismiss gestures. VcSidebar is built for use cases where a full blade is too heavy but a popup is too small — settings panels, filter drawers, item detail previews, and mobile bottom sheets.
 
 ## When to Use
 
@@ -70,9 +70,34 @@ const open = ref(false);
 | `actions` | `{ close }` | Extra buttons in the header actions area. |
 | `footer` | -- | Sticky footer area. |
 
+## Features
+
+### Animated Transitions
+
+The panel slides in from its configured `position` with a smooth CSS transition. The overlay fades in simultaneously. When `prefers-reduced-motion` is active, transitions are disabled for accessibility.
+
+### Focus Trapping and Scroll Locking
+
+When `trapFocus` is true (default), Tab key cycles through focusable elements inside the panel. When `lockScroll` is true (default), the page body scroll is locked, preventing background content from scrolling under the overlay.
+
+### Swipe-to-Dismiss (Bottom Sheet)
+
+When `position="bottom"` and `draggable` is true, users can swipe the panel down to dismiss it. The `dragHandle` prop adds a visible handle bar at the top of the panel for better affordance.
+
+### Size Presets
+
+| Size | Width/Height |
+|------|-------------|
+| `sm` | 300px |
+| `md` | 380px |
+| `lg` | 520px |
+| `full` | Full viewport |
+
+Override with the `width` or `height` prop for custom dimensions.
+
 ## Common Patterns
 
-**Bottom sheet with swipe-to-dismiss:**
+### Bottom Sheet with Swipe-to-Dismiss
 
 ```vue
 <VcSidebar v-model="open" position="bottom" size="md" draggable drag-handle>
@@ -80,13 +105,71 @@ const open = ref(false);
 </VcSidebar>
 ```
 
-**Elevated variant with custom width:**
+### Elevated Variant with Custom Width
 
 ```vue
 <VcSidebar v-model="open" variant="elevated" :width="480" title="Details">
   <div class="tw-p-5">Content</div>
 </VcSidebar>
 ```
+
+## Recipe: Filter Drawer in a List Blade
+
+```vue
+<script setup lang="ts">
+import { ref, reactive } from "vue";
+
+const showFilters = ref(false);
+const filters = reactive({
+  status: "",
+  dateFrom: "",
+  dateTo: "",
+  category: "",
+});
+
+function applyFilters() {
+  showFilters.value = false;
+  loadItems(filters);
+}
+
+function resetFilters() {
+  Object.assign(filters, { status: "", dateFrom: "", dateTo: "", category: "" });
+}
+</script>
+
+<template>
+  <VcButton icon="lucide-filter" @click="showFilters = true">Filters</VcButton>
+
+  <VcSidebar v-model="showFilters" title="Filters" position="right" size="sm">
+    <div class="tw-p-4 tw-space-y-4">
+      <VcSelect label="Status" v-model="filters.status" :options="statusOptions" />
+      <VcInput label="Date From" v-model="filters.dateFrom" type="date" />
+      <VcInput label="Date To" v-model="filters.dateTo" type="date" />
+      <VcSelect label="Category" v-model="filters.category" :options="categoryOptions" />
+    </div>
+
+    <template #footer>
+      <div class="tw-flex tw-gap-2 tw-p-4">
+        <VcButton variant="primary" @click="applyFilters">Apply</VcButton>
+        <VcButton variant="outline" @click="resetFilters">Reset</VcButton>
+      </div>
+    </template>
+  </VcSidebar>
+</template>
+```
+
+## Common Mistakes
+
+- **Using `draggable` with left/right position** -- Swipe-to-dismiss only works with `position="bottom"`. Setting `draggable` on a left or right sidebar has no effect.
+- **Forgetting `v-model`** -- VcSidebar requires a `v-model` binding to control open/close state. Without it, the panel cannot be dismissed.
+- **Nested scrolling conflicts** -- If the sidebar content is scrollable and `lockScroll` is true, the body scroll is locked but the sidebar content scrolls normally. If you have nested scroll containers, test carefully on mobile.
+
+## Tips
+
+- Listen to the `close` event to distinguish how the sidebar was closed (`"overlay"` click, `"escape"` key, or `"action"` button). This is useful when you need to prompt for unsaved changes only on certain close methods.
+- The `inset` prop (default `true`) adds a small gap between the sidebar and the viewport edges with rounded corners. Set `inset` to `false` for an edge-to-edge panel that looks more like a traditional drawer.
+- The `minimal` variant removes the header background and border, useful for lightweight panels that blend into the content.
+- Use the `header` slot to completely replace the default header when you need a custom layout (e.g., tabs in the header, search input, breadcrumbs).
 
 ## Accessibility
 

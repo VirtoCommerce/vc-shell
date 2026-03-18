@@ -5,8 +5,8 @@
       class="notification-dropdown__scroll"
     >
       <div
-        v-for="(item, index) in notifications"
-        :key="index"
+        v-for="item in notifications"
+        :key="item.id"
       >
         <NotificationItem :notification="item" />
       </div>
@@ -21,23 +21,25 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount } from "vue";
+import { computed, onMounted } from "vue";
 import NotificationItem from "@shared/components/notification-dropdown/_internal/notification/notification.vue";
 import { useI18n } from "vue-i18n";
 import { useNotificationStore } from "@core/notifications";
 import { VcScrollableContainer } from "@ui/components/atoms/vc-scrollable-container";
-import { orderBy } from "lodash-es";
 
 const store = useNotificationStore();
-
 const { t } = useI18n({ useScope: "global" });
 
+// Sort with timestamp normalization to handle mixed string/Date created values
 const notifications = computed(() =>
-  orderBy(store.history.value, ["created"], ["desc"]),
+  [...store.history.value].sort(
+    (a, b) => (b.created?.getTime() ?? 0) - (a.created?.getTime() ?? 0),
+  ),
 );
 
-onBeforeUnmount(() => {
-  if (store.history.value.some((x) => x.isNew)) {
+// Mark all as read when dropdown opens (persists to server)
+onMounted(() => {
+  if (store.hasUnread.value) {
     store.markAllAsRead();
   }
 });

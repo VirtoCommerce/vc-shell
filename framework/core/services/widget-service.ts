@@ -12,12 +12,12 @@ export interface IWidgetEvents {
   [key: string]: Set<WidgetEventHandler>;
 }
 
-/** @deprecated Use `useWidget().setTrigger()` instead of `defineExpose()` for widget refresh contracts. */
 export interface IExposedWidget {
   id?: string;
   [key: string]: unknown;
 }
 
+/** @deprecated No longer used — external widgets inject data via `injectBladeContext()` */
 export interface IWidgetConfig {
   requiredData?: string[];
   optionalData?: string[];
@@ -34,36 +34,38 @@ export interface IWidgetTrigger {
   badge?: Ref<number | string> | ComputedRef<number | string>;
   /** Handler called when the widget is clicked in dropdown */
   onClick?: () => void;
-  /** Handler called by updateActiveWidget to refresh data */
+  /** Handler called to refresh widget data */
   onRefresh?: () => void | Promise<void>;
   /** Disabled state — static or reactive */
   disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
 }
 
-/** Fields present only on headless widgets (kind: "headless") */
+/** Fields present only on headless widgets (when `headless` is set on IWidget) */
 export interface IHeadlessWidgetFields {
   icon: string;
   badge?: Ref<number | string> | ComputedRef<number | string>;
   loading?: Ref<boolean> | ComputedRef<boolean>;
+  disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
   onClick?: () => void;
   onRefresh?: () => void | Promise<void>;
 }
 
 export interface IWidget {
   id: string;
-  /** Discriminant: "headless" = framework renders VcWidget; "component" = user SFC */
-  kind: "headless" | "component";
   title?: string;
+  /** @deprecated Use headless widgets via `useBladeWidgets()` or external widgets via `registerExternalWidget()` */
   component?: Component;
+  /** @deprecated External widgets inject data via `injectBladeContext()` */
   props?: Record<string, unknown>;
+  /** @deprecated No longer used — external widgets inject data via `injectBladeContext()` */
   config?: IWidgetConfig;
+  /** @deprecated External widgets inject data via `injectBladeContext()` */
   events?: Record<string, unknown>;
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
-  /** @deprecated Use `useWidget().setTrigger({ onRefresh })` inside the widget instead. */
+  /** @deprecated Use `useWidget().setTrigger({ onRefresh })` inside the widget instead */
   updateFunctionName?: string;
-  /** Optional trigger contract for lightweight overflow rendering */
   trigger?: IWidgetTrigger;
-  /** Headless-only fields (icon, badge, loading, onClick, onRefresh) */
+  /** When set, framework renders VcWidget from these fields instead of component */
   headless?: IHeadlessWidgetFields;
 }
 
@@ -75,10 +77,12 @@ export interface IWidgetRegistration {
 export interface IExternalWidgetRegistration {
   id: string;
   component: Component;
-  config: IWidgetConfig;
+  /** @deprecated No longer used — external widgets inject data via `injectBladeContext()` */
+  config?: IWidgetConfig;
   targetBlades?: string[];
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
   title?: string;
+  /** @deprecated Use `useWidget().setTrigger({ onRefresh })` inside the widget instead */
   updateFunctionName?: string;
 }
 
@@ -86,14 +90,7 @@ export interface IWidgetService {
   registerWidget: (widget: IWidget, bladeId: string) => void;
   unregisterWidget: (widgetId: string, bladeId: string) => void;
   getWidgets: (bladeId: string) => IWidget[];
-  clearBladeWidgets: (bladeId: string) => void;
-  registeredWidgets: IWidgetRegistration[];
-  isActiveWidget: (id: string) => boolean;
-  setActiveWidget: (args: { widgetId: string; exposed?: ComponentInternalInstance["exposed"] }) => void;
-  updateActiveWidget: () => void;
-  isWidgetRegistered: (id: string) => boolean;
   updateWidget: ({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }) => void;
-  resolveWidgetProps: (widget: IWidget, bladeData: Record<string, unknown>) => Record<string, unknown>;
   getExternalWidgetsForBlade: (bladeId: string) => IExternalWidgetRegistration[];
   getAllExternalWidgets: () => IExternalWidgetRegistration[];
   cloneWidget: <T extends IWidget | IExternalWidgetRegistration>(widget: T) => T;
@@ -173,102 +170,15 @@ export function createWidgetService(): IWidgetService {
     getRegistrationItemId: (r) => r.widget.id,
   });
 
-  const activeWidget = ref<{ exposed?: ComponentInternalInstance["exposed"]; widgetId: string } | undefined>();
-
-  const resolveWidgetProps = (widget: IWidget, bladeData: Record<string, unknown>): Record<string, unknown> => {
-    if (!widget.config) {
-      return widget.props || {};
-    }
-
-    let resolvedProps: Record<string, unknown> = {};
-
-    if (widget.config.propsResolver) {
-      try {
-        const customProps = widget.config.propsResolver(bladeData);
-        resolvedProps = { ...widget.props, ...customProps };
-      } catch (error) {
-        logger.error(`Error in propsResolver for widget '${widget.id}':`, error);
-        resolvedProps = { ...widget.props };
-      }
-    } else {
-      resolvedProps = { ...widget.props };
-
-      const { requiredData = [], optionalData = [], fieldMapping = {} } = widget.config;
-
-      requiredData.forEach((key) => {
-        const bladeKey = fieldMapping[key] || key;
-        if (bladeData[bladeKey] !== undefined) {
-          resolvedProps[key] = bladeData[bladeKey];
-        } else {
-          logger.warn(`Required data '${key}' not found in blade data for widget '${widget.id}'`);
-          logger.warn(`Required data '${key}' not found in blade data for widget '${widget.id}'`);
-        }
-      });
-
-      optionalData.forEach((key) => {
-        const bladeKey = fieldMapping[key] || key;
-        if (bladeData[bladeKey] !== undefined) {
-          resolvedProps[key] = bladeData[bladeKey];
-        }
-      });
-    }
-
-    return resolvedProps;
-  };
-
-  const setActiveWidget = ({
-    exposed,
-    widgetId,
-  }: {
-    widgetId: string;
-    exposed?: ComponentInternalInstance["exposed"];
-  }): void => {
-    activeWidget.value = { exposed, widgetId };
-  };
-
-  const updateActiveWidget = (): void => {
-    const widgetId = activeWidget.value?.widgetId;
-    if (!widgetId) return;
-
-    const registration = bladeRegistry.registrations.find((r) => r.widget.id === widgetId);
-
-    // Priority 1: trigger.onRefresh
-    if (registration?.widget.trigger?.onRefresh) {
-      registration.widget.trigger.onRefresh();
-      return;
-    }
-
-    // Priority 2: legacy exposed[updateFunctionName]
-    const activeExposed = activeWidget.value?.exposed as IExposedWidget | undefined;
-    const functionNameToCall = registration?.widget.updateFunctionName;
-
-    if (activeExposed && functionNameToCall && typeof activeExposed[functionNameToCall] === "function") {
-      activeExposed[functionNameToCall]();
-      return;
-    }
-
-    logger.warn(`Widget '${widgetId}' has no trigger.onRefresh and no exposed function '${functionNameToCall}'.`);
-  };
-
   const getExternalWidgetsForBladeLocal = (bladeId: string): IExternalWidgetRegistration[] => {
     return getExternalWidgetsForBlade(bladeId.toLowerCase());
   };
 
   const service: IWidgetService = {
-    registerWidget: (widget, bladeId) => {
-      const normalized: IWidget = { ...widget, kind: widget.kind ?? "component" };
-      bladeRegistry.register(normalized, bladeId);
-    },
+    registerWidget: (widget, bladeId) => bladeRegistry.register(widget, bladeId),
     unregisterWidget: (widgetId, bladeId) => bladeRegistry.unregister(widgetId, bladeId),
     getWidgets: (bladeId) => bladeRegistry.get(bladeId),
-    clearBladeWidgets: (bladeId) => bladeRegistry.clear(bladeId),
-    registeredWidgets: bladeRegistry.registrations,
-    isActiveWidget: (id) => activeWidget.value?.widgetId === id,
-    setActiveWidget,
-    updateActiveWidget,
-    isWidgetRegistered: (id) => bladeRegistry.isRegistered(id),
     updateWidget: ({ id, bladeId, widget }) => bladeRegistry.update(id, bladeId, widget),
-    resolveWidgetProps,
     getExternalWidgetsForBlade: getExternalWidgetsForBladeLocal,
     getAllExternalWidgets,
     cloneWidget,

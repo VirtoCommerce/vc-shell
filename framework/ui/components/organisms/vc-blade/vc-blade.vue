@@ -282,4 +282,11 @@ const contentRef = ref<HTMLElement | null>(null);
 .vc-app--mobile .vc-blade {
   @apply tw-m-0 tw-rounded-none;
 }
+
+// When mobile widgets are visible (fixed at bottom), offset content so it isn't hidden
+.vc-blade--mobile:has(.vc-widget-container-mobile) {
+  .vc-blade__content {
+    padding-bottom: var(--blade-toolbar-widgets-mobile-height);
+  }
+}
 </style>

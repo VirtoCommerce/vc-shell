@@ -1,7 +1,7 @@
 import { App, watch, ref, InjectionKey } from "vue";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { PushNotification } from "@core/api/platform";
-import { useNotificationStore } from "@core/notifications";
+import { useNotificationStore, type NotificationStore } from "@core/notifications";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useCypressSignalRMock } from "cypress-signalr-mock";
 import { createLogger } from "@core/utilities";
@@ -10,23 +10,17 @@ const logger = createLogger("signalR");
 
 const currentCreator = ref<string | undefined>();
 
-let mountComplete = false;
-let pendingStart = false;
-let _startFn: (() => void) | null = null;
-
 export const updateSignalRCreatorSymbol: InjectionKey<(creator: string | undefined) => void> =
   Symbol("updateSignalRCreator");
 
-function setupSystemEventsHandler(connection: any, creator?: string) {
-  // Unsubscribe from the previous handler if it was
+function setupSystemEventsHandler(connection: any, store: NotificationStore, creator?: string) {
   connection.off("SendSystemEvents");
 
-  // Subscribe to events with the new creator
   if (creator) {
     logger.debug("Setup handler for creator: ", creator);
     connection.on("SendSystemEvents", (message: PushNotification) => {
       if (message.creator === creator) {
-        useNotificationStore().ingest(message);
+        store.ingest(message);
       }
     });
   }
@@ -52,23 +46,17 @@ export const signalR = {
         .build();
 
     const start = () => {
-      if (!mountComplete) {
-        pendingStart = true;
-        return;
-      }
       connection
         .start()
         .then(() => {
           logger.info("Connected.");
-          setupSystemEventsHandler(connection, currentCreator.value);
+          setupSystemEventsHandler(connection, store, currentCreator.value);
         })
         .catch((err) => {
           logger.error("Connection Error: ", err);
           setTimeout(() => start(), 5000);
         });
     };
-
-    _startFn = start;
 
     async function stop() {
       await connection.stop();
@@ -82,12 +70,11 @@ export const signalR = {
       store.ingest(message);
     });
 
-    // Watch for changes in the creator
     watch(
       currentCreator,
       (newCreator) => {
         if (newCreator && connection.state === "Connected") {
-          setupSystemEventsHandler(connection, newCreator);
+          setupSystemEventsHandler(connection, store, newCreator);
         }
       },
       { immediate: true },
@@ -101,7 +88,6 @@ export const signalR = {
           start();
         } else {
           reconnect = false;
-          pendingStart = false; // Cancel any pending deferred start
           await stop();
         }
       },
@@ -116,11 +102,3 @@ export const signalR = {
     });
   },
 };
-
-export function notifyMountComplete(): void {
-  mountComplete = true;
-  if (pendingStart && _startFn) {
-    pendingStart = false;
-    _startFn();
-  }
-}

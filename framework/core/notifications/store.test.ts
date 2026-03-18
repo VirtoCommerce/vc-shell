@@ -39,17 +39,17 @@ describe("NotificationStore", () => {
   describe("registerType", () => {
     it("registers a type config in the registry", () => {
       store.registerType("TestEvent", {
-        severity: "info",
-        toast: { mode: "auto" },
+        toast: { mode: "auto", severity: "info" },
       });
       expect(store.registry.get("TestEvent")).toBeDefined();
-      expect(store.registry.get("TestEvent")!.severity).toBe("info");
+      const toast = store.registry.get("TestEvent")!.toast as { severity: string };
+      expect(toast.severity).toBe("info");
     });
 
     it("overwrites existing type config (idempotent)", () => {
-      store.registerType("TestEvent", { severity: "info", toast: { mode: "auto" } });
-      store.registerType("TestEvent", { severity: "error", toast: false });
-      expect(store.registry.get("TestEvent")!.severity).toBe("error");
+      store.registerType("TestEvent", { toast: { mode: "auto", severity: "info" } });
+      store.registerType("TestEvent", { toast: false });
+      expect(store.registry.get("TestEvent")!.toast).toBe(false);
     });
   });
 
@@ -175,11 +175,11 @@ describe("NotificationStore", () => {
     it("calls toastController.handle when type is registered", () => {
       const handleSpy = vi.fn();
       store = createNotificationStore({ toastHandle: handleSpy });
-      store.registerType("TestEvent", { severity: "info", toast: { mode: "auto" } });
+      store.registerType("TestEvent", { toast: { mode: "auto" } });
       store.ingest(makePush());
       expect(handleSpy).toHaveBeenCalledWith(
         expect.objectContaining({ id: "test-1" }),
-        expect.objectContaining({ severity: "info" }),
+        expect.objectContaining({ toast: { mode: "auto" } }),
         expect.any(Function), // markAsRead
       );
     });

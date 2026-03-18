@@ -1,26 +1,29 @@
-import { inject } from "vue";
+import { inject, getCurrentInstance } from "vue";
 import { NotificationStoreKey } from "@framework/injection-keys";
 import { createNotificationStore, NotificationStore } from "../store";
-import { createLogger } from "@core/utilities";
 
-const logger = createLogger("use-notification-store");
+/** Module-level singleton — shared by all callers when inject() is unavailable. */
+let _singleton: NotificationStore | null = null;
 
 /**
- * Returns the NotificationStore instance from the current app context.
- * Falls back to creating a standalone instance when no app context is available
- * (e.g. in unit tests without a mounted app).
+ * Returns the shared NotificationStore singleton.
+ *
+ * Resolution order:
+ * 1. Vue inject() — works inside component setup() or app.runWithContext()
+ * 2. Module-level singleton — ensures all plugin install() calls and
+ *    remote microfrontend modules share the same store instance
  */
 export function useNotificationStore(): NotificationStore {
-  const injected = inject(NotificationStoreKey, null);
-  if (!injected) {
-    if (import.meta.env.DEV) {
-      logger.warn(
-        "useNotificationStore() called without app context. " +
-        "A standalone store was created. This is expected in tests but indicates " +
-        "a missing provide() in production.",
-      );
+  if (getCurrentInstance()) {
+    const injected = inject(NotificationStoreKey, null);
+    if (injected) {
+      _singleton = injected;
+      return injected;
     }
-    return createNotificationStore();
   }
-  return injected;
+
+  if (!_singleton) {
+    _singleton = createNotificationStore();
+  }
+  return _singleton;
 }

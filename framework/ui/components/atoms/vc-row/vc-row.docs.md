@@ -1,12 +1,13 @@
 # VcRow
 
-A simple layout primitive that arranges child elements in a horizontal flexbox row, automatically switching to a grid on mobile viewports.
+A simple layout primitive that arranges child elements in a horizontal flexbox row, automatically switching to a CSS grid on mobile viewports. VcRow has no props of its own — it is a purely presentational wrapper that applies consistent flex behavior and responsive breakpoints so you do not have to repeat the same Tailwind utilities across every horizontal layout.
 
 ## When to Use
 
 - Lay out sibling elements (images, cards, form fields) side by side
 - Build responsive rows that stack on mobile automatically
-- When NOT to use: complex grid layouts with explicit column sizing (use CSS grid or Tailwind utilities directly)
+- Pair with [VcCol](../vc-col/) for proportional multi-column layouts
+- When NOT to use: complex grid layouts with explicit column sizing (use CSS grid or Tailwind utilities directly); single-column stacking (use VcCol alone)
 
 ## Basic Usage
 
@@ -57,11 +58,53 @@ The `--row-gap` CSS variable (default `0`) controls spacing. You can also overri
 </template>
 ```
 
+### Proportional Columns with VcCol
+
+```vue
+<template>
+  <VcRow class="tw-gap-6">
+    <VcCol :size="1">
+      <VcImage :src="product.imageUrl" size="xl" />
+    </VcCol>
+    <VcCol :size="2">
+      <VcInput label="Product Name" v-model="product.name" />
+      <VcInput label="SKU" v-model="product.sku" />
+    </VcCol>
+  </VcRow>
+</template>
+```
+
+## Recipe: Form Section with Label and Fields
+
+Use VcRow to place a section label next to a group of fields in a blade detail view:
+
+```vue
+<template>
+  <VcRow class="tw-gap-4 tw-py-4 tw-border-b">
+    <VcCol :size="1">
+      <span class="tw-font-medium tw-text-sm tw-text-gray-700">Pricing</span>
+    </VcCol>
+    <VcCol :size="3" class="tw-gap-3">
+      <VcInput label="List Price" v-model="form.listPrice" type="number" />
+      <VcInput label="Sale Price" v-model="form.salePrice" type="number" />
+      <VcSelect label="Currency" v-model="form.currency" :options="currencies" />
+    </VcCol>
+  </VcRow>
+</template>
+```
+
 ## CSS Custom Properties
 
 | Variable | Default | Description |
 |---|---|---|
 | `--row-gap` | `0` | Gap between child elements |
+
+## Tips
+
+- On mobile (when a `.vc-app--mobile` ancestor is present), VcRow switches from `display: flex` to `display: grid`, causing children to stack vertically. This happens automatically via the framework's responsive class.
+- VcRow uses `flex-wrap: nowrap` and `align-items: stretch` by default. If you need wrapping, add `class="tw-flex-wrap"`.
+- For spacing, prefer the Tailwind `tw-gap-*` utility over `--row-gap` since it is more intuitive and co-locates with other layout classes.
+- VcRow is purely presentational — it renders a plain `<div>` with no ARIA attributes. Add roles or labels on the content elements as needed.
 
 ## Accessibility
 
@@ -70,4 +113,5 @@ The `--row-gap` CSS variable (default `0`) controls spacing. You can also overri
 
 ## Related Components
 
+- [VcCol](../vc-col/) -- vertical flex column, the natural child for proportional layouts
 - [VcContainer](../vc-container/) -- higher-level layout container for blade content sections

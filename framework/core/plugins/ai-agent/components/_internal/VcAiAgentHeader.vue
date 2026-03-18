@@ -8,6 +8,9 @@
       <div class="vc-ai-agent-header__content">
         <div class="vc-ai-agent-header__title">
           {{ title }}
+          <span v-if="itemsCount" class="vc-ai-agent-header__badge">
+            {{ itemsCount }}
+          </span>
         </div>
       </div>
     </div>
@@ -47,6 +50,7 @@ import VcVirtoOzLogo from "@core/plugins/ai-agent/components/_internal/VcVirtoOz
 defineProps<{
   title?: string;
   isExpanded: boolean;
+  itemsCount?: number;
 }>();
 
 defineEmits<{
@@ -97,6 +101,12 @@ defineEmits<{
     &:hover {
       color: var(--blade-header-button-color-hover, var(--neutrals-500));
     }
+  }
+
+  &__badge {
+    @apply tw-ml-2 tw-text-xs tw-font-medium tw-px-1.5 tw-py-0.5 tw-rounded-full;
+    background-color: var(--ai-panel-badge-bg);
+    color: var(--ai-panel-badge-color);
   }
 }
 </style>

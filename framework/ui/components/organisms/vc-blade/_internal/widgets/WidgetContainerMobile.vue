@@ -12,23 +12,28 @@
         :key="widget.id"
       >
         <VcWidget
-          v-if="widget.kind === 'headless'"
+          v-if="widget.headless"
           v-loading:500="resolveLoading(widget)"
           :icon="widget.headless?.icon"
           :title="resolveTitle(widget)"
           :value="resolveBadge(widget)"
+          :disabled="resolveDisabled(widget)"
           :data-item-key="widget.id"
           :widget-id="widget.id"
           @click="handleHeadlessClick(widget)"
         />
-        <component
+        <WidgetProvider
           v-else
-          :is="widget.component"
-          v-bind="widget.props || {}"
-          :data-item-key="widget.id"
           :widget-id="widget.id"
-          v-on="widget.events || {}"
-        />
+        >
+          <component
+            :is="widget.component"
+            v-bind="widget.props || {}"
+            :data-item-key="widget.id"
+            :widget-id="widget.id"
+            v-on="widget.events || {}"
+          />
+        </WidgetProvider>
       </template>
 
       <div
@@ -57,26 +62,34 @@
           :key="item.id"
         >
           <VcWidget
-            v-if="item.kind === 'headless'"
+            v-if="item.headless"
             v-loading:500="resolveLoading(item)"
             class="tw-w-full"
             :icon="item.headless?.icon"
             :title="resolveTitle(item)"
             :value="resolveBadge(item)"
+            :disabled="resolveDisabled(item)"
             :widget-id="item.id"
             horizontal
-            @click="handleHeadlessClick(item); showOverflow = false"
+            @click="
+              handleHeadlessClick(item);
+              showOverflow = false;
+            "
           />
-          <component
+          <WidgetProvider
             v-else
-            :is="item.component"
-            class="tw-w-full"
-            v-bind="item.props || {}"
-            horizontal
             :widget-id="item.id"
-            v-on="item.events || {}"
-            @click="showOverflow = false"
-          />
+          >
+            <component
+              :is="item.component"
+              class="tw-w-full"
+              v-bind="item.props || {}"
+              horizontal
+              :widget-id="item.id"
+              v-on="item.events || {}"
+              @click="showOverflow = false"
+            />
+          </WidgetProvider>
         </template>
       </div>
     </VcSidebar>
@@ -91,6 +104,7 @@ import { VcWidget } from "@ui/components/atoms/vc-widget";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { IWidget } from "@core/services/widget-service";
 import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
+import WidgetProvider from "./WidgetProvider.vue";
 
 interface Props {
   widgets: IWidget[];
@@ -101,7 +115,7 @@ const props = defineProps<Props>();
 const containerRef = ref<HTMLElement | null>(null);
 const showOverflow = ref(false);
 const isAnyVisible = computed(() => props.widgets.length > 0);
-const { resolveBadge, resolveLoading, resolveTitle, handleHeadlessClick } = useHeadlessWidgetHelpers();
+const { resolveBadge, resolveLoading, resolveDisabled, resolveTitle, handleHeadlessClick } = useHeadlessWidgetHelpers();
 
 const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>({
   containerRef,

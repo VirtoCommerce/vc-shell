@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, watch } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import VcAiAgentLoader from "@core/plugins/ai-agent/components/_internal/VcAiAgentLoader.vue";
 
@@ -51,13 +51,6 @@ const onLoad = () => {
   isLoading.value = false;
   console.debug("[VcAiAgentIframe] Iframe loaded");
 };
-
-onMounted(() => {
-  // Emit again on mount in case watch didn't catch it
-  if (iframeRef.value) {
-    emit("iframe-ready", iframeRef.value);
-  }
-});
 
 // Reset loading state when URL changes
 watch(() => props.url, () => {

@@ -1,5 +1,13 @@
-import { ref, computed, onMounted, onBeforeUnmount, nextTick, type Ref, watch } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, type Ref, watch, type ComputedRef } from "vue";
 import { useElementSize, useDebounceFn } from "@vueuse/core";
+
+export interface IUseAdaptiveItems<T> {
+  visibleItems: Ref<T[]>;
+  hiddenItems: Ref<T[]>;
+  showMoreButton: ComputedRef<boolean>;
+  recalculate: () => void;
+  updateObserver: () => void;
+}
 
 /**
  * Measure the natural (unshrunk) width of an element.
@@ -11,8 +19,7 @@ function measureNaturalWidth(element: HTMLElement): number {
   element.style.flexShrink = "0";
 
   const styles = getComputedStyle(element);
-  const width =
-    element.offsetWidth + parseFloat(styles.marginLeft || "0") + parseFloat(styles.marginRight || "0");
+  const width = element.offsetWidth + parseFloat(styles.marginLeft || "0") + parseFloat(styles.marginRight || "0");
 
   element.style.flexShrink = originalFlexShrink;
   return width;
@@ -38,7 +45,7 @@ export function useAdaptiveItems<T>(options: {
   moreButtonWidth: number;
   calculationStrategy?: "forward" | "reverse";
   initialItemWidth?: number;
-}) {
+}): IUseAdaptiveItems<T> {
   const {
     containerRef,
     items,
@@ -61,8 +68,8 @@ export function useAdaptiveItems<T>(options: {
   const containerGap = ref(0);
 
   // Result arrays
-  const visibleItems = ref<T[]>([]);
-  const hiddenItems = ref<T[]>([]);
+  const visibleItems = ref([]) as Ref<T[]>;
+  const hiddenItems = ref([]) as Ref<T[]>;
   const showMoreButton = computed(() => hiddenItems.value.length > 0);
 
   // Single persistent ResizeObserver
@@ -233,8 +240,7 @@ export function useAdaptiveItems<T>(options: {
           const styles = getComputedStyle(element);
           const borderBoxWidth = entry.borderBoxSize?.[0]?.inlineSize;
           const baseWidth = borderBoxWidth != null ? borderBoxWidth : element.offsetWidth;
-          const width =
-            baseWidth + parseFloat(styles.marginLeft || "0") + parseFloat(styles.marginRight || "0");
+          const width = baseWidth + parseFloat(styles.marginLeft || "0") + parseFloat(styles.marginRight || "0");
 
           if (width > 0 && itemSizes.value.get(key) !== width) {
             itemSizes.value.set(key, width);

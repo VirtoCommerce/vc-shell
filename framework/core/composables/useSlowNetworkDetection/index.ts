@@ -1,6 +1,10 @@
 import { computed, ref, type Ref } from "vue";
+import { createLogger } from "@core/utilities";
 
+const logger = createLogger("slow-network");
 const SLOW_REQUEST_THRESHOLD_MS = 5000;
+const SLOW_EFFECTIVE_TYPES = ["slow-2g", "2g"];
+let _connectionHandler: (() => void) | null = null;
 
 // ── Module-level singleton state ────────────────────────────────────
 const _isSetup = ref(false);
@@ -45,7 +49,19 @@ function untrackRequest(id: string): void {
 export function useSlowNetworkDetection(): UseSlowNetworkDetectionReturn {
   if (!_isSetup.value && typeof window !== "undefined") {
     _isSetup.value = true;
-    // effectiveType and notification setup added in later tasks
+
+    const connection = (navigator as any).connection;
+    if (connection) {
+      _connectionHandler = () => {
+        const isSlow = SLOW_EFFECTIVE_TYPES.includes(connection.effectiveType);
+        if (isSlow !== _isSlowEffectiveType.value) {
+          logger.info(`Connection type: ${connection.effectiveType} → ${isSlow ? "slow" : "normal"}`);
+        }
+        _isSlowEffectiveType.value = isSlow;
+      };
+      connection.addEventListener("change", _connectionHandler);
+      _connectionHandler(); // initial check
+    }
   }
 
   return {
@@ -58,6 +74,11 @@ export function useSlowNetworkDetection(): UseSlowNetworkDetectionReturn {
 /** Test-only: reset singleton state between tests. No-op in production builds. */
 export const _resetForTest: (() => void) | undefined = import.meta.env.VITEST
   ? () => {
+      const connection = (navigator as any).connection;
+      if (connection && _connectionHandler) {
+        connection.removeEventListener("change", _connectionHandler);
+        _connectionHandler = null;
+      }
       _isSetup.value = false;
       _slowRequestCount.value = 0;
       _isSlowEffectiveType.value = false;

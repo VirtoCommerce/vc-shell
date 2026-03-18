@@ -73,4 +73,73 @@ describe("useSlowNetworkDetection", () => {
       expect(isSlowNetwork.value).toBe(false);
     });
   });
+
+  describe("effectiveType channel", () => {
+    function mockConnection(effectiveType: string) {
+      const listeners: Array<() => void> = [];
+      const connection = {
+        effectiveType,
+        addEventListener: (_event: string, fn: () => void) => {
+          listeners.push(fn);
+        },
+        removeEventListener: (_event: string, fn: () => void) => {
+          const idx = listeners.indexOf(fn);
+          if (idx >= 0) listeners.splice(idx, 1);
+        },
+        _simulateChange(newType: string) {
+          connection.effectiveType = newType;
+          listeners.forEach((fn) => fn());
+        },
+      };
+      vi.stubGlobal("navigator", {
+        ...navigator,
+        connection,
+        onLine: true,
+      });
+      return connection;
+    }
+
+    it("detects slow-2g as slow network", async () => {
+      const connection = mockConnection("slow-2g");
+      const mod = await import("./index");
+      const { isSlowNetwork } = mod.useSlowNetworkDetection();
+      expect(isSlowNetwork.value).toBe(true);
+      mod._resetForTest?.();
+      vi.unstubAllGlobals();
+    });
+
+    it("detects 2g as slow network", async () => {
+      const connection = mockConnection("2g");
+      const mod = await import("./index");
+      const { isSlowNetwork } = mod.useSlowNetworkDetection();
+      expect(isSlowNetwork.value).toBe(true);
+      mod._resetForTest?.();
+      vi.unstubAllGlobals();
+    });
+
+    it("does not flag 4g as slow", async () => {
+      const connection = mockConnection("4g");
+      const mod = await import("./index");
+      const { isSlowNetwork } = mod.useSlowNetworkDetection();
+      expect(isSlowNetwork.value).toBe(false);
+      mod._resetForTest?.();
+      vi.unstubAllGlobals();
+    });
+
+    it("reacts to connection type changes", async () => {
+      const connection = mockConnection("4g");
+      const mod = await import("./index");
+      const { isSlowNetwork } = mod.useSlowNetworkDetection();
+      expect(isSlowNetwork.value).toBe(false);
+
+      connection._simulateChange("2g");
+      expect(isSlowNetwork.value).toBe(true);
+
+      connection._simulateChange("4g");
+      expect(isSlowNetwork.value).toBe(false);
+
+      mod._resetForTest?.();
+      vi.unstubAllGlobals();
+    });
+  });
 });

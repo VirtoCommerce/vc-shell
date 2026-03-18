@@ -1,4 +1,34 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { nextTick, ref } from "vue";
+
+const mockIsOnline = ref(true);
+
+const { mockNotification } = vi.hoisted(() => {
+  const mockNotification = {
+    warning: vi.fn(),
+    remove: vi.fn(),
+  };
+  return { mockNotification };
+});
+
+vi.mock("@shared/components/notifications/core/notification", () => ({
+  notification: mockNotification,
+}));
+
+vi.mock("@core/composables/useConnectionStatus", () => ({
+  useConnectionStatus: () => ({
+    isOnline: mockIsOnline,
+  }),
+}));
+
+vi.mock("@core/utilities", () => ({
+  createLogger: () => ({
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+  }),
+}));
 
 // Must be imported after vi.stubGlobal for navigator.connection mock
 let useSlowNetworkDetection: typeof import("./index")["useSlowNetworkDetection"];
@@ -140,6 +170,90 @@ describe("useSlowNetworkDetection", () => {
 
       mod._resetForTest?.();
       vi.unstubAllGlobals();
+    });
+  });
+
+  describe("notification management", () => {
+    beforeEach(() => {
+      mockIsOnline.value = true;
+      mockNotification.warning.mockClear();
+      mockNotification.remove.mockClear();
+    });
+
+    it("shows notification when isSlowNetwork becomes true", async () => {
+      const { trackRequest } = useSlowNetworkDetection();
+      trackRequest("req-1");
+      vi.advanceTimersByTime(5000);
+      await nextTick();
+      expect(mockNotification.warning).toHaveBeenCalledWith(
+        expect.stringContaining("slow"),
+        expect.objectContaining({
+          notificationId: "vc-framework-slow-network",
+          timeout: false,
+        }),
+      );
+    });
+
+    it("removes notification with 3s delay when isSlowNetwork becomes false", async () => {
+      const { trackRequest, untrackRequest } = useSlowNetworkDetection();
+      trackRequest("req-1");
+      vi.advanceTimersByTime(5000);
+      await nextTick();
+      untrackRequest("req-1");
+      await nextTick();
+      expect(mockNotification.remove).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(3000);
+      expect(mockNotification.remove).toHaveBeenCalledWith("vc-framework-slow-network");
+    });
+
+    it("cancels dismiss if slow again within 3s window", async () => {
+      const { trackRequest, untrackRequest } = useSlowNetworkDetection();
+      // Start req-2 early so it crosses threshold during the dismiss window
+      trackRequest("req-2");
+      trackRequest("req-1");
+      vi.advanceTimersByTime(5000);
+      await nextTick();
+      // Both are now slow; untrack req-1
+      untrackRequest("req-1");
+      await nextTick();
+      // isSlowNetwork is still true (req-2 still slow) — no dismiss timer started
+      vi.advanceTimersByTime(3000);
+      expect(mockNotification.remove).not.toHaveBeenCalled();
+    });
+
+    it("does not show slow notification when offline", async () => {
+      mockIsOnline.value = false;
+      const { trackRequest } = useSlowNetworkDetection();
+      trackRequest("req-1");
+      vi.advanceTimersByTime(5000);
+      await nextTick();
+      expect(mockNotification.warning).not.toHaveBeenCalled();
+    });
+
+    it("removes slow notification when going offline", async () => {
+      const { trackRequest } = useSlowNetworkDetection();
+      trackRequest("req-1");
+      vi.advanceTimersByTime(5000);
+      await nextTick();
+      expect(mockNotification.warning).toHaveBeenCalled();
+      mockIsOnline.value = false;
+      await nextTick();
+      expect(mockNotification.remove).toHaveBeenCalledWith("vc-framework-slow-network");
+    });
+
+    it("notification persists for 3s after recovery", async () => {
+      const { trackRequest, untrackRequest } = useSlowNetworkDetection();
+      trackRequest("req-1");
+      vi.advanceTimersByTime(5000);
+      await nextTick();
+      expect(mockNotification.warning).toHaveBeenCalled();
+      untrackRequest("req-1");
+      await nextTick();
+      expect(mockNotification.remove).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(2999);
+      expect(mockNotification.remove).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(1);
+      expect(mockNotification.remove).toHaveBeenCalledWith("vc-framework-slow-network");
     });
   });
 });

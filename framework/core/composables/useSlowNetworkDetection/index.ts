@@ -1,10 +1,29 @@
-import { computed, ref, type Ref } from "vue";
+import { computed, ref, watch, type Ref } from "vue";
 import { createLogger } from "@core/utilities";
+import { notification } from "@shared/components/notifications/core/notification";
+import { useConnectionStatus } from "@core/composables/useConnectionStatus";
 
 const logger = createLogger("slow-network");
 const SLOW_REQUEST_THRESHOLD_MS = 5000;
 const SLOW_EFFECTIVE_TYPES = ["slow-2g", "2g"];
 let _connectionHandler: (() => void) | null = null;
+
+const SLOW_NETWORK_NOTIFICATION_ID = "vc-framework-slow-network";
+const DISMISS_DELAY_MS = 3000;
+// TODO: move to i18n locale files when useConnectionStatus also migrates to i18n
+const SLOW_NETWORK_MESSAGE = "Your network is slow or the server is taking longer than usual. Please be patient.";
+let _dismissTimer: ReturnType<typeof setTimeout> | null = null;
+
+function showSlowNotification() {
+  notification.warning(SLOW_NETWORK_MESSAGE, {
+    notificationId: SLOW_NETWORK_NOTIFICATION_ID,
+    timeout: false,
+  });
+}
+
+function hideSlowNotification() {
+  notification.remove(SLOW_NETWORK_NOTIFICATION_ID);
+}
 
 // ── Module-level singleton state ────────────────────────────────────
 const _isSetup = ref(false);
@@ -62,6 +81,39 @@ export function useSlowNetworkDetection(): UseSlowNetworkDetectionReturn {
       connection.addEventListener("change", _connectionHandler);
       _connectionHandler(); // initial check
     }
+
+    const { isOnline } = useConnectionStatus();
+
+    watch(isSlowNetwork, (slow) => {
+      if (slow) {
+        if (_dismissTimer != null) {
+          clearTimeout(_dismissTimer);
+          _dismissTimer = null;
+        }
+        if (isOnline.value) {
+          logger.info("Slow network detected — showing notification");
+          showSlowNotification();
+        }
+      } else {
+        _dismissTimer = setTimeout(() => {
+          logger.info("Network recovered — hiding notification");
+          hideSlowNotification();
+          _dismissTimer = null;
+        }, DISMISS_DELAY_MS);
+      }
+    });
+
+    watch(isOnline, (online) => {
+      if (!online) {
+        if (_dismissTimer != null) {
+          clearTimeout(_dismissTimer);
+          _dismissTimer = null;
+        }
+        hideSlowNotification();
+      } else if (isSlowNetwork.value) {
+        showSlowNotification();
+      }
+    });
   }
 
   return {
@@ -78,6 +130,10 @@ export const _resetForTest: (() => void) | undefined = import.meta.env.VITEST
       if (connection && _connectionHandler) {
         connection.removeEventListener("change", _connectionHandler);
         _connectionHandler = null;
+      }
+      if (_dismissTimer != null) {
+        clearTimeout(_dismissTimer);
+        _dismissTimer = null;
       }
       _isSetup.value = false;
       _slowRequestCount.value = 0;

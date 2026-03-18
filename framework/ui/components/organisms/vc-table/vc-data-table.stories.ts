@@ -1,4 +1,4 @@
-import type { Meta, StoryFn } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { ref, h, onMounted, onUnmounted } from "vue";
 import { VcDataTable, VcColumn, TableColumnSwitcher } from "@ui/components/organisms/vc-table";
 import { VcInput, VcSelect } from "@ui/components/molecules";
@@ -10,7 +10,7 @@ import { withMobileView } from "../../../../../.storybook/decorators";
  * Columns are defined via `<VcColumn>` slots, supporting sorting, filtering,
  * inline editing, row selection, drag-and-drop reorder, and virtual scrolling.
  */
-export default {
+const meta = {
   title: "Organisms/VcDataTable",
   component: VcDataTable,
   tags: ["autodocs"],
@@ -24,7 +24,10 @@ export default {
       },
     },
   },
-} as Meta;
+} satisfies Meta<typeof VcDataTable>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 interface Product {
   id: number;
@@ -94,7 +97,8 @@ const mockProducts: Product[] = [
  * Basic usage of VcDataTable with VcColumn
  *
  */
-export const Basic: StoryFn = () => ({
+export const Basic: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: mockProducts };
@@ -109,12 +113,14 @@ export const Basic: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with sorting
  */
-export const WithSorting: StoryFn = () => ({
+export const WithSorting: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const sortField = ref("name");
@@ -167,12 +173,14 @@ export const WithSorting: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with selection
  */
-export const WithSelection: StoryFn = () => ({
+export const WithSelection: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const selection = ref<Product[]>([]);
@@ -194,12 +202,14 @@ export const WithSelection: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with selection and disabled rows
  */
-export const WithSelectableRows: StoryFn = () => ({
+export const WithSelectableRows: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const selection = ref<Product[]>([]);
@@ -226,12 +236,14 @@ export const WithSelectableRows: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with all cell types
  */
-export const WithCellTypes: StoryFn = () => ({
+export const WithCellTypes: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: mockProducts };
@@ -248,12 +260,14 @@ export const WithCellTypes: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with custom cell content via slots
  */
-export const WithCustomCells: StoryFn = () => ({
+export const WithCustomCells: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: mockProducts };
@@ -288,12 +302,14 @@ export const WithCustomCells: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with built-in pagination via `pagination` prop
  */
-export const WithPagination: StoryFn = () => ({
+export const WithPagination: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const currentPage = ref(1);
@@ -323,12 +339,14 @@ export const WithPagination: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with striped variant
  */
-export const Striped: StoryFn = () => ({
+export const Striped: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: mockProducts };
@@ -343,12 +361,14 @@ export const Striped: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with bordered variant
  */
-export const Bordered: StoryFn = () => ({
+export const Bordered: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: mockProducts };
@@ -363,12 +383,14 @@ export const Bordered: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with loading state
  */
-export const Loading: StoryFn = () => ({
+export const Loading: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: mockProducts };
@@ -383,12 +405,14 @@ export const Loading: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with empty state
  */
-export const Empty: StoryFn = () => ({
+export const Empty: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: [] };
@@ -409,12 +433,14 @@ export const Empty: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with header slot
  */
-export const WithHeader: StoryFn = () => ({
+export const WithHeader: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcInput },
   setup() {
     const searchQuery = ref("");
@@ -451,14 +477,16 @@ export const WithHeader: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with selection column via VcColumn
  *
  * This demonstrates defining a selection column via VcColumn with selectionMode prop.
  */
-export const SelectionViaVcColumn: StoryFn = () => ({
+export const SelectionViaVcColumn: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const selection = ref<Product[]>([]);
@@ -480,14 +508,16 @@ export const SelectionViaVcColumn: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with single selection (click row to select)
  *
  * In single selection mode, clicking a row selects it. No checkbox column is shown.
  */
-export const SingleSelection: StoryFn = () => ({
+export const SingleSelection: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const selection = ref<Product | undefined>(undefined);
@@ -509,9 +539,11 @@ export const SingleSelection: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
-export const ActiveItemHighlight: StoryFn = () => ({
+export const ActiveItemHighlight: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const activeId = ref<string | undefined>(undefined);
@@ -534,7 +566,8 @@ export const ActiveItemHighlight: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 ActiveItemHighlight.parameters = {
   docs: {
     description: {
@@ -546,7 +579,8 @@ ActiveItemHighlight.parameters = {
 /**
  * VcDataTable with single selection via VcColumn (radio button style)
  */
-export const SingleSelectionViaVcColumn: StoryFn = () => ({
+export const SingleSelectionViaVcColumn: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const selection = ref<Product | undefined>(undefined);
@@ -568,14 +602,16 @@ export const SingleSelectionViaVcColumn: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with selection and isRowSelectable via VcColumn
  *
  * Demonstrates disabled checkboxes for rows that don't meet the criteria.
  */
-export const SelectionWithDisabledRowsViaVcColumn: StoryFn = () => ({
+export const SelectionWithDisabledRowsViaVcColumn: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const selection = ref<Product[]>([]);
@@ -602,14 +638,16 @@ export const SelectionWithDisabledRowsViaVcColumn: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with selection events
  *
  * Demonstrates row-select and row-unselect events.
  */
-export const SelectionWithEvents: StoryFn = () => ({
+export const SelectionWithEvents: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const selection = ref<Product[]>([]);
@@ -670,7 +708,8 @@ export const SelectionWithEvents: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // ============================================================================
 // Editing Stories
@@ -681,7 +720,8 @@ export const SelectionWithEvents: StoryFn = () => ({
  *
  * Click on a cell to edit it. Press Enter or click outside to save.
  */
-export const CellEditing: StoryFn = () => ({
+export const CellEditing: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcInput },
   setup() {
     const products = ref([...mockProducts]);
@@ -736,14 +776,16 @@ export const CellEditing: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with row editing
  *
  * Click the edit button to enable row editing. Click save/cancel to commit/revert.
  */
-export const RowEditing: StoryFn = () => ({
+export const RowEditing: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcInput },
   setup() {
     const products = ref([...mockProducts]);
@@ -801,14 +843,16 @@ export const RowEditing: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with row editing and custom editor buttons
  *
  * Shows how to combine row editing with selection.
  */
-export const RowEditingWithSelection: StoryFn = () => ({
+export const RowEditingWithSelection: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcInput },
   setup() {
     const products = ref([...mockProducts]);
@@ -843,7 +887,8 @@ export const RowEditingWithSelection: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // ============================================================================
 // Multi-Sort Stories
@@ -856,7 +901,8 @@ export const RowEditingWithSelection: StoryFn = () => ({
  * The sort order badge (1, 2, 3...) shows the priority of each sorted column.
  * Regular click replaces all sorts with the clicked column.
  */
-export const MultiSort: StoryFn = () => ({
+export const MultiSort: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const multiSortMeta = ref<{ field: string; order: 1 | -1 | 0 }[]>([]);
@@ -915,7 +961,8 @@ export const MultiSort: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with removable sort (triple-click cycle)
@@ -923,7 +970,8 @@ export const MultiSort: StoryFn = () => ({
  * Click a column to cycle through: ascending -> descending -> no sort
  * This allows users to completely remove sorting from a column.
  */
-export const RemovableSort: StoryFn = () => ({
+export const RemovableSort: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const sortField = ref("");
@@ -979,14 +1027,16 @@ export const RemovableSort: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with multi-sort and removable sort combined
  *
  * Ctrl+click to add columns to sort, and clicking a sorted column cycles through ASC -> DESC -> removed.
  */
-export const MultiSortRemovable: StoryFn = () => ({
+export const MultiSortRemovable: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const multiSortMeta = ref<{ field: string; order: 1 | -1 | 0 }[]>([]);
@@ -1053,7 +1103,8 @@ export const MultiSortRemovable: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // ============================================================================
 // Row Reorder Stories
@@ -1065,7 +1116,8 @@ export const MultiSortRemovable: StoryFn = () => ({
  * Add a VcColumn with rowReorder prop to enable drag-and-drop row reordering.
  * A drag handle icon appears in the column, allowing users to drag rows to reorder.
  */
-export const RowReorder: StoryFn = () => ({
+export const RowReorder: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -1103,7 +1155,8 @@ export const RowReorder: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with row reorder via reorderableRows prop
@@ -1111,7 +1164,8 @@ export const RowReorder: StoryFn = () => ({
  * Set reorderableRows to true to enable drag-and-drop on the entire row.
  * This approach allows dragging from anywhere on the row (no drag handle column).
  */
-export const RowReorderWithoutHandle: StoryFn = () => ({
+export const RowReorderWithoutHandle: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -1148,14 +1202,16 @@ export const RowReorderWithoutHandle: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with row reorder and selection combined
  *
  * Demonstrates row reorder working alongside selection checkboxes.
  */
-export const RowReorderWithSelection: StoryFn = () => ({
+export const RowReorderWithSelection: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -1187,7 +1243,8 @@ export const RowReorderWithSelection: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // ============================================================================
 // Expandable Rows Stories
@@ -1278,7 +1335,8 @@ const mockProductsWithOrders: OrderProduct[] = [
  * Click the expand icon to reveal additional content for each row.
  * Use the #expansion slot to customize the expanded content.
  */
-export const ExpandableRows: StoryFn = () => ({
+export const ExpandableRows: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const expandedRows = ref<OrderProduct[]>([]);
@@ -1355,14 +1413,16 @@ export const ExpandableRows: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with expandable rows and selection
  *
  * Demonstrates expandable rows working alongside selection checkboxes.
  */
-export const ExpandableRowsWithSelection: StoryFn = () => ({
+export const ExpandableRowsWithSelection: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const expandedRows = ref<OrderProduct[]>([]);
@@ -1407,14 +1467,16 @@ export const ExpandableRowsWithSelection: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * VcDataTable with custom expansion icons
  *
  * Customize the expand/collapse icons using the expandedRowIcon and collapsedRowIcon props.
  */
-export const ExpandableRowsCustomIcons: StoryFn = () => ({
+export const ExpandableRowsCustomIcons: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const expandedRows = ref<OrderProduct[]>([]);
@@ -1452,7 +1514,8 @@ export const ExpandableRowsCustomIcons: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // ============================================================================
 // Column Resize Stories
@@ -1464,7 +1527,8 @@ export const ExpandableRowsCustomIcons: StoryFn = () => ({
  * Drag the border between column headers to resize columns.
  * Uses two-column resize mode: dragging one column affects its neighbor.
  */
-export const ColumnResize: StoryFn = () => ({
+export const ColumnResize: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const onResizeEnd = (event: { columns: { id: string; width: number }[] }) => {
@@ -1494,14 +1558,16 @@ export const ColumnResize: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Column resize with minimum width constraints
  *
  * Columns cannot be resized below 60px (default minimum).
  */
-export const ColumnResizeWithMinWidth: StoryFn = () => ({
+export const ColumnResizeWithMinWidth: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: mockProducts };
@@ -1526,7 +1592,8 @@ export const ColumnResizeWithMinWidth: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // ============================================================================
 // Column Reorder Stories
@@ -1537,7 +1604,8 @@ export const ColumnResizeWithMinWidth: StoryFn = () => ({
  *
  * Drag column headers to reorder them. Uses 50% threshold for smooth swapping.
  */
-export const ColumnReorder: StoryFn = () => ({
+export const ColumnReorder: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const onColumnReorder = (event: { columns: { id: string; width: number }[] }) => {
@@ -1568,14 +1636,16 @@ export const ColumnReorder: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Column reorder with selection column
  *
  * Selection column stays fixed - it cannot be reordered.
  */
-export const ColumnReorderWithSelection: StoryFn = () => ({
+export const ColumnReorderWithSelection: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const selection = ref<Product[]>([]);
@@ -1602,12 +1672,14 @@ export const ColumnReorderWithSelection: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Both column resize and reorder enabled
  */
-export const ColumnResizeAndReorder: StoryFn = () => ({
+export const ColumnResizeAndReorder: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: mockProducts };
@@ -1633,7 +1705,8 @@ export const ColumnResizeAndReorder: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // ============================================================================
 // State Persistence Stories
@@ -1644,7 +1717,8 @@ export const ColumnResizeAndReorder: StoryFn = () => ({
  *
  * Column widths and order are saved to localStorage and restored on page reload.
  */
-export const StatePersistence: StoryFn = () => ({
+export const StatePersistence: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcButton },
   setup() {
     const stateKey = "demo-products-table";
@@ -1698,14 +1772,16 @@ export const StatePersistence: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * State persistence with sessionStorage
  *
  * State is saved to sessionStorage (cleared when browser tab is closed).
  */
-export const StatePersistenceSession: StoryFn = () => ({
+export const StatePersistenceSession: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcButton },
   setup() {
     const stateKey = "demo-session-table";
@@ -1743,14 +1819,16 @@ export const StatePersistenceSession: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Full featured example: all features combined
  *
  * Demonstrates resize, reorder, selection, sorting, and state persistence working together.
  */
-export const FullFeaturedTable: StoryFn = () => ({
+export const FullFeaturedTable: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcButton },
   setup() {
     const selection = ref<Product[]>([]);
@@ -1808,7 +1886,8 @@ export const FullFeaturedTable: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // =============================================================================
 // ROW ACTIONS
@@ -1824,7 +1903,8 @@ export const FullFeaturedTable: StoryFn = () => ({
  * - mode="inline" (default): Quick action buttons on hover + overflow dropdown
  * - maxQuickActions: Configure how many actions show as buttons (rest go to dropdown)
  */
-export const WithRowActions: StoryFn = () => ({
+export const WithRowActions: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -1917,7 +1997,8 @@ export const WithRowActions: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Row Actions with Dropdown Menu
@@ -1932,7 +2013,8 @@ export const WithRowActions: StoryFn = () => ({
  * - Closes on backdrop click or Escape key
  * - Supports disabled and danger variants
  */
-export const WithRowActionsDropdown: StoryFn = () => ({
+export const WithRowActionsDropdown: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -1998,7 +2080,8 @@ export const WithRowActionsDropdown: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Row Actions in Column Position (Inline Mode)
@@ -2006,7 +2089,8 @@ export const WithRowActionsDropdown: StoryFn = () => ({
  * Actions render in a dedicated fixed zone to the right of the row.
  * Always visible — no hover required. Uses inline mode (quick action buttons).
  */
-export const WithRowActionsInlineColumn: StoryFn = () => ({
+export const WithRowActionsInlineColumn: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -2065,7 +2149,8 @@ export const WithRowActionsInlineColumn: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Row Actions Dropdown in Column Position
@@ -2073,7 +2158,8 @@ export const WithRowActionsInlineColumn: StoryFn = () => ({
  * Three-dot menu in a dedicated column, always visible.
  * Combines dropdown mode with column position.
  */
-export const WithRowActionsDropdownColumn: StoryFn = () => ({
+export const WithRowActionsDropdownColumn: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -2121,7 +2207,8 @@ export const WithRowActionsDropdownColumn: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // =============================================================================
 // LINE CLAMP
@@ -2132,7 +2219,8 @@ export const WithRowActionsDropdownColumn: StoryFn = () => ({
  *
  * Demonstrates the lineClamp prop for limiting text to a specific number of lines.
  */
-export const WithLineClamp: StoryFn = () => ({
+export const WithLineClamp: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const items = ref([
@@ -2190,7 +2278,8 @@ export const WithLineClamp: StoryFn = () => ({
       </div>
     </div>
   `,
-});
+  }),
+};
 
 // =============================================================================
 // CELL TYPES - IMAGE, LINK, HTML, DATE-AGO
@@ -2201,7 +2290,8 @@ export const WithLineClamp: StoryFn = () => ({
  *
  * Demonstrates the `type="image"` column for displaying product images.
  */
-export const CellTypeImage: StoryFn = () => ({
+export const CellTypeImage: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const items = ref([
@@ -2252,14 +2342,16 @@ export const CellTypeImage: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Link Cell Type
  *
  * Demonstrates the `type="link"` column for displaying clickable links.
  */
-export const CellTypeLink: StoryFn = () => ({
+export const CellTypeLink: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const items = ref([
@@ -2310,14 +2402,16 @@ export const CellTypeLink: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * HTML Cell Type
  *
  * Demonstrates the `type="html"` column for rendering rich HTML content.
  */
-export const CellTypeHtml: StoryFn = () => ({
+export const CellTypeHtml: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const items = ref([
@@ -2365,14 +2459,16 @@ export const CellTypeHtml: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Date-Ago Cell Type
  *
  * Demonstrates the `type="date-ago"` column for displaying relative time (e.g., "2 hours ago").
  */
-export const CellTypeDateAgo: StoryFn = () => ({
+export const CellTypeDateAgo: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const now = new Date();
@@ -2424,14 +2520,16 @@ export const CellTypeDateAgo: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * All Cell Types Combined
  *
  * Demonstrates all available cell types in a single table.
  */
-export const AllCellTypes: StoryFn = () => ({
+export const AllCellTypes: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const now = new Date();
@@ -2502,7 +2600,8 @@ export const AllCellTypes: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // =============================================================================
 // COLUMN SWITCHER
@@ -2520,7 +2619,8 @@ export const AllCellTypes: StoryFn = () => ({
  * Only 3 columns are declared — the remaining keys (id, currency, isActive, createdAt)
  * are auto-discovered and can be toggled on via the switcher.
  */
-export const BuiltInColumnSwitcher: StoryFn = () => ({
+export const BuiltInColumnSwitcher: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -2552,7 +2652,8 @@ export const BuiltInColumnSwitcher: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Column Switcher — Defined Mode
@@ -2560,7 +2661,8 @@ export const BuiltInColumnSwitcher: StoryFn = () => ({
  * Uses `column-switcher="defined"` to only show declared VcColumns in the switcher.
  * No auto-discovery from data keys.
  */
-export const ColumnSwitcherDefined: StoryFn = () => ({
+export const ColumnSwitcherDefined: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -2590,7 +2692,8 @@ export const ColumnSwitcherDefined: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // =============================================================================
 // ROW GROUPING
@@ -2602,7 +2705,8 @@ export const ColumnSwitcherDefined: StoryFn = () => ({
  * Demonstrates grouping rows by a field value within a single table.
  * Groups can be expanded/collapsed.
  */
-export const WithRowGrouping: StoryFn = () => ({
+export const WithRowGrouping: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -2645,14 +2749,16 @@ export const WithRowGrouping: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Row Grouping with Footer
  *
  * Demonstrates row grouping with a custom footer for each group.
  */
-export const WithRowGroupingFooter: StoryFn = () => ({
+export const WithRowGroupingFooter: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -2707,14 +2813,16 @@ export const WithRowGroupingFooter: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 /**
  * Row Grouping Non-Expandable
  *
  * Demonstrates row grouping where groups cannot be collapsed (always expanded).
  */
-export const WithRowGroupingNonExpandable: StoryFn = () => ({
+export const WithRowGroupingNonExpandable: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -2751,7 +2859,8 @@ export const WithRowGroupingNonExpandable: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // =============================================================================
 // INFINITE SCROLL
@@ -2763,7 +2872,8 @@ export const WithRowGroupingNonExpandable: StoryFn = () => ({
  * Demonstrates loading more data as the user scrolls near the bottom of the table.
  * Uses `infinite-scroll` prop + `@load-more` event. Pagination prop remains as an alternative.
  */
-export const InfiniteScroll: StoryFn = () => ({
+export const InfiniteScroll: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const PAGE_SIZE = 20;
@@ -2827,7 +2937,8 @@ export const InfiniteScroll: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 
 // =============================================================================
 // MOBILE VIEW
@@ -2846,7 +2957,8 @@ export const InfiniteScroll: StoryFn = () => ({
  *
  * **Note:** View this story on a mobile viewport (375px) to see the full effect.
  */
-export const MobileViewInfo: StoryFn = () => ({
+export const MobileViewInfo: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     // Extend products with thumbnail images
@@ -2874,7 +2986,8 @@ export const MobileViewInfo: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 MobileViewInfo.decorators = [withMobileView];
 MobileViewInfo.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -2906,7 +3019,8 @@ MobileViewInfo.parameters = {
  *
  * **Note:** View this story on a mobile viewport (375px) to see the mobile layout.
  */
-export const MobileCardView: StoryFn = () => ({
+export const MobileCardView: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: mockProducts };
@@ -2929,7 +3043,8 @@ export const MobileCardView: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 MobileCardView.decorators = [withMobileView];
 MobileCardView.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -2947,7 +3062,8 @@ MobileCardView.parameters = {
  * Swipe left on a card to reveal row actions (iOS-style).
  * Shows up to 2 actions directly, with a "More" button for additional actions.
  */
-export const MobileWithSwipeActions: StoryFn = () => ({
+export const MobileWithSwipeActions: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -2996,7 +3112,8 @@ export const MobileWithSwipeActions: StoryFn = () => ({
       </div>
     </div>
   `,
-});
+  }),
+};
 MobileWithSwipeActions.decorators = [withMobileView];
 MobileWithSwipeActions.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3014,7 +3131,8 @@ MobileWithSwipeActions.parameters = {
  * When there are more than 2 actions, a "More" button appears that opens
  * an iOS-style action sheet with all available actions.
  */
-export const MobileWithManyActions: StoryFn = () => ({
+export const MobileWithManyActions: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -3088,7 +3206,8 @@ export const MobileWithManyActions: StoryFn = () => ({
       </div>
     </div>
   `,
-});
+  }),
+};
 MobileWithManyActions.decorators = [withMobileView];
 MobileWithManyActions.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3110,7 +3229,8 @@ MobileWithManyActions.parameters = {
  *
  * This saves screen space by hiding checkboxes until selection is needed.
  */
-export const MobileWithSelection: StoryFn = () => ({
+export const MobileWithSelection: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcButton },
   setup() {
     const selection = ref<Product[]>([]);
@@ -3152,7 +3272,8 @@ export const MobileWithSelection: StoryFn = () => ({
       </div>
     </div>
   `,
-});
+  }),
+};
 MobileWithSelection.decorators = [withMobileView];
 MobileWithSelection.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3169,7 +3290,8 @@ MobileWithSelection.parameters = {
  *
  * Demonstrates various cell types in mobile card layout.
  */
-export const MobileAllCellTypes: StoryFn = () => ({
+export const MobileAllCellTypes: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     interface ExtendedProduct extends Product {
@@ -3204,7 +3326,8 @@ export const MobileAllCellTypes: StoryFn = () => ({
       </div>
     </div>
   `,
-});
+  }),
+};
 MobileAllCellTypes.decorators = [withMobileView];
 MobileAllCellTypes.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3226,7 +3349,8 @@ MobileAllCellTypes.parameters = {
  * Demonstrates that mobile card layout works for ANY data type, not just products.
  * This example shows a user list with email, role, and active status.
  */
-export const MobileUsers: StoryFn = () => ({
+export const MobileUsers: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     interface User {
@@ -3296,7 +3420,8 @@ export const MobileUsers: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 MobileUsers.decorators = [withMobileView];
 MobileUsers.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3314,7 +3439,8 @@ MobileUsers.parameters = {
  * Minimal card layout for documents or pages - just title and metadata fields.
  * No image, no status - demonstrates flexibility.
  */
-export const MobileDocuments: StoryFn = () => ({
+export const MobileDocuments: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     interface Document {
@@ -3377,7 +3503,8 @@ export const MobileDocuments: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 MobileDocuments.decorators = [withMobileView];
 MobileDocuments.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3395,7 +3522,8 @@ MobileDocuments.parameters = {
  * E-commerce orders with order number, customer, total, and status.
  * Demonstrates multiple statuses (order status + payment status).
  */
-export const MobileOrders: StoryFn = () => ({
+export const MobileOrders: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     interface Order {
@@ -3479,7 +3607,8 @@ export const MobileOrders: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 MobileOrders.decorators = [withMobileView];
 MobileOrders.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3496,7 +3625,8 @@ MobileOrders.parameters = {
  * Demonstrates multiple status badges for a single row (status + isPublished).
  * Shows the full power of the universal layout.
  */
-export const MobileProductsWithMultipleStatuses: StoryFn = () => ({
+export const MobileProductsWithMultipleStatuses: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     interface ExtendedProduct extends Product {
@@ -3529,7 +3659,8 @@ export const MobileProductsWithMultipleStatuses: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 MobileProductsWithMultipleStatuses.decorators = [withMobileView];
 MobileProductsWithMultipleStatuses.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3546,7 +3677,8 @@ MobileProductsWithMultipleStatuses.parameters = {
  * The old `mobilePosition` API still works for backward compatibility.
  * First `top-left` becomes title, others become fields with labels.
  */
-export const MobileLegacyAPI: StoryFn = () => ({
+export const MobileLegacyAPI: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     return { products: mockProducts };
@@ -3566,7 +3698,8 @@ export const MobileLegacyAPI: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 MobileLegacyAPI.decorators = [withMobileView];
 MobileLegacyAPI.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3584,7 +3717,8 @@ MobileLegacyAPI.parameters = {
  * Demonstrates displaying multiple status badges in a single card.
  * Both statuses appear in a row at the bottom of the card.
  */
-export const MobileTwoStatuses: StoryFn = () => ({
+export const MobileTwoStatuses: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     interface ProductWithStatuses {
@@ -3618,7 +3752,8 @@ export const MobileTwoStatuses: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 MobileTwoStatuses.decorators = [withMobileView];
 MobileTwoStatuses.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3637,7 +3772,8 @@ MobileTwoStatuses.parameters = {
  * Pull down on the card list to trigger a refresh.
  * Uses spring physics animation for natural feel.
  */
-export const MobilePullToRefresh: StoryFn = () => ({
+export const MobilePullToRefresh: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -3687,7 +3823,8 @@ export const MobilePullToRefresh: StoryFn = () => ({
       </div>
     </div>
   `,
-});
+  }),
+};
 MobilePullToRefresh.decorators = [withMobileView];
 MobilePullToRefresh.parameters = {
   viewport: { defaultViewport: "mobile1" },
@@ -3708,7 +3845,8 @@ MobilePullToRefresh.parameters = {
  *
  * The parent component controls how to handle bulk operations when selectAllActive is true.
  */
-export const SelectAllWithPagination: StoryFn = () => ({
+export const SelectAllWithPagination: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const tableRef = ref<any>(null);
@@ -3857,7 +3995,8 @@ export const SelectAllWithPagination: StoryFn = () => ({
       </div>
     </div>
   `,
-});
+  }),
+};
 SelectAllWithPagination.parameters = {
   docs: {
     description: {
@@ -3874,7 +4013,8 @@ SelectAllWithPagination.parameters = {
 /**
  * Basic Add/Remove Rows functionality with built-in add button
  */
-export const AddRemoveRows: StoryFn = () => ({
+export const AddRemoveRows: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcButton },
   setup() {
     const tableRef = ref<any>(null);
@@ -3986,7 +4126,8 @@ export const AddRemoveRows: StoryFn = () => ({
       </div>
     </div>
   `,
-});
+  }),
+};
 AddRemoveRows.parameters = {
   docs: {
     description: {
@@ -3999,7 +4140,8 @@ AddRemoveRows.parameters = {
 /**
  * Inline editing with validation
  */
-export const InlineEditingWithValidation: StoryFn = () => ({
+export const InlineEditingWithValidation: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcButton, VcInput },
   setup() {
     const tableRef = ref<any>(null);
@@ -4157,7 +4299,8 @@ export const InlineEditingWithValidation: StoryFn = () => ({
       </div>
     </div>
   `,
-});
+  }),
+};
 InlineEditingWithValidation.parameters = {
   docs: {
     description: {
@@ -4170,7 +4313,8 @@ InlineEditingWithValidation.parameters = {
 /**
  * Custom add row button via header slot
  */
-export const CustomAddRowButton: StoryFn = () => ({
+export const CustomAddRowButton: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcButton },
   setup() {
     const tableRef = ref<any>(null);
@@ -4248,7 +4392,8 @@ export const CustomAddRowButton: StoryFn = () => ({
       </div>
     </div>
   `,
-});
+  }),
+};
 CustomAddRowButton.parameters = {
   docs: {
     description: {
@@ -4274,7 +4419,8 @@ CustomAddRowButton.parameters = {
  *
  * The `@filter` event emits a flat object ready for backend API.
  */
-export const DeclarativeFilters: StoryFn = () => ({
+export const DeclarativeFilters: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -4422,7 +4568,8 @@ export const DeclarativeFilters: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 DeclarativeFilters.parameters = {
   docs: {
     description: {
@@ -4445,7 +4592,8 @@ DeclarativeFilters.parameters = {
  *
  * Note: Clear/Apply buttons are provided by ColumnFilter overlay automatically.
  */
-export const CustomFilterTemplate: StoryFn = () => ({
+export const CustomFilterTemplate: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn, VcInput },
   setup() {
     const allProducts = [...mockProducts];
@@ -4561,7 +4709,8 @@ export const CustomFilterTemplate: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 CustomFilterTemplate.parameters = {
   docs: {
     description: {
@@ -4578,7 +4727,8 @@ CustomFilterTemplate.parameters = {
  * Clicking the button opens a panel with the configured filters.
  * The `@filter` event emits a flat payload that merges both column and global filter values.
  */
-export const GlobalFilters: StoryFn = () => ({
+export const GlobalFilters: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -4743,7 +4893,8 @@ export const GlobalFilters: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 GlobalFilters.parameters = {
   docs: {
     description: {
@@ -4761,7 +4912,8 @@ GlobalFilters.parameters = {
  * Both `globalFilters` prop and column-level `filter` props work together.
  * The `@filter` event merges payloads from both into a single flat object.
  */
-export const GlobalAndColumnFiltersCombined: StoryFn = () => ({
+export const GlobalAndColumnFiltersCombined: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -4925,7 +5077,8 @@ export const GlobalAndColumnFiltersCombined: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 GlobalAndColumnFiltersCombined.parameters = {
   docs: {
     description: {
@@ -4943,7 +5096,8 @@ GlobalAndColumnFiltersCombined.parameters = {
  * The `@search` event is debounced (default 300ms) — use it for backend filtering.
  * Use `v-model:search-value` for two-way binding of the input value.
  */
-export const SearchBar: StoryFn = () => ({
+export const SearchBar: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -5003,7 +5157,8 @@ export const SearchBar: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 SearchBar.parameters = {
   docs: {
     description: {
@@ -5022,7 +5177,8 @@ SearchBar.parameters = {
  * global filters button appear together in a single header row.
  * The `@search` event handles the search input, while `@filter` handles the global filters.
  */
-export const SearchWithGlobalFilters: StoryFn = () => ({
+export const SearchWithGlobalFilters: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const products = ref([...mockProducts]);
@@ -5131,7 +5287,8 @@ export const SearchWithGlobalFilters: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 SearchWithGlobalFilters.parameters = {
   docs: {
     description: {
@@ -5147,7 +5304,8 @@ SearchWithGlobalFilters.parameters = {
  * Empty state using the declarative `emptyState` prop (TableStateConfig).
  * Shown when `items` is empty and there is no active search or filters.
  */
-export const EmptyStateConfig: StoryFn = () => ({
+export const EmptyStateConfig: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const actionClicked = ref(false);
@@ -5175,7 +5333,8 @@ export const EmptyStateConfig: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 EmptyStateConfig.parameters = {
   docs: {
     description: {
@@ -5192,7 +5351,8 @@ EmptyStateConfig.parameters = {
  * Shown when `items` is empty AND there is an active search or filter.
  * The table uses `searchable` with a pre-filled search value to trigger the not-found state.
  */
-export const NotFoundStateConfig: StoryFn = () => ({
+export const NotFoundStateConfig: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const searchValue = ref("nonexistent product xyz");
@@ -5237,7 +5397,8 @@ export const NotFoundStateConfig: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 NotFoundStateConfig.parameters = {
   docs: {
     description: {
@@ -5254,7 +5415,8 @@ NotFoundStateConfig.parameters = {
  * Both empty and not-found states — interactive demo.
  * Search to switch between the two states.
  */
-export const EmptyVsNotFound: StoryFn = () => ({
+export const EmptyVsNotFound: Story = {
+  render: () => ({
   components: { VcDataTable, VcColumn },
   setup() {
     const searchValue = ref("");
@@ -5303,7 +5465,8 @@ export const EmptyVsNotFound: StoryFn = () => ({
       </VcDataTable>
     </div>
   `,
-});
+  }),
+};
 EmptyVsNotFound.parameters = {
   docs: {
     description: {

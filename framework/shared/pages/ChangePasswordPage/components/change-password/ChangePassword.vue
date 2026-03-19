@@ -9,22 +9,12 @@
       v-if="forced"
       class="tw-mb-4"
     >
-      <vc-status
-        extend
-        :outline="false"
-        variant="info-dark"
-      >
-        <div class="tw-flex tw-flex-row tw-items-center tw-text-neutrals-800">
-          <VcIcon
-            icon="lucide-lightbulb"
-            size="l"
-            class="tw-mr-3"
-          />
-          <div>
-            <p class="tw-m-0">{{ t("COMPONENTS.CHANGE_PASSWORD.FORCED.LABEL") }}</p>
-          </div>
-        </div>
-      </vc-status>
+      <VcBanner
+        variant="info"
+        icon="lucide-lightbulb"
+        icon-size="l"
+        >{{ t("COMPONENTS.CHANGE_PASSWORD.FORCED.LABEL") }}
+      </VcBanner>
     </div>
 
     <VcForm>
@@ -119,9 +109,7 @@
         class="tw-mt-3 tw-text-danger-500"
       >
         {{
-          (err as IIdentityError).code
-            ? t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`)
-            : err
+          (err as IIdentityError).code ? t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`) : err
         }}
       </VcHint>
     </VcForm>

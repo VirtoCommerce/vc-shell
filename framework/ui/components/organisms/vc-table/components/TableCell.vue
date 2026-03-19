@@ -97,7 +97,7 @@ const contentStyle = computed(() => {
 
 <style lang="scss">
 .vc-table-composition__cell {
-  @apply tw-flex tw-items-center tw-text-sm tw-px-1;
+  @apply tw-flex tw-items-center tw-text-sm;
   // Allow flex items to shrink below content width
   min-width: 0;
   color: var(--table-text-color);

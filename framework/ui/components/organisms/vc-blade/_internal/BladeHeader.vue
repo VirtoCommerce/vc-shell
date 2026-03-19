@@ -190,16 +190,12 @@ function onClose(): void {
     }
 
     .vc-blade-header__content {
-      @apply tw-shrink-0;
+      @apply tw-shrink tw-min-w-0;
       min-width: 40px;
     }
 
     .vc-blade-header__actions {
-      @apply tw-shrink tw-min-w-0 tw-overflow-hidden tw-flex tw-items-center tw-gap-1;
-
-      > * {
-        @apply tw-truncate tw-min-w-0;
-      }
+      @apply tw-shrink-0 tw-overflow-hidden tw-flex tw-items-center tw-gap-1;
     }
   }
 

@@ -784,9 +784,19 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     // Clear new row flag on first interaction
     inlineEdit.clearNewRowFlag(rowIndex);
 
-    // If inline editing is active, update the inlineEdit composable immediately
-    if (inlineEdit.isEditing.value) {
+    // Use isInlineEditing (not inlineEdit.isEditing) to cover editMode="inline" without startEditing()
+    if (isInlineEditing.value) {
       inlineEdit.updateCell(rowIndex, field, newValue);
+    }
+
+    // In editMode="inline", also emit cell-edit-complete so parent pages
+    // that listen to @cell-edit-complete get notified. Mobile view has no
+    // blur/complete cycle, so this is the only way values propagate.
+    if (props.editMode === "inline") {
+      const item = props.items[rowIndex];
+      if (item) {
+        emit("cell-edit-complete", { data: item, field, newValue, index: rowIndex });
+      }
     }
   };
 

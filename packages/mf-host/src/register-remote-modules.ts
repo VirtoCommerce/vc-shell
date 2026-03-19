@@ -121,6 +121,11 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
   const modulesReady = ref(false);
   const modulesLoadError = ref(false);
 
+  // Capture the original URL before the blade router guard can redirect it away.
+  // During async module loading, the guard may not find workspaces (not registered yet)
+  // and redirect to root — losing the tenant prefix and blade URL.
+  const initialUrl = window.location.hash.replace(/^#/, "") || "/";
+
   app.provide(ModulesReadyKey, modulesReady);
   app.provide(ModulesLoadErrorKey, modulesLoadError);
 

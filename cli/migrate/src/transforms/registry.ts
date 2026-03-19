@@ -4,6 +4,7 @@ import { runDefineAppModule } from "./define-app-module.js";
 import { runRemoveDeprecatedAliases } from "./remove-deprecated-aliases.js";
 import { runNotificationMigration } from "./notification-migration.js";
 import { runRewriteImports } from "./rewrite-imports.js";
+import { runUseBladeMigration } from "./use-blade-migration.js";
 
 // Placeholder run functions — each will be replaced by real transforms
 const placeholder = () => ({
@@ -26,7 +27,7 @@ export const transforms: VersionedTransform[] = [
     description: "useBladeNavigation() → useBlade() + onBeforeClose boolean inversion",
     introducedIn: "2.0.0-alpha.8",
     migrationGuideSection: "Section 10",
-    run: placeholder,
+    run: runUseBladeMigration,
   },
   {
     name: "notification-migration",

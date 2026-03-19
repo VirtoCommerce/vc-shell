@@ -5460,6 +5460,7 @@ __metadata:
     esbuild: "npm:^0.25.3"
     gridstack: "npm:^12.4.2"
     iso-639-1: "npm:^3.1.0"
+    lodash-es: "npm:^4.17.21"
     lucide-vue-next: "npm:^0.577.0"
     normalize.css: "npm:^8.0.1"
     postcss: "npm:^8.4.32"

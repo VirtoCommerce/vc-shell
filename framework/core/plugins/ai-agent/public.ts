@@ -10,6 +10,7 @@ export { useAiAgent, createAiAgentToolbarButton } from "@core/plugins/ai-agent/c
 export type { UseAiAgentReturn } from "@core/plugins/ai-agent/composables/useAiAgent";
 
 export { useAiAgentContext } from "@core/plugins/ai-agent/composables/useAiAgentContext";
+export type { UseAiAgentContextReturn, UseAiAgentContextOptions } from "@core/plugins/ai-agent/types";
 
 // Component
 export { VcAiAgentPanel } from "@core/plugins/ai-agent/components";

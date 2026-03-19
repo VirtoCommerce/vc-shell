@@ -17,6 +17,14 @@ import type { MenuItemConfig } from "@core/types/menu-types";
 import type { Breadcrumbs } from "@ui/types";
 import type { DisplayableError } from "@core/utilities/error";
 
+/**
+ * @deprecated Blade pages no longer need to declare these props.
+ * Use `useBlade<TOptions>()` to access `param`, `options`, `expanded`, `closable`.
+ * VcBlade reads `expanded`/`closable` from BladeDescriptor automatically.
+ *
+ * These props are still passed by VcBladeSlot for backward compatibility
+ * and will be removed in the next major version.
+ */
 export type CoreBladeComponentProps = {
   expanded?: boolean;
   closable?: boolean;
@@ -57,6 +65,10 @@ export interface IBladeInstance {
   options?: Record<string, any>;
 }
 
+/**
+ * @deprecated Use `callParent(method, args)` from `useBlade()` instead of
+ * emitting `parent:call` events. Will be removed in the next major version.
+ */
 export interface IParentCallArgs {
   method: keyof CoreBladeExposed;
   args?: unknown;
@@ -201,8 +213,10 @@ export interface IBladeStack {
   openBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void>;
   /** Close a blade by ID. Returns true if close was prevented by a guard. */
   closeBlade(bladeId: string): Promise<boolean>;
-  /** Replace the current active blade with a different one */
+  /** Replace the current active blade — destroys old, creates new at same position */
   replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void>;
+  /** Cover the current blade — hides it and opens a new blade on top (closing reveals the hidden blade) */
+  coverCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void>;
   /** Close all children of a blade (deepest first, respecting guards) */
   closeChildren(parentId: string): Promise<void>;
 

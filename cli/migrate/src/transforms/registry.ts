@@ -5,6 +5,7 @@ import { runRemoveDeprecatedAliases } from "./remove-deprecated-aliases.js";
 import { runNotificationMigration } from "./notification-migration.js";
 import { runRewriteImports } from "./rewrite-imports.js";
 import { runUseBladeMigration } from "./use-blade-migration.js";
+import { runBladePropsSimplification } from "./blade-props-simplification.js";
 
 // Placeholder run functions — each will be replaced by real transforms
 const placeholder = () => ({
@@ -52,7 +53,7 @@ export const transforms: VersionedTransform[] = [
     name: "blade-props-simplification",
     description: "Remove boilerplate expanded/closable props and blade event emits",
     introducedIn: "2.0.0",
-    run: placeholder,
+    run: runBladePropsSimplification,
   },
   {
     name: "icon-audit",

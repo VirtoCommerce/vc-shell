@@ -3,12 +3,15 @@ import { Router } from "vue-router";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { notification } from "@shared/components/notifications/core/notification";
 import { createLogger } from "@core/utilities";
+import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const logger = createLogger("interceptors");
 
 export function registerInterceptors(router: Router) {
   const { fetch: originalFetch } = window;
   const { signOut, isAuthenticated } = useUserManagement();
+  const { trackRequest, untrackRequest } = useSlowNetworkDetection();
+  let requestCounter = 0;
 
   window.fetch = async (...args) => {
     /**
@@ -76,6 +79,9 @@ export function registerInterceptors(router: Router) {
         return Promise.reject(new Error("Network unavailable. Please check your connection."));
       }
 
+      const requestId = String(++requestCounter);
+      trackRequest(requestId);
+
       // Always enforce timeout, but preserve external cancellation semantics
       const controller = new AbortController();
       let didTimeout = false;
@@ -119,6 +125,7 @@ export function registerInterceptors(router: Router) {
         }
         throw e;
       } finally {
+        untrackRequest(requestId);
         clearTimeout(timeoutId);
         if (externalSignal) {
           externalSignal.removeEventListener("abort", abortFromExternal);

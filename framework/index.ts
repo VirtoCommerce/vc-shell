@@ -16,6 +16,7 @@ import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-in
 import { useAppInsights, AppInsightsOptionsKey } from "@core/composables/useAppInsights";
 import { setupGlobalErrorHandlers } from "@core/plugins/global-error-handler";
 import { useConnectionStatus } from "@core/composables/useConnectionStatus";
+import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 import { useNotificationStore } from "@core/notifications";
 
 // Import Blade Registry
@@ -344,6 +345,7 @@ export default {
 
     if (typeof window !== "undefined") {
       app.runWithContext(() => useConnectionStatus());
+      app.runWithContext(() => useSlowNetworkDetection());
     }
 
     setupRouterGuards(args.router);

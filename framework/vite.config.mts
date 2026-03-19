@@ -23,6 +23,10 @@ const frameworkAliases = {
   "@locales/": `${normalizedFrameworkRoot}/locales/`,
   "@vc-shell/framework/": `${normalizedFrameworkRoot}/`,
   "@vc-shell/framework": path.resolve(frameworkRoot, "index.ts"),
+  "@shell": `${normalizedFrameworkRoot}/shell`,
+  "@shell/": `${normalizedFrameworkRoot}/shell/`,
+  "@modules": `${normalizedFrameworkRoot}/modules`,
+  "@modules/": `${normalizedFrameworkRoot}/modules/`,
 };
 
 export default getLibraryConfiguration({

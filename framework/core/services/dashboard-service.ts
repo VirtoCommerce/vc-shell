@@ -1,4 +1,4 @@
-import { reactive, Component } from "vue";
+import { shallowReactive, Component } from "vue";
 import { createPreregistrationBus } from "@core/services/_internal";
 
 export interface DashboardWidgetSize {
@@ -46,8 +46,8 @@ export function registerDashboardWidget(widget: DashboardWidget): void {
 }
 
 const createState = () => ({
-  widgets: reactive<Map<string, DashboardWidget>>(new Map()),
-  layout: reactive<Map<string, DashboardWidgetPosition>>(new Map()),
+  widgets: shallowReactive<Map<string, DashboardWidget>>(new Map()),
+  layout: shallowReactive<Map<string, DashboardWidgetPosition>>(new Map()),
 });
 
 /**

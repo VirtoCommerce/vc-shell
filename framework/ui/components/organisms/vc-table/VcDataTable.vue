@@ -280,6 +280,21 @@
       v-else
       class="vc-data-table__content"
     >
+      <!-- Mobile: Select all toolbar (appears when selection is active) -->
+      <div
+        v-if="effectiveSelectionMode === 'multiple' && (selection.someSelected.value || selection.allSelected.value)"
+        class="vc-data-table__mobile-select-toolbar"
+      >
+        <TableCheckbox
+          :model-value="selection.allSelected.value"
+          :indeterminate="selection.someSelected.value && !selection.allSelected.value"
+          @change="handleSelectAllChange"
+        />
+        <span class="vc-data-table__mobile-select-toolbar-text">
+          {{ $t('COMPONENTS.ORGANISMS.VC_TABLE.SELECTED', 'Selected') }}: {{ selection.internalSelection.value.length }}
+        </span>
+      </div>
+
       <DataTableMobileView
         :items="displayItems"
         :columns="visibleColumns"
@@ -385,6 +400,7 @@ import {
   TableAddRowButton,
   TableSearchHeader,
   TableSelectAllBar,
+  TableCheckbox,
 } from "@ui/components/organisms/vc-table/components";
 import { VcPagination } from "@ui/components/molecules";
 import { useDataTableOrchestrator } from "@ui/components/organisms/vc-table/composables/useDataTableOrchestrator";
@@ -1294,6 +1310,17 @@ onBeforeUnmount(() => {
 
   &__rows-container {
     @apply tw-flex tw-flex-col;
+  }
+
+  &__mobile-select-toolbar {
+    @apply tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-2.5;
+    background-color: var(--table-select-bar-bg, var(--additional-50));
+    border-bottom: 1px solid var(--table-border-color, var(--neutrals-200));
+  }
+
+  &__mobile-select-toolbar-text {
+    @apply tw-text-sm tw-font-medium;
+    color: var(--neutrals-700);
   }
 
   &__selection-cell {

@@ -2,7 +2,7 @@
   <div
     class="vc-blade-navigation tw-flex tw-flex-col tw-grow tw-basis-0 tw-min-w-0 tw-overflow-hidden"
     role="region"
-    :aria-label="t('COMPONENTS.BLADE_NAVIGATION.ARIA_LABEL')"
+    :aria-label="t('COMPONENTS.ORGANISMS.BLADE_NAVIGATION.ARIA_LABEL')"
   >
     <!-- Non-blade routes (Dashboard, etc.) -->
     <RouterView v-if="!hasBlades" />

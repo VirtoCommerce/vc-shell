@@ -155,7 +155,9 @@
           "TITLE": "Spalten ein-/ausblenden",
           "SHOW_ALL": "Alle anzeigen",
           "RESET": "Zurücksetzen"
-        }
+        },
+        "OF": "von",
+        "PAGE": "Seite"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -422,5 +424,8 @@
   },
   "AI_AGENT": {
     "LOADING": "Virto OZ wird geladen..."
+  },
+  "common": {
+    "no_options": "Keine Optionen"
   }
 }

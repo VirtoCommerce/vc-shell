@@ -155,7 +155,9 @@
           "TITLE": "Show/Hide Columns",
           "SHOW_ALL": "Show All",
           "RESET": "Reset"
-        }
+        },
+        "OF": "of",
+        "PAGE": "Page"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -422,5 +424,8 @@
   },
   "AI_AGENT": {
     "LOADING": "Loading Virto OZ..."
+  },
+  "common": {
+    "no_options": "No options"
   }
 }

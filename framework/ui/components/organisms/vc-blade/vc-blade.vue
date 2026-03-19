@@ -13,7 +13,7 @@
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
     :aria-labelledby="props.title && !showSkeleton ? bladeTitleId : undefined"
-    :aria-label="!props.title || showSkeleton ? $t('COMPONENTS.VC_BLADE.PANEL') : undefined"
+    :aria-label="!props.title || showSkeleton ? $t('COMPONENTS.ORGANISMS.VC_BLADE.PANEL') : undefined"
   >
     <!-- Header zone: v-show keeps BladeHeader mounted to avoid Teleport unmount bug -->
     <template v-if="!($isMobile.value && blades.length === 1 && !$slots['actions'])">

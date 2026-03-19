@@ -3,10 +3,15 @@ import { App, Component } from "vue";
 import * as components from "@ui/components";
 import * as directives from "@core/directives";
 import { useBreakpoints } from "@vueuse/core";
-import { i18n, permissions, signalR } from "@core/plugins";
-// import { notifyMountComplete } from "@core/plugins/signalR";
+import { i18n } from "@core/plugins/i18n";
+import { permissions } from "@core/plugins/permissions";
+import { signalR } from "@core/plugins/signalR";
 import { aiAgentPlugin, type AiAgentPluginOptions } from "@core/plugins/ai-agent";
-import { SharedModule, notification } from "@shared";
+import { notification } from "@core/notifications/notification";
+import { VcBladeNavigationComponent } from "@shell/_internal/blade-navigation";
+import { VcPopupHandler } from "@shell/_internal/popup";
+import { AssetsDetailsModule } from "@modules/assets";
+import { AssetsManagerModule } from "@modules/assets-manager";
 import { registerInterceptors } from "@core/interceptors";
 import { usePermissions } from "@core/composables/usePermissions";
 import { useUserManagement } from "@core/composables/useUserManagement";
@@ -209,7 +214,10 @@ function createAndProvideServices(app: App) {
 }
 
 function installPlugins(app: App, args: FrameworkInstallArgs) {
-  app.use(SharedModule, { router: args.router });
+  app.use(VcBladeNavigationComponent, { router: args.router });
+  app.use(VcPopupHandler);
+  app.use(AssetsDetailsModule);
+  app.use(AssetsManagerModule);
   app.use(signalR, args.signalR);
   app.use(permissions);
   app.use<[]>(Vue3TouchEvents);
@@ -362,16 +370,22 @@ export default {
   },
 } as VcShellFrameworkPlugin;
 
+// ── Public API ───────────────────────────────────────────────────────
+
+// Injection keys (typed Symbol keys)
 export * from "@framework/injection-keys";
 
+// UI components (atoms, molecules, organisms)
 export * from "@ui/components";
 // eslint-disable-next-line import/export
 export * from "@ui/types";
 
+// Core composables
 export * from "@core/composables";
 
 // Notifications (new API)
-export { useBladeNotifications, useNotificationStore } from "./core/notifications";
+export { useBladeNotifications, useNotificationStore } from "@core/notifications";
+export { notification } from "@core/notifications/notification";
 export type {
   Severity,
   ToastConfig,
@@ -380,16 +394,64 @@ export type {
   NotificationAction,
   BladeNotificationOptions,
   BladeNotificationReturn,
-} from "./core/notifications";
+} from "@core/notifications";
 
+// Core
 export * from "@core/directives";
 export * from "@core/types";
-export * from "@core/plugins";
 export * from "@core/api/platform";
 export * from "@core/utilities";
 export * from "@core/constants";
 
-export * from "@shared";
+// Core plugins (public surface only)
+export * from "@core/plugins/modularity";
+export * from "@core/plugins/permissions";
+export * from "@core/plugins/validation";
 
-// AI Agent Plugin
-export * from "@core/plugins/ai-agent";
+// i18n (public singleton)
+export { i18n } from "@core/plugins/i18n";
+
+// SignalR (public symbols)
+export { signalR, updateSignalRCreatorSymbol } from "@core/plugins/signalR";
+
+// Blade navigation (public composables + types)
+export * from "@core/blade-navigation";
+
+// Popup (public composable)
+export { usePopup } from "@shell/_internal/popup";
+
+// Shell components (public building blocks)
+export * from "@shell/components";
+export * from "@shell/auth";
+export * from "@shell/pages";
+export * from "@shell/dashboard";
+
+// AI Agent (also available via @vc-shell/framework/ai-agent)
+export * from "@core/plugins/ai-agent/public";
+
+// Extensions (also available via @vc-shell/framework/extensions)
+export * from "@core/plugins/extension-points/public";
+
+// Built-in modules
+export * from "@modules";
+
+// Shared composables that moved to core/ui
+export * from "@core/composables/useBladeNavigationAdapter";
+export * from "@ui/utilities/vueUtils";
+
+// Multilanguage selector (moved from shared to ui)
+export * from "@ui/components/molecules/multilanguage-selector";
+
+// UI composables (useTableSort, useTableSelection)
+export * from "@ui/composables";
+
+// Notification rendering internals (used by shell layout)
+export * from "@shell/_internal/notifications/composables";
+export * from "@shell/_internal/notifications/components";
+
+// Blade navigation rendering components (VcBladeNavigation, VcBladeSlot)
+export * from "@shell/_internal/blade-navigation";
+
+// Deprecated re-exports (backward compatibility)
+/** @deprecated Use `VcDropdown` from `framework/ui/components` instead. */
+export { GenericDropdown } from "@shared/components/generic-dropdown";

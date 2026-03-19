@@ -1,5 +1,6 @@
 import semver from "semver";
 import type { VersionedTransform } from "./types.js";
+import { runDefineAppModule } from "./define-app-module.js";
 
 // Placeholder run functions — each will be replaced by real transforms
 const placeholder = () => ({
@@ -15,7 +16,7 @@ export const transforms: VersionedTransform[] = [
     description: "createAppModule(pages, locales) → defineAppModule({...})",
     introducedIn: "2.0.0-alpha.5",
     migrationGuideSection: "Migrating to defineAppModule",
-    run: placeholder,
+    run: runDefineAppModule,
   },
   {
     name: "use-blade-migration",

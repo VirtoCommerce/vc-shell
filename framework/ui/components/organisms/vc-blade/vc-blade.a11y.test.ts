@@ -4,15 +4,15 @@ import { mount, VueWrapper } from "@vue/test-utils";
 import axe from "axe-core";
 import { createI18n } from "vue-i18n";
 import VcBlade from "@ui/components/organisms/vc-blade/vc-blade.vue";
-import { BladeInstance, TOOLBAR_SERVICE, WidgetServiceKey } from "@framework/injection-keys";
-import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey } from "@shared/components/blade-navigation/types";
+import { BladeInstanceKey, ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
+import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey } from "@core/blade-navigation/types";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
-import type { IBladeInstance } from "@shared/components/blade-navigation/types";
+import type { IBladeInstance } from "@core/blade-navigation/types";
 
 // useBladeNavigation reads module-level singletons from plugin-v2.
 // Mock them so VcBlade's call to useBladeNavigation() succeeds without the full plugin.
-vi.mock("@shared/components/blade-navigation/plugin-v2", () => ({
+vi.mock("@shell/_internal/blade-navigation/plugin-v2", () => ({
   bladeStackInstance: {
     blades: ref([]),
     workspace: ref(undefined),
@@ -39,7 +39,7 @@ vi.mock("@shared/components/blade-navigation/plugin-v2", () => ({
 }));
 
 // Also mock urlSync to avoid router dependency in useBladeNavigation
-vi.mock("@shared/components/blade-navigation/utils/urlSync", () => ({
+vi.mock("@core/blade-navigation/utils/urlSync", () => ({
   buildUrlFromStack: vi.fn().mockReturnValue("/"),
   createUrlSync: vi.fn().mockReturnValue({ stop: vi.fn() }),
   getTenantPrefix: vi.fn().mockReturnValue(""),
@@ -65,8 +65,8 @@ function createBladeWrapper(bladeProps: Record<string, unknown> = {}) {
 
   return defineComponent({
     setup() {
-      provide(BladeInstance, bladeInstance);
-      provide(TOOLBAR_SERVICE, createToolbarService());
+      provide(BladeInstanceKey, bladeInstance);
+      provide(ToolbarServiceKey, createToolbarService());
       provide(WidgetServiceKey, createWidgetService());
       provide(BladeStackKey, {
         blades: ref([]),

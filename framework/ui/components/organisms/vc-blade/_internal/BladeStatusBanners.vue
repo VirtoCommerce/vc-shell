@@ -42,7 +42,7 @@ import { inject, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useCollapsible } from "@ui/composables/useCollapsible";
-import { BladeInstance } from "@framework/injection-keys";
+import { BladeInstanceKey } from "@framework/injection-keys";
 import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 import { useBladeError } from "@ui/components/organisms/vc-blade/_internal/composables/useBladeError";
 
@@ -52,7 +52,7 @@ interface Props {
 
 defineProps<Props>();
 
-const blade = inject(BladeInstance, DEFAULT_BLADE_INSTANCE);
+const blade = inject(BladeInstanceKey, DEFAULT_BLADE_INSTANCE);
 const { t } = useI18n({ useScope: "global" });
 const { hasError, shortErrorMessage, errorDetails, copyError } = useBladeError(blade);
 

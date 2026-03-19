@@ -1,12 +1,11 @@
 import type { Meta, StoryFn, StoryObj } from "@storybook/vue3-vite";
 import { ref, computed, provide } from "vue";
 import { VcBlade } from "@ui/components/organisms/vc-blade";
-import { BladeInstance, TOOLBAR_SERVICE } from "@framework/injection-keys";
-import { WidgetServiceKey } from "@framework/injection-keys";
+import { BladeInstanceKey, ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
-import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey } from "@shared/components/blade-navigation/types";
-import type { IBladeInstance } from "@shared/components/blade-navigation/types";
+import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey } from "@core/blade-navigation/types";
+import type { IBladeInstance } from "@core/blade-navigation/types";
 import type { IBladeToolbar } from "@core/types";
 import { withVcApp, withMobileView } from "../../../../../.storybook/decorators";
 
@@ -25,8 +24,8 @@ function provideMockBladeContext(overrides: Partial<IBladeInstance> = {}) {
     ...overrides,
   }));
 
-  provide(BladeInstance, bladeInstance);
-  provide(TOOLBAR_SERVICE, createToolbarService());
+  provide(BladeInstanceKey, bladeInstance);
+  provide(ToolbarServiceKey, createToolbarService());
   provide(WidgetServiceKey, createWidgetService());
 
   // Minimal BladeStack mock for useBladeNavigation

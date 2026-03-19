@@ -121,7 +121,8 @@
 <script lang="ts" setup>
 import { ref, inject, computed, onMounted, nextTick, watch, getCurrentInstance, useAttrs } from "vue";
 import { IBladeToolbar } from "@core/types";
-import { useBladeNavigation, useBladeStack } from "@shared/components/blade-navigation/composables";
+import { useBladeStack } from "@core/blade-navigation";
+import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
 import BladeHeaderSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeHeaderSkeleton.vue";
 import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";
@@ -129,11 +130,11 @@ import BladeToolbarSkeleton from "@ui/components/organisms/vc-blade/_internal/Bl
 import BladeContentSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeContentSkeleton.vue";
 import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
-import { BladeInstance, BLADE_BACK_BUTTON, BladeBackButtonKey, BladeInstanceKey } from "@framework/injection-keys";
+import { BladeBackButtonKey, BladeInstanceKey } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 import { useBlade } from "../../../../core/composables";
-import { BladeDescriptorKey } from "@shared/components/blade-navigation/types";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 
 export interface Props {
   icon?: string;

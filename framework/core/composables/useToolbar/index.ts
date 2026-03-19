@@ -1,9 +1,9 @@
 import { inject, provide, computed, getCurrentInstance, getCurrentScope, onBeforeUnmount, onScopeDispose } from "vue";
 import type { ComputedRef } from "vue";
-import { BladeInstance, ToolbarServiceKey } from "@framework/injection-keys";
+import { BladeInstanceKey, ToolbarServiceKey } from "@framework/injection-keys";
 import { IToolbarItem, IToolbarService, createToolbarService, toolbarBus } from "@core/services/toolbar-service";
 import { FALLBACK_BLADE_ID } from "@core/constants";
-import type { IBladeInstance } from "@shared/components/blade-navigation/types";
+import type { IBladeInstance } from "@core/blade-navigation/types";
 
 // Global toolbar service (if not provided through provide/inject)
 let globalToolbarService: IToolbarService | null = null;
@@ -65,7 +65,7 @@ export function useToolbar(options: UseToolbarOptions = {}): UseToolbarReturn {
 
   // Get the ID of the current blade
   const blade = inject<ComputedRef<IBladeInstance>>(
-    BladeInstance,
+    BladeInstanceKey,
     computed(() => ({
       id: FALLBACK_BLADE_ID,
       expandable: false,

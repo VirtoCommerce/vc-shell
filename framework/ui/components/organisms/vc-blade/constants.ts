@@ -1,9 +1,9 @@
 import { computed } from "vue";
 import { FALLBACK_BLADE_ID } from "@core/constants";
-import type { IBladeInstance } from "@shared/components/blade-navigation/types";
+import type { IBladeInstance } from "@core/blade-navigation/types";
 
 /**
- * Default fallback for `inject(BladeInstance)` when no blade context is provided.
+ * Default fallback for `inject(BladeInstanceKey)` when no blade context is provided.
  * Used in vc-blade.vue, BladeHeader, and WidgetContainer so all three share a
  * single canonical shape instead of divergent inline fallbacks.
  */

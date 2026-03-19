@@ -30,6 +30,7 @@
     "core/**/*.ts",
     "core/api/*.ts",
     "core/plugins/**/*.vue",
+    "ui/index.ts",
     "ui/components",
     "ui/composables",
     "ui/utilities",

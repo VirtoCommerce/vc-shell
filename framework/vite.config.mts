@@ -46,6 +46,9 @@ export default getLibraryConfiguration({
     lib: {
       entry: {
         framework: path.resolve(frameworkRoot, "index.ts"),
+        "ui/index": path.resolve(frameworkRoot, "ui/index.ts"),
+        "ai-agent/index": path.resolve(frameworkRoot, "core/plugins/ai-agent/public.ts"),
+        "extensions/index": path.resolve(frameworkRoot, "core/plugins/extension-points/public.ts"),
       },
       formats: ["es"],
     },
@@ -53,7 +56,7 @@ export default getLibraryConfiguration({
       external: ["vue", "vue-router", "vee-validate", "@vc-shell/config-generator"],
       output: {
         entryFileNames: "[name].js",
-        chunkFileNames: "[name]-[hash].js",
+        chunkFileNames: "chunks/[name]-[hash].js",
       },
       onwarn(warning, defaultHandler) {
         // Ignore all warnings with strings /*#__PURE__*/

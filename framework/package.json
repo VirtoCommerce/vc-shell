@@ -12,17 +12,30 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/framework.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/framework.js"
+    },
+    "./ui": {
+      "types": "./dist/ui/index.d.ts",
+      "import": "./dist/ui/index.js"
+    },
+    "./ai-agent": {
+      "types": "./dist/core/plugins/ai-agent/public.d.ts",
+      "import": "./dist/ai-agent/index.js"
+    },
+    "./extensions": {
+      "types": "./dist/core/plugins/extension-points/public.d.ts",
+      "import": "./dist/extensions/index.js"
     },
     "./package.json": "./package.json",
-    "./dist/index.css": "./dist/framework.css",
+    "./dist/framework.css": "./dist/framework.css",
     "./dist/locales/*": "./dist/locales/*",
     "./tailwind.config": "./tailwind.config.ts"
   },
   "sideEffects": [
     "**/*.css",
-    "**/*.scss"
+    "**/*.scss",
+    "**/*.vue"
   ],
   "scripts": {
     "build": "shx rm -rf ./dist && tsx scripts/build.mts",

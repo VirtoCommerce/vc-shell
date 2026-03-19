@@ -79,7 +79,7 @@ vi.mock("vue-router", () => ({
   }),
 }));
 
-vi.mock("@shared/components/notifications/core/notification", () => ({
+vi.mock("@core/notifications/notification", () => ({
   notification: {
     error: vi.fn(),
     success: vi.fn(),
@@ -103,7 +103,7 @@ vi.mock("@ui/components/organisms/vc-app/_internal/layouts/MobileLayout.vue", ()
   }),
 }));
 
-vi.mock("@shared/components/popup-handler", () => ({
+vi.mock("@shell/_internal/popup", () => ({
   VcPopupContainer: defineComponent({
     name: "VcPopupContainer",
     template: "<div class='mock-popup-container' />",

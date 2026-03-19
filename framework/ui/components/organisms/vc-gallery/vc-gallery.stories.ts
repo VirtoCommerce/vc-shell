@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import type { Meta, StoryFn } from "@storybook/vue3-vite";
 import { VcGallery } from "@ui/components/organisms/vc-gallery";
-import { VcPopupContainer } from "@shared/components/popup-handler";
+import { VcPopupContainer } from "@shell/_internal/popup";
 import type { ICommonAsset } from "@core/types";
 
 const sampleImages: ICommonAsset[] = [

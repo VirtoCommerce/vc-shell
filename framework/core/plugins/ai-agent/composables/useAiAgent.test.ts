@@ -11,7 +11,7 @@ vi.mock("@core/composables/useUser", () => ({
   }),
 }));
 
-vi.mock("@shared/components/blade-navigation/composables", () => ({
+vi.mock("@core/composables/useBladeNavigationAdapter", () => ({
   useBladeNavigation: () => ({
     blades: ref([]),
     openBlade: vi.fn(),

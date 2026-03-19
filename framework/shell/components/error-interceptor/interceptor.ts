@@ -1,6 +1,6 @@
 import { useErrorHandler } from "@core/composables/useErrorHandler";
 import { defineComponent, inject, watch, type VNode } from "vue";
-import { BladeDescriptorKey, BladeStackKey } from "@shared/components/blade-navigation/types";
+import { BladeDescriptorKey, BladeStackKey } from "@core/blade-navigation/types";
 import { cancelPendingErrorNotification } from "@core/utilities/pendingErrorNotifications";
 
 export interface Props {

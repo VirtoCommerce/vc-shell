@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { Ref } from "vue";
 import { Composer } from "vue-i18n";
-import { CoreBladeAdditionalSettings } from "@shared/components/blade-navigation/types";
+import { CoreBladeAdditionalSettings } from "@core/blade-navigation/types";
 
 declare module "*.vue" {
   import type { DefineComponent } from "vue";

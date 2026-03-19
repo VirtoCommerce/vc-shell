@@ -11,7 +11,7 @@ vi.mock("vue-i18n", () => ({
 }));
 
 // Mock convertColorNameToHex
-vi.mock("@shared/utilities", () => ({
+vi.mock("@core/utilities", () => ({
   convertColorNameToHex: (name: string) => (name === "red" ? "#ff0000" : undefined),
 }));
 

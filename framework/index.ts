@@ -452,6 +452,3 @@ export * from "@shell/_internal/notifications/components";
 // Blade navigation rendering components (VcBladeNavigation, VcBladeSlot)
 export * from "@shell/_internal/blade-navigation";
 
-// Deprecated re-exports (backward compatibility)
-/** @deprecated Use `VcDropdown` from `framework/ui/components` instead. */
-export { GenericDropdown } from "@shared/components/generic-dropdown";

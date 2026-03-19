@@ -18,7 +18,7 @@ import { ChangePasswordButton } from "@shell/components/change-password-button";
 import { LogoutButton } from "@shell/components/logout-button";
 import { provideAiAgentService } from "@core/plugins/ai-agent";
 import type { IAiAgentConfig } from "@core/plugins/ai-agent";
-import type { BladeRoutesRecord } from "@shared/components/blade-navigation/types";
+import type { BladeRoutesRecord } from "@core/blade-navigation/types";
 import type { AppBarButtonContent } from "@core/services/app-bar-mobile-buttons-service";
 import type { RegisterSettingsMenuItemOptions } from "@core/services/settings-menu-service";
 

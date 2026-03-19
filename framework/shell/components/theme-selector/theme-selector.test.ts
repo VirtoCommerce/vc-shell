@@ -20,7 +20,7 @@ vi.mock("@core/composables/useTheme", () => ({
   }),
 }));
 
-vi.mock("@shared/components/notifications", () => ({
+vi.mock("@core/notifications", () => ({
   notification: vi.fn(),
 }));
 

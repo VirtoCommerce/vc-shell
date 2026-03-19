@@ -3,11 +3,11 @@ import { useAsync } from "./index";
 import { DisplayableError, parseError } from "@core/utilities/error";
 import { cancelPendingErrorNotification } from "@core/utilities/pendingErrorNotifications";
 
-vi.mock("@shared/components/notifications/core/notification", () => ({
+vi.mock("@core/notifications/notification", () => ({
   notification: { error: vi.fn(), remove: vi.fn() },
 }));
 
-import { notification } from "@shared/components/notifications/core/notification";
+import { notification } from "@core/notifications/notification";
 
 describe("useAsync", () => {
   beforeEach(() => {

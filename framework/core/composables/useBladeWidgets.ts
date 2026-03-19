@@ -1,6 +1,6 @@
 import { type ComputedRef, type Ref, onMounted, onUnmounted, inject } from "vue";
 import { WidgetServiceKey } from "@framework/injection-keys";
-import { BladeDescriptorKey } from "@shared/components/blade-navigation/types";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import type { IWidget, IHeadlessWidgetFields } from "@core/services/widget-service";
 import { createLogger, InjectionError } from "@core/utilities";
 

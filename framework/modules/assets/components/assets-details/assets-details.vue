@@ -123,7 +123,7 @@ import { VcForm } from "@ui/components/molecules/vc-form";
 import { VcImage } from "@ui/components/atoms/vc-image";
 import { VcInput } from "@ui/components/molecules/vc-input";
 import { VcTextarea } from "@ui/components/molecules/vc-textarea";
-import { isImage, getFileThumbnail, readableSize } from "@shared/utilities/assets";
+import { isImage, getFileThumbnail, readableSize } from "@core/utilities/assets";
 import { formatDateRelative } from "@core/utilities/date";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 

@@ -6,10 +6,10 @@ import { setPendingErrorNotification } from "@core/utilities/pendingErrorNotific
 import { createLogger } from "@core/utilities";
 
 // Lazy-resolved reference to the notification singleton.
-// We avoid a top-level import of `@shared/components/notifications/core/notification`
-// because that module transitively pulls in UI components (@ui/components) which
+// We avoid a top-level import of `@core/notifications/notification`
+// because that module may transitively pull in UI components (@ui/components) which
 // import from @core/composables — creating a circular dependency at module load time.
-let _notification: typeof import("@shared/components/notifications/core/notification").notification | undefined;
+let _notification: typeof import("@core/notifications/notification").notification | undefined;
 
 const logger = createLogger("use-async");
 
@@ -66,7 +66,7 @@ export function useAsync<Payload = void, Result = void>(
         // when onErrorCaptured fires (synchronously, before setTimeout(0) callback)
         const timerId = setTimeout(async () => {
           if (!_notification) {
-            const mod = await import("@shared/components/notifications/core/notification");
+            const mod = await import("@core/notifications/notification");
             _notification = mod.notification;
           }
           _notification.error(parsed.message, {

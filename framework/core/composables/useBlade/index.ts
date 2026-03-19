@@ -4,17 +4,17 @@ import {
     BladeStackKey,
     BladeMessagingKey,
     BladeDataKey,
-} from "@shared/components/blade-navigation/types";
+} from "@core/blade-navigation/types";
 import type {
     BladeOpenEvent,
     IBladeStack,
-} from "@shared/components/blade-navigation/types";
+} from "@core/blade-navigation/types";
 import {
     bladeStackInstance,
     bladeMessagingInstance,
     bladeNavigationInstance,
-} from "@shared/components/blade-navigation/plugin-v2";
-import { createUrlSync } from "@shared/components/blade-navigation/utils/urlSync";
+} from "@shell/_internal/blade-navigation/plugin-v2";
+import { createUrlSync } from "@core/blade-navigation/utils/urlSync";
 
 export interface UseBladeReturn<TOptions = Record<string, unknown>> {
   // Identity (read-only) — runtime error outside blade context

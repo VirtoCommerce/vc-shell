@@ -157,10 +157,10 @@ import { ICommonAsset, IActionBuilderResult, IBladeToolbar, ITableColumns } from
 import { ref, computed, onMounted, unref, watch, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { formatDateRelative } from "@core/utilities/date";
-import { isImage, getFileThumbnail, readableSize } from "@shared/utilities/assets";
+import { isImage, getFileThumbnail, readableSize } from "@core/utilities/assets";
 import * as _ from "lodash-es";
-import type { IParentCallArgs } from "@shared/components/blade-navigation/types";
-import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
+import type { IParentCallArgs } from "@core/blade-navigation/types";
+import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("assets-manager");

@@ -17,7 +17,7 @@ import { PopupPluginKey } from "@shell/_internal/popup/keys";
 import { PopupPlugin, UsePopupInternal, UsePopupProps } from "@shell/_internal/popup/types";
 import { popupPluginInstance } from "@shell/_internal/popup/plugin";
 import { useI18n } from "vue-i18n";
-import { ComponentPublicInstanceConstructor } from "@shared/utilities/vueUtils";
+import { ComponentPublicInstanceConstructor } from "@ui/utilities/vueUtils";
 import * as _ from "lodash-es";
 import vcPopupWarning from "@shell/_internal/popup/common/vc-popup-warning.vue";
 import vcPopupError from "@shell/_internal/popup/common/vc-popup-error.vue";

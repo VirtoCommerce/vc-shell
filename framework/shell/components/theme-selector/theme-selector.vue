@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { useTheme } from "@core/composables/useTheme";
-import { notification } from "@shared/components/notifications";
+import { notification } from "@core/notifications/notification";
 import { SettingsMenuItem } from "@shell/components/settings-menu-item";
 import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
 

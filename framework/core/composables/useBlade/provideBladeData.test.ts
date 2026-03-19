@@ -7,7 +7,7 @@ import {
   BladeDescriptorKey,
   BladeStackKey,
   BladeMessagingKey,
-} from "@shared/components/blade-navigation/types";
+} from "@core/blade-navigation/types";
 import {
   mountWithBladeContext,
   mountWithoutBladeContext,

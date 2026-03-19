@@ -6,7 +6,7 @@ import { NotificationStoreKey } from "@framework/injection-keys";
 import { PushNotification } from "@core/api/platform";
 
 // Mock toast to avoid side effects
-vi.mock("@shared/components/notifications/core", () => {
+vi.mock("@core/notifications", () => {
   const notificationFn = vi.fn(() => "toast-id");
   notificationFn.success = vi.fn();
   notificationFn.error = vi.fn();

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { useMultivalueInput } from "./useMultivalueInput";
 
 // Mock convertColorNameToHex
-vi.mock("@shared/utilities", () => ({
+vi.mock("@core/utilities", () => ({
   convertColorNameToHex: vi.fn((name: string) => {
     const colors: Record<string, string> = { red: "#ff0000", blue: "#0000ff" };
     return colors[name.toLowerCase()] || null;

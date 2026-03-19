@@ -649,7 +649,7 @@ if (param.value) { /* correct -- checks the actual string */ }
 
 | Resource | Description |
 |----------|-------------|
-| [`defineBladeContext` / `injectBladeContext`](../../../shared/composables/useBladeContext.docs.md) | Share reactive blade data with descendant widgets |
+| [`defineBladeContext` / `injectBladeContext`](../useBladeContext.docs.md) | Share reactive blade data with descendant widgets |
 | [`useBladeRegistry`](../useBladeRegistry/) | Look up registered blade components by name |
 | [`VcBlade`](../../../ui/components/organisms/vc-blade/) | The blade UI shell component (header, toolbar, content area) |
 | [`VcBladeNavigation`](../../../shared/components/blade-navigation/) | The container component that renders the blade stack |

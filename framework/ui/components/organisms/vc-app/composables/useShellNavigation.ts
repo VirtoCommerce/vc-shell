@@ -1,6 +1,6 @@
 import { useRoute, useRouter } from "vue-router";
 import { useBlade } from "@core/composables/useBlade";
-import { navigateToMainRoute } from "@shared/components/blade-navigation/utils/navigateToMainRoute";
+import { navigateToMainRoute } from "@core/blade-navigation/utils/navigateToMainRoute";
 import { createLogger } from "@core/utilities";
 import type { MenuItem } from "@core/types";
 

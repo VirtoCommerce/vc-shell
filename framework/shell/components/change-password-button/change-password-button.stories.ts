@@ -1,7 +1,7 @@
 import { onUnmounted, provide } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import ChangePasswordButton from "@shell/components/change-password-button/change-password-button.vue";
-import { VcPopupContainer } from "@shared/components/popup-handler";
+import { VcPopupContainer } from "@shell/_internal/popup";
 import { CloseSettingsMenuKey } from "@framework/injection-keys";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { IdentityResult, SecurityResult } from "@core/api/platform";

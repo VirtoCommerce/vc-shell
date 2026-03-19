@@ -1,5 +1,5 @@
 import { computed, type ComputedRef } from "vue";
-import type { IBladeInstance } from "@shared/components/blade-navigation/types";
+import type { IBladeInstance } from "@core/blade-navigation/types";
 
 /**
  * Encapsulates blade error state: reactive computeds for the banner

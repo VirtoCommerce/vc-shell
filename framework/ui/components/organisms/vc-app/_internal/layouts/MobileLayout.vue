@@ -207,7 +207,7 @@ import { computed, inject, ref, watch } from "vue";
 import type { AppDescriptor } from "@core/api/platform";
 import type { MenuItem } from "@core/types";
 import { EmbeddedModeKey } from "@framework/injection-keys";
-import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
+import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
 import { UserDropdownButton } from "@shell/components/user-dropdown-button";
 import { useSidebarState } from "@core/composables/useSidebarState";
 import { useAppBarWidget } from "@core/composables";

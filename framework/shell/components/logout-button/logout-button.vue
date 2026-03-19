@@ -12,7 +12,7 @@ import { CloseSettingsMenuKey } from "@framework/injection-keys";
 import { SettingsMenuItem } from "@shell/components/settings-menu-item";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useRouter } from "vue-router";
-import { useBladeNavigation } from "@shared/components/blade-navigation";
+import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
 
 const { signOut } = useUserManagement();
 const router = useRouter();

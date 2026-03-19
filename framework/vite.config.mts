@@ -15,8 +15,6 @@ const frameworkAliases = {
   "@core/": `${normalizedFrameworkRoot}/core/`,
   "@ui": `${normalizedFrameworkRoot}/ui`,
   "@ui/": `${normalizedFrameworkRoot}/ui/`,
-  "@shared": `${normalizedFrameworkRoot}/shared`,
-  "@shared/": `${normalizedFrameworkRoot}/shared/`,
   "@assets": `${normalizedFrameworkRoot}/assets`,
   "@assets/": `${normalizedFrameworkRoot}/assets/`,
   "@locales": `${normalizedFrameworkRoot}/locales`,

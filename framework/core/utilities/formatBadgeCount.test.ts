@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatBadgeCount } from "@shared/utilities/formatBadgeCount";
+import { formatBadgeCount } from "./formatBadgeCount";
 
 describe("formatBadgeCount", () => {
   it("returns undefined for undefined input", () => {

@@ -32,11 +32,14 @@ vi.mock("@core/composables", async (importOriginal) => {
   };
 });
 
-vi.mock("@shared/components", () => ({
+vi.mock("@core/composables/useBladeNavigationAdapter", () => ({
   useBladeNavigation: () => ({
     blades,
     currentBladeNavigationData,
   }),
+}));
+
+vi.mock("@shell/components/user-dropdown-button", () => ({
   UserDropdownButton: defineComponent({
     name: "UserDropdownButton",
     setup() {

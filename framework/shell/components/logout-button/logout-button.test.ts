@@ -21,7 +21,7 @@ vi.mock("vue-router", () => ({
 }));
 
 const mockCloseBlade = vi.fn().mockResolvedValue(false);
-vi.mock("@shared/components/blade-navigation", () => ({
+vi.mock("@core/composables/useBladeNavigationAdapter", () => ({
   useBladeNavigation: () => ({
     closeBlade: mockCloseBlade,
   }),

@@ -7,7 +7,7 @@
       $attrs.class,
       {
         'vc-blade--mobile': $isMobile.value,
-        'vc-blade--expanded': expanded,
+        'vc-blade--expanded': isExpanded,
         'vc-blade--maximized': blade.maximized,
       },
     ]"
@@ -24,13 +24,13 @@
       <BladeHeader
         v-show="!showSkeleton"
         class="vc-blade__header"
-        :closable="closable"
+        :closable="isClosable"
         :icon="icon"
         :title="title"
         :subtitle="subtitle"
         :modified="modified"
         :title-id="bladeTitleId"
-        @close="$emit('close')"
+        @close="handleClose"
         @expand="$emit('expand')"
         @collapse="$emit('collapse')"
       >
@@ -119,7 +119,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, inject, computed, onMounted, nextTick, watch, getCurrentInstance } from "vue";
+import { ref, inject, computed, onMounted, nextTick, watch, getCurrentInstance, useAttrs } from "vue";
 import { IBladeToolbar } from "@core/types";
 import { useBladeNavigation, useBladeStack } from "@shared/components/blade-navigation/composables";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
@@ -133,6 +133,7 @@ import { BladeInstance, BLADE_BACK_BUTTON, BladeBackButtonKey, BladeInstanceKey 
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 import { useBlade } from "../../../../core/composables";
+import { BladeDescriptorKey } from "@shared/components/blade-navigation/types";
 
 export interface Props {
   icon?: string;
@@ -176,7 +177,48 @@ const slots = defineSlots<{
 
 const emit = defineEmits<Emits>();
 
-const { id: bladeId } = useBlade();
+// Single useBlade() call — reuse for both bladeId and context-aware features
+const bladeFull = useBlade();
+const { id: bladeId } = bladeFull;
+
+// Context detection: are we inside blade navigation (VcBladeSlot)?
+const hasBladeContext = !!inject(BladeDescriptorKey, undefined);
+
+// When inside blade navigation, read from BladeDescriptor (ignoring props).
+// When standalone (Storybook), fall back to props.
+const isExpanded = computed(() => {
+  if (hasBladeContext) return bladeFull.expanded.value;
+  return props.expanded;
+});
+
+const isClosable = computed(() => {
+  if (hasBladeContext) return bladeFull.closable.value;
+  return props.closable;
+});
+
+const attrs = useAttrs();
+
+function handleClose() {
+  if (attrs.onClose) {
+    // Legacy: blade page has @close listener on <VcBlade>
+    emit('close');
+  } else if (hasBladeContext) {
+    // New: VcBlade closes directly via blade stack
+    bladeFull.closeSelf();
+  } else {
+    // Standalone (Storybook): emit for argTypes action handlers
+    emit('close');
+  }
+}
+
+// One-time deprecation warning in dev mode
+if (import.meta.env.DEV && attrs.onClose && hasBladeContext) {
+  console.warn(
+    '[VcBlade] @close listener is deprecated when used inside blade navigation. ' +
+    'VcBlade now handles close automatically. ' +
+    'Remove @close="$emit(\'close:blade\')" from your template.'
+  );
+}
 
 const blade = inject(BladeInstanceKey, DEFAULT_BLADE_INSTANCE);
 

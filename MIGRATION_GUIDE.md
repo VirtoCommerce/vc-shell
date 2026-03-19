@@ -813,6 +813,99 @@ const { refreshAll } = useBladeWidgets([...]);
 
 If your code only uses `useWidgets()` to call `updateActiveWidget()`, replace it with `refreshAll()` from `useBladeWidgets`.
 
+### Stage 2: Headless Widgets (Preferred)
+
+For blade-local widgets that follow the standard VcWidget pattern (icon + title + badge + click), you can now declare them as **config objects** — no `.vue` file needed:
+
+```ts
+import { useBladeWidgets } from "@vc-shell/framework";
+
+const { refreshAll } = useBladeWidgets([
+  {
+    id: "OffersWidget",
+    icon: "lucide-tag",
+    title: "PRODUCTS.WIDGETS.OFFERS.TITLE",
+    badge: offersCount,
+    onClick: () => openBlade({ name: "OffersList" }),
+    onRefresh: loadOffers,
+  },
+  {
+    id: "AssociationsWidget",
+    icon: "lucide-link",
+    title: "PRODUCTS.WIDGETS.ASSOCIATIONS.TITLE",
+    badge: associationsCount,
+    isVisible: computed(() => !isNew.value),
+  },
+]);
+```
+
+The framework renders `<VcWidget>` directly from config — no need for a separate widget `.vue` file. Widget logic (API calls, counts) lives in composables.
+
+**When to use headless vs component widgets:**
+
+| | Headless | Component (SFC) |
+|---|---|---|
+| Blade-local, standard VcWidget visual | Preferred | |
+| External module widget | | Required |
+| Custom UI beyond VcWidget | | Required |
+
+### Blade Context for External Widgets
+
+External widgets from other modules now receive blade data via `defineBladeContext` / `injectBladeContext` instead of `config.requiredData` + `provideBladeData`.
+
+**Convention:** All blades expose their main entity as `item`. This is the standard contract — external widgets always access `ctx.value.item`.
+
+**Blade side (one line, replaces `provideBladeData`):**
+```ts
+// Before
+const { provideBladeData } = useBlade();
+const bladeData = computed(() => ({ id: item.value?.id, objectType: item.value?.objectType }));
+provideBladeData(bladeData);
+
+// After
+defineBladeContext({ item });
+```
+
+**External widget side (replaces props from `config.requiredData`):**
+```ts
+// Before — widget received props via config.requiredData resolution
+const props = defineProps<{ id: string; objectType: string }>();
+
+// After — widget injects blade context directly
+const ctx = injectBladeContext();
+const bladeItem = computed(() => ctx.value.item as { id?: string; objectType?: string });
+```
+
+**Registration (simplified — no config needed):**
+```ts
+// Before
+registerExternalWidget({
+  component: MessageWidget,
+  targetBlades: ["ProductDetails"],
+  config: { requiredData: ["id", "objectType"] },
+  updateFunctionName: "updateActiveWidgetCount",
+});
+
+// After
+registerExternalWidget({
+  component: MessageWidget,
+  targetBlades: ["ProductDetails"],
+});
+```
+
+**What gets removed:**
+- `config.requiredData` / `config.optionalData` / `config.fieldMapping` / `config.propsResolver`
+- `provideBladeData` from `useBlade()`
+- `resolveWidgetProps` logic
+- `updateFunctionName` — use `useWidget().setTrigger({ onRefresh })` instead
+- Widget `defineExpose({ updateFn })` — use `setTrigger` instead
+
+**Notes:**
+- `defineBladeContext` accepts plain objects or computed refs
+- `injectBladeContext()` returns `ComputedRef` — access via `.value`
+- Throws if no context found (blade forgot to call `defineBladeContext`)
+- Not limited to widgets — extensions, nested components can also use `injectBladeContext()`
+
 ---
 
 ## 12. Migrating to Vue 3.5.30, Vue Router 5, vue-tsc 3
@@ -1037,6 +1130,25 @@ The notification system has been redesigned with a unified `NotificationStore`. 
 | `notifyType` in `defineOptions` on templates | Remove — bind via module config `notifications` |
 | `hasUnreadNotifications` import | `useNotificationStore().hasUnread` |
 
+### Module Directory Structure
+
+Notification templates should live in a dedicated `notifications/` directory at the module root level, alongside `pages/`, `composables/`, and `widgets/`:
+
+```
+my-module/
+  components/          # Shared UI components (dashboard cards, etc.)
+  composables/         # Business logic composables
+  locales/             # i18n translations
+  notifications/       # Notification template components
+    MyDomainEvent.vue
+    index.ts
+  pages/               # Blade components
+  widgets/             # External blade widgets
+  index.ts             # Module entry point (defineAppModule)
+```
+
+> **Note:** Previously notification templates were placed inside `components/notifications/`. Move them to `notifications/` at the module root to match the established pattern for `widgets/`.
+
 ### Step 1: Module Registration
 
 **Before:**
@@ -1047,7 +1159,7 @@ export default createAppModule(pages, locales, notificationTemplates);
 
 **After:**
 ```ts
-import { MyEventTemplate } from "./components/notifications/MyEventTemplate.vue";
+import MyEventTemplate from "./notifications/MyEventTemplate.vue";
 
 export default defineAppModule({
   blades: pages,
@@ -1055,12 +1167,25 @@ export default defineAppModule({
   notifications: {
     MyDomainEvent: {
       template: MyEventTemplate,
-      severity: "info",
       toast: { mode: "auto" },
+    },
+    MyDangerousEvent: {
+      template: MyDangerousTemplate,
+      toast: { mode: "auto", severity: "warning" }, // 8s timeout instead of default 5s
     },
   },
 });
 ```
+
+**`toast` options:**
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `mode` | `"auto" \| "progress" \| "silent"` | — | Toast display mode |
+| `severity` | `"info" \| "warning" \| "error" \| "critical"` | `"info"` | Controls toast timeout and type (`info`=5s, `warning`=8s, `error`/`critical`=persistent) |
+| `timeout` | `number` | severity-based | Override timeout (ms) |
+| `isComplete` | `(msg) => boolean` | `msg.finished` | For `progress` mode: when to complete |
+| `completedType` | `(msg) => "success" \| "error"` | `() => "success"` | For `progress` mode: toast type on completion |
 
 ### Step 2: Remove `notifyType` from Blade `defineOptions`
 
@@ -1132,7 +1257,7 @@ watch(moduleNotifications, (newVal) => {
 **After:**
 ```ts
 // Module config handles the progress toast automatically:
-// notifications: { MyProgressEvent: { severity: "info", toast: { mode: "progress" } } }
+// notifications: { MyProgressEvent: { toast: { mode: "progress" } } }
 
 useBladeNotifications({
   types: ["MyProgressEvent"],
@@ -1157,7 +1282,7 @@ defineOptions({
 ```vue
 <script setup>
 // notifyType removed — binding is in module config
-defineProps<{ notification: PushNotification; severity?: string }>();
+defineProps<{ notification: PushNotification }>();
 </script>
 ```
 
@@ -1170,3 +1295,201 @@ Each step can be done independently per module. The module works at every stage:
 3. Remove `notifyType` from blade `defineOptions`
 4. Replace `useNotifications` → `useBladeNotifications` in blades
 5. Remove `notifyType` from template `defineOptions`
+6. Move `components/notifications/` → `notifications/` at module root (matches `widgets/` pattern)
+
+---
+
+## Blade Navigation: `replaceWith` vs `coverWith`
+
+The blade replacement API has been split into two distinct methods with clear semantics.
+
+### What Changed
+
+| Before | After | Behavior |
+|--------|-------|----------|
+| `replaceWith(event)` | `replaceWith(event)` | **Changed:** Now truly replaces the blade — destroys old, creates new at same index with same `parentId`. |
+| _(no equivalent)_ | `coverWith(event)` | **New:** Old `replaceWith` behavior — hides current blade, opens new one on top. Closing reveals hidden blade. |
+| `openBlade({ replaceCurrentBlade: true })` | _(unchanged)_ | Legacy adapter maps to `coverCurrentBlade` for backward compatibility. |
+
+### When to Use Which
+
+**`replaceWith`** — Use when the blade should be truly replaced (e.g., create→edit transition after saving a new entity):
+
+```typescript
+const { replaceWith } = useBlade();
+
+// After creating a new order, reopen the blade in edit mode
+if (!props.param && order.value.id) {
+  await replaceWith({
+    name: "OrderDetails",
+    param: order.value.id,
+  });
+}
+```
+
+**`coverWith`** — Use when you want to keep the old blade alive underneath (e.g., preview mode, sub-editing flow where closing returns to the previous state):
+
+```typescript
+const { coverWith } = useBlade();
+
+// Open a preview blade on top — closing it returns to the edit blade
+await coverWith({
+  name: "OrderPreview",
+  param: order.value.id,
+});
+```
+
+### Migration Steps
+
+1. **Audit existing `replaceWith` calls** — If the intent is a true replacement (create→edit, reload with new params), no changes needed — the new behavior is what you want.
+2. **If you relied on the hidden blade staying alive** (e.g., `callParent` reaching the hidden blade's methods), change `replaceWith` → `coverWith`.
+3. **Legacy `openBlade({ replaceCurrentBlade: true })`** — No changes needed, it continues to use the cover (hide+stack) behavior via the adapter.
+
+## 13. Blade Props Simplification
+
+VcBlade is now **context-aware** — it reads `expanded` and `closable` from the `BladeDescriptor` automatically when used inside blade navigation. Blade pages no longer need to declare boilerplate props/emits just to forward them to `<VcBlade>`.
+
+### What Changed
+
+| Before (deprecated) | After (new) |
+|---|---|
+| Declare `expanded`, `closable`, `param`, `options` in Props | Use `useBlade()` to access all of these |
+| Declare `close:blade`, `expand:blade`, `collapse:blade`, `parent:call` in Emits | Not needed — VcBlade handles close internally, `callParent()` replaces emit |
+| Forward props: `:expanded="expanded"` `:closable="closable"` | Not needed — VcBlade reads from BladeDescriptor |
+| Forward events: `@close="$emit('close:blade')"` | Not needed — VcBlade calls `closeSelf()` internally |
+| `emit("parent:call", { method: "reload" })` | `callParent("reload")` |
+| `emit("close:blade")` | `closeSelf()` |
+| `props.param` | `param.value` from `useBlade()` |
+| `props.options?.myField` (untyped) | `options.value?.myField` from `useBlade<{ myField: string }>()` (typed) |
+
+### New Features
+
+#### Typed Options
+
+`useBlade()` now accepts a generic for typed access to blade options:
+
+```typescript
+interface MyOptions { productId: string; mode: "edit" | "create" }
+const { options } = useBlade<MyOptions>();
+// options.value is MyOptions | undefined — no manual cast needed
+```
+
+#### Lifecycle Hooks
+
+New `onActivated` / `onDeactivated` hooks fire when a blade gains or loses active (rightmost) status:
+
+```typescript
+const { onActivated, onDeactivated } = useBlade();
+
+onActivated(() => {
+  // Blade became active — refresh data, start polling
+});
+
+onDeactivated(() => {
+  // Another blade opened on top — pause polling
+});
+```
+
+> **Note:** These hooks fire on **transitions only**, not on initial mount. Use `onMounted` for initial-mount logic.
+
+### Before / After Example
+
+**Before (~55 lines of boilerplate):**
+
+```vue
+<template>
+  <VcBlade
+    :title="bladeTitle"
+    width="50%"
+    :expanded="expanded"
+    :closable="closable"
+    :toolbar-items="bladeToolbar"
+    @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
+  >
+    <VcDataTable ... />
+  </VcBlade>
+</template>
+
+<script lang="ts" setup>
+import { IParentCallArgs, useBlade } from "@vc-shell/framework";
+
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: { sellerProduct?: SellerProduct };
+}
+
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+});
+const emit = defineEmits<Emits>();
+const { openBlade, closeSelf, callParent } = useBlade();
+
+const reload = async () => {
+  await loadOffers({ ... });
+  emit("parent:call", { method: "reload" });
+};
+</script>
+```
+
+**After (~35 lines, no boilerplate):**
+
+```vue
+<template>
+  <VcBlade
+    :title="bladeTitle"
+    width="50%"
+    :toolbar-items="bladeToolbar"
+  >
+    <VcDataTable ... />
+  </VcBlade>
+</template>
+
+<script lang="ts" setup>
+import { useBlade } from "@vc-shell/framework";
+
+const { param, options, openBlade, closeSelf, callParent } =
+  useBlade<{ sellerProduct?: SellerProduct }>();
+
+const reload = async () => {
+  await loadOffers({ ... });
+  callParent("reload");
+};
+</script>
+```
+
+### Migration Steps
+
+1. **Replace imports**: Remove `IParentCallArgs` from imports (no longer needed).
+2. **Remove Props boilerplate**: Remove `expanded`, `closable` from your Props interface. Remove `param` and `options` too — get them from `useBlade()`.
+3. **Remove Emits boilerplate**: Remove the entire `Emits` interface and `defineEmits()`.
+4. **Remove `withDefaults`**: Remove `withDefaults(defineProps<Props>(), { expanded: true, closable: true })` — these defaults are handled by VcBlade internally.
+5. **Use `useBlade()`**: Destructure what you need: `const { param, options, openBlade, closeSelf, callParent } = useBlade<YourOptionsType>()`.
+6. **Update template**: Remove `:expanded`, `:closable`, `@close`, `@expand`, `@collapse` from `<VcBlade>`.
+7. **Replace emits in script**: `emit("parent:call", { method: "X" })` → `callParent("X")`, `emit("close:blade")` → `closeSelf()`.
+8. **Replace `props.param`** → `param.value` (it's a `ComputedRef`).
+
+### Backward Compatibility
+
+- **Old code continues to work** — VcBladeSlot still passes all props and listens to all events. Migration is optional until the next major version.
+- **Partial migration is safe** — You can migrate individual blade pages one at a time. Old-style and new-style pages coexist in the same app.
+- A dev-mode `console.warn` appears when VcBlade detects `@close` listener inside blade navigation context, guiding developers to remove it.
+
+### Automated Migration
+
+```bash
+npx @vc-shell/codemod --transform blade-props-simplification
+```
+
+Or run all transforms: `npx @vc-shell/codemod`

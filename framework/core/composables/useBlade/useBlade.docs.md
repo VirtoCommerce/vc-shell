@@ -32,6 +32,18 @@ openBlade({ name: "OrderDetails", param: "order-123" });
 </script>
 ```
 
+```vue
+<script setup lang="ts">
+import { useBlade } from "@vc-shell/framework";
+
+// Typed options — no manual casting needed
+interface BladeOptions { sellerProduct?: SellerProduct }
+const { param, options, callParent } = useBlade<BladeOptions>();
+
+console.log(options.value?.sellerProduct); // typed as SellerProduct | undefined
+</script>
+```
+
 ## API Reference
 
 ### Import
@@ -46,6 +58,18 @@ const blade = useBlade();
 
 `useBlade()` takes no parameters. Context is resolved automatically via Vue's provide/inject system.
 
+### Type Parameter
+
+`useBlade<TOptions>()` accepts an optional generic to type the `options` computed ref:
+
+```typescript
+interface MyOptions { productId: string; mode: "edit" | "create" }
+const { options } = useBlade<MyOptions>();
+// options.value is MyOptions | undefined — no manual casting needed
+```
+
+Without the generic, `options.value` defaults to `Record<string, unknown> | undefined`.
+
 ### Returns: `UseBladeReturn`
 
 #### Identity Properties (blade context required)
@@ -56,7 +80,7 @@ These are reactive `ComputedRef` values that reflect the current blade's state. 
 |------------|-------------------------------------------------------|---------------------------------------------------------|
 | `id`       | `ComputedRef<string>`                                 | The current blade's unique ID within the blade stack    |
 | `param`    | `ComputedRef<string \| undefined>`                    | Route parameter passed when the blade was opened        |
-| `options`  | `ComputedRef<Record<string, unknown> \| undefined>`   | Additional options object passed to the blade           |
+| `options`  | `ComputedRef<TOptions \| undefined>`                  | Additional options object passed to the blade. Type is `Record<string, unknown>` by default; provide a generic to get a typed ref: `useBlade<MyOptions>()` |
 | `query`    | `ComputedRef<Record<string, string> \| undefined>`    | URL query parameters scoped to this blade               |
 | `closable` | `ComputedRef<boolean>`                                | `true` when this blade has a parent (i.e., can be closed) |
 | `expanded` | `ComputedRef<boolean>`                                | `true` when this blade is the active (rightmost) blade  |
@@ -74,7 +98,8 @@ These are reactive `ComputedRef` values that reflect the current blade's state. 
 |-----------------|-----------------------------------------|----------------------------------------------------|
 | `closeSelf`     | `() => Promise<boolean>`                | Close the current blade. Returns `true` if a guard prevented closure. Respects `onBeforeClose` guards. |
 | `closeChildren` | `() => Promise<void>`                   | Close all child blades of the current blade        |
-| `replaceWith`   | `(event: BladeOpenEvent) => Promise<void>` | Replace the current blade with a different one in the same position |
+| `replaceWith`   | `(event: BladeOpenEvent) => Promise<void>` | Replace the current blade with a different one in the same position (destroys the old blade) |
+| `coverWith`     | `(event: BladeOpenEvent) => Promise<void>` | Cover the current blade — hides it and opens a new blade on top. Closing the new blade reveals the hidden one. |
 
 #### Communication Methods (blade context required)
 
@@ -91,6 +116,15 @@ These are reactive `ComputedRef` values that reflect the current blade's state. 
 | `setError`      | `(error: unknown) => void`                   | Display an error banner on the blade                 |
 | `clearError`    | `() => void`                                 | Clear the blade error banner                         |
 
+#### Lifecycle Hooks (blade context required)
+
+| Method          | Signature                         | Description                                              |
+|-----------------|-----------------------------------|----------------------------------------------------------|
+| `onActivated`   | `(callback: () => void) => void`  | Register a callback fired when this blade becomes the active (rightmost) blade. Only fires on transitions, not on initial mount. |
+| `onDeactivated` | `(callback: () => void) => void`  | Register a callback fired when this blade loses active status (another blade opens on top). |
+
+> **Note:** Each hook can only be registered once per `useBlade()` call. A second registration logs a warning and is ignored. Use `onMounted` for initial-mount logic — `onActivated` only fires on subsequent activations.
+
 #### Deprecated
 
 | Method             | Signature                                               | Description                         |
@@ -99,7 +133,7 @@ These are reactive `ComputedRef` values that reflect the current blade's state. 
 
 ### BladeOpenEvent
 
-The object passed to `openBlade` and `replaceWith`:
+The object passed to `openBlade`, `replaceWith`, and `coverWith`:
 
 ```typescript
 interface BladeOpenEvent {
@@ -167,13 +201,21 @@ Replace the current blade with a different one, keeping the same position in the
 
 ```vue
 <script setup lang="ts">
-const { replaceWith } = useBlade();
+const { replaceWith, coverWith } = useBlade();
 
-// Switch from "create" mode to "edit" mode after saving
+// Switch from "create" mode to "edit" mode after saving (destroys the old blade)
 async function onSaveNew(createdId: string) {
   await replaceWith({
     name: "ProductDetails",
     param: createdId,
+  });
+}
+
+// Open a "preview" blade on top — closing it returns to the current blade
+async function onPreview() {
+  await coverWith({
+    name: "ProductPreview",
+    param: product.value.id,
   });
 }
 </script>
@@ -291,12 +333,17 @@ onBeforeClose(async () => {
 ### Blade Identity
 
 ```typescript
-const { id, name, param, expanded, closable } = useBlade();
+const { id, name, param, expanded, closable, onActivated, onDeactivated } = useBlade();
 
 useWidgets(id.value, widgetDefs); // blade ID for scoped operations
 
-watch(expanded, (isActive) => {
-  if (isActive) { /* blade became the rightmost (active) blade */ }
+// React to blade activation/deactivation (transitions only, not initial mount)
+onActivated(() => {
+  // blade became the rightmost (active) blade — e.g., refresh data
+});
+
+onDeactivated(() => {
+  // another blade opened on top — e.g., pause polling
 });
 ```
 
@@ -405,14 +452,13 @@ defineExpose({ reload, title: "Products" });
 <script setup lang="ts">
 import { useBlade, usePopup } from "@vc-shell/framework";
 
-defineOptions({ name: "ProductDetails" });
-const props = defineProps<{ expanded?: boolean; closable?: boolean; param?: string }>();
+defineOptions({ name: "ProductDetails", url: "/product-details" });
 
-const { onBeforeClose, closeSelf, callParent } = useBlade();
+const { param, onBeforeClose, closeSelf, callParent } = useBlade();
 const { showConfirmation } = usePopup();
 
 onMounted(async () => {
-  if (props.param) await loadProduct(props.param);
+  if (param.value) await loadProduct(param.value);
 });
 
 async function onSave() {
@@ -431,6 +477,8 @@ onBeforeClose(async () => {
 defineExpose({ title });
 </script>
 ```
+
+> **Note:** The key change vs. the old pattern is removing `defineProps<{ expanded?: boolean; closable?: boolean; param?: string }>()` and reading `param` from `useBlade()` instead.
 
 ### Recipe 3: Multi-Level Blade Chain (List -> Details -> Sub-Details)
 

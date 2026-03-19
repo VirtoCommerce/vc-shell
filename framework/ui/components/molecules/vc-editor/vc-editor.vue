@@ -343,9 +343,15 @@ const extensions = computed(() => {
     }),
   ];
 
-  // Add custom extensions if provided
+  // Merge custom extensions: custom ones override base ones with the same name
   if (props.extensions && props.extensions.length > 0) {
-    baseExtensions.push(...props.extensions);
+    const customNames = new Set(
+      props.extensions.map((ext: Extension) => ext.name).filter(Boolean),
+    );
+    const filtered = baseExtensions.filter(
+      (ext: Extension) => !customNames.has(ext.name),
+    );
+    return [...filtered, ...props.extensions];
   }
 
   return baseExtensions;

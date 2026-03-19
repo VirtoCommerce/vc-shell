@@ -4,7 +4,7 @@ import { mount } from "@vue/test-utils";
 import { mountWithSetup } from "@framework/test-helpers";
 
 // Mock useMenuExpanded before importing the composable
-vi.mock("@shared/composables/useMenuExpanded", () => ({
+vi.mock("@core/composables/useMenuExpanded", () => ({
   useMenuExpanded: () => ({
     isExpanded: ref(false),
     isHoverExpanded: ref(false),

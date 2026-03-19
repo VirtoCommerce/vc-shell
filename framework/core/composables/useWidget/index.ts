@@ -1,6 +1,6 @@
 import { inject } from "vue";
 import { WidgetIdKey, WidgetServiceKey } from "@framework/injection-keys";
-import { BladeDescriptorKey } from "@shared/components/blade-navigation/types";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import type { IWidgetTrigger } from "@core/services/widget-service";
 import { InjectionError } from "@core/utilities";
 

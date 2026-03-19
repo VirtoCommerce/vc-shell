@@ -12,8 +12,8 @@ import {
   BladeDescriptorKey,
   BladeStackKey,
   BladeMessagingKey,
-} from "@shared/components/blade-navigation/types";
-import type { IBladeStack, IBladeMessaging } from "@shared/components/blade-navigation/types";
+} from "@core/blade-navigation/types";
+import type { IBladeStack, IBladeMessaging } from "@core/blade-navigation/types";
 
 // ── Generic composable wrapper ─────────────────────────────────────────────────
 

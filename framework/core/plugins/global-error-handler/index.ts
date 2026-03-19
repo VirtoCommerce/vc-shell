@@ -1,5 +1,5 @@
 import type { App } from "vue";
-import { notification } from "@shared/components/notifications/core/notification";
+import { notification } from "@core/notifications/notification";
 import { parseError } from "@core/utilities/error";
 import { createLogger } from "@core/utilities";
 

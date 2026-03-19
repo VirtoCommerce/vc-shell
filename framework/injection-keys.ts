@@ -1,7 +1,7 @@
 import { InjectionKey, ComputedRef, type Component, type Ref } from "vue";
-import type { BladeVNode, IBladeInstance } from "@shared/components/blade-navigation/types";
-import { BladeDataKey } from "@shared/components/blade-navigation/types";
-import type { BladeRoutesRecord } from "@shared/components/blade-navigation/types";
+import type { BladeVNode, IBladeInstance } from "@core/blade-navigation/types";
+import { BladeDataKey } from "@core/blade-navigation/types";
+import type { BladeRoutesRecord } from "@core/blade-navigation/types";
 import type { NotificationTemplateConstructor } from "@core/types";
 import type { NotificationStore } from "@core/notifications/store";
 import { IToolbarService } from "@core/services/toolbar-service";
@@ -96,18 +96,3 @@ export const CloseSettingsMenuKey: InjectionKey<() => void> = Symbol("CloseSetti
 
 // Blade context (data exposed by blade for external widgets / extensions)
 export const BladeContextKey: InjectionKey<ComputedRef<Record<string, unknown>>> = Symbol("BladeContext");
-
-
-// Legacy aliases (deprecated - use the new *Key exports instead)
-/** @deprecated Use NavigationViewLocationKey instead */
-export const navigationViewLocation = NavigationViewLocationKey;
-/** @deprecated Use BladeInstanceKey instead. */
-export const BladeInstance = BladeInstanceKey;
-/** @deprecated Use NotificationTemplatesKey instead */
-export const NotificationTemplatesSymbol = NotificationTemplatesKey;
-/** @deprecated Use BladeBackButtonKey instead */
-export const BLADE_BACK_BUTTON = BladeBackButtonKey;
-/** @deprecated Use ToolbarServiceKey instead */
-export const TOOLBAR_SERVICE = ToolbarServiceKey;
-/** @deprecated Use EmbeddedModeKey instead */
-export const EMBEDDED_MODE = EmbeddedModeKey;

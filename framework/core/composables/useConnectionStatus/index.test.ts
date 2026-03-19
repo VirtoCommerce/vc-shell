@@ -8,7 +8,7 @@ vi.mock("@vueuse/core", () => ({
 }));
 
 // Mock notification
-vi.mock("@shared/components/notifications/core/notification", () => ({
+vi.mock("@core/notifications/notification", () => ({
   notification: {
     warning: vi.fn(),
     remove: vi.fn(),

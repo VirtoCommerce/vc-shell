@@ -12,3 +12,9 @@ export type {
   BladeNotificationReturn,
 } from "./types";
 export { SEVERITY_TIMEOUTS, EXCLUDED_NOTIFICATION_TYPES } from "./types";
+
+// Imperative notification API
+export { notification } from "./notification";
+
+// Toast UI types (NotificationOptions, Content, NotificationPosition, etc.)
+export * from "./toast-types";

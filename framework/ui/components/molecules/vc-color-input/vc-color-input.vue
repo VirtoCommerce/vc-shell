@@ -137,7 +137,7 @@ import { useFormField } from "@ui/composables/useFormField";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcHint } from "@ui/components/atoms/vc-hint";
-import { convertColorNameToHex, isValidHexColor, normalizeHexColor } from "@shared/utilities";
+import { convertColorNameToHex, isValidHexColor, normalizeHexColor } from "@core/utilities";
 import type { ITextFieldProps } from "@ui/types";
 
 export interface VcColorInputProps extends ITextFieldProps {

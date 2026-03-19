@@ -4,7 +4,7 @@ import { PushNotification } from "@core/api/platform";
 import { NotificationTypeConfig } from "./types";
 
 // Mock the notification imperative API
-vi.mock("@shared/components/notifications/core", () => {
+vi.mock("@core/notifications", () => {
   const notificationFn = vi.fn(() => "toast-id-1");
   notificationFn.success = vi.fn(() => "toast-id-s");
   notificationFn.error = vi.fn(() => "toast-id-e");
@@ -14,7 +14,7 @@ vi.mock("@shared/components/notifications/core", () => {
   return { notification: notificationFn };
 });
 
-import { notification } from "@shared/components/notifications/core";
+import { notification } from "@core/notifications";
 
 function makePush(overrides: Partial<PushNotification> = {}): PushNotification {
   return new PushNotification({

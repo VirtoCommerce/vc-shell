@@ -1,6 +1,6 @@
 import { watch, readonly, ref } from "vue";
 import { useNetwork } from "@vueuse/core";
-import { notification } from "@shared/components/notifications/core/notification";
+import { notification } from "@core/notifications/notification";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("connection-status");

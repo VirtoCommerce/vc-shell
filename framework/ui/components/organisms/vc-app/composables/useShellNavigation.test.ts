@@ -24,7 +24,7 @@ vi.mock("@core/composables/useBlade", () => ({
 }));
 
 const mockNavigateToMainRoute = vi.fn();
-vi.mock("@shared/components/blade-navigation/utils/navigateToMainRoute", () => ({
+vi.mock("@core/blade-navigation/utils/navigateToMainRoute", () => ({
   navigateToMainRoute: (...args: any[]) => mockNavigateToMainRoute(...args),
 }));
 

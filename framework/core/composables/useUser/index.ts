@@ -14,7 +14,7 @@ import {
 } from "@core/api/platform";
 import type { RequestPasswordResult } from "@core/types";
 import { createSharedComposable } from "@vueuse/core";
-import { useExternalProvider } from "@shared/components/sign-in/useExternalProvider";
+import { useExternalProvider } from "@shell/auth/sign-in/useExternalProvider";
 import { createLogger } from "@core/utilities";
 
 export interface TokenData {

@@ -43,9 +43,11 @@ yarn workspace app-vendor-portal run serve   # Dev server (requires framework bu
 ```
 vc-shell/
   framework/              # @vc-shell/framework — the main UI library
-    core/                 #   API clients, composables, plugins, services, types
-    ui/                   #   Atomic Design components (atoms → molecules → organisms)
-    shared/               #   App-level components (blade nav, notifications, sign-in, settings)
+    core/                 #   API clients, composables, plugins, services, types, blade-navigation logic
+    ui/                   #   Atomic Design components (atoms → molecules → organisms) + UI composables
+    shell/                #   App chrome: sidebar, auth pages, dashboard, settings
+    shell/_internal/      #   Internal rendering: blade-nav, notifications, popup
+    modules/              #   Built-in modules (assets, assets-manager)
     assets/styles/        #   SCSS: theme/colors.scss defines CSS custom properties
   cli/                    # CLI tools (api-client generator, create-vc-app scaffolder)
   configs/                # Shared configs (ts-config, vite-config, release-config)
@@ -56,8 +58,9 @@ vc-shell/
 ### Key Architectural Patterns
 
 **Blade Navigation** — The core UI paradigm. Blades are stacked panels (like Azure Portal). Key files:
-- `shared/components/blade-navigation/` — VcBladeNavigation, VcBladeSlot, composables
-- `core/composables/useBlade/` — `useBlade()` (legacy) and `useBladeContext()` (new extended API with openBlade, closeSelf, callParent, etc.)
+- `shell/_internal/blade-nav/` — VcBladeNavigation, VcBladeSlot (rendering layer)
+- `core/blade-navigation/` — blade stack logic and composables
+- `core/composables/useBlade/` — `useBlade()` unified API (openBlade, closeSelf, callParent, etc.)
 - Blades use provide/inject via injection keys for dependency injection between parent/child blades
 
 **Dynamic Module Loading** — Modules are loaded at runtime via `useDynamicModules()` from `core/plugins/modularity/`. Each module is a Vue plugin with optional extensions and version compatibility metadata. Modules declare framework/app compatibility via semver ranges.

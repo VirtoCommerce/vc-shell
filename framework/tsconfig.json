@@ -11,14 +11,16 @@
       "@core/*": ["./core/*"],
       "@ui": ["./ui"],
       "@ui/*": ["./ui/*"],
-      "@shared": ["./shared"],
-      "@shared/*": ["./shared/*"],
       "@assets": ["./assets"],
       "@assets/*": ["./assets/*"],
       "@locales": ["./locales"],
       "@locales/*": ["./locales/*"],
       "@vc-shell/framework": ["./index.ts"],
-      "@vc-shell/framework/*": ["./*"]
+      "@vc-shell/framework/*": ["./*"],
+      "@shell": ["./shell"],
+      "@shell/*": ["./shell/*"],
+      "@modules": ["./modules"],
+      "@modules/*": ["./modules/*"]
     }
   },
   "include": [
@@ -28,17 +30,20 @@
     "core/**/*.ts",
     "core/api/*.ts",
     "core/plugins/**/*.vue",
+    "ui/index.ts",
     "ui/components",
     "ui/composables",
+    "ui/utilities",
     "ui/types/*.ts",
     "ui/locales/*.ts",
     "ui/locales/*.json",
-    "shared/**/*.vue",
-    "shared/**/*.ts",
-    "shared/**/*.json",
     "utils/*.ts",
     "locales/*.ts",
-    "locales/*.json"
+    "locales/*.json",
+    "shell/**/*.vue",
+    "shell/**/*.ts",
+    "modules/**/*.vue",
+    "modules/**/*.ts"
   ],
   "exclude": [
     "**/*.spec.ts",

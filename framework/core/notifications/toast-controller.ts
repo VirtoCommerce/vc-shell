@@ -1,5 +1,5 @@
 import { PushNotification } from "@core/api/platform";
-import { notification } from "@shared/components/notifications/core";
+import { notification } from "@core/notifications/notification";
 import { NotificationTypeConfig, Severity, SEVERITY_TIMEOUTS, ToastConfig } from "./types";
 
 /** PushNotification with dynamic properties (subclasses add extra fields at runtime via constructor) */

@@ -1,0 +1,26 @@
+<template>
+  <div class="tw-flex tw-justify-center tw-flex-col tw-gap-4">
+    <ExternalProvider
+      v-for="provider in providers"
+      :key="provider.authenticationType"
+      :logo="provider.logoUrl"
+      :display-name="provider.displayName"
+      :authentication-type="provider.authenticationType"
+      @sign-in="signIn(provider.authenticationType)"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ExternalSignInProviderInfo } from "@core/api/platform";
+import { useExternalProvider } from "@shell/auth/sign-in/useExternalProvider";
+import { default as ExternalProvider } from "@shell/auth/sign-in/external-provider.vue";
+
+export interface Props {
+  providers: ExternalSignInProviderInfo[];
+}
+
+defineProps<Props>();
+
+const { signIn } = useExternalProvider();
+</script>

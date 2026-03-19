@@ -1493,3 +1493,105 @@ npx @vc-shell/codemod --transform blade-props-simplification
 ```
 
 Or run all transforms: `npx @vc-shell/codemod`
+
+---
+
+## 14. Import Restructuring
+
+The framework package now exposes multiple entry points. This allows consuming applications to import only what they need, reducing bundle size and clarifying which parts of the framework are optional.
+
+### 14.1 Entry Points
+
+| Entry point | Contents | Usage |
+|-------------|----------|-------|
+| `@vc-shell/framework` | Full framework: core + ui + shell + modules | Default — use in apps |
+| `@vc-shell/framework/ui` | Standalone UI kit: atoms, molecules, organisms — no core dependencies | Use in packages that only need UI components |
+| `@vc-shell/framework/ai-agent` | AI agent plugin (opt-in) | Import only when enabling AI agent features |
+| `@vc-shell/framework/extensions` | Extension points system (opt-in) | Import only when building extension-aware modules |
+
+```typescript
+// Full framework (default)
+import { useBlade, VcTable, VcBlade } from "@vc-shell/framework";
+
+// UI-only (no core services, no blade navigation)
+import { VcButton, VcInput, VcTable } from "@vc-shell/framework/ui";
+
+// AI agent plugin (opt-in)
+import { useAiAgent } from "@vc-shell/framework/ai-agent";
+
+// Extension points (opt-in)
+import { extensionsHelper } from "@vc-shell/framework/extensions";
+```
+
+### 14.2 Removed Symbols
+
+The following symbols have been removed. Use the listed alternatives instead:
+
+| Removed symbol | Alternative |
+|----------------|-------------|
+| `GenericDropdown` | `VcDropdown` |
+| `navigationViewLocation` | `NavigationViewLocationKey` |
+| `BladeInstance` | `BladeInstanceKey` |
+| `NotificationTemplatesSymbol` | `NotificationTemplatesKey` |
+| `BLADE_BACK_BUTTON` | `BladeBackButtonKey` |
+| `TOOLBAR_SERVICE` | `ToolbarServiceKey` |
+| `EMBEDDED_MODE` | `EmbeddedModeKey` |
+| `_warnStringKey` / `_warnedStringKeys` | Removed — test-only internals, no replacement |
+
+**Before:**
+```typescript
+import { BladeInstance, TOOLBAR_SERVICE, EMBEDDED_MODE } from "@vc-shell/framework";
+```
+
+**After:**
+```typescript
+import { BladeInstanceKey, ToolbarServiceKey, EmbeddedModeKey } from "@vc-shell/framework";
+```
+
+### 14.3 String-Key Inject Removal
+
+String-based injection keys (`inject("isMobile")`, `inject("isDesktop")`, etc.) are no longer provided by the framework. Use typed injection keys instead.
+
+**Before:**
+```typescript
+const isMobile = inject("isMobile");
+const isDesktop = inject("isDesktop");
+```
+
+**After:**
+```typescript
+import { inject } from "vue";
+import { IsMobileKey, IsDesktopKey } from "@vc-shell/framework";
+
+const isMobile = inject(IsMobileKey);
+const isDesktop = inject(IsDesktopKey);
+```
+
+All injection keys follow the `*Key` naming convention and are exported from `@vc-shell/framework`. The full list of available keys is in `framework/injection-keys.ts`.
+
+### 14.4 Directory Structure Changes
+
+The `shared/` directory has been dissolved. Its contents have been reorganized into purpose-specific directories:
+
+| Old location (`shared/`) | New location |
+|--------------------------|--------------|
+| `shared/components/blade-navigation/` | `shell/_internal/blade-nav/` (rendering) + `core/blade-navigation/` (logic) |
+| `shared/components/notifications/` | `shell/_internal/notifications/` (renderer) + `core/notifications/` (logic) |
+| `shared/components/popup/` | `shell/_internal/popup/` |
+| `shared/components/` (auth, settings, sidebar) | `shell/auth/`, `shell/components/`, `shell/dashboard/` |
+| `shared/composables/` (UI composables) | `ui/composables/` |
+| `shared/composables/` (logic composables) | `core/composables/` |
+| `shared/modules/` | `modules/` (built-in modules: assets, assets-manager) |
+
+**New directory layout:**
+```
+framework/
+  core/         # API clients, composables, plugins, services, types, blade-navigation logic
+  ui/           # Atomic Design components (atoms → molecules → organisms) + UI composables
+  shell/        # App chrome: sidebar, auth pages, dashboard, settings
+  shell/_internal/  # Internal rendering: blade-nav, notifications, popup
+  modules/      # Built-in modules (assets, assets-manager)
+  assets/       # SCSS styles and static assets
+```
+
+> **Note:** These directory changes are internal to the framework package. If you import exclusively from `@vc-shell/framework` (the package entry point) rather than from deep paths inside the package, no changes are required.

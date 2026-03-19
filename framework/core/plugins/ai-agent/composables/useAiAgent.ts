@@ -9,7 +9,7 @@ import type {
 } from "@core/plugins/ai-agent/types";
 import { createLogger, InjectionError } from "@core/utilities";
 import { useUser } from "@core/composables/useUser";
-import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
+import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
 import {
   AI_AGENT_TOOLBAR_BUTTON_ID,
   AI_AGENT_TOOLBAR_BUTTON_ICON,

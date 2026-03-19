@@ -1,11 +1,11 @@
 import { App, Component, inject, resolveComponent } from "vue";
 import { i18n } from "@core/plugins/i18n";
-import type { BladeInstanceConstructor } from "@shared/components/blade-navigation/types";
+import type { BladeInstanceConstructor } from "@core/blade-navigation/types";
 import { createLogger } from "@core/utilities";
 import { addMenuItem } from "@core/composables/useMenuService";
 import { useNotificationStore } from "@core/notifications";
 import type { ModuleNotificationsConfig } from "@core/notifications";
-import { notification } from "@shared/components/notifications/core";
+import { notification } from "@core/notifications/notification";
 import { BladeRegistryKey, IBladeRegistryInstance } from "@core/composables/useBladeRegistry";
 
 const logger = createLogger("modularity");

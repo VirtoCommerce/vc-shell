@@ -1,6 +1,6 @@
 import { computed, ref, watch, type Ref } from "vue";
 import { createLogger } from "@core/utilities";
-import { notification } from "@shared/components/notifications/core/notification";
+import { notification } from "@core/notifications/notification";
 import { useConnectionStatus } from "@core/composables/useConnectionStatus";
 
 const logger = createLogger("slow-network");

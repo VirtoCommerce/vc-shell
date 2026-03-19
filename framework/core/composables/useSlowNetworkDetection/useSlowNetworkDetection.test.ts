@@ -11,7 +11,7 @@ const { mockNotification } = vi.hoisted(() => {
   return { mockNotification };
 });
 
-vi.mock("@shared/components/notifications/core/notification", () => ({
+vi.mock("@core/notifications/notification", () => ({
   notification: mockNotification,
 }));
 

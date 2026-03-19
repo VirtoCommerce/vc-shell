@@ -24,6 +24,10 @@ export * from "@core/composables/useDynamicProperties";
 export * from "@core/composables/useBlade";
 export * from "@core/composables/useSidebarState";
 export * from "@core/composables/useWebVitals";
+export * from "@core/composables/useBladeWidgets";
+export * from "@core/composables/useBladeContext";
+export * from "@core/composables/useModificationTracker";
+export * from "@core/composables/useMenuExpanded";
 // Note: useConnectionStatus is NOT re-exported here to avoid circular
 // dependency. Import directly from "@core/composables/useConnectionStatus".
 // useBladeSelection and useAiAgent are now part of the ai-agent plugin

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Router } from "vue-router";
 import { useUserManagement } from "@core/composables/useUserManagement";
-import { notification } from "@shared/components/notifications/core/notification";
+import { notification } from "@core/notifications/notification";
 import { createLogger } from "@core/utilities";
 import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 

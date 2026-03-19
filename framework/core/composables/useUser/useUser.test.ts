@@ -17,7 +17,7 @@ vi.mock("@core/utilities", () => ({
   }),
 }));
 
-vi.mock("@shared/components/sign-in/useExternalProvider", () => ({
+vi.mock("@shell/auth/sign-in/useExternalProvider", () => ({
   useExternalProvider: () => ({
     storage: { value: null },
     signOut: vi.fn(),

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { computed, defineComponent, h, provide, ref } from "vue";
 import { mount } from "@vue/test-utils";
 import { WidgetIdKey, WidgetServiceKey } from "@framework/injection-keys";
-import { BladeDescriptorKey } from "@shared/components/blade-navigation/types";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { useWidget } from "./index";
 import type { IWidgetService } from "@core/services/widget-service";
 

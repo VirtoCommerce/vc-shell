@@ -108,7 +108,7 @@
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { inject, ref } from "vue";
 import { shift } from "@floating-ui/vue";
-import { BladeInstance } from "@framework/injection-keys";
+import { BladeInstanceKey } from "@framework/injection-keys";
 import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
 
@@ -129,7 +129,7 @@ const emit = defineEmits<{
   collapse: [];
 }>();
 
-const blade = inject(BladeInstance, DEFAULT_BLADE_INSTANCE);
+const blade = inject(BladeInstanceKey, DEFAULT_BLADE_INSTANCE);
 const tooltipVisible = ref(false);
 const tooltipIconRef = ref<HTMLElement | null>(null);
 const tooltipRef = ref<HTMLElement | null>(null);

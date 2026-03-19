@@ -11,14 +11,14 @@ import {
   type DynamicModuleRegistry,
 } from "@framework/injection-keys";
 import { useNotificationStore } from "@core/notifications";
-import { NotificationDropdown } from "@shared/components/notification-dropdown";
-import { LanguageSelector } from "@shared/components/language-selector";
-import { ThemeSelector } from "@shared/components/theme-selector";
-import { ChangePasswordButton } from "@shared/components/change-password-button";
-import { LogoutButton } from "@shared/components/logout-button";
+import { NotificationDropdown } from "@shell/components/notification-dropdown";
+import { LanguageSelector } from "@shell/components/language-selector";
+import { ThemeSelector } from "@shell/components/theme-selector";
+import { ChangePasswordButton } from "@shell/components/change-password-button";
+import { LogoutButton } from "@shell/components/logout-button";
 import { provideAiAgentService } from "@core/plugins/ai-agent";
 import type { IAiAgentConfig } from "@core/plugins/ai-agent";
-import type { BladeRoutesRecord } from "@shared/components/blade-navigation/types";
+import type { BladeRoutesRecord } from "@core/blade-navigation/types";
 import type { AppBarButtonContent } from "@core/services/app-bar-mobile-buttons-service";
 import type { RegisterSettingsMenuItemOptions } from "@core/services/settings-menu-service";
 

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { setPendingErrorNotification, cancelPendingErrorNotification } from "./pendingErrorNotifications";
 
-vi.mock("@shared/components/notifications/core/notification", () => ({
+vi.mock("@core/notifications/notification", () => ({
   notification: { remove: vi.fn() },
 }));
 

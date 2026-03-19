@@ -15,14 +15,16 @@ const frameworkAliases = {
   "@core/": `${normalizedFrameworkRoot}/core/`,
   "@ui": `${normalizedFrameworkRoot}/ui`,
   "@ui/": `${normalizedFrameworkRoot}/ui/`,
-  "@shared": `${normalizedFrameworkRoot}/shared`,
-  "@shared/": `${normalizedFrameworkRoot}/shared/`,
   "@assets": `${normalizedFrameworkRoot}/assets`,
   "@assets/": `${normalizedFrameworkRoot}/assets/`,
   "@locales": `${normalizedFrameworkRoot}/locales`,
   "@locales/": `${normalizedFrameworkRoot}/locales/`,
   "@vc-shell/framework/": `${normalizedFrameworkRoot}/`,
   "@vc-shell/framework": path.resolve(frameworkRoot, "index.ts"),
+  "@shell": `${normalizedFrameworkRoot}/shell`,
+  "@shell/": `${normalizedFrameworkRoot}/shell/`,
+  "@modules": `${normalizedFrameworkRoot}/modules`,
+  "@modules/": `${normalizedFrameworkRoot}/modules/`,
 };
 
 export default getLibraryConfiguration({
@@ -44,6 +46,9 @@ export default getLibraryConfiguration({
     lib: {
       entry: {
         framework: path.resolve(frameworkRoot, "index.ts"),
+        "ui/index": path.resolve(frameworkRoot, "ui/index.ts"),
+        "ai-agent/index": path.resolve(frameworkRoot, "core/plugins/ai-agent/public.ts"),
+        "extensions/index": path.resolve(frameworkRoot, "core/plugins/extension-points/public.ts"),
       },
       formats: ["es"],
     },
@@ -51,7 +56,7 @@ export default getLibraryConfiguration({
       external: ["vue", "vue-router", "vee-validate", "@vc-shell/config-generator"],
       output: {
         entryFileNames: "[name].js",
-        chunkFileNames: "[name]-[hash].js",
+        chunkFileNames: "chunks/[name]-[hash].js",
       },
       onwarn(warning, defaultHandler) {
         // Ignore all warnings with strings /*#__PURE__*/

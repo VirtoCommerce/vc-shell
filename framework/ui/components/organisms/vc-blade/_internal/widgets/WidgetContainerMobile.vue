@@ -143,7 +143,7 @@ const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>(
   }
 
   &__more {
-    @apply tw-flex tw-items-center tw-justify-center tw-px-2 tw-h-full tw-cursor-pointer;
+    @apply tw-flex tw-items-center tw-justify-center tw-px-2 tw-h-full tw-cursor-pointer tw-ml-auto;
     color: var(--blade-toolbar-icon-color);
 
     &:hover,

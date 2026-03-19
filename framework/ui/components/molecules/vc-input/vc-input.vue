@@ -634,7 +634,7 @@ function handleFocus() {
   &__field {
     @apply tw-w-auto tw-min-w-0 tw-max-w-full tw-relative tw-flex tw-flex-row tw-flex-auto tw-flex-nowrap [height:inherit];
     input {
-      @apply tw-border-none tw-outline-none tw-h-full tw-min-w-0 tw-w-full tw-box-border tw-grow tw-text-sm tw-text-[color:var(--input-text-color)];
+      @apply tw-border-none tw-outline-none tw-h-full tw-min-w-0 tw-w-full tw-box-border tw-grow tw-text-sm tw-text-[color:var(--input-text-color)] tw-text-ellipsis;
 
       &::-webkit-input-placeholder {
         @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm;

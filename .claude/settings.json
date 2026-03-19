@@ -59,6 +59,16 @@
             "command": "case \"$CLAUDE_FILE_PATH\" in */framework/*.ts|*/framework/*.vue) cd framework && npx tsc --noEmit --pretty 2>&1 | head -40;; esac"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath // empty' | { read -r f; case \"$f\" in */framework/*.vue|*/framework/*.ts) case \"$f\" in *.docs.md|*.stories.ts) ;; *) echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"[docs-keeper] You just modified a framework source file. Check if the corresponding *.docs.md and/or *.stories.ts need to be updated. Use the docs-keeper skill if needed.\"}}' ;; esac ;; esac; }",
+            "timeout": 5
+          }
+        ]
       }
     ]
   }

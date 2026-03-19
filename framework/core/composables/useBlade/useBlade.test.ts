@@ -70,6 +70,17 @@ describe("useBlade() inside blade context", () => {
     });
     expect(result.closable.value).toBe(false);
   });
+
+  it("options returns typed value via generic", () => {
+    interface TestOptions { productId: string; count: number }
+    const { result } = mountWithBladeContext(
+      () => useBlade<TestOptions>(),
+      { descriptor: { id: "b1", options: { productId: "p1", count: 5 } } },
+    );
+    // TypeScript: result.options.value should be TestOptions | undefined
+    expect(result.options.value?.productId).toBe("p1");
+    expect(result.options.value?.count).toBe(5);
+  });
 });
 
 // ── useBlade() outside blade context ───────────────────────────────────────

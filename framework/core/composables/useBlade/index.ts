@@ -16,11 +16,11 @@ import {
 } from "@shared/components/blade-navigation/plugin-v2";
 import { createUrlSync } from "@shared/components/blade-navigation/utils/urlSync";
 
-export interface UseBladeReturn {
+export interface UseBladeReturn<TOptions = Record<string, unknown>> {
   // Identity (read-only) — runtime error outside blade context
   readonly id: ComputedRef<string>;
   readonly param: ComputedRef<string | undefined>;
-  readonly options: ComputedRef<Record<string, unknown> | undefined>;
+  readonly options: ComputedRef<TOptions | undefined>;
   readonly query: ComputedRef<Record<string, string> | undefined>;
   readonly closable: ComputedRef<boolean>;
   readonly expanded: ComputedRef<boolean>;
@@ -33,6 +33,7 @@ export interface UseBladeReturn {
   closeSelf(): Promise<boolean>;
   closeChildren(): Promise<void>;
   replaceWith(event: BladeOpenEvent): Promise<void>;
+  coverWith(event: BladeOpenEvent): Promise<void>;
   // Communication — runtime error outside blade context
   callParent<T = unknown>(method: string, args?: unknown): Promise<T>;
   exposeToChildren(methods: Record<string, (...args: unknown[]) => unknown>): void;
@@ -77,7 +78,7 @@ function requireContext(method: string): never {
  * openBlade({ name: "OrderDetails", param: orderId });
  * ```
  */
-export function useBlade(): UseBladeReturn {
+export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<TOptions> {
     // Navigation — always available via inject (preferred) or singletons (fallback)
     const _stack: IBladeStack | undefined =
         (getCurrentInstance() ? inject(BladeStackKey, undefined) : undefined)
@@ -125,7 +126,7 @@ export function useBlade(): UseBladeReturn {
     });
     const options = computed(() => {
         if (!descriptor) requireContext("options");
-        return descriptor!.value.options;
+        return descriptor!.value.options as TOptions | undefined;
     });
     const query = computed(() => {
         if (!descriptor) requireContext("query");
@@ -215,6 +216,18 @@ export function useBlade(): UseBladeReturn {
         });
         const openedBlade = bladeStack.activeBlade.value;
         if (openedBlade?.url) {
+            getUrlSync()?.syncUrlReplace();
+        }
+    }
+
+    async function coverWith(event: BladeOpenEvent): Promise<void> {
+        if (!descriptor) requireContext("coverWith()");
+        await bladeStack.coverCurrentBlade({
+            ...event,
+            parentId: descriptor!.value.parentId,
+        });
+        const openedBlade = bladeStack.activeBlade.value;
+        if (openedBlade?.url) {
             getUrlSync()?.syncUrlPush();
         }
     }
@@ -263,6 +276,7 @@ export function useBlade(): UseBladeReturn {
         closeSelf,
         closeChildren,
         replaceWith,
+        coverWith,
         callParent,
         exposeToChildren,
         onBeforeClose,

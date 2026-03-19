@@ -93,6 +93,8 @@ defineExpose({ title, reload, onItemClick });
 
 ### Detail (child)
 
+> **Smart VcBlade pattern (recommended):** Blade pages no longer need to declare `expanded`/`closable` props or `close:blade`/`expand:blade`/`parent:call` emits. VcBlade reads these from `BladeDescriptor` automatically. Use `useBlade()` to access `param`, `options`, and actions.
+
 ```vue
 <script lang="ts" setup>
 import { useBlade } from "@vc-shell/framework";
@@ -103,18 +105,11 @@ defineOptions({
   routable: true,       // enables restoration from URL (deep link)
 });
 
-const props = defineProps<{
-  expanded: boolean;
-  closable: boolean;
-  param?: string;       // entity ID from openBlade({ param })
-  options?: { source: string };
-}>();
-
-const { callParent, closeSelf } = useBlade();
+const { param, options, callParent, closeSelf } = useBlade();
 
 onMounted(async () => {
-  if (props.param) {
-    await loadOrder({ id: props.param });
+  if (param.value) {
+    await loadOrder({ id: param.value });
   }
 });
 
@@ -124,6 +119,38 @@ async function onSave() {
 }
 </script>
 ```
+
+<details>
+<summary>Legacy pattern (deprecated — still works)</summary>
+
+```vue
+<script lang="ts" setup>
+import { useBlade } from "@vc-shell/framework";
+
+defineOptions({ name: "OrderDetails", url: "/order", routable: true });
+
+// Old pattern: manually declare expanded/closable/param/options as props
+const props = defineProps<{
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: { source: string };
+}>();
+
+// And pass them through on the <VcBlade> template:
+// <VcBlade :expanded="expanded" :closable="closable" @close="$emit('close:blade')" ...>
+
+const { callParent, closeSelf } = useBlade();
+
+onMounted(async () => {
+  if (props.param) await loadOrder({ id: props.param });
+});
+</script>
+```
+
+These props/emits are still forwarded by VcBladeSlot for backward compatibility, but new blade pages should use `useBlade()` instead.
+
+</details>
 
 **How it works:**
 1. `openBlade` automatically sets `parentId` = current blade's ID
@@ -154,12 +181,7 @@ When creating a new entity the blade opens without `param`. After saving, it nee
 
 ```vue
 <script lang="ts" setup>
-const { callParent, replaceWith } = useBlade();
-
-const props = defineProps<{
-  param?: string;   // undefined when creating, ID when editing
-  options?: { sellerProduct: SellerProduct };
-}>();
+const { param, options, callParent, replaceWith } = useBlade();
 
 async function onSave() {
   if (order.value.id) {
@@ -174,11 +196,11 @@ async function onSave() {
   await callParent("reload");
 
   // If this was a creation — replace current blade with "edit" using the real ID
-  if (!props.param && order.value.id) {
+  if (!param.value && order.value.id) {
     await replaceWith({
       name: "OrderDetails",
       param: order.value.id,
-      options: props.options,     // forward the same options
+      options: options.value,     // forward the same options
     });
     return;  // blade is already replaced
   }
@@ -187,10 +209,13 @@ async function onSave() {
 ```
 
 **How `replaceWith` works:**
-1. The current blade (create) is hidden (not destroyed)
-2. A new blade (edit) appears in the same position with the same `parentId`
+1. The current blade (create) is **destroyed**
+2. A new blade (edit) is created at the **same index** with the same `parentId`
 3. The URL automatically updates to `/#/orders/order/<new-id>`
 4. The parent-child link is preserved — `callParent` continues to work
+5. Breadcrumbs stay the same — no extra entries
+
+> **`replaceWith` vs `coverWith`:** Use `replaceWith` when you want a true replacement (e.g., create→edit transition). Use `coverWith` when you want to keep the old blade alive underneath — closing the covering blade will restore the hidden one. See [Recipe below](#cover-with-return).
 
 **Why NOT `callParent("onItemClick")`:**
 - Tight coupling — the child knows about the parent's internal methods
@@ -220,7 +245,7 @@ Deleting an entity from a detail blade: delete → refresh the list → close se
 
 ```vue
 <script lang="ts" setup>
-const { callParent, closeSelf } = useBlade();
+const { param, callParent, closeSelf } = useBlade();
 const { showConfirmation } = usePopup();
 
 async function onDelete() {
@@ -229,7 +254,7 @@ async function onDelete() {
   );
   if (!confirmed) return;
 
-  await deleteOrder({ id: props.param });
+  await deleteOrder({ id: param.value });
   await callParent("reload");   // refresh the list
   await closeSelf();            // close the detail blade
 }
@@ -598,7 +623,8 @@ const {
   // Actions (blade context only)
   closeSelf,    // () => Promise<boolean>     — close current blade
   closeChildren,// () => Promise<void>        — close child blades
-  replaceWith,  // (event: BladeOpenEvent) => Promise<void>  — replace self
+  replaceWith,  // (event: BladeOpenEvent) => Promise<void>  — replace self (destroy old)
+  coverWith,    // (event: BladeOpenEvent) => Promise<void>  — cover self (hide, close reveals old)
 
   // Communication (blade context only)
   callParent,       // <T>(method, args?) => Promise<T>

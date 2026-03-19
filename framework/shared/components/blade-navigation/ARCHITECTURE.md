@@ -67,7 +67,7 @@ interface BladeDescriptor {
   query?: Record<string, string>;
   options?: Record<string, unknown>;  // Large context (not in URL)
   parentId?: string;    // ID of blade that opened this one
-  visible: boolean;     // false for hidden blades (replaceCurrentBlade)
+  visible: boolean;     // false for hidden blades (coverCurrentBlade)
   error?: unknown;
   title?: string;
 }
@@ -79,7 +79,8 @@ Operations:
 | `openWorkspace(event)` | Clears stack, sets workspace at index 0 |
 | `openBlade(event)` | Appends child blade to stack |
 | `closeBlade(bladeId)` | Runs guard, removes blade + descendants |
-| `replaceCurrentBlade(event)` | Hides current blade, appends replacement |
+| `replaceCurrentBlade(event)` | Destroys current blade, creates replacement at same index |
+| `coverCurrentBlade(event)` | Hides current blade, appends replacement on top |
 | `registerBeforeClose(id, guard)` | Registers close guard (return `true` = prevent) |
 | `_restoreStack(descriptors)` | Bulk restore (URL restoration, bypasses guards) |
 
@@ -125,25 +126,32 @@ Features:
 
 ### 2.2 Consumer API Layer
 
-#### `useBladeContext()` — New API (`core/composables/useBlade/index.ts`)
+#### `useBlade()` / `useBladeContext()` — Primary API (`core/composables/useBlade/index.ts`)
 
 Preferred API for blade components. Uses provide/inject — only works inside VcBladeSlot.
+`useBlade()` is the public export; `useBladeContext()` is an alias.
 
 ```typescript
 const {
   // Identity (readonly computed)
   id, param, options, query, closable, expanded,
   // Actions
-  openBlade, closeSelf, replaceWith,
+  openBlade, closeSelf, replaceWith, coverWith,
   // Communication
   callParent, exposeToChildren,
   // Guards & errors
   onBeforeClose, setError, clearError,
-} = useBladeContext();
+} = useBlade();
 ```
 
 Key design: `openBlade` auto-sets `parentId` from the current blade's descriptor.
 No index arithmetic — the blade knows its own identity.
+
+**Smart VcBlade pattern**: Blade pages no longer need to declare `expanded`/`closable` props
+or `close:blade`/`expand:blade`/`collapse:blade`/`parent:call` emits. VcBlade reads
+`expanded`/`closable` from `BladeDescriptor` automatically (provided by VcBladeSlot).
+Blade pages use `useBlade()` to access `param`, `options`, and all blade actions.
+The old props/emits pattern is still supported for backward compatibility.
 
 #### `useBladeNavigation()` — Legacy Adapter (`composables/useBladeNavigationAdapter.ts`)
 
@@ -189,6 +197,7 @@ Responsibilities:
 - **Title sync**: `watchEffect` reads `bladeInstanceRef.value?.title` → `bladeStack.setBladeTitle(id, title)`.
 - **Cleanup**: `onBeforeUnmount` calls `messaging.cleanup(descriptor.id)`.
 - **Legacy compat**: Provides `BladeInstance` injection key with `IBladeInstance` shape.
+- **Smart VcBlade**: `expanded`/`closable` are read by VcBlade directly from `BladeDescriptor` — blade page components no longer need to declare or forward these props/emits. VcBladeSlot continues to forward them for backward compatibility with legacy blades that still declare them.
 
 #### VcBlade (`ui/components/organisms/vc-blade/vc-blade.vue`)
 
@@ -305,25 +314,40 @@ App (plugin-v2 install)
         ├── provide(BLADE_BACK_BUTTON, backButton)
         │
         └── <BladeComponent>   ← user's blade component
-            ├── useBladeContext()    → inject(BladeDescriptorKey, BladeStackKey, BladeMessagingKey)
-            └── useBlade()          → inject(BladeInstance)  [legacy]
+            ├── useBlade() / useBladeContext()  → inject(BladeDescriptorKey, BladeStackKey, BladeMessagingKey)
+            └── useBlade()                      → also inject(BladeInstance) for legacy compat
 ```
 
-## 5. replaceCurrentBlade — Hide-Don't-Destroy Pattern
+## 5. Replace vs Cover — Two Blade Substitution Strategies
 
-When replacing a blade, the original is hidden (not destroyed):
+### `replaceCurrentBlade` — True Replacement (destroy + create)
+
+Destroys the current blade and creates a new one at the same stack index, inheriting the same `parentId`:
+
+```
+Before:  [Workspace] → [OrderDetails(param=undefined)]
+After:   [Workspace] → [OrderDetails(param=new-id)]
+```
+
+Use case: "Create → Save → Edit" flow. The blade reopens with a real ID after entity creation.
+Stack size stays the same. Breadcrumbs, URL, and parent relationship are preserved.
+
+### `coverCurrentBlade` — Hide-Don't-Destroy Pattern
+
+Hides the current blade and appends a new one on top. Closing the covering blade restores the hidden one:
 
 ```
 Before:  [Workspace] → [OrderDetails(visible)]
 After:   [Workspace] → [OrderDetails(hidden)] → [ProductDetails(visible)]
 ```
 
-Why: The replacement blade can `callParent()` to reach the hidden blade's exposed methods.
-This is critical for scenarios like: OrderDetails opens EditOrder as replacement,
+Why: The covering blade can `callParent()` to reach the hidden blade's exposed methods.
+This is critical for scenarios like: OrderDetails opens EditOrder as cover,
 EditOrder calls `callParent("reload")` which reaches OrderDetails.reload().
 
-Trade-off: Stack grows by 1 for each replace. In chains (A→B→C→D), stack size = N+1
-where N is the chain length. Closing the replacement also cleans up the hidden blade.
+Trade-off: Stack grows by 1 for each cover. In chains (A→B→C→D), stack size = N+1
+where N is the chain length. Closing the cover also cleans up the hidden blade.
+Hidden blades are excluded from breadcrumbs.
 
 ## 6. Guard System
 
@@ -404,7 +428,7 @@ core/
 
 1. **URL depth**: Only 1 child blade level in URL. Third-level+ blades don't appear in address bar.
 2. **No max stack depth**: Stack can grow unbounded (theoretical; in practice ~5 blades).
-3. **replaceCurrentBlade accumulation**: Hidden blades persist until replacement is closed.
+3. **coverCurrentBlade accumulation**: Hidden blades persist until the covering blade is closed.
 4. **Module-level singletons**: `bladeStackInstance` etc. prevent SSR and multi-app scenarios. Reset functions exist for testing.
 5. **Vue SFC type checking**: `.vue` files lack type declarations — TypeScript doesn't verify props/emits at build time.
 6. **Legacy adapter overhead**: `descriptorToShim()` creates fake BladeVNode objects on every computed re-evaluation.
@@ -413,8 +437,12 @@ core/
 
 | API | Status | Usage |
 |-----|--------|-------|
-| `useBladeNavigation()` | Deprecated (adapter) | ~80% of existing blades |
-| `useBladeContext()` | Current | New development |
-| `useBlade()` | Legacy | Read-only blade identity |
+| `useBladeNavigation()` | Deprecated (adapter) | Legacy blades |
+| `useBlade()` / `useBladeContext()` | Current | New development |
+| Manual props (`expanded`, `closable`) + emits (`close:blade`, etc.) | Deprecated | Old blade pages — still works, but new pages should use `useBlade()` |
+
+> **Smart VcBlade**: As of the Smart VcBlade update, blade pages no longer need boilerplate
+> `expanded`/`closable` props or `close:blade`/`expand:blade`/`collapse:blade`/`parent:call` emits.
+> VcBlade reads these from `BladeDescriptor` automatically. Use `useBlade()` for all new blades.
 
 See [MIGRATION.md](./MIGRATION.md) for step-by-step migration guide.

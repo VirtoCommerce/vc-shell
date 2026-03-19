@@ -2,7 +2,9 @@
 
 ## Why Migrate?
 
-The legacy `useBladeNavigation()` API is maintained via an adapter layer for backward compatibility. The new `useBladeContext()` API is cleaner, type-safe, and avoids common pitfalls:
+The legacy `useBladeNavigation()` API is maintained via an adapter layer for backward compatibility. The new `useBlade()` API (also exported as `useBladeContext()`) is cleaner, type-safe, and avoids common pitfalls.
+
+Additionally, the **Smart VcBlade** update means blade pages no longer need to declare boilerplate props (`expanded`, `closable`, `param`, `options`) or emits (`close:blade`, `expand:blade`, `collapse:blade`, `parent:call`). VcBlade reads `expanded`/`closable` from `BladeDescriptor` automatically. Use `useBlade()` to access `param`, `options`, and all blade actions directly.
 
 | Legacy (`useBladeNavigation`) | New (`useBladeContext`) |
 |-------------------------------|------------------------|
@@ -22,17 +24,54 @@ Your blade component must be rendered inside `VcBladeSlot` (the v2 render layer)
 
 ```diff
 - import { useBladeNavigation } from "@vc-shell/framework";
-- import { useBlade } from "@vc-shell/framework";
-+ import { useBladeContext } from "@vc-shell/framework";
++ import { useBlade } from "@vc-shell/framework";
 ```
+
+> `useBlade()` is the canonical export. `useBladeContext()` is an alias for the same function — both work identically.
 
 ### 2. Replace Setup Calls
 
 ```diff
 - const { openBlade, closeBlade, onBeforeClose, onParentCall } = useBladeNavigation();
 - const blade = useBlade();
-+ const { param, options, expanded, closable, openBlade, closeSelf, callParent, onBeforeClose } = useBladeContext();
++ const { param, options, expanded, closable, openBlade, closeSelf, callParent, onBeforeClose } = useBlade();
 ```
+
+### 2b. Remove Boilerplate Props and Emits (Smart VcBlade)
+
+Blade pages no longer need to declare `expanded`/`closable`/`param`/`options` props or `close:blade`/`expand:blade`/`collapse:blade`/`parent:call` emits. VcBlade reads `expanded`/`closable` from the `BladeDescriptor` automatically, and `param`/`options` are available via `useBlade()`.
+
+```diff
+- const props = defineProps<{
+-   expanded: boolean;
+-   closable: boolean;
+-   param?: string;
+-   options?: MyOptions;
+- }>();
+- const emit = defineEmits<{
+-   (e: "close:blade"): void;
+-   (e: "expand:blade"): void;
+-   (e: "collapse:blade"): void;
+-   (e: "parent:call", args: IParentCallArgs): void;
+- }>();
+
++ const { param, options, closeSelf, callParent } = useBlade();
+```
+
+And in the template, remove the forwarding bindings from `<VcBlade>`:
+
+```diff
+- <VcBlade
+-   :expanded="expanded"
+-   :closable="closable"
+-   @close="$emit('close:blade')"
+-   @expand="$emit('expand:blade')"
+-   @collapse="$emit('collapse:blade')"
+- >
++ <VcBlade>
+```
+
+> **Note:** The old props/emits are still forwarded by VcBladeSlot for backward compatibility. Existing blades that still declare them continue to work — this step is optional but strongly recommended for new blades.
 
 ### 3. Access Blade Properties
 
@@ -43,7 +82,7 @@ Your blade component must be rendered inside `VcBladeSlot` (the v2 render layer)
 - const opts = blade.value.options;
 
   // After: direct computed refs
-+ const { param, options } = useBladeContext();
++ const { param, options } = useBlade();
 + // param.value, options.value — already reactive
 ```
 
@@ -104,7 +143,7 @@ Your blade component must be rendered inside `VcBladeSlot` (the v2 render layer)
 - defineExpose({ reload, save, title });
 
   // After: explicit registration (defineExpose still works for title)
-+ const { exposeToChildren } = useBladeContext();
++ const { exposeToChildren } = useBlade();
 + exposeToChildren({ reload, save });
 + defineExpose({ title }); // title still propagated via defineExpose
 ```
@@ -133,20 +172,31 @@ Your blade component must be rendered inside `VcBladeSlot` (the v2 render layer)
 ### 9. Replace Current Blade
 
 ```diff
-  // Before: flag on openBlade
+  // Before: flag on openBlade (legacy — hides old blade, stacks new one on top)
 - openBlade({
 -   blade: markRaw(EditBlade),
 -   replaceCurrentBlade: true,
 -   param: item.id,
 - });
 
-  // After: dedicated method
-+ const { replaceWith } = useBladeContext();
+  // After (true replacement — destroys old blade, creates new at same position):
++ // replaceWith is part of useBlade() — destructure it alongside other methods
++ const { replaceWith } = useBlade();
 + replaceWith({
 +   name: "EditBlade",
 +   param: item.id,
 + });
+
+  // Or, to preserve old blade underneath (closing new reveals old):
++ const { coverWith } = useBlade();
++ coverWith({
++   name: "EditBlade",
++   param: item.id,
++ });
 ```
+
+> **Note:** The legacy `replaceCurrentBlade: true` flag maps to `coverWith` (hide + stack)
+> for backward compatibility. New code should choose explicitly between `replaceWith` and `coverWith`.
 
 ### 10. Error Management
 
@@ -156,7 +206,7 @@ Your blade component must be rendered inside `VcBladeSlot` (the v2 render layer)
 - setBladeError(blade.value.navigation?.idx ?? 0, error);
 
   // After: on current blade (no index needed)
-+ const { setError, clearError } = useBladeContext();
++ const { setError, clearError } = useBlade();
 + setError(error);
 ```
 
@@ -199,9 +249,9 @@ defineExpose({ reload, title });
 
 ```vue
 <script lang="ts" setup>
-import { useBladeContext } from "@vc-shell/framework";
+import { useBlade } from "@vc-shell/framework";
 
-const { param, options, openBlade, closeSelf, callParent, onBeforeClose, exposeToChildren } = useBladeContext();
+const { param, options, openBlade, closeSelf, callParent, onBeforeClose, exposeToChildren } = useBlade();
 
 onBeforeClose(async () => {
   if (modified.value) return true; // prevent

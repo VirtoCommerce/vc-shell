@@ -4,8 +4,8 @@
     @click="handleClick"
   >
     <div
-      v-if="notification.isNew"
       class="vc-notification-item__unread-dot"
+      :style="{ visibility: notification.isNew ? 'visible' : 'hidden' }"
     />
     <div class="vc-notification-item__content">
       <component

@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from "vue";
+import { computed, onBeforeUnmount } from "vue";
 import NotificationItem from "@shared/components/notification-dropdown/_internal/notification/notification.vue";
 import { useI18n } from "vue-i18n";
 import { useNotificationStore } from "@core/notifications";
@@ -33,12 +33,14 @@ const { t } = useI18n({ useScope: "global" });
 // Sort with timestamp normalization to handle mixed string/Date created values
 const notifications = computed(() =>
   [...store.history.value].sort(
-    (a, b) => (b.created?.getTime() ?? 0) - (a.created?.getTime() ?? 0),
+    (a, b) =>
+      new Date(b.created as unknown as string).getTime() -
+      new Date(a.created as unknown as string).getTime(),
   ),
 );
 
-// Mark all as read when dropdown opens (persists to server)
-onMounted(() => {
+// Mark all as read when dropdown closes (persists to server)
+onBeforeUnmount(() => {
   if (store.hasUnread.value) {
     store.markAllAsRead();
   }

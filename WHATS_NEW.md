@@ -120,4 +120,6 @@ This document summarizes the major features and improvements introduced in v2.0.
 
 - **Multi-entry build** — The framework package now exposes sub-entry points: `@vc-shell/framework/ui` (standalone UI kit), `@vc-shell/framework/ai-agent`, and `@vc-shell/framework/extensions`. The main entry still re-exports everything.
 
+- **Framework globals** — `@vc-shell/framework/globals` provides all type augmentations (`*.vue` module, `$t`, `$hasAccess`, `$isMobile`, etc.) via a single tsconfig `types` entry, replacing manual `shims-vue.d.ts` and `vue-i18n.d.ts` files.
+
 - **`shared/` dissolved** — The `shared/` directory has been removed. Its contents moved to domain-appropriate locations: `core/` (logic), `ui/` (components), `shell/` (app chrome: auth, sidebar, dashboard, settings), and `modules/` (built-in modules). Public API imports from `@vc-shell/framework` are unchanged.

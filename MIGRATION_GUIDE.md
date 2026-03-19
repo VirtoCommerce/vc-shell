@@ -1595,3 +1595,4 @@ The following guides cover deprecated API cleanup. See `migration/README.md` for
 - [Guide 27: Menu Group Config](./migration/27-menu-group-config.md)
 - [Guide 28: Shared Components](./migration/28-shared-components.md)
 - [Guide 29: VcTable → VcDataTable](./migration/29-vc-table-to-data-table.md)
+- [Guide 30: Type Shims → Globals](./migration/30-shims-to-globals.md)

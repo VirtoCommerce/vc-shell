@@ -17,7 +17,6 @@ Work through these guides in order. Each is self-contained with before/after exa
 | # | Guide | Severity | Description |
 |---|-------|----------|-------------|
 | 01 | [package.json](./01-package-json.md) | **Required** | Update dependencies, add peer deps, remove obsolete packages |
-| 02 | [CSS Import Path](./02-css-import.md) | **Required** | `dist/index.css` → `dist/framework.css` |
 | 03 | [moment.js → date-fns](./03-moment-to-datefns.md) | **Required** | Replace moment.js usage with date-fns utilities |
 | 04 | [Window Globals Removed](./04-window-globals.md) | **Required** | `window.Vue`, `window.moment`, etc. no longer set |
 | 05 | [Icon Migration](./05-icons.md) | **Required** | Font Awesome → Lucide / Material Symbols / Bootstrap Icons |
@@ -65,6 +64,7 @@ Work through these guides in order. Each is self-contained with before/after exa
 | 27 | [Menu Group Config](./27-menu-group-config.md) | Deprecated | `group`/`groupIcon`/`inGroupPriority` → `groupConfig` object |
 | 28 | [Shared Components](./28-shared-components.md) | Deprecated | Shared `VcSidebar`/`VcDropdown` → UI component versions |
 | 29 | [VcTable → VcDataTable](./29-vc-table-to-data-table.md) | **Breaking** | Old VcTable removed; `VcTableAdapter` provides backward compat |
+| 30 | [Type Shims → Globals](./30-shims-to-globals.md) | Deprecated | Manual `shims-vue.d.ts` / `vue-i18n.d.ts` → `@vc-shell/framework/globals` |
 
 ## Severity Legend
 

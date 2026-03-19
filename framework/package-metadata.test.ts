@@ -10,7 +10,7 @@ describe("package.json metadata", () => {
   // FR-1.1: exports map has only explicit named entries
   it("exports map contains only expected explicit entries", () => {
     const keys = Object.keys(pkg.exports);
-    const allowed = [".", "./package.json", "./dist/index.css", "./dist/locales/*", "./tailwind.config"];
+    const allowed = [".", "./ui", "./ai-agent", "./extensions", "./package.json", "./dist/framework.css", "./dist/locales/*", "./tailwind.config"];
     for (const key of keys) {
       expect(allowed).toContain(key);
     }
@@ -34,10 +34,10 @@ describe("package.json metadata", () => {
     expect(pkg.sideEffects).not.toContain("index.ts");
   });
 
-  // NFR-2: sideEffects contains only CSS/SCSS entries
-  it("sideEffects contains only CSS and SCSS entries", () => {
+  // NFR-2: sideEffects contains only CSS/SCSS/Vue entries
+  it("sideEffects contains only CSS, SCSS, and Vue entries", () => {
     for (const entry of pkg.sideEffects) {
-      expect(entry).toMatch(/\.(css|scss)$/);
+      expect(entry).toMatch(/\.(css|scss|vue)$/);
     }
   });
 

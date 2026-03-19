@@ -82,7 +82,10 @@ export function createContextManager(options: ContextManagerOptions): ContextMan
     suggestions?: ISuggestion[],
     bladeId?: string,
   ): { cleared: boolean } => {
-    const targetBladeId = bladeId || bladeGetter()?.id;
+    // Always use bladeGetter().id as the Map key — it returns blade.type.name (e.g. "offerslist"),
+    // which matches getActiveBladeContext() lookup. bladeId from BladeInstanceKey is a runtime
+    // unique ID (e.g. "blade_1_abc") that would cause a key mismatch.
+    const targetBladeId = bladeGetter()?.id || bladeId;
     if (!targetBladeId) {
       logger.warn("Cannot set context data: no blade id available");
       return { cleared: false };

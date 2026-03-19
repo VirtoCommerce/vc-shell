@@ -149,6 +149,7 @@ const badgeVisible = computed(() => {
 
 .vc-menu-item {
   @apply tw-cursor-pointer tw-w-full;
+  padding: 2px 0;
 
   &:hover .vc-menu-item__content:not(.vc-menu-item__content--active) {
     background: var(--vc-menu-item-hover-bg);

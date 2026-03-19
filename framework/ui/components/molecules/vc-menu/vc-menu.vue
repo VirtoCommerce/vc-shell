@@ -127,7 +127,6 @@ const skeletonSections = [
 
   &__items {
     @apply tw-flex tw-flex-col tw-h-full tw-pb-4;
-    gap: var(--vc-menu-gap, 8px);
   }
 
   &__skeleton {

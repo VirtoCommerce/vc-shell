@@ -154,7 +154,6 @@ defineExpose({
   // Default (non-section) groups: flex column with 4px gap between header and children
   &:not(&--section) {
     @apply tw-flex tw-flex-col;
-    gap: 4px;
   }
 
   // Chevron transition (shared by both variants)
@@ -184,7 +183,7 @@ defineExpose({
   }
 
   &__children {
-    @apply tw-overflow-hidden tw-min-h-0 tw-flex tw-flex-col tw-gap-2;
+    @apply tw-overflow-hidden tw-min-h-0 tw-flex tw-flex-col;
   }
 
   // In collapsed mode, allow overflow for active indicators (::after at left: -4px)

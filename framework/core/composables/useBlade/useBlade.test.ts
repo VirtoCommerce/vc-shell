@@ -1,9 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+import { nextTick } from "vue";
 import { useBlade } from "./index";
 import {
   mountWithBladeContext,
   mountWithoutBladeContext,
   expectNoVueWarnings,
+  createMockBladeStack,
 } from "@framework/test-helpers";
 
 // ── useBlade() inside blade context ────────────────────────────────────────
@@ -133,5 +135,101 @@ describe("cleanup", () => {
       await wrapper.vm.$nextTick();
       wrapper.unmount();
     });
+  });
+});
+
+// ── lifecycle hooks ─────────────────────────────────────────────────────────
+
+describe("useBlade() lifecycle hooks", () => {
+  it("onActivated fires when blade becomes active", async () => {
+    const callback = vi.fn();
+    // Start as non-active blade
+    const mockStack = createMockBladeStack();
+    (mockStack.activeBlade as any).value = { id: "other-blade" };
+
+    const { result } = mountWithBladeContext(
+      () => {
+        const blade = useBlade();
+        blade.onActivated(callback);
+        return blade;
+      },
+      { descriptor: { id: "blade-1", parentId: "root" }, stack: mockStack },
+    );
+
+    expect(callback).not.toHaveBeenCalled();
+
+    // Simulate blade becoming active
+    (mockStack.activeBlade as any).value = { id: "blade-1" };
+    await nextTick();
+
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  it("onDeactivated fires when blade loses active status", async () => {
+    const callback = vi.fn();
+    const mockStack = createMockBladeStack();
+    (mockStack.activeBlade as any).value = { id: "blade-1" };
+
+    const { result } = mountWithBladeContext(
+      () => {
+        const blade = useBlade();
+        blade.onDeactivated(callback);
+        return blade;
+      },
+      { descriptor: { id: "blade-1", parentId: "root" }, stack: mockStack },
+    );
+
+    expect(callback).not.toHaveBeenCalled();
+
+    // Simulate another blade becoming active
+    (mockStack.activeBlade as any).value = { id: "other-blade" };
+    await nextTick();
+
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  it("onActivated does not fire on initial mount (only transitions)", async () => {
+    const callback = vi.fn();
+    const mockStack = createMockBladeStack();
+    // Blade is already active at mount time
+    (mockStack.activeBlade as any).value = { id: "blade-1" };
+
+    mountWithBladeContext(
+      () => {
+        const blade = useBlade();
+        blade.onActivated(callback);
+        return blade;
+      },
+      { descriptor: { id: "blade-1", parentId: "root" }, stack: mockStack },
+    );
+
+    await nextTick();
+    expect(callback).not.toHaveBeenCalled();
+  });
+
+  it("onActivated warns on duplicate registration", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    mountWithBladeContext(() => {
+      const blade = useBlade();
+      blade.onActivated(() => {});
+      blade.onActivated(() => {}); // duplicate
+      return blade;
+    });
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("onActivated() already registered"),
+    );
+    warnSpy.mockRestore();
+  });
+
+  it("onActivated throws outside blade context", () => {
+    const { result } = mountWithoutBladeContext(() => useBlade());
+    expect(() => result.onActivated(() => {})).toThrow(/onActivated\(\) requires blade context/);
+  });
+
+  it("onDeactivated throws outside blade context", () => {
+    const { result } = mountWithoutBladeContext(() => useBlade());
+    expect(() => result.onDeactivated(() => {})).toThrow(/onDeactivated\(\) requires blade context/);
   });
 });

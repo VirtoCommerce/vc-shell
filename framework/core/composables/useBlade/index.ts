@@ -1,4 +1,4 @@
-import { inject, computed, getCurrentInstance, provide, ref, isRef, type ComputedRef, type MaybeRef } from "vue";
+import { inject, computed, getCurrentInstance, provide, ref, isRef, watch, type ComputedRef, type MaybeRef } from "vue";
 import {
     BladeDescriptorKey,
     BladeStackKey,
@@ -39,6 +39,9 @@ export interface UseBladeReturn<TOptions = Record<string, unknown>> {
   exposeToChildren(methods: Record<string, (...args: unknown[]) => unknown>): void;
   // Guards — runtime error outside blade context
   onBeforeClose(guard: () => Promise<boolean>): void;
+  // Lifecycle — runtime error outside blade context
+  onActivated(callback: () => void): void;
+  onDeactivated(callback: () => void): void;
   // Error management — runtime error outside blade context
   setError(error: unknown): void;
   clearError(): void;
@@ -263,6 +266,31 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
         bladeStack.clearBladeError(descriptor!.value.id);
     }
 
+    // ── Lifecycle hooks ─────────────────────────────────────────────────────
+
+    let _activatedRegistered = false;
+    let _deactivatedRegistered = false;
+
+    function onActivated(callback: () => void): void {
+        if (!descriptor) requireContext("onActivated()");
+        if (_activatedRegistered) {
+            console.warn("[useBlade] onActivated() already registered in this blade.");
+            return;
+        }
+        _activatedRegistered = true;
+        watch(expanded, (val) => { if (val) callback(); });
+    }
+
+    function onDeactivated(callback: () => void): void {
+        if (!descriptor) requireContext("onDeactivated()");
+        if (_deactivatedRegistered) {
+            console.warn("[useBlade] onDeactivated() already registered in this blade.");
+            return;
+        }
+        _deactivatedRegistered = true;
+        watch(expanded, (val) => { if (!val) callback(); });
+    }
+
     return {
         id,
         param,
@@ -280,6 +308,8 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
         callParent,
         exposeToChildren,
         onBeforeClose,
+        onActivated,
+        onDeactivated,
         setError,
         clearError,
     };

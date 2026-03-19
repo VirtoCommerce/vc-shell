@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
-import DashboardWidgetCard from "@shared/components/dashboard-widget-card/dashboard-widget-card.vue";
+import DashboardWidgetCard from "@shell/dashboard/dashboard-widget-card/dashboard-widget-card.vue";
 
 describe("DashboardWidgetCard", () => {
   it("renders header and icon", () => {

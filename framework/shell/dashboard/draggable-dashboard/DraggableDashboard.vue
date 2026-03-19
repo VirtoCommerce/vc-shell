@@ -22,7 +22,7 @@
  * - Optional widget resizing
  */
 import { ref } from "vue";
-import GridstackDashboard from "@shared/components/draggable-dashboard/GridstackDashboard.vue";
+import GridstackDashboard from "@shell/dashboard/draggable-dashboard/GridstackDashboard.vue";
 
 // Props
 interface Props {

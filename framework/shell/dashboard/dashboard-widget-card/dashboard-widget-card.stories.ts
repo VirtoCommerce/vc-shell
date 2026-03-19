@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcButton } from "@ui/components/atoms/vc-button";
-import DashboardWidgetCard from "@shared/components/dashboard-widget-card/dashboard-widget-card.vue";
-import DashboardStatItem from "@shared/components/dashboard-widget-card/dashboard-stat-item.vue";
-import DashboardFeedList from "@shared/components/dashboard-widget-card/dashboard-feed-list.vue";
-import DashboardFeedRow from "@shared/components/dashboard-widget-card/dashboard-feed-row.vue";
+import DashboardWidgetCard from "@shell/dashboard/dashboard-widget-card/dashboard-widget-card.vue";
+import DashboardStatItem from "@shell/dashboard/dashboard-widget-card/dashboard-stat-item.vue";
+import DashboardFeedList from "@shell/dashboard/dashboard-widget-card/dashboard-feed-list.vue";
+import DashboardFeedRow from "@shell/dashboard/dashboard-widget-card/dashboard-feed-row.vue";
 
 const rows = [
   { name: "Minimalistic Lamp", status: "Published", date: "9 hours ago" },

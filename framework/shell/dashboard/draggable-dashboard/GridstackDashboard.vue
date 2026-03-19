@@ -82,9 +82,9 @@
  * - Accessibility support
  */
 import { ref, computed, onMounted, watch, nextTick } from "vue";
-import type { IDashboardWidget, DashboardWidgetPosition } from "@shared/components/draggable-dashboard/types";
+import type { IDashboardWidget, DashboardWidgetPosition } from "@shell/dashboard/draggable-dashboard/types";
 import { useDashboard } from "@core/composables/useDashboard";
-import { useGridstack } from "@shared/components/draggable-dashboard/composables/useGridstack";
+import { useGridstack } from "@shell/dashboard/draggable-dashboard/composables/useGridstack";
 import VcContainer from "@ui/components/atoms/vc-container/vc-container.vue";
 import "gridstack/dist/gridstack.min.css";
 

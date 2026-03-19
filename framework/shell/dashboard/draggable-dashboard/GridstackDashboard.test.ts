@@ -21,7 +21,7 @@ const mockInitGrid = vi.fn();
 const mockSaveLayout = vi.fn();
 const mockResetToDefaults = vi.fn();
 
-vi.mock("@shared/components/draggable-dashboard/composables/useGridstack", () => ({
+vi.mock("@shell/dashboard/draggable-dashboard/composables/useGridstack", () => ({
   useGridstack: vi.fn(() => ({
     layout: mockLayout,
     isInitialized: ref(false),

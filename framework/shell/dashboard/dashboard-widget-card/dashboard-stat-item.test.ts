@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
-import DashboardStatItem from "@shared/components/dashboard-widget-card/dashboard-stat-item.vue";
+import DashboardStatItem from "@shell/dashboard/dashboard-widget-card/dashboard-stat-item.vue";
 
 describe("DashboardStatItem", () => {
   it("renders value and label", () => {

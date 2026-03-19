@@ -1,8 +1,8 @@
 import { defineComponent, markRaw, onUnmounted } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import DraggableDashboard from "@shared/components/draggable-dashboard/DraggableDashboard.vue";
+import DraggableDashboard from "@shell/dashboard/draggable-dashboard/DraggableDashboard.vue";
 import { provideDashboardService } from "@core/composables/useDashboard";
-import { LAYOUT_STORAGE_KEY } from "@shared/components/draggable-dashboard";
+import { LAYOUT_STORAGE_KEY } from "@shell/dashboard/draggable-dashboard";
 
 const MetricWidget = defineComponent({
   name: "MetricWidget",

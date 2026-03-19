@@ -6,9 +6,9 @@ export * from "@shell/auth/sign-in";
  * @deprecated Use `VcDropdown` from `framework/ui/components` instead.
  */
 export { GenericDropdown } from "@shared/components/generic-dropdown";
-export * from "@shared/components/draggable-dashboard";
-export * from "@shared/components/dashboard-widget-card";
-export * from "@shared/components/dashboard-charts";
+export * from "@shell/dashboard/draggable-dashboard";
+export * from "@shell/dashboard/dashboard-widget-card";
+export * from "@shell/dashboard/dashboard-charts";
 
 // Re-export from new locations for backward compatibility
 export * from "@shell/components";

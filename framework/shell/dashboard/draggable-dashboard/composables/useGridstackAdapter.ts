@@ -6,7 +6,7 @@
  */
 
 import type { GridStackWidget, GridStackNode } from "gridstack";
-import type { IDashboardWidget, DashboardWidgetPosition, DashboardWidgetSize } from "@shared/components/draggable-dashboard/types";
+import type { IDashboardWidget, DashboardWidgetPosition, DashboardWidgetSize } from "@shell/dashboard/draggable-dashboard/types";
 
 /**
  * LocalStorage key for layout persistence

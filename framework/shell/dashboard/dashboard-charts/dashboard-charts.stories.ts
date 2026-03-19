@@ -3,8 +3,8 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import DashboardLineChart from "./DashboardLineChart.vue";
 import DashboardBarChart from "./DashboardBarChart.vue";
 import DashboardDonutChart from "./DashboardDonutChart.vue";
-import DashboardWidgetCard from "@shared/components/dashboard-widget-card/dashboard-widget-card.vue";
-import DashboardStatItem from "@shared/components/dashboard-widget-card/dashboard-stat-item.vue";
+import DashboardWidgetCard from "@shell/dashboard/dashboard-widget-card/dashboard-widget-card.vue";
+import DashboardStatItem from "@shell/dashboard/dashboard-widget-card/dashboard-stat-item.vue";
 import type { ChartConfig } from "./types";
 
 // --- Sample data ---

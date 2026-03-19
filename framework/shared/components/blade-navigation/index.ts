@@ -1,4 +1,5 @@
-export * from "@shared/components/blade-navigation/plugin-v2";
-export * from "@shared/components/blade-navigation/components";
-export * from "@shared/components/blade-navigation/composables";
-export * from "@shared/components/blade-navigation/types";
+// Transitional barrel — will be removed when shared/ is fully dissolved
+export * from "@core/blade-navigation";
+export * from "@shell/_internal/blade-navigation";
+export { useBladeNavigation, useBladeNavigation as useBladeNavigationAdapter } from "@core/composables/useBladeNavigationAdapter";
+export type { IUseBladeNavigation } from "@core/composables/useBladeNavigationAdapter";

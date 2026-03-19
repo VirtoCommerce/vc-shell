@@ -15,7 +15,7 @@ import {
   BladeStackKey,
   BladeMessagingKey,
   BladeDescriptorKey,
-} from "@shared/components/blade-navigation/types";
+} from "@core/blade-navigation/types";
 
 // ── Shared demo state (module-level for control panel ↔ blade component sync) ─
 

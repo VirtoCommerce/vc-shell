@@ -1,6 +1,6 @@
 export * from "@shared/components/blade-navigation";
 export * from "@shared/components/notifications";
-export * from "@shared/components/popup-handler";
+export * from "@shell/_internal/popup";
 export * from "@shell/auth/sign-in";
 /**
  * @deprecated Use `VcDropdown` from `framework/ui/components` instead.

@@ -2,7 +2,7 @@
   <div
     class="vc-menu-item"
     :class="{
-      'vc-menu-item--active': isActive,
+      'vc-menu-item--active': hasSubmenu ? isSubmenuOpen : isActive,
       'vc-menu-item--clickable': !disabled,
       'vc-menu-item--invisible': !isVisible,
     }"
@@ -42,24 +42,56 @@
           </slot>
 
           <VcIcon
-            v-if="showChevron"
+            v-if="showChevron || hasSubmenu"
             icon="lucide-chevron-right"
             size="xs"
             class="vc-menu-item__chevron"
+            :class="{ 'vc-menu-item__chevron--rotated': isMobile && isSubmenuOpen }"
           />
         </div>
       </slot>
     </div>
 
-    <!-- Content -->
+    <!-- Submenu: mobile inline expand -->
+    <div
+      v-if="hasSubmenu && isMobile"
+      class="vc-menu-item__submenu-wrapper"
+      :style="wrapperStyle"
+    >
+      <div
+        ref="contentRef"
+        class="vc-menu-item__submenu-content"
+      >
+        <slot name="submenu" />
+      </div>
+    </div>
+
+    <!-- Submenu: desktop dropdown panel -->
+    <VcDropdownPanel
+      v-if="hasSubmenu && !isMobile"
+      v-model:show="isSubmenuOpen"
+      :anchor-ref="triggerRef"
+      placement="right-start"
+      width="180px"
+      max-width="260px"
+    >
+      <div class="tw-p-1">
+        <slot name="submenu" />
+      </div>
+    </VcDropdownPanel>
+
+    <!-- Content (legacy slot) -->
     <slot name="content" />
   </div>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { Component, ref } from "vue";
+import { Component, inject, ref, useSlots, computed, watch } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcImage } from "@ui/components/atoms/vc-image";
+import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
+import { useCollapsible } from "@ui/composables";
+import { IsMobileKey } from "@framework/injection-keys";
 
 interface Props {
   title?: string;
@@ -85,6 +117,7 @@ defineSlots<{
   title: (props: any) => any;
   additional: (props: any) => any;
   content: (props: any) => any;
+  submenu: (props: any) => any;
 }>();
 
 const emit = defineEmits<{
@@ -92,10 +125,36 @@ const emit = defineEmits<{
   (e: "trigger:hover"): void;
 }>();
 
+const slots = useSlots();
+const isMobile = inject(IsMobileKey, ref(false));
+
+const hasSubmenu = computed(() => !!slots.submenu);
+const isSubmenuOpen = ref(false);
+
+// Collapsible for mobile inline expand
+const { contentRef, wrapperStyle, isExpanded } = useCollapsible();
+
+// Keep collapsible in sync with submenu open state
+watch(isSubmenuOpen, (open) => {
+  if (isExpanded.value !== open) {
+    isExpanded.value = open;
+  }
+});
+
+// Close submenu when switching between mobile/desktop
+watch(isMobile, () => {
+  isSubmenuOpen.value = false;
+});
+
 const triggerRef = ref<HTMLElement | null>(null);
 
 const handleTriggerClick = () => {
   if (props.disabled || props.triggerAction === "none") return;
+
+  if (hasSubmenu.value) {
+    isSubmenuOpen.value = !isSubmenuOpen.value;
+  }
+
   emit("trigger:click");
 };
 
@@ -162,7 +221,20 @@ defineExpose({ triggerRef });
   }
 
   &__chevron {
-    @apply tw-text-[color:var(--menu-item-chevron-color)] tw-text-[10px] tw-shrink-0 tw-ml-1;
+    @apply tw-text-[color:var(--menu-item-chevron-color)] tw-text-[10px] tw-shrink-0 tw-ml-1
+      tw-transition-transform tw-duration-200;
+
+    &--rotated {
+      @apply tw-rotate-90;
+    }
+  }
+
+  &__submenu-wrapper {
+    @apply tw-overflow-hidden tw-transition-all tw-duration-200 tw-ease-in-out;
+  }
+
+  &__submenu-content {
+    @apply tw-py-1 tw-pl-6 tw-pr-1;
   }
 }
 </style>

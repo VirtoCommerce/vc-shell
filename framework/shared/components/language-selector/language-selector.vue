@@ -1,22 +1,10 @@
 <template>
   <SettingsMenuItem
-    ref="menuItemRef"
     icon="lucide-languages"
     :title="$t('COMPONENTS.LANGUAGE_SELECTOR.TITLE')"
     :value="currentLanguageName"
-    :show-chevron="true"
-    :is-active="isSubMenuOpen"
-    @trigger:click="isSubMenuOpen = !isSubMenuOpen"
-  />
-
-  <VcDropdownPanel
-    v-model:show="isSubMenuOpen"
-    :anchor-ref="menuItemRef?.triggerRef ?? null"
-    placement="right-start"
-    width="180px"
-    max-width="260px"
   >
-    <div class="tw-p-1">
+    <template #submenu>
       <VcDropdownItem
         v-for="lang in languageItems"
         :key="lang.lang"
@@ -24,16 +12,15 @@
         :active="lang.lang === currentLocale"
         @click="handleLanguageSelect(lang)"
       />
-    </div>
-  </VcDropdownPanel>
+    </template>
+  </SettingsMenuItem>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { useLanguages } from "@core/composables";
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { SettingsMenuItem } from "@shared/components/settings-menu-item";
-import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
 import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
 
 interface ILanguage {
@@ -44,9 +31,6 @@ interface ILanguage {
 
 const { availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { setLocale, currentLocale } = useLanguages();
-
-const isSubMenuOpen = ref(false);
-const menuItemRef = ref<InstanceType<typeof SettingsMenuItem> | null>(null);
 
 const languageItems: ILanguage[] = availableLocales
   .map((locale: string) => ({
@@ -67,6 +51,5 @@ const handleLanguageSelect = (lang: ILanguage) => {
   if (Object.prototype.hasOwnProperty.call(lang, "clickHandler")) {
     lang.clickHandler(lang.lang);
   }
-  isSubMenuOpen.value = false;
 };
 </script>

@@ -1,11 +1,11 @@
 import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import SettingsMenuItem from "@shared/components/settings-menu-item/settings-menu-item.vue";
-import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
-import { VcIcon } from "@ui/components/atoms/vc-icon";
+import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
 
 /**
  * Individual menu item used inside the settings menu with optional icon, value, and chevron.
+ * Supports a `submenu` slot that automatically adapts: floating dropdown on desktop, inline accordion on mobile.
  */
 const meta = {
   title: "Shared/SettingsMenuItem",
@@ -24,7 +24,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Reusable settings menu item with icon, title, optional current value, and chevron indicator. Supports click/hover triggers and cascading sub-menu patterns.",
+          "Reusable settings menu item with icon, title, optional current value, and chevron indicator. Supports click/hover triggers and a built-in submenu slot with responsive desktop/mobile behavior.",
       },
     },
   },
@@ -114,11 +114,73 @@ export const FullMenu: Story = {
 };
 
 /**
- * Cascading sub-menu demo — click Theme to see the floating sub-panel
+ * Submenu slot demo — click "Theme" to see the responsive sub-menu.
+ * On desktop: floating dropdown panel to the right.
+ * On mobile: inline accordion with chevron rotation.
+ */
+export const SubmenuSlot: Story = {
+  render: () => ({
+    components: { SettingsMenuItem, VcDropdownItem },
+    setup() {
+      const selectedTheme = ref("light");
+      const themes = [
+        { key: "light", name: "Light" },
+        { key: "green", name: "Green" },
+        { key: "dark", name: "Dark" },
+      ];
+      const currentThemeName = () => themes.find((t) => t.key === selectedTheme.value)?.name ?? "";
+      return { selectedTheme, themes, currentThemeName };
+    },
+    template: `
+      <div style="padding: 4px 0;">
+        <SettingsMenuItem
+          icon="lucide-palette"
+          title="Theme"
+          :value="currentThemeName()"
+        >
+          <template #submenu>
+            <VcDropdownItem
+              v-for="theme in themes"
+              :key="theme.key"
+              :title="theme.name"
+              :active="theme.key === selectedTheme"
+              @click="selectedTheme = theme.key"
+            />
+          </template>
+        </SettingsMenuItem>
+        <SettingsMenuItem
+          icon="lucide-languages"
+          title="Language"
+          value="English"
+        >
+          <template #submenu>
+            <VcDropdownItem title="English" :active="true" />
+            <VcDropdownItem title="Deutsch" />
+            <VcDropdownItem title="Francais" />
+          </template>
+        </SettingsMenuItem>
+        <div style="margin: 4px 12px; border-top: 1px solid var(--neutrals-200);"></div>
+        <SettingsMenuItem
+          icon="lucide-key"
+          title="Change password"
+        />
+        <SettingsMenuItem
+          icon="lucide-log-out"
+          title="Log out"
+        />
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Legacy pattern: cascading sub-menu with manual VcDropdownPanel.
+ * Prefer the `submenu` slot instead (see SubmenuSlot story).
+ * @deprecated Use the submenu slot pattern instead
  */
 export const CascadingSubMenu: Story = {
   render: () => ({
-    components: { SettingsMenuItem, VcDropdownPanel, VcIcon },
+    components: { SettingsMenuItem, VcDropdownItem },
     setup() {
       const isSubMenuOpen = ref(false);
       const menuItemRef = ref<InstanceType<typeof SettingsMenuItem> | null>(null);
@@ -134,21 +196,13 @@ export const CascadingSubMenu: Story = {
     template: `
       <div style="padding: 4px 0;">
         <SettingsMenuItem
-          ref="menuItemRef"
           icon="lucide-palette"
-          title="Theme selector"
+          title="Theme (legacy pattern)"
           :value="currentThemeName()"
           :show-chevron="true"
           :is-active="isSubMenuOpen"
           @trigger:click="isSubMenuOpen = !isSubMenuOpen"
         />
-        <SettingsMenuItem
-          icon="lucide-languages"
-          title="Language selector"
-          value="English"
-          :show-chevron="true"
-        />
-        <div style="margin: 4px 12px; border-top: 1px solid var(--neutrals-200);"></div>
         <SettingsMenuItem
           icon="lucide-key"
           title="Change password"
@@ -157,49 +211,6 @@ export const CascadingSubMenu: Story = {
           icon="lucide-log-out"
           title="Log out"
         />
-
-        <VcDropdownPanel
-          v-model:show="isSubMenuOpen"
-          :anchor-ref="menuItemRef?.triggerRef ?? null"
-          placement="right-start"
-          width="180px"
-          max-width="260px"
-        >
-          <div style="padding: 4px;">
-            <button
-              v-for="theme in themes"
-              :key="theme.key"
-              type="button"
-              style="
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                width: 100%;
-                padding: 6px 8px;
-                border-radius: 6px;
-                font-size: 14px;
-                text-align: left;
-                background: transparent;
-                border: none;
-                cursor: pointer;
-                transition: background-color 0.15s;
-              "
-              :style="{ fontWeight: theme.key === selectedTheme ? '500' : '400' }"
-              @click="selectedTheme = theme.key; isSubMenuOpen = false"
-              @mouseenter="$event.target.style.backgroundColor = 'var(--neutrals-100)'"
-              @mouseleave="$event.target.style.backgroundColor = 'transparent'"
-            >
-              <VcIcon
-                v-if="theme.key === selectedTheme"
-                icon="lucide-check"
-                size="xs"
-                style="color: var(--additional-950); width: 14px; flex-shrink: 0; font-size: 10px;"
-              />
-              <span v-else style="width: 14px; flex-shrink: 0;" />
-              <span>{{ theme.name }}</span>
-            </button>
-          </div>
-        </VcDropdownPanel>
       </div>
     `,
   }),

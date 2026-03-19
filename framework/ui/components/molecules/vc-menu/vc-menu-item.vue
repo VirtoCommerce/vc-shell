@@ -128,7 +128,7 @@ const badgeVisible = computed(() => {
 
 <style lang="scss">
 :root {
-  --vc-menu-item-height: 34px;
+  --vc-menu-item-height: 28px;
   --vc-menu-item-padding-x: 6px;
   --vc-menu-item-border-radius: 6px 0 0 6px;
   --vc-menu-item-icon-size: 18px;
@@ -142,7 +142,7 @@ const badgeVisible = computed(() => {
   --vc-menu-item-active-icon-color: var(--secondary-700);
 
   // Nested sub-items (L3)
-  --vc-menu-subitem-height: 34px;
+  --vc-menu-subitem-height: 28px;
   --vc-menu-subitem-icon-size: 16px;
   --vc-menu-subitem-bg-inset: 8px;
 }

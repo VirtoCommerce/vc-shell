@@ -1,3 +1,9 @@
+# [2.0.0-alpha.12](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.11...v2.0.0-alpha.12) (2026-03-19)
+
+
+### Features
+
+* **create-vc-app:** update blade templates to use useBlade() without boilerplate ([5d1f148](https://github.com/VirtoCommerce/vc-shell/commit/5d1f148720f15512e2db0768d320a70ba417dc3e))
 # [2.0.0-alpha.11](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.10...v2.0.0-alpha.11) (2026-03-13)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app

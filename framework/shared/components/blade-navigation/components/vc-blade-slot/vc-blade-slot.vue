@@ -24,7 +24,7 @@
 import { computed, onBeforeUnmount, provide, ref, watch, watchEffect } from "vue";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 import { BladeInstance as BladeInstanceKey, BLADE_BACK_BUTTON } from "@framework/injection-keys";
-import { ErrorInterceptor } from "@shared/components/error-interceptor";
+import { ErrorInterceptor } from "@shell/components/error-interceptor";
 import { useBladeMessaging } from "@shared/components/blade-navigation/composables/useBladeMessaging";
 import { useBladeStack } from "@shared/components/blade-navigation/composables/useBladeStack";
 import type { BladeDescriptor, IBladeInstance, IParentCallArgs } from "@shared/components/blade-navigation/types";

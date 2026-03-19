@@ -208,7 +208,7 @@ import type { AppDescriptor } from "@core/api/platform";
 import type { MenuItem } from "@core/types";
 import { EmbeddedModeKey } from "@framework/injection-keys";
 import { useBladeNavigation } from "@shared/components/blade-navigation/composables";
-import { UserDropdownButton } from "@shared/components/user-dropdown-button";
+import { UserDropdownButton } from "@shell/components/user-dropdown-button";
 import { useSidebarState } from "@core/composables/useSidebarState";
 import { useAppBarWidget } from "@core/composables";
 import SidebarHeader from "@ui/components/organisms/vc-app/_internal/sidebar/SidebarHeader.vue";

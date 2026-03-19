@@ -1,7 +1,7 @@
 import { ref, watch, onUnmounted } from "vue";
 import { useNotifications } from "@core/composables/useNotifications";
 import { useUserManagement } from "@core/composables/useUserManagement";
-import { useAppSwitcher } from "@shared/components/app-switcher/composables/useAppSwitcher";
+import { useAppSwitcher } from "@shell/components/app-switcher/composables/useAppSwitcher";
 
 /**
  * Manages app readiness and authentication lifecycle.

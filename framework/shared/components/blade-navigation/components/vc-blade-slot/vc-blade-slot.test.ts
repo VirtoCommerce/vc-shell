@@ -25,7 +25,7 @@ vi.mock("@shared/components/blade-navigation/composables/useBladeMessaging", () 
   }),
 }));
 
-vi.mock("@shared/components/error-interceptor", () => ({
+vi.mock("@shell/components/error-interceptor", () => ({
   ErrorInterceptor: defineComponent({
     name: "ErrorInterceptor",
     props: ["capture"],

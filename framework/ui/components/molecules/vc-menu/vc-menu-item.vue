@@ -128,7 +128,7 @@ const badgeVisible = computed(() => {
 
 <style lang="scss">
 :root {
-  --vc-menu-item-height: 28px;
+  --vc-menu-item-height: 34px;
   --vc-menu-item-padding-x: 6px;
   --vc-menu-item-border-radius: 6px 0 0 6px;
   --vc-menu-item-icon-size: 18px;
@@ -142,9 +142,9 @@ const badgeVisible = computed(() => {
   --vc-menu-item-active-icon-color: var(--secondary-700);
 
   // Nested sub-items (L3)
-  --vc-menu-subitem-height: 24px;
+  --vc-menu-subitem-height: 34px;
   --vc-menu-subitem-icon-size: 16px;
-  --vc-menu-subitem-padding-left: 12px;
+  --vc-menu-subitem-bg-inset: 8px;
 }
 
 .vc-menu-item {
@@ -222,8 +222,12 @@ const badgeVisible = computed(() => {
     }
 
     &--nested {
+      // Structural offset via margin — separates item from track zone
+      margin-left: calc(var(--vc-menu-track-offset, 7px) + var(--vc-menu-subitem-bg-inset, 8px));
+      width: calc(100% - var(--vc-menu-track-offset, 7px) - var(--vc-menu-subitem-bg-inset, 8px));
       height: var(--vc-menu-subitem-height);
-      padding-left: var(--vc-menu-subitem-padding-left);
+      // Inner padding — same as regular items, controls bg-to-icon distance
+      padding-left: var(--vc-menu-item-padding-x);
 
       .vc-menu-item__icon {
         width: var(--vc-menu-subitem-icon-size);
@@ -231,31 +235,32 @@ const badgeVisible = computed(() => {
 
       &.vc-menu-item__content--active {
         @apply tw-font-medium;
-        background: transparent;
+        // Direct background — just like regular items
+        background: var(--vc-menu-item-active-bg);
 
-        &::before {
+        // Accent bar on the track line (expanded only)
+        &:not(.vc-menu-item__content--collapsed)::after {
           content: "";
           position: absolute;
-          inset: 0;
-          left: 8px;
-          background: var(--vc-menu-item-active-bg);
-          border-radius: var(--vc-menu-group-active-radius, 6px) 0 0 var(--vc-menu-group-active-radius, 6px);
-          pointer-events: none;
-        }
-
-        .vc-menu-item__icon,
-        .vc-menu-item__title {
-          position: relative;
-          z-index: 1;
+          top: 0;
+          bottom: 0;
+          left: calc(-1 * (var(--vc-menu-track-offset, 7px) + var(--vc-menu-subitem-bg-inset, 8px)));
+          width: 3px;
+          border-radius: 1px;
+          background: var(--secondary-300);
+          z-index: 2;
         }
       }
 
       // Collapsed + nested: behave like a regular collapsed item
       &.vc-menu-item__content--collapsed {
         @apply tw-justify-center;
+        margin-left: 0;
+        width: 100%;
         padding: 0;
         gap: 0;
         height: var(--vc-menu-item-height);
+        border-radius: 6px;
 
         .vc-menu-item__icon {
           width: var(--vc-menu-subitem-icon-size);
@@ -263,10 +268,6 @@ const badgeVisible = computed(() => {
 
         &.vc-menu-item__content--active {
           background: var(--vc-menu-item-active-bg);
-
-          &::before {
-            display: none;
-          }
 
           &::after {
             content: "";

@@ -140,10 +140,14 @@ defineExpose({
 
   // Section variant (L1)
   --vc-menu-section-height: 30px;
+  --vc-menu-section-padding-left: 12px;
   --vc-menu-section-text-color: var(--neutrals-400);
   --vc-menu-section-font-size: 14px;
   --vc-menu-section-chevron-size: 16px;
   --vc-menu-section-divider-color: var(--neutrals-100);
+
+  // Track line for nested groups (L2 → L3)
+  --vc-menu-track-offset: 7px;
 }
 
 .vc-menu-group {
@@ -180,7 +184,7 @@ defineExpose({
   }
 
   &__children {
-    @apply tw-overflow-hidden tw-min-h-0 tw-flex tw-flex-col tw-gap-[2px];
+    @apply tw-overflow-hidden tw-min-h-0 tw-flex tw-flex-col tw-gap-2;
   }
 
   // In collapsed mode, allow overflow for active indicators (::after at left: -4px)
@@ -188,9 +192,17 @@ defineExpose({
     @apply tw-overflow-visible;
   }
 
-  // Nested group children (L3) get wider gap
+  // Track line for non-section groups (L2 → L3 sub-items)
   &:not(&--section) > &__children-wrapper > &__children {
-    @apply tw-gap-[4px];
+    @apply tw-relative;
+
+    &::before {
+      content: "";
+      @apply tw-absolute tw-top-0 tw-bottom-0;
+      left: 1px;
+      width: 1px;
+      background: var(--neutrals-200);
+    }
   }
 
   // Active group header: border-radius left only + wider right padding (Figma spec)
@@ -201,24 +213,12 @@ defineExpose({
     padding-right: 10px;
   }
 
-  // Auto-highlight group header when any child item is active
-  &:has(.vc-menu-group__children .vc-menu-item__content--active)
-    > .vc-menu-item
-    .vc-menu-item__content:not(.vc-menu-item__content--active) {
-    background: var(--vc-menu-item-active-bg);
-    border-radius: var(--vc-menu-group-active-radius) 0 0
-      var(--vc-menu-group-active-radius);
-    padding-right: 10px;
-
-    // Collapsed: symmetric radius, no indicator (indicator is on the active child)
-    &.vc-menu-item__content--collapsed {
-      border-radius: 6px;
-      padding-right: 0;
-    }
-  }
 
   // ── Section variant (L1) ──────────────────────────────────
   &--section {
+    // Container-level indent (separates "group padding" from "item padding")
+    padding-left: var(--vc-menu-section-padding-left);
+
     // Section chevron inherits section text color, not item icon color
     .vc-menu-group__chevron {
       @apply tw-text-[color:var(--vc-menu-section-text-color)];

@@ -118,13 +118,16 @@ const skeletonSections = [
 </script>
 
 <style lang="scss">
+:root {
+  --vc-menu-gap: 8px;
+}
 .vc-menu {
   @apply tw-h-full;
   font-family: "Lato", sans-serif;
 
   &__items {
     @apply tw-flex tw-flex-col tw-h-full tw-pb-4;
-    gap: var(--vc-menu-gap, 2px);
+    gap: var(--vc-menu-gap, 8px);
   }
 
   &__skeleton {

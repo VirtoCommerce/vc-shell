@@ -709,7 +709,7 @@ watch(
   }
 
   &__dropdown {
-    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[101]
+    @apply tw-flex tw-flex-col tw-box-border tw-max-h-72 tw-h-auto tw-z-[10001]
       tw-overflow-hidden tw-absolute
       tw-bg-[color:var(--select-dropdown-bg)]
       tw-border tw-border-solid tw-border-[color:var(--select-dropdown-border)]

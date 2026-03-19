@@ -243,7 +243,7 @@ defineExpose({ close });
   --dropdown-panel-border-color: var(--neutrals-200);
   --dropdown-panel-border-radius: 6px;
   --dropdown-panel-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --dropdown-panel-z-index: 50;
+  --dropdown-panel-z-index: 10001;
   --dropdown-panel-title-color: var(--neutrals-900);
   --dropdown-panel-close-color: var(--neutrals-400);
   --dropdown-panel-close-hover-color: var(--neutrals-600);

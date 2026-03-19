@@ -101,20 +101,6 @@ export interface VcShellFrameworkPlugin {
   install(app: App, args: FrameworkInstallArgs): void;
 }
 
-// ── Dev-mode string key deprecation warnings ─────────────────────────
-
-const _warnedStringKeys = new Set<string>();
-
-function warnStringKey(key: string, replacement: string): void {
-  if (import.meta.env.DEV && !_warnedStringKeys.has(key)) {
-    _warnedStringKeys.add(key);
-    console.warn(`[vc-shell] inject("${key}") is deprecated. Use ${replacement} from @vc-shell/framework instead.`);
-  }
-}
-
-/** @internal — exported for testing only */
-export { warnStringKey as _warnStringKey, _warnedStringKeys };
-
 // ── Install helpers ──────────────────────────────────────────────────
 
 function setupI18n(app: App, args: FrameworkInstallArgs) {
@@ -170,31 +156,15 @@ function setupBreakpoints(app: App) {
   app.provide(IsMobileKey, app.config.globalProperties.$isMobile);
   app.provide(IsDesktopKey, app.config.globalProperties.$isDesktop);
   app.provide(IsTouchKey, app.config.globalProperties.$isTouch);
-
-  // String keys (backward compatibility for external apps/modules)
-  warnStringKey("isMobile", "IsMobileKey");
-  app.provide("isMobile", app.config.globalProperties.$isMobile);
-  warnStringKey("isDesktop", "IsDesktopKey");
-  app.provide("isDesktop", app.config.globalProperties.$isDesktop);
-  warnStringKey("isPhone", "IsPhoneKey");
-  app.provide("isPhone", app.config.globalProperties.$isPhone);
-  warnStringKey("isTablet", "IsTabletKey");
-  app.provide("isTablet", app.config.globalProperties.$isTablet);
-  warnStringKey("isTouch", "IsTouchKey");
-  app.provide("isTouch", app.config.globalProperties.$isTouch);
 }
 
 function setupLegacyGlobals(app: App) {
   // Pages
   app.config.globalProperties.pages = [];
-  warnStringKey("pages", "a typed injection key");
-  app.provide("pages", app.config.globalProperties.pages);
 
   // Blade routes
   app.config.globalProperties.bladeRoutes = [];
   app.provide(BladeRoutesKey, app.config.globalProperties.bladeRoutes);
-  warnStringKey("bladeRoutes", "BladeRoutesKey");
-  app.provide("bladeRoutes", app.config.globalProperties.bladeRoutes);
 
   // Legacy notification templates — empty array for backwards compat
   // New code uses useNotificationStore().registry

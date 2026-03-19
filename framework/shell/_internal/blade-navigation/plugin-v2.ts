@@ -65,7 +65,6 @@ export const VcBladeNavigationComponent = {
       router: args.router,
     };
     bladeNavigationInstance = bladeNavigationPluginData;
-    app.provide("bladeNavigationPlugin", bladeNavigationPluginData);
 
     // ── New BladeStack system ───────────────────────────────────────────────
 

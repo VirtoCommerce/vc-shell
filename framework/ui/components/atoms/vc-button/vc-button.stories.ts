@@ -15,7 +15,7 @@ const ALL_SIZES = ["sm", "default", "lg"] as const;
  *
  */
 const meta = {
-  title: "Atoms/VcButton",
+  title: "Action/VcButton",
   component: VcButton,
   tags: ["autodocs"],
   argTypes: {

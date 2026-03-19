@@ -7,7 +7,7 @@ import { VcAccordion, VcAccordionItem } from ".";
  * with smooth animations, customizable collapsed heights, and multiple visual variants.
  */
 const meta = {
-  title: "Molecules/VcAccordion",
+  title: "Action/VcAccordion",
   component: VcAccordion,
   tags: ["autodocs"],
   argTypes: {

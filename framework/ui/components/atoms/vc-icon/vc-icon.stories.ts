@@ -12,7 +12,7 @@ import { VcIcon } from "@ui/components/atoms/vc-icon";
  * emit console warnings in development. Migrate to Lucide equivalents.
  */
 const meta = {
-  title: "Atoms/VcIcon",
+  title: "Layout/VcIcon",
   component: VcIcon,
   tags: ["autodocs"],
   parameters: {

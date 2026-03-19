@@ -18,7 +18,7 @@ import VcDropdownPanel from "./vc-dropdown-panel.vue";
  * The panel is teleported to the document body for proper z-index stacking.
  */
 const meta = {
-  title: "Molecules/VcDropdownPanel",
+  title: "Overlay/VcDropdownPanel",
   component: VcDropdownPanel,
   tags: ["autodocs"],
   argTypes: {

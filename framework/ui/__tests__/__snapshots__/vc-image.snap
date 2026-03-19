@@ -1,0 +1,149 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="vc-image vc-image_l"
+  >
+    <div
+      class="vc-image__container vc-image_1x1"
+    >
+      <div
+        aria-hidden="true"
+        class="vc-image__placeholder"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide vc-lucide-icon vc-lucide-icon--xl vc-icon vc-icon--xl lucide-image-icon lucide-image vc-lucide-icon vc-lucide-icon--xl vc-icon vc-icon--xl"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            height="18"
+            rx="2"
+            ry="2"
+            width="18"
+            x="3"
+            y="3"
+          />
+          <circle
+            cx="9"
+            cy="9"
+            r="2"
+          />
+          <path
+            d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>        class="tw-flex tw-flex-col tw-items-center tw-gap-2"
+      >
+        <div
+          class="vc-image vc-image_s"
+        >
+          <div
+            class="vc-image__container vc-image_1x1"
+            role="img"
+            style=""
+          >
+            <!--v-if-->
+          </div>
+        </div>
+        <span
+          class="tw-text-xs"
+        >
+          s
+        </span>
+      </div>
+      <div
+        class="tw-flex tw-flex-col tw-items-center tw-gap-2"
+      >
+        <div
+          class="vc-image vc-image_m"
+        >
+          <div
+            class="vc-image__container vc-image_1x1"
+            role="img"
+            style=""
+          >
+            <!--v-if-->
+          </div>
+        </div>
+        <span
+          class="tw-text-xs"
+        >
+          m
+        </span>
+      </div>
+      <div
+        class="tw-flex tw-flex-col tw-items-center tw-gap-2"
+      >
+        <div
+          class="vc-image vc-image_l"
+        >
+          <div
+            class="vc-image__container vc-image_1x1"
+            role="img"
+            style=""
+          >
+            <!--v-if-->
+          </div>
+        </div>
+        <span
+          class="tw-text-xs"
+        >
+          l
+        </span>
+      </div>
+      <div
+        class="tw-flex tw-flex-col tw-items-center tw-gap-2"
+      >
+        <div
+          class="vc-image vc-image_xl"
+        >
+          <div
+            class="vc-image__container vc-image_1x1"
+            role="img"
+            style=""
+          >
+            <!--v-if-->
+          </div>
+        </div>
+        <span
+          class="tw-text-xs"
+        >
+          xl
+        </span>
+      </div>
+      <div
+        class="tw-flex tw-flex-col tw-items-center tw-gap-2"
+      >
+        <div
+          class="vc-image vc-image_xxl"
+        >
+          <div
+            class="vc-image__container vc-image_1x1"
+            role="img"
+            style=""
+          >
+            <!--v-if-->
+          </div>
+        </div>
+        <span
+          class="tw-text-xs"
+        >
+          xxl
+        </span>
+      </div>
+      
+    </div>
+  </div>
+</div>

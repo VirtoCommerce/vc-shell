@@ -1,0 +1,393 @@
+<div
+  data-v-app=""
+>
+  <form
+    class="vc-form"
+    novalidate=""
+  >
+    
+    <div
+      class="tw-flex tw-flex-col tw-gap-4"
+    >
+      
+      <!-- Backward compat delegation: date types -->
+      
+      <!-- Clean text input -->
+      <div
+        class="vc-input vc-input--text"
+      >
+        <!-- Input label -->
+        <label
+          class="vc-label vc-input__label"
+          for="vc-field-v-0"
+          id="vc-field-v-0-label"
+        >
+          <div
+            class="vc-label__text"
+          >
+            <span
+              class="vc-label__content"
+            >
+              
+              <span>
+                First Name
+              </span>
+              
+            </span>
+            <span
+              aria-hidden="true"
+              class="vc-label__required"
+            >
+              *
+            </span>
+          </div>
+          <!--v-if-->
+          <!--v-if-->
+        </label>
+        <div
+          class="vc-input__container"
+        >
+          <!--v-if-->
+          <div
+            class="vc-input__field-wrapper vc-input__field-wrapper--default"
+          >
+            <div
+              class="vc-input__field-container"
+            >
+              <!--v-if-->
+              <div
+                class="vc-input__field"
+              >
+                <!--v-if-->
+                
+                <input
+                  aria-labelledby="vc-field-v-0-label"
+                  aria-required="true"
+                  class="vc-input__input"
+                  id="vc-field-v-0"
+                  maxlength="1024"
+                  name="Field"
+                  tabindex="0"
+                  type="text"
+                />
+                
+                <!--v-if-->
+                <!--v-if-->
+                <!--v-if-->
+              </div>
+              <!--v-if-->
+              <!--v-if-->
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+        <div>
+          
+          <!--v-if-->
+          
+        </div>
+      </div>
+      
+      
+      
+      <!-- Backward compat delegation: date types -->
+      
+      <!-- Clean text input -->
+      <div
+        class="vc-input vc-input--text"
+      >
+        <!-- Input label -->
+        <label
+          class="vc-label vc-input__label"
+          for="vc-field-v-1"
+          id="vc-field-v-1-label"
+        >
+          <div
+            class="vc-label__text"
+          >
+            <span
+              class="vc-label__content"
+            >
+              
+              <span>
+                Last Name
+              </span>
+              
+            </span>
+            <span
+              aria-hidden="true"
+              class="vc-label__required"
+            >
+              *
+            </span>
+          </div>
+          <!--v-if-->
+          <!--v-if-->
+        </label>
+        <div
+          class="vc-input__container"
+        >
+          <!--v-if-->
+          <div
+            class="vc-input__field-wrapper vc-input__field-wrapper--default"
+          >
+            <div
+              class="vc-input__field-container"
+            >
+              <!--v-if-->
+              <div
+                class="vc-input__field"
+              >
+                <!--v-if-->
+                
+                <input
+                  aria-labelledby="vc-field-v-1-label"
+                  aria-required="true"
+                  class="vc-input__input"
+                  id="vc-field-v-1"
+                  maxlength="1024"
+                  name="Field"
+                  tabindex="0"
+                  type="text"
+                />
+                
+                <!--v-if-->
+                <!--v-if-->
+                <!--v-if-->
+              </div>
+              <!--v-if-->
+              <!--v-if-->
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+        <div>
+          
+          <!--v-if-->
+          
+        </div>
+      </div>
+      
+      
+      
+      <!-- Backward compat delegation: date types -->
+      
+      <!-- Clean text input -->
+      <div
+        class="vc-input vc-input--email"
+      >
+        <!-- Input label -->
+        <label
+          class="vc-label vc-input__label"
+          for="vc-field-v-2"
+          id="vc-field-v-2-label"
+        >
+          <div
+            class="vc-label__text"
+          >
+            <span
+              class="vc-label__content"
+            >
+              
+              <span>
+                Email
+              </span>
+              
+            </span>
+            <span
+              aria-hidden="true"
+              class="vc-label__required"
+            >
+              *
+            </span>
+          </div>
+          <!--v-if-->
+          <!--v-if-->
+        </label>
+        <div
+          class="vc-input__container"
+        >
+          <!--v-if-->
+          <div
+            class="vc-input__field-wrapper vc-input__field-wrapper--default"
+          >
+            <div
+              class="vc-input__field-container"
+            >
+              <!--v-if-->
+              <div
+                class="vc-input__field"
+              >
+                <!--v-if-->
+                
+                <input
+                  aria-labelledby="vc-field-v-2-label"
+                  aria-required="true"
+                  class="vc-input__input"
+                  id="vc-field-v-2"
+                  maxlength="1024"
+                  name="Field"
+                  tabindex="0"
+                  type="email"
+                />
+                
+                <!--v-if-->
+                <!--v-if-->
+                <!--v-if-->
+              </div>
+              <!--v-if-->
+              <!--v-if-->
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+        <div>
+          
+          <!--v-if-->
+          
+        </div>
+      </div>
+      
+      
+      <div
+        class="tw-mt-4"
+      >
+        <button
+          class="vc-button vc-button-primary vc-button--default"
+          type="submit"
+        >
+          <!-- Loading: spinner replaces icon; shown inline next to text -->
+          <!--v-if-->
+          <span
+            class="vc-button__title"
+          >
+            
+            Submit
+            
+          </span>
+        </button>
+      </div>
+    </div>
+    
+  </form>
+</div>                  name="Field"
+                      tabindex="0"
+                      type="email"
+                    />
+                    
+                    <!--v-if-->
+                    <!--v-if-->
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+              <!--v-if-->
+            </div>
+            <div>
+              
+              <!--v-if-->
+              
+            </div>
+          </div>
+          
+          
+          
+          <!-- Backward compat delegation: date types -->
+          
+          <!-- Clean text input -->
+          <div
+            class="vc-input vc-input--tel"
+          >
+            <!-- Input label -->
+            <label
+              class="vc-label vc-input__label"
+              for="vc-field-v-3"
+              id="vc-field-v-3-label"
+            >
+              <div
+                class="vc-label__text"
+              >
+                <span
+                  class="vc-label__content"
+                >
+                  
+                  <span>
+                    Phone
+                  </span>
+                  
+                </span>
+                <!--v-if-->
+              </div>
+              <!--v-if-->
+              <!--v-if-->
+            </label>
+            <div
+              class="vc-input__container"
+            >
+              <!--v-if-->
+              <div
+                class="vc-input__field-wrapper vc-input__field-wrapper--default"
+              >
+                <div
+                  class="vc-input__field-container"
+                >
+                  <!--v-if-->
+                  <div
+                    class="vc-input__field"
+                  >
+                    <!--v-if-->
+                    
+                    <input
+                      aria-labelledby="vc-field-v-3-label"
+                      class="vc-input__input"
+                      id="vc-field-v-3"
+                      maxlength="1024"
+                      name="Field"
+                      tabindex="0"
+                      type="tel"
+                    />
+                    
+                    <!--v-if-->
+                    <!--v-if-->
+                    <!--v-if-->
+                  </div>
+                  <!--v-if-->
+                  <!--v-if-->
+                </div>
+              </div>
+              <!--v-if-->
+            </div>
+            <div>
+              
+              <!--v-if-->
+              
+            </div>
+          </div>
+          
+          
+        </div>
+      </fieldset>
+      <div
+        class="tw-mt-2"
+      >
+        <button
+          class="vc-button vc-button-primary vc-button--default"
+          type="submit"
+        >
+          <!-- Loading: spinner replaces icon; shown inline next to text -->
+          <!--v-if-->
+          <span
+            class="vc-button__title"
+          >
+            
+            Submit
+            
+          </span>
+        </button>
+      </div>
+    </div>
+    
+  </form>
+</div>

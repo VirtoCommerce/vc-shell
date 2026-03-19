@@ -85,7 +85,7 @@ function createToolbarItems(count = 3): IBladeToolbar[] {
  * banners, and responsive mobile/desktop layouts.
  */
 const meta = {
-  title: "Organisms/VcBlade",
+  title: "Navigation/VcBlade",
   component: VcBlade,
   tags: ["autodocs"],
   parameters: {

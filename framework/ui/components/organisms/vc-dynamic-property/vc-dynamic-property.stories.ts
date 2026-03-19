@@ -20,7 +20,7 @@ import VcDynamicProperty from "./vc-dynamic-property.vue";
  * Validation is handled via vee-validate Field wrapper.
  */
 const meta = {
-  title: "Organisms/VcDynamicProperty",
+  title: "Data Display/VcDynamicProperty",
   component: VcDynamicProperty,
   tags: ["autodocs"],
   argTypes: {

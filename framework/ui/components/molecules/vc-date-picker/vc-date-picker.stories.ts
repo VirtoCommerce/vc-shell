@@ -7,7 +7,7 @@ import { ref } from "vue";
  * with standard field chrome including label, error, and hint support.
  */
 const meta = {
-  title: "Molecules/VcDatePicker",
+  title: "Form/VcDatePicker",
   component: VcDatePicker,
   tags: ["autodocs"],
   args: {

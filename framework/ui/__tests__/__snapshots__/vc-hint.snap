@@ -1,0 +1,57 @@
+<div
+  data-v-app=""
+>
+  <div
+    style="display: flex; flex-direction: column; gap: 16px;"
+  >
+    <div>
+      <div
+        style="font-weight: 500; margin-bottom: 4px;"
+      >
+        Password requirements:
+      </div>
+      <div
+        class="vc-hint"
+      >
+        
+        • Must be at least 8 characters long
+        
+      </div>
+      <div
+        class="vc-hint"
+      >
+        
+        • Must include at least one number
+        
+      </div>
+      <div
+        class="vc-hint"
+      >
+        
+        • Must include at least one special character
+        
+      </div>
+    </div>
+    <div>
+      <div
+        style="font-weight: 500; margin-bottom: 4px;"
+      >
+        File upload:
+      </div>
+      <div
+        class="vc-hint"
+      >
+        
+        Maximum file size: 5MB
+        
+      </div>
+      <div
+        class="vc-hint"
+      >
+        
+        Supported formats: JPG, PNG, PDF
+        
+      </div>
+    </div>
+  </div>
+</div>

@@ -12,7 +12,7 @@ import { VcScrollableContainer } from "@ui/components/atoms/vc-scrollable-contai
  * - Accessible: `role="region"`, keyboard navigation with Up/Down arrows
  */
 const meta = {
-  title: "Atoms/VcScrollableContainer",
+  title: "Layout/VcScrollableContainer",
   component: VcScrollableContainer,
   tags: ["autodocs"],
   argTypes: {

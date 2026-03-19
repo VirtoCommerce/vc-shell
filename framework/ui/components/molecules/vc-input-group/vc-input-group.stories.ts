@@ -11,7 +11,7 @@ import { VcInputGroup } from "@ui/components/molecules/vc-input-group";
  * It is designed for text inputs, selects, checkboxes, radios, and mixed field compositions.
  */
 const meta = {
-  title: "Molecules/VcInputGroup",
+  title: "Form/VcInputGroup",
   component: VcInputGroup,
   tags: ["autodocs"],
   argTypes: {

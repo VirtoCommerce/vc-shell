@@ -1,0 +1,45 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="tw-flex tw-gap-4"
+  >
+    <button
+      aria-disabled="false"
+      class="vc-link vc-link--active"
+      type="button"
+    >
+      
+      Home
+      
+    </button>
+    <button
+      aria-disabled="false"
+      class="vc-link"
+      type="button"
+    >
+      
+      Products
+      
+    </button>
+    <button
+      aria-disabled="false"
+      class="vc-link"
+      type="button"
+    >
+      
+      Services
+      
+    </button>
+    <button
+      aria-disabled="true"
+      class="vc-link vc-link--disabled"
+      disabled=""
+      type="button"
+    >
+      
+      Admin
+      
+    </button>
+  </div>
+</div>

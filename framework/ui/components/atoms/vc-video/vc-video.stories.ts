@@ -5,7 +5,7 @@ import { VcVideo } from "@ui/components/atoms/vc-video";
  * `VcVideo` - component for embedding video content with optional label and tooltip
  */
 const meta = {
-  title: "Atoms/VcVideo",
+  title: "Data Display/VcVideo",
   component: VcVideo,
   tags: ["autodocs"],
   args: {

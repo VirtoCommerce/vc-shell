@@ -1,0 +1,202 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="tw-flex tw-items-center tw-gap-8"
+  >
+    <div
+      class="tw-flex tw-flex-col tw-items-center"
+    >
+      <div
+        aria-label="Active"
+        class="vc-status-icon"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-status-icon__icon vc-status-icon__icon--success vc-status-icon__icon vc-status-icon__icon--success lucide-circle-check-icon lucide-circle-check vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-status-icon__icon vc-status-icon__icon--success vc-status-icon__icon vc-status-icon__icon--success"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+          />
+          <path
+            d="m9 12 2 2 4-4"
+          />
+        </svg>
+      </div>
+      <span
+        class="tw-mt-2 tw-text-sm"
+      >
+        Success
+      </span>
+    </div>
+    <div
+      class="tw-flex tw-flex-col tw-items-center"
+    >
+      <div
+        aria-label="Inactive"
+        class="vc-status-icon"
+        role="img"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-status-icon__icon vc-status-icon__icon--inactive vc-status-icon__icon vc-status-icon__icon--inactive lucide-circle-x-icon lucide-circle-x vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-status-icon__icon vc-status-icon__icon--inactive vc-status-icon__icon vc-status-icon__icon--inactive"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+          />
+          <path
+            d="m15 9-6 6"
+          />
+          <path
+            d="m9 9 6 6"
+          />
+        </svg>
+      </div>
+      <span
+        class="tw-mt-2 tw-text-sm"
+      >
+        Error
+      </span>
+    </div>
+  </div>
+</div>-circle-x-icon lucide-circle-x vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-status-icon__icon vc-status-icon__icon--inactive vc-status-icon__icon vc-status-icon__icon--inactive"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <path
+                d="m15 9-6 6"
+              />
+              <path
+                d="m9 9 6 6"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tw-flex tw-justify-between tw-items-center tw-p-2 tw-border-b tw-border-gray-100"
+      >
+        <span>
+          User authentication
+        </span>
+        <div
+          class="tw-flex tw-items-center"
+        >
+          <span
+            class="tw-mr-2 tw-text-sm"
+          >
+            Online
+          </span>
+          <div
+            aria-label="Active"
+            class="vc-status-icon"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-status-icon__icon vc-status-icon__icon--success vc-status-icon__icon vc-status-icon__icon--success lucide-circle-check-icon lucide-circle-check vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-status-icon__icon vc-status-icon__icon--success vc-status-icon__icon vc-status-icon__icon--success"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div
+        class="tw-flex tw-justify-between tw-items-center tw-p-2 tw-border-b tw-border-gray-100"
+      >
+        <span>
+          File upload service
+        </span>
+        <div
+          class="tw-flex tw-items-center"
+        >
+          <span
+            class="tw-mr-2 tw-text-sm"
+          >
+            Online
+          </span>
+          <div
+            aria-label="Active"
+            class="vc-status-icon"
+            role="img"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-status-icon__icon vc-status-icon__icon--success vc-status-icon__icon vc-status-icon__icon--success lucide-circle-check-icon lucide-circle-check vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-status-icon__icon vc-status-icon__icon--success vc-status-icon__icon vc-status-icon__icon--success"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>

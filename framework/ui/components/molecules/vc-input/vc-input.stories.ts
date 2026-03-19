@@ -10,7 +10,7 @@ import { ref, computed } from "vue";
  * and interactive elements.
  */
 const meta = {
-  title: "Molecules/VcInput",
+  title: "Form/VcInput",
   component: VcInput,
   tags: ["autodocs"],
   argTypes: {

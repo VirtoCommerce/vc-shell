@@ -9,7 +9,7 @@ import { useBreadcrumbs } from "@core/composables/useBreadcrumbs";
  * understand their location within the application's hierarchy and navigate back.
  */
 const meta = {
-  title: "Molecules/VcBreadcrumbs",
+  title: "Navigation/VcBreadcrumbs",
   component: VcBreadcrumbs,
   tags: ["autodocs"],
   argTypes: {

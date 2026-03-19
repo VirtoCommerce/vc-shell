@@ -1,0 +1,268 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="tw-flex tw-justify-center tw-items-center tw-h-40"
+  >
+    <div
+      class="vc-tooltip"
+    >
+      <div
+        class="vc-tooltip__trigger"
+      >
+        
+        <button
+          class="tw-px-4 tw-py-2 tw-bg-primary-500 tw-text-white tw-rounded-md tw-text-sm tw-font-medium tw-cursor-pointer tw-border-none hover:tw-bg-primary-600 tw-transition-colors"
+        >
+           Tooltip disabled 
+        </button>
+        
+      </div>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+  </div>
+</div>ansition-colors tw-text-base"
+          >
+            ➕
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-w-9 tw-h-9 tw-flex tw-items-center tw-justify-center tw-rounded-md tw-cursor-pointer tw-border-none tw-bg-transparent hover:tw-bg-neutrals-200 tw-transition-colors tw-text-base"
+          >
+            ✏️
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-w-9 tw-h-9 tw-flex tw-items-center tw-justify-center tw-rounded-md tw-cursor-pointer tw-border-none tw-bg-transparent hover:tw-bg-neutrals-200 tw-transition-colors tw-text-base"
+          >
+            🗑️
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-w-9 tw-h-9 tw-flex tw-items-center tw-justify-center tw-rounded-md tw-cursor-pointer tw-border-none tw-bg-transparent hover:tw-bg-neutrals-200 tw-transition-colors tw-text-base"
+          >
+            ⚙️
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+      
+    </div>
+  </div>
+</div>-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors"
+          >
+            right
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+    </div>
+    <div
+      class="tw-flex tw-justify-center tw-items-center tw-h-24"
+    >
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors"
+          >
+            right-start
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+    </div>
+    <div
+      class="tw-flex tw-justify-center tw-items-center tw-h-24"
+    >
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors"
+          >
+            right-end
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+    </div>
+    <div
+      class="tw-flex tw-justify-center tw-items-center tw-h-24"
+    >
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors"
+          >
+            bottom
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+    </div>
+    <div
+      class="tw-flex tw-justify-center tw-items-center tw-h-24"
+    >
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors"
+          >
+            bottom-start
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+    </div>
+    <div
+      class="tw-flex tw-justify-center tw-items-center tw-h-24"
+    >
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors"
+          >
+            bottom-end
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+    </div>
+    <div
+      class="tw-flex tw-justify-center tw-items-center tw-h-24"
+    >
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors"
+          >
+            left
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+    </div>
+    <div
+      class="tw-flex tw-justify-center tw-items-center tw-h-24"
+    >
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors"
+          >
+            left-start
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+    </div>
+    <div
+      class="tw-flex tw-justify-center tw-items-center tw-h-24"
+    >
+      <div
+        class="vc-tooltip"
+      >
+        <div
+          class="vc-tooltip__trigger"
+        >
+          
+          <button
+            class="tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors"
+          >
+            left-end
+          </button>
+          
+        </div>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+    </div>
+    
+  </div>
+</div>

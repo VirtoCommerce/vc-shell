@@ -6,7 +6,7 @@ import { VcStatusIcon } from "@ui/components/atoms/vc-status-icon";
  * It provides a simple way to represent success or error states.
  */
 const meta: Meta<typeof VcStatusIcon> = {
-  title: "Atoms/VcStatusIcon",
+  title: "Data Display/VcStatusIcon",
   component: VcStatusIcon,
   tags: ["autodocs"],
   argTypes: {

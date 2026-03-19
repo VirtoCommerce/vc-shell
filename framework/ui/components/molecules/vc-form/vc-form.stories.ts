@@ -8,7 +8,7 @@ import { ref } from "vue";
  * `VcForm` is a component that provides a standard form container with consistent styling and behavior.
  */
 const meta = {
-  title: "Molecules/VcForm",
+  title: "Form/VcForm",
   component: VcForm,
   tags: ["autodocs"],
   argTypes: {

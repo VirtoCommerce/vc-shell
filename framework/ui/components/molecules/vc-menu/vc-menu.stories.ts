@@ -7,7 +7,7 @@ import { VcMenu, VcMenuItem, VcMenuGroup } from ".";
  * section groups, 3-level nesting, animated expand/collapse, loading skeletons, and badge support.
  */
 const meta = {
-  title: "Molecules/VcMenu",
+  title: "Navigation/VcMenu",
   component: VcMenu,
   subcomponents: { VcMenuItem, VcMenuGroup },
   tags: ["autodocs"],

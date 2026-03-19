@@ -6,7 +6,7 @@ import { VcImage } from "@ui/components/atoms/vc-image";
  * sizes, and style options like rounded corners and borders.
  */
 const meta = {
-  title: "Atoms/VcImage",
+  title: "Data Display/VcImage",
   component: VcImage,
   tags: ["autodocs"],
   args: {

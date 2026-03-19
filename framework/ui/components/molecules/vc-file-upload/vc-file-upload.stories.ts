@@ -7,7 +7,7 @@ import { ref } from "vue";
  * drag-and-drop and browsing from file system.
  */
 const meta = {
-  title: "Molecules/VcFileUpload",
+  title: "Form/VcFileUpload",
   component: VcFileUpload,
   tags: ["autodocs"],
   args: {

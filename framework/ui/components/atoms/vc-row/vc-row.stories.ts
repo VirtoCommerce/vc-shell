@@ -7,7 +7,7 @@ import { VcImage } from "@ui/components/atoms/vc-image";
  * It adapts to mobile views by switching to a grid layout.
  */
 const meta = {
-  title: "Atoms/VcRow",
+  title: "Layout/VcRow",
   component: VcRow,
   tags: ["autodocs"],
   parameters: {

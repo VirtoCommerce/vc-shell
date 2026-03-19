@@ -1,0 +1,111 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="tw-max-w-lg"
+  >
+    <div
+      class="vc-color-input"
+    >
+      <!-- Label -->
+      <label
+        class="vc-label vc-color-input__label"
+        for="vc-field-v-0"
+        id="vc-field-v-0-label"
+      >
+        <div
+          class="vc-label__text"
+        >
+          <span
+            class="vc-label__content"
+          >
+            
+            <span>
+              Small color input
+            </span>
+            
+          </span>
+          <!--v-if-->
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </label>
+      <div
+        class="vc-color-input__field-wrapper vc-color-input__field-wrapper--small"
+      >
+        <div
+          class="vc-color-input__field-container"
+        >
+          <div
+            class="vc-color-input__field"
+          >
+            <input
+              aria-labelledby="vc-field-v-0-label"
+              class="vc-color-input__input"
+              id="vc-field-v-0"
+              name="Field"
+              placeholder="Enter hex color..."
+              tabindex="0"
+              type="text"
+            />
+            <!-- Color picker swatch -->
+            <div
+              class="vc-color-input__color-container"
+            >
+              <button
+                aria-label="Pick color: #a855f7"
+                class="vc-color-input__color-square"
+                style="background-color: rgb(168, 85, 247);"
+                type="button"
+              >
+                <!-- Hidden native color input -->
+                <input
+                  aria-hidden="true"
+                  class="vc-color-input__color-picker-hidden"
+                  tabindex="-1"
+                  type="color"
+                  value="#a855f7"
+                />
+              </button>
+            </div>
+            <!--v-if-->
+          </div>
+          <!--v-if-->
+        </div>
+      </div>
+      <div>
+        <!--v-if-->
+      </div>
+    </div>
+  </div>
+</div>
+                aria-hidden="true"
+                class="lucide vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs lucide-x-icon lucide-x vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6 6 18"
+                />
+                <path
+                  d="m6 6 12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <!--v-if-->
+        </div>
+      </div>
+      <div>
+        <!--v-if-->
+      </div>
+    </div>
+  </div>
+</div>

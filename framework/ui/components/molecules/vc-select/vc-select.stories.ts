@@ -9,7 +9,7 @@ import { VcButton } from "@ui/components/atoms/vc-button";
  * It supports various data sources, async loading, searching, and extensive customization through slots.
  */
 const meta = {
-  title: "Molecules/VcSelect",
+  title: "Form/VcSelect",
   component: VcSelect,
   tags: ["autodocs"],
   args: {

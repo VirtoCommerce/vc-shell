@@ -7,7 +7,7 @@ import VcRating from "@ui/components/molecules/vc-rating/vc-rating.vue";
  * star-and-text, or text-only, with support for labels, tooltips, and custom max values.
  */
 const meta: Meta<typeof VcRating> = {
-  title: "Molecules/VcRating",
+  title: "Form/VcRating",
   component: VcRating,
   // More on argTypes: https://storybook.js.org/docs/vue/api/argtypes
   tags: ["autodocs"],

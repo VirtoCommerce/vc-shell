@@ -8,7 +8,7 @@ import { VcContainer } from "@ui/components/atoms/vc-container";
  * - Configurable padding
  */
 const meta: Meta<typeof VcContainer> = {
-  title: "Atoms/VcContainer",
+  title: "Layout/VcContainer",
   component: VcContainer,
   tags: ["autodocs"],
   argTypes: {

@@ -1,0 +1,91 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="vc-col tw-gap-4"
+    style="flex-grow: 1;"
+  >
+    
+    <div
+      class="vc-image vc-image_xl"
+    >
+      <div
+        class="vc-image__container vc-image_1x1"
+        role="img"
+        style=""
+      >
+        <!--v-if-->
+      </div>
+    </div>
+    <div
+      class="vc-image vc-image_xl"
+    >
+      <div
+        class="vc-image__container vc-image_1x1"
+        role="img"
+        style=""
+      >
+        <!--v-if-->
+      </div>
+    </div>
+    <div
+      class="vc-image vc-image_xl"
+    >
+      <div
+        class="vc-image__container vc-image_1x1"
+        role="img"
+        style=""
+      >
+        <!--v-if-->
+      </div>
+    </div>
+    
+  </div>
+</div>"flex-grow: 2;"
+      >
+        
+        <div
+          class="tw-p-2 tw-font-medium tw-mb-2"
+        >
+          Size: 2
+        </div>
+        <div
+          class="vc-image vc-image_l"
+        >
+          <div
+            class="vc-image__container vc-image_1x1"
+            role="img"
+            style=""
+          >
+            <!--v-if-->
+          </div>
+        </div>
+        
+      </div>
+      <div
+        class="vc-col tw-p-2 tw-bg-gray-100 tw-rounded"
+        style="flex-grow: 3;"
+      >
+        
+        <div
+          class="tw-p-2 tw-font-medium tw-mb-2"
+        >
+          Size: 3
+        </div>
+        <div
+          class="vc-image vc-image_l"
+        >
+          <div
+            class="vc-image__container vc-image_1x1"
+            role="img"
+            style=""
+          >
+            <!--v-if-->
+          </div>
+        </div>
+        
+      </div>
+      
+    </div>
+  </div>
+</div>

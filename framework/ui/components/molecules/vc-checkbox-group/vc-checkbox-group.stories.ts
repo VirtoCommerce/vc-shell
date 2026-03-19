@@ -13,7 +13,7 @@ const options = [
  * `VcCheckboxGroup` wraps checkbox controls into an accessible fieldset.
  */
 const meta = {
-  title: "Molecules/VcCheckboxGroup",
+  title: "Form/VcCheckboxGroup",
   component: VcCheckboxGroup,
   tags: ["autodocs"],
   argTypes: {

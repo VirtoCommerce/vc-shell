@@ -10,7 +10,7 @@ import { ref, computed, watch } from "vue";
  * making it perfect for units of measurement, date formats, currencies, and other similar use cases.
  */
 const meta = {
-  title: "Molecules/VcInputDropdown",
+  title: "Form/VcInputDropdown",
   component: VcInputDropdown,
   tags: ["autodocs"],
   args: {

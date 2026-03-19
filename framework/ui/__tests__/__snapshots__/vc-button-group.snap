@@ -1,0 +1,138 @@
+<div
+  data-v-app=""
+>
+  <div
+    style="display: flex; flex-direction: column; gap: 16px;"
+  >
+    <div
+      class="vc-button-group vc-button-group--horizontal"
+      role="group"
+    >
+      
+      <button
+        class="vc-button vc-button-primary vc-button--sm"
+        type="button"
+      >
+        <!-- Loading: spinner replaces icon; shown inline next to text -->
+        <!--v-if-->
+        <span
+          class="vc-button__title"
+        >
+          
+          SM via group
+          
+        </span>
+      </button>
+      <button
+        class="vc-button vc-button-secondary vc-button--sm"
+        type="button"
+      >
+        <!-- Loading: spinner replaces icon; shown inline next to text -->
+        <!--v-if-->
+        <span
+          class="vc-button__title"
+        >
+          
+          SM via group
+          
+        </span>
+      </button>
+      
+    </div>
+    <div
+      class="vc-button-group vc-button-group--horizontal"
+      role="group"
+    >
+      
+      <button
+        class="vc-button vc-button-primary vc-button--default"
+        type="button"
+      >
+        <!-- Loading: spinner replaces icon; shown inline next to text -->
+        <!--v-if-->
+        <span
+          class="vc-button__title"
+        >
+          
+          Default via group
+          
+        </span>
+      </button>
+      <button
+        class="vc-button vc-button-secondary vc-button--default"
+        type="button"
+      >
+        <!-- Loading: spinner replaces icon; shown inline next to text -->
+        <!--v-if-->
+        <span
+          class="vc-button__title"
+        >
+          
+          Default via group
+          
+        </span>
+      </button>
+      
+    </div>
+    <div
+      class="vc-button-group vc-button-group--horizontal"
+      role="group"
+    >
+      
+      <button
+        class="vc-button vc-button-primary vc-button--lg"
+        type="button"
+      >
+        <!-- Loading: spinner replaces icon; shown inline next to text -->
+        <!--v-if-->
+        <span
+          class="vc-button__title"
+        >
+          
+          LG via group
+          
+        </span>
+      </button>
+      <button
+        class="vc-button vc-button-secondary vc-button--lg"
+        type="button"
+      >
+        <!-- Loading: spinner replaces icon; shown inline next to text -->
+        <!--v-if-->
+        <span
+          class="vc-button__title"
+        >
+          
+          LG via group
+          
+        </span>
+      </button>
+      
+    </div>
+  </div>
+</div>con"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M6 4v6a6 6 0 0 0 12 0V4"
+        />
+        <line
+          x1="4"
+          x2="20"
+          y1="20"
+          y2="20"
+        />
+      </svg>
+      <!--v-if-->
+    </button>
+    
+  </div>
+</div>

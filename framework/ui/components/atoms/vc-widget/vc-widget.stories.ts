@@ -8,7 +8,7 @@ import { provideWidgetService } from "@core/composables/useWidgets";
  * It's commonly used in dashboards, sidebars, and navigation elements.
  */
 const meta = {
-  title: "Atoms/VcWidget",
+  title: "Data Display/VcWidget",
   component: VcWidget,
   tags: ["autodocs"],
   decorators: [

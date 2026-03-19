@@ -1,0 +1,133 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="tw-flex tw-flex-col tw-gap-4"
+  >
+    <h3
+      class="tw-text-lg tw-font-medium"
+    >
+      Available Variants
+    </h3>
+    <div
+      class="tw-flex tw-flex-wrap tw-gap-4"
+    >
+      
+      <div
+        class="vc-card vc-card--default"
+      >
+        <div
+          class="vc-card__header"
+        >
+          
+          <div
+            class="vc-card__header-content"
+          >
+            <!--v-if-->
+            <div
+              class="vc-card__title"
+            >
+              default variant
+            </div>
+          </div>
+          
+          <!--v-if-->
+          <!--v-if-->
+        </div>
+        <div
+          class="vc-card__body-wrapper"
+          id="vc-card-body-v-0"
+        >
+          <div
+            class="vc-card__body"
+          >
+            
+            <p
+              class="tw-p-4"
+            >
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!
+            </p>
+            
+          </div>
+        </div>
+      </div>
+      <div
+        class="vc-card vc-card--success"
+      >
+        <div
+          class="vc-card__header"
+        >
+          
+          <div
+            class="vc-card__header-content"
+          >
+            <!--v-if-->
+            <div
+              class="vc-card__title"
+            >
+              success variant
+            </div>
+          </div>
+          
+          <!--v-if-->
+          <!--v-if-->
+        </div>
+        <div
+          class="vc-card__body-wrapper"
+          id="vc-card-body-v-1"
+        >
+          <div
+            class="vc-card__body"
+          >
+            
+            <p
+              class="tw-p-4"
+            >
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!
+            </p>
+            
+          </div>
+        </div>
+      </div>
+      <div
+        class="vc-card vc-card--danger"
+      >
+        <div
+          class="vc-card__header"
+        >
+          
+          <div
+            class="vc-card__header-content"
+          >
+            <!--v-if-->
+            <div
+              class="vc-card__title"
+            >
+              danger variant
+            </div>
+          </div>
+          
+          <!--v-if-->
+          <!--v-if-->
+        </div>
+        <div
+          class="vc-card__body-wrapper"
+          id="vc-card-body-v-2"
+        >
+          <div
+            class="vc-card__body"
+          >
+            
+            <p
+              class="tw-p-4"
+            >
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!
+            </p>
+            
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>

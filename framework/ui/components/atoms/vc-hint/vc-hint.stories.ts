@@ -6,7 +6,7 @@ import { VcHint } from "@ui/components/atoms/vc-hint";
  * It provides consistent styling for secondary information that guides users.
  */
 const meta = {
-  title: "Atoms/VcHint",
+  title: "Data Display/VcHint",
   component: VcHint,
   tags: ["autodocs"],
   argTypes: {

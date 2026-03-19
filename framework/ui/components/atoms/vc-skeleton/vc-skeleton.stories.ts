@@ -6,7 +6,7 @@ import VcSkeleton from "@ui/components/atoms/vc-skeleton/vc-skeleton.vue";
  * It helps improve UX by showing preliminary placeholders where content is loading.
  */
 const meta = {
-  title: "Atoms/VcSkeleton",
+  title: "Layout/VcSkeleton",
   component: VcSkeleton,
   tags: ["autodocs"],
   argTypes: {

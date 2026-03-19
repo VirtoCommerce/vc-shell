@@ -173,7 +173,7 @@ function useStorySetup() {
  * app bar, workspace area, and all framework services into a complete admin UI.
  */
 const meta: Meta = {
-  title: "Organisms/VcApp",
+  title: "Layout/VcApp",
   component: VcApp,
   tags: ["autodocs"],
   parameters: {

@@ -7,7 +7,7 @@ import { ref } from "vue";
  * Supports labels, hints, error handling, and other text field features.
  */
 const meta = {
-  title: "Molecules/VcTextarea",
+  title: "Form/VcTextarea",
   component: VcTextarea,
   tags: ["autodocs"],
   argTypes: {

@@ -6,7 +6,7 @@ import { VcLabel } from "@ui/components/atoms/vc-label";
  * with additional tooltip support.
  */
 const meta = {
-  title: "Atoms/VcLabel",
+  title: "Data Display/VcLabel",
   component: VcLabel,
   tags: ["autodocs"],
   argTypes: {

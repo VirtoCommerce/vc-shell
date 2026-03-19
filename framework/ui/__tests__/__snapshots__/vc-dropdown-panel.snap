@@ -1,0 +1,53 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="tw-p-8"
+  >
+    <button
+      class="tw-px-4 tw-py-2 tw-bg-[var(--primary-500)] tw-text-white tw-rounded tw-border-none tw-cursor-pointer"
+    >
+       Open Accessible Panel 
+    </button>
+    <!--teleport start-->
+    <!--teleport end-->
+  </div>
+</div>      </button>
+        <!--teleport start-->
+        <!--teleport end-->
+      </div>
+      <div
+        class="tw-text-xs tw-text-[var(--neutrals-500)]"
+      >
+        <strong>
+          Event log:
+        </strong>
+        
+        
+        <div
+          class="tw-mt-1 tw-italic"
+        >
+          No events yet
+        </div>
+      </div>
+    </div>
+  </div>
+</div>.5 tw-text-xs tw-bg-[var(--primary-500)] tw-text-white tw-rounded tw-border-none tw-cursor-pointer"
+      >
+        top-start
+      </button>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+    <div>
+      <button
+        class="tw-px-3 tw-py-1.5 tw-text-xs tw-bg-[var(--primary-500)] tw-text-white tw-rounded tw-border-none tw-cursor-pointer"
+      >
+        right-start
+      </button>
+      <!--teleport start-->
+      <!--teleport end-->
+    </div>
+    
+  </div>
+</div>

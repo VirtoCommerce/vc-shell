@@ -8,7 +8,7 @@ import { VcImage } from "@ui/components/atoms/vc-image";
  * It can be used within a `VcRow` component or standalone to create flexible layouts.
  */
 const meta = {
-  title: "Atoms/VcCol",
+  title: "Layout/VcCol",
   component: VcCol,
   tags: ["autodocs"],
   argTypes: {

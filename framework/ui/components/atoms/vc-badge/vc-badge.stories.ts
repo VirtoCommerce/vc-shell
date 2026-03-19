@@ -16,7 +16,7 @@ import { ref } from "vue";
  * The component supports multiple variants, sizes, and states, making it adaptable to various use cases
  */
 const meta = {
-  title: "Atoms/VcBadge",
+  title: "Data Display/VcBadge",
   component: VcBadge,
   tags: ["autodocs"],
   argTypes: {

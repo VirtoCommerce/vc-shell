@@ -6,7 +6,7 @@ import { VcButton, VcButtonGroup } from "@ui/components/atoms/vc-button";
  * Supports size propagation to children via provide/inject.
  */
 const meta = {
-  title: "Atoms/VcButtonGroup",
+  title: "Action/VcButtonGroup",
   component: VcButtonGroup,
   tags: ["autodocs"],
   argTypes: {

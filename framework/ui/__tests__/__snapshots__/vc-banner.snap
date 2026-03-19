@@ -1,0 +1,233 @@
+<div
+  data-v-app=""
+>
+  <div
+    aria-label="Error"
+    class="vc-banner vc-banner--danger tw-max-w-lg"
+    role="alert"
+  >
+    <svg
+      aria-hidden="true"
+      class="lucide vc-lucide-icon vc-lucide-icon--l vc-lucide-icon--danger vc-icon vc-icon--l vc-icon--danger vc-banner__icon vc-banner__icon lucide-circle-alert-icon lucide-circle-alert vc-lucide-icon vc-lucide-icon--l vc-lucide-icon--danger vc-icon vc-icon--l vc-icon--danger vc-banner__icon vc-banner__icon"
+      fill="none"
+      height="24"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="1.5"
+      viewBox="0 0 24 24"
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+      />
+      <line
+        x1="12"
+        x2="12"
+        y1="8"
+        y2="12"
+      />
+      <line
+        x1="12"
+        x2="12.01"
+        y1="16"
+        y2="16"
+      />
+    </svg>
+    <div
+      class="vc-banner__body"
+    >
+      <div
+        class="vc-banner__title"
+      >
+        
+        Decline Reason
+        
+      </div>
+      <div
+        class="vc-banner__content-wrapper"
+        style="max-height: 100px;"
+      >
+        <div
+          class="vc-banner__content"
+        >
+          
+           Product does not meet the quality standards. Please review the images and description, then resubmit for approval. 
+          
+        </div>
+      </div>
+      <!--v-if-->
+    </div>
+  </div>
+</div>     <li>
+              Price must be a positive number greater than zero
+            </li>
+            <li>
+              At least one product image is required for listing
+            </li>
+            <li>
+              Product description must be at least 50 characters long
+            </li>
+            <li>
+              Category selection is mandatory for marketplace placement
+            </li>
+            <li>
+              Weight and dimensions are required for shipping calculation
+            </li>
+          </ul>
+          
+        </div>
+      </div>
+      <!--v-if-->
+    </div>
+  </div>
+</div>    />
+        <path
+          d="m9 12 2 2 4-4"
+        />
+      </svg>
+      <div
+        class="vc-banner__body"
+      >
+        <div
+          class="vc-banner__title"
+        >
+          
+          Success
+          
+        </div>
+        <div
+          class="vc-banner__content-wrapper"
+          style="max-height: 100px;"
+        >
+          <div
+            class="vc-banner__content"
+          >
+            
+             The operation completed successfully.
+            
+          </div>
+        </div>
+        <!--v-if-->
+      </div>
+    </div>
+    <div
+      aria-label="Warning"
+      class="vc-banner vc-banner--warning"
+      role="alert"
+    >
+      <svg
+        aria-hidden="true"
+        class="lucide vc-lucide-icon vc-lucide-icon--l vc-icon vc-icon--l vc-banner__icon vc-banner__icon lucide-triangle-alert-icon lucide-triangle-alert vc-lucide-icon vc-lucide-icon--l vc-icon vc-icon--l vc-banner__icon vc-banner__icon"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+        />
+        <path
+          d="M12 9v4"
+        />
+        <path
+          d="M12 17h.01"
+        />
+      </svg>
+      <div
+        class="vc-banner__body"
+      >
+        <div
+          class="vc-banner__title"
+        >
+          
+          Warning
+          
+        </div>
+        <div
+          class="vc-banner__content-wrapper"
+          style="max-height: 100px;"
+        >
+          <div
+            class="vc-banner__content"
+          >
+            
+             Please review before proceeding with this action.
+            
+          </div>
+        </div>
+        <!--v-if-->
+      </div>
+    </div>
+    <div
+      aria-label="Error"
+      class="vc-banner vc-banner--danger"
+      role="alert"
+    >
+      <svg
+        aria-hidden="true"
+        class="lucide vc-lucide-icon vc-lucide-icon--l vc-icon vc-icon--l vc-banner__icon vc-banner__icon lucide-circle-alert-icon lucide-circle-alert vc-lucide-icon vc-lucide-icon--l vc-icon vc-icon--l vc-banner__icon vc-banner__icon"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+        />
+        <line
+          x1="12"
+          x2="12"
+          y1="8"
+          y2="12"
+        />
+        <line
+          x1="12"
+          x2="12.01"
+          y1="16"
+          y2="16"
+        />
+      </svg>
+      <div
+        class="vc-banner__body"
+      >
+        <div
+          class="vc-banner__title"
+        >
+          
+          Error
+          
+        </div>
+        <div
+          class="vc-banner__content-wrapper"
+          style="max-height: 100px;"
+        >
+          <div
+            class="vc-banner__content"
+          >
+            
+             Something went wrong. Please try again later.
+            
+          </div>
+        </div>
+        <!--v-if-->
+      </div>
+    </div>
+    
+  </div>
+</div>

@@ -17,7 +17,7 @@ import VcAuthLayout from "./vc-auth-layout.vue";
  * The component uses `useRouter()` internally to read `appVersion` from route meta.
  */
 const meta = {
-  title: "Organisms/VcAuthLayout",
+  title: "Layout/VcAuthLayout",
   component: VcAuthLayout,
   tags: ["autodocs"],
   argTypes: {

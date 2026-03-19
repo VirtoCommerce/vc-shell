@@ -1,0 +1,345 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="tw-max-w-2xl tw-space-y-4"
+  >
+    <h3
+      class="tw-text-lg tw-font-medium"
+    >
+      All States
+    </h3>
+    <div
+      class="tw-grid tw-grid-cols-2 tw-gap-4"
+    >
+      
+      <!-- Backward compat delegation: date types -->
+      
+      <!-- Clean text input -->
+      <div
+        class="vc-input vc-input--text"
+      >
+        <!-- Input label -->
+        <label
+          class="vc-label vc-input__label"
+          for="vc-field-v-0"
+          id="vc-field-v-0-label"
+        >
+          <div
+            class="vc-label__text"
+          >
+            <span
+              class="vc-label__content"
+            >
+              
+              <span>
+                Default
+              </span>
+              
+            </span>
+            <!--v-if-->
+          </div>
+          <!--v-if-->
+          <!--v-if-->
+        </label>
+        <div
+          class="vc-input__container"
+        >
+          <!--v-if-->
+          <div
+            class="vc-input__field-wrapper vc-input__field-wrapper--default"
+          >
+            <div
+              class="vc-input__field-container"
+            >
+              <!--v-if-->
+              <div
+                class="vc-input__field"
+              >
+                <!--v-if-->
+                
+                <input
+                  aria-labelledby="vc-field-v-0-label"
+                  class="vc-input__input"
+                  id="vc-field-v-0"
+                  maxlength="1024"
+                  name="Field"
+                  placeholder="Type here..."
+                  tabindex="0"
+                  type="text"
+                />
+                
+                <!--v-if-->
+                <!--v-if-->
+                <!--v-if-->
+              </div>
+              <!--v-if-->
+              <!--v-if-->
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+        <div>
+          
+          <!--v-if-->
+          
+        </div>
+      </div>
+      
+      
+      
+      <!-- Backward compat delegation: date types -->
+      
+      <!-- Clean text input -->
+      <div
+        class="vc-input vc-input--text vc-input--error"
+      >
+        <!-- Input label -->
+        <label
+          class="vc-label vc-label--error vc-input__label"
+          for="vc-field-v-1"
+          id="vc-field-v-1-label"
+        >
+          <div
+            class="vc-label__text"
+          >
+            <span
+              class="vc-label__content"
+            >
+              
+              <span>
+                Error
+              </span>
+              
+            </span>
+            <!--v-if-->
+          </div>
+          <!--v-if-->
+          <!--v-if-->
+        </label>
+        <div
+          class="vc-input__container"
+        >
+          <!--v-if-->
+          <div
+            class="vc-input__field-wrapper vc-input__field-wrapper--default"
+          >
+            <div
+              class="vc-input__field-container"
+            >
+              <!--v-if-->
+              <div
+                class="vc-input__field"
+              >
+                <!--v-if-->
+                
+                <input
+                  aria-describedby="vc-field-v-1-error"
+                  aria-invalid="true"
+                  aria-labelledby="vc-field-v-1-label"
+                  class="vc-input__input"
+                  id="vc-field-v-1"
+                  maxlength="1024"
+                  name="Field"
+                  tabindex="0"
+                  type="text"
+                />
+                
+                <!--v-if-->
+                <!--v-if-->
+                <!--v-if-->
+              </div>
+              <!--v-if-->
+              <!--v-if-->
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+        <div>
+          
+          <div
+            class="vc-hint vc-hint--error vc-input__hint-error"
+            id="vc-field-v-1-error"
+            role="alert"
+          >
+            
+            This field has an error
+            
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <!-- Backward compat delegation: date types -->
+      
+      <!-- Clean text input -->
+      <div
+        class="vc-input vc-input--text vc-input--disabled"
+      >
+        <!-- Input label -->
+        <label
+          class="vc-label vc-input__label"
+          for="vc-field-v-2"
+          id="vc-field-v-2-label"
+        >
+          <div
+            class="vc-label__text"
+          >
+            <span
+              class="vc-label__content"
+            >
+              
+              <span>
+                Disabled
+              </span>
+              
+            </span>
+            <!--v-if-->
+          </div>
+          <!--v-if-->
+          <!--v-if-->
+        </label>
+        <div
+          class="vc-input__container"
+        >
+          <!--v-if-->
+          <div
+            class="vc-input__field-wrapper vc-input__field-wrapper--default"
+          >
+            <div
+              class="vc-input__field-container"
+            >
+              <!--v-if-->
+              <div
+                class="vc-input__field"
+              >
+                <!--v-if-->
+                
+                <input
+                  aria-labelledby="vc-field-v-2-label"
+                  class="vc-input__input"
+                  disabled=""
+                  id="vc-field-v-2"
+                  maxlength="1024"
+                  name="Field"
+                  tabindex="0"
+                  type="text"
+                />
+                
+                <!--v-if-->
+                <!--v-if-->
+                <!--v-if-->
+              </div>
+              <!--v-if-->
+              <!--v-if-->
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+        <div>
+          
+          <!--v-if-->
+          
+        </div>
+      </div>
+      
+      
+      
+      <!-- Backward compat delegation: date types -->
+      
+      <!-- Clean text input -->
+      <div
+        class="vc-input vc-input--text"
+      >
+        <!-- Input label -->
+        <label
+          class="vc-label vc-input__label"
+          for="vc-field-v-3"
+          id="vc-field-v-3-label"
+        >
+          <div
+            class="vc-label__text"
+          >
+            <span
+              class="vc-label__content"
+            >
+              
+              <span>
+                Loading
+              </span>
+              
+            </span>
+            <!--v-if-->
+          </div>
+          <!--v-if-->
+          <!--v-if-->
+        </label>
+        <div
+          class="vc-input__container"
+        >
+          <!--v-if-->
+          <div
+            class="vc-input__field-wrapper vc-input__field-wrapper--default"
+          >
+            <div
+              class="vc-input__field-container"
+            >
+              <!--v-if-->
+              <div
+                class="vc-input__field"
+              >
+                <!--v-if-->
+                
+                <input
+                  aria-labelledby="vc-field-v-3-label"
+                  class="vc-input__input"
+                  id="vc-field-v-3"
+                  maxlength="1024"
+                  name="Field"
+                  tabindex="0"
+                  type="text"
+                />
+                
+                <!--v-if-->
+                <!--v-if-->
+                <!--v-if-->
+              </div>
+              <!--v-if-->
+              <div
+                class="vc-input__loading"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-input__loading-icon vc-input__loading-icon lucide-loader-circle-icon lucide-loader-circle vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-input__loading-icon vc-input__loading-icon"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21 12a9 9 0 1 1-6.219-8.56"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <!--v-if-->
+        </div>
+        <div>
+          
+          <!--v-if-->
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+</div>

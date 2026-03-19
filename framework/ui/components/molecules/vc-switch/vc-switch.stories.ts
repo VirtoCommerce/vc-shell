@@ -9,7 +9,7 @@ import VcHint from "@ui/components/atoms/vc-hint/vc-hint.vue";
  * and other binary choices in forms and configuration interfaces.
  */
 const meta = {
-  title: "Molecules/VcSwitch",
+  title: "Form/VcSwitch",
   component: VcSwitch,
   tags: ["autodocs"],
   argTypes: {

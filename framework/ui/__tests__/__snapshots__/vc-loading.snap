@@ -1,0 +1,48 @@
+<div
+  data-v-app=""
+>
+  <div
+    style="position: relative; width: 100%; height: 200px; border: 1px dashed rgb(204, 204, 204); border-radius: 8px; overflow: hidden;"
+  >
+    <div
+      class="tw-flex tw-flex-col tw-gap-4"
+    >
+      <button
+        class="tw-px-4 tw-py-2 tw-rounded tw-bg-[var(--primary-500)] tw-text-white tw-text-sm tw-w-fit tw-cursor-pointer"
+      >
+        Simulate Load (2s)
+      </button>
+      <div
+        style="position: relative; width: 100%; height: 200px; border: 1px dashed rgb(204, 204, 204); border-radius: 8px; overflow: hidden;"
+      >
+        <div
+          aria-busy="false"
+          aria-live="polite"
+          class="vc-loading-overlay"
+          role="status"
+        >
+          <div
+            class="vc-loading-overlay__bar"
+          >
+            <div
+              class="vc-loading-overlay__bar-fill"
+            />
+          </div>
+          <span
+            class="tw-sr-only"
+          />
+        </div>
+        <div
+          class="tw-flex tw-items-center tw-justify-center tw-h-full tw-text-sm tw-text-[var(--neutrals-400)]"
+        >
+           Content behind the overlay 
+        </div>
+      </div>
+    </div>
+    <div
+      class="tw-flex tw-items-center tw-justify-center tw-h-full tw-text-sm tw-text-[var(--neutrals-400)]"
+    >
+       Content behind the overlay 
+    </div>
+  </div>
+</div>

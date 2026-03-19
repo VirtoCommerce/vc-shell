@@ -12,7 +12,7 @@ import { ref } from "vue";
  * - Backdrop blur and semi-transparent overlay when active
  */
 const meta = {
-  title: "Atoms/VcLoading",
+  title: "Layout/VcLoading",
   component: VcLoading,
   tags: ["autodocs"],
   argTypes: {

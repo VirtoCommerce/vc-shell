@@ -7,7 +7,7 @@ import { VcProgress } from "@ui/components/atoms/vc-progress";
  * It supports different visual styles and can be dynamically updated.
  */
 const meta = {
-  title: "Atoms/VcProgress",
+  title: "Layout/VcProgress",
   component: VcProgress,
   tags: ["autodocs"],
   argTypes: {

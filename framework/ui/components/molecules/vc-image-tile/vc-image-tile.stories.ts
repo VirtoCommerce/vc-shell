@@ -9,7 +9,7 @@ import { VcIcon } from "@ui/components/atoms/vc-icon";
  * Used internally by `VcGalleryItem` and `VcImageUpload`.
  */
 const meta = {
-  title: "Molecules/VcImageTile",
+  title: "Action/VcImageTile",
   component: VcImageTile,
   tags: ["autodocs"],
   args: {

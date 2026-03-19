@@ -20,7 +20,7 @@ const sampleImages: ICommonAsset[] = [
  * gap spacing, and image fit mode.
  */
 export default {
-  title: "Organisms/VcGallery",
+  title: "Data Display/VcGallery",
   component: VcGallery,
   tags: ["autodocs"],
   args: {

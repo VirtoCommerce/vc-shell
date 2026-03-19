@@ -5,7 +5,7 @@ import VcButton from "@ui/components/atoms/vc-button/vc-button.vue";
 import VcIcon from "@ui/components/atoms/vc-icon/vc-icon.vue";
 
 const meta = {
-  title: "Organisms/VcPopup",
+  title: "Overlay/VcPopup",
   component: VcPopup,
   tags: ["autodocs"],
   argTypes: {

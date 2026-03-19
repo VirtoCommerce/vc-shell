@@ -14,7 +14,7 @@ import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
  * - ARIA `role="tooltip"` with `aria-describedby`
  */
 const meta = {
-  title: "Atoms/VcTooltip",
+  title: "Overlay/VcTooltip",
   component: VcTooltip,
   tags: ["autodocs"],
   argTypes: {

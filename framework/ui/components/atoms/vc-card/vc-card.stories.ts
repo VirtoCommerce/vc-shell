@@ -9,7 +9,7 @@ import { VcButton } from "@ui/components/atoms/vc-button";
  * optional header, actions, and collapsible functionality.
  */
 const meta = {
-  title: "Atoms/VcCard",
+  title: "Data Display/VcCard",
   component: VcCard,
   tags: ["autodocs"],
   argTypes: {

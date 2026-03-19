@@ -13,7 +13,7 @@ const options = [
  * `VcRadioGroup` wraps radio controls into an accessible fieldset/radiogroup.
  */
 const meta = {
-  title: "Molecules/VcRadioGroup",
+  title: "Form/VcRadioGroup",
   component: VcRadioGroup,
   tags: ["autodocs"],
   argTypes: {

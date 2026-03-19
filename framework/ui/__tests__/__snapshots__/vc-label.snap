@@ -1,0 +1,72 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="tw-space-y-2"
+  >
+    <div
+      class="vc-label"
+      default="Field Label"
+      tooltip="Additional information about this field"
+    >
+      <div
+        class="vc-label__text"
+      >
+        <span
+          class="vc-label__content"
+        >
+          
+          Field Label 
+          
+        </span>
+        <!--v-if-->
+      </div>
+      <span
+        class="vc-label__tooltip"
+      >
+        <div
+          class="vc-tooltip"
+        >
+          <div
+            class="vc-tooltip__trigger"
+          >
+            
+            <svg
+              aria-hidden="true"
+              class="lucide vc-lucide-icon vc-lucide-icon--s vc-icon vc-icon--s vc-label__tooltip-icon vc-label__tooltip-icon lucide-info-icon lucide-info vc-lucide-icon vc-lucide-icon--s vc-icon vc-icon--s vc-label__tooltip-icon vc-label__tooltip-icon"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <path
+                d="M12 16v-4"
+              />
+              <path
+                d="M12 8h.01"
+              />
+            </svg>
+            
+          </div>
+          <!--teleport start-->
+          <!--teleport end-->
+        </div>
+      </span>
+      <!--v-if-->
+    </div>
+    <input
+      class="tw-border tw-border-gray-300 tw-rounded tw-px-3 tw-py-2 tw-w-full"
+      placeholder="Enter value"
+    />
+  </div>
+</div>

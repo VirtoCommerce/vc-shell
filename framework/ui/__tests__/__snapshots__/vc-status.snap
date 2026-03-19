@@ -1,0 +1,325 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="vc-status vc-status--danger vc-status--extended"
+    outline="false"
+    role="status"
+  >
+    <div
+      class="vc-status__content"
+    >
+      
+      <div
+        class="tw-flex tw-flex-row tw-items-center"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide vc-lucide-icon vc-lucide-icon--xl vc-lucide-icon--danger vc-icon vc-icon--xl vc-icon--danger tw-mr-3 tw-mr-3 lucide-triangle-alert-icon lucide-triangle-alert vc-lucide-icon vc-lucide-icon--xl vc-lucide-icon--danger vc-icon vc-icon--xl vc-icon--danger tw-mr-3 tw-mr-3"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+          />
+          <path
+            d="M12 9v4"
+          />
+          <path
+            d="M12 17h.01"
+          />
+        </svg>
+        <div>
+          <h3
+            class="tw-font-bold"
+          >
+            Error Status
+          </h3>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque tortor id lacus viverra, ut mollis libero auctor.
+          </p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>ss="vc-status vc-status--warning vc-status--extended"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Extended
+            
+          </div>
+        </div>
+        <div
+          aria-label="warning"
+          class="vc-status vc-status--warning vc-status--dot"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="tw-space-y-2"
+    >
+      <h3
+        class="tw-font-medium tw-text-sm"
+      >
+        danger
+      </h3>
+      <div
+        class="tw-space-x-2"
+      >
+        <div
+          class="vc-status vc-status--danger"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Standard
+            
+          </div>
+        </div>
+        <div
+          class="vc-status vc-status--danger vc-status--extended"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Extended
+            
+          </div>
+        </div>
+        <div
+          aria-label="danger"
+          class="vc-status vc-status--danger vc-status--dot"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="tw-space-y-2"
+    >
+      <h3
+        class="tw-font-medium tw-text-sm"
+      >
+        success
+      </h3>
+      <div
+        class="tw-space-x-2"
+      >
+        <div
+          class="vc-status vc-status--success"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Standard
+            
+          </div>
+        </div>
+        <div
+          class="vc-status vc-status--success vc-status--extended"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Extended
+            
+          </div>
+        </div>
+        <div
+          aria-label="success"
+          class="vc-status vc-status--success vc-status--dot"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="tw-space-y-2"
+    >
+      <h3
+        class="tw-font-medium tw-text-sm"
+      >
+        light-danger
+      </h3>
+      <div
+        class="tw-space-x-2"
+      >
+        <div
+          class="vc-status vc-status--light-danger"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Standard
+            
+          </div>
+        </div>
+        <div
+          class="vc-status vc-status--light-danger vc-status--extended"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Extended
+            
+          </div>
+        </div>
+        <div
+          aria-label="light-danger"
+          class="vc-status vc-status--light-danger vc-status--dot"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="tw-space-y-2"
+    >
+      <h3
+        class="tw-font-medium tw-text-sm"
+      >
+        info-dark
+      </h3>
+      <div
+        class="tw-space-x-2"
+      >
+        <div
+          class="vc-status vc-status--info-dark"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Standard
+            
+          </div>
+        </div>
+        <div
+          class="vc-status vc-status--info-dark vc-status--extended"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Extended
+            
+          </div>
+        </div>
+        <div
+          aria-label="info-dark"
+          class="vc-status vc-status--info-dark vc-status--dot"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="tw-space-y-2"
+    >
+      <h3
+        class="tw-font-medium tw-text-sm"
+      >
+        primary
+      </h3>
+      <div
+        class="tw-space-x-2"
+      >
+        <div
+          class="vc-status vc-status--primary"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Standard
+            
+          </div>
+        </div>
+        <div
+          class="vc-status vc-status--primary vc-status--extended"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            Extended
+            
+          </div>
+        </div>
+        <div
+          aria-label="primary"
+          class="vc-status vc-status--primary vc-status--dot"
+          role="status"
+        >
+          <div
+            class="vc-status__content"
+          >
+            
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>

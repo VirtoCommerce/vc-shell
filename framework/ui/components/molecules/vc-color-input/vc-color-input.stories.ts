@@ -7,7 +7,7 @@ import { ref } from "vue";
  * with a color swatch square that opens the native color picker.
  */
 const meta = {
-  title: "Molecules/VcColorInput",
+  title: "Form/VcColorInput",
   component: VcColorInput,
   tags: ["autodocs"],
   args: {

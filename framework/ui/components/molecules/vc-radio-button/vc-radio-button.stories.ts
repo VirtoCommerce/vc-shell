@@ -7,7 +7,7 @@ import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
  * It provides a visual interface for making exclusive choices in forms and other interactive contexts.
  */
 const meta = {
-  title: "Molecules/VcRadioButton",
+  title: "Form/VcRadioButton",
   component: VcRadioButton,
   tags: ["autodocs"],
   args: {

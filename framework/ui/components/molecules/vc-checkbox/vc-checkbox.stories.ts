@@ -7,7 +7,7 @@ import { ref } from "vue";
  * Supports various sizes, states, and styling options.
  */
 const meta = {
-  title: "Molecules/VcCheckbox",
+  title: "Form/VcCheckbox",
   component: VcCheckbox,
   tags: ["autodocs"],
   argTypes: {

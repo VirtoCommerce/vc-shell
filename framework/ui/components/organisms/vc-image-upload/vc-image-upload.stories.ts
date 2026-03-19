@@ -11,7 +11,7 @@ import type { ICommonAsset } from "@core/types";
  * and removable image actions.
  */
 export default {
-  title: "Organisms/VcImageUpload",
+  title: "Data Display/VcImageUpload",
   component: VcImageUpload,
   tags: ["autodocs"],
   argTypes: {

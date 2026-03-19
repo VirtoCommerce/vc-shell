@@ -91,7 +91,7 @@ import { ComponentName } from "@ui/components/{level}/{component-dir}";
  * {2-3 sentences describing what it does and when to use it.}
  */
 const meta = {
-  title: "{Level}/{ComponentName}",
+  title: "{Category}/{ComponentName}",
   component: ComponentName,
   tags: ["autodocs"],
   argTypes: {
@@ -220,3 +220,40 @@ Before modifying any existing story file:
 4. Append only — new stories go at the end of the file
 5. `satisfies Meta` annotation and `@storybook/vue3-vite` import may be updated
 6. Verify: diff must show only additions, never modifications to existing lines
+
+## Category Reference
+
+Stories use functional categories instead of Atomic Design levels. Use the category that matches the component's primary purpose.
+
+| Category | Components |
+|---|---|
+| **Form** | VcInput, VcTextarea, VcSelect, VcCheckbox, VcCheckboxGroup, VcRadioButton, VcRadioGroup, VcSwitch, VcDatePicker, VcInputCurrency, VcInputDropdown, VcInputGroup, VcColorInput, VcSlider, VcRating, VcFileUpload, VcEditor, VcMultivalue, VcField, VcForm |
+| **Data Display** | VcDataTable, VcBadge, VcStatus, VcStatusIcon, VcLabel, VcHint, VcImage, VcVideo, VcCard, VcWidget, VcDynamicProperty, VcGallery, VcImageUpload |
+| **Navigation** | VcBreadcrumbs, VcMenu, VcPagination, VcBlade, VcBladeNavigation |
+| **Overlay** | VcPopup, VcTooltip, VcDropdown, VcDropdownPanel, VcToast, VcSidebar |
+| **Layout** | VcContainer, VcScrollableContainer, VcRow, VcCol, VcSkeleton, VcProgress, VcIcon, VcLoading, VcApp, VcAuthLayout |
+| **Action** | VcButton, VcButtonGroup, VcLink, VcBanner, VcAccordion, VcImageTile |
+| **Shared** | App-level components (settings, notifications, auth pages) |
+
+## Automated Testing
+
+All stories are automatically tested via `@storybook/addon-vitest`:
+
+- **HTML Snapshots** — each story is rendered and its DOM output is captured as a file snapshot via `composeStories()` + `toMatchFileSnapshot()`
+- **Visual Regression** — each story is screenshotted via Playwright and compared with `jest-image-snapshot`
+- **Coverage** — run `yarn test:coverage` to generate coverage reports for unit tests
+
+### Opting Out
+
+To disable snapshot testing for a story or entire component:
+
+```typescript
+const meta = {
+  parameters: {
+    snapshot: { disable: true },  // Skip all snapshot tests for this component
+    visual: { disable: true },    // Skip all visual tests for this component
+  },
+};
+```
+
+To skip individual stories: use `parameters: { snapshot: { skip: true } }` on the story.

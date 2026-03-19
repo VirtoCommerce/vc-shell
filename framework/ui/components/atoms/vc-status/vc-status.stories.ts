@@ -7,7 +7,7 @@ import { VcIcon } from "@ui/components/atoms/vc-icon";
  * It's used to represent the state of items or processes in the application.
  */
 const meta = {
-  title: "Atoms/VcStatus",
+  title: "Data Display/VcStatus",
   component: VcStatus,
   tags: ["autodocs"],
   argTypes: {

@@ -15,7 +15,7 @@ import { VcButton, VcIcon } from "@ui/components/atoms";
  * - responsive sizing (`sm`, `md`, `lg`, `full`)
  */
 const meta = {
-  title: "Organisms/VcSidebar",
+  title: "Overlay/VcSidebar",
   component: VcSidebar,
   tags: ["autodocs"],
   args: {

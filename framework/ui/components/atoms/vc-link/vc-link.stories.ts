@@ -5,7 +5,7 @@ import { VcLink } from "@ui/components/atoms/vc-link";
  * `VcLink` - component for displaying clickable links with various states
  */
 const meta = {
-  title: "Atoms/VcLink",
+  title: "Action/VcLink",
   component: VcLink,
   tags: ["autodocs"],
   args: {

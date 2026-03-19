@@ -10,7 +10,7 @@ import { VcIcon } from "@ui/components/atoms/vc-icon";
  * Long content is automatically collapsible via the `useCollapsible` composable.
  */
 const meta = {
-  title: "Atoms/VcBanner",
+  title: "Action/VcBanner",
   component: VcBanner,
   tags: ["autodocs"],
   argTypes: {

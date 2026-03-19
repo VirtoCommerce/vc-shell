@@ -8,7 +8,7 @@ import type { Editor } from "@tiptap/vue-3";
  * customizable toolbar, and error handling support.
  */
 const meta = {
-  title: "Molecules/VcEditor",
+  title: "Form/VcEditor",
   component: VcEditor,
   tags: ["autodocs"],
   args: {

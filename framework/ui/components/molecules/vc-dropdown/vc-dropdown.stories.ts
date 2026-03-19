@@ -69,7 +69,7 @@ const workspaceItems: WorkspaceItem[] = [
  * Use this component as the base for contextual menus, switchers, and compact option pickers.
  */
 const meta = {
-  title: "Molecules/VcDropdown",
+  title: "Overlay/VcDropdown",
   component: VcDropdown,
   tags: ["autodocs"],
   args: {

@@ -1,0 +1,210 @@
+<div
+  data-v-app=""
+>
+  <div
+    class="tw-max-w-lg tw-space-y-3"
+  >
+    <fieldset
+      aria-describedby="vc-input-group-v-0-hint"
+      aria-labelledby="vc-input-group-v-0-label"
+      class="vc-input-group vc-input-group--horizontal"
+      role="radiogroup"
+    >
+      <legend
+        class="vc-input-group__legend"
+        id="vc-input-group-v-0-label"
+      >
+        <div
+          class="vc-label"
+        >
+          <div
+            class="vc-label__text"
+          >
+            <span
+              class="vc-label__content"
+            >
+              
+              <span>
+                Payment method
+              </span>
+              
+            </span>
+            <!--v-if-->
+          </div>
+          <!--v-if-->
+          <!--v-if-->
+        </div>
+      </legend>
+      <div
+        class="vc-input-group__controls"
+      >
+        
+        <div
+          class="vc-radio-button"
+        >
+          <label
+            class="vc-radio-button__label"
+          >
+            <input
+              aria-describedby="vc-input-group-v-0-hint"
+              checked=""
+              class=""
+              id="vc-field-v-1"
+              name="payment-method"
+              tabindex="0"
+              type="radio"
+              value="card"
+            />
+             Card
+          </label>
+          <!--v-if-->
+        </div>
+        <div
+          class="vc-radio-button"
+        >
+          <label
+            class="vc-radio-button__label"
+          >
+            <input
+              aria-describedby="vc-input-group-v-0-hint"
+              class=""
+              id="vc-field-v-2"
+              name="payment-method"
+              tabindex="0"
+              type="radio"
+              value="invoice"
+            />
+             Invoice
+          </label>
+          <!--v-if-->
+        </div>
+        <div
+          class="vc-radio-button"
+        >
+          <label
+            class="vc-radio-button__label"
+          >
+            <input
+              aria-describedby="vc-input-group-v-0-hint"
+              class=""
+              id="vc-field-v-3"
+              name="payment-method"
+              tabindex="0"
+              type="radio"
+              value="cash"
+            />
+             Cash
+          </label>
+          <!--v-if-->
+        </div>
+        
+      </div>
+      <div>
+        
+        <div
+          class="vc-hint vc-input-group__hint"
+          id="vc-input-group-v-0-hint"
+        >
+          
+          You can change it later in checkout
+          
+        </div>
+        
+      </div>
+    </fieldset>
+    <div
+      class="tw-text-sm tw-text-gray-600"
+    >
+      Selected: card
+    </div>
+  </div>
+</div>  aria-describedby="vc-input-group-v-0-hint"
+              class="vc-checkbox__input"
+              false-value="false"
+              id="vc-field-v-2"
+              name="delivery-options"
+              tabindex="0"
+              true-value="true"
+              type="checkbox"
+              value="pickup"
+            />
+            <span
+              class="vc-checkbox__custom-input"
+            >
+              
+              <!--v-if-->
+              <!--v-if-->
+              
+            </span>
+            <span
+              class="vc-checkbox__text"
+            >
+              
+              Store pickup
+              
+            </span>
+            <!--v-if-->
+          </label>
+          <!--v-if-->
+        </div>
+        <div
+          class="vc-checkbox vc-checkbox--size-s"
+        >
+          <!--v-if-->
+          <label
+            class="vc-checkbox__container"
+          >
+            <input
+              aria-describedby="vc-input-group-v-0-hint"
+              class="vc-checkbox__input"
+              false-value="false"
+              id="vc-field-v-3"
+              name="delivery-options"
+              tabindex="0"
+              true-value="true"
+              type="checkbox"
+              value="postal"
+            />
+            <span
+              class="vc-checkbox__custom-input"
+            >
+              
+              <!--v-if-->
+              <!--v-if-->
+              
+            </span>
+            <span
+              class="vc-checkbox__text"
+            >
+              
+              Postal service
+              
+            </span>
+            <!--v-if-->
+          </label>
+          <!--v-if-->
+        </div>
+        
+      </div>
+      <div>
+        
+        <div
+          class="vc-hint vc-input-group__hint"
+          id="vc-input-group-v-0-hint"
+        >
+          
+          Choose at least one option
+          
+        </div>
+        
+      </div>
+    </fieldset>
+    <div
+      class="tw-text-sm tw-text-gray-600"
+    >
+      Selected: [
+  "courier"
+]
+    </div>
+  </div>
+</div>

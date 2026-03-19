@@ -11,7 +11,7 @@ import { withMobileView } from "../../../../../.storybook/decorators";
  * inline editing, row selection, drag-and-drop reorder, and virtual scrolling.
  */
 const meta = {
-  title: "Organisms/VcDataTable",
+  title: "Data Display/VcDataTable",
   component: VcDataTable,
   tags: ["autodocs"],
   parameters: {

@@ -7,7 +7,7 @@ import { VcPagination } from "@ui/components/molecules/vc-pagination";
  * It provides a simple and intuitive way to navigate between pages with first, previous, next, and last page controls.
  */
 const meta = {
-  title: "Molecules/VcPagination",
+  title: "Navigation/VcPagination",
   component: VcPagination,
   tags: ["autodocs"],
   args: {

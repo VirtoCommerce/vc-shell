@@ -6,14 +6,8 @@ import { runNotificationMigration } from "./notification-migration.js";
 import { runRewriteImports } from "./rewrite-imports.js";
 import { runUseBladeMigration } from "./use-blade-migration.js";
 import { runBladePropsSimplification } from "./blade-props-simplification.js";
-
-// Placeholder run functions — each will be replaced by real transforms
-const placeholder = () => ({
-  filesModified: [],
-  filesSkipped: [],
-  warnings: [],
-  errors: [],
-});
+import { runIconAudit } from "./icon-audit.js";
+import { runScssSafeUse } from "./scss-safe-use.js";
 
 export const transforms: VersionedTransform[] = [
   {
@@ -61,14 +55,14 @@ export const transforms: VersionedTransform[] = [
     introducedIn: "2.0.0",
     diagnosticOnly: true,
     migrationGuideSection: "Section 2",
-    run: placeholder,
+    run: runIconAudit,
   },
   {
     name: "scss-safe-use",
     description: "@import → @use for safe mechanical cases only",
     introducedIn: "2.0.0",
     migrationGuideSection: "Section 3.2",
-    run: placeholder,
+    run: runScssSafeUse,
   },
 ];
 

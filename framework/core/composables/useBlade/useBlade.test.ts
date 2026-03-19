@@ -223,6 +223,22 @@ describe("useBlade() lifecycle hooks", () => {
     warnSpy.mockRestore();
   });
 
+  it("onDeactivated warns on duplicate registration", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    mountWithBladeContext(() => {
+      const blade = useBlade();
+      blade.onDeactivated(() => {});
+      blade.onDeactivated(() => {}); // duplicate
+      return blade;
+    });
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("onDeactivated() already registered"),
+    );
+    warnSpy.mockRestore();
+  });
+
   it("onActivated throws outside blade context", () => {
     const { result } = mountWithoutBladeContext(() => useBlade());
     expect(() => result.onActivated(() => {})).toThrow(/onActivated\(\) requires blade context/);

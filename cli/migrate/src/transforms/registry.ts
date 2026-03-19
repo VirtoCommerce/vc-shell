@@ -2,6 +2,7 @@ import semver from "semver";
 import type { VersionedTransform } from "./types.js";
 import { runDefineAppModule } from "./define-app-module.js";
 import { runRemoveDeprecatedAliases } from "./remove-deprecated-aliases.js";
+import { runNotificationMigration } from "./notification-migration.js";
 
 // Placeholder run functions — each will be replaced by real transforms
 const placeholder = () => ({
@@ -31,7 +32,7 @@ export const transforms: VersionedTransform[] = [
     description: "useNotifications → useBladeNotifications",
     introducedIn: "2.0.0-alpha.10",
     migrationGuideSection: "Notifications System Redesign",
-    run: placeholder,
+    run: runNotificationMigration,
   },
   {
     name: "rewrite-imports",

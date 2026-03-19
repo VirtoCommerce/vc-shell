@@ -57,6 +57,12 @@ export default getLibraryConfiguration({
       output: {
         entryFileNames: "[name].js",
         chunkFileNames: "chunks/[name]-[hash].js",
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.names?.some((n) => n === "framework.css")) {
+            return "index.css";
+          }
+          return "[name].[ext]";
+        },
       },
       onwarn(warning, defaultHandler) {
         // Ignore all warnings with strings /*#__PURE__*/

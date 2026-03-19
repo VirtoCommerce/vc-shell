@@ -7,9 +7,9 @@ const SAFE_IMPORT_PATTERN = /^@import\s+['"]tailwind['"]/m;
 
 function collectScssFiles(dir: string): string[] {
   const files: string[] = [];
-  let entries: ReturnType<typeof readdirSync>;
+  let entries: string[];
   try {
-    entries = readdirSync(dir);
+    entries = readdirSync(dir, { encoding: "utf-8" });
   } catch {
     return files;
   }

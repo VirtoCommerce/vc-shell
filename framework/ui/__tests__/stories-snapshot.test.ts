@@ -23,7 +23,8 @@ function getAllStoryFiles() {
     import.meta.glob<StoryFile>([
       '../components/**/*.stories.ts',
       '../../../shared/components/**/*.stories.ts',
-      '../../../shared/pages/**/*.stories.ts',
+      '../../../shell/auth/**/*.stories.ts',
+      '../../../shell/pages/**/*.stories.ts',
     ], { eager: true }),
   );
 

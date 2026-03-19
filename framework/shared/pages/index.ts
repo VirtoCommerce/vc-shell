@@ -1,5 +1,6 @@
-export * from "@shared/pages/InvitePage";
-export * from "@shared/pages/LoginPage";
-export * from "@shared/pages/ForgotPasswordPage";
-export * from "@shared/pages/ResetPasswordPage";
-export * from "@shared/pages/ChangePasswordPage";
+// Re-export from new locations for backward compatibility
+export * from "@shell/auth/InvitePage";
+export * from "@shell/auth/LoginPage";
+export * from "@shell/auth/ForgotPasswordPage";
+export * from "@shell/auth/ResetPasswordPage";
+export * from "@shell/pages/ChangePasswordPage";

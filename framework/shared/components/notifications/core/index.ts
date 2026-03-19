@@ -1,1 +1,2 @@
-export { notification } from "@shared/components/notifications/core/notification";
+// Transitional re-export
+export { notification } from "@core/notifications/notification";

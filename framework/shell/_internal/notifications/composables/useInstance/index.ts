@@ -1,5 +1,5 @@
 import { App, Ref, ref } from "vue";
-import { NotificationPosition } from "@shared/components/notifications/types";
+import { NotificationPosition } from "@core/notifications/toast-types";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("notification-instance");

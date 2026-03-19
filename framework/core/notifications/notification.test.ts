@@ -22,7 +22,7 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-vi.mock("@shared/components/notifications/composables/useContainer", () => ({
+vi.mock("@shell/_internal/notifications/composables/useContainer", () => ({
   useContainer: () => ({
     defaultOptions: { timeout: 3000, pauseOnHover: true, position: "top-center" },
     actions: {

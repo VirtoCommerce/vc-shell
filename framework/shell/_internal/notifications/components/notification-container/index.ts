@@ -1,7 +1,7 @@
 import { VcToast } from "@ui/components/molecules/vc-toast";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { PropType, computed, defineComponent, h, ref, toRaw, reactive, inject } from "vue";
-import { Content, NotificationType, NotificationPosition, NotificationContainerStateKey } from "@shared/components/notifications/types";
+import { Content, NotificationType, NotificationPosition, NotificationContainerStateKey } from "@core/notifications/toast-types";
 
 const GAP = 14;
 const VISIBLE_TOASTS = 3;

@@ -1,8 +1,8 @@
-# @vc-shell/codemod — Design Spec
+# @vc-shell/migrate — Design Spec
 
 **Date:** 2026-03-19
 **Status:** Draft
-**Package:** `@vc-shell/codemod` (new workspace package in `cli/codemod/`)
+**Package:** `@vc-shell/migrate` (new workspace package in `cli/migrate/`)
 
 ## Problem
 
@@ -13,7 +13,7 @@ The framework has accumulated 12+ migration tasks in MIGRATION_GUIDE.md. Externa
 A single-command migration tool inspired by [Storybook's migration approach](https://storybook.js.org/docs/releases/migration-guide). One command upgrades everything:
 
 ```bash
-npx @vc-shell/codemod
+npx @vc-shell/migrate
 ```
 
 ## What the command does
@@ -28,25 +28,25 @@ npx @vc-shell/codemod
 
 ```bash
 # Full migration to latest
-npx @vc-shell/codemod
+npx @vc-shell/migrate
 
 # Migration to specific version
-npx @vc-shell/codemod --to 2.0.0
+npx @vc-shell/migrate --to 2.0.0
 
 # Preview without writing
-npx @vc-shell/codemod --dry-run
+npx @vc-shell/migrate --dry-run
 
 # Run only a specific transform
-npx @vc-shell/codemod --transform rewrite-imports
+npx @vc-shell/migrate --transform rewrite-imports
 
 # List available transforms
-npx @vc-shell/codemod --list
+npx @vc-shell/migrate --list
 
 # Specify working directory (for monorepo consumers)
-npx @vc-shell/codemod --cwd packages/my-module
+npx @vc-shell/migrate --cwd packages/my-module
 
 # Also update dependency versions in package.json
-npx @vc-shell/codemod --update-deps
+npx @vc-shell/migrate --update-deps
 ```
 
 ## Pre-Flight Checks
@@ -101,7 +101,7 @@ const transforms: VersionedTransform[] = [
 ## Architecture
 
 ```
-cli/codemod/
+cli/migrate/
 ├── src/
 │   ├── cli.ts                   # CLI entry (commander)
 │   ├── runner.ts                # Detect version, select transforms, execute
@@ -277,16 +277,16 @@ Each section adds:
 ```markdown
 ### Automated Migration
 \`\`\`bash
-npx @vc-shell/codemod
+npx @vc-shell/migrate
 \`\`\`
-Or run only this transform: `npx @vc-shell/codemod --transform <name>`
+Or run only this transform: `npx @vc-shell/migrate --transform <name>`
 ```
 
 ## Package Setup
 
 ```jsonc
 {
-  "name": "@vc-shell/codemod",
+  "name": "@vc-shell/migrate",
   "version": "1.0.0",
   "type": "module",
   "bin": "./dist/cli.js",

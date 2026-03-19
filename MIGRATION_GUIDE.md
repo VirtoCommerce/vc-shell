@@ -735,66 +735,88 @@ defineExpose({
 });
 ```
 
-### New Approach
+### New Approach: `useBladeWidgets()` (Headless)
 
-#### Blade side: `useBladeWidgets()`
+Replaces manual `registerWidget` + `unregisterWidget` + `useBlade().id` boilerplate. Automatically registers widgets on mount and unregisters on unmount. Gets blade ID from blade context automatically.
 
-Replaces manual `registerWidget` + `unregisterWidget` + `useBlade().id` boilerplate. Automatically registers widgets on mount and unregisters on unmount.
+Widgets are declared as **plain config objects** — no `.vue` file needed for standard sidebar widgets (icon + title + badge + click action):
 
 ```ts
 import { useBladeWidgets } from "@vc-shell/framework";
 
-const { refreshAll } = useBladeWidgets([
-  { id: "OffersWidget", component: OffersWidget, props: { item },
-    isVisible: computed(() => !!props.param) },
-  { id: "VideosWidget", component: VideosWidget, props: { item, disabled },
-    isVisible: computed(() => !!props.param) },
-  { id: "AssetsWidget", component: AssetsWidget, props: { item, disabled },
+const { refresh, refreshAll } = useBladeWidgets([
+  {
+    id: "OffersWidget",
+    icon: "lucide-tag",
+    title: "PRODUCTS.WIDGETS.OFFERS.TITLE",
+    badge: offersCount,           // Ref<number | string>
+    loading: offersLoading,       // Ref<boolean>
     isVisible: computed(() => !!props.param),
-    events: { "onUpdate:modelValue": (v) => { item.value = v } } },
+    onClick: () => openBlade({ name: "OffersList" }),
+    onRefresh: loadOffers,        // called by refresh("OffersWidget") or refreshAll()
+  },
+  {
+    id: "ReviewsWidget",
+    icon: "lucide-star",
+    title: "PRODUCTS.WIDGETS.REVIEWS.TITLE",
+    badge: reviewsCount,
+    isVisible: computed(() => !!props.param),
+    onClick: () => openBlade({ name: "ReviewsList" }),
+  },
 ]);
 
-// After save — refresh all widgets
+// After save — refresh all widgets that have onRefresh
 async function reload() {
   await fetchProduct();
-  refreshAll(); // calls trigger.onRefresh on all widgets
+  refreshAll();
 }
+
+// Or refresh a specific widget
+refresh("OffersWidget");
 ```
 
-#### Widget side: `useWidget()`
+#### `HeadlessWidgetDeclaration` fields
 
-Replaces `defineExpose` + `updateFunctionName` pattern. Widgets register their own refresh/badge contracts.
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `id` | `string` | Yes | Unique widget identifier |
+| `icon` | `string` | Yes | Icon name (e.g., `"lucide-tag"`) |
+| `title` | `string` | Yes | i18n key or display title |
+| `badge` | `Ref<number \| string>` | No | Badge counter value |
+| `loading` | `Ref<boolean>` | No | Show loading indicator |
+| `disabled` | `Ref<boolean> \| boolean` | No | Disable the widget |
+| `isVisible` | `ComputedRef<boolean> \| boolean` | No | Toggle visibility |
+| `onClick` | `() => void` | No | Action when widget is clicked |
+| `onRefresh` | `() => void \| Promise<void>` | No | Called by `refresh(id)` or `refreshAll()` |
 
-```ts
-import { useWidget } from "@vc-shell/framework";
+#### Return value
 
-const { setTrigger } = useWidget();
+| Property | Type | Description |
+|---|---|---|
+| `refresh` | `(widgetId: string) => void` | Trigger `onRefresh` on a specific widget |
+| `refreshAll` | `() => void` | Trigger `onRefresh` on all widgets that have one |
 
-setTrigger({
-  badge: count,              // reactive ref — shown in widget container
-  onRefresh: populateCounter, // called by refresh()/refreshAll() from blade
-});
-```
+#### When to use headless vs component widgets
 
-#### Two levels of updates
-
-1. **Reactive props** — blade updates `item` ref → widget reacts via `watch` automatically (light updates)
-2. **Explicit `refresh()` / `refreshAll()`** — for heavy cases where widget needs to re-fetch from API
+| | Headless (`useBladeWidgets`) | Component (SFC) |
+|---|---|---|
+| Blade-local, standard VcWidget visual | **Preferred** | |
+| External module widget | | Required |
+| Custom UI beyond VcWidget | | Required |
 
 ### Migration Steps
 
 1. **Replace `registerWidget` / `unregisterWidget` calls** in your blade with a single `useBladeWidgets([...])` call
 2. **Remove `onUnmounted` cleanup** — `useBladeWidgets` handles it automatically
-3. **Remove `useBlade().id` / `bladeId.value`** — `useBladeWidgets` gets blade ID automatically
-4. **Replace `defineExpose({ updateFn })` in widgets** with `useWidget().setTrigger({ onRefresh: updateFn })`
-5. **Remove `updateFunctionName`** from widget declarations — use `setTrigger` instead
+3. **Remove `useBlade().id` / `bladeId.value`** — `useBladeWidgets` gets blade ID from blade context automatically
+4. **Remove widget `.vue` files** for standard VcWidget sidebar items — declare them as headless config objects with `icon`, `title`, `badge`, `onClick`
+5. **Move refresh logic into `onRefresh`** — replaces `defineExpose({ updateFn })` and `updateFunctionName` patterns
 6. **Replace `updateActiveWidget()`** calls with `refresh(widgetId)` or `refreshAll()`
 
 ### Backward Compatibility
 
 - Old `registerWidget()` + `unregisterWidget()` continue to work
 - `updateFunctionName` + `defineExpose` — deprecated but not broken
-- `trigger.onRefresh` has priority over `defineExpose` in `updateActiveWidget()`
 - Migration is gradual — old and new patterns coexist in the same blade
 
 ### `useWidgets()` is now internal API
@@ -808,46 +830,10 @@ const { registerWidget, unregisterWidget } = useWidgets();
 
 // After — use useBladeWidgets instead
 import { useBladeWidgets } from "@vc-shell/framework";
-const { refreshAll } = useBladeWidgets([...]);
+const { refresh, refreshAll } = useBladeWidgets([...]);
 ```
 
 If your code only uses `useWidgets()` to call `updateActiveWidget()`, replace it with `refreshAll()` from `useBladeWidgets`.
-
-### Stage 2: Headless Widgets (Preferred)
-
-For blade-local widgets that follow the standard VcWidget pattern (icon + title + badge + click), you can now declare them as **config objects** — no `.vue` file needed:
-
-```ts
-import { useBladeWidgets } from "@vc-shell/framework";
-
-const { refreshAll } = useBladeWidgets([
-  {
-    id: "OffersWidget",
-    icon: "lucide-tag",
-    title: "PRODUCTS.WIDGETS.OFFERS.TITLE",
-    badge: offersCount,
-    onClick: () => openBlade({ name: "OffersList" }),
-    onRefresh: loadOffers,
-  },
-  {
-    id: "AssociationsWidget",
-    icon: "lucide-link",
-    title: "PRODUCTS.WIDGETS.ASSOCIATIONS.TITLE",
-    badge: associationsCount,
-    isVisible: computed(() => !isNew.value),
-  },
-]);
-```
-
-The framework renders `<VcWidget>` directly from config — no need for a separate widget `.vue` file. Widget logic (API calls, counts) lives in composables.
-
-**When to use headless vs component widgets:**
-
-| | Headless | Component (SFC) |
-|---|---|---|
-| Blade-local, standard VcWidget visual | Preferred | |
-| External module widget | | Required |
-| Custom UI beyond VcWidget | | Required |
 
 ### Blade Context for External Widgets
 
@@ -897,8 +883,8 @@ registerExternalWidget({
 - `config.requiredData` / `config.optionalData` / `config.fieldMapping` / `config.propsResolver`
 - `provideBladeData` from `useBlade()`
 - `resolveWidgetProps` logic
-- `updateFunctionName` — use `useWidget().setTrigger({ onRefresh })` instead
-- Widget `defineExpose({ updateFn })` — use `setTrigger` instead
+- `updateFunctionName` — use `onRefresh` in `HeadlessWidgetDeclaration` instead
+- Widget `defineExpose({ updateFn })` — use `onRefresh` callback instead
 
 **Notes:**
 - `defineBladeContext` accepts plain objects or computed refs
@@ -1595,3 +1581,17 @@ framework/
 ```
 
 > **Note:** These directory changes are internal to the framework package. If you import exclusively from `@vc-shell/framework` (the package entry point) rather than from deep paths inside the package, no changes are required.
+
+---
+
+## Additional Migration Guides
+
+The following guides cover deprecated API cleanup. See `migration/README.md` for the full index:
+
+- [Guide 23: Composable Return Types](./migration/23-composable-return-types.md)
+- [Guide 24: VcBanner Variants](./migration/24-vc-banner-variants.md)
+- [Guide 25: VcSwitch Tooltip Prop](./migration/25-vc-switch-tooltip.md)
+- [Guide 26: VcIcon Container Prop](./migration/26-vc-icon-container.md)
+- [Guide 27: Menu Group Config](./migration/27-menu-group-config.md)
+- [Guide 28: Shared Components](./migration/28-shared-components.md)
+- [Guide 29: VcTable → VcDataTable](./migration/29-vc-table-to-data-table.md)

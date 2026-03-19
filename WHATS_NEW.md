@@ -1,0 +1,123 @@
+# What's New in @vc-shell/framework v2.0.0
+
+This document summarizes the major features and improvements introduced in v2.0.0 of `@vc-shell/framework`. For migration instructions from previous versions, see [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md).
+
+---
+
+## Blade System
+
+- **`useBlade()` unified composable** — Replaces the separate `useBladeNavigation()`, `useBladeContext()`, and legacy `useBlade()` APIs with a single composable covering all blade operations: `openBlade`, `closeSelf`, `closeChildren`, `callParent`, `replaceWith`, and `coverWith`.
+
+- **Auto-injection of blade props** — VcBlade now reads `expanded` and `closable` directly from the BladeDescriptor; blade pages no longer need to declare these as props or wire up the corresponding emits as boilerplate.
+
+- **Typed options** — `useBlade<MyOptions>()` accepts a generic type parameter so that `options.value` is fully typed, eliminating the need for manual type assertions on blade option objects.
+
+- **`onActivated` / `onDeactivated` lifecycle hooks** — New hooks that fire when a blade gains or loses "active" (rightmost visible) status, enabling blade-level focus management and lazy data loading.
+
+- **`replaceWith` / `coverWith`** — Two distinct navigation methods with different semantics: `replaceWith` destroys the old blade immediately, while `coverWith` hides it so that closing the new blade restores the original.
+
+- **VcBlade loading skeleton** — VcBlade now renders a built-in skeleton placeholder while blade content is loading, replacing ad-hoc spinner implementations in blade pages.
+
+---
+
+## Table System
+
+- **`VcDataTable`** — New compositional table component with a declarative `<VcColumn>` slot-based API, replacing the prop-array approach of the legacy `VcTable`. See [`VcDataTable` docs](./framework/ui/components/organisms/vc-table/vc-table.docs.md).
+
+- **`VcTableAdapter`** — Backward-compatible wrapper exported under the familiar `VcTable` name, mapping the old prop-based API to the new `VcDataTable` internals with no breaking changes for existing consumers.
+
+- **Column switcher** — Enable the `column-switcher` prop to give users a UI control for toggling individual column visibility at runtime.
+
+- **Global filters** — A configurable filter bar is available via the `global-filters` prop, providing a consistent filtering UI above the table without custom toolbar wiring.
+
+- **Pull-to-refresh** — On mobile, users can swipe down on the table to trigger a data reload, matching native mobile list conventions.
+
+- **`activeItemId`** — Highlight a specific row as "active" (e.g., the currently open detail blade) without enabling full selection mode.
+
+- **Empty / not-found states** — Built-in configurable states via `emptyText` and `notFoundText` props, with dedicated empty-state illustrations for zero-data and zero-search-results scenarios.
+
+- **Virtual scroll** — Efficient DOM rendering for large datasets; only visible rows are rendered, keeping the table performant at thousands of rows.
+
+- **Inline cell editing** — Cells can be made editable directly within the table row without opening a separate blade or modal.
+
+- **Column resize and reorder with state persistence** — Users can resize and reorder columns; layout is automatically persisted to localStorage or sessionStorage using the `stateKey` prop.
+
+- **Row drag-and-drop reorder** — Rows can be reordered via drag-and-drop when the `reorderable-rows` prop is enabled, emitting the new order for the parent to persist.
+
+---
+
+## Notifications
+
+- **`NotificationStore`** — Centralized Pinia-based store for notification state, replacing scattered reactive refs and providing a single source of truth for all notification data.
+
+- **`useBladeNotifications()`** — Subscribe to specific notification types within a blade's lifecycle context; subscriptions are automatically cleaned up when the blade is closed.
+
+- **Toast modes** — Three toast display modes: `auto` (show then auto-dismiss), `progress` (track long-running operations with a progress indicator), and `silent` (store-only, no toast displayed).
+
+- **Severity-based timeouts** — Standardized auto-dismiss durations by severity: `info` dismisses after 5 s, `warning` after 8 s, while `error` and `critical` notifications remain persistent until manually dismissed.
+
+---
+
+## Widgets
+
+- **`useBladeWidgets()`** — Declare widgets in a headless composable style with automatic registration on blade mount and unregistration on blade unmount, eliminating manual lifecycle management.
+
+- **`defineBladeContext()` / `injectBladeContext()`** — Typed helpers for sharing a blade's internal context (data, actions) with external widgets and child components, replacing untyped `provide`/`inject` calls.
+
+---
+
+## Modules
+
+- **`defineAppModule()`** — New named-options API for defining application modules, replacing the positional-argument `createAppModule()` call with a more readable and extensible object format.
+
+- **Module Federation support** — Two new packages, `@vc-shell/mf-config` and `@vc-shell/mf-host`, provide first-class Vite Module Federation configuration for micro-frontend architectures.
+
+---
+
+## UI Components
+
+- **`VcEditor`** — Rich-text editor with preview, source, and split-pane modes; supports `maxlength`, a customizable toolbar, and fullscreen editing. See [`VcEditor` docs](./framework/ui/components/molecules/vc-editor/vc-editor.docs.md).
+
+- **`VcAuthLayout`** — Replaces the narrower `VcLoginForm` with a flexible authentication layout component that supports custom branding, logos, and supplementary content slots.
+
+- **`DraggableDashboard`** — A drag-and-drop dashboard container with programmatic widget registration via `registerDashboardWidget()`, enabling modules to contribute dashboard tiles without modifying the host app.
+
+- **New design tokens** — Four new CSS custom property groups added to the theme: `overlay` (backdrop colors), `shadow` (elevation shadows), `surface` (card/panel backgrounds), and `glass` (frosted-glass effect values).
+
+---
+
+## New Composables
+
+- **`useConnectionStatus`** — Tracks SignalR hub connection state, exposing reactive status for UI indicators and automatic reconnection logic.
+
+- **`useKeyboardNavigation`** — Provides keyboard navigation (arrow keys, Home/End, Enter) for list and table components, improving accessibility without custom event handling.
+
+- **`useWebVitals`** — Collects Core Web Vitals metrics (LCP, FID, CLS, etc.) and exposes them for reporting to analytics or monitoring services.
+
+- **`useBeforeUnload`** — Registers a browser unload guard that prompts the user when there are unsaved changes, preventing accidental data loss on page navigation or close.
+
+- **`useLoading`** — Centralized loading state manager for coordinating multiple async operations, replacing ad-hoc `ref(false)` loading flags scattered across composables.
+
+- **`useErrorHandler`** — Composable interface to the global error handler, allowing components and composables to report errors consistently without direct coupling to the error service.
+
+- **`useAppBarWidget`** — Programmatic App Bar widget registration, replacing reliance on named toolbar slots and enabling modules to contribute App Bar items at runtime.
+
+- **`useAppBarMobileButtons`** — Register mobile-specific action buttons in the App Bar, providing a dedicated API for the mobile App Bar button area separate from desktop toolbar items.
+
+- **`useSettingsMenu`** — Programmatic registration of settings menu items, replacing the user-dropdown slot approach and allowing modules to contribute settings entries without modifying the host template.
+
+---
+
+## Infrastructure
+
+- **Global Error Handler** — Three-layer error capture (Vue component errors, async promise rejections, unhandled window errors) with a deduplication window and automatic toast notification on unhandled errors.
+
+- **ARIA / Accessibility** — Comprehensive `role` and `aria-*` attributes added across blades, popups, tables, and menu items, bringing the framework closer to WCAG 2.1 AA compliance.
+
+- **Typed Symbol injection keys** — All framework injection keys (`BladeInstanceKey`, `ToolbarKey`, etc.) are now typed Symbols defined in `framework/injection-keys.ts`. Legacy string keys remain as `@deprecated` shims to ease migration.
+
+## Package Structure
+
+- **Multi-entry build** — The framework package now exposes sub-entry points: `@vc-shell/framework/ui` (standalone UI kit), `@vc-shell/framework/ai-agent`, and `@vc-shell/framework/extensions`. The main entry still re-exports everything.
+
+- **`shared/` dissolved** — The `shared/` directory has been removed. Its contents moved to domain-appropriate locations: `core/` (logic), `ui/` (components), `shell/` (app chrome: auth, sidebar, dashboard, settings), and `modules/` (built-in modules). Public API imports from `@vc-shell/framework` are unchanged.

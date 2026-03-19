@@ -1,8 +1,8 @@
 import { Router } from "vue-router";
 import { App } from "vue";
-import { AssetsDetailsModule } from "@shared/modules/assets";
+import { AssetsDetailsModule } from "@modules/assets";
 import { VcBladeNavigationComponent } from "@shared/components/blade-navigation";
-import { AssetsManagerModule } from "@shared/modules/assets-manager";
+import { AssetsManagerModule } from "@modules/assets-manager";
 import { VcPopupHandler } from "@shared/components/popup-handler";
 
 export const SharedModule = {

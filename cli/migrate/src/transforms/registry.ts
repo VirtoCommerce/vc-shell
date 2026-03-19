@@ -1,6 +1,7 @@
 import semver from "semver";
 import type { VersionedTransform } from "./types.js";
 import { runDefineAppModule } from "./define-app-module.js";
+import { runRemoveDeprecatedAliases } from "./remove-deprecated-aliases.js";
 
 // Placeholder run functions — each will be replaced by real transforms
 const placeholder = () => ({
@@ -42,7 +43,7 @@ export const transforms: VersionedTransform[] = [
     name: "remove-deprecated-aliases",
     description: "BladeInstance → BladeInstanceKey, etc.",
     introducedIn: "2.0.0",
-    run: placeholder,
+    run: runRemoveDeprecatedAliases,
   },
   {
     name: "blade-props-simplification",

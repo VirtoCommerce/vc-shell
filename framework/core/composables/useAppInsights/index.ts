@@ -1,24 +1,25 @@
 import { inject, type InjectionKey } from "vue";
-import { AppInsightsPluginOptions, useAppInsights as useInsights } from "vue3-application-insights";
+import { AppInsightsPluginOptions } from "vue3-application-insights";
 import { generateW3CId } from "@microsoft/applicationinsights-core-js";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { ApplicationInsights, Snippet } from "@microsoft/applicationinsights-web";
 
 export const AppInsightsOptionsKey: InjectionKey<AppInsightsPluginOptions> = Symbol("AppInsightsOptions");
+export const AppInsightsInstanceKey: InjectionKey<ApplicationInsights | null> = Symbol("AppInsightsInstance");
 
 export interface UseAppInsightsReturn {
   setupPageTracking: {
     beforeEach: (route: { name: string }) => void;
     afterEach: (route: { name: string; fullPath: string }) => void;
   };
-  appInsights: ApplicationInsights;
+  appInsights: ApplicationInsights | null;
 }
 
 /** @deprecated Use UseAppInsightsReturn instead */
 export type IUseAppInsights = UseAppInsightsReturn;
 
 export function useAppInsights(): UseAppInsightsReturn {
-  const appInsights = useInsights();
+  const appInsights = inject(AppInsightsInstanceKey, null);
   const { user } = useUserManagement();
   const appInsightsOptions = inject(AppInsightsOptionsKey, undefined);
 

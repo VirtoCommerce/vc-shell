@@ -1,5 +1,5 @@
-import { ref, computed, Ref, toRaw } from "vue";
-import { useForm, useFormContext } from "vee-validate";
+import { ref, computed, Ref, toRaw, inject } from "vue";
+import { useForm, PublicFormContextKey } from "vee-validate";
 
 /**
  * Safe deep clone that handles Date objects and other non-serializable types.
@@ -77,7 +77,9 @@ export function useTableInlineEdit<T extends Record<string, any>>(
   // If a parent form exists (e.g. blade's useForm), reuse it so <Field>
   // components register with the parent — blade.meta.valid then reflects
   // table cell errors. Only create own form when no parent exists.
-  const parentForm = useFormContext();
+  // Use inject() with a default instead of useFormContext() to avoid
+  // Vue "injection not found" warning when no parent form exists.
+  const parentForm = inject(PublicFormContextKey, undefined);
   const ownForm = parentForm ? undefined : useForm();
   const activeForm = (parentForm ?? ownForm)!;
   const { meta, setFieldValue, errors: veeErrors, validate } = activeForm;

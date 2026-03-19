@@ -13,7 +13,8 @@ import { useUserManagement } from "@core/composables/useUserManagement";
 import Vue3TouchEvents from "vue3-touch-events";
 import * as locales from "@locales";
 import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
-import { useAppInsights, AppInsightsOptionsKey } from "@core/composables/useAppInsights";
+import { useAppInsights, AppInsightsOptionsKey, AppInsightsInstanceKey } from "@core/composables/useAppInsights";
+import { useAppInsights as useInsightsFromLib } from "vue3-application-insights";
 import { setupGlobalErrorHandlers } from "@core/plugins/global-error-handler";
 import { useConnectionStatus } from "@core/composables/useConnectionStatus";
 import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
@@ -254,6 +255,11 @@ function installApplicationInsightsDeferred(app: App, args: FrameworkInstallArgs
 
   // Install the SDK plugin (may start telemetry collection)
   app.use(AppInsightsPlugin, aiOptions);
+
+  // Re-provide instance under our own key so useAppInsights() can inject with a default
+  // (avoids Vue "injection not found" warning when the library's private Symbol is used)
+  const appInsightsInstance = app.runWithContext(() => useInsightsFromLib());
+  app.provide(AppInsightsInstanceKey, appInsightsInstance);
 
   // Register router hooks for page tracking.
   // Note: the initial navigation's page-view may not be tracked since

@@ -1,16 +1,17 @@
 <template>
   <div class="vc-ai-agent-header">
     <div class="vc-ai-agent-header__icon">
-      <VcVirtoOzLogo :width="22" :height="24" show-dots />
+      <VcVirtoOzLogo
+        :width="22"
+        :height="24"
+        show-dots
+      />
     </div>
 
     <div class="vc-ai-agent-header__wrapper">
       <div class="vc-ai-agent-header__content">
         <div class="vc-ai-agent-header__title">
           {{ title }}
-          <span v-if="itemsCount" class="vc-ai-agent-header__badge">
-            {{ itemsCount }}
-          </span>
         </div>
       </div>
     </div>

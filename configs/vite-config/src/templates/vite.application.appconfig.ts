@@ -38,9 +38,11 @@ const normalizedFrameworkPath = normalizePath(frameworkPath);
 const frameworkIndexPath = normalizePath(path.resolve(frameworkPath, "index.ts"));
 const frameworkCorePath = `${normalizedFrameworkPath}/core`;
 const frameworkUiPath = `${normalizedFrameworkPath}/ui`;
+const frameworkShellPath = `${normalizedFrameworkPath}/shell`;
 const frameworkSharedPath = `${normalizedFrameworkPath}/shared`;
 const frameworkAssetsPath = `${normalizedFrameworkPath}/assets`;
 const frameworkLocalesPath = `${normalizedFrameworkPath}/locales`;
+const frameworkModulesPath = `${normalizedFrameworkPath}/modules`;
 
 const styleImportPattern = /\.(css|scss|sass|less|styl)(?:$|\?)/i;
 
@@ -146,9 +148,11 @@ if (isMonorepo) {
     { find: "@framework", replacement: normalizedFrameworkPath },
     { find: "@core", replacement: frameworkCorePath },
     { find: "@ui", replacement: frameworkUiPath },
+    { find: "@shell", replacement: frameworkShellPath },
     { find: "@shared", replacement: frameworkSharedPath },
     { find: "@assets", replacement: frameworkAssetsPath },
     { find: "@locales", replacement: frameworkLocalesPath },
+    { find: "@modules", replacement: frameworkModulesPath },
   ];
 }
 
@@ -253,8 +257,8 @@ export default defineConfig({
               frameworkIndexPath,
               `${frameworkCorePath}/composables/index.ts`,
               `${frameworkCorePath}/plugins/index.ts`,
-              `${frameworkSharedPath}/components/blade-navigation/**/*.vue`,
-              `${frameworkSharedPath}/components/blade-navigation/**/*.ts`,
+              `${frameworkShellPath}/_internal/blade-navigation/**/*.vue`,
+              `${frameworkShellPath}/_internal/blade-navigation/**/*.ts`,
               `${frameworkUiPath}/components/organisms/vc-app/vc-app.vue`,
               `${frameworkUiPath}/components/organisms/vc-blade/**/*.vue`,
             ],

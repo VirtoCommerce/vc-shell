@@ -232,8 +232,56 @@ export function createBladeStack(
       _closeBladesCleanup(bladesToClose);
     }
 
-    // Create replacement descriptor — parent is the HIDDEN blade (not its parent),
-    // so parentCall from the replacing blade reaches the hidden blade's methods.
+    // Create replacement descriptor — keeps the SAME parent as the replaced blade,
+    // so the new blade occupies the exact same position in the hierarchy.
+    const descriptor: BladeDescriptor = {
+      id: generateBladeId(),
+      name: event.name,
+      url: _resolveUrl(event.name),
+      param: event.param,
+      query: event.query,
+      options: event.options,
+      parentId: current.parentId,
+      visible: true,
+    };
+
+    // Destroy old blade and put new one at the same index
+    _closeBladesCleanup([current]);
+    const updated = [..._blades.value.slice(0, currentIndex), descriptor, ..._blades.value.slice(currentIndex + 1)];
+    _blades.value = updated;
+
+    if (event.onOpen) _onOpenCallbacks.set(descriptor.id, event.onOpen);
+    if (event.onClose) _onCloseCallbacks.set(descriptor.id, event.onClose);
+
+    event.onOpen?.();
+  }
+
+  async function coverCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
+    const current = activeBlade.value;
+    if (!current) {
+      throw new Error("[BladeStack] No active blade to cover");
+    }
+
+    // Validate blade exists in registry
+    if (!bladeRegistry.getBlade(event.name)) {
+      throw new Error(`[BladeStack] Blade '${event.name}' not found in registry`);
+    }
+
+    const currentIndex = _blades.value.findIndex((b) => b.id === current.id);
+    if (currentIndex === -1) {
+      throw new Error(`[BladeStack] Active blade '${current.id}' not found in stack`);
+    }
+
+    // Close any blades after the current one first
+    const bladesToClose = _blades.value.slice(currentIndex + 1);
+    if (bladesToClose.length > 0) {
+      const prevented = await _checkGuards(bladesToClose);
+      if (prevented) return;
+      _closeBladesCleanup(bladesToClose);
+    }
+
+    // Create covering descriptor — parent is the HIDDEN blade (not its parent),
+    // so callParent from the covering blade reaches the hidden blade's methods.
     const descriptor: BladeDescriptor = {
       id: generateBladeId(),
       name: event.name,
@@ -339,6 +387,7 @@ export function createBladeStack(
     closeBlade,
     closeChildren,
     replaceCurrentBlade,
+    coverCurrentBlade,
     registerBeforeClose,
     unregisterBeforeClose,
     setBladeError,

@@ -54,6 +54,7 @@ export function createMockBladeStack(): IBladeStack {
     closeBlade: vi.fn().mockResolvedValue(false),
     closeChildren: vi.fn().mockResolvedValue(undefined),
     replaceCurrentBlade: vi.fn().mockResolvedValue(undefined),
+    coverCurrentBlade: vi.fn().mockResolvedValue(undefined),
     registerBeforeClose: vi.fn(),
     setBladeError: vi.fn(),
     clearBladeError: vi.fn(),

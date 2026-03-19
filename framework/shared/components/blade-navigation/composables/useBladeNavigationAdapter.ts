@@ -258,8 +258,8 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (isWorkspace) {
       await bladeStack.openWorkspace(event);
     } else if (args.replaceCurrentBlade) {
-      // replaceCurrentBlade inherits the replaced blade's parent automatically
-      await bladeStack.replaceCurrentBlade(event);
+      // Legacy replaceCurrentBlade maps to coverCurrentBlade (hide + stack)
+      await bladeStack.coverCurrentBlade(event);
     } else {
       const parentId = getCurrentBladeId();
       await bladeStack.openBlade({ ...event, parentId });

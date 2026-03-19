@@ -34,7 +34,8 @@ Creates a new stack instance. Called once by the navigation plugin.
 | `openBlade(event)` | Opens a child blade after a parent. Closes any blades deeper than the parent (with guard checks). |
 | `closeBlade(bladeId)` | Closes a blade and all its children. Returns `true` if a guard prevented closing. |
 | `closeChildren(parentId)` | Closes all blades after the given parent. |
-| `replaceCurrentBlade(event)` | Hides the current active blade (keeps it in the stack) and opens a new blade in its place. Closing the replacement restores the hidden blade. |
+| `replaceCurrentBlade(event)` | Destroys the current active blade and creates a new one at the same stack index with the same `parentId`. |
+| `coverCurrentBlade(event)` | Hides the current active blade (keeps it in the stack) and opens a new blade on top. Closing the covering blade restores the hidden blade. |
 | `registerBeforeClose(bladeId, guard)` | Registers a guard function. Return `true` from the guard to PREVENT closing. |
 | `unregisterBeforeClose(bladeId)` | Removes a close guard. |
 | `setBladeError(bladeId, error)` | Sets an error on a blade descriptor (displayed as error banner). |
@@ -99,13 +100,18 @@ openBlade({
 });
 ```
 
-### Replacing the current blade
+### Replacing the current blade (legacy adapter)
 
 ```typescript
+// Legacy: replaceCurrentBlade flag maps to coverCurrentBlade (hide + stack)
 openBlade({
   blade: resolveBladeByName("AlternateView"),
   replaceCurrentBlade: true,
 });
+
+// New API — prefer useBlade() methods:
+// replaceWith() — true replacement (destroy old, create new at same index)
+// coverWith()   — hide old, open new on top (closing new reveals old)
 ```
 
 ## BladeDescriptor
@@ -121,7 +127,7 @@ The plain data object stored in the stack for each blade:
 | `query` | `Record?` | Query parameters |
 | `options` | `unknown` | Arbitrary options passed to the blade |
 | `parentId` | `string?` | ID of the parent blade |
-| `visible` | `boolean` | Whether the blade is rendered (false when replaced) |
+| `visible` | `boolean` | Whether the blade is rendered (false when covered via `coverCurrentBlade`) |
 | `error` | `unknown?` | Error state for the error banner |
 | `title` | `string?` | Dynamic title override |
 
@@ -129,7 +135,7 @@ The plain data object stored in the stack for each blade:
 
 - Prefer `useBlade()` / `useBladeContext()` (from `core/composables/useBlade/`) for new code -- they provide a cleaner API than the legacy adapter.
 - Close guards return `true` to PREVENT closing (opposite of the legacy convention where `false` prevented closing). The adapter handles the inversion.
-- `replaceCurrentBlade` hides the current blade without destroying it. The hidden blade's `parentId` becomes the replacement's `parentId`, so `callParent` from the replacement reaches the hidden blade's exposed methods.
+- `replaceCurrentBlade` destroys the current blade and creates a new one at the same index with the same `parentId`. Use `coverCurrentBlade` to hide instead of destroy — the covering blade's `callParent` reaches the hidden blade's exposed methods.
 - URL sync only updates the address bar for blades that have a `url` segment. Third-level detail panels without URLs leave the previous URL intact.
 - `useBladeNavigation()` requires the navigation plugin to be installed. It throws if called before plugin initialization.
 

@@ -90,16 +90,18 @@ watchDebounced(
     // Clear existing breadcrumbs
     breadcrumbs.value.forEach((bc) => bc && remove([bc.id]));
 
-    // Rebuild from current blade stack
-    newVal.forEach((descriptor, index) => {
+    // Rebuild from current blade stack (skip hidden blades from coverCurrentBlade)
+    newVal.filter((b) => b.visible).forEach((descriptor, index) => {
       push({
         id: index.toString(),
         title: toRef({ title: descriptor.name }, "title"),
         clickHandler: async (id) => {
-          const targetIndex = parseInt(id) + 1;
-          const bladeToClose = blades.value[targetIndex];
-          if (bladeToClose) {
-            const prevented = await bladeStack.closeBlade(bladeToClose.id);
+          const visibleIndex = parseInt(id);
+          // Map visible index back to actual blade in stack
+          const visibleBlades = blades.value.filter((b) => b.visible);
+          const targetBlade = visibleBlades[visibleIndex + 1];
+          if (targetBlade) {
+            const prevented = await bladeStack.closeBlade(targetBlade.id);
             if (!prevented) {
               syncUrlReplace();
             }

@@ -301,7 +301,7 @@ describe("createBladeStack", () => {
     });
   });
 
-  // ── replaceCurrentBlade ────────────────────────────────────────────────────
+  // ── replaceCurrentBlade (true replacement) ─────────────────────────────────
 
   describe("replaceCurrentBlade", () => {
     beforeEach(async () => {
@@ -309,15 +309,54 @@ describe("createBladeStack", () => {
       await stack.openBlade({ name: "OrderDetails", param: "old-id" });
     });
 
-    it("replaces the active blade", async () => {
+    it("truly replaces the active blade at same index", async () => {
       await stack.replaceCurrentBlade({
         name: "ProductDetails",
         param: "new-id",
       });
 
-      // Stack: workspace + hidden original + new replacement
-      // The original blade is hidden (visible: false), not destroyed,
-      // so callParent from the replacement reaches the hidden blade's methods.
+      // Stack: workspace + replacement (old blade destroyed)
+      expect(stack.blades.value).toHaveLength(2);
+      expect(stack.blades.value[1].name).toBe("ProductDetails");
+      expect(stack.blades.value[1].param).toBe("new-id");
+      expect(stack.blades.value[1].visible).toBe(true);
+    });
+
+    it("keeps the same parentId as the replaced blade", async () => {
+      const originalParentId = stack.blades.value[1].parentId;
+
+      await stack.replaceCurrentBlade({
+        name: "ProductDetails",
+        param: "new-id",
+      });
+
+      expect(stack.blades.value[1].parentId).toBe(originalParentId);
+    });
+
+    it("throws with no active blade", async () => {
+      stack._restoreStack([]);
+
+      await expect(
+        stack.replaceCurrentBlade({ name: "OrderDetails" }),
+      ).rejects.toThrow("No active blade to replace");
+    });
+  });
+
+  // ── coverCurrentBlade (hide + stack) ──────────────────────────────────────
+
+  describe("coverCurrentBlade", () => {
+    beforeEach(async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "old-id" });
+    });
+
+    it("hides the active blade and appends new one", async () => {
+      await stack.coverCurrentBlade({
+        name: "ProductDetails",
+        param: "new-id",
+      });
+
+      // Stack: workspace + hidden original + covering blade
       expect(stack.blades.value).toHaveLength(3);
       expect(stack.blades.value[1].name).toBe("OrderDetails");
       expect(stack.blades.value[1].visible).toBe(false);
@@ -329,7 +368,7 @@ describe("createBladeStack", () => {
     it("sets parentId to hidden blade (for callParent routing)", async () => {
       const hiddenBladeId = stack.blades.value[1].id;
 
-      await stack.replaceCurrentBlade({
+      await stack.coverCurrentBlade({
         name: "ProductDetails",
         param: "new-id",
       });
@@ -339,25 +378,12 @@ describe("createBladeStack", () => {
       expect(stack.blades.value[2].parentId).toBe(hiddenBladeId);
     });
 
-    it("respects guard on current blade", async () => {
-      const currentId = stack.blades.value[1].id;
-      stack.registerBeforeClose(currentId, async () => true);
-
-      await stack.replaceCurrentBlade({
-        name: "ProductDetails",
-        param: "new-id",
-      });
-
-      // Replace should be prevented
-      expect(stack.blades.value[1].name).toBe("OrderDetails");
-    });
-
     it("throws with no active blade", async () => {
       stack._restoreStack([]);
 
       await expect(
-        stack.replaceCurrentBlade({ name: "OrderDetails" }),
-      ).rejects.toThrow("No active blade to replace");
+        stack.coverCurrentBlade({ name: "OrderDetails" }),
+      ).rejects.toThrow("No active blade to cover");
     });
   });
 

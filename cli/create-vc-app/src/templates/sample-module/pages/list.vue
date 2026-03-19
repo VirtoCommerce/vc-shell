@@ -2,17 +2,11 @@
   <VcBlade
     :title="title"
     width="50%"
-    :expanded="expanded"
-    :closable="closable"
     :toolbar-items="bladeToolbar"
-    @close="$emit('close:blade')"
-    @expand="$emit('expand:blade')"
-    @collapse="$emit('collapse:blade')"
   >
     <!-- Blade contents -->
     <!-- @vue-generic {MockedItem} -->
     <VcTable
-      :expanded="expanded"
       class="tw-grow tw-basis-0"
       multiselect
       :loading="loading"
@@ -46,9 +40,8 @@ import { computed, ref, markRaw, onMounted, watch } from "vue";
 import {
   IActionBuilderResult,
   IBladeToolbar,
-  IParentCallArgs,
   ITableColumns,
-  useBladeNavigation,
+  useBlade,
   usePopup,
   useTableSort,
   useFunctions,
@@ -57,20 +50,6 @@ import { useI18n } from "vue-i18n";
 import { useList } from "./../composables";
 import Details from "./details.vue";
 import { MockedItem } from "./../composables/useList";
-
-export interface Props {
-  expanded?: boolean;
-  closable?: boolean;
-  param?: string;
-  options?: Record<string, unknown>;
-}
-
-export interface Emits {
-  (event: "parent:call", args: IParentCallArgs): void;
-  (event: "collapse:blade"): void;
-  (event: "expand:blade"): void;
-  (event: "close:blade"): void;
-}
 
 defineOptions({
   url: "/sample-list",
@@ -83,15 +62,8 @@ defineOptions({
   },
 });
 
-const props = withDefaults(defineProps<Props>(), {
-  expanded: true,
-  closable: true,
-});
-
-defineEmits<Emits>();
-
 const { t } = useI18n({ useScope: "global" });
-const { openBlade } = useBladeNavigation();
+const { param, openBlade } = useBlade();
 const { showConfirmation } = usePopup();
 const { debounce } = useFunctions();
 
@@ -132,7 +104,7 @@ const notfound = {
 };
 
 watch(
-  () => props.param,
+  param,
   (newVal) => {
     selectedItemId.value = newVal;
   },

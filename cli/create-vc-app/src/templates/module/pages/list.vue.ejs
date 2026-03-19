@@ -3,12 +3,7 @@
     :title="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.TITLE')"
     :toolbar-items="bladeToolbar"
     :loading="loading"
-    :expanded="expanded"
-    :closable="closable"
     width="50%"
-    @close="$emit('close:blade')"
-    @expand="$emit('expand:blade')"
-    @collapse="$emit('collapse:blade')"
   >
     <VcDataTable
       :items="data"
@@ -32,27 +27,12 @@ import {
   VcBlade,
   VcDataTable,
   VcColumn,
-  useBladeNavigation,
+  useBlade,
   type IBladeToolbar,
-  type IParentCallArgs,
 } from "@vc-shell/framework";
 import { ref, computed, markRaw } from "vue";
 import use<%- ModuleNamePascalCase %>List from "../composables/useList";
 import Details from "./details.vue";
-
-export interface Props {
-  expanded?: boolean;
-  closable?: boolean;
-  param?: string;
-  options?: Record<string, unknown>;
-}
-
-export interface Emits {
-  (event: "parent:call", args: IParentCallArgs): void;
-  (event: "collapse:blade"): void;
-  (event: "expand:blade"): void;
-  (event: "close:blade"): void;
-}
 
 defineOptions({
   url: "/<%- ModuleName %>",
@@ -65,14 +45,7 @@ defineOptions({
   },
 });
 
-const props = withDefaults(defineProps<Props>(), {
-  expanded: true,
-  closable: true,
-});
-
-defineEmits<Emits>();
-
-const { openBlade } = useBladeNavigation();
+const { openBlade } = useBlade();
 
 const {
   data,

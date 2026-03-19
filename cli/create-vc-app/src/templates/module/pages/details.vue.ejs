@@ -3,12 +3,7 @@
     :title="title"
     :toolbar-items="bladeToolbar"
     :loading="loading"
-    :expanded="expanded"
-    :closable="closable"
     width="70%"
-    @close="$emit('close:blade')"
-    @expand="$emit('expand:blade')"
-    @collapse="$emit('collapse:blade')"
   >
     <VcContainer>
       <VcForm>
@@ -29,50 +24,29 @@ import {
   VcContainer,
   VcForm,
   VcInput,
-  useBladeNavigation,
+  useBlade,
   useModificationTracker,
   usePopup,
   useBeforeUnload,
   type IBladeToolbar,
-  type IParentCallArgs,
 } from "@vc-shell/framework";
 import { ref, computed, onMounted } from "vue";
 import use<%- ModuleNamePascalCase %>Details from "../composables/useDetails";
-
-export interface Props {
-  expanded?: boolean;
-  closable?: boolean;
-  param?: string;
-}
-
-export interface Emits {
-  (event: "parent:call", args: IParentCallArgs): void;
-  (event: "collapse:blade"): void;
-  (event: "expand:blade"): void;
-  (event: "close:blade"): void;
-}
 
 defineOptions({
   url: "/<%- ModuleName %>-details",
   name: "<%- ModuleNamePascalCase %>Details",
 });
 
-const props = withDefaults(defineProps<Props>(), {
-  expanded: true,
-  closable: true,
-  param: undefined,
-});
+const { param, closeSelf, callParent, onBeforeClose } = useBlade();
 
-const emit = defineEmits<Emits>();
-
-const { onBeforeClose } = useBladeNavigation();
 const { showConfirmation } = usePopup();
 
 const { item, loading, getItem, saveItem } = use<%- ModuleNamePascalCase %>Details();
 const { isModified, resetModificationState } = useModificationTracker(item);
 
 const title = computed(() => {
-  return props.param
+  return param.value
     ? String(item.value?.name || "<%- ModuleNameSentenceCase %> Details")
     : "New <%- ModuleNameSentenceCase %>";
 });
@@ -86,14 +60,14 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       await saveItem();
       resetModificationState();
-      emit("parent:call", { method: "reload" });
+      callParent("reload");
     },
   },
 ]);
 
 onMounted(async () => {
-  if (props.param) {
-    await getItem(props.param);
+  if (param.value) {
+    await getItem(param.value);
   }
 });
 

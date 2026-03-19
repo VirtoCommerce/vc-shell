@@ -2,13 +2,8 @@
   <VcBlade
     :loading="loading"
     :title="title"
-    :expanded="expanded"
-    :closable="closable"
     width="70%"
     :toolbar-items="bladeToolbar"
-    @close="$emit('close:blade')"
-    @expand="$emit('expand:blade')"
-    @collapse="$emit('collapse:blade')"
   >
     <VcContainer class="tw-p-2">
       <VcForm class="tw-space-y-4">
@@ -130,42 +125,22 @@
 </template>
 
 <script lang="ts" setup>
-import { IBladeToolbar, IParentCallArgs, useBeforeUnload, useBladeNavigation, usePopup } from "@vc-shell/framework";
+import { IBladeToolbar, useBlade, useBeforeUnload, usePopup } from "@vc-shell/framework";
 import { useDetails } from "./../composables";
 import { computed, onMounted, ref } from "vue";
 import { Field, useForm } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
 
-export interface Props {
-  expanded?: boolean;
-  closable?: boolean;
-  param?: string;
-}
-
-export interface Emits {
-  (event: "parent:call", args: IParentCallArgs): void;
-  (event: "collapse:blade"): void;
-  (event: "expand:blade"): void;
-  (event: "close:blade"): void;
-}
-
 defineOptions({
   url: "/sample-details",
   name: "SampleDetails",
 });
 
-const props = withDefaults(defineProps<Props>(), {
-  expanded: true,
-  closable: true,
-  param: undefined,
-});
-
-const emit = defineEmits<Emits>();
+const { param, closeSelf, callParent, onBeforeClose } = useBlade();
 
 const { loading, getItem, saveItem, removeItem, item, currencyOptions, isModified } = useDetails();
 const { showConfirmation } = usePopup();
-const { onBeforeClose } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 
 const { meta } = useForm({
@@ -177,7 +152,7 @@ const isDisabled = computed(() => {
 });
 
 const title = computed(() => {
-  return props.param
+  return param.value
     ? item.value?.name
       ? item.value?.name + t("SAMPLE_APP.PAGES.DETAILS.TITLE.DETAILS")
       : t("SAMPLE_APP.PAGES.DETAILS.TITLE.LOADING")
@@ -192,10 +167,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       await saveItem(item.value);
 
-      emit("parent:call", {
-        method: "reload",
-      });
-      emit("close:blade");
+      callParent("reload");
+      closeSelf();
     },
     disabled: computed(() => !(isModified.value && !isDisabled.value)),
   },
@@ -205,13 +178,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: "Delete",
     async clickHandler() {
       if (await showConfirmation(t(`SAMPLE_APP.PAGES.ALERTS.DELETE`))) {
-        if (props.param) {
-          await removeItem({ id: props.param });
-          emit("parent:call", {
-            method: "reload",
-          });
+        if (param.value) {
+          await removeItem({ id: param.value });
+          callParent("reload");
 
-          emit("close:blade");
+          closeSelf();
         }
       }
     },
@@ -219,8 +190,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 ]);
 
 onMounted(async () => {
-  if (props.param) {
-    await getItem({ id: props.param });
+  if (param.value) {
+    await getItem({ id: param.value });
   }
 });
 

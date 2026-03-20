@@ -132,9 +132,9 @@ import { Field, useForm } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
 
-defineOptions({
-  url: "/sample-details",
+defineBlade({
   name: "SampleDetails",
+  url: "/sample-details",
 });
 
 const { param, closeSelf, callParent, onBeforeClose } = useBlade();

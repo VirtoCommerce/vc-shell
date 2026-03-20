@@ -113,6 +113,14 @@ export const transforms: VersionedTransform[] = [
     scope: "project",
     transformPath: t("shims-to-globals"),
   },
+  {
+    name: "use-data-table-sort",
+    description: "Replace manual sortField/sortOrder/sortExpression boilerplate with useDataTableSort()",
+    introducedIn: "2.0.0",
+    migrationGuideSection: "Guide 31",
+    transformPath: t("use-data-table-sort"),
+    fileExtensions: [".vue"],
+  },
 ];
 
 export function selectTransforms(

@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.0.0-alpha.15](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.14...v2.0.0-alpha.15) (2026-03-20)
+
+
+### Features
+
+* add VC Shell Migrate package to release configuration ([ffe523b](https://github.com/VirtoCommerce/vc-shell/commit/ffe523b4d356d93657727d00d919ffb21d46d810))
+
 # [2.0.0-alpha.14](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.13...v2.0.0-alpha.14) (2026-03-20)
 
 

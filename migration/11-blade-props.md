@@ -142,6 +142,24 @@ If a wrapper (e.g. `productDetails.vue`) passes `:param`, `:options`, `:expanded
 />
 ```
 
+### 4. `callParent` args must match the exposed function signature
+
+`callParent("method", args)` passes `args` as the **single argument** to the exposed function (see `useBladeMessaging.ts`). The shape must match:
+
+```typescript
+// Parent exposes:
+function onItemClick(event: { data: Product }) { ... }
+exposeToChildren({ onItemClick });
+
+// ✅ Correct — matches { data: Product } signature
+callParent("onItemClick", { data: item.value });
+
+// ❌ Wrong — passes raw Product, not { data: Product }
+callParent("onItemClick", item.value);
+```
+
+The old `emit("parent:call", { method: "X", args: Y })` passed `Y` the same way — as a single argument to the method. So the shape of `args` must remain identical.
+
 ## Typed Options
 
 ```typescript

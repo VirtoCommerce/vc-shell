@@ -422,6 +422,7 @@ export * from "@ui/components/molecules/multilanguage-selector";
 export * from "@ui/composables";
 
 // Notification rendering internals (used by shell layout)
+import "@shell/_internal/notifications/styles/index.scss";
 export * from "@shell/_internal/notifications/composables";
 export * from "@shell/_internal/notifications/components";
 

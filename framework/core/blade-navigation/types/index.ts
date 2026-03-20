@@ -159,7 +159,7 @@ export interface BladeDescriptor {
   visible: boolean;
   /** Error state for this blade */
   error?: unknown;
-  /** Blade title — populated at runtime from the component's defineExpose({ title }) */
+  /** Blade title — populated at runtime by VcBlade via setBladeTitle() */
   title?: string;
 }
 
@@ -238,7 +238,7 @@ export interface IBladeStack {
   /** Clear a blade's error */
   clearBladeError(bladeId: string): void;
 
-  /** Update a blade's title (called by VcBladeSlot when component exposes title) */
+  /** Update a blade's title (called by VcBlade when title prop changes) */
   setBladeTitle(bladeId: string, title: string | undefined): void;
 
   /** Restore stack from descriptors (used by HistoryManager — bypasses guards) */

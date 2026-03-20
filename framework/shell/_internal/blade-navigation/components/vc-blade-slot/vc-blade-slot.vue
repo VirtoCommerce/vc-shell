@@ -26,7 +26,6 @@ import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 import { BladeInstanceKey, BladeBackButtonKey } from "@framework/injection-keys";
 import { ErrorInterceptor } from "@shell/components/error-interceptor";
 import { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
-import { useBladeStack } from "@core/blade-navigation/useBladeStack";
 import type { BladeDescriptor, IBladeInstance, IParentCallArgs } from "@core/blade-navigation/types";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import type { CoreBladeExposed } from "@core/blade-navigation/types";
@@ -48,7 +47,6 @@ const emit = defineEmits<{
 }>();
 
 const bladeRegistry = useBladeRegistry();
-const bladeStack = useBladeStack();
 const maximized = ref(false);
 const bladeInstanceRef = ref<CoreBladeExposed>();
 
@@ -75,7 +73,7 @@ provide(
     error: (props.descriptor.error as IBladeInstance["error"]) ?? null,
     navigation: undefined, // No longer VNode-based
     breadcrumbs: props.breadcrumbs,
-    title: bladeInstanceRef.value?.title,
+    title: props.descriptor.title,
   })),
 );
 
@@ -113,15 +111,6 @@ onBeforeUnmount(() => {
   messaging.cleanup(props.descriptor.id);
 });
 
-// ── Propagate exposed title to BladeStack ────────────────────────────────────
-// Uses watchEffect so it tracks reactivity of bladeInstanceRef.value?.title
-// (which may be a ref exposed via defineExpose)
-watchEffect(() => {
-  const title = bladeInstanceRef.value?.title;
-  if (title !== undefined) {
-    bladeStack.setBladeTitle(props.descriptor.id, title);
-  }
-});
 
 // ── Event handlers ──────────────────────────────────────────────────────────
 

@@ -119,7 +119,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, inject, computed, onMounted, nextTick, watch, getCurrentInstance, useAttrs } from "vue";
+import { ref, inject, computed, onMounted, nextTick, watch, getCurrentInstance, useAttrs, watchEffect } from "vue";
 import { IBladeToolbar } from "@core/types";
 import { useBladeStack } from "@core/blade-navigation";
 import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
@@ -225,7 +225,14 @@ const blade = inject(BladeInstanceKey, DEFAULT_BLADE_INSTANCE);
 
 const backButton = inject(BladeBackButtonKey);
 
-const { blades } = useBladeStack();
+const { blades, setBladeTitle } = useBladeStack();
+
+// Register title with BladeStack for navigation/breadcrumbs
+watchEffect(() => {
+  if (hasBladeContext && bladeId.value && props.title) {
+    setBladeTitle(bladeId.value, props.title);
+  }
+});
 
 const bladeRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);

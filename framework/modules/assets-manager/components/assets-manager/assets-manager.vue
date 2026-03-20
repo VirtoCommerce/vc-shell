@@ -428,9 +428,7 @@ const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
   return result;
 };
 
-defineExpose({
-  title: bladeTitle,
-});
+
 </script>
 
 <style lang="scss">

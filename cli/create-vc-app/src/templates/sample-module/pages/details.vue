@@ -203,7 +203,5 @@ onBeforeClose(async () => {
 
 useBeforeUnload(computed(() => !isDisabled.value && isModified.value));
 
-defineExpose({
-  title,
-});
+
 </script>

@@ -63,7 +63,7 @@ defineOptions({
 });
 
 const { t } = useI18n({ useScope: "global" });
-const { param, openBlade } = useBlade();
+const { param, openBlade, exposeToChildren } = useBlade();
 const { showConfirmation } = usePopup();
 const { debounce } = useFunctions();
 
@@ -265,8 +265,5 @@ watch(
   },
 );
 
-defineExpose({
-  title,
-  reload,
-});
+exposeToChildren({ reload });
 </script>

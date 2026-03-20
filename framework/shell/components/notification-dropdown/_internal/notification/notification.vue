@@ -11,7 +11,6 @@
       <component
         :is="currentTemplate"
         v-if="currentTemplate"
-        v-bind="templateProps"
       />
       <NotificationTemplate
         v-else
@@ -30,9 +29,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, provide } from "vue";
 import { PushNotification } from "@core/api/platform";
-import { useNotificationStore } from "@core/notifications";
+import { useNotificationStore, NotificationContextKey } from "@core/notifications";
 import { NotificationTemplate } from "@shell/components/notification-template";
 
 export interface Props {
@@ -54,9 +53,7 @@ const currentTemplate = computed(() => {
   return store.registry.get(type)?.template;
 });
 
-const templateProps = computed(() => ({
-  notification: props.notification,
-}));
+provide(NotificationContextKey, computed(() => props.notification));
 
 const handleClick = () => {
   emit("onClick", props.notification);

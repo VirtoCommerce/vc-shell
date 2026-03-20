@@ -1,14 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h } from "vue";
+import { defineComponent, h, ref } from "vue";
 import Notification from "./notification.vue";
 
 // Mock dependencies
-vi.mock("@core/notifications", () => ({
-  useNotificationStore: vi.fn(() => ({
-    registry: new Map(),
-  })),
-}));
+vi.mock("@core/notifications", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@core/notifications")>();
+  return {
+    ...actual,
+    useNotificationStore: vi.fn(() => ({
+      registry: new Map(),
+    })),
+  };
+});
 
 vi.mock("@shell/components/notification-template", () => ({
   NotificationTemplate: defineComponent({
@@ -20,7 +24,7 @@ vi.mock("@shell/components/notification-template", () => ({
   }),
 }));
 
-import { useNotificationStore } from "@core/notifications";
+import { useNotificationStore, useNotificationContext } from "@core/notifications";
 
 const VcHintStub = defineComponent({
   name: "VcHint",
@@ -91,10 +95,13 @@ describe("notification.vue", () => {
   });
 
   it("uses custom template when notifyType is registered", () => {
+    const receivedNotification = ref<any>(null);
+
     const CustomTemplate = defineComponent({
       name: "CustomTemplate",
-      props: ["notification"],
       setup() {
+        const ctx = useNotificationContext();
+        receivedNotification.value = ctx.value;
         return () => h("div", { class: "custom-template" }, "Custom");
       },
     });
@@ -103,8 +110,34 @@ describe("notification.vue", () => {
     registry.set("order-update", { template: CustomTemplate });
     vi.mocked(useNotificationStore).mockReturnValue({ registry } as any);
 
-    const wrapper = mountNotification(makeNotification({ notifyType: "order-update" }));
+    const notif = makeNotification({ notifyType: "order-update", title: "Order Update" });
+    const wrapper = mountNotification(notif);
     expect(wrapper.find(".custom-template").exists()).toBe(true);
     expect(wrapper.find(".mock-notification-template").exists()).toBe(false);
+    expect(receivedNotification.value).toEqual(notif);
+  });
+
+  it("integration: provide/inject round-trip delivers correct notification to template", () => {
+    const receivedTitle = ref<string>("");
+
+    const RoundTripTemplate = defineComponent({
+      name: "RoundTripTemplate",
+      setup() {
+        const ctx = useNotificationContext();
+        receivedTitle.value = ctx.value.title ?? "";
+        return () => h("div", { class: "round-trip" }, ctx.value.title);
+      },
+    });
+
+    const registry = new Map();
+    registry.set("round-trip-test", { template: RoundTripTemplate });
+    vi.mocked(useNotificationStore).mockReturnValue({ registry } as any);
+
+    const notif = makeNotification({ notifyType: "round-trip-test", title: "Round Trip Title" });
+    const wrapper = mountNotification(notif);
+
+    expect(wrapper.find(".round-trip").exists()).toBe(true);
+    expect(wrapper.find(".round-trip").text()).toBe("Round Trip Title");
+    expect(receivedTitle.value).toBe("Round Trip Title");
   });
 });

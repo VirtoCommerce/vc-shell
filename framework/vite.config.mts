@@ -41,7 +41,7 @@ export default getLibraryConfiguration({
   ],
   build: {
     target: "esnext",
-    cssCodeSplit: true,
+    cssCodeSplit: false,
     sourcemap: mode === "development",
     lib: {
       entry: {

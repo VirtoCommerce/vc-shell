@@ -5572,7 +5572,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@npm:^2.0.0-alpha.12, @vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@npm:^2.0.0-alpha.12":
+  version: 2.0.0-alpha.12
+  resolution: "@vc-shell/api-client-generator@npm:2.0.0-alpha.12"
+  dependencies:
+    chalk: "npm:^2.4.2"
+    cross-spawn: "npm:^7.0.3"
+    mri: "npm:^1.2.0"
+    nswag: "npm:^14.6.3"
+    vite: "npm:^6.3.3"
+    vite-plugin-dts: "npm:^3.6.4"
+  bin:
+    api-client-generator: ./dist/api-client-generator.js
+  checksum: 10/aaae72806f1a86cc48e2371aebcae17c73193e73a9ce9b8a7b4fb9814198d6600a2cbef38e579ee1717f6cee55b89790b63ea4ee8d8ff901a14e79cbf652a3d0
+  languageName: node
+  linkType: hard
+
+"@vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -5590,7 +5606,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@npm:^2.0.0-alpha.12, @vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
+"@vc-shell/config-generator@npm:^2.0.0-alpha.12":
+  version: 2.0.0-alpha.12
+  resolution: "@vc-shell/config-generator@npm:2.0.0-alpha.12"
+  dependencies:
+    "@vitejs/plugin-vue": "npm:^5.2.3"
+    vite: "npm:^6.3.3"
+    vite-plugin-checker: "npm:^0.9.1"
+    vite-plugin-circular-dependency: "npm:^0.5.0"
+    vite-plugin-mkcert: "npm:^1.17.1"
+    vue: "npm:^3.5.30"
+  checksum: 10/4d7e35dd2dc82225699843568022953472ea1c5b5bb0160989a7be48980ecd3557802d686eab01bfd4e925de22a5361ff6d129dc5f5f4b399b7d3d7e2b64ee5e
+  languageName: node
+  linkType: hard
+
+"@vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:configs/vite-config"
   dependencies:
@@ -5632,7 +5662,74 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@npm:^2.0.0-alpha.12, @vc-shell/framework@workspace:*, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@npm:^2.0.0-alpha.12":
+  version: 2.0.0-alpha.12
+  resolution: "@vc-shell/framework@npm:2.0.0-alpha.12"
+  dependencies:
+    "@floating-ui/dom": "npm:^1.7.4"
+    "@floating-ui/vue": "npm:^1.0.6"
+    "@fontsource/lato": "npm:^5.2.7"
+    "@fontsource/plus-jakarta-sans": "npm:^5.1.0"
+    "@fortawesome/fontawesome-free": "npm:^6.7.2"
+    "@headlessui/vue": "npm:^1.7.19"
+    "@material-symbols/font-300": "npm:^0.32.0"
+    "@microsoft/signalr": "npm:^8.0.0"
+    "@tiptap/core": "npm:^3.4.2"
+    "@tiptap/extension-font-size": "npm:^3.0.0-next.3"
+    "@tiptap/extension-image": "npm:^3.4.2"
+    "@tiptap/extension-link": "npm:^3.4.2"
+    "@tiptap/extension-placeholder": "npm:^3.4.2"
+    "@tiptap/extension-table": "npm:^3.4.2"
+    "@tiptap/extension-table-cell": "npm:^3.4.2"
+    "@tiptap/extension-table-header": "npm:^3.4.2"
+    "@tiptap/extension-table-row": "npm:^3.4.2"
+    "@tiptap/extension-text-style": "npm:^3.4.2"
+    "@tiptap/extension-underline": "npm:^3.4.2"
+    "@tiptap/extensions": "npm:^3.4.2"
+    "@tiptap/pm": "npm:^3.4.2"
+    "@tiptap/starter-kit": "npm:^3.4.2"
+    "@tiptap/vue-3": "npm:^3.4.2"
+    "@unovis/ts": "npm:^1.6.4"
+    "@unovis/vue": "npm:^1.6.4"
+    "@vee-validate/i18n": "npm:^4.12.4"
+    "@vee-validate/rules": "npm:^4.12.4"
+    "@vuepic/vue-datepicker": "npm:^11.0.2"
+    "@vueuse/components": "npm:^10.7.1"
+    "@vueuse/core": "npm:^10.7.1"
+    "@vueuse/integrations": "npm:^10.7.1"
+    bootstrap-icons: "npm:^1.11.3"
+    core-js: "npm:^3.35.0"
+    date-fns: "npm:^4.1.0"
+    dompurify: "npm:^3.0.11"
+    gridstack: "npm:^12.4.2"
+    iso-639-1: "npm:^3.1.0"
+    lodash-es: "npm:^4.17.21"
+    lucide-vue-next: "npm:^0.577.0"
+    normalize.css: "npm:^8.0.1"
+    semver: "npm:^7.7.4"
+    swiper: "npm:^11.2.10"
+    tiptap-markdown: "npm:^0.9.0"
+    truncate-html: "npm:^1.1.1"
+    vee-validate: "npm:^4.12.4"
+    vue-currency-input: "npm:^3.0.5"
+    vue-i18n: "npm:^11.1.11"
+    vue3-application-insights: "npm:^1.1.0"
+    vue3-touch-events: "npm:^4.1.8"
+    web-vitals: "npm:^5.1.0"
+    whatwg-fetch: "npm:^3.6.19"
+  peerDependencies:
+    vue: ">=3.4.0"
+    vue-router: ">=4.2.0"
+  peerDependenciesMeta:
+    vue:
+      optional: false
+    vue-router:
+      optional: false
+  checksum: 10/e536ba6cbc538cd0092f2198690c44ab5c591e734ba5967132fec60a63534ceb319e1136310a31cebba816f3eebcfcb70767d6ed0509fbce4291949c9e59581e
+  languageName: node
+  linkType: hard
+
+"@vc-shell/framework@workspace:*, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -5719,6 +5816,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@vc-shell/mf-config@npm:2.0.0-alpha.12":
+  version: 2.0.0-alpha.12
+  resolution: "@vc-shell/mf-config@npm:2.0.0-alpha.12"
+  checksum: 10/50ac2df88addfa76bb9e4b03c693653bf3c6564b857e189786f6d2a18973ae552afe44155c8da03fb2b0c714c61f77505ed02e3097139ac4d880d2c26617dca2
+  languageName: node
+  linkType: hard
+
 "@vc-shell/mf-config@workspace:*, @vc-shell/mf-config@workspace:packages/mf-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/mf-config@workspace:packages/mf-config"
@@ -5729,7 +5833,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/mf-host@npm:^2.0.0-alpha.12, @vc-shell/mf-host@workspace:packages/mf-host":
+"@vc-shell/mf-host@npm:^2.0.0-alpha.12":
+  version: 2.0.0-alpha.12
+  resolution: "@vc-shell/mf-host@npm:2.0.0-alpha.12"
+  dependencies:
+    "@module-federation/runtime": "npm:^2.1.0"
+    "@vc-shell/mf-config": "npm:2.0.0-alpha.12"
+    semver: "npm:^7.6.2"
+  peerDependencies:
+    "@vc-shell/framework": ^2.0.0-alpha.12
+    "@vueuse/core": ^10.0.0
+    lodash-es: ^4.0.0
+    vee-validate: ^4.12.0
+    vue: ^3.4.0
+    vue-i18n: ^9.0.0 || ^11.0.0
+    vue-router: ^4.0.0 || ^5.0.0
+  checksum: 10/a00452849e09886e30ef0f670b85cb27e894de57a8463300357f39a52c7006990d9d0d63dab989daba3514a001d53dd422ef099ac6f18082abac073b85dfe1e1
+  languageName: node
+  linkType: hard
+
+"@vc-shell/mf-host@workspace:packages/mf-host":
   version: 0.0.0-use.local
   resolution: "@vc-shell/mf-host@workspace:packages/mf-host"
   dependencies:
@@ -5879,7 +6002,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@npm:^2.0.0-alpha.12, @vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
+"@vc-shell/ts-config@npm:^2.0.0-alpha.12":
+  version: 2.0.0-alpha.12
+  resolution: "@vc-shell/ts-config@npm:2.0.0-alpha.12"
+  checksum: 10/8e729dbf055c15c49995f39813ac4dc8f47d22c9f337c90b22df09cf2e4145735f3944fe98212356933ad0400dddfd802dda37f0da544fc0a9c34c3ee57ad137
+  languageName: node
+  linkType: hard
+
+"@vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/ts-config@workspace:configs/ts-config"
   languageName: unknown
@@ -6904,7 +7034,6 @@ __metadata:
     jsdom: "npm:^24.1.0"
     lint-staged: "npm:^15.2.0"
     lodash-es: "npm:^4.17.21"
-    moment: "npm:^2.30.1"
     postcss: "npm:^8.4.32"
     prettier: "npm:^3.1.1"
     release-it: "npm:^19.0.4"
@@ -14798,13 +14927,6 @@ __metadata:
   bin:
     lookup-amd: bin/cli.js
   checksum: 10/6899af0a0940d99f0f65a47836bc3462f2b82c0989adac8f1484ca026e4da516a97ef58deeb5f7b693cbddc555291591ed457b33ee33f3c5486d3ee51b27fa75
-  languageName: node
-  linkType: hard
-
-"moment@npm:^2.30.1":
-  version: 2.30.1
-  resolution: "moment@npm:2.30.1"
-  checksum: 10/ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
   languageName: node
   linkType: hard
 

@@ -360,7 +360,7 @@ export * from "@ui/types";
 export * from "@core/composables";
 
 // Notifications (new API)
-export { useBladeNotifications, useNotificationStore, useNotificationContext } from "@core/notifications";
+export { useBladeNotifications, useNotificationStore, useNotificationContext, NotificationContextKey } from "@core/notifications";
 export { notification } from "@core/notifications/notification";
 export type {
   Severity,

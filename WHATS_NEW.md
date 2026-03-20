@@ -44,6 +44,8 @@ This document summarizes the major features and improvements introduced in v2.0.
 
 - **Row drag-and-drop reorder** — Rows can be reordered via drag-and-drop when the `reorderable-rows` prop is enabled, emitting the new order for the parent to persist.
 
+- **`useDataTableSort()` composable** — Page-level composable for VcDataTable sort state. Provides `sortField` and `sortOrder` refs for `v-model` binding, plus a `sortExpression` string for API calls, eliminating manual sort boilerplate in list pages.
+
 ---
 
 ## Notifications

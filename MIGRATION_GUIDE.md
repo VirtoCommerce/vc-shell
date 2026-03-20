@@ -1596,3 +1596,4 @@ The following guides cover deprecated API cleanup. See `migration/README.md` for
 - [Guide 28: Shared Components](./migration/28-shared-components.md)
 - [Guide 29: VcTable → VcDataTable](./migration/29-vc-table-to-data-table.md)
 - [Guide 30: Type Shims → Globals](./migration/30-shims-to-globals.md)
+- [Guide 31: useDataTableSort](./migration/31-use-data-table-sort.md)

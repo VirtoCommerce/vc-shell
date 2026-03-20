@@ -36,7 +36,8 @@ export interface UseBladeReturn<TOptions = Record<string, unknown>> {
   coverWith(event: BladeOpenEvent): Promise<void>;
   // Communication — runtime error outside blade context
   callParent<T = unknown>(method: string, args?: unknown): Promise<T>;
-  exposeToChildren(methods: Record<string, (...args: unknown[]) => unknown>): void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  exposeToChildren(methods: Record<string, (...args: any[]) => any>): void;
   // Guards — runtime error outside blade context
   onBeforeClose(guard: () => Promise<boolean>): void;
   // Lifecycle — runtime error outside blade context
@@ -242,7 +243,8 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
         return messaging.callParent<T>(descriptor!.value.id, method, args);
     }
 
-    function exposeToChildren(methods: Record<string, (...args: unknown[]) => unknown>): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function exposeToChildren(methods: Record<string, (...args: any[]) => any>): void {
         if (!descriptor) requireContext("exposeToChildren()");
         messaging.exposeToChildren(descriptor!.value.id, methods);
     }

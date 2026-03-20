@@ -1,4 +1,4 @@
-import { type ComputedRef, type Ref, computed, inject, onBeforeUnmount, ref, watch } from "vue";
+import { type Ref, computed, inject, onBeforeUnmount, ref, watch } from "vue";
 import { useBlade } from "@core/composables/useBlade";
 import { usePermissions } from "@core/composables/usePermissions";
 import { useToolbar } from "@core/composables/useToolbar";
@@ -6,6 +6,7 @@ import type { IBladeToolbar } from "@core/types";
 import { FALLBACK_BLADE_ID } from "@core/constants";
 import type { IToolbarItem } from "@core/services/toolbar-service";
 import { resolveVisibility, resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
+import { IsMobileKey } from "@framework/injection-keys";
 
 const PROP_ITEM_ID_PREFIX = "prop_toolbar_item_";
 
@@ -29,10 +30,7 @@ export function useToolbarRegistration(items: Ref<IBladeToolbar[]>) {
   const { id: currentBladeId } = useBlade();
   const bladeId = computed(() => (currentBladeId.value ?? FALLBACK_BLADE_ID).toLowerCase());
 
-  const isMobile = inject<ComputedRef<boolean>>(
-    "isMobile",
-    computed(() => false),
-  );
+  const isMobile = inject(IsMobileKey, ref(false));
 
   const registeredItemIds = new Set<string>();
   const registrationBladeId = ref(bladeId.value);

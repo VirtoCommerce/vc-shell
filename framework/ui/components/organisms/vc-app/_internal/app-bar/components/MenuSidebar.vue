@@ -65,7 +65,7 @@
 
 <script lang="ts" setup>
 import { computed, inject, ref, useSlots, type MaybeRef, type Ref } from "vue";
-import { EmbeddedModeKey, IsDesktopKey } from "@framework/injection-keys";
+import { EmbeddedModeKey, IsDesktopKey, IsMobileKey } from "@framework/injection-keys";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 
@@ -87,7 +87,7 @@ defineSlots<{
 }>();
 
 const isEmbedded = inject(EmbeddedModeKey, false);
-const isMobile = inject<Ref<boolean>>("isMobile", ref(false));
+const isMobile = inject(IsMobileKey, ref(false));
 const isDesktop = inject(IsDesktopKey, ref(false));
 const slots = useSlots();
 

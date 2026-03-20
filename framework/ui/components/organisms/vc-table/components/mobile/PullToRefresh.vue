@@ -47,6 +47,7 @@
  */
 import { ref, computed, inject, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { IsMobileKey } from "@framework/injection-keys";
 
 export interface PullToRefreshProps {
   /** Enable/disable pull-to-refresh */
@@ -81,7 +82,7 @@ const emit = defineEmits<{
 }>();
 
 // Check if mobile via inject (provided by VcDataTable or parent)
-const isMobile = inject<Ref<boolean>>("isMobile", ref(true));
+const isMobile = inject(IsMobileKey, ref(true));
 
 // Refs
 const containerRef = ref<HTMLElement | null>(null);

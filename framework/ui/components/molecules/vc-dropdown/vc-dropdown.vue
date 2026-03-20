@@ -104,6 +104,7 @@ import { computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, ref, T
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloatingPosition, type FloatingOffset, useTeleportTarget } from "@ui/composables";
 import type { Placement } from "@floating-ui/vue";
+import { IsMobileKey } from "@framework/injection-keys";
 
 export type DropdownRole = "menu" | "listbox";
 export type DropdownCloseReason = "outside" | "escape" | "action";
@@ -172,7 +173,7 @@ const instance = getCurrentInstance();
 const uid = instance?.uid ?? Math.round(Math.random() * 10_000);
 const panelId = `vc-dropdown-${uid}`;
 
-const isMobile = inject<Ref<boolean>>("isMobile", ref(false));
+const isMobile = inject(IsMobileKey, ref(false));
 
 const referenceEl = ref<HTMLElement | null>(null);
 const floatingEl = ref<HTMLElement | null>(null);

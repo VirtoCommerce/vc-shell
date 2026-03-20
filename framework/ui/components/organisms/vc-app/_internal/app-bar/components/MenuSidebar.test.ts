@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { ref, provide, defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
-import { EmbeddedModeKey, IsDesktopKey } from "@framework/injection-keys";
+import { EmbeddedModeKey, IsDesktopKey, IsMobileKey } from "@framework/injection-keys";
 import MenuSidebar from "./MenuSidebar.vue";
 
 function mountSidebar(
@@ -10,7 +10,7 @@ function mountSidebar(
 ) {
   const Wrapper = defineComponent({
     setup() {
-      provide("isMobile", ref(options.isMobile ?? false));
+      provide(IsMobileKey, ref(options.isMobile ?? false));
       provide(IsDesktopKey, ref(options.isDesktop ?? true));
       provide(EmbeddedModeKey, options.isEmbedded ?? false);
       return () =>
@@ -75,7 +75,7 @@ describe("MenuSidebar", () => {
   it("renders app-switcher slot on desktop", () => {
     const Wrapper = defineComponent({
       setup() {
-        provide("isMobile", ref(false));
+        provide(IsMobileKey, ref(false));
         provide(IsDesktopKey, ref(true));
         provide(EmbeddedModeKey, false);
         return () =>
@@ -102,7 +102,7 @@ describe("MenuSidebar", () => {
   it("renders navmenu and user-dropdown slots on mobile", () => {
     const Wrapper = defineComponent({
       setup() {
-        provide("isMobile", ref(true));
+        provide(IsMobileKey, ref(true));
         provide(IsDesktopKey, ref(false));
         provide(EmbeddedModeKey, false);
         return () =>
@@ -129,7 +129,7 @@ describe("MenuSidebar", () => {
   it("uses VcSidebar wrapper on mobile", () => {
     const Wrapper = defineComponent({
       setup() {
-        provide("isMobile", ref(true));
+        provide(IsMobileKey, ref(true));
         provide(IsDesktopKey, ref(false));
         provide(EmbeddedModeKey, false);
         return () => h(MenuSidebar, { isOpened: true, expanded: false });

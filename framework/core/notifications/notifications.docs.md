@@ -81,6 +81,29 @@ interface BladeNotificationReturn<T extends PushNotification> {
 }
 ```
 
+### `useNotificationContext<T>()`
+
+Returns the current notification object inside a custom notification template. Uses Vue's `inject()` under the hood — must be called inside a component rendered as a notification template.
+
+**File:** `composables/useNotificationContext.ts`
+
+#### Returns
+
+`ComputedRef<T>` — reactive reference to the current `PushNotification` (or extended type via generic).
+
+#### Example
+
+```typescript
+import { useNotificationContext } from "@vc-shell/framework";
+
+interface IOrderNotification extends PushNotification {
+  orderId?: string;
+}
+
+const notificationRef = useNotificationContext<IOrderNotification>();
+// notificationRef.value.orderId, notificationRef.value.title, etc.
+```
+
 ### Toast Controller
 
 Handles toast popup display based on `NotificationTypeConfig.toast` settings. Created internally by the store.
@@ -139,6 +162,8 @@ store.registerType("CatalogExportCompleted", {
   groupBy: "jobId",
 });
 ```
+
+Custom templates access the notification via `useNotificationContext()` composable — no props needed. See [NotificationTemplate docs](../../shell/components/notification-template/notification-template.docs.md) for template examples.
 
 ### Subscribing in a blade
 

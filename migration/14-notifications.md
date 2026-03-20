@@ -71,6 +71,40 @@ Toast options: `mode` (`"auto"` | `"progress"` | `"silent"`), `severity` (`"info
 +});
 ```
 
+## Step 5: Notification Template Props → Composable
+
+Custom notification templates no longer receive `notification` as a prop. Use `useNotificationContext()` instead.
+
+```diff
+ <script lang="ts" setup>
+-import { PushNotification, NotificationTemplate } from "@vc-shell/framework";
+-
+-export interface Props {
+-  notification: PushNotification;
+-}
+-
+-defineProps<Props>();
+-
+-defineOptions({ inheritAttrs: false });
++import { useNotificationContext, NotificationTemplate } from "@vc-shell/framework";
++import { computed } from "vue";
++
++const notificationRef = useNotificationContext();
++const notification = computed(() => notificationRef.value);
+ </script>
+```
+
+Remove `defineProps`, `defineOptions({ inheritAttrs: false })`, and any `variant` prop.
+
+For typed notifications, pass a generic:
+
+```ts
+interface IMyNotification extends PushNotification {
+  customField?: string;
+}
+const notificationRef = useNotificationContext<IMyNotification>();
+```
+
 ## Directory Structure
 
 Move `components/notifications/` → `notifications/` at module root:

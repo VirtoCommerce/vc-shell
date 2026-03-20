@@ -1283,6 +1283,19 @@ Each step can be done independently per module. The module works at every stage:
 5. Remove `notifyType` from template `defineOptions`
 6. Move `components/notifications/` → `notifications/` at module root (matches `widgets/` pattern)
 
+### Notification Template Props → Composable
+
+Custom notification templates no longer receive `notification` as a prop via the renderer. Use the `useNotificationContext()` composable instead:
+
+```diff
+-const props = defineProps<{ notification: PushNotification }>();
+-defineOptions({ inheritAttrs: false });
++const notificationRef = useNotificationContext();
++const notification = computed(() => notificationRef.value);
+```
+
+The composable returns a `ComputedRef<PushNotification>`. For extended types, use the generic: `useNotificationContext<IMyNotification>()`.
+
 ---
 
 ## Blade Navigation: `replaceWith` vs `coverWith`

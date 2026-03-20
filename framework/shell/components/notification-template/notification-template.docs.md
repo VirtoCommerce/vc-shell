@@ -14,12 +14,11 @@ The template displays the notification title, a "time ago" timestamp (e.g., "3 m
 
 ```vue
 <script setup lang="ts">
-import { NotificationTemplate } from "@vc-shell/framework";
-import type { IPushNotification } from "@vc-shell/framework";
+import { NotificationTemplate, useNotificationContext } from "@vc-shell/framework";
+import { computed } from "vue";
 
-const props = defineProps<{
-  notification: IPushNotification;
-}>();
+const notificationRef = useNotificationContext();
+const notification = computed(() => notificationRef.value);
 </script>
 
 <template>
@@ -47,12 +46,21 @@ Create a domain-specific notification template that extends the base with order 
 ```vue
 <!-- OrderNotification.vue -->
 <script setup lang="ts">
-import { NotificationTemplate } from "@vc-shell/framework";
-import type { IPushNotification } from "@vc-shell/framework";
+import { NotificationTemplate, useNotificationContext, useBlade } from "@vc-shell/framework";
+import type { PushNotification } from "@vc-shell/framework";
+import { computed } from "vue";
 
-const props = defineProps<{
-  notification: IPushNotification;
-}>();
+interface IOrderNotification extends PushNotification {
+  orderId?: string;
+}
+
+const notificationRef = useNotificationContext<IOrderNotification>();
+const notification = computed(() => notificationRef.value);
+const { openBlade } = useBlade();
+
+function openOrderBlade(orderId: string) {
+  openBlade({ name: "OrderDetails", param: orderId });
+}
 </script>
 
 <template>
@@ -65,9 +73,9 @@ const props = defineProps<{
     <div class="tw-text-sm tw-text-gray-600">
       <p>{{ notification.description }}</p>
       <a
-        v-if="notification.payload?.orderId"
+        v-if="notification.orderId"
         class="tw-text-blue-500 tw-underline"
-        @click="openOrderBlade(notification.payload.orderId)"
+        @click="openOrderBlade(notification.orderId)"
       >
         View order details
       </a>
@@ -76,16 +84,24 @@ const props = defineProps<{
 </template>
 ```
 
-Then register the template so the notification dropdown uses it for order-related notifications:
+Then register the template in your module so the notification dropdown uses it for order-related notifications:
 
 ```ts
-import { provide } from "vue";
-import { NotificationTemplatesKey } from "@vc-shell/framework";
-import OrderNotification from "./OrderNotification.vue";
+import OrderNotification from "./notifications/OrderNotification.vue";
 
-provide(NotificationTemplatesKey, {
-  OrderCreated: OrderNotification,
-  OrderStatusChanged: OrderNotification,
+export default defineAppModule({
+  blades: pages,
+  locales,
+  notifications: {
+    OrderCreated: {
+      template: OrderNotification,
+      toast: { mode: "auto" },
+    },
+    OrderStatusChanged: {
+      template: OrderNotification,
+      toast: { mode: "auto" },
+    },
+  },
 });
 ```
 
@@ -97,13 +113,13 @@ For background tasks like catalog imports, show a progress bar inside the notifi
 <!-- ImportNotification.vue -->
 <script setup lang="ts">
 import { computed } from "vue";
-import { NotificationTemplate } from "@vc-shell/framework";
-import type { IPushNotification } from "@vc-shell/framework";
+import { NotificationTemplate, useNotificationContext } from "@vc-shell/framework";
 
-const props = defineProps<{ notification: IPushNotification }>();
+const notificationRef = useNotificationContext();
+const notification = computed(() => notificationRef.value);
 
-const progress = computed(() => props.notification.progressValue ?? 0);
-const isRunning = computed(() => props.notification.isRunning ?? false);
+const progress = computed(() => (notification.value as any).progressValue ?? 0);
+const isRunning = computed(() => (notification.value as any).isRunning ?? false);
 </script>
 
 <template>
@@ -136,7 +152,7 @@ const isRunning = computed(() => props.notification.isRunning ?? false);
 
 ## Tips
 
-- Always pass the full `notification` object, not just the title. The component needs it for timestamp calculation and unread state.
+- Use `useNotificationContext()` to access notification data. No props needed — the renderer provides the notification automatically.
 - Use CSS custom property values for the `color` prop (e.g., `var(--success-500)`) to stay consistent with the active theme.
 - The `severity` prop can be used to apply predefined color schemes without specifying a custom `color`.
 - When creating custom templates, keep the slot content concise. The notification dropdown shows many items in a scrollable list, and overly tall notifications push others out of view.

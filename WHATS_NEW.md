@@ -58,6 +58,8 @@ This document summarizes the major features and improvements introduced in v2.0.
 
 - **Severity-based timeouts** — Standardized auto-dismiss durations by severity: `info` dismisses after 5 s, `warning` after 8 s, while `error` and `critical` notifications remain persistent until manually dismissed.
 
+- **`useNotificationContext()`** — New composable for accessing notification data inside custom templates. Replaces implicit props with an explicit pull-based API. Custom templates no longer need `defineProps` or `inheritAttrs: false`.
+
 ---
 
 ## Widgets

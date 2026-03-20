@@ -1,95 +1,68 @@
-import type { Project } from "ts-morph";
-import type { TransformOptions, TransformResult } from "./types.js";
+import type { API, FileInfo, Options } from "jscodeshift";
+import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
+import type { Transform } from "./types.js";
 import { SYMBOL_TO_ENTRY } from "../utils/import-rewriter.js";
 
-export function runRewriteImports(
-  project: Project,
-  options: TransformOptions,
-): TransformResult {
-  const result: TransformResult = {
-    filesModified: [],
-    filesSkipped: [],
-    warnings: [],
-    errors: [],
-  };
+function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {
+  const j = api.jscodeshift;
+  const root = j(fileInfo.source);
 
-  for (const sourceFile of project.getSourceFiles()) {
-    const importDeclarations = sourceFile
-      .getImportDeclarations()
-      .filter((d) => d.getModuleSpecifierValue() === "@vc-shell/framework");
+  const frameworkImports = root.find(j.ImportDeclaration, {
+    source: { value: "@vc-shell/framework" },
+  });
+  if (frameworkImports.size() === 0) return null;
 
-    if (importDeclarations.length === 0) {
-      result.filesSkipped.push(sourceFile.getFilePath());
-      continue;
-    }
+  let modified = false;
 
-    let fileModified = false;
+  frameworkImports.forEach((importPath) => {
+    const specifiers = importPath.node.specifiers ?? [];
+    const toMove = new Map<string, Array<{ imported: string; local: string }>>();
+    const toKeep: typeof specifiers = [];
 
-    for (const importDecl of importDeclarations) {
-      const namedImports = importDecl.getNamedImports();
-
-      // Group specifiers by their target entry point
-      const toMove = new Map<string, string[]>(); // entryPoint -> symbols[]
-      const toKeep: string[] = [];
-
-      for (const namedImport of namedImports) {
-        const name = namedImport.getName();
-        const alias = namedImport.getAliasNode()?.getText();
-        const targetEntry = SYMBOL_TO_ENTRY.get(name);
-
-        if (targetEntry) {
-          if (!toMove.has(targetEntry)) {
-            toMove.set(targetEntry, []);
-          }
-          // Preserve alias if present
-          toMove.get(targetEntry)!.push(alias ? `${name} as ${alias}` : name);
-        } else {
-          toKeep.push(alias ? `${name} as ${alias}` : name);
-        }
-      }
-
-      if (toMove.size === 0) {
-        // Nothing to move in this import declaration
+    for (const spec of specifiers) {
+      if (spec.type !== "ImportSpecifier") {
+        toKeep.push(spec);
         continue;
       }
+      const importedName = spec.imported.type === "Identifier" ? spec.imported.name : "";
+      const localName = (spec.local as any)?.name ?? importedName;
+      const targetEntry = SYMBOL_TO_ENTRY.get(importedName);
 
-      fileModified = true;
-
-      // Add new import declarations for each sub-entry point
-      for (const [entryPoint, symbols] of toMove) {
-        sourceFile.addImportDeclaration({
-          namedImports: symbols,
-          moduleSpecifier: entryPoint,
-        });
-      }
-
-      // Either update or remove the original import declaration
-      if (toKeep.length === 0) {
-        importDecl.remove();
+      if (targetEntry) {
+        if (!toMove.has(targetEntry)) toMove.set(targetEntry, []);
+        toMove.get(targetEntry)!.push({ imported: importedName, local: localName });
       } else {
-        // Remove moved specifiers from original; keep only the remaining ones
-        // We rebuild by removing all named imports and re-adding the kept ones
-        for (const namedImport of importDecl.getNamedImports()) {
-          namedImport.remove();
-        }
-        for (const kept of toKeep) {
-          // kept may be "name" or "name as alias"
-          const parts = kept.split(" as ");
-          if (parts.length === 2) {
-            importDecl.addNamedImport({ name: parts[0].trim(), alias: parts[1].trim() });
-          } else {
-            importDecl.addNamedImport(kept.trim());
-          }
-        }
+        toKeep.push(spec);
       }
     }
 
-    if (fileModified) {
-      result.filesModified.push(sourceFile.getFilePath());
-    } else {
-      result.filesSkipped.push(sourceFile.getFilePath());
-    }
-  }
+    if (toMove.size === 0) return;
+    modified = true;
 
-  return result;
+    // Insert new import declarations for each sub-entry point after current import
+    for (const [entryPoint, symbols] of toMove) {
+      const newSpecifiers = symbols.map((s) => {
+        const spec = j.importSpecifier(j.identifier(s.imported));
+        if (s.local !== s.imported) {
+          spec.local = j.identifier(s.local);
+        }
+        return spec;
+      });
+      const newImport = j.importDeclaration(newSpecifiers, j.literal(entryPoint));
+      j(importPath).insertAfter(newImport);
+    }
+
+    // Update or remove original import
+    if (toKeep.length === 0) {
+      j(importPath).remove();
+    } else {
+      importPath.node.specifiers = toKeep;
+    }
+  });
+
+  if (!modified) return null;
+  return root.toSource();
 }
+
+export default wrapForSFC(coreTransform) as Transform;
+export const parser = "tsx";

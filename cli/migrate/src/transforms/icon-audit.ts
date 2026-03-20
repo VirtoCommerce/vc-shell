@@ -1,5 +1,5 @@
-import type { Project } from "ts-morph";
-import type { TransformOptions, TransformResult } from "./types.js";
+import type { API, FileInfo, Options } from "jscodeshift";
+import type { Transform } from "./types.js";
 
 const ICON_SUGGESTIONS: Record<string, string> = {
   "fa-check": "check (Material Symbols)",
@@ -21,50 +21,23 @@ const ICON_SUGGESTIONS: Record<string, string> = {
 
 const FA_PATTERN = /\b(?:fas?|far|fal|fab)\s+(fa-[\w-]+)/g;
 
-export function runIconAudit(
-  project: Project,
-  _options: TransformOptions,
-): TransformResult {
-  const result: TransformResult = {
-    filesModified: [],
-    filesSkipped: [],
-    warnings: [],
-    errors: [],
-  };
-
-  // icon name → occurrence count
-  const iconCounts = new Map<string, number>();
-
-  for (const sourceFile of project.getSourceFiles()) {
-    const text = sourceFile.getFullText();
-    FA_PATTERN.lastIndex = 0;
-    let match: RegExpExecArray | null;
-    while ((match = FA_PATTERN.exec(text)) !== null) {
-      const iconName = match[1]; // e.g. "fa-check"
-      iconCounts.set(iconName, (iconCounts.get(iconName) ?? 0) + 1);
+const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options): string | null => {
+  const text = fileInfo.source;
+  FA_PATTERN.lastIndex = 0;
+  const icons: string[] = [];
+  let match: RegExpExecArray | null;
+  while ((match = FA_PATTERN.exec(text)) !== null) {
+    icons.push(match[1]);
+  }
+  if (icons.length > 0) {
+    for (const icon of icons) {
+      const suggestion = ICON_SUGGESTIONS[icon];
+      const hint = suggestion ? ` → suggested: ${suggestion}` : "";
+      api.report(`${fileInfo.path}: ${icon}${hint}`);
     }
   }
+  return null; // Never modify
+};
 
-  if (iconCounts.size === 0) {
-    return result;
-  }
-
-  result.warnings.push(
-    `[icon-audit] Found ${iconCounts.size} unique Font Awesome icon(s) across project source files:`,
-  );
-
-  const sorted = [...iconCounts.entries()].sort((a, b) => b[1] - a[1]);
-  for (const [icon, count] of sorted) {
-    const suggestion = ICON_SUGGESTIONS[icon];
-    const hint = suggestion ? ` → suggested replacement: ${suggestion}` : "";
-    result.warnings.push(
-      `  ${icon} (${count} occurrence${count !== 1 ? "s" : ""})${hint}`,
-    );
-  }
-
-  result.warnings.push(
-    "[icon-audit] Action required: replace Font Awesome classes with Material Symbols icon names in VcIcon usage.",
-  );
-
-  return result;
-}
+export default transform;
+export const parser = "tsx";

@@ -3,12 +3,7 @@ import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
 import type { Transform } from "./types.js";
 
 const RENAME_MAP: Record<string, string> = {
-  navigationViewLocation: "NavigationViewLocationKey",
-  BladeInstance: "BladeInstanceKey",
-  NotificationTemplatesSymbol: "NotificationTemplatesKey",
-  BLADE_BACK_BUTTON: "BladeBackButtonKey",
-  TOOLBAR_SERVICE: "ToolbarServiceKey",
-  EMBEDDED_MODE: "EmbeddedModeKey",
+  useWidgets: "useBladeWidgets",
 };
 
 function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {
@@ -33,6 +28,16 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
     root.find(j.Identifier, { name: r.old }).forEach((path) => {
       path.node.name = r.new;
     });
+  }
+
+  // Check for registerWidget/unregisterWidget usage requiring manual review
+  const hasRegister = root.find(j.Identifier, { name: "registerWidget" }).size() > 0 ||
+    root.find(j.Identifier, { name: "unregisterWidget" }).size() > 0;
+  if (hasRegister) {
+    api.report(
+      `${fileInfo.path}: useWidgets → useBladeWidgets renamed. ` +
+      `registerWidget/unregisterWidget calls require manual review.`,
+    );
   }
 
   return root.toSource();

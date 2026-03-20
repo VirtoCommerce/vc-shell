@@ -3,12 +3,26 @@ import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
 import type { Transform } from "./types.js";
 
 const RENAME_MAP: Record<string, string> = {
-  navigationViewLocation: "NavigationViewLocationKey",
-  BladeInstance: "BladeInstanceKey",
-  NotificationTemplatesSymbol: "NotificationTemplatesKey",
-  BLADE_BACK_BUTTON: "BladeBackButtonKey",
-  TOOLBAR_SERVICE: "ToolbarServiceKey",
-  EMBEDDED_MODE: "EmbeddedModeKey",
+  IUsePermissions: "UsePermissionsReturn",
+  IAppUserAPI: "UseUserReturn",
+  IUseAssets: "UseAssetsReturn",
+  IUseAppInsights: "UseAppInsightsReturn",
+  IUseFunctions: "UseFunctionsReturn",
+  IUseTheme: "UseThemeReturn",
+  IUseLanguages: "UseLanguagesReturn",
+  INotifications: "UseNotificationsReturn",
+  IUseErrorHandler: "UseErrorHandlerReturn",
+  IUseDynamicProperties: "UseDynamicPropertiesReturn",
+  IUseBreadcrumbs: "UseBreadcrumbsReturn",
+  IBladeRegistry: "UseBladeRegistryReturn",
+  IUseSettings: "UseSettingsReturn",
+  IUserManagementAPI: "UseUserManagementReturn",
+  UseConnectionStatus: "UseConnectionStatusReturn",
+  SidebarStateReturn: "UseSidebarStateReturn",
+  UseAsync: "UseAsyncReturn",
+  UseApiClient: "UseApiClientReturn",
+  AccordionProps: "VcAccordionProps",
+  AccordionEmits: "VcAccordionEmits",
 };
 
 function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {

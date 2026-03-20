@@ -1,47 +1,42 @@
 import { describe, it, expect } from "vitest";
-import { Project } from "ts-morph";
-import { runNotificationMigration } from "../../../src/transforms/notification-migration";
+import transform from "../../../src/transforms/notification-migration";
+import { applyTransform } from "../../../src/utils/test-helpers";
 
-describe("notification-migration transform", () => {
-  it("renames useNotifications import and call sites", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    const source = project.createSourceFile(
-      "test.ts",
-      `import { useNotifications } from "@vc-shell/framework";
-const { notification } = useNotifications();`,
-    );
-
-    const result = runNotificationMigration(project, { dryRun: false, cwd: "." });
-
-    const text = source.getFullText();
-    expect(text).toContain("useBladeNotifications");
-    expect(text).not.toMatch(/\buseNotifications\b/);
-    expect(result.filesModified).toHaveLength(1);
+describe("notification-migration (jscodeshift)", () => {
+  it("renames useNotifications to useBladeNotifications", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { useNotifications } from "@vc-shell/framework";\nconst { notifications } = useNotifications();`,
+    });
+    expect(result).toContain("useBladeNotifications");
+    expect(result).not.toContain("useNotifications");
   });
 
-  it("skips files without useNotifications", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    project.createSourceFile("test.ts", `import { ref } from "vue";`);
-
-    const result = runNotificationMigration(project, { dryRun: false, cwd: "." });
-    expect(result.filesModified).toHaveLength(0);
+  it("skips files without @vc-shell/framework import", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { ref } from "vue";\nconst x = ref(0);`,
+    });
+    expect(result).toBeNull();
   });
 
-  it("handles destructured usage correctly", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    const source = project.createSourceFile(
-      "test.ts",
-      `import { useNotifications } from "@vc-shell/framework";
-const notifications = useNotifications();
-notifications.show("hello");`,
-    );
+  it("skips files without useNotifications import", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { ref } from "@vc-shell/framework";\nconst x = ref(0);`,
+    });
+    expect(result).toBeNull();
+  });
 
-    runNotificationMigration(project, { dryRun: false, cwd: "." });
-
-    const text = source.getFullText();
-    expect(text).toContain("useBladeNotifications");
-    // Call site should be renamed too
-    expect(text).toContain("useBladeNotifications()");
-    expect(text).not.toMatch(/\buseNotifications\b/);
+  it("handles Vue SFC files", () => {
+    const vue = `<template><div/></template>
+<script setup lang="ts">
+import { useNotifications } from "@vc-shell/framework";
+const { notifications } = useNotifications();
+</script>`;
+    const result = applyTransform(transform, { path: "test.vue", source: vue });
+    expect(result).toContain("<template><div/></template>");
+    expect(result).toContain("useBladeNotifications");
+    expect(result).not.toContain("useNotifications");
   });
 });

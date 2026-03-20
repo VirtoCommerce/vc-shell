@@ -1,28 +1,19 @@
-import { readdirSync, readFileSync, statSync } from "fs";
-import { join } from "path";
-import type { Project } from "ts-morph";
-import type { TransformOptions, TransformResult } from "./types.js";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
+import type { API, FileInfo, Options } from "jscodeshift";
+import type { Transform } from "./types.js";
 
 const SAFE_IMPORT_PATTERN = /^@import\s+['"]tailwind['"]/m;
 
 function collectScssFiles(dir: string): string[] {
   const files: string[] = [];
   let entries: string[];
-  try {
-    entries = readdirSync(dir, { encoding: "utf-8" });
-  } catch {
-    return files;
-  }
+  try { entries = readdirSync(dir, { encoding: "utf-8" }); } catch { return files; }
   for (const entry of entries) {
     const full = join(dir, entry);
     let stat;
-    try {
-      stat = statSync(full);
-    } catch {
-      continue;
-    }
+    try { stat = statSync(full); } catch { continue; }
     if (stat.isDirectory()) {
-      // Skip node_modules and hidden directories
       if (entry === "node_modules" || entry.startsWith(".")) continue;
       files.push(...collectScssFiles(full));
     } else if (entry.endsWith(".scss")) {
@@ -32,53 +23,23 @@ function collectScssFiles(dir: string): string[] {
   return files;
 }
 
-export function runScssSafeUse(
-  _project: Project,
-  options: TransformOptions,
-): TransformResult {
-  const result: TransformResult = {
-    filesModified: [],
-    filesSkipped: [],
-    warnings: [],
-    errors: [],
-  };
+const transform: Transform = (_fileInfo: FileInfo, api: API, options: Options): string | null => {
+  const cwd = (options as any).cwd ?? ".";
+  const srcDir = join(cwd, "src");
+  const scssFiles = collectScssFiles(srcDir);
 
-  const scssFiles = collectScssFiles(options.cwd);
+  for (const filePath of scssFiles) {
+    const content = readFileSync(filePath, "utf-8");
+    const importLines = content.split("\n").filter((line) => /^@import\s/.test(line.trim()));
 
-  // Detect safe @import → @use candidates
-  const safeConversions: string[] = [];
-  for (const file of scssFiles) {
-    let content: string;
-    try {
-      content = readFileSync(file, "utf8");
-    } catch {
-      continue;
-    }
-    if (SAFE_IMPORT_PATTERN.test(content)) {
-      safeConversions.push(file);
+    for (const line of importLines) {
+      if (SAFE_IMPORT_PATTERN.test(line)) continue;
+      api.report(`${filePath}: ${line.trim()} — consider @use/@forward migration`);
     }
   }
 
-  if (safeConversions.length > 0) {
-    result.warnings.push(
-      `[scss-safe-use] Found ${safeConversions.length} file(s) with safe @import 'tailwind' → @use 'tailwind' conversion:`,
-    );
-    for (const f of safeConversions) {
-      result.warnings.push(`  ${f}`);
-    }
-  }
+  return null; // Never modify
+};
 
-  // Always print manual checklist
-  result.warnings.push("[scss-safe-use] Manual checklist:");
-  result.warnings.push(
-    "  - Check for @import statements that can be converted to @use",
-  );
-  result.warnings.push(
-    "  - Remove old base.scss/colors.scss if present",
-  );
-  result.warnings.push(
-    "  - Move custom styles to appropriate files",
-  );
-
-  return result;
-}
+export default transform;
+export const parser = "tsx";

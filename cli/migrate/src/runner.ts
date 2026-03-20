@@ -1,9 +1,11 @@
 import chalk from "chalk";
-import { Project } from "ts-morph";
 import { resolve, join } from "node:path";
-import { readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import writeFileAtomic from "write-file-atomic";
+import jscodeshift from "jscodeshift";
 import { detectFrameworkVersion } from "./version-detector.js";
 import { selectTransforms, transforms } from "./transforms/registry.js";
+import type { TransformModule, TransformReport } from "./transforms/types.js";
 
 export interface RunOptions {
   cwd: string;
@@ -56,44 +58,98 @@ export async function run(options: RunOptions): Promise<void> {
   );
   selected.forEach((t) => console.log(chalk.gray(`  - ${t.name}: ${t.description}`)));
 
-  // Create ts-morph project and add source files
-  const project = new Project({
-    tsConfigFilePath: undefined,
-    skipAddingFilesFromTsConfig: true,
-  });
-
-  // Add .ts files from src/
+  // Glob source files for per-file transforms
   const srcDir = join(cwd, "src");
-  const tsFiles = findFiles(srcDir, ".ts");
-  tsFiles.forEach((f) => project.addSourceFileAtPath(f));
+  const sourceFiles = findFiles(srcDir, [".ts", ".vue"]);
 
-  // Run transforms
-  for (const transform of selected) {
-    console.log(chalk.blue(`\nRunning: ${transform.name}...`));
-    const result = transform.run(project, { dryRun: options.dryRun, cwd });
+  for (const t of selected) {
+    console.log(chalk.blue(`\nRunning: ${t.name}...`));
 
-    if (result.filesModified.length > 0) {
-      console.log(chalk.green(`  Modified: ${result.filesModified.length} file(s)`));
+    // Dynamic import of transform module
+    const mod: TransformModule = await import(t.transformPath);
+    const transform = mod.default;
+    const parser = mod.parser ?? "tsx";
+    const j = jscodeshift.withParser(parser);
+
+    const report: TransformReport = {
+      name: t.name,
+      filesModified: [],
+      filesSkipped: [],
+      filesErrored: [],
+      reports: [],
+    };
+
+    const api = {
+      jscodeshift: j,
+      j,
+      stats: () => {},
+      report: (msg: string) => report.reports.push(msg),
+    };
+
+    if (t.scope === "project") {
+      // Project-scoped transforms run once with cwd
+      try {
+        transform(
+          { path: cwd, source: "" },
+          api as any,
+          { cwd, dryRun: options.dryRun } as any,
+        );
+      } catch (err) {
+        report.filesErrored.push({
+          path: cwd,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+    } else {
+      // Per-file transforms
+      for (const filePath of sourceFiles) {
+        try {
+          const source = readFileSync(filePath, "utf-8");
+          const result = transform(
+            { path: filePath, source },
+            api as any,
+            { cwd } as any,
+          );
+
+          if (result != null && result !== source) {
+            if (!options.dryRun) {
+              writeFileAtomic.sync(filePath, result);
+            }
+            report.filesModified.push(filePath);
+          } else {
+            report.filesSkipped.push(filePath);
+          }
+        } catch (err) {
+          report.filesErrored.push({
+            path: filePath,
+            error: err instanceof Error ? err.message : String(err),
+          });
+        }
+      }
     }
-    if (result.warnings.length > 0) {
-      result.warnings.forEach((w) => console.log(chalk.yellow(`  ⚠ ${w}`)));
+
+    // Print report
+    if (report.filesModified.length > 0) {
+      console.log(chalk.green(`  Modified: ${report.filesModified.length} file(s)`));
     }
-    if (result.errors.length > 0) {
-      result.errors.forEach((e) => console.log(chalk.red(`  ✗ ${e}`)));
+    if (report.reports.length > 0) {
+      report.reports.forEach((w) => console.log(chalk.yellow(`  ⚠ ${w}`)));
+    }
+    if (report.filesErrored.length > 0) {
+      report.filesErrored.forEach((e) =>
+        console.log(chalk.red(`  ✗ ${e.path}: ${e.error}`)),
+      );
     }
   }
 
-  // Save changes (unless dry-run)
-  if (!options.dryRun) {
-    await project.save();
-    console.log(chalk.green("\nAll transforms applied successfully."));
-  } else {
+  if (options.dryRun) {
     console.log(chalk.yellow("\nDry run complete. No files were modified."));
+  } else {
+    console.log(chalk.green("\nAll transforms applied successfully."));
   }
 }
 
-/** Recursively collect files with a given extension under a directory. */
-function findFiles(dir: string, ext: string): string[] {
+function findFiles(dir: string, extensions: string[]): string[] {
   const results: string[] = [];
   let entries: string[];
   try {
@@ -102,12 +158,17 @@ function findFiles(dir: string, ext: string): string[] {
     return results;
   }
   for (const entry of entries) {
+    if (entry === "node_modules" || entry.startsWith(".") || entry === "dist") continue;
     const full = join(dir, entry);
-    const stat = statSync(full);
-    if (stat.isDirectory()) {
-      results.push(...findFiles(full, ext));
-    } else if (entry.endsWith(ext)) {
-      results.push(full);
+    try {
+      const stat = statSync(full);
+      if (stat.isDirectory()) {
+        results.push(...findFiles(full, extensions));
+      } else if (extensions.some((ext) => entry.endsWith(ext))) {
+        results.push(full);
+      }
+    } catch {
+      continue;
     }
   }
   return results;
@@ -117,7 +178,8 @@ function listTransforms(): void {
   console.log(chalk.blue("Available transforms:\n"));
   for (const t of transforms) {
     const tag = t.diagnosticOnly ? chalk.gray(" [diagnostic]") : "";
-    console.log(`  ${chalk.bold(t.name)}${tag}`);
+    const scopeTag = t.scope === "project" ? chalk.gray(" [project]") : "";
+    console.log(`  ${chalk.bold(t.name)}${tag}${scopeTag}`);
     console.log(`    ${t.description}`);
     console.log(`    Introduced in: ${t.introducedIn}`);
     if (t.migrationGuideSection) {

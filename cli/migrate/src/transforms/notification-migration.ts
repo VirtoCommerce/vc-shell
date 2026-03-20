@@ -1,54 +1,37 @@
-import { SyntaxKind } from "ts-morph";
-import type { Project } from "ts-morph";
-import type { TransformOptions, TransformResult } from "./types.js";
+import type { API, FileInfo, Options } from "jscodeshift";
+import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
+import type { Transform } from "./types.js";
 
-const OLD_NAME = "useNotifications";
-const NEW_NAME = "useBladeNotifications";
+const RENAME_MAP: Record<string, string> = {
+  useNotifications: "useBladeNotifications",
+};
 
-export function runNotificationMigration(
-  project: Project,
-  options: TransformOptions,
-): TransformResult {
-  const result: TransformResult = {
-    filesModified: [],
-    filesSkipped: [],
-    warnings: [],
-    errors: [],
-  };
+function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {
+  const j = api.jscodeshift;
+  const root = j(fileInfo.source);
 
-  for (const sourceFile of project.getSourceFiles()) {
-    const importDeclarations = sourceFile
-      .getImportDeclarations()
-      .filter((d) => d.getModuleSpecifierValue() === "@vc-shell/framework");
+  const frameworkImports = root.find(j.ImportDeclaration, {
+    source: { value: "@vc-shell/framework" },
+  });
+  if (frameworkImports.size() === 0) return null;
 
-    let hasTarget = false;
-
-    for (const importDecl of importDeclarations) {
-      for (const namedImport of importDecl.getNamedImports()) {
-        if (namedImport.getName() === OLD_NAME) {
-          hasTarget = true;
-          break;
-        }
-      }
-      if (hasTarget) break;
+  const renames: Array<{ old: string; new: string }> = [];
+  frameworkImports.find(j.ImportSpecifier).forEach((path) => {
+    const name = path.node.imported.type === "Identifier" ? path.node.imported.name : "";
+    if (RENAME_MAP[name]) {
+      renames.push({ old: name, new: RENAME_MAP[name] });
     }
+  });
+  if (renames.length === 0) return null;
 
-    if (!hasTarget) {
-      result.filesSkipped.push(sourceFile.getFilePath());
-      continue;
-    }
-
-    // Rename all identifiers with the old name throughout the file
-    const identifiers = sourceFile
-      .getDescendantsOfKind(SyntaxKind.Identifier)
-      .filter((id) => id.getText() === OLD_NAME);
-
-    for (const id of identifiers) {
-      id.replaceWithText(NEW_NAME);
-    }
-
-    result.filesModified.push(sourceFile.getFilePath());
+  for (const r of renames) {
+    root.find(j.Identifier, { name: r.old }).forEach((path) => {
+      path.node.name = r.new;
+    });
   }
 
-  return result;
+  return root.toSource();
 }
+
+export default wrapForSFC(coreTransform) as Transform;
+export const parser = "tsx";

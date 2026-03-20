@@ -1,54 +1,74 @@
 import { describe, it, expect } from "vitest";
-import { Project } from "ts-morph";
-import { runDefineAppModule } from "../../../src/transforms/define-app-module";
+import transform from "../../../src/transforms/define-app-module";
+import { applyTransform, applyTransformWithReports } from "../../../src/utils/test-helpers";
+import { readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-describe("define-app-module transform", () => {
-  it("transforms createAppModule to defineAppModule", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    const source = project.createSourceFile(
-      "test.ts",
-      `import { createAppModule } from "@vc-shell/framework";
-export default createAppModule(pages, locales);`,
-    );
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const FIXTURES = join(__dirname, "__testfixtures__");
 
-    const result = runDefineAppModule(project, {
-      dryRun: false,
-      cwd: ".",
-    });
+describe("define-app-module (jscodeshift)", () => {
+  it("transforms 2-arg createAppModule", () => {
+    const input = readFileSync(join(FIXTURES, "basic.input.ts"), "utf8");
+    const result = applyTransform(transform, { path: "test.ts", source: input });
+    expect(result).not.toBeNull();
+    expect(result).toContain("defineAppModule");
+    expect(result).not.toContain("createAppModule");
+    // Should have shorthand object: defineAppModule({ pages, locales })
+    expect(result).toMatch(/defineAppModule\(\{.*pages.*,.*locales.*\}\)/s);
+  });
 
-    expect(source.getFullText()).toContain("defineAppModule");
-    expect(source.getFullText()).toContain(
-      "defineAppModule({ pages, locales })",
-    );
-    expect(source.getFullText()).not.toContain("createAppModule");
-    expect(result.filesModified).toHaveLength(1);
+  it("transforms 3-arg with notificationTemplates", () => {
+    const input = readFileSync(join(FIXTURES, "three-args.input.ts"), "utf8");
+    const result = applyTransform(transform, { path: "test.ts", source: input });
+    expect(result).not.toBeNull();
+    expect(result).toContain("defineAppModule");
+    expect(result).toContain("blades: pages");
+    expect(result).toContain("locales: locales");
+    expect(result).toContain("notificationTemplates: notificationTemplates");
+    expect(result).not.toContain("createAppModule");
   });
 
   it("skips files without createAppModule", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    project.createSourceFile("test.ts", `import { ref } from "vue";`);
-
-    const result = runDefineAppModule(project, {
-      dryRun: false,
-      cwd: ".",
-    });
-    expect(result.filesModified).toHaveLength(0);
+    const input = readFileSync(join(FIXTURES, "no-match.input.ts"), "utf8");
+    const result = applyTransform(transform, { path: "test.ts", source: input });
+    expect(result).toBeNull();
   });
 
-  it("handles createAppModule with additional arguments", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    const source = project.createSourceFile(
-      "test.ts",
-      `import { createAppModule } from "@vc-shell/framework";
-export default createAppModule(pages, locales, { name: "MyModule" });`,
-    );
+  it("warns on 3-arg about notificationTemplates", () => {
+    const input = readFileSync(join(FIXTURES, "three-args.input.ts"), "utf8");
+    const { reports } = applyTransformWithReports(transform, { path: "test.ts", source: input });
+    expect(reports.length).toBeGreaterThan(0);
+    expect(reports[0]).toContain("notificationTemplates");
+  });
 
-    const result = runDefineAppModule(project, {
-      dryRun: false,
-      cwd: ".",
-    });
+  it("warns on 4+ arguments", () => {
+    const code = `import { createAppModule } from "@vc-shell/framework";
+export default createAppModule(pages, locales, templates, components, options);`;
+    const { result, reports } = applyTransformWithReports(transform, { path: "test.ts", source: code });
+    expect(result).not.toBeNull();
+    expect(reports[0]).toContain("manual review");
+  });
 
-    // Should warn about non-standard arguments
-    expect(result.warnings.length).toBeGreaterThan(0);
+  it("preserves formatting of unchanged lines", () => {
+    const input = readFileSync(join(FIXTURES, "basic.input.ts"), "utf8");
+    const result = applyTransform(transform, { path: "test.ts", source: input });
+    // The import line structure should be preserved (only name changes)
+    expect(result).toContain('from "@vc-shell/framework"');
+    // Import should use the same quote style and structure
+    expect(result).toMatch(/import\s*\{\s*defineAppModule\s*\}\s*from\s*"@vc-shell\/framework"/);
+  });
+
+  it("handles Vue SFC files", () => {
+    const vue = `<template><div/></template>
+<script setup lang="ts">
+import { createAppModule } from "@vc-shell/framework";
+export default createAppModule(pages, locales);
+</script>`;
+    const result = applyTransform(transform, { path: "test.vue", source: vue });
+    expect(result).toContain("<template><div/></template>");
+    expect(result).toContain("defineAppModule");
+    expect(result).not.toContain("createAppModule");
   });
 });

@@ -13,6 +13,13 @@ describe("selectTransforms", () => {
       "blade-props-simplification",
       "icon-audit",
       "scss-safe-use",
+      "widgets-migration",
+      "composable-return-types",
+      "banner-variants",
+      "switch-tooltip-prop",
+      "icon-container-prop",
+      "menu-group-config",
+      "shims-to-globals",
     ]);
   });
 
@@ -45,8 +52,6 @@ describe("selectTransforms", () => {
   });
 
   it("does NOT select transforms whose introducedIn exceeds targetVersion", () => {
-    // Targeting alpha.4 — no transforms have introducedIn ≤ alpha.4
-    // (define-app-module is alpha.5, which is > alpha.4)
     const selected = selectTransforms("1.0.0", "2.0.0-alpha.4");
     expect(selected).toEqual([]);
   });

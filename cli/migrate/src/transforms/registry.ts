@@ -1,13 +1,10 @@
 import semver from "semver";
+import { fileURLToPath } from "node:url";
+import { resolve, dirname } from "node:path";
 import type { VersionedTransform } from "./types.js";
-import { runDefineAppModule } from "./define-app-module.js";
-import { runRemoveDeprecatedAliases } from "./remove-deprecated-aliases.js";
-import { runNotificationMigration } from "./notification-migration.js";
-import { runRewriteImports } from "./rewrite-imports.js";
-import { runUseBladeMigration } from "./use-blade-migration.js";
-import { runBladePropsSimplification } from "./blade-props-simplification.js";
-import { runIconAudit } from "./icon-audit.js";
-import { runScssSafeUse } from "./scss-safe-use.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const t = (name: string) => resolve(__dirname, `${name}.js`);
 
 export const transforms: VersionedTransform[] = [
   {
@@ -15,39 +12,39 @@ export const transforms: VersionedTransform[] = [
     description: "createAppModule(pages, locales) → defineAppModule({...})",
     introducedIn: "2.0.0-alpha.5",
     migrationGuideSection: "Migrating to defineAppModule",
-    run: runDefineAppModule,
+    transformPath: t("define-app-module"),
   },
   {
     name: "use-blade-migration",
     description: "useBladeNavigation() → useBlade() + onBeforeClose boolean inversion",
     introducedIn: "2.0.0-alpha.8",
     migrationGuideSection: "Section 10",
-    run: runUseBladeMigration,
+    transformPath: t("use-blade-migration"),
   },
   {
     name: "notification-migration",
     description: "useNotifications → useBladeNotifications",
     introducedIn: "2.0.0-alpha.10",
     migrationGuideSection: "Notifications System Redesign",
-    run: runNotificationMigration,
+    transformPath: t("notification-migration"),
   },
   {
     name: "rewrite-imports",
     description: "Remap imports for symbols moved to /ai-agent, /extensions",
     introducedIn: "2.0.0",
-    run: runRewriteImports,
+    transformPath: t("rewrite-imports"),
   },
   {
     name: "remove-deprecated-aliases",
     description: "BladeInstance → BladeInstanceKey, etc.",
     introducedIn: "2.0.0",
-    run: runRemoveDeprecatedAliases,
+    transformPath: t("remove-deprecated-aliases"),
   },
   {
     name: "blade-props-simplification",
     description: "Remove boilerplate expanded/closable props and blade event emits",
     introducedIn: "2.0.0",
-    run: runBladePropsSimplification,
+    transformPath: t("blade-props-simplification"),
   },
   {
     name: "icon-audit",
@@ -55,23 +52,69 @@ export const transforms: VersionedTransform[] = [
     introducedIn: "2.0.0",
     diagnosticOnly: true,
     migrationGuideSection: "Section 2",
-    run: runIconAudit,
+    transformPath: t("icon-audit"),
   },
   {
     name: "scss-safe-use",
     description: "@import → @use for safe mechanical cases only",
     introducedIn: "2.0.0",
     migrationGuideSection: "Section 3.2",
-    run: runScssSafeUse,
+    scope: "project",
+    transformPath: t("scss-safe-use"),
+  },
+  {
+    name: "widgets-migration",
+    description: "useWidgets() → useBladeWidgets() with manual migration warnings",
+    introducedIn: "2.0.0",
+    migrationGuideSection: "Registering Widgets in Blades",
+    transformPath: t("widgets-migration"),
+  },
+  {
+    name: "composable-return-types",
+    description: "IUsePermissions → UsePermissionsReturn and 19 other type alias renames (20 total)",
+    introducedIn: "2.0.0",
+    migrationGuideSection: "Guide 23",
+    transformPath: t("composable-return-types"),
+  },
+  {
+    name: "banner-variants",
+    description: 'VcBanner variant="light-danger" → "danger", etc.',
+    introducedIn: "2.0.0",
+    migrationGuideSection: "Guide 24",
+    transformPath: t("banner-variants"),
+  },
+  {
+    name: "switch-tooltip-prop",
+    description: "VcSwitch tooltip → hint prop rename",
+    introducedIn: "2.0.0",
+    migrationGuideSection: "Guide 25",
+    transformPath: t("switch-tooltip-prop"),
+  },
+  {
+    name: "icon-container-prop",
+    description: "VcIcon useContainer prop removal",
+    introducedIn: "2.0.0",
+    migrationGuideSection: "Guide 26",
+    transformPath: t("icon-container-prop"),
+  },
+  {
+    name: "menu-group-config",
+    description: "Detect deprecated group/groupIcon/inGroupPriority menu properties",
+    introducedIn: "2.0.0",
+    diagnosticOnly: true,
+    migrationGuideSection: "Guide 27",
+    transformPath: t("menu-group-config"),
+  },
+  {
+    name: "shims-to-globals",
+    description: "Replace manual shims-vue.d.ts / vue-i18n.d.ts with @vc-shell/framework/globals",
+    introducedIn: "2.0.0",
+    migrationGuideSection: "Guide 30",
+    scope: "project",
+    transformPath: t("shims-to-globals"),
   },
 ];
 
-/**
- * Select transforms that apply for a given version migration.
- * A transform runs when:
- * 1. semver.lt(currentVersion, transform.introducedIn) — current is below the breaking change
- * 2. semver.lte(transform.introducedIn, targetVersion) — the breaking change exists in target
- */
 export function selectTransforms(
   currentVersion: string,
   targetVersion: string,

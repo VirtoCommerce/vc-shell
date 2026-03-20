@@ -1,25 +1,32 @@
-import type { Project } from "ts-morph";
+import type { API, FileInfo, Options } from "jscodeshift";
 
-export interface TransformOptions {
-  dryRun: boolean;
-  cwd: string;
-}
+export type Transform = (
+  fileInfo: FileInfo,
+  api: API,
+  options: Options & { cwd?: string; dryRun?: boolean },
+) => string | null;
 
-export interface TransformResult {
-  filesModified: string[];
-  filesSkipped: string[];
-  warnings: string[];
-  errors: string[];
+export interface TransformModule {
+  default: Transform;
+  parser?: string;
 }
 
 export interface VersionedTransform {
   name: string;
   description: string;
-  /** The version that introduced the breaking change this transform fixes. */
   introducedIn: string;
-  /** Migration guide section reference */
   migrationGuideSection?: string;
-  /** Whether this transform is diagnostic-only (reports but doesn't modify) */
   diagnosticOnly?: boolean;
-  run(project: Project, options: TransformOptions): TransformResult;
+  /** "file" = called once per file (default), "project" = called once with cwd */
+  scope?: "file" | "project";
+  /** Absolute path to transform file for dynamic import */
+  transformPath: string;
+}
+
+export interface TransformReport {
+  name: string;
+  filesModified: string[];
+  filesSkipped: string[];
+  filesErrored: Array<{ path: string; error: string }>;
+  reports: string[];
 }

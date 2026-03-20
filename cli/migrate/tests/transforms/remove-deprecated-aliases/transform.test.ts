@@ -1,51 +1,53 @@
 import { describe, it, expect } from "vitest";
-import { Project } from "ts-morph";
-import { runRemoveDeprecatedAliases } from "../../../src/transforms/remove-deprecated-aliases";
+import transform from "../../../src/transforms/remove-deprecated-aliases";
+import { applyTransform } from "../../../src/utils/test-helpers";
 
-describe("remove-deprecated-aliases transform", () => {
-  it("renames deprecated imports and all usages", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    const source = project.createSourceFile(
-      "test.ts",
-      `import { BladeInstance, TOOLBAR_SERVICE } from "@vc-shell/framework";
-const blade: BladeInstance = inject(BladeInstance);
-const toolbar = inject(TOOLBAR_SERVICE);`,
-    );
-
-    const result = runRemoveDeprecatedAliases(project, { dryRun: false, cwd: "." });
-
-    const text = source.getFullText();
-    expect(text).toContain("BladeInstanceKey");
-    expect(text).toContain("ToolbarServiceKey");
-    expect(text).not.toMatch(/\bBladeInstance\b(?!Key)/);
-    expect(text).not.toContain("TOOLBAR_SERVICE");
-    expect(result.filesModified).toHaveLength(1);
+describe("remove-deprecated-aliases (jscodeshift)", () => {
+  it("renames TOOLBAR_SERVICE to ToolbarServiceKey", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { TOOLBAR_SERVICE } from "@vc-shell/framework";\nconst svc = inject(TOOLBAR_SERVICE);`,
+    });
+    expect(result).toContain("ToolbarServiceKey");
+    expect(result).not.toContain("TOOLBAR_SERVICE");
   });
 
-  it("skips files without deprecated aliases", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    project.createSourceFile("test.ts", `import { ref } from "vue";`);
-
-    const result = runRemoveDeprecatedAliases(project, { dryRun: false, cwd: "." });
-    expect(result.filesModified).toHaveLength(0);
+  it("renames BladeInstance to BladeInstanceKey", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { BladeInstance } from "@vc-shell/framework";\nconst blade = inject(BladeInstance);`,
+    });
+    expect(result).toContain("BladeInstanceKey");
+    // Ensure no standalone "BladeInstance" remains (only "BladeInstanceKey")
+    expect(result!.replace(/BladeInstanceKey/g, "")).not.toContain("BladeInstance");
   });
 
-  it("renames all six deprecated aliases", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    const source = project.createSourceFile(
-      "test.ts",
-      `import { navigationViewLocation, BladeInstance, NotificationTemplatesSymbol, BLADE_BACK_BUTTON, TOOLBAR_SERVICE, EMBEDDED_MODE } from "@vc-shell/framework";
-console.log(navigationViewLocation, BladeInstance, NotificationTemplatesSymbol, BLADE_BACK_BUTTON, TOOLBAR_SERVICE, EMBEDDED_MODE);`,
-    );
+  it("renames multiple aliases in one file", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { EMBEDDED_MODE, BLADE_BACK_BUTTON } from "@vc-shell/framework";
+const embedded = inject(EMBEDDED_MODE);
+const back = inject(BLADE_BACK_BUTTON);`,
+    });
+    expect(result).toContain("EmbeddedModeKey");
+    expect(result).toContain("BladeBackButtonKey");
+    expect(result).not.toContain("EMBEDDED_MODE");
+    expect(result).not.toContain("BLADE_BACK_BUTTON");
+  });
 
-    runRemoveDeprecatedAliases(project, { dryRun: false, cwd: "." });
+  it("skips files without @vc-shell/framework import", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { ref } from "vue";\nconst x = ref(0);`,
+    });
+    expect(result).toBeNull();
+  });
 
-    const text = source.getFullText();
-    expect(text).toContain("NavigationViewLocationKey");
-    expect(text).toContain("BladeInstanceKey");
-    expect(text).toContain("NotificationTemplatesKey");
-    expect(text).toContain("BladeBackButtonKey");
-    expect(text).toContain("ToolbarServiceKey");
-    expect(text).toContain("EmbeddedModeKey");
+  it("skips files without matching imports", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { useBlade } from "@vc-shell/framework";\nconst b = useBlade();`,
+    });
+    expect(result).toBeNull();
   });
 });

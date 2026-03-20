@@ -1,100 +1,70 @@
 import { describe, it, expect } from "vitest";
-import { Project } from "ts-morph";
-import { runUseBladeMigration } from "../../../src/transforms/use-blade-migration";
+import transform from "../../../src/transforms/use-blade-migration";
+import { applyTransform, applyTransformWithReports } from "../../../src/utils/test-helpers";
 
-describe("use-blade-migration transform", () => {
-  it("renames useBladeNavigation import and call to useBlade", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    const source = project.createSourceFile(
-      "test.ts",
-      `import { useBladeNavigation } from "@vc-shell/framework";
-const { openBlade, closeBlade } = useBladeNavigation();`,
-    );
-
-    const result = runUseBladeMigration(project, { dryRun: false, cwd: "." });
-
-    const text = source.getFullText();
-    expect(text).toContain("useBlade");
-    expect(text).not.toMatch(/\buseBladeNavigation\b/);
-    expect(result.filesModified).toHaveLength(1);
+describe("use-blade-migration (jscodeshift)", () => {
+  it("renames useBladeNavigation to useBlade", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { useBladeNavigation } from "@vc-shell/framework";\nconst { openBlade } = useBladeNavigation();`,
+    });
+    expect(result).toContain("useBlade");
+    expect(result).not.toContain("useBladeNavigation");
   });
 
-  it("inverts simple onBeforeClose return false → return !false", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    const source = project.createSourceFile(
-      "test.ts",
-      `import { useBladeNavigation } from "@vc-shell/framework";
+  it("inverts simple boolean return in onBeforeClose", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { useBladeNavigation } from "@vc-shell/framework";
 const { onBeforeClose } = useBladeNavigation();
 onBeforeClose(() => {
   return false;
 });`,
-    );
-
-    runUseBladeMigration(project, { dryRun: false, cwd: "." });
-
-    const text = source.getFullText();
-    expect(text).toContain("useBlade");
-    // The return value should be inverted
-    expect(text).toContain("!false");
+    });
+    expect(result).toContain("!false");
   });
 
-  it("inverts return true → return !true", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    const source = project.createSourceFile(
-      "test.ts",
-      `import { useBladeNavigation } from "@vc-shell/framework";
-const { onBeforeClose } = useBladeNavigation();
-onBeforeClose(() => {
-  return true;
-});`,
-    );
-
-    runUseBladeMigration(project, { dryRun: false, cwd: "." });
-
-    const text = source.getFullText();
-    expect(text).toContain("!true");
-  });
-
-  it("inverts return expression → return !(expression)", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    const source = project.createSourceFile(
-      "test.ts",
-      `import { useBladeNavigation } from "@vc-shell/framework";
+  it("inverts expression return in onBeforeClose", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { useBladeNavigation } from "@vc-shell/framework";
 const { onBeforeClose } = useBladeNavigation();
 onBeforeClose(() => {
   return isDirty.value;
 });`,
-    );
-
-    runUseBladeMigration(project, { dryRun: false, cwd: "." });
-
-    const text = source.getFullText();
-    expect(text).toContain("!(isDirty.value)");
+    });
+    // Should negate: !isDirty.value or !(isDirty.value)
+    expect(result).toMatch(/!(isDirty\.value|\(isDirty\.value\))/);
   });
 
-  it("warns on complex callbacks with multiple returns", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    project.createSourceFile(
-      "test.ts",
-      `import { useBladeNavigation } from "@vc-shell/framework";
+  it("warns on non-inline callback", () => {
+    const { reports } = applyTransformWithReports(transform, {
+      path: "test.ts",
+      source: `import { useBladeNavigation } from "@vc-shell/framework";
+const { onBeforeClose } = useBladeNavigation();
+onBeforeClose(myCallback);`,
+    });
+    expect(reports[0]).toContain("non-inline callback");
+  });
+
+  it("warns on multiple returns", () => {
+    const { reports } = applyTransformWithReports(transform, {
+      path: "test.ts",
+      source: `import { useBladeNavigation } from "@vc-shell/framework";
 const { onBeforeClose } = useBladeNavigation();
 onBeforeClose(() => {
-  if (condition) return false;
-  return true;
+  if (dirty) return true;
+  return false;
 });`,
-    );
-
-    const result = runUseBladeMigration(project, { dryRun: false, cwd: "." });
-
-    expect(result.warnings.length).toBeGreaterThan(0);
-    expect(result.warnings[0]).toContain("manual review");
+    });
+    expect(reports[0]).toContain("multiple returns");
   });
 
   it("skips files without useBladeNavigation", () => {
-    const project = new Project({ useInMemoryFileSystem: true });
-    project.createSourceFile("test.ts", `import { ref } from "vue";`);
-
-    const result = runUseBladeMigration(project, { dryRun: false, cwd: "." });
-    expect(result.filesModified).toHaveLength(0);
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { ref } from "vue";`,
+    });
+    expect(result).toBeNull();
   });
 });

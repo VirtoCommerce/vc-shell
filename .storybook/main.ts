@@ -129,6 +129,9 @@ export default {
         resolve: {
           alias: {
             "@framework": frameworkRoot,
+            "@framework/": `${frameworkRoot}/`,
+            "@modules": path.resolve(frameworkRoot, "modules"),
+            "@modules/": `${path.resolve(frameworkRoot, "modules")}/`,
             "@core": path.resolve(frameworkRoot, "core"),
             "@core/": `${path.resolve(frameworkRoot, "core")}/`,
             "@ui": path.resolve(frameworkRoot, "ui"),
@@ -138,6 +141,8 @@ export default {
             "@ui/types/": `${path.resolve(frameworkRoot, "ui/types")}/`,
             "@shared": path.resolve(frameworkRoot, "shared"),
             "@shared/": `${path.resolve(frameworkRoot, "shared")}/`,
+            "@shell": path.resolve(frameworkRoot, "shell"),
+            "@shell/": `${path.resolve(frameworkRoot, "shell")}/`,
             "@assets": path.resolve(frameworkRoot, "assets"),
             "@assets/": `${path.resolve(frameworkRoot, "assets")}/`,
             "@locales": path.resolve(frameworkRoot, "locales"),

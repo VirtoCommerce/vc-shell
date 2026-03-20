@@ -5572,9 +5572,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@npm:^2.0.0-alpha.15":
-  version: 2.0.0-alpha.15
-  resolution: "@vc-shell/api-client-generator@npm:2.0.0-alpha.15"
+"@vc-shell/api-client-generator@npm:^2.0.0-alpha.16":
+  version: 2.0.0-alpha.16
+  resolution: "@vc-shell/api-client-generator@npm:2.0.0-alpha.16"
   dependencies:
     chalk: "npm:^2.4.2"
     cross-spawn: "npm:^7.0.3"
@@ -5584,7 +5584,7 @@ __metadata:
     vite-plugin-dts: "npm:^3.6.4"
   bin:
     api-client-generator: ./dist/api-client-generator.js
-  checksum: 10/b91f5c95afd99af57548c0ba7cc50f813a481715467057b415bfc9e252ee4a2008c9262089b6bc5438c492fef9380d8dc56ca901a0e14eb01b271c34bfe712de
+  checksum: 10/6bde04f93331ecbbade9ca041e9b20dc56ed8715c36516753bd743856be180db3bbbd2ec5f8c94a42661156aaf35ac0ae6c8aa7226feba8bacfa8e4c5a5cf25c
   languageName: node
   linkType: hard
 
@@ -5606,9 +5606,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@npm:^2.0.0-alpha.15":
-  version: 2.0.0-alpha.15
-  resolution: "@vc-shell/config-generator@npm:2.0.0-alpha.15"
+"@vc-shell/config-generator@npm:^2.0.0-alpha.16":
+  version: 2.0.0-alpha.16
+  resolution: "@vc-shell/config-generator@npm:2.0.0-alpha.16"
   dependencies:
     "@vitejs/plugin-vue": "npm:^5.2.3"
     vite: "npm:^6.3.3"
@@ -5616,7 +5616,7 @@ __metadata:
     vite-plugin-circular-dependency: "npm:^0.5.0"
     vite-plugin-mkcert: "npm:^1.17.1"
     vue: "npm:^3.5.30"
-  checksum: 10/0e40336dcc58c06a5e594df12ac85e4f385de13e754a8889cc77a6b97c89f84119286ab5dee8714ff4b9849fe695a7d5fd888d2f311f4564c57acd87aeecd7b9
+  checksum: 10/9a39c0a7b15cc8b6a1fef4ad4e98384c31c43b7f092f2625de484a895cca90a6fe928540f71feebec1146bd99a5abfda8a498d45f2e0725ab3dbd5ac5f897d21
   languageName: node
   linkType: hard
 
@@ -5662,9 +5662,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@npm:^2.0.0-alpha.15":
-  version: 2.0.0-alpha.15
-  resolution: "@vc-shell/framework@npm:2.0.0-alpha.15"
+"@vc-shell/framework@npm:^2.0.0-alpha.16":
+  version: 2.0.0-alpha.16
+  resolution: "@vc-shell/framework@npm:2.0.0-alpha.16"
   dependencies:
     "@floating-ui/dom": "npm:^1.7.4"
     "@floating-ui/vue": "npm:^1.0.6"
@@ -5725,7 +5725,7 @@ __metadata:
       optional: false
     vue-router:
       optional: false
-  checksum: 10/c1705028f7b8c465dcb6cd89b42fe86041c1c8fa651b6060587a8fe499bce99387a19a97a5f5c7ca8f85dce069f1a1e6695853eff3e48b16f262424117387757
+  checksum: 10/55f893e69b25329f9cac40d934c34ecdb673b6f81a5a87a39564a89eb4663cca2a3a170e600a75c47b49dd15acc0b48bcc249ea2ea216dda09144343d2ad94e9
   languageName: node
   linkType: hard
 
@@ -5816,10 +5816,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/mf-config@npm:2.0.0-alpha.15":
-  version: 2.0.0-alpha.15
-  resolution: "@vc-shell/mf-config@npm:2.0.0-alpha.15"
-  checksum: 10/8fef4cfd987e33971cb76bfcad82a07a35435fb28cf7760ec30e67aedb147a9847ace3c26748731f746f28899c4d5bf0faf6e2bf6f52b213fa76032f7396d545
+"@vc-shell/mf-config@npm:2.0.0-alpha.16":
+  version: 2.0.0-alpha.16
+  resolution: "@vc-shell/mf-config@npm:2.0.0-alpha.16"
+  checksum: 10/27319ae52255c646816bbde5238dd759246f2805edc58ea0207e8636d9a5c499cebfb38cca4a6ccd62962f02054e6449280897677ad6189225cab6ebc7850a62
   languageName: node
   linkType: hard
 
@@ -5833,22 +5833,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/mf-host@npm:^2.0.0-alpha.15":
-  version: 2.0.0-alpha.15
-  resolution: "@vc-shell/mf-host@npm:2.0.0-alpha.15"
+"@vc-shell/mf-host@npm:^2.0.0-alpha.16":
+  version: 2.0.0-alpha.16
+  resolution: "@vc-shell/mf-host@npm:2.0.0-alpha.16"
   dependencies:
     "@module-federation/runtime": "npm:^2.1.0"
-    "@vc-shell/mf-config": "npm:2.0.0-alpha.15"
+    "@vc-shell/mf-config": "npm:2.0.0-alpha.16"
     semver: "npm:^7.6.2"
   peerDependencies:
-    "@vc-shell/framework": ^2.0.0-alpha.15
+    "@vc-shell/framework": ^2.0.0-alpha.16
     "@vueuse/core": ^10.0.0
     lodash-es: ^4.0.0
     vee-validate: ^4.12.0
     vue: ^3.4.0
     vue-i18n: ^9.0.0 || ^11.0.0
     vue-router: ^4.0.0 || ^5.0.0
-  checksum: 10/42e4baf292dddfe2ae9c96b8ab7b0aad113256eff72db1112df0405f70ec565561a0229d1bb103217a0f37b986d2c26b3c2c407b0dafea7736570b9cf2f850f5
+  checksum: 10/fd05fe7d31b5a55b128db8a2097e5363af39e69cf26c5ff3c15fc7df73b0be53fef36bb93ee7c4cca0f4f3c00158fac64251292f767185bdac396ed0e13f0a5b
   languageName: node
   linkType: hard
 
@@ -5873,7 +5873,7 @@ __metadata:
     vue-i18n: "npm:^11.3.0"
     vue-router: "npm:^5.0.3"
   peerDependencies:
-    "@vc-shell/framework": ^2.0.0-alpha.15
+    "@vc-shell/framework": ^2.0.0-alpha.16
     "@vueuse/core": ^10.0.0
     lodash-es: ^4.0.0
     vee-validate: ^4.12.0
@@ -6002,10 +6002,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@npm:^2.0.0-alpha.15":
-  version: 2.0.0-alpha.15
-  resolution: "@vc-shell/ts-config@npm:2.0.0-alpha.15"
-  checksum: 10/52008aec153ffa76e825ffe9a966869ce686c5a30175a7da8632803002f7709d55f4d1b715e2fcda6d495010188a1b3fcb930d362d2f991b6d2743fb821ad112
+"@vc-shell/ts-config@npm:^2.0.0-alpha.16":
+  version: 2.0.0-alpha.16
+  resolution: "@vc-shell/ts-config@npm:2.0.0-alpha.16"
+  checksum: 10/b688286471da07840dacb32374054ff2246aa83de16ba1d1030a81c2d44e3d97df37daf1ad02b66ee903d1749ebe8312caf95ac0a558264e92f3e2a25fa0a7b3
   languageName: node
   linkType: hard
 
@@ -7009,11 +7009,11 @@ __metadata:
     "@types/node": "npm:^20.10.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.4.0"
     "@typescript-eslint/parser": "npm:^7.4.0"
-    "@vc-shell/api-client-generator": "npm:^2.0.0-alpha.15"
-    "@vc-shell/config-generator": "npm:^2.0.0-alpha.15"
-    "@vc-shell/framework": "npm:^2.0.0-alpha.15"
-    "@vc-shell/mf-host": "npm:^2.0.0-alpha.15"
-    "@vc-shell/ts-config": "npm:^2.0.0-alpha.15"
+    "@vc-shell/api-client-generator": "npm:^2.0.0-alpha.16"
+    "@vc-shell/config-generator": "npm:^2.0.0-alpha.16"
+    "@vc-shell/framework": "npm:^2.0.0-alpha.16"
+    "@vc-shell/mf-host": "npm:^2.0.0-alpha.16"
+    "@vc-shell/ts-config": "npm:^2.0.0-alpha.16"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     "@vue/eslint-config-prettier": "npm:^9.0.0"
     "@vue/eslint-config-typescript": "npm:^13.0.0"

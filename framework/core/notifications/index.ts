@@ -11,7 +11,7 @@ export type {
   BladeNotificationOptions,
   BladeNotificationReturn,
 } from "./types";
-export { SEVERITY_TIMEOUTS, EXCLUDED_NOTIFICATION_TYPES } from "./types";
+export { SEVERITY_TIMEOUTS, EXCLUDED_NOTIFICATION_TYPES, NotificationContextKey } from "./types";
 
 // Imperative notification API
 export { notification } from "./notification";

@@ -1,4 +1,4 @@
-import { Component, ComputedRef } from "vue";
+import { Component, ComputedRef, InjectionKey } from "vue";
 import { PushNotification } from "@core/api/platform";
 
 export type Severity = "info" | "warning" | "error" | "critical";
@@ -57,5 +57,8 @@ export const SEVERITY_TIMEOUTS: Record<Severity, number | false> = {
   error: false, // persistent
   critical: false, // persistent
 };
+
+export const NotificationContextKey: InjectionKey<ComputedRef<PushNotification>> =
+  Symbol("NotificationContext");
 
 export const EXCLUDED_NOTIFICATION_TYPES = ["IndexProgressPushNotification"];

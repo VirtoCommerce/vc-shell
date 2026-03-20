@@ -75,7 +75,7 @@ export interface BladeMenuItemConfig {
  */
 export interface BladeDefinition {
   name: string;
-  url: `/${string}`;
+  url?: `/${string}`;
   isWorkspace?: boolean;
   routable?: boolean;
   permissions?: string | string[];

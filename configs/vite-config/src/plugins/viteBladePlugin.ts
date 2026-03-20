@@ -85,26 +85,34 @@ export function transformDefineBlade(
   const configParts = configProperties.map((p: any) => scriptContent.slice(p.start!, p.end!));
   const configObjectText = `{ ${configParts.join(", ")} }`;
 
-  // Build replacement
-  const importLine = `import { __registerBladeConfig } from "@vc-shell/framework";\n`;
+  // Build replacement: only defineOptions stays in <script setup>
   const defineOptionsLine = `defineOptions({ name: "${nameValue}" });\n`;
-  const registerLine = `__registerBladeConfig("${nameValue}", ${configObjectText});\n`;
-  const replacement = defineOptionsLine + registerLine;
 
-  // Replace in script content
+  // Replace defineBlade() call with just defineOptions() in <script setup>
   const newScriptContent =
-    scriptContent.slice(0, defineBladeNode.start!) + replacement + scriptContent.slice(defineBladeNode.end!);
-
-  // Prepend import if not already present
-  const finalScriptContent = newScriptContent.includes("import { __registerBladeConfig }")
-    ? newScriptContent
-    : importLine + newScriptContent;
+    scriptContent.slice(0, defineBladeNode.start!) + defineOptionsLine + scriptContent.slice(defineBladeNode.end!);
 
   // Reconstruct SFC by replacing the script setup content
   const scriptSetupStart = scriptSetup.loc.start.offset;
   const scriptSetupEnd = scriptSetup.loc.end.offset;
 
-  const newCode = code.slice(0, scriptSetupStart) + finalScriptContent + code.slice(scriptSetupEnd);
+  let newCode = code.slice(0, scriptSetupStart) + newScriptContent + code.slice(scriptSetupEnd);
+
+  // Inject a separate <script> block for __registerBladeConfig so it runs at module evaluation time,
+  // not inside the setup() function. This ensures config is available when registerBlade() is called
+  // during module installation (before any component is mounted).
+  const scriptBlock = `<script lang="ts">
+import { __registerBladeConfig } from "@vc-shell/framework";
+__registerBladeConfig("${nameValue}", ${configObjectText});
+</script>
+`;
+
+  // Insert the <script> block before the <script setup> tag
+  // Match both `<script setup lang="ts">` and `<script lang="ts" setup>`
+  const scriptSetupTagMatch = newCode.match(/<script\s+[^>]*?\bsetup\b[^>]*>/);
+  if (scriptSetupTagMatch && scriptSetupTagMatch.index != null) {
+    newCode = newCode.slice(0, scriptSetupTagMatch.index) + scriptBlock + newCode.slice(scriptSetupTagMatch.index);
+  }
 
   return { code: newCode, map: null };
 }

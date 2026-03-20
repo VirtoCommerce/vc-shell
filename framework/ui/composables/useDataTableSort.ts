@@ -1,6 +1,7 @@
 import { ref, computed, type Ref, type ComputedRef } from "vue";
 
 export type DataTableSortDirection = "ASC" | "DESC";
+export type DataTableSortOrder = 0 | 1 | -1;
 
 export interface UseDataTableSortOptions {
   /** Column field to sort by initially */
@@ -14,23 +15,22 @@ export interface UseDataTableSortReturn {
   sortField: Ref<string | undefined>;
   /**
    * Numeric ref for v-model:sort-order on VcDataTable.
-   * Runtime values: 1 = ASC, -1 = DESC, 0 = none.
-   * Typed as `number` to match VcDataTable's `update:sortOrder` emit signature.
+   * 1 = ASC, -1 = DESC, 0 = none.
    */
-  sortOrder: Ref<number>;
+  sortOrder: Ref<DataTableSortOrder>;
   /** String expression for API calls: "field:ASC" | "field:DESC" | undefined */
   sortExpression: ComputedRef<string | undefined>;
   /** Reset to initial values */
   resetSort: () => void;
 }
 
-function directionToOrder(dir?: DataTableSortDirection): number {
+function directionToOrder(dir?: DataTableSortDirection): DataTableSortOrder {
   if (dir === "ASC") return 1;
   if (dir === "DESC") return -1;
   return 0;
 }
 
-function orderToDirection(order: number): DataTableSortDirection | undefined {
+function orderToDirection(order: DataTableSortOrder): DataTableSortDirection | undefined {
   if (order === 1) return "ASC";
   if (order === -1) return "DESC";
   return undefined;
@@ -41,7 +41,7 @@ export function useDataTableSort(options?: UseDataTableSortOptions): UseDataTabl
   const initialOrder = directionToOrder(options?.initialDirection);
 
   const sortField = ref<string | undefined>(initialField);
-  const sortOrder = ref<number>(initialOrder);
+  const sortOrder = ref<DataTableSortOrder>(initialOrder);
 
   const sortExpression = computed<string | undefined>(() => {
     const dir = orderToDirection(sortOrder.value);

@@ -12,7 +12,9 @@
     "build": "echo 'Building @vc-shell/config-generator...' && tsc -b --clean && tsc && tsc-alias && echo '@vc-shell/config-generator built.'"
   },
   "dependencies": {
+    "@babel/parser": "^7.27.0",
     "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/compiler-sfc": "^3.5.30",
     "vite": "^6.3.3",
     "vite-plugin-checker": "^0.9.1",
     "vite-plugin-circular-dependency": "^0.5.0",

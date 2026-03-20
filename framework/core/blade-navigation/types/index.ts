@@ -13,7 +13,7 @@ import {
   ComputedRef,
 } from "vue";
 import type { ComponentPublicInstanceConstructor } from "@ui/utilities/vueUtils";
-import type { MenuItemConfig } from "@core/types/menu-types";
+import type { MenuItemConfig, MenuItemBadgeConfig } from "@core/types/menu-types";
 import type { Breadcrumbs } from "@ui/types";
 import type { DisplayableError } from "@core/utilities/error";
 
@@ -46,6 +46,47 @@ export type CoreBladeAdditionalSettings = {
   name?: string;
   menuItem?: MenuItemConfig;
 };
+
+// ─── defineBlade types ────────────────────────────────────────────────────────
+
+/**
+ * Menu item configuration for defineBlade().
+ * Clean subset of MenuItemConfig — deprecated fields (group, groupIcon, inGroupPriority) excluded.
+ */
+export interface BladeMenuItemConfig {
+  title: string;
+  icon: string;
+  priority: number;
+  groupConfig?: {
+    id: string;
+    title?: string;
+    icon?: string;
+    priority?: number;
+    permissions?: string | string[];
+    badge?: MenuItemBadgeConfig;
+  };
+  permissions?: string | string[];
+  badge?: MenuItemBadgeConfig;
+}
+
+/**
+ * Full blade definition passed to defineBlade().
+ * Includes `name` — the Vite plugin splits it: name → defineOptions, rest → registry.
+ */
+export interface BladeDefinition {
+  name: string;
+  url: `/${string}`;
+  isWorkspace?: boolean;
+  routable?: boolean;
+  permissions?: string | string[];
+  menuItem?: BladeMenuItemConfig;
+}
+
+/**
+ * Blade config stored in the global registry (BladeDefinition minus name).
+ */
+export type BladeConfig = Omit<BladeDefinition, "name">;
+
 export interface CoreBladeExposed {
   [x: string]: any;
   title?: string;

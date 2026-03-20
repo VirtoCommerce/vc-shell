@@ -21,3 +21,4 @@
 
 /// <reference path="./shims-vue.d.ts" />
 /// <reference path="./globals-augments.d.ts" />
+/// <reference path="./typings/blade-macros.d.ts" />

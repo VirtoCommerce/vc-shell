@@ -41,7 +41,7 @@ describe("createBladeRegistry", () => {
 
       registry._registerBladeFn("Orders", data);
 
-      expect(registry.getBlade("Orders")).toBe(data);
+      expect(registry.getBlade("Orders")).toMatchObject(data);
       expect(registry.registeredBladesMap.value.has("Orders")).toBe(true);
     });
 
@@ -89,7 +89,7 @@ describe("createBladeRegistry", () => {
       registry._registerBladeFn("Orders", first);
       registry._registerBladeFn("Orders", second, true);
 
-      expect(registry.getBlade("Orders")).toBe(second);
+      expect(registry.getBlade("Orders")).toMatchObject(second);
     });
 
     it("error message suggests allowOverwrite", () => {
@@ -114,7 +114,7 @@ describe("createBladeRegistry", () => {
       const result = registry.getBladeByRoute("orders");
       expect(result).toBeDefined();
       expect(result!.name).toBe("Orders");
-      expect(result!.data).toBe(data);
+      expect(result!.data).toMatchObject(data);
     });
 
     it("finds blade with leading slash", () => {

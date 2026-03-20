@@ -1,6 +1,9 @@
 import { App, inject, shallowRef, computed, ComputedRef, readonly as vueReadonly } from "vue";
 import type { BladeInstanceConstructor } from "@core/blade-navigation/types";
 import { createLogger } from "@core/utilities";
+import { getBladeConfig } from "@core/blade-navigation/bladeConfigRegistry";
+import { addMenuItem } from "@core/composables/useMenuService";
+import type { MenuItem } from "@core/types";
 
 const logger = createLogger("blade-registry");
 
@@ -102,7 +105,17 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
       throw new Error(`BladeRegistry: Invalid component provided for blade '${name}'`);
     }
 
-    // Create new map to trigger reactivity
+    // ── Merge: blade config registry (defineBlade) > registrationData (legacy) ──
+    const config = getBladeConfig(name);
+    const component = registrationData.component;
+
+    const route = config?.url ?? registrationData.route;
+    const isWorkspace = config?.isWorkspace ?? registrationData.isWorkspace ?? false;
+    const routable = config?.routable ?? (registrationData.routable !== false);
+    const permissions = config?.permissions ?? registrationData.permissions;
+    const menuItem = config?.menuItem ?? component.menuItem;
+
+    // ── Duplicate check ──
     const newMap = new Map(registeredBladesInternal.value);
 
     if (newMap.has(name)) {
@@ -115,26 +128,42 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
       logger.warn(`Blade '${name}' is already registered. Overwriting (allowOverwrite=true).`);
     }
 
-    // Register component globally if not already registered or different
+    // Register component globally
     const existingGlobalComponent = app.component(name);
-    if (!existingGlobalComponent || existingGlobalComponent !== registrationData.component) {
-      if (existingGlobalComponent && existingGlobalComponent !== registrationData.component) {
-        logger.warn(
-          `Global component '${name}' already exists and is different. Overwriting with new blade component.`,
-        );
+    if (!existingGlobalComponent || existingGlobalComponent !== component) {
+      if (existingGlobalComponent && existingGlobalComponent !== component) {
         logger.warn(
           `Global component '${name}' already exists and is different. Overwriting with new blade component.`,
         );
       }
-      app.component(name, registrationData.component);
+      app.component(name, component);
     }
 
-    newMap.set(name, registrationData);
+    // Store merged registration data
+    const mergedData: IBladeRegistrationData = {
+      component,
+      route,
+      isWorkspace,
+      routable,
+      permissions,
+    };
+
+    newMap.set(name, mergedData);
     registeredBladesInternal.value = newMap;
 
     // Maintain reverse route index
-    if (registrationData.route) {
-      _routeIndex.set(_normalizeRoute(registrationData.route), name);
+    if (route) {
+      _routeIndex.set(_normalizeRoute(route), name);
+    }
+
+    // ── Menu registration (moved from defineAppModule) ──
+    if (route && menuItem) {
+      addMenuItem({
+        ...menuItem,
+        url: route,
+        routeId: name,
+        permissions: permissions || menuItem.permissions,
+      } as MenuItem);
     }
   }
 
@@ -176,7 +205,6 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
         return globalComponent;
       }
     } catch (error) {
-      logger.warn(`Error accessing global component '${name}':`, error);
       logger.warn(`Error accessing global component '${name}':`, error);
     }
 

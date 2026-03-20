@@ -2,7 +2,6 @@ import { App, Component, inject, resolveComponent } from "vue";
 import { i18n } from "@core/plugins/i18n";
 import type { BladeInstanceConstructor } from "@core/blade-navigation/types";
 import { createLogger } from "@core/utilities";
-import { addMenuItem } from "@core/composables/useMenuService";
 import { useNotificationStore } from "@core/notifications";
 import type { ModuleNotificationsConfig } from "@core/notifications";
 import { notification } from "@core/notifications/notification";
@@ -53,27 +52,15 @@ export function defineAppModule(options: DefineAppModuleOptions) {
         } else {
           for (const [exportKey, component] of Object.entries(blades)) {
             const name = component.name || exportKey;
-
-            bladeRegistry._registerBladeFn(name, {
-              component,
-              route: component.url,
-              isWorkspace: component.isWorkspace || false,
-              routable: component.routable !== false,
-              permissions: component.permissions,
-            });
-
-            // Menu item registration
-            if (component.url && component.menuItem) {
-              app.runWithContext(() => {
-                addMenuItem({
-                  ...component.menuItem!,
-                  icon: component.menuItem!.icon,
-                  url: component.url!,
-                  routeId: name,
-                  permissions: component.permissions || component.menuItem!.permissions,
-                });
+            app.runWithContext(() => {
+              bladeRegistry._registerBladeFn(name, {
+                component,
+                route: component.url,
+                isWorkspace: component.isWorkspace || false,
+                routable: component.routable !== false,
+                permissions: component.permissions,
               });
-            }
+            });
           }
         }
       }

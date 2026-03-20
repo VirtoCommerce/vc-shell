@@ -51,9 +51,9 @@ import { useList } from "./../composables";
 import Details from "./details.vue";
 import { MockedItem } from "./../composables/useList";
 
-defineOptions({
-  url: "/sample-list",
+defineBlade({
   name: "SampleList",
+  url: "/sample-list",
   isWorkspace: true,
   menuItem: {
     title: "SAMPLE_APP.MENU.TITLE",

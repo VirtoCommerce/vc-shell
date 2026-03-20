@@ -1,3 +1,16 @@
+# [2.0.0-alpha.13](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.12...v2.0.0-alpha.13) (2026-03-20)
+
+
+### Bug Fixes
+
+* **ToolbarMobile:** scope disabled button opacity to :disabled pseudo-class ([a723942](https://github.com/VirtoCommerce/vc-shell/commit/a72394267a36a0240299ef432b340f450ebee724))
+* **vc-sidebar:** prevent infinite recursion in focus trap ([3221237](https://github.com/VirtoCommerce/vc-shell/commit/3221237032f855543b64183b1238e3e2dcac423c))
+* widen exposeToChildren type signature to accept typed functions ([0fad830](https://github.com/VirtoCommerce/vc-shell/commit/0fad83088db7075c3e5267b0ed9a7702c1acbcfb))
+
+
+### Features
+
+* add Vue module augmentation type declarations ([f1b8f48](https://github.com/VirtoCommerce/vc-shell/commit/f1b8f4817a849d4fbe4eb8c820214d942f691e93))
 # [2.0.0-alpha.12](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.11...v2.0.0-alpha.12) (2026-03-19)
 
 

@@ -1,5 +1,32 @@
 # Changelog
 
+# [2.0.0-alpha.13](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.12...v2.0.0-alpha.13) (2026-03-20)
+
+
+### Bug Fixes
+
+* **migrate:** fix TypeScript error in scss-safe-use readdirSync typing ([2f6e458](https://github.com/VirtoCommerce/vc-shell/commit/2f6e4584eb047f7555fd206a24f74433eebaffcd))
+* **ToolbarMobile:** scope disabled button opacity to :disabled pseudo-class ([a723942](https://github.com/VirtoCommerce/vc-shell/commit/a72394267a36a0240299ef432b340f450ebee724))
+* **vc-sidebar:** prevent infinite recursion in focus trap ([3221237](https://github.com/VirtoCommerce/vc-shell/commit/3221237032f855543b64183b1238e3e2dcac423c))
+* widen exposeToChildren type signature to accept typed functions ([0fad830](https://github.com/VirtoCommerce/vc-shell/commit/0fad83088db7075c3e5267b0ed9a7702c1acbcfb))
+
+
+### Features
+
+* add Vue module augmentation type declarations ([f1b8f48](https://github.com/VirtoCommerce/vc-shell/commit/f1b8f4817a849d4fbe4eb8c820214d942f691e93))
+* **migrate:** add blade-props-simplification transform ([83c1f41](https://github.com/VirtoCommerce/vc-shell/commit/83c1f41b29370061ff72e97b14486740cc6772de))
+* **migrate:** add CLI entry point with commander ([b773e92](https://github.com/VirtoCommerce/vc-shell/commit/b773e924c64f90b5b661f82fedb965d0d4ba74d7))
+* **migrate:** add define-app-module transform ([fa8ea88](https://github.com/VirtoCommerce/vc-shell/commit/fa8ea88855de47ee5c61e613c7a86898c60ce781))
+* **migrate:** add icon-audit and scss-safe-use diagnostic transforms ([1975d07](https://github.com/VirtoCommerce/vc-shell/commit/1975d072ceca6ba2da77db006274a47591ae8d9f))
+* **migrate:** add notification-migration transform ([f28480d](https://github.com/VirtoCommerce/vc-shell/commit/f28480d0d9cdd5376110c21913afae0b37e7e443))
+* **migrate:** add remove-deprecated-aliases transform ([ded2ff8](https://github.com/VirtoCommerce/vc-shell/commit/ded2ff833b5a47cec253ee9279c6cd9d93482a9e))
+* **migrate:** add rewrite-imports transform for sub-entry points ([2ec2aa3](https://github.com/VirtoCommerce/vc-shell/commit/2ec2aa391177eaad5ceb9e2243d4e56b004bb8be))
+* **migrate:** add runner orchestrator with tests ([bc9fa3f](https://github.com/VirtoCommerce/vc-shell/commit/bc9fa3fde6e4c69fad9130aa1c1a3bc14100f053))
+* **migrate:** add transform types and version-based registry with selection logic ([2148647](https://github.com/VirtoCommerce/vc-shell/commit/214864780a7939236d049ac6b93a1310a3b726bb))
+* **migrate:** add use-blade-migration with onBeforeClose inversion ([4696267](https://github.com/VirtoCommerce/vc-shell/commit/4696267bbb1861eda235c88548f129e89c854eaa))
+* **migrate:** add version detector with workspace:* fallback ([c45fabc](https://github.com/VirtoCommerce/vc-shell/commit/c45fabc51885db1890510bdf142b5cbea4364b9b))
+* **migrate:** add Vue SFC script block extraction utility ([e086631](https://github.com/VirtoCommerce/vc-shell/commit/e0866319f311c09c971ff02e496cefa6dd96423e))
+
 # [2.0.0-alpha.12](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.11...v2.0.0-alpha.12) (2026-03-19)
 
 

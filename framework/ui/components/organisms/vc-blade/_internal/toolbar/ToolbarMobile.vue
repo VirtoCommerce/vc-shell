@@ -209,6 +209,10 @@ $touch-min: 44px;
       .vc-blade-toolbar-mobile__action {
         opacity: 1;
         transform: translateY(0);
+
+        &:disabled {
+          opacity: 0.4;
+        }
       }
     }
   }
@@ -246,7 +250,6 @@ $touch-min: 44px;
     }
 
     &:disabled {
-      opacity: 0.4 !important;
       cursor: default;
     }
 

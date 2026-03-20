@@ -69,3 +69,4 @@ function getModulesLibraryConfiguration(options: ModulesLibraryOptions = {}) {
 export type { ModulesLibraryOptions } from "@vite-config/templates/vite.modules-library.appconfig";
 
 export { getLibraryConfiguration, getApplicationConfiguration, getModulesLibraryConfiguration };
+export { viteBladePlugin } from "./plugins/viteBladePlugin";

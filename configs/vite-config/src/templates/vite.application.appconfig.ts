@@ -5,6 +5,7 @@ import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
 import { checker } from "vite-plugin-checker";
 import circleDependency from "vite-plugin-circular-dependency";
+import { viteBladePlugin } from "../plugins/viteBladePlugin";
 
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
 const version = JSON.parse(packageJson.toString()).version || 0;
@@ -190,6 +191,7 @@ export default defineConfig({
       },
     },
     mkcert({ hosts: ["localhost", "127.0.0.1"] }),
+    viteBladePlugin(),
     vue(),
     checker({
       vueTsc: true,

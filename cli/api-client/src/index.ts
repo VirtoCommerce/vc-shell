@@ -21,6 +21,26 @@ interface ApiClientArgs {
   SKIP_BUILD?: boolean;
   VERBOSE?: boolean;
   APP_TYPE_STYLE?: "Class" | "Interface";
+  PACKAGE?: boolean;
+}
+
+/**
+ * Resolved configuration after parsing CLI args and env variables
+ */
+interface ResolvedConfig {
+  platformUrl: string;
+  platformModules: string;
+  apiClientDirectory: string;
+  packageName?: string;
+  packageVersion?: string;
+  outDir: string;
+  buildDir: string;
+  runtime: string;
+  skipBuild: boolean;
+  verbose: boolean;
+  typeStyle: "Class" | "Interface";
+  packageMode: boolean;
+  parsedArgs: ApiClientArgs;
 }
 
 /**
@@ -615,313 +635,374 @@ function handlePackageJson(packageJsonPath: string, generatedModules: string[], 
 }
 
 /**
- * Main function to generate API client
+ * Parses and validates CLI arguments and environment variables into a resolved configuration.
+ */
+function parseAndValidateArgs(): ResolvedConfig {
+  const parsedArgs = mri(process.argv.slice(2)) as ApiClientArgs;
+
+  // Get values from environment variables first, then from CLI arguments
+  const rawPlatformUrl = process.env.APP_PLATFORM_URL ?? parsedArgs.APP_PLATFORM_URL;
+  // Ensure trailing slash so NSwag config.nswag URL concatenation produces valid URIs
+  // e.g. "https://localhost:5001" + "docs/..." → "https://localhost:5001docs/..." (invalid port)
+  const platformUrl = rawPlatformUrl?.endsWith("/") ? rawPlatformUrl : rawPlatformUrl ? `${rawPlatformUrl}/` : rawPlatformUrl;
+  const platformModules = process.env.APP_PLATFORM_MODULES ?? parsedArgs.APP_PLATFORM_MODULES;
+  const apiClientDirectory = process.env.APP_API_CLIENT_DIRECTORY ?? parsedArgs.APP_API_CLIENT_DIRECTORY;
+  const packageName = process.env.APP_PACKAGE_NAME ?? parsedArgs.APP_PACKAGE_NAME;
+  const packageVersion = process.env.APP_PACKAGE_VERSION ?? parsedArgs.APP_PACKAGE_VERSION;
+  const outDir = process.env.APP_OUT_DIR ?? parsedArgs.APP_OUT_DIR ?? "./";
+  const buildDir = process.env.APP_BUILD_DIR ?? parsedArgs.APP_BUILD_DIR ?? "dist";
+  const runtime = process.env.RUNTIME ?? parsedArgs.RUNTIME ?? "Net80";
+  const skipBuild = process.env.SKIP_BUILD === "true" || parsedArgs.SKIP_BUILD === true;
+  const verbose = process.env.VERBOSE === "true" || parsedArgs.VERBOSE === true;
+  const typeStyle = (process.env.APP_TYPE_STYLE ?? parsedArgs.APP_TYPE_STYLE ?? "Class") as "Class" | "Interface";
+  const explicitPackage = process.env.APP_PACKAGE_MODE === "true" || parsedArgs.PACKAGE === true;
+
+  // Validate RUNTIME parameter
+  const knownRuntimes = ["Net80", "Net90", "Net100"];
+  if (!knownRuntimes.includes(runtime)) {
+    console.warn(
+      "api-client-generator %s Unknown RUNTIME value: %s. Known values: %s. Proceeding anyway — NSwag will report an error if the runtime is unsupported.",
+      chalk.yellow("warning"),
+      chalk.whiteBright(runtime),
+      chalk.whiteBright(knownRuntimes.join(", ")),
+    );
+  }
+
+  // Validate APP_TYPE_STYLE parameter
+  if (typeStyle !== "Class" && typeStyle !== "Interface") {
+    console.error(
+      "api-client-generator %s Invalid APP_TYPE_STYLE value: %s. Must be either 'Class' or 'Interface'",
+      chalk.red("error"),
+      chalk.whiteBright(typeStyle),
+    );
+    process.exit(1);
+  }
+
+  if (verbose) {
+    console.log(
+      "api-client-generator %s Using APP_TYPE_STYLE: %s",
+      chalk.blue("debug"),
+      chalk.whiteBright(typeStyle),
+    );
+  }
+
+  // Validate required arguments
+  if (!platformUrl) {
+    console.error(
+      "api-client-generator %s APP_PLATFORM_URL is required in .env config or as api-client-generator argument",
+      chalk.red("error"),
+    );
+    process.exit(1);
+  }
+
+  if (!platformModules) {
+    console.error(
+      "api-client-generator %s APP_PLATFORM_MODULES is required in .env config or as api-client-generator argument",
+      chalk.red("error"),
+    );
+    process.exit(1);
+  }
+
+  if (!apiClientDirectory) {
+    console.error(
+      "api-client-generator %s APP_API_CLIENT_DIRECTORY is required in .env config or as api-client-generator argument",
+      chalk.red("error"),
+    );
+    process.exit(1);
+  }
+
+  // Determine package mode: explicit flag OR existing package.json in target directory
+  const packageJsonPath = path.join(path.resolve(process.cwd(), apiClientDirectory), "package.json");
+  const packageMode = explicitPackage || existsSync(packageJsonPath);
+
+  if (verbose) {
+    console.log(
+      "api-client-generator %s Package mode: %s (explicit flag: %s, existing package.json: %s)",
+      chalk.blue("debug"),
+      chalk.whiteBright(String(packageMode)),
+      chalk.whiteBright(String(explicitPackage)),
+      chalk.whiteBright(String(existsSync(packageJsonPath))),
+    );
+  }
+
+  return {
+    platformUrl,
+    platformModules,
+    apiClientDirectory,
+    packageName,
+    packageVersion,
+    outDir,
+    buildDir,
+    runtime,
+    skipBuild,
+    verbose,
+    typeStyle,
+    packageMode,
+    parsedArgs,
+  };
+}
+
+/**
+ * Phase 1: Generate API client TypeScript files via NSwag.
+ * Runs for all modes — produces .ts files in the target directory.
+ */
+function generateClients(config: ResolvedConfig): string[] {
+  const paths = new Paths(config.apiClientDirectory);
+
+  // Ensure target directory exists
+  if (!existsSync(config.apiClientDirectory)) {
+    try {
+      mkdirSync(config.apiClientDirectory, { recursive: true });
+      console.log(
+        "api-client-generator %s Created directory %s",
+        chalk.greenBright("success"),
+        chalk.whiteBright(config.apiClientDirectory),
+      );
+    } catch (error) {
+      console.error(
+        "api-client-generator %s Failed to create directory %s",
+        chalk.red("error"),
+        chalk.whiteBright(config.apiClientDirectory),
+      );
+      console.error(chalk.red("Error details:"), error);
+      console.error("api-client-generator %s Directory creation troubleshooting:", chalk.blue("info"));
+      console.error(chalk.blue("  - Check if you have write permissions in the parent directory"));
+      console.error(chalk.blue("  - Ensure the path is valid and not too long"));
+      console.error(chalk.blue("  - Try running with elevated permissions if needed"));
+      process.exit(1);
+    }
+  }
+
+  // Parse platform modules with improved space handling
+  const platformModulesList = config.platformModules
+    .replace(/[[\]]/g, "") // Remove brackets
+    .split(",") // Split by comma
+    .map((module) => module.trim()) // Trim whitespace from each module
+    .filter((module) => module.length > 0); // Remove empty entries
+
+  const generatedFiles: string[] = [];
+
+  for (const platformModule of platformModulesList) {
+    const apiClientPaths = paths.resolveApiClientPaths(platformModule);
+
+    console.log(
+      "api-client-generator %s Generating API client for %s module on %s environment",
+      chalk.green("info"),
+      chalk.whiteBright(platformModule),
+      chalk.whiteBright(config.platformUrl),
+    );
+
+    // Construct nswag command with validated parameters
+    const nswagVariables = [
+      `APP_PLATFORM_URL=${config.platformUrl}`,
+      `APP_PLATFORM_MODULE=${platformModule}`,
+      `APP_AUTH_API_BASE_PATH=${paths.nswagPaths.authApiBase}`,
+      `APP_TEMPLATE_DIRECTORY=${paths.nswagPaths.templates}`,
+      `APP_API_CLIENT_PATH=${apiClientPaths.nswag}`,
+      `APP_TYPE_STYLE=${config.typeStyle}`,
+      `RUNTIME=${config.runtime}`,
+    ].join(",");
+
+    const nswagCommand = ["run", paths.nswagPaths.configuration, `/variables:${nswagVariables}`];
+
+    if (config.verbose) {
+      console.log(
+        "api-client-generator %s Running command: npx nswag %s",
+        chalk.blue("debug"),
+        nswagCommand.join(" "),
+      );
+      console.log("api-client-generator %s Variables: %s", chalk.blue("debug"), nswagVariables);
+    }
+
+    // Execute nswag command
+    const nswag = sync("npx nswag", nswagCommand, {
+      stdio: ["ignore", config.verbose ? "inherit" : "pipe", "inherit"],
+      shell: true,
+    });
+
+    if (nswag.status === 0) {
+      console.log(
+        "api-client-generator %s Successfully generated %s",
+        chalk.greenBright("success"),
+        chalk.whiteBright(apiClientPaths.console),
+      );
+      generatedFiles.push(`${platformModule.toLowerCase()}.ts`);
+    } else {
+      console.error(
+        "api-client-generator %s Failed to generate %s",
+        chalk.red("error"),
+        chalk.whiteBright(apiClientPaths.console),
+      );
+
+      // Always show error details
+      console.error(
+        "api-client-generator %s NSwag command failed with exit code: %s",
+        chalk.red("error"),
+        nswag.status,
+      );
+
+      // Show stderr output for better error understanding
+      if (nswag.stderr && nswag.stderr.toString().trim()) {
+        console.error("api-client-generator %s NSwag error output:", chalk.red("error"));
+        console.error(chalk.red(nswag.stderr.toString()));
+      }
+
+      // Show stdout output if available (might contain useful info)
+      if (nswag.stdout && nswag.stdout.toString().trim()) {
+        console.error("api-client-generator %s NSwag output:", chalk.yellow("warning"));
+        console.error(chalk.yellow(nswag.stdout.toString()));
+      }
+
+      // Provide helpful troubleshooting information
+      console.error("api-client-generator %s Troubleshooting tips:", chalk.blue("info"));
+      console.error(chalk.blue("  - Check if the platform URL is accessible: %s"), config.platformUrl);
+      console.error(chalk.blue("  - Verify the module name '%s' exists on the platform"), platformModule);
+      console.error(chalk.blue(`  - Ensure .NET Core ${config.runtime} is installed`));
+      console.error(chalk.blue("  - Try running with --VERBOSE=true for more details"));
+      process.exit(1);
+    }
+  }
+
+  return generatedFiles;
+}
+
+/**
+ * Phase 2: Build as npm package — compile TypeScript and generate package.json.
+ * Only runs in package mode (existing package.json or --PACKAGE flag).
+ */
+function buildPackage(config: ResolvedConfig, generatedFiles: string[]): void {
+  // Ensure build directory exists
+  const fullBuildDir = path.join(config.apiClientDirectory, config.buildDir);
+  if (!existsSync(fullBuildDir)) {
+    try {
+      mkdirSync(fullBuildDir, { recursive: true });
+      console.log(
+        "api-client-generator %s Created build directory %s",
+        chalk.greenBright("success"),
+        chalk.whiteBright(fullBuildDir),
+      );
+    } catch (error) {
+      console.error(
+        "api-client-generator %s Failed to create build directory %s",
+        chalk.red("error"),
+        chalk.whiteBright(fullBuildDir),
+      );
+      console.error(chalk.red("Error details:"), error);
+      console.error("api-client-generator %s Build directory creation troubleshooting:", chalk.blue("info"));
+      console.error(chalk.blue("  - Check if you have write permissions in the API client directory"));
+      console.error(chalk.blue("  - Ensure the build directory path is valid"));
+      console.error(
+        chalk.blue("  - The TypeScript compiler will attempt to create the directory during compilation"),
+      );
+      // Continue execution, as tsc will create the directory during compilation
+    }
+  }
+
+  // Handle tsconfig generation and updates
+  const tsConfigPath = path.join(config.apiClientDirectory, "tsconfig.json");
+  const tsConfig = handleTsConfig(tsConfigPath, generatedFiles, config.outDir, config.buildDir);
+
+  // Write updated tsconfig.json
+  try {
+    writeFileSync(tsConfigPath, JSON.stringify(tsConfig, null, 2));
+    if (config.verbose) {
+      console.log("api-client-generator %s Updated tsconfig.json", chalk.greenBright("success"));
+    }
+  } catch (error) {
+    console.error("api-client-generator %s Failed to write tsconfig.json", chalk.red("error"));
+    console.error(chalk.red("Error details:"), error);
+    console.error("api-client-generator %s File writing troubleshooting:", chalk.blue("info"));
+    console.error(chalk.blue("  - Check if you have write permissions in the API client directory"));
+    console.error(chalk.blue("  - Ensure the file path is valid and not locked by another process"));
+    console.error(chalk.blue("  - Try running with elevated permissions if needed"));
+    process.exit(1);
+  }
+
+  // Compile generated TypeScript files to JavaScript with declaration files
+  console.log("api-client-generator %s Compiling TypeScript files to JavaScript", chalk.green("info"));
+
+  const tsc = sync("npx tsc", ["--project", tsConfigPath], {
+    stdio: ["ignore", "pipe", "pipe"],
+    shell: true,
+  });
+
+  if (tsc.status === 0) {
+    console.log("api-client-generator %s Successfully compiled TypeScript files", chalk.greenBright("success"));
+  } else {
+    console.error("api-client-generator %s Failed to compile TypeScript files", chalk.red("error"));
+
+    // Show TypeScript compilation errors
+    if (tsc.stderr && tsc.stderr.toString().trim()) {
+      console.error("api-client-generator %s TypeScript compilation errors:", chalk.red("error"));
+      console.error(chalk.red(tsc.stderr.toString()));
+    }
+
+    // Show stdout output if available (might contain useful info)
+    if (tsc.stdout && tsc.stdout.toString().trim()) {
+      console.error("api-client-generator %s TypeScript output:", chalk.yellow("warning"));
+      console.error(chalk.yellow(tsc.stdout.toString()));
+    }
+
+    // Provide helpful troubleshooting information
+    console.error("api-client-generator %s TypeScript compilation troubleshooting:", chalk.blue("info"));
+    console.error(chalk.blue("  - Check if all required dependencies are installed"));
+    console.error(chalk.blue("  - Verify TypeScript configuration in tsconfig.json"));
+    console.error(chalk.blue("  - Ensure generated API files are valid TypeScript"));
+    console.error(chalk.blue("  - Try running with --VERBOSE=true for more details"));
+
+    // Exit on TypeScript compilation errors
+    process.exit(1);
+  }
+
+  // Handle package.json generation and updates
+  const packageJsonPath = path.join(config.apiClientDirectory, "package.json");
+  const packageJson = handlePackageJson(packageJsonPath, generatedFiles, {
+    ...config.parsedArgs,
+    APP_PACKAGE_NAME: config.packageName,
+    APP_PACKAGE_VERSION: config.packageVersion,
+    APP_BUILD_DIR: config.buildDir,
+    VERBOSE: config.verbose,
+  });
+
+  // Write updated package.json with proper formatting
+  try {
+    writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+    console.log("api-client-generator %s Generated package.json", chalk.greenBright("success"));
+  } catch (error) {
+    console.error("api-client-generator %s Failed to write package.json", chalk.red("error"));
+    console.error(chalk.red("Error details:"), error);
+    console.error("api-client-generator %s Package.json writing troubleshooting:", chalk.blue("info"));
+    console.error(chalk.blue("  - Check if you have write permissions in the API client directory"));
+    console.error(chalk.blue("  - Ensure the file path is valid and not locked by another process"));
+    console.error(chalk.blue("  - Try running with elevated permissions if needed"));
+    process.exit(1);
+  }
+}
+
+/**
+ * Main orchestrator: parses args, generates clients, optionally builds as npm package.
+ *
+ * Behavior:
+ * - Default: generates only .ts files via NSwag (simple mode)
+ * - If package.json exists in target dir OR --PACKAGE flag is set: full pipeline
+ *   (tsconfig + TypeScript compilation + package.json generation/update)
+ * - SKIP_BUILD=true overrides package mode — skips compilation and package.json
  */
 async function generateApiClient(): Promise<void> {
   try {
     await resolveConfig({}, "build");
 
-    const parsedArgs = mri(process.argv.slice(2)) as ApiClientArgs;
+    const config = parseAndValidateArgs();
+    const generatedFiles = generateClients(config);
 
-    // Get values from environment variables first, then from CLI arguments
-    const rawPlatformUrl = process.env.APP_PLATFORM_URL ?? parsedArgs.APP_PLATFORM_URL;
-    // Ensure trailing slash so NSwag config.nswag URL concatenation produces valid URIs
-    // e.g. "https://localhost:5001" + "docs/..." → "https://localhost:5001docs/..." (invalid port)
-    const platformUrl = rawPlatformUrl?.endsWith("/") ? rawPlatformUrl : rawPlatformUrl ? `${rawPlatformUrl}/` : rawPlatformUrl;
-    const platformModules = process.env.APP_PLATFORM_MODULES ?? parsedArgs.APP_PLATFORM_MODULES;
-    const apiClientDirectory = process.env.APP_API_CLIENT_DIRECTORY ?? parsedArgs.APP_API_CLIENT_DIRECTORY;
-    const packageName = process.env.APP_PACKAGE_NAME ?? parsedArgs.APP_PACKAGE_NAME;
-    const packageVersion = process.env.APP_PACKAGE_VERSION ?? parsedArgs.APP_PACKAGE_VERSION;
-    const outDir = process.env.APP_OUT_DIR ?? parsedArgs.APP_OUT_DIR ?? "./";
-    const buildDir = process.env.APP_BUILD_DIR ?? parsedArgs.APP_BUILD_DIR ?? "dist";
-    const runtime = process.env.RUNTIME ?? parsedArgs.RUNTIME ?? "Net80";
-
-    // Validate RUNTIME parameter
-    const knownRuntimes = ["Net80", "Net90", "Net100"];
-    if (!knownRuntimes.includes(runtime)) {
-      console.warn(
-        "api-client-generator %s Unknown RUNTIME value: %s. Known values: %s. Proceeding anyway — NSwag will report an error if the runtime is unsupported.",
-        chalk.yellow("warning"),
-        chalk.whiteBright(runtime),
-        chalk.whiteBright(knownRuntimes.join(", ")),
-      );
-    }
-
-    const skipBuild = process.env.SKIP_BUILD === "true" || parsedArgs.SKIP_BUILD === true;
-    const verbose = process.env.VERBOSE === "true" || parsedArgs.VERBOSE === true;
-    const typeStyle = (process.env.APP_TYPE_STYLE ?? parsedArgs.APP_TYPE_STYLE ?? "Class") as "Class" | "Interface";
-
-    // Validate APP_TYPE_STYLE parameter
-    if (typeStyle !== "Class" && typeStyle !== "Interface") {
-      console.error(
-        "api-client-generator %s Invalid APP_TYPE_STYLE value: %s. Must be either 'Class' or 'Interface'",
-        chalk.red("error"),
-        chalk.whiteBright(typeStyle),
-      );
-      process.exit(1);
-    }
-
-    if (verbose) {
+    if (config.packageMode && !config.skipBuild && generatedFiles.length > 0) {
+      buildPackage(config, generatedFiles);
+    } else if (!config.packageMode) {
       console.log(
-        "api-client-generator %s Using APP_TYPE_STYLE: %s",
-        chalk.blue("debug"),
-        chalk.whiteBright(typeStyle),
+        "api-client-generator %s Generated %d API client file(s) in simple mode (no package build)",
+        chalk.greenBright("success"),
+        generatedFiles.length,
       );
-    }
-
-    // Validate required arguments
-    if (!platformUrl) {
-      console.error(
-        "api-client-generator %s APP_PLATFORM_URL is required in .env config or as api-client-generator argument",
-        chalk.red("error"),
-      );
-      process.exit(1);
-    }
-
-    if (!platformModules) {
-      console.error(
-        "api-client-generator %s APP_PLATFORM_MODULES is required in .env config or as api-client-generator argument",
-        chalk.red("error"),
-      );
-      process.exit(1);
-    }
-
-    if (!apiClientDirectory) {
-      console.error(
-        "api-client-generator %s APP_API_CLIENT_DIRECTORY is required in .env config or as api-client-generator argument",
-        chalk.red("error"),
-      );
-      process.exit(1);
-    }
-
-    const paths = new Paths(apiClientDirectory);
-
-    // Ensure target directory exists
-    if (!existsSync(apiClientDirectory)) {
-      try {
-        mkdirSync(apiClientDirectory, { recursive: true });
-        console.log(
-          "api-client-generator %s Created directory %s",
-          chalk.greenBright("success"),
-          chalk.whiteBright(apiClientDirectory),
-        );
-      } catch (error) {
-        console.error(
-          "api-client-generator %s Failed to create directory %s",
-          chalk.red("error"),
-          chalk.whiteBright(apiClientDirectory),
-        );
-        console.error(chalk.red("Error details:"), error);
-        console.error("api-client-generator %s Directory creation troubleshooting:", chalk.blue("info"));
-        console.error(chalk.blue("  - Check if you have write permissions in the parent directory"));
-        console.error(chalk.blue("  - Ensure the path is valid and not too long"));
-        console.error(chalk.blue("  - Try running with elevated permissions if needed"));
-        process.exit(1);
-      }
-    }
-
-    // Ensure build directory exists
-    const fullBuildDir = path.join(apiClientDirectory, buildDir);
-    if (!existsSync(fullBuildDir)) {
-      try {
-        mkdirSync(fullBuildDir, { recursive: true });
-        console.log(
-          "api-client-generator %s Created build directory %s",
-          chalk.greenBright("success"),
-          chalk.whiteBright(fullBuildDir),
-        );
-      } catch (error) {
-        console.error(
-          "api-client-generator %s Failed to create build directory %s",
-          chalk.red("error"),
-          chalk.whiteBright(fullBuildDir),
-        );
-        console.error(chalk.red("Error details:"), error);
-        console.error("api-client-generator %s Build directory creation troubleshooting:", chalk.blue("info"));
-        console.error(chalk.blue("  - Check if you have write permissions in the API client directory"));
-        console.error(chalk.blue("  - Ensure the build directory path is valid"));
-        console.error(
-          chalk.blue("  - The TypeScript compiler will attempt to create the directory during compilation"),
-        );
-        // Continue execution, as tsc will create the directory during compilation
-      }
-    }
-
-    // Parse platform modules with improved space handling
-    const platformModulesList = platformModules
-      .replace(/[[\]]/g, "") // Remove brackets
-      .split(",") // Split by comma
-      .map((module) => module.trim()) // Trim whitespace from each module
-      .filter((module) => module.length > 0); // Remove empty entries
-
-    const generatedFiles: string[] = [];
-
-    for (const platformModule of platformModulesList) {
-      const apiClientPaths = paths.resolveApiClientPaths(platformModule);
-
-      console.log(
-        "api-client-generator %s Generating API client for %s module on %s environment",
-        chalk.green("info"),
-        chalk.whiteBright(platformModule),
-        chalk.whiteBright(platformUrl),
-      );
-
-      // Construct nswag command with validated parameters
-      const nswagVariables = [
-        `APP_PLATFORM_URL=${platformUrl}`,
-        `APP_PLATFORM_MODULE=${platformModule}`,
-        `APP_AUTH_API_BASE_PATH=${paths.nswagPaths.authApiBase}`,
-        `APP_TEMPLATE_DIRECTORY=${paths.nswagPaths.templates}`,
-        `APP_API_CLIENT_PATH=${apiClientPaths.nswag}`,
-        `APP_TYPE_STYLE=${typeStyle}`,
-        `RUNTIME=${runtime}`,
-      ].join(",");
-
-      const nswagCommand = ["run", paths.nswagPaths.configuration, `/variables:${nswagVariables}`];
-
-      if (verbose) {
-        console.log(
-          "api-client-generator %s Running command: npx nswag %s",
-          chalk.blue("debug"),
-          nswagCommand.join(" "),
-        );
-        console.log("api-client-generator %s Variables: %s", chalk.blue("debug"), nswagVariables);
-      }
-
-      // Execute nswag command
-      const nswag = sync("npx nswag", nswagCommand, {
-        stdio: ["ignore", verbose ? "inherit" : "pipe", "inherit"],
-        shell: true,
-      });
-
-      if (nswag.status === 0) {
-        console.log(
-          "api-client-generator %s Successfully generated %s",
-          chalk.greenBright("success"),
-          chalk.whiteBright(apiClientPaths.console),
-        );
-
-        // Skip configuration update if SKIP_BUILD is set
-        if (!skipBuild) {
-          generatedFiles.push(`${platformModule.toLowerCase()}.ts`);
-        }
-      } else {
-        console.error(
-          "api-client-generator %s Failed to generate %s",
-          chalk.red("error"),
-          chalk.whiteBright(apiClientPaths.console),
-        );
-
-        // Always show error details
-        console.error(
-          "api-client-generator %s NSwag command failed with exit code: %s",
-          chalk.red("error"),
-          nswag.status,
-        );
-
-        // Show stderr output for better error understanding
-        if (nswag.stderr && nswag.stderr.toString().trim()) {
-          console.error("api-client-generator %s NSwag error output:", chalk.red("error"));
-          console.error(chalk.red(nswag.stderr.toString()));
-        }
-
-        // Show stdout output if available (might contain useful info)
-        if (nswag.stdout && nswag.stdout.toString().trim()) {
-          console.error("api-client-generator %s NSwag output:", chalk.yellow("warning"));
-          console.error(chalk.yellow(nswag.stdout.toString()));
-        }
-
-        // Provide helpful troubleshooting information
-        console.error("api-client-generator %s Troubleshooting tips:", chalk.blue("info"));
-        console.error(chalk.blue("  - Check if the platform URL is accessible: %s"), platformUrl);
-        console.error(chalk.blue("  - Verify the module name '%s' exists on the platform"), platformModule);
-        console.error(chalk.blue(`  - Ensure .NET Core ${runtime} is installed`));
-        console.error(chalk.blue("  - Try running with --VERBOSE=true for more details"));
-        process.exit(1);
-      }
-    }
-
-    // Skip compilation and package.json generation if SKIP_BUILD is set
-    if (!skipBuild) {
-      // Handle tsconfig generation and updates
-      const tsConfigPath = path.join(apiClientDirectory, "tsconfig.json");
-      const tsConfig = handleTsConfig(tsConfigPath, generatedFiles, outDir, buildDir);
-
-      // Write updated tsconfig.json
-      try {
-        writeFileSync(tsConfigPath, JSON.stringify(tsConfig, null, 2));
-        if (verbose) {
-          console.log("api-client-generator %s Updated tsconfig.json", chalk.greenBright("success"));
-        }
-      } catch (error) {
-        console.error("api-client-generator %s Failed to write tsconfig.json", chalk.red("error"));
-        console.error(chalk.red("Error details:"), error);
-        console.error("api-client-generator %s File writing troubleshooting:", chalk.blue("info"));
-        console.error(chalk.blue("  - Check if you have write permissions in the API client directory"));
-        console.error(chalk.blue("  - Ensure the file path is valid and not locked by another process"));
-        console.error(chalk.blue("  - Try running with elevated permissions if needed"));
-        process.exit(1);
-      }
-
-      // Compile generated TypeScript files to JavaScript with declaration files
-      console.log("api-client-generator %s Compiling TypeScript files to JavaScript", chalk.green("info"));
-
-      const tsc = sync("npx tsc", ["--project", tsConfigPath], {
-        stdio: ["ignore", "pipe", "pipe"],
-        shell: true,
-      });
-
-      if (tsc.status === 0) {
-        console.log("api-client-generator %s Successfully compiled TypeScript files", chalk.greenBright("success"));
-      } else {
-        console.error("api-client-generator %s Failed to compile TypeScript files", chalk.red("error"));
-
-        // Show TypeScript compilation errors
-        if (tsc.stderr && tsc.stderr.toString().trim()) {
-          console.error("api-client-generator %s TypeScript compilation errors:", chalk.red("error"));
-          console.error(chalk.red(tsc.stderr.toString()));
-        }
-
-        // Show stdout output if available (might contain useful info)
-        if (tsc.stdout && tsc.stdout.toString().trim()) {
-          console.error("api-client-generator %s TypeScript output:", chalk.yellow("warning"));
-          console.error(chalk.yellow(tsc.stdout.toString()));
-        }
-
-        // Provide helpful troubleshooting information
-        console.error("api-client-generator %s TypeScript compilation troubleshooting:", chalk.blue("info"));
-        console.error(chalk.blue("  - Check if all required dependencies are installed"));
-        console.error(chalk.blue("  - Verify TypeScript configuration in tsconfig.json"));
-        console.error(chalk.blue("  - Ensure generated API files are valid TypeScript"));
-        console.error(chalk.blue("  - Try running with --VERBOSE=true for more details"));
-
-        // Exit on TypeScript compilation errors
-        process.exit(1);
-      }
-
-      // Handle package.json generation and updates
-      const packageJsonPath = path.join(apiClientDirectory, "package.json");
-      const packageJson = handlePackageJson(packageJsonPath, generatedFiles, {
-        ...parsedArgs,
-        APP_PACKAGE_NAME: packageName,
-        APP_PACKAGE_VERSION: packageVersion,
-        APP_BUILD_DIR: buildDir,
-        VERBOSE: verbose,
-      });
-
-      // Write updated package.json with proper formatting
-      try {
-        writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-        console.log("api-client-generator %s Generated package.json", chalk.greenBright("success"));
-      } catch (error) {
-        console.error("api-client-generator %s Failed to write package.json", chalk.red("error"));
-        console.error(chalk.red("Error details:"), error);
-        console.error("api-client-generator %s Package.json writing troubleshooting:", chalk.blue("info"));
-        console.error(chalk.blue("  - Check if you have write permissions in the API client directory"));
-        console.error(chalk.blue("  - Ensure the file path is valid and not locked by another process"));
-        console.error(chalk.blue("  - Try running with elevated permissions if needed"));
-        process.exit(1);
-      }
     }
   } catch (error) {
     console.error("api-client-generator %s Unexpected error occurred during API client generation", chalk.red("error"));

@@ -410,18 +410,24 @@ function getFocusableElements() {
   });
 }
 
+let isRedirectingFocus = false;
+
 function focusFirstFocusable() {
+  if (isRedirectingFocus) return;
+  isRedirectingFocus = true;
+
   const firstFocusable = getFocusableElements()[0];
   if (firstFocusable) {
     firstFocusable.focus();
-    return;
+  } else {
+    panelEl.value?.focus();
   }
 
-  panelEl.value?.focus();
+  isRedirectingFocus = false;
 }
 
 function handleDocumentFocusIn(event: FocusEvent) {
-  if (!props.modelValue || !props.trapFocus || !panelEl.value) {
+  if (isRedirectingFocus || !props.modelValue || !props.trapFocus || !panelEl.value) {
     return;
   }
 

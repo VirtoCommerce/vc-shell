@@ -1,3 +1,9 @@
+# [2.0.0-alpha.14](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.13...v2.0.0-alpha.14) (2026-03-20)
+
+
+### Bug Fixes
+
+* **notifications:** decouple toast dismissal from notification badge state ([d6d08f1](https://github.com/VirtoCommerce/vc-shell/commit/d6d08f14e6aaf3cd88451c2b80b72b2596a27d02))
 # [2.0.0-alpha.13](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.12...v2.0.0-alpha.13) (2026-03-20)
 
 

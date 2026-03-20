@@ -1,3 +1,7 @@
+# [2.0.0-alpha.14](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.13...v2.0.0-alpha.14) (2026-03-20)
+
+**Note:** Version bump only for package @vc-shell/mf-module
+
 # [2.0.0-alpha.13](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.12...v2.0.0-alpha.13) (2026-03-20)
 
 **Note:** Version bump only for package @vc-shell/mf-module

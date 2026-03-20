@@ -58,6 +58,7 @@
     "@types/adm-zip": "^0.5.5",
     "@types/jest-image-snapshot": "^6.4.1",
     "@types/jquery": "^3.5.32",
+    "@types/jscodeshift": "^17.3.0",
     "@types/lodash": "^4.17.9",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.10.5",

@@ -1,0 +1,53 @@
+import { describe, it, expect } from "vitest";
+import transform from "../../../src/transforms/remove-deprecated-aliases";
+import { applyTransform } from "../../../src/utils/test-helpers";
+
+describe("remove-deprecated-aliases (jscodeshift)", () => {
+  it("renames TOOLBAR_SERVICE to ToolbarServiceKey", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { TOOLBAR_SERVICE } from "@vc-shell/framework";\nconst svc = inject(TOOLBAR_SERVICE);`,
+    });
+    expect(result).toContain("ToolbarServiceKey");
+    expect(result).not.toContain("TOOLBAR_SERVICE");
+  });
+
+  it("renames BladeInstance to BladeInstanceKey", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { BladeInstance } from "@vc-shell/framework";\nconst blade = inject(BladeInstance);`,
+    });
+    expect(result).toContain("BladeInstanceKey");
+    // Ensure no standalone "BladeInstance" remains (only "BladeInstanceKey")
+    expect(result!.replace(/BladeInstanceKey/g, "")).not.toContain("BladeInstance");
+  });
+
+  it("renames multiple aliases in one file", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { EMBEDDED_MODE, BLADE_BACK_BUTTON } from "@vc-shell/framework";
+const embedded = inject(EMBEDDED_MODE);
+const back = inject(BLADE_BACK_BUTTON);`,
+    });
+    expect(result).toContain("EmbeddedModeKey");
+    expect(result).toContain("BladeBackButtonKey");
+    expect(result).not.toContain("EMBEDDED_MODE");
+    expect(result).not.toContain("BLADE_BACK_BUTTON");
+  });
+
+  it("skips files without @vc-shell/framework import", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { ref } from "vue";\nconst x = ref(0);`,
+    });
+    expect(result).toBeNull();
+  });
+
+  it("skips files without matching imports", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { useBlade } from "@vc-shell/framework";\nconst b = useBlade();`,
+    });
+    expect(result).toBeNull();
+  });
+});

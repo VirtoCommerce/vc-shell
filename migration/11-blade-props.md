@@ -90,6 +90,58 @@ const reload = async () => {
 7. Replace `emit("close:blade")` → `closeSelf()`
 8. Replace `props.param` → `param.value`
 
+## Common Pitfalls
+
+### 1. `param.value` in templates — Vue auto-unwraps refs
+
+In `<template>`, Vue automatically unwraps refs. `param` from `useBlade()` is a `ComputedRef<string | undefined>`, so in templates use `param` directly, not `param.value`:
+
+```vue
+<!-- ✅ Correct -->
+<div v-if="param">...</div>
+<VcInput :disabled="!!param" />
+
+<!-- ❌ Wrong — "Property 'value' does not exist on type 'string'" -->
+<div v-if="param.value">...</div>
+```
+
+In `<script>`, always use `.value` as usual:
+```typescript
+if (param.value) {
+  await loadProduct({ id: param.value });
+}
+```
+
+### 2. `useBlade()` must be called BEFORE composables that use `options.value`
+
+If a composable needs `options.value` at setup time, declare `useBlade()` first:
+
+```typescript
+// ✅ Correct order
+const { options } = useBlade<{ orderId: string }>();
+const { items } = useMyComposable({ orderId: options.value?.orderId || "" });
+
+// ❌ Wrong — "Variable 'options' is used before being assigned"
+const { items } = useMyComposable({ orderId: options.value?.orderId || "" });
+const { options } = useBlade<{ orderId: string }>();
+```
+
+### 3. Wrapper components — stop passing blade props to base components
+
+If a wrapper (e.g. `productDetails.vue`) passes `:param`, `:options`, `:expanded`, `:closable` and blade events to a base component (e.g. `ProductDetailsBase.vue`), remove them all. The base component should call `useBlade()` directly — Vue's provide/inject hierarchy resolves the BladeDescriptor from the parent wrapper automatically.
+
+```vue
+<!-- ✅ After migration — wrapper only passes non-blade props -->
+<ProductDetailsBase :config="detailsConfig" />
+
+<!-- ❌ Before — blade boilerplate forwarding -->
+<ProductDetailsBase
+  :expanded="expanded" :closable="closable" :param="param" :options="options"
+  @parent:call="$emit('parent:call', $event)"
+  @close:blade="$emit('close:blade')"
+/>
+```
+
 ## Typed Options
 
 ```typescript

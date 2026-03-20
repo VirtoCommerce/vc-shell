@@ -21,6 +21,11 @@ export const releasePackages: ReleasePackageConfig[] = [
     displayName: "Create VC App (@vc-shell/create-vc-app)",
   },
   {
+    path: "cli/migrate",
+    packageName: "@vc-shell/migrate",
+    displayName: "VC Shell Migrate (@vc-shell/migrate)",
+  },
+  {
     path: "configs/vite-config",
     packageName: "@vc-shell/config-generator",
     displayName: "Vite Config (@vc-shell/config-generator)",

@@ -7,34 +7,17 @@
  *   "compilerOptions": { "types": ["vite/client", "@vc-shell/framework/globals"] }
  *
  * This replaces manual shims-vue.d.ts and vue-i18n.d.ts files.
+ *
+ * This file is an umbrella entry point that pulls in:
+ * - shims-vue.d.ts   (script — ambient `declare module "*.vue"`)
+ * - globals-augments.d.ts (module — `@vue/runtime-core` augmentation)
+ *
+ * They MUST be separate files because TypeScript treats `declare module "X"`
+ * differently in scripts vs modules:
+ * - Script file → ambient declaration (creates the module from scratch)
+ * - Module file → augmentation (extends an existing module)
+ * We need "*.vue" as ambient and "@vue/runtime-core" as augmentation.
  */
 
-import type { CoreBladeAdditionalSettings } from "./index";
-import type { Ref } from "vue";
-import type { Composer } from "vue-i18n";
-
-declare module "*.vue" {
-  import type { DefineComponent } from "vue";
-  const component: DefineComponent<{}, {}, any>;
-  export default component;
-}
-
-declare module "@vue/runtime-core" {
-  interface ComponentCustomProperties extends _ComponentCustomProperties {
-    $t: (key: string, ...args: any[]) => string;
-    $d: (key: string, ...args: any[]) => string;
-    $tm: (key: string, ...args: any[]) => string;
-    $rt: (key: string, ...args: any[]) => string;
-    $mergeLocaleMessage: Composer<{}, {}, {}, string, never, string>["mergeLocaleMessage"];
-    $hasAccess: (permissions: string | string[] | undefined) => boolean;
-    $isPhone: Ref<boolean>;
-    $isTablet: Ref<boolean>;
-    $isMobile: Ref<boolean>;
-    $isDesktop: Ref<boolean>;
-    $isTouch: boolean;
-  }
-
-  interface ComponentOptionsBase extends CoreBladeAdditionalSettings {}
-}
-
-export {};
+/// <reference path="./shims-vue.d.ts" />
+/// <reference path="./globals-augments.d.ts" />

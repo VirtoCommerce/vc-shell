@@ -50,6 +50,10 @@
     "**/*.test.ts",
     "vitest.config.ts",
     // TODO: fix this
-    "**/*.stories.ts"
+    "**/*.stories.ts",
+    // These are for consuming apps only — including them here breaks vue-tsc .vue resolution
+    "globals.d.ts",
+    "shims-vue.d.ts",
+    "globals-augments.d.ts"
   ]
 }

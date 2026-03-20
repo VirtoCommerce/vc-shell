@@ -9,6 +9,8 @@
     "dist",
     "dist/locales/*.json",
     "globals.d.ts",
+    "globals-augments.d.ts",
+    "shims-vue.d.ts",
     "tailwind.config.ts"
   ],
   "exports": {

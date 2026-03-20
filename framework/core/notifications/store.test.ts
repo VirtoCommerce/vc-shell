@@ -180,7 +180,6 @@ describe("NotificationStore", () => {
       expect(handleSpy).toHaveBeenCalledWith(
         expect.objectContaining({ id: "test-1" }),
         expect.objectContaining({ toast: { mode: "auto" } }),
-        expect.any(Function), // markAsRead
       );
     });
 

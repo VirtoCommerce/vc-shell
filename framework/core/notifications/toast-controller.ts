@@ -38,7 +38,6 @@ export interface IToastController {
   handle(
     message: PushNotification,
     config: NotificationTypeConfig,
-    markAsReadFn?: (msg: PushNotification) => void,
   ): void;
 }
 
@@ -48,7 +47,6 @@ export function createToastController(): IToastController {
   function handle(
     message: PushNotification,
     config: NotificationTypeConfig,
-    markAsReadFn?: (msg: PushNotification) => void,
   ) {
     if (!config.toast) return;
     if (config.toast.mode === "silent") return;
@@ -56,9 +54,9 @@ export function createToastController(): IToastController {
     const severity = resolveSeverity(config.toast, message);
 
     if (config.toast.mode === "auto") {
-      handleAuto(message, severity, config, markAsReadFn);
+      handleAuto(message, severity, config);
     } else if (config.toast.mode === "progress") {
-      handleProgress(message, severity, config, markAsReadFn);
+      handleProgress(message, severity, config);
     }
   }
 
@@ -66,7 +64,6 @@ export function createToastController(): IToastController {
     message: PushNotification,
     severity: Severity,
     config: NotificationTypeConfig,
-    markAsReadFn?: (msg: PushNotification) => void,
   ) {
     const timeout =
       config.toast && typeof config.toast !== "boolean" && config.toast.timeout != null
@@ -76,9 +73,6 @@ export function createToastController(): IToastController {
     notification(message.title ?? "", {
       timeout,
       type: severity === "critical" ? "error" : severity === "info" ? "default" : severity,
-      onClose() {
-        markAsReadFn?.(message);
-      },
     });
   }
 
@@ -86,7 +80,6 @@ export function createToastController(): IToastController {
     message: PushNotification,
     severity: Severity,
     config: NotificationTypeConfig,
-    markAsReadFn?: (msg: PushNotification) => void,
   ) {
     const toastConfig = config.toast as Exclude<typeof config.toast, false>;
     const key = resolveToastKey(message, config);
@@ -101,9 +94,6 @@ export function createToastController(): IToastController {
           type: completedType,
           timeout: 5000,
           content: message.title ?? "",
-          onClose() {
-            markAsReadFn?.(message);
-          },
         });
         activeToasts.delete(key);
       }

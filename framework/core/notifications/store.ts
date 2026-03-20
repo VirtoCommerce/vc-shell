@@ -11,7 +11,6 @@ export interface NotificationStoreOptions {
   toastHandle?: (
     msg: PushNotification,
     config: NotificationTypeConfig,
-    markAsRead: (msg: PushNotification) => void,
   ) => void;
 }
 
@@ -91,7 +90,7 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
     // Toast (Level 1: always-on) — use stored isNew, not incoming
     const config = message.notifyType ? registry.get(message.notifyType) : undefined;
     if (config && effectiveIsNew) {
-      toastHandle(message, config, markAsRead);
+      toastHandle(message, config);
     }
 
     // Notify subscribers (Level 2: blade-level) — use stored isNew

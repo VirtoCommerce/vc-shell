@@ -72,7 +72,7 @@ Commands:
   /vc-app add-module <name>   Add an empty module skeleton to the current project
   /vc-app generate            Generate a full UI module from intent (list/details blades, composables, locales)
   /vc-app promote <name>      Transition a prototype module from mock data to real API client
-  /vc-app design [prompt]   Generate a full application from a free-text description (multi-module)
+  /vc-app design [prompt]    Generate a full application from a free-text description (multi-module)
 
 Examples:
   /vc-app create

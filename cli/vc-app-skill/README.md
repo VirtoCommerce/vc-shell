@@ -11,6 +11,7 @@ The skill covers:
 - Connecting to VirtoCommerce platform and generating typed API clients
 - Intent-driven module generation (list + details blades, composables, locales) with mock or API data
 - Enhancing existing modules with surgical modifications (add columns, fields, toolbar actions, logic, blade links)
+- Generating full multi-module applications from a free-text prompt (design command)
 - Promoting prototype modules from mock data to real API clients
 - Following vc-shell conventions: Vue 3 + TypeScript, Tailwind with `tw-` prefix, `<script setup>`, BEM class names
 
@@ -111,6 +112,25 @@ When the module already exists, generate detects it and switches to enhance mode
 - **Phase E5: Verification** — type-checks the result
 
 Supported enhance actions: add columns, add form fields, add logic/computed/watchers, add toolbar actions, link blades, add new blades to existing module.
+
+### `/vc-app design`
+
+Generate a full multi-module application from a free-text prompt. Parses a description into a structured plan, shows it for confirmation, then orchestrates existing generators to build everything.
+
+```
+/vc-app design "Build a tenant management system with subscriptions and agent catalog"
+/vc-app design --from requirements.md
+/vc-app design
+```
+
+- **Phase 1: Prompt Acquisition** — inline text, `--from <file>`, or interactive input
+- **Phase 2: Prompt Analysis** — extracts entities, fields, actions, connections, and abstract TODOs from natural language
+- **Phase 3: Plan Presentation** — shows structured plan for confirmation with iterative corrections
+- **Phase 4: API Detection** — checks for existing API clients, attempts entity matching
+- **Phase 5: Execution** — scaffolds project if needed, then loops over modules dispatching generators, wires connections between blades, injects TODO comments for abstract requirements
+- **Phase 6: Summary** — shows created modules, wired connections, TODOs, data source status, TypeScript check result
+
+Supports prompts in any language; module/field names are always generated in English.
 
 ### `/vc-app promote <name>`
 

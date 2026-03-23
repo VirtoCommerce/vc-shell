@@ -125,6 +125,30 @@ export { default as {moduleClassName} } from "./{moduleName}";
 - If the module name is already exported (any form), skip — do not add duplicate
 - Add a blank line before the new export only if the file does not end with a blank line
 
+### Step 7: Register module in main.ts (app.use)
+
+Find the app entry point: look for `src/main.ts` relative to the project root (the parent of `src/modules/`).
+
+Read `main.ts` and check if `{moduleClassName}` is already imported and used:
+- Check for `import { ... {moduleClassName} ... } from "./modules"` (or `from "@/modules"`)
+- Check for `app.use({moduleClassName})`
+
+If NOT already registered:
+
+1. **Update the modules import.** Find the existing `import { ... } from "./modules"` line. Add `{moduleClassName}` to its named imports. If no such import exists, add:
+   ```ts
+   import { {moduleClassName} } from "./modules";
+   ```
+
+2. **Add `app.use({moduleClassName})`.** Find the last `app.use(SomeModule)` line (before `app.use(router)` or similar non-module uses). Insert `app.use({moduleClassName});` after it.
+
+**Critical rules:**
+- Read the file first — NEVER overwrite from scratch
+- Use Edit tool for surgical changes
+- Preserve all existing imports and app.use() calls
+- If module is already imported AND used, skip entirely
+- Place `app.use()` with other module registrations, NOT after `app.use(router)`
+
 ## Output Contract
 
 Files written to disk:
@@ -132,6 +156,7 @@ Files written to disk:
 2. `{targetDir}/composables/index.ts` (created or updated)
 3. `{targetDir}/index.ts` (created)
 4. `{appModulesRegistryPath}` (appended — module export added)
+5. `src/main.ts` (updated — import + app.use added)
 
 Returns a summary of all files created/modified and confirmation of registry registration.
 
@@ -145,3 +170,5 @@ Before completing, verify:
 - [ ] App registry was READ before modifying — existing exports preserved
 - [ ] No duplicate export for `{moduleClassName}` in registry
 - [ ] Module `index.ts` uses `import * as pages` (namespace import), not named imports
+- [ ] `main.ts` has `import { {moduleClassName} }` from modules
+- [ ] `main.ts` has `app.use({moduleClassName})` with other module registrations

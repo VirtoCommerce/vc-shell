@@ -113,8 +113,8 @@ const saveItem = async (item: Record<string, unknown>) => {
   return item;
 };
 
-const removeItems = async (ids: string[]) => {
-  console.log("Mock remove:", ids);
+const deleteItem = async (id: string) => {
+  console.log("Mock delete:", id);
 };
 // vc-app:mock-end
 ```

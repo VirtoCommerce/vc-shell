@@ -164,7 +164,7 @@ When `dataSource` fields are empty/null (no API client), the generator must:
 
 1. Wrap mock data-source code with `// vc-app:mock-start` and `// vc-app:mock-end` markers
 2. Generate a mock data array with sample values matching the requested columns
-3. Generate mock `fetchItems`, `removeItems` functions inside the marker block
+3. Generate mock `fetchItems`, `fetchItem`, `saveItem`, `removeItems` functions inside the marker block
 
 Instead of the normal composable that imports API client classes, generate this mock composable body:
 

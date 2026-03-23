@@ -22,6 +22,7 @@ describe("selectTransforms", () => {
       "menu-group-config",
       "shims-to-globals",
       "use-data-table-sort",
+      "manual-migration-audit",
     ]);
   });
 

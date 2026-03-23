@@ -129,6 +129,13 @@ export const transforms: VersionedTransform[] = [
     transformPath: t("use-data-table-sort"),
     fileExtensions: [".vue"],
   },
+  {
+    name: "manual-migration-audit",
+    description: "Detect patterns requiring manual migration (useExternalWidgets, moment, useFunctions, closeBlade)",
+    introducedIn: "2.0.0",
+    diagnosticOnly: true,
+    transformPath: t("manual-migration-audit"),
+  },
 ];
 
 export function selectTransforms(

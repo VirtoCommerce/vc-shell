@@ -52,6 +52,7 @@ Parse `$ARGUMENTS` to determine the subcommand:
 | `add-module <name>` | Section: `/vc-app add-module` |
 | `generate ...` | Section: `/vc-app generate` |
 | `promote <moduleName>` | Section: `/vc-app promote` |
+| `design ...`              | Section: `/vc-app design` |
 | empty / `help` / `--help` | Section: Help |
 
 If no arguments match, show the help section.
@@ -71,6 +72,7 @@ Commands:
   /vc-app add-module <name>   Add an empty module skeleton to the current project
   /vc-app generate            Generate a full UI module from intent (list/details blades, composables, locales)
   /vc-app promote <name>      Transition a prototype module from mock data to real API client
+  /vc-app design [prompt]   Generate a full application from a free-text description (multi-module)
 
 Examples:
   /vc-app create
@@ -78,6 +80,8 @@ Examples:
   /vc-app add-module orders
   /vc-app generate
   /vc-app promote team
+  /vc-app design "Build a tenant management system with subscriptions and agent catalog"
+  /vc-app design --from requirements.md
 ```
 
 Stop after displaying help. Do not proceed to any other section.

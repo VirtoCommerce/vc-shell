@@ -73,8 +73,9 @@ onMounted(async () => {
 
 onBeforeClose(async () => {
   if (isModified.value) {
-    return await showConfirmation("You have unsaved changes. Are you sure you want to close?");
+    return !(await showConfirmation("You have unsaved changes. Are you sure you want to close?"));
   }
+  return false;
 });
 
 useBeforeUnload(computed(() => isModified.value));

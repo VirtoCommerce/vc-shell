@@ -50,4 +50,9 @@ export const releasePackages: ReleasePackageConfig[] = [
     packageName: "@vc-shell/mf-module",
     displayName: "MF Module (@vc-shell/mf-module)",
   },
+  {
+    path: "cli/vc-app-skill",
+    packageName: "@vc-shell/vc-app-skill",
+    displayName: "VC App Skill (@vc-shell/vc-app-skill)",
+  },
 ];

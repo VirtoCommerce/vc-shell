@@ -197,8 +197,9 @@ onMounted(async () => {
 
 onBeforeClose(async () => {
   if (!isDisabled.value && isModified.value) {
-    return await showConfirmation(t("SAMPLE_APP.PAGES.ALERTS.CLOSE_CONFIRMATION"));
+    return !(await showConfirmation(t("SAMPLE_APP.PAGES.ALERTS.CLOSE_CONFIRMATION")));
   }
+  return false;
 });
 
 useBeforeUnload(computed(() => !isDisabled.value && isModified.value));

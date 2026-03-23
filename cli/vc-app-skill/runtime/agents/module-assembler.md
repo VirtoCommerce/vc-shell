@@ -140,14 +140,17 @@ If NOT already registered:
    import { {moduleClassName} } from "./modules";
    ```
 
-2. **Add `app.use({moduleClassName})`.** Find the last `app.use(SomeModule)` line (before `app.use(router)` or similar non-module uses). Insert `app.use({moduleClassName});` after it.
+2. **Add `app.use({moduleClassName})`.** Insert `app.use({moduleClassName});` in the correct position:
+   - AFTER `app.use(VirtoShellFramework, ...)` (framework must be first)
+   - AFTER any existing `app.use(ModuleName)` calls (group modules together)
+   - BEFORE `app.use(router)` (router must come after all modules)
 
 **Critical rules:**
 - Read the file first — NEVER overwrite from scratch
 - Use Edit tool for surgical changes
 - Preserve all existing imports and app.use() calls
 - If module is already imported AND used, skip entirely
-- Place `app.use()` with other module registrations, NOT after `app.use(router)`
+- Module registration order: VirtoShellFramework → all modules → router → bootstrap
 
 ## Output Contract
 

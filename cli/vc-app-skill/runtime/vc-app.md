@@ -17,11 +17,11 @@ Before doing anything else, resolve these paths and store them for all subsequen
 
 ### Skill directory
 
-```
-SKILL_DIR = <directory containing this file, i.e., cli/create-vc-app/skill>
-```
+Resolve `SKILL_DIR` using this priority order:
 
-If running from a project that installed `@vc-shell/create-vc-app`, look for `node_modules/@vc-shell/create-vc-app/skill/`. Otherwise use the path of this file's parent directory.
+1. **npm global install:** If this file was loaded from `~/.claude/vc-app-skill/`, set `SKILL_DIR` to that directory.
+2. **npm local install:** If `node_modules/@vc-shell/vc-app-skill/runtime/` exists relative to the project root, set `SKILL_DIR` to that path.
+3. **Fallback:** Set `SKILL_DIR` to the directory containing this file (works in dev/monorepo mode where this file lives at `cli/vc-app-skill/runtime/`).
 
 ### Knowledge base
 

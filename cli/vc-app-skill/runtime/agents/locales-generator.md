@@ -107,6 +107,8 @@ import en from "./en.json";
 export { en };
 ```
 
+**CRITICAL:** Use named `export { en }`, NOT `export default { en }`. The framework's `defineAppModule` expects `import * as locales` which requires named exports. A default export will silently break locale loading.
+
 ## Output Contract
 
 Files written to disk:
@@ -123,5 +125,6 @@ Before completing, verify:
 - [ ] Keys with template literal interpolation (`${...}`) were excluded
 - [ ] JSON is valid (no trailing commas, proper nesting)
 - [ ] `locales/index.ts` uses `import en from "./en.json"` (relative, not absolute)
+- [ ] `locales/index.ts` uses `export { en }` (named export), NOT `export default { en }` (default export breaks `import * as locales`)
 - [ ] No duplicate keys in the JSON (last value wins if duplicates exist)
 - [ ] Values are human-readable strings, not the raw key segments

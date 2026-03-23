@@ -58,7 +58,9 @@ export { en };
 <!-- PATTERN: useDataTableSort — sortField/sortOrder bound to VcDataTable, sortExpression watched -->
 <!-- PATTERN: exposeToChildren — exposes reload so child detail blade can call callParent("reload") -->
 <!-- PATTERN: openBlade with onOpen/onClose to track selectedItemId -->
-<!-- PATTERN: simpleColumns as computed array — alternative to inline VcColumn for data-only columns -->
+<!-- PATTERN: explicit VcColumn declarations — NO v-for, enables #body slots and mobile layout -->
+<!-- PATTERN: column types: image, date-ago, status, status-icon for proper rendering -->
+<!-- PATTERN: mobile-role/mobile-position for mobile card layout -->
 
 ```vue
 <template>
@@ -89,11 +91,35 @@ export { en };
       @pagination-click="onPaginationClick"
       @pull-refresh="reload"
     >
-      <!-- PATTERN: v-for over computed column array for data-driven simple columns -->
+      <!-- PATTERN: each VcColumn declared explicitly for slots and mobile layout -->
       <VcColumn
-        v-for="col in simpleColumns"
-        :key="col.id"
-        v-bind="col"
+        id="iconUrl"
+        :title="t('TEAM.PAGES.LIST.TABLE.HEADER.IMAGE')"
+        empty-icon="lucide-user"
+        type="image"
+        :always-visible="true"
+        width="60px"
+        mobile-role="image"
+      />
+      <VcColumn
+        id="firstName"
+        :title="t('TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME')"
+        :always-visible="true"
+        :sortable="true"
+        mobile-position="top-left"
+      />
+      <VcColumn
+        id="lastName"
+        :title="t('TEAM.PAGES.LIST.TABLE.HEADER.LAST_NAME')"
+        :always-visible="true"
+        :sortable="true"
+        mobile-position="bottom-left"
+      />
+      <VcColumn
+        id="email"
+        :title="t('TEAM.PAGES.LIST.TABLE.HEADER.EMAIL')"
+        :always-visible="true"
+        mobile-position="bottom-right"
       />
 
       <!-- PATTERN: custom body slot for computed display value -->
@@ -101,19 +127,25 @@ export { en };
         id="role"
         :title="t('TEAM.PAGES.LIST.TABLE.HEADER.ROLE')"
         :always-visible="true"
+        mobile-position="top-right"
       >
         <template #body="{ data }">
           {{ roleName(data.role as string) }}
         </template>
       </VcColumn>
 
+      <!-- PATTERN: status column with VcStatus component in #body slot -->
       <VcColumn
         id="isLockedOut"
         :title="t('TEAM.PAGES.LIST.TABLE.HEADER.STATUS')"
         :always-visible="true"
+        type="status"
+        mobile-role="status"
       >
         <template #body="{ data }">
-          <TeamStatus :is-locked-out="data.isLockedOut" />
+          <VcStatus :variant="data.isLockedOut ? 'danger' : 'success'">
+            {{ data.isLockedOut ? t('TEAM.PAGES.LIST.TABLE.STATUS.LOCKED') : t('TEAM.PAGES.LIST.TABLE.STATUS.ACTIVE') }}
+          </VcStatus>
         </template>
       </VcColumn>
     </VcDataTable>
@@ -181,33 +213,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
 ]);
 
-// PATTERN: simpleColumns as computed array — use for columns with no custom slot
-const simpleColumns = computed(() => [
-  {
-    id: "iconUrl",
-    title: t("TEAM.PAGES.LIST.TABLE.HEADER.IMAGE"),
-    emptyIcon: "lucide-user",
-    type: "image" as const,
-    alwaysVisible: true,
-  },
-  {
-    id: "firstName",
-    title: t("TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME"),
-    alwaysVisible: true,
-    sortable: true,
-  },
-  {
-    id: "lastName",
-    title: t("TEAM.PAGES.LIST.TABLE.HEADER.LAST_NAME"),
-    alwaysVisible: true,
-    sortable: true,
-  },
-  {
-    id: "email",
-    title: t("TEAM.PAGES.LIST.TABLE.HEADER.EMAIL"),
-    alwaysVisible: true,
-  },
-]);
+// PATTERN: columns are declared in the template, NOT as a computed array
+// This allows #body slots for custom rendering (VcStatus, images, etc.)
 
 // PATTERN: watch sortExpression to reload data when sort changes
 watch(sortExpression, async (value) => {

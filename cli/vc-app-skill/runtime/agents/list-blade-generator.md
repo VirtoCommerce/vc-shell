@@ -17,7 +17,8 @@ description: Generates a list blade Vue component and its plural composable for 
       {
         "name": "string — field name (camelCase)",
         "title": "string — display label",
-        "type": "string? — 'date-time' | 'image' | 'number' | 'boolean' | 'html' | 'link'",
+        "type": "string? — detected data type from API (e.g., 'string', 'Date', 'number', 'boolean')",
+        "isEnum": "boolean? — true if field is a string enum (status/state)",
         "sortable": "boolean?"
       }
     ],
@@ -75,28 +76,89 @@ Follow the skeleton from `composable-list.md` exactly:
 
 If the `searchMethod` uses a non-standard pluralization (e.g., `searchSellerUsers` for `SellerUser`), match the client method name exactly.
 
-### Step 3: Generate the list blade
+### Step 3: Classify columns and assign VcColumn attributes
+
+For each column in `columns`, determine the VcColumn attributes using these rules:
+
+**Column type mapping** (based on field name and data type):
+- Field name contains "status" or "state" OR `isEnum: true` → `type="status"`, add `#body` slot with `VcStatus`
+- Field name starts with "is", "has", "can" (boolean) → `type="status-icon"`
+- Field name contains "date", "created", "modified", "updated" (Date type) → `type="date-ago"`
+- Field name contains "price", "total", "amount", "cost" (monetary) → `type="money"`
+- Field name contains "img", "image", "avatar", "thumbnail" → `type="image"`, `width="60px"`
+- Numeric field (not monetary) → `type="number"`
+- Everything else → no type (plain text)
+
+**Mobile layout assignment** (assign to the first matching column):
+- First image column → `mobile-role="image"`, `:always-visible="true"`
+- First identifier column (name, number, title) → `mobile-position="top-left"`, `:always-visible="true"`
+- First status column → `mobile-role="status"`, `:always-visible="true"`
+- First monetary/value column → `mobile-position="top-right"`
+- First secondary text column → `mobile-position="bottom-left"`
+- First date column → `mobile-position="bottom-right"`
+
+### Step 4: Generate the list blade
 
 Write to: `{targetDir}/pages/{moduleName}-list.vue`
 
-Follow the template from `list-blade-pattern.md` exactly:
+Follow the template from `list-blade-pattern.md` exactly.
 
-**Template section:**
-- `<VcBlade :title="title" width="50%" :toolbar-items="bladeToolbar">`
-- `<VcDataTable>` with all required props:
-  - `:loading`, `:items="{listVarName}"`, `:total-count`, `:pagination`, `v-model:active-item-id`, `state-key="{stateKey}"`, `v-model:sort-field`, `v-model:sort-order`, `:pull-to-refresh="true"`, `:empty-state`
-  - `@row-click`, `@pagination-click`, `@pull-refresh`
-- For each column in `columns`: emit as `<VcColumn v-for="col in simpleColumns" :key="col.id" v-bind="col" />`
+**CRITICAL: Template section — explicit VcColumn declarations (NO v-for):**
+
+Each column must be declared as a separate `<VcColumn>` element in the template. Do NOT use `v-for` with a computed array. This enables:
+- `#body` slots for status badges, images, and custom rendering
+- Per-column `mobile-role` / `mobile-position` attributes
+- Better readability and maintainability
+
+Example of correct column declarations:
+```vue
+<VcColumn
+  id="number"
+  :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER')"
+  :always-visible="true"
+  :sortable="true"
+  mobile-position="top-left"
+/>
+<VcColumn
+  id="status"
+  :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.STATUS')"
+  :always-visible="true"
+  :sortable="true"
+  type="status"
+  mobile-role="status"
+>
+  <template #body="{ data }">
+    <VcStatus :variant="statusVariant(data.status)">
+      {{ data.status }}
+    </VcStatus>
+  </template>
+</VcColumn>
+<VcColumn
+  id="total"
+  :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.TOTAL')"
+  :sortable="true"
+  type="money"
+  mobile-position="top-right"
+/>
+<VcColumn
+  id="createdDate"
+  :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE')"
+  :sortable="true"
+  type="date-ago"
+  mobile-position="bottom-right"
+/>
+```
 
 **Script setup section:**
 - `defineBlade({ name: "{bladeComponentName}", url: "{url}", isWorkspace: true, permissions: ["{i18nPrefix_lower}:manage"], menuItem: { title: "{menuConfig.title}", icon: "{menuConfig.icon}", priority: {menuConfig.priority} } })`
 - Import and destructure `{composableName}` with correct variable names
 - `useDataTableSort({ initialField: "createdDate", initialDirection: "DESC" })`
-- Build `simpleColumns` computed array from `columns` input, mapping each to `{ id, title: t("..."), alwaysVisible, sortable, type? }`
+- If any status column exists: generate `statusVariant()` mapping function (see `list-blade-pattern.md` → Status Column Pattern)
 - Use `{i18nPrefix}.PAGES.LIST.*` key pattern for all i18n calls
 - Include `watch(sortExpression, ...)`, `onMounted`, `reload`, `onPaginationClick`, `onItemClick`, `onAddItem`, `exposeToChildren({ reload })`
+- Do NOT create a `simpleColumns` computed array — columns are in the template
 
-### Step 4: Create composable barrel if it doesn't exist
+### Step 5: Create composable barrel if it doesn't exist
 
 Write to: `{targetDir}/composables/index.ts`
 
@@ -126,4 +188,11 @@ Before completing, verify:
 - [ ] Composable uses default export (factory function), not named export
 - [ ] `useLoading(...)` wraps the loading ref in the composable return
 - [ ] All `t(...)` calls use `{i18nPrefix}.PAGES.LIST.*` key pattern
-- [ ] Column `type` values use `"date-time"` (with hyphen) not `"datetime"`
+- [ ] **Each VcColumn is declared explicitly in the template — NO v-for with computed array**
+- [ ] Date columns use `type="date-ago"` (NOT `"date-time"`)
+- [ ] Status/state columns use `type="status"` with `#body` slot containing `VcStatus` component
+- [ ] Boolean columns (is*, has*, can*) use `type="status-icon"`
+- [ ] Monetary columns use `type="money"`
+- [ ] Mobile layout attributes (`mobile-position`, `mobile-role`) are assigned to key columns
+- [ ] If status column exists, `statusVariant()` function is defined in script setup
+- [ ] No `simpleColumns` computed array exists in script — columns are purely in template

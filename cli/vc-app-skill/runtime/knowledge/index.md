@@ -10,7 +10,7 @@ Docs are searched in priority order:
 
 1. `node_modules/@vc-shell/framework/**/<name>.docs.md` (if project has framework installed)
 2. `<VC_SHELL_FRAMEWORK_PATH>/**/<name>.docs.md` (if env var or `.vc-app.json` sets a path)
-3. `cli/create-vc-app/skill/knowledge/docs/**/<name>.docs.md` (built-in fallback, updated at release)
+3. `node_modules/@vc-shell/vc-app-skill/runtime/knowledge/docs/**/<name>.docs.md` (built-in fallback, updated at release)
 
 Paths use **basename glob** format (`**/<name>.docs.md`) because the sync script preserves relative paths from `framework/`. For example, `useBlade.docs.md` lives at `core/composables/useBlade/useBlade.docs.md` — search by basename only.
 

@@ -22,7 +22,6 @@
             {{ selectAllItemsText }}
           </VcButton>
         </template>
-
       </span>
 
       <VcButton
@@ -79,16 +78,27 @@ const visible = computed(() => {
 });
 
 const allSelectedText = computed(() => {
-  return t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED_COUNT", { count: props.totalCount }, `All ${props.totalCount} items selected`);
+  return t(
+    "COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED_COUNT",
+    { count: props.totalCount },
+    `All ${props.totalCount} items selected`,
+  );
 });
 
 const currentPageSelectedText = computed(() => {
-  return t("COMPONENTS.ORGANISMS.VC_TABLE.CURRENT_PAGE_SELECTED", `All ${props.selectionCount} items on this page are selected.`);
+  return t(
+    "COMPONENTS.ORGANISMS.VC_TABLE.CURRENT_PAGE_SELECTED",
+    `All ${props.selectionCount} items on this page are selected.`,
+  );
 });
 
 const selectAllItemsText = computed(() => {
   if (props.selectAllLabel) return props.selectAllLabel;
-  return t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL_COUNT", { count: props.totalCount }, `Select all ${props.totalCount} items`);
+  return t(
+    "COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL_COUNT",
+    { count: props.totalCount },
+    `Select all ${props.totalCount} items`,
+  );
 });
 
 const cancelText = computed(() => {

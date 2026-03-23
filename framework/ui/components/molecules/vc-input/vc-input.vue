@@ -263,7 +263,18 @@ export interface Props extends ITextFieldProps {
    * Input type
    * Default value: text
    */
-  type?: "text" | "password" | "email" | "tel" | "url" | "time" | "color" | "number" | "integer" | "date" | "datetime-local";
+  type?:
+    | "text"
+    | "password"
+    | "email"
+    | "tel"
+    | "url"
+    | "time"
+    | "color"
+    | "number"
+    | "integer"
+    | "date"
+    | "datetime-local";
   /**
    * Prefix
    */
@@ -372,8 +383,17 @@ defineSlots<{
   hint: (props: Record<string, never>) => VNode[];
 }>();
 
-const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
-  useFormField(props);
+const {
+  fieldId: inputId,
+  labelId,
+  errorId,
+  hintId,
+  invalid,
+  resolvedDisabled,
+  resolvedName,
+  ariaRequired,
+  ariaDescribedBy,
+} = useFormField(props);
 
 let emitTimer: NodeJS.Timeout;
 let emitValueFn;
@@ -701,6 +721,5 @@ function handleFocus() {
     @apply tw-border-[color:var(--input-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--input-error-ring-color)];
   }
-
 }
 </style>

@@ -4,7 +4,7 @@
     :bordered="true"
     size="s"
     aspect="1x1"
-    :src="(value as string)"
+    :src="value as string"
     :empty-icon="emptyIcon"
     background="contain"
   />

@@ -1,5 +1,8 @@
 <template>
-  <div role="rowgroup" class="vc-table-composition__header">
+  <div
+    role="rowgroup"
+    class="vc-table-composition__header"
+  >
     <slot />
   </div>
 </template>

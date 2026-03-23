@@ -9,20 +9,12 @@ interface ActiveToast {
   toastId: string | number;
 }
 
-function resolveSeverity(
-  toast: ToastConfig,
-  msg: PushNotification,
-): Severity {
+function resolveSeverity(toast: ToastConfig, msg: PushNotification): Severity {
   if (!toast.severity) return "info";
-  return typeof toast.severity === "function"
-    ? toast.severity(msg)
-    : toast.severity;
+  return typeof toast.severity === "function" ? toast.severity(msg) : toast.severity;
 }
 
-function resolveToastKey(
-  msg: PushNotification,
-  config: NotificationTypeConfig,
-): string {
+function resolveToastKey(msg: PushNotification, config: NotificationTypeConfig): string {
   const type = msg.notifyType ?? "unknown";
   if (config.groupBy) {
     const groupValue = (msg as PushNotificationRecord)[config.groupBy] ?? "default";
@@ -31,23 +23,16 @@ function resolveToastKey(
   return `${type}::${msg.id}`;
 }
 
-const defaultIsComplete = (msg: PushNotification) =>
-  !!(msg as PushNotificationRecord).finished;
+const defaultIsComplete = (msg: PushNotification) => !!(msg as PushNotificationRecord).finished;
 
 export interface IToastController {
-  handle(
-    message: PushNotification,
-    config: NotificationTypeConfig,
-  ): void;
+  handle(message: PushNotification, config: NotificationTypeConfig): void;
 }
 
 export function createToastController(): IToastController {
   const activeToasts = new Map<string, ActiveToast>();
 
-  function handle(
-    message: PushNotification,
-    config: NotificationTypeConfig,
-  ) {
+  function handle(message: PushNotification, config: NotificationTypeConfig) {
     if (!config.toast) return;
     if (config.toast.mode === "silent") return;
 
@@ -60,11 +45,7 @@ export function createToastController(): IToastController {
     }
   }
 
-  function handleAuto(
-    message: PushNotification,
-    severity: Severity,
-    config: NotificationTypeConfig,
-  ) {
+  function handleAuto(message: PushNotification, severity: Severity, config: NotificationTypeConfig) {
     const timeout =
       config.toast && typeof config.toast !== "boolean" && config.toast.timeout != null
         ? config.toast.timeout
@@ -76,11 +57,7 @@ export function createToastController(): IToastController {
     });
   }
 
-  function handleProgress(
-    message: PushNotification,
-    severity: Severity,
-    config: NotificationTypeConfig,
-  ) {
+  function handleProgress(message: PushNotification, severity: Severity, config: NotificationTypeConfig) {
     const toastConfig = config.toast as Exclude<typeof config.toast, false>;
     const key = resolveToastKey(message, config);
     const isComplete = toastConfig.isComplete ?? defaultIsComplete;
@@ -120,4 +97,3 @@ export function createToastController(): IToastController {
 
   return { handle };
 }
-

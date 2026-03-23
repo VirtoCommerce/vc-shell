@@ -157,8 +157,16 @@ const props = withDefaults(defineProps<VcColorInputProps>(), {
 
 const emit = defineEmits<VcColorInputEmits>();
 
-const { fieldId: inputId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
-  useFormField(props);
+const {
+  fieldId: inputId,
+  labelId,
+  errorId,
+  hintId,
+  invalid,
+  resolvedDisabled,
+  ariaRequired,
+  ariaDescribedBy,
+} = useFormField(props);
 
 // State
 const isFocused = ref(false);
@@ -393,6 +401,5 @@ defineExpose({ focus });
       tw-ring-[3px] tw-ring-[color:var(--input-focus-ring-color)]
       tw-outline-none;
   }
-
 }
 </style>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // framework/composables/useTableSort.ts
 import { ref, computed, Ref, WritableComputedRef } from "vue";
 import { createLogger } from "@core/utilities";

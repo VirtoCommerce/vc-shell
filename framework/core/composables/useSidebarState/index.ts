@@ -42,12 +42,7 @@ export function provideSidebarState(): UseSidebarStateReturn {
   if (existing) return existing;
 
   // Delegate to shared useMenuExpanded composable for reactive state sync
-  const {
-    isExpanded: isPinned,
-    isHoverExpanded,
-    toggleExpanded: togglePin,
-    toggleHoverExpanded,
-  } = useMenuExpanded();
+  const { isExpanded: isPinned, isHoverExpanded, toggleExpanded: togglePin, toggleHoverExpanded } = useMenuExpanded();
 
   const isMenuOpen = ref(false);
 

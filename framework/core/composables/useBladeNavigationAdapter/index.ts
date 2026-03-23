@@ -5,21 +5,8 @@
  * Drop-in replacement for the old useBladeNavigation.
  * Consumer code keeps working; deprecation warnings guide migration.
  */
-import {
-  computed,
-  getCurrentInstance,
-  inject,
-  warn,
-  Component,
-  ComputedRef,
-  Ref,
-  ref,
-} from "vue";
-import {
-  RouteLocationNormalized,
-  RouteLocationRaw,
-  NavigationFailure,
-} from "vue-router";
+import { computed, getCurrentInstance, inject, warn, Component, ComputedRef, Ref, ref } from "vue";
+import { RouteLocationNormalized, RouteLocationRaw, NavigationFailure } from "vue-router";
 import {
   bladeNavigationInstance as globalBladeNavigationPluginInstanceFallback,
   bladeStackInstance,
@@ -56,9 +43,7 @@ function warnDeprecated(method: string, replacement?: string): void {
 export interface IUseBladeNavigation {
   readonly blades: ComputedRef<BladeVNode[]>;
   readonly activeWorkspace: ComputedRef<BladeVNode | undefined>;
-  readonly currentBladeNavigationData: ComputedRef<
-    BladeVNode["props"]["navigation"] | undefined
-  >;
+  readonly currentBladeNavigationData: ComputedRef<BladeVNode["props"]["navigation"] | undefined>;
   openBlade: <Blade extends Component>(
     args: IBladeEvent<Blade>,
     isWorkspace?: boolean,
@@ -67,15 +52,8 @@ export interface IUseBladeNavigation {
   goToRoot: () => RouteLocationRaw;
   onParentCall: (args: IParentCallArgs, currentBladeIndex?: number) => void;
   onBeforeClose: (cb: () => Promise<boolean | undefined>) => void;
-  resolveBladeByName: (
-    name: string,
-  ) => BladeInstanceConstructor | undefined;
-  routeResolver: (
-    to: RouteLocationNormalized,
-  ) =>
-    | Promise<RouteLocationRaw | undefined>
-    | RouteLocationRaw
-    | undefined;
+  resolveBladeByName: (name: string) => BladeInstanceConstructor | undefined;
+  routeResolver: (to: RouteLocationNormalized) => Promise<RouteLocationRaw | undefined> | RouteLocationRaw | undefined;
   setNavigationQuery: (query: Record<string, string | number>) => void;
   getNavigationQuery: () => Record<string, string | number> | undefined;
   setBladeError: (bladeIdx: number, error: unknown) => void;
@@ -88,20 +66,14 @@ export interface IUseBladeNavigation {
  * Creates a minimal BladeVNode-compatible object from a BladeDescriptor.
  * Only satisfies property reads — NOT a real VNode for rendering.
  */
-function descriptorToShim(
-  descriptor: BladeDescriptor,
-  index: number,
-  activeId?: string,
-): BladeVNode {
+function descriptorToShim(descriptor: BladeDescriptor, index: number, activeId?: string): BladeVNode {
   return {
     props: {
       navigation: {
         idx: index,
-        instance: descriptor.title != null ? { title: descriptor.title } : undefined as any,
+        instance: descriptor.title != null ? { title: descriptor.title } : (undefined as any),
         isVisible: descriptor.visible,
-        error: ref(
-          descriptor.error ? new Error(String(descriptor.error)) : null,
-        ) as Ref<Error | null>,
+        error: ref(descriptor.error ? new Error(String(descriptor.error)) : null) as Ref<Error | null>,
       },
       param: descriptor.param,
       options: descriptor.options,
@@ -144,18 +116,14 @@ function getSharedState() {
   const router = globalBladeNavigationPluginInstanceFallback?.router;
 
   if (!router) {
-    throw new Error(
-      "[@vc-shell/framework#useBladeNavigation] Vue Router instance is not available.",
-    );
+    throw new Error("[@vc-shell/framework#useBladeNavigation] Vue Router instance is not available.");
   }
 
   // Lazily create computeds once
   if (!_blades) {
     _blades = computed<BladeVNode[]>(() => {
       const activeId = bladeStack.activeBlade.value?.id;
-      return bladeStack.blades.value.map((d, i) =>
-        descriptorToShim(d, i, activeId),
-      );
+      return bladeStack.blades.value.map((d, i) => descriptorToShim(d, i, activeId));
     });
   }
 
@@ -179,19 +147,13 @@ function getSharedState() {
 
 // ── Utility: extract blade name from IBladeEvent.blade ─────────────────────────
 
-function extractBladeName<Blade extends Component>(
-  blade: IBladeEvent<Blade>["blade"],
-): string {
+function extractBladeName<Blade extends Component>(blade: IBladeEvent<Blade>["blade"]): string {
   if (!blade) {
     throw new Error("Blade cannot be null or undefined.");
   }
 
   // { name: "SomeBlade" } shorthand
-  if (
-    typeof blade === "object" &&
-    "name" in blade &&
-    typeof (blade as any).name === "string"
-  ) {
+  if (typeof blade === "object" && "name" in blade && typeof (blade as any).name === "string") {
     return (blade as any).name;
   }
 
@@ -203,20 +165,11 @@ function extractBladeName<Blade extends Component>(
 // ── Per-caller function ────────────────────────────────────────────────────────
 
 export function useBladeNavigation(): IUseBladeNavigation {
-  const {
-    bladeStack,
-    messaging,
-    bladeRegistry,
-    router,
-    blades,
-    activeWorkspace,
-  } = getSharedState();
+  const { bladeStack, messaging, bladeRegistry, router, blades, activeWorkspace } = getSharedState();
 
   // Try to get current blade descriptor from the new render layer (VcBladeSlot)
   // Only call inject() when inside a component setup — avoids Vue warning in route guards
-  const currentDescriptor = getCurrentInstance()
-    ? inject(BladeDescriptorKey, undefined)
-    : undefined;
+  const currentDescriptor = getCurrentInstance() ? inject(BladeDescriptorKey, undefined) : undefined;
 
   // ── URL sync helpers (centralized in urlSync.ts) ────────────────────────────
 
@@ -277,10 +230,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   // ── closeBlade ─────────────────────────────────────────────────────────────
 
   async function closeBlade(index: number): Promise<boolean> {
-    warnDeprecated(
-      "closeBlade(index)",
-      "useBlade().closeSelf()",
-    );
+    warnDeprecated("closeBlade(index)", "useBlade().closeSelf()");
     const bladeId = getBladeIdByIndex(index);
     if (!bladeId) {
       logger.error(`closeBlade: No blade found at index ${index}.`);
@@ -303,8 +253,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     // Using { path: "/" } would drop the tenant prefix from the URL.
     const routes = router.getRoutes();
     const mainRoute = routes.find((r) => r.meta?.root);
-    const mainRouteAlias =
-      routes.find((r) => r.aliasOf?.path === mainRoute?.path) || mainRoute;
+    const mainRouteAlias = routes.find((r) => r.aliasOf?.path === mainRoute?.path) || mainRoute;
 
     if (mainRouteAlias?.name) {
       return {
@@ -320,14 +269,8 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   // ── onParentCall ───────────────────────────────────────────────────────────
 
-  async function onParentCall(
-    args: IParentCallArgs,
-    currentBladeIndex?: number,
-  ): Promise<void> {
-    warnDeprecated(
-      "onParentCall(args, index)",
-      "useBlade().callParent(method, args)",
-    );
+  async function onParentCall(args: IParentCallArgs, currentBladeIndex?: number): Promise<void> {
+    warnDeprecated("onParentCall(args, index)", "useBlade().callParent(method, args)");
 
     let callerId: string | undefined;
 
@@ -338,38 +281,24 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
 
     if (!callerId) {
-      logger.error(
-        "onParentCall: Could not determine caller blade.",
-      );
+      logger.error("onParentCall: Could not determine caller blade.");
       return;
     }
 
     try {
-      const result = await messaging.callParent(
-        callerId,
-        args.method as string,
-        args.args,
-      );
+      const result = await messaging.callParent(callerId, args.method as string, args.args);
       if (typeof args.callback === "function") {
         args.callback(result);
       }
     } catch (error) {
-      logger.error(
-        `onParentCall: Failed to call parent method "${args.method}":`,
-        error,
-      );
+      logger.error(`onParentCall: Failed to call parent method "${args.method}":`, error);
     }
   }
 
   // ── onBeforeClose ──────────────────────────────────────────────────────────
 
-  function onBeforeClose(
-    cb: () => Promise<boolean | undefined>,
-  ): void {
-    warnDeprecated(
-      "onBeforeClose(cb)",
-      "useBlade().onBeforeClose(guard)",
-    );
+  function onBeforeClose(cb: () => Promise<boolean | undefined>): void {
+    warnDeprecated("onBeforeClose(cb)", "useBlade().onBeforeClose(guard)");
 
     const bladeId = getCurrentBladeId();
     if (!bladeId) {
@@ -389,31 +318,20 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   // ── resolveBladeByName ─────────────────────────────────────────────────────
 
-  function resolveBladeByName(
-    name: string,
-  ): BladeInstanceConstructor | undefined {
-    return bladeRegistry.getBladeComponent(
-      name,
-    ) as BladeInstanceConstructor | undefined;
+  function resolveBladeByName(name: string): BladeInstanceConstructor | undefined {
+    return bladeRegistry.getBladeComponent(name) as BladeInstanceConstructor | undefined;
   }
 
   // ── routeResolver (noop — handled by plugin-v2) ────────────────────────────
 
-  function routeResolver(
-    _to: RouteLocationNormalized,
-  ): undefined {
-    warnDeprecated(
-      "routeResolver",
-      "plugin-v2 handles URL resolution automatically",
-    );
+  function routeResolver(_to: RouteLocationNormalized): undefined {
+    warnDeprecated("routeResolver", "plugin-v2 handles URL resolution automatically");
     return undefined;
   }
 
   // ── setNavigationQuery / getNavigationQuery ────────────────────────────────
 
-  function setNavigationQuery(
-    query: Record<string, string | number>,
-  ): void {
+  function setNavigationQuery(query: Record<string, string | number>): void {
     warnDeprecated("setNavigationQuery");
 
     const ws = bladeStack.workspace.value;
@@ -427,25 +345,19 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
     router.options.history.replace(
       decodeURIComponent(
-        `${window.location.hash.substring(1).split("?")[0]}?${new URLSearchParams(
-          cleanQuery,
-        ).toString()}`,
+        `${window.location.hash.substring(1).split("?")[0]}?${new URLSearchParams(cleanQuery).toString()}`,
       ),
     );
   }
 
-  function getNavigationQuery():
-    | Record<string, string | number>
-    | undefined {
+  function getNavigationQuery(): Record<string, string | number> | undefined {
     warnDeprecated("getNavigationQuery");
 
     const ws = bladeStack.workspace.value;
     if (!ws) return undefined;
 
     const prefix = ws.name.toLowerCase();
-    const urlParams = new URLSearchParams(
-      window.location.hash.split("?")[1] || "",
-    );
+    const urlParams = new URLSearchParams(window.location.hash.split("?")[1] || "");
     const result: Record<string, string | number> = {};
 
     for (const [key, value] of urlParams.entries()) {
@@ -484,11 +396,9 @@ export function useBladeNavigation(): IUseBladeNavigation {
     const idx = allBlades.findIndex((b) => b.id === d.id);
     return {
       idx,
-      instance: d.title != null ? { title: d.title } : undefined as any,
+      instance: d.title != null ? { title: d.title } : (undefined as any),
       isVisible: d.visible,
-      error: ref(
-        d.error ? new Error(String(d.error)) : null,
-      ) as Ref<Error | null>,
+      error: ref(d.error ? new Error(String(d.error)) : null) as Ref<Error | null>,
     } as BladeVNode["props"]["navigation"];
   });
 

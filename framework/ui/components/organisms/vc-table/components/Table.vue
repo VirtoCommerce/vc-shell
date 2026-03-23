@@ -1,5 +1,9 @@
 <template>
-  <div role="table" class="vc-table-composition" :class="variant && `vc-table-composition--${variant}`">
+  <div
+    role="table"
+    class="vc-table-composition"
+    :class="variant && `vc-table-composition--${variant}`"
+  >
     <slot />
   </div>
 </template>

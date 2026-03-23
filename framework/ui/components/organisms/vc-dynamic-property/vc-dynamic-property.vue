@@ -513,7 +513,6 @@ const value = computed({
     return internalModel.value;
   },
   set(newValue) {
-
     // For multivalue (array), pass it directly
     if (computedProperty.value.multivalue && Array.isArray(newValue)) {
       emit("update:model-value", {

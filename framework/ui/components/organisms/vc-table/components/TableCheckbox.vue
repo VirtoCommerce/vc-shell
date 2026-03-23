@@ -25,7 +25,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   "update:modelValue": [value: boolean];
-  "change": [value: boolean];
+  change: [value: boolean];
 }>();
 
 const isChecked = computed(() => props.modelValue ?? props.checked ?? false);

@@ -106,8 +106,15 @@ defineSlots<{
   error: (props: Record<string, never>) => any;
 }>();
 
-const { fieldId: switchId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
-  useFormField(props);
+const {
+  fieldId: switchId,
+  errorId,
+  hintId,
+  invalid,
+  resolvedDisabled,
+  ariaRequired,
+  ariaDescribedBy,
+} = useFormField(props);
 
 // `tooltip` prop is kept for backward compat — treat as hint text
 const hintText = computed(() => props.hint || props.tooltip);
@@ -115,7 +122,9 @@ const hintText = computed(() => props.hint || props.tooltip);
 if (import.meta.env.DEV) {
   onMounted(() => {
     if (props.tooltip) {
-      console.warn('[VcSwitch] The "tooltip" prop is deprecated. Use "hint" for hint text or "labelTooltip" for the label info icon.');
+      console.warn(
+        '[VcSwitch] The "tooltip" prop is deprecated. Use "hint" for hint text or "labelTooltip" for the label info icon.',
+      );
     }
   });
 }
@@ -232,6 +241,5 @@ function onInput(e: Event) {
   &--disabled {
     @apply tw-pointer-events-none;
   }
-
 }
 </style>

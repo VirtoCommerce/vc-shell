@@ -31,7 +31,7 @@ const meta = {
     }),
   ],
   args: {
-    title: "Product \"Winter Sneakers\" updated",
+    title: 'Product "Winter Sneakers" updated',
     notification: makeNotification(),
   },
   parameters: {

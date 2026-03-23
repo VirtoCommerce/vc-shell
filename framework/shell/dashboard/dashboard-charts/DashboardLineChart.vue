@@ -107,26 +107,20 @@ const margin = { top: 8, right: 8, bottom: 4, left: 4 };
 const xAccessor = (d: T) => d[props.xKey] as number;
 
 const filteredData = computed(() =>
-  filterDataByRange(
-    props.data,
-    (datum) => datum[props.xKey],
-    props.rangeStart,
-    props.rangeEnd,
-  ),
+  filterDataByRange(props.data, (datum) => datum[props.xKey], props.rangeStart, props.rangeEnd),
 );
 
-const yAccessors = computed(() =>
-  props.yKeys.map((key) => (d: T) => d[key] as number),
-);
+const yAccessors = computed(() => props.yKeys.map((key) => (d: T) => d[key] as number));
 
 const colors = computed(() =>
-  props.yKeys.map((key, index) =>
-    resolveSeriesMeta({
-      config: props.config,
-      key: String(key),
-      index,
-      fallbackLabel: String(key),
-    }).color,
+  props.yKeys.map(
+    (key, index) =>
+      resolveSeriesMeta({
+        config: props.config,
+        key: String(key),
+        index,
+        fallbackLabel: String(key),
+      }).color,
   ),
 );
 
@@ -155,11 +149,7 @@ const crosshairTooltipTemplate = (
   allData: T[],
   leftNearestDatumIndex?: number,
 ): string | undefined => {
-  const activeDatum =
-    datum ??
-    (typeof leftNearestDatumIndex === "number"
-      ? allData[leftNearestDatumIndex]
-      : undefined);
+  const activeDatum = datum ?? (typeof leftNearestDatumIndex === "number" ? allData[leftNearestDatumIndex] : undefined);
 
   if (!activeDatum) {
     return undefined;

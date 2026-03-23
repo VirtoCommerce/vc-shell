@@ -6,7 +6,9 @@
     :disabled="disabled"
     @click="$emit('click', $event)"
   >
-    <span class="vc-column-switcher-button__label">{{ $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_SWITCHER.BUTTON") }}</span>
+    <span class="vc-column-switcher-button__label">{{
+      $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_SWITCHER.BUTTON")
+    }}</span>
   </VcButton>
 </template>
 
@@ -25,7 +27,7 @@ withDefaults(
   }>(),
   {
     disabled: false,
-  }
+  },
 );
 
 defineEmits<{

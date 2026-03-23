@@ -6,7 +6,7 @@
       :scope="{
         data: item,
         field: fieldName,
-        index
+        index,
       }"
     />
   </template>
@@ -75,7 +75,7 @@ const cellValue = computed(() => {
 // Currency for money cells
 const currency = computed(() => {
   const field = props.config.column.props.currencyField || "currency";
-  return (props.item as Record<string, unknown>)[field] as string || "USD";
+  return ((props.item as Record<string, unknown>)[field] as string) || "USD";
 });
 
 // Date variant based on column type

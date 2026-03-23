@@ -32,9 +32,7 @@ const _isSlowEffectiveType = ref(false);
 const _pendingTimers = new Map<string, ReturnType<typeof setTimeout>>();
 const _trackedSlowIds = new Set<string>();
 
-const isSlowNetwork = computed(
-  () => _slowRequestCount.value > 0 || _isSlowEffectiveType.value,
-);
+const isSlowNetwork = computed(() => _slowRequestCount.value > 0 || _isSlowEffectiveType.value);
 
 export interface UseSlowNetworkDetectionReturn {
   isSlowNetwork: Readonly<Ref<boolean>>;

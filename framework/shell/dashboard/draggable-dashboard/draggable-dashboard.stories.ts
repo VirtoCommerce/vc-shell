@@ -79,11 +79,7 @@ function registerStoryWidgets() {
       position: { x: 8, y: 0 },
       props: {
         title: "Needs attention",
-        items: [
-          "4 offers waiting approval",
-          "2 shipments delayed",
-          "1 product requires changes",
-        ],
+        items: ["4 offers waiting approval", "2 shipments delayed", "1 product requires changes"],
       },
     },
     {
@@ -94,13 +90,7 @@ function registerStoryWidgets() {
       position: { x: 0, y: 3 },
       props: {
         title: "Top products this week",
-        items: [
-          "Cotton Hoodie",
-          "Winter Sneakers",
-          "Sports Bottle",
-          "Travel Backpack",
-          "Sunglasses",
-        ],
+        items: ["Cotton Hoodie", "Winter Sneakers", "Sports Bottle", "Travel Backpack", "Sunglasses"],
       },
     },
     {

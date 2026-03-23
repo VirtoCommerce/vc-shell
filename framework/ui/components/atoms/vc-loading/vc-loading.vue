@@ -11,7 +11,7 @@
     <div class="vc-loading-overlay__bar">
       <div class="vc-loading-overlay__bar-fill"></div>
     </div>
-    <span class="tw-sr-only">{{ active ? 'Loading...' : '' }}</span>
+    <span class="tw-sr-only">{{ active ? "Loading..." : "" }}</span>
   </div>
 </template>
 
@@ -65,7 +65,11 @@ defineProps<Props>();
 }
 
 @keyframes vc-bar-sweep {
-  0% { left: -40%; }
-  100% { left: 100%; }
+  0% {
+    left: -40%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 </style>

@@ -44,11 +44,14 @@ function provideMockBladeContext(overrides: Partial<IBladeInstance> = {}) {
     onParentCall: () => () => {},
   } as any);
 
-  provide(BladeDescriptorKey, computed(() => ({
-    id: "story-blade",
-    index: 0,
-    parentId: undefined,
-  })) as any);
+  provide(
+    BladeDescriptorKey,
+    computed(() => ({
+      id: "story-blade",
+      index: 0,
+      parentId: undefined,
+    })) as any,
+  );
 }
 
 // ── Toolbar items factory ────────────────────────────────────────────────────
@@ -448,7 +451,9 @@ export const LoadingToggle: Story = {
     setup() {
       provideMockBladeContext();
       const loading = ref(true);
-      const toggle = () => { loading.value = !loading.value; };
+      const toggle = () => {
+        loading.value = !loading.value;
+      };
       return { args, loading, toggle };
     },
     template: `

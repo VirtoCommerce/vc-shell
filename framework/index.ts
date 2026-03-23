@@ -353,14 +353,18 @@ export * from "@framework/injection-keys";
 
 // UI components (atoms, molecules, organisms)
 export * from "@ui/components";
-// eslint-disable-next-line import/export
 export * from "@ui/types";
 
 // Core composables
 export * from "@core/composables";
 
 // Notifications (new API)
-export { useBladeNotifications, useNotificationStore, useNotificationContext, NotificationContextKey } from "@core/notifications";
+export {
+  useBladeNotifications,
+  useNotificationStore,
+  useNotificationContext,
+  NotificationContextKey,
+} from "@core/notifications";
 export { notification } from "@core/notifications/notification";
 export type {
   Severity,
@@ -428,4 +432,3 @@ export * from "@shell/_internal/notifications/components";
 
 // Blade navigation rendering components (VcBladeNavigation, VcBladeSlot)
 export * from "@shell/_internal/blade-navigation";
-

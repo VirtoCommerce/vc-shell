@@ -40,7 +40,8 @@ async function uploadSingleFile(
   if (response?.length) {
     const uploadedFile = response[0];
     uploadedFile.createdDate = new Date();
-    uploadedFile.sortOrder = startingSortOrder !== undefined && startingSortOrder >= 0 ? startingSortOrder + index + 1 : 0;
+    uploadedFile.sortOrder =
+      startingSortOrder !== undefined && startingSortOrder >= 0 ? startingSortOrder + index + 1 : 0;
     uploadedFile.url = uploadedFile.url ? decodeURI(uploadedFile.url) : "";
 
     if ("size" in uploadedFile) {

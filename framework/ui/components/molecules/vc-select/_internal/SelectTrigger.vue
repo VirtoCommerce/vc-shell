@@ -104,9 +104,7 @@
                           </template>
                           <template v-else-if="!multiple">
                             <template v-if="loading">
-                              <span class="vc-select__loading">{{
-                                t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
-                              }}</span>
+                              <span class="vc-select__loading">{{ t("COMPONENTS.MOLECULES.VC_SELECT.LOADING") }}</span>
                             </template>
                             <template v-else>
                               <slot

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Router } from "vue-router";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { notification } from "@core/notifications/notification";
@@ -55,11 +54,7 @@ export function registerInterceptors(router: Router) {
       const [resource, init] = args;
 
       function isApiRequest(input: RequestInfo | URL): boolean {
-        const raw = typeof input === "string"
-          ? input
-          : input instanceof Request
-            ? input.url
-            : input.toString();
+        const raw = typeof input === "string" ? input : input instanceof Request ? input.url : input.toString();
 
         try {
           const url = new URL(raw, window.location.origin);
@@ -140,7 +135,9 @@ export function registerInterceptors(router: Router) {
 function redirect(router: Router) {
   // redirect to login page if it exists
   if (router && router.getRoutes().some((route) => route.path === "/login" || route.name === "Login")) {
-    router.currentRoute.value.path !== "/login" && router.push("/login");
+    if (router.currentRoute.value.path !== "/login") {
+      router.push("/login");
+    }
   } else {
     // Use the origin to redirect to the root of the application if no login page exists.
     // Usually this is the case when the application is used as a module.

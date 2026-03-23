@@ -8,9 +8,7 @@
   >
     <VcCol :size="aspectRatio[0]">
       <!-- Field label -->
-      <VcLabel
-        v-if="label"
-      >
+      <VcLabel v-if="label">
         <span>{{ label }}</span>
         <template
           v-if="tooltip"

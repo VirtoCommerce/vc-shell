@@ -37,9 +37,7 @@ export function useCollapsible(options: UseCollapsibleOptions = {}): UseCollapsi
 
   const hasOverflow = computed(() => contentHeight.value > collapsedHeight);
 
-  const hasScroll = computed(
-    () => maxExpandedHeight !== undefined && contentHeight.value > maxExpandedHeight,
-  );
+  const hasScroll = computed(() => maxExpandedHeight !== undefined && contentHeight.value > maxExpandedHeight);
 
   const wrapperStyle = computed<CSSProperties>(() => {
     if (isExpanded.value) {

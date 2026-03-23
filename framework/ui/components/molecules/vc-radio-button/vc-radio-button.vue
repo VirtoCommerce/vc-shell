@@ -68,8 +68,15 @@ defineSlots<{
   error: (props: Record<string, never>) => VNode[];
 }>();
 
-const { fieldId: radioId, errorId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
-  useFormField(props);
+const {
+  fieldId: radioId,
+  errorId,
+  invalid,
+  resolvedDisabled,
+  resolvedName,
+  ariaRequired,
+  ariaDescribedBy,
+} = useFormField(props);
 
 const checked = computed(() => {
   return props.modelValue != null && (props.binary ? !!props.modelValue : isEqual(props.modelValue, props.value));
@@ -178,6 +185,5 @@ function onChange() {
   &__error {
     @apply tw-mt-1 [--hint-error-color:var(--radio-error)];
   }
-
 }
 </style>

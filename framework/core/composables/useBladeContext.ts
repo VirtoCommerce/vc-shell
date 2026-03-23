@@ -16,7 +16,10 @@ import { InjectionError } from "@core/utilities";
  * ```
  */
 export function defineBladeContext(data: MaybeRefOrGetter<Record<string, unknown>>): void {
-  provide(BladeContextKey, computed(() => toValue(data)));
+  provide(
+    BladeContextKey,
+    computed(() => toValue(data)),
+  );
 }
 
 /**

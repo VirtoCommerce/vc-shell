@@ -20,7 +20,10 @@
       aria-hidden="true"
     />
     <div class="vc-banner__body">
-      <div v-if="hasTitle" class="vc-banner__title">
+      <div
+        v-if="hasTitle"
+        class="vc-banner__title"
+      >
         <slot name="title"></slot>
       </div>
       <div
@@ -28,11 +31,17 @@
         class="vc-banner__content-wrapper"
         :style="wrapperStyle"
       >
-        <div ref="contentRef" class="vc-banner__content">
+        <div
+          ref="contentRef"
+          class="vc-banner__content"
+        >
           <slot name="default"></slot>
         </div>
       </div>
-      <div v-if="showTrigger" class="vc-banner__trigger">
+      <div
+        v-if="showTrigger"
+        class="vc-banner__trigger"
+      >
         <slot
           name="trigger"
           :is-expanded="isExpanded"
@@ -126,10 +135,26 @@ if (import.meta.env?.DEV) {
 @use "sass:map";
 
 $banner-variants: (
-  info: (bg: var(--neutrals-50), border: var(--info-100), accent: var(--info-500)),
-  warning: (bg: var(--neutrals-50), border: var(--warning-100), accent: var(--warning-500)),
-  danger: (bg: var(--neutrals-50), border: var(--danger-100), accent: var(--danger-500)),
-  success: (bg: var(--neutrals-50), border: var(--success-100), accent: var(--success-500)),
+  info: (
+    bg: var(--neutrals-50),
+    border: var(--info-100),
+    accent: var(--info-500),
+  ),
+  warning: (
+    bg: var(--neutrals-50),
+    border: var(--warning-100),
+    accent: var(--warning-500),
+  ),
+  danger: (
+    bg: var(--neutrals-50),
+    border: var(--danger-100),
+    accent: var(--danger-500),
+  ),
+  success: (
+    bg: var(--neutrals-50),
+    border: var(--success-100),
+    accent: var(--success-500),
+  ),
 );
 
 .vc-banner {

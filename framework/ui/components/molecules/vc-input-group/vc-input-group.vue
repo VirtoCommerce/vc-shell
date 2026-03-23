@@ -168,6 +168,5 @@ provide(InputGroupContextKey, {
   &--disabled {
     @apply tw-opacity-50;
   }
-
 }
 </style>

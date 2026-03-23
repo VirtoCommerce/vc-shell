@@ -99,11 +99,11 @@ const mockProducts: Product[] = [
  */
 export const Basic: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: mockProducts };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: mockProducts };
+    },
+    template: `
     <div style="height: 400px">
       <VcDataTable :items="products">
         <VcColumn id="name" field="name" title="Name" />
@@ -121,42 +121,42 @@ export const Basic: Story = {
  */
 export const WithSorting: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const sortField = ref("name");
-    const sortOrder = ref<1 | -1 | 0>(1);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const sortField = ref("name");
+      const sortOrder = ref<1 | -1 | 0>(1);
 
-    const sortedProducts = ref(
-      [...mockProducts].sort((a, b) => {
-        const field = sortField.value as keyof Product;
-        if (sortOrder.value === 0) return 0;
-        const aVal = a[field];
-        const bVal = b[field];
-        if (typeof aVal === "string" && typeof bVal === "string") {
-          return sortOrder.value * aVal.localeCompare(bVal);
-        }
-        return sortOrder.value * (Number(aVal) - Number(bVal));
-      }),
-    );
+      const sortedProducts = ref(
+        [...mockProducts].sort((a, b) => {
+          const field = sortField.value as keyof Product;
+          if (sortOrder.value === 0) return 0;
+          const aVal = a[field];
+          const bVal = b[field];
+          if (typeof aVal === "string" && typeof bVal === "string") {
+            return sortOrder.value * aVal.localeCompare(bVal);
+          }
+          return sortOrder.value * (Number(aVal) - Number(bVal));
+        }),
+      );
 
-    const handleSort = (e: { sortField: string; sortOrder: number }) => {
-      sortField.value = e.sortField;
-      sortOrder.value = e.sortOrder as 1 | -1 | 0;
-      const field = e.sortField as keyof Product;
-      sortedProducts.value = [...mockProducts].sort((a, b) => {
-        if (e.sortOrder === 0) return 0;
-        const aVal = a[field];
-        const bVal = b[field];
-        if (typeof aVal === "string" && typeof bVal === "string") {
-          return e.sortOrder * aVal.localeCompare(bVal);
-        }
-        return e.sortOrder * (Number(aVal) - Number(bVal));
-      });
-    };
+      const handleSort = (e: { sortField: string; sortOrder: number }) => {
+        sortField.value = e.sortField;
+        sortOrder.value = e.sortOrder as 1 | -1 | 0;
+        const field = e.sortField as keyof Product;
+        sortedProducts.value = [...mockProducts].sort((a, b) => {
+          if (e.sortOrder === 0) return 0;
+          const aVal = a[field];
+          const bVal = b[field];
+          if (typeof aVal === "string" && typeof bVal === "string") {
+            return e.sortOrder * aVal.localeCompare(bVal);
+          }
+          return e.sortOrder * (Number(aVal) - Number(bVal));
+        });
+      };
 
-    return { products: sortedProducts, sortField, sortOrder, handleSort };
-  },
-  template: `
+      return { products: sortedProducts, sortField, sortOrder, handleSort };
+    },
+    template: `
     <div style="height: 400px">
       <p class="tw-mb-2">Sort: {{ sortField }} ({{ sortOrder === 1 ? 'ASC' : sortOrder === -1 ? 'DESC' : 'NONE' }})</p>
       <VcDataTable
@@ -181,13 +181,13 @@ export const WithSorting: Story = {
  */
 export const WithSelection: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const selection = ref<Product[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const selection = ref<Product[]>([]);
 
-    return { products: mockProducts, selection };
-  },
-  template: `
+      return { products: mockProducts, selection };
+    },
+    template: `
     <div style="height: 400px">
       <p class="tw-mb-2">Selected: {{ selection.map(p => p.name).join(', ') || 'None' }}</p>
       <VcDataTable
@@ -210,16 +210,16 @@ export const WithSelection: Story = {
  */
 export const WithSelectableRows: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const selection = ref<Product[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const selection = ref<Product[]>([]);
 
-    // Only allow selection of in-stock items
-    const isRowSelectable = (product: Product) => product.stock > 0;
+      // Only allow selection of in-stock items
+      const isRowSelectable = (product: Product) => product.stock > 0;
 
-    return { products: mockProducts, selection, isRowSelectable };
-  },
-  template: `
+      return { products: mockProducts, selection, isRowSelectable };
+    },
+    template: `
     <div style="height: 400px">
       <p class="tw-mb-2 tw-text-sm tw-text-neutrals-600">Only items with stock > 0 can be selected</p>
       <p class="tw-mb-2">Selected: {{ selection.map(p => p.name).join(', ') || 'None' }}</p>
@@ -244,11 +244,11 @@ export const WithSelectableRows: Story = {
  */
 export const WithCellTypes: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: mockProducts };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: mockProducts };
+    },
+    template: `
     <div style="height: 400px">
       <VcDataTable :items="products">
         <VcColumn id="name" field="name" title="Name (text)" width="180px" />
@@ -268,11 +268,11 @@ export const WithCellTypes: Story = {
  */
 export const WithCustomCells: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: mockProducts };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: mockProducts };
+    },
+    template: `
     <div style="height: 400px">
       <VcDataTable :items="products">
         <VcColumn id="name" field="name" title="Name">
@@ -310,23 +310,23 @@ export const WithCustomCells: Story = {
  */
 export const WithPagination: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const currentPage = ref(1);
-    const pageSize = 3;
-    const totalPages = Math.ceil(mockProducts.length / pageSize);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const currentPage = ref(1);
+      const pageSize = 3;
+      const totalPages = Math.ceil(mockProducts.length / pageSize);
 
-    const paginatedProducts = ref(mockProducts.slice(0, pageSize));
+      const paginatedProducts = ref(mockProducts.slice(0, pageSize));
 
-    const handlePagination = (page: number) => {
-      currentPage.value = page;
-      const start = (page - 1) * pageSize;
-      paginatedProducts.value = mockProducts.slice(start, start + pageSize);
-    };
+      const handlePagination = (page: number) => {
+        currentPage.value = page;
+        const start = (page - 1) * pageSize;
+        paginatedProducts.value = mockProducts.slice(start, start + pageSize);
+      };
 
-    return { products: paginatedProducts, currentPage, totalPages, handlePagination };
-  },
-  template: `
+      return { products: paginatedProducts, currentPage, totalPages, handlePagination };
+    },
+    template: `
     <div style="height: 400px">
       <VcDataTable
         :items="products"
@@ -347,11 +347,11 @@ export const WithPagination: Story = {
  */
 export const Striped: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: mockProducts };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: mockProducts };
+    },
+    template: `
     <div style="height: 400px">
       <VcDataTable :items="products" striped>
         <VcColumn id="name" field="name" title="Name" />
@@ -369,11 +369,11 @@ export const Striped: Story = {
  */
 export const Bordered: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: mockProducts };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: mockProducts };
+    },
+    template: `
     <div style="height: 400px">
       <VcDataTable :items="products" bordered>
         <VcColumn id="name" field="name" title="Name" />
@@ -391,11 +391,11 @@ export const Bordered: Story = {
  */
 export const Loading: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: mockProducts };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: mockProducts };
+    },
+    template: `
     <div style="height: 400px">
       <VcDataTable :items="products" :loading="true">
         <VcColumn id="name" field="name" title="Name" />
@@ -413,11 +413,11 @@ export const Loading: Story = {
  */
 export const Empty: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: [] };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: [] };
+    },
+    template: `
     <div style="height: 400px">
       <VcDataTable :items="products">
         <VcColumn id="name" field="name" title="Name" />
@@ -441,21 +441,21 @@ export const Empty: Story = {
  */
 export const WithHeader: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcInput },
-  setup() {
-    const searchQuery = ref("");
-    const filteredProducts = ref(mockProducts);
+    components: { VcDataTable, VcColumn, VcInput },
+    setup() {
+      const searchQuery = ref("");
+      const filteredProducts = ref(mockProducts);
 
-    const handleSearch = () => {
-      const query = searchQuery.value.toLowerCase();
-      filteredProducts.value = mockProducts.filter(
-        (p) => p.name.toLowerCase().includes(query) || p.status.toLowerCase().includes(query),
-      );
-    };
+      const handleSearch = () => {
+        const query = searchQuery.value.toLowerCase();
+        filteredProducts.value = mockProducts.filter(
+          (p) => p.name.toLowerCase().includes(query) || p.status.toLowerCase().includes(query),
+        );
+      };
 
-    return { products: filteredProducts, searchQuery, handleSearch };
-  },
-  template: `
+      return { products: filteredProducts, searchQuery, handleSearch };
+    },
+    template: `
     <div style="height: 450px">
       <VcDataTable :items="products">
         <template #header>
@@ -487,13 +487,13 @@ export const WithHeader: Story = {
  */
 export const SelectionViaVcColumn: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const selection = ref<Product[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const selection = ref<Product[]>([]);
 
-    return { products: mockProducts, selection };
-  },
-  template: `
+      return { products: mockProducts, selection };
+    },
+    template: `
     <div style="height: 400px">
       <p class="tw-mb-2">Selected: {{ selection.map(p => p.name).join(', ') || 'None' }}</p>
       <VcDataTable
@@ -518,13 +518,13 @@ export const SelectionViaVcColumn: Story = {
  */
 export const SingleSelection: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const selection = ref<Product | undefined>(undefined);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const selection = ref<Product | undefined>(undefined);
 
-    return { products: mockProducts, selection };
-  },
-  template: `
+      return { products: mockProducts, selection };
+    },
+    template: `
     <div style="height: 400px">
       <p class="tw-mb-2">Selected: {{ selection?.name || 'None' }}</p>
       <VcDataTable
@@ -544,13 +544,13 @@ export const SingleSelection: Story = {
 
 export const ActiveItemHighlight: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const activeId = ref<string | undefined>(undefined);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const activeId = ref<string | undefined>(undefined);
 
-    return { products: mockProducts, activeId };
-  },
-  template: `
+      return { products: mockProducts, activeId };
+    },
+    template: `
     <div style="height: 400px">
       <p class="tw-mb-2">Active row ID: {{ activeId ?? 'None' }}
         <button class="tw-ml-2 tw-text-sm tw-underline" @click="activeId = undefined">Clear</button>
@@ -571,7 +571,8 @@ export const ActiveItemHighlight: Story = {
 ActiveItemHighlight.parameters = {
   docs: {
     description: {
-      story: "Click a row to highlight it as active. Click again to deselect. Use `v-model:active-item-id` for two-way binding — the table automatically highlights the row matching the given ID and updates the value on row click.",
+      story:
+        "Click a row to highlight it as active. Click again to deselect. Use `v-model:active-item-id` for two-way binding — the table automatically highlights the row matching the given ID and updates the value on row click.",
     },
   },
 };
@@ -581,13 +582,13 @@ ActiveItemHighlight.parameters = {
  */
 export const SingleSelectionViaVcColumn: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const selection = ref<Product | undefined>(undefined);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const selection = ref<Product | undefined>(undefined);
 
-    return { products: mockProducts, selection };
-  },
-  template: `
+      return { products: mockProducts, selection };
+    },
+    template: `
     <div style="height: 400px">
       <p class="tw-mb-2">Selected: {{ selection?.name || 'None' }}</p>
       <VcDataTable
@@ -612,16 +613,16 @@ export const SingleSelectionViaVcColumn: Story = {
  */
 export const SelectionWithDisabledRowsViaVcColumn: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const selection = ref<Product[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const selection = ref<Product[]>([]);
 
-    // Only allow selection of items that are active and in stock
-    const isRowSelectable = (product: Product) => product.isActive && product.stock > 0;
+      // Only allow selection of items that are active and in stock
+      const isRowSelectable = (product: Product) => product.isActive && product.stock > 0;
 
-    return { products: mockProducts, selection, isRowSelectable };
-  },
-  template: `
+      return { products: mockProducts, selection, isRowSelectable };
+    },
+    template: `
     <div style="height: 400px">
       <p class="tw-mb-2 tw-text-sm tw-text-neutrals-600">Only active items with stock > 0 can be selected (USB-C Hub is disabled)</p>
       <p class="tw-mb-2">Selected: {{ selection.map(p => p.name).join(', ') || 'None' }}</p>
@@ -648,42 +649,42 @@ export const SelectionWithDisabledRowsViaVcColumn: Story = {
  */
 export const SelectionWithEvents: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const selection = ref<Product[]>([]);
-    const eventLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const selection = ref<Product[]>([]);
+      const eventLog = ref<string[]>([]);
 
-    const handleRowSelect = (e: { data: Product }) => {
-      eventLog.value.unshift(`Selected: ${e.data.name}`);
-      if (eventLog.value.length > 5) eventLog.value.pop();
-    };
+      const handleRowSelect = (e: { data: Product }) => {
+        eventLog.value.unshift(`Selected: ${e.data.name}`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+      };
 
-    const handleRowUnselect = (e: { data: Product }) => {
-      eventLog.value.unshift(`Unselected: ${e.data.name}`);
-      if (eventLog.value.length > 5) eventLog.value.pop();
-    };
+      const handleRowUnselect = (e: { data: Product }) => {
+        eventLog.value.unshift(`Unselected: ${e.data.name}`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+      };
 
-    const handleSelectAll = (e: { data: Product[] }) => {
-      eventLog.value.unshift(`Select All: ${e.data.length} items`);
-      if (eventLog.value.length > 5) eventLog.value.pop();
-    };
+      const handleSelectAll = (e: { data: Product[] }) => {
+        eventLog.value.unshift(`Select All: ${e.data.length} items`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+      };
 
-    const handleUnselectAll = () => {
-      eventLog.value.unshift("Unselect All");
-      if (eventLog.value.length > 5) eventLog.value.pop();
-    };
+      const handleUnselectAll = () => {
+        eventLog.value.unshift("Unselect All");
+        if (eventLog.value.length > 5) eventLog.value.pop();
+      };
 
-    return {
-      products: mockProducts,
-      selection,
-      eventLog,
-      handleRowSelect,
-      handleRowUnselect,
-      handleSelectAll,
-      handleUnselectAll,
-    };
-  },
-  template: `
+      return {
+        products: mockProducts,
+        selection,
+        eventLog,
+        handleRowSelect,
+        handleRowUnselect,
+        handleSelectAll,
+        handleUnselectAll,
+      };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Event Log:</p>
@@ -722,21 +723,21 @@ export const SelectionWithEvents: Story = {
  */
 export const CellEditing: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcInput },
-  setup() {
-    const products = ref([...mockProducts]);
-    const eventLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn, VcInput },
+    setup() {
+      const products = ref([...mockProducts]);
+      const eventLog = ref<string[]>([]);
 
-    const handleCellEditComplete = (e: { data: any; field: string; newValue: unknown; index: number }) => {
-      eventLog.value.unshift(`Cell edited: ${e.field} = ${e.newValue}`);
-      if (eventLog.value.length > 5) eventLog.value.pop();
-      // Update the value
-      e.data[e.field] = e.newValue;
-    };
+      const handleCellEditComplete = (e: { data: any; field: string; newValue: unknown; index: number }) => {
+        eventLog.value.unshift(`Cell edited: ${e.field} = ${e.newValue}`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+        // Update the value
+        e.data[e.field] = e.newValue;
+      };
 
-    return { products, eventLog, handleCellEditComplete };
-  },
-  template: `
+      return { products, eventLog, handleCellEditComplete };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Click on Name or Stock cell to edit:</p>
@@ -786,25 +787,25 @@ export const CellEditing: Story = {
  */
 export const RowEditing: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcInput },
-  setup() {
-    const products = ref([...mockProducts]);
-    const editingRows = ref<any[]>([]);
-    const eventLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn, VcInput },
+    setup() {
+      const products = ref([...mockProducts]);
+      const editingRows = ref<any[]>([]);
+      const eventLog = ref<string[]>([]);
 
-    const handleRowEditSave = (e: { data: any; newData: any; index: number }) => {
-      eventLog.value.unshift(`Row saved: ${e.newData.name} (price: ${e.newData.price})`);
-      if (eventLog.value.length > 5) eventLog.value.pop();
-    };
+      const handleRowEditSave = (e: { data: any; newData: any; index: number }) => {
+        eventLog.value.unshift(`Row saved: ${e.newData.name} (price: ${e.newData.price})`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+      };
 
-    const handleRowEditCancel = (e: { data: any; index: number }) => {
-      eventLog.value.unshift(`Row edit cancelled: ${e.data.name}`);
-      if (eventLog.value.length > 5) eventLog.value.pop();
-    };
+      const handleRowEditCancel = (e: { data: any; index: number }) => {
+        eventLog.value.unshift(`Row edit cancelled: ${e.data.name}`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+      };
 
-    return { products, editingRows, eventLog, handleRowEditSave, handleRowEditCancel };
-  },
-  template: `
+      return { products, editingRows, eventLog, handleRowEditSave, handleRowEditCancel };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Click edit button (✎) to edit a row:</p>
@@ -853,15 +854,15 @@ export const RowEditing: Story = {
  */
 export const RowEditingWithSelection: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcInput },
-  setup() {
-    const products = ref([...mockProducts]);
-    const editingRows = ref<any[]>([]);
-    const selection = ref<any[]>([]);
+    components: { VcDataTable, VcColumn, VcInput },
+    setup() {
+      const products = ref([...mockProducts]);
+      const editingRows = ref<any[]>([]);
+      const selection = ref<any[]>([]);
 
-    return { products, editingRows, selection };
-  },
-  template: `
+      return { products, editingRows, selection };
+    },
+    template: `
     <div style="height: 450px">
       <p class="tw-mb-2">Selected: {{ selection.map(p => p.name).join(', ') || 'None' }}</p>
       <p class="tw-mb-2 tw-text-sm tw-text-neutrals-600">Editing: {{ editingRows.map(p => p.name).join(', ') || 'None' }}</p>
@@ -903,45 +904,45 @@ export const RowEditingWithSelection: Story = {
  */
 export const MultiSort: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const multiSortMeta = ref<{ field: string; order: 1 | -1 | 0 }[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const multiSortMeta = ref<{ field: string; order: 1 | -1 | 0 }[]>([]);
 
-    const sortedProducts = ref([...mockProducts]);
+      const sortedProducts = ref([...mockProducts]);
 
-    const handleSort = (e: { multiSortMeta: { field: string; order: 1 | -1 | 0 }[] }) => {
-      multiSortMeta.value = e.multiSortMeta;
+      const handleSort = (e: { multiSortMeta: { field: string; order: 1 | -1 | 0 }[] }) => {
+        multiSortMeta.value = e.multiSortMeta;
 
-      // Apply multi-sort to products
-      sortedProducts.value = [...mockProducts].sort((a, b) => {
-        for (const meta of e.multiSortMeta) {
-          const field = meta.field as keyof Product;
-          const aVal = a[field];
-          const bVal = b[field];
-          let comparison = 0;
+        // Apply multi-sort to products
+        sortedProducts.value = [...mockProducts].sort((a, b) => {
+          for (const meta of e.multiSortMeta) {
+            const field = meta.field as keyof Product;
+            const aVal = a[field];
+            const bVal = b[field];
+            let comparison = 0;
 
-          if (typeof aVal === "string" && typeof bVal === "string") {
-            comparison = aVal.localeCompare(bVal);
-          } else {
-            comparison = Number(aVal) - Number(bVal);
+            if (typeof aVal === "string" && typeof bVal === "string") {
+              comparison = aVal.localeCompare(bVal);
+            } else {
+              comparison = Number(aVal) - Number(bVal);
+            }
+
+            if (comparison !== 0) {
+              return meta.order * comparison;
+            }
           }
+          return 0;
+        });
+      };
 
-          if (comparison !== 0) {
-            return meta.order * comparison;
-          }
-        }
-        return 0;
-      });
-    };
+      const formatSortMeta = () => {
+        if (multiSortMeta.value.length === 0) return "None";
+        return multiSortMeta.value.map((m, i) => `${i + 1}. ${m.field} (${m.order === 1 ? "ASC" : "DESC"})`).join(", ");
+      };
 
-    const formatSortMeta = () => {
-      if (multiSortMeta.value.length === 0) return "None";
-      return multiSortMeta.value.map((m, i) => `${i + 1}. ${m.field} (${m.order === 1 ? "ASC" : "DESC"})`).join(", ");
-    };
-
-    return { products: sortedProducts, multiSortMeta, handleSort, formatSortMeta };
-  },
-  template: `
+      return { products: sortedProducts, multiSortMeta, handleSort, formatSortMeta };
+    },
+    template: `
     <div style="height: 450px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Multi-Sort Mode</p>
@@ -972,41 +973,41 @@ export const MultiSort: Story = {
  */
 export const RemovableSort: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const sortField = ref("");
-    const sortOrder = ref<1 | -1 | 0>(0);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const sortField = ref("");
+      const sortOrder = ref<1 | -1 | 0>(0);
 
-    const sortedProducts = ref([...mockProducts]);
+      const sortedProducts = ref([...mockProducts]);
 
-    const handleSort = (e: { sortField: string; sortOrder: number }) => {
-      sortField.value = e.sortField;
-      sortOrder.value = e.sortOrder as 1 | -1 | 0;
+      const handleSort = (e: { sortField: string; sortOrder: number }) => {
+        sortField.value = e.sortField;
+        sortOrder.value = e.sortOrder as 1 | -1 | 0;
 
-      if (e.sortOrder === 0 || !e.sortField) {
-        // No sort - restore original order
-        sortedProducts.value = [...mockProducts];
-      } else {
-        const field = e.sortField as keyof Product;
-        sortedProducts.value = [...mockProducts].sort((a, b) => {
-          const aVal = a[field];
-          const bVal = b[field];
-          if (typeof aVal === "string" && typeof bVal === "string") {
-            return e.sortOrder * aVal.localeCompare(bVal);
-          }
-          return e.sortOrder * (Number(aVal) - Number(bVal));
-        });
-      }
-    };
+        if (e.sortOrder === 0 || !e.sortField) {
+          // No sort - restore original order
+          sortedProducts.value = [...mockProducts];
+        } else {
+          const field = e.sortField as keyof Product;
+          sortedProducts.value = [...mockProducts].sort((a, b) => {
+            const aVal = a[field];
+            const bVal = b[field];
+            if (typeof aVal === "string" && typeof bVal === "string") {
+              return e.sortOrder * aVal.localeCompare(bVal);
+            }
+            return e.sortOrder * (Number(aVal) - Number(bVal));
+          });
+        }
+      };
 
-    const getSortLabel = () => {
-      if (!sortField.value || sortOrder.value === 0) return "None";
-      return `${sortField.value} (${sortOrder.value === 1 ? "ASC" : "DESC"})`;
-    };
+      const getSortLabel = () => {
+        if (!sortField.value || sortOrder.value === 0) return "None";
+        return `${sortField.value} (${sortOrder.value === 1 ? "ASC" : "DESC"})`;
+      };
 
-    return { products: sortedProducts, sortField, sortOrder, handleSort, getSortLabel };
-  },
-  template: `
+      return { products: sortedProducts, sortField, sortOrder, handleSort, getSortLabel };
+    },
+    template: `
     <div style="height: 450px">
       <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Removable Sort</p>
@@ -1037,49 +1038,49 @@ export const RemovableSort: Story = {
  */
 export const MultiSortRemovable: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const multiSortMeta = ref<{ field: string; order: 1 | -1 | 0 }[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const multiSortMeta = ref<{ field: string; order: 1 | -1 | 0 }[]>([]);
 
-    const sortedProducts = ref([...mockProducts]);
+      const sortedProducts = ref([...mockProducts]);
 
-    const handleSort = (e: { multiSortMeta: { field: string; order: 1 | -1 | 0 }[] }) => {
-      multiSortMeta.value = e.multiSortMeta;
+      const handleSort = (e: { multiSortMeta: { field: string; order: 1 | -1 | 0 }[] }) => {
+        multiSortMeta.value = e.multiSortMeta;
 
-      if (e.multiSortMeta.length === 0) {
-        sortedProducts.value = [...mockProducts];
-        return;
-      }
-
-      sortedProducts.value = [...mockProducts].sort((a, b) => {
-        for (const meta of e.multiSortMeta) {
-          const field = meta.field as keyof Product;
-          const aVal = a[field];
-          const bVal = b[field];
-          let comparison = 0;
-
-          if (typeof aVal === "string" && typeof bVal === "string") {
-            comparison = aVal.localeCompare(bVal);
-          } else {
-            comparison = Number(aVal) - Number(bVal);
-          }
-
-          if (comparison !== 0) {
-            return meta.order * comparison;
-          }
+        if (e.multiSortMeta.length === 0) {
+          sortedProducts.value = [...mockProducts];
+          return;
         }
-        return 0;
-      });
-    };
 
-    const formatSortMeta = () => {
-      if (multiSortMeta.value.length === 0) return "None";
-      return multiSortMeta.value.map((m, i) => `${i + 1}. ${m.field} (${m.order === 1 ? "ASC" : "DESC"})`).join(", ");
-    };
+        sortedProducts.value = [...mockProducts].sort((a, b) => {
+          for (const meta of e.multiSortMeta) {
+            const field = meta.field as keyof Product;
+            const aVal = a[field];
+            const bVal = b[field];
+            let comparison = 0;
 
-    return { products: sortedProducts, multiSortMeta, handleSort, formatSortMeta };
-  },
-  template: `
+            if (typeof aVal === "string" && typeof bVal === "string") {
+              comparison = aVal.localeCompare(bVal);
+            } else {
+              comparison = Number(aVal) - Number(bVal);
+            }
+
+            if (comparison !== 0) {
+              return meta.order * comparison;
+            }
+          }
+          return 0;
+        });
+      };
+
+      const formatSortMeta = () => {
+        if (multiSortMeta.value.length === 0) return "None";
+        return multiSortMeta.value.map((m, i) => `${i + 1}. ${m.field} (${m.order === 1 ? "ASC" : "DESC"})`).join(", ");
+      };
+
+      return { products: sortedProducts, multiSortMeta, handleSort, formatSortMeta };
+    },
+    template: `
     <div style="height: 450px">
       <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Multi-Sort with Removable Sort</p>
@@ -1118,21 +1119,21 @@ export const MultiSortRemovable: Story = {
  */
 export const RowReorder: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const eventLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const eventLog = ref<string[]>([]);
 
-    const handleRowReorder = (e: { dragIndex: number; dropIndex: number; value: Product[] }) => {
-      eventLog.value.unshift(`Moved row from ${e.dragIndex} to ${e.dropIndex}`);
-      if (eventLog.value.length > 5) eventLog.value.pop();
-      // Update the products array with the new order
-      products.value = e.value;
-    };
+      const handleRowReorder = (e: { dragIndex: number; dropIndex: number; value: Product[] }) => {
+        eventLog.value.unshift(`Moved row from ${e.dragIndex} to ${e.dropIndex}`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+        // Update the products array with the new order
+        products.value = e.value;
+      };
 
-    return { products, eventLog, handleRowReorder };
-  },
-  template: `
+      return { products, eventLog, handleRowReorder };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Row Reorder with Drag Handle</p>
@@ -1166,20 +1167,20 @@ export const RowReorder: Story = {
  */
 export const RowReorderWithoutHandle: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const eventLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const eventLog = ref<string[]>([]);
 
-    const handleRowReorder = (e: { dragIndex: number; dropIndex: number; value: Product[] }) => {
-      eventLog.value.unshift(`Moved row from ${e.dragIndex} to ${e.dropIndex}`);
-      if (eventLog.value.length > 5) eventLog.value.pop();
-      products.value = e.value;
-    };
+      const handleRowReorder = (e: { dragIndex: number; dropIndex: number; value: Product[] }) => {
+        eventLog.value.unshift(`Moved row from ${e.dragIndex} to ${e.dropIndex}`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+        products.value = e.value;
+      };
 
-    return { products, eventLog, handleRowReorder };
-  },
-  template: `
+      return { products, eventLog, handleRowReorder };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Row Reorder (Entire Row Draggable)</p>
@@ -1212,18 +1213,18 @@ export const RowReorderWithoutHandle: Story = {
  */
 export const RowReorderWithSelection: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const selection = ref<Product[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const selection = ref<Product[]>([]);
 
-    const handleRowReorder = (e: { dragIndex: number; dropIndex: number; value: Product[] }) => {
-      products.value = e.value;
-    };
+      const handleRowReorder = (e: { dragIndex: number; dropIndex: number; value: Product[] }) => {
+        products.value = e.value;
+      };
 
-    return { products, selection, handleRowReorder };
-  },
-  template: `
+      return { products, selection, handleRowReorder };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Row Reorder with Selection</p>
@@ -1337,30 +1338,30 @@ const mockProductsWithOrders: OrderProduct[] = [
  */
 export const ExpandableRows: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const expandedRows = ref<OrderProduct[]>([]);
-    const eventLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const expandedRows = ref<OrderProduct[]>([]);
+      const eventLog = ref<string[]>([]);
 
-    const handleRowExpand = (e: { data: OrderProduct }) => {
-      eventLog.value.unshift(`Expanded: ${e.data.name}`);
-      if (eventLog.value.length > 5) eventLog.value.pop();
-    };
+      const handleRowExpand = (e: { data: OrderProduct }) => {
+        eventLog.value.unshift(`Expanded: ${e.data.name}`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+      };
 
-    const handleRowCollapse = (e: { data: OrderProduct }) => {
-      eventLog.value.unshift(`Collapsed: ${e.data.name}`);
-      if (eventLog.value.length > 5) eventLog.value.pop();
-    };
+      const handleRowCollapse = (e: { data: OrderProduct }) => {
+        eventLog.value.unshift(`Collapsed: ${e.data.name}`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+      };
 
-    return {
-      products: mockProductsWithOrders,
-      expandedRows,
-      eventLog,
-      handleRowExpand,
-      handleRowCollapse,
-    };
-  },
-  template: `
+      return {
+        products: mockProductsWithOrders,
+        expandedRows,
+        eventLog,
+        handleRowExpand,
+        handleRowCollapse,
+      };
+    },
+    template: `
     <div style="height: 600px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Expandable Rows</p>
@@ -1423,18 +1424,18 @@ export const ExpandableRows: Story = {
  */
 export const ExpandableRowsWithSelection: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const expandedRows = ref<OrderProduct[]>([]);
-    const selection = ref<OrderProduct[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const expandedRows = ref<OrderProduct[]>([]);
+      const selection = ref<OrderProduct[]>([]);
 
-    return {
-      products: mockProductsWithOrders,
-      expandedRows,
-      selection,
-    };
-  },
-  template: `
+      return {
+        products: mockProductsWithOrders,
+        expandedRows,
+        selection,
+      };
+    },
+    template: `
     <div style="height: 600px">
       <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Expandable Rows with Selection</p>
@@ -1477,16 +1478,16 @@ export const ExpandableRowsWithSelection: Story = {
  */
 export const ExpandableRowsCustomIcons: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const expandedRows = ref<OrderProduct[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const expandedRows = ref<OrderProduct[]>([]);
 
-    return {
-      products: mockProductsWithOrders,
-      expandedRows,
-    };
-  },
-  template: `
+      return {
+        products: mockProductsWithOrders,
+        expandedRows,
+      };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Custom Expansion Icons</p>
@@ -1529,15 +1530,15 @@ export const ExpandableRowsCustomIcons: Story = {
  */
 export const ColumnResize: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const onResizeEnd = (event: { columns: { id: string; width: number }[] }) => {
-      console.log("Column resize end:", event.columns);
-    };
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const onResizeEnd = (event: { columns: { id: string; width: number }[] }) => {
+        console.log("Column resize end:", event.columns);
+      };
 
-    return { products: mockProducts, onResizeEnd };
-  },
-  template: `
+      return { products: mockProducts, onResizeEnd };
+    },
+    template: `
     <div style="height: 400px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Column Resize</p>
@@ -1568,11 +1569,11 @@ export const ColumnResize: Story = {
  */
 export const ColumnResizeWithMinWidth: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: mockProducts };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: mockProducts };
+    },
+    template: `
     <div style="height: 400px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Column Resize with Min Width</p>
@@ -1606,15 +1607,15 @@ export const ColumnResizeWithMinWidth: Story = {
  */
 export const ColumnReorder: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const onColumnReorder = (event: { columns: { id: string; width: number }[] }) => {
-      console.log("Column reorder:", event.columns);
-    };
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const onColumnReorder = (event: { columns: { id: string; width: number }[] }) => {
+        console.log("Column reorder:", event.columns);
+      };
 
-    return { products: mockProducts, onColumnReorder };
-  },
-  template: `
+      return { products: mockProducts, onColumnReorder };
+    },
+    template: `
     <div style="height: 400px">
       <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Column Reorder</p>
@@ -1646,12 +1647,12 @@ export const ColumnReorder: Story = {
  */
 export const ColumnReorderWithSelection: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const selection = ref<Product[]>([]);
-    return { products: mockProducts, selection };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const selection = ref<Product[]>([]);
+      return { products: mockProducts, selection };
+    },
+    template: `
     <div style="height: 400px">
       <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Column Reorder with Selection</p>
@@ -1680,11 +1681,11 @@ export const ColumnReorderWithSelection: Story = {
  */
 export const ColumnResizeAndReorder: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: mockProducts };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: mockProducts };
+    },
+    template: `
     <div style="height: 400px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Column Resize + Reorder</p>
@@ -1719,32 +1720,32 @@ export const ColumnResizeAndReorder: Story = {
  */
 export const StatePersistence: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcButton },
-  setup() {
-    const stateKey = "demo-products-table";
+    components: { VcDataTable, VcColumn, VcButton },
+    setup() {
+      const stateKey = "demo-products-table";
 
-    const clearState = () => {
-      localStorage.removeItem(`VC_DATATABLE_${stateKey.toUpperCase()}`);
-      window.location.reload();
-    };
+      const clearState = () => {
+        localStorage.removeItem(`VC_DATATABLE_${stateKey.toUpperCase()}`);
+        window.location.reload();
+      };
 
-    const onStateSave = (state: object) => {
-      console.log("State saved:", state);
-    };
+      const onStateSave = (state: object) => {
+        console.log("State saved:", state);
+      };
 
-    const onStateRestore = (state: object) => {
-      console.log("State restored:", state);
-    };
+      const onStateRestore = (state: object) => {
+        console.log("State restored:", state);
+      };
 
-    return {
-      products: mockProducts,
-      stateKey,
-      clearState,
-      onStateSave,
-      onStateRestore,
-    };
-  },
-  template: `
+      return {
+        products: mockProducts,
+        stateKey,
+        clearState,
+        onStateSave,
+        onStateRestore,
+      };
+    },
+    template: `
     <div style="height: 450px">
       <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">State Persistence (localStorage)</p>
@@ -1782,18 +1783,18 @@ export const StatePersistence: Story = {
  */
 export const StatePersistenceSession: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcButton },
-  setup() {
-    const stateKey = "demo-session-table";
+    components: { VcDataTable, VcColumn, VcButton },
+    setup() {
+      const stateKey = "demo-session-table";
 
-    const clearState = () => {
-      sessionStorage.removeItem(`VC_DATATABLE_${stateKey.toUpperCase()}`);
-      window.location.reload();
-    };
+      const clearState = () => {
+        sessionStorage.removeItem(`VC_DATATABLE_${stateKey.toUpperCase()}`);
+        window.location.reload();
+      };
 
-    return { products: mockProducts, stateKey, clearState };
-  },
-  template: `
+      return { products: mockProducts, stateKey, clearState };
+    },
+    template: `
     <div style="height: 450px">
       <div class="tw-mb-4 tw-p-3 tw-bg-warning-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">State Persistence (sessionStorage)</p>
@@ -1829,28 +1830,28 @@ export const StatePersistenceSession: Story = {
  */
 export const FullFeaturedTable: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcButton },
-  setup() {
-    const selection = ref<Product[]>([]);
-    const sortField = ref("name");
-    const sortOrder = ref<1 | -1 | 0>(1);
-    const stateKey = "full-featured-table";
+    components: { VcDataTable, VcColumn, VcButton },
+    setup() {
+      const selection = ref<Product[]>([]);
+      const sortField = ref("name");
+      const sortOrder = ref<1 | -1 | 0>(1);
+      const stateKey = "full-featured-table";
 
-    const clearState = () => {
-      localStorage.removeItem(`VC_DATATABLE_${stateKey.toUpperCase()}`);
-      window.location.reload();
-    };
+      const clearState = () => {
+        localStorage.removeItem(`VC_DATATABLE_${stateKey.toUpperCase()}`);
+        window.location.reload();
+      };
 
-    return {
-      products: mockProducts,
-      selection,
-      sortField,
-      sortOrder,
-      stateKey,
-      clearState,
-    };
-  },
-  template: `
+      return {
+        products: mockProducts,
+        selection,
+        sortField,
+        sortOrder,
+        stateKey,
+        clearState,
+      };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-gradient-to-r tw-from-primary-50 tw-to-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">🚀 Full Featured VcDataTable</p>
@@ -1905,66 +1906,66 @@ export const FullFeaturedTable: Story = {
  */
 export const WithRowActions: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const eventLog = ref<string[]>([]);
-    const maxQuickActions = ref(2);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const eventLog = ref<string[]>([]);
+      const maxQuickActions = ref(2);
 
-    const getRowActions = (item: Product) => [
-      {
-        icon: "lucide-eye",
-        title: "View",
-        clickHandler: () => {
-          eventLog.value.unshift(`View: ${item.name}`);
-          if (eventLog.value.length > 5) eventLog.value.pop();
+      const getRowActions = (item: Product) => [
+        {
+          icon: "lucide-eye",
+          title: "View",
+          clickHandler: () => {
+            eventLog.value.unshift(`View: ${item.name}`);
+            if (eventLog.value.length > 5) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-pencil",
-        title: "Edit",
-        clickHandler: () => {
-          eventLog.value.unshift(`Edit: ${item.name}`);
-          if (eventLog.value.length > 5) eventLog.value.pop();
+        {
+          icon: "lucide-pencil",
+          title: "Edit",
+          clickHandler: () => {
+            eventLog.value.unshift(`Edit: ${item.name}`);
+            if (eventLog.value.length > 5) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-copy",
-        title: "Duplicate",
-        clickHandler: () => {
-          const newProduct = {
-            ...item,
-            id: Math.max(...products.value.map((p) => p.id)) + 1,
-            name: `${item.name} (Copy)`,
-          };
-          products.value.push(newProduct);
-          eventLog.value.unshift(`Duplicated: ${item.name}`);
-          if (eventLog.value.length > 5) eventLog.value.pop();
+        {
+          icon: "lucide-copy",
+          title: "Duplicate",
+          clickHandler: () => {
+            const newProduct = {
+              ...item,
+              id: Math.max(...products.value.map((p) => p.id)) + 1,
+              name: `${item.name} (Copy)`,
+            };
+            products.value.push(newProduct);
+            eventLog.value.unshift(`Duplicated: ${item.name}`);
+            if (eventLog.value.length > 5) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-archive",
-        title: "Archive",
-        clickHandler: () => {
-          eventLog.value.unshift(`Archived: ${item.name}`);
-          if (eventLog.value.length > 5) eventLog.value.pop();
+        {
+          icon: "lucide-archive",
+          title: "Archive",
+          clickHandler: () => {
+            eventLog.value.unshift(`Archived: ${item.name}`);
+            if (eventLog.value.length > 5) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-trash-2",
-        title: "Delete",
-        variant: "danger" as const,
-        clickHandler: () => {
-          products.value = products.value.filter((p) => p.id !== item.id);
-          eventLog.value.unshift(`Deleted: ${item.name}`);
-          if (eventLog.value.length > 5) eventLog.value.pop();
+        {
+          icon: "lucide-trash-2",
+          title: "Delete",
+          variant: "danger" as const,
+          clickHandler: () => {
+            products.value = products.value.filter((p) => p.id !== item.id);
+            eventLog.value.unshift(`Deleted: ${item.name}`);
+            if (eventLog.value.length > 5) eventLog.value.pop();
+          },
         },
-      },
-    ];
+      ];
 
-    return { products, eventLog, getRowActions, maxQuickActions };
-  },
-  template: `
+      return { products, eventLog, getRowActions, maxQuickActions };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-neutrals-100 tw-rounded tw-text-sm">
         <div class="tw-flex tw-items-center tw-gap-4 tw-mb-3">
@@ -2015,54 +2016,54 @@ export const WithRowActions: Story = {
  */
 export const WithRowActionsDropdown: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
 
-    const getRowActions = (item: Product) => [
-      {
-        icon: "lucide-eye",
-        title: "View details",
-        clickHandler: () => alert(`View: ${item.name}`),
-      },
-      {
-        icon: "lucide-pencil",
-        title: "Edit",
-        clickHandler: () => alert(`Edit: ${item.name}`),
-      },
-      {
-        icon: "lucide-copy",
-        title: "Duplicate",
-        clickHandler: () => {
-          const newProduct = {
-            ...item,
-            id: Math.max(...products.value.map((p) => p.id)) + 1,
-            name: `${item.name} (Copy)`,
-          };
-          products.value.push(newProduct);
+      const getRowActions = (item: Product) => [
+        {
+          icon: "lucide-eye",
+          title: "View details",
+          clickHandler: () => alert(`View: ${item.name}`),
         },
-      },
-      {
-        icon: "lucide-archive",
-        title: "Archive",
-        disabled: item.stock === 0,
-        clickHandler: () => alert(`Archive: ${item.name}`),
-      },
-      {
-        icon: "lucide-trash-2",
-        title: "Delete",
-        variant: "danger" as const,
-        clickHandler: () => {
-          if (confirm(`Delete ${item.name}?`)) {
-            products.value = products.value.filter((p) => p.id !== item.id);
-          }
+        {
+          icon: "lucide-pencil",
+          title: "Edit",
+          clickHandler: () => alert(`Edit: ${item.name}`),
         },
-      },
-    ];
+        {
+          icon: "lucide-copy",
+          title: "Duplicate",
+          clickHandler: () => {
+            const newProduct = {
+              ...item,
+              id: Math.max(...products.value.map((p) => p.id)) + 1,
+              name: `${item.name} (Copy)`,
+            };
+            products.value.push(newProduct);
+          },
+        },
+        {
+          icon: "lucide-archive",
+          title: "Archive",
+          disabled: item.stock === 0,
+          clickHandler: () => alert(`Archive: ${item.name}`),
+        },
+        {
+          icon: "lucide-trash-2",
+          title: "Delete",
+          variant: "danger" as const,
+          clickHandler: () => {
+            if (confirm(`Delete ${item.name}?`)) {
+              products.value = products.value.filter((p) => p.id !== item.id);
+            }
+          },
+        },
+      ];
 
-    return { products, getRowActions };
-  },
-  template: `
+      return { products, getRowActions };
+    },
+    template: `
     <div style="height: 400px">
       <p class="tw-mb-4 tw-text-sm tw-text-neutrals-500">
         Click the three dots (⋮) to open the actions menu.
@@ -2091,43 +2092,43 @@ export const WithRowActionsDropdown: Story = {
  */
 export const WithRowActionsInlineColumn: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const eventLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const eventLog = ref<string[]>([]);
 
-    const getRowActions = (item: Product) => [
-      {
-        icon: "lucide-eye",
-        title: "View",
-        clickHandler: () => {
-          eventLog.value.unshift(`View: ${item.name}`);
-          if (eventLog.value.length > 5) eventLog.value.pop();
+      const getRowActions = (item: Product) => [
+        {
+          icon: "lucide-eye",
+          title: "View",
+          clickHandler: () => {
+            eventLog.value.unshift(`View: ${item.name}`);
+            if (eventLog.value.length > 5) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-pencil",
-        title: "Edit",
-        clickHandler: () => {
-          eventLog.value.unshift(`Edit: ${item.name}`);
-          if (eventLog.value.length > 5) eventLog.value.pop();
+        {
+          icon: "lucide-pencil",
+          title: "Edit",
+          clickHandler: () => {
+            eventLog.value.unshift(`Edit: ${item.name}`);
+            if (eventLog.value.length > 5) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-trash-2",
-        title: "Delete",
-        variant: "danger" as const,
-        clickHandler: () => {
-          products.value = products.value.filter((p) => p.id !== item.id);
-          eventLog.value.unshift(`Deleted: ${item.name}`);
-          if (eventLog.value.length > 5) eventLog.value.pop();
+        {
+          icon: "lucide-trash-2",
+          title: "Delete",
+          variant: "danger" as const,
+          clickHandler: () => {
+            products.value = products.value.filter((p) => p.id !== item.id);
+            eventLog.value.unshift(`Deleted: ${item.name}`);
+            if (eventLog.value.length > 5) eventLog.value.pop();
+          },
         },
-      },
-    ];
+      ];
 
-    return { products, eventLog, getRowActions };
-  },
-  template: `
+      return { products, eventLog, getRowActions };
+    },
+    template: `
     <div style="height: 500px">
       <p class="tw-mb-4 tw-text-sm tw-text-neutrals-500">
         Actions are always visible in a dedicated column — no hover needed.
@@ -2160,36 +2161,36 @@ export const WithRowActionsInlineColumn: Story = {
  */
 export const WithRowActionsDropdownColumn: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
 
-    const getRowActions = (item: Product) => [
-      {
-        icon: "lucide-eye",
-        title: "View details",
-        clickHandler: () => alert(`View: ${item.name}`),
-      },
-      {
-        icon: "lucide-pencil",
-        title: "Edit",
-        clickHandler: () => alert(`Edit: ${item.name}`),
-      },
-      {
-        icon: "lucide-trash-2",
-        title: "Delete",
-        variant: "danger" as const,
-        clickHandler: () => {
-          if (confirm(`Delete ${item.name}?`)) {
-            products.value = products.value.filter((p) => p.id !== item.id);
-          }
+      const getRowActions = (item: Product) => [
+        {
+          icon: "lucide-eye",
+          title: "View details",
+          clickHandler: () => alert(`View: ${item.name}`),
         },
-      },
-    ];
+        {
+          icon: "lucide-pencil",
+          title: "Edit",
+          clickHandler: () => alert(`Edit: ${item.name}`),
+        },
+        {
+          icon: "lucide-trash-2",
+          title: "Delete",
+          variant: "danger" as const,
+          clickHandler: () => {
+            if (confirm(`Delete ${item.name}?`)) {
+              products.value = products.value.filter((p) => p.id !== item.id);
+            }
+          },
+        },
+      ];
 
-    return { products, getRowActions };
-  },
-  template: `
+      return { products, getRowActions };
+    },
+    template: `
     <div style="height: 400px">
       <p class="tw-mb-4 tw-text-sm tw-text-neutrals-500">
         Three-dot menu always visible in dedicated column. Click to open dropdown.
@@ -2221,31 +2222,31 @@ export const WithRowActionsDropdownColumn: Story = {
  */
 export const WithLineClamp: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const items = ref([
-      {
-        id: 1,
-        title: "Short Title",
-        description: "A short description.",
-      },
-      {
-        id: 2,
-        title: "Medium Length Title That Might Wrap",
-        description:
-          "This is a medium length description that might wrap to multiple lines depending on the column width.",
-      },
-      {
-        id: 3,
-        title: "Very Long Title That Will Definitely Need Multiple Lines to Display All the Text",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-      },
-    ]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const items = ref([
+        {
+          id: 1,
+          title: "Short Title",
+          description: "A short description.",
+        },
+        {
+          id: 2,
+          title: "Medium Length Title That Might Wrap",
+          description:
+            "This is a medium length description that might wrap to multiple lines depending on the column width.",
+        },
+        {
+          id: 3,
+          title: "Very Long Title That Will Definitely Need Multiple Lines to Display All the Text",
+          description:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+        },
+      ]);
 
-    return { items };
-  },
-  template: `
+      return { items };
+    },
+    template: `
     <div class="tw-space-y-8">
       <div>
         <h3 class="tw-font-semibold tw-mb-2">Default (3 lines clamp)</h3>
@@ -2292,44 +2293,44 @@ export const WithLineClamp: Story = {
  */
 export const CellTypeImage: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const items = ref([
-      {
-        id: 1,
-        name: "Laptop Pro",
-        image: "https://picsum.photos/seed/laptop/80/80",
-        price: 1299.99,
-      },
-      {
-        id: 2,
-        name: "Wireless Mouse",
-        image: "https://picsum.photos/seed/mouse/80/80",
-        price: 49.99,
-      },
-      {
-        id: 3,
-        name: "USB-C Hub",
-        image: "https://picsum.photos/seed/hub/80/80",
-        price: 89.99,
-      },
-      {
-        id: 4,
-        name: 'Monitor 27"',
-        image: "https://picsum.photos/seed/monitor/80/80",
-        price: 399.99,
-      },
-      {
-        id: 5,
-        name: "Mechanical Keyboard",
-        image: "", // Empty image to show placeholder
-        price: 149.99,
-      },
-    ]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const items = ref([
+        {
+          id: 1,
+          name: "Laptop Pro",
+          image: "https://picsum.photos/seed/laptop/80/80",
+          price: 1299.99,
+        },
+        {
+          id: 2,
+          name: "Wireless Mouse",
+          image: "https://picsum.photos/seed/mouse/80/80",
+          price: 49.99,
+        },
+        {
+          id: 3,
+          name: "USB-C Hub",
+          image: "https://picsum.photos/seed/hub/80/80",
+          price: 89.99,
+        },
+        {
+          id: 4,
+          name: 'Monitor 27"',
+          image: "https://picsum.photos/seed/monitor/80/80",
+          price: 399.99,
+        },
+        {
+          id: 5,
+          name: "Mechanical Keyboard",
+          image: "", // Empty image to show placeholder
+          price: 149.99,
+        },
+      ]);
 
-    return { items };
-  },
-  template: `
+      return { items };
+    },
+    template: `
     <div style="height: 400px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Image Cell Type</p>
@@ -2352,44 +2353,44 @@ export const CellTypeImage: Story = {
  */
 export const CellTypeLink: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const items = ref([
-      {
-        id: 1,
-        name: "Vue.js Documentation",
-        url: "https://vuejs.org/guide/introduction.html",
-        category: "Documentation",
-      },
-      {
-        id: 2,
-        name: "TypeScript Handbook",
-        url: "https://www.typescriptlang.org/docs/handbook/intro.html",
-        category: "Documentation",
-      },
-      {
-        id: 3,
-        name: "Storybook",
-        url: "https://storybook.js.org/",
-        category: "Tools",
-      },
-      {
-        id: 4,
-        name: "Vite",
-        url: "https://vitejs.dev/",
-        category: "Build Tools",
-      },
-      {
-        id: 5,
-        name: "VcShell",
-        url: "https://docs.virtocommerce.org/platform/developer-guide/2.0/custom-apps-development/vc-shell/Getting-started/creating-first-custom-app/",
-        category: "UI Library",
-      },
-    ]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const items = ref([
+        {
+          id: 1,
+          name: "Vue.js Documentation",
+          url: "https://vuejs.org/guide/introduction.html",
+          category: "Documentation",
+        },
+        {
+          id: 2,
+          name: "TypeScript Handbook",
+          url: "https://www.typescriptlang.org/docs/handbook/intro.html",
+          category: "Documentation",
+        },
+        {
+          id: 3,
+          name: "Storybook",
+          url: "https://storybook.js.org/",
+          category: "Tools",
+        },
+        {
+          id: 4,
+          name: "Vite",
+          url: "https://vitejs.dev/",
+          category: "Build Tools",
+        },
+        {
+          id: 5,
+          name: "VcShell",
+          url: "https://docs.virtocommerce.org/platform/developer-guide/2.0/custom-apps-development/vc-shell/Getting-started/creating-first-custom-app/",
+          category: "UI Library",
+        },
+      ]);
 
-    return { items };
-  },
-  template: `
+      return { items };
+    },
+    template: `
     <div style="height: 400px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Link Cell Type</p>
@@ -2412,42 +2413,42 @@ export const CellTypeLink: Story = {
  */
 export const CellTypeHtml: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const items = ref([
-      {
-        id: 1,
-        title: "Bold Text",
-        content: "<strong>This text is bold</strong> and this is normal.",
-      },
-      {
-        id: 2,
-        title: "Colored Text",
-        content:
-          '<span style="color: green;">Green</span>, <span style="color: red;">Red</span>, <span style="color: blue;">Blue</span>',
-      },
-      {
-        id: 3,
-        title: "List",
-        content: "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>",
-      },
-      {
-        id: 4,
-        title: "Mixed Content",
-        content:
-          '<em>Italic</em>, <u>underline</u>, and <code style="background: #f0f0f0; padding: 2px 4px; border-radius: 3px;">code</code>',
-      },
-      {
-        id: 5,
-        title: "Badge Example",
-        content:
-          '<span style="display: inline-block; padding: 2px 8px; background: #10B981; color: white; border-radius: 12px; font-size: 12px;">Active</span>',
-      },
-    ]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const items = ref([
+        {
+          id: 1,
+          title: "Bold Text",
+          content: "<strong>This text is bold</strong> and this is normal.",
+        },
+        {
+          id: 2,
+          title: "Colored Text",
+          content:
+            '<span style="color: green;">Green</span>, <span style="color: red;">Red</span>, <span style="color: blue;">Blue</span>',
+        },
+        {
+          id: 3,
+          title: "List",
+          content: "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>",
+        },
+        {
+          id: 4,
+          title: "Mixed Content",
+          content:
+            '<em>Italic</em>, <u>underline</u>, and <code style="background: #f0f0f0; padding: 2px 4px; border-radius: 3px;">code</code>',
+        },
+        {
+          id: 5,
+          title: "Badge Example",
+          content:
+            '<span style="display: inline-block; padding: 2px 8px; background: #10B981; color: white; border-radius: 12px; font-size: 12px;">Active</span>',
+        },
+      ]);
 
-    return { items };
-  },
-  template: `
+      return { items };
+    },
+    template: `
     <div style="height: 400px">
       <div class="tw-mb-4 tw-p-3 tw-bg-warning-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">HTML Cell Type</p>
@@ -2469,45 +2470,45 @@ export const CellTypeHtml: Story = {
  */
 export const CellTypeDateAgo: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const now = new Date();
-    const items = ref([
-      {
-        id: 1,
-        action: "User logged in",
-        timestamp: new Date(now.getTime() - 2 * 60 * 1000), // 2 minutes ago
-        user: "john.doe",
-      },
-      {
-        id: 2,
-        action: "Order placed",
-        timestamp: new Date(now.getTime() - 45 * 60 * 1000), // 45 minutes ago
-        user: "jane.smith",
-      },
-      {
-        id: 3,
-        action: "Product updated",
-        timestamp: new Date(now.getTime() - 3 * 60 * 60 * 1000), // 3 hours ago
-        user: "admin",
-      },
-      {
-        id: 4,
-        action: "Comment added",
-        timestamp: new Date(now.getTime() - 24 * 60 * 60 * 1000), // 1 day ago
-        user: "support",
-      },
-      {
-        id: 5,
-        action: "Report generated",
-        timestamp: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
-        user: "system",
-      },
-    ]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const now = new Date();
+      const items = ref([
+        {
+          id: 1,
+          action: "User logged in",
+          timestamp: new Date(now.getTime() - 2 * 60 * 1000), // 2 minutes ago
+          user: "john.doe",
+        },
+        {
+          id: 2,
+          action: "Order placed",
+          timestamp: new Date(now.getTime() - 45 * 60 * 1000), // 45 minutes ago
+          user: "jane.smith",
+        },
+        {
+          id: 3,
+          action: "Product updated",
+          timestamp: new Date(now.getTime() - 3 * 60 * 60 * 1000), // 3 hours ago
+          user: "admin",
+        },
+        {
+          id: 4,
+          action: "Comment added",
+          timestamp: new Date(now.getTime() - 24 * 60 * 60 * 1000), // 1 day ago
+          user: "support",
+        },
+        {
+          id: 5,
+          action: "Report generated",
+          timestamp: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+          user: "system",
+        },
+      ]);
 
-    return { items };
-  },
-  template: `
+      return { items };
+    },
+    template: `
     <div style="height: 400px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Date-Ago Cell Type</p>
@@ -2530,57 +2531,57 @@ export const CellTypeDateAgo: Story = {
  */
 export const AllCellTypes: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const now = new Date();
-    const items = ref([
-      {
-        id: 1,
-        image: "https://picsum.photos/seed/p1/60/60",
-        name: "Premium Laptop",
-        description: "<strong>High-performance</strong> laptop with <em>16GB RAM</em>",
-        price: 1299.99,
-        currency: "USD",
-        stock: 45,
-        url: "https://example.com/laptop",
-        isActive: true,
-        status: "In Stock",
-        createdAt: new Date("2024-01-15"),
-        updatedAt: new Date(now.getTime() - 2 * 60 * 60 * 1000),
-      },
-      {
-        id: 2,
-        image: "https://picsum.photos/seed/p2/60/60",
-        name: "Wireless Mouse",
-        description: "<span style='color: gray;'>Ergonomic design</span> for comfort",
-        price: 49.99,
-        currency: "EUR",
-        stock: 120,
-        url: "https://example.com/mouse",
-        isActive: true,
-        status: "In Stock",
-        createdAt: new Date("2024-02-10"),
-        updatedAt: new Date(now.getTime() - 30 * 60 * 1000),
-      },
-      {
-        id: 3,
-        image: "https://picsum.photos/seed/p3/60/60",
-        name: "USB-C Hub",
-        description: "<code>7-in-1</code> connectivity hub",
-        price: 89.99,
-        currency: "USD",
-        stock: 0,
-        url: "https://example.com/hub",
-        isActive: false,
-        status: "Out of Stock",
-        createdAt: new Date("2024-01-20"),
-        updatedAt: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
-      },
-    ]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const now = new Date();
+      const items = ref([
+        {
+          id: 1,
+          image: "https://picsum.photos/seed/p1/60/60",
+          name: "Premium Laptop",
+          description: "<strong>High-performance</strong> laptop with <em>16GB RAM</em>",
+          price: 1299.99,
+          currency: "USD",
+          stock: 45,
+          url: "https://example.com/laptop",
+          isActive: true,
+          status: "In Stock",
+          createdAt: new Date("2024-01-15"),
+          updatedAt: new Date(now.getTime() - 2 * 60 * 60 * 1000),
+        },
+        {
+          id: 2,
+          image: "https://picsum.photos/seed/p2/60/60",
+          name: "Wireless Mouse",
+          description: "<span style='color: gray;'>Ergonomic design</span> for comfort",
+          price: 49.99,
+          currency: "EUR",
+          stock: 120,
+          url: "https://example.com/mouse",
+          isActive: true,
+          status: "In Stock",
+          createdAt: new Date("2024-02-10"),
+          updatedAt: new Date(now.getTime() - 30 * 60 * 1000),
+        },
+        {
+          id: 3,
+          image: "https://picsum.photos/seed/p3/60/60",
+          name: "USB-C Hub",
+          description: "<code>7-in-1</code> connectivity hub",
+          price: 89.99,
+          currency: "USD",
+          stock: 0,
+          url: "https://example.com/hub",
+          isActive: false,
+          status: "Out of Stock",
+          createdAt: new Date("2024-01-20"),
+          updatedAt: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
+        },
+      ]);
 
-    return { items };
-  },
-  template: `
+      return { items };
+    },
+    template: `
     <div style="height: 450px">
       <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">All Cell Types</p>
@@ -2607,9 +2608,6 @@ export const AllCellTypes: Story = {
 // COLUMN SWITCHER
 // =============================================================================
 
-
-
-
 /**
  * Built-in Column Switcher — Auto Mode (via prop)
  *
@@ -2621,12 +2619,12 @@ export const AllCellTypes: Story = {
  */
 export const BuiltInColumnSwitcher: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    return { products };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      return { products };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Built-in Column Switcher (Auto)</p>
@@ -2663,12 +2661,12 @@ export const BuiltInColumnSwitcher: Story = {
  */
 export const ColumnSwitcherDefined: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    return { products };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      return { products };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Column Switcher (Defined Mode)</p>
@@ -2707,14 +2705,14 @@ export const ColumnSwitcherDefined: Story = {
  */
 export const WithRowGrouping: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const expandedGroups = ref<string[]>(["In Stock", "Low Stock", "Out of Stock"]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const expandedGroups = ref<string[]>(["In Stock", "Low Stock", "Out of Stock"]);
 
-    return { products, expandedGroups };
-  },
-  template: `
+      return { products, expandedGroups };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Row Grouping</p>
@@ -2759,22 +2757,22 @@ export const WithRowGrouping: Story = {
  */
 export const WithRowGroupingFooter: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const expandedGroups = ref<string[]>(["In Stock", "Low Stock", "Out of Stock"]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const expandedGroups = ref<string[]>(["In Stock", "Low Stock", "Out of Stock"]);
 
-    // Calculate totals per group
-    const getGroupTotal = (status: string) => {
-      return products.value
-        .filter((p) => p.status === status)
-        .reduce((sum, p) => sum + p.price, 0)
-        .toFixed(2);
-    };
+      // Calculate totals per group
+      const getGroupTotal = (status: string) => {
+        return products.value
+          .filter((p) => p.status === status)
+          .reduce((sum, p) => sum + p.price, 0)
+          .toFixed(2);
+      };
 
-    return { products, expandedGroups, getGroupTotal };
-  },
-  template: `
+      return { products, expandedGroups, getGroupTotal };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Row Grouping with Footer</p>
@@ -2823,12 +2821,12 @@ export const WithRowGroupingFooter: Story = {
  */
 export const WithRowGroupingNonExpandable: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    return { products };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      return { products };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Row Grouping (Non-Expandable)</p>
@@ -2874,49 +2872,49 @@ export const WithRowGroupingNonExpandable: Story = {
  */
 export const InfiniteScroll: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const PAGE_SIZE = 20;
-    let nextId = 1;
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const PAGE_SIZE = 20;
+      let nextId = 1;
 
-    const generatePage = (count: number) => {
-      const statuses = ["In Stock", "Out of Stock", "Low Stock"];
-      return Array.from({ length: count }, () => ({
-        id: nextId++,
-        name: `Product ${nextId - 1}`,
-        price: Math.round(Math.random() * 1000 * 100) / 100,
-        currency: "USD",
-        stock: Math.floor(Math.random() * 200),
-        status: statuses[Math.floor(Math.random() * statuses.length)],
-        isActive: Math.random() > 0.3,
-        createdAt: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000),
-      }));
-    };
+      const generatePage = (count: number) => {
+        const statuses = ["In Stock", "Out of Stock", "Low Stock"];
+        return Array.from({ length: count }, () => ({
+          id: nextId++,
+          name: `Product ${nextId - 1}`,
+          price: Math.round(Math.random() * 1000 * 100) / 100,
+          currency: "USD",
+          stock: Math.floor(Math.random() * 200),
+          status: statuses[Math.floor(Math.random() * statuses.length)],
+          isActive: Math.random() > 0.3,
+          createdAt: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000),
+        }));
+      };
 
-    const products = ref(generatePage(PAGE_SIZE));
-    const loading = ref(false);
-    const hasMore = ref(true);
-    const loadCount = ref(0);
+      const products = ref(generatePage(PAGE_SIZE));
+      const loading = ref(false);
+      const hasMore = ref(true);
+      const loadCount = ref(0);
 
-    const loadMore = () => {
-      if (loading.value || !hasMore.value) return;
-      loading.value = true;
-      loadCount.value++;
-      // Simulate async fetch
-      setTimeout(() => {
-        const newItems = generatePage(PAGE_SIZE);
-        products.value = [...products.value, ...newItems];
-        loading.value = false;
-        // Stop after 5 pages (100 items total)
-        if (products.value.length >= 100) {
-          hasMore.value = false;
-        }
-      }, 800);
-    };
+      const loadMore = () => {
+        if (loading.value || !hasMore.value) return;
+        loading.value = true;
+        loadCount.value++;
+        // Simulate async fetch
+        setTimeout(() => {
+          const newItems = generatePage(PAGE_SIZE);
+          products.value = [...products.value, ...newItems];
+          loading.value = false;
+          // Stop after 5 pages (100 items total)
+          if (products.value.length >= 100) {
+            hasMore.value = false;
+          }
+        }, 800);
+      };
 
-    return { products, loading, hasMore, loadMore, loadCount };
-  },
-  template: `
+      return { products, loading, hasMore, loadMore, loadCount };
+    },
+    template: `
     <div>
       <div class="tw-mb-2 tw-text-sm tw-text-neutrals-500">
         Loaded: {{ products.length }} items | Fetches: {{ loadCount }} | {{ hasMore ? 'Scroll down to load more...' : 'All items loaded' }}
@@ -2959,19 +2957,19 @@ export const InfiniteScroll: Story = {
  */
 export const MobileViewInfo: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    // Extend products with thumbnail images
-    interface ProductWithImage extends Product {
-      thumbnail: string;
-    }
-    const products: ProductWithImage[] = mockProducts.map((p) => ({
-      ...p,
-      thumbnail: `https://picsum.photos/seed/${p.id}/100/100`,
-    }));
-    return { products };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      // Extend products with thumbnail images
+      interface ProductWithImage extends Product {
+        thumbnail: string;
+      }
+      const products: ProductWithImage[] = mockProducts.map((p) => ({
+        ...p,
+        thumbnail: `https://picsum.photos/seed/${p.id}/100/100`,
+      }));
+      return { products };
+    },
+    template: `
     <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Mobile View</strong>
@@ -3021,11 +3019,11 @@ MobileViewInfo.parameters = {
  */
 export const MobileCardView: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: mockProducts };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: mockProducts };
+    },
+    template: `
     <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Mobile View Preview</strong>
@@ -3064,36 +3062,36 @@ MobileCardView.parameters = {
  */
 export const MobileWithSwipeActions: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const eventLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const eventLog = ref<string[]>([]);
 
-    const getRowActions = (item: Product) => [
-      {
-        icon: "lucide-pencil",
-        title: "Edit",
-        type: "success" as const,
-        clickHandler: () => {
-          eventLog.value.unshift(`Edit: ${item.name}`);
-          if (eventLog.value.length > 3) eventLog.value.pop();
+      const getRowActions = (item: Product) => [
+        {
+          icon: "lucide-pencil",
+          title: "Edit",
+          type: "success" as const,
+          clickHandler: () => {
+            eventLog.value.unshift(`Edit: ${item.name}`);
+            if (eventLog.value.length > 3) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-trash-2",
-        title: "Delete",
-        type: "danger" as const,
-        clickHandler: () => {
-          products.value = products.value.filter((p) => p.id !== item.id);
-          eventLog.value.unshift(`Deleted: ${item.name}`);
-          if (eventLog.value.length > 3) eventLog.value.pop();
+        {
+          icon: "lucide-trash-2",
+          title: "Delete",
+          type: "danger" as const,
+          clickHandler: () => {
+            products.value = products.value.filter((p) => p.id !== item.id);
+            eventLog.value.unshift(`Deleted: ${item.name}`);
+            if (eventLog.value.length > 3) eventLog.value.pop();
+          },
         },
-      },
-    ];
+      ];
 
-    return { products, eventLog, getRowActions };
-  },
-  template: `
+      return { products, eventLog, getRowActions };
+    },
+    template: `
     <div style="max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Swipe Actions Demo</strong>
@@ -3133,61 +3131,61 @@ MobileWithSwipeActions.parameters = {
  */
 export const MobileWithManyActions: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const eventLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const eventLog = ref<string[]>([]);
 
-    const getRowActions = (item: Product) => [
-      {
-        icon: "lucide-eye",
-        title: "View",
-        clickHandler: () => {
-          eventLog.value.unshift(`View: ${item.name}`);
-          if (eventLog.value.length > 3) eventLog.value.pop();
+      const getRowActions = (item: Product) => [
+        {
+          icon: "lucide-eye",
+          title: "View",
+          clickHandler: () => {
+            eventLog.value.unshift(`View: ${item.name}`);
+            if (eventLog.value.length > 3) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-pencil",
-        title: "Edit",
-        type: "success" as const,
-        clickHandler: () => {
-          eventLog.value.unshift(`Edit: ${item.name}`);
-          if (eventLog.value.length > 3) eventLog.value.pop();
+        {
+          icon: "lucide-pencil",
+          title: "Edit",
+          type: "success" as const,
+          clickHandler: () => {
+            eventLog.value.unshift(`Edit: ${item.name}`);
+            if (eventLog.value.length > 3) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-copy",
-        title: "Duplicate",
-        clickHandler: () => {
-          eventLog.value.unshift(`Duplicate: ${item.name}`);
-          if (eventLog.value.length > 3) eventLog.value.pop();
+        {
+          icon: "lucide-copy",
+          title: "Duplicate",
+          clickHandler: () => {
+            eventLog.value.unshift(`Duplicate: ${item.name}`);
+            if (eventLog.value.length > 3) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-archive",
-        title: "Archive",
-        type: "warning" as const,
-        clickHandler: () => {
-          eventLog.value.unshift(`Archive: ${item.name}`);
-          if (eventLog.value.length > 3) eventLog.value.pop();
+        {
+          icon: "lucide-archive",
+          title: "Archive",
+          type: "warning" as const,
+          clickHandler: () => {
+            eventLog.value.unshift(`Archive: ${item.name}`);
+            if (eventLog.value.length > 3) eventLog.value.pop();
+          },
         },
-      },
-      {
-        icon: "lucide-trash-2",
-        title: "Delete",
-        type: "danger" as const,
-        clickHandler: () => {
-          products.value = products.value.filter((p) => p.id !== item.id);
-          eventLog.value.unshift(`Deleted: ${item.name}`);
-          if (eventLog.value.length > 3) eventLog.value.pop();
+        {
+          icon: "lucide-trash-2",
+          title: "Delete",
+          type: "danger" as const,
+          clickHandler: () => {
+            products.value = products.value.filter((p) => p.id !== item.id);
+            eventLog.value.unshift(`Deleted: ${item.name}`);
+            if (eventLog.value.length > 3) eventLog.value.pop();
+          },
         },
-      },
-    ];
+      ];
 
-    return { products, eventLog, getRowActions };
-  },
-  template: `
+      return { products, eventLog, getRowActions };
+    },
+    template: `
     <div style="max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Action Sheet Demo</strong>
@@ -3231,15 +3229,15 @@ MobileWithManyActions.parameters = {
  */
 export const MobileWithSelection: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcButton },
-  setup() {
-    const selection = ref<Product[]>([]);
-    const clearSelection = () => {
-      selection.value = [];
-    };
-    return { products: mockProducts, selection, clearSelection };
-  },
-  template: `
+    components: { VcDataTable, VcColumn, VcButton },
+    setup() {
+      const selection = ref<Product[]>([]);
+      const clearSelection = () => {
+        selection.value = [];
+      };
+      return { products: mockProducts, selection, clearSelection };
+    },
+    template: `
     <div style="max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -3292,22 +3290,22 @@ MobileWithSelection.parameters = {
  */
 export const MobileAllCellTypes: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    interface ExtendedProduct extends Product {
-      thumbnail: string;
-      description: string;
-      lastUpdated: Date;
-    }
-    const products: ExtendedProduct[] = mockProducts.map((p) => ({
-      ...p,
-      thumbnail: `https://picsum.photos/seed/${p.id}/100/100`,
-      description: `<strong>${p.name}</strong> - A great product for your needs.`,
-      lastUpdated: new Date(),
-    }));
-    return { products };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      interface ExtendedProduct extends Product {
+        thumbnail: string;
+        description: string;
+        lastUpdated: Date;
+      }
+      const products: ExtendedProduct[] = mockProducts.map((p) => ({
+        ...p,
+        thumbnail: `https://picsum.photos/seed/${p.id}/100/100`,
+        description: `<strong>${p.name}</strong> - A great product for your needs.`,
+        lastUpdated: new Date(),
+      }));
+      return { products };
+    },
+    template: `
     <div style="max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Cell Types Demo</strong>
@@ -3351,61 +3349,61 @@ MobileAllCellTypes.parameters = {
  */
 export const MobileUsers: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    interface User {
-      id: number;
-      name: string;
-      email: string;
-      role: string;
-      isActive: boolean;
-      createdAt: Date;
-    }
-    const users: User[] = [
-      {
-        id: 1,
-        name: "John Doe",
-        email: "john@example.com",
-        role: "Admin",
-        isActive: true,
-        createdAt: new Date("2024-01-15"),
-      },
-      {
-        id: 2,
-        name: "Jane Smith",
-        email: "jane@example.com",
-        role: "Editor",
-        isActive: true,
-        createdAt: new Date("2024-02-20"),
-      },
-      {
-        id: 3,
-        name: "Bob Wilson",
-        email: "bob@example.com",
-        role: "Viewer",
-        isActive: false,
-        createdAt: new Date("2024-03-10"),
-      },
-      {
-        id: 4,
-        name: "Alice Brown",
-        email: "alice@example.com",
-        role: "Editor",
-        isActive: true,
-        createdAt: new Date("2024-04-05"),
-      },
-      {
-        id: 5,
-        name: "Charlie Davis",
-        email: "charlie@example.com",
-        role: "Admin",
-        isActive: true,
-        createdAt: new Date("2024-05-12"),
-      },
-    ];
-    return { users };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      interface User {
+        id: number;
+        name: string;
+        email: string;
+        role: string;
+        isActive: boolean;
+        createdAt: Date;
+      }
+      const users: User[] = [
+        {
+          id: 1,
+          name: "John Doe",
+          email: "john@example.com",
+          role: "Admin",
+          isActive: true,
+          createdAt: new Date("2024-01-15"),
+        },
+        {
+          id: 2,
+          name: "Jane Smith",
+          email: "jane@example.com",
+          role: "Editor",
+          isActive: true,
+          createdAt: new Date("2024-02-20"),
+        },
+        {
+          id: 3,
+          name: "Bob Wilson",
+          email: "bob@example.com",
+          role: "Viewer",
+          isActive: false,
+          createdAt: new Date("2024-03-10"),
+        },
+        {
+          id: 4,
+          name: "Alice Brown",
+          email: "alice@example.com",
+          role: "Editor",
+          isActive: true,
+          createdAt: new Date("2024-04-05"),
+        },
+        {
+          id: 5,
+          name: "Charlie Davis",
+          email: "charlie@example.com",
+          role: "Admin",
+          isActive: true,
+          createdAt: new Date("2024-05-12"),
+        },
+      ];
+      return { users };
+    },
+    template: `
     <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Users List</strong>
@@ -3441,55 +3439,55 @@ MobileUsers.parameters = {
  */
 export const MobileDocuments: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    interface Document {
-      id: number;
-      title: string;
-      author: string;
-      category: string;
-      lastModified: Date;
-    }
-    const documents: Document[] = [
-      {
-        id: 1,
-        title: "Homepage Design Spec",
-        author: "Jane Smith",
-        category: "Design",
-        lastModified: new Date("2025-01-28"),
-      },
-      {
-        id: 2,
-        title: "API Documentation",
-        author: "John Doe",
-        category: "Technical",
-        lastModified: new Date("2025-01-25"),
-      },
-      {
-        id: 3,
-        title: "Marketing Strategy Q1",
-        author: "Alice Brown",
-        category: "Marketing",
-        lastModified: new Date("2025-01-20"),
-      },
-      {
-        id: 4,
-        title: "User Research Report",
-        author: "Bob Wilson",
-        category: "Research",
-        lastModified: new Date("2025-01-15"),
-      },
-      {
-        id: 5,
-        title: "Product Roadmap 2025",
-        author: "Charlie Davis",
-        category: "Planning",
-        lastModified: new Date("2025-01-10"),
-      },
-    ];
-    return { documents };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      interface Document {
+        id: number;
+        title: string;
+        author: string;
+        category: string;
+        lastModified: Date;
+      }
+      const documents: Document[] = [
+        {
+          id: 1,
+          title: "Homepage Design Spec",
+          author: "Jane Smith",
+          category: "Design",
+          lastModified: new Date("2025-01-28"),
+        },
+        {
+          id: 2,
+          title: "API Documentation",
+          author: "John Doe",
+          category: "Technical",
+          lastModified: new Date("2025-01-25"),
+        },
+        {
+          id: 3,
+          title: "Marketing Strategy Q1",
+          author: "Alice Brown",
+          category: "Marketing",
+          lastModified: new Date("2025-01-20"),
+        },
+        {
+          id: 4,
+          title: "User Research Report",
+          author: "Bob Wilson",
+          category: "Research",
+          lastModified: new Date("2025-01-15"),
+        },
+        {
+          id: 5,
+          title: "Product Roadmap 2025",
+          author: "Charlie Davis",
+          category: "Planning",
+          lastModified: new Date("2025-01-10"),
+        },
+      ];
+      return { documents };
+    },
+    template: `
     <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Documents</strong>
@@ -3524,73 +3522,73 @@ MobileDocuments.parameters = {
  */
 export const MobileOrders: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    interface Order {
-      id: number;
-      orderNumber: string;
-      customer: string;
-      total: number;
-      itemCount: number;
-      status: string;
-      paymentStatus: string;
-      createdAt: Date;
-    }
-    const orders: Order[] = [
-      {
-        id: 1,
-        orderNumber: "ORD-2025-001",
-        customer: "John Doe",
-        total: 299.99,
-        itemCount: 3,
-        status: "Shipped",
-        paymentStatus: "Paid",
-        createdAt: new Date("2025-01-28"),
-      },
-      {
-        id: 2,
-        orderNumber: "ORD-2025-002",
-        customer: "Jane Smith",
-        total: 149.5,
-        itemCount: 2,
-        status: "Processing",
-        paymentStatus: "Paid",
-        createdAt: new Date("2025-01-27"),
-      },
-      {
-        id: 3,
-        orderNumber: "ORD-2025-003",
-        customer: "Bob Wilson",
-        total: 599.0,
-        itemCount: 5,
-        status: "Pending",
-        paymentStatus: "Pending",
-        createdAt: new Date("2025-01-26"),
-      },
-      {
-        id: 4,
-        orderNumber: "ORD-2025-004",
-        customer: "Alice Brown",
-        total: 89.99,
-        itemCount: 1,
-        status: "Delivered",
-        paymentStatus: "Paid",
-        createdAt: new Date("2025-01-25"),
-      },
-      {
-        id: 5,
-        orderNumber: "ORD-2025-005",
-        customer: "Charlie Davis",
-        total: 1299.0,
-        itemCount: 4,
-        status: "Cancelled",
-        paymentStatus: "Refunded",
-        createdAt: new Date("2025-01-24"),
-      },
-    ];
-    return { orders };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      interface Order {
+        id: number;
+        orderNumber: string;
+        customer: string;
+        total: number;
+        itemCount: number;
+        status: string;
+        paymentStatus: string;
+        createdAt: Date;
+      }
+      const orders: Order[] = [
+        {
+          id: 1,
+          orderNumber: "ORD-2025-001",
+          customer: "John Doe",
+          total: 299.99,
+          itemCount: 3,
+          status: "Shipped",
+          paymentStatus: "Paid",
+          createdAt: new Date("2025-01-28"),
+        },
+        {
+          id: 2,
+          orderNumber: "ORD-2025-002",
+          customer: "Jane Smith",
+          total: 149.5,
+          itemCount: 2,
+          status: "Processing",
+          paymentStatus: "Paid",
+          createdAt: new Date("2025-01-27"),
+        },
+        {
+          id: 3,
+          orderNumber: "ORD-2025-003",
+          customer: "Bob Wilson",
+          total: 599.0,
+          itemCount: 5,
+          status: "Pending",
+          paymentStatus: "Pending",
+          createdAt: new Date("2025-01-26"),
+        },
+        {
+          id: 4,
+          orderNumber: "ORD-2025-004",
+          customer: "Alice Brown",
+          total: 89.99,
+          itemCount: 1,
+          status: "Delivered",
+          paymentStatus: "Paid",
+          createdAt: new Date("2025-01-25"),
+        },
+        {
+          id: 5,
+          orderNumber: "ORD-2025-005",
+          customer: "Charlie Davis",
+          total: 1299.0,
+          itemCount: 4,
+          status: "Cancelled",
+          paymentStatus: "Refunded",
+          createdAt: new Date("2025-01-24"),
+        },
+      ];
+      return { orders };
+    },
+    template: `
     <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Orders</strong>
@@ -3627,22 +3625,22 @@ MobileOrders.parameters = {
  */
 export const MobileProductsWithMultipleStatuses: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    interface ExtendedProduct extends Product {
-      thumbnail: string;
-      isPublished: boolean;
-      gtin: string;
-    }
-    const products: ExtendedProduct[] = mockProducts.map((p, i) => ({
-      ...p,
-      thumbnail: `https://picsum.photos/seed/${p.id}/100/100`,
-      isPublished: i % 2 === 0,
-      gtin: `8901234567890${p.id}`,
-    }));
-    return { products };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      interface ExtendedProduct extends Product {
+        thumbnail: string;
+        isPublished: boolean;
+        gtin: string;
+      }
+      const products: ExtendedProduct[] = mockProducts.map((p, i) => ({
+        ...p,
+        thumbnail: `https://picsum.photos/seed/${p.id}/100/100`,
+        isPublished: i % 2 === 0,
+        gtin: `8901234567890${p.id}`,
+      }));
+      return { products };
+    },
+    template: `
     <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Products (Extended)</strong>
@@ -3679,11 +3677,11 @@ MobileProductsWithMultipleStatuses.parameters = {
  */
 export const MobileLegacyAPI: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    return { products: mockProducts };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      return { products: mockProducts };
+    },
+    template: `
     <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #fef3c7; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Legacy mobilePosition API</strong>
@@ -3719,25 +3717,25 @@ MobileLegacyAPI.parameters = {
  */
 export const MobileTwoStatuses: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    interface ProductWithStatuses {
-      id: number;
-      name: string;
-      price: number;
-      stockStatus: string;
-      publishStatus: string;
-    }
-    const products: ProductWithStatuses[] = [
-      { id: 1, name: "Laptop Pro", price: 1299.99, stockStatus: "In Stock", publishStatus: "Published" },
-      { id: 2, name: "Wireless Mouse", price: 49.99, stockStatus: "Low Stock", publishStatus: "Draft" },
-      { id: 3, name: "USB-C Hub", price: 79.99, stockStatus: "Out of Stock", publishStatus: "Published" },
-      { id: 4, name: "Mechanical Keyboard", price: 149.99, stockStatus: "In Stock", publishStatus: "Archived" },
-      { id: 5, name: "Monitor Stand", price: 89.99, stockStatus: "In Stock", publishStatus: "Published" },
-    ];
-    return { products };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      interface ProductWithStatuses {
+        id: number;
+        name: string;
+        price: number;
+        stockStatus: string;
+        publishStatus: string;
+      }
+      const products: ProductWithStatuses[] = [
+        { id: 1, name: "Laptop Pro", price: 1299.99, stockStatus: "In Stock", publishStatus: "Published" },
+        { id: 2, name: "Wireless Mouse", price: 49.99, stockStatus: "Low Stock", publishStatus: "Draft" },
+        { id: 3, name: "USB-C Hub", price: 79.99, stockStatus: "Out of Stock", publishStatus: "Published" },
+        { id: 4, name: "Mechanical Keyboard", price: 149.99, stockStatus: "In Stock", publishStatus: "Archived" },
+        { id: 5, name: "Monitor Stand", price: 89.99, stockStatus: "In Stock", publishStatus: "Published" },
+      ];
+      return { products };
+    },
+    template: `
     <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #ecfdf5; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Two Statuses Demo</strong>
@@ -3774,33 +3772,33 @@ MobileTwoStatuses.parameters = {
  */
 export const MobilePullToRefresh: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const loading = ref(false);
-    const refreshCount = ref(0);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const loading = ref(false);
+      const refreshCount = ref(0);
 
-    const handleRefresh = () => {
-      loading.value = true;
-      refreshCount.value++;
-      // Simulate network request
-      setTimeout(() => {
-        // Simulate adding new item at the top
-        const newProduct = {
-          id: Date.now(),
-          name: `New Product ${refreshCount.value}`,
-          price: Math.floor(Math.random() * 200) + 50,
-          stock: Math.floor(Math.random() * 100),
-          status: "Active",
-        };
-        products.value = [newProduct, ...products.value.slice(0, 4)];
-        loading.value = false;
-      }, 1500);
-    };
+      const handleRefresh = () => {
+        loading.value = true;
+        refreshCount.value++;
+        // Simulate network request
+        setTimeout(() => {
+          // Simulate adding new item at the top
+          const newProduct = {
+            id: Date.now(),
+            name: `New Product ${refreshCount.value}`,
+            price: Math.floor(Math.random() * 200) + 50,
+            stock: Math.floor(Math.random() * 100),
+            status: "Active",
+          };
+          products.value = [newProduct, ...products.value.slice(0, 4)];
+          loading.value = false;
+        }, 1500);
+      };
 
-    return { products, loading, refreshCount, handleRefresh };
-  },
-  template: `
+      return { products, loading, refreshCount, handleRefresh };
+    },
+    template: `
     <div style="max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
       <div style="background: #f0f9ff; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
         <strong>Pull-to-Refresh Demo</strong>
@@ -3847,87 +3845,87 @@ MobilePullToRefresh.parameters = {
  */
 export const SelectAllWithPagination: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const tableRef = ref<any>(null);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const tableRef = ref<any>(null);
 
-    // Simulate paginated data (page 1 of 10)
-    const pageSize = 5;
-    const totalCount = 50;
-    const currentPage = ref(1);
+      // Simulate paginated data (page 1 of 10)
+      const pageSize = 5;
+      const totalCount = 50;
+      const currentPage = ref(1);
 
-    // Generate mock data for current page
-    const generatePageData = (page: number) => {
-      const start = (page - 1) * pageSize;
-      return Array.from({ length: pageSize }, (_, i) => ({
-        id: start + i + 1,
-        name: `Product ${start + i + 1}`,
-        price: Math.floor(Math.random() * 200) + 50,
-        stock: Math.floor(Math.random() * 100),
-        status: ["Active", "Inactive", "Pending"][Math.floor(Math.random() * 3)],
-      }));
-    };
+      // Generate mock data for current page
+      const generatePageData = (page: number) => {
+        const start = (page - 1) * pageSize;
+        return Array.from({ length: pageSize }, (_, i) => ({
+          id: start + i + 1,
+          name: `Product ${start + i + 1}`,
+          price: Math.floor(Math.random() * 200) + 50,
+          stock: Math.floor(Math.random() * 100),
+          status: ["Active", "Inactive", "Pending"][Math.floor(Math.random() * 3)],
+        }));
+      };
 
-    const items = ref(generatePageData(1));
-    const selection = ref<typeof items.value>([]);
-    const isSelectAllActive = ref(false);
-    const actionLog = ref<string[]>([]);
+      const items = ref(generatePageData(1));
+      const selection = ref<typeof items.value>([]);
+      const isSelectAllActive = ref(false);
+      const actionLog = ref<string[]>([]);
 
-    // Handle select all event from table
-    const handleSelectAll = (event: { selected: boolean }) => {
-      if (event.selected) {
-        actionLog.value.unshift(`SELECT ALL triggered - would select all ${totalCount} items`);
-      } else {
-        actionLog.value.unshift("SELECT ALL cleared");
-      }
-      if (actionLog.value.length > 3) actionLog.value.pop();
-    };
+      // Handle select all event from table
+      const handleSelectAll = (event: { selected: boolean }) => {
+        if (event.selected) {
+          actionLog.value.unshift(`SELECT ALL triggered - would select all ${totalCount} items`);
+        } else {
+          actionLog.value.unshift("SELECT ALL cleared");
+        }
+        if (actionLog.value.length > 3) actionLog.value.pop();
+      };
 
-    // Simulate bulk delete
-    const handleBulkDelete = () => {
-      const state = tableRef.value?.getSelectionState();
-      if (state?.isSelectAll) {
-        actionLog.value.unshift(`DELETE ALL ${totalCount} items (server-side)`);
-      } else {
-        actionLog.value.unshift(`DELETE ${state?.count ?? 0} selected items`);
-      }
-      if (actionLog.value.length > 3) actionLog.value.pop();
+      // Simulate bulk delete
+      const handleBulkDelete = () => {
+        const state = tableRef.value?.getSelectionState();
+        if (state?.isSelectAll) {
+          actionLog.value.unshift(`DELETE ALL ${totalCount} items (server-side)`);
+        } else {
+          actionLog.value.unshift(`DELETE ${state?.count ?? 0} selected items`);
+        }
+        if (actionLog.value.length > 3) actionLog.value.pop();
 
-      // Clear selection after action
-      tableRef.value?.clearSelection();
-    };
+        // Clear selection after action
+        tableRef.value?.clearSelection();
+      };
 
-    // Programmatic select all
-    const triggerSelectAll = () => {
-      tableRef.value?.selectAll();
-    };
+      // Programmatic select all
+      const triggerSelectAll = () => {
+        tableRef.value?.selectAll();
+      };
 
-    const totalPages = Math.ceil(totalCount / pageSize);
+      const totalPages = Math.ceil(totalCount / pageSize);
 
-    const handlePageClick = (page: number) => {
-      currentPage.value = page;
-      items.value = generatePageData(page);
-      selection.value = [];
-      isSelectAllActive.value = false;
-    };
+      const handlePageClick = (page: number) => {
+        currentPage.value = page;
+        items.value = generatePageData(page);
+        selection.value = [];
+        isSelectAllActive.value = false;
+      };
 
-    return {
-      tableRef,
-      items,
-      selection,
-      isSelectAllActive,
-      totalCount,
-      totalPages,
-      currentPage,
-      pageSize,
-      actionLog,
-      handleSelectAll,
-      handleBulkDelete,
-      triggerSelectAll,
-      handlePageClick,
-    };
-  },
-  template: `
+      return {
+        tableRef,
+        items,
+        selection,
+        isSelectAllActive,
+        totalCount,
+        totalPages,
+        currentPage,
+        pageSize,
+        actionLog,
+        handleSelectAll,
+        handleBulkDelete,
+        triggerSelectAll,
+        handlePageClick,
+      };
+    },
+    template: `
     <div style="max-width: 800px; margin: 0 auto;">
       <div style="background: #f0f9ff; padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid #bae6fd;">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -4015,70 +4013,70 @@ SelectAllWithPagination.parameters = {
  */
 export const AddRemoveRows: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcButton },
-  setup() {
-    const tableRef = ref<any>(null);
+    components: { VcDataTable, VcColumn, VcButton },
+    setup() {
+      const tableRef = ref<any>(null);
 
-    // Start with some initial data
-    const items = ref([
-      { id: 1, name: "Product A", price: 99.99, stock: 50 },
-      { id: 2, name: "Product B", price: 149.99, stock: 30 },
-      { id: 3, name: "Product C", price: 199.99, stock: 20 },
-    ]);
+      // Start with some initial data
+      const items = ref([
+        { id: 1, name: "Product A", price: 99.99, stock: 50 },
+        { id: 2, name: "Product B", price: 149.99, stock: 30 },
+        { id: 3, name: "Product C", price: 199.99, stock: 20 },
+      ]);
 
-    let nextId = 4;
-    const actionLog = ref<string[]>([]);
+      let nextId = 4;
+      const actionLog = ref<string[]>([]);
 
-    // Handle row-add event (customize defaults)
-    const handleRowAdd = (event: { defaults: Record<string, unknown>; cancel: () => void }) => {
-      event.defaults.id = nextId++;
-      event.defaults.name = `New Product ${nextId - 1}`;
-      event.defaults.price = 0;
-      event.defaults.stock = 0;
-      actionLog.value.unshift(`Added row with id ${event.defaults.id}`);
-      if (actionLog.value.length > 5) actionLog.value.pop();
-    };
+      // Handle row-add event (customize defaults)
+      const handleRowAdd = (event: { defaults: Record<string, unknown>; cancel: () => void }) => {
+        event.defaults.id = nextId++;
+        event.defaults.name = `New Product ${nextId - 1}`;
+        event.defaults.price = 0;
+        event.defaults.stock = 0;
+        actionLog.value.unshift(`Added row with id ${event.defaults.id}`);
+        if (actionLog.value.length > 5) actionLog.value.pop();
+      };
 
-    // Handle row-remove event
-    const handleRowRemove = (event: { data: (typeof items.value)[0]; index: number; cancel: () => void }) => {
-      actionLog.value.unshift(`Removed "${event.data.name}" at index ${event.index}`);
-      if (actionLog.value.length > 5) actionLog.value.pop();
-    };
+      // Handle row-remove event
+      const handleRowRemove = (event: { data: (typeof items.value)[0]; index: number; cancel: () => void }) => {
+        actionLog.value.unshift(`Removed "${event.data.name}" at index ${event.index}`);
+        if (actionLog.value.length > 5) actionLog.value.pop();
+      };
 
-    // Programmatic add
-    const addCustomRow = () => {
-      tableRef.value?.addRow({
-        id: nextId++,
-        name: "Custom Added Product",
-        price: 299.99,
-        stock: 100,
-      });
-    };
+      // Programmatic add
+      const addCustomRow = () => {
+        tableRef.value?.addRow({
+          id: nextId++,
+          name: "Custom Added Product",
+          price: 299.99,
+          stock: 100,
+        });
+      };
 
-    // Row actions with delete
-    const getRowActions = (item: (typeof items.value)[0], index: number) => [
-      {
-        id: "delete",
-        title: "Delete",
-        icon: "lucide-trash-2",
-        variant: "danger" as const,
-        clickHandler: () => {
-          tableRef.value?.removeRow(index);
+      // Row actions with delete
+      const getRowActions = (item: (typeof items.value)[0], index: number) => [
+        {
+          id: "delete",
+          title: "Delete",
+          icon: "lucide-trash-2",
+          variant: "danger" as const,
+          clickHandler: () => {
+            tableRef.value?.removeRow(index);
+          },
         },
-      },
-    ];
+      ];
 
-    return {
-      tableRef,
-      items,
-      actionLog,
-      handleRowAdd,
-      handleRowRemove,
-      addCustomRow,
-      getRowActions,
-    };
-  },
-  template: `
+      return {
+        tableRef,
+        items,
+        actionLog,
+        handleRowAdd,
+        handleRowRemove,
+        addCustomRow,
+        getRowActions,
+      };
+    },
+    template: `
     <div style="max-width: 800px; margin: 0 auto;">
       <div style="background: #f0f9ff; padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid #bae6fd;">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -4142,91 +4140,91 @@ AddRemoveRows.parameters = {
  */
 export const InlineEditingWithValidation: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcButton, VcInput },
-  setup() {
-    const tableRef = ref<any>(null);
+    components: { VcDataTable, VcColumn, VcButton, VcInput },
+    setup() {
+      const tableRef = ref<any>(null);
 
-    const items = ref([
-      { id: 1, name: "Product A", price: 99.99, stock: 50 },
-      { id: 2, name: "Product B", price: 149.99, stock: 30 },
-      { id: 3, name: "Product C", price: 199.99, stock: 20 },
-    ]);
+      const items = ref([
+        { id: 1, name: "Product A", price: 99.99, stock: 50 },
+        { id: 2, name: "Product B", price: 149.99, stock: 30 },
+        { id: 3, name: "Product C", price: 199.99, stock: 20 },
+      ]);
 
-    const isEditing = ref(false);
-    const actionLog = ref<string[]>([]);
+      const isEditing = ref(false);
+      const actionLog = ref<string[]>([]);
 
-    // Note: Validation is now handled via VeeValidate rules on VcColumn
-    // Example: <VcColumn :rules="{ required: true, min: 3 }" />
+      // Note: Validation is now handled via VeeValidate rules on VcColumn
+      // Example: <VcColumn :rules="{ required: true, min: 3 }" />
 
-    const startEditing = () => {
-      tableRef.value?.startEditing();
-      isEditing.value = true;
-    };
+      const startEditing = () => {
+        tableRef.value?.startEditing();
+        isEditing.value = true;
+      };
 
-    const saveChanges = async () => {
-      await tableRef.value?.saveChanges();
-      isEditing.value = false;
-    };
+      const saveChanges = async () => {
+        await tableRef.value?.saveChanges();
+        isEditing.value = false;
+      };
 
-    const cancelEditing = () => {
-      tableRef.value?.cancelEditing();
-      isEditing.value = false;
-    };
+      const cancelEditing = () => {
+        tableRef.value?.cancelEditing();
+        isEditing.value = false;
+      };
 
-    const handleEditSave = (event: { changes: Array<{ field: string; oldValue: unknown; newValue: unknown }> }) => {
-      actionLog.value.unshift(`Saved ${event.changes.length} change(s)`);
-      if (actionLog.value.length > 5) actionLog.value.pop();
-    };
+      const handleEditSave = (event: { changes: Array<{ field: string; oldValue: unknown; newValue: unknown }> }) => {
+        actionLog.value.unshift(`Saved ${event.changes.length} change(s)`);
+        if (actionLog.value.length > 5) actionLog.value.pop();
+      };
 
-    const handleEditCancel = () => {
-      actionLog.value.unshift("Cancelled editing");
-      if (actionLog.value.length > 5) actionLog.value.pop();
-    };
+      const handleEditCancel = () => {
+        actionLog.value.unshift("Cancelled editing");
+        if (actionLog.value.length > 5) actionLog.value.pop();
+      };
 
-    // Reactive state tracking from tableRef using polling
-    // Note: Vue template refs don't create reactive subscriptions to exposed computed refs,
-    // so we poll the state at a reasonable interval for the demo
-    const editingIsDirty = ref(false);
-    const editingIsValid = ref(true);
-    const editingChangesCount = ref(0);
-    let pollInterval: ReturnType<typeof setInterval> | null = null;
+      // Reactive state tracking from tableRef using polling
+      // Note: Vue template refs don't create reactive subscriptions to exposed computed refs,
+      // so we poll the state at a reasonable interval for the demo
+      const editingIsDirty = ref(false);
+      const editingIsValid = ref(true);
+      const editingChangesCount = ref(0);
+      let pollInterval: ReturnType<typeof setInterval> | null = null;
 
-    const updateEditState = () => {
-      // Vue auto-unwraps refs exposed via defineExpose when accessed through template ref
-      // So tableRef.value?.isDirty returns the value directly, not a Ref
-      const isDirtyVal = tableRef.value?.isDirty;
-      const isValidVal = tableRef.value?.isValid;
-      const pendingChangesVal = tableRef.value?.pendingChanges;
+      const updateEditState = () => {
+        // Vue auto-unwraps refs exposed via defineExpose when accessed through template ref
+        // So tableRef.value?.isDirty returns the value directly, not a Ref
+        const isDirtyVal = tableRef.value?.isDirty;
+        const isValidVal = tableRef.value?.isValid;
+        const pendingChangesVal = tableRef.value?.pendingChanges;
 
-      editingIsDirty.value = isDirtyVal ?? false;
-      editingIsValid.value = isValidVal ?? true;
-      editingChangesCount.value = pendingChangesVal?.length ?? 0;
-    };
+        editingIsDirty.value = isDirtyVal ?? false;
+        editingIsValid.value = isValidVal ?? true;
+        editingChangesCount.value = pendingChangesVal?.length ?? 0;
+      };
 
-    onMounted(() => {
-      pollInterval = setInterval(updateEditState, 100);
-    });
+      onMounted(() => {
+        pollInterval = setInterval(updateEditState, 100);
+      });
 
-    onUnmounted(() => {
-      if (pollInterval) clearInterval(pollInterval);
-    });
+      onUnmounted(() => {
+        if (pollInterval) clearInterval(pollInterval);
+      });
 
-    return {
-      tableRef,
-      items,
-      isEditing,
-      actionLog,
-      startEditing,
-      saveChanges,
-      cancelEditing,
-      handleEditSave,
-      handleEditCancel,
-      editingIsDirty,
-      editingIsValid,
-      editingChangesCount,
-    };
-  },
-  template: `
+      return {
+        tableRef,
+        items,
+        isEditing,
+        actionLog,
+        startEditing,
+        saveChanges,
+        cancelEditing,
+        handleEditSave,
+        handleEditCancel,
+        editingIsDirty,
+        editingIsValid,
+        editingChangesCount,
+      };
+    },
+    template: `
     <div style="max-width: 800px; margin: 0 auto;">
       <div style="background: #f0f9ff; padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid #bae6fd;">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -4315,43 +4313,43 @@ InlineEditingWithValidation.parameters = {
  */
 export const CustomAddRowButton: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcButton },
-  setup() {
-    const tableRef = ref<any>(null);
+    components: { VcDataTable, VcColumn, VcButton },
+    setup() {
+      const tableRef = ref<any>(null);
 
-    const items = ref([
-      { id: 1, name: "Product A", category: "Electronics", price: 99.99 },
-      { id: 2, name: "Product B", category: "Clothing", price: 49.99 },
-    ]);
+      const items = ref([
+        { id: 1, name: "Product A", category: "Electronics", price: 99.99 },
+        { id: 2, name: "Product B", category: "Clothing", price: 49.99 },
+      ]);
 
-    let nextId = 3;
+      let nextId = 3;
 
-    const addElectronics = () => {
-      tableRef.value?.addRow({
-        id: nextId++,
-        name: `Electronics ${nextId - 1}`,
-        category: "Electronics",
-        price: 199.99,
-      });
-    };
+      const addElectronics = () => {
+        tableRef.value?.addRow({
+          id: nextId++,
+          name: `Electronics ${nextId - 1}`,
+          category: "Electronics",
+          price: 199.99,
+        });
+      };
 
-    const addClothing = () => {
-      tableRef.value?.addRow({
-        id: nextId++,
-        name: `Clothing ${nextId - 1}`,
-        category: "Clothing",
-        price: 29.99,
-      });
-    };
+      const addClothing = () => {
+        tableRef.value?.addRow({
+          id: nextId++,
+          name: `Clothing ${nextId - 1}`,
+          category: "Clothing",
+          price: 29.99,
+        });
+      };
 
-    return {
-      tableRef,
-      items,
-      addElectronics,
-      addClothing,
-    };
-  },
-  template: `
+      return {
+        tableRef,
+        items,
+        addElectronics,
+        addClothing,
+      };
+    },
+    template: `
     <div style="max-width: 800px; margin: 0 auto;">
       <div style="background: #f0f9ff; padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid #bae6fd;">
         <strong>Custom Add Row Buttons</strong>
@@ -4421,76 +4419,76 @@ CustomAddRowButton.parameters = {
  */
 export const DeclarativeFilters: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
 
-    // Status options for select filter
-    const statusOptions = [
-      { value: "In Stock", label: "In Stock" },
-      { value: "Out of Stock", label: "Out of Stock" },
-      { value: "Low Stock", label: "Low Stock" },
-    ];
+      // Status options for select filter
+      const statusOptions = [
+        { value: "In Stock", label: "In Stock" },
+        { value: "Out of Stock", label: "Out of Stock" },
+        { value: "Low Stock", label: "Low Stock" },
+      ];
 
-    // Currency options for multi-select filter
-    const currencyOptions = [
-      { value: "USD", label: "US Dollar" },
-      { value: "EUR", label: "Euro" },
-      { value: "GBP", label: "British Pound" },
-    ];
+      // Currency options for multi-select filter
+      const currencyOptions = [
+        { value: "USD", label: "US Dollar" },
+        { value: "EUR", label: "Euro" },
+        { value: "GBP", label: "British Pound" },
+      ];
 
-    // Event log
-    const filterLog = ref<string[]>([]);
-    const activeFilters = ref<Record<string, unknown>>({});
+      // Event log
+      const filterLog = ref<string[]>([]);
+      const activeFilters = ref<Record<string, unknown>>({});
 
-    const handleFilter = (event: { filters: Record<string, unknown>; filteredValue: unknown[] }) => {
-      const filters = event.filters;
-      activeFilters.value = filters;
-      const entries = Object.entries(filters);
-      const parts: string[] = [];
-      for (const [k, v] of entries) {
-        parts.push(k + "=" + JSON.stringify(v));
-      }
-      filterLog.value.unshift("Filter: { " + (parts.join(", ") || "empty") + " }");
-      if (filterLog.value.length > 5) filterLog.value.pop();
+      const handleFilter = (event: { filters: Record<string, unknown>; filteredValue: unknown[] }) => {
+        const filters = event.filters;
+        activeFilters.value = filters;
+        const entries = Object.entries(filters);
+        const parts: string[] = [];
+        for (const [k, v] of entries) {
+          parts.push(k + "=" + JSON.stringify(v));
+        }
+        filterLog.value.unshift("Filter: { " + (parts.join(", ") || "empty") + " }");
+        if (filterLog.value.length > 5) filterLog.value.pop();
 
-      // Client-side filtering demo (in real app, you'd send to backend)
-      if (Object.keys(filters).length === 0) {
-        products.value = [...mockProducts];
-      } else {
-        products.value = mockProducts.filter((p) => {
-          // Name text filter
-          if (filters.name && !p.name.toLowerCase().includes(String(filters.name).toLowerCase())) {
-            return false;
-          }
-          // Status select filter
-          if (filters.status && p.status !== filters.status) {
-            return false;
-          }
-          // Currency multi-select filter
-          if (filters.currency && Array.isArray(filters.currency) && filters.currency.length > 0) {
-            if (!filters.currency.includes(p.currency)) {
+        // Client-side filtering demo (in real app, you'd send to backend)
+        if (Object.keys(filters).length === 0) {
+          products.value = [...mockProducts];
+        } else {
+          products.value = mockProducts.filter((p) => {
+            // Name text filter
+            if (filters.name && !p.name.toLowerCase().includes(String(filters.name).toLowerCase())) {
               return false;
             }
-          }
-          // Date range filter
-          if (filters.startDate || filters.endDate) {
-            const created = p.createdAt.getTime();
-            if (filters.startDate && created < new Date(filters.startDate as string).getTime()) {
+            // Status select filter
+            if (filters.status && p.status !== filters.status) {
               return false;
             }
-            if (filters.endDate && created > new Date(filters.endDate as string).getTime()) {
-              return false;
+            // Currency multi-select filter
+            if (filters.currency && Array.isArray(filters.currency) && filters.currency.length > 0) {
+              if (!filters.currency.includes(p.currency)) {
+                return false;
+              }
             }
-          }
-          return true;
-        });
-      }
-    };
+            // Date range filter
+            if (filters.startDate || filters.endDate) {
+              const created = p.createdAt.getTime();
+              if (filters.startDate && created < new Date(filters.startDate as string).getTime()) {
+                return false;
+              }
+              if (filters.endDate && created > new Date(filters.endDate as string).getTime()) {
+                return false;
+              }
+            }
+            return true;
+          });
+        }
+      };
 
-    return { products, statusOptions, currencyOptions, filterLog, activeFilters, handleFilter };
-  },
-  template: `
+      return { products, statusOptions, currencyOptions, filterLog, activeFilters, handleFilter };
+    },
+    template: `
     <div style="height: 600px" class="tw-overflow-hidden">
       <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-primary-50 tw-to-primary-50 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Declarative Column Filters</p>
@@ -4594,50 +4592,50 @@ DeclarativeFilters.parameters = {
  */
 export const CustomFilterTemplate: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn, VcInput },
-  setup() {
-    const allProducts = [...mockProducts];
-    const products = ref([...allProducts]);
-    const filterLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn, VcInput },
+    setup() {
+      const allProducts = [...mockProducts];
+      const products = ref([...allProducts]);
+      const filterLog = ref<string[]>([]);
 
-    const handleFilter = (event: { filters: Record<string, unknown>; filteredValue: unknown[] }) => {
-      const filters = event.filters;
+      const handleFilter = (event: { filters: Record<string, unknown>; filteredValue: unknown[] }) => {
+        const filters = event.filters;
 
-      // Log
-      const entries = Object.entries(filters);
-      const parts: string[] = [];
-      for (const [k, v] of entries) {
-        parts.push(k + "=" + JSON.stringify(v));
-      }
-      filterLog.value.unshift("Filter: { " + (parts.join(", ") || "empty") + " }");
-      if (filterLog.value.length > 5) filterLog.value.pop();
-
-      // Apply client-side filtering for demo
-      let filtered = [...allProducts];
-
-      // Text filter on name
-      if (filters.name && typeof filters.name === "string") {
-        const search = filters.name.toLowerCase();
-        filtered = filtered.filter((p) => p.name.toLowerCase().includes(search));
-      }
-
-      // Price range filter
-      if (filters.price && typeof filters.price === "object") {
-        const range = filters.price as { min?: number; max?: number };
-        if (range.min != null) {
-          filtered = filtered.filter((p) => p.price >= Number(range.min));
+        // Log
+        const entries = Object.entries(filters);
+        const parts: string[] = [];
+        for (const [k, v] of entries) {
+          parts.push(k + "=" + JSON.stringify(v));
         }
-        if (range.max != null) {
-          filtered = filtered.filter((p) => p.price <= Number(range.max));
+        filterLog.value.unshift("Filter: { " + (parts.join(", ") || "empty") + " }");
+        if (filterLog.value.length > 5) filterLog.value.pop();
+
+        // Apply client-side filtering for demo
+        let filtered = [...allProducts];
+
+        // Text filter on name
+        if (filters.name && typeof filters.name === "string") {
+          const search = filters.name.toLowerCase();
+          filtered = filtered.filter((p) => p.name.toLowerCase().includes(search));
         }
-      }
 
-      products.value = filtered;
-    };
+        // Price range filter
+        if (filters.price && typeof filters.price === "object") {
+          const range = filters.price as { min?: number; max?: number };
+          if (range.min != null) {
+            filtered = filtered.filter((p) => p.price >= Number(range.min));
+          }
+          if (range.max != null) {
+            filtered = filtered.filter((p) => p.price <= Number(range.max));
+          }
+        }
 
-    return { products, filterLog, handleFilter };
-  },
-  template: `
+        products.value = filtered;
+      };
+
+      return { products, filterLog, handleFilter };
+    },
+    template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold">Custom Filter Templates</p>
@@ -4729,97 +4727,97 @@ CustomFilterTemplate.parameters = {
  */
 export const GlobalFilters: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
 
-    const statusOptions = [
-      { value: "In Stock", label: "In Stock" },
-      { value: "Out of Stock", label: "Out of Stock" },
-      { value: "Low Stock", label: "Low Stock" },
-    ];
+      const statusOptions = [
+        { value: "In Stock", label: "In Stock" },
+        { value: "Out of Stock", label: "Out of Stock" },
+        { value: "Low Stock", label: "Low Stock" },
+      ];
 
-    const currencyOptions = [
-      { value: "USD", label: "US Dollar" },
-      { value: "EUR", label: "Euro" },
-      { value: "GBP", label: "British Pound" },
-    ];
+      const currencyOptions = [
+        { value: "USD", label: "US Dollar" },
+        { value: "EUR", label: "Euro" },
+        { value: "GBP", label: "British Pound" },
+      ];
 
-    // Global filter definitions
-    const globalFilters = [
-      {
-        id: "search",
-        label: "Search by name",
-        filter: true,
-        placeholder: "Type product name...",
-      },
-      {
-        id: "status",
-        label: "Status",
-        filter: { options: statusOptions },
-        placeholder: "Select status",
-      },
-      {
-        id: "currency",
-        label: "Currency",
-        filter: { options: currencyOptions, multiple: true },
-        placeholder: "Select currencies",
-      },
-      {
-        id: "created",
-        label: "Created Date",
-        filter: { range: ["createdFrom", "createdTo"] },
-      },
-    ];
+      // Global filter definitions
+      const globalFilters = [
+        {
+          id: "search",
+          label: "Search by name",
+          filter: true,
+          placeholder: "Type product name...",
+        },
+        {
+          id: "status",
+          label: "Status",
+          filter: { options: statusOptions },
+          placeholder: "Select status",
+        },
+        {
+          id: "currency",
+          label: "Currency",
+          filter: { options: currencyOptions, multiple: true },
+          placeholder: "Select currencies",
+        },
+        {
+          id: "created",
+          label: "Created Date",
+          filter: { range: ["createdFrom", "createdTo"] },
+        },
+      ];
 
-    // Event log
-    const filterLog = ref<string[]>([]);
-    const activeFilters = ref<Record<string, unknown>>({});
+      // Event log
+      const filterLog = ref<string[]>([]);
+      const activeFilters = ref<Record<string, unknown>>({});
 
-    const handleFilter = (event: { filters: Record<string, unknown>; filteredValue: unknown[] }) => {
-      const filters = event.filters;
-      activeFilters.value = filters;
-      const entries = Object.entries(filters);
-      const parts: string[] = [];
-      for (const [k, v] of entries) {
-        parts.push(k + "=" + JSON.stringify(v));
-      }
-      filterLog.value.unshift("Filter: { " + (parts.join(", ") || "empty") + " }");
-      if (filterLog.value.length > 8) filterLog.value.pop();
+      const handleFilter = (event: { filters: Record<string, unknown>; filteredValue: unknown[] }) => {
+        const filters = event.filters;
+        activeFilters.value = filters;
+        const entries = Object.entries(filters);
+        const parts: string[] = [];
+        for (const [k, v] of entries) {
+          parts.push(k + "=" + JSON.stringify(v));
+        }
+        filterLog.value.unshift("Filter: { " + (parts.join(", ") || "empty") + " }");
+        if (filterLog.value.length > 8) filterLog.value.pop();
 
-      // Client-side filtering demo
-      if (Object.keys(filters).length === 0) {
-        products.value = [...mockProducts];
-      } else {
-        products.value = mockProducts.filter((p) => {
-          if (filters.search && !p.name.toLowerCase().includes(String(filters.search).toLowerCase())) {
-            return false;
-          }
-          if (filters.status && p.status !== filters.status) {
-            return false;
-          }
-          if (filters.currency && Array.isArray(filters.currency) && filters.currency.length > 0) {
-            if (!filters.currency.includes(p.currency)) {
+        // Client-side filtering demo
+        if (Object.keys(filters).length === 0) {
+          products.value = [...mockProducts];
+        } else {
+          products.value = mockProducts.filter((p) => {
+            if (filters.search && !p.name.toLowerCase().includes(String(filters.search).toLowerCase())) {
               return false;
             }
-          }
-          if (filters.createdFrom || filters.createdTo) {
-            const created = p.createdAt.getTime();
-            if (filters.createdFrom && created < new Date(filters.createdFrom as string).getTime()) {
+            if (filters.status && p.status !== filters.status) {
               return false;
             }
-            if (filters.createdTo && created > new Date(filters.createdTo as string).getTime()) {
-              return false;
+            if (filters.currency && Array.isArray(filters.currency) && filters.currency.length > 0) {
+              if (!filters.currency.includes(p.currency)) {
+                return false;
+              }
             }
-          }
-          return true;
-        });
-      }
-    };
+            if (filters.createdFrom || filters.createdTo) {
+              const created = p.createdAt.getTime();
+              if (filters.createdFrom && created < new Date(filters.createdFrom as string).getTime()) {
+                return false;
+              }
+              if (filters.createdTo && created > new Date(filters.createdTo as string).getTime()) {
+                return false;
+              }
+            }
+            return true;
+          });
+        }
+      };
 
-    return { products, globalFilters, filterLog, activeFilters, handleFilter };
-  },
-  template: `
+      return { products, globalFilters, filterLog, activeFilters, handleFilter };
+    },
+    template: `
     <div style="height: 650px" class="tw-overflow-hidden">
       <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-accent-50 tw-to-info-50 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Global Filters</p>
@@ -4914,86 +4912,86 @@ GlobalFilters.parameters = {
  */
 export const GlobalAndColumnFiltersCombined: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
 
-    const statusOptions = [
-      { value: "In Stock", label: "In Stock" },
-      { value: "Out of Stock", label: "Out of Stock" },
-      { value: "Low Stock", label: "Low Stock" },
-    ];
+      const statusOptions = [
+        { value: "In Stock", label: "In Stock" },
+        { value: "Out of Stock", label: "Out of Stock" },
+        { value: "Low Stock", label: "Low Stock" },
+      ];
 
-    const currencyOptions = [
-      { value: "USD", label: "US Dollar" },
-      { value: "EUR", label: "Euro" },
-    ];
+      const currencyOptions = [
+        { value: "USD", label: "US Dollar" },
+        { value: "EUR", label: "Euro" },
+      ];
 
-    // Global filters — search + date range
-    const globalFilters = [
-      {
-        id: "search",
-        label: "Quick Search",
-        filter: true,
-        placeholder: "Search products...",
-      },
-      {
-        id: "created",
-        label: "Created Date",
-        filter: { range: ["createdFrom", "createdTo"] },
-      },
-    ];
+      // Global filters — search + date range
+      const globalFilters = [
+        {
+          id: "search",
+          label: "Quick Search",
+          filter: true,
+          placeholder: "Search products...",
+        },
+        {
+          id: "created",
+          label: "Created Date",
+          filter: { range: ["createdFrom", "createdTo"] },
+        },
+      ];
 
-    const filterLog = ref<string[]>([]);
-    const activeFilters = ref<Record<string, unknown>>({});
+      const filterLog = ref<string[]>([]);
+      const activeFilters = ref<Record<string, unknown>>({});
 
-    const handleFilter = (event: { filters: Record<string, unknown>; filteredValue: unknown[] }) => {
-      const filters = event.filters;
-      activeFilters.value = filters;
-      const entries = Object.entries(filters);
-      const parts: string[] = [];
-      for (const [k, v] of entries) {
-        parts.push(k + "=" + JSON.stringify(v));
-      }
-      filterLog.value.unshift("Filter: { " + (parts.join(", ") || "empty") + " }");
-      if (filterLog.value.length > 8) filterLog.value.pop();
+      const handleFilter = (event: { filters: Record<string, unknown>; filteredValue: unknown[] }) => {
+        const filters = event.filters;
+        activeFilters.value = filters;
+        const entries = Object.entries(filters);
+        const parts: string[] = [];
+        for (const [k, v] of entries) {
+          parts.push(k + "=" + JSON.stringify(v));
+        }
+        filterLog.value.unshift("Filter: { " + (parts.join(", ") || "empty") + " }");
+        if (filterLog.value.length > 8) filterLog.value.pop();
 
-      // Client-side filtering demo
-      if (Object.keys(filters).length === 0) {
-        products.value = [...mockProducts];
-      } else {
-        products.value = mockProducts.filter((p) => {
-          if (filters.search && !p.name.toLowerCase().includes(String(filters.search).toLowerCase())) {
-            return false;
-          }
-          if (filters.name && !p.name.toLowerCase().includes(String(filters.name).toLowerCase())) {
-            return false;
-          }
-          if (filters.status && p.status !== filters.status) {
-            return false;
-          }
-          if (filters.currency && Array.isArray(filters.currency) && filters.currency.length > 0) {
-            if (!filters.currency.includes(p.currency)) {
+        // Client-side filtering demo
+        if (Object.keys(filters).length === 0) {
+          products.value = [...mockProducts];
+        } else {
+          products.value = mockProducts.filter((p) => {
+            if (filters.search && !p.name.toLowerCase().includes(String(filters.search).toLowerCase())) {
               return false;
             }
-          }
-          if (filters.createdFrom || filters.createdTo) {
-            const created = p.createdAt.getTime();
-            if (filters.createdFrom && created < new Date(filters.createdFrom as string).getTime()) {
+            if (filters.name && !p.name.toLowerCase().includes(String(filters.name).toLowerCase())) {
               return false;
             }
-            if (filters.createdTo && created > new Date(filters.createdTo as string).getTime()) {
+            if (filters.status && p.status !== filters.status) {
               return false;
             }
-          }
-          return true;
-        });
-      }
-    };
+            if (filters.currency && Array.isArray(filters.currency) && filters.currency.length > 0) {
+              if (!filters.currency.includes(p.currency)) {
+                return false;
+              }
+            }
+            if (filters.createdFrom || filters.createdTo) {
+              const created = p.createdAt.getTime();
+              if (filters.createdFrom && created < new Date(filters.createdFrom as string).getTime()) {
+                return false;
+              }
+              if (filters.createdTo && created > new Date(filters.createdTo as string).getTime()) {
+                return false;
+              }
+            }
+            return true;
+          });
+        }
+      };
 
-    return { products, statusOptions, currencyOptions, globalFilters, filterLog, activeFilters, handleFilter };
-  },
-  template: `
+      return { products, statusOptions, currencyOptions, globalFilters, filterLog, activeFilters, handleFilter };
+    },
+    template: `
     <div style="height: 650px" class="tw-overflow-hidden">
       <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-warning-50 tw-to-warning-100 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Global + Column Filters Combined</p>
@@ -5098,33 +5096,33 @@ GlobalAndColumnFiltersCombined.parameters = {
  */
 export const SearchBar: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const searchValue = ref("");
-    const searchLog = ref<string[]>([]);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const searchValue = ref("");
+      const searchLog = ref<string[]>([]);
 
-    const handleSearch = (value: string) => {
-      searchLog.value.unshift(`search: "${value}" (${new Date().toLocaleTimeString()})`);
-      if (searchLog.value.length > 6) searchLog.value.pop();
+      const handleSearch = (value: string) => {
+        searchLog.value.unshift(`search: "${value}" (${new Date().toLocaleTimeString()})`);
+        if (searchLog.value.length > 6) searchLog.value.pop();
 
-      // Client-side filtering demo
-      if (!value) {
-        products.value = [...mockProducts];
-      } else {
-        const q = value.toLowerCase();
-        products.value = mockProducts.filter(
-          (p) =>
-            p.name.toLowerCase().includes(q) ||
-            p.status.toLowerCase().includes(q) ||
-            p.currency.toLowerCase().includes(q),
-        );
-      }
-    };
+        // Client-side filtering demo
+        if (!value) {
+          products.value = [...mockProducts];
+        } else {
+          const q = value.toLowerCase();
+          products.value = mockProducts.filter(
+            (p) =>
+              p.name.toLowerCase().includes(q) ||
+              p.status.toLowerCase().includes(q) ||
+              p.currency.toLowerCase().includes(q),
+          );
+        }
+      };
 
-    return { products, searchValue, searchLog, handleSearch };
-  },
-  template: `
+      return { products, searchValue, searchLog, handleSearch };
+    },
+    template: `
     <div style="height: 550px" class="tw-overflow-hidden">
       <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-primary-50 tw-to-info-50 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Inline Search Bar</p>
@@ -5179,72 +5177,72 @@ SearchBar.parameters = {
  */
 export const SearchWithGlobalFilters: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const products = ref([...mockProducts]);
-    const searchValue = ref("");
-    const eventLog = ref<string[]>([]);
-    const activeFilters = ref<Record<string, unknown>>({});
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const searchValue = ref("");
+      const eventLog = ref<string[]>([]);
+      const activeFilters = ref<Record<string, unknown>>({});
 
-    const statusOptions = [
-      { value: "In Stock", label: "In Stock" },
-      { value: "Out of Stock", label: "Out of Stock" },
-      { value: "Low Stock", label: "Low Stock" },
-    ];
+      const statusOptions = [
+        { value: "In Stock", label: "In Stock" },
+        { value: "Out of Stock", label: "Out of Stock" },
+        { value: "Low Stock", label: "Low Stock" },
+      ];
 
-    const currencyOptions = [
-      { value: "USD", label: "US Dollar" },
-      { value: "EUR", label: "Euro" },
-    ];
+      const currencyOptions = [
+        { value: "USD", label: "US Dollar" },
+        { value: "EUR", label: "Euro" },
+      ];
 
-    const globalFilters = [
-      {
-        id: "status",
-        label: "Status",
-        filter: { options: statusOptions },
-        placeholder: "Select status",
-      },
-      {
-        id: "currency",
-        label: "Currency",
-        filter: { options: currencyOptions, multiple: true },
-        placeholder: "Select currencies",
-      },
-    ];
+      const globalFilters = [
+        {
+          id: "status",
+          label: "Status",
+          filter: { options: statusOptions },
+          placeholder: "Select status",
+        },
+        {
+          id: "currency",
+          label: "Currency",
+          filter: { options: currencyOptions, multiple: true },
+          placeholder: "Select currencies",
+        },
+      ];
 
-    const applyFiltering = () => {
-      let result = [...mockProducts];
-      const q = searchValue.value.toLowerCase();
-      if (q) {
-        result = result.filter((p) => p.name.toLowerCase().includes(q));
-      }
-      const filters = activeFilters.value;
-      if (filters.status) {
-        result = result.filter((p) => p.status === filters.status);
-      }
-      if (filters.currency && Array.isArray(filters.currency) && filters.currency.length > 0) {
-        result = result.filter((p) => (filters.currency as string[]).includes(p.currency));
-      }
-      products.value = result;
-    };
+      const applyFiltering = () => {
+        let result = [...mockProducts];
+        const q = searchValue.value.toLowerCase();
+        if (q) {
+          result = result.filter((p) => p.name.toLowerCase().includes(q));
+        }
+        const filters = activeFilters.value;
+        if (filters.status) {
+          result = result.filter((p) => p.status === filters.status);
+        }
+        if (filters.currency && Array.isArray(filters.currency) && filters.currency.length > 0) {
+          result = result.filter((p) => (filters.currency as string[]).includes(p.currency));
+        }
+        products.value = result;
+      };
 
-    const handleSearch = (value: string) => {
-      eventLog.value.unshift(`@search: "${value}"`);
-      if (eventLog.value.length > 6) eventLog.value.pop();
-      applyFiltering();
-    };
+      const handleSearch = (value: string) => {
+        eventLog.value.unshift(`@search: "${value}"`);
+        if (eventLog.value.length > 6) eventLog.value.pop();
+        applyFiltering();
+      };
 
-    const handleFilter = (event: { filters: Record<string, unknown>; filteredValue: unknown[] }) => {
-      activeFilters.value = event.filters;
-      const parts = Object.entries(event.filters).map(([k, v]) => k + "=" + JSON.stringify(v));
-      eventLog.value.unshift(`@filter: { ${parts.join(", ") || "empty"} }`);
-      if (eventLog.value.length > 6) eventLog.value.pop();
-      applyFiltering();
-    };
+      const handleFilter = (event: { filters: Record<string, unknown>; filteredValue: unknown[] }) => {
+        activeFilters.value = event.filters;
+        const parts = Object.entries(event.filters).map(([k, v]) => k + "=" + JSON.stringify(v));
+        eventLog.value.unshift(`@filter: { ${parts.join(", ") || "empty"} }`);
+        if (eventLog.value.length > 6) eventLog.value.pop();
+        applyFiltering();
+      };
 
-    return { products, searchValue, globalFilters, eventLog, activeFilters, handleSearch, handleFilter };
-  },
-  template: `
+      return { products, searchValue, globalFilters, eventLog, activeFilters, handleSearch, handleFilter };
+    },
+    template: `
     <div style="height: 600px" class="tw-overflow-hidden">
       <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-accent-50 tw-to-primary-50 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Search + Global Filters</p>
@@ -5306,21 +5304,21 @@ SearchWithGlobalFilters.parameters = {
  */
 export const EmptyStateConfig: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const actionClicked = ref(false);
-    const emptyState = {
-      icon: "lucide-package-open",
-      title: "No products yet",
-      description: "Your product catalog is empty. Add your first product to get started.",
-      actionLabel: "Add Product",
-      actionHandler: () => {
-        actionClicked.value = true;
-      },
-    };
-    return { products: [] as Product[], emptyState, actionClicked };
-  },
-  template: `
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const actionClicked = ref(false);
+      const emptyState = {
+        icon: "lucide-package-open",
+        title: "No products yet",
+        description: "Your product catalog is empty. Add your first product to get started.",
+        actionLabel: "Add Product",
+        actionHandler: () => {
+          actionClicked.value = true;
+        },
+      };
+      return { products: [] as Product[], emptyState, actionClicked };
+    },
+    template: `
     <div style="height: 400px">
       <div v-if="actionClicked" class="tw-mb-2 tw-p-2 tw-bg-success-50 tw-rounded tw-text-sm tw-text-success-700">
         Action button clicked!
@@ -5353,31 +5351,31 @@ EmptyStateConfig.parameters = {
  */
 export const NotFoundStateConfig: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const searchValue = ref("nonexistent product xyz");
-    const actionClicked = ref(false);
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const searchValue = ref("nonexistent product xyz");
+      const actionClicked = ref(false);
 
-    const notFoundState = {
-      icon: "lucide-search",
-      title: "No results found",
-      description: "We couldn't find any products matching your search. Try adjusting your query.",
-      actionLabel: "Clear Search",
-      actionHandler: () => {
-        searchValue.value = "";
-        actionClicked.value = true;
-      },
-    };
+      const notFoundState = {
+        icon: "lucide-search",
+        title: "No results found",
+        description: "We couldn't find any products matching your search. Try adjusting your query.",
+        actionLabel: "Clear Search",
+        actionHandler: () => {
+          searchValue.value = "";
+          actionClicked.value = true;
+        },
+      };
 
-    const emptyState = {
-      icon: "lucide-package-open",
-      title: "No products yet",
-      description: "Your product catalog is empty.",
-    };
+      const emptyState = {
+        icon: "lucide-package-open",
+        title: "No products yet",
+        description: "Your product catalog is empty.",
+      };
 
-    return { products: [] as Product[], searchValue, notFoundState, emptyState, actionClicked };
-  },
-  template: `
+      return { products: [] as Product[], searchValue, notFoundState, emptyState, actionClicked };
+    },
+    template: `
     <div style="height: 400px">
       <div v-if="actionClicked" class="tw-mb-2 tw-p-2 tw-bg-success-50 tw-rounded tw-text-sm tw-text-success-700">
         Search cleared! (In a real app, items would reload and show the empty state instead.)
@@ -5417,31 +5415,31 @@ NotFoundStateConfig.parameters = {
  */
 export const EmptyVsNotFound: Story = {
   render: () => ({
-  components: { VcDataTable, VcColumn },
-  setup() {
-    const searchValue = ref("");
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const searchValue = ref("");
 
-    const emptyState = {
-      icon: "lucide-package-open",
-      title: "No products yet",
-      description: "Your catalog is empty. Add your first product to get started.",
-      actionLabel: "Add Product",
-      actionHandler: () => alert("Add product clicked!"),
-    };
+      const emptyState = {
+        icon: "lucide-package-open",
+        title: "No products yet",
+        description: "Your catalog is empty. Add your first product to get started.",
+        actionLabel: "Add Product",
+        actionHandler: () => alert("Add product clicked!"),
+      };
 
-    const notFoundState = {
-      icon: "lucide-search",
-      title: "Nothing matches your search",
-      description: "Try a different search term or clear the search field.",
-      actionLabel: "Clear Search",
-      actionHandler: () => {
-        searchValue.value = "";
-      },
-    };
+      const notFoundState = {
+        icon: "lucide-search",
+        title: "Nothing matches your search",
+        description: "Try a different search term or clear the search field.",
+        actionLabel: "Clear Search",
+        actionHandler: () => {
+          searchValue.value = "";
+        },
+      };
 
-    return { products: [] as Product[], searchValue, emptyState, notFoundState };
-  },
-  template: `
+      return { products: [] as Product[], searchValue, emptyState, notFoundState };
+    },
+    template: `
     <div style="height: 450px">
       <div class="tw-mb-4 tw-p-3 tw-bg-gradient-to-r tw-from-accent-50 tw-to-primary-50 tw-rounded-lg tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Empty vs Not Found</p>

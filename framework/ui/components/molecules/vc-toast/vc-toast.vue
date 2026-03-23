@@ -289,9 +289,7 @@ function onPointerUp(e: PointerEvent) {
     return;
   }
 
-  const swipeAmountX = parseFloat(
-    toastRef.value?.style.getPropertyValue("--swipe-amount-x")?.replace("px", "") || "0",
-  );
+  const swipeAmountX = parseFloat(toastRef.value?.style.getPropertyValue("--swipe-amount-x")?.replace("px", "") || "0");
   const timeTaken = Date.now() - dragStartTime.value;
   const velocity = Math.abs(swipeAmountX) / timeTaken;
 
@@ -366,7 +364,10 @@ function onPointerUp(e: PointerEvent) {
   --lift-amount: calc(var(--lift, 1) * var(--gap, 14px));
 
   /* Sonner transition: standard ease (NOT bouncy) */
-  transition: transform 400ms, opacity 400ms, box-shadow 200ms;
+  transition:
+    transform 400ms,
+    opacity 400ms,
+    box-shadow 200ms;
 
   /* Position anchor + initial off-screen --y */
   &[data-y-position="top"] {
@@ -389,8 +390,7 @@ function onPointerUp(e: PointerEvent) {
 
   /* Collapsed stacking: back toasts */
   &[data-expanded="false"][data-front="false"] {
-    --y: translateY(calc(var(--lift-amount) * var(--toasts-before)))
-         scale(calc(-1 * var(--toasts-before) * 0.05 + 1));
+    --y: translateY(calc(var(--lift-amount) * var(--toasts-before))) scale(calc(-1 * var(--toasts-before) * 0.05 + 1));
     height: var(--front-toast-height);
   }
 
@@ -434,7 +434,9 @@ function onPointerUp(e: PointerEvent) {
   &[data-removed="true"][data-front="false"][data-swiped-out="false"][data-expanded="false"] {
     --y: translateY(40%);
     opacity: 0;
-    transition: transform 500ms, opacity 200ms;
+    transition:
+      transform 500ms,
+      opacity 200ms;
   }
 
   /* Hover effect */
@@ -491,7 +493,7 @@ function onPointerUp(e: PointerEvent) {
 
   /* Expanded hover gap pseudo — extends hit area between toasts */
   &[data-expanded="true"]::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     height: calc(var(--gap, 14px) + 1px);
@@ -513,7 +515,7 @@ function onPointerUp(e: PointerEvent) {
 
   /* Swiping pseudo — extends hit area to prevent accidental mouse-leave */
   &[data-swiping="true"]::before {
-    content: '';
+    content: "";
     position: absolute;
     left: -100%;
     right: -100%;

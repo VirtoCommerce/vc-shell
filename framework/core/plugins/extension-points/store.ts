@@ -38,8 +38,7 @@ export function getPoint(name: string): ExtensionPointState {
   if (import.meta.env.DEV && !registry[name].declared) {
     const declared = Object.keys(registry).filter((k) => registry[k].declared);
     console.warn(
-      `[vc-shell] Extension point "${name}" is not declared. ` +
-        `Available: ${declared.join(", ") || "(none)"}`,
+      `[vc-shell] Extension point "${name}" is not declared. ` + `Available: ${declared.join(", ") || "(none)"}`,
     );
   }
 

@@ -1,6 +1,9 @@
 import { inject, provide, getCurrentScope, onScopeDispose } from "vue";
 import { AppBarMobileButtonsServiceKey } from "@framework/injection-keys";
-import { createAppBarMobileButtonsService, IAppBarMobileButtonsService } from "@core/services/app-bar-mobile-buttons-service";
+import {
+  createAppBarMobileButtonsService,
+  IAppBarMobileButtonsService,
+} from "@core/services/app-bar-mobile-buttons-service";
 import { createLogger, InjectionError } from "@core/utilities";
 
 export type UseAppBarMobileButtonsReturn = IAppBarMobileButtonsService;

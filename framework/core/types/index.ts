@@ -12,7 +12,6 @@ import type { IBladeInstance } from "@core/blade-navigation/types";
 // i.e. interface N { key: value } can't be casted to Record<TKey,TValue>
 // while it satisfies requirements
 export type IValidationRules = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
   required?: boolean;
   numeric?: boolean;
@@ -74,7 +73,7 @@ export interface IBladeToolbar {
     | Ref<boolean | undefined>
     | ComputedRef<boolean | undefined>
     | ((blade?: IBladeInstance) => boolean | undefined);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
   separator?: "left" | "right" | "both";
   permissions?: string | string[];
@@ -93,7 +92,6 @@ export type NotificationTemplateConstructor = ComponentPublicInstanceConstructor
   notifyType: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export interface IActionBuilderResult<T = {}> {
   icon: string;
   title: string | Ref<string>;
@@ -110,7 +108,6 @@ export interface AssetsHandler<T extends ICommonAsset> {
 }
 
 export interface ICommonAsset {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
   sortOrder?: number;
   title?: string | undefined;

@@ -22,7 +22,7 @@ function safeClone<T>(obj: T): T {
           return new Date(value.value);
         }
         return value;
-      }
+      },
     );
   }
 }
@@ -63,9 +63,7 @@ export interface UseTableInlineEditOptions<T extends Record<string, any>> {
  * // <CellMoney v-bind="inlineEdit.getCellEditProps(index, 'price', { required: true })" />
  * ```
  */
-export function useTableInlineEdit<T extends Record<string, any>>(
-  options: UseTableInlineEditOptions<T>,
-) {
+export function useTableInlineEdit<T extends Record<string, any>>(options: UseTableInlineEditOptions<T>) {
   const { items, rules, onCellUpdate, onSave, onCancel } = options;
 
   const isEditing = ref(false);

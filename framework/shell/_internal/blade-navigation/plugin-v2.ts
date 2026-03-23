@@ -75,7 +75,7 @@ export const VcBladeNavigationComponent = {
       } catch {
         console.warn(
           "[BladeNavigationPlugin] BladeRegistry not yet available. " +
-          "BladeStack will be created but URL restoration may be deferred.",
+            "BladeStack will be created but URL restoration may be deferred.",
         );
         return undefined;
       }

@@ -33,9 +33,7 @@ export function resolveVisibility(
  * - `boolean` → used directly
  * - `Ref<boolean>` or `ComputedRef<boolean>` → unwrapped
  */
-export function resolveReactiveBoolean(
-  value: boolean | { value: boolean | undefined } | undefined,
-): boolean {
+export function resolveReactiveBoolean(value: boolean | { value: boolean | undefined } | undefined): boolean {
   if (value === undefined) {
     return false;
   }

@@ -55,7 +55,10 @@
             class="vc-gallery-preview__nav vc-gallery-preview__nav--prev"
             @click="localIndex--"
           >
-            <VcIcon icon="lucide-chevron-left" size="l" />
+            <VcIcon
+              icon="lucide-chevron-left"
+              size="l"
+            />
           </button>
 
           <!-- Nav: next -->
@@ -65,7 +68,10 @@
             class="vc-gallery-preview__nav vc-gallery-preview__nav--next"
             @click="localIndex++"
           >
-            <VcIcon icon="lucide-chevron-right" size="l" />
+            <VcIcon
+              icon="lucide-chevron-right"
+              size="l"
+            />
           </button>
         </div>
 
@@ -90,9 +96,7 @@
               />
             </button>
           </div>
-          <span class="vc-gallery-preview__counter">
-            {{ localIndex + 1 }}&thinsp;/&thinsp;{{ images.length }}
-          </span>
+          <span class="vc-gallery-preview__counter"> {{ localIndex + 1 }}&thinsp;/&thinsp;{{ images.length }} </span>
         </div>
       </div>
     </template>
@@ -307,7 +311,9 @@ onBeforeUnmount(() => {
 
     /* Hide scrollbar */
     scrollbar-width: none;
-    &::-webkit-scrollbar { display: none; }
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   &__thumb {

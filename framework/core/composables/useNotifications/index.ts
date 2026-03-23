@@ -27,14 +27,12 @@ export function useNotifications(notifyType?: string | string[]): UseNotificatio
   if (import.meta.env.DEV) {
     logger.warn(
       "[vc-shell] useNotifications() is deprecated. Use useBladeNotifications() instead. " +
-      "See: MIGRATION_GUIDE.md#notifications",
+        "See: MIGRATION_GUIDE.md#notifications",
     );
   }
 
   const store = useNotificationStore();
-  const types = notifyType
-    ? Array.isArray(notifyType) ? notifyType : [notifyType]
-    : [];
+  const types = notifyType ? (Array.isArray(notifyType) ? notifyType : [notifyType]) : [];
 
   let handler: ((msg: PushNotification) => void) | undefined;
 
@@ -54,10 +52,7 @@ export function useNotifications(notifyType?: string | string[]): UseNotificatio
   const moduleNotifications = computed(() => {
     if (!types.length) return [];
     return store.realtime.value.filter(
-      (item) =>
-        item.isNew &&
-        item.notifyType != null &&
-        types.includes(item.notifyType),
+      (item) => item.isNew && item.notifyType != null && types.includes(item.notifyType),
     );
   });
 
@@ -68,6 +63,8 @@ export function useNotifications(notifyType?: string | string[]): UseNotificatio
     addNotification: store.ingest,
     markAsRead: store.markAsRead,
     markAllAsRead: store.markAllAsRead,
-    setNotificationHandler: (fn) => { handler = fn; },
+    setNotificationHandler: (fn) => {
+      handler = fn;
+    },
   };
 }

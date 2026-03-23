@@ -45,7 +45,7 @@
         </template>
         <template #item="{ item, click }">
           <VcDropdownItem
-            :title="typeof item.title === 'string' ? item.title : item.title?.value ?? ''"
+            :title="typeof item.title === 'string' ? item.title : (item.title?.value ?? '')"
             :icon="item.icon"
             @click="click"
           />

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-types */
-
 import { VNode, DefineComponent, InjectionKey, Ref } from "vue";
 
 export type NotificationType = "success" | "error" | "warning" | "default";
@@ -13,7 +10,7 @@ export interface NotificationOptions {
   type?: NotificationType;
   onOpen?: <T>(payload: T) => void;
   onClose?: <T>(payload: T) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   payload?: string | Record<string, any>;
   updateId?: string | number;
   position?: NotificationPosition;
@@ -40,4 +37,5 @@ export interface NotificationContainerState {
   };
 }
 
-export const NotificationContainerStateKey: InjectionKey<NotificationContainerState> = Symbol("NotificationContainerState");
+export const NotificationContainerStateKey: InjectionKey<NotificationContainerState> =
+  Symbol("NotificationContainerState");

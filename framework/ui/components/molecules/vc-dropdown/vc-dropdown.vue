@@ -46,53 +46,53 @@
           tabindex="-1"
           @keydown="onPanelKeydown"
         >
-        <div
-          class="vc-dropdown__content"
-          :class="{ 'vc-dropdown__content--padded': padded }"
-        >
-          <slot
-            name="items-container"
-            :items="items"
-            :close="close"
+          <div
+            class="vc-dropdown__content"
+            :class="{ 'vc-dropdown__content--padded': padded }"
           >
-            <div
-              v-if="items.length"
-              class="vc-dropdown__items-container"
+            <slot
+              name="items-container"
+              :items="items"
+              :close="close"
             >
               <div
-                v-for="(item, index) in items"
-                :id="itemId(index)"
-                :key="itemKey(item, index)"
-                class="vc-dropdown__item"
-                :class="{
-                  'vc-dropdown__item--padded': padded,
-                  'vc-dropdown__item--mobile': isMobile,
-                  'vc-dropdown__item--active': isItemActive?.(item),
-                  'vc-dropdown__item--focused': focusedIndex === index,
-                }"
-                :role="itemRole"
-                :aria-selected="role === 'listbox' ? !!isItemActive?.(item) : undefined"
-                @click="selectItem(item, index)"
+                v-if="items.length"
+                class="vc-dropdown__items-container"
               >
-                <slot
-                  name="item"
-                  :item="item"
-                  :click="() => selectItem(item, index)"
+                <div
+                  v-for="(item, index) in items"
+                  :id="itemId(index)"
+                  :key="getItemKey(item, index)"
+                  class="vc-dropdown__item"
+                  :class="{
+                    'vc-dropdown__item--padded': padded,
+                    'vc-dropdown__item--mobile': isMobile,
+                    'vc-dropdown__item--active': isItemActive?.(item),
+                    'vc-dropdown__item--focused': focusedIndex === index,
+                  }"
+                  :role="itemRole"
+                  :aria-selected="role === 'listbox' ? !!isItemActive?.(item) : undefined"
+                  @click="selectItem(item, index)"
                 >
-                  {{ itemText?.(item) }}
+                  <slot
+                    name="item"
+                    :item="item"
+                    :click="() => selectItem(item, index)"
+                  >
+                    {{ itemText?.(item) }}
+                  </slot>
+                </div>
+              </div>
+              <div
+                v-else
+                class="vc-dropdown__empty"
+              >
+                <slot name="empty">
+                  {{ emptyText }}
                 </slot>
               </div>
-            </div>
-            <div
-              v-else
-              class="vc-dropdown__empty"
-            >
-              <slot name="empty">
-                {{ emptyText }}
-              </slot>
-            </div>
-          </slot>
-        </div>
+            </slot>
+          </div>
         </div>
       </Transition>
     </Teleport>
@@ -261,7 +261,7 @@ function itemId(index: number) {
   return `${panelId}-item-${index}`;
 }
 
-function itemKey(item: T, index: number) {
+function getItemKey(item: T, index: number) {
   return props.itemKey ? props.itemKey(item, index) : index;
 }
 

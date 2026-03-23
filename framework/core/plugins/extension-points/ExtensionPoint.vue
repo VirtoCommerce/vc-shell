@@ -15,11 +15,11 @@
     <hr
       v-if="separator"
       :class="separatorClass || 'vc-extension-point__separator'"
-    >
+    />
     <component
+      :is="extension.component"
       v-for="extension in visibleComponents"
       :key="extension.id"
-      :is="extension.component"
       v-bind="extension.props || {}"
     />
   </div>
@@ -27,9 +27,9 @@
   <!-- Plain mode: no wrapper (backward-compatible) -->
   <template v-else>
     <component
+      :is="extension.component"
       v-for="extension in visibleComponents"
       :key="extension.id"
-      :is="extension.component"
       v-bind="extension.props || {}"
     />
   </template>
@@ -67,16 +67,12 @@ const { components } = defineExtensionPoint(props.name);
 const visibleComponents = computed(() => {
   if (!props.filter) return components.value;
   const entries = Object.entries(props.filter);
-  return components.value.filter(
-    (c) => c.meta && entries.every(([key, value]) => c.meta![key] === value),
-  );
+  return components.value.filter((c) => c.meta && entries.every(([key, value]) => c.meta![key] === value));
 });
 
 const hasVisibleComponents = computed(() => visibleComponents.value.length > 0);
 
-const hasLayout = computed(
-  () => props.separator || props.separatorClass || props.wrapperClass || props.gap,
-);
+const hasLayout = computed(() => props.separator || props.separatorClass || props.wrapperClass || props.gap);
 
 const wrapperStyle = computed(() => {
   if (!props.gap) return undefined;

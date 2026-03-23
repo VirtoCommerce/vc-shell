@@ -4,6 +4,7 @@
     role="region"
     :aria-label="ariaLabel || 'Content carousel'"
   >
+    <!-- eslint-disable vue/no-deprecated-filter -- TS union type, not a Vue 2 filter -->
     <swiper
       class="vc-slider__swiper"
       :class="{
@@ -13,10 +14,11 @@
       :modules="modules"
       :space-between="spaceBetweenSlides"
       :navigation="navigation ? buttonsList : false"
-      :slides-per-view="(slidesPerView as number | 'auto' | undefined)"
+      :slides-per-view="slidesPerView as number | 'auto' | undefined"
       :observer="true"
       :observe-parents="true"
     >
+      <!-- eslint-enable vue/no-deprecated-filter -->
       <swiper-slide
         v-for="(slide, i) in slides"
         :key="i"

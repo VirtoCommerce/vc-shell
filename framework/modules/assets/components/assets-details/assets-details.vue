@@ -38,9 +38,7 @@
                     </VcCol>
                     <VcCol>
                       <VcLabel>{{ t("ASSETS.PAGES.DETAILS.FIELDS.CREATED_DATE") }}</VcLabel>
-                      <VcHint class="tw-text-s">{{
-                        formatDateRelative(defaultAsset.createdDate) || "N/A"
-                      }}</VcHint>
+                      <VcHint class="tw-text-s">{{ formatDateRelative(defaultAsset.createdDate) || "N/A" }}</VcHint>
                     </VcCol>
                     <VcCol class="tw-w-full">
                       <VcLabel>{{ t("ASSETS.PAGES.DETAILS.FIELDS.URL") }}</VcLabel>
@@ -224,8 +222,6 @@ function openLink(link: string | undefined) {
   }
   location.href = link;
 }
-
-
 </script>
 
 <style lang="scss">

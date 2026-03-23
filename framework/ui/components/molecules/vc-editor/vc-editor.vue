@@ -174,7 +174,6 @@ import type { Extension } from "@tiptap/core";
 import { FontSize } from "@ui/components/molecules/vc-editor/_internal/extensions/font-size";
 import { format } from "prettier/standalone";
 import * as prettierPluginHtml from "prettier/parser-html";
-// eslint-disable-next-line import/no-named-as-default
 import DOMPurify from "dompurify";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcHint } from "@ui/components/atoms/vc-hint";
@@ -184,7 +183,11 @@ import type { CustomToolbarItem } from "@ui/components/molecules/vc-editor/_inte
 import type { IFormFieldProps } from "@ui/types/form-field";
 
 // Export types for external use
-export type { CustomToolbarItem, CustomToolbarButton, CustomToolbarDropdown } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
+export type {
+  CustomToolbarItem,
+  CustomToolbarButton,
+  CustomToolbarDropdown,
+} from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
 
 // Define toolbar button types
 export type ToolbarNames =
@@ -318,7 +321,6 @@ function detectContentType(content: string): "html" | "markdown" {
 }
 
 const extensions = computed(() => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const baseExtensions: any[] = [
     StarterKit,
     Underline,
@@ -345,12 +347,8 @@ const extensions = computed(() => {
 
   // Merge custom extensions: custom ones override base ones with the same name
   if (props.extensions && props.extensions.length > 0) {
-    const customNames = new Set(
-      props.extensions.map((ext: Extension) => ext.name).filter(Boolean),
-    );
-    const filtered = baseExtensions.filter(
-      (ext: Extension) => !customNames.has(ext.name),
-    );
+    const customNames = new Set(props.extensions.map((ext: Extension) => ext.name).filter(Boolean));
+    const filtered = baseExtensions.filter((ext: Extension) => !customNames.has(ext.name));
     return [...filtered, ...props.extensions];
   }
 
@@ -558,7 +556,6 @@ async function handleImageSelection(event: Event) {
     console.error("Image upload failed:", error);
   }
 }
-
 </script>
 
 <style lang="scss">
@@ -830,6 +827,5 @@ async function handleImageSelection(event: Event) {
       min-height: 0;
     }
   }
-
 }
 </style>

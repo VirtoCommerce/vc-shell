@@ -34,7 +34,7 @@ const props = withDefaults(
   {
     label: undefined,
     icon: "lucide-plus",
-  }
+  },
 );
 
 defineEmits<{
@@ -42,9 +42,7 @@ defineEmits<{
   add: [];
 }>();
 
-const displayLabel = computed(() =>
-  props.label ?? t("COMPONENTS.ORGANISMS.VC_TABLE.ADD_ROW")
-);
+const displayLabel = computed(() => props.label ?? t("COMPONENTS.ORGANISMS.VC_TABLE.ADD_ROW"));
 </script>
 
 <style lang="scss">

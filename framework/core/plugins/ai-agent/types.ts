@@ -310,17 +310,17 @@ export interface IChatErrorPayload {
  * Message types sent from Embedded App to Host Shell (child -> parent)
  */
 export type EmbeddedToHostMessageType =
-  | "EMBEDDED_APP_READY"    // App loaded, supports AI agent
-  | "AI_TOGGLE_PANEL"       // Request to toggle AI panel
-  | "AI_CONTEXT_UPDATE"     // Context data changed
-  | "AI_CONTEXT_CLEAR";     // Context cleared (blade closed)
+  | "EMBEDDED_APP_READY" // App loaded, supports AI agent
+  | "AI_TOGGLE_PANEL" // Request to toggle AI panel
+  | "AI_CONTEXT_UPDATE" // Context data changed
+  | "AI_CONTEXT_CLEAR"; // Context cleared (blade closed)
 
 /**
  * Message types sent from Host Shell to Embedded App (parent -> child)
  */
 export type HostToEmbeddedMessageType =
-  | "EMBEDDED_HOST_READY"   // Handshake confirmation
-  | "AI_CHAT_MESSAGE";      // Proxied chatbot message
+  | "EMBEDDED_HOST_READY" // Handshake confirmation
+  | "AI_CHAT_MESSAGE"; // Proxied chatbot message
 
 /** Payload for EMBEDDED_APP_READY */
 export interface IEmbeddedAppReadyPayload {

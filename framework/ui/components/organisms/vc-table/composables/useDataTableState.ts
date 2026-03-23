@@ -43,15 +43,8 @@ const SCHEMA_VERSION = 1;
 // =============================================================================
 
 export function useDataTableState(options: UseDataTableStateOptions): UseDataTableStateReturn {
-  const {
-    stateKey,
-    stateStorage,
-    columnWidths,
-    hiddenColumnIds,
-    shownColumnIds,
-    onStateSave,
-    onStateRestore,
-  } = options;
+  const { stateKey, stateStorage, columnWidths, hiddenColumnIds, shownColumnIds, onStateSave, onStateRestore } =
+    options;
 
   let isRestoring = false;
   let debounceTimer: ReturnType<typeof setTimeout> | undefined;

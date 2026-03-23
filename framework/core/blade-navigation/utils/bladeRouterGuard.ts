@@ -11,9 +11,7 @@ import { restoreFromUrl } from "@core/blade-navigation/utils/restoreFromUrl";
  * - `undefined` — allow navigation (no redirect)
  * - `{ path, query, replace }` — redirect to cleaned-up URL
  */
-export type BladeGuardResult =
-  | undefined
-  | { path: string; query: Record<string, string>; replace: true };
+export type BladeGuardResult = undefined | { path: string; query: Record<string, string>; replace: true };
 
 /**
  * Router guard that syncs URL navigation with the BladeStack.
@@ -67,9 +65,10 @@ export async function bladeRouterGuard(
   }
 
   // Preserve route params (e.g. sellerId) so fallback redirects keep the tenant prefix
-  const routeParams = Object.fromEntries(
-    Object.entries(to.params).filter(([, v]) => typeof v === "string"),
-  ) as Record<string, string>;
+  const routeParams = Object.fromEntries(Object.entries(to.params).filter(([, v]) => typeof v === "string")) as Record<
+    string,
+    string
+  >;
 
   // Restore blade stack from URL (idempotent — skips if already matching)
   const needsUrlCleanup = await restoreFromUrl(bladeStack, bladeRegistry, parsed, hasAccess, router, routeParams);

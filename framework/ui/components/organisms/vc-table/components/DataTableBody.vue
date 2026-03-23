@@ -135,7 +135,7 @@ import TableSkeletonRows from "@ui/components/organisms/vc-table/components/_int
  * Record<string, any> → T assignment even when T extends Record<string, any>.
  * This is safe: DataTableBody is an internal sub-component only used by VcDataTable.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 type Item = any;
 
 // Row props return type (mirrors getRowProps in VcDataTable)
@@ -342,7 +342,6 @@ const handleRowDrop = (e: DragEvent) => emit("row-drop", e);
 .vc-data-table__body {
   @apply tw-flex tw-flex-col tw-overflow-y-auto tw-flex-auto tw-min-h-0;
 }
-
 
 .vc-data-table__rows-container {
   @apply tw-flex tw-flex-col;

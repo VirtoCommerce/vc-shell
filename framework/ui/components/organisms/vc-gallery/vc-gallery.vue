@@ -33,13 +33,13 @@
   >
     <template v-if="hasImages || !disabled">
       <TransitionGroup
-        tag="div"
-        :name="reorder.isDragging.value ? 'vc-gallery-swap' : ''"
         :ref="
           (comp: any) => {
             if (comp?.$el) reorder.galleryRef.value = comp.$el;
           }
         "
+        tag="div"
+        :name="reorder.isDragging.value ? 'vc-gallery-swap' : ''"
         class="vc-gallery__grid"
       >
         <!-- Image tiles -->

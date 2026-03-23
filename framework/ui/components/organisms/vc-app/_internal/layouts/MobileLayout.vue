@@ -184,12 +184,14 @@
       </div>
     </template>
     <template #user-dropdown>
+      <!-- eslint-disable vue/no-duplicate-attributes -- slot name + scoped prop -->
       <slot
         name="sidebar-footer"
         :avatar="avatar"
         :name="userName"
         :role="userRole"
       >
+        <!-- eslint-enable vue/no-duplicate-attributes -->
         <UserDropdownButton
           v-if="!isEmbedded"
           :avatar-url="avatar"

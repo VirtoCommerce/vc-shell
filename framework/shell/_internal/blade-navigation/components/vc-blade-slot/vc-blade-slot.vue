@@ -1,6 +1,7 @@
 <template>
   <ErrorInterceptor :capture="true">
-    <template #default="{ error: interceptorError, reset: resetInterceptor }">
+    <!-- eslint-disable-next-line vue/no-unused-vars -- error available for future use -->
+    <template #default="{ error, reset: resetInterceptor }">
       <component
         :is="bladeComponent"
         v-if="bladeComponent"
@@ -110,7 +111,6 @@ watch(
 onBeforeUnmount(() => {
   messaging.cleanup(props.descriptor.id);
 });
-
 
 // ── Event handlers ──────────────────────────────────────────────────────────
 

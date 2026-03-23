@@ -5,10 +5,7 @@
  * All props are defined here for maintainability and documentation.
  */
 import type { PropType, ExtractPropTypes } from "vue";
-import type {
-  SortMeta,
-  DataTableRowActionItem,
-} from "@ui/components/organisms/vc-table/types";
+import type { SortMeta, DataTableRowActionItem } from "@ui/components/organisms/vc-table/types";
 
 /**
  * DataTable variants for visual styling

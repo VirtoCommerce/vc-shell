@@ -116,10 +116,30 @@ export const AllVariants: Story = {
     components: { VcBanner },
     setup() {
       const variants = [
-        { variant: "info", icon: "lucide-info", title: "Information", text: "This is an informational message for the user." },
-        { variant: "success", icon: "lucide-circle-check", title: "Success", text: "The operation completed successfully." },
-        { variant: "warning", icon: "lucide-triangle-alert", title: "Warning", text: "Please review before proceeding with this action." },
-        { variant: "danger", icon: "lucide-circle-alert", title: "Error", text: "Something went wrong. Please try again later." },
+        {
+          variant: "info",
+          icon: "lucide-info",
+          title: "Information",
+          text: "This is an informational message for the user.",
+        },
+        {
+          variant: "success",
+          icon: "lucide-circle-check",
+          title: "Success",
+          text: "The operation completed successfully.",
+        },
+        {
+          variant: "warning",
+          icon: "lucide-triangle-alert",
+          title: "Warning",
+          text: "Please review before proceeding with this action.",
+        },
+        {
+          variant: "danger",
+          icon: "lucide-circle-alert",
+          title: "Error",
+          text: "Something went wrong. Please try again later.",
+        },
       ] as const;
       return { variants };
     },

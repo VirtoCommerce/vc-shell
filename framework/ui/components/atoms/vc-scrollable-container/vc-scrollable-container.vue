@@ -70,8 +70,10 @@ if (props.speed !== undefined) {
 
 const SCROLL_STEP = 40;
 
-const { canScrollUp, canScrollDown, startScroll, stopScroll, updateScrollState } =
-  useScrollArrows(viewportRef, options);
+const { canScrollUp, canScrollDown, startScroll, stopScroll, updateScrollState } = useScrollArrows(
+  viewportRef,
+  options,
+);
 
 function scrollByKey(direction: "up" | "down") {
   if (!viewportRef.value) return;

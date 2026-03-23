@@ -36,12 +36,36 @@
               viewBox="0 0 16 16"
               fill="currentColor"
             >
-              <circle cx="5" cy="3" r="1.5" />
-              <circle cx="11" cy="3" r="1.5" />
-              <circle cx="5" cy="8" r="1.5" />
-              <circle cx="11" cy="8" r="1.5" />
-              <circle cx="5" cy="13" r="1.5" />
-              <circle cx="11" cy="13" r="1.5" />
+              <circle
+                cx="5"
+                cy="3"
+                r="1.5"
+              />
+              <circle
+                cx="11"
+                cy="3"
+                r="1.5"
+              />
+              <circle
+                cx="5"
+                cy="8"
+                r="1.5"
+              />
+              <circle
+                cx="11"
+                cy="8"
+                r="1.5"
+              />
+              <circle
+                cx="5"
+                cy="13"
+                r="1.5"
+              />
+              <circle
+                cx="11"
+                cy="13"
+                r="1.5"
+              />
             </svg>
           </div>
 
@@ -113,20 +137,12 @@ const dashboard = useDashboard();
 const widgets = computed(() => dashboard.getWidgets() as IDashboardWidget[]);
 
 // Gridstack integration
-const {
-  layout,
-  isInitialized,
-  initGrid,
-  saveLayout,
-  resetToDefaults,
-} = useGridstack(widgets, {
+const { layout, isInitialized, initGrid, saveLayout, resetToDefaults } = useGridstack(widgets, {
   resizable: props.resizable,
   autoSave: true,
   gridOptions: {
     draggable: {
-      handle: props.showDragHandles
-        ? ".vc-gridstack-dashboard__drag-handle"
-        : ".grid-stack-item-content",
+      handle: props.showDragHandles ? ".vc-gridstack-dashboard__drag-handle" : ".grid-stack-item-content",
     },
   },
   onLayoutChange: (newLayout) => {
@@ -260,7 +276,9 @@ defineExpose({
     color: var(--gridstack-drag-handle-color);
     cursor: grab;
     border-radius: 4px;
-    transition: color 0.15s ease, background-color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
 
     &:hover {
       color: var(--gridstack-drag-handle-color-hover);

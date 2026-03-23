@@ -47,13 +47,7 @@
 
 <script setup lang="ts" generic="T extends Record<string, any>">
 import { computed } from "vue";
-import {
-  VisXYContainer,
-  VisGroupedBar,
-  VisAxis,
-  VisTooltip,
-  VisGroupedBarSelectors,
-} from "@unovis/vue";
+import { VisXYContainer, VisGroupedBar, VisAxis, VisTooltip, VisGroupedBarSelectors } from "@unovis/vue";
 import ChartContainer from "./ChartContainer.vue";
 import ChartLegend from "./ChartLegend.vue";
 import type { ChartConfig } from "./types";
@@ -105,34 +99,25 @@ const margin = { top: 8, right: 8, bottom: 4, left: 4 };
 const xAccessor = (d: T) => d[props.xKey] as number;
 
 const filteredData = computed(() =>
-  filterDataByRange(
-    props.data,
-    (datum) => datum[props.xKey],
-    props.rangeStart,
-    props.rangeEnd,
-  ),
+  filterDataByRange(props.data, (datum) => datum[props.xKey], props.rangeStart, props.rangeEnd),
 );
 
-const yAccessors = computed(() =>
-  props.yKeys.map((key) => (d: T) => d[key] as number),
-);
+const yAccessors = computed(() => props.yKeys.map((key) => (d: T) => d[key] as number));
 
 const colors = computed(() =>
-  props.yKeys.map((key, index) =>
-    resolveSeriesMeta({
-      config: props.config,
-      key: String(key),
-      index,
-      fallbackLabel: String(key),
-    }).color,
+  props.yKeys.map(
+    (key, index) =>
+      resolveSeriesMeta({
+        config: props.config,
+        key: String(key),
+        index,
+        fallbackLabel: String(key),
+      }).color,
   ),
 );
 
 const barTooltipTriggers = computed(() => ({
-  [VisGroupedBarSelectors.bar]: (
-    datum: T,
-    seriesIndex: number,
-  ): string | null | undefined => {
+  [VisGroupedBarSelectors.bar]: (datum: T, seriesIndex: number): string | null | undefined => {
     if (!props.yKeys.length || seriesIndex < 0) {
       return null;
     }

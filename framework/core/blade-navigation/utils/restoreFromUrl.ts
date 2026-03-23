@@ -40,9 +40,7 @@ export async function restoreFromUrl(
 
   // Guard 1: blade not found
   if (!workspaceMatch) {
-    console.warn(
-      `[restoreFromUrl] No workspace blade found for URL segment '${parsed.workspaceUrl}'`,
-    );
+    console.warn(`[restoreFromUrl] No workspace blade found for URL segment '${parsed.workspaceUrl}'`);
     if (router) navigateToMainRoute(router, routeParams);
     return false;
   }
@@ -79,9 +77,7 @@ export async function restoreFromUrl(
       // Idempotency: skip if child already exists with same name and param.
       // This means the blade was opened programmatically (normal operation)
       // and syncUrlPush just triggered the guard — not a page restore.
-      const existingChild = bladeStack.blades.value.find(
-        (b) => b.name === bladeMatch.name && b.param === parsed.param,
-      );
+      const existingChild = bladeStack.blades.value.find((b) => b.name === bladeMatch.name && b.param === parsed.param);
       if (existingChild) {
         return false;
       }
@@ -98,9 +94,7 @@ export async function restoreFromUrl(
         // options not available from URL — blade must handle gracefully
       });
     } else {
-      console.warn(
-        `[restoreFromUrl] No blade found for URL segment '${parsed.bladeUrl}'`,
-      );
+      console.warn(`[restoreFromUrl] No blade found for URL segment '${parsed.bladeUrl}'`);
     }
   }
 

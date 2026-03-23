@@ -62,7 +62,7 @@ function mapPositionToRole(position: MobileCardPosition, isFirstTopLeft: boolean
 function createColumnConfig(
   col: ColumnInstance,
   position: MobileCardPosition,
-  isTitle: boolean = false
+  isTitle: boolean = false,
 ): MobileColumnConfig {
   return {
     id: col.props.id,

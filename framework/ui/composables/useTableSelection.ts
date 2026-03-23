@@ -69,9 +69,7 @@ export interface UseTableSelectionReturn<T> {
   deselectByIds: (ids: string[]) => void;
 }
 
-export function useTableSelection<T extends object>(
-  options?: UseTableSelectionOptions<T>
-): UseTableSelectionReturn<T> {
+export function useTableSelection<T extends object>(options?: UseTableSelectionOptions<T>): UseTableSelectionReturn<T> {
   const idField = options?.idField ?? ("id" as keyof T);
 
   const getItemId = (item: T): string | undefined => {

@@ -1,13 +1,22 @@
 <template>
-  <div class="vc-notification-template" @click="$emit('click')">
+  <div
+    class="vc-notification-template"
+    @click="$emit('click')"
+  >
     <div
       class="vc-notification-template__container"
       :class="{
         'vc-notification-template__container--mobile': $isMobile.value,
       }"
     >
-      <div class="vc-notification-template__icon-container" :style="{ backgroundColor: color ?? 'var(--primary-500)' }">
-        <VcIcon :icon="icon ?? 'lucide-bell'" size="s" />
+      <div
+        class="vc-notification-template__icon-container"
+        :style="{ backgroundColor: color ?? 'var(--primary-500)' }"
+      >
+        <VcIcon
+          :icon="icon ?? 'lucide-bell'"
+          size="s"
+        />
       </div>
       <div class="vc-notification-template__content">
         <p

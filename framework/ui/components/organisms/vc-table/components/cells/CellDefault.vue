@@ -9,6 +9,7 @@
     :validate-on-mount="validateOnMount"
   >
     <template #default="{ errors, errorMessage }">
+      <!-- eslint-disable vue/no-deprecated-filter -- TS union, not a filter -->
       <VcInput
         :model-value="value as string | null"
         class="vc-table-cell-default__input"
@@ -27,11 +28,16 @@
           />
         </template>
       </VcInput>
+      <!-- eslint-enable vue/no-deprecated-filter -->
     </template>
   </CellEditableWrapper>
 
   <!-- Display mode -->
-  <span v-else class="vc-table-cell-default">{{ value }}</span>
+  <span
+    v-else
+    class="vc-table-cell-default"
+    >{{ value }}</span
+  >
 </template>
 
 <script setup lang="ts">

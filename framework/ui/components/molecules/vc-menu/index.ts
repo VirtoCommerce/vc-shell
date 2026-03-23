@@ -6,6 +6,11 @@ export const VcMenu = _VcMenu as typeof _VcMenu;
 export const VcMenuItem = _VcMenuItem as typeof _VcMenuItem;
 export const VcMenuGroup = _VcMenuGroup as typeof _VcMenuGroup;
 
-export type { VcMenuProps, VcMenuItemProps, VcMenuItemBadge, VcMenuGroupProps } from "@ui/components/molecules/vc-menu/types";
+export type {
+  VcMenuProps,
+  VcMenuItemProps,
+  VcMenuItemBadge,
+  VcMenuGroupProps,
+} from "@ui/components/molecules/vc-menu/types";
 
 export { VcMenuExpandedKey } from "@ui/components/molecules/vc-menu/constants";

@@ -125,7 +125,7 @@
         ref="selectDropdownRef"
         :is-opened="isOpened"
         :listbox-id="listboxId"
-        :ariaLabel="label || name"
+        v-bind="{ ariaLabel: label || name }"
         :dropdown-style="dropdownStyle"
         :searchable="searchable"
         :option-scope="optionScope"

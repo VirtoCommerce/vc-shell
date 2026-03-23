@@ -4,18 +4,29 @@
     class="vc-table-composition__actions"
     @click.stop
   >
-    <div v-for="(action, idx) in visibleActions" :key="idx" class="vc-table-composition__action">
-      <VcTooltip placement="top" :max-width="200" variant="dark">
-          <div
-            class="vc-table-composition__action-icon"
-            :class="{
-              'vc-table-composition__action-icon--disabled': action.disabled,
-              'vc-table-composition__action-icon--danger': action.variant === 'danger',
-            }"
-            @click="handleActionClick(action)"
-          >
-            <VcIcon :icon="action.icon" size="s" />
-          </div>
+    <div
+      v-for="(action, idx) in visibleActions"
+      :key="idx"
+      class="vc-table-composition__action"
+    >
+      <VcTooltip
+        placement="top"
+        :max-width="200"
+        variant="dark"
+      >
+        <div
+          class="vc-table-composition__action-icon"
+          :class="{
+            'vc-table-composition__action-icon--disabled': action.disabled,
+            'vc-table-composition__action-icon--danger': action.variant === 'danger',
+          }"
+          @click="handleActionClick(action)"
+        >
+          <VcIcon
+            :icon="action.icon"
+            size="s"
+          />
+        </div>
         <template #tooltip>
           {{ action.title || action.name }}
         </template>
@@ -65,7 +76,7 @@ if (tableContext && tableContext.selectedRowIndex) {
       const shouldBeVisible = props.rowIndex !== undefined && newValue === props.rowIndex;
       isVisible.value = shouldBeVisible;
     },
-    { immediate: true }
+    { immediate: true },
   );
 }
 
@@ -77,7 +88,7 @@ watch(
       isVisible.value = newValue;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const handleActionClick = (action: TableAction) => {

@@ -261,8 +261,8 @@ const toolbarItems = computed(() => {
 // Computed property to sort custom buttons
 const sortedCustomButtons = computed(() => {
   return [...props.customButtons].sort((a, b) => {
-    const groupA = a.group || 'default';
-    const groupB = b.group || 'default';
+    const groupA = a.group || "default";
+    const groupB = b.group || "default";
     const orderA = a.order || 0;
     const orderB = b.order || 0;
 
@@ -311,6 +311,5 @@ function triggerImageUpload() {
     margin: 0 0.5rem;
     flex-shrink: 0;
   }
-
 }
 </style>

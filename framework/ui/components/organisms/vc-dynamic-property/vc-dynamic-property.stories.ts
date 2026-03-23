@@ -168,7 +168,8 @@ const meta = {
       },
     },
     "onUpdate:modelValue": {
-      description: "Emitted when the value changes. Payload includes value, dictionary, locale, and optional unitOfMeasureId/colorCode",
+      description:
+        "Emitted when the value changes. Payload includes value, dictionary, locale, and optional unitOfMeasureId/colorCode",
       table: { category: "Events" },
     },
   },
@@ -294,7 +295,8 @@ export const LongText: Story = {
   parameters: {
     docs: {
       description: {
-        story: "LongText value type renders as a VcTextarea, suitable for multi-line content like descriptions or notes.",
+        story:
+          "LongText value type renders as a VcTextarea, suitable for multi-line content like descriptions or notes.",
       },
     },
   },
@@ -333,7 +335,7 @@ export const NumberType: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Number value type renders as a VcInput with `type=\"number\"`, allowing decimal values.",
+        story: 'Number value type renders as a VcInput with `type="number"`, allowing decimal values.',
       },
     },
   },
@@ -372,7 +374,8 @@ export const IntegerType: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Integer value type renders as a VcInput with `type=\"integer\"` and `step=\"1\"`, restricting to whole numbers.",
+        story:
+          'Integer value type renders as a VcInput with `type="integer"` and `step="1"`, restricting to whole numbers.',
       },
     },
   },
@@ -411,7 +414,7 @@ export const DateTimeType: Story = {
   parameters: {
     docs: {
       description: {
-        story: "DateTime value type renders as a VcInput with `type=\"datetime-local\"` for date and time selection.",
+        story: 'DateTime value type renders as a VcInput with `type="datetime-local"` for date and time selection.',
       },
     },
   },
@@ -450,7 +453,8 @@ export const BooleanType: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Boolean value type renders as a VcSwitch toggle. Useful for on/off flags like active status or feature toggles.",
+        story:
+          "Boolean value type renders as a VcSwitch toggle. Useful for on/off flags like active status or feature toggles.",
       },
     },
   },
@@ -491,7 +495,8 @@ export const ColorType: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Color value type (non-dictionary, single value) renders as a VcInput with `type=\"color\"` for native color picking.",
+        story:
+          'Color value type (non-dictionary, single value) renders as a VcInput with `type="color"` for native color picking.',
       },
     },
   },
@@ -538,7 +543,8 @@ export const DictionarySelect: Story = {
   parameters: {
     docs: {
       description: {
-        story: "When `dictionary` is true, the component renders a VcSelect dropdown with options loaded from `optionsGetter`. Supports search filtering.",
+        story:
+          "When `dictionary` is true, the component renders a VcSelect dropdown with options loaded from `optionsGetter`. Supports search filtering.",
       },
     },
   },
@@ -582,7 +588,8 @@ export const RequiredWithValidation: Story = {
   parameters: {
     docs: {
       description: {
-        story: "When `required` is true, vee-validate enforces the field. Additional rules like `min`, `max`, and `regex` are applied from the `rules` prop.",
+        story:
+          "When `required` is true, vee-validate enforces the field. Additional rules like `min`, `max`, and `regex` are applied from the `rules` prop.",
       },
     },
   },
@@ -622,7 +629,8 @@ export const Disabled: Story = {
   parameters: {
     docs: {
       description: {
-        story: "When `disabled` is true, the rendered input control is non-interactive. Useful for displaying property values in read-only contexts.",
+        story:
+          "When `disabled` is true, the rendered input control is non-interactive. Useful for displaying property values in read-only contexts.",
       },
     },
   },
@@ -636,17 +644,28 @@ export const PropertyForm: Story = {
     components: { VcDynamicProperty },
     setup() {
       const properties = [
-        { id: "p1", name: "productName", label: "Product Name", valueType: "ShortText", value: "Widget Pro", required: true },
-        { id: "p2", name: "description", label: "Description", valueType: "LongText", value: "A premium widget for all your needs." },
+        {
+          id: "p1",
+          name: "productName",
+          label: "Product Name",
+          valueType: "ShortText",
+          value: "Widget Pro",
+          required: true,
+        },
+        {
+          id: "p2",
+          name: "description",
+          label: "Description",
+          valueType: "LongText",
+          value: "A premium widget for all your needs.",
+        },
         { id: "p3", name: "price", label: "Price", valueType: "Number", value: 29.99, required: true },
         { id: "p4", name: "stock", label: "Stock Quantity", valueType: "Integer", value: 150 },
         { id: "p5", name: "releaseDate", label: "Release Date", valueType: "DateTime", value: "2026-06-01T09:00" },
         { id: "p6", name: "isPublished", label: "Published", valueType: "Boolean", value: true },
       ];
 
-      const values = ref<Record<string, any>>(
-        Object.fromEntries(properties.map((p) => [p.id, p.value])),
-      );
+      const values = ref<Record<string, any>>(Object.fromEntries(properties.map((p) => [p.id, p.value])));
 
       const noopGetter = async () => [];
 
@@ -677,7 +696,8 @@ export const PropertyForm: Story = {
   parameters: {
     docs: {
       description: {
-        story: "A composition example showing multiple dynamic properties of different value types rendered together as a product property form.",
+        story:
+          "A composition example showing multiple dynamic properties of different value types rendered together as a product property form.",
       },
     },
   },
@@ -722,7 +742,8 @@ export const Accessibility: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Dynamic properties inherit accessibility from their underlying input components (VcInput, VcSelect, VcSwitch, etc.). Labels are associated with inputs, required fields are marked, and keyboard navigation is fully supported.",
+        story:
+          "Dynamic properties inherit accessibility from their underlying input components (VcInput, VcSelect, VcSwitch, etc.). Labels are associated with inputs, required fields are marked, and keyboard navigation is fully supported.",
       },
     },
   },

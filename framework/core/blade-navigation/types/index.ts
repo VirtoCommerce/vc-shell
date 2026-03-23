@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Router } from "vue-router";
 import {
   AppContext,
@@ -303,4 +302,5 @@ export interface IBladeMessaging {
 export const BladeStackKey: InjectionKey<IBladeStack> = Symbol("BladeStack");
 export const BladeMessagingKey: InjectionKey<IBladeMessaging> = Symbol("BladeMessaging");
 export const BladeDescriptorKey: InjectionKey<ComputedRef<BladeDescriptor>> = Symbol("BladeDescriptor");
-export const BladeDataKey: InjectionKey<ComputedRef<Record<string, unknown>> | Ref<Record<string, unknown>>> = Symbol("BladeData");
+export const BladeDataKey: InjectionKey<ComputedRef<Record<string, unknown>> | Ref<Record<string, unknown>>> =
+  Symbol("BladeData");

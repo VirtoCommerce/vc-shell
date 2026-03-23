@@ -15,7 +15,7 @@
       v-else
       class="tw-flex tw-justify-center tw-items-center tw-p-4 tw-text-sm tw-text-[color:var(--neutrals-400)]"
     >
-      {{ t('COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY') }}
+      {{ t("COMPONENTS.NOTIFICATION_DROPDOWN.EMPTY") }}
     </div>
   </div>
 </template>
@@ -33,9 +33,7 @@ const { t } = useI18n({ useScope: "global" });
 // Sort with timestamp normalization to handle mixed string/Date created values
 const notifications = computed(() =>
   [...store.history.value].sort(
-    (a, b) =>
-      new Date(b.created as unknown as string).getTime() -
-      new Date(a.created as unknown as string).getTime(),
+    (a, b) => new Date(b.created as unknown as string).getTime() - new Date(a.created as unknown as string).getTime(),
   ),
 );
 

@@ -53,7 +53,10 @@ const currentTemplate = computed(() => {
   return store.registry.get(type)?.template;
 });
 
-provide(NotificationContextKey, computed(() => props.notification));
+provide(
+  NotificationContextKey,
+  computed(() => props.notification),
+);
 
 const handleClick = () => {
   emit("onClick", props.notification);

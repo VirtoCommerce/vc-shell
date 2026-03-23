@@ -24,25 +24,26 @@ export function useConnectionStatus(): UseConnectionStatusReturn {
 
     const { isOnline } = useNetwork();
 
-    watch(isOnline, (online) => {
-      _isOnline.value = online;
+    watch(
+      isOnline,
+      (online) => {
+        _isOnline.value = online;
 
-      if (!online) {
-        logger.warn("Network connection lost");
-        notification.warning(
-          "You are currently offline. Some features may be unavailable.",
-          {
+        if (!online) {
+          logger.warn("Network connection lost");
+          notification.warning("You are currently offline. Some features may be unavailable.", {
             notificationId: OFFLINE_NOTIFICATION_ID,
             timeout: false,
-          },
-        );
-        document.documentElement.classList.add("vc-offline");
-      } else {
-        logger.info("Network connection restored");
-        notification.remove(OFFLINE_NOTIFICATION_ID);
-        document.documentElement.classList.remove("vc-offline");
-      }
-    }, { immediate: true });
+          });
+          document.documentElement.classList.add("vc-offline");
+        } else {
+          logger.info("Network connection restored");
+          notification.remove(OFFLINE_NOTIFICATION_ID);
+          document.documentElement.classList.remove("vc-offline");
+        }
+      },
+      { immediate: true },
+    );
   }
 
   return {

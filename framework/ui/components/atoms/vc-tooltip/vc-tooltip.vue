@@ -36,7 +36,10 @@
             :style="arrowStyle"
           />
           <!-- Body: sits on top of arrow via z-index, covers inner half -->
-          <div class="vc-tooltip__body" :class="`vc-tooltip__body--${variant}`">
+          <div
+            class="vc-tooltip__body"
+            :class="`vc-tooltip__body--${variant}`"
+          >
             <slot name="tooltip"></slot>
           </div>
         </div>
@@ -133,15 +136,15 @@ const middleware = computed(() => {
   return mw;
 });
 
-const { floatingStyles, placement: resolvedPlacement, middlewareData } = useFloating(
-  tooltipCompRef,
-  tooltipRef,
-  {
-    placement: computed(() => props.placement as Placement),
-    whileElementsMounted: autoUpdate,
-    middleware,
-  },
-);
+const {
+  floatingStyles,
+  placement: resolvedPlacement,
+  middlewareData,
+} = useFloating(tooltipCompRef, tooltipRef, {
+  placement: computed(() => props.placement as Placement),
+  whileElementsMounted: autoUpdate,
+  middleware,
+});
 
 const resolvedMaxWidth = computed(() => {
   if (typeof props.maxWidth === "number") return `${props.maxWidth}px`;

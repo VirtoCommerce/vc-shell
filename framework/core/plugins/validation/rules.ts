@@ -3,7 +3,6 @@ import { defineRule } from "vee-validate";
 import { all } from "@vee-validate/rules";
 
 Object.keys(all).forEach((rule: string) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defineRule(rule, (all as Record<string, any>)[rule]);
 });
 

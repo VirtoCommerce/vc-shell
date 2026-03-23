@@ -63,12 +63,7 @@ function resolveFieldData<T>(data: T, field: string | undefined): unknown {
 /**
  * Compare two values for sorting
  */
-function compare(
-  value1: unknown,
-  value2: unknown,
-  order: number,
-  nullSortOrder: number = 1
-): number {
+function compare(value1: unknown, value2: unknown, order: number, nullSortOrder: number = 1): number {
   const result = compareValues(value1, value2, nullSortOrder);
   return order * result;
 }
@@ -102,18 +97,9 @@ function compareValues(value1: unknown, value2: unknown, nullSortOrder: number):
  * Main composable for data processing
  */
 export function useDataProcessing<T extends Record<string, any>>(
-  options: UseDataProcessingOptions<T>
+  options: UseDataProcessingOptions<T>,
 ): UseDataProcessingReturn<T> {
-  const {
-    items,
-    sortField,
-    sortOrder,
-    sortMode,
-    multiSortMeta,
-    groupRowsBy,
-    lazy,
-    onSortChange,
-  } = options;
+  const { items, sortField, sortOrder, sortMode, multiSortMeta, groupRowsBy, lazy, onSortChange } = options;
 
   // ============================================================================
   // SORTING

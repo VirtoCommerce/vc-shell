@@ -111,7 +111,7 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
 
     const route = config?.url ?? registrationData.route;
     const isWorkspace = config?.isWorkspace ?? registrationData.isWorkspace ?? false;
-    const routable = config?.routable ?? (registrationData.routable !== false);
+    const routable = config?.routable ?? registrationData.routable !== false;
     const permissions = config?.permissions ?? registrationData.permissions;
     const menuItem = config?.menuItem ?? component.menuItem;
 
@@ -229,9 +229,7 @@ export function createBladeRegistry(app: App): IBladeRegistryInstance {
   }
 
   // Cache the readonly map — computed is inherently read-only
-  const readonlyBladesMap = computed<ReadonlyMap<string, IBladeRegistrationData>>(
-    () => registeredBladesInternal.value,
-  );
+  const readonlyBladesMap = computed<ReadonlyMap<string, IBladeRegistrationData>>(() => registeredBladesInternal.value);
 
   const registryApi: UseBladeRegistryReturn = {
     registeredBladesMap: readonlyBladesMap,

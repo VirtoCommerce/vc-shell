@@ -15,18 +15,11 @@ export function createBladeMessaging(bladeStack: IBladeStack): IBladeMessaging {
   // bladeId → Record of method name → function
   const _exposedMethods = new Map<string, Record<string, (...args: any[]) => any>>();
 
-  function exposeToChildren(
-    bladeId: string,
-    methods: Record<string, (...args: any[]) => any>,
-  ): void {
+  function exposeToChildren(bladeId: string, methods: Record<string, (...args: any[]) => any>): void {
     _exposedMethods.set(bladeId, methods);
   }
 
-  async function callParent<T = unknown>(
-    callerBladeId: string,
-    method: string,
-    args?: unknown,
-  ): Promise<T> {
+  async function callParent<T = unknown>(callerBladeId: string, method: string, args?: unknown): Promise<T> {
     // Find the caller blade to get its parentId
     const callerBlade = bladeStack.blades.value.find((b) => b.id === callerBladeId);
     if (!callerBlade) {
@@ -72,9 +65,7 @@ export function createBladeMessaging(bladeStack: IBladeStack): IBladeMessaging {
 export function useBladeMessaging(): IBladeMessaging {
   const messaging = inject(BladeMessagingKey);
   if (!messaging) {
-    throw new Error(
-      "[useBladeMessaging] BladeMessaging not found. Ensure BladeNavigationPlugin is installed.",
-    );
+    throw new Error("[useBladeMessaging] BladeMessaging not found. Ensure BladeNavigationPlugin is installed.");
   }
   return messaging;
 }

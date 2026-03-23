@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { VcPopup } from "@ui/components/organisms/vc-popup";
 import {
   markRaw,
@@ -73,7 +72,9 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
     }
   }
 
-  function resolveInstance(customInstance?: UsePopupProps<DefineComponent>): UsePopupProps<DefineComponent> | undefined {
+  function resolveInstance(
+    customInstance?: UsePopupProps<DefineComponent>,
+  ): UsePopupProps<DefineComponent> | undefined {
     return rawPopup ?? customInstance;
   }
 

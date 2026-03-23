@@ -46,9 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
 const hasCustomSize = computed(() => typeof props.customSize === "number" && props.customSize > 0);
 
 // Direct custom size style — no scaling factors
-const customSizeStyle = computed(() =>
-  props.customSize ? { fontSize: `${props.customSize}px` } : undefined,
-);
+const customSizeStyle = computed(() => (props.customSize ? { fontSize: `${props.customSize}px` } : undefined));
 
 // Deprecation warning (dev-only)
 onMounted(() => {

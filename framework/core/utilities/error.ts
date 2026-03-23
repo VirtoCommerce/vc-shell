@@ -46,7 +46,6 @@ export function parseError(errorToParse: unknown): DisplayableError {
 
   // Handle plain objects, which are likely API responses.
   if (typeof errorToParse === "object" && errorToParse !== null) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const errorObject = errorToParse as Record<string, any>;
 
     // Check if it conforms to the expected API error response structure.

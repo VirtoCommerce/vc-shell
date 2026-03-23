@@ -1,5 +1,8 @@
 <template>
-  <div class="vc-accordion" :class="`vc-accordion--${variant}`">
+  <div
+    class="vc-accordion"
+    :class="`vc-accordion--${variant}`"
+  >
     <VcAccordionItem
       v-for="(item, index) in items"
       :key="item.id || index"
@@ -11,13 +14,19 @@
       class="vc-accordion__item"
       @toggle="(expanded) => handleToggle(item.id || index, expanded)"
     >
-      <template v-if="item.titleSlot" #title>
+      <template
+        v-if="item.titleSlot"
+        #title
+      >
         <component :is="item.titleSlot" />
       </template>
       <template v-if="typeof item.content === 'string'">
         {{ item.content }}
       </template>
-      <component v-else-if="item.content" :is="item.content" />
+      <component
+        :is="item.content"
+        v-else-if="item.content"
+      />
     </VcAccordionItem>
 
     <slot></slot>

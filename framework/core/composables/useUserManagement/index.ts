@@ -18,7 +18,7 @@ export interface UseUserManagementReturn {
   loadUser: () => Promise<UserDetail>;
   requestPasswordReset: (loginOrEmail: string) => Promise<RequestPasswordResult>;
   changeUserPassword: (oldPassword: string, newPassword: string) => Promise<SecurityResult | undefined>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   signIn: (username: string, password: string) => Promise<SignInResult | { succeeded: boolean; error?: any }>;
   signOut: () => Promise<void>;
 }

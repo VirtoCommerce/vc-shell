@@ -12,7 +12,10 @@ export type {
 
 // Gridstack composables (for advanced usage)
 export { useGridstack } from "@shell/dashboard/draggable-dashboard/composables/useGridstack";
-export type { UseGridstackOptions, UseGridstackReturn } from "@shell/dashboard/draggable-dashboard/composables/useGridstack";
+export type {
+  UseGridstackOptions,
+  UseGridstackReturn,
+} from "@shell/dashboard/draggable-dashboard/composables/useGridstack";
 
 // Import and re-export to avoid Storybook docgen issues with direct re-exports
 import {

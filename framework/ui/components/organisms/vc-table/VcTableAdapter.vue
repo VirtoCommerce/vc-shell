@@ -45,8 +45,8 @@
       <!-- Dynamic VcColumn generation from columns[] prop -->
       <VcColumn
         v-for="col in effectiveColumns"
-        :key="col.id"
         :id="col.id"
+        :key="col.id"
         :field="col.field || col.id"
         :title="toValue(col.title)"
         :width="col.width"
@@ -110,10 +110,16 @@
       </template>
 
       <!-- Empty / NotFound — delegate rendering to VcDataTable via props, passthrough custom slots -->
-      <template v-if="$slots.notfound" #not-found>
+      <template
+        v-if="$slots.notfound"
+        #not-found
+      >
         <slot name="notfound" />
       </template>
-      <template v-if="$slots.empty" #empty>
+      <template
+        v-if="$slots.empty"
+        #empty
+      >
         <slot name="empty" />
       </template>
 
@@ -162,7 +168,13 @@ import VcDataTable from "@ui/components/organisms/vc-table/VcDataTable.vue";
 import VcColumn from "@ui/components/organisms/vc-table/components/VcColumn.vue";
 import { GlobalFiltersButton } from "@ui/components/organisms/vc-table/components";
 import { VcDropdownPanel } from "@ui/components/molecules";
-import type { TableAction, TableEmptyAction, DataTablePagination, AddRowConfig, TableStateConfig } from "@ui/components/organisms/vc-table/types";
+import type {
+  TableAction,
+  TableEmptyAction,
+  DataTablePagination,
+  AddRowConfig,
+  TableStateConfig,
+} from "@ui/components/organisms/vc-table/types";
 import type { ITableColumns, IActionBuilderResult } from "@core/types";
 
 // ============================================================================
@@ -358,9 +370,7 @@ const paginationConfig = computed<DataTablePagination | undefined>(() => {
 // The expanded/alwaysVisible filtering is handled exclusively by VcDataTable
 // via the showAllColumns prop. Keeping all VcColumn elements mounted ensures
 // that state persistence (column widths/order) is never lost during blade collapse.
-const effectiveColumns = computed(() =>
-  props.columns.filter((col) => col.visible !== false),
-);
+const effectiveColumns = computed(() => props.columns.filter((col) => col.visible !== false));
 
 // NotFound state detection
 const isNotFoundState = computed(
@@ -373,7 +383,11 @@ const mappedEmptyState = computed<TableStateConfig | undefined>(() => {
   return {
     icon: props.empty.icon,
     title: typeof props.empty.text === "string" ? props.empty.text : toValue(props.empty.text),
-    actionLabel: props.empty.action ? (typeof props.empty.action === "string" ? props.empty.action : toValue(props.empty.action)) : undefined,
+    actionLabel: props.empty.action
+      ? typeof props.empty.action === "string"
+        ? props.empty.action
+        : toValue(props.empty.action)
+      : undefined,
     actionHandler: props.empty.clickHandler,
   };
 });
@@ -383,7 +397,11 @@ const mappedNotFoundState = computed<TableStateConfig | undefined>(() => {
   return {
     icon: props.notfound.icon,
     title: typeof props.notfound.text === "string" ? props.notfound.text : toValue(props.notfound.text),
-    actionLabel: props.notfound.action ? (typeof props.notfound.action === "string" ? props.notfound.action : toValue(props.notfound.action)) : undefined,
+    actionLabel: props.notfound.action
+      ? typeof props.notfound.action === "string"
+        ? props.notfound.action
+        : toValue(props.notfound.action)
+      : undefined,
     actionHandler: props.notfound.clickHandler,
   };
 });

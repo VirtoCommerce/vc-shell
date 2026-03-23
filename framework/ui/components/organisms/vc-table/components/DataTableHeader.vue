@@ -1,6 +1,10 @@
 <template>
   <TableHeader>
-    <TableRow variant="header" :show-drag-handle="showDragHandle" :actions-position="actionsPosition">
+    <TableRow
+      variant="header"
+      :show-drag-handle="showDragHandle"
+      :actions-position="actionsPosition"
+    >
       <!-- Selection column (only if NOT defined via VcColumn) -->
       <TableHead
         v-if="showSelectionCell"
@@ -48,7 +52,10 @@
         <template v-else-if="col.props.expander || col.props.rowReorder" />
         <!-- Custom header slot from VcColumn -->
         <template v-else-if="col.slots.header">
-          <SlotProxy :slot-fn="col.slots.header!" :scope="{ column: col.props }" />
+          <SlotProxy
+            :slot-fn="col.slots.header!"
+            :scope="{ column: col.props }"
+          />
         </template>
         <!-- Default header content -->
         <template v-else>
@@ -58,7 +65,8 @@
                 v-if="isEditing && col.props.rules?.required"
                 class="tw-text-danger-500 tw-mr-0.5"
                 aria-hidden="true"
-              >*</span>
+                >*</span
+              >
               {{ col.props.title }}
             </span>
             <ColumnFilter
@@ -73,15 +81,43 @@
               @apply="handleFilterApply(col, $event)"
               @clear="handleFilterClear(col)"
             >
-              <template v-if="col.slots.filter" #filter="{ value, updateValue, startDate, updateStartDate, endDate, updateEndDate, applyFilter, clearFilter }">
-                <SlotProxy :slot-fn="col.slots.filter!" :scope="{ field: col.props.field, value, updateValue, startDate, updateStartDate, endDate, updateEndDate, applyFilter, clearFilter }" />
+              <template
+                v-if="col.slots.filter"
+                #filter="{
+                  value,
+                  updateValue,
+                  startDate,
+                  updateStartDate,
+                  endDate,
+                  updateEndDate,
+                  applyFilter,
+                  clearFilter,
+                }"
+              >
+                <SlotProxy
+                  :slot-fn="col.slots.filter!"
+                  :scope="{
+                    field: col.props.field,
+                    value,
+                    updateValue,
+                    startDate,
+                    updateStartDate,
+                    endDate,
+                    updateEndDate,
+                    applyFilter,
+                    clearFilter,
+                  }"
+                />
               </template>
             </ColumnFilter>
           </div>
         </template>
       </TableHead>
       <!-- Actions slot: provides spacer in column mode + column switcher when enabled -->
-      <template v-if="showColumnSwitcher || actionsPosition === 'column'" #actions>
+      <template
+        v-if="showColumnSwitcher || actionsPosition === 'column'"
+        #actions
+      >
         <div
           v-if="showColumnSwitcher"
           class="vc-col-switcher-trigger"
@@ -95,11 +131,21 @@
           @keydown.space.prevent.stop="emit('column-switcher-click')"
         >
           <span class="vc-col-switcher-trigger__chevron">
-            <VcIcon icon="lucide-chevron-left" size="xs" :use-container="false" />
+            <VcIcon
+              icon="lucide-chevron-left"
+              size="xs"
+              :use-container="false"
+            />
           </span>
           <VcTooltip placement="bottom">
-            <span ref="columnSwitcherBtnRef" class="vc-col-switcher-trigger__action">
-              <VcIcon icon="lucide-circle-plus" size="s" />
+            <span
+              ref="columnSwitcherBtnRef"
+              class="vc-col-switcher-trigger__action"
+            >
+              <VcIcon
+                icon="lucide-circle-plus"
+                size="s"
+              />
             </span>
             <template #tooltip>
               {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_SWITCHER.TITLE") }}
@@ -383,4 +429,3 @@ const handleFilterClear = (col: ColumnInstance) => {
   }
 }
 </style>
-

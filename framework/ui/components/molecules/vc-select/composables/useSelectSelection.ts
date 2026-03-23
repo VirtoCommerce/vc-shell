@@ -108,10 +108,7 @@ export function useSelectSelection<Option>(opts: UseSelectSelectionOptions<Optio
     const optValue = opts.getOptionValue.value(opt) as Option[];
 
     if (opts.multiple() !== true) {
-      if (
-        innerValue.value.length === 0 ||
-        isEqual(opts.getOptionValue.value(innerValue.value[0]), optValue) !== true
-      ) {
+      if (innerValue.value.length === 0 || isEqual(opts.getOptionValue.value(innerValue.value[0]), optValue) !== true) {
         opts.emit.updateModelValue(opts.emitValue() === true ? optValue : opt);
       }
 

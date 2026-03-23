@@ -111,8 +111,16 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { fieldId: textareaId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
-  useFormField(props);
+const {
+  fieldId: textareaId,
+  labelId,
+  errorId,
+  hintId,
+  invalid,
+  resolvedDisabled,
+  ariaRequired,
+  ariaDescribedBy,
+} = useFormField(props);
 
 const textareaRef = ref<HTMLTextAreaElement>();
 const isFocused = ref(false);
@@ -223,6 +231,5 @@ defineExpose({
     @apply tw-border-[color:var(--textarea-border-color-error)]
       tw-ring-[3px] tw-ring-[color:var(--textarea-error-ring-color)];
   }
-
 }
 </style>

@@ -58,8 +58,7 @@ const meta = {
       options: [...ALL_VARIANTS],
       table: {
         type: {
-          summary:
-            "'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'info' | 'outline' | 'ghost' | 'link'",
+          summary: "'primary' | 'secondary' | 'danger' | 'warning' | 'success' | 'info' | 'outline' | 'ghost' | 'link'",
         },
         defaultValue: { summary: "'primary'" },
       },
@@ -107,7 +106,8 @@ const meta = {
       },
     },
     text: {
-      description: "Whether the button should appear as text only (no background). Legacy — use variant='ghost' for new code.",
+      description:
+        "Whether the button should appear as text only (no background). Legacy — use variant='ghost' for new code.",
       control: "boolean",
       table: {
         type: { summary: "boolean" },
@@ -291,7 +291,9 @@ export const Loading: Story = {
       const loading = ref(false);
       const handleClick = () => {
         loading.value = true;
-        setTimeout(() => { loading.value = false; }, 2000);
+        setTimeout(() => {
+          loading.value = false;
+        }, 2000);
       };
       return { loading, handleClick };
     },

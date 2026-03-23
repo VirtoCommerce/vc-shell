@@ -1,16 +1,28 @@
 <template>
-  <div role="rowgroup" class="vc-table-composition__body" :data-items-count="items?.length">
+  <div
+    role="rowgroup"
+    class="vc-table-composition__body"
+    :data-items-count="items?.length"
+  >
     <template v-if="!loading && hasContent">
       <slot :items="items" />
     </template>
-    <div v-else-if="!loading && !hasContent" key="__empty__" class="vc-table-composition__body-state">
+    <div
+      v-else-if="!loading && !hasContent"
+      key="__empty__"
+      class="vc-table-composition__body-state"
+    >
       <slot name="empty">
         <div class="vc-table-composition__empty">
           <slot name="empty-content">No data available</slot>
         </div>
       </slot>
     </div>
-    <div v-else key="__loading__" class="vc-table-composition__body-state">
+    <div
+      v-else
+      key="__loading__"
+      class="vc-table-composition__body-state"
+    >
       <slot name="loading">
         <div class="vc-table-composition__loading">
           <div class="vc-table-composition__loading-spinner">Loading...</div>

@@ -5,8 +5,17 @@
     :class="{ 'vc-breadcrumbs-item--light': variant === 'light' }"
     aria-current="page"
   >
-    <VcIcon v-if="icon" class="vc-breadcrumbs-item__icon" :icon="icon" size="s" />
-    <span class="vc-breadcrumbs-item__title" :title="resolvedTitle">{{ resolvedTitle }}</span>
+    <VcIcon
+      v-if="icon"
+      class="vc-breadcrumbs-item__icon"
+      :icon="icon"
+      size="s"
+    />
+    <span
+      class="vc-breadcrumbs-item__title"
+      :title="resolvedTitle"
+      >{{ resolvedTitle }}</span
+    >
   </span>
   <button
     v-else
@@ -15,8 +24,17 @@
     :class="{ 'vc-breadcrumbs-item--light': variant === 'light' }"
     @click="onClick"
   >
-    <VcIcon v-if="icon" class="vc-breadcrumbs-item__icon" :icon="icon" size="s" />
-    <span class="vc-breadcrumbs-item__title" :title="resolvedTitle">{{ resolvedTitle }}</span>
+    <VcIcon
+      v-if="icon"
+      class="vc-breadcrumbs-item__icon"
+      :icon="icon"
+      size="s"
+    />
+    <span
+      class="vc-breadcrumbs-item__title"
+      :title="resolvedTitle"
+      >{{ resolvedTitle }}</span
+    >
   </button>
 </template>
 

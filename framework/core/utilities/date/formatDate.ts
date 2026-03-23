@@ -18,11 +18,7 @@ export function formatDateRelative(value: DateInput, localeCode?: string): strin
   return formatDistanceToNow(date, { addSuffix: true, locale });
 }
 
-export function formatDateWithPattern(
-  value: DateInput,
-  momentFormatStr: string,
-  localeCode?: string,
-): string {
+export function formatDateWithPattern(value: DateInput, momentFormatStr: string, localeCode?: string): string {
   const date = toDate(value);
   if (!date) return "";
   const dateFnsFormat = convertMomentFormat(momentFormatStr);

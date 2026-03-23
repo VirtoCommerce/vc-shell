@@ -301,9 +301,35 @@ function getSanitizedHtml(html: string): string {
 
   const sanitized = DOMPurify.default.sanitize(html, {
     ALLOWED_TAGS: [
-      "p", "br", "strong", "em", "u", "s", "h1", "h2", "h3", "h4", "h5", "h6",
-      "ul", "ol", "li", "blockquote", "pre", "code", "a", "img", "table",
-      "thead", "tbody", "tr", "th", "td", "hr", "div", "span",
+      "p",
+      "br",
+      "strong",
+      "em",
+      "u",
+      "s",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "ul",
+      "ol",
+      "li",
+      "blockquote",
+      "pre",
+      "code",
+      "a",
+      "img",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "th",
+      "td",
+      "hr",
+      "div",
+      "span",
     ],
     ALLOWED_ATTR: ["href", "src", "alt", "title", "class", "id", "colspan", "rowspan", "align", "valign"],
     FORBID_TAGS: ["script", "object", "embed", "form", "input"],
@@ -339,7 +365,6 @@ const emit = defineEmits<{
 
 const locale = window.navigator.language;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const value = computed((): any => _.get(props.item, props.cell.field || props.cell.id));
 
 const isEditable = computed(() => props.cell.editable && props.editing);

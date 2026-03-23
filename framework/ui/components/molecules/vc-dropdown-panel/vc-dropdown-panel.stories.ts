@@ -372,7 +372,8 @@ export const WithFooter: Story = {
   parameters: {
     docs: {
       description: {
-        story: "The footer slot is ideal for action buttons like Apply/Cancel. The footer has a subtle background and top border to separate it from content.",
+        story:
+          "The footer slot is ideal for action buttons like Apply/Cancel. The footer has a subtle background and top border to separate it from content.",
       },
     },
   },
@@ -436,7 +437,8 @@ export const ScrollableContent: Story = {
   parameters: {
     docs: {
       description: {
-        story: "When content exceeds `maxHeight`, the content area becomes scrollable while the header and footer remain fixed. The maxHeight is also clamped by the available viewport space via Floating UI.",
+        story:
+          "When content exceeds `maxHeight`, the content area becomes scrollable while the header and footer remain fixed. The maxHeight is also clamped by the available viewport space via Floating UI.",
       },
     },
   },
@@ -493,7 +495,8 @@ export const Placements: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Floating UI placement controls where the panel appears relative to the anchor. The panel will automatically flip or shift if there is not enough space in the preferred direction.",
+        story:
+          "Floating UI placement controls where the panel appears relative to the anchor. The panel will automatically flip or shift if there is not enough space in the preferred direction.",
       },
     },
   },
@@ -559,7 +562,8 @@ export const Interactive: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Demonstrates all close mechanisms: click-outside, Escape key, header close button, and anchor toggle. The event log shows open/close activity.",
+        story:
+          "Demonstrates all close mechanisms: click-outside, Escape key, header close button, and anchor toggle. The event log shows open/close activity.",
       },
     },
   },
@@ -628,7 +632,8 @@ export const CustomHeader: Story = {
   parameters: {
     docs: {
       description: {
-        story: "The `#header` slot replaces the default title + close button. It receives a `close` function as a slot prop for custom dismiss controls.",
+        story:
+          "The `#header` slot replaces the default title + close button. It receives a `close` function as a slot prop for custom dismiss controls.",
       },
     },
   },
@@ -700,7 +705,8 @@ export const Accessibility: Story = {
   parameters: {
     docs: {
       description: {
-        story: "The panel supports keyboard dismissal via Escape and the close button has an `aria-label=\"Close\"` attribute. Form elements inside the panel are fully keyboard accessible.",
+        story:
+          'The panel supports keyboard dismissal via Escape and the close button has an `aria-label="Close"` attribute. Form elements inside the panel are fully keyboard accessible.',
       },
     },
   },

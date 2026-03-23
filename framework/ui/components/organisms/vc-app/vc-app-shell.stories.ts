@@ -29,7 +29,8 @@ function getMenuExpandedStorageKey(): string {
   return `VC_APP_MENU_EXPANDED_${appName}`;
 }
 
-const MOCK_LOGO = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 30'%3E%3Ctext x='5' y='22' font-family='Arial' font-size='18' font-weight='bold' fill='%23319ED5'%3EVirtoShell%3C/text%3E%3C/svg%3E";
+const MOCK_LOGO =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 30'%3E%3Ctext x='5' y='22' font-family='Arial' font-size='18' font-weight='bold' fill='%23319ED5'%3EVirtoShell%3C/text%3E%3C/svg%3E";
 
 const mockMenuItems: Partial<MenuItem>[] = [
   {
@@ -91,26 +92,146 @@ function appIconSvg(emoji: string, bg: string): string {
 }
 
 const mockApps: AppDescriptor[] = [
-  { id: "commerce", title: "Commerce Manager", description: "Manage your store", iconUrl: appIconSvg("🛒", "#E3F2FD"), relativeUrl: "/commerce" },
-  { id: "catalog", title: "Catalog", description: "Product catalog management", iconUrl: appIconSvg("📦", "#FFF3E0"), relativeUrl: "/catalog" },
-  { id: "orders", title: "Orders", description: "Order processing", iconUrl: appIconSvg("📋", "#E8F5E9"), relativeUrl: "/orders" },
-  { id: "customers", title: "Customers", description: "Customer management", iconUrl: appIconSvg("👥", "#F3E5F5"), relativeUrl: "/customers" },
-  { id: "marketing", title: "Marketing", description: "Campaigns & promotions", iconUrl: appIconSvg("📣", "#FFF8E1"), relativeUrl: "/marketing" },
-  { id: "inventory", title: "Inventory", description: "Stock management", iconUrl: appIconSvg("🏭", "#ECEFF1"), relativeUrl: "/inventory" },
-  { id: "pricing", title: "Pricing", description: "Price lists & rules", iconUrl: appIconSvg("💲", "#E0F7FA"), relativeUrl: "/pricing" },
-  { id: "content", title: "Content", description: "CMS & pages", iconUrl: appIconSvg("📝", "#FCE4EC"), relativeUrl: "/content" },
-  { id: "analytics", title: "Analytics", description: "Reports & dashboards", iconUrl: appIconSvg("📊", "#EDE7F6"), relativeUrl: "/analytics" },
-  { id: "search", title: "App Search", description: "Search configuration", iconUrl: appIconSvg("🔍", "#E8EAF6"), relativeUrl: "/search" },
-  { id: "settings", title: "Settings", description: "Platform settings", iconUrl: appIconSvg("⚙️", "#EFEBE9"), relativeUrl: "/settings" },
-  { id: "users", title: "User Management", description: "Users & roles", iconUrl: appIconSvg("🔑", "#FBE9E7"), relativeUrl: "/users" },
-  { id: "notifications", title: "Notifications Hub", description: "Notification settings", iconUrl: appIconSvg("🔔", "#FFFDE7"), relativeUrl: "/notifications" },
-  { id: "imports", title: "Import/Export", description: "Data import & export", iconUrl: appIconSvg("📤", "#E0F2F1"), relativeUrl: "/imports" },
-  { id: "themes", title: "Themes", description: "Storefront themes", iconUrl: appIconSvg("🎨", "#F9FBE7"), relativeUrl: "/themes" },
-  { id: "integrations", title: "Integrations", description: "Third-party connections", iconUrl: appIconSvg("🔗", "#E1F5FE"), relativeUrl: "/integrations" },
-  { id: "taxes", title: "Tax Management", description: "Tax rules & rates", iconUrl: appIconSvg("🧾", "#F1F8E9"), relativeUrl: "/taxes" },
-  { id: "shipping", title: "Shipping", description: "Delivery & logistics", iconUrl: appIconSvg("🚚", "#E8F5E9"), relativeUrl: "/shipping" },
-  { id: "reviews", title: "Reviews", description: "Product reviews", iconUrl: appIconSvg("⭐", "#FFF3E0"), relativeUrl: "/reviews" },
-  { id: "vendor-portal", title: "Vendor Portal", description: "Marketplace vendors", iconUrl: appIconSvg("🏪", "#F3E5F5"), relativeUrl: "/vendor" },
+  {
+    id: "commerce",
+    title: "Commerce Manager",
+    description: "Manage your store",
+    iconUrl: appIconSvg("🛒", "#E3F2FD"),
+    relativeUrl: "/commerce",
+  },
+  {
+    id: "catalog",
+    title: "Catalog",
+    description: "Product catalog management",
+    iconUrl: appIconSvg("📦", "#FFF3E0"),
+    relativeUrl: "/catalog",
+  },
+  {
+    id: "orders",
+    title: "Orders",
+    description: "Order processing",
+    iconUrl: appIconSvg("📋", "#E8F5E9"),
+    relativeUrl: "/orders",
+  },
+  {
+    id: "customers",
+    title: "Customers",
+    description: "Customer management",
+    iconUrl: appIconSvg("👥", "#F3E5F5"),
+    relativeUrl: "/customers",
+  },
+  {
+    id: "marketing",
+    title: "Marketing",
+    description: "Campaigns & promotions",
+    iconUrl: appIconSvg("📣", "#FFF8E1"),
+    relativeUrl: "/marketing",
+  },
+  {
+    id: "inventory",
+    title: "Inventory",
+    description: "Stock management",
+    iconUrl: appIconSvg("🏭", "#ECEFF1"),
+    relativeUrl: "/inventory",
+  },
+  {
+    id: "pricing",
+    title: "Pricing",
+    description: "Price lists & rules",
+    iconUrl: appIconSvg("💲", "#E0F7FA"),
+    relativeUrl: "/pricing",
+  },
+  {
+    id: "content",
+    title: "Content",
+    description: "CMS & pages",
+    iconUrl: appIconSvg("📝", "#FCE4EC"),
+    relativeUrl: "/content",
+  },
+  {
+    id: "analytics",
+    title: "Analytics",
+    description: "Reports & dashboards",
+    iconUrl: appIconSvg("📊", "#EDE7F6"),
+    relativeUrl: "/analytics",
+  },
+  {
+    id: "search",
+    title: "App Search",
+    description: "Search configuration",
+    iconUrl: appIconSvg("🔍", "#E8EAF6"),
+    relativeUrl: "/search",
+  },
+  {
+    id: "settings",
+    title: "Settings",
+    description: "Platform settings",
+    iconUrl: appIconSvg("⚙️", "#EFEBE9"),
+    relativeUrl: "/settings",
+  },
+  {
+    id: "users",
+    title: "User Management",
+    description: "Users & roles",
+    iconUrl: appIconSvg("🔑", "#FBE9E7"),
+    relativeUrl: "/users",
+  },
+  {
+    id: "notifications",
+    title: "Notifications Hub",
+    description: "Notification settings",
+    iconUrl: appIconSvg("🔔", "#FFFDE7"),
+    relativeUrl: "/notifications",
+  },
+  {
+    id: "imports",
+    title: "Import/Export",
+    description: "Data import & export",
+    iconUrl: appIconSvg("📤", "#E0F2F1"),
+    relativeUrl: "/imports",
+  },
+  {
+    id: "themes",
+    title: "Themes",
+    description: "Storefront themes",
+    iconUrl: appIconSvg("🎨", "#F9FBE7"),
+    relativeUrl: "/themes",
+  },
+  {
+    id: "integrations",
+    title: "Integrations",
+    description: "Third-party connections",
+    iconUrl: appIconSvg("🔗", "#E1F5FE"),
+    relativeUrl: "/integrations",
+  },
+  {
+    id: "taxes",
+    title: "Tax Management",
+    description: "Tax rules & rates",
+    iconUrl: appIconSvg("🧾", "#F1F8E9"),
+    relativeUrl: "/taxes",
+  },
+  {
+    id: "shipping",
+    title: "Shipping",
+    description: "Delivery & logistics",
+    iconUrl: appIconSvg("🚚", "#E8F5E9"),
+    relativeUrl: "/shipping",
+  },
+  {
+    id: "reviews",
+    title: "Reviews",
+    description: "Product reviews",
+    iconUrl: appIconSvg("⭐", "#FFF3E0"),
+    relativeUrl: "/reviews",
+  },
+  {
+    id: "vendor-portal",
+    title: "Vendor Portal",
+    description: "Marketplace vendors",
+    iconUrl: appIconSvg("🏪", "#F3E5F5"),
+    relativeUrl: "/vendor",
+  },
 ] as AppDescriptor[];
 
 // ── Mock notifications (PushNotification format for loadFromHistory) ──
@@ -119,21 +240,126 @@ const MIN = 60_000;
 const HOUR = 3_600_000;
 
 const mockNotifications = [
-  { id: "n1", title: "New order #SO-10042", description: "3 items, total $450.00", isNew: true, created: new Date(now - 2 * MIN).toISOString(), notifyType: "OrderCreated" },
-  { id: "n2", title: "Payment received — $1,250.00", description: "Order #SO-10038, Visa ending 4242", isNew: true, created: new Date(now - 5 * MIN).toISOString(), notifyType: "PaymentReceived" },
-  { id: "n3", title: "Low stock alert: SKU-8812", description: "\"Wireless Keyboard\" — only 3 left in warehouse A", isNew: true, created: new Date(now - 12 * MIN).toISOString(), notifyType: "LowStock" },
-  { id: "n4", title: "Customer refund request #RF-331", description: "Amount: $89.99 — reason: defective item", isNew: true, created: new Date(now - 18 * MIN).toISOString(), notifyType: "RefundRequested" },
-  { id: "n5", title: "New review on \"Premium Headphones\"", description: "★★★★★ — \"Best headphones I've ever owned!\"", isNew: false, created: new Date(now - 25 * MIN).toISOString(), notifyType: "ReviewCreated" },
-  { id: "n6", title: "Shipping label created #SH-9921", description: "FedEx Ground, tracking: 7489203841", isNew: false, created: new Date(now - 30 * MIN).toISOString(), notifyType: "ShipmentCreated" },
-  { id: "n7", title: "Catalog import completed", description: "1,247 products imported, 3 skipped", isNew: false, created: new Date(now - 45 * MIN).toISOString(), notifyType: "ImportCompleted" },
-  { id: "n8", title: "New vendor application", description: "TechGadgets Inc. — pending approval", isNew: false, created: new Date(now - 1 * HOUR).toISOString(), notifyType: "VendorApplication" },
-  { id: "n9", title: "Price rule expired: Summer Sale", description: "20% off all electronics — ended today", isNew: false, created: new Date(now - 1.5 * HOUR).toISOString(), notifyType: "PriceRuleExpired" },
-  { id: "n10", title: "System backup completed", description: "Full backup — 4.2 GB, duration: 12 min", isNew: false, created: new Date(now - 2 * HOUR).toISOString(), notifyType: "SystemBackup" },
-  { id: "n11", title: "New order #SO-10041", description: "1 item, total $29.99", isNew: false, created: new Date(now - 2.5 * HOUR).toISOString(), notifyType: "OrderCreated" },
-  { id: "n12", title: "User login from new device", description: "Chrome on macOS — IP: 203.0.113.42", isNew: false, created: new Date(now - 3 * HOUR).toISOString(), notifyType: "SecurityAlert" },
-  { id: "n13", title: "Inventory sync finished", description: "Warehouse B — 892 SKUs updated", isNew: false, created: new Date(now - 3.5 * HOUR).toISOString(), notifyType: "InventorySync" },
-  { id: "n14", title: "Marketing campaign started", description: "\"Spring Collection Launch\" — 15,000 recipients", isNew: false, created: new Date(now - 4 * HOUR).toISOString(), notifyType: "CampaignStarted" },
-  { id: "n15", title: "New order #SO-10040", description: "5 items, total $1,120.00", isNew: false, created: new Date(now - 5 * HOUR).toISOString(), notifyType: "OrderCreated" },
+  {
+    id: "n1",
+    title: "New order #SO-10042",
+    description: "3 items, total $450.00",
+    isNew: true,
+    created: new Date(now - 2 * MIN).toISOString(),
+    notifyType: "OrderCreated",
+  },
+  {
+    id: "n2",
+    title: "Payment received — $1,250.00",
+    description: "Order #SO-10038, Visa ending 4242",
+    isNew: true,
+    created: new Date(now - 5 * MIN).toISOString(),
+    notifyType: "PaymentReceived",
+  },
+  {
+    id: "n3",
+    title: "Low stock alert: SKU-8812",
+    description: '"Wireless Keyboard" — only 3 left in warehouse A',
+    isNew: true,
+    created: new Date(now - 12 * MIN).toISOString(),
+    notifyType: "LowStock",
+  },
+  {
+    id: "n4",
+    title: "Customer refund request #RF-331",
+    description: "Amount: $89.99 — reason: defective item",
+    isNew: true,
+    created: new Date(now - 18 * MIN).toISOString(),
+    notifyType: "RefundRequested",
+  },
+  {
+    id: "n5",
+    title: 'New review on "Premium Headphones"',
+    description: '★★★★★ — "Best headphones I\'ve ever owned!"',
+    isNew: false,
+    created: new Date(now - 25 * MIN).toISOString(),
+    notifyType: "ReviewCreated",
+  },
+  {
+    id: "n6",
+    title: "Shipping label created #SH-9921",
+    description: "FedEx Ground, tracking: 7489203841",
+    isNew: false,
+    created: new Date(now - 30 * MIN).toISOString(),
+    notifyType: "ShipmentCreated",
+  },
+  {
+    id: "n7",
+    title: "Catalog import completed",
+    description: "1,247 products imported, 3 skipped",
+    isNew: false,
+    created: new Date(now - 45 * MIN).toISOString(),
+    notifyType: "ImportCompleted",
+  },
+  {
+    id: "n8",
+    title: "New vendor application",
+    description: "TechGadgets Inc. — pending approval",
+    isNew: false,
+    created: new Date(now - 1 * HOUR).toISOString(),
+    notifyType: "VendorApplication",
+  },
+  {
+    id: "n9",
+    title: "Price rule expired: Summer Sale",
+    description: "20% off all electronics — ended today",
+    isNew: false,
+    created: new Date(now - 1.5 * HOUR).toISOString(),
+    notifyType: "PriceRuleExpired",
+  },
+  {
+    id: "n10",
+    title: "System backup completed",
+    description: "Full backup — 4.2 GB, duration: 12 min",
+    isNew: false,
+    created: new Date(now - 2 * HOUR).toISOString(),
+    notifyType: "SystemBackup",
+  },
+  {
+    id: "n11",
+    title: "New order #SO-10041",
+    description: "1 item, total $29.99",
+    isNew: false,
+    created: new Date(now - 2.5 * HOUR).toISOString(),
+    notifyType: "OrderCreated",
+  },
+  {
+    id: "n12",
+    title: "User login from new device",
+    description: "Chrome on macOS — IP: 203.0.113.42",
+    isNew: false,
+    created: new Date(now - 3 * HOUR).toISOString(),
+    notifyType: "SecurityAlert",
+  },
+  {
+    id: "n13",
+    title: "Inventory sync finished",
+    description: "Warehouse B — 892 SKUs updated",
+    isNew: false,
+    created: new Date(now - 3.5 * HOUR).toISOString(),
+    notifyType: "InventorySync",
+  },
+  {
+    id: "n14",
+    title: "Marketing campaign started",
+    description: '"Spring Collection Launch" — 15,000 recipients',
+    isNew: false,
+    created: new Date(now - 4 * HOUR).toISOString(),
+    notifyType: "CampaignStarted",
+  },
+  {
+    id: "n15",
+    title: "New order #SO-10040",
+    description: "5 items, total $1,120.00",
+    isNew: false,
+    created: new Date(now - 5 * HOUR).toISOString(),
+    notifyType: "OrderCreated",
+  },
 ];
 
 // ── Override API calls so VcApp stories get mock data ──
@@ -147,10 +373,12 @@ const _origFetch = window.fetch;
 window.fetch = function (input: RequestInfo | URL, init?: RequestInit) {
   const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
   if (url.includes("/api/platform/pushnotifications") && init?.method === "POST") {
-    return Promise.resolve(new Response(JSON.stringify({ notifyEvents: mockNotifications }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    }));
+    return Promise.resolve(
+      new Response(JSON.stringify({ notifyEvents: mockNotifications }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
   }
   return _origFetch.call(this, input, init);
 } as typeof window.fetch;

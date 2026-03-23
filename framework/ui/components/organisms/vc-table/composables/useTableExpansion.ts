@@ -40,7 +40,7 @@ export interface UseTableExpansionReturn<T> {
 }
 
 export function useTableExpansion<T extends Record<string, any>>(
-  options: UseTableExpansionOptions<T>
+  options: UseTableExpansionOptions<T>,
 ): UseTableExpansionReturn<T> {
   const { expandedRows, getItemKey } = options;
 
@@ -59,7 +59,7 @@ export function useTableExpansion<T extends Record<string, any>>(
         internalExpandedRows.value = [...newVal];
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   /**
@@ -67,9 +67,7 @@ export function useTableExpansion<T extends Record<string, any>>(
    * Uses getItemKey with index=0 - the key should be based on dataKey field, not array index
    */
   const expandedRowKeys = computed<Set<string>>(() => {
-    return new Set(
-      internalExpandedRows.value.map((item) => getItemKey(item, 0))
-    );
+    return new Set(internalExpandedRows.value.map((item) => getItemKey(item, 0)));
   });
 
   // ============================================================================
@@ -108,9 +106,7 @@ export function useTableExpansion<T extends Record<string, any>>(
   const collapseRow = (item: T, index: number, event?: Event): RowExpandEvent<T> => {
     // Use getItemKey with 0 as index to match expandedRowKeys computation
     const key = getItemKey(item, 0);
-    internalExpandedRows.value = internalExpandedRows.value.filter(
-      (r) => getItemKey(r, 0) !== key
-    );
+    internalExpandedRows.value = internalExpandedRows.value.filter((r) => getItemKey(r, 0) !== key);
     return {
       data: item,
       originalEvent: event || new Event("collapse"),

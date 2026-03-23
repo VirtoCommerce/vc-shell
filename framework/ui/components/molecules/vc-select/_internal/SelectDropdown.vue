@@ -3,9 +3,9 @@
     <Transition name="select-dropdown">
       <div
         v-if="isOpened"
+        :id="listboxId"
         ref="dropdownElRef"
         v-on-click-outside="[() => emit('clickOutside'), { ignore: [dropdownToggleRef] }]"
-        :id="listboxId"
         data-test-id="dropdown"
         class="vc-select__dropdown"
         role="listbox"
@@ -47,7 +47,8 @@
             <slot
               name="option"
               v-bind="item"
-            >{{ item.label }}</slot>
+              >{{ item.label }}</slot
+            >
             <span
               v-if="item.selected"
               class="vc-select__check-icon"
@@ -133,13 +134,7 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
-  option: (scope: {
-    index: number;
-    opt: any;
-    selected: boolean;
-    label: any;
-    toggleOption: (opt: any) => void;
-  }) => any;
+  option: (scope: { index: number; opt: any; selected: boolean; label: any; toggleOption: (opt: any) => void }) => any;
   "no-options": (props: any) => any;
 }>();
 
@@ -161,8 +156,7 @@ function onDropdownWheel(event: WheelEvent) {
 
   if (isInViewport) {
     const atTop = el.scrollTop <= 0 && event.deltaY < 0;
-    const atBottom =
-      Math.ceil(el.scrollTop) >= el.scrollHeight - el.clientHeight && event.deltaY > 0;
+    const atBottom = Math.ceil(el.scrollTop) >= el.scrollHeight - el.clientHeight && event.deltaY > 0;
     if (atTop || atBottom) {
       event.preventDefault();
     }

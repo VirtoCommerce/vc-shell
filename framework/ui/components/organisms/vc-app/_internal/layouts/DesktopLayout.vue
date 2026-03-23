@@ -308,7 +308,6 @@ const handleSwitchApp = (app: AppDescriptor) => {
     &--expanded {
       width: var(--app-bar-width);
     }
-
   }
 
   &__header {

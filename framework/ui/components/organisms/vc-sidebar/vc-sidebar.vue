@@ -130,7 +130,6 @@ function getScrollLockState(): ScrollLockState | null {
     return null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const win = window as any;
 
   if (!win[SCROLL_LOCK_KEY]) {
@@ -724,8 +723,8 @@ defineExpose({
   &__content {
     @apply tw-flex tw-flex-col tw-flex-1 tw-relative tw-overflow-auto;
     min-height: 0;
-    padding: max(0px, env(safe-area-inset-top)) max(0px, env(safe-area-inset-right)) max(0px, env(safe-area-inset-bottom))
-      max(0px, env(safe-area-inset-left));
+    padding: max(0px, env(safe-area-inset-top)) max(0px, env(safe-area-inset-right))
+      max(0px, env(safe-area-inset-bottom)) max(0px, env(safe-area-inset-left));
   }
 
   &__footer {

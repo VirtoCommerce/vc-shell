@@ -27,7 +27,7 @@ const escapeMap: Record<string, string> = {
   "&": "&amp;",
   "<": "&lt;",
   ">": "&gt;",
-  "\"": "&quot;",
+  '"': "&quot;",
   "'": "&#39;",
 };
 
@@ -97,10 +97,7 @@ export const filterDataByRange = <T>(
   });
 };
 
-export const formatAxisValue = (
-  value: unknown,
-  formatter?: (value: number | Date) => string,
-): string => {
+export const formatAxisValue = (value: unknown, formatter?: (value: number | Date) => string): string => {
   if (formatter) {
     if (typeof value === "number" || value instanceof Date) {
       return formatter(value);
@@ -119,10 +116,7 @@ export const formatAxisValue = (
   return String(value);
 };
 
-export const formatNumericValue = (
-  value: unknown,
-  formatter?: (value: number) => string,
-): string => {
+export const formatNumericValue = (value: unknown, formatter?: (value: number) => string): string => {
   const numericValue = typeof value === "number" ? value : Number(value);
 
   if (!Number.isFinite(numericValue)) {
@@ -145,9 +139,7 @@ export const resolveSeriesMeta = ({
   const configKeys = Object.keys(config);
   const keyItem = key ? config[key] : undefined;
   const indexItem =
-    typeof index === "number" && Number.isFinite(index) && configKeys[index]
-      ? config[configKeys[index]]
-      : undefined;
+    typeof index === "number" && Number.isFinite(index) && configKeys[index] ? config[configKeys[index]] : undefined;
   const item = keyItem ?? indexItem;
 
   return {
@@ -156,17 +148,12 @@ export const resolveSeriesMeta = ({
   };
 };
 
-export const buildChartTooltipHtml = ({
-  title,
-  items,
-}: BuildChartTooltipOptions): string | undefined => {
+export const buildChartTooltipHtml = ({ title, items }: BuildChartTooltipOptions): string | undefined => {
   if (!items.length) {
     return undefined;
   }
 
-  const titleMarkup = title
-    ? `<div class="dashboard-chart-tooltip__title">${escapeHtml(title)}</div>`
-    : "";
+  const titleMarkup = title ? `<div class="dashboard-chart-tooltip__title">${escapeHtml(title)}</div>` : "";
 
   const itemsMarkup = items
     .map(

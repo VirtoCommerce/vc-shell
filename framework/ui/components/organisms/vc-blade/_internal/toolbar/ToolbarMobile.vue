@@ -136,9 +136,7 @@ function isItemDisabled(item: IBladeToolbar): boolean {
 }
 
 function getStaggerStyle(index: number): Record<string, string> {
-  const delay = isExpanded.value
-    ? `${index * 40}ms`
-    : `${(props.items.length - 1 - index) * 25}ms`;
+  const delay = isExpanded.value ? `${index * 40}ms` : `${(props.items.length - 1 - index) * 25}ms`;
   return { transitionDelay: delay };
 }
 

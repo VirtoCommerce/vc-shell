@@ -1,10 +1,10 @@
 <template>
   <div
+    :id="id"
     class="vc-hint"
     :class="{
       'vc-hint--error': error,
     }"
-    :id="id"
     :role="error ? 'alert' : undefined"
   >
     <slot></slot>

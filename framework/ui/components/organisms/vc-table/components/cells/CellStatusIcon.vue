@@ -1,6 +1,9 @@
 <template>
   <div class="vc-table-cell-status-icon">
-    <VcStatusIcon v-if="typeof value === 'boolean'" :status="(value as boolean)" />
+    <VcStatusIcon
+      v-if="typeof value === 'boolean'"
+      :status="value as boolean"
+    />
   </div>
 </template>
 

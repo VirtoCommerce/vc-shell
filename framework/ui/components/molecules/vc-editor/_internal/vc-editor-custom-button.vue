@@ -1,7 +1,7 @@
 <template>
   <component
-    v-if="isButton(customButton) && customButton.component"
     :is="customButton.component"
+    v-if="isButton(customButton) && customButton.component"
     :editor="editor"
     :disabled="disabled || isDisabled"
     v-bind="customButton.componentProps || {}"
@@ -70,7 +70,7 @@ function handleAction() {
 function handleDropdownChange(event: Event) {
   const target = event.target as HTMLSelectElement;
   if (isDropdown(props.customButton)) {
-    const option = props.customButton.options.find(opt => opt.value === target.value);
+    const option = props.customButton.options.find((opt) => opt.value === target.value);
     if (option) {
       option.action(props.editor, target.value);
     }

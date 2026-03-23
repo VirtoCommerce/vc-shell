@@ -1,17 +1,28 @@
 <template>
   <div class="vc-table-composition__empty-state">
-    <VcIcon v-if="icon" :icon="icon" size="xxl" class="vc-table-composition__empty-icon" />
+    <VcIcon
+      v-if="icon"
+      :icon="icon"
+      size="xxl"
+      class="vc-table-composition__empty-icon"
+    />
     <div class="vc-table-composition__empty-content">
       <slot>
         <div class="vc-table-composition__empty-title">
           {{ title || "No data" }}
         </div>
-        <div v-if="description" class="vc-table-composition__empty-description">
+        <div
+          v-if="description"
+          class="vc-table-composition__empty-description"
+        >
           {{ description }}
         </div>
       </slot>
     </div>
-    <div v-if="actionLabel || $slots.action" class="vc-table-composition__empty-action">
+    <div
+      v-if="actionLabel || $slots.action"
+      class="vc-table-composition__empty-action"
+    >
       <slot name="action">
         <VcButton
           v-if="actionLabel"

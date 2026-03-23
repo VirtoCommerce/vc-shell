@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-types */
-
 import { ComponentPublicInstance, ComputedOptions, MethodOptions } from "vue";
 
 type RemoveOnVnodePrefix<T> = {

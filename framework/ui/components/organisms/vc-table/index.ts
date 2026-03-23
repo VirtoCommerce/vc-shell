@@ -62,7 +62,11 @@ export {
 } from "@ui/components/organisms/vc-table/composables";
 
 // Virtual scroll types
-export type { VirtualScrollOptions, VirtualScrollItem, VirtualScrollReturn } from "@ui/components/organisms/vc-table/composables";
+export type {
+  VirtualScrollOptions,
+  VirtualScrollItem,
+  VirtualScrollReturn,
+} from "@ui/components/organisms/vc-table/composables";
 
 // Re-export types
 export * from "@ui/components/organisms/vc-table/types";

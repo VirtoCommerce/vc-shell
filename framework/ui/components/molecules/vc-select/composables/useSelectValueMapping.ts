@@ -30,9 +30,13 @@ function getPropValueFn<Option>(propValue: OptionProp<Option>, defaultVal: Optio
 }
 
 export function useSelectValueMapping<Option>(options: UseSelectValueMappingOptions<Option>) {
-  const getOptionValue = computed(() => getPropValueFn(options.optionValue(), "id")) as ComputedRef<(opt: Option) => any>;
+  const getOptionValue = computed(() => getPropValueFn(options.optionValue(), "id")) as ComputedRef<
+    (opt: Option) => any
+  >;
 
-  const getOptionLabel = computed(() => getPropValueFn(options.optionLabel(), "title")) as ComputedRef<(opt: Option) => any>;
+  const getOptionLabel = computed(() => getPropValueFn(options.optionLabel(), "title")) as ComputedRef<
+    (opt: Option) => any
+  >;
 
   function getOption(value: Option, valueCache: Option[], defaultValues: Option[], optionsList: Option[]) {
     const fn = (opt: Option) => isEqual(getOptionValue.value(opt), value);

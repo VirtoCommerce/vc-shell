@@ -93,7 +93,7 @@ export interface UseTableSelectionV2Return<T> {
 }
 
 export function useTableSelectionV2<T extends Record<string, any>>(
-  options: UseTableSelectionV2Options<T>
+  options: UseTableSelectionV2Options<T>,
 ): UseTableSelectionV2Return<T> {
   const {
     items,
@@ -124,7 +124,7 @@ export function useTableSelectionV2<T extends Record<string, any>>(
         internalSelection.value = Array.isArray(newVal) ? newVal : [newVal];
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   // Sync selectAllActive with external prop
@@ -135,16 +135,14 @@ export function useTableSelectionV2<T extends Record<string, any>>(
         isSelectAllActive.value = newVal;
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   /**
    * Set of selected item keys for O(1) lookup
    */
   const selectionKeys = computed<Set<string>>(() => {
-    return new Set(
-      internalSelection.value.map((item) => getItemKey(item, -1))
-    );
+    return new Set(internalSelection.value.map((item) => getItemKey(item, -1)));
   });
 
   // ============================================================================
@@ -174,9 +172,7 @@ export function useTableSelectionV2<T extends Record<string, any>>(
   const someSelected = computed<boolean>(() => {
     if (!items.value || items.value.length === 0) return false;
     if (selectableItems.value.length === 0) return false;
-    const selectedCount = selectableItems.value.filter((item) =>
-      isSelected(item)
-    ).length;
+    const selectedCount = selectableItems.value.filter((item) => isSelected(item)).length;
     return selectedCount > 0 && selectedCount < selectableItems.value.length;
   });
 
@@ -250,9 +246,7 @@ export function useTableSelectionV2<T extends Record<string, any>>(
   const unselectItem = (item: T, event?: Event): RowSelectEvent<T> | null => {
     const key = getItemKey(item, -1);
 
-    internalSelection.value = internalSelection.value.filter(
-      (selected) => getItemKey(selected, -1) !== key
-    );
+    internalSelection.value = internalSelection.value.filter((selected) => getItemKey(selected, -1) !== key);
 
     return {
       data: item,
@@ -263,18 +257,14 @@ export function useTableSelectionV2<T extends Record<string, any>>(
   /**
    * Handle row selection change (click or checkbox)
    */
-  const handleRowSelectionChange = (
-    item: T,
-    eventOrValue?: Event | boolean
-  ): RowSelectEvent<T> | null => {
+  const handleRowSelectionChange = (item: T, eventOrValue?: Event | boolean): RowSelectEvent<T> | null => {
     // Check if row is selectable
     if (!canSelect(item)) {
       return null;
     }
 
     const isCurrentlySelected = isSelected(item);
-    const originalEvent =
-      eventOrValue instanceof Event ? eventOrValue : new Event("change");
+    const originalEvent = eventOrValue instanceof Event ? eventOrValue : new Event("change");
 
     if (isCurrentlySelected) {
       return unselectItem(item, originalEvent);
@@ -286,10 +276,7 @@ export function useTableSelectionV2<T extends Record<string, any>>(
   /**
    * Handle select all checkbox change
    */
-  const handleSelectAllChange = (
-    value: boolean,
-    event?: Event
-  ): RowSelectAllEvent<T> => {
+  const handleSelectAllChange = (value: boolean, event?: Event): RowSelectAllEvent<T> => {
     const originalEvent = event || new Event("change");
 
     if (value) {
@@ -361,7 +348,7 @@ export function useTableSelectionV2<T extends Record<string, any>>(
         isSelectAllActive.value = false;
         onSelectAllChange?.(false);
       }
-    }
+    },
   );
 
   return {

@@ -18,9 +18,7 @@ export interface UseTableColumnsReorderOptions<T extends ReorderableColumn> {
  * - Smooth transitions
  * - Throttling for performance
  */
-export function useTableColumnsReorder<T extends ReorderableColumn>(
-  options: UseTableColumnsReorderOptions<T>
-) {
+export function useTableColumnsReorder<T extends ReorderableColumn>(options: UseTableColumnsReorderOptions<T>) {
   const { columns, onReorderEnd } = options;
 
   const isDragging = ref(false);
@@ -38,8 +36,7 @@ export function useTableColumnsReorder<T extends ReorderableColumn>(
 
     // Disable default ghost image - use transparent 1x1 pixel
     const transparentPixel = document.createElement("img");
-    transparentPixel.src =
-      "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+    transparentPixel.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     transparentPixel.style.position = "absolute";
     transparentPixel.style.top = "-9999px";
     document.body.appendChild(transparentPixel);

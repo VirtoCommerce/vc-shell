@@ -54,7 +54,10 @@
             class="vc-column-filter__content"
           >
             <!-- Text filter -->
-            <div v-if="filterType === 'text'" class="vc-column-filter__input-wrapper">
+            <div
+              v-if="filterType === 'text'"
+              class="vc-column-filter__input-wrapper"
+            >
               <VcInput
                 ref="inputRef"
                 :model-value="localValue as string"
@@ -67,7 +70,11 @@
             </div>
 
             <!-- Select filter -->
-            <div v-else-if="filterType === 'select'" class="vc-column-filter__input-wrapper">
+            <div
+              v-else-if="filterType === 'select'"
+              class="vc-column-filter__input-wrapper"
+            >
+              <!-- eslint-disable vue/no-deprecated-filter -- TS union, not a filter -->
               <VcSelect
                 :model-value="localValue as string | string[] | null"
                 :options="filterOptions || []"
@@ -80,10 +87,14 @@
                 emit-value
                 @update:model-value="updateLocalValue($event)"
               />
+              <!-- eslint-enable vue/no-deprecated-filter -->
             </div>
 
             <!-- DateRange filter -->
-            <div v-else-if="filterType === 'dateRange'" class="vc-column-filter__range">
+            <div
+              v-else-if="filterType === 'dateRange'"
+              class="vc-column-filter__range"
+            >
               <div class="vc-column-filter__range-field">
                 <span class="vc-column-filter__range-label">
                   {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_FILTER.FROM") }}
@@ -187,7 +198,12 @@ const localEndDate = ref("");
 
 // Initialize local state from modelValue
 const initLocalState = () => {
-  if (props.filterType === "dateRange" && props.modelValue && typeof props.modelValue === "object" && !Array.isArray(props.modelValue)) {
+  if (
+    props.filterType === "dateRange" &&
+    props.modelValue &&
+    typeof props.modelValue === "object" &&
+    !Array.isArray(props.modelValue)
+  ) {
     const rangeVal = props.modelValue as { start?: string; end?: string };
     localStartDate.value = rangeVal.start ?? "";
     localEndDate.value = rangeVal.end ?? "";
@@ -440,7 +456,6 @@ onBeforeUnmount(() => {
   &__actions {
     @apply tw-flex tw-justify-end tw-gap-2 tw-px-3 tw-py-2 tw-border-t tw-border-neutrals-200 tw-bg-neutrals-50 tw-rounded-b-lg;
   }
-
 }
 
 // Transition

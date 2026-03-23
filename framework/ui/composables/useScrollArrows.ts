@@ -6,10 +6,7 @@ export interface UseScrollArrowsOptions {
   speed?: number;
 }
 
-export function useScrollArrows(
-  viewportRef: Ref<HTMLElement | null>,
-  options: UseScrollArrowsOptions = {},
-) {
+export function useScrollArrows(viewportRef: Ref<HTMLElement | null>, options: UseScrollArrowsOptions = {}) {
   const { speed = 2 } = options;
 
   const canScrollUp = ref(false);

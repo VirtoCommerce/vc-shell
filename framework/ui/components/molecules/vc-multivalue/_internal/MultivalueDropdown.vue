@@ -168,8 +168,7 @@ function onDropdownWheel(event: WheelEvent) {
     // Native scroll handles viewport scrolling.
     // Only prevent page scroll at boundaries.
     const atTop = el.scrollTop <= 0 && event.deltaY < 0;
-    const atBottom =
-      Math.ceil(el.scrollTop) >= el.scrollHeight - el.clientHeight && event.deltaY > 0;
+    const atBottom = Math.ceil(el.scrollTop) >= el.scrollHeight - el.clientHeight && event.deltaY > 0;
     if (atTop || atBottom) {
       event.preventDefault();
     }

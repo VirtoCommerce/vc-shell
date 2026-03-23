@@ -202,22 +202,22 @@ const attrs = useAttrs();
 function handleClose() {
   if (attrs.onClose) {
     // Legacy: blade page has @close listener on <VcBlade>
-    emit('close');
+    emit("close");
   } else if (hasBladeContext) {
     // New: VcBlade closes directly via blade stack
     bladeFull.closeSelf();
   } else {
     // Standalone (Storybook): emit for argTypes action handlers
-    emit('close');
+    emit("close");
   }
 }
 
 // One-time deprecation warning in dev mode
 if (import.meta.env.DEV && attrs.onClose && hasBladeContext) {
   console.warn(
-    '[VcBlade] @close listener is deprecated when used inside blade navigation. ' +
-    'VcBlade now handles close automatically. ' +
-    'Remove @close="$emit(\'close:blade\')" from your template.'
+    "[VcBlade] @close listener is deprecated when used inside blade navigation. " +
+      "VcBlade now handles close automatically. " +
+      "Remove @close=\"$emit('close:blade')\" from your template.",
   );
 }
 

@@ -6,7 +6,10 @@
   >
     {{ agoText }}
   </span>
-  <span v-else class="vc-table-cell-date-ago vc-table-cell-date-ago--not-set">
+  <span
+    v-else
+    class="vc-table-cell-date-ago vc-table-cell-date-ago--not-set"
+  >
     {{ t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET") }}
   </span>
 </template>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { readonly, ref, type Ref, type DeepReadonly } from "vue";
 import { HasLoading } from "@core/composables/useLoading";
 import { parseError, DisplayableError } from "@core/utilities/error";

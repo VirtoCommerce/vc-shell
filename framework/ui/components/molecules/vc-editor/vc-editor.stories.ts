@@ -274,7 +274,7 @@ export const WithCustomButtons: Story = {
         action: (editor: Editor) => {
           editor.chain().focus().toggleHighlight().run();
         },
-        isActive: (editor: Editor) => editor.isActive('highlight'),
+        isActive: (editor: Editor) => editor.isActive("highlight"),
         group: "format",
         order: 2,
       } as CustomToolbarButton,
@@ -282,12 +282,28 @@ export const WithCustomButtons: Story = {
         id: "text-align",
         label: "Text Align",
         options: [
-          { value: 'left', label: 'Left', action: (editor: Editor) => editor.chain().focus().setTextAlign('left').run() },
-          { value: 'center', label: 'Center', action: (editor: Editor) => editor.chain().focus().setTextAlign('center').run() },
-          { value: 'right', label: 'Right', action: (editor: Editor) => editor.chain().focus().setTextAlign('right').run() },
-          { value: 'justify', label: 'Justify', action: (editor: Editor) => editor.chain().focus().setTextAlign('justify').run() },
+          {
+            value: "left",
+            label: "Left",
+            action: (editor: Editor) => editor.chain().focus().setTextAlign("left").run(),
+          },
+          {
+            value: "center",
+            label: "Center",
+            action: (editor: Editor) => editor.chain().focus().setTextAlign("center").run(),
+          },
+          {
+            value: "right",
+            label: "Right",
+            action: (editor: Editor) => editor.chain().focus().setTextAlign("right").run(),
+          },
+          {
+            value: "justify",
+            label: "Justify",
+            action: (editor: Editor) => editor.chain().focus().setTextAlign("justify").run(),
+          },
         ],
-        getValue: (editor: Editor) => editor.getAttributes('paragraph').textAlign || 'left',
+        getValue: (editor: Editor) => editor.getAttributes("paragraph").textAlign || "left",
         group: "align",
         order: 1,
       } as CustomToolbarDropdown,
@@ -313,55 +329,69 @@ const CustomEmojiButton = defineComponent({
     disabled: Boolean,
   },
   setup(props) {
-    const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇'];
+    const emojis = ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇"];
     const showPicker = ref(false);
-    
+
     const insertEmoji = (emoji: string) => {
       props.editor.chain().focus().insertContent(emoji).run();
       showPicker.value = false;
     };
-    
-    return () => h('div', { class: 'emoji-picker', style: { position: 'relative' } }, [
-      h('button', {
-        class: 'vc-editor-button',
-        disabled: props.disabled,
-        onClick: () => showPicker.value = !showPicker.value,
-        style: {
-          padding: '0.25rem 0.5rem',
-          borderRadius: '6px',
-          border: 'none',
-          background: 'transparent',
-          cursor: props.disabled ? 'not-allowed' : 'pointer',
-        }
-      }, '😊'),
-      showPicker.value && h('div', {
-        class: 'emoji-picker-menu',
-        style: {
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          background: 'white',
-          border: '1px solid #ccc',
-          borderRadius: '6px',
-          padding: '0.5rem',
-          display: 'flex',
-          gap: '0.25rem',
-          zIndex: 100,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        }
-      }, emojis.map(emoji => 
-        h('button', {
-          onClick: () => insertEmoji(emoji),
-          style: {
-            border: 'none',
-            background: 'transparent',
-            cursor: 'pointer',
-            fontSize: '1.25rem',
-            padding: '0.25rem',
-          }
-        }, emoji)
-      ))
-    ]);
+
+    return () =>
+      h("div", { class: "emoji-picker", style: { position: "relative" } }, [
+        h(
+          "button",
+          {
+            class: "vc-editor-button",
+            disabled: props.disabled,
+            onClick: () => (showPicker.value = !showPicker.value),
+            style: {
+              padding: "0.25rem 0.5rem",
+              borderRadius: "6px",
+              border: "none",
+              background: "transparent",
+              cursor: props.disabled ? "not-allowed" : "pointer",
+            },
+          },
+          "😊",
+        ),
+        showPicker.value &&
+          h(
+            "div",
+            {
+              class: "emoji-picker-menu",
+              style: {
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                background: "white",
+                border: "1px solid #ccc",
+                borderRadius: "6px",
+                padding: "0.5rem",
+                display: "flex",
+                gap: "0.25rem",
+                zIndex: 100,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+              },
+            },
+            emojis.map((emoji) =>
+              h(
+                "button",
+                {
+                  onClick: () => insertEmoji(emoji),
+                  style: {
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    fontSize: "1.25rem",
+                    padding: "0.25rem",
+                  },
+                },
+                emoji,
+              ),
+            ),
+          ),
+      ]);
   },
 });
 
@@ -384,7 +414,7 @@ export const WithCustomComponent: Story = {
         icon: "lucide-file-text",
         action: (editor: Editor) => {
           const text = editor.getText();
-          const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+          const wordCount = text.split(/\s+/).filter((word) => word.length > 0).length;
           alert(`Word count: ${wordCount}`);
         },
         group: "tools",
@@ -413,7 +443,9 @@ export const WithTipTapExtensions: Story = {
   render: (args) => ({
     components: { VcEditor },
     setup() {
-      const content = ref("# Custom Extensions\n\nYou can add any TipTap extension to enhance the editor functionality.");
+      const content = ref(
+        "# Custom Extensions\n\nYou can add any TipTap extension to enhance the editor functionality.",
+      );
       return { args, content };
     },
     template: '<vc-editor v-bind="args" v-model="content"></vc-editor>',

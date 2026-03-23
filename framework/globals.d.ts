@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * Global type augmentations for apps consuming @vc-shell/framework.
  *

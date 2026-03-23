@@ -94,7 +94,7 @@
       :dropdown-style="dropdownStyle"
       :available-options="availableOptions"
       :option-label="optionLabel"
-      :ariaLabel="label || name"
+      v-bind="{ ariaLabel: label || name }"
       :listbox-id="listboxId"
       :dropdown-toggle-ref="triggerComponentRef?.triggerRef ?? null"
       @select="onItemSelect"
@@ -151,7 +151,10 @@ import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcHint } from "@ui/components/atoms/vc-hint";
 import MultivalueTrigger from "@ui/components/molecules/vc-multivalue/_internal/MultivalueTrigger.vue";
 import MultivalueDropdown from "@ui/components/molecules/vc-multivalue/_internal/MultivalueDropdown.vue";
-import { useMultivalueMode, type MultivalueType } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueMode";
+import {
+  useMultivalueMode,
+  type MultivalueType,
+} from "@ui/components/molecules/vc-multivalue/composables/useMultivalueMode";
 import { useMultivalueValues } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueValues";
 import { useMultivalueInput } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueInput";
 import { useMultivalueColor } from "@ui/components/molecules/vc-multivalue/composables/useMultivalueColor";
@@ -244,26 +247,18 @@ const { availableOptions } = useMultivalueOptions<T>({
   optionValue: () => props.optionValue,
 });
 
-const {
-  isOpened,
-  isFocused,
-  dropdownToggleRef,
-  dropdownRef,
-  searchRef,
-  dropdownStyle,
-  toggleDropdown,
-  closeDropdown,
-} = useMultivalueDropdown({
-  disabled: () => props.disabled ?? false,
-  onItemSelect: (index: number) => {
-    if (availableOptions.value[index]) {
-      onItemSelect(availableOptions.value[index]);
-    }
-  },
-  emit: {
-    close: () => emit("close"),
-  },
-});
+const { isOpened, isFocused, dropdownToggleRef, dropdownRef, searchRef, dropdownStyle, toggleDropdown, closeDropdown } =
+  useMultivalueDropdown({
+    disabled: () => props.disabled ?? false,
+    onItemSelect: (index: number) => {
+      if (availableOptions.value[index]) {
+        onItemSelect(availableOptions.value[index]);
+      }
+    },
+    emit: {
+      close: () => emit("close"),
+    },
+  });
 
 // --- Sync DOM refs from sub-components → composable ---
 watchEffect(() => {
@@ -523,16 +518,19 @@ function onSearch(event: Event) {
   &__color-picker-hidden {
     @apply tw-opacity-0 tw-absolute tw-w-0 tw-h-0 tw-pointer-events-none;
   }
-
 }
 
 // Dropdown enter/leave transition
 .multivalue-dropdown-enter-active {
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
 }
 
 .multivalue-dropdown-leave-active {
-  transition: opacity 0.1s ease, transform 0.1s ease;
+  transition:
+    opacity 0.1s ease,
+    transform 0.1s ease;
 }
 
 .multivalue-dropdown-enter-from {

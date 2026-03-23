@@ -38,7 +38,8 @@
             <span
               v-if="value"
               class="vc-menu-item__value"
-            >{{ value }}</span>
+              >{{ value }}</span
+            >
           </slot>
 
           <VcIcon

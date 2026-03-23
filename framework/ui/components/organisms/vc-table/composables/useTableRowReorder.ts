@@ -66,7 +66,6 @@ export function useTableRowReorder<T extends TableItem | string>(
   let dropFired = false;
 
   function onRowMouseDown(event: MouseEvent) {
-
     const row = resolveRowElement(event);
     if (!row) return;
     row.draggable = true;
@@ -88,8 +87,7 @@ export function useTableRowReorder<T extends TableItem | string>(
 
       // Hide default browser ghost — live-swap provides visual feedback
       const transparentPixel = document.createElement("img");
-      transparentPixel.src =
-        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+      transparentPixel.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
       transparentPixel.style.position = "absolute";
       transparentPixel.style.top = "-9999px";
       document.body.appendChild(transparentPixel);
@@ -146,8 +144,7 @@ export function useTableRowReorder<T extends TableItem | string>(
    * Called from both onRowDrop and onRowDragEnd (whichever fires first).
    */
   function commitReorder() {
-    const didReorder =
-      draggedRow.value !== undefined && originalIndex !== null && draggedRow.value !== originalIndex;
+    const didReorder = draggedRow.value !== undefined && originalIndex !== null && draggedRow.value !== originalIndex;
 
     if (didReorder) {
       syncing = true;

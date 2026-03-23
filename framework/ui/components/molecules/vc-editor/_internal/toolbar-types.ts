@@ -49,9 +49,9 @@ export interface CustomToolbarDropdown {
 export type CustomToolbarItem = CustomToolbarButton | CustomToolbarDropdown;
 
 export function isDropdown(item: CustomToolbarItem): item is CustomToolbarDropdown {
-  return 'options' in item;
+  return "options" in item;
 }
 
 export function isButton(item: CustomToolbarItem): item is CustomToolbarButton {
-  return !('options' in item);
+  return !("options" in item);
 }

@@ -46,9 +46,7 @@ export function defineAppModule(options: DefineAppModuleOptions) {
         const bladeRegistry = app.runWithContext(() => inject<IBladeRegistryInstance>(BladeRegistryKey));
 
         if (!bladeRegistry?._registerBladeFn) {
-          logger.error(
-            "defineAppModule: BladeRegistry not found. Blade registration will be skipped.",
-          );
+          logger.error("defineAppModule: BladeRegistry not found. Blade registration will be skipped.");
         } else {
           for (const [exportKey, component] of Object.entries(blades)) {
             const name = component.name || exportKey;
@@ -89,9 +87,7 @@ export function defineAppModule(options: DefineAppModuleOptions) {
       if (blades) {
         for (const component of Object.values(blades)) {
           if (component.notifyType) {
-            const notifyTypes = Array.isArray(component.notifyType)
-              ? component.notifyType
-              : [component.notifyType];
+            const notifyTypes = Array.isArray(component.notifyType) ? component.notifyType : [component.notifyType];
 
             // Skip if notifications config already handles these types
             const unhandledTypes = notifyTypes.filter((t) => !store.registry.has(t));
@@ -113,8 +109,8 @@ export function defineAppModule(options: DefineAppModuleOptions) {
               if (import.meta.env.DEV) {
                 logger.warn(
                   `[vc-shell] notifyType on blade "${component.name}" is deprecated. ` +
-                  `Use useBladeNotifications() inside the blade instead. ` +
-                  `See: MIGRATION_GUIDE.md#notifications`,
+                    `Use useBladeNotifications() inside the blade instead. ` +
+                    `See: MIGRATION_GUIDE.md#notifications`,
                 );
               }
             }
@@ -148,7 +144,7 @@ export function createAppModule(
   pages: Record<string, BladeInstanceConstructor>,
   locales?: Record<string, object>,
   notificationTemplates?: Record<string, Component & { notifyType?: string }>,
-  components?: Record<string, Component>
+  components?: Record<string, Component>,
 ) {
   return defineAppModule({
     blades: pages,

@@ -277,7 +277,7 @@ watch(
       // Refreshing finished, animate back to 0
       springAnimation(0);
     }
-  }
+  },
 );
 
 // Cleanup on unmount

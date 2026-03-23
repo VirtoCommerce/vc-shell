@@ -88,7 +88,8 @@
               <span
                 v-if="field.label"
                 class="vc-data-table-mobile-card__field-label"
-              >{{ field.label }}:</span>
+                >{{ field.label }}:</span
+              >
               <span
                 class="vc-data-table-mobile-card__field-value"
                 :class="{ 'vc-data-table-mobile-card__field-value--editing': isInlineEditing }"
@@ -111,7 +112,10 @@
             v-if="layout.statuses.length > 0"
             class="vc-data-table-mobile-card__statuses"
           >
-            <template v-for="status in layout.statuses" :key="status.id">
+            <template
+              v-for="status in layout.statuses"
+              :key="status.id"
+            >
               <MobileCellRenderer
                 :config="status"
                 :item="item"
@@ -156,7 +160,10 @@
         :disabled="action.disabled"
         @click.stop="handleActionClick(action)"
       >
-        <VcIcon :icon="action.icon" size="s" />
+        <VcIcon
+          :icon="action.icon"
+          size="s"
+        />
         <span class="vc-data-table-mobile-card__action-title">{{ action.title }}</span>
       </button>
     </div>
@@ -231,7 +238,7 @@ const props = withDefaults(
     moreLabel: "More",
     actionSheetTitle: "Actions",
     cancelLabel: "Cancel",
-  }
+  },
 );
 
 const emit = defineEmits<{
@@ -484,7 +491,7 @@ watch(
       springAnimation(0);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // Reset swipe state
@@ -589,7 +596,9 @@ onBeforeUnmount(() => {
   // Visual feedback during long press
   &--long-press &__content {
     @apply tw-scale-[0.98] tw-shadow-lg;
-    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    transition:
+      transform 0.15s ease-out,
+      box-shadow 0.15s ease-out;
   }
 
   &__content {

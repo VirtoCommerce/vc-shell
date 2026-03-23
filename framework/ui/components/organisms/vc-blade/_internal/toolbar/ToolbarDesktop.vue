@@ -120,6 +120,5 @@ watch(
       @apply tw-text-[var(--blade-toolbar-desktop-more-hover-color)];
     }
   }
-
 }
 </style>

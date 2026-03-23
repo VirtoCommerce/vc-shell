@@ -250,7 +250,8 @@ export const NoHeader: Story = {
   parameters: {
     docs: {
       description: {
-        story: "When neither `title` nor `subtitle` is provided, the header section is hidden entirely, leaving only the content area.",
+        story:
+          "When neither `title` nor `subtitle` is provided, the header section is hidden entirely, leaving only the content area.",
       },
     },
   },
@@ -292,7 +293,8 @@ export const WithFooter: Story = {
   parameters: {
     docs: {
       description: {
-        story: "The `#footer` slot renders below the card and is ideal for terms of service, privacy policy links, or other legal notices.",
+        story:
+          "The `#footer` slot renders below the card and is ideal for terms of service, privacy policy links, or other legal notices.",
       },
     },
   },
@@ -327,7 +329,8 @@ export const CustomBackgroundColor: Story = {
   parameters: {
     docs: {
       description: {
-        story: "The `bgColor` prop overrides the default page background color. This allows theming the auth page to match brand guidelines.",
+        story:
+          "The `bgColor` prop overrides the default page background color. This allows theming the auth page to match brand guidelines.",
       },
     },
   },
@@ -415,7 +418,8 @@ export const WithSSOProviders: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Auth layout with SSO provider buttons (Google, GitHub) above the traditional email/password form, separated by an 'or' divider.",
+        story:
+          "Auth layout with SSO provider buttons (Google, GitHub) above the traditional email/password form, separated by an 'or' divider.",
       },
     },
   },
@@ -448,7 +452,8 @@ export const MinimalContent: Story = {
   parameters: {
     docs: {
       description: {
-        story: "A minimal layout with custom content and no header, useful for session-expired or confirmation screens.",
+        story:
+          "A minimal layout with custom content and no header, useful for session-expired or confirmation screens.",
       },
     },
   },
@@ -506,7 +511,8 @@ export const Accessibility: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Demonstrates accessible form markup with `aria-required`, `autocomplete`, `aria-label`, and semantic `<nav>` in the footer. The layout uses a `<main>` landmark element.",
+        story:
+          "Demonstrates accessible form markup with `aria-required`, `autocomplete`, `aria-label`, and semantic `<nav>` in the footer. The layout uses a `<main>` landmark element.",
       },
     },
   },

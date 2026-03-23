@@ -9,7 +9,11 @@
       :expanded="isGroupRowExpanded"
       @toggle="handleGroupToggle"
     >
-      <slot name="groupheader" :data="item" :index="index">
+      <slot
+        name="groupheader"
+        :data="item"
+        :index="index"
+      >
         <span class="vc-data-table__group-label">{{ groupKey }}</span>
         <span class="vc-data-table__group-count">({{ groupCount }})</span>
       </slot>
@@ -97,7 +101,10 @@
       </TableCell>
 
       <!-- Row Actions (hover-visible) - use named slot for proper positioning -->
-      <template v-if="hasActions" #actions>
+      <template
+        v-if="hasActions"
+        #actions
+      >
         <slot name="actions" />
       </template>
     </TableRow>
@@ -117,7 +124,11 @@
       v-if="groupingEnabled && isLastInGroup && $slots.groupfooter && (!expandableRowGroups || isGroupRowExpanded)"
       class="vc-data-table__group-footer"
     >
-      <slot name="groupfooter" :data="item" :index="index" />
+      <slot
+        name="groupfooter"
+        :data="item"
+        :index="index"
+      />
     </div>
   </div>
 </template>

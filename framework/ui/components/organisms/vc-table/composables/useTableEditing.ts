@@ -33,7 +33,7 @@ function safeClone<T>(obj: T): T {
           return new Date(value.value);
         }
         return value;
-      }
+      },
     );
   }
 }
@@ -109,7 +109,7 @@ export interface UseTableEditingReturn<T> {
 }
 
 export function useTableEditing<T extends Record<string, any>>(
-  options: UseTableEditingOptions<T>
+  options: UseTableEditingOptions<T>,
 ): UseTableEditingReturn<T> {
   const { editMode, editingRows, getItemKey } = options;
 
@@ -145,7 +145,7 @@ export function useTableEditing<T extends Record<string, any>>(
         internalEditingRows.value = [...newVal];
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   // ============================================================================
@@ -157,10 +157,7 @@ export function useTableEditing<T extends Record<string, any>>(
    */
   const isCellEditing = (rowIndex: number, field: string): boolean => {
     if (editMode.value === "cell") {
-      return (
-        editingCell.value?.rowIndex === rowIndex &&
-        editingCell.value?.field === field
-      );
+      return editingCell.value?.rowIndex === rowIndex && editingCell.value?.field === field;
     }
     return false;
   };
@@ -210,12 +207,7 @@ export function useTableEditing<T extends Record<string, any>>(
    * Complete cell editing with new value.
    * Clears editingMeta for this row - the new value should be applied by the parent.
    */
-  const completeCellEdit = (
-    item: T,
-    field: string,
-    rowIndex: number,
-    newValue: unknown
-  ): CellEditCompleteEvent<T> => {
+  const completeCellEdit = (item: T, field: string, rowIndex: number, newValue: unknown): CellEditCompleteEvent<T> => {
     if (editMode.value !== "cell") {
       return { data: item, field, newValue, index: rowIndex };
     }
@@ -287,9 +279,7 @@ export function useTableEditing<T extends Record<string, any>>(
    */
   const isRowEditing = (item: T): boolean => {
     const key = getItemKey(item, -1);
-    return internalEditingRows.value.some(
-      (row) => getItemKey(row, -1) === key
-    );
+    return internalEditingRows.value.some((row) => getItemKey(row, -1) === key);
   };
 
   /**
@@ -323,9 +313,7 @@ export function useTableEditing<T extends Record<string, any>>(
     const originalData = editingRowSnapshot.value.get(key);
 
     // Remove from editing
-    internalEditingRows.value = internalEditingRows.value.filter(
-      (row) => getItemKey(row, -1) !== key
-    );
+    internalEditingRows.value = internalEditingRows.value.filter((row) => getItemKey(row, -1) !== key);
     editingRowSnapshot.value.delete(key);
 
     return {
@@ -352,9 +340,7 @@ export function useTableEditing<T extends Record<string, any>>(
     }
 
     // Remove from editing
-    internalEditingRows.value = internalEditingRows.value.filter(
-      (row) => getItemKey(row, -1) !== key
-    );
+    internalEditingRows.value = internalEditingRows.value.filter((row) => getItemKey(row, -1) !== key);
     editingRowSnapshot.value.delete(key);
 
     return { data: item, index: rowIndex };

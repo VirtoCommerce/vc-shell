@@ -248,12 +248,13 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
         // Re-resolve defaults from the new options so selected labels display correctly
         if (resolvedDefaults.value.length === 0) {
           const currentDefaults = resolvedDefaults.value;
-          const reResolved = currentDefaults.length === 0
-            ? cachedItems.value.filter((item) => {
-                const key = String(opts.getOptionValue.value(item));
-                return resolveCache.has(key);
-              })
-            : currentDefaults;
+          const reResolved =
+            currentDefaults.length === 0
+              ? cachedItems.value.filter((item) => {
+                  const key = String(opts.getOptionValue.value(item));
+                  return resolveCache.has(key);
+                })
+              : currentDefaults;
           if (reResolved.length === 0) {
             // resolveCache was just cleared and repopulated — resolvedDefaults
             // will be picked up via displayItems in innerValue computed

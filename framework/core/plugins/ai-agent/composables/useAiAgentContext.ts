@@ -236,5 +236,7 @@ export function useAiAgentContext<
  * @deprecated Use the `clearPreview()` method returned by useAiAgentContext() instead.
  */
 export function clearPreviewState(_previewState: UseAiAgentContextReturn["previewState"]): void {
-  console.warn("[ai-agent] clearPreviewState() is deprecated. Use clearPreview() from useAiAgentContext() return value instead.");
+  console.warn(
+    "[ai-agent] clearPreviewState() is deprecated. Use clearPreview() from useAiAgentContext() return value instead.",
+  );
 }

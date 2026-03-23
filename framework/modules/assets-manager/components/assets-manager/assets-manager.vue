@@ -324,7 +324,6 @@ async function onDrop(event: DragEvent) {
         logger.error("Failed to upload dropped files:", error);
         throw error;
       }
-
     }
     isDragging.value = false;
   }
@@ -363,12 +362,12 @@ async function upload(files: FileList) {
       modifiedFileList.items.add(file);
     });
     if (props.options.assetsUploadHandler && typeof props.options.assetsUploadHandler === "function")
-    try {
-      defaultAssets.value = await props.options.assetsUploadHandler(modifiedFileList.files);
-    } catch (error) {
-      logger.error("Failed to upload assets:", error);
-      throw error;
-    }
+      try {
+        defaultAssets.value = await props.options.assetsUploadHandler(modifiedFileList.files);
+      } catch (error) {
+        logger.error("Failed to upload assets:", error);
+        throw error;
+      }
   }
 }
 
@@ -383,7 +382,6 @@ async function inputUpload(event: Event) {
       logger.error("Failed to upload files:", error);
       throw error;
     }
-
   }
 }
 
@@ -427,8 +425,6 @@ const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
 
   return result;
 };
-
-
 </script>
 
 <style lang="scss">

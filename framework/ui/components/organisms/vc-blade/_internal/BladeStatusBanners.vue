@@ -1,24 +1,48 @@
 <template>
   <!-- Error banner -->
   <Transition name="banner-reveal">
-    <div v-if="hasError" class="vc-blade-status-banners__error" role="alert">
+    <div
+      v-if="hasError"
+      class="vc-blade-status-banners__error"
+      role="alert"
+    >
       <div class="vc-blade-status-banners__error-accent" />
 
       <!-- Collapsed header row -->
-      <div class="vc-blade-status-banners__error-header" @click="toggle">
-        <VcIcon size="s" icon="lucide-circle-alert" class="vc-blade-status-banners__error-icon" />
+      <div
+        class="vc-blade-status-banners__error-header"
+        @click="toggle"
+      >
+        <VcIcon
+          size="s"
+          icon="lucide-circle-alert"
+          class="vc-blade-status-banners__error-icon"
+        />
         <span class="vc-blade-status-banners__error-text">{{ shortErrorMessage }}</span>
-        <VcIcon size="xs" :icon="isExpanded ? 'lucide-chevron-up' : 'lucide-chevron-down'"
-          class="vc-blade-status-banners__error-chevron" />
+        <VcIcon
+          size="xs"
+          :icon="isExpanded ? 'lucide-chevron-up' : 'lucide-chevron-down'"
+          class="vc-blade-status-banners__error-chevron"
+        />
       </div>
 
       <!-- Expandable details (useCollapsible: measured max-height transition) -->
-      <div ref="contentRef" class="vc-blade-status-banners__error-details-wrapper" :style="wrapperStyle">
+      <div
+        ref="contentRef"
+        class="vc-blade-status-banners__error-details-wrapper"
+        :style="wrapperStyle"
+      >
         <div class="vc-blade-status-banners__error-details">
           <pre class="vc-blade-status-banners__error-details-text">{{ errorDetails }}</pre>
-          <button class="vc-blade-status-banners__error-copy"
-            :title="t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR')" @click.stop="handleCopy">
-            <VcIcon size="xs" :icon="copied ? 'lucide-check' : 'lucide-copy'" />
+          <button
+            class="vc-blade-status-banners__error-copy"
+            :title="t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR')"
+            @click.stop="handleCopy"
+          >
+            <VcIcon
+              size="xs"
+              :icon="copied ? 'lucide-check' : 'lucide-copy'"
+            />
           </button>
         </div>
       </div>
@@ -27,9 +51,17 @@
 
   <!-- Unsaved changes banner -->
   <Transition name="banner-reveal">
-    <div v-if="modified" class="vc-blade-status-banners__unsaved" role="status">
+    <div
+      v-if="modified"
+      class="vc-blade-status-banners__unsaved"
+      role="status"
+    >
       <div class="vc-blade-status-banners__unsaved-accent" />
-      <VcIcon size="s" icon="lucide-pencil" class="vc-blade-status-banners__unsaved-icon" />
+      <VcIcon
+        size="s"
+        icon="lucide-pencil"
+        class="vc-blade-status-banners__unsaved-icon"
+      />
       <span class="vc-blade-status-banners__unsaved-text">
         {{ t("COMPONENTS.ORGANISMS.VC_BLADE.UNSAVED_CHANGES") }}
       </span>

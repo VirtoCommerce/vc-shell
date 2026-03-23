@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentInternalInstance, ComputedRef, Ref, Slots, VNode } from "vue";
 import type { IActionBuilderResult, ITableColumns } from "@core/types";
 
@@ -6,7 +5,11 @@ import type { IActionBuilderResult, ITableColumns } from "@core/types";
 export type { IActionBuilderResult, ITableColumns };
 
 // Re-export row grouping types from composable
-export type { GroupedData, RowGroupingOptions, UseTableRowGroupingReturn } from "@ui/components/organisms/vc-table/composables/useTableRowGrouping";
+export type {
+  GroupedData,
+  RowGroupingOptions,
+  UseTableRowGroupingReturn,
+} from "@ui/components/organisms/vc-table/composables/useTableRowGrouping";
 
 // ColumnInstance moved here from ColumnCollector.ts to break circular dependency
 export interface ColumnInstance {
@@ -171,7 +174,12 @@ export interface DateRangeFilterConfig {
  * - `SelectFilterConfig` — dropdown filter
  * - `DateRangeFilterConfig` — date range picker
  */
-export type ColumnFilterConfig = boolean | string | SelectFilterConfig | SelectFilterWithFieldConfig | DateRangeFilterConfig;
+export type ColumnFilterConfig =
+  | boolean
+  | string
+  | SelectFilterConfig
+  | SelectFilterWithFieldConfig
+  | DateRangeFilterConfig;
 
 /** Runtime filter value — varies by filter type */
 export type FilterValue = string | string[] | number | { start?: string; end?: string } | null | undefined;

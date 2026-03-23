@@ -58,7 +58,6 @@ export const SEVERITY_TIMEOUTS: Record<Severity, number | false> = {
   critical: false, // persistent
 };
 
-export const NotificationContextKey: InjectionKey<ComputedRef<PushNotification>> =
-  Symbol("NotificationContext");
+export const NotificationContextKey: InjectionKey<ComputedRef<PushNotification>> = Symbol("NotificationContext");
 
 export const EXCLUDED_NOTIFICATION_TYPES = ["IndexProgressPushNotification"];

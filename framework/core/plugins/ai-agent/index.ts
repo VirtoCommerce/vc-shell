@@ -54,7 +54,9 @@ export const aiAgentPlugin = {
 
     // Skip installation if no URL configured
     if (!url) {
-      logger.info("AI Agent plugin skipped: no URL configured. Set APP_AI_AGENT_URL env variable or pass config.url option.");
+      logger.info(
+        "AI Agent plugin skipped: no URL configured. Set APP_AI_AGENT_URL env variable or pass config.url option.",
+      );
       return;
     }
 
@@ -79,7 +81,11 @@ export * from "@core/plugins/ai-agent/types";
 export * from "@core/plugins/ai-agent/constants";
 
 // Re-export composables
-export { useAiAgent, provideAiAgentService, createAiAgentToolbarButton } from "@core/plugins/ai-agent/composables/useAiAgent";
+export {
+  useAiAgent,
+  provideAiAgentService,
+  createAiAgentToolbarButton,
+} from "@core/plugins/ai-agent/composables/useAiAgent";
 export type { UseAiAgentReturn, ProvideAiAgentServiceOptions } from "@core/plugins/ai-agent/composables/useAiAgent";
 
 export { useAiAgentContext, clearPreviewState } from "@core/plugins/ai-agent/composables/useAiAgentContext";
@@ -88,4 +94,7 @@ export { useAiAgentContext, clearPreviewState } from "@core/plugins/ai-agent/com
 export { VcAiAgentPanel } from "@core/plugins/ai-agent/components";
 
 // Re-export service types
-export type { IAiAgentServiceInternal, CreateAiAgentServiceOptions } from "@core/plugins/ai-agent/services/ai-agent-service";
+export type {
+  IAiAgentServiceInternal,
+  CreateAiAgentServiceOptions,
+} from "@core/plugins/ai-agent/services/ai-agent-service";

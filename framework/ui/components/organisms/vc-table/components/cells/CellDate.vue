@@ -1,6 +1,13 @@
 <template>
-  <span v-if="value" class="vc-table-cell-date">{{ formatted }}</span>
-  <span v-else class="vc-table-cell-date vc-table-cell-date--not-set">
+  <span
+    v-if="value"
+    class="vc-table-cell-date"
+    >{{ formatted }}</span
+  >
+  <span
+    v-else
+    class="vc-table-cell-date vc-table-cell-date--not-set"
+  >
     {{ t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET") }}
   </span>
 </template>

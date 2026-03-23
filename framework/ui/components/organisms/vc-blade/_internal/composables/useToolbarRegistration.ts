@@ -20,12 +20,9 @@ const PROP_ITEM_ID_PREFIX = "prop_toolbar_item_";
  */
 export function useToolbarRegistration(items: Ref<IBladeToolbar[]>) {
   const { hasAccess } = usePermissions();
-  const {
-    registerToolbarItem,
-    unregisterToolbarItem,
-    getToolbarItems,
-    updateToolbarItem,
-  } = useToolbar({ autoCleanup: false });
+  const { registerToolbarItem, unregisterToolbarItem, getToolbarItems, updateToolbarItem } = useToolbar({
+    autoCleanup: false,
+  });
 
   const { id: currentBladeId } = useBlade();
   const bladeId = computed(() => (currentBladeId.value ?? FALLBACK_BLADE_ID).toLowerCase());

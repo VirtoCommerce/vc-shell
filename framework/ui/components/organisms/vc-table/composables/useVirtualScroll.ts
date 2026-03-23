@@ -164,10 +164,7 @@ export function useVirtualScroll<T>(options: VirtualScrollOptions<T>): VirtualSc
       // Handle lazy loading
       if (lazy && onLazyLoad) {
         // Only trigger lazy load if range has changed significantly
-        if (
-          range.start !== lastLazyLoadRange.start ||
-          range.end !== lastLazyLoadRange.end
-        ) {
+        if (range.start !== lastLazyLoadRange.start || range.end !== lastLazyLoadRange.end) {
           lastLazyLoadRange = { ...range };
           isLoading.value = true;
           onLazyLoad({ first: range.start, last: range.end });
@@ -240,7 +237,7 @@ export function useVirtualScroll<T>(options: VirtualScrollOptions<T>): VirtualSc
         initializeContainer();
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   // Watch for items changes - reset scroll if items change significantly
@@ -253,7 +250,7 @@ export function useVirtualScroll<T>(options: VirtualScrollOptions<T>): VirtualSc
         // Reset lazy load tracking
         lastLazyLoadRange = { start: -1, end: -1 };
       }
-    }
+    },
   );
 
   // Setup resize observer

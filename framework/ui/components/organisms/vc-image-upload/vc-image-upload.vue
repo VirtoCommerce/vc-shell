@@ -82,9 +82,7 @@ const resolvedActions = computed(() => ({
 }));
 
 const placeholderText = computed(() =>
-  props.placeholder
-    ? { dragHere: props.placeholder.text, browse: props.placeholder.link }
-    : undefined,
+  props.placeholder ? { dragHere: props.placeholder.text, browse: props.placeholder.link } : undefined,
 );
 
 function onPreviewClick() {

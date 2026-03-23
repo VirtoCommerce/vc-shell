@@ -139,8 +139,15 @@ defineSlots<{
   icon: (props: Record<string, never>) => VNode[];
 }>();
 
-const { fieldId: checkboxId, errorId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
-  useFormField(props);
+const {
+  fieldId: checkboxId,
+  errorId,
+  invalid,
+  resolvedDisabled,
+  resolvedName,
+  ariaRequired,
+  ariaDescribedBy,
+} = useFormField(props);
 
 const checkboxRef = ref<HTMLInputElement | null>(null);
 
@@ -317,7 +324,6 @@ onMounted(() => {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
     opacity: var(--checkbox-disabled-opacity);
   }
-
 }
 
 @keyframes checkbox-check-in {

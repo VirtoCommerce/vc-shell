@@ -106,7 +106,8 @@ function handleClick() {
 
 .vc-user-dropdown-button {
   @apply tw-w-full tw-cursor-pointer tw-relative tw-flex tw-h-[var(--user-dropdown-height)] tw-flex-col tw-select-none tw-overflow-hidden tw-border-solid tw-border-t tw-border-t-[var(--user-dropdown-border-color)] tw-pl-[var(--user-dropdown-wrap-padding-left)];
-  transition: padding-left var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease);
+  transition: padding-left var(--app-bar-transition-duration, 200ms)
+    var(--app-bar-hover-transition-timing-function, ease);
 
   &:hover {
     .vc-user-dropdown-button__trigger {
@@ -131,7 +132,8 @@ function handleClick() {
 
   &--collapsed {
     @apply tw-pl-0;
-    transition: padding-left var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease);
+    transition: padding-left var(--app-bar-transition-duration, 200ms)
+      var(--app-bar-hover-transition-timing-function, ease);
 
     .vc-user-dropdown-button__wrap {
       @apply tw-justify-center;

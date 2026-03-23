@@ -6,7 +6,11 @@
  */
 
 import type { GridStackWidget, GridStackNode } from "gridstack";
-import type { IDashboardWidget, DashboardWidgetPosition, DashboardWidgetSize } from "@shell/dashboard/draggable-dashboard/types";
+import type {
+  IDashboardWidget,
+  DashboardWidgetPosition,
+  DashboardWidgetSize,
+} from "@shell/dashboard/draggable-dashboard/types";
 
 /**
  * LocalStorage key for layout persistence
@@ -23,10 +27,7 @@ interface LegacyLayoutFormat {
 /**
  * Converts our widget type to Gridstack widget format
  */
-export function toGridstackWidget(
-  widget: IDashboardWidget,
-  position?: DashboardWidgetPosition,
-): GridStackWidget {
+export function toGridstackWidget(widget: IDashboardWidget, position?: DashboardWidgetPosition): GridStackWidget {
   const pos = position ?? widget.position;
   return {
     id: widget.id,
@@ -63,9 +64,7 @@ export function fromGridstackNode(node: GridStackNode): {
 /**
  * Converts Gridstack nodes array to our layout Map format
  */
-export function gridstackNodesToLayoutMap(
-  nodes: GridStackNode[],
-): Map<string, DashboardWidgetPosition> {
+export function gridstackNodesToLayoutMap(nodes: GridStackNode[]): Map<string, DashboardWidgetPosition> {
   const layout = new Map<string, DashboardWidgetPosition>();
 
   for (const node of nodes) {
@@ -116,10 +115,7 @@ export function loadLayoutFromStorage(): Map<string, DashboardWidgetPosition> | 
 /**
  * Saves layout to localStorage in Gridstack format
  */
-export function saveLayoutToStorage(
-  widgets: IDashboardWidget[],
-  layout: Map<string, DashboardWidgetPosition>,
-): void {
+export function saveLayoutToStorage(widgets: IDashboardWidget[], layout: Map<string, DashboardWidgetPosition>): void {
   try {
     const gridstackFormat: GridStackWidget[] = widgets.map((widget) => {
       const pos = layout.get(widget.id);
@@ -153,10 +149,7 @@ export function clearLayoutStorage(): void {
  * Auto-arrange widgets in a grid layout
  * Places widgets side by side when possible, wrapping to next row
  */
-function autoArrangeWidgets(
-  widgets: IDashboardWidget[],
-  columns: number = 12,
-): Map<string, DashboardWidgetPosition> {
+function autoArrangeWidgets(widgets: IDashboardWidget[], columns: number = 12): Map<string, DashboardWidgetPosition> {
   const layout = new Map<string, DashboardWidgetPosition>();
 
   // Track occupied cells in each row

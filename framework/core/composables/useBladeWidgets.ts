@@ -49,7 +49,7 @@ export function useBladeWidgets(widgets: HeadlessWidgetDeclaration[]): UseBladeW
   if (!descriptor) {
     throw new Error(
       "[vc-shell] useBladeWidgets() requires blade context (BladeDescriptorKey). " +
-      "It must be called inside a blade component rendered by VcBladeSlot.",
+        "It must be called inside a blade component rendered by VcBladeSlot.",
     );
   }
 

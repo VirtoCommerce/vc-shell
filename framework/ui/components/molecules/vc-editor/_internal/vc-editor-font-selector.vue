@@ -8,9 +8,21 @@
         :disabled="disabled"
         @click="toggleSizeDropdown"
       >
-        <VcIcon icon="lucide-a-large-small" size="s" :use-container="false" />
-        <span v-if="currentFontSize" class="vc-editor-font-selector__size-value">{{ currentFontSize }}px</span>
-        <VcIcon icon="lucide-chevron-down" size="xs" :use-container="false" />
+        <VcIcon
+          icon="lucide-a-large-small"
+          size="s"
+          :use-container="false"
+        />
+        <span
+          v-if="currentFontSize"
+          class="vc-editor-font-selector__size-value"
+          >{{ currentFontSize }}px</span
+        >
+        <VcIcon
+          icon="lucide-chevron-down"
+          size="xs"
+          :use-container="false"
+        />
       </button>
       <div
         v-if="showSizeDropdown"
@@ -61,8 +73,8 @@ const customSize = ref<number | null>(null);
 const fontSizes = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 72];
 
 const currentFontSize = computed(() => {
-  const attrs = props.editor.getAttributes('textStyle');
-  return attrs.fontSize ? parseInt(attrs.fontSize.replace('px', '')) : null;
+  const attrs = props.editor.getAttributes("textStyle");
+  return attrs.fontSize ? parseInt(attrs.fontSize.replace("px", "")) : null;
 });
 
 function toggleSizeDropdown() {
@@ -88,17 +100,17 @@ function closeDropdown() {
 
 function handleClickOutside(event: MouseEvent) {
   const target = event.target as HTMLElement;
-  if (!target.closest('.vc-editor-font-selector')) {
+  if (!target.closest(".vc-editor-font-selector")) {
     closeDropdown();
   }
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
+  document.addEventListener("click", handleClickOutside);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside);
+  document.removeEventListener("click", handleClickOutside);
 });
 </script>
 

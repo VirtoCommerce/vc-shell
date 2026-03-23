@@ -12,7 +12,11 @@
           width="40px"
           :line-clamp="0"
         >
-          <VcSkeleton variant="circle" width="18px" height="18px" />
+          <VcSkeleton
+            variant="circle"
+            width="18px"
+            height="18px"
+          />
         </TableCell>
         <TableCell
           v-for="col in columns"
@@ -21,17 +25,15 @@
           :style="getCellStyle(col.props)"
           :line-clamp="0"
         >
-          <VcSkeleton
-            v-bind="getSkeletonProps(col.props, rowIndex)"
-          />
+          <VcSkeleton v-bind="getSkeletonProps(col.props, rowIndex)" />
         </TableCell>
       </TableRow>
     </template>
 
     <!-- Fallback: simple full-width skeleton rows when columns aren't parsed yet -->
     <div
-      v-else
       v-for="rowIndex in rows"
+      v-else
       :key="`fallback-${rowIndex}`"
       class="vc-data-table__skeleton-fallback-row"
     >

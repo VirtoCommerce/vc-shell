@@ -95,9 +95,7 @@ const isColumnVisible = (columnId: string): boolean => {
 };
 
 const toggleColumn = (columnId: string) => {
-  const currentVisible =
-    props.visibleColumns ||
-    props.columns.filter((c) => c.visible !== false).map((c) => c.id);
+  const currentVisible = props.visibleColumns || props.columns.filter((c) => c.visible !== false).map((c) => c.id);
 
   const newVisible = isColumnVisible(columnId)
     ? currentVisible.filter((id) => id !== columnId)
@@ -114,9 +112,7 @@ const handleShowAll = () => {
 };
 
 const handleReset = () => {
-  const defaultVisible = props.columns
-    .filter((c) => (c.defaultVisible ?? c.visible) !== false)
-    .map((c) => c.id);
+  const defaultVisible = props.columns.filter((c) => (c.defaultVisible ?? c.visible) !== false).map((c) => c.id);
   emit("update:visibleColumns", defaultVisible);
 };
 </script>
@@ -139,6 +135,5 @@ const handleReset = () => {
   &__label {
     @apply tw-flex-1 tw-text-sm tw-text-neutrals-900;
   }
-
 }
 </style>

@@ -131,9 +131,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   const setHeaderRef = (id: string, el: unknown) => {
     // Handle both component instances and direct DOM elements
     const domEl =
-      el && typeof el === "object" && "$el" in el
-        ? (el as { $el: HTMLElement }).$el
-        : (el as HTMLElement | null);
+      el && typeof el === "object" && "$el" in el ? (el as { $el: HTMLElement }).$el : (el as HTMLElement | null);
     if (domEl) headerRefs.set(id, domEl);
     else headerRefs.delete(id);
   };
@@ -144,8 +142,8 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
 
   const orderedVisibleColumns = computed<ColumnInstance[]>(() => {
     // Filter out any undefined/null columns to prevent runtime errors
-    const validColumns = visibleColumns.value.filter((col): col is ColumnInstance =>
-      col != null && col.props != null && col.props.id != null
+    const validColumns = visibleColumns.value.filter(
+      (col): col is ColumnInstance => col != null && col.props != null && col.props.id != null,
     );
 
     if (!reorderableColumns || columnWidths.value.length === 0) {
@@ -238,7 +236,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
         columnWidths.value = newWidths;
       }
     },
-    { immediate: true }
+    { immediate: true },
   );
 
   // Whether any visible data column has no explicit width (flex-grow columns exist)

@@ -207,11 +207,9 @@ defineExpose({
   // Active group header: border-radius left only + wider right padding (Figma spec)
   // Applies when group has explicit `active` prop
   > .vc-menu-item .vc-menu-item__content--active {
-    border-radius: var(--vc-menu-group-active-radius) 0 0
-      var(--vc-menu-group-active-radius);
+    border-radius: var(--vc-menu-group-active-radius) 0 0 var(--vc-menu-group-active-radius);
     padding-right: 10px;
   }
-
 
   // ── Section variant (L1) ──────────────────────────────────
   &--section {

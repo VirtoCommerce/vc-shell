@@ -38,7 +38,7 @@ export function deepClone<T>(obj: T): T {
           return new Date(value.value);
         }
         return value;
-      }
+      },
     );
   }
 }

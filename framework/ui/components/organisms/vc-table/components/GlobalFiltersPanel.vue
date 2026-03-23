@@ -36,6 +36,7 @@
         />
 
         <!-- Select filter -->
+        <!-- eslint-disable vue/no-deprecated-filter -- TS union, not a filter -->
         <VcSelect
           v-else-if="getType(filter.id) === 'select'"
           :model-value="localValues[filter.id] as string | string[] | null"
@@ -49,6 +50,7 @@
           emit-value
           @update:model-value="updateFilterValue(filter.id, $event)"
         />
+        <!-- eslint-enable vue/no-deprecated-filter -->
 
         <!-- DateRange filter -->
         <div
@@ -137,6 +139,7 @@
           @update:model-value="updateFilterValue(filter.id, $event)"
         />
 
+        <!-- eslint-disable vue/no-deprecated-filter -- TS union, not a filter -->
         <VcSelect
           v-else-if="getType(filter.id) === 'select'"
           :model-value="localValues[filter.id] as string | string[] | null"
@@ -150,6 +153,7 @@
           emit-value
           @update:model-value="updateFilterValue(filter.id, $event)"
         />
+        <!-- eslint-enable vue/no-deprecated-filter -->
 
         <div
           v-else-if="getType(filter.id) === 'dateRange'"
@@ -285,7 +289,7 @@ watch(
       initLocalValues();
     }
   },
-  { deep: true }
+  { deep: true },
 );
 
 // Initialize when panel opens
@@ -295,7 +299,7 @@ watch(
     if (newShow) {
       initLocalValues();
     }
-  }
+  },
 );
 
 // Update filter value

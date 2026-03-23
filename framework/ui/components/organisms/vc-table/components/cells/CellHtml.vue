@@ -1,5 +1,8 @@
 <template>
-  <div class="vc-table-cell-html" v-html="truncatedHtml" />
+  <div
+    class="vc-table-cell-html"
+    v-html="truncatedHtml"
+  />
 </template>
 
 <script setup lang="ts">
@@ -25,9 +28,35 @@ function getSanitizedHtml(html: string): string {
 
   const sanitized = DOMPurify.default.sanitize(html, {
     ALLOWED_TAGS: [
-      "p", "br", "strong", "em", "u", "s", "h1", "h2", "h3", "h4", "h5", "h6",
-      "ul", "ol", "li", "blockquote", "pre", "code", "a", "img", "table",
-      "thead", "tbody", "tr", "th", "td", "hr", "div", "span",
+      "p",
+      "br",
+      "strong",
+      "em",
+      "u",
+      "s",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "ul",
+      "ol",
+      "li",
+      "blockquote",
+      "pre",
+      "code",
+      "a",
+      "img",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "th",
+      "td",
+      "hr",
+      "div",
+      "span",
     ],
     ALLOWED_ATTR: ["href", "src", "alt", "title", "class", "id", "colspan", "rowspan", "align", "valign"],
     FORBID_TAGS: ["script", "object", "embed", "form", "input"],
@@ -50,9 +79,7 @@ const sanitizedHtml = computed(() => {
   return getSanitizedHtml(String(props.value));
 });
 
-const truncatedHtml = computed(() =>
-  htmlTruncate(sanitizedHtml.value, props.maxLength || 30),
-);
+const truncatedHtml = computed(() => htmlTruncate(sanitizedHtml.value, props.maxLength || 30));
 </script>
 
 <style lang="scss">

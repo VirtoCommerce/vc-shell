@@ -8,10 +8,7 @@ const logger = createLogger("notification-store");
 
 export interface NotificationStoreOptions {
   /** Injected toast handler. Defaults to createToastController().handle */
-  toastHandle?: (
-    msg: PushNotification,
-    config: NotificationTypeConfig,
-  ) => void;
+  toastHandle?: (msg: PushNotification, config: NotificationTypeConfig) => void;
 }
 
 export interface NotificationStore {

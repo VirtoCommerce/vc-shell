@@ -48,14 +48,7 @@ export interface UseTableSortReturn {
 }
 
 export function useTableSort(options: UseTableSortOptions): UseTableSortReturn {
-  const {
-    sortField,
-    sortOrder,
-    sortMode,
-    multiSortMeta,
-    removableSort,
-    onSort,
-  } = options;
+  const { sortField, sortOrder, sortMode, multiSortMeta, removableSort, onSort } = options;
 
   // Internal state (initialized from props, kept in sync via watchers below)
   const internalSortField = ref<string | undefined>(sortField.value);
@@ -116,7 +109,9 @@ export function useTableSort(options: UseTableSortOptions): UseTableSortReturn {
   const handleMultiSort = (field: string, event?: Event): void => {
     const currentMeta = [...internalMultiSortMeta.value];
     const existingIndex = currentMeta.findIndex((m) => m.field === field);
-    const isCtrlClick = (event as MouseEvent | KeyboardEvent | undefined)?.ctrlKey || (event as MouseEvent | KeyboardEvent | undefined)?.metaKey;
+    const isCtrlClick =
+      (event as MouseEvent | KeyboardEvent | undefined)?.ctrlKey ||
+      (event as MouseEvent | KeyboardEvent | undefined)?.metaKey;
 
     if (isCtrlClick) {
       // Ctrl+click: add to or toggle existing sort
@@ -178,11 +173,7 @@ export function useTableSort(options: UseTableSortOptions): UseTableSortReturn {
 
     // Single sort mode
     if (internalSortField.value === field) {
-      return internalSortOrder.value === 1
-        ? "asc"
-        : internalSortOrder.value === -1
-          ? "desc"
-          : undefined;
+      return internalSortOrder.value === 1 ? "asc" : internalSortOrder.value === -1 ? "desc" : undefined;
     }
     return undefined;
   };

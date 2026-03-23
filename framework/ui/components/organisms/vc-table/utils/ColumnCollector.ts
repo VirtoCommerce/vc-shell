@@ -72,8 +72,9 @@ export class ColumnCollector {
 
     // Filter out any invalid columns and sort by component uid
     return columns
-      .filter((col): col is ColumnInstance =>
-        col != null && col.instance != null && col.props != null && col.props.id != null
+      .filter(
+        (col): col is ColumnInstance =>
+          col != null && col.instance != null && col.props != null && col.props.id != null,
       )
       .sort((a, b) => {
         return a.instance.uid - b.instance.uid;

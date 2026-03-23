@@ -1,5 +1,9 @@
 import { createApp, nextTick, reactive, ref, Ref } from "vue";
-import { NotificationOptions, NotificationPosition, NotificationContainerStateKey } from "@core/notifications/toast-types";
+import {
+  NotificationOptions,
+  NotificationPosition,
+  NotificationContainerStateKey,
+} from "@core/notifications/toast-types";
 import { useInstance } from "@shell/_internal/notifications/composables/useInstance";
 import * as _ from "lodash-es";
 import { generateId, createLogger } from "@core/utilities";
@@ -94,9 +98,8 @@ export function useContainer(): IUseContainer {
       // Create a new root element for the position
       const dom = generateRoot(position);
       // Lazy import to break circular dependency (NotificationContainer → useContainer)
-      const { default: NotificationContainer } = await import(
-        "@shell/_internal/notifications/components/notification-container"
-      );
+      const { default: NotificationContainer } =
+        await import("@shell/_internal/notifications/components/notification-container");
       const instance = createApp(NotificationContainer, {
         ...(options as Record<string, unknown>),
         position, // Pass the position to the component

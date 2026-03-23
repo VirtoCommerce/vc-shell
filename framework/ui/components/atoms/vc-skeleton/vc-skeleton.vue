@@ -26,10 +26,7 @@
   <div
     v-else
     class="vc-skeleton__shape"
-    :class="[
-      `vc-skeleton__shape--${variant}`,
-      { 'tw-animate-pulse': animated },
-    ]"
+    :class="[`vc-skeleton__shape--${variant}`, { 'tw-animate-pulse': animated }]"
     :style="{
       width: normalizeSize(width),
       height: normalizeSize(height),

@@ -31,8 +31,8 @@
 
     <template v-if="!ssoOnly">
       <VcForm
-        @submit="login"
         class="tw-gap-5"
+        @submit="login"
       >
         <Field
           v-slot="{ errorMessage, handleChange, errors }"

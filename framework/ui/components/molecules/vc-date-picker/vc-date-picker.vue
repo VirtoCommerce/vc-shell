@@ -315,7 +315,6 @@ function handleFocus() {
       tw-ring-[3px] tw-ring-[color:var(--input-focus-ring-color)]
       tw-outline-none;
   }
-
 }
 
 /* VueDatePicker theme integration - shared with VcInput */

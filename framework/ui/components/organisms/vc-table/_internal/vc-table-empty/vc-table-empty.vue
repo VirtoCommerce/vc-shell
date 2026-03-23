@@ -33,7 +33,7 @@
           :icon="empty.icon"
           size="xxxl"
           class="vc-table-empty__icon"
-        />  
+        />
         <div class="vc-table-empty__text">
           {{ empty?.text || $t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY") }}
         </div>

@@ -291,7 +291,7 @@
           @change="handleSelectAllChange"
         />
         <span class="vc-data-table__mobile-select-toolbar-text">
-          {{ $t('COMPONENTS.ORGANISMS.VC_TABLE.SELECTED', 'Selected') }}: {{ selection.internalSelection.value.length }}
+          {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECTED", "Selected") }}: {{ selection.internalSelection.value.length }}
         </span>
       </div>
 
@@ -790,6 +790,7 @@ columnCollector.onUpdate(() => {
 
 // All declared columns (before visibility filtering) — from slots or collector
 const declaredColumns = computed<ColumnInstance[]>(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   columnsVersion.value;
   const slotCols = extractColumnsFromSlots();
   if (slotCols.length > 0) return slotCols;

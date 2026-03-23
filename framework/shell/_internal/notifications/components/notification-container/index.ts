@@ -1,7 +1,12 @@
 import { VcToast } from "@ui/components/molecules/vc-toast";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { PropType, computed, defineComponent, h, ref, toRaw, reactive, inject } from "vue";
-import { Content, NotificationType, NotificationPosition, NotificationContainerStateKey } from "@core/notifications/toast-types";
+import {
+  Content,
+  NotificationType,
+  NotificationPosition,
+  NotificationContainerStateKey,
+} from "@core/notifications/toast-types";
 
 const GAP = 14;
 const VISIBLE_TOASTS = 3;
@@ -51,7 +56,6 @@ const NotificationContainer = defineComponent({
       default: undefined,
     },
     payload: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       type: [String, Object] as PropType<Record<string, any>>,
       required: false,
       default: () => ({}),
@@ -99,11 +103,7 @@ const NotificationContainer = defineComponent({
     }
 
     function isComponent(content: Content) {
-      return (
-        typeof content === "object" &&
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (!!(content as any)?.render || !!(content as any)?.setup)
-      );
+      return typeof content === "object" && (!!(content as any)?.render || !!(content as any)?.setup);
     }
 
     function handleClose(id: string | number | undefined) {
@@ -128,7 +128,7 @@ const NotificationContainer = defineComponent({
 
       // Front toast = newest = last in array
       const frontToastId = count > 0 ? items[count - 1].notificationId : undefined;
-      const frontHeight = frontToastId !== undefined ? (heightsMap.get(frontToastId) || 0) : 0;
+      const frontHeight = frontToastId !== undefined ? heightsMap.get(frontToastId) || 0 : 0;
 
       const children = items.map((item, arrayIndex) => {
         // sonnerIndex: 0 = front/newest, higher = older/back
@@ -144,8 +144,7 @@ const NotificationContainer = defineComponent({
         }
         const offset = sonnerIndex * GAP + heightSum;
 
-        const initialHeight =
-          item.notificationId !== undefined ? (heightsMap.get(item.notificationId) || 0) : 0;
+        const initialHeight = item.notificationId !== undefined ? heightsMap.get(item.notificationId) || 0 : 0;
 
         const toastStyle: Record<string, string | number> = {
           "--toasts-before": sonnerIndex,
@@ -199,10 +198,7 @@ const NotificationContainer = defineComponent({
                 type: "button",
                 onClick: handleClearAll,
               },
-              [
-                h(VcIcon, { icon: "lucide-x", size: "xs", "aria-hidden": "true" }),
-                "Clear all",
-              ],
+              [h(VcIcon, { icon: "lucide-x", size: "xs", "aria-hidden": "true" }), "Clear all"],
             ),
           ],
         );
@@ -216,13 +212,10 @@ const NotificationContainer = defineComponent({
         let hSum = 0;
         for (let i = 1; i < count; i++) {
           const id = items[i].notificationId;
-          hSum += id !== undefined ? (heightsMap.get(id) || 0) : 0;
+          hSum += id !== undefined ? heightsMap.get(id) || 0 : 0;
         }
         const oldestOffset = oldestSonnerIdx * GAP + hSum;
-        const oldestHeight =
-          items[0].notificationId !== undefined
-            ? (heightsMap.get(items[0].notificationId) || 0)
-            : 0;
+        const oldestHeight = items[0].notificationId !== undefined ? heightsMap.get(items[0].notificationId) || 0 : 0;
         groupHeight = oldestOffset + oldestHeight;
       } else {
         // Collapsed: front toast height + visible back toasts gap

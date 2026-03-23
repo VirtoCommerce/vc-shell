@@ -10,6 +10,12 @@
         'vc-file-upload__drop-zone--dragging': isDragging,
         'vc-file-upload__drop-zone--disabled': resolvedDisabled,
       }"
+      role="button"
+      :tabindex="resolvedDisabled ? -1 : 0"
+      :aria-label="customText?.dragHere || 'Upload files'"
+      :aria-describedby="ariaDescribedBy"
+      :aria-disabled="resolvedDisabled || undefined"
+      :aria-required="ariaRequired"
       @drop.stop.prevent="onDrop"
       @drag.stop.prevent
       @dragstart.stop.prevent
@@ -17,12 +23,6 @@
       @dragover.stop.prevent="dragOver"
       @dragenter.stop.prevent
       @dragleave.stop.prevent="dragLeave"
-      role="button"
-      :tabindex="resolvedDisabled ? -1 : 0"
-      :aria-label="customText?.dragHere || 'Upload files'"
-      :aria-describedby="ariaDescribedBy"
-      :aria-disabled="resolvedDisabled || undefined"
-      :aria-required="ariaRequired"
       @keydown.enter="toggleUploader"
       @keydown.space.prevent="toggleUploader"
     >
@@ -113,26 +113,18 @@ defineSlots<{
 
 const { t } = useI18n({ useScope: "global" });
 
-const {
-  fieldId,
-  errorId,
-  resolvedDisabled,
-  resolvedName,
-  ariaRequired,
-  groupContext,
-} = useFormField(props);
+const { fieldId, errorId, resolvedDisabled, resolvedName, ariaRequired, groupContext } = useFormField(props);
 
 const internalRules = unref(props.rules) || "";
 const isDragging = ref(false);
 
-const { errorMessage: veeErrorMessage, handleChange, validate } = useField(
-  `${props.name === "Gallery" ? fieldId.value : props.name}`,
-  internalRules as IValidationRules,
-);
+const {
+  errorMessage: veeErrorMessage,
+  handleChange,
+  validate,
+} = useField(`${props.name === "Gallery" ? fieldId.value : props.name}`, internalRules as IValidationRules);
 
-const resolvedErrorMessage = computed(
-  () => props.errorMessage || veeErrorMessage.value,
-);
+const resolvedErrorMessage = computed(() => props.errorMessage || veeErrorMessage.value);
 
 const ariaDescribedBy = computed(() => {
   const ids = new Set<string>();
@@ -265,6 +257,5 @@ function dragLeave() {
   &__error {
     @apply tw-mt-1 [--hint-error-color:var(--file-upload-error-color)];
   }
-
 }
 </style>

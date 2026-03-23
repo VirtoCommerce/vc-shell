@@ -9,7 +9,10 @@
   >
     <VcTooltip placement="bottom">
       <template #default>
-        <slot :errors="errors" :error-message="errorMessage" />
+        <slot
+          :errors="errors"
+          :error-message="errorMessage"
+        />
       </template>
       <template
         v-if="errorMessage"

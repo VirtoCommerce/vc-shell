@@ -206,7 +206,8 @@ export const NestedGroups: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Three-level nesting: Section > Group > Sub-items. The 'New orders' group expands to show Accepted/Declined.",
+        story:
+          "Three-level nesting: Section > Group > Sub-items. The 'New orders' group expands to show Accepted/Declined.",
       },
     },
   },

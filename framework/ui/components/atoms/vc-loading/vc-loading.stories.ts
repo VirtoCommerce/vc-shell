@@ -119,8 +119,7 @@ export const Inactive: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          "When inactive, the overlay is completely hidden. The content beneath is fully visible and interactive.",
+        story: "When inactive, the overlay is completely hidden. The content beneath is fully visible and interactive.",
       },
     },
   },

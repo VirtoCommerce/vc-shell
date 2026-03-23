@@ -14,7 +14,7 @@
         },
       ]"
       :style="imageHandler"
-      :role="clickable ? 'button' : (src ? 'img' : undefined)"
+      :role="clickable ? 'button' : src ? 'img' : undefined"
       :tabindex="clickable ? 0 : undefined"
       :aria-label="alt || (clickable ? 'Image' : undefined)"
       @click="onClick"

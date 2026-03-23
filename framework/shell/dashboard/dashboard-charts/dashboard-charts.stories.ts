@@ -24,20 +24,7 @@ const revenueData = [
   { month: 11, revenue: 9400, orders: 258 },
 ];
 
-const monthLabels = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const salesByCategory = [
   { category: 0, electronics: 12000, clothing: 8500, home: 5200 },
@@ -287,10 +274,7 @@ export const InteractiveRangeAndTooltips: Story = {
         return Math.max(0, maxMonth.value - (option.size - 1));
       });
 
-      const rangeLabel = computed(
-        () =>
-          periodOptions.find(({ id }) => id === selectedPeriod.value)?.label ?? "ALL",
-      );
+      const rangeLabel = computed(() => periodOptions.find(({ id }) => id === selectedPeriod.value)?.label ?? "ALL");
 
       const totalProducts = statusData.reduce((sum, item) => sum + item.value, 0);
 

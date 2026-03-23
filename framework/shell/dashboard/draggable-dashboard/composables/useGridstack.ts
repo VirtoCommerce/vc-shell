@@ -84,16 +84,8 @@ export interface UseGridstackReturn {
 /**
  * Vue 3 composable for Gridstack integration
  */
-export function useGridstack(
-  widgets: Ref<IDashboardWidget[]>,
-  options: UseGridstackOptions = {},
-): UseGridstackReturn {
-  const {
-    gridOptions = {},
-    resizable = false,
-    autoSave = true,
-    onLayoutChange,
-  } = options;
+export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGridstackOptions = {}): UseGridstackReturn {
+  const { gridOptions = {}, resizable = false, autoSave = true, onLayoutChange } = options;
 
   // State
   const grid = shallowRef<GridStack | null>(null);
@@ -336,14 +328,11 @@ export function useGridstack(
       await nextTick();
 
       // Find added widgets
-      const addedWidgets = newWidgets.filter(
-        (w) => !oldWidgets?.some((ow) => ow.id === w.id),
-      );
+      const addedWidgets = newWidgets.filter((w) => !oldWidgets?.some((ow) => ow.id === w.id));
 
       // Find removed widgets
-      const removedWidgetIds = oldWidgets
-        ?.filter((w) => !newWidgets.some((nw) => nw.id === w.id))
-        .map((w) => w.id) ?? [];
+      const removedWidgetIds =
+        oldWidgets?.filter((w) => !newWidgets.some((nw) => nw.id === w.id)).map((w) => w.id) ?? [];
 
       // Remove old widgets
       for (const id of removedWidgetIds) {

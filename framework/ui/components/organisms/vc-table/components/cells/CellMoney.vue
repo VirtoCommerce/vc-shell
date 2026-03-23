@@ -9,8 +9,9 @@
     :validate-on-mount="validateOnMount"
   >
     <template #default="{ errors, errorMessage }">
+      <!-- eslint-disable vue/no-deprecated-filter -- TS union, not a filter -->
       <VcInputCurrency
-        :model-value="(value as number | null | undefined)"
+        :model-value="value as number | null | undefined"
         :options="[]"
         :option="currency || 'USD'"
         currency-display="symbol"
@@ -30,12 +31,20 @@
           />
         </template>
       </VcInputCurrency>
+      <!-- eslint-enable vue/no-deprecated-filter -->
     </template>
   </CellEditableWrapper>
 
   <!-- Display mode -->
-  <span v-else-if="!isEmpty" class="vc-table-cell-money">{{ formatted }}</span>
-  <span v-else class="vc-table-cell-money vc-table-cell-money--not-set">
+  <span
+    v-else-if="!isEmpty"
+    class="vc-table-cell-money"
+    >{{ formatted }}</span
+  >
+  <span
+    v-else
+    class="vc-table-cell-money vc-table-cell-money--not-set"
+  >
     {{ t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET") }}
   </span>
 </template>
@@ -84,9 +93,7 @@ const isDesktopRef = inject(IsDesktopKey, ref(true));
 const isMobile = computed(() => isMobileRef.value);
 const isDesktop = computed(() => isDesktopRef.value);
 
-const isEmpty = computed(
-  () => typeof props.value === "undefined" || props.value === null || Number(props.value) === 0,
-);
+const isEmpty = computed(() => typeof props.value === "undefined" || props.value === null || Number(props.value) === 0);
 
 const formatted = computed(() => {
   const num = Number(props.value);

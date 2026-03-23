@@ -30,7 +30,6 @@ export const useExternalProvider = (): IUseExternalProvider => {
     return searchParams.get("returnUrl") || searchParams.get("ReturnUrl");
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function externalSignIn(authenticationType?: string) {
     try {
       const origin = window.location.origin;

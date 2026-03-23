@@ -166,7 +166,9 @@ function handleKeyDown(e: KeyboardEvent) {
     // Standard behavior of tabulation
   } else if (e.key === "Enter") {
     // Complete editing and go to the next field
-    e.target && (e.target as HTMLElement).blur();
+    if (e.target) {
+      (e.target as HTMLElement).blur();
+    }
 
     // Find all tabindex elements and go to the next one
     const allElements = Array.from(document.querySelectorAll('[tabindex="0"]:not(:disabled)'));

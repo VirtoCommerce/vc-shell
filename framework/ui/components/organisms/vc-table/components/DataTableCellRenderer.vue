@@ -82,7 +82,7 @@
           index,
           editorCallback: handleEditorCallback,
           editorSaveCallback: completeEdit,
-          editorCancelCallback: cancelEdit
+          editorCancelCallback: cancelEdit,
         }"
       />
     </div>
@@ -96,7 +96,7 @@
         :scope="{
           data: item,
           field: fieldName,
-          index
+          index,
         }"
       />
     </div>
@@ -223,7 +223,7 @@ const cancelEdit = () => {
  */
 const handleEditorFocusOut = (event: FocusEvent) => {
   // Check if focus is moving to another element within the editor
-  const wrapper = (event.currentTarget as HTMLElement);
+  const wrapper = event.currentTarget as HTMLElement;
   const relatedTarget = event.relatedTarget as HTMLElement | null;
 
   // If focus is staying within the wrapper, don't complete
@@ -273,7 +273,7 @@ const cellValue = computed(() => {
 // Currency for money cells
 const currency = computed(() => {
   const field = props.column.props.currencyField || "currency";
-  return (props.item as Record<string, unknown>)[field] as string || "USD";
+  return ((props.item as Record<string, unknown>)[field] as string) || "USD";
 });
 
 // Date variant based on column type

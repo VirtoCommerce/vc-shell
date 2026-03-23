@@ -2,7 +2,10 @@
   <div class="vc-ai-agent-iframe">
     <!-- Loading overlay -->
     <Transition name="fade">
-      <VcAiAgentLoader v-if="isLoading && url" :text="$t('AI_AGENT.LOADING')" />
+      <VcAiAgentLoader
+        v-if="isLoading && url"
+        :text="$t('AI_AGENT.LOADING')"
+      />
     </Transition>
 
     <iframe
@@ -15,8 +18,15 @@
       allow="clipboard-read; clipboard-write"
       @load="onLoad"
     />
-    <div v-else class="vc-ai-agent-iframe__placeholder">
-      <VcIcon icon="lucide-sparkles" size="xl" class="vc-ai-agent-iframe__placeholder-icon" />
+    <div
+      v-else
+      class="vc-ai-agent-iframe__placeholder"
+    >
+      <VcIcon
+        icon="lucide-sparkles"
+        size="xl"
+        class="vc-ai-agent-iframe__placeholder-icon"
+      />
       <p class="vc-ai-agent-iframe__placeholder-text">AI Agent URL not configured</p>
     </div>
   </div>
@@ -43,11 +53,15 @@ const isLoading = ref(true);
 
 // Emit iframe ref as soon as it's available in the DOM (before @load)
 // This is critical because chatbot sends CHAT_READY before @load fires
-watch(iframeRef, (iframe) => {
-  if (iframe) {
-    emit("iframe-ready", iframe);
-  }
-}, { immediate: true });
+watch(
+  iframeRef,
+  (iframe) => {
+    if (iframe) {
+      emit("iframe-ready", iframe);
+    }
+  },
+  { immediate: true },
+);
 
 const onLoad = () => {
   // Hide loader after iframe loads
@@ -56,9 +70,12 @@ const onLoad = () => {
 };
 
 // Reset loading state when URL changes
-watch(() => props.url, () => {
-  isLoading.value = true;
-});
+watch(
+  () => props.url,
+  () => {
+    isLoading.value = true;
+  },
+);
 </script>
 
 <style lang="scss">

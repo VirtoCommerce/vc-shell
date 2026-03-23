@@ -6,7 +6,6 @@ import type { ICommonAsset } from "@core/types";
 export function useGalleryPreview(images: Ref<ICommonAsset[]>) {
   const previewIndex = ref(0);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { open } = usePopup(
     computed(() => ({
       component: VcGalleryPreview,

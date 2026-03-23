@@ -131,7 +131,8 @@ The VcTooltip component is a versatile UI element for displaying contextual info
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const triggerButtonClass = "tw-px-4 tw-py-2 tw-bg-primary-500 tw-text-white tw-rounded-md tw-text-sm tw-font-medium tw-cursor-pointer tw-border-none hover:tw-bg-primary-600 tw-transition-colors";
+const triggerButtonClass =
+  "tw-px-4 tw-py-2 tw-bg-primary-500 tw-text-white tw-rounded-md tw-text-sm tw-font-medium tw-cursor-pointer tw-border-none hover:tw-bg-primary-600 tw-transition-colors";
 
 /**
  * Basic tooltip with arrow — the default experience.
@@ -249,7 +250,8 @@ export const Placements: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Tooltips can be positioned in 12 ways relative to the trigger. Floating UI automatically flips when near viewport edges.",
+        story:
+          "Tooltips can be positioned in 12 ways relative to the trigger. Floating UI automatically flips when near viewport edges.",
       },
     },
   },
@@ -270,7 +272,8 @@ export const Placements: Story = {
         "left-start",
         "left-end",
       ];
-      const btnClass = "tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors";
+      const btnClass =
+        "tw-px-3 tw-py-1.5 tw-bg-neutrals-100 tw-text-neutrals-700 tw-rounded-md tw-text-xs tw-font-medium tw-cursor-pointer tw-border tw-border-solid tw-border-neutrals-200 hover:tw-bg-neutrals-200 tw-transition-colors";
       return { placements, btnClass };
     },
     template: `

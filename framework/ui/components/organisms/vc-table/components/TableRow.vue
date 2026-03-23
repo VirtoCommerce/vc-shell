@@ -27,17 +27,49 @@
       v-if="showDragHandle"
       class="vc-table-composition__row-drag-handle"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-        <rect x="2" y="4" width="12" height="1.5" rx="0.75"/>
-        <rect x="2" y="7.25" width="12" height="1.5" rx="0.75"/>
-        <rect x="2" y="10.5" width="12" height="1.5" rx="0.75"/>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+      >
+        <rect
+          x="2"
+          y="4"
+          width="12"
+          height="1.5"
+          rx="0.75"
+        />
+        <rect
+          x="2"
+          y="7.25"
+          width="12"
+          height="1.5"
+          rx="0.75"
+        />
+        <rect
+          x="2"
+          y="10.5"
+          width="12"
+          height="1.5"
+          rx="0.75"
+        />
       </svg>
     </div>
-    <TransitionGroup tag="div" :name="isColumnReordering ? 'vc-table-col-swap' : ''" class="vc-table-composition__row-transition-wrapper" :class="{ 'vc-table-composition__row-transition-wrapper--no-filler': hasFlexColumns }">
+    <TransitionGroup
+      tag="div"
+      :name="isColumnReordering ? 'vc-table-col-swap' : ''"
+      class="vc-table-composition__row-transition-wrapper"
+      :class="{ 'vc-table-composition__row-transition-wrapper--no-filler': hasFlexColumns }"
+    >
       <slot />
     </TransitionGroup>
     <!-- Row actions: overlay mode (absolute positioned, current behavior) -->
-    <slot v-if="actionsPosition !== 'column'" name="actions" />
+    <slot
+      v-if="actionsPosition !== 'column'"
+      name="actions"
+    />
 
     <!-- Row actions: column mode (fixed zone, always visible) -->
     <div
@@ -248,14 +280,19 @@ const handleDrop = (event: DragEvent) => {
     border-radius: 6px !important;
     transform: scale(1.01) !important;
     cursor: grabbing !important;
-    transition: box-shadow 0.15s ease, transform 0.15s ease, background-color 0.15s ease;
+    transition:
+      box-shadow 0.15s ease,
+      transform 0.15s ease,
+      background-color 0.15s ease;
   }
 
   &-drag-handle {
     @apply tw-flex tw-items-center tw-justify-center tw-w-6 tw-h-6 tw-flex-shrink-0 tw-rounded;
     cursor: inherit; // Inherit from row (grab when reorderable, default otherwise)
     color: var(--table-drag-handle-color, var(--neutrals-400));
-    transition: color 0.15s ease, background-color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
 
     &:hover {
       color: var(--table-drag-handle-color-hover, var(--neutrals-600));

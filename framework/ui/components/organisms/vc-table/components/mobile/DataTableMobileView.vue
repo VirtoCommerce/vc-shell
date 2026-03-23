@@ -76,7 +76,14 @@
  * - Action handling
  */
 import { computed, unref } from "vue";
-import type { MobileCardLayout, MobileSwipeAction, TableEmptyAction, ColumnInstance, TableAction, PullToRefreshTextConfig } from "@ui/components/organisms/vc-table/types";
+import type {
+  MobileCardLayout,
+  MobileSwipeAction,
+  TableEmptyAction,
+  ColumnInstance,
+  TableAction,
+  PullToRefreshTextConfig,
+} from "@ui/components/organisms/vc-table/types";
 import { useMobileCardLayout } from "@ui/components/organisms/vc-table/composables/useMobileCardLayout";
 import { provideTableSwipe } from "@ui/components/organisms/vc-table/composables/useTableSwipe";
 import DataTableMobileCard from "@ui/components/organisms/vc-table/components/mobile/DataTableMobileCard.vue";
@@ -135,7 +142,7 @@ const props = withDefaults(
     pullToRefreshText: undefined,
     isInlineEditing: false,
     newRowIndices: undefined,
-  }
+  },
 );
 
 const emit = defineEmits<{

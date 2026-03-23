@@ -20,7 +20,7 @@ export interface IBasePropertyValue {
   languageCode?: string | null;
   alias?: string | null;
   valueType?: string | null;
-  value?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  value?: any;
   valueId?: string | null;
   isInherited?: boolean;
   unitOfMeasureId?: string | null;
@@ -56,7 +56,6 @@ export interface UseDynamicPropertiesReturn<
   TPropertyValue extends IBasePropertyValue,
   TPropertyDictionaryItem extends IBasePropertyDictionaryItem,
   TPropertyDictionaryItemSearchCriteria extends IBasePropertyDictionaryItemSearchCriteria,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TMeasurement extends IBaseMeasurementDictionaryItem = Record<string, any>,
 > {
   loading: ComputedRef<boolean>;
@@ -79,9 +78,14 @@ export type IUseDynamicProperties<
   TPropertyValue extends IBasePropertyValue,
   TPropertyDictionaryItem extends IBasePropertyDictionaryItem,
   TPropertyDictionaryItemSearchCriteria extends IBasePropertyDictionaryItemSearchCriteria,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   TMeasurement extends IBaseMeasurementDictionaryItem = Record<string, any>,
-> = UseDynamicPropertiesReturn<TProperty, TPropertyValue, TPropertyDictionaryItem, TPropertyDictionaryItemSearchCriteria, TMeasurement>;
+> = UseDynamicPropertiesReturn<
+  TProperty,
+  TPropertyValue,
+  TPropertyDictionaryItem,
+  TPropertyDictionaryItemSearchCriteria,
+  TMeasurement
+>;
 
 export interface SetPropertyValueParams<TProperty, TPropertyValue, TPropertyDictionaryItem> {
   property: TProperty;
@@ -138,7 +142,12 @@ export const useDynamicProperties = <
   PropertyValueConstructor: new (data?: Partial<TPropertyValue>) => TPropertyValue,
   PropertyDictionaryItemConstructor: new (data?: Partial<TPropertyDictionaryItem>) => TPropertyDictionaryItem,
   searchMeasurementFunction?: (measureId: string, locale?: string) => Promise<TMeasurement[] | undefined>,
-): UseDynamicPropertiesReturn<TProperty, TPropertyValue, TPropertyDictionaryItem, TPropertyDictionaryItemSearchCriteria> => {
+): UseDynamicPropertiesReturn<
+  TProperty,
+  TPropertyValue,
+  TPropertyDictionaryItem,
+  TPropertyDictionaryItemSearchCriteria
+> => {
   // === ASYNC OPERATIONS ===
 
   const { loading: dictionaryItemsLoading, action: searchDictionaryItems } = useAsync<
@@ -358,9 +367,7 @@ export const useDynamicProperties = <
     } else {
       // Fallback: localizedValues is missing or empty (e.g. improperly created on platform side).
       // Use existing language codes from property.values, or fall back to current locale.
-      const existingLanguageCodes = [
-        ...new Set((property.values ?? []).map((v) => v.languageCode).filter(Boolean)),
-      ];
+      const existingLanguageCodes = [...new Set((property.values ?? []).map((v) => v.languageCode).filter(Boolean))];
       const languageCodes = existingLanguageCodes.length > 0 ? existingLanguageCodes : locale ? [locale] : [];
 
       property.values = languageCodes.map((langCode) =>

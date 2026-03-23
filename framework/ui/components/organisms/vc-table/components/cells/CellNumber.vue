@@ -9,6 +9,7 @@
     :validate-on-mount="validateOnMount"
   >
     <template #default="{ errors, errorMessage }">
+      <!-- eslint-disable vue/no-deprecated-filter -- TS union, not a filter -->
       <VcInput
         :model-value="value as number | null"
         class="vc-table-cell-number__input"
@@ -28,12 +29,20 @@
           />
         </template>
       </VcInput>
+      <!-- eslint-enable vue/no-deprecated-filter -->
     </template>
   </CellEditableWrapper>
 
   <!-- Display mode -->
-  <span v-else-if="!isEmpty" class="vc-table-cell-number">{{ formatted }}</span>
-  <span v-else class="vc-table-cell-number vc-table-cell-number--not-set">
+  <span
+    v-else-if="!isEmpty"
+    class="vc-table-cell-number"
+    >{{ formatted }}</span
+  >
+  <span
+    v-else
+    class="vc-table-cell-number vc-table-cell-number--not-set"
+  >
     {{ t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_SET") }}
   </span>
 </template>

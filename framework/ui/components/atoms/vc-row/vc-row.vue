@@ -6,7 +6,6 @@
 
 <script setup lang="ts">
 defineSlots<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   default: (props: any) => any;
 }>();
 </script>

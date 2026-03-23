@@ -25,8 +25,14 @@
     <div class="vc-table-composition__head-content">
       <slot />
     </div>
-    <div v-if="sortable" class="vc-table-composition__head-sort">
-      <span v-if="sortIndex" class="vc-table-composition__head-sort-badge">
+    <div
+      v-if="sortable"
+      class="vc-table-composition__head-sort"
+    >
+      <span
+        v-if="sortIndex"
+        class="vc-table-composition__head-sort-badge"
+      >
         {{ sortIndex }}
       </span>
       <VcIcon
@@ -34,7 +40,12 @@
         :icon="sortDirection === 'asc' ? 'lucide-arrow-up' : 'lucide-arrow-down'"
         size="xs"
       />
-      <VcIcon v-else icon="lucide-arrow-up-down" size="xs" class="tw-opacity-30" />
+      <VcIcon
+        v-else
+        icon="lucide-arrow-up-down"
+        size="xs"
+        class="tw-opacity-30"
+      />
     </div>
     <!-- AG Grid / TanStack style resizer -->
     <div
@@ -305,7 +316,10 @@ const handleDrop = (event: DragEvent) => {
     border-radius: 6px !important;
     transform: scale(1.01) !important;
     cursor: grabbing !important;
-    transition: box-shadow 0.15s ease, transform 0.15s ease, background-color 0.15s ease;
+    transition:
+      box-shadow 0.15s ease,
+      transform 0.15s ease,
+      background-color 0.15s ease;
   }
 }
 </style>

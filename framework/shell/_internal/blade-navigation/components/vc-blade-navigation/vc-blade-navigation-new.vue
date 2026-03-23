@@ -91,26 +91,28 @@ watchDebounced(
     breadcrumbs.value.forEach((bc) => bc && remove([bc.id]));
 
     // Rebuild from current blade stack (skip hidden blades from coverCurrentBlade)
-    newVal.filter((b) => b.visible).forEach((descriptor, index) => {
-      push({
-        id: index.toString(),
-        title: toRef({ title: descriptor.name }, "title"),
-        clickHandler: async (id) => {
-          const visibleIndex = parseInt(id);
-          // Map visible index back to actual blade in stack
-          const visibleBlades = blades.value.filter((b) => b.visible);
-          const targetBlade = visibleBlades[visibleIndex + 1];
-          if (targetBlade) {
-            const prevented = await bladeStack.closeBlade(targetBlade.id);
-            if (!prevented) {
-              syncUrlReplace();
+    newVal
+      .filter((b) => b.visible)
+      .forEach((descriptor, index) => {
+        push({
+          id: index.toString(),
+          title: toRef({ title: descriptor.name }, "title"),
+          clickHandler: async (id) => {
+            const visibleIndex = parseInt(id);
+            // Map visible index back to actual blade in stack
+            const visibleBlades = blades.value.filter((b) => b.visible);
+            const targetBlade = visibleBlades[visibleIndex + 1];
+            if (targetBlade) {
+              const prevented = await bladeStack.closeBlade(targetBlade.id);
+              if (!prevented) {
+                syncUrlReplace();
+              }
+              return !prevented;
             }
-            return !prevented;
-          }
-          return true;
-        },
+            return true;
+          },
+        });
       });
-    });
   },
   {
     deep: true,

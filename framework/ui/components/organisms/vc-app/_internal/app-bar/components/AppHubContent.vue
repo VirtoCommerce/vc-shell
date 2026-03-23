@@ -316,7 +316,13 @@ onBeforeUnmount(() => {
 });
 
 function normalizeIconUrl(url: string): string {
-  if (!url || url.startsWith("/") || url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) {
+  if (
+    !url ||
+    url.startsWith("/") ||
+    url.startsWith("http://") ||
+    url.startsWith("https://") ||
+    url.startsWith("data:")
+  ) {
     return url;
   }
 

@@ -39,7 +39,10 @@
           :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.FULLSCREEN')"
           @click.stop="$emit('preview')"
         >
-          <VcIcon icon="lucide-maximize" size="s" />
+          <VcIcon
+            icon="lucide-maximize"
+            size="s"
+          />
         </button>
         <button
           v-if="actions?.edit"
@@ -48,7 +51,10 @@
           :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.EDIT')"
           @click.stop="$emit('edit')"
         >
-          <VcIcon icon="lucide-pencil" size="s" />
+          <VcIcon
+            icon="lucide-pencil"
+            size="s"
+          />
         </button>
         <button
           v-if="actions?.remove"
@@ -57,7 +63,10 @@
           :title="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.DELETE')"
           @click.stop="$emit('remove')"
         >
-          <VcIcon icon="lucide-trash-2" size="s" />
+          <VcIcon
+            icon="lucide-trash-2"
+            size="s"
+          />
         </button>
 
         <!-- Extra actions slot -->
@@ -216,7 +225,11 @@ function deactivate() {
 }
 
 @keyframes image-tile-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 </style>

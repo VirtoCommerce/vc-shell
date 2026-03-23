@@ -61,7 +61,10 @@
             :disabled="resolveDisabled(item)"
             :widget-id="item.id"
             horizontal
-            @click="handleHeadlessClick(item); showToolbar = false"
+            @click="
+              handleHeadlessClick(item);
+              showToolbar = false;
+            "
           />
           <WidgetProvider
             v-else
@@ -104,7 +107,6 @@ const { resolveBadge, resolveLoading, resolveDisabled, resolveTitle, handleHeadl
 const displayedItems = computed(() => props.widgets.slice(0, 3));
 const overflowItems = computed(() => props.widgets.slice(3));
 const showMoreButton = computed(() => props.widgets.length > 3);
-
 </script>
 
 <style lang="scss">

@@ -17,8 +17,7 @@ const meta = {
   tags: ["autodocs"],
   argTypes: {
     speed: {
-      description:
-        "Scroll speed in pixels per animation frame. Captured once at mount and not reactive afterward.",
+      description: "Scroll speed in pixels per animation frame. Captured once at mount and not reactive afterward.",
       control: { type: "number", min: 1, max: 20, step: 1 },
       table: {
         type: { summary: "number" },

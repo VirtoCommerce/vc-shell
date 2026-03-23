@@ -1,4 +1,5 @@
-import { ref } from "vue";
+import { ref, defineComponent, h } from "vue";
+import { mount } from "@vue/test-utils";
 
 // Mock external dependencies before importing the module under test
 const mockStartTrackPage = vi.fn();
@@ -15,7 +16,6 @@ const mockAppInsights = {
 };
 
 vi.mock("vue3-application-insights", () => ({
-  useAppInsights: () => mockAppInsights,
   AppInsightsPluginOptions: {},
 }));
 
@@ -30,7 +30,26 @@ vi.mock("@core/composables/useUserManagement", () => ({
 }));
 
 // Must import after mocks are set up
-import { useAppInsights } from "./index";
+import { useAppInsights, AppInsightsInstanceKey } from "./index";
+
+/** Helper: runs useAppInsights inside a component so provide/inject works. */
+function runWithProvide(): ReturnType<typeof useAppInsights> {
+  let result!: ReturnType<typeof useAppInsights>;
+  const Wrapper = defineComponent({
+    setup() {
+      result = useAppInsights();
+      return () => h("div");
+    },
+  });
+  mount(Wrapper, {
+    global: {
+      provide: {
+        [AppInsightsInstanceKey as symbol]: mockAppInsights,
+      },
+    },
+  });
+  return result;
+}
 
 describe("useAppInsights", () => {
   beforeEach(() => {
@@ -40,7 +59,7 @@ describe("useAppInsights", () => {
   });
 
   it("returns setupPageTracking and appInsights", () => {
-    const result = useAppInsights();
+    const result = runWithProvide();
     expect(result.appInsights).toBeDefined();
     expect(result.setupPageTracking).toBeDefined();
     expect(result.setupPageTracking.beforeEach).toBeTypeOf("function");
@@ -48,7 +67,7 @@ describe("useAppInsights", () => {
   });
 
   it("beforeEach sets traceID and starts tracking", () => {
-    const { setupPageTracking } = useAppInsights();
+    const { setupPageTracking } = runWithProvide();
     setupPageTracking.beforeEach({ name: "TestPage" });
 
     expect(mockAppInsights.context.telemetryTrace.traceID).toBe("mock-w3c-id");
@@ -57,18 +76,17 @@ describe("useAppInsights", () => {
   });
 
   it("afterEach stops tracking with URL and user info", () => {
-    const { setupPageTracking } = useAppInsights();
+    const { setupPageTracking } = runWithProvide();
     setupPageTracking.afterEach({ name: "TestPage", fullPath: "/test/path" });
 
-    expect(mockStopTrackPage).toHaveBeenCalledWith(
-      "TestPage",
-      expect.stringContaining("/test/path"),
-      { userId: "user-123", userName: "testuser" },
-    );
+    expect(mockStopTrackPage).toHaveBeenCalledWith("TestPage", expect.stringContaining("/test/path"), {
+      userId: "user-123",
+      userName: "testuser",
+    });
   });
 
   it("afterEach URL includes protocol and host", () => {
-    const { setupPageTracking } = useAppInsights();
+    const { setupPageTracking } = runWithProvide();
     setupPageTracking.afterEach({ name: "Page", fullPath: "/foo" });
 
     const url = mockStopTrackPage.mock.calls[0][1];

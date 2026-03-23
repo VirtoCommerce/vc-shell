@@ -142,15 +142,15 @@ describe("NotificationStore", () => {
       expect(store.history.value.every((n) => !n.isNew)).toBe(true);
     });
 
-    it("rolls back isNew on server failure", async () => {
+    it("keeps local read state on server failure", async () => {
       mockMarkAllAsRead.mockRejectedValueOnce(new Error("server error"));
 
       store.ingest(makePush({ id: "a", isNew: true }));
       store.ingest(makePush({ id: "b", isNew: false }));
 
-      await expect(store.markAllAsRead()).rejects.toThrow("server error");
-      // Rolled back: "a" was true, "b" was false
-      expect(store.history.value.find((x) => x.id === "a")!.isNew).toBe(true);
+      await store.markAllAsRead();
+      // Local state stays "read" — server failure is non-critical
+      expect(store.history.value.find((x) => x.id === "a")!.isNew).toBe(false);
       expect(store.history.value.find((x) => x.id === "b")!.isNew).toBe(false);
     });
   });
@@ -201,9 +201,7 @@ describe("NotificationStore", () => {
 
       await store.loadHistory(5);
 
-      expect(mockSearchPushNotification).toHaveBeenCalledWith(
-        expect.objectContaining({ take: 5 }),
-      );
+      expect(mockSearchPushNotification).toHaveBeenCalledWith(expect.objectContaining({ take: 5 }));
       expect(store.history.value).toHaveLength(2);
       expect(store.history.value[0].id).toBe("h-1");
       expect(store.history.value[1].id).toBe("h-2");

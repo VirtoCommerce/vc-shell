@@ -17,7 +17,7 @@ const stubs = {
   VcBadge: { template: '<span class="vc-badge-stub"><slot /></span>', props: ["variant"] },
   VcTooltip: { template: '<div class="vc-tooltip-stub"><slot /><slot name="tooltip" /></div>' },
   VcSidebar: { template: '<div class="vc-sidebar-stub"><slot /></div>' },
-  Teleport: { template: '<div><slot /></div>' },
+  Teleport: { template: "<div><slot /></div>" },
 };
 
 function factory(props: Record<string, unknown> = {}) {

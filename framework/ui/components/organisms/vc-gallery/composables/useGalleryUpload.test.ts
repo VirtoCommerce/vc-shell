@@ -27,7 +27,7 @@ beforeAll(() => {
         return list as FileList;
       }
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     (globalThis as any).DataTransfer = DataTransferPolyfill;
   }
 });

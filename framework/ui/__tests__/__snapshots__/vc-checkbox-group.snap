@@ -1,165 +1,183 @@
 <div
   data-v-app=""
 >
-  <div
-    class="tw-max-w-lg tw-space-y-4"
+  <fieldset
+    aria-describedby="vc-input-group-v-1-hint"
+    aria-labelledby="vc-input-group-v-1-label"
+    class="vc-input-group vc-input-group--vertical vc-checkbox-group"
+    role="group"
   >
-    <fieldset
-      aria-describedby="vc-input-group-v-1-hint"
-      aria-labelledby="vc-input-group-v-1-label"
-      class="vc-input-group vc-input-group--vertical vc-checkbox-group"
-      role="group"
+    <legend
+      class="vc-input-group__legend"
+      id="vc-input-group-v-1-label"
     >
-      <legend
-        class="vc-input-group__legend"
-        id="vc-input-group-v-1-label"
-      >
-        <div
-          class="vc-label"
-        >
-          <div
-            class="vc-label__text"
-          >
-            <span
-              class="vc-label__content"
-            >
-              
-              <span>
-                Notification channels
-              </span>
-              
-            </span>
-            <!--v-if-->
-          </div>
-          <!--v-if-->
-          <!--v-if-->
-        </div>
-      </legend>
       <div
-        class="vc-input-group__controls"
+        class="vc-label"
+      >
+        <div
+          class="vc-label__text"
+        >
+          <span
+            class="vc-label__content"
+          >
+            
+            <span>
+              Notification channels
+            </span>
+            
+          </span>
+          <!--v-if-->
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+    </legend>
+    <div
+      class="vc-input-group__controls"
+    >
+      
+      
+      <div
+        class="vc-checkbox vc-checkbox--size-s"
+      >
+        <!--v-if-->
+        <label
+          class="vc-checkbox__container"
+        >
+          <input
+            aria-describedby="vc-input-group-v-1-hint"
+            class="vc-checkbox__input"
+            false-value="false"
+            id="vc-field-v-2"
+            name="vc-checkbox-group-v-0"
+            tabindex="0"
+            true-value="true"
+            type="checkbox"
+            value="email"
+          />
+          <span
+            class="vc-checkbox__custom-input"
+          >
+            
+            <svg
+              class="vc-checkbox__check-icon"
+              fill="none"
+              height="14"
+              viewBox="0 0 14 14"
+              width="14"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.90927 3.80151C10.3113 3.3995 10.9631 3.3995 11.3651 3.80151C11.7671 4.20352 11.7671 4.85531 11.3651 5.25732L6.35527 10.2671C5.95326 10.6691 5.30148 10.6691 4.89947 10.2671L2.63476 8.00241C2.23275 7.6004 2.23275 6.94862 2.63476 6.54661C3.03677 6.14459 3.68856 6.14459 4.09057 6.54661L5.62737 8.08341L9.90927 3.80151Z"
+                fill="var(--additional-50)"
+              />
+            </svg>
+            <!--v-if-->
+            
+          </span>
+          <span
+            class="vc-checkbox__text"
+          >
+            
+            Email
+            
+          </span>
+          <!--v-if-->
+        </label>
+        <!--v-if-->
+      </div>
+      <div
+        class="vc-checkbox vc-checkbox--disabled vc-checkbox--size-s"
+      >
+        <!--v-if-->
+        <label
+          class="vc-checkbox__container"
+        >
+          <input
+            aria-describedby="vc-input-group-v-1-hint"
+            class="vc-checkbox__input"
+            disabled=""
+            false-value="false"
+            id="vc-field-v-3"
+            name="vc-checkbox-group-v-0"
+            tabindex="0"
+            true-value="true"
+            type="checkbox"
+            value="sms"
+          />
+          <span
+            class="vc-checkbox__custom-input"
+          >
+            
+            <!--v-if-->
+            <!--v-if-->
+            
+          </span>
+          <span
+            class="vc-checkbox__text"
+          >
+            
+            SMS
+            
+          </span>
+          <!--v-if-->
+        </label>
+        <!--v-if-->
+      </div>
+      <div
+        class="vc-checkbox vc-checkbox--size-s"
+      >
+        <!--v-if-->
+        <label
+          class="vc-checkbox__container"
+        >
+          <input
+            aria-describedby="vc-input-group-v-1-hint"
+            class="vc-checkbox__input"
+            false-value="false"
+            id="vc-field-v-4"
+            name="vc-checkbox-group-v-0"
+            tabindex="0"
+            true-value="true"
+            type="checkbox"
+            value="push"
+          />
+          <span
+            class="vc-checkbox__custom-input"
+          >
+            
+            <!--v-if-->
+            <!--v-if-->
+            
+          </span>
+          <span
+            class="vc-checkbox__text"
+          >
+            
+            Push
+            
+          </span>
+          <!--v-if-->
+        </label>
+        <!--v-if-->
+      </div>
+      
+      
+    </div>
+    <div>
+      
+      <div
+        class="vc-hint vc-input-group__hint"
+        id="vc-input-group-v-1-hint"
       >
         
+        You can choose multiple options
         
-        <div
-          class="vc-checkbox vc-checkbox--size-s"
-        >
-          <!--v-if-->
-          <label
-            class="vc-checkbox__container"
-          >
-            <input
-              aria-describedby="vc-input-group-v-1-hint"
-              class="vc-checkbox__input"
-              false-value="false"
-              id="vc-field-v-2"
-              name="notification-channels"
-              tabindex="0"
-              true-value="true"
-              type="checkbox"
-              value="email"
-            />
-            <span
-              class="vc-checkbox__custom-input"
-            >
-              
-              <svg
-                class="vc-checkbox__check-icon"
-                fill="none"
-                height="14"
-                viewBox="0 0 14 14"
-                width="14"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M9.90927 3.80151C10.3113 3.3995 10.9631 3.3995 11.3651 3.80151C11.7671 4.20352 11.7671 4.85531 11.3651 5.25732L6.35527 10.2671C5.95326 10.6691 5.30148 10.6691 4.89947 10.2671L2.63476 8.00241C2.23275 7.6004 2.23275 6.94862 2.63476 6.54661C3.03677 6.14459 3.68856 6.14459 4.09057 6.54661L5.62737 8.08341L9.90927 3.80151Z"
-                  fill="var(--additional-50)"
-                />
-              </svg>
-              <!--v-if-->
-              
-            </span>
-            <span
-              class="vc-checkbox__text"
-            >
-              
-              Email
-              
-            </span>
-            <!--v-if-->
-          </label>
-          <!--v-if-->
-        </div>
-        <div
-          class="vc-checkbox vc-checkbox--size-s"
-        >
-          <!--v-if-->
-          <label
-            class="vc-checkbox__container"
-          >
-            <input
-              aria-describedby="vc-input-group-v-1-hint"
-              class="vc-checkbox__input"
-              false-value="false"
-              id="vc-field-v-3"
-              name="notification-channels"
-              tabindex="0"
-              true-value="true"
-              type="checkbox"
-              value="sms"
-            />
-            <span
-              class="vc-checkbox__custom-input"
-            >
-              
-              <!--v-if-->
-              <!--v-if-->
-              
-            </span>
-            <span
-              class="vc-checkbox__text"
-            >
-              
-              SMS
-              
-            </span>
-            <!--v-if-->
-          </label>
-          <!--v-if-->
-        </div>
-        <div
-          class="vc-checkbox vc-checkbox--size-s"
-        >
-          <!--v-if-->
-          <label
-            class="vc-checkbox__container"
-          >
-            <input
-              aria-describedby="vc-input-group-v-1-hint"
-              class="vc-checkbox__input"
-              false-value="false"
-              id="vc-field-v-4"
-              name="notification-channels"
-              tabindex="0"
-              true-value="true"
-              type="checkbox"
-              value="push"
-            />
-            <span
-              class="vc-checkbox__custom-input"
-            >
-              
-              <!--v-if-->
-              <!--v-if-->
-              
-            </span>
-            <span
-              class="vc-checkbox__text"
-            >
-              
-              Push
-              
-            </span>
-            <!--v-if-->
+      </div>
+      
+    </div>
+  </fieldset>
+</div><!--v-if-->
           </label>
           <!--v-if-->
         </div>

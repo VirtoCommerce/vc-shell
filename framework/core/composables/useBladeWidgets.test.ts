@@ -27,10 +27,7 @@ function createMockWidgetService(overrides: Partial<IWidgetService> = {}): IWidg
   };
 }
 
-function mountWithBlade(
-  setup: () => unknown,
-  options: { bladeId?: string; widgetService?: IWidgetService } = {},
-) {
+function mountWithBlade(setup: () => unknown, options: { bladeId?: string; widgetService?: IWidgetService } = {}) {
   const bladeId = options.bladeId ?? "test-blade";
   const service = options.widgetService ?? createMockWidgetService();
 
@@ -56,10 +53,11 @@ describe("useBladeWidgets", () => {
     const service = createMockWidgetService({ registerWidget });
 
     mountWithBlade(
-      () => useBladeWidgets([
-        { id: "W1", icon: "lucide-tag", title: "Widget 1", badge: ref(5) },
-        { id: "W2", icon: "lucide-star", title: "Widget 2" },
-      ]),
+      () =>
+        useBladeWidgets([
+          { id: "W1", icon: "lucide-tag", title: "Widget 1", badge: ref(5) },
+          { id: "W2", icon: "lucide-star", title: "Widget 2" },
+        ]),
       { widgetService: service, bladeId: "blade-1" },
     );
 
@@ -79,10 +77,11 @@ describe("useBladeWidgets", () => {
     const service = createMockWidgetService({ unregisterWidget });
 
     const wrapper = mountWithBlade(
-      () => useBladeWidgets([
-        { id: "W1", icon: "lucide-tag", title: "Widget 1" },
-        { id: "W2", icon: "lucide-star", title: "Widget 2" },
-      ]),
+      () =>
+        useBladeWidgets([
+          { id: "W1", icon: "lucide-tag", title: "Widget 1" },
+          { id: "W2", icon: "lucide-star", title: "Widget 2" },
+        ]),
       { widgetService: service, bladeId: "blade-1" },
     );
 
@@ -100,13 +99,16 @@ describe("useBladeWidgets", () => {
     const onClick = vi.fn();
 
     mountWithBlade(
-      () => useBladeWidgets([{
-        id: "W1",
-        icon: "lucide-tag",
-        title: "Test Widget",
-        badge,
-        onClick,
-      }]),
+      () =>
+        useBladeWidgets([
+          {
+            id: "W1",
+            icon: "lucide-tag",
+            title: "Test Widget",
+            badge,
+            onClick,
+          },
+        ]),
       { widgetService: service, bladeId: "blade-1" },
     );
 
@@ -125,12 +127,15 @@ describe("useBladeWidgets", () => {
     const onRefresh = vi.fn();
 
     mountWithBlade(
-      () => useBladeWidgets([{
-        id: "W1",
-        icon: "lucide-star",
-        title: "Refresh Widget",
-        onRefresh,
-      }]),
+      () =>
+        useBladeWidgets([
+          {
+            id: "W1",
+            icon: "lucide-star",
+            title: "Refresh Widget",
+            onRefresh,
+          },
+        ]),
       { widgetService: service, bladeId: "blade-1" },
     );
 
@@ -144,14 +149,14 @@ describe("useBladeWidgets", () => {
 
   it("refresh() calls trigger.onRefresh on specific widget", () => {
     const onRefresh = vi.fn();
-    const getWidgets = vi.fn(() => [
-      { id: "W1", trigger: { onRefresh } },
-    ]);
+    const getWidgets = vi.fn(() => [{ id: "W1", trigger: { onRefresh } }]);
     const service = createMockWidgetService({ getWidgets });
 
     let result: ReturnType<typeof useBladeWidgets> | undefined;
     mountWithBlade(
-      () => { result = useBladeWidgets([{ id: "W1", icon: "lucide-star", title: "Test" }]); },
+      () => {
+        result = useBladeWidgets([{ id: "W1", icon: "lucide-star", title: "Test" }]);
+      },
       { widgetService: service, bladeId: "blade-1" },
     );
 
@@ -171,11 +176,13 @@ describe("useBladeWidgets", () => {
 
     let result: ReturnType<typeof useBladeWidgets> | undefined;
     mountWithBlade(
-      () => { result = useBladeWidgets([
-        { id: "W1", icon: "lucide-star", title: "T1", onRefresh: onRefresh1 },
-        { id: "W2", icon: "lucide-tag", title: "T2", onRefresh: onRefresh2 },
-        { id: "W3", icon: "lucide-link", title: "T3" },
-      ]); },
+      () => {
+        result = useBladeWidgets([
+          { id: "W1", icon: "lucide-star", title: "T1", onRefresh: onRefresh1 },
+          { id: "W2", icon: "lucide-tag", title: "T2", onRefresh: onRefresh2 },
+          { id: "W3", icon: "lucide-link", title: "T3" },
+        ]);
+      },
       { widgetService: service, bladeId: "blade-1" },
     );
 
@@ -189,16 +196,10 @@ describe("useBladeWidgets", () => {
     const service = createMockWidgetService({ registerWidget });
     const isVisible = computed(() => true);
 
-    mountWithBlade(
-      () => useBladeWidgets([
-        { id: "W1", icon: "lucide-star", title: "Test", isVisible },
-      ]),
-      { widgetService: service },
-    );
+    mountWithBlade(() => useBladeWidgets([{ id: "W1", icon: "lucide-star", title: "Test", isVisible }]), {
+      widgetService: service,
+    });
 
-    expect(registerWidget).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "W1", isVisible }),
-      expect.any(String),
-    );
+    expect(registerWidget).toHaveBeenCalledWith(expect.objectContaining({ id: "W1", isVisible }), expect.any(String));
   });
 });

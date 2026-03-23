@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { createBladeScopedRegistry, type BladeScopedRegistry } from "@core/services/_internal/createBladeScopedRegistry";
+import {
+  createBladeScopedRegistry,
+  type BladeScopedRegistry,
+} from "@core/services/_internal/createBladeScopedRegistry";
 
 interface TestItem {
   id: string;

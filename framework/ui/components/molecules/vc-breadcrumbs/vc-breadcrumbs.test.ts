@@ -27,7 +27,9 @@ describe("VcBreadcrumbs", () => {
             template: '<span class="stub-breadcrumbs-item">{{ title }}</span>',
             props: ["title", "icon", "current", "variant", "id", "clickHandler"],
           },
-          VcDropdown: { template: '<div class="stub-dropdown"><slot name="trigger" :isActive="false" /><slot name="item" /></div>' },
+          VcDropdown: {
+            template: '<div class="stub-dropdown"><slot name="trigger" :isActive="false" /><slot name="item" /></div>',
+          },
           VcDropdownItem: { template: '<div class="stub-dropdown-item" />' },
           VcButton: true,
           VcIcon: true,

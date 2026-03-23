@@ -4,10 +4,7 @@ import { mount } from "@vue/test-utils";
 import { AppRootElementKey } from "@framework/injection-keys";
 import { useTeleportTarget } from "./useTeleportTarget";
 
-function mountWithProvider<T>(
-  setupFn: () => T,
-  providerSetup?: () => void,
-) {
+function mountWithProvider<T>(setupFn: () => T, providerSetup?: () => void) {
   let result: T;
   const Inner = defineComponent({
     setup() {
@@ -32,17 +29,13 @@ describe("useTeleportTarget", () => {
   });
 
   it("uses explicit string target", () => {
-    const { result } = mountWithProvider(() =>
-      useTeleportTarget({ to: "#my-portal" }),
-    );
+    const { result } = mountWithProvider(() => useTeleportTarget({ to: "#my-portal" }));
     expect(result.teleportTarget.value).toBe("#my-portal");
   });
 
   it("uses explicit HTMLElement target", () => {
     const el = document.createElement("div");
-    const { result } = mountWithProvider(() =>
-      useTeleportTarget({ to: el }),
-    );
+    const { result } = mountWithProvider(() => useTeleportTarget({ to: el }));
     expect(result.teleportTarget.value).toBe(el);
   });
 
@@ -71,9 +64,7 @@ describe("useTeleportTarget", () => {
   });
 
   it("returns undefined when fallbackToBody is false and no target/root", () => {
-    const { result } = mountWithProvider(() =>
-      useTeleportTarget({ fallbackToBody: false }),
-    );
+    const { result } = mountWithProvider(() => useTeleportTarget({ fallbackToBody: false }));
     expect(result.teleportTarget.value).toBeUndefined();
   });
 
@@ -91,9 +82,7 @@ describe("useTeleportTarget", () => {
   it("supports reactive MaybeRefOrGetter for to option", async () => {
     const target = ref<string | null>(null);
 
-    const { result } = mountWithProvider(() =>
-      useTeleportTarget({ to: () => target.value }),
-    );
+    const { result } = mountWithProvider(() => useTeleportTarget({ to: () => target.value }));
 
     expect(result.teleportTarget.value).toBe("body");
 

@@ -68,7 +68,23 @@ vi.mock("@ui/components/organisms/vc-table/VcDataTable.vue", () => ({
 vi.mock("@ui/components/organisms/vc-table/components/VcColumn.vue", () => ({
   default: defineComponent({
     name: "VcColumn",
-    props: ["id", "field", "title", "width", "type", "sortable", "editable", "align", "alwaysVisible", "currencyField", "rules", "filter", "mobileRole", "mobilePosition", "mobileVisible"],
+    props: [
+      "id",
+      "field",
+      "title",
+      "width",
+      "type",
+      "sortable",
+      "editable",
+      "align",
+      "alwaysVisible",
+      "currencyField",
+      "rules",
+      "filter",
+      "mobileRole",
+      "mobilePosition",
+      "mobileVisible",
+    ],
     template: "<div class='mock-vc-column' :data-id='id' />",
   }),
 }));

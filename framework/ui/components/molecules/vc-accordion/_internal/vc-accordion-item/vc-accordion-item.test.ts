@@ -79,9 +79,7 @@ describe("VcAccordionItem", () => {
     const wrapper = mount(VcAccordionItem, {
       props: { title: "T", disabled: true },
     });
-    expect(
-      (wrapper.find(".vc-accordion-item__header").element as HTMLButtonElement).disabled,
-    ).toBe(true);
+    expect((wrapper.find(".vc-accordion-item__header").element as HTMLButtonElement).disabled).toBe(true);
   });
 
   it("shows chevron icon when hasOverflow is true", () => {

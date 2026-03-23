@@ -9,8 +9,14 @@ vi.mock("vue-i18n", () => ({
 
 const stubs = {
   VcButton: { template: '<button class="vc-button-stub"><slot /></button>', props: ["variant", "size", "icon"] },
-  VcSelect: { template: '<div class="vc-select-stub" />', props: ["modelValue", "options", "multiple", "clearable", "placeholder", "emitValue", "optionValue", "optionLabel"] },
-  VcDropdownPanel: { template: '<div class="vc-dropdown-panel-stub"><slot /><slot name="footer" /></div>', props: ["show", "anchorRef", "title", "width", "maxWidth"] },
+  VcSelect: {
+    template: '<div class="vc-select-stub" />',
+    props: ["modelValue", "options", "multiple", "clearable", "placeholder", "emitValue", "optionValue", "optionLabel"],
+  },
+  VcDropdownPanel: {
+    template: '<div class="vc-dropdown-panel-stub"><slot /><slot name="footer" /></div>',
+    props: ["show", "anchorRef", "title", "width", "maxWidth"],
+  },
   VcDatePicker: { template: '<div class="vc-date-picker-stub" />', props: ["modelValue", "variant"] },
   VcInput: { template: '<input class="vc-input-stub" />', props: ["modelValue", "placeholder", "clearable"] },
 };
@@ -48,9 +54,7 @@ describe("GlobalFiltersPanel", () => {
 
   it("renders filters from config", () => {
     const w = factory({
-      filters: [
-        { field: "status", label: "Status", type: "select", options: [{ label: "Active", value: "active" }] },
-      ],
+      filters: [{ field: "status", label: "Status", type: "select", options: [{ label: "Active", value: "active" }] }],
     });
     expect(w.exists()).toBe(true);
   });

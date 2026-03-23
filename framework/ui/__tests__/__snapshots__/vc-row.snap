@@ -5,38 +5,39 @@
     <p
       class="tw-mb-2 tw-text-sm"
     >
-      Items with custom spacing using utility classes
+      Simulating mobile view with grid layout
     </p>
     <div
-      class="vc-row tw-gap-4"
+      class="vc-app--mobile"
     >
-      
-      
       <div
-        class="tw-p-4 tw-bg-gray-100 tw-rounded tw-w-32 tw-h-32 tw-flex tw-items-center tw-justify-center"
+        class="vc-row tw-gap-2"
       >
-         Item 1
+        
+        
+        <div
+          class="tw-p-4 tw-bg-gray-100 tw-rounded tw-flex tw-items-center tw-justify-center"
+        >
+           Item 1
+        </div>
+        <div
+          class="tw-p-4 tw-bg-gray-100 tw-rounded tw-flex tw-items-center tw-justify-center"
+        >
+           Item 2
+        </div>
+        <div
+          class="tw-p-4 tw-bg-gray-100 tw-rounded tw-flex tw-items-center tw-justify-center"
+        >
+           Item 3
+        </div>
+        <div
+          class="tw-p-4 tw-bg-gray-100 tw-rounded tw-flex tw-items-center tw-justify-center"
+        >
+           Item 4
+        </div>
+        
+        
       </div>
-      <div
-        class="tw-p-4 tw-bg-gray-100 tw-rounded tw-w-32 tw-h-32 tw-flex tw-items-center tw-justify-center"
-      >
-         Item 2
-      </div>
-      <div
-        class="tw-p-4 tw-bg-gray-100 tw-rounded tw-w-32 tw-h-32 tw-flex tw-items-center tw-justify-center"
-      >
-         Item 3
-      </div>
-      <div
-        class="tw-p-4 tw-bg-gray-100 tw-rounded tw-w-32 tw-h-32 tw-flex tw-items-center tw-justify-center"
-      >
-         Item 4
-      </div>
-      
-      
-    </div>
-  </div>
-</div>      </div>
     </div>
   </div>
 </div>"tw-font-medium tw-mb-2"

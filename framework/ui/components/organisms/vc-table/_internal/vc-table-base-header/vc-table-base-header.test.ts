@@ -9,11 +9,15 @@ vi.mock("vue-i18n", () => ({
 
 const stubs = {
   VcInput: {
-    template: '<input class="vc-input-stub" :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
+    template:
+      '<input class="vc-input-stub" :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />',
     props: ["modelValue", "placeholder", "clearable", "name"],
   },
   VcIcon: { template: '<i class="vc-icon-stub" />', props: ["icon"] },
-  VcTableFilter: { template: '<div class="vc-table-filter-stub"><slot /></div>', props: ["title", "counter", "parentExpanded", "disabled"] },
+  VcTableFilter: {
+    template: '<div class="vc-table-filter-stub"><slot /></div>',
+    props: ["title", "counter", "parentExpanded", "disabled"],
+  },
 };
 
 function factory(props: Record<string, unknown> = {}, slots: Record<string, string> = {}) {

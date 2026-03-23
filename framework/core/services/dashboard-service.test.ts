@@ -26,8 +26,20 @@ describe("createDashboardService", () => {
     const { createDashboardService } = await loadModule();
     const svc = createDashboardService({ hasAccess: (perms) => perms?.includes("admin") ?? true });
     svc.registerWidget({ id: "pub", name: "P", component: {} as any, size: { width: 1, height: 1 } });
-    svc.registerWidget({ id: "priv", name: "R", component: {} as any, size: { width: 1, height: 1 }, permissions: ["admin"] });
-    svc.registerWidget({ id: "denied", name: "D", component: {} as any, size: { width: 1, height: 1 }, permissions: ["superuser"] });
+    svc.registerWidget({
+      id: "priv",
+      name: "R",
+      component: {} as any,
+      size: { width: 1, height: 1 },
+      permissions: ["admin"],
+    });
+    svc.registerWidget({
+      id: "denied",
+      name: "D",
+      component: {} as any,
+      size: { width: 1, height: 1 },
+      permissions: ["superuser"],
+    });
     expect(svc.getWidgets()).toHaveLength(2);
   });
 

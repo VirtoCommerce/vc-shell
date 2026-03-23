@@ -13,10 +13,10 @@ vi.mock("@ui/components/molecules/vc-dropdown", () => ({
     props: ["modelValue", "items", "emptyText", "maxHeight", "padded", "closeOnClickOutside"],
     setup(props, { slots }) {
       return () =>
-        h("div", { class: "vc-dropdown" },
-          props.items?.map((item: any, idx: number) =>
-            slots.item?.({ item }) ?? h("div", { key: idx }, item.title),
-          ),
+        h(
+          "div",
+          { class: "vc-dropdown" },
+          props.items?.map((item: any, idx: number) => slots.item?.({ item }) ?? h("div", { key: idx }, item.title)),
         );
     },
   }),
@@ -28,7 +28,8 @@ vi.mock("@shell/components/notification-dropdown/_internal/notification/notifica
     name: "NotificationItem",
     props: ["notification"],
     setup(props) {
-      return () => h("div", { class: "notification-item", "data-testid": props.notification?.id }, props.notification?.title);
+      return () =>
+        h("div", { class: "notification-item", "data-testid": props.notification?.id }, props.notification?.title);
     },
   }),
 }));
@@ -39,7 +40,7 @@ vi.mock("lodash-es", () => ({
     return [...arr].sort((a, b) => {
       const aVal = a[keys[0]];
       const bVal = b[keys[0]];
-      return dirs[0] === "desc" ? (bVal > aVal ? 1 : -1) : (aVal > bVal ? 1 : -1);
+      return dirs[0] === "desc" ? (bVal > aVal ? 1 : -1) : aVal > bVal ? 1 : -1;
     });
   },
 }));
@@ -66,9 +67,7 @@ describe("notification-dropdown ↔ store integration", () => {
       messages: { en: { COMPONENTS: { NOTIFICATION_DROPDOWN: { EMPTY: "No notifications" } } } },
     });
 
-    const NotificationDropdown = (
-      await import("./notification-dropdown.vue")
-    ).default;
+    const NotificationDropdown = (await import("./notification-dropdown.vue")).default;
 
     const wrapper = mount(NotificationDropdown, {
       global: {
@@ -108,9 +107,7 @@ describe("notification-dropdown ↔ store integration", () => {
       messages: { en: { COMPONENTS: { NOTIFICATION_DROPDOWN: { EMPTY: "No notifications" } } } },
     });
 
-    const NotificationDropdown = (
-      await import("./notification-dropdown.vue")
-    ).default;
+    const NotificationDropdown = (await import("./notification-dropdown.vue")).default;
 
     const wrapper = mount(NotificationDropdown, {
       global: {

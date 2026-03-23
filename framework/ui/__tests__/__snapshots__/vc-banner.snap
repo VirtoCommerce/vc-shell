@@ -2,13 +2,13 @@
   data-v-app=""
 >
   <div
-    aria-label="Error"
-    class="vc-banner vc-banner--danger tw-max-w-lg"
-    role="alert"
+    aria-label="Information"
+    class="vc-banner vc-banner--info"
+    role="region"
   >
     <svg
       aria-hidden="true"
-      class="lucide vc-lucide-icon vc-lucide-icon--l vc-lucide-icon--danger vc-icon vc-icon--l vc-icon--danger vc-banner__icon vc-banner__icon lucide-circle-alert-icon lucide-circle-alert vc-lucide-icon vc-lucide-icon--l vc-lucide-icon--danger vc-icon vc-icon--l vc-icon--danger vc-banner__icon vc-banner__icon"
+      class="lucide vc-lucide-icon vc-lucide-icon--l vc-icon vc-icon--l vc-banner__icon vc-banner__icon lucide-info-icon lucide-info vc-lucide-icon vc-lucide-icon--l vc-icon vc-icon--l vc-banner__icon vc-banner__icon"
       fill="none"
       height="24"
       stroke="currentColor"
@@ -24,17 +24,11 @@
         cy="12"
         r="10"
       />
-      <line
-        x1="12"
-        x2="12"
-        y1="8"
-        y2="12"
+      <path
+        d="M12 16v-4"
       />
-      <line
-        x1="12"
-        x2="12.01"
-        y1="16"
-        y2="16"
+      <path
+        d="M12 8h.01"
       />
     </svg>
     <div
@@ -44,7 +38,7 @@
         class="vc-banner__title"
       >
         
-        Decline Reason
+        Heads up!
         
       </div>
       <div
@@ -55,14 +49,22 @@
           class="vc-banner__content"
         >
           
-           Product does not meet the quality standards. Please review the images and description, then resubmit for approval. 
+           You can add components to your app using the CLI. 
           
         </div>
       </div>
       <!--v-if-->
     </div>
   </div>
-</div>     <li>
+</div>lowing validation errors were found during processing:
+          </p>
+          <ul
+            class="tw-list-disc tw-pl-4 tw-mt-1 tw-space-y-1"
+          >
+            <li>
+              Product SKU is required and must be unique
+            </li>
+            <li>
               Price must be a positive number greater than zero
             </li>
             <li>
@@ -83,151 +85,5 @@
       </div>
       <!--v-if-->
     </div>
-  </div>
-</div>    />
-        <path
-          d="m9 12 2 2 4-4"
-        />
-      </svg>
-      <div
-        class="vc-banner__body"
-      >
-        <div
-          class="vc-banner__title"
-        >
-          
-          Success
-          
-        </div>
-        <div
-          class="vc-banner__content-wrapper"
-          style="max-height: 100px;"
-        >
-          <div
-            class="vc-banner__content"
-          >
-            
-             The operation completed successfully.
-            
-          </div>
-        </div>
-        <!--v-if-->
-      </div>
-    </div>
-    <div
-      aria-label="Warning"
-      class="vc-banner vc-banner--warning"
-      role="alert"
-    >
-      <svg
-        aria-hidden="true"
-        class="lucide vc-lucide-icon vc-lucide-icon--l vc-icon vc-icon--l vc-banner__icon vc-banner__icon lucide-triangle-alert-icon lucide-triangle-alert vc-lucide-icon vc-lucide-icon--l vc-icon vc-icon--l vc-banner__icon vc-banner__icon"
-        fill="none"
-        height="24"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="1.5"
-        viewBox="0 0 24 24"
-        width="24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
-        />
-        <path
-          d="M12 9v4"
-        />
-        <path
-          d="M12 17h.01"
-        />
-      </svg>
-      <div
-        class="vc-banner__body"
-      >
-        <div
-          class="vc-banner__title"
-        >
-          
-          Warning
-          
-        </div>
-        <div
-          class="vc-banner__content-wrapper"
-          style="max-height: 100px;"
-        >
-          <div
-            class="vc-banner__content"
-          >
-            
-             Please review before proceeding with this action.
-            
-          </div>
-        </div>
-        <!--v-if-->
-      </div>
-    </div>
-    <div
-      aria-label="Error"
-      class="vc-banner vc-banner--danger"
-      role="alert"
-    >
-      <svg
-        aria-hidden="true"
-        class="lucide vc-lucide-icon vc-lucide-icon--l vc-icon vc-icon--l vc-banner__icon vc-banner__icon lucide-circle-alert-icon lucide-circle-alert vc-lucide-icon vc-lucide-icon--l vc-icon vc-icon--l vc-banner__icon vc-banner__icon"
-        fill="none"
-        height="24"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="1.5"
-        viewBox="0 0 24 24"
-        width="24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          cx="12"
-          cy="12"
-          r="10"
-        />
-        <line
-          x1="12"
-          x2="12"
-          y1="8"
-          y2="12"
-        />
-        <line
-          x1="12"
-          x2="12.01"
-          y1="16"
-          y2="16"
-        />
-      </svg>
-      <div
-        class="vc-banner__body"
-      >
-        <div
-          class="vc-banner__title"
-        >
-          
-          Error
-          
-        </div>
-        <div
-          class="vc-banner__content-wrapper"
-          style="max-height: 100px;"
-        >
-          <div
-            class="vc-banner__content"
-          >
-            
-             Something went wrong. Please try again later.
-            
-          </div>
-        </div>
-        <!--v-if-->
-      </div>
-    </div>
-    
   </div>
 </div>

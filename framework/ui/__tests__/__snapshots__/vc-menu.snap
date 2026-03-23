@@ -4,377 +4,444 @@
   <div
     style="width: 246px; background: var(--additional-50, white); padding: 8px; border-radius: 8px; min-height: 400px;"
   >
-    <div>
-      <button
-        style="margin-bottom: 12px; padding: 6px 16px; background: rgb(59, 130, 246); color: white; border-radius: 6px; cursor: pointer;"
-      >
-        Collapse
-      </button>
+    <div
+      class="vc-menu"
+    >
+      <!-- Loading skeleton -->
+      
+      <!-- Menu content -->
       <div
-        style="width: 246px; transition: width 0.3s ease; background: var(--additional-50, white); padding: 8px; border-radius: 8px; min-height: 400px;"
+        class="vc-menu__items"
       >
+        
         <div
-          class="vc-menu"
+          class="vc-menu-group vc-menu-group--section"
         >
-          <!-- Loading skeleton -->
-          
-          <!-- Menu content -->
-          <div
-            class="vc-menu__items"
+          <!-- Section variant header -->
+          <button
+            class="vc-menu-group__section-header"
           >
-            
-            <div
-              class="vc-menu-group vc-menu-group--section"
+            <!--v-if-->
+            <span
+              class="vc-menu-group__section-title"
             >
-              <!-- Section variant header -->
-              <button
-                class="vc-menu-group__section-header"
-              >
-                <!--v-if-->
-                <span
-                  class="vc-menu-group__section-title"
-                >
-                  Activity
-                </span>
-                <svg
-                  aria-hidden="true"
-                  class="lucide vc-lucide-icon vc-lucide-icon--s vc-icon vc-icon--s vc-menu-group__chevron vc-menu-group__chevron lucide-chevron-down-icon lucide-chevron-down vc-lucide-icon vc-lucide-icon--s vc-icon vc-icon--s vc-menu-group__chevron vc-menu-group__chevron"
-                  fill="none"
-                  height="24"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m6 9 6 6 6-6"
-                  />
-                </svg>
-              </button>
-              <!-- Children with grid animation -->
+              Orders
+            </span>
+            <svg
+              aria-hidden="true"
+              class="lucide vc-lucide-icon vc-lucide-icon--s vc-icon vc-icon--s vc-menu-group__chevron vc-menu-group__chevron lucide-chevron-down-icon lucide-chevron-down vc-lucide-icon vc-lucide-icon--s vc-icon vc-icon--s vc-menu-group__chevron vc-menu-group__chevron"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m6 9 6 6 6-6"
+              />
+            </svg>
+          </button>
+          <!-- Children with grid animation -->
+          <div
+            class="vc-menu-group__children-wrapper"
+          >
+            <div
+              class="vc-menu-group__children"
+            >
+              
               <div
-                class="vc-menu-group__children-wrapper"
+                class="vc-menu-item"
               >
-                <div
-                  class="vc-menu-group__children"
+                <vctooltip
+                  placement="bottom"
                 >
+                  <div
+                    class="vc-menu-item__content"
+                  >
+                    <!-- Icon -->
+                    <div
+                      class="vc-menu-item__icon"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content lucide-shopping-cart-icon lucide-shopping-cart vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle
+                          cx="8"
+                          cy="21"
+                          r="1"
+                        />
+                        <circle
+                          cx="19"
+                          cy="21"
+                          r="1"
+                        />
+                        <path
+                          d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"
+                        />
+                      </svg>
+                    </div>
+                    <!-- Title + badge (shown when expanded) -->
+                    <div
+                      class="vc-menu-item__title"
+                    >
+                      <span
+                        class="vc-menu-item__title-text"
+                      >
+                        New Orders
+                      </span>
+                      
+                      <!-- Inline mode: render badge element directly without wrapper -->
+                      <div
+                        class="vc-badge__badge vc-badge__badge--inline vc-badge__badge--primary vc-badge__badge--inline-small vc-menu-item__badge"
+                      >
+                        <span
+                          class="vc-badge__text"
+                        >
+                          5
+                        </span>
+                      </div>
+                      
+                      
+                      
+                    </div>
+                  </div>
+                </vctooltip>
+              </div>
+              <div
+                class="vc-menu-item"
+              >
+                <vctooltip
+                  placement="bottom"
+                >
+                  <div
+                    class="vc-menu-item__content"
+                  >
+                    <!-- Icon -->
+                    <div
+                      class="vc-menu-item__icon"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content lucide-triangle-alert-icon lucide-triangle-alert vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+                        />
+                        <path
+                          d="M12 9v4"
+                        />
+                        <path
+                          d="M12 17h.01"
+                        />
+                      </svg>
+                    </div>
+                    <!-- Title + badge (shown when expanded) -->
+                    <div
+                      class="vc-menu-item__title"
+                    >
+                      <span
+                        class="vc-menu-item__title-text"
+                      >
+                        Returns
+                      </span>
+                      
+                      <!-- Inline mode: render badge element directly without wrapper -->
+                      <div
+                        class="vc-badge__badge vc-badge__badge--inline vc-badge__badge--danger vc-badge__badge--content-long vc-badge__badge--inline-small vc-menu-item__badge"
+                      >
+                        <span
+                          class="vc-badge__text"
+                        >
+                          99
+                        </span>
+                      </div>
+                      
+                      
+                      
+                    </div>
+                  </div>
+                </vctooltip>
+              </div>
+              <div
+                class="vc-menu-item"
+              >
+                <vctooltip
+                  placement="bottom"
+                >
+                  <div
+                    class="vc-menu-item__content"
+                  >
+                    <!-- Icon -->
+                    <div
+                      class="vc-menu-item__icon"
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content lucide-bell-icon lucide-bell vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10.268 21a2 2 0 0 0 3.464 0"
+                        />
+                        <path
+                          d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"
+                        />
+                      </svg>
+                    </div>
+                    <!-- Title + badge (shown when expanded) -->
+                    <div
+                      class="vc-menu-item__title"
+                    >
+                      <span
+                        class="vc-menu-item__title-text"
+                      >
+                        Notifications
+                      </span>
+                      
+                      <!-- Inline mode: render badge element directly without wrapper -->
+                      <div
+                        aria-label="Notification"
+                        class="vc-badge__badge vc-badge__badge--inline vc-badge__badge--warning vc-badge__badge--content-long vc-badge__badge--content-very-long vc-badge__badge--dot vc-badge__badge--inline-small vc-menu-item__badge"
+                      >
+                        <!--v-if-->
+                      </div>
+                      
+                      
+                      
+                    </div>
+                  </div>
+                </vctooltip>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      
+    </div>
+  </div>
+</div>="vc-menu-item"
+          >
+            <vctooltip
+              placement="right"
+            >
+              <div
+                class="vc-menu-item__content vc-menu-item__content--collapsed"
+              >
+                <!-- Icon -->
+                <div
+                  class="vc-menu-item__icon"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content lucide-settings-icon lucide-settings vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"
+                    />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                    />
+                  </svg>
+                </div>
+                <!-- Title + badge (shown when expanded) -->
+                <div
+                  class="vc-menu-item__title"
+                  style="display: none;"
+                >
+                  <span
+                    class="vc-menu-item__title-text"
+                  >
+                    Settings
+                  </span>
+                  <!--v-if-->
                   
-                  <div
-                    class="vc-menu-item"
-                  >
-                    <vctooltip
-                      placement="bottom"
-                    >
-                      <div
-                        class="vc-menu-item__content vc-menu-item__content--active"
-                      >
-                        <!-- Icon -->
-                        <div
-                          class="vc-menu-item__icon"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content lucide-file-text-icon lucide-file-text vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content"
-                            fill="none"
-                            height="24"
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="1.5"
-                            viewBox="0 0 24 24"
-                            width="24"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"
-                            />
-                            <path
-                              d="M14 2v5a1 1 0 0 0 1 1h5"
-                            />
-                            <path
-                              d="M10 9H8"
-                            />
-                            <path
-                              d="M16 13H8"
-                            />
-                            <path
-                              d="M16 17H8"
-                            />
-                          </svg>
-                        </div>
-                        <!-- Title + badge (shown when expanded) -->
-                        <div
-                          class="vc-menu-item__title"
-                        >
-                          <span
-                            class="vc-menu-item__title-text"
-                          >
-                            New Orders
-                          </span>
-                          <!--v-if-->
-                          
-                          
-                        </div>
-                      </div>
-                    </vctooltip>
-                  </div>
-                  <div
-                    class="vc-menu-item"
-                  >
-                    <vctooltip
-                      placement="bottom"
-                    >
-                      <div
-                        class="vc-menu-item__content"
-                      >
-                        <!-- Icon -->
-                        <div
-                          class="vc-menu-item__icon"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content lucide-clock-icon lucide-clock vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content"
-                            fill="none"
-                            height="24"
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="1.5"
-                            viewBox="0 0 24 24"
-                            width="24"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <circle
-                              cx="12"
-                              cy="12"
-                              r="10"
-                            />
-                            <path
-                              d="M12 6v6l4 2"
-                            />
-                          </svg>
-                        </div>
-                        <!-- Title + badge (shown when expanded) -->
-                        <div
-                          class="vc-menu-item__title"
-                        >
-                          <span
-                            class="vc-menu-item__title-text"
-                          >
-                            Pending Reviews
-                          </span>
-                          <!--v-if-->
-                          
-                          
-                        </div>
-                      </div>
-                    </vctooltip>
-                  </div>
                   
                 </div>
               </div>
-            </div>
-            <div
-              class="vc-menu-group vc-menu-group--section"
-            >
-              <!-- Section variant header -->
-              <button
-                class="vc-menu-group__section-header"
+            </vctooltip>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>-skeleton__shape--circle tw-animate-pulse"
+                role="status"
+                style="width: 18px; height: 18px;"
               >
-                <!--v-if-->
                 <span
-                  class="vc-menu-group__section-title"
+                  class="tw-sr-only"
                 >
-                  Orders & Customers
+                  Loading...
                 </span>
-                <svg
-                  aria-hidden="true"
-                  class="lucide vc-lucide-icon vc-lucide-icon--s vc-icon vc-icon--s vc-menu-group__chevron vc-menu-group__chevron lucide-chevron-down-icon lucide-chevron-down vc-lucide-icon vc-lucide-icon--s vc-icon vc-icon--s vc-menu-group__chevron vc-menu-group__chevron"
-                  fill="none"
-                  height="24"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m6 9 6 6 6-6"
-                  />
-                </svg>
-              </button>
-              <!-- Children with grid animation -->
+              </div>
+              
+              
+              
+              <!-- Text variant: rows of skeleton lines (original behavior) -->
+              
+              <!-- Circle / Block variant: single shape element -->
               <div
-                class="vc-menu-group__children-wrapper"
+                aria-busy="true"
+                aria-label="Loading..."
+                class="vc-skeleton__shape vc-skeleton__shape--block tw-animate-pulse"
+                role="status"
+                style="width: 110px; height: 14px;"
               >
-                <div
-                  class="vc-menu-group__children"
+                <span
+                  class="tw-sr-only"
                 >
-                  
-                  <div
-                    class="vc-menu-item"
+                  Loading...
+                </span>
+              </div>
+              
+              
+            </div>
+            <!-- Nested children -->
+            <div
+              class="tw-flex tw-flex-col tw-gap-1 tw-pl-3"
+            >
+              
+              <div
+                class="tw-flex tw-items-center tw-gap-1.5 tw-h-6 tw-px-1.5"
+              >
+                
+                <!-- Text variant: rows of skeleton lines (original behavior) -->
+                
+                <!-- Circle / Block variant: single shape element -->
+                <div
+                  aria-busy="true"
+                  aria-label="Loading..."
+                  class="vc-skeleton__shape vc-skeleton__shape--circle tw-animate-pulse"
+                  role="status"
+                  style="width: 16px; height: 16px;"
+                >
+                  <span
+                    class="tw-sr-only"
                   >
-                    <vctooltip
-                      placement="bottom"
-                    >
-                      <div
-                        class="vc-menu-item__content"
-                      >
-                        <!-- Icon -->
-                        <div
-                          class="vc-menu-item__icon"
-                        >
-                          <svg
-                            aria-hidden="true"
-                            class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content lucide-file-icon lucide-file vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content"
-                            fill="none"
-                            height="24"
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="1.5"
-                            viewBox="0 0 24 24"
-                            width="24"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"
-                            />
-                            <path
-                              d="M14 2v5a1 1 0 0 0 1 1h5"
-                            />
-                          </svg>
-                        </div>
-                        <!-- Title + badge (shown when expanded) -->
-                        <div
-                          class="vc-menu-item__title"
-                        >
-                          <span
-                            class="vc-menu-item__title-text"
-                          >
-                            All orders
-                          </span>
-                          <!--v-if-->
-                          
-                          
-                        </div>
-                      </div>
-                    </vctooltip>
-                  </div>
-                  <div
-                    class="vc-menu-group"
+                    Loading...
+                  </span>
+                </div>
+                
+                
+                
+                <!-- Text variant: rows of skeleton lines (original behavior) -->
+                
+                <!-- Circle / Block variant: single shape element -->
+                <div
+                  aria-busy="true"
+                  aria-label="Loading..."
+                  class="vc-skeleton__shape vc-skeleton__shape--block tw-animate-pulse"
+                  role="status"
+                  style="width: 70px; height: 12px;"
+                >
+                  <span
+                    class="tw-sr-only"
                   >
-                    <!-- Section variant header -->
-                    
-                    <!-- Default variant header (uses VcMenuItem) -->
-                    <div
-                      class="vc-menu-item"
-                    >
-                      <vctooltip
-                        placement="bottom"
-                      >
-                        <div
-                          class="vc-menu-item__content"
-                        >
-                          <!-- Icon -->
-                          <div
-                            class="vc-menu-item__icon"
-                          >
-                            <svg
-                              aria-hidden="true"
-                              class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content lucide-file-plus-icon lucide-file-plus vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content"
-                              fill="none"
-                              height="24"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="1.5"
-                              viewBox="0 0 24 24"
-                              width="24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"
-                              />
-                              <path
-                                d="M14 2v5a1 1 0 0 0 1 1h5"
-                              />
-                              <path
-                                d="M9 15h6"
-                              />
-                              <path
-                                d="M12 18v-6"
-                              />
-                            </svg>
-                          </div>
-                          <!-- Title + badge (shown when expanded) -->
-                          <div
-                            class="vc-menu-item__title"
-                          >
-                            <span
-                              class="vc-menu-item__title-text"
-                            >
-                              New orders
-                            </span>
-                            <!--v-if-->
-                            
-                            <svg
-                              aria-hidden="true"
-                              class="lucide vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs vc-menu-group__chevron vc-menu-group__chevron lucide-chevron-down-icon lucide-chevron-down vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs vc-menu-group__chevron vc-menu-group__chevron"
-                              fill="none"
-                              height="24"
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="1.5"
-                              viewBox="0 0 24 24"
-                              width="24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="m6 9 6 6 6-6"
-                              />
-                            </svg>
-                            
-                          </div>
-                        </div>
-                      </vctooltip>
-                    </div>
-                    
-                    <!-- Children with grid animation -->
-                    <div
-                      class="vc-menu-group__children-wrapper"
-                    >
-                      <div
-                        class="vc-menu-group__children"
-                      >
-                        
-                        <div
-                          class="vc-menu-item"
-                        >
-                          <vctooltip
-                            placement="bottom"
-                          >
-                            <div
-                              class="vc-menu-item__content vc-menu-item__content--nested"
-                            >
-                              <!-- Icon -->
-                              <div
-                                class="vc-menu-item__icon"
-                              >
-                                <svg
-                                  aria-hidden="true"
-                                  class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content lucide-square-check-big-icon lucide-square-check-big vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m vc-menu-item__icon-content vc-menu-item__icon-content"
-                                  fill="none"
-                                  height="24"
-                                  stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
+                    Loading...
+                  </span>
+                </div>
+                
+                
+              </div>
+              <div
+                class="tw-flex tw-items-center tw-gap-1.5 tw-h-6 tw-px-1.5"
+              >
+                
+                <!-- Text variant: rows of skeleton lines (original behavior) -->
+                
+                <!-- Circle / Block variant: single shape element -->
+                <div
+                  aria-busy="true"
+                  aria-label="Loading..."
+                  class="vc-skeleton__shape vc-skeleton__shape--circle tw-animate-pulse"
+                  role="status"
+                  style="width: 16px; height: 16px;"
+                >
+                  <span
+                    class="tw-sr-only"
+                  >
+                    Loading...
+                  </span>
+                </div>
+                
+                
+                
+                <!-- Text variant: rows of skeleton lines (original behavior) -->
+                
+                <!-- Circle / Block variant: single shape element -->
+                <div
+                  aria-busy="true"
+                  aria-label="Loading..."
+                  class="vc-skeleton__shape vc-skeleton__shape--block tw-animate-pulse"
+                  role="status"
+                  style="width: 55px; height: 12px;"
+                >
+                  <span
+                    class="tw-sr-only"
+                  >
+                    Loading...
+                  </span>
+                </div>
+                
+                
+              </div>
+              
+            </div>
+            
+            
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>                           stroke-linejoin="round"
                                   stroke-width="1.5"
                                   viewBox="0 0 24 24"
                                   width="24"

@@ -2,9 +2,13 @@
   data-v-app=""
 >
   <div
-    style="display: flex; flex-direction: column; gap: 16px;"
+    class="vc-hint"
   >
-    <div>
+    
+    This is a hint
+    
+  </div>
+</div>  <div>
       <div
         style="font-weight: 500; margin-bottom: 4px;"
       >

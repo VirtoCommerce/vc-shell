@@ -1,10 +1,10 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { describe, expect, test } from 'vitest';
-import { composeStories } from '@storybook/vue3-vite';
-import { page } from '@vitest/browser/context';
-import { toMatchImageSnapshot } from 'jest-image-snapshot';
-import type { Meta, StoryFn } from '@storybook/vue3-vite';
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { describe, expect, test } from "vitest";
+import { composeStories } from "@storybook/vue3-vite";
+import { page } from "@vitest/browser/context";
+import { toMatchImageSnapshot } from "jest-image-snapshot";
+import type { Meta, StoryFn } from "@storybook/vue3-vite";
 
 expect.extend({ toMatchImageSnapshot });
 
@@ -19,31 +19,32 @@ const compose = (entry: StoryFile): ReturnType<typeof composeStories<StoryFile>>
   try {
     return composeStories(entry);
   } catch (e) {
-    throw new Error(
-      `There was an issue composing stories for the module: ${JSON.stringify(entry)}, ${e}`,
-    );
+    throw new Error(`There was an issue composing stories for the module: ${JSON.stringify(entry)}, ${e}`);
   }
 };
 
-const customSnapshotsDir = path.resolve(__dirname, '__image_snapshots__');
+const customSnapshotsDir = path.resolve(__dirname, "__image_snapshots__");
 
 function getAllStoryFiles() {
   const storyFiles = Object.entries(
-    import.meta.glob<StoryFile>([
-      '../components/**/*.stories.ts',
-      '../../../shared/components/**/*.stories.ts',
-      '../../../shell/auth/**/*.stories.ts',
-      '../../../shell/pages/**/*.stories.ts',
-    ], { eager: true }),
+    import.meta.glob<StoryFile>(
+      [
+        "../components/**/*.stories.ts",
+        "../../../shared/components/**/*.stories.ts",
+        "../../../shell/auth/**/*.stories.ts",
+        "../../../shell/pages/**/*.stories.ts",
+      ],
+      { eager: true },
+    ),
   );
 
   return storyFiles.map(([filePath, storyFile]) => {
-    const componentName = path.basename(filePath).replace(/\.stories\.ts$/, '');
+    const componentName = path.basename(filePath).replace(/\.stories\.ts$/, "");
     return { filePath, storyFile, componentName };
   });
 }
 
-describe('Stories Visual Regression', () => {
+describe("Stories Visual Regression", () => {
   getAllStoryFiles().forEach(({ storyFile, componentName }) => {
     const meta = storyFile.default;
     const title = meta.title || componentName;
@@ -71,7 +72,7 @@ describe('Stories Visual Regression', () => {
             customSnapshotsDir,
             customSnapshotIdentifier: `${componentName}--${name}`,
             failureThreshold: 0.01,
-            failureThresholdType: 'percent',
+            failureThresholdType: "percent",
           });
         });
       });

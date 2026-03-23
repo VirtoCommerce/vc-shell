@@ -5,9 +5,8 @@ import VcAppMenu from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenu.
 
 vi.mock("@core/composables", () => ({
   useMenuService: () => ({
-    menuItems: ref([
-      { title: "Orders", priority: 1, routeId: "Orders", url: "/orders", id: undefined },
-    ]),
+    menuItems: ref([{ title: "Orders", priority: 1, routeId: "Orders", url: "/orders", id: undefined }]),
+    menuBadges: ref(new Map()),
   }),
   usePermissions: () => ({
     hasAccess: () => true,
@@ -15,7 +14,17 @@ vi.mock("@core/composables", () => ({
 }));
 
 vi.mock("vue-router", () => ({
-  useRoute: () => ({ path: "/orders", params: {}, query: {}, hash: "", name: "Orders", fullPath: "/orders", matched: [], meta: {}, redirectedFrom: undefined }),
+  useRoute: () => ({
+    path: "/orders",
+    params: {},
+    query: {},
+    hash: "",
+    name: "Orders",
+    fullPath: "/orders",
+    matched: [],
+    meta: {},
+    redirectedFrom: undefined,
+  }),
 }));
 
 describe("VcAppMenu", () => {
@@ -29,11 +38,27 @@ describe("VcAppMenu", () => {
 
     const wrapper = mount(VcAppMenu, {
       global: {
+        mocks: {
+          $t: (k: string) => k,
+        },
         stubs: {
           RouterLink: RouterLinkStub,
-          VcContainer: defineComponent({ setup(_, { slots }) { return () => h("div", slots.default?.()); } }),
-          VcAppMenuGroup: defineComponent({ setup() { return () => h("div"); } }),
-          VcAppMenuItem: defineComponent({ props: ["title"], setup(props) { return () => h("button", String(props.title)); } }),
+          VcContainer: defineComponent({
+            setup(_, { slots }) {
+              return () => h("div", slots.default?.());
+            },
+          }),
+          VcAppMenuGroup: defineComponent({
+            setup() {
+              return () => h("div");
+            },
+          }),
+          VcAppMenuItem: defineComponent({
+            props: ["title"],
+            setup(props) {
+              return () => h("button", String(props.title));
+            },
+          }),
         },
       },
     });

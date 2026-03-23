@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
-  FrameworkError, ValidationError, ServiceError, InjectionError,
-  RegistrationError, BladeError, ModuleLoadError, isFrameworkError, wrapError,
+  FrameworkError,
+  ValidationError,
+  ServiceError,
+  InjectionError,
+  RegistrationError,
+  BladeError,
+  ModuleLoadError,
+  isFrameworkError,
+  wrapError,
 } from "./errorTypes";
 
 describe("FrameworkError", () => {

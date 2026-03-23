@@ -32,10 +32,7 @@ const StubWidgetComponent = defineComponent({
   },
 });
 
-function mountContainer(
-  props: Record<string, unknown> = {},
-  options: { isMobile?: boolean } = {},
-) {
+function mountContainer(props: Record<string, unknown> = {}, options: { isMobile?: boolean } = {}) {
   return mount(WidgetContainer, {
     props: {
       bladeId: "test-blade",
@@ -74,9 +71,7 @@ describe("WidgetContainer", () => {
   });
 
   it("renders desktop widget container when widgets exist and not mobile", () => {
-    mockWidgets.value = [
-      { id: "w1", component: StubWidgetComponent, isVisible: true },
-    ];
+    mockWidgets.value = [{ id: "w1", component: StubWidgetComponent, isVisible: true }];
 
     const wrapper = mountContainer({}, { isMobile: false });
     expect(wrapper.find(".stub-desktop-widgets").exists()).toBe(true);
@@ -84,9 +79,7 @@ describe("WidgetContainer", () => {
   });
 
   it("renders mobile widget container when widgets exist and is mobile", () => {
-    mockWidgets.value = [
-      { id: "w1", component: StubWidgetComponent, isVisible: true },
-    ];
+    mockWidgets.value = [{ id: "w1", component: StubWidgetComponent, isVisible: true }];
 
     const wrapper = mountContainer({}, { isMobile: true });
     expect(wrapper.find(".stub-mobile-widgets").exists()).toBe(true);
@@ -94,18 +87,14 @@ describe("WidgetContainer", () => {
   });
 
   it("filters out widgets where isVisible is false", () => {
-    mockWidgets.value = [
-      { id: "w1", component: StubWidgetComponent, isVisible: false },
-    ];
+    mockWidgets.value = [{ id: "w1", component: StubWidgetComponent, isVisible: false }];
 
     const wrapper = mountContainer();
     expect(wrapper.find(".stub-desktop-widgets").exists()).toBe(false);
   });
 
   it("normalizes bladeId to lowercase", () => {
-    mockWidgets.value = [
-      { id: "w1", component: StubWidgetComponent, isVisible: true },
-    ];
+    mockWidgets.value = [{ id: "w1", component: StubWidgetComponent, isVisible: true }];
 
     const wrapper = mountContainer({ bladeId: "My-Blade" });
     const desktopStub = wrapper.find(".stub-desktop-widgets");

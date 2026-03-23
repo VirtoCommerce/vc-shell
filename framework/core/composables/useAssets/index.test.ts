@@ -37,9 +37,7 @@ describe("useAssets", () => {
         { url: "b.jpg", name: "b" } as ICommonAsset,
         { url: "c.jpg", name: "c" } as ICommonAsset,
       ];
-      const toDelete: ICommonAsset[] = [
-        { url: "b.jpg", name: "b" } as ICommonAsset,
-      ];
+      const toDelete: ICommonAsset[] = [{ url: "b.jpg", name: "b" } as ICommonAsset];
       const result = remove(toDelete, initial);
       expect(result).toHaveLength(2);
       expect(result.map((a) => a.url)).toEqual(["a.jpg", "c.jpg"]);
@@ -47,9 +45,7 @@ describe("useAssets", () => {
 
     it("returns clone, does not mutate original", () => {
       const { remove } = useAssets();
-      const initial: ICommonAsset[] = [
-        { url: "a.jpg", name: "a" } as ICommonAsset,
-      ];
+      const initial: ICommonAsset[] = [{ url: "a.jpg", name: "a" } as ICommonAsset];
       const result = remove([], initial);
       expect(result).not.toBe(initial);
       expect(result).toHaveLength(1);
@@ -69,9 +65,7 @@ describe("useAssets", () => {
         { url: "a.jpg", name: "a", sortOrder: 0 } as ICommonAsset,
         { url: "b.jpg", name: "b", sortOrder: 1 } as ICommonAsset,
       ];
-      const updated: ICommonAsset[] = [
-        { url: "a.jpg", name: "updated-a", sortOrder: 5 } as ICommonAsset,
-      ];
+      const updated: ICommonAsset[] = [{ url: "a.jpg", name: "updated-a", sortOrder: 5 } as ICommonAsset];
       const result = edit(updated, initial);
       expect(result).toHaveLength(2);
       expect(result[0].name).toBe("updated-a");
@@ -112,7 +106,9 @@ describe("useAssets", () => {
       const { upload, loading } = useAssets();
       const file = new File(["content"], "test.jpg", { type: "image/jpeg" });
       const fileList = {
-        [Symbol.iterator]: function* () { yield file; },
+        [Symbol.iterator]: function* () {
+          yield file;
+        },
         length: 1,
         item: () => file,
         0: file,
@@ -129,7 +125,9 @@ describe("useAssets", () => {
       const { upload, loading } = useAssets();
       const file = new File(["content"], "test.jpg");
       const fileList = {
-        [Symbol.iterator]: function* () { yield file; },
+        [Symbol.iterator]: function* () {
+          yield file;
+        },
         length: 1,
         item: () => file,
         0: file,

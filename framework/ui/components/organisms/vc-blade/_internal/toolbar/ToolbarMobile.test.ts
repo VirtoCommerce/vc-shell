@@ -49,10 +49,7 @@ describe("ToolbarMobile", () => {
   });
 
   it("shows more button when multiple items", () => {
-    const wrapper = mountToolbar([
-      createToolbarItem({ id: "1" }),
-      createToolbarItem({ id: "2", title: "Delete" }),
-    ]);
+    const wrapper = mountToolbar([createToolbarItem({ id: "1" }), createToolbarItem({ id: "2", title: "Delete" })]);
     expect(wrapper.find(".vc-blade-toolbar-mobile__pill-more").exists()).toBe(true);
   });
 
@@ -64,10 +61,7 @@ describe("ToolbarMobile", () => {
   });
 
   it("expands menu on more button click", async () => {
-    const wrapper = mountToolbar([
-      createToolbarItem({ id: "1" }),
-      createToolbarItem({ id: "2", title: "Delete" }),
-    ]);
+    const wrapper = mountToolbar([createToolbarItem({ id: "1" }), createToolbarItem({ id: "2", title: "Delete" })]);
 
     await wrapper.find(".vc-blade-toolbar-mobile__pill-more").trigger("click");
 
@@ -75,10 +69,7 @@ describe("ToolbarMobile", () => {
   });
 
   it("renders action buttons in expanded menu", async () => {
-    const items = [
-      createToolbarItem({ id: "1", title: "Save" }),
-      createToolbarItem({ id: "2", title: "Delete" }),
-    ];
+    const items = [createToolbarItem({ id: "1", title: "Save" }), createToolbarItem({ id: "2", title: "Delete" })];
 
     const wrapper = mountToolbar(items);
     await wrapper.find(".vc-blade-toolbar-mobile__pill-more").trigger("click");
@@ -88,10 +79,7 @@ describe("ToolbarMobile", () => {
   });
 
   it("shows close FAB when expanded", async () => {
-    const wrapper = mountToolbar([
-      createToolbarItem({ id: "1" }),
-      createToolbarItem({ id: "2" }),
-    ]);
+    const wrapper = mountToolbar([createToolbarItem({ id: "1" }), createToolbarItem({ id: "2" })]);
 
     await wrapper.find(".vc-blade-toolbar-mobile__pill-more").trigger("click");
 
@@ -100,10 +88,7 @@ describe("ToolbarMobile", () => {
   });
 
   it("closes menu on close FAB click", async () => {
-    const wrapper = mountToolbar([
-      createToolbarItem({ id: "1" }),
-      createToolbarItem({ id: "2" }),
-    ]);
+    const wrapper = mountToolbar([createToolbarItem({ id: "1" }), createToolbarItem({ id: "2" })]);
 
     await wrapper.find(".vc-blade-toolbar-mobile__pill-more").trigger("click");
     expect(wrapper.find(".vc-blade-toolbar-mobile__menu--open").exists()).toBe(true);
@@ -127,20 +112,14 @@ describe("ToolbarMobile", () => {
   });
 
   it("shows backdrop when expanded", async () => {
-    const wrapper = mountToolbar([
-      createToolbarItem({ id: "1" }),
-      createToolbarItem({ id: "2" }),
-    ]);
+    const wrapper = mountToolbar([createToolbarItem({ id: "1" }), createToolbarItem({ id: "2" })]);
 
     await wrapper.find(".vc-blade-toolbar-mobile__pill-more").trigger("click");
     expect(wrapper.find(".vc-blade-toolbar-mobile__backdrop").exists()).toBe(true);
   });
 
   it("closes menu on backdrop click", async () => {
-    const wrapper = mountToolbar([
-      createToolbarItem({ id: "1" }),
-      createToolbarItem({ id: "2" }),
-    ]);
+    const wrapper = mountToolbar([createToolbarItem({ id: "1" }), createToolbarItem({ id: "2" })]);
 
     await wrapper.find(".vc-blade-toolbar-mobile__pill-more").trigger("click");
     await wrapper.find(".vc-blade-toolbar-mobile__backdrop").trigger("click");
@@ -148,10 +127,7 @@ describe("ToolbarMobile", () => {
   });
 
   it("disables action button when item is disabled", async () => {
-    const wrapper = mountToolbar([
-      createToolbarItem({ id: "1", disabled: true }),
-      createToolbarItem({ id: "2" }),
-    ]);
+    const wrapper = mountToolbar([createToolbarItem({ id: "1", disabled: true }), createToolbarItem({ id: "2" })]);
 
     await wrapper.find(".vc-blade-toolbar-mobile__pill-more").trigger("click");
     const firstAction = wrapper.findAll(".vc-blade-toolbar-mobile__action")[0];
@@ -159,10 +135,7 @@ describe("ToolbarMobile", () => {
   });
 
   it("applies primary icon class to first action item", async () => {
-    const wrapper = mountToolbar([
-      createToolbarItem({ id: "1" }),
-      createToolbarItem({ id: "2" }),
-    ]);
+    const wrapper = mountToolbar([createToolbarItem({ id: "1" }), createToolbarItem({ id: "2" })]);
 
     await wrapper.find(".vc-blade-toolbar-mobile__pill-more").trigger("click");
     const firstIcon = wrapper.findAll(".vc-blade-toolbar-mobile__action-icon")[0];
@@ -170,9 +143,7 @@ describe("ToolbarMobile", () => {
   });
 
   it("resolves function-based icon", () => {
-    const wrapper = mountToolbar([
-      createToolbarItem({ icon: () => "lucide-dynamic" }),
-    ]);
+    const wrapper = mountToolbar([createToolbarItem({ icon: () => "lucide-dynamic" })]);
 
     const icon = wrapper.find(".vc-icon-stub");
     expect(icon.attributes("data-icon")).toBe("lucide-dynamic");

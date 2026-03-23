@@ -3,8 +3,7 @@ import { mount } from "@vue/test-utils";
 import VcLoading from "./vc-loading.vue";
 
 describe("VcLoading", () => {
-  const mountComponent = (props = {}) =>
-    mount(VcLoading as any, { props });
+  const mountComponent = (props = {}) => mount(VcLoading as any, { props });
 
   describe("rendering", () => {
     it("renders with vc-loading-overlay class", () => {

@@ -15,18 +15,42 @@ import { IsMobileKey } from "@framework/injection-keys";
 // ============================================================================
 
 vi.mock("@ui/components/organisms/vc-table/components", () => ({
-  Table: defineComponent({ name: "Table", template: "<div class='mock-table'><slot /><slot name='row-actions' /><slot name='expansion' /><slot name='empty' /><slot name='loading' /><slot name='groupheader' /><slot name='groupfooter' /></div>" }),
+  Table: defineComponent({
+    name: "VcTable",
+    template:
+      "<div class='mock-table'><slot /><slot name='row-actions' /><slot name='expansion' /><slot name='empty' /><slot name='loading' /><slot name='groupheader' /><slot name='groupfooter' /></div>",
+  }),
   TableFooter: defineComponent({ name: "TableFooter", template: "<div class='mock-table-footer'><slot /></div>" }),
-  TableEmpty: defineComponent({ name: "TableEmpty", props: ["icon", "title", "description", "actionLabel", "actionHandler"], template: "<div class='mock-table-empty'>{{ title }}</div>" }),
+  TableEmpty: defineComponent({
+    name: "TableEmpty",
+    props: ["icon", "title", "description", "actionLabel", "actionHandler"],
+    template: "<div class='mock-table-empty'>{{ title }}</div>",
+  }),
   TableRowActions: defineComponent({ name: "TableRowActions", template: "<div />" }),
-  DataTableHeader: defineComponent({ name: "DataTableHeader", inheritAttrs: false, template: "<div class='mock-header' />" }),
-  DataTableBody: defineComponent({ name: "DataTableBody", inheritAttrs: false, template: "<div class='mock-body'><slot name='empty' /><slot name='loading' /></div>" }),
+  DataTableHeader: defineComponent({
+    name: "DataTableHeader",
+    inheritAttrs: false,
+    template: "<div class='mock-header' />",
+  }),
+  DataTableBody: defineComponent({
+    name: "DataTableBody",
+    inheritAttrs: false,
+    template: "<div class='mock-body'><slot name='empty' /><slot name='loading' /></div>",
+  }),
   GlobalFiltersButton: defineComponent({ name: "GlobalFiltersButton", template: "<button class='mock-gf-btn' />" }),
   GlobalFiltersPanel: defineComponent({ name: "GlobalFiltersPanel", template: "<div />" }),
   TableColumnSwitcher: defineComponent({ name: "TableColumnSwitcher", template: "<div />" }),
-  DataTableMobileView: defineComponent({ name: "DataTableMobileView", inheritAttrs: false, template: "<div class='mock-mobile'><slot name='empty' /></div>" }),
+  DataTableMobileView: defineComponent({
+    name: "DataTableMobileView",
+    inheritAttrs: false,
+    template: "<div class='mock-mobile'><slot name='empty' /></div>",
+  }),
   TableAddRowButton: defineComponent({ name: "TableAddRowButton", template: "<div />" }),
-  TableSearchHeader: defineComponent({ name: "TableSearchHeader", props: ["searchable", "modelValue", "placeholder"], template: "<div class='mock-search-header'><slot name='actions' /></div>" }),
+  TableSearchHeader: defineComponent({
+    name: "TableSearchHeader",
+    props: ["searchable", "modelValue", "placeholder"],
+    template: "<div class='mock-search-header'><slot name='actions' /></div>",
+  }),
   TableSelectAllBar: defineComponent({ name: "TableSelectAllBar", template: "<div />" }),
 }));
 
@@ -346,9 +370,8 @@ describe("VcDataTable", () => {
   });
 
   it("passes stateKey to orchestrator", async () => {
-    const { useDataTableOrchestrator } = await import(
-      "@ui/components/organisms/vc-table/composables/useDataTableOrchestrator"
-    );
+    const { useDataTableOrchestrator } =
+      await import("@ui/components/organisms/vc-table/composables/useDataTableOrchestrator");
     mountTable({ stateKey: "my-unique-key" });
     expect(useDataTableOrchestrator).toHaveBeenCalled();
     const callArgs = (useDataTableOrchestrator as ReturnType<typeof vi.fn>).mock.calls[0][0];

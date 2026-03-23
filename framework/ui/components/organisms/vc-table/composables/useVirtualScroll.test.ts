@@ -77,9 +77,7 @@ describe("useVirtualScroll", () => {
   it("returns empty range when items is empty", () => {
     const items = ref<any[]>([]);
     const containerRef = ref<HTMLElement | null>(null);
-    const { result } = mountWithSetup(() =>
-      useVirtualScroll({ items, itemSize: 40, containerRef }),
-    );
+    const { result } = mountWithSetup(() => useVirtualScroll({ items, itemSize: 40, containerRef }));
     result.containerHeight.value = 200;
     expect(result.visibleRange.value).toEqual({ start: 0, end: 0 });
   });
@@ -100,9 +98,7 @@ describe("useVirtualScroll", () => {
   it("scrollToIndex calls scrollTo on container", () => {
     const containerRef = ref<HTMLElement | null>(null);
     const items = makeItems(100);
-    const { result } = mountWithSetup(() =>
-      useVirtualScroll({ items, itemSize: 40, containerRef }),
-    );
+    const { result } = mountWithSetup(() => useVirtualScroll({ items, itemSize: 40, containerRef }));
     const mockScrollTo = vi.fn();
     containerRef.value = { scrollTo: mockScrollTo, clientHeight: 200, scrollTop: 0 } as any;
     result.scrollToIndex(10);
@@ -112,9 +108,7 @@ describe("useVirtualScroll", () => {
   it("scrollToTop calls scrollTo with top=0", () => {
     const containerRef = ref<HTMLElement | null>(null);
     const items = makeItems(100);
-    const { result } = mountWithSetup(() =>
-      useVirtualScroll({ items, itemSize: 40, containerRef }),
-    );
+    const { result } = mountWithSetup(() => useVirtualScroll({ items, itemSize: 40, containerRef }));
     const mockScrollTo = vi.fn();
     containerRef.value = { scrollTo: mockScrollTo, clientHeight: 200, scrollTop: 0 } as any;
     result.scrollToTop();

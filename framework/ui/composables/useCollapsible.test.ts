@@ -51,9 +51,7 @@ describe("useCollapsible", () => {
   });
 
   it("wrapperStyle caps at maxExpandedHeight when content exceeds it", () => {
-    const { result } = mountWithSetup(() =>
-      useCollapsible({ expanded: true, maxExpandedHeight: 200 }),
-    );
+    const { result } = mountWithSetup(() => useCollapsible({ expanded: true, maxExpandedHeight: 200 }));
 
     // Simulate content height > maxExpandedHeight
     // contentHeight is a ref we can't set directly, but we can verify logic:

@@ -57,13 +57,10 @@ describe("VcImage", () => {
       expect(wrapper.find(".vc-image_1x1").exists()).toBe(true);
     });
 
-    it.each(["1x1", "16x9", "4x3", "3x2"] as const)(
-      "applies aspect class: %s",
-      (aspect) => {
-        const wrapper = mountComponent({ aspect });
-        expect(wrapper.find(`.vc-image_${aspect}`).exists()).toBe(true);
-      },
-    );
+    it.each(["1x1", "16x9", "4x3", "3x2"] as const)("applies aspect class: %s", (aspect) => {
+      const wrapper = mountComponent({ aspect });
+      expect(wrapper.find(`.vc-image_${aspect}`).exists()).toBe(true);
+    });
   });
 
   describe("size", () => {
@@ -72,13 +69,10 @@ describe("VcImage", () => {
       expect(wrapper.find(".vc-image_auto").exists()).toBe(true);
     });
 
-    it.each(["xxs", "xs", "s", "m", "l", "xl", "xxl"] as const)(
-      "applies size class: %s",
-      (size) => {
-        const wrapper = mountComponent({ size });
-        expect(wrapper.find(`.vc-image_${size}`).exists()).toBe(true);
-      },
-    );
+    it.each(["xxs", "xs", "s", "m", "l", "xl", "xxl"] as const)("applies size class: %s", (size) => {
+      const wrapper = mountComponent({ size });
+      expect(wrapper.find(`.vc-image_${size}`).exists()).toBe(true);
+    });
   });
 
   describe("modifiers", () => {

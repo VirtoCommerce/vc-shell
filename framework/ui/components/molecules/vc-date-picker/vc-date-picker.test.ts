@@ -34,7 +34,8 @@ describe("VcDatePicker", () => {
           VcIcon: true,
           // Stub the VueDatePicker library component to avoid complex DOM interactions
           VueDatePicker: {
-            template: '<div class="dp__main"><input class="dp__input" :value="modelValue" @change="$emit(\'update:modelValue\', $event.target.value)" /></div>',
+            template:
+              '<div class="dp__main"><input class="dp__input" :value="modelValue" @change="$emit(\'update:modelValue\', $event.target.value)" /></div>',
             props: ["modelValue"],
             emits: ["update:modelValue"],
           },

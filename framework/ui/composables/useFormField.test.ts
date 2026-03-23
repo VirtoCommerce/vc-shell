@@ -4,10 +4,7 @@ import { mount } from "@vue/test-utils";
 import { InputGroupContextKey, type InputGroupContext } from "@ui/components/molecules/vc-input-group/context";
 import { useFormField } from "./useFormField";
 
-function mountWithProvider<T>(
-  setupFn: () => T,
-  providerSetup?: () => void,
-) {
+function mountWithProvider<T>(setupFn: () => T, providerSetup?: () => void) {
   let result: T;
   const Inner = defineComponent({
     setup() {
@@ -27,9 +24,7 @@ function mountWithProvider<T>(
 
 describe("useFormField", () => {
   it("generates unique field IDs", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({ label: "Test" }),
-    );
+    const { result } = mountWithProvider(() => useFormField({ label: "Test" }));
 
     expect(result.fieldId.value).toMatch(/^vc-field-/);
     expect(result.labelId.value).toMatch(/-label$/);
@@ -38,79 +33,57 @@ describe("useFormField", () => {
   });
 
   it("invalid is false when no error props", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({}),
-    );
+    const { result } = mountWithProvider(() => useFormField({}));
     expect(result.invalid.value).toBe(false);
   });
 
   it("invalid is true when error prop is true", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({ error: true }),
-    );
+    const { result } = mountWithProvider(() => useFormField({ error: true }));
     expect(result.invalid.value).toBe(true);
   });
 
   it("invalid is true when errorMessage is provided", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({ errorMessage: "Required" }),
-    );
+    const { result } = mountWithProvider(() => useFormField({ errorMessage: "Required" }));
     expect(result.invalid.value).toBe(true);
   });
 
   it("resolvedDisabled respects props.disabled", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({ disabled: true }),
-    );
+    const { result } = mountWithProvider(() => useFormField({ disabled: true }));
     expect(result.resolvedDisabled.value).toBe(true);
   });
 
   it("resolvedDisabled is false by default", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({}),
-    );
+    const { result } = mountWithProvider(() => useFormField({}));
     expect(result.resolvedDisabled.value).toBe(false);
   });
 
   it("resolvedName uses props.name when no group context", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({ name: "myField" }),
-    );
+    const { result } = mountWithProvider(() => useFormField({ name: "myField" }));
     expect(result.resolvedName.value).toBe("myField");
   });
 
   it("ariaRequired is true when required", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({ required: true }),
-    );
+    const { result } = mountWithProvider(() => useFormField({ required: true }));
     expect(result.ariaRequired.value).toBe(true);
   });
 
   it("ariaRequired is undefined when not required", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({}),
-    );
+    const { result } = mountWithProvider(() => useFormField({}));
     expect(result.ariaRequired.value).toBeUndefined();
   });
 
   it("ariaDescribedBy includes errorId when errorMessage present", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({ errorMessage: "Error!" }),
-    );
+    const { result } = mountWithProvider(() => useFormField({ errorMessage: "Error!" }));
     expect(result.ariaDescribedBy.value).toContain(result.errorId.value);
   });
 
   it("ariaDescribedBy includes hintId when hint present", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({ hint: "Some hint" }),
-    );
+    const { result } = mountWithProvider(() => useFormField({ hint: "Some hint" }));
     expect(result.ariaDescribedBy.value).toContain(result.hintId.value);
   });
 
   it("ariaDescribedBy is undefined when no error or hint", () => {
-    const { result } = mountWithProvider(() =>
-      useFormField({}),
-    );
+    const { result } = mountWithProvider(() => useFormField({}));
     expect(result.ariaDescribedBy.value).toBeUndefined();
   });
 

@@ -3,8 +3,7 @@ import { mount } from "@vue/test-utils";
 import VcStatus from "@ui/components/atoms/vc-status/vc-status.vue";
 
 describe("VcStatus", () => {
-  const mountComponent = (props = {}, slots = {}) =>
-    mount(VcStatus as any, { props, slots });
+  const mountComponent = (props = {}, slots = {}) => mount(VcStatus as any, { props, slots });
 
   it("renders with role='status'", () => {
     const wrapper = mountComponent();

@@ -74,9 +74,6 @@ describe("useShellNavigation", () => {
     const { result } = mountWithSetup(() => useShellNavigation());
 
     await result.openRoot();
-    expect(mockNavigateToMainRoute).toHaveBeenCalledWith(
-      expect.anything(),
-      { sellerId: "abc" },
-    );
+    expect(mockNavigateToMainRoute).toHaveBeenCalledWith(expect.anything(), { sellerId: "abc" });
   });
 });

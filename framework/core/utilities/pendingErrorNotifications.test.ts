@@ -43,7 +43,11 @@ describe("pendingErrorNotifications", () => {
 
   it("does not cancel same error twice", () => {
     const error = { message: "once" };
-    setPendingErrorNotification(error, setTimeout(() => {}, 1000), "n3");
+    setPendingErrorNotification(
+      error,
+      setTimeout(() => {}, 1000),
+      "n3",
+    );
     cancelPendingErrorNotification(error);
     expect(cancelPendingErrorNotification(error)).toBe(false);
   });

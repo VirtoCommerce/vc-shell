@@ -32,12 +32,14 @@ describe("defineBladeContext / injectBladeContext", () => {
 
   it("throws InjectionError when no context provided", () => {
     expect(() => {
-      mount(defineComponent({
-        setup() {
-          injectBladeContext();
-          return () => h("div");
-        },
-      }));
+      mount(
+        defineComponent({
+          setup() {
+            injectBladeContext();
+            return () => h("div");
+          },
+        }),
+      );
     }).toThrow("BladeContext");
   });
 

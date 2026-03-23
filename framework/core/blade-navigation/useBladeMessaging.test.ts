@@ -114,9 +114,7 @@ describe("createBladeMessaging", () => {
 
   describe("error handling", () => {
     it("throws when caller blade not found", async () => {
-      await expect(
-        messaging.callParent("non-existent-id", "reload"),
-      ).rejects.toThrow("not found in stack");
+      await expect(messaging.callParent("non-existent-id", "reload")).rejects.toThrow("not found in stack");
     });
 
     it("returns undefined when caller has no parent", async () => {

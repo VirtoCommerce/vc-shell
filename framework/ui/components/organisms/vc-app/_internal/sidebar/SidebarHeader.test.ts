@@ -4,10 +4,7 @@ import { mount } from "@vue/test-utils";
 import { ShellIndicatorsKey } from "@framework/injection-keys";
 import SidebarHeader from "./SidebarHeader.vue";
 
-function mountHeader(
-  props: Record<string, unknown> = {},
-  options: { hasUnread?: boolean } = {},
-) {
+function mountHeader(props: Record<string, unknown> = {}, options: { hasUnread?: boolean } = {}) {
   const Wrapper = defineComponent({
     setup() {
       provide(ShellIndicatorsKey, ref(options.hasUnread ?? false));
@@ -141,9 +138,13 @@ describe("SidebarHeader", () => {
       setup() {
         provide(ShellIndicatorsKey, ref(false));
         return () =>
-          h(SidebarHeader, { isMobile: true }, {
-            actions: () => h("div", { class: "custom-actions" }),
-          });
+          h(
+            SidebarHeader,
+            { isMobile: true },
+            {
+              actions: () => h("div", { class: "custom-actions" }),
+            },
+          );
       },
     });
 

@@ -1,7 +1,7 @@
-import path from 'node:path';
-import { describe, expect, test } from 'vitest';
-import { composeStories } from '@storybook/vue3-vite';
-import type { Meta, StoryFn } from '@storybook/vue3-vite';
+import path from "node:path";
+import { describe, expect, test } from "vitest";
+import { composeStories } from "@storybook/vue3-vite";
+import type { Meta, StoryFn } from "@storybook/vue3-vite";
 
 type StoryFile = {
   default: Meta;
@@ -12,30 +12,31 @@ const compose = (entry: StoryFile): ReturnType<typeof composeStories<StoryFile>>
   try {
     return composeStories(entry);
   } catch (e) {
-    throw new Error(
-      `There was an issue composing stories for the module: ${JSON.stringify(entry)}, ${e}`,
-    );
+    throw new Error(`There was an issue composing stories for the module: ${JSON.stringify(entry)}, ${e}`);
   }
 };
 
 function getAllStoryFiles() {
   const storyFiles = Object.entries(
-    import.meta.glob<StoryFile>([
-      '../components/**/*.stories.ts',
-      '../../../shared/components/**/*.stories.ts',
-      '../../../shell/auth/**/*.stories.ts',
-      '../../../shell/pages/**/*.stories.ts',
-    ], { eager: true }),
+    import.meta.glob<StoryFile>(
+      [
+        "../components/**/*.stories.ts",
+        "../../../shared/components/**/*.stories.ts",
+        "../../../shell/auth/**/*.stories.ts",
+        "../../../shell/pages/**/*.stories.ts",
+      ],
+      { eager: true },
+    ),
   );
 
   return storyFiles.map(([filePath, storyFile]) => {
     const storyDir = path.dirname(filePath);
-    const componentName = path.basename(filePath).replace(/\.stories\.ts$/, '');
+    const componentName = path.basename(filePath).replace(/\.stories\.ts$/, "");
     return { filePath, storyFile, componentName, storyDir };
   });
 }
 
-describe('Stories Snapshots', () => {
+describe("Stories Snapshots", () => {
   getAllStoryFiles().forEach(({ storyFile, componentName }) => {
     const meta = storyFile.default;
     const title = meta.title || componentName;

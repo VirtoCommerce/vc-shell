@@ -218,7 +218,10 @@ describe("useTableRowReorder — reorderedItems sync with items", () => {
     const items = ref<Item[]>(makeItems());
     const { result, wrapper } = mountWithSetup(() => useTableRowReorder(items, vi.fn()));
 
-    const newItems: Item[] = [{ id: "z", name: "Zeta" }, { id: "a", name: "Alpha" }];
+    const newItems: Item[] = [
+      { id: "z", name: "Zeta" },
+      { id: "a", name: "Alpha" },
+    ];
     items.value = newItems;
 
     await new Promise((resolve) => setTimeout(resolve, 0));

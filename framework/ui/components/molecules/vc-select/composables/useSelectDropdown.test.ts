@@ -79,9 +79,7 @@ describe("useSelectDropdown", () => {
   });
 
   it("toggleDropdown does nothing when disabled", () => {
-    const { result } = mountWithSetup(() =>
-      useSelectDropdown(createOptions({ disabled: () => true })),
-    );
+    const { result } = mountWithSetup(() => useSelectDropdown(createOptions({ disabled: () => true })));
 
     result.toggleDropdown();
     expect(result.isOpened.value).toBe(false);

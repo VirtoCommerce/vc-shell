@@ -92,9 +92,7 @@ describe("VcEditorFontSelector", () => {
     const wrapper = mount(VcEditorFontSelector, {
       props: { editor, disabled: true },
     });
-    expect(
-      (wrapper.find(".vc-editor-font-selector__button").element as HTMLButtonElement).disabled,
-    ).toBe(true);
+    expect((wrapper.find(".vc-editor-font-selector__button").element as HTMLButtonElement).disabled).toBe(true);
   });
 
   it("highlights the active font size option", async () => {

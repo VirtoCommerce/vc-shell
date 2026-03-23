@@ -22,9 +22,7 @@ function dispatchKeyDown(el: HTMLElement, key: string, extra: Partial<KeyboardEv
 
 describe("useKeyboardNavigation", () => {
   it("returns expected API shape", () => {
-    const { result, wrapper } = mountWithSetup(() =>
-      useKeyboardNavigation({ containerSelector: "" }),
-    );
+    const { result, wrapper } = mountWithSetup(() => useKeyboardNavigation({ containerSelector: "" }));
     expect(result.initKeyboardNavigation).toBeTypeOf("function");
     expect(result.cleanupKeyboardNavigation).toBeTypeOf("function");
     expect(result.focusNextElement).toBeTypeOf("function");
@@ -37,9 +35,7 @@ describe("useKeyboardNavigation", () => {
   });
 
   it("initial focused index is -1", () => {
-    const { result, wrapper } = mountWithSetup(() =>
-      useKeyboardNavigation({ containerSelector: "" }),
-    );
+    const { result, wrapper } = mountWithSetup(() => useKeyboardNavigation({ containerSelector: "" }));
     expect(result.getFocusedIndex()).toBe(-1);
     wrapper.unmount();
   });
@@ -47,9 +43,7 @@ describe("useKeyboardNavigation", () => {
   describe("with initialized container", () => {
     function setup(options: Parameters<typeof useKeyboardNavigation>[0] = {}) {
       const container = createContainer(3);
-      const { result, wrapper } = mountWithSetup(() =>
-        useKeyboardNavigation({ containerSelector: "", ...options }),
-      );
+      const { result, wrapper } = mountWithSetup(() => useKeyboardNavigation({ containerSelector: "", ...options }));
       result.initKeyboardNavigation(container);
       return { result, wrapper, container };
     }

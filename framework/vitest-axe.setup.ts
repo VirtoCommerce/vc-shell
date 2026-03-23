@@ -26,7 +26,6 @@ expect.extend({
 
 // Type augmentation for the custom matcher
 declare module "vitest" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface AsymmetricMatchersContaining {
     toHaveNoViolations(): void;
   }

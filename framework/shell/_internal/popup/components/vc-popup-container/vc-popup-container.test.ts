@@ -28,10 +28,7 @@ const DummyPopup = defineComponent({
   emits: ["close"],
   setup(props, { slots }) {
     return () =>
-      h("div", { class: "dummy-popup" }, [
-        h("span", { class: "popup-title" }, props.title),
-        slots.default?.(),
-      ]);
+      h("div", { class: "dummy-popup" }, [h("span", { class: "popup-title" }, props.title), slots.default?.()]);
   },
 });
 

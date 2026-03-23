@@ -35,7 +35,9 @@ function withSetup<T>(composable: () => T): { result: T; app: ReturnType<typeof 
 
 type TestItem = { id: string; name: string; [key: string]: unknown };
 
-function buildOptions(overrides: Partial<VcDataTableOrchestratorOptions<TestItem>> = {}): VcDataTableOrchestratorOptions<TestItem> {
+function buildOptions(
+  overrides: Partial<VcDataTableOrchestratorOptions<TestItem>> = {},
+): VcDataTableOrchestratorOptions<TestItem> {
   const items = ref<TestItem[]>([]) as Ref<TestItem[]>;
   const visibleColumns = computed<ColumnInstance[]>(() => []);
   const declaredColumns = computed<ColumnInstance[]>(() => []);

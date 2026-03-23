@@ -37,9 +37,7 @@ describe("useShellLifecycle", () => {
   });
 
   it("returns the expected API shape", () => {
-    const { result } = mountWithSetup(() =>
-      useShellLifecycle({ isReady: false }),
-    );
+    const { result } = mountWithSetup(() => useShellLifecycle({ isReady: false }));
 
     expect(result).toHaveProperty("isAppReady");
     expect(result).toHaveProperty("isAuthenticated");
@@ -55,9 +53,7 @@ describe("useShellLifecycle", () => {
   });
 
   it("isAppReady becomes true when isReady is true", () => {
-    const { result } = mountWithSetup(() =>
-      useShellLifecycle({ isReady: true }),
-    );
+    const { result } = mountWithSetup(() => useShellLifecycle({ isReady: true }));
 
     expect(result.isAppReady.value).toBe(true);
   });
@@ -100,9 +96,7 @@ describe("useShellLifecycle", () => {
   });
 
   it("resets state on unmount", () => {
-    const { result, wrapper } = mountWithSetup(() =>
-      useShellLifecycle({ isReady: true }),
-    );
+    const { result, wrapper } = mountWithSetup(() => useShellLifecycle({ isReady: true }));
 
     expect(result.isAppReady.value).toBe(true);
     wrapper.unmount();

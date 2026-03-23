@@ -19,7 +19,8 @@ const stubs = {
     emits: ["update:show"],
   },
   VcCheckbox: {
-    template: '<input type="checkbox" class="vc-checkbox-stub" :checked="modelValue" @change="$emit(\'update:modelValue\', !modelValue)" />',
+    template:
+      '<input type="checkbox" class="vc-checkbox-stub" :checked="modelValue" @change="$emit(\'update:modelValue\', !modelValue)" />',
     props: ["modelValue"],
     emits: ["update:modelValue"],
   },

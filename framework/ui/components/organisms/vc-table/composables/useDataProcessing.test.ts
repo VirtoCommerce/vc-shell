@@ -93,12 +93,7 @@ describe("useDataProcessing", () => {
         { field: "name", order: 1 },
       ]),
     });
-    expect(processedData.value.map((i) => `${i.category}:${i.name}`)).toEqual([
-      "A:X",
-      "A:Y",
-      "B:W",
-      "B:Z",
-    ]);
+    expect(processedData.value.map((i) => `${i.category}:${i.name}`)).toEqual(["A:X", "A:Y", "B:W", "B:Z"]);
   });
 
   // --- Lazy mode ---

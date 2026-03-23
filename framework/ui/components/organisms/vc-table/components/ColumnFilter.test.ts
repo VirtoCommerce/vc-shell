@@ -12,7 +12,7 @@ const stubs = {
   VcButton: { template: '<button class="vc-button-stub"><slot /></button>' },
   VcIcon: { template: '<i class="vc-icon-stub" />' },
   VcDatePicker: { template: '<div class="vc-date-picker-stub" />' },
-  Teleport: { template: '<div><slot /></div>' },
+  Teleport: { template: "<div><slot /></div>" },
 };
 
 function factory(props: Record<string, unknown> = {}) {

@@ -57,7 +57,7 @@ const globalStubs = {
   ExternalProviders: { template: "<div />" },
   ExtensionPoint: { template: "<div />" },
   Field: {
-    template: "<div><slot v-bind=\"slotProps\" /></div>",
+    template: '<div><slot v-bind="slotProps" /></div>',
     computed: {
       slotProps() {
         return { errorMessage: "", handleChange: () => {}, errors: [] };

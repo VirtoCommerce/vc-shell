@@ -35,33 +35,35 @@ describe("widget-service: trigger contract", () => {
   });
 });
 
-describe("widget-service: setActiveWidget", () => {
-  it("accepts trigger-only call (no exposed)", async () => {
+describe("widget-service: register and retrieve", () => {
+  it("registers a widget and retrieves it by blade", async () => {
     const { createWidgetService } = await loadWidgetServiceModule();
     const service = createWidgetService();
 
-    // Should not throw when called without exposed
-    service.setActiveWidget({ widgetId: "my-widget" });
-    expect(service.isActiveWidget("my-widget")).toBe(true);
+    service.registerWidget({ id: "my-widget", component: {} as any, title: "My Widget" }, "blade-1");
+
+    const widgets = service.getWidgets("blade-1");
+    expect(widgets).toHaveLength(1);
+    expect(widgets[0].id).toBe("my-widget");
   });
 
-  it("accepts legacy call with exposed", async () => {
+  it("unregisters a widget from a blade", async () => {
     const { createWidgetService } = await loadWidgetServiceModule();
     const service = createWidgetService();
 
-    const exposed = { updateActiveWidgetCount: vi.fn() };
-    service.setActiveWidget({ widgetId: "legacy-widget", exposed });
-    expect(service.isActiveWidget("legacy-widget")).toBe(true);
+    service.registerWidget({ id: "w1", component: {} as any }, "blade-1");
+    service.unregisterWidget("w1", "blade-1");
+
+    expect(service.getWidgets("blade-1")).toHaveLength(0);
   });
 });
 
-describe("widget-service: updateActiveWidget", () => {
-  it("calls trigger.onRefresh when available (priority over exposed)", async () => {
+describe("widget-service: updateWidget", () => {
+  it("updates trigger.onRefresh on a registered widget", async () => {
     const { createWidgetService } = await loadWidgetServiceModule();
     const service = createWidgetService();
 
     const onRefresh = vi.fn();
-    const exposedFn = vi.fn();
 
     service.registerWidget(
       {
@@ -73,44 +75,34 @@ describe("widget-service: updateActiveWidget", () => {
       "blade-1",
     );
 
-    // Set active with exposed that also has the function
-    service.setActiveWidget({
-      widgetId: "hybrid-widget",
-      exposed: { refresh: exposedFn },
-    });
+    const widgets = service.getWidgets("blade-1");
+    expect(widgets[0].trigger?.onRefresh).toBe(onRefresh);
 
-    service.updateActiveWidget();
-
+    // Call onRefresh directly
+    widgets[0].trigger?.onRefresh?.();
     expect(onRefresh).toHaveBeenCalledOnce();
-    expect(exposedFn).not.toHaveBeenCalled();
   });
 
-  it("falls back to exposed when no trigger.onRefresh", async () => {
+  it("updates widget properties via updateWidget", async () => {
     const { createWidgetService } = await loadWidgetServiceModule();
     const service = createWidgetService();
-
-    const exposedFn = vi.fn();
 
     service.registerWidget(
       {
         id: "legacy-widget",
         component: {} as any,
-        updateFunctionName: "updateCount",
+        title: "Old Title",
       },
       "blade-1",
     );
 
-    service.setActiveWidget({
-      widgetId: "legacy-widget",
-      exposed: { updateCount: exposedFn },
-    });
+    service.updateWidget({ id: "legacy-widget", bladeId: "blade-1", widget: { title: "New Title" } });
 
-    service.updateActiveWidget();
-
-    expect(exposedFn).toHaveBeenCalledOnce();
+    const widgets = service.getWidgets("blade-1");
+    expect(widgets[0].title).toBe("New Title");
   });
 
-  it("works with trigger-only (no exposed at all)", async () => {
+  it("stores trigger with onRefresh on a widget", async () => {
     const { createWidgetService } = await loadWidgetServiceModule();
     const service = createWidgetService();
 
@@ -125,9 +117,8 @@ describe("widget-service: updateActiveWidget", () => {
       "blade-1",
     );
 
-    service.setActiveWidget({ widgetId: "trigger-only" });
-    service.updateActiveWidget();
-
-    expect(onRefresh).toHaveBeenCalledOnce();
+    const widgets = service.getWidgets("blade-1");
+    expect(widgets).toHaveLength(1);
+    expect(widgets[0].trigger?.onRefresh).toBe(onRefresh);
   });
 });

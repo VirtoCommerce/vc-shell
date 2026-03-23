@@ -95,8 +95,6 @@ describe("VcBreadcrumbsItem", () => {
     const wrapper = mount(VcBreadcrumbsItem, {
       props: { ...baseProps, title: "A Long Breadcrumb Title" },
     });
-    expect(wrapper.find(".vc-breadcrumbs-item__title").attributes("title")).toBe(
-      "A Long Breadcrumb Title",
-    );
+    expect(wrapper.find(".vc-breadcrumbs-item__title").attributes("title")).toBe("A Long Breadcrumb Title");
   });
 });

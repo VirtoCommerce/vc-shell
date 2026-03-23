@@ -2,85 +2,79 @@
   data-v-app=""
 >
   <div
-    class="vc-checkbox vc-checkbox--size-s"
-    default="Text next to the checkbox"
+    class="tw-space-y-4"
   >
-    <label
-      class="vc-label vc-checkbox__label"
-      for="vc-field-v-0"
+    <div
+      class="vc-checkbox vc-checkbox--size-s"
     >
-      <div
-        class="vc-label__text"
+      <!--v-if-->
+      <label
+        class="vc-checkbox__container"
       >
+        <input
+          class="vc-checkbox__input"
+          false-value="false"
+          id="vc-field-v-0"
+          name="Field"
+          tabindex="0"
+          true-value="true"
+          type="checkbox"
+        />
         <span
-          class="vc-label__content"
+          class="vc-checkbox__custom-input"
         >
           
-          <span>
-            Checkbox Label
-          </span>
+          <svg
+            class="vc-checkbox__check-icon"
+            fill="none"
+            height="14"
+            viewBox="0 0 14 14"
+            width="14"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.90927 3.80151C10.3113 3.3995 10.9631 3.3995 11.3651 3.80151C11.7671 4.20352 11.7671 4.85531 11.3651 5.25732L6.35527 10.2671C5.95326 10.6691 5.30148 10.6691 4.89947 10.2671L2.63476 8.00241C2.23275 7.6004 2.23275 6.94862 2.63476 6.54661C3.03677 6.14459 3.68856 6.14459 4.09057 6.54661L5.62737 8.08341L9.90927 3.80151Z"
+              fill="var(--additional-50)"
+            />
+          </svg>
+          <!--v-if-->
+          
+        </span>
+        <span
+          class="vc-checkbox__text"
+        >
+          
+          Small checkbox
           
         </span>
         <!--v-if-->
-      </div>
+      </label>
       <!--v-if-->
-      <!--v-if-->
-    </label>
-    <label
-      class="vc-checkbox__container"
+    </div>
+    <div
+      class="vc-checkbox vc-checkbox--size-m"
     >
-      <input
-        class="vc-checkbox__input"
-        false-value="false"
-        id="vc-field-v-0"
-        name="Field"
-        tabindex="0"
-        true-value="true"
-        type="checkbox"
-      />
-      <span
-        class="vc-checkbox__custom-input"
-      >
-        
-        <svg
-          class="vc-checkbox__check-icon"
-          fill="none"
-          height="14"
-          viewBox="0 0 14 14"
-          width="14"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M9.90927 3.80151C10.3113 3.3995 10.9631 3.3995 11.3651 3.80151C11.7671 4.20352 11.7671 4.85531 11.3651 5.25732L6.35527 10.2671C5.95326 10.6691 5.30148 10.6691 4.89947 10.2671L2.63476 8.00241C2.23275 7.6004 2.23275 6.94862 2.63476 6.54661C3.03677 6.14459 3.68856 6.14459 4.09057 6.54661L5.62737 8.08341L9.90927 3.80151Z"
-            fill="var(--additional-50)"
-          />
-        </svg>
-        <!--v-if-->
-        
-      </span>
-      <span
-        class="vc-checkbox__text"
-      >
-        
-        <div>
-          <span
-            class="tw-font-bold"
-          >
-            Custom content
-          </span>
-          <p
-            class="tw-text-sm tw-text-gray-500"
-          >
-            This is a custom content inside the checkbox
-          </p>
-        </div>
-        
-      </span>
       <!--v-if-->
-    </label>
-    <!--v-if-->
-  </div>
-</div> height="14"
+      <label
+        class="vc-checkbox__container"
+      >
+        <input
+          class="vc-checkbox__input"
+          false-value="false"
+          id="vc-field-v-1"
+          name="Field"
+          tabindex="0"
+          true-value="true"
+          type="checkbox"
+        />
+        <span
+          class="vc-checkbox__custom-input"
+        >
+          
+          <svg
+            class="vc-checkbox__check-icon"
+            fill="none"
+            height="14"
             viewBox="0 0 14 14"
             width="14"
             xmlns="http://www.w3.org/2000/svg"

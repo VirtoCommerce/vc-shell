@@ -47,9 +47,7 @@ describe("bladeConfigRegistry", () => {
     __registerBladeConfig("Orders", sampleConfig);
     __registerBladeConfig("Orders", { url: "/orders-v2" });
 
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Duplicate blade name"),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Duplicate blade name"));
     expect(getBladeConfig("Orders")?.url).toBe("/orders-v2");
 
     warnSpy.mockRestore();

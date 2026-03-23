@@ -1,10 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createApp, defineComponent, h } from "vue";
 import { createBladeRegistry } from "@core/composables/useBladeRegistry";
-import {
-  __registerBladeConfig,
-  __clearBladeConfigRegistry,
-} from "@core/blade-navigation/bladeConfigRegistry";
+import { __registerBladeConfig, __clearBladeConfigRegistry } from "@core/blade-navigation/bladeConfigRegistry";
 
 vi.mock("@core/composables/useMenuService", () => ({
   addMenuItem: vi.fn(),

@@ -106,10 +106,14 @@ describe("MenuSidebar", () => {
         provide(IsDesktopKey, ref(false));
         provide(EmbeddedModeKey, false);
         return () =>
-          h(MenuSidebar, { isOpened: true, expanded: false }, {
-            navmenu: () => h("div", { class: "custom-navmenu" }),
-            "user-dropdown": () => h("div", { class: "custom-user-dropdown" }),
-          });
+          h(
+            MenuSidebar,
+            { isOpened: true, expanded: false },
+            {
+              navmenu: () => h("div", { class: "custom-navmenu" }),
+              "user-dropdown": () => h("div", { class: "custom-user-dropdown" }),
+            },
+          );
       },
     });
 

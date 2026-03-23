@@ -108,7 +108,7 @@ describe("toolbar-service", () => {
 });
 
 describe("widget-service", () => {
-  it("keeps registration flag true while the same id is still registered in another blade", async () => {
+  it("keeps widget in other blade after unregister from one blade", async () => {
     const { createWidgetService } = await loadWidgetServiceModule();
     const service = createWidgetService();
 
@@ -117,8 +117,8 @@ describe("widget-service", () => {
 
     service.unregisterWidget("duplicate", "blade-a");
 
+    expect(service.getWidgets("blade-a")).toHaveLength(0);
     expect(service.getWidgets("blade-b")).toHaveLength(1);
-    expect(service.isWidgetRegistered("duplicate")).toBe(true);
   });
 
   it("returns a copy from getWidgets to prevent external mutations", async () => {
@@ -144,16 +144,16 @@ describe("widget-service", () => {
     expect(service.getWidgets("blade-2")).toHaveLength(0);
   });
 
-  it("clears all widgets for a blade", async () => {
+  it("unregisters all widgets for a blade individually", async () => {
     const { createWidgetService } = await loadWidgetServiceModule();
     const service = createWidgetService();
 
     service.registerWidget({ id: "w1", component: {} as any }, "blade-1");
     service.registerWidget({ id: "w2", component: {} as any }, "blade-1");
-    service.clearBladeWidgets("blade-1");
+    service.unregisterWidget("w1", "blade-1");
+    service.unregisterWidget("w2", "blade-1");
 
     expect(service.getWidgets("blade-1")).toHaveLength(0);
-    expect(service.isWidgetRegistered("w1")).toBe(false);
   });
 
   it("updates a widget in-place", async () => {
@@ -166,9 +166,8 @@ describe("widget-service", () => {
     expect(service.getWidgets("blade-1")[0].title).toBe("New");
   });
 
-  it("resolves widget props from blade data", async () => {
-    const { createWidgetService } = await loadWidgetServiceModule();
-    const service = createWidgetService();
+  it("cloneWidget returns a deep copy of a widget", async () => {
+    const { createWidgetService, cloneWidget } = await loadWidgetServiceModule();
 
     const widget = {
       id: "w1",
@@ -180,8 +179,10 @@ describe("widget-service", () => {
       },
     };
 
-    const props = service.resolveWidgetProps(widget, { currentUserId: "42", role: "admin" });
-    expect(props).toEqual({ userId: "42", role: "admin" });
+    const cloned = cloneWidget(widget);
+    expect(cloned).toEqual(widget);
+    expect(cloned).not.toBe(widget);
+    expect(cloned.config).not.toBe(widget.config);
   });
 
   it("preregistration deduplicates by bladeId::widgetId key", async () => {

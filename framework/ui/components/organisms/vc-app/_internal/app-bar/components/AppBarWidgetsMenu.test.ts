@@ -26,7 +26,8 @@ function mountMenu() {
         AppBarWidgetItem: {
           name: "AppBarWidgetItem",
           props: ["widgetId"],
-          template: '<div class="stub-widget-item" :data-widget-id="widgetId"><slot name="trigger" :isActive="false" /></div>',
+          template:
+            '<div class="stub-widget-item" :data-widget-id="widgetId"><slot name="trigger" :isActive="false" /></div>',
         },
         VcIcon: {
           name: "VcIcon",

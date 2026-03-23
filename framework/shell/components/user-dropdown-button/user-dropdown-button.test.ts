@@ -15,7 +15,11 @@ vi.mock("@core/composables/useSidebarState", () => ({
 const stubs = {
   UserInfo: { name: "UserInfo", template: "<div class='user-info-stub' />" },
   SettingsMenu: { name: "SettingsMenu", template: "<div class='settings-menu-stub' />" },
-  VcDropdownPanel: { name: "VcDropdownPanel", template: "<div class='dropdown-panel-stub'><slot /></div>", props: ["show", "anchorRef", "placement", "width", "maxWidth"] },
+  VcDropdownPanel: {
+    name: "VcDropdownPanel",
+    template: "<div class='dropdown-panel-stub'><slot /></div>",
+    props: ["show", "anchorRef", "placement", "width", "maxWidth"],
+  },
   UserSidebar: { name: "UserSidebar", template: "<div class='user-sidebar-stub' />" },
 };
 

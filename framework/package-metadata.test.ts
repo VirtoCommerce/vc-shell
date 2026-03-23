@@ -10,7 +10,17 @@ describe("package.json metadata", () => {
   // FR-1.1: exports map has only explicit named entries
   it("exports map contains only expected explicit entries", () => {
     const keys = Object.keys(pkg.exports);
-    const allowed = [".", "./ui", "./ai-agent", "./extensions", "./globals", "./package.json", "./dist/index.css", "./dist/locales/*", "./tailwind.config"];
+    const allowed = [
+      ".",
+      "./ui",
+      "./ai-agent",
+      "./extensions",
+      "./globals",
+      "./package.json",
+      "./dist/index.css",
+      "./dist/locales/*",
+      "./tailwind.config",
+    ];
     for (const key of keys) {
       expect(allowed).toContain(key);
     }
@@ -50,24 +60,24 @@ describe("package.json metadata", () => {
     expect(pkg).toHaveProperty("peerDependencies.vue-router");
   });
 
-  it("peerDependencies contains vue-i18n", () => {
-    expect(pkg).toHaveProperty("peerDependencies.vue-i18n");
+  it("dependencies contains vue-i18n", () => {
+    expect(pkg).toHaveProperty("dependencies.vue-i18n");
   });
 
-  it("peerDependencies contains vee-validate", () => {
-    expect(pkg).toHaveProperty("peerDependencies.vee-validate");
+  it("dependencies contains vee-validate", () => {
+    expect(pkg).toHaveProperty("dependencies.vee-validate");
   });
 
-  it("peerDependencies contains @vueuse/core", () => {
-    expect(pkg).toHaveProperty("peerDependencies.@vueuse/core");
+  it("dependencies contains @vueuse/core", () => {
+    expect(pkg).toHaveProperty("dependencies.@vueuse/core");
   });
 
-  it("peerDependencies contains @vueuse/components", () => {
-    expect(pkg).toHaveProperty("peerDependencies.@vueuse/components");
+  it("dependencies contains @vueuse/components", () => {
+    expect(pkg).toHaveProperty("dependencies.@vueuse/components");
   });
 
-  it("peerDependencies contains @vueuse/integrations", () => {
-    expect(pkg).toHaveProperty("peerDependencies.@vueuse/integrations");
+  it("dependencies contains @vueuse/integrations", () => {
+    expect(pkg).toHaveProperty("dependencies.@vueuse/integrations");
   });
 
   // FR-4.1: shared runtime deps must NOT remain in dependencies
@@ -79,24 +89,24 @@ describe("package.json metadata", () => {
     expect(pkg.dependencies).not.toHaveProperty("vue-router");
   });
 
-  it("dependencies does not contain vue-i18n", () => {
-    expect(pkg.dependencies).not.toHaveProperty("vue-i18n");
+  it("peerDependencies does not contain vue-i18n", () => {
+    expect(pkg.peerDependencies).not.toHaveProperty("vue-i18n");
   });
 
-  it("dependencies does not contain vee-validate", () => {
-    expect(pkg.dependencies).not.toHaveProperty("vee-validate");
+  it("peerDependencies does not contain vee-validate", () => {
+    expect(pkg.peerDependencies).not.toHaveProperty("vee-validate");
   });
 
-  it("dependencies does not contain @vueuse/core", () => {
-    expect(pkg.dependencies).not.toHaveProperty("@vueuse/core");
+  it("peerDependencies does not contain @vueuse/core", () => {
+    expect(pkg.peerDependencies).not.toHaveProperty("@vueuse/core");
   });
 
-  it("dependencies does not contain @vueuse/components", () => {
-    expect(pkg.dependencies).not.toHaveProperty("@vueuse/components");
+  it("peerDependencies does not contain @vueuse/components", () => {
+    expect(pkg.peerDependencies).not.toHaveProperty("@vueuse/components");
   });
 
-  it("dependencies does not contain @vueuse/integrations", () => {
-    expect(pkg.dependencies).not.toHaveProperty("@vueuse/integrations");
+  it("peerDependencies does not contain @vueuse/integrations", () => {
+    expect(pkg.peerDependencies).not.toHaveProperty("@vueuse/integrations");
   });
 
   // peerDependenciesMeta: required peers marked optional: false
@@ -108,24 +118,24 @@ describe("package.json metadata", () => {
     expect(pkg).toHaveProperty("peerDependenciesMeta.vue-router.optional", false);
   });
 
-  it("peerDependenciesMeta marks vue-i18n as optional: false", () => {
-    expect(pkg).toHaveProperty("peerDependenciesMeta.vue-i18n.optional", false);
+  // peerDependenciesMeta should not contain entries for packages moved to dependencies
+  it("peerDependenciesMeta does not contain vue-i18n", () => {
+    expect(pkg.peerDependenciesMeta).not.toHaveProperty("vue-i18n");
   });
 
-  // peerDependenciesMeta: optional peers marked optional: true
-  it("peerDependenciesMeta marks vee-validate as optional: true", () => {
-    expect(pkg).toHaveProperty("peerDependenciesMeta.vee-validate.optional", true);
+  it("peerDependenciesMeta does not contain vee-validate", () => {
+    expect(pkg.peerDependenciesMeta).not.toHaveProperty("vee-validate");
   });
 
-  it("peerDependenciesMeta marks @vueuse/core as optional: true", () => {
-    expect(pkg).toHaveProperty("peerDependenciesMeta.@vueuse/core.optional", true);
+  it("peerDependenciesMeta does not contain @vueuse/core", () => {
+    expect(pkg.peerDependenciesMeta).not.toHaveProperty("@vueuse/core");
   });
 
-  it("peerDependenciesMeta marks @vueuse/components as optional: true", () => {
-    expect(pkg).toHaveProperty("peerDependenciesMeta.@vueuse/components.optional", true);
+  it("peerDependenciesMeta does not contain @vueuse/components", () => {
+    expect(pkg.peerDependenciesMeta).not.toHaveProperty("@vueuse/components");
   });
 
-  it("peerDependenciesMeta marks @vueuse/integrations as optional: true", () => {
-    expect(pkg).toHaveProperty("peerDependenciesMeta.@vueuse/integrations.optional", true);
+  it("peerDependenciesMeta does not contain @vueuse/integrations", () => {
+    expect(pkg.peerDependenciesMeta).not.toHaveProperty("@vueuse/integrations");
   });
 });

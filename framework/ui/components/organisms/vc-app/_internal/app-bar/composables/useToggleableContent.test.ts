@@ -3,11 +3,7 @@ import { mountWithSetup } from "@framework/test-helpers";
 import { useToggleableContent, type ToggleableItem } from "./useToggleableContent";
 
 describe("useToggleableContent", () => {
-  const items: ToggleableItem[] = [
-    { id: "a" },
-    { id: "b" },
-    { id: "c" },
-  ];
+  const items: ToggleableItem[] = [{ id: "a" }, { id: "b" }, { id: "c" }];
 
   it("returns the expected API shape", () => {
     const activeId = ref<string | null>(null);

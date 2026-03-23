@@ -77,9 +77,7 @@ describe("useMultivalueDropdown", () => {
   });
 
   it("openDropdown does nothing when disabled", () => {
-    const { result } = mountWithSetup(() =>
-      useMultivalueDropdown(createOptions({ disabled: () => true })),
-    );
+    const { result } = mountWithSetup(() => useMultivalueDropdown(createOptions({ disabled: () => true })));
 
     result.openDropdown();
     expect(result.isOpened.value).toBe(false);
@@ -87,9 +85,7 @@ describe("useMultivalueDropdown", () => {
 
   it("closeDropdown closes and emits", () => {
     const emit = { close: vi.fn() };
-    const { result } = mountWithSetup(() =>
-      useMultivalueDropdown(createOptions({ emit })),
-    );
+    const { result } = mountWithSetup(() => useMultivalueDropdown(createOptions({ emit })));
 
     result.openDropdown();
     result.closeDropdown();
@@ -108,9 +104,7 @@ describe("useMultivalueDropdown", () => {
 
   it("toggleDropdown closes when open", () => {
     const emit = { close: vi.fn() };
-    const { result } = mountWithSetup(() =>
-      useMultivalueDropdown(createOptions({ emit })),
-    );
+    const { result } = mountWithSetup(() => useMultivalueDropdown(createOptions({ emit })));
 
     result.toggleDropdown();
     expect(result.isOpened.value).toBe(true);

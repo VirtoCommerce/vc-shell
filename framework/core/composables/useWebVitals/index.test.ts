@@ -103,9 +103,7 @@ describe("useWebVitals", () => {
 
     // import.meta.env.DEV is true in test environment
     if (import.meta.env.DEV) {
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining("[web-vitals] FCP"),
-      );
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("[web-vitals] FCP"));
     }
     warnSpy.mockRestore();
   });

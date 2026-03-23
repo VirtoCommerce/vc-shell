@@ -10,7 +10,10 @@ vi.mock("vue-i18n", () => ({
 
 const stubs = {
   VcIcon: { template: '<i class="vc-icon-stub" />', props: ["icon", "size"] },
-  VcTooltip: { template: '<div class="vc-tooltip-stub"><slot /><slot name="tooltip" /></div>', props: ["placement", "maxWidth", "variant"] },
+  VcTooltip: {
+    template: '<div class="vc-tooltip-stub"><slot /><slot name="tooltip" /></div>',
+    props: ["placement", "maxWidth", "variant"],
+  },
 };
 
 function factory(props: Record<string, unknown> = {}, provideContext = true) {

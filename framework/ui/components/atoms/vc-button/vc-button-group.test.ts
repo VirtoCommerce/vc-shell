@@ -5,8 +5,7 @@ import { ButtonGroupKey } from "@ui/components/atoms/vc-button/types";
 import { defineComponent, h, inject } from "vue";
 
 describe("VcButtonGroup", () => {
-  const mountComponent = (props = {}, slots = {}) =>
-    mount(VcButtonGroup as any, { props, slots });
+  const mountComponent = (props = {}, slots = {}) => mount(VcButtonGroup as any, { props, slots });
 
   it("renders with role='group'", () => {
     const wrapper = mountComponent();

@@ -66,10 +66,7 @@ describe("useToolbar", () => {
 
     const item: IToolbarItem = { id: "btn1", title: "Save" } as IToolbarItem;
     result!.registerToolbarItem(item);
-    expect(mockService.registerToolbarItem).toHaveBeenCalledWith(
-      item,
-      expect.any(String),
-    );
+    expect(mockService.registerToolbarItem).toHaveBeenCalledWith(item, expect.any(String));
   });
 
   it("delegates unregisterToolbarItem to service", () => {
@@ -92,10 +89,7 @@ describe("useToolbar", () => {
 
     mount(Outer);
     result!.unregisterToolbarItem("btn1");
-    expect(mockService.unregisterToolbarItem).toHaveBeenCalledWith(
-      "btn1",
-      expect.any(String),
-    );
+    expect(mockService.unregisterToolbarItem).toHaveBeenCalledWith("btn1", expect.any(String));
   });
 
   it("delegates getToolbarItems to service", () => {

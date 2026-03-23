@@ -18,7 +18,7 @@ const globalStubs = {
     template: "<button @click=\"$emit('click')\"><slot /></button>",
   },
   VcImage: {
-    template: "<img :src=\"src\" />",
+    template: '<img :src="src" />',
     props: ["src", "size"],
   },
 };

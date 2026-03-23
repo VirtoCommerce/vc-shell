@@ -5,7 +5,17 @@ import { createI18n } from "vue-i18n";
 import { ref } from "vue";
 import VcDatePicker from "@ui/components/molecules/vc-date-picker/vc-date-picker.vue";
 
-const i18n = createI18n({ legacy: false, locale: "en", messages: { en: { COMPONENTS: { MOLECULES: { VC_INPUT: { DATE_TIME_PLACEHOLDER: "Select date & time", DATE_PLACEHOLDER: "Select date" } } } } } });
+const i18n = createI18n({
+  legacy: false,
+  locale: "en",
+  messages: {
+    en: {
+      COMPONENTS: {
+        MOLECULES: { VC_INPUT: { DATE_TIME_PLACEHOLDER: "Select date & time", DATE_PLACEHOLDER: "Select date" } },
+      },
+    },
+  },
+});
 
 describe("VcDatePicker a11y", () => {
   let wrapper: VueWrapper;

@@ -2,29 +2,9 @@
   data-v-app=""
 >
   <div
-    aria-label="Editor with custom TipTap extensions"
     class="vc-editor"
   >
-    <div
-      class="vc-label vc-editor__label"
-    >
-      <div
-        class="vc-label__text"
-      >
-        <span
-          class="vc-label__content"
-        >
-          
-          <span>
-            Editor with custom TipTap extensions
-          </span>
-          
-        </span>
-        <!--v-if-->
-      </div>
-      <!--v-if-->
-      <!--v-if-->
-    </div>
+    <!--v-if-->
     <div
       class="vc-editor__header"
     >
@@ -197,8 +177,8 @@
         <!-- Heading 1 -->
         <button
           aria-label="Heading 1"
-          aria-pressed="true"
-          class="vc-editor-button vc-editor-button--active"
+          aria-pressed="false"
+          class="vc-editor-button"
           type="button"
         >
           <svg
@@ -325,7 +305,6 @@
           aria-label="Bullet list"
           aria-pressed="false"
           class="vc-editor-button"
-          disabled=""
           type="button"
         >
           <svg
@@ -371,7 +350,6 @@
           aria-label="Numbered list"
           aria-pressed="false"
           class="vc-editor-button"
-          disabled=""
           type="button"
         >
           <svg
@@ -789,75 +767,6 @@
           tabindex="0"
           translate="no"
         >
-          <h1>
-            Custom Extensions
-          </h1>
-          <p>
-            You can add any TipTap extension to enhance the editor functionality.
-          </p>
-        </div>
-      </div>
-      <!-- Full preview view -->
-      <!--v-if-->
-      <!-- Source code view -->
-      <!--v-if-->
-      <!-- Side-by-side view: Editor left, Code right -->
-      <!--v-if-->
-    </div>
-    <!-- Character count display -->
-    <!--v-if-->
-    <input
-      accept="image/*"
-      hidden=""
-      multiple=""
-      type="file"
-    />
-    <!--v-if-->
-  </div>
-</div>000/svg"
-          >
-            <path
-              d="m15 15 6 6"
-            />
-            <path
-              d="m15 9 6-6"
-            />
-            <path
-              d="M21 16v5h-5"
-            />
-            <path
-              d="M21 8V3h-5"
-            />
-            <path
-              d="M3 16v5h5"
-            />
-            <path
-              d="m3 21 6-6"
-            />
-            <path
-              d="M3 8V3h5"
-            />
-            <path
-              d="M9 9 3 3"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div
-      class="vc-editor__body"
-    >
-      <!-- Normal editor view -->
-      <div
-        class="vc-editor__content"
-      >
-        <div
-          class="tiptap ProseMirror"
-          contenteditable="true"
-          role="textbox"
-          tabindex="0"
-          translate="no"
-        >
           <p
             class="is-empty is-editor-empty"
             data-placeholder="Start typing here..."
@@ -885,7 +794,53 @@
     />
     <!--v-if-->
   </div>
-</div>        />
+</div> editor with 
+            <em>
+              initial content
+            </em>
+            .
+          </p>
+          <ul
+            class="tight"
+            data-tight="true"
+          >
+            <li>
+              <p>
+                List item 1
+              </p>
+            </li>
+            <li>
+              <p>
+                List item 2
+              </p>
+            </li>
+            <li>
+              <p>
+                List item 3
+              </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- Full preview view -->
+      <!--v-if-->
+      <!-- Source code view -->
+      <!--v-if-->
+      <!-- Side-by-side view: Editor left, Code right -->
+      <!--v-if-->
+    </div>
+    <!-- Character count display -->
+    <!--v-if-->
+    <input
+      accept="image/*"
+      hidden=""
+      multiple=""
+      type="file"
+    />
+    <!--v-if-->
+  </div>
+</div>             d="M9 9 3 3"
+            />
           </svg>
         </button>
       </div>

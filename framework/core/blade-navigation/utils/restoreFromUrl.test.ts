@@ -17,7 +17,10 @@ vi.mock("@core/notifications", () => ({
 // ── Mock registry ──────────────────────────────────────────────────────────────
 
 function createMockRegistry(
-  blades: Record<string, { route?: string; isWorkspace?: boolean; routable?: boolean; permissions?: string | string[] }> = {},
+  blades: Record<
+    string,
+    { route?: string; isWorkspace?: boolean; routable?: boolean; permissions?: string | string[] }
+  > = {},
 ): IBladeRegistry {
   const map = new Map<string, IBladeRegistrationData>(
     Object.entries(blades).map(([name, data]) => [
@@ -128,9 +131,7 @@ describe("restoreFromUrl", () => {
 
       expect(result).toBe(false);
       expect(stack.blades.value).toHaveLength(0);
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining("No workspace blade found"),
-      );
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("No workspace blade found"));
 
       warnSpy.mockRestore();
     });
@@ -144,9 +145,7 @@ describe("restoreFromUrl", () => {
 
       expect(result).toBe(false);
       expect(stack.blades.value).toHaveLength(0);
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining("not a workspace"),
-      );
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("not a workspace"));
 
       warnSpy.mockRestore();
     });
@@ -191,9 +190,7 @@ describe("restoreFromUrl", () => {
 
       expect(result).toBe(false);
       expect(stack.blades.value).toHaveLength(1); // Only workspace
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining("No blade found for URL segment"),
-      );
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("No blade found for URL segment"));
 
       warnSpy.mockRestore();
     });
@@ -269,9 +266,7 @@ describe("restoreFromUrl", () => {
       });
       mockRouter = {
         replace: vi.fn(),
-        getRoutes: vi.fn().mockReturnValue([
-          { name: "App", meta: { root: true }, path: "/" },
-        ]),
+        getRoutes: vi.fn().mockReturnValue([{ name: "App", meta: { root: true }, path: "/" }]),
       };
     });
 
@@ -281,7 +276,8 @@ describe("restoreFromUrl", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       const result = await restoreFromUrl(
-        permStack, protectedRegistry,
+        permStack,
+        protectedRegistry,
         { workspaceUrl: "orders" },
         hasAccess,
         mockRouter as any,
@@ -291,9 +287,7 @@ describe("restoreFromUrl", () => {
       expect(permStack.blades.value).toHaveLength(0);
       expect(hasAccess).toHaveBeenCalledWith("order:read");
       expect(mockRouter.replace).toHaveBeenCalled();
-      expect(warnSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Access denied"),
-      );
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Access denied"));
 
       warnSpy.mockRestore();
     });
@@ -303,7 +297,8 @@ describe("restoreFromUrl", () => {
       const permStack = createBladeStack(protectedRegistry);
 
       const result = await restoreFromUrl(
-        permStack, protectedRegistry,
+        permStack,
+        protectedRegistry,
         { workspaceUrl: "orders" },
         hasAccess,
         mockRouter as any,
@@ -320,7 +315,8 @@ describe("restoreFromUrl", () => {
       const permStack = createBladeStack(protectedRegistry);
 
       const result = await restoreFromUrl(
-        permStack, protectedRegistry,
+        permStack,
+        protectedRegistry,
         { workspaceUrl: "products" },
         hasAccess,
         mockRouter as any,
@@ -335,10 +331,7 @@ describe("restoreFromUrl", () => {
     it("works without hasAccess (backward compatible)", async () => {
       const permStack = createBladeStack(protectedRegistry);
 
-      const result = await restoreFromUrl(
-        permStack, protectedRegistry,
-        { workspaceUrl: "orders" },
-      );
+      const result = await restoreFromUrl(permStack, protectedRegistry, { workspaceUrl: "orders" });
 
       expect(result).toBe(false);
       expect(permStack.blades.value).toHaveLength(1);
@@ -350,16 +343,9 @@ describe("restoreFromUrl", () => {
       const permStack = createBladeStack(protectedRegistry);
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      await restoreFromUrl(
-        permStack, protectedRegistry,
-        { workspaceUrl: "orders" },
-        hasAccess,
-        mockRouter as any,
-      );
+      await restoreFromUrl(permStack, protectedRegistry, { workspaceUrl: "orders" }, hasAccess, mockRouter as any);
 
-      expect(mockRouter.replace).toHaveBeenCalledWith(
-        expect.objectContaining({ name: "App" }),
-      );
+      expect(mockRouter.replace).toHaveBeenCalledWith(expect.objectContaining({ name: "App" }));
 
       vi.restoreAllMocks();
     });

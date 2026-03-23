@@ -2,223 +2,189 @@
   data-v-app=""
 >
   <div
-    style="height: 250px; width: 300px; border: 1px solid rgb(229, 231, 235); border-radius: 8px; overflow: hidden;"
+    class="tw-flex tw-gap-6"
   >
-    <div
-      aria-label="Scrollable content"
-      class="vc-scrollable-container"
-      role="region"
-    >
-      <div
-        aria-hidden="true"
-        class="vc-scrollable-container__arrow vc-scrollable-container__arrow--hidden"
+    <div>
+      <p
+        class="tw-text-xs tw-font-medium tw-mb-2 tw-text-[var(--neutrals-600)]"
       >
-        
-        <svg
-          aria-hidden="true"
-          class="lucide vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs lucide-chevron-up-icon lucide-chevron-up vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs"
-          fill="none"
-          height="24"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="1.5"
-          viewBox="0 0 24 24"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m18 15-6-6-6 6"
-          />
-        </svg>
-        
-      </div>
+        speed: 10 (fast)
+      </p>
       <div
-        class="vc-scrollable-container__viewport"
-        tabindex="0"
+        style="height: 250px; width: 260px; border: 1px solid rgb(229, 231, 235); border-radius: 8px; overflow: hidden;"
       >
-        
-        
         <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+          aria-label="Scrollable content"
+          class="vc-scrollable-container"
+          role="region"
         >
-          Item 1
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 2
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 3
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 4
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 5
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 6
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 7
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 8
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 9
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 10
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 11
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 12
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 13
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 14
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 15
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 16
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 17
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 18
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 19
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 20
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 21
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 22
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 23
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 24
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 25
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 26
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 27
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 28
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 29
-        </div>
-        <div
-          class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
-        >
-          Item 30
-        </div>
-        
-        
-      </div>
-      <div
-        aria-hidden="true"
-        class="vc-scrollable-container__arrow vc-scrollable-container__arrow--hidden"
-      >
-        
-        <svg
-          aria-hidden="true"
-          class="lucide vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs lucide-chevron-down-icon lucide-chevron-down vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs"
-          fill="none"
-          height="24"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="1.5"
-          viewBox="0 0 24 24"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m6 9 6 6 6-6"
-          />
-        </svg>
-        
-      </div>
-    </div>
-  </div>
-</div>    class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+          <div
+            aria-hidden="true"
+            class="vc-scrollable-container__arrow vc-scrollable-container__arrow--hidden"
+          >
+            
+            <svg
+              aria-hidden="true"
+              class="lucide vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs lucide-chevron-up-icon lucide-chevron-up vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m18 15-6-6-6 6"
+              />
+            </svg>
+            
+          </div>
+          <div
+            class="vc-scrollable-container__viewport"
+            tabindex="0"
+          >
+            
+            
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 1
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 2
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 3
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 4
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 5
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 6
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 7
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 8
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 9
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 10
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 11
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 12
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 13
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 14
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 15
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 16
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 17
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 18
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 19
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 20
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 21
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 22
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 23
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 24
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 25
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 26
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
+            >
+              Fast-scroll item 27
+            </div>
+            <div
+              class="tw-px-3 tw-py-2 tw-text-sm tw-border-b tw-border-[var(--neutrals-100)]"
             >
               Fast-scroll item 28
             </div>

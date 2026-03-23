@@ -3,8 +3,7 @@ import { mount } from "@vue/test-utils";
 import VcSkeleton from "@ui/components/atoms/vc-skeleton/vc-skeleton.vue";
 
 describe("VcSkeleton", () => {
-  const mountComponent = (props = {}) =>
-    mount(VcSkeleton as any, { props });
+  const mountComponent = (props = {}) => mount(VcSkeleton as any, { props });
 
   it("renders text variant by default", () => {
     const wrapper = mountComponent();

@@ -65,19 +65,13 @@ describe("VcScrollableContainer", () => {
   });
 
   it("renders custom arrow-up slot", () => {
-    const wrapper = mountComponent(
-      {},
-      { "arrow-up": () => "Up Arrow" },
-    );
+    const wrapper = mountComponent({}, { "arrow-up": () => "Up Arrow" });
     const arrows = wrapper.findAll(".vc-scrollable-container__arrow");
     expect(arrows[0].text()).toContain("Up Arrow");
   });
 
   it("renders custom arrow-down slot", () => {
-    const wrapper = mountComponent(
-      {},
-      { "arrow-down": () => "Down Arrow" },
-    );
+    const wrapper = mountComponent({}, { "arrow-down": () => "Down Arrow" });
     const arrows = wrapper.findAll(".vc-scrollable-container__arrow");
     expect(arrows[1].text()).toContain("Down Arrow");
   });

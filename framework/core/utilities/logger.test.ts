@@ -2,7 +2,9 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { createLogger, logger, loggers } from "./logger";
 
 describe("createLogger", () => {
-  beforeEach(() => { vi.restoreAllMocks(); });
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
 
   it("creates logger with all methods", () => {
     const log = createLogger("test");
@@ -48,7 +50,9 @@ describe("createLogger", () => {
 });
 
 describe("default exports", () => {
-  it("exports default logger", () => { expect(typeof logger.error).toBe("function"); });
+  it("exports default logger", () => {
+    expect(typeof logger.error).toBe("function");
+  });
   it("exports named loggers", () => {
     expect(loggers.core).toBeDefined();
     expect(loggers.ui).toBeDefined();

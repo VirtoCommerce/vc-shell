@@ -21,7 +21,7 @@
           >
             
             <span>
-              Small color input
+              Brand color
             </span>
             
           </span>
@@ -31,7 +31,7 @@
         <!--v-if-->
       </label>
       <div
-        class="vc-color-input__field-wrapper vc-color-input__field-wrapper--small"
+        class="vc-color-input__field-wrapper vc-color-input__field-wrapper--default"
       >
         <div
           class="vc-color-input__field-container"
@@ -53,9 +53,9 @@
               class="vc-color-input__color-container"
             >
               <button
-                aria-label="Pick color: #a855f7"
+                aria-label="Pick color: #3b82f6"
                 class="vc-color-input__color-square"
-                style="background-color: rgb(168, 85, 247);"
+                style="background-color: rgb(59, 130, 246);"
                 type="button"
               >
                 <!-- Hidden native color input -->
@@ -64,7 +64,7 @@
                   class="vc-color-input__color-picker-hidden"
                   tabindex="-1"
                   type="color"
-                  value="#a855f7"
+                  value="#3b82f6"
                 />
               </button>
             </div>
@@ -77,14 +77,26 @@
         <!--v-if-->
       </div>
     </div>
+    <div
+      class="tw-mt-4 tw-p-2 tw-bg-gray-100 tw-rounded tw-text-sm"
+    >
+      <strong>
+        Value:
+      </strong>
+       "#3b82f6" 
+    </div>
   </div>
-</div>
-                aria-hidden="true"
-                class="lucide vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs lucide-x-icon lucide-x vc-lucide-icon vc-lucide-icon--xs vc-icon vc-icon--xs"
-                fill="none"
-                height="24"
-                stroke="currentColor"
-                stroke-linecap="round"
+</div>-0-error"
+          role="alert"
+        >
+          
+          Please enter a valid hex color
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>ke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="1.5"
                 viewBox="0 0 24 24"

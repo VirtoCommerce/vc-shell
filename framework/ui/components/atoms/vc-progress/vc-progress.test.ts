@@ -3,8 +3,7 @@ import { mount } from "@vue/test-utils";
 import VcProgress from "./vc-progress.vue";
 
 describe("VcProgress", () => {
-  const mountComponent = (props = {}) =>
-    mount(VcProgress as any, { props });
+  const mountComponent = (props = {}) => mount(VcProgress as any, { props });
 
   describe("rendering", () => {
     it("renders with vc-progress class", () => {

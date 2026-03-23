@@ -5,8 +5,16 @@ import type { ChartConfig } from "./types";
 
 vi.mock("@unovis/vue", () => ({
   VisSingleContainer: { name: "VisSingleContainer", template: "<div><slot /></div>", props: ["data", "height"] },
-  VisDonut: { name: "VisDonut", template: "<div />", props: ["value", "color", "arcWidth", "cornerRadius", "padAngle", "centralLabel", "centralSubLabel"] },
-  VisTooltip: { name: "VisTooltip", template: "<div />", props: ["allowHover", "className", "verticalShift", "triggers"] },
+  VisDonut: {
+    name: "VisDonut",
+    template: "<div />",
+    props: ["value", "color", "arcWidth", "cornerRadius", "padAngle", "centralLabel", "centralSubLabel"],
+  },
+  VisTooltip: {
+    name: "VisTooltip",
+    template: "<div />",
+    props: ["allowHover", "className", "verticalShift", "triggers"],
+  },
   VisDonutSelectors: { segment: "[data-segment]" },
 }));
 

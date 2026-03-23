@@ -8,7 +8,7 @@ const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });
 beforeAll(() => {
   if (!window.matchMedia) {
     // jsdom fallback for touch/hover detection in component click handler
-    window.matchMedia = ((query: string) =>
+    window.matchMedia = (query: string) =>
       ({
         matches: query === "(hover: none)",
         media: query,
@@ -18,7 +18,7 @@ beforeAll(() => {
         addEventListener: () => undefined,
         removeEventListener: () => undefined,
         dispatchEvent: () => false,
-      }) as MediaQueryList);
+      }) as MediaQueryList;
   }
 });
 

@@ -4,7 +4,7 @@ import { PushNotification } from "@core/api/platform";
 import { NotificationTypeConfig } from "./types";
 
 // Mock the notification imperative API
-vi.mock("@core/notifications", () => {
+vi.mock("@core/notifications/notification", () => {
   const notificationFn = vi.fn(() => "toast-id-1");
   notificationFn.success = vi.fn(() => "toast-id-s");
   notificationFn.error = vi.fn(() => "toast-id-e");
@@ -14,7 +14,7 @@ vi.mock("@core/notifications", () => {
   return { notification: notificationFn };
 });
 
-import { notification } from "@core/notifications";
+import { notification } from "@core/notifications/notification";
 
 function makePush(overrides: Partial<PushNotification> = {}): PushNotification {
   return new PushNotification({
@@ -42,10 +42,7 @@ describe("ToastController", () => {
 
     it("shows a toast with severity-based timeout", () => {
       controller.handle(makePush(), config);
-      expect(notification).toHaveBeenCalledWith(
-        "Test title",
-        expect.objectContaining({ timeout: 5000 }),
-      );
+      expect(notification).toHaveBeenCalledWith("Test title", expect.objectContaining({ timeout: 5000 }));
     });
 
     it("uses warning timeout for warning severity", () => {
@@ -53,10 +50,7 @@ describe("ToastController", () => {
         toast: { mode: "auto", severity: "warning" },
       };
       controller.handle(makePush(), warnConfig);
-      expect(notification).toHaveBeenCalledWith(
-        "Test title",
-        expect.objectContaining({ timeout: 8000 }),
-      );
+      expect(notification).toHaveBeenCalledWith("Test title", expect.objectContaining({ timeout: 8000 }));
     });
 
     it("uses persistent (false) for error severity", () => {
@@ -64,10 +58,7 @@ describe("ToastController", () => {
         toast: { mode: "auto", severity: "error" },
       };
       controller.handle(makePush(), errConfig);
-      expect(notification).toHaveBeenCalledWith(
-        "Test title",
-        expect.objectContaining({ timeout: false }),
-      );
+      expect(notification).toHaveBeenCalledWith("Test title", expect.objectContaining({ timeout: false }));
     });
   });
 
@@ -78,19 +69,13 @@ describe("ToastController", () => {
 
     it("creates persistent toast on first message", () => {
       controller.handle(makePush(), config);
-      expect(notification).toHaveBeenCalledWith(
-        "Test title",
-        expect.objectContaining({ timeout: false }),
-      );
+      expect(notification).toHaveBeenCalledWith("Test title", expect.objectContaining({ timeout: false }));
     });
 
     it("updates existing toast on subsequent messages", () => {
       controller.handle(makePush(), config);
       controller.handle(makePush({ title: "Updated" }), config);
-      expect(notification.update).toHaveBeenCalledWith(
-        "toast-id-1",
-        expect.objectContaining({ content: "Updated" }),
-      );
+      expect(notification.update).toHaveBeenCalledWith("toast-id-1", expect.objectContaining({ content: "Updated" }));
     });
 
     it("completes toast when isComplete returns true", () => {
@@ -103,10 +88,7 @@ describe("ToastController", () => {
         },
       };
       controller.handle(makePush(), progressConfig);
-      controller.handle(
-        makePush({ ...({} as any), finished: new Date() }),
-        progressConfig,
-      );
+      controller.handle(makePush({ ...({} as any), finished: new Date() }), progressConfig);
       expect(notification.update).toHaveBeenCalledWith(
         "toast-id-1",
         expect.objectContaining({ type: "success", timeout: 5000 }),

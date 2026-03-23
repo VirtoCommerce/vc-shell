@@ -23,6 +23,7 @@ vi.mock("@shell/_internal/blade-navigation/plugin-v2", () => ({
     registerBeforeClose: vi.fn(),
     setBladeError: vi.fn(),
     clearBladeError: vi.fn(),
+    setBladeTitle: vi.fn(),
   },
   bladeMessagingInstance: {
     callParent: vi.fn().mockResolvedValue(undefined),
@@ -76,16 +77,20 @@ function createBladeWrapper(bladeProps: Record<string, unknown> = {}) {
         closeSelf: async () => {},
         closeChildren: async () => {},
         replaceBlade: async () => {},
+        setBladeTitle: vi.fn(),
       } as any);
       provide(BladeMessagingKey, {
         callParent: async () => undefined,
         onParentCall: () => () => {},
       } as any);
-      provide(BladeDescriptorKey, computed(() => ({
-        id: "test-blade",
-        index: 0,
-        parentId: undefined,
-      })) as any);
+      provide(
+        BladeDescriptorKey,
+        computed(() => ({
+          id: "test-blade",
+          index: 0,
+          parentId: undefined,
+        })) as any,
+      );
 
       return () => h(VcBlade as any, bladeProps);
     },
@@ -107,10 +112,11 @@ describe("VcBlade a11y", () => {
         stubs: {
           VcIcon: true,
           BladeHeader: {
-            // Provide a semantically valid header stub that supports :title-id prop
-            // so aria-labelledby can be verified by axe and test assertions
+            // Use <div> (not <header>) to avoid axe landmark-banner-is-top-level violation
+            // when nested inside role="region". Still supports :title-id for aria-labelledby tests.
             props: ["title", "titleId"],
-            template: '<header><h2 :id="titleId">{{ title }}</h2><slot /><slot name="prepend" /><slot name="actions" /></header>',
+            template:
+              '<div role="heading" aria-level="2"><h2 :id="titleId">{{ title }}</h2><slot /><slot name="prepend" /><slot name="actions" /></div>',
           },
           BladeHeaderSkeleton: true,
           BladeToolbar: true,

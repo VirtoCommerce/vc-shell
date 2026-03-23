@@ -21,9 +21,7 @@ describe("useDataTableSort", () => {
     });
 
     it("initializes with provided field and direction ASC", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTableSort({ initialField: "name", initialDirection: "ASC" }),
-      );
+      const { result } = mountWithSetup(() => useDataTableSort({ initialField: "name", initialDirection: "ASC" }));
       expect(result.sortField.value).toBe("name");
       expect(result.sortOrder.value).toBe(1);
       expect(result.sortExpression.value).toBe("name:ASC");
@@ -37,9 +35,7 @@ describe("useDataTableSort", () => {
     });
 
     it("returns undefined when sortOrder is 0", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTableSort({ initialField: "name", initialDirection: "ASC" }),
-      );
+      const { result } = mountWithSetup(() => useDataTableSort({ initialField: "name", initialDirection: "ASC" }));
       result.sortOrder.value = 0;
       expect(result.sortExpression.value).toBeUndefined();
     });
@@ -61,9 +57,7 @@ describe("useDataTableSort", () => {
 
   describe("resetSort", () => {
     it("resets to initial values", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTableSort({ initialField: "date", initialDirection: "DESC" }),
-      );
+      const { result } = mountWithSetup(() => useDataTableSort({ initialField: "date", initialDirection: "DESC" }));
       result.sortField.value = "name";
       result.sortOrder.value = 1;
       result.resetSort();
@@ -85,18 +79,14 @@ describe("useDataTableSort", () => {
 
   describe("v-model reactivity", () => {
     it("sortExpression updates when sortField changes", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTableSort({ initialField: "name", initialDirection: "ASC" }),
-      );
+      const { result } = mountWithSetup(() => useDataTableSort({ initialField: "name", initialDirection: "ASC" }));
       expect(result.sortExpression.value).toBe("name:ASC");
       result.sortField.value = "price";
       expect(result.sortExpression.value).toBe("price:ASC");
     });
 
     it("sortExpression updates when sortOrder changes", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTableSort({ initialField: "name", initialDirection: "ASC" }),
-      );
+      const { result } = mountWithSetup(() => useDataTableSort({ initialField: "name", initialDirection: "ASC" }));
       result.sortOrder.value = -1;
       expect(result.sortExpression.value).toBe("name:DESC");
     });

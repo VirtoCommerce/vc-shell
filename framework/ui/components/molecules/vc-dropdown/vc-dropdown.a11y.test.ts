@@ -16,7 +16,7 @@ describe("VcDropdown a11y", () => {
       slots: {
         // Use a non-interactive span inside the trigger div (which already has role="button" + tabindex)
         // to avoid the nested-interactive axe violation (button inside role="button")
-        trigger: '<span>Open menu</span>',
+        trigger: "<span>Open menu</span>",
         ...slots,
       },
       global: {

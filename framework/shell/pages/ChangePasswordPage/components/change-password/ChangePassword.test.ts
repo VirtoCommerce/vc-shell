@@ -44,7 +44,7 @@ const globalStubs = {
   VcHint: { template: "<span><slot /></span>" },
   VcBanner: { template: "<div><slot /></div>" },
   Field: {
-    template: "<div><slot v-bind=\"slotProps\" /></div>",
+    template: '<div><slot v-bind="slotProps" /></div>',
     computed: {
       slotProps() {
         return { field: {}, errorMessage: "", errors: [] };

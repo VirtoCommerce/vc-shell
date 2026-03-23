@@ -2,205 +2,217 @@
   data-v-app=""
 >
   <div
-    class="tw-max-w-2xl tw-space-y-4"
+    class="tw-max-w-lg tw-space-y-6"
   >
     <h3
       class="tw-text-lg tw-font-medium"
     >
-      All States
+      Accessibility Features
     </h3>
+    
+    <!-- Backward compat delegation: date types -->
+    
+    <!-- Clean text input -->
     <div
-      class="tw-grid tw-grid-cols-2 tw-gap-4"
+      class="vc-input vc-input--text"
     >
-      
-      <!-- Backward compat delegation: date types -->
-      
-      <!-- Clean text input -->
-      <div
-        class="vc-input vc-input--text"
+      <!-- Input label -->
+      <label
+        class="vc-label vc-input__label"
+        for="vc-field-v-0"
+        id="vc-field-v-0-label"
       >
-        <!-- Input label -->
-        <label
-          class="vc-label vc-input__label"
-          for="vc-field-v-0"
-          id="vc-field-v-0-label"
-        >
-          <div
-            class="vc-label__text"
-          >
-            <span
-              class="vc-label__content"
-            >
-              
-              <span>
-                Default
-              </span>
-              
-            </span>
-            <!--v-if-->
-          </div>
-          <!--v-if-->
-          <!--v-if-->
-        </label>
         <div
-          class="vc-input__container"
+          class="vc-label__text"
         >
-          <!--v-if-->
-          <div
-            class="vc-input__field-wrapper vc-input__field-wrapper--default"
+          <span
+            class="vc-label__content"
           >
+            
+            <span>
+              With hint (inspect aria-describedby)
+            </span>
+            
+          </span>
+          <!--v-if-->
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </label>
+      <div
+        class="vc-input__container"
+      >
+        <!--v-if-->
+        <div
+          class="vc-input__field-wrapper vc-input__field-wrapper--default"
+        >
+          <div
+            class="vc-input__field-container"
+          >
+            <!--v-if-->
             <div
-              class="vc-input__field-container"
+              class="vc-input__field"
             >
               <!--v-if-->
-              <div
-                class="vc-input__field"
-              >
-                <!--v-if-->
-                
-                <input
-                  aria-labelledby="vc-field-v-0-label"
-                  class="vc-input__input"
-                  id="vc-field-v-0"
-                  maxlength="1024"
-                  name="Field"
-                  placeholder="Type here..."
-                  tabindex="0"
-                  type="text"
-                />
-                
-                <!--v-if-->
-                <!--v-if-->
-                <!--v-if-->
-              </div>
+              
+              <input
+                aria-describedby="vc-field-v-0-hint"
+                aria-labelledby="vc-field-v-0-label"
+                class="vc-input__input"
+                id="vc-field-v-0"
+                maxlength="1024"
+                name="Field"
+                placeholder="Tab here and inspect..."
+                tabindex="0"
+                type="text"
+              />
+              
+              <!--v-if-->
               <!--v-if-->
               <!--v-if-->
             </div>
-          </div>
-          <!--v-if-->
-        </div>
-        <div>
-          
-          <!--v-if-->
-          
-        </div>
-      </div>
-      
-      
-      
-      <!-- Backward compat delegation: date types -->
-      
-      <!-- Clean text input -->
-      <div
-        class="vc-input vc-input--text vc-input--error"
-      >
-        <!-- Input label -->
-        <label
-          class="vc-label vc-label--error vc-input__label"
-          for="vc-field-v-1"
-          id="vc-field-v-1-label"
-        >
-          <div
-            class="vc-label__text"
-          >
-            <span
-              class="vc-label__content"
-            >
-              
-              <span>
-                Error
-              </span>
-              
-            </span>
+            <!--v-if-->
             <!--v-if-->
           </div>
-          <!--v-if-->
-          <!--v-if-->
-        </label>
+        </div>
+        <!--v-if-->
+      </div>
+      <div>
+        
         <div
-          class="vc-input__container"
+          class="vc-hint vc-input__desc"
+          id="vc-field-v-0-hint"
         >
-          <!--v-if-->
-          <div
-            class="vc-input__field-wrapper vc-input__field-wrapper--default"
+          
+          This hint is linked via aria-describedby
+          
+        </div>
+        
+      </div>
+    </div>
+    
+    
+    
+    <!-- Backward compat delegation: date types -->
+    
+    <!-- Clean text input -->
+    <div
+      class="vc-input vc-input--text vc-input--error"
+    >
+      <!-- Input label -->
+      <label
+        class="vc-label vc-label--error vc-input__label"
+        for="vc-field-v-1"
+        id="vc-field-v-1-label"
+      >
+        <div
+          class="vc-label__text"
+        >
+          <span
+            class="vc-label__content"
           >
+            
+            <span>
+              With error (inspect aria-invalid)
+            </span>
+            
+          </span>
+          <!--v-if-->
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </label>
+      <div
+        class="vc-input__container"
+      >
+        <!--v-if-->
+        <div
+          class="vc-input__field-wrapper vc-input__field-wrapper--default"
+        >
+          <div
+            class="vc-input__field-container"
+          >
+            <!--v-if-->
             <div
-              class="vc-input__field-container"
+              class="vc-input__field"
             >
               <!--v-if-->
-              <div
-                class="vc-input__field"
-              >
-                <!--v-if-->
-                
-                <input
-                  aria-describedby="vc-field-v-1-error"
-                  aria-invalid="true"
-                  aria-labelledby="vc-field-v-1-label"
-                  class="vc-input__input"
-                  id="vc-field-v-1"
-                  maxlength="1024"
-                  name="Field"
-                  tabindex="0"
-                  type="text"
-                />
-                
-                <!--v-if-->
-                <!--v-if-->
-                <!--v-if-->
-              </div>
+              
+              <input
+                aria-describedby="vc-field-v-1-error"
+                aria-invalid="true"
+                aria-labelledby="vc-field-v-1-label"
+                class="vc-input__input"
+                id="vc-field-v-1"
+                maxlength="1024"
+                name="Field"
+                tabindex="0"
+                type="text"
+              />
+              
+              <!--v-if-->
               <!--v-if-->
               <!--v-if-->
             </div>
-          </div>
-          <!--v-if-->
-        </div>
-        <div>
-          
-          <div
-            class="vc-hint vc-hint--error vc-input__hint-error"
-            id="vc-field-v-1-error"
-            role="alert"
-          >
-            
-            This field has an error
-            
-          </div>
-          
-        </div>
-      </div>
-      
-      
-      
-      <!-- Backward compat delegation: date types -->
-      
-      <!-- Clean text input -->
-      <div
-        class="vc-input vc-input--text vc-input--disabled"
-      >
-        <!-- Input label -->
-        <label
-          class="vc-label vc-input__label"
-          for="vc-field-v-2"
-          id="vc-field-v-2-label"
-        >
-          <div
-            class="vc-label__text"
-          >
-            <span
-              class="vc-label__content"
-            >
-              
-              <span>
-                Disabled
-              </span>
-              
-            </span>
+            <!--v-if-->
             <!--v-if-->
           </div>
-          <!--v-if-->
-          <!--v-if-->
-        </label>
+        </div>
+        <!--v-if-->
+      </div>
+      <div>
+        
+        <div
+          class="vc-hint vc-hint--error vc-input__hint-error"
+          id="vc-field-v-1-error"
+          role="alert"
+        >
+          
+          Error linked via aria-describedby
+          
+        </div>
+        
+      </div>
+    </div>
+    
+    
+    <div
+      class="tw-p-3 tw-bg-blue-50 tw-rounded tw-text-blue-700 tw-text-sm"
+    >
+      <strong>
+        Inspect the DOM to verify:
+      </strong>
+      <ul
+        class="tw-list-disc tw-pl-5 tw-mt-1"
+      >
+        <li>
+          <code>
+            aria-labelledby
+          </code>
+           on input matches the label's 
+          <code>
+            id
+          </code>
+        </li>
+        <li>
+          <code>
+            aria-describedby
+          </code>
+           on input matches the hint/error 
+          <code>
+            id
+          </code>
+        </li>
+        <li>
+          <code>
+            aria-invalid="true"
+          </code>
+           appears on the error input
+        </li>
+      </ul>
+    </div>
+  </div>
+</div> </label>
         <div
           class="vc-input__container"
         >

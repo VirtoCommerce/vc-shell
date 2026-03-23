@@ -184,9 +184,7 @@ describe("GridstackDashboard", () => {
   });
 
   it("falls back to widget.id when name is not set for aria-label", () => {
-    const wrapper = mountGridstack({}, [
-      { id: "my-widget", component: WidgetA, size: { width: 4, height: 2 } },
-    ]);
+    const wrapper = mountGridstack({}, [{ id: "my-widget", component: WidgetA, size: { width: 4, height: 2 } }]);
     const item = wrapper.find(".grid-stack-item");
     expect(item.attributes("aria-label")).toContain("my-widget");
   });

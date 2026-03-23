@@ -4,15 +4,16 @@ import { ref, computed } from "vue";
 // ── Hoist mock objects so they can be used in vi.mock factory ─────────────────
 // vi.hoisted() creates values before hoisting, making them available in vi.mock.
 
-const { mockStackBlades, mockStackActiveBlade, mockStackWorkspace, mockOpenBlade, mockGetBladeComponent } =
-  vi.hoisted(() => {
+const { mockStackBlades, mockStackActiveBlade, mockStackWorkspace, mockOpenBlade, mockGetBladeComponent } = vi.hoisted(
+  () => {
     const mockStackBlades = { value: [] as any[] };
     const mockStackActiveBlade = { value: undefined as any };
     const mockStackWorkspace = { value: undefined as any };
     const mockOpenBlade = vi.fn().mockResolvedValue(undefined);
     const mockGetBladeComponent = vi.fn().mockReturnValue(undefined);
     return { mockStackBlades, mockStackActiveBlade, mockStackWorkspace, mockOpenBlade, mockGetBladeComponent };
-  });
+  },
+);
 
 // ── Mock the module-level singletons from plugin-v2 ───────────────────────────
 // useBladeNavigation reads bladeStackInstance, bladeMessagingInstance, etc.
@@ -63,10 +64,7 @@ vi.mock("@core/blade-navigation/utils/urlSync", () => ({
 }));
 
 // Import after mocks are registered
-import {
-  useBladeNavigation,
-  _resetAdapterState,
-} from "@core/composables/useBladeNavigationAdapter";
+import { useBladeNavigation, _resetAdapterState } from "@core/composables/useBladeNavigationAdapter";
 
 afterEach(() => {
   // Clear cached computeds and deprecation warned set between tests
@@ -133,9 +131,7 @@ describe("useBladeNavigation()", () => {
     const nav = useBladeNavigation();
     await nav.openBlade({ blade: { name: "TargetBlade" }, param: "p1" });
 
-    expect(mockOpenBlade).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "TargetBlade", param: "p1" }),
-    );
+    expect(mockOpenBlade).toHaveBeenCalledWith(expect.objectContaining({ name: "TargetBlade", param: "p1" }));
   });
 
   it("resolveBladeByName delegates to bladeRegistry.getBladeComponent", () => {

@@ -34,11 +34,7 @@ vi.mock("@ui/components/molecules/vc-breadcrumbs/vc-breadcrumbs.vue", () => ({
     name: "VcBreadcrumbs",
     props: ["items", "collapsed"],
     setup(_, { slots }) {
-      return () =>
-        h("div", { class: "mock-breadcrumbs" }, [
-          slots.trigger?.({ click: () => {} }),
-          slots.default?.(),
-        ]);
+      return () => h("div", { class: "mock-breadcrumbs" }, [slots.trigger?.({ click: () => {} }), slots.default?.()]);
     },
   }),
 }));

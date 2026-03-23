@@ -37,7 +37,7 @@ const globalStubs = {
   VcButton: { template: "<button @click='$emit(\"click\")'><slot /></button>" },
   VcHint: { template: "<span><slot /></span>" },
   Field: {
-    template: "<div><slot v-bind=\"slotProps\" /></div>",
+    template: '<div><slot v-bind="slotProps" /></div>',
     computed: {
       slotProps() {
         return { errorMessage: "", handleChange: () => {}, errors: [] };

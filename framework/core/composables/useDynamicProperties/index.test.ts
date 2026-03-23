@@ -200,10 +200,7 @@ describe("useDynamicProperties", () => {
     it("sets multivalue array", () => {
       const { setPropertyValue } = createComposable();
       const prop: TestProperty = { id: "1", name: "test", multivalue: true, values: [] };
-      const vals = [
-        new TestPropertyValue({ value: "a" }),
-        new TestPropertyValue({ value: "b" }),
-      ];
+      const vals = [new TestPropertyValue({ value: "a" }), new TestPropertyValue({ value: "b" })];
       setPropertyValue({ property: prop, value: vals });
       expect(prop.values).toHaveLength(2);
     });

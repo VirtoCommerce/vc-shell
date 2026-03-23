@@ -3,8 +3,7 @@ import { mount } from "@vue/test-utils";
 import VcBadge from "./vc-badge.vue";
 
 describe("VcBadge", () => {
-  const mountBadge = (props = {}, slots = {}) =>
-    mount(VcBadge as any, { props, slots });
+  const mountBadge = (props = {}, slots = {}) => mount(VcBadge as any, { props, slots });
 
   it("renders badge with content", () => {
     const w = mountBadge({ content: "5" });

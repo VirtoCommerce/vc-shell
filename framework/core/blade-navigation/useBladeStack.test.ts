@@ -117,9 +117,7 @@ describe("createBladeStack", () => {
     });
 
     it("throws for unregistered blade", async () => {
-      await expect(stack.openWorkspace({ name: "NonExistent" })).rejects.toThrow(
-        "not found in registry",
-      );
+      await expect(stack.openWorkspace({ name: "NonExistent" })).rejects.toThrow("not found in registry");
     });
 
     it("calls onOpen callback", async () => {
@@ -171,15 +169,11 @@ describe("createBladeStack", () => {
     it("throws when no parent exists", async () => {
       stack._restoreStack([]); // Clear stack
 
-      await expect(
-        stack.openBlade({ name: "OrderDetails", param: "1" }),
-      ).rejects.toThrow("no parent blade found");
+      await expect(stack.openBlade({ name: "OrderDetails", param: "1" })).rejects.toThrow("no parent blade found");
     });
 
     it("throws for unregistered blade", async () => {
-      await expect(stack.openBlade({ name: "Unknown" })).rejects.toThrow(
-        "not found in registry",
-      );
+      await expect(stack.openBlade({ name: "Unknown" })).rejects.toThrow("not found in registry");
     });
 
     it("calls onOpen callback", async () => {
@@ -336,9 +330,7 @@ describe("createBladeStack", () => {
     it("throws with no active blade", async () => {
       stack._restoreStack([]);
 
-      await expect(
-        stack.replaceCurrentBlade({ name: "OrderDetails" }),
-      ).rejects.toThrow("No active blade to replace");
+      await expect(stack.replaceCurrentBlade({ name: "OrderDetails" })).rejects.toThrow("No active blade to replace");
     });
   });
 
@@ -381,9 +373,7 @@ describe("createBladeStack", () => {
     it("throws with no active blade", async () => {
       stack._restoreStack([]);
 
-      await expect(
-        stack.coverCurrentBlade({ name: "OrderDetails" }),
-      ).rejects.toThrow("No active blade to cover");
+      await expect(stack.coverCurrentBlade({ name: "OrderDetails" })).rejects.toThrow("No active blade to cover");
     });
   });
 

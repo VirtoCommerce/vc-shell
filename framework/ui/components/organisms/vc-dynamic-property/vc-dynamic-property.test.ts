@@ -13,6 +13,7 @@ vi.mock("vue-i18n", () => ({
 // Mock convertColorNameToHex
 vi.mock("@core/utilities", () => ({
   convertColorNameToHex: (name: string) => (name === "red" ? "#ff0000" : undefined),
+  createLogger: vi.fn(() => ({ warn: vi.fn(), error: vi.fn(), info: vi.fn(), debug: vi.fn() })),
 }));
 
 import VcDynamicProperty from "./vc-dynamic-property.vue";
@@ -41,12 +42,34 @@ function factory(propOverrides: Record<string, unknown> = {}) {
       stubs: {
         VcInput: {
           name: "VcInput",
-          props: ["modelValue", "label", "type", "disabled", "clearable", "required", "placeholder", "errorMessage", "error", "loading", "currentLanguage"],
+          props: [
+            "modelValue",
+            "label",
+            "type",
+            "disabled",
+            "clearable",
+            "required",
+            "placeholder",
+            "errorMessage",
+            "error",
+            "loading",
+            "currentLanguage",
+          ],
           template: '<input class="vc-input-stub" :value="modelValue" />',
         },
         VcSelect: {
           name: "VcSelect",
-          props: ["modelValue", "options", "label", "disabled", "required", "placeholder", "errorMessage", "error", "loading"],
+          props: [
+            "modelValue",
+            "options",
+            "label",
+            "disabled",
+            "required",
+            "placeholder",
+            "errorMessage",
+            "error",
+            "loading",
+          ],
           template: '<select class="vc-select-stub"></select>',
         },
         VcMultivalue: {

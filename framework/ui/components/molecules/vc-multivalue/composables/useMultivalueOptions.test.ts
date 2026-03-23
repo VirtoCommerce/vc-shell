@@ -47,9 +47,7 @@ describe("useMultivalueOptions", () => {
   });
 
   it("returns empty when all options are selected", () => {
-    const options: TestOption[] = [
-      { id: "1", label: "One" },
-    ];
+    const options: TestOption[] = [{ id: "1", label: "One" }];
 
     const { result } = mountWithSetup(() =>
       useMultivalueOptions<TestOption>({

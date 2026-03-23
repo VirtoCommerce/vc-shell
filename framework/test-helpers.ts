@@ -8,11 +8,7 @@
 import { computed, defineComponent, h, provide, ref } from "vue";
 import { mount } from "@vue/test-utils";
 import { expect, vi } from "vitest";
-import {
-  BladeDescriptorKey,
-  BladeStackKey,
-  BladeMessagingKey,
-} from "@core/blade-navigation/types";
+import { BladeDescriptorKey, BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
 import type { IBladeStack, IBladeMessaging } from "@core/blade-navigation/types";
 
 // ── Generic composable wrapper ─────────────────────────────────────────────────

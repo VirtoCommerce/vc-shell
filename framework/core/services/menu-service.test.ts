@@ -178,11 +178,17 @@ describe("menu-service", () => {
       const service = createMenuService();
 
       service.addMenuItem({
-        title: "Users", priority: 1, url: "/users", routeId: "Users",
+        title: "Users",
+        priority: 1,
+        url: "/users",
+        routeId: "Users",
         groupConfig: { id: "admin", title: "Admin", icon: "fas fa-shield" },
       } as any);
       service.addMenuItem({
-        title: "Users Updated", priority: 1, url: "/users", routeId: "Users",
+        title: "Users Updated",
+        priority: 1,
+        url: "/users",
+        routeId: "Users",
         groupConfig: { id: "admin", title: "Admin" },
       } as any);
 
@@ -226,11 +232,17 @@ describe("menu-service", () => {
       const service = createMenuService();
 
       service.addMenuItem({
-        title: "Item A", priority: 1, url: "/a", routeId: "A",
+        title: "Item A",
+        priority: 1,
+        url: "/a",
+        routeId: "A",
         groupConfig: { id: "grp", title: "Old Title", icon: "old-icon", priority: 10 },
       } as any);
       service.addMenuItem({
-        title: "Item B", priority: 2, url: "/b", routeId: "B",
+        title: "Item B",
+        priority: 2,
+        url: "/b",
+        routeId: "B",
         groupConfig: { id: "grp", title: "New Title", icon: "new-icon", priority: 5 },
       } as any);
 
@@ -292,11 +304,17 @@ describe("menu-service", () => {
       const { addMenuItem, removeRegisteredMenuItem, createMenuService } = await loadMenuServiceModule();
 
       addMenuItem({
-        title: "Users", priority: 1, url: "/users", routeId: "Users",
+        title: "Users",
+        priority: 1,
+        url: "/users",
+        routeId: "Users",
         groupConfig: { id: "admin", title: "Admin", icon: "fas fa-shield" },
       } as any);
       addMenuItem({
-        title: "Roles", priority: 2, url: "/roles", routeId: "Roles",
+        title: "Roles",
+        priority: 2,
+        url: "/roles",
+        routeId: "Roles",
         groupConfig: { id: "admin", title: "Admin" },
       } as any);
 

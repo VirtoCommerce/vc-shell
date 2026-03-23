@@ -17,7 +17,9 @@ const mocks = vi.hoisted(() => {
     getAllNotifications,
     getNotification,
     hasNotification,
-    resetCounter: () => { idCounter = 0; },
+    resetCounter: () => {
+      idCounter = 0;
+    },
     nextId: () => `id-${++idCounter}`,
   };
 });

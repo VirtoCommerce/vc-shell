@@ -22,17 +22,13 @@ describe("DashboardStatItem", () => {
     const wrapper = mount(DashboardStatItem, {
       props: { value: 14, label: "Pending", variant: "warning" },
     });
-    expect(wrapper.find(".dashboard-stat-item__value").classes()).toContain(
-      "dashboard-stat-item__value--warning",
-    );
+    expect(wrapper.find(".dashboard-stat-item__value").classes()).toContain("dashboard-stat-item__value--warning");
   });
 
   it("applies default variant when no variant prop", () => {
     const wrapper = mount(DashboardStatItem, {
       props: { value: 8, label: "Today" },
     });
-    expect(wrapper.find(".dashboard-stat-item__value").classes()).not.toContain(
-      "dashboard-stat-item__value--warning",
-    );
+    expect(wrapper.find(".dashboard-stat-item__value").classes()).not.toContain("dashboard-stat-item__value--warning");
   });
 });

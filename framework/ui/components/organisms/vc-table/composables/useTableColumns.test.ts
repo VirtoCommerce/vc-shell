@@ -189,11 +189,7 @@ describe("useTableColumns — column width guard (never drop entries for hidden 
 
 describe("useTableColumns — special columns are excluded from columnWidths", () => {
   it("selectionMode columns are not added to columnWidths", () => {
-    const cols = [
-      makeColumn("__sel__", { selectionMode: "multiple" }),
-      makeColumn("name"),
-      makeColumn("email"),
-    ];
+    const cols = [makeColumn("__sel__", { selectionMode: "multiple" }), makeColumn("name"), makeColumn("email")];
     const visibleColumns = ref(cols);
 
     const { columnWidths } = useTableColumns({ visibleColumns });

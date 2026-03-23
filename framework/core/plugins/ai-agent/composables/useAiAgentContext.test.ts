@@ -39,10 +39,7 @@ function createMockInternalService() {
   };
 }
 
-function mountWithAiContext<T>(
-  setupFn: () => T,
-  service: ReturnType<typeof createMockInternalService> | null = null,
-) {
+function mountWithAiContext<T>(setupFn: () => T, service: ReturnType<typeof createMockInternalService> | null = null) {
   let result: T;
   const Inner = defineComponent({
     setup() {
@@ -79,10 +76,7 @@ describe("useAiAgentContext", () => {
   it("sets context data on mount via _setContextData", async () => {
     const service = createMockInternalService();
     const dataRef = ref({ id: "1", objectType: "Product", name: "Item" });
-    mountWithAiContext(
-      () => useAiAgentContext({ dataRef }),
-      service,
-    );
+    mountWithAiContext(() => useAiAgentContext({ dataRef }), service);
 
     await nextTick();
     expect(service._setContextData).toHaveBeenCalledWith(
@@ -96,10 +90,7 @@ describe("useAiAgentContext", () => {
   it("normalizes single object to array for context", async () => {
     const service = createMockInternalService();
     const dataRef = ref({ id: "x", objectType: "Offer", name: "My Offer" });
-    mountWithAiContext(
-      () => useAiAgentContext({ dataRef }),
-      service,
-    );
+    mountWithAiContext(() => useAiAgentContext({ dataRef }), service);
 
     await nextTick();
     const call = service._setContextData.mock.calls[0];
@@ -113,10 +104,7 @@ describe("useAiAgentContext", () => {
       { id: "1", objectType: "Product", name: "A" },
       { id: "2", objectType: "Product", name: "B" },
     ]);
-    mountWithAiContext(
-      () => useAiAgentContext({ dataRef }),
-      service,
-    );
+    mountWithAiContext(() => useAiAgentContext({ dataRef }), service);
 
     await nextTick();
     const call = service._setContextData.mock.calls[0];
@@ -128,10 +116,7 @@ describe("useAiAgentContext", () => {
   it("applies preview changes from service", async () => {
     const service = createMockInternalService();
     const dataRef = ref({ id: "1", objectType: "Product", name: "Old Name", price: 10 });
-    const { result } = mountWithAiContext(
-      () => useAiAgentContext({ dataRef }),
-      service,
-    );
+    const { result } = mountWithAiContext(() => useAiAgentContext({ dataRef }), service);
 
     service._simulatePreviewChanges({
       data: { name: "New Name" },
@@ -147,10 +132,7 @@ describe("useAiAgentContext", () => {
   it("clearPreview resets preview state", async () => {
     const service = createMockInternalService();
     const dataRef = ref({ id: "1", objectType: "Product", name: "Test" });
-    const { result } = mountWithAiContext(
-      () => useAiAgentContext({ dataRef }),
-      service,
-    );
+    const { result } = mountWithAiContext(() => useAiAgentContext({ dataRef }), service);
 
     service._simulatePreviewChanges({
       data: { name: "Changed" },
@@ -166,10 +148,7 @@ describe("useAiAgentContext", () => {
   it("clears context on unmount", async () => {
     const service = createMockInternalService();
     const dataRef = ref({ id: "1", objectType: "Product", name: "Test" });
-    const { wrapper } = mountWithAiContext(
-      () => useAiAgentContext({ dataRef }),
-      service,
-    );
+    const { wrapper } = mountWithAiContext(() => useAiAgentContext({ dataRef }), service);
 
     service._setContextData.mockClear();
     wrapper.unmount();
@@ -181,18 +160,10 @@ describe("useAiAgentContext", () => {
     const service = createMockInternalService();
     const suggestions = [{ id: "s1", title: "Translate", prompt: "Do it" }] as any;
     const dataRef = ref({ id: "1", objectType: "Product", name: "Test" });
-    mountWithAiContext(
-      () => useAiAgentContext({ dataRef, suggestions }),
-      service,
-    );
+    mountWithAiContext(() => useAiAgentContext({ dataRef, suggestions }), service);
 
     await nextTick();
-    expect(service._setContextData).toHaveBeenCalledWith(
-      expect.anything(),
-      "details",
-      suggestions,
-      "test-blade-1",
-    );
+    expect(service._setContextData).toHaveBeenCalledWith(expect.anything(), "details", suggestions, "test-blade-1");
   });
 });
 

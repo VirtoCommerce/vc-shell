@@ -1,10 +1,7 @@
 import { ref } from "vue";
 import { mountWithSetup } from "@framework/test-helpers";
 
-const mockItems = ref([
-  { id: "widget-1" },
-  { id: "widget-2" },
-]);
+const mockItems = ref([{ id: "widget-1" }, { id: "widget-2" }]);
 
 vi.mock("@core/composables/useAppBarWidget", () => ({
   useAppBarWidget: () => ({
@@ -12,14 +9,11 @@ vi.mock("@core/composables/useAppBarWidget", () => ({
   }),
 }));
 
-vi.mock(
-  "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarState",
-  () => ({
-    useAppBarState: () => ({
-      activeWidgetId: ref<string | null>(null),
-    }),
+vi.mock("@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarState", () => ({
+  useAppBarState: () => ({
+    activeWidgetId: ref<string | null>(null),
   }),
-);
+}));
 
 import { useAppBarWidgets } from "./useAppBarWidgets";
 

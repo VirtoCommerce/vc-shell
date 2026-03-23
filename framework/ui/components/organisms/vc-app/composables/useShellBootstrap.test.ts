@@ -62,7 +62,10 @@ vi.mock("../../../../../core/plugins/ai-agent", () => ({
 }));
 
 // ── Import after mocks ─────────────────────────────────────────────
-import { useShellBootstrap, type ShellBootstrapOptions } from "@ui/components/organisms/vc-app/composables/useShellBootstrap";
+import {
+  useShellBootstrap,
+  type ShellBootstrapOptions,
+} from "@ui/components/organisms/vc-app/composables/useShellBootstrap";
 import {
   SettingsMenuServiceKey,
   EmbeddedModeKey,
@@ -133,9 +136,7 @@ describe("useShellBootstrap", () => {
     it("provides false when no unread notifications", () => {
       bootstrapInScope(createOptions());
 
-      const provideCall = mockProvide.mock.calls.find(
-        ([key]: [unknown]) => key === ShellIndicatorsKey,
-      );
+      const provideCall = mockProvide.mock.calls.find(([key]: [unknown]) => key === ShellIndicatorsKey);
       expect(provideCall).toBeDefined();
       expect(provideCall![1].value).toBe(false);
     });
@@ -143,9 +144,7 @@ describe("useShellBootstrap", () => {
     it("reacts to hasUnreadNotifications changes", () => {
       bootstrapInScope(createOptions());
 
-      const provideCall = mockProvide.mock.calls.find(
-        ([key]: [unknown]) => key === ShellIndicatorsKey,
-      );
+      const provideCall = mockProvide.mock.calls.find(([key]: [unknown]) => key === ShellIndicatorsKey);
       expect(provideCall![1].value).toBe(false);
 
       mockHasUnread.value = true;
@@ -171,6 +170,7 @@ describe("useShellBootstrap", () => {
       expect(mockProvideAiAgentService).toHaveBeenCalledWith({
         config: expect.objectContaining({ url: "https://ai.example.com" }),
         addGlobalToolbarButton: false,
+        isEmbedded: false,
       });
     });
 
@@ -181,9 +181,7 @@ describe("useShellBootstrap", () => {
         }),
       );
 
-      expect(mockProvideAiAgentService).toHaveBeenCalledWith(
-        expect.objectContaining({ addGlobalToolbarButton: true }),
-      );
+      expect(mockProvideAiAgentService).toHaveBeenCalledWith(expect.objectContaining({ addGlobalToolbarButton: true }));
     });
   });
 
@@ -196,9 +194,7 @@ describe("useShellBootstrap", () => {
 
     it("provides DynamicModulesKey when dynamicModules is defined", () => {
       const modules = { testModule: {} };
-      bootstrapInScope(
-        createOptions({ dynamicModules: modules }),
-      );
+      bootstrapInScope(createOptions({ dynamicModules: modules }));
 
       expect(mockProvide).toHaveBeenCalledWith(DynamicModulesKey, modules);
     });
@@ -206,9 +202,7 @@ describe("useShellBootstrap", () => {
     it("does not provide DynamicModulesKey when dynamicModules is undefined", () => {
       bootstrapInScope(createOptions());
 
-      const dynamicModulesCall = mockProvide.mock.calls.find(
-        ([key]: [unknown]) => key === DynamicModulesKey,
-      );
+      const dynamicModulesCall = mockProvide.mock.calls.find(([key]: [unknown]) => key === DynamicModulesKey);
       expect(dynamicModulesCall).toBeUndefined();
     });
 

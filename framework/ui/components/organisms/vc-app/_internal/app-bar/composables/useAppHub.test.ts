@@ -95,10 +95,7 @@ describe("useAppHub", () => {
   });
 
   it("filters apps by search query", () => {
-    const apps = ref([
-      makeApp({ id: "a", title: "Catalog" }),
-      makeApp({ id: "b", title: "Orders" }),
-    ]);
+    const apps = ref([makeApp({ id: "a", title: "Catalog" }), makeApp({ id: "b", title: "Orders" })]);
     const { result } = mountWithSetup(() =>
       useAppHub({
         appsList: apps,
@@ -173,9 +170,7 @@ describe("useAppHub", () => {
   });
 
   it("filters widgets by searchTerms", () => {
-    const widgets = ref([
-      makeWidget({ id: "w1", title: "Alpha", searchTerms: ["beta", "gamma"] }),
-    ]);
+    const widgets = ref([makeWidget({ id: "w1", title: "Alpha", searchTerms: ["beta", "gamma"] })]);
     const { result } = mountWithSetup(() =>
       useAppHub({
         appsList: ref([]),

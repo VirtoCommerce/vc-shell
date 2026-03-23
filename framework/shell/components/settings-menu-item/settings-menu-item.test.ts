@@ -18,11 +18,7 @@ const stubs = {
   },
 };
 
-function factory(
-  props: Record<string, unknown> = {},
-  slots: Record<string, string> = {},
-  isMobile = false,
-) {
+function factory(props: Record<string, unknown> = {}, slots: Record<string, string> = {}, isMobile = false) {
   return mount(SettingsMenuItem, {
     props: { title: "Test Item", ...props },
     slots,

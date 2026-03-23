@@ -20,9 +20,7 @@ describe("useTableSort", () => {
     });
 
     it("initializes with provided initial values", () => {
-      const { result } = mountWithSetup(() =>
-        useTableSort({ initialProperty: "name", initialDirection: "ASC" }),
-      );
+      const { result } = mountWithSetup(() => useTableSort({ initialProperty: "name", initialDirection: "ASC" }));
       expect(result.currentSort.value).toEqual({ property: "name", direction: "ASC" });
       expect(result.sortExpression.value).toBe("name:ASC");
     });
@@ -118,9 +116,7 @@ describe("useTableSort", () => {
     });
 
     it("resets to initial values when options provided", () => {
-      const { result } = mountWithSetup(() =>
-        useTableSort({ initialProperty: "date", initialDirection: "DESC" }),
-      );
+      const { result } = mountWithSetup(() => useTableSort({ initialProperty: "date", initialDirection: "DESC" }));
       result.handleSortChange("name:ASC");
       result.resetSort();
       expect(result.currentSort.value).toEqual({ property: "date", direction: "DESC" });

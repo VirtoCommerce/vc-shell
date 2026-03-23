@@ -77,11 +77,7 @@ describe("useToolbarRegistration", () => {
     items.value = [{ id: "btn-1", title: "Save Draft" }];
     await nextTick();
 
-    expect(mockUpdate).toHaveBeenCalledWith(
-      "btn-1",
-      expect.objectContaining({ title: "Save Draft" }),
-      "test-blade",
-    );
+    expect(mockUpdate).toHaveBeenCalledWith("btn-1", expect.objectContaining({ title: "Save Draft" }), "test-blade");
   });
 
   it("visibleItems filters and sorts by priority", () => {

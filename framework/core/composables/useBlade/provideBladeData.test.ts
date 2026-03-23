@@ -2,12 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { computed, defineComponent, h, inject, provide, ref } from "vue";
 import { mount } from "@vue/test-utils";
 import { useBlade } from "./index";
-import {
-  BladeDataKey,
-  BladeDescriptorKey,
-  BladeStackKey,
-  BladeMessagingKey,
-} from "@core/blade-navigation/types";
+import { BladeDataKey, BladeDescriptorKey, BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
 import {
   mountWithBladeContext,
   mountWithoutBladeContext,
@@ -115,9 +110,7 @@ describe("useBlade().provideBladeData", () => {
       () => {},
     );
 
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("provideBladeData"),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("provideBladeData"));
     warnSpy.mockRestore();
   });
 });

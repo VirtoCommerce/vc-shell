@@ -70,17 +70,13 @@ describe("external-providers.vue", () => {
   });
 
   it("displays provider display names", () => {
-    const providers = [
-      { authenticationType: "google", displayName: "Sign in with Google" },
-    ];
+    const providers = [{ authenticationType: "google", displayName: "Sign in with Google" }];
     const wrapper = mountComponent(providers);
     expect(wrapper.text()).toContain("Sign in with Google");
   });
 
   it("calls signIn with authenticationType when provider is clicked", async () => {
-    const providers = [
-      { authenticationType: "okta", displayName: "Okta" },
-    ];
+    const providers = [{ authenticationType: "okta", displayName: "Okta" }];
     const wrapper = mountComponent(providers);
     await wrapper.find("button").trigger("click");
     expect(mockSignIn).toHaveBeenCalledWith("okta");

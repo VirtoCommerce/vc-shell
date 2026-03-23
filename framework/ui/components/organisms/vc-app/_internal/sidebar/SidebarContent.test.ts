@@ -86,11 +86,14 @@ describe("SidebarContent", () => {
   });
 
   it("renders custom menu slot", () => {
-    const wrapper = mountContent({}, {
-      slots: {
-        menu: () => h("div", { class: "custom-menu" }, "Custom Menu"),
+    const wrapper = mountContent(
+      {},
+      {
+        slots: {
+          menu: () => h("div", { class: "custom-menu" }, "Custom Menu"),
+        },
       },
-    });
+    );
     expect(wrapper.find(".custom-menu").exists()).toBe(true);
   });
 

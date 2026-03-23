@@ -31,7 +31,10 @@ function createDataSource(overrides: Record<string, any> = {}) {
 describe("useSelectDataSource", () => {
   describe("open()", () => {
     it("loads data on first open for async loader", async () => {
-      const items = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }];
+      const items = [
+        { id: "1", name: "Alpha" },
+        { id: "2", name: "Beta" },
+      ];
       const loader = createMockLoader(items, 2);
       const ds = createDataSource({ options: () => loader });
 
@@ -56,7 +59,10 @@ describe("useSelectDataSource", () => {
     });
 
     it("loads static array on first open", async () => {
-      const items = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }];
+      const items = [
+        { id: "1", name: "Alpha" },
+        { id: "2", name: "Beta" },
+      ];
       const ds = createDataSource({ options: () => items });
 
       await ds.open();
@@ -93,9 +99,13 @@ describe("useSelectDataSource", () => {
 
   describe("search", () => {
     it("async search sets searchResults via API", async () => {
-      const baseItems = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }];
+      const baseItems = [
+        { id: "1", name: "Alpha" },
+        { id: "2", name: "Beta" },
+      ];
       const searchItems = [{ id: "1", name: "Alpha" }];
-      const loader = vi.fn()
+      const loader = vi
+        .fn()
         .mockResolvedValueOnce({ results: baseItems, totalCount: 2 })
         .mockResolvedValueOnce({ results: searchItems, totalCount: 1 });
       const emitSearch = vi.fn();
@@ -113,7 +123,11 @@ describe("useSelectDataSource", () => {
     });
 
     it("client-side search filters cachedItems by label", async () => {
-      const items = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }, { id: "3", name: "Alphabet" }];
+      const items = [
+        { id: "1", name: "Alpha" },
+        { id: "2", name: "Beta" },
+        { id: "3", name: "Alphabet" },
+      ];
       const ds = createDataSource({ options: () => items });
 
       await ds.open();
@@ -128,9 +142,13 @@ describe("useSelectDataSource", () => {
     });
 
     it("clearSearch restores cachedItems without API call", async () => {
-      const baseItems = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }];
+      const baseItems = [
+        { id: "1", name: "Alpha" },
+        { id: "2", name: "Beta" },
+      ];
       const searchItems = [{ id: "1", name: "Alpha" }];
-      const loader = vi.fn()
+      const loader = vi
+        .fn()
         .mockResolvedValueOnce({ results: baseItems, totalCount: 2 })
         .mockResolvedValueOnce({ results: searchItems, totalCount: 1 });
       const ds = createDataSource({ options: () => loader, debounce: () => 0 });
@@ -152,7 +170,8 @@ describe("useSelectDataSource", () => {
     it("appends new page to cachedItems", async () => {
       const page1 = [{ id: "1", name: "Alpha" }];
       const page2 = [{ id: "2", name: "Beta" }];
-      const loader = vi.fn()
+      const loader = vi
+        .fn()
         .mockResolvedValueOnce({ results: page1, totalCount: 2 })
         .mockResolvedValueOnce({ results: page2, totalCount: 2 });
       const ds = createDataSource({ options: () => loader });
@@ -167,8 +186,12 @@ describe("useSelectDataSource", () => {
 
     it("deduplicates by getOptionValue", async () => {
       const page1 = [{ id: "1", name: "Alpha" }];
-      const page2 = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }];
-      const loader = vi.fn()
+      const page2 = [
+        { id: "1", name: "Alpha" },
+        { id: "2", name: "Beta" },
+      ];
+      const loader = vi
+        .fn()
         .mockResolvedValueOnce({ results: page1, totalCount: 3 })
         .mockResolvedValueOnce({ results: page2, totalCount: 3 });
       const ds = createDataSource({ options: () => loader });
@@ -185,7 +208,8 @@ describe("useSelectDataSource", () => {
     it("cached pages survive close/open cycle", async () => {
       const page1 = [{ id: "1", name: "Alpha" }];
       const page2 = [{ id: "2", name: "Beta" }];
-      const loader = vi.fn()
+      const loader = vi
+        .fn()
         .mockResolvedValueOnce({ results: page1, totalCount: 2 })
         .mockResolvedValueOnce({ results: page2, totalCount: 2 });
       const ds = createDataSource({ options: () => loader });
@@ -229,9 +253,11 @@ describe("useSelectDataSource", () => {
     });
 
     it("finds items in cachedItems without API call", async () => {
-      const items = [{ id: "1", name: "Alpha" }, { id: "2", name: "Beta" }];
-      const loader = vi.fn()
-        .mockResolvedValueOnce({ results: items, totalCount: 2 });
+      const items = [
+        { id: "1", name: "Alpha" },
+        { id: "2", name: "Beta" },
+      ];
+      const loader = vi.fn().mockResolvedValueOnce({ results: items, totalCount: 2 });
       const ds = createDataSource({ options: () => loader });
 
       await ds.open();
@@ -271,7 +297,8 @@ describe("useSelectDataSource", () => {
         { id: "3", name: "Gamma" },
       ];
       // ids-based call returns empty (API doesn't support ids), first-page call returns items
-      const loader = vi.fn()
+      const loader = vi
+        .fn()
         .mockResolvedValueOnce({ results: [], totalCount: 0 }) // ids-based call
         .mockResolvedValueOnce({ results: firstPage, totalCount: 3 }); // fallback open()
       const ds = createDataSource({ options: () => loader });
@@ -303,7 +330,8 @@ describe("useSelectDataSource", () => {
 
     it("partial cache hit — only fetches missing", async () => {
       const items = [{ id: "1", name: "Alpha" }];
-      const loader = vi.fn()
+      const loader = vi
+        .fn()
         .mockResolvedValueOnce({ results: items, totalCount: 1 })
         .mockResolvedValueOnce({ results: [{ id: "3", name: "Gamma" }], totalCount: 1 });
       const ds = createDataSource({ options: () => loader });
@@ -323,7 +351,8 @@ describe("useSelectDataSource", () => {
     it("clears cache and reloads from API", async () => {
       const items1 = [{ id: "1", name: "Alpha" }];
       const items2 = [{ id: "1", name: "Alpha Updated" }];
-      const loader = vi.fn()
+      const loader = vi
+        .fn()
         .mockResolvedValueOnce({ results: items1, totalCount: 1 })
         .mockResolvedValueOnce({ results: items2, totalCount: 1 });
       const ds = createDataSource({ options: () => loader });

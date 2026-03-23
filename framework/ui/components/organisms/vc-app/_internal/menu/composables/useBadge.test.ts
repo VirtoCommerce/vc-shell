@@ -26,9 +26,7 @@ describe("useBadge", () => {
   });
 
   it("resolves direct badge config with content number", () => {
-    const { result } = mountWithSetup(() =>
-      useBadge({ content: 5, variant: "danger" }),
-    );
+    const { result } = mountWithSetup(() => useBadge({ content: 5, variant: "danger" }));
 
     expect(result.value.isVisible).toBe(true);
     expect(result.value.content).toBe(5);
@@ -56,26 +54,20 @@ describe("useBadge", () => {
   });
 
   it("resolves function content", () => {
-    const { result } = mountWithSetup(() =>
-      useBadge({ content: () => 7 }),
-    );
+    const { result } = mountWithSetup(() => useBadge({ content: () => 7 }));
 
     expect(result.value.content).toBe(7);
   });
 
   it("resolves ref content", () => {
     const count = ref(3);
-    const { result } = mountWithSetup(() =>
-      useBadge({ content: count }),
-    );
+    const { result } = mountWithSetup(() => useBadge({ content: count }));
 
     expect(result.value.content).toBe(3);
   });
 
   it("isDot badge is visible even without content", () => {
-    const { result } = mountWithSetup(() =>
-      useBadge({ content: undefined, isDot: true }),
-    );
+    const { result } = mountWithSetup(() => useBadge({ content: undefined, isDot: true }));
 
     expect(result.value.isDot).toBe(true);
     expect(result.value.isVisible).toBe(true);
@@ -95,9 +87,7 @@ describe("useBadge", () => {
 
   it("falls back to routeId lookup in registry", () => {
     mockBadges.value.set("my-route", { content: 10, variant: "success" });
-    const { result } = mountWithSetup(() =>
-      useBadge(undefined, "my-route"),
-    );
+    const { result } = mountWithSetup(() => useBadge(undefined, "my-route"));
 
     expect(result.value.content).toBe(10);
     expect(result.value.variant).toBe("success");
@@ -106,9 +96,7 @@ describe("useBadge", () => {
 
   it("falls back to groupId lookup when routeId not found", () => {
     mockBadges.value.set("my-group", { content: 2, variant: "warning" });
-    const { result } = mountWithSetup(() =>
-      useBadge(undefined, "no-match", "my-group"),
-    );
+    const { result } = mountWithSetup(() => useBadge(undefined, "no-match", "my-group"));
 
     expect(result.value.content).toBe(2);
     expect(result.value.variant).toBe("warning");
@@ -116,9 +104,7 @@ describe("useBadge", () => {
 
   it("direct config takes priority over registry", () => {
     mockBadges.value.set("my-route", { content: 99 });
-    const { result } = mountWithSetup(() =>
-      useBadge({ content: 1 }, "my-route"),
-    );
+    const { result } = mountWithSetup(() => useBadge({ content: 1 }, "my-route"));
 
     expect(result.value.content).toBe(1);
   });

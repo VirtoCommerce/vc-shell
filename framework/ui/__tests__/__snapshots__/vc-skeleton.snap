@@ -2,86 +2,77 @@
   data-v-app=""
 >
   <div
-    class="tw-flex tw-flex-wrap tw-gap-6 tw-items-center"
+    class="tw-border tw-rounded-lg tw-overflow-hidden tw-w-[500px]"
   >
-    
-    <!-- Text variant: rows of skeleton lines (original behavior) -->
-    
-    <!-- Circle / Block variant: single shape element -->
+    <!-- Header skeleton -->
     <div
-      aria-busy="true"
-      aria-label="Loading..."
-      class="vc-skeleton__shape vc-skeleton__shape--circle tw-animate-pulse"
-      role="status"
-      style="width: 100px; height: 100px;"
+      class="tw-flex tw-items-center tw-gap-3 tw-px-6 tw-py-4 tw-border-b"
     >
-      <span
-        class="tw-sr-only"
+      
+      <!-- Text variant: rows of skeleton lines (original behavior) -->
+      
+      <!-- Circle / Block variant: single shape element -->
+      <div
+        aria-busy="true"
+        aria-label="Loading..."
+        class="vc-skeleton__shape vc-skeleton__shape--circle tw-animate-pulse"
+        role="status"
+        style="width: 24px; height: 24px;"
       >
-        Loading...
-      </span>
+        <span
+          class="tw-sr-only"
+        >
+          Loading...
+        </span>
+      </div>
+      
+      
+      <div
+        class="tw-flex-1 tw-flex tw-flex-col tw-gap-1"
+      >
+        
+        <!-- Text variant: rows of skeleton lines (original behavior) -->
+        
+        <!-- Circle / Block variant: single shape element -->
+        <div
+          aria-busy="true"
+          aria-label="Loading..."
+          class="vc-skeleton__shape vc-skeleton__shape--block tw-animate-pulse"
+          role="status"
+          style="width: 40%; height: 16px;"
+        >
+          <span
+            class="tw-sr-only"
+          >
+            Loading...
+          </span>
+        </div>
+        
+        
+        
+        <!-- Text variant: rows of skeleton lines (original behavior) -->
+        
+        <!-- Circle / Block variant: single shape element -->
+        <div
+          aria-busy="true"
+          aria-label="Loading..."
+          class="vc-skeleton__shape vc-skeleton__shape--block tw-animate-pulse"
+          role="status"
+          style="width: 25%; height: 12px;"
+        >
+          <span
+            class="tw-sr-only"
+          >
+            Loading...
+          </span>
+        </div>
+        
+        
+      </div>
     </div>
-    
-    
-    
-    <!-- Text variant: rows of skeleton lines (original behavior) -->
-    
-    <!-- Circle / Block variant: single shape element -->
+    <!-- Toolbar skeleton -->
     <div
-      aria-busy="true"
-      aria-label="Loading..."
-      class="vc-skeleton__shape vc-skeleton__shape--block tw-animate-pulse"
-      role="status"
-      style="width: 100px; height: 100px;"
-    >
-      <span
-        class="tw-sr-only"
-      >
-        Loading...
-      </span>
-    </div>
-    
-    
-    
-    <!-- Text variant: rows of skeleton lines (original behavior) -->
-    
-    <!-- Circle / Block variant: single shape element -->
-    <div
-      aria-busy="true"
-      aria-label="Loading..."
-      class="vc-skeleton__shape vc-skeleton__shape--block tw-animate-pulse"
-      role="status"
-      style="width: 150px; height: 60px;"
-    >
-      <span
-        class="tw-sr-only"
-      >
-        Loading...
-      </span>
-    </div>
-    
-    
-    
-    <!-- Text variant: rows of skeleton lines (original behavior) -->
-    
-    <!-- Circle / Block variant: single shape element -->
-    <div
-      aria-busy="true"
-      aria-label="Loading..."
-      class="vc-skeleton__shape vc-skeleton__shape--block tw-animate-pulse"
-      role="status"
-      style="width: 200px; height: 20px;"
-    >
-      <span
-        class="tw-sr-only"
-      >
-        Loading...
-      </span>
-    </div>
-    
-    
-  </div>
-</div>="tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-3 tw-border-b tw-bg-[--neutrals-50]"
+      class="tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-3 tw-border-b tw-bg-[--neutrals-50]"
     >
       
       <!-- Text variant: rows of skeleton lines (original behavior) -->

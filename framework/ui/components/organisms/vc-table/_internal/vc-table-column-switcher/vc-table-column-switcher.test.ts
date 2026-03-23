@@ -8,7 +8,8 @@ vi.mock("vue-i18n", () => ({
 
 const stubs = {
   VcDropdown: {
-    template: '<div class="vc-dropdown-stub"><slot name="trigger" /><slot name="item" v-for="item in items" :item="item" /></div>',
+    template:
+      '<div class="vc-dropdown-stub"><slot name="trigger" /><slot name="item" v-for="item in items" :item="item" /></div>',
     props: ["modelValue", "items", "placement", "floating", "maxHeight"],
     emits: ["item-click", "update:modelValue"],
   },

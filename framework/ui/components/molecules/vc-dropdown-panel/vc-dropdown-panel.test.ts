@@ -46,26 +46,17 @@ describe("VcDropdownPanel", () => {
   });
 
   it("renders header slot content", () => {
-    const wrapper = mountComponent(
-      { show: true },
-      { header: '<div class="custom-header">Custom Header</div>' },
-    );
+    const wrapper = mountComponent({ show: true }, { header: '<div class="custom-header">Custom Header</div>' });
     expect(wrapper.find(".vc-dropdown-panel__header").exists()).toBe(true);
   });
 
   it("renders default slot content", () => {
-    const wrapper = mountComponent(
-      { show: true },
-      { default: '<div class="panel-content">Content</div>' },
-    );
+    const wrapper = mountComponent({ show: true }, { default: '<div class="panel-content">Content</div>' });
     expect(wrapper.find(".panel-content").exists()).toBe(true);
   });
 
   it("renders footer slot when provided", () => {
-    const wrapper = mountComponent(
-      { show: true },
-      { footer: '<button class="footer-btn">Save</button>' },
-    );
+    const wrapper = mountComponent({ show: true }, { footer: '<button class="footer-btn">Save</button>' });
     expect(wrapper.find(".vc-dropdown-panel__footer").exists()).toBe(true);
   });
 

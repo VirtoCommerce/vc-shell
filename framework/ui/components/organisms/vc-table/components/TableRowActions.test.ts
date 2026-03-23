@@ -14,8 +14,11 @@ const stubs = {
     template: '<button class="vc-button-stub" @click="$emit(\'click\', $event)"><slot /></button>',
     props: ["variant", "size", "icon", "iconSize"],
   },
-  VcTooltip: { template: '<div class="vc-tooltip-stub"><slot /><slot name="tooltip" /></div>', props: ["placement", "maxWidth", "variant"] },
-  Teleport: { template: '<div><slot /></div>' },
+  VcTooltip: {
+    template: '<div class="vc-tooltip-stub"><slot /><slot name="tooltip" /></div>',
+    props: ["placement", "maxWidth", "variant"],
+  },
+  Teleport: { template: "<div><slot /></div>" },
 };
 
 function factory(props: Record<string, unknown> = {}) {

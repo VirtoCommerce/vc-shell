@@ -65,8 +65,7 @@ const MenuSidebarStub = defineComponent({
 const AppHubContentStub = defineComponent({
   name: "AppHubContent",
   setup(_, { slots }) {
-    return () =>
-      h("div", { class: "stub-hub" }, slots.applications?.({ appsList: [], switchApp: vi.fn() }));
+    return () => h("div", { class: "stub-hub" }, slots.applications?.({ appsList: [], switchApp: vi.fn() }));
   },
 });
 

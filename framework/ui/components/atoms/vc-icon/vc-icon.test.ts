@@ -8,11 +8,26 @@ describe("VcIcon", () => {
       props,
       global: {
         stubs: {
-          VcLucideIcon: { template: '<i class="vc-lucide-icon-stub"></i>', props: ["icon", "size", "variant", "strokeWidth", "customSize"] },
-          VcMaterialIcon: { template: '<i class="vc-material-icon-stub"></i>', props: ["icon", "size", "variant", "type", "fill", "weight", "grade", "customSize"] },
-          VcBootstrapIcon: { template: '<i class="vc-bootstrap-icon-stub"></i>', props: ["icon", "size", "variant", "customSize"] },
-          VcFontawesomeIcon: { template: '<i class="vc-fontawesome-icon-stub"></i>', props: ["icon", "size", "variant", "customSize"] },
-          VcSvgIcon: { template: '<i class="vc-svg-icon-stub"></i>', props: ["icon", "size", "variant", "customSize", "basePath"] },
+          VcLucideIcon: {
+            template: '<i class="vc-lucide-icon-stub"></i>',
+            props: ["icon", "size", "variant", "strokeWidth", "customSize"],
+          },
+          VcMaterialIcon: {
+            template: '<i class="vc-material-icon-stub"></i>',
+            props: ["icon", "size", "variant", "type", "fill", "weight", "grade", "customSize"],
+          },
+          VcBootstrapIcon: {
+            template: '<i class="vc-bootstrap-icon-stub"></i>',
+            props: ["icon", "size", "variant", "customSize"],
+          },
+          VcFontawesomeIcon: {
+            template: '<i class="vc-fontawesome-icon-stub"></i>',
+            props: ["icon", "size", "variant", "customSize"],
+          },
+          VcSvgIcon: {
+            template: '<i class="vc-svg-icon-stub"></i>',
+            props: ["icon", "size", "variant", "customSize", "basePath"],
+          },
         },
       },
     });
@@ -63,23 +78,17 @@ describe("VcIcon", () => {
       expect(wrapper.find(".vc-icon--m").exists()).toBe(true);
     });
 
-    it.each(["xs", "s", "m", "l", "xl", "xxl", "xxxl"] as const)(
-      "applies size class: %s",
-      (size) => {
-        const wrapper = mountComponent({ icon: "lucide-home", size });
-        expect(wrapper.find(`.vc-icon--${size}`).exists()).toBe(true);
-      },
-    );
+    it.each(["xs", "s", "m", "l", "xl", "xxl", "xxxl"] as const)("applies size class: %s", (size) => {
+      const wrapper = mountComponent({ icon: "lucide-home", size });
+      expect(wrapper.find(`.vc-icon--${size}`).exists()).toBe(true);
+    });
   });
 
   describe("variant", () => {
-    it.each(["warning", "danger", "success"] as const)(
-      "applies variant class: %s",
-      (variant) => {
-        const wrapper = mountComponent({ icon: "lucide-home", variant });
-        expect(wrapper.find(`.vc-icon--${variant}`).exists()).toBe(true);
-      },
-    );
+    it.each(["warning", "danger", "success"] as const)("applies variant class: %s", (variant) => {
+      const wrapper = mountComponent({ icon: "lucide-home", variant });
+      expect(wrapper.find(`.vc-icon--${variant}`).exists()).toBe(true);
+    });
   });
 
   describe("container", () => {

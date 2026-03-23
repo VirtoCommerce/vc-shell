@@ -6,7 +6,11 @@ import type { ChartConfig } from "./types";
 vi.mock("@unovis/vue", () => ({
   VisXYContainer: { name: "VisXYContainer", template: "<div><slot /></div>", props: ["data", "height", "margin"] },
   VisLine: { name: "VisLine", template: "<div />", props: ["x", "y", "color", "curveType", "lineWidth"] },
-  VisAxis: { name: "VisAxis", template: "<div />", props: ["type", "tickLine", "domainLine", "gridLine", "numTicks", "tickFormat"] },
+  VisAxis: {
+    name: "VisAxis",
+    template: "<div />",
+    props: ["type", "tickLine", "domainLine", "gridLine", "numTicks", "tickFormat"],
+  },
   VisTooltip: { name: "VisTooltip", template: "<div />", props: ["allowHover", "className", "verticalShift"] },
   VisCrosshair: { name: "VisCrosshair", template: "<div />", props: ["x", "y", "color", "template"] },
 }));

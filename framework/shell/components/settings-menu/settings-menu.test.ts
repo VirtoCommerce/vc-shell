@@ -7,10 +7,12 @@ vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (k: string) => k, locale: ref("en") }),
 }));
 
-const DummyComp = markRaw(defineComponent({
-  props: { label: String },
-  template: '<div class="dummy-item">{{ label }}</div>',
-}));
+const DummyComp = markRaw(
+  defineComponent({
+    props: { label: String },
+    template: '<div class="dummy-item">{{ label }}</div>',
+  }),
+);
 
 const mockItems = ref<Array<{ id: string; group?: string; component: unknown; props?: Record<string, unknown> }>>([]);
 
@@ -67,17 +69,13 @@ describe("SettingsMenu", () => {
   });
 
   it("passes props to dynamic components", () => {
-    mockItems.value = [
-      { id: "a", component: DummyComp, props: { label: "Hello" } },
-    ];
+    mockItems.value = [{ id: "a", component: DummyComp, props: { label: "Hello" } }];
     const w = factory();
     expect(w.text()).toContain("Hello");
   });
 
   it("reactively updates when items change", async () => {
-    mockItems.value = [
-      { id: "a", component: DummyComp, props: { label: "First" } },
-    ];
+    mockItems.value = [{ id: "a", component: DummyComp, props: { label: "First" } }];
     const w = factory();
     expect(w.findAll(".dummy-item").length).toBe(1);
 

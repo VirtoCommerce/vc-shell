@@ -4,7 +4,8 @@ import TableCheckbox from "./TableCheckbox.vue";
 
 const stubs = {
   VcCheckbox: {
-    template: '<input type="checkbox" class="vc-checkbox-stub" :checked="modelValue" :disabled="disabled" @change="$emit(\'update:modelValue\', !modelValue)" />',
+    template:
+      '<input type="checkbox" class="vc-checkbox-stub" :checked="modelValue" :disabled="disabled" @change="$emit(\'update:modelValue\', !modelValue)" />',
     props: ["modelValue", "disabled", "indeterminate"],
     emits: ["update:modelValue"],
   },

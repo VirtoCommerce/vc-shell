@@ -97,10 +97,7 @@ describe("BladeToolbar", () => {
   });
 
   it("renders widgets-container slot when provided", () => {
-    const wrapper = factory(
-      {},
-      { "widgets-container": '<div class="widget-container-test">Widgets</div>' },
-    );
+    const wrapper = factory({}, { "widgets-container": '<div class="widget-container-test">Widgets</div>' });
     expect(wrapper.find(".widget-container-test").exists()).toBe(true);
   });
 

@@ -74,11 +74,13 @@ describe("useBlade() inside blade context", () => {
   });
 
   it("options returns typed value via generic", () => {
-    interface TestOptions { productId: string; count: number }
-    const { result } = mountWithBladeContext(
-      () => useBlade<TestOptions>(),
-      { descriptor: { id: "b1", options: { productId: "p1", count: 5 } } },
-    );
+    interface TestOptions {
+      productId: string;
+      count: number;
+    }
+    const { result } = mountWithBladeContext(() => useBlade<TestOptions>(), {
+      descriptor: { id: "b1", options: { productId: "p1", count: 5 } },
+    });
     // TypeScript: result.options.value should be TestOptions | undefined
     expect(result.options.value?.productId).toBe("p1");
     expect(result.options.value?.count).toBe(5);
@@ -217,9 +219,7 @@ describe("useBlade() lifecycle hooks", () => {
       return blade;
     });
 
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("onActivated() already registered"),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("onActivated() already registered"));
     warnSpy.mockRestore();
   });
 
@@ -233,9 +233,7 @@ describe("useBlade() lifecycle hooks", () => {
       return blade;
     });
 
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("onDeactivated() already registered"),
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("onDeactivated() already registered"));
     warnSpy.mockRestore();
   });
 

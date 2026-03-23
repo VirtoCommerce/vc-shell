@@ -61,9 +61,7 @@ describe("useFloatingPosition", () => {
     const referenceEl = ref<HTMLElement | null>(null);
     const floatingEl = ref<HTMLElement | null>(null);
 
-    const { result } = mountWithSetup(() =>
-      useFloatingPosition(referenceEl, floatingEl, { placement: "top-start" }),
-    );
+    const { result } = mountWithSetup(() => useFloatingPosition(referenceEl, floatingEl, { placement: "top-start" }));
 
     expect(result.resolvedPlacement.value).toBe("top-start");
   });
@@ -72,9 +70,7 @@ describe("useFloatingPosition", () => {
     const referenceEl = ref<HTMLElement | null>(null);
     const floatingEl = ref<HTMLElement | null>(null);
 
-    const { result } = mountWithSetup(() =>
-      useFloatingPosition(referenceEl, floatingEl, { strategy: "fixed" }),
-    );
+    const { result } = mountWithSetup(() => useFloatingPosition(referenceEl, floatingEl, { strategy: "fixed" }));
 
     expect(result.resolvedStrategy.value).toBe("fixed");
   });
@@ -101,9 +97,7 @@ describe("useFloatingPosition", () => {
     const referenceEl = ref<HTMLElement | null>(null);
     const floatingEl = ref<HTMLElement | null>(null);
 
-    const { result } = mountWithSetup(() =>
-      useFloatingPosition(referenceEl, floatingEl, { offset: 12 }),
-    );
+    const { result } = mountWithSetup(() => useFloatingPosition(referenceEl, floatingEl, { offset: 12 }));
 
     // Composable should return valid result with numeric offset
     expect(result.floatingStyle.value).toBeDefined();
@@ -131,9 +125,7 @@ describe("useFloatingPosition", () => {
 
     vi.mocked(flip).mockClear();
 
-    mountWithSetup(() =>
-      useFloatingPosition(referenceEl, floatingEl, { enableFlip: false }),
-    );
+    mountWithSetup(() => useFloatingPosition(referenceEl, floatingEl, { enableFlip: false }));
 
     expect(flip).not.toHaveBeenCalled();
   });
@@ -145,9 +137,7 @@ describe("useFloatingPosition", () => {
 
     vi.mocked(shift).mockClear();
 
-    mountWithSetup(() =>
-      useFloatingPosition(referenceEl, floatingEl, { enableShift: false }),
-    );
+    mountWithSetup(() => useFloatingPosition(referenceEl, floatingEl, { enableShift: false }));
 
     expect(shift).not.toHaveBeenCalled();
   });

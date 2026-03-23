@@ -42,9 +42,7 @@ describe("SelectTrigger", () => {
 
   it("renders default placeholder from i18n when no placeholder prop", () => {
     const wrapper = mount(SelectTrigger, { props: baseProps });
-    expect(wrapper.find(".vc-select__placeholder").text()).toBe(
-      "COMPONENTS.MOLECULES.VC_SELECT.CLICK_TO_SELECT",
-    );
+    expect(wrapper.find(".vc-select__placeholder").text()).toBe("COMPONENTS.MOLECULES.VC_SELECT.CLICK_TO_SELECT");
   });
 
   it("renders selected single value", () => {
@@ -125,14 +123,28 @@ describe("SelectTrigger", () => {
 
   it("shows clearable button when clearable, hasValue and not disabled", () => {
     const wrapper = mount(SelectTrigger, {
-      props: { ...baseProps, hasValue: true, clearable: true, selectedScope: [{ index: 0, opt: { label: "A" }, selected: true, toggleOption: vi.fn(), removeAtIndex: vi.fn() }] },
+      props: {
+        ...baseProps,
+        hasValue: true,
+        clearable: true,
+        selectedScope: [
+          { index: 0, opt: { label: "A" }, selected: true, toggleOption: vi.fn(), removeAtIndex: vi.fn() },
+        ],
+      },
     });
     expect(wrapper.find(".vc-select__clear").exists()).toBe(true);
   });
 
   it("emits reset when clear button clicked", async () => {
     const wrapper = mount(SelectTrigger, {
-      props: { ...baseProps, hasValue: true, clearable: true, selectedScope: [{ index: 0, opt: { label: "A" }, selected: true, toggleOption: vi.fn(), removeAtIndex: vi.fn() }] },
+      props: {
+        ...baseProps,
+        hasValue: true,
+        clearable: true,
+        selectedScope: [
+          { index: 0, opt: { label: "A" }, selected: true, toggleOption: vi.fn(), removeAtIndex: vi.fn() },
+        ],
+      },
     });
     await wrapper.find(".vc-select__clear").trigger("click");
     expect(wrapper.emitted("reset")).toBeTruthy();

@@ -6,9 +6,21 @@ import type { ChartConfig } from "./types";
 // Stub all Unovis and child chart components
 vi.mock("@unovis/vue", () => ({
   VisXYContainer: { name: "VisXYContainer", template: "<div><slot /></div>", props: ["data", "height", "margin"] },
-  VisGroupedBar: { name: "VisGroupedBar", template: "<div />", props: ["x", "y", "color", "roundedCorners", "barPadding"] },
-  VisAxis: { name: "VisAxis", template: "<div />", props: ["type", "tickLine", "domainLine", "gridLine", "numTicks", "tickFormat"] },
-  VisTooltip: { name: "VisTooltip", template: "<div />", props: ["allowHover", "className", "verticalShift", "triggers"] },
+  VisGroupedBar: {
+    name: "VisGroupedBar",
+    template: "<div />",
+    props: ["x", "y", "color", "roundedCorners", "barPadding"],
+  },
+  VisAxis: {
+    name: "VisAxis",
+    template: "<div />",
+    props: ["type", "tickLine", "domainLine", "gridLine", "numTicks", "tickFormat"],
+  },
+  VisTooltip: {
+    name: "VisTooltip",
+    template: "<div />",
+    props: ["allowHover", "className", "verticalShift", "triggers"],
+  },
   VisGroupedBarSelectors: { bar: "[data-bar]" },
 }));
 

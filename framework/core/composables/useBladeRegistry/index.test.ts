@@ -10,9 +10,7 @@ function makeBlade(name = "TestBlade") {
   return defineComponent({ name, render: () => h("div") });
 }
 
-function makeRegistrationData(
-  overrides: Partial<IBladeRegistrationData> = {},
-): IBladeRegistrationData {
+function makeRegistrationData(overrides: Partial<IBladeRegistrationData> = {}): IBladeRegistrationData {
   return {
     component: makeBlade() as any,
     ...overrides,
@@ -56,16 +54,14 @@ describe("createBladeRegistry", () => {
 
     it("throws on empty name", () => {
       const registry = createBladeRegistry(app);
-      expect(() => registry._registerBladeFn("", makeRegistrationData())).toThrow(
-        "non-empty string",
-      );
+      expect(() => registry._registerBladeFn("", makeRegistrationData())).toThrow("non-empty string");
     });
 
     it("throws when component is missing", () => {
       const registry = createBladeRegistry(app);
-      expect(() =>
-        registry._registerBladeFn("Test", { component: undefined as any }),
-      ).toThrow("must include a component");
+      expect(() => registry._registerBladeFn("Test", { component: undefined as any })).toThrow(
+        "must include a component",
+      );
     });
   });
 
@@ -76,9 +72,9 @@ describe("createBladeRegistry", () => {
       const registry = createBladeRegistry(app);
       registry._registerBladeFn("Orders", makeRegistrationData({ route: "/orders" }));
 
-      expect(() =>
-        registry._registerBladeFn("Orders", makeRegistrationData({ route: "/orders" })),
-      ).toThrow("already registered");
+      expect(() => registry._registerBladeFn("Orders", makeRegistrationData({ route: "/orders" }))).toThrow(
+        "already registered",
+      );
     });
 
     it("allows overwrite when allowOverwrite=true", () => {
@@ -96,9 +92,7 @@ describe("createBladeRegistry", () => {
       const registry = createBladeRegistry(app);
       registry._registerBladeFn("Orders", makeRegistrationData());
 
-      expect(() => registry._registerBladeFn("Orders", makeRegistrationData())).toThrow(
-        "allowOverwrite=true",
-      );
+      expect(() => registry._registerBladeFn("Orders", makeRegistrationData())).toThrow("allowOverwrite=true");
     });
   });
 

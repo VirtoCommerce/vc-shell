@@ -62,9 +62,7 @@ function mountSlot(overrides = {}) {
 describe("vc-blade-slot.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetBladeComponent.mockReturnValue(
-      defineComponent({ setup: () => () => h("div", "blade-content") }),
-    );
+    mockGetBladeComponent.mockReturnValue(defineComponent({ setup: () => () => h("div", "blade-content") }));
   });
 
   it("renders when blade component is resolved", () => {
@@ -102,8 +100,7 @@ describe("vc-blade-slot.vue", () => {
     const BladeComp = defineComponent({
       emits: ["parent:call"],
       setup(_, { emit }) {
-        return () =>
-          h("button", { onClick: () => emit("parent:call", { method: "reload" }) }, "Call");
+        return () => h("button", { onClick: () => emit("parent:call", { method: "reload" }) }, "Call");
       },
     });
     mockGetBladeComponent.mockReturnValue(BladeComp);

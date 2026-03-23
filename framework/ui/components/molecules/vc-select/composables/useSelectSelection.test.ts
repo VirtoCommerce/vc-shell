@@ -49,9 +49,7 @@ describe("useSelectSelection", () => {
   });
 
   it("innerValue wraps single value in array", () => {
-    const { result } = mountWithSetup(() =>
-      useSelectSelection(createOpts({ modelValue: () => "test" })),
-    );
+    const { result } = mountWithSetup(() => useSelectSelection(createOpts({ modelValue: () => "test" })));
     expect(result.innerValue.value).toEqual(["test"]);
   });
 
@@ -73,9 +71,7 @@ describe("useSelectSelection", () => {
   });
 
   it("hasValue is true when value present", () => {
-    const { result } = mountWithSetup(() =>
-      useSelectSelection(createOpts({ modelValue: () => "test" })),
-    );
+    const { result } = mountWithSetup(() => useSelectSelection(createOpts({ modelValue: () => "test" })));
     expect(result.hasValue.value).toBe(true);
   });
 
@@ -104,9 +100,7 @@ describe("useSelectSelection", () => {
 
   it("toggleOption emits value for single select", () => {
     const emit = { updateModelValue: vi.fn(), close: vi.fn() };
-    const { result } = mountWithSetup(() =>
-      useSelectSelection(createOpts({ emit })),
-    );
+    const { result } = mountWithSetup(() => useSelectSelection(createOpts({ emit })));
 
     result.toggleOption({ id: "1", title: "One" });
 
@@ -117,9 +111,7 @@ describe("useSelectSelection", () => {
   it("toggleOption closes dropdown for single select", () => {
     const isOpened = ref(true);
     const emit = { updateModelValue: vi.fn(), close: vi.fn() };
-    const { result } = mountWithSetup(() =>
-      useSelectSelection(createOpts({ isOpened, emit })),
-    );
+    const { result } = mountWithSetup(() => useSelectSelection(createOpts({ isOpened, emit })));
 
     result.toggleOption({ id: "1", title: "One" });
     expect(isOpened.value).toBe(false);
@@ -127,9 +119,7 @@ describe("useSelectSelection", () => {
 
   it("toggleOption does nothing for undefined option", () => {
     const emit = { updateModelValue: vi.fn(), close: vi.fn() };
-    const { result } = mountWithSetup(() =>
-      useSelectSelection(createOpts({ emit })),
-    );
+    const { result } = mountWithSetup(() => useSelectSelection(createOpts({ emit })));
 
     result.toggleOption(undefined as any);
     expect(emit.updateModelValue).not.toHaveBeenCalled();
@@ -204,9 +194,7 @@ describe("useSelectSelection", () => {
 
   it("removeAtIndex does nothing for invalid index", () => {
     const emit = { updateModelValue: vi.fn(), close: vi.fn() };
-    const { result } = mountWithSetup(() =>
-      useSelectSelection(createOpts({ emit })),
-    );
+    const { result } = mountWithSetup(() => useSelectSelection(createOpts({ emit })));
 
     result.removeAtIndex(-1);
     result.removeAtIndex(999);
@@ -230,9 +218,7 @@ describe("useSelectSelection", () => {
 
   it("onReset emits null for single", () => {
     const emit = { updateModelValue: vi.fn(), close: vi.fn() };
-    const { result } = mountWithSetup(() =>
-      useSelectSelection(createOpts({ emit })),
-    );
+    const { result } = mountWithSetup(() => useSelectSelection(createOpts({ emit })));
 
     result.onReset();
     expect(emit.updateModelValue).toHaveBeenCalledWith(null);

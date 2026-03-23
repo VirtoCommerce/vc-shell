@@ -18,7 +18,10 @@ describe("useNotificationContext", () => {
 
     const Parent = defineComponent({
       setup() {
-        provide(NotificationContextKey, computed(() => notification));
+        provide(
+          NotificationContextKey,
+          computed(() => notification),
+        );
         return () => h(Child);
       },
     });
@@ -57,7 +60,10 @@ describe("useNotificationContext", () => {
 
     const Parent = defineComponent({
       setup() {
-        provide(NotificationContextKey, computed(() => notification));
+        provide(
+          NotificationContextKey,
+          computed(() => notification),
+        );
         return () => h(Child);
       },
     });

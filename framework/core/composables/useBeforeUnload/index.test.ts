@@ -41,9 +41,7 @@ describe("useBeforeUnload", () => {
     mountWithSetup(() => useBeforeUnload(modified));
 
     // Get the handler that was registered
-    const handler = addSpy.mock.calls.find(
-      (call) => call[0] === "beforeunload",
-    )?.[1] as EventListener;
+    const handler = addSpy.mock.calls.find((call) => call[0] === "beforeunload")?.[1] as EventListener;
     expect(handler).toBeDefined();
 
     const event = new Event("beforeunload");
@@ -56,9 +54,7 @@ describe("useBeforeUnload", () => {
     const modified = computed(() => false);
     mountWithSetup(() => useBeforeUnload(modified));
 
-    const handler = addSpy.mock.calls.find(
-      (call) => call[0] === "beforeunload",
-    )?.[1] as EventListener;
+    const handler = addSpy.mock.calls.find((call) => call[0] === "beforeunload")?.[1] as EventListener;
     expect(handler).toBeDefined();
 
     const event = new Event("beforeunload");

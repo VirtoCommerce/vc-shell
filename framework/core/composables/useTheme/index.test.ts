@@ -97,10 +97,7 @@ describe("useTheme", () => {
 
   it("register accepts array of themes", () => {
     const theme = useTheme();
-    theme.register([
-      { key: "sunset" },
-      { key: "forest" },
-    ]);
+    theme.register([{ key: "sunset" }, { key: "forest" }]);
     const keys = theme.themes.value.map((t) => t.key);
     expect(keys).toContain("sunset");
     expect(keys).toContain("forest");

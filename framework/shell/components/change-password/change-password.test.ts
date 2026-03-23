@@ -42,7 +42,10 @@ const stubs = {
     emits: ["close"],
   },
   VcForm: { template: '<div data-stub="VcForm"><slot /></div>' },
-  VcInput: { template: '<input data-stub="VcInput" />', props: ["modelValue", "label", "placeholder", "type", "required", "error", "errorMessage"] },
+  VcInput: {
+    template: '<input data-stub="VcInput" />',
+    props: ["modelValue", "label", "placeholder", "type", "required", "error", "errorMessage"],
+  },
   VcButton: { template: '<button data-stub="VcButton"><slot /></button>', props: ["disabled", "variant"] },
   VcHint: { template: '<span data-stub="VcHint"><slot /></span>' },
   VcIcon: { template: '<i data-stub="VcIcon" />', props: ["icon", "size"] },

@@ -31,8 +31,8 @@ vi.mock("@core/utilities", () => ({
 }));
 
 // Must be imported after vi.stubGlobal for navigator.connection mock
-let useSlowNetworkDetection: typeof import("./index")["useSlowNetworkDetection"];
-let _resetForTest: typeof import("./index")["_resetForTest"];
+let useSlowNetworkDetection: (typeof import("./index"))["useSlowNetworkDetection"];
+let _resetForTest: (typeof import("./index"))["_resetForTest"];
 
 describe("useSlowNetworkDetection", () => {
   beforeEach(async () => {

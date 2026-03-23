@@ -11,7 +11,7 @@ const stubs = {
   TableGroupRow: { template: '<div class="table-group-row-stub" />' },
   TableEmpty: { template: '<div class="table-empty-stub"><slot /></div>' },
   TableSkeletonRows: { template: '<div class="skeleton-stub" />' },
-  TransitionGroup: { template: '<div><slot /></div>' },
+  TransitionGroup: { template: "<div><slot /></div>" },
 };
 
 function factory(props: Record<string, unknown> = {}) {

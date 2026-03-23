@@ -2,88 +2,71 @@
   data-v-app=""
 >
   <div
-    class="tw-flex tw-flex-col tw-gap-4"
+    class="vc-card vc-card--collapsable vc-card--default"
   >
-    <h3
-      class="tw-text-lg tw-font-medium"
-    >
-      Available Variants
-    </h3>
     <div
-      class="tw-flex tw-flex-wrap tw-gap-4"
+      aria-controls="vc-card-body-v-0"
+      aria-expanded="true"
+      class="vc-card__header"
+      role="button"
+      tabindex="0"
     >
       
       <div
-        class="vc-card vc-card--default"
+        class="vc-card__header-content"
       >
+        <!--v-if-->
         <div
-          class="vc-card__header"
+          class="vc-card__title"
         >
-          
-          <div
-            class="vc-card__header-content"
-          >
-            <!--v-if-->
-            <div
-              class="vc-card__title"
-            >
-              default variant
-            </div>
-          </div>
-          
-          <!--v-if-->
-          <!--v-if-->
-        </div>
-        <div
-          class="vc-card__body-wrapper"
-          id="vc-card-body-v-0"
-        >
-          <div
-            class="vc-card__body"
-          >
-            
-            <p
-              class="tw-p-4"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!
-            </p>
-            
-          </div>
+          Card Title
         </div>
       </div>
-      <div
-        class="vc-card vc-card--success"
+      
+      <!--v-if-->
+      <svg
+        aria-hidden="true"
+        class="lucide vc-lucide-icon vc-lucide-icon--s vc-icon vc-icon--s vc-card__collapse vc-card__collapse--rotated vc-card__collapse vc-card__collapse--rotated lucide-chevron-down-icon lucide-chevron-down vc-lucide-icon vc-lucide-icon--s vc-icon vc-icon--s vc-card__collapse vc-card__collapse--rotated vc-card__collapse vc-card__collapse--rotated"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <div
-          class="vc-card__header"
+        <path
+          d="m6 9 6 6 6-6"
+        />
+      </svg>
+    </div>
+    <div
+      class="vc-card__body-wrapper"
+      id="vc-card-body-v-0"
+    >
+      <div
+        class="vc-card__body"
+        default="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!"
+      >
+        
+        <p
+          class="tw-p-4"
         >
-          
-          <div
-            class="vc-card__header-content"
-          >
-            <!--v-if-->
-            <div
-              class="vc-card__title"
-            >
-              success variant
-            </div>
-          </div>
-          
-          <!--v-if-->
-          <!--v-if-->
-        </div>
-        <div
-          class="vc-card__body-wrapper"
-          id="vc-card-body-v-1"
-        >
-          <div
-            class="vc-card__body"
-          >
-            
-            <p
-              class="tw-p-4"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!
+        </p>
+        
+      </div>
+    </div>
+  </div>
+</div>iditate neque quas!
+        </p>
+        
+      </div>
+    </div>
+  </div>
+</div>m repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!
             </p>
             
           </div>

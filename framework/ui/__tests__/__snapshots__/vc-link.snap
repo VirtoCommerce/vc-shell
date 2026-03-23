@@ -2,30 +2,20 @@
   data-v-app=""
 >
   <div
-    class="tw-flex tw-gap-4"
+    style="max-width: 300px;"
   >
     <button
       aria-disabled="false"
-      class="vc-link vc-link--active"
+      class="vc-link"
+      default="This is a much longer link text that might wrap to multiple lines depending on the container width"
       type="button"
     >
       
-      Home
+      This is a much longer link text that might wrap to multiple lines depending on the container width
       
     </button>
-    <button
-      aria-disabled="false"
-      class="vc-link"
-      type="button"
-    >
-      
-      Products
-      
-    </button>
-    <button
-      aria-disabled="false"
-      class="vc-link"
-      type="button"
+  </div>
+</div>on"
     >
       
       Services

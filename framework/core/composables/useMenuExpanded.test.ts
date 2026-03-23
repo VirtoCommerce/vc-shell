@@ -5,7 +5,6 @@ import { useMenuExpanded } from "./useMenuExpanded";
 // Mock useLocalStorage to use a simple ref instead of actual localStorage
 vi.mock("@vueuse/core", () => ({
   useLocalStorage: (_key: string, defaultValue: boolean) => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { ref } = require("vue");
     return ref(defaultValue);
   },

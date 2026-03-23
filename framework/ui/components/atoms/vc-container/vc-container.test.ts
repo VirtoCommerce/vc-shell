@@ -3,8 +3,7 @@ import { mount } from "@vue/test-utils";
 import VcContainer from "./vc-container.vue";
 
 describe("VcContainer", () => {
-  const mountComponent = (props = {}, slots = {}) =>
-    mount(VcContainer as any, { props, slots });
+  const mountComponent = (props = {}, slots = {}) => mount(VcContainer as any, { props, slots });
 
   describe("rendering", () => {
     it("renders with vc-container class", () => {

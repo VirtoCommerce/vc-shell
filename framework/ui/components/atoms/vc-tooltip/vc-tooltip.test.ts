@@ -74,10 +74,7 @@ describe("VcTooltip", () => {
   });
 
   it("does not show tooltip when disabled", async () => {
-    const wrapper = mountComponent(
-      { disabled: true },
-      { tooltip: () => "Tooltip text" },
-    );
+    const wrapper = mountComponent({ disabled: true }, { tooltip: () => "Tooltip text" });
     await wrapper.trigger("mouseenter");
     await nextTick();
     expect(wrapper.find("[role='tooltip']").exists()).toBe(false);
@@ -91,10 +88,7 @@ describe("VcTooltip", () => {
   });
 
   it("applies variant class to wrapper", async () => {
-    const wrapper = mountComponent(
-      { variant: "dark" },
-      { tooltip: () => "Tooltip text" },
-    );
+    const wrapper = mountComponent({ variant: "dark" }, { tooltip: () => "Tooltip text" });
     await wrapper.trigger("mouseenter");
     await nextTick();
     expect(wrapper.find(".vc-tooltip__wrapper--dark").exists()).toBe(true);
@@ -108,10 +102,7 @@ describe("VcTooltip", () => {
   });
 
   it("does not render arrow when arrow is false", async () => {
-    const wrapper = mountComponent(
-      { arrow: false },
-      { tooltip: () => "Tooltip text" },
-    );
+    const wrapper = mountComponent({ arrow: false }, { tooltip: () => "Tooltip text" });
     await wrapper.trigger("mouseenter");
     await nextTick();
     expect(wrapper.find(".vc-tooltip__arrow").exists()).toBe(false);

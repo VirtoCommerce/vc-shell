@@ -77,10 +77,7 @@ describe("ToolbarDesktop", () => {
 
   it("renders toolbar buttons for visible items", () => {
     const wrapper = mountToolbar({
-      items: [
-        createToolbarItem({ id: "1", title: "Save" }),
-        createToolbarItem({ id: "2", title: "Delete" }),
-      ],
+      items: [createToolbarItem({ id: "1", title: "Save" }), createToolbarItem({ id: "2", title: "Delete" })],
     });
     expect(wrapper.findAll(".toolbar-base-button-stub")).toHaveLength(2);
   });

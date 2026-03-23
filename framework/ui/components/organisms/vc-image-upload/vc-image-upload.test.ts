@@ -32,7 +32,8 @@ function factory(props: Record<string, unknown> = {}) {
         VcImageTile: {
           name: "VcImageTile",
           props: ["src", "alt", "name", "imageFit", "actions"],
-          template: '<div class="vc-image-tile-stub" @click="$emit(\'preview\')" ><button class="remove-btn" @click.stop="$emit(\'remove\')">remove</button></div>',
+          template:
+            '<div class="vc-image-tile-stub" @click="$emit(\'preview\')" ><button class="remove-btn" @click.stop="$emit(\'remove\')">remove</button></div>',
         },
         VcFileUpload: {
           name: "VcFileUpload",

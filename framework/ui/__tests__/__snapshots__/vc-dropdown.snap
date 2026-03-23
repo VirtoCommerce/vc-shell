@@ -2,24 +2,24 @@
   data-v-app=""
 >
   <div
-    class="tw-min-h-[340px] tw-rounded-xl tw-border tw-border-solid tw-border-neutrals-200 tw-bg-additional-50 tw-p-6"
+    class="tw-min-h-[300px] tw-rounded-xl tw-border tw-border-solid tw-border-neutrals-200 tw-bg-additional-50 tw-p-6"
   >
     <p
       class="tw-mb-1 tw-text-sm tw-text-neutrals-500"
     >
-      Long list + keyboard navigation
+      Workspace switcher
     </p>
     <p
-      class="tw-mb-5 tw-text-sm tw-text-neutrals-700"
+      class="tw-mb-5 tw-text-base tw-font-semibold tw-text-neutrals-900"
     >
-      Use Arrow keys, Enter and Escape.
+      Current: Atlas Backoffice
     </p>
     <div
       class="vc-dropdown"
     >
       <div
-        aria-controls="vc-dropdown-2020"
-        aria-expanded="true"
+        aria-controls="vc-dropdown-2017"
+        aria-expanded="false"
         aria-haspopup="listbox"
         class="vc-dropdown__trigger"
         role="button"
@@ -27,7 +27,7 @@
       >
         
         <button
-          class="vc-button vc-button-ghost vc-button--default"
+          class="vc-button vc-button-outline vc-button--default"
           type="button"
         >
           <!-- Loading: spinner replaces icon; shown inline next to text -->
@@ -41,7 +41,7 @@
             >
               <svg
                 aria-hidden="true"
-                class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m lucide-list-filter-icon lucide-list-filter vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m"
+                class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m lucide-layers-icon lucide-layers vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m"
                 fill="none"
                 height="24"
                 stroke="currentColor"
@@ -53,19 +53,19 @@
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M2 5h20"
+                  d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"
                 />
                 <path
-                  d="M6 12h12"
+                  d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"
                 />
                 <path
-                  d="M9 19h6"
+                  d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"
                 />
               </svg>
-               Audience segments 
+               Atlas Backoffice 
               <svg
                 aria-hidden="true"
-                class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m lucide-chevron-up-icon lucide-chevron-up vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m"
+                class="lucide vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m lucide-chevron-down-icon lucide-chevron-down vc-lucide-icon vc-lucide-icon--m vc-icon vc-icon--m"
                 fill="none"
                 height="24"
                 stroke="currentColor"
@@ -77,7 +77,7 @@
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="m18 15-6-6-6 6"
+                  d="m6 9 6 6 6-6"
                 />
               </svg>
             </span>
@@ -87,26 +87,31 @@
         
       </div>
       <!--teleport start-->
-      <div
-        aria-activedescendant="vc-dropdown-2020-item-2"
-        class="vc-dropdown__dropdown vc-dropdown__dropdown--floating vc-dropdown__dropdown--default vc-dropdown__dropdown--bottom-start vc-dropdown-transition-enter-from vc-dropdown-transition-enter-active"
-        id="vc-dropdown-2020"
-        role="listbox"
-        style="max-height: 220px; position: fixed; top: 0px; left: 8px; z-index: 10000; width: max-content;"
-        tabindex="-1"
-      >
-        <div
-          class="vc-dropdown__content vc-dropdown__content--padded"
-        >
-          
-          <div
-            class="vc-dropdown__items-container"
-          >
+      <!--v-if-->
+      <!--teleport end-->
+    </div>
+  </div>
+</div>       <path
+                  d="m6 9 6 6 6-6"
+                />
+              </svg>
+            </span>
+            
+          </span>
+        </button>
+        
+      </div>
+      <!--teleport start-->
+      <!--v-if-->
+      <!--teleport end-->
+    </div>
+  </div>
+</div> >
             
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-0"
+              id="vc-dropdown-2032-item-0"
               role="option"
             >
               
@@ -135,7 +140,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-1"
+              id="vc-dropdown-2032-item-1"
               role="option"
             >
               
@@ -164,7 +169,7 @@
             <div
               aria-selected="true"
               class="vc-dropdown__item vc-dropdown__item--padded vc-dropdown__item--active vc-dropdown__item--focused"
-              id="vc-dropdown-2020-item-2"
+              id="vc-dropdown-2032-item-2"
               role="option"
             >
               
@@ -193,7 +198,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-3"
+              id="vc-dropdown-2032-item-3"
               role="option"
             >
               
@@ -222,7 +227,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-4"
+              id="vc-dropdown-2032-item-4"
               role="option"
             >
               
@@ -251,7 +256,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-5"
+              id="vc-dropdown-2032-item-5"
               role="option"
             >
               
@@ -280,7 +285,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-6"
+              id="vc-dropdown-2032-item-6"
               role="option"
             >
               
@@ -309,7 +314,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-7"
+              id="vc-dropdown-2032-item-7"
               role="option"
             >
               
@@ -338,7 +343,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-8"
+              id="vc-dropdown-2032-item-8"
               role="option"
             >
               
@@ -367,7 +372,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-9"
+              id="vc-dropdown-2032-item-9"
               role="option"
             >
               
@@ -396,7 +401,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-10"
+              id="vc-dropdown-2032-item-10"
               role="option"
             >
               
@@ -425,7 +430,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-11"
+              id="vc-dropdown-2032-item-11"
               role="option"
             >
               
@@ -454,7 +459,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-12"
+              id="vc-dropdown-2032-item-12"
               role="option"
             >
               
@@ -483,7 +488,7 @@
             <div
               aria-selected="false"
               class="vc-dropdown__item vc-dropdown__item--padded"
-              id="vc-dropdown-2020-item-13"
+              id="vc-dropdown-2032-item-13"
               role="option"
             >
               

@@ -47,8 +47,10 @@ const i18n = createI18n({
   messages: {
     en: {
       COMPONENTS: {
-        BLADE_NAVIGATION: {
-          ARIA_LABEL: "Blade navigation",
+        ORGANISMS: {
+          BLADE_NAVIGATION: {
+            ARIA_LABEL: "Blade navigation",
+          },
         },
       },
     },

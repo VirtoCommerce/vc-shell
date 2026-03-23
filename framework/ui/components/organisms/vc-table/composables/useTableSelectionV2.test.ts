@@ -55,8 +55,7 @@ describe("stale callback audit (FR-3.7)", () => {
     const propsRef = ref<((item: Item) => boolean) | undefined>(undefined);
 
     // This getter closes over propsRef — reads at call time (safe pattern)
-    const runtimeGetter = (item: Item): boolean =>
-      propsRef.value ? propsRef.value(item) : true;
+    const runtimeGetter = (item: Item): boolean => (propsRef.value ? propsRef.value(item) : true);
 
     const { canSelect } = useTableSelectionV2(makeOptions(runtimeGetter));
 
@@ -86,9 +85,7 @@ describe("stale callback audit (FR-3.7)", () => {
       return item.selectable;
     };
 
-    const { allSelected, handleSelectAllChange } = useTableSelectionV2(
-      makeOptions(trackingCallback),
-    );
+    const { allSelected, handleSelectAllChange } = useTableSelectionV2(makeOptions(trackingCallback));
 
     // Trigger selectableItems computation by calling handleSelectAllChange
     handleSelectAllChange(true);
@@ -103,9 +100,7 @@ describe("stale callback audit (FR-3.7)", () => {
   it("selection correctly excludes non-selectable items based on isRowSelectable", () => {
     // Verify the composable uses the isRowSelectable callback to filter
     const isRowSelectable = (item: Item) => item.selectable;
-    const { handleSelectAllChange, internalSelection } = useTableSelectionV2(
-      makeOptions(isRowSelectable),
-    );
+    const { handleSelectAllChange, internalSelection } = useTableSelectionV2(makeOptions(isRowSelectable));
 
     // Select all — only selectable items should be included
     handleSelectAllChange(true);

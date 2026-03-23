@@ -9,23 +9,17 @@ vi.mock("@core/composables/useAppBarMobileButtons", () => ({
   }),
 }));
 
-vi.mock(
-  "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarState",
-  () => ({
-    useAppBarState: () => ({
-      activeMobileActionId: ref<string | null>(null),
-    }),
+vi.mock("@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarState", () => ({
+  useAppBarState: () => ({
+    activeMobileActionId: ref<string | null>(null),
   }),
-);
+}));
 
 import { useAppBarMobileActions } from "./useAppBarMobileActions";
 
 describe("useAppBarMobileActions", () => {
   beforeEach(() => {
-    mockButtons.value = [
-      { id: "btn-1" },
-      { id: "btn-2" },
-    ];
+    mockButtons.value = [{ id: "btn-1" }, { id: "btn-2" }];
   });
 
   it("returns the expected API shape", () => {

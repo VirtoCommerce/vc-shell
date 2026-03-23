@@ -130,9 +130,7 @@ describe("useTableSelection", () => {
     }
 
     it("uses a custom key as idField", () => {
-      const { result } = mountWithSetup(() =>
-        useTableSelection<CustomItem>({ idField: "code" }),
-      );
+      const { result } = mountWithSetup(() => useTableSelection<CustomItem>({ idField: "code" }));
       const a: CustomItem = { code: "A", label: "Item A" };
       const b: CustomItem = { code: "B", label: "Item B" };
       result.selectItems([a, b]);
@@ -141,18 +139,14 @@ describe("useTableSelection", () => {
     });
 
     it("uses a function as idField", () => {
-      const { result } = mountWithSetup(() =>
-        useTableSelection<CustomItem>({ idField: (item) => item.code }),
-      );
+      const { result } = mountWithSetup(() => useTableSelection<CustomItem>({ idField: (item) => item.code }));
       const a: CustomItem = { code: "X", label: "Item X" };
       result.selectItems([a]);
       expect(result.selectedIds.value).toEqual(["X"]);
     });
 
     it("handles idField returning undefined", () => {
-      const { result } = mountWithSetup(() =>
-        useTableSelection<CustomItem>({ idField: () => undefined }),
-      );
+      const { result } = mountWithSetup(() => useTableSelection<CustomItem>({ idField: () => undefined }));
       const a: CustomItem = { code: "A", label: "Item A" };
       result.selectItems([a]);
       expect(result.selectedIds.value).toEqual([]);

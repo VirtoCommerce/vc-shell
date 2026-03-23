@@ -19,10 +19,7 @@ vi.mock("@ui/components/organisms/vc-sidebar", () => ({
     props: ["modelValue", "position", "teleport", "title"],
     emits: ["update:modelValue"],
     setup(props, { slots, emit }) {
-      return () =>
-        h("div", { class: "mock-vc-sidebar" }, [
-          props.modelValue ? slots.default?.() : null,
-        ]);
+      return () => h("div", { class: "mock-vc-sidebar" }, [props.modelValue ? slots.default?.() : null]);
     },
   }),
 }));

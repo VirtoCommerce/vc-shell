@@ -150,9 +150,7 @@ describe("createNotificationStore", () => {
       const { createNotificationStore } = await import("../store");
       const { PushNotification } = await import("@core/api/platform");
       const store = createNotificationStore();
-      store.ingest(
-        new PushNotification({ id: "idx1", isNew: true, notifyType: "IndexProgressPushNotification" }),
-      );
+      store.ingest(new PushNotification({ id: "idx1", isNew: true, notifyType: "IndexProgressPushNotification" }));
       expect(store.history.value).toHaveLength(0);
     });
 

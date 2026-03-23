@@ -30,6 +30,18 @@ description: Generates a list blade Vue component and its plural composable for 
     "knowledgeBase": "string — absolute path to skill/knowledge/",
     "docsRoot": "string — absolute path to skill/knowledge/docs/",
     "targetDir": "string — absolute path to output module directory"
+  },
+  "optional": {
+    "existingModule": {
+      "blades": "array — existing blade names for linking",
+      "localePrefix": "string — existing i18n prefix",
+      "indexPath": "string — path to index.ts"
+    },
+    "linkTo": {
+      "blade": "string — blade to add openBlade link from",
+      "trigger": "string — button|row-action|tab",
+      "label": "string — i18n key for trigger label"
+    }
   }
 }
 ```
@@ -60,6 +72,20 @@ From inputs compute:
 - `stateKey` = snake_case of `moduleName` + `_list` (e.g., `team_list`)
 - `i18nPrefix` = SCREAMING_SNAKE of `moduleName` (e.g., `TEAM`)
 - `url` = `"/" + moduleName` (e.g., `"/team"`)
+
+### Existing Module Context
+
+When `existingModule` is provided:
+- Use the same `localePrefix` convention from `existingModule.localePrefix` instead of deriving a new one. This ensures i18n keys are consistent across all blades in the module.
+- Reference `existingModule.blades` to avoid naming collisions with existing blade component names.
+
+When `linkTo` is provided:
+- After generating the new list blade, open the source blade file specified by `linkTo.blade` (resolve from `existingModule.indexPath` parent directory + `pages/`).
+- Add an `openBlade` call to the source blade based on `linkTo.trigger`:
+  - `"button"` — add a toolbar button with `linkTo.label` that calls `openBlade({ blade: {bladeComponentName} })`
+  - `"row-action"` — add a row action in the VcDataTable that opens the new blade on click
+  - `"tab"` — add a tab entry that renders the new blade inline
+- Import the new blade component at the top of the source blade's `<script setup>`.
 
 ### Step 2: Generate the plural composable
 

@@ -10,7 +10,8 @@ description: Creates the module index.ts barrel, pages/index.ts, composables/ind
   "required": {
     "moduleName": "string — kebab-case module name (e.g., 'team', 'catalog-items')",
     "generatedFiles": ["string — absolute paths to all generated files in this module"],
-    "appModulesRegistryPath": "string — absolute path to app's src/modules/index.ts"
+    "appModulesRegistryPath": "string — absolute path to app's src/modules/index.ts",
+    "mode": "string — 'create' (default) or 'append'"
   }
 }
 ```
@@ -24,6 +25,22 @@ Before generating, Read:
 (Use `knowledgeBase` from the parent skill context, or infer from the `targetDir` if not provided: look for `skill/knowledge/patterns/module-structure.md` relative to the worktree root.)
 
 ## Generation Rules
+
+### Append Mode
+
+When `mode: "append"`:
+
+1. Read the existing `{targetDir}/index.ts` — do NOT overwrite it from scratch
+2. Add new blade import statements after existing imports in `pages/index.ts`
+3. Add new blade to the `blades` object in `defineAppModule` — since `blades: pages` uses namespace import, the new page export in `pages/index.ts` is automatically included
+4. Do NOT overwrite any existing content — only append new exports and imports
+5. Use the Edit tool (not Write tool) for all file modifications in append mode
+
+Specifically in append mode:
+- `pages/index.ts` — append new `export { default as NewBlade } from "./new-blade.vue"` lines
+- `composables/index.ts` — append new composable export lines
+- `{targetDir}/index.ts` — no changes needed (namespace import `* as pages` picks up new pages automatically)
+- `appModulesRegistryPath` — no changes needed (module is already registered)
 
 ### Step 1: Derive naming variables
 

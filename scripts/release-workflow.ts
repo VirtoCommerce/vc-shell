@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
+import { readdirSync } from "node:fs";
 import fs from "fs-extra";
 import { releasePackages, type ReleasePackageConfig } from "./release-packages";
 
@@ -225,4 +226,59 @@ export function generateRootChangelog(releaseCount: number) {
     "-t",
     "v",
   ]);
+}
+
+const SKILL_DIR = path.resolve("cli/vc-app-skill");
+const SKILL_VERSION_FILE = path.join(SKILL_DIR, "runtime/VERSION");
+const SKILL_KNOWLEDGE_DOCS = path.join(SKILL_DIR, "runtime/knowledge/docs");
+const FRAMEWORK_DIR = path.resolve("framework");
+
+export function syncSkillVersion(version: string) {
+  console.log("\n[release] Syncing vc-app-skill assets...");
+
+  if (!fs.existsSync(SKILL_VERSION_FILE)) {
+    console.log("  - Skipping VERSION sync (file not found)");
+    return;
+  }
+
+  fs.writeFileSync(SKILL_VERSION_FILE, `${version}\n`);
+  console.log(`  + VERSION → ${version}`);
+}
+
+export function syncSkillDocs() {
+  if (!fs.existsSync(FRAMEWORK_DIR)) {
+    console.log("  - Skipping docs sync (framework directory not found)");
+    return;
+  }
+
+  fs.removeSync(SKILL_KNOWLEDGE_DOCS);
+  fs.mkdirpSync(SKILL_KNOWLEDGE_DOCS);
+
+  const entries = readdirSync(FRAMEWORK_DIR, { recursive: true, encoding: "utf8" });
+  let count = 0;
+
+  for (const entry of entries) {
+    if (typeof entry === "string" && entry.endsWith(".docs.md")) {
+      const src = path.join(FRAMEWORK_DIR, entry);
+      const dest = path.join(SKILL_KNOWLEDGE_DOCS, entry);
+
+      fs.mkdirpSync(path.dirname(dest));
+      fs.copyFileSync(src, dest);
+      count++;
+    }
+  }
+
+  let hash = "unknown";
+  const gitResult = spawnSync("git", ["rev-parse", "--short", "HEAD"], { encoding: "utf8" });
+
+  if (gitResult.status === 0 && gitResult.stdout) {
+    hash = gitResult.stdout.trim();
+  }
+
+  fs.writeFileSync(
+    path.join(SKILL_KNOWLEDGE_DOCS, "_BUILD_HASH.md"),
+    `Synced from framework at commit ${hash} on ${new Date().toISOString()}\n`,
+  );
+
+  console.log(`  + Synced ${count} docs files (commit: ${hash})`);
 }

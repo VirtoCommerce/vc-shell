@@ -1,5 +1,10 @@
 import { updateAppsDependencies, updateBoilerplatePkgVersions } from "./utils";
-import { generatePackageChangelogs, syncWorkspacePackageVersions } from "./release-workflow";
+import {
+  generatePackageChangelogs,
+  syncSkillDocs,
+  syncSkillVersion,
+  syncWorkspacePackageVersions,
+} from "./release-workflow";
 
 async function runAfterBump(version: string) {
   if (!version) {
@@ -9,6 +14,8 @@ async function runAfterBump(version: string) {
   syncWorkspacePackageVersions(version);
   await updateBoilerplatePkgVersions();
   await updateAppsDependencies();
+  syncSkillVersion(version);
+  syncSkillDocs();
   generatePackageChangelogs(1);
 }
 

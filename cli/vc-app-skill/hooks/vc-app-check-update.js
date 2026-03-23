@@ -54,7 +54,7 @@ const child = spawn(process.execPath, ["-e", `
 
   let latest = null;
   try {
-    latest = execSync("npm view @vc-shell/vc-app-skill version", { encoding: "utf8", timeout: 10000, windowsHide: true }).trim();
+    latest = execSync("npm view @vc-shell/vc-app-skill@alpha version", { encoding: "utf8", timeout: 10000, windowsHide: true }).trim();
   } catch (e) {}
 
   const result = {

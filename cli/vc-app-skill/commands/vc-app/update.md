@@ -6,7 +6,7 @@ allowed-tools:
   - AskUserQuestion
 ---
 
-Run: `npx @vc-shell/vc-app-skill install`
+Run: `npx @vc-shell/vc-app-skill@alpha install`
 
 Show the user what version was installed and what's new.
 After update, remind user to restart the session for changes to take effect.

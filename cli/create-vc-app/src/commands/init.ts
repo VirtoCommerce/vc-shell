@@ -17,7 +17,6 @@ import { printSuccess } from "../output.js";
 const PROJECT_TYPES: { title: string; value: ProjectType }[] = [
   { title: "Standalone App — full application with bundled modules", value: "standalone" },
   { title: "Dynamic Module — remote module loaded by host via Module Federation", value: "dynamic-module" },
-  { title: "Host App — shell application that loads dynamic modules", value: "host-app" },
 ];
 
 export async function initCommand(args: Record<string, unknown>, templateRoot: string): Promise<void> {
@@ -137,7 +136,6 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
           {
             name: "moduleName",
             type: (_, values) => {
-              if (projectType === "host-app") return null;
               if (projectType === "standalone" && !values.includeModule) return null;
               return "text";
             },
@@ -172,7 +170,7 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
           },
           {
             name: "mocks",
-            type: projectType === "host-app" ? null : "confirm",
+            type: "confirm",
             message: "Include sample module with mock data?",
             initial: false,
           },
@@ -184,7 +182,7 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
         projectName,
         packageName: phase1.packageName || (isValidPackageName(projectName) ? projectName : toValidPackageName(projectName)),
         projectType,
-        moduleName: phase2.moduleName || (phase2.includeModule !== false && projectType !== "host-app" ? defaultModuleName : undefined),
+        moduleName: phase2.moduleName || (phase2.includeModule !== false ? defaultModuleName : undefined),
         basePath: phase2.basePath || toValidBasePath(defaultBasePath),
         tenantRoutes: phase2.tenantRoutes || false,
         aiAgent: phase2.aiAgent || false,
@@ -224,7 +222,7 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
   }
 
   // 3. Render sample module (standalone and dynamic-module, if requested)
-  if (options.mocks && options.projectType !== "host-app") {
+  if (options.mocks) {
     renderDir(path.join(templateRoot, "sample-module"), path.join(root, "src/modules/sample"), templateData);
   }
 

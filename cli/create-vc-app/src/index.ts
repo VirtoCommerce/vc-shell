@@ -36,7 +36,7 @@ ${pc.bold("Usage:")}
   create-vc-app add-module <module-name>     Add a module to existing project
 
 ${pc.bold("Options (create):")}
-  --type <type>              Project type: standalone | dynamic-module | host-app
+  --type <type>              Project type: standalone | dynamic-module
   --name, --app-name <name>  Application name
   --package-name <name>      npm package name
   --module-name <name>       Initial module name (opt-in for standalone)
@@ -53,7 +53,6 @@ ${pc.bold("Examples:")}
   create-vc-app my-app
   create-vc-app my-app --type standalone --dashboard --mocks
   create-vc-app my-module --type dynamic-module --module-name "Reviews"
-  create-vc-app my-shell --type host-app --dashboard --tenant-routes
   create-vc-app add-module orders
 
 ${pc.bold("Docs:")} https://docs.virtocommerce.org/platform/developer-guide/latest/custom-apps-development/vc-shell/vc-shell-overview/

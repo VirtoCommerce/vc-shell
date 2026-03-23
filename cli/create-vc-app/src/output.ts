@@ -4,7 +4,6 @@ import type { ProjectOptions } from "./types.js";
 const PROJECT_TYPE_LABELS: Record<string, string> = {
   standalone: "Standalone App",
   "dynamic-module": "Dynamic Module",
-  "host-app": "Host App",
 };
 
 export function printSuccess(options: ProjectOptions): void {

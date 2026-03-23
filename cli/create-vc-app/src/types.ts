@@ -1,4 +1,4 @@
-export type ProjectType = "standalone" | "dynamic-module" | "host-app";
+export type ProjectType = "standalone" | "dynamic-module";
 
 export interface ProjectOptions {
   projectName: string;

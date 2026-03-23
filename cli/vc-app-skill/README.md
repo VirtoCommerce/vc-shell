@@ -210,7 +210,3 @@ node cli/vc-app-skill/bin/install.cjs
 # Verify deployment
 ls ~/.claude/vc-app-skill/agents/
 ```
-
-### Releasing
-
-The package follows the monorepo release workflow. Bump `version` in `package.json` and `runtime/VERSION` together, then publish via the standard release pipeline.

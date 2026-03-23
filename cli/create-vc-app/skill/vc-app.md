@@ -83,7 +83,7 @@ Stop after displaying help. Do not proceed to any other section.
 
 ## `/vc-app create`
 
-Interactive project scaffolding dialog.
+Collect project parameters through dialog, then run CLI in **non-interactive mode** (all flags passed at once).
 
 ### Dialog
 
@@ -92,7 +92,8 @@ Interactive project scaffolding dialog.
    - `standalone` — Self-contained app with its own auth and routing
    - `dynamic-module` — Loadable module plugin for a host app
    - `host-app` — Shell host that loads dynamic modules
-3. **Ask the user:** Which options do you want? (multi-select, all optional)
+3. **Ask the user:** Initial module name? (suggest: project name in TitleCase, e.g., `my-vendor-app` → `MyVendorApp`)
+4. **Ask the user:** Which options do you want? (multi-select, all optional)
    - `--dashboard` — Include a dashboard page
    - `--tenant-routes` — Include tenant-aware routing
    - `--ai-agent` — Include AI agent integration scaffold
@@ -100,11 +101,28 @@ Interactive project scaffolding dialog.
 
 ### Execution
 
-After collecting all answers, run:
+**IMPORTANT:** Always use non-interactive mode — pass ALL flags to skip CLI prompts:
 
 ```bash
-npx @vc-shell/create-vc-app <projectName> --type <projectType> [selected options]
+npx @vc-shell/create-vc-app <projectName> \
+  --type <projectType> \
+  --module-name "<moduleName>" \
+  [--dashboard] [--tenant-routes] [--ai-agent] [--mocks]
 ```
+
+Available CLI flags (see `cli/create-vc-app/README.md` for full list):
+| Flag | Description |
+|------|-------------|
+| `--type <type>` | `standalone` \| `dynamic-module` \| `host-app` |
+| `--name`, `--app-name` | Application display name |
+| `--package-name` | npm package name |
+| `--module-name` | Initial module name |
+| `--base-path` | Base path (default: `/apps/<name>/`) |
+| `--dashboard` | Include Dashboard |
+| `--tenant-routes` | Include tenant routing |
+| `--ai-agent` | Include AI Agent config |
+| `--mocks` | Include sample module with mock data |
+| `--overwrite` | Overwrite existing files |
 
 If the command fails, show the stderr output and suggest the user check that `@vc-shell/create-vc-app` is installed or accessible via npx.
 

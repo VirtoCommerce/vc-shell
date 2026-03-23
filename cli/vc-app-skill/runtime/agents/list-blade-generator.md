@@ -158,6 +158,45 @@ Example of correct column declarations:
 - Include `watch(sortExpression, ...)`, `onMounted`, `reload`, `onPaginationClick`, `onItemClick`, `onAddItem`, `exposeToChildren({ reload })`
 - Do NOT create a `simpleColumns` computed array — columns are in the template
 
+### Mock Mode
+
+When `dataSource` fields are empty/null (no API client), the generator must:
+
+1. Wrap mock data-source code with `// vc-app:mock-start` and `// vc-app:mock-end` markers
+2. Generate a mock data array with sample values matching the requested columns
+3. Generate mock `fetchItems`, `removeItems` functions inside the marker block
+
+Instead of the normal composable that imports API client classes, generate this mock composable body:
+
+```ts
+// vc-app:mock-start
+const mockData: Record<string, unknown>[] = [
+  { id: "1", name: "Item 1", status: "active", createdDate: new Date().toISOString() },
+];
+
+const fetchItems = async (query?: Record<string, unknown>) => {
+  return { results: mockData, totalCount: mockData.length };
+};
+
+const fetchItem = async (id: string) => {
+  return mockData.find((item) => item.id === id) ?? {};
+};
+
+const saveItem = async (item: Record<string, unknown>) => {
+  console.log("Mock save:", item);
+  return item;
+};
+
+const removeItems = async (ids: string[]) => {
+  console.log("Mock remove:", ids);
+};
+// vc-app:mock-end
+```
+
+Adapt the mock data entries to include all columns from the input `columns` array with appropriate sample values for each type (strings, dates, numbers, booleans). The list blade template and composable return shape remain the same — only the data-fetching internals change.
+
+The markers `// vc-app:mock-start` and `// vc-app:mock-end` MUST appear exactly as shown — they are used by `/vc-app promote` to locate and replace mock code with real API calls.
+
 ### Step 5: Create composable barrel if it doesn't exist
 
 Write to: `{targetDir}/composables/index.ts`

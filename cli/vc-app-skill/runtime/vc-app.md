@@ -311,13 +311,22 @@ Where `I18N_PREFIX` = SCREAMING_SNAKE_CASE of `moduleName` (e.g., `team` → `TE
 
 ### Phase 2: Data Source (Interactive Dialog)
 
+**Auto-detect no-API mode:** Before asking, check whether an API client directory exists:
+- Check `src/api_client/` relative to project root
+- Check the value of `APP_API_CLIENT_DIRECTORY` from `.env`
+
+If neither exists and `APP_API_CLIENT_DIRECTORY` is not set, skip the "Should this module use an API client?" question — go directly to mock mode (Phase 3 with empty data source). Show a note to the user:
+```
+No API client found — generating with mock data.
+```
+
+If an API client directory does exist, proceed with the interactive dialog:
+
 1. **Ask the user:** Should this module use an API client to fetch data? (If they just want a static/mock module, skip to Phase 3 with empty data source.)
 
 2. **If yes — discover API entities:**
 
-   Determine the API client directory. Check in order:
-   - `src/api_client/` relative to project root
-   - The value of `APP_API_CLIENT_DIRECTORY` from `.env`
+   Determine the API client directory (already resolved above).
 
    Dispatch the `api-analyzer` agent to discover available entities:
 
@@ -504,6 +513,52 @@ After locales are generated, dispatch the `module-assembler` agent:
 > ```
 
 Add any new files to `GENERATED_FILES`.
+
+#### 3e: Write prototype metadata (mock mode only)
+
+When generating without API (DATA_SOURCE is empty), after all subagents complete:
+
+1. Collect `GENERATED_FILES` from all agent reports.
+
+2. Write `.vc-app-prototype.json` to `{TARGET_DIR}/` with this structure:
+
+```json
+{
+  "version": 1,
+  "generatedAt": "<ISO 8601 timestamp>",
+  "intent": {
+    "moduleName": "<INTENT.moduleName>",
+    "bladeTypes": "<INTENT.bladeTypes>",
+    "description": "<INTENT.description>",
+    "menuConfig": {
+      "title": "<INTENT.menuConfig.title>",
+      "icon": "<INTENT.menuConfig.icon>",
+      "priority": "<INTENT.menuConfig.priority>"
+    }
+  },
+  "mockFields": {
+    "columns": [
+      { "name": "<colName>", "type": "<colType>", "sortable": <bool> }
+    ],
+    "formFields": [
+      { "name": "<fieldName>", "type": "<fieldType>", "required": <bool> }
+    ]
+  },
+  "generatedFiles": [
+    "<relative path from TARGET_DIR, excluding locale files>"
+  ]
+}
+```
+
+Populate `mockFields.columns` from the column definitions used to dispatch the list blade generator, and `mockFields.formFields` from the field definitions used for the details blade generator. `generatedFiles` should contain relative paths (from `TARGET_DIR`) of all generated files, excluding locale files (`locales/*.json`).
+
+3. Add `.vc-app-prototype.json` to `GENERATED_FILES`.
+
+4. Append to the Phase 4 summary output:
+```
+Module generated with mock data.
+When your API is ready, run: /vc-app connect && /vc-app promote <moduleName>
+```
 
 ### Phase 4: Verification
 

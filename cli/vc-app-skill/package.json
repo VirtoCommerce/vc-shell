@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/vc-app-skill",
-  "version": "2.0.0-alpha.21",
+  "version": "2.0.0-alpha.22",
   "description": "AI coding skill for scaffolding and generating VirtoCommerce Shell applications. Works with Claude Code, OpenCode, Gemini, Codex, Cursor.",
   "bin": "./bin/install.cjs",
   "files": [

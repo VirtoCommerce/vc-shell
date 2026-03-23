@@ -1,3 +1,10 @@
+# [2.0.0-alpha.22](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.21...v2.0.0-alpha.22) (2026-03-23)
+
+
+### Bug Fixes
+
+* **vc-app-skill:** clarify app.use ordering — after framework, before router ([97439e4](https://github.com/VirtoCommerce/vc-shell/commit/97439e4cfedcae81a6fc26721b91d79187e95f1a))
+* **vc-app-skill:** register generated modules in main.ts (import + app.use) ([e88d75e](https://github.com/VirtoCommerce/vc-shell/commit/e88d75e86ed0d4f69d3261d3d04e3b68bfb3baa5))
 # [2.0.0-alpha.21](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.20...v2.0.0-alpha.21) (2026-03-23)
 
 

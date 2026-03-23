@@ -149,4 +149,73 @@ emit("close:blade");
     const importMatches = result!.match(/import.*useBlade.*from/g);
     expect(importMatches).toHaveLength(1);
   });
+
+  it("merges needed members into existing useBlade() call", () => {
+    const input = `import { useBlade } from "@vc-shell/framework";
+import type { IParentCallArgs } from "@vc-shell/framework";
+
+interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
+
+interface Emits {
+  (e: "parent:call", args: IParentCallArgs): void;
+  (e: "close:blade"): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+});
+
+const emit = defineEmits<Emits>();
+
+const { openBlade, onBeforeClose } = useBlade();
+
+emit("parent:call", { method: "refresh" });
+emit("close:blade");
+const id = props.param;
+`;
+    const result = applyTransform(transform, { path: "test.ts", source: input });
+    expect(result).not.toBeNull();
+    // Should NOT have a second useBlade() call
+    const useBladeCallMatches = result!.match(/useBlade\(\)/g);
+    expect(useBladeCallMatches).toHaveLength(1);
+    // All members must appear in the SINGLE useBlade() destructuring line
+    const useBladeDestructure = result!.match(/const\s*\{([^}]+)\}\s*=\s*useBlade\(\)/);
+    expect(useBladeDestructure).not.toBeNull();
+    const destructuredMembers = useBladeDestructure![1];
+    expect(destructuredMembers).toContain("openBlade");
+    expect(destructuredMembers).toContain("onBeforeClose");
+    expect(destructuredMembers).toContain("param");
+    expect(destructuredMembers).toContain("callParent");
+    expect(destructuredMembers).toContain("closeSelf");
+  });
+
+  it("removes empty export type {} stubs after Props/Emits removal", () => {
+    const input = `<template><div/></template>
+<script setup lang="ts">
+import { IParentCallArgs } from "@vc-shell/framework";
+
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: Record<string, any>;
+}
+
+export interface Emits {
+  (e: "close:blade"): void;
+  (e: "parent:call", args: IParentCallArgs): void;
+}
+
+const props = withDefaults(defineProps<Props>(), { expanded: true, closable: true });
+const emit = defineEmits<Emits>();
+</script>`;
+    const result = applyTransform(transform, { path: "test.vue", source: input });
+    expect(result).not.toBeNull();
+    expect(result).not.toContain("export type {};");
+  });
 });

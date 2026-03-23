@@ -196,7 +196,16 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
     addUseBladeCall(root, j, neededMembers);
   }
 
-  return root.toSource();
+  let result = root.toSource();
+
+  // --- Remove leftover `export type {};` stubs ---
+  // When jscodeshift removes an `export interface`, it leaves behind `export type {};`.
+  // These stubs are not tracked in the AST after removal, so we clean them via string replacement.
+  if (propsRemoved || hasBladeEmits) {
+    result = result.replace(/^\s*export type \{\};\s*\n?/gm, "");
+  }
+
+  return result;
 }
 
 function removeDefinePropsStatement(root: any, j: any): void {
@@ -333,10 +342,33 @@ function addUseBladeImport(root: any, j: any): void {
 }
 
 function addUseBladeCall(root: any, j: any, neededMembers: Set<string>): void {
-  // Check if useBlade() call already exists
-  const existingCalls = root.find(j.CallExpression, { callee: { name: "useBlade" } });
-  if (existingCalls.size() > 0) return;
+  // Check if useBlade() call already exists in a variable declaration
+  const existingCalls = root.find(j.VariableDeclaration).filter((path: any) => {
+    return j(path).find(j.CallExpression, { callee: { name: "useBlade" } }).size() > 0;
+  });
 
+  if (existingCalls.size() > 0) {
+    // Merge missing members into the FIRST existing destructuring only
+    const firstCall = existingCalls.at(0);
+    const declarator = firstCall.get().node.declarations[0];
+    if (declarator.id.type === "ObjectPattern") {
+      const existingNames = new Set(
+        declarator.id.properties
+          .filter((p: any) => p.type === "ObjectProperty" && p.key.type === "Identifier")
+          .map((p: any) => p.key.name),
+      );
+      for (const name of neededMembers) {
+        if (!existingNames.has(name)) {
+          const prop = j.objectProperty(j.identifier(name), j.identifier(name));
+          prop.shorthand = true;
+          declarator.id.properties.push(prop);
+        }
+      }
+    }
+    return;
+  }
+
+  // No existing call — create new one
   const members = Array.from(neededMembers).sort();
   const properties = members.map((name) => {
     const prop = j.objectProperty(j.identifier(name), j.identifier(name));

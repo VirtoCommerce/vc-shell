@@ -70,6 +70,30 @@ describe("define-app-module (jscodeshift)", () => {
     expect(result).toMatch(/import\s*\{\s*defineAppModule\s*\}\s*from\s*"@vc-shell\/framework"/);
   });
 
+  it("auto-migrates notifications when notifyTypeMap is provided", () => {
+    const input = readFileSync(join(FIXTURES, "notifications-auto.input.ts"), "utf8");
+    const notifyTypeMap = {
+      "./components/notifications": {
+        OfferCreatedDomainEvent: "OfferCreatedDomainEvent.vue",
+        OfferDeletedDomainEvent: "OfferDeletedDomainEvent.vue",
+      },
+    };
+    const result = applyTransform(transform, { path: "modules/offers/index.ts", source: input }, { notifyTypeMap });
+    expect(result).not.toBeNull();
+    expect(result).not.toContain("notificationTemplates");
+    expect(result).toContain('import OfferCreatedDomainEvent from "./components/notifications/OfferCreatedDomainEvent.vue"');
+    expect(result).toContain('import OfferDeletedDomainEvent from "./components/notifications/OfferDeletedDomainEvent.vue"');
+    expect(result).toContain("notifications:");
+    expect(result).toContain('mode: "auto"');
+    expect(result).toContain("template: OfferCreatedDomainEvent");
+  });
+
+  it("falls back to notificationTemplates when no notifyTypeMap", () => {
+    const input = readFileSync(join(FIXTURES, "three-args.input.ts"), "utf8");
+    const result = applyTransform(transform, { path: "test.ts", source: input });
+    expect(result).toContain("notificationTemplates");
+  });
+
   it("handles Vue SFC files", () => {
     const vue = `<template><div/></template>
 <script setup lang="ts">

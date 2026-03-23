@@ -2,7 +2,7 @@ import type { API, FileInfo, Options } from "jscodeshift";
 import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
 import type { Transform } from "./types.js";
 
-function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {
+function coreTransform(fileInfo: FileInfo, api: API, options: Options): string | null {
   const j = api.jscodeshift;
   const root = j(fileInfo.source);
 
@@ -44,22 +44,131 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
       j(path).replaceWith(replacement);
       modified = true;
     } else if (args.length >= 3) {
-      // 3+ args: defineAppModule({ blades: arg0, locales: arg1, notificationTemplates?: arg2 })
-      // arg3+ (components etc.) dropped — not needed in new API
-      const properties = [
-        j.property("init", j.identifier("blades"), args[0] as any),
-        j.property("init", j.identifier("locales"), args[1] as any),
-      ];
-      if (args[1].type === "Identifier" && args[1].name === "locales") {
-        properties[1].shorthand = true;
+      // 3+ args: defineAppModule({ blades, locales, notifications/notificationTemplates })
+      const notifArg = args[2];
+      let autoMigrated = false;
+
+      // Try auto-migration with notifyTypeMap
+      const notifyTypeMap = options.notifyTypeMap as
+        | Record<string, Record<string, string>>
+        | undefined;
+
+      if (notifyTypeMap && notifArg.type === "Identifier") {
+        // Find the namespace import source for the notifications identifier
+        let notifImportSource: string | null = null;
+        let notifEntries: Record<string, string> | null = null;
+
+        root.find(j.ImportDeclaration).forEach((imp) => {
+          const specs = imp.node.specifiers || [];
+          const hasNs = specs.some(
+            (s) =>
+              s.type === "ImportNamespaceSpecifier" &&
+              s.local?.name === (notifArg as any).name,
+          );
+          if (hasNs && imp.node.source.value) {
+            const src = String(imp.node.source.value);
+            if (notifyTypeMap[src]) {
+              notifImportSource = src;
+              notifEntries = notifyTypeMap[src];
+            }
+          }
+        });
+
+        if (notifEntries && notifImportSource) {
+          const entries = Object.entries(notifEntries);
+          const capturedSource = notifImportSource;
+
+          // Replace namespace import with individual default imports
+          const oldImport = root.find(j.ImportDeclaration).filter((imp) =>
+            String(imp.node.source.value) === capturedSource &&
+            (imp.node.specifiers || []).some(
+              (s: any) =>
+                s.type === "ImportNamespaceSpecifier" &&
+                s.local?.name === (notifArg as any).name,
+            ),
+          );
+
+          // Insert new imports after old one (reverse iterate for correct order)
+          for (let i = entries.length - 1; i >= 0; i--) {
+            const [eventName, fileName] = entries[i];
+            const importPath = `${capturedSource}/${fileName}`;
+            oldImport.insertAfter(
+              j.importDeclaration(
+                [j.importDefaultSpecifier(j.identifier(eventName))],
+                j.literal(importPath),
+              ),
+            );
+          }
+          oldImport.remove();
+
+          // Build notifications object
+          const notifProperties = entries.map(([eventName]) => {
+            const templateProp = j.property(
+              "init",
+              j.identifier("template"),
+              j.identifier(eventName),
+            );
+            const toastProp = j.property(
+              "init",
+              j.identifier("toast"),
+              j.objectExpression([
+                j.property("init", j.identifier("mode"), j.literal("auto")),
+              ]),
+            );
+            return j.property(
+              "init",
+              j.identifier(eventName),
+              j.objectExpression([templateProp, toastProp]),
+            );
+          });
+
+          const properties = [
+            j.property("init", j.identifier("blades"), args[0] as any),
+            j.property("init", j.identifier("locales"), args[1] as any),
+          ];
+          if (args[1].type === "Identifier" && args[1].name === "locales") {
+            properties[1].shorthand = true;
+          }
+          properties.push(
+            j.property(
+              "init",
+              j.identifier("notifications"),
+              j.objectExpression(notifProperties),
+            ),
+          );
+
+          const obj = j.objectExpression(properties);
+          j(path).replaceWith(j.callExpression(j.identifier("defineAppModule"), [obj]));
+
+          autoMigrated = true;
+          api.report(
+            `${fileInfo.path}: Auto-migrated notifications. ` +
+            `Review toast.severity — defaulting to mode: "auto" only.`,
+          );
+        }
       }
-      properties.push(j.property("init", j.identifier("notificationTemplates"), args[2] as any));
-      if (args[2].type === "Identifier" && args[2].name === "notificationTemplates") {
-        properties[2].shorthand = true;
+
+      if (!autoMigrated) {
+        // Fallback: keep notificationTemplates as deprecated key
+        const properties = [
+          j.property("init", j.identifier("blades"), args[0] as any),
+          j.property("init", j.identifier("locales"), args[1] as any),
+        ];
+        if (args[1].type === "Identifier" && args[1].name === "locales") {
+          properties[1].shorthand = true;
+        }
+        properties.push(j.property("init", j.identifier("notificationTemplates"), args[2] as any));
+        if (args[2].type === "Identifier" && args[2].name === "notificationTemplates") {
+          properties[2].shorthand = true;
+        }
+        const obj = j.objectExpression(properties);
+        j(path).replaceWith(j.callExpression(j.identifier("defineAppModule"), [obj]));
+
+        api.report(
+          `${fileInfo.path}: Migrated ${args.length}-arg createAppModule. ` +
+          `notificationTemplates is deprecated — migrate to new notifications config format.`,
+        );
       }
-      const obj = j.objectExpression(properties);
-      const replacement = j.callExpression(j.identifier("defineAppModule"), [obj]);
-      j(path).replaceWith(replacement);
 
       // Remove dead imports for unused args (e.g. `import * as components`)
       if (args.length >= 4) {
@@ -83,10 +192,6 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
         }
       }
 
-      api.report(
-        `${fileInfo.path}: Migrated ${args.length}-arg createAppModule. ` +
-        `notificationTemplates is deprecated — migrate to new notifications config format.`,
-      );
       modified = true;
     }
   });

@@ -51,6 +51,7 @@ Parse `$ARGUMENTS` to determine the subcommand:
 | `connect ...` | Section: `/vc-app connect` |
 | `add-module <name>` | Section: `/vc-app add-module` |
 | `generate ...` | Section: `/vc-app generate` |
+| `promote <moduleName>` | Section: `/vc-app promote` |
 | empty / `help` / `--help` | Section: Help |
 
 If no arguments match, show the help section.
@@ -69,12 +70,14 @@ Commands:
   /vc-app connect             Connect to a VirtoCommerce platform and generate API clients
   /vc-app add-module <name>   Add an empty module skeleton to the current project
   /vc-app generate            Generate a full UI module from intent (list/details blades, composables, locales)
+  /vc-app promote <name>      Transition a prototype module from mock data to real API client
 
 Examples:
   /vc-app create
   /vc-app connect
   /vc-app add-module orders
   /vc-app generate
+  /vc-app promote team
 ```
 
 Stop after displaying help. Do not proceed to any other section.
@@ -609,6 +612,170 @@ You may need to manually fix these errors, or run /vc-app generate again after a
 
 ---
 
+## `/vc-app promote`
+
+Transition a prototype module from mock data to a real API client. This command replaces mock composables, updates blade templates, and rewires locales to use actual API entities — preserving all UI structure and layout decisions from the prototype.
+
+### Phase 1: Validation
+
+1. **Parse arguments.** Extract the module name from `$ARGUMENTS`. Format: `promote <moduleName>`. If no name provided, ask the user.
+
+2. **Read prototype metadata.** Look for `.vc-app-prototype.json` in `src/modules/<moduleName>/`:
+   ```bash
+   cat src/modules/<moduleName>/.vc-app-prototype.json
+   ```
+   If the file does not exist, stop with an error:
+   ```
+   Error: Module '<moduleName>' is not a prototype. Only modules generated without an API client can be promoted.
+   Run /vc-app generate with an API client to create a production module directly.
+   ```
+
+3. **Validate generated files.** Check that all paths listed in `generatedFiles` still exist. If any are missing (renamed or moved), warn the user and ask them to confirm continuation or provide updated paths.
+
+4. **Locate API client directory:**
+   - Check `src/api_client/` relative to project root
+   - Check the value of `APP_API_CLIENT_DIRECTORY` from `.env`
+   - If neither exists, stop with an error:
+     ```
+     Error: No API client found. Run /vc-app connect first to generate API clients.
+     ```
+
+Store:
+```
+MODULE_DIR = <project root>/src/modules/<moduleName>
+PROTOTYPE = <parsed .vc-app-prototype.json>
+API_CLIENT_DIR = <resolved api_client directory>
+```
+
+### Phase 2: Data Source Discovery
+
+Follow the same interactive dialog flow as `/vc-app generate` Phase 2 — dispatch the `api-analyzer` agent, present entities to the user, let them select an entity, discover fields, select columns/form fields, and choose CRUD methods.
+
+Key differences from generate:
+- Only collect **columns** if `PROTOTYPE.intent.bladeTypes` includes `"list"`.
+- Only collect **form fields** if `PROTOTYPE.intent.bladeTypes` includes `"details"`.
+
+Output: `DATA_SOURCE` object (same structure as `/vc-app generate` Phase 2).
+
+### Phase 3: Field Mapping
+
+Map prototype mock fields to real API entity fields.
+
+1. **Auto-match fields.** For each mock field in `PROTOTYPE.mockFields` (both `columns` and `formFields`), attempt matching against `DATA_SOURCE` fields using this priority:
+   - **Exact name match** (case-insensitive): mock field `name` === API field `name`
+   - **Semantic similarity** (LLM judgment): e.g., mock `fullName` ≈ API `displayName`
+   - **Unmatched**: no reasonable API counterpart found
+
+2. **Present mapping table** to the user for confirmation:
+   ```
+   Field Mapping (mock → API):
+     name        → displayName    (semantic match)
+     email       → email          (exact match)
+     isActive    → isActive       (exact match)
+     priority    → ???            (no match)
+     score       → ???            (no match)
+     fullName    → ???            (no match)
+
+   Confirm mapping? [Y]es / [E]dit
+   ```
+
+3. **For unmatched fields**, ask the user to choose an action for each:
+   - **[D]elete** — Remove from the module entirely
+   - **[K]eep as stub** — Keep the field with a `// TODO: wire to real data` comment
+   - **[M]ap manually** — User specifies which API field to map to
+   - **[C]omputed** — Field is derived from other fields (user provides a note)
+
+4. **Store the result** as `FIELD_MAP`:
+   ```json
+   {
+     "name": { "action": "map", "apiField": "displayName", "apiType": "string" },
+     "email": { "action": "map", "apiField": "email", "apiType": "string" },
+     "isActive": { "action": "map", "apiField": "isActive", "apiType": "boolean" },
+     "priority": { "action": "delete" },
+     "score": { "action": "keep-stub" },
+     "fullName": { "action": "computed", "note": "derived from firstName + lastName" }
+   }
+   ```
+
+### Phase 4: Code Transformation
+
+Dispatch the `promote-agent` to rewrite module files:
+
+> Use the **Agent tool** with this prompt:
+>
+> Read the file `{SKILL_DIR}/agents/promote-agent.md` for your full instructions.
+>
+> Execute with these parameters:
+> ```json
+> {
+>   "targetDir": "<absolute path to module directory>",
+>   "prototypeMetadata": <.vc-app-prototype.json contents>,
+>   "dataSource": <DATA_SOURCE>,
+>   "fieldMap": <FIELD_MAP>,
+>   "knowledgeBase": "{KNOWLEDGE_BASE}",
+>   "docsRoot": "{DOCS_ROOT}"
+> }
+> ```
+
+Handle agent status:
+- **DONE** — Proceed to Phase 5.
+- **DONE_WITH_CONCERNS** — Show concerns to the user, then proceed to Phase 5.
+- **BLOCKED** — Show the error to the user. Do NOT proceed. Suggest fixing the issue and re-running `/vc-app promote <moduleName>`.
+
+### Phase 5: Cleanup & Verification
+
+1. **Type-check.** Dispatch the `type-checker` agent:
+
+   > Use the **Agent tool** with this prompt:
+   >
+   > Read the file `{SKILL_DIR}/agents/type-checker.md` for your full instructions.
+   >
+   > Execute with these parameters:
+   > ```json
+   > {
+   >   "projectRoot": "<project root absolute path>",
+   >   "generatedFiles": <list of files modified by promote-agent>
+   > }
+   > ```
+
+2. **If type-check passes** — delete the prototype marker and show success:
+
+   ```bash
+   rm src/modules/<moduleName>/.vc-app-prototype.json
+   ```
+
+   ```
+   Module "<moduleName>" promoted successfully!
+
+   Files modified:
+     {list all files modified by promote-agent}
+
+   Field warnings:
+     {list any keep-stub fields with TODO comments}
+     {list any computed fields that need manual implementation}
+
+   TypeScript: PASS — no errors.
+
+   To test:
+     yarn serve    (or: yarn dev)
+   ```
+
+3. **If type-check fails** — keep the marker file and show errors:
+
+   ```
+   Module "<moduleName>" promoted with type errors.
+
+   Files modified:
+     {list all files modified by promote-agent}
+
+   Type errors:
+     {list errors from type-checker report}
+
+   `.vc-app-prototype.json` kept — run /vc-app promote <moduleName> again after fixing errors.
+   ```
+
+---
+
 ## Error Handling
 
 Apply these rules throughout all sections:
@@ -655,6 +822,7 @@ All agents live at `{SKILL_DIR}/agents/`. Each agent file contains its own Input
 | locales-generator | `agents/locales-generator.md` | Scans generated files for i18n keys, writes en.json | Yes |
 | module-assembler | `agents/module-assembler.md` | Creates barrel files, registers module | Yes |
 | type-checker | `agents/type-checker.md` | Runs vue-tsc, fixes type errors iteratively | Yes (fixes only) |
+| promote-agent | `agents/promote-agent.md` | Transforms mock composables/blades/locales to use real API | Yes (edits only) |
 
 ### How to dispatch an agent
 

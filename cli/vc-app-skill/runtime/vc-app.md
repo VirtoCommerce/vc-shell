@@ -92,8 +92,7 @@ Collect project parameters through dialog, then run CLI in **non-interactive mod
    - `standalone` — Self-contained app with its own auth and routing
    - `dynamic-module` — Loadable module plugin for a host app
    - `host-app` — Shell host that loads dynamic modules
-3. **Ask the user:** Initial module name? (suggest: project name in TitleCase, e.g., `my-vendor-app` → `MyVendorApp`)
-4. **Ask the user:** Which options do you want? (multi-select, all optional)
+3. **Ask the user:** Which options do you want? (multi-select, all optional)
    - `--dashboard` — Include a dashboard page
    - `--tenant-routes` — Include tenant-aware routing
    - `--ai-agent` — Include AI agent integration scaffold
@@ -106,9 +105,10 @@ Collect project parameters through dialog, then run CLI in **non-interactive mod
 ```bash
 npx @vc-shell/create-vc-app <projectName> \
   --type <projectType> \
-  --module-name "<moduleName>" \
   [--dashboard] [--tenant-routes] [--ai-agent] [--mocks]
 ```
+
+**IMPORTANT:** Do NOT pass `--module-name` for standalone apps — the starter module is opt-in and unnecessary because this skill generates custom modules via `/vc-app generate`. For `dynamic-module`, `--module-name` is still required.
 
 Available CLI flags (see `cli/create-vc-app/README.md` for full list):
 | Flag | Description |
@@ -116,7 +116,7 @@ Available CLI flags (see `cli/create-vc-app/README.md` for full list):
 | `--type <type>` | `standalone` \| `dynamic-module` \| `host-app` |
 | `--name`, `--app-name` | Application display name |
 | `--package-name` | npm package name |
-| `--module-name` | Initial module name |
+| `--module-name` | Initial module name (opt-in for standalone, required for dynamic-module) |
 | `--base-path` | Base path (default: `/apps/<name>/`) |
 | `--dashboard` | Include Dashboard |
 | `--tenant-routes` | Include tenant routing |

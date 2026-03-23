@@ -11,6 +11,7 @@
     "globals.d.ts",
     "globals-augments.d.ts",
     "shims-vue.d.ts",
+    "typings/blade-macros.d.ts",
     "tailwind.config.ts"
   ],
   "exports": {

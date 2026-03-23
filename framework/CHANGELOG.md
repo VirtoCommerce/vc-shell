@@ -1,3 +1,9 @@
+# [2.0.0-alpha.18](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.17...v2.0.0-alpha.18) (2026-03-23)
+
+
+### Bug Fixes
+
+* add fallback timer for select visibility checks ([323c393](https://github.com/VirtoCommerce/vc-shell/commit/323c3931778e5eb30a7306d111a0dd4866ac77d7))
 # [2.0.0-alpha.17](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.16...v2.0.0-alpha.17) (2026-03-23)
 
 

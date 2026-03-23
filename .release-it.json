@@ -25,7 +25,6 @@
     }
   },
   "hooks": {
-    "before:init": "tsx scripts/release-preflight.ts",
     "after:bump": "tsx scripts/release-hooks.ts after-bump ${version}"
   }
 }

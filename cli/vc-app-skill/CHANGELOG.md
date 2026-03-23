@@ -1,3 +1,9 @@
+# [2.0.0-alpha.21](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.20...v2.0.0-alpha.21) (2026-03-23)
+
+
+### Bug Fixes
+
+* **vc-app-skill:** use [@alpha](https://github.com/alpha) dist-tag for create-vc-app commands ([09b4a27](https://github.com/VirtoCommerce/vc-shell/commit/09b4a273116d9b04c00ff1c6ad19af2d869bd394))
 # [2.0.0-alpha.20](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.18...v2.0.0-alpha.20) (2026-03-23)
 
 

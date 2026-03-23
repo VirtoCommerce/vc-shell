@@ -16,8 +16,8 @@
       @pagination-click="(page: number) => { currentPage = page; getItems(); }"
     >
       <!-- Add your columns here -->
-      <VcColumn id="name" :header="'Name'" sortable />
-      <VcColumn id="createdDate" :header="'Created'" type="datetime" sortable />
+      <VcColumn id="name" :header="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.NAME')" sortable />
+      <VcColumn id="createdDate" :header="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.CREATED_DATE')" type="datetime" sortable />
     </VcDataTable>
   </VcBlade>
 </template>
@@ -32,6 +32,7 @@ import {
 } from "@vc-shell/framework";
 import { ref } from "vue";
 import use<%- ModuleNamePascalCase %>List from "../composables/useList";
+import { useI18n } from "vue-i18n";
 
 defineBlade({
   url: "/<%- ModuleName %>",
@@ -44,6 +45,7 @@ defineBlade({
   },
 });
 
+const { t } = useI18n({ useScope: "global" });
 const { openBlade, exposeToChildren } = useBlade();
 
 const {
@@ -58,13 +60,13 @@ const {
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "refresh",
-    title: "Refresh",
+    title: t("<%- ModuleNameScreamingSnake %>.PAGES.LIST.TOOLBAR.REFRESH"),
     icon: "lucide-refresh-cw",
     clickHandler: () => getItems(),
   },
   {
     id: "add",
-    title: "Add",
+    title: t("<%- ModuleNameScreamingSnake %>.PAGES.LIST.TOOLBAR.ADD"),
     icon: "lucide-plus",
     clickHandler: () => openDetails(),
   },

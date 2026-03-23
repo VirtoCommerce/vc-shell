@@ -10,7 +10,7 @@
         <!-- Add your form fields here -->
         <VcInput
           v-model="item.name"
-          :label="'Name'"
+          :label="$t('<%- ModuleNameScreamingSnake %>.PAGES.DETAILS.FIELDS.NAME')"
           required
         />
       </VcForm>
@@ -32,12 +32,14 @@ import {
 } from "@vc-shell/framework";
 import { ref, computed, onMounted } from "vue";
 import use<%- ModuleNamePascalCase %>Details from "../composables/useDetails";
+import { useI18n } from "vue-i18n";
 
 defineBlade({
   url: "/<%- ModuleName %>-details",
   name: "<%- ModuleNamePascalCase %>Details",
 });
 
+const { t } = useI18n({ useScope: "global" });
 const { param, closeSelf, callParent, onBeforeClose } = useBlade();
 
 const { showConfirmation } = usePopup();
@@ -46,14 +48,14 @@ const { item, loading, getItem, saveItem, isModified, resetModificationState } =
 
 const title = computed(() => {
   return param.value
-    ? String(item.value?.name || "<%- ModuleNameSentenceCase %> Details")
-    : "New <%- ModuleNameSentenceCase %>";
+    ? String(item.value?.name || t("<%- ModuleNameScreamingSnake %>.PAGES.DETAILS.TITLE"))
+    : t("<%- ModuleNameScreamingSnake %>.PAGES.DETAILS.TITLE_NEW");
 });
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
-    title: "Save",
+    title: t("<%- ModuleNameScreamingSnake %>.PAGES.DETAILS.TOOLBAR.SAVE"),
     icon: "lucide-save",
     disabled: computed(() => !isModified.value),
     async clickHandler() {
@@ -72,7 +74,7 @@ onMounted(async () => {
 
 onBeforeClose(async () => {
   if (isModified.value) {
-    return !(await showConfirmation("You have unsaved changes. Are you sure you want to close?"));
+    return !(await showConfirmation(t("<%- ModuleNameScreamingSnake %>.ALERTS.CLOSE_CONFIRMATION")));
   }
   return false;
 });

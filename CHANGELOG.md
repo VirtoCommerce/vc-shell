@@ -1,5 +1,18 @@
 # Changelog
 
+# [2.0.0-alpha.23](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.22...v2.0.0-alpha.23) (2026-03-23)
+
+
+### Bug Fixes
+
+* **vc-app-skill:** add menuItem to standalone details blades (isWorkspace entry point) ([6be54ad](https://github.com/VirtoCommerce/vc-shell/commit/6be54ad38613ea0de865ab1348236417da8a572d))
+* **vc-app-skill:** auto-run yarn install after project scaffold ([cb9ada3](https://github.com/VirtoCommerce/vc-shell/commit/cb9ada34579f89121de5648eee65b346bcd4d924))
+
+
+### Features
+
+* **vc-app-skill:** add platform URL prompt and update design plan structure ([7855830](https://github.com/VirtoCommerce/vc-shell/commit/78558303247107ff55d5b0aeb3f5fdf50cad16f8))
+
 # [2.0.0-alpha.22](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.21...v2.0.0-alpha.22) (2026-03-23)
 
 

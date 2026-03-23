@@ -1,3 +1,7 @@
+# [2.0.0-alpha.23](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.22...v2.0.0-alpha.23) (2026-03-23)
+
+**Note:** Version bump only for package @vc-shell/mf-host
+
 # [2.0.0-alpha.22](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.21...v2.0.0-alpha.22) (2026-03-23)
 
 **Note:** Version bump only for package @vc-shell/mf-host

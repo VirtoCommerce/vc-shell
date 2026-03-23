@@ -2,7 +2,6 @@
   "name": "@vc-shell/vc-app-skill",
   "version": "2.0.0-alpha.18",
   "description": "AI coding skill for scaffolding and generating VirtoCommerce Shell applications. Works with Claude Code, OpenCode, Gemini, Codex, Cursor.",
-  "license": "MIT",
   "bin": "./bin/install.cjs",
   "files": [
     "bin",
@@ -19,9 +18,8 @@
     "scaffolding",
     "vue3"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/AlenGeoAlex/vc-shell.git",
-    "directory": "cli/vc-app-skill"
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

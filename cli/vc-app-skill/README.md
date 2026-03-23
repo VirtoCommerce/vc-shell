@@ -4,13 +4,14 @@ An AI coding skill for scaffolding and generating VirtoCommerce Shell applicatio
 
 ## Overview
 
-`vc-app-skill` installs a set of AI-readable skill files (markdown prompts, knowledge base, slash commands) into your AI coding tool's configuration directory. Once installed, your AI assistant gains deep knowledge of the VirtoCommerce Shell framework — enabling it to scaffold apps, generate modules, wire up API clients, and follow framework conventions automatically.
+`vc-app-skill` installs a set of AI-readable skill files (markdown prompts, knowledge base, slash commands) into your AI coding tool's configuration directory. Once installed, your AI assistant gains deep knowledge of the VirtoCommerce Shell framework — enabling it to scaffold apps, connect to platform APIs, generate full UI modules, and follow framework conventions automatically.
 
 The skill covers:
-- Creating host apps and standalone apps from templates
-- Scaffolding dynamic modules with proper blade navigation
-- Generating typed API clients from OpenAPI specs
-- Adding feature modules (list + detail blades, composables, locales)
+- Creating standalone apps from templates
+- Connecting to VirtoCommerce platform and generating typed API clients
+- Intent-driven module generation (list + details blades, composables, locales) with mock or API data
+- Enhancing existing modules with surgical modifications (add columns, fields, toolbar actions, logic, blade links)
+- Promoting prototype modules from mock data to real API clients
 - Following vc-shell conventions: Vue 3 + TypeScript, Tailwind with `tw-` prefix, `<script setup>`, BEM class names
 
 ## Installation
@@ -21,7 +22,7 @@ The skill covers:
 npx @vc-shell/vc-app-skill install
 ```
 
-Installs skill files into `~/.claude/skills/vc-app/` (Claude Code) or the equivalent directory for your tool.
+Installs skill files into `~/.claude/vc-app-skill/` and registers the `/vc-app` slash command.
 
 ### OpenCode
 
@@ -56,61 +57,87 @@ Scaffold a new VirtoCommerce Shell application interactively.
 ```
 
 Prompts for:
-- App type: `host-app`, `standalone`, or `dynamic-module`
 - App name and npm package name
 - Target directory
-- Whether to include a sample module
 
-Generates a fully configured project with `package.json`, `tsconfig.json`, Vite config, and entry points.
+Generates a fully configured standalone project with `package.json`, `tsconfig.json`, Vite config, and entry points.
 
 ### `/vc-app connect`
 
-Connect a dynamic module to an existing host application.
+Connect to a VirtoCommerce platform instance and generate typed API clients.
 
 ```
-/vc-app connect --module ./my-module --host ./my-host-app
+/vc-app connect
 ```
 
-Updates the host app's module registry to include the dynamic module, handling version compatibility metadata.
+Walks through:
+1. Writing `.env` with platform URL
+2. Writing `.env.local` with auth credentials
+3. Generating NSwag API clients from the platform's Swagger endpoints
+4. Verifying TypeScript compilation
 
-### `/vc-app add-module`
+### `/vc-app add-module <name>`
 
-Add a new feature module to an existing app.
+Add an empty module skeleton to the current project.
 
 ```
-/vc-app add-module --name Products
+/vc-app add-module orders
 ```
 
 Generates:
-- `src/modules/products/` directory
-- `index.ts` with blade registration
-- `pages/list.vue` — list blade with `VcTable`
-- `pages/details.vue` — detail blade with form fields
-- `composables/useProductDetails.ts` — data composable
-- Locale files (`en.json`)
+- `src/modules/<name>/` directory with `index.ts`, `pages/`, `composables/`, `locales/`
+- Registers the module in the app's module list
 
 ### `/vc-app generate`
 
-Generate individual pieces of an app.
+Full intent-driven module generation. This is the main power feature — it walks through an interactive dialog to generate a complete module.
 
 ```
-/vc-app generate blade --name OrderDetails
-/vc-app generate composable --name useOrders
-/vc-app generate api-client --spec https://example.com/api/swagger.json
+/vc-app generate
 ```
 
-Subcommands:
-- `blade` — generates a single blade component following vc-shell conventions
-- `composable` — generates a typed composable with loading/error state
-- `api-client` — generates a typed API client from an OpenAPI specification
-- `widget` — generates a dashboard widget component
+**Create flow** (new module):
+- **Phase 1: Intent** — describe what the module does, pick blade types (list+details, list-only, details-only), configure menu entry
+- **Phase 2: Data Source** — select API entity, choose columns/fields, pick CRUD methods. If no API client exists, generates with mock data automatically
+- **Phase 3: Generation** — dispatches specialized agents to generate blades, composables, locales, and barrel files
+- **Phase 4: Verification** — runs TypeScript type-checker
+
+**Enhance flow** (existing module):
+When the module already exists, generate detects it and switches to enhance mode:
+- **Phase E1: Module Analysis** — analyzes existing blades, composables, locales, API status
+- **Phase E2: Intent Parsing** — describe changes in free text, parsed into action plan
+- **Phase E3: Data Source** — only if new entity is involved
+- **Phase E4: Execution** — dispatches blade-enhancer for surgical edits or generators for new blades
+- **Phase E5: Verification** — type-checks the result
+
+Supported enhance actions: add columns, add form fields, add logic/computed/watchers, add toolbar actions, link blades, add new blades to existing module.
+
+### `/vc-app promote <name>`
+
+Transition a prototype module from mock data to a real API client.
+
+```
+/vc-app promote team
+```
+
+When you generate a module without an API client, it uses mock data with `// vc-app:mock-start/end` markers. After running `/vc-app connect` to generate API clients, promote performs surgical replacement:
+
+- **Phase 1: Validation** — reads `.vc-app-prototype.json`, locates API client
+- **Phase 2: Data Source Discovery** — select API entity and fields (reuses generate Phase 2)
+- **Phase 3: Field Mapping** — auto-matches mock fields to API fields (exact + semantic), user confirms
+- **Phase 4: Code Transformation** — replaces mock code with real API calls, renames fields, updates locales
+- **Phase 5: Cleanup** — type-checks, removes prototype marker on success
 
 ## Update
 
-Re-run the install command to update to the latest skill version:
-
 ```bash
 npx @vc-shell/vc-app-skill install
+```
+
+Or from within your AI tool:
+
+```
+/vc-app:update
 ```
 
 The installer checks the installed version against the package version and overwrites files only when the package is newer.
@@ -129,43 +156,60 @@ To uninstall for a specific runtime:
 npx @vc-shell/vc-app-skill uninstall --runtime opencode
 ```
 
-## Development
+## Architecture
 
-This package lives in the `cli/vc-app-skill/` directory of the [vc-shell monorepo](https://github.com/AlenGeoAlex/vc-shell).
-
-### Structure
+### Skill structure
 
 ```
 cli/vc-app-skill/
   bin/
-    install.cjs         # CLI entry point (install / uninstall)
+    install.cjs              # CLI entry point (install / uninstall)
+    uninstall.cjs            # Uninstall entry point
   commands/
-    install.ts          # Install logic per runtime
-    uninstall.ts        # Uninstall logic
+    vc-app.md                # Slash command entry point (loads runtime skill)
+    vc-app/
+      update.md              # /vc-app:update command
   hooks/
-    post-install.cjs    # npm postinstall hook (auto-runs on npx)
+    vc-app-check-update.js   # SessionStart hook for update checks
   runtime/
-    VERSION             # Current skill version
-    skill.md            # Main skill prompt loaded by AI tool
-    knowledge/          # Framework knowledge base (components, patterns, examples)
-    commands/           # Slash command definitions (/vc-app create, etc.)
+    VERSION                  # Current skill version
+    vc-app.md                # Main orchestrator — command routing, all flows
+    agents/                  # Specialized subagent prompts
+    knowledge/               # Framework knowledge base
+      index.md               # Knowledge index
+      docs/                  # Component .docs.md files
+      patterns/              # Blade/composable skeleton patterns
+      examples/              # Reference examples
+    scripts/                 # Helper scripts
   README.md
   package.json
 ```
 
+### Agents
+
+The skill dispatches specialized agents for different tasks:
+
+| Agent | Purpose |
+|---|---|
+| `api-analyzer` | Discovers entities and CRUD methods in API client files |
+| `list-blade-generator` | Generates list blade + plural composable |
+| `details-blade-generator` | Generates details blade + singular composable |
+| `locales-generator` | Scans generated files for i18n keys, writes locale JSON |
+| `module-assembler` | Creates barrel files and registers module (create + append modes) |
+| `type-checker` | Runs vue-tsc, iteratively fixes type errors |
+| `promote-agent` | Transforms mock composables/blades/locales to use real API |
+| `module-analyzer` | Analyzes existing module structure (read-only) |
+| `blade-enhancer` | Surgical edits to existing blades/composables/locales |
+
 ### Running locally
 
 ```bash
-# From repo root
-yarn workspace @vc-shell/vc-app-skill run build
+# Install skill from local source
+node cli/vc-app-skill/bin/install.cjs
 
-# Test install against local Claude config
-node cli/vc-app-skill/bin/install.cjs install
+# Verify deployment
+ls ~/.claude/vc-app-skill/agents/
 ```
-
-### Adding knowledge
-
-Edit files under `runtime/knowledge/` to extend or correct the AI's understanding of the framework. Each file is a markdown document that gets concatenated into the skill context.
 
 ### Releasing
 

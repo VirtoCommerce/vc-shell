@@ -66,7 +66,7 @@ Display this to the user:
 /vc-app — VirtoCommerce Shell Application Generator
 
 Commands:
-  /vc-app create              Scaffold a new vc-shell project (standalone, dynamic-module, or host-app)
+  /vc-app create              Scaffold a new vc-shell standalone project
   /vc-app connect             Connect to a VirtoCommerce platform and generate API clients
   /vc-app add-module <name>   Add an empty module skeleton to the current project
   /vc-app generate            Generate a full UI module from intent (list/details blades, composables, locales)
@@ -91,15 +91,11 @@ Collect project parameters through dialog, then run CLI in **non-interactive mod
 ### Dialog
 
 1. **Ask the user:** What is the project name? (kebab-case, e.g., `my-vendor-app`)
-2. **Ask the user:** What project type?
-   - `standalone` — Self-contained app with its own auth and routing
-   - `dynamic-module` — Loadable module plugin for a host app
-   - `host-app` — Shell host that loads dynamic modules
-3. **Ask the user:** Which options do you want? (multi-select, all optional)
+2. **Ask the user:** Which options do you want? (multi-select, all optional)
    - `--dashboard` — Include a dashboard page
    - `--tenant-routes` — Include tenant-aware routing
    - `--ai-agent` — Include AI agent integration scaffold
-   - `--mocks` — Include mock API data for development
+   - `--mocks` — Include sample modules with mock data (demo content to explore the framework)
 
 ### Execution
 
@@ -107,24 +103,23 @@ Collect project parameters through dialog, then run CLI in **non-interactive mod
 
 ```bash
 npx @vc-shell/create-vc-app <projectName> \
-  --type <projectType> \
+  --type standalone \
   [--dashboard] [--tenant-routes] [--ai-agent] [--mocks]
 ```
 
-**IMPORTANT:** Do NOT pass `--module-name` for standalone apps — the starter module is opt-in and unnecessary because this skill generates custom modules via `/vc-app generate`. For `dynamic-module`, `--module-name` is still required.
+**IMPORTANT:** Do NOT pass `--module-name` — the starter module is opt-in and unnecessary because this skill generates custom modules via `/vc-app generate`.
 
 Available CLI flags (see `cli/create-vc-app/README.md` for full list):
 | Flag | Description |
 |------|-------------|
-| `--type <type>` | `standalone` \| `dynamic-module` \| `host-app` |
+| `--type` | Always `standalone` |
 | `--name`, `--app-name` | Application display name |
 | `--package-name` | npm package name |
-| `--module-name` | Initial module name (opt-in for standalone, required for dynamic-module) |
 | `--base-path` | Base path (default: `/apps/<name>/`) |
 | `--dashboard` | Include Dashboard |
 | `--tenant-routes` | Include tenant routing |
 | `--ai-agent` | Include AI Agent config |
-| `--mocks` | Include sample module with mock data |
+| `--mocks` | Include sample modules with mock data (demo content) |
 | `--overwrite` | Overwrite existing files |
 
 If the command fails, show the stderr output and suggest the user check that `@vc-shell/create-vc-app` is installed or accessible via npx.

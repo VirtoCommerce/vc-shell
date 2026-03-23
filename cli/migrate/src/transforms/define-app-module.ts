@@ -30,17 +30,15 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
     const args = path.node.arguments;
 
     if (args.length === 2) {
-      // 2-arg: defineAppModule({ pages, locales })
-      // Use shorthand properties
-      const properties = args.map((arg) => {
-        if (arg.type === "Identifier") {
-          const prop = j.property("init", j.identifier(arg.name), j.identifier(arg.name));
-          prop.shorthand = true;
-          return prop;
-        }
-        // For non-identifier args, use the arg as-is with a generic key
-        return j.property("init", j.identifier("arg"), arg as any);
-      });
+      // 2-arg: defineAppModule({ blades: pages, locales: locales })
+      const properties = [
+        j.property("init", j.identifier("blades"), args[0] as any),
+        j.property("init", j.identifier("locales"), args[1] as any),
+      ];
+      // Use shorthand only for locales if identifier matches key name
+      if (args[1].type === "Identifier" && args[1].name === "locales") {
+        properties[1].shorthand = true;
+      }
       const obj = j.objectExpression(properties);
       const replacement = j.callExpression(j.identifier("defineAppModule"), [obj]);
       j(path).replaceWith(replacement);

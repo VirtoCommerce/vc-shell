@@ -15,8 +15,15 @@ describe("define-app-module (jscodeshift)", () => {
     expect(result).not.toBeNull();
     expect(result).toContain("defineAppModule");
     expect(result).not.toContain("createAppModule");
-    // Should have shorthand object: defineAppModule({ pages, locales })
-    expect(result).toMatch(/defineAppModule\(\{.*pages.*,.*locales.*\}\)/s);
+    expect(result).toContain("blades: pages");
+    expect(result).toContain("locales");
+  });
+
+  it("transforms 2-arg with aliased identifiers", () => {
+    const input = readFileSync(join(FIXTURES, "aliased-args.input.ts"), "utf8");
+    const result = applyTransform(transform, { path: "test.ts", source: input });
+    expect(result).toContain("blades: mpPages");
+    expect(result).toContain("locales: mpLocales");
   });
 
   it("transforms 3-arg with notificationTemplates", () => {

@@ -106,7 +106,7 @@ Collect project parameters through dialog, then run CLI in **non-interactive mod
 **IMPORTANT:** Always use non-interactive mode — pass ALL flags to skip CLI prompts:
 
 ```bash
-npx @vc-shell/create-vc-app <projectName> \
+npx @vc-shell/create-vc-app@alpha <projectName> \
   --type standalone \
   [--dashboard] [--tenant-routes] [--ai-agent] [--mocks]
 ```
@@ -251,7 +251,7 @@ If no name is provided, ask the user for the module name (kebab-case).
 Run:
 
 ```bash
-npx @vc-shell/create-vc-app add-module <moduleName>
+npx @vc-shell/create-vc-app@alpha add-module <moduleName>
 ```
 
 If the command fails, show stderr and suggest manual creation following the module structure pattern.

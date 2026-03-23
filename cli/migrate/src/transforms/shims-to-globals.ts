@@ -7,11 +7,7 @@ import type { Transform } from "./types.js";
 const GLOBALS_ENTRY = "@vc-shell/framework/globals";
 
 // Markers that identify standard boilerplate shim files
-const BOILERPLATE_MARKERS = [
-  "$mergeLocaleMessage",
-  "CoreBladeAdditionalSettings",
-  "*.vue",
-];
+const BOILERPLATE_MARKERS = ["$mergeLocaleMessage", "CoreBladeAdditionalSettings", "*.vue"];
 
 function isStandardBoilerplate(content: string): boolean {
   return BOILERPLATE_MARKERS.some((marker) => content.includes(marker));

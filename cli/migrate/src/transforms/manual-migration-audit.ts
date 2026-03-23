@@ -5,7 +5,8 @@ import type { Transform } from "./types.js";
 const PATTERNS: Array<{ pattern: RegExp; message: string }> = [
   {
     pattern: /\buseExternalWidgets\b/,
-    message: "useExternalWidgets is removed. Replace with module-specific widget composable (e.g. useOfferWidgets, useOrderWidgets).",
+    message:
+      "useExternalWidgets is removed. Replace with module-specific widget composable (e.g. useOfferWidgets, useOrderWidgets).",
   },
   {
     pattern: /\bimport\s+moment\b/,

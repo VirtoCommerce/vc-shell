@@ -26,11 +26,7 @@ const RENAME_MAP: Record<string, string> = {
  * Render a single template file. Strips .ejs extension.
  * Binary files are copied as-is. Text files are rendered through EJS.
  */
-export function renderTemplate(
-  templatePath: string,
-  outputPath: string,
-  data: Record<string, unknown>,
-): void {
+export function renderTemplate(templatePath: string, outputPath: string, data: Record<string, unknown>): void {
   if (outputPath.endsWith(".ejs")) {
     outputPath = outputPath.slice(0, -4);
   }
@@ -56,11 +52,7 @@ export function renderTemplate(
  * Handles file renames (underscore → dot prefix) and EJS variable substitution
  * in file/directory names.
  */
-export function renderDir(
-  templateDir: string,
-  outputDir: string,
-  data: Record<string, unknown>,
-): void {
+export function renderDir(templateDir: string, outputDir: string, data: Record<string, unknown>): void {
   if (!fs.existsSync(templateDir)) return;
 
   const entries = fs.readdirSync(templateDir);
@@ -69,7 +61,7 @@ export function renderDir(
     const sourcePath = path.join(templateDir, entry);
 
     // Strip .ejs before rename lookup so _package.json.ejs → _package.json → package.json
-    let baseName = entry.endsWith(".ejs") ? entry.slice(0, -4) : entry;
+    const baseName = entry.endsWith(".ejs") ? entry.slice(0, -4) : entry;
     let targetName = RENAME_MAP[baseName] ?? baseName;
     // Replace template variables in file/directory names
     try {

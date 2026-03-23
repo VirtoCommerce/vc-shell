@@ -22,10 +22,14 @@ describe("shims-to-globals (jscodeshift)", () => {
       join(testDir, "tsconfig.json"),
       JSON.stringify({ compilerOptions: { types: ["vite/client"] } }, null, 2),
     );
-    const { reports } = applyTransformWithReports(transform, {
-      path: testDir,
-      source: "",
-    }, { cwd: testDir });
+    const { reports } = applyTransformWithReports(
+      transform,
+      {
+        path: testDir,
+        source: "",
+      },
+      { cwd: testDir },
+    );
     expect(reports[0]).toContain("@vc-shell/framework/globals");
     const tsconfig = JSON.parse(readFileSync(join(testDir, "tsconfig.json"), "utf-8"));
     expect(tsconfig.compilerOptions.types).toContain("@vc-shell/framework/globals");
@@ -37,24 +41,31 @@ describe("shims-to-globals (jscodeshift)", () => {
       join(testDir, "src", "shims-vue.d.ts"),
       `declare module "*.vue" { }\ninterface CoreBladeAdditionalSettings {}`,
     );
-    const { reports } = applyTransformWithReports(transform, {
-      path: testDir, source: "",
-    }, { cwd: testDir });
+    const { reports } = applyTransformWithReports(
+      transform,
+      {
+        path: testDir,
+        source: "",
+      },
+      { cwd: testDir },
+    );
     expect(existsSync(join(testDir, "src", "shims-vue.d.ts"))).toBe(false);
-    expect(reports.some(r => r.includes("deleted"))).toBe(true);
+    expect(reports.some((r) => r.includes("deleted"))).toBe(true);
   });
 
   it("warns on custom shims without deleting", () => {
     writeFileSync(join(testDir, "tsconfig.json"), JSON.stringify({ compilerOptions: {} }));
-    writeFileSync(
-      join(testDir, "src", "shims-vue.d.ts"),
-      `declare module "*.custom" { export const x: string; }`,
+    writeFileSync(join(testDir, "src", "shims-vue.d.ts"), `declare module "*.custom" { export const x: string; }`);
+    const { reports } = applyTransformWithReports(
+      transform,
+      {
+        path: testDir,
+        source: "",
+      },
+      { cwd: testDir },
     );
-    const { reports } = applyTransformWithReports(transform, {
-      path: testDir, source: "",
-    }, { cwd: testDir });
     expect(existsSync(join(testDir, "src", "shims-vue.d.ts"))).toBe(true);
-    expect(reports.some(r => r.includes("review manually"))).toBe(true);
+    expect(reports.some((r) => r.includes("review manually"))).toBe(true);
   });
 
   it("prefers tsconfig.app.json over tsconfig.json", () => {

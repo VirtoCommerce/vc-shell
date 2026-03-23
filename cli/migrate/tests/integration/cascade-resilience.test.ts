@@ -27,11 +27,7 @@ function runPipeline(
     };
 
     try {
-      const result = transform(
-        { path: filePath, source: current },
-        api as any,
-        { cwd: "." } as any,
-      );
+      const result = transform({ path: filePath, source: current }, api as any, { cwd: "." } as any);
 
       if (result != null && result !== current) {
         current = deduplicateImportSpecifiers(result, j);
@@ -126,7 +122,7 @@ const id = props.param;
     // Blade props removed from template
     expect(result).not.toContain(':expanded="expanded"');
     expect(result).not.toContain(':closable="closable"');
-    expect(result).not.toContain('@close="$emit(\'close:blade\')"');
+    expect(result).not.toContain("@close=\"$emit('close:blade')\"");
 
     // callParent and closeSelf added
     expect(result).toContain("callParent");

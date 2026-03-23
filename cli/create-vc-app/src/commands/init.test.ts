@@ -39,7 +39,7 @@ describe("initCommand — standalone", () => {
     const mainTs = readGenerated(root, "src/main.ts");
 
     // No module import/use
-    expect(mainTs).not.toContain("from \"./modules/");
+    expect(mainTs).not.toContain('from "./modules/');
     expect(mainTs).not.toMatch(/app\.use\(\w+\);\s*\n\s*app\.use\(router\)/);
 
     // No modules directory at all
@@ -94,7 +94,10 @@ describe("initCommand — standalone", () => {
 
   it("generates with both module and mocks", async () => {
     await initCommand(
-      { _: [root], type: "standalone", "module-name": "Reviews", mocks: true, overwrite: true } as unknown as Record<string, unknown>,
+      { _: [root], type: "standalone", "module-name": "Reviews", mocks: true, overwrite: true } as unknown as Record<
+        string,
+        unknown
+      >,
       templateRoot,
     );
 
@@ -369,7 +372,10 @@ describe("initCommand — dynamic-module", () => {
 
   it("uses provided --module-name", async () => {
     await initCommand(
-      { _: [root], type: "dynamic-module", "module-name": "Reviews", overwrite: true } as unknown as Record<string, unknown>,
+      { _: [root], type: "dynamic-module", "module-name": "Reviews", overwrite: true } as unknown as Record<
+        string,
+        unknown
+      >,
       templateRoot,
     );
 

@@ -121,10 +121,7 @@ function textDedup(source: string): { result: string; modified: boolean } {
 
         if (added || incoming.length > 0) {
           // Rebuild the first occurrence line with merged specifiers
-          replacements.set(
-            record.lineIndex,
-            `${record.before}{ ${record.specifiers.join(", ")} }${record.after}`,
-          );
+          replacements.set(record.lineIndex, `${record.before}{ ${record.specifiers.join(", ")} }${record.after}`);
         }
       }
 

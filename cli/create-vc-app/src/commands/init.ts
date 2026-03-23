@@ -47,13 +47,13 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
     // For dynamic-module, module is always required — default to project name.
     const explicitModule = args["module-name"] as string | undefined;
     const moduleName =
-      projectType === "dynamic-module"
-        ? explicitModule || toSentenceCase(projectName)
-        : explicitModule || undefined;
+      projectType === "dynamic-module" ? explicitModule || toSentenceCase(projectName) : explicitModule || undefined;
 
     options = {
       projectName: toKebabCase(projectName),
-      packageName: (args["package-name"] as string) || (isValidPackageName(projectName) ? projectName : toValidPackageName(projectName)),
+      packageName:
+        (args["package-name"] as string) ||
+        (isValidPackageName(projectName) ? projectName : toValidPackageName(projectName)),
       projectType,
       moduleName,
       basePath: (args["base-path"] as string) || toValidBasePath(`/apps/${toKebabCase(projectName)}/`),
@@ -83,7 +83,8 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
             format: (value) => toKebabCase(String(value).trim()),
           },
           {
-            type: () => (!fs.existsSync(path.resolve(cwd, dir!)) || isDirEmpty(path.resolve(cwd, dir!)) ? null : "confirm"),
+            type: () =>
+              !fs.existsSync(path.resolve(cwd, dir!)) || isDirEmpty(path.resolve(cwd, dir!)) ? null : "confirm",
             name: "overwrite",
             message: () =>
               (dir === "." ? "Current directory" : `Target directory "${dir}"`) +
@@ -180,7 +181,8 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
 
       options = {
         projectName,
-        packageName: phase1.packageName || (isValidPackageName(projectName) ? projectName : toValidPackageName(projectName)),
+        packageName:
+          phase1.packageName || (isValidPackageName(projectName) ? projectName : toValidPackageName(projectName)),
         projectType,
         moduleName: phase2.moduleName || (phase2.includeModule !== false ? defaultModuleName : undefined),
         basePath: phase2.basePath || toValidBasePath(defaultBasePath),

@@ -25,18 +25,14 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
     const obj = args[0];
 
     const hasBlade = obj.properties.some(
-      (p: any) =>
-        p.type === "ObjectProperty" &&
-        p.key.type === "Identifier" &&
-        BLADE_FIELDS.includes(p.key.name),
+      (p: any) => p.type === "ObjectProperty" && p.key.type === "Identifier" && BLADE_FIELDS.includes(p.key.name),
     );
 
     if (!hasBlade) return;
 
     // Remove notifyType property
     obj.properties = obj.properties.filter(
-      (p: any) =>
-        !(p.type === "ObjectProperty" && p.key.type === "Identifier" && p.key.name === "notifyType"),
+      (p: any) => !(p.type === "ObjectProperty" && p.key.type === "Identifier" && p.key.name === "notifyType"),
     );
 
     // Rename defineOptions → defineBlade

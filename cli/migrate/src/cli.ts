@@ -8,25 +8,15 @@ const program = new Command();
 
 program
   .name("vc-shell-migrate")
-  .description(
-    "Migrate your code to the latest @vc-shell/framework version",
-  )
+  .description("Migrate your code to the latest @vc-shell/framework version")
   .version("1.0.0")
   .option("--to <version>", "Target framework version (default: latest)")
   .option("--transform <name>", "Run only a specific transform")
   .option("--dry-run", "Preview changes without writing files", false)
   .option("--list", "List available transforms", false)
   .option("--cwd <path>", "Working directory", ".")
-  .option(
-    "--update-deps",
-    "Also update dependency versions in package.json",
-    false,
-  )
-  .option(
-    "--exclude <patterns...>",
-    "Additional exclude patterns for files/directories",
-    [],
-  )
+  .option("--update-deps", "Also update dependency versions in package.json", false)
+  .option("--exclude <patterns...>", "Additional exclude patterns for files/directories", [])
   .action(async (options) => {
     const cwd = resolve(options.cwd);
 

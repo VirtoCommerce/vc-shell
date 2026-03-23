@@ -140,7 +140,10 @@ if (isMonorepo) {
   // normalization from stripping trailing slashes and creating duplicate entries.
   frameworkAliases = [
     // CSS import must be intercepted before the subpath regex
-    { find: "@vc-shell/framework/dist/index.css", replacement: normalizePath(path.resolve(frameworkPath, "assets/styles/index.scss")) },
+    {
+      find: "@vc-shell/framework/dist/index.css",
+      replacement: normalizePath(path.resolve(frameworkPath, "assets/styles/index.scss")),
+    },
     // Bare import: resolve to source entry point (regex = exact match only)
     { find: /^@vc-shell\/framework$/, replacement: frameworkIndexPath },
     // Subpath imports: @vc-shell/framework/core/... → framework/core/...
@@ -206,14 +209,14 @@ export default defineConfig({
       : []),
     ...(process.env.ANALYZE
       ? [
-          await import("rollup-plugin-visualizer").then(({ visualizer }) =>
+          (await import("rollup-plugin-visualizer").then(({ visualizer }) =>
             visualizer({
               filename: "stats.html",
               template: "treemap",
               gzipSize: true,
               open: false,
             }),
-          ) as PluginOption,
+          )) as PluginOption,
         ]
       : []),
   ],
@@ -365,7 +368,9 @@ export default defineConfig({
 
             // Handle framework vendor chunks
             if (normalizedId.includes("/vendor-")) {
-              const groupedFrameworkVendor = frameworkVendorChunks.find(({ patterns }) => matchesAny(normalizedId, patterns));
+              const groupedFrameworkVendor = frameworkVendorChunks.find(({ patterns }) =>
+                matchesAny(normalizedId, patterns),
+              );
               if (groupedFrameworkVendor) {
                 return groupedFrameworkVendor.chunk;
               }

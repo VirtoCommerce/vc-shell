@@ -8,11 +8,19 @@ const SAFE_IMPORT_PATTERN = /^@import\s+['"]tailwind['"]/m;
 function collectScssFiles(dir: string): string[] {
   const files: string[] = [];
   let entries: string[];
-  try { entries = readdirSync(dir, { encoding: "utf-8" }); } catch { return files; }
+  try {
+    entries = readdirSync(dir, { encoding: "utf-8" });
+  } catch {
+    return files;
+  }
   for (const entry of entries) {
     const full = join(dir, entry);
     let stat;
-    try { stat = statSync(full); } catch { continue; }
+    try {
+      stat = statSync(full);
+    } catch {
+      continue;
+    }
     if (stat.isDirectory()) {
       if (entry === "node_modules" || entry.startsWith(".")) continue;
       files.push(...collectScssFiles(full));

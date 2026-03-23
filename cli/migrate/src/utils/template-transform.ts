@@ -7,16 +7,9 @@
  * Remove a list of attribute patterns from a specific tag in a template string.
  * Each pattern is matched as a regex against attributes on the given tag.
  */
-export function removeAttributesFromTag(
-  template: string,
-  tagName: string,
-  attributePatterns: RegExp[],
-): string {
+export function removeAttributesFromTag(template: string, tagName: string, attributePatterns: RegExp[]): string {
   // Find the opening tag (handles multi-line)
-  const tagRegex = new RegExp(
-    `(<${tagName}\\b)([^>]*?)(\\s*/?>)`,
-    "gs",
-  );
+  const tagRegex = new RegExp(`(<${tagName}\\b)([^>]*?)(\\s*/?>)`, "gs");
 
   return template.replace(tagRegex, (match, open, attrs, close) => {
     let cleaned = attrs as string;

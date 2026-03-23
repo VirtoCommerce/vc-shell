@@ -14,7 +14,7 @@ import { realpathSync } from "node:fs";
  */
 export function stripExternalStyles(): Plugin {
   let normalizedRoot: string;
-  const sharedDepPatterns = SHARED_DEP_NAMES.map(name => `/node_modules/${name}/`);
+  const sharedDepPatterns = SHARED_DEP_NAMES.map((name) => `/node_modules/${name}/`);
 
   return {
     name: "strip-external-styles",
@@ -43,7 +43,7 @@ export function stripExternalStyles(): Plugin {
       }
 
       // Rule 1: Strip styles from shared dependencies
-      if (sharedDepPatterns.some(p => normalizedId.includes(p))) {
+      if (sharedDepPatterns.some((p) => normalizedId.includes(p))) {
         return { code: "", map: null };
       }
 

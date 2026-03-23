@@ -52,10 +52,7 @@ export function addModuleToMain(mainTsPath: string, moduleName: string): void {
 /**
  * Add a menu item registration to bootstrap.ts
  */
-export function addMenuItemToBootstrap(
-  bootstrapPath: string,
-  moduleName: string,
-): void {
+export function addMenuItemToBootstrap(bootstrapPath: string, moduleName: string): void {
   let code = fs.readFileSync(bootstrapPath, "utf-8");
   const kebabName = toKebabCase(moduleName);
   const screamingSnake = toScreamingSnakeCase(moduleName);

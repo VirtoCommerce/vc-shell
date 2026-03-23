@@ -11,7 +11,7 @@ useExternalWidgets({ bladeId });
 </script>`;
     const { result, reports } = applyTransformWithReports(transform, { path: "test.vue", source: input });
     expect(result).toBeNull();
-    expect(reports.some(r => r.includes("useExternalWidgets"))).toBe(true);
+    expect(reports.some((r) => r.includes("useExternalWidgets"))).toBe(true);
   });
 
   it("warns about moment import", () => {
@@ -20,7 +20,7 @@ useExternalWidgets({ bladeId });
 import moment from "moment";
 </script>`;
     const { reports } = applyTransformWithReports(transform, { path: "test.vue", source: input });
-    expect(reports.some(r => r.includes("moment"))).toBe(true);
+    expect(reports.some((r) => r.includes("moment"))).toBe(true);
   });
 
   it("warns about useFunctions", () => {
@@ -30,7 +30,7 @@ import { useFunctions } from "@vc-shell/framework";
 const { debounce } = useFunctions();
 </script>`;
     const { reports } = applyTransformWithReports(transform, { path: "test.vue", source: input });
-    expect(reports.some(r => r.includes("useFunctions"))).toBe(true);
+    expect(reports.some((r) => r.includes("useFunctions"))).toBe(true);
   });
 
   it("warns about closeBlade", () => {
@@ -41,7 +41,7 @@ const { closeBlade } = useBlade();
 closeBlade(1);
 </script>`;
     const { reports } = applyTransformWithReports(transform, { path: "test.vue", source: input });
-    expect(reports.some(r => r.includes("closeBlade"))).toBe(true);
+    expect(reports.some((r) => r.includes("closeBlade"))).toBe(true);
   });
 
   it("warns about multiple useBlade() calls", () => {
@@ -52,7 +52,7 @@ const { openBlade, closeSelf } = useBlade();
 const blade = useBlade();
 </script>`;
     const { reports } = applyTransformWithReports(transform, { path: "test.vue", source: input });
-    expect(reports.some(r => r.includes("Multiple useBlade()"))).toBe(true);
+    expect(reports.some((r) => r.includes("Multiple useBlade()"))).toBe(true);
   });
 
   it("does not warn on clean files", () => {

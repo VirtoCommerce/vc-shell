@@ -21,7 +21,7 @@ const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options): 
   if (issues.length > 0) {
     api.report(
       `${fileInfo.path}: Found deprecated menu properties: ${issues.join(", ")}. ` +
-      `Migrate to groupConfig: { id, title, icon, priority, permissions }.`,
+        `Migrate to groupConfig: { id, title, icon, priority, permissions }.`,
     );
   }
 

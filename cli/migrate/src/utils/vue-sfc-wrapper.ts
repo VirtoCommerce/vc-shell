@@ -16,21 +16,13 @@ export function wrapForSFC(coreTransform: Transform): Transform {
     const scriptBlock = descriptor.scriptSetup ?? descriptor.script;
     if (!scriptBlock) return null;
 
-    const scriptResult = coreTransform(
-      { ...fileInfo, source: scriptBlock.content },
-      api,
-      options,
-    );
+    const scriptResult = coreTransform({ ...fileInfo, source: scriptBlock.content }, api, options);
     if (scriptResult == null) return null;
 
     // Offset-based splicing — safe with $ characters
     const start = scriptBlock.loc.start.offset;
     const end = scriptBlock.loc.end.offset;
-    return (
-      fileInfo.source.substring(0, start) +
-      scriptResult +
-      fileInfo.source.substring(end)
-    );
+    return fileInfo.source.substring(0, start) + scriptResult + fileInfo.source.substring(end);
   };
 }
 
@@ -51,11 +43,7 @@ export function wrapForSFCTemplate(
 
     const start = descriptor.template.loc.start.offset;
     const end = descriptor.template.loc.end.offset;
-    return (
-      fileInfo.source.substring(0, start) +
-      result.content +
-      fileInfo.source.substring(end)
-    );
+    return fileInfo.source.substring(0, start) + result.content + fileInfo.source.substring(end);
   };
 }
 
@@ -74,15 +62,11 @@ export function wrapForSFCBoth(
     } catch (err) {
       api.report(
         `${fileInfo.path}: Script transform failed (${err instanceof Error ? err.message : String(err)}), ` +
-        `attempting template-only transform`
+          `attempting template-only transform`,
       );
     }
     const source = afterScript ?? fileInfo.source;
-    const afterTemplate = wrapForSFCTemplate(templateTransform)(
-      { ...fileInfo, source },
-      api,
-      options,
-    );
+    const afterTemplate = wrapForSFCTemplate(templateTransform)({ ...fileInfo, source }, api, options);
     return afterTemplate ?? afterScript;
   };
 }

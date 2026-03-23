@@ -162,9 +162,7 @@ describe("registerRemoteModules", () => {
   it("initializes MF runtime with all compatible remotes", async () => {
     const { app, router } = createTestApp();
 
-    const modules: ModuleRegistryEntry[] = [
-      { id: "reviews", entry: "/reviews/remoteEntry.js", version: "1.0.0" },
-    ];
+    const modules: ModuleRegistryEntry[] = [{ id: "reviews", entry: "/reviews/remoteEntry.js", version: "1.0.0" }];
 
     (global.fetch as any).mockResolvedValue({
       ok: true,
@@ -317,9 +315,7 @@ describe("registerRemoteModules", () => {
   it("handles module that exports install directly (not as default)", async () => {
     const { app, router } = createTestApp();
 
-    const modules: ModuleRegistryEntry[] = [
-      { id: "direct", entry: "/direct/remoteEntry.js", version: "1.0.0" },
-    ];
+    const modules: ModuleRegistryEntry[] = [{ id: "direct", entry: "/direct/remoteEntry.js", version: "1.0.0" }];
 
     (global.fetch as any).mockResolvedValue({
       ok: true,
@@ -363,9 +359,7 @@ describe("registerRemoteModules", () => {
     it("installs all sub-modules from { default: { Rating: { install }, Orders: { install } } }", async () => {
       const { app, router } = createTestApp();
 
-      const modules: ModuleRegistryEntry[] = [
-        { id: "marketplace", entry: "/mp/remoteEntry.js", version: "1.0.0" },
-      ];
+      const modules: ModuleRegistryEntry[] = [{ id: "marketplace", entry: "/mp/remoteEntry.js", version: "1.0.0" }];
 
       (global.fetch as any).mockResolvedValue({
         ok: true,
@@ -392,9 +386,7 @@ describe("registerRemoteModules", () => {
     it("installs namespace-wrapped sub-modules { default: { Rating: { default: { install } } } }", async () => {
       const { app, router } = createTestApp();
 
-      const modules: ModuleRegistryEntry[] = [
-        { id: "marketplace", entry: "/mp/remoteEntry.js", version: "1.0.0" },
-      ];
+      const modules: ModuleRegistryEntry[] = [{ id: "marketplace", entry: "/mp/remoteEntry.js", version: "1.0.0" }];
 
       (global.fetch as any).mockResolvedValue({
         ok: true,
@@ -418,9 +410,7 @@ describe("registerRemoteModules", () => {
     it("skips modules with null/empty exports (no install found)", async () => {
       const { app, router } = createTestApp();
 
-      const modules: ModuleRegistryEntry[] = [
-        { id: "empty-mod", entry: "/empty/remoteEntry.js", version: "1.0.0" },
-      ];
+      const modules: ModuleRegistryEntry[] = [{ id: "empty-mod", entry: "/empty/remoteEntry.js", version: "1.0.0" }];
 
       (global.fetch as any).mockResolvedValue({
         ok: true,
@@ -438,9 +428,7 @@ describe("registerRemoteModules", () => {
     it("skips sub-module entries that are not objects", async () => {
       const { app, router } = createTestApp();
 
-      const modules: ModuleRegistryEntry[] = [
-        { id: "mixed", entry: "/mixed/remoteEntry.js", version: "1.0.0" },
-      ];
+      const modules: ModuleRegistryEntry[] = [{ id: "mixed", entry: "/mixed/remoteEntry.js", version: "1.0.0" }];
 
       (global.fetch as any).mockResolvedValue({
         ok: true,
@@ -486,10 +474,7 @@ describe("registerRemoteModules", () => {
       registerRemoteModules(app, { router, appName: "test-app" });
       await flushPromises();
 
-      expect(satisfies).toHaveBeenCalledWith(
-        expect.any(String),
-        ">=1.0.0 <2.0.0",
-      );
+      expect(satisfies).toHaveBeenCalledWith(expect.any(String), ">=1.0.0 <2.0.0");
     });
 
     it("converts (1.0.0,2.0.0] to >1.0.0 <=2.0.0", async () => {
@@ -513,10 +498,7 @@ describe("registerRemoteModules", () => {
       registerRemoteModules(app, { router, appName: "test-app" });
       await flushPromises();
 
-      expect(satisfies).toHaveBeenCalledWith(
-        expect.any(String),
-        ">1.0.0 <=2.0.0",
-      );
+      expect(satisfies).toHaveBeenCalledWith(expect.any(String), ">1.0.0 <=2.0.0");
     });
 
     it("converts [1.2.4,] to >=1.2.4 (open upper bound)", async () => {
@@ -540,10 +522,7 @@ describe("registerRemoteModules", () => {
       registerRemoteModules(app, { router, appName: "test-app" });
       await flushPromises();
 
-      expect(satisfies).toHaveBeenCalledWith(
-        expect.any(String),
-        ">=1.2.4",
-      );
+      expect(satisfies).toHaveBeenCalledWith(expect.any(String), ">=1.2.4");
     });
 
     it("passes through npm-style ranges like ^1.2.0 unchanged", async () => {
@@ -567,19 +546,14 @@ describe("registerRemoteModules", () => {
       registerRemoteModules(app, { router, appName: "test-app" });
       await flushPromises();
 
-      expect(satisfies).toHaveBeenCalledWith(
-        expect.any(String),
-        "^1.2.0",
-      );
+      expect(satisfies).toHaveBeenCalledWith(expect.any(String), "^1.2.0");
     });
   });
 
   it("sets performance marks in correct order", async () => {
     const { app, router } = createTestApp();
 
-    const modules: ModuleRegistryEntry[] = [
-      { id: "mod", entry: "/mod/remoteEntry.js", version: "1.0.0" },
-    ];
+    const modules: ModuleRegistryEntry[] = [{ id: "mod", entry: "/mod/remoteEntry.js", version: "1.0.0" }];
 
     (global.fetch as any).mockResolvedValue({
       ok: true,
@@ -592,18 +566,11 @@ describe("registerRemoteModules", () => {
     await flushPromises();
 
     const marks = (performance.mark as any).mock.calls.map((c: any[]) => c[0]);
-    expect(marks).toEqual([
-      "vc:modules-start",
-      "vc:modules-loaded",
-      "vc:modules-installed",
-      "vc:modules-done",
-    ]);
+    expect(marks).toEqual(["vc:modules-start", "vc:modules-loaded", "vc:modules-installed", "vc:modules-done"]);
   });
 
   it("createInstance() receives all 7 shared deps", async () => {
-    const modules: ModuleRegistryEntry[] = [
-      { id: "test-mod", entry: "http://cdn/remoteEntry.js", version: "1.0.0" },
-    ];
+    const modules: ModuleRegistryEntry[] = [{ id: "test-mod", entry: "http://cdn/remoteEntry.js", version: "1.0.0" }];
 
     (global.fetch as any).mockResolvedValue({
       ok: true,
@@ -618,7 +585,15 @@ describe("registerRemoteModules", () => {
 
     const createInstanceCall = vi.mocked(createInstance).mock.calls[0][0];
     const sharedKeys = Object.keys(createInstanceCall.shared!);
-    const expectedDeps = ["vue", "vue-router", "vue-i18n", "vee-validate", "lodash-es", "@vueuse/core", "@vc-shell/framework"];
+    const expectedDeps = [
+      "vue",
+      "vue-router",
+      "vue-i18n",
+      "vee-validate",
+      "lodash-es",
+      "@vueuse/core",
+      "@vc-shell/framework",
+    ];
     expect(sharedKeys.sort()).toEqual(expectedDeps.sort());
   });
 });

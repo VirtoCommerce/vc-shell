@@ -25,13 +25,13 @@ import frameworkPkg from "@vc-shell/framework/package.json";
 const REGISTRY_URL = "/api/frontend-modules";
 
 const RUNTIME_LIBS: Record<string, { lib: () => unknown; version: string }> = {
-  vue:                   { lib: () => Vue,         version: vuePkg.version },
-  "vue-router":          { lib: () => VueRouter,   version: vueRouterPkg.version },
-  "vue-i18n":            { lib: () => VueI18n,     version: vueI18nPkg.version },
-  "vee-validate":        { lib: () => VeeValidate, version: (VeeValidate as any).version ?? "4.0.0" },
-  "lodash-es":           { lib: () => LodashEs,    version: lodashEsPkg.version },
-  "@vueuse/core":        { lib: () => VueuseCore,  version: vueusePkg.version },
-  "@vc-shell/framework": { lib: () => Framework,   version: frameworkPkg.version },
+  vue: { lib: () => Vue, version: vuePkg.version },
+  "vue-router": { lib: () => VueRouter, version: vueRouterPkg.version },
+  "vue-i18n": { lib: () => VueI18n, version: vueI18nPkg.version },
+  "vee-validate": { lib: () => VeeValidate, version: (VeeValidate as any).version ?? "4.0.0" },
+  "lodash-es": { lib: () => LodashEs, version: lodashEsPkg.version },
+  "@vueuse/core": { lib: () => VueuseCore, version: vueusePkg.version },
+  "@vc-shell/framework": { lib: () => Framework, version: frameworkPkg.version },
 };
 
 const SHARED_LIBS = Object.fromEntries(
@@ -172,7 +172,10 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
         const range = humanizeRange(fwRange);
         const coerced = semver.coerce(frameworkVersion)?.version ?? frameworkVersion;
         const ok = semver.satisfies(coerced, range);
-        if (!ok) console.warn(`[mf-host] Module "${mod.id}" v${mod.version} requires framework ${range}, current ${frameworkVersion}. Skipping.`);
+        if (!ok)
+          console.warn(
+            `[mf-host] Module "${mod.id}" v${mod.version} requires framework ${range}, current ${frameworkVersion}. Skipping.`,
+          );
         return ok;
       });
 
@@ -226,7 +229,9 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
       }
 
       if (failed.length > 0) {
-        console.warn(`[mf-host] ${loaded.length}/${compatible.length} modules loaded. Failed: [${failed.map((f) => f.mod.id).join(", ")}]`);
+        console.warn(
+          `[mf-host] ${loaded.length}/${compatible.length} modules loaded. Failed: [${failed.map((f) => f.mod.id).join(", ")}]`,
+        );
       }
 
       performance.mark("vc:modules-installed");

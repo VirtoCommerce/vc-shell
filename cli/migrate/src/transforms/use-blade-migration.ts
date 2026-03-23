@@ -12,8 +12,7 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   const frameworkImports = root.find(j.ImportDeclaration, {
     source: { value: "@vc-shell/framework" },
   });
-  const hasTarget =
-    frameworkImports.find(j.ImportSpecifier, { imported: { name: OLD_NAME } }).size() > 0;
+  const hasTarget = frameworkImports.find(j.ImportSpecifier, { imported: { name: OLD_NAME } }).size() > 0;
   if (!hasTarget) return null;
 
   // Step 1: Rename all useBladeNavigation identifiers
@@ -29,9 +28,7 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
     const callback = args[0];
     // Must be inline arrow/function
     if (callback.type !== "ArrowFunctionExpression" && callback.type !== "FunctionExpression") {
-      api.report(
-        `${fileInfo.path}: onBeforeClose with non-inline callback, manual review needed`,
-      );
+      api.report(`${fileInfo.path}: onBeforeClose with non-inline callback, manual review needed`);
       return;
     }
 
@@ -42,9 +39,7 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
     if (returnStatements.size() === 0) return;
 
     if (returnStatements.size() > 1) {
-      api.report(
-        `${fileInfo.path}: Complex onBeforeClose callback with multiple returns, manual review needed`,
-      );
+      api.report(`${fileInfo.path}: Complex onBeforeClose callback with multiple returns, manual review needed`);
       return;
     }
 

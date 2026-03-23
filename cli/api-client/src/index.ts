@@ -644,7 +644,11 @@ function parseAndValidateArgs(): ResolvedConfig {
   const rawPlatformUrl = process.env.APP_PLATFORM_URL ?? parsedArgs.APP_PLATFORM_URL;
   // Ensure trailing slash so NSwag config.nswag URL concatenation produces valid URIs
   // e.g. "https://localhost:5001" + "docs/..." → "https://localhost:5001docs/..." (invalid port)
-  const platformUrl = rawPlatformUrl?.endsWith("/") ? rawPlatformUrl : rawPlatformUrl ? `${rawPlatformUrl}/` : rawPlatformUrl;
+  const platformUrl = rawPlatformUrl?.endsWith("/")
+    ? rawPlatformUrl
+    : rawPlatformUrl
+      ? `${rawPlatformUrl}/`
+      : rawPlatformUrl;
   const platformModules = process.env.APP_PLATFORM_MODULES ?? parsedArgs.APP_PLATFORM_MODULES;
   const apiClientDirectory = process.env.APP_API_CLIENT_DIRECTORY ?? parsedArgs.APP_API_CLIENT_DIRECTORY;
   const packageName = process.env.APP_PACKAGE_NAME ?? parsedArgs.APP_PACKAGE_NAME;
@@ -679,11 +683,7 @@ function parseAndValidateArgs(): ResolvedConfig {
   }
 
   if (verbose) {
-    console.log(
-      "api-client-generator %s Using APP_TYPE_STYLE: %s",
-      chalk.blue("debug"),
-      chalk.whiteBright(typeStyle),
-    );
+    console.log("api-client-generator %s Using APP_TYPE_STYLE: %s", chalk.blue("debug"), chalk.whiteBright(typeStyle));
   }
 
   // Validate required arguments
@@ -806,11 +806,7 @@ function generateClients(config: ResolvedConfig): string[] {
     const nswagCommand = ["run", paths.nswagPaths.configuration, `/variables:${nswagVariables}`];
 
     if (config.verbose) {
-      console.log(
-        "api-client-generator %s Running command: npx nswag %s",
-        chalk.blue("debug"),
-        nswagCommand.join(" "),
-      );
+      console.log("api-client-generator %s Running command: npx nswag %s", chalk.blue("debug"), nswagCommand.join(" "));
       console.log("api-client-generator %s Variables: %s", chalk.blue("debug"), nswagVariables);
     }
 
@@ -891,9 +887,7 @@ function buildPackage(config: ResolvedConfig, generatedFiles: string[]): void {
       console.error("api-client-generator %s Build directory creation troubleshooting:", chalk.blue("info"));
       console.error(chalk.blue("  - Check if you have write permissions in the API client directory"));
       console.error(chalk.blue("  - Ensure the build directory path is valid"));
-      console.error(
-        chalk.blue("  - The TypeScript compiler will attempt to create the directory during compilation"),
-      );
+      console.error(chalk.blue("  - The TypeScript compiler will attempt to create the directory during compilation"));
       // Continue execution, as tsc will create the directory during compilation
     }
   }

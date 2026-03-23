@@ -10,9 +10,7 @@ export function detectFrameworkVersion(cwd: string): string | null {
 
   const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
   const version =
-    pkg.dependencies?.[FRAMEWORK_PKG] ??
-    pkg.devDependencies?.[FRAMEWORK_PKG] ??
-    pkg.peerDependencies?.[FRAMEWORK_PKG];
+    pkg.dependencies?.[FRAMEWORK_PKG] ?? pkg.devDependencies?.[FRAMEWORK_PKG] ?? pkg.peerDependencies?.[FRAMEWORK_PKG];
 
   if (!version) return null;
 
@@ -29,13 +27,7 @@ export function detectFrameworkVersion(cwd: string): string | null {
 }
 
 function resolveFromNodeModules(cwd: string): string | null {
-  const nmPkgPath = join(
-    cwd,
-    "node_modules",
-    "@vc-shell",
-    "framework",
-    "package.json",
-  );
+  const nmPkgPath = join(cwd, "node_modules", "@vc-shell", "framework", "package.json");
   if (!existsSync(nmPkgPath)) return null;
   const pkg = JSON.parse(readFileSync(nmPkgPath, "utf-8"));
   return pkg.version ?? null;

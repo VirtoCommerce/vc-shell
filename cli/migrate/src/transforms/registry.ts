@@ -138,10 +138,7 @@ export const transforms: VersionedTransform[] = [
   },
 ];
 
-export function selectTransforms(
-  currentVersion: string,
-  targetVersion: string,
-): VersionedTransform[] {
+export function selectTransforms(currentVersion: string, targetVersion: string): VersionedTransform[] {
   const current = semver.parse(currentVersion);
   const target = semver.parse(targetVersion);
 
@@ -151,9 +148,6 @@ export function selectTransforms(
   return transforms.filter((t) => {
     const introduced = semver.parse(t.introducedIn);
     if (!introduced) return false;
-    return (
-      semver.lt(currentVersion, t.introducedIn) &&
-      semver.lte(t.introducedIn, targetVersion)
-    );
+    return semver.lt(currentVersion, t.introducedIn) && semver.lte(t.introducedIn, targetVersion);
   });
 }

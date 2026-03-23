@@ -54,37 +54,25 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
 
   // Check props.param / props.options usage
   const usesParam =
-    root
-      .find(j.MemberExpression, { object: { name: "props" }, property: { name: "param" } })
-      .size() > 0;
+    root.find(j.MemberExpression, { object: { name: "props" }, property: { name: "param" } }).size() > 0;
   const usesOptions =
-    root
-      .find(j.MemberExpression, { object: { name: "props" }, property: { name: "options" } })
-      .size() > 0;
+    root.find(j.MemberExpression, { object: { name: "props" }, property: { name: "options" } }).size() > 0;
 
   if (usesParam) neededMembers.add("param");
   if (usesOptions) neededMembers.add("options");
 
   // Check emit("parent:call", ...) usage
-  const parentCallEmits = root
-    .find(j.CallExpression, { callee: { name: "emit" } })
-    .filter((path) => {
-      const args = path.node.arguments;
-      return (
-        args.length > 0 && args[0].type === "StringLiteral" && args[0].value === "parent:call"
-      );
-    });
+  const parentCallEmits = root.find(j.CallExpression, { callee: { name: "emit" } }).filter((path) => {
+    const args = path.node.arguments;
+    return args.length > 0 && args[0].type === "StringLiteral" && args[0].value === "parent:call";
+  });
   if (parentCallEmits.size() > 0) neededMembers.add("callParent");
 
   // Check emit("close:blade") usage
-  const closeBladeEmits = root
-    .find(j.CallExpression, { callee: { name: "emit" } })
-    .filter((path) => {
-      const args = path.node.arguments;
-      return (
-        args.length > 0 && args[0].type === "StringLiteral" && args[0].value === "close:blade"
-      );
-    });
+  const closeBladeEmits = root.find(j.CallExpression, { callee: { name: "emit" } }).filter((path) => {
+    const args = path.node.arguments;
+    return args.length > 0 && args[0].type === "StringLiteral" && args[0].value === "close:blade";
+  });
   if (closeBladeEmits.size() > 0) neededMembers.add("closeSelf");
 
   // --- Step 3: Replace emit("parent:call", ...) → callParent(...) ---
@@ -92,9 +80,7 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
     .find(j.CallExpression, { callee: { name: "emit" } })
     .filter((path) => {
       const args = path.node.arguments;
-      return (
-        args.length > 0 && args[0].type === "StringLiteral" && args[0].value === "parent:call"
-      );
+      return args.length > 0 && args[0].type === "StringLiteral" && args[0].value === "parent:call";
     })
     .forEach((path) => {
       const args = path.node.arguments;
@@ -126,9 +112,7 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
     .find(j.CallExpression, { callee: { name: "emit" } })
     .filter((path) => {
       const args = path.node.arguments;
-      return (
-        args.length > 0 && args[0].type === "StringLiteral" && args[0].value === "close:blade"
-      );
+      return args.length > 0 && args[0].type === "StringLiteral" && args[0].value === "close:blade";
     })
     .forEach((path) => {
       j(path).replaceWith(j.callExpression(j.identifier("closeSelf"), []));
@@ -136,18 +120,14 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
 
   // --- Step 5: Replace props.param → param.value, props.options → options.value ---
   if (usesParam) {
-    root
-      .find(j.MemberExpression, { object: { name: "props" }, property: { name: "param" } })
-      .forEach((path) => {
-        j(path).replaceWith(j.memberExpression(j.identifier("param"), j.identifier("value")));
-      });
+    root.find(j.MemberExpression, { object: { name: "props" }, property: { name: "param" } }).forEach((path) => {
+      j(path).replaceWith(j.memberExpression(j.identifier("param"), j.identifier("value")));
+    });
   }
   if (usesOptions) {
-    root
-      .find(j.MemberExpression, { object: { name: "props" }, property: { name: "options" } })
-      .forEach((path) => {
-        j(path).replaceWith(j.memberExpression(j.identifier("options"), j.identifier("value")));
-      });
+    root.find(j.MemberExpression, { object: { name: "props" }, property: { name: "options" } }).forEach((path) => {
+      j(path).replaceWith(j.memberExpression(j.identifier("options"), j.identifier("value")));
+    });
   }
 
   // --- Step 6: Remove blade fields from Props interface ---
@@ -228,30 +208,28 @@ function removeDefinePropsStatement(root: any, j: any): void {
 
 function simplifyWithDefaults(root: any, j: any): void {
   // Find withDefaults(defineProps<Props>(), { expanded: true, closable: true })
-  root
-    .find(j.CallExpression, { callee: { name: "withDefaults" } })
-    .forEach((path: any) => {
-      const args = path.node.arguments;
-      if (args.length < 2) return;
+  root.find(j.CallExpression, { callee: { name: "withDefaults" } }).forEach((path: any) => {
+    const args = path.node.arguments;
+    if (args.length < 2) return;
 
-      const defaultsObj = args[1];
-      if (defaultsObj.type !== "ObjectExpression") return;
+    const defaultsObj = args[1];
+    if (defaultsObj.type !== "ObjectExpression") return;
 
-      // Filter out blade defaults
-      const remaining = defaultsObj.properties.filter((prop: any) => {
-        if (prop.type !== "ObjectProperty") return true;
-        if (prop.key.type !== "Identifier") return true;
-        return !BLADE_PROPS.includes(prop.key.name);
-      });
-
-      if (remaining.length === 0) {
-        // All defaults were blade-only — replace withDefaults(...) with defineProps<Props>()
-        j(path).replaceWith(args[0]);
-      } else {
-        // Keep non-blade defaults
-        defaultsObj.properties = remaining;
-      }
+    // Filter out blade defaults
+    const remaining = defaultsObj.properties.filter((prop: any) => {
+      if (prop.type !== "ObjectProperty") return true;
+      if (prop.key.type !== "Identifier") return true;
+      return !BLADE_PROPS.includes(prop.key.name);
     });
+
+    if (remaining.length === 0) {
+      // All defaults were blade-only — replace withDefaults(...) with defineProps<Props>()
+      j(path).replaceWith(args[0]);
+    } else {
+      // Keep non-blade defaults
+      defaultsObj.properties = remaining;
+    }
+  });
 }
 
 function removeDefineEmitsStatement(root: any, j: any): void {
@@ -300,10 +278,7 @@ function addUseBladeImport(root: any, j: any): void {
     const specifiers = path.node.specifiers || [];
     if (
       specifiers.some(
-        (s: any) =>
-          s.type === "ImportSpecifier" &&
-          s.imported.type === "Identifier" &&
-          s.imported.name === "useBlade",
+        (s: any) => s.type === "ImportSpecifier" && s.imported.type === "Identifier" && s.imported.name === "useBlade",
       )
     ) {
       alreadyImported = true;
@@ -344,7 +319,11 @@ function addUseBladeImport(root: any, j: any): void {
 function addUseBladeCall(root: any, j: any, neededMembers: Set<string>): void {
   // Check if useBlade() call already exists in a variable declaration
   const existingCalls = root.find(j.VariableDeclaration).filter((path: any) => {
-    return j(path).find(j.CallExpression, { callee: { name: "useBlade" } }).size() > 0;
+    return (
+      j(path)
+        .find(j.CallExpression, { callee: { name: "useBlade" } })
+        .size() > 0
+    );
   });
 
   if (existingCalls.size() > 0) {
@@ -377,10 +356,7 @@ function addUseBladeCall(root: any, j: any, neededMembers: Set<string>): void {
   });
 
   const declaration = j.variableDeclaration("const", [
-    j.variableDeclarator(
-      j.objectPattern(properties),
-      j.callExpression(j.identifier("useBlade"), []),
-    ),
+    j.variableDeclarator(j.objectPattern(properties), j.callExpression(j.identifier("useBlade"), [])),
   ]);
 
   // Insert after last import
@@ -394,10 +370,7 @@ function addUseBladeCall(root: any, j: any, neededMembers: Set<string>): void {
   }
 }
 
-function templateTransform(
-  template: string,
-  _filePath: string,
-): { content: string; changed: boolean } {
+function templateTransform(template: string, _filePath: string): { content: string; changed: boolean } {
   const result = removeBladeBoilerplateFromTemplate(template);
   return { content: result, changed: result !== template };
 }

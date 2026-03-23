@@ -81,14 +81,10 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   // Build useDataTableSort options object
   const optionProperties = [];
   if (initialField) {
-    optionProperties.push(
-      j.objectProperty(j.identifier("initialField"), j.stringLiteral(initialField)),
-    );
+    optionProperties.push(j.objectProperty(j.identifier("initialField"), j.stringLiteral(initialField)));
   }
   if (initialDirection) {
-    optionProperties.push(
-      j.objectProperty(j.identifier("initialDirection"), j.stringLiteral(initialDirection)),
-    );
+    optionProperties.push(j.objectProperty(j.identifier("initialDirection"), j.stringLiteral(initialDirection)));
   }
 
   // Build: const { sortField, sortOrder, sortExpression } = useDataTableSort({ ... })

@@ -19,11 +19,7 @@ export interface RunOptions {
   exclude?: string[];
 }
 
-const DEFAULT_EXCLUDES = [
-  "api_client",
-  "*.generated.ts",
-  "*.d.ts",
-];
+const DEFAULT_EXCLUDES = ["api_client", "*.generated.ts", "*.d.ts"];
 
 export async function run(options: RunOptions): Promise<void> {
   if (options.list) {
@@ -47,11 +43,7 @@ export async function run(options: RunOptions): Promise<void> {
   if (options.transform) {
     selected = selected.filter((t) => t.name === options.transform);
     if (selected.length === 0) {
-      console.log(
-        chalk.yellow(
-          `Transform "${options.transform}" not found or not applicable for this version range.`,
-        ),
-      );
+      console.log(chalk.yellow(`Transform "${options.transform}" not found or not applicable for this version range.`));
       return;
     }
   }
@@ -61,11 +53,7 @@ export async function run(options: RunOptions): Promise<void> {
     return;
   }
 
-  console.log(
-    chalk.blue(
-      `Running ${selected.length} transform(s)${options.dryRun ? " (dry run)" : ""}:`,
-    ),
-  );
+  console.log(chalk.blue(`Running ${selected.length} transform(s)${options.dryRun ? " (dry run)" : ""}:`));
   selected.forEach((t) => console.log(chalk.gray(`  - ${t.name}: ${t.description}`)));
 
   const srcDir = join(cwd, "src");
@@ -113,11 +101,7 @@ export async function run(options: RunOptions): Promise<void> {
 
     if (t.scope === "project") {
       try {
-        transform(
-          { path: cwd, source: "" },
-          api as any,
-          { cwd, dryRun: options.dryRun } as any,
-        );
+        transform({ path: cwd, source: "" }, api as any, { cwd, dryRun: options.dryRun } as any);
       } catch (err) {
         report.filesErrored.push({
           path: cwd,
@@ -184,14 +168,10 @@ export async function run(options: RunOptions): Promise<void> {
       report.reports.forEach((w) => console.log(chalk.yellow(`  ⚠ ${w}`)));
     }
     if (report.filesRolledBack.length > 0) {
-      report.filesRolledBack.forEach((e) =>
-        console.log(chalk.yellow(`  ⟲ ${e.path}: rolled back (${e.error})`)),
-      );
+      report.filesRolledBack.forEach((e) => console.log(chalk.yellow(`  ⟲ ${e.path}: rolled back (${e.error})`)));
     }
     if (report.filesErrored.length > 0) {
-      report.filesErrored.forEach((e) =>
-        console.log(chalk.red(`  ✗ ${e.path}: ${e.error}`)),
-      );
+      report.filesErrored.forEach((e) => console.log(chalk.red(`  ✗ ${e.path}: ${e.error}`)));
     }
 
     totalModified += report.filesModified.length;
@@ -234,9 +214,7 @@ export async function run(options: RunOptions): Promise<void> {
 
 // Scan src/modules/{module}/components/notifications/{file}.vue to build a mapping
 // of notifyType event names to file names, keyed by module directory.
-function collectNotifyTypeMap(
-  srcDir: string,
-): Map<string, Record<string, Record<string, string>>> {
+function collectNotifyTypeMap(srcDir: string): Map<string, Record<string, Record<string, string>>> {
   const result = new Map<string, Record<string, Record<string, string>>>();
   const modulesDir = join(srcDir, "modules");
   if (!existsSync(modulesDir)) return result;
@@ -339,9 +317,8 @@ function findFiles(dir: string, extensions: string[], excludes: string[]): strin
  * text-based dedup can process them. Only affects import blocks.
  */
 function collapseMultiLineImports(script: string): string {
-  return script.replace(
-    /import\s*\{[^}]*\}\s*from\s*['"][^'"]+['"]\s*;?/gs,
-    (match) => match.replace(/\s*\n\s*/g, " "),
+  return script.replace(/import\s*\{[^}]*\}\s*from\s*['"][^'"]+['"]\s*;?/gs, (match) =>
+    match.replace(/\s*\n\s*/g, " "),
   );
 }
 
@@ -383,11 +360,7 @@ function parseValidate(filePath: string, source: string, parser: string): string
   }
 }
 
-function updateDependencyVersions(
-  cwd: string,
-  targetVersion: string,
-  dryRun: boolean,
-): string[] {
+function updateDependencyVersions(cwd: string, targetVersion: string, dryRun: boolean): string[] {
   const pkgPath = join(cwd, "package.json");
   if (!existsSync(pkgPath)) return [];
 

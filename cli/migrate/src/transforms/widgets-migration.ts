@@ -31,12 +31,13 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   }
 
   // Check for registerWidget/unregisterWidget usage requiring manual review
-  const hasRegister = root.find(j.Identifier, { name: "registerWidget" }).size() > 0 ||
+  const hasRegister =
+    root.find(j.Identifier, { name: "registerWidget" }).size() > 0 ||
     root.find(j.Identifier, { name: "unregisterWidget" }).size() > 0;
   if (hasRegister) {
     api.report(
       `${fileInfo.path}: useWidgets → useBladeWidgets renamed. ` +
-      `registerWidget/unregisterWidget calls require manual review.`,
+        `registerWidget/unregisterWidget calls require manual review.`,
     );
   }
 

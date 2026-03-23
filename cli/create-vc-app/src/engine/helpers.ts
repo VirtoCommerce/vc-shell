@@ -8,9 +8,7 @@ export function toKebabCase(str: string): string {
 }
 
 export function toPascalCase(str: string): string {
-  return str
-    .replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ""))
-    .replace(/^(.)/, (_, c) => c.toUpperCase());
+  return str.replace(/[-_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : "")).replace(/^(.)/, (_, c) => c.toUpperCase());
 }
 
 export function toCamelCase(str: string): string {
@@ -26,9 +24,7 @@ export function toScreamingSnakeCase(str: string): string {
 }
 
 export function toSentenceCase(str: string): string {
-  return str
-    .replace(/[-_]+/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return str.replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export function isValidPackageName(name: string): boolean {
@@ -53,9 +49,16 @@ export function toValidBasePath(basePath: string): string {
     .replace(/\/?$/, "/");
 }
 
-export function buildTemplateData(
-  options: { moduleName?: string; projectName?: string; packageName?: string; basePath?: string; tenantRoutes?: boolean; aiAgent?: boolean; dashboard?: boolean; mocks?: boolean },
-): Record<string, string | boolean> {
+export function buildTemplateData(options: {
+  moduleName?: string;
+  projectName?: string;
+  packageName?: string;
+  basePath?: string;
+  tenantRoutes?: boolean;
+  aiAgent?: boolean;
+  dashboard?: boolean;
+  mocks?: boolean;
+}): Record<string, string | boolean> {
   const moduleName = options.moduleName || "";
   const kebab = moduleName ? toKebabCase(moduleName) : "";
 

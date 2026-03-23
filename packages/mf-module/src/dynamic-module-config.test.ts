@@ -53,13 +53,8 @@ describe("dynamicModuleConfiguration (MF)", () => {
   });
 
   it("stripExternalStyles plugin has buildStart hook for path normalization", () => {
-    const config = dynamicModuleConfiguration(
-      { name: "test-module", version: "1.0.0" },
-      {},
-    );
-    const stripPlugin = config.plugins?.flat().find(
-      (p: any) => p?.name === "strip-external-styles",
-    );
+    const config = dynamicModuleConfiguration({ name: "test-module", version: "1.0.0" }, {});
+    const stripPlugin = config.plugins?.flat().find((p: any) => p?.name === "strip-external-styles");
     expect(stripPlugin).toBeDefined();
     expect(typeof (stripPlugin as any).buildStart).toBe("function");
     expect(typeof (stripPlugin as any).transform).toBe("function");
@@ -80,13 +75,8 @@ describe("stripExternalStyles transform", () => {
   let stripPlugin: any;
 
   beforeEach(() => {
-    const config = dynamicModuleConfiguration(
-      { name: "test-module", version: "1.0.0" },
-      {},
-    );
-    stripPlugin = config.plugins
-      ?.flat()
-      .find((p: any) => p?.name === "strip-external-styles");
+    const config = dynamicModuleConfiguration({ name: "test-module", version: "1.0.0" }, {});
+    stripPlugin = config.plugins?.flat().find((p: any) => p?.name === "strip-external-styles");
     stripPlugin.buildStart.call({});
   });
 
@@ -115,42 +105,27 @@ describe("stripExternalStyles transform", () => {
   });
 
   it("strips CSS from non-scoped shared dep (e.g. vue-i18n)", () => {
-    const result = stripPlugin.transform(
-      "div{}",
-      `${process.cwd()}/node_modules/vue-i18n/dist/style.css`,
-    );
+    const result = stripPlugin.transform("div{}", `${process.cwd()}/node_modules/vue-i18n/dist/style.css`);
     expect(result).toEqual({ code: "", map: null });
   });
 
   it("keeps CSS from non-shared npm package", () => {
-    const result = stripPlugin.transform(
-      ".picker{}",
-      `${process.cwd()}/node_modules/some-datepicker/dist/style.css`,
-    );
+    const result = stripPlugin.transform(".picker{}", `${process.cwd()}/node_modules/some-datepicker/dist/style.css`);
     expect(result).toBeNull();
   });
 
   it("keeps module's own CSS in src/", () => {
-    const result = stripPlugin.transform(
-      ".my{}",
-      `${process.cwd()}/src/components/MyComponent.scss`,
-    );
+    const result = stripPlugin.transform(".my{}", `${process.cwd()}/src/components/MyComponent.scss`);
     expect(result).toBeNull();
   });
 
   it("keeps module's own Vue SFC style", () => {
-    const result = stripPlugin.transform(
-      ".my{}",
-      `${process.cwd()}/src/components/MyComponent.vue?type=style&index=0`,
-    );
+    const result = stripPlugin.transform(".my{}", `${process.cwd()}/src/components/MyComponent.vue?type=style&index=0`);
     expect(result).toBeNull();
   });
 
   it("strips CSS from path outside project root (symlink/portal scenario)", () => {
-    const result = stripPlugin.transform(
-      ".ext{}",
-      `/some/other/project/node_modules/some-private-pkg/dist/style.css`,
-    );
+    const result = stripPlugin.transform(".ext{}", `/some/other/project/node_modules/some-private-pkg/dist/style.css`);
     expect(result).toEqual({ code: "", map: null });
   });
 
@@ -173,10 +148,7 @@ describe("stripExternalStyles transform", () => {
   it("strips all shared deps from SHARED_DEP_NAMES", () => {
     expect(SHARED_DEP_NAMES.length).toBeGreaterThan(0);
     for (const dep of SHARED_DEP_NAMES) {
-      const result = stripPlugin.transform(
-        "body{}",
-        `${process.cwd()}/node_modules/${dep}/dist/style.css`,
-      );
+      const result = stripPlugin.transform("body{}", `${process.cwd()}/node_modules/${dep}/dist/style.css`);
       expect(result).toEqual({ code: "", map: null });
     }
   });

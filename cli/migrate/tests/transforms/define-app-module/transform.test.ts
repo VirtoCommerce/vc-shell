@@ -58,7 +58,7 @@ describe("define-app-module (jscodeshift)", () => {
     expect(result).toContain("locales");
     expect(result).toContain("notificationTemplates");
     expect(result).not.toMatch(/defineAppModule\([^)]*components/s);
-    expect(result).not.toContain('import * as components');
+    expect(result).not.toContain("import * as components");
   });
 
   it("preserves formatting of unchanged lines", () => {
@@ -81,8 +81,12 @@ describe("define-app-module (jscodeshift)", () => {
     const result = applyTransform(transform, { path: "modules/offers/index.ts", source: input }, { notifyTypeMap });
     expect(result).not.toBeNull();
     expect(result).not.toContain("notificationTemplates");
-    expect(result).toContain('import OfferCreatedDomainEvent from "./components/notifications/OfferCreatedDomainEvent.vue"');
-    expect(result).toContain('import OfferDeletedDomainEvent from "./components/notifications/OfferDeletedDomainEvent.vue"');
+    expect(result).toContain(
+      'import OfferCreatedDomainEvent from "./components/notifications/OfferCreatedDomainEvent.vue"',
+    );
+    expect(result).toContain(
+      'import OfferDeletedDomainEvent from "./components/notifications/OfferDeletedDomainEvent.vue"',
+    );
     expect(result).toContain("notifications:");
     expect(result).toContain('mode: "auto"');
     expect(result).toContain("template: OfferCreatedDomainEvent");

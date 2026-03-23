@@ -47,7 +47,7 @@ export function transformDefineBlade(
   });
 
   // Find defineBlade(...) call expression statement
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   let defineBladeNode: any = null;
   for (const node of ast.program.body) {
     if (
@@ -68,9 +68,8 @@ export function transformDefineBlade(
   if (!argNode || argNode.type !== "ObjectExpression") return null;
 
   // Find 'name' property
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const nameProp = argNode.properties.find(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (p: any) => p.type === "ObjectProperty" && p.key.type === "Identifier" && p.key.name === "name",
   );
   if (!nameProp) return null;
@@ -79,9 +78,9 @@ export function transformDefineBlade(
   if (!nameValue) return null;
 
   // Build config object from all properties except 'name'
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const configProperties = argNode.properties.filter((p: any) => p !== nameProp);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const configParts = configProperties.map((p: any) => scriptContent.slice(p.start!, p.end!));
   const configObjectText = `{ ${configParts.join(", ")} }`;
 

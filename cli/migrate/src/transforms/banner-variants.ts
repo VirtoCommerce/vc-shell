@@ -4,7 +4,7 @@ import type { Transform } from "./types.js";
 const VARIANT_MAP: Record<string, string> = {
   "light-danger": "danger",
   "info-dark": "info",
-  "primary": "info",
+  primary: "info",
 };
 
 function templateTransform(template: string, _filePath: string): { content: string; changed: boolean } {

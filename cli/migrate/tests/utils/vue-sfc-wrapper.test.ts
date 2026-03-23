@@ -10,20 +10,14 @@ const mockApi = () => {
 
 describe("wrapForSFC", () => {
   it("passes .ts files directly to coreTransform", () => {
-    const core: Transform = (fileInfo) =>
-      fileInfo.source.replace("foo", "bar");
+    const core: Transform = (fileInfo) => fileInfo.source.replace("foo", "bar");
     const wrapped = wrapForSFC(core);
-    const result = wrapped(
-      { path: "test.ts", source: "const foo = 1;" },
-      mockApi(),
-      {},
-    );
+    const result = wrapped({ path: "test.ts", source: "const foo = 1;" }, mockApi(), {});
     expect(result).toBe("const bar = 1;");
   });
 
   it("extracts script setup from .vue and reconstructs", () => {
-    const core: Transform = (fileInfo) =>
-      fileInfo.source.replace("foo", "bar");
+    const core: Transform = (fileInfo) => fileInfo.source.replace("foo", "bar");
     const wrapped = wrapForSFC(core);
     const vue = `<template><div/></template>
 <script setup lang="ts">
@@ -35,8 +29,7 @@ const foo = 1;
   });
 
   it("handles $emit in transformed script without corruption", () => {
-    const core: Transform = (fileInfo) =>
-      fileInfo.source.replace("oldFn", "newFn");
+    const core: Transform = (fileInfo) => fileInfo.source.replace("oldFn", "newFn");
     const wrapped = wrapForSFC(core);
     const vue = `<template><div/></template>
 <script setup lang="ts">
@@ -51,11 +44,7 @@ const oldFn = 1;
   it("returns null for .vue without script block", () => {
     const core: Transform = () => "changed";
     const wrapped = wrapForSFC(core);
-    const result = wrapped(
-      { path: "test.vue", source: "<template><div/></template>" },
-      mockApi(),
-      {},
-    );
+    const result = wrapped({ path: "test.vue", source: "<template><div/></template>" }, mockApi(), {});
     expect(result).toBeNull();
   });
 
@@ -103,8 +92,7 @@ const x = 1;
 
 describe("wrapForSFCBoth", () => {
   it("applies both script and template transforms", () => {
-    const scriptCore: Transform = (fileInfo) =>
-      fileInfo.source.replace("oldVar", "newVar");
+    const scriptCore: Transform = (fileInfo) => fileInfo.source.replace("oldVar", "newVar");
     const tmplTransform = (t: string) => ({
       content: t.replace("old-class", "new-class"),
       changed: true,
@@ -122,8 +110,7 @@ const oldVar = 1;
   });
 
   it("returns result when only script changes", () => {
-    const scriptCore: Transform = (fileInfo) =>
-      fileInfo.source.replace("old", "new");
+    const scriptCore: Transform = (fileInfo) => fileInfo.source.replace("old", "new");
     const tmplTransform = (t: string) => ({ content: t, changed: false });
     const wrapped = wrapForSFCBoth(scriptCore, tmplTransform);
     const vue = `<template><div/></template>

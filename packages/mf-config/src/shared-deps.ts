@@ -39,8 +39,5 @@ export const DEFAULT_SHARED: Record<string, SharedDepConfig> = { ...SHARED_DEPS_
  * This eliminates multi-MB fallback bundles (vue, framework, lodash, etc).
  */
 export const REMOTE_SHARED: Record<string, SharedDepConfig> = Object.fromEntries(
-  Object.entries(SHARED_DEPS_BASE).map(([key, config]) => [
-    key,
-    { ...config, import: false as const },
-  ]),
+  Object.entries(SHARED_DEPS_BASE).map(([key, config]) => [key, { ...config, import: false as const }]),
 );

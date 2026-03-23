@@ -49,9 +49,7 @@ function coreTransform(fileInfo: FileInfo, api: API, options: Options): string |
       let autoMigrated = false;
 
       // Try auto-migration with notifyTypeMap
-      const notifyTypeMap = options.notifyTypeMap as
-        | Record<string, Record<string, string>>
-        | undefined;
+      const notifyTypeMap = options.notifyTypeMap as Record<string, Record<string, string>> | undefined;
 
       if (notifyTypeMap && notifArg.type === "Identifier") {
         // Find the namespace import source for the notifications identifier
@@ -61,9 +59,7 @@ function coreTransform(fileInfo: FileInfo, api: API, options: Options): string |
         root.find(j.ImportDeclaration).forEach((imp) => {
           const specs = imp.node.specifiers || [];
           const hasNs = specs.some(
-            (s) =>
-              s.type === "ImportNamespaceSpecifier" &&
-              s.local?.name === (notifArg as any).name,
+            (s) => s.type === "ImportNamespaceSpecifier" && s.local?.name === (notifArg as any).name,
           );
           if (hasNs && imp.node.source.value) {
             const src = String(imp.node.source.value);
@@ -79,47 +75,35 @@ function coreTransform(fileInfo: FileInfo, api: API, options: Options): string |
           const capturedSource = notifImportSource;
 
           // Replace namespace import with individual default imports
-          const oldImport = root.find(j.ImportDeclaration).filter((imp) =>
-            String(imp.node.source.value) === capturedSource &&
-            (imp.node.specifiers || []).some(
-              (s: any) =>
-                s.type === "ImportNamespaceSpecifier" &&
-                s.local?.name === (notifArg as any).name,
-            ),
-          );
+          const oldImport = root
+            .find(j.ImportDeclaration)
+            .filter(
+              (imp) =>
+                String(imp.node.source.value) === capturedSource &&
+                (imp.node.specifiers || []).some(
+                  (s: any) => s.type === "ImportNamespaceSpecifier" && s.local?.name === (notifArg as any).name,
+                ),
+            );
 
           // Insert new imports after old one (reverse iterate for correct order)
           for (let i = entries.length - 1; i >= 0; i--) {
             const [eventName, fileName] = entries[i];
             const importPath = `${capturedSource}/${fileName}`;
             oldImport.insertAfter(
-              j.importDeclaration(
-                [j.importDefaultSpecifier(j.identifier(eventName))],
-                j.literal(importPath),
-              ),
+              j.importDeclaration([j.importDefaultSpecifier(j.identifier(eventName))], j.literal(importPath)),
             );
           }
           oldImport.remove();
 
           // Build notifications object
           const notifProperties = entries.map(([eventName]) => {
-            const templateProp = j.property(
-              "init",
-              j.identifier("template"),
-              j.identifier(eventName),
-            );
+            const templateProp = j.property("init", j.identifier("template"), j.identifier(eventName));
             const toastProp = j.property(
               "init",
               j.identifier("toast"),
-              j.objectExpression([
-                j.property("init", j.identifier("mode"), j.literal("auto")),
-              ]),
+              j.objectExpression([j.property("init", j.identifier("mode"), j.literal("auto"))]),
             );
-            return j.property(
-              "init",
-              j.identifier(eventName),
-              j.objectExpression([templateProp, toastProp]),
-            );
+            return j.property("init", j.identifier(eventName), j.objectExpression([templateProp, toastProp]));
           });
 
           const properties = [
@@ -129,13 +113,7 @@ function coreTransform(fileInfo: FileInfo, api: API, options: Options): string |
           if (args[1].type === "Identifier" && args[1].name === "locales") {
             properties[1].shorthand = true;
           }
-          properties.push(
-            j.property(
-              "init",
-              j.identifier("notifications"),
-              j.objectExpression(notifProperties),
-            ),
-          );
+          properties.push(j.property("init", j.identifier("notifications"), j.objectExpression(notifProperties)));
 
           const obj = j.objectExpression(properties);
           j(path).replaceWith(j.callExpression(j.identifier("defineAppModule"), [obj]));
@@ -143,7 +121,7 @@ function coreTransform(fileInfo: FileInfo, api: API, options: Options): string |
           autoMigrated = true;
           api.report(
             `${fileInfo.path}: Auto-migrated notifications. ` +
-            `Review toast.severity — defaulting to mode: "auto" only.`,
+              `Review toast.severity — defaulting to mode: "auto" only.`,
           );
         }
       }
@@ -166,7 +144,7 @@ function coreTransform(fileInfo: FileInfo, api: API, options: Options): string |
 
         api.report(
           `${fileInfo.path}: Migrated ${args.length}-arg createAppModule. ` +
-          `notificationTemplates is deprecated — migrate to new notifications config format.`,
+            `notificationTemplates is deprecated — migrate to new notifications config format.`,
         );
       }
 

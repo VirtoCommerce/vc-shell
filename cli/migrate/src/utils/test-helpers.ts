@@ -18,11 +18,7 @@ export function applyTransform(
     stats: () => {},
     report: () => {},
   };
-  return transform(
-    { path: input.path, source: input.source },
-    api as any,
-    { ...options } as any,
-  );
+  return transform({ path: input.path, source: input.source }, api as any, { ...options } as any);
 }
 
 /**
@@ -41,11 +37,7 @@ export function applyTransformWithReports(
     stats: () => {},
     report: (msg: string) => reports.push(msg),
   };
-  const result = transform(
-    { path: input.path, source: input.source },
-    api as any,
-    { ...options } as any,
-  );
+  const result = transform({ path: input.path, source: input.source }, api as any, { ...options } as any);
   return { result, reports };
 }
 
@@ -54,12 +46,7 @@ export function applyTransformWithReports(
  * If no output file exists, expects transform to return null (no changes).
  * @param ext - file extension, default "ts". Use "vue" for SFC fixtures.
  */
-export function defineFixtureTest(
-  transform: Transform,
-  fixturesDir: string,
-  fixtureName: string,
-  ext: string = "ts",
-) {
+export function defineFixtureTest(transform: Transform, fixturesDir: string, fixtureName: string, ext: string = "ts") {
   const inputPath = join(fixturesDir, `${fixtureName}.input.${ext}`);
   const outputPath = join(fixturesDir, `${fixtureName}.output.${ext}`);
   const input = readFileSync(inputPath, "utf8");

@@ -35,11 +35,7 @@ describe("full migration pipeline", () => {
     const input = `import { createAppModule } from "@vc-shell/framework";
 export default createAppModule(pages, locales);`;
 
-    const result = transform(
-      { path: "test.ts", source: input },
-      api,
-      { cwd: "." },
-    );
+    const result = transform({ path: "test.ts", source: input }, api, { cwd: "." });
 
     expect(result).not.toBeNull();
     expect(result).toContain("defineAppModule");
@@ -66,11 +62,7 @@ export default createAppModule(pages, locales);`;
     };
 
     // Should not throw with a valid cwd (even if no scss files found)
-    const result = transform(
-      { path: ".", source: "" },
-      api,
-      { cwd: tmpdir() },
-    );
+    const result = transform({ path: ".", source: "" }, api, { cwd: tmpdir() });
     expect(result).toBeNull();
   });
 });

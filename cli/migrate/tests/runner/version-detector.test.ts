@@ -37,19 +37,13 @@ describe("detectFrameworkVersion", () => {
     );
     const nmDir = join(dir, "node_modules", "@vc-shell", "framework");
     mkdirSync(nmDir, { recursive: true });
-    writeFileSync(
-      join(nmDir, "package.json"),
-      JSON.stringify({ version: "2.0.0-alpha.11" }),
-    );
+    writeFileSync(join(nmDir, "package.json"), JSON.stringify({ version: "2.0.0-alpha.11" }));
     expect(detectFrameworkVersion(dir)).toBe("2.0.0-alpha.11");
   });
 
   it("returns null when framework not found", () => {
     const dir = mkdtempSync(join(tmpdir(), "codemod-test-"));
-    writeFileSync(
-      join(dir, "package.json"),
-      JSON.stringify({ dependencies: {} }),
-    );
+    writeFileSync(join(dir, "package.json"), JSON.stringify({ dependencies: {} }));
     expect(detectFrameworkVersion(dir)).toBeNull();
   });
 });

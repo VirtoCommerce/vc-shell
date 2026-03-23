@@ -1,9 +1,0 @@
-node_modules
-dist
-framework/dist
-import-module/dist
-cli/api-client/dist
-cli/api-client/public
-cli/config/dist
-cli/create-vc-app/src/templates
-api-client.ts

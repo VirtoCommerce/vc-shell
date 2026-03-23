@@ -918,6 +918,19 @@ Parse `$ARGUMENTS` (everything after `design`):
 
 Store the result as `DESIGN_PROMPT`.
 
+#### Platform URL
+
+After acquiring the prompt, ask the user for the platform address:
+
+**Ask the user:** What is your VirtoCommerce platform URL? (e.g., `https://admin.example.com` or `https://localhost:5001`). You can skip this if you don't have a platform yet.
+
+- **If the user provides a URL** → store as `PLATFORM_URL`
+- **If the user skips** (says "skip", "no", "none", empty, "later", etc.) → set `PLATFORM_URL = null`
+
+This URL is needed for:
+- Writing `.env.local` with `APP_PLATFORM_URL` so the app can authenticate against the platform
+- Enabling API client generation (via `/vc-app connect` flow) during or after design
+
 If the prompt is very short (under 20 words) or too abstract (no concrete entities/data mentioned), ask for clarification:
 ```
 Your description is quite abstract. To generate modules, I need to know what entities/data the app manages.
@@ -957,6 +970,7 @@ Produce the structured plan:
 ```json
 DESIGN_PLAN = {
   "appName": "string — kebab-case, derived from the main concept in prompt",
+  "platformUrl": "string | null — from PLATFORM_URL collected in Phase 1",
   "modules": [
     {
       "name": "string — kebab-case module name (english)",
@@ -1007,6 +1021,7 @@ Modules ({count}):
 Connections:
   {from} → [{trigger}] → {to}
 
+Platform: {DESIGN_PLAN.platformUrl or "not set (mock mode)"}
 Scaffold: {yes if needsScaffold, otherwise no}
 
 Confirm? (y to proceed, or describe corrections)
@@ -1067,7 +1082,17 @@ After the user confirms the plan:
 
    Show the updated plan to the user for final confirmation before execution.
 
-3. **If no API client** → all modules use mock mode. Show:
+3. **If no API client AND `DESIGN_PLAN.platformUrl` is set** → the user provided a platform URL but hasn't generated API clients yet. Ask:
+   ```
+   Platform URL is set ({DESIGN_PLAN.platformUrl}) but no API client found.
+   Would you like to connect to the platform and generate API clients now? (y/n)
+   - If yes: which platform modules? (comma-separated, e.g., VirtoCommerce.Orders,VirtoCommerce.Catalog)
+   ```
+   If the user says yes and provides module names → run the `/vc-app connect` execution steps (Steps 1-4 from the connect section) using `DESIGN_PLAN.platformUrl` and the provided module list. After connect completes, re-run API Detection (step 1-2 above) to match entities.
+
+   If the user declines → proceed with mock mode for all modules.
+
+4. **If no API client AND `DESIGN_PLAN.platformUrl` is null** → all modules use mock mode. Show:
    ```
    No API client found — all modules will use mock data.
    Run /vc-app connect when your API is ready, then /vc-app promote for each module.
@@ -1083,7 +1108,21 @@ If `DESIGN_PLAN.needsScaffold` is true, run the `/vc-app create` flow:
 - After scaffold completes, `cd` into the new project directory
 - Update project root for subsequent steps
 
-If scaffold is not needed, skip this step.
+If scaffold is not needed, skip to the `.env.local` step below.
+
+#### Write `.env.local` with Platform URL
+
+If `DESIGN_PLAN.platformUrl` is not null:
+
+1. Write or update `.env.local` in the project root:
+   ```env
+   APP_PLATFORM_URL=<DESIGN_PLAN.platformUrl>
+   ```
+   If `.env.local` already exists, read it first and only update/add the `APP_PLATFORM_URL` line. Do NOT remove other variables.
+
+2. This enables the app to authenticate against the platform on first launch (`yarn serve`).
+
+If `DESIGN_PLAN.platformUrl` is null, skip this step.
 
 #### Step 2: Generate Loop
 
@@ -1226,6 +1265,7 @@ TODOs (search for "TODO [vc-app:design]"):
   {module.name}: "{todo text}"
   ...
 
+Platform: {DESIGN_PLAN.platformUrl or "not connected"}
 Data: {mock/API summary per module}
 TypeScript: {✓ no errors / ✗ N errors (see above)}
 ```

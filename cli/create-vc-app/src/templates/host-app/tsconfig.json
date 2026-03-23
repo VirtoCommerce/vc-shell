@@ -6,6 +6,7 @@
     "rootDir": "src",
     "types": [
       "vite/client",
+      "@vc-shell/framework/globals"
       ]
   },
   "include": [

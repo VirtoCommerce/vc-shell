@@ -6,49 +6,87 @@
   >
     <!-- Blade contents -->
     <!-- @vue-generic {MockedItem} -->
-    <VcTable
-      class="tw-grow tw-basis-0"
-      multiselect
+    <VcDataTable
+      v-model:search-value="searchValue"
+      v-model:active-item-id="selectedItemId"
+      v-model:selection="selectedItems"
       :loading="loading"
-      :columns="columns"
-      :sort="sortExpression"
-      :pages="pages"
-      :total-count="totalCount"
-      :search-value="searchValue"
-      :current-page="currentPage"
-      enable-item-actions
-      :item-action-builder="actionBuilder"
-      :empty="empty"
-      :notfound="notfound"
-      :search-placeholder="$t('SAMPLE_APP.PAGES.LIST.SEARCH.PLACEHOLDER')"
-      :total-label="$t('SAMPLE_APP.PAGES.LIST.TABLE.TOTALS')"
-      :selected-item-id="selectedItemId"
-      state-key="SAMPLE_APP"
+      class="tw-grow tw-basis-0"
+      selection-mode="multiple"
       :items="data ?? []"
-      @item-click="onItemClick"
-      @header-click="onHeaderClick"
-      @selection-changed="onSelectionChanged"
-      @search:change="onSearchList"
+      :row-actions="actionBuilder"
+      :pagination="{ currentPage, pages }"
+      :searchable="true"
+      :search-placeholder="$t('SAMPLE_APP.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :empty-state="{
+        icon: 'lucide-file',
+        title: $t('SAMPLE_APP.PAGES.LIST.EMPTY.NO_ITEMS'),
+        actionLabel: $t('SAMPLE_APP.PAGES.LIST.EMPTY.ADD'),
+        actionHandler: addItem,
+      }"
+      :not-found-state="{
+        icon: 'lucide-file',
+        title: $t('SAMPLE_APP.PAGES.LIST.NOT_FOUND.EMPTY'),
+        actionLabel: $t('SAMPLE_APP.PAGES.LIST.NOT_FOUND.RESET'),
+        actionHandler: clearSearch,
+      }"
+      :total-label="$t('SAMPLE_APP.PAGES.LIST.TABLE.TOTALS')"
+      :total-count="totalCount"
+      state-key="SAMPLE_APP"
+      @search="onSearchList"
+      @row-click="onItemClick"
       @pagination-click="onPaginationClick"
     >
-    </VcTable>
+      <VcColumn
+        id="imgSrc"
+        :title="$t('SAMPLE_APP.PAGES.LIST.TABLE.HEADER.IMAGE')"
+        type="image"
+        width="70px"
+      />
+      <VcColumn
+        id="name"
+        :title="$t('SAMPLE_APP.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME')"
+        :sortable="true"
+        :always-visible="true"
+      />
+      <VcColumn
+        id="description"
+        :title="$t('SAMPLE_APP.PAGES.LIST.TABLE.HEADER.DESCRIPTION')"
+      />
+      <VcColumn
+        id="price"
+        :title="$t('SAMPLE_APP.PAGES.LIST.TABLE.HEADER.PRICE')"
+        type="money"
+        :sortable="true"
+        :always-visible="true"
+      />
+      <VcColumn
+        id="salePrice"
+        :title="$t('SAMPLE_APP.PAGES.LIST.TABLE.HEADER.SALE_PRICE')"
+        type="money"
+      />
+      <VcColumn
+        id="currency.name"
+        :title="$t('SAMPLE_APP.PAGES.LIST.TABLE.HEADER.CURRENCY')"
+      />
+    </VcDataTable>
   </VcBlade>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, markRaw, onMounted, watch } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import {
-  IActionBuilderResult,
   IBladeToolbar,
-  ITableColumns,
   useBlade,
   usePopup,
   useTableSort,
   useFunctions,
+  VcColumn,
+  VcDataTable,
 } from "@vc-shell/framework";
+import type { TableAction } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 import { useList } from "./../composables";
-import Details from "./details.vue";
 import { MockedItem } from "./../composables/useList";
 
 defineBlade({
@@ -67,9 +105,9 @@ const { param, openBlade, exposeToChildren } = useBlade();
 const { showConfirmation } = usePopup();
 const { debounce } = useFunctions();
 
-const { sortExpression, handleSortChange: tableSortHandler } = useTableSort({
-  initialDirection: "DESC",
+const { sortExpression } = useTableSort({
   initialProperty: "createdDate",
+  initialDirection: "DESC",
 });
 
 const { getItems, removeItems, data, loading, totalCount, pages, currentPage, searchQuery } = useList({
@@ -79,29 +117,9 @@ const { getItems, removeItems, data, loading, totalCount, pages, currentPage, se
 
 const searchValue = ref();
 const selectedItemId = ref<string>();
-const selectedIds = ref<string[]>([]);
+const selectedItems = ref<MockedItem[]>([]);
 
-const empty = {
-  icon: "lucide-file",
-  text: computed(() => t("SAMPLE_APP.PAGES.LIST.EMPTY.NO_ITEMS")),
-  action: computed(() => t("SAMPLE_APP.PAGES.LIST.EMPTY.ADD")),
-  clickHandler: () => {
-    addItem();
-  },
-};
-
-const notfound = {
-  icon: "lucide-file",
-  text: computed(() => t("SAMPLE_APP.PAGES.LIST.NOT_FOUND.EMPTY")),
-  action: computed(() => t("SAMPLE_APP.PAGES.LIST.NOT_FOUND.RESET")),
-  clickHandler: async () => {
-    searchValue.value = "";
-    await getItems({
-      ...searchQuery.value,
-      keyword: "",
-    });
-  },
-};
+const selectedIds = computed(() => selectedItems.value.map((item) => item.id).filter(Boolean) as string[]);
 
 watch(
   param,
@@ -118,6 +136,13 @@ onMounted(async () => {
   });
 });
 
+watch(sortExpression, async (value) => {
+  await getItems({
+    ...searchQuery.value,
+    sort: value,
+  });
+});
+
 const onSearchList = debounce(async (keyword: string) => {
   searchValue.value = keyword;
   await getItems({
@@ -126,9 +151,17 @@ const onSearchList = debounce(async (keyword: string) => {
   });
 }, 1000);
 
+const clearSearch = async () => {
+  searchValue.value = "";
+  await getItems({
+    ...searchQuery.value,
+    keyword: "",
+  });
+};
+
 const addItem = () => {
   openBlade({
-    blade: markRaw(Details),
+    name: "SampleDetails",
   });
 };
 
@@ -159,42 +192,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
 ]);
 
-const columns = ref<ITableColumns[]>([
-  {
-    id: "imgSrc",
-    title: computed(() => t("SAMPLE_APP.PAGES.LIST.TABLE.HEADER.IMAGE")),
-    type: "image",
-    width: "70px",
-  },
-  {
-    id: "name",
-    title: computed(() => t("SAMPLE_APP.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
-    alwaysVisible: true,
-  },
-  {
-    id: "description",
-    title: computed(() => t("SAMPLE_APP.PAGES.LIST.TABLE.HEADER.DESCRIPTION")),
-  },
-  {
-    id: "price",
-    title: computed(() => t("SAMPLE_APP.PAGES.LIST.TABLE.HEADER.PRICE")),
-    type: "money",
-    alwaysVisible: true,
-  },
-  {
-    id: "salePrice",
-    title: computed(() => t("SAMPLE_APP.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
-    type: "money",
-  },
-  {
-    id: "currency.name",
-    title: computed(() => t("SAMPLE_APP.PAGES.LIST.TABLE.HEADER.CURRENCY")),
-  },
-]);
-
 const title = computed(() => t("SAMPLE_APP.PAGES.LIST.TITLE"));
 
 const reload = async () => {
+  selectedItems.value = [];
   await getItems({
     ...searchQuery.value,
     skip: (currentPage.value - 1) * (searchQuery.value.take ?? 10),
@@ -202,9 +203,10 @@ const reload = async () => {
   });
 };
 
-const onItemClick = (item: { id: string }) => {
+const onItemClick = (event: { data: MockedItem; index: number; originalEvent: Event }) => {
+  const item = event.data;
   openBlade({
-    blade: markRaw(Details),
+    name: "SampleDetails",
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -215,32 +217,23 @@ const onItemClick = (item: { id: string }) => {
   });
 };
 
-const onHeaderClick = (item: ITableColumns) => {
-  tableSortHandler(item.id);
-};
-
-const onSelectionChanged = (items: MockedItem[]) => {
-  selectedIds.value = items.map((item) => item.id!);
-};
-
-const actionBuilder = (): IActionBuilderResult[] => {
-  const result: IActionBuilderResult[] = [];
-  result.push({
-    icon: "lucide-trash-2",
-    title: computed(() => t("SAMPLE_APP.PAGES.LIST.TABLE.ACTIONS.DELETE")),
-    type: "danger",
-    async clickHandler(_item: MockedItem) {
-      if (_item.id) {
-        if (!selectedIds.value.includes(_item.id)) {
-          selectedIds.value.push(_item.id);
+const actionBuilder = (item: MockedItem): TableAction[] => {
+  return [
+    {
+      icon: "lucide-trash-2",
+      title: computed(() => t("SAMPLE_APP.PAGES.LIST.TABLE.ACTIONS.DELETE")),
+      type: "danger",
+      async clickHandler() {
+        if (item.id) {
+          if (!selectedIds.value.includes(item.id)) {
+            selectedItems.value = [...selectedItems.value, item];
+          }
+          await remove(selectedIds.value);
+          selectedItems.value = [];
         }
-        await remove(selectedIds.value);
-        selectedIds.value = [];
-      }
+      },
     },
-  });
-
-  return result;
+  ];
 };
 
 async function remove(ids: string[]) {
@@ -255,15 +248,6 @@ async function remove(ids: string[]) {
     await reload();
   }
 }
-
-watch(
-  () => sortExpression.value,
-  async (newVal) => {
-    await getItems({
-      sort: newVal,
-    });
-  },
-);
 
 exposeToChildren({ reload });
 </script>

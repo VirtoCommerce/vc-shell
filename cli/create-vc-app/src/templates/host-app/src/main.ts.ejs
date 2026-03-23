@@ -16,24 +16,26 @@ async function startApp() {
     console.log(e);
   }
 
-  const app = createApp(RouterView)
-    .use(VirtoShellFramework, {
-      router,
-      i18n: {
-        locale: import.meta.env.APP_I18N_LOCALE,
-        fallbackLocale: import.meta.env.APP_I18N_FALLBACK_LOCALE,
-      },
-<% if (aiAgent) { %>
-      aiAgent: {
-        config: {
-          url: import.meta.env.APP_AI_AGENT_URL,
-        },
-      },
-<% } %>
-    })
-    .use(router);
+  const { currentLocale, setLocale } = useLanguages();
 
-  const { currentLocale, setLocale } = app.runWithContext(() => useLanguages());
+  const app = createApp(RouterView);
+
+  app.use(VirtoShellFramework, {
+    router,
+    i18n: {
+      locale: import.meta.env.APP_I18N_LOCALE,
+      fallbackLocale: import.meta.env.APP_I18N_FALLBACK_LOCALE,
+    },
+<% if (aiAgent) { %>
+    aiAgent: {
+      config: {
+        url: import.meta.env.APP_AI_AGENT_URL,
+      },
+    },
+<% } %>
+  });
+
+  app.use(router);
 
   bootstrap(app);
 
@@ -43,7 +45,7 @@ async function startApp() {
 
   setLocale(currentLocale.value);
 
-  app.config.errorHandler = (err) => {
+  app.config.errorHandler = (err: unknown) => {
     notification.error((err as Error).toString(), {
       timeout: 5000,
     });

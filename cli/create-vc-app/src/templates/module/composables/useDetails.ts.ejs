@@ -1,8 +1,9 @@
 import { ref } from "vue";
-import { useAsync, useLoading } from "@vc-shell/framework";
+import { useAsync, useLoading, useModificationTracker } from "@vc-shell/framework";
 
 export default function use<%- ModuleNamePascalCase %>Details() {
-  const item = ref<Record<string, unknown>>({});
+  const item = ref<Record<string, any>>({});
+  const { isModified, resetModificationState } = useModificationTracker(item);
 
   const { loading: itemLoading, action: fetchItem } = useAsync(async (id?: string) => {
     // TODO: Replace with real API call
@@ -34,5 +35,7 @@ export default function use<%- ModuleNamePascalCase %>Details() {
     loading,
     getItem,
     saveItem,
+    isModified,
+    resetModificationState,
   };
 }

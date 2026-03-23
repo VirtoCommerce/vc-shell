@@ -30,11 +30,10 @@ import {
   useBlade,
   type IBladeToolbar,
 } from "@vc-shell/framework";
-import { ref, computed, markRaw } from "vue";
+import { ref } from "vue";
 import use<%- ModuleNamePascalCase %>List from "../composables/useList";
-import Details from "./details.vue";
 
-defineOptions({
+defineBlade({
   url: "/<%- ModuleName %>",
   name: "<%- ModuleNamePascalCase %>List",
   isWorkspace: true,
@@ -45,7 +44,7 @@ defineOptions({
   },
 });
 
-const { openBlade } = useBlade();
+const { openBlade, exposeToChildren } = useBlade();
 
 const {
   data,
@@ -73,7 +72,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
 function openDetails(item?: { id?: string }) {
   openBlade({
-    blade: markRaw(Details),
+    name: "<%- ModuleNamePascalCase %>Details",
     param: item?.id,
     onClose() {
       getItems();
@@ -83,8 +82,5 @@ function openDetails(item?: { id?: string }) {
 
 getItems();
 
-defineExpose({
-  title: computed(() => "<%- ModuleNameSentenceCase %>"),
-  reload: getItems,
-});
+exposeToChildren({ reload: getItems });
 </script>

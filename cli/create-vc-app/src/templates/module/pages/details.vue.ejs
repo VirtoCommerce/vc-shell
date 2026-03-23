@@ -33,7 +33,7 @@ import {
 import { ref, computed, onMounted } from "vue";
 import use<%- ModuleNamePascalCase %>Details from "../composables/useDetails";
 
-defineOptions({
+defineBlade({
   url: "/<%- ModuleName %>-details",
   name: "<%- ModuleNamePascalCase %>Details",
 });
@@ -42,8 +42,7 @@ const { param, closeSelf, callParent, onBeforeClose } = useBlade();
 
 const { showConfirmation } = usePopup();
 
-const { item, loading, getItem, saveItem } = use<%- ModuleNamePascalCase %>Details();
-const { isModified, resetModificationState } = useModificationTracker(item);
+const { item, loading, getItem, saveItem, isModified, resetModificationState } = use<%- ModuleNamePascalCase %>Details();
 
 const title = computed(() => {
   return param.value
@@ -79,8 +78,4 @@ onBeforeClose(async () => {
 });
 
 useBeforeUnload(computed(() => isModified.value));
-
-defineExpose({
-  title,
-});
 </script>

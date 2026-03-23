@@ -157,7 +157,7 @@ Follow `details-blade-pattern.md` template exactly:
 
 **Script setup:**
 - `defineBlade({ name: "{bladeComponentName}" })` — no url/isWorkspace for child blades
-- If `isStandalone: true`: `defineBlade({ name: "{bladeComponentName}", url: "{url}", isWorkspace: true })`
+- If `isStandalone: true`: `defineBlade({ name: "{bladeComponentName}", url: "{url}", isWorkspace: true, menuItem: { title: "{menuConfig.title}", icon: "{menuConfig.icon}", priority: {menuConfig.priority} } })` — standalone details blades that serve as the module entry point need a menu item to be accessible from navigation
 - `const { onBeforeClose, param, options, callParent, closeSelf } = useBlade()`
 - `const { meta } = useForm({ validateOnMount: false })`
 - Import and destructure `{composableName}` — only include methods that exist in `crudMethods`

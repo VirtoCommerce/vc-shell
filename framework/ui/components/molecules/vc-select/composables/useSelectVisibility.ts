@@ -5,6 +5,7 @@ export function useSelectVisibility() {
   const isSelectVisible = ref(false);
 
   let rootVisibilityObserver: IntersectionObserver | null = null;
+  let fallbackTimerId: ReturnType<typeof setTimeout> | null = null;
 
   function checkVisibilityFallback() {
     if (selectRootRef.value && !isSelectVisible.value) {
@@ -39,11 +40,15 @@ export function useSelectVisibility() {
       rootVisibilityObserver.observe(selectRootRef.value);
 
       // Fallback for iframe: check visibility after a delay
-      setTimeout(checkVisibilityFallback, 100);
+      fallbackTimerId = setTimeout(checkVisibilityFallback, 100);
     }
   });
 
   onUnmounted(() => {
+    if (fallbackTimerId !== null) {
+      clearTimeout(fallbackTimerId);
+      fallbackTimerId = null;
+    }
     if (rootVisibilityObserver && selectRootRef.value) {
       rootVisibilityObserver.unobserve(selectRootRef.value);
     }

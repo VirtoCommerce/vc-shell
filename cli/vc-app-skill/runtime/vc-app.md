@@ -1266,6 +1266,30 @@ If `src/api_client/` does not exist and the user wants API-backed generation:
 - Suggest running `/vc-app connect` first
 - Do NOT proceed with generation
 
+### Prompt too abstract (design)
+If the prompt contains no identifiable entities, data objects, or concrete fields (e.g., "make me an app", "something cool"):
+- Ask the user to clarify: "Describe what entities/data the app manages, what actions users perform, and how objects relate."
+- Do NOT attempt to parse an empty/abstract prompt into modules.
+
+### Large design plan (10+ modules)
+If prompt analysis produces 10 or more modules:
+- Show the full plan for review
+- Suggest batching: "Generate first N now, rest later?"
+- If user agrees to split, truncate modules list and note the remainder
+
+### One module fails in design loop
+If a single module's generation fails during the design execution loop:
+- Show the error for that module
+- Continue generating remaining modules
+- In the final summary, list the failed module under "Skipped (errors):" with the error message
+- Suggest: "Re-run /vc-app generate for the skipped module after fixing the issue."
+
+### Prompt in non-English (design)
+The prompt may be in any language. This is fine — parse entities and intent from any language, but:
+- Module names → always kebab-case english
+- Field names → always camelCase english
+- If you cannot confidently translate an entity name, ask the user to confirm the english name
+
 ---
 
 ## Subagent Dispatch Reference

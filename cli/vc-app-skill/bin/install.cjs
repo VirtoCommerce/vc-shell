@@ -127,8 +127,16 @@ function readVersion() {
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
+const KNOWN_RUNTIMES = ['claude', 'opencode', 'gemini'];
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
+
+  if (args.runtime && !KNOWN_RUNTIMES.includes(args.runtime)) {
+    console.warn(yellow(`  warning: unknown runtime "${args.runtime}", falling back to auto-detect`));
+    args.runtime = null;
+  }
+
   const baseDir = args.global ? os.homedir() : process.cwd();
   const configDir = detectConfigDir(baseDir, args.runtime);
   const version = readVersion();
@@ -197,13 +205,14 @@ function main() {
     }
   }
 
-  if (fs.existsSync(destRuntime)) {
-    // Also list skill files
+  // List sub-commands from commands/vc-app/ directory
+  const subCommandsDir = path.join(destCommands, 'vc-app');
+  if (fs.existsSync(subCommandsDir)) {
     try {
-      const skillFiles = fs.readdirSync(destRuntime).filter((f) => f.endsWith('.md'));
-      for (const f of skillFiles) {
+      const subs = fs.readdirSync(subCommandsDir).filter((f) => f.endsWith('.md'));
+      for (const f of subs) {
         const name = f.replace(/\.md$/, '');
-        console.log(`    ${cyan('/')}${cyan(name)}`);
+        console.log(`    ${cyan('/')}${cyan(`vc-app:${name}`)}`);
       }
     } catch {
       // ignore

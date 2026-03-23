@@ -32,8 +32,8 @@ describe("define-app-module (jscodeshift)", () => {
     expect(result).not.toBeNull();
     expect(result).toContain("defineAppModule");
     expect(result).toContain("blades: pages");
-    expect(result).toContain("locales: locales");
-    expect(result).toContain("notificationTemplates: notificationTemplates");
+    expect(result).toContain("locales");
+    expect(result).toContain("notificationTemplates");
     expect(result).not.toContain("createAppModule");
   });
 
@@ -47,15 +47,18 @@ describe("define-app-module (jscodeshift)", () => {
     const input = readFileSync(join(FIXTURES, "three-args.input.ts"), "utf8");
     const { reports } = applyTransformWithReports(transform, { path: "test.ts", source: input });
     expect(reports.length).toBeGreaterThan(0);
-    expect(reports[0]).toContain("notificationTemplates");
+    expect(reports[0]).toContain("deprecated");
   });
 
-  it("warns on 4+ arguments", () => {
-    const code = `import { createAppModule } from "@vc-shell/framework";
-export default createAppModule(pages, locales, templates, components, options);`;
-    const { result, reports } = applyTransformWithReports(transform, { path: "test.ts", source: code });
+  it("transforms 4-arg createAppModule to object syntax", () => {
+    const input = readFileSync(join(FIXTURES, "four-args.input.ts"), "utf8");
+    const result = applyTransform(transform, { path: "test.ts", source: input });
     expect(result).not.toBeNull();
-    expect(reports[0]).toContain("manual review");
+    expect(result).toContain("blades: pages");
+    expect(result).toContain("locales");
+    expect(result).toContain("notificationTemplates");
+    expect(result).not.toMatch(/defineAppModule\([^)]*components/s);
+    expect(result).not.toContain('import * as components');
   });
 
   it("preserves formatting of unchanged lines", () => {

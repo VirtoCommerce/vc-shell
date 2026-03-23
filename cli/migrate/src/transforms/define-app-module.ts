@@ -43,28 +43,49 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
       const replacement = j.callExpression(j.identifier("defineAppModule"), [obj]);
       j(path).replaceWith(replacement);
       modified = true;
-    } else if (args.length === 3) {
-      // 3-arg: defineAppModule({ blades: pages, locales: locales, notificationTemplates: notificationTemplates })
+    } else if (args.length >= 3) {
+      // 3+ args: defineAppModule({ blades: arg0, locales: arg1, notificationTemplates?: arg2 })
+      // arg3+ (components etc.) dropped — not needed in new API
       const properties = [
         j.property("init", j.identifier("blades"), args[0] as any),
         j.property("init", j.identifier("locales"), args[1] as any),
-        j.property("init", j.identifier("notificationTemplates"), args[2] as any),
       ];
+      if (args[1].type === "Identifier" && args[1].name === "locales") {
+        properties[1].shorthand = true;
+      }
+      properties.push(j.property("init", j.identifier("notificationTemplates"), args[2] as any));
+      if (args[2].type === "Identifier" && args[2].name === "notificationTemplates") {
+        properties[2].shorthand = true;
+      }
       const obj = j.objectExpression(properties);
       const replacement = j.callExpression(j.identifier("defineAppModule"), [obj]);
       j(path).replaceWith(replacement);
-      api.report(
-        `${fileInfo.path}: Migrated 3-arg createAppModule with notificationTemplates. ` +
-        `Consider restructuring to the new notifications config format (see MIGRATION_GUIDE.md "Notifications System Redesign").`,
-      );
-      modified = true;
-    } else {
-      // 4+ args: just rename the callee
-      if (path.node.callee.type === "Identifier") {
-        path.node.callee.name = "defineAppModule";
+
+      // Remove dead imports for unused args (e.g. `import * as components`)
+      if (args.length >= 4) {
+        for (let i = 3; i < args.length; i++) {
+          const droppedArg = args[i];
+          if (droppedArg.type === "Identifier") {
+            const droppedName = droppedArg.name;
+            root.find(j.ImportDeclaration).forEach((imp: any) => {
+              const specs = imp.node.specifiers || [];
+              const nsIdx = specs.findIndex(
+                (s: any) => s.type === "ImportNamespaceSpecifier" && s.local?.name === droppedName,
+              );
+              if (nsIdx !== -1) {
+                const usages = root.find(j.Identifier, { name: droppedName }).size();
+                if (usages <= 1) {
+                  j(imp).remove();
+                }
+              }
+            });
+          }
+        }
       }
+
       api.report(
-        `${fileInfo.path}: defineAppModule called with ${args.length} argument(s) — manual review required.`,
+        `${fileInfo.path}: Migrated ${args.length}-arg createAppModule. ` +
+        `notificationTemplates is deprecated — migrate to new notifications config format.`,
       );
       modified = true;
     }

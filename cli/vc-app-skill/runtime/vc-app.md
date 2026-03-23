@@ -128,15 +128,26 @@ Available CLI flags (see `cli/create-vc-app/README.md` for full list):
 
 If the command fails, show the stderr output and suggest the user check that `@vc-shell/create-vc-app` is installed or accessible via npx.
 
+### Post-scaffold: install dependencies
+
+After successful creation, `cd` into the new project directory and run:
+
+```bash
+yarn install
+```
+
+Wait for installation to complete. This is required — without installed dependencies, type-checking and code generation will fail.
+
+If `yarn install` fails, show the error and suggest the user fix it manually before proceeding.
+
 ### Next step
 
-After successful creation, tell the user:
+After dependencies are installed, tell the user:
 
 ```
-Project created successfully! Next steps:
-  cd <projectName>
-  yarn install
+Project created successfully! Dependencies installed.
   /vc-app connect    — to connect to your VirtoCommerce platform and generate API clients
+  /vc-app generate   — to generate UI modules (with mock data if no API connected)
 ```
 
 ---

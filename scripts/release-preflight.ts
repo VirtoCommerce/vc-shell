@@ -49,6 +49,7 @@ function runChecks() {
   console.log("\x1b[90m──────────────────────────────────\x1b[0m");
 
   for (const check of checks) {
+    process.stdout.write(`  ⏳ ${check.name}...`);
     const start = Date.now();
 
     const result = spawnSync(check.command, check.args, {
@@ -65,6 +66,9 @@ function runChecks() {
 
     const dots = ".".repeat(Math.max(1, 24 - check.name.length));
     const time = formatDuration(duration);
+
+    // Clear the "⏳ Running..." line and overwrite with result
+    process.stdout.write(`\r\x1b[2K`);
 
     if (ok) {
       console.log(`  \x1b[32m✓\x1b[0m ${check.name} \x1b[90m${dots}\x1b[0m ${time}`);

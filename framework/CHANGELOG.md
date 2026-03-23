@@ -1,3 +1,23 @@
+# [2.0.0-alpha.17](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.16...v2.0.0-alpha.17) (2026-03-23)
+
+
+### Bug Fixes
+
+* **defineBlade:** register blade config at module scope, not setup time ([7d80498](https://github.com/VirtoCommerce/vc-shell/commit/7d804989ac285c1fb2d277e131c7e159292a5f41))
+* **framework:** expose defineBlade global type via globals.d.ts reference ([7c24305](https://github.com/VirtoCommerce/vc-shell/commit/7c243059b18fcb6f8588425c08d3bd2856db03db))
+* **framework:** fix vc-select reactivity and assets-details binding ([5f37bd7](https://github.com/VirtoCommerce/vc-shell/commit/5f37bd7a8095a27438fb94c2cdf967c212217282))
+* **notifications:** export NotificationContextKey from framework public API ([28a989d](https://github.com/VirtoCommerce/vc-shell/commit/28a989d26ea4b5e5f59fc48e34756829bdfe401c))
+
+
+### Features
+
+* add useDataTableSort composable for VcDataTable sort state management ([4eafe65](https://github.com/VirtoCommerce/vc-shell/commit/4eafe65a02b7af23dc4f5196c2583e09de47ec5a))
+* **blade-navigation:** add BladeDefinition, BladeMenuItemConfig, BladeConfig types ([813786b](https://github.com/VirtoCommerce/vc-shell/commit/813786be215ba0d73e9269863a218277b36f17e4))
+* **blade-navigation:** add global bladeConfigRegistry for defineBlade ([2957c70](https://github.com/VirtoCommerce/vc-shell/commit/2957c70a751a7a47b8a40fd47e57797e0ad9ea73))
+* **blade-registry:** read from bladeConfigRegistry + handle menu registration ([235fc51](https://github.com/VirtoCommerce/vc-shell/commit/235fc51f78e05c9958ad5096f85b69ccd8417c0b))
+* **framework:** add global defineBlade() type declaration ([4b5b227](https://github.com/VirtoCommerce/vc-shell/commit/4b5b22725c0b381aecb583bd7efd11ea94bd34c9))
+* **notifications:** add NotificationContextKey injection key ([325de54](https://github.com/VirtoCommerce/vc-shell/commit/325de540aea20bab3f9981d55419b9e8882faf10))
+* **notifications:** add useNotificationContext composable ([fa73deb](https://github.com/VirtoCommerce/vc-shell/commit/fa73debbcabc2378c1a0c0a90dba589a134c2c87))
 # [2.0.0-alpha.16](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.15...v2.0.0-alpha.16) (2026-03-20)
 
 **Note:** Version bump only for package @vc-shell/framework

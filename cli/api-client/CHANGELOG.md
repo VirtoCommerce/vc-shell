@@ -1,3 +1,9 @@
+# [2.0.0-alpha.17](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.16...v2.0.0-alpha.17) (2026-03-23)
+
+
+### Features
+
+* **api-client:** add simple mode — generate only .ts files by default ([2f5a475](https://github.com/VirtoCommerce/vc-shell/commit/2f5a475ad9ec9928f7aae8e2ecf03e38b0a22bd1))
 # [2.0.0-alpha.16](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.15...v2.0.0-alpha.16) (2026-03-20)
 
 **Note:** Version bump only for package @vc-shell/api-client-generator

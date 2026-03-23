@@ -1,3 +1,20 @@
+# [2.0.0-alpha.17](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.16...v2.0.0-alpha.17) (2026-03-23)
+
+
+### Bug Fixes
+
+* **migrate:** remove empty export type {} stubs after Props/Emits removal ([e6164ba](https://github.com/VirtoCommerce/vc-shell/commit/e6164ba267c737aee8990f271173d05e844e81a9))
+
+
+### Features
+
+* **migrate:** add defineOptions → defineBlade transform ([676caea](https://github.com/VirtoCommerce/vc-shell/commit/676caea421fe960b589041ef74679d5fdb5336d8))
+* **migrate:** add import dedup utility and improve vue-sfc-wrapper resilience ([c87e065](https://github.com/VirtoCommerce/vc-shell/commit/c87e06554b3f538d1ee45a65269e53c94fe40683))
+* **migrate:** add manual-migration-audit diagnostic transform ([a069aad](https://github.com/VirtoCommerce/vc-shell/commit/a069aadd1816eb6363dd5e95ccd175b9e464d43e))
+* **migrate:** add use-data-table-sort codemod transform ([655aef7](https://github.com/VirtoCommerce/vc-shell/commit/655aef7b98405b1243c00ed1cdc2a2320600d780))
+* **migrate:** auto-migrate notificationTemplates to notifications config ([a9ccbe5](https://github.com/VirtoCommerce/vc-shell/commit/a9ccbe5e30a3f4b30a2c22e2911629d0a86dbb2d))
+* **migrate:** fix defineAppModule 2-arg to use blades key ([a92f444](https://github.com/VirtoCommerce/vc-shell/commit/a92f44400ac5253900c0b9377113614fac931753))
+* **migrate:** fix defineAppModule 3/4-arg to use object syntax with blades key ([31a1ef3](https://github.com/VirtoCommerce/vc-shell/commit/31a1ef3ae2b87fb77290ec79ff79cf13e65a7bf6))
 # [2.0.0-alpha.16](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.15...v2.0.0-alpha.16) (2026-03-20)
 
 **Note:** Version bump only for package @vc-shell/migrate

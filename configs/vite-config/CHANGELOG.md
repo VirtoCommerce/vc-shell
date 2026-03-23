@@ -1,3 +1,14 @@
+# [2.0.0-alpha.17](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.16...v2.0.0-alpha.17) (2026-03-23)
+
+
+### Bug Fixes
+
+* **defineBlade:** register blade config at module scope, not setup time ([7d80498](https://github.com/VirtoCommerce/vc-shell/commit/7d804989ac285c1fb2d277e131c7e159292a5f41))
+
+
+### Features
+
+* **vite-config:** add viteBladePlugin for defineBlade macro transform ([adee11c](https://github.com/VirtoCommerce/vc-shell/commit/adee11ca10431eb3f7705fdf4129509f3b7710f7))
 # [2.0.0-alpha.16](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.15...v2.0.0-alpha.16) (2026-03-20)
 
 **Note:** Version bump only for package @vc-shell/config-generator

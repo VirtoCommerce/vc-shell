@@ -1,3 +1,21 @@
+# [2.0.0-alpha.17](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.16...v2.0.0-alpha.17) (2026-03-23)
+
+
+### Bug Fixes
+
+* **vc-app:** use non-interactive CLI mode with full flag set for /vc-app create ([b113262](https://github.com/VirtoCommerce/vc-shell/commit/b113262317d340b2d076cdd46a3ab79ec2f9b147))
+
+
+### Features
+
+* **vc-app-skill:** migrate skill content from create-vc-app to standalone package ([1ac8945](https://github.com/VirtoCommerce/vc-shell/commit/1ac894510ca32cad22efb226117127f76085f85a))
+* **vc-app:** add curated module examples from vendor-portal ([9cdf07a](https://github.com/VirtoCommerce/vc-shell/commit/9cdf07a11de7f8d8b11806e7c79ed9a2c950262a))
+* **vc-app:** add details path patterns with nested types handling ([49ebd16](https://github.com/VirtoCommerce/vc-shell/commit/49ebd1673563a636c38913f858028590ea99763d))
+* **vc-app:** add entry-point skill with command routing ([e20072a](https://github.com/VirtoCommerce/vc-shell/commit/e20072a62883325dff909020b747c942fcd575d1))
+* **vc-app:** add knowledge index, module structure, and list path patterns ([2f9f176](https://github.com/VirtoCommerce/vc-shell/commit/2f9f176476cd14d57d42abe2122a9449dff078fd))
+* **vc-app:** add subagent prompts for code generation ([4dbc259](https://github.com/VirtoCommerce/vc-shell/commit/4dbc25948199d7f40a45d1fb4f17cf12d7985798))
+* **vc-app:** add supporting patterns (toolbar, navigation, widgets) with API verification ([8bce97c](https://github.com/VirtoCommerce/vc-shell/commit/8bce97c29c2524753a7408f572985cf4e7da6475))
+* **vc-app:** create skill directory structure and docs sync script ([d52d881](https://github.com/VirtoCommerce/vc-shell/commit/d52d8810328568efb129658388aa87b10ecbb318))
 # [2.0.0-alpha.16](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.15...v2.0.0-alpha.16) (2026-03-20)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app

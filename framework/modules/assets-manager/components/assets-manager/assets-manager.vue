@@ -195,7 +195,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<Emits>();
 
-defineOptions({
+defineBlade({
   name: "AssetsManager",
 });
 

@@ -26,7 +26,7 @@
         v-if="tooltip"
         #tooltip
       >
-        <span v-html="tooltip"></span>
+        <span v-html="DOMPurify.sanitize(tooltip)"></span>
       </template>
     </VcLabel>
 
@@ -175,6 +175,7 @@ import { useSelectDataSource } from "@ui/components/molecules/vc-select/composab
 import { useSelectSelection } from "@ui/components/molecules/vc-select/composables/useSelectSelection";
 import SelectTrigger from "@ui/components/molecules/vc-select/_internal/SelectTrigger.vue";
 import SelectDropdown from "@ui/components/molecules/vc-select/_internal/SelectDropdown.vue";
+import DOMPurify from "dompurify";
 
 type ArrayElementType<U> = U extends Array<infer V> ? V : never;
 type Option = P extends { results?: T[]; totalCount?: number } ? T & ArrayElementType<Required<P>["results"]> : T;
@@ -814,7 +815,6 @@ watch(
   &.vc-select--has-hint-or-error {
     @apply tw-pb-5;
   }
-
 }
 
 // Dropdown enter/leave transition (fade + scale)

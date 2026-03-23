@@ -9,7 +9,7 @@ const PROJECT_TYPE_LABELS: Record<string, string> = {
 
 export function printSuccess(options: ProjectOptions): void {
   const typeLabel = PROJECT_TYPE_LABELS[options.projectType];
-  const hasModule = options.projectType !== "host-app";
+  const hasModule = !!options.moduleName;
 
   console.log(`
   ${pc.green("╭─────────────────────────────────────────╮")}

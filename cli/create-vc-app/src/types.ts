@@ -4,7 +4,7 @@ export interface ProjectOptions {
   projectName: string;
   packageName: string;
   projectType: ProjectType;
-  moduleName: string;
+  moduleName?: string;
   basePath: string;
   tenantRoutes: boolean;
   aiAgent: boolean;

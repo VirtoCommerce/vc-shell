@@ -1,13 +1,13 @@
 import { App } from "vue";
-import { addMenuItem<% if (dashboard) { %>, registerDashboardWidget<% } %> } from "@vc-shell/framework";
-<% if (dashboard) { %>
+<% if (dashboard) { -%>
+import { addMenuItem, registerDashboardWidget } from "@vc-shell/framework";
 import { markRaw } from "vue";
 import Welcome from "./components/dashboard-widgets/Welcome.vue";
-<% } %>
+<% } -%>
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function bootstrap(app: App) {
-<% if (dashboard) { %>
+<% if (dashboard) { -%>
   addMenuItem({
     title: "SHELL.MENU.DASHBOARD",
     icon: "lucide-home",
@@ -22,5 +22,5 @@ export function bootstrap(app: App) {
     size: { width: 6, height: 6 },
     position: { x: 0, y: 0 },
   });
-<% } %>
+<% } -%>
 }

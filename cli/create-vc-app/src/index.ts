@@ -39,7 +39,7 @@ ${pc.bold("Options (create):")}
   --type <type>              Project type: standalone | dynamic-module | host-app
   --name, --app-name <name>  Application name
   --package-name <name>      npm package name
-  --module-name <name>       Initial module name
+  --module-name <name>       Initial module name (opt-in for standalone)
   --base-path <path>         Base path [default: /apps/<name>/]
   --tenant-routes            Include tenant routing (/:tenantId prefix)
   --ai-agent                 Include AI Agent configuration

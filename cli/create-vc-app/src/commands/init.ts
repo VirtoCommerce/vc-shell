@@ -44,11 +44,19 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
     const projectName = getProjectName();
     const projectType = args.type as ProjectType;
 
+    // For standalone, module is opt-in: only generated when --module-name is explicitly provided.
+    // For dynamic-module, module is always required — default to project name.
+    const explicitModule = args["module-name"] as string | undefined;
+    const moduleName =
+      projectType === "dynamic-module"
+        ? explicitModule || toSentenceCase(projectName)
+        : explicitModule || undefined;
+
     options = {
       projectName: toKebabCase(projectName),
       packageName: (args["package-name"] as string) || (isValidPackageName(projectName) ? projectName : toValidPackageName(projectName)),
       projectType,
-      moduleName: (args["module-name"] as string) || toSentenceCase(projectName),
+      moduleName,
       basePath: (args["base-path"] as string) || toValidBasePath(`/apps/${toKebabCase(projectName)}/`),
       tenantRoutes: (args["tenant-routes"] as boolean) || false,
       aiAgent: (args["ai-agent"] as boolean) || false,
@@ -121,8 +129,18 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
       const phase2 = await prompts(
         [
           {
+            name: "includeModule",
+            type: projectType === "standalone" ? "confirm" : null,
+            message: "Include starter module?",
+            initial: true,
+          },
+          {
             name: "moduleName",
-            type: projectType === "host-app" ? null : "text",
+            type: (_, values) => {
+              if (projectType === "host-app") return null;
+              if (projectType === "standalone" && !values.includeModule) return null;
+              return "text";
+            },
             message: pc.reset("Module name:"),
             initial: defaultModuleName,
             format: (value: string) => String(value).trim(),
@@ -166,7 +184,7 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
         projectName,
         packageName: phase1.packageName || (isValidPackageName(projectName) ? projectName : toValidPackageName(projectName)),
         projectType,
-        moduleName: phase2.moduleName || defaultModuleName,
+        moduleName: phase2.moduleName || (phase2.includeModule !== false && projectType !== "host-app" ? defaultModuleName : undefined),
         basePath: phase2.basePath || toValidBasePath(defaultBasePath),
         tenantRoutes: phase2.tenantRoutes || false,
         aiAgent: phase2.aiAgent || false,
@@ -194,8 +212,8 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
   // 1. Render project type template
   renderDir(path.join(templateRoot, options.projectType), root, templateData);
 
-  // 2. Render module (standalone and dynamic-module only)
-  if (options.projectType !== "host-app") {
+  // 2. Render module (when moduleName is provided — always for dynamic-module, opt-in for standalone)
+  if (options.moduleName) {
     const moduleKebab = toKebabCase(options.moduleName);
     const moduleTargetDir =
       options.projectType === "dynamic-module"

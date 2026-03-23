@@ -54,18 +54,19 @@ export function toValidBasePath(basePath: string): string {
 }
 
 export function buildTemplateData(
-  options: { moduleName: string; projectName?: string; packageName?: string; basePath?: string; tenantRoutes?: boolean; aiAgent?: boolean; dashboard?: boolean; mocks?: boolean },
+  options: { moduleName?: string; projectName?: string; packageName?: string; basePath?: string; tenantRoutes?: boolean; aiAgent?: boolean; dashboard?: boolean; mocks?: boolean },
 ): Record<string, string | boolean> {
-  const moduleName = options.moduleName;
-  const kebab = toKebabCase(moduleName);
+  const moduleName = options.moduleName || "";
+  const kebab = moduleName ? toKebabCase(moduleName) : "";
 
   const data: Record<string, string | boolean> = {
+    hasModule: !!options.moduleName,
     ModuleName: kebab,
-    ModuleNamePascalCase: toPascalCase(moduleName),
-    ModuleNameCamelCase: toCamelCase(moduleName),
+    ModuleNamePascalCase: moduleName ? toPascalCase(moduleName) : "",
+    ModuleNameCamelCase: moduleName ? toCamelCase(moduleName) : "",
     ModuleNameUppercase: kebab.toUpperCase(),
-    ModuleNameScreamingSnake: toScreamingSnakeCase(moduleName),
-    ModuleNameSentenceCase: toSentenceCase(moduleName),
+    ModuleNameScreamingSnake: moduleName ? toScreamingSnakeCase(moduleName) : "",
+    ModuleNameSentenceCase: moduleName ? toSentenceCase(moduleName) : "",
   };
 
   if (options.projectName) {

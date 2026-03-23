@@ -3,10 +3,12 @@ import { createApp } from "vue";
 import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
+<% if (hasModule) { -%>
 import <%- ModuleNamePascalCase %> from "./modules/<%- ModuleName %>";
-<% if (mocks) { %>
+<% } -%>
+<% if (mocks) { -%>
 import Sample from "./modules/sample";
-<% } %>
+<% } -%>
 import { bootstrap } from "./bootstrap";
 
 import "@vc-shell/framework/dist/index.css";
@@ -20,28 +22,32 @@ async function startApp() {
     console.log(e);
   }
 
-  const app = createApp(RouterView)
-    .use(VirtoShellFramework, {
-      router,
-      i18n: {
-        locale: import.meta.env.APP_I18N_LOCALE,
-        fallbackLocale: import.meta.env.APP_I18N_FALLBACK_LOCALE,
-      },
-<% if (aiAgent) { %>
-      aiAgent: {
-        config: {
-          url: import.meta.env.APP_AI_AGENT_URL,
-        },
-      },
-<% } %>
-    })
-    .use(<%- ModuleNamePascalCase %>, { router })
-<% if (mocks) { %>
-    .use(Sample, { router })
-<% } %>
-    .use(router);
+  const { currentLocale, setLocale } = useLanguages();
 
-  const { currentLocale, setLocale } = app.runWithContext(() => useLanguages());
+  const app = createApp(RouterView);
+
+  app.use(VirtoShellFramework, {
+    router,
+    i18n: {
+      locale: import.meta.env.APP_I18N_LOCALE,
+      fallbackLocale: import.meta.env.APP_I18N_FALLBACK_LOCALE,
+    },
+<% if (aiAgent) { -%>
+    aiAgent: {
+      config: {
+        url: import.meta.env.APP_AI_AGENT_URL,
+      },
+    },
+<% } -%>
+  });
+
+<% if (hasModule) { -%>
+  app.use(<%- ModuleNamePascalCase %>);
+<% } -%>
+<% if (mocks) { -%>
+  app.use(Sample);
+<% } -%>
+  app.use(router);
 
   bootstrap(app);
 
@@ -51,7 +57,7 @@ async function startApp() {
 
   setLocale(currentLocale.value);
 
-  app.config.errorHandler = (err) => {
+  app.config.errorHandler = (err: unknown) => {
     notification.error((err as Error).toString(), {
       timeout: 5000,
     });

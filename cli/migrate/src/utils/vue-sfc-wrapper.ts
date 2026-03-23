@@ -68,7 +68,15 @@ export function wrapForSFCBoth(
   templateTransform: (template: string, filePath: string) => { content: string; changed: boolean },
 ): Transform {
   return (fileInfo, api, options) => {
-    const afterScript = wrapForSFC(scriptTransform)(fileInfo, api, options);
+    let afterScript: string | null = null;
+    try {
+      afterScript = wrapForSFC(scriptTransform)(fileInfo, api, options);
+    } catch (err) {
+      api.report(
+        `${fileInfo.path}: Script transform failed (${err instanceof Error ? err.message : String(err)}), ` +
+        `attempting template-only transform`
+      );
+    }
     const source = afterScript ?? fileInfo.source;
     const afterTemplate = wrapForSFCTemplate(templateTransform)(
       { ...fileInfo, source },

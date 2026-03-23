@@ -162,4 +162,30 @@ const x = 1;
     const result = wrapped({ path: "test.vue", source: vue }, mockApi(), {});
     expect(result).toBeNull();
   });
+
+  it("applies template transform when script transform throws", () => {
+    const scriptCore: Transform = () => {
+      throw new Error("parse error");
+    };
+    const tmplTransform = (t: string) => ({
+      content: t.replace("old-class", "new-class"),
+      changed: true,
+    });
+    const reports: string[] = [];
+    const api = {
+      ...mockApi(),
+      report: (msg: string) => reports.push(msg),
+    };
+    const wrapped = wrapForSFCBoth(scriptCore, tmplTransform);
+    const vue = `<template>
+<div class="old-class"/>
+</template>
+<script setup lang="ts">
+const x = 1;
+</script>`;
+    const result = wrapped({ path: "test.vue", source: vue }, api, {});
+    expect(result).toContain("new-class");
+    expect(result).toContain("const x = 1;");
+    expect(reports[0]).toContain("Script transform failed");
+  });
 });

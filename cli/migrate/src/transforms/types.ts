@@ -21,6 +21,10 @@ export interface VersionedTransform {
   scope?: "file" | "project";
   /** Absolute path to transform file for dynamic import */
   transformPath: string;
+  /** Glob patterns for files this transform should skip */
+  excludeFiles?: string[];
+  /** File extensions this transform applies to (default: [".ts", ".vue"]) */
+  fileExtensions?: string[];
 }
 
 export interface TransformReport {
@@ -29,4 +33,6 @@ export interface TransformReport {
   filesSkipped: string[];
   filesErrored: Array<{ path: string; error: string }>;
   reports: string[];
+  filesExcluded: string[];
+  filesRolledBack: Array<{ path: string; error: string }>;
 }

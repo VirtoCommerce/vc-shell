@@ -22,6 +22,11 @@ program
     "Also update dependency versions in package.json",
     false,
   )
+  .option(
+    "--exclude <patterns...>",
+    "Additional exclude patterns for files/directories",
+    [],
+  )
   .action(async (options) => {
     const cwd = resolve(options.cwd);
 
@@ -52,6 +57,8 @@ program
       transform: options.transform,
       dryRun: options.dryRun,
       list: options.list,
+      updateDeps: options.updateDeps,
+      exclude: options.exclude ?? [],
     });
   });
 

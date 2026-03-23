@@ -1,3 +1,9 @@
+# [2.0.0-alpha.20](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.18...v2.0.0-alpha.20) (2026-03-23)
+
+
+### Bug Fixes
+
+* **vc-app-skill:** use [@alpha](https://github.com/alpha) dist-tag for update command and version check hook ([cceaab9](https://github.com/VirtoCommerce/vc-shell/commit/cceaab926a3a51160d8994891bc88445bfb9a9aa))
 # [2.0.0-alpha.19](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.18...v2.0.0-alpha.19) (2026-03-23)
 
 **Note:** Version bump only for package @vc-shell/vc-app-skill

@@ -1,3 +1,9 @@
+# [2.0.0-alpha.20](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.18...v2.0.0-alpha.20) (2026-03-23)
+
+
+### Bug Fixes
+
+* **theme-selector:** update notification mock path in tests ([c46aed1](https://github.com/VirtoCommerce/vc-shell/commit/c46aed1128abbb3b93623129de31b40809618408))
 # [2.0.0-alpha.19](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.18...v2.0.0-alpha.19) (2026-03-23)
 
 **Note:** Version bump only for package @vc-shell/framework

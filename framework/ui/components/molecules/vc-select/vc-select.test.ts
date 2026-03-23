@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createI18n } from "vue-i18n";
 import VcSelect from "@ui/components/molecules/vc-select/vc-select.vue";
@@ -12,6 +12,16 @@ beforeAll(() => {
       disconnect() {}
     } as any;
   }
+});
+
+// Prevent useSelectVisibility timers from leaking after test teardown
+beforeEach(() => {
+  vi.useFakeTimers();
+});
+
+afterEach(() => {
+  vi.runOnlyPendingTimers();
+  vi.useRealTimers();
 });
 
 const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });

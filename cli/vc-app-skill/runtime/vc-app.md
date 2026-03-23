@@ -312,6 +312,13 @@ INTENT = {
 
 Where `I18N_PREFIX` = SCREAMING_SNAKE_CASE of `moduleName` (e.g., `team` → `TEAM`, `catalog-items` → `CATALOG_ITEMS`).
 
+### Enhance Mode Detection
+
+After collecting `INTENT.moduleName`, check if `src/modules/<moduleName>/` already exists.
+
+- If it **exists** → switch to the **Enhance Flow** (see section below, after Phase 4).
+- If it **does not exist** → continue with the **Create Flow** (Phase 2 onwards).
+
 ### Phase 2: Data Source (Interactive Dialog)
 
 **Auto-detect no-API mode:** Before asking, check whether an API client directory exists:
@@ -610,6 +617,117 @@ Remaining type errors:
 You may need to manually fix these errors, or run /vc-app generate again after adjusting your API clients.
 ```
 
+### Enhance Flow (module exists)
+
+When the module directory already exists, generate switches to enhance mode — surgical modifications to existing code.
+
+#### Phase E1: Module Analysis
+
+Dispatch `module-analyzer` agent:
+
+> Use the **Agent tool** with this prompt:
+>
+> Read the file `{SKILL_DIR}/agents/module-analyzer.md` for your full instructions.
+>
+> Execute with these parameters:
+> ```json
+> {
+>   "targetDir": "<absolute path to module directory>"
+> }
+> ```
+
+Store the result as `MODULE_ANALYSIS`.
+
+Present the module summary to the user:
+```
+Module "<moduleName>" analysis:
+  Blades: <list blade names and types>
+  Composables: <list composable names>
+  API connected: yes/no
+  Locale keys: <count>
+```
+
+Ask: **"What would you like to change? (describe in free text)"**
+
+#### Phase E2: Intent Parsing
+
+Parse the user's free-text description into an action plan. Map to action types:
+- Mentions of "column", "add to list/table" → `add-column`
+- Mentions of "field", "input", "form" → `add-field`
+- Mentions of "logic", "validation", "computed", "watcher" → `add-logic`
+- Mentions of "toolbar", "button", "action", "export" → `add-toolbar-action`
+- Mentions of "link", "navigate", "open blade", "connect" → `link-blades`
+- Mentions of "new blade", "new list", "new details" → new blade creation (uses existing generators)
+
+Present the parsed action plan to the user for confirmation:
+```
+Proposed changes:
+  1. [add-column] Add "email" column to team-list after "name"
+  2. [add-field] Add "email" input field to team-details after "name"
+  3. [add-toolbar-action] Add "Export CSV" button to team-list toolbar
+
+Confirm? (y to proceed, or describe corrections)
+```
+
+#### Phase E3: Data Source (conditional)
+
+- If action plan includes **new blades with a different API entity** → run full Phase 2 data source discovery for the new entity
+- If adding fields from the **existing entity** → skip, fields come from existing API types (use `MODULE_ANALYSIS.composables` to find the entity)
+- If adding **logic/toolbar only** → skip
+
+#### Phase E4: Execution
+
+For each action in the confirmed plan:
+
+**New blades** → dispatch `list-blade-generator` or `details-blade-generator` with `existingModule` context:
+- `existingModule.blades` = blade names from `MODULE_ANALYSIS.blades`
+- `existingModule.localePrefix` = derive from existing locale keys
+- `existingModule.indexPath` = path to module's `index.ts`
+- If linking to existing blade, pass `linkTo` with trigger type
+
+Then dispatch `module-assembler` with `mode: "append"`.
+
+**Modifications to existing files** → dispatch `blade-enhancer`:
+
+> Use the **Agent tool** with this prompt:
+>
+> Read the file `{SKILL_DIR}/agents/blade-enhancer.md` for your full instructions.
+>
+> Execute with these parameters:
+> ```json
+> {
+>   "targetDir": "<absolute path to module>",
+>   "moduleAnalysis": <MODULE_ANALYSIS>,
+>   "actions": <confirmed action plan>,
+>   "dataSource": <DATA_SOURCE if applicable>,
+>   "knowledgeBase": "{KNOWLEDGE_BASE}",
+>   "docsRoot": "{DOCS_ROOT}"
+> }
+> ```
+
+Handle agent status:
+- `DONE` → proceed to Phase E5
+- `DONE_WITH_CONCERNS` → show concerns to user, proceed to Phase E5
+- `BLOCKED` → show error, stop
+
+#### Phase E5: Verify
+
+Dispatch `type-checker` agent to verify TypeScript compiles.
+
+Present summary of all changes:
+```
+Module "<moduleName>" enhanced:
+
+  Modified files:
+    <list of files with change description>
+
+  New files (if any):
+    <list of new files>
+
+  ⚠ <any concerns from blade-enhancer>
+  ✓/✗ TypeScript: <status>
+```
+
 ---
 
 ## `/vc-app promote`
@@ -823,6 +941,8 @@ All agents live at `{SKILL_DIR}/agents/`. Each agent file contains its own Input
 | module-assembler | `agents/module-assembler.md` | Creates barrel files, registers module | Yes |
 | type-checker | `agents/type-checker.md` | Runs vue-tsc, fixes type errors iteratively | Yes (fixes only) |
 | promote-agent | `agents/promote-agent.md` | Transforms mock composables/blades/locales to use real API | Yes (edits only) |
+| module-analyzer | `agents/module-analyzer.md` | Analyzes existing module structure (blades, composables, locales) | No (returns JSON) |
+| blade-enhancer | `agents/blade-enhancer.md` | Surgical edits to existing blades/composables/locales | Yes (edits only) |
 
 ### How to dispatch an agent
 

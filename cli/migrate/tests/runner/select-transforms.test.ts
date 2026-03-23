@@ -11,6 +11,7 @@ describe("selectTransforms", () => {
       "rewrite-imports",
       "remove-deprecated-aliases",
       "blade-props-simplification",
+      "define-options-to-blade",
       "icon-audit",
       "scss-safe-use",
       "widgets-migration",
@@ -20,6 +21,7 @@ describe("selectTransforms", () => {
       "icon-container-prop",
       "menu-group-config",
       "shims-to-globals",
+      "use-data-table-sort",
     ]);
   });
 

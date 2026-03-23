@@ -47,6 +47,14 @@ export const transforms: VersionedTransform[] = [
     transformPath: t("blade-props-simplification"),
   },
   {
+    name: "define-options-to-blade",
+    description: "defineOptions() → defineBlade() for blade pages (removes notifyType)",
+    introducedIn: "2.0.0",
+    migrationGuideSection: "defineBlade macro",
+    transformPath: t("define-options-to-blade"),
+    fileExtensions: [".vue"],
+  },
+  {
     name: "icon-audit",
     description: "Detect Font Awesome icons, report with suggested replacements (diagnostic-only)",
     introducedIn: "2.0.0",

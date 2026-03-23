@@ -893,6 +893,347 @@ Handle agent status:
 
 ---
 
+## `/vc-app design`
+
+Generate a full vc-shell application from a free-text prompt. This command parses a description into a multi-module plan, shows it for confirmation, then orchestrates existing generators to build everything.
+
+### Phase 1: Prompt Acquisition
+
+Parse `$ARGUMENTS` (everything after `design`):
+
+1. **If text after `design`** (not starting with `--`) → use as the prompt directly.
+2. **If `--from <path>`** → read the file at `<path>` relative to project root. Use its contents as the prompt. If file doesn't exist, show error and stop.
+3. **If empty** → ask the user: **"Describe the application you want to build:"**
+
+Store the result as `DESIGN_PROMPT`.
+
+If the prompt is very short (under 20 words) or too abstract (no concrete entities/data mentioned), ask for clarification:
+```
+Your description is quite abstract. To generate modules, I need to know what entities/data the app manages.
+
+Could you describe:
+- What objects does the app manage? (e.g., tenants, orders, products)
+- What actions can users perform? (e.g., create, approve, export)
+- How are the objects related? (e.g., tenant has subscriptions)
+```
+
+### Phase 2: Prompt Analysis
+
+Parse `DESIGN_PROMPT` into a structured application plan. Apply these parsing rules:
+
+**Entity extraction:**
+- Nouns that represent manageable data objects → modules (e.g., "tenants", "subscriptions", "agents")
+- Module names: always kebab-case english, derived from entity names, regardless of prompt language
+
+**Field extraction:**
+- Concrete field mentions ("subscription token key", "trial period", "email") → columns or formFields with inferred types
+- Type inference: dates → `"date-time"`, booleans/flags → `"boolean"`, numbers/counts/amounts → `"number"`, everything else → `"string"`
+- If a field clearly belongs to a list view (searchable, sortable characteristic) → column
+- If a field clearly belongs to a form (editable, configurable) → formField
+- If unclear → put in both columns and formFields
+
+**Action extraction:**
+- Concrete actions ("start trial", "upgrade plan", "approve") → toolbarActions with action name derived from the verb
+- Navigation mentions ("from tenant to subscription", "drill into details") → connections
+
+**Abstract requirement extraction:**
+- Anything that cannot be mapped to a concrete field/action/connection → todos
+- Quote the original text from the prompt
+- Examples: "plan limits will be identified later", "integration with external billing TBD"
+
+Produce the structured plan:
+
+```json
+DESIGN_PLAN = {
+  "appName": "string — kebab-case, derived from the main concept in prompt",
+  "modules": [
+    {
+      "name": "string — kebab-case module name (english)",
+      "description": "string — what this module does",
+      "bladeTypes": "list+details | list-only | details-only",
+      "columns": [{ "name": "string", "type": "string", "sortable": true/false }],
+      "formFields": [{ "name": "string", "type": "string", "required": true/false }],
+      "toolbarActions": [{ "label": "string", "action": "string (camelCase)" }],
+      "todos": ["string — exact quote from prompt"]
+    }
+  ],
+  "connections": [
+    { "from": "string — source blade name", "to": "string — target blade name", "trigger": "row-action | toolbar | tab" }
+  ],
+  "needsScaffold": false
+}
+```
+
+**Scaffold detection:** Check if the current directory is a vc-shell project:
+- Look for `package.json` with `@vc-shell/framework` in dependencies or devDependencies
+- If not found → set `needsScaffold: true`
+- If found → set `needsScaffold: false`
+
+**Blade type inference:**
+- Entity with both list-worthy columns AND editable fields → `"list+details"`
+- Entity that is mainly a collection/catalog with no edit form → `"list-only"`
+- Entity that is a singleton/settings with no list → `"details-only"`
+- Default to `"list+details"` when unclear
+
+### Phase 3: Plan Presentation
+
+Present the parsed plan to the user in this format:
+
+```
+Application Plan: {DESIGN_PLAN.appName}
+
+Modules ({count}):
+─────────────────────────────────────────
+1. {name} ({bladeTypes})
+   Columns: {comma-separated column names}
+   Fields: {comma-separated field names}
+   Actions: {comma-separated action labels}
+   TODO: "{todo text}"
+
+2. {name} ({bladeTypes})
+   ...
+
+Connections:
+  {from} → [{trigger}] → {to}
+
+Scaffold: {yes if needsScaffold, otherwise no}
+
+Confirm? (y to proceed, or describe corrections)
+```
+
+**Confirmation loop:**
+
+Wait for the user's response:
+- **"y" / "yes" / confirmation** → proceed to Phase 4
+- **Free-text corrections** → re-parse the corrections, update `DESIGN_PLAN`, show the updated plan again. Examples of corrections the user might give:
+  - "remove the agent-catalog module"
+  - "add an email column to tenants"
+  - "change subscriptions to details-only"
+  - "the connection from tenants to subscriptions should be a tab, not toolbar"
+- **No iteration limit** — keep looping until the user confirms or cancels
+
+**Large plan warning:** If the plan has 10 or more modules, show a suggestion before the confirmation prompt:
+```
+This is a large application ({count} modules). Consider generating in batches:
+  - Generate first {N} modules now, the rest later?
+  - Or proceed with all {count}?
+```
+
+If the user chooses to split, truncate `DESIGN_PLAN.modules` to the first N and note the remainder for the user to generate later.
+
+### Phase 4: API Detection
+
+After the user confirms the plan:
+
+1. Check if `src/api_client/` exists (or `APP_API_CLIENT_DIRECTORY` from `.env`)
+2. **If API client exists** → dispatch `api-analyzer` agent for entity matching:
+
+   > Use the **Agent tool** with this prompt:
+   >
+   > Read the file `{SKILL_DIR}/agents/api-analyzer.md` for your full instructions.
+   >
+   > Execute with these parameters:
+   > ```json
+   > {
+   >   "apiClientDir": "<resolved api_client directory absolute path>",
+   >   "entityHint": "<comma-separated module names from DESIGN_PLAN>"
+   > }
+   > ```
+   >
+   > Return the structured JSON result.
+
+   For each module in `DESIGN_PLAN.modules`, attempt to match its `name` against discovered API entities:
+   - Exact name match (case-insensitive)
+   - Semantic match (e.g., module "tenants" ≈ entity "Tenant")
+   - No match → module stays in mock mode
+
+   Update the plan display with data source info:
+   ```
+   1. tenants (list+details) — Data: API (TenantEntity matched)
+   2. subscriptions (details-only) — Data: API (SubscriptionEntity matched)
+   3. agent-catalog (list+details) — Data: mock (no match)
+   ```
+
+   Show the updated plan to the user for final confirmation before execution.
+
+3. **If no API client** → all modules use mock mode. Show:
+   ```
+   No API client found — all modules will use mock data.
+   Run /vc-app connect when your API is ready, then /vc-app promote for each module.
+   ```
+
+### Phase 5: Execution
+
+#### Step 1: Scaffold (if `needsScaffold: true`)
+
+If `DESIGN_PLAN.needsScaffold` is true, run the `/vc-app create` flow:
+- Use `DESIGN_PLAN.appName` as the project name
+- Enable default options (no dashboard, no tenant-routes, no ai-agent, no mocks)
+- After scaffold completes, `cd` into the new project directory
+- Update project root for subsequent steps
+
+If scaffold is not needed, skip this step.
+
+#### Step 2: Generate Loop
+
+Process each module in `DESIGN_PLAN.modules` in order:
+
+For module at index `i`:
+
+**2a: Build INTENT**
+```json
+INTENT = {
+  "description": "{module.description}",
+  "moduleName": "{module.name}",
+  "bladeTypes": "{module.bladeTypes}",
+  "menuConfig": {
+    "title": "{I18N_PREFIX}.MENU.TITLE",
+    "icon": "lucide-{infer icon from module description}",
+    "priority": {100 + i * 10}
+  },
+  "isWorkspace": true
+}
+```
+Where `I18N_PREFIX` = SCREAMING_SNAKE_CASE of `module.name`.
+
+**2b: Build DATA_SOURCE**
+
+- **If module matched an API entity** (from Phase 4): build full DATA_SOURCE from api-analyzer results — `entityName`, `entityTypePath`, `clientClass`, `searchMethod`, `getMethod`, `createMethod`, `updateMethod`, `deleteMethod`, columns from `module.columns` mapped to API fields, fields from `module.formFields` mapped to API fields.
+
+- **If mock mode**: set DATA_SOURCE to empty/null. The generators will produce mock code. Use `module.columns` and `module.formFields` directly as the column/field definitions for the generators.
+
+**2c: Dispatch generators**
+
+Follow the same Phase 3 generation flow as `/vc-app generate`:
+
+1. Create target directory:
+   ```bash
+   mkdir -p {TARGET_DIR}/pages {TARGET_DIR}/composables {TARGET_DIR}/locales
+   ```
+   Where `TARGET_DIR = <project root>/src/modules/{module.name}`
+
+2. Initialize `GENERATED_FILES = []`
+
+3. Dispatch blade generators based on `module.bladeTypes`:
+   - If includes "list" → dispatch `list-blade-generator` (same parameters as `/vc-app generate` Phase 3a)
+   - If includes "details" → dispatch `details-blade-generator` (same parameters as `/vc-app generate` Phase 3b)
+   - If both → dispatch in parallel
+
+4. After blade generators complete → dispatch `locales-generator` (same as `/vc-app generate` Phase 3c)
+
+5. Dispatch `module-assembler` (same as `/vc-app generate` Phase 3d)
+
+6. If mock mode → write `.vc-app-prototype.json` (same as `/vc-app generate` Phase 3e)
+
+**2d: Pass context for connections**
+
+For modules after the first, if `DESIGN_PLAN.connections` references a connection FROM an already-generated blade TO the current module's blade, pass `existingModule` context to the blade generator:
+```json
+"existingModule": {
+  "blades": ["<list of already-generated blade names>"],
+  "localePrefix": "<prefix from first module>",
+  "indexPath": "<path to previously generated module's index.ts>"
+},
+"linkTo": {
+  "blade": "<source blade name from connection>",
+  "trigger": "<connection.trigger>",
+  "label": "<I18N_PREFIX>.ACTIONS.<ACTION_NAME>"
+}
+```
+
+**2e: Wire remaining connections**
+
+After all modules are generated, for each connection in `DESIGN_PLAN.connections` that was NOT wired via `linkTo` in step 2d (e.g., connection from a later module to an earlier one), dispatch `blade-enhancer`:
+
+> Use the **Agent tool** with this prompt:
+>
+> Read the file `{SKILL_DIR}/agents/blade-enhancer.md` for your full instructions.
+>
+> Execute with these parameters:
+> ```json
+> {
+>   "targetDir": "<absolute path to source module directory>",
+>   "moduleAnalysis": { "blades": [<source blade info>] },
+>   "actions": [{
+>     "type": "link-blades",
+>     "sourceBlade": "<connection.from>",
+>     "targetBlade": "<connection.to>",
+>     "trigger": "<connection.trigger>",
+>     "targetModule": "<target module name>"
+>   }],
+>   "knowledgeBase": "{KNOWLEDGE_BASE}",
+>   "docsRoot": "{DOCS_ROOT}"
+> }
+> ```
+
+#### Step 3: TODO Injection
+
+After all modules are generated, for each TODO in any module's `todos` array:
+
+1. Find the most relevant composable file for that module: `src/modules/{module.name}/composables/use{PascalCase(module.name)}.ts`
+2. Read the file and find the last import statement
+3. Add a TODO comment after the imports:
+   ```typescript
+   // TODO [vc-app:design]: "{exact quoted text from prompt}"
+   ```
+4. If the composable file doesn't exist, add the TODO to the module's `index.ts` instead.
+
+#### Step 4: Verification
+
+After all modules are generated and TODOs injected, dispatch the `type-checker` agent once for the entire project:
+
+> Use the **Agent tool** with this prompt:
+>
+> Read the file `{SKILL_DIR}/agents/type-checker.md` for your full instructions.
+>
+> Execute with these parameters:
+> ```json
+> {
+>   "projectRoot": "<project root absolute path>",
+>   "generatedFiles": {ALL_GENERATED_FILES}
+> }
+> ```
+
+Where `ALL_GENERATED_FILES` is the combined list of all `GENERATED_FILES` from all module generation loops.
+
+### Phase 6: Summary
+
+After verification, display the final summary:
+
+```
+Application "{DESIGN_PLAN.appName}" generated!
+
+Modules created:
+  {module.name} ({module.bladeTypes}) — {columns count} columns, {fields count} fields, {actions count} toolbar actions
+  ...
+
+Connections wired:
+  {from} → [{trigger}] → {to}
+  ...
+
+TODOs (search for "TODO [vc-app:design]"):
+  {module.name}: "{todo text}"
+  ...
+
+Data: {mock/API summary per module}
+TypeScript: {✓ no errors / ✗ N errors (see above)}
+```
+
+If all modules used mock data, append:
+```
+Next steps:
+  /vc-app connect     — connect to platform API
+  /vc-app promote     — transition each module from mock to real API
+```
+
+If some modules matched API and some didn't, append:
+```
+Next steps:
+  /vc-app promote <name>  — transition mock modules to real API when ready
+```
+
+---
+
 ## Error Handling
 
 Apply these rules throughout all sections:

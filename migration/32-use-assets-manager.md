@@ -149,6 +149,92 @@ Template:
  }
 ```
 
+### 4. Injectable image handlers (ProductDetailsBase pattern)
+
+When a component accepts optional `imageHandlers` from parent via Props with fallback to defaults:
+
+```diff
+-import { useAssets, ICommonAsset } from "@vc-shell/framework";
++import { useAssetsManager, type AssetLike, type UseAssetsManagerReturn } from "@vc-shell/framework";
+
+ export interface Props {
+   config: ProductDetailsConfig;
+-  imageHandlers?: {
+-    edit?: (image: ICommonAsset) => void;
+-    upload?: (files: FileList, startingSortOrder?: number) => Promise<void>;
+-    remove?: (image: ICommonAsset) => Promise<void>;
+-    sort?: (sortedImages: ICommonAsset[]) => Promise<void>;
+-  };
++  /** Optional override — parent can provide its own manager instance */
++  assetsManager?: UseAssetsManagerReturn;
+ }
+
+-const { upload: assetsUpload, remove: assetsRemove, edit: assetsEdit, loading: assetsLoading } = useAssets();
+-
+-const defaultImageHandlers = {
+-  loading: computed(() => assetsLoading.value),
+-  async edit(image: ICommonAsset) {
+-    const edited = assetsEdit([image], item.value.productData?.images || []);
+-    if (item.value.productData) {
+-      item.value.productData.images = edited.map((_image) => _image as ProductImage);
+-    }
+-  },
+-  async upload(files: FileList, startingSortOrder?: number) {
+-    const uploaded = await assetsUpload(files, `/catalog/${item.value.id}`, startingSortOrder);
+-    if (item.value.productData) {
+-      item.value.productData.images = [
+-        ...(item.value.productData?.images || []),
+-        ...(uploaded?.map((image) => image as ProductImage) || []),
+-      ];
+-    }
+-  },
+-  async remove(image: ICommonAsset) {
+-    if (await showConfirmation(t('PRODUCTS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION'))) {
+-      if (item.value.productData) {
+-        const remaining = assetsRemove([image], item.value.productData.images || []);
+-        item.value.productData.images = remaining.map((image) => image as ProductImage);
+-      }
+-    }
+-  },
+-  async sort(sortedImages: ICommonAsset[]) {
+-    if (item.value.productData) {
+-      item.value.productData.images = sortedImages.map((image) => image as ProductImage);
+-    }
+-  },
+-};
+-
+-const _imageHandlers = computed(() => props.imageHandlers || defaultImageHandlers);
++// Default manager for product images
++const productImages = computed({
++  get: () => item.value.productData?.images ?? [],
++  set: (val) => { if (item.value.productData) item.value.productData.images = val as ProductImage[]; },
++});
++const defaultAssets = useAssetsManager(productImages, {
++  uploadPath: () => `/catalog/${item.value.id || item.value.gtin}`,
++  confirmRemove: () => showConfirmation(t('PRODUCTS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION')),
++});
++
++// Use parent override or default
++const assets = computed(() => props.assetsManager ?? defaultAssets);
+```
+
+Template:
+```diff
+ <VcGallery
+-  :images="item.productData.images"
+-  :loading="assetsLoading"
++  :images="assets.value.items.value"
++  :loading="assets.value.loading.value"
+   @edit="onGalleryItemEdit"
+-  @upload="_imageHandlers.value.upload"
+-  @remove="_imageHandlers.value.remove"
+-  @sort="_imageHandlers.value.sort"
++  @upload="assets.value.upload"
++  @remove="assets.value.remove"
++  @sort="assets.value.reorder"
+ />
+```
+
 ## How to Find
 
 ```bash

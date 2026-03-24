@@ -31,9 +31,9 @@ export function collectApiClientImportedNames(
     if (typeof source === "string" && isApiClientImport(source, packageName)) {
       for (const specifier of path.node.specifiers ?? []) {
         if (specifier.type === "ImportSpecifier" && specifier.local) {
-          names.add(specifier.local.name);
+          names.add(specifier.local.name as string);
         } else if (specifier.type === "ImportDefaultSpecifier" && specifier.local) {
-          names.add(specifier.local.name);
+          names.add(specifier.local.name as string);
         }
       }
     }
@@ -82,28 +82,52 @@ export function coreTransform(
 
     const args = path.node.arguments;
 
+    let replacement;
+
     if (args.length === 0) {
       // Rule C: no args → `{} as ClassName`
-      const asExpr = j.tsAsExpression(
+      replacement = j.tsAsExpression(
         j.objectExpression([]),
         j.tsTypeReference(j.identifier(className)),
       );
-
-      // Check parent for TSAsExpression — collapse double-cast
-      const parent = path.parent;
-      if (parent && parent.node.type === "TSAsExpression") {
-        // Parent is already `expr as SomeType`, replace with `{} as SomeType` using parent's type
-        parent.replace(
-          j.tsAsExpression(j.objectExpression([]), parent.node.typeAnnotation),
+    } else {
+      const arg = args[0];
+      if (
+        (arg.type === "Identifier" && (arg as any).name === "undefined") ||
+        (arg.type === "NullLiteral") ||
+        (arg.type === "Literal" && (arg as any).value === null)
+      ) {
+        // null/undefined literal → Rule C (empty object)
+        replacement = j.tsAsExpression(
+          j.objectExpression([]),
+          j.tsTypeReference(j.identifier(className)),
+        );
+      } else if (arg.type === "ObjectExpression") {
+        // Rule A: new Dto({...}) → {...} as Dto
+        replacement = j.tsAsExpression(
+          arg,
+          j.tsTypeReference(j.identifier(className)),
         );
       } else {
-        path.replace(asExpr);
+        // Rule B: new Dto(variable) → { ...variable } as Dto
+        replacement = j.tsAsExpression(
+          j.objectExpression([j.spreadElement(arg as any)]),
+          j.tsTypeReference(j.identifier(className)),
+        );
       }
-      changed = true;
-    } else {
-      // Rules A/B come in Task 2
-      return;
     }
+
+    // Check parent for TSAsExpression — collapse double-cast
+    const parent = path.parent;
+    if (parent && parent.node.type === "TSAsExpression") {
+      // Parent is already `expr as SomeType`, replace with `{obj} as SomeType` using parent's type
+      parent.replace(
+        j.tsAsExpression(replacement.expression, parent.node.typeAnnotation),
+      );
+    } else {
+      path.replace(replacement);
+    }
+    changed = true;
   });
 
   return changed ? root.toSource() : null;

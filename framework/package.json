@@ -7,7 +7,6 @@
   "style": "./dist/index.css",
   "files": [
     "dist",
-    "dist/locales/*.json",
     "globals.d.ts",
     "globals-augments.d.ts",
     "shims-vue.d.ts",
@@ -36,7 +35,17 @@
     },
     "./package.json": "./package.json",
     "./dist/index.css": "./dist/index.css",
-    "./dist/locales/*": "./dist/locales/*",
+    "./locales/en": {
+      "types": "./dist/locales/en.d.ts",
+      "import": "./dist/locales/en.js"
+    },
+    "./locales/de": {
+      "types": "./dist/locales/de.d.ts",
+      "import": "./dist/locales/de.js"
+    },
+    "./locales/types": {
+      "types": "./dist/locales/types.d.ts"
+    },
     "./tailwind.config": "./tailwind.config.ts"
   },
   "sideEffects": [
@@ -145,5 +154,8 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "bin": {
+    "vc-check-locales": "./dist/scripts/check-locales.cjs"
   }
 }

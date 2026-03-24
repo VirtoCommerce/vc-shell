@@ -122,6 +122,16 @@ New high-level composable that eliminates boilerplate when working with assets (
 
 ---
 
+## Localization
+
+- **Typed locale exports** — Framework locales are now available as typed ES module exports: `import en from '@vc-shell/framework/locales/en'`. Each export is fully typed with the `VcShellLocale` interface, providing IDE autocomplete for all ~430 translation keys. Use `VcShellLocalePartial` for partial overrides.
+
+- **Dev-mode missing key warnings** — In development mode, accessing a translation key that has no value for the current locale logs a console warning with the exact key path, helping catch untranslated strings early.
+
+- **`vc-check-locales` CLI** — New bin command to validate custom locale files against the framework's English baseline. Run `npx vc-check-locales ./locales/fr.json` to see missing and extra keys. Integrates into CI pipelines via non-zero exit code on failure.
+
+---
+
 ## Infrastructure
 
 - **Global Error Handler** — Three-layer error capture (Vue component errors, async promise rejections, unhandled window errors) with a deduplication window and automatic toast notification on unhandled errors.

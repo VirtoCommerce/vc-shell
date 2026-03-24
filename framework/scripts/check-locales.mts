@@ -3,8 +3,15 @@ import fs from "fs-extra";
 import chalk from "chalk";
 import { fileURLToPath } from "node:url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// In ESM (tsx): derive from import.meta.url. In CJS (esbuild bundle): use Node's globals.
+/* eslint-disable no-var */
+var __filename: string, __dirname: string;
+try {
+  __filename = fileURLToPath(import.meta.url);
+  __dirname = dirname(__filename);
+} catch {
+  // CJS environment: __dirname and __filename are already defined by Node/esbuild
+}
 
 interface LocaleComparison {
   locale: string;
@@ -95,11 +102,66 @@ async function checkLocales(): Promise<boolean> {
   return true;
 }
 
-// Run the check if this file is executed directly
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  checkLocales().then((success) => {
+// CLI entry point: npx vc-check-locales ./path/to/locale.json
+async function cli() {
+  const args = process.argv.slice(2);
+
+  if (args.length === 0) {
+    // No args: run internal check (existing behavior)
+    const success = await checkLocales();
     process.exit(success ? 0 : 1);
-  });
+  }
+
+  // External file validation against framework baseline
+  const userFile = args[0];
+  if (!fs.existsSync(userFile)) {
+    console.log(chalk.red(`\nFile not found: ${userFile}`));
+    process.exit(1);
+  }
+
+  // Resolve baseline en.json: first try source locales (dev), then fall back to dist
+  // __dirname works both in tsx (top-level define) and in CJS esbuild bundle
+  const candidates = [
+    path.join(__dirname, "../locales/en.json"),         // source (when running via tsx in dev)
+    path.join(__dirname, "../dist/locales/en.json"),    // fallback
+    path.join(__dirname, "../locales/en.json"),         // when bundled as dist/scripts/ → ../locales/
+  ];
+
+  const resolvedBaseline = candidates.find((p) => fs.existsSync(p));
+
+  if (!resolvedBaseline) {
+    console.log(chalk.red("\nCould not find framework baseline locale (en.json)"));
+    process.exit(1);
+  }
+
+  console.log(chalk.cyan(`Checking ${path.basename(userFile)} against framework baseline...\n`));
+
+  const { missing, extra } = compareLocales(resolvedBaseline, path.resolve(userFile));
+
+  if (missing.length > 0) {
+    console.log(chalk.red(`Missing keys (${missing.length}):`));
+    console.log(missing.join("\n"));
+    console.log();
+  }
+
+  if (extra.length > 0) {
+    console.log(chalk.yellow(`Extra keys (${extra.length}):`));
+    console.log(extra.join("\n"));
+    console.log();
+  }
+
+  if (missing.length === 0 && extra.length === 0) {
+    console.log(chalk.green(`✓ ${path.basename(userFile)} is complete — all keys match the framework baseline.`));
+    process.exit(0);
+  } else {
+    console.log(chalk.red(`✗ Found ${missing.length} missing and ${extra.length} extra keys.`));
+    process.exit(1);
+  }
+}
+
+// Run if executed directly
+if (process.argv[1] === __filename || process.argv[1]?.endsWith("/vc-check-locales")) {
+  cli();
 }
 
 export { checkLocales, compareLocales };

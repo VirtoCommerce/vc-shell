@@ -66,6 +66,7 @@ Work through these guides in order. Each is self-contained with before/after exa
 | 29 | [VcTable → VcDataTable](./29-vc-table-to-data-table.md) | **Breaking** | Old VcTable removed; `VcTableAdapter` provides backward compat |
 | 30 | [Type Shims → Globals](./30-shims-to-globals.md) | Deprecated | Manual `shims-vue.d.ts` / `vue-i18n.d.ts` → `@vc-shell/framework/globals` |
 | 31 | [useDataTableSort](./31-use-data-table-sort.md) | Optional | Replace manual sort boilerplate with `useDataTableSort` composable |
+| 33 | [Locale Exports](./33-locale-exports.md) | **Breaking** | `dist/locales/*.json` wildcard → named `@vc-shell/framework/locales/<lang>` exports |
 
 ## Severity Legend
 

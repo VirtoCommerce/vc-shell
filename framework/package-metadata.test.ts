@@ -18,7 +18,9 @@ describe("package.json metadata", () => {
       "./globals",
       "./package.json",
       "./dist/index.css",
-      "./dist/locales/*",
+      "./locales/en",
+      "./locales/de",
+      "./locales/types",
       "./tailwind.config",
     ];
     for (const key of keys) {

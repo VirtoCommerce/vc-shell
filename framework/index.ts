@@ -114,6 +114,13 @@ function setupI18n(app: App, args: FrameworkInstallArgs) {
 
   app.use(i18n);
 
+  // Dev-mode: warn about missing translation keys
+  if (import.meta.env.DEV) {
+    i18n.global.setMissingHandler((locale, key) => {
+      console.warn(`[vc-shell i18n] Missing translation: "${key}" for locale "${locale}"`);
+    });
+  }
+
   const languageService = createLanguageService();
   app.provide(LanguageServiceKey, languageService);
 

@@ -134,12 +134,16 @@ export function useAssetsManager(
     assetsRef.value = assetsRef.value.filter((item) => !keysToRemove.has(item[key]));
   }
 
-  function reorder(_items: AssetLike[]): void {
-    // TODO: implement
+  function reorder(newOrder: AssetLike[]): void {
+    assetsRef.value = newOrder.map((item) => ({ ...item }));
   }
 
-  function updateItem(_item: AssetLike): void {
-    // TODO: implement
+  function updateItem(item: AssetLike): void {
+    const key = options.assetKey ?? "url";
+    const index = assetsRef.value.findIndex((existing) => existing[key] === item[key]);
+    if (index !== -1) {
+      assetsRef.value[index] = { ...assetsRef.value[index], ...item };
+    }
   }
 
   return {

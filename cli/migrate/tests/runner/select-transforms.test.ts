@@ -23,6 +23,7 @@ describe("selectTransforms", () => {
       "shims-to-globals",
       "use-data-table-sort",
       "manual-migration-audit",
+      "nswag-class-to-interface",
       "use-assets-migration",
     ]);
   });

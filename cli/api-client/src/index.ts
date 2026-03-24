@@ -1,7 +1,7 @@
 import { default as chalk } from "chalk";
 import { sync } from "cross-spawn";
 import { resolveConfig } from "vite";
-import { writeFileSync, existsSync, readFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, existsSync, readFileSync, mkdirSync, readdirSync } from "node:fs";
 import { Paths } from "@api-client-generator/paths/paths";
 import mri from "mri";
 import path from "node:path";
@@ -635,6 +635,45 @@ function handlePackageJson(packageJsonPath: string, generatedModules: string[], 
 }
 
 /**
+ * Detects the type style used in existing generated API client files.
+ * Scans .ts files in the target directory for `export class` patterns (NSwag-generated DTO classes).
+ * Returns "Class" if class-based DTOs are found, "Interface" if only interfaces exist, or undefined if no files found.
+ */
+function detectExistingTypeStyle(apiClientDirectory: string): "Class" | "Interface" | undefined {
+  const targetDir = path.resolve(process.cwd(), apiClientDirectory);
+  if (!existsSync(targetDir)) {
+    return undefined;
+  }
+
+  let tsFiles: string[];
+  try {
+    tsFiles = readdirSync(targetDir).filter((f) => f.endsWith(".ts") && f !== "index.ts");
+  } catch {
+    return undefined;
+  }
+
+  if (tsFiles.length === 0) {
+    return undefined;
+  }
+
+  // Check first few generated files for class-based DTO patterns
+  for (const file of tsFiles.slice(0, 5)) {
+    const filePath = path.join(targetDir, file);
+    try {
+      const content = readFileSync(filePath, "utf-8");
+      // NSwag class-style DTOs have `export class SomeName implements ISomeName`
+      if (/export class \w+ implements I\w+/.test(content)) {
+        return "Class";
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return "Interface";
+}
+
+/**
  * Parses and validates CLI arguments and environment variables into a resolved configuration.
  */
 function parseAndValidateArgs(): ResolvedConfig {
@@ -658,7 +697,25 @@ function parseAndValidateArgs(): ResolvedConfig {
   const runtime = process.env.RUNTIME ?? parsedArgs.RUNTIME ?? "Net80";
   const skipBuild = process.env.SKIP_BUILD === "true" || parsedArgs.SKIP_BUILD === true;
   const verbose = process.env.VERBOSE === "true" || parsedArgs.VERBOSE === true;
-  const typeStyle = (process.env.APP_TYPE_STYLE ?? parsedArgs.APP_TYPE_STYLE ?? "Class") as "Class" | "Interface";
+  const explicitTypeStyle = process.env.APP_TYPE_STYLE ?? parsedArgs.APP_TYPE_STYLE;
+  let typeStyle: "Class" | "Interface";
+  if (explicitTypeStyle) {
+    typeStyle = explicitTypeStyle as "Class" | "Interface";
+  } else if (apiClientDirectory) {
+    // Auto-detect: if existing files use classes, keep classes; otherwise default to Interface
+    const detected = detectExistingTypeStyle(apiClientDirectory);
+    typeStyle = detected ?? "Interface";
+  } else {
+    typeStyle = "Interface";
+  }
+  if (!explicitTypeStyle) {
+    console.log(
+      "api-client-generator %s APP_TYPE_STYLE not specified, using %s (set APP_TYPE_STYLE=Class to generate class-based DTOs)",
+      chalk.blue("info"),
+      chalk.whiteBright(typeStyle),
+    );
+  }
+
   const explicitPackage = process.env.APP_PACKAGE_MODE === "true" || parsedArgs.PACKAGE === true;
 
   // Validate RUNTIME parameter
@@ -683,7 +740,13 @@ function parseAndValidateArgs(): ResolvedConfig {
   }
 
   if (verbose) {
-    console.log("api-client-generator %s Using APP_TYPE_STYLE: %s", chalk.blue("debug"), chalk.whiteBright(typeStyle));
+    const typeStyleSource = explicitTypeStyle ? "explicit" : apiClientDirectory ? "auto-detected" : "default";
+    console.log(
+      "api-client-generator %s Using APP_TYPE_STYLE: %s (%s)",
+      chalk.blue("debug"),
+      chalk.whiteBright(typeStyle),
+      chalk.gray(typeStyleSource),
+    );
   }
 
   // Validate required arguments

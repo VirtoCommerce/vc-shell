@@ -139,7 +139,7 @@ export const transforms: VersionedTransform[] = [
   {
     name: "nswag-class-to-interface",
     description: "Migrate consumer code from NSwag class-based to interface-based DTOs",
-    introducedIn: "2.1.0",
+    introducedIn: "2.0.0-alpha.24",
     scope: "project",
     transformPath: t("nswag-class-to-interface"),
   },

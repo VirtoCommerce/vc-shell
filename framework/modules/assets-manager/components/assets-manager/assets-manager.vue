@@ -228,7 +228,7 @@ async function upload(files: FileList) {
   if (!files || files.length === 0) return;
 
   const existingNames = new Set(
-    defaultAssets.value.map((asset) => asset.name).filter(Boolean),
+    (defaultAssets.value ?? []).map((asset) => asset.name).filter(Boolean),
   );
 
   const transfer = new DataTransfer();

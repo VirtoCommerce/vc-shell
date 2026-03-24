@@ -1610,3 +1610,4 @@ The following guides cover deprecated API cleanup. See `migration/README.md` for
 - [Guide 29: VcTable → VcDataTable](./migration/29-vc-table-to-data-table.md)
 - [Guide 30: Type Shims → Globals](./migration/30-shims-to-globals.md)
 - [Guide 31: useDataTableSort](./migration/31-use-data-table-sort.md)
+- [Guide 32: useAssetsManager](./migration/32-use-assets-manager.md)

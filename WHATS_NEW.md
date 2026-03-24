@@ -110,6 +110,16 @@ This document summarizes the major features and improvements introduced in v2.0.
 
 - **`useSettingsMenu`** — Programmatic registration of settings menu items, replacing the user-dropdown slot approach and allowing modules to contribute settings entries without modifying the host template.
 
+### Asset Management — `useAssetsManager()`
+
+New high-level composable that eliminates boilerplate when working with assets (images, files). Pass a reactive ref and options — the composable handles upload, remove, reorder, and metadata updates by mutating the ref directly.
+
+- **Zero wiring** — no more manual `assetsHandler` objects
+- **Built-in confirmation** — optional `confirmRemove` callback
+- **No type casting** — works with any `AssetLike` compatible type (Image, ProductImage, etc.)
+- **AssetsManager blade** — now accepts `manager: UseAssetsManagerReturn` in options instead of 3 separate handler functions
+- `useAssets()` and `ICommonAsset` are deprecated but continue to work. See [migration guide #32](./migration/32-use-assets-manager.md)
+
 ---
 
 ## Infrastructure

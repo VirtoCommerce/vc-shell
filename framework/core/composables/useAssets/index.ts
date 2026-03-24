@@ -76,6 +76,13 @@ async function processBatched<T, R>(
 export function useAssets(): UseAssetsReturn {
   const loading = ref(false);
 
+  if (import.meta.env?.DEV) {
+    console.warn(
+      "[useAssets] is deprecated. Use useAssetsManager(ref, options) instead. " +
+        "See migration guide #32.",
+    );
+  }
+
   async function upload(files: FileList, uploadPath: string, startingSortOrder?: number): Promise<ICommonAsset[]> {
     try {
       loading.value = true;

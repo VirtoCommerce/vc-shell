@@ -29,12 +29,12 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { ICommonAsset } from "@core/types";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcImageTile } from "@ui/components/molecules/vc-image-tile";
 
 export interface Props {
-  image: ICommonAsset;
+  image: AssetLike;
   readonly?: boolean;
   actions?: {
     preview?: boolean;
@@ -46,16 +46,16 @@ export interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  image: () => ({}) as ICommonAsset,
+  image: () => ({}) as AssetLike,
   readonly: false,
   disableDrag: false,
   imageFit: "contain",
 });
 
 defineEmits<{
-  (e: "preview", image: ICommonAsset): void;
-  (e: "edit", image: ICommonAsset): void;
-  (e: "remove", image: ICommonAsset): void;
+  (e: "preview", image: AssetLike): void;
+  (e: "edit", image: AssetLike): void;
+  (e: "remove", image: AssetLike): void;
 }>();
 
 const resolvedActions = computed(() => ({

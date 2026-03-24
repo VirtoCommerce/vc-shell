@@ -1,14 +1,22 @@
 import { describe, it, expect } from "vitest";
 import { coreTransform } from "../../../src/transforms/nswag-class-to-interface-core";
-import { applyTransform } from "../../../src/utils/test-helpers";
+import { applyTransform, applyTransformWithReports } from "../../../src/utils/test-helpers";
 
-const dtoClassNames = new Set(["Offer", "PushMessage", "SearchResult", "ImportProfile"]);
+const dtoClassNames = new Set(["Offer", "PushMessage", "SearchResult", "ImportProfile", "Image"]);
 const interfaceToClass = new Map<string, string>([["IOffer", "Offer"]]);
 
 const defaultOptions = {
   dtoClassNames,
   interfaceToClass,
 };
+
+function transformWithReports(source: string, path = "test.ts") {
+  return applyTransformWithReports(
+    (fileInfo, api, options) => coreTransform(fileInfo, api, options),
+    { path, source },
+    { dtoClassNames, interfaceToClass },
+  );
+}
 
 describe("nswag-class-to-interface-core — Rule C (empty constructor)", () => {
   it("replaces `new Offer()` with `{} as Offer` when Offer is imported from api_client", () => {
@@ -197,5 +205,48 @@ const profile = new ImportProfile() as ExtProfile;`,
     expect(result).toContain("{} as ExtProfile");
     expect(result).not.toContain("new ImportProfile");
     expect(result).not.toContain("as ImportProfile");
+  });
+});
+
+describe("nswag-class-to-interface-core — Rule F (diagnostics)", () => {
+  it("reports .fromJS() usage when DTO is imported from api_client", () => {
+    const { reports } = transformWithReports(
+      `import { Offer } from "../api_client";
+const offer = Offer.fromJS(data);`,
+    );
+    expect(reports.some((r) => r.includes("fromJS"))).toBe(true);
+  });
+
+  it("reports .toJSON() usage when DTO is imported from api_client", () => {
+    const { reports } = transformWithReports(
+      `import { Offer } from "../api_client";
+const json = offer.toJSON();`,
+    );
+    expect(reports.some((r) => r.includes("toJSON"))).toBe(true);
+  });
+
+  it("reports Image import conflict with DOM global", () => {
+    const { reports } = transformWithReports(
+      `import { Image } from "../../api_client/virtocommerce.platform";
+const img = new Image();`,
+    );
+    expect(reports.some((r) => r.includes("Image") && r.includes("DOM"))).toBe(true);
+  });
+});
+
+describe("nswag-class-to-interface-core — Rule G (clone-then-mutate)", () => {
+  it("does NOT replace new PushMessage() when followed by property assignments", () => {
+    const { result, reports } = transformWithReports(
+      `import { PushMessage } from "../api_client";
+const cloned = new PushMessage();
+cloned.topic = "test";
+cloned.shortMessage = "hello";`,
+    );
+    // Should NOT transform the new expression
+    if (result !== null) {
+      expect(result).toContain("new PushMessage()");
+    }
+    // Should emit a diagnostic
+    expect(reports.some((r) => r.includes("Clone-then-mutate"))).toBe(true);
   });
 });

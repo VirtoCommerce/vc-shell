@@ -1,17 +1,17 @@
 import { describe, it, expect, vi } from "vitest";
 import { ref } from "vue";
 import { useGalleryReorder } from "./useGalleryReorder";
-import type { ICommonAsset } from "@core/types";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 
 describe("useGalleryReorder", () => {
   it("disableDrag is true when images <= 1", () => {
-    const images = ref<ICommonAsset[]>([{ name: "a.png", sortOrder: 0 }]);
+    const images = ref<AssetLike[]>([{ name: "a.png", sortOrder: 0 }]);
     const { disableDrag } = useGalleryReorder(images, { disabled: ref(false), onSort: vi.fn() });
     expect(disableDrag.value).toBe(true);
   });
 
   it("disableDrag is false when images > 1", () => {
-    const images = ref<ICommonAsset[]>([
+    const images = ref<AssetLike[]>([
       { name: "a.png", sortOrder: 0 },
       { name: "b.png", sortOrder: 1 },
     ]);
@@ -20,7 +20,7 @@ describe("useGalleryReorder", () => {
   });
 
   it("disableDrag is true when disabled prop is true", () => {
-    const images = ref<ICommonAsset[]>([
+    const images = ref<AssetLike[]>([
       { name: "a.png", sortOrder: 0 },
       { name: "b.png", sortOrder: 1 },
     ]);
@@ -29,7 +29,7 @@ describe("useGalleryReorder", () => {
   });
 
   it("returns isDragging and draggedId refs", () => {
-    const images = ref<ICommonAsset[]>([
+    const images = ref<AssetLike[]>([
       { name: "a.png", sortOrder: 0 },
       { name: "b.png", sortOrder: 1 },
     ]);
@@ -39,7 +39,7 @@ describe("useGalleryReorder", () => {
   });
 
   it("enables draggable only from drag handle", () => {
-    const images = ref<ICommonAsset[]>([
+    const images = ref<AssetLike[]>([
       { id: "1", name: "a.png", sortOrder: 0 },
       { id: "2", name: "b.png", sortOrder: 1 },
     ]);
@@ -56,7 +56,7 @@ describe("useGalleryReorder", () => {
   });
 
   it("does not enable draggable when clicking action controls", () => {
-    const images = ref<ICommonAsset[]>([
+    const images = ref<AssetLike[]>([
       { id: "1", name: "a.png", sortOrder: 0 },
       { id: "2", name: "b.png", sortOrder: 1 },
     ]);

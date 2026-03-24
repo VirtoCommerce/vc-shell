@@ -1,9 +1,9 @@
 import { computed, ref, Ref, toValue } from "vue";
 import { usePopup } from "@shell/_internal/popup/composables/usePopup";
 import VcGalleryPreview from "../_internal/vc-gallery-preview/vc-gallery-preview.vue";
-import type { ICommonAsset } from "@core/types";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 
-export function useGalleryPreview(images: Ref<ICommonAsset[]>) {
+export function useGalleryPreview(images: Ref<AssetLike[]>) {
   const previewIndex = ref(0);
 
   const { open } = usePopup(

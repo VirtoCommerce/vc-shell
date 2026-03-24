@@ -1,11 +1,11 @@
 import { Ref, toValue } from "vue";
-import type { ICommonAsset } from "@core/types";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 
 interface UseGalleryUploadOptions {
   onUpload: (files: FileList, startingSortOrder?: number) => void;
 }
 
-export function useGalleryUpload(images: Ref<ICommonAsset[]>, options: UseGalleryUploadOptions) {
+export function useGalleryUpload(images: Ref<AssetLike[]>, options: UseGalleryUploadOptions) {
   function onUpload(files: FileList) {
     if (!files || !files.length) return;
 

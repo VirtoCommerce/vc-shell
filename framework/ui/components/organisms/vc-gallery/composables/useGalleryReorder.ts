@@ -1,16 +1,16 @@
 import { computed, ref, Ref, toValue } from "vue";
-import type { ICommonAsset } from "@core/types";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 
 interface UseGalleryReorderOptions {
   disabled: Ref<boolean>;
-  onSort: (sorted: ICommonAsset[]) => void;
+  onSort: (sorted: AssetLike[]) => void;
 }
 
 // Transparent 1x1 GIF hides the browser's default drag ghost
 const TRANSPARENT_GIF = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 const SWAP_THROTTLE_MS = 50;
 
-export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalleryReorderOptions) {
+export function useGalleryReorder(images: Ref<AssetLike[]>, options: UseGalleryReorderOptions) {
   const galleryRef = ref<HTMLElement>();
   const isDragging = ref(false);
   const draggedId = ref<string>();
@@ -19,7 +19,7 @@ export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalle
 
   let draggedIndex = -1;
   let lastSwapTime = 0;
-  let snapshotBeforeDrag: ICommonAsset[] = [];
+  let snapshotBeforeDrag: AssetLike[] = [];
   let dropCommitted = false;
 
   function findGalleryItem(element: HTMLElement): HTMLElement | null {
@@ -62,7 +62,7 @@ export function useGalleryReorder(images: Ref<ICommonAsset[]>, options: UseGalle
     target.draggable = false;
   }
 
-  function onItemDragStart(event: DragEvent, item: ICommonAsset) {
+  function onItemDragStart(event: DragEvent, item: AssetLike) {
     if (disableDrag.value) return;
 
     // Hide default browser ghost

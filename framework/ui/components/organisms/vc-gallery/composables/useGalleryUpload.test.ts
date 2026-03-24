@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import { ref } from "vue";
 import { useGalleryUpload } from "./useGalleryUpload";
-import type { ICommonAsset } from "@core/types";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 
 // jsdom does not provide DataTransfer — supply a minimal polyfill
 beforeAll(() => {
@@ -40,7 +40,7 @@ function createFileList(...names: string[]): FileList {
 
 describe("useGalleryUpload", () => {
   it("deduplicates filenames against existing images", () => {
-    const images = ref<ICommonAsset[]>([{ name: "photo.png", sortOrder: 0 }]);
+    const images = ref<AssetLike[]>([{ name: "photo.png", sortOrder: 0 }]);
     const onEmit = vi.fn();
     const { onUpload } = useGalleryUpload(images, { onUpload: onEmit });
 
@@ -53,7 +53,7 @@ describe("useGalleryUpload", () => {
   });
 
   it("passes through files without name collision", () => {
-    const images = ref<ICommonAsset[]>([]);
+    const images = ref<AssetLike[]>([]);
     const onEmit = vi.fn();
     const { onUpload } = useGalleryUpload(images, { onUpload: onEmit });
 
@@ -64,7 +64,7 @@ describe("useGalleryUpload", () => {
   });
 
   it("does nothing for empty FileList", () => {
-    const images = ref<ICommonAsset[]>([]);
+    const images = ref<AssetLike[]>([]);
     const onEmit = vi.fn();
     const { onUpload } = useGalleryUpload(images, { onUpload: onEmit });
 
@@ -74,7 +74,7 @@ describe("useGalleryUpload", () => {
   });
 
   it("handles multiple collisions with incrementing suffix", () => {
-    const images = ref<ICommonAsset[]>([
+    const images = ref<AssetLike[]>([
       { name: "img.png", sortOrder: 0 },
       { name: "img_1.png", sortOrder: 1 },
     ]);

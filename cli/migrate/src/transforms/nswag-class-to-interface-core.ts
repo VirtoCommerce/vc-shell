@@ -83,6 +83,65 @@ export function coreTransform(
 
   let changed = false;
 
+  // Rule F: .fromJS() / .toJSON() diagnostic
+  root.find(j.CallExpression, {
+    callee: { type: "MemberExpression", property: { type: "Identifier" } },
+  }).forEach((path) => {
+    const prop = (path.node.callee as any).property.name;
+    if (prop === "fromJS" || prop === "toJSON") {
+      api.report(
+        `${fileInfo.path}: .${prop}() called — this method does not exist on interfaces. Manual migration required.`,
+      );
+    }
+  });
+
+  // Rule F: Image DOM conflict warning
+  if (importedNames.has("Image") && effectiveDtos.has("Image")) {
+    api.report(
+      `${fileInfo.path}: 'Image' imported from api_client conflicts with DOM global 'Image'. Consider: import { type Image } or import { Image as ApiImage }.`,
+    );
+  }
+
+  // Rule G: Clone-then-mutate detection — must run before NewExpression handler
+  const excludedVarNames = new Set<string>();
+
+  root.find(j.VariableDeclarator).forEach((path) => {
+    const init = path.node.init;
+    if (!init || init.type !== "NewExpression" || init.callee.type !== "Identifier") return;
+    if (!effectiveDtos.has(init.callee.name)) return;
+    if (path.node.id.type !== "Identifier") return;
+
+    const varName = path.node.id.name;
+    // Check if parent is VariableDeclaration, and its parent has a body array
+    const declPath = path.parent;
+    const blockPath = declPath.parent;
+    if (!blockPath?.node?.body) return;
+
+    const stmts = blockPath.node.body;
+    const declIdx = stmts.indexOf(declPath.node);
+    if (declIdx === -1) return;
+
+    // Look at subsequent statements for x.prop = ...
+    for (let i = declIdx + 1; i < stmts.length && i <= declIdx + 10; i++) {
+      const stmt = stmts[i];
+      if (
+        stmt.type === "ExpressionStatement" &&
+        stmt.expression.type === "AssignmentExpression" &&
+        stmt.expression.left.type === "MemberExpression" &&
+        stmt.expression.left.object.type === "Identifier" &&
+        stmt.expression.left.object.name === varName
+      ) {
+        excludedVarNames.add(varName);
+        api.report(
+          `${fileInfo.path}: Clone-then-mutate pattern detected for ${init.callee.name}. Manual migration required.`,
+        );
+        break;
+      } else {
+        break; // Stop at first non-mutation statement
+      }
+    }
+  });
+
   // Find all NewExpression where callee is an Identifier in effectiveDtos
   root.find(j.NewExpression, {
     callee: { type: "Identifier" },
@@ -91,6 +150,16 @@ export function coreTransform(
     if (callee.type !== "Identifier") return;
     const className = callee.name;
     if (!effectiveDtos.has(className)) return;
+
+    // Rule G: Skip if this new expression is the init of a clone-then-mutate variable
+    const parentDeclarator = path.parent;
+    if (
+      parentDeclarator.node.type === "VariableDeclarator" &&
+      parentDeclarator.node.id.type === "Identifier" &&
+      excludedVarNames.has(parentDeclarator.node.id.name)
+    ) {
+      return; // Skip — Rule G diagnostic emitted
+    }
 
     const args = path.node.arguments;
 

@@ -13,7 +13,7 @@
     :removable="itemActions?.remove !== false"
     :previewable="itemActions?.preview !== false"
     @upload="(files: FileList) => emit('upload', files)"
-    @remove="(img: ICommonAsset) => emit('remove', img)"
+    @remove="(img: AssetLike) => emit('remove', img)"
   />
 
   <!-- Normal gallery mode -->
@@ -150,7 +150,8 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import type { ICommonAsset, IValidationRules } from "@core/types";
+import type { IValidationRules } from "@core/types";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 import { VcFileUpload } from "@ui/components/molecules/vc-file-upload";
 import { VcHint } from "@ui/components/atoms/vc-hint";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
@@ -162,7 +163,7 @@ import { useGalleryPreview } from "./composables/useGalleryPreview";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
-  images?: ICommonAsset[];
+  images?: AssetLike[];
   disabled?: boolean;
   multiple?: boolean;
   loading?: boolean;
@@ -186,9 +187,9 @@ export interface Props {
 
 export interface Emits {
   (event: "upload", files: FileList, startingSortOrder?: number): void;
-  (event: "sort", sorted: ICommonAsset[]): void;
-  (event: "edit", image: ICommonAsset): void;
-  (event: "remove", image: ICommonAsset): void;
+  (event: "sort", sorted: AssetLike[]): void;
+  (event: "edit", image: AssetLike): void;
+  (event: "remove", image: AssetLike): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -237,7 +238,7 @@ const legacyPlaceholder = computed(() =>
 );
 
 // Local images state
-const localImages = ref<ICommonAsset[]>([]);
+const localImages = ref<AssetLike[]>([]);
 watch(
   () => props.images,
   (newVal) => {

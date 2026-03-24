@@ -107,11 +107,11 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { VcPopup } from "@ui/components/organisms/vc-popup";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import type { ICommonAsset } from "@core/types";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
-  images?: ICommonAsset[];
+  images?: AssetLike[];
   index: number;
 }
 

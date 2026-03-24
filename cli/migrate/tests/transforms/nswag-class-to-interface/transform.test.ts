@@ -250,3 +250,58 @@ cloned.shortMessage = "hello";`,
     expect(reports.some((r) => r.includes("Clone-then-mutate"))).toBe(true);
   });
 });
+
+describe("Vue SFC support", () => {
+  it("transforms script content from .vue file", () => {
+    // coreTransform receives only the script content, not the full SFC
+    // The path ending in .vue is just for reporting
+    const result = applyTransform(
+      (fileInfo, api, options) => coreTransform(fileInfo, api, options),
+      {
+        path: "components/test.vue",
+        source: `import { Offer } from "../../api_client/virtocommerce.marketplacevendor";
+const item = new Offer();`,
+      },
+      defaultOptions,
+    );
+    expect(result).toContain("{} as Offer");
+    expect(result).not.toContain("new Offer()");
+  });
+});
+
+describe("Package import matching", () => {
+  it("matches imports from package name", () => {
+    const result = applyTransform(
+      (fileInfo, api, options) => coreTransform(fileInfo, api, options),
+      {
+        path: "test.ts",
+        source: `import { Offer } from "@vcmp-vendor-portal/api/marketplacevendor";
+const x = new Offer();`,
+      },
+      {
+        dtoClassNames,
+        interfaceToClass,
+        packageName: "@vcmp-vendor-portal/api",
+      },
+    );
+    expect(result).toContain("{} as Offer");
+    expect(result).not.toContain("new Offer()");
+  });
+
+  it("does NOT match unrelated packages", () => {
+    const result = applyTransform(
+      (fileInfo, api, options) => coreTransform(fileInfo, api, options),
+      {
+        path: "test.ts",
+        source: `import { Offer } from "@some-other/package";
+const x = new Offer();`,
+      },
+      {
+        dtoClassNames,
+        interfaceToClass,
+        packageName: "@vcmp-vendor-portal/api",
+      },
+    );
+    expect(result).toBeNull();
+  });
+});

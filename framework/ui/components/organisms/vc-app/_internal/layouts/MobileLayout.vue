@@ -100,14 +100,19 @@
                 role="tabpanel"
                 class="mobile-layout__panel mobile-layout__panel--menu"
               >
+                <div v-if="showSearch" class="mobile-layout__search">
+                  <VcInput v-model="searchQuery" :placeholder="props.searchPlaceholder || $t('SHELL.SIDEBAR.SEARCH_PLACEHOLDER', 'Search keyword')" size="small" clearable :debounce="300" />
+                </div>
                 <VcScrollableContainer class="mobile-layout__menu-scroll">
                   <slot
                     name="menu"
                     :expanded="true"
                     :on-item-click="handleMenuItemClick"
+                    :search-query="searchQuery"
                   >
                     <VcAppMenu
                       :expanded="true"
+                      :search-query="searchQuery"
                       @item:click="handleMenuItemClick"
                     />
                   </slot>
@@ -168,14 +173,19 @@
           v-else
           class="mobile-layout__panel mobile-layout__panel--single mobile-layout__panel--menu"
         >
+          <div v-if="showSearch" class="mobile-layout__search">
+            <VcInput v-model="searchQuery" :placeholder="props.searchPlaceholder || $t('SHELL.SIDEBAR.SEARCH_PLACEHOLDER', 'Search keyword')" size="small" clearable :debounce="300" />
+          </div>
           <VcScrollableContainer class="mobile-layout__menu-scroll">
             <slot
               name="menu"
               :expanded="true"
               :on-item-click="handleMenuItemClick"
+              :search-query="searchQuery"
             >
               <VcAppMenu
                 :expanded="true"
+                :search-query="searchQuery"
                 @item:click="handleMenuItemClick"
               />
             </slot>
@@ -219,6 +229,7 @@ import MenuSidebar from "@ui/components/organisms/vc-app/_internal/app-bar/compo
 import AppHubContent from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppHubContent.vue";
 import VcAppMenu from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenu.vue";
 import { VcScrollableContainer } from "@ui/components/atoms/vc-scrollable-container";
+import { VcInput } from "@ui/components/molecules/vc-input";
 
 export interface Props {
   logo?: string;
@@ -229,12 +240,15 @@ export interface Props {
   disableMenu?: boolean;
   disableAppSwitcher?: boolean;
   appsList?: AppDescriptor[];
+  showSearch?: boolean;
+  searchPlaceholder?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   disableMenu: false,
   disableAppSwitcher: false,
   appsList: () => [],
+  showSearch: false,
 });
 
 const emit = defineEmits<{
@@ -244,10 +258,12 @@ const emit = defineEmits<{
 
 defineSlots<{
   "app-switcher"?: (props: { appsList: AppDescriptor[]; switchApp: (app: AppDescriptor) => void }) => unknown;
-  menu?: (props: { expanded: boolean; onItemClick: (item: MenuItem) => void }) => unknown;
+  menu?: (props: { expanded: boolean; onItemClick: (item: MenuItem) => void; searchQuery: string }) => unknown;
   "sidebar-header"?: (props: { logo?: string; expanded: boolean; isMobile: boolean }) => unknown;
   "sidebar-footer"?: (props: { avatar?: string; name?: string; role?: string }) => unknown;
 }>();
+
+const searchQuery = ref("");
 
 const sidebar = useSidebarState();
 const isEmbedded = inject(EmbeddedModeKey, false);
@@ -448,6 +464,7 @@ watch(
   (isOpen) => {
     if (!isOpen) {
       setActiveIndex(MENU_TAB_INDEX);
+      searchQuery.value = "";
     }
   },
 );
@@ -479,6 +496,7 @@ watch(showHeader, (nextValue) => {
 });
 
 const handleMenuItemClick = (item: MenuItem) => {
+  searchQuery.value = "";
   sidebar.closeMenu();
   emit("item:click", item);
 };
@@ -563,6 +581,12 @@ const handleSwitchApp = (app: AppDescriptor) => {
     .vc-container__inner {
       @apply tw-overflow-visible;
     }
+  }
+
+  &__search {
+    @apply tw-flex-none tw-px-[18px] tw-py-[11px];
+    background-color: var(--secondary-50);
+    border-bottom: 1px solid var(--neutrals-200);
   }
 
   &__panel {

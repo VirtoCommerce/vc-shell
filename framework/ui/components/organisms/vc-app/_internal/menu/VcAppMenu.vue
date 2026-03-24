@@ -1,12 +1,12 @@
 <template>
   <VcMenu
-    v-if="visibleMenuItems.length"
+    v-if="filteredMenuItems.length"
     :expanded="expanded"
     class="vc-app-menu"
     :class="{ 'vc-app-menu--collapsed': !expanded }"
   >
     <template
-      v-for="item in visibleMenuItems"
+      v-for="item in filteredMenuItems"
       :key="item.id ?? item.routeId ?? item.url ?? item.title"
     >
       <!-- Group items (have children) -->
@@ -51,6 +51,7 @@
 <script lang="ts" setup>
 import { computed, isRef, unref, type Ref } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useMenuService, usePermissions } from "@core/composables";
 import type { MenuItem, MenuItemBadgeConfig, MenuItemBadge } from "@core/types";
 import { VcMenu, VcMenuItem, VcMenuGroup } from "@ui/components/molecules/vc-menu";
@@ -59,9 +60,10 @@ import { stripTenantPrefix } from "@ui/components/organisms/vc-app/_internal/men
 
 export interface Props {
   expanded?: boolean;
+  searchQuery?: string;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   expanded: true,
 });
 
@@ -70,6 +72,7 @@ const emit = defineEmits<{
 }>();
 
 const route = useRoute();
+const { t } = useI18n();
 const { menuItems, menuBadges } = useMenuService();
 const { hasAccess } = usePermissions();
 
@@ -85,6 +88,36 @@ const visibleMenuItems = computed(() => {
     if (item.children?.length) return accessibleChildren(item).length > 0;
     return true;
   });
+});
+
+const filteredMenuItems = computed(() => {
+  const query = props.searchQuery?.toLowerCase().trim();
+  if (!query) return visibleMenuItems.value;
+
+  return visibleMenuItems.value
+    .map((item) => {
+      const children = accessibleChildren(item);
+
+      // Standalone item — match title
+      if (!children.length) {
+        return t(item.title).toLowerCase().includes(query) ? item : null;
+      }
+
+      // Group title matches — show all children
+      if (t(item.title).toLowerCase().includes(query)) return item;
+
+      // Filter matching children only
+      const matchedChildren = children.filter((child) =>
+        t(child.title).toLowerCase().includes(query)
+      );
+
+      if (matchedChildren.length) {
+        return { ...item, children: matchedChildren };
+      }
+
+      return null;
+    })
+    .filter(Boolean) as MenuItem[];
 });
 
 const getGroupId = (item: MenuItem): string => {

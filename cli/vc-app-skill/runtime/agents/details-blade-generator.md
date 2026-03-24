@@ -21,9 +21,10 @@ description: Generates a details blade Vue component and its singular composable
     "fields": [
       {
         "name": "string — camelCase field name",
-        "type": "string — 'string' | 'boolean' | 'number' | 'Date' | 'enum' | 'array'",
+        "type": "string — 'string' | 'text' | 'rich-text' | 'boolean' | 'number' | 'currency' | 'date-time' | 'Date' | 'enum' | 'multi-select' | 'image' | 'gallery' | 'file' | 'rating' | 'range' | 'color' | 'array'",
         "required": "boolean?",
-        "label": "string? — display label override"
+        "label": "string? — display label override",
+        "component": "string? — explicit component override (e.g., 'VcTextarea', 'VcEditor', 'VcInputCurrency'). If provided, use this instead of type-based mapping."
       }
     ],
     "isStandalone": "boolean — true if this is a workspace blade with its own URL (settings/profile page)",
@@ -54,7 +55,10 @@ Before generating, Read these files in order:
 2. `{knowledgeBase}/patterns/composable-details.md` — singular composable skeleton and rules
 3. `{knowledgeBase}/index.md` — to find relevant component docs
 
-From `index.md`, identify docs for `VcInput`, `VcSelect`, `VcSwitch`, `VcBlade`, `VcForm` and Read them from `{docsRoot}/`.
+From `index.md`, identify and Read docs from `{docsRoot}/` for:
+- **Always:** `VcBlade`, `VcForm`, `VcInput`, `VcSelect`, `VcSwitch`
+- **Based on field types present:** Read docs for each component that appears in the field type mapping below (e.g., if any field has type `text` → read `VcTextarea` docs; if `rich-text` → read `VcEditor` docs; if `currency` → read `VcInputCurrency` docs; etc.)
+- **Layout:** If 5+ fields → read `VcCard` docs; if 8+ fields → read `VcAccordion` docs
 
 ## Generation Rules
 
@@ -87,16 +91,41 @@ When `linkTo` is provided:
 
 ### Step 2: Map fields to components
 
-For each field in `fields`, determine the component and rules:
+For each field in `fields`, determine the component using this table. If the field already has a `component` property (from `/vc-app design`), use that directly. Otherwise, map from `type`:
 
 | Field type | Component | Validation rules | Notes |
 |------------|-----------|------------------|-------|
-| `string` | `VcInput` | `required` (if required) | Default input |
-| `boolean` | `VcSwitch` | none | No `Field` wrapper |
-| `number` | `VcInput type="number"` | `required\|bigint\|min_value:0` | |
-| `Date` | `VcInput type="datetime-local"` | `required` (if required) | |
-| `enum` | `VcSelect` | `required` (if required) | Needs `statusOptions` computed |
+| `string` | `VcInput` | `required` (if required) | Default for short text. Use `rules="email"` if name contains "email", `type="tel"` if phone, `type="url"` if url/website |
+| `text` | `VcTextarea` | `required` (if required) | Long text: description, notes, comments, bio, summary |
+| `rich-text` | `VcEditor` | `required` (if required) | HTML/WYSIWYG: body, content, article, template |
+| `boolean` | `VcSwitch` | none | No `Field` wrapper. Default for toggles (isActive, isEnabled) |
+| `boolean` | `VcCheckbox` | none | No `Field` wrapper. Use for consent/accept semantics (agreeTerms) |
+| `number` | `VcInput type="number"` | `required\|bigint\|min_value:0` | Plain numbers: quantity, count, age |
+| `currency` | `VcInputCurrency` | `required\|min_value:0` | Money: price, cost, amount, salary. Set `currency="USD"` (or infer from context) |
+| `date-time` | `VcDatePicker` | `required` (if required) | Preferred over `VcInput type="datetime-local"`. Calendar picker widget |
+| `Date` | `VcDatePicker` | `required` (if required) | Legacy alias — same as `date-time` |
+| `enum` | `VcSelect` | `required` (if required) | For 6+ options or dynamic options. Needs `{field}Options` computed |
+| `enum` (2-5 options) | `VcRadioGroup` | `required` (if required) | More visual for small static sets. Needs `{field}Options` array |
+| `multi-select` | `VcMultivalue` | none | Tags/multi-pick: tags, categories, roles. No `Field` wrapper needed |
+| `multi-select` (static) | `VcCheckboxGroup` | none | Few static checkboxes. Needs `{field}Options` array |
+| `rating` | `VcRating` | none | Star rating 1-5. No `Field` wrapper needed |
+| `range` | `VcSlider` | none | Numeric slider: discount, percentage. Set `:min` / `:max` |
+| `color` | `VcColorInput` | none | Color picker with hex. No `Field` wrapper needed |
+| `image` | `VcImageUpload` | none | Single image upload with preview |
+| `gallery` | `VcGallery` | none | Multi-image management grid |
+| `file` | `VcFileUpload` | none | File attachment. Set `:accept` filter for allowed extensions |
 | `array` | `VcDataTable` (inline) | none | Read-only nested table |
+
+**Field name heuristics:** When field type is plain `"string"`, upgrade based on the field name:
+- `description`, `notes`, `comment`, `bio`, `summary`, `about` → `text` (VcTextarea)
+- `body`, `content`, `html`, `article`, `template` → `rich-text` (VcEditor)
+- `price`, `cost`, `amount`, `total`, `salary`, `budget`, `fee` → `currency` (VcInputCurrency)
+- `avatar`, `logo`, `photo`, `thumbnail`, `banner` → `image` (VcImageUpload)
+- `tags`, `labels`, `categories`, `roles`, `permissions` → `multi-select` (VcMultivalue)
+- `rating`, `score`, `stars` → `rating` (VcRating)
+- `color`, `colour`, `brandColor` → `color` (VcColorInput)
+
+Refer to `details-blade-pattern.md` → "Field Type → Component Mapping" section for full template examples of each component.
 
 ### Step 3: Generate the singular composable
 
@@ -175,11 +204,34 @@ Follow `details-blade-pattern.md` template exactly:
 
 **Template:**
 - `<VcBlade :loading="loading" :modified="modified" :title="title" :toolbar-items="bladeToolbar" width="50%">`
-- `<VcContainer><VcForm><VcRow>`
-- For each non-array, non-boolean field: wrap in `<Field>` with `v-slot`, `name`, `:model-value`, `rules`
-- For boolean fields: `<VcSwitch v-model="entity.{name}">` without Field wrapper
+- `<VcContainer>`
+
+**Banners (contextual alerts):**
+- Add `<VcBanner>` at the top of the form (before `<VcForm>`) for state-dependent alerts. See `details-blade-pattern.md` → "Contextual Banners Pattern".
+- Use `variant="info"` for creation hints, `variant="danger"` for errors, `variant="warning"` for missing data.
+- Example: `<VcBanner v-if="!entity.id" variant="info" icon="lucide-lightbulb" icon-size="l">{{ $t("...CREATE_HINT") }}</VcBanner>`
+
+**Form fields:**
+- `<VcForm>` wraps all editable fields
+- Use the component determined in Step 2 for each field. Refer to `details-blade-pattern.md` for full template examples of each component type.
+- Components that need `<Field>` wrapper (for validation): `VcInput`, `VcTextarea`, `VcEditor`, `VcDatePicker`, `VcSelect`, `VcRadioGroup`, `VcInputCurrency`, `VcFileUpload`
+- Components that do NOT need `<Field>` wrapper: `VcSwitch`, `VcCheckbox`, `VcMultivalue`, `VcRating`, `VcSlider`, `VcColorInput`, `VcImageUpload`, `VcGallery`
 - For array fields: separate `<VcRow>` with inline `<VcDataTable>`
 - Use i18n keys: `{i18nPrefix}.FIELDS.{FIELD_NAME_UPPER}.LABEL` and `.PLACEHOLDER`
+
+**Read-only fields (VcField):**
+- For fields that should display data without editing (computed values, IDs, timestamps on existing entities), use `<VcField>` instead of `<VcInput>`:
+  ```vue
+  <VcField :label="$t('...')" :model-value="entity.number" orientation="horizontal" :aspect-ratio="[1, 2]" copyable type="text" />
+  ```
+- See `details-blade-pattern.md` → "Read-Only Details Pattern".
+- Use `VcField` when: the blade is view-only, or for specific non-editable fields within an editable form (order number, creation date).
+
+**Layout — ALWAYS use VcCard sections:**
+- Group related fields in `<VcCard :header="$t('...')">` sections. This is how real vc-shell apps are built — flat forms without cards look unfinished.
+- If 3+ fields → at minimum 1 card. If 5+ fields → 2+ cards grouped by topic.
+- If 8+ fields → consider `<VcAccordion>` for secondary/advanced fields.
+- **Grid:** Use `<VcRow><VcCol>` to arrange short fields in 2 columns. Wide fields (`VcTextarea`, `VcEditor`, `VcGallery`, `VcDataTable`) span full width.
 
 **Close guard:**
 ```ts
@@ -217,9 +269,18 @@ Before completing, verify:
 - [ ] `onBeforeClose` guard is present if `modified` is used
 - [ ] After save/delete: `callParent("reload")` before `closeSelf()`
 - [ ] `disabled` on toolbar items is a `computed(...)`, not a plain boolean
-- [ ] `boolean` fields use `VcSwitch` without a `Field` wrapper
-- [ ] `enum` fields use `VcSelect` with `option-value` and `option-label` props
+- [ ] `boolean` fields use `VcSwitch` (or `VcCheckbox` for consent) without a `Field` wrapper
+- [ ] `enum` fields use `VcSelect` (6+ options) or `VcRadioGroup` (2-5 options) with `option-value` and `option-label` props
+- [ ] `text` fields use `VcTextarea`, NOT `VcInput`
+- [ ] `rich-text` fields use `VcEditor`, NOT `VcTextarea`
+- [ ] `currency` fields use `VcInputCurrency`, NOT `VcInput type="number"`
+- [ ] `date-time` fields use `VcDatePicker`, NOT `VcInput type="datetime-local"`
+- [ ] `multi-select` fields use `VcMultivalue` or `VcCheckboxGroup`
+- [ ] `image` fields use `VcImageUpload`, `gallery` uses `VcGallery`, `file` uses `VcFileUpload`
+- [ ] `rating` fields use `VcRating`, `range` uses `VcSlider`, `color` uses `VcColorInput`
 - [ ] `array` fields render as inline `VcDataTable` in a separate `VcRow`
+- [ ] Components without `Field` wrapper: `VcSwitch`, `VcCheckbox`, `VcMultivalue`, `VcRating`, `VcSlider`, `VcColorInput`, `VcImageUpload`, `VcGallery`
+- [ ] Wide components (`VcTextarea`, `VcEditor`, `VcGallery`, `VcDataTable`) span full width, not in 2-col grid
 - [ ] `useModificationTracker` is used in composable (not blade)
 - [ ] `resetModificationState()` called after fetch AND after create/update
 - [ ] No `useI18n` import in the composable file

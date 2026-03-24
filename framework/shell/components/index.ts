@@ -6,7 +6,6 @@ export * from "@shell/components/settings-menu";
 export * from "@shell/components/settings-menu-item";
 export * from "@shell/components/notification-dropdown";
 export * from "@shell/components/notification-template";
-export * from "@shell/components/app-switcher";
 export * from "@shell/components/change-password-button";
 export * from "@shell/components/change-password";
 export * from "@shell/components/logout-button";

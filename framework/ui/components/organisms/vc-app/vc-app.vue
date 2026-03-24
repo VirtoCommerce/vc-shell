@@ -33,6 +33,8 @@
           :disable-menu="disableMenu"
           :disable-app-switcher="disableAppSwitcher"
           :apps-list="appsList"
+          :show-search="showSearch"
+          :search-placeholder="searchPlaceholder"
           @logo:click="openRoot"
           @item:click="handleMenuItemClick"
           @switch-app="switchApp"
@@ -128,6 +130,8 @@ export interface Props {
   disableMenu?: boolean;
   disableAppSwitcher?: boolean;
   role?: string;
+  showSearch?: boolean;
+  searchPlaceholder?: string;
 }
 
 defineOptions({
@@ -144,7 +148,7 @@ defineSlots<{
     openRoot: () => void;
     handleMenuItemClick: (item: MenuItem) => void;
   }) => unknown;
-  menu?: (props: { expanded: boolean; onItemClick: (item: MenuItem) => void }) => unknown;
+  menu?: (props: { expanded: boolean; onItemClick: (item: MenuItem) => void; searchQuery: string }) => unknown;
   "sidebar-header"?: (props: { logo?: string; expanded: boolean; isMobile: boolean }) => unknown;
   "sidebar-footer"?: (props: { avatar?: string; name?: string; role?: string }) => unknown;
   workspace?: (props: { isAuthenticated: boolean }) => unknown;

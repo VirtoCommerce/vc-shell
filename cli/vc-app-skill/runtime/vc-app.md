@@ -951,7 +951,29 @@ Parse `DESIGN_PROMPT` into a structured application plan. Apply these parsing ru
 
 **Field extraction:**
 - Concrete field mentions ("subscription token key", "trial period", "email") → columns or formFields with inferred types
-- Type inference: dates → `"date-time"`, booleans/flags → `"boolean"`, numbers/counts/amounts → `"number"`, everything else → `"string"`
+- Type inference — use the most specific type possible:
+
+  | Signal in prompt | Field type | Component (details) | Column type (list) |
+  |---|---|---|---|
+  | date, deadline, birthday, created, expires | `date-time` | `VcDatePicker` | `date-ago` |
+  | is*, has*, can*, enabled, active, published | `boolean` | `VcSwitch` | `status-icon` |
+  | price, cost, amount, total, salary, budget, fee | `currency` | `VcInputCurrency` | `money` |
+  | count, quantity, age, priority (numeric) | `number` | `VcInput type="number"` | `number` |
+  | description, notes, comment, bio, summary | `text` | `VcTextarea` | — (not in list) |
+  | body, content, html, article, template | `rich-text` | `VcEditor` | — (not in list) |
+  | status, state, type, category (from fixed set) | `enum` | `VcSelect` or `VcRadioGroup` | `status` |
+  | tags, labels, categories, roles, permissions | `multi-select` | `VcMultivalue` | — (not in list) |
+  | avatar, logo, photo, thumbnail, banner | `image` | `VcImageUpload` | `image` |
+  | photos, images, screenshots, gallery | `gallery` | `VcGallery` | — (not in list) |
+  | file, attachment, document, contract | `file` | `VcFileUpload` | — (not in list) |
+  | rating, score, stars | `rating` | `VcRating` | — (custom slot) |
+  | color, colour, brandColor | `color` | `VcColorInput` | — (custom slot) |
+  | discount, opacity, percentage, progress | `range` | `VcSlider` | — (custom slot) |
+  | email | `string` | `VcInput` (rules="email") | plain text |
+  | phone, tel | `string` | `VcInput` (type="tel") | plain text |
+  | url, website, link | `string` | `VcInput` (type="url") | plain text |
+  | everything else | `string` | `VcInput` | plain text |
+
 - If a field clearly belongs to a list view (searchable, sortable characteristic) → column
 - If a field clearly belongs to a form (editable, configurable) → formField
 - If unclear → put in both columns and formFields
@@ -976,9 +998,13 @@ DESIGN_PLAN = {
       "name": "string — kebab-case module name (english)",
       "description": "string — what this module does",
       "bladeTypes": "list+details | list-only | details-only",
+      "readOnly": "boolean? — true if details blade is view-only (use VcField instead of VcInput). Default: false",
       "columns": [{ "name": "string", "type": "string", "sortable": true/false }],
-      "formFields": [{ "name": "string", "type": "string", "required": true/false }],
+      "formFields": [{ "name": "string", "type": "string (use specific types from type inference table above)", "required": true/false, "component": "string? — VcInput|VcTextarea|VcEditor|VcDatePicker|VcSelect|VcSwitch|VcCheckbox|VcRadioGroup|VcInputCurrency|VcMultivalue|VcRating|VcSlider|VcColorInput|VcImageUpload|VcGallery|VcFileUpload|VcField", "readOnly": "boolean? — true for display-only fields within editable form" }],
       "toolbarActions": [{ "label": "string", "action": "string (camelCase)" }],
+      "widgets": "string[]? — names of related sub-entities for blade sidebar widgets (e.g., ['offers', 'videos'])",
+      "dashboard": "boolean? — true to generate a DashboardWidgetCard for this module",
+      "notifications": "string[]? — domain event names to generate notification templates for (e.g., ['OrderCreated'])",
       "todos": ["string — exact quote from prompt"]
     }
   ],
@@ -998,7 +1024,17 @@ DESIGN_PLAN = {
 - Entity with both list-worthy columns AND editable fields → `"list+details"`
 - Entity that is mainly a collection/catalog with no edit form → `"list-only"`
 - Entity that is a singleton/settings with no list → `"details-only"`
+- Entity that is view-only (order details, transaction log, audit) → `"list+details"` but mark the details blade `readOnly: true`
 - Default to `"list+details"` when unclear
+
+**Details blade mode inference:**
+- If the entity is view-only (order, transaction, audit log, payment) → set `readOnly: true` on the module — the details generator will use `VcField` for display instead of `VcInput`
+- If the entity has mixed editable + read-only fields → default `readOnly: false`, individual fields marked as `readOnly` in `formFields`
+
+**Feature inference (enrich modules based on prompt signals):**
+- If entity mentions "related" sub-entities (e.g., "product has offers and videos") → add `widgets: ["sub-entity-name"]` — generates blade sidebar widgets with `useBladeWidgets()`
+- If entity is a "primary" concept that would benefit from a dashboard summary → add `dashboard: true` — generates a `DashboardWidgetCard` with stats
+- If entity mentions "notifications" or "events" or "alerts" → add `notifications: ["EventName"]` — generates notification template components
 
 ### Phase 3: Plan Presentation
 
@@ -1009,10 +1045,13 @@ Application Plan: {DESIGN_PLAN.appName}
 
 Modules ({count}):
 ─────────────────────────────────────────
-1. {name} ({bladeTypes})
-   Columns: {comma-separated column names}
-   Fields: {comma-separated field names}
+1. {name} ({bladeTypes}{, read-only if readOnly})
+   Columns: {comma-separated column names with types, e.g. "name(string), status(enum), price(currency)"}
+   Fields: {comma-separated "fieldName → Component", e.g. "name → VcInput, description → VcTextarea, price → VcInputCurrency"}
    Actions: {comma-separated action labels}
+   {Widgets: sub-entity-1, sub-entity-2 — if widgets present}
+   {Dashboard: yes — if dashboard present}
+   {Notifications: EventName — if notifications present}
    TODO: "{todo text}"
 
 2. {name} ({bladeTypes})

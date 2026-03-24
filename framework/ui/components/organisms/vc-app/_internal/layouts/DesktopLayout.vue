@@ -55,6 +55,8 @@
         :user-role="userRole"
         :disable-menu="disableMenu"
         :header-visible="showHeader"
+        :show-search="showSearch"
+        :search-placeholder="searchPlaceholder"
         @item:click="$emit('item:click', $event)"
       >
         <template
@@ -134,12 +136,15 @@ export interface Props {
   disableMenu?: boolean;
   disableAppSwitcher?: boolean;
   appsList?: AppDescriptor[];
+  showSearch?: boolean;
+  searchPlaceholder?: string;
 }
 
 withDefaults(defineProps<Props>(), {
   disableMenu: false,
   disableAppSwitcher: false,
   appsList: () => [],
+  showSearch: false,
 });
 
 const emit = defineEmits<{
@@ -150,7 +155,7 @@ const emit = defineEmits<{
 
 defineSlots<{
   "app-switcher"?: (props: { appsList: AppDescriptor[]; switchApp: (app: AppDescriptor) => void }) => unknown;
-  menu?: (props: { expanded: boolean; onItemClick: (item: MenuItem) => void }) => unknown;
+  menu?: (props: { expanded: boolean; onItemClick: (item: MenuItem) => void; searchQuery: string }) => unknown;
   "sidebar-header"?: (props: { logo?: string; expanded: boolean; isMobile: boolean }) => unknown;
   "sidebar-footer"?: (props: { avatar?: string; name?: string; role?: string }) => unknown;
 }>();

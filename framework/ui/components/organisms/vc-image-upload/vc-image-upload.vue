@@ -37,7 +37,8 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { ICommonAsset, IValidationRules } from "@core/types";
+import type { IValidationRules } from "@core/types";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 import { VcFileUpload } from "@ui/components/molecules/vc-file-upload";
 import { VcHint } from "@ui/components/atoms/vc-hint";
 import { VcImageTile } from "@ui/components/molecules/vc-image-tile";
@@ -45,7 +46,7 @@ import { useI18n } from "vue-i18n";
 import { useGalleryPreview } from "@ui/components/organisms/vc-gallery/composables/useGalleryPreview";
 
 export interface Props {
-  image?: ICommonAsset;
+  image?: AssetLike;
   disabled?: boolean;
   loading?: boolean;
   accept?: string;
@@ -59,7 +60,7 @@ export interface Props {
 
 export interface Emits {
   (event: "upload", files: FileList): void;
-  (event: "remove", image: ICommonAsset): void;
+  (event: "remove", image: AssetLike): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -92,7 +92,7 @@ export function useAssetsManager(
 ): UseAssetsManagerReturn {
   const _loading = ref(false);
 
-  const items = computed(() => assetsRef.value);
+  const items = computed(() => assetsRef.value ?? []);
   const loading = computed(() => _loading.value);
 
   const concurrency = options.concurrency ?? DEFAULT_CONCURRENCY;
@@ -112,7 +112,7 @@ export function useAssetsManager(
       );
 
       const successfulUploads = uploadResults.filter((asset): asset is AssetLike => asset !== null);
-      assetsRef.value = [...assetsRef.value, ...successfulUploads];
+      assetsRef.value = [...(assetsRef.value ?? []), ...successfulUploads];
     } catch (error) {
       logger.error("Upload failed:", error);
       throw error;
@@ -132,7 +132,7 @@ export function useAssetsManager(
     }
 
     const keysToRemove = new Set(itemsToRemove.map((item) => item[assetKey]));
-    assetsRef.value = assetsRef.value.filter((item) => !keysToRemove.has(item[assetKey]));
+    assetsRef.value = (assetsRef.value ?? []).filter((item) => !keysToRemove.has(item[assetKey]));
   }
 
   function reorder(newOrder: AssetLike[]): void {

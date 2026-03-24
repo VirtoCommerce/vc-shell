@@ -3,7 +3,7 @@ import { coreTransform } from "../../../src/transforms/nswag-class-to-interface-
 import { applyTransform } from "../../../src/utils/test-helpers";
 
 const dtoClassNames = new Set(["Offer", "PushMessage", "SearchResult", "ImportProfile"]);
-const interfaceToClass = new Map<string, string>();
+const interfaceToClass = new Map<string, string>([["IOffer", "Offer"]]);
 
 const defaultOptions = {
   dtoClassNames,
@@ -135,6 +135,54 @@ const offer = new Offer(null);`,
     expect(result).not.toBeNull();
     expect(result).toContain("{} as Offer");
     expect(result).not.toContain("new Offer");
+  });
+});
+
+describe("nswag-class-to-interface-core — Rule D (IPrefix type removal)", () => {
+  it("renames IOffer to Offer in import and type annotations", () => {
+    const result = applyTransform(coreTransform, {
+      path: "test.ts",
+      source: `import { IOffer } from "../../api_client/virtocommerce.marketplacevendor";
+const item = ref<IOffer>();
+function process(data: IOffer): IOffer { return data; }`,
+    }, defaultOptions);
+    expect(result).not.toBeNull();
+    expect(result).not.toContain("IOffer");
+    expect(result).toContain("import { Offer }");
+    expect(result).toContain("ref<Offer>");
+    expect(result).toContain("data: Offer): Offer");
+  });
+});
+
+describe("nswag-class-to-interface-core — Rule E (import deduplication)", () => {
+  it("merges IOffer + Offer into single Offer import", () => {
+    const result = applyTransform(coreTransform, {
+      path: "test.ts",
+      source: `import { IOffer, Offer, VcmpSellerCatalogClient } from "../../api_client/virtocommerce.marketplacevendor";
+const item = ref<IOffer>(new Offer());`,
+    }, defaultOptions);
+    expect(result).not.toBeNull();
+    expect(result).not.toContain("IOffer");
+    expect(result).toContain("Offer");
+    expect(result).toContain("VcmpSellerCatalogClient");
+    // Offer should appear exactly once in import specifiers
+    const importLine = result!.split("\n").find((l: string) => l.startsWith("import"));
+    const offerCount = (importLine!.match(/\bOffer\b/g) || []).length;
+    expect(offerCount).toBe(1);
+  });
+});
+
+describe("nswag-class-to-interface-core — Rule D + Rule C combined", () => {
+  it("renames IOffer and replaces new Offer() in same file", () => {
+    const result = applyTransform(coreTransform, {
+      path: "test.ts",
+      source: `import { IOffer, Offer } from "../../api_client/virtocommerce.marketplacevendor";
+const item = ref<IOffer>(new Offer());`,
+    }, defaultOptions);
+    expect(result).not.toBeNull();
+    expect(result).not.toContain("IOffer");
+    expect(result).toContain("ref<Offer>");
+    expect(result).toContain("{} as Offer");
   });
 });
 

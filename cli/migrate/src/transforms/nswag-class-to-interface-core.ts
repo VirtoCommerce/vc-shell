@@ -53,8 +53,7 @@ export function coreTransform(
   const j = api.jscodeshift;
   const root = j(fileInfo.source);
 
-  const { dtoClassNames, packageName } = options;
-  if (!dtoClassNames || dtoClassNames.size === 0) return null;
+  const { dtoClassNames, interfaceToClass, packageName } = options;
 
   // Collect names actually imported from api_client in this file
   const importedNames = collectApiClientImportedNames(root, j, packageName);
@@ -62,12 +61,25 @@ export function coreTransform(
 
   // Effective DTOs: intersection of dtoClassNames and actually-imported names
   const effectiveDtos = new Set<string>();
-  for (const name of importedNames) {
-    if (dtoClassNames.has(name)) {
-      effectiveDtos.add(name);
+  if (dtoClassNames) {
+    for (const name of importedNames) {
+      if (dtoClassNames.has(name)) {
+        effectiveDtos.add(name);
+      }
     }
   }
-  if (effectiveDtos.size === 0) return null;
+
+  // Effective renames: intersection of interfaceToClass keys and actually-imported names
+  const effectiveRenames = new Map<string, string>();
+  if (interfaceToClass) {
+    for (const [iName, className] of interfaceToClass) {
+      if (importedNames.has(iName)) {
+        effectiveRenames.set(iName, className);
+      }
+    }
+  }
+
+  if (effectiveDtos.size === 0 && effectiveRenames.size === 0) return null;
 
   let changed = false;
 
@@ -130,7 +142,67 @@ export function coreTransform(
     changed = true;
   });
 
-  return changed ? root.toSource() : null;
+  // Rule D/E: Rename IPrefix → ClassName in imports and type references
+  // Collect renames that were applied so we can do text replacement for type positions
+  // (jscodeshift doesn't traverse into TSTypeParameterInstantiation on CallExpressions)
+  const appliedRenames = new Map<string, string>();
+
+  if (effectiveRenames.size > 0) {
+    root
+      .find(j.ImportDeclaration)
+      .filter((path) => {
+        const source = path.node.source.value;
+        return typeof source === "string" && isApiClientImport(source, packageName);
+      })
+      .forEach((importPath) => {
+        const specifiers = importPath.node.specifiers ?? [];
+        const toRemove: number[] = [];
+
+        specifiers.forEach((spec, idx) => {
+          if (spec.type !== "ImportSpecifier" || spec.imported.type !== "Identifier") return;
+          const importedName = spec.imported.name;
+          const targetName = effectiveRenames.get(importedName);
+          if (!targetName) return;
+
+          // Rule E: Check if targetName already imported in same declaration
+          const alreadyImported = specifiers.some(
+            (s) =>
+              s.type === "ImportSpecifier" &&
+              s.imported.type === "Identifier" &&
+              s.imported.name === targetName,
+          );
+
+          if (alreadyImported) {
+            toRemove.push(idx); // Remove duplicate IPrefix specifier
+          } else {
+            // Rule D: Rename the specifier
+            spec.imported = j.identifier(targetName);
+            if (spec.local && (spec.local as any).name === importedName) {
+              spec.local = j.identifier(targetName);
+            }
+          }
+
+          appliedRenames.set(importedName, targetName);
+          changed = true;
+        });
+
+        // Remove deduplicated specifiers (reverse to preserve indices)
+        for (const idx of toRemove.reverse()) {
+          specifiers.splice(idx, 1);
+        }
+      });
+  }
+
+  if (!changed) return null;
+
+  // Generate source from AST, then apply text-based renames for type references
+  // that jscodeshift cannot traverse (e.g. TSTypeParameterInstantiation in CallExpression)
+  let output = root.toSource();
+  for (const [oldName, newName] of appliedRenames) {
+    output = output.replace(new RegExp(`\\b${oldName}\\b`, "g"), newName);
+  }
+
+  return output;
 }
 
 export default coreTransform as Transform;

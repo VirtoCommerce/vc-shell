@@ -2,6 +2,7 @@ import { Component, ComputedRef, Ref } from "vue";
 import type { CoreBladeExposed } from "@core/blade-navigation/types";
 import type { ComponentPublicInstanceConstructor } from "@ui/utilities/vueUtils";
 import type { IBladeInstance } from "@core/blade-navigation/types";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 
 // AI Agent types are now part of the ai-agent plugin
 // export * from "./plugins/ai-agent/types";
@@ -99,6 +100,9 @@ export interface IActionBuilderResult<T = {}> {
   clickHandler(item?: T, index?: number): void;
 }
 
+/**
+ * @deprecated Use UseAssetsManagerReturn from @vc-shell/framework instead. Will be removed in v3.0.
+ */
 export interface AssetsHandler<T extends ICommonAsset> {
   noRemoveConfirmation?: boolean;
   loading?: Ref<boolean>;
@@ -107,22 +111,10 @@ export interface AssetsHandler<T extends ICommonAsset> {
   remove?: (files: T[]) => T[];
 }
 
-export interface ICommonAsset {
-  [x: string]: any;
-  sortOrder?: number;
-  title?: string | undefined;
-  name?: string | undefined;
-  url?: string | undefined;
-  readableSize?: string;
-  relativeUrl?: string | undefined;
-  description?: string | undefined;
-  modifiedDate?: Date;
-  id?: string | undefined;
-  altText?: string | undefined;
-  typeId?: string;
-  size?: number;
-  createdDate?: Date;
-}
+/**
+ * @deprecated Use AssetLike from @vc-shell/framework instead. Will be removed in v3.0.
+ */
+export type ICommonAsset = AssetLike;
 
 export interface RequestPasswordResult {
   succeeded: boolean;

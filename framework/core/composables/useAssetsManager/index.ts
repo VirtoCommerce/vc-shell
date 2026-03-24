@@ -119,12 +119,19 @@ export function useAssetsManager(
     }
   }
 
-  async function remove(_item: AssetLike): Promise<void> {
-    // TODO: implement
+  async function remove(item: AssetLike): Promise<void> {
+    await removeMany([item]);
   }
 
-  async function removeMany(_items: AssetLike[]): Promise<void> {
-    // TODO: implement
+  async function removeMany(itemsToRemove: AssetLike[]): Promise<void> {
+    if (options.confirmRemove) {
+      const confirmed = await options.confirmRemove();
+      if (!confirmed) return;
+    }
+
+    const key = options.assetKey ?? "url";
+    const keysToRemove = new Set(itemsToRemove.map((item) => item[key]));
+    assetsRef.value = assetsRef.value.filter((item) => !keysToRemove.has(item[key]));
   }
 
   function reorder(_items: AssetLike[]): void {

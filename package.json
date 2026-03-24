@@ -34,7 +34,8 @@
     "test:snapshot:update": "vitest --project=storybook -u",
     "prepare": "husky install",
     "pre-commit": "yarn check-locales",
-    "generate-changelogs": "tsx scripts/generate-initial-changelogs.ts"
+    "generate-changelogs": "tsx scripts/generate-initial-changelogs.ts",
+    "unpublish:vc-app-skill": "for v in 17 18 19 20 21 22; do npm unpublish @vc-shell/vc-app-skill@2.0.0-alpha.$v; done"
   },
   "workspaces": [
     "apps/*",

@@ -8,6 +8,7 @@ export * from "@core/composables/useApiClient";
 export * from "@core/composables/useLoading";
 export * from "@core/composables/useErrorHandler";
 export * from "@core/composables/useAssets";
+export * from "@core/composables/useAssetsManager";
 export * from "@core/composables/useMenuService";
 export * from "@core/composables/useBeforeUnload";
 export * from "@core/composables/useLanguages";

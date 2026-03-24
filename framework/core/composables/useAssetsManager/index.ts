@@ -1,4 +1,4 @@
-import { computed, Ref, ComputedRef } from "vue";
+import { computed, ref, Ref, ComputedRef } from "vue";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-assets-manager");
@@ -27,17 +27,96 @@ export interface UseAssetsManagerReturn {
   loading: ComputedRef<boolean>;
 }
 
+/** Default concurrency for parallel uploads */
+const DEFAULT_CONCURRENCY = 4;
+
+/**
+ * Uploads a single file and returns the asset
+ */
+async function uploadSingleFile(
+  file: File,
+  uploadPath: string,
+  index: number,
+  startingSortOrder?: number,
+): Promise<AssetLike | null> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const result = await fetch(`/api/assets?folderUrl=/${uploadPath}`, {
+    method: "POST",
+    body: formData,
+  });
+
+  const response = await result.json();
+
+  if (response?.length) {
+    const uploadedFile = response[0];
+    uploadedFile.createdDate = new Date();
+    uploadedFile.sortOrder =
+      startingSortOrder !== undefined && startingSortOrder >= 0 ? startingSortOrder + index + 1 : 0;
+    uploadedFile.url = uploadedFile.url ? decodeURI(uploadedFile.url) : "";
+
+    if ("size" in uploadedFile) {
+      uploadedFile.size = file.size;
+    }
+
+    return uploadedFile;
+  }
+
+  return null;
+}
+
+/**
+ * Processes items in batches with concurrency limit
+ */
+async function processBatched<T, R>(
+  items: T[],
+  processor: (item: T, index: number) => Promise<R>,
+  concurrency: number,
+): Promise<R[]> {
+  const results: R[] = [];
+
+  for (let i = 0; i < items.length; i += concurrency) {
+    const batch = items.slice(i, i + concurrency);
+    const batchResults = await Promise.all(batch.map((item, batchIndex) => processor(item, i + batchIndex)));
+    results.push(...batchResults);
+  }
+
+  return results;
+}
+
 export function useAssetsManager(
   assetsRef: Ref<AssetLike[]>,
   options: UseAssetsManagerOptions,
 ): UseAssetsManagerReturn {
-  const _loading = false;
+  const _loading = ref(false);
 
   const items = computed(() => assetsRef.value);
-  const loading = computed(() => _loading);
+  const loading = computed(() => _loading.value);
 
-  async function upload(_files: FileList, _startingSortOrder?: number): Promise<void> {
-    // TODO: implement
+  const concurrency = options.concurrency ?? DEFAULT_CONCURRENCY;
+
+  async function upload(files: FileList, startingSortOrder?: number): Promise<void> {
+    try {
+      _loading.value = true;
+
+      const fileArray = Array.from(files);
+      const uploadPath = options.uploadPath();
+
+      const uploadResults = await processBatched(
+        fileArray,
+        (file, index) => uploadSingleFile(file, uploadPath, index, startingSortOrder),
+        concurrency,
+      );
+
+      const successfulUploads = uploadResults.filter((asset): asset is AssetLike => asset !== null);
+      assetsRef.value = [...assetsRef.value, ...successfulUploads];
+    } catch (error) {
+      logger.error("Upload failed:", error);
+      throw error;
+    } finally {
+      _loading.value = false;
+    }
   }
 
   async function remove(_item: AssetLike): Promise<void> {

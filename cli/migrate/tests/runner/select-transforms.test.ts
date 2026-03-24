@@ -45,7 +45,7 @@ describe("selectTransforms", () => {
   });
 
   it("returns empty when already on target version", () => {
-    const selected = selectTransforms("2.0.0", "2.1.0");
+    const selected = selectTransforms("2.1.0", "2.2.0");
     expect(selected).toEqual([]);
   });
 

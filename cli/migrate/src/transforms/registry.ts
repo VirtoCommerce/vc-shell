@@ -136,6 +136,13 @@ export const transforms: VersionedTransform[] = [
     diagnosticOnly: true,
     transformPath: t("manual-migration-audit"),
   },
+  {
+    name: "nswag-class-to-interface",
+    description: "Migrate consumer code from NSwag class-based to interface-based DTOs",
+    introducedIn: "2.1.0",
+    scope: "project",
+    transformPath: t("nswag-class-to-interface"),
+  },
 ];
 
 export function selectTransforms(currentVersion: string, targetVersion: string): VersionedTransform[] {

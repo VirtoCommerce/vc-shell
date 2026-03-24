@@ -42,7 +42,8 @@ async function uploadSingleFile(
   const formData = new FormData();
   formData.append("file", file);
 
-  const result = await fetch(`/api/assets?folderUrl=/${uploadPath}`, {
+  const normalizedPath = uploadPath.startsWith("/") ? uploadPath.slice(1) : uploadPath;
+  const result = await fetch(`/api/assets?folderUrl=/${normalizedPath}`, {
     method: "POST",
     body: formData,
   });
@@ -95,6 +96,7 @@ export function useAssetsManager(
   const loading = computed(() => _loading.value);
 
   const concurrency = options.concurrency ?? DEFAULT_CONCURRENCY;
+  const assetKey = options.assetKey ?? "url";
 
   async function upload(files: FileList, startingSortOrder?: number): Promise<void> {
     try {
@@ -129,9 +131,8 @@ export function useAssetsManager(
       if (!confirmed) return;
     }
 
-    const key = options.assetKey ?? "url";
-    const keysToRemove = new Set(itemsToRemove.map((item) => item[key]));
-    assetsRef.value = assetsRef.value.filter((item) => !keysToRemove.has(item[key]));
+    const keysToRemove = new Set(itemsToRemove.map((item) => item[assetKey]));
+    assetsRef.value = assetsRef.value.filter((item) => !keysToRemove.has(item[assetKey]));
   }
 
   function reorder(newOrder: AssetLike[]): void {
@@ -139,10 +140,11 @@ export function useAssetsManager(
   }
 
   function updateItem(item: AssetLike): void {
-    const key = options.assetKey ?? "url";
-    const index = assetsRef.value.findIndex((existing) => existing[key] === item[key]);
+    const index = assetsRef.value.findIndex((existing) => existing[assetKey] === item[assetKey]);
     if (index !== -1) {
-      assetsRef.value[index] = { ...assetsRef.value[index], ...item };
+      const updated = [...assetsRef.value];
+      updated[index] = { ...assetsRef.value[index], ...item };
+      assetsRef.value = updated;
     }
   }
 

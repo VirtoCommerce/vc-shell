@@ -92,6 +92,19 @@ describe("useAssetsManager", () => {
       expect(fetchSpy).toHaveBeenCalledWith("/api/assets?folderUrl=/my/path", expect.objectContaining({ method: "POST" }));
     });
 
+    it("normalizes leading slash in uploadPath to avoid double-slash", async () => {
+      const assets = ref<AssetLike[]>([]);
+      const { upload } = useAssetsManager(assets, { uploadPath: () => "/leading/slash" });
+
+      const file = new File(["x"], "f.jpg");
+      await upload(createFileList(file));
+
+      expect(fetchSpy).toHaveBeenCalledWith(
+        "/api/assets?folderUrl=/leading/slash",
+        expect.objectContaining({ method: "POST" }),
+      );
+    });
+
     it("sets sortOrder from startingSortOrder", async () => {
       const assets = ref<AssetLike[]>([]);
       const { upload } = useAssetsManager(assets, { uploadPath: () => "p" });
@@ -340,6 +353,17 @@ describe("useAssetsManager", () => {
       updateItem({ name: "alpha", sortOrder: 5 });
 
       expect(assets.value[0].sortOrder).toBe(5);
+    });
+
+    it("replaces the array reference (not mutate in-place) so computed deps update", () => {
+      const assets = ref<AssetLike[]>([{ url: "a.jpg", name: "old" }]);
+      const { updateItem } = useAssetsManager(assets, { uploadPath: () => "p" });
+
+      const before = assets.value;
+      updateItem({ url: "a.jpg", name: "new" });
+
+      expect(assets.value).not.toBe(before);
+      expect(assets.value[0].name).toBe("new");
     });
   });
 });

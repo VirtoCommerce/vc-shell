@@ -143,6 +143,13 @@ export const transforms: VersionedTransform[] = [
     scope: "project",
     transformPath: t("nswag-class-to-interface"),
   },
+  {
+    name: "use-assets-migration",
+    description: "ICommonAsset → AssetLike + detect useAssets() for manual migration to useAssetsManager()",
+    introducedIn: "2.0.0-alpha.24",
+    migrationGuideSection: "Guide 32",
+    transformPath: t("use-assets-migration"),
+  },
 ];
 
 export function selectTransforms(currentVersion: string, targetVersion: string): VersionedTransform[] {

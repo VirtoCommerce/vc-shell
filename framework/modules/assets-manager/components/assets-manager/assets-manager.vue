@@ -10,13 +10,13 @@
     @collapse="$emit('collapse:blade')"
   >
     <div
-      v-loading="options?.loading"
+      v-loading="isLoading"
       class="tw-relative tw-h-full tw-flex-1"
       @dragover.prevent.stop="dragOver"
       @dragleave.prevent="dragLeave"
       @drop.prevent.stop="onDrop"
     >
-      <!-- @vue-generic {ICommonAsset} -->
+      <!-- @vue-generic {AssetLike} -->
       <VcTable
         :columns="columns"
         :expanded="expanded"
@@ -153,14 +153,14 @@
 </template>
 
 <script setup lang="ts">
-import { ICommonAsset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "@core/types";
-import { ref, computed, onMounted, unref, watch, Ref } from "vue";
+import type { AssetLike, UseAssetsManagerReturn } from "@core/composables/useAssetsManager";
+import { IActionBuilderResult, IBladeToolbar, ITableColumns } from "@core/types";
+import { ref, computed, unref } from "vue";
 import { useI18n } from "vue-i18n";
 import { formatDateRelative } from "@core/utilities/date";
 import { isImage, getFileThumbnail, readableSize } from "@core/utilities/assets";
-import * as _ from "lodash-es";
 import type { IParentCallArgs } from "@core/blade-navigation/types";
-import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
+import { useBlade } from "@core/composables/useBlade";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("assets-manager");
@@ -170,13 +170,9 @@ export interface Props {
   closable?: boolean;
   options: {
     title?: string;
-    assets: ICommonAsset[];
-    loading: Ref<boolean>;
-    assetsEditHandler: (assets: ICommonAsset[]) => ICommonAsset[];
-    assetsUploadHandler: (files: FileList) => Promise<ICommonAsset[]>;
-    assetsRemoveHandler: (assets: ICommonAsset[]) => Promise<ICommonAsset[]>;
-    disabled: boolean;
-    hiddenFields: string[];
+    manager: UseAssetsManagerReturn;
+    disabled?: boolean;
+    hiddenFields?: string[];
   };
 }
 
@@ -201,18 +197,25 @@ defineBlade({
 
 const { t } = useI18n({ useScope: "global" });
 
-const defaultAssets = ref<ICommonAsset[]>([]);
+const {
+  items: defaultAssets,
+  upload: managerUpload,
+  removeMany,
+  reorder: managerReorder,
+  updateItem,
+  loading: managerLoading,
+} = props.options.manager;
+
+const isLoading = computed(() => managerLoading.value);
 
 const bladeTitle = computed(() => props.options.title || t("ASSETS_MANAGER.TITLE"));
 
 const isDragging = ref(false);
 const uploader = ref();
-const selectedItems: Ref<ICommonAsset[]> = ref([]);
+const selectedItems = ref<AssetLike[]>([]);
 const readonly = computed(() => props.options.disabled);
-let assetsCopy: ICommonAsset[];
-const modified = ref(false);
 
-const { openBlade, resolveBladeByName } = useBladeNavigation();
+const { openBlade } = useBlade();
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -230,9 +233,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("ASSETS_MANAGER.TOOLBAR.DELETE")),
     icon: "lucide-trash-2",
     async clickHandler() {
-      if (props.options.assetsRemoveHandler && typeof props.options.assetsRemoveHandler === "function") {
-        defaultAssets.value = await props.options.assetsRemoveHandler(selectedItems.value);
-      }
+      await removeMany(selectedItems.value);
     },
     disabled: computed(() => !selectedItems.value.length || readonly.value),
     isVisible: computed(() => !readonly.value),
@@ -273,31 +274,14 @@ const columns = ref<ITableColumns[]>([
   },
 ]);
 
-watch(
-  () => defaultAssets.value,
-  (newVal) => {
-    modified.value = !_.isEqual(newVal, assetsCopy);
-  },
-  { deep: true },
-);
-
-onMounted(() => {
-  defaultAssets.value = props.options?.assets;
-  assetsCopy = _.cloneDeep(props.options?.assets);
-});
-
-async function sortAssets(event: { dragIndex: number; dropIndex: number; value: ICommonAsset[] }) {
-  if (
-    props.options.assetsEditHandler &&
-    typeof props.options.assetsEditHandler === "function" &&
-    event.dragIndex !== event.dropIndex
-  ) {
+async function sortAssets(event: { dragIndex: number; dropIndex: number; value: AssetLike[] }) {
+  if (event.dragIndex !== event.dropIndex) {
     const sorted = event.value.map((item, index) => {
       item.sortOrder = index;
       return item;
     });
 
-    defaultAssets.value = await props.options.assetsEditHandler(sorted);
+    managerReorder(sorted);
   }
 }
 
@@ -361,13 +345,13 @@ async function upload(files: FileList) {
     uploadedFiles.forEach((file) => {
       modifiedFileList.items.add(file);
     });
-    if (props.options.assetsUploadHandler && typeof props.options.assetsUploadHandler === "function")
-      try {
-        defaultAssets.value = await props.options.assetsUploadHandler(modifiedFileList.files);
-      } catch (error) {
-        logger.error("Failed to upload assets:", error);
-        throw error;
-      }
+
+    try {
+      await managerUpload(modifiedFileList.files);
+    } catch (error) {
+      logger.error("Failed to upload assets:", error);
+      throw error;
+    }
   }
 }
 
@@ -385,40 +369,38 @@ async function inputUpload(event: Event) {
   }
 }
 
-function onItemClick(item: ICommonAsset) {
+function onItemClick(item: AssetLike) {
   openBlade({
-    blade: resolveBladeByName("AssetsDetails"),
+    name: "AssetsDetails",
     options: {
       asset: unref(item),
       disabled: readonly.value,
       hiddenFields: props.options.hiddenFields,
-      assetEditHandler: (asset: ICommonAsset) => {
-        if (props.options.assetsEditHandler && typeof props.options.assetsEditHandler === "function") {
-          defaultAssets.value = props.options.assetsEditHandler([asset]);
-        } else throw new Error("Asset edit handler is not defined");
+      assetEditHandler: (asset: AssetLike) => {
+        updateItem(asset);
       },
-      assetRemoveHandler: async (asset: ICommonAsset) => {
-        if (props.options.assetsRemoveHandler && typeof props.options.assetsRemoveHandler === "function") {
-          defaultAssets.value = await props.options.assetsRemoveHandler([asset]);
-        } else throw new Error("Asset remove handler is not defined");
+      assetRemoveHandler: async (asset: AssetLike) => {
+        await props.options.manager.remove(asset);
       },
     },
+  }).catch((error) => {
+    logger.error("Failed to open AssetsDetails blade:", error);
   });
 }
 
-const onSelectionChanged = (items: ICommonAsset[]) => {
+const onSelectionChanged = (items: AssetLike[]) => {
   selectedItems.value = items;
 };
 
-const actionBuilder = (): IActionBuilderResult<ICommonAsset>[] => {
-  const result: IActionBuilderResult<ICommonAsset>[] = [];
+const actionBuilder = (): IActionBuilderResult<AssetLike>[] => {
+  const result: IActionBuilderResult<AssetLike>[] = [];
 
   result.push({
     icon: "lucide-trash-2",
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.DELETE")),
     type: "danger",
-    async clickHandler(item: ICommonAsset) {
-      defaultAssets.value = await props.options.assetsRemoveHandler([item]);
+    async clickHandler(item: AssetLike) {
+      await props.options.manager.remove(item);
       selectedItems.value = [];
     },
   });

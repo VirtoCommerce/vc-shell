@@ -1,0 +1,99 @@
+<template>
+  <!-- Editable mode -->
+  <CellEditableWrapper
+    v-if="editable"
+    :label="label || ''"
+    :field-name="fieldName || ''"
+    :model-value="value"
+    :rules="rules"
+    :validate-on-mount="validateOnMount"
+  >
+    <template #default="{ errors, errorMessage }">
+      <!-- eslint-disable vue/no-deprecated-filter -- TS union, not a filter -->
+      <VcInput
+        :model-value="value as string | null"
+        class="vc-table-cell-default__input"
+        :error="errors.length > 0"
+        :error-message="isMobile ? errorMessage : undefined"
+        @update:model-value="$emit('update', { field: fieldId || '', value: $event })"
+        @blur="onBlur(errors)"
+      >
+        <template
+          v-if="isDesktop && errors.length > 0"
+          #append-inner
+        >
+          <VcIcon
+            icon="lucide-circle-alert"
+            class="vc-table-cell-default__error-icon"
+          />
+        </template>
+      </VcInput>
+      <!-- eslint-enable vue/no-deprecated-filter -->
+    </template>
+  </CellEditableWrapper>
+
+  <!-- Display mode -->
+  <span
+    v-else
+    class="vc-table-cell-default"
+    >{{ value }}</span
+  >
+</template>
+
+<script setup lang="ts">
+import { computed, inject, Ref, ref } from "vue";
+import VcInput from "@ui/components/molecules/vc-input/vc-input.vue";
+import { VcIcon } from "@ui/components/atoms";
+import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
+import CellEditableWrapper from "@ui/components/organisms/vc-data-table/components/cells/CellEditableWrapper.vue";
+
+const props = defineProps<{
+  /** The cell value to display or edit */
+  value?: unknown;
+  /** Whether the cell is in editable mode */
+  editable?: boolean;
+  /** Label for the editable field (used for validation) */
+  label?: string;
+  /** Field name for validation */
+  fieldName?: string;
+  /** Field identifier for update/blur events */
+  fieldId?: string;
+  /** Validation rules for the editable field */
+  rules?: Record<string, unknown>;
+  /** Row index for blur event payload */
+  rowIndex?: number;
+  /** Trigger validation immediately on mount (for new rows) */
+  validateOnMount?: boolean;
+}>();
+
+const emit = defineEmits<{
+  /** Emitted when cell value is updated */
+  (e: "update", payload: { field: string; value: unknown }): void;
+  /** Emitted when editable cell loses focus (only if no validation errors) */
+  (e: "blur", payload: { row: number | undefined; field: string }): void;
+}>();
+
+const isMobileRef = inject(IsMobileKey, ref(false));
+const isDesktopRef = inject(IsDesktopKey, ref(true));
+const isMobile = computed(() => isMobileRef.value);
+const isDesktop = computed(() => isDesktopRef.value);
+
+const onBlur = (errors: string[]) => {
+  if (errors && errors.length > 0) return;
+  emit("blur", { row: props.rowIndex, field: props.fieldId || "" });
+};
+</script>
+
+<style lang="scss">
+.vc-table-cell-default {
+  @apply tw-truncate;
+
+  &__input {
+    @apply tw-w-full;
+  }
+
+  &__error-icon {
+    @apply tw-text-danger-500;
+  }
+}
+</style>

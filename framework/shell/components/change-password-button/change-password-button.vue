@@ -10,7 +10,7 @@
 import { inject } from "vue";
 import { CloseSettingsMenuKey } from "@framework/injection-keys";
 import { SettingsMenuItem } from "@shell/components/settings-menu-item";
-import { usePopup } from "@shell/_internal/popup/composables/usePopup";
+import { usePopup } from "@core/composables/usePopup";
 import { ChangePassword } from "@shell/components/change-password";
 
 const { open } = usePopup({ component: ChangePassword });

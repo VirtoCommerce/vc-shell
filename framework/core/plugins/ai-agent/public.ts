@@ -20,3 +20,9 @@ export type { IAiAgentConfig, IAiAgentService } from "@core/plugins/ai-agent/typ
 
 // Constants
 export { DEFAULT_AI_AGENT_CONFIG, AI_AGENT_URL_ENV_KEY } from "@core/plugins/ai-agent/constants";
+
+// Message types for embedded app communication
+export { EMBEDDED_TO_HOST_MESSAGE_TYPES, HOST_TO_EMBEDDED_MESSAGE_TYPES } from "@core/plugins/ai-agent/constants";
+
+// Protocol types
+export type { IAiContextUpdatePayload, IAiChatMessagePayload, IAiAgentMessage } from "@core/plugins/ai-agent/types";

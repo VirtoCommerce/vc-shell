@@ -1,1 +1,1 @@
-export { usePopup } from "@shell/_internal/popup/composables/usePopup";
+export { usePopup } from "@core/composables/usePopup";

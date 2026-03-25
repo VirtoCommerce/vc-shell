@@ -405,7 +405,7 @@ export { signalR, updateSignalRCreatorSymbol } from "@core/plugins/signalR";
 export * from "@core/blade-navigation";
 
 // Popup (public composable)
-export { usePopup } from "@shell/_internal/popup";
+export { usePopup } from "@core/composables/usePopup";
 
 // Shell components (public building blocks)
 export * from "@shell/components";

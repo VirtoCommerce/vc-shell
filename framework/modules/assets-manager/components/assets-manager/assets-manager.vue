@@ -119,7 +119,7 @@ import { formatDateRelative } from "@core/utilities/date";
 import { isImage, getFileThumbnail, readableSize } from "@core/utilities/assets";
 import { useBlade } from "@core/composables/useBlade";
 import { createLogger } from "@core/utilities";
-import { TableAction } from "@ui/components/organisms/vc-table/types";
+import { TableAction } from "@ui/components/organisms/vc-data-table/types";
 
 const logger = createLogger("assets-manager");
 

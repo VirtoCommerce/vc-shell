@@ -1,7 +1,7 @@
 import { type ComputedRef, type Ref, onMounted, onUnmounted, inject } from "vue";
-import { WidgetServiceKey } from "@framework/injection-keys";
+import { WidgetServiceKey, WidgetScopeKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
-import type { IWidget, IHeadlessWidgetFields } from "@core/services/widget-service";
+import type { IWidget, IHeadlessWidgetFields, IWidgetTrigger } from "@core/services/widget-service";
 import { createLogger, InjectionError } from "@core/utilities";
 
 const logger = createLogger("use-blade-widgets");
@@ -87,6 +87,35 @@ export function useBladeWidgets(widgets: HeadlessWidgetDeclaration[]): UseBladeW
   }
 
   return { refresh, refreshAll };
+}
+
+// ── Widget scope (for component-based external widgets) ─────────────────────
+
+export interface IWidgetScope {
+  /** Register trigger contract (onRefresh, onClick, badge) */
+  setTrigger: (trigger: IWidgetTrigger) => void;
+}
+
+/**
+ * Registers a trigger contract (onRefresh, onClick, badge) for an external
+ * component-based widget, so the hosting blade can call `refresh()` / `refreshAll()`.
+ *
+ * Uses provide/inject — no props or IDs needed. Must be called inside a widget
+ * component rendered by WidgetContainer.
+ *
+ * @example
+ * ```ts
+ * // Inside an external widget component:
+ * useWidgetTrigger({ onRefresh: loadData });
+ * ```
+ */
+export function useWidgetTrigger(trigger: IWidgetTrigger): void {
+  const scope = inject(WidgetScopeKey);
+  if (!scope) {
+    logger.warn("useWidgetTrigger() called outside WidgetContainer scope — trigger will not be registered.");
+    return;
+  }
+  scope.setTrigger(trigger);
 }
 
 // ── Internal ─────────────────────────────────────────────────────────────────

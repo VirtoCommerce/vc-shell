@@ -62,7 +62,7 @@ export interface IWidget {
   /** @deprecated External widgets inject data via `injectBladeContext()` */
   events?: Record<string, unknown>;
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
-  /** @deprecated Use `useWidget().setTrigger({ onRefresh })` inside the widget instead */
+  /** @deprecated Use headless widgets via `useBladeWidgets()` instead */
   updateFunctionName?: string;
   trigger?: IWidgetTrigger;
   /** When set, framework renders VcWidget from these fields instead of component */
@@ -82,7 +82,7 @@ export interface IExternalWidgetRegistration {
   targetBlades?: string[];
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
   title?: string;
-  /** @deprecated Use `useWidget().setTrigger({ onRefresh })` inside the widget instead */
+  /** @deprecated Use headless widgets via `useBladeWidgets()` instead */
   updateFunctionName?: string;
 }
 

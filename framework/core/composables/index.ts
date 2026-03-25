@@ -16,7 +16,6 @@ export * from "@core/composables/useBreadcrumbs";
 export * from "@core/composables/useAppInsights";
 export * from "@core/composables/useTheme";
 // useWidgets is internal — deprecated re-export available via shared/composables
-export * from "@core/composables/useWidget";
 export * from "@core/composables/useDashboard";
 export * from "@core/composables/useAppBarWidget";
 export * from "@core/composables/useSettingsMenu";

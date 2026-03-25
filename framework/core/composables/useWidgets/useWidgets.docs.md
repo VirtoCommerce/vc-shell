@@ -9,7 +9,7 @@ Also exports `provideWidgetService()` for framework-level initialization and `re
 - When you need low-level access to the widget service (register, unregister, query widgets)
 - When building framework infrastructure that manages widget lifecycles
 - When pre-registering widgets from a module's `install()` function before the component tree exists
-- When NOT to use: for typical blade widget work, prefer `useBladeWidgets()` which handles lifecycle automatically. For widget-side logic (badge, refresh), use `useWidget()`.
+- When NOT to use: for typical blade widget work, prefer `useBladeWidgets()` which handles lifecycle automatically. For widget-side logic (badge, refresh), use headless widgets.
 
 ## Quick Start
 
@@ -46,7 +46,7 @@ None.
 | `setActiveWidget` | `(args) => void` | Sets a widget as active with its exposed instance. |
 | `updateActiveWidget` | `() => void` | Triggers the active widget's update function. Deprecated -- use headless widgets instead. |
 | `isWidgetRegistered` | `(id: string) => boolean` | Checks if a widget ID exists in any blade's registry. |
-| `updateWidget` | `(args) => void` | Updates properties of a registered widget (trigger, badge, etc.). Used by `useWidget().setTrigger()`. |
+| `updateWidget` | `(args) => void` | Updates properties of a registered widget (trigger, badge, etc.). |
 | `resolveWidgetProps` | `(widget, bladeData) => Record<string, unknown>` | Resolves widget props from blade data. Deprecated. |
 | `getExternalWidgetsForBlade` | `(bladeId: string) => IExternalWidgetRegistration[]` | Gets external widgets that target a specific blade (registered by other modules). |
 | `getAllExternalWidgets` | `() => IExternalWidgetRegistration[]` | Gets all registered external widgets across all modules. |

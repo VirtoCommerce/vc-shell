@@ -18,7 +18,7 @@
         />
 
         <!-- Component-based: external widgets / legacy -->
-        <WidgetProvider
+        <WidgetScope
           v-else
           :widget-id="widget.id"
         >
@@ -28,7 +28,7 @@
             :widget-id="widget.id"
             v-on="widget.events || {}"
           />
-        </WidgetProvider>
+        </WidgetScope>
       </template>
 
       <VcDropdown
@@ -66,7 +66,7 @@
               showToolbar = false;
             "
           />
-          <WidgetProvider
+          <WidgetScope
             v-else
             :widget-id="item.id"
           >
@@ -79,7 +79,7 @@
               v-on="item.events || {}"
               @click="showToolbar = false"
             />
-          </WidgetProvider>
+          </WidgetScope>
         </template>
       </VcDropdown>
     </div>
@@ -92,7 +92,7 @@ import { IWidget } from "@core/services/widget-service";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcWidget } from "@ui/components/atoms/vc-widget";
-import WidgetProvider from "./WidgetProvider.vue";
+import WidgetScope from "./WidgetScope.vue";
 import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
 
 interface Props {

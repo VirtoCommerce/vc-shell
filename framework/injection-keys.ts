@@ -8,6 +8,7 @@ import { IToolbarService } from "@core/services/toolbar-service";
 import { IAiAgentService } from "@core/plugins/ai-agent/types";
 
 import type { IWidgetService } from "@core/services/widget-service";
+import type { IWidgetScope } from "@core/composables/useBladeWidgets";
 import type { IDashboardService } from "@core/services/dashboard-service";
 import type { GlobalSearchState } from "@core/services/global-search-service";
 import type { MenuService } from "@core/services/menu-service";
@@ -39,8 +40,6 @@ export const AppBarMobileButtonsServiceKey: InjectionKey<IAppBarMobileButtonsSer
 export const LanguageServiceKey: InjectionKey<ILanguageService> = Symbol("LanguageService");
 export const ToolbarServiceKey: InjectionKey<IToolbarService> = Symbol("ToolbarService");
 
-// Widget identity key (provided by WidgetProvider, consumed by useWidget)
-export const WidgetIdKey: InjectionKey<string> = Symbol("WidgetId");
 
 /**
  * Registry of dynamic modules available via provide/inject.
@@ -96,3 +95,6 @@ export const CloseSettingsMenuKey: InjectionKey<() => void> = Symbol("CloseSetti
 
 // Blade context (data exposed by blade for external widgets / extensions)
 export const BladeContextKey: InjectionKey<ComputedRef<Record<string, unknown>>> = Symbol("BladeContext");
+
+// Widget scope (provided by WidgetContainer for component-based widgets)
+export const WidgetScopeKey: InjectionKey<IWidgetScope> = Symbol("WidgetScope");

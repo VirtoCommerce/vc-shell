@@ -22,7 +22,7 @@
           :widget-id="widget.id"
           @click="handleHeadlessClick(widget)"
         />
-        <WidgetProvider
+        <WidgetScope
           v-else
           :widget-id="widget.id"
         >
@@ -33,7 +33,7 @@
             :widget-id="widget.id"
             v-on="widget.events || {}"
           />
-        </WidgetProvider>
+        </WidgetScope>
       </template>
 
       <div
@@ -76,7 +76,7 @@
               showOverflow = false;
             "
           />
-          <WidgetProvider
+          <WidgetScope
             v-else
             :widget-id="item.id"
           >
@@ -89,7 +89,7 @@
               v-on="item.events || {}"
               @click="showOverflow = false"
             />
-          </WidgetProvider>
+          </WidgetScope>
         </template>
       </div>
     </VcSidebar>
@@ -104,7 +104,7 @@ import { VcWidget } from "@ui/components/atoms/vc-widget";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { IWidget } from "@core/services/widget-service";
 import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
-import WidgetProvider from "./WidgetProvider.vue";
+import WidgetScope from "./WidgetScope.vue";
 
 interface Props {
   widgets: IWidget[];

@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from "vitest";
 import { ref, computed } from "vue";
 import { mount } from "@vue/test-utils";
-import { WidgetServiceKey } from "@framework/injection-keys";
+import { WidgetServiceKey, WidgetScopeKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
-import { useBladeWidgets } from "./useBladeWidgets";
+import { useBladeWidgets, useWidgetTrigger } from "./useBladeWidgets";
 import type { IWidgetService } from "@core/services/widget-service";
-import type { HeadlessWidgetDeclaration } from "./useBladeWidgets";
+import type { HeadlessWidgetDeclaration, IWidgetScope } from "./useBladeWidgets";
 
 function createMockWidgetService(overrides: Partial<IWidgetService> = {}): IWidgetService {
   return {
@@ -201,5 +201,68 @@ describe("useBladeWidgets", () => {
     });
 
     expect(registerWidget).toHaveBeenCalledWith(expect.objectContaining({ id: "W1", isVisible }), expect.any(String));
+  });
+});
+
+describe("useWidgetTrigger", () => {
+  it("calls scope.setTrigger with provided trigger", () => {
+    const setTrigger = vi.fn();
+    const scope: IWidgetScope = { setTrigger };
+    const onRefresh = vi.fn();
+
+    const Wrapper = {
+      setup() {
+        useWidgetTrigger({ onRefresh });
+      },
+      template: "<div />",
+    };
+
+    mount(Wrapper, {
+      global: {
+        provide: {
+          [WidgetScopeKey as symbol]: scope,
+        },
+      },
+    });
+
+    expect(setTrigger).toHaveBeenCalledOnce();
+    expect(setTrigger).toHaveBeenCalledWith({ onRefresh });
+  });
+
+  it("does not throw when called outside WidgetScope (logs warning)", () => {
+    const Wrapper = {
+      setup() {
+        useWidgetTrigger({ onRefresh: vi.fn() });
+      },
+      template: "<div />",
+    };
+
+    // No WidgetScopeKey provided — should not throw
+    expect(() => mount(Wrapper)).not.toThrow();
+  });
+
+  it("passes full trigger contract (onRefresh, onClick, badge)", () => {
+    const setTrigger = vi.fn();
+    const scope: IWidgetScope = { setTrigger };
+    const onRefresh = vi.fn();
+    const onClick = vi.fn();
+    const badge = ref(42);
+
+    const Wrapper = {
+      setup() {
+        useWidgetTrigger({ onRefresh, onClick, badge });
+      },
+      template: "<div />",
+    };
+
+    mount(Wrapper, {
+      global: {
+        provide: {
+          [WidgetScopeKey as symbol]: scope,
+        },
+      },
+    });
+
+    expect(setTrigger).toHaveBeenCalledWith({ onRefresh, onClick, badge });
   });
 });

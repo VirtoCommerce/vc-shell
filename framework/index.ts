@@ -447,4 +447,4 @@ export { addMenuItem } from "@core/services/menu-service";
 export { addAppBarWidget } from "@core/services/app-bar-menu-service";
 export { addSettingsMenuItem } from "@core/services/settings-menu-service";
 export { registerDashboardWidget } from "@core/services/dashboard-service";
-export type { IExternalWidgetRegistration } from "@core/services/widget-service";
+export type { IExternalWidgetRegistration, IWidgetTrigger } from "@core/services/widget-service";

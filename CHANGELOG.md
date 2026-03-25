@@ -1,5 +1,7 @@
 # Changelog
 
+# [2.0.0-alpha.27](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.26...v2.0.0-alpha.27) (2026-03-25)
+
 # [2.0.0-alpha.26](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.25...v2.0.0-alpha.26) (2026-03-25)
 
 # [2.0.0-alpha.25](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.24...v2.0.0-alpha.25) (2026-03-25)

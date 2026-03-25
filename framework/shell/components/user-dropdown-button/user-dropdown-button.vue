@@ -19,6 +19,7 @@
         }"
       >
         <UserInfo
+          class="vc-user-dropdown-button__user-info"
           :avatar-url="avatarUrl"
           :name="name"
           :role="role"
@@ -127,7 +128,11 @@ function handleClick() {
   }
 
   &__wrap {
-    @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-bg-[--user-dropdown-wrap-bg] tw-gap-3;
+    @apply tw-flex tw-justify-between tw-items-center tw-flex-auto tw-bg-[--user-dropdown-wrap-bg] tw-gap-3 tw-min-w-0;
+  }
+
+  &__user-info {
+    @apply tw-min-w-0 tw-flex-1;
   }
 
   &--collapsed {
@@ -140,7 +145,7 @@ function handleClick() {
     }
 
     .vc-user-info {
-      @apply tw-w-auto tw-justify-center tw-gap-0;
+      @apply tw-w-auto tw-justify-center tw-gap-0 tw-flex-none;
     }
 
     .vc-user-info__info {
@@ -154,7 +159,7 @@ function handleClick() {
   }
 
   &__actions {
-    @apply tw-h-full;
+    @apply tw-h-full tw-shrink-0;
   }
 
   &__trigger {

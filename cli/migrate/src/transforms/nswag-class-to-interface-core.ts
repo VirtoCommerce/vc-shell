@@ -45,11 +45,7 @@ export function collectApiClientImportedNames(
  * Core AST transform for nswag-class-to-interface migration.
  * Rule C: Replace `new DtoClass()` (no args) with `{} as DtoClass`.
  */
-export function coreTransform(
-  fileInfo: FileInfo,
-  api: API,
-  options: Options & NswagCoreOptions,
-): string | null {
+export function coreTransform(fileInfo: FileInfo, api: API, options: Options & NswagCoreOptions): string | null {
   const j = api.jscodeshift;
   const root = j(fileInfo.source);
 
@@ -84,16 +80,18 @@ export function coreTransform(
   let changed = false;
 
   // Rule F: .fromJS() / .toJSON() diagnostic
-  root.find(j.CallExpression, {
-    callee: { type: "MemberExpression", property: { type: "Identifier" } },
-  }).forEach((path) => {
-    const prop = (path.node.callee as any).property.name;
-    if (prop === "fromJS" || prop === "toJSON") {
-      api.report(
-        `${fileInfo.path}: .${prop}() called — this method does not exist on interfaces. Manual migration required.`,
-      );
-    }
-  });
+  root
+    .find(j.CallExpression, {
+      callee: { type: "MemberExpression", property: { type: "Identifier" } },
+    })
+    .forEach((path) => {
+      const prop = (path.node.callee as any).property.name;
+      if (prop === "fromJS" || prop === "toJSON") {
+        api.report(
+          `${fileInfo.path}: .${prop}() called — this method does not exist on interfaces. Manual migration required.`,
+        );
+      }
+    });
 
   // Rule F: Image DOM conflict warning
   if (importedNames.has("Image") && effectiveDtos.has("Image")) {
@@ -143,73 +141,64 @@ export function coreTransform(
   });
 
   // Find all NewExpression where callee is an Identifier in effectiveDtos
-  root.find(j.NewExpression, {
-    callee: { type: "Identifier" },
-  }).forEach((path) => {
-    const callee = path.node.callee;
-    if (callee.type !== "Identifier") return;
-    const className = callee.name;
-    if (!effectiveDtos.has(className)) return;
+  root
+    .find(j.NewExpression, {
+      callee: { type: "Identifier" },
+    })
+    .forEach((path) => {
+      const callee = path.node.callee;
+      if (callee.type !== "Identifier") return;
+      const className = callee.name;
+      if (!effectiveDtos.has(className)) return;
 
-    // Rule G: Skip if this new expression is the init of a clone-then-mutate variable
-    const parentDeclarator = path.parent;
-    if (
-      parentDeclarator.node.type === "VariableDeclarator" &&
-      parentDeclarator.node.id.type === "Identifier" &&
-      excludedVarNames.has(parentDeclarator.node.id.name)
-    ) {
-      return; // Skip — Rule G diagnostic emitted
-    }
-
-    const args = path.node.arguments;
-
-    let replacement;
-
-    if (args.length === 0) {
-      // Rule C: no args → `{} as ClassName`
-      replacement = j.tsAsExpression(
-        j.objectExpression([]),
-        j.tsTypeReference(j.identifier(className)),
-      );
-    } else {
-      const arg = args[0];
+      // Rule G: Skip if this new expression is the init of a clone-then-mutate variable
+      const parentDeclarator = path.parent;
       if (
-        (arg.type === "Identifier" && (arg as any).name === "undefined") ||
-        (arg.type === "NullLiteral") ||
-        (arg.type === "Literal" && (arg as any).value === null)
+        parentDeclarator.node.type === "VariableDeclarator" &&
+        parentDeclarator.node.id.type === "Identifier" &&
+        excludedVarNames.has(parentDeclarator.node.id.name)
       ) {
-        // null/undefined literal → Rule C (empty object)
-        replacement = j.tsAsExpression(
-          j.objectExpression([]),
-          j.tsTypeReference(j.identifier(className)),
-        );
-      } else if (arg.type === "ObjectExpression") {
-        // Rule A: new Dto({...}) → {...} as Dto
-        replacement = j.tsAsExpression(
-          arg,
-          j.tsTypeReference(j.identifier(className)),
-        );
-      } else {
-        // Rule B: new Dto(variable) → { ...variable } as Dto
-        replacement = j.tsAsExpression(
-          j.objectExpression([j.spreadElement(arg as any)]),
-          j.tsTypeReference(j.identifier(className)),
-        );
+        return; // Skip — Rule G diagnostic emitted
       }
-    }
 
-    // Check parent for TSAsExpression — collapse double-cast
-    const parent = path.parent;
-    if (parent && parent.node.type === "TSAsExpression") {
-      // Parent is already `expr as SomeType`, replace with `{obj} as SomeType` using parent's type
-      parent.replace(
-        j.tsAsExpression(replacement.expression, parent.node.typeAnnotation),
-      );
-    } else {
-      path.replace(replacement);
-    }
-    changed = true;
-  });
+      const args = path.node.arguments;
+
+      let replacement;
+
+      if (args.length === 0) {
+        // Rule C: no args → `{} as ClassName`
+        replacement = j.tsAsExpression(j.objectExpression([]), j.tsTypeReference(j.identifier(className)));
+      } else {
+        const arg = args[0];
+        if (
+          (arg.type === "Identifier" && (arg as any).name === "undefined") ||
+          arg.type === "NullLiteral" ||
+          (arg.type === "Literal" && (arg as any).value === null)
+        ) {
+          // null/undefined literal → Rule C (empty object)
+          replacement = j.tsAsExpression(j.objectExpression([]), j.tsTypeReference(j.identifier(className)));
+        } else if (arg.type === "ObjectExpression") {
+          // Rule A: new Dto({...}) → {...} as Dto
+          replacement = j.tsAsExpression(arg, j.tsTypeReference(j.identifier(className)));
+        } else {
+          // Rule B: new Dto(variable) → { ...variable } as Dto
+          replacement = j.tsAsExpression(
+            j.objectExpression([j.spreadElement(arg as any)]),
+            j.tsTypeReference(j.identifier(className)),
+          );
+        }
+      }
+
+      // Check parent for TSAsExpression — collapse double-cast
+      const parent = path.parent;
+      if (parent && parent.node.type === "TSAsExpression") {
+        // Parent is already `expr as SomeType`, replace with `{obj} as SomeType` using parent's type
+        parent.replace(j.tsAsExpression(replacement.expression, parent.node.typeAnnotation));
+      } else {
+        path.replace(replacement);
+      }
+      changed = true;
+    });
 
   // Rule D/E: Rename IPrefix → ClassName in imports and type references
   // Collect renames that were applied so we can do text replacement for type positions
@@ -235,10 +224,7 @@ export function coreTransform(
 
           // Rule E: Check if targetName already imported in same declaration
           const alreadyImported = specifiers.some(
-            (s) =>
-              s.type === "ImportSpecifier" &&
-              s.imported.type === "Identifier" &&
-              s.imported.name === targetName,
+            (s) => s.type === "ImportSpecifier" && s.imported.type === "Identifier" && s.imported.name === targetName,
           );
 
           if (alreadyImported) {

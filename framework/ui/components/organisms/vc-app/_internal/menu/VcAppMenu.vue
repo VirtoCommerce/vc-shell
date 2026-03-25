@@ -107,9 +107,7 @@ const filteredMenuItems = computed(() => {
       if (t(item.title).toLowerCase().includes(query)) return item;
 
       // Filter matching children only
-      const matchedChildren = children.filter((child) =>
-        t(child.title).toLowerCase().includes(query)
-      );
+      const matchedChildren = children.filter((child) => t(child.title).toLowerCase().includes(query));
 
       if (matchedChildren.length) {
         return { ...item, children: matchedChildren };

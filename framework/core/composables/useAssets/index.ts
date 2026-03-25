@@ -78,8 +78,7 @@ export function useAssets(): UseAssetsReturn {
 
   if (import.meta.env?.DEV) {
     console.warn(
-      "[useAssets] is deprecated. Use useAssetsManager(ref, options) instead. " +
-        "See migration guide #32.",
+      "[useAssets] is deprecated. Use useAssetsManager(ref, options) instead. " + "See migration guide #32.",
     );
   }
 

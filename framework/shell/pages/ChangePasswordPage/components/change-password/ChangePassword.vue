@@ -108,9 +108,7 @@
         :key="i"
         class="tw-mt-3 tw-text-danger-500"
       >
-        {{
-          (err as IdentityError).code ? t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IdentityError).code}`) : err
-        }}
+        {{ (err as IdentityError).code ? t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IdentityError).code}`) : err }}
       </VcHint>
     </VcForm>
   </VcAuthLayout>

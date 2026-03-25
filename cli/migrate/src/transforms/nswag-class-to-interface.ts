@@ -70,9 +70,7 @@ function findConsumerFiles(dir: string, apiClientDir: string): string[] {
     if (entry === "node_modules" || entry === "dist") continue;
 
     const fullPath = join(dir, entry);
-    const resolvedApiClient = apiClientDir.endsWith("/")
-      ? apiClientDir.slice(0, -1)
-      : apiClientDir;
+    const resolvedApiClient = apiClientDir.endsWith("/") ? apiClientDir.slice(0, -1) : apiClientDir;
     if (fullPath === resolvedApiClient) continue;
 
     const stat = statSync(fullPath);
@@ -145,11 +143,7 @@ const transform: Transform = (_fileInfo: FileInfo, api: API, options: Options): 
         const scriptBlock = descriptor.scriptSetup ?? descriptor.script;
         if (!scriptBlock) continue;
 
-        const scriptResult = coreTransform(
-          { path: relPath, source: scriptBlock.content },
-          fileApi,
-          coreOptions,
-        );
+        const scriptResult = coreTransform({ path: relPath, source: scriptBlock.content }, fileApi, coreOptions);
 
         if (scriptResult !== null) {
           const start = scriptBlock.loc.start.offset;
@@ -169,9 +163,7 @@ const transform: Transform = (_fileInfo: FileInfo, api: API, options: Options): 
       }
     } catch (err) {
       const relPath = relative(cwd, filePath);
-      api.report(
-        `${relPath}: ERROR — ${err instanceof Error ? err.message : String(err)}`,
-      );
+      api.report(`${relPath}: ERROR — ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 

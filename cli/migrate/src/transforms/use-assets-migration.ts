@@ -17,13 +17,9 @@ const RENAME_MAP: Record<string, string> = {
  */
 function detectPattern(source: string, filePath: string): string {
   const isVue = filePath.endsWith(".vue");
-  const hasHandlerObject =
-    /(?:assetsHandler|imageHandler|defaultImageHandler)\s*[=:]/.test(source);
-  const hasInjectableProps =
-    /imageHandlers\??\s*[:{]/.test(source) || /props\.imageHandlers/.test(source);
-  const hasSingleImagePattern =
-    /(?:iconUrl|logo|photo|avatar)\s*[=:]/.test(source) &&
-    !/\.images\s*[=]/.test(source);
+  const hasHandlerObject = /(?:assetsHandler|imageHandler|defaultImageHandler)\s*[=:]/.test(source);
+  const hasInjectableProps = /imageHandlers\??\s*[:{]/.test(source) || /props\.imageHandlers/.test(source);
+  const hasSingleImagePattern = /(?:iconUrl|logo|photo|avatar)\s*[=:]/.test(source) && !/\.images\s*[=]/.test(source);
 
   if (hasInjectableProps) return "injectable";
   if (hasSingleImagePattern && !hasHandlerObject) return "single-image";
@@ -40,9 +36,7 @@ function extractUploadPath(source: string): string | null {
 
 function extractTargetRef(source: string): string | null {
   // Match patterns like: offer.value.images = [..., ...uploaded] or item.value.productData.images =
-  const match = source.match(
-    /(\w+\.value(?:\.\w+)*\.(?:images|image|photo|iconUrl|logo))\s*=/,
-  );
+  const match = source.match(/(\w+\.value(?:\.\w+)*\.(?:images|image|photo|iconUrl|logo))\s*=/);
   return match ? match[1] : null;
 }
 
@@ -66,7 +60,9 @@ function formatDiagnostic(
       if (targetRef) lines.push(`    Target ref: ${targetRef}`);
       if (uploadPath) lines.push(`    Upload path: ${uploadPath}`);
       if (hasConfirm) lines.push(`    Has confirmation: yes`);
-      lines.push(`    → Replace with: useAssetsManager(ref, { uploadPath: () => ..., ${hasConfirm ? "confirmRemove: () => showConfirmation(...)" : ""} })`);
+      lines.push(
+        `    → Replace with: useAssetsManager(ref, { uploadPath: () => ..., ${hasConfirm ? "confirmRemove: () => showConfirmation(...)" : ""} })`,
+      );
       lines.push(`    → See migration guide #32, example 1`);
       break;
 
@@ -126,13 +122,14 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   }
 
   // --- Smart diagnostic: detect useAssets() pattern and provide specific guidance ---
-  const hasUseAssets = frameworkImports
-    .find(j.ImportSpecifier)
-    .filter((path) => {
-      const name = path.node.imported.type === "Identifier" ? path.node.imported.name : "";
-      return name === "useAssets";
-    })
-    .size() > 0;
+  const hasUseAssets =
+    frameworkImports
+      .find(j.ImportSpecifier)
+      .filter((path) => {
+        const name = path.node.imported.type === "Identifier" ? path.node.imported.name : "";
+        return name === "useAssets";
+      })
+      .size() > 0;
 
   if (hasUseAssets) {
     const source = fileInfo.source;
@@ -159,15 +156,9 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   const source = fileInfo.source;
   for (const pattern of handlerPatterns) {
     if (source.includes(pattern)) {
-      console.log(
-        `  ⚠️  ${fileInfo.path}: AssetsManager handler options detected (${pattern}).`,
-      );
-      console.log(
-        `    → Replace options.assets/assetsUploadHandler/assetsEditHandler/assetsRemoveHandler`,
-      );
-      console.log(
-        `      with options.manager: markRaw(useAssetsManagerInstance). See migration guide #32, example 5.`,
-      );
+      console.log(`  ⚠️  ${fileInfo.path}: AssetsManager handler options detected (${pattern}).`);
+      console.log(`    → Replace options.assets/assetsUploadHandler/assetsEditHandler/assetsRemoveHandler`);
+      console.log(`      with options.manager: markRaw(useAssetsManagerInstance). See migration guide #32, example 5.`);
       break;
     }
   }
@@ -175,36 +166,24 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   // --- Diagnostic: detect openBlade calls that open AssetsManager/AssetsDetails with old options ---
   const bladeCallPattern = /name:\s*["']AssetsManager["']/;
   if (bladeCallPattern.test(source)) {
-    const hasOldOptions = /assetsUploadHandler|assetsEditHandler|assetsRemoveHandler|loading:\s*\w+Loading/.test(source);
+    const hasOldOptions = /assetsUploadHandler|assetsEditHandler|assetsRemoveHandler|loading:\s*\w+Loading/.test(
+      source,
+    );
     if (hasOldOptions) {
-      console.log(
-        `  ⚠️  ${fileInfo.path}: openBlade("AssetsManager") uses old handler options.`,
-      );
-      console.log(
-        `    → Replace assets/loading/assetsUploadHandler/assetsEditHandler/assetsRemoveHandler`,
-      );
-      console.log(
-        `      with { manager: markRaw(useAssetsManagerInstance) }. See migration guide #32, example 5.`,
-      );
+      console.log(`  ⚠️  ${fileInfo.path}: openBlade("AssetsManager") uses old handler options.`);
+      console.log(`    → Replace assets/loading/assetsUploadHandler/assetsEditHandler/assetsRemoveHandler`);
+      console.log(`      with { manager: markRaw(useAssetsManagerInstance) }. See migration guide #32, example 5.`);
     } else if (!source.includes("markRaw") && /manager\s*:/.test(source)) {
-      console.log(
-        `  ⚠️  ${fileInfo.path}: openBlade("AssetsManager") passes manager without markRaw().`,
-      );
-      console.log(
-        `    → Wrap with markRaw() to prevent Vue reactive proxy unwrap. See migration guide #32.`,
-      );
+      console.log(`  ⚠️  ${fileInfo.path}: openBlade("AssetsManager") passes manager without markRaw().`);
+      console.log(`    → Wrap with markRaw() to prevent Vue reactive proxy unwrap. See migration guide #32.`);
     }
   }
 
   const detailsCallPattern = /name:\s*["']AssetsDetails["']/;
   if (detailsCallPattern.test(source)) {
     if (/ICommonAsset/.test(source)) {
-      console.log(
-        `  ⚠️  ${fileInfo.path}: openBlade("AssetsDetails") uses ICommonAsset type.`,
-      );
-      console.log(
-        `    → Replace ICommonAsset with AssetLike. See migration guide #32, example 6.`,
-      );
+      console.log(`  ⚠️  ${fileInfo.path}: openBlade("AssetsDetails") uses ICommonAsset type.`);
+      console.log(`    → Replace ICommonAsset with AssetLike. See migration guide #32, example 6.`);
     }
   }
 

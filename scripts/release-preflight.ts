@@ -16,8 +16,15 @@ const checks: Check[] = [
   },
   {
     name: "Lint",
-    command: "yarn",
-    args: ["lint"],
+    command: "npx",
+    args: [
+      "eslint",
+      "--cache",
+      "framework/**/*.{ts,vue}",
+      "cli/**/*.{ts,vue}",
+      "configs/**/*.{ts,vue}",
+      "packages/**/*.{ts,vue}",
+    ],
   },
   {
     name: "Tests",

@@ -100,8 +100,17 @@
                 role="tabpanel"
                 class="mobile-layout__panel mobile-layout__panel--menu"
               >
-                <div v-if="showSearch" class="mobile-layout__search">
-                  <VcInput v-model="searchQuery" :placeholder="props.searchPlaceholder || $t('SHELL.SIDEBAR.SEARCH_PLACEHOLDER', 'Search keyword')" size="small" clearable :debounce="300" />
+                <div
+                  v-if="showSearch"
+                  class="mobile-layout__search"
+                >
+                  <VcInput
+                    v-model="searchQuery"
+                    :placeholder="props.searchPlaceholder || $t('SHELL.SIDEBAR.SEARCH_PLACEHOLDER', 'Search keyword')"
+                    size="small"
+                    clearable
+                    :debounce="300"
+                  />
                 </div>
                 <VcScrollableContainer class="mobile-layout__menu-scroll">
                   <slot
@@ -173,8 +182,17 @@
           v-else
           class="mobile-layout__panel mobile-layout__panel--single mobile-layout__panel--menu"
         >
-          <div v-if="showSearch" class="mobile-layout__search">
-            <VcInput v-model="searchQuery" :placeholder="props.searchPlaceholder || $t('SHELL.SIDEBAR.SEARCH_PLACEHOLDER', 'Search keyword')" size="small" clearable :debounce="300" />
+          <div
+            v-if="showSearch"
+            class="mobile-layout__search"
+          >
+            <VcInput
+              v-model="searchQuery"
+              :placeholder="props.searchPlaceholder || $t('SHELL.SIDEBAR.SEARCH_PLACEHOLDER', 'Search keyword')"
+              size="small"
+              clearable
+              :debounce="300"
+            />
           </div>
           <VcScrollableContainer class="mobile-layout__menu-scroll">
             <slot

@@ -19,7 +19,7 @@ vi.mock("vee-validate", () => ({
   useIsFormValid: () => ref(true),
   useForm: () => ({ validateField: vi.fn() }),
   Field: {
-    template: '<div><slot v-bind="{ errorMessage: \'\', handleChange: () => {}, errors: [] }" /></div>',
+    template: "<div><slot v-bind=\"{ errorMessage: '', handleChange: () => {}, errors: [] }\" /></div>",
   },
 }));
 

@@ -89,7 +89,10 @@ describe("useAssetsManager", () => {
       const file = new File(["x"], "f.jpg");
       await upload(createFileList(file));
 
-      expect(fetchSpy).toHaveBeenCalledWith("/api/assets?folderUrl=/my/path", expect.objectContaining({ method: "POST" }));
+      expect(fetchSpy).toHaveBeenCalledWith(
+        "/api/assets?folderUrl=/my/path",
+        expect.objectContaining({ method: "POST" }),
+      );
     });
 
     it("normalizes leading slash in uploadPath to avoid double-slash", async () => {
@@ -257,11 +260,7 @@ describe("useAssetsManager", () => {
 
   describe("removeMany", () => {
     it("removes multiple items in one call", async () => {
-      const assets = ref<AssetLike[]>([
-        { url: "a.jpg" },
-        { url: "b.jpg" },
-        { url: "c.jpg" },
-      ]);
+      const assets = ref<AssetLike[]>([{ url: "a.jpg" }, { url: "b.jpg" }, { url: "c.jpg" }]);
       const { removeMany } = useAssetsManager(assets, { uploadPath: () => "p" });
 
       await removeMany([{ url: "a.jpg" }, { url: "c.jpg" }]);
@@ -323,9 +322,7 @@ describe("useAssetsManager", () => {
 
   describe("updateItem", () => {
     it("merges updated properties into existing item", () => {
-      const assets = ref<AssetLike[]>([
-        { url: "a.jpg", name: "old-name", sortOrder: 0 },
-      ]);
+      const assets = ref<AssetLike[]>([{ url: "a.jpg", name: "old-name", sortOrder: 0 }]);
       const { updateItem } = useAssetsManager(assets, { uploadPath: () => "p" });
 
       updateItem({ url: "a.jpg", name: "new-name" });
@@ -345,9 +342,7 @@ describe("useAssetsManager", () => {
     });
 
     it("uses custom assetKey for matching", () => {
-      const assets = ref<AssetLike[]>([
-        { url: "a.jpg", name: "alpha", sortOrder: 0 },
-      ]);
+      const assets = ref<AssetLike[]>([{ url: "a.jpg", name: "alpha", sortOrder: 0 }]);
       const { updateItem } = useAssetsManager(assets, { uploadPath: () => "p", assetKey: "name" });
 
       updateItem({ name: "alpha", sortOrder: 5 });

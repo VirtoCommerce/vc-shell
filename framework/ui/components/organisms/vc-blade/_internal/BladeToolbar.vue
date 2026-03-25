@@ -48,7 +48,6 @@ const { visibleItems } = useToolbarRegistration(toRef(props, "items"));
 <style lang="scss">
 :root {
   --blade-toolbar-height: 54px;
-  --blade-toolbar-height-expanded: 54px;
   --blade-toolbar-background-color: var(--neutrals-50);
   --blade-toolbar-border-color: var(--neutrals-200);
   --blade-toolbar-icon-color: var(--neutrals-700);

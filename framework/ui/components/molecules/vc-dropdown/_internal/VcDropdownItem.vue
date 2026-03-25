@@ -49,7 +49,7 @@ withDefaults(defineProps<Props>(), {
 <style lang="scss">
 .vc-dropdown-item {
   @apply tw-flex tw-items-center tw-gap-2 tw-w-full tw-px-2 tw-py-[6px] tw-rounded-md
-    tw-text-sm tw-cursor-pointer tw-transition-colors tw-duration-150;
+    tw-text-xs tw-cursor-pointer tw-transition-colors tw-duration-150;
 
   &:hover {
     background: var(--neutrals-100);

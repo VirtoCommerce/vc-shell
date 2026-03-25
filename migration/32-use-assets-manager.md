@@ -37,14 +37,17 @@ The AssetsManager blade options have also changed: instead of passing 3 separate
 
 ### Choosing a ref to pass
 
-`useAssetsManager(source, options)` accepts any `Ref<AssetLike[]>`. Pick the simplest form:
+`useAssetsManager(source, options)` accepts `Ref<AssetLike[] | undefined | null>`. The composable treats `undefined`/`null` as empty array internally. Pick the simplest form:
 
 | Situation | Use |
 |---|---|
-| Direct property on a ref (`offer.value.images`) | `toRef(offer.value, 'images')` |
-| Nullable intermediate (`item.value.productData?.images`) | `computed({ get, set })` with `?? []` guard |
+| Property on a ref (`offer.value.images`) | `toRef(offer.value, 'images')` |
+| Nullable property (`entity.value.images?`) | `toRef(entity.value, 'images')` — `undefined` handled automatically |
+| Nullable intermediate (`item.value.data?.images`) | `computed({ get, set })` — intermediate may not exist |
 | Shape transformation (single value ↔ array) | `computed({ get, set })` |
-| Side effects needed on write (`emitAssets()`) | `computed({ get, set })` |
+| Side effects needed on write | `computed({ get, set })` with logic in setter |
+
+Prefer `toRef()` whenever the parent object is guaranteed to exist. Use `computed({ get, set })` only when the path has nullable intermediates, needs type casting, or requires side effects on write.
 
 ### 1. Gallery with confirmation
 

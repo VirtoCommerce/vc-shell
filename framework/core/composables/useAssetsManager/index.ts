@@ -1,4 +1,4 @@
-import { computed, ref, Ref, ComputedRef } from "vue";
+import { computed, ref, watch, Ref, ComputedRef } from "vue";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-assets-manager");
@@ -18,7 +18,7 @@ export interface UseAssetsManagerOptions {
 }
 
 export interface UseAssetsManagerReturn {
-  items: ComputedRef<AssetLike[]>;
+  items: Ref<AssetLike[]>;
   upload: (files: FileList, startingSortOrder?: number) => Promise<void>;
   remove: (item: AssetLike) => Promise<void>;
   removeMany: (items: AssetLike[]) => Promise<void>;
@@ -87,12 +87,32 @@ async function processBatched<T, R>(
 }
 
 export function useAssetsManager(
-  assetsRef: Ref<AssetLike[]>,
+  source: Ref<AssetLike[] | undefined | null>,
   options: UseAssetsManagerOptions,
 ): UseAssetsManagerReturn {
   const _loading = ref(false);
 
-  const items = computed(() => assetsRef.value ?? []);
+  // Internal ref owns the data. Synced from source via watch,
+  // written back to source after every mutation.
+  // This avoids reactivity issues when source is a WritableComputed
+  // wrapping deeply nested properties (e.g. item.value.productData.assets).
+  const _items = ref<AssetLike[]>(source.value ?? []);
+
+  // Sync: source → internal (e.g. when parent reloads data)
+  watch(
+    () => source.value,
+    (newVal) => {
+      _items.value = newVal ?? [];
+    },
+    { deep: true, immediate: true },
+  );
+
+  /** Write internal state back to source */
+  function _sync() {
+    source.value = _items.value;
+  }
+
+  const items: Ref<AssetLike[]> = _items;
   const loading = computed(() => _loading.value);
 
   const concurrency = options.concurrency ?? DEFAULT_CONCURRENCY;
@@ -112,7 +132,8 @@ export function useAssetsManager(
       );
 
       const successfulUploads = uploadResults.filter((asset): asset is AssetLike => asset !== null);
-      assetsRef.value = [...(assetsRef.value ?? []), ...successfulUploads];
+      _items.value = [..._items.value, ...successfulUploads];
+      _sync();
     } catch (error) {
       logger.error("Upload failed:", error);
       throw error;
@@ -131,20 +152,23 @@ export function useAssetsManager(
       if (!confirmed) return;
     }
 
-    const keysToRemove = new Set(itemsToRemove.map((item) => item[assetKey]));
-    assetsRef.value = (assetsRef.value ?? []).filter((item) => !keysToRemove.has(item[assetKey]));
+    const keysToRemove = new Set(itemsToRemove.map((i) => i[assetKey]));
+    _items.value = _items.value.filter((i) => !keysToRemove.has(i[assetKey]));
+    _sync();
   }
 
   function reorder(newOrder: AssetLike[]): void {
-    assetsRef.value = newOrder.map((item) => ({ ...item }));
+    _items.value = newOrder.map((item) => ({ ...item }));
+    _sync();
   }
 
   function updateItem(item: AssetLike): void {
-    const index = assetsRef.value.findIndex((existing) => existing[assetKey] === item[assetKey]);
+    const index = _items.value.findIndex((existing) => existing[assetKey] === item[assetKey]);
     if (index !== -1) {
-      const updated = [...assetsRef.value];
-      updated[index] = { ...assetsRef.value[index], ...item };
-      assetsRef.value = updated;
+      const updated = [..._items.value];
+      updated[index] = { ..._items.value[index], ...item };
+      _items.value = updated;
+      _sync();
     }
   }
 

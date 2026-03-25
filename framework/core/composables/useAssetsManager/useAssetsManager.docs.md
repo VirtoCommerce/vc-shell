@@ -22,7 +22,7 @@ const assets = useAssetsManager(ref, options);
 
 | Parameter | Type | Description |
 |---|---|---|
-| `source` | `Ref<AssetLike[]>` | Reactive ref to the asset array. Can be a plain `ref`, `computed({ get, set })`, or `toRef()`. The composable holds an internal copy and syncs both ways. |
+| `source` | `Ref<AssetLike[] \| undefined \| null>` | Reactive ref to the asset array. Accepts `ref()`, `toRef()`, or `computed({ get, set })`. `undefined`/`null` values are treated as empty array. The composable holds an internal copy and syncs both ways. |
 | `options` | `UseAssetsManagerOptions` | Configuration (see below) |
 
 ### Options

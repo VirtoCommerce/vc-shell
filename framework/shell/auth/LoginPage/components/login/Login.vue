@@ -163,6 +163,17 @@ const form = reactive({
   password: "",
 });
 
+function resolveSafeRedirectPath(candidate: string | null): string {
+  if (!candidate) return "/";
+
+  const redirectPath = candidate.trim();
+  if (!redirectPath.startsWith("/") || redirectPath.startsWith("//")) {
+    return "/";
+  }
+
+  return redirectPath;
+}
+
 const login = async () => {
   if (!isValid.value) return;
 
@@ -178,7 +189,7 @@ const login = async () => {
   }
 
   if (signInResult.value.succeeded) {
-    const redirectTo = localStorage.getItem("redirectAfterLogin") || "/";
+    const redirectTo = resolveSafeRedirectPath(localStorage.getItem("redirectAfterLogin"));
     localStorage.removeItem("redirectAfterLogin");
     await router.push(redirectTo);
     return;

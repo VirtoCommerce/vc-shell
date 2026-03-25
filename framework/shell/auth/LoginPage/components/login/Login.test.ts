@@ -9,9 +9,18 @@ vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (k: string) => k, locale: { value: "en" } }),
 }));
 
+const mockPush = vi.fn();
 vi.mock("vue-router", () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: mockPush }),
   useRoute: () => ({ query: {} }),
+}));
+
+vi.mock("vee-validate", () => ({
+  useIsFormValid: () => ref(true),
+  useForm: () => ({ validateField: vi.fn() }),
+  Field: {
+    template: '<div><slot v-bind="{ errorMessage: \'\', handleChange: () => {}, errors: [] }" /></div>',
+  },
 }));
 
 const mockSignIn = vi.fn().mockResolvedValue({ succeeded: true });
@@ -83,6 +92,7 @@ describe("Login.vue", () => {
     vi.clearAllMocks();
     mockLoading.value = false;
     mockUser.value = { passwordExpired: false };
+    localStorage.removeItem("redirectAfterLogin");
   });
 
   it("renders the component", () => {
@@ -134,5 +144,27 @@ describe("Login.vue", () => {
       subtitle: "Custom Subtitle",
     });
     expect(wrapper.exists()).toBe(true);
+  });
+
+  it("redirects to safe internal path after successful login", async () => {
+    localStorage.setItem("redirectAfterLogin", "/orders/123");
+    const wrapper = mountLogin();
+
+    await wrapper.findAll("button")[0].trigger("click");
+    await flushPromises();
+
+    expect(mockPush).toHaveBeenCalledWith("/orders/123");
+    expect(localStorage.getItem("redirectAfterLogin")).toBeNull();
+  });
+
+  it("falls back to root path for unsafe redirect after successful login", async () => {
+    localStorage.setItem("redirectAfterLogin", "https://evil.example/phishing");
+    const wrapper = mountLogin();
+
+    await wrapper.findAll("button")[0].trigger("click");
+    await flushPromises();
+
+    expect(mockPush).toHaveBeenCalledWith("/");
+    expect(localStorage.getItem("redirectAfterLogin")).toBeNull();
   });
 });

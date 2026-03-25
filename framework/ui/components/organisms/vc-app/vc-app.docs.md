@@ -44,18 +44,20 @@ const user = reactive({ name: "John", role: "Admin" });
 | `name` | `string` | -- | Current user display name. |
 | `role` | `string` | -- | Current user role label. |
 | `disableMenu` | `boolean` | `false` | Hide navigation menu items. |
-| `disableAppSwitcher` | `boolean` | `false` | Hide application switcher UI. |
+| `disableAppHub` | `boolean` | `false` | Hide the Applications section inside the App Hub. |
+| `showSearch` | `boolean` | `false` | Show a search input in the sidebar that filters menu items by title. |
+| `searchPlaceholder` | `string` | `"Search keyword"` | Placeholder text for the sidebar search input. Falls back to i18n key `SHELL.SIDEBAR.SEARCH_PLACEHOLDER`. |
 
 ## Slots
 
 | Slot | Props | Description |
 |------|-------|-------------|
 | `layout` | `{ isMobile, sidebar, appsList, switchApp, openRoot, handleMenuItemClick }` | Override the entire layout (sidebar + navigation). |
-| `menu` | `{ expanded, onItemClick }` | Custom navigation menu. |
+| `menu` | `{ expanded, onItemClick, searchQuery }` | Custom navigation menu. `searchQuery` contains the current search input value (empty string when search is inactive). |
 | `sidebar-header` | `{ logo, expanded, isMobile }` | Custom sidebar header. |
 | `sidebar-footer` | `{ avatar, name, role }` | Custom sidebar footer (user info). |
 | `workspace` | `{ isAuthenticated }` | Override the blade navigation workspace. |
-| `app-switcher` | `{ appsList, switchApp }` | Custom application switcher. |
+| `app-hub` | `{ appsList, switchApp }` | Custom content for the Applications section of the App Hub. |
 
 ## Architecture
 
@@ -72,13 +74,54 @@ VcApp orchestrates several internal systems:
 
 On desktop viewports, VcApp renders a collapsible sidebar on the left with navigation menu items, user info in the footer, and the blade workspace on the right. On mobile viewports, the sidebar is replaced by a top bar with a hamburger menu that opens a slide-over navigation panel.
 
+### Sidebar Menu Search
+
+When `showSearch` is `true`, a search input appears at the top of the sidebar (desktop) or mobile navigation panel. It filters menu items in real time (300ms debounce) by matching the search query against translated item titles:
+
+- **Standalone items** — shown if their title contains the query.
+- **Group items** — if the group title matches, all accessible children are shown. Otherwise, only children whose titles match are displayed.
+- The search query is automatically cleared when a menu item is clicked or when the sidebar collapses.
+
+On desktop, the search input is visible only when the sidebar is expanded (pinned). On mobile, it appears inside the slide-out navigation panel.
+
+If you use the `menu` slot to provide a custom menu, the `searchQuery` prop is passed to your slot so you can implement your own filtering logic.
+
+```vue
+<template>
+  <VcApp :is-ready="true" logo="/logo.svg" title="Admin" show-search search-placeholder="Find a module...">
+    <!-- Default menu with built-in filtering — no extra code needed -->
+  </VcApp>
+</template>
+```
+
+#### Custom Menu with Search
+
+```vue
+<template>
+  <VcApp :is-ready="true" logo="/logo.svg" title="Admin" show-search>
+    <template #menu="{ expanded, onItemClick, searchQuery }">
+      <MyCustomMenu
+        :expanded="expanded"
+        :filter="searchQuery"
+        @select="onItemClick"
+      />
+    </template>
+  </VcApp>
+</template>
+```
+
 ### Dynamic Module Registration
 
 Modules registered via `useDynamicModules()` are loaded at runtime. Each module can contribute menu items, blades, toolbar actions, settings pages, and dashboard widgets. VcApp handles module loading errors gracefully by displaying notification toasts.
 
-### Application Switcher
+### App Hub
 
-When multiple applications are registered (e.g., Vendor Portal, Marketplace Admin), VcApp shows an app switcher in the sidebar header. Users can toggle between apps without a full page reload.
+The App Hub is a popover panel (desktop) or a swipeable tab (mobile) that combines two sections:
+
+- **Applications** — tile grid of registered apps (e.g., Vendor Portal, Marketplace Admin). Clicking an app switches context without a full page reload. This section can be hidden with `disableAppHub` or customized via the `app-hub` slot. The list is searchable via a built-in search input inside the hub.
+- **Widgets** — registered app bar widgets (notifications, background tasks, etc.). Clicking a widget expands its content inline (desktop) or navigates to its panel (mobile). Widgets are registered via `useAppBarWidget()` and can display badges for unread counts.
+
+On desktop, the App Hub opens from the sidebar header menu button (`AppHubPopover`). On mobile, it appears as a second tab ("Hub") in the slide-out navigation panel — users can swipe between Menu and Hub tabs.
 
 ## Recipe: Minimal App Setup
 

@@ -78,6 +78,14 @@ This document summarizes the major features and improvements introduced in v2.0.
 
 ---
 
+## App Hub
+
+- **App Switcher → App Hub** — The "App Switcher" has been renamed to "App Hub" across the framework, reflecting its expanded role as a unified panel combining application switching and app bar widgets (notifications, background tasks, etc.). The `disableAppSwitcher` prop is now `disableAppHub`, the `#app-switcher` slot is now `#app-hub`, and `useAppSwitcher()` is now `useAppHub()`. See [migration guide #34](./migration/34-app-hub-rename.md).
+
+- **Sidebar Search** — New `showSearch` and `searchPlaceholder` props on `VcApp` add a real-time search input to the sidebar that filters menu items by translated title. Works on both desktop (expanded sidebar) and mobile (slide-out navigation panel).
+
+---
+
 ## UI Components
 
 - **`VcEditor`** — Rich-text editor with preview, source, and split-pane modes; supports `maxlength`, a customizable toolbar, and fullscreen editing. See [`VcEditor` docs](./framework/ui/components/molecules/vc-editor/vc-editor.docs.md).

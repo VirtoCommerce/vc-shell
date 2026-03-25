@@ -150,6 +150,14 @@ export const transforms: VersionedTransform[] = [
     migrationGuideSection: "Guide 32",
     transformPath: t("use-assets-migration"),
   },
+  {
+    name: "app-hub-rename",
+    description: "disableAppSwitcher → disableAppHub, #app-switcher → #app-hub, useAppSwitcher → useAppHub",
+    introducedIn: "2.0.0-alpha.27",
+    migrationGuideSection: "Guide 34",
+    transformPath: t("app-hub-rename"),
+    fileExtensions: [".vue", ".ts"],
+  },
 ];
 
 export function selectTransforms(currentVersion: string, targetVersion: string): VersionedTransform[] {

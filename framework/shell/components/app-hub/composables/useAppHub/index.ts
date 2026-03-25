@@ -5,15 +5,15 @@ import { notification } from "@core/notifications/notification";
 import { i18n } from "@core/plugins";
 import { createLogger } from "@core/utilities";
 
-const logger = createLogger("use-app-switcher");
+const logger = createLogger("use-app-hub");
 
-interface IUseAppSwitcher {
+interface IUseAppHub {
   readonly appsList: Ref<AppDescriptor[]>;
   getApps: () => Promise<void>;
   switchApp: (app: AppDescriptor) => void;
 }
 
-export function useAppSwitcher(): IUseAppSwitcher {
+export function useAppHub(): IUseAppHub {
   const { hasAccess } = usePermissions();
   const appsList = ref<AppDescriptor[]>([]);
 

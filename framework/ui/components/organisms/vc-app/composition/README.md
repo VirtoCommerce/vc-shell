@@ -34,10 +34,10 @@ Use `framework/ui/components/organisms/vc-app/index.ts` exports:
 Layouts:
 - `VcAppDesktopLayout` emits: `logo:click`, `item:click`, `switch-app`.
 - `VcAppMobileLayout` emits: `item:click`, `switch-app`.
-- Both expose `#app-switcher="{ appsList, switchApp }"` slot.
+- Both expose `#app-hub="{ appsList, switchApp }"` slot.
 
 Menu sidebar (`VcAppMenuSidebar`):
-- Required slots in desktop mode: `widgets`, `widgets-active-content`, `app-switcher`.
+- Required slots in desktop mode: `widgets`, `widgets-active-content`, `app-hub`.
 - Required slots in mobile mode: `widgets`, `widgets-active-content`, `navmenu`, `user-dropdown`.
 
 ## VcApp customization slots

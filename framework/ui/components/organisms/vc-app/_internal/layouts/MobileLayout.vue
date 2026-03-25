@@ -135,16 +135,16 @@
               >
                 <AppHubContent
                   :apps-list="props.appsList"
-                  :show-applications="!props.disableAppSwitcher"
+                  :show-applications="!props.disableAppHub"
                   mobile
                   @switch-app="handleSwitchApp"
                 >
                   <template
-                    v-if="$slots['app-switcher'] && !props.disableAppSwitcher"
+                    v-if="$slots['app-hub'] && !props.disableAppHub"
                     #applications="{ appsList: slotAppsList, switchApp: slotSwitchApp }"
                   >
                     <slot
-                      name="app-switcher"
+                      name="app-hub"
                       :apps-list="slotAppsList"
                       :switch-app="slotSwitchApp"
                     />
@@ -161,16 +161,16 @@
         >
           <AppHubContent
             :apps-list="props.appsList"
-            :show-applications="!props.disableAppSwitcher"
+            :show-applications="!props.disableAppHub"
             mobile
             @switch-app="handleSwitchApp"
           >
             <template
-              v-if="$slots['app-switcher'] && !props.disableAppSwitcher"
+              v-if="$slots['app-hub'] && !props.disableAppHub"
               #applications="{ appsList: slotAppsList, switchApp: slotSwitchApp }"
             >
               <slot
-                name="app-switcher"
+                name="app-hub"
                 :apps-list="slotAppsList"
                 :switch-app="slotSwitchApp"
               />
@@ -256,7 +256,7 @@ export interface Props {
   userName?: string;
   userRole?: string;
   disableMenu?: boolean;
-  disableAppSwitcher?: boolean;
+  disableAppHub?: boolean;
   appsList?: AppDescriptor[];
   showSearch?: boolean;
   searchPlaceholder?: string;
@@ -264,7 +264,7 @@ export interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   disableMenu: false,
-  disableAppSwitcher: false,
+  disableAppHub: false,
   appsList: () => [],
   showSearch: false,
 });
@@ -275,7 +275,7 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
-  "app-switcher"?: (props: { appsList: AppDescriptor[]; switchApp: (app: AppDescriptor) => void }) => unknown;
+  "app-hub"?: (props: { appsList: AppDescriptor[]; switchApp: (app: AppDescriptor) => void }) => unknown;
   menu?: (props: { expanded: boolean; onItemClick: (item: MenuItem) => void; searchQuery: string }) => unknown;
   "sidebar-header"?: (props: { logo?: string; expanded: boolean; isMobile: boolean }) => unknown;
   "sidebar-footer"?: (props: { avatar?: string; name?: string; role?: string }) => unknown;
@@ -306,7 +306,7 @@ const hasWidgetBadge = computed(() =>
 );
 
 const showHubTab = computed(
-  () => widgetItems.value.length > 0 || (!props.disableAppSwitcher && props.appsList.length > 0),
+  () => widgetItems.value.length > 0 || (!props.disableAppHub && props.appsList.length > 0),
 );
 
 const showTabs = computed(() => showHubTab.value && !props.disableMenu);

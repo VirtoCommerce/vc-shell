@@ -1003,3 +1003,74 @@ export const CustomMenuSlot: StoryFn = () => {
 CustomMenuSlot.parameters = {
   layout: "fullscreen",
 };
+
+/**
+ * VcApp with `showSearch` enabled — a search input appears at the top of the sidebar
+ * and filters menu items in real time by their translated title.
+ */
+export const WithSidebarSearch: StoryFn = () => {
+  localStorage.setItem(getMenuExpandedStorageKey(), "true");
+
+  return {
+    components: { VcApp },
+    setup: () => useStorySetup(),
+    template: `
+      <div style="height: 600px;">
+        <VcApp
+          :is-ready="true"
+          :logo="logo"
+          name="John Doe"
+          role="Administrator"
+          title="VirtoShell"
+          version="3.0.0"
+          show-search
+          search-placeholder="Find a module..."
+        />
+      </div>
+    `,
+  };
+};
+
+WithSidebarSearch.parameters = {
+  layout: "fullscreen",
+};
+
+/**
+ * Mobile layout with sidebar search enabled.
+ * Open the slide-out menu to see the search input above the navigation items.
+ */
+export const MobileWithSearch: StoryFn = () => {
+  localStorage.setItem(getMenuExpandedStorageKey(), "true");
+
+  return {
+    components: { VcApp },
+    setup: () => {
+      const storySetup = useStorySetup();
+      const sidebar = provideSidebarState();
+      onMounted(() => sidebar.openMenu());
+      return storySetup;
+    },
+    template: `
+      <div style="height: 600px;">
+        <VcApp
+          :is-ready="true"
+          :logo="logo"
+          name="John Doe"
+          role="Administrator"
+          title="VirtoShell"
+          version="3.0.0"
+          show-search
+          search-placeholder="Search menu..."
+        />
+      </div>
+    `,
+  };
+};
+
+MobileWithSearch.decorators = [withMobileView];
+MobileWithSearch.parameters = {
+  layout: "fullscreen",
+  viewport: {
+    defaultViewport: "mobile1",
+  },
+};

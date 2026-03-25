@@ -85,16 +85,16 @@
     :show="sidebar.isMenuOpen.value"
     :anchor-ref="appHubAnchorRef"
     :apps-list="appsList"
-    :show-applications="!disableAppSwitcher"
+    :show-applications="!disableAppHub"
     @update:show="handleAppHubVisibility"
     @switch-app="handleSwitchApp"
   >
     <template
-      v-if="$slots['app-switcher'] && !disableAppSwitcher"
+      v-if="$slots['app-hub'] && !disableAppHub"
       #applications="{ appsList: slotAppsList, switchApp: slotSwitchApp }"
     >
       <slot
-        name="app-switcher"
+        name="app-hub"
         :apps-list="slotAppsList"
         :switch-app="slotSwitchApp"
       />
@@ -134,7 +134,7 @@ export interface Props {
   userName?: string;
   userRole?: string;
   disableMenu?: boolean;
-  disableAppSwitcher?: boolean;
+  disableAppHub?: boolean;
   appsList?: AppDescriptor[];
   showSearch?: boolean;
   searchPlaceholder?: string;
@@ -142,7 +142,7 @@ export interface Props {
 
 withDefaults(defineProps<Props>(), {
   disableMenu: false,
-  disableAppSwitcher: false,
+  disableAppHub: false,
   appsList: () => [],
   showSearch: false,
 });
@@ -154,7 +154,7 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
-  "app-switcher"?: (props: { appsList: AppDescriptor[]; switchApp: (app: AppDescriptor) => void }) => unknown;
+  "app-hub"?: (props: { appsList: AppDescriptor[]; switchApp: (app: AppDescriptor) => void }) => unknown;
   menu?: (props: { expanded: boolean; onItemClick: (item: MenuItem) => void; searchQuery: string }) => unknown;
   "sidebar-header"?: (props: { logo?: string; expanded: boolean; isMobile: boolean }) => unknown;
   "sidebar-footer"?: (props: { avatar?: string; name?: string; role?: string }) => unknown;

@@ -31,7 +31,7 @@
           :user-role="role"
           :title="title"
           :disable-menu="disableMenu"
-          :disable-app-switcher="disableAppSwitcher"
+          :disable-app-hub="disableAppHub"
           :apps-list="appsList"
           :show-search="showSearch"
           :search-placeholder="searchPlaceholder"
@@ -40,11 +40,11 @@
           @switch-app="switchApp"
         >
           <template
-            v-if="$slots['app-switcher'] && !disableAppSwitcher"
-            #app-switcher="{ appsList: slotAppsList, switchApp: slotSwitchApp }"
+            v-if="$slots['app-hub'] && !disableAppHub"
+            #app-hub="{ appsList: slotAppsList, switchApp: slotSwitchApp }"
           >
             <slot
-              name="app-switcher"
+              name="app-hub"
               :apps-list="slotAppsList"
               :switch-app="slotSwitchApp"
             />
@@ -129,7 +129,7 @@ export interface Props {
   avatar?: string;
   name?: string;
   disableMenu?: boolean;
-  disableAppSwitcher?: boolean;
+  disableAppHub?: boolean;
   role?: string;
   showSearch?: boolean;
   searchPlaceholder?: string;
@@ -140,7 +140,7 @@ defineOptions({
 });
 
 defineSlots<{
-  "app-switcher"?: (props: { appsList: AppDescriptor[]; switchApp: (app: AppDescriptor) => void }) => unknown;
+  "app-hub"?: (props: { appsList: AppDescriptor[]; switchApp: (app: AppDescriptor) => void }) => unknown;
   layout?: (props: {
     isMobile: boolean;
     sidebar: SidebarStateReturn;

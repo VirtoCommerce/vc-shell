@@ -54,8 +54,8 @@
           </div>
         </template>
         <template v-else>
-          <div class="menu-sidebar__app-switcher-wrapper">
-            <slot name="app-switcher" />
+          <div class="menu-sidebar__app-hub-wrapper">
+            <slot name="app-hub" />
           </div>
         </template>
       </div>
@@ -81,7 +81,7 @@ const emit = defineEmits<{
 defineSlots<{
   navmenu: () => unknown;
   "user-dropdown": () => unknown;
-  "app-switcher": () => unknown;
+  "app-hub": () => unknown;
   "widgets-active-content": () => unknown;
   widgets: () => unknown;
 }>();
@@ -173,7 +173,7 @@ const wrapperProps = computed<Record<string, unknown>>(() => {
     }
   }
 
-  &__app-switcher-wrapper {
+  &__app-hub-wrapper {
     @apply tw-flex-1 tw-overflow-y-auto tw-min-h-0;
   }
 

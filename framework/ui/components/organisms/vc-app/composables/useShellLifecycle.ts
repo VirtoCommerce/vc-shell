@@ -1,7 +1,7 @@
 import { ref, watch, onUnmounted } from "vue";
 import { useNotificationStore } from "@core/notifications";
 import { useUserManagement } from "@core/composables/useUserManagement";
-import { useAppSwitcher } from "@shell/components/app-switcher/composables/useAppSwitcher";
+import { useAppHub } from "@shell/components/app-hub/composables/useAppHub";
 
 /**
  * Manages app readiness and authentication lifecycle.
@@ -12,7 +12,7 @@ export function useShellLifecycle(props: { isReady: boolean }) {
   const isBootstrapped = ref(false);
   const { isAuthenticated } = useUserManagement();
   const { loadHistory } = useNotificationStore();
-  const { appsList, switchApp, getApps } = useAppSwitcher();
+  const { appsList, switchApp, getApps } = useAppHub();
 
   // Show the shell as soon as isReady is true (don't block on auth).
   // Auth only gates one-time bootstrap (loading notifications, app list).

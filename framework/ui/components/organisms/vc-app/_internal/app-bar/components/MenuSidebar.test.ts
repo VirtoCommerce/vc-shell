@@ -72,7 +72,7 @@ describe("MenuSidebar", () => {
     expect(wrapper.find(".menu-sidebar__wrapper--desktop").exists()).toBe(true);
   });
 
-  it("renders app-switcher slot on desktop", () => {
+  it("renders app-hub slot on desktop", () => {
     const Wrapper = defineComponent({
       setup() {
         provide(IsMobileKey, ref(false));
@@ -82,7 +82,7 @@ describe("MenuSidebar", () => {
           h(
             MenuSidebar,
             { isOpened: true, expanded: false },
-            { "app-switcher": () => h("div", { class: "custom-app-switcher" }) },
+            { "app-hub": () => h("div", { class: "custom-app-hub" }) },
           );
       },
     });
@@ -96,7 +96,7 @@ describe("MenuSidebar", () => {
       },
     });
 
-    expect(wrapper.find(".custom-app-switcher").exists()).toBe(true);
+    expect(wrapper.find(".custom-app-hub").exists()).toBe(true);
   });
 
   it("renders navmenu and user-dropdown slots on mobile", () => {

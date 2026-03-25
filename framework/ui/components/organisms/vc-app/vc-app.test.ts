@@ -94,7 +94,7 @@ vi.mock("@ui/components/organisms/vc-app/_internal/layouts/DesktopLayout.vue", (
   default: defineComponent({
     name: "DesktopLayout",
     template:
-      "<div class='mock-desktop-layout'><slot /><slot name='app-switcher' /><slot name='menu' /><slot name='sidebar-header' /><slot name='sidebar-footer' /></div>",
+      "<div class='mock-desktop-layout'><slot /><slot name='app-hub' /><slot name='menu' /><slot name='sidebar-header' /><slot name='sidebar-footer' /></div>",
   }),
 }));
 

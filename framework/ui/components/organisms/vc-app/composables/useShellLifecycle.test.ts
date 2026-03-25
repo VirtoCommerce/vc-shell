@@ -19,8 +19,8 @@ vi.mock("@core/notifications", () => ({
   }),
 }));
 
-vi.mock("@shell/components/app-switcher/composables/useAppSwitcher", () => ({
-  useAppSwitcher: () => ({
+vi.mock("@shell/components/app-hub/composables/useAppHub", () => ({
+  useAppHub: () => ({
     appsList: mockAppsList,
     switchApp: mockSwitchApp,
     getApps: mockGetApps,

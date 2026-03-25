@@ -67,6 +67,7 @@ Work through these guides in order. Each is self-contained with before/after exa
 | 30 | [Type Shims → Globals](./30-shims-to-globals.md) | Deprecated | Manual `shims-vue.d.ts` / `vue-i18n.d.ts` → `@vc-shell/framework/globals` |
 | 31 | [useDataTableSort](./31-use-data-table-sort.md) | Optional | Replace manual sort boilerplate with `useDataTableSort` composable |
 | 33 | [Locale Exports](./33-locale-exports.md) | **Breaking** | `dist/locales/*.json` wildcard → named `@vc-shell/framework/locales/<lang>` exports |
+| 34 | [App Hub Rename](./34-app-hub-rename.md) | **Breaking** | `disableAppSwitcher` → `disableAppHub`, `#app-switcher` → `#app-hub`, `useAppSwitcher` → `useAppHub` |
 
 ## Severity Legend
 

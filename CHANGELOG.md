@@ -1,5 +1,55 @@
 # Changelog
 
+# [2.0.0-alpha.24](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.23...v2.0.0-alpha.24) (2026-03-25)
+
+
+### Bug Fixes
+
+* **assets-manager:** guard defaultAssets.value in upload deduplication ([21b6aa2](https://github.com/VirtoCommerce/vc-shell/commit/21b6aa258b372569d77dd1b528d2a8da12992991))
+* **auth:** validate redirect path after login to prevent open redirect ([5bd710f](https://github.com/VirtoCommerce/vc-shell/commit/5bd710f140afca096834e6b9f4ef7a37301cac2d))
+* **services:** wrap registered components with markRaw to avoid reactivity overhead ([f47fc44](https://github.com/VirtoCommerce/vc-shell/commit/f47fc448f575e2df0c6a234da0cd87068ff24d3c))
+* **ui:** reduce dropdown item font size and normalize BladeToolbar line endings ([48b880d](https://github.com/VirtoCommerce/vc-shell/commit/48b880d04ede646194f2ba3df9941d0de5735efe))
+* **useAssetsManager:** consistent array replacement in updateItem, normalize uploadPath ([6fdeb11](https://github.com/VirtoCommerce/vc-shell/commit/6fdeb115f68159c70570b38a056a6b0876ab55a3))
+* **useAssetsManager:** guard against undefined assetsRef.value ([53ef130](https://github.com/VirtoCommerce/vc-shell/commit/53ef1304e6aa6f36214056ccc7dc24ab7730845f))
+* **usePermissions:** read permissions reactively instead of caching in module-level ref ([b87af19](https://github.com/VirtoCommerce/vc-shell/commit/b87af194ff86c634a98a4bac584d38d65b5b48cf))
+* **validation:** update error type references from IIdentityError to IdentityError ([c6ab523](https://github.com/VirtoCommerce/vc-shell/commit/c6ab523fe28597ff52b91f3bbbcf53d4bf393a6e))
+
+
+### Documentation
+
+* **assets-manager:** document blade options breaking change and enhance codemod ([69cc786](https://github.com/VirtoCommerce/vc-shell/commit/69cc7865a5678a093d972e6e39f955d722fcc133))
+
+
+### Features
+
+* add unpublish script for vc-app-skill versions 17-22 ([a04853c](https://github.com/VirtoCommerce/vc-shell/commit/a04853cdcba826b99f095884f0e4eba9acecc736))
+* **api-client, migrate:** default to Interface for new API clients, add nswag class-to-interface migration ([569a1f7](https://github.com/VirtoCommerce/vc-shell/commit/569a1f79532d5ca2e1a9968e3b249b3d3ffeed71))
+* **codemod:** add use-assets-migration transform ([57022ec](https://github.com/VirtoCommerce/vc-shell/commit/57022ec18d7d3f85e207377316222e32ad142520))
+* **codemod:** register use-assets-migration in transform registry ([83fb018](https://github.com/VirtoCommerce/vc-shell/commit/83fb018a7afbfc924d21e595c312fb536d3d40b5))
+* **codemod:** smart diagnostic for useAssets() migration patterns ([479defe](https://github.com/VirtoCommerce/vc-shell/commit/479defe6c57d6aa335c683e6aeec0f4941158749))
+* export useAssetsManager from core composables barrel ([c8bafb8](https://github.com/VirtoCommerce/vc-shell/commit/c8bafb890b0e324b30cd6d810f1b5de6d54dd80c))
+* **framework:** export pre-registration functions for external modules ([7a4c854](https://github.com/VirtoCommerce/vc-shell/commit/7a4c8540dcdf807d5309c04701460c4bf7e5df38))
+* **i18n:** add typed locale exports for framework translations ([d1e1b29](https://github.com/VirtoCommerce/vc-shell/commit/d1e1b29575b2ba5e6e935e6b2e653ae73fdb258d))
+* **migrate:** add project-scope orchestrator and registry entry for nswag-class-to-interface ([7a8dcd6](https://github.com/VirtoCommerce/vc-shell/commit/7a8dcd66e65b427c9e94bc40aa1a9fbf4a6062f7))
+* **migrate:** add Rules A/B — object literal and variable argument transforms ([0856d45](https://github.com/VirtoCommerce/vc-shell/commit/0856d457a7e3d6a1f9d05d392edea1f34578059b))
+* **migrate:** add Rules D/E — IPrefix rename and import deduplication ([e988d87](https://github.com/VirtoCommerce/vc-shell/commit/e988d87733e023fbc7abbf460cf6b2e174e5edb3))
+* **migrate:** scaffold nswag-class-to-interface core transform with Rule C ([2579e5b](https://github.com/VirtoCommerce/vc-shell/commit/2579e5bfe3840cafd8562ff466e8b58e47794524))
+* **useAssetsManager:** accept nullable source ref ([05d5da7](https://github.com/VirtoCommerce/vc-shell/commit/05d5da71c4934b8ddb8cd63293f0a7f855dc86e7))
+* **useAssetsManager:** implement remove and removeMany with confirmation ([9f9589c](https://github.com/VirtoCommerce/vc-shell/commit/9f9589c74b074a8473c9dc535b8704ab07c3b2fc))
+* **useAssetsManager:** implement reorder and updateItem ([4946433](https://github.com/VirtoCommerce/vc-shell/commit/4946433097ee63702c27fb65010d2e7bc286768e))
+* **useAssetsManager:** implement upload with batch concurrency ([cd34520](https://github.com/VirtoCommerce/vc-shell/commit/cd3452092099a6721125e30d81cdc735af0e9c87))
+* **useAssetsManager:** skeleton with AssetLike type, items, loading ([3cd9f2b](https://github.com/VirtoCommerce/vc-shell/commit/3cd9f2bca101278d546f23bb2309d845226c9fe9))
+* **vc-app-skill:** add knowledge-stats script for knowledge base audit ([7a568fc](https://github.com/VirtoCommerce/vc-shell/commit/7a568fc57335d51349a644721c904586efd49273))
+* **vc-app-skill:** enrich knowledge base with When to Use sections, patterns, and sync-docs script ([c82ed63](https://github.com/VirtoCommerce/vc-shell/commit/c82ed639d748bdc8fd2d9c39435ee37baedd0563))
+* **vc-app:** add sidebar search bar for menu filtering ([72f17fc](https://github.com/VirtoCommerce/vc-shell/commit/72f17fc5b0e77e4e87457c5a29262345da50317d)), closes [#menu](https://github.com/VirtoCommerce/vc-shell/issues/menu) [#menu](https://github.com/VirtoCommerce/vc-shell/issues/menu)
+
+
+### BREAKING CHANGES
+
+* **assets-manager:** notice
+- use-assets-migration codemod: detect openBlade("AssetsManager") with
+  old handler options and missing markRaw()
+
 # [2.0.0-alpha.23](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.22...v2.0.0-alpha.23) (2026-03-23)
 
 

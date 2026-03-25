@@ -17,16 +17,18 @@ import { AssetsManagerModule } from "@vc-shell/framework";
 
 The module exports `AssetsManagerModule` (a Vue plugin) and the `AssetsManager` component, which is declared as a global component.
 
-## Props (Options)
+## Options (via `useBlade`)
 
-The blade receives its configuration via the `options` prop when opened:
+The blade reads its configuration from `options` via `useBlade<AssetsManagerOptions>()` (not props):
 
 | Option | Type | Description |
 |---|---|---|
-| `title` | `string` | Custom blade title (defaults to i18n `ASSETS_MANAGER.TITLE`) |
-| `manager` | `UseAssetsManagerReturn` | The asset manager instance from `useAssetsManager()` |
-| `disabled` | `boolean` | When true, hides upload/delete actions and disables reordering |
-| `hiddenFields` | `string[]` | Fields to hide in the detail view |
+| `title` | `string?` | Custom blade title (defaults to i18n `ASSETS_MANAGER.TITLE`) |
+| `manager` | `UseAssetsManagerReturn` | The asset manager instance from `useAssetsManager()`. **Must be wrapped in `markRaw()`** |
+| `disabled` | `boolean?` | When true, hides upload/delete actions and disables reordering |
+| `hiddenFields` | `string[]?` | Fields to hide in the detail view |
+
+> **Breaking change:** The old options (`assets`, `loading`, `assetsUploadHandler`, `assetsEditHandler`, `assetsRemoveHandler`) have been removed. Pass a single `manager` instance instead. See [migration guide #32](../../../migration/32-use-assets-manager.md).
 
 ## Usage
 
@@ -59,7 +61,7 @@ openBlade({
 
 ## Features
 
-- **Table view**: Displays assets with thumbnail, name, size, sort order, and creation date columns.
+- **Table view**: Displays assets with thumbnail, name, size, sort order, and creation date columns using `VcDataTable` with declarative `<VcColumn>` API.
 - **Upload**: Via toolbar button or drag-and-drop onto the table. Handles duplicate filenames by appending `_1`, `_2`, etc.
 - **Delete**: Toolbar delete button (requires selection) and per-row action button.
 - **Reorder**: Drag-and-drop row reordering when not in readonly mode.

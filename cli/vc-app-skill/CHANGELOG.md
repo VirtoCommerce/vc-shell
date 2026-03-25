@@ -1,3 +1,11 @@
+# [2.0.0-alpha.24](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.23...v2.0.0-alpha.24) (2026-03-25)
+
+
+### Features
+
+* **vc-app-skill:** add knowledge-stats script for knowledge base audit ([7a568fc](https://github.com/VirtoCommerce/vc-shell/commit/7a568fc57335d51349a644721c904586efd49273))
+* **vc-app-skill:** enrich knowledge base with When to Use sections, patterns, and sync-docs script ([c82ed63](https://github.com/VirtoCommerce/vc-shell/commit/c82ed639d748bdc8fd2d9c39435ee37baedd0563))
+* **vc-app:** add sidebar search bar for menu filtering ([72f17fc](https://github.com/VirtoCommerce/vc-shell/commit/72f17fc5b0e77e4e87457c5a29262345da50317d)), closes [#menu](https://github.com/VirtoCommerce/vc-shell/issues/menu) [#menu](https://github.com/VirtoCommerce/vc-shell/issues/menu)
 # [2.0.0-alpha.23](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.22...v2.0.0-alpha.23) (2026-03-23)
 
 

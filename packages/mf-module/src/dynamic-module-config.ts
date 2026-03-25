@@ -4,6 +4,7 @@ import type { UserConfig } from "vite";
 import { REMOTE_SHARED } from "@vc-shell/mf-config";
 import { stripExternalStyles } from "./strip-external-styles";
 import type { DynamicModuleOptions } from "./types";
+import { viteBladePlugin } from "@vc-shell/config-generator";
 
 export default function dynamicModuleConfiguration(
   pkg: { name: string; version: string },
@@ -13,6 +14,7 @@ export default function dynamicModuleConfiguration(
 
   return {
     plugins: [
+      viteBladePlugin(),
       stripExternalStyles(),
       vue(),
       federation({

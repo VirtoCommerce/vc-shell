@@ -166,9 +166,45 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
         `    → Replace options.assets/assetsUploadHandler/assetsEditHandler/assetsRemoveHandler`,
       );
       console.log(
-        `      with options.manager: UseAssetsManagerReturn. See migration guide #32.`,
+        `      with options.manager: markRaw(useAssetsManagerInstance). See migration guide #32, example 5.`,
       );
       break;
+    }
+  }
+
+  // --- Diagnostic: detect openBlade calls that open AssetsManager/AssetsDetails with old options ---
+  const bladeCallPattern = /name:\s*["']AssetsManager["']/;
+  if (bladeCallPattern.test(source)) {
+    const hasOldOptions = /assetsUploadHandler|assetsEditHandler|assetsRemoveHandler|loading:\s*\w+Loading/.test(source);
+    if (hasOldOptions) {
+      console.log(
+        `  ⚠️  ${fileInfo.path}: openBlade("AssetsManager") uses old handler options.`,
+      );
+      console.log(
+        `    → Replace assets/loading/assetsUploadHandler/assetsEditHandler/assetsRemoveHandler`,
+      );
+      console.log(
+        `      with { manager: markRaw(useAssetsManagerInstance) }. See migration guide #32, example 5.`,
+      );
+    } else if (!source.includes("markRaw") && /manager\s*:/.test(source)) {
+      console.log(
+        `  ⚠️  ${fileInfo.path}: openBlade("AssetsManager") passes manager without markRaw().`,
+      );
+      console.log(
+        `    → Wrap with markRaw() to prevent Vue reactive proxy unwrap. See migration guide #32.`,
+      );
+    }
+  }
+
+  const detailsCallPattern = /name:\s*["']AssetsDetails["']/;
+  if (detailsCallPattern.test(source)) {
+    if (/ICommonAsset/.test(source)) {
+      console.log(
+        `  ⚠️  ${fileInfo.path}: openBlade("AssetsDetails") uses ICommonAsset type.`,
+      );
+      console.log(
+        `    → Replace ICommonAsset with AssetLike. See migration guide #32, example 6.`,
+      );
     }
   }
 

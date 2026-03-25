@@ -117,7 +117,9 @@ New high-level composable that eliminates boilerplate when working with assets (
 - **Zero wiring** — no more manual `assetsHandler` objects
 - **Built-in confirmation** — optional `confirmRemove` callback
 - **No type casting** — works with any `AssetLike` compatible type (Image, ProductImage, etc.)
-- **AssetsManager blade** — now accepts `manager: UseAssetsManagerReturn` in options instead of 3 separate handler functions
+- **Internal ref with two-way sync** — the composable owns an internal `Ref<AssetLike[]>` (changed from `ComputedRef`) and syncs both ways: source → internal on data reload, mutations → source after every operation. This avoids reactivity issues with `WritableComputed` wrapping deeply nested properties.
+- **AssetsManager blade** — now accepts `manager: UseAssetsManagerReturn` in options instead of 3 separate handler functions. **Breaking:** old `assets`/`assetsUploadHandler`/`assetsEditHandler`/`assetsRemoveHandler` options are removed. Pass `markRaw(manager)` to prevent Vue reactive proxy unwrap.
+- **AssetsManager internals** — the blade now uses `VcDataTable` with declarative `<VcColumn>` API internally, replacing the legacy `VcTable` with `:columns` prop array.
 - `useAssets()` and `ICommonAsset` are deprecated but continue to work. See [migration guide #32](./migration/32-use-assets-manager.md)
 
 ---

@@ -17,22 +17,25 @@ import { AssetsManagerModule } from "@vc-shell/framework";
 
 The module exports `AssetsManagerModule` (a Vue plugin) and the `AssetsManager` component, which is declared as a global component.
 
-## Props (Options)
+## Options (via `useBlade`)
 
-The blade receives its configuration via the `options` prop when opened:
+The blade reads its configuration from `options` via `useBlade<AssetsManagerOptions>()` (not props):
 
 | Option | Type | Description |
 |---|---|---|
-| `title` | `string` | Custom blade title (defaults to i18n `ASSETS_MANAGER.TITLE`) |
-| `manager` | `UseAssetsManagerReturn` | The asset manager instance from `useAssetsManager()` |
-| `disabled` | `boolean` | When true, hides upload/delete actions and disables reordering |
-| `hiddenFields` | `string[]` | Fields to hide in the detail view |
+| `title` | `string?` | Custom blade title (defaults to i18n `ASSETS_MANAGER.TITLE`) |
+| `manager` | `UseAssetsManagerReturn` | The asset manager instance from `useAssetsManager()`. **Must be wrapped in `markRaw()`** |
+| `disabled` | `boolean?` | When true, hides upload/delete actions and disables reordering |
+| `hiddenFields` | `string[]?` | Fields to hide in the detail view |
+
+> **Breaking change:** The old options (`assets`, `loading`, `assetsUploadHandler`, `assetsEditHandler`, `assetsRemoveHandler`) have been removed. Pass a single `manager` instance instead. See [migration guide #32](../../../migration/32-use-assets-manager.md).
 
 ## Usage
 
 Open the Assets Manager as a child blade:
 
 ```typescript
+import { markRaw } from "vue";
 import { useBlade, useAssetsManager } from "@vc-shell/framework";
 
 const { openBlade } = useBlade();
@@ -45,7 +48,11 @@ const assetsManager = useAssetsManager(product.assets, {
 openBlade({
   name: "AssetsManager",
   options: {
-    manager: assetsManager,
+    // IMPORTANT: markRaw prevents Vue from wrapping the manager in a
+    // deep reactive proxy. Without it, blade options (stored in
+    // ref<BladeDescriptor[]>) auto-unwrap nested Refs, breaking
+    // manager.items.value and manager.loading.value access.
+    manager: markRaw(assetsManager),
     disabled: !canEdit.value,
     hiddenFields: ["sortOrder"],
   },
@@ -54,7 +61,7 @@ openBlade({
 
 ## Features
 
-- **Table view**: Displays assets with thumbnail, name, size, sort order, and creation date columns.
+- **Table view**: Displays assets with thumbnail, name, size, sort order, and creation date columns using `VcDataTable` with declarative `<VcColumn>` API.
 - **Upload**: Via toolbar button or drag-and-drop onto the table. Handles duplicate filenames by appending `_1`, `_2`, etc.
 - **Delete**: Toolbar delete button (requires selection) and per-row action button.
 - **Reorder**: Drag-and-drop row reordering when not in readonly mode.
@@ -71,6 +78,7 @@ openBlade({
 
 ## Tips
 
+- **Always use `markRaw()` when passing manager through blade options.** Blade descriptors are stored in `ref<BladeDescriptor[]>()`, which creates a deep reactive proxy. Vue auto-unwraps `Ref` values inside reactive objects, so `manager.items` would become a plain array instead of `Ref<AssetLike[]>` — breaking `.value` access. `markRaw()` prevents this by telling Vue not to make the manager reactive.
 - The `manager` object (from `useAssetsManager()`) owns the reactive asset list and all mutation methods. The blade reads `manager.items` and calls `manager.upload()`, `manager.remove()`, `manager.removeMany()`, `manager.reorder()`, and `manager.updateItem()`.
 - The `disabled` prop makes the entire blade readonly: no upload, no delete, no reorder.
 - Asset thumbnails use `isImage()` from shared utilities to determine if an image preview or a file-type icon should be shown.

@@ -29,7 +29,9 @@ The AssetsManager blade options have also changed: instead of passing 3 separate
 | Manual `showConfirmation()` before remove | `confirmRemove: () => showConfirmation(t('...'))` in options |
 | Manual array merge after upload | Automatic — composable mutates the ref |
 | Manual `.map(x => ({...x}) as Image)` casts | Not needed — `AssetLike` index signature is structurally compatible |
-| AssetsManager blade `options.assets`, `options.loading`, `options.assetsUploadHandler`, `options.assetsEditHandler`, `options.assetsRemoveHandler` | AssetsManager blade `options.manager` |
+| AssetsManager blade `options.assets`, `options.loading`, `options.assetsUploadHandler`, `options.assetsEditHandler`, `options.assetsRemoveHandler` | AssetsManager blade `options.manager: markRaw(assets)` |
+
+> **Important:** When passing `useAssetsManager` through blade options, always wrap with `markRaw()` from Vue. Blade descriptors are stored in a deep reactive ref which auto-unwraps nested Refs, breaking `.value` access on `manager.items` and `manager.loading`. `markRaw()` prevents this.
 
 ## Migration Examples
 
@@ -235,6 +237,77 @@ Template:
  />
 ```
 
+### 5. Opening the AssetsManager blade (breaking change)
+
+The AssetsManager blade no longer accepts separate handler functions and a raw assets array. Pass a single `manager: UseAssetsManagerReturn` instance instead. Always wrap with `markRaw()`.
+
+```diff
+-import { useAssets, ICommonAsset } from "@vc-shell/framework";
++import { markRaw } from "vue";
++import { useAssetsManager, useBlade } from "@vc-shell/framework";
+
+-const { upload, remove, edit, loading } = useAssets();
+-const assetsHandler = { /* ... handler object ... */ };
++const assets = useAssetsManager(imagesRef, {
++  uploadPath: () => `catalog/${product.value?.id}`,
++  confirmRemove: () => showConfirmation(t("CONFIRM_DELETE")),
++});
+
+ openBlade({
+   name: "AssetsManager",
+   options: {
+-    assets: product.value.images,
+-    loading: loading,
+-    assetsEditHandler: (items) => assetsHandler.edit(items),
+-    assetsUploadHandler: (files) => assetsHandler.upload(files),
+-    assetsRemoveHandler: (items) => assetsHandler.remove(items),
+-    disabled: !canEdit.value,
++    manager: markRaw(assets),
++    disabled: !canEdit.value,
+   },
+ });
+```
+
+**Old options (removed):**
+
+| Option | Type |
+|---|---|
+| `assets` | `ICommonAsset[]` |
+| `loading` | `Ref<boolean>` |
+| `assetsUploadHandler` | `(files: FileList) => Promise<ICommonAsset[]>` |
+| `assetsEditHandler` | `(assets: ICommonAsset[]) => ICommonAsset[]` |
+| `assetsRemoveHandler` | `(assets: ICommonAsset[]) => Promise<ICommonAsset[]>` |
+
+**New options:**
+
+| Option | Type | Description |
+|---|---|---|
+| `manager` | `UseAssetsManagerReturn` | Manager instance from `useAssetsManager()`. **Must be wrapped in `markRaw()`** |
+| `title` | `string?` | Custom blade title |
+| `disabled` | `boolean?` | Readonly mode |
+| `hiddenFields` | `string[]?` | Fields to hide in the detail view |
+
+### 6. Opening the AssetsDetails blade
+
+The AssetsDetails blade options now use `AssetLike` instead of `ICommonAsset`. The callback signatures are identical — only the type name changed:
+
+```diff
+ openBlade({
+   name: "AssetsDetails",
+   options: {
+-    asset: item as ICommonAsset,
++    asset: item as AssetLike,
+     disabled: readonly,
+-    assetEditHandler: (asset: ICommonAsset) => { ... },
+-    assetRemoveHandler: async (asset: ICommonAsset) => { ... },
++    assetEditHandler: (asset: AssetLike) => { ... },
++    assetRemoveHandler: async (asset: AssetLike) => { ... },
+   },
+ });
+```
+
+This is typically a no-op if you already migrated `ICommonAsset` → `AssetLike` (the codemod handles this automatically).
+
 ## How to Find
 
 ```bash
@@ -246,6 +319,9 @@ grep -rn "ICommonAsset" src/
 
 # Find assetsHandler-style objects (candidates for migration)
 grep -rn "assetsHandler\|assetsUploadHandler\|assetsRemoveHandler\|assetsEditHandler" src/
+
+# Find callers that open AssetsManager/AssetsDetails with old options
+grep -rn 'name:.*"AssetsManager"\|name:.*"AssetsDetails"' src/ --include="*.vue" --include="*.ts"
 
 # Run the automated codemod (renames ICommonAsset → AssetLike, reports useAssets usages)
 npx vc-migrate use-assets-migration

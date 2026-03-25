@@ -1,4 +1,4 @@
-import { ComputedRef } from "vue";
+import { ComputedRef, markRaw } from "vue";
 import { createSimpleMapRegistry, createPreregistrationBus } from "@core/services/_internal";
 
 export interface AppBarWidget {
@@ -48,8 +48,8 @@ export function createAppBarWidgetService(): IAppBarWidgetService {
       id: options.id || "",
       order: options.order ?? currentSize,
       title: options.title,
-      icon: options.icon,
-      component: options.component,
+      icon: typeof options.icon === "object" ? markRaw(options.icon) : options.icon,
+      component: options.component ? markRaw(options.component) : undefined,
       props: options.props,
       onClick: options.onClick,
       slot: options.slot,

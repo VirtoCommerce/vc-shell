@@ -1,4 +1,4 @@
-import { ComputedRef } from "vue";
+import { ComputedRef, markRaw } from "vue";
 import { createSimpleMapRegistry, createPreregistrationBus } from "@core/services/_internal";
 
 export interface ISettingsMenuItem {
@@ -43,7 +43,7 @@ export function createSettingsMenuService(): ISettingsMenuService {
       id: options.id || "",
       order: options.order ?? currentSize,
       group: options.group,
-      component: options.component,
+      component: markRaw(options.component),
       props: options.props,
     }),
     getId: (options) => options.id || "",

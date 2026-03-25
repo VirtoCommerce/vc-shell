@@ -9,7 +9,7 @@ vi.mock("vue-i18n", () => ({
 }));
 
 const mockOpen = vi.fn();
-vi.mock("@shell/_internal/popup/composables/usePopup", () => ({
+vi.mock("@core/composables/usePopup", () => ({
   usePopup: () => ({ open: mockOpen }),
 }));
 

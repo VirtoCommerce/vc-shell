@@ -1,5 +1,5 @@
 import { computed, ref, Ref, toValue } from "vue";
-import { usePopup } from "@shell/_internal/popup/composables/usePopup";
+import { usePopup } from "@core/composables/usePopup";
 import VcGalleryPreview from "../_internal/vc-gallery-preview/vc-gallery-preview.vue";
 import type { AssetLike } from "@core/composables/useAssetsManager";
 

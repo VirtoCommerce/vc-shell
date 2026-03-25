@@ -185,10 +185,10 @@ function validateForm() {
     if (form.password || form.confirmPassword) {
       form.errors = (await validatePassword(form.password)).errors ?? [];
       if (form.confirmPassword !== form.password) {
-        (form.errors as IIdentityError[]).push({ code: "Repeat-password" });
+        (form.errors as IdentityError[]).push({ code: "Repeat-password" });
       }
       if (form.confirmPassword === form.currentPassword && form.password === form.currentPassword) {
-        (form.errors as IIdentityError[]).push({ code: "Equal-passwords" });
+        (form.errors as IdentityError[]).push({ code: "Equal-passwords" });
       }
       form.isValid = form.errors.length == 0;
     }

@@ -35,7 +35,18 @@ The AssetsManager blade options have also changed: instead of passing 3 separate
 
 ## Migration Examples
 
-### 1. Gallery with confirmation (offers-details pattern)
+### Choosing a ref to pass
+
+`useAssetsManager(source, options)` accepts any `Ref<AssetLike[]>`. Pick the simplest form:
+
+| Situation | Use |
+|---|---|
+| Direct property on a ref (`offer.value.images`) | `toRef(offer.value, 'images')` |
+| Nullable intermediate (`item.value.productData?.images`) | `computed({ get, set })` with `?? []` guard |
+| Shape transformation (single value ↔ array) | `computed({ get, set })` |
+| Side effects needed on write (`emitAssets()`) | `computed({ get, set })` |
+
+### 1. Gallery with confirmation
 
 ```diff
 -import { useAssets } from "@vc-shell/framework";
@@ -77,7 +88,7 @@ Template:
  />
 ```
 
-### 2. Single image upload (team-member-details pattern)
+### 2. Single image upload
 
 ```diff
 -import { useAssets } from "@vc-shell/framework";
@@ -116,7 +127,7 @@ Template:
  />
 ```
 
-### 3. Composable (useSellerDetails pattern)
+### 3. Composable returning asset handlers
 
 ```diff
 -import { useAssets } from "@vc-shell/framework";
@@ -151,7 +162,7 @@ Template:
  }
 ```
 
-### 4. Injectable image handlers (ProductDetailsBase pattern)
+### 4. Injectable image handlers
 
 When a component accepts optional `imageHandlers` from parent via Props with fallback to defaults:
 
@@ -237,38 +248,87 @@ Template:
  />
 ```
 
-### 5. Opening the AssetsManager blade (breaking change)
+### 5. Widget opening AssetsManager blade
 
-The AssetsManager blade no longer accepts separate handler functions and a raw assets array. Pass a single `manager: UseAssetsManagerReturn` instance instead. Always wrap with `markRaw()`.
+A component that builds a handler object from `useAssets()` and opens the AssetsManager blade with the old options. **Both** parts must be migrated together.
 
 ```diff
--import { useAssets, ICommonAsset } from "@vc-shell/framework";
+ <script setup lang="ts">
+-import { useBladeNavigation, usePopup, useAssets } from "@vc-shell/framework";
+-import { Asset } from "@api/marketplacevendor";
 +import { markRaw } from "vue";
-+import { useAssetsManager, useBlade } from "@vc-shell/framework";
++import { useBlade, usePopup, useAssetsManager, type AssetLike } from "@vc-shell/framework";
 
--const { upload, remove, edit, loading } = useAssets();
--const assetsHandler = { /* ... handler object ... */ };
-+const assets = useAssetsManager(imagesRef, {
-+  uploadPath: () => `catalog/${product.value?.id}`,
-+  confirmRemove: () => showConfirmation(t("CONFIRM_DELETE")),
+-const { openBlade, resolveBladeByName } = useBladeNavigation();
++const { openBlade } = useBlade();
+ const { showConfirmation } = usePopup();
+-const { edit, upload, remove, loading } = useAssets();
+
+-const assetsHandler = {
+-  loading: computed(() => loading.value),
+-  edit: (files: Asset[]) => {
+-    internalModel.value.productData.assets = edit(files, internalModel.value.productData.assets);
+-    emitAssets();
+-    return internalModel.value.productData.assets;
+-  },
+-  async upload(files: FileList | null, lastSortOrder?: number) {
+-    if (files) {
+-      const uploaded = (await upload(files, `catalog/${internalModel.value.id}`, lastSortOrder))
+-        .map((x) => new Asset(x));
+-      internalModel.value.productData.assets =
+-        internalModel.value.productData.assets.concat(uploaded);
+-      emitAssets();
+-      return internalModel.value.productData.assets;
+-    }
+-  },
+-  async remove(files: Asset[]) {
+-    if (await showConfirmation(t("PRODUCTS.PAGES.ALERTS.DELETE_CONFIRMATION_ASSET", { count: files.length }))) {
+-      internalModel.value.productData.assets =
+-        (await remove(files, internalModel.value.productData.assets)).map((x) => new Asset(x));
+-    }
+-    emitAssets();
+-    return internalModel.value.productData.assets;
+-  },
+-};
++const productAssets = computed({
++  get: () => internalModel.value?.productData?.assets ?? [],
++  set: (val) => {
++    if (internalModel.value?.productData) {
++      internalModel.value.productData.assets = val;
++      emitAssets();
++    }
++  },
++});
++const assets = useAssetsManager(productAssets, {
++  uploadPath: () => `catalog/${internalModel.value?.id}`,
++  confirmRemove: () =>
++    showConfirmation(t("PRODUCTS.PAGES.ALERTS.DELETE_CONFIRMATION_ASSET")),
 +});
 
- openBlade({
-   name: "AssetsManager",
-   options: {
--    assets: product.value.images,
--    loading: loading,
--    assetsEditHandler: (items) => assetsHandler.edit(items),
--    assetsUploadHandler: (files) => assetsHandler.upload(files),
--    assetsRemoveHandler: (items) => assetsHandler.remove(items),
--    disabled: !canEdit.value,
-+    manager: markRaw(assets),
-+    disabled: !canEdit.value,
-   },
- });
+ function clickHandler() {
+-  openBlade({
+-    blade: resolveBladeByName("AssetsManager"),
+-    options: {
+-      assets: internalModel.value?.productData?.assets,
+-      loading: assetsHandler?.loading,
+-      assetsEditHandler: assetsHandler?.edit,
+-      assetsUploadHandler: assetsHandler?.upload,
+-      assetsRemoveHandler: assetsHandler?.remove,
+-      disabled: props.disabled,
+-    },
+-  });
++  openBlade({
++    name: "AssetsManager",
++    options: {
++      manager: markRaw(assets),
++      disabled: props.disabled,
++    },
++  });
+ }
+ </script>
 ```
 
-**Old options (removed):**
+**Old AssetsManager blade options (removed):**
 
 | Option | Type |
 |---|---|
@@ -278,7 +338,7 @@ The AssetsManager blade no longer accepts separate handler functions and a raw a
 | `assetsEditHandler` | `(assets: ICommonAsset[]) => ICommonAsset[]` |
 | `assetsRemoveHandler` | `(assets: ICommonAsset[]) => Promise<ICommonAsset[]>` |
 
-**New options:**
+**New AssetsManager blade options:**
 
 | Option | Type | Description |
 |---|---|---|
@@ -287,26 +347,38 @@ The AssetsManager blade no longer accepts separate handler functions and a raw a
 | `disabled` | `boolean?` | Readonly mode |
 | `hiddenFields` | `string[]?` | Fields to hide in the detail view |
 
+> **Why `markRaw()`?** Blade descriptors are stored in `ref<BladeDescriptor[]>()`, which creates a deep reactive proxy. Vue auto-unwraps nested `Ref` values inside reactive objects — so `manager.items` would become a plain array instead of `Ref<AssetLike[]>`, breaking `.value` access. `markRaw()` prevents this.
+
 ### 6. Opening the AssetsDetails blade
 
-The AssetsDetails blade options now use `AssetLike` instead of `ICommonAsset`. The callback signatures are identical — only the type name changed:
+The AssetsDetails blade options now use `AssetLike` instead of `ICommonAsset`. The navigation API also changes:
 
 ```diff
- openBlade({
-   name: "AssetsDetails",
-   options: {
--    asset: item as ICommonAsset,
-+    asset: item as AssetLike,
-     disabled: readonly,
--    assetEditHandler: (asset: ICommonAsset) => { ... },
--    assetRemoveHandler: async (asset: ICommonAsset) => { ... },
-+    assetEditHandler: (asset: AssetLike) => { ... },
-+    assetRemoveHandler: async (asset: AssetLike) => { ... },
-   },
- });
+-import { useBladeNavigation, ICommonAsset } from "@vc-shell/framework";
++import { useBlade, type AssetLike } from "@vc-shell/framework";
+
+-const { openBlade } = useBladeNavigation();
++const { openBlade } = useBlade();
+
+ function onGalleryItemEdit(item: Image) {
+   openBlade({
+-    blade: { name: "AssetsDetails" },
++    name: "AssetsDetails",
+     options: {
+       asset: item,
+-      assetEditHandler: (_f: Image) => assetsHandler.edit?.([_f]),
+-      assetRemoveHandler: (_f: Image) => assetsHandler.remove?.(_f),
++      assetEditHandler: (asset: AssetLike) => assets.updateItem(asset),
++      assetRemoveHandler: async (asset: AssetLike) => assets.remove(asset),
+     },
+   });
+ }
 ```
 
-This is typically a no-op if you already migrated `ICommonAsset` → `AssetLike` (the codemod handles this automatically).
+This combines three migrations:
+- `ICommonAsset` → `AssetLike` (codemod handles the type rename automatically)
+- `useBladeNavigation()` → `useBlade()` (see [guide #10](./10-use-blade.md))
+- `blade: { name: "X" }` → `name: "X"` (see [guide #10](./10-use-blade.md))
 
 ## How to Find
 

@@ -439,3 +439,12 @@ export * from "@shell/_internal/notifications/components";
 
 // Blade navigation rendering components (VcBladeNavigation, VcBladeSlot)
 export * from "@shell/_internal/blade-navigation";
+
+// Pre-registration functions (used by external modules before provide/inject tree exists)
+export { registerExternalWidget, registerWidget } from "@core/composables/useWidgets";
+export { registerToolbarItem } from "@core/services/toolbar-service";
+export { addMenuItem } from "@core/services/menu-service";
+export { addAppBarWidget } from "@core/services/app-bar-menu-service";
+export { addSettingsMenuItem } from "@core/services/settings-menu-service";
+export { registerDashboardWidget } from "@core/services/dashboard-service";
+export type { IExternalWidgetRegistration } from "@core/services/widget-service";

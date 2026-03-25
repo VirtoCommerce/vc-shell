@@ -91,10 +91,8 @@ export function useBladeWidgets(widgets: HeadlessWidgetDeclaration[]): UseBladeW
 
 // ── Widget scope (for component-based external widgets) ─────────────────────
 
-export interface IWidgetScope {
-  /** Register trigger contract (onRefresh, onClick, badge) */
-  setTrigger: (trigger: IWidgetTrigger) => void;
-}
+// Re-export for backward compatibility (type moved to widget-service)
+export type { IWidgetScope } from "@core/services/widget-service";
 
 /**
  * Registers a trigger contract (onRefresh, onClick, badge) for an external

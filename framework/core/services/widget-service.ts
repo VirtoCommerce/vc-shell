@@ -17,12 +17,9 @@ export interface IExposedWidget {
   [key: string]: unknown;
 }
 
-/** @deprecated No longer used — external widgets inject data via `injectBladeContext()` */
-export interface IWidgetConfig {
-  requiredData?: string[];
-  optionalData?: string[];
-  propsResolver?: (bladeData: Record<string, unknown>) => Record<string, unknown>;
-  fieldMapping?: Record<string, string>;
+export interface IWidgetScope {
+  /** Register trigger contract (onRefresh, onClick, badge) */
+  setTrigger: (trigger: IWidgetTrigger) => void;
 }
 
 export interface IWidgetTrigger {
@@ -57,8 +54,6 @@ export interface IWidget {
   component?: Component;
   /** @deprecated External widgets inject data via `injectBladeContext()` */
   props?: Record<string, unknown>;
-  /** @deprecated No longer used — external widgets inject data via `injectBladeContext()` */
-  config?: IWidgetConfig;
   /** @deprecated External widgets inject data via `injectBladeContext()` */
   events?: Record<string, unknown>;
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
@@ -77,8 +72,6 @@ export interface IWidgetRegistration {
 export interface IExternalWidgetRegistration {
   id: string;
   component: Component;
-  /** @deprecated No longer used — external widgets inject data via `injectBladeContext()` */
-  config?: IWidgetConfig;
   targetBlades?: string[];
   isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
   title?: string;

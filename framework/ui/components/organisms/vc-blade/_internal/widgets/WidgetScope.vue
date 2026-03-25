@@ -6,8 +6,7 @@
 import { provide, inject } from "vue";
 import { WidgetServiceKey, WidgetScopeKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
-import type { IWidgetTrigger } from "@core/services/widget-service";
-import type { IWidgetScope } from "@core/composables/useBladeWidgets";
+import type { IWidgetTrigger, IWidgetScope } from "@core/services/widget-service";
 
 const props = defineProps<{ widgetId: string }>();
 

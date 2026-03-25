@@ -2,6 +2,12 @@
 
 Accesses the dashboard service for registering and managing dashboard widgets. Widgets are permission-aware, support layout positioning, and can be pre-registered during module setup before the service is initialized.
 
+## When to Use
+
+- Register dashboard widgets during module setup (use standalone `registerDashboardWidget`)
+- Read or update widget layout at runtime inside a dashboard view component (use `useDashboard()`)
+- When NOT to use: for sidebar navigation items -- use `useMenuService` / `addMenuItem`; for settings-page entries -- use `useSettingsMenu`
+
 ## Quick Start
 
 ```typescript

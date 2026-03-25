@@ -10,6 +10,12 @@ Blade navigation manages an ordered stack of blade descriptors (plain data objec
 2. **useBladeMessaging** -- inter-blade communication: parent-child method calls.
 3. **useBladeNavigation** (adapter) -- legacy API adapter that maps the old index-based API onto the new ID-based stack and messaging systems.
 
+## When to Use
+
+- Build or extend the blade navigation infrastructure itself (plugin authors, framework internals)
+- Need direct access to the blade stack state machine (`useBladeStack`) or inter-blade messaging (`useBladeMessaging`)
+- When NOT to use: for everyday blade operations in modules -- prefer `useBlade()` from `core/composables/useBlade/`, which wraps these low-level composables with a cleaner, context-aware API
+
 ## Exports
 
 ```typescript

@@ -6,6 +6,12 @@ Integrates an AI assistant panel (chatbot iframe) into the vc-shell application.
 
 The AI agent plugin embeds an external chatbot via an iframe panel that slides in from the right side of the application. It automatically sends the current blade context (user, active blade, selected items) to the chatbot and handles incoming commands (navigate, preview changes, download files). The plugin is optional -- if no `APP_AI_AGENT_URL` environment variable or `config.url` is provided, it silently skips installation.
 
+## When to Use
+
+- Embed an AI assistant chatbot panel into your vc-shell application with automatic blade context passing
+- Enable preview/apply workflows where AI suggests changes and the user confirms them
+- When NOT to use: if you don't have an AI agent backend -- the plugin silently skips when no `APP_AI_AGENT_URL` is set
+
 ## Installation / Registration
 
 ```typescript

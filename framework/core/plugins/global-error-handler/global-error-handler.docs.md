@@ -8,6 +8,12 @@ In a complex admin shell with dynamically loaded modules, errors can originate f
 
 The global error handler solves this by installing three layers of error catching that cover all common error sources. Every caught error is parsed into a human-readable message and displayed as a toast notification, ensuring users always know when something goes wrong -- even if the module developer forgot to add error handling.
 
+## When to Use
+
+- This plugin is always active -- it catches unhandled errors from Vue components, async rejections, and uncaught JS errors automatically
+- You don't need to install or configure it -- the framework does this during app setup
+- When to be aware: if you handle errors manually in a composable (try/catch), the global handler won't fire for those -- which is the desired behavior
+
 ### Three Layers of Error Catching
 
 1. **Vue `app.config.errorHandler`** -- catches errors thrown inside Vue components (render functions, lifecycle hooks, watchers, event handlers)

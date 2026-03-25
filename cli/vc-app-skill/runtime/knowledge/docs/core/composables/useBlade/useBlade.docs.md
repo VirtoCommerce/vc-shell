@@ -4,6 +4,13 @@ Unified composable for blade navigation, identity, communication, guards, and er
 
 `useBlade()` works **everywhere**: inside blades it provides the full API (identity, navigation, communication, guards, errors); outside blades (dashboard cards, notification templates, composables) it provides navigation only (`openBlade`). Blade-specific methods throw a descriptive runtime error if called outside blade context.
 
+## When to Use
+
+- Open, close, replace, or cover blades from any component (blade, dashboard widget, toolbar handler)
+- Read blade identity (`param`, `options`, `id`) or register close guards inside a blade
+- Communicate between parent and child blades via `callParent` / `exposeToChildren`
+- When NOT to use: for low-level stack manipulation or custom navigation plugins -- use the blade-navigation composables (`useBladeStack`, `useBladeMessaging`) directly
+
 ## Quick Start
 
 ```vue

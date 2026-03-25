@@ -8,6 +8,12 @@ Form validation is a critical part of any admin interface. The vc-shell framewor
 
 This plugin auto-registers every rule from `@vee-validate/rules` (required, email, min, max, etc.) via `defineRule()`, then adds custom rules specific to vc-shell use cases. Once registered, rules are available globally in any `<Field>` component, `useField()` composable, or validation schema -- no per-component imports needed.
 
+## When to Use
+
+- Validate form fields in blades using `<Field>` components or `useField()` with declarative rules (`required`, `email`, `min`, etc.)
+- Use custom vc-shell rules: image dimensions (`validateImageMinSize`), file weight, date comparisons, BigInt safety
+- When NOT to use: for API-level validation -- that belongs server-side; for simple presence checks on non-form data -- use plain conditionals
+
 The framework imports this module during setup. No manual installation is needed by module developers.
 
 ## Installation / Registration

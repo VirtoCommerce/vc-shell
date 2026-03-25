@@ -25,6 +25,17 @@ Traditional admin panels use page-based routing: click a link, the entire viewpo
 | Layout | Full viewport | Side-by-side panels |
 | Depth | Flat (1 level) | Unlimited nesting |
 
+## When to Use
+
+| Scenario | Component |
+|----------|-----------|
+| Stacked panel with toolbar, header, and lifecycle | **VcBlade** |
+| One-off confirmation or input dialog | [VcPopup](../../molecules/vc-popup/) |
+| Full-page route without blade stack | Vue Router view |
+| Scrollable content section inside a blade | [VcContainer](../../molecules/vc-container/) |
+
+Use VcBlade for every screen in a vc-shell application -- it is the standard container that integrates with the navigation system, toolbar, breadcrumbs, and unsaved-changes guards. **Do not use** VcBlade for transient dialogs (use `VcPopup` / `usePopup()`) or for content areas that do not need their own header and close button.
+
 ## Quick Start
 
 ```vue

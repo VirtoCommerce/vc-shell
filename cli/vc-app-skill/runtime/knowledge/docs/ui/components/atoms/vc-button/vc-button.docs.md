@@ -2,6 +2,17 @@
 
 A versatile button component supporting 9 style variants, 5 size options, loading state, and icon integration. VcButton is the primary interactive element for triggering actions throughout the application -- from toolbar buttons and form submissions to inline table actions and navigation.
 
+## When to Use
+
+| Scenario | Component |
+|----------|-----------|
+| Triggering an action (save, delete, submit) | **VcButton** |
+| Navigating to another URL or route | `<router-link>` or `<a>` tag |
+| Action inside a blade toolbar | `IBladeToolbar` items (rendered as buttons automatically) |
+| Inline text-style link within a paragraph | Native `<a>` or `<router-link>` |
+
+Use VcButton for any user-initiated action that does not navigate to a URL. **Do not use** VcButton for navigation -- the `link` variant looks like a link but calls `preventDefault()`, so actual URL navigation will not work. For toolbar actions, define `IBladeToolbar` objects instead of placing VcButton manually.
+
 ## Quick Start
 
 ```vue

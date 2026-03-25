@@ -1,6 +1,6 @@
 # LogoutButton
 
-Settings menu action that signs the user out, closes all open blades, and redirects to the login page. This component encapsulates the full sign-out flow: it injects `CloseSettingsMenuKey` to dismiss the parent menu before navigation, calls `useUserManagement().signOut()` to clear the authentication token, and uses `useBladeNavigation()` to close any open blades so the user does not return to stale blade state on next login.
+Settings menu action that signs the user out, closes all open blades, and redirects to the login page. This component encapsulates the full sign-out flow: it injects `CloseSettingsMenuKey` to dismiss the parent menu before navigation, calls `useUserManagement().signOut()` to clear the authentication token, and uses `useBladeStack()` to close open child blades so the user does not return to stale blade state on next login.
 
 ## When to Use
 
@@ -37,7 +37,7 @@ settingsMenu.register({
 
 ## Key Props
 
-This component has no props. It uses `useUserManagement()` for sign-out and `useBladeNavigation()` to close blades.
+This component has no props. It uses `useUserManagement()` for sign-out and `useBladeStack()` to close blades.
 
 ## Recipe: Module with Complete Settings Menu Registration
 
@@ -71,7 +71,7 @@ export default {
 ## Details
 
 - **Menu dismissal**: Before starting the sign-out flow, the component calls the injected `CloseSettingsMenuKey` function to close the dropdown. This prevents a visual artifact where the menu stays open while the page redirects.
-- **Blade cleanup**: All open blades are closed via `useBladeNavigation()` before redirecting. This avoids orphaned blade state in the navigation stack.
+- **Blade cleanup**: All open child blades are closed via `useBladeStack()` before redirecting. This avoids orphaned blade state in the navigation stack.
 - **Redirect**: After sign-out completes, the user is redirected to the `/login` route.
 - **External providers**: If the user signed in through an external SSO provider, the sign-out flow also triggers the provider's logout redirect via `useExternalProvider().signOut()`.
 

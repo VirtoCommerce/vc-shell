@@ -4,6 +4,12 @@ The modularity plugin is the backbone of every vc-shell application. It defines 
 
 If you are building anything in vc-shell -- a new page, a CRUD flow, a dashboard widget, a notification handler -- you will start by creating a module.
 
+## When to Use
+
+- Package any feature as a self-contained unit with blades, menu items, locales, notifications, and permissions
+- Every vc-shell feature starts here -- `defineAppModule()` is the entry point for all module development
+- When NOT to use: for shared utilities or composables that have no UI -- export them as plain TypeScript modules instead
+
 ---
 
 ## Table of Contents

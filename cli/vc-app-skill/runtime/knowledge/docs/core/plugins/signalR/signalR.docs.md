@@ -4,6 +4,12 @@ Real-time push notification transport via ASP.NET SignalR. Connects to the platf
 
 ## Overview
 
+## When to Use
+
+- Receive real-time push notifications from the platform (order updates, export progress, background job status)
+- Display live notification toasts and badge counts without polling
+- When NOT to use: for request-response API calls -- use `useApiClient`; for periodic data refresh -- use polling with `useAsync` instead
+
 The VirtoCommerce platform uses ASP.NET SignalR to push real-time notifications to connected clients. These notifications cover events like order status changes, catalog exports completing, background job progress, and system alerts.
 
 The SignalR plugin establishes a persistent WebSocket connection to the platform hub and listens for two event channels:

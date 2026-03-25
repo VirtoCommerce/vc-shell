@@ -18,6 +18,17 @@ Columns are defined as `<VcColumn>` child components -- no configuration objects
 - State persistence (column widths, order, sort, filters) to localStorage/sessionStorage
 - Full TypeScript generics -- `VcDataTable<Product>` propagates types to events and slots
 
+## When to Use
+
+| Scenario | Component |
+|----------|-----------|
+| Tabular data with sorting, selection, pagination | **VcDataTable** |
+| Simple short list without table features | `v-for` with custom markup |
+| Image/card grid layout | [VcGallery](../vc-gallery/) |
+| Key-value detail display | [VcField](../../molecules/vc-field/) or [VcCard](../../atoms/vc-card/) |
+
+Use VcDataTable whenever you need structured rows and columns with any combination of sorting, filtering, inline editing, or column management. **Do not use** VcDataTable for simple lists of 5-10 items that need no table features -- a plain `v-for` loop is lighter. For thumbnail/card grids, prefer VcGallery.
+
 ---
 
 ## Table of Contents
@@ -1329,6 +1340,7 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 | Event | Payload | Description |
 |-------|---------|-------------|
+| `update:editingRows` | `T[]` | v-model update for currently editing rows. |
 | `cell-edit-init` | `{ data: T, field: string, index: number }` | Cell entered edit mode. |
 | `cell-edit-complete` | `{ data: T, field: string, newValue: unknown, index: number }` | Cell edit committed. |
 | `cell-edit-cancel` | `{ data: T, field: string, index: number }` | Cell edit cancelled. |

@@ -8,6 +8,13 @@ When the returned `action` is called, `useAsync` automatically:
 3. On failure: parses the error into a `DisplayableError`, stores it in `error`, logs it, optionally shows a toast notification, and re-throws
 4. Sets `loading` to `false` (success or failure)
 
+## When to Use
+
+- Wrap any async operation (API calls, saves, deletes) with reactive `loading` and `error` state
+- Get automatic error parsing, toast notifications, and re-throw behavior for free
+- Combine with `useLoading` when a blade has multiple independent async operations
+- When NOT to use: for synchronous logic -- just use a regular function; for fire-and-forget operations where you do not need loading/error tracking
+
 ## Quick Start
 
 ```typescript

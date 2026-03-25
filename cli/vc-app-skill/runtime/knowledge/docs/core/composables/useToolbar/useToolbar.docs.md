@@ -2,6 +2,12 @@
 
 Manages toolbar buttons for blades. Each blade in the application has its own toolbar area at the top of the blade header. `useToolbar` provides a scoped API to register, update, and remove buttons within that toolbar. It automatically resolves the current blade context and cleans up registered items when the component unmounts.
 
+## When to Use
+
+- Add action buttons (Save, Delete, Refresh, Export) to a blade's toolbar header
+- Dynamically update button state (disabled, visible, icon) in response to loading or form changes
+- When NOT to use: for global app-bar actions -- use `useAppBarWidget`; for navigation links -- use `useMenuService`
+
 ## Quick Start
 
 ```typescript

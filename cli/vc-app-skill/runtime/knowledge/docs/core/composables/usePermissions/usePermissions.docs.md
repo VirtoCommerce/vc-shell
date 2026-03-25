@@ -2,6 +2,12 @@
 
 Checks whether the current user has specific platform permissions. This composable reads the authenticated user's permission list and provides a `hasAccess` function for conditional UI rendering and access control. It is client-side only -- it does not enforce server-side authorization.
 
+## When to Use
+
+- Conditionally show or hide UI elements (buttons, toolbar items, sections) based on the current user's permissions
+- Guard blade access or toolbar registration with client-side permission checks
+- When NOT to use: as the sole authorization mechanism -- always pair with server-side enforcement; for checking authentication status -- use `useUser` instead
+
 ## Quick Start
 
 ```typescript

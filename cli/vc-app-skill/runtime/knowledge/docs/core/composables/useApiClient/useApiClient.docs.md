@@ -2,6 +2,12 @@
 
 Creates a typed API client instance for communicating with VirtoCommerce platform APIs. The composable accepts a generated client class constructor and returns an async factory function that produces a configured, authenticated client. Base URL resolution and authentication token injection are handled automatically.
 
+## When to Use
+
+- Instantiate a generated VirtoCommerce API client with automatic authentication and base-URL resolution
+- Pair with `useAsync` for loading/error state on every API call in a blade or composable
+- When NOT to use: for third-party or non-platform APIs that do not extend `AuthApiBase` -- use `fetch` or Axios directly
+
 ## Quick Start
 
 ```typescript

@@ -4,6 +4,12 @@ Extension points enable **cross-module UI composition** without direct imports. 
 
 This is how vc-shell achieves its modular architecture: modules can extend each other without compile-time dependencies.
 
+## When to Use
+
+- Module A needs to inject UI into Module B without a compile-time dependency (e.g., a "Reviews" tab inside a "Product Details" blade owned by another module)
+- You need order-independent, runtime-resolved composition -- modules can load in any order
+- When NOT to use: for simple parent-child communication within one module -- use props/slots/provide-inject instead; for data-only integration -- use events or a shared composable
+
 ---
 
 ## Table of Contents

@@ -2,6 +2,12 @@
 
 Accesses the navigation menu service for adding, removing, and badging menu items in the application sidebar. The service supports a pre-registration pattern that allows modules to declare menu items before the service is initialized, and a grouping system that organizes items into collapsible sections.
 
+## When to Use
+
+- Register sidebar navigation items during module setup (use standalone `addMenuItem`)
+- Add, remove, or badge menu items at runtime inside components (use `useMenuService()`)
+- When NOT to use: for dashboard widgets -- use `useDashboard` / `registerDashboardWidget`; for settings-page entries -- use `useSettingsMenu`
+
 ## Quick Start
 
 ```typescript

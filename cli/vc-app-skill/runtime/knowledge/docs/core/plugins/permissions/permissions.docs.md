@@ -8,6 +8,12 @@ The VirtoCommerce platform uses a role-based permission system where each user i
 
 The plugin installs the `hasAccess()` function from the `usePermissions()` composable as both a Vue global property (`$hasAccess`) and a provide/inject injectable (`"$hasAccess"`). This means permission checks are available everywhere: in templates via `$hasAccess()`, in composition API code via `usePermissions()`, and in any injecting component.
 
+## When to Use
+
+- Show/hide UI elements based on user permissions: `v-if="$hasAccess('order:create')"` in templates or `hasAccess()` in composables
+- Guard toolbar buttons, menu items, or entire blade sections with client-side permission checks
+- When NOT to use: as the sole authorization layer -- always enforce permissions server-side too; for authentication checks (logged in / logged out) -- use `useUser` instead
+
 The framework installs this plugin automatically during app setup. Module developers never need to register it manually.
 
 ## Installation / Registration

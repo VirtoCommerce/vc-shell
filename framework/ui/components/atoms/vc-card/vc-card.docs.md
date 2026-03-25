@@ -2,6 +2,17 @@
 
 A bordered container with an optional header, icon, action buttons, and collapsible body. VcCard groups related content into visually distinct sections on blades and detail views. It supports three color variants for semantic meaning and smooth animated collapse/expand.
 
+## When to Use
+
+| Scenario | Component |
+|----------|-----------|
+| Grouping form fields or content with a header | **VcCard** |
+| Scrollable content wrapper without a header | [VcContainer](../vc-container/) |
+| Collapsible section with rich toggle behavior | [VcAccordion](../../molecules/vc-accordion/) (for multiple exclusive panels) |
+| Alert or notification banner | [VcBanner](../vc-banner/) |
+
+Use VcCard to visually separate content sections on a blade -- especially when you need a titled header, action buttons, or collapsible body. **Do not use** VcCard for dismissible alerts or status messages (use `VcBanner`), and avoid nesting VcCard when a simple `VcContainer` with padding would suffice.
+
 ## Quick Start
 
 ```vue

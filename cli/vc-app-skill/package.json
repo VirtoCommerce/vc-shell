@@ -18,6 +18,9 @@
     "scaffolding",
     "vue3"
   ],
+  "scripts": {
+    "sync-docs": "node bin/sync-docs.cjs"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

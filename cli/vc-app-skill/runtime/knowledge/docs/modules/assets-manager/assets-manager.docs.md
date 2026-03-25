@@ -4,7 +4,7 @@ A built-in blade module for managing file assets (images, documents, archives). 
 
 ## Overview
 
-The Assets Manager is registered as an app module via `defineAppModule` and opened as a child blade from any parent blade that needs asset management. The parent provides handler callbacks for upload, edit, and remove operations -- the module handles the UI and delegates data mutations back to the parent.
+The Assets Manager is registered as an app module via `defineAppModule` and opened as a child blade from any parent blade that needs asset management. The parent creates a `useAssetsManager` instance and passes it through `options.manager` -- the module handles the UI and delegates data mutations through the manager.
 
 ## Module Registration
 
@@ -24,11 +24,7 @@ The blade receives its configuration via the `options` prop when opened:
 | Option | Type | Description |
 |---|---|---|
 | `title` | `string` | Custom blade title (defaults to i18n `ASSETS_MANAGER.TITLE`) |
-| `assets` | `ICommonAsset[]` | Initial array of assets to display |
-| `loading` | `Ref<boolean>` | Reactive loading state for the table overlay |
-| `assetsEditHandler` | `(assets) => ICommonAsset[]` | Called when assets are reordered or edited |
-| `assetsUploadHandler` | `(files) => Promise<ICommonAsset[]>` | Called with selected files for upload |
-| `assetsRemoveHandler` | `(assets) => Promise<ICommonAsset[]>` | Called to delete selected assets |
+| `manager` | `UseAssetsManagerReturn` | The asset manager instance from `useAssetsManager()` |
 | `disabled` | `boolean` | When true, hides upload/delete actions and disables reordering |
 | `hiddenFields` | `string[]` | Fields to hide in the detail view |
 
@@ -37,29 +33,26 @@ The blade receives its configuration via the `options` prop when opened:
 Open the Assets Manager as a child blade:
 
 ```typescript
-import { useBladeNavigation } from "@vc-shell/framework";
+import { markRaw } from "vue";
+import { useBlade, useAssetsManager } from "@vc-shell/framework";
 
-const { openBlade, resolveBladeByName } = useBladeNavigation();
+const { openBlade } = useBlade();
+
+const assetsManager = useAssetsManager(product.assets, {
+  uploadPath: () => `/catalog/${product.id}`,
+  confirmRemove: () => confirm("Delete selected assets?"),
+});
 
 openBlade({
-  blade: resolveBladeByName("AssetsManager"),
+  name: "AssetsManager",
   options: {
-    assets: product.assets,
-    loading: isLoading,
+    // IMPORTANT: markRaw prevents Vue from wrapping the manager in a
+    // deep reactive proxy. Without it, blade options (stored in
+    // ref<BladeDescriptor[]>) auto-unwrap nested Refs, breaking
+    // manager.items.value and manager.loading.value access.
+    manager: markRaw(assetsManager),
     disabled: !canEdit.value,
     hiddenFields: ["sortOrder"],
-    assetsUploadHandler: async (files) => {
-      const uploaded = await uploadFiles(files);
-      return [...product.assets, ...uploaded];
-    },
-    assetsEditHandler: (assets) => {
-      product.assets = assets;
-      return assets;
-    },
-    assetsRemoveHandler: async (assets) => {
-      await deleteAssets(assets);
-      return product.assets.filter(a => !assets.includes(a));
-    },
   },
 });
 ```
@@ -79,17 +72,18 @@ openBlade({
 | Button | Condition | Action |
 |---|---|---|
 | Add | `!disabled` | Opens file picker for upload |
-| Delete | `!disabled` and items selected | Calls `assetsRemoveHandler` with selected items |
+| Delete | `!disabled` and items selected | Calls `manager.removeMany()` with selected items |
 
 ## Tips
 
-- All mutation handlers must return the updated full asset array -- the module replaces its internal list with the return value.
+- **Always use `markRaw()` when passing manager through blade options.** Blade descriptors are stored in `ref<BladeDescriptor[]>()`, which creates a deep reactive proxy. Vue auto-unwraps `Ref` values inside reactive objects, so `manager.items` would become a plain array instead of `Ref<AssetLike[]>` — breaking `.value` access. `markRaw()` prevents this by telling Vue not to make the manager reactive.
+- The `manager` object (from `useAssetsManager()`) owns the reactive asset list and all mutation methods. The blade reads `manager.items` and calls `manager.upload()`, `manager.remove()`, `manager.removeMany()`, `manager.reorder()`, and `manager.updateItem()`.
 - The `disabled` prop makes the entire blade readonly: no upload, no delete, no reorder.
 - Asset thumbnails use `isImage()` from shared utilities to determine if an image preview or a file-type icon should be shown.
-- The module uses `useBladeNavigation()` internally to open the detail sub-blade.
+- The module uses `useBlade()` internally to open the detail sub-blade.
 
 ## Related
 
+- `framework/core/composables/useAssetsManager/` -- `useAssetsManager`, `AssetLike`, `UseAssetsManagerReturn`
 - `framework/shared/utilities/assets.ts` -- `isImage`, `getFileThumbnail`, `readableSize`
 - `framework/core/utilities/date/` -- `formatDateRelative` for creation dates
-- `framework/core/types/` -- `ICommonAsset` interface

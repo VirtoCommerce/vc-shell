@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { normalizePath } from "vite";
 import { checker } from "vite-plugin-checker";
 import libAssetsPlugin from "@laynezh/vite-plugin-lib-assets";
+import { viteBladePlugin } from "@vc-shell/config-generator";
 
 const mode = process.env.APP_ENV as string;
 const frameworkRoot = path.dirname(fileURLToPath(import.meta.url));
@@ -32,6 +33,7 @@ export default getLibraryConfiguration({
     alias: frameworkAliases,
   },
   plugins: [
+    viteBladePlugin(),
     vue(),
     checker({
       vueTsc: true,

@@ -4,8 +4,8 @@ import { mount } from "@vue/test-utils";
 import { mountWithSetup, expectNoVueWarnings } from "@framework/test-helpers";
 
 // ── Mock useUserManagement to control user state ───────────────────────────────
-// usePermissions reads module-level userPermissions ref which is set from user.value.
-// We mock the shared composable to isolate each test from leaked permission state.
+// usePermissions reads permissions directly from reactive user.value on each call.
+// We mock the shared composable to isolate each test scenario.
 
 const mockUser = vi.fn();
 

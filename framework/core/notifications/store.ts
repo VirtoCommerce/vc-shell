@@ -71,7 +71,7 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
       Object.assign(existing, message);
       existing.isNew = effectiveIsNew;
     } else {
-      history.value.push(new PushNotification(message));
+      history.value.push({ ...message } as PushNotification);
     }
 
     // Upsert into realtime
@@ -81,7 +81,7 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
       Object.assign(existingRt, message);
       existingRt.isNew = effectiveIsNew;
     } else {
-      realtime.value.push(new PushNotification(message));
+      realtime.value.push({ ...message } as PushNotification);
     }
 
     // Toast (Level 1: always-on) — use stored isNew, not incoming
@@ -128,7 +128,7 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
 
   async function loadHistory(take = 10) {
     try {
-      const criteria = new PushNotificationSearchCriteria({ take });
+      const criteria: PushNotificationSearchCriteria = { take };
       const result = await notificationsClient.searchPushNotification(criteria);
       history.value = result.notifyEvents ?? [];
     } catch (e) {

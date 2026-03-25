@@ -47,13 +47,13 @@ export function patchUserManagement() {
     changeUserPassword: userManagement.changeUserPassword,
   };
 
-  userManagement.signIn = async () => new SignInResult({ succeeded: true });
+  userManagement.signIn = async () => ({ succeeded: true } as SignInResult);
   userManagement.signOut = async () => {};
   userManagement.validateToken = async () => true;
-  userManagement.validatePassword = async () => new IdentityResult({ succeeded: true, errors: [] });
-  userManagement.resetPasswordByToken = async () => new SecurityResult({ succeeded: true, errors: [] });
+  userManagement.validatePassword = async () => ({ succeeded: true, errors: [] } as IdentityResult);
+  userManagement.resetPasswordByToken = async () => ({ succeeded: true, errors: [] } as SecurityResult);
   userManagement.requestPasswordReset = async () => ({ succeeded: true });
-  userManagement.changeUserPassword = async () => new SecurityResult({ succeeded: true, errors: [] });
+  userManagement.changeUserPassword = async () => ({ succeeded: true, errors: [] } as SecurityResult);
 
   for (const name of ["Login", "ForgotPassword", "ChangePassword"] as const) {
     if (!router.hasRoute(name)) {

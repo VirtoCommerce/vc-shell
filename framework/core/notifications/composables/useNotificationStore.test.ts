@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mountWithSetup } from "@framework/test-helpers";
 import { defineComponent, h, provide } from "vue";
 import { mount } from "@vue/test-utils";
+import type { PushNotification } from "@core/api/platform";
 
 // Mock dependencies
 vi.mock("@core/utilities", () => ({
@@ -13,14 +14,6 @@ vi.mock("@core/utilities", () => ({
 }));
 
 vi.mock("@core/api/platform", () => ({
-  PushNotification: class PushNotification {
-    id?: string;
-    isNew?: boolean;
-    notifyType?: string;
-    constructor(init?: Record<string, unknown>) {
-      if (init) Object.assign(this, init);
-    }
-  },
   PushNotificationClient: class {
     markAllAsRead = vi.fn().mockResolvedValue(undefined);
     searchPushNotification = vi.fn().mockResolvedValue({ notifyEvents: [] });
@@ -124,9 +117,9 @@ describe("createNotificationStore", () => {
   describe("ingest", () => {
     it("adds a new notification to history and realtime", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
-      const msg = new PushNotification({ id: "n1", isNew: true, notifyType: "Order" });
+      const msg = { id: "n1", isNew: true, notifyType: "Order" } as PushNotification;
       store.ingest(msg);
       expect(store.history.value).toHaveLength(1);
       expect(store.realtime.value).toHaveLength(1);
@@ -135,48 +128,48 @@ describe("createNotificationStore", () => {
 
     it("upserts existing notification preserving read state", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
-      store.ingest(new PushNotification({ id: "n1", isNew: true, notifyType: "Order" }));
+      store.ingest({ id: "n1", isNew: true, notifyType: "Order" } as PushNotification);
       store.markAsRead(store.history.value[0]);
       expect(store.history.value[0].isNew).toBe(false);
       // Re-ingest same id — should preserve isNew=false
-      store.ingest(new PushNotification({ id: "n1", isNew: true, notifyType: "Order" }));
+      store.ingest({ id: "n1", isNew: true, notifyType: "Order" } as PushNotification);
       expect(store.history.value).toHaveLength(1);
       expect(store.history.value[0].isNew).toBe(false);
     });
 
     it("excludes IndexProgressPushNotification type", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
-      store.ingest(new PushNotification({ id: "idx1", isNew: true, notifyType: "IndexProgressPushNotification" }));
+      store.ingest({ id: "idx1", isNew: true, notifyType: "IndexProgressPushNotification" } as PushNotification);
       expect(store.history.value).toHaveLength(0);
     });
 
     it("notifies subscribers matching type", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
       const handler = vi.fn();
       store.subscribe({ types: ["Order"], handler });
-      store.ingest(new PushNotification({ id: "n1", isNew: true, notifyType: "Order" }));
+      store.ingest({ id: "n1", isNew: true, notifyType: "Order" } as PushNotification);
       expect(handler).toHaveBeenCalledTimes(1);
     });
 
     it("does not notify subscribers for non-matching type", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
       const handler = vi.fn();
       store.subscribe({ types: ["Order"], handler });
-      store.ingest(new PushNotification({ id: "n1", isNew: true, notifyType: "Payment" }));
+      store.ingest({ id: "n1", isNew: true, notifyType: "Payment" } as PushNotification);
       expect(handler).not.toHaveBeenCalled();
     });
 
     it("respects subscriber filter", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
       const handler = vi.fn();
       store.subscribe({
@@ -184,9 +177,9 @@ describe("createNotificationStore", () => {
         filter: (msg) => msg.id === "n2",
         handler,
       });
-      store.ingest(new PushNotification({ id: "n1", isNew: true, notifyType: "Order" }));
+      store.ingest({ id: "n1", isNew: true, notifyType: "Order" } as PushNotification);
       expect(handler).not.toHaveBeenCalled();
-      store.ingest(new PushNotification({ id: "n2", isNew: true, notifyType: "Order" }));
+      store.ingest({ id: "n2", isNew: true, notifyType: "Order" } as PushNotification);
       expect(handler).toHaveBeenCalledTimes(1);
     });
   });
@@ -194,9 +187,9 @@ describe("createNotificationStore", () => {
   describe("markAsRead", () => {
     it("marks notification as read in history and realtime", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
-      store.ingest(new PushNotification({ id: "n1", isNew: true, notifyType: "Order" }));
+      store.ingest({ id: "n1", isNew: true, notifyType: "Order" } as PushNotification);
       expect(store.unreadCount.value).toBe(1);
       store.markAsRead(store.history.value[0]);
       expect(store.unreadCount.value).toBe(0);
@@ -207,10 +200,10 @@ describe("createNotificationStore", () => {
   describe("markAllAsRead", () => {
     it("marks all notifications as read", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
-      store.ingest(new PushNotification({ id: "n1", isNew: true, notifyType: "A" }));
-      store.ingest(new PushNotification({ id: "n2", isNew: true, notifyType: "B" }));
+      store.ingest({ id: "n1", isNew: true, notifyType: "A" } as PushNotification);
+      store.ingest({ id: "n2", isNew: true, notifyType: "B" } as PushNotification);
       expect(store.unreadCount.value).toBe(2);
       await store.markAllAsRead();
       expect(store.unreadCount.value).toBe(0);
@@ -220,14 +213,14 @@ describe("createNotificationStore", () => {
   describe("subscribe / unsubscribe", () => {
     it("returns an unsubscribe function that stops notifications", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
       const handler = vi.fn();
       const unsub = store.subscribe({ types: ["Order"], handler });
-      store.ingest(new PushNotification({ id: "n1", isNew: true, notifyType: "Order" }));
+      store.ingest({ id: "n1", isNew: true, notifyType: "Order" } as PushNotification);
       expect(handler).toHaveBeenCalledTimes(1);
       unsub();
-      store.ingest(new PushNotification({ id: "n2", isNew: true, notifyType: "Order" }));
+      store.ingest({ id: "n2", isNew: true, notifyType: "Order" } as PushNotification);
       expect(handler).toHaveBeenCalledTimes(1);
     });
   });
@@ -235,11 +228,11 @@ describe("createNotificationStore", () => {
   describe("getByType", () => {
     it("filters history by notifyType", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
-      store.ingest(new PushNotification({ id: "n1", isNew: true, notifyType: "Order" }));
-      store.ingest(new PushNotification({ id: "n2", isNew: true, notifyType: "Payment" }));
-      store.ingest(new PushNotification({ id: "n3", isNew: true, notifyType: "Order" }));
+      store.ingest({ id: "n1", isNew: true, notifyType: "Order" } as PushNotification);
+      store.ingest({ id: "n2", isNew: true, notifyType: "Payment" } as PushNotification);
+      store.ingest({ id: "n3", isNew: true, notifyType: "Order" } as PushNotification);
       const orders = store.getByType("Order");
       expect(orders).toHaveLength(2);
       expect(orders.every((n) => n.notifyType === "Order")).toBe(true);
@@ -255,10 +248,10 @@ describe("createNotificationStore", () => {
   describe("unreadCount / hasUnread", () => {
     it("counts only isNew=true notifications", async () => {
       const { createNotificationStore } = await import("../store");
-      const { PushNotification } = await import("@core/api/platform");
+
       const store = createNotificationStore();
-      store.ingest(new PushNotification({ id: "n1", isNew: true, notifyType: "A" }));
-      store.ingest(new PushNotification({ id: "n2", isNew: false, notifyType: "B" }));
+      store.ingest({ id: "n1", isNew: true, notifyType: "A" } as PushNotification);
+      store.ingest({ id: "n2", isNew: false, notifyType: "B" } as PushNotification);
       expect(store.unreadCount.value).toBe(1);
       expect(store.hasUnread.value).toBe(true);
     });

@@ -180,7 +180,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
       loading.value = true;
 
       // First do the standard login to set cookies/session
-      const result = await securityClient.login(new LoginRequest({ userName: username, password }));
+      const result = await securityClient.login({ userName: username, password } as LoginRequest);
       logger.debug("signIn - Cookie login completed:", result);
 
       if (!result.succeeded) {
@@ -301,10 +301,10 @@ export function _createInternalUserLogic(): IUserInternalAPI {
 
     try {
       loading.value = true;
-      const command = new ChangePasswordRequest({
+      const command: ChangePasswordRequest = {
         oldPassword,
         newPassword,
-      });
+      };
 
       result = await securityClient.changeCurrentUserPassword(command);
     } catch (e: any) {

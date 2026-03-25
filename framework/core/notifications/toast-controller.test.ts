@@ -17,14 +17,14 @@ vi.mock("@core/notifications/notification", () => {
 import { notification } from "@core/notifications/notification";
 
 function makePush(overrides: Partial<PushNotification> = {}): PushNotification {
-  return new PushNotification({
+  return {
     id: "msg-1",
     notifyType: "TestEvent",
     title: "Test title",
     isNew: true,
     created: new Date(),
     ...overrides,
-  });
+  } as PushNotification;
 }
 
 describe("ToastController", () => {

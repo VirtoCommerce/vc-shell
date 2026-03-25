@@ -7,7 +7,7 @@ import { PushNotification } from "@core/api/platform";
 
 describe("useNotificationContext", () => {
   it("returns the provided notification as ComputedRef", () => {
-    const notification = new PushNotification({ title: "Test", id: "1" });
+    const notification = { title: "Test", id: "1" } as PushNotification;
 
     const Child = defineComponent({
       setup() {
@@ -48,7 +48,7 @@ describe("useNotificationContext", () => {
       productName?: string;
     }
 
-    const notification = new PushNotification({ title: "Product" });
+    const notification = { title: "Product", productName: "Widget" } as unknown as PushNotification;
     (notification as any).productName = "Widget";
 
     const Child = defineComponent({

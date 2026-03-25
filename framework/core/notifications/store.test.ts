@@ -19,14 +19,14 @@ vi.mock("@core/api/platform", async (importOriginal) => {
 });
 
 function makePush(overrides: Partial<PushNotification> = {}): PushNotification {
-  return new PushNotification({
+  return {
     id: "test-1",
     notifyType: "TestEvent",
     title: "Test",
     isNew: true,
     created: new Date(),
     ...overrides,
-  });
+  } as PushNotification;
 }
 
 describe("NotificationStore", () => {
@@ -194,8 +194,8 @@ describe("NotificationStore", () => {
   describe("loadHistory", () => {
     it("populates history from API response", async () => {
       const notifications = [
-        new PushNotification({ id: "h-1", title: "First", isNew: true }),
-        new PushNotification({ id: "h-2", title: "Second", isNew: false }),
+        { id: "h-1", title: "First", isNew: true } as PushNotification,
+        { id: "h-2", title: "Second", isNew: false } as PushNotification,
       ];
       mockSearchPushNotification.mockResolvedValueOnce({ notifyEvents: notifications });
 

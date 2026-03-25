@@ -41,12 +41,12 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { IPushNotification } from "@core/api/platform";
+import { PushNotification } from "@core/api/platform";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export interface Props {
   title: string;
-  notification: IPushNotification;
+  notification: PushNotification;
   icon?: string;
   color?: string;
   severity?: string;

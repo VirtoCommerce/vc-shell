@@ -26,14 +26,14 @@ vi.mock("./useNotificationStore", () => ({
 const { useBladeNotifications } = await import("./useBladeNotifications");
 
 function makePush(overrides: Partial<PushNotification> = {}): PushNotification {
-  return new PushNotification({
+  return {
     id: "test-1",
     notifyType: "TestEvent",
     title: "Test",
     isNew: true,
     created: new Date(),
     ...overrides,
-  });
+  } as PushNotification;
 }
 
 describe("useBladeNotifications", () => {

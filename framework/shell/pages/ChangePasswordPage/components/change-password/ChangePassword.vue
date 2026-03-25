@@ -109,7 +109,7 @@
         class="tw-mt-3 tw-text-danger-500"
       >
         {{
-          (err as IIdentityError).code ? t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`) : err
+          (err as IdentityError).code ? t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IdentityError).code}`) : err
         }}
       </VcHint>
     </VcForm>
@@ -119,7 +119,7 @@
 <script lang="ts" setup>
 import { nextTick, reactive, computed } from "vue";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
-import { IIdentityError } from "@core/api/platform";
+import { IdentityError } from "@core/api/platform";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useSettings } from "@core/composables";
 import { useI18n } from "vue-i18n";
@@ -127,7 +127,7 @@ import { useRouter } from "vue-router";
 
 interface IChangePassForm {
   isValid: boolean;
-  errors: IIdentityError[] | string[];
+  errors: IdentityError[] | string[];
   currentPassword: string;
   password: string;
   confirmPassword: string;

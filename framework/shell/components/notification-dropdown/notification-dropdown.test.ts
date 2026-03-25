@@ -46,14 +46,14 @@ vi.mock("lodash-es", () => ({
 }));
 
 function makePush(overrides: Partial<PushNotification> = {}): PushNotification {
-  return new PushNotification({
+  return {
     id: "n-1",
     notifyType: "TestEvent",
     title: "Test Notification",
     isNew: true,
     created: new Date(),
     ...overrides,
-  });
+  } as PushNotification;
 }
 
 describe("notification-dropdown ↔ store integration", () => {

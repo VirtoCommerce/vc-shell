@@ -122,7 +122,7 @@
         >
           <!-- TODO: stylizing-->
           {{
-            (err as IIdentityError).code ? t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`) : err
+            (err as IdentityError).code ? t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IdentityError).code}`) : err
           }}
         </VcHint>
       </div>
@@ -140,14 +140,14 @@ import { VcHint } from "@ui/components/atoms/vc-hint";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcPopup } from "@ui/components/organisms/vc-popup";
 import { VcForm } from "@ui/components/molecules/vc-form";
-import { IIdentityError } from "@core/api/platform";
+import { IdentityError } from "@core/api/platform";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
 interface IChangePassForm {
   isValid: boolean;
-  errors: IIdentityError[] | string[];
+  errors: IdentityError[] | string[];
   currentPassword: string;
   password: string;
   confirmPassword: string;

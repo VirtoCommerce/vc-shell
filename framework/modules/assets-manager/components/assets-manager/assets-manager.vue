@@ -13,12 +13,12 @@
     >
       <!-- @vue-generic {AssetLike} -->
       <VcDataTable
+        v-model:selection="selectedItems"
         :items="defaultAssets"
         state-key="assets_manager"
         :reorderable-rows="!readonly"
-        :header="false"
-        :footer="false"
         :selection-mode="!readonly ? 'multiple' : undefined"
+        :row-actions="!readonly ? actionBuilder : undefined"
         :empty-state="{
           icon: 'lucide-cloud-upload',
           title: $t('ASSETS_MANAGER.EMPTY.UPLOAD_ASSETS'),
@@ -26,10 +26,8 @@
           actionHandler: toggleUploader,
         }"
         class="tw-h-full tw-w-full"
-        @item-click="onItemClick"
-        @row:reorder="sortAssets"
-        @row-actions="!readonly ? actionBuilder : undefined"
-        @selection-changed="onSelectionChanged"
+        @row-click="({ data }) => onItemClick(data)"
+        @row-reorder="sortAssets"
       >
         <VcColumn
           id="url"
@@ -37,20 +35,20 @@
           width="10%"
           always-visible
         >
-          <template #default="{ item }">
+          <template #body="{ data }">
             <div class="tw-flex tw-items-center tw-justify-center">
-              <template v-if="isImage(item.name ?? '')">
+              <template v-if="isImage(data.name ?? '')">
                 <VcImage
                   :bordered="true"
                   size="s"
                   aspect="1x1"
-                  :src="item.url"
+                  :src="data.url"
                   background="contain"
                 ></VcImage>
               </template>
               <template v-else>
                 <VcIcon
-                  :icon="getFileThumbnail(item.name ?? '')"
+                  :icon="getFileThumbnail(data.name ?? '')"
                   class="tw-text-[color:var(--assets-manager-thumbnail-color)] tw-text-[38px]"
                 ></VcIcon>
               </template>
@@ -71,9 +69,9 @@
           width="20%"
           always-visible
         >
-          <template #default="{ item }">
+          <template #body="{ data }">
             <div>
-              {{ readableSize(item.size ?? 0) }}
+              {{ readableSize(data.size ?? 0) }}
             </div>
           </template>
         </VcColumn>
@@ -84,9 +82,9 @@
           width="25%"
           always-visible
         >
-          <template #default="{ item }">
+          <template #body="{ data }">
             <div>
-              {{ item.sortOrder }}
+              {{ data.sortOrder }}
             </div>
           </template>
         </VcColumn>
@@ -114,13 +112,14 @@
 
 <script setup lang="ts">
 import type { AssetLike, UseAssetsManagerReturn } from "@core/composables/useAssetsManager";
-import { IActionBuilderResult, IBladeToolbar } from "@core/types";
+import { IBladeToolbar } from "@core/types";
 import { ref, computed, unref } from "vue";
 import { useI18n } from "vue-i18n";
 import { formatDateRelative } from "@core/utilities/date";
 import { isImage, getFileThumbnail, readableSize } from "@core/utilities/assets";
 import { useBlade } from "@core/composables/useBlade";
 import { createLogger } from "@core/utilities";
+import { TableAction } from "@ui/components/organisms/vc-table/types";
 
 const logger = createLogger("assets-manager");
 
@@ -139,16 +138,11 @@ const { options, openBlade } = useBlade<AssetsManagerOptions>();
 
 const { t } = useI18n({ useScope: "global" });
 
-const {
-  items: defaultAssets,
-  upload: managerUpload,
-  removeMany,
-  reorder: managerReorder,
-  updateItem,
-  loading: managerLoading,
-} = options.value!.manager;
+const manager = computed(() => options.value!.manager);
 
-const isLoading = computed(() => managerLoading.value);
+const defaultAssets = computed(() => manager.value.items.value ?? []);
+
+const isLoading = computed(() => manager.value.loading.value);
 
 const bladeTitle = computed(() => options.value?.title || t("ASSETS_MANAGER.TITLE"));
 
@@ -173,7 +167,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("ASSETS_MANAGER.TOOLBAR.DELETE")),
     icon: "lucide-trash-2",
     async clickHandler() {
-      await removeMany(selectedItems.value);
+      await manager.value.removeMany(selectedItems.value);
     },
     disabled: computed(() => !selectedItems.value.length || readonly.value),
     isVisible: computed(() => !readonly.value),
@@ -187,7 +181,7 @@ async function sortAssets(event: { dragIndex: number; dropIndex: number; value: 
       return item;
     });
 
-    managerReorder(sorted);
+    manager.value.reorder(sorted);
   }
 }
 
@@ -227,9 +221,7 @@ function toggleUploader() {
 async function upload(files: FileList) {
   if (!files || files.length === 0) return;
 
-  const existingNames = new Set(
-    (defaultAssets.value ?? []).map((asset) => asset.name).filter(Boolean),
-  );
+  const existingNames = new Set((defaultAssets.value ?? []).map((asset) => asset.name).filter(Boolean));
 
   const transfer = new DataTransfer();
   for (const file of Array.from(files)) {
@@ -250,7 +242,7 @@ async function upload(files: FileList) {
   }
 
   try {
-    await managerUpload(transfer.files);
+    await manager.value.upload(transfer.files);
   } catch (error) {
     logger.error("Failed to upload assets:", error);
     throw error;
@@ -279,10 +271,10 @@ function onItemClick(item: AssetLike) {
       disabled: readonly.value,
       hiddenFields: options.value?.hiddenFields,
       assetEditHandler: (asset: AssetLike) => {
-        updateItem(asset);
+        manager.value.updateItem(asset);
       },
       assetRemoveHandler: async (asset: AssetLike) => {
-        await options.value!.manager.remove(asset);
+        await manager.value.remove(asset);
       },
     },
   }).catch((error) => {
@@ -290,18 +282,14 @@ function onItemClick(item: AssetLike) {
   });
 }
 
-const onSelectionChanged = (items: AssetLike[]) => {
-  selectedItems.value = items;
-};
-
-const actionBuilder = (): IActionBuilderResult<AssetLike>[] => {
+const actionBuilder = (): TableAction[] => {
   return [
     {
       icon: "lucide-trash-2",
       title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.DELETE")),
       type: "danger",
       async clickHandler(item: AssetLike) {
-        await options.value!.manager.remove(item);
+        await manager.value.remove(item);
         selectedItems.value = [];
       },
     },

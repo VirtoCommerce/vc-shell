@@ -2,12 +2,7 @@
   <VcBlade
     :title="options?.asset?.name"
     :subtitle="t('ASSETS.PAGES.DETAILS.SUBTITLE')"
-    :expanded="expanded"
-    :closable="closable"
     :toolbar-items="bladeToolbar"
-    @close="$emit('close:blade')"
-    @expand="$emit('expand:blade')"
-    @collapse="$emit('collapse:blade')"
   >
     <!-- Blade contents -->
     <div class="tw-flex tw-grow-1 tw-border-t tw-border-solid tw-border-t-[--assets-details-border]">
@@ -47,7 +42,7 @@
                           <VcLink
                             class="vc-link tw-text-s tw-truncate tw-w-full"
                             @click="openLink(defaultAsset.url)"
-                            >{{ props.options?.asset.name }}</VcLink
+                            >{{ options?.asset.name }}</VcLink
                           >
                         </div>
                         <VcButton
@@ -125,43 +120,29 @@ import { VcTextarea } from "@ui/components/molecules/vc-textarea";
 import { isImage, getFileThumbnail, readableSize } from "@core/utilities/assets";
 import { formatDateRelative } from "@core/utilities/date";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
+import { useBlade } from "@core/composables/useBlade";
 
-export interface Props {
-  expanded?: boolean;
-  closable?: boolean;
-  options?: {
-    asset: AssetLike;
-    disabled?: boolean;
-    hiddenFields?: string[];
-    assetEditHandler?: (defaultAsset: AssetLike) => void;
-    assetRemoveHandler?: (defaultAsset: AssetLike) => Promise<void>;
-  };
+interface AssetsDetailsOptions {
+  asset: AssetLike;
+  disabled?: boolean;
+  hiddenFields?: string[];
+  assetEditHandler?: (defaultAsset: AssetLike) => void;
+  assetRemoveHandler?: (defaultAsset: AssetLike) => Promise<void>;
 }
-
-export interface Emits {
-  (event: "close:blade"): void;
-  (event: "expand:blade"): void;
-  (event: "collapse:blade"): void;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  expanded: true,
-  closable: true,
-});
-
-const emit = defineEmits<Emits>();
 
 defineBlade({
   name: "AssetsDetails",
 });
 
+const { options, closeSelf } = useBlade<AssetsDetailsOptions>();
+
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const { t } = useI18n({ useScope: "global" });
-const defaultAsset = ref<AssetLike>({ ...props.options?.asset });
+const defaultAsset = ref<AssetLike>({ ...options.value?.asset });
 
-const readonly = computed(() => props.options?.disabled);
+const readonly = computed(() => options.value?.disabled);
 
 const assetNameClean = computed({
   get() {
@@ -183,9 +164,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
     icon: "lucide-save",
     async clickHandler() {
-      if (props.options?.assetEditHandler && typeof props.options?.assetEditHandler === "function") {
-        await props.options?.assetEditHandler(defaultAsset.value);
-        emit("close:blade");
+      if (options.value?.assetEditHandler && typeof options.value?.assetEditHandler === "function") {
+        await options.value?.assetEditHandler(defaultAsset.value);
+        closeSelf();
       }
     },
     disabled: computed(() => isDisabled.value || readonly.value),
@@ -195,9 +176,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
     icon: "lucide-trash-2",
     async clickHandler() {
-      if (props.options?.assetRemoveHandler && typeof props.options?.assetRemoveHandler === "function") {
-        await props.options?.assetRemoveHandler(defaultAsset.value);
-        emit("close:blade");
+      if (options.value?.assetRemoveHandler && typeof options.value?.assetRemoveHandler === "function") {
+        await options.value?.assetRemoveHandler(defaultAsset.value);
+        closeSelf();
       }
     },
     disabled: computed(() => readonly.value),

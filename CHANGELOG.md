@@ -1,5 +1,13 @@
 # Changelog
 
+# [2.0.0-alpha.25](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.24...v2.0.0-alpha.25) (2026-03-25)
+
+
+### Bug Fixes
+
+* break circular dependency between injection-keys and useBladeWidgets ([99a2f02](https://github.com/VirtoCommerce/vc-shell/commit/99a2f022b4f72e3c8d22b9de32fd796f8b03bbf2))
+* **framework:** add viteBladePlugin to library build config ([78381b9](https://github.com/VirtoCommerce/vc-shell/commit/78381b9ef4f0bcba0c6f1bd374ad73c52fab0366))
+
 # [2.0.0-alpha.24](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.23...v2.0.0-alpha.24) (2026-03-25)
 
 

@@ -62,7 +62,7 @@ This centralized approach has several advantages:
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `WidgetIdKey` | `string` | Widget identity (provided by WidgetProvider) |
+| `WidgetScopeKey` | `IWidgetScope` | Widget scope (provided by WidgetContainer for component-based widgets via `WidgetScope.vue`) |
 | `AppRootElementKey` | `Ref<HTMLElement \| undefined>` | App root element for scoped Teleport |
 | `EmbeddedModeKey` | `boolean` | Whether the app runs in embedded mode |
 | `ShellIndicatorsKey` | `ComputedRef<boolean>` | Unread indicator state for sidebar |

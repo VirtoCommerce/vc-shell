@@ -219,7 +219,7 @@ import { computed, inject, ref, watch } from "vue";
 import type { AppDescriptor } from "@core/api/platform";
 import type { MenuItem } from "@core/types";
 import { EmbeddedModeKey } from "@framework/injection-keys";
-import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
+import { useBladeStack } from "@core/blade-navigation";
 import { UserDropdownButton } from "@shell/components/user-dropdown-button";
 import { useSidebarState } from "@core/composables/useSidebarState";
 import { useAppBarWidget } from "@core/composables";
@@ -267,7 +267,7 @@ const searchQuery = ref("");
 
 const sidebar = useSidebarState();
 const isEmbedded = inject(EmbeddedModeKey, false);
-const { blades, currentBladeNavigationData } = useBladeNavigation();
+const { blades, activeBlade } = useBladeStack();
 const { items: widgetItems } = useAppBarWidget();
 
 const MENU_TAB_INDEX = 0;
@@ -484,8 +484,8 @@ watch(showTabs, (isVisible) => {
 const showHeader = computed(() => blades.value.length <= 1);
 
 const viewTitle = computed(() => {
-  const currentTitle = currentBladeNavigationData.value?.instance?.title;
-  const lastBladeTitle = blades.value[blades.value.length - 1]?.props?.navigation?.instance?.title;
+  const currentTitle = activeBlade.value?.title;
+  const lastBladeTitle = blades.value[blades.value.length - 1]?.title;
   return currentTitle ?? lastBladeTitle ?? "";
 });
 

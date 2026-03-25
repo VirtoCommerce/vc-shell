@@ -10,6 +10,7 @@ import { mount } from "@vue/test-utils";
 import { ref, defineComponent, nextTick, h } from "vue";
 import VcApp from "./vc-app.vue";
 import { AppRootElementKey, BladeRoutesKey, ModulesLoadErrorKey } from "@framework/injection-keys";
+import { BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
 
 // ============================================================================
 // Mocks
@@ -147,6 +148,8 @@ function mountApp(propsOverride: Record<string, unknown> = {}) {
       provide: {
         [BladeRoutesKey as symbol]: [],
         [ModulesLoadErrorKey as symbol]: ref(false),
+        [BladeStackKey as symbol]: { blades: ref([]) },
+        [BladeMessagingKey as symbol]: { on: vi.fn(), off: vi.fn() },
         aiAgentConfig: undefined,
         aiAgentAddGlobalToolbarButton: true,
       },

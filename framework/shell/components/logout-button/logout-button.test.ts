@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import LogoutButton from "./logout-button.vue";
 import { CloseSettingsMenuKey } from "@framework/injection-keys";
 
@@ -20,9 +20,21 @@ vi.mock("vue-router", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
-const mockCloseBlade = vi.fn().mockResolvedValue(false);
-vi.mock("@core/composables/useBladeNavigationAdapter", () => ({
-  useBladeNavigation: () => ({
+const blades = ref([
+  { id: "workspace", name: "Workspace", visible: true },
+  { id: "child-1", name: "Details", visible: true, parentId: "workspace" },
+] as Array<{ id: string; name: string; visible: boolean; parentId?: string }>);
+
+const mockCloseBlade = vi.fn(async (bladeId: string) => {
+  if (blades.value.length <= 1) return false;
+  if (blades.value[blades.value.length - 1]?.id !== bladeId) return false;
+  blades.value = blades.value.slice(0, -1);
+  return false;
+});
+vi.mock("@core/blade-navigation", () => ({
+  useBladeStack: () => ({
+    blades,
+    activeBlade: computed(() => blades.value[blades.value.length - 1]),
     closeBlade: mockCloseBlade,
   }),
 }));
@@ -46,6 +58,10 @@ function factory(closeSettingsMenu?: () => void) {
 describe("LogoutButton", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    blades.value = [
+      { id: "workspace", name: "Workspace", visible: true },
+      { id: "child-1", name: "Details", visible: true, parentId: "workspace" },
+    ];
   });
 
   it("renders SettingsMenuItem", () => {
@@ -53,25 +69,24 @@ describe("LogoutButton", () => {
     expect(w.find('[data-stub="SettingsMenuItem"]').exists()).toBe(true);
   });
 
-  it("calls closeSettingsMenu, closeBlade, signOut, and navigates on click", async () => {
+  it("calls closeSettingsMenu, closes child blades, signs out, and navigates on click", async () => {
     const closeFn = vi.fn();
-    mockCloseBlade.mockResolvedValue(false);
     const w = factory(closeFn);
     await w.find('[data-stub="SettingsMenuItem"]').trigger("click");
     await vi.waitFor(() => {
       expect(closeFn).toHaveBeenCalled();
-      expect(mockCloseBlade).toHaveBeenCalledWith(0);
+      expect(mockCloseBlade).toHaveBeenCalledWith("child-1");
       expect(mockSignOut).toHaveBeenCalled();
       expect(mockPush).toHaveBeenCalledWith({ name: "Login" });
     });
   });
 
-  it("does not sign out if closeBlade is prevented", async () => {
-    mockCloseBlade.mockResolvedValue(true);
+  it("does not sign out if blade close is prevented", async () => {
+    mockCloseBlade.mockResolvedValueOnce(true);
     const w = factory();
     await w.find('[data-stub="SettingsMenuItem"]').trigger("click");
     await vi.waitFor(() => {
-      expect(mockCloseBlade).toHaveBeenCalledWith(0);
+      expect(mockCloseBlade).toHaveBeenCalledWith("child-1");
     });
     expect(mockSignOut).not.toHaveBeenCalled();
     expect(mockPush).not.toHaveBeenCalled();

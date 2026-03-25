@@ -2,7 +2,7 @@ import { ref, nextTick } from "vue";
 import { mountWithSetup } from "@framework/test-helpers";
 
 const mockIsAuthenticated = ref(false);
-const mockLoadFromHistory = vi.fn().mockResolvedValue(undefined);
+const mockLoadHistory = vi.fn().mockResolvedValue(undefined);
 const mockGetApps = vi.fn().mockResolvedValue(undefined);
 const mockAppsList = ref([]);
 const mockSwitchApp = vi.fn();
@@ -13,9 +13,9 @@ vi.mock("@core/composables/useUserManagement", () => ({
   }),
 }));
 
-vi.mock("@core/composables/useNotifications", () => ({
-  useNotifications: () => ({
-    loadFromHistory: mockLoadFromHistory,
+vi.mock("@core/notifications", () => ({
+  useNotificationStore: () => ({
+    loadHistory: mockLoadHistory,
   }),
 }));
 
@@ -62,7 +62,7 @@ describe("useShellLifecycle", () => {
     mockIsAuthenticated.value = false;
     mountWithSetup(() => useShellLifecycle({ isReady: true }));
 
-    expect(mockLoadFromHistory).not.toHaveBeenCalled();
+    expect(mockLoadHistory).not.toHaveBeenCalled();
     expect(mockGetApps).not.toHaveBeenCalled();
   });
 
@@ -72,7 +72,7 @@ describe("useShellLifecycle", () => {
 
     // watcher fires immediately with immediate: true
     await nextTick();
-    expect(mockLoadFromHistory).toHaveBeenCalled();
+    expect(mockLoadHistory).toHaveBeenCalled();
     expect(mockGetApps).toHaveBeenCalled();
   });
 
@@ -82,7 +82,7 @@ describe("useShellLifecycle", () => {
     const { wrapper } = mountWithSetup(() => useShellLifecycle({ isReady: true }));
 
     await nextTick();
-    const callCount = mockLoadFromHistory.mock.calls.length;
+    const callCount = mockLoadHistory.mock.calls.length;
 
     // Trigger watcher again
     mockIsAuthenticated.value = false;
@@ -91,7 +91,7 @@ describe("useShellLifecycle", () => {
     await nextTick();
 
     // Should not have increased
-    expect(mockLoadFromHistory).toHaveBeenCalledTimes(callCount);
+    expect(mockLoadHistory).toHaveBeenCalledTimes(callCount);
     wrapper.unmount();
   });
 

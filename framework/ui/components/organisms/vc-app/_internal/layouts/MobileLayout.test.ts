@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { defineComponent, h, nextTick, ref } from "vue";
+import { computed, defineComponent, h, nextTick, ref } from "vue";
 import { mount } from "@vue/test-utils";
 import MobileLayout from "@ui/components/organisms/vc-app/_internal/layouts/MobileLayout.vue";
 
@@ -13,8 +13,8 @@ const sidebarState = {
   }),
 };
 
-const blades = ref([{ props: { navigation: { instance: { title: "Dashboard" } } } }] as unknown[]);
-const currentBladeNavigationData = ref({ instance: { title: "Dashboard" } } as Record<string, unknown>);
+const blades = ref([{ id: "workspace", name: "Dashboard", title: "Dashboard", visible: true }] as unknown[]);
+const activeBlade = computed(() => blades.value[blades.value.length - 1] as Record<string, unknown> | undefined);
 const widgetItems = ref<Record<string, unknown>[]>([]);
 
 vi.mock("@core/composables/useSidebarState", () => ({
@@ -32,10 +32,10 @@ vi.mock("@core/composables", async (importOriginal) => {
   };
 });
 
-vi.mock("@core/composables/useBladeNavigationAdapter", () => ({
-  useBladeNavigation: () => ({
+vi.mock("@core/blade-navigation", () => ({
+  useBladeStack: () => ({
     blades,
-    currentBladeNavigationData,
+    activeBlade,
   }),
 }));
 

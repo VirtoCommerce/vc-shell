@@ -12,19 +12,24 @@ import { CloseSettingsMenuKey } from "@framework/injection-keys";
 import { SettingsMenuItem } from "@shell/components/settings-menu-item";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useRouter } from "vue-router";
-import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
+import { useBladeStack } from "@core/blade-navigation";
 
 const { signOut } = useUserManagement();
 const router = useRouter();
-const { closeBlade } = useBladeNavigation();
+const { blades, closeBlade } = useBladeStack();
 const closeSettingsMenu = inject(CloseSettingsMenuKey, undefined);
 
 const handleLogout = async () => {
   closeSettingsMenu?.();
-  const isPrevented = await closeBlade(0);
-  if (!isPrevented) {
-    await signOut();
-    router.push({ name: "Login" });
+  while (blades.value.length > 1) {
+    const activeChild = blades.value[blades.value.length - 1];
+    const isPrevented = await closeBlade(activeChild.id);
+    if (isPrevented) {
+      return;
+    }
   }
+
+  await signOut();
+  router.push({ name: "Login" });
 };
 </script>

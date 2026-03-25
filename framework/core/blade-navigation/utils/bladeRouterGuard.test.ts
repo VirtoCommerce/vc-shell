@@ -155,6 +155,24 @@ describe("bladeRouterGuard", () => {
       expect(stack.blades.value).toHaveLength(0);
     });
 
+    it("cancels navigation when beforeClose guard prevents clearing blades on real route", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "123" });
+      const childBladeId = stack.blades.value[1].id;
+
+      stack.registerBeforeClose(childBladeId, async () => true);
+
+      const to = mockRoute({
+        path: "/platform",
+        matched: [rootRecord, platformRecord],
+      });
+
+      const result = await bladeRouterGuard(to, stack, registry);
+
+      expect(result).toBe(false);
+      expect(stack.blades.value).toHaveLength(2);
+    });
+
     it("skips blade restoration for Dashboard route", async () => {
       await stack.openWorkspace({ name: "Orders" });
       expect(stack.blades.value).toHaveLength(1);
@@ -230,6 +248,24 @@ describe("bladeRouterGuard", () => {
 
       expect(result).toBeUndefined();
       expect(stack.blades.value).toHaveLength(0);
+    });
+
+    it("cancels navigation when beforeClose guard prevents clearing stack for root catch-all", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "123" });
+      const childBladeId = stack.blades.value[1].id;
+
+      stack.registerBeforeClose(childBladeId, async () => true);
+
+      const to = mockRoute({
+        path: "/",
+        matched: [rootRecord, catchAllRecord],
+      });
+
+      const result = await bladeRouterGuard(to, stack, registry);
+
+      expect(result).toBe(false);
+      expect(stack.blades.value).toHaveLength(2);
     });
   });
 

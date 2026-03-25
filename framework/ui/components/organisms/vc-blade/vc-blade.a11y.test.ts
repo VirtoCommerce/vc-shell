@@ -10,8 +10,8 @@ import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
 import type { IBladeInstance } from "@core/blade-navigation/types";
 
-// useBladeNavigation reads module-level singletons from plugin-v2.
-// Mock them so VcBlade's call to useBladeNavigation() succeeds without the full plugin.
+// useBlade reads module-level singletons from plugin-v2.
+// Mock them so VcBlade's blade actions succeed without the full plugin.
 vi.mock("@shell/_internal/blade-navigation/plugin-v2", () => ({
   bladeStackInstance: {
     blades: ref([]),
@@ -39,7 +39,7 @@ vi.mock("@shell/_internal/blade-navigation/plugin-v2", () => ({
   },
 }));
 
-// Also mock urlSync to avoid router dependency in useBladeNavigation
+// Also mock urlSync to avoid router dependency in useBlade
 vi.mock("@core/blade-navigation/utils/urlSync", () => ({
   buildUrlFromStack: vi.fn().mockReturnValue("/"),
   createUrlSync: vi.fn().mockReturnValue({ stop: vi.fn() }),

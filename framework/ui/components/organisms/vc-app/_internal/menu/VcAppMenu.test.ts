@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { ref, defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
+import { createI18n } from "vue-i18n";
 import VcAppMenu from "@ui/components/organisms/vc-app/_internal/menu/VcAppMenu.vue";
 
 vi.mock("@core/composables", () => ({
@@ -36,11 +37,11 @@ describe("VcAppMenu", () => {
       },
     });
 
+    const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });
+
     const wrapper = mount(VcAppMenu, {
       global: {
-        mocks: {
-          $t: (k: string) => k,
-        },
+        plugins: [i18n],
         stubs: {
           RouterLink: RouterLinkStub,
           VcContainer: defineComponent({

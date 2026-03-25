@@ -1,5 +1,5 @@
 import { ref, watch, onUnmounted } from "vue";
-import { useNotifications } from "@core/composables/useNotifications";
+import { useNotificationStore } from "@core/notifications";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useAppSwitcher } from "@shell/components/app-switcher/composables/useAppSwitcher";
 
@@ -11,7 +11,7 @@ export function useShellLifecycle(props: { isReady: boolean }) {
   const isAppReady = ref(false);
   const isBootstrapped = ref(false);
   const { isAuthenticated } = useUserManagement();
-  const { loadFromHistory } = useNotifications();
+  const { loadHistory } = useNotificationStore();
   const { appsList, switchApp, getApps } = useAppSwitcher();
 
   // Show the shell as soon as isReady is true (don't block on auth).
@@ -23,7 +23,7 @@ export function useShellLifecycle(props: { isReady: boolean }) {
 
       if (!isBootstrapped.value && isReady && isAuth) {
         isBootstrapped.value = true;
-        await loadFromHistory();
+        await loadHistory();
         await getApps();
       }
     },

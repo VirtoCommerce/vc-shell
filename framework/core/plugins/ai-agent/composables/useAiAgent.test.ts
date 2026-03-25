@@ -11,11 +11,17 @@ vi.mock("@core/composables/useUser", () => ({
   }),
 }));
 
-vi.mock("@core/composables/useBladeNavigationAdapter", () => ({
-  useBladeNavigation: () => ({
-    blades: ref([]),
+vi.mock("@core/composables/useBlade", () => ({
+  useBlade: () => ({
     openBlade: vi.fn(),
-    resolveBladeByName: vi.fn(),
+  }),
+}));
+
+vi.mock("@core/blade-navigation", () => ({
+  useBladeStack: () => ({
+    blades: ref([]),
+    activeBlade: computed(() => undefined),
+    replaceCurrentBlade: vi.fn(),
   }),
 }));
 

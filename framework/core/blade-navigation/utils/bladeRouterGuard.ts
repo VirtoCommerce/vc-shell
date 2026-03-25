@@ -1,6 +1,6 @@
 import type { RouteLocationNormalized } from "vue-router";
 import type { Router } from "vue-router";
-import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
+import type { UseBladeRegistryReturn } from "@core/composables/useBladeRegistry";
 import type { IBladeStack } from "@core/blade-navigation/types";
 import { parseBladeUrl, buildUrlFromStack } from "@core/blade-navigation/utils/urlSync";
 import { restoreFromUrl } from "@core/blade-navigation/utils/restoreFromUrl";
@@ -9,9 +9,33 @@ import { restoreFromUrl } from "@core/blade-navigation/utils/restoreFromUrl";
  * Result of the blade router guard.
  *
  * - `undefined` — allow navigation (no redirect)
+ * - `false` — cancel navigation (e.g. beforeClose guard prevented closing)
  * - `{ path, query, replace }` — redirect to cleaned-up URL
  */
-export type BladeGuardResult = undefined | { path: string; query: Record<string, string>; replace: true };
+export type BladeGuardResult = undefined | false | { path: string; query: Record<string, string>; replace: true };
+
+async function clearBladeStackRespectingGuards(bladeStack: IBladeStack): Promise<boolean> {
+  while (bladeStack.blades.value.length > 1) {
+    const bladesBeforeClose = bladeStack.blades.value;
+    const lastBlade = bladesBeforeClose[bladesBeforeClose.length - 1];
+    const prevented = await bladeStack.closeBlade(lastBlade.id);
+
+    if (prevented) {
+      return false;
+    }
+
+    // Defensive exit to avoid infinite loops if stack doesn't change unexpectedly.
+    if (bladeStack.blades.value.length >= bladesBeforeClose.length) {
+      return false;
+    }
+  }
+
+  if (bladeStack.blades.value.length > 0) {
+    bladeStack._restoreStack([]);
+  }
+
+  return true;
+}
 
 /**
  * Router guard that syncs URL navigation with the BladeStack.
@@ -30,7 +54,7 @@ export type BladeGuardResult = undefined | { path: string; query: Record<string,
 export async function bladeRouterGuard(
   to: RouteLocationNormalized,
   bladeStack: IBladeStack,
-  bladeRegistry: IBladeRegistry,
+  bladeRegistry: UseBladeRegistryReturn,
   hasAccess?: (permissions: string | string[] | undefined) => boolean,
   router?: Router,
 ): Promise<BladeGuardResult> {
@@ -44,7 +68,10 @@ export async function bladeRouterGuard(
   if (!isBladeCatchAll) {
     // Clear any open blades so the page renders without stale blade state
     if (bladeStack.blades.value.length > 0) {
-      bladeStack._restoreStack([]);
+      const wasCleared = await clearBladeStackRespectingGuards(bladeStack);
+      if (!wasCleared) {
+        return false;
+      }
     }
     return undefined;
   }
@@ -59,7 +86,10 @@ export async function bladeRouterGuard(
     // No workspace in URL (e.g. navigating to "/") — clear the blade stack.
     // The app shell renders its own default view (e.g. dashboard) when the stack is empty.
     if (bladeStack.blades.value.length > 0) {
-      bladeStack._restoreStack([]);
+      const wasCleared = await clearBladeStackRespectingGuards(bladeStack);
+      if (!wasCleared) {
+        return false;
+      }
     }
     return undefined;
   }

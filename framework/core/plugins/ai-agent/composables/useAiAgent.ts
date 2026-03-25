@@ -9,7 +9,8 @@ import type {
 } from "@core/plugins/ai-agent/types";
 import { createLogger, InjectionError } from "@core/utilities";
 import { useUser } from "@core/composables/useUser";
-import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
+import { useBlade } from "@core/composables/useBlade";
+import { useBladeStack } from "@core/blade-navigation";
 import {
   AI_AGENT_TOOLBAR_BUTTON_ID,
   AI_AGENT_TOOLBAR_BUTTON_ICON,
@@ -42,7 +43,8 @@ export interface ProvideAiAgentServiceOptions {
 export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): IAiAgentServiceInternal {
   const languageService = inject(LanguageServiceKey);
   const { user, getAccessToken } = useUser();
-  const { blades, openBlade, resolveBladeByName } = useBladeNavigation();
+  const { openBlade } = useBlade();
+  const { blades, activeBlade, replaceCurrentBlade } = useBladeStack();
   const isEmbedded = options?.isEmbedded;
 
   // Create the service
@@ -57,36 +59,44 @@ export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): I
       };
     },
     bladeGetter: (): IAiAgentBladeContext | null => {
-      // Get the last (most recent) blade
-      const lastBlade = blades.value[blades.value.length - 1];
-      if (!lastBlade) return null;
+      const currentBlade = activeBlade.value ?? blades.value[blades.value.length - 1];
+      if (!currentBlade) return null;
 
       return {
-        id: lastBlade.type?.name?.toLowerCase() ?? "unknown",
-        name: lastBlade.type?.name ?? "Unknown",
-        title: lastBlade.props?.navigation?.instance?.title,
-        param: lastBlade.props?.param,
-        options: lastBlade.props?.options,
+        id: currentBlade.id,
+        name: currentBlade.name,
+        title: currentBlade.title,
+        param: currentBlade.param,
+        options: currentBlade.options,
       };
     },
     localeGetter: () => languageService?.currentLocale.value ?? "en",
     tokenGetter: getAccessToken,
     navigateToBlade: (bladeName: string, param?: string, bladeOptions?: Record<string, unknown>) => {
-      const blade = resolveBladeByName(bladeName);
-      if (blade) {
-        openBlade({ blade, param, options: bladeOptions });
-        logger.debug(`Navigated to blade: ${bladeName}`);
-      } else {
-        logger.warn(`Blade not found: ${bladeName}`);
-      }
+      openBlade({ name: bladeName, param, options: bladeOptions })
+        .then(() => {
+          logger.debug(`Navigated to blade: ${bladeName}`);
+        })
+        .catch((error) => {
+          logger.warn(`Blade not found or cannot be opened: ${bladeName}`, error);
+        });
     },
     reloadBlade: () => {
-      // Emit reload on current blade if available (last blade in the list)
-      const lastBlade = blades.value[blades.value.length - 1];
-      if (lastBlade?.props?.navigation?.instance?.reload) {
-        lastBlade.props.navigation.instance.reload();
-        logger.debug("Current blade reloaded");
-      }
+      const currentBlade = activeBlade.value;
+      if (!currentBlade) return;
+
+      replaceCurrentBlade({
+        name: currentBlade.name,
+        param: currentBlade.param,
+        query: currentBlade.query,
+        options: currentBlade.options,
+      })
+        .then(() => {
+          logger.debug("Current blade reloaded");
+        })
+        .catch((error) => {
+          logger.warn("Failed to reload current blade", error);
+        });
     },
     initialConfig: options?.config,
     isEmbedded,

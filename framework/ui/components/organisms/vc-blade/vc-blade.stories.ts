@@ -28,15 +28,22 @@ function provideMockBladeContext(overrides: Partial<IBladeInstance> = {}) {
   provide(ToolbarServiceKey, createToolbarService());
   provide(WidgetServiceKey, createWidgetService());
 
-  // Minimal BladeStack mock for useBladeNavigation
+  // Minimal BladeStack mock for useBlade
   provide(BladeStackKey, {
     blades: ref([]),
     activeBlade: ref(null),
+    openWorkspace: async () => {},
     openBlade: async () => {},
-    closeBlade: async () => {},
-    closeSelf: async () => {},
+    closeBlade: async () => false,
     closeChildren: async () => {},
-    replaceBlade: async () => {},
+    replaceCurrentBlade: async () => {},
+    coverCurrentBlade: async () => {},
+    registerBeforeClose: () => {},
+    unregisterBeforeClose: () => {},
+    setBladeError: () => {},
+    clearBladeError: () => {},
+    setBladeTitle: () => {},
+    _restoreStack: () => {},
   } as any);
 
   provide(BladeMessagingKey, {

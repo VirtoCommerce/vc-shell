@@ -122,7 +122,6 @@
 import { ref, inject, computed, onMounted, nextTick, watch, getCurrentInstance, useAttrs, watchEffect } from "vue";
 import { IBladeToolbar } from "@core/types";
 import { useBladeStack } from "@core/blade-navigation";
-import { useBladeNavigation } from "@core/composables/useBladeNavigationAdapter";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
 import BladeHeaderSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeHeaderSkeleton.vue";
 import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";

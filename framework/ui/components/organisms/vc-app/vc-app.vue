@@ -88,7 +88,7 @@
           v-if="isAuthenticated"
           class="vc-app__workspace"
         >
-          <VcBladeNavigation />
+          <VcBladeNavigation v-if="hasBladeNavigation" />
           <!-- AI Agent Panel (shown when plugin is installed) -->
           <VcAiAgentPanel v-if="aiAgentConfig?.url" />
         </div>
@@ -119,6 +119,7 @@ import { provideAppBarState } from "@ui/components/organisms/vc-app/_internal/ap
 import { useShellBootstrap } from "@ui/components/organisms/vc-app/composables/useShellBootstrap";
 import { useShellNavigation } from "@ui/components/organisms/vc-app/composables/useShellNavigation";
 import { useShellLifecycle } from "@ui/components/organisms/vc-app/composables/useShellLifecycle";
+import { BladeMessagingKey, BladeStackKey } from "@core/blade-navigation/types";
 
 export interface Props {
   isReady: boolean;
@@ -155,6 +156,8 @@ defineSlots<{
 }>();
 
 const props = defineProps<Props>();
+
+const hasBladeNavigation = Boolean(inject(BladeStackKey, null) && inject(BladeMessagingKey, null));
 
 const logger = createLogger("vc-app");
 logger.debug("Init vc-app");

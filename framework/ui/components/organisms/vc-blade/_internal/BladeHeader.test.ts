@@ -132,29 +132,28 @@ describe("BladeHeader", () => {
     expect(wrapper.emitted("close")).toBeTruthy();
   });
 
-  it("shows expand button when blade is expandable and not maximized", () => {
-    const wrapper = factory({}, { expandable: true, maximized: false });
-    // Should have expand button
+  it("shows expand button when blade is closable and not maximized", () => {
+    const wrapper = factory({ closable: true }, { maximized: false });
     const buttons = wrapper.findAll(".vc-blade-header__button");
     expect(buttons.length).toBeGreaterThan(0);
   });
 
   it("emits expand when expand button is clicked", async () => {
-    const wrapper = factory({ closable: true }, { expandable: true, maximized: false });
+    const wrapper = factory({ closable: true }, { maximized: false });
     // First button is expand, second is close
     const buttons = wrapper.findAll(".vc-blade-header__button");
     await buttons[0].trigger("click");
     expect(wrapper.emitted("expand")).toBeTruthy();
   });
 
-  it("shows collapse button when blade is expandable and maximized", () => {
-    const wrapper = factory({}, { expandable: true, maximized: true });
+  it("shows collapse button when blade is closable and maximized", () => {
+    const wrapper = factory({ closable: true }, { maximized: true });
     const buttons = wrapper.findAll(".vc-blade-header__button");
     expect(buttons.length).toBeGreaterThan(0);
   });
 
   it("emits collapse when collapse button is clicked", async () => {
-    const wrapper = factory({ closable: true }, { expandable: true, maximized: true });
+    const wrapper = factory({ closable: true }, { maximized: true });
     const buttons = wrapper.findAll(".vc-blade-header__button");
     await buttons[0].trigger("click");
     expect(wrapper.emitted("collapse")).toBeTruthy();

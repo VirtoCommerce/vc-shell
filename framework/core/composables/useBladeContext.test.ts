@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { ref, computed, defineComponent, h, type ComputedRef } from "vue";
+import { ref, computed, defineComponent, h, nextTick, type ComputedRef } from "vue";
 import { mount } from "@vue/test-utils";
 import { defineBladeContext, injectBladeContext } from "./useBladeContext";
 
 describe("defineBladeContext / injectBladeContext", () => {
-  it("provides and injects blade context", () => {
+  it("unwraps ref values so consumers access them directly", () => {
     const item = ref({ id: "123" });
     const disabled = computed(() => false);
     let injected: ComputedRef<Record<string, unknown>> | undefined;
@@ -26,8 +26,60 @@ describe("defineBladeContext / injectBladeContext", () => {
     mount(Parent);
 
     expect(injected).toBeDefined();
-    expect(injected!.value.item).toBe(item);
-    expect(injected!.value.disabled).toBe(disabled);
+    // Values are unwrapped — no .value needed
+    expect(injected!.value.item).toEqual({ id: "123" });
+    expect(injected!.value.disabled).toBe(false);
+  });
+
+  it("tracks ref changes reactively", async () => {
+    const item = ref({ id: "1" });
+    let injected: ComputedRef<Record<string, unknown>> | undefined;
+
+    const Child = defineComponent({
+      setup() {
+        injected = injectBladeContext();
+        return () => h("div");
+      },
+    });
+
+    const Parent = defineComponent({
+      setup() {
+        defineBladeContext({ item });
+        return () => h(Child);
+      },
+    });
+
+    mount(Parent);
+
+    expect(injected!.value.item).toEqual({ id: "1" });
+
+    item.value = { id: "2" };
+    await nextTick();
+
+    expect(injected!.value.item).toEqual({ id: "2" });
+  });
+
+  it("passes plain (non-ref) values through unchanged", () => {
+    let injected: ComputedRef<Record<string, unknown>> | undefined;
+
+    const Child = defineComponent({
+      setup() {
+        injected = injectBladeContext();
+        return () => h("div");
+      },
+    });
+
+    const Parent = defineComponent({
+      setup() {
+        defineBladeContext({ name: "test", count: 42 });
+        return () => h(Child);
+      },
+    });
+
+    mount(Parent);
+
+    expect(injected!.value.name).toBe("test");
+    expect(injected!.value.count).toBe(42);
   });
 
   it("throws InjectionError when no context provided", () => {
@@ -43,7 +95,7 @@ describe("defineBladeContext / injectBladeContext", () => {
     }).toThrow("BladeContext");
   });
 
-  it("grandchild component accesses context from ancestor blade", () => {
+  it("grandchild component accesses unwrapped context from ancestor blade", () => {
     const item = ref("test-item");
     let injectedItem: unknown;
 
@@ -70,6 +122,6 @@ describe("defineBladeContext / injectBladeContext", () => {
 
     mount(Blade);
 
-    expect(injectedItem).toBe(item);
+    expect(injectedItem).toBe("test-item");
   });
 });

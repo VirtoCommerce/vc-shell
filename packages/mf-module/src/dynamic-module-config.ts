@@ -3,6 +3,7 @@ import { federation } from "@module-federation/vite";
 import type { UserConfig } from "vite";
 import { REMOTE_SHARED } from "@vc-shell/mf-config";
 import { stripExternalStyles } from "./strip-external-styles";
+import { preserveStandaloneHtml } from "./preserve-standalone-html";
 import type { DynamicModuleOptions } from "./types";
 import { viteBladePlugin } from "@vc-shell/config-generator";
 
@@ -16,6 +17,7 @@ export default function dynamicModuleConfiguration(
   return {
     base,
     plugins: [
+      preserveStandaloneHtml(),
       viteBladePlugin(),
       stripExternalStyles(),
       vue(),
@@ -32,6 +34,7 @@ export default function dynamicModuleConfiguration(
     build: {
       target: "esnext",
       outDir: "dist",
+      emptyOutDir: false,
     },
   };
 }

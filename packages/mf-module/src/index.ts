@@ -7,6 +7,7 @@ import type { DynamicModuleOptions } from "./types";
 
 export type { DynamicModuleOptions, CompatibilityOptions } from "./types";
 export { stripExternalStyles } from "./strip-external-styles";
+export { preserveStandaloneHtml } from "./preserve-standalone-html";
 
 const getPackageJson = () => {
   try {

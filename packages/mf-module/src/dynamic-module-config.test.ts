@@ -62,6 +62,23 @@ describe("dynamicModuleConfiguration (MF)", () => {
     expect(config.build?.target).toBe("esnext");
   });
 
+  it("sets emptyOutDir to false to preserve standalone build", () => {
+    const config = dynamicModuleConfiguration(pkg, {
+      compatibility: { framework: "^2.0.0" },
+    });
+    expect(config.build?.emptyOutDir).toBe(false);
+  });
+
+  it("includes preserveStandaloneHtml plugin", () => {
+    const config = dynamicModuleConfiguration(pkg, {
+      compatibility: { framework: "^2.0.0" },
+    });
+    const plugin = config.plugins?.flat().find((p: any) => p?.name === "preserve-standalone-html");
+    expect(plugin).toBeDefined();
+    expect(typeof (plugin as any).buildStart).toBe("function");
+    expect(typeof (plugin as any).closeBundle).toBe("function");
+  });
+
   it("includes shared deps with singleton: true", () => {
     const config = dynamicModuleConfiguration(pkg, {
       compatibility: { framework: "^2.0.0" },

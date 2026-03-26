@@ -68,6 +68,8 @@ Work through these guides in order. Each is self-contained with before/after exa
 | 31 | [useDataTableSort](./31-use-data-table-sort.md) | Optional | Replace manual sort boilerplate with `useDataTableSort` composable |
 | 33 | [Locale Exports](./33-locale-exports.md) | **Breaking** | `dist/locales/*.json` wildcard → named `@vc-shell/framework/locales/<lang>` exports |
 | 34 | [App Hub Rename](./34-app-hub-rename.md) | **Breaking** | `disableAppSwitcher` → `disableAppHub`, `#app-switcher` → `#app-hub`, `useAppSwitcher` → `useAppHub` |
+| 35 | [defineBlade](./35-define-blade.md) | Deprecated | `defineOptions()` with blade fields → `defineBlade()` macro |
+| 36 | [useResponsive](./36-use-responsive.md) | Deprecated | `$isMobile.value` / `inject(IsMobileKey)` → `useResponsive()` composable |
 
 ## Severity Legend
 

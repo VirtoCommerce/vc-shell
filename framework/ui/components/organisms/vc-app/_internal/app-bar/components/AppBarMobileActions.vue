@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="$isMobile.value"
+    v-if="isMobile"
     class="app-bar-mobile-actions"
   >
     <div
@@ -45,6 +45,7 @@
 
 <script lang="ts" setup>
 import { VcButton } from "@ui/components/atoms/vc-button";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { useAppBarMobileActions } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarMobileActions";
@@ -58,6 +59,7 @@ export interface Props {
 
 const props = defineProps<Props>();
 
+const { isMobile } = useResponsive();
 const { getButtons } = useAppBarMobileButtons();
 const { currentAction, toggleAction, hideAllActions, isAnyActionVisible } = useAppBarMobileActions();
 const route = useRoute();

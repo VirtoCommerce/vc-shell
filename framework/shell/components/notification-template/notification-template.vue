@@ -6,7 +6,7 @@
     <div
       class="vc-notification-template__container"
       :class="{
-        'vc-notification-template__container--mobile': $isMobile.value,
+        'vc-notification-template__container--mobile': isMobile,
       }"
     >
       <div
@@ -21,7 +21,7 @@
       <div class="vc-notification-template__content">
         <p
           class="vc-notification-template__title"
-          :class="{ 'vc-notification-template__title--desktop': $isDesktop.value }"
+          :class="{ 'vc-notification-template__title--desktop': isDesktop }"
         >
           {{ title }}
         </p>
@@ -43,6 +43,7 @@
 import { computed } from "vue";
 import { PushNotification } from "@core/api/platform";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export interface Props {
   title: string;
@@ -57,6 +58,7 @@ export interface Emits {
 
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
+const { isMobile, isDesktop } = useResponsive();
 
 const locale = window.navigator.language;
 

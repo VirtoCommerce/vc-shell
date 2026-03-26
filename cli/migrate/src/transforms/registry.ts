@@ -158,6 +158,14 @@ export const transforms: VersionedTransform[] = [
     transformPath: t("app-hub-rename"),
     fileExtensions: [".vue", ".ts"],
   },
+  {
+    name: "responsive-composable",
+    description: "$isMobile.value / inject(IsMobileKey) / inject('isMobile') → useResponsive()",
+    introducedIn: "2.0.0",
+    migrationGuideSection: "Guide 36",
+    transformPath: t("responsive-composable"),
+    fileExtensions: [".vue"],
+  },
 ];
 
 export function selectTransforms(currentVersion: string, targetVersion: string): VersionedTransform[] {

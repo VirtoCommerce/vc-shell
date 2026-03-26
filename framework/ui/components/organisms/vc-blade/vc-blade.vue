@@ -6,7 +6,7 @@
     :class="[
       $attrs.class,
       {
-        'vc-blade--mobile': $isMobile.value,
+        'vc-blade--mobile': isMobile,
         'vc-blade--expanded': isExpanded,
         'vc-blade--maximized': descriptor?.maximized,
       },
@@ -16,7 +16,7 @@
     :aria-label="!props.title || showSkeleton ? $t('COMPONENTS.ORGANISMS.VC_BLADE.PANEL') : undefined"
   >
     <!-- Header zone: v-show keeps BladeHeader mounted to avoid Teleport unmount bug -->
-    <template v-if="!($isMobile.value && blades.length === 1 && !$slots['actions'])">
+    <template v-if="!(isMobile && blades.length === 1 && !$slots['actions'])">
       <BladeHeaderSkeleton
         v-if="showSkeleton"
         class="vc-blade__header"
@@ -37,12 +37,12 @@
         <template #prepend>
           <component
             :is="backButton"
-            v-if="backButton && $isMobile.value"
+            v-if="backButton && isMobile"
             class="vc-blade__back-button"
           />
 
           <div
-            v-if="descriptor?.breadcrumbs?.length && $isDesktop.value"
+            v-if="descriptor?.breadcrumbs?.length && isDesktop"
             class="vc-blade__breadcrumbs"
           >
             <VcBreadcrumbs
@@ -103,13 +103,13 @@
     >
       <div
         class="vc-blade__main"
-        :class="{ 'vc-blade__main--mobile': $isMobile.value }"
+        :class="{ 'vc-blade__main--mobile': isMobile }"
       >
         <div
           class="vc-blade__slot"
           :class="{
-            'vc-blade__slot--desktop': $isDesktop.value,
-            'vc-blade__slot--mobile': $isMobile.value,
+            'vc-blade__slot--desktop': isDesktop,
+            'vc-blade__slot--mobile': isMobile,
           }"
         >
           <slot></slot>
@@ -132,6 +132,7 @@ import { VcButton } from "@ui/components/atoms/vc-button";
 import { BladeBackButtonKey } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { useBlade } from "../../../../core/composables";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 
 export interface Props {
@@ -175,6 +176,8 @@ const slots = defineSlots<{
 }>();
 
 const emit = defineEmits<Emits>();
+
+const { isMobile, isDesktop } = useResponsive();
 
 // Single useBlade() call — reuse for both bladeId and context-aware features
 const bladeFull = useBlade();

@@ -9,14 +9,14 @@
     ref="appRootRef"
     class="vc-app"
     :class="{
-      'vc-app--mobile': $isMobile.value,
+      'vc-app--mobile': isMobile,
     }"
   >
     <div class="vc-app__main-content">
       <!-- Layout: desktop sidebar or mobile top bar -->
       <slot
         name="layout"
-        :is-mobile="$isMobile.value"
+        :is-mobile="isMobile"
         :sidebar="sidebar"
         :apps-list="appsList"
         :switch-app="switchApp"
@@ -24,7 +24,7 @@
         :handle-menu-item-click="handleMenuItemClick"
       >
         <component
-          :is="$isDesktop.value ? DesktopLayout : MobileLayout"
+          :is="isDesktop ? DesktopLayout : MobileLayout"
           :logo="logo"
           :avatar="avatar"
           :user-name="name"
@@ -101,6 +101,7 @@
 </template>
 <script lang="ts" setup>
 import { inject, provide, ref, watch } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import DesktopLayout from "@ui/components/organisms/vc-app/_internal/layouts/DesktopLayout.vue";
 import MobileLayout from "@ui/components/organisms/vc-app/_internal/layouts/MobileLayout.vue";
 import { VcPopupContainer } from "@shell/_internal/popup";
@@ -156,6 +157,8 @@ defineSlots<{
 }>();
 
 const props = defineProps<Props>();
+
+const { isMobile, isDesktop } = useResponsive();
 
 const hasBladeNavigation = Boolean(inject(BladeStackKey, null) && inject(BladeMessagingKey, null));
 

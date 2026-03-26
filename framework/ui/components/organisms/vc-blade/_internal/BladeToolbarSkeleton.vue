@@ -2,7 +2,7 @@
   <div
     class="vc-blade-toolbar vc-blade-toolbar-skeleton"
     :class="{
-      'vc-blade-toolbar--mobile': $isMobile.value,
+      'vc-blade-toolbar--mobile': isMobile,
     }"
   >
     <div class="vc-blade-toolbar__content">
@@ -21,8 +21,11 @@
 
 <script lang="ts" setup>
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 defineOptions({ name: "BladeToolbarSkeleton" });
+
+const { isMobile } = useResponsive();
 </script>
 
 <style lang="scss">

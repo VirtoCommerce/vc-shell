@@ -6,11 +6,11 @@
     <div
       class="app-bar-overlay"
       :class="{
-        'app-bar-overlay--mobile': $isMobile.value,
-        'app-bar-overlay--desktop': $isDesktop.value,
+        'app-bar-overlay--mobile': isMobile,
+        'app-bar-overlay--desktop': isDesktop,
         'app-bar-overlay--sidebar': isSidebarMode,
-        'app-bar-overlay--standalone-mobile': $isMobile.value && !isSidebarMode,
-        'app-bar-overlay--collapsed': !expanded && !$isMobile.value,
+        'app-bar-overlay--standalone-mobile': isMobile && !isSidebarMode,
+        'app-bar-overlay--collapsed': !expanded && !isMobile,
       }"
     >
       <div class="app-bar-overlay__content app-bar-overlay__dropdowns">
@@ -22,6 +22,7 @@
 
 <script lang="ts" setup>
 import { inject, type MaybeRef } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { AppRootElementKey } from "@framework/injection-keys";
 
 defineProps<{
@@ -29,6 +30,7 @@ defineProps<{
   expanded: MaybeRef<boolean>;
 }>();
 
+const { isMobile, isDesktop } = useResponsive();
 const appRootEl = inject(AppRootElementKey, undefined);
 </script>
 

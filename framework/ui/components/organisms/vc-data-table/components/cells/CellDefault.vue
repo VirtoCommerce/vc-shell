@@ -41,10 +41,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, Ref, ref } from "vue";
 import VcInput from "@ui/components/molecules/vc-input/vc-input.vue";
 import { VcIcon } from "@ui/components/atoms";
-import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import CellEditableWrapper from "@ui/components/organisms/vc-data-table/components/cells/CellEditableWrapper.vue";
 
 const props = defineProps<{
@@ -73,10 +72,7 @@ const emit = defineEmits<{
   (e: "blur", payload: { row: number | undefined; field: string }): void;
 }>();
 
-const isMobileRef = inject(IsMobileKey, ref(false));
-const isDesktopRef = inject(IsDesktopKey, ref(true));
-const isMobile = computed(() => isMobileRef.value);
-const isDesktop = computed(() => isDesktopRef.value);
+const { isMobile, isDesktop } = useResponsive();
 
 const onBlur = (errors: string[]) => {
   if (errors && errors.length > 0) return;

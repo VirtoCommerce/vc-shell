@@ -87,8 +87,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, inject, type Ref, watch } from "vue";
-import { IsMobileKey } from "@framework/injection-keys";
+import { ref, computed, watch } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export interface Props {
@@ -116,7 +116,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const isMobile = inject(IsMobileKey)!;
+const { isMobile } = useResponsive();
 
 /** Number of page buttons to show on mobile devices */
 const MAX_PAGES_MOBILE = 3;

@@ -56,10 +56,10 @@
             :clearable="false"
             :config="{ closeOnAutoApply: false }"
             auto-apply
-            :teleport-center="$isMobile.value"
+            :teleport-center="isMobile"
             :is24="isBrowserLocale24h"
             v-bind="datePickerOptions"
-            :teleport="$isDesktop.value ? 'body' : undefined"
+            :teleport="isDesktop ? 'body' : undefined"
             :aria-invalid="invalid || undefined"
             :aria-required="ariaRequired"
             :aria-describedby="ariaDescribedBy"
@@ -126,6 +126,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useFormField } from "@ui/composables/useFormField";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
@@ -154,6 +155,7 @@ const props = withDefaults(defineProps<VcDatePickerProps>(), {
 
 const emit = defineEmits<VcDatePickerEmits>();
 
+const { isMobile, isDesktop } = useResponsive();
 const { labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } = useFormField(props);
 
 // State

@@ -45,9 +45,9 @@
  * - Disabled when content is scrolled down (scrollTop > 0)
  * - Disabled when refreshing=true
  */
-import { ref, computed, inject, type Ref } from "vue";
+import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { IsMobileKey } from "@framework/injection-keys";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export interface PullToRefreshProps {
   /** Enable/disable pull-to-refresh */
@@ -81,8 +81,8 @@ const emit = defineEmits<{
   refresh: [];
 }>();
 
-// Check if mobile via inject (provided by VcDataTable or parent)
-const isMobile = inject(IsMobileKey, ref(true));
+// Check if mobile via useResponsive composable
+const { isMobile } = useResponsive();
 
 // Refs
 const containerRef = ref<HTMLElement | null>(null);

@@ -127,8 +127,8 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, inject, ref, getCurrentInstance } from "vue";
-import { IsMobileKey } from "@framework/injection-keys";
+import { computed, ref, getCurrentInstance } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 
 export type PopupVariant = "default" | "error" | "warning" | "success" | "info";
@@ -171,7 +171,7 @@ defineSlots<{
 const instanceUid = getCurrentInstance()?.uid ?? 0;
 const popupTitleId = `vc-popup-title-${instanceUid}`;
 
-const isMobile = inject(IsMobileKey, ref(false));
+const { isMobile } = useResponsive();
 const pendingDismissReason = ref<PopupCloseReason | null>(null);
 
 const variantMeta: Record<Exclude<PopupVariant, "default">, { icon: string; className: string }> = {

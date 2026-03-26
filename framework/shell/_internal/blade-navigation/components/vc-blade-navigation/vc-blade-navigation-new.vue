@@ -29,9 +29,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, h, inject, Ref, toRef } from "vue";
+import { computed, h, toRef } from "vue";
 import { useI18n } from "vue-i18n";
-import { IsMobileKey } from "@framework/injection-keys";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { RouterView, useRouter } from "vue-router";
 import { watchDebounced } from "@vueuse/core";
 import { VcBladeSlot } from "@shell/_internal/blade-navigation/components/vc-blade-slot";
@@ -66,7 +66,7 @@ const bladeCount = computed(() => {
 
 // ── Visibility logic ────────────────────────────────────────────────────────
 
-const isMobile = inject(IsMobileKey)!;
+const { isMobile } = useResponsive();
 
 const aiAgentService = inject(AiAgentServiceKey, undefined);
 const isAiPanelExpanded = computed(() => aiAgentService?.isExpanded.value ?? false);

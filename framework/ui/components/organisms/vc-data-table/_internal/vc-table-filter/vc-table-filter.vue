@@ -42,7 +42,7 @@
         <div
           class="vc-table-filter__panel-inner"
           :class="{
-            'vc-table-filter__panel-inner--desktop': $isDesktop.value,
+            'vc-table-filter__panel-inner--desktop': isDesktop,
           }"
           @click.stop
         >
@@ -64,8 +64,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed, inject, Ref } from "vue";
-import { IsMobileKey } from "@framework/injection-keys";
+import { ref, watch, computed, Ref } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcBadge } from "@ui/components/atoms/vc-badge";
 import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
@@ -92,7 +92,7 @@ const props = withDefaults(defineProps<Props>(), {
 const isPanelVisible = ref(false);
 const filterToggle = ref<HTMLElement | null>();
 const filterPanel = ref<HTMLElement | null>();
-const isMobile = inject(IsMobileKey)!;
+const { isMobile, isDesktop } = useResponsive();
 const sidebarWrapperComponent = computed(() => (isMobile.value ? VcSidebar : "div"));
 
 const sidebarWrapperProps = computed<Record<string, unknown>>(() => {

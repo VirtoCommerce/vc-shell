@@ -1,6 +1,6 @@
 <template>
   <WidgetContainerMobile
-    v-if="visibleWidgets.length > 0 && $isMobile.value"
+    v-if="visibleWidgets.length > 0 && isMobile"
     :widgets="visibleWidgets"
     :blade-id="normalizedBladeId"
   />
@@ -13,6 +13,7 @@
 
 <script setup lang="ts">
 import { computed, inject, onMounted, onUnmounted } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useWidgets } from "@core/composables/useWidgets";
 import WidgetContainerDesktop from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerDesktop.vue";
 import WidgetContainerMobile from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerMobile.vue";
@@ -26,6 +27,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { isMobile } = useResponsive();
 const logger = createLogger("widget-container");
 
 const normalizedBladeId = computed(() => props.bladeId.toLowerCase());

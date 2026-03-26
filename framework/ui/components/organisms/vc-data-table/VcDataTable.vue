@@ -383,7 +383,7 @@
  * Orchestration logic (sub-composable wiring, watchers, event handlers, derived
  * computeds) is extracted into useDataTableOrchestrator for independent testability.
  */
-import { ref, computed, provide, watch, onBeforeUnmount, useSlots, inject, type Ref, type VNode } from "vue";
+import { ref, computed, provide, watch, onBeforeUnmount, useSlots, type Ref, type VNode } from "vue";
 import { useElementSize } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import {
@@ -411,7 +411,7 @@ import {
   HasFlexColumnsKey,
   IsColumnReorderingKey,
 } from "@ui/components/organisms/vc-data-table/keys";
-import { IsMobileKey } from "@framework/injection-keys";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import type {
   VcColumnProps,
   VcDataTableExtendedProps,
@@ -700,7 +700,7 @@ const paginationRangeText = computed(() => {
 // Mobile Responsive Detection
 // ============================================================================
 
-const isMobile = inject(IsMobileKey, ref(false));
+const { isMobile } = useResponsive();
 const isMobileView = computed(() => isMobile.value);
 
 // ============================================================================

@@ -2,12 +2,12 @@
   <div
     class="vc-table-base-header"
     :class="{
-      'vc-table-base-header--mobile': $isMobile.value,
-      'vc-table-base-header--desktop': $isDesktop.value,
+      'vc-table-base-header--mobile': isMobile,
+      'vc-table-base-header--desktop': isDesktop,
     }"
   >
     <!-- <div
-      v-if="$isMobile.value && $slots['filters']"
+      v-if="isMobile && $slots['filters']"
       class="vc-table-base-header__filter-mobile"
     >
       <VcTableFilter
@@ -73,6 +73,7 @@
 <script lang="ts" setup>
 import VcTableFilter from "@ui/components/organisms/vc-data-table/_internal/vc-table-filter/vc-table-filter.vue";
 import { VcInput } from "@ui/components/molecules";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export interface Props {
   searchValue?: string;
@@ -88,6 +89,8 @@ export interface Emits {
 
 defineProps<Props>();
 defineEmits<Emits>();
+
+const { isMobile, isDesktop } = useResponsive();
 </script>
 
 <style lang="scss">

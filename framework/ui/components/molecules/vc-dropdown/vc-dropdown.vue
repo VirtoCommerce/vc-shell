@@ -100,11 +100,11 @@
 </template>
 
 <script lang="ts" setup generic="T">
-import { computed, getCurrentInstance, inject, nextTick, onBeforeUnmount, ref, Transition, watch, type Ref } from "vue";
+import { computed, getCurrentInstance, nextTick, onBeforeUnmount, ref, Transition, watch, type Ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloatingPosition, type FloatingOffset, useTeleportTarget } from "@ui/composables";
 import type { Placement } from "@floating-ui/vue";
-import { IsMobileKey } from "@framework/injection-keys";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export type DropdownRole = "menu" | "listbox";
 export type DropdownCloseReason = "outside" | "escape" | "action";
@@ -173,7 +173,7 @@ const instance = getCurrentInstance();
 const uid = instance?.uid ?? Math.round(Math.random() * 10_000);
 const panelId = `vc-dropdown-${uid}`;
 
-const isMobile = inject(IsMobileKey, ref(false));
+const { isMobile } = useResponsive();
 
 const referenceEl = ref<HTMLElement | null>(null);
 const floatingEl = ref<HTMLElement | null>(null);

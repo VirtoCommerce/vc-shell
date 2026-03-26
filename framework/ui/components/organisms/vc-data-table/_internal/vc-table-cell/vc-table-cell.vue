@@ -28,12 +28,12 @@
                   currency-display="symbol"
                   class="vc-table-cell__input-currency"
                   :error="errors.length > 0"
-                  :error-message="$isMobile.value ? errorMessage : undefined"
+                  :error-message="isMobile ? errorMessage : undefined"
                   @update:model-value="$emit('update', { field: cell.id, value: $event })"
                   @blur="onBlur({ row: index, field: cell.id, errors })"
                 >
                   <template
-                    v-if="$isDesktop.value && errors.length > 0"
+                    v-if="isDesktop && errors.length > 0"
                     #append-inner
                   >
                     <VcIcon
@@ -171,12 +171,12 @@
                 class="vc-table-cell__input-number"
                 type="number"
                 :error="errors.length > 0"
-                :error-message="$isMobile.value ? errorMessage : undefined"
+                :error-message="isMobile ? errorMessage : undefined"
                 @update:model-value="$emit('update', { field: cell.id, value: $event })"
                 @blur="onBlur({ row: index, field: cell.id, errors })"
               >
                 <template
-                  v-if="$isDesktop.value && errors.length > 0"
+                  v-if="isDesktop && errors.length > 0"
                   #append-inner
                 >
                   <VcIcon
@@ -243,12 +243,12 @@
                 :model-value="value"
                 class="vc-table-cell__input-default"
                 :error="errors.length > 0"
-                :error-message="$isMobile.value ? errorMessage : undefined"
+                :error-message="isMobile ? errorMessage : undefined"
                 @update:model-value="$emit('update', { field: cell.id, value: $event })"
                 @blur="onBlur({ row: index, field: cell.id, errors })"
               >
                 <template
-                  v-if="$isDesktop.value && errors.length > 0"
+                  v-if="isDesktop && errors.length > 0"
                   #append-inner
                 >
                   <VcIcon
@@ -279,6 +279,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { formatDateRelative, formatDateWithPattern } from "@core/utilities/date";
 import * as _ from "lodash-es";
 import htmlTruncate from "truncate-html";
@@ -362,6 +363,8 @@ const emit = defineEmits<{
   (event: "update", payload: { field: string; value: any }): void;
   (event: "blur", payload: { row: number | undefined; field: string }): void;
 }>();
+
+const { isMobile, isDesktop } = useResponsive();
 
 const locale = window.navigator.language;
 

@@ -2,13 +2,13 @@
   <div
     class="vc-blade-toolbar"
     :class="{
-      'vc-blade-toolbar--mobile': $isMobile.value,
+      'vc-blade-toolbar--mobile': isMobile,
     }"
   >
     <div class="vc-blade-toolbar__content">
       <div class="vc-blade-toolbar__buttons">
         <ToolbarMobile
-          v-if="$isMobile.value"
+          v-if="isMobile"
           :items="visibleItems"
         />
         <ToolbarDesktop
@@ -28,6 +28,7 @@
 
 <script lang="ts" setup>
 import { toRef } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import type { IBladeToolbar } from "@core/types";
 import ToolbarMobile from "@ui/components/organisms/vc-blade/_internal/toolbar/ToolbarMobile.vue";
 import ToolbarDesktop from "@ui/components/organisms/vc-blade/_internal/toolbar/ToolbarDesktop.vue";
@@ -41,6 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
   items: () => [],
 });
 
+const { isMobile } = useResponsive();
 const isExpanded = true;
 const { visibleItems } = useToolbarRegistration(toRef(props, "items"));
 </script>

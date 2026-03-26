@@ -217,14 +217,14 @@
  * Supports text, select (single/multi), and dateRange filter types.
  * Custom filter UI can be provided via named slots.
  */
-import { ref, computed, watch, inject } from "vue";
+import { ref, computed, watch } from "vue";
 import { VcDropdownPanel } from "@ui/components/molecules";
 import { VcInput, VcSelect } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import type { GlobalFilterConfig } from "@ui/components/organisms/vc-data-table/types";
 import { useColumnFilter } from "@ui/components/organisms/vc-data-table/composables/useColumnFilter";
-import { IsMobileKey } from "@framework/injection-keys";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 interface Props {
   /** List of filter configurations (id, label, type, options) */
@@ -252,7 +252,7 @@ const emit = defineEmits<{
   clear: [];
 }>();
 
-const isMobile = inject(IsMobileKey, ref(false));
+const { isMobile } = useResponsive();
 
 // Use the same helpers as ColumnFilter
 const { getFilterType, getFilterOptions, isMultipleSelect, getRangeFields } = useColumnFilter();

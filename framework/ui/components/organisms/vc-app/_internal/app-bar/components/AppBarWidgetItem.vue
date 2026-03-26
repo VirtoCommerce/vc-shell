@@ -1,7 +1,7 @@
 <template>
   <div
     class="app-bar-button"
-    :class="{ 'app-bar-button--mobile': $isMobile.value }"
+    :class="{ 'app-bar-button--mobile': isMobile }"
   >
     <VcTooltip
       placement="bottom"
@@ -40,6 +40,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed, type Component } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useAppBarWidgets } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarWidgets";
 
 export interface Props {
@@ -61,6 +62,7 @@ defineSlots<{
   trigger: (props: { isActive: boolean; toggle: () => void }) => any;
 }>();
 
+const { isMobile } = useResponsive();
 const { toggleWidget, currentWidget } = useAppBarWidgets();
 // Check if the current widget is active
 const isActive = computed(() => (props.widgetId ? currentWidget.value?.id === props.widgetId : false));

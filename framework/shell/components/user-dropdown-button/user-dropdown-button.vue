@@ -7,8 +7,8 @@
       :class="{
         'vc-user-dropdown-button--active': isMenuOpened,
         'vc-user-dropdown-button--auto-width': disabled,
-        'vc-user-dropdown-button--mobile': $isMobile.value,
-        'vc-user-dropdown-button--collapsed': !isPinned && $isDesktop.value,
+        'vc-user-dropdown-button--mobile': isMobile,
+        'vc-user-dropdown-button--collapsed': !isPinned && isDesktop,
       }"
       @click="handleClick"
     >
@@ -33,7 +33,7 @@
 
     <!-- Desktop: floating dropdown panel -->
     <VcDropdownPanel
-      v-if="$isDesktop.value"
+      v-if="isDesktop"
       v-model:show="isMenuOpened"
       :anchor-ref="buttonRef"
       placement="right"
@@ -59,6 +59,7 @@ import { default as UserSidebar } from "@shell/components/user-dropdown-button/_
 import { SettingsMenu } from "@shell/components/settings-menu";
 import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
 import { useSidebarState } from "@core/composables/useSidebarState";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export interface Props {
   avatarUrl?: string | undefined;
@@ -72,6 +73,7 @@ defineProps<Props>();
 const isMenuOpened = ref(false);
 const buttonRef = ref<HTMLElement | null>(null);
 const { isPinned, isExpanded } = useSidebarState();
+const { isMobile, isDesktop } = useResponsive();
 
 function closeMenu() {
   isMenuOpened.value = false;

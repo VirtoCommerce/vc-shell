@@ -17,11 +17,10 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, ref, type Ref } from "vue";
-import { IsDesktopKey } from "@framework/injection-keys";
 import { IMenuItem } from "@core/types";
 import { SettingsMenu } from "@shell/components/settings-menu";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 defineProps<{
   isOpened: boolean;
@@ -32,7 +31,7 @@ defineEmits<{
   (e: "item:click", item: IMenuItem): void;
 }>();
 
-const isDesktop = inject(IsDesktopKey, ref(false));
+const { isDesktop } = useResponsive();
 </script>
 
 <style lang="scss">

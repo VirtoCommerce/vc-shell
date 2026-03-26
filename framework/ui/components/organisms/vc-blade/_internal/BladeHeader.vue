@@ -2,7 +2,7 @@
   <div
     class="vc-blade-header"
     :class="{
-      'vc-blade-header--mobile': $isMobile.value,
+      'vc-blade-header--mobile': isMobile,
     }"
   >
     <slot name="prepend"></slot>
@@ -73,7 +73,7 @@
       </div>
 
       <div
-        v-if="!$isMobile.value"
+        v-if="!isMobile"
         class="vc-blade-header__controls"
       >
         <template v-if="closable">
@@ -107,6 +107,7 @@
 <script lang="ts" setup>
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { ref, inject } from "vue";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 import { shift } from "@floating-ui/vue";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
@@ -128,6 +129,7 @@ const emit = defineEmits<{
   collapse: [];
 }>();
 
+const { isMobile } = useResponsive();
 const descriptor = inject(BladeDescriptorKey, undefined);
 const tooltipVisible = ref(false);
 const tooltipIconRef = ref<HTMLElement | null>(null);

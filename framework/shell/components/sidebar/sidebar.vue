@@ -28,9 +28,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, ref, type Ref } from "vue";
-import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
+import { computed } from "vue";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export interface Props {
   position?: "left" | "right";
@@ -55,8 +55,7 @@ defineSlots<{
   content?: () => unknown;
 }>();
 
-const isMobile = inject(IsMobileKey, ref(false));
-const isDesktop = inject(IsDesktopKey, ref(false));
+const { isMobile, isDesktop } = useResponsive();
 
 const renderMatchesViewport = computed(() => {
   if (props.render === "always") {

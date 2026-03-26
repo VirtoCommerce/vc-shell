@@ -87,12 +87,12 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { Component, inject, ref, useSlots, computed, watch } from "vue";
+import { Component, useSlots, computed, watch, ref } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcImage } from "@ui/components/atoms/vc-image";
 import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
 import { useCollapsible } from "@ui/composables";
-import { IsMobileKey } from "@framework/injection-keys";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 interface Props {
   title?: string;
@@ -127,7 +127,7 @@ const emit = defineEmits<{
 }>();
 
 const slots = useSlots();
-const isMobile = inject(IsMobileKey, ref(false));
+const { isMobile } = useResponsive();
 
 const hasSubmenu = computed(() => !!slots.submenu);
 const isSubmenuOpen = ref(false);

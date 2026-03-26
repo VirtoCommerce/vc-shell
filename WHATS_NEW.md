@@ -10,6 +10,8 @@ This document summarizes the major features and improvements introduced in v2.0.
 
 - **Auto-injection of blade props** — VcBlade now reads `expanded` and `closable` directly from the BladeDescriptor; blade pages no longer need to declare these as props or wire up the corresponding emits as boilerplate.
 
+- **`defineBlade()` macro** — New compile-time macro replacing `defineOptions()` for blade pages. Separates blade metadata (url, permissions, menuItem) from Vue component options. The Vite plugin splits it at build time: `name` goes to `defineOptions`, everything else registers in a global blade config registry available before component mount. Automated codemod: `npx @vc-shell/migrate --transform define-options-to-blade`. See [migration guide #35](./migration/35-define-blade.md).
+
 - **Typed options** — `useBlade<MyOptions>()` accepts a generic type parameter so that `options.value` is fully typed, eliminating the need for manual type assertions on blade option objects.
 
 - **`onActivated` / `onDeactivated` lifecycle hooks** — New hooks that fire when a blade gains or loses "active" (rightmost visible) status, enabling blade-level focus management and lazy data loading.
@@ -111,6 +113,8 @@ This document summarizes the major features and improvements introduced in v2.0.
 - **`useLoading`** — Centralized loading state manager for coordinating multiple async operations, replacing ad-hoc `ref(false)` loading flags scattered across composables.
 
 - **`useErrorHandler`** — Composable interface to the global error handler, allowing components and composables to report errors consistently without direct coupling to the error service.
+
+- **`useResponsive()`** — Unified composable for reactive breakpoint state (`isMobile`, `isDesktop`, `isPhone`, `isTablet`, `isTouch`). Replaces the awkward `$isMobile.value` global properties in templates and `inject(IsMobileKey)` in script setup. Vue auto-unwraps the refs in templates, so no `.value` is needed. See [migration guide #36](./migration/36-use-responsive.md).
 
 - **`useAppBarWidget`** — Programmatic App Bar widget registration, replacing reliance on named toolbar slots and enabling modules to contribute App Bar items at runtime.
 

@@ -18,10 +18,15 @@ declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
     $mergeLocaleMessage: Composer<{}, {}, {}, string, never, string>["mergeLocaleMessage"];
     $hasAccess: (permissions: string | string[] | undefined) => boolean;
+    /** @deprecated Use `useResponsive()` composable instead. */
     $isPhone: Ref<boolean>;
+    /** @deprecated Use `useResponsive()` composable instead. */
     $isTablet: Ref<boolean>;
+    /** @deprecated Use `useResponsive()` composable instead. */
     $isMobile: Ref<boolean>;
+    /** @deprecated Use `useResponsive()` composable instead. */
     $isDesktop: Ref<boolean>;
+    /** @deprecated Use `useResponsive()` composable instead. */
     $isTouch: boolean;
     $t: (key: string, ...args: any[]) => string;
     $te: (key: string) => boolean;

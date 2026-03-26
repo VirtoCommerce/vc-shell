@@ -1,6 +1,7 @@
 import { ref, computed, defineComponent, h, provide, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
-import { AiAgentServiceKey, BladeInstanceKey } from "@framework/injection-keys";
+import { AiAgentServiceKey } from "@framework/injection-keys";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { useAiAgentContext, clearPreviewState } from "./useAiAgentContext";
 
 function createMockInternalService() {
@@ -53,8 +54,8 @@ function mountWithAiContext<T>(setupFn: () => T, service: ReturnType<typeof crea
         provide(AiAgentServiceKey, service as any);
       }
       provide(
-        BladeInstanceKey,
-        computed(() => ({ id: "test-blade-1" })),
+        BladeDescriptorKey,
+        computed(() => ({ id: "test-blade-1", name: "TestBlade", visible: true })),
       );
       return () => h(Inner);
     },

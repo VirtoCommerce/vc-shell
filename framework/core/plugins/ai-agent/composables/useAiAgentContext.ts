@@ -1,5 +1,6 @@
 import { inject, ref, computed, watch, onUnmounted, type Ref, type ComputedRef } from "vue";
-import { AiAgentServiceKey, BladeInstanceKey } from "@framework/injection-keys";
+import { AiAgentServiceKey } from "@framework/injection-keys";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { deepMergeChanges } from "@core/plugins/ai-agent/utils/deep-merge-changes";
 import type { IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
 import type {
@@ -97,9 +98,9 @@ export function useAiAgentContext<
   // Try to get the service (may not be available if plugin not installed)
   const service = inject(AiAgentServiceKey) as IAiAgentServiceInternal | undefined;
 
-  // Get current blade instance to identify which blade this context belongs to
-  const bladeInstance = inject(BladeInstanceKey, null);
-  const bladeId = computed(() => bladeInstance?.value?.id);
+  // Get current blade descriptor to identify which blade this context belongs to
+  const bladeDescriptor = inject(BladeDescriptorKey, null);
+  const bladeId = computed(() => bladeDescriptor?.value?.id);
 
   // Preview state
   const isPreviewActive = ref(false);

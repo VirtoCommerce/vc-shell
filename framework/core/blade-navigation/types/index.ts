@@ -14,7 +14,6 @@ import {
 import type { ComponentPublicInstanceConstructor } from "@ui/utilities/vueUtils";
 import type { MenuItemConfig, MenuItemBadgeConfig } from "@core/types/menu-types";
 import type { Breadcrumbs } from "@ui/types";
-import type { DisplayableError } from "@core/utilities/error";
 
 /**
  * @deprecated Blade pages no longer need to declare these props.
@@ -91,18 +90,6 @@ export interface CoreBladeExposed {
   title?: string;
   reloadParent?: () => void;
   reload?: () => void;
-}
-
-export interface IBladeInstance {
-  id: string;
-  expandable: boolean;
-  maximized: boolean;
-  error: DisplayableError | Error | string | null | undefined;
-  navigation: BladeVNode["props"]["navigation"] | undefined;
-  breadcrumbs: Breadcrumbs[] | undefined;
-  title?: string;
-  param?: string;
-  options?: Record<string, any>;
 }
 
 /**

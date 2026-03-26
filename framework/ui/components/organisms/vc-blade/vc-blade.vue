@@ -8,7 +8,7 @@
       {
         'vc-blade--mobile': $isMobile.value,
         'vc-blade--expanded': isExpanded,
-        'vc-blade--maximized': blade.maximized,
+        'vc-blade--maximized': descriptor?.maximized,
       },
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
@@ -42,11 +42,11 @@
           />
 
           <div
-            v-if="blade.breadcrumbs?.length && $isDesktop.value"
+            v-if="descriptor?.breadcrumbs?.length && $isDesktop.value"
             class="vc-blade__breadcrumbs"
           >
             <VcBreadcrumbs
-              :items="blade.breadcrumbs"
+              :items="descriptor?.breadcrumbs"
               collapsed
             >
               <template #trigger="{ click, isActive }">
@@ -129,9 +129,8 @@ import BladeToolbarSkeleton from "@ui/components/organisms/vc-blade/_internal/Bl
 import BladeContentSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeContentSkeleton.vue";
 import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
-import { BladeBackButtonKey, BladeInstanceKey } from "@framework/injection-keys";
+import { BladeBackButtonKey } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
-import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 import { useBlade } from "../../../../core/composables";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 
@@ -220,7 +219,7 @@ if (import.meta.env.DEV && attrs.onClose && hasBladeContext) {
   );
 }
 
-const blade = inject(BladeInstanceKey, DEFAULT_BLADE_INSTANCE);
+const descriptor = inject(BladeDescriptorKey, undefined);
 
 const backButton = inject(BladeBackButtonKey);
 

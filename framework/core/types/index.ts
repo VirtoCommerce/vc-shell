@@ -1,7 +1,7 @@
 import { Component, ComputedRef, Ref } from "vue";
 import type { CoreBladeExposed } from "@core/blade-navigation/types";
 import type { ComponentPublicInstanceConstructor } from "@ui/utilities/vueUtils";
-import type { IBladeInstance } from "@core/blade-navigation/types";
+import type { BladeDescriptor } from "@core/blade-navigation/types";
 import type { AssetLike } from "@core/composables/useAssetsManager";
 
 // AI Agent types are now part of the ai-agent plugin
@@ -73,7 +73,7 @@ export interface IBladeToolbar {
     | boolean
     | Ref<boolean | undefined>
     | ComputedRef<boolean | undefined>
-    | ((blade?: IBladeInstance) => boolean | undefined);
+    | ((blade?: BladeDescriptor) => boolean | undefined);
 
   clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
   separator?: "left" | "right" | "both";

@@ -74,8 +74,7 @@ import { inject, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useCollapsible } from "@ui/composables/useCollapsible";
-import { BladeInstanceKey } from "@framework/injection-keys";
-import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { useBladeError } from "@ui/components/organisms/vc-blade/_internal/composables/useBladeError";
 
 interface Props {
@@ -84,9 +83,9 @@ interface Props {
 
 defineProps<Props>();
 
-const blade = inject(BladeInstanceKey, DEFAULT_BLADE_INSTANCE);
+const descriptor = inject(BladeDescriptorKey, undefined);
 const { t } = useI18n({ useScope: "global" });
-const { hasError, shortErrorMessage, errorDetails, copyError } = useBladeError(blade);
+const { hasError, shortErrorMessage, errorDetails, copyError } = useBladeError(descriptor);
 
 const { contentRef, isExpanded, wrapperStyle, toggle } = useCollapsible();
 const copied = ref(false);

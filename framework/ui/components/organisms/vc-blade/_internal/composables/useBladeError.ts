@@ -1,12 +1,12 @@
 import { computed, type ComputedRef } from "vue";
-import type { IBladeInstance } from "@core/blade-navigation/types";
+import type { BladeDescriptor } from "@core/blade-navigation/types";
 
 /**
  * Encapsulates blade error state: reactive computeds for the banner
  * and a helper to copy full error details to clipboard.
  */
-export function useBladeError(blade: ComputedRef<IBladeInstance>) {
-  const error = computed(() => blade.value.error ?? null);
+export function useBladeError(blade: ComputedRef<BladeDescriptor> | undefined) {
+  const error = computed(() => blade?.value?.error ?? null);
 
   const hasError = computed(() => Boolean(error.value));
 

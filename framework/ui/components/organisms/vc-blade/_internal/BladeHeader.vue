@@ -76,9 +76,9 @@
         v-if="!$isMobile.value"
         class="vc-blade-header__controls"
       >
-        <template v-if="blade.expandable">
+        <template v-if="closable">
           <div
-            v-if="blade.maximized"
+            v-if="descriptor?.maximized"
             class="vc-blade-header__button"
             @click="onCollapse"
           >
@@ -106,10 +106,9 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { inject, ref } from "vue";
+import { ref, inject } from "vue";
 import { shift } from "@floating-ui/vue";
-import { BladeInstanceKey } from "@framework/injection-keys";
-import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
 
 export interface Props {
@@ -129,7 +128,7 @@ const emit = defineEmits<{
   collapse: [];
 }>();
 
-const blade = inject(BladeInstanceKey, DEFAULT_BLADE_INSTANCE);
+const descriptor = inject(BladeDescriptorKey, undefined);
 const tooltipVisible = ref(false);
 const tooltipIconRef = ref<HTMLElement | null>(null);
 const tooltipRef = ref<HTMLElement | null>(null);
@@ -140,13 +139,13 @@ const { floatingStyle } = useFloatingPosition(tooltipIconRef, tooltipRef, {
 });
 
 function onExpand(): void {
-  if (blade.value.expandable) {
+  if (props.closable) {
     emit("expand");
   }
 }
 
 function onCollapse(): void {
-  if (blade.value.expandable) {
+  if (props.closable) {
     emit("collapse");
   }
 }

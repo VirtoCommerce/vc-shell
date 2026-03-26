@@ -1,5 +1,5 @@
 import { Component, ref, ComponentInternalInstance, ComputedRef, Ref } from "vue";
-import type { IBladeInstance } from "@core/blade-navigation/types";
+import type { BladeDescriptor } from "@core/blade-navigation/types";
 import { cloneDeep } from "lodash-es";
 import { createBladeScopedRegistry, createPreregistrationBus } from "@core/services/_internal";
 import { createLogger } from "@core/utilities";
@@ -56,7 +56,7 @@ export interface IWidget {
   props?: Record<string, unknown>;
   /** @deprecated External widgets inject data via `injectBladeContext()` */
   events?: Record<string, unknown>;
-  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
+  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: BladeDescriptor) => boolean);
   /** @deprecated Use headless widgets via `useBladeWidgets()` instead */
   updateFunctionName?: string;
   trigger?: IWidgetTrigger;
@@ -73,7 +73,7 @@ export interface IExternalWidgetRegistration {
   id: string;
   component: Component;
   targetBlades?: string[];
-  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: IBladeInstance) => boolean);
+  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: BladeDescriptor) => boolean);
   title?: string;
   /** @deprecated Use headless widgets via `useBladeWidgets()` instead */
   updateFunctionName?: string;

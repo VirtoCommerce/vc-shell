@@ -12,14 +12,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, toValue, onMounted, onUnmounted } from "vue";
+import { computed, inject, onMounted, onUnmounted } from "vue";
 import { useWidgets } from "@core/composables/useWidgets";
 import WidgetContainerDesktop from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerDesktop.vue";
 import WidgetContainerMobile from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerMobile.vue";
-import { BladeInstanceKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { IWidget } from "@core/services/widget-service";
-import { DEFAULT_BLADE_INSTANCE } from "@ui/components/organisms/vc-blade/constants";
 import { resolveVisibility } from "@ui/components/organisms/vc-blade/utils";
 import { createLogger } from "@core/utilities";
 
@@ -33,7 +31,6 @@ const logger = createLogger("widget-container");
 const normalizedBladeId = computed(() => props.bladeId.toLowerCase());
 const widgetService = useWidgets();
 
-const bladeInstance = inject(BladeInstanceKey, DEFAULT_BLADE_INSTANCE);
 const descriptor = inject(BladeDescriptorKey, undefined);
 
 // ── External widget auto-resolution ─────────────────────────────────────────
@@ -89,6 +86,6 @@ onUnmounted(unregisterExternalWidgets);
 const widgets = computed(() => widgetService.getWidgets(normalizedBladeId.value));
 
 const visibleWidgets = computed(() =>
-  widgets.value.filter((widget: IWidget) => resolveVisibility(widget.isVisible, toValue(bladeInstance))),
+  widgets.value.filter((widget: IWidget) => resolveVisibility(widget.isVisible, descriptor?.value)),
 );
 </script>

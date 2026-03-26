@@ -294,7 +294,7 @@ export function createBladeStack(
     };
 
     // Hide current blade (don't destroy it) and append new blade after it
-    const updated = _blades.value.slice(0, currentIndex);
+    const updated: BladeDescriptor[] = _blades.value.slice(0, currentIndex);
     updated.push({ ...current, visible: false });
     updated.push(descriptor);
     _blades.value = updated;

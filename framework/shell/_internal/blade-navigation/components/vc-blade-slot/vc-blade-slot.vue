@@ -24,10 +24,10 @@
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, provide, ref, watch, watchEffect } from "vue";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
-import { BladeInstanceKey, BladeBackButtonKey } from "@framework/injection-keys";
+import { BladeBackButtonKey } from "@framework/injection-keys";
 import { ErrorInterceptor } from "@shell/components/error-interceptor";
 import { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
-import type { BladeDescriptor, IBladeInstance, IParentCallArgs } from "@core/blade-navigation/types";
+import type { BladeDescriptor, IParentCallArgs } from "@core/blade-navigation/types";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import type { CoreBladeExposed } from "@core/blade-navigation/types";
 import type { Breadcrumbs } from "@ui/types";
@@ -56,25 +56,13 @@ const bladeComponent = computed(() => {
   return bladeRegistry.getBladeComponent(props.descriptor.name);
 });
 
-// ── Provide new injection key (BladeDescriptor) ─────────────────────────────
+// ── Provide enriched BladeDescriptor ─────────────────────────────────────────
 provide(
   BladeDescriptorKey,
-  computed(() => props.descriptor),
-);
-
-// ── Provide BladeInstanceKey for backward compatibility ──
-provide(
-  BladeInstanceKey,
-  computed<IBladeInstance>(() => ({
-    id: props.descriptor.id,
-    param: props.descriptor.param,
-    options: props.descriptor.options,
-    expandable: props.closable, // expandable when there are multiple blades
+  computed(() => ({
+    ...props.descriptor,
     maximized: maximized.value,
-    error: (props.descriptor.error as IBladeInstance["error"]) ?? null,
-    navigation: undefined, // No longer VNode-based
     breadcrumbs: props.breadcrumbs,
-    title: props.descriptor.title,
   })),
 );
 

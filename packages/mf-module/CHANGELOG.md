@@ -1,3 +1,9 @@
+# [2.0.0-alpha.28](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.27...v2.0.0-alpha.28) (2026-03-26)
+
+
+### Bug Fixes
+
+* **mf-module:** Set base path for MF bundle to match platform app routing ([#218](https://github.com/VirtoCommerce/vc-shell/issues/218)) ([60925b2](https://github.com/VirtoCommerce/vc-shell/commit/60925b2a4e99232c3d6404e8b01b03771f9ae724))
 # [2.0.0-alpha.27](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.26...v2.0.0-alpha.27) (2026-03-25)
 
 **Note:** Version bump only for package @vc-shell/mf-module

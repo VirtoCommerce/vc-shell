@@ -4,11 +4,11 @@ import { mount, VueWrapper } from "@vue/test-utils";
 import axe from "axe-core";
 import { createI18n } from "vue-i18n";
 import VcBlade from "@ui/components/organisms/vc-blade/vc-blade.vue";
-import { BladeInstanceKey, ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
+import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
 import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey } from "@core/blade-navigation/types";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
-import type { IBladeInstance } from "@core/blade-navigation/types";
+import type { BladeDescriptor } from "@core/blade-navigation/types";
 
 // useBlade reads module-level singletons from plugin-v2.
 // Mock them so VcBlade's blade actions succeed without the full plugin.
@@ -53,20 +53,8 @@ const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });
  * that provides all required injection keys via provide/inject.
  */
 function createBladeWrapper(bladeProps: Record<string, unknown> = {}) {
-  const bladeInstance = computed<IBladeInstance>(() => ({
-    id: "test-blade",
-    error: null,
-    expandable: false,
-    maximized: false,
-    navigation: undefined,
-    breadcrumbs: undefined,
-    param: undefined,
-    options: undefined,
-  }));
-
   return defineComponent({
     setup() {
-      provide(BladeInstanceKey, bladeInstance);
       provide(ToolbarServiceKey, createToolbarService());
       provide(WidgetServiceKey, createWidgetService());
       provide(BladeStackKey, {
@@ -85,11 +73,11 @@ function createBladeWrapper(bladeProps: Record<string, unknown> = {}) {
       } as any);
       provide(
         BladeDescriptorKey,
-        computed(() => ({
+        computed<BladeDescriptor>(() => ({
           id: "test-blade",
-          index: 0,
-          parentId: undefined,
-        })) as any,
+          name: "TestBlade",
+          visible: true,
+        })),
       );
 
       return () => h(VcBlade as any, bladeProps);

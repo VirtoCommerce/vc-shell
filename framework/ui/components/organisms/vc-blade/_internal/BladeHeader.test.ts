@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { computed, ref } from "vue";
-import { BladeInstanceKey } from "@framework/injection-keys";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import type { BladeDescriptor } from "@core/blade-navigation/types";
 
 // Mock @floating-ui/vue
 vi.mock("@floating-ui/vue", () => ({
@@ -20,16 +21,11 @@ vi.mock("@ui/composables", () => ({
 
 import BladeHeader from "./BladeHeader.vue";
 
-function factory(props: Record<string, unknown> = {}, bladeInstance?: Record<string, unknown>) {
-  const defaultBladeInstance = computed(() => ({
+function factory(props: Record<string, unknown> = {}, bladeInstance?: Partial<BladeDescriptor>) {
+  const defaultDescriptor = computed<BladeDescriptor>(() => ({
     id: "test-blade",
-    error: null,
-    expandable: false,
-    maximized: false,
-    navigation: undefined,
-    breadcrumbs: undefined,
-    param: undefined,
-    options: undefined,
+    name: "TestBlade",
+    visible: true,
     ...bladeInstance,
   }));
 
@@ -37,7 +33,7 @@ function factory(props: Record<string, unknown> = {}, bladeInstance?: Record<str
     props,
     global: {
       provide: {
-        [BladeInstanceKey as symbol]: defaultBladeInstance,
+        [BladeDescriptorKey as symbol]: defaultDescriptor,
       },
       stubs: {
         VcIcon: {
@@ -170,11 +166,10 @@ describe("BladeHeader", () => {
       slots: { prepend: '<div class="back-btn">Back</div>' },
       global: {
         provide: {
-          [BladeInstanceKey as symbol]: computed(() => ({
+          [BladeDescriptorKey as symbol]: computed<BladeDescriptor>(() => ({
             id: "blade-1",
-            error: null,
-            expandable: false,
-            maximized: false,
+            name: "TestBlade",
+            visible: true,
           })),
         },
         stubs: { VcIcon: true, teleport: true },
@@ -190,11 +185,10 @@ describe("BladeHeader", () => {
       slots: { actions: '<button class="action-btn">Save</button>' },
       global: {
         provide: {
-          [BladeInstanceKey as symbol]: computed(() => ({
+          [BladeDescriptorKey as symbol]: computed<BladeDescriptor>(() => ({
             id: "blade-1",
-            error: null,
-            expandable: false,
-            maximized: false,
+            name: "TestBlade",
+            visible: true,
           })),
         },
         stubs: { VcIcon: true, teleport: true },
@@ -210,10 +204,10 @@ describe("BladeHeader", () => {
       props: { title: "Test", closable: true },
       global: {
         provide: {
-          [BladeInstanceKey as symbol]: computed(() => ({
+          [BladeDescriptorKey as symbol]: computed<BladeDescriptor>(() => ({
             id: "blade-1",
-            error: null,
-            expandable: true,
+            name: "TestBlade",
+            visible: true,
             maximized: false,
           })),
         },

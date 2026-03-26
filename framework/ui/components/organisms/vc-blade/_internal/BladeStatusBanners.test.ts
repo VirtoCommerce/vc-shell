@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { computed, ref } from "vue";
-import { BladeInstanceKey } from "@framework/injection-keys";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import type { BladeDescriptor } from "@core/blade-navigation/types";
 
 // Mock vue-i18n
 vi.mock("vue-i18n", () => ({
@@ -40,11 +41,11 @@ function factory(props: Record<string, unknown> = {}, bladeError: unknown = null
     props,
     global: {
       provide: {
-        [BladeInstanceKey as symbol]: computed(() => ({
+        [BladeDescriptorKey as symbol]: computed<BladeDescriptor>(() => ({
           id: "test-blade",
-          error: bladeError,
-          expandable: false,
-          maximized: false,
+          name: "TestBlade",
+          visible: true,
+          error: bladeError as Error | undefined,
         })),
       },
       stubs: {

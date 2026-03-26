@@ -83,7 +83,7 @@ export function createContextManager(options: ContextManagerOptions): ContextMan
     bladeId?: string,
   ): { cleared: boolean } => {
     // Always use bladeGetter().id as the Map key — it returns blade.type.name (e.g. "offerslist"),
-    // which matches getActiveBladeContext() lookup. bladeId from BladeInstanceKey is a runtime
+    // which matches getActiveBladeContext() lookup. bladeId from BladeDescriptorKey is a runtime
     // unique ID (e.g. "blade_1_abc") that would cause a key mismatch.
     const targetBladeId = bladeGetter()?.id || bladeId;
     if (!targetBladeId) {

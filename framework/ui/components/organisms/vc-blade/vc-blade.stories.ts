@@ -1,30 +1,17 @@
 import type { Meta, StoryFn, StoryObj } from "@storybook/vue3-vite";
 import { ref, computed, provide } from "vue";
 import { VcBlade } from "@ui/components/organisms/vc-blade";
-import { BladeInstanceKey, ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
+import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
 import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey } from "@core/blade-navigation/types";
-import type { IBladeInstance } from "@core/blade-navigation/types";
+import type { BladeDescriptor } from "@core/blade-navigation/types";
 import type { IBladeToolbar } from "@core/types";
 import { withVcApp, withMobileView } from "../../../../../.storybook/decorators";
 
 // ── Mock blade injection context ─────────────────────────────────────────────
 
-function provideMockBladeContext(overrides: Partial<IBladeInstance> = {}) {
-  const bladeInstance = computed<IBladeInstance>(() => ({
-    id: "story-blade",
-    error: null,
-    expandable: true,
-    maximized: false,
-    navigation: undefined,
-    breadcrumbs: undefined,
-    param: undefined,
-    options: undefined,
-    ...overrides,
-  }));
-
-  provide(BladeInstanceKey, bladeInstance);
+function provideMockBladeContext(overrides: Partial<BladeDescriptor> = {}) {
   provide(ToolbarServiceKey, createToolbarService());
   provide(WidgetServiceKey, createWidgetService());
 
@@ -53,11 +40,12 @@ function provideMockBladeContext(overrides: Partial<IBladeInstance> = {}) {
 
   provide(
     BladeDescriptorKey,
-    computed(() => ({
+    computed<BladeDescriptor>(() => ({
       id: "story-blade",
-      index: 0,
-      parentId: undefined,
-    })) as any,
+      name: "StoryBlade",
+      visible: true,
+      ...overrides,
+    })),
   );
 }
 

@@ -201,6 +201,10 @@ export interface BladeDescriptor {
   error?: unknown;
   /** Blade title — populated at runtime by VcBlade via setBladeTitle() */
   title?: string;
+  /** Whether this blade is maximized (fullscreen) — set by VcBladeSlot */
+  maximized?: boolean;
+  /** Navigation breadcrumbs — set by VcBladeSlot */
+  breadcrumbs?: Breadcrumbs[];
 }
 
 /**

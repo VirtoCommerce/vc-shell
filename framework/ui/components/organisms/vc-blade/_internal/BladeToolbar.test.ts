@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref } from "vue";
+import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 
 // Mock the toolbar registration composable
 vi.mock("@ui/components/organisms/vc-blade/_internal/composables/useToolbarRegistration", () => ({
@@ -28,9 +29,9 @@ function factory(props: Record<string, unknown> = {}, slots: Record<string, stri
           template: '<div class="toolbar-desktop-stub"></div>',
         },
       },
-      mocks: {
-        $isMobile: ref(false),
-        $isDesktop: ref(true),
+      provide: {
+        [IsMobileKey as symbol]: ref(false),
+        [IsDesktopKey as symbol]: ref(true),
       },
     },
   });
@@ -64,9 +65,9 @@ describe("BladeToolbar", () => {
             template: '<div class="toolbar-desktop-stub"></div>',
           },
         },
-        mocks: {
-          $isMobile: ref(true),
-          $isDesktop: ref(false),
+        provide: {
+          [IsMobileKey as symbol]: ref(true),
+          [IsDesktopKey as symbol]: ref(false),
         },
       },
     });
@@ -82,9 +83,9 @@ describe("BladeToolbar", () => {
           ToolbarMobile: { template: "<div />" },
           ToolbarDesktop: { template: "<div />" },
         },
-        mocks: {
-          $isMobile: ref(true),
-          $isDesktop: ref(false),
+        provide: {
+          [IsMobileKey as symbol]: ref(true),
+          [IsDesktopKey as symbol]: ref(false),
         },
       },
     });

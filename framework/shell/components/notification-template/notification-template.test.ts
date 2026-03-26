@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ref } from "vue";
 import { mount } from "@vue/test-utils";
+import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import NotificationTemplate from "./notification-template.vue";
 
 // Stub VcIcon
@@ -9,11 +10,9 @@ const stubs = {
 };
 
 const globalConfig = {
-  config: {
-    globalProperties: {
-      $isMobile: ref(false),
-      $isDesktop: ref(true),
-    },
+  provide: {
+    [IsMobileKey as symbol]: ref(false),
+    [IsDesktopKey as symbol]: ref(true),
   },
 };
 
@@ -114,11 +113,9 @@ describe("NotificationTemplate", () => {
 
   it("applies mobile class when on mobile", () => {
     const mobileConfig = {
-      config: {
-        globalProperties: {
-          $isMobile: ref(true),
-          $isDesktop: ref(false),
-        },
+      provide: {
+        [IsMobileKey as symbol]: ref(true),
+        [IsDesktopKey as symbol]: ref(false),
       },
     };
     const wrapper = mount(NotificationTemplate, {

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { ref } from "vue";
 import { mount } from "@vue/test-utils";
+import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import UserDropdownButton from "./user-dropdown-button.vue";
 
 // Mock composable
@@ -24,11 +25,9 @@ const stubs = {
 };
 
 const globalConfig = {
-  config: {
-    globalProperties: {
-      $isMobile: ref(false),
-      $isDesktop: ref(true),
-    },
+  provide: {
+    [IsMobileKey as symbol]: ref(false),
+    [IsDesktopKey as symbol]: ref(true),
   },
 };
 
@@ -70,11 +69,9 @@ describe("UserDropdownButton", () => {
 
   it("renders UserSidebar on mobile", () => {
     const mobileConfig = {
-      config: {
-        globalProperties: {
-          $isMobile: ref(true),
-          $isDesktop: ref(false),
-        },
+      provide: {
+        [IsMobileKey as symbol]: ref(true),
+        [IsDesktopKey as symbol]: ref(false),
       },
     };
     const wrapper = mount(UserDropdownButton, {

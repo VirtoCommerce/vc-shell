@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { ref, provide, defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
-import { AppRootElementKey } from "@framework/injection-keys";
+import { AppRootElementKey, IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import AppBarOverlay from "./AppBarOverlay.vue";
 
 function mountOverlay(
@@ -11,9 +11,14 @@ function mountOverlay(
   const appRootEl = options.appRootEl ?? document.createElement("div");
   document.body.appendChild(appRootEl);
 
+  const isMobile = ref(options.isMobile ?? false);
+  const isDesktop = ref(options.isDesktop ?? true);
+
   const Wrapper = defineComponent({
     setup() {
       provide(AppRootElementKey, ref(appRootEl));
+      provide(IsMobileKey, isMobile);
+      provide(IsDesktopKey, isDesktop);
       return () =>
         h(AppBarOverlay, {
           isSidebarMode: false,
@@ -25,12 +30,6 @@ function mountOverlay(
 
   return {
     wrapper: mount(Wrapper, {
-      global: {
-        mocks: {
-          $isMobile: ref(options.isMobile ?? false),
-          $isDesktop: ref(options.isDesktop ?? true),
-        },
-      },
       attachTo: document.body,
     }),
     appRootEl,
@@ -57,9 +56,9 @@ describe("AppBarOverlay", () => {
     const wrapper = mount(AppBarOverlay, {
       props: { isSidebarMode: false, expanded: false },
       global: {
-        mocks: {
-          $isMobile: ref(false),
-          $isDesktop: ref(true),
+        provide: {
+          [IsMobileKey as symbol]: ref(false),
+          [IsDesktopKey as symbol]: ref(true),
         },
       },
     });
@@ -98,6 +97,8 @@ describe("AppBarOverlay", () => {
     const Wrapper = defineComponent({
       setup() {
         provide(AppRootElementKey, ref(appRootEl));
+        provide(IsMobileKey, ref(false));
+        provide(IsDesktopKey, ref(true));
         return () =>
           h(
             AppBarOverlay,
@@ -108,12 +109,6 @@ describe("AppBarOverlay", () => {
     });
 
     mount(Wrapper, {
-      global: {
-        mocks: {
-          $isMobile: ref(false),
-          $isDesktop: ref(true),
-        },
-      },
       attachTo: document.body,
     });
 

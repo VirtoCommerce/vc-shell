@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { ref, computed, defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
+import { IsMobileKey } from "@framework/injection-keys";
 
 const mockWidgets = ref<Record<string, unknown>[]>([]);
 const mockExternalWidgets: Record<string, unknown>[] = [];
@@ -39,8 +40,8 @@ function mountContainer(props: Record<string, unknown> = {}, options: { isMobile
       ...props,
     },
     global: {
-      mocks: {
-        $isMobile: ref(options.isMobile ?? false),
+      provide: {
+        [IsMobileKey as symbol]: ref(options.isMobile ?? false),
       },
       stubs: {
         WidgetContainerDesktop: {

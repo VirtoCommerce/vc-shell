@@ -9,7 +9,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref, defineComponent, nextTick, h } from "vue";
 import VcApp from "./vc-app.vue";
-import { AppRootElementKey, BladeRoutesKey, ModulesLoadErrorKey } from "@framework/injection-keys";
+import { AppRootElementKey, BladeRoutesKey, ModulesLoadErrorKey, IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import { BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
 
 // ============================================================================
@@ -150,14 +150,10 @@ function mountApp(propsOverride: Record<string, unknown> = {}) {
         [ModulesLoadErrorKey as symbol]: ref(false),
         [BladeStackKey as symbol]: { blades: ref([]) },
         [BladeMessagingKey as symbol]: { on: vi.fn(), off: vi.fn() },
+        [IsMobileKey as symbol]: isMobileRef,
+        [IsDesktopKey as symbol]: isDesktopRef,
         aiAgentConfig: undefined,
         aiAgentAddGlobalToolbarButton: true,
-      },
-      config: {
-        globalProperties: {
-          $isMobile: isMobileRef,
-          $isDesktop: isDesktopRef,
-        },
       },
       components: {
         VcLoading: VcLoadingStub,

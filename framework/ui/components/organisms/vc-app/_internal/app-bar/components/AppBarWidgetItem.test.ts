@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { ref } from "vue";
 import { mount } from "@vue/test-utils";
+import { IsMobileKey } from "@framework/injection-keys";
 
 const mockCurrentWidget = ref<Record<string, unknown> | undefined>(undefined);
 const mockToggleWidget = vi.fn();
@@ -22,8 +23,8 @@ function mountItem(props: Record<string, unknown> = {}, slots?: Record<string, u
     },
     slots,
     global: {
-      mocks: {
-        $isMobile: ref(false),
+      provide: {
+        [IsMobileKey as symbol]: ref(false),
       },
       stubs: {
         VcTooltip: {
@@ -60,7 +61,7 @@ describe("AppBarWidgetItem", () => {
     const wrapper = mount(AppBarWidgetItem, {
       props: { widgetId: "w1" },
       global: {
-        mocks: { $isMobile: ref(true) },
+        provide: { [IsMobileKey as symbol]: ref(true) },
         stubs: {
           VcTooltip: { template: '<div><slot /><slot name="tooltip" /></div>' },
           VcIcon: { template: '<i class="vc-icon-stub" />' },

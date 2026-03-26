@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { computed, ref } from "vue";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
 
 // Mock @floating-ui/vue
@@ -34,6 +35,8 @@ function factory(props: Record<string, unknown> = {}, bladeInstance?: Partial<Bl
     global: {
       provide: {
         [BladeDescriptorKey as symbol]: defaultDescriptor,
+        [IsMobileKey as symbol]: ref(false),
+        [IsDesktopKey as symbol]: ref(true),
       },
       stubs: {
         VcIcon: {
@@ -45,8 +48,6 @@ function factory(props: Record<string, unknown> = {}, bladeInstance?: Partial<Bl
       },
       mocks: {
         $t: (key: string) => key,
-        $isMobile: ref(false),
-        $isDesktop: ref(true),
       },
     },
   });
@@ -170,9 +171,11 @@ describe("BladeHeader", () => {
             name: "TestBlade",
             visible: true,
           })),
+          [IsMobileKey as symbol]: ref(false),
+          [IsDesktopKey as symbol]: ref(true),
         },
         stubs: { VcIcon: true, teleport: true },
-        mocks: { $t: (k: string) => k, $isMobile: ref(false), $isDesktop: ref(true) },
+        mocks: { $t: (k: string) => k },
       },
     });
     expect(wrapper.find(".back-btn").exists()).toBe(true);
@@ -189,9 +192,11 @@ describe("BladeHeader", () => {
             name: "TestBlade",
             visible: true,
           })),
+          [IsMobileKey as symbol]: ref(false),
+          [IsDesktopKey as symbol]: ref(true),
         },
         stubs: { VcIcon: true, teleport: true },
-        mocks: { $t: (k: string) => k, $isMobile: ref(false), $isDesktop: ref(true) },
+        mocks: { $t: (k: string) => k },
       },
     });
     expect(wrapper.find(".action-btn").exists()).toBe(true);
@@ -209,9 +214,11 @@ describe("BladeHeader", () => {
             visible: true,
             maximized: false,
           })),
+          [IsMobileKey as symbol]: ref(true),
+          [IsDesktopKey as symbol]: ref(false),
         },
         stubs: { VcIcon: true, teleport: true },
-        mocks: { $t: (k: string) => k, $isMobile: ref(true), $isDesktop: ref(false) },
+        mocks: { $t: (k: string) => k },
       },
     });
     expect(wrapper.find(".vc-blade-header__controls").exists()).toBe(false);

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { ref } from "vue";
 import { mount } from "@vue/test-utils";
+import { IsMobileKey } from "@framework/injection-keys";
 
 const mockGetButtons = ref<Record<string, unknown>[]>([]);
 const mockCurrentAction = ref<Record<string, unknown> | undefined>(undefined);
@@ -37,8 +38,8 @@ function mountActions(props: Record<string, unknown> = {}) {
       ...props,
     },
     global: {
-      mocks: {
-        $isMobile: ref(true),
+      provide: {
+        [IsMobileKey as symbol]: ref(true),
       },
       stubs: {
         VcButton: {
@@ -73,7 +74,7 @@ describe("AppBarMobileActions", () => {
     const wrapper = mount(AppBarMobileActions, {
       props: { isSidebarMode: false, expanded: false },
       global: {
-        mocks: { $isMobile: ref(false) },
+        provide: { [IsMobileKey as symbol]: ref(false) },
         stubs: {
           VcButton: { template: "<button />" },
           VcSidebar: { template: "<div />" },

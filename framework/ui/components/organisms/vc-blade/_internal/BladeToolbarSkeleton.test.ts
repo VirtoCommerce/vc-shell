@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { defineComponent, h, ref } from "vue";
+import { IsMobileKey } from "@framework/injection-keys";
 import BladeToolbarSkeleton from "./BladeToolbarSkeleton.vue";
 
 vi.mock("@ui/components/atoms/vc-skeleton", () => ({
@@ -17,8 +18,8 @@ describe("BladeToolbarSkeleton.vue", () => {
   it("renders the root element with toolbar class", () => {
     const wrapper = mount(BladeToolbarSkeleton, {
       global: {
-        mocks: {
-          $isMobile: ref(false),
+        provide: {
+          [IsMobileKey as symbol]: ref(false),
         },
       },
     });
@@ -28,8 +29,8 @@ describe("BladeToolbarSkeleton.vue", () => {
   it("renders 3 skeleton button placeholders", () => {
     const wrapper = mount(BladeToolbarSkeleton, {
       global: {
-        mocks: {
-          $isMobile: ref(false),
+        provide: {
+          [IsMobileKey as symbol]: ref(false),
         },
       },
     });
@@ -40,8 +41,8 @@ describe("BladeToolbarSkeleton.vue", () => {
   it("has mobile class when $isMobile is true", () => {
     const wrapper = mount(BladeToolbarSkeleton, {
       global: {
-        mocks: {
-          $isMobile: ref(true),
+        provide: {
+          [IsMobileKey as symbol]: ref(true),
         },
       },
     });

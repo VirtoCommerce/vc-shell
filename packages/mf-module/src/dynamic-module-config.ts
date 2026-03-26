@@ -31,7 +31,7 @@ export default function dynamicModuleConfiguration(
     ],
     build: {
       target: "esnext",
-      outDir: "dist",
+      outDir: "dist/mf",
     },
   };
 }

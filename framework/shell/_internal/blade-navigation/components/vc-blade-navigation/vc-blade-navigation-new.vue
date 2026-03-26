@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, h, toRef } from "vue";
+import { computed, h, inject, toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { RouterView, useRouter } from "vue-router";

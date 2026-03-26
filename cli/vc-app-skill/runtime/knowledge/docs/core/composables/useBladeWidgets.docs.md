@@ -112,7 +112,7 @@ A complete example of an external widget that shows an unread message count and 
 **1. Register the external widget (module index.ts):**
 
 ```typescript
-import { createAppModule, registerExternalWidget, IBladeInstance } from "@vc-shell/framework";
+import { createAppModule, registerExternalWidget, BladeDescriptor } from "@vc-shell/framework";
 import { markRaw } from "vue";
 import { MessageWidget } from "./components/widgets";
 
@@ -120,7 +120,7 @@ registerExternalWidget({
   id: "MessageWidget",
   component: markRaw(MessageWidget),
   targetBlades: ["ProductDetails", "OrderDetails"],
-  isVisible: (blade?: IBladeInstance) => !!blade?.param,
+  isVisible: (blade?: BladeDescriptor) => !!blade?.param,
 });
 ```
 

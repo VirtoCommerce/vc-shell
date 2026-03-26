@@ -21,7 +21,7 @@ This centralized approach has several advantages:
 | Key | Type | Description |
 |-----|------|-------------|
 | `NavigationViewLocationKey` | `BladeVNode` | Current blade VNode location in navigation |
-| `BladeInstanceKey` | `ComputedRef<IBladeInstance>` | Current blade instance metadata |
+| `BladeDescriptorKey` | `ComputedRef<BladeDescriptor>` | Current blade descriptor metadata |
 | `BladeBackButtonKey` | `Component \| undefined` | Custom back button component for a blade |
 | `BladeDataKey` | *(from blade-navigation types)* | Data passed between parent/child blades |
 | `BladeContextKey` | `ComputedRef<Record<string, unknown>>` | Blade-exposed context for widgets/extensions |
@@ -83,7 +83,7 @@ This centralized approach has several advantages:
 | Deprecated | Use Instead |
 |------------|-------------|
 | `navigationViewLocation` | `NavigationViewLocationKey` |
-| `BladeInstance` | `BladeInstanceKey` |
+| `BladeDescriptor` | `BladeDescriptorKey` |
 | `NotificationTemplatesSymbol` | `NotificationTemplatesKey` |
 | `BLADE_BACK_BUTTON` | `BladeBackButtonKey` |
 | `TOOLBAR_SERVICE` | `ToolbarServiceKey` |

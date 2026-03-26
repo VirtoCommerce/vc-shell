@@ -355,7 +355,7 @@ interface IBladeToolbar {
   clickHandler?(): void;
   disabled?: boolean | ComputedRef<boolean>;
   isVisible?: boolean | Ref<boolean> | ComputedRef<boolean>
-             | ((blade?: IBladeInstance) => boolean);
+             | ((blade?: BladeDescriptor) => boolean);
   separator?: "left" | "right" | "both";
 }
 ```

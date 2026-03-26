@@ -146,6 +146,19 @@ if (isMonorepo) {
     },
     // Bare import: resolve to source entry point (regex = exact match only)
     { find: /^@vc-shell\/framework$/, replacement: frameworkIndexPath },
+    // Named sub-entries: resolve to their source entry points (before catch-all)
+    {
+      find: /^@vc-shell\/framework\/ai-agent$/,
+      replacement: normalizePath(path.resolve(frameworkPath, "core/plugins/ai-agent/public.ts")),
+    },
+    {
+      find: /^@vc-shell\/framework\/extensions$/,
+      replacement: normalizePath(path.resolve(frameworkPath, "core/plugins/extension-points/public.ts")),
+    },
+    {
+      find: /^@vc-shell\/framework\/ui$/,
+      replacement: normalizePath(path.resolve(frameworkPath, "ui/index.ts")),
+    },
     // Subpath imports: @vc-shell/framework/core/... → framework/core/...
     { find: /^@vc-shell\/framework\/(.+)/, replacement: `${normalizedFrameworkPath}/$1` },
     // Internal framework path aliases for source imports

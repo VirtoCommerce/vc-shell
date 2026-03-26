@@ -11,8 +11,10 @@ export default function dynamicModuleConfiguration(
   options: DynamicModuleOptions,
 ): UserConfig {
   const entry = options.entry ?? "./src/modules/index.ts";
+  const base = process.env.APP_BASE_PATH || `/apps/${pkg.name}/`;
 
   return {
+    base,
     plugins: [
       viteBladePlugin(),
       stripExternalStyles(),

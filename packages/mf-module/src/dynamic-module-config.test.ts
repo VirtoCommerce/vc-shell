@@ -14,6 +14,25 @@ import { SHARED_DEP_NAMES } from "@vc-shell/mf-config";
 describe("dynamicModuleConfiguration (MF)", () => {
   const pkg = { name: "reviews", version: "1.0.0" };
 
+  beforeEach(() => {
+    delete process.env.APP_BASE_PATH;
+  });
+
+  it("derives base from package name by default", () => {
+    const config = dynamicModuleConfiguration(pkg, {
+      compatibility: { framework: "^2.0.0" },
+    });
+    expect(config.base).toBe("/apps/reviews/");
+  });
+
+  it("uses APP_BASE_PATH env var when set", () => {
+    process.env.APP_BASE_PATH = "/custom/path/";
+    const config = dynamicModuleConfiguration(pkg, {
+      compatibility: { framework: "^2.0.0" },
+    });
+    expect(config.base).toBe("/custom/path/");
+  });
+
   it("produces MF remote config with correct name and exposes", () => {
     const config = dynamicModuleConfiguration(pkg, {
       compatibility: { framework: "^2.0.0" },

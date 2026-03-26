@@ -1,3 +1,9 @@
+# [2.0.0-alpha.29](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.28...v2.0.0-alpha.29) (2026-03-26)
+
+
+### Bug Fixes
+
+* **vite-config:** fix named sub-entries for framework path resolution ([2e4cdd1](https://github.com/VirtoCommerce/vc-shell/commit/2e4cdd10d6afc7bef32562715eb89ea7a5a5d307))
 # [2.0.0-alpha.28](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.27...v2.0.0-alpha.28) (2026-03-26)
 
 **Note:** Version bump only for package @vc-shell/config-generator

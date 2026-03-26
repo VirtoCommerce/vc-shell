@@ -1,3 +1,16 @@
+# [2.0.0-alpha.29](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.28...v2.0.0-alpha.29) (2026-03-26)
+
+
+### Bug Fixes
+
+* **navigation:** inject missing dependency in vc-blade-navigation component ([7c950a0](https://github.com/VirtoCommerce/vc-shell/commit/7c950a07f44b28fbe9e3cd7899e182fc406a8ef6))
+* **test:** update BladeHeader tests to use closable prop instead of expandable descriptor ([d37244b](https://github.com/VirtoCommerce/vc-shell/commit/d37244b8b2874a694679c663065e0a4161123395))
+
+
+### Features
+
+* **popup:**  usePopup composable documentation and tests ([bef8e8b](https://github.com/VirtoCommerce/vc-shell/commit/bef8e8b9f0c30f4986a15c7127870abe95862056))
+* **responsive-composable:** introduce useResponsive composable to replace global properties and injection keys ([1280853](https://github.com/VirtoCommerce/vc-shell/commit/1280853cf10ec6cf432b5e7eb88b0991430dfc20))
 # [2.0.0-alpha.28](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.27...v2.0.0-alpha.28) (2026-03-26)
 
 **Note:** Version bump only for package @vc-shell/framework

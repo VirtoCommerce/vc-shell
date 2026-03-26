@@ -1,3 +1,7 @@
+# [2.0.0-alpha.29](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.28...v2.0.0-alpha.29) (2026-03-26)
+
+**Note:** Version bump only for package @vc-shell/vc-app-skill
+
 # [2.0.0-alpha.28](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.27...v2.0.0-alpha.28) (2026-03-26)
 
 **Note:** Version bump only for package @vc-shell/vc-app-skill

@@ -17,7 +17,7 @@ The pattern follows a "define once, inject anywhere" approach: the blade compone
 // In a blade's <script setup>
 import { defineBladeContext, injectBladeContext } from '@vc-shell/framework';
 
-// Provide context (blade component)
+// Provide context — refs/computeds are auto-unwrapped for consumers
 defineBladeContext({ item, disabled, loading });
 
 // Or with a computed for selective exposure
@@ -29,7 +29,9 @@ defineBladeContext(computed(() => ({ id: item.value?.id })));
 import { injectBladeContext } from '@vc-shell/framework';
 
 const ctx = injectBladeContext();
+// Refs are already unwrapped — access values directly, no .value needed
 const entityId = computed(() => ctx.value.id as string);
+const item = computed(() => ctx.value.item as { id: string; name: string });
 ```
 
 ## API
@@ -90,6 +92,7 @@ defineBladeContext(computed(() => ({
 
 ## Details
 
+- **Automatic ref unwrapping**: `defineBladeContext` shallow-unwraps all ref/computed values in the provided object. Consumers get plain values directly (`ctx.value.item` instead of `ctx.value.item.value`). This works reactively — when the source ref changes, the context updates automatically.
 - **Reactivity**: The provided context is always wrapped in a `computed`, so consumers receive a `ComputedRef` regardless of whether the provider passed a plain object, a ref, or a getter. Changes propagate automatically.
 - **Injection key**: Uses `BladeContextKey` from `framework/injection-keys.ts`. This is a framework-level Symbol, so there is no risk of key collision with application code.
 - **Error handling**: `injectBladeContext` throws an `InjectionError` with a descriptive message if called outside a blade component tree. This fails fast during development rather than silently returning `undefined`.

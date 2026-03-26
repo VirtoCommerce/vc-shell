@@ -21,7 +21,7 @@ This centralized approach has several advantages:
 | Key | Type | Description |
 |-----|------|-------------|
 | `NavigationViewLocationKey` | `BladeVNode` | Current blade VNode location in navigation |
-| `BladeDescriptorKey` | `ComputedRef<BladeDescriptor>` | Current blade instance metadata |
+| `BladeDescriptorKey` | `ComputedRef<BladeDescriptor>` | Current blade descriptor metadata |
 | `BladeBackButtonKey` | `Component \| undefined` | Custom back button component for a blade |
 | `BladeDataKey` | *(from blade-navigation types)* | Data passed between parent/child blades |
 | `BladeContextKey` | `ComputedRef<Record<string, unknown>>` | Blade-exposed context for widgets/extensions |

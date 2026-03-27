@@ -31,8 +31,8 @@
         :modified="modified"
         :title-id="bladeTitleId"
         @close="handleClose"
-        @expand="$emit('expand')"
-        @collapse="$emit('collapse')"
+        @expand="handleExpand"
+        @collapse="handleCollapse"
       >
         <template #prepend>
           <component
@@ -133,7 +133,7 @@ import { BladeBackButtonKey } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { useBlade } from "../../../../core/composables";
 import { useResponsive } from "@framework/core/composables/useResponsive";
-import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import { BladeDescriptorKey, BladeMaximizedKey } from "@core/blade-navigation/types";
 
 export interface Props {
   icon?: string;
@@ -185,6 +185,7 @@ const { id: bladeId } = bladeFull;
 
 // Context detection: are we inside blade navigation (VcBladeSlot)?
 const hasBladeContext = !!inject(BladeDescriptorKey, undefined);
+const maximizedRef = inject(BladeMaximizedKey, undefined);
 
 // When inside blade navigation, read from BladeDescriptor (ignoring props).
 // When standalone (Storybook), fall back to props.
@@ -210,6 +211,22 @@ function handleClose() {
   } else {
     // Standalone (Storybook): emit for argTypes action handlers
     emit("close");
+  }
+}
+
+function handleExpand() {
+  if (maximizedRef) {
+    maximizedRef.value = true;
+  } else {
+    emit("expand");
+  }
+}
+
+function handleCollapse() {
+  if (maximizedRef) {
+    maximizedRef.value = false;
+  } else {
+    emit("collapse");
   }
 }
 

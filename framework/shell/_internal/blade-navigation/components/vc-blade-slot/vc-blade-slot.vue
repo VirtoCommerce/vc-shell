@@ -22,13 +22,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, provide, ref, watch, watchEffect } from "vue";
+import { computed, onBeforeUnmount, provide, ref, watch } from "vue";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 import { BladeBackButtonKey } from "@framework/injection-keys";
 import { ErrorInterceptor } from "@shell/components/error-interceptor";
 import { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
 import type { BladeDescriptor, IParentCallArgs } from "@core/blade-navigation/types";
-import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import { BladeDescriptorKey, BladeMaximizedKey } from "@core/blade-navigation/types";
 import type { CoreBladeExposed } from "@core/blade-navigation/types";
 import type { Breadcrumbs } from "@ui/types";
 import type { Component } from "vue";
@@ -65,6 +65,9 @@ provide(
     breadcrumbs: props.breadcrumbs,
   })),
 );
+
+// Provide writable maximized ref so VcBlade can toggle expand/collapse directly
+provide(BladeMaximizedKey, maximized);
 
 // Provide back button component
 provide(

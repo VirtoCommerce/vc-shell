@@ -293,5 +293,6 @@ export interface IBladeMessaging {
 export const BladeStackKey: InjectionKey<IBladeStack> = Symbol("BladeStack");
 export const BladeMessagingKey: InjectionKey<IBladeMessaging> = Symbol("BladeMessaging");
 export const BladeDescriptorKey: InjectionKey<ComputedRef<BladeDescriptor>> = Symbol("BladeDescriptor");
+export const BladeMaximizedKey: InjectionKey<Ref<boolean>> = Symbol("BladeMaximized");
 export const BladeDataKey: InjectionKey<ComputedRef<Record<string, unknown>> | Ref<Record<string, unknown>>> =
   Symbol("BladeData");

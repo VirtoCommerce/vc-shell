@@ -1,14 +1,15 @@
 <template>
   <div
     class="vc-field"
-    :class="{
-      'vc-field--vertical': orientation === 'vertical',
-      'vc-field--horizontal': orientation === 'horizontal',
-    }"
+    :class="[`vc-field--${orientation}`]"
   >
-    <VcCol :size="aspectRatio[0]">
-      <!-- Field label -->
-      <VcLabel v-if="label">
+    <!-- Label -->
+    <div
+      v-if="label"
+      class="vc-field__label"
+      :style="orientation === 'horizontal' ? { flex: `${aspectRatio[0]} 1 0%` } : undefined"
+    >
+      <VcLabel>
         <span>{{ label }}</span>
         <template
           v-if="tooltip"
@@ -17,100 +18,138 @@
           {{ tooltip }}
         </template>
       </VcLabel>
-    </VcCol>
-    <VcCol :size="aspectRatio[1]">
-      <VcFieldType
-        :value="modelValue"
-        :type="type"
-        class="vc-field__field-type"
-      >
-        <VcButton
-          v-if="copyable"
-          :icon="copyIcon"
-          icon-size="m"
-          class="vc-field__copy-button"
-          text
-          aria-label="Copy to clipboard"
-          @click="copy(modelValue)"
-        ></VcButton>
-      </VcFieldType>
-    </VcCol>
+    </div>
+
+    <!-- Value -->
+    <div
+      class="vc-field__value"
+      :style="orientation === 'horizontal' ? { flex: `${aspectRatio[1]} 1 0%` } : undefined"
+    >
+      <div class="vc-field__content">
+        <VcLink
+          v-if="type === 'link' && modelValue"
+          class="vc-field__link"
+          @click="onLinkClick"
+        >{{ displayValue || modelValue }}</VcLink>
+
+        <a
+          v-else-if="type === 'email' && modelValue"
+          :href="`mailto:${modelValue}`"
+          class="vc-field__link"
+        >{{ displayValue || modelValue }}</a>
+
+        <span
+          v-else
+          class="vc-field__text"
+        >{{ formattedValue }}</span>
+      </div>
+
+      <VcButton
+        v-if="copyable"
+        :icon="copyIcon"
+        icon-size="m"
+        class="vc-field__copy"
+        text
+        aria-label="Copy to clipboard"
+        @click="onCopy"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { VcLabel } from "@ui/components/atoms/vc-label";
-import { VcCol } from "@ui/components/atoms/vc-col";
-import VcFieldType from "@ui/components/molecules/vc-field/_internal/vc-field-type/vc-field-type.vue";
+import { formatDateRelative } from "@core/utilities/date";
 
 export interface VcFieldProps {
-  /**
-   * Field label text
-   */
   label?: string;
-  /**
-   * Field tooltip information
-   */
   tooltip?: string;
-  /**
-   * Field type
-   */
   type?: "text" | "date" | "date-ago" | "link" | "email";
-  /**
-   * Field content
-   */
   modelValue?: string | number | Date;
-  /**
-   * Add button for field content copying
-   */
+  /** Text to display instead of modelValue. modelValue is still used for copy/link actions. */
+  displayValue?: string;
   copyable?: boolean;
-  /**
-   * Field orientation
-   */
   orientation?: "horizontal" | "vertical";
-  /**
-   * Aspect ratio for columns
-   */
   aspectRatio?: [number, number];
 }
 
-withDefaults(defineProps<VcFieldProps>(), {
+const props = withDefaults(defineProps<VcFieldProps>(), {
   type: "text",
   orientation: "vertical",
   aspectRatio: () => [1, 1],
 });
 
+const formattedValue = computed(() => {
+  const val = props.modelValue;
+  if (val == null || val === "") {
+    return props.type === "date" || props.type === "date-ago" ? "N/A" : "";
+  }
+
+  if (props.type === "date") {
+    return val instanceof Date ? val.toLocaleDateString() : String(val);
+  }
+  if (props.type === "date-ago") {
+    return formatDateRelative(val) || "N/A";
+  }
+  return String(val);
+});
+
 const copyIcon = ref("lucide-copy");
 
-function copy(value: string | number | Date | undefined) {
-  navigator.clipboard?.writeText(String(value ?? ""));
+function onCopy() {
+  navigator.clipboard?.writeText(String(props.modelValue ?? ""));
   copyIcon.value = "lucide-check";
   setTimeout(() => {
     copyIcon.value = "lucide-copy";
   }, 1000);
 }
+
+function onLinkClick() {
+  const url = String(props.modelValue ?? "");
+  if (url) {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+}
 </script>
 
 <style lang="scss">
-:root {
-  --field-gap: 0.5rem;
-}
-
 .vc-field {
-  @apply tw-flex;
+  @apply tw-min-w-0 tw-max-w-full tw-overflow-hidden;
 
   &--vertical {
-    @apply tw-flex-col;
-    gap: var(--field-gap);
+    @apply tw-flex tw-flex-col;
+    gap: 0.25rem;
   }
 
   &--horizontal {
-    @apply tw-flex-row tw-items-center;
+    @apply tw-flex tw-flex-row tw-items-baseline;
+    gap: 0.5rem;
   }
 
-  &__copy-button {
-    @apply tw-ml-2;
+  &__label {
+    @apply tw-min-w-0;
+  }
+
+  &__value {
+    @apply tw-flex tw-items-center tw-gap-1;
+  }
+
+  &__content {
+    @apply tw-overflow-hidden tw-flex-1;
+  }
+
+  &__text {
+    @apply tw-text-sm tw-text-[color:var(--neutrals-600)];
+    @apply tw-whitespace-normal tw-break-words;
+  }
+
+  &__link {
+    @apply tw-text-sm;
+  }
+
+  &__copy {
+    @apply tw-flex-shrink-0;
   }
 }
 </style>

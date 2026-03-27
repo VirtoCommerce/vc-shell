@@ -11,9 +11,15 @@
         v-for="widget in visibleItems"
         :key="widget.id"
       >
+        <VcSkeleton
+          v-if="widget.headless && resolveLoading(widget)"
+          variant="block"
+          :width="48"
+          :height="48"
+          :data-item-key="widget.id"
+        />
         <VcWidget
-          v-if="widget.headless"
-          v-loading:500="resolveLoading(widget)"
+          v-else-if="widget.headless"
           :icon="widget.headless?.icon"
           :title="resolveTitle(widget)"
           :value="resolveBadge(widget)"
@@ -61,9 +67,14 @@
           v-for="item in hiddenItems"
           :key="item.id"
         >
+          <VcSkeleton
+            v-if="item.headless && resolveLoading(item)"
+            variant="block"
+            width="100%"
+            :height="32"
+          />
           <VcWidget
-            v-if="item.headless"
-            v-loading:500="resolveLoading(item)"
+            v-else-if="item.headless"
             class="tw-w-full"
             :icon="item.headless?.icon"
             :title="resolveTitle(item)"
@@ -101,6 +112,7 @@ import { computed, ref } from "vue";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcWidget } from "@ui/components/atoms/vc-widget";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { IWidget } from "@core/services/widget-service";
 import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
@@ -138,7 +150,7 @@ const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>(
   background-color: var(--blade-toolbar-widgets-bg-color-mobile);
 
   &__content {
-    @apply tw-flex tw-flex-row tw-items-center tw-gap-1 tw-px-[22px];
+    @apply tw-flex tw-flex-row tw-items-center tw-gap-1 tw-px-[22px] tw-w-full tw-overflow-hidden;
     height: var(--blade-toolbar-widgets-mobile-height);
   }
 

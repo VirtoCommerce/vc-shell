@@ -24,8 +24,9 @@
       :data-is-expanded="isExpanded"
       @click.stop="$emit('expand-toggle', $event)"
     >
-      <i
-        :class="isExpanded ? expandedIcon : collapsedIcon"
+      <VcIcon
+        :icon="isExpanded ? expandedIcon : collapsedIcon"
+        size="xs"
         class="vc-cell-renderer__expander-icon"
       />
     </VcButton>
@@ -135,6 +136,7 @@ import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/util
 import TableCheckbox from "@ui/components/organisms/vc-data-table/components/TableCheckbox.vue";
 import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
 import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import DynamicCellRenderer from "@ui/components/organisms/vc-data-table/components/cells/DynamicCellRenderer.vue";
 import { SlotProxy } from "@ui/components/organisms/vc-data-table/components/_internal/SlotProxy";
 

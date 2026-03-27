@@ -13,6 +13,7 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
+| `layout` | `"filmstrip" \| "grid"` | `"filmstrip"` | Layout mode — filmstrip shows a single scrollable row with expand/collapse; grid shows the classic multi-row auto-fill layout. |
 | `images` | `ICommonAsset[]` | `[]` | Array of image assets to display. |
 | `disabled` | `boolean` | `false` | Disables all interactive actions. |
 | `multiple` | `boolean` | `false` | Allow selecting multiple files in upload dialog. |
@@ -47,7 +48,8 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 - **Drag-and-drop reorder** -- Drag tiles to reorder. Emits `sort` with the new array. The dragged tile shows a ghost preview during the drag operation.
 - **External file drop** -- Drop files from the OS onto the gallery to upload. The entire gallery acts as a drop target with visual feedback.
 - **Lightbox preview** -- Click a tile to open a full-screen preview carousel. Navigate between images with arrow keys or swipe gestures.
-- **Responsive grid** -- Auto-fill grid adapts to container width using CSS grid with `auto-fill` and `minmax()`.
+- **Filmstrip layout (default)** -- Single-row scrollable strip powered by Swiper. Navigate with arrows or mouse wheel. Click "Show all (N)" to expand into full grid. Upload button and "or drop here" hint always visible in header.
+- **Grid layout** -- Classic auto-fill grid that wraps images into multiple rows. Set `layout="grid"` to use this mode.
 - **Per-tile actions** -- Each tile shows preview, edit, and remove buttons on hover. Disable individual actions via the `itemActions` prop.
 
 ## Basic Usage
@@ -62,6 +64,29 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
   @sort="handleSort"
   @edit="handleEdit"
   @remove="handleRemove"
+/>
+```
+
+## Filmstrip Layout (Default)
+
+```vue
+<VcGallery
+  :images="product.images"
+  imagefit="cover"
+  @upload="handleUpload"
+  @sort="handleSort"
+  @remove="handleRemove"
+/>
+```
+
+## Classic Grid Layout
+
+```vue
+<VcGallery
+  layout="grid"
+  :images="product.images"
+  @upload="handleUpload"
+  @sort="handleSort"
 />
 ```
 
@@ -156,6 +181,7 @@ function handleRemove(image: ICommonAsset) {
 - Use `imagefit="cover"` for photo galleries where cropping is acceptable, and `"contain"` for logos or icons where the full image must be visible.
 - The upload zone tile always appears at the end of the grid when the gallery is not disabled. It accepts both click and drag-and-drop interactions.
 - The `startingSortOrder` parameter in the `upload` event tells you where the new files should be inserted in the sort order. Use it to maintain correct ordering when appending new images.
+- The filmstrip layout is ideal for blades where vertical space is limited. Users can expand to see all images or scroll horizontally. The classic grid layout is better for dedicated media management pages.
 
 ## Accessibility
 

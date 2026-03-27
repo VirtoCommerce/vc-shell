@@ -8,6 +8,7 @@
     class="vc-gallery-item"
     :class="{
       'vc-gallery-item--readonly': readonly,
+      'vc-gallery-item--mobile': isMobile,
     }"
     @preview="$emit('preview', image)"
     @edit="$emit('edit', image)"
@@ -17,6 +18,7 @@
       <div
         v-if="!readonly && !disableDrag"
         class="vc-gallery-item__drag-handle"
+        :class="{ 'vc-gallery-item__drag-handle--mobile': isMobile }"
       >
         <VcIcon
           icon="lucide-grip-vertical"
@@ -32,6 +34,7 @@ import { computed } from "vue";
 import type { AssetLike } from "@core/composables/useAssetsManager";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcImageTile } from "@ui/components/molecules/vc-image-tile";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export interface Props {
   image: AssetLike;
@@ -51,6 +54,8 @@ const props = withDefaults(defineProps<Props>(), {
   disableDrag: false,
   imageFit: "contain",
 });
+
+const { isMobile } = useResponsive();
 
 defineEmits<{
   (e: "preview", image: AssetLike): void;
@@ -73,13 +78,13 @@ const resolvedActions = computed(() => ({
     color: var(--secondary-400);
   }
 
-  @media (hover: hover) {
-    &:hover &__drag-handle {
-      @apply tw-opacity-100;
-    }
+  // Desktop: show on hover
+  &:not(&--mobile):hover &__drag-handle {
+    @apply tw-opacity-100;
   }
 
-  &:global(.vc-image-tile--active) &__drag-handle {
+  // Mobile: always visible
+  &--mobile &__drag-handle {
     @apply tw-opacity-100;
   }
 }

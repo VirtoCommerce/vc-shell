@@ -34,7 +34,9 @@
       },
       "VC_FILE_UPLOAD": {
         "DRAG_HERE": "Drag and drop file here or",
-        "BROWSE": "browse your files"
+        "BROWSE": "browse your files",
+        "TAP_TO_UPLOAD": "Tap to select files",
+        "UPLOADING": "Uploading..."
       },
       "VC_INPUT": {
         "DATE_PLACEHOLDER": "Select date",
@@ -71,7 +73,11 @@
         "GALLERY_IS_EMPTY": "Gallery is empty",
         "DROP_TO_UPLOAD": "Drop to upload",
         "DRAG_IMAGES_HERE": "Drag images here or",
-        "BROWSE_IMAGES": "browse your files"
+        "BROWSE_IMAGES": "browse your files",
+        "UPLOAD": "Upload",
+        "OR_DROP_HERE": "or drop here",
+        "SHOW_ALL": "Show all ({count})",
+        "COLLAPSE": "Collapse"
       },
       "VC_APP": {
         "INTERNAL": {

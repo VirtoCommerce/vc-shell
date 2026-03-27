@@ -4,6 +4,7 @@
     class="vc-image-tile"
     :class="{
       'vc-image-tile--active': isActive,
+      'vc-image-tile--mobile': isMobile,
     }"
     @click="onTileClick"
   >
@@ -18,6 +19,7 @@
       v-if="src"
       :src="src"
       :alt="alt"
+      loading="lazy"
       class="vc-image-tile__image"
       :class="{ 'vc-image-tile__image--loaded': imageState.isLoaded.value }"
       :style="{ objectFit: imageFit }"
@@ -89,6 +91,7 @@ import { vOnClickOutside } from "@vueuse/components";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useI18n } from "vue-i18n";
 import { useImageLoad } from "@ui/components/organisms/vc-gallery/composables/useImageLoad";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export interface VcImageTileActions {
   preview?: boolean;
@@ -115,11 +118,13 @@ defineEmits<{
 }>();
 
 const { t } = useI18n({ useScope: "global" });
+const { isMobile } = useResponsive();
 const imageState = useImageLoad(toRef(() => props.src));
 const isActive = ref(false);
 
 function onTileClick() {
-  if (window.matchMedia("(hover: none)").matches) {
+  // On mobile tray is always visible, no need to toggle
+  if (!isMobile.value && window.matchMedia("(hover: none)").matches) {
     isActive.value = !isActive.value;
   }
 }
@@ -191,19 +196,35 @@ function deactivate() {
     color: var(--image-tile-action-color);
   }
 
-  @media (hover: hover) {
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--image-tile-shadow-hover);
-    }
+  // Desktop: hover effects
+  &:not(&--mobile):hover {
+    transform: translateY(-2px);
+    box-shadow: var(--image-tile-shadow-hover);
+  }
 
-    &:hover &__tray {
-      @apply tw-translate-y-0;
-    }
+  &:not(&--mobile):hover &__tray {
+    @apply tw-translate-y-0;
   }
 
   &--active &__tray {
     @apply tw-translate-y-0;
+  }
+
+  // Mobile: tray always visible, compact layout
+  &--mobile &__tray {
+    @apply tw-translate-y-0;
+    padding: 4px;
+    gap: 2px;
+  }
+
+  &--mobile &__tray-name {
+    @apply tw-text-[10px];
+  }
+
+  &--mobile .vc-image-tile-action {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
   }
 }
 

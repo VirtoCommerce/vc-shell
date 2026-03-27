@@ -315,6 +315,10 @@ function handleDialogDismiss(): void {
     @apply tw-flex tw-w-full tw-min-h-0 tw-grow tw-gap-5 tw-px-6 tw-pb-5 tw-pt-3;
   }
 
+  &__panel--fullscreen &__content {
+    @apply tw-p-0 tw-overflow-hidden tw-h-full;
+  }
+
   &__content-inner {
     @apply tw-text-sm tw-font-normal tw-leading-5 tw-text-[var(--popup-content-text-color)] tw-flex tw-items-center tw-flex-auto tw-overflow-y-auto [word-break:break-word];
 
@@ -323,12 +327,21 @@ function handleDialogDismiss(): void {
     }
   }
 
+  &__panel--fullscreen &__content-inner {
+    @apply tw-overflow-hidden tw-h-full tw-items-stretch;
+  }
+
   &__content-wrapper {
     @apply tw-flex tw-flex-auto tw-self-center tw-min-h-0 tw-max-h-[-webkit-fill-available] tw-max-h-[-moz-available];
 
     &--full {
       @apply tw-h-full;
     }
+  }
+
+  &__panel--fullscreen &__content-wrapper {
+    @apply tw-self-stretch tw-h-full tw-overflow-hidden tw-flex-col;
+    min-width: 0;
   }
 
   &__footer {

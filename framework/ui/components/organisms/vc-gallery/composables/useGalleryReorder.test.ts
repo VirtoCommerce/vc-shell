@@ -38,36 +38,6 @@ describe("useGalleryReorder", () => {
     expect(draggedId.value).toBeUndefined();
   });
 
-  it("enables draggable only from drag handle", () => {
-    const images = ref<AssetLike[]>([
-      { id: "1", name: "a.png", sortOrder: 0 },
-      { id: "2", name: "b.png", sortOrder: 1 },
-    ]);
-    const { reorderHandlers } = useGalleryReorder(images, { disabled: ref(false), onSort: vi.fn() });
-
-    const tile = document.createElement("div");
-    const handle = document.createElement("div");
-    handle.className = "vc-gallery-item__drag-handle";
-    tile.appendChild(handle);
-
-    reorderHandlers.onItemMouseDown({ currentTarget: tile, target: handle, button: 0 } as unknown as MouseEvent);
-
-    expect(tile.draggable).toBe(true);
-  });
-
-  it("does not enable draggable when clicking action controls", () => {
-    const images = ref<AssetLike[]>([
-      { id: "1", name: "a.png", sortOrder: 0 },
-      { id: "2", name: "b.png", sortOrder: 1 },
-    ]);
-    const { reorderHandlers } = useGalleryReorder(images, { disabled: ref(false), onSort: vi.fn() });
-
-    const tile = document.createElement("div");
-    const actionButton = document.createElement("button");
-    tile.appendChild(actionButton);
-
-    reorderHandlers.onItemMouseDown({ currentTarget: tile, target: actionButton, button: 0 } as unknown as MouseEvent);
-
-    expect(tile.draggable).toBe(false);
-  });
+  // Handle-based drag is managed by SortableJS internally via the `handle` option.
+  // No manual mousedown/draggable tests needed.
 });

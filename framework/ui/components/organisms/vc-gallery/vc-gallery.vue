@@ -23,6 +23,7 @@
     :class="{
       'vc-gallery--drag-over': isDragOver,
       'vc-gallery--reordering': reorder.isDragging.value,
+      'vc-gallery--mobile': isMobile,
       [`vc-gallery--${size}`]: true,
     }"
     :style="{ '--gallery-gap': `${gap}px` }"
@@ -31,31 +32,94 @@
     @dragover.prevent
     @drop.prevent="onGlobalDrop"
   >
-    <template v-if="hasImages || !disabled">
-      <TransitionGroup
-        :ref="
-          (comp: any) => {
-            if (comp?.$el) reorder.galleryRef.value = comp.$el;
-          }
-        "
-        tag="div"
-        :name="reorder.isDragging.value ? 'vc-gallery-swap' : ''"
+    <!-- Header row (only when images exist) -->
+    <div
+      v-if="!disabled && hasImages"
+      class="vc-gallery__header"
+    >
+      <div class="vc-gallery__header-actions">
+        <button
+          type="button"
+          class="vc-gallery__upload-btn"
+          :disabled="loading"
+          @click="onHeaderUploadClick"
+        >
+          <VcIcon
+            icon="lucide-cloud-upload"
+            size="xs"
+          />
+          {{ t("COMPONENTS.ORGANISMS.VC_GALLERY.UPLOAD") }}
+        </button>
+        <span
+          v-if="!isMobile"
+          class="vc-gallery__dnd-hint"
+        >{{ t("COMPONENTS.ORGANISMS.VC_GALLERY.OR_DROP_HERE") }}</span>
+        <input
+          ref="fileInputRef"
+          type="file"
+          :multiple="multiple"
+          :accept="accept"
+          hidden
+          @change="onFileInputChange"
+        />
+      </div>
+    </div>
+
+    <!-- Dropzone wrapper (only when images exist) -->
+    <div
+      v-if="hasImages"
+      class="vc-gallery__dropzone"
+      :class="{
+        'vc-gallery__dropzone--loading': loading,
+        'vc-gallery__dropzone--mobile': isMobile,
+      }"
+    >
+      <!-- Filmstrip mode (collapsed, only when overflow) -->
+      <VcGalleryFilmstrip
+        v-if="layout === 'filmstrip' && !filmstrip.isExpanded.value && filmstrip.hasOverflow.value"
+        :images="localImages"
+        :gap="gap"
+        :has-overflow="filmstrip.hasOverflow.value"
+        :loading="loading"
+        @swiper-init="filmstrip.onSwiperInit"
+        @swiper-resize="filmstrip.onSwiperResize"
+        @slides-updated="filmstrip.checkOverflow"
+      >
+        <template #item="{ image, index }">
+          <slot
+            name="item"
+            :image="image"
+            :index="index"
+            :actions="{
+              preview: () => preview.openPreview(index),
+              edit: () => emit('edit', image),
+              remove: () => emit('remove', image),
+            }"
+          >
+            <VcGalleryItem
+              :image="image"
+              :readonly="disabled"
+              :actions="itemActions"
+              :disable-drag="true"
+              :image-fit="imagefit"
+              @preview="preview.openPreview(index)"
+              @edit="emit('edit', $event)"
+              @remove="emit('remove', $event)"
+            />
+          </slot>
+        </template>
+      </VcGalleryFilmstrip>
+
+      <!-- Grid mode (or expanded filmstrip) -->
+      <div
+        v-else
+        :ref="(el) => { if (el) reorder.galleryRef.value = el as HTMLElement; }"
         class="vc-gallery__grid"
       >
-        <!-- Image tiles -->
         <div
           v-for="(image, i) in localImages"
           :key="`img_${image.id || i}`"
           class="vc-gallery__item"
-          :class="{ 'vc-gallery__item--dragging': reorder.isDragging.value && reorder.draggedId.value === image.id }"
-          @mousedown="reorder.reorderHandlers.onItemMouseDown"
-          @mouseup="reorder.reorderHandlers.onItemMouseUp"
-          @mouseleave="reorder.reorderHandlers.onItemMouseUp"
-          @dragstart="reorder.reorderHandlers.onItemDragStart($event, image)"
-          @dragover="reorder.reorderHandlers.onItemDragOver"
-          @dragleave="reorder.reorderHandlers.onItemDragLeave"
-          @drop="reorder.reorderHandlers.onItemDrop"
-          @dragend="reorder.reorderHandlers.onItemDragEnd"
         >
           <slot
             name="item"
@@ -79,27 +143,41 @@
             />
           </slot>
         </div>
+      </div>
 
-        <!-- Upload tile (when images exist) -->
-        <div
-          v-if="!disabled && hasImages"
-          key="__upload__"
-          class="vc-gallery__upload-tile"
-        >
-          <VcFileUpload
-            class="vc-gallery__upload-zone"
-            :icon="uploadIcon"
-            :multiple="multiple"
-            :rules="rules"
-            :name="name"
-            :loading="loading"
-            :accept="accept"
-            :custom-text="uploadCustomText"
-            @upload="upload.onUpload"
-          />
-        </div>
-      </TransitionGroup>
-    </template>
+      <!-- Loading overlay (inside dropzone so nav arrows stay visible) -->
+      <!-- Expand toggle (inside dropzone) -->
+      <button
+        v-if="layout === 'filmstrip' && filmstrip.hasOverflow.value"
+        type="button"
+        class="vc-gallery__expand-toggle"
+        :class="{ 'vc-gallery__expand-toggle--open': filmstrip.isExpanded.value }"
+        @click="filmstrip.toggleExpand()"
+      >
+        <template v-if="filmstrip.isExpanded.value">
+          {{ t("COMPONENTS.ORGANISMS.VC_GALLERY.COLLAPSE") }}
+        </template>
+        <template v-else>
+          {{ t("COMPONENTS.ORGANISMS.VC_GALLERY.SHOW_ALL", { count: localImages.length }) }}
+        </template>
+        <VcIcon
+          icon="lucide-chevron-down"
+          size="xs"
+        />
+      </button>
+
+      <!-- Loading overlay -->
+      <div
+        v-if="loading"
+        class="vc-gallery__loading-overlay"
+      >
+        <VcIcon
+          icon="lucide-loader-2"
+          size="xl"
+          class="vc-gallery__loading-spinner"
+        />
+      </div>
+    </div>
 
     <!-- Empty state / Full-width upload -->
     <div
@@ -156,11 +234,14 @@ import { VcFileUpload } from "@ui/components/molecules/vc-file-upload";
 import { VcHint } from "@ui/components/atoms/vc-hint";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
+import VcGalleryFilmstrip from "./_internal/vc-gallery-filmstrip/vc-gallery-filmstrip.vue";
 import VcImageUpload from "@ui/components/organisms/vc-image-upload/vc-image-upload.vue";
 import { useGalleryReorder } from "./composables/useGalleryReorder";
 import { useGalleryUpload } from "./composables/useGalleryUpload";
 import { useGalleryPreview } from "./composables/useGalleryPreview";
+import { useGalleryFilmstrip } from "./composables/useGalleryFilmstrip";
 import { useI18n } from "vue-i18n";
+import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export interface Props {
   images?: AssetLike[];
@@ -172,6 +253,7 @@ export interface Props {
   name?: string;
   accept?: string;
   // New props
+  layout?: "filmstrip" | "grid";
   size?: "sm" | "md" | "lg";
   gap?: number;
   imagefit?: "contain" | "cover";
@@ -194,6 +276,7 @@ export interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   images: () => [],
+  layout: "filmstrip",
   size: "md",
   gap: 8,
   imagefit: "contain",
@@ -205,6 +288,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
+const { isMobile } = useResponsive();
 
 // Deprecation warnings (dev only)
 if (import.meta.env?.DEV) {
@@ -264,6 +348,27 @@ const upload = useGalleryUpload(localImages, {
 });
 
 const preview = useGalleryPreview(localImages);
+
+// Filmstrip
+const filmstrip = useGalleryFilmstrip({
+  imageCount: computed(() => localImages.value.length),
+});
+
+// Header upload (file input)
+const fileInputRef = ref<HTMLInputElement>();
+
+function onHeaderUploadClick() {
+  fileInputRef.value?.click();
+}
+
+function onFileInputChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length) {
+    upload.onUpload(input.files);
+    input.value = "";
+  }
+}
+
 
 // Global drag-over (file from OS)
 const isDragOver = ref(false);
@@ -325,6 +430,21 @@ function onGlobalDrop(event: DragEvent) {
     --gallery-tile-max: 260px;
   }
 
+  // Mobile: adjusted tiles
+  &--mobile {
+    &.vc-gallery--sm {
+      --gallery-tile-min: 100px;
+    }
+
+    &.vc-gallery--md {
+      --gallery-tile-min: 120px;
+    }
+
+    &.vc-gallery--lg {
+      --gallery-tile-min: 150px;
+    }
+  }
+
   &--drag-over {
     @apply tw-rounded-lg tw-ring-2 tw-ring-[var(--gallery-drop-overlay-border)];
     background: var(--gallery-upload-bg-hover);
@@ -332,7 +452,7 @@ function onGlobalDrop(event: DragEvent) {
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(var(--gallery-tile-min), var(--gallery-tile-max)));
+    grid-template-columns: repeat(auto-fill, var(--gallery-tile-min));
     gap: var(--gallery-gap);
     @apply tw-relative;
   }
@@ -341,67 +461,116 @@ function onGlobalDrop(event: DragEvent) {
     @apply tw-min-w-0;
   }
 
-  &__upload-tile {
-    @apply tw-aspect-square tw-rounded-lg tw-border-2 tw-border-dashed tw-border-[var(--gallery-upload-border)] tw-transition-all tw-duration-200 tw-overflow-hidden;
+  // ── Header row ──
+  &__header {
+    @apply tw-flex tw-items-center tw-justify-end tw-mb-2 tw-gap-2;
+  }
+
+  &__header-actions {
+    @apply tw-flex tw-items-center tw-gap-2;
+  }
+
+  &__upload-btn {
+    @apply tw-flex tw-items-center tw-gap-1 tw-text-xs tw-font-medium
+      tw-cursor-pointer tw-transition-all tw-duration-150
+      tw-rounded-full tw-border tw-border-solid;
+    color: var(--primary-500);
+    border-color: var(--primary-200);
+    background: var(--primary-50);
+    padding: 4px 12px;
 
     &:hover {
-      border-color: var(--gallery-upload-border-hover);
-      background: var(--gallery-upload-bg-hover);
+      color: var(--primary-700);
+      border-color: var(--primary-400);
+      background: var(--primary-100);
+    }
+
+    &:disabled {
+      @apply tw-opacity-50 tw-cursor-not-allowed;
     }
   }
 
-  &__upload-tile .vc-file-upload__container {
-    @apply tw-h-full;
+  &__dnd-hint {
+    @apply tw-text-[11px];
+    color: var(--secondary-400);
   }
 
-  &__upload-tile .vc-file-upload__drop-zone {
-    @apply tw-border-0 tw-h-full tw-w-full tw-rounded-none tw-p-2 tw-justify-center;
-    min-height: unset;
-    background: transparent;
+  // ── Dropzone wrapper ──
+  &__dropzone {
+    @apply tw-relative tw-rounded-md tw-transition-all tw-duration-200;
+    border: 1.5px dashed var(--secondary-300);
+    padding: 6px;
+
+    &--loading {
+      animation: gallery-dropzone-pulse 1.5s ease-in-out infinite;
+      border-color: var(--primary-300);
+    }
+
+    &--mobile {
+      border-color: transparent;
+    }
   }
 
-  &__upload-tile .vc-file-upload__text {
-    @apply tw-mt-2 tw-text-[11px] tw-leading-4 tw-whitespace-normal;
-  }
+  // ── Expand toggle ──
+  &__expand-toggle {
+    @apply tw-flex tw-items-center tw-justify-center tw-gap-1 tw-w-full
+      tw-text-xs tw-font-medium tw-border-0
+      tw-cursor-pointer tw-transition-all tw-duration-150
+      tw-rounded-md tw-mt-1;
+    color: var(--secondary-600);
+    background: var(--secondary-50);
+    padding: 6px 0;
 
-  &__upload-tile .vc-file-upload__link {
-    @apply tw-text-[11px] tw-whitespace-normal;
-  }
+    &:hover {
+      color: var(--primary-600);
+      background: var(--primary-50);
+    }
 
-  &__upload-tile .vc-file-upload__icon {
-    @apply tw-text-2xl;
+    .vc-icon {
+      @apply tw-transition-transform tw-duration-200;
+    }
+
+    &--open .vc-icon {
+      @apply tw-rotate-180;
+    }
   }
 
   &__empty-upload {
     @apply tw-w-full;
-  }
 
-  &__empty-upload .vc-file-upload__drop-zone {
-    @apply tw-min-h-[160px];
+    .vc-file-upload__drop-zone {
+      min-height: 160px;
+    }
   }
 
   &__empty {
     @apply tw-flex tw-justify-center tw-p-5 tw-h-full tw-items-center;
   }
 
-  &__item--dragging .vc-gallery-item {
-    box-shadow:
-      0 8px 24px -4px rgba(0, 0, 0, 0.15),
-      0 0 0 2px var(--primary-400) !important;
-    cursor: grabbing !important;
+  &__item--dragging {
+    .vc-gallery-item,
+    .vc-image-tile {
+      box-shadow:
+        0 8px 24px -4px rgba(0, 0, 0, 0.15),
+        0 0 0 2px var(--primary-400) !important;
+      cursor: grabbing !important;
+    }
   }
 
-  &--reordering .vc-gallery-item {
-    @media (hover: hover) {
-      &:hover {
-        transform: none;
-        box-shadow: var(--gallery-tile-shadow);
-      }
+  &__item--ghost {
+    opacity: 0.4;
+  }
 
-      &:hover .vc-gallery-item__tray {
-        @apply tw-translate-y-full;
-      }
-    }
+  // ── Loading overlay ──
+  &__loading-overlay {
+    @apply tw-absolute tw-inset-0 tw-z-10 tw-flex tw-items-center tw-justify-center tw-rounded-md tw-pointer-events-none;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(2px);
+  }
+
+  &__loading-spinner {
+    color: var(--primary-500);
+    animation: gallery-loading-spin 1s linear infinite;
   }
 
   &__drop-overlay {
@@ -413,13 +582,13 @@ function onGlobalDrop(event: DragEvent) {
   }
 }
 
-// FLIP animation for live-swap reorder
-.vc-gallery-swap-move {
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1) !important;
+@keyframes gallery-dropzone-pulse {
+  0%, 100% { border-color: var(--primary-300); background: transparent; }
+  50% { border-color: var(--primary-400); background: var(--primary-50); }
 }
 
-.vc-gallery-swap-enter-active,
-.vc-gallery-swap-leave-active {
-  transition: none !important;
+@keyframes gallery-loading-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 </style>

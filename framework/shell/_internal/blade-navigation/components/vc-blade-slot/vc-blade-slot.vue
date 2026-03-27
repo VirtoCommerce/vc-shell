@@ -29,7 +29,6 @@ import { ErrorInterceptor } from "@shell/components/error-interceptor";
 import { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
 import type { BladeDescriptor, IParentCallArgs } from "@core/blade-navigation/types";
 import { BladeDescriptorKey, BladeMaximizedKey } from "@core/blade-navigation/types";
-import type { CoreBladeExposed } from "@core/blade-navigation/types";
 import type { Breadcrumbs } from "@ui/types";
 import type { Component } from "vue";
 
@@ -49,7 +48,7 @@ const emit = defineEmits<{
 
 const bladeRegistry = useBladeRegistry();
 const maximized = ref(false);
-const bladeInstanceRef = ref<CoreBladeExposed>();
+const bladeInstanceRef = ref<Record<string, any>>();
 
 // Resolve blade component from registry
 const bladeComponent = computed(() => {

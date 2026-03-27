@@ -1,5 +1,4 @@
 import { InjectionKey, ComputedRef, type Component, type Ref } from "vue";
-import type { BladeVNode } from "@core/blade-navigation/types";
 import { BladeDataKey } from "@core/blade-navigation/types";
 import type { BladeRoutesRecord } from "@core/blade-navigation/types";
 import type { NotificationTemplateConstructor } from "@core/types";
@@ -18,7 +17,6 @@ import type { IAppBarMobileButtonsService } from "@core/services/app-bar-mobile-
 import type { ILanguageService } from "@core/services/language-service";
 
 // Blade navigation keys
-export const NavigationViewLocationKey: InjectionKey<BladeVNode> = Symbol("NavigationViewLocation");
 export const BladeBackButtonKey: InjectionKey<Component | undefined> = Symbol("BladeBackButton");
 export { BladeDataKey };
 

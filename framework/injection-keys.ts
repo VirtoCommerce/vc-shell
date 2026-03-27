@@ -30,7 +30,6 @@ export const NotificationStoreKey: InjectionKey<NotificationStore> = Symbol("Not
 // Service keys
 export const WidgetServiceKey: InjectionKey<IWidgetService> = Symbol("WidgetService");
 export const DashboardServiceKey: InjectionKey<IDashboardService> = Symbol("DashboardService");
-export const GlobalSearchKey: InjectionKey<GlobalSearchState> = Symbol("GlobalSearch");
 export const MenuServiceKey: InjectionKey<MenuService> = Symbol("MenuService");
 export const SettingsMenuServiceKey: InjectionKey<ISettingsMenuService> = Symbol("SettingsMenuService");
 export const AppBarWidgetServiceKey: InjectionKey<IAppBarWidgetService> = Symbol("AppBarWidgetService");
@@ -38,7 +37,6 @@ export const AppBarMobileButtonsServiceKey: InjectionKey<IAppBarMobileButtonsSer
   Symbol("AppBarMobileButtonsService");
 export const LanguageServiceKey: InjectionKey<ILanguageService> = Symbol("LanguageService");
 export const ToolbarServiceKey: InjectionKey<IToolbarService> = Symbol("ToolbarService");
-
 
 /**
  * Registry of dynamic modules available via provide/inject.

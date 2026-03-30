@@ -1,3 +1,9 @@
+# [2.0.0-alpha.30](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.29...v2.0.0-alpha.30) (2026-03-30)
+
+
+### Features
+
+* **docs:** add documentation for usePopup and useResponsive composables ([342a50a](https://github.com/VirtoCommerce/vc-shell/commit/342a50ada1545637782e01f5452a60839aa90fd2))
 # [2.0.0-alpha.29](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.28...v2.0.0-alpha.29) (2026-03-26)
 
 **Note:** Version bump only for package @vc-shell/vc-app-skill

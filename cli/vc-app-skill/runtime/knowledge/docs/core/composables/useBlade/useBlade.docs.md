@@ -123,6 +123,14 @@ These are reactive `ComputedRef` values that reflect the current blade's state. 
 | `setError`      | `(error: unknown) => void`                   | Display an error banner on the blade                 |
 | `clearError`    | `() => void`                                 | Clear the blade error banner                         |
 
+#### Banner Management (blade context required)
+
+| Method         | Signature                                                    | Description                                                    |
+|----------------|--------------------------------------------------------------|----------------------------------------------------------------|
+| `addBanner`    | `(options: Omit<IBladeBanner, "id" \| "_system">) => string` | Add a custom banner to the blade. Returns the banner's unique ID. |
+| `removeBanner` | `(id: string) => void`                                       | Remove a specific banner by its ID                             |
+| `clearBanners` | `() => void`                                                 | Remove all custom banners (system error/modified banners are preserved) |
+
 #### Lifecycle Hooks (blade context required)
 
 | Method          | Signature                         | Description                                              |
@@ -372,6 +380,74 @@ async function loadData() {
 }
 </script>
 ```
+
+### Banner Management
+
+Add custom banners (info, warning, danger, success) to the top of a blade. Banners appear between the header and toolbar, sorted by severity: danger > warning > info > success.
+
+```vue
+<script setup lang="ts">
+import { h } from "vue";
+import { useBlade } from "@vc-shell/framework";
+
+const { addBanner, removeBanner, clearBanners } = useBlade();
+
+// Simple text banner
+const bannerId = addBanner({
+  variant: "info",
+  message: "This record is in read-only mode",
+});
+
+// Warning with dismiss button
+addBanner({
+  variant: "warning",
+  message: "License expires in 7 days",
+  dismissible: true,
+});
+
+// Banner with an action button
+addBanner({
+  variant: "success",
+  message: "Import completed (42 items)",
+  dismissible: true,
+  action: {
+    label: "View report",
+    handler: () => openReport(),
+  },
+});
+
+// Banner with custom render function
+addBanner({
+  variant: "info",
+  render: () => h("span", [
+    "Data synced from ",
+    h("b", "Warehouse A"),
+    " at 14:32",
+  ]),
+});
+
+// Remove a specific banner
+removeBanner(bannerId);
+
+// Clear all custom banners (system error/modified banners are preserved)
+clearBanners();
+</script>
+```
+
+#### IBladeBanner
+
+The options object passed to `addBanner`:
+
+| Property      | Type                              | Default  | Description                                        |
+|---------------|-----------------------------------|----------|----------------------------------------------------|
+| `variant`     | `"danger" \| "warning" \| "info" \| "success"` | required | Color scheme and default icon              |
+| `message`     | `string`                          | --       | Plain text message                                 |
+| `render`      | `() => VNode`                     | --       | Custom render function (takes priority over message) |
+| `dismissible` | `boolean`                         | `false`  | Show a close button to dismiss the banner          |
+| `icon`        | `string`                          | --       | Override the default variant icon (lucide icon name) |
+| `action`      | `{ label: string; handler: () => void }` | --  | Action button displayed on the right side          |
+
+> **Note:** `addBanner` returns a unique string ID. Use it with `removeBanner(id)` to programmatically remove a specific banner. `clearBanners()` removes all custom banners but preserves system banners (error and unsaved changes).
 
 ---
 

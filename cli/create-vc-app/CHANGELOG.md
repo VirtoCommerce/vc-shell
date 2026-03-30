@@ -1,3 +1,9 @@
+# [2.0.0-alpha.30](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.29...v2.0.0-alpha.30) (2026-03-30)
+
+
+### Bug Fixes
+
+* **cli:** remove beforeEnter guard from tenant route templates, format responsive-composable transform ([3752273](https://github.com/VirtoCommerce/vc-shell/commit/37522732b789316a92c4c958c395c8f3fbf9e0ea))
 # [2.0.0-alpha.29](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.28...v2.0.0-alpha.29) (2026-03-26)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app

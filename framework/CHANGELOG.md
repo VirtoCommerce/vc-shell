@@ -1,3 +1,18 @@
+# [2.0.0-alpha.30](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.29...v2.0.0-alpha.30) (2026-03-30)
+
+
+### Bug Fixes
+
+* **blade:** restore expand/collapse button in vc-blade ([4c3abbe](https://github.com/VirtoCommerce/vc-shell/commit/4c3abbed1604835e316e24da86c35a714b1ca200))
+* **blade:** watch shortErrorMessage for updates, re-export IBladeBanner, add dismiss-error test ([60298dd](https://github.com/VirtoCommerce/vc-shell/commit/60298ddd29bb8d32a553a57eef15f7c05aabb609))
+
+
+### Features
+
+* **blade:** add addBanner/removeBanner/clearBanners to useBlade() ([773362f](https://github.com/VirtoCommerce/vc-shell/commit/773362f8958782509b5e153c1c2889fffebf92a8))
+* **blade:** add IBladeBanner interface and BladeBannersKey injection key ([8c8ceb8](https://github.com/VirtoCommerce/vc-shell/commit/8c8ceb808b5f18f16f021d1c91d152308f59a4fc))
+* **blade:** provide BladeBannersKey in VcBladeSlot ([86c47e7](https://github.com/VirtoCommerce/vc-shell/commit/86c47e788afb8090364ebfefca10ae5db332b54e))
+* **blade:** rewrite BladeStatusBanners for unified banner list with custom banners support ([887c5b9](https://github.com/VirtoCommerce/vc-shell/commit/887c5b9c66ad3afcc95c9b03a50943ac3bb5b46c))
 # [2.0.0-alpha.29](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.28...v2.0.0-alpha.29) (2026-03-26)
 
 

@@ -76,7 +76,7 @@
         "BROWSE_IMAGES": "browse your files",
         "UPLOAD": "Upload",
         "OR_DROP_HERE": "or drop here",
-        "SHOW_ALL": "Show all ({count})",
+        "SHOW_ALL": "Expand ({count})",
         "COLLAPSE": "Collapse"
       },
       "VC_APP": {

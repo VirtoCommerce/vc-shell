@@ -16,9 +16,9 @@ describe("useGalleryFilmstrip", () => {
     expect(isExpanded.value).toBe(false);
   });
 
-  it("hasOverflow is false when imageCount is 0", () => {
+  it("hasOverflow starts true (optimistic) before Swiper init", () => {
     const { hasOverflow } = useGalleryFilmstrip({ imageCount: ref(0) });
-    expect(hasOverflow.value).toBe(false);
+    expect(hasOverflow.value).toBe(true);
   });
 
   it("exposes swiperRef for template binding", () => {

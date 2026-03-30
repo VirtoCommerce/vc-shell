@@ -28,6 +28,8 @@ export default {
     gap: 8,
     imagefit: "contain",
     layout: "filmstrip",
+    label: "Images",
+    required: false,
   },
   argTypes: {
     size: {
@@ -80,6 +82,16 @@ export default {
       options: ["filmstrip", "grid"],
       description: "Gallery layout mode — filmstrip (single scrollable row) or grid (multi-row auto-fill).",
       table: { category: "Layout", defaultValue: { summary: "filmstrip" } },
+    },
+    label: {
+      control: "text",
+      description: "Label text displayed in the gallery header.",
+      table: { category: "Config" },
+    },
+    required: {
+      control: "boolean",
+      description: "Shows a required indicator on the label.",
+      table: { category: "Config", defaultValue: { summary: "false" } },
     },
     accept: {
       description: "Comma-separated list of accepted file extensions.",

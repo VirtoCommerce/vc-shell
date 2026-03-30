@@ -34,10 +34,20 @@
   >
     <!-- Header row (only when images exist) -->
     <div
-      v-if="!disabled && hasImages"
+      v-if="hasImages"
       class="vc-gallery__header"
     >
-      <div class="vc-gallery__header-actions">
+      <VcLabel
+        v-if="label"
+        class="vc-gallery__label"
+        :required="required"
+      >
+        {{ label }}
+      </VcLabel>
+      <div
+        v-if="!disabled"
+        class="vc-gallery__header-actions"
+      >
         <button
           type="button"
           class="vc-gallery__upload-btn"
@@ -53,7 +63,8 @@
         <span
           v-if="!isMobile"
           class="vc-gallery__dnd-hint"
-        >{{ t("COMPONENTS.ORGANISMS.VC_GALLERY.OR_DROP_HERE") }}</span>
+          >{{ t("COMPONENTS.ORGANISMS.VC_GALLERY.OR_DROP_HERE") }}</span
+        >
         <input
           ref="fileInputRef"
           type="file"
@@ -84,6 +95,11 @@
         @swiper-init="filmstrip.onSwiperInit"
         @swiper-resize="filmstrip.onSwiperResize"
         @slides-updated="filmstrip.checkOverflow"
+        @sortable-container="
+          (el) => {
+            reorder.galleryRef.value = el;
+          }
+        "
       >
         <template #item="{ image, index }">
           <slot
@@ -100,7 +116,7 @@
               :image="image"
               :readonly="disabled"
               :actions="itemActions"
-              :disable-drag="true"
+              :disable-drag="isMobile || reorder.disableDrag.value"
               :image-fit="imagefit"
               @preview="preview.openPreview(index)"
               @edit="emit('edit', $event)"
@@ -113,7 +129,11 @@
       <!-- Grid mode (or expanded filmstrip) -->
       <div
         v-else
-        :ref="(el) => { if (el) reorder.galleryRef.value = el as HTMLElement; }"
+        :ref="
+          (el) => {
+            if (el) reorder.galleryRef.value = el as HTMLElement;
+          }
+        "
         class="vc-gallery__grid"
       >
         <div
@@ -232,6 +252,7 @@ import type { IValidationRules } from "@core/types";
 import type { AssetLike } from "@core/composables/useAssetsManager";
 import { VcFileUpload } from "@ui/components/molecules/vc-file-upload";
 import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryFilmstrip from "./_internal/vc-gallery-filmstrip/vc-gallery-filmstrip.vue";
@@ -304,14 +325,8 @@ if (import.meta.env?.DEV) {
   if (props.uploadIcon && props.uploadIcon !== "lucide-cloud-upload") {
     console.warn(`[VcGallery] prop "uploadIcon" is deprecated. Use #empty slot for custom upload UI.`);
   }
-  if (props.label) {
-    console.warn(`[VcGallery] prop "label" is deprecated. Use external <VcLabel> instead.`);
-  }
   if (props.tooltip) {
     console.warn(`[VcGallery] prop "tooltip" is deprecated. Use external <VcLabel> instead.`);
-  }
-  if (props.required) {
-    console.warn(`[VcGallery] prop "required" is deprecated. Use external <VcLabel> instead.`);
   }
 }
 
@@ -341,6 +356,40 @@ const uploadCustomText = computed(() => ({
 const reorder = useGalleryReorder(localImages, {
   disabled: computed(() => !!props.disabled),
   onSort: (sorted) => emit("sort", sorted),
+  onReorderStart: () => {
+    // Disable Swiper touch during drag to prevent slide movement
+    const swiper = filmstrip.swiperRef.value;
+    if (swiper) {
+      swiper.allowTouchMove = false;
+    }
+  },
+  onReorderEnd: () => {
+    // Re-enable Swiper and update after reorder
+    const swiper = filmstrip.swiperRef.value;
+    if (swiper) {
+      swiper.allowTouchMove = true;
+      swiper.update();
+    }
+  },
+  onDragEdge: (direction) => {
+    const swiper = filmstrip.swiperRef.value;
+    if (!swiper) return;
+    // Use translateTo for reliable scrolling in freeMode
+    const step = 40; // px per tick
+    const currentTranslate = swiper.getTranslate();
+    const minTranslate = swiper.minTranslate();
+    const maxTranslate = swiper.maxTranslate();
+
+    if (direction === 1) {
+      const target = Math.max(currentTranslate - step, maxTranslate);
+      swiper.setTranslate(target);
+      swiper.update();
+    } else if (direction === -1) {
+      const target = Math.min(currentTranslate + step, minTranslate);
+      swiper.setTranslate(target);
+      swiper.update();
+    }
+  },
 });
 
 const upload = useGalleryUpload(localImages, {
@@ -368,7 +417,6 @@ function onFileInputChange(event: Event) {
     input.value = "";
   }
 }
-
 
 // Global drag-over (file from OS)
 const isDragOver = ref(false);
@@ -433,15 +481,15 @@ function onGlobalDrop(event: DragEvent) {
   // Mobile: adjusted tiles
   &--mobile {
     &.vc-gallery--sm {
-      --gallery-tile-min: 100px;
-    }
-
-    &.vc-gallery--md {
       --gallery-tile-min: 120px;
     }
 
+    &.vc-gallery--md {
+      --gallery-tile-min: 140px;
+    }
+
     &.vc-gallery--lg {
-      --gallery-tile-min: 150px;
+      --gallery-tile-min: 170px;
     }
   }
 
@@ -463,7 +511,11 @@ function onGlobalDrop(event: DragEvent) {
 
   // ── Header row ──
   &__header {
-    @apply tw-flex tw-items-center tw-justify-end tw-mb-2 tw-gap-2;
+    @apply tw-flex tw-items-center tw-mb-2 tw-gap-2;
+  }
+
+  &__label {
+    @apply tw-flex-1 tw-min-w-0;
   }
 
   &__header-actions {
@@ -583,12 +635,23 @@ function onGlobalDrop(event: DragEvent) {
 }
 
 @keyframes gallery-dropzone-pulse {
-  0%, 100% { border-color: var(--primary-300); background: transparent; }
-  50% { border-color: var(--primary-400); background: var(--primary-50); }
+  0%,
+  100% {
+    border-color: var(--primary-300);
+    background: transparent;
+  }
+  50% {
+    border-color: var(--primary-400);
+    background: var(--primary-50);
+  }
 }
 
 @keyframes gallery-loading-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

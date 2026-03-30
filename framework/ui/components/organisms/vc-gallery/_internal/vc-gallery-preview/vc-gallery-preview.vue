@@ -132,7 +132,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch, toRef } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Keyboard, FreeMode } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -141,6 +141,7 @@ import { VcPopup } from "@ui/components/organisms/vc-popup";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import type { AssetLike } from "@core/composables/useAssetsManager";
 import { useI18n } from "vue-i18n";
+import { useScrollLock } from "@vueuse/core";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export interface Props {
@@ -205,15 +206,19 @@ function slideNext() {
   mainSwiper.value?.slideNext();
 }
 
-function onCopyLink() {
+async function onCopyLink() {
   const link = currentImage.value?.url ?? "";
   const fullLink = link.charAt(0) === "/" ? `${location.origin}${link}` : link;
-  navigator.clipboard?.writeText(fullLink);
 
-  copied.value = true;
-  setTimeout(() => {
-    copied.value = false;
-  }, 1500);
+  try {
+    await navigator.clipboard.writeText(fullLink);
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 1500);
+  } catch {
+    // Clipboard API unavailable (HTTP context) — silent fail
+  }
 }
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -223,15 +228,16 @@ function handleKeyDown(event: KeyboardEvent) {
   }
 }
 
+const scrollLock = useScrollLock(document.body);
+
 onMounted(() => {
   window.addEventListener("keydown", handleKeyDown);
-  // Prevent page scroll behind preview
-  document.body.style.overflow = "hidden";
+  scrollLock.value = true;
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", handleKeyDown);
-  document.body.style.overflow = "";
+  scrollLock.value = false;
 });
 </script>
 

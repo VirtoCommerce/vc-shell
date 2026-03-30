@@ -4,10 +4,7 @@
       :modules="swiperModules"
       :slides-per-view="'auto'"
       :space-between="gap"
-      :navigation="{
-        prevEl: '.vc-gallery-filmstrip__nav--prev',
-        nextEl: '.vc-gallery-filmstrip__nav--next',
-      }"
+      :navigation="false"
       :mousewheel="{ forceToAxis: true }"
       :free-mode="{ enabled: true, sticky: false }"
       :slides-per-group="1"
@@ -82,6 +79,7 @@ const emit = defineEmits<{
   (e: "swiper-init", swiper: SwiperType): void;
   (e: "swiper-resize", swiper: SwiperType): void;
   (e: "slides-updated", swiper: SwiperType): void;
+  (e: "sortable-container", el: HTMLElement | undefined): void;
 }>();
 
 const swiperModules = [Navigation, Mousewheel, FreeMode];
@@ -91,7 +89,20 @@ const nextRef = ref<HTMLButtonElement>();
 
 function onSwiperInit(swiper: SwiperType) {
   swiperInstance.value = swiper;
+
+  // Bind navigation to scoped refs (not global selectors)
+  if (prevRef.value && nextRef.value) {
+    swiper.params.navigation = {
+      ...(swiper.params.navigation as object),
+      prevEl: prevRef.value,
+      nextEl: nextRef.value,
+    };
+    swiper.navigation.init();
+    swiper.navigation.update();
+  }
+
   emit("swiper-init", swiper);
+  emit("sortable-container", swiper.wrapperEl);
 }
 
 function onSwiperResize(swiper: SwiperType) {

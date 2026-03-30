@@ -73,19 +73,8 @@ const resolvedActions = computed(() => ({
 <style lang="scss">
 .vc-gallery-item {
   &__drag-handle {
-    @apply tw-absolute tw-top-1 tw-left-1 tw-opacity-0 tw-transition-opacity tw-duration-200
-      tw-cursor-move tw-z-[1] tw-p-0.5 tw-rounded;
+    @apply tw-cursor-move tw-p-0.5 tw-rounded tw-shrink-0;
     color: var(--secondary-400);
-  }
-
-  // Desktop: show on hover
-  &:not(&--mobile):hover &__drag-handle {
-    @apply tw-opacity-100;
-  }
-
-  // Mobile: always visible
-  &--mobile &__drag-handle {
-    @apply tw-opacity-100;
   }
 }
 </style>

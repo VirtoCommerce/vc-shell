@@ -1,4 +1,4 @@
-import { ref, Ref } from "vue";
+import { ref, Ref, watch, nextTick } from "vue";
 import type { Swiper as SwiperType } from "swiper";
 
 interface UseGalleryFilmstripOptions {
@@ -7,7 +7,7 @@ interface UseGalleryFilmstripOptions {
 
 export function useGalleryFilmstrip(options: UseGalleryFilmstripOptions) {
   const isExpanded = ref(false);
-  const hasOverflow = ref(false);
+  const hasOverflow = ref(true); // Optimistic: render filmstrip first, Swiper init will correct
   const swiperRef = ref<SwiperType>();
 
   function toggleExpand() {
@@ -26,6 +26,21 @@ export function useGalleryFilmstrip(options: UseGalleryFilmstripOptions) {
   function onSwiperResize(swiper: SwiperType) {
     checkOverflow(swiper);
   }
+
+  // Re-check overflow when image count changes (add/remove)
+  watch(options.imageCount, () => {
+    if (swiperRef.value) {
+      // Swiper exists — update and re-check
+      nextTick(() => {
+        swiperRef.value!.update();
+        checkOverflow(swiperRef.value!);
+      });
+    } else {
+      // Swiper doesn't exist (grid is showing) — reset to optimistic
+      // so filmstrip renders again and Swiper can re-evaluate
+      hasOverflow.value = true;
+    }
+  });
 
   return {
     isExpanded,

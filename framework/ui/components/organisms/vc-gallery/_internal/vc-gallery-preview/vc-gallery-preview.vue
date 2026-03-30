@@ -116,7 +116,7 @@
                 @click="slideTo(i)"
               >
                 <img
-                  :src="item.url"
+                  :src="getThumbnailUrl(item.url, '64x64') ?? item.url"
                   :alt="item.name || ''"
                   loading="lazy"
                   class="vc-gallery-preview__thumb-img"
@@ -143,6 +143,7 @@ import type { AssetLike } from "@core/composables/useAssetsManager";
 import { useI18n } from "vue-i18n";
 import { useScrollLock } from "@vueuse/core";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { getThumbnailUrl } from "@core/utilities/thumbnail";
 
 export interface Props {
   images?: AssetLike[];

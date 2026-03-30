@@ -39,6 +39,7 @@
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { computed } from "vue";
 import { createLogger } from "@core/utilities";
+import { getThumbnailUrl, type ThumbnailSize } from "@core/utilities/thumbnail";
 
 const logger = createLogger("vc-image");
 
@@ -53,6 +54,8 @@ export interface Props {
   emptyIcon?: string;
   /** Accessible alt text for the image */
   alt?: string;
+  /** Load a thumbnail variant instead of the full-size image */
+  thumbnailSize?: ThumbnailSize;
 }
 
 export interface Emits {
@@ -85,7 +88,8 @@ function ensureHttps(url: string): string {
 
 const imageHandler = computed(() => {
   if (props.src) {
-    const secureUrl = ensureHttps(props.src);
+    const thumbUrl = getThumbnailUrl(props.src, props.thumbnailSize) ?? props.src;
+    const secureUrl = ensureHttps(thumbUrl);
     return `background: url(${CSS.escape(secureUrl)}) center / ${props.background} no-repeat`;
   }
   return undefined;

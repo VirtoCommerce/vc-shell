@@ -144,4 +144,27 @@ describe("VcImage", () => {
       expect(wrapper.find(".vc-image__placeholder").attributes("aria-hidden")).toBe("true");
     });
   });
+
+  describe("thumbnailSize", () => {
+    // jsdom cannot parse complex background shorthand, so we test the
+    // computed style string via the VM instead of the rendered attribute.
+    it("transforms src URL with thumbnail suffix", () => {
+      const wrapper = mountComponent({ src: "https://cdn.example.com/photo.jpg", thumbnailSize: "sm" });
+      const styleString = (wrapper.vm as any).imageHandler;
+      expect(styleString).toContain("photo_sm.jpg");
+    });
+
+    it("uses original src when thumbnailSize is not set", () => {
+      const wrapper = mountComponent({ src: "https://cdn.example.com/photo.jpg" });
+      const styleString = (wrapper.vm as any).imageHandler;
+      expect(styleString).toContain("photo.jpg");
+      expect(styleString).not.toContain("_sm");
+    });
+
+    it("handles pixel size thumbnails", () => {
+      const wrapper = mountComponent({ src: "https://cdn.example.com/photo.jpg", thumbnailSize: "128x128" });
+      const styleString = (wrapper.vm as any).imageHandler;
+      expect(styleString).toContain("photo_128x128.jpg");
+    });
+  });
 });

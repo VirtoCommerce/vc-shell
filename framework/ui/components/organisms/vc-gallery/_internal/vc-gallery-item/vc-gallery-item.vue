@@ -4,6 +4,7 @@
     :alt="image.altText || image.name || ''"
     :name="image.name"
     :image-fit="imageFit"
+    :thumbnail-size="thumbnailSize"
     :actions="resolvedActions"
     class="vc-gallery-item"
     :class="{
@@ -35,6 +36,7 @@ import type { AssetLike } from "@core/composables/useAssetsManager";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcImageTile } from "@ui/components/molecules/vc-image-tile";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import type { ThumbnailSize } from "@core/utilities/thumbnail";
 
 export interface Props {
   image: AssetLike;
@@ -46,6 +48,7 @@ export interface Props {
   };
   disableDrag?: boolean;
   imageFit?: "contain" | "cover";
+  thumbnailSize?: ThumbnailSize;
 }
 
 const props = withDefaults(defineProps<Props>(), {

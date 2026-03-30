@@ -86,6 +86,16 @@ const meta = {
         defaultValue: { summary: "'lucide-image'" },
       },
     },
+    thumbnailSize: {
+      description: "Load a thumbnail variant instead of the full-size image",
+      control: "select",
+      options: [undefined, "sm", "md", "lg", "64x64", "128x128", "168x168", "216x216", "348x348"],
+      table: {
+        type: { summary: "ThumbnailSize" },
+        defaultValue: { summary: "undefined" },
+        category: "Performance",
+      },
+    },
     onClick: {
       description: "Event emitted when clicking on an image with clickable=true",
       action: "clicked",

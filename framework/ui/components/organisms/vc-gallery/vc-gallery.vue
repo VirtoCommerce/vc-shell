@@ -32,9 +32,9 @@
     @dragover.prevent
     @drop.prevent="onGlobalDrop"
   >
-    <!-- Header row (only when images exist) -->
+    <!-- Header row: label always visible, upload button after first image -->
     <div
-      v-if="hasImages"
+      v-if="label || (hasImages && !disabled)"
       class="vc-gallery__header"
     >
       <VcLabel
@@ -45,7 +45,7 @@
         {{ label }}
       </VcLabel>
       <div
-        v-if="!disabled"
+        v-if="!disabled && hasImages"
         class="vc-gallery__header-actions"
       >
         <button
@@ -118,6 +118,7 @@
               :actions="itemActions"
               :disable-drag="isMobile || reorder.disableDrag.value"
               :image-fit="imagefit"
+              :thumbnail-size="resolvedThumbnailSize"
               @preview="preview.openPreview(index)"
               @edit="emit('edit', $event)"
               @remove="emit('remove', $event)"
@@ -157,6 +158,7 @@
               :actions="itemActions"
               :disable-drag="reorder.disableDrag.value"
               :image-fit="imagefit"
+              :thumbnail-size="resolvedThumbnailSize"
               @preview="preview.openPreview(i)"
               @edit="emit('edit', $event)"
               @remove="emit('remove', $event)"
@@ -261,6 +263,7 @@ import { useGalleryReorder } from "./composables/useGalleryReorder";
 import { useGalleryUpload } from "./composables/useGalleryUpload";
 import { useGalleryPreview } from "./composables/useGalleryPreview";
 import { useGalleryFilmstrip } from "./composables/useGalleryFilmstrip";
+import type { ThumbnailSize } from "@core/utilities/thumbnail";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 
@@ -278,6 +281,8 @@ export interface Props {
   size?: "sm" | "md" | "lg";
   gap?: number;
   imagefit?: "contain" | "cover";
+  /** Thumbnail size for gallery tiles. Auto-mapped from `size` if not set. */
+  thumbnailSize?: ThumbnailSize;
   // Deprecated props (kept for backward compat)
   variant?: "gallery" | "file-upload";
   hideAfterUpload?: boolean;
@@ -397,6 +402,10 @@ const upload = useGalleryUpload(localImages, {
 });
 
 const preview = useGalleryPreview(localImages);
+
+// Thumbnail size: explicit prop or auto-map from gallery size
+const tileThumbnailSizeMap: Record<string, ThumbnailSize> = { sm: "128x128", md: "216x216", lg: "348x348" };
+const resolvedThumbnailSize = computed(() => props.thumbnailSize ?? tileThumbnailSizeMap[props.size]);
 
 // Filmstrip
 const filmstrip = useGalleryFilmstrip({

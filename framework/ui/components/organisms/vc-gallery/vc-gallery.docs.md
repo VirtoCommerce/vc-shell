@@ -27,6 +27,7 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Tile size preset. Sizes are smaller on mobile. |
 | `gap` | `number` | `8` | Gap between tiles in pixels. |
 | `imagefit` | `"contain" \| "cover"` | `"contain"` | How images fit within tiles. |
+| `thumbnailSize` | `ThumbnailSize` | auto from `size` | Thumbnail size for tile images. Auto-mapped: sm→128x128, md→216x216, lg→348x348. Preview thumbnails use 64x64. |
 
 ## Events
 

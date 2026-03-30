@@ -7,6 +7,7 @@
     :src="value as string"
     :empty-icon="emptyIcon"
     background="contain"
+    thumbnail-size="sm"
   />
 </template>
 

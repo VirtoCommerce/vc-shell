@@ -28,6 +28,7 @@ An image display component with predefined sizes, aspect ratio control, and a pl
 | `clickable` | `boolean` | `false` | Makes the image interactive with cursor and click event |
 | `emptyIcon` | `string` | `"lucide-image"` | Icon shown when `src` is empty |
 | `alt` | `string` | — | Accessible alt text |
+| `thumbnailSize` | `ThumbnailSize` | — | Load a thumbnail variant instead of full-size image. Values: `"sm"`, `"md"`, `"lg"`, `"64x64"`, `"128x128"`, `"168x168"`, `"216x216"`, `"348x348"` |
 
 ## Size Reference
 

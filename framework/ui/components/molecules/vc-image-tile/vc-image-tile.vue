@@ -17,7 +17,7 @@
     <!-- Image -->
     <img
       v-if="src"
-      :src="src"
+      :src="resolvedSrc"
       :alt="alt"
       loading="lazy"
       class="vc-image-tile__image"
@@ -85,12 +85,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRef } from "vue";
+import { computed, ref, toRef } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useI18n } from "vue-i18n";
 import { useImageLoad } from "@ui/components/organisms/vc-gallery/composables/useImageLoad";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { getThumbnailUrl, type ThumbnailSize } from "@core/utilities/thumbnail";
 
 export interface VcImageTileActions {
   preview?: boolean;
@@ -104,6 +105,8 @@ export interface VcImageTileProps {
   name?: string;
   imageFit?: "contain" | "cover";
   actions?: VcImageTileActions;
+  /** Load a thumbnail variant instead of the full-size image */
+  thumbnailSize?: ThumbnailSize;
 }
 
 const props = withDefaults(defineProps<VcImageTileProps>(), {
@@ -118,7 +121,8 @@ defineEmits<{
 
 const { t } = useI18n({ useScope: "global" });
 const { isMobile } = useResponsive();
-const imageState = useImageLoad(toRef(() => props.src));
+const resolvedSrc = computed(() => getThumbnailUrl(props.src, props.thumbnailSize) ?? props.src);
+const imageState = useImageLoad(toRef(() => resolvedSrc.value));
 const isActive = ref(false);
 
 function onTileClick() {

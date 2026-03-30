@@ -160,8 +160,8 @@ const MODIFIED_BANNER_ID = "__system-modified__";
 
 // ── Sync system error banner ──────────────────────────────────────────────
 watch(
-  hasError,
-  (has) => {
+  [hasError, shortErrorMessage],
+  ([has]) => {
     if (!bannersRef) return;
     const idx = bannersRef.value.findIndex((b) => b.id === ERROR_BANNER_ID);
     if (has && idx === -1) {

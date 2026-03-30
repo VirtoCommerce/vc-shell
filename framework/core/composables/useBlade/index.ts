@@ -1,6 +1,13 @@
 import { inject, computed, getCurrentInstance, provide, ref, isRef, watch, type ComputedRef, type MaybeRef } from "vue";
-import { BladeDescriptorKey, BladeStackKey, BladeMessagingKey, BladeDataKey, BladeBannersKey } from "@core/blade-navigation/types";
+import {
+  BladeDescriptorKey,
+  BladeStackKey,
+  BladeMessagingKey,
+  BladeDataKey,
+  BladeBannersKey,
+} from "@core/blade-navigation/types";
 import type { BladeOpenEvent, IBladeStack, IBladeBanner } from "@core/blade-navigation/types";
+export type { IBladeBanner } from "@core/blade-navigation/types";
 import {
   bladeStackInstance,
   bladeMessagingInstance,

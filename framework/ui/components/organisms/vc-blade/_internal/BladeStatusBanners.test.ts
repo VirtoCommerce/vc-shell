@@ -171,4 +171,12 @@ describe("BladeStatusBanners", () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.find(".vc-blade-status-banners__dismiss").exists()).toBe(false);
   });
+
+  it("dismissing error banner calls clearBladeError", async () => {
+    const { wrapper } = factory({}, new Error("test error"));
+    const dismissBtn = wrapper.find(".vc-blade-status-banners__dismiss");
+    expect(dismissBtn.exists()).toBe(true);
+    await dismissBtn.trigger("click");
+    expect(stubStack.clearBladeError).toHaveBeenCalledWith("test-blade");
+  });
 });

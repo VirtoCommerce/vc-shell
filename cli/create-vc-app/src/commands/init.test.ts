@@ -170,7 +170,6 @@ describe("initCommand — standalone", () => {
 
     expect(routes).toContain("tenantId");
     expect(routes).toContain("tenantIdRegex");
-    expect(routes).toContain("beforeEnter");
   });
 
   it("excludes tenant routes by default", async () => {

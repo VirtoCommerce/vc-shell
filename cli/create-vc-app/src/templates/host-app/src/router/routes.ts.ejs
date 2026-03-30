@@ -43,15 +43,6 @@ export const routes: RouteRecordRaw[] = [
         }),
       },
     ],
-<% if (tenantRoutes) { %>
-    beforeEnter: (to) => {
-      const { tenantId } = to.params;
-      if (!tenantId || new RegExp(tenantIdRegex).test(tenantId as string)) {
-        return true;
-      }
-      return { path: "/" };
-    },
-<% } %>
   },
   {
     name: "Login",

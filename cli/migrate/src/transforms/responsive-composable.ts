@@ -138,7 +138,11 @@ const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options): 
           const specifiers = path.node.specifiers || [];
           // Check if useResponsive already imported
           for (const spec of specifiers) {
-            if (spec.type === "ImportSpecifier" && spec.imported.type === "Identifier" && spec.imported.name === "useResponsive") {
+            if (
+              spec.type === "ImportSpecifier" &&
+              spec.imported.type === "Identifier" &&
+              spec.imported.name === "useResponsive"
+            ) {
               hasUseResponsiveImport = true;
             }
           }

@@ -27,8 +27,8 @@ import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 import { BladeBackButtonKey } from "@framework/injection-keys";
 import { ErrorInterceptor } from "@shell/components/error-interceptor";
 import { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
-import type { BladeDescriptor, IParentCallArgs } from "@core/blade-navigation/types";
-import { BladeDescriptorKey, BladeMaximizedKey } from "@core/blade-navigation/types";
+import type { BladeDescriptor, IParentCallArgs, IBladeBanner } from "@core/blade-navigation/types";
+import { BladeDescriptorKey, BladeMaximizedKey, BladeBannersKey } from "@core/blade-navigation/types";
 import type { CoreBladeExposed } from "@core/blade-navigation/types";
 import type { Breadcrumbs } from "@ui/types";
 import type { Component } from "vue";
@@ -49,6 +49,7 @@ const emit = defineEmits<{
 
 const bladeRegistry = useBladeRegistry();
 const maximized = ref(false);
+const banners = ref<IBladeBanner[]>([]);
 const bladeInstanceRef = ref<CoreBladeExposed>();
 
 // Resolve blade component from registry
@@ -68,6 +69,7 @@ provide(
 
 // Provide writable maximized ref so VcBlade can toggle expand/collapse directly
 provide(BladeMaximizedKey, maximized);
+provide(BladeBannersKey, banners);
 
 // Provide back button component
 provide(

@@ -1,6 +1,6 @@
 import { inject, computed, getCurrentInstance, provide, ref, isRef, watch, type ComputedRef, type MaybeRef } from "vue";
-import { BladeDescriptorKey, BladeStackKey, BladeMessagingKey, BladeDataKey } from "@core/blade-navigation/types";
-import type { BladeOpenEvent, IBladeStack } from "@core/blade-navigation/types";
+import { BladeDescriptorKey, BladeStackKey, BladeMessagingKey, BladeDataKey, BladeBannersKey } from "@core/blade-navigation/types";
+import type { BladeOpenEvent, IBladeStack, IBladeBanner } from "@core/blade-navigation/types";
 import {
   bladeStackInstance,
   bladeMessagingInstance,
@@ -38,6 +38,10 @@ export interface UseBladeReturn<TOptions = Record<string, unknown>> {
   // Error management — runtime error outside blade context
   setError(error: unknown): void;
   clearError(): void;
+  // Banner management — runtime error outside blade context
+  addBanner(options: Omit<IBladeBanner, "id" | "_system">): string;
+  removeBanner(id: string): void;
+  clearBanners(): void;
 }
 
 const CONTEXT_ERROR_SUFFIX =
@@ -92,6 +96,9 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
 
   // Blade context — optional (via inject, no error if missing)
   const descriptor = getCurrentInstance() ? inject(BladeDescriptorKey, undefined) : undefined;
+
+  // Blade banners — optional (via inject, no error if missing)
+  const bannersRef = getCurrentInstance() ? inject(BladeBannersKey, undefined) : undefined;
 
   // ── URL sync (lazy — only created if router available) ────────────────────
   let _urlSync: ReturnType<typeof createUrlSync> | undefined;
@@ -252,6 +259,31 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
     bladeStack.clearBladeError(descriptor!.value.id);
   }
 
+  // ── Banner management ─────────────────────────────────────────────────
+
+  let _bannerCounter = 0;
+
+  function addBanner(options: Omit<IBladeBanner, "id" | "_system">): string {
+    if (!bannersRef) requireContext("addBanner()");
+    const id = `banner-${descriptor!.value.id}-${++_bannerCounter}`;
+    bannersRef!.value.push({
+      ...options,
+      id,
+      dismissible: options.dismissible ?? false,
+    });
+    return id;
+  }
+
+  function removeBanner(id: string): void {
+    if (!bannersRef) requireContext("removeBanner()");
+    bannersRef!.value = bannersRef!.value.filter((b) => b.id !== id);
+  }
+
+  function clearBanners(): void {
+    if (!bannersRef) requireContext("clearBanners()");
+    bannersRef!.value = bannersRef!.value.filter((b) => b._system);
+  }
+
   // ── Lifecycle hooks ─────────────────────────────────────────────────────
 
   let _activatedRegistered = false;
@@ -302,5 +334,8 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
     onDeactivated,
     setError,
     clearError,
+    addBanner,
+    removeBanner,
+    clearBanners,
   };
 }

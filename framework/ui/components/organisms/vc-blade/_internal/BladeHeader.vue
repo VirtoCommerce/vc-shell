@@ -184,19 +184,22 @@ function onClose(): void {
   @apply tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-6 tw-border-solid tw-border-b tw-border-b-[color:var(--blade-header-border-color)];
 
   &--mobile {
-    @apply tw-h-[var(--blade-header-mobile-height)];
+    @apply tw-min-h-[var(--blade-header-mobile-height)] tw-h-auto tw-py-2;
 
     .vc-blade-header__title {
       @apply tw-text-lg/[22px];
     }
 
+    .vc-blade-header__wrapper {
+      @apply tw-flex-col tw-items-start tw-gap-1;
+    }
+
     .vc-blade-header__content {
-      @apply tw-shrink tw-min-w-0;
-      min-width: 40px;
+      @apply tw-w-full tw-min-w-0;
     }
 
     .vc-blade-header__actions {
-      @apply tw-shrink-0 tw-overflow-hidden tw-flex tw-items-center tw-gap-1;
+      @apply tw-flex tw-items-center tw-gap-1 tw-overflow-x-auto tw-max-w-full;
     }
   }
 

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { ref, computed, defineComponent, h, nextTick, type ComputedRef } from "vue";
 import { mount } from "@vue/test-utils";
-import { defineBladeContext, injectBladeContext } from "./useBladeContext";
+import { defineBladeContext, injectBladeContext } from ".";
 
 describe("defineBladeContext / injectBladeContext", () => {
   it("unwraps ref values so consumers access them directly", () => {

@@ -101,7 +101,8 @@
         "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",
         "ERROR_POPUP": {
           "TITLE": "Fehlerdetails",
-          "COPY_ERROR": "Inhalt kopieren"
+          "COPY_ERROR": "Inhalt kopieren",
+          "CLOSE": "schließen"
         },
         "MORE": "Mehr",
         "TOOLBAR": "Toolbar-Aktionen",

@@ -32,11 +32,14 @@
             :title="t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.CLOSE')"
             @click.stop="dismissBanner(banner)"
           >
-            <VcIcon size="xs" icon="lucide-x" />
+            <VcIcon
+              size="xs"
+              icon="lucide-x"
+            />
           </button>
         </div>
         <div
-          ref="errorContentRef"
+          :ref="(el) => { errorContentRef = el as HTMLElement | undefined; }"
           class="vc-blade-status-banners__error-details-wrapper"
           :style="errorWrapperStyle"
         >
@@ -47,7 +50,10 @@
               :title="t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR')"
               @click.stop="handleCopy"
             >
-              <VcIcon size="xs" :icon="copied ? 'lucide-check' : 'lucide-copy'" />
+              <VcIcon
+                size="xs"
+                :icon="copied ? 'lucide-check' : 'lucide-copy'"
+              />
             </button>
           </div>
         </div>
@@ -84,7 +90,10 @@
             class="vc-blade-status-banners__dismiss"
             @click="dismissBanner(banner)"
           >
-            <VcIcon size="xs" icon="lucide-x" />
+            <VcIcon
+              size="xs"
+              icon="lucide-x"
+            />
           </button>
         </div>
       </template>
@@ -208,9 +217,7 @@ const VARIANT_PRIORITY: Record<string, number> = {
 
 const sortedBanners = computed(() => {
   if (!bannersRef) return [];
-  return [...bannersRef.value].sort(
-    (a, b) => (VARIANT_PRIORITY[a.variant] ?? 9) - (VARIANT_PRIORITY[b.variant] ?? 9),
-  );
+  return [...bannersRef.value].sort((a, b) => (VARIANT_PRIORITY[a.variant] ?? 9) - (VARIANT_PRIORITY[b.variant] ?? 9));
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -291,7 +298,9 @@ function dismissBanner(banner: IBladeBanner) {
 
     .vc-blade-status-banners__action {
       color: var(--danger-600);
-      &:hover { color: var(--danger-800); }
+      &:hover {
+        color: var(--danger-800);
+      }
     }
   }
 
@@ -313,7 +322,9 @@ function dismissBanner(banner: IBladeBanner) {
 
     .vc-blade-status-banners__action {
       color: var(--warning-600);
-      &:hover { color: var(--warning-800); }
+      &:hover {
+        color: var(--warning-800);
+      }
     }
   }
 
@@ -335,7 +346,9 @@ function dismissBanner(banner: IBladeBanner) {
 
     .vc-blade-status-banners__action {
       color: var(--info-600);
-      &:hover { color: var(--info-800); }
+      &:hover {
+        color: var(--info-800);
+      }
     }
   }
 
@@ -357,7 +370,9 @@ function dismissBanner(banner: IBladeBanner) {
 
     .vc-blade-status-banners__action {
       color: var(--success-600);
-      &:hover { color: var(--success-800); }
+      &:hover {
+        color: var(--success-800);
+      }
     }
   }
 

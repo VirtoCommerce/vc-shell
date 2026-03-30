@@ -4,8 +4,8 @@ import { VcBlade } from "@ui/components/organisms/vc-blade";
 import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
-import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey } from "@core/blade-navigation/types";
-import type { BladeDescriptor } from "@core/blade-navigation/types";
+import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey, BladeBannersKey } from "@core/blade-navigation/types";
+import type { BladeDescriptor, IBladeBanner } from "@core/blade-navigation/types";
 import type { IBladeToolbar } from "@core/types";
 import { withVcApp, withMobileView } from "../../../../../.storybook/decorators";
 
@@ -38,6 +38,10 @@ function provideMockBladeContext(overrides: Partial<BladeDescriptor> = {}) {
     onParentCall: () => () => {},
   } as any);
 
+  // Provide banners ref for BladeStatusBanners
+  const banners = ref<IBladeBanner[]>([]);
+  provide(BladeBannersKey, banners);
+
   provide(
     BladeDescriptorKey,
     computed<BladeDescriptor>(() => ({
@@ -47,6 +51,8 @@ function provideMockBladeContext(overrides: Partial<BladeDescriptor> = {}) {
       ...overrides,
     })),
   );
+
+  return { banners };
 }
 
 // ── Toolbar items factory ────────────────────────────────────────────────────
@@ -502,6 +508,164 @@ export const ToolbarOverflow: Story = {
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">With 10 toolbar items in a 400px blade, items that don't fit are moved to a "More" dropdown.</p>
           <p class="tw-text-sm tw-text-gray-600 tw-mt-2">This uses the useAdaptiveItems composable with ResizeObserver.</p>
+        </div>
+      </VcBlade>
+    `,
+  }),
+};
+
+export const CustomBanners: Story = {
+  args: {
+    title: "Product Details",
+    subtitle: "SKU-12345",
+    icon: "lucide-box",
+    width: 500,
+    toolbarItems: createToolbarItems(2),
+  },
+  render: (args) => ({
+    components: { VcBlade },
+    setup() {
+      const { banners } = provideMockBladeContext();
+      banners.value = [
+        {
+          id: "info-1",
+          variant: "info",
+          message: "This record is in read-only mode",
+          icon: "lucide-lock",
+          dismissible: false,
+        },
+        {
+          id: "success-1",
+          variant: "success",
+          message: "Import completed successfully (42 items)",
+          dismissible: true,
+        },
+      ];
+      return { args };
+    },
+    template: `
+      <VcBlade v-bind="args" @close="() => {}">
+        <div class="tw-p-6">
+          <p class="tw-text-sm tw-text-gray-600">Custom banners added programmatically via useBlade().addBanner().</p>
+          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Banners are sorted by priority: danger > warning > info > success.</p>
+        </div>
+      </VcBlade>
+    `,
+  }),
+};
+
+export const AllBannerVariants: Story = {
+  args: {
+    title: "Banner Showcase",
+    icon: "lucide-palette",
+    width: 500,
+  },
+  render: (args) => ({
+    components: { VcBlade },
+    setup() {
+      const { banners } = provideMockBladeContext();
+      banners.value = [
+        {
+          id: "success-1",
+          variant: "success",
+          message: "All changes saved successfully",
+          icon: "lucide-circle-check",
+          dismissible: true,
+        },
+        {
+          id: "info-1",
+          variant: "info",
+          message: "Sync in progress — data may be incomplete",
+          dismissible: false,
+        },
+        {
+          id: "warning-1",
+          variant: "warning",
+          message: "License expires in 7 days",
+          dismissible: true,
+          action: { label: "Renew", handler: () => console.log("Renew clicked") },
+        },
+        {
+          id: "danger-1",
+          variant: "danger",
+          message: "Payment processing is unavailable",
+          dismissible: true,
+        },
+      ];
+      return { args };
+    },
+    template: `
+      <VcBlade v-bind="args" @close="() => {}">
+        <div class="tw-p-6">
+          <p class="tw-text-sm tw-text-gray-600">All four banner variants displayed at once.</p>
+          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Note the priority sort order: danger (top) > warning > info > success (bottom).</p>
+        </div>
+      </VcBlade>
+    `,
+  }),
+};
+
+export const BannerWithAction: Story = {
+  args: {
+    title: "Order Details",
+    subtitle: "ORD-99887",
+    icon: "lucide-file-text",
+    width: 500,
+  },
+  render: (args) => ({
+    components: { VcBlade },
+    setup() {
+      const { banners } = provideMockBladeContext();
+      banners.value = [
+        {
+          id: "warning-action",
+          variant: "warning",
+          message: "This order has unresolved disputes",
+          dismissible: false,
+          action: {
+            label: "View disputes",
+            handler: () => console.log("View disputes clicked"),
+          },
+        },
+      ];
+      return { args };
+    },
+    template: `
+      <VcBlade v-bind="args" @close="() => {}">
+        <div class="tw-p-6">
+          <p class="tw-text-sm tw-text-gray-600">Banners can include action buttons for contextual navigation.</p>
+        </div>
+      </VcBlade>
+    `,
+  }),
+};
+
+export const ErrorWithCustomBanners: Story = {
+  args: {
+    title: "Problematic Blade",
+    icon: "lucide-triangle-alert",
+    width: 500,
+    modified: true,
+  },
+  render: (args) => ({
+    components: { VcBlade },
+    setup() {
+      const { banners } = provideMockBladeContext({
+        error: new Error("Failed to save: network timeout after 30s"),
+      });
+      banners.value.push({
+        id: "info-readonly",
+        variant: "info",
+        message: "Editing is restricted while sync is in progress",
+        dismissible: false,
+      });
+      return { args };
+    },
+    template: `
+      <VcBlade v-bind="args" @close="() => {}">
+        <div class="tw-p-6">
+          <p class="tw-text-sm tw-text-gray-600">System banners (error + unsaved changes) and custom banners coexist,</p>
+          <p class="tw-text-sm tw-text-gray-600 tw-mt-1">all sorted by priority: danger > warning > info.</p>
         </div>
       </VcBlade>
     `,

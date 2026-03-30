@@ -18,10 +18,7 @@ function createPopupPlugin(): PopupPlugin {
   };
 }
 
-function mountWithPopup(
-  setupFn: () => ReturnType<typeof usePopup>,
-  plugin?: PopupPlugin,
-) {
+function mountWithPopup(setupFn: () => ReturnType<typeof usePopup>, plugin?: PopupPlugin) {
   const popupPlugin = plugin ?? createPopupPlugin();
   let result: ReturnType<typeof usePopup> | undefined;
 

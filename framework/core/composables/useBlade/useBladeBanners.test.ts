@@ -155,9 +155,7 @@ describe("useBlade banner methods", () => {
   });
 
   it("clearBanners removes all non-system banners", () => {
-    const banners = ref<IBladeBanner[]>([
-      { id: "sys-1", variant: "danger", message: "System error", _system: true },
-    ]);
+    const banners = ref<IBladeBanner[]>([{ id: "sys-1", variant: "danger", message: "System error", _system: true }]);
     const { result } = mountUseBlade(banners);
 
     result.addBanner({ variant: "info", message: "Custom" });

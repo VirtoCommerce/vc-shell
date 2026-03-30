@@ -39,7 +39,6 @@ export const AppBarMobileButtonsServiceKey: InjectionKey<IAppBarMobileButtonsSer
 export const LanguageServiceKey: InjectionKey<ILanguageService> = Symbol("LanguageService");
 export const ToolbarServiceKey: InjectionKey<IToolbarService> = Symbol("ToolbarService");
 
-
 /**
  * Registry of dynamic modules available via provide/inject.
  * Consumers can extend this interface via declaration merging:

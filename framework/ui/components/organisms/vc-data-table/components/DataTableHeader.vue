@@ -174,7 +174,12 @@
  */
 import { computed, ref } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
-import type { VcColumnProps, FilterType, FilterOption, FilterValue } from "@ui/components/organisms/vc-data-table/types";
+import type {
+  VcColumnProps,
+  FilterType,
+  FilterOption,
+  FilterValue,
+} from "@ui/components/organisms/vc-data-table/types";
 import TableHeader from "@ui/components/organisms/vc-data-table/components/TableHeader.vue";
 import TableRow from "@ui/components/organisms/vc-data-table/components/TableRow.vue";
 import TableHead from "@ui/components/organisms/vc-data-table/components/TableHead.vue";

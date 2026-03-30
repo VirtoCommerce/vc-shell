@@ -9,7 +9,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref, defineComponent, nextTick, h } from "vue";
 import VcApp from "./vc-app.vue";
-import { AppRootElementKey, BladeRoutesKey, ModulesLoadErrorKey, IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
+import {
+  AppRootElementKey,
+  BladeRoutesKey,
+  ModulesLoadErrorKey,
+  IsMobileKey,
+  IsDesktopKey,
+} from "@framework/injection-keys";
 import { BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
 
 // ============================================================================

@@ -305,9 +305,7 @@ const hasWidgetBadge = computed(() =>
   }),
 );
 
-const showHubTab = computed(
-  () => widgetItems.value.length > 0 || (!props.disableAppHub && props.appsList.length > 0),
-);
+const showHubTab = computed(() => widgetItems.value.length > 0 || (!props.disableAppHub && props.appsList.length > 0));
 
 const showTabs = computed(() => showHubTab.value && !props.disableMenu);
 

@@ -192,7 +192,11 @@
  */
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
-import type { MobileCardLayout, MobileSwipeAction, MobileColumnConfig } from "@ui/components/organisms/vc-data-table/types";
+import type {
+  MobileCardLayout,
+  MobileSwipeAction,
+  MobileColumnConfig,
+} from "@ui/components/organisms/vc-data-table/types";
 import { useTableSwipe } from "@ui/components/organisms/vc-data-table/composables/useTableSwipe";
 import MobileCellRenderer from "@ui/components/organisms/vc-data-table/components/mobile/MobileCellRenderer.vue";
 import MobileActionSheet from "@ui/components/organisms/vc-data-table/components/mobile/MobileActionSheet.vue";

@@ -47,10 +47,9 @@
                 ></VcImage>
               </template>
               <template v-else>
-                <VcIcon
-                  :icon="getFileThumbnail(data.name ?? '')"
-                  class="tw-text-[color:var(--assets-manager-thumbnail-color)] tw-text-[38px]"
-                ></VcIcon>
+                <div class="assets-manager__file-badge" :style="{ backgroundColor: getExtensionColor(data.name ?? '') }">
+                  {{ getExtensionLabel(data.name ?? '') }}
+                </div>
               </template>
             </div>
           </template>
@@ -116,7 +115,7 @@ import { IBladeToolbar } from "@core/types";
 import { ref, computed, unref } from "vue";
 import { useI18n } from "vue-i18n";
 import { formatDateRelative } from "@core/utilities/date";
-import { isImage, getFileThumbnail, readableSize } from "@core/utilities/assets";
+import { isImage, readableSize, getExtensionColor, getExtensionLabel } from "@core/utilities/assets";
 import { useBlade } from "@core/composables/useBlade";
 import { createLogger } from "@core/utilities";
 import { TableAction } from "@ui/components/organisms/vc-data-table/types";
@@ -242,7 +241,8 @@ async function upload(files: FileList) {
   }
 
   try {
-    await manager.value.upload(transfer.files);
+    const maxSortOrder = defaultAssets.value.reduce((max, asset) => Math.max(max, asset.sortOrder ?? 0), -1);
+    await manager.value.upload(transfer.files, maxSortOrder);
   } catch (error) {
     logger.error("Failed to upload assets:", error);
     throw error;
@@ -300,7 +300,14 @@ const actionBuilder = (): TableAction[] => {
 <style lang="scss">
 :root {
   --assets-manager-empty-icon-color: var(--primary-400);
-  --assets-manager-thumbnail-color: var(--secondary-500);
   --assets-manager-mobile-border: var(--info-100);
+}
+
+.assets-manager__file-badge {
+  @apply tw-flex tw-items-center tw-justify-center;
+  @apply tw-px-2.5 tw-py-1;
+  @apply tw-rounded;
+  @apply tw-text-xs tw-font-bold tw-tracking-wide;
+  @apply tw-text-white;
 }
 </style>

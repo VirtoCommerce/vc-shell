@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isImage, getFileThumbnail, readableSize } from "./assets";
+import { isImage, readableSize, getExtensionColor, getExtensionLabel } from "./assets";
 
 describe("assets utilities", () => {
   describe("isImage", () => {
@@ -37,55 +37,41 @@ describe("assets utilities", () => {
     });
   });
 
-  describe("getFileThumbnail", () => {
-    it("returns correct icon for PDF", () => {
-      expect(getFileThumbnail("report.pdf")).toBe("bi-filetype-pdf");
+  describe("getExtensionColor", () => {
+    it("returns correct color for known extensions", () => {
+      expect(getExtensionColor("report.pdf")).toBe("#e74c3c");
+      expect(getExtensionColor("doc.docx")).toBe("#2b579a");
+      expect(getExtensionColor("sheet.xlsx")).toBe("#217346");
+      expect(getExtensionColor("slides.pptx")).toBe("#d35230");
+      expect(getExtensionColor("data.csv")).toBe("#16a085");
+      expect(getExtensionColor("archive.zip")).toBe("#f39c12");
+      expect(getExtensionColor("song.mp3")).toBe("#e67e22");
+      expect(getExtensionColor("video.mp4")).toBe("#8e44ad");
     });
 
-    it("returns correct icon for Word documents", () => {
-      expect(getFileThumbnail("doc.doc")).toBe("bi-filetype-doc");
-      expect(getFileThumbnail("doc.docx")).toBe("bi-filetype-doc");
+    it("returns fallback for unknown extension", () => {
+      expect(getExtensionColor("file.xyz")).toBe("var(--neutrals-400)");
+      expect(getExtensionColor("file.txt")).toBe("var(--neutrals-400)");
     });
 
-    it("returns correct icon for Excel files", () => {
-      expect(getFileThumbnail("sheet.xls")).toBe("bi-filetype-xls");
-      expect(getFileThumbnail("sheet.xlsx")).toBe("bi-filetype-xls");
+    it("returns fallback for undefined", () => {
+      expect(getExtensionColor(undefined)).toBe("var(--neutrals-400)");
+    });
+  });
+
+  describe("getExtensionLabel", () => {
+    it("returns uppercase extension", () => {
+      expect(getExtensionLabel("report.pdf")).toBe("PDF");
+      expect(getExtensionLabel("doc.docx")).toBe("DOCX");
+      expect(getExtensionLabel("sheet.xlsx")).toBe("XLSX");
     });
 
-    it("returns correct icon for PowerPoint files", () => {
-      expect(getFileThumbnail("slides.ppt")).toBe("bi-filetype-ppt");
-      expect(getFileThumbnail("slides.pptx")).toBe("bi-filetype-ppt");
+    it("returns FILE for undefined", () => {
+      expect(getExtensionLabel(undefined)).toBe("FILE");
     });
 
-    it("returns correct icon for CSV files", () => {
-      expect(getFileThumbnail("data.csv")).toBe("bi-filetype-csv");
-    });
-
-    it("returns correct icon for ZIP files", () => {
-      expect(getFileThumbnail("archive.zip")).toBe("bi-file-zip");
-    });
-
-    it("returns correct icon for audio files", () => {
-      expect(getFileThumbnail("song.mp3")).toBe("bi-file-music");
-      expect(getFileThumbnail("song.aac")).toBe("bi-file-music");
-    });
-
-    it("returns correct icon for video files", () => {
-      expect(getFileThumbnail("video.mp4")).toBe("bi-file-play");
-      expect(getFileThumbnail("video.avi")).toBe("bi-file-play");
-    });
-
-    it("returns default icon for unknown extension", () => {
-      expect(getFileThumbnail("file.xyz")).toBe("bi-file-earmark");
-      expect(getFileThumbnail("file.txt")).toBe("bi-file-earmark");
-    });
-
-    it("returns default icon for undefined", () => {
-      expect(getFileThumbnail(undefined)).toBe("bi-file-earmark");
-    });
-
-    it("returns default icon for file without extension", () => {
-      expect(getFileThumbnail("noext")).toBe("bi-file-earmark");
+    it("returns FILE for file without extension", () => {
+      expect(getExtensionLabel("noext")).toBe("NOEXT");
     });
   });
 

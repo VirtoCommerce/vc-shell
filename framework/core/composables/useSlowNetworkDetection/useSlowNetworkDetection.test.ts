@@ -55,7 +55,7 @@ describe("useSlowNetworkDetection", () => {
       const { isSlowNetwork, trackRequest, untrackRequest } = useSlowNetworkDetection();
 
       trackRequest("req-1");
-      vi.advanceTimersByTime(4999);
+      vi.advanceTimersByTime(9999);
       expect(isSlowNetwork.value).toBe(false);
 
       untrackRequest("req-1");
@@ -66,7 +66,7 @@ describe("useSlowNetworkDetection", () => {
       const { isSlowNetwork, trackRequest } = useSlowNetworkDetection();
 
       trackRequest("req-1");
-      vi.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(10000);
       expect(isSlowNetwork.value).toBe(true);
     });
 
@@ -74,7 +74,7 @@ describe("useSlowNetworkDetection", () => {
       const { isSlowNetwork, trackRequest, untrackRequest } = useSlowNetworkDetection();
 
       trackRequest("req-1");
-      vi.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(10000);
       expect(isSlowNetwork.value).toBe(true);
 
       untrackRequest("req-1");
@@ -86,7 +86,7 @@ describe("useSlowNetworkDetection", () => {
 
       trackRequest("req-1");
       trackRequest("req-2");
-      vi.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(10000);
       expect(isSlowNetwork.value).toBe(true);
 
       untrackRequest("req-1");
@@ -183,7 +183,7 @@ describe("useSlowNetworkDetection", () => {
     it("shows notification when isSlowNetwork becomes true", async () => {
       const { trackRequest } = useSlowNetworkDetection();
       trackRequest("req-1");
-      vi.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(10000);
       await nextTick();
       expect(mockNotification.warning).toHaveBeenCalledWith(
         expect.stringContaining("slow"),
@@ -197,7 +197,7 @@ describe("useSlowNetworkDetection", () => {
     it("removes notification with 3s delay when isSlowNetwork becomes false", async () => {
       const { trackRequest, untrackRequest } = useSlowNetworkDetection();
       trackRequest("req-1");
-      vi.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(10000);
       await nextTick();
       untrackRequest("req-1");
       await nextTick();
@@ -211,7 +211,7 @@ describe("useSlowNetworkDetection", () => {
       // Start req-2 early so it crosses threshold during the dismiss window
       trackRequest("req-2");
       trackRequest("req-1");
-      vi.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(10000);
       await nextTick();
       // Both are now slow; untrack req-1
       untrackRequest("req-1");
@@ -225,7 +225,7 @@ describe("useSlowNetworkDetection", () => {
       mockIsOnline.value = false;
       const { trackRequest } = useSlowNetworkDetection();
       trackRequest("req-1");
-      vi.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(10000);
       await nextTick();
       expect(mockNotification.warning).not.toHaveBeenCalled();
     });
@@ -233,7 +233,7 @@ describe("useSlowNetworkDetection", () => {
     it("removes slow notification when going offline", async () => {
       const { trackRequest } = useSlowNetworkDetection();
       trackRequest("req-1");
-      vi.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(10000);
       await nextTick();
       expect(mockNotification.warning).toHaveBeenCalled();
       mockIsOnline.value = false;
@@ -244,7 +244,7 @@ describe("useSlowNetworkDetection", () => {
     it("notification persists for 3s after recovery", async () => {
       const { trackRequest, untrackRequest } = useSlowNetworkDetection();
       trackRequest("req-1");
-      vi.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(10000);
       await nextTick();
       expect(mockNotification.warning).toHaveBeenCalled();
       untrackRequest("req-1");

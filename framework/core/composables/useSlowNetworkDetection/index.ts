@@ -4,7 +4,7 @@ import { notification } from "@core/notifications/notification";
 import { useConnectionStatus } from "@core/composables/useConnectionStatus";
 
 const logger = createLogger("slow-network");
-const SLOW_REQUEST_THRESHOLD_MS = 5000;
+const SLOW_REQUEST_THRESHOLD_MS = 10000;
 const SLOW_EFFECTIVE_TYPES = ["slow-2g", "2g"];
 let _connectionHandler: (() => void) | null = null;
 

@@ -34,7 +34,9 @@
       },
       "VC_FILE_UPLOAD": {
         "DRAG_HERE": "Datei hier ablegen oder",
-        "BROWSE": "Dateien durchsuchen"
+        "BROWSE": "Dateien durchsuchen",
+        "TAP_TO_UPLOAD": "Tippen, um Dateien auszuwählen",
+        "UPLOADING": "Wird hochgeladen..."
       },
       "VC_INPUT": {
         "DATE_PLACEHOLDER": "Datum auswählen",
@@ -71,7 +73,11 @@
         "GALLERY_IS_EMPTY": "Galerie ist leer",
         "DROP_TO_UPLOAD": "Zum Hochladen ablegen",
         "DRAG_IMAGES_HERE": "Bilder hierher ziehen oder",
-        "BROWSE_IMAGES": "Dateien durchsuchen"
+        "BROWSE_IMAGES": "Dateien durchsuchen",
+        "UPLOAD": "Hochladen",
+        "OR_DROP_HERE": "oder hierher ziehen",
+        "SHOW_ALL": "Erweitern ({count})",
+        "COLLAPSE": "Einklappen"
       },
       "VC_APP": {
         "INTERNAL": {

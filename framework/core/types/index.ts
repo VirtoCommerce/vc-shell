@@ -1,5 +1,4 @@
 import { Component, ComputedRef, Ref } from "vue";
-import type { CoreBladeExposed } from "@core/blade-navigation/types";
 import type { ComponentPublicInstanceConstructor } from "@ui/utilities/vueUtils";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
 import type { AssetLike } from "@core/composables/useAssetsManager";
@@ -75,7 +74,7 @@ export interface IBladeToolbar {
     | ComputedRef<boolean | undefined>
     | ((blade?: BladeDescriptor) => boolean | undefined);
 
-  clickHandler?(app?: Record<string, any> | CoreBladeExposed | null): void;
+  clickHandler?(app?: Record<string, any> | null): void;
   separator?: "left" | "right" | "both";
   permissions?: string | string[];
 }

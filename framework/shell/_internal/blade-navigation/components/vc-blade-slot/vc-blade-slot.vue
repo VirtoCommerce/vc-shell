@@ -29,7 +29,6 @@ import { ErrorInterceptor } from "@shell/components/error-interceptor";
 import { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
 import type { BladeDescriptor, IParentCallArgs, IBladeBanner } from "@core/blade-navigation/types";
 import { BladeDescriptorKey, BladeMaximizedKey, BladeBannersKey } from "@core/blade-navigation/types";
-import type { CoreBladeExposed } from "@core/blade-navigation/types";
 import type { Breadcrumbs } from "@ui/types";
 import type { Component } from "vue";
 

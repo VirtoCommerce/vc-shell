@@ -3,9 +3,9 @@ import { ref, computed } from "vue";
 import { mount } from "@vue/test-utils";
 import { WidgetServiceKey, WidgetScopeKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
-import { useBladeWidgets, useWidgetTrigger } from "./useBladeWidgets";
+import { useBladeWidgets, useWidgetTrigger } from ".";
 import type { IWidgetService } from "@core/services/widget-service";
-import type { HeadlessWidgetDeclaration, IWidgetScope } from "./useBladeWidgets";
+import type { HeadlessWidgetDeclaration, IWidgetScope } from ".";
 
 function createMockWidgetService(overrides: Partial<IWidgetService> = {}): IWidgetService {
   return {

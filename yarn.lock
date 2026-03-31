@@ -4916,6 +4916,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/sortablejs@npm:^1.15.9":
+  version: 1.15.9
+  resolution: "@types/sortablejs@npm:1.15.9"
+  checksum: 10/9e0d6ef1cdcd30acab7af74cab5cbf56685e2de47c6f254357f7dde2626e9b49b8668c43f92761202cf4e10f2e3fd3d7baa6a83a39c3d342fc45ce66e87bd5aa
+  languageName: node
+  linkType: hard
+
 "@types/stack-utils@npm:^2.0.3":
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
@@ -5428,7 +5435,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@npm:^2.0.0-alpha.28, @vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@npm:^2.0.0-alpha.29, @vc-shell/api-client-generator@workspace:*, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -5446,7 +5453,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@npm:^2.0.0-alpha.28, @vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
+"@vc-shell/config-generator@npm:^2.0.0-alpha.29, @vc-shell/config-generator@workspace:*, @vc-shell/config-generator@workspace:configs/vite-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:configs/vite-config"
   dependencies:
@@ -5490,7 +5497,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@npm:^2.0.0-alpha.28, @vc-shell/framework@workspace:*, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@npm:^2.0.0-alpha.29, @vc-shell/framework@workspace:*, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -5521,6 +5528,7 @@ __metadata:
     "@tiptap/vue-3": "npm:^3.4.2"
     "@types/dompurify": "npm:^3.0.5"
     "@types/semver": "npm:^7.7.1"
+    "@types/sortablejs": "npm:^1.15.9"
     "@unovis/ts": "npm:^1.6.4"
     "@unovis/vue": "npm:^1.6.4"
     "@vc-shell/api-client-generator": "workspace:*"
@@ -5549,6 +5557,7 @@ __metadata:
     sass: "npm:^1.87.0"
     semver: "npm:^7.7.4"
     shx: "npm:^0.3.4"
+    sortablejs: "npm:^1.15.7"
     swiper: "npm:^11.2.10"
     tiptap-markdown: "npm:^0.9.0"
     truncate-html: "npm:^1.1.1"
@@ -5589,7 +5598,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/mf-host@npm:^2.0.0-alpha.28, @vc-shell/mf-host@workspace:packages/mf-host":
+"@vc-shell/mf-host@npm:^2.0.0-alpha.29, @vc-shell/mf-host@workspace:packages/mf-host":
   version: 0.0.0-use.local
   resolution: "@vc-shell/mf-host@workspace:packages/mf-host"
   dependencies:
@@ -5610,7 +5619,7 @@ __metadata:
     vue-i18n: "npm:^11.3.0"
     vue-router: "npm:^5.0.3"
   peerDependencies:
-    "@vc-shell/framework": ^2.0.0-alpha.28
+    "@vc-shell/framework": ^2.0.0-alpha.29
     "@vueuse/core": ^10.0.0
     lodash-es: ^4.0.0
     vee-validate: ^4.12.0
@@ -5634,7 +5643,7 @@ __metadata:
     vitest: "npm:^3.2.4"
     vue: "npm:^3.5.30"
   peerDependencies:
-    "@vc-shell/config-generator": ^2.0.0-alpha.28
+    "@vc-shell/config-generator": ^2.0.0-alpha.29
     "@vitejs/plugin-vue": ^5.0.0
     vite: ^5.0.0 || ^6.0.0
   languageName: unknown
@@ -5740,7 +5749,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/ts-config@npm:^2.0.0-alpha.28, @vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
+"@vc-shell/ts-config@npm:^2.0.0-alpha.29, @vc-shell/ts-config@workspace:*, @vc-shell/ts-config@workspace:configs/ts-config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/ts-config@workspace:configs/ts-config"
   languageName: unknown
@@ -6715,11 +6724,11 @@ __metadata:
     "@rollup/plugin-typescript": "npm:^11.1.5"
     "@types/lodash-es": "npm:^4.17.12"
     "@types/node": "npm:^20.10.5"
-    "@vc-shell/api-client-generator": "npm:^2.0.0-alpha.28"
-    "@vc-shell/config-generator": "npm:^2.0.0-alpha.28"
-    "@vc-shell/framework": "npm:^2.0.0-alpha.28"
-    "@vc-shell/mf-host": "npm:^2.0.0-alpha.28"
-    "@vc-shell/ts-config": "npm:^2.0.0-alpha.28"
+    "@vc-shell/api-client-generator": "npm:^2.0.0-alpha.29"
+    "@vc-shell/config-generator": "npm:^2.0.0-alpha.29"
+    "@vc-shell/framework": "npm:^2.0.0-alpha.29"
+    "@vc-shell/mf-host": "npm:^2.0.0-alpha.29"
+    "@vc-shell/ts-config": "npm:^2.0.0-alpha.29"
     "@vitejs/plugin-vue": "npm:^5.2.3"
     "@vue/eslint-config-prettier": "npm:^10.2.0"
     "@vue/eslint-config-typescript": "npm:^14.6.0"
@@ -17497,6 +17506,13 @@ __metadata:
     ip-address: "npm:^10.0.1"
     smart-buffer: "npm:^4.2.0"
   checksum: 10/d19366c95908c19db154f329bbe94c2317d315dc933a7c2b5101e73f32a555c84fb199b62174e1490082a593a4933d8d5a9b297bde7d1419c14a11a965f51356
+  languageName: node
+  linkType: hard
+
+"sortablejs@npm:^1.15.7":
+  version: 1.15.7
+  resolution: "sortablejs@npm:1.15.7"
+  checksum: 10/4ef195ec8512c48ba536c65fc8ab8ecf0bd05a918dc79d64213428edf12c8d5a6c18ff40f822d69d4716b764d860e0fdf8a467cf7ab6386f613aa4ea99ac5d42
   languageName: node
   linkType: hard
 

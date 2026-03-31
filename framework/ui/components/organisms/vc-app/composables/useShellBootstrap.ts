@@ -1,6 +1,5 @@
 import { provide, inject, computed } from "vue";
 import { provideAppBarMobileButtonsService } from "@core/composables/useAppBarMobileButtons";
-import { provideGlobalSearch } from "@core/composables/useGlobalSearch";
 import { provideDashboardService } from "@core/composables/useDashboard";
 import {
   SettingsMenuServiceKey,
@@ -36,7 +35,6 @@ export function useShellBootstrap(options: ShellBootstrapOptions) {
 
   // 1b. Component-scoped services (created here for VcApp descendants)
   const mobileButtons = provideAppBarMobileButtonsService();
-  provideGlobalSearch();
   provideDashboardService();
 
   // 2. Provide injection keys

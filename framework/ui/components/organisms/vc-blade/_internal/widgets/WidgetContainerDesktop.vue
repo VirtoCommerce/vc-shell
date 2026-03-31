@@ -6,9 +6,14 @@
         :key="widget.id"
       >
         <!-- Headless: framework renders VcWidget from config -->
+        <VcSkeleton
+          v-if="widget.headless && resolveLoading(widget)"
+          variant="block"
+          :width="48"
+          :height="48"
+        />
         <VcWidget
-          v-if="widget.headless"
-          v-loading:500="resolveLoading(widget)"
+          v-else-if="widget.headless"
           :icon="widget.headless?.icon"
           :title="resolveTitle(widget)"
           :value="resolveBadge(widget)"
@@ -51,9 +56,14 @@
         </template>
 
         <template #item="{ item }">
+          <VcSkeleton
+            v-if="item.headless && resolveLoading(item)"
+            variant="block"
+            width="100%"
+            :height="32"
+          />
           <VcWidget
-            v-if="item.headless"
-            v-loading:500="resolveLoading(item)"
+            v-else-if="item.headless"
             class="tw-w-full"
             :icon="item.headless?.icon"
             :title="resolveTitle(item)"
@@ -92,6 +102,7 @@ import { IWidget } from "@core/services/widget-service";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcWidget } from "@ui/components/atoms/vc-widget";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import WidgetScope from "./WidgetScope.vue";
 import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
 
@@ -124,11 +135,34 @@ const showMoreButton = computed(() => props.widgets.length > 3);
     @apply tw-flex tw-flex-row tw-gap-1;
   }
 
-  // Suppress widget's own hover inside dropdown — the dropdown item wrapper provides hover feedback
+  // Style widgets inside dropdown to match VcDropdownItem appearance
   .vc-dropdown__item {
+    // Suppress widget's own hover — the dropdown item wrapper provides hover feedback
     --widget-bg-hover-color: transparent;
+    --widget-bg-color: transparent;
     --widget-icon-hover-color: var(--widget-icon-color);
     --widget-title-hover-color: var(--widget-title-color);
+    --widget-border-radius: 0;
+
+    .vc-widget--horizontal {
+      @apply tw-px-2 tw-py-[6px] tw-gap-2;
+
+      .vc-widget__icon-container {
+        @apply tw-flex tw-items-center tw-justify-center;
+      }
+
+      .vc-widget__icon {
+        font-size: 14px;
+      }
+
+      .vc-widget__content {
+        @apply tw-ml-0;
+      }
+
+      .vc-widget__title {
+        @apply tw-mt-0 tw-text-xs tw-font-normal;
+      }
+    }
   }
 
   &__more {

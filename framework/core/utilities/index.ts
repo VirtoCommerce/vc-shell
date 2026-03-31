@@ -9,6 +9,7 @@ export * from "./date";
 export * from "@core/utilities/assets";
 export * from "@core/utilities/colorUtils";
 export * from "@core/utilities/formatBadgeCount";
+export * from "@core/utilities/thumbnail";
 // Note: pendingErrorNotifications is NOT re-exported here to avoid a circular
 // dependency (notification.ts → @core/utilities → pendingErrorNotifications → notification.ts).
 // Import directly from "@core/utilities/pendingErrorNotifications" where needed.

@@ -6,11 +6,11 @@
   >
     <!-- Blade contents -->
     <div class="tw-flex tw-grow-1 tw-border-t tw-border-solid tw-border-t-[--assets-details-border]">
-      <div class="assets-details__content tw-grow tw-basis-0 tw-w-full">
+      <div class="assets-details__content tw-grow tw-basis-0 tw-w-full tw-overflow-hidden">
         <VcContainer :no-padding="true">
           <div class="tw-p-4">
             <VcForm>
-              <VcRow class="tw-mb-4 !tw-flex">
+              <div class="assets-details__header">
                 <template v-if="isImage(defaultAsset.name)">
                   <VcImage
                     :src="defaultAsset.url"
@@ -20,44 +20,34 @@
                   ></VcImage>
                 </template>
                 <template v-else>
-                  <VcIcon
-                    :icon="getFileThumbnail(defaultAsset.name)"
-                    class="tw-text-[color:var(--assets-details-thumbnail-color)] tw-text-[128px] tw-shrink-0"
-                  ></VcIcon>
+                  <div class="assets-details__file-preview tw-shrink-0">
+                    <div
+                      class="assets-details__file-badge"
+                      :style="{ backgroundColor: getExtensionColor(defaultAsset.name) }"
+                    >
+                      {{ getExtensionLabel(defaultAsset.name) }}
+                    </div>
+                  </div>
                 </template>
-                <VcCol class="tw-ml-6">
-                  <VcCol>
-                    <VcCol>
-                      <VcLabel>{{ t("ASSETS.PAGES.DETAILS.FIELDS.SIZE") }}</VcLabel>
-                      <VcHint class="tw-text-s">{{ readableSize(defaultAsset.size) }}</VcHint>
-                    </VcCol>
-                    <VcCol>
-                      <VcLabel>{{ t("ASSETS.PAGES.DETAILS.FIELDS.CREATED_DATE") }}</VcLabel>
-                      <VcHint class="tw-text-s">{{ formatDateRelative(defaultAsset.createdDate) || "N/A" }}</VcHint>
-                    </VcCol>
-                    <VcCol class="tw-w-full">
-                      <VcLabel>{{ t("ASSETS.PAGES.DETAILS.FIELDS.URL") }}</VcLabel>
-                      <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
-                        <div class="tw-truncate">
-                          <VcLink
-                            class="vc-link tw-text-s tw-truncate tw-w-full"
-                            @click="openLink(defaultAsset.url)"
-                            >{{ options?.asset.name }}</VcLink
-                          >
-                        </div>
-                        <VcButton
-                          icon="lucide-copy"
-                          icon-size="m"
-                          class="tw-ml-2"
-                          text
-                          :title="t('ASSETS.PAGES.DETAILS.FIELDS.COPY')"
-                          @click="copyLink(defaultAsset.url)"
-                        ></VcButton>
-                      </div>
-                    </VcCol>
-                  </VcCol>
-                </VcCol>
-              </VcRow>
+                <div class="assets-details__meta">
+                  <VcField
+                    :label="t('ASSETS.PAGES.DETAILS.FIELDS.SIZE')"
+                    :model-value="readableSize(defaultAsset.size)"
+                  />
+                  <VcField
+                    :label="t('ASSETS.PAGES.DETAILS.FIELDS.CREATED_DATE')"
+                    :model-value="defaultAsset.createdDate"
+                    type="date-ago"
+                  />
+                  <VcField
+                    :label="t('ASSETS.PAGES.DETAILS.FIELDS.URL')"
+                    :model-value="defaultAsset.url"
+                    :display-value="defaultAsset.name"
+                    type="link"
+                    copyable
+                  />
+                </div>
+              </div>
 
               <Field
                 v-if="!options?.hiddenFields?.includes('name')"
@@ -117,8 +107,8 @@ import { VcForm } from "@ui/components/molecules/vc-form";
 import { VcImage } from "@ui/components/atoms/vc-image";
 import { VcInput } from "@ui/components/molecules/vc-input";
 import { VcTextarea } from "@ui/components/molecules/vc-textarea";
-import { isImage, getFileThumbnail, readableSize } from "@core/utilities/assets";
-import { formatDateRelative } from "@core/utilities/date";
+import { VcField } from "@ui/components/molecules/vc-field";
+import { isImage, readableSize, getExtensionColor, getExtensionLabel } from "@core/utilities/assets";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 import { useBlade } from "@core/composables/useBlade";
 
@@ -187,28 +177,40 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
 const assetType = computed(() => defaultAsset.value?.typeId);
 
-function copyLink(link: string | undefined) {
-  if (!link) {
-    return;
-  }
-  if (link.charAt(0) === "/") {
-    navigator.clipboard?.writeText(`${location.origin}${link}`);
-  } else {
-    navigator.clipboard?.writeText(link);
-  }
-}
-
-function openLink(link: string | undefined) {
-  if (!link) {
-    return;
-  }
-  location.href = link;
-}
 </script>
 
 <style lang="scss">
 :root {
   --assets-details-border: var(--neutrals-200);
-  --assets-details-thumbnail-color: var(--secondary-500);
 }
+
+.assets-details__header {
+  @apply tw-flex tw-mb-4;
+  @apply tw-overflow-hidden;
+}
+
+.assets-details__meta {
+  @apply tw-flex tw-flex-col tw-gap-3;
+  @apply tw-ml-6 tw-min-w-0 tw-flex-1;
+  @apply tw-overflow-hidden;
+}
+
+.assets-details__file-preview {
+  @apply tw-w-[var(--image-size-xl)] tw-h-[var(--image-size-xl)];
+  @apply tw-rounded-[var(--image-border-radius)];
+  @apply tw-border tw-border-solid tw-border-[color:var(--image-border-color)];
+  @apply tw-bg-[var(--neutrals-50)];
+  @apply tw-flex tw-flex-col tw-items-center tw-justify-center;
+  @apply tw-gap-2;
+  @apply tw-overflow-hidden;
+}
+
+.assets-details__file-badge {
+  @apply tw-flex tw-items-center tw-justify-center;
+  @apply tw-px-3.5 tw-py-1.5;
+  @apply tw-rounded-md;
+  @apply tw-text-sm tw-font-bold tw-tracking-wide;
+  @apply tw-text-white;
+}
+
 </style>

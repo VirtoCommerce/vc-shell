@@ -27,6 +27,9 @@ export default {
     size: "md",
     gap: 8,
     imagefit: "contain",
+    layout: "filmstrip",
+    label: "Images",
+    required: false,
   },
   argTypes: {
     size: {
@@ -73,6 +76,22 @@ export default {
     name: {
       description: "Field name used for validation messages.",
       table: { category: "Config", defaultValue: { summary: "Gallery" } },
+    },
+    layout: {
+      control: "radio",
+      options: ["filmstrip", "grid"],
+      description: "Gallery layout mode — filmstrip (single scrollable row) or grid (multi-row auto-fill).",
+      table: { category: "Layout", defaultValue: { summary: "filmstrip" } },
+    },
+    label: {
+      control: "text",
+      description: "Label text displayed in the gallery header.",
+      table: { category: "Config" },
+    },
+    required: {
+      control: "boolean",
+      description: "Shows a required indicator on the label.",
+      table: { category: "Config", defaultValue: { summary: "false" } },
     },
     accept: {
       description: "Comma-separated list of accepted file extensions.",
@@ -239,3 +258,35 @@ export const TightGrid: StoryFn = (args) => ({
   `,
 });
 TightGrid.args = { gap: 0, size: "sm", imagefit: "cover" };
+
+export const FilmstripDefault = Template.bind({});
+FilmstripDefault.args = { layout: "filmstrip", imagefit: "cover" };
+
+export const FilmstripManyImages: StoryFn = (args) => ({
+  components: { VcGallery, VcPopupContainer },
+  setup() {
+    const images = ref<ICommonAsset[]>([...manyImages]);
+    const onSort = (sorted: ICommonAsset[]) => {
+      images.value = sorted;
+    };
+    const onRemove = (image: ICommonAsset) => {
+      images.value = images.value.filter((img) => img.id !== image.id);
+    };
+    return { args, images, onSort, onRemove };
+  },
+  template: `
+    <div class="tw-p-4" style="max-width: 600px;">
+      <VcGallery
+        v-bind="args"
+        :images="images"
+        @sort="onSort"
+        @remove="onRemove"
+      />
+      <VcPopupContainer />
+    </div>
+  `,
+});
+FilmstripManyImages.args = { layout: "filmstrip", size: "sm", imagefit: "cover" };
+
+export const GridLayout = Template.bind({});
+GridLayout.args = { layout: "grid" };

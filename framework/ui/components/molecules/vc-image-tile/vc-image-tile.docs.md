@@ -40,6 +40,7 @@ function deleteImage() { /* remove from list */ }
 | `name` | `string` | — | File name displayed in the tray |
 | `imageFit` | `"contain" \| "cover"` | `"contain"` | How the image fits within the tile |
 | `actions` | `VcImageTileActions` | — | Which built-in action buttons to show |
+| `thumbnailSize` | `ThumbnailSize` | — | Load a thumbnail variant instead of full-size image |
 
 ## VcImageTileActions Interface
 

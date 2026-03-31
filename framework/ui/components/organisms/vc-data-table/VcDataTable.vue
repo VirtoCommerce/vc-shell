@@ -1335,6 +1335,9 @@ onBeforeUnmount(() => {
     &,
     .vc-table-composition__cell-content {
       overflow: visible;
+      // Don't let cell-content grow — keep it intrinsic-sized so that
+      // justify-content: center on the parent actually centers the checkbox/skeleton
+      flex: 0 0 auto;
     }
   }
 

@@ -8,8 +8,7 @@
       >
         <TableCell
           v-if="showSelectionCell"
-          :style="{ textAlign: 'center', justifyContent: 'center', minWidth: '40px', maxWidth: '40px' }"
-          width="40px"
+          class="vc-data-table__selection-cell"
           :line-clamp="0"
         >
           <VcSkeleton

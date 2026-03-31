@@ -10,7 +10,7 @@
     :aria-disabled="disabled"
     @click="onClickFn"
   >
-    <slot></slot>
+    <span class="vc-link__text"><slot></slot></span>
   </button>
 </template>
 
@@ -45,10 +45,10 @@ function onClickFn(): void {
 }
 
 .vc-link {
-  @apply tw-text-[color:var(--link-text-color)] tw-no-underline tw-cursor-pointer tw-transition tw-duration-200 tw-inline-block hover:tw-text-[color:var(--link-text-color-hover)] hover:tw-underline
+  @apply tw-text-[color:var(--link-text-color)] tw-no-underline tw-cursor-pointer tw-transition tw-duration-200 tw-max-w-full hover:tw-text-[color:var(--link-text-color-hover)] hover:tw-underline
     focus-visible:tw-outline-none focus-visible:tw-ring-[3px] focus-visible:tw-ring-[color:var(--link-focus-ring-color)] focus-visible:tw-rounded-sm;
   /* Reset button styles for link appearance */
-  @apply tw-bg-transparent tw-border-none tw-p-0;
+  @apply tw-bg-transparent tw-border-none tw-p-0 tw-text-left;
 
   &--active {
     @apply tw-text-[color:var(--link-text-color-active)] tw-no-underline hover:tw-text-[color:var(--link-text-color-active)] hover:tw-no-underline;
@@ -56,6 +56,10 @@ function onClickFn(): void {
 
   &--disabled {
     @apply tw-cursor-not-allowed tw-text-[color:var(--link-text-color-disabled)] tw-no-underline tw-opacity-50 hover:tw-text-[color:var(--link-text-color-disabled)] hover:tw-no-underline;
+  }
+
+  &__text {
+    @apply tw-block tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap;
   }
 }
 </style>

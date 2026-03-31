@@ -4,6 +4,7 @@
     class="vc-image-tile"
     :class="{
       'vc-image-tile--active': isActive,
+      'vc-image-tile--mobile': isMobile,
     }"
     @click="onTileClick"
   >
@@ -16,8 +17,9 @@
     <!-- Image -->
     <img
       v-if="src"
-      :src="src"
+      :src="resolvedSrc"
       :alt="alt"
+      loading="lazy"
       class="vc-image-tile__image"
       :class="{ 'vc-image-tile__image--loaded': imageState.isLoaded.value }"
       :style="{ objectFit: imageFit }"
@@ -25,13 +27,21 @@
       @error="imageState.onError"
     />
 
-    <!-- Overlay slot (e.g. drag handle) -->
-    <slot name="overlay" />
+    <!-- Top bar: name + overlay (drag handle) -->
+    <div class="vc-image-tile__topbar">
+      <slot name="overlay" />
+      <div
+        v-if="name"
+        class="vc-image-tile__name"
+        :title="name"
+      >
+        {{ name }}
+      </div>
+    </div>
 
-    <!-- Slide-up tray -->
+    <!-- Bottom tray: action buttons -->
     <div class="vc-image-tile__tray">
       <div class="vc-image-tile__tray-actions">
-        <!-- Built-in actions -->
         <button
           v-if="actions?.preview !== false"
           type="button"
@@ -68,27 +78,20 @@
             size="s"
           />
         </button>
-
-        <!-- Extra actions slot -->
         <slot name="actions" />
-      </div>
-      <div
-        v-if="name"
-        class="vc-image-tile__tray-name"
-        :title="name"
-      >
-        {{ name }}
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, toRef } from "vue";
+import { computed, ref, toRef } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useI18n } from "vue-i18n";
 import { useImageLoad } from "@ui/components/organisms/vc-gallery/composables/useImageLoad";
+import { useResponsive } from "@framework/core/composables/useResponsive";
+import { getThumbnailUrl, type ThumbnailSize } from "@core/utilities/thumbnail";
 
 export interface VcImageTileActions {
   preview?: boolean;
@@ -102,6 +105,8 @@ export interface VcImageTileProps {
   name?: string;
   imageFit?: "contain" | "cover";
   actions?: VcImageTileActions;
+  /** Load a thumbnail variant instead of the full-size image */
+  thumbnailSize?: ThumbnailSize;
 }
 
 const props = withDefaults(defineProps<VcImageTileProps>(), {
@@ -115,11 +120,13 @@ defineEmits<{
 }>();
 
 const { t } = useI18n({ useScope: "global" });
-const imageState = useImageLoad(toRef(() => props.src));
+const { isMobile } = useResponsive();
+const resolvedSrc = computed(() => getThumbnailUrl(props.src, props.thumbnailSize) ?? props.src);
+const imageState = useImageLoad(toRef(() => resolvedSrc.value));
 const isActive = ref(false);
 
 function onTileClick() {
-  if (window.matchMedia("(hover: none)").matches) {
+  if (isMobile.value) {
     isActive.value = !isActive.value;
   }
 }
@@ -174,9 +181,24 @@ function deactivate() {
     animation: image-tile-shimmer 1.5s infinite ease-in-out;
   }
 
+  // ── Top bar: name + drag handle ──
+  &__topbar {
+    @apply tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-z-[1]
+      tw-flex tw-items-center tw-gap-1 tw-px-1.5 tw-py-1
+      -tw-translate-y-full tw-transition-transform tw-duration-200 tw-ease-out;
+    background: var(--image-tile-tray-bg);
+    backdrop-filter: blur(var(--image-tile-tray-blur)) saturate(1.5);
+  }
+
+  &__name {
+    @apply tw-truncate tw-text-[10px] tw-leading-tight tw-ml-auto;
+    color: var(--image-tile-action-color);
+  }
+
+  // ── Bottom tray: action buttons ──
   &__tray {
     @apply tw-absolute tw-bottom-0 tw-left-0 tw-right-0
-      tw-flex tw-items-center tw-gap-1 tw-px-2 tw-py-1.5
+      tw-flex tw-items-center tw-justify-center tw-gap-1 tw-px-2 tw-py-1.5
       tw-translate-y-full tw-transition-transform tw-duration-200 tw-ease-out;
     background: var(--image-tile-tray-bg);
     backdrop-filter: blur(var(--image-tile-tray-blur)) saturate(1.5);
@@ -186,24 +208,34 @@ function deactivate() {
     @apply tw-flex tw-gap-1 tw-shrink-0;
   }
 
-  &__tray-name {
-    @apply tw-truncate tw-text-xs tw-ml-auto;
-    color: var(--image-tile-action-color);
+  // Desktop: hover effects
+  &:not(&--mobile):hover {
+    transform: translateY(-2px);
+    box-shadow: var(--image-tile-shadow-hover);
   }
 
-  @media (hover: hover) {
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--image-tile-shadow-hover);
-    }
-
-    &:hover &__tray {
-      @apply tw-translate-y-0;
-    }
-  }
-
-  &--active &__tray {
+  &:not(&--mobile):hover &__tray,
+  &:not(&--mobile):hover &__topbar {
     @apply tw-translate-y-0;
+  }
+
+  &--active &__tray,
+  &--active &__topbar {
+    @apply tw-translate-y-0;
+  }
+
+  // Mobile: compact layout (shown on tap via --active)
+  &--mobile &__tray,
+  &--mobile &__topbar {
+    padding: 4px;
+    gap: 2px;
+  }
+
+
+  &--mobile .vc-image-tile-action {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
   }
 }
 

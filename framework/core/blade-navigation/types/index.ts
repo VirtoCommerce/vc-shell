@@ -1,48 +1,11 @@
 import { Router } from "vue-router";
-import {
-  AppContext,
-  Component,
-  ComponentOptionsBase,
-  ComponentOptionsMixin,
-  VNode,
-  ComponentInternalInstance,
-  VNodeTypes,
-  Ref,
-  InjectionKey,
-  ComputedRef,
-} from "vue";
-import type { ComponentPublicInstanceConstructor } from "@ui/utilities/vueUtils";
+import { Component, Ref, InjectionKey, ComputedRef } from "vue";
 import type { MenuItemConfig, MenuItemBadgeConfig } from "@core/types/menu-types";
 import type { Breadcrumbs } from "@ui/types";
-
-/**
- * @deprecated Blade pages no longer need to declare these props.
- * Use `useBlade<TOptions>()` to access `param`, `options`, `expanded`, `closable`.
- * VcBlade reads `expanded`/`closable` from BladeDescriptor automatically.
- *
- * These props are still passed by VcBladeSlot for backward compatibility
- * and will be removed in the next major version.
- */
-export type CoreBladeComponentProps = {
-  expanded?: boolean;
-  closable?: boolean;
-  param?: string;
-  options?: Record<string, any>;
-};
 
 export type CoreDynamicBladeComponentProps = {
   model?: any;
   composables?: any;
-};
-
-export type CoreBladeAdditionalSettings = {
-  url?: `/${string}`;
-  routable?: boolean;
-  permissions?: string | string[];
-  isWorkspace?: boolean;
-  isBlade?: boolean;
-  name?: string;
-  menuItem?: MenuItemConfig;
 };
 
 // ─── defineBlade types ────────────────────────────────────────────────────────
@@ -85,43 +48,28 @@ export interface BladeDefinition {
  */
 export type BladeConfig = Omit<BladeDefinition, "name">;
 
-export interface CoreBladeExposed {
-  [x: string]: any;
-  title?: string;
-  reloadParent?: () => void;
-  reload?: () => void;
-}
+// ─── Adapter stubs (kept for backward compatibility in adapter layer) ────────
+// These are simplified stubs of the former complex deprecated types.
+// New code should NOT use them — use BladeDescriptor / BladeOpenEvent / useBlade() instead.
 
-/**
- * @deprecated Use `callParent(method, args)` from `useBlade()` instead of
- * emitting `parent:call` events. Will be removed in the next major version.
- */
+/** @deprecated Stub — use `Record<string, any>` or blade's own exposed type */
+export type CoreBladeExposed = Record<string, any>;
+
+/** @deprecated Stub — use `useBlade().callParent()` instead of `parent:call` events */
 export interface IParentCallArgs {
-  method: keyof CoreBladeExposed;
+  method: string;
   args?: unknown;
   callback?: (args: unknown) => void;
 }
 
-export interface BladeComponentInternalInstance extends ComponentInternalInstance {
-  vnode: VNode & BladeVNode;
-  appContext: AppContext & { components: Record<string, BladeInstanceConstructor> };
-}
+/** @deprecated Stub — use `Component` directly */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type BladeInstanceConstructor<T extends Component = Component> = Component & {
+  menuItem?: MenuItemConfig;
+  [key: string]: any;
+};
 
-export type ExtractedBladeOptions<T, U extends keyof T> = T[U];
-
-type Extractor<T> = Extract<T, ComponentPublicInstanceConstructor>;
-
-export type BladeInstanceConstructor<T extends Component = Component> = Extractor<T> & {
-  new (...args: any[]): InstanceType<Extractor<T>> & {
-    $: ComponentInternalInstance & {
-      exposed: CoreBladeExposed | InstanceType<Extractor<T>>["$"]["exposed"];
-    };
-    $props: InstanceType<Extractor<T>>["$props"] & CoreBladeComponentProps;
-  };
-} & ComponentOptionsBase<any, any, any, any, ComponentOptionsMixin, ComponentOptionsMixin, any, any, any> &
-  CoreBladeAdditionalSettings;
-
-/** @deprecated This interface will be replaced in a future version. Avoid new usages. */
+/** @deprecated Stub — use `BladeOpenEvent` instead */
 export interface IBladeEvent<T extends Component = Component> {
   blade: BladeInstanceConstructor<T> | { name: string } | undefined;
   options?: Record<string, any>;
@@ -135,15 +83,16 @@ export interface BladeNavigationPlugin {
   router: Router;
 }
 
+/** @deprecated Stub — use blade registry data instead */
 export interface BladeRoutesRecord {
-  component: BladeInstanceConstructor;
+  component: Component;
   name: string;
   isWorkspace: boolean;
   route: string;
 }
 
-type VNodeMountHook = (vnode: BladeVNode | VNode) => void;
-export interface BladeVNode extends VNode {
+/** @deprecated Stub — used only in adapter shims, not real VNodes */
+export interface BladeVNode {
   props: {
     navigation: {
       onOpen?: () => void;
@@ -154,18 +103,18 @@ export interface BladeVNode extends VNode {
       idx: number;
       isVisible?: boolean;
     };
-    onVnodeUnmounted?: VNodeMountHook | VNodeMountHook[];
-    onVnodeMounted?: VNodeMountHook | VNodeMountHook[];
-  } & Omit<VNode["props"], "onVnodeUnmounted" | "onVnodeMounted"> &
-    CoreBladeComponentProps;
-  type: VNodeTypes & BladeInstanceConstructor;
+    param?: string;
+    options?: Record<string, any>;
+    expanded?: boolean;
+    closable?: boolean;
+  };
+  type: { name?: string; url?: string; [key: string]: any };
 }
 
 // ─── New Blade Navigation Types (BladeStack architecture) ─────────────────────
 
 /**
- * Plain data descriptor for a blade instance in the stack.
- * Replaces BladeVNode — no VNode mutation, purely reactive data.
+ * Plain data descriptor for a blade instance in the stack. Purely reactive data.
  */
 export interface BladeDescriptor {
   /** Unique per open blade instance (generated at open time) */

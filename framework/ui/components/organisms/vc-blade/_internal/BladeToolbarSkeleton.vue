@@ -1,9 +1,7 @@
 <template>
   <div
+    v-if="!isMobile"
     class="vc-blade-toolbar vc-blade-toolbar-skeleton"
-    :class="{
-      'vc-blade-toolbar--mobile': isMobile,
-    }"
   >
     <div class="vc-blade-toolbar__content">
       <div class="vc-blade-toolbar-skeleton__buttons">

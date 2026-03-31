@@ -2,6 +2,7 @@
   <VcPopup
     v-if="currentImage"
     is-mobile-fullscreen
+    is-fullscreen
     modal-width="vc-gallery-preview__modal"
     @close="$emit('close')"
   >
@@ -34,68 +35,95 @@
 
     <template #content>
       <div class="vc-gallery-preview__body">
-        <!-- Image viewing area -->
+        <!-- Main image swiper -->
         <div class="vc-gallery-preview__stage">
-          <Transition
-            name="vc-gallery-preview-fade"
-            mode="out-in"
+          <Swiper
+            :modules="mainModules"
+            :initial-slide="localIndex"
+            :space-between="0"
+            :keyboard="{ enabled: true }"
+            :simulate-touch="true"
+            :grab-cursor="true"
+            class="vc-gallery-preview__main-swiper"
+            @swiper="onMainSwiperInit"
+            @slide-change="onMainSlideChange"
           >
-            <img
-              :key="localIndex"
-              :src="currentImage.url"
-              :alt="currentImage.altText || currentImage.name || ''"
-              class="vc-gallery-preview__image"
-            />
-          </Transition>
+            <SwiperSlide
+              v-for="(image, i) in images"
+              :key="i"
+              class="vc-gallery-preview__slide"
+            >
+              <img
+                :src="image.url"
+                :alt="image.altText || image.name || ''"
+                loading="lazy"
+                class="vc-gallery-preview__image"
+              />
+            </SwiperSlide>
+          </Swiper>
 
-          <!-- Nav: previous -->
-          <button
-            v-if="localIndex > 0"
-            type="button"
-            class="vc-gallery-preview__nav vc-gallery-preview__nav--prev"
-            @click="localIndex--"
-          >
-            <VcIcon
-              icon="lucide-chevron-left"
-              size="l"
-            />
-          </button>
-
-          <!-- Nav: next -->
-          <button
-            v-if="localIndex < images.length - 1"
-            type="button"
-            class="vc-gallery-preview__nav vc-gallery-preview__nav--next"
-            @click="localIndex++"
-          >
-            <VcIcon
-              icon="lucide-chevron-right"
-              size="l"
-            />
-          </button>
+          <!-- Nav buttons (desktop only) -->
+          <template v-if="!isMobile">
+            <button
+              v-if="localIndex > 0"
+              type="button"
+              class="vc-gallery-preview__nav vc-gallery-preview__nav--prev"
+              @click="slidePrev"
+            >
+              <VcIcon
+                icon="lucide-chevron-left"
+                size="l"
+              />
+            </button>
+            <button
+              v-if="localIndex < images.length - 1"
+              type="button"
+              class="vc-gallery-preview__nav vc-gallery-preview__nav--next"
+              @click="slideNext"
+            >
+              <VcIcon
+                icon="lucide-chevron-right"
+                size="l"
+              />
+            </button>
+          </template>
         </div>
 
-        <!-- Thumbnail strip -->
+        <!-- Thumbnail swiper -->
         <div
           v-if="images.length > 1"
           class="vc-gallery-preview__filmstrip"
         >
-          <div class="vc-gallery-preview__thumbs">
-            <button
+          <Swiper
+            :modules="thumbModules"
+            :slides-per-view="'auto'"
+            :space-between="6"
+            :center-insufficient-slides="true"
+            :slide-to-clicked-slide="true"
+            :free-mode="{ enabled: true, sticky: false }"
+            class="vc-gallery-preview__thumb-swiper"
+            @swiper="onThumbSwiperInit"
+          >
+            <SwiperSlide
               v-for="(item, i) in images"
               :key="i"
-              type="button"
-              class="vc-gallery-preview__thumb"
-              :class="{ 'vc-gallery-preview__thumb--active': i === localIndex }"
-              @click="localIndex = i"
+              class="vc-gallery-preview__thumb-slide"
             >
-              <img
-                :src="item.url"
-                :alt="item.name || ''"
-                class="vc-gallery-preview__thumb-img"
-              />
-            </button>
-          </div>
+              <button
+                type="button"
+                class="vc-gallery-preview__thumb"
+                :class="{ 'vc-gallery-preview__thumb--active': i === localIndex }"
+                @click="slideTo(i)"
+              >
+                <img
+                  :src="getThumbnailUrl(item.url, '64x64') ?? item.url"
+                  :alt="item.name || ''"
+                  loading="lazy"
+                  class="vc-gallery-preview__thumb-img"
+                />
+              </button>
+            </SwiperSlide>
+          </Swiper>
           <span class="vc-gallery-preview__counter"> {{ localIndex + 1 }}&thinsp;/&thinsp;{{ images.length }} </span>
         </div>
       </div>
@@ -104,11 +132,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch, toRef } from "vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Keyboard, FreeMode } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
+import "swiper/css";
 import { VcPopup } from "@ui/components/organisms/vc-popup";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import type { AssetLike } from "@core/composables/useAssetsManager";
 import { useI18n } from "vue-i18n";
+import { useScrollLock } from "@vueuse/core";
+import { useResponsive } from "@framework/core/composables/useResponsive";
+import { getThumbnailUrl } from "@core/utilities/thumbnail";
 
 export interface Props {
   images?: AssetLike[];
@@ -126,8 +161,15 @@ const props = withDefaults(defineProps<Props>(), {
   index: 0,
 });
 const { t } = useI18n({ useScope: "global" });
+const { isMobile } = useResponsive();
 const localIndex = ref(props.index);
 const copied = ref(false);
+
+const mainModules = [Keyboard];
+const thumbModules = [FreeMode];
+
+const mainSwiper = ref<SwiperType>();
+const thumbSwiper = ref<SwiperType>();
 
 const currentImage = computed(() => props.images[localIndex.value]);
 
@@ -135,37 +177,68 @@ watch(
   () => props.index,
   (nextIndex) => {
     localIndex.value = nextIndex;
+    mainSwiper.value?.slideTo(nextIndex);
   },
 );
 
-function onCopyLink() {
+function onMainSwiperInit(swiper: SwiperType) {
+  mainSwiper.value = swiper;
+}
+
+function onThumbSwiperInit(swiper: SwiperType) {
+  thumbSwiper.value = swiper;
+}
+
+function onMainSlideChange(swiper: SwiperType) {
+  localIndex.value = swiper.activeIndex;
+  // Sync thumbnail swiper to keep active thumb visible
+  thumbSwiper.value?.slideTo(swiper.activeIndex);
+}
+
+function slideTo(index: number) {
+  mainSwiper.value?.slideTo(index);
+}
+
+function slidePrev() {
+  mainSwiper.value?.slidePrev();
+}
+
+function slideNext() {
+  mainSwiper.value?.slideNext();
+}
+
+async function onCopyLink() {
   const link = currentImage.value?.url ?? "";
   const fullLink = link.charAt(0) === "/" ? `${location.origin}${link}` : link;
-  navigator.clipboard?.writeText(fullLink);
 
-  copied.value = true;
-  setTimeout(() => {
-    copied.value = false;
-  }, 1500);
+  try {
+    await navigator.clipboard.writeText(fullLink);
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 1500);
+  } catch {
+    // Clipboard API unavailable (HTTP context) — silent fail
+  }
 }
 
 function handleKeyDown(event: KeyboardEvent) {
-  if (event.key === "ArrowLeft" && localIndex.value > 0) {
-    localIndex.value--;
-  } else if (event.key === "ArrowRight" && localIndex.value < props.images.length - 1) {
-    localIndex.value++;
-  } else if (event.key === "Escape") {
+  if (event.key === "Escape") {
     event.preventDefault();
     emit("close");
   }
 }
 
+const scrollLock = useScrollLock(document.body);
+
 onMounted(() => {
   window.addEventListener("keydown", handleKeyDown);
+  scrollLock.value = true;
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", handleKeyDown);
+  scrollLock.value = false;
 });
 </script>
 
@@ -185,27 +258,6 @@ onBeforeUnmount(() => {
   --gp-action-btn-hover: var(--neutrals-200);
   --gp-action-btn-color: var(--secondary-600);
   --gp-copied-color: var(--success-500);
-}
-
-/* ---------- Modal sizing ---------- */
-.vc-gallery-preview__modal {
-  width: 90vw;
-  max-width: 1400px;
-  height: calc(90vh - 40px);
-
-  /* Override VcPopup internals: remove padding so preview goes edge-to-edge,
-     and stretch content to full panel height */
-  .vc-popup__content {
-    @apply tw-p-0 tw-min-h-0 tw-flex-col;
-  }
-
-  .vc-popup__content-inner {
-    @apply tw-items-stretch tw-min-h-0;
-  }
-
-  .vc-popup__content-wrapper {
-    @apply tw-self-stretch tw-flex-col tw-min-h-0;
-  }
 }
 
 /* ---------- Header ---------- */
@@ -235,7 +287,6 @@ onBeforeUnmount(() => {
     }
   }
 
-  /* Copied state: icon turns green */
   &__action-btn .vc-icon--lucide-check {
     color: var(--gp-copied-color);
   }
@@ -243,6 +294,8 @@ onBeforeUnmount(() => {
   /* ---------- Body ---------- */
   &__body {
     @apply tw-flex tw-flex-col tw-h-full tw-min-h-0;
+    min-width: 0;
+    overflow: hidden;
   }
 
   /* ---------- Image stage ---------- */
@@ -253,11 +306,25 @@ onBeforeUnmount(() => {
     border-top: 1px solid var(--gp-border);
   }
 
-  &__image {
-    @apply tw-max-w-full tw-max-h-full tw-object-contain tw-select-none tw-p-8;
+  &__main-swiper {
+    @apply tw-w-full tw-h-full;
+    position: absolute;
+    inset: 0;
   }
 
-  /* ---------- Nav buttons ---------- */
+  &__slide {
+    @apply tw-flex tw-items-center tw-justify-center tw-h-full;
+  }
+
+  &__image {
+    @apply tw-max-w-full tw-max-h-full tw-object-contain tw-select-none tw-p-4;
+
+    @media (min-width: 768px) {
+      @apply tw-p-8;
+    }
+  }
+
+  /* ---------- Nav buttons (desktop) ---------- */
   &__nav {
     @apply tw-absolute tw-top-1/2 -tw-translate-y-1/2
       tw-flex tw-items-center tw-justify-center
@@ -270,6 +337,7 @@ onBeforeUnmount(() => {
     box-shadow: var(--gp-nav-shadow);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    z-index: 2;
 
     &--prev {
       @apply tw-left-4;
@@ -292,28 +360,19 @@ onBeforeUnmount(() => {
     @apply tw-opacity-100;
   }
 
-  @media (hover: none) {
-    &__nav {
-      @apply tw-opacity-100;
-    }
-  }
-
-  /* ---------- Filmstrip ---------- */
+  /* ---------- Filmstrip (thumbnails) ---------- */
   &__filmstrip {
     @apply tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-3 tw-shrink-0;
     background: var(--popup-bg, #fff);
     border-top: 1px solid var(--gp-border);
   }
 
-  &__thumbs {
-    @apply tw-flex tw-gap-1.5 tw-overflow-x-auto tw-flex-1;
-    -webkit-overflow-scrolling: touch;
+  &__thumb-swiper {
+    @apply tw-flex-1 tw-min-w-0 tw-overflow-hidden;
+  }
 
-    /* Hide scrollbar */
-    scrollbar-width: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+  &__thumb-slide {
+    width: var(--gp-thumb-size) !important;
   }
 
   &__thumb {
@@ -324,6 +383,7 @@ onBeforeUnmount(() => {
     width: var(--gp-thumb-size);
     height: var(--gp-thumb-size);
     border-color: var(--gp-border);
+    display: block;
 
     &:hover {
       @apply tw-opacity-90;
@@ -343,15 +403,5 @@ onBeforeUnmount(() => {
     @apply tw-text-xs tw-shrink-0 tw-tabular-nums tw-font-medium;
     color: var(--gp-counter-color);
   }
-}
-
-/* ---------- Crossfade transition ---------- */
-.vc-gallery-preview-fade-enter-active,
-.vc-gallery-preview-fade-leave-active {
-  transition: opacity 180ms ease;
-}
-.vc-gallery-preview-fade-enter-from,
-.vc-gallery-preview-fade-leave-to {
-  opacity: 0;
 }
 </style>

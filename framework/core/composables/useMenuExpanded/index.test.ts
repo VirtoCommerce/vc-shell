@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { mountWithSetup } from "@framework/test-helpers";
-import { useMenuExpanded } from "./useMenuExpanded";
+import { useMenuExpanded } from ".";
 
 // Mock useLocalStorage to use a simple ref instead of actual localStorage
 vi.mock("@vueuse/core", () => ({

@@ -1,5 +1,5 @@
 import type { Meta, StoryFn, StoryObj } from "@storybook/vue3-vite";
-import { ref, computed, provide } from "vue";
+import { ref, computed, provide, h } from "vue";
 import { VcBlade } from "@ui/components/organisms/vc-blade";
 import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
 import { createToolbarService } from "@core/services/toolbar-service";
@@ -666,6 +666,90 @@ export const ErrorWithCustomBanners: Story = {
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">System banners (error + unsaved changes) and custom banners coexist,</p>
           <p class="tw-text-sm tw-text-gray-600 tw-mt-1">all sorted by priority: danger > warning > info.</p>
+        </div>
+      </VcBlade>
+    `,
+  }),
+};
+
+export const BannerWithRenderFunction: Story = {
+  args: {
+    title: "Inventory Sync",
+    subtitle: "Warehouse A",
+    icon: "lucide-warehouse",
+    width: 500,
+    toolbarItems: createToolbarItems(2),
+  },
+  render: (args) => ({
+    components: { VcBlade },
+    setup() {
+      const { banners } = provideMockBladeContext();
+      banners.value = [
+        {
+          id: "render-rich",
+          variant: "info",
+          dismissible: true,
+          render: () =>
+            h("span", { style: "font-size: 12px" }, [
+              "Last sync from ",
+              h("b", "Warehouse A"),
+              " completed at ",
+              h("span", { style: "font-weight: 600; color: var(--info-700)" }, "14:32"),
+              " — ",
+              h("span", { style: "opacity: 0.7" }, "42 items updated"),
+            ]),
+        },
+        {
+          id: "render-warning",
+          variant: "warning",
+          dismissible: false,
+          render: () =>
+            h("span", { style: "font-size: 12px" }, [
+              h("span", { style: "font-weight: 600" }, "3 conflicts"),
+              " detected during sync. ",
+              h(
+                "a",
+                {
+                  href: "#",
+                  onClick: (e: Event) => {
+                    e.preventDefault();
+                    console.log("Resolve clicked");
+                  },
+                  style: "color: var(--warning-700); text-decoration: underline; cursor: pointer",
+                },
+                "Resolve now",
+              ),
+            ]),
+        },
+        {
+          id: "render-badge",
+          variant: "success",
+          dismissible: true,
+          render: () =>
+            h("span", { style: "font-size: 12px; display: flex; align-items: center; gap: 6px" }, [
+              "Import completed",
+              h(
+                "span",
+                {
+                  style:
+                    "background: var(--success-200); color: var(--success-800); padding: 1px 6px; border-radius: 9999px; font-size: 11px; font-weight: 600",
+                },
+                "42 items",
+              ),
+            ]),
+        },
+      ];
+      return { args };
+    },
+    template: `
+      <VcBlade v-bind="args" @close="() => {}">
+        <div class="tw-p-6">
+          <p class="tw-text-sm tw-text-gray-600">Banners using render() functions for rich custom content:</p>
+          <ul class="tw-text-sm tw-text-gray-600 tw-mt-2 tw-list-disc tw-pl-5 tw-space-y-1">
+            <li>Formatted text with bold and colored spans</li>
+            <li>Inline clickable links</li>
+            <li>Badge-style pill elements</li>
+          </ul>
         </div>
       </VcBlade>
     `,

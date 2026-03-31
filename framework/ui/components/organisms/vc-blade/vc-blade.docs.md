@@ -62,7 +62,7 @@ A blade has four visual zones, rendered top-to-bottom:
 |--------------------------------------|
 |  [Save] [Delete] [Refresh]  [More >] |  <-- Toolbar
 |--------------------------------------|
-|  ** Unsaved changes banner **        |  <-- Status Banners
+|  ** Status banners (stacked) **      |  <-- Status Banners
 |--------------------------------------|
 |                                      |
 |         Content (default slot)       |  <-- Content Area
@@ -74,7 +74,7 @@ A blade has four visual zones, rendered top-to-bottom:
 
 **Toolbar** -- Action buttons from the `toolbarItems` prop. Overflow items automatically collapse into a "More" dropdown (via `ResizeObserver`).
 
-**Status Banners** -- Yellow banner when `modified` is `true`; red banner when the blade has an error (set via `setError()`).
+**Status Banners** -- Unified, priority-sorted banner area. System banners: yellow when `modified` is `true`, red when the blade has an error (via `setError()`). Custom banners can be added programmatically via `useBlade().addBanner()` — see [useBlade docs](../../../core/composables/useBlade/useBlade.docs.md#banner-management).
 
 **Content Area** -- The `default` slot. Scrolls independently of header and toolbar.
 
@@ -398,6 +398,31 @@ Combine with `onBeforeClose` and `useBeforeUnload` for full protection:
 import { useBeforeUnload } from "@vc-shell/framework";
 useBeforeUnload(hasChanges);  // Browser tab close warning
 ```
+
+## Custom Banners
+
+Add informational, warning, or success banners to a blade programmatically. Banners appear between the header and toolbar, sorted by severity.
+
+```vue
+<script setup lang="ts">
+import { useBlade } from "@vc-shell/framework";
+
+const { addBanner, removeBanner, clearBanners } = useBlade();
+
+// Info banner (e.g. read-only mode)
+addBanner({ variant: "info", message: "This record is read-only" });
+
+// Dismissible warning with action
+addBanner({
+  variant: "warning",
+  message: "License expires in 7 days",
+  dismissible: true,
+  action: { label: "Renew", handler: () => openRenewal() },
+});
+</script>
+```
+
+Four variants are available: `danger`, `warning`, `info`, `success`. System banners (error and unsaved changes) are always present and cannot be removed by `clearBanners()`. For the full API reference, see [useBlade — Banner Management](../../../core/composables/useBlade/useBlade.docs.md#banner-management).
 
 ## Blade Width Control
 

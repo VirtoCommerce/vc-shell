@@ -356,7 +356,7 @@ export default {
 // ── Public API ───────────────────────────────────────────────────────
 
 // Injection keys (typed Symbol keys)
-export * from "@framework/injection-keys";
+export * from "./injection-keys";
 
 // UI components (atoms, molecules, organisms)
 export * from "@ui/components";

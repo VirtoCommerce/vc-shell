@@ -136,11 +136,17 @@ const readonly = computed(() => options.value?.disabled);
 
 const assetNameClean = computed({
   get() {
-    return defaultAsset.value.name?.split(".").shift();
+    const name = defaultAsset.value.name;
+    if (!name) return "";
+    const dotIndex = name.lastIndexOf(".");
+    return dotIndex > 0 ? name.slice(0, dotIndex) : name;
   },
   set(value) {
-    const fileExtension = defaultAsset.value.name?.split(".").pop();
-    defaultAsset.value.name = value + "." + fileExtension;
+    const name = defaultAsset.value.name;
+    if (!name) return;
+    const dotIndex = name.lastIndexOf(".");
+    const ext = dotIndex > 0 ? name.slice(dotIndex) : "";
+    defaultAsset.value.name = value ? value + ext : "";
   },
 });
 

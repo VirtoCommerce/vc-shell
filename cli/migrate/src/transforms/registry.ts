@@ -166,6 +166,24 @@ export const transforms: VersionedTransform[] = [
     transformPath: t("responsive-composable"),
     fileExtensions: [".vue"],
   },
+  {
+    name: "use-blade-form",
+    description: "Detect useForm + useBeforeUnload patterns for migration to useBladeForm()",
+    introducedIn: "2.0.0-alpha.31",
+    diagnosticOnly: true,
+    migrationGuideSection: "Guide 37",
+    transformPath: t("use-blade-form"),
+    fileExtensions: [".vue"],
+  },
+  {
+    name: "dynamic-properties-refactor",
+    description:
+      "useDynamicProperties<A,B,C,D,E>(fn, Class, Class, fn) → useDynamicProperties({ searchDictionary, searchMeasurements })",
+    introducedIn: "2.0.0-alpha.31",
+    migrationGuideSection: "Guide 38",
+    transformPath: t("dynamic-properties-refactor"),
+    fileExtensions: [".vue"],
+  },
 ];
 
 export function selectTransforms(currentVersion: string, targetVersion: string): VersionedTransform[] {

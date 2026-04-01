@@ -424,6 +424,7 @@ export * from "@modules";
 
 // Shared composables that moved to core/ui
 export * from "@core/composables/useBladeNavigationAdapter";
+export * from "@core/composables/useBladeForm";
 export * from "@ui/utilities/vueUtils";
 
 // Multilanguage selector (moved from shared to ui)

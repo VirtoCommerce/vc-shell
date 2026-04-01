@@ -28,7 +28,7 @@
         :icon="icon"
         :title="title"
         :subtitle="subtitle"
-        :modified="modified"
+        :modified="effectiveModified"
         :title-id="bladeTitleId"
         @close="handleClose"
         @expand="handleExpand"
@@ -76,7 +76,7 @@
 
     <BladeStatusBanners
       v-if="!showSkeleton"
-      :modified="modified"
+      :modified="effectiveModified"
     />
 
     <!-- Toolbar zone -->
@@ -129,7 +129,7 @@ import BladeToolbarSkeleton from "@ui/components/organisms/vc-blade/_internal/Bl
 import BladeContentSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeContentSkeleton.vue";
 import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
-import { BladeBackButtonKey } from "@framework/injection-keys";
+import { BladeBackButtonKey, BladeFormKey } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { useBlade } from "../../../../core/composables";
 import { useResponsive } from "@framework/core/composables/useResponsive";
@@ -163,6 +163,17 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
   toolbarItems: () => [],
   modified: undefined,
+});
+
+// Auto-detect form state from useBladeForm (if present in this blade)
+const bladeForm = inject(BladeFormKey, null);
+
+const effectiveModified = computed(() => {
+  // Explicit prop takes priority (backward compatibility)
+  if (props.modified !== undefined) return props.modified;
+  // Auto-inject from useBladeForm (undefined if no form → indicator hidden)
+  if (!bladeForm) return undefined;
+  return bladeForm.isModified.value;
 });
 
 const instanceUid = getCurrentInstance()?.uid ?? 0;

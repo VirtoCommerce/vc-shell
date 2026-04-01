@@ -5,6 +5,7 @@ import type { NotificationTemplateConstructor } from "@core/types";
 import type { NotificationStore } from "@core/notifications/store";
 import { IToolbarService } from "@core/services/toolbar-service";
 import { IAiAgentService } from "@core/plugins/ai-agent/types";
+import type { BladeFormInjection } from "@core/composables/useBladeForm/types";
 
 import type { IWidgetService } from "@core/services/widget-service";
 import type { IWidgetScope } from "@core/services/widget-service";
@@ -93,3 +94,6 @@ export const BladeContextKey: InjectionKey<ComputedRef<Record<string, unknown>>>
 
 // Widget scope (provided by WidgetContainer for component-based widgets)
 export const WidgetScopeKey: InjectionKey<IWidgetScope> = Symbol("WidgetScope");
+
+// Blade form keys
+export const BladeFormKey: InjectionKey<BladeFormInjection> = Symbol("BladeForm");

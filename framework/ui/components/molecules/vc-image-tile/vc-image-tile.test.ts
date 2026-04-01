@@ -60,13 +60,13 @@ describe("VcImageTile", () => {
 
   it("renders name in tray when provided", () => {
     const wrapper = mountComponent({ name: "photo.jpg" });
-    expect(wrapper.find(".vc-image-tile__tray-name").exists()).toBe(true);
-    expect(wrapper.find(".vc-image-tile__tray-name").text()).toBe("photo.jpg");
+    expect(wrapper.find(".vc-image-tile__name").exists()).toBe(true);
+    expect(wrapper.find(".vc-image-tile__name").text()).toBe("photo.jpg");
   });
 
   it("does not render name when not provided", () => {
     const wrapper = mountComponent();
-    expect(wrapper.find(".vc-image-tile__tray-name").exists()).toBe(false);
+    expect(wrapper.find(".vc-image-tile__name").exists()).toBe(false);
   });
 
   it("renders preview action button by default", () => {

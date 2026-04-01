@@ -53,8 +53,7 @@ describe("VcField", () => {
 
   it("passes modelValue to field type", () => {
     const wrapper = mountComponent({ modelValue: "Test value" });
-    const fieldType = wrapper.find(".stub-field-type");
-    expect(fieldType.exists()).toBe(true);
+    expect(wrapper.find(".vc-field__text").text()).toBe("Test value");
   });
 
   it("renders copy button when copyable is true", () => {

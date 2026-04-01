@@ -186,6 +186,8 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
 
     lastContainerWidth = containerEl.value.clientWidth;
 
+    if (typeof ResizeObserver === "undefined") return;
+
     resizeObserver = new ResizeObserver((entries) => {
       // Skip during active drag
       if (isResizing.value) return;

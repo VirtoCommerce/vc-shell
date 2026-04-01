@@ -38,7 +38,7 @@ describe("BladeToolbarSkeleton.vue", () => {
     expect(skeletons.length).toBe(3);
   });
 
-  it("has mobile class when $isMobile is true", () => {
+  it("does not render when $isMobile is true", () => {
     const wrapper = mount(BladeToolbarSkeleton, {
       global: {
         provide: {
@@ -46,6 +46,6 @@ describe("BladeToolbarSkeleton.vue", () => {
         },
       },
     });
-    expect(wrapper.find(".vc-blade-toolbar--mobile").exists()).toBe(true);
+    expect(wrapper.find(".vc-blade-toolbar-skeleton").exists()).toBe(false);
   });
 });

@@ -700,6 +700,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
       return tableContainerRef.value.querySelectorAll(`[data-column-id="${id}"]`);
     },
     onResizeEnd: (colsData) => emit("column-resize-end", { columns: colsData }),
+    containerEl: tableContainerRef,
   });
 
   const {

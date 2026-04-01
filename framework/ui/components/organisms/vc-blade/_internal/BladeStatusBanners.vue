@@ -39,7 +39,11 @@
           </button>
         </div>
         <div
-          :ref="(el) => { errorContentRef = el as HTMLElement | undefined; }"
+          :ref="
+            (el) => {
+              errorContentRef = el as HTMLElement | undefined;
+            }
+          "
           class="vc-blade-status-banners__error-details-wrapper"
           :style="errorWrapperStyle"
         >
@@ -410,7 +414,7 @@ function dismissBanner(banner: IBladeBanner) {
   }
 
   &__dismiss {
-    @apply tw-shrink-0 tw-ml-2 tw-p-1 tw-rounded tw-border-0 tw-cursor-pointer;
+    @apply tw-shrink-0 tw-ml-2 tw-flex tw-rounded tw-border-0 tw-cursor-pointer;
     @apply tw-bg-transparent;
     color: inherit;
     opacity: 0.5;

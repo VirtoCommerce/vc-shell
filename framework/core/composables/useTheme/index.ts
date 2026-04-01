@@ -31,7 +31,10 @@ export interface UseThemeReturn {
 export type IUseTheme = UseThemeReturn;
 
 // Initialize with a default "light" theme, assuming a convention for its localization key.
-const _themeRegistry: Ref<ThemeDefinition[]> = ref([{ key: "light", localizationKey: "CORE.THEMES.LIGHT" }]);
+const _themeRegistry: Ref<ThemeDefinition[]> = ref([
+  { key: "light", localizationKey: "CORE.THEMES.LIGHT" },
+  { key: "dark", localizationKey: "CORE.THEMES.DARK" },
+]);
 
 export const useTheme = (): UseThemeReturn => {
   const { t } = i18n.global;

@@ -1,9 +1,12 @@
 import type { IBaseProperty, IBasePropertyValue, PropertyDisplayValue } from "../types";
 import type { PropertyValueStrategy, PropertyInputValue, SetContext } from "./types";
-import { isEmptyValue, createValue, cleanEmptyValues } from "../utils";
+import { isEmptyValue, isMultivalueProperty, createValue, cleanEmptyValues } from "../utils";
 
 export const colorStrategy: PropertyValueStrategy = {
   get(property: IBaseProperty, _locale: string): PropertyDisplayValue {
+    if (isMultivalueProperty(property)) {
+      return (property.values ?? []) as IBasePropertyValue[];
+    }
     return (property.values?.[0]?.value as string) ?? "";
   },
 

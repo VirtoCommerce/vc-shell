@@ -1,4 +1,4 @@
-import { ref, Ref, onBeforeUnmount } from "vue";
+import { ref, watch, Ref, onBeforeUnmount } from "vue";
 
 export interface ResizableColumn {
   id: string;
@@ -11,6 +11,8 @@ export interface UseTableColumnsResizeOptions {
   getColumnElement?: (id: string) => HTMLElement | null;
   getAllColumnElements?: (id: string) => NodeListOf<Element> | null;
   onResizeEnd?: (columns: ResizableColumn[]) => void;
+  /** Container element — used by ResizeObserver to scale columns when container resizes */
+  containerEl?: Ref<HTMLElement | null>;
 }
 
 /**
@@ -24,7 +26,7 @@ export interface UseTableColumnsResizeOptions {
  * - rAF-throttled for smooth 60fps updates.
  */
 export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
-  const { columns, minColumnWidth = 40, getColumnElement, onResizeEnd } = options;
+  const { columns, minColumnWidth = 40, getColumnElement, onResizeEnd, containerEl } = options;
 
   const isResizing = ref(false);
 
@@ -169,7 +171,62 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     onResizeStart: (id: string | undefined, e: MouseEvent) => handleResizeStart(id!, e),
   });
 
+  // =========================================================================
+  // Container ResizeObserver — scale column widths when container resizes
+  // (e.g. blade expands/collapses). Only acts when columns have been manually
+  // resized (have explicit widths). Scales proportionally so columns fill
+  // the new container width without a gap.
+  // =========================================================================
+
+  let lastContainerWidth = 0;
+  let resizeObserver: ResizeObserver | null = null;
+
+  const setupResizeObserver = () => {
+    if (!containerEl?.value) return;
+
+    lastContainerWidth = containerEl.value.clientWidth;
+
+    resizeObserver = new ResizeObserver((entries) => {
+      // Skip during active drag
+      if (isResizing.value) return;
+
+      const newWidth = entries[0].contentRect.width;
+      if (newWidth === lastContainerWidth || lastContainerWidth === 0) {
+        lastContainerWidth = newWidth;
+        return;
+      }
+
+      // Check if any columns have been manually resized
+      const hasResizedColumns = columns.value.some((col) => col.width > 0);
+      if (!hasResizedColumns) {
+        lastContainerWidth = newWidth;
+        return;
+      }
+
+      // Scale all resized columns proportionally
+      const ratio = newWidth / lastContainerWidth;
+      columns.value.forEach((col) => {
+        if (col.width > 0) {
+          col.width = Math.max(minColumnWidth, Math.round(col.width * ratio));
+        }
+      });
+
+      lastContainerWidth = newWidth;
+    });
+
+    resizeObserver.observe(containerEl.value);
+  };
+
+  // Watch for container element becoming available
+  if (containerEl) {
+    watch(containerEl, (el) => {
+      resizeObserver?.disconnect();
+      if (el) setupResizeObserver();
+    }, { immediate: true });
+  }
+
   onBeforeUnmount(() => {
+    resizeObserver?.disconnect();
     if (isResizing.value) {
       if (rafId) cancelAnimationFrame(rafId);
       document.removeEventListener("mousemove", handleResizeMove);

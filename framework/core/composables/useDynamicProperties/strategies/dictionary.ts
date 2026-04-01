@@ -8,7 +8,10 @@ export const dictionaryStrategy: PropertyValueStrategy = {
       if (isMultivalueProperty(property)) {
         return (property.values?.filter((v) => v.languageCode === locale) ?? []) as IBasePropertyValue[];
       }
-      const val = property.values?.find((v) => v.languageCode === locale);
+      // Find by locale first, then fallback to value without languageCode
+      const val =
+        property.values?.find((v) => v.languageCode === locale) ??
+        property.values?.find((v) => !v.languageCode);
       return (val?.valueId as string) ?? "";
     }
 
@@ -21,6 +24,13 @@ export const dictionaryStrategy: PropertyValueStrategy = {
 
   set(property: IBaseProperty, value: PropertyInputValue, context: SetContext): void {
     const { dictionary, locale } = context;
+
+    // Empty value → clean up regardless of dictionary presence
+    if (!Array.isArray(value) && isEmptyValue(value)) {
+      cleanEmptyValues(property, locale);
+      return;
+    }
+
     if (!dictionary?.length) return;
 
     if (isMultilanguageProperty(property)) {

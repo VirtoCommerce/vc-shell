@@ -8,7 +8,10 @@ export const regularStrategy: PropertyValueStrategy = {
       if (isMultivalueProperty(property)) {
         return (property.values?.filter((v) => v.languageCode === locale) ?? []) as IBasePropertyValue[];
       }
-      const val = property.values?.find((v) => v.languageCode === locale);
+      // Find by locale first, then fallback to value without languageCode
+      const val =
+        property.values?.find((v) => v.languageCode === locale) ??
+        property.values?.find((v) => !v.languageCode);
       return (val?.value as string) ?? "";
     }
 

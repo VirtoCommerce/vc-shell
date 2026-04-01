@@ -268,6 +268,56 @@ describe("useDataTableState — restore from persisted state", () => {
   });
 });
 
+describe("useDataTableState — resetState", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  it("resetState clears storage and resets columnWidths, hiddenColumnIds", async () => {
+    localStorage.setItem(
+      "VC_DATATABLE_RESET-TEST",
+      JSON.stringify({
+        v: 1,
+        columnWidths: { name: 200, price: 150 },
+        columnOrder: ["name", "price"],
+        hiddenColumnIds: ["stock"],
+      }),
+    );
+
+    const Harness = defineComponent({
+      setup() {
+        const columnWidths = ref([
+          { id: "name", width: 200 },
+          { id: "price", width: 150 },
+        ]);
+        const hiddenColumnIds = ref(new Set<string>(["stock"]));
+        const { resetState } = useDataTableState({
+          stateKey: ref("reset-test"),
+          stateStorage: ref("local"),
+          columnWidths,
+          hiddenColumnIds,
+        });
+        return { resetState, columnWidths, hiddenColumnIds };
+      },
+      render: () => null,
+    });
+
+    const wrapper = mount(Harness);
+    const vm = wrapper.vm as any;
+
+    vm.resetState();
+    await nextTick();
+
+    expect(localStorage.getItem("VC_DATATABLE_RESET-TEST")).toBeNull();
+    expect(vm.columnWidths).toEqual([]);
+    expect(vm.hiddenColumnIds.size).toBe(0);
+
+    wrapper.unmount();
+  });
+
+});
+
 describe("useDataTableState — clearState", () => {
   beforeEach(() => {
     localStorage.clear();

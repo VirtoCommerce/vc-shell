@@ -84,6 +84,8 @@ const emit = defineEmits<{
   "update:visibleColumns": [columnIds: string[]];
   /** Emitted to close panel */
   "update:show": [boolean];
+  /** Full table reset (widths + order + visibility) */
+  "reset": [];
 }>();
 
 const isColumnVisible = (columnId: string): boolean => {
@@ -112,8 +114,7 @@ const handleShowAll = () => {
 };
 
 const handleReset = () => {
-  const defaultVisible = props.columns.filter((c) => (c.defaultVisible ?? c.visible) !== false).map((c) => c.id);
-  emit("update:visibleColumns", defaultVisible);
+  emit("reset");
 };
 </script>
 

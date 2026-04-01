@@ -83,14 +83,14 @@ describe("TableColumnSwitcher", () => {
     expect(emitted![0][0]).toEqual(["name", "email", "phone"]);
   });
 
-  it("emits update:visibleColumns with defaults on reset", async () => {
+  it("emits reset event (not update:visibleColumns) on reset", async () => {
     const w = factory({ visibleColumns: ["name", "email", "phone"] });
     const buttons = w.findAll(".vc-button-stub");
     // Second button is "Reset"
     await buttons[1].trigger("click");
-    const emitted = w.emitted("update:visibleColumns");
-    expect(emitted).toBeTruthy();
-    // Default visible: name and email (phone has visible: false)
-    expect(emitted![0][0]).toEqual(["name", "email"]);
+    expect(w.emitted("reset")).toBeTruthy();
+    expect(w.emitted("reset")!.length).toBeGreaterThanOrEqual(1);
+    // Reset no longer emits update:visibleColumns
+    expect(w.emitted("update:visibleColumns")).toBeFalsy();
   });
 });

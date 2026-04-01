@@ -55,6 +55,7 @@
       :anchor-ref="columnSwitcherButtonEl"
       @update:visible-columns="handleColumnVisibilityChange"
       @update:show="showColumnSwitcherPanel = $event"
+      @reset="handleTableReset"
     />
 
     <!-- Add Row Button (header position) -->
@@ -945,6 +946,7 @@ const {
   handleAddRow,
   handleRemoveRow,
   handleColumnVisibilityChange,
+  handleTableReset,
   handleCellClick,
   handleCellEditComplete,
   handleCellEditCancel,

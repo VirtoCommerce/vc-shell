@@ -29,6 +29,7 @@ export interface UseDataTableStateOptions {
 export interface UseDataTableStateReturn {
   saveState: () => void;
   clearState: () => void;
+  resetState: () => void;
 }
 
 // =============================================================================
@@ -43,8 +44,15 @@ const SCHEMA_VERSION = 1;
 // =============================================================================
 
 export function useDataTableState(options: UseDataTableStateOptions): UseDataTableStateReturn {
-  const { stateKey, stateStorage, columnWidths, hiddenColumnIds, shownColumnIds, onStateSave, onStateRestore } =
-    options;
+  const {
+    stateKey,
+    stateStorage,
+    columnWidths,
+    hiddenColumnIds,
+    shownColumnIds,
+    onStateSave,
+    onStateRestore,
+  } = options;
 
   let isRestoring = false;
   let debounceTimer: ReturnType<typeof setTimeout> | undefined;
@@ -139,6 +147,7 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
       state.shownColumnIds = [...shownColumnIds.value];
     }
 
+
     return state;
   }
 
@@ -179,6 +188,30 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     } catch {
       // Silently ignore
     }
+  }
+
+  function resetState(): void {
+    // Cancel pending saves
+    if (debounceTimer != null) {
+      clearTimeout(debounceTimer);
+      debounceTimer = undefined;
+    }
+
+    // Clear persisted state
+    clearState();
+
+    // Reset runtime state
+    isRestoring = true;
+    columnWidths.value = [];
+    hiddenColumnIds.value = new Set();
+    if (shownColumnIds) {
+      shownColumnIds.value = new Set();
+    }
+
+
+    void nextTick(() => {
+      isRestoring = false;
+    });
   }
 
   // ---------------------------------------------------------------------------
@@ -281,6 +314,8 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
       shownColumnIds.value = new Set(state.shownColumnIds);
     }
 
+
+
     onStateRestore?.(state);
 
     void nextTick(() => {
@@ -332,5 +367,6 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
   return {
     saveState,
     clearState,
+    resetState,
   };
 }

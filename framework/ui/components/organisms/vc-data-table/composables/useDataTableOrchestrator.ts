@@ -205,6 +205,7 @@ export interface VcDataTableOrchestratorReturn<T extends Record<string, unknown>
   handleAddRow: (defaults?: Partial<T>) => void;
   handleRemoveRow: (rowIndex: number) => void;
   handleColumnVisibilityChange: (visibleIds: string[]) => void;
+  handleTableReset: () => void;
   handleCellClick: (item: T, field: string, rowIndex: number, col: ColumnInstance) => void;
   handleCellEditComplete: (item: T, field: string, rowIndex: number, newValue: unknown) => void;
   handleCellEditCancel: (item: T, field: string, rowIndex: number) => void;
@@ -692,7 +693,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
 
   const { handleResizeStart } = useTableColumnsResize({
     columns: cols.columnWidths,
-    minColumnWidth: 60,
+    minColumnWidth: 40,
     getColumnElement: (id) => cols.headerRefs.get(id) ?? null,
     getAllColumnElements: (id) => {
       if (!tableContainerRef.value) return null;
@@ -889,6 +890,38 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     shownDataDiscoveredColumnIds.value = newShown;
   };
 
+  const handleTableReset = () => {
+    // 1. Reset persisted state (clears storage + runtime refs including columnWidths, hiddenColumnIds, etc.)
+    statePersistence.resetState();
+
+    // 2. Re-hide data-discovered columns (they default to hidden).
+    // The dataDiscoveredIds watcher won't re-fire because the IDs haven't changed,
+    // but resetState() cleared hiddenColumnIds — so we must re-populate manually.
+    if (dataDiscoveredIds.value.size > 0) {
+      hiddenColumnIds.value = new Set(dataDiscoveredIds.value);
+    }
+
+    // 3. Reinitialize columnWidths from declared columns.
+    // resetState() sets columnWidths to [] which would trigger the watch(visibleColumns)
+    // in useTableColumns, but only if new columns aren't already tracked.
+    // Force re-initialization by setting widths from current visible columns:
+    const currentCols = visibleColumns.value;
+    if (currentCols.length > 0) {
+      cols.columnWidths.value = currentCols
+        .filter((col) => !cols.isSpecialColumn(col.props))
+        .map((col) => ({
+          id: col.props.id,
+          width: col.props.width
+            ? typeof col.props.width === "number"
+              ? col.props.width
+              : typeof col.props.width === "string" && /^\d+(\.\d+)?(px)?$/.test(col.props.width.trim())
+                ? parseInt(col.props.width) || 0
+                : 0
+            : 0,
+        }));
+    }
+  };
+
   // ============================================================================
   // Mobile View Event Handlers
   // ============================================================================
@@ -1000,6 +1033,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     handleAddRow,
     handleRemoveRow,
     handleColumnVisibilityChange,
+    handleTableReset,
     handleCellClick,
     handleCellEditComplete,
     handleCellEditCancel,

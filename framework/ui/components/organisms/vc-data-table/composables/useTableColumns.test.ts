@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { ref, computed, nextTick } from "vue";
 import { useTableColumns } from "@ui/components/organisms/vc-data-table/composables/useTableColumns";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
+import type { VcColumnProps } from "@ui/components/organisms/vc-data-table/types";
 
 // ─── Helper ─────────────────────────────────────────────────────────────────
 
@@ -197,6 +198,23 @@ describe("useTableColumns — special columns are excluded from columnWidths", (
     // Only data columns tracked — not the selection column
     expect(columnWidths.value.find((c) => c.id === "__sel__")).toBeUndefined();
     expect(columnWidths.value).toHaveLength(2);
+  });
+});
+
+describe("useTableColumns — getEffectiveColumnWidth", () => {
+  it("returns px for resized columns", () => {
+    const cols = [makeColumn("name", { width: 200 })];
+    const visibleColumns = ref(cols);
+    const { columnWidths, getEffectiveColumnWidth } = useTableColumns({ visibleColumns });
+    columnWidths.value = [{ id: "name", width: 250 }];
+    expect(getEffectiveColumnWidth({ id: "name" } as VcColumnProps)).toBe("250px");
+  });
+
+  it("returns fixed px for special columns", () => {
+    const cols = [makeColumn("sel", { selectionMode: "multiple" } as any)];
+    const visibleColumns = ref(cols);
+    const { getEffectiveColumnWidth } = useTableColumns({ visibleColumns });
+    expect(getEffectiveColumnWidth({ id: "sel", selectionMode: "multiple" } as unknown as VcColumnProps)).toBe("40px");
   });
 });
 

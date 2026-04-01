@@ -249,6 +249,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   return {
     // State
     columnWidths,
+
     headerRefs,
 
     // Methods

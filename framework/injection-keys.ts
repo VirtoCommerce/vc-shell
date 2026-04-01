@@ -1,7 +1,6 @@
 import { InjectionKey, ComputedRef, type Component, type Ref } from "vue";
 import { BladeDataKey } from "@core/blade-navigation/types";
 import type { BladeRoutesRecord } from "@core/blade-navigation/types";
-import type { NotificationTemplateConstructor } from "@core/types";
 import type { NotificationStore } from "@core/notifications/store";
 import { IToolbarService } from "@core/services/toolbar-service";
 import { IAiAgentService } from "@core/plugins/ai-agent/types";
@@ -22,8 +21,6 @@ export const BladeBackButtonKey: InjectionKey<Component | undefined> = Symbol("B
 export { BladeDataKey };
 
 // Notification keys
-export const NotificationTemplatesKey: InjectionKey<NotificationTemplateConstructor[]> =
-  Symbol("NotificationTemplates");
 export const NotificationStoreKey: InjectionKey<NotificationStore> = Symbol("NotificationStore");
 
 // Service keys

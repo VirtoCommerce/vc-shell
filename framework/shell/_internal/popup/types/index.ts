@@ -1,8 +1,8 @@
-import { Component, DefineComponent, Slot as VueSlot } from "vue";
-import { ComponentPublicInstanceConstructor, ComponentEmit } from "@ui/utilities/vueUtils";
+import { Component, Slot as VueSlot } from "vue";
+import type { ComponentProps } from "vue-component-type-helpers";
 
-export type RawProps<T extends ComponentPublicInstanceConstructor> = Omit<InstanceType<T>["$props"], `on${string}`>;
-export type RawEmits<T extends ComponentPublicInstanceConstructor> = ComponentEmit<T>;
+export type RawProps<T extends Component> = Omit<ComponentProps<T>, `on${string}`>;
+export type RawEmits<T extends Component> = Pick<ComponentProps<T>, Extract<keyof ComponentProps<T>, `on${string}`>>;
 export type Slot = string | Component | VueSlot;
 
 export interface UsePopupInternal {
@@ -12,10 +12,10 @@ export interface UsePopupInternal {
 }
 
 export interface PopupPlugin {
-  popups: Partial<UsePopupProps<DefineComponent> & UsePopupInternal>[];
+  popups: Partial<UsePopupProps & UsePopupInternal>[];
 }
 
-export interface UsePopupProps<T extends ComponentPublicInstanceConstructor> {
+export interface UsePopupProps<T extends Component = Component> {
   component: T;
   emits?: RawEmits<T>;
   props?: RawProps<T>;

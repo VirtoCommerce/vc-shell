@@ -4,9 +4,7 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import NotificationDropdown from "@shell/components/notification-dropdown/notification-dropdown.vue";
 import { NotificationTemplate } from "@shell/components/notification-template";
 import { useNotifications } from "@core/composables/useNotifications";
-import { NotificationTemplatesKey } from "@framework/injection-keys";
 import { PushNotification } from "@core/api/platform";
-import type { NotificationTemplateConstructor } from "@core/types";
 
 function seedStoryNotifications() {
   const { addNotification } = useNotifications();
@@ -53,7 +51,7 @@ const OfferNotificationTemplate = defineComponent({
       </p>
     </NotificationTemplate>
   `,
-}) as NotificationTemplateConstructor;
+});
 
 OfferNotificationTemplate.notifyType = "OfferCreatedDomainEvent";
 
@@ -90,13 +88,3 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const DefaultTemplateResolution: Story = {};
-
-export const WithCustomTemplate: Story = {
-  render: () => ({
-    components: { NotificationDropdown },
-    setup() {
-      provide(NotificationTemplatesKey, [OfferNotificationTemplate]);
-    },
-    template: `<NotificationDropdown />`,
-  }),
-};

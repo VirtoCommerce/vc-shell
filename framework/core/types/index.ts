@@ -1,5 +1,4 @@
 import { Component, ComputedRef, Ref } from "vue";
-import type { ComponentPublicInstanceConstructor } from "@ui/utilities/vueUtils";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
 import type { AssetLike } from "@core/composables/useAssetsManager";
 
@@ -78,19 +77,6 @@ export interface IBladeToolbar {
   separator?: "left" | "right" | "both";
   permissions?: string | string[];
 }
-
-export type ToolbarMenu<T> = T extends {
-  component?: infer C extends ComponentPublicInstanceConstructor;
-}
-  ? {
-      component?: C;
-      options?: InstanceType<C>["$props"];
-    } & IBladeToolbar
-  : T & { component?: ComponentPublicInstanceConstructor };
-
-export type NotificationTemplateConstructor = ComponentPublicInstanceConstructor & {
-  notifyType: string;
-};
 
 export interface IActionBuilderResult<T = {}> {
   icon: string;

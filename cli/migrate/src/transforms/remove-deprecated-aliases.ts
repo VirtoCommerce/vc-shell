@@ -5,7 +5,6 @@ import type { Transform } from "./types.js";
 const RENAME_MAP: Record<string, string> = {
   navigationViewLocation: "NavigationViewLocationKey",
   BladeInstance: "BladeInstanceKey",
-  NotificationTemplatesSymbol: "NotificationTemplatesKey",
   BLADE_BACK_BUTTON: "BladeBackButtonKey",
   TOOLBAR_SERVICE: "ToolbarServiceKey",
   EMBEDDED_MODE: "EmbeddedModeKey",

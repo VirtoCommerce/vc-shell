@@ -43,7 +43,6 @@ import {
 import {
   AppBarWidgetServiceKey,
   MenuServiceKey,
-  NotificationTemplatesKey,
   NotificationStoreKey,
   SettingsMenuServiceKey,
   ToolbarServiceKey,
@@ -173,10 +172,6 @@ function setupLegacyGlobals(app: App) {
   // Blade routes
   app.config.globalProperties.bladeRoutes = [];
   app.provide(BladeRoutesKey, app.config.globalProperties.bladeRoutes);
-
-  // Legacy notification templates — empty array for backwards compat
-  // New code uses useNotificationStore().registry
-  app.provide(NotificationTemplatesKey, []);
 }
 
 function createAndProvideServices(app: App) {
@@ -425,7 +420,6 @@ export * from "@modules";
 // Shared composables that moved to core/ui
 export * from "@core/composables/useBladeNavigationAdapter";
 export * from "@core/composables/useBladeForm";
-export * from "@ui/utilities/vueUtils";
 
 // Multilanguage selector (moved from shared to ui)
 export * from "@ui/components/molecules/multilanguage-selector";

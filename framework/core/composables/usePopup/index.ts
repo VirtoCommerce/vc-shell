@@ -10,13 +10,12 @@ import {
   watch,
   MaybeRef,
   unref,
-  DefineComponent,
+  Component,
 } from "vue";
 import { PopupPluginKey } from "@shell/_internal/popup/keys";
 import { PopupPlugin, UsePopupInternal, UsePopupProps } from "@shell/_internal/popup/types";
 import { popupPluginInstance } from "@shell/_internal/popup/plugin";
 import { useI18n } from "vue-i18n";
-import { ComponentPublicInstanceConstructor } from "@ui/utilities/vueUtils";
 import * as _ from "lodash-es";
 import vcPopupWarning from "@shell/_internal/popup/common/vc-popup-warning.vue";
 import vcPopupError from "@shell/_internal/popup/common/vc-popup-error.vue";
@@ -36,12 +35,12 @@ function usePopupInternal() {
   return popupInstance;
 }
 
-export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typeof VcPopup>(
+export function usePopup<T extends Component = typeof VcPopup>(
   options?: MaybeRef<UsePopupProps<T>>,
 ): IUsePopup {
   const { t } = useI18n({ useScope: "global" });
   const popupInstance = usePopupInternal();
-  let rawPopup: (UsePopupProps<DefineComponent> & UsePopupInternal) | undefined;
+  let rawPopup: (UsePopupProps & UsePopupInternal) | undefined;
 
   if (options) {
     rawPopup = createInstance(unref(options));
@@ -57,7 +56,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
     { deep: true },
   );
 
-  function destroy(confirmation?: Partial<UsePopupProps<DefineComponent> & UsePopupInternal>): void {
+  function destroy(confirmation?: Partial<UsePopupProps & UsePopupInternal>): void {
     if (!confirmation) {
       return;
     }
@@ -73,12 +72,12 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
   }
 
   function resolveInstance(
-    customInstance?: UsePopupProps<DefineComponent>,
-  ): UsePopupProps<DefineComponent> | undefined {
+    customInstance?: UsePopupProps,
+  ): UsePopupProps | undefined {
     return rawPopup ?? customInstance;
   }
 
-  function pushInstance(popup?: UsePopupProps<DefineComponent>) {
+  function pushInstance(popup?: UsePopupProps) {
     if (!popup) {
       return;
     }
@@ -87,12 +86,12 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
     popupInstance?.popups?.push(popup);
   }
 
-  async function open(customInstance?: UsePopupProps<DefineComponent>) {
+  async function open(customInstance?: UsePopupProps) {
     await nextTick();
     pushInstance(resolveInstance(customInstance));
   }
 
-  function close(customInstance?: UsePopupProps<DefineComponent>) {
+  function close(customInstance?: UsePopupProps) {
     const instanceToClose = resolveInstance(customInstance);
     if (!instanceToClose) {
       return;
@@ -105,10 +104,10 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
   }
 
   function showSimplePopup(
-    component: ComponentPublicInstanceConstructor<any>,
+    component: Component,
     title: string,
     message: string | Ref<string>,
-  ): UsePopupProps<DefineComponent> & UsePopupInternal {
+  ): UsePopupProps & UsePopupInternal {
     const popup = createInstance({
       component,
       props: {
@@ -162,7 +161,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
     showSimplePopup(vcPopupInfo, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.INFO"), message);
   }
 
-  function createInstance<T extends ComponentPublicInstanceConstructor<any> = typeof VcPopup>(
+  function createInstance<T extends Component = typeof VcPopup>(
     options: UsePopupProps<T>,
   ) {
     const popup = reactive({
@@ -170,7 +169,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
       id: Symbol("vc-popup-instance"),
       close: () => undefined,
       open: () => undefined,
-    }) as unknown as UsePopupProps<DefineComponent> & UsePopupInternal;
+    }) as unknown as UsePopupProps & UsePopupInternal;
 
     popup.close = () => close(popup);
     popup.open = () => open(popup);
@@ -187,7 +186,7 @@ export function usePopup<T extends ComponentPublicInstanceConstructor<any> = typ
   };
 }
 
-function createComponent<T extends ComponentPublicInstanceConstructor<any> = typeof VcPopup>(
+function createComponent<T extends Component = typeof VcPopup>(
   options: UsePopupProps<T>,
 ) {
   const slots =

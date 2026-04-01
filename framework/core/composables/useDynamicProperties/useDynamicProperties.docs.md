@@ -1,163 +1,162 @@
 # useDynamicProperties
 
-Generic composable for managing dynamic (runtime-defined) property values with support for multilanguage, multivalue, dictionary, color, and measurement property types. This is one of the most complex composables in the framework because it must handle the combinatorial explosion of property configurations: a property can be multilanguage AND multivalue AND dictionary-backed, each combination requiring different get/set logic. The composable handles loading dictionary items from the API, getting/setting property values by locale, unit-of-measure lookups, and color code management.
+Composable for managing dynamic (runtime-defined) property values with support for multilanguage, multivalue, dictionary, color, and measurement property types.
 
-The composable is generic over the property, value, dictionary item, and measurement types, allowing it to work with both the standard platform types and custom extensions.
+Internally uses a strategy pattern — each property type (regular, boolean, dictionary, measure, color) has a dedicated handler with `get`/`set` methods.
 
 ## When to Use
 
 - In product, category, or any entity detail blades that display platform dynamic properties
 - When properties are defined at runtime (not compile-time) and may be multilanguage or dictionary-based
 - When you need to render and edit property values that can be text, boolean, number, datetime, dictionary selection, color picker, or measurement with units
-- When NOT to use: for static, compile-time form fields, use standard Vue reactive state. For simple key-value pairs without multilanguage/dictionary support, plain refs are sufficient.
+- When NOT to use: for static, compile-time form fields, use standard Vue reactive state
 
 ## Quick Start
 
 ```typescript
-import { useDynamicProperties } from '@vc-shell/framework';
-import { PropertyValue, PropertyDictionaryItem } from '@core/api/platform';
+import { useDynamicProperties } from "@vc-shell/framework";
 
-const { loading, loadDictionaries, getPropertyValue, setPropertyValue, loadMeasurements } =
-  useDynamicProperties(
-    (criteria) => api.searchPropertyDictionaryItems(criteria),
-    PropertyValue,
-    PropertyDictionaryItem,
-    (measureId, locale) => api.searchMeasurements(measureId, locale),
-  );
+const { getPropertyValue, setPropertyValue, loadDictionaries, loadMeasurements, loading } =
+  useDynamicProperties({
+    searchDictionary: (criteria) => api.searchPropertyDictionaryItems(criteria),
+    searchMeasurements: (measureId, locale) => api.searchMeasurements(measureId, locale),
+  });
 ```
 
 ## API
 
-### Parameters
+### Options
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `searchDictionaryItemsFunction` | `(criteria) => Promise<TPropertyDictionaryItem[] \| undefined>` | Yes | API function to search dictionary items by property ID and keyword. Called when the user opens a dictionary dropdown. |
-| `PropertyValueConstructor` | `new (data?) => TPropertyValue` | Yes | Constructor class for creating property value instances. Used when creating new values during `setPropertyValue`. |
-| `PropertyDictionaryItemConstructor` | `new (data?) => TPropertyDictionaryItem` | Yes | Constructor class for creating dictionary item instances. Used when localizing dictionary items. |
-| `searchMeasurementFunction` | `(measureId, locale?) => Promise<TMeasurement[] \| undefined>` | No | API function for loading measurement/unit-of-measure dictionaries. Only needed if you have measure-type properties. |
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `searchDictionary` | `(criteria: IBasePropertyDictionaryItemSearchCriteria) => Promise<IBasePropertyDictionaryItem[] \| undefined>` | Yes | API function to search dictionary items by property ID and keyword |
+| `searchMeasurements` | `(measureId: string, locale?: string) => Promise<IBaseMeasurementDictionaryItem[] \| undefined>` | No | API function for loading measurement units. Only needed for measure-type properties |
 
 ### Returns
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `loading` | `ComputedRef<boolean>` | Whether a dictionary or measurement lookup is in progress. |
-| `loadDictionaries` | `(propertyId, keyword?, locale?) => Promise<TPropertyDictionaryItem[] \| undefined>` | Loads dictionary items for a property. If `locale` is provided, resolves localized values from `localizedValues`. |
-| `getPropertyValue` | `(property, locale) => string \| TPropertyValue[] \| boolean` | Reads the display value for a property in the given locale. Returns string for simple values, array for multivalue, boolean for boolean type. |
-| `setPropertyValue` | `(params: SetPropertyValueParams) => void` | Writes a value to a property. Dispatches to specialized handlers based on property type (measure, color, dictionary, regular). |
-| `loadMeasurements` | `(measureId, keyword?, locale?) => Promise<TMeasurement[] \| undefined>` | Loads measurement units for a measure-type property. No-op if `searchMeasurementFunction` was not provided. |
+| `getPropertyValue` | `(property, locale) => PropertyDisplayValue` | Read display value for a property. Returns string, boolean, or array depending on type. Does NOT mutate the property. |
+| `setPropertyValue` | `(params: SetPropertyValueParams) => void` | Write value to a property. Handles type-specific transformation and empty cleanup. |
+| `loadDictionaries` | `(propertyId, keyword?, locale?) => Promise<...>` | Load dictionary items. If locale is provided, resolves localized values. |
+| `loadMeasurements` | `(measureId, keyword?, locale?) => Promise<...>` | Load measurement units. No-op if `searchMeasurements` was not provided. |
+| `loading` | `ComputedRef<boolean>` | Whether a dictionary lookup is in progress. |
 
 ### SetPropertyValueParams
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `property` | `TProperty` | The property object to update. Modified in place. |
-| `value` | `string \| TPropertyValue[] \| TPropertyDictionaryItem[]` | The new value. Type depends on property configuration. |
-| `dictionary` | `TPropertyDictionaryItem[]?` | Dictionary items for dictionary properties. Required when setting a dictionary value. |
+| `property` | `IBaseProperty` | The property object to update. Modified in place. |
+| `value` | `string \| IBasePropertyValue[] \| (IBasePropertyDictionaryItem & { value: string })[]` | The new value. Type depends on property configuration. |
+| `dictionary` | `IBasePropertyDictionaryItem[]?` | Dictionary items. Required when setting a dictionary value. |
 | `locale` | `string?` | Current locale for multilanguage properties. |
-| `initialProp` | `TProperty?` | Original property state. Used for empty-value detection -- if the original was empty and the new value is empty, a placeholder is preserved; otherwise, the value array is cleared. |
 | `unitOfMeasureId` | `string?` | Unit of measure ID for measure-type properties. |
 | `colorCode` | `string?` | Color hex code for color-type properties. |
 
+### PropertyDisplayValue
+
+```ts
+type PropertyDisplayValue = string | IBasePropertyValue[] | boolean;
+```
+
 ## How It Works
+
+### Strategy Resolution
+
+The composable resolves a strategy handler based on property flags:
+
+| Priority | Condition | Strategy | Handles |
+|----------|-----------|----------|---------|
+| 1 | `valueType === "Measure"` | measureStrategy | Numeric input with unit dropdown |
+| 2 | `valueType === "Color"` && !dictionary | colorStrategy | Color picker, multivalue colors |
+| 3 | `valueType === "Boolean"` | booleanStrategy | Checkbox/switch |
+| 4 | `dictionary === true` | dictionaryStrategy | Select dropdowns with localized options |
+| 5 | (default) | regularStrategy | ShortText, LongText, Number, Integer, DateTime |
 
 ### Value Getting
 
-`getPropertyValue` dispatches based on property flags:
+Each strategy's `get()` reads from `property.values` without mutation:
 
-- **Multilanguage**: Finds the value entry matching the locale. For multivalue, returns all entries for that locale as an array. For dictionary, returns the `valueId`. If no entry exists for the locale, creates a default entry using the first available alias.
-- **Single-language**: Returns the first value entry. For multivalue, returns all entries as an array. For dictionary, returns the `valueId`.
-- **Boolean**: Returns `false` if no value entry exists (instead of empty string).
+- **Multilanguage**: Finds value matching locale, falls back to value without languageCode
+- **Multivalue**: Returns full array (filtered by locale for multilanguage)
+- **Dictionary**: Returns `valueId` instead of `value`
+- **Boolean**: Returns `false` (not `""`) when no value exists
 
 ### Value Setting
 
-`setPropertyValue` checks property type in order:
-1. **Measure** (`valueType === "Measure"`): Creates a single value entry with `unitOfMeasureId`.
-2. **Color** (`valueType === "Color"`, no dictionary): Creates value entry/entries with `colorCode`.
-3. **Dictionary**: Resolves the selected dictionary item(s), expanding `localizedValues` into per-locale value entries for multilanguage dictionaries.
-4. **Regular**: Handles the remaining cases -- simple text, number, boolean, datetime.
+Each strategy's `set()` writes to `property.values`:
 
-### Dictionary Localization
+- **Empty values are cleaned up automatically** via `cleanEmptyValues()`. When user clears a field, scaffolding objects are removed and `property.values` becomes `[]`. This prevents false modification detection in `useBladeForm`.
+- **Multilanguage cleanup**: Only the value for the current locale is removed; other locales are preserved.
+- **Dictionary**: Expands `localizedValues` into per-locale value entries.
 
-When `loadDictionaries` is called with a locale, each dictionary item's `localizedValues` array is searched for the matching locale. The localized display value replaces the generic `alias` for UI rendering. This is why the function returns `Promise<TPropertyDictionaryItem[]>` -- the items are cloned and enriched.
+### Empty Value Cleanup (cleanEmptyValues)
 
-## Recipe: Rendering a Dynamic Property Form
+When `setPropertyValue` receives an empty value (`""`, `null`, `undefined`), it cleans up `property.values` instead of leaving scaffolding objects:
 
-```vue
-<script setup lang="ts">
-import { useDynamicProperties, useLanguages } from '@vc-shell/framework';
-import { ref, watch } from 'vue';
-
-const { currentLocale } = useLanguages();
-const { loading, loadDictionaries, getPropertyValue, setPropertyValue } =
-  useDynamicProperties(searchDictionaryItems, PropertyValue, PropertyDictionaryItem);
-
-const properties = ref<Property[]>([]);
-
-// Display values, keyed by property ID
-function displayValue(property: Property) {
-  return getPropertyValue(property, currentLocale.value);
-}
-
-// Handle value change from a form input
-async function onValueChange(property: Property, newValue: string) {
-  if (property.dictionary) {
-    const dictItems = await loadDictionaries(property.id!, '', currentLocale.value);
-    setPropertyValue({
-      property,
-      value: newValue,
-      dictionary: dictItems ?? [],
-      locale: currentLocale.value,
-    });
-  } else {
-    setPropertyValue({
-      property,
-      value: newValue,
-      locale: currentLocale.value,
-    });
-  }
-}
-</script>
+```
+Before: values: [{ value: "", languageCode: "en", propertyId: "abc", ... }]
+After:  values: []
 ```
 
-## Recipe: Dictionary Property with Search-as-You-Type
+This ensures that `useBladeForm`'s deep comparison correctly detects "no change" when user clears a field that was originally empty.
+
+## Recipe: With VcDynamicProperty
 
 ```vue
-<script setup lang="ts">
-import { useDynamicProperties } from '@vc-shell/framework';
-import { ref } from 'vue';
-
-const { loadDictionaries } = useDynamicProperties(/* ... */);
-
-const dictOptions = ref<PropertyDictionaryItem[]>([]);
-
-async function onDictionarySearch(property: Property, keyword: string, locale: string) {
-  const items = await loadDictionaries(property.id!, keyword, locale);
-  dictOptions.value = items ?? [];
-}
-</script>
-
 <template>
-  <VcSelect
-    :options="dictOptions"
-    option-value="id"
-    option-label="value"
-    @search="(keyword) => onDictionarySearch(property, keyword, currentLocale)"
-    @update:model-value="(val) => onValueChange(property, val)"
+  <VcDynamicProperty
+    v-for="property in properties"
+    :key="property.id"
+    :property="property"
+    :model-value="getPropertyValue(property, currentLocale)"
+    :options-getter="loadDictionaries"
+    :measurements-getter="loadMeasurements"
+    :current-language="currentLocale"
+    :value-type="property.valueType ?? ''"
+    :dictionary="property.dictionary"
+    :multivalue="property.multivalue"
+    :multilanguage="property.multilanguage"
+    @update:model-value="(ev) => setPropertyValue({ property, ...ev })"
   />
 </template>
+
+<script setup lang="ts">
+import { useDynamicProperties } from "@vc-shell/framework";
+
+const { getPropertyValue, setPropertyValue, loadDictionaries, loadMeasurements } =
+  useDynamicProperties({
+    searchDictionary: searchDictionaryItems,
+    searchMeasurements: searchMeasurementItems,
+  });
+</script>
 ```
 
 ## Tips
 
-- **`setPropertyValue` mutates the property in place.** Unlike `useAssets` which returns new arrays, this composable modifies `property.values` directly. This is by design because dynamic properties are typically part of a larger entity object that gets saved as a whole.
-- **Always pass `dictionary` when setting dictionary values.** Without the dictionary items, the composable cannot resolve `valueId` to the correct alias and localized values. Omitting it results in incomplete value entries.
-- **Empty value handling depends on `initialProp`.** When the user clears a field, the behavior differs based on whether the property originally had a value. If it did, clearing sets `values: []` (explicit empty). If it was always empty, a placeholder value entry is preserved. This distinction matters for the platform's diff/save logic.
-- **Boolean properties always have a value entry.** Unlike other types where clearing removes the value, boolean properties always maintain a value entry (with `value: false`). This ensures checkboxes render correctly.
-- **The composable is generic but not abstract.** You must pass concrete constructor classes, not interfaces. The constructors are called with `new` to create value and dictionary item instances.
+- **`setPropertyValue` mutates the property in place.** `property.values` is modified directly. This is by design because dynamic properties are typically part of a larger entity object saved as a whole.
+- **Always pass `dictionary` when setting dictionary values.** Without dictionary items, the composable cannot resolve `valueId` to the correct alias and localized values.
+- **Boolean properties always have a value entry.** Unlike other types where clearing removes the value, boolean properties maintain a value entry (`value: false`). This ensures checkboxes render correctly.
+- **No class constructors needed.** Values are created as plain objects via `createValue()`. No factory classes required.
+
+## File Structure
+
+```
+useDynamicProperties/
+  index.ts              — composable entry point (~60 lines)
+  types.ts              — all interfaces
+  utils.ts              — isEmptyValue, createValue, cleanEmptyValues, type guards
+  strategies/
+    index.ts            — resolveStrategy() registry
+    types.ts            — PropertyValueStrategy interface
+    regular.ts          — ShortText, LongText, Number, Integer, DateTime
+    boolean.ts          — Boolean
+    dictionary.ts       — Dictionary (all multi/single × language/value)
+    measure.ts          — Measure
+    color.ts            — Color
+```
 
 ## Related
 
-- [useLanguages](../useLanguages/useLanguages.docs.md) -- locale management for multilanguage property rendering
-- `IBaseProperty`, `IBasePropertyValue` -- base interfaces defined in the composable file
-- `PropertyValue`, `PropertyDictionaryItem` from `@core/api/platform` -- concrete types for the standard platform
+- [useBladeForm](../useBladeForm/useBladeForm.docs.md) — form state management that uses `semanticEqual` for modification detection. `cleanEmptyValues` ensures compatibility.
+- [VcDynamicProperty](../../../../ui/components/organisms/vc-dynamic-property/vc-dynamic-property.docs.md) — UI component that renders dynamic properties

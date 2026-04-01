@@ -1,101 +1,57 @@
-import {
-  useDynamicProperties,
-  IBaseProperty,
-  IBasePropertyValue,
-  IBasePropertyDictionaryItem,
-  IBasePropertyDictionaryItemSearchCriteria,
-} from "./index";
-
-// Simple constructors for test
-class TestPropertyValue implements IBasePropertyValue {
-  propertyName?: string | null;
-  propertyId?: string | null;
-  languageCode?: string | null;
-  alias?: string | null;
-  valueType?: string | null;
-  value?: any;
-  valueId?: string | null;
-  isInherited?: boolean;
-  unitOfMeasureId?: string | null;
-  colorCode?: string | null;
-
-  constructor(data?: Partial<IBasePropertyValue>) {
-    Object.assign(this, data);
-  }
-}
-
-class TestDictionaryItem implements IBasePropertyDictionaryItem {
-  id?: string | null;
-  propertyId?: string | null;
-  alias?: string | null;
-  localizedValues?: { languageCode?: string | null; value?: string | null }[] | null;
-  value?: string;
-  colorCode?: string | null;
-
-  constructor(data?: Partial<IBasePropertyDictionaryItem>) {
-    Object.assign(this, data);
-  }
-}
-
-type TestProperty = IBaseProperty<TestPropertyValue>;
+import { useDynamicProperties, type IBaseProperty, type IBasePropertyValue, type IBasePropertyDictionaryItem } from "./index";
 
 function createComposable(
   searchFn = vi.fn().mockResolvedValue([]),
   measureFn?: (measureId: string, locale?: string) => Promise<any>,
 ) {
-  return useDynamicProperties<
-    TestProperty,
-    TestPropertyValue,
-    TestDictionaryItem,
-    IBasePropertyDictionaryItemSearchCriteria,
-    any
-  >(searchFn, TestPropertyValue, TestDictionaryItem, measureFn);
+  return useDynamicProperties({
+    searchDictionary: searchFn,
+    searchMeasurements: measureFn,
+  });
+}
+
+function val(data?: Partial<IBasePropertyValue>): IBasePropertyValue {
+  return { isInherited: false, ...data };
+}
+
+function dictItem(data?: Partial<IBasePropertyDictionaryItem>): IBasePropertyDictionaryItem {
+  return { ...data };
 }
 
 describe("useDynamicProperties", () => {
   describe("getPropertyValue", () => {
     it("returns empty string for property with no values", () => {
       const { getPropertyValue } = createComposable();
-      const prop: TestProperty = { id: "1", name: "test", values: [] };
+      const prop: IBaseProperty = { id: "1", name: "test", values: [] };
       expect(getPropertyValue(prop, "en")).toBe("");
     });
 
     it("returns false for Boolean property with no values", () => {
       const { getPropertyValue } = createComposable();
-      const prop: TestProperty = { id: "1", name: "test", values: [], valueType: "Boolean" };
+      const prop: IBaseProperty = { id: "1", name: "test", values: [], valueType: "Boolean" };
       expect(getPropertyValue(prop, "en")).toBe(false);
     });
 
     it("returns first value for single-language property", () => {
       const { getPropertyValue } = createComposable();
-      const prop: TestProperty = {
-        id: "1",
-        name: "test",
-        values: [new TestPropertyValue({ value: "hello" })],
-      };
+      const prop: IBaseProperty = { id: "1", name: "test", values: [val({ value: "hello" })] };
       expect(getPropertyValue(prop, "en")).toBe("hello");
     });
 
     it("returns valueId for dictionary property", () => {
       const { getPropertyValue } = createComposable();
-      const prop: TestProperty = {
-        id: "1",
-        name: "test",
-        dictionary: true,
-        values: [new TestPropertyValue({ valueId: "dict-1", value: "Label" })],
+      const prop: IBaseProperty = {
+        id: "1", name: "test", dictionary: true,
+        values: [val({ valueId: "dict-1", value: "Label" })],
       };
       expect(getPropertyValue(prop, "en")).toBe("dict-1");
     });
 
     it("returns values array for multivalue property", () => {
       const { getPropertyValue } = createComposable();
-      const val1 = new TestPropertyValue({ value: "a" });
-      const val2 = new TestPropertyValue({ value: "b" });
-      const prop: TestProperty = {
-        id: "1",
-        name: "test",
-        multivalue: true,
-        values: [val1, val2],
+      const prop: IBaseProperty = {
+        id: "1", name: "test", multivalue: true,
+        values: [val({ value: "a" }), val({ value: "b" })],
       };
       const result = getPropertyValue(prop, "en");
       expect(Array.isArray(result)).toBe(true);
@@ -104,35 +60,31 @@ describe("useDynamicProperties", () => {
 
     it("returns locale-specific value for multilanguage property", () => {
       const { getPropertyValue } = createComposable();
-      const prop: TestProperty = {
-        id: "1",
-        name: "test",
-        multilanguage: true,
-        values: [
-          new TestPropertyValue({ value: "english", languageCode: "en" }),
-          new TestPropertyValue({ value: "french", languageCode: "fr" }),
-        ],
+      const prop: IBaseProperty = {
+        id: "1", name: "test", multilanguage: true,
+        values: [val({ value: "english", languageCode: "en" }), val({ value: "french", languageCode: "fr" })],
       };
       expect(getPropertyValue(prop, "fr")).toBe("french");
     });
 
     it("returns false for multilanguage Boolean with no matching locale", () => {
       const { getPropertyValue } = createComposable();
-      const prop: TestProperty = {
-        id: "1",
-        name: "test",
-        multilanguage: true,
-        valueType: "Boolean",
-        values: [],
-      };
+      const prop: IBaseProperty = { id: "1", name: "test", multilanguage: true, valueType: "Boolean", values: [] };
       expect(getPropertyValue(prop, "en")).toBe(false);
+    });
+
+    it("does NOT mutate property.values when reading (no side-effects)", () => {
+      const { getPropertyValue } = createComposable();
+      const prop: IBaseProperty = { id: "1", name: "test", multilanguage: true, values: [] };
+      getPropertyValue(prop, "en");
+      expect(prop.values).toHaveLength(0);
     });
   });
 
   describe("setPropertyValue", () => {
     it("sets a simple string value", () => {
       const { setPropertyValue } = createComposable();
-      const prop: TestProperty = { id: "1", name: "test", values: [] };
+      const prop: IBaseProperty = { id: "1", name: "test", values: [] };
       setPropertyValue({ property: prop, value: "new value" });
       expect(prop.values).toHaveLength(1);
       expect(prop.values![0].value).toBe("new value");
@@ -140,15 +92,14 @@ describe("useDynamicProperties", () => {
 
     it("updates existing value in place", () => {
       const { setPropertyValue } = createComposable();
-      const existing = new TestPropertyValue({ value: "old" });
-      const prop: TestProperty = { id: "1", name: "test", values: [existing] };
+      const prop: IBaseProperty = { id: "1", name: "test", values: [val({ value: "old" })] };
       setPropertyValue({ property: prop, value: "updated" });
       expect(prop.values![0].value).toBe("updated");
     });
 
     it("sets boolean value", () => {
       const { setPropertyValue } = createComposable();
-      const prop: TestProperty = { id: "1", name: "test", valueType: "Boolean", values: [] };
+      const prop: IBaseProperty = { id: "1", name: "test", valueType: "Boolean", values: [] };
       setPropertyValue({ property: prop, value: true as any });
       expect(prop.values).toHaveLength(1);
       expect(prop.values![0].value).toBe(true);
@@ -156,7 +107,7 @@ describe("useDynamicProperties", () => {
 
     it("sets measure property value with unit", () => {
       const { setPropertyValue } = createComposable();
-      const prop: TestProperty = { id: "1", name: "weight", valueType: "Measure", values: [] };
+      const prop: IBaseProperty = { id: "1", name: "weight", valueType: "Measure", values: [] };
       setPropertyValue({ property: prop, value: "42", unitOfMeasureId: "kg" });
       expect(prop.values).toHaveLength(1);
       expect(prop.values![0].value).toBe("42");
@@ -165,7 +116,7 @@ describe("useDynamicProperties", () => {
 
     it("sets color property value with colorCode", () => {
       const { setPropertyValue } = createComposable();
-      const prop: TestProperty = { id: "1", name: "color", valueType: "Color", values: [] };
+      const prop: IBaseProperty = { id: "1", name: "color", valueType: "Color", values: [] };
       setPropertyValue({ property: prop, value: "Red", colorCode: "#FF0000" });
       expect(prop.values).toHaveLength(1);
       expect(prop.values![0].value).toBe("Red");
@@ -174,44 +125,78 @@ describe("useDynamicProperties", () => {
 
     it("sets dictionary value for single-language property", () => {
       const { setPropertyValue } = createComposable();
-      const prop: TestProperty = { id: "1", name: "test", dictionary: true, values: [] };
-      const dictionary = [new TestDictionaryItem({ id: "d1", alias: "Option1", propertyId: "1" })];
+      const prop: IBaseProperty = { id: "1", name: "test", dictionary: true, values: [] };
+      const dictionary = [dictItem({ id: "d1", alias: "Option1", propertyId: "1" })];
       setPropertyValue({ property: prop, value: "d1", dictionary });
       expect(prop.values).toHaveLength(1);
       expect(prop.values![0].valueId).toBe("d1");
     });
 
-    it("clears values when empty value is set and original had a value", () => {
-      const { setPropertyValue } = createComposable();
-      const prop: TestProperty = {
-        id: "1",
-        name: "test",
-        values: [new TestPropertyValue({ value: "existing" })],
-      };
-      const initialProp: TestProperty = {
-        id: "1",
-        name: "test",
-        values: [new TestPropertyValue({ value: "existing" })],
-      };
-      setPropertyValue({ property: prop, value: "", initialProp });
-      expect(prop.values).toHaveLength(0);
-    });
-
     it("sets multivalue array", () => {
       const { setPropertyValue } = createComposable();
-      const prop: TestProperty = { id: "1", name: "test", multivalue: true, values: [] };
-      const vals = [new TestPropertyValue({ value: "a" }), new TestPropertyValue({ value: "b" })];
+      const prop: IBaseProperty = { id: "1", name: "test", multivalue: true, values: [] };
+      const vals = [val({ value: "a" }), val({ value: "b" })];
       setPropertyValue({ property: prop, value: vals });
       expect(prop.values).toHaveLength(2);
     });
 
     it("sets multilanguage value for specific locale", () => {
       const { setPropertyValue } = createComposable();
-      const existing = new TestPropertyValue({ value: "hello", languageCode: "en" });
-      const prop: TestProperty = { id: "1", name: "test", multilanguage: true, values: [existing] };
+      const prop: IBaseProperty = {
+        id: "1", name: "test", multilanguage: true,
+        values: [val({ value: "hello", languageCode: "en" })],
+      };
       setPropertyValue({ property: prop, value: "bonjour", locale: "fr" });
-      // Should have both en and fr values
       expect(prop.values!.some((v) => v.languageCode === "fr" && v.value === "bonjour")).toBe(true);
+    });
+  });
+
+  describe("reverse transformation", () => {
+    it("clears values when empty string is set", () => {
+      const { setPropertyValue } = createComposable();
+      const prop: IBaseProperty = { id: "1", name: "test", values: [val({ value: "existing" })] };
+      setPropertyValue({ property: prop, value: "" });
+      expect(prop.values).toHaveLength(0);
+    });
+
+    it("clears values when undefined is set", () => {
+      const { setPropertyValue } = createComposable();
+      const prop: IBaseProperty = { id: "1", name: "test", values: [val({ value: "existing" })] };
+      setPropertyValue({ property: prop, value: undefined as any });
+      expect(prop.values).toHaveLength(0);
+    });
+
+    it("clears only current locale for multilanguage on empty", () => {
+      const { setPropertyValue } = createComposable();
+      const prop: IBaseProperty = {
+        id: "1", name: "test", multilanguage: true,
+        values: [
+          val({ value: "english", languageCode: "en" }),
+          val({ value: "french", languageCode: "fr" }),
+        ],
+      };
+      setPropertyValue({ property: prop, value: "", locale: "fr" });
+      expect(prop.values).toHaveLength(1);
+      expect(prop.values![0].languageCode).toBe("en");
+    });
+
+    it("clears measure when empty", () => {
+      const { setPropertyValue } = createComposable();
+      const prop: IBaseProperty = {
+        id: "1", name: "weight", valueType: "Measure",
+        values: [val({ value: "42", unitOfMeasureId: "kg" })],
+      };
+      setPropertyValue({ property: prop, value: "" });
+      expect(prop.values).toHaveLength(0);
+    });
+
+    it("full cycle: set → clear → values is empty array", () => {
+      const { setPropertyValue } = createComposable();
+      const prop: IBaseProperty = { id: "1", name: "test", values: [] };
+      setPropertyValue({ property: prop, value: "hello" });
+      expect(prop.values).toHaveLength(1);
+      setPropertyValue({ property: prop, value: "" });
+      expect(prop.values).toHaveLength(0);
     });
   });
 
@@ -227,22 +212,15 @@ describe("useDynamicProperties", () => {
       const { loadDictionaries } = createComposable(searchFn);
       await loadDictionaries("prop-1", "keyword");
       expect(searchFn).toHaveBeenCalledWith(
-        expect.objectContaining({
-          propertyIds: ["prop-1"],
-          keyword: "keyword",
-          skip: 0,
-        }),
+        expect.objectContaining({ propertyIds: ["prop-1"], keyword: "keyword", skip: 0 }),
       );
     });
 
     it("localizes dictionary items when locale is provided", async () => {
-      const items = [
-        new TestDictionaryItem({
-          id: "d1",
-          alias: "fallback",
-          localizedValues: [{ languageCode: "fr", value: "French Label" }],
-        }),
-      ];
+      const items = [dictItem({
+        id: "d1", alias: "fallback",
+        localizedValues: [{ languageCode: "fr", value: "French Label" }],
+      })];
       const searchFn = vi.fn().mockResolvedValue(items);
       const { loadDictionaries } = createComposable(searchFn);
       const result = await loadDictionaries("prop-1", undefined, "fr");
@@ -250,13 +228,10 @@ describe("useDynamicProperties", () => {
     });
 
     it("uses alias when no localized value matches", async () => {
-      const items = [
-        new TestDictionaryItem({
-          id: "d1",
-          alias: "AliasValue",
-          localizedValues: [{ languageCode: "de", value: "German" }],
-        }),
-      ];
+      const items = [dictItem({
+        id: "d1", alias: "AliasValue",
+        localizedValues: [{ languageCode: "de", value: "German" }],
+      })];
       const searchFn = vi.fn().mockResolvedValue(items);
       const { loadDictionaries } = createComposable(searchFn);
       const result = await loadDictionaries("prop-1", undefined, "fr");
@@ -283,7 +258,7 @@ describe("useDynamicProperties", () => {
       const measurements = [{ id: "m1", code: "kg", name: "Kilogram" }];
       const measureFn = vi.fn().mockResolvedValue(measurements);
       const { loadMeasurements } = createComposable(vi.fn(), measureFn);
-      const result = await loadMeasurements("m1", "en");
+      const result = await loadMeasurements("m1", undefined, "en");
       expect(measureFn).toHaveBeenCalledWith("m1", "en");
       expect(result).toEqual(measurements);
     });

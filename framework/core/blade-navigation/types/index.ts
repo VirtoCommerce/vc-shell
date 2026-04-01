@@ -1,5 +1,5 @@
 import { Router } from "vue-router";
-import { Component, Ref, InjectionKey, ComputedRef } from "vue";
+import { Component, Ref, InjectionKey, ComputedRef, VNode } from "vue";
 import type { MenuItemConfig, MenuItemBadgeConfig } from "@core/types/menu-types";
 import type { Breadcrumbs } from "@ui/types";
 

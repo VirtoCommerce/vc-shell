@@ -70,6 +70,8 @@ Work through these guides in order. Each is self-contained with before/after exa
 | 34 | [App Hub Rename](./34-app-hub-rename.md) | **Breaking** | `disableAppSwitcher` → `disableAppHub`, `#app-switcher` → `#app-hub`, `useAppSwitcher` → `useAppHub` |
 | 35 | [defineBlade](./35-define-blade.md) | Deprecated | `defineOptions()` with blade fields → `defineBlade()` macro |
 | 36 | [useResponsive](./36-use-responsive.md) | Deprecated | `$isMobile.value` / `inject(IsMobileKey)` → `useResponsive()` composable |
+| 37 | [useBladeForm](./37-use-blade-form.md) | Optional | Replace manual useForm + useModificationTracker + useBeforeUnload with useBladeForm |
+| 38 | [Dynamic Properties Refactor](./38-dynamic-properties-refactor.md) | **Breaking** | useDynamicProperties: remove generics/constructors, options-based API |
 
 ## Severity Legend
 

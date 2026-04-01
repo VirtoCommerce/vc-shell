@@ -1612,3 +1612,23 @@ The following guides cover deprecated API cleanup. See `migration/README.md` for
 - [Guide 31: useDataTableSort](./migration/31-use-data-table-sort.md)
 - [Guide 32: useAssetsManager](./migration/32-use-assets-manager.md)
 - [Guide 34: App Hub Rename](./migration/34-app-hub-rename.md)
+- [Guide 37: useBladeForm](./migration/37-use-blade-form.md)
+- [Guide 38: Dynamic Properties Refactor](./migration/38-dynamic-properties-refactor.md)
+
+---
+
+## Form & Dynamic Properties
+
+### `useBladeForm` — Unified Form State Management
+
+The new `useBladeForm` composable replaces the manual combination of `useForm` (vee-validate), `useModificationTracker`, `useBeforeUnload`, and `onBeforeClose` that every detail blade previously wired up by hand. A single call provides `canSave`, `isModified`, `setBaseline()`, and `revert()`, while VcBlade auto-detects modification state via provide/inject — no `:modified` prop needed.
+
+See [Guide 37: useBladeForm](./migration/37-use-blade-form.md) for before/after examples at three complexity levels and a step-by-step checklist.
+
+### `useDynamicProperties` — Strategy-Based Refactor
+
+The `useDynamicProperties` composable has been refactored from a monolithic function with five generic type parameters and class constructors to a clean options-based API. Factory classes (`PropertyValueFactory`, `PropertyDictionaryItemFactory`) are no longer needed — delete them. A new `cleanEmptyValues()` helper is returned for stripping empty property values before save.
+
+**This is a breaking change.** The old positional-argument signature is removed.
+
+See [Guide 38: Dynamic Properties Refactor](./migration/38-dynamic-properties-refactor.md) for migration instructions and the automated codemod.

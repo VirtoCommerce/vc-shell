@@ -137,6 +137,14 @@ New high-level composable that eliminates boilerplate when working with assets (
 
 ---
 
+## Form & Validation
+
+- **`useBladeForm()` composable** — Unified form state management for detail blades. Replaces the manual combination of `useForm` (vee-validate), `useModificationTracker`, `useBeforeUnload`, and `onBeforeClose` with a single composable call. Returns `canSave`, `isModified`, `setBaseline()`, `revert()`, `setFieldError`, and `errorBag`. VcBlade auto-detects modification state via provide/inject, eliminating the `:modified` prop. Supports `canSaveOverride` for custom disabled logic and `closeConfirmMessage` for custom unsaved-changes dialogs. Automated codemod: `npx @vc-shell/migrate --transform use-blade-form`. See [migration guide #37](./migration/37-use-blade-form.md).
+
+- **`useDynamicProperties()` refactor** — Rewritten from a monolithic function with five generic type parameters and class constructors to a clean options-based API using the strategy pattern internally. Factory classes (`PropertyValueFactory`, `PropertyDictionaryItemFactory`) are no longer needed. New `cleanEmptyValues()` helper strips empty property values before save. No getter side-effects — dictionary loading is explicit. Automated codemod: `npx @vc-shell/migrate --transform dynamic-properties-refactor`. See [migration guide #38](./migration/38-dynamic-properties-refactor.md).
+
+---
+
 ## Localization
 
 - **Typed locale exports** — Framework locales are now available as typed ES module exports: `import en from '@vc-shell/framework/locales/en'`. Each export is fully typed with the `VcShellLocale` interface, providing IDE autocomplete for all ~430 translation keys. Use `VcShellLocalePartial` for partial overrides.

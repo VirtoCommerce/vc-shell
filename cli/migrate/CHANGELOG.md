@@ -1,3 +1,9 @@
+# [2.0.0-alpha.31](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.30...v2.0.0-alpha.31) (2026-04-01)
+
+
+### Features
+
+* **migrate:** add codemod transforms for useBladeForm and useDynamicProperties ([9cf4cc8](https://github.com/VirtoCommerce/vc-shell/commit/9cf4cc8c280bb70e5ef6c457c07c44988b6fafbc))
 # [2.0.0-alpha.30](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.29...v2.0.0-alpha.30) (2026-03-30)
 
 

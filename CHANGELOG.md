@@ -1,5 +1,31 @@
 # Changelog
 
+# [2.0.0-alpha.31](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.30...v2.0.0-alpha.31) (2026-04-01)
+
+
+### Bug Fixes
+
+* **assets:** use lastIndexOf for file name/extension parsing ([251075e](https://github.com/VirtoCommerce/vc-shell/commit/251075e6ddabb960388262374cfb52ff5078a785))
+* **blade:** hide toolbar skeleton on mobile instead of applying mobile class ([1a594f2](https://github.com/VirtoCommerce/vc-shell/commit/1a594f291bc80fd77ac8555d64d4e25564ffbe14))
+* **blade:** two-line mobile header layout to prevent title truncation ([335d2ec](https://github.com/VirtoCommerce/vc-shell/commit/335d2ec8d310000b8c5b5aa7433d3ae033116318))
+* **gallery:** review fixes, mobile tap-to-reveal, label prop, drag improvements ([c4c2b79](https://github.com/VirtoCommerce/vc-shell/commit/c4c2b79c8d41cb7b380e3bc9a3fe74b71258ac7e))
+* **slow-network:** update tests and docs for 10s detection threshold ([f49e446](https://github.com/VirtoCommerce/vc-shell/commit/f49e4464481147e1b718c3867b3280c1acf200e3))
+* **table:** render expander icon via VcIcon instead of bare <i> tag ([1b04fc6](https://github.com/VirtoCommerce/vc-shell/commit/1b04fc6e3641b271ca65e5a33653cb5e9d58e375))
+* **table:** use selection-cell class for skeleton rows, fix cell-content flex sizing ([7f7cce9](https://github.com/VirtoCommerce/vc-shell/commit/7f7cce9316b5a0b9dd922310a9d93eee78c33bb9))
+* use relative path for injection-keys re-export to fix d.ts alias resolution ([67364e1](https://github.com/VirtoCommerce/vc-shell/commit/67364e1e2ceda1b1a49ee19187fae6e1d82e17bf))
+* **widgets:** replace v-loading with skeleton placeholders, fix dropdown widget styling ([5c44acc](https://github.com/VirtoCommerce/vc-shell/commit/5c44accdb52ca1d4502e2d0357a884e5764fb4ec))
+
+
+### Features
+
+* **dynamicProperties:** strategy-based refactor with clean API ([befd1c4](https://github.com/VirtoCommerce/vc-shell/commit/befd1c4192366f6103c0a39deb17b782dcc57d30))
+* **gallery:** add filmstrip layout with swiper, fullscreen preview, mobile UX improvements ([08f476b](https://github.com/VirtoCommerce/vc-shell/commit/08f476b7fb6ae244aeeb80e88e426f44a61dffa2))
+* **image:** add thumbnail URL utility and thumbnailSize prop to image components ([4f35180](https://github.com/VirtoCommerce/vc-shell/commit/4f3518040275d6a415e4735bd32fd15b8db8c38f))
+* **migrate:** add codemod transforms for useBladeForm and useDynamicProperties ([9cf4cc8](https://github.com/VirtoCommerce/vc-shell/commit/9cf4cc8c280bb70e5ef6c457c07c44988b6fafbc))
+* **table:** auto-scale column widths when container resizes via ResizeObserver ([9957fd1](https://github.com/VirtoCommerce/vc-shell/commit/9957fd11310b9f743df1c2db7a36dd4ed5ddce35))
+* **table:** proportional column resize + full reset via column switcher ([d9af649](https://github.com/VirtoCommerce/vc-shell/commit/d9af6498efcea0875ffb0991cbaca36eb06a7329))
+* **useBladeForm:** unified form state management for blades ([a25bc23](https://github.com/VirtoCommerce/vc-shell/commit/a25bc23b717433e056a11fdc9c3d52e333cc8790))
+
 # [2.0.0-alpha.30](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.29...v2.0.0-alpha.30) (2026-03-30)
 
 

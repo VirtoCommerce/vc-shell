@@ -13,17 +13,21 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
+| `layout` | `"filmstrip" \| "grid"` | `"filmstrip"` | Layout mode — filmstrip shows a single scrollable row with expand/collapse; grid shows the classic multi-row auto-fill layout. |
+| `label` | `string` | `undefined` | Label text displayed in the gallery header. |
+| `required` | `boolean` | `false` | Shows a required indicator (`*`) on the label. |
 | `images` | `ICommonAsset[]` | `[]` | Array of image assets to display. |
 | `disabled` | `boolean` | `false` | Disables all interactive actions. |
 | `multiple` | `boolean` | `false` | Allow selecting multiple files in upload dialog. |
-| `loading` | `boolean` | `false` | Shows a loading spinner on the upload zone. |
+| `loading` | `boolean` | `false` | Shows a loading overlay with spinner on the gallery. |
 | `itemActions` | `{ preview?: boolean; edit?: boolean; remove?: boolean }` | `{ preview: true, edit: true, remove: true }` | Per-tile action visibility. |
 | `rules` | `IValidationRules` | `undefined` | Validation rules for uploaded files. |
 | `name` | `string` | `"Gallery"` | Field name for validation messages. |
 | `accept` | `string` | `undefined` | Accepted file extensions. |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Tile size preset. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Tile size preset. Sizes are smaller on mobile. |
 | `gap` | `number` | `8` | Gap between tiles in pixels. |
 | `imagefit` | `"contain" \| "cover"` | `"contain"` | How images fit within tiles. |
+| `thumbnailSize` | `ThumbnailSize` | auto from `size` | Thumbnail size for tile images. Auto-mapped: sm→128x128, md→216x216, lg→348x348. Preview thumbnails use 64x64. |
 
 ## Events
 
@@ -44,24 +48,53 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 
 ## Features
 
-- **Drag-and-drop reorder** -- Drag tiles to reorder. Emits `sort` with the new array. The dragged tile shows a ghost preview during the drag operation.
-- **External file drop** -- Drop files from the OS onto the gallery to upload. The entire gallery acts as a drop target with visual feedback.
-- **Lightbox preview** -- Click a tile to open a full-screen preview carousel. Navigate between images with arrow keys or swipe gestures.
-- **Responsive grid** -- Auto-fill grid adapts to container width using CSS grid with `auto-fill` and `minmax()`.
-- **Per-tile actions** -- Each tile shows preview, edit, and remove buttons on hover. Disable individual actions via the `itemActions` prop.
+- **Filmstrip layout (default)** -- Single-row scrollable strip powered by Swiper. Navigate with arrows, mouse wheel, or swipe. Click "Expand (N)" to show all images in a grid. "Collapse" returns to filmstrip.
+- **Grid layout** -- Classic auto-fill grid that wraps images into multiple rows. Set `layout="grid"` to use this mode.
+- **Drag-and-drop reorder** -- Drag tiles by the grip handle to reorder (powered by SortableJS). Works on both desktop and touch devices. In filmstrip mode, dragging to the edge auto-scrolls the strip. Emits `sort` with the new array.
+- **External file drop** -- Drop files from the OS onto the gallery to upload. The dashed border acts as a visual drop zone indicator (desktop only). A full overlay appears during drag-over.
+- **Fullscreen preview** -- Click the preview button to open a fullscreen carousel. Swipe or use arrow keys to navigate. Thumbnail strip at the bottom syncs with the main image.
+- **Per-tile actions** -- Each tile shows preview, edit, and remove buttons. On desktop: visible on hover. On mobile: visible on tap. Tile name is shown in the top bar alongside the drag handle.
+- **Loading state** -- When `loading` is true, a pulsing border and spinner overlay appear on the gallery. Upload button is disabled. Swiper navigation is frozen.
+- **Mobile responsive** -- Smaller tile sizes, no drag-and-drop hints, no dashed borders, compact action buttons, tap-to-reveal overlays. Uses `useResponsive` throughout.
+- **Lazy loading** -- Images use native `loading="lazy"` for deferred loading.
 
 ## Basic Usage
 
 ```vue
 <VcGallery
+  label="Product Images"
+  required
   :images="product.images"
-  size="md"
   imagefit="cover"
-  :item-actions="{ preview: true, edit: true, remove: true }"
   @upload="handleUpload"
   @sort="handleSort"
   @edit="handleEdit"
   @remove="handleRemove"
+/>
+```
+
+## Filmstrip Layout (Default)
+
+```vue
+<VcGallery
+  label="Images"
+  :images="product.images"
+  imagefit="cover"
+  @upload="handleUpload"
+  @sort="handleSort"
+  @remove="handleRemove"
+/>
+```
+
+## Classic Grid Layout
+
+```vue
+<VcGallery
+  layout="grid"
+  label="Attachments"
+  :images="product.images"
+  @upload="handleUpload"
+  @sort="handleSort"
 />
 ```
 
@@ -99,6 +132,8 @@ function handleRemove(image: ICommonAsset) {
 <template>
   <VcBlade title="Product Images">
     <VcGallery
+      label="Product Images"
+      required
       :images="images"
       multiple
       accept=".jpg,.png,.webp"
@@ -152,20 +187,24 @@ function handleRemove(image: ICommonAsset) {
 
 ## Tips
 
-- The `size` prop controls tile dimensions: `"sm"` is good for compact grids (e.g., thumbnails in a sidebar), `"md"` is the standard, and `"lg"` works well for hero image management.
+- The `size` prop controls tile dimensions: `"sm"` is good for compact grids (e.g., thumbnails in a sidebar), `"md"` is the standard, and `"lg"` works well for hero image management. Tiles are automatically smaller on mobile.
 - Use `imagefit="cover"` for photo galleries where cropping is acceptable, and `"contain"` for logos or icons where the full image must be visible.
-- The upload zone tile always appears at the end of the grid when the gallery is not disabled. It accepts both click and drag-and-drop interactions.
+- The filmstrip layout is ideal for blades where vertical space is limited. Users can expand to see all images or scroll horizontally. The classic grid layout is better for dedicated media management pages.
+- Use the `label` prop to display a header label integrated with the upload button. Add `required` to show a required indicator.
 - The `startingSortOrder` parameter in the `upload` event tells you where the new files should be inserted in the sort order. Use it to maintain correct ordering when appending new images.
+- On desktop, reorder by dragging the grip handle icon. In filmstrip mode, dragging to the strip edge auto-scrolls to reveal more tiles.
+- On mobile, tap a tile to reveal action buttons and the image name. Drag-and-drop hints and dashed borders are hidden automatically.
 
 ## Accessibility
 
 - Tiles are keyboard-navigable with Tab and action buttons are focusable
-- Lightbox preview supports keyboard navigation (arrow keys, Escape to close)
-- The upload zone is accessible via keyboard (Enter/Space to open file picker)
-- Drag-and-drop reorder requires mouse/touch; provide an alternative reorder mechanism for keyboard-only users if needed
+- Fullscreen preview supports keyboard navigation (arrow keys, Escape to close) and swipe gestures
+- The upload button in the header is keyboard-accessible
+- On mobile, tile actions are revealed via tap with click-outside to dismiss
 
 ## Related Components
 
 - **VcImageUpload** -- single-image upload component
-- **VcImageTile** -- the internal tile component used for each image
-- **VcLabel** / **VcHint** -- use alongside VcGallery for field labeling
+- **VcImageTile** -- the internal tile component used for each image (topbar with name + drag handle, bottom tray with actions)
+- **VcFileUpload** -- the file upload drop zone used in empty gallery state
+- **VcLabel** -- used internally when `label` prop is set

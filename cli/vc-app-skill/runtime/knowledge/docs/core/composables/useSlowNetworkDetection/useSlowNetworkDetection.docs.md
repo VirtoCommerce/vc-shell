@@ -1,6 +1,6 @@
 # useSlowNetworkDetection
 
-Detects slow network conditions and shows a persistent warning notification so users know why the UI is unresponsive. Two detection channels work together: a **proactive** channel reads `navigator.connection.effectiveType` to catch weak connections before any request is made, and a **reactive** channel flags API requests that have been pending for more than 5 seconds. The notification auto-dismisses with a 3-second delay after conditions clear, preventing flicker. When the browser goes fully offline, the slow-network notification is suppressed in favor of the existing offline notification from `useConnectionStatus`.
+Detects slow network conditions and shows a persistent warning notification so users know why the UI is unresponsive. Two detection channels work together: a **proactive** channel reads `navigator.connection.effectiveType` to catch weak connections before any request is made, and a **reactive** channel flags API requests that have been pending for more than 10 seconds. The notification auto-dismisses with a 3-second delay after conditions clear, preventing flicker. When the browser goes fully offline, the slow-network notification is suppressed in favor of the existing offline notification from `useConnectionStatus`.
 
 Like `useConnectionStatus`, this is a module-level singleton — calling it from multiple components shares the same state and listeners.
 
@@ -41,14 +41,14 @@ const { isSlowNetwork } = useSlowNetworkDetection();
 | Property | Type | Description |
 |---|---|---|
 | `isSlowNetwork` | `Readonly<Ref<boolean>>` | `true` when the network is slow (either channel active). Read-only. |
-| `trackRequest` | `(id: string) => void` | Start tracking a request. If it isn't untracked within 5 s, it counts as slow. |
+| `trackRequest` | `(id: string) => void` | Start tracking a request. If it isn't untracked within 10 s, it counts as slow. |
 | `untrackRequest` | `(id: string) => void` | Stop tracking a request. Cancels the timer or decrements the slow count. |
 
 ### Constants
 
 | Name | Value | Purpose |
 |---|---|---|
-| `SLOW_REQUEST_THRESHOLD_MS` | `5000` | Time before a pending request is considered slow |
+| `SLOW_REQUEST_THRESHOLD_MS` | `10000` | Time before a pending request is considered slow |
 | `DISMISS_DELAY_MS` | `3000` | Delay before hiding the notification after recovery |
 | `SLOW_EFFECTIVE_TYPES` | `["slow-2g", "2g"]` | Connection types flagged as slow |
 
@@ -60,7 +60,7 @@ On first call, the composable checks `navigator.connection.effectiveType` (Netwo
 
 ### Channel 2: Request timers (reactive)
 
-The fetch interceptor in `framework/core/interceptors/index.ts` calls `trackRequest(id)` before every `/api/*` request and `untrackRequest(id)` in the `finally` block. Each tracked request gets a 5-second timer. If the response arrives in time, the timer is cancelled. If not, `isSlowNetwork` becomes `true` and stays `true` until all slow requests complete.
+The fetch interceptor in `framework/core/interceptors/index.ts` calls `trackRequest(id)` before every `/api/*` request and `untrackRequest(id)` in the `finally` block. Each tracked request gets a 10-second timer. If the response arrives in time, the timer is cancelled. If not, `isSlowNetwork` becomes `true` and stays `true` until all slow requests complete.
 
 ### Notification lifecycle
 

@@ -469,11 +469,18 @@ const editor = useEditor({
     const output =
       detectedType.value === "html"
         ? tipTapEditor.getHTML()
-        : (tipTapEditor.storage as any).markdown?.getMarkdown?.() || tipTapEditor.getHTML();
+        : (tipTapEditor.storage as any).markdown?.getMarkdown?.() ?? tipTapEditor.getHTML();
 
     // Check maxlength if specified
     if (props.maxlength && output.length > props.maxlength) {
       return; // Don't emit if exceeds maxlength
+    }
+
+    // tiptap-markdown normalizes content on round-trip (e.g. adds trailing \n).
+    // Skip emit when the only difference is trailing whitespace — otherwise
+    // useBladeForm sees a phantom modification after undo back to original.
+    if ((output || "").trimEnd() === (props.modelValue || "").trimEnd()) {
+      return;
     }
 
     emit("update:modelValue", output);
@@ -494,9 +501,9 @@ watch(
     const editorContent =
       detectedType.value === "html"
         ? editor.value.getHTML()
-        : (editor.value.storage as any).markdown?.getMarkdown?.() || editor.value.getHTML();
+        : (editor.value.storage as any).markdown?.getMarkdown?.() ?? editor.value.getHTML();
 
-    if (editorContent !== value) {
+    if ((editorContent || "").trimEnd() !== (value || "").trimEnd()) {
       settingContentFromProp = true;
       editor.value.commands.setContent(value || "");
       settingContentFromProp = false;

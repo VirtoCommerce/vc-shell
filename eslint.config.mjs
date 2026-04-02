@@ -24,6 +24,20 @@ export default [
   // Storybook
   ...storybookPlugin.configs["flat/recommended"],
 
+  // Z-index token enforcement — blocks tw-z-[<number>] in templates
+  {
+    files: ["**/*.vue"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "Literal[value=/tw-z-\\[\\d/]",
+          message: "Use tw-z-[var(--z-*)] token instead of hardcoded tw-z-[number]. See framework/assets/styles/theme/_z-index.scss",
+        },
+      ],
+    },
+  },
+
   // Prettier (must be last among formatting configs)
   vuePrettierConfig,
 

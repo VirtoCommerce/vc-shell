@@ -30,18 +30,21 @@
           v-if="type === 'link' && modelValue"
           class="vc-field__link"
           @click="onLinkClick"
-        >{{ displayValue || modelValue }}</VcLink>
+          >{{ displayValue || modelValue }}</VcLink
+        >
 
         <a
           v-else-if="type === 'email' && modelValue"
           :href="`mailto:${modelValue}`"
           class="vc-field__link"
-        >{{ displayValue || modelValue }}</a>
+          >{{ displayValue || modelValue }}</a
+        >
 
         <span
           v-else
           class="vc-field__text"
-        >{{ formattedValue }}</span>
+          >{{ formattedValue }}</span
+        >
       </div>
 
       <VcButton

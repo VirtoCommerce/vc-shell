@@ -231,7 +231,6 @@ function deactivate() {
     gap: 2px;
   }
 
-
   &--mobile .vc-image-tile-action {
     width: 28px;
     height: 28px;

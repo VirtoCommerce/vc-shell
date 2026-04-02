@@ -97,10 +97,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
 
     let clampedDelta: number;
     if (rightIndices.length > 0) {
-      const totalGiveable = rightIndices.reduce(
-        (sum, idx) => sum + (initialWidths[idx] - minColumnWidth),
-        0,
-      );
+      const totalGiveable = rightIndices.reduce((sum, idx) => sum + (initialWidths[idx] - minColumnWidth), 0);
       clampedDelta = Math.max(minDelta, Math.min(rawDelta, totalGiveable));
 
       // Distribute proportionally among right neighbors
@@ -221,10 +218,14 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
 
   // Watch for container element becoming available
   if (containerEl) {
-    watch(containerEl, (el) => {
-      resizeObserver?.disconnect();
-      if (el) setupResizeObserver();
-    }, { immediate: true });
+    watch(
+      containerEl,
+      (el) => {
+        resizeObserver?.disconnect();
+        if (el) setupResizeObserver();
+      },
+      { immediate: true },
+    );
   }
 
   onBeforeUnmount(() => {

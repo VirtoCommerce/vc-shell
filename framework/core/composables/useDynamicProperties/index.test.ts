@@ -1,4 +1,9 @@
-import { useDynamicProperties, type IBaseProperty, type IBasePropertyValue, type IBasePropertyDictionaryItem } from "./index";
+import {
+  useDynamicProperties,
+  type IBaseProperty,
+  type IBasePropertyValue,
+  type IBasePropertyDictionaryItem,
+} from "./index";
 
 function createComposable(
   searchFn = vi.fn().mockResolvedValue([]),
@@ -41,7 +46,9 @@ describe("useDynamicProperties", () => {
     it("returns valueId for dictionary property", () => {
       const { getPropertyValue } = createComposable();
       const prop: IBaseProperty = {
-        id: "1", name: "test", dictionary: true,
+        id: "1",
+        name: "test",
+        dictionary: true,
         values: [val({ valueId: "dict-1", value: "Label" })],
       };
       expect(getPropertyValue(prop, "en")).toBe("dict-1");
@@ -50,7 +57,9 @@ describe("useDynamicProperties", () => {
     it("returns values array for multivalue property", () => {
       const { getPropertyValue } = createComposable();
       const prop: IBaseProperty = {
-        id: "1", name: "test", multivalue: true,
+        id: "1",
+        name: "test",
+        multivalue: true,
         values: [val({ value: "a" }), val({ value: "b" })],
       };
       const result = getPropertyValue(prop, "en");
@@ -61,7 +70,9 @@ describe("useDynamicProperties", () => {
     it("returns locale-specific value for multilanguage property", () => {
       const { getPropertyValue } = createComposable();
       const prop: IBaseProperty = {
-        id: "1", name: "test", multilanguage: true,
+        id: "1",
+        name: "test",
+        multilanguage: true,
         values: [val({ value: "english", languageCode: "en" }), val({ value: "french", languageCode: "fr" })],
       };
       expect(getPropertyValue(prop, "fr")).toBe("french");
@@ -143,7 +154,9 @@ describe("useDynamicProperties", () => {
     it("sets multilanguage value for specific locale", () => {
       const { setPropertyValue } = createComposable();
       const prop: IBaseProperty = {
-        id: "1", name: "test", multilanguage: true,
+        id: "1",
+        name: "test",
+        multilanguage: true,
         values: [val({ value: "hello", languageCode: "en" })],
       };
       setPropertyValue({ property: prop, value: "bonjour", locale: "fr" });
@@ -169,11 +182,10 @@ describe("useDynamicProperties", () => {
     it("clears only current locale for multilanguage on empty", () => {
       const { setPropertyValue } = createComposable();
       const prop: IBaseProperty = {
-        id: "1", name: "test", multilanguage: true,
-        values: [
-          val({ value: "english", languageCode: "en" }),
-          val({ value: "french", languageCode: "fr" }),
-        ],
+        id: "1",
+        name: "test",
+        multilanguage: true,
+        values: [val({ value: "english", languageCode: "en" }), val({ value: "french", languageCode: "fr" })],
       };
       setPropertyValue({ property: prop, value: "", locale: "fr" });
       expect(prop.values).toHaveLength(1);
@@ -183,7 +195,9 @@ describe("useDynamicProperties", () => {
     it("clears measure when empty", () => {
       const { setPropertyValue } = createComposable();
       const prop: IBaseProperty = {
-        id: "1", name: "weight", valueType: "Measure",
+        id: "1",
+        name: "weight",
+        valueType: "Measure",
         values: [val({ value: "42", unitOfMeasureId: "kg" })],
       };
       setPropertyValue({ property: prop, value: "" });
@@ -217,10 +231,13 @@ describe("useDynamicProperties", () => {
     });
 
     it("localizes dictionary items when locale is provided", async () => {
-      const items = [dictItem({
-        id: "d1", alias: "fallback",
-        localizedValues: [{ languageCode: "fr", value: "French Label" }],
-      })];
+      const items = [
+        dictItem({
+          id: "d1",
+          alias: "fallback",
+          localizedValues: [{ languageCode: "fr", value: "French Label" }],
+        }),
+      ];
       const searchFn = vi.fn().mockResolvedValue(items);
       const { loadDictionaries } = createComposable(searchFn);
       const result = await loadDictionaries("prop-1", undefined, "fr");
@@ -228,10 +245,13 @@ describe("useDynamicProperties", () => {
     });
 
     it("uses alias when no localized value matches", async () => {
-      const items = [dictItem({
-        id: "d1", alias: "AliasValue",
-        localizedValues: [{ languageCode: "de", value: "German" }],
-      })];
+      const items = [
+        dictItem({
+          id: "d1",
+          alias: "AliasValue",
+          localizedValues: [{ languageCode: "de", value: "German" }],
+        }),
+      ];
       const searchFn = vi.fn().mockResolvedValue(items);
       const { loadDictionaries } = createComposable(searchFn);
       const result = await loadDictionaries("prop-1", undefined, "fr");

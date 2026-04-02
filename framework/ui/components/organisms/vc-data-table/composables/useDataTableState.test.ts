@@ -315,7 +315,6 @@ describe("useDataTableState — resetState", () => {
 
     wrapper.unmount();
   });
-
 });
 
 describe("useDataTableState — clearState", () => {

@@ -31,15 +31,12 @@ interface IUsePopup {
 
 function usePopupInternal() {
   const instance = getCurrentInstance();
-  const popupInstance: PopupPlugin | undefined =
-    (instance && inject(PopupPluginKey, undefined)) || popupPluginInstance;
+  const popupInstance: PopupPlugin | undefined = (instance && inject(PopupPluginKey, undefined)) || popupPluginInstance;
 
   return popupInstance;
 }
 
-export function usePopup<T extends Component = Component>(
-  options?: MaybeRef<UsePopupProps<T>>,
-): IUsePopup {
+export function usePopup<T extends Component = Component>(options?: MaybeRef<UsePopupProps<T>>): IUsePopup {
   const { t } = useI18n({ useScope: "global" });
   const popupInstance = usePopupInternal();
   let rawPopup: (UsePopupProps & UsePopupInternal) | undefined;
@@ -73,9 +70,7 @@ export function usePopup<T extends Component = Component>(
     }
   }
 
-  function resolveInstance(
-    customInstance?: UsePopupProps,
-  ): UsePopupProps | undefined {
+  function resolveInstance(customInstance?: UsePopupProps): UsePopupProps | undefined {
     return rawPopup ?? customInstance;
   }
 
@@ -179,9 +174,7 @@ export function usePopup<T extends Component = Component>(
     showSimplePopup(infoComponent, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.INFO"), message);
   }
 
-  function createInstance<T extends Component = Component>(
-    options: UsePopupProps<T>,
-  ) {
+  function createInstance<T extends Component = Component>(options: UsePopupProps<T>) {
     const popup = reactive({
       ...createComponent(options),
       id: Symbol("vc-popup-instance"),
@@ -204,9 +197,7 @@ export function usePopup<T extends Component = Component>(
   };
 }
 
-function createComponent<T extends Component = Component>(
-  options: UsePopupProps<T>,
-) {
+function createComponent<T extends Component = Component>(options: UsePopupProps<T>) {
   const slots =
     typeof options.slots === "undefined"
       ? {}

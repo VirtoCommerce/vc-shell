@@ -10,8 +10,7 @@ export const regularStrategy: PropertyValueStrategy = {
       }
       // Find by locale first, then fallback to value without languageCode
       const val =
-        property.values?.find((v) => v.languageCode === locale) ??
-        property.values?.find((v) => !v.languageCode);
+        property.values?.find((v) => v.languageCode === locale) ?? property.values?.find((v) => !v.languageCode);
       return (val?.value as string) ?? "";
     }
 

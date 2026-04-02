@@ -3,9 +3,7 @@ import { getThumbnailUrl, getBestThumbnailSize } from "./index";
 
 describe("getThumbnailUrl", () => {
   it("appends preset suffix before extension", () => {
-    expect(getThumbnailUrl("https://cdn.example.com/photo.jpg", "sm")).toBe(
-      "https://cdn.example.com/photo_sm.jpg",
-    );
+    expect(getThumbnailUrl("https://cdn.example.com/photo.jpg", "sm")).toBe("https://cdn.example.com/photo_sm.jpg");
   });
 
   it("appends pixel size suffix", () => {
@@ -15,9 +13,7 @@ describe("getThumbnailUrl", () => {
   });
 
   it("returns original URL when no size specified", () => {
-    expect(getThumbnailUrl("https://cdn.example.com/photo.jpg")).toBe(
-      "https://cdn.example.com/photo.jpg",
-    );
+    expect(getThumbnailUrl("https://cdn.example.com/photo.jpg")).toBe("https://cdn.example.com/photo.jpg");
   });
 
   it("returns undefined for undefined URL", () => {
@@ -31,21 +27,15 @@ describe("getThumbnailUrl", () => {
   });
 
   it("does not double-apply suffix", () => {
-    expect(getThumbnailUrl("https://cdn.example.com/photo_sm.jpg", "sm")).toBe(
-      "https://cdn.example.com/photo_sm.jpg",
-    );
+    expect(getThumbnailUrl("https://cdn.example.com/photo_sm.jpg", "sm")).toBe("https://cdn.example.com/photo_sm.jpg");
   });
 
   it("returns as-is when no extension found", () => {
-    expect(getThumbnailUrl("https://cdn.example.com/photo", "sm")).toBe(
-      "https://cdn.example.com/photo",
-    );
+    expect(getThumbnailUrl("https://cdn.example.com/photo", "sm")).toBe("https://cdn.example.com/photo");
   });
 
   it("handles relative URLs", () => {
-    expect(getThumbnailUrl("/assets/images/logo.png", "64x64")).toBe(
-      "/assets/images/logo_64x64.png",
-    );
+    expect(getThumbnailUrl("/assets/images/logo.png", "64x64")).toBe("/assets/images/logo_64x64.png");
   });
 
   it("handles multiple dots in path", () => {

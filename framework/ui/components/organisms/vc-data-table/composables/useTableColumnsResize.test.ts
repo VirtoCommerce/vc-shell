@@ -222,4 +222,3 @@ describe("proportional resize", () => {
     expect(columns.value[2].width).toBeLessThan(200); // C shrunk
   });
 });
-

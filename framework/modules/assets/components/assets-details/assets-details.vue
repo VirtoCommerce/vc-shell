@@ -182,7 +182,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 ]);
 
 const assetType = computed(() => defaultAsset.value?.typeId);
-
 </script>
 
 <style lang="scss">
@@ -218,5 +217,4 @@ const assetType = computed(() => defaultAsset.value?.typeId);
   @apply tw-text-sm tw-font-bold tw-tracking-wide;
   @apply tw-text-white;
 }
-
 </style>

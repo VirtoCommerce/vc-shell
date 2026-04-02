@@ -140,9 +140,9 @@ notification.setPosition = (position: NotificationPosition) => {
 notification.clearPosition = (position: NotificationPosition) => {
   if (!_backend) return;
 
-  const notificationsInPosition = _backend.getAllNotifications().filter(
-    (item) => (item.position || _backend!.defaultOptions.position) === position,
-  );
+  const notificationsInPosition = _backend
+    .getAllNotifications()
+    .filter((item) => (item.position || _backend!.defaultOptions.position) === position);
 
   notificationsInPosition.forEach((item) => {
     if (item.notificationId) {

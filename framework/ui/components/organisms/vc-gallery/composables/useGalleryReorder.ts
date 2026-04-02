@@ -36,7 +36,8 @@ export function useGalleryReorder(images: Ref<AssetLike[]>, options: UseGalleryR
       if (!container || !options.onDragEdge) return;
 
       // Use the visible parent (swiper container or gallery dropzone), not swiper-wrapper
-      const visibleParent = container.closest(".vc-gallery-filmstrip") || container.closest(".vc-gallery__dropzone") || container;
+      const visibleParent =
+        container.closest(".vc-gallery-filmstrip") || container.closest(".vc-gallery__dropzone") || container;
       const rect = visibleParent.getBoundingClientRect();
 
       if (mouseX < rect.left + EDGE_THRESHOLD) {

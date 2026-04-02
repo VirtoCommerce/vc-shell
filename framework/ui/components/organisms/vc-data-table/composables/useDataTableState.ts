@@ -44,15 +44,8 @@ const SCHEMA_VERSION = 1;
 // =============================================================================
 
 export function useDataTableState(options: UseDataTableStateOptions): UseDataTableStateReturn {
-  const {
-    stateKey,
-    stateStorage,
-    columnWidths,
-    hiddenColumnIds,
-    shownColumnIds,
-    onStateSave,
-    onStateRestore,
-  } = options;
+  const { stateKey, stateStorage, columnWidths, hiddenColumnIds, shownColumnIds, onStateSave, onStateRestore } =
+    options;
 
   let isRestoring = false;
   let debounceTimer: ReturnType<typeof setTimeout> | undefined;
@@ -147,7 +140,6 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
       state.shownColumnIds = [...shownColumnIds.value];
     }
 
-
     return state;
   }
 
@@ -207,7 +199,6 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     if (shownColumnIds) {
       shownColumnIds.value = new Set();
     }
-
 
     void nextTick(() => {
       isRestoring = false;
@@ -313,8 +304,6 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     if (shownColumnIds && state.shownColumnIds) {
       shownColumnIds.value = new Set(state.shownColumnIds);
     }
-
-
 
     onStateRestore?.(state);
 

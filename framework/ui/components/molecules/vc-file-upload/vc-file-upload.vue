@@ -260,7 +260,10 @@ function dragLeave() {
     background: transparent;
     outline: none;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    transition:
+      border-color 0.2s,
+      background 0.2s,
+      box-shadow 0.2s;
 
     &--dragging {
       cursor: copy;
@@ -334,7 +337,11 @@ function dragLeave() {
 }
 
 @keyframes file-upload-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

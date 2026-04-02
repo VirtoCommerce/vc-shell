@@ -6,8 +6,7 @@ export const booleanStrategy: PropertyValueStrategy = {
   get(property: IBaseProperty, locale: string): PropertyDisplayValue {
     if (isMultilanguageProperty(property)) {
       const val =
-        property.values?.find((v) => v.languageCode === locale) ??
-        property.values?.find((v) => !v.languageCode);
+        property.values?.find((v) => v.languageCode === locale) ?? property.values?.find((v) => !v.languageCode);
       return val?.value ?? false;
     }
     return property.values?.[0]?.value ?? false;

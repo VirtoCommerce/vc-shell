@@ -469,7 +469,7 @@ const editor = useEditor({
     const output =
       detectedType.value === "html"
         ? tipTapEditor.getHTML()
-        : (tipTapEditor.storage as any).markdown?.getMarkdown?.() ?? tipTapEditor.getHTML();
+        : ((tipTapEditor.storage as any).markdown?.getMarkdown?.() ?? tipTapEditor.getHTML());
 
     // Check maxlength if specified
     if (props.maxlength && output.length > props.maxlength) {
@@ -501,7 +501,7 @@ watch(
     const editorContent =
       detectedType.value === "html"
         ? editor.value.getHTML()
-        : (editor.value.storage as any).markdown?.getMarkdown?.() ?? editor.value.getHTML();
+        : ((editor.value.storage as any).markdown?.getMarkdown?.() ?? editor.value.getHTML());
 
     if ((editorContent || "").trimEnd() !== (value || "").trimEnd()) {
       settingContentFromProp = true;

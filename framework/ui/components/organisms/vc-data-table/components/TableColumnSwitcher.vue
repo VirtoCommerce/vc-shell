@@ -85,7 +85,7 @@ const emit = defineEmits<{
   /** Emitted to close panel */
   "update:show": [boolean];
   /** Full table reset (widths + order + visibility) */
-  "reset": [];
+  reset: [];
 }>();
 
 const isColumnVisible = (columnId: string): boolean => {

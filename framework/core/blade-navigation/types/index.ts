@@ -63,7 +63,7 @@ export interface IParentCallArgs {
 }
 
 /** @deprecated Stub — use `Component` directly */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+
 export type BladeInstanceConstructor<T extends Component = Component> = Component & {
   menuItem?: MenuItemConfig;
   [key: string]: any;

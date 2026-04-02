@@ -46,11 +46,7 @@ export function useDynamicProperties(options: DynamicPropertiesOptions): UseDyna
     });
   }
 
-  async function loadMeasurements(
-    measureId: string,
-    _keyword?: string,
-    locale?: string,
-  ) {
+  async function loadMeasurements(measureId: string, _keyword?: string, locale?: string) {
     if (!measureId || !searchMeasurements) return undefined;
     return await searchMeasurements(measureId, locale);
   }

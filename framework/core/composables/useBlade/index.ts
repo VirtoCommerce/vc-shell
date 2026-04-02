@@ -8,11 +8,7 @@ import {
 } from "@core/blade-navigation/types";
 import type { BladeOpenEvent, IBladeStack, IBladeBanner } from "@core/blade-navigation/types";
 export type { IBladeBanner } from "@core/blade-navigation/types";
-import {
-  bladeStackInstance,
-  bladeMessagingInstance,
-  bladeNavigationInstance,
-} from "@core/blade-navigation/singletons";
+import { bladeStackInstance, bladeMessagingInstance, bladeNavigationInstance } from "@core/blade-navigation/singletons";
 import { createUrlSync } from "@core/blade-navigation/utils/urlSync";
 
 export interface UseBladeReturn<TOptions = Record<string, unknown>> {

@@ -47,8 +47,11 @@
                 ></VcImage>
               </template>
               <template v-else>
-                <div class="assets-manager__file-badge" :style="{ backgroundColor: getExtensionColor(data.name ?? '') }">
-                  {{ getExtensionLabel(data.name ?? '') }}
+                <div
+                  class="assets-manager__file-badge"
+                  :style="{ backgroundColor: getExtensionColor(data.name ?? '') }"
+                >
+                  {{ getExtensionLabel(data.name ?? "") }}
                 </div>
               </template>
             </div>

@@ -10,8 +10,7 @@ export const dictionaryStrategy: PropertyValueStrategy = {
       }
       // Find by locale first, then fallback to value without languageCode
       const val =
-        property.values?.find((v) => v.languageCode === locale) ??
-        property.values?.find((v) => !v.languageCode);
+        property.values?.find((v) => v.languageCode === locale) ?? property.values?.find((v) => !v.languageCode);
       return (val?.valueId as string) ?? "";
     }
 
@@ -48,7 +47,11 @@ function setMultilanguageDictionary(
   locale?: string,
 ): void {
   if (Array.isArray(value)) {
-    setMultilanguageMultivalueDictionary(property, value as (IBasePropertyDictionaryItem & { value: string })[], dictionary);
+    setMultilanguageMultivalueDictionary(
+      property,
+      value as (IBasePropertyDictionaryItem & { value: string })[],
+      dictionary,
+    );
   } else {
     setMultilanguageSingleValueDictionary(property, value as string, dictionary, locale);
   }
@@ -106,9 +109,7 @@ function setMultilanguageSingleValueDictionary(
       }),
     );
   } else {
-    const existingLanguageCodes = [
-      ...new Set((property.values ?? []).map((v) => v.languageCode).filter(Boolean)),
-    ];
+    const existingLanguageCodes = [...new Set((property.values ?? []).map((v) => v.languageCode).filter(Boolean))];
     const languageCodes = existingLanguageCodes.length > 0 ? existingLanguageCodes : locale ? [locale] : [];
 
     property.values = languageCodes.map((langCode) =>

@@ -62,7 +62,7 @@ const hideBreadcrumbs = () => {
 
   &__breadcrumbs {
     position: fixed;
-    z-index: 1000;
+    z-index: var(--z-overlay-back-button);
     background: var(--additional-50);
     border-radius: var(--blade-navigation-border-radius);
     box-shadow: var(--blade-navigation-shadow);

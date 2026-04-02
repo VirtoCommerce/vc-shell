@@ -520,7 +520,7 @@ function onPointerUp(e: PointerEvent) {
     left: -100%;
     right: -100%;
     height: 100%;
-    z-index: -1;
+    z-index: var(--z-local-below);
   }
 
   /* Reduced motion */

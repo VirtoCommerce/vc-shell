@@ -183,7 +183,7 @@ function deactivate() {
 
   // ── Top bar: name + drag handle ──
   &__topbar {
-    @apply tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-z-[1]
+    @apply tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-z-[var(--z-local-above)]
       tw-flex tw-items-center tw-gap-1 tw-px-1.5 tw-py-1
       -tw-translate-y-full tw-transition-transform tw-duration-200 tw-ease-out;
     background: var(--image-tile-tray-bg);

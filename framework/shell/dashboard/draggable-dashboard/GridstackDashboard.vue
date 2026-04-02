@@ -267,7 +267,7 @@ defineExpose({
     position: absolute;
     top: 8px;
     right: 8px;
-    z-index: 10;
+    z-index: var(--z-local-sticky);
     width: 24px;
     height: 24px;
     display: flex;

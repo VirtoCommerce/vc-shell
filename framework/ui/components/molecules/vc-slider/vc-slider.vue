@@ -118,7 +118,7 @@ const buttonsList = computed(() => ({
 
   &__next,
   &__prev {
-    @apply tw-absolute tw-top-2/4 -tw-translate-y-2/4 tw-z-[2];
+    @apply tw-absolute tw-top-2/4 -tw-translate-y-2/4 tw-z-[var(--z-local-above)];
 
     &.swiper-button-disabled .vc-slider__btn {
       @apply tw-text-[var(--slider-button-text-disabled)];

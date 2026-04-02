@@ -249,7 +249,7 @@ const badgeVisible = computed(() => {
           width: 3px;
           border-radius: 1px;
           background: var(--secondary-300);
-          z-index: 2;
+          z-index: var(--z-local-above);
         }
       }
 

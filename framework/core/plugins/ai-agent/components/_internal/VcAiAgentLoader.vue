@@ -57,7 +57,7 @@ defineProps<Props>();
 }
 
 .vc-ai-agent-loader {
-  @apply tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center tw-z-10;
+  @apply tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center tw-z-[var(--z-local-sticky)];
   background: linear-gradient(135deg, var(--additional-50) 0%, var(--neutrals-50) 100%);
 
   &__content {

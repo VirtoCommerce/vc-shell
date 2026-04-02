@@ -27,6 +27,7 @@
     "storybook-compress": "vite-node --mode production scripts/compress-storybook.ts --",
     "check-locales": "tsx framework/scripts/check-locales.mts",
     "check-circular": "madge --circular framework/",
+    "check-layers": "tsx scripts/check-layer-violations.ts",
     "test": "vitest",
     "test:unit": "vitest --config framework/vitest.config.ts",
     "test:storybook": "vitest --project=storybook",

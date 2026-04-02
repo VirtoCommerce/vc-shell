@@ -1,23 +1,46 @@
 import { mergeProps } from "vue";
 import { Content, NotificationOptions, NotificationPosition } from "@core/notifications/toast-types";
-import { useContainer } from "@shell/_internal/notifications/composables/useContainer";
-import { createLogger } from "@core/utilities";
+import { generateId, createLogger } from "@core/utilities";
 
 const logger = createLogger("notification");
 
-const {
-  defaultOptions,
-  actions,
-  getNotification,
-  getAllNotifications,
-  appendInstance,
-  generateNotificationId,
-  hasNotification,
-} = useContainer();
+// ── Container backend (set by shell during plugin install) ───────────────────
+
+interface NotificationBackend {
+  defaultOptions: NotificationOptions;
+  actions: {
+    add(options: NotificationOptions): void;
+    remove(id: string | number): void;
+    clear(): void;
+    dismiss(notificationId: string | number): void;
+    update(option: NotificationOptions): void;
+    setPosition(position: NotificationPosition): void;
+  };
+  getAllNotifications(): NotificationOptions[];
+  appendInstance(options: NotificationOptions): void;
+  getNotification(notificationId: string | number): NotificationOptions | undefined;
+  hasNotification(notificationId: string | number): boolean;
+}
+
+let _backend: NotificationBackend | null = null;
+
+/**
+ * Shell registers the notification backend during plugin install.
+ */
+export function setNotificationBackend(backend: NotificationBackend): void {
+  _backend = backend;
+}
+
+// ── Public API ───────────────────────────────────────────────────────────────
 
 function showNotification(content: Content, options: NotificationOptions) {
+  if (!_backend) {
+    logger.debug("Backend not yet registered — notification call ignored.");
+    return undefined;
+  }
+
   options = mergeProps(
-    defaultOptions as Record<string, unknown>,
+    _backend.defaultOptions as Record<string, unknown>,
     options as Record<string, unknown>,
   ) as NotificationOptions;
 
@@ -25,7 +48,7 @@ function showNotification(content: Content, options: NotificationOptions) {
     !options.notificationId ||
     (typeof options.notificationId !== "string" && typeof options.notificationId !== "number")
   ) {
-    options.notificationId = generateNotificationId();
+    options.notificationId = generateId();
   }
 
   options = {
@@ -33,7 +56,7 @@ function showNotification(content: Content, options: NotificationOptions) {
     content,
   };
 
-  appendInstance(options);
+  _backend.appendInstance(options);
   return options.notificationId;
 }
 
@@ -50,119 +73,99 @@ notification.success = (content: Content, options?: NotificationOptions) =>
   showNotification(content, { ...options, type: "success" });
 
 notification.clearAll = () => {
-  actions.clear();
+  _backend?.actions.clear();
 };
 
 notification.remove = (notificationId?: number | string) => {
+  if (!_backend) return;
   if (notificationId) {
-    actions.dismiss(notificationId);
+    _backend.actions.dismiss(notificationId);
   } else {
-    actions.clear();
+    _backend.actions.clear();
   }
 };
 
 notification.update = (notificationId: string | number, options: NotificationOptions) => {
-  // Check if notification exists
-  if (!hasNotification(notificationId)) {
+  if (!_backend) return notificationId;
+
+  if (!_backend.hasNotification(notificationId)) {
     logger.warn(`Cannot update: notification with ID ${notificationId} not found`);
     return notificationId;
   }
 
-  // Get the current notification
-  const item = getNotification(String(notificationId));
+  const item = _backend.getNotification(String(notificationId));
 
   if (item) {
-    // First update option: if the position changes, recreate the notification
     if (options.position && options.position !== item.position) {
-      // Create new options with required fields
       const updatedOptions: NotificationOptions = {
-        ...item, // Copy all current properties
-        ...options, // Apply new properties
-        updateId: generateNotificationId(), // Mark as update
-        notificationId: notificationId, // Keep the original ID
-      };
-
-      // Determine content for update
-      let contentToUse: Content | undefined;
-
-      // If new content is explicitly provided, use it
-      if (options.content !== undefined) {
-        contentToUse = options.content;
-        delete updatedOptions.content; // Remove content from options
-      }
-      // Otherwise use existing content
-      else if (item.content) {
-        contentToUse = item.content;
-        delete updatedOptions.content; // Remove content from options
-      }
-
-      // Proceed with the update only if there is content
-      if (contentToUse) {
-        // Remove the old notification
-        actions.remove(notificationId);
-        // Create a new one with the new position
-        return showNotification(contentToUse, updatedOptions);
-      }
-    }
-    // Second option: update content without changing position
-    else {
-      // Use direct update through actions.update
-      const updateOptions = {
+        ...item,
         ...options,
-        updateId: generateNotificationId(),
+        updateId: generateId(),
         notificationId: notificationId,
       };
 
-      // If we're only updating content, use a special method
+      let contentToUse: Content | undefined;
+
       if (options.content !== undefined) {
-        // Apply the update directly through actions
-        const result = actions.update(updateOptions);
-        return notificationId;
-      } else {
-        // Update other properties
-        const result = actions.update(updateOptions);
-        return notificationId;
+        contentToUse = options.content;
+        delete updatedOptions.content;
+      } else if (item.content) {
+        contentToUse = item.content;
+        delete updatedOptions.content;
       }
+
+      if (contentToUse) {
+        _backend.actions.remove(notificationId);
+        return showNotification(contentToUse, updatedOptions);
+      }
+    } else {
+      const updateOptions = {
+        ...options,
+        updateId: generateId(),
+        notificationId: notificationId,
+      };
+
+      _backend.actions.update(updateOptions);
+      return notificationId;
     }
   }
 
   return notificationId;
 };
 
-// New method for setting notification position
 notification.setPosition = (position: NotificationPosition) => {
-  defaultOptions.position = position;
+  if (_backend) _backend.defaultOptions.position = position;
 };
 
-// New method for clearing notifications only in a specific position
 notification.clearPosition = (position: NotificationPosition) => {
-  // Find all notifications in the specified position
-  const notificationsInPosition = getAllNotifications().filter(
-    (item) => (item.position || defaultOptions.position) === position,
+  if (!_backend) return;
+
+  const notificationsInPosition = _backend.getAllNotifications().filter(
+    (item) => (item.position || _backend!.defaultOptions.position) === position,
   );
 
-  // Remove each notification
   notificationsInPosition.forEach((item) => {
     if (item.notificationId) {
-      actions.dismiss(item.notificationId);
+      _backend!.actions.dismiss(item.notificationId);
     }
   });
 };
 
-// Useful debugging method
 notification.debug = () => {
-  // Default settings information
-  Object.entries(defaultOptions).forEach(([key, value]) => {
+  if (!_backend) {
+    logger.debug("Backend not registered");
+    return { active: [], defaultOptions: {} };
+  }
+
+  Object.entries(_backend.defaultOptions).forEach(([key, value]) => {
     logger.debug(`Default option ${key}: `, value);
   });
 
-  // Available actions
-  Object.entries(actions).forEach(([key]) => {
+  Object.entries(_backend.actions).forEach(([key]) => {
     logger.debug(`Available action: ${key}`);
   });
 
-  // Collect statistics on notifications in different positions
-  const groupedNotifications = getAllNotifications().reduce<
+  const groupedNotifications = _backend.getAllNotifications().reduce<
     Record<
       string,
       Array<{
@@ -172,7 +175,7 @@ notification.debug = () => {
       }>
     >
   >((acc, item) => {
-    const position = (item.position as string) || (defaultOptions.position as string);
+    const position = (item.position as string) || (_backend!.defaultOptions.position as string);
 
     if (!acc[position]) {
       acc[position] = [];
@@ -187,15 +190,14 @@ notification.debug = () => {
     return acc;
   }, {});
 
-  // Display group information
   Object.entries(groupedNotifications).forEach(([position, items]) => {
     logger.debug(`Position ${position}: ${items.length} notifications`);
     items.forEach((item) => logger.debug(`  - ${item.id} (${item.type}): ${item.content}`));
   });
 
   return {
-    active: getAllNotifications(),
-    defaultOptions,
+    active: _backend.getAllNotifications(),
+    defaultOptions: _backend.defaultOptions,
   };
 };
 

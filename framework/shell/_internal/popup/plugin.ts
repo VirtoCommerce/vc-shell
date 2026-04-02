@@ -1,8 +1,11 @@
 import { App, shallowReactive, DefineComponent } from "vue";
-import { PopupPlugin, UsePopupProps, UsePopupInternal } from "@shell/_internal/popup/types";
-import { PopupPluginKey } from "@shell/_internal/popup/keys";
+import type { PopupPlugin, UsePopupProps, UsePopupInternal } from "@core/composables/usePopup/types";
+import { PopupPluginKey } from "@core/composables/usePopup/keys";
+import { setPopupPluginInstance } from "@core/composables/usePopup/singleton";
+import { registerPopupPresets } from "@shell/_internal/popup/register-presets";
 
-export let popupPluginInstance: PopupPlugin;
+// Re-export for backward compatibility
+export { popupPluginInstance } from "@core/composables/usePopup/singleton";
 
 export const VcPopupHandler = {
   install(app: App) {
@@ -14,6 +17,7 @@ export const VcPopupHandler = {
 
     app.config.globalProperties.$popupPlugin = popupPlugin;
     app.provide(PopupPluginKey, popupPlugin);
-    popupPluginInstance = popupPlugin;
+    setPopupPluginInstance(popupPlugin);
+    registerPopupPresets();
   },
 };

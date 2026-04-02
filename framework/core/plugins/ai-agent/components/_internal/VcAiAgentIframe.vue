@@ -34,7 +34,6 @@
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { VcIcon } from "@ui/components/atoms/vc-icon";
 import VcAiAgentLoader from "@core/plugins/ai-agent/components/_internal/VcAiAgentLoader.vue";
 import { createLogger } from "@core/utilities";
 

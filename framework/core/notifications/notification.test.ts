@@ -24,37 +24,35 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-vi.mock("@shell/_internal/notifications/composables/useContainer", () => ({
-  useContainer: () => ({
-    defaultOptions: { timeout: 3000, pauseOnHover: true, position: "top-center" },
-    actions: {
-      add: vi.fn(),
-      remove: vi.fn(),
-      clear: mocks.clear,
-      dismiss: mocks.dismiss,
-      update: mocks.update,
-    },
-    appendInstance: mocks.appendInstance,
-    generateNotificationId: () => mocks.nextId(),
-    getAllNotifications: mocks.getAllNotifications,
-    getNotification: mocks.getNotification,
-    hasNotification: mocks.hasNotification,
-  }),
-}));
-
 vi.mock("@core/utilities", () => ({
   createLogger: () => ({
     warn: vi.fn(),
     debug: vi.fn(),
   }),
+  generateId: () => mocks.nextId(),
 }));
 
-import { notification } from "./notification";
+import { notification, setNotificationBackend } from "./notification";
 
 describe("notification service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.resetCounter();
+    setNotificationBackend({
+      defaultOptions: { timeout: 3000, pauseOnHover: true, position: "top-center" },
+      actions: {
+        add: vi.fn(),
+        remove: vi.fn(),
+        clear: mocks.clear,
+        dismiss: mocks.dismiss,
+        update: mocks.update,
+        setPosition: vi.fn(),
+      },
+      getAllNotifications: mocks.getAllNotifications,
+      appendInstance: mocks.appendInstance,
+      getNotification: mocks.getNotification,
+      hasNotification: mocks.hasNotification,
+    });
   });
 
   it("notification() calls appendInstance with type 'default'", () => {

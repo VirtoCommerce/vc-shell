@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { defineComponent, shallowReactive, DefineComponent, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
-import { PopupPluginKey } from "@shell/_internal/popup/keys";
-import type { PopupPlugin, UsePopupProps, UsePopupInternal } from "@shell/_internal/popup/types";
+import { PopupPluginKey } from "@core/composables/usePopup/keys";
+import type { PopupPlugin, UsePopupProps, UsePopupInternal } from "@core/composables/usePopup/types";
 import { usePopup } from "./index";
+import { registerPopupPreset, _resetPopupPresets } from "./preset-registry";
 
 // Mock vue-i18n
 vi.mock("vue-i18n", () => ({
@@ -11,6 +12,11 @@ vi.mock("vue-i18n", () => ({
     t: (key: string) => key,
   }),
 }));
+
+// Mock preset components (simple defineComponent stubs)
+const MockWarning = defineComponent({ name: "MockWarning", emits: ["close", "confirm"], template: "<div />" });
+const MockError = defineComponent({ name: "MockError", emits: ["close"], template: "<div />" });
+const MockInfo = defineComponent({ name: "MockInfo", emits: ["close"], template: "<div />" });
 
 function createPopupPlugin(): PopupPlugin {
   return {
@@ -39,6 +45,13 @@ function mountWithPopup(setupFn: () => ReturnType<typeof usePopup>, plugin?: Pop
 }
 
 describe("usePopup", () => {
+  beforeEach(() => {
+    _resetPopupPresets();
+    registerPopupPreset("warning", MockWarning);
+    registerPopupPreset("error", MockError);
+    registerPopupPreset("info", MockInfo);
+  });
+
   describe("built-in dialogs (no options)", () => {
     it("returns all expected methods", () => {
       const { result } = mountWithPopup(() => usePopup());

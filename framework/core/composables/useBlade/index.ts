@@ -12,7 +12,7 @@ import {
   bladeStackInstance,
   bladeMessagingInstance,
   bladeNavigationInstance,
-} from "@shell/_internal/blade-navigation/plugin-v2";
+} from "@core/blade-navigation/singletons";
 import { createUrlSync } from "@core/blade-navigation/utils/urlSync";
 
 export interface UseBladeReturn<TOptions = Record<string, unknown>> {

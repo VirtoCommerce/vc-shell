@@ -12,7 +12,7 @@ import {
   bladeStackInstance,
   bladeMessagingInstance,
   bladeRegistryInstance,
-} from "@shell/_internal/blade-navigation/plugin-v2";
+} from "@core/blade-navigation/singletons";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 import {
   BladeVNode,

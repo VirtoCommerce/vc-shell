@@ -19,7 +19,7 @@ const { mockStackBlades, mockStackActiveBlade, mockStackWorkspace, mockOpenBlade
 // useBladeNavigation reads bladeStackInstance, bladeMessagingInstance, etc.
 // directly from plugin-v2 (NOT via inject()). We must mock the module.
 
-vi.mock("@shell/_internal/blade-navigation/plugin-v2", () => ({
+vi.mock("@core/blade-navigation/singletons", () => ({
   bladeStackInstance: {
     blades: mockStackBlades,
     workspace: mockStackWorkspace,

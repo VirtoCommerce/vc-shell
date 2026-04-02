@@ -17,7 +17,7 @@ vi.mock("@core/utilities", () => ({
   }),
 }));
 
-vi.mock("@shell/auth/sign-in/useExternalProvider", () => ({
+vi.mock("@core/composables/useExternalProvider", () => ({
   useExternalProvider: () => ({
     storage: { value: null },
     signOut: vi.fn(),
@@ -37,6 +37,9 @@ vi.mock("@core/api/platform", () => ({
     getLoginTypes: vi.fn(),
   })),
   LoginRequest: vi.fn().mockImplementation((args: unknown) => args),
+  ExternalSignInClient: vi.fn().mockImplementation(() => ({
+    getExternalLoginProviders: vi.fn(),
+  })),
 }));
 
 // Import after mocks are registered

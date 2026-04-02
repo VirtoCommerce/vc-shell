@@ -196,3 +196,5 @@ export interface MenuItem extends Omit<MenuItemConfig, "title" | "id"> {
    */
   badge?: MenuItemBadgeConfig;
 }
+
+export type { Breadcrumbs } from "@core/types/breadcrumbs";

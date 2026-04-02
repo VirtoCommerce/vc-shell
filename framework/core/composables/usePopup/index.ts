@@ -1,4 +1,3 @@
-import { VcPopup } from "@ui/components/organisms/vc-popup";
 import {
   markRaw,
   getCurrentInstance,
@@ -12,14 +11,16 @@ import {
   unref,
   Component,
 } from "vue";
-import { PopupPluginKey } from "@shell/_internal/popup/keys";
-import { PopupPlugin, UsePopupInternal, UsePopupProps } from "@shell/_internal/popup/types";
-import { popupPluginInstance } from "@shell/_internal/popup/plugin";
+import { PopupPluginKey } from "@core/composables/usePopup/keys";
+import type { PopupPlugin, UsePopupInternal, UsePopupProps } from "@core/composables/usePopup/types";
+import { popupPluginInstance } from "@core/composables/usePopup/singleton";
+import { getPopupPreset } from "@core/composables/usePopup/preset-registry";
 import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
-import vcPopupWarning from "@shell/_internal/popup/common/vc-popup-warning.vue";
-import vcPopupError from "@shell/_internal/popup/common/vc-popup-error.vue";
-import vcPopupInfo from "@shell/_internal/popup/common/vc-popup-info.vue";
+import { createLogger } from "@core/utilities";
+
+const logger = createLogger("use-popup");
+
 interface IUsePopup {
   open(): void;
   close(): void;
@@ -30,12 +31,13 @@ interface IUsePopup {
 
 function usePopupInternal() {
   const instance = getCurrentInstance();
-  const popupInstance: PopupPlugin = (instance && inject(PopupPluginKey, undefined)) || popupPluginInstance;
+  const popupInstance: PopupPlugin | undefined =
+    (instance && inject(PopupPluginKey, undefined)) || popupPluginInstance;
 
   return popupInstance;
 }
 
-export function usePopup<T extends Component = typeof VcPopup>(
+export function usePopup<T extends Component = Component>(
   options?: MaybeRef<UsePopupProps<T>>,
 ): IUsePopup {
   const { t } = useI18n({ useScope: "global" });
@@ -128,9 +130,15 @@ export function usePopup<T extends Component = typeof VcPopup>(
   }
 
   function showConfirmation(message: string | Ref<string>): Promise<boolean> {
+    const warningComponent = getPopupPreset("warning");
+    if (!warningComponent) {
+      logger.error("Popup preset 'warning' not registered. Ensure shell popup plugin is installed.");
+      return Promise.resolve(false);
+    }
+
     return new Promise((resolve) => {
       const confirmation = createInstance({
-        component: vcPopupWarning,
+        component: warningComponent,
         props: {
           title: t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.CONFIRMATION"),
         },
@@ -154,14 +162,24 @@ export function usePopup<T extends Component = typeof VcPopup>(
   }
 
   function showError(message: string | Ref<string>) {
-    showSimplePopup(vcPopupError, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.ERROR"), message);
+    const errorComponent = getPopupPreset("error");
+    if (!errorComponent) {
+      logger.error("Popup preset 'error' not registered. Ensure shell popup plugin is installed.");
+      return;
+    }
+    showSimplePopup(errorComponent, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.ERROR"), message);
   }
 
   function showInfo(message: string | Ref<string>) {
-    showSimplePopup(vcPopupInfo, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.INFO"), message);
+    const infoComponent = getPopupPreset("info");
+    if (!infoComponent) {
+      logger.error("Popup preset 'info' not registered. Ensure shell popup plugin is installed.");
+      return;
+    }
+    showSimplePopup(infoComponent, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.INFO"), message);
   }
 
-  function createInstance<T extends Component = typeof VcPopup>(
+  function createInstance<T extends Component = Component>(
     options: UsePopupProps<T>,
   ) {
     const popup = reactive({
@@ -186,7 +204,7 @@ export function usePopup<T extends Component = typeof VcPopup>(
   };
 }
 
-function createComponent<T extends Component = typeof VcPopup>(
+function createComponent<T extends Component = Component>(
   options: UsePopupProps<T>,
 ) {
   const slots =

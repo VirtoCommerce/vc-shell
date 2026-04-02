@@ -1,4 +1,2 @@
-import type { InjectionKey } from "vue";
-import type { PopupPlugin } from "@shell/_internal/popup/types";
-
-export const PopupPluginKey: InjectionKey<PopupPlugin> = Symbol("PopupPlugin");
+// Canonical location: @core/composables/usePopup/keys
+export { PopupPluginKey } from "@core/composables/usePopup/keys";

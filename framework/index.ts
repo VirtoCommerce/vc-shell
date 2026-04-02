@@ -24,6 +24,7 @@ import { setupGlobalErrorHandlers } from "@core/plugins/global-error-handler";
 import { useConnectionStatus } from "@core/composables/useConnectionStatus";
 import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 import { useNotificationStore } from "@core/notifications";
+import { registerNotificationBackend } from "@shell/_internal/notifications/register-backend";
 
 // Import Blade Registry
 import { createBladeRegistry, BladeRegistryKey, IBladeRegistryInstance } from "@core/composables/useBladeRegistry";
@@ -187,6 +188,9 @@ function createAndProvideServices(app: App) {
 }
 
 function installPlugins(app: App, args: FrameworkInstallArgs) {
+  // Register notification backend before any plugin that might use notifications
+  registerNotificationBackend();
+
   app.use(VcBladeNavigationComponent, { router: args.router });
   app.use(VcPopupHandler);
   app.use(AssetsDetailsModule);
@@ -405,7 +409,6 @@ export { usePopup } from "@core/composables/usePopup";
 // Shell components (public building blocks)
 export * from "@shell/components";
 export * from "@shell/auth";
-export * from "@shell/pages";
 export * from "@shell/dashboard";
 
 // AI Agent (also available via @vc-shell/framework/ai-agent)

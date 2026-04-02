@@ -8,34 +8,27 @@ import { bladeRouterGuard } from "@core/blade-navigation/utils/bladeRouterGuard"
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 import { usePermissions } from "@core/composables/usePermissions";
+import {
+  setBladeNavigationInstance,
+  setBladeStackInstance,
+  setBladeMessagingInstance,
+  setBladeRegistryInstance,
+} from "@core/blade-navigation/singletons";
+
+// Re-export singletons for backward compatibility
+export {
+  bladeNavigationInstance,
+  bladeStackInstance,
+  bladeMessagingInstance,
+  bladeRegistryInstance,
+  _resetBladeNavigationSingletons,
+} from "@core/blade-navigation/singletons";
 
 // Declare globally
 declare module "@vue/runtime-core" {
   export interface GlobalComponents {
     VcBladeNavigation: (typeof components)["VcBladeNavigation"];
   }
-}
-
-// Keep legacy global reference for backward compatibility
-export let bladeNavigationInstance: BladeNavigationPlugin;
-
-// Module-level singletons — accessible without inject() (for use in route guards, adapters, etc.)
-// These are set once during plugin install and persist for the app's lifetime.
-// Limitation: only one Vue app per JS context is supported.
-// Call _resetBladeNavigationSingletons() in test teardown to prevent cross-test leaks.
-import type { IBladeStack, IBladeMessaging } from "@core/blade-navigation/types";
-export let bladeStackInstance: IBladeStack | undefined;
-export let bladeMessagingInstance: IBladeMessaging | undefined;
-export let bladeRegistryInstance: IBladeRegistry | undefined;
-
-/**
- * Reset all module-level singletons. For use in test teardown only.
- * @internal
- */
-export function _resetBladeNavigationSingletons(): void {
-  bladeStackInstance = undefined;
-  bladeMessagingInstance = undefined;
-  bladeRegistryInstance = undefined;
 }
 
 /**
@@ -64,7 +57,7 @@ export const VcBladeNavigationComponent = {
     const bladeNavigationPluginData: BladeNavigationPlugin = {
       router: args.router,
     };
-    bladeNavigationInstance = bladeNavigationPluginData;
+    setBladeNavigationInstance(bladeNavigationPluginData);
 
     // ── New BladeStack system ───────────────────────────────────────────────
 
@@ -92,13 +85,13 @@ export const VcBladeNavigationComponent = {
     // Create BladeStack with permission enforcement
     const bladeStack = createBladeStack(bladeRegistry, hasAccess);
     app.provide(BladeStackKey, bladeStack);
-    bladeStackInstance = bladeStack;
+    setBladeStackInstance(bladeStack);
 
     // Create BladeMessaging
     const messaging = createBladeMessaging(bladeStack);
     app.provide(BladeMessagingKey, messaging);
-    bladeMessagingInstance = messaging;
-    bladeRegistryInstance = bladeRegistry;
+    setBladeMessagingInstance(messaging);
+    setBladeRegistryInstance(bladeRegistry!);
 
     // ── Auto-register catch-all route ───────────────────────────────────────
     // Safety net: prevents Vue Router "route not found" errors for blade URLs

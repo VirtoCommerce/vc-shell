@@ -5,13 +5,13 @@ import { createBladeStack } from "@core/blade-navigation/useBladeStack";
 import type { IBladeRegistry, IBladeRegistrationData } from "@core/composables/useBladeRegistry";
 import type { IBladeStack, ParsedBladeUrl } from "@core/blade-navigation/types";
 
-// Mock notification to avoid ResizeObserver errors in jsdom
-vi.mock("@core/notifications", () => ({
-  notification: {
+// Mock notification to avoid backend registration requirement in tests
+vi.mock("@core/notifications/notification", () => ({
+  notification: Object.assign(vi.fn(), {
     error: vi.fn(),
     success: vi.fn(),
     warning: vi.fn(),
-  },
+  }),
 }));
 
 // ── Mock registry ──────────────────────────────────────────────────────────────

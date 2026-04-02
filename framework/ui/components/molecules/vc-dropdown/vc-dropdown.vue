@@ -151,7 +151,7 @@ const props = withDefaults(defineProps<VcDropdownProps<T>>(), {
   closeOnEscape: true,
   closeOnSelect: false,
   autoFocusPanel: true,
-  zIndex: 10000,
+  zIndex: 9300,
   padded: true,
 });
 

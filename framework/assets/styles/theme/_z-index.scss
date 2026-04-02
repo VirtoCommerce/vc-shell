@@ -36,7 +36,7 @@
   // ── Critical (over everything, 9000–9500) ─
   --z-critical-loading:        9000;  // loading overlay (below modals)
   --z-critical-popup:          9100;  // popup windows
-  --z-critical-modal:          9200;  // modal dialogs (above popup)
+  --z-critical-modal:          9200;  // modal dialogs, sidebar overlays (above popup)
   --z-critical-dropdown-panel: 9300;  // teleported dropdown (works inside modals)
   --z-critical-tooltip:        9400;  // tooltips (informational, always visible)
   --z-critical-notification:   9500;  // notifications (topmost — user must see)

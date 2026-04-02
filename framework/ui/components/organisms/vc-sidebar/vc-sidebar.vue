@@ -229,7 +229,7 @@ const props = withDefaults(defineProps<Props>(), {
   closeAriaLabel: "Close sidebar",
   closeButton: true,
   inset: true,
-  zIndex: 10_000,
+  zIndex: 9200,
   draggable: false,
   dragHandle: false,
   closeThreshold: 0.3,

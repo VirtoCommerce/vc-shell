@@ -30,12 +30,11 @@ defineProps<Props>();
   --loading-overlay-bg: rgba(255, 255, 255, 0.6);
   --loading-bar-width: 140px;
   --loading-bar-height: 4px;
-  --loading-z-index: 9998;
 }
 
 .vc-loading-overlay {
   @apply tw-absolute tw-items-center tw-justify-center tw-w-full tw-h-full tw-box-border tw-hidden;
-  z-index: var(--loading-z-index);
+  z-index: var(--z-critical-loading);
 
   &--active {
     @apply tw-flex #{!important};

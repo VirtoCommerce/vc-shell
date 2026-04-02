@@ -9,7 +9,7 @@ interface LoadingOptions {
 }
 
 export const loading = (el: HTMLElement, binding: DirectiveBinding) => {
-  const zIndex = binding.arg ? parseInt(binding.arg, 10) : 9999;
+  const zIndex = binding.arg ? parseInt(binding.arg, 10) : 9000;
 
   const options: LoadingOptions = typeof binding.value === "object" ? binding.value : { blur: true };
 

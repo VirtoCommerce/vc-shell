@@ -1,6 +1,6 @@
 .notification__container {
   position: fixed;
-  z-index: 9999;
+  z-index: var(--z-critical-notification);
 
   /* Default position - top center */
   &:not([data-position]) {

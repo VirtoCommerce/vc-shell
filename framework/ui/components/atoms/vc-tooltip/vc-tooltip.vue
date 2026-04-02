@@ -215,7 +215,6 @@ onBeforeUnmount(() => {
   --tooltip-font-size: 12px;
   --tooltip-padding-x: 10px;
   --tooltip-padding-y: 6px;
-  --tooltip-z-index: 1002;
 }
 
 .vc-tooltip {
@@ -226,7 +225,7 @@ onBeforeUnmount(() => {
   // Wrapper: positioned by floating-ui, holds arrow + body
   &__wrapper {
     @apply tw-absolute;
-    z-index: var(--tooltip-z-index);
+    z-index: var(--z-critical-tooltip);
     width: max-content;
     pointer-events: none;
 
@@ -246,7 +245,7 @@ onBeforeUnmount(() => {
 
   // Body: sits ON TOP of arrow (z-index: 1), its background covers arrow's inner half
   &__body {
-    @apply tw-relative tw-z-[1] tw-leading-snug tw-font-normal;
+    @apply tw-relative tw-z-[var(--z-local-above)] tw-leading-snug tw-font-normal;
     border-radius: var(--tooltip-border-radius);
     font-size: var(--tooltip-font-size);
     padding: var(--tooltip-padding-y) var(--tooltip-padding-x);

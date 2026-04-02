@@ -422,7 +422,7 @@ function onSearch(event: Event) {
 
   &__dropdown {
     @apply tw-flex tw-flex-col tw-box-border
-      tw-max-h-[300px] tw-z-[10001] tw-overflow-hidden
+      tw-max-h-[300px] tw-z-[var(--z-critical-dropdown-panel)] tw-overflow-hidden
       tw-absolute tw-bg-[color:var(--multivalue-dropdown-bg)]
       tw-border tw-border-solid tw-border-[color:var(--multivalue-dropdown-border)]
       tw-rounded-[var(--multivalue-border-radius)]

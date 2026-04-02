@@ -1,0 +1,43 @@
+// Z-Index Token Scale — single source of truth.
+//
+// ┌─────────────────────────────────────────────────────────┐
+// │  Where does my element live?                            │
+// │                                                         │
+// │  Inside component, overlaps sibling  → --z-local-*      │
+// │  Page chrome, visible on scroll      → --z-layout-*     │
+// │  Pops up on action, inside blade     → --z-overlay-*    │
+// │  Covers ENTIRE app (teleported)      → --z-critical-*   │
+// │                                                         │
+// │  No matching token? Add one here.                       │
+// │  Pick the group, value between neighbors.               │
+// │  Never use a bare z-index number.                       │
+// └─────────────────────────────────────────────────────────┘
+
+:root {
+  // ── Local (inside component, 1–15) ────────
+  --z-local-below:     -1;   // background behind content (toast ::after)
+  --z-local-above:      2;   // element above sibling (filmstrip nav, slider thumb)
+  --z-local-sticky:    10;   // sticky inside scroll container (table row, resize handle)
+  --z-local-header:    11;   // sticky table header (above sticky rows)
+
+  // ── Layout (page chrome, 40–70) ───────────
+  --z-layout-header:   40;   // app header bar
+  --z-layout-sidebar:  50;   // sidebar navigation
+  --z-layout-widget:   54;   // mobile widget container (above sidebar)
+  --z-layout-toolbar:  60;   // mobile toolbar (above widget)
+
+  // ── Overlay (over content, 100–500) ───────
+  --z-overlay-dropdown:       100;  // dropdowns, column filters, table filter
+  --z-overlay-editor-bubble:  200;  // editor bubble menu (above dropdown)
+  --z-overlay-row-actions:    300;  // table row action menus
+  --z-overlay-drag:           400;  // drag overlay
+  --z-overlay-back-button:    500;  // mobile back button
+
+  // ── Critical (over everything, 9000–9500) ─
+  --z-critical-loading:        9000;  // loading overlay (below modals)
+  --z-critical-popup:          9100;  // popup windows
+  --z-critical-modal:          9200;  // modal dialogs (above popup)
+  --z-critical-dropdown-panel: 9300;  // teleported dropdown (works inside modals)
+  --z-critical-tooltip:        9400;  // tooltips (informational, always visible)
+  --z-critical-notification:   9500;  // notifications (topmost — user must see)
+}

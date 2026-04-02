@@ -7,8 +7,10 @@
       :navigation="false"
       :mousewheel="{ forceToAxis: true }"
       :free-mode="{ enabled: true, sticky: false }"
+      :grid="{ rows: 1, fill: 'row' }"
       :slides-per-group="1"
       class="vc-gallery-filmstrip__swiper"
+      :class="{ 'vc-gallery-filmstrip__swiper--expanded': expanded }"
       @swiper="onSwiperInit"
       @resize="onSwiperResize"
       @slides-updated="onSlidesUpdated"
@@ -28,9 +30,9 @@
       </SwiperSlide>
     </Swiper>
 
-    <!-- Navigation arrows -->
+    <!-- Navigation arrows (hidden in expanded mode) -->
     <button
-      v-show="hasOverflow && !loading"
+      v-show="hasOverflow && !loading && !expanded"
       ref="prevRef"
       type="button"
       class="vc-gallery-filmstrip__nav vc-gallery-filmstrip__nav--prev"
@@ -41,7 +43,7 @@
       />
     </button>
     <button
-      v-show="hasOverflow && !loading"
+      v-show="hasOverflow && !loading && !expanded"
       ref="nextRef"
       type="button"
       class="vc-gallery-filmstrip__nav vc-gallery-filmstrip__nav--next"
@@ -57,7 +59,7 @@
 <script lang="ts" setup>
 import { ref, watch, toRef, nextTick } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { Navigation, Mousewheel, FreeMode } from "swiper/modules";
+import { Navigation, Mousewheel, FreeMode, Grid } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
@@ -68,11 +70,14 @@ export interface Props {
   gap?: number;
   hasOverflow: boolean;
   loading?: boolean;
+  /** When true, shows all images in a wrapped grid instead of horizontal filmstrip */
+  expanded?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   gap: 8,
   loading: false,
+  expanded: false,
 });
 
 const emit = defineEmits<{
@@ -82,10 +87,11 @@ const emit = defineEmits<{
   (e: "sortable-container", el: HTMLElement | undefined): void;
 }>();
 
-const swiperModules = [Navigation, Mousewheel, FreeMode];
+const swiperModules = [Navigation, Mousewheel, FreeMode, Grid];
 
 const prevRef = ref<HTMLButtonElement>();
 const nextRef = ref<HTMLButtonElement>();
+const swiperInstance = ref<SwiperType>();
 
 function onSwiperInit(swiper: SwiperType) {
   swiperInstance.value = swiper;
@@ -113,7 +119,28 @@ function onSlidesUpdated(swiper: SwiperType) {
   emit("slides-updated", swiper);
 }
 
-const swiperInstance = ref<SwiperType>();
+// Toggle Swiper interaction when expanding/collapsing.
+// In expanded mode, CSS --expanded class handles the visual grid layout
+// (flex-wrap + override of Swiper inline styles). Here we only control
+// Swiper's interaction layer: disable touch/mousewheel so it doesn't scroll.
+watch(
+  () => props.expanded,
+  (isExpanded) => {
+    const swiper = swiperInstance.value;
+    if (!swiper) return;
+
+    swiper.allowTouchMove = !isExpanded;
+
+    if (isExpanded) {
+      swiper.mousewheel?.disable();
+    } else {
+      swiper.mousewheel?.enable();
+      swiper.slideTo(0, 0);
+    }
+
+    nextTick(() => swiper.update());
+  },
+);
 
 // Disable/enable swiper during loading
 watch(toRef(props, "loading"), (isLoading) => {
@@ -125,12 +152,12 @@ watch(toRef(props, "loading"), (isLoading) => {
   }
 });
 
-// Scroll to end when new images are added
+// Scroll to end when new images are added (only in filmstrip mode)
 let prevImageCount = props.images.length;
 watch(
   () => props.images.length,
   (newCount) => {
-    if (newCount > prevImageCount && swiperInstance.value) {
+    if (newCount > prevImageCount && swiperInstance.value && !props.expanded) {
       nextTick(() => {
         swiperInstance.value?.slideTo(newCount - 1, 300);
       });
@@ -146,6 +173,26 @@ watch(
 
   &__swiper {
     @apply tw-overflow-hidden;
+
+    // Expanded mode: override Swiper's inline layout to show all images
+    // in a wrapped grid. Swiper stays in DOM (no remount = no image flicker)
+    // but CSS takes over visual positioning.
+    &--expanded {
+      @apply tw-overflow-visible;
+
+      .swiper-wrapper {
+        flex-wrap: wrap;
+        gap: var(--gallery-gap);
+        width: 100% !important;
+        height: auto !important;
+        transform: none !important;
+      }
+
+      .swiper-slide {
+        margin-right: 0 !important;
+        margin-top: 0 !important;
+      }
+    }
   }
 
   &__slide {

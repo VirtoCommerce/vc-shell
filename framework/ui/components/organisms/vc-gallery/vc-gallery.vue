@@ -85,13 +85,14 @@
         'vc-gallery__dropzone--mobile': isMobile,
       }"
     >
-      <!-- Filmstrip mode (collapsed, only when overflow) -->
+      <!-- Filmstrip / Expanded grid (single Swiper instance, no DOM remount) -->
       <VcGalleryFilmstrip
-        v-if="layout === 'filmstrip' && !filmstrip.isExpanded.value && filmstrip.hasOverflow.value"
+        v-if="layout === 'filmstrip' && filmstrip.hasOverflow.value"
         :images="localImages"
         :gap="gap"
         :has-overflow="filmstrip.hasOverflow.value"
         :loading="loading"
+        :expanded="filmstrip.isExpanded.value"
         @swiper-init="filmstrip.onSwiperInit"
         @swiper-resize="filmstrip.onSwiperResize"
         @slides-updated="filmstrip.checkOverflow"
@@ -127,9 +128,9 @@
         </template>
       </VcGalleryFilmstrip>
 
-      <!-- Grid mode (or expanded filmstrip) -->
+      <!-- Grid mode (layout="grid", no filmstrip) -->
       <div
-        v-else
+        v-else-if="layout === 'grid'"
         :ref="
           (el) => {
             if (el) reorder.galleryRef.value = el as HTMLElement;

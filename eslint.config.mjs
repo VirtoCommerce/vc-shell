@@ -28,12 +28,9 @@ export default [
   {
     files: ["**/*.vue"],
     rules: {
-      "no-restricted-syntax": [
+      "vue/no-restricted-class": [
         "error",
-        {
-          selector: "Literal[value=/tw-z-\\[\\d/]",
-          message: "Use tw-z-[var(--z-*)] token instead of hardcoded tw-z-[number]. See framework/assets/styles/theme/_z-index.scss",
-        },
+        "/tw-z-\\[\\d/",
       ],
     },
   },

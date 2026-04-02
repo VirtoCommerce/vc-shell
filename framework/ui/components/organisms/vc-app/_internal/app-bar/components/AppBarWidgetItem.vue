@@ -115,7 +115,7 @@ function toggleContent() {
     @apply tw-absolute tw-left-0 tw-bottom-0 tw-w-full
         tw-border-b-[2px]
         tw-border-[color:var(--app-bar-button-border-color)]
-        tw-opacity-0 tw-transition-opacity tw-duration-200 tw-z-[2];
+        tw-opacity-0 tw-transition-opacity tw-duration-200 tw-z-[var(--z-local-above)];
   }
 
   &:hover::after {

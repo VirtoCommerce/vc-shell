@@ -542,7 +542,7 @@ const handleSwitchApp = (app: AppDescriptor) => {
   }
 
   &__tab {
-    @apply tw-flex-1 tw-py-3 tw-text-center tw-text-xs tw-font-semibold tw-cursor-pointer tw-relative tw-border-0 tw-bg-transparent tw-z-[1];
+    @apply tw-flex-1 tw-py-3 tw-text-center tw-text-xs tw-font-semibold tw-cursor-pointer tw-relative tw-border-0 tw-bg-transparent tw-z-[var(--z-local-above)];
     color: var(--app-bar-button);
     transition: color 0.15s ease;
 

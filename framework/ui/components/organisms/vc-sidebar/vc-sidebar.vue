@@ -670,7 +670,7 @@ defineExpose({
 
   &__header {
     @apply tw-flex tw-items-center tw-justify-between tw-gap-4 tw-px-5 tw-py-4 tw-border-b tw-border-solid;
-    @apply tw-border-b-[color:var(--vc-sidebar-border-color)] tw-sticky tw-top-0 tw-z-[1];
+    @apply tw-border-b-[color:var(--vc-sidebar-border-color)] tw-sticky tw-top-0 tw-z-[var(--z-local-above)];
     min-height: var(--vc-sidebar-header-height);
     background: inherit;
     backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
@@ -728,7 +728,7 @@ defineExpose({
   }
 
   &__footer {
-    @apply tw-mt-auto tw-sticky tw-bottom-0 tw-z-[1] tw-border-t tw-border-solid tw-border-t-[color:var(--vc-sidebar-border-color)];
+    @apply tw-mt-auto tw-sticky tw-bottom-0 tw-z-[var(--z-local-above)] tw-border-t tw-border-solid tw-border-t-[color:var(--vc-sidebar-border-color)];
     min-height: var(--vc-sidebar-footer-height);
     background: inherit;
     backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));

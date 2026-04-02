@@ -92,7 +92,7 @@ function isBadgeActive(item: AppBarWidget): boolean {
   @apply tw-flex tw-items-center;
 
   &__accent {
-    @apply tw-block tw-absolute -tw-right-[4px] tw-top-[0px] tw-w-[5px] tw-h-[5px] tw-bg-[--app-toolbar-menu-accent-color] tw-rounded-full tw-z-[1];
+    @apply tw-block tw-absolute -tw-right-[4px] tw-top-[0px] tw-w-[5px] tw-h-[5px] tw-bg-[--app-toolbar-menu-accent-color] tw-rounded-full tw-z-[var(--z-local-above)];
   }
 
   &__button {

@@ -186,7 +186,7 @@ const hasUnread = inject(ShellIndicatorsKey, ref(false));
 
   &__accent {
     @apply tw-block tw-absolute tw-right-0 tw-top-0
-      tw-w-[5px] tw-h-[5px] tw-rounded-full tw-z-[1]
+      tw-w-[5px] tw-h-[5px] tw-rounded-full tw-z-[var(--z-local-above)]
       tw-bg-[var(--app-bar-accent-color,var(--danger-500))];
   }
 

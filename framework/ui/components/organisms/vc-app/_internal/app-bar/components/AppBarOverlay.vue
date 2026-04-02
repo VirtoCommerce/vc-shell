@@ -36,7 +36,7 @@ const appRootEl = inject(AppRootElementKey, undefined);
 
 <style lang="scss">
 .app-bar-overlay {
-  @apply tw-w-auto tw-h-full tw-absolute tw-top-0 tw-right-0 tw-z-[11]
+  @apply tw-w-auto tw-h-full tw-absolute tw-top-0 tw-right-0 tw-z-[var(--z-local-header)]
          tw-bg-[color:var(--app-bar-background)];
 
   &--standalone-mobile {
@@ -48,7 +48,7 @@ const appRootEl = inject(AppRootElementKey, undefined);
   }
 
   &--mobile {
-    @apply tw-fixed tw-top-[var(--app-bar-mobile-height)] tw-left-0 tw-bottom-0 tw-flex-1 tw-w-[var(--app-bar-mobile-width)] tw-z-[9999];
+    @apply tw-fixed tw-top-[var(--app-bar-mobile-height)] tw-left-0 tw-bottom-0 tw-flex-1 tw-w-[var(--app-bar-mobile-width)] tw-z-[var(--z-critical-notification)];
 
     .app-bar-overlay__content {
       @apply tw-flex tw-flex-col;
@@ -57,7 +57,7 @@ const appRootEl = inject(AppRootElementKey, undefined);
   }
 
   &--collapsed {
-    @apply tw-z-[14];
+    @apply tw-z-[var(--z-local-header)];
   }
 
   &--desktop {
@@ -75,7 +75,7 @@ const appRootEl = inject(AppRootElementKey, undefined);
     &:before {
       content: "";
       @apply tw-absolute tw-left-0 tw-top-[-1px] tw-w-full tw-h-[1px]
-             tw-bg-[color:var(--app-bar-border)] tw-z-[1];
+             tw-bg-[color:var(--app-bar-border)] tw-z-[var(--z-local-above)];
     }
   }
 
@@ -83,12 +83,12 @@ const appRootEl = inject(AppRootElementKey, undefined);
     @apply tw-h-auto tw-relative;
 
     &:not(:empty) {
-      @apply tw-visible tw-border-b-[2px] tw-border-[color:var(--app-bar-border)] tw-z-[2];
+      @apply tw-visible tw-border-b-[2px] tw-border-[color:var(--app-bar-border)] tw-z-[var(--z-local-above)];
 
       &:before {
         content: "";
         @apply tw-absolute tw-left-0 tw-top-[-2px] tw-w-full tw-h-[2px]
-               tw-bg-[color:var(--app-bar-content-visible-border)] tw-z-[1] #{!important};
+               tw-bg-[color:var(--app-bar-content-visible-border)] tw-z-[var(--z-local-above)] #{!important};
       }
     }
   }

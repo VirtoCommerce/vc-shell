@@ -150,7 +150,7 @@ const handleMenuItemClick = (item: MenuItem) => {
 
   &:before {
     content: "";
-    @apply tw-absolute tw-left-0 tw-top-[-1px] tw-w-full tw-h-[1px] tw-z-[1];
+    @apply tw-absolute tw-left-0 tw-top-[-1px] tw-w-full tw-h-[1px] tw-z-[var(--z-local-above)];
     background-color: var(--app-bar-border);
   }
 }

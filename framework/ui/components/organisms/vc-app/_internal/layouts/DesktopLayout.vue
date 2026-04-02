@@ -276,7 +276,7 @@ const handleSwitchApp = (app: AppDescriptor) => {
   bottom: 0;
   width: var(--app-bar-width);
   background-color: var(--app-bar-background);
-  z-index: 50;
+  z-index: var(--z-layout-sidebar);
 
   // Show collapse button on hover
   &:hover .sidebar-collapse-button {

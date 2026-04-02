@@ -116,10 +116,10 @@ const wrapperProps = computed<Record<string, unknown>>(() => {
 <style lang="scss">
 .menu-sidebar {
   &__wrapper {
-    @apply tw-absolute tw-top-0 tw-left-0 tw-w-full tw-bottom-0 tw-z-10 tw-flex tw-flex-col;
+    @apply tw-absolute tw-top-0 tw-left-0 tw-w-full tw-bottom-0 tw-z-[var(--z-local-sticky)] tw-flex tw-flex-col;
 
     &--desktop {
-      @apply tw-w-[var(--app-bar-width)] tw-z-[12];
+      @apply tw-w-[var(--app-bar-width)] tw-z-[var(--z-local-header)];
     }
 
     &--expanded {
@@ -137,7 +137,7 @@ const wrapperProps = computed<Record<string, unknown>>(() => {
 
     &:before {
       content: "";
-      @apply tw-absolute tw-left-0 tw-top-[-1px] tw-w-full tw-h-[1px] tw-bg-[color:var(--app-bar-border)] tw-z-[1] #{!important};
+      @apply tw-absolute tw-left-0 tw-top-[-1px] tw-w-full tw-h-[1px] tw-bg-[color:var(--app-bar-border)] tw-z-[var(--z-local-above)] #{!important};
     }
   }
 
@@ -164,11 +164,11 @@ const wrapperProps = computed<Record<string, unknown>>(() => {
     max-height: 40vh;
 
     &:not(:empty) {
-      @apply tw-visible tw-border-b-[2px] tw-border-[color:var(--app-bar-border)] tw-z-[2];
+      @apply tw-visible tw-border-b-[2px] tw-border-[color:var(--app-bar-border)] tw-z-[var(--z-local-above)];
 
       &:before {
         content: "";
-        @apply tw-absolute tw-left-0 tw-top-[-2px] tw-w-full tw-h-[2px] tw-bg-[color:var(--app-bar-content-visible-border)] tw-z-[1] #{!important};
+        @apply tw-absolute tw-left-0 tw-top-[-2px] tw-w-full tw-h-[2px] tw-bg-[color:var(--app-bar-content-visible-border)] tw-z-[var(--z-local-above)] #{!important};
       }
     }
   }

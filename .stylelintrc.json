@@ -1,0 +1,29 @@
+{
+  "plugins": [
+    "stylelint-declaration-strict-value"
+  ],
+  "ignoreFiles": [
+    "**/dist/**",
+    "**/node_modules/**"
+  ],
+  "overrides": [
+    {
+      "files": ["**/*.scss"],
+      "customSyntax": "postcss-scss"
+    },
+    {
+      "files": ["**/*.vue"],
+      "customSyntax": "postcss-html"
+    }
+  ],
+  "rules": {
+    "scale-unlimited/declaration-strict-value": [
+      ["z-index"],
+      {
+        "ignoreValues": ["-1", "auto", "inherit", "initial", "unset"],
+        "disableFix": true,
+        "message": "z-index must use a design token: var(--z-*). See framework/assets/styles/theme/_z-index.scss"
+      }
+    ]
+  }
+}

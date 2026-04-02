@@ -97,7 +97,7 @@ const endResize = () => {
 
 <style lang="scss">
 .vc-table-composition__resize-handle {
-  @apply tw-absolute tw-top-0 tw-right-0 tw-h-full tw-cursor-col-resize tw-z-10;
+  @apply tw-absolute tw-top-0 tw-right-0 tw-h-full tw-cursor-col-resize tw-z-[var(--z-local-sticky)];
   @apply tw-flex tw-items-center tw-justify-center;
 
   // Wider hit area for easier interaction (8px total)

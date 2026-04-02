@@ -254,7 +254,7 @@ const handleDrop = (event: DragEvent) => {
 
   // AG Grid / TanStack style resizer
   &-resizer {
-    @apply tw-absolute tw-top-0 tw-right-0 tw-h-full tw-w-1 tw-cursor-col-resize tw-z-10;
+    @apply tw-absolute tw-top-0 tw-right-0 tw-h-full tw-w-1 tw-cursor-col-resize tw-z-[var(--z-local-sticky)];
     @apply tw-flex tw-items-center tw-justify-center;
     margin-right: -2px; // Center on border
 
@@ -308,7 +308,7 @@ const handleDrop = (event: DragEvent) => {
   // Style for column being dragged — matches row dragging style
   &--dragging {
     @apply tw-relative;
-    z-index: 10 !important;
+    z-index: var(--z-local-sticky);
     background-color: var(--primary-50) !important;
     box-shadow:
       0 4px 12px -2px rgba(0, 0, 0, 0.12),

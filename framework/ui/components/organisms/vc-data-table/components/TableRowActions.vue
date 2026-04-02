@@ -351,7 +351,7 @@ onBeforeUnmount(() => {
   @apply tw-absolute tw-flex tw-right-0 tw-px-2 tw-items-center tw-gap-1;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: -8px 0 8px rgba(255, 255, 255, 0.9);
-  z-index: 10;
+  z-index: var(--z-local-sticky);
 
   // Selected row: match selected background (class toggle, no timing issue)
   .vc-table-composition__row--selected & {
@@ -440,13 +440,13 @@ onBeforeUnmount(() => {
 
   &__backdrop {
     @apply tw-fixed tw-inset-0;
-    z-index: 999;
+    z-index: var(--z-overlay-row-actions);
   }
 
   &__dropdown {
     @apply tw-bg-additional-50 tw-rounded-lg tw-shadow-lg tw-border tw-border-neutrals-200;
     @apply tw-py-1 tw-min-w-[160px];
-    z-index: 1000;
+    z-index: var(--z-overlay-row-actions);
     max-height: 300px;
     overflow-y: auto;
   }

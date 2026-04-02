@@ -105,7 +105,7 @@ const handleActionClick = (action: TableAction) => {
 .vc-table-composition__actions {
   @apply tw-absolute tw-flex tw-right-0 tw-px-2.5 tw-h-full tw-items-center tw-gap-2;
   background-color: var(--table-actions-bg, white);
-  z-index: 2;
+  z-index: var(--z-local-above);
   pointer-events: auto;
   top: 0;
   box-shadow: -4px 0 8px rgba(0, 0, 0, 0.05); // Add subtle shadow for visibility

@@ -212,7 +212,7 @@ function closePanel() {
   }
 
   &__panel {
-    @apply tw-absolute tw-max-w-[800px] tw-min-w-[400px] tw-w-0 tw-z-[100] [box-shadow:var(--table-filter-desktop-shadow)] tw-rounded-[3px] tw-overflow-hidden;
+    @apply tw-absolute tw-max-w-[800px] tw-min-w-[400px] tw-w-0 tw-z-[var(--z-overlay-dropdown)] [box-shadow:var(--table-filter-desktop-shadow)] tw-rounded-[3px] tw-overflow-hidden;
   }
 
   &__panel-inner {

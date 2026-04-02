@@ -615,7 +615,7 @@ onBeforeUnmount(() => {
   }
 
   &__checkbox {
-    @apply tw-absolute tw-left-0 tw-top-0 tw-bottom-0 tw-flex tw-items-center tw-px-3 tw-z-10;
+    @apply tw-absolute tw-left-0 tw-top-0 tw-bottom-0 tw-flex tw-items-center tw-px-3 tw-z-[var(--z-local-sticky)];
   }
 
   &__body {

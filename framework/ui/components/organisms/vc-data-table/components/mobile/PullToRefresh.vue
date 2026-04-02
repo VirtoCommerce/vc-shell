@@ -315,7 +315,7 @@ defineExpose({
     @apply tw-absolute tw-left-0 tw-right-0 tw-top-0 tw-flex tw-items-center tw-justify-center;
     @apply tw-bg-[var(--ptr-indicator-bg)] tw-text-[var(--ptr-indicator-text)];
     height: 60px;
-    z-index: 10;
+    z-index: var(--z-local-sticky);
   }
 
   &__indicator-content {

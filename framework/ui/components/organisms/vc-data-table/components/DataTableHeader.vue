@@ -333,7 +333,7 @@ const handleFilterClear = (col: ColumnInstance) => {
   position: absolute;
   right: 0;
   top: 50%;
-  z-index: 11;
+  z-index: var(--z-local-header);
 
   display: flex;
   align-items: center;

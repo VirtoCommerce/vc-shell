@@ -428,7 +428,7 @@ onBeforeUnmount(() => {
   }
 
   &__overlay {
-    @apply tw-fixed tw-z-[100] tw-bg-additional-50 tw-rounded-lg tw-shadow-lg tw-border tw-border-neutrals-200;
+    @apply tw-fixed tw-z-[var(--z-overlay-dropdown)] tw-bg-additional-50 tw-rounded-lg tw-shadow-lg tw-border tw-border-neutrals-200;
     min-width: 200px;
     max-width: 300px;
   }

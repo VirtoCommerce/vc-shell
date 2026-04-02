@@ -250,7 +250,7 @@ const handleDrop = (event: DragEvent) => {
   }
 
   &--header {
-    @apply tw-font-medium tw-sticky tw-top-0 tw-z-[1];
+    @apply tw-font-medium tw-sticky tw-top-0 tw-z-[var(--z-local-above)];
     background-color: var(--table-header-bg);
     color: var(--table-header-text-color);
     border-bottom: 1px solid var(--table-header-border-color);
@@ -272,7 +272,7 @@ const handleDrop = (event: DragEvent) => {
 
   &--dragging {
     @apply tw-relative;
-    z-index: 10 !important;
+    z-index: var(--z-local-sticky);
     background-color: var(--primary-50) !important;
     box-shadow:
       0 4px 12px -2px rgba(0, 0, 0, 0.12),

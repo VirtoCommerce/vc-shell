@@ -1,55 +1,55 @@
 import type { ComputedRef } from "vue";
 
-// === Base interfaces (unchanged — used by consumers and VcDynamicProperty) ===
+// === Base interfaces (used by consumers and VcDynamicProperty) ===
 
 export interface IBaseProperty<TPropertyValue extends IBasePropertyValue = IBasePropertyValue> {
-  id?: string | null;
-  name?: string | null;
-  values?: TPropertyValue[] | null;
-  multilanguage?: boolean | null;
-  multivalue?: boolean | null;
-  dictionary?: boolean | null;
-  valueType?: string | null;
+  id?: string | undefined;
+  name?: string | undefined;
+  values?: TPropertyValue[] | undefined;
+  multilanguage?: boolean | undefined;
+  multivalue?: boolean | undefined;
+  dictionary?: boolean | undefined;
+  valueType?: string | undefined;
 }
 
 export interface IBasePropertyValue {
-  propertyName?: string | null;
-  propertyId?: string | null;
-  languageCode?: string | null;
-  alias?: string | null;
-  valueType?: string | null;
+  propertyName?: string | undefined;
+  propertyId?: string | undefined;
+  languageCode?: string | undefined;
+  alias?: string | undefined;
+  valueType?: string | undefined;
   value?: any;
-  valueId?: string | null;
+  valueId?: string | undefined;
   isInherited?: boolean;
-  unitOfMeasureId?: string | null;
-  colorCode?: string | null;
+  unitOfMeasureId?: string | undefined;
+  colorCode?: string | undefined;
 }
 
 export interface IBasePropertyDictionaryItem {
-  id?: string | null;
-  propertyId?: string | null;
-  alias?: string | null;
-  localizedValues?: { languageCode?: string | null; value?: string | null }[] | null;
+  id?: string | undefined;
+  propertyId?: string | undefined;
+  alias?: string | undefined;
+  localizedValues?: { languageCode?: string | undefined; value?: string | undefined }[] | undefined;
   value?: string;
-  colorCode?: string | null;
+  colorCode?: string | undefined;
 }
 
 export interface IBasePropertyDictionaryItemSearchCriteria {
-  propertyIds?: string[] | null;
-  keyword?: string | null;
-  skip?: number | null;
-  take?: number | null;
+  propertyIds?: string[] | undefined;
+  keyword?: string | undefined;
+  skip?: number | undefined;
+  take?: number | undefined;
 }
 
 export interface IBaseMeasurementDictionaryItem {
-  code?: string | null;
-  name?: string | null;
-  symbol?: string | null;
+  code?: string | undefined;
+  name?: string | undefined;
+  symbol?: string | undefined;
   isDefault?: boolean;
-  id?: string | null;
+  id?: string | undefined;
 }
 
-// === New clean API types ===
+// ===  API types ===
 
 export interface DynamicPropertiesOptions {
   searchDictionary: (

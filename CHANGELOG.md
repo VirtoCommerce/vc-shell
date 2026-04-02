@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.0.0-alpha.32](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.31...v2.0.0-alpha.32) (2026-04-02)
+
+
+### Bug Fixes
+
+* **vc-editor:** prevent phantom modifications from tiptap markdown normalization ([bb81f14](https://github.com/VirtoCommerce/vc-shell/commit/bb81f140df11331b86892c5bda6cd160d866f061))
+
 # [2.0.0-alpha.31](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.30...v2.0.0-alpha.31) (2026-04-01)
 
 

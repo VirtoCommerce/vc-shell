@@ -1,3 +1,7 @@
+# [2.0.0-alpha.32](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.31...v2.0.0-alpha.32) (2026-04-02)
+
+**Note:** Version bump only for package @vc-shell/api-client-generator
+
 # [2.0.0-alpha.31](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.30...v2.0.0-alpha.31) (2026-04-01)
 
 **Note:** Version bump only for package @vc-shell/api-client-generator

@@ -91,4 +91,4 @@ export default {
 - [SettingsMenu](../settings-menu/settings-menu.docs.md) -- parent container
 - [SettingsMenuItem](../settings-menu-item/settings-menu-item.docs.md) -- base menu item used internally
 - [LogoutButton](../logout-button/logout-button.docs.md) -- sibling account action
-- [ChangePasswordPage](../../pages/ChangePasswordPage/change-password-page.docs.md) -- full-page variant for expired passwords
+- [ChangePasswordPage](../../auth/ChangePasswordPage/change-password-page.docs.md) -- full-page variant for expired passwords

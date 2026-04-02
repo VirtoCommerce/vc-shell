@@ -820,7 +820,7 @@ async function handleImageSelection(event: Event) {
     width: 100vw;
     height: 100vh;
     background-color: var(--vc-editor-surface);
-    z-index: 1000;
+    z-index: var(--z-overlay-editor-bubble);
     padding: 1rem;
     display: flex;
     flex-direction: column;

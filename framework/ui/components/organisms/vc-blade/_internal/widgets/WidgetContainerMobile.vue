@@ -145,7 +145,7 @@ const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>(
 }
 
 .vc-widget-container-mobile {
-  @apply tw-fixed tw-bottom-0 tw-left-0 tw-right-0 tw-w-full tw-z-[54];
+  @apply tw-fixed tw-bottom-0 tw-left-0 tw-right-0 tw-w-full tw-z-[var(--z-layout-widget)];
   height: var(--blade-toolbar-widgets-mobile-height);
   background-color: var(--blade-toolbar-widgets-bg-color-mobile);
 

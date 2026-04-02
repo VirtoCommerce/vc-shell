@@ -216,7 +216,7 @@ function onClose(): void {
   }
 
   &__status {
-    @apply tw-block tw-w-2 tw-h-2 tw-rounded-full tw-z-[1] tw-mr-[10px];
+    @apply tw-block tw-w-2 tw-h-2 tw-rounded-full tw-z-[var(--z-local-above)] tw-mr-[10px];
   }
 
   &__status-container {
@@ -232,7 +232,7 @@ function onClose(): void {
   }
 
   &__tooltip {
-    @apply tw-absolute tw-z-10 tw-bg-[color:var(--blade-tooltip-background)] tw-border tw-border-solid tw-border-[color:var(--blade-tooltip-border)] tw-shadow-[1px_1px_8px_rgba(126,142,157,0.25)] tw-rounded-[3px] tw-text-[color:var(--blade-tooltip-text)] tw-font-normal tw-py-1 tw-px-2 tw-ml-4;
+    @apply tw-absolute tw-z-[var(--z-local-sticky)] tw-bg-[color:var(--blade-tooltip-background)] tw-border tw-border-solid tw-border-[color:var(--blade-tooltip-border)] tw-shadow-[1px_1px_8px_rgba(126,142,157,0.25)] tw-rounded-[3px] tw-text-[color:var(--blade-tooltip-text)] tw-font-normal tw-py-1 tw-px-2 tw-ml-4;
   }
 
   &__icon {

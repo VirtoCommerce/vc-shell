@@ -155,7 +155,7 @@ watch(
 
   // ── Navigation arrows ──
   &__nav {
-    @apply tw-absolute tw-top-1/2 -tw-translate-y-1/2 tw-z-[2]
+    @apply tw-absolute tw-top-1/2 -tw-translate-y-1/2 tw-z-[var(--z-local-above)]
       tw-flex tw-items-center tw-justify-center
       tw-w-6 tw-h-6 tw-rounded-full tw-border tw-border-solid tw-cursor-pointer
       tw-transition-all tw-duration-150 tw-p-0;

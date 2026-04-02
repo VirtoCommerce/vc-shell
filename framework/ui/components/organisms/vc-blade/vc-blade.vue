@@ -299,7 +299,7 @@ const contentRef = ref<HTMLElement | null>(null);
   }
 
   &--maximized {
-    @apply tw-absolute tw-z-[2] tw-top-0 tw-bottom-0 tw-left-0 tw-shrink !important;
+    @apply tw-absolute tw-z-[var(--z-local-above)] tw-top-0 tw-bottom-0 tw-left-0 tw-shrink !important;
     width: -webkit-fill-available !important;
     width: -moz-available !important;
     width: stretch !important;

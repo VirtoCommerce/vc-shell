@@ -337,7 +337,7 @@ onBeforeUnmount(() => {
     box-shadow: var(--gp-nav-shadow);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 2;
+    z-index: var(--z-local-above);
 
     &--prev {
       @apply tw-left-4;

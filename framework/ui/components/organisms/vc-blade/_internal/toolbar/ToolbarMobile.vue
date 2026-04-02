@@ -183,7 +183,7 @@ $touch-min: 44px;
 .vc-blade-toolbar-mobile {
   // ── Backdrop ──────────────────────────────────────────────────────────
   &__backdrop {
-    @apply tw-fixed tw-inset-0 tw-z-[55];
+    @apply tw-fixed tw-inset-0 tw-z-[var(--z-layout-toolbar)];
     background: var(--overlay-bg);
     backdrop-filter: blur(var(--overlay-blur));
     -webkit-backdrop-filter: blur(var(--overlay-blur));
@@ -194,7 +194,7 @@ $touch-min: 44px;
     position: fixed;
     bottom: calc(#{$fab-bottom} + #{$touch-min} + 8px);
     right: $fab-right;
-    z-index: 60;
+    z-index: var(--z-layout-toolbar);
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -280,7 +280,7 @@ $touch-min: 44px;
       bottom: calc(#{$fab-bottom} + env(safe-area-inset-bottom));
     }
     right: $fab-right;
-    z-index: 60;
+    z-index: var(--z-layout-toolbar);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -313,7 +313,7 @@ $touch-min: 44px;
       bottom: calc(#{$fab-bottom} + env(safe-area-inset-bottom));
     }
     right: $fab-right;
-    z-index: 60;
+    z-index: var(--z-layout-toolbar);
     display: flex;
     align-items: stretch;
     height: $touch-min;

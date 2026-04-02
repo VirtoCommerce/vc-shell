@@ -68,7 +68,7 @@ const { visibleItems } = useToolbarRegistration(toRef(props, "items"));
   }
 
   &--mobile {
-    @apply tw-fixed tw-bottom-0 tw-right-0 tw-z-50 tw-p-4 tw-bg-transparent tw-border-0 tw-w-auto;
+    @apply tw-fixed tw-bottom-0 tw-right-0 tw-z-[var(--z-layout-sidebar)] tw-p-4 tw-bg-transparent tw-border-0 tw-w-auto;
   }
 }
 </style>

@@ -624,7 +624,7 @@ function onGlobalDrop(event: DragEvent) {
 
   // ── Loading overlay ──
   &__loading-overlay {
-    @apply tw-absolute tw-inset-0 tw-z-10 tw-flex tw-items-center tw-justify-center tw-rounded-md tw-pointer-events-none;
+    @apply tw-absolute tw-inset-0 tw-z-[var(--z-local-sticky)] tw-flex tw-items-center tw-justify-center tw-rounded-md tw-pointer-events-none;
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(2px);
   }
@@ -635,7 +635,7 @@ function onGlobalDrop(event: DragEvent) {
   }
 
   &__drop-overlay {
-    @apply tw-absolute tw-inset-0 tw-z-10 tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-rounded-lg tw-pointer-events-none;
+    @apply tw-absolute tw-inset-0 tw-z-[var(--z-local-sticky)] tw-flex tw-flex-col tw-items-center tw-justify-center tw-gap-2 tw-rounded-lg tw-pointer-events-none;
     background: var(--gallery-drop-overlay-bg);
     border: 2px solid var(--gallery-drop-overlay-border);
     backdrop-filter: blur(4px);

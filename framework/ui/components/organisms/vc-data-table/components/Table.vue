@@ -61,6 +61,10 @@ provide(TableContextKey, context);
   @apply tw-relative tw-box-border tw-w-full tw-h-full tw-flex tw-flex-col tw-overflow-hidden;
   min-height: 0;
 
+  // Shared cell padding — single source of truth for head & body alignment.
+  // Both TableHead and TableCell reference this variable so columns never drift.
+  --table-cell-padding-x: 0.5rem;
+
   // CSS Variables from original vc-table
   --table-border-color: var(--neutrals-200);
   --table-header-border-color: var(--neutrals-200);

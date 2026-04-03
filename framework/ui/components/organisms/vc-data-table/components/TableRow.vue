@@ -302,8 +302,10 @@ const handleDrop = (event: DragEvent) => {
 
   &-transition-wrapper {
     @apply tw-flex tw-items-center;
-    // Inherit parent row's gap
-    gap: inherit;
+    // No inter-column gap — spacing is handled exclusively by cell padding
+    // (--table-cell-padding-x in TableHead/TableCell). This ensures header and
+    // body columns always align, matching the ag-grid approach.
+    gap: 0;
     // Critical: min-width: 0 allows flex children to shrink below content size
     // This enables text truncation/line-clamping in cells
     min-width: 0;
@@ -315,13 +317,10 @@ const handleDrop = (event: DragEvent) => {
     // Filler pseudo-element absorbs leftover space when ALL columns have fixed widths.
     // Columns with width use flex: 0 1 auto (no grow, can shrink), and this filler fills
     // any remaining width — preventing visual jumps after resize.
-    // Filler absorbs leftover space when all columns have fixed widths.
-    // Negative margin compensates the inherited gap (tw-gap-2 = 0.5rem).
     &::after {
       content: "";
       flex: 1 1 0;
       min-width: 0;
-      margin-left: -0.5rem;
     }
 
     // When flex-grow columns exist, disable the filler so it doesn't compete for space

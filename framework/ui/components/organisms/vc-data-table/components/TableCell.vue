@@ -98,6 +98,9 @@ const contentStyle = computed(() => {
 <style lang="scss">
 .vc-table-composition__cell {
   @apply tw-flex tw-items-center tw-text-sm;
+  // Horizontal padding — matches TableHead via shared --table-cell-padding-x variable.
+  // This ensures body content aligns exactly with header text.
+  padding: 0 var(--table-cell-padding-x);
   // Allow flex items to shrink below content width
   min-width: 0;
   color: var(--table-text-color);

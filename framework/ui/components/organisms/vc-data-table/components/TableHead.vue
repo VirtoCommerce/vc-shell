@@ -205,11 +205,11 @@ const handleDrop = (event: DragEvent) => {
 
 <style lang="scss">
 .vc-table-composition__head {
-  @apply tw-relative tw-flex tw-items-center tw-gap-1 tw-font-medium tw-text-sm tw-px-1 tw-h-[60px];
+  @apply tw-relative tw-flex tw-items-center tw-gap-1 tw-font-medium tw-text-sm tw-h-[60px];
+  // Horizontal padding from shared variable — matches TableCell exactly.
+  padding-left: var(--table-cell-padding-x);
+  padding-right: var(--table-cell-padding-x);
   transition: color 0.2s ease;
-  // px-1 + gap-1 match body cells (TableCell) to ensure head and body shrink
-  // identically when many columns are visible. With px-3, padding alone was 24px
-  // per cell — causing 28 cells to exceed the container and create horizontal scroll.
   min-width: 0;
   // Clip internal overflow (sort icon, content) so it doesn't extend the parent's
   // scrollWidth when many columns compress cells below their content size.

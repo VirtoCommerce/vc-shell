@@ -259,6 +259,7 @@ function handleDialogDismiss(): void {
 .vc-popup {
   &__overlay {
     @apply tw-fixed tw-inset-0;
+    z-index: var(--z-critical-popup);
     background: var(--popup-overlay);
     backdrop-filter: blur(var(--vc-popup-overlay-blur));
     -webkit-backdrop-filter: blur(var(--vc-popup-overlay-blur));
@@ -266,6 +267,7 @@ function handleDialogDismiss(): void {
 
   &__container {
     @apply tw-fixed tw-inset-0 tw-overflow-y-auto;
+    z-index: var(--z-critical-popup);
 
     &--desktop {
       @apply tw-p-4;

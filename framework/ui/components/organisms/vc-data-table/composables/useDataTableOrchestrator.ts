@@ -695,10 +695,6 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     columns: cols.columnWidths,
     minColumnWidth: 40,
     getColumnElement: (id) => cols.headerRefs.get(id) ?? null,
-    getAllColumnElements: (id) => {
-      if (!tableContainerRef.value) return null;
-      return tableContainerRef.value.querySelectorAll(`[data-column-id="${id}"]`);
-    },
     onResizeEnd: (colsData) => emit("column-resize-end", { columns: colsData }),
     containerEl: tableContainerRef,
   });

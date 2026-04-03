@@ -9,20 +9,20 @@ export interface UseTableColumnsResizeOptions {
   columns: Ref<ResizableColumn[]>;
   minColumnWidth?: number;
   getColumnElement?: (id: string) => HTMLElement | null;
-  getAllColumnElements?: (id: string) => NodeListOf<Element> | null;
   onResizeEnd?: (columns: ResizableColumn[]) => void;
   /** Container element — used by ResizeObserver to scale columns when container resizes */
   containerEl?: Ref<HTMLElement | null>;
 }
 
 /**
- * Column resizing via Vue reactivity (AG Grid shift-mode style).
+ * Column resizing via Vue reactivity (AG Grid style).
  *
  * - All widths in pixels. No percentages.
- * - Growing a column proportionally shrinks right neighbors (total stays constant).
- * - Flex-grow columns get explicit px width on first resize (flex disabled, like AG Grid).
- * - Last column can only shrink (grow it by resizing the second-to-last).
- * - No direct DOM manipulation — Vue re-renders atomically. Zero layout shift.
+ * - Growing a column equally shrinks ALL right neighbors to make room.
+ * - Shrinking a column equally grows ALL right neighbors.
+ * - Resize stops when all right neighbors hit minColumnWidth.
+ * - Last column (no neighbors): grows/shrinks into filler space only.
+ * - On drag start, all columns are pinned to their DOM widths to prevent flex drift.
  * - rAF-throttled for smooth 60fps updates.
  */
 export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
@@ -34,12 +34,10 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   let startX = 0;
   let initialWidths: number[] = [];
   let rafId = 0;
-  let maxLastColumnGrowth = 0;
-
-  const isColumnRendered = (columnId: string): boolean => {
-    if (!getColumnElement) return false;
-    return getColumnElement(columnId) !== null;
-  };
+  /** Max px the dragged column can grow (all right neighbors give + filler) */
+  let maxGrowth = 0;
+  /** Indices of all rendered right neighbors */
+  let rightNeighborIndices: number[] = [];
 
   const measureAllColumnWidths = (): number[] => {
     return columns.value.map((col) => {
@@ -51,14 +49,24 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     });
   };
 
-  const getRightNeighborIndices = (fromIndex: number): number[] => {
-    const indices: number[] = [];
-    for (let i = fromIndex + 1; i < columns.value.length; i++) {
-      if (isColumnRendered(columns.value[i].id)) {
-        indices.push(i);
+  /**
+   * Measure available filler space — the gap between the last rendered
+   * column's right edge and the row wrapper's right edge.
+   * This is how much ANY column can grow before the row overflows.
+   */
+  const measureFillerSpace = (): number => {
+    if (!getColumnElement) return 0;
+
+    // Find the last rendered column
+    for (let i = columns.value.length - 1; i >= 0; i--) {
+      const el = getColumnElement(columns.value[i].id);
+      if (el?.parentElement) {
+        const parentRight = el.parentElement.getBoundingClientRect().right;
+        const colRight = el.getBoundingClientRect().right;
+        return Math.max(0, parentRight - colRight - 1);
       }
     }
-    return indices;
+    return 0;
   };
 
   const handleResizeStart = (columnId: string, event: MouseEvent) => {
@@ -69,17 +77,29 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     initialWidths = measureAllColumnWidths();
     startX = event.pageX;
 
-    // For the last column: measure filler gap (space between column right edge
-    // and container right edge). The column can grow back into this gap.
-    maxLastColumnGrowth = 0;
-    if (getRightNeighborIndices(columnIndex).length === 0 && getColumnElement) {
-      const el = getColumnElement(columnId);
-      if (el?.parentElement) {
-        const parentRight = el.parentElement.getBoundingClientRect().right;
-        const colRight = el.getBoundingClientRect().right;
-        maxLastColumnGrowth = Math.max(0, parentRight - colRight - 2);
+    // Pin ALL columns to their current DOM widths.
+    // Without this, stored widths may differ from DOM widths due to flex-shrink
+    // (when total stored > container, flex compresses all columns).
+    // Pinning ensures: stored = DOM, total ≤ container, filler appears,
+    // and changing one column doesn't cause flex redistribution on others.
+    columns.value.forEach((col, i) => {
+      col.width = initialWidths[i];
+    });
+
+    // Find all rendered right neighbors
+    rightNeighborIndices = [];
+    if (getColumnElement) {
+      for (let i = columnIndex + 1; i < columns.value.length; i++) {
+        if (getColumnElement(columns.value[i].id)) {
+          rightNeighborIndices.push(i);
+        }
       }
     }
+
+    // Max growth = total right neighbors can give + filler
+    const totalGiveable = rightNeighborIndices.reduce((sum, idx) => sum + (initialWidths[idx] - minColumnWidth), 0);
+    const filler = measureFillerSpace();
+    maxGrowth = totalGiveable + filler;
 
     isResizing.value = true;
 
@@ -93,37 +113,49 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   const applyResize = (rawDelta: number) => {
     const initialWidth = initialWidths[resizingColumnIndex];
     const minDelta = minColumnWidth - initialWidth;
-    const rightIndices = getRightNeighborIndices(resizingColumnIndex);
+    const clampedDelta = Math.max(minDelta, Math.min(rawDelta, maxGrowth));
 
-    let clampedDelta: number;
-    if (rightIndices.length > 0) {
-      const totalGiveable = rightIndices.reduce((sum, idx) => sum + (initialWidths[idx] - minColumnWidth), 0);
-      clampedDelta = Math.max(minDelta, Math.min(rawDelta, totalGiveable));
-
-      // Distribute proportionally among right neighbors
-      const totalRightWidth = rightIndices.reduce((sum, idx) => sum + initialWidths[idx], 0);
-      let distributed = 0;
-
-      for (let i = 0; i < rightIndices.length; i++) {
-        const idx = rightIndices[i];
-        const initialW = initialWidths[idx];
-
-        if (i === rightIndices.length - 1) {
-          // Last neighbor absorbs rounding remainder
-          columns.value[idx].width = Math.max(minColumnWidth, Math.round(initialW - (clampedDelta - distributed)));
-        } else {
-          const share = totalRightWidth > 0 ? (initialW / totalRightWidth) * clampedDelta : 0;
-          const newWidth = Math.max(minColumnWidth, Math.round(initialW - share));
-          distributed += initialW - newWidth;
-          columns.value[idx].width = newWidth;
-        }
-      }
-    } else {
-      // Last column: can shrink freely, can grow into the filler gap.
-      clampedDelta = Math.max(minDelta, Math.min(rawDelta, maxLastColumnGrowth));
-    }
-
+    // Apply to the dragged column
     columns.value[resizingColumnIndex].width = Math.round(initialWidth + clampedDelta);
+
+    // Distribute the inverse delta equally across ALL right neighbors.
+    // Equal distribution preserves relative size differences between columns.
+    // Columns that hit minColumnWidth stop shrinking; remainder redistributes to others.
+    if (rightNeighborIndices.length > 0) {
+      let remaining = clampedDelta;
+      const active = [...rightNeighborIndices];
+
+      // Reset all neighbors to initial widths first (needed for cumulative delta from drag start)
+      for (const idx of rightNeighborIndices) {
+        columns.value[idx].width = initialWidths[idx];
+      }
+
+      // Iteratively distribute: some columns may hit min and drop out
+      while (Math.abs(remaining) > 0.5 && active.length > 0) {
+        const share = remaining / active.length;
+        const next: number[] = [];
+        let applied = 0;
+
+        for (const idx of active) {
+          const current = columns.value[idx].width;
+          const newWidth = Math.max(minColumnWidth, Math.round(current - share));
+          const actualChange = current - newWidth;
+          applied += actualChange;
+          columns.value[idx].width = newWidth;
+
+          // Column still has room to give/take — keep it active
+          if (newWidth > minColumnWidth || share < 0) {
+            next.push(idx);
+          }
+        }
+
+        remaining -= applied;
+        // If no progress was made, break to avoid infinite loop
+        if (Math.abs(applied) < 0.5) break;
+        active.length = 0;
+        active.push(...next);
+      }
+    }
   };
 
   const handleResizeMove = (event: MouseEvent) => {

@@ -15,7 +15,6 @@ function setup(
   cols?: ResizableColumn[],
   opts: {
     getColumnElement?: (id: string) => HTMLElement | null;
-    getAllColumnElements?: (id: string) => NodeListOf<Element> | null;
     onResizeEnd?: (cols: ResizableColumn[]) => void;
   } = {},
 ) {
@@ -33,7 +32,6 @@ function setup(
 }
 
 afterEach(() => {
-  // Clean up any lingering document listeners / styles
   document.body.style.cursor = "";
   document.body.style.userSelect = "";
 });
@@ -61,7 +59,6 @@ describe("useTableColumnsResize", () => {
 
   it("handleResizeStart sets isResizing and body styles", () => {
     const mocks = mockElements({ name: 200, price: 150, stock: 100 });
-
     const { result } = setup(undefined, mocks);
     result.handleResizeStart("name", { pageX: 100 } as MouseEvent);
 
@@ -69,7 +66,6 @@ describe("useTableColumnsResize", () => {
     expect(document.body.style.cursor).toBe("col-resize");
     expect(document.body.style.userSelect).toBe("none");
 
-    // Simulate mouseup to clean up
     document.dispatchEvent(new MouseEvent("mouseup"));
   });
 
@@ -82,11 +78,9 @@ describe("useTableColumnsResize", () => {
   it("onResizeEnd callback is called on mouseup", () => {
     const onResizeEnd = vi.fn();
     const mocks = mockElements({ name: 200, price: 150, stock: 100 });
-
     const { result } = setup(undefined, { ...mocks, onResizeEnd });
     result.handleResizeStart("name", { pageX: 100 } as MouseEvent);
 
-    // Simulate mouseup
     document.dispatchEvent(new MouseEvent("mouseup"));
 
     expect(onResizeEnd).toHaveBeenCalled();
@@ -94,19 +88,23 @@ describe("useTableColumnsResize", () => {
   });
 });
 
-// Shared WeakMap for mock element widths — used by getComputedStyle mock
+// Shared WeakMap for mock element widths
 const mockElWidths = new WeakMap<object, number>();
 
-// Helper to create mock elements (used by proportional resize tests)
-function mockElements(widthMap: Record<string, number>) {
+function mockElements(widthMap: Record<string, number>, parentRight?: number) {
   const elements = new Map<string, { el: ReturnType<typeof createMockEl> }>();
+  const totalWidth = parentRight ?? Object.values(widthMap).reduce((s, w) => s + w, 0);
 
+  let left = 0;
   function createMockEl(width: number) {
+    const colLeft = left;
+    const colRight = left + width;
+    left = colRight;
     const el = {
-      getBoundingClientRect: () => ({ width, left: 0, right: width }),
+      getBoundingClientRect: () => ({ width, left: colLeft, right: colRight }),
       style: { transition: "", width: "", minWidth: "", maxWidth: "", flex: "", flexShrink: "" },
       parentElement: {
-        getBoundingClientRect: () => ({ right: 1000 }),
+        getBoundingClientRect: () => ({ right: totalWidth }),
       },
     } as unknown as HTMLElement;
     mockElWidths.set(el, width);
@@ -118,11 +116,9 @@ function mockElements(widthMap: Record<string, number>) {
   }
   return {
     getColumnElement: (id: string) => elements.get(id)?.el ?? null,
-    getAllColumnElements: () => null,
   };
 }
 
-// Mock getComputedStyle for mock elements — returns width based on stored value
 const originalGetComputedStyle = window.getComputedStyle;
 beforeEach(() => {
   window.getComputedStyle = ((el: Element) => {
@@ -137,16 +133,15 @@ afterEach(() => {
   window.getComputedStyle = originalGetComputedStyle;
 });
 
-// Helper: flush requestAnimationFrame in jsdom
 function flushRAF() {
   vi.advanceTimersByTime(16);
 }
 
-describe("proportional resize", () => {
+describe("equal resize across all right neighbors", () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
 
-  it("distributes delta proportionally across all right neighbors", () => {
+  it("growing a column shrinks all right neighbors equally", () => {
     const cols = [
       { id: "a", width: 300 },
       { id: "b", width: 250 },
@@ -154,21 +149,17 @@ describe("proportional resize", () => {
       { id: "d", width: 200 },
     ];
     const mocks = mockElements({ a: 300, b: 250, c: 250, d: 200 });
-    const onResizeEnd = vi.fn();
-    const { result, columns } = setup(cols, { ...mocks, onResizeEnd });
+    const { result, columns } = setup(cols, mocks);
 
-    result.handleResizeStart("a", new MouseEvent("mousedown", { clientX: 300 }));
-
+    result.handleResizeStart("a", { pageX: 300 } as MouseEvent);
     const moveEvent = new MouseEvent("mousemove", { clientX: 400 });
     Object.defineProperty(moveEvent, "pageX", { value: 400 });
     document.dispatchEvent(moveEvent);
     flushRAF();
-
     document.dispatchEvent(new MouseEvent("mouseup"));
 
     const totalBefore = 300 + 250 + 250 + 200;
     const totalAfter = columns.value.reduce((s, c) => s + c.width, 0);
-    // Rounded on commit — allow ±1 per column for rounding
     expect(Math.abs(totalAfter - totalBefore)).toBeLessThanOrEqual(columns.value.length);
     expect(columns.value[0].width).toBe(400);
     expect(columns.value[1].width).toBeLessThan(250);
@@ -176,27 +167,47 @@ describe("proportional resize", () => {
     expect(columns.value[3].width).toBeLessThan(200);
   });
 
-  it("stops resize when all right neighbors hit minColumnWidth", () => {
+  it("stops when all right neighbors hit minColumnWidth", () => {
     const cols = [
       { id: "a", width: 200 },
       { id: "b", width: 80 },
       { id: "c", width: 80 },
     ];
     const mocks = mockElements({ a: 200, b: 80, c: 80 });
-    const onResizeEnd = vi.fn();
-    const { result, columns } = setup(cols, { ...mocks, onResizeEnd });
+    const { result, columns } = setup(cols, mocks);
 
-    result.handleResizeStart("a", new MouseEvent("mousedown", { clientX: 200 }));
+    result.handleResizeStart("a", { pageX: 200 } as MouseEvent);
     const moveEvent = new MouseEvent("mousemove", { clientX: 600 });
     Object.defineProperty(moveEvent, "pageX", { value: 600 });
     document.dispatchEvent(moveEvent);
     flushRAF();
     document.dispatchEvent(new MouseEvent("mouseup"));
 
-    // B and C can only give 20px each (80-60=20), total giveable = 40
+    // B and C can only give 20px each (80-60=20), total = 40
     expect(columns.value[1].width).toBe(60);
     expect(columns.value[2].width).toBe(60);
     expect(columns.value[0].width).toBe(240);
+  });
+
+  it("shrinking a column grows right neighbors proportionally", () => {
+    const cols = [
+      { id: "a", width: 400 },
+      { id: "b", width: 100 },
+      { id: "c", width: 100 },
+    ];
+    const mocks = mockElements({ a: 400, b: 100, c: 100 });
+    const { result, columns } = setup(cols, mocks);
+
+    result.handleResizeStart("a", { pageX: 400 } as MouseEvent);
+    const moveEvent = new MouseEvent("mousemove", { clientX: 300 });
+    Object.defineProperty(moveEvent, "pageX", { value: 300 });
+    document.dispatchEvent(moveEvent);
+    flushRAF();
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    expect(columns.value[0].width).toBe(300);
+    const neighborTotal = columns.value[1].width + columns.value[2].width;
+    expect(neighborTotal).toBe(300); // Gained 100
   });
 
   it("left columns are not affected during resize", () => {
@@ -206,11 +217,9 @@ describe("proportional resize", () => {
       { id: "c", width: 200 },
     ];
     const mocks = mockElements({ a: 200, b: 200, c: 200 });
-    const onResizeEnd = vi.fn();
-    const { result, columns } = setup(cols, { ...mocks, onResizeEnd });
+    const { result, columns } = setup(cols, mocks);
 
-    // Resize B (middle column)
-    result.handleResizeStart("b", new MouseEvent("mousedown", { clientX: 400 }));
+    result.handleResizeStart("b", { pageX: 400 } as MouseEvent);
     const moveEvent = new MouseEvent("mousemove", { clientX: 450 });
     Object.defineProperty(moveEvent, "pageX", { value: 450 });
     document.dispatchEvent(moveEvent);
@@ -220,5 +229,62 @@ describe("proportional resize", () => {
     expect(columns.value[0].width).toBe(200); // A unchanged
     expect(columns.value[1].width).toBeGreaterThan(200); // B grew
     expect(columns.value[2].width).toBeLessThan(200); // C shrunk
+  });
+
+  it("last column grows into filler without neighbors", () => {
+    const cols = [
+      { id: "a", width: 200 },
+      { id: "b", width: 200 },
+    ];
+    // parentRight = 500 → filler ~100
+    const mocks = mockElements({ a: 200, b: 200 }, 500);
+    const { result, columns } = setup(cols, mocks);
+
+    result.handleResizeStart("b", { pageX: 400 } as MouseEvent);
+    const moveEvent = new MouseEvent("mousemove", { clientX: 450 });
+    Object.defineProperty(moveEvent, "pageX", { value: 450 });
+    document.dispatchEvent(moveEvent);
+    flushRAF();
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    expect(columns.value[1].width).toBe(250);
+    expect(columns.value[0].width).toBe(200); // Unchanged
+  });
+
+  it("pins all columns to DOM widths on drag start (flex-shrink fix)", () => {
+    const cols = [
+      { id: "a", width: 500 },
+      { id: "b", width: 500 },
+    ];
+    // DOM says 300+300 (flex-shrunk from stored 500+500)
+    const mocks = mockElements({ a: 300, b: 300 });
+    const { result, columns } = setup(cols, mocks);
+
+    result.handleResizeStart("a", { pageX: 300 } as MouseEvent);
+
+    expect(columns.value[0].width).toBe(300);
+    expect(columns.value[1].width).toBe(300);
+
+    document.dispatchEvent(new MouseEvent("mouseup"));
+  });
+
+  it("neighbor give + filler combined for max growth", () => {
+    const cols = [
+      { id: "a", width: 200 },
+      { id: "b", width: 100 },
+    ];
+    // parentRight = 350 → filler ~50. Neighbor give = 100-60=40. Max = ~89.
+    const mocks = mockElements({ a: 200, b: 100 }, 350);
+    const { result, columns } = setup(cols, mocks);
+
+    result.handleResizeStart("a", { pageX: 200 } as MouseEvent);
+    const moveEvent = new MouseEvent("mousemove", { clientX: 400 });
+    Object.defineProperty(moveEvent, "pageX", { value: 400 });
+    document.dispatchEvent(moveEvent);
+    flushRAF();
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    expect(columns.value[0].width).toBe(289); // Grew by 89
+    expect(columns.value[1].width).toBe(60); // At min
   });
 });

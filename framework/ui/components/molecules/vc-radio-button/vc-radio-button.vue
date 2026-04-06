@@ -1,5 +1,25 @@
 <template>
-  <div class="vc-radio-button">
+  <!-- Skeleton mode -->
+  <div
+    v-if="bladeLoading"
+    class="vc-radio-button vc-radio-button--skeleton"
+  >
+    <VcSkeleton
+      variant="circle"
+      :width="16"
+      :height="16"
+    />
+    <VcSkeleton
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="12"
+    />
+  </div>
+
+  <div
+    v-else
+    class="vc-radio-button"
+  >
     <label class="vc-radio-button__label">
       <input
         :id="radioId"
@@ -41,7 +61,9 @@
 import { isEqual } from "lodash-es";
 import { computed, type VNode } from "vue";
 import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { useFormField } from "@ui/composables/useFormField";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type { IFormFieldProps } from "@ui/types";
 
 const props = withDefaults(
@@ -77,6 +99,8 @@ const {
   ariaRequired,
   ariaDescribedBy,
 } = useFormField(props);
+
+const bladeLoading = useBladeLoading();
 
 const checked = computed(() => {
   return props.modelValue != null && (props.binary ? !!props.modelValue : isEqual(props.modelValue, props.value));
@@ -184,6 +208,10 @@ function onChange() {
 
   &__error {
     @apply tw-mt-1 [--hint-error-color:var(--radio-error)];
+  }
+
+  &--skeleton {
+    @apply tw-flex tw-flex-row tw-items-center tw-gap-2;
   }
 }
 </style>

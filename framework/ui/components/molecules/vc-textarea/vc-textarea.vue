@@ -1,5 +1,25 @@
 <template>
+  <!-- Skeleton mode -->
   <div
+    v-if="bladeLoading"
+    class="vc-textarea vc-textarea--skeleton"
+  >
+    <VcSkeleton
+      v-if="label"
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="11"
+    />
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="120"
+    />
+  </div>
+
+  <!-- Normal mode -->
+  <div
+    v-else
     class="vc-textarea"
     :class="{
       'vc-textarea--error': invalid,
@@ -82,7 +102,9 @@
 import { ref, type VNode } from "vue";
 import { VcHint } from "@ui/components/atoms/vc-hint";
 import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { useFormField } from "@ui/composables/useFormField";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type { IFormFieldProps } from "@ui/types";
 
 export interface Props extends IFormFieldProps {
@@ -108,6 +130,8 @@ const props = withDefaults(defineProps<Props>(), {
   name: "Field",
   maxlength: "1024",
 });
+
+const bladeLoading = useBladeLoading();
 
 const emit = defineEmits<Emits>();
 
@@ -158,6 +182,10 @@ defineExpose({
 }
 
 .vc-textarea {
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1.5;
+  }
+
   &__label {
     @apply tw-mb-2;
   }

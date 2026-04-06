@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import VcField from "@ui/components/molecules/vc-field/vc-field.vue";
+import { provide, ref } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 
 const TYPE = ["text", "date", "date-ago", "link", "email"];
 const ORIENTATION = ["vertical", "horizontal"];
@@ -176,4 +178,22 @@ export const HorizontalAspectRatio: Story = {
     orientation: "horizontal",
     aspectRatio: [1, 2],
   },
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Status",
+  },
+  render: (args) => ({
+    components: { VcField },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcField v-bind="args" />',
+  }),
 };

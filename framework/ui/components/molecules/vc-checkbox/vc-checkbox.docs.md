@@ -323,3 +323,8 @@ const selected = ref<string[]>([]);
 - [VcSwitch](../vc-switch/) -- toggle switch for on/off settings
 - [VcRadioButton](../vc-radio-button/) -- mutually exclusive single selection
 - [VcInputGroup](../vc-input-group/) -- semantic wrapper for grouping checkboxes or radio buttons
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
+

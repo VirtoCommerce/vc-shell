@@ -1,9 +1,9 @@
 <template>
   <div
     ref="tableRootRef"
-    v-loading:49="loading && !showSkeleton"
+    v-loading:49="(loading || bladeLoading) && !showSkeleton"
     class="vc-data-table"
-    :aria-busy="loading || undefined"
+    :aria-busy="loading || bladeLoading || undefined"
   >
     <!-- Header slot -->
     <div
@@ -136,7 +136,7 @@
         <!-- Body -->
         <DataTableBody
           :items="displayItems"
-          :loading="loading"
+          :loading="loading || bladeLoading"
           :skeleton-rows="props.skeletonRows"
           :columns="safeColumns"
           :get-column-width="cols.getEffectiveColumnWidth"
@@ -413,6 +413,7 @@ import {
   IsColumnReorderingKey,
 } from "@ui/components/organisms/vc-data-table/keys";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type {
   VcColumnProps,
   VcDataTableExtendedProps,
@@ -681,8 +682,11 @@ watch(
   { immediate: true },
 );
 
+/** Blade-level loading state (skeleton mode from parent VcBlade) */
+const bladeLoading = useBladeLoading();
+
 /** True when skeleton should show instead of spinner overlay */
-const showSkeleton = computed(() => props.loading && !hasLoadedOnce.value);
+const showSkeleton = computed(() => (props.loading || bladeLoading.value) && !hasLoadedOnce.value);
 
 const paginationRangeText = computed(() => {
   const p = props.pagination;

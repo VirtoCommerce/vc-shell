@@ -1,5 +1,23 @@
 <template>
+  <!-- Skeleton mode -->
   <div
+    v-if="bladeLoading"
+    class="vc-switch vc-switch--skeleton"
+  >
+    <VcSkeleton
+      variant="block"
+      :width="36"
+      :height="20"
+    />
+    <VcSkeleton
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="12"
+    />
+  </div>
+
+  <div
+    v-else
     class="vc-switch"
     :class="{
       'vc-switch--disabled': resolvedDisabled,
@@ -73,7 +91,9 @@
 import { computed, onMounted } from "vue";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { useFormField } from "@ui/composables/useFormField";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type { IFormFieldProps } from "@ui/types";
 
 export interface Props extends IFormFieldProps {
@@ -115,6 +135,8 @@ const {
   ariaRequired,
   ariaDescribedBy,
 } = useFormField(props);
+
+const bladeLoading = useBladeLoading();
 
 // `tooltip` prop is kept for backward compat — treat as hint text
 const hintText = computed(() => props.hint || props.tooltip);
@@ -240,6 +262,10 @@ function onInput(e: Event) {
 
   &--disabled {
     @apply tw-pointer-events-none;
+  }
+
+  &--skeleton {
+    @apply tw-flex tw-flex-row tw-items-center tw-gap-2;
   }
 }
 </style>

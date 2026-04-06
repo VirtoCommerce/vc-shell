@@ -1,4 +1,5 @@
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
 
@@ -279,5 +280,23 @@ export const HorizontalGroup: Story = {
         </div>
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Option A",
+  },
+  render: (args) => ({
+    components: { VcRadioButton },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcRadioButton v-bind="args" />',
   }),
 };

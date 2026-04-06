@@ -1,4 +1,5 @@
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcAccordion, VcAccordionItem } from ".";
 
@@ -527,4 +528,19 @@ export const WithPartialVisibilityAndScroll: Story = {
       },
     },
   },
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  render: (args) => ({
+    components: { VcAccordion },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcAccordion v-bind="args" />',
+  }),
 };

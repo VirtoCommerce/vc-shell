@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcSlider } from ".";
 import { VcImage } from "@ui/components/atoms/vc-image";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { provide, ref } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 
 /**
  * VcSlider component is used to create a content carousel with customizable number of slides,
@@ -220,5 +222,20 @@ export const SingleSlide: Story = {
         </template>
       </vc-slider>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  render: (args) => ({
+    components: { VcSlider },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcSlider v-bind="args" />',
   }),
 };

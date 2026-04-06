@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcDatePicker } from "@ui/components/molecules/vc-date-picker";
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 
 /**
  * `VcDatePicker` is a standalone date picker component that wraps the VueDatePicker library
@@ -168,5 +169,23 @@ export const Clearable: Story = {
         <VcDatePicker v-bind="args" v-model="value" />
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Created Date",
+  },
+  render: (args) => ({
+    components: { VcDatePicker },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcDatePicker v-bind="args" />',
   }),
 };

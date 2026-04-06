@@ -1,5 +1,25 @@
 <template>
+  <!-- Skeleton mode -->
   <div
+    v-if="bladeLoading"
+    class="vc-multivalue vc-multivalue--skeleton"
+  >
+    <VcSkeleton
+      v-if="label"
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="11"
+    />
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="36"
+    />
+  </div>
+
+  <!-- Normal mode -->
+  <div
+    v-else
     class="vc-multivalue"
     :class="[
       `vc-multivalue--${type}`,
@@ -147,8 +167,10 @@
 <script lang="ts" setup generic="T extends { id?: string; colorCode?: string }">
 import { ref, computed, watchEffect } from "vue";
 import { useFormField } from "@ui/composables/useFormField";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import MultivalueTrigger from "@ui/components/molecules/vc-multivalue/_internal/MultivalueTrigger.vue";
 import MultivalueDropdown from "@ui/components/molecules/vc-multivalue/_internal/MultivalueDropdown.vue";
 import {
@@ -204,6 +226,7 @@ defineSlots<{
   append: (props: any) => any;
 }>();
 
+const bladeLoading = useBladeLoading();
 const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } =
   useFormField(props);
 const listboxId = computed(() => `${fieldId.value}-listbox`);
@@ -327,6 +350,10 @@ function onSearch(event: Event) {
 }
 
 .vc-multivalue {
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1.5;
+  }
+
   &--date,
   &--datetime-local {
     @apply tw-max-w-[220px];

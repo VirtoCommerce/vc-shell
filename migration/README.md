@@ -72,6 +72,7 @@ Work through these guides in order. Each is self-contained with before/after exa
 | 36 | [useResponsive](./36-use-responsive.md) | Deprecated | `$isMobile.value` / `inject(IsMobileKey)` → `useResponsive()` composable |
 | 37 | [useBladeForm](./37-use-blade-form.md) | Optional | Replace manual useForm + useModificationTracker + useBeforeUnload with useBladeForm |
 | 38 | [Dynamic Properties Refactor](./38-dynamic-properties-refactor.md) | **Breaking** | useDynamicProperties: remove generics/constructors, options-based API |
+| 39 | [Transparent Blade Skeletons](./39-blade-skeleton.md) | Informational | Layout-aware skeleton loading via `useBladeLoading()` composable |
 
 ## Severity Legend
 

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcTextarea } from "@ui/components/molecules/vc-textarea";
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 
 /**
  * `VcTextarea` — a multiline input field component designed for entering large amounts of text.
@@ -322,5 +323,23 @@ export const Interactive: Story = {
         </div>
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Description",
+  },
+  render: (args) => ({
+    components: { VcTextarea },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcTextarea v-bind="args" />',
   }),
 };

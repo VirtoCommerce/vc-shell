@@ -161,3 +161,8 @@ Do not mix `binary` mode with regular `value` comparison in the same group. Bina
 - [VcSwitch](../vc-switch/) -- for on/off toggles
 - [VcInputGroup](../vc-input-group/) -- semantic wrapper with `role="radiogroup"`
 - [VcSelect](../vc-select/) -- dropdown for larger option sets
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
+

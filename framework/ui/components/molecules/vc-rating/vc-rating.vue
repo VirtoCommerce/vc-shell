@@ -1,5 +1,8 @@
 <template>
-  <div class="vc-rating">
+  <div v-if="bladeLoading" class="vc-rating vc-rating--skeleton">
+    <VcSkeleton v-for="i in 5" :key="i" variant="circle" :width="20" :height="20" />
+  </div>
+  <div v-else class="vc-rating">
     <!-- Rating label -->
     <VcLabel
       v-if="label"
@@ -57,6 +60,10 @@
 </template>
 <script lang="ts" setup>
 import { VNode } from "vue";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+
+const bladeLoading = useBladeLoading();
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import type { IFormFieldProps } from "@ui/types/form-field";
@@ -88,6 +95,10 @@ defineSlots<{
 
 .vc-rating {
   @apply tw-flex tw-flex-col tw-align-middle;
+
+  &--skeleton {
+    @apply tw-flex tw-flex-row tw-gap-1;
+  }
 
   &__content {
     @apply tw-flex tw-flex-row tw-items-center;

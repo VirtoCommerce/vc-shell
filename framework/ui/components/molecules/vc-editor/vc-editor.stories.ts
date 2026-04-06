@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcEditor, type CustomToolbarButton, type CustomToolbarDropdown } from "@ui/components/molecules/vc-editor";
-import { ref, defineComponent, h } from "vue";
+import { ref, defineComponent, h, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 import type { Editor } from "@tiptap/vue-3";
 
 /**
@@ -449,5 +450,23 @@ export const WithTipTapExtensions: Story = {
       return { args, content };
     },
     template: '<vc-editor v-bind="args" v-model="content"></vc-editor>',
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Content",
+  },
+  render: (args) => ({
+    components: { VcEditor },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcEditor v-bind="args" />',
   }),
 };

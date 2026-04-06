@@ -1,4 +1,5 @@
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcCheckboxGroup } from "@ui/components/molecules/vc-checkbox-group";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
@@ -262,5 +263,20 @@ export const Accessibility: Story = {
         </div>
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  render: (args) => ({
+    components: { VcCheckboxGroup },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcCheckboxGroup v-bind="args" />',
   }),
 };

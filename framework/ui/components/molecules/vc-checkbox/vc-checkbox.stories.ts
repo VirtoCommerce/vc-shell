@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 
 /**
  * `VcCheckbox` represents a checkbox component for selecting options.
@@ -352,5 +353,23 @@ export const CustomContent: Story = {
         </div>
       </vc-checkbox>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Accept terms",
+  },
+  render: (args) => ({
+    components: { VcCheckbox },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcCheckbox v-bind="args" />',
   }),
 };

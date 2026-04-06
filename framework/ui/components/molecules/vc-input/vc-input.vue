@@ -1,7 +1,25 @@
 <template>
+  <!-- Skeleton mode -->
+  <div
+    v-if="bladeLoading"
+    class="vc-input vc-input--skeleton"
+  >
+    <VcSkeleton
+      v-if="label"
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="11"
+    />
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="36"
+    />
+  </div>
+
   <!-- Backward compat delegation: date types -->
   <VcDatePicker
-    v-if="type === 'date' || type === 'datetime-local'"
+    v-else-if="type === 'date' || type === 'datetime-local'"
     :model-value="modelValue"
     :type="type"
     :date-picker-options="datePickerOptions"
@@ -248,9 +266,11 @@ import { computed, ref, unref, watch, type VNode } from "vue";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { VcDatePicker } from "@ui/components/molecules/vc-date-picker";
 import { VcColorInput } from "@ui/components/molecules/vc-color-input";
 import { useFormField } from "@ui/composables/useFormField";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type { VueDatePickerProps } from "@vuepic/vue-datepicker";
 import type { ITextFieldProps } from "@ui/types";
 
@@ -328,6 +348,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+const bladeLoading = useBladeLoading();
 
 defineSlots<{
   /**
@@ -552,6 +573,10 @@ function handleFocus() {
 }
 
 .vc-input {
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1.5;
+  }
+
   &__label {
     @apply tw-mb-2;
   }

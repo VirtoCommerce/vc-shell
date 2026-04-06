@@ -144,3 +144,8 @@ interface CheckboxGroupOption<V = string | number | boolean> {
 - [VcCheckbox](../vc-checkbox/) — individual checkbox component
 - [VcRadioGroup](../vc-radio-group/) — mutually exclusive option group
 - [VcInputGroup](../vc-input-group/) — generic form field group (used internally)
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
+

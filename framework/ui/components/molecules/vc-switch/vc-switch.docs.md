@@ -298,3 +298,8 @@ const isActive = ref(true);
 - [VcCheckbox](../vc-checkbox/) -- for checkboxes and checkbox groups
 - [VcRadioButton](../vc-radio-button/) -- for mutually exclusive choices
 - [VcInputGroup](../vc-input-group/) -- semantic wrapper for grouping form controls
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
+

@@ -151,3 +151,8 @@ The native color picker does not support alpha/transparency. If you need RGBA co
 
 - [VcInput](../vc-input/) -- general-purpose input (delegates to VcColorInput for `type="color"`)
 - [VcField](../vc-field/) -- read-only field display (for showing a color value without editing)
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
+

@@ -1,4 +1,5 @@
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import VcSwitch from "@ui/components/molecules/vc-switch/vc-switch.vue";
 import VcHint from "@ui/components/atoms/vc-hint/vc-hint.vue";
@@ -320,5 +321,23 @@ export const Variants: Story = {
         />
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Enable feature",
+  },
+  render: (args) => ({
+    components: { VcSwitch },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcSwitch v-bind="args" />',
   }),
 };

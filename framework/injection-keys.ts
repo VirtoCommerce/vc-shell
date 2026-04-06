@@ -94,3 +94,6 @@ export const WidgetScopeKey: InjectionKey<IWidgetScope> = Symbol("WidgetScope");
 
 // Blade form keys
 export const BladeFormKey: InjectionKey<BladeFormInjection> = Symbol("BladeForm");
+
+// Blade loading state (skeleton mode for child components)
+export const BladeLoadingKey: InjectionKey<Ref<boolean>> = Symbol("BladeLoading");

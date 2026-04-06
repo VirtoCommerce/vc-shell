@@ -1,7 +1,11 @@
 import type { Meta, StoryFn, StoryObj } from "@storybook/vue3-vite";
 import { ref, computed, provide, h } from "vue";
 import { VcBlade } from "@ui/components/organisms/vc-blade";
-import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
+import { ToolbarServiceKey, WidgetServiceKey, BladeLoadingKey } from "@framework/injection-keys";
+import { VcInput } from "@ui/components/molecules/vc-input";
+import { VcSelect } from "@ui/components/molecules/vc-select";
+import { VcCard } from "@ui/components/atoms/vc-card";
+import { VcTextarea } from "@ui/components/molecules/vc-textarea";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
 import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey, BladeBannersKey } from "@core/blade-navigation/types";
@@ -752,6 +756,40 @@ export const BannerWithRenderFunction: Story = {
           </ul>
         </div>
       </VcBlade>
+    `,
+  }),
+};
+
+/**
+ * Composite skeleton story showing a realistic blade with multiple form fields
+ * in their skeleton state during loading.
+ */
+export const SkeletonWithRealContent: Story = {
+  args: {
+    loading: true,
+    title: "Product Details",
+    toolbarItems: [],
+  },
+  render: (args) => ({
+    components: { VcBlade, VcInput, VcSelect, VcCard, VcTextarea },
+    setup() {
+      return { args };
+    },
+    template: `
+      <div style="height: 600px; display: flex;">
+        <VcBlade v-bind="args">
+          <div style="display: flex; flex-direction: column; gap: 16px; padding: 20px;">
+            <VcInput label="Product Name" placeholder="Enter name" />
+            <VcSelect label="Category" />
+            <VcCard header="Description">
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 16px;">
+                <VcTextarea label="Short Description" />
+                <VcInput label="SKU" />
+              </div>
+            </VcCard>
+          </div>
+        </VcBlade>
+      </div>
     `,
   }),
 };

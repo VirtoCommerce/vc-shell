@@ -20,6 +20,14 @@ This document summarizes the major features and improvements introduced in v2.0.
 
 - **VcBlade loading skeleton** — VcBlade now renders a built-in skeleton placeholder while blade content is loading, replacing ad-hoc spinner implementations in blade pages.
 
+### Transparent Blade Skeletons
+
+VcBlade now provides layout-aware skeleton loading. When `loading=true`, every child UI component (VcInput, VcSelect, VcCard, etc.) automatically renders a skeleton placeholder matching its exact shape — no generic skeleton, no layout jumps. Zero changes to existing blade pages.
+
+Custom components can opt in via `useBladeLoading()` composable.
+
+See [migration/39-blade-skeleton.md](./migration/39-blade-skeleton.md) for details.
+
 ---
 
 ## Table System

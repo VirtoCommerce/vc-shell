@@ -1,5 +1,10 @@
 <template>
+  <div v-if="bladeLoading" class="vc-color-input vc-color-input--skeleton">
+    <VcSkeleton v-if="label" variant="block" :width="60 + (label?.length || 0) * 4" :height="11" />
+    <VcSkeleton variant="block" width="100%" :height="36" />
+  </div>
   <div
+    v-else
     class="vc-color-input"
     :class="[
       {
@@ -133,6 +138,10 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { ref, watch, nextTick } from "vue";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+
+const bladeLoading = useBladeLoading();
 import { useFormField } from "@ui/composables/useFormField";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
@@ -375,6 +384,10 @@ defineExpose({ focus });
 
   &__desc {
     @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm tw-mt-1;
+  }
+
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1.5;
   }
 
   &--error &__field-wrapper {

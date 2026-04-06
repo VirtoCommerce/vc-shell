@@ -1,4 +1,5 @@
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 import { Meta, StoryObj } from "@storybook/vue3-vite";
 import VcRating from "@ui/components/molecules/vc-rating/vc-rating.vue";
 
@@ -362,5 +363,20 @@ export const ComparisonTable: Story = {
         </table>
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  render: (args) => ({
+    components: { VcRating },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcRating v-bind="args" />',
   }),
 };

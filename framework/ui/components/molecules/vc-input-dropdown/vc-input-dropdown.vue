@@ -1,5 +1,25 @@
 <template>
+  <!-- Skeleton mode -->
+  <div
+    v-if="bladeLoading"
+    class="vc-input-dropdown vc-input-dropdown--skeleton"
+  >
+    <VcSkeleton
+      v-if="label"
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="11"
+    />
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="36"
+    />
+  </div>
+
+  <!-- Normal mode -->
   <VcSelect
+    v-else
     class="vc-input-dropdown"
     :options="options"
     :option-label="optionLabel"
@@ -114,6 +134,8 @@ import { unref } from "vue";
 import { VcSelect } from "@ui/components/molecules/vc-select";
 import { VcInput } from "@ui/components/molecules/vc-input";
 import { type OptionProp } from "@ui/components/molecules/vc-select";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type { ITextFieldProps } from "@ui/types/form-field";
 
 export interface VcInputDropdownProps extends ITextFieldProps {
@@ -231,6 +253,8 @@ defineSlots<{
 }>();
 
 defineEmits<VcInputDropdownEmits>();
+
+const bladeLoading = useBladeLoading();
 </script>
 
 <style lang="scss">
@@ -239,6 +263,10 @@ defineEmits<VcInputDropdownEmits>();
 }
 
 .vc-input-dropdown {
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1.5;
+  }
+
   &__input {
     @apply tw-w-full;
   }

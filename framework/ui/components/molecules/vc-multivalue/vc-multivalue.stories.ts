@@ -1,4 +1,5 @@
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcMultivalue } from ".";
 
@@ -557,5 +558,23 @@ export const WithPrependAppend: Story = {
         </vc-multivalue>
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Tags",
+  },
+  render: (args) => ({
+    components: { VcMultivalue },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcMultivalue v-bind="args" />',
   }),
 };

@@ -1,5 +1,29 @@
 <template>
+  <!-- Skeleton mode -->
+  <div
+    v-if="bladeLoading"
+    class="vc-checkbox-group vc-checkbox-group--skeleton"
+  >
+    <div
+      v-for="i in (options?.length || 3)"
+      :key="i"
+      class="vc-checkbox-group__skeleton-item"
+    >
+      <VcSkeleton
+        variant="block"
+        :width="16"
+        :height="16"
+      />
+      <VcSkeleton
+        variant="block"
+        :width="60 + i * 12"
+        :height="12"
+      />
+    </div>
+  </div>
+
   <VcInputGroup
+    v-else
     class="vc-checkbox-group"
     :label="label"
     :tooltip="tooltip"
@@ -35,6 +59,8 @@
 import { computed, useId } from "vue";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
 import { VcInputGroup } from "@ui/components/molecules/vc-input-group";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type { IFormFieldProps } from "@ui/types/form-field";
 
 export interface CheckboxGroupOption<V = string | number | boolean> {
@@ -65,6 +91,8 @@ const emit = defineEmits<{
   (event: "update:modelValue", value: T[]): void;
 }>();
 
+const bladeLoading = useBladeLoading();
+
 const uid = useId();
 const generatedName = computed(() => `vc-checkbox-group-${uid}`);
 const resolvedName = computed(() => props.name || generatedName.value);
@@ -92,6 +120,14 @@ function getOptionKey(option: CheckboxGroupOption<T>, index: number) {
 .vc-checkbox-group {
   .vc-checkbox {
     @apply tw-min-h-5;
+  }
+
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-2;
+  }
+
+  &__skeleton-item {
+    @apply tw-flex tw-flex-row tw-items-center tw-gap-2;
   }
 }
 </style>

@@ -1,5 +1,10 @@
 <template>
+  <div v-if="bladeLoading" class="vc-editor vc-editor--skeleton">
+    <VcSkeleton v-if="label" variant="block" :width="60 + (label?.length || 0) * 4" :height="11" />
+    <VcSkeleton variant="block" width="100%" :height="320" />
+  </div>
   <div
+    v-else
     class="vc-editor"
     :class="{
       'vc-editor--error': !!errorMessage,
@@ -158,6 +163,10 @@
 </template>
 <script lang="ts" setup>
 import { ref, watch, onBeforeUnmount, computed } from "vue";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+
+const bladeLoading = useBladeLoading();
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import { StarterKit } from "@tiptap/starter-kit";
 import { Underline } from "@tiptap/extension-underline";
@@ -811,6 +820,10 @@ async function handleImageSelection(event: Event) {
       color: var(--warning-600);
       font-weight: 600;
     }
+  }
+
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1.5;
   }
 
   &--fullscreen {

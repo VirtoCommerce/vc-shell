@@ -1,5 +1,22 @@
 <template>
   <div
+    v-if="bladeLoading"
+    class="vc-accordion vc-accordion--skeleton"
+  >
+    <div
+      v-for="i in 3"
+      :key="i"
+      class="vc-accordion__item"
+    >
+      <VcSkeleton
+        variant="block"
+        width="100%"
+        :height="44"
+      />
+    </div>
+  </div>
+  <div
+    v-else
     class="vc-accordion"
     :class="`vc-accordion--${variant}`"
   >
@@ -37,6 +54,10 @@
 import { ref, watch, computed } from "vue";
 import type { VNode, Component } from "vue";
 import VcAccordionItem from "@ui/components/molecules/vc-accordion/_internal/vc-accordion-item/vc-accordion-item.vue";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
+
+const bladeLoading = useBladeLoading();
 
 export interface AccordionItem {
   id?: string | number;
@@ -180,6 +201,10 @@ watch(
     .vc-accordion__item {
       border: 1px solid var(--accordion-item-border-color);
     }
+  }
+
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1;
   }
 
   &--ghost {

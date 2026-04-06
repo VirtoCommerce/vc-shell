@@ -1,5 +1,23 @@
 <template>
+  <!-- Skeleton mode -->
   <div
+    v-if="bladeLoading"
+    class="vc-checkbox vc-checkbox--skeleton"
+  >
+    <VcSkeleton
+      variant="block"
+      :width="20"
+      :height="20"
+    />
+    <VcSkeleton
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="12"
+    />
+  </div>
+
+  <div
+    v-else
     class="vc-checkbox"
     :class="{
       'vc-checkbox--disabled': resolvedDisabled,
@@ -106,7 +124,9 @@
 import { computed, ref, watch, onMounted, type VNode } from "vue";
 import { VcHint } from "@ui/components/atoms/vc-hint";
 import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { useFormField } from "@ui/composables/useFormField";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type { IFormFieldProps } from "@ui/types";
 
 const props = withDefaults(
@@ -148,6 +168,8 @@ const {
   ariaRequired,
   ariaDescribedBy,
 } = useFormField(props);
+
+const bladeLoading = useBladeLoading();
 
 const checkboxRef = ref<HTMLInputElement | null>(null);
 
@@ -323,6 +345,10 @@ onMounted(() => {
   &--disabled {
     @apply tw-cursor-not-allowed tw-pointer-events-none;
     opacity: var(--checkbox-disabled-opacity);
+  }
+
+  &--skeleton {
+    @apply tw-flex tw-flex-row tw-items-center tw-gap-2;
   }
 }
 

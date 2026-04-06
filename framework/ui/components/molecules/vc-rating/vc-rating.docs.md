@@ -251,3 +251,8 @@ Use the `"star-and-text"` or `"text"` variant in table cell slots for a compact 
 - [VcField](../vc-field/) -- Read-only field display, often used alongside ratings in detail views
 - [VcLabel](../../atoms/vc-label/) -- Label atom used internally for the label and tooltip
 - [VcIcon](../../atoms/vc-icon/) -- Renders the star icons internally
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
+

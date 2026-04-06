@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcInputDropdown } from "@ui/components/molecules/vc-input-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcButton } from "@ui/components/atoms/vc-button";
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 
 /**
  * `VcInputDropdown` is a versatile component that combines an input field with a dropdown selection.
@@ -757,5 +758,23 @@ export const States: Story = {
         />
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Search",
+  },
+  render: (args) => ({
+    components: { VcInputDropdown },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcInputDropdown v-bind="args" />',
   }),
 };

@@ -113,3 +113,8 @@ const products = [
 ## Related Components
 
 - [VcImage](../../atoms/vc-image/) -- image component often used inside slides
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
+

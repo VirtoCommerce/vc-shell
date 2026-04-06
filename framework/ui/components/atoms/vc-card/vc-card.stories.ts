@@ -3,6 +3,8 @@ import { VcCard } from ".";
 import { VcInput } from "@ui/components/molecules/vc-input";
 import { VcCol } from "@ui/components/atoms/vc-col";
 import { VcButton } from "@ui/components/atoms/vc-button";
+import { provide, ref } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 
 /**
  * `VcCard` is a container component that provides a bordered and styled section with
@@ -339,4 +341,22 @@ export const WithComponentContent: Story = {
       },
     },
   },
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    header: "Card Title",
+  },
+  render: (args) => ({
+    components: { VcCard },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcCard v-bind="args" />',
+  }),
 };

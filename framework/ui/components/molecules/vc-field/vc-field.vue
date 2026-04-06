@@ -1,5 +1,14 @@
 <template>
+  <div v-if="bladeLoading" class="vc-field" :class="[`vc-field--${orientation}`]">
+    <div v-if="label" class="vc-field__label">
+      <VcSkeleton variant="block" :width="60 + (label?.length || 0) * 4" :height="11" />
+    </div>
+    <div class="vc-field__value">
+      <VcSkeleton variant="block" :width="120" :height="14" />
+    </div>
+  </div>
   <div
+    v-else
     class="vc-field"
     :class="[`vc-field--${orientation}`]"
   >
@@ -62,6 +71,10 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+
+const bladeLoading = useBladeLoading();
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { formatDateRelative } from "@core/utilities/date";
 

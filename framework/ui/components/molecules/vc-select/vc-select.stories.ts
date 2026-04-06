@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcSelect } from "@ui/components/molecules/vc-select";
-import { ref, h, computed } from "vue";
+import { ref, h, computed, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcButton } from "@ui/components/atoms/vc-button";
 
@@ -1726,5 +1727,23 @@ export const Scrollable: Story = {
         </div>
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Category",
+  },
+  render: (args) => ({
+    components: { VcSelect },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcSelect v-bind="args" />',
   }),
 };

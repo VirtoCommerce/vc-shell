@@ -351,3 +351,7 @@ const validationHeader = computed(() =>
 - [VcContainer](../vc-container/) -- scrollable content wrapper without header or collapsing
 - [VcBanner](../vc-banner/) -- for alert/notification messages rather than content grouping
 - [VcCol](../vc-col/) / [VcRow](../vc-row/) -- for grid-based layout within card bodies
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, VcCard shows a skeleton header (if the `header` prop is set) while its body content renders normally — child components self-skeletonize via their own `BladeLoadingKey` injection.

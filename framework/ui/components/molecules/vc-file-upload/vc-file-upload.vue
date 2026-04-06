@@ -1,5 +1,9 @@
 <template>
+  <div v-if="bladeLoading" class="vc-file-upload__container vc-file-upload--skeleton">
+    <VcSkeleton variant="block" width="100%" :height="120" />
+  </div>
   <div
+    v-else
     class="vc-file-upload__container"
     :class="{ 'vc-file-upload__container--error': !!resolvedErrorMessage }"
   >
@@ -100,6 +104,10 @@
 </template>
 <script lang="ts" setup>
 import { ref, unref, computed, type VNode } from "vue";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+
+const bladeLoading = useBladeLoading();
 import { useField } from "vee-validate";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcLink } from "@ui/components/atoms/vc-link";
@@ -328,6 +336,13 @@ function dragLeave() {
     font-size: 12px;
     font-weight: 500;
     color: var(--file-upload-text-color);
+  }
+
+  &--skeleton {
+    .vc-skeleton__shape {
+      border: 2px dashed var(--vc-skeleton-bg);
+      background: transparent;
+    }
   }
 
   &__error {

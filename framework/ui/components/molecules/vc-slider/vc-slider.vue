@@ -1,5 +1,9 @@
 <template>
+  <div v-if="bladeLoading" class="vc-slider vc-slider--skeleton">
+    <VcSkeleton variant="block" width="100%" :height="20" />
+  </div>
   <div
+    v-else
     class="vc-slider tw-relative"
     role="region"
     :aria-label="ariaLabel || 'Content carousel'"
@@ -62,6 +66,10 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+
+const bladeLoading = useBladeLoading();
 import { computed } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation } from "swiper/modules";
@@ -114,6 +122,10 @@ const buttonsList = computed(() => ({
     &.vc-slider__swiper_navigation {
       @apply tw-px-10;
     }
+  }
+
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1.5;
   }
 
   &__next,

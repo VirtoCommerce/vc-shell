@@ -95,9 +95,7 @@
     </BladeToolbar>
 
     <!-- Content zone -->
-    <BladeContentSkeleton v-if="showSkeleton" />
     <div
-      v-else
       ref="contentRef"
       class="vc-blade__content"
     >
@@ -119,17 +117,16 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, inject, computed, onMounted, nextTick, watch, getCurrentInstance, useAttrs, watchEffect } from "vue";
+import { ref, inject, provide, computed, onMounted, nextTick, watch, getCurrentInstance, useAttrs, watchEffect } from "vue";
 import { IBladeToolbar } from "@core/types";
 import { useBladeStack } from "@core/blade-navigation";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
 import BladeHeaderSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeHeaderSkeleton.vue";
 import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";
 import BladeToolbarSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeToolbarSkeleton.vue";
-import BladeContentSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeContentSkeleton.vue";
 import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
-import { BladeBackButtonKey, BladeFormKey } from "@framework/injection-keys";
+import { BladeBackButtonKey, BladeFormKey, BladeLoadingKey } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { useBlade } from "../../../../core/composables";
 import { useResponsive } from "@framework/core/composables/useResponsive";
@@ -180,6 +177,8 @@ const instanceUid = getCurrentInstance()?.uid ?? 0;
 const bladeTitleId = `blade-title-${instanceUid}`;
 
 const showSkeleton = computed(() => Boolean(props.loading));
+
+provide(BladeLoadingKey, showSkeleton);
 
 const slots = defineSlots<{
   actions(): void;

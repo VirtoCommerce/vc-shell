@@ -1,7 +1,28 @@
 <template>
+  <!-- Skeleton mode: blade is loading -->
+  <div
+    v-if="bladeLoading"
+    class="vc-gallery vc-gallery--skeleton"
+  >
+    <VcSkeleton
+      v-if="label"
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="11"
+    />
+    <div class="vc-gallery__skeleton-filmstrip">
+      <VcSkeleton
+        v-for="i in 4"
+        :key="i"
+        variant="block"
+        class="vc-gallery__skeleton-tile"
+      />
+    </div>
+  </div>
+
   <!-- Legacy shim: variant="file-upload" delegates to VcImageUpload -->
   <VcImageUpload
-    v-if="isLegacySingleImageMode"
+    v-else-if="isLegacySingleImageMode"
     :image="images?.[0]"
     :disabled="disabled"
     :loading="loading"
@@ -267,6 +288,8 @@ import { useGalleryFilmstrip } from "./composables/useGalleryFilmstrip";
 import type { ThumbnailSize } from "@core/utilities/thumbnail";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 
 export interface Props {
   images?: AssetLike[];
@@ -316,6 +339,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
 const { isMobile } = useResponsive();
+const bladeLoading = useBladeLoading();
 
 // Deprecation warnings (dev only)
 if (import.meta.env?.DEV) {
@@ -501,6 +525,21 @@ function onGlobalDrop(event: DragEvent) {
     &.vc-gallery--lg {
       --gallery-tile-min: 170px;
     }
+  }
+
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-2;
+  }
+
+  &__skeleton-filmstrip {
+    @apply tw-flex tw-flex-row tw-overflow-hidden;
+    gap: var(--gallery-grid-gap, 8px);
+  }
+
+  &__skeleton-tile {
+    width: var(--gallery-tile-min);
+    aspect-ratio: 1;
+    @apply tw-shrink-0;
   }
 
   &--drag-over {

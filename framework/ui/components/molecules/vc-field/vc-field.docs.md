@@ -166,3 +166,8 @@ The `type` prop affects rendering, not validation. Setting `type="email"` does n
 - [VcInput](../vc-input/) -- editable text field (use instead when user input is needed)
 - [VcLabel](../../atoms/vc-label/) -- standalone label atom used internally
 - [VcCol](../../atoms/vc-col/) -- column layout atom used for aspect ratio
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
+

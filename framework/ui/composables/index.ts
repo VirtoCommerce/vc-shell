@@ -7,3 +7,4 @@ export * from "@ui/composables/useTeleportTarget";
 export * from "@ui/composables/useTableSort";
 export * from "@ui/composables/useTableSelection";
 export * from "@ui/composables/useDataTableSort";
+export * from "@ui/composables/useBladeLoading";

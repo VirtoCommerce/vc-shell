@@ -3,8 +3,29 @@
     class="vc-card"
     :class="[{ 'vc-card--collapsable': isCollapsable }, `vc-card--${variant}`]"
   >
+    <!-- Skeleton header -->
     <div
-      v-if="header"
+      v-if="header && bladeLoading"
+      class="vc-card__header"
+    >
+      <div class="vc-card__header-content">
+        <VcSkeleton
+          v-if="icon"
+          variant="circle"
+          :width="22"
+          :height="22"
+          class="tw-mr-3"
+        />
+        <VcSkeleton
+          variant="block"
+          :width="80 + (header?.length || 0) * 4"
+          :height="14"
+        />
+      </div>
+    </div>
+    <!-- Normal header -->
+    <div
+      v-else-if="header"
       class="vc-card__header"
       :role="isCollapsable ? 'button' : undefined"
       :tabindex="isCollapsable ? 0 : undefined"
@@ -56,7 +77,11 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import { ref, watch, useId } from "vue";
+
+const bladeLoading = useBladeLoading();
 
 export interface Props {
   header?: string;

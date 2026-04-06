@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcColorInput } from "@ui/components/molecules/vc-color-input";
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 
 /**
  * `VcColorInput` is a standalone color input component that combines a text input for hex values
@@ -152,5 +153,23 @@ export const Small: Story = {
         <VcColorInput v-bind="args" v-model="value" />
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Color",
+  },
+  render: (args) => ({
+    components: { VcColorInput },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcColorInput v-bind="args" />',
   }),
 };

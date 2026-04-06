@@ -1,5 +1,25 @@
 <template>
+  <!-- Skeleton mode -->
   <div
+    v-if="bladeLoading"
+    class="vc-date-picker vc-date-picker--skeleton"
+  >
+    <VcSkeleton
+      v-if="label"
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="11"
+    />
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="36"
+    />
+  </div>
+
+  <!-- Normal mode -->
+  <div
+    v-else
     class="vc-date-picker"
     :class="[
       {
@@ -128,9 +148,11 @@
 import { computed, ref, watch } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useFormField } from "@ui/composables/useFormField";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcHint } from "@ui/components/atoms/vc-hint";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import VueDatePicker, { VueDatePickerProps, ModelValue } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import type { ITextFieldProps } from "@ui/types";
@@ -155,6 +177,7 @@ const props = withDefaults(defineProps<VcDatePickerProps>(), {
 
 const emit = defineEmits<VcDatePickerEmits>();
 
+const bladeLoading = useBladeLoading();
 const { isMobile, isDesktop } = useResponsive();
 const { labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } = useFormField(props);
 
@@ -248,6 +271,10 @@ function handleFocus() {
 }
 
 .vc-date-picker {
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1.5;
+  }
+
   &__label {
     @apply tw-mb-2;
   }

@@ -1,5 +1,25 @@
 <template>
+  <!-- Skeleton mode -->
   <div
+    v-if="bladeLoading"
+    class="vc-select vc-select--skeleton"
+  >
+    <VcSkeleton
+      v-if="label"
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="11"
+    />
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="36"
+    />
+  </div>
+
+  <!-- Normal mode -->
+  <div
+    v-else
     ref="selectRootRef"
     class="vc-select"
     :class="{
@@ -160,8 +180,10 @@
 <script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number } | undefined = undefined">
 import { ref, computed, watch, watchEffect, nextTick } from "vue";
 import { useFormField } from "@ui/composables/useFormField";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import { useIntersectionObserver } from "@vueuse/core";
 import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { useI18n } from "vue-i18n";
 import { useKeyboardNavigation } from "@core/composables/useKeyboardNavigation";
 import {
@@ -326,6 +348,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n({ useScope: "global" });
+const bladeLoading = useBladeLoading();
 
 const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
   useFormField(props);
@@ -555,6 +578,10 @@ watch(
 }
 
 .vc-select {
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1.5;
+  }
+
   &--no-outline {
     .vc-select__chevron-container {
       display: none;

@@ -322,3 +322,8 @@ async function onUpload(files: FileList) {
 - [VcGallery](../../organisms/vc-gallery/) -- Full image gallery with preview, reorder, drag-and-drop sorting, and upload
 - [VcImageTile](../vc-image-tile/) -- Image display tile used inside galleries
 - [VcHint](../../atoms/vc-hint/) -- Used internally for error message display
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
+

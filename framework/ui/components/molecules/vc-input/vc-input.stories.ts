@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcInput } from "@ui/components/molecules/vc-input";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { ref, computed } from "vue";
+import { ref, computed, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 
 /**
  * `VcInput` is a versatile input field component that supports a wide range of input types, customization options,
@@ -1000,5 +1001,24 @@ export const Accessibility: Story = {
         </div>
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Product Name",
+    placeholder: "Enter name",
+  },
+  render: (args) => ({
+    components: { VcInput },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcInput v-bind="args" />',
   }),
 };

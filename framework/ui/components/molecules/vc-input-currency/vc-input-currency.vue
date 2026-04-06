@@ -1,5 +1,25 @@
 <template>
+  <!-- Skeleton mode -->
+  <div
+    v-if="bladeLoading"
+    class="vc-input-currency vc-input-currency--skeleton"
+  >
+    <VcSkeleton
+      v-if="label"
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="11"
+    />
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="36"
+    />
+  </div>
+
+  <!-- Normal mode -->
   <VcInputDropdown
+    v-else
     class="vc-input-currency"
     :options="options"
     :option-label="optionLabel"
@@ -48,6 +68,8 @@
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
 import { unref, watch } from "vue";
 import { VcInputDropdown } from "@ui/components/molecules/vc-input-dropdown";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import { type OptionProp } from "@ui/components/molecules/vc-select";
 import type { IFormFieldProps } from "@ui/types";
 
@@ -102,6 +124,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+const bladeLoading = useBladeLoading();
 
 const { inputRef, setOptions, numberValue, setValue } = useCurrencyInput(
   {
@@ -194,6 +217,10 @@ function handlePaste(e: ClipboardEvent) {
 }
 
 .vc-input-currency {
+  &--skeleton {
+    @apply tw-flex tw-flex-col tw-gap-1.5;
+  }
+
   &__control {
     @apply tw-border-none tw-px-0 tw-py-0 tw-text-sm tw-outline-none tw-bg-transparent tw-w-full tw-h-full;
   }

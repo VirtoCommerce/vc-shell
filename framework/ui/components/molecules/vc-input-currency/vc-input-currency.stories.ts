@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcInputCurrency } from "@ui/components/molecules/vc-input-currency";
-import { ref } from "vue";
+import { ref, provide } from "vue";
+import { BladeLoadingKey } from "@framework/injection-keys";
 
 /**
  * `VcInputCurrency` is a specialized input component for handling currency values with formatting
@@ -528,5 +529,23 @@ export const Clearable: Story = {
         />
       </div>
     `,
+  }),
+};
+
+/**
+ * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
+ * to simulate the blade loading context.
+ */
+export const Skeleton: Story = {
+  args: {
+    label: "Price",
+  },
+  render: (args) => ({
+    components: { VcInputCurrency },
+    setup() {
+      provide(BladeLoadingKey, ref(true));
+      return { args };
+    },
+    template: '<VcInputCurrency v-bind="args" />',
   }),
 };

@@ -59,6 +59,7 @@ export interface UseUserReturn {
 export type IAppUserAPI = UseUserReturn;
 
 const user: Ref<UserDetail | undefined> = ref();
+const authData: Ref<TokenData | null> = ref(null);
 
 function readAuthData(): TokenData | null {
   try {
@@ -137,7 +138,6 @@ async function fetchToken(params: Record<string, string>): Promise<TokenData | n
 
 export function _createInternalUserLogic(): IUserInternalAPI {
   const loading: Ref<boolean> = ref(false);
-  const authData: Ref<TokenData | null> = ref(null);
 
   const { storage: externalSignInStorage, signOut: externalSignOut } = useExternalProvider();
 

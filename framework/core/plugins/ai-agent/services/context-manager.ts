@@ -1,4 +1,4 @@
-import { ref, computed, type ComputedRef } from "vue";
+import { ref, computed, toValue, type ComputedRef, type MaybeRefOrGetter } from "vue";
 import { cloneDeep } from "lodash-es";
 import { createLogger } from "@core/utilities";
 import type {
@@ -14,9 +14,9 @@ import type {
 const logger = createLogger("ai-agent-context");
 
 export interface ContextManagerOptions {
-  userGetter: () => IAiAgentUserContext | undefined;
-  bladeGetter: () => IAiAgentBladeContext | null;
-  localeGetter: () => string;
+  user: MaybeRefOrGetter<IAiAgentUserContext | undefined>;
+  blade: MaybeRefOrGetter<IAiAgentBladeContext | null>;
+  locale: MaybeRefOrGetter<string>;
   tokenGetter?: () => Promise<string | null>;
 }
 
@@ -48,14 +48,14 @@ function toBladeContext(blade: IAiAgentBladeContext | null): IChatBladeContext {
 }
 
 export function createContextManager(options: ContextManagerOptions): ContextManager {
-  const { userGetter, bladeGetter, localeGetter, tokenGetter } = options;
+  const { user, blade, locale, tokenGetter } = options;
 
   const bladeContexts = ref<
     Map<string, { items: Record<string, unknown>[]; type: AiAgentContextType; suggestions?: ISuggestion[] }>
   >(new Map());
 
   const getActiveBladeContext = () => {
-    const activeBlade = bladeGetter();
+    const activeBlade = toValue(blade);
     if (!activeBlade)
       return {
         items: [] as Record<string, unknown>[],
@@ -82,10 +82,10 @@ export function createContextManager(options: ContextManagerOptions): ContextMan
     suggestions?: ISuggestion[],
     bladeId?: string,
   ): { cleared: boolean } => {
-    // Always use bladeGetter().id as the Map key — it returns blade.type.name (e.g. "offerslist"),
+    // Always use blade's id as the Map key — it returns blade.type.name (e.g. "offerslist"),
     // which matches getActiveBladeContext() lookup. bladeId from BladeDescriptorKey is a runtime
     // unique ID (e.g. "blade_1_abc") that would cause a key mismatch.
-    const targetBladeId = bladeGetter()?.id || bladeId;
+    const targetBladeId = toValue(blade)?.id || bladeId;
     if (!targetBladeId) {
       logger.warn("Cannot set context data: no blade id available");
       return { cleared: false };
@@ -105,9 +105,9 @@ export function createContextManager(options: ContextManagerOptions): ContextMan
   const buildInitPayload = async (): Promise<IInitContextPayload> => {
     const accessToken = tokenGetter ? ((await tokenGetter()) ?? undefined) : undefined;
     return {
-      userId: userGetter()?.id || "",
-      locale: localeGetter(),
-      blade: toBladeContext(bladeGetter()),
+      userId: toValue(user)?.id || "",
+      locale: toValue(locale),
+      blade: toBladeContext(toValue(blade)),
       contextType: contextType.value,
       items: cloneDeep(contextItems.value),
       suggestions: contextSuggestions.value ? cloneDeep(contextSuggestions.value) : undefined,
@@ -118,11 +118,11 @@ export function createContextManager(options: ContextManagerOptions): ContextMan
   const buildUpdatePayload = async (): Promise<IUpdateContextPayload> => {
     const accessToken = tokenGetter ? ((await tokenGetter()) ?? undefined) : undefined;
     return {
-      blade: toBladeContext(bladeGetter()),
+      blade: toBladeContext(toValue(blade)),
       contextType: contextType.value,
       items: cloneDeep(contextItems.value),
       suggestions: contextSuggestions.value ? cloneDeep(contextSuggestions.value) : undefined,
-      locale: localeGetter(),
+      locale: toValue(locale),
       accessToken,
     };
   };

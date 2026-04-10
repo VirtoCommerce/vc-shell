@@ -1,4 +1,4 @@
-import { ref, computed, watch, type ShallowRef } from "vue";
+import { ref, computed, watch, toValue, type MaybeRefOrGetter, type ShallowRef } from "vue";
 import { createLogger } from "@core/utilities";
 import type {
   IAiAgentService,
@@ -23,12 +23,12 @@ const logger = createLogger("ai-agent-service");
  * Options for creating the AI agent service
  */
 export interface CreateAiAgentServiceOptions {
-  /** Function to get current user information */
-  userGetter: () => IAiAgentUserContext | undefined;
-  /** Function to get current blade context */
-  bladeGetter: () => IAiAgentBladeContext | null;
-  /** Function to get user locale */
-  localeGetter: () => string;
+  /** Current user information (ref, getter, or plain value) */
+  user: MaybeRefOrGetter<IAiAgentUserContext | undefined>;
+  /** Current blade context (ref, getter, or plain value) */
+  blade: MaybeRefOrGetter<IAiAgentBladeContext | null>;
+  /** User locale (ref, getter, or plain value) */
+  locale: MaybeRefOrGetter<string>;
   /** Function to get access token (handles automatic refresh) */
   tokenGetter?: () => Promise<string | null>;
   /** Function to navigate to blade */
@@ -68,16 +68,7 @@ export interface IAiAgentServiceInternal extends IAiAgentService {
  * Creates an AI agent service by composing panel-controller, context-manager, and message-transport.
  */
 export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiAgentServiceInternal {
-  const {
-    userGetter,
-    bladeGetter,
-    localeGetter,
-    tokenGetter,
-    navigateToBlade,
-    reloadBlade,
-    initialConfig,
-    isEmbedded = false,
-  } = options;
+  const { user, blade, locale, tokenGetter, navigateToBlade, reloadBlade, initialConfig, isEmbedded = false } = options;
 
   const config = ref<IAiAgentConfig>({ ...DEFAULT_AI_AGENT_CONFIG, ...initialConfig });
 
@@ -85,9 +76,9 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
   const panel = createPanelController();
 
   const contextManager = createContextManager({
-    userGetter,
-    bladeGetter,
-    localeGetter,
+    user,
+    blade,
+    locale,
     tokenGetter,
   });
 
@@ -100,8 +91,8 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
 
   // Context computed (no timestamp — clean dependency tracking)
   const context = computed<IAiAgentContext>(() => ({
-    user: userGetter(),
-    currentBlade: bladeGetter(),
+    user: toValue(user),
+    currentBlade: toValue(blade),
     items: contextManager.contextItems.value,
   }));
 
@@ -137,14 +128,21 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
 
   // Watch context changes → UPDATE_CONTEXT (normal) or AI_CONTEXT_UPDATE (embedded)
   watch(
-    () => ({ currentBlade: context.value.currentBlade, items: context.value.items }),
-    async () => {
+    context,
+    async (newContext, oldContext) => {
       if (isEmbedded) {
         const payload = await contextManager.buildInitPayload();
         transport.sendToParent({ type: "AI_CONTEXT_UPDATE", payload });
         return;
       }
-      if (panel.isOpen.value && panel.isInitialized.value && transport.iframeRef.value?.contentWindow) {
+      if (!panel.isInitialized.value || !transport.iframeRef.value?.contentWindow) {
+        return;
+      }
+
+      if (newContext.user?.id !== oldContext?.user?.id) {
+        const payload = await contextManager.buildInitPayload();
+        transport.sendToIframe({ type: "INIT_CONTEXT", payload });
+      } else if (panel.isOpen.value) {
         const payload = await contextManager.buildUpdatePayload();
         transport.sendToIframe({ type: "UPDATE_CONTEXT", payload });
       }

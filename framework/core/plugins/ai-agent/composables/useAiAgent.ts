@@ -1,4 +1,4 @@
-import { inject, provide } from "vue";
+import { computed, inject, provide } from "vue";
 import { createAiAgentService, type IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
 import { AiAgentServiceKey, EmbeddedModeKey, LanguageServiceKey, ToolbarServiceKey } from "@framework/injection-keys";
 import type {
@@ -49,7 +49,7 @@ export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): I
 
   // Create the service
   const service = createAiAgentService({
-    userGetter: () => {
+    user: computed(() => {
       if (!user.value) return undefined;
       return {
         id: user.value.id,
@@ -57,8 +57,8 @@ export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): I
         isAdministrator: user.value.isAdministrator,
         permissions: user.value.permissions,
       };
-    },
-    bladeGetter: (): IAiAgentBladeContext | null => {
+    }),
+    blade: (): IAiAgentBladeContext | null => {
       const currentBlade = activeBlade.value ?? blades.value[blades.value.length - 1];
       if (!currentBlade) return null;
 
@@ -70,7 +70,7 @@ export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): I
         options: currentBlade.options,
       };
     },
-    localeGetter: () => languageService?.currentLocale.value ?? "en",
+    locale: () => languageService?.currentLocale.value ?? "en",
     tokenGetter: getAccessToken,
     navigateToBlade: (bladeName: string, param?: string, bladeOptions?: Record<string, unknown>) => {
       openBlade({ name: bladeName, param, options: bladeOptions })

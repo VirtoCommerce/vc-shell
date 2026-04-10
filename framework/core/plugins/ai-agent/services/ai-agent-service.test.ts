@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { nextTick } from "vue";
+import { nextTick, ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { createAiAgentService } from "./ai-agent-service";
 
@@ -13,9 +13,9 @@ vi.mock("@core/utilities", () => ({
 }));
 
 describe("createAiAgentService", () => {
-  const userGetter = () => ({ id: "user-1", userName: "admin" });
-  const bladeGetter = () => ({ id: "offers", name: "OfferDetails", title: "Offer #1" });
-  const localeGetter = () => "en";
+  const currentUser = ref<{ id: string; userName: string } | undefined>({ id: "user-1", userName: "admin" });
+  const blade = () => ({ id: "offers", name: "OfferDetails", title: "Offer #1" });
+  const locale = () => "en";
   const tokenGetter = async () => "token-123";
 
   let service: ReturnType<typeof createAiAgentService>;
@@ -23,11 +23,12 @@ describe("createAiAgentService", () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
+    currentUser.value = { id: "user-1", userName: "admin" };
 
     service = createAiAgentService({
-      userGetter,
-      bladeGetter,
-      localeGetter,
+      user: currentUser,
+      blade,
+      locale,
       tokenGetter,
       initialConfig: { url: "https://chat.example.com" },
     });
@@ -123,5 +124,46 @@ describe("createAiAgentService", () => {
 
     const updateCall = postMessageSpy.mock.calls.find((call) => call[0]?.type === "UPDATE_CONTEXT");
     expect(updateCall).toBeUndefined();
+  });
+
+  it("sends INIT_CONTEXT when user changes while panel is open", async () => {
+    // Initialize: trigger CHAT_READY
+    window.dispatchEvent(new MessageEvent("message", { data: { type: "CHAT_READY" } }));
+    await flushPromises();
+
+    service.openPanel();
+    await nextTick();
+    postMessageSpy.mockClear();
+
+    // Simulate logout + re-login with different user
+    currentUser.value = { id: "user-2", userName: "other-seller" };
+    await nextTick();
+    await flushPromises();
+
+    const initCall = postMessageSpy.mock.calls.find((call) => call[0]?.type === "INIT_CONTEXT");
+    expect(initCall).toBeDefined();
+    expect(initCall![0].payload).toEqual(
+      expect.objectContaining({
+        userId: "user-2",
+        accessToken: "token-123",
+      }),
+    );
+  });
+
+  it("sends INIT_CONTEXT when user changes even if panel is closed", async () => {
+    // Initialize: trigger CHAT_READY (sets isInitialized)
+    window.dispatchEvent(new MessageEvent("message", { data: { type: "CHAT_READY" } }));
+    await flushPromises();
+    // Panel stays closed
+    postMessageSpy.mockClear();
+
+    // Simulate logout + re-login with different user
+    currentUser.value = { id: "user-2", userName: "other-seller" };
+    await nextTick();
+    await flushPromises();
+
+    const initCall = postMessageSpy.mock.calls.find((call) => call[0]?.type === "INIT_CONTEXT");
+    expect(initCall).toBeDefined();
+    expect(initCall![0].payload.userId).toBe("user-2");
   });
 });

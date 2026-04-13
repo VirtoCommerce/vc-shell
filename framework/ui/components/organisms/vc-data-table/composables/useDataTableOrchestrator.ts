@@ -192,6 +192,7 @@ export interface VcDataTableOrchestratorReturn<T extends Record<string, unknown>
 
   // Expansion helper
   isRowExpanded: (item: T) => boolean;
+  canExpand: (item: T) => boolean;
   expandedKeysArray: Ref<string[]>;
 
   // Data-discovered IDs watcher stable ref
@@ -334,6 +335,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   const expansion = useTableExpansion<T>({
     expandedRows: toRef(props, "expandedRows") as Ref<T[]>,
     getItemKey,
+    isRowExpandable: (item: T) => (props.isRowExpandable ? props.isRowExpandable(item) : true),
   });
 
   // Use a regular ref with array of keys for proper reactivity
@@ -361,6 +363,11 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   const isRowExpanded = (item: T): boolean => {
     const key = getItemKey(item, 0);
     return expandedKeysArray.value.includes(key);
+  };
+
+  // Helper to check if row can be expanded
+  const canExpand = (item: T): boolean => {
+    return expansion.canExpand(item);
   };
 
   // ============================================================================
@@ -801,6 +808,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   const handleExpandToggle = (item: T, index: number, event: Event) => {
     const wasExpanded = expansion.isRowExpanded(item, index);
     const result = expansion.toggleRowExpansion(item, index, event);
+    if (!result) return;
     if (wasExpanded) emit("row-collapse", result);
     else emit("row-expand", result);
   };
@@ -1017,6 +1025,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
 
     // Expansion helper
     isRowExpanded,
+    canExpand,
     expandedKeysArray,
 
     // Data-discovered IDs stable ref

@@ -941,6 +941,7 @@ const {
 
   // Expansion helper
   isRowExpanded,
+  canExpand,
 
   // Event handlers
   handleSort,
@@ -1146,7 +1147,7 @@ const getRowProps = (item: T, index: number) => ({
   isDragging: draggedRow.value === index,
 
   // Expansion
-  expandable: hasExpanderColumn.value,
+  expandable: hasExpanderColumn.value && canExpand(item),
   isExpanded: isRowExpanded(item),
   expandedIcon: props.expandedRowIcon,
   collapsedIcon: props.collapsedRowIcon,

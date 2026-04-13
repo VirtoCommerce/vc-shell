@@ -619,6 +619,33 @@ Customize expand/collapse icons:
 </VcDataTable>
 ```
 
+### Conditional expansion
+
+Use `isRowExpandable` to control which rows show the expand toggle. Rows that fail the predicate cannot be expanded:
+
+```vue
+<template>
+  <VcDataTable
+    :items="orders"
+    v-model:expanded-rows="expandedRows"
+    :is-row-expandable="(order) => order.lineItems.length > 0"
+  >
+    <VcColumn id="expand" :expander="true" :width="40" />
+    <VcColumn id="orderNumber" field="number" title="Order #" />
+
+    <template #expansion="{ data }">
+      <div class="tw-p-4">
+        <p v-for="item in data.lineItems" :key="item.id">{{ item.name }}</p>
+      </div>
+    </template>
+  </VcDataTable>
+</template>
+
+<script setup lang="ts">
+const expandedRows = ref<Order[]>([]);
+</script>
+```
+
 ---
 
 ## Row Grouping
@@ -1264,6 +1291,7 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 | `expandedRows` | `T[]` | `[]` | Expanded rows. Use with `v-model:expandedRows`. |
 | `expandedRowIcon` | `string` | `"lucide-chevron-down"` | Icon for expanded state. |
 | `collapsedRowIcon` | `string` | `"lucide-chevron-right"` | Icon for collapsed state. |
+| `isRowExpandable` | `(data: T) => boolean` | -- | Per-row predicate to hide the expand toggle. |
 
 ### Row Grouping
 

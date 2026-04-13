@@ -485,6 +485,8 @@ export interface VcDataTableProps<T = any> {
   expandedRowIcon?: string;
   /** Icon class for collapsed row toggle (default: `"lucide-chevron-right"`) */
   collapsedRowIcon?: string;
+  /** Per-row function to disable expansion (hidden toggle). When omitted, all rows are expandable. */
+  isRowExpandable?: (data: T) => boolean;
 
   // === Row Grouping ===
   /** Field(s) to group rows by */

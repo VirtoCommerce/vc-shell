@@ -98,3 +98,66 @@ describe("useTableExpansion", () => {
     expect(result.expandedRowKeys.value.has("X")).toBe(true);
   });
 });
+
+describe("isRowExpandable", () => {
+  it("canExpand returns true when no callback provided", () => {
+    const { result } = setup();
+    expect(result.canExpand({ id: "1", name: "A" })).toBe(true);
+  });
+
+  it("canExpand delegates to isRowExpandable callback", () => {
+    const { result } = mountWithSetup(() =>
+      useTableExpansion<Item>({
+        expandedRows: ref(undefined),
+        getItemKey,
+        isRowExpandable: (item) => item.id !== "blocked",
+      }),
+    );
+    expect(result.canExpand({ id: "ok", name: "OK" })).toBe(true);
+    expect(result.canExpand({ id: "blocked", name: "Blocked" })).toBe(false);
+  });
+
+  it("toggleRowExpansion is a no-op for non-expandable rows", () => {
+    const { result } = mountWithSetup(() =>
+      useTableExpansion<Item>({
+        expandedRows: ref(undefined),
+        getItemKey,
+        isRowExpandable: (item) => item.id !== "blocked",
+      }),
+    );
+    const mockEvent = { stopPropagation: () => {} } as unknown as Event;
+    const ev = result.toggleRowExpansion({ id: "blocked", name: "Blocked" }, 0, mockEvent);
+    expect(ev).toBeNull();
+    expect(result.internalExpandedRows.value).toHaveLength(0);
+  });
+
+  it("expandRow is a no-op for non-expandable rows", () => {
+    const { result } = mountWithSetup(() =>
+      useTableExpansion<Item>({
+        expandedRows: ref(undefined),
+        getItemKey,
+        isRowExpandable: (item) => item.id !== "blocked",
+      }),
+    );
+    const ev = result.expandRow({ id: "blocked", name: "Blocked" }, 0);
+    expect(ev).toBeNull();
+    expect(result.internalExpandedRows.value).toHaveLength(0);
+  });
+
+  it("expandAll only expands rows that pass isRowExpandable", () => {
+    const { result } = mountWithSetup(() =>
+      useTableExpansion<Item>({
+        expandedRows: ref(undefined),
+        getItemKey,
+        isRowExpandable: (item) => item.id !== "blocked",
+      }),
+    );
+    result.expandAll([
+      { id: "1", name: "A" },
+      { id: "blocked", name: "Blocked" },
+      { id: "2", name: "B" },
+    ]);
+    expect(result.internalExpandedRows.value).toHaveLength(2);
+    expect(result.isRowExpanded({ id: "blocked", name: "Blocked" }, 0)).toBe(false);
+  });
+});

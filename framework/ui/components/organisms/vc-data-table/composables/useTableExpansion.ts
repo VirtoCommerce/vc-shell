@@ -13,6 +13,8 @@ export interface UseTableExpansionOptions<T> {
   expandedRows?: Ref<T[] | undefined>;
   /** Function to get unique key for an item */
   getItemKey: (item: T, index: number) => string;
+  /** Per-row callback to disable expansion. When omitted, all rows are expandable. */
+  isRowExpandable?: (item: T) => boolean;
 }
 
 export interface RowExpandEvent<T> {
@@ -25,12 +27,14 @@ export interface UseTableExpansionReturn<T> {
   internalExpandedRows: Ref<T[]>;
   /** Set of expanded row keys for O(1) lookup */
   expandedRowKeys: ComputedRef<Set<string>>;
+  /** Check if a row is allowed to expand (based on isRowExpandable callback) */
+  canExpand: (item: T) => boolean;
   /** Check if a specific row is expanded */
   isRowExpanded: (item: T, index: number) => boolean;
   /** Toggle row expansion state */
-  toggleRowExpansion: (item: T, index: number, event: Event) => RowExpandEvent<T>;
+  toggleRowExpansion: (item: T, index: number, event: Event) => RowExpandEvent<T> | null;
   /** Expand a row */
-  expandRow: (item: T, index: number, event?: Event) => RowExpandEvent<T>;
+  expandRow: (item: T, index: number, event?: Event) => RowExpandEvent<T> | null;
   /** Collapse a row */
   collapseRow: (item: T, index: number, event?: Event) => RowExpandEvent<T>;
   /** Expand all rows */
@@ -42,7 +46,7 @@ export interface UseTableExpansionReturn<T> {
 export function useTableExpansion<T extends Record<string, any>>(
   options: UseTableExpansionOptions<T>,
 ): UseTableExpansionReturn<T> {
-  const { expandedRows, getItemKey } = options;
+  const { expandedRows, getItemKey, isRowExpandable } = options;
 
   // ============================================================================
   // State
@@ -75,6 +79,14 @@ export function useTableExpansion<T extends Record<string, any>>(
   // ============================================================================
 
   /**
+   * Check if a row is allowed to expand (based on isRowExpandable callback)
+   */
+  const canExpand = (item: T): boolean => {
+    if (!isRowExpandable) return true;
+    return isRowExpandable(item);
+  };
+
+  /**
    * Check if a specific row is expanded
    * Note: Uses index=0 for key generation to match expandedRowKeys computation
    * The key should be based on dataKey field, not array index
@@ -90,7 +102,9 @@ export function useTableExpansion<T extends Record<string, any>>(
   /**
    * Expand a row
    */
-  const expandRow = (item: T, index: number, event?: Event): RowExpandEvent<T> => {
+  const expandRow = (item: T, index: number, event?: Event): RowExpandEvent<T> | null => {
+    if (!canExpand(item)) return null;
+
     if (!isRowExpanded(item, index)) {
       internalExpandedRows.value = [...internalExpandedRows.value, item];
     }
@@ -116,8 +130,10 @@ export function useTableExpansion<T extends Record<string, any>>(
   /**
    * Toggle row expansion state
    */
-  const toggleRowExpansion = (item: T, index: number, event: Event): RowExpandEvent<T> => {
+  const toggleRowExpansion = (item: T, index: number, event: Event): RowExpandEvent<T> | null => {
     event.stopPropagation();
+
+    if (!canExpand(item)) return null;
 
     if (isRowExpanded(item, index)) {
       return collapseRow(item, index, event);
@@ -130,7 +146,7 @@ export function useTableExpansion<T extends Record<string, any>>(
    * Expand all rows
    */
   const expandAll = (items: T[]): void => {
-    internalExpandedRows.value = [...items];
+    internalExpandedRows.value = isRowExpandable ? items.filter(isRowExpandable) : [...items];
   };
 
   /**
@@ -143,6 +159,7 @@ export function useTableExpansion<T extends Record<string, any>>(
   return {
     internalExpandedRows,
     expandedRowKeys,
+    canExpand,
     isRowExpanded,
     toggleRowExpansion,
     expandRow,

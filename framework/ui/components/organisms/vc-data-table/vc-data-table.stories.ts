@@ -1518,6 +1518,73 @@ export const ExpandableRowsCustomIcons: Story = {
   }),
 };
 
+/**
+ * VcDataTable with conditional row expansion
+ *
+ * Use the isRowExpandable prop to control which rows can be expanded.
+ * Rows that fail the predicate show no expand toggle and cannot be expanded programmatically.
+ */
+export const ConditionalExpandableRows: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const expandedRows = ref<OrderProduct[]>([]);
+
+      // Only products that have orders can be expanded
+      const isRowExpandable = (item: OrderProduct) =>
+        !!(item.orders && item.orders.length > 0);
+
+      return {
+        products: mockProductsWithOrders,
+        expandedRows,
+        isRowExpandable,
+      };
+    },
+    template: `
+    <div style="height: 600px">
+      <div class="tw-mb-4 tw-p-3 tw-bg-warning-50 tw-rounded tw-text-sm">
+        <p class="tw-font-semibold tw-mb-1">Conditional Expandable Rows</p>
+        <p class="tw-text-neutrals-600 tw-mb-2">Only rows with orders show the expand toggle. Rows without orders cannot be expanded.</p>
+        <p><strong>Expanded:</strong> {{ expandedRows.map(p => p.name).join(', ') || 'None' }}</p>
+      </div>
+      <VcDataTable
+        :items="products"
+        v-model:expanded-rows="expandedRows"
+        :is-row-expandable="isRowExpandable"
+      >
+        <VcColumn id="expander" :expander="true" />
+        <VcColumn id="name" field="name" title="Name" />
+        <VcColumn id="price" field="price" title="Price" type="money" />
+        <VcColumn id="stock" field="stock" title="Stock" type="number" />
+        <VcColumn id="status" field="status" title="Status" />
+
+        <template #expansion="{ data }">
+          <div class="tw-p-4">
+            <h4 class="tw-font-semibold tw-mb-3 tw-text-neutrals-700">Order History for {{ data.name }}</h4>
+            <table class="tw-w-full tw-text-sm tw-border tw-border-neutrals-200">
+              <thead class="tw-bg-neutrals-100">
+                <tr>
+                  <th class="tw-p-2 tw-text-left">Order ID</th>
+                  <th class="tw-p-2 tw-text-left">Date</th>
+                  <th class="tw-p-2 tw-text-right">Qty</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="order in data.orders" :key="order.orderId" class="tw-border-t tw-border-neutrals-200">
+                  <td class="tw-p-2">{{ order.orderId }}</td>
+                  <td class="tw-p-2">{{ order.date }}</td>
+                  <td class="tw-p-2 tw-text-right">{{ order.quantity }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
+      </VcDataTable>
+    </div>
+    `,
+  }),
+};
+
 // ============================================================================
 // Column Resize Stories
 // ============================================================================

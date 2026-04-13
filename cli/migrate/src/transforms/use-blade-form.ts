@@ -26,7 +26,10 @@ function coreTransform(fileInfo: FileInfo, api: { report: (msg: string) => void 
   // Detect useForm destructure patterns
   if (/useForm\s*[<(]/.test(source)) {
     diagnostics.push(
-      `    → useForm() call found — replace with useBladeForm(). Destructure { form, validate, resetForm, setBaseline, modified, isValid } from useBladeForm().`,
+      `    → useForm() (vee-validate) found — replace with useBladeForm({ data: yourRef, closeConfirmMessage: computed(() => t("...")) }).`,
+    );
+    diagnostics.push(
+      `      useBladeForm replaces: useForm + onBeforeClose + modified tracking. Remove all three.`,
     );
   }
 
@@ -44,10 +47,13 @@ function coreTransform(fileInfo: FileInfo, api: { report: (msg: string) => void 
     );
   }
 
-  // Detect onBeforeClose with modified check
-  if (/onBeforeClose/.test(source) && /modified/.test(source)) {
+  // Detect onBeforeClose — useBladeForm handles close confirmation automatically
+  if (/onBeforeClose/.test(source)) {
     diagnostics.push(
-      `    → onBeforeClose uses modified state — useBladeForm() handles this automatically via built-in beforeUnload. Remove manual onBeforeClose guard.`,
+      `    → onBeforeClose() found — REMOVE it entirely. useBladeForm() handles close confirmation automatically.`,
+    );
+    diagnostics.push(
+      `      Pass closeConfirmMessage to useBladeForm(): useBladeForm({ data: myRef, closeConfirmMessage: computed(() => t("...CLOSE_CONFIRMATION")) })`,
     );
   }
 

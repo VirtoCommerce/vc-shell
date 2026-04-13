@@ -18,6 +18,7 @@ export interface RunOptions {
   transform?: string;
   dryRun: boolean;
   list: boolean;
+  noReport?: boolean;
   updateDeps?: boolean;
   exclude?: string[];
 }
@@ -155,9 +156,18 @@ export async function run(options: RunOptions): Promise<void> {
 
           if (result != null && result !== source) {
             try {
-              result = deduplicateImportSpecifiers(result, j);
+              const deduped = deduplicateImportSpecifiers(result, j);
+              if (deduped !== result) {
+                result = deduped;
+              }
             } catch {
-              // Dedup failed — use result as-is, validation will catch issues
+              // Dedup failed — use result as-is
+            }
+
+            // Idempotency: if after dedup the result equals original, skip
+            if (result === source) {
+              report.filesSkipped.push(filePath);
+              continue;
             }
 
             const validationError = parseValidate(filePath, result, parser);
@@ -224,6 +234,9 @@ export async function run(options: RunOptions): Promise<void> {
     depChanges.forEach((c) => console.log(`    ${c}`));
     console.log(chalk.yellow("\n  ⚠ Run `yarn install` to update the lockfile."));
   }
+
+  // Migration report generation (Task 5)
+  // if (!options.dryRun && !options.noReport) { generateMigrationReport(...) }
 
   if (options.dryRun) {
     console.log(chalk.yellow("\nDry run complete. No files were modified."));

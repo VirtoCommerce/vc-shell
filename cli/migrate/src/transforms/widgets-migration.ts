@@ -31,10 +31,16 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   if (!hasUseWidgets) return null;
 
   api.report(
-    `${fileInfo.path}: useWidgets() → useBladeWidgets() — API completely changed. ` +
-      `Old: useWidgets() returns {registerWidget, clearBladeWidgets, updateActiveWidget}. ` +
-      `New: useBladeWidgets(widgets[]) takes declarative array, returns {refresh, refreshAll}. ` +
-      `Manual rewrite required. See migration guide.`,
+    `${fileInfo.path}: useWidgets() → useBladeWidgets() — API completely changed. Manual rewrite required.`,
+  );
+  api.report(
+    `  Old: const { registerWidget, clearBladeWidgets } = useWidgets(); registerWidget({...}, bladeId);`,
+  );
+  api.report(
+    `  New: const { refresh, refreshAll } = useBladeWidgets([ { id, icon, title, badge, onClick, onRefresh } ]);`,
+  );
+  api.report(
+    `  Auto-lifecycle: no onUnmounted/clearBladeWidgets needed. See migration guide #13.`,
   );
 
   return null; // diagnostic-only

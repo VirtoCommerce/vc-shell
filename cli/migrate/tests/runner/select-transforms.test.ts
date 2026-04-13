@@ -11,6 +11,7 @@ describe("selectTransforms", () => {
       "rewrite-imports",
       "remove-deprecated-aliases",
       "blade-props-simplification",
+      "define-expose-to-children",
       "define-options-to-blade",
       "icon-audit",
       "scss-safe-use",

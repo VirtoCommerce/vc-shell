@@ -48,6 +48,15 @@ export const transforms: VersionedTransform[] = [
     after: ["define-options-to-blade"],
   },
   {
+    name: "define-expose-to-children",
+    description: "defineExpose() → exposeToChildren() from useBlade() in blade pages",
+    introducedIn: "2.0.0",
+    migrationGuideSection: "Guide 11",
+    transformPath: t("define-expose-to-children"),
+    fileExtensions: [".vue"],
+    after: ["define-options-to-blade"],
+  },
+  {
     name: "define-options-to-blade",
     description: "defineOptions() → defineBlade() for blade pages (removes notifyType)",
     introducedIn: "2.0.0",

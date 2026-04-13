@@ -45,6 +45,7 @@ export const transforms: VersionedTransform[] = [
     description: "Remove boilerplate expanded/closable props and blade event emits",
     introducedIn: "2.0.0",
     transformPath: t("blade-props-simplification"),
+    after: ["define-options-to-blade"],
   },
   {
     name: "define-options-to-blade",
@@ -53,6 +54,7 @@ export const transforms: VersionedTransform[] = [
     migrationGuideSection: "defineBlade macro",
     transformPath: t("define-options-to-blade"),
     fileExtensions: [".vue"],
+    after: ["use-blade-migration"],
   },
   {
     name: "icon-audit",
@@ -181,6 +183,7 @@ export const transforms: VersionedTransform[] = [
     introducedIn: "2.0.0",
     transformPath: t("remove-pathmatch-route"),
     fileExtensions: [".ts"],
+    after: ["use-blade-migration"],
   },
   {
     name: "dynamic-properties-refactor",

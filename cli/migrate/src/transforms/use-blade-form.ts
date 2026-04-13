@@ -8,7 +8,7 @@ import type { Transform } from "./types.js";
  * Does NOT modify any code — all changes require manual review.
  */
 
-function coreTransform(fileInfo: FileInfo, _api: unknown, _options: Options): string | null {
+function coreTransform(fileInfo: FileInfo, api: { report: (msg: string) => void }, _options: Options): string | null {
   const source = fileInfo.source;
 
   // --- Detect patterns via simple text matching (diagnostic-only, no AST modification) ---
@@ -80,11 +80,11 @@ function coreTransform(fileInfo: FileInfo, _api: unknown, _options: Options): st
   }
 
   if (diagnostics.length > 0) {
-    console.log(`  ⚠️  ${fileInfo.path}: Manual migration needed for useBladeForm():`);
+    api.report(`  ⚠️  ${fileInfo.path}: Manual migration needed for useBladeForm():`);
     for (const d of diagnostics) {
-      console.log(d);
+      api.report(d);
     }
-    console.log(`    → See migration guide #37 for full examples.`);
+    api.report(`    → See migration guide #37 for full examples.`);
   }
 
   // Diagnostic-only: never modify the file

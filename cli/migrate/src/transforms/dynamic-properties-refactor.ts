@@ -126,7 +126,7 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   });
 
   if (modified) {
-    console.log(`  ✅  ${fileInfo.path}: Migrated useDynamicProperties() to options API`);
+    api.report(`  ✅  ${fileInfo.path}: Migrated useDynamicProperties() to options API`);
   }
 
   if (!modified) return null;

@@ -1,14 +1,16 @@
 import chalk from "chalk";
 import { resolve, join, dirname } from "node:path";
-import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import writeFileAtomic from "write-file-atomic";
 import jscodeshift from "jscodeshift";
 import { detectFrameworkVersion } from "./version-detector.js";
 import { selectTransforms, transforms } from "./transforms/registry.js";
 import type { TransformModule, TransformReport } from "./transforms/types.js";
-import { parse as parseSFC } from "@vue/compiler-sfc";
 import { deduplicateImportSpecifiers } from "./utils/import-dedup.js";
+import { DEFAULT_EXCLUDES, findFiles, collectNotifyTypeMap } from "./file-scanner.js";
+import { preDedupSource, parseValidate } from "./sfc-processor.js";
+import { updateDependencyVersions } from "./dep-updater.js";
 
 export interface RunOptions {
   cwd: string;
@@ -19,8 +21,6 @@ export interface RunOptions {
   updateDeps?: boolean;
   exclude?: string[];
 }
-
-const DEFAULT_EXCLUDES = ["api_client", "*.generated.ts", "*.d.ts"];
 
 /**
  * Detect the version of @vc-shell/migrate package itself — it's published in lockstep
@@ -228,184 +228,6 @@ export async function run(options: RunOptions): Promise<void> {
   } else {
     console.log(chalk.green("\nMigration complete."));
   }
-}
-
-// Scan src/modules/{module}/components/notifications/{file}.vue to build a mapping
-// of notifyType event names to file names, keyed by module directory.
-function collectNotifyTypeMap(srcDir: string): Map<string, Record<string, Record<string, string>>> {
-  const result = new Map<string, Record<string, Record<string, string>>>();
-  const modulesDir = join(srcDir, "modules");
-  if (!existsSync(modulesDir)) return result;
-
-  let moduleEntries: string[];
-  try {
-    moduleEntries = readdirSync(modulesDir, { encoding: "utf-8" });
-  } catch {
-    return result;
-  }
-
-  for (const moduleEntry of moduleEntries) {
-    const moduleDir = join(modulesDir, moduleEntry);
-    try {
-      if (!statSync(moduleDir).isDirectory()) continue;
-    } catch {
-      continue;
-    }
-
-    const notifDir = join(moduleDir, "components", "notifications");
-    if (!existsSync(notifDir)) continue;
-
-    const notifications: Record<string, string> = {};
-    let files: string[];
-    try {
-      files = readdirSync(notifDir, { encoding: "utf-8" });
-    } catch {
-      continue;
-    }
-
-    for (const file of files) {
-      if (!file.endsWith(".vue")) continue;
-      try {
-        const filePath = join(notifDir, file);
-        const source = readFileSync(filePath, "utf-8");
-        const { descriptor } = parseSFC(source, { filename: filePath });
-        const scriptBlock = descriptor.scriptSetup ?? descriptor.script;
-        if (!scriptBlock) continue;
-
-        const match = scriptBlock.content.match(
-          /(?:defineOptions|defineBlade)\s*\(\s*\{[^}]*notifyType\s*:\s*["']([^"']+)["']/s,
-        );
-        if (match) {
-          notifications[match[1]] = file;
-        }
-      } catch {
-        continue;
-      }
-    }
-
-    if (Object.keys(notifications).length > 0) {
-      result.set(moduleDir, { "./components/notifications": notifications });
-    }
-  }
-
-  return result;
-}
-
-function findFiles(dir: string, extensions: string[], excludes: string[]): string[] {
-  const results: string[] = [];
-  let entries: string[];
-  try {
-    entries = readdirSync(dir, { encoding: "utf-8" });
-  } catch {
-    return results;
-  }
-  for (const entry of entries) {
-    if (entry === "node_modules" || entry.startsWith(".") || entry === "dist") continue;
-    if (excludes.includes(entry)) continue;
-    const full = join(dir, entry);
-    try {
-      const stat = statSync(full);
-      if (stat.isDirectory()) {
-        results.push(...findFiles(full, extensions, excludes));
-      } else if (extensions.some((ext) => entry.endsWith(ext))) {
-        const excluded = excludes.some((pattern) => {
-          if (pattern.startsWith("*")) {
-            return entry.endsWith(pattern.slice(1));
-          }
-          return entry === pattern;
-        });
-        if (!excluded) {
-          results.push(full);
-        }
-      }
-    } catch {
-      continue;
-    }
-  }
-  return results;
-}
-
-/**
- * Pre-dedup source before passing to transform.
- * For .vue files: extract script block, dedup, splice back.
- * For .ts files: dedup directly.
- */
-/**
- * Collapse multi-line import statements into single lines so the
- * text-based dedup can process them. Only affects import blocks.
- */
-function collapseMultiLineImports(script: string): string {
-  return script.replace(/import\s*\{[^}]*\}\s*from\s*['"][^'"]+['"]\s*;?/gs, (match) =>
-    match.replace(/\s*\n\s*/g, " "),
-  );
-}
-
-function preDedupSource(source: string, filePath: string, j: any): string {
-  if (filePath.endsWith(".vue")) {
-    const { descriptor } = parseSFC(source, { filename: filePath });
-    const scriptBlock = descriptor.scriptSetup ?? descriptor.script;
-    if (!scriptBlock) return source;
-
-    // Collapse multi-line imports so text-based dedup can handle them
-    const collapsed = collapseMultiLineImports(scriptBlock.content);
-    const deduped = deduplicateImportSpecifiers(collapsed, j);
-    if (deduped === scriptBlock.content) return source;
-
-    const start = scriptBlock.loc.start.offset;
-    const end = scriptBlock.loc.end.offset;
-    return source.substring(0, start) + deduped + source.substring(end);
-  }
-  return deduplicateImportSpecifiers(source, j);
-}
-
-function parseValidate(filePath: string, source: string, parser: string): string | null {
-  try {
-    if (filePath.endsWith(".vue")) {
-      const { descriptor, errors } = parseSFC(source, { filename: filePath });
-      if (errors.length > 0) {
-        return `SFC parse error: ${errors[0].message}`;
-      }
-      const scriptBlock = descriptor.scriptSetup ?? descriptor.script;
-      if (scriptBlock) {
-        jscodeshift.withParser(parser)(scriptBlock.content);
-      }
-    } else {
-      jscodeshift.withParser(parser)(source);
-    }
-    return null;
-  } catch (err) {
-    return err instanceof Error ? err.message : String(err);
-  }
-}
-
-function updateDependencyVersions(cwd: string, targetVersion: string, dryRun: boolean): string[] {
-  const pkgPath = join(cwd, "package.json");
-  if (!existsSync(pkgPath)) return [];
-
-  const pkgRaw = readFileSync(pkgPath, "utf-8");
-  const pkg = JSON.parse(pkgRaw);
-  const changes: string[] = [];
-
-  for (const depType of ["dependencies", "devDependencies"] as const) {
-    const deps = pkg[depType];
-    if (!deps) continue;
-    for (const name of Object.keys(deps)) {
-      if (name.startsWith("@vc-shell/")) {
-        const oldVersion = deps[name];
-        const newVersion = `^${targetVersion}`;
-        if (oldVersion !== newVersion) {
-          changes.push(`${name}: ${oldVersion} → ${newVersion}`);
-          deps[name] = newVersion;
-        }
-      }
-    }
-  }
-
-  if (changes.length > 0 && !dryRun) {
-    writeFileAtomic.sync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
-  }
-
-  return changes;
 }
 
 function listTransforms(): void {

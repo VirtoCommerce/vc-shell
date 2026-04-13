@@ -6,7 +6,7 @@ import writeFileAtomic from "write-file-atomic";
 import jscodeshift from "jscodeshift";
 import { detectFrameworkVersion } from "./version-detector.js";
 import { selectTransforms, transforms } from "./transforms/registry.js";
-import type { TransformModule, TransformReport } from "./transforms/types.js";
+import type { TransformModule, TransformReport, VersionedTransform } from "./transforms/types.js";
 import { deduplicateImportSpecifiers } from "./utils/import-dedup.js";
 import { DEFAULT_EXCLUDES, findFiles, collectNotifyTypeMap } from "./file-scanner.js";
 import { preDedupSource, parseValidate } from "./sfc-processor.js";
@@ -65,6 +65,8 @@ export async function run(options: RunOptions): Promise<void> {
       return;
     }
   }
+
+  selected = topologicalSort(selected);
 
   if (selected.length === 0) {
     console.log(chalk.green("No transforms needed for this version range."));
@@ -228,6 +230,49 @@ export async function run(options: RunOptions): Promise<void> {
   } else {
     console.log(chalk.green("\nMigration complete."));
   }
+}
+
+/**
+ * Kahn's algorithm: topological sort with stable ordering for unrelated nodes.
+ */
+export function topologicalSort(transforms: VersionedTransform[]): VersionedTransform[] {
+  const nameToIndex = new Map<string, number>();
+  transforms.forEach((t, i) => nameToIndex.set(t.name, i));
+
+  const inDegree = new Array(transforms.length).fill(0);
+  const dependents = new Map<number, number[]>();
+
+  for (let i = 0; i < transforms.length; i++) {
+    for (const dep of transforms[i].after ?? []) {
+      const depIdx = nameToIndex.get(dep);
+      if (depIdx === undefined) continue;
+      inDegree[i]++;
+      if (!dependents.has(depIdx)) dependents.set(depIdx, []);
+      dependents.get(depIdx)!.push(i);
+    }
+  }
+
+  const queue: number[] = [];
+  for (let i = 0; i < transforms.length; i++) {
+    if (inDegree[i] === 0) queue.push(i);
+  }
+
+  const result: VersionedTransform[] = [];
+  while (queue.length > 0) {
+    const idx = queue.shift()!;
+    result.push(transforms[idx]);
+    for (const dep of dependents.get(idx) ?? []) {
+      inDegree[dep]--;
+      if (inDegree[dep] === 0) queue.push(dep);
+    }
+  }
+
+  if (result.length !== transforms.length) {
+    const missing = transforms.filter((t) => !result.includes(t)).map((t) => t.name);
+    throw new Error(`Cycle detected in transform dependencies: ${missing.join(", ")}`);
+  }
+
+  return result;
 }
 
 function listTransforms(): void {

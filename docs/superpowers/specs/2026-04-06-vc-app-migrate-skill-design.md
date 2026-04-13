@@ -73,8 +73,7 @@ All knowledge is self-contained within the skill:
 | Injection Key (BladeInstance) | `21-injection-keys.md` | `blade-props-migration.md` | `blade-navigation.md` |
 | NSwag DTO Clone-mutate | — | `nswag-migration.md` | — |
 | Reusable Blade Components | `11-blade-props.md` | `blade-props-migration.md` | `child-blade-flow.md` |
-| replaceWith semantics | `12-replace-cover.md` | — (diagnostic only) | `blade-navigation.md` |
-| Notification templates | `14-notifications.md` | — (diagnostic only) | `signalr-notifications.md` |
+| Notification templates | `14-notifications.md` | `notifications-migration.md` | `signalr-notifications.md` |
 
 ---
 

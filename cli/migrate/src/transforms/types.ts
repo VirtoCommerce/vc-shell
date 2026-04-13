@@ -25,6 +25,8 @@ export interface VersionedTransform {
   excludeFiles?: string[];
   /** File extensions this transform applies to (default: [".ts", ".vue"]) */
   fileExtensions?: string[];
+  /** Transform names that must complete before this one runs */
+  after?: string[];
 }
 
 export interface TransformReport {

@@ -1,10 +1,5 @@
 import { type Ref, type ComputedRef, watch, nextTick, onBeforeUnmount } from "vue";
 
-// =============================================================================
-// Types
-// =============================================================================
-
-/** Schema for persisted table state (versioned for future migrations). */
 export interface DataTablePersistedState {
   /** Schema version — bump when adding/renaming/removing fields. */
   v: 1;
@@ -32,27 +27,18 @@ export interface UseDataTableStateReturn {
   resetState: () => void;
 }
 
-// =============================================================================
-// Constants
-// =============================================================================
-
 const DEBOUNCE_MS = 150;
 const SCHEMA_VERSION = 1;
-
-// =============================================================================
-// Composable
-// =============================================================================
 
 export function useDataTableState(options: UseDataTableStateOptions): UseDataTableStateReturn {
   const { stateKey, stateStorage, columnWidths, hiddenColumnIds, shownColumnIds, onStateSave, onStateRestore } =
     options;
 
-  let isRestoring = false;
+  // Counter instead of boolean: multiple restore paths run concurrently during
+  // setup and each schedules its own nextTick to decrement. A boolean would let
+  // the first nextTick unblock saves while the second restore is still in flight.
+  let restoringCount = 0;
   let debounceTimer: ReturnType<typeof setTimeout> | undefined;
-
-  // ---------------------------------------------------------------------------
-  // Helpers
-  // ---------------------------------------------------------------------------
 
   function getStorageKey(): string | null {
     const key = stateKey.value;
@@ -66,10 +52,6 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
       return null;
     }
   }
-
-  // ---------------------------------------------------------------------------
-  // Read persisted state synchronously (before any watchers)
-  // ---------------------------------------------------------------------------
 
   function readPersistedState(): DataTablePersistedState | null {
     const storageKey = getStorageKey();
@@ -114,10 +96,6 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
       ? { widths: pendingState.columnWidths, order: pendingState.columnOrder }
       : null;
 
-  // ---------------------------------------------------------------------------
-  // Build / Save / Clear
-  // ---------------------------------------------------------------------------
-
   function buildState(): DataTablePersistedState {
     const state: DataTablePersistedState = { v: SCHEMA_VERSION };
 
@@ -144,7 +122,7 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
   }
 
   function saveState(): void {
-    if (isRestoring) return;
+    if (restoringCount > 0) return;
 
     const storageKey = getStorageKey();
     if (!storageKey) return;
@@ -193,7 +171,7 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     clearState();
 
     // Reset runtime state
-    isRestoring = true;
+    restoringCount++;
     columnWidths.value = [];
     hiddenColumnIds.value = new Set();
     if (shownColumnIds) {
@@ -201,19 +179,15 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     }
 
     void nextTick(() => {
-      isRestoring = false;
+      restoringCount--;
     });
   }
-
-  // ---------------------------------------------------------------------------
-  // Column restore helper
-  // ---------------------------------------------------------------------------
 
   function applyColumnRestore(
     currentWidths: { id: string; width: number }[],
     pending: { widths: Record<string, number>; order: string[] },
   ): void {
-    isRestoring = true;
+    restoringCount++;
 
     const { widths, order } = pending;
 
@@ -241,23 +215,12 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     columnWidths.value = restored;
 
     void nextTick(() => {
-      isRestoring = false;
+      restoringCount--;
     });
   }
 
-  // ---------------------------------------------------------------------------
-  // Column widths + order restore
-  //
-  // useTableColumns has `watch(visibleColumns, ..., { immediate: true })` that
-  // sets columnWidths from column props during setup. Since VcDataTable extracts
-  // columns from slots synchronously, columnWidths is already populated by the
-  // time this composable runs.
-  //
-  // Strategy:
-  //   - If columnWidths already has entries → apply persisted order synchronously
-  //   - If columnWidths is still empty (inject/provide fallback) → use a watcher
-  // ---------------------------------------------------------------------------
-
+  // Column widths are typically available by now (slot-based extraction is sync).
+  // If not yet (inject/provide path), a watcher picks them up.
   if (pendingColumnRestore) {
     if (columnWidths.value.length > 0) {
       // Columns are already available (slot-based extraction) — apply immediately
@@ -275,7 +238,7 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
           pendingColumnRestore = null;
 
           void nextTick(() => {
-            isRestoring = false;
+            restoringCount--;
             stopColumnWatch();
           });
         },
@@ -284,18 +247,12 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Non-column state restore (hidden/shown column IDs)
-  //
-  // Apply synchronously to avoid race with VcDataTable's data-discovered
-  // columns watcher (which may run immediately and add auto-hidden IDs).
-  // ---------------------------------------------------------------------------
-
+  // Hidden/shown column IDs — apply sync to avoid race with data-discovered columns watcher
   if (pendingState) {
     const state = pendingState;
     pendingState = null;
 
-    isRestoring = true;
+    restoringCount++;
 
     // Hidden columns
     if (state.hiddenColumnIds) {
@@ -308,16 +265,12 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     onStateRestore?.(state);
 
     void nextTick(() => {
-      isRestoring = false;
+      restoringCount--;
     });
   }
 
-  // ---------------------------------------------------------------------------
-  // Debounced auto-save watcher
-  // ---------------------------------------------------------------------------
-
   function debouncedSave(): void {
-    if (isRestoring) return;
+    if (restoringCount > 0) return;
     if (!stateKey.value) return;
     // Don't save while columns haven't been restored yet
     if (pendingColumnRestore) return;
@@ -337,11 +290,6 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     : [columnWidths, hiddenColumnIds];
   watch(watchedSources, debouncedSave, { deep: true });
 
-  // ---------------------------------------------------------------------------
-  // Lifecycle
-  // ---------------------------------------------------------------------------
-
-  // Flush pending debounced save on unmount
   onBeforeUnmount(() => {
     if (debounceTimer != null) {
       clearTimeout(debounceTimer);

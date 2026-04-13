@@ -10,20 +10,16 @@ export interface UseTableColumnsResizeOptions {
   minColumnWidth?: number;
   getColumnElement?: (id: string) => HTMLElement | null;
   onResizeEnd?: (columns: ResizableColumn[]) => void;
-  /** Container element — used by ResizeObserver to scale columns when container resizes */
   containerEl?: Ref<HTMLElement | null>;
 }
 
 /**
- * Column resizing via Vue reactivity (AG Grid style).
+ * Column resizing via Vue reactivity.
  *
- * - All widths in pixels. No percentages.
- * - Growing a column equally shrinks ALL right neighbors to make room.
- * - Shrinking a column equally grows ALL right neighbors.
- * - Resize stops when all right neighbors hit minColumnWidth.
- * - Last column (no neighbors): grows/shrinks into filler space only.
- * - On drag start, all columns are pinned to their DOM widths to prevent flex drift.
- * - rAF-throttled for smooth 60fps updates.
+ * Widths in pixels. Growing a column shrinks right neighbors equally.
+ * On drag start all columns are pinned to DOM widths to prevent flex drift.
+ * Container resize (blade expand/collapse) scales columns proportionally
+ * after layout has settled (convergence detection, not a hardcoded timer).
  */
 export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   const { columns, minColumnWidth = 40, getColumnElement, onResizeEnd, containerEl } = options;
@@ -34,9 +30,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   let startX = 0;
   let initialWidths: number[] = [];
   let rafId = 0;
-  /** Max px the dragged column can grow (all right neighbors give + filler) */
   let maxGrowth = 0;
-  /** Indices of all rendered right neighbors */
   let rightNeighborIndices: number[] = [];
 
   const measureAllColumnWidths = (): number[] => {
@@ -49,21 +43,17 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     });
   };
 
-  /**
-   * Measure available filler space — the gap between the last rendered
-   * column's right edge and the row wrapper's right edge.
-   * This is how much ANY column can grow before the row overflows.
-   */
+  // Gap between the last rendered column's right edge and the row wrapper's right edge.
+  // NOTE: reads pre-pin DOM. After Vue re-renders with pinned widths, filler may differ
+  // slightly when flex-grow columns existed — maxGrowth will be underestimated by that margin.
   const measureFillerSpace = (): number => {
     if (!getColumnElement) return 0;
-
-    // Find the last rendered column
     for (let i = columns.value.length - 1; i >= 0; i--) {
       const el = getColumnElement(columns.value[i].id);
       if (el?.parentElement) {
         const parentRight = el.parentElement.getBoundingClientRect().right;
         const colRight = el.getBoundingClientRect().right;
-        return Math.max(0, parentRight - colRight - 1);
+        return Math.max(0, Math.floor(parentRight - colRight));
       }
     }
     return 0;
@@ -77,16 +67,14 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     initialWidths = measureAllColumnWidths();
     startX = event.pageX;
 
-    // Pin ALL columns to their current DOM widths.
-    // Without this, stored widths may differ from DOM widths due to flex-shrink
-    // (when total stored > container, flex compresses all columns).
-    // Pinning ensures: stored = DOM, total ≤ container, filler appears,
-    // and changing one column doesn't cause flex redistribution on others.
+    // Measure filler before pinning — DOM still reflects actual flex layout
+    const filler = measureFillerSpace();
+
+    // Pin all columns to DOM widths so flex doesn't redistribute during drag
     columns.value.forEach((col, i) => {
       col.width = initialWidths[i];
     });
 
-    // Find all rendered right neighbors
     rightNeighborIndices = [];
     if (getColumnElement) {
       for (let i = columnIndex + 1; i < columns.value.length; i++) {
@@ -96,16 +84,12 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
       }
     }
 
-    // Max growth = total right neighbors can give + filler
     const totalGiveable = rightNeighborIndices.reduce((sum, idx) => sum + (initialWidths[idx] - minColumnWidth), 0);
-    const filler = measureFillerSpace();
     maxGrowth = totalGiveable + filler;
 
     isResizing.value = true;
-
     document.body.style.cursor = "col-resize";
     document.body.style.userSelect = "none";
-
     document.addEventListener("mousemove", handleResizeMove);
     document.addEventListener("mouseup", handleResizeEnd);
   };
@@ -115,22 +99,17 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     const minDelta = minColumnWidth - initialWidth;
     const clampedDelta = Math.max(minDelta, Math.min(rawDelta, maxGrowth));
 
-    // Apply to the dragged column
     columns.value[resizingColumnIndex].width = Math.round(initialWidth + clampedDelta);
 
-    // Distribute the inverse delta equally across ALL right neighbors.
-    // Equal distribution preserves relative size differences between columns.
-    // Columns that hit minColumnWidth stop shrinking; remainder redistributes to others.
+    // Distribute inverse delta equally across right neighbors
     if (rightNeighborIndices.length > 0) {
       let remaining = clampedDelta;
       const active = [...rightNeighborIndices];
 
-      // Reset all neighbors to initial widths first (needed for cumulative delta from drag start)
       for (const idx of rightNeighborIndices) {
         columns.value[idx].width = initialWidths[idx];
       }
 
-      // Iteratively distribute: some columns may hit min and drop out
       while (Math.abs(remaining) > 0.5 && active.length > 0) {
         const share = remaining / active.length;
         const next: number[] = [];
@@ -143,14 +122,12 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
           applied += actualChange;
           columns.value[idx].width = newWidth;
 
-          // Column still has room to give/take — keep it active
           if (newWidth > minColumnWidth || share < 0) {
             next.push(idx);
           }
         }
 
         remaining -= applied;
-        // If no progress was made, break to avoid infinite loop
         if (Math.abs(applied) < 0.5) break;
         active.length = 0;
         active.push(...next);
@@ -160,9 +137,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
 
   const handleResizeMove = (event: MouseEvent) => {
     if (!isResizing.value || resizingColumnIndex === -1) return;
-
     const rawDelta = event.pageX - startX;
-
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
       applyResize(rawDelta);
@@ -172,83 +147,107 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
 
   const handleResizeEnd = () => {
     if (!isResizing.value) return;
-
     if (rafId) {
       cancelAnimationFrame(rafId);
       rafId = 0;
     }
-
     isResizing.value = false;
     resizingColumnIndex = -1;
     initialWidths = [];
-
     document.body.style.cursor = "";
     document.body.style.userSelect = "";
-
     document.removeEventListener("mousemove", handleResizeMove);
     document.removeEventListener("mouseup", handleResizeEnd);
-
-    if (onResizeEnd) {
-      onResizeEnd(columns.value);
-    }
+    onResizeEnd?.(columns.value);
   };
 
   const getResizeHeadProps = (columnId: string, index: number) => ({
     resizable: true,
     columnId,
     isLastResizable: index === columns.value.length - 1,
-    onResizeStart: (id: string | undefined, e: MouseEvent) => handleResizeStart(id!, e),
+    onResizeStart: (id: string | undefined, e: MouseEvent) => {
+      if (id) handleResizeStart(id, e);
+    },
   });
 
-  // =========================================================================
-  // Container ResizeObserver — scale column widths when container resizes
-  // (e.g. blade expands/collapses). Only acts when columns have been manually
-  // resized (have explicit widths). Scales proportionally so columns fill
-  // the new container width without a gap.
-  // =========================================================================
+  // --- Container ResizeObserver: proportional scaling on container resize ---
 
   let lastContainerWidth = 0;
   let resizeObserver: ResizeObserver | null = null;
+  // Scaling disabled until container width stabilizes after mount/transition.
+  // Uses convergence detection: 100ms with no resize events = settled.
+  let settled = false;
+  let settleDebounce: ReturnType<typeof setTimeout> | undefined;
+
+  const onSettled = () => {
+    settled = true;
+    if (!containerEl?.value) return;
+    const w = containerEl.value.clientWidth;
+    // Column wider than container = corrupt (stale localStorage from a past bug)
+    if (w > 0) {
+      for (const col of columns.value) {
+        if (col.width > w) col.width = 0;
+      }
+    }
+    lastContainerWidth = w;
+  };
 
   const setupResizeObserver = () => {
-    if (!containerEl?.value) return;
+    if (!containerEl?.value || typeof ResizeObserver === "undefined") return;
 
-    lastContainerWidth = containerEl.value.clientWidth;
-
-    if (typeof ResizeObserver === "undefined") return;
+    lastContainerWidth = 0;
+    settled = false;
+    if (settleDebounce !== undefined) {
+      clearTimeout(settleDebounce);
+      settleDebounce = undefined;
+    }
 
     resizeObserver = new ResizeObserver((entries) => {
-      // Skip during active drag
       if (isResizing.value) return;
-
       const newWidth = entries[0].contentRect.width;
-      if (newWidth === lastContainerWidth || lastContainerWidth === 0) {
+      if (newWidth < 50) return; // mid-transition noise
+
+      if (!settled) {
+        lastContainerWidth = newWidth;
+        // Reset debounce — width still changing (animation in progress)
+        if (settleDebounce !== undefined) clearTimeout(settleDebounce);
+        settleDebounce = setTimeout(() => {
+          settleDebounce = undefined;
+          onSettled();
+        }, 100);
+        return;
+      }
+
+      if (newWidth === lastContainerWidth) return;
+
+      if (lastContainerWidth < 50) {
         lastContainerWidth = newWidth;
         return;
       }
 
-      // Check if any columns have been manually resized
-      const hasResizedColumns = columns.value.some((col) => col.width > 0);
-      if (!hasResizedColumns) {
+      const hasExplicitWidths = columns.value.some((col) => col.width > 0);
+      if (!hasExplicitWidths) {
         lastContainerWidth = newWidth;
         return;
       }
 
-      // Scale all resized columns proportionally
       const ratio = newWidth / lastContainerWidth;
+      if (ratio > 3 || ratio < 1 / 3) {
+        lastContainerWidth = newWidth;
+        return;
+      }
+
       columns.value.forEach((col) => {
         if (col.width > 0) {
           col.width = Math.max(minColumnWidth, Math.round(col.width * ratio));
         }
       });
-
       lastContainerWidth = newWidth;
     });
 
     resizeObserver.observe(containerEl.value);
   };
 
-  // Watch for container element becoming available
   if (containerEl) {
     watch(
       containerEl,
@@ -261,6 +260,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   }
 
   onBeforeUnmount(() => {
+    if (settleDebounce !== undefined) clearTimeout(settleDebounce);
     resizeObserver?.disconnect();
     if (isResizing.value) {
       if (rafId) cancelAnimationFrame(rafId);

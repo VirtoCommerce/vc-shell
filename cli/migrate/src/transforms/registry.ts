@@ -153,6 +153,14 @@ export const transforms: VersionedTransform[] = [
     transformPath: t("use-assets-migration"),
   },
   {
+    name: "replace-cover-method",
+    description: "Detect replaceWith() usage — semantics changed, may need coverWith()",
+    introducedIn: "2.0.0",
+    diagnosticOnly: true,
+    migrationGuideSection: "Guide 12",
+    transformPath: t("replace-cover-method"),
+  },
+  {
     name: "app-hub-rename",
     description: "disableAppSwitcher → disableAppHub, #app-switcher → #app-hub, useAppSwitcher → useAppHub",
     introducedIn: "2.0.0-alpha.27",
@@ -186,6 +194,14 @@ export const transforms: VersionedTransform[] = [
     after: ["use-blade-migration"],
   },
   {
+    name: "locale-imports",
+    description: "@vc-shell/framework/dist/locales/*.json → @vc-shell/framework/locales/*",
+    introducedIn: "2.0.0",
+    migrationGuideSection: "Guide 33",
+    transformPath: t("locale-imports"),
+    fileExtensions: [".ts"],
+  },
+  {
     name: "dynamic-properties-refactor",
     description:
       "useDynamicProperties<A,B,C,D,E>(fn, Class, Class, fn) → useDynamicProperties({ searchDictionary, searchMeasurements })",
@@ -193,6 +209,14 @@ export const transforms: VersionedTransform[] = [
     migrationGuideSection: "Guide 38",
     transformPath: t("dynamic-properties-refactor"),
     fileExtensions: [".vue"],
+  },
+  {
+    name: "window-globals",
+    description: "Detect removed window.Vue/window._/window.moment globals",
+    introducedIn: "2.0.0",
+    diagnosticOnly: true,
+    migrationGuideSection: "Guide 04",
+    transformPath: t("window-globals"),
   },
 ];
 

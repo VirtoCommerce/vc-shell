@@ -44,6 +44,15 @@ const back = inject(BLADE_BACK_BUTTON);`,
     expect(result).toBeNull();
   });
 
+  it("renames NotificationTemplatesSymbol to NotificationTemplatesKey", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { NotificationTemplatesSymbol } from "@vc-shell/framework";\nconst tpl = inject(NotificationTemplatesSymbol);`,
+    });
+    expect(result).toContain("NotificationTemplatesKey");
+    expect(result).not.toContain("NotificationTemplatesSymbol");
+  });
+
   it("skips files without matching imports", () => {
     const result = applyTransform(transform, {
       path: "test.ts",

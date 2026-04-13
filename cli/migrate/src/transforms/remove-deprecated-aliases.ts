@@ -7,6 +7,7 @@ const RENAME_MAP: Record<string, string> = {
   BLADE_BACK_BUTTON: "BladeBackButtonKey",
   TOOLBAR_SERVICE: "ToolbarServiceKey",
   EMBEDDED_MODE: "EmbeddedModeKey",
+  NotificationTemplatesSymbol: "NotificationTemplatesKey",
 };
 
 // Symbols that require manual migration (API changed, not just renamed)

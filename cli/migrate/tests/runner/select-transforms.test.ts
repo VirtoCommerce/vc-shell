@@ -25,11 +25,14 @@ describe("selectTransforms", () => {
       "manual-migration-audit",
       "nswag-class-to-interface",
       "use-assets-migration",
+      "replace-cover-method",
       "app-hub-rename",
       "responsive-composable",
       "use-blade-form",
       "remove-pathmatch-route",
+      "locale-imports",
       "dynamic-properties-refactor",
+      "window-globals",
     ]);
   });
 

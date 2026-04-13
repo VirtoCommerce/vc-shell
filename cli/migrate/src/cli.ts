@@ -17,6 +17,7 @@ program
   .option("--cwd <path>", "Working directory", ".")
   .option("--update-deps", "Also update dependency versions in package.json", false)
   .option("--exclude <patterns...>", "Additional exclude patterns for files/directories", [])
+  .option("--no-report", "Skip MIGRATION_REPORT.md generation", false)
   .action(async (options) => {
     const cwd = resolve(options.cwd);
 
@@ -49,6 +50,7 @@ program
       list: options.list,
       updateDeps: options.updateDeps,
       exclude: options.exclude ?? [],
+      noReport: options.noReport ?? false,
     });
   });
 

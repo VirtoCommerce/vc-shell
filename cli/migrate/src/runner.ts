@@ -11,6 +11,7 @@ import { deduplicateImportSpecifiers } from "./utils/import-dedup.js";
 import { DEFAULT_EXCLUDES, findFiles, collectNotifyTypeMap } from "./file-scanner.js";
 import { preDedupSource, parseValidate } from "./sfc-processor.js";
 import { updateDependencyVersions } from "./dep-updater.js";
+import { generateMigrationReport } from "./report-generator.js";
 
 export interface RunOptions {
   cwd: string;
@@ -94,6 +95,7 @@ export async function run(options: RunOptions): Promise<void> {
   let totalExcluded = 0;
   let totalRolledBack = 0;
   let totalWarnings = 0;
+  const allReports: TransformReport[] = [];
 
   for (const t of selected) {
     console.log(chalk.blue(`\nRunning: ${t.name}...`));
@@ -204,6 +206,8 @@ export async function run(options: RunOptions): Promise<void> {
       report.filesErrored.forEach((e) => console.log(chalk.red(`  ✗ ${e.path}: ${e.error}`)));
     }
 
+    allReports.push(report);
+
     totalModified += report.filesModified.length;
     totalSkipped += report.filesSkipped.length;
     totalExcluded += report.filesExcluded.length;
@@ -235,8 +239,10 @@ export async function run(options: RunOptions): Promise<void> {
     console.log(chalk.yellow("\n  ⚠ Run `yarn install` to update the lockfile."));
   }
 
-  // Migration report generation (Task 5)
-  // if (!options.dryRun && !options.noReport) { generateMigrationReport(...) }
+  if (!options.dryRun && !options.noReport) {
+    generateMigrationReport(cwd, currentVersion, targetVersion, allReports, depChanges, sourceFiles);
+    console.log(chalk.blue(`\n📄 Migration report written to MIGRATION_REPORT.md`));
+  }
 
   if (options.dryRun) {
     console.log(chalk.yellow("\nDry run complete. No files were modified."));

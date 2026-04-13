@@ -53,6 +53,7 @@ Parse `$ARGUMENTS` to determine the subcommand:
 | `generate ...` | Section: `/vc-app generate` |
 | `promote <moduleName>` | Section: `/vc-app promote` |
 | `design ...`              | Section: `/vc-app design` |
+| `migrate`                | Section: `/vc-app migrate` |
 | empty / `help` / `--help` | Section: Help |
 
 If no arguments match, show the help section.
@@ -73,6 +74,7 @@ Commands:
   /vc-app generate            Generate a full UI module from intent (list/details blades, composables, locales)
   /vc-app promote <name>      Transition a prototype module from mock data to real API client
   /vc-app design [prompt]    Generate a full application from a free-text description (multi-module)
+  /vc-app migrate             Migrate existing app to latest @vc-shell/framework (CLI + AI)
 
 Examples:
   /vc-app create
@@ -1415,3 +1417,110 @@ Additional context:
 ```
 
 The agent will read its own instruction file, load any required knowledge/pattern files, execute its generation rules, perform its self-check, and report back.
+
+---
+
+## /vc-app migrate
+
+Fully automatic migration to the latest @vc-shell/framework version. Runs the CLI migrator for mechanical transforms, installs updated dependencies, then uses AI to complete manual migrations.
+
+### Step 1: Pre-flight checks
+
+1. Verify `@vc-shell/framework` exists in package.json (dependencies or devDependencies). If not found, stop: "This doesn't appear to be a vc-shell project."
+2. Run `git status --porcelain` — if output is non-empty, warn: "You have uncommitted changes. Commit or stash before migrating." Ask user to confirm before proceeding.
+3. Read current framework version from package.json for display.
+
+### Step 2: Run CLI migrator
+
+Run:
+
+```bash
+npx @vc-shell/migrate --update-deps
+```
+
+Display the output to the user. If the command fails, stop and show the error.
+
+### Step 3: Install dependencies
+
+Run:
+
+```bash
+yarn install
+```
+
+If yarn fails (version conflicts, missing packages), stop and show the error. Dependencies must resolve before AI migration can type-check.
+
+### Step 4: Parse migration report
+
+Read `MIGRATION_REPORT.md` from project root.
+
+Parse the "Manual Migration Required" section. Extract each topic heading and the affected files listed under it.
+
+Map topic headings to migration prompt files and pattern files:
+
+| Report Heading contains | Migration Prompt | Pattern |
+|---|---|---|
+| Widget | `{KNOWLEDGE_BASE}/migration-prompts/widgets-migration.md` | `{KNOWLEDGE_BASE}/patterns/blade-widget.md` |
+| Form Management / useBladeForm | `{KNOWLEDGE_BASE}/migration-prompts/blade-form-migration.md` | `{KNOWLEDGE_BASE}/patterns/form-validation.md` |
+| Injection Key | `{KNOWLEDGE_BASE}/migration-prompts/blade-props-migration.md` | `{KNOWLEDGE_BASE}/patterns/blade-navigation.md` |
+| NSwag / DTO / Clone-then-mutate | `{KNOWLEDGE_BASE}/migration-prompts/nswag-migration.md` | — |
+| Reusable Blade Components | `{KNOWLEDGE_BASE}/migration-prompts/blade-props-migration.md` | `{KNOWLEDGE_BASE}/patterns/child-blade-flow.md` |
+| Notification | `{KNOWLEDGE_BASE}/migration-prompts/notifications-migration.md` | `{KNOWLEDGE_BASE}/patterns/signalr-notifications.md` |
+
+Build the `topics` array for the migration-agent, including only topics that appear in the report.
+
+### Step 5: Dispatch migration-agent
+
+If there are topics to process, dispatch the migration-agent subagent:
+
+**Agent:** `{SKILL_DIR}/agents/migration-agent.md`
+
+**Input:**
+
+```json
+{
+  "cwd": "<project root>",
+  "reportPath": "<path to MIGRATION_REPORT.md>",
+  "topics": [
+    {
+      "name": "<topic name>",
+      "affectedFiles": ["src/path/to/file.vue"],
+      "migrationPromptPath": "<absolute path to migration prompt>",
+      "patternPath": "<absolute path to pattern file or null>"
+    }
+  ]
+}
+```
+
+### Step 6: Type-check verification
+
+After migration-agent completes, run:
+
+```bash
+npx vue-tsc --noEmit
+```
+
+If there are remaining TypeScript errors:
+1. Show the errors to the user
+2. Attempt to fix iteratively — read each error, fix the file, re-check (max 3 rounds)
+
+### Step 7: Update report and summarize
+
+Update `MIGRATION_REPORT.md`:
+- For each topic the agent successfully completed, add ✅ to the heading
+- Add a "Completed by AI" section listing what was done
+
+Print summary to user:
+
+```
+Migration complete!
+
+  Mechanical (CLI):  {N} files
+  AI-assisted:       {M} files across {T} topics
+  Remaining issues:  {R} (see MIGRATION_REPORT.md)
+
+Next steps:
+  1. Review the changes: git diff
+  2. Run: yarn build
+  3. Test the application
+```

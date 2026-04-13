@@ -163,11 +163,11 @@ export const transforms: VersionedTransform[] = [
   },
   {
     name: "replace-cover-method",
-    description: "Detect replaceWith() usage — semantics changed, may need coverWith()",
+    description: "openBlade({ replaceCurrentBlade: true }) → coverWith()",
     introducedIn: "2.0.0",
-    diagnosticOnly: true,
     migrationGuideSection: "Guide 12",
     transformPath: t("replace-cover-method"),
+    fileExtensions: [".vue", ".ts"],
   },
   {
     name: "app-hub-rename",

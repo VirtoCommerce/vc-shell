@@ -1,34 +1,65 @@
 import { describe, it, expect } from "vitest";
 import transform from "../../../src/transforms/replace-cover-method";
-import { applyTransformWithReports } from "../../../src/utils/test-helpers";
+import { applyTransform } from "../../../src/utils/test-helpers";
 
-describe("replace-cover-method (diagnostic)", () => {
-  it("emits diagnostic for replaceWith usage", () => {
-    const { result, reports } = applyTransformWithReports(transform, {
+describe("replace-cover-method", () => {
+  it("replaces openBlade with replaceCurrentBlade: true → coverWith", () => {
+    const result = applyTransform(transform, {
       path: "test.ts",
-      source: `import { useBlade } from "@vc-shell/framework";\nconst { replaceWith } = useBlade();\nreplaceWith({ name: "Details" });`,
+      source: `const { openBlade } = useBlade();
+openBlade({ name: "Details", param: id, replaceCurrentBlade: true });`,
     });
-    expect(result).toBeNull();
-    expect(reports.length).toBeGreaterThan(0);
-    expect(reports[0]).toContain("replaceWith");
-    expect(reports[0]).toContain("coverWith");
+    expect(result).toContain("coverWith");
+    expect(result).not.toContain("replaceCurrentBlade");
+    expect(result).not.toContain("openBlade");
   });
 
-  it("skips files without replaceWith", () => {
-    const { result, reports } = applyTransformWithReports(transform, {
+  it("adds coverWith to useBlade destructuring", () => {
+    const result = applyTransform(transform, {
       path: "test.ts",
-      source: `import { useBlade } from "@vc-shell/framework";\nconst { openBlade } = useBlade();`,
+      source: `const { openBlade, closeSelf } = useBlade();
+openBlade({ name: "Details", replaceCurrentBlade: true });`,
     });
-    expect(result).toBeNull();
-    expect(reports).toHaveLength(0);
+    expect(result).toContain("coverWith");
+    expect(result).toContain("closeSelf");
+    expect(result).not.toContain("openBlade");
   });
 
-  it("skips files without framework import", () => {
-    const { result, reports } = applyTransformWithReports(transform, {
+  it("keeps openBlade in destructuring if still used elsewhere", () => {
+    const result = applyTransform(transform, {
       path: "test.ts",
-      source: `const x = 1;`,
+      source: `const { openBlade } = useBlade();
+openBlade({ name: "Details", replaceCurrentBlade: true });
+openBlade({ name: "Other" });`,
+    });
+    expect(result).toContain("coverWith");
+    expect(result).toContain("openBlade");
+  });
+
+  it("skips openBlade without replaceCurrentBlade", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `const { openBlade } = useBlade();
+openBlade({ name: "Details", param: id });`,
     });
     expect(result).toBeNull();
-    expect(reports).toHaveLength(0);
+  });
+
+  it("does not touch existing replaceWith calls", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `const { replaceWith } = useBlade();
+replaceWith({ name: "Details", param: id });`,
+    });
+    expect(result).toBeNull();
+  });
+
+  it("skips replaceCurrentBlade: false", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `const { openBlade } = useBlade();
+openBlade({ name: "Details", replaceCurrentBlade: false });`,
+    });
+    expect(result).toBeNull();
   });
 });

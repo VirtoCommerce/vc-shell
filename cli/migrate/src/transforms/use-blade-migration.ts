@@ -44,12 +44,23 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
     }
 
     // Single return — invert it
+    const isAsync = (callback as any).async === true;
+
     returnStatements.forEach((retPath) => {
       const arg = retPath.node.argument;
       if (!arg) return;
 
-      // Wrap with unary negation: !expr or !(expr)
-      retPath.node.argument = j.unaryExpression("!", arg);
+      // If async callback and return is NOT already awaited, wrap with await first
+      if (isAsync && arg.type !== "AwaitExpression") {
+        // return expr → return !(await expr)
+        retPath.node.argument = j.unaryExpression("!", j.awaitExpression(arg));
+      } else if (arg.type === "AwaitExpression") {
+        // return await expr → return !(await expr)
+        retPath.node.argument = j.unaryExpression("!", arg);
+      } else {
+        // Sync: return expr → return !expr
+        retPath.node.argument = j.unaryExpression("!", arg);
+      }
     });
   });
 

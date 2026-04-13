@@ -80,6 +80,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+defineOptions({ name: "TestBlade", url: "/test" });
+
 const { openBlade, onBeforeClose } = useBladeNavigation();
 const { notification } = useNotifications();
 

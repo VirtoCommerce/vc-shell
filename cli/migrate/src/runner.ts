@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { resolve, join, dirname } from "node:path";
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import writeFileAtomic from "write-file-atomic";
 import jscodeshift from "jscodeshift";
 import { detectFrameworkVersion } from "./version-detector.js";
@@ -21,6 +22,23 @@ export interface RunOptions {
 
 const DEFAULT_EXCLUDES = ["api_client", "*.generated.ts", "*.d.ts"];
 
+/**
+ * Detect the version of @vc-shell/migrate package itself — it's published in lockstep
+ * with the framework, so its version IS the target version.
+ */
+function detectLatestFrameworkVersion(): string | null {
+  try {
+    const migratePkgPath = join(dirname(fileURLToPath(import.meta.url)), "..", "package.json");
+    if (existsSync(migratePkgPath)) {
+      const pkg = JSON.parse(readFileSync(migratePkgPath, "utf-8"));
+      return pkg.version ?? null;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
 export async function run(options: RunOptions): Promise<void> {
   if (options.list) {
     listTransforms();
@@ -35,7 +53,7 @@ export async function run(options: RunOptions): Promise<void> {
     return;
   }
 
-  const targetVersion = options.to ?? "2.0.0";
+  const targetVersion = options.to ?? detectLatestFrameworkVersion() ?? "2.0.0";
   console.log(chalk.blue(`Migrating from ${currentVersion} → ${targetVersion}`));
 
   let selected = selectTransforms(currentVersion, targetVersion);

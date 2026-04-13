@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import transform from "../../../src/transforms/remove-deprecated-aliases";
-import { applyTransform } from "../../../src/utils/test-helpers";
+import { applyTransform, applyTransformWithReports } from "../../../src/utils/test-helpers";
 
 describe("remove-deprecated-aliases (jscodeshift)", () => {
   it("renames TOOLBAR_SERVICE to ToolbarServiceKey", () => {
@@ -12,14 +12,15 @@ describe("remove-deprecated-aliases (jscodeshift)", () => {
     expect(result).not.toContain("TOOLBAR_SERVICE");
   });
 
-  it("renames BladeInstance to BladeInstanceKey", () => {
-    const result = applyTransform(transform, {
+  it("emits diagnostic for BladeInstance (requires manual migration)", () => {
+    const { result, reports } = applyTransformWithReports(transform, {
       path: "test.ts",
       source: `import { BladeInstance } from "@vc-shell/framework";\nconst blade = inject(BladeInstance);`,
     });
-    expect(result).toContain("BladeInstanceKey");
-    // Ensure no standalone "BladeInstance" remains (only "BladeInstanceKey")
-    expect(result!.replace(/BladeInstanceKey/g, "")).not.toContain("BladeInstance");
+    // BladeInstance is no longer mechanically renamed — it needs manual migration to useBlade()
+    expect(result).toBeNull();
+    expect(reports.length).toBeGreaterThan(0);
+    expect(reports[0]).toContain("useBlade()");
   });
 
   it("renames multiple aliases in one file", () => {

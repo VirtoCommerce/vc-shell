@@ -1,148 +1,27 @@
-import type { API, FileInfo, Options } from "jscodeshift";
-import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
+import type { FileInfo, Options } from "jscodeshift";
 import type { Transform } from "./types.js";
 
 /**
- * Detect useForm (vee-validate) + useBeforeUnload/useModificationTracker patterns
- * and migrate imports toward useBladeForm().
+ * Diagnostic-only transform: detect useForm (vee-validate) + useBeforeUnload/useModificationTracker
+ * patterns and report them for manual migration to useBladeForm().
  *
- * Safe mechanical transforms:
- * 1. Remove `useForm` import from `vee-validate` (keep `Field` etc.)
- * 2. Remove `useBeforeUnload` and `useModificationTracker` from `@vc-shell/framework`
- * 3. Add `useBladeForm` to `@vc-shell/framework` import
- *
- * Diagnostic-only (reported for manual migration):
- * - toolbar disabled formula referencing modified/valid/isValid
- * - onBeforeClose logic using modified/isValid
- * - setBaseline() call placement
- * - handleSubmit / validate / resetForm usage
+ * Does NOT modify any code — all changes require manual review.
  */
 
-const REMOVE_FROM_FRAMEWORK = new Set(["useBeforeUnload", "useModificationTracker"]);
-const ADD_TO_FRAMEWORK = "useBladeForm";
+function coreTransform(fileInfo: FileInfo, _api: unknown, _options: Options): string | null {
+  const source = fileInfo.source;
 
-function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {
-  const j = api.jscodeshift;
-  const root = j(fileInfo.source);
-
-  // --- Detect vee-validate useForm import ---
-  const veeValidateImports = root.find(j.ImportDeclaration, {
-    source: { value: "vee-validate" },
-  });
-
-  const hasUseForm =
-    veeValidateImports
-      .find(j.ImportSpecifier)
-      .filter((path) => {
-        const name = path.node.imported.type === "Identifier" ? path.node.imported.name : "";
-        return name === "useForm";
-      })
-      .size() > 0;
-
-  // --- Detect framework imports ---
-  const frameworkImports = root.find(j.ImportDeclaration, {
-    source: { value: "@vc-shell/framework" },
-  });
-
-  const hasBeforeUnload =
-    frameworkImports
-      .find(j.ImportSpecifier)
-      .filter((path) => {
-        const name = path.node.imported.type === "Identifier" ? path.node.imported.name : "";
-        return name === "useBeforeUnload";
-      })
-      .size() > 0;
-
+  // --- Detect patterns via simple text matching (diagnostic-only, no AST modification) ---
+  const hasUseForm = /\bimport\s[^;]*\buseForm\b[^;]*from\s+['"]vee-validate['"]/.test(source);
+  const hasBeforeUnload = /\bimport\s[^;]*\buseBeforeUnload\b[^;]*from\s+['"]@vc-shell\/framework['"]/.test(source);
   const hasModificationTracker =
-    frameworkImports
-      .find(j.ImportSpecifier)
-      .filter((path) => {
-        const name = path.node.imported.type === "Identifier" ? path.node.imported.name : "";
-        return name === "useModificationTracker";
-      })
-      .size() > 0;
+    /\bimport\s[^;]*\buseModificationTracker\b[^;]*from\s+['"]@vc-shell\/framework['"]/.test(source);
 
   // Only process files that have the target pattern
   if (!hasUseForm && !hasBeforeUnload && !hasModificationTracker) return null;
 
-  let modified = false;
+  // --- Diagnostics only — no code modifications ---
   const diagnostics: string[] = [];
-
-  // --- Step 1: Remove useForm from vee-validate ---
-  if (hasUseForm) {
-    veeValidateImports.forEach((importPath) => {
-      const specifiers = importPath.node.specifiers ?? [];
-      const remaining = specifiers.filter((spec) => {
-        if (spec.type !== "ImportSpecifier") return true;
-        const name = spec.imported.type === "Identifier" ? spec.imported.name : "";
-        return name !== "useForm";
-      });
-
-      if (remaining.length === 0) {
-        // Remove entire import
-        j(importPath).remove();
-      } else {
-        importPath.node.specifiers = remaining;
-      }
-    });
-    modified = true;
-  }
-
-  // --- Step 2: Remove useBeforeUnload/useModificationTracker from framework ---
-  if (hasBeforeUnload || hasModificationTracker) {
-    frameworkImports.forEach((importPath) => {
-      const specifiers = importPath.node.specifiers ?? [];
-      const remaining = specifiers.filter((spec) => {
-        if (spec.type !== "ImportSpecifier") return true;
-        const name = spec.imported.type === "Identifier" ? spec.imported.name : "";
-        return !REMOVE_FROM_FRAMEWORK.has(name);
-      });
-
-      if (remaining.length === 0) {
-        // Should not happen — framework import usually has more symbols
-        j(importPath).remove();
-      } else {
-        importPath.node.specifiers = remaining;
-      }
-    });
-    modified = true;
-  }
-
-  // --- Step 3: Add useBladeForm to framework import ---
-  const hasBladeFormAlready =
-    root
-      .find(j.ImportDeclaration, { source: { value: "@vc-shell/framework" } })
-      .find(j.ImportSpecifier)
-      .filter((path) => {
-        const name = path.node.imported.type === "Identifier" ? path.node.imported.name : "";
-        return name === ADD_TO_FRAMEWORK;
-      })
-      .size() > 0;
-
-  if (!hasBladeFormAlready) {
-    const fwImports = root.find(j.ImportDeclaration, {
-      source: { value: "@vc-shell/framework" },
-    });
-
-    if (fwImports.size() > 0) {
-      const firstImport = fwImports.at(0);
-      const specifiers = firstImport.get().node.specifiers ?? [];
-      specifiers.push(j.importSpecifier(j.identifier(ADD_TO_FRAMEWORK)));
-      modified = true;
-    } else {
-      // No framework import exists — create one
-      const newImport = j.importDeclaration(
-        [j.importSpecifier(j.identifier(ADD_TO_FRAMEWORK))],
-        j.literal("@vc-shell/framework"),
-      );
-      const body = root.find(j.Program).get("body");
-      body.value.unshift(newImport);
-      modified = true;
-    }
-  }
-
-  // --- Step 4: Diagnostics for manual migration ---
-  const source = fileInfo.source;
 
   // Detect useForm destructure patterns
   if (/useForm\s*[<(]/.test(source)) {
@@ -208,10 +87,10 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
     console.log(`    → See migration guide #37 for full examples.`);
   }
 
-  if (!modified) return null;
-  return root.toSource();
+  // Diagnostic-only: never modify the file
+  return null;
 }
 
-const transform: Transform = wrapForSFC(coreTransform) as Transform;
+const transform: Transform = coreTransform as Transform;
 export default transform;
 export const parser = "tsx";

@@ -127,7 +127,7 @@ function coreTransform(fileInfo: FileInfo, api: API, options: Options): string |
       }
 
       if (!autoMigrated) {
-        // Fallback: keep notificationTemplates as deprecated key
+        // Fallback: keep notificationTemplates as deprecated key (skip if undefined)
         const properties = [
           j.property("init", j.identifier("blades"), args[0] as any),
           j.property("init", j.identifier("locales"), args[1] as any),
@@ -135,9 +135,15 @@ function coreTransform(fileInfo: FileInfo, api: API, options: Options): string |
         if (args[1].type === "Identifier" && args[1].name === "locales") {
           properties[1].shorthand = true;
         }
-        properties.push(j.property("init", j.identifier("notificationTemplates"), args[2] as any));
-        if (args[2].type === "Identifier" && args[2].name === "notificationTemplates") {
-          properties[2].shorthand = true;
+
+        // Only add notificationTemplates if it's not `undefined`
+        const isUndefinedArg =
+          args[2].type === "Identifier" && (args[2] as any).name === "undefined";
+        if (!isUndefinedArg) {
+          properties.push(j.property("init", j.identifier("notificationTemplates"), args[2] as any));
+          if (args[2].type === "Identifier" && args[2].name === "notificationTemplates") {
+            properties[2].shorthand = true;
+          }
         }
         const obj = j.objectExpression(properties);
         j(path).replaceWith(j.callExpression(j.identifier("defineAppModule"), [obj]));

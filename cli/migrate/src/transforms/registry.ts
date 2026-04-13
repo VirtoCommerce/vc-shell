@@ -176,6 +176,13 @@ export const transforms: VersionedTransform[] = [
     fileExtensions: [".vue"],
   },
   {
+    name: "remove-pathmatch-route",
+    description: "Remove /:pathMatch(.*)*  catch-all route (now built into framework)",
+    introducedIn: "2.0.0",
+    transformPath: t("remove-pathmatch-route"),
+    fileExtensions: [".ts"],
+  },
+  {
     name: "dynamic-properties-refactor",
     description:
       "useDynamicProperties<A,B,C,D,E>(fn, Class, Class, fn) → useDynamicProperties({ searchDictionary, searchMeasurements })",
@@ -196,6 +203,25 @@ export function selectTransforms(currentVersion: string, targetVersion: string):
   return transforms.filter((t) => {
     const introduced = semver.parse(t.introducedIn);
     if (!introduced) return false;
-    return semver.lt(currentVersion, t.introducedIn) && semver.lte(t.introducedIn, targetVersion);
+    if (!semver.lt(currentVersion, t.introducedIn)) return false;
+
+    // Normal case: introducedIn <= targetVersion
+    if (semver.lte(t.introducedIn, targetVersion)) return true;
+
+    // Special case: target is a prerelease (e.g. 2.0.0-alpha.32) and introducedIn
+    // is the corresponding stable release (e.g. 2.0.0) with no prerelease tag.
+    // Prereleases are on the path to that release, so include the transform.
+    // Without this, semver.lte("2.0.0", "2.0.0-alpha.32") returns false.
+    if (
+      target.prerelease.length > 0 &&
+      introduced.prerelease.length === 0 &&
+      target.major === introduced.major &&
+      target.minor === introduced.minor &&
+      target.patch === introduced.patch
+    ) {
+      return true;
+    }
+
+    return false;
   });
 }

@@ -2,9 +2,13 @@ import type { API, FileInfo, Options } from "jscodeshift";
 import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
 import type { Transform } from "./types.js";
 
-const RENAME_MAP: Record<string, string> = {
-  useWidgets: "useBladeWidgets",
-};
+/**
+ * Diagnostic-only: detect useWidgets() usage and report manual migration needed.
+ *
+ * The old useWidgets() API (registerWidget, clearBladeWidgets, updateActiveWidget)
+ * is completely replaced by the new declarative useBladeWidgets(widgets[]) API.
+ * This cannot be mechanically migrated — it requires manual rewrite.
+ */
 
 function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {
   const j = api.jscodeshift;
@@ -15,33 +19,25 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   });
   if (frameworkImports.size() === 0) return null;
 
-  const renames: Array<{ old: string; new: string }> = [];
-  frameworkImports.find(j.ImportSpecifier).forEach((path) => {
-    const name = path.node.imported.type === "Identifier" ? path.node.imported.name : "";
-    if (RENAME_MAP[name]) {
-      renames.push({ old: name, new: RENAME_MAP[name] });
-    }
-  });
-  if (renames.length === 0) return null;
+  const hasUseWidgets =
+    frameworkImports
+      .find(j.ImportSpecifier)
+      .filter((path) => {
+        const name = path.node.imported.type === "Identifier" ? path.node.imported.name : "";
+        return name === "useWidgets";
+      })
+      .size() > 0;
 
-  for (const r of renames) {
-    root.find(j.Identifier, { name: r.old }).forEach((path) => {
-      path.node.name = r.new;
-    });
-  }
+  if (!hasUseWidgets) return null;
 
-  // Check for registerWidget/unregisterWidget usage requiring manual review
-  const hasRegister =
-    root.find(j.Identifier, { name: "registerWidget" }).size() > 0 ||
-    root.find(j.Identifier, { name: "unregisterWidget" }).size() > 0;
-  if (hasRegister) {
-    api.report(
-      `${fileInfo.path}: useWidgets → useBladeWidgets renamed. ` +
-        `registerWidget/unregisterWidget calls require manual review.`,
-    );
-  }
+  api.report(
+    `${fileInfo.path}: useWidgets() → useBladeWidgets() — API completely changed. ` +
+      `Old: useWidgets() returns {registerWidget, clearBladeWidgets, updateActiveWidget}. ` +
+      `New: useBladeWidgets(widgets[]) takes declarative array, returns {refresh, refreshAll}. ` +
+      `Manual rewrite required. See migration guide.`,
+  );
 
-  return root.toSource();
+  return null; // diagnostic-only
 }
 
 export default wrapForSFC(coreTransform) as Transform;

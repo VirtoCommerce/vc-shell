@@ -49,6 +49,20 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
 
   if (!hasBladeProps && !hasBladeEmits) return null;
 
+  // --- Guard: only process actual blade pages (have defineOptions/defineBlade) ---
+  // Reusable components may also have expanded/closable props but should NOT be simplified.
+  const hasDefineOptions =
+    root.find(j.CallExpression, { callee: { name: "defineOptions" } }).size() > 0;
+  const hasDefineBlade =
+    root.find(j.CallExpression, { callee: { name: "defineBlade" } }).size() > 0;
+
+  if (!hasDefineOptions && !hasDefineBlade) {
+    api.report(
+      `${fileInfo.path}: Has blade props/emits but no defineOptions/defineBlade — skipping (likely reusable component, not a blade page).`,
+    );
+    return null;
+  }
+
   // --- Track needed useBlade members ---
   const neededMembers = new Set<string>();
 
@@ -134,8 +148,8 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   let propsRemoved = false;
   propsInterfaces.forEach((path) => {
     const body = path.node.body.body;
-    // Remove blade props + param + options (they come from useBlade now)
-    const propsToRemove = [...BLADE_PROPS, ...(usesParam ? ["param"] : []), ...(usesOptions ? ["options"] : [])];
+    // Remove blade props + param + options unconditionally (they come from useBlade now)
+    const propsToRemove = [...BLADE_PROPS, "param", "options"];
     path.node.body.body = body.filter((member) => {
       if (member.type !== "TSPropertySignature") return true;
       if (member.key.type !== "Identifier") return true;

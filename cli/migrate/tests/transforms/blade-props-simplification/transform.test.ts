@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import transform from "../../../src/transforms/blade-props-simplification";
 import { applyTransform } from "../../../src/utils/test-helpers";
 
+const BLADE_MARKER = `\ndefineOptions({ name: "TestBlade", url: "/test" });\n`;
+
 describe("blade-props-simplification (jscodeshift)", () => {
   it("removes blade boilerplate props and emits, adds useBlade", () => {
     const input = `import { defineComponent } from "@vc-shell/framework";
@@ -28,7 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-
+${BLADE_MARKER}
 function save() {
   emit("parent:call", { method: "refresh" });
 }
@@ -63,9 +65,33 @@ const opts = props.options;
     expect(result).toBeNull();
   });
 
-  it("removes defineProps when only blade fields exist", () => {
+  it("skips reusable components without defineOptions/defineBlade", () => {
     const input = `import { ref } from "@vc-shell/framework";
 
+interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  title: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+});
+
+interface Emits {
+  (e: "close:blade"): void;
+}
+
+const emit = defineEmits<Emits>();
+`;
+    const result = applyTransform(transform, { path: "BaseListBlade.ts", source: input });
+    expect(result).toBeNull();
+  });
+
+  it("removes defineProps when only blade fields exist", () => {
+    const input = `import { ref } from "@vc-shell/framework";
+${BLADE_MARKER}
 interface Props {
   expanded?: boolean;
   closable?: boolean;
@@ -84,7 +110,7 @@ const props = withDefaults(defineProps<Props>(), {
 
   it("replaces emit parent:call with callParent", () => {
     const input = `import type { IParentCallArgs } from "@vc-shell/framework";
-
+${BLADE_MARKER}
 interface Emits {
   (e: "parent:call", args: IParentCallArgs): void;
   (e: "close:blade"): void;
@@ -108,7 +134,7 @@ function onSaveWithArgs() {
 
   it("handles files with only Emits boilerplate", () => {
     const input = `import type { IParentCallArgs } from "@vc-shell/framework";
-
+${BLADE_MARKER}
 interface Emits {
   (e: "parent:call", args: IParentCallArgs): void;
   (e: "close:blade"): void;
@@ -126,7 +152,7 @@ emit("close:blade");
 
   it("does not duplicate useBlade import if already present", () => {
     const input = `import { useBlade } from "@vc-shell/framework";
-
+${BLADE_MARKER}
 interface Props {
   expanded?: boolean;
   closable?: boolean;
@@ -153,7 +179,7 @@ emit("close:blade");
   it("merges needed members into existing useBlade() call", () => {
     const input = `import { useBlade } from "@vc-shell/framework";
 import type { IParentCallArgs } from "@vc-shell/framework";
-
+${BLADE_MARKER}
 interface Props {
   expanded?: boolean;
   closable?: boolean;
@@ -198,6 +224,8 @@ const id = props.param;
     const input = `<template><div/></template>
 <script setup lang="ts">
 import { IParentCallArgs } from "@vc-shell/framework";
+
+defineOptions({ name: "TestBlade", url: "/test" });
 
 export interface Props {
   expanded?: boolean;

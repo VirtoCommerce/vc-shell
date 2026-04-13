@@ -25,6 +25,11 @@ describe("selectTransforms", () => {
       "manual-migration-audit",
       "nswag-class-to-interface",
       "use-assets-migration",
+      "app-hub-rename",
+      "responsive-composable",
+      "use-blade-form",
+      "remove-pathmatch-route",
+      "dynamic-properties-refactor",
     ]);
   });
 
@@ -57,22 +62,27 @@ describe("selectTransforms", () => {
   });
 
   it("does NOT select transforms whose introducedIn exceeds targetVersion", () => {
-    const selected = selectTransforms("1.0.0", "2.0.0-alpha.4");
+    // Target 1.0.0-alpha.1 — no transforms introduced before this
+    const selected = selectTransforms("0.9.0", "1.0.0-alpha.1");
     expect(selected).toEqual([]);
   });
 
-  it("selects define-app-module when targeting exactly alpha.5", () => {
+  it("selects define-app-module + all 2.0.0 stable transforms when targeting alpha.5", () => {
     const selected = selectTransforms("1.0.0", "2.0.0-alpha.5");
     const names = selected.map((t) => t.name);
-    expect(names).toEqual(["define-app-module"]);
+    // alpha.5 includes define-app-module (introducedIn: alpha.5) PLUS all
+    // transforms with introducedIn: "2.0.0" (same base version)
+    expect(names).toContain("define-app-module");
+    expect(names).toContain("rewrite-imports"); // introducedIn: "2.0.0"
+    expect(names).not.toContain("use-blade-migration"); // introducedIn: alpha.8
   });
 
-  it("selects transforms up to but not exceeding target alpha.8", () => {
+  it("selects alpha transforms up to target + all stable 2.0.0 transforms", () => {
     const selected = selectTransforms("1.0.0", "2.0.0-alpha.8");
     const names = selected.map((t) => t.name);
-    expect(names).toContain("define-app-module");
-    expect(names).toContain("use-blade-migration");
-    expect(names).not.toContain("notification-migration");
-    expect(names).not.toContain("rewrite-imports");
+    expect(names).toContain("define-app-module"); // alpha.5
+    expect(names).toContain("use-blade-migration"); // alpha.8
+    expect(names).not.toContain("notification-migration"); // alpha.10
+    expect(names).toContain("rewrite-imports"); // 2.0.0 (same base)
   });
 });

@@ -1183,7 +1183,7 @@ const PAGINATION_ITEM_SLOT = 37;
 const PAGINATION_BASE_WIDTH = 140;
 
 const paginationMaxPages = computed(() => {
-  if (!props.pagination.value || paginationWidth.value === 0) return 5;
+  if (!props.pagination || paginationWidth.value === 0) return 5;
   const available = paginationWidth.value - PAGINATION_BASE_WIDTH;
   // prev + next buttons always shown = 2 slots
   const slotsForPages = Math.floor((available - 2 * PAGINATION_ITEM_SLOT) / PAGINATION_ITEM_SLOT);
@@ -1193,7 +1193,7 @@ const paginationMaxPages = computed(() => {
 });
 
 const paginationShowFirstLast = computed(() => {
-  if (!props.pagination.value || paginationWidth.value === 0) return true;
+  if (!props.pagination || paginationWidth.value === 0) return true;
   const available = paginationWidth.value - PAGINATION_BASE_WIDTH;
   // Need room for: first + prev + at least 1 page + next + last = 5 slots minimum
   return available >= 5 * PAGINATION_ITEM_SLOT;

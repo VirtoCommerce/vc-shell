@@ -120,6 +120,7 @@
                   :alt="item.name || ''"
                   loading="lazy"
                   class="vc-gallery-preview__thumb-img"
+                  @error="onThumbImageError($event, item.url)"
                 />
               </button>
             </SwiperSlide>
@@ -205,6 +206,14 @@ function slidePrev() {
 
 function slideNext() {
   mainSwiper.value?.slideNext();
+}
+
+function onThumbImageError(event: Event, fallbackUrl?: string) {
+  if (!fallbackUrl) return;
+  const target = event.target;
+  if (target instanceof HTMLImageElement) {
+    target.src = fallbackUrl;
+  }
 }
 
 async function onCopyLink() {

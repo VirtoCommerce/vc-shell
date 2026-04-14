@@ -8,7 +8,7 @@
   <a href="https://www.npmjs.com/package/@vc-shell/framework"><img src="https://img.shields.io/npm/v/@vc-shell/framework/alpha?color=orange&label=%40vc-shell%2Fframework" alt="alpha version"></a>
   <a href="https://github.com/VirtoCommerce/vc-shell/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-VC--OSL-green" alt="License"></a>
   <a href="https://vc-shell-storybook.govirto.com/"><img src="https://img.shields.io/badge/storybook-live%20demo-ff4785" alt="Storybook"></a>
-  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen" alt="Node.js"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen" alt="Node.js"></a>
   <a href="https://yarnpkg.com/"><img src="https://img.shields.io/badge/yarn-4.9.2-blue" alt="Yarn"></a>
 </p>
 
@@ -72,15 +72,15 @@ vc-shell/
 │
 ├── configs/                    # Shared configurations
 │   ├── ts-config/              #   @vc-shell/ts-config
-│   └── vite-config/            #   @vc-shell/vite-config (not published)
+│   └── vite-config/            #   @vc-shell/config-generator
 │
 ├── packages/                   # Module Federation packages
 │   ├── mf-config/              #   @vc-shell/mf-config
 │   ├── mf-host/                #   @vc-shell/mf-host
 │   └── mf-module/              #   @vc-shell/mf-module
 │
-├── apps/
-│   └── vendor-portal/          # Example app consuming the framework (separate release cycle)
+├── apps/                       # Apps for local framework development & debugging
+│   └── ...                     #   Place vc-shell apps here (see "Local Development with an App")
 │
 └── .storybook/                 # Storybook configuration
 ```
@@ -89,7 +89,7 @@ vc-shell/
 
 ### Prerequisites
 
-- **Node.js** >= 18
+- **Node.js** >= 22
 - **Yarn** 4.x (Corepack: `corepack enable`)
 
 ### Installation
@@ -119,31 +119,49 @@ npx @vc-shell/create-vc-app my-app
 
 ### Common Commands
 
+#### Build
+
 ```bash
-# Build
 yarn build                          # Build all publishable packages
 yarn build-framework                # Build only @vc-shell/framework
-
-# Development
-yarn storybook-serve                # Storybook dev server at :6006
-
-# Lint & Format
-yarn lint                           # ESLint with auto-fix
-
-# Test
-yarn test:unit                      # Run unit tests (Vitest)
-yarn test:coverage                  # Tests with coverage report
-yarn test:storybook                 # Run Storybook interaction tests
-
-# Type Check
-cd framework && npx tsc --noEmit    # TypeScript validation
-
-# Utilities
-yarn check-locales                  # Validate locale files
-yarn check-circular                 # Detect circular dependencies
+yarn build:analyze                  # Build with bundle analyzer
+yarn build-cli:config               # Build @vc-shell/config-generator
+yarn build-cli:api-client           # Build @vc-shell/api-client-generator
+yarn build-cli:create-vc-app        # Build @vc-shell/create-vc-app
 ```
 
-### API Client Generation
+#### Development
+
+```bash
+yarn storybook-serve                # Storybook dev server at :6006
+```
+
+#### Test
+
+```bash
+yarn test                           # Run tests in watch mode
+yarn test:unit                      # Run unit tests (single run)
+yarn test:coverage                  # Tests with coverage report
+yarn test:storybook                 # Run Storybook interaction tests
+yarn test:snapshot:update           # Update Storybook snapshots
+```
+
+#### Lint & Type Check
+
+```bash
+yarn lint                           # ESLint with auto-fix
+cd framework && npx tsc --noEmit    # TypeScript validation
+```
+
+#### Code Quality
+
+```bash
+yarn check-locales                  # Validate locale files
+yarn check-circular                 # Detect circular dependencies (madge)
+yarn check-layers                   # Enforce layer dependency direction
+```
+
+#### API Client Generation
 
 Generate TypeScript API clients from VirtoCommerce Platform modules:
 
@@ -151,31 +169,91 @@ Generate TypeScript API clients from VirtoCommerce Platform modules:
 yarn generate:api-client
 ```
 
-### Release
+#### Release
 
 ```bash
-yarn release          # Interactive release workflow
-yarn release:dry      # Dry run (preview changes)
+yarn release                        # Interactive release workflow
+yarn release:dry                    # Dry run (preview changes)
 ```
 
-## Component Library
+#### Utilities
 
-The framework follows **Atomic Design** methodology:
+```bash
+yarn clean                          # Remove all node_modules + dist directories
+yarn changed                        # List commits since last release tag
+yarn diff                           # Diff stats since last release tag
+```
 
-### Atoms (base building blocks)
-`VcBadge` `VcBanner` `VcButton` `VcCard` `VcContainer` `VcHint` `VcIcon` `VcImage` `VcLabel` `VcLink` `VcLoading` `VcProgress` `VcSkeleton` `VcStatus` `VcTooltip` and more
+### Local Development with an App
 
-### Molecules (composite form elements)
-`VcInput` `VcSelect` `VcDatePicker` `VcEditor` `VcFileUpload` `VcCheckbox` `VcRadioGroup` `VcSwitch` `VcSlider` `VcAccordion` `VcDropdown` `VcPagination` `VcTextarea` `VcMultivalue` `VcColorInput` `VcInputCurrency` and more
+If you have an existing vc-shell application (e.g. from a separate repository) and want to develop against local framework packages:
 
-### Organisms (complex UI blocks)
-`VcBlade` `VcDataTable` `VcGallery` `VcImageUpload` `VcPopup` `VcSidebar` `VcApp` `VcAuthLayout` `VcDynamicProperty`
+1. **Copy or clone** the app into the `apps/` directory:
 
-### Live Demo
+```bash
+cp -r /path/to/my-vc-app apps/my-vc-app
+```
 
-Explore all components interactively: **[Storybook](https://vc-shell-storybook.govirto.com/)**
+2. **Run the setup script** to link the app to the monorepo:
 
-## Architecture Highlights
+```bash
+yarn setup-apps
+```
+
+This script automatically:
+- **Removes `yarn.lock`** from each app — the app's standalone lockfile creates a separate resolution tree that bypasses Yarn workspace resolution; removing it lets the monorepo's root lockfile take over
+- **Syncs `@vc-shell/*` versions** — if the app's dependency ranges (e.g. `"@vc-shell/framework": "^1.0.0"`) don't match the local package version, Yarn will fetch from npm instead of using the local workspace package; the script updates all ranges to `^<current-monorepo-version>`
+- **Runs `yarn install`** to resolve everything through workspace
+
+3. **Start the app** (where `<app-name>` is the `name` field from the app's `package.json`):
+
+```bash
+yarn workspace <app-name> run serve
+```
+
+> **Note:** The app must be built on `@vc-shell/framework`. The `apps/*` glob is already included in the root `workspaces` field, so any directory placed in `apps/` with a valid `package.json` is automatically recognized as a workspace. The `apps/` directory is not shipped — it exists purely for local development and debugging of the framework against real applications.
+
+## Contributing
+
+### Getting Set Up
+
+1. Fork the repository and clone your fork
+2. Install dependencies: `yarn install`
+3. Build all packages: `yarn build`
+4. Create a feature branch: `git checkout -b feat/my-feature`
+
+### Commit Convention
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) enforced by commitlint. Commit messages must follow this format:
+
+```
+<type>(<scope>): <subject>
+```
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`
+
+See [`.github/COMMIT_CONVENTION.md`](./.github/COMMIT_CONVENTION.md) for full details and examples.
+
+### Pre-commit Hooks
+
+Husky runs these checks automatically on each commit:
+
+- **lint-staged** — ESLint + Prettier + Stylelint on staged files
+- **check-locales** — validates locale file consistency
+- **commitlint** — enforces conventional commit message format
+
+### Before Submitting a PR
+
+```bash
+yarn lint                           # Fix lint issues
+cd framework && npx tsc --noEmit    # Type check
+yarn test:unit                      # Run unit tests
+yarn check-circular                 # No circular dependencies
+```
+
+A [pull request template](./.github/PULL_REQUEST_TEMPLATE.md) is provided to guide your PR description.
+
+## Architecture
 
 ### Blade Navigation
 
@@ -187,22 +265,11 @@ import { useBlade } from "@vc-shell/framework";
 
 const { param, openBlade, closeSelf, callParent, onActivated } = useBlade();
 
-// Open a child blade by registered name
 openBlade({ name: "OrderDetails", param: "order-123" });
-
-// Open a workspace blade (replaces all blades)
 openBlade({ name: "OrdersList", isWorkspace: true });
-
-// Close this blade
 closeSelf();
-
-// Call a method exposed by the parent blade
 const result = await callParent("reload");
-
-// React to blade becoming active (rightmost visible)
-onActivated(() => {
-  // refresh data, focus input, etc.
-});
+onActivated(() => { /* refresh data */ });
 </script>
 ```
 
@@ -229,30 +296,32 @@ Blade components are auto-registered in BladeRegistry by their `name` property, 
 
 ### Extension Points
 
-The framework supports declarative extension points with `defineExtensionPoint()` and `useExtensionPoint()`:
+The framework supports declarative extension points for cross-module customization:
 
 ```typescript
 import { defineExtensionPoint } from "@vc-shell/framework/extensions";
 
-// Declare an extension point in a blade
 const { ExtensionPoint, extensions } = defineExtensionPoint("order-details-toolbar");
-```
-
-```vue
-<!-- Render all registered extensions -->
-<ExtensionPoint />
 ```
 
 Consumer modules contribute to extension points by registering components at those named slots.
 
-## Code Style
+## Component Library
 
-- **Vue SFC**: `<script setup lang="ts">` — Composition API only
-- **CSS**: Tailwind with `tw-` prefix (e.g., `tw-flex tw-px-4`). Colors via CSS custom properties: `tw-bg-[var(--primary-500)]`
-- **Types**: Strict TypeScript. Interfaces prefixed with `I` (e.g., `ITableColumns`)
-- **Components**: `Vc` prefix for all framework components
-- **Commits**: Conventional Commits enforced by commitlint
-- **State**: Composables + provide/inject for cross-component DI
+The framework follows **Atomic Design** methodology:
+
+### Atoms (base building blocks)
+`VcBadge` `VcBanner` `VcButton` `VcCard` `VcContainer` `VcHint` `VcIcon` `VcImage` `VcLabel` `VcLink` `VcLoading` `VcProgress` `VcSkeleton` `VcStatus` `VcTooltip` and more
+
+### Molecules (composite form elements)
+`VcInput` `VcSelect` `VcDatePicker` `VcEditor` `VcFileUpload` `VcCheckbox` `VcRadioGroup` `VcSwitch` `VcSlider` `VcAccordion` `VcDropdown` `VcPagination` `VcTextarea` `VcMultivalue` `VcColorInput` `VcInputCurrency` and more
+
+### Organisms (complex UI blocks)
+`VcBlade` `VcDataTable` `VcGallery` `VcImageUpload` `VcPopup` `VcSidebar` `VcApp` `VcAuthLayout` `VcDynamicProperty`
+
+### Live Demo
+
+Explore all components interactively: **[Storybook](https://vc-shell-storybook.govirto.com/)**
 
 ## Documentation
 

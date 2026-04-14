@@ -36,7 +36,8 @@
     "prepare": "husky install",
     "pre-commit": "yarn check-locales",
     "generate-changelogs": "tsx scripts/generate-initial-changelogs.ts",
-    "clean": "find . -name node_modules -type d -prune -exec rm -rf {} + && find . -name dist -type d -prune -exec rm -rf {} +"
+    "clean": "find . -name node_modules -type d -prune -exec rm -rf {} + && find . -name dist -type d -prune -exec rm -rf {} +",
+    "setup-apps": "tsx scripts/setup-app.ts"
   },
   "workspaces": [
     "apps/*",
@@ -122,6 +123,9 @@
     "vue-component-meta": "^3.2.5",
     "vue-eslint-parser": "^10.2.0",
     "vue-tsc": "^3.2.5"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "dependencies": {
     "cross-spawn": "^7.0.3",

@@ -99,7 +99,7 @@ Sub-components are in `vc-table/components/`, composables in `vc-table/composabl
 
 - **Storybook HMR loop**: vc-table stories have a known infinite HMR reload (~1s remount). Playwright snapshots may appear empty; use screenshots instead.
 - **Vue watcher + immediate**: `watch(computed, ..., { immediate: true })` fires again during post-setup flush if computed returns new array reference (fails `Object.is`). Guard with set-equality checks.
-- **Flex column layout**: Columns use `flex: 0 1 auto` with `min-width: 0`. Head/cell padding MUST match (`tw-px-1`) or columns with many columns overflow. The `::after` filler pseudo-element absorbs leftover space.
+- **Flex column layout**: Columns use `flex: 0 1 auto` with `min-width: 0`. Head/cell padding MUST match — both use `--table-cell-padding-x` (defined in `Table.vue`). No inter-column gap (gap: 0 on transition-wrapper); spacing is cell-padding-only. The `::after` filler pseudo-element absorbs leftover space.
 - **Row drag-and-drop**: `event.preventDefault()` in `dragover` MUST be called on EVERY event or `drop` never fires. No early returns before it.
 - **VcTableAdapter sort prop**: Parent passes `:sort-expression` but adapter prop is `sort` — `props.sort` is always undefined. `lastSortField` ref is the essential fallback.
 - **No horizontal scrollbar**: `.vc-table-composition` uses `overflow: hidden`, not `auto`.

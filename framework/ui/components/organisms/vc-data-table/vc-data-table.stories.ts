@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { ref, h, onMounted, onUnmounted } from "vue";
+import { ref, computed, h, onMounted, onUnmounted } from "vue";
 import { VcDataTable, VcColumn, TableColumnSwitcher } from "@ui/components/organisms/vc-data-table";
 import { VcInput, VcSelect } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
+import { useDataTablePagination } from "@ui/composables/useDataTablePagination";
 import { withMobileView } from "../../../../../.storybook/decorators";
 
 /**
@@ -332,6 +333,51 @@ export const WithPagination: Story = {
         :items="products"
         :pagination="{ currentPage, pages: totalPages }"
         @pagination-click="handlePagination"
+      >
+        <VcColumn id="name" field="name" title="Name" />
+        <VcColumn id="price" field="price" title="Price" type="money" />
+        <VcColumn id="stock" field="stock" title="Stock" type="number" />
+      </VcDataTable>
+    </div>
+  `,
+  }),
+};
+
+/**
+ * VcDataTable with pagination managed by `useDataTablePagination` composable.
+ * Eliminates manual Math.ceil/Math.floor boilerplate and provides a ready-made
+ * `paginationProps` object + `goToPage` handler via `onPageChange` callback.
+ */
+export const WithPaginationComposable: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const allProducts = mockProducts;
+      const pageSize = 3;
+
+      // Simulate a search result with totalCount
+      const searchResult = ref({ results: allProducts.slice(0, pageSize), totalCount: allProducts.length });
+
+      const pagination = useDataTablePagination({
+        pageSize,
+        totalCount: computed(() => searchResult.value.totalCount),
+        onPageChange: ({ skip }) => {
+          // Simulate server-side pagination
+          searchResult.value = {
+            ...searchResult.value,
+            results: allProducts.slice(skip, skip + pageSize),
+          };
+        },
+      });
+
+      return { products: computed(() => searchResult.value.results), pagination };
+    },
+    template: `
+    <div style="height: 400px">
+      <VcDataTable
+        :items="products"
+        :pagination="pagination.paginationProps"
+        @pagination-click="pagination.goToPage"
       >
         <VcColumn id="name" field="name" title="Name" />
         <VcColumn id="price" field="price" title="Price" type="money" />

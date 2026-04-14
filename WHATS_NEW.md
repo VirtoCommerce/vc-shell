@@ -56,6 +56,8 @@ See [migration/39-blade-skeleton.md](./migration/39-blade-skeleton.md) for detai
 
 - **`useDataTableSort()` composable** — Page-level composable for VcDataTable sort state. Provides `sortField` and `sortOrder` refs for `v-model` binding, plus a `sortExpression` string for API calls, eliminating manual sort boilerplate in list pages.
 
+- **`useDataTablePagination()` composable** — Page-level composable for VcDataTable pagination state. Derives `pages`, `skip`, and a ready-made `paginationProps` object from a reactive `totalCount`, and fires an optional `onPageChange` event callback for data fetching. Eliminates `Math.ceil`/`Math.floor` boilerplate from data composables and `onPaginationClick` handlers from list blades. Follows the VueUse `useOffsetPagination` event-callback pattern.
+
 ---
 
 ## Notifications

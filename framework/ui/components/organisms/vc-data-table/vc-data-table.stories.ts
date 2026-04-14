@@ -345,8 +345,8 @@ export const WithPagination: Story = {
 
 /**
  * VcDataTable with pagination managed by `useDataTablePagination` composable.
- * Eliminates manual Math.ceil/Math.floor boilerplate and provides a ready-made
- * `paginationProps` object + `goToPage` handler via `onPageChange` callback.
+ * Returns a `reactive()` object passable directly as `:pagination` prop.
+ * Eliminates manual Math.ceil/Math.floor boilerplate via `onPageChange` callback.
  */
 export const WithPaginationComposable: Story = {
   render: () => ({
@@ -376,7 +376,7 @@ export const WithPaginationComposable: Story = {
     <div style="height: 400px">
       <VcDataTable
         :items="products"
-        :pagination="pagination.paginationProps"
+        :pagination="pagination"
         @pagination-click="pagination.goToPage"
       >
         <VcColumn id="name" field="name" title="Name" />

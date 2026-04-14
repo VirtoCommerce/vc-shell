@@ -1,5 +1,4 @@
-import { ref, computed, type Ref, type ComputedRef, type MaybeRefOrGetter, toValue } from "vue";
-import type { DataTablePagination } from "@ui/components/organisms/vc-data-table/types";
+import { ref, computed, reactive, type MaybeRefOrGetter, toValue } from "vue";
 
 export interface UseDataTablePaginationOptions {
   /** Items per page. Default: 20 */
@@ -11,16 +10,16 @@ export interface UseDataTablePaginationOptions {
 }
 
 export interface UseDataTablePaginationReturn {
-  /** Current 1-based page number */
-  currentPage: Ref<number>;
+  /** Current 1-based page number (writable) */
+  currentPage: number;
   /** Total number of pages */
-  pages: ComputedRef<number>;
+  readonly pages: number;
   /** Current skip offset: (currentPage - 1) * pageSize */
-  skip: ComputedRef<number>;
+  readonly skip: number;
   /** Resolved page size */
-  pageSize: ComputedRef<number>;
-  /** Ready-made prop object for VcDataTable :pagination binding */
-  paginationProps: ComputedRef<DataTablePagination>;
+  readonly pageSize: number;
+  /** Resolved total item count — pass to VcDataTable :total-count */
+  readonly totalCount: number;
   /** Navigate to a specific page. Fires onPageChange if provided. */
   goToPage: (page: number) => void;
   /** Reset to page 1. Does NOT fire onPageChange. */
@@ -32,12 +31,7 @@ export function useDataTablePagination(options: UseDataTablePaginationOptions): 
   const currentPage = ref(1);
   const pages = computed(() => Math.ceil(toValue(options.totalCount) / pageSize.value) || 0);
   const skip = computed(() => (currentPage.value - 1) * pageSize.value);
-
-  const paginationProps = computed<DataTablePagination>(() => ({
-    currentPage: currentPage.value,
-    pages: pages.value,
-    pageSize: pageSize.value,
-  }));
+  const totalCount = computed(() => toValue(options.totalCount));
 
   function goToPage(page: number) {
     currentPage.value = page;
@@ -48,5 +42,5 @@ export function useDataTablePagination(options: UseDataTablePaginationOptions): 
     currentPage.value = 1;
   }
 
-  return { currentPage, pages, skip, pageSize, paginationProps, goToPage, reset };
+  return reactive({ currentPage, pages, skip, pageSize, totalCount, goToPage, reset });
 }

@@ -1,6 +1,6 @@
 # useDataTablePagination
 
-Manages page-level pagination state for `VcDataTable`. Derives `pages`, `skip`, and a ready-made `paginationProps` object from a reactive `totalCount` input, and fires an optional `onPageChange` callback when the page changes.
+Manages page-level pagination state for `VcDataTable`. Derives `pages`, `skip`, `totalCount` from a reactive input, and fires an optional `onPageChange` callback when the page changes. Returns a `reactive()` object — all properties are plain values (no `.value` needed), and the object is directly passable as the VcDataTable `:pagination` prop.
 
 Follows the same event-callback pattern as VueUse's `useOffsetPagination`.
 
@@ -8,7 +8,7 @@ Follows the same event-callback pattern as VueUse's `useOffsetPagination`.
 
 - You are using `VcDataTable` with `:pagination` prop and `@pagination-click` event
 - You want to eliminate the `Math.ceil` / `Math.floor` pagination boilerplate from data composables
-- You want a ready-made `paginationProps` object instead of manually constructing `{ currentPage, pages }`
+- You want a single object to bind as `:pagination`, `:total-count`, and `@pagination-click`
 
 ## When NOT to Use
 
@@ -30,8 +30,8 @@ const pagination = useDataTablePagination({
 ```vue
 <VcDataTable
   :items="items"
-  :total-count="totalCount"
-  :pagination="pagination.paginationProps"
+  :total-count="pagination.totalCount"
+  :pagination="pagination"
   @pagination-click="pagination.goToPage"
 />
 ```
@@ -46,17 +46,19 @@ const pagination = useDataTablePagination({
 | `pageSize` | `MaybeRefOrGetter<number>` | `20` | Items per page |
 | `onPageChange` | `(state: { page: number; skip: number }) => void` | `undefined` | Event callback fired when `goToPage()` is called |
 
-### Returns
+### Returns (`reactive()` object)
 
 | Property | Type | Description |
 |---|---|---|
-| `currentPage` | `Ref<number>` | Current 1-based page number |
-| `pages` | `ComputedRef<number>` | Total number of pages |
-| `skip` | `ComputedRef<number>` | Current skip offset for API calls |
-| `pageSize` | `ComputedRef<number>` | Resolved page size |
-| `paginationProps` | `ComputedRef<DataTablePagination>` | Ready-made prop object for `:pagination` binding |
+| `currentPage` | `number` | Current 1-based page number (writable) |
+| `pages` | `number` (readonly) | Total number of pages |
+| `skip` | `number` (readonly) | Current skip offset for API calls |
+| `pageSize` | `number` (readonly) | Resolved page size |
+| `totalCount` | `number` (readonly) | Resolved total item count |
 | `goToPage` | `(page: number) => void` | Navigate to page; fires `onPageChange` |
 | `reset` | `() => void` | Reset to page 1; does NOT fire `onPageChange` |
+
+All properties are auto-unwrapped by `reactive()` — no `.value` access needed in script or template.
 
 ## Recipe: Server-Side Paginated Table
 
@@ -91,8 +93,8 @@ const { sortField, sortOrder, sortExpression } = useDataTableSort({
 <template>
   <VcDataTable
     :items="searchResult?.results ?? []"
-    :total-count="searchResult?.totalCount"
-    :pagination="pagination.paginationProps"
+    :total-count="pagination.totalCount"
+    :pagination="pagination"
     @pagination-click="pagination.goToPage"
     v-model:sort-field="sortField"
     v-model:sort-order="sortOrder"
@@ -124,7 +126,6 @@ export function useOffers() {
 
   return {
     offers: computed(() => searchResult.value?.results ?? []),
-    totalCount: computed(() => searchResult.value?.totalCount ?? 0),
     pagination,
     loadOffers,
   };
@@ -135,23 +136,27 @@ Blade then simply binds:
 
 ```vue
 <VcDataTable
-  :pagination="pagination.paginationProps"
+  :total-count="pagination.totalCount"
+  :pagination="pagination"
   @pagination-click="pagination.goToPage"
 />
 ```
 
 ## Details
 
+- **`reactive()` return**: The composable wraps its return in `reactive()`, so all `Ref`/`ComputedRef` properties are auto-unwrapped. Access with `pagination.pages` (not `pagination.pages.value`). This allows the object to be passed directly as `:pagination` prop to VcDataTable without intermediate conversion.
 - **Event callback, not load**: `onPageChange` is an event notification (like VueUse's `useOffsetPagination`). The composable does not know about data fetching — it just notifies.
 - **No auto-clamp**: When `totalCount` decreases (e.g. after deletion), `currentPage` is NOT automatically clamped. Call `reset()` or `goToPage(1)` explicitly after mutations.
 - **reset() is silent**: `reset()` sets `currentPage = 1` but does NOT fire `onPageChange`. This prevents accidental double-fetches when the consumer resets pagination during a reload.
-- **Pure without callback**: Omit `onPageChange` and the composable works as pure state — useful for unit tests or when the consumer prefers to watch `skip` reactively.
+- **Pure without callback**: Omit `onPageChange` and the composable works as pure state — useful for unit tests or when the consumer prefers to watch properties reactively.
+- **Why `reactive()` and not `ref()`**: Pagination is a cohesive group of properties always used together (`pagination.xxx`). `reactive()` is the Vue-idiomatic choice for such objects. `useDataTableSort` returns `ref()`s because its properties are destructured and used with `v-model` individually.
 
 ## Tips
 
 - Call `pagination.reset()` alongside search/filter changes to return to page 1.
 - Pair with `useDataTableSort` for the complete table state management story.
-- The `skip` computed can be used directly in API queries when not using `onPageChange`.
+- The `skip` property can be used directly in API queries when not using `onPageChange`.
+- Do NOT destructure properties: `const { pages } = pagination` loses reactivity. Always access via `pagination.pages`.
 
 ## Related
 

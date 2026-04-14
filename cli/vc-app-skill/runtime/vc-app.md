@@ -1432,10 +1432,22 @@ Fully automatic migration to the latest @vc-shell/framework version. Runs the CL
 
 ### Step 2: Run CLI migrator
 
-Resolve the migrate CLI binary with this priority:
-1. **Env override:** If `VC_SHELL_MIGRATE_CLI` env var is set, use `node {value}`
-2. **Local monorepo build:** If `{SKILL_DIR}/../../migrate/dist/cli.js` exists (dev/monorepo mode), use `node {path}`
-3. **npm global/local:** Otherwise use `npx @vc-shell/migrate`
+Resolve the migrate CLI binary. Run this shell snippet and use the result:
+
+```bash
+if [ -n "$VC_SHELL_MIGRATE_CLI" ] && [ -f "$VC_SHELL_MIGRATE_CLI" ]; then
+  echo "node $VC_SHELL_MIGRATE_CLI"
+elif [ -f "./node_modules/@vc-shell/migrate/dist/cli.js" ]; then
+  echo "node ./node_modules/@vc-shell/migrate/dist/cli.js"
+else
+  echo "npx @vc-shell/migrate"
+fi
+```
+
+Priority:
+1. **Env override:** `VC_SHELL_MIGRATE_CLI` env var
+2. **Project node_modules:** `./node_modules/@vc-shell/migrate/dist/cli.js`
+3. **npx fallback:** `npx @vc-shell/migrate`
 
 Run:
 

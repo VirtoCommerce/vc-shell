@@ -5,6 +5,7 @@ describe("selectTransforms", () => {
   it("selects all transforms when migrating from 1.x to 2.0.0", () => {
     const selected = selectTransforms("1.0.0", "2.0.0");
     expect(selected.map((t) => t.name)).toEqual([
+      "remove-release-config",
       "define-app-module",
       "use-blade-migration",
       "notification-migration",
@@ -24,6 +25,7 @@ describe("selectTransforms", () => {
       "shims-to-globals",
       "use-data-table-sort",
       "manual-migration-audit",
+      "vctable-audit",
       "nswag-class-to-interface",
       "use-assets-migration",
       "replace-cover-method",

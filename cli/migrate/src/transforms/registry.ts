@@ -8,6 +8,13 @@ const t = (name: string) => resolve(__dirname, `${name}.js`);
 
 export const transforms: VersionedTransform[] = [
   {
+    name: "remove-release-config",
+    description: "Remove deprecated @vc-shell/release-config and scripts/release.ts",
+    introducedIn: "2.0.0",
+    scope: "project",
+    transformPath: t("remove-release-config"),
+  },
+  {
     name: "define-app-module",
     description: "createAppModule(pages, locales) → defineAppModule({...})",
     introducedIn: "2.0.0-alpha.5",
@@ -67,7 +74,7 @@ export const transforms: VersionedTransform[] = [
   },
   {
     name: "icon-audit",
-    description: "Detect Font Awesome icons, report with suggested replacements (diagnostic-only)",
+    description: "Detect non-lucide icons (material-/bi-/fa-) and suggest lucide replacements (diagnostic-only)",
     introducedIn: "2.0.0",
     diagnosticOnly: true,
     migrationGuideSection: "Section 2",
@@ -146,6 +153,15 @@ export const transforms: VersionedTransform[] = [
     introducedIn: "2.0.0",
     diagnosticOnly: true,
     transformPath: t("manual-migration-audit"),
+  },
+  {
+    name: "vctable-audit",
+    description: "Detect <VcTable> usage for migration to <VcDataTable> (diagnostic-only)",
+    introducedIn: "2.0.0",
+    diagnosticOnly: true,
+    migrationGuideSection: "VcTable → VcDataTable",
+    transformPath: t("vctable-audit"),
+    fileExtensions: [".vue"],
   },
   {
     name: "nswag-class-to-interface",

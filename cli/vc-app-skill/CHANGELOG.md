@@ -1,3 +1,18 @@
+# [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
+
+
+### Bug Fixes
+
+* **vc-app-skill:** add VC_SHELL_MIGRATE_CLI env override for local testing ([010d2f2](https://github.com/VirtoCommerce/vc-shell/commit/010d2f2ecb29d31d9134406bcd18e46e5883208b))
+* **vc-app-skill:** resolve migrate CLI from project node_modules before npx fallback ([82a8156](https://github.com/VirtoCommerce/vc-shell/commit/82a81563f7fdb94a94a7b8a80796ecffc671a39c))
+* **vc-app-skill:** resolve migrate CLI locally in dev mode, fallback to npx ([89888a0](https://github.com/VirtoCommerce/vc-shell/commit/89888a06cc0b4a1519f46f070ee06ebb0d82fd09))
+
+
+### Features
+
+* **vc-app-skill:** add /vc-app migrate command with full migration pipeline ([35a8b11](https://github.com/VirtoCommerce/vc-shell/commit/35a8b119457b14f6f4626caf133476222afd6663))
+* **vc-app-skill:** add migration prompt knowledge base (nswag, widgets, form, blade-props, notifications) ([a0b0eb2](https://github.com/VirtoCommerce/vc-shell/commit/a0b0eb2a96521916a72bdbf787961c1c96f96f6d))
+* **vc-app-skill:** add migration-agent subagent prompt ([29ac155](https://github.com/VirtoCommerce/vc-shell/commit/29ac1550c8e3c9b71d5dbc2ade7ea86b4d40213f))
 # [2.0.0-alpha.32](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.31...v2.0.0-alpha.32) (2026-04-02)
 
 **Note:** Version bump only for package @vc-shell/vc-app-skill

@@ -298,3 +298,8 @@ const content = ref("<h1>Title</h1>");
 
 - [VcTextarea](../vc-textarea/) -- plain multi-line text input (no formatting)
 - [VcInput](../vc-input/) -- single-line text input
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
+

@@ -786,3 +786,10 @@ VcInput follows WAI-ARIA best practices for form fields:
 - [VcInputGroup](../vc-input-group/) -- Groups multiple inputs with shared label, error state, and disabled state
 - [VcLabel](../../atoms/vc-label/) -- The label atom used internally by VcInput
 - [VcHint](../../atoms/vc-hint/) -- The hint/error atom used internally by VcInput
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
+
+This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+

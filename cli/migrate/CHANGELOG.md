@@ -1,3 +1,24 @@
+# [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
+
+
+### Bug Fixes
+
+* **migrate:** fix 7 critical bugs found during real-app testing ([41688a1](https://github.com/VirtoCommerce/vc-shell/commit/41688a164250d397c51b6007953bc112f63ee4b9))
+* **migrate:** improve useBladeForm diagnostic — onBeforeClose must be removed, show closeConfirmMessage example ([274bf9a](https://github.com/VirtoCommerce/vc-shell/commit/274bf9aac965b8c8cecada58d7959d547da7f52b))
+
+
+### Features
+
+* **migrate:** add 4 new transforms (injection-keys, replace-cover, locale-imports, window-globals) ([bbcbc79](https://github.com/VirtoCommerce/vc-shell/commit/bbcbc79530ad237ed4d9bd4519ba164559b125a5))
+* **migrate:** add after field to VersionedTransform for dependency ordering ([a854662](https://github.com/VirtoCommerce/vc-shell/commit/a85466259f908c585161e6db43337c1b1e5d2ece))
+* **migrate:** add defineExpose → exposeToChildren transform + improve widgets diagnostic ([d73352c](https://github.com/VirtoCommerce/vc-shell/commit/d73352c02630f3cf2b046f524769ac8d4cec1f0f))
+* **migrate:** add release-config cleanup and VcTable audits ([23118dd](https://github.com/VirtoCommerce/vc-shell/commit/23118dd74e9bd4387b166bd5e35a341ad81cd6be))
+* **migrate:** declare after dependencies for blade-props, define-options, remove-pathmatch ([90167af](https://github.com/VirtoCommerce/vc-shell/commit/90167afbe8d07fc88a9543eb431edf6b29e5aba9))
+* **migrate:** generate MIGRATION_REPORT.md with automated/manual/uncovered sections ([3d9d2a1](https://github.com/VirtoCommerce/vc-shell/commit/3d9d2a10844ffe940e96a3f74bf40c24ff6e7a71))
+* **migrate:** idempotency guard — second run produces zero modifications ([cd91b25](https://github.com/VirtoCommerce/vc-shell/commit/cd91b250a8a5235543f6a5fe4330a86d530b250a))
+* **migrate:** replace-cover-method — openBlade({ replaceCurrentBlade: true }) → coverWith() ([cb24cd8](https://github.com/VirtoCommerce/vc-shell/commit/cb24cd8353847fd9c7ddc91927f726cba3ada00b))
+* **migrate:** structured migration report with before/after examples and guide links ([2f5c2da](https://github.com/VirtoCommerce/vc-shell/commit/2f5c2da289abb9977464fb8772ddcfe2c3daa17d))
+* **migrate:** topological sort for transform dependency ordering ([24a4446](https://github.com/VirtoCommerce/vc-shell/commit/24a44463fd9e114401b989114aacfc07ddb5250f))
 # [2.0.0-alpha.32](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.31...v2.0.0-alpha.32) (2026-04-02)
 
 **Note:** Version bump only for package @vc-shell/migrate

@@ -1,5 +1,48 @@
 # Changelog
 
+# [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
+
+
+### Bug Fixes
+
+* **lint:** use vue/no-restricted-class for template z-index enforcement ([d65b670](https://github.com/VirtoCommerce/vc-shell/commit/d65b670a64670af4dc3f98a2fcaa4efa1980f04c))
+* **migrate:** fix 7 critical bugs found during real-app testing ([41688a1](https://github.com/VirtoCommerce/vc-shell/commit/41688a164250d397c51b6007953bc112f63ee4b9))
+* **migrate:** improve useBladeForm diagnostic — onBeforeClose must be removed, show closeConfirmMessage example ([274bf9a](https://github.com/VirtoCommerce/vc-shell/commit/274bf9aac965b8c8cecada58d7959d547da7f52b))
+* **rnd-114:** isolated authData refs causing the previous user's token to persist after logout and re-login ([#219](https://github.com/VirtoCommerce/vc-shell/issues/219)) ([acb6406](https://github.com/VirtoCommerce/vc-shell/commit/acb640635ecafdcae61bd5423dd9fc7e24398c3f))
+* **sidebar, dropdown:** align JS z-index defaults with token scale ([431bccd](https://github.com/VirtoCommerce/vc-shell/commit/431bccda9660cbfc9314fc4184a35cc3fadb17a4))
+* **ui:** refine blade loading states and media/date interactions ([32eb9ae](https://github.com/VirtoCommerce/vc-shell/commit/32eb9ae7d691c07edc3d4af7d6f9b2d9bfab86fa))
+* **ui:** resolve pagination and image fallback type errors ([c5c4a2f](https://github.com/VirtoCommerce/vc-shell/commit/c5c4a2fea9141ea39fa21b2cc0b23cfc78947a00))
+* **vc-app-skill:** add VC_SHELL_MIGRATE_CLI env override for local testing ([010d2f2](https://github.com/VirtoCommerce/vc-shell/commit/010d2f2ecb29d31d9134406bcd18e46e5883208b))
+* **vc-app-skill:** resolve migrate CLI from project node_modules before npx fallback ([82a8156](https://github.com/VirtoCommerce/vc-shell/commit/82a81563f7fdb94a94a7b8a80796ecffc671a39c))
+* **vc-app-skill:** resolve migrate CLI locally in dev mode, fallback to npx ([89888a0](https://github.com/VirtoCommerce/vc-shell/commit/89888a06cc0b4a1519f46f070ee06ebb0d82fd09))
+* **vc-data-table:** prevent column width corruption from ResizeObserver ([10b73b9](https://github.com/VirtoCommerce/vc-shell/commit/10b73b92370cfd0e9c335e9f197795c1faf2a4fb))
+* **vc-data-table:** rewrite column resize with equal distribution ([f92641c](https://github.com/VirtoCommerce/vc-shell/commit/f92641c30726181f5e0f7258c30a75a4cc58e947))
+* **vc-data-table:** unify cell padding for header and body alignment ([544e2c0](https://github.com/VirtoCommerce/vc-shell/commit/544e2c075edec560acadeb5096671c7b95091475))
+* **vc-gallery:** eliminate image flicker on filmstrip expand/collapse ([869bc82](https://github.com/VirtoCommerce/vc-shell/commit/869bc82077104751ce1bd7e7e1e5e1e8747c8343))
+* **vc-popup:** add z-index token to overlay and container ([c5505c1](https://github.com/VirtoCommerce/vc-shell/commit/c5505c1837bb783af6479d64adf8483a3f01fad2))
+
+
+### Features
+
+* **core:** add useBladeForm markReady for prefilled entities ([9ba3803](https://github.com/VirtoCommerce/vc-shell/commit/9ba380313282dffb5109f83da3d65663b3103e32))
+* **framework:** add useDataTablePagination composable ([8085a04](https://github.com/VirtoCommerce/vc-shell/commit/8085a0402c60d03a7eb575004106ca8cf2fcfee4))
+* **migrate:** add 4 new transforms (injection-keys, replace-cover, locale-imports, window-globals) ([bbcbc79](https://github.com/VirtoCommerce/vc-shell/commit/bbcbc79530ad237ed4d9bd4519ba164559b125a5))
+* **migrate:** add after field to VersionedTransform for dependency ordering ([a854662](https://github.com/VirtoCommerce/vc-shell/commit/a85466259f908c585161e6db43337c1b1e5d2ece))
+* **migrate:** add defineExpose → exposeToChildren transform + improve widgets diagnostic ([d73352c](https://github.com/VirtoCommerce/vc-shell/commit/d73352c02630f3cf2b046f524769ac8d4cec1f0f))
+* **migrate:** add release-config cleanup and VcTable audits ([23118dd](https://github.com/VirtoCommerce/vc-shell/commit/23118dd74e9bd4387b166bd5e35a341ad81cd6be))
+* **migrate:** declare after dependencies for blade-props, define-options, remove-pathmatch ([90167af](https://github.com/VirtoCommerce/vc-shell/commit/90167afbe8d07fc88a9543eb431edf6b29e5aba9))
+* **migrate:** generate MIGRATION_REPORT.md with automated/manual/uncovered sections ([3d9d2a1](https://github.com/VirtoCommerce/vc-shell/commit/3d9d2a10844ffe940e96a3f74bf40c24ff6e7a71))
+* **migrate:** idempotency guard — second run produces zero modifications ([cd91b25](https://github.com/VirtoCommerce/vc-shell/commit/cd91b250a8a5235543f6a5fe4330a86d530b250a))
+* **migrate:** replace-cover-method — openBlade({ replaceCurrentBlade: true }) → coverWith() ([cb24cd8](https://github.com/VirtoCommerce/vc-shell/commit/cb24cd8353847fd9c7ddc91927f726cba3ada00b))
+* **migrate:** structured migration report with before/after examples and guide links ([2f5c2da](https://github.com/VirtoCommerce/vc-shell/commit/2f5c2da289abb9977464fb8772ddcfe2c3daa17d))
+* **migrate:** topological sort for transform dependency ordering ([24a4446](https://github.com/VirtoCommerce/vc-shell/commit/24a44463fd9e114401b989114aacfc07ddb5250f))
+* **skeleton:** transparent blade skeleton via provide/inject ([89d3285](https://github.com/VirtoCommerce/vc-shell/commit/89d328529bf8c647c0a3648f53a845510c49f689))
+* **styles:** add z-index token scale as CSS custom properties ([39c5c1d](https://github.com/VirtoCommerce/vc-shell/commit/39c5c1d4329ab9eeeb11ccb8befaf685d0e34ff8))
+* **vc-app-skill:** add /vc-app migrate command with full migration pipeline ([35a8b11](https://github.com/VirtoCommerce/vc-shell/commit/35a8b119457b14f6f4626caf133476222afd6663))
+* **vc-app-skill:** add migration prompt knowledge base (nswag, widgets, form, blade-props, notifications) ([a0b0eb2](https://github.com/VirtoCommerce/vc-shell/commit/a0b0eb2a96521916a72bdbf787961c1c96f96f6d))
+* **vc-app-skill:** add migration-agent subagent prompt ([29ac155](https://github.com/VirtoCommerce/vc-shell/commit/29ac1550c8e3c9b71d5dbc2ade7ea86b4d40213f))
+* **vc-data-table:** add isRowExpandable prop for conditional row expansion ([f8b5bb5](https://github.com/VirtoCommerce/vc-shell/commit/f8b5bb5bf6d59f3bedf60ef43cda07777ed33ea9))
+
 # [2.0.0-alpha.32](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.31...v2.0.0-alpha.32) (2026-04-02)
 
 

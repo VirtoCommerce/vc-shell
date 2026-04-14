@@ -359,3 +359,10 @@ Uses the same `--input-*` variables as VcInput for consistent styling across all
 
 - [VcInput](../vc-input/) -- general-purpose input; delegates to VcDatePicker for `type="date"` and `type="datetime-local"`
 - [VcMultivalue](../vc-multivalue/) -- can handle multiple date values with `type="date"`
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
+
+This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+

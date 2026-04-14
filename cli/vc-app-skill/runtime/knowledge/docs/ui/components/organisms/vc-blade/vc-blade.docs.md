@@ -659,3 +659,33 @@ openBlade({ name: "ProductsList" });
 | `useLoading()` | Merges multiple loading refs into a single boolean. |
 | `usePopup()` | Confirmation dialogs and error messages. |
 | `useBladeWidgets()` | Register contextual widgets for the blade widget area. |
+
+## Content Skeleton Mode
+
+When `loading=true`, VcBlade provides `BladeLoadingKey` to all descendant components via Vue's provide/inject. Each framework UI component automatically renders a skeleton placeholder matching its visual footprint.
+
+### How It Works
+
+1. Set `loading` prop on VcBlade (typically bound to your data-fetching composable's loading ref)
+2. All child components (`VcInput`, `VcSelect`, `VcCard`, etc.) detect the loading state and render skeletons
+3. Layout containers (`VcContainer`, `VcRow`, `VcCol`, `VcForm`) are transparent — they preserve layout structure
+4. When loading completes, components switch to their normal rendering
+
+### What Shows During Loading
+
+- **Config-gated fields** (`v-if="config.showName"`) — config is available immediately, so these fields show skeletons
+- **Data-gated fields** (`v-if="item.productData"`) — data not yet loaded, so these fields don't appear in the skeleton
+- **Header and toolbar** — have their own dedicated skeletons (unchanged)
+
+No changes to existing blade pages are required.
+
+### Custom Components
+
+To make custom components skeleton-aware:
+
+```ts
+import { useBladeLoading } from "@vc-shell/framework";
+
+const bladeLoading = useBladeLoading();
+// bladeLoading.value === true when parent VcBlade is loading
+```

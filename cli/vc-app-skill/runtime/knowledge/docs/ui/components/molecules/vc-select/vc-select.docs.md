@@ -682,3 +682,10 @@ Don't forget `:key` with cascading selects, otherwise the second select will ret
 - [VcInput](../vc-input/) — simple text field
 - [VcDatePicker](../vc-date-picker/) — date selection
 - [VcField](../vc-field/) — wrapper with label/error/hint (read-only display)
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
+
+This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+

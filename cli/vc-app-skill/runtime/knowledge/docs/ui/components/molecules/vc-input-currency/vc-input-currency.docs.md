@@ -368,3 +368,10 @@ Additionally inherits all `--input-*` CSS variables from VcInput/VcInputDropdown
 - [VcInputDropdown](../vc-input-dropdown/) -- the underlying composite input + dropdown component
 - [VcInput](../vc-input/) -- plain input for non-currency numbers
 - [VcSelect](../vc-select/) -- standalone dropdown selection
+
+## Skeleton / Loading State
+
+When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
+
+This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+

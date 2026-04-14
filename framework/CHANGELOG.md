@@ -1,3 +1,26 @@
+# [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
+
+
+### Bug Fixes
+
+* **rnd-114:** isolated authData refs causing the previous user's token to persist after logout and re-login ([#219](https://github.com/VirtoCommerce/vc-shell/issues/219)) ([acb6406](https://github.com/VirtoCommerce/vc-shell/commit/acb640635ecafdcae61bd5423dd9fc7e24398c3f))
+* **sidebar, dropdown:** align JS z-index defaults with token scale ([431bccd](https://github.com/VirtoCommerce/vc-shell/commit/431bccda9660cbfc9314fc4184a35cc3fadb17a4))
+* **ui:** refine blade loading states and media/date interactions ([32eb9ae](https://github.com/VirtoCommerce/vc-shell/commit/32eb9ae7d691c07edc3d4af7d6f9b2d9bfab86fa))
+* **ui:** resolve pagination and image fallback type errors ([c5c4a2f](https://github.com/VirtoCommerce/vc-shell/commit/c5c4a2fea9141ea39fa21b2cc0b23cfc78947a00))
+* **vc-data-table:** prevent column width corruption from ResizeObserver ([10b73b9](https://github.com/VirtoCommerce/vc-shell/commit/10b73b92370cfd0e9c335e9f197795c1faf2a4fb))
+* **vc-data-table:** rewrite column resize with equal distribution ([f92641c](https://github.com/VirtoCommerce/vc-shell/commit/f92641c30726181f5e0f7258c30a75a4cc58e947))
+* **vc-data-table:** unify cell padding for header and body alignment ([544e2c0](https://github.com/VirtoCommerce/vc-shell/commit/544e2c075edec560acadeb5096671c7b95091475))
+* **vc-gallery:** eliminate image flicker on filmstrip expand/collapse ([869bc82](https://github.com/VirtoCommerce/vc-shell/commit/869bc82077104751ce1bd7e7e1e5e1e8747c8343))
+* **vc-popup:** add z-index token to overlay and container ([c5505c1](https://github.com/VirtoCommerce/vc-shell/commit/c5505c1837bb783af6479d64adf8483a3f01fad2))
+
+
+### Features
+
+* **core:** add useBladeForm markReady for prefilled entities ([9ba3803](https://github.com/VirtoCommerce/vc-shell/commit/9ba380313282dffb5109f83da3d65663b3103e32))
+* **framework:** add useDataTablePagination composable ([8085a04](https://github.com/VirtoCommerce/vc-shell/commit/8085a0402c60d03a7eb575004106ca8cf2fcfee4))
+* **skeleton:** transparent blade skeleton via provide/inject ([89d3285](https://github.com/VirtoCommerce/vc-shell/commit/89d328529bf8c647c0a3648f53a845510c49f689))
+* **styles:** add z-index token scale as CSS custom properties ([39c5c1d](https://github.com/VirtoCommerce/vc-shell/commit/39c5c1d4329ab9eeeb11ccb8befaf685d0e34ff8))
+* **vc-data-table:** add isRowExpandable prop for conditional row expansion ([f8b5bb5](https://github.com/VirtoCommerce/vc-shell/commit/f8b5bb5bf6d59f3bedf60ef43cda07777ed33ea9))
 # [2.0.0-alpha.32](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.31...v2.0.0-alpha.32) (2026-04-02)
 
 

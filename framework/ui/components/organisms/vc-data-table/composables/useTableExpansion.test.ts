@@ -35,7 +35,8 @@ describe("useTableExpansion", () => {
     const item = { id: "2", name: "B" };
     const event = result.expandRow(item, 0);
     expect(result.isRowExpanded(item, 0)).toBe(true);
-    expect(event.data).toBe(item);
+    expect(event).not.toBeNull();
+    expect(event!.data).toBe(item);
   });
 
   it("expandRow is idempotent", () => {

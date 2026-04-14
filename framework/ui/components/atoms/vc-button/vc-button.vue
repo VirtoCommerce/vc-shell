@@ -1,5 +1,6 @@
 <template>
   <button
+    v-if="!bladeLoading"
     :class="buttonClass"
     :type="type"
     :disabled="disabled || loading"
@@ -34,6 +35,7 @@
 import { computed, inject, type Component } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { ButtonGroupKey, type ButtonVariant, type ButtonSize } from "@ui/components/atoms/vc-button/types";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 
 const SIZE_ALIAS: Record<string, string> = {
   base: "default",
@@ -69,6 +71,7 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false,
 });
 
+const bladeLoading = useBladeLoading();
 const emit = defineEmits<Emits>();
 
 defineSlots<{

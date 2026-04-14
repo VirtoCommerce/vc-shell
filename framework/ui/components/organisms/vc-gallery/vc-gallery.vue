@@ -108,7 +108,7 @@
     >
       <!-- Filmstrip / Expanded grid (single Swiper instance, no DOM remount) -->
       <VcGalleryFilmstrip
-        v-if="layout === 'filmstrip' && filmstrip.hasOverflow.value"
+        v-if="layout === 'filmstrip'"
         :images="localImages"
         :gap="gap"
         :has-overflow="filmstrip.hasOverflow.value"

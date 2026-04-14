@@ -6,12 +6,22 @@
         :key="widget.id"
       >
         <!-- Headless: framework renders VcWidget from config -->
-        <VcSkeleton
+        <div
           v-if="widget.headless && resolveLoading(widget)"
-          variant="block"
-          :width="48"
-          :height="48"
-        />
+          class="vc-widget-container-desktop__widget-skeleton"
+        >
+          <VcSkeleton
+            variant="circle"
+            :width="18"
+            :height="18"
+          />
+          <VcSkeleton
+            variant="block"
+            :width="36"
+            :height="10"
+            class="tw-mt-1"
+          />
+        </div>
         <VcWidget
           v-else-if="widget.headless"
           :icon="widget.headless?.icon"
@@ -163,6 +173,10 @@ const showMoreButton = computed(() => props.widgets.length > 3);
         @apply tw-mt-0 tw-text-xs tw-font-normal;
       }
     }
+  }
+
+  &__widget-skeleton {
+    @apply tw-shrink-0 tw-px-2 tw-py-1.5 tw-flex tw-flex-col tw-items-center tw-justify-center;
   }
 
   &__more {

@@ -195,12 +195,6 @@ defineExpose({ triggerRef });
     @apply tw-hidden;
   }
 
-  &--active {
-    .vc-menu-item__trigger {
-      @apply tw-bg-[color:var(--menu-item-bg-active)];
-    }
-  }
-
   &__content {
     @apply tw-flex tw-items-center tw-w-full tw-gap-2;
   }

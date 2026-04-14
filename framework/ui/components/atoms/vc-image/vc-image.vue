@@ -37,7 +37,7 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { createLogger } from "@core/utilities";
 import { getThumbnailUrl, type ThumbnailSize } from "@core/utilities/thumbnail";
 
@@ -86,10 +86,36 @@ function ensureHttps(url: string): string {
   return url;
 }
 
+const thumbnailSrc = computed(() => getThumbnailUrl(props.src, props.thumbnailSize) ?? props.src);
+const useFallback = ref(false);
+const resolvedSrc = computed(() => (useFallback.value ? props.src : thumbnailSrc.value));
+
+// Reset fallback when src or thumbnailSize changes
+watch(
+  () => [props.src, props.thumbnailSize],
+  () => {
+    useFallback.value = false;
+  },
+);
+
+// Probe thumbnail URL — fall back to original on error
+watch(
+  resolvedSrc,
+  (url) => {
+    if (!url || !props.thumbnailSize || useFallback.value) return;
+    if (url === props.src) return; // already original, nothing to probe
+    const img = new Image();
+    img.src = ensureHttps(url);
+    img.onerror = () => {
+      useFallback.value = true;
+    };
+  },
+  { immediate: true },
+);
+
 const imageHandler = computed(() => {
-  if (props.src) {
-    const thumbUrl = getThumbnailUrl(props.src, props.thumbnailSize) ?? props.src;
-    const secureUrl = ensureHttps(thumbUrl);
+  if (resolvedSrc.value) {
+    const secureUrl = ensureHttps(resolvedSrc.value);
     return `background: url(${CSS.escape(secureUrl)}) center / ${props.background} no-repeat`;
   }
   return undefined;

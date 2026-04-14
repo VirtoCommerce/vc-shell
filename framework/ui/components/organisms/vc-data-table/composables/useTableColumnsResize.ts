@@ -183,12 +183,30 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     settled = true;
     if (!containerEl?.value) return;
     const w = containerEl.value.clientWidth;
+    if (w <= 0) {
+      lastContainerWidth = w;
+      return;
+    }
+
     // Column wider than container = corrupt (stale localStorage from a past bug)
-    if (w > 0) {
-      for (const col of columns.value) {
-        if (col.width > w) col.width = 0;
+    for (const col of columns.value) {
+      if (col.width > w) col.width = 0;
+    }
+
+    // Scale columns restored from a different-width container (e.g. two-blade → one-blade).
+    // Only when ALL columns have explicit pixel widths (happens after user resize + persist).
+    // Flex columns (width=0) fill space on their own and don't need scaling.
+    const withWidth = columns.value.filter((c) => c.width > 0);
+    if (withWidth.length > 0 && withWidth.length === columns.value.length) {
+      const totalWidth = withWidth.reduce((s, c) => s + c.width, 0);
+      const ratio = w / totalWidth;
+      if (ratio > 1.5 || ratio < 0.67) {
+        for (const col of withWidth) {
+          col.width = Math.max(minColumnWidth, Math.round(col.width * ratio));
+        }
       }
     }
+
     lastContainerWidth = w;
   };
 

@@ -78,7 +78,7 @@
             auto-apply
             :teleport-center="isMobile"
             :is24="isBrowserLocale24h"
-            v-bind="datePickerOptions"
+            v-bind="resolvedDatePickerOptions"
             :teleport="isDesktop ? 'body' : undefined"
             :aria-invalid="invalid || undefined"
             :aria-required="ariaRequired"
@@ -88,6 +88,8 @@
             tabindex="0"
             @focus="handleFocus"
             @closed="handleBlur"
+            @range-start="handleRangeStart"
+            @range-end="handleRangeEnd"
             @tooltip-open="handleFocus"
             @tooltip-close="handleBlur"
           />
@@ -185,6 +187,7 @@ const { labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaD
 const isFocused = ref(false);
 const locale = window.navigator.language;
 const internalValue = ref<ModelValue | undefined>(props.modelValue);
+const pendingRangeStart = ref<Date | null>(null);
 
 const maxDate = computed(() => (props.type === "date" && "9999-12-31") || undefined);
 
@@ -192,6 +195,46 @@ const isBrowserLocale24h = (() => {
   const hr = new Intl.DateTimeFormat(locale, { hour: "numeric" }).format();
   return Number.isInteger(Number(hr));
 })();
+
+// Build a date-fns format string matching the browser locale for text input parsing.
+// When `format` prop is a function, VueDatePicker cannot reverse-parse typed text,
+// so we derive a parseable pattern from Intl.DateTimeFormat parts.
+const textInputParseFormat = computed(() => {
+  const includeTime = props.type === "datetime-local";
+  const parts = new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    ...(includeTime ? { hour: "2-digit", minute: "2-digit", hour12: !isBrowserLocale24h } : {}),
+  }).formatToParts(new Date(2000, 0, 15, 13, 30));
+
+  const tokenMap: Record<string, string> = {
+    year: "yyyy",
+    month: "MM",
+    day: "dd",
+    hour: isBrowserLocale24h ? "HH" : "hh",
+    minute: "mm",
+    dayPeriod: "aa",
+  };
+
+  return parts.map((p) => tokenMap[p.type] ?? p.value).join("");
+});
+
+// When textInput is enabled via datePickerOptions, inject the parse format automatically.
+// Consumer-provided textInput options (if object) take precedence.
+const resolvedDatePickerOptions = computed(() => {
+  if (!props.datePickerOptions?.textInput) return props.datePickerOptions;
+
+  const opts = { ...props.datePickerOptions };
+  const userTextInput = typeof opts.textInput === "object" ? opts.textInput : {};
+  opts.textInput = {
+    format: textInputParseFormat.value,
+    rangeSeparator: " - ",
+    ...userTextInput,
+  } as (typeof opts)["textInput"];
+
+  return opts;
+});
 
 const formatDateWithLocale = (date: Date | Date[]) => {
   const options: Intl.DateTimeFormatOptions = {
@@ -209,7 +252,10 @@ const formatDateWithLocale = (date: Date | Date[]) => {
   const formatSingleDate = (d: Date) => new Intl.DateTimeFormat(locale, options).format(d);
 
   if (Array.isArray(date)) {
-    return date.map(formatSingleDate).join(",");
+    // Use " - " separator matching textInput.rangeSeparator so the text input
+    // parser can correctly split start/end. Show separator even for partial
+    // ranges ([date, null]) so the user edits the start part, not appends end.
+    return date.map((d) => (d != null ? formatSingleDate(d) : "")).join(" - ");
   } else {
     return formatSingleDate(date);
   }
@@ -228,6 +274,7 @@ watch(
 // Sync internal → emit (with guard to prevent watch loop)
 watch(internalValue, (newVal, oldVal) => {
   if (newVal !== oldVal && newVal !== props.modelValue) {
+    pendingRangeStart.value = null;
     emit("update:modelValue", newVal);
   }
 });
@@ -237,7 +284,20 @@ function onReset() {
   emit("update:modelValue", null);
 }
 
+function handleRangeStart(date: Date) {
+  pendingRangeStart.value = date;
+}
+
+function handleRangeEnd() {
+  pendingRangeStart.value = null;
+}
+
 function handleBlur(e: Event) {
+  // Commit partial range: user selected start date but closed picker without selecting end
+  if (pendingRangeStart.value != null) {
+    internalValue.value = [pendingRangeStart.value, null] as ModelValue;
+    pendingRangeStart.value = null;
+  }
   isFocused.value = false;
   emit("blur", e);
 }

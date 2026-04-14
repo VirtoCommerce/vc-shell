@@ -6,7 +6,7 @@
       :src="image.url"
       :alt="image.altText || image.name || ''"
       :name="image.name"
-      image-fit="cover"
+      image-fit="contain"
       :actions="resolvedActions"
       @preview="onPreviewClick"
       @remove="emit('remove', image!)"

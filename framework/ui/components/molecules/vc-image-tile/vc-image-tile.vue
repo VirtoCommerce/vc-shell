@@ -10,21 +10,31 @@
   >
     <!-- Skeleton shimmer -->
     <div
-      v-if="!imageState.isLoaded.value"
+      v-if="!imageState.isLoaded.value && !imageState.hasError.value"
       class="vc-image-tile__skeleton"
     />
 
+    <!-- Error placeholder -->
+    <div
+      v-if="imageState.hasError.value"
+      class="vc-image-tile__error"
+    >
+      <VcIcon
+        icon="lucide-image-off"
+        size="xl"
+      />
+    </div>
+
     <!-- Image -->
     <img
-      v-if="src"
+      v-if="src && !imageState.hasError.value"
       :src="resolvedSrc"
       :alt="alt"
-      loading="lazy"
       class="vc-image-tile__image"
       :class="{ 'vc-image-tile__image--loaded': imageState.isLoaded.value }"
       :style="{ objectFit: imageFit }"
       @load="imageState.onLoad"
-      @error="imageState.onError"
+      @error="onImageError"
     />
 
     <!-- Top bar: name + overlay (drag handle) -->
@@ -85,7 +95,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, toRef } from "vue";
+import { computed, ref, toRef, watch } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useI18n } from "vue-i18n";
@@ -121,9 +131,34 @@ defineEmits<{
 
 const { t } = useI18n({ useScope: "global" });
 const { isMobile } = useResponsive();
-const resolvedSrc = computed(() => getThumbnailUrl(props.src, props.thumbnailSize) ?? props.src);
+
+const thumbnailSrc = computed(() => getThumbnailUrl(props.src, props.thumbnailSize) ?? props.src);
+const useFallback = ref(false);
+const resolvedSrc = computed(() => (useFallback.value ? props.src : thumbnailSrc.value));
 const imageState = useImageLoad(toRef(() => resolvedSrc.value));
 const isActive = ref(false);
+
+// Reset fallback when src or thumbnailSize changes
+watch(
+  () => [props.src, props.thumbnailSize],
+  () => {
+    useFallback.value = false;
+  },
+);
+
+function onImageError(event: Event) {
+  // If thumbnail failed and original URL is different — try original
+  if (!useFallback.value && thumbnailSrc.value !== props.src) {
+    useFallback.value = true;
+    // Directly set src on DOM element to avoid waiting for Vue re-render
+    const img = event.target as HTMLImageElement;
+    if (props.src) {
+      img.src = props.src;
+    }
+    return;
+  }
+  imageState.onError();
+}
 
 function onTileClick() {
   if (isMobile.value) {
@@ -179,6 +214,12 @@ function deactivate() {
     );
     background-size: 200% 100%;
     animation: image-tile-shimmer 1.5s infinite ease-in-out;
+  }
+
+  &__error {
+    @apply tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center;
+    color: var(--secondary-300);
+    background: var(--image-tile-skeleton-from);
   }
 
   // ── Top bar: name + drag handle ──

@@ -273,7 +273,7 @@ describe("equal resize across all right neighbors", () => {
       { id: "a", width: 200 },
       { id: "b", width: 100 },
     ];
-    // parentRight = 350 → filler ~50. Neighbor give = 100-60=40. Max = ~89.
+    // parentRight = 350 → filler = 50. Neighbor give = 100-60=40. Max = 90.
     const mocks = mockElements({ a: 200, b: 100 }, 350);
     const { result, columns } = setup(cols, mocks);
 
@@ -284,7 +284,7 @@ describe("equal resize across all right neighbors", () => {
     flushRAF();
     document.dispatchEvent(new MouseEvent("mouseup"));
 
-    expect(columns.value[0].width).toBe(289); // Grew by 89
+    expect(columns.value[0].width).toBe(290); // Grew by 90
     expect(columns.value[1].width).toBe(60); // At min
   });
 });

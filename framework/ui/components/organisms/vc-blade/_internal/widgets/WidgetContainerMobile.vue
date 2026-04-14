@@ -11,13 +11,23 @@
         v-for="widget in visibleItems"
         :key="widget.id"
       >
-        <VcSkeleton
+        <div
           v-if="widget.headless && resolveLoading(widget)"
-          variant="block"
-          :width="48"
-          :height="48"
+          class="vc-widget-container-mobile__widget-skeleton"
           :data-item-key="widget.id"
-        />
+        >
+          <VcSkeleton
+            variant="circle"
+            :width="18"
+            :height="18"
+          />
+          <VcSkeleton
+            variant="block"
+            :width="36"
+            :height="10"
+            class="tw-mt-1"
+          />
+        </div>
         <VcWidget
           v-else-if="widget.headless"
           :icon="widget.headless?.icon"
@@ -152,6 +162,10 @@ const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>(
   &__content {
     @apply tw-flex tw-flex-row tw-items-center tw-gap-1 tw-px-[22px] tw-w-full tw-overflow-hidden;
     height: var(--blade-toolbar-widgets-mobile-height);
+  }
+
+  &__widget-skeleton {
+    @apply tw-shrink-0 tw-px-2 tw-py-1.5 tw-flex tw-flex-col tw-items-center tw-justify-center;
   }
 
   &__more {

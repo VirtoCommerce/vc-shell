@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="!bladeLoading"
     class="vc-banner"
     :class="[
       `vc-banner--${normalizedVariant}`,
@@ -66,6 +67,7 @@
 import { computed, useSlots } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useCollapsible } from "@ui/composables/useCollapsible";
+import { useBladeLoading } from "@ui/composables/useBladeLoading";
 
 export type CurrentBannerVariant = "info" | "warning" | "danger" | "success";
 /**
@@ -98,6 +100,7 @@ const props = withDefaults(defineProps<Props>(), {
   collapsedHeight: 100,
 });
 
+const bladeLoading = useBladeLoading();
 const slots = useSlots();
 const { contentRef, isExpanded, hasOverflow, wrapperStyle, toggle } = useCollapsible({
   collapsedHeight: props.collapsedHeight,

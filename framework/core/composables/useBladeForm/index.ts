@@ -102,6 +102,21 @@ export function useBladeForm<T>(options: UseBladeFormOptions<T>): UseBladeFormRe
     isReady.value = true;
   }
 
+  /**
+   * Mark the form as ready without resetting the pristine snapshot.
+   *
+   * Unlike `setBaseline()`, this does NOT overwrite the pristine snapshot.
+   * Instead it compares current `data` against the snapshot taken at setup time
+   * and sets `trackerIsModified` accordingly.
+   *
+   * Use when data was programmatically pre-filled (e.g. "create from template")
+   * and should appear as modified immediately so the save button is enabled.
+   */
+  function markReady(): void {
+    isReady.value = true;
+    trackerIsModified.value = !semanticEqual(data.value, pristineSnapshot.value);
+  }
+
   function revert(): void | Promise<void> {
     if (onRevert) {
       return onRevert();
@@ -144,6 +159,7 @@ export function useBladeForm<T>(options: UseBladeFormOptions<T>): UseBladeFormRe
 
   return {
     setBaseline,
+    markReady,
     revert,
     canSave,
     isModified,

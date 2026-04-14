@@ -26,6 +26,7 @@ export interface UseBladeFormOptions<T> {
 
 export interface UseBladeFormReturn {
   setBaseline: () => void;
+  markReady: () => void;
   revert: () => void | Promise<void>;
   canSave: ComputedRef<boolean>;
   isModified: ComputedRef<boolean>;

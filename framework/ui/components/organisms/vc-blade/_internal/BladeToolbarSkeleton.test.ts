@@ -34,8 +34,8 @@ describe("BladeToolbarSkeleton.vue", () => {
         },
       },
     });
-    const skeletons = wrapper.findAll(".mock-skeleton");
-    expect(skeletons.length).toBe(3);
+    const buttonPlaceholders = wrapper.findAll(".vc-blade-toolbar-skeleton__button");
+    expect(buttonPlaceholders.length).toBe(3);
   });
 
   it("does not render when $isMobile is true", () => {

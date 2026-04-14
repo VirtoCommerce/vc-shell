@@ -13,6 +13,7 @@ vi.mock("vue-i18n", () => ({
 vi.mock("@ui/components/organisms/vc-gallery/composables/useImageLoad", () => ({
   useImageLoad: () => ({
     isLoaded: { value: true },
+    hasError: { value: false },
     onLoad: vi.fn(),
     onError: vi.fn(),
   }),

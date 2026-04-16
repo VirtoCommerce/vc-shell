@@ -122,6 +122,7 @@ import { useUserManagement } from "@core/composables/useUserManagement";
 import { useSettings } from "@core/composables";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
+import { VcAuthLayout, VcBanner, VcButton, VcForm, VcHint, VcInput } from "@ui/components";
 
 interface IChangePassForm {
   isValid: boolean;

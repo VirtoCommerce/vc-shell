@@ -55,6 +55,9 @@ export interface Props {
   loading?: boolean;
 }
 
+import { VcIcon } from "@ui/components";
+import { vLoading } from "@core/directives";
+
 const props = defineProps<Props>();
 
 defineSlots<{

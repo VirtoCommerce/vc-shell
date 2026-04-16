@@ -180,3 +180,5 @@ New high-level composable that eliminates boilerplate when working with assets (
 - **Framework globals** — `@vc-shell/framework/globals` provides all type augmentations (`*.vue` module, `$t`, `$hasAccess`, `$isMobile`, etc.) via a single tsconfig `types` entry, replacing manual `shims-vue.d.ts` and `vue-i18n.d.ts` files.
 
 - **`shared/` dissolved** — The `shared/` directory has been removed. Its contents moved to domain-appropriate locations: `core/` (logic), `ui/` (components), `shell/` (app chrome: auth, sidebar, dashboard, settings), and `modules/` (built-in modules). Public API imports from `@vc-shell/framework` are unchanged.
+
+- **No global component registration** — The framework no longer calls `app.component()` for Vc* components and `app.directive()` for directives during plugin installation. Import them explicitly from `@vc-shell/framework/ui`. This enables proper tree-shaking of unused components. Automated codemod: `npx @vc-shell/migrate --transform remove-global-components`. See [migration guide #40](./migration/40-remove-global-components.md).

@@ -1632,3 +1632,11 @@ The `useDynamicProperties` composable has been refactored from a monolithic func
 **This is a breaking change.** The old positional-argument signature is removed.
 
 See [Guide 38: Dynamic Properties Refactor](./migration/38-dynamic-properties-refactor.md) for migration instructions and the automated codemod.
+
+## 40. Remove Global Component Registration
+
+The framework no longer registers `Vc*` components and directives globally. All components must be explicitly imported from `@vc-shell/framework/ui`.
+
+**Automated:** `npx @vc-shell/migrate --transform remove-global-components`
+
+See [migration/40-remove-global-components.md](./migration/40-remove-global-components.md) for details.

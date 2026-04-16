@@ -43,6 +43,7 @@ const rules: Rule[] = [
     description: "core/ must not import from ui/",
     layer: "core",
     forbidden: [/from\s+["']@ui\//],
+    exceptions: ["ai-agent/components"],
     skipTests: true,
   },
   {

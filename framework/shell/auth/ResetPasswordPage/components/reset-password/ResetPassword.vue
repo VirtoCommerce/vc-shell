@@ -96,6 +96,7 @@ import { Field, useForm } from "vee-validate";
 import { useSettings } from "@core/composables";
 import { useI18n } from "vue-i18n";
 import { useUserManagement } from "@core/composables/useUserManagement";
+import { VcAuthLayout, VcButton, VcForm, VcHint, VcInput, VcLoading } from "@ui/components";
 
 const props = withDefaults(
   defineProps<{

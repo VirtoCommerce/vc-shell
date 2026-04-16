@@ -9,10 +9,3 @@ export const ErrorInterceptor = _Interceptor as typeof _Interceptor & {
     };
   };
 };
-
-// Declare globally
-declare module "@vue/runtime-core" {
-  export interface GlobalComponents {
-    ErrorInterceptor: typeof ErrorInterceptor;
-  }
-}

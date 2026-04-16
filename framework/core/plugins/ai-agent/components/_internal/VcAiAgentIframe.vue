@@ -36,6 +36,7 @@
 import { ref, watch } from "vue";
 import VcAiAgentLoader from "@core/plugins/ai-agent/components/_internal/VcAiAgentLoader.vue";
 import { createLogger } from "@core/utilities";
+import { VcIcon } from "@ui/components";
 
 const logger = createLogger("ai-agent-iframe");
 

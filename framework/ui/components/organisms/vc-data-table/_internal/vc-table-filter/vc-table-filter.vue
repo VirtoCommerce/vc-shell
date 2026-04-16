@@ -69,6 +69,7 @@ import { useResponsive } from "@framework/core/composables/useResponsive";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcBadge } from "@ui/components/atoms/vc-badge";
 import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { useFloatingPosition } from "@ui/composables";
 

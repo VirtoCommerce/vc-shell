@@ -42,6 +42,8 @@
 import { computed, type Component } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useAppBarWidgets } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarWidgets";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
 
 export interface Props {
   title?: string;

@@ -47,6 +47,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcBadge } from "@ui/components/atoms/vc-badge";
 import { formatBadgeCount } from "@core/utilities/formatBadgeCount";
 
 export interface Props {

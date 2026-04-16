@@ -68,6 +68,7 @@ import { computed, inject } from "vue";
 import type { Component } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcBadge } from "@ui/components/atoms/vc-badge";
+import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
 import { VcMenuExpandedKey } from "@ui/components/molecules/vc-menu/constants";
 
 interface VcMenuItemBadge {

@@ -26,3 +26,4 @@ export * from "@ui/components/molecules/vc-dropdown-panel";
 export * from "@ui/components/molecules/vc-dropdown";
 export * from "@ui/components/molecules/vc-menu";
 export * from "@ui/components/molecules/vc-image-tile";
+export * from "@ui/components/molecules/multilanguage-selector";

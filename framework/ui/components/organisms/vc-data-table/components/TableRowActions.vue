@@ -111,6 +111,7 @@
 import { ref, computed, watch, onBeforeUnmount, inject, nextTick } from "vue";
 import { offset, flip, shift } from "@floating-ui/vue";
 import { VcIcon, VcButton } from "@ui/components/atoms";
+import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
 import type { TableAction } from "@ui/components/organisms/vc-data-table/types";
 import { TableContextKey } from "@ui/components/organisms/vc-data-table/keys";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";

@@ -85,6 +85,7 @@ import { useIsFormValid, Field, useForm } from "vee-validate";
 import { useSettings } from "@core/composables";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useI18n } from "vue-i18n";
+import { VcAuthLayout, VcButton, VcForm, VcHint, VcInput } from "@ui/components";
 
 type ForgotPasswordFunc = (args: { loginOrEmail: string }) => Promise<void>;
 

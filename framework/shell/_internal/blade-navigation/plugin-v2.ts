@@ -1,6 +1,5 @@
 import { Router } from "vue-router";
 import { App } from "vue";
-import * as components from "@shell/_internal/blade-navigation/components";
 import { BladeNavigationPlugin, BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
 import { createBladeStack } from "@core/blade-navigation/useBladeStack";
 import { createBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
@@ -24,13 +23,6 @@ export {
   _resetBladeNavigationSingletons,
 } from "@core/blade-navigation/singletons";
 
-// Declare globally
-declare module "@vue/runtime-core" {
-  export interface GlobalComponents {
-    VcBladeNavigation: (typeof components)["VcBladeNavigation"];
-  }
-}
-
 /**
  * New Blade Navigation Plugin (v2).
  *
@@ -47,11 +39,6 @@ declare module "@vue/runtime-core" {
 export const VcBladeNavigationComponent = {
   install(app: App, args: { router: Router }) {
     const { router } = args;
-
-    // ── Register UI components ──────────────────────────────────────────────
-    Object.entries(components).forEach(([componentName, component]) => {
-      app.component(componentName, component);
-    });
 
     // ── Legacy backward compatibility ───────────────────────────────────────
     const bladeNavigationPluginData: BladeNavigationPlugin = {

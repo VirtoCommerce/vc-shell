@@ -48,6 +48,7 @@
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export interface PullToRefreshProps {
   /** Enable/disable pull-to-refresh */

@@ -425,6 +425,7 @@ import type {
   TableStateConfig,
 } from "@ui/components/organisms/vc-data-table/types";
 import type { DataTablePersistedState } from "@ui/components/organisms/vc-data-table/composables";
+import { vLoading } from "@core/directives";
 
 const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
   items: () => [],

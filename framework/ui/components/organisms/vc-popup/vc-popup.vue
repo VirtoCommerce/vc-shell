@@ -130,6 +130,8 @@
 import { computed, ref, getCurrentInstance } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export type PopupVariant = "default" | "error" | "warning" | "success" | "info";
 export type PopupCloseReason = "overlay" | "escape" | "action";

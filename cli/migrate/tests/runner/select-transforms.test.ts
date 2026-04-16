@@ -36,6 +36,7 @@ describe("selectTransforms", () => {
       "locale-imports",
       "dynamic-properties-refactor",
       "window-globals",
+      "remove-global-components",
     ]);
   });
 

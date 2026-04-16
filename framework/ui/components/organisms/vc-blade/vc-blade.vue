@@ -126,6 +126,7 @@ import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolb
 import BladeToolbarSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeToolbarSkeleton.vue";
 import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcBreadcrumbs } from "@ui/components/molecules/vc-breadcrumbs";
 import { BladeBackButtonKey, BladeFormKey, BladeLoadingKey } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { useBlade } from "../../../../core/composables";

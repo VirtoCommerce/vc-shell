@@ -122,6 +122,8 @@ import { isImage, readableSize, getExtensionColor, getExtensionLabel } from "@co
 import { useBlade } from "@core/composables/useBlade";
 import { createLogger } from "@core/utilities";
 import { TableAction } from "@ui/components/organisms/vc-data-table/types";
+import { VcBlade, VcColumn, VcDataTable, VcImage } from "@ui/components";
+import { vLoading } from "@core/directives";
 
 const logger = createLogger("assets-manager");
 

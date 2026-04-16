@@ -105,6 +105,8 @@ import { useResponsive } from "@framework/core/composables/useResponsive";
 import DesktopLayout from "@ui/components/organisms/vc-app/_internal/layouts/DesktopLayout.vue";
 import MobileLayout from "@ui/components/organisms/vc-app/_internal/layouts/MobileLayout.vue";
 import { VcPopupContainer } from "@shell/_internal/popup";
+import { VcLoading } from "@ui/components/atoms/vc-loading";
+import { VcBladeNavigation } from "@shell/_internal/blade-navigation/components";
 import type { BladeRoutesRecord } from "@core/blade-navigation/types";
 import type { AppDescriptor } from "@core/api/platform";
 import type { MenuItem } from "@core/types";

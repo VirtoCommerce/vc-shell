@@ -125,6 +125,7 @@ import { default as ExternalProviders } from "@shell/auth/sign-in/external-provi
 import { useExternalProvider } from "@shell/auth/sign-in/useExternalProvider";
 import { ExtensionPoint } from "@core/plugins/extension-points";
 import { createLogger } from "@core/utilities";
+import { VcAuthLayout, VcButton, VcForm, VcHint, VcInput } from "@ui/components";
 
 const logger = createLogger("login-page");
 

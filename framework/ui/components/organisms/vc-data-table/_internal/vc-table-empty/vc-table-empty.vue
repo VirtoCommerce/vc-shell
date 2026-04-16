@@ -52,6 +52,8 @@
 <script lang="ts" setup>
 import { Ref } from "vue";
 import { TableEmptyAction } from "@ui/components/organisms/vc-data-table/types";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 export interface Props {
   items: any[];

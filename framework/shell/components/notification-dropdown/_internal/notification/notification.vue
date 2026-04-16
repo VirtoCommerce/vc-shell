@@ -33,6 +33,7 @@ import { computed, provide } from "vue";
 import { PushNotification } from "@core/api/platform";
 import { useNotificationStore, NotificationContextKey } from "@core/notifications";
 import { NotificationTemplate } from "@shell/components/notification-template";
+import { VcHint } from "@ui/components";
 
 export interface Props {
   notification: PushNotification;

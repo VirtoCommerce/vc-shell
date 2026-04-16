@@ -4,3 +4,4 @@
 export * from "@ui/components";
 export * from "@ui/composables";
 export * from "@ui/types";
+export * from "@core/directives";

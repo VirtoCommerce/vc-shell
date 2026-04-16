@@ -243,6 +243,14 @@ export const transforms: VersionedTransform[] = [
     migrationGuideSection: "Guide 04",
     transformPath: t("window-globals"),
   },
+  {
+    name: "remove-global-components",
+    description: "Add explicit imports for globally registered Vc* components and directives",
+    introducedIn: "2.0.0-alpha.32",
+    migrationGuideSection: "Guide 40",
+    transformPath: t("remove-global-components"),
+    fileExtensions: [".vue"],
+  },
 ];
 
 export function selectTransforms(currentVersion: string, targetVersion: string): VersionedTransform[] {

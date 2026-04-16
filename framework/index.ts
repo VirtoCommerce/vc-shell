@@ -1,7 +1,5 @@
 import type { RouteLocationNormalized, Router } from "vue-router";
-import { App, Component } from "vue";
-import * as components from "@ui/components";
-import * as directives from "@core/directives";
+import { App } from "vue";
 import { useBreakpoints } from "@vueuse/core";
 import { i18n } from "@core/plugins/i18n";
 import { permissions } from "@core/plugins/permissions";
@@ -133,16 +131,6 @@ function setupI18n(app: App, args: FrameworkInstallArgs) {
   // Components locales
   Object.entries(locales).forEach(([key, message]) => {
     i18n.global.mergeLocaleMessage(resolveCamelCaseLocale(key), message);
-  });
-}
-
-function registerComponentsAndDirectives(app: App) {
-  Object.entries(components).forEach(([name, component]) => {
-    app.component(name, component as Component);
-  });
-
-  Object.entries(directives).forEach(([directiveName, directive]) => {
-    app.directive(directiveName, directive);
   });
 }
 
@@ -322,7 +310,6 @@ export default {
     window.fetch = registerInterceptors(args.router);
 
     setupI18n(app, args);
-    registerComponentsAndDirectives(app);
     setupBreakpoints(app);
     setupLegacyGlobals(app);
     createAndProvideServices(app);

@@ -140,6 +140,7 @@ import { VcHint } from "@ui/components/atoms/vc-hint";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcPopup } from "@ui/components/organisms/vc-popup";
 import { VcForm } from "@ui/components/molecules/vc-form";
+import { VcIcon, VcStatus } from "@ui/components";
 import { IdentityError } from "@core/api/platform";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useI18n } from "vue-i18n";

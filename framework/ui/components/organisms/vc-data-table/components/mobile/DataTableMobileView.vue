@@ -88,6 +88,8 @@ import { useMobileCardLayout } from "@ui/components/organisms/vc-data-table/comp
 import { provideTableSwipe } from "@ui/components/organisms/vc-data-table/composables/useTableSwipe";
 import DataTableMobileCard from "@ui/components/organisms/vc-data-table/components/mobile/DataTableMobileCard.vue";
 import PullToRefresh from "@ui/components/organisms/vc-data-table/components/mobile/PullToRefresh.vue";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 const props = withDefaults(
   defineProps<{

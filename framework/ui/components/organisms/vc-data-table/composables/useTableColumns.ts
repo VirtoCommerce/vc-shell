@@ -94,11 +94,16 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
 
   /**
    * Total fixed-width "chrome" in each row that is NOT available for data columns.
-   * Includes: row padding, special VcColumn widths, drag handle + gap.
+   * Includes: row padding, special VcColumn widths, implicit selection cell, drag handle + gap.
    */
   const getSpecialColumnsWidth = (): number => {
     // Row horizontal padding: tw-px-4 = 16px × 2 = 32px (TableRow.vue)
     let total = 32;
+
+    // Implicit selection cell (rendered by DataTableHeader/DataTableRow, not a VcColumn)
+    if (options.hasSelectionColumn?.value && !options.isSelectionViaColumn?.value) {
+      total += 40;
+    }
 
     for (const col of visibleColumns.value) {
       if (col.props.selectionMode) total += 40;

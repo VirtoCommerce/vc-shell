@@ -160,16 +160,14 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
       }
     }
 
-    // Convert px back to weights, then normalize so sum(visible weights) = 1.0.
-    // Without normalization, shrinking columns in a narrow container creates
-    // sub-1.0 weight sums, and expanding the container later leaves a large
-    // filler gap instead of proportionally scaling columns.
+    // Convert px back to weights using available as denominator.
+    // This preserves filler: if user shrinks a column, sum(weights) < 1.0
+    // and the filler absorbs the freed space. User can then grow back into it.
     const newSpecs = cloneSpecs(initialSpecs);
     const visibleIds = activeOrder.filter((id) => !!newSpecs[id]);
-    const totalNewPx = visibleIds.reduce((s, id) => s + (newPx[id] ?? 0), 0);
     for (const id of visibleIds) {
       if (newSpecs[id] && newPx[id] !== undefined) {
-        newSpecs[id].weight = totalNewPx > 0 ? newPx[id] / totalNewPx : 1 / visibleIds.length;
+        newSpecs[id].weight = available > 0 ? newPx[id] / available : 1 / visibleIds.length;
       }
     }
     const cols = visibleIds.map((id) => ({ id, spec: newSpecs[id] }));
@@ -214,6 +212,22 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     },
   });
 
+  /**
+   * Normalize visible column weights to sum=1.0.
+   * Called on container resize so columns scale proportionally to fill space.
+   * User-created filler (from shrinking) is absorbed — columns expand to fill.
+   */
+  const normalizeVisibleWeights = () => {
+    const activeOrder = getActiveOrder();
+    if (activeOrder.length === 0) return;
+    const state = { ...columnState.value, specs: { ...columnState.value.specs } };
+    for (const id of activeOrder) {
+      if (state.specs[id]) state.specs[id] = { ...state.specs[id] };
+    }
+    normalizeWeights(state.specs, activeOrder);
+    columnState.value = state;
+  };
+
   // --- Container ResizeObserver: recompute on container resize ---
 
   let resizeObserver: ResizeObserver | null = null;
@@ -236,10 +250,15 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
         settleDebounce = setTimeout(() => {
           settleDebounce = undefined;
           settled = true;
+          // On settle, normalize visible weights so columns fill new space.
+          normalizeVisibleWeights();
           recompute();
         }, 100);
         return;
       }
+      // Container resized after settle (blade open/close).
+      // Normalize visible weights so columns scale proportionally to fill space.
+      normalizeVisibleWeights();
       recompute();
     });
     resizeObserver.observe(containerEl.value);

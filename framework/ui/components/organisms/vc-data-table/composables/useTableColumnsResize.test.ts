@@ -244,7 +244,7 @@ describe("weight-based resize behavior", () => {
       },
     };
     const engineOut = makeEngineOutput({});
-    const { result, columnState, engineOutput } = setup(state, engineOut, {
+    const { result, columnState, recompute } = setup(state, engineOut, {
       availableWidth: 450,
       getVisibleRegularColumnIds: () => ["a", "b", "c"],
     });
@@ -256,8 +256,14 @@ describe("weight-based resize behavior", () => {
     flushRAF();
     document.dispatchEvent(new MouseEvent("mouseup"));
 
-    expect(Object.keys(engineOutput.value.widths)).toEqual(["a", "b", "c"]);
+    // Only visible regular columns (a, b, c) had their weights adjusted.
+    // The hidden column is not part of the resize redistribution.
+    expect(columnState.value.specs["a"].weight).toBeGreaterThan(0.4);
+    expect(columnState.value.specs["b"].weight).toBeLessThan(0.35);
+    expect(columnState.value.specs["c"].weight).toBeLessThan(0.25);
     expect(columnState.value.specs["hidden"].weight).toBe(0);
+    // recompute() is delegated to the caller — called after the state commit.
+    expect(recompute).toHaveBeenCalled();
   });
 
   it("preserves unbounded maxPx during clone and does not collapse widths to min", () => {

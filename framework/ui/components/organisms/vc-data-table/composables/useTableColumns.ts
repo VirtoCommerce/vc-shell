@@ -9,6 +9,7 @@
  */
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
+import { isSpecialColumn, SPECIAL_COLUMN_WIDTHS } from "@ui/components/organisms/vc-data-table/utils/columnHelpers";
 import type {
   VcColumnProps,
   ColumnState,
@@ -20,6 +21,7 @@ import {
   parseColumnWidth,
   buildInitialWeights,
   normalizeWeights,
+  DEFAULT_MIN_COLUMN_PX,
   type EngineOutput,
 } from "./useColumnWidthEngine";
 
@@ -45,7 +47,7 @@ export interface UseTableColumnsReturn {
   // Methods
   setHeaderRef: (id: string, el: unknown) => void;
   recompute: () => void;
-  initFromProps: (availableWidth: number) => void;
+  resetFromProps: () => void;
 
   // Computed
   orderedVisibleColumns: ComputedRef<ColumnInstance[]>;
@@ -62,11 +64,10 @@ export interface UseTableColumnsReturn {
   getHeaderStyle: (col: VcColumnProps) => object | undefined;
   getCellStyle: (col: VcColumnProps) => object | undefined;
   getSortField: (col: VcColumnProps) => string;
-  getFillerWidth: () => number;
 }
 
 export function useTableColumns(options: UseTableColumnsOptions): UseTableColumnsReturn {
-  const { visibleColumns, resizableColumns = true, reorderableColumns = false } = options;
+  const { visibleColumns, resizableColumns = true, reorderableColumns = false, fitMode = "gap" } = options;
 
   // ============================================================================
   // State
@@ -80,33 +81,30 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   // Helpers
   // ============================================================================
 
-  const isSpecialColumn = (col: VcColumnProps): boolean => {
-    return !!(col.selectionMode || col.rowReorder || col.expander || col.rowEditor);
-  };
-
   const isColumnResizable = (col: VcColumnProps): boolean => {
     if (isSpecialColumn(col)) return false;
-    return resizableColumns ?? false;
+    return resizableColumns;
   };
 
   const isColumnReorderable = (col: VcColumnProps): boolean => {
     if (isSpecialColumn(col)) return false;
-    return reorderableColumns ?? false;
+    return reorderableColumns;
   };
 
   const getEffectiveColumnWidth = (col: VcColumnProps): string | undefined => {
-    if (col.selectionMode) return "40px";
-    if (col.rowReorder || col.expander) return "50px";
-    if (col.rowEditor) return "100px";
+    if (col.selectionMode) return `${SPECIAL_COLUMN_WIDTHS.selection}px`;
+    if (col.rowReorder) return `${SPECIAL_COLUMN_WIDTHS.rowReorder}px`;
+    if (col.expander) return `${SPECIAL_COLUMN_WIDTHS.expander}px`;
+    if (col.rowEditor) return `${SPECIAL_COLUMN_WIDTHS.rowEditor}px`;
     const w = engineOutput.value.widths[col.id];
+    // Returning undefined signals "engine hasn't computed yet" — TableHead/TableCell
+    // use a flex:1 fallback to avoid left-pack flash during the initial render.
     if (w !== undefined && w > 0) return `${w}px`;
     return undefined;
   };
 
-  const getFillerWidth = (): number => engineOutput.value.fillerWidth;
-
   const getHeaderAlign = (col: VcColumnProps): "left" | "center" | "right" | undefined => {
-    if (col.selectionMode || col.rowReorder || col.expander || col.rowEditor) return "center";
+    if (isSpecialColumn(col)) return "center";
     const align = col.headerAlign || col.align;
     if (!align) return undefined;
     if (align === "start") return "left";
@@ -115,7 +113,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   };
 
   const getCellAlign = (col: VcColumnProps): "left" | "center" | "right" | undefined => {
-    if (col.selectionMode || col.rowReorder || col.expander || col.rowEditor) return "center";
+    if (isSpecialColumn(col)) return "center";
     if (!col.align) return undefined;
     if (col.align === "start") return "left";
     if (col.align === "end") return "right";
@@ -124,23 +122,21 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
 
   const getHeaderStyle = (col: VcColumnProps): object | undefined => {
     if (col.selectionMode) {
-      return { textAlign: "center", justifyContent: "center", minWidth: "40px", maxWidth: "40px" };
+      return {
+        textAlign: "center",
+        justifyContent: "center",
+        minWidth: `${SPECIAL_COLUMN_WIDTHS.selection}px`,
+        maxWidth: `${SPECIAL_COLUMN_WIDTHS.selection}px`,
+      };
     }
     if (col.rowReorder || col.expander) {
-      return { textAlign: "center", justifyContent: "center", minWidth: "50px", maxWidth: "50px" };
+      const px = col.rowReorder ? SPECIAL_COLUMN_WIDTHS.rowReorder : SPECIAL_COLUMN_WIDTHS.expander;
+      return { textAlign: "center", justifyContent: "center", minWidth: `${px}px`, maxWidth: `${px}px` };
     }
     return undefined;
   };
 
-  const getCellStyle = (col: VcColumnProps): object | undefined => {
-    if (col.selectionMode) {
-      return { textAlign: "center", justifyContent: "center", minWidth: "40px", maxWidth: "40px" };
-    }
-    if (col.rowReorder || col.expander) {
-      return { textAlign: "center", justifyContent: "center", minWidth: "50px", maxWidth: "50px" };
-    }
-    return undefined;
-  };
+  const getCellStyle = (col: VcColumnProps): object | undefined => getHeaderStyle(col);
 
   const getSortField = (col: VcColumnProps): string => col.sortField || col.field || col.id;
 
@@ -153,30 +149,6 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
       el && typeof el === "object" && "$el" in el ? (el as { $el: HTMLElement }).$el : (el as HTMLElement | null);
     if (domEl) headerRefs.set(id, domEl);
     else headerRefs.delete(id);
-  };
-
-  // ============================================================================
-  // Engine recomputation
-  // ============================================================================
-
-  const recompute = () => {
-    const availableWidth = options.getAvailableWidth();
-    if (availableWidth <= 0) return;
-
-    const visibleRegular = orderedVisibleColumns.value
-      .filter((c) => !isSpecialColumn(c.props))
-      .map((c) => c.props.id);
-
-    const cols = visibleRegular
-      .filter((id) => columnState.value.specs[id])
-      .map((id) => ({ id, spec: columnState.value.specs[id] }));
-
-    if (cols.length === 0) return;
-    engineOutput.value = computeColumnWidths({
-      availableWidth,
-      columns: cols,
-      mode: options.fitMode ?? "gap",
-    });
   };
 
   // ============================================================================
@@ -218,28 +190,96 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   // Initialization from VcColumn props
   // ============================================================================
 
-  const initFromProps = (availableWidth: number) => {
+  /**
+   * Build a ColumnSpec for one column from its declared props.
+   * Uses `availableWidth` to resolve percentage values.
+   */
+  function buildSpec(col: VcColumnProps, availableWidth: number, fallbackWeight: number): ColumnSpec {
+    const minParsed = parseColumnWidth(col.minWidth, availableWidth);
+    const maxParsed = parseColumnWidth(col.maxWidth, availableWidth);
+    return {
+      weight: fallbackWeight,
+      minPx: minParsed.desiredPx ?? DEFAULT_MIN_COLUMN_PX,
+      maxPx: maxParsed.desiredPx ?? Infinity,
+    };
+  }
+
+  /**
+   * Initialize weights and specs for all currently-visible regular columns
+   * from their declared props (`width`, `minWidth`, `maxWidth`).
+   * Safe to call with availableWidth=0 — percentages resolve to 0 in that case,
+   * so `needsPropsReinit` will remain true until a real width is available.
+   */
+  function applyInitFromProps(availableWidth: number): void {
     const regularCols = visibleColumns.value.filter((c) => !isSpecialColumn(c.props));
+    if (regularCols.length === 0) return;
+
     const parsed = regularCols.map((col) => ({
       id: col.props.id,
-      parsed: parseColumnWidth(col.props.width, availableWidth > 0 ? availableWidth : 0),
+      parsed: parseColumnWidth(col.props.width, availableWidth),
     }));
+    const weights = buildInitialWeights(parsed, availableWidth);
 
-    const weights = buildInitialWeights(parsed, availableWidth > 0 ? availableWidth : 0);
-    const order = regularCols.map((c) => c.props.id);
-    const specs: Record<string, ColumnSpec> = {};
-
+    const order = [...columnState.value.order];
+    // Ensure all regular columns are in order
+    const orderSet = new Set(order);
     for (const col of regularCols) {
-      const minParsed = parseColumnWidth(col.props.minWidth, availableWidth > 0 ? availableWidth : 0);
-      const maxParsed = parseColumnWidth(col.props.maxWidth, availableWidth > 0 ? availableWidth : 0);
-      specs[col.props.id] = {
-        weight: weights[col.props.id] ?? 1 / order.length,
-        minPx: minParsed.desiredPx ?? 40,
-        maxPx: maxParsed.desiredPx ?? Infinity,
-      };
+      if (!orderSet.has(col.props.id)) order.push(col.props.id);
+    }
+
+    const specs: Record<string, ColumnSpec> = { ...columnState.value.specs };
+    for (const col of regularCols) {
+      const fallbackWeight = weights[col.props.id] ?? 1 / regularCols.length;
+      specs[col.props.id] = buildSpec(col.props, availableWidth, fallbackWeight);
     }
 
     columnState.value = { order, specs };
+  }
+
+  /**
+   * Reset: rebuild ColumnState from declared props, discarding persisted state.
+   * Called by handleTableReset in the orchestrator.
+   */
+  const resetFromProps = (): void => {
+    columnState.value = { order: [], specs: {} };
+    needsPropsReinit = true;
+    const available = options.getAvailableWidth();
+    if (available > 0) {
+      applyInitFromProps(available);
+      needsPropsReinit = false;
+    }
+  };
+
+  // ============================================================================
+  // Engine recomputation
+  // ============================================================================
+
+  // When true, the next recompute with a positive availableWidth will re-parse
+  // declared VcColumn props (handles the initial-mount case where DOM was empty).
+  let needsPropsReinit = false;
+
+  const recompute = () => {
+    const availableWidth = options.getAvailableWidth();
+    if (availableWidth <= 0) return;
+
+    // Deferred initial-props parsing: the first watcher run (immediate, pre-mount)
+    // has no DOM to measure. Once DOM is ready and we have a real width, parse
+    // declared props to honor <VcColumn :width="200" min-width="100" />.
+    if (needsPropsReinit) {
+      applyInitFromProps(availableWidth);
+      needsPropsReinit = false;
+    }
+
+    const visibleRegular = orderedVisibleColumns.value
+      .filter((c) => !isSpecialColumn(c.props))
+      .map((c) => c.props.id);
+
+    const cols = visibleRegular
+      .filter((id) => columnState.value.specs[id])
+      .map((id) => ({ id, spec: columnState.value.specs[id] }));
+
+    if (cols.length === 0) return;
+    engineOutput.value = computeColumnWidths({ availableWidth, columns: cols, mode: fitMode });
   };
 
   // ============================================================================
@@ -257,46 +297,52 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
       const newIdSet = new Set(newIds);
       const trackedIds = new Set(columnState.value.order);
 
-      // Detect genuinely new columns (never seen before)
       const brandNewIds = newIds.filter((id) => !trackedIds.has(id));
-
-      // Detect columns that just became visible (were tracked but hidden).
-      // On first run (immediate), skip — all columns appear "just shown" but
-      // their weights may have been restored from persistence. Don't overwrite.
+      // On first run (immediate), skip show/hide detection — all columns appear
+      // "just shown" but their weights may have been restored from persistence.
       const justShownIds = isFirstRun ? [] : newIds.filter((id) => trackedIds.has(id) && !prevVisibleIdSet.has(id));
-
-      // Detect columns that just became hidden
       const justHiddenIds = isFirstRun ? [] : [...prevVisibleIdSet].filter((id) => !newIdSet.has(id));
-
       const visibleSetChanged = brandNewIds.length > 0 || justShownIds.length > 0 || justHiddenIds.length > 0;
 
-      if (brandNewIds.length > 0 || columnState.value.order.length === 0) {
-        // Brand-new columns: add to order, give them average weight of existing visible
-        const state = { ...columnState.value };
-        state.order = [...state.order];
-        state.specs = { ...state.specs };
+      const isInitialEmpty = columnState.value.order.length === 0;
+      const available = options.getAvailableWidth();
 
-        const existingVisible = newIds.filter((id) => state.specs[id] && !brandNewIds.includes(id));
-        const avgWeight =
-          existingVisible.length > 0
-            ? existingVisible.reduce((s, id) => s + state.specs[id].weight, 0) / existingVisible.length
-            : 1 / newIds.length;
+      if (isInitialEmpty || brandNewIds.length > 0) {
+        // Brand-new or initial columns need specs.
+        if (isInitialEmpty && available > 0) {
+          // Best case: DOM is ready and we can parse declared props immediately.
+          applyInitFromProps(available);
+          needsPropsReinit = false;
+        } else {
+          // Fallback: DOM not ready OR we're adding columns to an existing set.
+          // Give new columns a reasonable default weight; if available=0, mark
+          // for a proper props re-init on first recompute() with real width.
+          const state = { ...columnState.value };
+          state.order = [...state.order];
+          state.specs = { ...state.specs };
 
-        for (const col of regularCols) {
-          if (!trackedIds.has(col.props.id)) {
-            state.order.push(col.props.id);
-            state.specs[col.props.id] = { weight: avgWeight, minPx: 40, maxPx: Infinity };
+          const existingVisible = newIds.filter((id) => state.specs[id] && !brandNewIds.includes(id));
+          const avgWeight =
+            existingVisible.length > 0
+              ? existingVisible.reduce((s, id) => s + state.specs[id].weight, 0) / existingVisible.length
+              : 1 / newIds.length;
+
+          for (const col of regularCols) {
+            if (!trackedIds.has(col.props.id)) {
+              state.order.push(col.props.id);
+              state.specs[col.props.id] = buildSpec(col.props, available, avgWeight);
+            }
           }
-        }
 
-        // Normalize visible columns
-        const visibleRegular = newIds.filter((id) => state.specs[id]);
-        normalizeWeights(state.specs, visibleRegular);
-        columnState.value = state;
+          const visibleRegular = newIds.filter((id) => state.specs[id]);
+          normalizeWeights(state.specs, visibleRegular);
+          columnState.value = state;
+
+          if (isInitialEmpty && available <= 0) needsPropsReinit = true;
+        }
       } else if (justShownIds.length > 0) {
-        // Previously hidden columns became visible. Give them average weight
-        // of currently visible columns, then renormalize. This preserves
-        // proportions among existing columns while giving new ones fair space.
+        // Previously hidden columns became visible. Give them average weight of
+        // currently visible columns, then renormalize. Preserves proportions.
         const state = { ...columnState.value };
         state.specs = { ...state.specs };
 
@@ -307,30 +353,23 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
             : 1 / newIds.length;
 
         for (const id of justShownIds) {
-          if (state.specs[id]) {
-            state.specs[id] = { ...state.specs[id], weight: avgWeight };
-          }
+          if (state.specs[id]) state.specs[id] = { ...state.specs[id], weight: avgWeight };
         }
 
-        const visibleRegular = newIds.filter((id) => state.specs[id]);
-        normalizeWeights(state.specs, visibleRegular);
+        normalizeWeights(state.specs, newIds.filter((id) => state.specs[id]));
         columnState.value = state;
       } else if (justHiddenIds.length > 0) {
         // Columns were hidden. Renormalize remaining visible so they fill space.
         const state = { ...columnState.value };
         state.specs = { ...state.specs };
-        const visibleRegular = newIds.filter((id) => state.specs[id]);
-        normalizeWeights(state.specs, visibleRegular);
+        normalizeWeights(state.specs, newIds.filter((id) => state.specs[id]));
         columnState.value = state;
       }
 
       prevVisibleIdSet = newIdSet;
       isFirstRun = false;
 
-      // Always recompute when visible columns change
-      if (visibleSetChanged) {
-        recompute();
-      }
+      if (visibleSetChanged) recompute();
     },
     { immediate: true },
   );
@@ -341,7 +380,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     headerRefs,
     setHeaderRef,
     recompute,
-    initFromProps,
+    resetFromProps,
     orderedVisibleColumns,
     totalColumns,
     isSpecialColumn,
@@ -354,6 +393,5 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     getHeaderStyle,
     getCellStyle,
     getSortField,
-    getFillerWidth,
   };
 }

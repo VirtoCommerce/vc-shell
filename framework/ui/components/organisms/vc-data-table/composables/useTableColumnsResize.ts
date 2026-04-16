@@ -1,17 +1,18 @@
 import { ref, watch, type Ref, onBeforeUnmount } from "vue";
-import type { ColumnState, ColumnSpec, TableFitMode } from "../types";
-import { computeColumnWidths, type EngineOutput } from "./useColumnWidthEngine";
+import type { ColumnState, ColumnSpec } from "../types";
+import { computeColumnWidths, DEFAULT_MIN_COLUMN_PX, type EngineOutput } from "./useColumnWidthEngine";
 
 export interface UseTableColumnsResizeOptions {
   columnState: Ref<ColumnState>;
   engineOutput: Ref<EngineOutput>;
+  /** Re-runs the width engine with current weights and measured availableWidth. */
   recompute: () => void;
   /** Returns net available width for data columns (measured from DOM wrapper). */
   getAvailableWidth: () => number;
+  /** Floor for both user-drag clamp and iterative right-neighbor distribution. */
   minColumnWidth?: number;
-  fitMode?: TableFitMode;
+  /** Returns ids of currently-visible regular (non-special) columns in display order. */
   getVisibleRegularColumnIds?: () => string[];
-  getColumnElement?: (id: string) => HTMLElement | null;
   onResizeEnd?: () => void;
   containerEl?: Ref<HTMLElement | null>;
 }
@@ -22,7 +23,7 @@ export interface UseTableColumnsResizeOptions {
  * On drag start, snapshots current weights.
  * During drag, converts pixel delta to weight delta and redistributes
  * among right neighbors. On end, commits to columnState.
- * Container resize simply calls recompute() after debounce.
+ * Container resize calls recompute() after debounce, then rAF-throttled.
  */
 export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   const {
@@ -30,8 +31,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     engineOutput,
     recompute,
     getAvailableWidth,
-    minColumnWidth = 40,
-    fitMode = "gap",
+    minColumnWidth = DEFAULT_MIN_COLUMN_PX,
     getVisibleRegularColumnIds,
     onResizeEnd,
     containerEl,
@@ -167,13 +167,13 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     const visibleIds = activeOrder.filter((id) => !!newSpecs[id]);
     for (const id of visibleIds) {
       if (newSpecs[id] && newPx[id] !== undefined) {
-        newSpecs[id].weight = available > 0 ? newPx[id] / available : 1 / visibleIds.length;
+        newSpecs[id].weight = newPx[id] / available;
       }
     }
-    const cols = visibleIds.map((id) => ({ id, spec: newSpecs[id] }));
-    engineOutput.value = computeColumnWidths({ availableWidth: available, columns: cols, mode: fitMode });
 
+    // Commit specs; recompute() re-runs the engine (in useTableColumns).
     columnState.value = { ...columnState.value, specs: newSpecs };
+    recompute();
   };
 
   const handleResizeMove = (event: MouseEvent) => {
@@ -213,10 +213,29 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   });
 
   // --- Container ResizeObserver: recompute on container resize ---
+  //
+  // Flow:
+  //   1. Initial burst of ticks during mount/blade-open animation → debounced
+  //      by 100ms to wait for layout to "settle" before the first compute.
+  //   2. After settle, subsequent ticks → throttled via requestAnimationFrame
+  //      to at most one recompute per frame. Prevents layout thrash during
+  //      continuous animations (blade open/close takes ~300ms, 18 ticks).
+  //
+  // `recompute()` queries DOM (getBoundingClientRect) and runs the engine;
+  // calling it synchronously on every tick can cause visible jank.
 
   let resizeObserver: ResizeObserver | null = null;
   let settled = false;
   let settleDebounce: ReturnType<typeof setTimeout> | undefined;
+  let rafRecomputeId = 0;
+
+  const scheduleRecompute = () => {
+    if (rafRecomputeId) return;
+    rafRecomputeId = requestAnimationFrame(() => {
+      rafRecomputeId = 0;
+      if (!isResizing.value) recompute();
+    });
+  };
 
   const setupResizeObserver = () => {
     if (!containerEl?.value || typeof ResizeObserver === "undefined") return;
@@ -238,10 +257,9 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
         }, 100);
         return;
       }
+      // Post-settle: rAF-throttle to avoid layout thrash during animations.
       // Weights stay as-is — engine scales everything proportionally.
-      // If user created filler by shrinking columns, the filler proportion
-      // is preserved when container grows/shrinks (blade open/close).
-      recompute();
+      scheduleRecompute();
     });
     resizeObserver.observe(containerEl.value);
   };
@@ -259,6 +277,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
 
   onBeforeUnmount(() => {
     if (settleDebounce !== undefined) clearTimeout(settleDebounce);
+    if (rafRecomputeId) cancelAnimationFrame(rafRecomputeId);
     resizeObserver?.disconnect();
     if (isResizing.value) {
       if (rafId) cancelAnimationFrame(rafId);

@@ -31,6 +31,8 @@ import {
   useDataTableState,
 } from "@ui/components/organisms/vc-data-table/composables";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
+import { isSpecialColumn } from "@ui/components/organisms/vc-data-table/utils/columnHelpers";
+import { DEFAULT_MIN_COLUMN_PX } from "@ui/components/organisms/vc-data-table/composables/useColumnWidthEngine";
 import type {
   VcColumnProps,
   FilterValue,
@@ -409,9 +411,9 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   // Column Helpers (via composable)
   // ============================================================================
 
-  // Forward-declared so measureAvailableWidth can reference it safely.
-  // Assigned immediately after useTableColumns() call below.
-  let cols: ReturnType<typeof useTableColumns> | undefined;
+  // Cached transition-wrapper element — updated lazily on measurement.
+  // Avoids a querySelector call on every ResizeObserver tick.
+  let cachedWrapper: HTMLElement | null = null;
 
   /**
    * Measures available width for data columns directly from the DOM.
@@ -421,37 +423,35 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
    * inside the wrapper (implicit selection checkbox, VcColumn-based
    * selection/expander/rowReorder/rowEditor). No hardcoded pixel constants.
    *
-   * Important: when wrapper is not mounted yet, return 0.
-   * This prevents an early compute on a transient container width and avoids
-   * first-frame column jump once wrapper measurements become available.
+   * When wrapper is not mounted yet, returns 0 — callers treat this as
+   * "defer until DOM is ready" to avoid a first-frame column jump.
    */
   const measureAvailableWidth = (): number => {
-    const wrapper = tableContainerRef.value?.querySelector(
-      ".vc-table-composition__row-transition-wrapper",
-    ) as HTMLElement | null;
-    if (!wrapper || wrapper.clientWidth <= 0) {
-      return 0;
+    if (!cachedWrapper || !cachedWrapper.isConnected) {
+      cachedWrapper = (tableContainerRef.value?.querySelector(
+        ".vc-table-composition__row-transition-wrapper",
+      ) ?? null) as HTMLElement | null;
     }
-    // Subtract special cells inside the wrapper
+    if (!cachedWrapper || cachedWrapper.clientWidth <= 0) return 0;
+
+    // Subtract special cells inside the wrapper.
     let specialWidth = 0;
-    // 1. Implicit selection cells (not a VcColumn)
-    const implicitCells = wrapper.querySelectorAll(".vc-data-table__selection-cell");
+    // 1. Implicit selection cells (not a VcColumn — no data-column-id).
+    const implicitCells = cachedWrapper.querySelectorAll(".vc-data-table__selection-cell");
     for (const cell of implicitCells) {
       specialWidth += (cell as HTMLElement).getBoundingClientRect().width;
     }
-    // 2. Special VcColumn cells (selectionMode, expander, rowReorder, rowEditor)
-    if (cols) {
-      for (const col of visibleColumns.value) {
-        if (cols.isSpecialColumn(col.props)) {
-          const el = cols.headerRefs.get(col.props.id);
-          if (el) specialWidth += el.getBoundingClientRect().width;
-        }
+    // 2. Special VcColumn cells (selectionMode, expander, rowReorder, rowEditor).
+    for (const col of visibleColumns.value) {
+      if (isSpecialColumn(col.props)) {
+        const el = cols.headerRefs.get(col.props.id);
+        if (el) specialWidth += el.getBoundingClientRect().width;
       }
     }
-    return Math.max(0, wrapper.clientWidth - specialWidth);
+    return Math.max(0, cachedWrapper.clientWidth - specialWidth);
   };
 
-  cols = useTableColumns({
+  const cols = useTableColumns({
     visibleColumns,
     resizableColumns: props.resizableColumns ?? true,
     reorderableColumns: props.reorderableColumns ?? true,
@@ -479,7 +479,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     // Declared columns (excluding statically hidden and special columns)
     const declared = declaredColumns.value
       .filter((col) => col.props.visible !== false)
-      .filter((col) => !cols.isSpecialColumn(col.props))
+      .filter((col) => !isSpecialColumn(col.props))
       .map((col) => ({
         id: col.props.id,
         label: col.props.title || col.props.field || col.props.id,
@@ -747,11 +747,9 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     engineOutput: cols.engineOutput,
     recompute: cols.recompute,
     getAvailableWidth: measureAvailableWidth,
-    minColumnWidth: 40,
-    fitMode: props.fitMode ?? "gap",
+    minColumnWidth: DEFAULT_MIN_COLUMN_PX,
     getVisibleRegularColumnIds: () =>
-      cols.orderedVisibleColumns.value.filter((col) => !cols.isSpecialColumn(col.props)).map((col) => col.props.id),
-    getColumnElement: (id) => cols.headerRefs.get(id) ?? null,
+      cols.orderedVisibleColumns.value.filter((col) => !isSpecialColumn(col.props)).map((col) => col.props.id),
     onResizeEnd: () => emit("column-resize-end", { columns: [] }),
     containerEl: tableContainerRef,
   });
@@ -956,12 +954,9 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
       hiddenColumnIds.value = new Set(dataDiscoveredIds.value);
     }
 
-    // 3. Re-init from props and recompute
-    const available = tableContainerRef.value?.clientWidth ?? 0;
-    if (available > 0) {
-      cols.initFromProps(available);
-      cols.recompute();
-    }
+    // 3. Re-init from declared VcColumn props (discards any runtime state).
+    cols.resetFromProps();
+    cols.recompute();
   };
 
   // ============================================================================

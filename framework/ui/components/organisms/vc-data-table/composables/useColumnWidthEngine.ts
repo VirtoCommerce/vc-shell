@@ -29,6 +29,12 @@ export type ParsedWidth =
   | { type: "percent"; desiredPx: number }
   | { type: "auto"; desiredPx: null };
 
+/**
+ * Default minimum column width in pixels when VcColumn.minWidth is not set.
+ * Shared between engine, resize composable, and watcher init paths.
+ */
+export const DEFAULT_MIN_COLUMN_PX = 40;
+
 // ============================================================================
 // Core engine
 // ============================================================================
@@ -253,7 +259,14 @@ export function parseColumnWidth(value: string | number | undefined, availableWi
     return { type: "px", desiredPx: parseFloat(pxMatch[1]) };
   }
 
-  // Unrecognized CSS value (e.g. "10rem") — treat as auto
+  // Unrecognized CSS value (e.g. "10rem") — treat as auto.
+  // Only px and % are supported; other units are ignored.
+  if (typeof process !== "undefined" && process.env?.NODE_ENV !== "production") {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[VcDataTable] Unsupported width value "${value}". Only px (number, "200", "200px") and % ("20%") are supported. Treating as auto.`,
+    );
+  }
   return { type: "auto", desiredPx: null };
 }
 

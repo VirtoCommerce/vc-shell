@@ -342,3 +342,84 @@ describe("normalizeWeights", () => {
     expect(specs["b"].weight).toBeCloseTo(0.5, 10);
   });
 });
+
+describe("end-to-end: declared widths flow through engine", () => {
+  it("honors px-declared column widths when used with buildInitialWeights", () => {
+    // Simulates the useTableColumns init path: parse props → weights → engine.
+    const availableWidth = 600;
+    const parsed = [
+      { id: "a", parsed: parseColumnWidth(200, availableWidth) },
+      { id: "b", parsed: parseColumnWidth(300, availableWidth) },
+      { id: "c", parsed: parseColumnWidth(100, availableWidth) },
+    ];
+    const weights = buildInitialWeights(parsed, availableWidth);
+
+    const result = computeColumnWidths({
+      availableWidth,
+      columns: [
+        { id: "a", spec: { weight: weights["a"], minPx: 40, maxPx: Infinity } },
+        { id: "b", spec: { weight: weights["b"], minPx: 40, maxPx: Infinity } },
+        { id: "c", spec: { weight: weights["c"], minPx: 40, maxPx: Infinity } },
+      ],
+      mode: "fit",
+    });
+
+    // Declared widths were 200/300/100; with available=600 they fit exactly.
+    expect(result.widths["a"]).toBe(200);
+    expect(result.widths["b"]).toBe(300);
+    expect(result.widths["c"]).toBe(100);
+    expect(result.fillerWidth).toBe(0);
+  });
+
+  it("respects declared minWidth — column stays ≥ min after narrow-container shrink", () => {
+    // Declared: a=minWidth=150, b=minWidth=40, c=minWidth=40, available=300
+    // Engine should honor min of 150 for `a` even when proportional shrink would push it lower.
+    const input: EngineInput = {
+      availableWidth: 300,
+      columns: [
+        { id: "a", spec: { weight: 0.2, minPx: 150, maxPx: Infinity } },
+        { id: "b", spec: { weight: 0.4, minPx: 40, maxPx: Infinity } },
+        { id: "c", spec: { weight: 0.4, minPx: 40, maxPx: Infinity } },
+      ],
+      mode: "fit",
+    };
+    const result = computeColumnWidths(input);
+    expect(result.widths["a"]).toBeGreaterThanOrEqual(150);
+    expect(sumWidths(result.widths)).toBe(300);
+  });
+
+  it("respects declared maxWidth — column never exceeds max even with large weight", () => {
+    const input: EngineInput = {
+      availableWidth: 1000,
+      columns: [
+        { id: "a", spec: { weight: 0.8, minPx: 40, maxPx: 250 } },
+        { id: "b", spec: { weight: 0.1, minPx: 40, maxPx: Infinity } },
+        { id: "c", spec: { weight: 0.1, minPx: 40, maxPx: Infinity } },
+      ],
+      mode: "fit",
+    };
+    const result = computeColumnWidths(input);
+    expect(result.widths["a"]).toBeLessThanOrEqual(250);
+    // Remaining width goes to b and c (which have grow capacity).
+    expect(result.widths["b"] + result.widths["c"]).toBe(1000 - result.widths["a"]);
+  });
+
+  it("fit mode with all columns at maxPx: surplus flows to filler", () => {
+    // All columns capped at their max — engine can't grow them further.
+    // In fit mode, this edge case produces a non-zero filler (documented behavior).
+    const input: EngineInput = {
+      availableWidth: 1000,
+      columns: [
+        { id: "a", spec: { weight: 0.5, minPx: 40, maxPx: 200 } },
+        { id: "b", spec: { weight: 0.5, minPx: 40, maxPx: 200 } },
+      ],
+      mode: "fit",
+    };
+    const result = computeColumnWidths(input);
+    expect(result.widths["a"]).toBe(200);
+    expect(result.widths["b"]).toBe(200);
+    // Sum must equal available; 600px overflow goes to filler.
+    expect(sumWidths(result.widths) + result.fillerWidth).toBe(1000);
+    expect(result.fillerWidth).toBe(600);
+  });
+});

@@ -10,6 +10,7 @@ export interface UseTableColumnsResizeOptions {
   getSpecialColumnsWidth: () => number;
   minColumnWidth?: number;
   fitMode?: TableFitMode;
+  getVisibleRegularColumnIds?: () => string[];
   getColumnElement?: (id: string) => HTMLElement | null;
   onResizeEnd?: () => void;
   containerEl?: Ref<HTMLElement | null>;
@@ -32,6 +33,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     getSpecialColumnsWidth,
     minColumnWidth = 40,
     fitMode = "gap",
+    getVisibleRegularColumnIds,
     onResizeEnd,
     containerEl,
   } = options;
@@ -44,15 +46,38 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   let draggedId = "";
   let rightNeighborIds: string[] = [];
 
+  const cloneSpecs = (specs: Record<string, ColumnSpec>): Record<string, ColumnSpec> => {
+    const cloned: Record<string, ColumnSpec> = {};
+    for (const [id, spec] of Object.entries(specs)) {
+      cloned[id] = { ...spec };
+    }
+    return cloned;
+  };
+
+  const getActiveOrder = (): string[] => {
+    const visibleRegular = getVisibleRegularColumnIds?.() ?? [];
+    if (visibleRegular.length > 0) {
+      return visibleRegular.filter((id) => !!columnState.value.specs[id]);
+    }
+
+    const renderedIds = new Set(Object.keys(engineOutput.value.widths));
+    if (renderedIds.size === 0) {
+      return columnState.value.order.filter((id) => !!columnState.value.specs[id]);
+    }
+    return columnState.value.order.filter((id) => renderedIds.has(id) && !!columnState.value.specs[id]);
+  };
+
   const handleResizeStart = (columnId: string, event: MouseEvent) => {
+    const activeOrder = getActiveOrder();
+    const idx = activeOrder.indexOf(columnId);
+    if (idx < 0) return;
+
     draggedId = columnId;
     startX = event.pageX;
-    initialSpecs = JSON.parse(JSON.stringify(columnState.value.specs));
+    initialSpecs = cloneSpecs(columnState.value.specs);
 
     // Find right neighbors in order
-    const order = columnState.value.order;
-    const idx = order.indexOf(columnId);
-    rightNeighborIds = idx >= 0 ? order.slice(idx + 1).filter((id) => initialSpecs[id]) : [];
+    rightNeighborIds = activeOrder.slice(idx + 1).filter((id) => !!initialSpecs[id]);
 
     isResizing.value = true;
     document.body.style.cursor = "col-resize";
@@ -65,30 +90,86 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     const available = getAvailableWidth() - getSpecialColumnsWidth();
     if (available <= 0) return;
 
-    const deltaWeight = rawDelta / available;
-    const newSpecs = JSON.parse(JSON.stringify(initialSpecs)) as Record<string, ColumnSpec>;
+    const activeOrder = getActiveOrder();
+    if (activeOrder.length === 0 || !activeOrder.includes(draggedId)) return;
 
-    // Apply delta to dragged column
-    newSpecs[draggedId].weight = Math.max(0.01, initialSpecs[draggedId].weight + deltaWeight);
-
-    // Compensate from right neighbors proportionally
-    const totalRightWeight = rightNeighborIds.reduce((s, id) => s + (initialSpecs[id]?.weight ?? 0), 0);
-    if (totalRightWeight > 0) {
-      for (const id of rightNeighborIds) {
-        const share = initialSpecs[id].weight / totalRightWeight;
-        newSpecs[id].weight = Math.max(0.01, initialSpecs[id].weight - deltaWeight * share);
+    // --- Work in pixels, same as the old system ---
+    // Compute initial pixel widths from weights
+    const initialPx: Record<string, number> = {};
+    for (const id of activeOrder) {
+      if (initialSpecs[id]) {
+        initialPx[id] = initialSpecs[id].weight * available;
       }
     }
 
-    // Normalize visible weights
-    const visibleIds = columnState.value.order.filter((id) => newSpecs[id]);
-    normalizeWeights(newSpecs, visibleIds);
+    // Max growth = sum of how much right neighbors can shrink (each down to minPx)
+    let maxGrowthPx = 0;
+    for (const id of rightNeighborIds) {
+      const min = initialSpecs[id]?.minPx ?? minColumnWidth;
+      maxGrowthPx += Math.max(0, initialPx[id] - min);
+    }
+
+    // Max shrink = dragged column down to its minPx
+    const draggedMin = initialSpecs[draggedId]?.minPx ?? minColumnWidth;
+    const maxShrinkPx = Math.max(0, initialPx[draggedId] - draggedMin);
+
+    // Clamp: can't grow more than right neighbors can give, can't shrink below min
+    const clampedDelta = Math.max(-maxShrinkPx, Math.min(rawDelta, maxGrowthPx));
+    if (Math.abs(clampedDelta) < 0.5) return;
+
+    // Build new pixel widths starting from initial values
+    const newPx: Record<string, number> = { ...initialPx };
+
+    // Apply clamped delta to dragged column
+    newPx[draggedId] = initialPx[draggedId] + clampedDelta;
+
+    // Distribute inverse delta across right neighbors (iterative, same as old system)
+    if (rightNeighborIds.length > 0) {
+      for (const id of rightNeighborIds) {
+        newPx[id] = initialPx[id];
+      }
+      let remaining = clampedDelta;
+      const active = [...rightNeighborIds];
+
+      while (Math.abs(remaining) > 0.5 && active.length > 0) {
+        const share = remaining / active.length;
+        const next: string[] = [];
+        let applied = 0;
+
+        for (const id of active) {
+          const min = initialSpecs[id]?.minPx ?? minColumnWidth;
+          const current = newPx[id];
+          const target = current - share;
+          const clamped = Math.max(min, target);
+          const actualChange = current - clamped;
+          applied += actualChange;
+          newPx[id] = clamped;
+
+          if (clamped > min || share < 0) {
+            next.push(id);
+          }
+        }
+
+        remaining -= applied;
+        if (Math.abs(applied) < 0.5) break;
+        active.length = 0;
+        active.push(...next);
+      }
+    }
+
+    // Convert px back to weights. Left columns stay frozen (their px didn't change).
+    const newSpecs = cloneSpecs(initialSpecs);
+    for (const id of activeOrder) {
+      if (newSpecs[id] && newPx[id] !== undefined) {
+        newSpecs[id].weight = newPx[id] / available;
+      }
+    }
 
     // Compute and update
+    const visibleIds = activeOrder.filter((id) => !!newSpecs[id]);
     const cols = visibleIds.map((id) => ({ id, spec: newSpecs[id] }));
     engineOutput.value = computeColumnWidths({ availableWidth: available, columns: cols, mode: fitMode });
 
-    // Update specs
     columnState.value = { ...columnState.value, specs: newSpecs };
   };
 

@@ -247,6 +247,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   // ============================================================================
 
   let prevVisibleIdSet = new Set<string>();
+  let isFirstRun = true;
 
   watch(
     visibleColumns,
@@ -259,11 +260,13 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
       // Detect genuinely new columns (never seen before)
       const brandNewIds = newIds.filter((id) => !trackedIds.has(id));
 
-      // Detect columns that just became visible (were tracked but hidden)
-      const justShownIds = newIds.filter((id) => trackedIds.has(id) && !prevVisibleIdSet.has(id));
+      // Detect columns that just became visible (were tracked but hidden).
+      // On first run (immediate), skip — all columns appear "just shown" but
+      // their weights may have been restored from persistence. Don't overwrite.
+      const justShownIds = isFirstRun ? [] : newIds.filter((id) => trackedIds.has(id) && !prevVisibleIdSet.has(id));
 
       // Detect columns that just became hidden
-      const justHiddenIds = [...prevVisibleIdSet].filter((id) => !newIdSet.has(id));
+      const justHiddenIds = isFirstRun ? [] : [...prevVisibleIdSet].filter((id) => !newIdSet.has(id));
 
       const visibleSetChanged = brandNewIds.length > 0 || justShownIds.length > 0 || justHiddenIds.length > 0;
 
@@ -322,6 +325,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
       }
 
       prevVisibleIdSet = newIdSet;
+      isFirstRun = false;
 
       // Always recompute when visible columns change
       if (visibleSetChanged) {

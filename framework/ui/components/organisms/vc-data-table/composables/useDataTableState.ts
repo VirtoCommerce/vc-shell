@@ -243,7 +243,10 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
       }
     }
 
-    normalizeWeights(newSpecs, newOrder);
+    // Don't normalize here — weights were saved already normalized for visible
+    // columns. Normalizing across ALL columns (including hidden) would dilute
+    // visible weights. The engine only sees visible columns and handles their
+    // proportions correctly.
     columnState.value = { order: newOrder, specs: newSpecs };
 
     void nextTick(() => {

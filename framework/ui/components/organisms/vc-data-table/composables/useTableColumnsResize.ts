@@ -160,16 +160,18 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
       }
     }
 
-    // Convert px back to weights. Left columns stay frozen (their px didn't change).
+    // Convert px back to weights, then normalize so sum(visible weights) = 1.0.
+    // Without normalization, shrinking columns in a narrow container creates
+    // sub-1.0 weight sums, and expanding the container later leaves a large
+    // filler gap instead of proportionally scaling columns.
     const newSpecs = cloneSpecs(initialSpecs);
-    for (const id of activeOrder) {
+    const visibleIds = activeOrder.filter((id) => !!newSpecs[id]);
+    const totalNewPx = visibleIds.reduce((s, id) => s + (newPx[id] ?? 0), 0);
+    for (const id of visibleIds) {
       if (newSpecs[id] && newPx[id] !== undefined) {
-        newSpecs[id].weight = newPx[id] / available;
+        newSpecs[id].weight = totalNewPx > 0 ? newPx[id] / totalNewPx : 1 / visibleIds.length;
       }
     }
-
-    // Compute and update
-    const visibleIds = activeOrder.filter((id) => !!newSpecs[id]);
     const cols = visibleIds.map((id) => ({ id, spec: newSpecs[id] }));
     engineOutput.value = computeColumnWidths({ availableWidth: available, columns: cols, mode: fitMode });
 

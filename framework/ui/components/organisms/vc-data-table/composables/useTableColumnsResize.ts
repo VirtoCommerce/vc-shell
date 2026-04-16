@@ -1,6 +1,6 @@
 import { ref, watch, type Ref, onBeforeUnmount } from "vue";
 import type { ColumnState, ColumnSpec, TableFitMode } from "../types";
-import { computeColumnWidths, normalizeWeights, type EngineOutput } from "./useColumnWidthEngine";
+import { computeColumnWidths, type EngineOutput } from "./useColumnWidthEngine";
 
 export interface UseTableColumnsResizeOptions {
   columnState: Ref<ColumnState>;
@@ -212,22 +212,6 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     },
   });
 
-  /**
-   * Normalize visible column weights to sum=1.0.
-   * Called on container resize so columns scale proportionally to fill space.
-   * User-created filler (from shrinking) is absorbed — columns expand to fill.
-   */
-  const normalizeVisibleWeights = () => {
-    const activeOrder = getActiveOrder();
-    if (activeOrder.length === 0) return;
-    const state = { ...columnState.value, specs: { ...columnState.value.specs } };
-    for (const id of activeOrder) {
-      if (state.specs[id]) state.specs[id] = { ...state.specs[id] };
-    }
-    normalizeWeights(state.specs, activeOrder);
-    columnState.value = state;
-  };
-
   // --- Container ResizeObserver: recompute on container resize ---
 
   let resizeObserver: ResizeObserver | null = null;
@@ -250,15 +234,13 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
         settleDebounce = setTimeout(() => {
           settleDebounce = undefined;
           settled = true;
-          // On settle, normalize visible weights so columns fill new space.
-          normalizeVisibleWeights();
           recompute();
         }, 100);
         return;
       }
-      // Container resized after settle (blade open/close).
-      // Normalize visible weights so columns scale proportionally to fill space.
-      normalizeVisibleWeights();
+      // Weights stay as-is — engine scales everything proportionally.
+      // If user created filler by shrinking columns, the filler proportion
+      // is preserved when container grows/shrinks (blade open/close).
       recompute();
     });
     resizeObserver.observe(containerEl.value);

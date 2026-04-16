@@ -420,13 +420,17 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
    * drag handles, row-level gap) and subtracts special cells rendered
    * inside the wrapper (implicit selection checkbox, VcColumn-based
    * selection/expander/rowReorder/rowEditor). No hardcoded pixel constants.
+   *
+   * Important: when wrapper is not mounted yet, return 0.
+   * This prevents an early compute on a transient container width and avoids
+   * first-frame column jump once wrapper measurements become available.
    */
   const measureAvailableWidth = (): number => {
     const wrapper = tableContainerRef.value?.querySelector(
       ".vc-table-composition__row-transition-wrapper",
     ) as HTMLElement | null;
     if (!wrapper || wrapper.clientWidth <= 0) {
-      return tableContainerRef.value?.clientWidth ?? 0;
+      return 0;
     }
     // Subtract special cells inside the wrapper
     let specialWidth = 0;

@@ -78,9 +78,9 @@ const cellStyle = computed(() => {
     minWidth: props.minWidth || undefined,
     maxWidth: props.maxWidth,
     textAlign: props.align,
-    // Engine provides exact pixel widths — use fixed flex basis, no grow/shrink.
-    // Columns without width (special columns during initial render) get no flex override.
-    flex: props.width ? `0 0 ${props.width}` : undefined,
+    // Engine-provided widths are fixed. Before first compute, keep cells
+    // evenly distributed to match headers and avoid initial left-pack flash.
+    flex: props.width ? `0 0 ${props.width}` : "1 1 0px",
   } as Record<string, string | number | undefined>;
 });
 

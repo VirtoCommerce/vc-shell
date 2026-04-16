@@ -6,8 +6,8 @@ export interface UseTableColumnsResizeOptions {
   columnState: Ref<ColumnState>;
   engineOutput: Ref<EngineOutput>;
   recompute: () => void;
+  /** Returns net available width for data columns (measured from DOM wrapper). */
   getAvailableWidth: () => number;
-  getSpecialColumnsWidth: () => number;
   minColumnWidth?: number;
   fitMode?: TableFitMode;
   getVisibleRegularColumnIds?: () => string[];
@@ -30,7 +30,6 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     engineOutput,
     recompute,
     getAvailableWidth,
-    getSpecialColumnsWidth,
     minColumnWidth = 40,
     fitMode = "gap",
     getVisibleRegularColumnIds,
@@ -87,7 +86,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   };
 
   const applyResize = (rawDelta: number) => {
-    const available = getAvailableWidth() - getSpecialColumnsWidth();
+    const available = getAvailableWidth();
     if (available <= 0) return;
 
     const activeOrder = getActiveOrder();

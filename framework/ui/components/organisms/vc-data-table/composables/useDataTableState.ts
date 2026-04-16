@@ -57,8 +57,16 @@ function migrateV1toV2(state: DataTablePersistedState): PersistedStateV2 | null 
 }
 
 export function useDataTableState(options: UseDataTableStateOptions): UseDataTableStateReturn {
-  const { stateKey, stateStorage, columnState, hiddenColumnIds, shownColumnIds, getAvailableWidth, onStateSave, onStateRestore } =
-    options;
+  const {
+    stateKey,
+    stateStorage,
+    columnState,
+    hiddenColumnIds,
+    shownColumnIds,
+    getAvailableWidth,
+    onStateSave,
+    onStateRestore,
+  } = options;
 
   // Counter instead of boolean: multiple restore paths run concurrently during
   // setup and each schedules its own nextTick to decrement. A boolean would let
@@ -128,17 +136,13 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
   // Pending column weight/order data — applied when useTableColumns finishes
   // initializing columnState (i.e., when columns are registered).
   let pendingColumnRestore: { weights: Record<string, number>; order: string[] } | null =
-    pendingState?.weights && pendingState?.order
-      ? { weights: pendingState.weights, order: pendingState.order }
-      : null;
+    pendingState?.weights && pendingState?.order ? { weights: pendingState.weights, order: pendingState.order } : null;
 
   function buildState(): PersistedStateV2 {
     const state: PersistedStateV2 = {
       v: 2,
       order: columnState.value.order,
-      weights: Object.fromEntries(
-        Object.entries(columnState.value.specs).map(([id, s]) => [id, s.weight]),
-      ),
+      weights: Object.fromEntries(Object.entries(columnState.value.specs).map(([id, s]) => [id, s.weight])),
     };
     state.hiddenColumnIds = [...hiddenColumnIds.value];
     if (shownColumnIds) {

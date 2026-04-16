@@ -5620,7 +5620,7 @@ FitMode.parameters = {
   docs: {
     description: {
       story:
-        "With `fit-mode=\"fit\"` the weight-based column width engine treats explicit `width` values as " +
+        'With `fit-mode="fit"` the weight-based column width engine treats explicit `width` values as ' +
         "proportional hints and distributes all available table space across columns. " +
         "No filler gap appears on the right — columns always span 100% of the container width.",
     },
@@ -5657,7 +5657,7 @@ GapMode.parameters = {
   docs: {
     description: {
       story:
-        "With `fit-mode=\"gap\"` (the default) columns are rendered at their explicit pixel widths. " +
+        'With `fit-mode="gap"` (the default) columns are rendered at their explicit pixel widths. ' +
         "If the total column width is less than the table container width, the remaining space shows as a " +
         "filler area on the right. This is the classic spreadsheet-style layout.",
     },
@@ -5696,7 +5696,7 @@ MinMaxConstraints.parameters = {
       story:
         "VcColumn accepts `minWidth` and `maxWidth` props (number in px or CSS string). " +
         "The width engine clamps each column to its bounds after distributing space. " +
-        "Here \"Name\" will never shrink below 200 px and \"Stock\" will never exceed 100 px, " +
+        'Here "Name" will never shrink below 200 px and "Stock" will never exceed 100 px, ' +
         "regardless of how remaining space is redistributed.",
     },
   },
@@ -5731,8 +5731,8 @@ PercentageWidths.parameters = {
   docs: {
     description: {
       story:
-        "Percentage strings (e.g. `width=\"35%\"`) are resolved against the table container width " +
-        "and used as initial column sizes. Combined with `fit-mode=\"fit\"` the percentages act as " +
+        'Percentage strings (e.g. `width="35%"`) are resolved against the table container width ' +
+        'and used as initial column sizes. Combined with `fit-mode="fit"` the percentages act as ' +
         "proportional weights, keeping the columns distributed across the full width as the container resizes.",
     },
   },
@@ -5768,7 +5768,7 @@ MixedWidths.parameters = {
     description: {
       story:
         "All three column-width strategies can coexist in the same table: " +
-        "a fixed pixel column (`width=\"200\"`), a percentage column (`width=\"30%\"`), " +
+        'a fixed pixel column (`width="200"`), a percentage column (`width="30%"`), ' +
         "and two auto columns without an explicit width. " +
         "The engine resolves px and % to concrete values first, then distributes the remaining " +
         "space equally among the auto columns.",
@@ -5811,7 +5811,7 @@ NarrowContainer.parameters = {
   docs: {
     description: {
       story:
-        "When total column widths exceed the container size the engine enters \"crisis squeeze\" mode: " +
+        'When total column widths exceed the container size the engine enters "crisis squeeze" mode: ' +
         "it proportionally reduces column widths toward their `minWidth` limits until they fit. " +
         "Eight columns are defined with a total natural width far exceeding the 400 px container, " +
         "demonstrating how the engine handles overflow without a horizontal scrollbar.",

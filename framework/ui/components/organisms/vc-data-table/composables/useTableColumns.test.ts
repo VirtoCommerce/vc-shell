@@ -111,35 +111,14 @@ describe("useTableColumns — totalColumns", () => {
     expect(totalColumns.value).toBe(3);
   });
 
-  it("adds 1 when hasSelectionColumn=true and isSelectionViaColumn=false", () => {
+  it("counts only visible columns (selection handled externally)", () => {
     const cols = [makeColumn("name"), makeColumn("email")];
     const visibleColumns = ref(cols);
-    const hasSelectionColumn = computed(() => true);
-    const isSelectionViaColumn = computed(() => false);
 
-    const { totalColumns } = useTableColumns({
-      visibleColumns,
-      hasSelectionColumn,
-      isSelectionViaColumn,
-      ...createOptions(),
-    });
+    const { totalColumns } = useTableColumns({ visibleColumns, ...createOptions() });
 
-    expect(totalColumns.value).toBe(3); // 2 data cols + 1 selection col
-  });
-
-  it("does NOT add 1 when isSelectionViaColumn=true", () => {
-    const cols = [makeColumn("name"), makeColumn("email")];
-    const visibleColumns = ref(cols);
-    const hasSelectionColumn = computed(() => true);
-    const isSelectionViaColumn = computed(() => true);
-
-    const { totalColumns } = useTableColumns({
-      visibleColumns,
-      hasSelectionColumn,
-      isSelectionViaColumn,
-      ...createOptions(),
-    });
-
+    // totalColumns simply counts visibleColumns — implicit selection cells
+    // are handled by the DOM measurement, not by this composable.
     expect(totalColumns.value).toBe(2);
   });
 });

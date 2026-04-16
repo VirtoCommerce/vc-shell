@@ -43,13 +43,13 @@ function setup(
     onResizeEnd?: () => void;
     availableWidth?: number;
     specialColumnsWidth?: number;
+    getVisibleRegularColumnIds?: () => string[];
   } = {},
 ) {
   const columnState = ref(state ?? makeColumnState(["name", "price", "stock"]));
   const engineOutput = ref(engineOut ?? makeEngineOutput({ name: 200, price: 150, stock: 100 }));
   const recompute = vi.fn();
   const availableWidth = opts.availableWidth ?? 450;
-  const specialColumnsWidth = opts.specialColumnsWidth ?? 0;
 
   return {
     ...mountWithSetup(() =>
@@ -58,8 +58,8 @@ function setup(
         engineOutput,
         recompute,
         getAvailableWidth: () => availableWidth,
-        getSpecialColumnsWidth: () => specialColumnsWidth,
         minColumnWidth: 40,
+        getVisibleRegularColumnIds: opts.getVisibleRegularColumnIds,
         onResizeEnd: opts.onResizeEnd,
       }),
     ),
@@ -199,5 +199,82 @@ describe("weight-based resize behavior", () => {
 
     const totalWeight = Object.values(columnState.value.specs).reduce((s, spec) => s + spec.weight, 0);
     expect(totalWeight).toBeCloseTo(1.0, 2);
+  });
+
+  it("resizes only rendered columns when hidden columns remain in persisted order", () => {
+    const state: ColumnState = {
+      order: ["a", "hidden", "b", "c"],
+      specs: {
+        a: { weight: 0.4, minPx: 40, maxPx: Infinity },
+        hidden: { weight: 0, minPx: 40, maxPx: Infinity },
+        b: { weight: 0.35, minPx: 40, maxPx: Infinity },
+        c: { weight: 0.25, minPx: 40, maxPx: Infinity },
+      },
+    };
+    const engineOut = makeEngineOutput({ a: 180, b: 157, c: 113 });
+    const { result, columnState, engineOutput } = setup(state, engineOut, { availableWidth: 450 });
+
+    const initialHiddenWeight = columnState.value.specs["hidden"].weight;
+    const initialWeightA = columnState.value.specs["a"].weight;
+    const initialWeightB = columnState.value.specs["b"].weight;
+
+    result.handleResizeStart("a", { pageX: 200 } as MouseEvent);
+    const moveEvent = new MouseEvent("mousemove", { clientX: 260 });
+    Object.defineProperty(moveEvent, "pageX", { value: 260 });
+    document.dispatchEvent(moveEvent);
+    flushRAF();
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    // Hidden column is not part of render/output during resize.
+    expect(engineOutput.value.widths).not.toHaveProperty("hidden");
+    // Visible neighbors are resized, hidden stays untouched.
+    expect(columnState.value.specs["a"].weight).toBeGreaterThan(initialWeightA);
+    expect(columnState.value.specs["b"].weight).toBeLessThan(initialWeightB);
+    expect(columnState.value.specs["hidden"].weight).toBe(initialHiddenWeight);
+  });
+
+  it("uses explicit visible regular ids when engine output is not initialized yet", () => {
+    const state: ColumnState = {
+      order: ["a", "hidden", "b", "c"],
+      specs: {
+        a: { weight: 0.4, minPx: 40, maxPx: Infinity },
+        hidden: { weight: 0, minPx: 40, maxPx: Infinity },
+        b: { weight: 0.35, minPx: 40, maxPx: Infinity },
+        c: { weight: 0.25, minPx: 40, maxPx: Infinity },
+      },
+    };
+    const engineOut = makeEngineOutput({});
+    const { result, columnState, engineOutput } = setup(state, engineOut, {
+      availableWidth: 450,
+      getVisibleRegularColumnIds: () => ["a", "b", "c"],
+    });
+
+    result.handleResizeStart("a", { pageX: 200 } as MouseEvent);
+    const moveEvent = new MouseEvent("mousemove", { clientX: 260 });
+    Object.defineProperty(moveEvent, "pageX", { value: 260 });
+    document.dispatchEvent(moveEvent);
+    flushRAF();
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    expect(Object.keys(engineOutput.value.widths)).toEqual(["a", "b", "c"]);
+    expect(columnState.value.specs["hidden"].weight).toBe(0);
+  });
+
+  it("preserves unbounded maxPx during clone and does not collapse widths to min", () => {
+    const state = makeColumnStateFromWidths({ a: 200, b: 200, c: 200 });
+    const engineOut = makeEngineOutput({ a: 200, b: 200, c: 200 });
+    const { result, engineOutput } = setup(state, engineOut, { availableWidth: 600 });
+
+    result.handleResizeStart("a", { pageX: 200 } as MouseEvent);
+    const moveEvent = new MouseEvent("mousemove", { clientX: 260 });
+    Object.defineProperty(moveEvent, "pageX", { value: 260 });
+    document.dispatchEvent(moveEvent);
+    flushRAF();
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    expect(engineOutput.value.widths["a"]).toBeGreaterThan(40);
+    expect(engineOutput.value.widths["b"]).toBeGreaterThan(40);
+    expect(engineOutput.value.widths["c"]).toBeGreaterThan(40);
+    expect(engineOutput.value.fillerWidth).toBe(0);
   });
 });

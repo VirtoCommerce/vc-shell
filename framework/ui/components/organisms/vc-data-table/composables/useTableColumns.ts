@@ -1,11 +1,11 @@
 /**
  * useTableColumns - Composable for column-related logic
  *
- * Extracts column ordering, width management, and helper functions
- * from VcDataTable.vue to reduce main component size.
- *
  * Uses the weight-based column width engine for deterministic
  * width computation: sum(widths) + filler === availableWidth.
+ *
+ * Available width is measured directly from the DOM transition-wrapper
+ * element — no hardcoded constants for row padding, drag handles, etc.
  */
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
@@ -27,9 +27,12 @@ export interface UseTableColumnsOptions {
   visibleColumns: Ref<ColumnInstance[]> | ComputedRef<ColumnInstance[]>;
   resizableColumns?: boolean;
   reorderableColumns?: boolean;
-  hasSelectionColumn?: ComputedRef<boolean>;
-  isSelectionViaColumn?: ComputedRef<boolean>;
   fitMode?: TableFitMode;
+  /**
+   * Measures the pixel width available for data columns directly from DOM.
+   * Should return the transition-wrapper width (already excludes row padding,
+   * drag handles, selection cells, etc.) or 0 if not yet rendered.
+   */
   getAvailableWidth: () => number;
 }
 
@@ -60,7 +63,6 @@ export interface UseTableColumnsReturn {
   getCellStyle: (col: VcColumnProps) => object | undefined;
   getSortField: (col: VcColumnProps) => string;
   getFillerWidth: () => number;
-  getSpecialColumnsWidth: () => number;
 }
 
 export function useTableColumns(options: UseTableColumnsOptions): UseTableColumnsReturn {
@@ -92,44 +94,16 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     return reorderableColumns ?? false;
   };
 
-  /**
-   * Total fixed-width "chrome" in each row that is NOT available for data columns.
-   * Includes: row padding, special VcColumn widths, implicit selection cell, drag handle + gap.
-   */
-  const getSpecialColumnsWidth = (): number => {
-    // Row horizontal padding: tw-px-4 = 16px × 2 = 32px (TableRow.vue)
-    let total = 32;
-
-    // Implicit selection cell (rendered by DataTableHeader/DataTableRow, not a VcColumn)
-    if (options.hasSelectionColumn?.value && !options.isSelectionViaColumn?.value) {
-      total += 40;
-    }
-
-    for (const col of visibleColumns.value) {
-      if (col.props.selectionMode) total += 40;
-      else if (col.props.rowReorder) {
-        // rowReorder column (50px) + row gap between drag handle and transition wrapper (8px)
-        total += 50 + 8;
-      } else if (col.props.expander) total += 50;
-      else if (col.props.rowEditor) total += 100;
-    }
-    return total;
-  };
-
   const getEffectiveColumnWidth = (col: VcColumnProps): string | undefined => {
-    // Special columns — always have fixed width
     if (col.selectionMode) return "40px";
     if (col.rowReorder || col.expander) return "50px";
     if (col.rowEditor) return "100px";
-    // Read from engine output
     const w = engineOutput.value.widths[col.id];
     if (w !== undefined && w > 0) return `${w}px`;
     return undefined;
   };
 
-  const getFillerWidth = (): number => {
-    return engineOutput.value.fillerWidth;
-  };
+  const getFillerWidth = (): number => engineOutput.value.fillerWidth;
 
   const getHeaderAlign = (col: VcColumnProps): "left" | "center" | "right" | undefined => {
     if (col.selectionMode || col.rowReorder || col.expander || col.rowEditor) return "center";
@@ -175,7 +149,6 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   // ============================================================================
 
   const setHeaderRef = (id: string, el: unknown) => {
-    // Handle both component instances and direct DOM elements
     const domEl =
       el && typeof el === "object" && "$el" in el ? (el as { $el: HTMLElement }).$el : (el as HTMLElement | null);
     if (domEl) headerRefs.set(id, domEl);
@@ -187,10 +160,12 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   // ============================================================================
 
   const recompute = () => {
-    const availableWidth = options.getAvailableWidth() - getSpecialColumnsWidth();
+    const availableWidth = options.getAvailableWidth();
     if (availableWidth <= 0) return;
 
-    const visibleRegular = orderedVisibleColumns.value.filter((c) => !isSpecialColumn(c.props)).map((c) => c.props.id);
+    const visibleRegular = orderedVisibleColumns.value
+      .filter((c) => !isSpecialColumn(c.props))
+      .map((c) => c.props.id);
 
     const cols = visibleRegular
       .filter((id) => columnState.value.specs[id])
@@ -209,7 +184,6 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   // ============================================================================
 
   const orderedVisibleColumns = computed<ColumnInstance[]>(() => {
-    // Filter out any undefined/null columns to prevent runtime errors
     const validColumns = visibleColumns.value.filter(
       (col): col is ColumnInstance => col != null && col.props != null && col.props.id != null,
     );
@@ -238,13 +212,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     return resizableCols.length > 0 && resizableCols[resizableCols.length - 1].props.id === col.id;
   };
 
-  const totalColumns = computed(() => {
-    let count = visibleColumns.value.length;
-    if (options.hasSelectionColumn?.value && !options.isSelectionViaColumn?.value) {
-      count += 1;
-    }
-    return count;
-  });
+  const totalColumns = computed(() => visibleColumns.value.length);
 
   // ============================================================================
   // Initialization from VcColumn props
@@ -252,21 +220,18 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
 
   const initFromProps = (availableWidth: number) => {
     const regularCols = visibleColumns.value.filter((c) => !isSpecialColumn(c.props));
-    const specialWidth = getSpecialColumnsWidth();
-    const netAvailable = availableWidth - specialWidth;
-
     const parsed = regularCols.map((col) => ({
       id: col.props.id,
-      parsed: parseColumnWidth(col.props.width, netAvailable > 0 ? netAvailable : 0),
+      parsed: parseColumnWidth(col.props.width, availableWidth > 0 ? availableWidth : 0),
     }));
 
-    const weights = buildInitialWeights(parsed, netAvailable > 0 ? netAvailable : 0);
+    const weights = buildInitialWeights(parsed, availableWidth > 0 ? availableWidth : 0);
     const order = regularCols.map((c) => c.props.id);
     const specs: Record<string, ColumnSpec> = {};
 
     for (const col of regularCols) {
-      const minParsed = parseColumnWidth(col.props.minWidth, netAvailable > 0 ? netAvailable : 0);
-      const maxParsed = parseColumnWidth(col.props.maxWidth, netAvailable > 0 ? netAvailable : 0);
+      const minParsed = parseColumnWidth(col.props.minWidth, availableWidth > 0 ? availableWidth : 0);
+      const maxParsed = parseColumnWidth(col.props.maxWidth, availableWidth > 0 ? availableWidth : 0);
       specs[col.props.id] = {
         weight: weights[col.props.id] ?? 1 / order.length,
         minPx: minParsed.desiredPx ?? 40,
@@ -281,82 +246,100 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   // Watch for column changes
   // ============================================================================
 
-  // Track visible column IDs to detect show/hide changes
-  let prevVisibleIds: string[] = [];
+  let prevVisibleIdSet = new Set<string>();
 
   watch(
     visibleColumns,
     () => {
       const regularCols = visibleColumns.value.filter((c) => !isSpecialColumn(c.props));
-      const currentIds = new Set(columnState.value.order);
       const newIds = regularCols.map((c) => c.props.id);
+      const newIdSet = new Set(newIds);
+      const trackedIds = new Set(columnState.value.order);
 
-      // Detect if the visible set actually changed
-      const prevSet = new Set(prevVisibleIds);
-      const visibleSetChanged =
-        newIds.length !== prevVisibleIds.length || newIds.some((id) => !prevSet.has(id));
+      // Detect genuinely new columns (never seen before)
+      const brandNewIds = newIds.filter((id) => !trackedIds.has(id));
 
-      // Check if genuinely new columns appeared (not yet in order)
-      const hasNewColumns = !newIds.every((id) => currentIds.has(id)) || columnState.value.order.length === 0;
+      // Detect columns that just became visible (were tracked but hidden)
+      const justShownIds = newIds.filter((id) => trackedIds.has(id) && !prevVisibleIdSet.has(id));
 
-      if (hasNewColumns) {
+      // Detect columns that just became hidden
+      const justHiddenIds = [...prevVisibleIdSet].filter((id) => !newIdSet.has(id));
+
+      const visibleSetChanged = brandNewIds.length > 0 || justShownIds.length > 0 || justHiddenIds.length > 0;
+
+      if (brandNewIds.length > 0 || columnState.value.order.length === 0) {
+        // Brand-new columns: add to order, give them average weight of existing visible
         const state = { ...columnState.value };
         state.order = [...state.order];
         state.specs = { ...state.specs };
 
+        const existingVisible = newIds.filter((id) => state.specs[id] && !brandNewIds.includes(id));
+        const avgWeight =
+          existingVisible.length > 0
+            ? existingVisible.reduce((s, id) => s + state.specs[id].weight, 0) / existingVisible.length
+            : 1 / newIds.length;
+
         for (const col of regularCols) {
-          if (!currentIds.has(col.props.id)) {
+          if (!trackedIds.has(col.props.id)) {
             state.order.push(col.props.id);
-            state.specs[col.props.id] = {
-              weight: 1 / newIds.length, // fair initial share
-              minPx: 40,
-              maxPx: Infinity,
-            };
+            state.specs[col.props.id] = { weight: avgWeight, minPx: 40, maxPx: Infinity };
           }
         }
 
-        // Normalize ALL visible columns so new ones get fair share
+        // Normalize visible columns
         const visibleRegular = newIds.filter((id) => state.specs[id]);
         normalizeWeights(state.specs, visibleRegular);
         columnState.value = state;
-      } else if (visibleSetChanged) {
-        // Visible set changed (show/hide toggle). Redistribute weights equally
-        // among ALL visible columns so they share space fairly.
+      } else if (justShownIds.length > 0) {
+        // Previously hidden columns became visible. Give them average weight
+        // of currently visible columns, then renormalize. This preserves
+        // proportions among existing columns while giving new ones fair space.
+        const state = { ...columnState.value };
+        state.specs = { ...state.specs };
+
+        const existingVisible = newIds.filter((id) => state.specs[id] && !justShownIds.includes(id));
+        const avgWeight =
+          existingVisible.length > 0
+            ? existingVisible.reduce((s, id) => s + state.specs[id].weight, 0) / existingVisible.length
+            : 1 / newIds.length;
+
+        for (const id of justShownIds) {
+          if (state.specs[id]) {
+            state.specs[id] = { ...state.specs[id], weight: avgWeight };
+          }
+        }
+
+        const visibleRegular = newIds.filter((id) => state.specs[id]);
+        normalizeWeights(state.specs, visibleRegular);
+        columnState.value = state;
+      } else if (justHiddenIds.length > 0) {
+        // Columns were hidden. Renormalize remaining visible so they fill space.
         const state = { ...columnState.value };
         state.specs = { ...state.specs };
         const visibleRegular = newIds.filter((id) => state.specs[id]);
-        const equalWeight = visibleRegular.length > 0 ? 1 / visibleRegular.length : 0;
-        for (const id of visibleRegular) {
-          state.specs[id] = { ...state.specs[id], weight: equalWeight };
-        }
+        normalizeWeights(state.specs, visibleRegular);
         columnState.value = state;
       }
 
-      // Update prev tracking AFTER all branches used it
-      prevVisibleIds = [...newIds];
+      prevVisibleIdSet = newIdSet;
 
-      // Always recompute engine output when visible columns change
-      recompute();
+      // Always recompute when visible columns change
+      if (visibleSetChanged) {
+        recompute();
+      }
     },
     { immediate: true },
   );
 
   return {
-    // State
     columnState,
     engineOutput,
     headerRefs,
-
-    // Methods
     setHeaderRef,
     recompute,
     initFromProps,
-
-    // Computed
     orderedVisibleColumns,
     totalColumns,
-
-    // Helpers
     isSpecialColumn,
     isColumnResizable,
     isColumnReorderable,
@@ -368,6 +351,5 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     getCellStyle,
     getSortField,
     getFillerWidth,
-    getSpecialColumnsWidth,
   };
 }

@@ -150,7 +150,10 @@ const emit = defineEmits<{
 }>();
 
 const tableContext = inject(TableContextKey, null);
-const fillerWidth = inject(FillerWidthKey, computed(() => 0));
+const fillerWidth = inject(
+  FillerWidthKey,
+  computed(() => 0),
+);
 const isColumnReordering = inject(IsColumnReorderingKey, ref(false));
 const isDragging = ref(false);
 

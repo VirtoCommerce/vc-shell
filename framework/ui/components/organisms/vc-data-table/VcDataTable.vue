@@ -990,7 +990,10 @@ provide(FilterContextKey, {
 });
 
 // Provide engine-controlled filler width for TableRow
-provide(FillerWidthKey, computed(() => cols.getFillerWidth()));
+provide(
+  FillerWidthKey,
+  computed(() => cols.getFillerWidth()),
+);
 
 // Provide column reordering state so TableRow enables FLIP animation only during drag
 provide(IsColumnReorderingKey, isColumnReordering);

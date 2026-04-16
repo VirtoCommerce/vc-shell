@@ -1,91 +1,58 @@
-import { ref, watch, Ref, onBeforeUnmount } from "vue";
-
-export interface ResizableColumn {
-  id: string;
-  width: number;
-}
+import { ref, watch, type Ref, onBeforeUnmount } from "vue";
+import type { ColumnState, ColumnSpec, TableFitMode } from "../types";
+import { computeColumnWidths, normalizeWeights, type EngineOutput } from "./useColumnWidthEngine";
 
 export interface UseTableColumnsResizeOptions {
-  columns: Ref<ResizableColumn[]>;
+  columnState: Ref<ColumnState>;
+  engineOutput: Ref<EngineOutput>;
+  recompute: () => void;
+  getAvailableWidth: () => number;
+  getSpecialColumnsWidth: () => number;
   minColumnWidth?: number;
+  fitMode?: TableFitMode;
   getColumnElement?: (id: string) => HTMLElement | null;
-  onResizeEnd?: (columns: ResizableColumn[]) => void;
+  onResizeEnd?: () => void;
   containerEl?: Ref<HTMLElement | null>;
 }
 
 /**
- * Column resizing via Vue reactivity.
+ * Column resizing via weight manipulation.
  *
- * Widths in pixels. Growing a column shrinks right neighbors equally.
- * On drag start all columns are pinned to DOM widths to prevent flex drift.
- * Container resize (blade expand/collapse) scales columns proportionally
- * after layout has settled (convergence detection, not a hardcoded timer).
+ * On drag start, snapshots current weights.
+ * During drag, converts pixel delta to weight delta and redistributes
+ * among right neighbors. On end, commits to columnState.
+ * Container resize simply calls recompute() after debounce.
  */
 export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
-  const { columns, minColumnWidth = 40, getColumnElement, onResizeEnd, containerEl } = options;
+  const {
+    columnState,
+    engineOutput,
+    recompute,
+    getAvailableWidth,
+    getSpecialColumnsWidth,
+    minColumnWidth = 40,
+    fitMode = "gap",
+    onResizeEnd,
+    containerEl,
+  } = options;
 
   const isResizing = ref(false);
 
-  let resizingColumnIndex = -1;
   let startX = 0;
-  let initialWidths: number[] = [];
   let rafId = 0;
-  let maxGrowth = 0;
-  let rightNeighborIndices: number[] = [];
-
-  const measureAllColumnWidths = (): number[] => {
-    return columns.value.map((col) => {
-      if (getColumnElement) {
-        const el = getColumnElement(col.id);
-        if (el) return el.getBoundingClientRect().width;
-      }
-      return col.width || minColumnWidth;
-    });
-  };
-
-  // Gap between the last rendered column's right edge and the row wrapper's right edge.
-  // NOTE: reads pre-pin DOM. After Vue re-renders with pinned widths, filler may differ
-  // slightly when flex-grow columns existed — maxGrowth will be underestimated by that margin.
-  const measureFillerSpace = (): number => {
-    if (!getColumnElement) return 0;
-    for (let i = columns.value.length - 1; i >= 0; i--) {
-      const el = getColumnElement(columns.value[i].id);
-      if (el?.parentElement) {
-        const parentRight = el.parentElement.getBoundingClientRect().right;
-        const colRight = el.getBoundingClientRect().right;
-        return Math.max(0, Math.floor(parentRight - colRight));
-      }
-    }
-    return 0;
-  };
+  let initialSpecs: Record<string, ColumnSpec> = {};
+  let draggedId = "";
+  let rightNeighborIds: string[] = [];
 
   const handleResizeStart = (columnId: string, event: MouseEvent) => {
-    const columnIndex = columns.value.findIndex((c) => c.id === columnId);
-    if (columnIndex === -1) return;
-
-    resizingColumnIndex = columnIndex;
-    initialWidths = measureAllColumnWidths();
+    draggedId = columnId;
     startX = event.pageX;
+    initialSpecs = JSON.parse(JSON.stringify(columnState.value.specs));
 
-    // Measure filler before pinning — DOM still reflects actual flex layout
-    const filler = measureFillerSpace();
-
-    // Pin all columns to DOM widths so flex doesn't redistribute during drag
-    columns.value.forEach((col, i) => {
-      col.width = initialWidths[i];
-    });
-
-    rightNeighborIndices = [];
-    if (getColumnElement) {
-      for (let i = columnIndex + 1; i < columns.value.length; i++) {
-        if (getColumnElement(columns.value[i].id)) {
-          rightNeighborIndices.push(i);
-        }
-      }
-    }
-
-    const totalGiveable = rightNeighborIndices.reduce((sum, idx) => sum + (initialWidths[idx] - minColumnWidth), 0);
-    maxGrowth = totalGiveable + filler;
+    // Find right neighbors in order
+    const order = columnState.value.order;
+    const idx = order.indexOf(columnId);
+    rightNeighborIds = idx >= 0 ? order.slice(idx + 1).filter((id) => initialSpecs[id]) : [];
 
     isResizing.value = true;
     document.body.style.cursor = "col-resize";
@@ -95,48 +62,38 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   };
 
   const applyResize = (rawDelta: number) => {
-    const initialWidth = initialWidths[resizingColumnIndex];
-    const minDelta = minColumnWidth - initialWidth;
-    const clampedDelta = Math.max(minDelta, Math.min(rawDelta, maxGrowth));
+    const available = getAvailableWidth() - getSpecialColumnsWidth();
+    if (available <= 0) return;
 
-    columns.value[resizingColumnIndex].width = Math.round(initialWidth + clampedDelta);
+    const deltaWeight = rawDelta / available;
+    const newSpecs = JSON.parse(JSON.stringify(initialSpecs)) as Record<string, ColumnSpec>;
 
-    // Distribute inverse delta equally across right neighbors
-    if (rightNeighborIndices.length > 0) {
-      let remaining = clampedDelta;
-      const active = [...rightNeighborIndices];
+    // Apply delta to dragged column
+    newSpecs[draggedId].weight = Math.max(0.01, initialSpecs[draggedId].weight + deltaWeight);
 
-      for (const idx of rightNeighborIndices) {
-        columns.value[idx].width = initialWidths[idx];
-      }
-
-      while (Math.abs(remaining) > 0.5 && active.length > 0) {
-        const share = remaining / active.length;
-        const next: number[] = [];
-        let applied = 0;
-
-        for (const idx of active) {
-          const current = columns.value[idx].width;
-          const newWidth = Math.max(minColumnWidth, Math.round(current - share));
-          const actualChange = current - newWidth;
-          applied += actualChange;
-          columns.value[idx].width = newWidth;
-
-          if (newWidth > minColumnWidth || share < 0) {
-            next.push(idx);
-          }
-        }
-
-        remaining -= applied;
-        if (Math.abs(applied) < 0.5) break;
-        active.length = 0;
-        active.push(...next);
+    // Compensate from right neighbors proportionally
+    const totalRightWeight = rightNeighborIds.reduce((s, id) => s + (initialSpecs[id]?.weight ?? 0), 0);
+    if (totalRightWeight > 0) {
+      for (const id of rightNeighborIds) {
+        const share = initialSpecs[id].weight / totalRightWeight;
+        newSpecs[id].weight = Math.max(0.01, initialSpecs[id].weight - deltaWeight * share);
       }
     }
+
+    // Normalize visible weights
+    const visibleIds = columnState.value.order.filter((id) => newSpecs[id]);
+    normalizeWeights(newSpecs, visibleIds);
+
+    // Compute and update
+    const cols = visibleIds.map((id) => ({ id, spec: newSpecs[id] }));
+    engineOutput.value = computeColumnWidths({ availableWidth: available, columns: cols, mode: fitMode });
+
+    // Update specs
+    columnState.value = { ...columnState.value, specs: newSpecs };
   };
 
   const handleResizeMove = (event: MouseEvent) => {
-    if (!isResizing.value || resizingColumnIndex === -1) return;
+    if (!isResizing.value || !draggedId) return;
     const rawDelta = event.pageX - startX;
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
@@ -152,117 +109,53 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
       rafId = 0;
     }
     isResizing.value = false;
-    resizingColumnIndex = -1;
-    initialWidths = [];
+    draggedId = "";
+    initialSpecs = {};
+    rightNeighborIds = [];
     document.body.style.cursor = "";
     document.body.style.userSelect = "";
     document.removeEventListener("mousemove", handleResizeMove);
     document.removeEventListener("mouseup", handleResizeEnd);
-    onResizeEnd?.(columns.value);
+    onResizeEnd?.();
   };
 
   const getResizeHeadProps = (columnId: string, index: number) => ({
     resizable: true,
     columnId,
-    isLastResizable: index === columns.value.length - 1,
+    isLastResizable: index === columnState.value.order.length - 1,
     onResizeStart: (id: string | undefined, e: MouseEvent) => {
       if (id) handleResizeStart(id, e);
     },
   });
 
-  // --- Container ResizeObserver: proportional scaling on container resize ---
+  // --- Container ResizeObserver: recompute on container resize ---
 
-  let lastContainerWidth = 0;
   let resizeObserver: ResizeObserver | null = null;
-  // Scaling disabled until container width stabilizes after mount/transition.
-  // Uses convergence detection: 100ms with no resize events = settled.
   let settled = false;
   let settleDebounce: ReturnType<typeof setTimeout> | undefined;
-
-  const onSettled = () => {
-    settled = true;
-    if (!containerEl?.value) return;
-    const w = containerEl.value.clientWidth;
-    if (w <= 0) {
-      lastContainerWidth = w;
-      return;
-    }
-
-    // Column wider than container = corrupt (stale localStorage from a past bug)
-    for (const col of columns.value) {
-      if (col.width > w) col.width = 0;
-    }
-
-    // Scale columns restored from a different-width container (e.g. two-blade → one-blade).
-    // Only when ALL columns have explicit pixel widths (happens after user resize + persist).
-    // Flex columns (width=0) fill space on their own and don't need scaling.
-    const withWidth = columns.value.filter((c) => c.width > 0);
-    if (withWidth.length > 0 && withWidth.length === columns.value.length) {
-      const totalWidth = withWidth.reduce((s, c) => s + c.width, 0);
-      const ratio = w / totalWidth;
-      if (ratio > 1.5 || ratio < 0.67) {
-        for (const col of withWidth) {
-          col.width = Math.max(minColumnWidth, Math.round(col.width * ratio));
-        }
-      }
-    }
-
-    lastContainerWidth = w;
-  };
 
   const setupResizeObserver = () => {
     if (!containerEl?.value || typeof ResizeObserver === "undefined") return;
 
-    lastContainerWidth = 0;
     settled = false;
     if (settleDebounce !== undefined) {
       clearTimeout(settleDebounce);
       settleDebounce = undefined;
     }
 
-    resizeObserver = new ResizeObserver((entries) => {
+    resizeObserver = new ResizeObserver(() => {
       if (isResizing.value) return;
-      const newWidth = entries[0].contentRect.width;
-      if (newWidth < 50) return; // mid-transition noise
-
       if (!settled) {
-        lastContainerWidth = newWidth;
-        // Reset debounce — width still changing (animation in progress)
         if (settleDebounce !== undefined) clearTimeout(settleDebounce);
         settleDebounce = setTimeout(() => {
           settleDebounce = undefined;
-          onSettled();
+          settled = true;
+          recompute();
         }, 100);
         return;
       }
-
-      if (newWidth === lastContainerWidth) return;
-
-      if (lastContainerWidth < 50) {
-        lastContainerWidth = newWidth;
-        return;
-      }
-
-      const hasExplicitWidths = columns.value.some((col) => col.width > 0);
-      if (!hasExplicitWidths) {
-        lastContainerWidth = newWidth;
-        return;
-      }
-
-      const ratio = newWidth / lastContainerWidth;
-      if (ratio > 3 || ratio < 1 / 3) {
-        lastContainerWidth = newWidth;
-        return;
-      }
-
-      columns.value.forEach((col) => {
-        if (col.width > 0) {
-          col.width = Math.max(minColumnWidth, Math.round(col.width * ratio));
-        }
-      });
-      lastContainerWidth = newWidth;
+      recompute();
     });
-
     resizeObserver.observe(containerEl.value);
   };
 

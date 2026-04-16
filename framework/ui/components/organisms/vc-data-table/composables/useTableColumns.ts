@@ -3,10 +3,20 @@
  *
  * Extracts column ordering, width management, and helper functions
  * from VcDataTable.vue to reduce main component size.
+ *
+ * Uses the weight-based column width engine for deterministic
+ * width computation: sum(widths) + filler === availableWidth.
  */
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
-import type { VcColumnProps } from "@ui/components/organisms/vc-data-table/types";
+import type { VcColumnProps, ColumnState, ColumnSpec, TableFitMode } from "@ui/components/organisms/vc-data-table/types";
+import {
+  computeColumnWidths,
+  parseColumnWidth,
+  buildInitialWeights,
+  normalizeWeights,
+  type EngineOutput,
+} from "./useColumnWidthEngine";
 
 export interface UseTableColumnsOptions {
   visibleColumns: Ref<ColumnInstance[]> | ComputedRef<ColumnInstance[]>;
@@ -14,15 +24,20 @@ export interface UseTableColumnsOptions {
   reorderableColumns?: boolean;
   hasSelectionColumn?: ComputedRef<boolean>;
   isSelectionViaColumn?: ComputedRef<boolean>;
+  fitMode?: TableFitMode;
+  getAvailableWidth: () => number;
 }
 
 export interface UseTableColumnsReturn {
   // State
-  columnWidths: Ref<{ id: string; width: number }[]>;
+  columnState: Ref<ColumnState>;
+  engineOutput: Ref<EngineOutput>;
   headerRefs: Map<string, HTMLElement>;
 
   // Methods
   setHeaderRef: (id: string, el: unknown) => void;
+  recompute: () => void;
+  initFromProps: (availableWidth: number) => void;
 
   // Computed
   orderedVisibleColumns: ComputedRef<ColumnInstance[]>;
@@ -39,8 +54,8 @@ export interface UseTableColumnsReturn {
   getHeaderStyle: (col: VcColumnProps) => object | undefined;
   getCellStyle: (col: VcColumnProps) => object | undefined;
   getSortField: (col: VcColumnProps) => string;
-  /** Whether any visible column has no explicit width (i.e., uses flex-grow) */
-  hasFlexColumns: ComputedRef<boolean>;
+  getFillerWidth: () => number;
+  getSpecialColumnsWidth: () => number;
 }
 
 export function useTableColumns(options: UseTableColumnsOptions): UseTableColumnsReturn {
@@ -50,7 +65,8 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   // State
   // ============================================================================
 
-  const columnWidths = ref<{ id: string; width: number }[]>([]);
+  const columnState = ref<ColumnState>({ order: [], specs: {} });
+  const engineOutput = ref<EngineOutput>({ widths: {}, fillerWidth: 0 });
   const headerRefs = new Map<string, HTMLElement>();
 
   // ============================================================================
@@ -71,18 +87,29 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     return reorderableColumns ?? false;
   };
 
+  const getSpecialColumnsWidth = (): number => {
+    let total = 0;
+    for (const col of visibleColumns.value) {
+      if (col.props.selectionMode) total += 40;
+      else if (col.props.rowReorder || col.props.expander) total += 50;
+      else if (col.props.rowEditor) total += 100;
+    }
+    return total;
+  };
+
   const getEffectiveColumnWidth = (col: VcColumnProps): string | undefined => {
     // Special columns — always have fixed width
     if (col.selectionMode) return "40px";
     if (col.rowReorder || col.expander) return "50px";
     if (col.rowEditor) return "100px";
-    // User-resized width takes priority
-    const resized = columnWidths.value.find((c) => c.id === col.id);
-    if (resized && resized.width > 0) return `${resized.width}px`;
-    // Developer-set width
-    if (col.width) return typeof col.width === "number" ? `${col.width}px` : col.width;
-    // No width → undefined, flex layout will make it grow to fill available space
+    // Read from engine output
+    const w = engineOutput.value.widths[col.id];
+    if (w !== undefined && w > 0) return `${w}px`;
     return undefined;
+  };
+
+  const getFillerWidth = (): number => {
+    return engineOutput.value.fillerWidth;
   };
 
   const getHeaderAlign = (col: VcColumnProps): "left" | "center" | "right" | undefined => {
@@ -137,6 +164,30 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   };
 
   // ============================================================================
+  // Engine recomputation
+  // ============================================================================
+
+  const recompute = () => {
+    const availableWidth = options.getAvailableWidth() - getSpecialColumnsWidth();
+    if (availableWidth <= 0) return;
+
+    const visibleRegular = orderedVisibleColumns.value
+      .filter((c) => !isSpecialColumn(c.props))
+      .map((c) => c.props.id);
+
+    const cols = visibleRegular
+      .filter((id) => columnState.value.specs[id])
+      .map((id) => ({ id, spec: columnState.value.specs[id] }));
+
+    if (cols.length === 0) return;
+    engineOutput.value = computeColumnWidths({
+      availableWidth,
+      columns: cols,
+      mode: options.fitMode ?? "gap",
+    });
+  };
+
+  // ============================================================================
   // Column Ordering
   // ============================================================================
 
@@ -146,11 +197,11 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
       (col): col is ColumnInstance => col != null && col.props != null && col.props.id != null,
     );
 
-    if (!reorderableColumns || columnWidths.value.length === 0) {
+    if (!reorderableColumns || columnState.value.order.length === 0) {
       return validColumns;
     }
 
-    const orderMap = new Map(columnWidths.value.map((c, i) => [c.id, i]));
+    const orderMap = new Map(columnState.value.order.map((id, i) => [id, i]));
     const specialCols = validColumns.filter((col) => isSpecialColumn(col.props));
     const dataCols = validColumns
       .filter((col) => !isSpecialColumn(col.props))
@@ -179,86 +230,91 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   });
 
   // ============================================================================
+  // Initialization from VcColumn props
+  // ============================================================================
+
+  const initFromProps = (availableWidth: number) => {
+    const regularCols = visibleColumns.value.filter((c) => !isSpecialColumn(c.props));
+    const specialWidth = getSpecialColumnsWidth();
+    const netAvailable = availableWidth - specialWidth;
+
+    const parsed = regularCols.map((col) => ({
+      id: col.props.id,
+      parsed: parseColumnWidth(col.props.width, netAvailable > 0 ? netAvailable : 0),
+    }));
+
+    const weights = buildInitialWeights(parsed, netAvailable > 0 ? netAvailable : 0);
+    const order = regularCols.map((c) => c.props.id);
+    const specs: Record<string, ColumnSpec> = {};
+
+    for (const col of regularCols) {
+      const minParsed = parseColumnWidth(col.props.minWidth, netAvailable > 0 ? netAvailable : 0);
+      const maxParsed = parseColumnWidth(col.props.maxWidth, netAvailable > 0 ? netAvailable : 0);
+      specs[col.props.id] = {
+        weight: weights[col.props.id] ?? 1 / order.length,
+        minPx: minParsed.desiredPx ?? 40,
+        maxPx: maxParsed.desiredPx ?? Infinity,
+      };
+    }
+
+    columnState.value = { order, specs };
+  };
+
+  // ============================================================================
   // Watch for column changes
   // ============================================================================
 
   watch(
     visibleColumns,
-    (cols) => {
-      const newWidths = cols
-        .filter((col) => !isSpecialColumn(col.props))
-        .map((col) => ({
-          id: col.props.id,
-          // Only store absolute pixel values; percentage/other relative widths stay 0
-          // so getEffectiveColumnWidth falls through to the original col.width string.
-          width: col.props.width
-            ? typeof col.props.width === "number"
-              ? col.props.width
-              : typeof col.props.width === "string" && /^\d+(\.\d+)?(px)?$/.test(col.props.width.trim())
-                ? parseInt(col.props.width) || 0
-                : 0
-            : 0,
-        }));
+    () => {
+      const regularCols = visibleColumns.value.filter((c) => !isSpecialColumn(c.props));
+      const currentIds = new Set(columnState.value.order);
+      const newIds = regularCols.map((c) => c.props.id);
 
-      // Guard: skip if all visible columns are already tracked in columnWidths.
-      // Since we never remove entries (hidden columns preserve their state),
-      // the only meaningful change is when a genuinely new column appears.
-      const current = columnWidths.value;
-      const currentIds = new Set(current.map((c) => c.id));
-
-      if (newWidths.every((nw) => currentIds.has(nw.id))) {
-        // All visible columns already tracked — nothing to do
-        return;
+      if (newIds.every((id) => currentIds.has(id)) && columnState.value.order.length > 0) {
+        return; // All visible columns already tracked
       }
 
-      // Structural change: columns added or removed.
-      // Keep ALL existing entries — columns may be temporarily hidden
-      // (showAllColumns=false during blade collapse, or hidden via hiddenColumnIds)
-      // and their widths/order must be preserved for when they become visible again.
-      if (current.length > 0) {
-        const currentMap = new Map(current.map((c) => [c.id, c.width]));
+      // Append new columns with lazy-init weight
+      const state = { ...columnState.value };
+      state.order = [...state.order];
+      state.specs = { ...state.specs };
 
-        // Only append genuinely new columns (not already tracked)
-        let changed = false;
-        const merged = [...current];
-        for (const nw of newWidths) {
-          if (!currentMap.has(nw.id)) {
-            merged.push(nw);
-            changed = true;
-          }
+      for (const col of regularCols) {
+        if (!currentIds.has(col.props.id)) {
+          state.order.push(col.props.id);
+          state.specs[col.props.id] = {
+            weight: 0, // will be normalized
+            minPx: 40,
+            maxPx: Infinity,
+          };
         }
-
-        if (changed) {
-          columnWidths.value = merged;
-        }
-      } else {
-        // First initialization — no existing state
-        columnWidths.value = newWidths;
       }
+
+      // Normalize visible weights
+      const visibleRegular = newIds.filter((id) => state.specs[id]);
+      normalizeWeights(state.specs, visibleRegular);
+
+      columnState.value = state;
+      recompute();
     },
     { immediate: true },
   );
 
-  // Whether any visible data column has no explicit width (flex-grow columns exist)
-  const hasFlexColumns = computed(() => {
-    return orderedVisibleColumns.value.some(
-      (col) => !isSpecialColumn(col.props) && getEffectiveColumnWidth(col.props) === undefined,
-    );
-  });
-
   return {
     // State
-    columnWidths,
-
+    columnState,
+    engineOutput,
     headerRefs,
 
     // Methods
     setHeaderRef,
+    recompute,
+    initFromProps,
 
     // Computed
     orderedVisibleColumns,
     totalColumns,
-    hasFlexColumns,
 
     // Helpers
     isSpecialColumn,
@@ -271,5 +327,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     getHeaderStyle,
     getCellStyle,
     getSortField,
+    getFillerWidth,
+    getSpecialColumnsWidth,
   };
 }

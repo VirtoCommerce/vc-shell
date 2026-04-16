@@ -140,10 +140,9 @@ const cellStyle = computed(() => ({
   minWidth: props.minWidth || undefined,
   maxWidth: props.maxWidth,
   textAlign: props.align,
-  // Columns with width: fixed basis, no grow, can shrink when crowded.
-  // The row's ::after filler absorbs any leftover space instead of flex-grow.
-  // Columns without width share remaining space equally from 0.
-  flex: props.width ? "0 1 auto" : "1 1 0",
+  // Engine provides exact pixel widths — use fixed flex basis, no grow/shrink.
+  // Columns without width (special columns during initial render) get no flex override.
+  flex: props.width ? `0 0 ${props.width}` : undefined,
 }));
 
 const handleSort = (event: Event) => {

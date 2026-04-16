@@ -39,8 +39,9 @@ import type {
   SortMeta,
   MobileSwipeAction,
   VcDataTableExtendedProps,
+  TableFitMode,
+  PersistedStateV2,
 } from "@ui/components/organisms/vc-data-table/types";
-import type { DataTablePersistedState } from "@ui/components/organisms/vc-data-table/composables";
 
 // ============================================================================
 // Orchestrator input/output interfaces
@@ -53,7 +54,7 @@ import type { DataTablePersistedState } from "@ui/components/organisms/vc-data-t
  * correctly tracks changes throughout the component's lifetime.
  */
 export interface VcDataTableOrchestratorOptions<T extends Record<string, unknown>> {
-  props: VcDataTableExtendedProps<T>;
+  props: VcDataTableExtendedProps<T> & { fitMode?: TableFitMode };
   emit: VcDataTableOrchestratorEmit<T>;
   visibleColumns: ComputedRef<ColumnInstance[]>;
   declaredColumns: ComputedRef<ColumnInstance[]>;
@@ -104,8 +105,8 @@ export type VcDataTableOrchestratorEmit<T> = {
   (event: "row-reorder", payload: { dragIndex: number; dropIndex: number; value: T[] }): void;
   (event: "column-resize-end", payload: { columns: { id: string; width: number }[] }): void;
   (event: "column-reorder", payload: { columns: { id: string; [key: string]: unknown }[] }): void;
-  (event: "state-save", state: DataTablePersistedState): void;
-  (event: "state-restore", state: DataTablePersistedState): void;
+  (event: "state-save", state: PersistedStateV2): void;
+  (event: "state-restore", state: PersistedStateV2): void;
   (event: "update:expandedRows", value: T[]): void;
   (event: "row-expand", payload: { data: T; originalEvent: Event }): void;
   (event: "row-collapse", payload: { data: T; originalEvent: Event }): void;
@@ -414,6 +415,8 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     reorderableColumns: props.reorderableColumns ?? true,
     hasSelectionColumn,
     isSelectionViaColumn,
+    fitMode: props.fitMode ?? "gap",
+    getAvailableWidth: () => tableContainerRef.value?.clientWidth ?? 0,
   });
 
   // ============================================================================
@@ -466,9 +469,10 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   const statePersistence = useDataTableState({
     stateKey: toRef(props, "stateKey") as Ref<string | undefined>,
     stateStorage: computed(() => props.stateStorage ?? "local"),
-    columnWidths: cols.columnWidths,
+    columnState: cols.columnState,
     hiddenColumnIds,
     shownColumnIds: shownDataDiscoveredColumnIds,
+    getAvailableWidth: () => tableContainerRef.value?.clientWidth ?? 0,
     onStateSave: (state) => emit("state-save", state),
     onStateRestore: (state) => emit("state-restore", state),
   });
@@ -699,10 +703,15 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   // ============================================================================
 
   const { handleResizeStart } = useTableColumnsResize({
-    columns: cols.columnWidths,
+    columnState: cols.columnState,
+    engineOutput: cols.engineOutput,
+    recompute: cols.recompute,
+    getAvailableWidth: () => tableContainerRef.value?.clientWidth ?? 0,
+    getSpecialColumnsWidth: cols.getSpecialColumnsWidth,
     minColumnWidth: 40,
+    fitMode: props.fitMode ?? "gap",
     getColumnElement: (id) => cols.headerRefs.get(id) ?? null,
-    onResizeEnd: (colsData) => emit("column-resize-end", { columns: colsData }),
+    onResizeEnd: () => emit("column-resize-end", { columns: [] }),
     containerEl: tableContainerRef,
   });
 
@@ -712,8 +721,8 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     handleDragOver: handleColumnDragOver,
     handleDrop: handleColumnDrop,
   } = useTableColumnsReorder({
-    columns: cols.columnWidths,
-    onReorderEnd: (colsData) => emit("column-reorder", { columns: colsData }),
+    columnState: cols.columnState,
+    onReorderEnd: () => emit("column-reorder", { columns: [] }),
   });
 
   // ============================================================================
@@ -896,7 +905,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   };
 
   const handleTableReset = () => {
-    // 1. Reset persisted state (clears storage + runtime refs including columnWidths, hiddenColumnIds, etc.)
+    // 1. Reset persisted state (clears storage + runtime refs including columnState, hiddenColumnIds, etc.)
     statePersistence.resetState();
 
     // 2. Re-hide data-discovered columns (they default to hidden).
@@ -906,24 +915,11 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
       hiddenColumnIds.value = new Set(dataDiscoveredIds.value);
     }
 
-    // 3. Reinitialize columnWidths from declared columns.
-    // resetState() sets columnWidths to [] which would trigger the watch(visibleColumns)
-    // in useTableColumns, but only if new columns aren't already tracked.
-    // Force re-initialization by setting widths from current visible columns:
-    const currentCols = visibleColumns.value;
-    if (currentCols.length > 0) {
-      cols.columnWidths.value = currentCols
-        .filter((col) => !cols.isSpecialColumn(col.props))
-        .map((col) => ({
-          id: col.props.id,
-          width: col.props.width
-            ? typeof col.props.width === "number"
-              ? col.props.width
-              : typeof col.props.width === "string" && /^\d+(\.\d+)?(px)?$/.test(col.props.width.trim())
-                ? parseInt(col.props.width) || 0
-                : 0
-            : 0,
-        }));
+    // 3. Re-init from props and recompute
+    const available = tableContainerRef.value?.clientWidth ?? 0;
+    if (available > 0) {
+      cols.initFromProps(available);
+      cols.recompute();
     }
   };
 

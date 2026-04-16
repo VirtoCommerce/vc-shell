@@ -30,14 +30,15 @@ describe("TableCell", () => {
     expect(w.find(".vc-table-composition__cell").attributes("style")).toContain("width: 200px");
   });
 
-  it("sets flex: 0 1 auto when width is provided", () => {
+  it("sets flex: 0 0 <width> when width is provided", () => {
     const w = factory({ width: "100px" });
-    expect(w.find(".vc-table-composition__cell").attributes("style")).toContain("flex: 0 1 auto");
+    expect(w.find(".vc-table-composition__cell").attributes("style")).toContain("flex: 0 0 100px");
   });
 
-  it("sets flex: 1 1 0 when width is not provided", () => {
+  it("does not set flex when width is not provided", () => {
     const w = factory();
-    expect(w.find(".vc-table-composition__cell").attributes("style")).toContain("flex: 1 1 0");
+    const style = w.find(".vc-table-composition__cell").attributes("style") || "";
+    expect(style).not.toContain("flex:");
   });
 
   it("applies text alignment", () => {

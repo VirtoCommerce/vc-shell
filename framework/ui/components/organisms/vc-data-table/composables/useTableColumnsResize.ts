@@ -101,12 +101,16 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
       }
     }
 
-    // Max growth = sum of how much right neighbors can shrink (each down to minPx)
+    // Max growth = right neighbors' shrink capacity + filler space (gap mode)
     let maxGrowthPx = 0;
     for (const id of rightNeighborIds) {
       const min = initialSpecs[id]?.minPx ?? minColumnWidth;
       maxGrowthPx += Math.max(0, initialPx[id] - min);
     }
+    // In gap mode, filler space can also be consumed by growing columns
+    const totalInitialPx = activeOrder.reduce((s, id) => s + (initialPx[id] ?? 0), 0);
+    const fillerPx = Math.max(0, available - totalInitialPx);
+    maxGrowthPx += fillerPx;
 
     // Max shrink = dragged column down to its minPx
     const draggedMin = initialSpecs[draggedId]?.minPx ?? minColumnWidth;

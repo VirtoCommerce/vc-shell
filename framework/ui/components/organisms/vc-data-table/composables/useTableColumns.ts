@@ -281,6 +281,9 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   // Watch for column changes
   // ============================================================================
 
+  // Track visible column IDs to detect show/hide changes
+  let prevVisibleIds: string[] = [];
+
   watch(
     visibleColumns,
     () => {
@@ -288,31 +291,51 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
       const currentIds = new Set(columnState.value.order);
       const newIds = regularCols.map((c) => c.props.id);
 
-      if (newIds.every((id) => currentIds.has(id)) && columnState.value.order.length > 0) {
-        return; // All visible columns already tracked
-      }
+      // Detect if the visible set actually changed
+      const prevSet = new Set(prevVisibleIds);
+      const visibleSetChanged =
+        newIds.length !== prevVisibleIds.length || newIds.some((id) => !prevSet.has(id));
 
-      // Append new columns with lazy-init weight
-      const state = { ...columnState.value };
-      state.order = [...state.order];
-      state.specs = { ...state.specs };
+      // Check if genuinely new columns appeared (not yet in order)
+      const hasNewColumns = !newIds.every((id) => currentIds.has(id)) || columnState.value.order.length === 0;
 
-      for (const col of regularCols) {
-        if (!currentIds.has(col.props.id)) {
-          state.order.push(col.props.id);
-          state.specs[col.props.id] = {
-            weight: 0, // will be normalized
-            minPx: 40,
-            maxPx: Infinity,
-          };
+      if (hasNewColumns) {
+        const state = { ...columnState.value };
+        state.order = [...state.order];
+        state.specs = { ...state.specs };
+
+        for (const col of regularCols) {
+          if (!currentIds.has(col.props.id)) {
+            state.order.push(col.props.id);
+            state.specs[col.props.id] = {
+              weight: 1 / newIds.length, // fair initial share
+              minPx: 40,
+              maxPx: Infinity,
+            };
+          }
         }
+
+        // Normalize ALL visible columns so new ones get fair share
+        const visibleRegular = newIds.filter((id) => state.specs[id]);
+        normalizeWeights(state.specs, visibleRegular);
+        columnState.value = state;
+      } else if (visibleSetChanged) {
+        // Visible set changed (show/hide toggle). Redistribute weights equally
+        // among ALL visible columns so they share space fairly.
+        const state = { ...columnState.value };
+        state.specs = { ...state.specs };
+        const visibleRegular = newIds.filter((id) => state.specs[id]);
+        const equalWeight = visibleRegular.length > 0 ? 1 / visibleRegular.length : 0;
+        for (const id of visibleRegular) {
+          state.specs[id] = { ...state.specs[id], weight: equalWeight };
+        }
+        columnState.value = state;
       }
 
-      // Normalize visible weights
-      const visibleRegular = newIds.filter((id) => state.specs[id]);
-      normalizeWeights(state.specs, visibleRegular);
+      // Update prev tracking AFTER all branches used it
+      prevVisibleIds = [...newIds];
 
-      columnState.value = state;
+      // Always recompute engine output when visible columns change
       recompute();
     },
     { immediate: true },

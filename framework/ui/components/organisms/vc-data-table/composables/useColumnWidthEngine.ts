@@ -47,9 +47,7 @@ export function computeColumnWidths(input: EngineInput): EngineOutput {
   const desired = columns.map((col) => col.spec.weight * availableWidth);
 
   // Step 2: Clamp pass
-  const clamped = columns.map((col, i) =>
-    Math.max(col.spec.minPx, Math.min(desired[i], col.spec.maxPx)),
-  );
+  const clamped = columns.map((col, i) => Math.max(col.spec.minPx, Math.min(desired[i], col.spec.maxPx)));
 
   // Step 3: Delta
   let delta = availableWidth - clamped.reduce((s, w) => s + w, 0);
@@ -80,11 +78,7 @@ export function computeColumnWidths(input: EngineInput): EngineOutput {
   return finalize(columns, clamped, 0, availableWidth);
 }
 
-function distributeGrow(
-  columns: EngineInput["columns"],
-  clamped: number[],
-  surplus: number,
-): void {
+function distributeGrow(columns: EngineInput["columns"], clamped: number[], surplus: number): void {
   let remaining = surplus;
   const maxIters = columns.length;
 
@@ -130,11 +124,7 @@ function distributeGrow(
   }
 }
 
-function distributeShrink(
-  columns: EngineInput["columns"],
-  clamped: number[],
-  deficit: number,
-): void {
+function distributeShrink(columns: EngineInput["columns"], clamped: number[], deficit: number): void {
   let remaining = Math.abs(deficit);
   const maxIters = columns.length;
 
@@ -164,11 +154,7 @@ function distributeShrink(
   }
 }
 
-function crisisSqueeze(
-  columns: EngineInput["columns"],
-  clamped: number[],
-  availableWidth: number,
-): void {
+function crisisSqueeze(columns: EngineInput["columns"], clamped: number[], availableWidth: number): void {
   console.warn(
     `[VcDataTable] Column width crisis: sum(minPx)=${columns.reduce((s, c) => s + c.spec.minPx, 0)}px > availableWidth=${availableWidth}px. Columns will be squeezed below their minimum widths.`,
   );
@@ -198,7 +184,7 @@ function finalize(
   const remainders = floats.map((f, i) => f - floored[i]);
   const flooredFiller = Math.floor(fillerFloat);
 
-  let total = floored.reduce((s, w) => s + w, 0) + flooredFiller;
+  const total = floored.reduce((s, w) => s + w, 0) + flooredFiller;
   let shortage = availableWidth - total;
 
   // Build priority list: highest remainder first, ties broken by index (stable)
@@ -244,10 +230,7 @@ function finalize(
 // Initialization helpers
 // ============================================================================
 
-export function parseColumnWidth(
-  value: string | number | undefined,
-  availableWidth: number,
-): ParsedWidth {
+export function parseColumnWidth(value: string | number | undefined, availableWidth: number): ParsedWidth {
   if (value === undefined || value === null || value === "") {
     return { type: "auto", desiredPx: null };
   }
@@ -316,10 +299,7 @@ export function buildInitialWeights(
   return weights;
 }
 
-export function normalizeWeights(
-  specs: Record<string, ColumnSpec>,
-  visibleIds: string[],
-): void {
+export function normalizeWeights(specs: Record<string, ColumnSpec>, visibleIds: string[]): void {
   const total = visibleIds.reduce((s, id) => s + (specs[id]?.weight ?? 0), 0);
   if (total <= 0) {
     const equal = 1 / visibleIds.length;

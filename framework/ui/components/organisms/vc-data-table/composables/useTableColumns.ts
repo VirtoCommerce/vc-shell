@@ -9,7 +9,12 @@
  */
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
-import type { VcColumnProps, ColumnState, ColumnSpec, TableFitMode } from "@ui/components/organisms/vc-data-table/types";
+import type {
+  VcColumnProps,
+  ColumnState,
+  ColumnSpec,
+  TableFitMode,
+} from "@ui/components/organisms/vc-data-table/types";
 import {
   computeColumnWidths,
   parseColumnWidth,
@@ -87,11 +92,20 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     return reorderableColumns ?? false;
   };
 
+  /**
+   * Total fixed-width "chrome" in each row that is NOT available for data columns.
+   * Includes: row padding, special VcColumn widths, drag handle + gap.
+   */
   const getSpecialColumnsWidth = (): number => {
-    let total = 0;
+    // Row horizontal padding: tw-px-4 = 16px × 2 = 32px (TableRow.vue)
+    let total = 32;
+
     for (const col of visibleColumns.value) {
       if (col.props.selectionMode) total += 40;
-      else if (col.props.rowReorder || col.props.expander) total += 50;
+      else if (col.props.rowReorder) {
+        // rowReorder column (50px) + row gap between drag handle and transition wrapper (8px)
+        total += 50 + 8;
+      } else if (col.props.expander) total += 50;
       else if (col.props.rowEditor) total += 100;
     }
     return total;
@@ -171,9 +185,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     const availableWidth = options.getAvailableWidth() - getSpecialColumnsWidth();
     if (availableWidth <= 0) return;
 
-    const visibleRegular = orderedVisibleColumns.value
-      .filter((c) => !isSpecialColumn(c.props))
-      .map((c) => c.props.id);
+    const visibleRegular = orderedVisibleColumns.value.filter((c) => !isSpecialColumn(c.props)).map((c) => c.props.id);
 
     const cols = visibleRegular
       .filter((id) => columnState.value.specs[id])

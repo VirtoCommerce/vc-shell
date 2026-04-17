@@ -282,6 +282,13 @@ export const transforms: VersionedTransform[] = [
     fileExtensions: [".ts"],
     after: ["define-app-module"],
   },
+  {
+    name: "vc-blade-loading-prop",
+    description: "Convert <VcBlade v-loading=\"X\"> to <VcBlade :loading=\"X\"> — use built-in blade loading prop",
+    introducedIn: "2.0.0-alpha.33",
+    transformPath: t("vc-blade-loading-prop"),
+    fileExtensions: [".vue"],
+  },
 ];
 
 export function selectTransforms(currentVersion: string, targetVersion: string): VersionedTransform[] {

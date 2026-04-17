@@ -51,6 +51,7 @@ describe("selectTransforms", () => {
       "remove-global-components",
       "remove-expose-title",
       "remove-app-module-options",
+      "vc-blade-loading-prop",
     ]);
   });
 

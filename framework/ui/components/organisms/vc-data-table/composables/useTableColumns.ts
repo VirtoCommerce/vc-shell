@@ -238,15 +238,18 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
 
   /**
    * Reset: rebuild ColumnState from declared props, discarding persisted state.
-   * Called by handleTableReset in the orchestrator.
+   * Called by handleTableReset in the orchestrator. Also clears engineOutput
+   * so callers don't see stale widths between reset and the next recompute.
    */
   const resetFromProps = (): void => {
     columnState.value = { order: [], specs: {} };
+    engineOutput.value = { widths: {}, fillerWidth: 0 };
     needsPropsReinit = true;
     const available = options.getAvailableWidth();
     if (available > 0) {
       applyInitFromProps(available);
       needsPropsReinit = false;
+      recompute();
     }
   };
 

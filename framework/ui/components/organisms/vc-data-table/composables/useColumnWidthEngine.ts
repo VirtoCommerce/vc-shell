@@ -261,13 +261,20 @@ export function parseColumnWidth(value: string | number | undefined, availableWi
 
   // Unrecognized CSS value (e.g. "10rem") — treat as auto.
   // Only px and % are supported; other units are ignored.
-  if (typeof process !== "undefined" && process.env?.NODE_ENV !== "production") {
-    // eslint-disable-next-line no-console
-    console.warn(
-      `[VcDataTable] Unsupported width value "${value}". Only px (number, "200", "200px") and % ("20%") are supported. Treating as auto.`,
-    );
-  }
+  warnUnsupportedWidthOnce(value);
   return { type: "auto", desiredPx: null };
+}
+
+// Module-level set to avoid spamming console during re-renders.
+const warnedWidthValues = new Set<string>();
+function warnUnsupportedWidthOnce(value: string): void {
+  if (typeof process === "undefined" || process.env?.NODE_ENV === "production") return;
+  if (warnedWidthValues.has(value)) return;
+  warnedWidthValues.add(value);
+  // eslint-disable-next-line no-console
+  console.warn(
+    `[VcDataTable] Unsupported width value "${value}". Only px (number, "200", "200px") and % ("20%") are supported. Treating as auto.`,
+  );
 }
 
 export function buildInitialWeights(

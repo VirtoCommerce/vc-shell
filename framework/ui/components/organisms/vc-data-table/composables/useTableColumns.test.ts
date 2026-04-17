@@ -79,6 +79,56 @@ describe("useTableColumns — columnState initialization", () => {
     expect(columnState.value.specs["email"].weight).toBeCloseTo(0.5, 2);
   });
 
+  it("honors declared px widths end-to-end — engine output matches ratios", () => {
+    // Regression test: VcColumn :width="200" was silently ignored before fix.
+    const cols = [
+      makeColumn("a", { width: 200 }),
+      makeColumn("b", { width: 300 }),
+      makeColumn("c", { width: 100 }),
+    ];
+    const visibleColumns = ref(cols);
+
+    const { columnState, engineOutput } = useTableColumns({
+      visibleColumns,
+      getAvailableWidth: () => 600,
+      fitMode: "fit",
+    });
+
+    // Weights should reflect 200/300/100 ratio (normalized to sum=1).
+    expect(columnState.value.specs["a"].weight).toBeCloseTo(200 / 600, 2);
+    expect(columnState.value.specs["b"].weight).toBeCloseTo(300 / 600, 2);
+    expect(columnState.value.specs["c"].weight).toBeCloseTo(100 / 600, 2);
+    // Engine output exactly matches declared widths in fit mode.
+    expect(engineOutput.value.widths["a"]).toBe(200);
+    expect(engineOutput.value.widths["b"]).toBe(300);
+    expect(engineOutput.value.widths["c"]).toBe(100);
+  });
+
+  it("honors declared minWidth in specs after init", () => {
+    const cols = [makeColumn("big", { width: 100, minWidth: 150 }), makeColumn("small", { width: 100 })];
+    const visibleColumns = ref(cols);
+
+    const { columnState } = useTableColumns({
+      visibleColumns,
+      getAvailableWidth: () => 400,
+    });
+
+    expect(columnState.value.specs["big"].minPx).toBe(150);
+    expect(columnState.value.specs["small"].minPx).toBe(40); // default fallback
+  });
+
+  it("honors declared maxWidth in specs after init", () => {
+    const cols = [makeColumn("capped", { width: 500, maxWidth: 250 })];
+    const visibleColumns = ref(cols);
+
+    const { columnState } = useTableColumns({
+      visibleColumns,
+      getAvailableWidth: () => 1000,
+    });
+
+    expect(columnState.value.specs["capped"].maxPx).toBe(250);
+  });
+
   it("handles percentage width columns via weight system", () => {
     const cols = [makeColumn("name", { width: "50%" })];
     const visibleColumns = ref(cols);

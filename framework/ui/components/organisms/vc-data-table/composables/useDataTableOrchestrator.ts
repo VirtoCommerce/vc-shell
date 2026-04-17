@@ -514,7 +514,13 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     shownColumnIds: shownDataDiscoveredColumnIds,
     getAvailableWidth: measureAvailableWidth,
     onStateSave: (state) => emit("state-save", state),
-    onStateRestore: (state) => emit("state-restore", state),
+    onStateRestore: (state) => {
+      // Persistence has restored weights — cancel any pending deferred
+      // re-init from declared VcColumn props so recompute() doesn't overwrite
+      // the user's saved column widths with the declarative defaults.
+      cols.markStateRestored();
+      emit("state-restore", state);
+    },
   });
 
   // Initialize hiddenColumnIds with data-discovered columns (they start hidden).

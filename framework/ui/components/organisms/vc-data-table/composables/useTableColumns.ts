@@ -48,6 +48,12 @@ export interface UseTableColumnsReturn {
   setHeaderRef: (id: string, el: unknown) => void;
   recompute: () => void;
   resetFromProps: () => void;
+  /**
+   * Cancels a pending deferred re-init from declared props.
+   * Called by the orchestrator after persistence restores ColumnState — the
+   * restored weights take precedence over declared VcColumn widths.
+   */
+  markStateRestored: () => void;
 
   // Computed
   orderedVisibleColumns: ComputedRef<ColumnInstance[]>;
@@ -237,6 +243,16 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   }
 
   /**
+   * Cancel any pending deferred re-init from declared props.
+   * When persistence restores weights, those take precedence over declared
+   * VcColumn widths — so `needsPropsReinit` must be cleared to prevent
+   * recompute() from overwriting restored weights with parsed props.
+   */
+  const markStateRestored = (): void => {
+    needsPropsReinit = false;
+  };
+
+  /**
    * Reset: rebuild ColumnState from declared props, discarding persisted state.
    * Called by handleTableReset in the orchestrator. Also clears engineOutput
    * so callers don't see stale widths between reset and the next recompute.
@@ -384,6 +400,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     setHeaderRef,
     recompute,
     resetFromProps,
+    markStateRestored,
     orderedVisibleColumns,
     totalColumns,
     isSpecialColumn,

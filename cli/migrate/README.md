@@ -56,7 +56,7 @@ npx @vc-shell/migrate [options]
 | Option | Description | Default |
 |--------|-------------|---------|
 | `--to <version>` | Target framework version | `2.0.0` |
-| `--transform <name>` | Run only a specific transform | all applicable |
+| `--transform <name>` | Run only a specific transform (bypasses version filter — runs even if already on target) | all applicable |
 | `--dry-run` | Preview changes without writing files | `false` |
 | `--list` | List all available transforms and exit | |
 | `--cwd <path>` | Working directory (your app root) | `.` |

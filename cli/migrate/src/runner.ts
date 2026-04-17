@@ -58,14 +58,22 @@ export async function run(options: RunOptions): Promise<void> {
   const targetVersion = options.to ?? detectLatestFrameworkVersion() ?? "2.0.0";
   console.log(chalk.blue(`Migrating from ${currentVersion} → ${targetVersion}`));
 
-  let selected = selectTransforms(currentVersion, targetVersion);
+  let selected: VersionedTransform[];
 
   if (options.transform) {
-    selected = selected.filter((t) => t.name === options.transform);
-    if (selected.length === 0) {
-      console.log(chalk.yellow(`Transform "${options.transform}" not found or not applicable for this version range.`));
+    // Explicit --transform bypasses version filter: user is asking for a specific
+    // transform regardless of whether it falls in the current → target range.
+    // Useful when re-applying a transform retroactively or fixing files the
+    // original migration missed.
+    const match = transforms.find((t) => t.name === options.transform);
+    if (!match) {
+      console.log(chalk.yellow(`Transform "${options.transform}" not found.`));
+      console.log(chalk.gray(`Run with --list to see available transforms.`));
       return;
     }
+    selected = [match];
+  } else {
+    selected = selectTransforms(currentVersion, targetVersion);
   }
 
   selected = topologicalSort(selected);

@@ -5,9 +5,9 @@ import { selectTransforms } from "../../src/transforms/registry";
 describe("full migration pipeline", () => {
   it("selects 15 transforms for 1.x → 2.0.0 migration", () => {
     const selected = selectTransforms("1.0.0", "2.0.0");
-    expect(selected).toHaveLength(32);
+    expect(selected).toHaveLength(36);
     expect(selected[0].name).toBe("remove-release-config");
-    expect(selected[selected.length - 1].name).toBe("remove-global-components");
+    expect(selected[selected.length - 1].name).toBe("remove-app-module-options");
   });
 
   it("transforms can be dynamically imported and executed", async () => {

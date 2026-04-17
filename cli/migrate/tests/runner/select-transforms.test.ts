@@ -49,6 +49,8 @@ describe("selectTransforms", () => {
       "dynamic-properties-refactor",
       "window-globals",
       "remove-global-components",
+      "remove-expose-title",
+      "remove-app-module-options",
     ]);
   });
 

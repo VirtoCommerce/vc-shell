@@ -64,6 +64,14 @@ export const transforms: VersionedTransform[] = [
     after: ["define-options-to-blade"],
   },
   {
+    name: "blade-events-cleanup",
+    description: "Remove @parent:call, @close:blade, @collapse:blade, @expand:blade from all .vue files",
+    introducedIn: "2.0.0",
+    transformPath: t("blade-events-cleanup"),
+    fileExtensions: [".vue"],
+    after: ["blade-props-simplification"],
+  },
+  {
     name: "define-options-to-blade",
     description: "defineOptions() → defineBlade() for blade pages (removes notifyType)",
     introducedIn: "2.0.0",
@@ -73,12 +81,19 @@ export const transforms: VersionedTransform[] = [
     after: ["use-blade-migration"],
   },
   {
+    name: "icon-replace",
+    description: "Replace well-known material-/bi-/fa- icons with lucide equivalents",
+    introducedIn: "2.0.0",
+    transformPath: t("icon-replace"),
+  },
+  {
     name: "icon-audit",
     description: "Detect non-lucide icons (material-/bi-/fa-) and suggest lucide replacements (diagnostic-only)",
     introducedIn: "2.0.0",
     diagnosticOnly: true,
     migrationGuideSection: "Section 2",
     transformPath: t("icon-audit"),
+    after: ["icon-replace"],
   },
   {
     name: "scss-safe-use",
@@ -203,12 +218,12 @@ export const transforms: VersionedTransform[] = [
   },
   {
     name: "use-blade-form",
-    description: "Detect useForm + useBeforeUnload patterns for migration to useBladeForm()",
+    description: "Detect useForm + useBeforeUnload + useModificationTracker patterns for migration to useBladeForm()",
     introducedIn: "2.0.0-alpha.31",
     diagnosticOnly: true,
     migrationGuideSection: "Guide 37",
     transformPath: t("use-blade-form"),
-    fileExtensions: [".vue"],
+    fileExtensions: [".vue", ".ts"],
   },
   {
     name: "remove-pathmatch-route",
@@ -250,6 +265,22 @@ export const transforms: VersionedTransform[] = [
     migrationGuideSection: "Guide 40",
     transformPath: t("remove-global-components"),
     fileExtensions: [".vue"],
+  },
+  {
+    name: "remove-expose-title",
+    description: "Remove deprecated `title` from exposeToChildren({...}) — computed refs no longer allowed",
+    introducedIn: "2.0.0-alpha.33",
+    transformPath: t("remove-expose-title"),
+    fileExtensions: [".vue", ".ts"],
+    after: ["define-expose-to-children"],
+  },
+  {
+    name: "remove-app-module-options",
+    description: "Remove `{ router }` second argument from .use(AppModule, { router }) — defineAppModule takes no options",
+    introducedIn: "2.0.0-alpha.33",
+    transformPath: t("remove-app-module-options"),
+    fileExtensions: [".ts"],
+    after: ["define-app-module"],
   },
 ];
 

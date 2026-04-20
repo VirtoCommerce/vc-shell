@@ -506,7 +506,47 @@ Key points:
 
 This is the most complex transformation. Replace the `#filters` template slot (with staged filter state, apply/reset buttons, and checkbox loops) with a declarative `global-filters` prop and `@filter` event.
 
-**DO NOT SKIP THIS RULE even if filter types look exotic.** Real apps often have date-range pickers, multi-select dropdowns, and enum selects alongside checkboxes. Each of these maps to a `GlobalFilterConfig` entry with an appropriate `type` (`"multi-select"`, `"date-range"`, `"select"`, `"text"`, etc.) and `options`. If a single filter type does not fit any documented `GlobalFilterConfig.type`, map the other filters and flag the one holdout in your report — **do NOT delete the whole filter panel.** "Removed to get the build green" is not an acceptable resolution: the user loses UX. If in doubt, keep the existing `<template #filters>` slot unchanged and mark the file as needing manual migration in the report, rather than erasing user-visible functionality.
+**DO NOT SKIP THIS RULE even if filter types look exotic.** Real apps often have date-range pickers, multi-select dropdowns, and enum selects alongside checkboxes. Each of these maps to a `GlobalFilterConfig` entry with an appropriate `filter` shape and `options`. If a single filter type does not fit any documented shape, map the other filters and flag the one holdout in your report — **do NOT delete the whole filter panel.** "Removed to get the build green" is not an acceptable resolution: the user loses UX. If in doubt, keep the existing `<template #filters>` slot unchanged and mark the file as needing manual migration in the report, rather than erasing user-visible functionality.
+
+### Filter shapes cheat-sheet
+
+Use these exact shapes in `GlobalFilterConfig[]` (annotate the `computed<GlobalFilterConfig[]>(...)` to satisfy strict typing):
+
+```ts
+// Single-select (checkbox group → dropdown)
+{ id: "type", label: t("..."), filter: { options: [{ value, label }, ...] } }
+
+// Multi-select — same shape + multiple: true
+{ id: "tags", label: t("..."), filter: { options: [...], multiple: true } }
+
+// Date range — TWO output keys in event.filters (not a nested object)
+{ id: "dueDate", label: t("..."), filter: { range: ["startDate", "endDate"] } }
+
+// Free-text (column search already covers this, but for completeness)
+{ id: "keyword", label: t("..."), filter: true }
+```
+
+### `@filter` handler — no manual Date→string coercion
+
+VcDataTable's `GlobalFiltersPanel` internally normalises date-picker values to `"YYYY-MM-DD"` (local components, no TZ shift). Handler receives `event.filters: Record<string, unknown>` with string values:
+
+```ts
+async function onFilter(event: { filters: Record<string, unknown> }) {
+  currentFilters.value = {
+    type: event.filters.type as string | undefined,
+    priority: event.filters.priority as string | undefined,
+    startDate: event.filters.startDate as string | undefined, // already "YYYY-MM-DD"
+    endDate: event.filters.endDate as string | undefined,
+  };
+  await reload();
+}
+```
+
+Do NOT call `.toISOString()` on values from `event.filters` — the panel already hands back plain strings, and `.toISOString()` on a local-midnight Date would introduce an off-by-one-day TZ shift.
+
+### Apply / Reset buttons are built-in
+
+The old `#filters` slot typically had staged/applied state plus Apply/Reset buttons. VcDataTable's built-in panel ships its own Apply/Clear footer — **delete** `stagedFilters` / `appliedFilters` / `activeFilterCount` / `toggleFilter` / `applyFilters` / `resetFilters`. Keep a single `currentFilters` ref (populated from `@filter`) used by `reload()` / search — that's it.
 
 **BEFORE:**
 

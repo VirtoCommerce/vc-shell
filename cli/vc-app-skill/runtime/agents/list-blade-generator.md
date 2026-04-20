@@ -61,6 +61,7 @@ From `index.md`, identify any `.docs.md` files for `VcBlade`, `VcDataTable`, `Vc
 ### Step 1: Derive naming variables
 
 From inputs compute:
+
 - `entityNamePlural` = `entityName` + "s" (e.g., `TeamMembers`, `Orders`)
 - `entityNameLower` = camelCase of `entityName` (e.g., `teamMember`, `order`)
 - `entityNamePluralLower` = camelCase of `entityNamePlural` (e.g., `teamMembers`, `orders`)
@@ -76,10 +77,12 @@ From inputs compute:
 ### Existing Module Context
 
 When `existingModule` is provided:
+
 - Use the same `localePrefix` convention from `existingModule.localePrefix` instead of deriving a new one. This ensures i18n keys are consistent across all blades in the module.
 - Reference `existingModule.blades` to avoid naming collisions with existing blade component names.
 
 When `linkTo` is provided:
+
 - After generating the new list blade, open the source blade file specified by `linkTo.blade` (resolve from `existingModule.indexPath` parent directory + `pages/`).
 - Add an `openBlade` call to the source blade based on `linkTo.trigger`:
   - `"button"` — add a toolbar button with `linkTo.label` that calls `openBlade({ blade: {bladeComponentName} })`
@@ -92,6 +95,7 @@ When `linkTo` is provided:
 Write to: `{targetDir}/composables/use{EntityNamePlural}/index.ts`
 
 Follow the skeleton from `composable-list.md` exactly:
+
 - Import `useApiClient`, `useAsync`, `useLoading` from `@vc-shell/framework`
 - Import `Search{EntityName}Query`, `Search{EntityName}Result`, `{EntityName}`, `{ClientClass}` from `entityTypePath`
 - Import type alias: `import type { Search{EntityName}Query as ISearch{EntityName}Query }`
@@ -107,6 +111,7 @@ If the `searchMethod` uses a non-standard pluralization (e.g., `searchUsers` for
 For each column in `columns`, determine the VcColumn attributes using these rules:
 
 **Column type mapping** (based on field name and data type):
+
 - Field name contains "status" or "state" OR `isEnum: true` → `type="status"`, add `#body` slot with `VcStatus`
 - Field name starts with "is", "has", "can" (boolean) → `type="status-icon"`
 - Field name contains "date", "created", "modified", "updated" (Date type) → `type="date-ago"`
@@ -116,6 +121,7 @@ For each column in `columns`, determine the VcColumn attributes using these rule
 - Everything else → no type (plain text)
 
 **Mobile layout assignment** (assign to the first matching column):
+
 - First image column → `mobile-role="image"`, `:always-visible="true"`
 - First identifier column (name, number, title) → `mobile-position="top-left"`, `:always-visible="true"`
 - First status column → `mobile-role="status"`, `:always-visible="true"`
@@ -132,50 +138,28 @@ Follow the template from `list-blade-pattern.md` exactly.
 **CRITICAL: Template section — explicit VcColumn declarations (NO v-for):**
 
 Each column must be declared as a separate `<VcColumn>` element in the template. Do NOT use `v-for` with a computed array. This enables:
+
 - `#body` slots for status badges, images, and custom rendering
 - Per-column `mobile-role` / `mobile-position` attributes
 - Better readability and maintainability
 
 Example of correct column declarations:
+
 ```vue
-<VcColumn
-  id="number"
-  :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER')"
-  :always-visible="true"
-  :sortable="true"
-  mobile-position="top-left"
-/>
-<VcColumn
-  id="status"
-  :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.STATUS')"
-  :always-visible="true"
-  :sortable="true"
-  type="status"
-  mobile-role="status"
->
+<VcColumn id="number" :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER')" :always-visible="true" :sortable="true" mobile-position="top-left" />
+<VcColumn id="status" :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.STATUS')" :always-visible="true" :sortable="true" type="status" mobile-role="status">
   <template #body="{ data }">
     <VcStatus :variant="statusVariant(data.status)">
       {{ data.status }}
     </VcStatus>
   </template>
 </VcColumn>
-<VcColumn
-  id="total"
-  :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.TOTAL')"
-  :sortable="true"
-  type="money"
-  mobile-position="top-right"
-/>
-<VcColumn
-  id="createdDate"
-  :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE')"
-  :sortable="true"
-  type="date-ago"
-  mobile-position="bottom-right"
-/>
+<VcColumn id="total" :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.TOTAL')" :sortable="true" type="money" mobile-position="top-right" />
+<VcColumn id="createdDate" :title="t('ORDERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE')" :sortable="true" type="date-ago" mobile-position="bottom-right" />
 ```
 
 **Script setup section:**
+
 - `defineBlade({ name: "{bladeComponentName}", url: "{url}", isWorkspace: true, permissions: ["{i18nPrefix_lower}:manage"], menuItem: { title: "{menuConfig.title}", icon: "{menuConfig.icon}", priority: {menuConfig.priority} } })`
 - Import and destructure `{composableName}` with correct variable names
 - `useDataTableSort({ initialField: "createdDate", initialDirection: "DESC" })`
@@ -196,9 +180,7 @@ Instead of the normal composable that imports API client classes, generate this 
 
 ```ts
 // vc-app:mock-start
-const mockData: Record<string, unknown>[] = [
-  { id: "1", name: "Item 1", status: "active", createdDate: new Date().toISOString() },
-];
+const mockData: Record<string, unknown>[] = [{ id: "1", name: "Item 1", status: "active", createdDate: new Date().toISOString() }];
 
 const fetchItems = async (query?: Record<string, unknown>) => {
   return { results: mockData, totalCount: mockData.length };
@@ -236,6 +218,7 @@ If the file already exists, append the export line (do not overwrite).
 ## Output Contract
 
 Files written to disk:
+
 1. `{targetDir}/composables/use{EntityNamePlural}/index.ts`
 2. `{targetDir}/pages/{moduleName}-list.vue`
 3. `{targetDir}/composables/index.ts` (created or appended)
@@ -245,6 +228,7 @@ Returns a summary of generated files and any assumptions made.
 ## Self-Check
 
 Before completing, verify:
+
 - [ ] `defineBlade` is at module scope (top-level of `<script setup>`), not inside any function
 - [ ] `state-key` is snake_case and unique (based on `moduleName`)
 - [ ] `useDataTableSort` destructures `sortField`, `sortOrder`, `sortExpression` — all three used
@@ -256,7 +240,7 @@ Before completing, verify:
 - [ ] **Each VcColumn is declared explicitly in the template — NO v-for with computed array**
 - [ ] Date columns use `type="date-ago"` (NOT `"date-time"`)
 - [ ] Status/state columns use `type="status"` with `#body` slot containing `VcStatus` component
-- [ ] Boolean columns (is*, has*, can*) use `type="status-icon"`
+- [ ] Boolean columns (is*, has*, can\*) use `type="status-icon"`
 - [ ] Monetary columns use `type="money"`
 - [ ] Mobile layout attributes (`mobile-position`, `mobile-role`) are assigned to key columns
 - [ ] If status column exists, `statusVariant()` function is defined in script setup

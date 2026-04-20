@@ -1,5 +1,8 @@
 <template>
-  <VcBlade v-loading="loading" :title="title">
+  <VcBlade
+    v-loading="loading"
+    :title="title"
+  >
     <div>content</div>
   </VcBlade>
 </template>

@@ -19,32 +19,32 @@ A scrollable content wrapper that fills its parent, provides configurable paddin
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `shadow` | `boolean` | `false` | Shows an inset shadow when content overflows |
-| `noPadding` | `boolean` | `false` | Removes the default 16px inner padding |
-| `ariaLabel` | `string` | — | When provided, renders as `<section>` with this label instead of `<div>` |
+| Prop        | Type      | Default | Description                                                              |
+| ----------- | --------- | ------- | ------------------------------------------------------------------------ |
+| `shadow`    | `boolean` | `false` | Shows an inset shadow when content overflows                             |
+| `noPadding` | `boolean` | `false` | Removes the default 16px inner padding                                   |
+| `ariaLabel` | `string`  | —       | When provided, renders as `<section>` with this label instead of `<div>` |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--container-padding` | `16px` | Inner padding of the scrollable area |
-| `--container-bg` | `transparent` | Background color |
-| `--container-border-radius` | `0` | Border radius |
-| `--container-gap` | `0` | Gap between child elements |
+| Variable                    | Default       | Description                          |
+| --------------------------- | ------------- | ------------------------------------ |
+| `--container-padding`       | `16px`        | Inner padding of the scrollable area |
+| `--container-bg`            | `transparent` | Background color                     |
+| `--container-border-radius` | `0`           | Border radius                        |
+| `--container-gap`           | `0`           | Gap between child elements           |
 
 ## Exposed Methods
 
-| Method | Description |
-|--------|-------------|
+| Method        | Description                                      |
+| ------------- | ------------------------------------------------ |
 | `scrollTop()` | Programmatically scroll the container to the top |
-| `component` | Ref to the inner scrollable DOM element |
+| `component`   | Ref to the inner scrollable DOM element          |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event    | Payload | Description                   |
+| -------- | ------- | ----------------------------- |
 | `scroll` | `Event` | Emitted on every scroll event |
 
 ## Common Patterns
@@ -88,7 +88,10 @@ function scrollToTop() {
 </script>
 
 <template>
-  <VcContainer ref="containerRef" shadow>
+  <VcContainer
+    ref="containerRef"
+    shadow
+  >
     <!-- long content -->
   </VcContainer>
   <VcButton @click="scrollToTop">Back to Top</VcButton>

@@ -14,10 +14,10 @@ The composable maintains two copies of the data: the `pristineValue` (the clean 
 ## Basic Usage
 
 ```typescript
-import { useModificationTracker } from '@vc-shell/framework';
+import { useModificationTracker } from "@vc-shell/framework";
 
 // With a static initial value
-const { currentValue, isModified, resetModificationState } = useModificationTracker({ name: '', price: 0 });
+const { currentValue, isModified, resetModificationState } = useModificationTracker({ name: "", price: 0 });
 
 // With a reactive source (e.g., data loaded from API)
 const { currentValue, isModified, resetModificationState } = useModificationTracker(apiData);
@@ -34,17 +34,17 @@ resetModificationState(); // currentValue becomes the new pristine baseline
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `initialValueProp` | `T \| Ref<T>` | Yes | Initial value or reactive ref to track |
+| Parameter          | Type          | Required | Description                            |
+| ------------------ | ------------- | -------- | -------------------------------------- |
+| `initialValueProp` | `T \| Ref<T>` | Yes      | Initial value or reactive ref to track |
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `currentValue` | `Ref<T>` | The working value (bind to v-model) |
-| `pristineValue` | `Ref<T>` | The "clean" baseline value |
-| `isModified` | `DeepReadonly<Ref<boolean>>` | `true` when `currentValue` differs from `pristineValue` |
+| Property                 | Type                                  | Description                                                |
+| ------------------------ | ------------------------------------- | ---------------------------------------------------------- |
+| `currentValue`           | `Ref<T>`                              | The working value (bind to v-model)                        |
+| `pristineValue`          | `Ref<T>`                              | The "clean" baseline value                                 |
+| `isModified`             | `DeepReadonly<Ref<boolean>>`          | `true` when `currentValue` differs from `pristineValue`    |
 | `resetModificationState` | `(newBaseline?: T \| Ref<T>) => void` | Reset modification tracking; optionally set a new baseline |
 
 ## Recipe: Blade with Save/Discard and Unsaved Changes Guard
@@ -81,8 +81,18 @@ function discard() {
     <input v-model.number="currentValue.price" />
 
     <div class="tw-flex tw-gap-2">
-      <button :disabled="!isModified" @click="save">Save</button>
-      <button :disabled="!isModified" @click="discard">Discard</button>
+      <button
+        :disabled="!isModified"
+        @click="save"
+      >
+        Save
+      </button>
+      <button
+        :disabled="!isModified"
+        @click="discard"
+      >
+        Discard
+      </button>
     </div>
   </VcBlade>
 </template>

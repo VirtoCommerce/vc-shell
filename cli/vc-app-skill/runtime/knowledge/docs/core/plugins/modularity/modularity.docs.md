@@ -59,7 +59,11 @@ export default defineAppModule({
 ```vue
 <!-- modules/my-feature/pages/MyFeatureList.vue -->
 <template>
-  <VcBlade title="My Feature" :closable="closable" @close="$emit('close:blade')">
+  <VcBlade
+    title="My Feature"
+    :closable="closable"
+    @close="$emit('close:blade')"
+  >
     <p>Hello from my first module!</p>
   </VcBlade>
 </template>
@@ -109,12 +113,12 @@ The module is installed by the host application (or loaded remotely via Module F
 
 A module is a **Vue plugin** created by `defineAppModule()`. It bundles everything a feature needs:
 
-| Asset | Purpose |
-|-------|---------|
-| **Blades** | Vue components registered in `BladeRegistry` for blade navigation |
-| **Locales** | Translation objects merged into the global vue-i18n instance |
-| **Notifications** | Notification type configurations for real-time push events |
-| **Dashboard widgets** | Cards displayed on the main dashboard (registered separately) |
+| Asset                 | Purpose                                                           |
+| --------------------- | ----------------------------------------------------------------- |
+| **Blades**            | Vue components registered in `BladeRegistry` for blade navigation |
+| **Locales**           | Translation objects merged into the global vue-i18n instance      |
+| **Notifications**     | Notification type configurations for real-time push events        |
+| **Dashboard widgets** | Cards displayed on the main dashboard (registered separately)     |
 
 Modules are self-contained: each module declares its own routes, menu entries, permissions, and translations. The framework composes them at runtime.
 
@@ -180,18 +184,20 @@ export default createAppModule(pages, locales, notificationTemplates, components
 export default defineAppModule({
   blades: pages,
   locales,
-  notifications: { /* ... */ },
+  notifications: {
+    /* ... */
+  },
 });
 ```
 
 Key differences:
 
-| | `createAppModule` | `defineAppModule` |
-|---|---|---|
-| API style | Positional args | Named options object |
-| Notifications | `notificationTemplates` (legacy) | `notifications` (new typed config) |
+|                   | `createAppModule`                       | `defineAppModule`                  |
+| ----------------- | --------------------------------------- | ---------------------------------- |
+| API style         | Positional args                         | Named options object               |
+| Notifications     | `notificationTemplates` (legacy)        | `notifications` (new typed config) |
 | Global components | 4th arg registers via `app.component()` | Not supported (use provide/inject) |
-| Status | **Deprecated** -- will be removed | **Current** -- use this |
+| Status            | **Deprecated** -- will be removed       | **Current** -- use this            |
 
 Migration is a one-line change:
 
@@ -220,7 +226,7 @@ export default defineAppModule({
 
   // Notification type configurations (new API)
   notifications: {
-    "OrderChangedEvent": {
+    OrderChangedEvent: {
       toast: { mode: "auto" },
     },
   },
@@ -249,14 +255,14 @@ export default defineAppModule({
 
 Each blade is registered in the `BladeRegistry` with:
 
-| Property | Source | Description |
-|----------|--------|-------------|
-| `name` | `component.name` or the export key | Unique identifier in the registry |
-| `component` | The Vue component itself | Used to render the blade |
-| `route` | `component.url` | URL path for routable blades |
-| `isWorkspace` | `component.isWorkspace` | `true` = top-level blade (fills the workspace) |
-| `routable` | `component.routable` | `true` = gets a Vue Router route (default: `true`) |
-| `permissions` | `component.permissions` | Required permissions to access the blade |
+| Property      | Source                             | Description                                        |
+| ------------- | ---------------------------------- | -------------------------------------------------- |
+| `name`        | `component.name` or the export key | Unique identifier in the registry                  |
+| `component`   | The Vue component itself           | Used to render the blade                           |
+| `route`       | `component.url`                    | URL path for routable blades                       |
+| `isWorkspace` | `component.isWorkspace`            | `true` = top-level blade (fills the workspace)     |
+| `routable`    | `component.routable`               | `true` = gets a Vue Router route (default: `true`) |
+| `permissions` | `component.permissions`            | Required permissions to access the blade           |
 
 > **Tip:** The export key (e.g., `ProductsList` in `{ ProductsList }`) is used as a fallback name when `component.name` is not defined. Always set `defineOptions({ name: "..." })` for clarity.
 
@@ -285,9 +291,9 @@ defineOptions({
 
   // Sidebar menu configuration. Only used if `url` is also set.
   menuItem: {
-    title: "ORDERS.MENU.TITLE",      // i18n key or plain string
-    icon: "lucide-shopping-cart",      // Icon name (lucide or fas)
-    priority: 1,                       // Lower = higher in menu
+    title: "ORDERS.MENU.TITLE", // i18n key or plain string
+    icon: "lucide-shopping-cart", // Icon name (lucide or fas)
+    priority: 1, // Lower = higher in menu
     permissions: ["seller:orders:view"], // Optional override
   },
 });
@@ -318,9 +324,9 @@ defineOptions({
   url: "/products",
   isWorkspace: true,
   menuItem: {
-    title: "PRODUCTS.MENU.TITLE",   // Resolved via vue-i18n
+    title: "PRODUCTS.MENU.TITLE", // Resolved via vue-i18n
     icon: "lucide-package",
-    priority: 10,                    // Sort order in the sidebar
+    priority: 10, // Sort order in the sidebar
   },
   permissions: ["seller:products:view"],
 });
@@ -353,27 +359,27 @@ export default defineAppModule({
   blades: { OrdersList },
   notifications: {
     // Simple: auto-show a toast when this event arrives
-    "OrderCreatedEvent": {
+    OrderCreatedEvent: {
       toast: { mode: "auto" },
     },
 
     // With custom template and severity
-    "OrderFailedEvent": {
+    OrderFailedEvent: {
       template: OrderNotification,
       toast: { mode: "auto", severity: "error" },
     },
 
     // Progress-style toast (e.g., long-running export)
-    "ExportProgressEvent": {
+    ExportProgressEvent: {
       toast: {
         mode: "progress",
         isComplete: (msg) => msg.finished === true,
-        completedType: (msg) => msg.errorCount > 0 ? "error" : "success",
+        completedType: (msg) => (msg.errorCount > 0 ? "error" : "success"),
       },
     },
 
     // Silent: stored in history, no toast
-    "AuditLogEvent": {
+    AuditLogEvent: {
       toast: false,
     },
   },
@@ -382,21 +388,21 @@ export default defineAppModule({
 
 **`NotificationTypeConfig` options:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `toast` | `ToastConfig \| false` | Toast display behavior. `false` = no toast (silent). |
-| `template` | `Component` | Custom Vue component for rendering in the notification panel |
-| `groupBy` | `string` | Group notifications by this field value |
+| Field      | Type                   | Description                                                  |
+| ---------- | ---------------------- | ------------------------------------------------------------ |
+| `toast`    | `ToastConfig \| false` | Toast display behavior. `false` = no toast (silent).         |
+| `template` | `Component`            | Custom Vue component for rendering in the notification panel |
+| `groupBy`  | `string`               | Group notifications by this field value                      |
 
 **`ToastConfig` options:**
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `mode` | `"auto" \| "progress" \| "silent"` | required | `auto` = show and auto-dismiss; `progress` = stay until complete; `silent` = no toast |
-| `severity` | `Severity \| (msg) => Severity` | `"info"` | Toast type: `"info"`, `"success"`, `"warning"`, `"error"` |
-| `timeout` | `number` | varies | Auto-dismiss timeout in milliseconds |
-| `isComplete` | `(msg) => boolean` | `msg.finished` | For `progress` mode: when to close the toast |
-| `completedType` | `(msg) => "success" \| "error"` | `() => "success"` | For `progress` mode: final toast type |
+| Field           | Type                               | Default           | Description                                                                           |
+| --------------- | ---------------------------------- | ----------------- | ------------------------------------------------------------------------------------- |
+| `mode`          | `"auto" \| "progress" \| "silent"` | required          | `auto` = show and auto-dismiss; `progress` = stay until complete; `silent` = no toast |
+| `severity`      | `Severity \| (msg) => Severity`    | `"info"`          | Toast type: `"info"`, `"success"`, `"warning"`, `"error"`                             |
+| `timeout`       | `number`                           | varies            | Auto-dismiss timeout in milliseconds                                                  |
+| `isComplete`    | `(msg) => boolean`                 | `msg.finished`    | For `progress` mode: when to close the toast                                          |
+| `completedType` | `(msg) => "success" \| "error"`    | `() => "success"` | For `progress` mode: final toast type                                                 |
 
 ### Adding Locales
 
@@ -483,15 +489,15 @@ export default defineAppModule({ blades: pages, locales });
 
 **`DashboardWidget` options:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `string` | Unique widget identifier |
-| `name` | `string` | Display name |
-| `component` | `Component` | Vue component to render |
-| `size` | `{ width: number; height: number }` | Grid size |
-| `position` | `{ x: number; y: number }` | Initial grid position (optional) |
-| `permissions` | `string[]` | Required permissions (optional) |
-| `props` | `Record<string, unknown>` | Props passed to the component (optional) |
+| Field         | Type                                | Description                              |
+| ------------- | ----------------------------------- | ---------------------------------------- |
+| `id`          | `string`                            | Unique widget identifier                 |
+| `name`        | `string`                            | Display name                             |
+| `component`   | `Component`                         | Vue component to render                  |
+| `size`        | `{ width: number; height: number }` | Grid size                                |
+| `position`    | `{ x: number; y: number }`          | Initial grid position (optional)         |
+| `permissions` | `string[]`                          | Required permissions (optional)          |
+| `props`       | `Record<string, unknown>`           | Props passed to the component (optional) |
 
 ### Module Version Compatibility
 
@@ -770,7 +776,9 @@ export default createAppModule(pages, locales, notificationTemplates);
 export default defineAppModule({
   blades: pages,
   locales,
-  notifications: { /* ... */ },
+  notifications: {
+    /* ... */
+  },
 });
 ```
 
@@ -857,12 +865,12 @@ interface DefineAppModuleOptions {
 
 **Parameters:**
 
-| # | Parameter | Type | Description |
-|---|-----------|------|-------------|
-| 1 | `pages` | `Record<string, BladeInstanceConstructor>` | Blade components |
-| 2 | `locales` | `Record<string, object>` | Locale objects (optional) |
-| 3 | `notificationTemplates` | `Record<string, Component>` | Legacy notification templates (optional) |
-| 4 | `components` | `Record<string, Component>` | Global components (optional, ignored in new impl) |
+| #   | Parameter               | Type                                       | Description                                       |
+| --- | ----------------------- | ------------------------------------------ | ------------------------------------------------- |
+| 1   | `pages`                 | `Record<string, BladeInstanceConstructor>` | Blade components                                  |
+| 2   | `locales`               | `Record<string, object>`                   | Locale objects (optional)                         |
+| 3   | `notificationTemplates` | `Record<string, Component>`                | Legacy notification templates (optional)          |
+| 4   | `components`            | `Record<string, Component>`                | Global components (optional, ignored in new impl) |
 
 ---
 
@@ -886,22 +894,22 @@ interface DashboardWidget {
 
 ### Blade Static Properties (defineOptions)
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `name` | `string` | export key | Unique blade identifier |
-| `url` | `string` | `undefined` | URL path for routing |
-| `isWorkspace` | `boolean` | `false` | Top-level workspace blade |
-| `routable` | `boolean` | `true` | Whether a Vue Router route is created |
-| `permissions` | `string[]` | `undefined` | Required access permissions |
-| `menuItem` | `MenuItemConfig` | `undefined` | Sidebar menu configuration |
+| Property      | Type             | Default     | Description                           |
+| ------------- | ---------------- | ----------- | ------------------------------------- |
+| `name`        | `string`         | export key  | Unique blade identifier               |
+| `url`         | `string`         | `undefined` | URL path for routing                  |
+| `isWorkspace` | `boolean`        | `false`     | Top-level workspace blade             |
+| `routable`    | `boolean`        | `true`      | Whether a Vue Router route is created |
+| `permissions` | `string[]`       | `undefined` | Required access permissions           |
+| `menuItem`    | `MenuItemConfig` | `undefined` | Sidebar menu configuration            |
 
 **`MenuItemConfig`:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `title` | `string` | Display text or i18n key |
-| `icon` | `string` | Icon name (lucide-* or fas fa-*) |
-| `priority` | `number` | Sort order (lower = higher in menu) |
+| Field         | Type       | Description                                                     |
+| ------------- | ---------- | --------------------------------------------------------------- |
+| `title`       | `string`   | Display text or i18n key                                        |
+| `icon`        | `string`   | Icon name (lucide-_ or fas fa-_)                                |
+| `priority`    | `number`   | Sort order (lower = higher in menu)                             |
 | `permissions` | `string[]` | Permission override (optional, falls back to blade permissions) |
 
 ---
@@ -937,13 +945,13 @@ interface ToastConfig {
 
 ## Related
 
-| Resource | Path | Description |
-|----------|------|-------------|
-| Extension Points Plugin | `core/plugins/extension-points/` | Cross-module UI extension system |
-| BladeRegistry | `core/composables/useBladeRegistry/` | Where blades are stored and looked up |
-| useMenuService | `core/composables/useMenuService/` | `addMenuItem()` for sidebar navigation |
-| useDashboard | `core/composables/useDashboard/` | Dashboard widget management |
-| NotificationStore | `core/notifications/` | Notification type registration and dispatch |
-| i18n Plugin | `core/plugins/i18n/` | vue-i18n singleton for locale merging |
-| mf-host | `packages/mf-host/` | Module Federation host that loads remote modules |
-| Blade Navigation | `shared/components/blade-navigation/` | Blade stack rendering and navigation |
+| Resource                | Path                                  | Description                                      |
+| ----------------------- | ------------------------------------- | ------------------------------------------------ |
+| Extension Points Plugin | `core/plugins/extension-points/`      | Cross-module UI extension system                 |
+| BladeRegistry           | `core/composables/useBladeRegistry/`  | Where blades are stored and looked up            |
+| useMenuService          | `core/composables/useMenuService/`    | `addMenuItem()` for sidebar navigation           |
+| useDashboard            | `core/composables/useDashboard/`      | Dashboard widget management                      |
+| NotificationStore       | `core/notifications/`                 | Notification type registration and dispatch      |
+| i18n Plugin             | `core/plugins/i18n/`                  | vue-i18n singleton for locale merging            |
+| mf-host                 | `packages/mf-host/`                   | Module Federation host that loads remote modules |
+| Blade Navigation        | `shared/components/blade-navigation/` | Blade stack rendering and navigation             |

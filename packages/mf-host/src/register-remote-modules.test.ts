@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createApp, type App } from "vue";
-import { createRouter, createWebHistory, type Router } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 // Create a mock loadRemote that we can control per-test
 const mockLoadRemote = vi.fn();

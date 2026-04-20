@@ -1,4 +1,3 @@
-import { ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcWidget } from "@ui/components/atoms/vc-widget";
 import { provideWidgetService } from "@core/composables/useWidgets";

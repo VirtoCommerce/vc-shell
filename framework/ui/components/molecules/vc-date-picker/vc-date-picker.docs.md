@@ -20,7 +20,11 @@ A date and datetime picker that wraps the [VueDatePicker](https://vue3datepicker
 
 ```vue
 <template>
-  <VcDatePicker v-model="date" label="Delivery date" placeholder="Pick a date..." />
+  <VcDatePicker
+    v-model="date"
+    label="Delivery date"
+    placeholder="Pick a date..."
+  />
 </template>
 
 <script setup lang="ts">
@@ -42,12 +46,7 @@ The `type` prop controls whether the picker shows a date-only calendar or includ
 <VcDatePicker v-model="startDate" label="Start date" />
 
 <!-- Date and time -->
-<VcDatePicker
-  v-model="scheduledAt"
-  type="datetime-local"
-  label="Schedule publication"
-  placeholder="Pick date and time..."
-/>
+<VcDatePicker v-model="scheduledAt" type="datetime-local" label="Schedule publication" placeholder="Pick date and time..." />
 ```
 
 In `datetime-local` mode, the time picker is rendered inline below the calendar. The component auto-detects whether to show 12-hour (AM/PM) or 24-hour format based on the browser's locale.
@@ -57,22 +56,17 @@ In `datetime-local` mode, the time picker is rendered inline below the calendar.
 When `clearable` is set, a small "x" button appears once a date is selected, allowing the user to reset the field to `null`.
 
 ```vue
-<VcDatePicker
-  v-model="optionalDate"
-  label="Expiration date"
-  clearable
-  hint="Leave empty for no expiration"
-/>
+<VcDatePicker v-model="optionalDate" label="Expiration date" clearable hint="Leave empty for no expiration" />
 ```
 
 ### Size Variants
 
 Two height variants are available:
 
-| Size | Value | Height |
-|------|-------|--------|
-| Default | `"default"` | 36px |
-| Small | `"small"` | 32px |
+| Size    | Value       | Height |
+| ------- | ----------- | ------ |
+| Default | `"default"` | 36px   |
+| Small   | `"small"`   | 32px   |
 
 ```vue
 <VcDatePicker v-model="date" label="Default size" size="default" />
@@ -144,19 +138,10 @@ const form = reactive({
 <VcDatePicker :model-value="new Date()" label="Created at" disabled />
 
 <!-- Error state -->
-<VcDatePicker
-  v-model="date"
-  label="Start date"
-  :error="true"
-  error-message="Start date is required"
-/>
+<VcDatePicker v-model="date" label="Start date" :error="true" error-message="Start date is required" />
 
 <!-- With hint text -->
-<VcDatePicker
-  v-model="date"
-  label="Delivery date"
-  hint="Select a date within the next 30 days"
-/>
+<VcDatePicker v-model="date" label="Delivery date" hint="Select a date within the next 30 days" />
 ```
 
 ### Multilanguage Support
@@ -164,12 +149,7 @@ const form = reactive({
 Like other form fields, the date picker supports the multilanguage label indicator:
 
 ```vue
-<VcDatePicker
-  v-model="localizedDate"
-  label="Event date"
-  multilanguage
-  current-language="de-DE"
-/>
+<VcDatePicker v-model="localizedDate" label="Event date" multilanguage current-language="de-DE" />
 ```
 
 ## Recipes
@@ -297,52 +277,52 @@ const date = ref<Date | null>(new Date("2025-01-15"));
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `Date \| string \| null` | `undefined` | Bound value via `v-model` |
-| `type` | `"date" \| "datetime-local"` | `"date"` | Date only or date + time mode |
-| `label` | `string` | -- | Label text above the field |
-| `placeholder` | `string` | auto (localized) | Placeholder text; auto-generated from locale if not provided |
-| `hint` | `string` | -- | Helper text below the field |
-| `tooltip` | `string` | -- | Tooltip on the label info icon |
-| `clearable` | `boolean` | `false` | Shows a clear button when a date is selected |
-| `loading` | `boolean` | `false` | Shows a spinning loader icon |
-| `size` | `"default" \| "small"` | `"default"` | Field height variant |
-| `required` | `boolean` | `false` | Shows a required indicator |
-| `error` | `boolean` | `false` | Enables error styling |
-| `errorMessage` | `string` | -- | Error message below the field |
-| `disabled` | `boolean` | `false` | Disables the date picker |
-| `autofocus` | `boolean` | `false` | Focus the field on mount |
-| `name` | `string` | `"Field"` | HTML name attribute |
-| `multilanguage` | `boolean` | `false` | Shows language badge on the label |
-| `currentLanguage` | `string` | -- | Language code for the badge |
-| `datePickerOptions` | `VueDatePickerProps` | -- | Pass-through options to VueDatePicker |
+| Prop                | Type                         | Default          | Description                                                  |
+| ------------------- | ---------------------------- | ---------------- | ------------------------------------------------------------ |
+| `modelValue`        | `Date \| string \| null`     | `undefined`      | Bound value via `v-model`                                    |
+| `type`              | `"date" \| "datetime-local"` | `"date"`         | Date only or date + time mode                                |
+| `label`             | `string`                     | --               | Label text above the field                                   |
+| `placeholder`       | `string`                     | auto (localized) | Placeholder text; auto-generated from locale if not provided |
+| `hint`              | `string`                     | --               | Helper text below the field                                  |
+| `tooltip`           | `string`                     | --               | Tooltip on the label info icon                               |
+| `clearable`         | `boolean`                    | `false`          | Shows a clear button when a date is selected                 |
+| `loading`           | `boolean`                    | `false`          | Shows a spinning loader icon                                 |
+| `size`              | `"default" \| "small"`       | `"default"`      | Field height variant                                         |
+| `required`          | `boolean`                    | `false`          | Shows a required indicator                                   |
+| `error`             | `boolean`                    | `false`          | Enables error styling                                        |
+| `errorMessage`      | `string`                     | --               | Error message below the field                                |
+| `disabled`          | `boolean`                    | `false`          | Disables the date picker                                     |
+| `autofocus`         | `boolean`                    | `false`          | Focus the field on mount                                     |
+| `name`              | `string`                     | `"Field"`        | HTML name attribute                                          |
+| `multilanguage`     | `boolean`                    | `false`          | Shows language badge on the label                            |
+| `currentLanguage`   | `string`                     | --               | Language code for the badge                                  |
+| `datePickerOptions` | `VueDatePickerProps`         | --               | Pass-through options to VueDatePicker                        |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:modelValue` | `Date \| string \| null` | Emitted when the selected date changes |
-| `focus` | -- | Emitted when the picker gains focus or opens |
-| `blur` | `Event` | Emitted when the picker loses focus or closes |
+| Event               | Payload                  | Description                                   |
+| ------------------- | ------------------------ | --------------------------------------------- |
+| `update:modelValue` | `Date \| string \| null` | Emitted when the selected date changes        |
+| `focus`             | --                       | Emitted when the picker gains focus or opens  |
+| `blur`              | `Event`                  | Emitted when the picker loses focus or closes |
 
 ## CSS Variables
 
 Uses the same `--input-*` variables as VcInput for consistent styling across all input molecules:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--input-height` | `36px` | Default field height |
-| `--input-height-small` | `32px` | Small variant field height |
-| `--input-border-radius` | `6px` | Corner radius |
-| `--input-border-color` | `var(--neutrals-300)` | Default border color |
-| `--input-border-color-focus` | `var(--primary-500)` | Focus border color |
-| `--input-border-color-error` | `var(--danger-500)` | Error border color |
-| `--input-background-color` | `var(--additional-50)` | Background color |
-| `--input-text-color` | `var(--neutrals-800)` | Text color |
-| `--input-placeholder-color` | `var(--neutrals-400)` | Placeholder color |
-| `--input-focus-ring-color` | `var(--primary-100)` | Focus ring color |
-| `--input-error-ring-color` | `var(--danger-100)` | Error ring color |
+| Variable                     | Default                | Description                |
+| ---------------------------- | ---------------------- | -------------------------- |
+| `--input-height`             | `36px`                 | Default field height       |
+| `--input-height-small`       | `32px`                 | Small variant field height |
+| `--input-border-radius`      | `6px`                  | Corner radius              |
+| `--input-border-color`       | `var(--neutrals-300)`  | Default border color       |
+| `--input-border-color-focus` | `var(--primary-500)`   | Focus border color         |
+| `--input-border-color-error` | `var(--danger-500)`    | Error border color         |
+| `--input-background-color`   | `var(--additional-50)` | Background color           |
+| `--input-text-color`         | `var(--neutrals-800)`  | Text color                 |
+| `--input-placeholder-color`  | `var(--neutrals-400)`  | Placeholder color          |
+| `--input-focus-ring-color`   | `var(--primary-100)`   | Focus ring color           |
+| `--input-error-ring-color`   | `var(--danger-100)`    | Error ring color           |
 
 ## Accessibility
 
@@ -365,4 +345,3 @@ Uses the same `--input-*` variables as VcInput for consistent styling across all
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
-

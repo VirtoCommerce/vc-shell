@@ -1,4 +1,4 @@
-import { Component, ComputedRef, Ref } from "vue";
+import { ComputedRef, Ref } from "vue";
 
 /**
  * Badge configuration for menu items.

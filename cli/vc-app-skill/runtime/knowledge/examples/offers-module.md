@@ -1,6 +1,7 @@
 # Example: Offers Module (Notifications + Dashboard Widget)
 
 This example covers patterns NOT shown in team-module.md:
+
 - `registerDashboardWidget` — registering a dashboard widget from module index
 - `notifications` registration in `defineAppModule` — mapping event names to Vue templates
 - `useNotificationContext` — accessing notification data inside a notification template
@@ -40,11 +41,11 @@ export default defineAppModule({
   notifications: {
     OfferCreatedDomainEvent: {
       template: OfferCreatedDomainEvent,
-      toast: { mode: "auto" },            // auto-dismiss toast
+      toast: { mode: "auto" }, // auto-dismiss toast
     },
     OfferDeletedDomainEvent: {
       template: OfferDeletedDomainEvent,
-      toast: { mode: "auto", severity: "warning" },  // warning severity
+      toast: { mode: "auto", severity: "warning" }, // warning severity
     },
   },
 });
@@ -73,7 +74,8 @@ export * from "./composables";
     <VcHint
       v-if="notification.description"
       class="tw-mb-1"
-    >{{ notification.description }}</VcHint>
+      >{{ notification.description }}</VcHint
+    >
   </NotificationTemplate>
 </template>
 
@@ -98,17 +100,17 @@ const notificationStyle = {
 
 ## Notes on notification severity values
 
-| severity | use case |
-|---|---|
+| severity    | use case                            |
+| ----------- | ----------------------------------- |
 | `"success"` | Positive completion (default green) |
-| `"warning"` | Non-critical issue (yellow) |
-| `"error"` | Failure (red) |
-| (omitted) | Informational (blue/neutral) |
+| `"warning"` | Non-critical issue (yellow)         |
+| `"error"`   | Failure (red)                       |
+| (omitted)   | Informational (blue/neutral)        |
 
 ## Notes on toast mode values
 
-| mode | behavior |
-|---|---|
-| `"auto"` | Dismisses automatically after timeout |
-| `"manual"` | User must click to dismiss |
-| `"none"` | No toast shown; notification only in notification center |
+| mode       | behavior                                                 |
+| ---------- | -------------------------------------------------------- |
+| `"auto"`   | Dismisses automatically after timeout                    |
+| `"manual"` | User must click to dismiss                               |
+| `"none"`   | No toast shown; notification only in notification center |

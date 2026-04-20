@@ -34,18 +34,18 @@ onMounted(async () => {
 
 ## Components
 
-| Component | Props | Description |
-|-----------|-------|-------------|
+| Component           | Props                                     | Description                                     |
+| ------------------- | ----------------------------------------- | ----------------------------------------------- |
 | `ExternalProviders` | `providers: ExternalSignInProviderInfo[]` | Renders a vertical list of SSO provider buttons |
 
 ## API (`useExternalProvider`)
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `getProviders` | `() => Promise<ExternalSignInProviderInfo[]>` | Fetch available SSO providers from the platform API |
-| `signIn` | `(authenticationType: string) => Promise<void>` | Redirect to external provider login |
-| `signOut` | `(authenticationType: string) => Promise<void>` | Redirect to external provider logout |
-| `storage` | `Ref<{ providerType?: string }>` | Persisted localStorage ref tracking the active provider |
+| Method         | Signature                                       | Description                                             |
+| -------------- | ----------------------------------------------- | ------------------------------------------------------- |
+| `getProviders` | `() => Promise<ExternalSignInProviderInfo[]>`   | Fetch available SSO providers from the platform API     |
+| `signIn`       | `(authenticationType: string) => Promise<void>` | Redirect to external provider login                     |
+| `signOut`      | `(authenticationType: string) => Promise<void>` | Redirect to external provider logout                    |
+| `storage`      | `Ref<{ providerType?: string }>`                | Persisted localStorage ref tracking the active provider |
 
 ## Recipe: Custom Login Page with SSO and Credentials
 
@@ -67,18 +67,31 @@ onMounted(async () => {
   <VcAuthLayout>
     <!-- Standard credentials form -->
     <form @submit.prevent="handleLogin">
-      <VcInput v-model="username" label="Email" />
-      <VcInput v-model="password" label="Password" type="password" />
+      <VcInput
+        v-model="username"
+        label="Email"
+      />
+      <VcInput
+        v-model="password"
+        label="Password"
+        type="password"
+      />
       <VcButton type="submit">Sign In</VcButton>
     </form>
 
     <!-- Divider between credentials and SSO -->
-    <div v-if="hasProviders" class="tw-my-4 tw-text-center tw-text-gray-400">
+    <div
+      v-if="hasProviders"
+      class="tw-my-4 tw-text-center tw-text-gray-400"
+    >
       or continue with
     </div>
 
     <!-- SSO provider buttons -->
-    <ExternalProviders v-if="hasProviders" :providers="providers" />
+    <ExternalProviders
+      v-if="hasProviders"
+      :providers="providers"
+    />
   </VcAuthLayout>
 </template>
 ```
@@ -89,7 +102,10 @@ When the platform is configured for SSO-only authentication, use the `LoginPage`
 
 ```vue
 <template>
-  <Login sso-only title="Sign in with your corporate account" />
+  <Login
+    sso-only
+    title="Sign in with your corporate account"
+  />
 </template>
 ```
 

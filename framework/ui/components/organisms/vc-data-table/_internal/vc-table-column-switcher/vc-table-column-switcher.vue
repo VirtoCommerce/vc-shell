@@ -89,7 +89,7 @@ function toggleVisibility(item: ITableColumns) {
   return item;
 }
 
-function close() {
+function _close() {
   if (isActive.value) {
     isActive.value = false;
   }

@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
 
 // Mock the internal user logic and createSharedComposable
 const mockInternals = {

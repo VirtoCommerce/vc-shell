@@ -26,12 +26,12 @@ import { UserDropdownButton } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | `undefined` | User display name |
-| `role` | `string` | `undefined` | User role label |
-| `avatarUrl` | `string` | `undefined` | URL for the user avatar image |
-| `disabled` | `boolean` | `false` | Prevents menu from opening |
+| Prop        | Type      | Default     | Description                   |
+| ----------- | --------- | ----------- | ----------------------------- |
+| `name`      | `string`  | `undefined` | User display name             |
+| `role`      | `string`  | `undefined` | User role label               |
+| `avatarUrl` | `string`  | `undefined` | URL for the user avatar image |
+| `disabled`  | `boolean` | `false`     | Prevents menu from opening    |
 
 ## Recipe: Wiring to User Management Composable
 
@@ -45,9 +45,7 @@ import { useUserManagement } from "@vc-shell/framework";
 
 const { currentUser } = useUserManagement();
 
-const displayName = computed(() =>
-  currentUser.value ? `${currentUser.value.firstName} ${currentUser.value.lastName}` : ""
-);
+const displayName = computed(() => (currentUser.value ? `${currentUser.value.firstName} ${currentUser.value.lastName}` : ""));
 const role = computed(() => currentUser.value?.roles?.[0]?.name ?? "");
 const avatarUrl = computed(() => currentUser.value?.photoUrl);
 </script>

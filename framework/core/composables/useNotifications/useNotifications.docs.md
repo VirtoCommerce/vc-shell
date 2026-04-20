@@ -13,21 +13,14 @@ Provides access to the push-notification system: reading notification history, f
 ## Quick Start
 
 ```typescript
-import { useNotifications } from '@vc-shell/framework';
+import { useNotifications } from "@vc-shell/framework";
 
 // Subscribe to specific notification types
-const {
-  notifications,
-  moduleNotifications,
-  loadFromHistory,
-  markAsRead,
-  markAllAsRead,
-  setNotificationHandler,
-} = useNotifications('OrderStatusChanged');
+const { notifications, moduleNotifications, loadFromHistory, markAsRead, markAllAsRead, setNotificationHandler } = useNotifications("OrderStatusChanged");
 
 // Register a handler for real-time notifications
 setNotificationHandler((notification) => {
-  console.log('Order status changed:', notification);
+  console.log("Order status changed:", notification);
   refreshOrderList();
 });
 
@@ -39,20 +32,20 @@ onMounted(() => loadFromHistory(50));
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `notifyType` | `string \| string[]` | No | Notification type(s) to subscribe to (e.g., `'OrderStatusChanged'` or `['OrderCreated', 'OrderCancelled']`). Omit to receive all notifications. |
+| Parameter    | Type                 | Required | Description                                                                                                                                     |
+| ------------ | -------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `notifyType` | `string \| string[]` | No       | Notification type(s) to subscribe to (e.g., `'OrderStatusChanged'` or `['OrderCreated', 'OrderCancelled']`). Omit to receive all notifications. |
 
 ### Returns
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `notifications` | `ComputedRef<PushNotification[]>` | All notification history, sorted newest first. Includes both read and unread. |
-| `moduleNotifications` | `ComputedRef<PushNotification[]>` | New real-time notifications matching the subscribed types. Only includes items where `isNew` is `true`. |
-| `loadFromHistory` | `(take?: number) => Promise<void>` | Loads notification history from the server. `take` controls how many to fetch. |
-| `addNotification` | `(message: PushNotification) => void` | Manually ingests a notification into the store (e.g., for testing or synthetic events). |
-| `markAsRead` | `(message: PushNotification) => void` | Marks a single notification as read. |
-| `markAllAsRead` | `() => void` | Marks all notifications as read. |
+| Property                 | Type                                                          | Description                                                                                                                    |
+| ------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `notifications`          | `ComputedRef<PushNotification[]>`                             | All notification history, sorted newest first. Includes both read and unread.                                                  |
+| `moduleNotifications`    | `ComputedRef<PushNotification[]>`                             | New real-time notifications matching the subscribed types. Only includes items where `isNew` is `true`.                        |
+| `loadFromHistory`        | `(take?: number) => Promise<void>`                            | Loads notification history from the server. `take` controls how many to fetch.                                                 |
+| `addNotification`        | `(message: PushNotification) => void`                         | Manually ingests a notification into the store (e.g., for testing or synthetic events).                                        |
+| `markAsRead`             | `(message: PushNotification) => void`                         | Marks a single notification as read.                                                                                           |
+| `markAllAsRead`          | `() => void`                                                  | Marks all notifications as read.                                                                                               |
 | `setNotificationHandler` | `(handler: (notification: PushNotification) => void) => void` | Registers a callback for incoming real-time notifications matching subscribed types. Only one handler per composable instance. |
 
 ## How It Works
@@ -71,21 +64,14 @@ onMounted(() => loadFromHistory(50));
 
 ```vue
 <script setup lang="ts">
-import { useNotifications } from '@vc-shell/framework';
-import { onMounted } from 'vue';
+import { useNotifications } from "@vc-shell/framework";
+import { onMounted } from "vue";
 
-const {
-  notifications,
-  moduleNotifications,
-  loadFromHistory,
-  markAsRead,
-  markAllAsRead,
-  setNotificationHandler,
-} = useNotifications(['OrderCreated', 'OrderStatusChanged', 'OrderCancelled']);
+const { notifications, moduleNotifications, loadFromHistory, markAsRead, markAllAsRead, setNotificationHandler } = useNotifications(["OrderCreated", "OrderStatusChanged", "OrderCancelled"]);
 
 // Play a sound on new notifications
 setNotificationHandler((notification) => {
-  const audio = new Audio('/sounds/notification.mp3');
+  const audio = new Audio("/sounds/notification.mp3");
   audio.play().catch(() => {});
 });
 
@@ -95,15 +81,21 @@ onMounted(() => loadFromHistory(100));
 <template>
   <div class="notification-panel">
     <div class="tw-flex tw-justify-between tw-items-center tw-p-2">
-      <span class="tw-font-semibold">
-        Notifications ({{ moduleNotifications.length }} new)
-      </span>
-      <VcButton size="sm" variant="ghost" @click="markAllAsRead">
+      <span class="tw-font-semibold"> Notifications ({{ moduleNotifications.length }} new) </span>
+      <VcButton
+        size="sm"
+        variant="ghost"
+        @click="markAllAsRead"
+      >
         Mark all read
       </VcButton>
     </div>
 
-    <div v-for="item in notifications" :key="item.id" class="tw-p-2 tw-border-b">
+    <div
+      v-for="item in notifications"
+      :key="item.id"
+      class="tw-p-2 tw-border-b"
+    >
       <div class="tw-flex tw-justify-between">
         <span :class="{ 'tw-font-bold': item.isNew }">
           {{ item.title }}
@@ -127,10 +119,10 @@ onMounted(() => loadFromHistory(100));
 
 ```vue
 <script setup lang="ts">
-import { useNotifications } from '@vc-shell/framework';
-import { onMounted } from 'vue';
+import { useNotifications } from "@vc-shell/framework";
+import { onMounted } from "vue";
 
-const { setNotificationHandler } = useNotifications('InventoryChanged');
+const { setNotificationHandler } = useNotifications("InventoryChanged");
 
 const items = ref<InventoryItem[]>([]);
 

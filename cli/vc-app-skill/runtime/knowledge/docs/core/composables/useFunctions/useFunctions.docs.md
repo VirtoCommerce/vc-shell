@@ -12,7 +12,7 @@ Provides lightweight utility functions for timing control: debounce, throttle, d
 ## Quick Start
 
 ```typescript
-import { useFunctions } from '@vc-shell/framework';
+import { useFunctions } from "@vc-shell/framework";
 
 const { debounce, throttle, delay, once } = useFunctions();
 
@@ -31,7 +31,7 @@ delay(() => showTooltip(), 500);
 
 // Ensure a function runs only once (e.g., expensive initialization)
 const initOnce = once(() => {
-  console.log('This runs exactly once');
+  console.log("This runs exactly once");
   return expensiveSetup();
 });
 initOnce(); // runs and caches the result
@@ -43,12 +43,12 @@ initOnce(); // still returns cached result
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `debounce` | `(fn, delay: number) => (...args) => void` | Delays invocation until `delay` ms after the last call. Each new call resets the timer. |
+| Property   | Type                                       | Description                                                                                              |
+| ---------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `debounce` | `(fn, delay: number) => (...args) => void` | Delays invocation until `delay` ms after the last call. Each new call resets the timer.                  |
 | `throttle` | `(fn, delay: number) => (...args) => void` | Invokes at most once per `delay` ms on the leading edge. Subsequent calls within the window are ignored. |
-| `delay` | `(fn, ms?: number) => void` | Runs `fn` after `ms` milliseconds (default 0, which defers to the next macrotask via `setTimeout`). |
-| `once` | `(fn) => (...args) => unknown` | Ensures `fn` executes only once; subsequent calls return the cached result of the first invocation. |
+| `delay`    | `(fn, ms?: number) => void`                | Runs `fn` after `ms` milliseconds (default 0, which defers to the next macrotask via `setTimeout`).      |
+| `once`     | `(fn) => (...args) => unknown`             | Ensures `fn` executes only once; subsequent calls return the cached result of the first invocation.      |
 
 ## How They Work
 
@@ -61,11 +61,11 @@ initOnce(); // still returns cached result
 
 ```vue
 <script setup lang="ts">
-import { useFunctions } from '@vc-shell/framework';
-import { ref } from 'vue';
+import { useFunctions } from "@vc-shell/framework";
+import { ref } from "vue";
 
 const { debounce } = useFunctions();
-const searchQuery = ref('');
+const searchQuery = ref("");
 const results = ref<Product[]>([]);
 
 const performSearch = debounce(async (query: string) => {
@@ -91,7 +91,10 @@ function onSearchInput(value: string) {
         @update:model-value="onSearchInput"
       />
     </template>
-    <div v-for="product in results" :key="product.id">
+    <div
+      v-for="product in results"
+      :key="product.id"
+    >
       {{ product.name }}
     </div>
   </VcBlade>

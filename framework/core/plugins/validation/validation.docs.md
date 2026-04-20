@@ -32,11 +32,11 @@ Object.entries(allRules).forEach(([name, rule]) => {
 });
 
 // Then register custom vc-shell rules
-defineRule("mindimensions", /* ... */);
-defineRule("fileWeight", /* ... */);
-defineRule("before", /* ... */);
-defineRule("after", /* ... */);
-defineRule("bigint", /* ... */);
+defineRule("mindimensions" /* ... */);
+defineRule("fileWeight" /* ... */);
+defineRule("before" /* ... */);
+defineRule("after" /* ... */);
+defineRule("bigint" /* ... */);
 ```
 
 ## API
@@ -47,13 +47,13 @@ All rules from `@vee-validate/rules` are registered: `required`, `email`, `min`,
 
 ### Custom Rules
 
-| Rule | Params | Description |
-|------|--------|-------------|
-| `mindimensions` | `[width, height]` | Validates image files meet minimum pixel dimensions |
-| `fileWeight` | `[sizeInKB]` | Validates file size does not exceed the limit (in kilobytes) |
-| `before` | `[targetDate]` | Validates date is before the target date |
-| `after` | `[targetDate]` | Validates date is after the target date |
-| `bigint` | -- | Validates the value is a safe integer (`Number.isSafeInteger`) |
+| Rule            | Params            | Description                                                    |
+| --------------- | ----------------- | -------------------------------------------------------------- |
+| `mindimensions` | `[width, height]` | Validates image files meet minimum pixel dimensions            |
+| `fileWeight`    | `[sizeInKB]`      | Validates file size does not exceed the limit (in kilobytes)   |
+| `before`        | `[targetDate]`    | Validates date is before the target date                       |
+| `after`         | `[targetDate]`    | Validates date is after the target date                        |
+| `bigint`        | --                | Validates the value is a safe integer (`Number.isSafeInteger`) |
 
 ## Usage
 
@@ -63,16 +63,40 @@ The simplest approach for inline rule declarations:
 
 ```vue
 <template>
-  <VcField name="email" rules="required|email" v-slot="{ field, errors }">
-    <VcInput v-bind="field" :error-message="errors[0]" label="Email" />
+  <VcField
+    name="email"
+    rules="required|email"
+    v-slot="{ field, errors }"
+  >
+    <VcInput
+      v-bind="field"
+      :error-message="errors[0]"
+      label="Email"
+    />
   </VcField>
 
-  <VcField name="username" rules="required|min:3|max:50" v-slot="{ field, errors }">
-    <VcInput v-bind="field" :error-message="errors[0]" label="Username" />
+  <VcField
+    name="username"
+    rules="required|min:3|max:50"
+    v-slot="{ field, errors }"
+  >
+    <VcInput
+      v-bind="field"
+      :error-message="errors[0]"
+      label="Username"
+    />
   </VcField>
 
-  <VcField name="age" rules="required|numeric|between:18,120" v-slot="{ field, errors }">
-    <VcInput v-bind="field" :error-message="errors[0]" label="Age" />
+  <VcField
+    name="age"
+    rules="required|numeric|between:18,120"
+    v-slot="{ field, errors }"
+  >
+    <VcInput
+      v-bind="field"
+      :error-message="errors[0]"
+      label="Age"
+    />
   </VcField>
 </template>
 ```
@@ -105,12 +129,31 @@ const endDateRules = computed(() => `required|after:${startDate.value}`);
 </script>
 
 <template>
-  <VcField name="startDate" rules="required" v-slot="{ field, errors }">
-    <VcInput type="date" v-bind="field" v-model="startDate" :error-message="errors[0]" label="Start Date" />
+  <VcField
+    name="startDate"
+    rules="required"
+    v-slot="{ field, errors }"
+  >
+    <VcInput
+      type="date"
+      v-bind="field"
+      v-model="startDate"
+      :error-message="errors[0]"
+      label="Start Date"
+    />
   </VcField>
 
-  <VcField name="endDate" :rules="endDateRules" v-slot="{ field, errors }">
-    <VcInput type="date" v-bind="field" :error-message="errors[0]" label="End Date" />
+  <VcField
+    name="endDate"
+    :rules="endDateRules"
+    v-slot="{ field, errors }"
+  >
+    <VcInput
+      type="date"
+      v-bind="field"
+      :error-message="errors[0]"
+      label="End Date"
+    />
   </VcField>
 </template>
 ```

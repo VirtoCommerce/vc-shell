@@ -11,7 +11,7 @@ Manages the sidebar menu expanded/collapsed and hover-expanded state with localS
 ## Basic Usage
 
 ```typescript
-import { useMenuExpanded } from '@vc-shell/framework';
+import { useMenuExpanded } from "@vc-shell/framework";
 
 const { isExpanded, toggleExpanded, isHoverExpanded, toggleHoverExpanded } = useMenuExpanded();
 
@@ -19,19 +19,19 @@ const { isExpanded, toggleExpanded, isHoverExpanded, toggleHoverExpanded } = use
 toggleExpanded();
 
 // Hover expand with 200ms delay
-toggleHoverExpanded(true);   // opens after delay
-toggleHoverExpanded(false);  // closes immediately
+toggleHoverExpanded(true); // opens after delay
+toggleHoverExpanded(false); // closes immediately
 ```
 
 ## API
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `isExpanded` | `Ref<boolean>` | Pinned state, persisted via `useLocalStorage` |
-| `toggleExpanded` | `() => void` | Toggle the pinned state |
-| `isHoverExpanded` | `Ref<boolean>` | Temporary hover expansion (not persisted) |
+| Property              | Type                               | Description                                                      |
+| --------------------- | ---------------------------------- | ---------------------------------------------------------------- |
+| `isExpanded`          | `Ref<boolean>`                     | Pinned state, persisted via `useLocalStorage`                    |
+| `toggleExpanded`      | `() => void`                       | Toggle the pinned state                                          |
+| `isHoverExpanded`     | `Ref<boolean>`                     | Temporary hover expansion (not persisted)                        |
 | `toggleHoverExpanded` | `(shouldExpand?: boolean) => void` | Set hover state; opening has a 200ms delay, closing is immediate |
 
 ## Recipe: Custom Sidebar with Hover Expand
@@ -59,7 +59,7 @@ const isVisuallyExpanded = computed(() => isExpanded.value || isHoverExpanded.va
       <!-- menu items -->
     </nav>
     <button @click="toggleExpanded">
-      {{ isExpanded ? 'Unpin' : 'Pin' }}
+      {{ isExpanded ? "Unpin" : "Pin" }}
     </button>
   </aside>
 </template>

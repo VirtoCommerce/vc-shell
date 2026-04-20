@@ -268,7 +268,7 @@ export const WithTooltip: Story = {
  * Checkbox with different sizes
  */
 export const Sizes: Story = {
-  render: (args) => ({
+  render: (_args) => ({
     components: { VcCheckbox },
     setup() {
       const checked = ref(true);

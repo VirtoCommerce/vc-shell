@@ -14,7 +14,11 @@ A container component that wraps overflowing content with auto-hiding scroll arr
 ```vue
 <template>
   <VcScrollableContainer style="height: 200px;">
-    <div v-for="i in 30" :key="i" class="tw-px-3 tw-py-2">
+    <div
+      v-for="i in 30"
+      :key="i"
+      class="tw-px-3 tw-py-2"
+    >
       Item {{ i }}
     </div>
   </VcScrollableContainer>
@@ -27,24 +31,24 @@ import { VcScrollableContainer } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `speed` | `number` | `2` | Scroll speed in px/frame. Captured once at mount (not reactive). |
+| Prop    | Type     | Default | Description                                                      |
+| ------- | -------- | ------- | ---------------------------------------------------------------- |
+| `speed` | `number` | `2`     | Scroll speed in px/frame. Captured once at mount (not reactive). |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
-| `default` | Content rendered inside the scrollable viewport |
-| `arrow-up` | Custom up-arrow indicator (replaces default chevron) |
+| Slot         | Description                                            |
+| ------------ | ------------------------------------------------------ |
+| `default`    | Content rendered inside the scrollable viewport        |
+| `arrow-up`   | Custom up-arrow indicator (replaces default chevron)   |
 | `arrow-down` | Custom down-arrow indicator (replaces default chevron) |
 
 ## Exposed
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `viewportRef` | `Ref<HTMLElement \| null>` | Direct reference to the viewport DOM element |
-| `updateScrollState` | `() => void` | Manually recalculate arrow visibility |
+| Property            | Type                       | Description                                  |
+| ------------------- | -------------------------- | -------------------------------------------- |
+| `viewportRef`       | `Ref<HTMLElement \| null>` | Direct reference to the viewport DOM element |
+| `updateScrollState` | `() => void`               | Manually recalculate arrow visibility        |
 
 ## Recipe: Sidebar Filter List in a Blade
 
@@ -52,13 +56,19 @@ import { VcScrollableContainer } from "@vc-shell/framework";
 <template>
   <div class="tw-w-64 tw-border-r tw-border-gray-200">
     <h3 class="tw-px-3 tw-py-2 tw-font-semibold tw-text-sm">Filters</h3>
-    <VcScrollableContainer style="max-height: 320px;" :speed="3">
+    <VcScrollableContainer
+      style="max-height: 320px;"
+      :speed="3"
+    >
       <label
         v-for="filter in filters"
         :key="filter.id"
         class="tw-flex tw-items-center tw-gap-2 tw-px-3 tw-py-1.5 hover:tw-bg-gray-50 tw-cursor-pointer"
       >
-        <input type="checkbox" v-model="filter.active" />
+        <input
+          type="checkbox"
+          v-model="filter.active"
+        />
         <span class="tw-text-sm">{{ filter.label }}</span>
       </label>
     </VcScrollableContainer>
@@ -83,7 +93,10 @@ watch(activeCategory, () => {
 </script>
 
 <template>
-  <VcScrollableContainer ref="scrollContainer" style="height: 300px;">
+  <VcScrollableContainer
+    ref="scrollContainer"
+    style="height: 300px;"
+  >
     <ItemList :category="activeCategory" />
   </VcScrollableContainer>
 </template>

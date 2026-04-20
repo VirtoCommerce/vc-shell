@@ -20,15 +20,15 @@ A flexbox column layout primitive that stacks its children vertically. Designed 
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `size` | `number` | `1` | Flex-grow value controlling how much space the column occupies relative to siblings |
+| Prop   | Type     | Default | Description                                                                         |
+| ------ | -------- | ------- | ----------------------------------------------------------------------------------- |
+| `size` | `number` | `1`     | Flex-grow value controlling how much space the column occupies relative to siblings |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--col-gap` | `0` | Vertical gap between child elements |
+| Variable    | Default | Description                         |
+| ----------- | ------- | ----------------------------------- |
+| `--col-gap` | `0`     | Vertical gap between child elements |
 
 ## Common Patterns
 
@@ -75,12 +75,29 @@ A common blade layout places metadata in a narrow sidebar column and form fields
 ```vue
 <template>
   <VcRow class="tw-gap-6">
-    <VcCol :size="3" class="tw-gap-4">
-      <VcInput label="Name" v-model="form.name" required />
-      <VcTextarea label="Description" v-model="form.description" />
-      <VcSelect label="Category" v-model="form.category" :options="categories" />
+    <VcCol
+      :size="3"
+      class="tw-gap-4"
+    >
+      <VcInput
+        label="Name"
+        v-model="form.name"
+        required
+      />
+      <VcTextarea
+        label="Description"
+        v-model="form.description"
+      />
+      <VcSelect
+        label="Category"
+        v-model="form.category"
+        :options="categories"
+      />
     </VcCol>
-    <VcCol :size="1" class="tw-gap-4">
+    <VcCol
+      :size="1"
+      class="tw-gap-4"
+    >
       <VcStatusIcon :status="form.isPublished" />
       <VcHint>Created: {{ form.createdDate }}</VcHint>
       <VcHint>Modified: {{ form.modifiedDate }}</VcHint>

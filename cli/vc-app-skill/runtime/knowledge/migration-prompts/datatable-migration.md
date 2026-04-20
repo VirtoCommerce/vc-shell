@@ -11,21 +11,21 @@ Replace the imperative `VcTable` component (columns array, manual sort handlers,
 
 Full prop/event mapping:
 
-| VcTable prop/event | VcDataTable equivalent |
-|---|---|
-| `:columns="columns"` | `<VcColumn>` child components (see RULE 2) |
-| `:selected-item-id="id"` | `v-model:active-item-id="id"` |
-| `:sort="sortExpression"` | `v-model:sort-field` + `v-model:sort-order` |
-| `:multiselect="true"` | `:selection-mode="'multiple'"` |
-| `@selection-changed="fn"` | `v-model:selection="ref"` |
-| `:search-value="val"` | `:searchable="true"` (internal state) |
-| `@search:change="fn"` | `@search="fn"` |
-| `@item-click="fn"` | `@row-click="fn"` (different signature) |
-| `@header-click="fn"` | Remove (sort is declarative via v-model) |
-| `@scroll:ptr="fn"` | `:pull-to-refresh="true"` + `@pull-refresh="fn"` |
-| `:pages` + `:current-page` | `:pagination="{ currentPage, pages }"` |
-| `:active-filter-count` | Remove (managed by global-filters internally) |
-| `<!--@vue-generic {T}-->` | Remove (no longer needed) |
+| VcTable prop/event         | VcDataTable equivalent                           |
+| -------------------------- | ------------------------------------------------ |
+| `:columns="columns"`       | `<VcColumn>` child components (see RULE 2)       |
+| `:selected-item-id="id"`   | `v-model:active-item-id="id"`                    |
+| `:sort="sortExpression"`   | `v-model:sort-field` + `v-model:sort-order`      |
+| `:multiselect="true"`      | `:selection-mode="'multiple'"`                   |
+| `@selection-changed="fn"`  | `v-model:selection="ref"`                        |
+| `:search-value="val"`      | `:searchable="true"` (internal state)            |
+| `@search:change="fn"`      | `@search="fn"`                                   |
+| `@item-click="fn"`         | `@row-click="fn"` (different signature)          |
+| `@header-click="fn"`       | Remove (sort is declarative via v-model)         |
+| `@scroll:ptr="fn"`         | `:pull-to-refresh="true"` + `@pull-refresh="fn"` |
+| `:pages` + `:current-page` | `:pagination="{ currentPage, pages }"`           |
+| `:active-filter-count`     | Remove (managed by global-filters internally)    |
+| `<!--@vue-generic {T}-->`  | Remove (no longer needed)                        |
 
 **BEFORE:**
 
@@ -125,6 +125,7 @@ Full prop/event mapping:
 ```
 
 Key points:
+
 - `<!--@vue-generic {T}-->` comment is removed entirely.
 - `@header-click` is removed — sort is now declarative via `v-model:sort-field` and `v-model:sort-order`.
 - `:active-filter-count` is removed — the `global-filters` prop manages filter state and badge count internally.
@@ -136,18 +137,18 @@ Column definition moves from a JavaScript array to `<VcColumn>` child components
 
 Prop mapping:
 
-| columns array key | VcColumn prop |
-|---|---|
-| `id` | `id` |
-| `title` | `:title` |
-| `sortable` | `:sortable` |
-| `alwaysVisible` | `:always-visible` |
-| `type` | `type` |
-| `width` | `width` |
-| `visible` | `:visible` |
-| `field` | `:field` |
+| columns array key                                             | VcColumn prop     |
+| ------------------------------------------------------------- | ----------------- |
+| `id`                                                          | `id`              |
+| `title`                                                       | `:title`          |
+| `sortable`                                                    | `:sortable`       |
+| `alwaysVisible`                                               | `:always-visible` |
+| `type`                                                        | `type`            |
+| `width`                                                       | `width`           |
+| `visible`                                                     | `:visible`        |
+| `field`                                                       | `:field`          |
 | `mobilePosition` (value: `"top-left"`, `"bottom-left"`, etc.) | `mobile-position` |
-| `mobilePosition` (value: `"image"`, `"status"`) | `mobile-role` |
+| `mobilePosition` (value: `"image"`, `"status"`)               | `mobile-role`     |
 
 **BEFORE:**
 
@@ -262,6 +263,7 @@ Custom slot transformation — the slot name changes from `#item_{columnId}` to 
 ```
 
 Key points:
+
 - Remove the entire `columns` ref/reactive from the script section.
 - Remove the `ITableColumns` import if it was only used for the columns array.
 - The `mobilePosition` value `"image"` or `"status"` maps to `mobile-role`, not `mobile-position`. All other position values (`"top-left"`, `"bottom-left"`, `"top-right"`, `"bottom-right"`) map to `mobile-position`.
@@ -349,6 +351,7 @@ watch(sortExpression, async () => {
 ```
 
 Key points:
+
 - `initialProperty` is renamed to `initialField`.
 - `handleSortChange` is removed — the `v-model:sort-field` and `v-model:sort-order` bindings on VcDataTable handle sort changes automatically.
 - `sortExpression` is still available as a computed string (e.g., `"createdDate:DESC"`) for the API call watcher.
@@ -370,10 +373,7 @@ function onSelectionChanged(items: OrderItem[]) {
 ```
 
 ```vue
-<VcTable
-  :multiselect="true"
-  @selection-changed="onSelectionChanged"
-/>
+<VcTable :multiselect="true" @selection-changed="onSelectionChanged" />
 ```
 
 **AFTER:**
@@ -385,20 +385,22 @@ const localSelection = ref<OrderItem[]>([]);
 const selectedIds = computed(() => localSelection.value.map((i) => i.id!));
 
 // Or use a watcher if you need side-effects:
-watch(localSelection, (newSelection) => {
-  // e.g., enable/disable toolbar buttons based on selection
-  hasSelection.value = newSelection.length > 0;
-}, { deep: true });
+watch(
+  localSelection,
+  (newSelection) => {
+    // e.g., enable/disable toolbar buttons based on selection
+    hasSelection.value = newSelection.length > 0;
+  },
+  { deep: true },
+);
 ```
 
 ```vue
-<VcDataTable
-  :selection-mode="'multiple'"
-  v-model:selection="localSelection"
-/>
+<VcDataTable :selection-mode="'multiple'" v-model:selection="localSelection" />
 ```
 
 Key points:
+
 - The `localSelection` ref holds full item objects (typed to your entity), not string IDs.
 - Remove the `onSelectionChanged` function entirely.
 - `:multiselect="true"` becomes `:selection-mode="'multiple'"`.
@@ -442,6 +444,7 @@ function onItemClick(event: { data: OrderItem }) {
 ```
 
 Key points:
+
 - The parameter changes from `item: T` to `event: { data: T }`.
 - Destructure `event.data` at the top of the handler to minimize changes in the rest of the function body.
 - If the handler was a simple one-liner, you can also inline the destructure: `(event: { data: OrderItem }) => openBlade({ name: "OrderDetails", param: event.data.id })`.
@@ -496,6 +499,7 @@ Replace `#empty` and `#notfound` template slots with the `:empty-state` prop.
 ```
 
 Key points:
+
 - Remove `#empty` and `#notfound` template slots entirely.
 - Remove dedicated empty/not-found `.vue` components if they only rendered an icon, title, and action button.
 - `:empty-state` shows when there are no items at all (no search active). Props: `icon`, `title`, `actionLabel`, `actionHandler`.
@@ -565,13 +569,9 @@ const appliedFilters = reactive({
   status: [] as string[],
 });
 
-const hasFilterChanges = computed(
-  () => JSON.stringify(stagedFilters) !== JSON.stringify(appliedFilters),
-);
+const hasFilterChanges = computed(() => JSON.stringify(stagedFilters) !== JSON.stringify(appliedFilters));
 const hasFiltersApplied = computed(() => appliedFilters.status.length > 0);
-const activeFilterCount = computed(() =>
-  hasFiltersApplied.value ? appliedFilters.status.length : 0,
-);
+const activeFilterCount = computed(() => (hasFiltersApplied.value ? appliedFilters.status.length : 0));
 
 function toggleFilter(group: "status", value: string) {
   const idx = stagedFilters[group].indexOf(value);
@@ -595,11 +595,7 @@ function resetFilters() {
 ```
 
 ```vue
-<VcTable
-  :columns="columns"
-  :items="items"
-  :active-filter-count="activeFilterCount"
->
+<VcTable :columns="columns" :items="items" :active-filter-count="activeFilterCount">
   <template #filters>
     <div class="filters-panel">
       <h4>{{ $t("MY_MODULE.PAGES.LIST.FILTERS.STATUS") }}</h4>
@@ -662,16 +658,13 @@ async function onFilter(event: { filters: Record<string, unknown> }) {
 ```
 
 ```vue
-<VcDataTable
-  :items="items"
-  :global-filters="computedGlobalFilters"
-  @filter="onFilter"
->
+<VcDataTable :items="items" :global-filters="computedGlobalFilters" @filter="onFilter">
   <!-- VcColumn children here -->
 </VcDataTable>
 ```
 
 Remove all of the following explicitly:
+
 - `stagedFilters` reactive object
 - `appliedFilters` reactive object
 - `hasFilterChanges` computed
@@ -685,6 +678,7 @@ Remove all of the following explicitly:
 - Any filter-related CSS classes (`.filters-panel`, `.filters-actions`, etc.)
 
 Key points:
+
 - The `global-filters` prop accepts an array of filter descriptors. Each descriptor has `id`, `label`, and a `filter` object with `options` and `multiple`.
 - VcDataTable renders the filter UI internally — no manual checkbox loops or apply/reset buttons.
 - The `@filter` event fires when the user applies filters. The `event.filters` object is keyed by filter `id`, with values matching the selected option values.
@@ -757,10 +751,7 @@ export function useMyList(options?: { pageSize?: number }) {
 **BEFORE (blade page):**
 
 ```vue
-<VcDataTable
-  :pagination="{ currentPage, pages }"
-  @pagination-click="onPaginationClick"
-/>
+<VcDataTable :pagination="{ currentPage, pages }" @pagination-click="onPaginationClick" />
 ```
 
 ```typescript
@@ -774,11 +765,7 @@ const onPaginationClick = async (page: number) => {
 **AFTER (blade page):**
 
 ```vue
-<VcDataTable
-  :pagination="pagination"
-  :total-count="pagination.totalCount"
-  @pagination-click="pagination.goToPage"
-/>
+<VcDataTable :pagination="pagination" :total-count="pagination.totalCount" @pagination-click="pagination.goToPage" />
 ```
 
 ```typescript
@@ -787,11 +774,13 @@ const { items, pagination, loadItems, loading } = useMyList();
 ```
 
 **What to remove:**
+
 - `totalCount`, `pages`, `currentPage` computed from composable return
 - Manual `onPaginationClick` function in blade pages
 - Manual `skip` calculation `(page - 1) * pageSize`
 
 **What to add:**
+
 - `useDataTablePagination` import in composable
 - `pagination` object in composable return
 - `:pagination="pagination"` and `@pagination-click="pagination.goToPage"` in template

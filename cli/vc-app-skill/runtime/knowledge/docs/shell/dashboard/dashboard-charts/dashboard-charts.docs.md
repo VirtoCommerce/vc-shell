@@ -18,11 +18,11 @@ The charts are designed to work inside `DashboardWidgetCard` components, automat
 
 ## Components
 
-| Component | Description |
-|-----------|-------------|
-| `DashboardLineChart` | Time-series or continuous data with connected points |
-| `DashboardBarChart` | Grouped or single bar charts for categorical comparison |
-| `DashboardDonutChart` | Circular chart for part-to-whole relationships |
+| Component             | Description                                             |
+| --------------------- | ------------------------------------------------------- |
+| `DashboardLineChart`  | Time-series or continuous data with connected points    |
+| `DashboardBarChart`   | Grouped or single bar charts for categorical comparison |
+| `DashboardDonutChart` | Circular chart for part-to-whole relationships          |
 
 ## Basic Usage
 
@@ -54,35 +54,38 @@ const config: ChartConfig = {
 
 ## Key Props (shared across chart types)
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `data` | `T[]` | -- | Array of data points |
-| `config` | `ChartConfig` | -- | Series color and label configuration |
-| `xKey` | `keyof T` | -- | Key for x-axis values (line/bar) |
-| `yKeys` | `(keyof T)[]` | -- | Keys for y-axis series (line/bar) |
-| `showTooltip` | `boolean` | `true` | Enable hover tooltips |
-| `showLegend` | `boolean` | `true` | Show color legend below chart |
-| `rangeStart` | `number` | `undefined` | Filter data from this x value |
-| `rangeEnd` | `number` | `undefined` | Filter data up to this x value |
+| Prop          | Type          | Default     | Description                          |
+| ------------- | ------------- | ----------- | ------------------------------------ |
+| `data`        | `T[]`         | --          | Array of data points                 |
+| `config`      | `ChartConfig` | --          | Series color and label configuration |
+| `xKey`        | `keyof T`     | --          | Key for x-axis values (line/bar)     |
+| `yKeys`       | `(keyof T)[]` | --          | Keys for y-axis series (line/bar)    |
+| `showTooltip` | `boolean`     | `true`      | Enable hover tooltips                |
+| `showLegend`  | `boolean`     | `true`      | Show color legend below chart        |
+| `rangeStart`  | `number`      | `undefined` | Filter data from this x value        |
+| `rangeEnd`    | `number`      | `undefined` | Filter data up to this x value       |
 
 ### Donut-specific props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `valueKey` | `keyof T` | -- | Key for segment values |
-| `centralLabel` | `string` | `undefined` | Large text in donut center |
-| `centralSubLabel` | `string` | `undefined` | Small text below central label |
-| `arcWidth` | `number` | `60` | Donut arc thickness |
+| Prop              | Type      | Default     | Description                    |
+| ----------------- | --------- | ----------- | ------------------------------ |
+| `valueKey`        | `keyof T` | --          | Key for segment values         |
+| `centralLabel`    | `string`  | `undefined` | Large text in donut center     |
+| `centralSubLabel` | `string`  | `undefined` | Small text below central label |
+| `arcWidth`        | `number`  | `60`        | Donut arc thickness            |
 
 ## ChartConfig Type
 
 The `ChartConfig` object maps data field names to their visual configuration:
 
 ```typescript
-type ChartConfig = Record<string, {
-  label: string;    // Display name in legend and tooltip
-  color: string;    // CSS color value (hex, var(), rgb, etc.)
-}>;
+type ChartConfig = Record<
+  string,
+  {
+    label: string; // Display name in legend and tooltip
+    color: string; // CSS color value (hex, var(), rgb, etc.)
+  }
+>;
 ```
 
 ## Common Patterns
@@ -117,26 +120,13 @@ const salesConfig: ChartConfig = {
 ### Bar Chart with Formatted Axes
 
 ```vue
-<DashboardBarChart
-  :data="quarterlyData"
-  :config="quarterConfig"
-  x-key="quarter"
-  :y-keys="['electronics', 'clothing']"
-  :x-tick-format="(v) => ['Q1', 'Q2', 'Q3', 'Q4'][v]"
-  :y-tick-format="(v) => '$' + (v / 1000).toFixed(0) + 'k'"
-/>
+<DashboardBarChart :data="quarterlyData" :config="quarterConfig" x-key="quarter" :y-keys="['electronics', 'clothing']" :x-tick-format="(v) => ['Q1', 'Q2', 'Q3', 'Q4'][v]" :y-tick-format="(v) => '$' + (v / 1000).toFixed(0) + 'k'" />
 ```
 
 ### Donut Chart
 
 ```vue
-<DashboardDonutChart
-  :data="categoryData"
-  :config="categoryConfig"
-  value-key="count"
-  central-label="1,000"
-  central-sub-label="Total Products"
-/>
+<DashboardDonutChart :data="categoryData" :config="categoryConfig" value-key="count" central-label="1,000" central-sub-label="Total Products" />
 ```
 
 ### Chart Inside a Widget Card

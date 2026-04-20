@@ -34,9 +34,7 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
   api.report(
     `  Old: const { registerWidget, clearBladeWidgets, updateActiveWidget } = useWidgets(); registerWidget({...}, bladeId);`,
   );
-  api.report(
-    `  New: const { refreshAll } = useXxxWidgets(...); // UseXxxWidgetsReturn extends UseBladeWidgetsReturn`,
-  );
+  api.report(`  New: const { refreshAll } = useXxxWidgets(...); // UseXxxWidgetsReturn extends UseBladeWidgetsReturn`);
   api.report(`  Mapping: updateActiveWidget() → refreshAll() from your module widgets composable return.`);
   api.report(`  Auto-lifecycle: no onUnmounted/clearBladeWidgets needed. See migration guide #13.`);
 

@@ -45,16 +45,16 @@ Store `DOCS_ROOT` for passing to subagents.
 
 Parse `$ARGUMENTS` to determine the subcommand:
 
-| Arguments pattern | Route to |
-|---|---|
-| `create ...` | Section: `/vc-app create` |
-| `connect ...` | Section: `/vc-app connect` |
-| `add-module <name>` | Section: `/vc-app add-module` |
-| `generate ...` | Section: `/vc-app generate` |
-| `promote <moduleName>` | Section: `/vc-app promote` |
-| `design ...`              | Section: `/vc-app design` |
-| `migrate`                | Section: `/vc-app migrate` |
-| empty / `help` / `--help` | Section: Help |
+| Arguments pattern         | Route to                      |
+| ------------------------- | ----------------------------- |
+| `create ...`              | Section: `/vc-app create`     |
+| `connect ...`             | Section: `/vc-app connect`    |
+| `add-module <name>`       | Section: `/vc-app add-module` |
+| `generate ...`            | Section: `/vc-app generate`   |
+| `promote <moduleName>`    | Section: `/vc-app promote`    |
+| `design ...`              | Section: `/vc-app design`     |
+| `migrate`                 | Section: `/vc-app migrate`    |
+| empty / `help` / `--help` | Section: Help                 |
 
 If no arguments match, show the help section.
 
@@ -196,16 +196,19 @@ cat package.json | grep -q "generate-api-client"
 ```
 
 If yes, run:
+
 ```bash
 yarn generate-api-client
 ```
 
 If no, run:
+
 ```bash
 npx @vc-shell/api-client-generator
 ```
 
 If the command fails, show stderr and suggest:
+
 - Check that the platform URL is reachable
 - Check that the module names are correct
 - Try running with `--verbose` for more details
@@ -219,6 +222,7 @@ npx vue-tsc --noEmit
 ```
 
 If `vue-tsc` is not available, fall back to:
+
 ```bash
 npx tsc --noEmit
 ```
@@ -308,6 +312,7 @@ Full intent-driven module generation. This is the main power feature — it walk
    - Menu priority? (default: 100)
 
 Store all collected values:
+
 ```
 INTENT = {
   description: string,
@@ -334,10 +339,12 @@ After collecting `INTENT.moduleName`, check if `src/modules/<moduleName>/` alrea
 ### Phase 2: Data Source (Interactive Dialog)
 
 **Auto-detect no-API mode:** Before asking, check whether an API client directory exists:
+
 - Check `src/api_client/` relative to project root
 - Check the value of `APP_API_CLIENT_DIRECTORY` from `.env`
 
 If neither exists and `APP_API_CLIENT_DIRECTORY` is not set, skip the "Should this module use an API client?" question — go directly to mock mode (Phase 3 with empty data source). Show a note to the user:
+
 ```
 No API client found — generating with mock data.
 ```
@@ -357,6 +364,7 @@ If an API client directory does exist, proceed with the interactive dialog:
    > Read the file `{SKILL_DIR}/agents/api-analyzer.md` for your full instructions.
    >
    > Execute with these parameters:
+   >
    > ```json
    > {
    >   "apiClientDir": "<resolved api_client directory absolute path>",
@@ -367,6 +375,7 @@ If an API client directory does exist, proceed with the interactive dialog:
    > Return the structured JSON result.
 
 3. **Present discovered entities to the user.** Show a numbered list:
+
    ```
    Discovered API entities:
      1. User (UserSecurityClient) — search, get, create, update, delete
@@ -378,6 +387,7 @@ If an API client directory does exist, proceed with the interactive dialog:
 4. **Ask the user:** Which entity to use? (number from list)
 
 5. **Read the entity's type file** to discover available fields. Use Grep to find the entity class definition and extract its properties. Present them to the user:
+
    ```
    Fields on User:
      1. id (string)
@@ -409,6 +419,7 @@ If an API client directory does exist, proceed with the interactive dialog:
    ```
 
 Store all collected values:
+
 ```
 DATA_SOURCE = {
   clientClass: string,
@@ -428,11 +439,13 @@ DATA_SOURCE = {
 ### Phase 3: Generation (Dispatch Subagents)
 
 Determine the target directory for the module:
+
 ```
 TARGET_DIR = <project root>/src/modules/{INTENT.moduleName}
 ```
 
 Create the directory if it doesn't exist:
+
 ```bash
 mkdir -p {TARGET_DIR}/pages {TARGET_DIR}/composables {TARGET_DIR}/locales
 ```
@@ -448,6 +461,7 @@ Dispatch the `list-blade-generator` agent:
 > Read the file `{SKILL_DIR}/agents/list-blade-generator.md` for your full instructions.
 >
 > Execute with these parameters:
+>
 > ```json
 > {
 >   "moduleName": "{INTENT.moduleName}",
@@ -474,6 +488,7 @@ Dispatch the `details-blade-generator` agent:
 > Read the file `{SKILL_DIR}/agents/details-blade-generator.md` for your full instructions.
 >
 > Execute with these parameters:
+>
 > ```json
 > {
 >   "moduleName": "{INTENT.moduleName}",
@@ -507,6 +522,7 @@ After blade generators complete (wait for both if parallel), dispatch the `local
 > Read the file `{SKILL_DIR}/agents/locales-generator.md` for your full instructions.
 >
 > Execute with these parameters:
+>
 > ```json
 > {
 >   "moduleName": "{INTENT.moduleName}",
@@ -526,6 +542,7 @@ After locales are generated, dispatch the `module-assembler` agent:
 > Read the file `{SKILL_DIR}/agents/module-assembler.md` for your full instructions.
 >
 > Execute with these parameters:
+>
 > ```json
 > {
 >   "moduleName": "{INTENT.moduleName}",
@@ -577,6 +594,7 @@ Populate `mockFields.columns` from the column definitions used to dispatch the l
 3. Add `.vc-app-prototype.json` to `GENERATED_FILES`.
 
 4. Append to the Phase 4 summary output:
+
 ```
 Module generated with mock data.
 When your API is ready, run: /vc-app connect && /vc-app promote <moduleName>
@@ -591,6 +609,7 @@ After all generation is complete, dispatch the `type-checker` agent:
 > Read the file `{SKILL_DIR}/agents/type-checker.md` for your full instructions.
 >
 > Execute with these parameters:
+>
 > ```json
 > {
 >   "projectRoot": "<project root absolute path>",
@@ -642,6 +661,7 @@ Dispatch `module-analyzer` agent:
 > Read the file `{SKILL_DIR}/agents/module-analyzer.md` for your full instructions.
 >
 > Execute with these parameters:
+>
 > ```json
 > {
 >   "targetDir": "<absolute path to module directory>"
@@ -651,6 +671,7 @@ Dispatch `module-analyzer` agent:
 Store the result as `MODULE_ANALYSIS`.
 
 Present the module summary to the user:
+
 ```
 Module "<moduleName>" analysis:
   Blades: <list blade names and types>
@@ -664,6 +685,7 @@ Ask: **"What would you like to change? (describe in free text)"**
 #### Phase E2: Intent Parsing
 
 Parse the user's free-text description into an action plan. Map to action types:
+
 - Mentions of "column", "add to list/table" → `add-column`
 - Mentions of "field", "input", "form" → `add-field`
 - Mentions of "logic", "validation", "computed", "watcher" → `add-logic`
@@ -672,6 +694,7 @@ Parse the user's free-text description into an action plan. Map to action types:
 - Mentions of "new blade", "new list", "new details" → new blade creation (uses existing generators)
 
 Present the parsed action plan to the user for confirmation:
+
 ```
 Proposed changes:
   1. [add-column] Add "email" column to team-list after "name"
@@ -692,6 +715,7 @@ Confirm? (y to proceed, or describe corrections)
 For each action in the confirmed plan:
 
 **New blades** → dispatch `list-blade-generator` or `details-blade-generator` with `existingModule` context:
+
 - `existingModule.blades` = blade names from `MODULE_ANALYSIS.blades`
 - `existingModule.localePrefix` = derive from existing locale keys
 - `existingModule.indexPath` = path to module's `index.ts`
@@ -706,6 +730,7 @@ Then dispatch `module-assembler` with `mode: "append"`.
 > Read the file `{SKILL_DIR}/agents/blade-enhancer.md` for your full instructions.
 >
 > Execute with these parameters:
+>
 > ```json
 > {
 >   "targetDir": "<absolute path to module>",
@@ -718,6 +743,7 @@ Then dispatch `module-assembler` with `mode: "append"`.
 > ```
 
 Handle agent status:
+
 - `DONE` → proceed to Phase E5
 - `DONE_WITH_CONCERNS` → show concerns to user, proceed to Phase E5
 - `BLOCKED` → show error, stop
@@ -727,6 +753,7 @@ Handle agent status:
 Dispatch `type-checker` agent to verify TypeScript compiles.
 
 Present summary of all changes:
+
 ```
 Module "<moduleName>" enhanced:
 
@@ -751,10 +778,13 @@ Transition a prototype module from mock data to a real API client. This command 
 1. **Parse arguments.** Extract the module name from `$ARGUMENTS`. Format: `promote <moduleName>`. If no name provided, ask the user.
 
 2. **Read prototype metadata.** Look for `.vc-app-prototype.json` in `src/modules/<moduleName>/`:
+
    ```bash
    cat src/modules/<moduleName>/.vc-app-prototype.json
    ```
+
    If the file does not exist, stop with an error:
+
    ```
    Error: Module '<moduleName>' is not a prototype. Only modules generated without an API client can be promoted.
    Run /vc-app generate with an API client to create a production module directly.
@@ -771,6 +801,7 @@ Transition a prototype module from mock data to a real API client. This command 
      ```
 
 Store:
+
 ```
 MODULE_DIR = <project root>/src/modules/<moduleName>
 PROTOTYPE = <parsed .vc-app-prototype.json>
@@ -782,6 +813,7 @@ API_CLIENT_DIR = <resolved api_client directory>
 Follow the same interactive dialog flow as `/vc-app generate` Phase 2 — dispatch the `api-analyzer` agent, present entities to the user, let them select an entity, discover fields, select columns/form fields, and choose CRUD methods.
 
 Key differences from generate:
+
 - Only collect **columns** if `PROTOTYPE.intent.bladeTypes` includes `"list"`.
 - Only collect **form fields** if `PROTOTYPE.intent.bladeTypes` includes `"details"`.
 
@@ -797,6 +829,7 @@ Map prototype mock fields to real API entity fields.
    - **Unmatched**: no reasonable API counterpart found
 
 2. **Present mapping table** to the user for confirmation:
+
    ```
    Field Mapping (mock → API):
      name        → displayName    (semantic match)
@@ -836,6 +869,7 @@ Dispatch the `promote-agent` to rewrite module files:
 > Read the file `{SKILL_DIR}/agents/promote-agent.md` for your full instructions.
 >
 > Execute with these parameters:
+>
 > ```json
 > {
 >   "targetDir": "<absolute path to module directory>",
@@ -848,6 +882,7 @@ Dispatch the `promote-agent` to rewrite module files:
 > ```
 
 Handle agent status:
+
 - **DONE** — Proceed to Phase 5.
 - **DONE_WITH_CONCERNS** — Show concerns to the user, then proceed to Phase 5.
 - **BLOCKED** — Show the error to the user. Do NOT proceed. Suggest fixing the issue and re-running `/vc-app promote <moduleName>`.
@@ -861,6 +896,7 @@ Handle agent status:
    > Read the file `{SKILL_DIR}/agents/type-checker.md` for your full instructions.
    >
    > Execute with these parameters:
+   >
    > ```json
    > {
    >   "projectRoot": "<project root absolute path>",
@@ -930,10 +966,12 @@ After acquiring the prompt, ask the user for the platform address:
 - **If the user skips** (says "skip", "no", "none", empty, "later", etc.) → set `PLATFORM_URL = null`
 
 This URL is needed for:
+
 - Writing `.env.local` with `APP_PLATFORM_URL` so the app can authenticate against the platform
 - Enabling API client generation (via `/vc-app connect` flow) during or after design
 
 If the prompt is very short (under 20 words) or too abstract (no concrete entities/data mentioned), ask for clarification:
+
 ```
 Your description is quite abstract. To generate modules, I need to know what entities/data the app manages.
 
@@ -948,43 +986,47 @@ Could you describe:
 Parse `DESIGN_PROMPT` into a structured application plan. Apply these parsing rules:
 
 **Entity extraction:**
+
 - Nouns that represent manageable data objects → modules (e.g., "tenants", "subscriptions", "agents")
 - Module names: always kebab-case english, derived from entity names, regardless of prompt language
 
 **Field extraction:**
+
 - Concrete field mentions ("subscription token key", "trial period", "email") → columns or formFields with inferred types
 - Type inference — use the most specific type possible:
 
-  | Signal in prompt | Field type | Component (details) | Column type (list) |
-  |---|---|---|---|
-  | date, deadline, birthday, created, expires | `date-time` | `VcDatePicker` | `date-ago` |
-  | is*, has*, can*, enabled, active, published | `boolean` | `VcSwitch` | `status-icon` |
-  | price, cost, amount, total, salary, budget, fee | `currency` | `VcInputCurrency` | `money` |
-  | count, quantity, age, priority (numeric) | `number` | `VcInput type="number"` | `number` |
-  | description, notes, comment, bio, summary | `text` | `VcTextarea` | — (not in list) |
-  | body, content, html, article, template | `rich-text` | `VcEditor` | — (not in list) |
-  | status, state, type, category (from fixed set) | `enum` | `VcSelect` or `VcRadioGroup` | `status` |
-  | tags, labels, categories, roles, permissions | `multi-select` | `VcMultivalue` | — (not in list) |
-  | avatar, logo, photo, thumbnail, banner | `image` | `VcImageUpload` | `image` |
-  | photos, images, screenshots, gallery | `gallery` | `VcGallery` | — (not in list) |
-  | file, attachment, document, contract | `file` | `VcFileUpload` | — (not in list) |
-  | rating, score, stars | `rating` | `VcRating` | — (custom slot) |
-  | color, colour, brandColor | `color` | `VcColorInput` | — (custom slot) |
-  | discount, opacity, percentage, progress | `range` | `VcSlider` | — (custom slot) |
-  | email | `string` | `VcInput` (rules="email") | plain text |
-  | phone, tel | `string` | `VcInput` (type="tel") | plain text |
-  | url, website, link | `string` | `VcInput` (type="url") | plain text |
-  | everything else | `string` | `VcInput` | plain text |
+  | Signal in prompt                                | Field type     | Component (details)          | Column type (list) |
+  | ----------------------------------------------- | -------------- | ---------------------------- | ------------------ |
+  | date, deadline, birthday, created, expires      | `date-time`    | `VcDatePicker`               | `date-ago`         |
+  | is*, has*, can\*, enabled, active, published    | `boolean`      | `VcSwitch`                   | `status-icon`      |
+  | price, cost, amount, total, salary, budget, fee | `currency`     | `VcInputCurrency`            | `money`            |
+  | count, quantity, age, priority (numeric)        | `number`       | `VcInput type="number"`      | `number`           |
+  | description, notes, comment, bio, summary       | `text`         | `VcTextarea`                 | — (not in list)    |
+  | body, content, html, article, template          | `rich-text`    | `VcEditor`                   | — (not in list)    |
+  | status, state, type, category (from fixed set)  | `enum`         | `VcSelect` or `VcRadioGroup` | `status`           |
+  | tags, labels, categories, roles, permissions    | `multi-select` | `VcMultivalue`               | — (not in list)    |
+  | avatar, logo, photo, thumbnail, banner          | `image`        | `VcImageUpload`              | `image`            |
+  | photos, images, screenshots, gallery            | `gallery`      | `VcGallery`                  | — (not in list)    |
+  | file, attachment, document, contract            | `file`         | `VcFileUpload`               | — (not in list)    |
+  | rating, score, stars                            | `rating`       | `VcRating`                   | — (custom slot)    |
+  | color, colour, brandColor                       | `color`        | `VcColorInput`               | — (custom slot)    |
+  | discount, opacity, percentage, progress         | `range`        | `VcSlider`                   | — (custom slot)    |
+  | email                                           | `string`       | `VcInput` (rules="email")    | plain text         |
+  | phone, tel                                      | `string`       | `VcInput` (type="tel")       | plain text         |
+  | url, website, link                              | `string`       | `VcInput` (type="url")       | plain text         |
+  | everything else                                 | `string`       | `VcInput`                    | plain text         |
 
 - If a field clearly belongs to a list view (searchable, sortable characteristic) → column
 - If a field clearly belongs to a form (editable, configurable) → formField
 - If unclear → put in both columns and formFields
 
 **Action extraction:**
+
 - Concrete actions ("start trial", "upgrade plan", "approve") → toolbarActions with action name derived from the verb
 - Navigation mentions ("from tenant to subscription", "drill into details") → connections
 
 **Abstract requirement extraction:**
+
 - Anything that cannot be mapped to a concrete field/action/connection → todos
 - Quote the original text from the prompt
 - Examples: "plan limits will be identified later", "integration with external billing TBD"
@@ -1018,11 +1060,13 @@ DESIGN_PLAN = {
 ```
 
 **Scaffold detection:** Check if the current directory is a vc-shell project:
+
 - Look for `package.json` with `@vc-shell/framework` in dependencies or devDependencies
 - If not found → set `needsScaffold: true`
 - If found → set `needsScaffold: false`
 
 **Blade type inference:**
+
 - Entity with both list-worthy columns AND editable fields → `"list+details"`
 - Entity that is mainly a collection/catalog with no edit form → `"list-only"`
 - Entity that is a singleton/settings with no list → `"details-only"`
@@ -1030,10 +1074,12 @@ DESIGN_PLAN = {
 - Default to `"list+details"` when unclear
 
 **Details blade mode inference:**
+
 - If the entity is view-only (order, transaction, audit log, payment) → set `readOnly: true` on the module — the details generator will use `VcField` for display instead of `VcInput`
 - If the entity has mixed editable + read-only fields → default `readOnly: false`, individual fields marked as `readOnly` in `formFields`
 
 **Feature inference (enrich modules based on prompt signals):**
+
 - If entity mentions "related" sub-entities (e.g., "product has offers and videos") → add `widgets: ["sub-entity-name"]` — generates blade sidebar widgets with `useBladeWidgets()`
 - If entity is a "primary" concept that would benefit from a dashboard summary → add `dashboard: true` — generates a `DashboardWidgetCard` with stats
 - If entity mentions "notifications" or "events" or "alerts" → add `notifications: ["EventName"]` — generates notification template components
@@ -1071,6 +1117,7 @@ Confirm? (y to proceed, or describe corrections)
 **Confirmation loop:**
 
 Wait for the user's response:
+
 - **"y" / "yes" / confirmation** → proceed to Phase 4
 - **Free-text corrections** → re-parse the corrections, update `DESIGN_PLAN`, show the updated plan again. Examples of corrections the user might give:
   - "remove the agent-catalog module"
@@ -1080,6 +1127,7 @@ Wait for the user's response:
 - **No iteration limit** — keep looping until the user confirms or cancels
 
 **Large plan warning:** If the plan has 10 or more modules, show a suggestion before the confirmation prompt:
+
 ```
 This is a large application ({count} modules). Consider generating in batches:
   - Generate first {N} modules now, the rest later?
@@ -1100,6 +1148,7 @@ After the user confirms the plan:
    > Read the file `{SKILL_DIR}/agents/api-analyzer.md` for your full instructions.
    >
    > Execute with these parameters:
+   >
    > ```json
    > {
    >   "apiClientDir": "<resolved api_client directory absolute path>",
@@ -1115,6 +1164,7 @@ After the user confirms the plan:
    - No match → module stays in mock mode
 
    Update the plan display with data source info:
+
    ```
    1. tenants (list+details) — Data: API (TenantEntity matched)
    2. subscriptions (details-only) — Data: API (SubscriptionEntity matched)
@@ -1124,11 +1174,13 @@ After the user confirms the plan:
    Show the updated plan to the user for final confirmation before execution.
 
 3. **If no API client AND `DESIGN_PLAN.platformUrl` is set** → the user provided a platform URL but hasn't generated API clients yet. Ask:
+
    ```
    Platform URL is set ({DESIGN_PLAN.platformUrl}) but no API client found.
    Would you like to connect to the platform and generate API clients now? (y/n)
    - If yes: which platform modules? (comma-separated, e.g., VirtoCommerce.Orders,VirtoCommerce.Catalog)
    ```
+
    If the user says yes and provides module names → run the `/vc-app connect` execution steps (Steps 1-4 from the connect section) using `DESIGN_PLAN.platformUrl` and the provided module list. After connect completes, re-run API Detection (step 1-2 above) to match entities.
 
    If the user declines → proceed with mock mode for all modules.
@@ -1144,6 +1196,7 @@ After the user confirms the plan:
 #### Step 1: Scaffold (if `needsScaffold: true`)
 
 If `DESIGN_PLAN.needsScaffold` is true, run the `/vc-app create` flow:
+
 - Use `DESIGN_PLAN.appName` as the project name
 - Enable default options (no dashboard, no tenant-routes, no ai-agent, no mocks)
 - After scaffold completes, `cd` into the new project directory
@@ -1156,9 +1209,11 @@ If scaffold is not needed, skip to the `.env.local` step below.
 If `DESIGN_PLAN.platformUrl` is not null:
 
 1. Write or update `.env.local` in the project root:
+
    ```env
    APP_PLATFORM_URL=<DESIGN_PLAN.platformUrl>
    ```
+
    If `.env.local` already exists, read it first and only update/add the `APP_PLATFORM_URL` line. Do NOT remove other variables.
 
 2. This enables the app to authenticate against the platform on first launch (`yarn serve`).
@@ -1172,6 +1227,7 @@ Process each module in `DESIGN_PLAN.modules` in order:
 For module at index `i`:
 
 **2a: Build INTENT**
+
 ```json
 INTENT = {
   "description": "{module.description}",
@@ -1185,6 +1241,7 @@ INTENT = {
   "isWorkspace": true
 }
 ```
+
 Where `I18N_PREFIX` = SCREAMING_SNAKE_CASE of `module.name`.
 
 **2b: Build DATA_SOURCE**
@@ -1198,9 +1255,11 @@ Where `I18N_PREFIX` = SCREAMING_SNAKE_CASE of `module.name`.
 Follow the same Phase 3 generation flow as `/vc-app generate`:
 
 1. Create target directory:
+
    ```bash
    mkdir -p {TARGET_DIR}/pages {TARGET_DIR}/composables {TARGET_DIR}/locales
    ```
+
    Where `TARGET_DIR = <project root>/src/modules/{module.name}`
 
 2. Initialize `GENERATED_FILES = []`
@@ -1219,6 +1278,7 @@ Follow the same Phase 3 generation flow as `/vc-app generate`:
 **2d: Pass context for connections**
 
 For modules after the first, if `DESIGN_PLAN.connections` references a connection FROM an already-generated blade TO the current module's blade, pass `existingModule` context to the blade generator:
+
 ```json
 "existingModule": {
   "blades": ["<list of already-generated blade names>"],
@@ -1241,6 +1301,7 @@ After all modules are generated, for each connection in `DESIGN_PLAN.connections
 > Read the file `{SKILL_DIR}/agents/blade-enhancer.md` for your full instructions.
 >
 > Execute with these parameters:
+>
 > ```json
 > {
 >   "targetDir": "<absolute path to source module directory>",
@@ -1278,6 +1339,7 @@ After all modules are generated and TODOs injected, dispatch the `type-checker` 
 > Read the file `{SKILL_DIR}/agents/type-checker.md` for your full instructions.
 >
 > Execute with these parameters:
+>
 > ```json
 > {
 >   "projectRoot": "<project root absolute path>",
@@ -1312,6 +1374,7 @@ TypeScript: {✓ no errors / ✗ N errors (see above)}
 ```
 
 If all modules used mock data, append:
+
 ```
 Next steps:
   /vc-app connect     — connect to platform API
@@ -1319,6 +1382,7 @@ Next steps:
 ```
 
 If some modules matched API and some didn't, append:
+
 ```
 Next steps:
   /vc-app promote <name>  — transition mock modules to real API when ready
@@ -1331,53 +1395,71 @@ Next steps:
 Apply these rules throughout all sections:
 
 ### CLI command fails
+
 If any `npx` or `yarn` command exits with non-zero status:
+
 - Show the stderr/stdout output to the user
 - Suggest a manual fix or alternative command
 - Do NOT proceed to subsequent steps that depend on the failed step
 
 ### `vue-tsc` / `tsc` fails during connect
+
 If type checking fails after API client generation:
+
 - Dispatch the `type-checker` agent with the generated files in `src/api_client/`
 - Show the type-checker's report to the user
 
 ### User cancels mid-dialog
+
 If the user indicates they want to cancel (says "cancel", "stop", "nevermind", etc.) at any dialog step:
+
 - Stop immediately
 - Do NOT write any partial files
 - Confirm cancellation: "Generation cancelled. No files were created."
 
 ### Agent returns error
+
 If any subagent reports an error or fails to complete:
+
 - Show the error details to the user
 - Suggest retrying: "You can retry with `/vc-app generate` — your previous answers will need to be re-entered."
 - Do NOT proceed to subsequent phases that depend on the failed agent
 
 ### Missing API client directory
+
 If `src/api_client/` does not exist and the user wants API-backed generation:
+
 - Suggest running `/vc-app connect` first
 - Do NOT proceed with generation
 
 ### Prompt too abstract (design)
+
 If the prompt contains no identifiable entities, data objects, or concrete fields (e.g., "make me an app", "something cool"):
+
 - Ask the user to clarify: "Describe what entities/data the app manages, what actions users perform, and how objects relate."
 - Do NOT attempt to parse an empty/abstract prompt into modules.
 
 ### Large design plan (10+ modules)
+
 If prompt analysis produces 10 or more modules:
+
 - Show the full plan for review
 - Suggest batching: "Generate first N now, rest later?"
 - If user agrees to split, truncate modules list and note the remainder
 
 ### One module fails in design loop
+
 If a single module's generation fails during the design execution loop:
+
 - Show the error for that module
 - Continue generating remaining modules
 - In the final summary, list the failed module under "Skipped (errors):" with the error message
 - Suggest: "Re-run /vc-app generate for the skipped module after fixing the issue."
 
 ### Prompt in non-English (design)
+
 The prompt may be in any language. This is fine — parse entities and intent from any language, but:
+
 - Module names → always kebab-case english
 - Field names → always camelCase english
 - If you cannot confidently translate an entity name, ask the user to confirm the english name
@@ -1388,17 +1470,17 @@ The prompt may be in any language. This is fine — parse entities and intent fr
 
 All agents live at `{SKILL_DIR}/agents/`. Each agent file contains its own Input Contract, Knowledge Loading, Generation Rules, Output Contract, and Self-Check.
 
-| Agent | File | Purpose | Writes files? |
-|---|---|---|---|
-| api-analyzer | `agents/api-analyzer.md` | Discovers entities/methods in API client files | No (returns JSON) |
-| list-blade-generator | `agents/list-blade-generator.md` | Generates list blade + plural composable | Yes |
-| details-blade-generator | `agents/details-blade-generator.md` | Generates details blade + singular composable | Yes |
-| locales-generator | `agents/locales-generator.md` | Scans generated files for i18n keys, writes en.json | Yes |
-| module-assembler | `agents/module-assembler.md` | Creates barrel files, registers module | Yes |
-| type-checker | `agents/type-checker.md` | Runs vue-tsc, fixes type errors iteratively | Yes (fixes only) |
-| promote-agent | `agents/promote-agent.md` | Transforms mock composables/blades/locales to use real API | Yes (edits only) |
-| module-analyzer | `agents/module-analyzer.md` | Analyzes existing module structure (blades, composables, locales) | No (returns JSON) |
-| blade-enhancer | `agents/blade-enhancer.md` | Surgical edits to existing blades/composables/locales | Yes (edits only) |
+| Agent                   | File                                | Purpose                                                           | Writes files?     |
+| ----------------------- | ----------------------------------- | ----------------------------------------------------------------- | ----------------- |
+| api-analyzer            | `agents/api-analyzer.md`            | Discovers entities/methods in API client files                    | No (returns JSON) |
+| list-blade-generator    | `agents/list-blade-generator.md`    | Generates list blade + plural composable                          | Yes               |
+| details-blade-generator | `agents/details-blade-generator.md` | Generates details blade + singular composable                     | Yes               |
+| locales-generator       | `agents/locales-generator.md`       | Scans generated files for i18n keys, writes en.json               | Yes               |
+| module-assembler        | `agents/module-assembler.md`        | Creates barrel files, registers module                            | Yes               |
+| type-checker            | `agents/type-checker.md`            | Runs vue-tsc, fixes type errors iteratively                       | Yes (fixes only)  |
+| promote-agent           | `agents/promote-agent.md`           | Transforms mock composables/blades/locales to use real API        | Yes (edits only)  |
+| module-analyzer         | `agents/module-analyzer.md`         | Analyzes existing module structure (blades, composables, locales) | No (returns JSON) |
+| blade-enhancer          | `agents/blade-enhancer.md`          | Surgical edits to existing blades/composables/locales             | Yes (edits only)  |
 
 ### How to dispatch an agent
 
@@ -1445,6 +1527,7 @@ fi
 ```
 
 Priority:
+
 1. **Env override:** `VC_SHELL_MIGRATE_CLI` env var
 2. **Project node_modules:** `./node_modules/@vc-shell/migrate/dist/cli.js`
 3. **npx fallback:** `npx @vc-shell/migrate`
@@ -1470,6 +1553,7 @@ Display the output to the user. If the command fails, stop and show the error.
 3. **Hard gate — verify platform accessibility:**
    - Check for `APP_PLATFORM_URL` in `.env.local` or `.env`.
    - If not found, **STOP** with this error:
+
      ```
      Error: Platform URL not configured.
 
@@ -1479,6 +1563,7 @@ Display the output to the user. If the command fails, stop and show the error.
      2. Ensure the platform is running and accessible
      3. Re-run /vc-app migrate
      ```
+
    - If found, run:
      ```bash
      yarn generate-api-client
@@ -1486,9 +1571,11 @@ Display the output to the user. If the command fails, stop and show the error.
    - If the generator fails (platform unreachable), **STOP** with the same error.
 
 4. **Verify generated types compile:**
+
    ```bash
    npx vue-tsc --noEmit 2>&1 | head -20
    ```
+
    If there are errors in `src/api_client/` files, the generator produced invalid output — **STOP** and ask the user to check the platform API and re-run.
 
 5. On success, continue to Step 3.
@@ -1511,23 +1598,24 @@ Parse the "Manual Migration Required" section. Extract each topic heading and th
 
 Map topic headings to migration prompt files and pattern files:
 
-| Report Heading contains (or equals transform name) | Canonical topic name | Migration Prompt | Pattern |
-|---|---|---|---|
-| Widget / widgets-migration | `widgets-migration` | `{KNOWLEDGE_BASE}/migration-prompts/widgets-migration.md` | `{KNOWLEDGE_BASE}/patterns/blade-widget.md` |
-| Form Management / useBladeForm / use-blade-form | `use-blade-form` | `{KNOWLEDGE_BASE}/migration-prompts/blade-form-migration.md` | `{KNOWLEDGE_BASE}/patterns/form-validation.md` |
-| Injection Key / remove-deprecated-aliases | `remove-deprecated-aliases` | `{KNOWLEDGE_BASE}/migration-prompts/blade-props-migration.md` | `{KNOWLEDGE_BASE}/patterns/blade-navigation.md` |
-| NSwag / DTO / Clone-then-mutate / nswag-class-to-interface | `nswag-class-to-interface` | `{KNOWLEDGE_BASE}/migration-prompts/nswag-migration.md` | — |
-| Reusable Blade Components / blade-props-simplification | `blade-props-simplification` | `{KNOWLEDGE_BASE}/migration-prompts/blade-props-migration.md` | `{KNOWLEDGE_BASE}/patterns/child-blade-flow.md` |
-| Notification / notification-migration | `notification-migration` | `{KNOWLEDGE_BASE}/migration-prompts/notifications-migration.md` | `{KNOWLEDGE_BASE}/patterns/signalr-notifications.md` |
-| VcTable / DataTable / vctable-audit | `vctable-audit` | `{KNOWLEDGE_BASE}/migration-prompts/datatable-migration.md` | `{KNOWLEDGE_BASE}/patterns/datatable-pattern.md` |
-| Icon / material- / bi- / fa- / icon-audit | `icon-audit` | `{KNOWLEDGE_BASE}/migration-prompts/icon-migration.md` | — |
-| Assets API / useAssets / useAssetsManager / use-assets-migration | `use-assets-migration` | `{KNOWLEDGE_BASE}/migration-prompts/use-assets-migration.md` | `{KNOWLEDGE_BASE}/patterns/assets-management.md` |
-| Manual Migration Audit / useExternalWidgets / moment / useFunctions / manual-migration-audit | `manual-migration-audit` | `{KNOWLEDGE_BASE}/migration-prompts/manual-migration-audit.md` | — |
-| Pagination / useDataTablePagination / use-data-table-pagination-audit | `use-data-table-pagination-audit` | `{KNOWLEDGE_BASE}/migration-prompts/use-data-table-pagination-migration.md` | — |
+| Report Heading contains (or equals transform name)                                           | Canonical topic name              | Migration Prompt                                                            | Pattern                                              |
+| -------------------------------------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Widget / widgets-migration                                                                   | `widgets-migration`               | `{KNOWLEDGE_BASE}/migration-prompts/widgets-migration.md`                   | `{KNOWLEDGE_BASE}/patterns/blade-widget.md`          |
+| Form Management / useBladeForm / use-blade-form                                              | `use-blade-form`                  | `{KNOWLEDGE_BASE}/migration-prompts/blade-form-migration.md`                | `{KNOWLEDGE_BASE}/patterns/form-validation.md`       |
+| Injection Key / remove-deprecated-aliases                                                    | `remove-deprecated-aliases`       | `{KNOWLEDGE_BASE}/migration-prompts/blade-props-migration.md`               | `{KNOWLEDGE_BASE}/patterns/blade-navigation.md`      |
+| NSwag / DTO / Clone-then-mutate / nswag-class-to-interface                                   | `nswag-class-to-interface`        | `{KNOWLEDGE_BASE}/migration-prompts/nswag-migration.md`                     | —                                                    |
+| Reusable Blade Components / blade-props-simplification                                       | `blade-props-simplification`      | `{KNOWLEDGE_BASE}/migration-prompts/blade-props-migration.md`               | `{KNOWLEDGE_BASE}/patterns/child-blade-flow.md`      |
+| Notification / notification-migration                                                        | `notification-migration`          | `{KNOWLEDGE_BASE}/migration-prompts/notifications-migration.md`             | `{KNOWLEDGE_BASE}/patterns/signalr-notifications.md` |
+| VcTable / DataTable / vctable-audit                                                          | `vctable-audit`                   | `{KNOWLEDGE_BASE}/migration-prompts/datatable-migration.md`                 | `{KNOWLEDGE_BASE}/patterns/datatable-pattern.md`     |
+| Icon / material- / bi- / fa- / icon-audit                                                    | `icon-audit`                      | `{KNOWLEDGE_BASE}/migration-prompts/icon-migration.md`                      | —                                                    |
+| Assets API / useAssets / useAssetsManager / use-assets-migration                             | `use-assets-migration`            | `{KNOWLEDGE_BASE}/migration-prompts/use-assets-migration.md`                | `{KNOWLEDGE_BASE}/patterns/assets-management.md`     |
+| Manual Migration Audit / useExternalWidgets / moment / useFunctions / manual-migration-audit | `manual-migration-audit`          | `{KNOWLEDGE_BASE}/migration-prompts/manual-migration-audit.md`              | —                                                    |
+| Pagination / useDataTablePagination / use-data-table-pagination-audit                        | `use-data-table-pagination-audit` | `{KNOWLEDGE_BASE}/migration-prompts/use-data-table-pagination-migration.md` | —                                                    |
 
 Build the `topics` array for the migration-agent using the canonical topic names above.
 
 Hard gate:
+
 1. If a heading from "Manual Migration Required" does not match any row, add it to `unmappedTopics`.
 2. If a mapped row references a missing migration prompt file, add it to `missingPrompts`.
 3. If `unmappedTopics` or `missingPrompts` is non-empty, **STOP** and print both lists. Do not silently skip actionable topics.
@@ -1535,6 +1623,7 @@ Hard gate:
 ### Step 5: Dispatch migration-agent (with partial recovery)
 
 **Before dispatching, check for partial completion** from a previous run:
+
 1. Parse `MIGRATION_REPORT.md` and collect topics already marked as completed (`### ✅ ...` headings).
 2. If `.vc-app-migrate-state.json` exists, load completed topics from it.
 3. Union both sources into `alreadyCompletedTopics`.
@@ -1572,6 +1661,7 @@ npx vue-tsc --noEmit
 ```
 
 If there are remaining TypeScript errors:
+
 1. Show the errors to the user
 2. Attempt to fix iteratively — read each error, fix the file, re-check (max 3 rounds)
 
@@ -1582,6 +1672,7 @@ yarn build
 ```
 
 If the build fails (Vite resolve errors, missing assets, etc.):
+
 1. Show the error to the user
 2. Attempt to fix iteratively (max 2 rounds) — common issues: missing imports, deleted files still referenced, CSS import paths
 3. If still failing after 2 rounds, **STOP** and mark migration as incomplete (do not print "Migration complete")
@@ -1604,10 +1695,12 @@ If Prettier fails, stop and show the error.
 ### Step 7: Update report and summarize
 
 Update `MIGRATION_REPORT.md`:
+
 - For each topic the agent successfully completed, add ✅ to the heading
 - Add a "Completed by AI" section listing what was done
 
 Write `.vc-app-migrate-state.json` in project root:
+
 - Store per-topic status (`completed`/`failed`), affected files, and timestamp
 - This state is used by Step 5 for automatic resume on the next `/vc-app migrate` run
 

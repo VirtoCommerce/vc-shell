@@ -26,21 +26,21 @@ if (hasAccess("order:update")) {
 
 The `hasAccess` function evaluates permissions from the current user object (loaded via `useUserManagement`). The behavior depends on the input type and the user's role.
 
-| Input | Result |
-|-------|--------|
-| `undefined` | `true` -- no permission required, everyone has access |
-| `"order:read"` | `true` if the user has this exact permission string |
+| Input                            | Result                                                              |
+| -------------------------------- | ------------------------------------------------------------------- |
+| `undefined`                      | `true` -- no permission required, everyone has access               |
+| `"order:read"`                   | `true` if the user has this exact permission string                 |
 | `["order:read", "order:update"]` | `true` if the user has **any** of the listed permissions (OR logic) |
-| Any value, administrator user | Always `true` -- administrators bypass all checks |
+| Any value, administrator user    | Always `true` -- administrators bypass all checks                   |
 
 Permission strings follow the VirtoCommerce platform format: `"module:action"`. Common examples:
 
-| Permission | Meaning |
-|------------|---------|
-| `"order:read"` | View orders |
-| `"order:update"` | Edit orders |
-| `"order:delete"` | Delete orders |
-| `"catalog:create"` | Create catalog items |
+| Permission          | Meaning                  |
+| ------------------- | ------------------------ |
+| `"order:read"`      | View orders              |
+| `"order:update"`    | Edit orders              |
+| `"order:delete"`    | Delete orders            |
+| `"catalog:create"`  | Create catalog items     |
 | `"customer:manage"` | Full customer management |
 
 ## Conditional Rendering in Templates
@@ -255,15 +255,15 @@ if (hasAccess("order:delete")) {
 
 ### Returns: `UsePermissionsReturn`
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property    | Type                                                        | Description                                              |
+| ----------- | ----------------------------------------------------------- | -------------------------------------------------------- |
 | `hasAccess` | `(permissions: string \| string[] \| undefined) => boolean` | Check if the current user has the required permission(s) |
 
 ### hasAccess Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `permissions` | `string \| string[] \| undefined` | No | Permission string, array of strings (OR logic), or `undefined` (always true) |
+| Parameter     | Type                              | Required | Description                                                                  |
+| ------------- | --------------------------------- | -------- | ---------------------------------------------------------------------------- |
+| `permissions` | `string \| string[] \| undefined` | No       | Permission string, array of strings (OR logic), or `undefined` (always true) |
 
 ### Internal Behavior
 

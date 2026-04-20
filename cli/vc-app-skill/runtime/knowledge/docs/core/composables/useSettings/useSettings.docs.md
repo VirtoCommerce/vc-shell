@@ -30,21 +30,21 @@ const { uiSettings, loading } = useSettings();
 
 ### Returns
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `uiSettings` | `Ref<IUISetting>` | Reactive object with current UI customization values |
-| `loading` | `ComputedRef<boolean>` | Whether settings are being fetched from the API |
+| Property        | Type                                                | Description                                               |
+| --------------- | --------------------------------------------------- | --------------------------------------------------------- |
+| `uiSettings`    | `Ref<IUISetting>`                                   | Reactive object with current UI customization values      |
+| `loading`       | `ComputedRef<boolean>`                              | Whether settings are being fetched from the API           |
 | `applySettings` | `(args: { logo?, title?, avatar?, role? }) => void` | Override settings with custom values (prevents API fetch) |
 
 ### IUISetting
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property        | Type      | Description                                |
+| --------------- | --------- | ------------------------------------------ |
 | `contrast_logo` | `string?` | Logo variant for dark/contrast backgrounds |
-| `logo` | `string?` | Primary application logo URL |
-| `title` | `string?` | Application title |
-| `avatar` | `string?` | Current user avatar URL |
-| `role` | `string?` | Current user role display name |
+| `logo`          | `string?` | Primary application logo URL               |
+| `title`         | `string?` | Application title                          |
+| `avatar`        | `string?` | Current user avatar URL                    |
+| `role`          | `string?` | Current user role display name             |
 
 ## Common Patterns
 
@@ -58,14 +58,20 @@ const { uiSettings, loading } = useSettings();
 </script>
 
 <template>
-  <div v-loading="loading" class="tw-min-h-[40px]">
+  <div
+    v-loading="loading"
+    class="tw-min-h-[40px]"
+  >
     <img
       v-if="uiSettings.logo"
       :src="uiSettings.logo"
       :alt="uiSettings.title ?? 'Application Logo'"
       class="tw-h-10"
     />
-    <span v-if="uiSettings.title" class="tw-ml-2 tw-text-lg tw-font-semibold">
+    <span
+      v-if="uiSettings.title"
+      class="tw-ml-2 tw-text-lg tw-font-semibold"
+    >
       {{ uiSettings.title }}
     </span>
   </div>
@@ -117,7 +123,10 @@ watch(user, (currentUser) => {
       alt="User avatar"
       class="tw-w-8 tw-h-8 tw-rounded-full"
     />
-    <span v-if="uiSettings.role" class="tw-text-sm tw-text-gray-500">
+    <span
+      v-if="uiSettings.role"
+      class="tw-text-sm tw-text-gray-500"
+    >
       {{ uiSettings.role }}
     </span>
   </div>

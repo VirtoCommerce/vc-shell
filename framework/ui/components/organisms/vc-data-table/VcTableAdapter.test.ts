@@ -7,7 +7,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount, VueWrapper } from "@vue/test-utils";
-import { defineComponent, ref, nextTick } from "vue";
+import { defineComponent, nextTick } from "vue";
 import VcTableAdapter from "./VcTableAdapter.vue";
 
 // ============================================================================

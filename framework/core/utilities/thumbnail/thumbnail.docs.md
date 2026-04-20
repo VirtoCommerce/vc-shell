@@ -12,21 +12,21 @@ Transforms full-size image URLs into thumbnail variants by appending size suffix
 
 ### Named Presets
 
-| Preset | Use Case |
-|--------|----------|
-| `sm` | Small icons, table cells, avatar thumbnails |
-| `md` | Medium previews, cards |
-| `lg` | Large previews, hero images |
+| Preset | Use Case                                    |
+| ------ | ------------------------------------------- |
+| `sm`   | Small icons, table cells, avatar thumbnails |
+| `md`   | Medium previews, cards                      |
+| `lg`   | Large previews, hero images                 |
 
 ### Pixel Sizes
 
-| Size | Pixels | Use Case |
-|------|--------|----------|
-| `64x64` | 64px | Table cells, tiny thumbnails |
-| `128x128` | 128px | Small tiles, list items |
-| `168x168` | 168px | Medium tiles |
-| `216x216` | 216px | Gallery tiles (md) |
-| `348x348` | 348px | Large gallery tiles |
+| Size      | Pixels | Use Case                     |
+| --------- | ------ | ---------------------------- |
+| `64x64`   | 64px   | Table cells, tiny thumbnails |
+| `128x128` | 128px  | Small tiles, list items      |
+| `168x168` | 168px  | Medium tiles                 |
+| `216x216` | 216px  | Gallery tiles (md)           |
+| `348x348` | 348px  | Large gallery tiles          |
 
 ## API
 
@@ -37,20 +37,21 @@ Transforms an image URL by inserting a size suffix before the file extension.
 ```ts
 import { getThumbnailUrl } from "@core/utilities/thumbnail";
 
-getThumbnailUrl("https://cdn.example.com/photo.jpg", "sm")
+getThumbnailUrl("https://cdn.example.com/photo.jpg", "sm");
 // → "https://cdn.example.com/photo_sm.jpg"
 
-getThumbnailUrl("https://cdn.example.com/photo.jpg", "128x128")
+getThumbnailUrl("https://cdn.example.com/photo.jpg", "128x128");
 // → "https://cdn.example.com/photo_128x128.jpg"
 
-getThumbnailUrl("https://cdn.example.com/photo.jpg")
+getThumbnailUrl("https://cdn.example.com/photo.jpg");
 // → "https://cdn.example.com/photo.jpg" (unchanged)
 
-getThumbnailUrl(undefined, "sm")
+getThumbnailUrl(undefined, "sm");
 // → undefined
 ```
 
 **Parameters:**
+
 - `url` — Original image URL (string or undefined)
 - `size` — Thumbnail size preset or pixel dimensions (optional)
 
@@ -63,10 +64,10 @@ Maps a CSS pixel display size to the best-fit thumbnail preset. Picks the smalle
 ```ts
 import { getBestThumbnailSize } from "@core/utilities/thumbnail";
 
-getBestThumbnailSize(48)   // → "64x64"
-getBestThumbnailSize(96)   // → "128x128"
-getBestThumbnailSize(200)  // → "216x216"
-getBestThumbnailSize(500)  // → "lg"
+getBestThumbnailSize(48); // → "64x64"
+getBestThumbnailSize(96); // → "128x128"
+getBestThumbnailSize(200); // → "216x216"
+getBestThumbnailSize(500); // → "lg"
 ```
 
 ## Usage in Components
@@ -74,11 +75,7 @@ getBestThumbnailSize(500)  // → "lg"
 ### VcImage
 
 ```vue
-<VcImage
-  :src="product.imgSrc"
-  thumbnail-size="sm"
-  size="s"
-/>
+<VcImage :src="product.imgSrc" thumbnail-size="sm" size="s" />
 ```
 
 ### VcGallery

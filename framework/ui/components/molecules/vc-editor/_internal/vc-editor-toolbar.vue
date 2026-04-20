@@ -223,9 +223,9 @@ import type { CustomToolbarItem } from "@ui/components/molecules/vc-editor/_inte
 export interface Props {
   editor: Editor;
   disabled: boolean;
-  contentType: "html" | "markdown";
+  contentType?: "html" | "markdown";
   toolbar: ToolbarNames[];
-  customButtons: CustomToolbarItem[];
+  customButtons?: CustomToolbarItem[];
 }
 
 // Define toolbar button types

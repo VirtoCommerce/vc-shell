@@ -26,22 +26,18 @@ import { VcVideo } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `source` | `string` | -- | Embed URL for the video (e.g., YouTube embed link) |
-| `label` | `string` | -- | Label text displayed above the video |
-| `tooltip` | `string` | -- | Tooltip text shown on the label's info icon |
+| Prop      | Type     | Default | Description                                        |
+| --------- | -------- | ------- | -------------------------------------------------- |
+| `source`  | `string` | --      | Embed URL for the video (e.g., YouTube embed link) |
+| `label`   | `string` | --      | Label text displayed above the video               |
+| `tooltip` | `string` | --      | Tooltip text shown on the label's info icon        |
 
 ## Common Patterns
 
 ### Video with Label and Tooltip
 
 ```vue
-<VcVideo
-  source="https://www.youtube.com/embed/dQw4w9WgXcQ"
-  label="Setup Guide"
-  tooltip="This video walks through the initial configuration steps"
-/>
+<VcVideo source="https://www.youtube.com/embed/dQw4w9WgXcQ" label="Setup Guide" tooltip="This video walks through the initial configuration steps" />
 ```
 
 ### Placeholder When Source Is Missing
@@ -57,7 +53,11 @@ When `source` is not provided, VcVideo renders a centered film icon placeholder 
 ```vue
 <template>
   <VcBlade title="Product Details">
-    <VcInput label="Video URL" v-model="product.videoUrl" placeholder="https://youtube.com/embed/..." />
+    <VcInput
+      label="Video URL"
+      v-model="product.videoUrl"
+      placeholder="https://youtube.com/embed/..."
+    />
     <VcVideo
       :source="product.videoUrl"
       label="Product Video"
@@ -89,12 +89,12 @@ When `source` is not provided, VcVideo renders a centered film icon placeholder 
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|---|---|---|
-| `--video-icon-color` | `var(--neutrals-400)` | Placeholder icon color |
-| `--video-placeholder-bg` | `var(--neutrals-100)` | Placeholder background |
-| `--video-border-radius` | `6px` | Container corner radius |
-| `--video-border-color` | `var(--neutrals-200)` | Container border color |
+| Variable                 | Default               | Description             |
+| ------------------------ | --------------------- | ----------------------- |
+| `--video-icon-color`     | `var(--neutrals-400)` | Placeholder icon color  |
+| `--video-placeholder-bg` | `var(--neutrals-100)` | Placeholder background  |
+| `--video-border-radius`  | `6px`                 | Container corner radius |
+| `--video-border-color`   | `var(--neutrals-200)` | Container border color  |
 
 ## Tips
 

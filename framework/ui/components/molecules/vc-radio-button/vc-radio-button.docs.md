@@ -20,10 +20,28 @@ The component also supports a `binary` mode for simple true/false toggles, where
 
 ```vue
 <template>
-  <VcInputGroup label="Shipping method" role="radiogroup">
-    <VcRadioButton v-model="method" value="standard" label="Standard" name="shipping" />
-    <VcRadioButton v-model="method" value="express" label="Express" name="shipping" />
-    <VcRadioButton v-model="method" value="overnight" label="Overnight" name="shipping" />
+  <VcInputGroup
+    label="Shipping method"
+    role="radiogroup"
+  >
+    <VcRadioButton
+      v-model="method"
+      value="standard"
+      label="Standard"
+      name="shipping"
+    />
+    <VcRadioButton
+      v-model="method"
+      value="express"
+      label="Express"
+      name="shipping"
+    />
+    <VcRadioButton
+      v-model="method"
+      value="overnight"
+      label="Overnight"
+      name="shipping"
+    />
   </VcInputGroup>
 </template>
 
@@ -37,15 +55,15 @@ const method = ref("standard");
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `T` | `undefined` | Bound value via `v-model` (shared across the group) |
-| `value` | `T` | -- | This radio button's value. Selected when `modelValue === value` |
-| `label` | `string` | -- | Text label next to the radio circle |
-| `name` | `string` | `"RadioField"` | HTML `name` attribute (must be shared within a group) |
-| `binary` | `boolean` | `false` | Enables boolean toggle mode (clicking toggles `true`/`false`) |
-| `disabled` | `boolean` | `false` | Disables this radio button |
-| `error` / `errorMessage` | `boolean` / `string` | -- | Error styling and message |
+| Prop                     | Type                 | Default        | Description                                                     |
+| ------------------------ | -------------------- | -------------- | --------------------------------------------------------------- |
+| `modelValue`             | `T`                  | `undefined`    | Bound value via `v-model` (shared across the group)             |
+| `value`                  | `T`                  | --             | This radio button's value. Selected when `modelValue === value` |
+| `label`                  | `string`             | --             | Text label next to the radio circle                             |
+| `name`                   | `string`             | `"RadioField"` | HTML `name` attribute (must be shared within a group)           |
+| `binary`                 | `boolean`            | `false`        | Enables boolean toggle mode (clicking toggles `true`/`false`)   |
+| `disabled`               | `boolean`            | `false`        | Disables this radio button                                      |
+| `error` / `errorMessage` | `boolean` / `string` | --             | Error styling and message                                       |
 
 ## Common Patterns
 
@@ -65,10 +83,28 @@ Wrap radio buttons in a `VcInputGroup` with horizontal orientation for inline di
 
 ```vue
 <template>
-  <VcInputGroup label="Priority" role="radiogroup">
-    <VcRadioButton v-model="priority" :value="1" label="Low" name="priority" />
-    <VcRadioButton v-model="priority" :value="2" label="Medium" name="priority" />
-    <VcRadioButton v-model="priority" :value="3" label="High" name="priority" />
+  <VcInputGroup
+    label="Priority"
+    role="radiogroup"
+  >
+    <VcRadioButton
+      v-model="priority"
+      :value="1"
+      label="Low"
+      name="priority"
+    />
+    <VcRadioButton
+      v-model="priority"
+      :value="2"
+      label="Medium"
+      name="priority"
+    />
+    <VcRadioButton
+      v-model="priority"
+      :value="3"
+      label="High"
+      name="priority"
+    />
   </VcInputGroup>
 </template>
 
@@ -109,8 +145,8 @@ In binary mode, clicking toggles between `true` and `false` rather than comparin
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot    | Description                 |
+| ------- | --------------------------- |
 | `error` | Custom error message markup |
 
 ## Accessibility
@@ -165,4 +201,3 @@ Do not mix `binary` mode with regular `value` comparison in the same group. Bina
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
-

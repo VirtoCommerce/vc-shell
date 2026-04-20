@@ -14,15 +14,15 @@ Also exports `provideWidgetService()` for framework-level initialization and `re
 ## Quick Start
 
 ```typescript
-import { useWidgets } from '@vc-shell/framework';
+import { useWidgets } from "@vc-shell/framework";
 
 const widgetService = useWidgets();
 
 // Query all widgets registered for a specific blade
-const widgets = widgetService.getWidgets('order-details');
+const widgets = widgetService.getWidgets("order-details");
 
 // Check if a widget is currently active (visible and expanded)
-if (widgetService.isActiveWidget('order-status-widget')) {
+if (widgetService.isActiveWidget("order-status-widget")) {
   // widget is currently in focus
 }
 ```
@@ -35,29 +35,29 @@ None.
 
 ### Returns (`IWidgetService`)
 
-| Property / Method | Type | Description |
-|-------------------|------|-------------|
-| `registerWidget` | `(widget: IWidget, bladeId: string) => void` | Registers a widget for a specific blade. The widget will appear in that blade's widget area. |
-| `unregisterWidget` | `(widgetId: string, bladeId: string) => void` | Removes a widget from a blade by ID. |
-| `getWidgets` | `(bladeId: string) => IWidget[]` | Returns all widgets registered for a specific blade. |
-| `clearBladeWidgets` | `(bladeId: string) => void` | Removes all widgets for a blade (used during blade teardown). |
-| `registeredWidgets` | `IWidgetRegistration[]` | All widget registrations across all blades. |
-| `isActiveWidget` | `(id: string) => boolean` | Checks if a widget is currently active (selected/expanded). |
-| `setActiveWidget` | `(args) => void` | Sets a widget as active with its exposed instance. |
-| `updateActiveWidget` | `() => void` | Triggers the active widget's update function. Deprecated -- use headless widgets instead. |
-| `isWidgetRegistered` | `(id: string) => boolean` | Checks if a widget ID exists in any blade's registry. |
-| `updateWidget` | `(args) => void` | Updates properties of a registered widget (trigger, badge, etc.). |
-| `resolveWidgetProps` | `(widget, bladeData) => Record<string, unknown>` | Resolves widget props from blade data. Deprecated. |
-| `getExternalWidgetsForBlade` | `(bladeId: string) => IExternalWidgetRegistration[]` | Gets external widgets that target a specific blade (registered by other modules). |
-| `getAllExternalWidgets` | `() => IExternalWidgetRegistration[]` | Gets all registered external widgets across all modules. |
+| Property / Method            | Type                                                 | Description                                                                                  |
+| ---------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `registerWidget`             | `(widget: IWidget, bladeId: string) => void`         | Registers a widget for a specific blade. The widget will appear in that blade's widget area. |
+| `unregisterWidget`           | `(widgetId: string, bladeId: string) => void`        | Removes a widget from a blade by ID.                                                         |
+| `getWidgets`                 | `(bladeId: string) => IWidget[]`                     | Returns all widgets registered for a specific blade.                                         |
+| `clearBladeWidgets`          | `(bladeId: string) => void`                          | Removes all widgets for a blade (used during blade teardown).                                |
+| `registeredWidgets`          | `IWidgetRegistration[]`                              | All widget registrations across all blades.                                                  |
+| `isActiveWidget`             | `(id: string) => boolean`                            | Checks if a widget is currently active (selected/expanded).                                  |
+| `setActiveWidget`            | `(args) => void`                                     | Sets a widget as active with its exposed instance.                                           |
+| `updateActiveWidget`         | `() => void`                                         | Triggers the active widget's update function. Deprecated -- use headless widgets instead.    |
+| `isWidgetRegistered`         | `(id: string) => boolean`                            | Checks if a widget ID exists in any blade's registry.                                        |
+| `updateWidget`               | `(args) => void`                                     | Updates properties of a registered widget (trigger, badge, etc.).                            |
+| `resolveWidgetProps`         | `(widget, bladeData) => Record<string, unknown>`     | Resolves widget props from blade data. Deprecated.                                           |
+| `getExternalWidgetsForBlade` | `(bladeId: string) => IExternalWidgetRegistration[]` | Gets external widgets that target a specific blade (registered by other modules).            |
+| `getAllExternalWidgets`      | `() => IExternalWidgetRegistration[]`                | Gets all registered external widgets across all modules.                                     |
 
 ### Additional Exports
 
-| Export | Description |
-|--------|-------------|
-| `provideWidgetService()` | Creates and provides the widget service via Vue injection. Idempotent -- returns existing service if already provided. Cleans up via `onScopeDispose`. |
-| `registerWidget(widget, bladeId)` | Global pre-registration. Widgets registered this way are picked up when `provideWidgetService()` creates the service. Use in module `install()`. |
-| `registerExternalWidget(registration)` | Global pre-registration for cross-module widgets. These widgets are rendered in blades owned by other modules. |
+| Export                                 | Description                                                                                                                                            |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `provideWidgetService()`               | Creates and provides the widget service via Vue injection. Idempotent -- returns existing service if already provided. Cleans up via `onScopeDispose`. |
+| `registerWidget(widget, bladeId)`      | Global pre-registration. Widgets registered this way are picked up when `provideWidgetService()` creates the service. Use in module `install()`.       |
+| `registerExternalWidget(registration)` | Global pre-registration for cross-module widgets. These widgets are rendered in blades owned by other modules.                                         |
 
 ## How It Works
 
@@ -75,20 +75,20 @@ The service tracks active widgets (which widget is currently expanded/focused) s
 
 ```typescript
 // my-module/index.ts
-import { registerWidget } from '@vc-shell/framework';
-import { markRaw } from 'vue';
-import OrderStatusWidget from './widgets/OrderStatusWidget.vue';
+import { registerWidget } from "@vc-shell/framework";
+import { markRaw } from "vue";
+import OrderStatusWidget from "./widgets/OrderStatusWidget.vue";
 
 export default {
   install() {
     registerWidget(
       {
-        id: 'order-status',
-        title: 'Order Status',
+        id: "order-status",
+        title: "Order Status",
         component: markRaw(OrderStatusWidget),
-        icon: 'fas fa-clipboard-check',
+        icon: "fas fa-clipboard-check",
       },
-      'order-details', // blade ID where this widget appears
+      "order-details", // blade ID where this widget appears
     );
   },
 };
@@ -100,18 +100,18 @@ A shipping module can add a widget to the order module's detail blade:
 
 ```typescript
 // shipping-module/index.ts
-import { registerExternalWidget } from '@vc-shell/framework';
-import { markRaw } from 'vue';
-import ShippingTracker from './widgets/ShippingTracker.vue';
+import { registerExternalWidget } from "@vc-shell/framework";
+import { markRaw } from "vue";
+import ShippingTracker from "./widgets/ShippingTracker.vue";
 
 export default {
   install() {
     registerExternalWidget({
-      widgetId: 'shipping-tracker',
-      bladeId: 'order-details', // target blade from another module
+      widgetId: "shipping-tracker",
+      bladeId: "order-details", // target blade from another module
       component: markRaw(ShippingTracker),
-      title: 'Shipping',
-      icon: 'fas fa-truck',
+      title: "Shipping",
+      icon: "fas fa-truck",
     });
   },
 };
@@ -121,21 +121,16 @@ export default {
 
 ```vue
 <script setup lang="ts">
-import { useWidgets } from '@vc-shell/framework';
-import { computed } from 'vue';
+import { useWidgets } from "@vc-shell/framework";
+import { computed } from "vue";
 
 const props = defineProps<{ bladeId: string }>();
 const widgetService = useWidgets();
 
 const bladeWidgets = computed(() => widgetService.getWidgets(props.bladeId));
-const externalWidgets = computed(() =>
-  widgetService.getExternalWidgetsForBlade(props.bladeId),
-);
+const externalWidgets = computed(() => widgetService.getExternalWidgetsForBlade(props.bladeId));
 
-const allWidgets = computed(() => [
-  ...bladeWidgets.value,
-  ...externalWidgets.value,
-]);
+const allWidgets = computed(() => [...bladeWidgets.value, ...externalWidgets.value]);
 </script>
 ```
 

@@ -10,6 +10,7 @@ A headless, accessible dropdown primitive for building menus and listboxes. Prov
 - Notification panels or custom popovers with item lists
 
 When NOT to use:
+
 - For form field selection -- use [VcSelect](../vc-select/)
 - For rich panel content with header/footer/scrollable body -- use [VcDropdownPanel](../vc-dropdown-panel/)
 - For navigation menus -- use [VcMenu](../vc-menu/)
@@ -29,7 +30,10 @@ When NOT to use:
       <VcButton @click="toggle">Actions</VcButton>
     </template>
     <template #item="{ item, click }">
-      <button class="tw-w-full tw-text-left tw-px-3 tw-py-2" @click="click">
+      <button
+        class="tw-w-full tw-text-left tw-px-3 tw-py-2"
+        @click="click"
+      >
         {{ item.title }}
       </button>
     </template>
@@ -60,14 +64,7 @@ function onAction(item: { id: string; title: string }) {
 When `floating` is `true`, the dropdown panel is positioned using `@floating-ui` with automatic flip and shift middleware. The panel is teleported to the body to avoid z-index stacking context issues.
 
 ```vue
-<VcDropdown
-  v-model="open"
-  :items="items"
-  floating
-  placement="bottom-start"
-  :offset="{ mainAxis: 4 }"
-  :z-index="10000"
->
+<VcDropdown v-model="open" :items="items" floating placement="bottom-start" :offset="{ mainAxis: 4 }" :z-index="10000">
   <template #trigger="{ toggle }">
     <VcButton @click="toggle">Open</VcButton>
   </template>
@@ -84,14 +81,7 @@ Available `placement` values follow Floating UI conventions: `"top"`, `"top-star
 Build rich action menus by customizing the `#item` slot with icons, labels, and keyboard shortcut hints.
 
 ```vue
-<VcDropdown
-  v-model="open"
-  :items="actions"
-  floating
-  placement="bottom-start"
-  close-on-select
-  @item-click="handleAction"
->
+<VcDropdown v-model="open" :items="actions" floating placement="bottom-start" close-on-select @item-click="handleAction">
   <template #trigger="{ toggle }">
     <VcButton icon="lucide-ellipsis" @click="toggle" />
   </template>
@@ -110,15 +100,7 @@ Build rich action menus by customizing the `#item` slot with icons, labels, and 
 Use `role="listbox"` for option-selection patterns. Combine with `isItemActive` to highlight the current selection and `aria-selected` is set automatically.
 
 ```vue
-<VcDropdown
-  v-model="open"
-  :items="workspaces"
-  role="listbox"
-  :is-item-active="(item) => item.id === activeId"
-  close-on-select
-  floating
-  @item-click="(item) => (activeId = item.id)"
->
+<VcDropdown v-model="open" :items="workspaces" role="listbox" :is-item-active="(item) => item.id === activeId" close-on-select floating @item-click="(item) => (activeId = item.id)">
   <template #trigger="{ toggle }">
     <VcButton variant="outline" @click="toggle">{{ currentWorkspace }}</VcButton>
   </template>
@@ -136,14 +118,7 @@ Use `role="listbox"` for option-selection patterns. Combine with `isItemActive` 
 Fine-tune when the dropdown closes:
 
 ```vue
-<VcDropdown
-  v-model="open"
-  :items="items"
-  floating
-  :close-on-click-outside="true"
-  :close-on-escape="true"
-  :close-on-select="false"
->
+<VcDropdown v-model="open" :items="items" floating :close-on-click-outside="true" :close-on-escape="true" :close-on-select="false">
   <!-- Multi-select pattern: dropdown stays open after each selection -->
 </VcDropdown>
 ```
@@ -206,16 +181,40 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 
 ```vue
 <template>
-  <VcDropdown v-model="confirmOpen" floating placement="bottom-end" :close-on-select="false">
+  <VcDropdown
+    v-model="confirmOpen"
+    floating
+    placement="bottom-end"
+    :close-on-select="false"
+  >
     <template #trigger="{ toggle }">
-      <VcButton variant="danger" @click="toggle">Delete</VcButton>
+      <VcButton
+        variant="danger"
+        @click="toggle"
+        >Delete</VcButton
+      >
     </template>
     <template #items-container="{ close }">
       <div class="tw-p-4 tw-w-64">
         <p class="tw-text-sm tw-mb-3">Are you sure you want to delete this item?</p>
         <div class="tw-flex tw-gap-2 tw-justify-end">
-          <VcButton size="s" variant="outline" @click="close">Cancel</VcButton>
-          <VcButton size="s" variant="danger" @click="() => { confirmDelete(); close(); }">Delete</VcButton>
+          <VcButton
+            size="s"
+            variant="outline"
+            @click="close"
+            >Cancel</VcButton
+          >
+          <VcButton
+            size="s"
+            variant="danger"
+            @click="
+              () => {
+                confirmDelete();
+                close();
+              }
+            "
+            >Delete</VcButton
+          >
         </div>
       </div>
     </template>
@@ -227,9 +226,16 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 
 ```vue
 <template>
-  <VcDropdown v-model="isOpen" :items="items" floating>
+  <VcDropdown
+    v-model="isOpen"
+    :items="items"
+    floating
+  >
     <template #trigger="{ open, close, isActive }">
-      <VcButton @mouseenter="open" @mouseleave="close">
+      <VcButton
+        @mouseenter="open"
+        @mouseleave="close"
+      >
         {{ isActive ? "Hover to close" : "Hover to open" }}
       </VcButton>
     </template>
@@ -288,60 +294,60 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `boolean` | `false` | Controls open/closed state via `v-model` |
-| `items` | `T[]` | `[]` | Items to render in the dropdown |
-| `emptyText` | `string` | `""` | Text shown when items array is empty |
-| `itemText` | `(item: T) => string` | -- | Maps an item to display text (default renderer only) |
-| `isItemActive` | `(item: T) => boolean` | -- | Marks the currently active item (highlighted state) |
-| `itemKey` | `(item: T, index: number) => string \| number` | index | Unique key function for items |
-| `floating` | `boolean` | `false` | Enable floating positioning via `@floating-ui` |
-| `teleport` | `boolean` | -- | Force teleport to body (defaults to match `floating`) |
-| `teleportTo` | `string \| HTMLElement` | -- | Custom teleport target |
-| `placement` | `Placement` | `"bottom"` | Floating UI placement |
-| `offset` | `{ mainAxis?: number; crossAxis?: number }` | `{ mainAxis: 0, crossAxis: 0 }` | Offset from the trigger element |
-| `variant` | `"default" \| "secondary"` | `"default"` | Visual style variant |
-| `maxHeight` | `number \| string` | `300` | Maximum panel height (number = px, string = CSS value) |
-| `role` | `"menu" \| "listbox"` | `"menu"` | ARIA role for the dropdown panel |
-| `closeOnClickOutside` | `boolean` | `true` | Close when clicking outside the dropdown |
-| `closeOnEscape` | `boolean` | `true` | Close on Escape key press |
-| `closeOnSelect` | `boolean` | `false` | Close after selecting an item |
-| `autoFocusPanel` | `boolean` | `true` | Focus the panel element when opened |
-| `padded` | `boolean` | `true` | Apply compact padding and rounded item backgrounds |
-| `zIndex` | `number` | `10000` | Z-index for the floating panel |
+| Prop                  | Type                                           | Default                         | Description                                            |
+| --------------------- | ---------------------------------------------- | ------------------------------- | ------------------------------------------------------ |
+| `modelValue`          | `boolean`                                      | `false`                         | Controls open/closed state via `v-model`               |
+| `items`               | `T[]`                                          | `[]`                            | Items to render in the dropdown                        |
+| `emptyText`           | `string`                                       | `""`                            | Text shown when items array is empty                   |
+| `itemText`            | `(item: T) => string`                          | --                              | Maps an item to display text (default renderer only)   |
+| `isItemActive`        | `(item: T) => boolean`                         | --                              | Marks the currently active item (highlighted state)    |
+| `itemKey`             | `(item: T, index: number) => string \| number` | index                           | Unique key function for items                          |
+| `floating`            | `boolean`                                      | `false`                         | Enable floating positioning via `@floating-ui`         |
+| `teleport`            | `boolean`                                      | --                              | Force teleport to body (defaults to match `floating`)  |
+| `teleportTo`          | `string \| HTMLElement`                        | --                              | Custom teleport target                                 |
+| `placement`           | `Placement`                                    | `"bottom"`                      | Floating UI placement                                  |
+| `offset`              | `{ mainAxis?: number; crossAxis?: number }`    | `{ mainAxis: 0, crossAxis: 0 }` | Offset from the trigger element                        |
+| `variant`             | `"default" \| "secondary"`                     | `"default"`                     | Visual style variant                                   |
+| `maxHeight`           | `number \| string`                             | `300`                           | Maximum panel height (number = px, string = CSS value) |
+| `role`                | `"menu" \| "listbox"`                          | `"menu"`                        | ARIA role for the dropdown panel                       |
+| `closeOnClickOutside` | `boolean`                                      | `true`                          | Close when clicking outside the dropdown               |
+| `closeOnEscape`       | `boolean`                                      | `true`                          | Close on Escape key press                              |
+| `closeOnSelect`       | `boolean`                                      | `false`                         | Close after selecting an item                          |
+| `autoFocusPanel`      | `boolean`                                      | `true`                          | Focus the panel element when opened                    |
+| `padded`              | `boolean`                                      | `true`                          | Apply compact padding and rounded item backgrounds     |
+| `zIndex`              | `number`                                       | `10000`                         | Z-index for the floating panel                         |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:modelValue` | `boolean` | Open/close state changed |
-| `item-click` | `T` | An item was selected |
-| `open` | -- | Dropdown opened |
-| `close` | `"outside" \| "escape" \| "action"` | Dropdown closed with reason |
+| Event               | Payload                             | Description                 |
+| ------------------- | ----------------------------------- | --------------------------- |
+| `update:modelValue` | `boolean`                           | Open/close state changed    |
+| `item-click`        | `T`                                 | An item was selected        |
+| `open`              | --                                  | Dropdown opened             |
+| `close`             | `"outside" \| "escape" \| "action"` | Dropdown closed with reason |
 
 ## Slots
 
-| Slot | Props | Description |
-|------|-------|-------------|
-| `trigger` | `{ isActive: boolean, toggle: () => void, open: () => void, close: () => void }` | Custom trigger element |
-| `item` | `{ item: T, click: () => void }` | Custom item rendering |
-| `empty` | -- | Content when items array is empty |
-| `items-container` | `{ items: T[], close: () => void }` | Full control over the items list |
+| Slot              | Props                                                                            | Description                       |
+| ----------------- | -------------------------------------------------------------------------------- | --------------------------------- |
+| `trigger`         | `{ isActive: boolean, toggle: () => void, open: () => void, close: () => void }` | Custom trigger element            |
+| `item`            | `{ item: T, click: () => void }`                                                 | Custom item rendering             |
+| `empty`           | --                                                                               | Content when items array is empty |
+| `items-container` | `{ items: T[], close: () => void }`                                              | Full control over the items list  |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--vc-dropdown-bg` | `var(--additional-50)` | Panel background color |
-| `--vc-dropdown-text` | `var(--neutrals-950)` | Default text color |
-| `--vc-dropdown-border` | `var(--neutrals-200)` | Floating panel border color |
-| `--vc-dropdown-accent` | `var(--neutrals-100)` | Hover/focus background color |
-| `--vc-dropdown-accent-foreground` | `var(--neutrals-900)` | Hover/focus text color |
-| `--vc-dropdown-divider` | `var(--neutrals-200)` | Mobile item divider color |
-| `--vc-dropdown-trigger-focus-ring-width` | `2px` | Trigger focus ring width |
-| `--vc-dropdown-trigger-focus-ring-offset` | `1px` | Trigger focus ring offset |
-| `--vc-dropdown-trigger-focus-ring-color` | `var(--primary-300)` | Trigger focus ring color |
+| Variable                                  | Default                | Description                  |
+| ----------------------------------------- | ---------------------- | ---------------------------- |
+| `--vc-dropdown-bg`                        | `var(--additional-50)` | Panel background color       |
+| `--vc-dropdown-text`                      | `var(--neutrals-950)`  | Default text color           |
+| `--vc-dropdown-border`                    | `var(--neutrals-200)`  | Floating panel border color  |
+| `--vc-dropdown-accent`                    | `var(--neutrals-100)`  | Hover/focus background color |
+| `--vc-dropdown-accent-foreground`         | `var(--neutrals-900)`  | Hover/focus text color       |
+| `--vc-dropdown-divider`                   | `var(--neutrals-200)`  | Mobile item divider color    |
+| `--vc-dropdown-trigger-focus-ring-width`  | `2px`                  | Trigger focus ring width     |
+| `--vc-dropdown-trigger-focus-ring-offset` | `1px`                  | Trigger focus ring offset    |
+| `--vc-dropdown-trigger-focus-ring-color`  | `var(--primary-300)`   | Trigger focus ring color     |
 
 ## Accessibility
 

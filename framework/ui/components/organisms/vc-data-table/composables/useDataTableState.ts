@@ -1,6 +1,5 @@
 import { type Ref, type ComputedRef, watch, nextTick, onBeforeUnmount } from "vue";
 import type { ColumnState, ColumnSpec, PersistedStateV2 } from "../types";
-import { normalizeWeights } from "./useColumnWidthEngine";
 
 /** Legacy v1 persisted state shape (for migration) */
 export interface DataTablePersistedState {

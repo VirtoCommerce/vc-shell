@@ -189,7 +189,7 @@ import { VcIcon, VcTooltip } from "@ui/components/atoms";
 import { SlotProxy } from "@ui/components/organisms/vc-data-table/components/_internal/SlotProxy";
 
 // Props interface
-const props = defineProps<{
+const _props = defineProps<{
   /** Column instances from ColumnCollector */
   columns: ColumnInstance[];
 

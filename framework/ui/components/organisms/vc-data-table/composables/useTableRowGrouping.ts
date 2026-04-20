@@ -128,7 +128,7 @@ export function useTableRowGrouping<T extends Record<string, any>>(
   const {
     items,
     groupRowsBy,
-    rowGroupMode = ref("subheader"),
+    rowGroupMode: _rowGroupMode = ref("subheader"),
     expandableRowGroups = ref(false),
     expandedRowGroups,
     onExpandedRowGroupsChange,

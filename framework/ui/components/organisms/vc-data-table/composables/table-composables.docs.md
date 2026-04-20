@@ -10,49 +10,49 @@ The composables follow a PrimeVue-inspired pattern: each returns reactive state 
 
 ### Data & State
 
-| Composable | Purpose |
-|---|---|
-| `useDataTableState` | Persists column state (v2 schema: weights, order, hidden/shown IDs) to localStorage/sessionStorage. Auto-migrates v1 (pixel-based) state on first load. Key format: `VC_DATATABLE_{KEY}`. Debounced auto-save (150ms) with restore-on-mount. |
-| `useTableColumns` | Column ordering, width management via `columnState` (weight store), computed pixel widths via `engineOutput`. Exposes `recompute()` to trigger a recalculation pass. Watches `visibleColumns` and appends new columns without dropping hidden ones. |
-| `useColumnWidthEngine` | Pure functions for deterministic column width computation (see below). |
-| `useDataProcessing` | Client-side sort pipeline (single/multi) and row grouping. Skipped when `lazy: true` (server-side). |
-| `useTableContext` | Provides/injects table-level context for sub-components. |
+| Composable             | Purpose                                                                                                                                                                                                                                             |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useDataTableState`    | Persists column state (v2 schema: weights, order, hidden/shown IDs) to localStorage/sessionStorage. Auto-migrates v1 (pixel-based) state on first load. Key format: `VC_DATATABLE_{KEY}`. Debounced auto-save (150ms) with restore-on-mount.        |
+| `useTableColumns`      | Column ordering, width management via `columnState` (weight store), computed pixel widths via `engineOutput`. Exposes `recompute()` to trigger a recalculation pass. Watches `visibleColumns` and appends new columns without dropping hidden ones. |
+| `useColumnWidthEngine` | Pure functions for deterministic column width computation (see below).                                                                                                                                                                              |
+| `useDataProcessing`    | Client-side sort pipeline (single/multi) and row grouping. Skipped when `lazy: true` (server-side).                                                                                                                                                 |
+| `useTableContext`      | Provides/injects table-level context for sub-components.                                                                                                                                                                                            |
 
 ### Sorting & Filtering
 
-| Composable | Purpose |
-|---|---|
-| `useTableSort` | Single and multi-sort with removable sort (asc -> desc -> none cycle). Ctrl+click for multi-sort. Syncs with external props. |
-| `useFilterState` | Collects per-column filter values and builds flat backend payloads. Supports text, select, and dateRange filters. Tracks `hasActiveFilters` and `activeFilterCount`. |
-| `useColumnFilter` | Declarative filter config utilities: type guards (`isSelectFilter`, `isDateRangeFilter`), field resolution, options extraction. |
+| Composable        | Purpose                                                                                                                                                              |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useTableSort`    | Single and multi-sort with removable sort (asc -> desc -> none cycle). Ctrl+click for multi-sort. Syncs with external props.                                         |
+| `useFilterState`  | Collects per-column filter values and builds flat backend payloads. Supports text, select, and dateRange filters. Tracks `hasActiveFilters` and `activeFilterCount`. |
+| `useColumnFilter` | Declarative filter config utilities: type guards (`isSelectFilter`, `isDateRangeFilter`), field resolution, options extraction.                                      |
 
 ### Interaction
 
-| Composable | Purpose |
-|---|---|
-| `useTableRowReorder` | Drag-and-drop row reordering with live-swap at 50% vertical threshold. Commits via `dragend` (always fires) with `drop` as preferred path. |
-| `useTableColumnsReorder` | Drag-and-drop column reordering with 50% horizontal threshold. Returns `getReorderHeadProps()` for easy binding. |
-| `useTableColumnsResize` | Weight-based resize: dragging adjusts the weights of the dragged column and its right neighbor without touching other columns. DOM-based px updates during drag for smooth 60fps; commits new weights to `columnState` on mouseup. No `ResizeObserver` scaling. |
-| `useTableSelectionV2` | Row selection: single, multiple (checkbox), and row-click modes. Emits `RowSelectEvent` / `RowSelectAllEvent`. |
-| `useTableSwipe` | Mobile swipe context (provide/inject). Tracks which row has an active swipe action. |
+| Composable               | Purpose                                                                                                                                                                                                                                                         |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useTableRowReorder`     | Drag-and-drop row reordering with live-swap at 50% vertical threshold. Commits via `dragend` (always fires) with `drop` as preferred path.                                                                                                                      |
+| `useTableColumnsReorder` | Drag-and-drop column reordering with 50% horizontal threshold. Returns `getReorderHeadProps()` for easy binding.                                                                                                                                                |
+| `useTableColumnsResize`  | Weight-based resize: dragging adjusts the weights of the dragged column and its right neighbor without touching other columns. DOM-based px updates during drag for smooth 60fps; commits new weights to `columnState` on mouseup. No `ResizeObserver` scaling. |
+| `useTableSelectionV2`    | Row selection: single, multiple (checkbox), and row-click modes. Emits `RowSelectEvent` / `RowSelectAllEvent`.                                                                                                                                                  |
+| `useTableSwipe`          | Mobile swipe context (provide/inject). Tracks which row has an active swipe action.                                                                                                                                                                             |
 
 ### Editing
 
-| Composable | Purpose |
-|---|---|
-| `useTableEditing` | Cell-level and row-level editing (PrimeVue-style). Stores editing copies in `editingMeta` so typing does not trigger re-renders on the original data. |
-| `useTableInlineEdit` | Bulk inline editing mode (all rows editable simultaneously). Different from `useTableEditing`. |
-| `useCellBase` | Base composable for editable cell components: blur handling, display formatting, empty-state detection. |
-| `useCellRegistry` | Registry pattern for cell type components (text, number, money, date, status, etc.). Register custom cell types at runtime. |
+| Composable           | Purpose                                                                                                                                               |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useTableEditing`    | Cell-level and row-level editing (PrimeVue-style). Stores editing copies in `editingMeta` so typing does not trigger re-renders on the original data. |
+| `useTableInlineEdit` | Bulk inline editing mode (all rows editable simultaneously). Different from `useTableEditing`.                                                        |
+| `useCellBase`        | Base composable for editable cell components: blur handling, display formatting, empty-state detection.                                               |
+| `useCellRegistry`    | Registry pattern for cell type components (text, number, money, date, status, etc.). Register custom cell types at runtime.                           |
 
 ### Layout
 
-| Composable | Purpose |
-|---|---|
-| `useVirtualScroll` | Windowed rendering for large datasets. Renders only visible rows + buffer. Supports lazy loading, scroll-to-index, and debounced scroll events. |
-| `useTableExpansion` | Expandable rows with O(1) key-based lookup. Toggle, expand-all, collapse-all. |
-| `useTableRowGrouping` | Groups rows by field and inserts group header rows. |
-| `useMobileCardLayout` | Mobile card view layout logic for responsive table display. |
+| Composable            | Purpose                                                                                                                                         |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useVirtualScroll`    | Windowed rendering for large datasets. Renders only visible rows + buffer. Supports lazy loading, scroll-to-index, and debounced scroll events. |
+| `useTableExpansion`   | Expandable rows with O(1) key-based lookup. Toggle, expand-all, collapse-all.                                                                   |
+| `useTableRowGrouping` | Groups rows by field and inserts group header rows.                                                                                             |
+| `useMobileCardLayout` | Mobile card view layout logic for responsive table display.                                                                                     |
 
 ## useColumnWidthEngine
 
@@ -66,16 +66,16 @@ The central engine. Distributes `availableWidth` among visible columns according
 
 ```ts
 interface EngineInput {
-  visibleIds: string[];                          // Ordered list of visible column IDs
-  specs: Record<string, ColumnSpec>;            // Per-column: weight, minWidth, maxWidth
-  availableWidth: number;                        // Container width in px
-  fitMode: "gap" | "fit";                       // "gap" leaves filler space, "fit" fills width
+  visibleIds: string[]; // Ordered list of visible column IDs
+  specs: Record<string, ColumnSpec>; // Per-column: weight, minWidth, maxWidth
+  availableWidth: number; // Container width in px
+  fitMode: "gap" | "fit"; // "gap" leaves filler space, "fit" fills width
 }
 
 interface EngineOutput {
-  widths: Record<string, number>;               // Computed px width per column ID
-  totalWidth: number;                            // Sum of all computed widths
-  overflow: boolean;                             // true when sum(minWidth) > availableWidth
+  widths: Record<string, number>; // Computed px width per column ID
+  totalWidth: number; // Sum of all computed widths
+  overflow: boolean; // true when sum(minWidth) > availableWidth
 }
 ```
 
@@ -87,9 +87,9 @@ Parses a `VcColumn` `width` prop into a concrete pixel value.
 
 ```ts
 type ParsedWidth =
-  | { type: "px";   value: number }   // "200", 200, "200px"
-  | { type: "pct";  value: number }   // "20%" → 0.2 * availableWidth
-  | { type: "auto"; value: undefined } // undefined, "auto"
+  | { type: "px"; value: number } // "200", 200, "200px"
+  | { type: "pct"; value: number } // "20%" → 0.2 * availableWidth
+  | { type: "auto"; value: undefined }; // undefined, "auto"
 ```
 
 #### `buildInitialWeights(parsed: ParsedWidth[], availableWidth: number): Record<string, number>`
@@ -109,33 +109,19 @@ Mutates `specs` in place so that the weights of `visibleIds` sum to 1.0. Called 
 
 ### When weights update
 
-| User action | Weight change |
-|-------------|--------------|
-| Column resize (drag border) | Dragged column and right neighbor exchange weight proportionally |
-| Column show/hide | Hidden column's weight is preserved; shown column uses saved or initial weight |
-| Reset columns | All weights rebuilt from declarative `width` props |
-| Container resize | Weights unchanged; engine recomputes px widths from same weights × new `availableWidth` |
+| User action                 | Weight change                                                                           |
+| --------------------------- | --------------------------------------------------------------------------------------- |
+| Column resize (drag border) | Dragged column and right neighbor exchange weight proportionally                        |
+| Column show/hide            | Hidden column's weight is preserved; shown column uses saved or initial weight          |
+| Reset columns               | All weights rebuilt from declarative `width` props                                      |
+| Container resize            | Weights unchanged; engine recomputes px widths from same weights × new `availableWidth` |
 
 ## Usage
 
 These composables are consumed internally by VcDataTable. If you need to interact with them, use VcDataTable's props and events:
 
 ```vue
-<VcDataTable
-  :items="items"
-  state-key="my-table"
-  sort-field="name"
-  :sort-order="1"
-  removable-sort
-  resizable-columns
-  reorderable-columns
-  :virtual-scroll="true"
-  :virtual-scroll-item-size="48"
-  edit-mode="cell"
-  @sort="onSort"
-  @cell-edit-complete="onCellEdit"
-  @row:reorder="onReorder"
->
+<VcDataTable :items="items" state-key="my-table" sort-field="name" :sort-order="1" removable-sort resizable-columns reorderable-columns :virtual-scroll="true" :virtual-scroll-item-size="48" edit-mode="cell" @sort="onSort" @cell-edit-complete="onCellEdit" @row:reorder="onReorder">
   <VcColumn field="name" header="Name" sortable :filter="true" />
   <VcColumn field="status" header="Status" :filter="{ options: statusOptions }" />
 </VcDataTable>

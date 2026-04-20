@@ -78,11 +78,22 @@ const { sortField, sortOrder, sortExpression } = useDataTableSort({
 const selectedItemId = ref<string>();
 const title = computed(() => t("MODULE.PAGES.LIST.TITLE"));
 const bladeToolbar = ref<IBladeToolbar[]>([
-  { id: "refresh", icon: "lucide-refresh-cw", title: computed(() => t("MODULE.PAGES.LIST.TOOLBAR.REFRESH")), async clickHandler() { await reload(); } },
+  {
+    id: "refresh",
+    icon: "lucide-refresh-cw",
+    title: computed(() => t("MODULE.PAGES.LIST.TOOLBAR.REFRESH")),
+    async clickHandler() {
+      await reload();
+    },
+  },
 ]);
 
-watch(sortExpression, async (val) => { await getEntities({ ...searchQuery.value, sort: val }); });
-onMounted(async () => { await reload(); });
+watch(sortExpression, async (val) => {
+  await getEntities({ ...searchQuery.value, sort: val });
+});
+onMounted(async () => {
+  await reload();
+});
 
 const reload = async () => {
   await getEntities({ ...searchQuery.value, skip: pagination.skip, sort: sortExpression.value });
@@ -91,7 +102,16 @@ const onSearch = async (keyword: string | undefined) => {
   await getEntities({ ...searchQuery.value, keyword, skip: 0, sort: sortExpression.value });
 };
 const onItemClick = (event: { data: { id?: string } }) => {
-  openBlade({ name: "EntityDetails", param: event.data.id, onOpen() { selectedItemId.value = event.data.id; }, onClose() { selectedItemId.value = undefined; } });
+  openBlade({
+    name: "EntityDetails",
+    param: event.data.id,
+    onOpen() {
+      selectedItemId.value = event.data.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
+  });
 };
 
 exposeToChildren({ reload });
@@ -235,25 +255,13 @@ Demonstrates all major VcDataTable features: selection, global filters, pull-to-
 <script lang="ts" setup>
 import { computed, ref, watch, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  IBladeToolbar,
-  useBlade,
-  usePopup,
-  useDataTableSort,
-} from "@vc-shell/framework";
+import { IBladeToolbar, useBlade, usePopup, useDataTableSort } from "@vc-shell/framework";
 import useEntities from "../composables/useEntities";
 
 const { openBlade, exposeToChildren, param } = useBlade();
 const { t } = useI18n({ useScope: "global" });
 const { showConfirmation } = usePopup();
-const {
-  getEntities,
-  deleteEntities,
-  searchQuery,
-  loading,
-  items,
-  pagination,
-} = useEntities();
+const { getEntities, deleteEntities, searchQuery, loading, items, pagination } = useEntities();
 
 // Sort state
 const { sortField, sortOrder, sortExpression } = useDataTableSort({
@@ -351,7 +359,9 @@ watch(sortExpression, async (val) => {
 // Track selected row when param changes
 watch(
   () => param.value,
-  (newVal) => { selectedItemId.value = newVal; },
+  (newVal) => {
+    selectedItemId.value = newVal;
+  },
   { immediate: true, deep: true },
 );
 
@@ -378,8 +388,12 @@ const onItemClick = (event: { data: { id?: string } }) => {
   openBlade({
     name: "EntityDetails",
     param: event.data.id,
-    onOpen() { selectedItemId.value = event.data.id; },
-    onClose() { selectedItemId.value = undefined; },
+    onOpen() {
+      selectedItemId.value = event.data.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
   });
 };
 
@@ -413,58 +427,58 @@ exposeToChildren({
 
 ## 3. VcColumn Props Reference
 
-| Prop | Type | Description |
-|---|---|---|
-| `id` | `string` | Column identifier. Matches the item property name used to extract cell value. |
-| `title` | `string` | Column header text. Accepts an i18n key or plain string. |
-| `sortable` | `boolean` | Enable sorting on this column. Default `false`. |
-| `always-visible` | `boolean` | Column cannot be hidden by the user via column settings. Default `false`. |
-| `type` | `string` | Built-in cell renderer: `"date-ago"`, `"date-time"`, `"image"`, `"status"`, `"status-icon"`, `"money"`, `"number"`, `"date"`, `"datetime"`. |
-| `width` | `string` | CSS width value (e.g., `"60px"`, `"120px"`, `"20%"`). |
-| `visible` | `boolean` | Initial column visibility. Default `true`. Set `false` to hide by default (user can show via column settings). |
-| `field` | `string` | Dot-path to nested property on the row item (e.g., `"metadata.category"`, `"productData.productType"`). Use when `id` alone cannot resolve the value. |
-| `mobile-position` | `string` | Position in mobile card layout: `"top-left"`, `"top-right"`, `"bottom-left"`, `"bottom-right"`. |
-| `mobile-role` | `string` | Special mobile rendering role: `"image"`, `"status"`, `"title"`, `"field"`. |
+| Prop              | Type      | Description                                                                                                                                           |
+| ----------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`              | `string`  | Column identifier. Matches the item property name used to extract cell value.                                                                         |
+| `title`           | `string`  | Column header text. Accepts an i18n key or plain string.                                                                                              |
+| `sortable`        | `boolean` | Enable sorting on this column. Default `false`.                                                                                                       |
+| `always-visible`  | `boolean` | Column cannot be hidden by the user via column settings. Default `false`.                                                                             |
+| `type`            | `string`  | Built-in cell renderer: `"date-ago"`, `"date-time"`, `"image"`, `"status"`, `"status-icon"`, `"money"`, `"number"`, `"date"`, `"datetime"`.           |
+| `width`           | `string`  | CSS width value (e.g., `"60px"`, `"120px"`, `"20%"`).                                                                                                 |
+| `visible`         | `boolean` | Initial column visibility. Default `true`. Set `false` to hide by default (user can show via column settings).                                        |
+| `field`           | `string`  | Dot-path to nested property on the row item (e.g., `"metadata.category"`, `"productData.productType"`). Use when `id` alone cannot resolve the value. |
+| `mobile-position` | `string`  | Position in mobile card layout: `"top-left"`, `"top-right"`, `"bottom-left"`, `"bottom-right"`.                                                       |
+| `mobile-role`     | `string`  | Special mobile rendering role: `"image"`, `"status"`, `"title"`, `"field"`.                                                                           |
 
 ### VcColumn Slots
 
-| Slot | Scope | Description |
-|---|---|---|
+| Slot    | Scope      | Description                                           |
+| ------- | ---------- | ----------------------------------------------------- |
 | `#body` | `{ data }` | Custom cell body. `data` is the full row item object. |
 
 ---
 
 ## 4. VcDataTable Props Reference
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `items` | `unknown[]` | `[]` | Array of row items to display. |
-| `total-count` | `number` | `0` | Total number of items (for pagination display). |
-| `loading` | `boolean` | `false` | Shows loading indicator overlay. |
-| `pagination` | `UseDataTablePaginationReturn` | -- | Pagination state from `useDataTablePagination()`. Contains `currentPage`, `pages`, `totalCount`, `skip`, `goToPage()`. |
-| `v-model:active-item-id` | `string \| undefined` | -- | Two-way binding for the highlighted/active row id. |
-| `v-model:sort-field` | `string` | -- | Two-way binding for the currently sorted column id. |
-| `v-model:sort-order` | `0 \| 1 \| -1` | -- | Two-way binding for sort order (1=ASC, -1=DESC, 0=none). Use `useDataTableSort()` which manages this internally. |
-| `v-model:selection` | `unknown[]` | -- | Two-way binding for selected row items. |
-| `state-key` | `string` | -- | Unique key for persisting column widths/order/visibility to localStorage. Use snake_case (e.g., `"entity_list"`). |
-| `searchable` | `boolean` | `false` | Shows the search input above the table. |
-| `selection-mode` | `"multiple" \| undefined` | `undefined` | Enables row checkboxes for multi-select. Set to `"multiple"` to enable, `undefined` to disable. |
-| `is-row-selectable` | `(item: unknown) => boolean` | -- | Predicate to control which rows can be selected. |
-| `global-filters` | `GlobalFilter[] \| undefined` | `undefined` | Array of filter definitions shown above the table. |
-| `pull-to-refresh` | `boolean` | `false` | Enables mobile pull-to-refresh gesture. |
-| `empty-state` | `{ icon: string; title: string; actionLabel?: string; actionHandler?: () => void }` | -- | Configuration for empty state display when no items. |
+| Prop                     | Type                                                                                | Default     | Description                                                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `items`                  | `unknown[]`                                                                         | `[]`        | Array of row items to display.                                                                                         |
+| `total-count`            | `number`                                                                            | `0`         | Total number of items (for pagination display).                                                                        |
+| `loading`                | `boolean`                                                                           | `false`     | Shows loading indicator overlay.                                                                                       |
+| `pagination`             | `UseDataTablePaginationReturn`                                                      | --          | Pagination state from `useDataTablePagination()`. Contains `currentPage`, `pages`, `totalCount`, `skip`, `goToPage()`. |
+| `v-model:active-item-id` | `string \| undefined`                                                               | --          | Two-way binding for the highlighted/active row id.                                                                     |
+| `v-model:sort-field`     | `string`                                                                            | --          | Two-way binding for the currently sorted column id.                                                                    |
+| `v-model:sort-order`     | `0 \| 1 \| -1`                                                                      | --          | Two-way binding for sort order (1=ASC, -1=DESC, 0=none). Use `useDataTableSort()` which manages this internally.       |
+| `v-model:selection`      | `unknown[]`                                                                         | --          | Two-way binding for selected row items.                                                                                |
+| `state-key`              | `string`                                                                            | --          | Unique key for persisting column widths/order/visibility to localStorage. Use snake_case (e.g., `"entity_list"`).      |
+| `searchable`             | `boolean`                                                                           | `false`     | Shows the search input above the table.                                                                                |
+| `selection-mode`         | `"multiple" \| undefined`                                                           | `undefined` | Enables row checkboxes for multi-select. Set to `"multiple"` to enable, `undefined` to disable.                        |
+| `is-row-selectable`      | `(item: unknown) => boolean`                                                        | --          | Predicate to control which rows can be selected.                                                                       |
+| `global-filters`         | `GlobalFilter[] \| undefined`                                                       | `undefined` | Array of filter definitions shown above the table.                                                                     |
+| `pull-to-refresh`        | `boolean`                                                                           | `false`     | Enables mobile pull-to-refresh gesture.                                                                                |
+| `empty-state`            | `{ icon: string; title: string; actionLabel?: string; actionHandler?: () => void }` | --          | Configuration for empty state display when no items.                                                                   |
 
 ---
 
 ## 5. Events Reference
 
-| Event | Payload | Description |
-|---|---|---|
-| `@row-click` | `{ data: RowItem }` | Emitted when a row is clicked. The row item is wrapped in `{ data }`. |
-| `@pagination-click` | `number` | Emitted when a pagination page button is clicked. Payload is the target page number (1-based). |
-| `@search` | `string \| undefined` | Emitted when the user types in the search input. Payload is the search keyword or `undefined` when cleared. |
-| `@filter` | `{ filters: Record<string, unknown> }` | Emitted when a global filter is applied. `filters` is a map of filter id to selected values. |
-| `@pull-refresh` | -- | Emitted when the user triggers pull-to-refresh on mobile. |
+| Event               | Payload                                | Description                                                                                                 |
+| ------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `@row-click`        | `{ data: RowItem }`                    | Emitted when a row is clicked. The row item is wrapped in `{ data }`.                                       |
+| `@pagination-click` | `number`                               | Emitted when a pagination page button is clicked. Payload is the target page number (1-based).              |
+| `@search`           | `string \| undefined`                  | Emitted when the user types in the search input. Payload is the search keyword or `undefined` when cleared. |
+| `@filter`           | `{ filters: Record<string, unknown> }` | Emitted when a global filter is applied. `filters` is a map of filter id to selected values.                |
+| `@pull-refresh`     | --                                     | Emitted when the user triggers pull-to-refresh on mobile.                                                   |
 
 ---
 
@@ -477,11 +491,16 @@ exposeToChildren({
 3. **Use `useDataTableSort` for sort state.** It returns `sortField`, `sortOrder` (for v-model bindings), and `sortExpression` (computed `"field:DIR"` string for the API). Watch `sortExpression` to reload data when sort changes.
 
 4. **Selection requires a local ref.** Bind `v-model:selection` to a `localSelection` ref, then watch it to sync with external selection state or toolbar actions:
+
    ```ts
    const localSelection = ref<Item[]>([]);
-   watch(localSelection, (newSelection) => {
-     // Update toolbar state, selection handler, etc.
-   }, { deep: true });
+   watch(
+     localSelection,
+     (newSelection) => {
+       // Update toolbar state, selection handler, etc.
+     },
+     { deep: true },
+   );
    ```
 
 5. **`state-key` must be unique across all modules.** Use snake_case naming: `"entity_list"`, `"another_list"`, `"team_members"`.
@@ -494,7 +513,7 @@ exposeToChildren({
 
 9. **Column `type` selection rules:**
    - Date fields: use `"date-ago"` in list blades (relative time), not `"date-time"`
-   - Boolean fields (is*, has*, can*): use `"status-icon"`
+   - Boolean fields (is*, has*, can\*): use `"status-icon"`
    - Status/state enums: use `"status"` with a custom `#body` slot containing `VcStatus`
    - Image URLs: use `"image"` with `mobile-role="image"`
    - Currency fields: use `"money"`

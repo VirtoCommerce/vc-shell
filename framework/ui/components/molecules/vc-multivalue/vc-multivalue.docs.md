@@ -10,6 +10,7 @@ A multi-value input component for collecting multiple entries as chips/tags. Sup
 - Building tokenized inputs where each value is displayed as a removable chip
 
 When NOT to use:
+
 - Selecting from a list without manual entry -- use [VcSelect](../vc-select/) with `multiple`
 - Single value entry -- use [VcInput](../vc-input/)
 - Rich text content -- use [VcEditor](../vc-editor/)
@@ -18,7 +19,11 @@ When NOT to use:
 
 ```vue
 <template>
-  <VcMultivalue v-model="tags" label="Tags" placeholder="Type and press Enter" />
+  <VcMultivalue
+    v-model="tags"
+    label="Tags"
+    placeholder="Type and press Enter"
+  />
 </template>
 
 <script setup lang="ts">
@@ -126,22 +131,10 @@ const form = reactive({
 
 ```vue
 <!-- Show spinner while fetching options -->
-<VcMultivalue
-  v-model="selected"
-  :options="options"
-  multivalue
-  :loading="isLoading"
-  label="Async options"
-/>
+<VcMultivalue v-model="selected" :options="options" multivalue :loading="isLoading" label="Async options" />
 
 <!-- Allow clearing all selected values at once -->
-<VcMultivalue
-  v-model="selected"
-  :options="options"
-  multivalue
-  clearable
-  label="Clearable selection"
-/>
+<VcMultivalue v-model="selected" :options="options" multivalue clearable label="Clearable selection" />
 ```
 
 ### Custom Rendering with Slots
@@ -265,66 +258,66 @@ const selectedArray = ref([{ id: "1", title: "Option 1" }]);
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `T[]` | `[]` | Array of selected values via `v-model` |
-| `type` | `"text" \| "number" \| "integer" \| "date" \| "datetime-local" \| "color"` | `"text"` | Input type for manual entry |
-| `options` | `T[]` | `[]` | Predefined options for dictionary mode |
-| `optionValue` | `string` | `"id"` | Property name used as the option's unique key |
-| `optionLabel` | `string` | `"title"` | Property name used as the option's display text |
-| `multivalue` | `boolean` | `false` | Enables dictionary mode with dropdown |
-| `clearable` | `boolean` | `false` | Shows a clear-all button when values are selected |
-| `loading` | `boolean` | `false` | Shows a loading spinner in the field |
-| `placeholder` | `string` | -- | Input placeholder text |
-| `label` | `string` | -- | Label text above the field |
-| `tooltip` | `string` | -- | Tooltip shown on label hover |
-| `hint` | `string` | -- | Helper text displayed below the field |
-| `disabled` | `boolean` | `false` | Disables the entire field |
-| `required` | `boolean` | `false` | Shows a required asterisk on the label |
-| `name` | `string` | `"Field"` | Form field name attribute |
-| `error` | `boolean` | `false` | External error flag for styling |
-| `errorMessage` | `string` | -- | Error message text (also sets error state when truthy) |
-| `multilanguage` | `boolean` | `false` | Enables multilanguage indicator on the label |
-| `currentLanguage` | `string` | -- | Current language code for multilanguage mode |
+| Prop              | Type                                                                       | Default   | Description                                            |
+| ----------------- | -------------------------------------------------------------------------- | --------- | ------------------------------------------------------ |
+| `modelValue`      | `T[]`                                                                      | `[]`      | Array of selected values via `v-model`                 |
+| `type`            | `"text" \| "number" \| "integer" \| "date" \| "datetime-local" \| "color"` | `"text"`  | Input type for manual entry                            |
+| `options`         | `T[]`                                                                      | `[]`      | Predefined options for dictionary mode                 |
+| `optionValue`     | `string`                                                                   | `"id"`    | Property name used as the option's unique key          |
+| `optionLabel`     | `string`                                                                   | `"title"` | Property name used as the option's display text        |
+| `multivalue`      | `boolean`                                                                  | `false`   | Enables dictionary mode with dropdown                  |
+| `clearable`       | `boolean`                                                                  | `false`   | Shows a clear-all button when values are selected      |
+| `loading`         | `boolean`                                                                  | `false`   | Shows a loading spinner in the field                   |
+| `placeholder`     | `string`                                                                   | --        | Input placeholder text                                 |
+| `label`           | `string`                                                                   | --        | Label text above the field                             |
+| `tooltip`         | `string`                                                                   | --        | Tooltip shown on label hover                           |
+| `hint`            | `string`                                                                   | --        | Helper text displayed below the field                  |
+| `disabled`        | `boolean`                                                                  | `false`   | Disables the entire field                              |
+| `required`        | `boolean`                                                                  | `false`   | Shows a required asterisk on the label                 |
+| `name`            | `string`                                                                   | `"Field"` | Form field name attribute                              |
+| `error`           | `boolean`                                                                  | `false`   | External error flag for styling                        |
+| `errorMessage`    | `string`                                                                   | --        | Error message text (also sets error state when truthy) |
+| `multilanguage`   | `boolean`                                                                  | `false`   | Enables multilanguage indicator on the label           |
+| `currentLanguage` | `string`                                                                   | --        | Current language code for multilanguage mode           |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:model-value` | `T[]` | Emitted when the selected values change |
-| `close` | -- | Emitted when the dropdown closes |
-| `search` | `string` | Emitted when the user types in the dropdown search field |
+| Event                | Payload  | Description                                              |
+| -------------------- | -------- | -------------------------------------------------------- |
+| `update:model-value` | `T[]`    | Emitted when the selected values change                  |
+| `close`              | --       | Emitted when the dropdown closes                         |
+| `search`             | `string` | Emitted when the user types in the dropdown search field |
 
 ## Slots
 
-| Slot | Scope | Description |
-|------|-------|-------------|
-| `option` | `{ item: T, index: number }` | Custom rendering for dropdown options (dictionary mode) |
-| `selected-item` | `{ value: string \| number, item: T, index: number, remove: () => void }` | Custom rendering for selected value chips |
-| `prepend` | -- | Content rendered before the field area (inside the border) |
-| `append` | -- | Content rendered after the field area (inside the border) |
-| `error` | -- | Custom error message markup (replaces default VcHint) |
-| `hint` | -- | Custom hint markup (replaces default VcHint) |
+| Slot            | Scope                                                                     | Description                                                |
+| --------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `option`        | `{ item: T, index: number }`                                              | Custom rendering for dropdown options (dictionary mode)    |
+| `selected-item` | `{ value: string \| number, item: T, index: number, remove: () => void }` | Custom rendering for selected value chips                  |
+| `prepend`       | --                                                                        | Content rendered before the field area (inside the border) |
+| `append`        | --                                                                        | Content rendered after the field area (inside the border)  |
+| `error`         | --                                                                        | Custom error message markup (replaces default VcHint)      |
+| `hint`          | --                                                                        | Custom hint markup (replaces default VcHint)               |
 
 ## CSS Variables
 
 The component uses `--multivalue-*` variables that fall back to `--select-*` tokens for visual consistency with VcSelect.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--multivalue-height` | `36px` | Minimum height of the input field |
-| `--multivalue-border-radius` | `var(--select-border-radius, 6px)` | Border radius |
-| `--multivalue-border-color` | `var(--select-border-color, var(--neutrals-300))` | Default border color |
-| `--multivalue-background-color` | `var(--select-background-color, transparent)` | Field background |
-| `--multivalue-text-color` | `var(--select-text-color, var(--neutrals-800))` | Field text color |
-| `--multivalue-chip-background-color` | `var(--select-multiple-options-background-color, var(--neutrals-100))` | Chip background |
-| `--multivalue-chip-border-color` | `var(--select-multiple-options-border-color, var(--neutrals-200))` | Chip border |
-| `--multivalue-border-color-focus` | `var(--select-border-color-focus, var(--primary-500))` | Border color on focus |
-| `--multivalue-focus-ring-color` | `var(--select-focus-ring-color, var(--primary-100))` | Focus ring color |
-| `--multivalue-border-color-error` | `var(--select-border-color-error, var(--danger-500))` | Border on error |
-| `--multivalue-error-ring-color` | `var(--select-error-ring-color, var(--danger-100))` | Error ring color |
-| `--multivalue-disabled-text-color` | `var(--neutrals-500)` | Disabled text color |
-| `--multivalue-loading-color` | `var(--select-loading-color, var(--info-500))` | Loading spinner color |
+| Variable                             | Default                                                                | Description                       |
+| ------------------------------------ | ---------------------------------------------------------------------- | --------------------------------- |
+| `--multivalue-height`                | `36px`                                                                 | Minimum height of the input field |
+| `--multivalue-border-radius`         | `var(--select-border-radius, 6px)`                                     | Border radius                     |
+| `--multivalue-border-color`          | `var(--select-border-color, var(--neutrals-300))`                      | Default border color              |
+| `--multivalue-background-color`      | `var(--select-background-color, transparent)`                          | Field background                  |
+| `--multivalue-text-color`            | `var(--select-text-color, var(--neutrals-800))`                        | Field text color                  |
+| `--multivalue-chip-background-color` | `var(--select-multiple-options-background-color, var(--neutrals-100))` | Chip background                   |
+| `--multivalue-chip-border-color`     | `var(--select-multiple-options-border-color, var(--neutrals-200))`     | Chip border                       |
+| `--multivalue-border-color-focus`    | `var(--select-border-color-focus, var(--primary-500))`                 | Border color on focus             |
+| `--multivalue-focus-ring-color`      | `var(--select-focus-ring-color, var(--primary-100))`                   | Focus ring color                  |
+| `--multivalue-border-color-error`    | `var(--select-border-color-error, var(--danger-500))`                  | Border on error                   |
+| `--multivalue-error-ring-color`      | `var(--select-error-ring-color, var(--danger-100))`                    | Error ring color                  |
+| `--multivalue-disabled-text-color`   | `var(--neutrals-500)`                                                  | Disabled text color               |
+| `--multivalue-loading-color`         | `var(--select-loading-color, var(--info-500))`                         | Loading spinner color             |
 
 ## Accessibility
 
@@ -351,4 +344,3 @@ The component uses `--multivalue-*` variables that fall back to `--select-*` tok
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
-

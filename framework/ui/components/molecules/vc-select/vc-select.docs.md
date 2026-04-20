@@ -6,14 +6,14 @@ VcSelect is one of the most widely used components in vc-shell. It covers most s
 
 ## When to Use
 
-| Scenario | Component |
-|----------|-----------|
-| Selection from a list (single/multiple) | **VcSelect** |
-| Free text input | [VcInput](../vc-input/) |
-| Number input + unit selection | [VcInputDropdown](../vc-input-dropdown/) |
-| Tags with free-form input | [VcMultivalue](../vc-multivalue/) |
-| Date selection | [VcDatePicker](../vc-date-picker/) |
-| Color selection | [VcColorInput](../vc-color-input/) |
+| Scenario                                | Component                                |
+| --------------------------------------- | ---------------------------------------- |
+| Selection from a list (single/multiple) | **VcSelect**                             |
+| Free text input                         | [VcInput](../vc-input/)                  |
+| Number input + unit selection           | [VcInputDropdown](../vc-input-dropdown/) |
+| Tags with free-form input               | [VcMultivalue](../vc-multivalue/)        |
+| Date selection                          | [VcDatePicker](../vc-date-picker/)       |
+| Color selection                         | [VcColorInput](../vc-color-input/)       |
 
 ## Quick Start
 
@@ -75,11 +75,7 @@ By default `option-value="id"` and `option-label="title"` — if your objects us
 For simple lists of strings or numbers:
 
 ```vue
-<VcSelect
-  v-model="size"
-  :options="['S', 'M', 'L', 'XL', 'XXL']"
-  label="Размер"
-/>
+<VcSelect v-model="size" :options="['S', 'M', 'L', 'XL', 'XXL']" label="Размер" />
 ```
 
 In this case `optionValue` and `optionLabel` are not needed — the component uses the value as-is.
@@ -87,6 +83,7 @@ In this case `optionValue` and `optionLabel` are not needed — the component us
 ### Async Function (Server API)
 
 To load data from a server, pass a function instead of an array. This is the most powerful mode — it automatically provides:
+
 - Search with debounce (500ms by default)
 - Infinite scrolling (loads more on scroll down)
 - Automatic resolution of the initial value by `ids`
@@ -184,14 +181,7 @@ Selected values are displayed as chips with a remove button. The `clearable` but
 Enable `searchable` to add a search field to the dropdown:
 
 ```vue
-<VcSelect
-  v-model="userId"
-  :options="users"
-  label="Пользователь"
-  searchable
-  :debounce="300"
-  @search="onSearch"
-/>
+<VcSelect v-model="userId" :options="users" label="Пользователь" searchable :debounce="300" @search="onSearch" />
 ```
 
 - **Static array:** filtering happens on the client side (by `optionLabel`)
@@ -206,7 +196,11 @@ Use the `#option` slot for full control over how each option is rendered:
 
 ```vue
 <template>
-  <VcSelect v-model="statusId" :options="statuses" label="Статус заказа">
+  <VcSelect
+    v-model="statusId"
+    :options="statuses"
+    label="Статус заказа"
+  >
     <template #option="{ opt, selected, toggleOption }">
       <div
         class="tw-flex tw-items-center tw-gap-2 tw-px-3 tw-py-2 tw-cursor-pointer"
@@ -224,7 +218,12 @@ Use the `#option` slot for full control over how each option is rendered:
           <span class="tw-text-xs tw-text-[var(--neutrals-400)]">{{ opt.description }}</span>
         </div>
         <!-- Галочка для выбранного -->
-        <VcIcon v-if="selected" icon="lucide-check" size="xs" class="tw-ml-auto" />
+        <VcIcon
+          v-if="selected"
+          icon="lucide-check"
+          size="xs"
+          class="tw-ml-auto"
+        />
       </div>
     </template>
   </VcSelect>
@@ -316,12 +315,7 @@ const { meta, errorBag } = useForm({ validateOnMount: false });
 For an async select with search, the pattern is the same, but `handleChange` is called alongside business logic:
 
 ```vue
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="offer.productId"
-  name="product"
-  rules="required"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="offer.productId" name="product" rules="required">
   <VcSelect
     v-model="offer.productId"
     label="Product"
@@ -509,7 +503,11 @@ A typical pattern in vc-shell — a select on a details page:
     <VcForm>
       <VcRow>
         <VcCol :size="6">
-          <VcInput v-model="product.name" label="Name" required />
+          <VcInput
+            v-model="product.name"
+            label="Name"
+            required
+          />
         </VcCol>
         <VcCol :size="6">
           <VcSelect
@@ -571,18 +569,10 @@ If `v-model` contains an ID but the list has not been loaded yet — for static 
 
 ```vue
 <!-- ❌ Проблема: async функция не обрабатывает ids -->
-const loadUsers = async (keyword?: string, skip?: number) => {
-  return api.searchUsers({ keyword, skip, take: 20 });
-};
+const loadUsers = async (keyword?: string, skip?: number) => { return api.searchUsers({ keyword, skip, take: 20 }); };
 
 <!-- ✅ Решение: обработайте ids параметр -->
-const loadUsers = async (keyword?: string, skip?: number, ids?: string[]) => {
-  if (ids?.length) {
-    const users = await api.getUsersByIds(ids);
-    return { results: users, totalCount: users.length };
-  }
-  return api.searchUsers({ keyword, skip, take: 20 });
-};
+const loadUsers = async (keyword?: string, skip?: number, ids?: string[]) => { if (ids?.length) { const users = await api.getUsersByIds(ids); return { results: users, totalCount: users.length }; } return api.searchUsers({ keyword, skip, take: 20 }); };
 ```
 
 ### Problem: Unnecessary requests with cascading selects
@@ -593,55 +583,55 @@ Don't forget `:key` with cascading selects, otherwise the second select will ret
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `T \| T[] \| string \| string[] \| null` | `undefined` | Value (v-model). Type depends on `emitValue` and `multiple` |
-| `options` | `T[] \| ((keyword?, skip?, ids?) => Promise<P>)` | `[]` | Static array or async function |
-| `optionValue` | `string \| ((opt: T) => string)` | `"id"` | Object property used as the value |
-| `optionLabel` | `string \| ((opt: T) => string)` | `"title"` | Object property used for display |
-| `multiple` | `boolean` | `false` | Multiple selection |
-| `searchable` | `boolean` | `false` | Search through options |
-| `emitValue` | `boolean` | `true` | `true` = emit the value, `false` = emit the full object |
-| `clearable` | `boolean` | `true` | Clear button |
-| `debounce` | `number \| string` | `500` | Search delay (ms) |
-| `mapOptions` | `boolean` | `true` | Automatically look up label by value in the array |
-| `placement` | `string` | `"bottom"` | Dropdown position (Floating UI placements) |
-| `size` | `"default" \| "small"` | `"default"` | Field size |
-| `outline` | `boolean` | `true` | Show border outline |
-| `loading` | `boolean` | `false` | Loading state |
-| `label` | `string` | — | Label text |
-| `placeholder` | `string` | — | Placeholder |
-| `required` | `boolean` | `false` | Required field (asterisk) |
-| `disabled` | `boolean` | `false` | Disable the component |
-| `error` | `boolean` | `false` | Error state |
-| `errorMessage` | `string` | — | Error text |
-| `hint` | `string` | — | Hint text below the field |
-| `tooltip` | `string` | — | Tooltip next to the label |
-| `prefix` | `string` | — | Prefix inside the field |
-| `suffix` | `string` | — | Suffix inside the field |
-| `multilanguage` | `boolean` | `false` | Multilanguage icon on the label |
-| `currentLanguage` | `string` | — | Current language |
-| `name` | `string` | `"Field"` | Field name for validation |
+| Prop              | Type                                             | Default     | Description                                                 |
+| ----------------- | ------------------------------------------------ | ----------- | ----------------------------------------------------------- |
+| `modelValue`      | `T \| T[] \| string \| string[] \| null`         | `undefined` | Value (v-model). Type depends on `emitValue` and `multiple` |
+| `options`         | `T[] \| ((keyword?, skip?, ids?) => Promise<P>)` | `[]`        | Static array or async function                              |
+| `optionValue`     | `string \| ((opt: T) => string)`                 | `"id"`      | Object property used as the value                           |
+| `optionLabel`     | `string \| ((opt: T) => string)`                 | `"title"`   | Object property used for display                            |
+| `multiple`        | `boolean`                                        | `false`     | Multiple selection                                          |
+| `searchable`      | `boolean`                                        | `false`     | Search through options                                      |
+| `emitValue`       | `boolean`                                        | `true`      | `true` = emit the value, `false` = emit the full object     |
+| `clearable`       | `boolean`                                        | `true`      | Clear button                                                |
+| `debounce`        | `number \| string`                               | `500`       | Search delay (ms)                                           |
+| `mapOptions`      | `boolean`                                        | `true`      | Automatically look up label by value in the array           |
+| `placement`       | `string`                                         | `"bottom"`  | Dropdown position (Floating UI placements)                  |
+| `size`            | `"default" \| "small"`                           | `"default"` | Field size                                                  |
+| `outline`         | `boolean`                                        | `true`      | Show border outline                                         |
+| `loading`         | `boolean`                                        | `false`     | Loading state                                               |
+| `label`           | `string`                                         | —           | Label text                                                  |
+| `placeholder`     | `string`                                         | —           | Placeholder                                                 |
+| `required`        | `boolean`                                        | `false`     | Required field (asterisk)                                   |
+| `disabled`        | `boolean`                                        | `false`     | Disable the component                                       |
+| `error`           | `boolean`                                        | `false`     | Error state                                                 |
+| `errorMessage`    | `string`                                         | —           | Error text                                                  |
+| `hint`            | `string`                                         | —           | Hint text below the field                                   |
+| `tooltip`         | `string`                                         | —           | Tooltip next to the label                                   |
+| `prefix`          | `string`                                         | —           | Prefix inside the field                                     |
+| `suffix`          | `string`                                         | —           | Suffix inside the field                                     |
+| `multilanguage`   | `boolean`                                        | `false`     | Multilanguage icon on the label                             |
+| `currentLanguage` | `string`                                         | —           | Current language                                            |
+| `name`            | `string`                                         | `"Field"`   | Field name for validation                                   |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event               | Payload                                  | Description            |
+| ------------------- | ---------------------------------------- | ---------------------- |
 | `update:modelValue` | `T \| T[] \| string \| string[] \| null` | Selected value changed |
-| `search` | `string` | Search query changed |
-| `close` | — | Dropdown closed |
+| `search`            | `string`                                 | Search query changed   |
+| `close`             | —                                        | Dropdown closed        |
 
 ## Slots
 
-| Slot | Scope | Description |
-|------|-------|-------------|
-| `option` | `{ index, opt, selected, toggleOption }` | Custom option rendering. **You must call `toggleOption(opt)` on click.** |
-| `selected-item` | `{ index, opt, selected, removeAtIndex }` | Custom rendering of selected chips (multiple) |
-| `control` | `{ toggleHandler, isOpened }` | Full trigger replacement |
-| `prepend` / `append` | — | Content outside the field |
-| `prepend-inner` / `append-inner` | — | Content inside the field |
-| `no-options` | — | Shown when there are no options |
-| `error` / `hint` | — | Custom rendering of error/hint |
+| Slot                             | Scope                                     | Description                                                              |
+| -------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------ |
+| `option`                         | `{ index, opt, selected, toggleOption }`  | Custom option rendering. **You must call `toggleOption(opt)` on click.** |
+| `selected-item`                  | `{ index, opt, selected, removeAtIndex }` | Custom rendering of selected chips (multiple)                            |
+| `control`                        | `{ toggleHandler, isOpened }`             | Full trigger replacement                                                 |
+| `prepend` / `append`             | —                                         | Content outside the field                                                |
+| `prepend-inner` / `append-inner` | —                                         | Content inside the field                                                 |
+| `no-options`                     | —                                         | Shown when there are no options                                          |
+| `error` / `hint`                 | —                                         | Custom rendering of error/hint                                           |
 
 ## CSS Variables
 
@@ -688,4 +678,3 @@ Don't forget `:key` with cascading selects, otherwise the second select will ret
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
-

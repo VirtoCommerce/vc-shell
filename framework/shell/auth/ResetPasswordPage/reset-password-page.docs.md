@@ -36,13 +36,13 @@ With custom branding:
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `userId` | `string` | **required** | User ID from the reset link |
-| `userName` | `string` | **required** | Username/email for auto-sign-in after reset |
-| `token` | `string` | **required** | Reset token from the email link |
-| `logo` | `string` | `/assets/logo-white.svg` | Logo image URL |
-| `background` | `string` | `/assets/background.jpg` | Background image URL |
+| Prop         | Type     | Default                  | Description                                 |
+| ------------ | -------- | ------------------------ | ------------------------------------------- |
+| `userId`     | `string` | **required**             | User ID from the reset link                 |
+| `userName`   | `string` | **required**             | Username/email for auto-sign-in after reset |
+| `token`      | `string` | **required**             | Reset token from the email link             |
+| `logo`       | `string` | `/assets/logo-white.svg` | Logo image URL                              |
+| `background` | `string` | `/assets/background.jpg` | Background image URL                        |
 
 ## Recipe: Router Configuration
 
@@ -67,6 +67,7 @@ const routes = [
 ```
 
 The reset email link typically looks like:
+
 ```
 https://your-app.com/reset-password?userId=abc123&userName=jane@example.com&token=xyz789...
 ```

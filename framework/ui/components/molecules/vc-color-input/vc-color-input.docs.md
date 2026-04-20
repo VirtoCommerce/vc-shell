@@ -22,7 +22,11 @@ The component follows the same prop interface as other vc-shell form fields (`IT
 
 ```vue
 <template>
-  <VcColorInput v-model="color" label="Brand color" placeholder="Enter hex color..." />
+  <VcColorInput
+    v-model="color"
+    label="Brand color"
+    placeholder="Enter hex color..."
+  />
 </template>
 
 <script setup lang="ts">
@@ -35,15 +39,15 @@ const color = ref<string | null>(null);
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `string \| null` | `undefined` | Color value via `v-model` (hex string or CSS color name) |
-| `label` | `string` | -- | Label text above the field |
-| `placeholder` | `string` | -- | Placeholder text |
-| `clearable` | `boolean` | `false` | Shows a clear button when a value is present |
-| `size` | `"default" \| "small"` | `"default"` | Field height variant |
-| `error` / `errorMessage` | `boolean` / `string` | -- | Error styling and validation message |
-| `disabled` | `boolean` | `false` | Disables the input and color picker |
+| Prop                     | Type                   | Default     | Description                                              |
+| ------------------------ | ---------------------- | ----------- | -------------------------------------------------------- |
+| `modelValue`             | `string \| null`       | `undefined` | Color value via `v-model` (hex string or CSS color name) |
+| `label`                  | `string`               | --          | Label text above the field                               |
+| `placeholder`            | `string`               | --          | Placeholder text                                         |
+| `clearable`              | `boolean`              | `false`     | Shows a clear button when a value is present             |
+| `size`                   | `"default" \| "small"` | `"default"` | Field height variant                                     |
+| `error` / `errorMessage` | `boolean` / `string`   | --          | Error styling and validation message                     |
+| `disabled`               | `boolean`              | `false`     | Disables the input and color picker                      |
 
 ## Common Patterns
 
@@ -66,7 +70,10 @@ const color = ref<string | null>(null);
 
 ```vue
 <template>
-  <VcColorInput v-model="color" label="Accent color" />
+  <VcColorInput
+    v-model="color"
+    label="Accent color"
+  />
   <!-- Accepts "#3b82f6", "#fff", "red", "cornflowerblue", etc. -->
 </template>
 
@@ -81,9 +88,20 @@ const color = ref("#3b82f6");
 ```vue
 <template>
   <div class="tw-flex tw-flex-col tw-gap-4">
-    <VcInput v-model="category.name" label="Category Name" rules="required" />
-    <VcColorInput v-model="category.badgeColor" label="Badge Color" clearable />
-    <VcInput v-model="category.description" label="Description" />
+    <VcInput
+      v-model="category.name"
+      label="Category Name"
+      rules="required"
+    />
+    <VcColorInput
+      v-model="category.badgeColor"
+      label="Badge Color"
+      clearable
+    />
+    <VcInput
+      v-model="category.description"
+      label="Description"
+    />
   </div>
 </template>
 ```
@@ -95,8 +113,15 @@ You can use `VcInput` with `type="color"` instead of importing `VcColorInput` di
 ```vue
 <template>
   <!-- These are equivalent -->
-  <VcInput type="color" v-model="color" label="Theme Color" />
-  <VcColorInput v-model="color" label="Theme Color" />
+  <VcInput
+    type="color"
+    v-model="color"
+    label="Theme Color"
+  />
+  <VcColorInput
+    v-model="color"
+    label="Theme Color"
+  />
 </template>
 ```
 
@@ -106,12 +131,30 @@ You can use `VcInput` with `type="color"` instead of importing `VcColorInput` di
 <template>
   <h3>Theme Colors</h3>
   <div class="tw-grid tw-grid-cols-2 tw-gap-4">
-    <VcColorInput v-model="theme.primary" label="Primary" />
-    <VcColorInput v-model="theme.secondary" label="Secondary" />
-    <VcColorInput v-model="theme.accent" label="Accent" />
-    <VcColorInput v-model="theme.background" label="Background" />
-    <VcColorInput v-model="theme.text" label="Text" />
-    <VcColorInput v-model="theme.error" label="Error" />
+    <VcColorInput
+      v-model="theme.primary"
+      label="Primary"
+    />
+    <VcColorInput
+      v-model="theme.secondary"
+      label="Secondary"
+    />
+    <VcColorInput
+      v-model="theme.accent"
+      label="Accent"
+    />
+    <VcColorInput
+      v-model="theme.background"
+      label="Background"
+    />
+    <VcColorInput
+      v-model="theme.text"
+      label="Text"
+    />
+    <VcColorInput
+      v-model="theme.error"
+      label="Error"
+    />
   </div>
 </template>
 ```
@@ -155,4 +198,3 @@ The native color picker does not support alpha/transparency. If you need RGBA co
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
-

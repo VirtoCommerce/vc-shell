@@ -1,6 +1,5 @@
 import { BasicColorSchema, useColorMode, useCycleList } from "@vueuse/core";
 import { computed, watchEffect, ref, type Ref } from "vue";
-import { useI18n } from "vue-i18n";
 import * as _ from "lodash-es";
 import { i18n } from "@core/plugins/i18n";
 import { createLogger } from "@core/utilities";

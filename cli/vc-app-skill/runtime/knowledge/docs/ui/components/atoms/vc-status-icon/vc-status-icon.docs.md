@@ -23,8 +23,8 @@ import { VcStatusIcon } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+| Prop     | Type      | Default     | Description                                                           |
+| -------- | --------- | ----------- | --------------------------------------------------------------------- |
 | `status` | `boolean` | `undefined` | `true` shows a green check circle; `false` shows a muted cross circle |
 
 ## Common Patterns
@@ -33,7 +33,11 @@ import { VcStatusIcon } from "@vc-shell/framework";
 
 ```vue
 <template>
-  <VcColumn id="isActive" header="Active" :width="80">
+  <VcColumn
+    id="isActive"
+    header="Active"
+    :width="80"
+  >
     <template #default="{ row }">
       <VcStatusIcon :status="row.isActive" />
     </template>
@@ -45,18 +49,33 @@ import { VcStatusIcon } from "@vc-shell/framework";
 
 ```vue
 <template>
-  <VcDataTable :columns="columns" :items="users">
-    <VcColumn id="emailVerified" header="Email" :width="70">
+  <VcDataTable
+    :columns="columns"
+    :items="users"
+  >
+    <VcColumn
+      id="emailVerified"
+      header="Email"
+      :width="70"
+    >
       <template #default="{ row }">
         <VcStatusIcon :status="row.emailVerified" />
       </template>
     </VcColumn>
-    <VcColumn id="isActive" header="Active" :width="70">
+    <VcColumn
+      id="isActive"
+      header="Active"
+      :width="70"
+    >
       <template #default="{ row }">
         <VcStatusIcon :status="row.isActive" />
       </template>
     </VcColumn>
-    <VcColumn id="hasAvatar" header="Avatar" :width="70">
+    <VcColumn
+      id="hasAvatar"
+      header="Avatar"
+      :width="70"
+    >
       <template #default="{ row }">
         <VcStatusIcon :status="!!row.avatarUrl" />
       </template>
@@ -70,10 +89,14 @@ import { VcStatusIcon } from "@vc-shell/framework";
 ```vue
 <template>
   <div class="tw-space-y-2">
-    <div v-for="service in services" :key="service.name" class="tw-flex tw-justify-between tw-items-center tw-py-2 tw-border-b">
+    <div
+      v-for="service in services"
+      :key="service.name"
+      class="tw-flex tw-justify-between tw-items-center tw-py-2 tw-border-b"
+    >
       <span>{{ service.name }}</span>
       <div class="tw-flex tw-items-center tw-gap-2">
-        <span class="tw-text-sm">{{ service.status ? 'Online' : 'Offline' }}</span>
+        <span class="tw-text-sm">{{ service.status ? "Online" : "Offline" }}</span>
         <VcStatusIcon :status="service.status" />
       </div>
     </div>
@@ -89,8 +112,11 @@ VcStatusIcon is intentionally minimal. If you need a text label next to the icon
 <template>
   <div class="tw-flex tw-items-center tw-gap-2">
     <VcStatusIcon :status="order.isPaid" />
-    <span class="tw-text-sm" :class="order.isPaid ? 'tw-text-green-600' : 'tw-text-gray-400'">
-      {{ order.isPaid ? 'Paid' : 'Unpaid' }}
+    <span
+      class="tw-text-sm"
+      :class="order.isPaid ? 'tw-text-green-600' : 'tw-text-gray-400'"
+    >
+      {{ order.isPaid ? "Paid" : "Unpaid" }}
     </span>
   </div>
 </template>
@@ -98,9 +124,9 @@ VcStatusIcon is intentionally minimal. If you need a text label next to the icon
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|---|---|---|
-| `--status-icon-success-color` | `var(--success-500)` | Color of the check icon |
+| Variable                       | Default               | Description             |
+| ------------------------------ | --------------------- | ----------------------- |
+| `--status-icon-success-color`  | `var(--success-500)`  | Color of the check icon |
 | `--status-icon-inactive-color` | `var(--neutrals-300)` | Color of the cross icon |
 
 ## Tips

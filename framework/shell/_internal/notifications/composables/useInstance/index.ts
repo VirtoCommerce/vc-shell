@@ -1,4 +1,4 @@
-import { App, Ref, ref } from "vue";
+import { App } from "vue";
 import { NotificationPosition } from "@core/notifications/toast-types";
 import { createLogger } from "@core/utilities";
 

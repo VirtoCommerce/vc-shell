@@ -105,7 +105,7 @@
  * - Support for built-in widget positions
  * - Accessibility support
  */
-import { ref, computed, onMounted, watch, nextTick } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import type { IDashboardWidget, DashboardWidgetPosition } from "@shell/dashboard/draggable-dashboard/types";
 import { useDashboard } from "@core/composables/useDashboard";
 import { useGridstack } from "@shell/dashboard/draggable-dashboard/composables/useGridstack";

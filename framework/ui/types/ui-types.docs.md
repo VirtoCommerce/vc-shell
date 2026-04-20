@@ -21,41 +21,41 @@ When building custom form field components, extending these interfaces ensures c
 
 Base props shared by all form field components (VcCheckbox, VcSwitch, VcRadioButton, VcInput, VcTextarea, VcSelect, VcDatePicker, VcEditor, VcFileUpload, VcColorInput, etc.).
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `label` | `string?` | Field label text |
-| `tooltip` | `string?` | Tooltip shown on label hover |
-| `disabled` | `boolean?` | Whether the field is disabled |
-| `required` | `boolean?` | Whether the field is required |
-| `name` | `string?` | Form field name attribute |
-| `error` | `boolean?` | External error flag |
-| `errorMessage` | `string?` | Error message text (also sets error state when truthy) |
+| Prop           | Type       | Description                                            |
+| -------------- | ---------- | ------------------------------------------------------ |
+| `label`        | `string?`  | Field label text                                       |
+| `tooltip`      | `string?`  | Tooltip shown on label hover                           |
+| `disabled`     | `boolean?` | Whether the field is disabled                          |
+| `required`     | `boolean?` | Whether the field is required                          |
+| `name`         | `string?`  | Form field name attribute                              |
+| `error`        | `boolean?` | External error flag                                    |
+| `errorMessage` | `string?`  | Error message text (also sets error state when truthy) |
 
 ### `ITextFieldProps`
 
 Extended props for text-input-like components (VcInput, VcTextarea, VcSelect, VcDatePicker, VcColorInput). Extends `IFormFieldProps`.
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `placeholder` | `string?` | Placeholder text |
-| `hint` | `string?` | Hint text shown below the field |
-| `clearable` | `boolean?` | Show clear button |
-| `loading` | `boolean?` | Show loading indicator |
-| `autofocus` | `boolean?` | Auto-focus on mount |
-| `size` | `"default" \| "small"?` | Field size variant |
-| `multilanguage` | `boolean?` | Whether multilanguage mode is active |
-| `currentLanguage` | `string?` | Current language code for multilanguage mode |
+| Prop              | Type                    | Description                                  |
+| ----------------- | ----------------------- | -------------------------------------------- |
+| `placeholder`     | `string?`               | Placeholder text                             |
+| `hint`            | `string?`               | Hint text shown below the field              |
+| `clearable`       | `boolean?`              | Show clear button                            |
+| `loading`         | `boolean?`              | Show loading indicator                       |
+| `autofocus`       | `boolean?`              | Auto-focus on mount                          |
+| `size`            | `"default" \| "small"?` | Field size variant                           |
+| `multilanguage`   | `boolean?`              | Whether multilanguage mode is active         |
+| `currentLanguage` | `string?`               | Current language code for multilanguage mode |
 
 ### `Breadcrumbs`
 
 Breadcrumb navigation item used by blade headers.
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `id` | `string` | Unique breadcrumb identifier |
-| `title` | `MaybeRef<string \| undefined>` | Display text (can be reactive) |
-| `icon` | `string?` | Icon identifier |
-| `clickHandler` | `(id: string) => void \| boolean \| Promise<void \| boolean>?` | Navigation handler |
+| Prop           | Type                                                           | Description                    |
+| -------------- | -------------------------------------------------------------- | ------------------------------ |
+| `id`           | `string`                                                       | Unique breadcrumb identifier   |
+| `title`        | `MaybeRef<string \| undefined>`                                | Display text (can be reactive) |
+| `icon`         | `string?`                                                      | Icon identifier                |
+| `clickHandler` | `(id: string) => void \| boolean \| Promise<void \| boolean>?` | Navigation handler             |
 
 ## Usage Examples
 
@@ -94,8 +94,15 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="my-toggle" :class="{ 'my-toggle--error': error || !!errorMessage }">
-    <VcLabel v-if="label" :tooltip="tooltip" :required="required">
+  <div
+    class="my-toggle"
+    :class="{ 'my-toggle--error': error || !!errorMessage }"
+  >
+    <VcLabel
+      v-if="label"
+      :tooltip="tooltip"
+      :required="required"
+    >
       {{ label }}
     </VcLabel>
     <button
@@ -104,9 +111,13 @@ const emit = defineEmits<{
       role="switch"
       @click="emit('update:modelValue', !modelValue)"
     >
-      {{ modelValue ? (onLabel ?? 'On') : (offLabel ?? 'Off') }}
+      {{ modelValue ? (onLabel ?? "On") : (offLabel ?? "Off") }}
     </button>
-    <span v-if="errorMessage" class="my-toggle__error">{{ errorMessage }}</span>
+    <span
+      v-if="errorMessage"
+      class="my-toggle__error"
+      >{{ errorMessage }}</span
+    >
   </div>
 </template>
 ```

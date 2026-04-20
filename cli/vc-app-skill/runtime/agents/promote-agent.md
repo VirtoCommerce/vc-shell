@@ -61,6 +61,7 @@ If `bladeTypes` is `"details-only"`, skip all list composable and list blade fil
 ### Step 1: Validate generated files
 
 For each path in `prototypeMetadata.generatedFiles`:
+
 1. Check that `{targetDir}/{path}` exists on disk
 2. Read the file contents
 3. If a file is missing, record a warning: `"MISSING: {path} — listed in prototypeMetadata but not found on disk"`
@@ -76,11 +77,13 @@ Process each composable file (`.ts` files under `composables/`) listed in `gener
 Search for `// vc-app:mock-start` and `// vc-app:mock-end` markers in the file.
 
 **Primary path (markers found):**
+
 - Extract the entire block between `// vc-app:mock-start` and `// vc-app:mock-end` (inclusive of the marker lines)
 - Replace the block with the real API integration code (see Step 2c)
 - Remove the marker comments themselves
 
 **Fallback path (markers NOT found):**
+
 - Pattern-match mock function signatures: look for functions that return hardcoded arrays/objects, `const mockData`, `const mock`, `setTimeout` simulating async, or inline `Promise.resolve(...)` with literal data
 - Replace matched regions with real API integration code
 - Set status to `DONE_WITH_CONCERNS` with concern: `"Mock markers not found in {filePath} — used pattern-matching fallback. Verify edits manually."`
@@ -90,6 +93,7 @@ Search for `// vc-app:mock-start` and `// vc-app:mock-end` markers in the file.
 At the top of the file, apply these import changes:
 
 **Add** (if not already present):
+
 ```ts
 import { useApiClient } from "@vc-shell/framework";
 import { {dataSource.clientClass} } from "{dataSource.entityTypePath}";
@@ -97,6 +101,7 @@ import { {dataSource.entityType}, /* SearchQuery, SearchResult types as needed *
 ```
 
 **Remove:**
+
 - Any imports that reference mock data files or mock type definitions that no longer exist
 - Do NOT remove other existing imports (framework composables, Vue imports, etc.)
 
@@ -109,6 +114,7 @@ const apiClient = useApiClient({dataSource.clientClass});
 ```
 
 Then replace mock function bodies:
+
 - **List composable** (`useList` / `use{EntityPlural}`):
   - Mock search/fetch function → `apiClient.{dataSource.searchMethod}(query)`
   - Mock remove function → `apiClient.{dataSource.deleteMethod}(ids)`
@@ -118,6 +124,7 @@ Then replace mock function bodies:
   - Mock delete function → `apiClient.{dataSource.deleteMethod}(ids)`
 
 If a method is not provided in `dataSource` (e.g., `deleteMethod` is undefined), leave a TODO comment:
+
 ```ts
 // TODO [vc-app:promote]: deleteMethod not provided — implement manually
 ```
@@ -139,11 +146,13 @@ For each entry in `fieldMap`:
   - Computed property keys and template literals referencing the field
 
 - **`action: "delete"`** — Remove code blocks that reference the deleted field. If the field appears in a return statement or interface, remove it. If it appears in logic that cannot be cleanly removed, comment it out with:
+
   ```ts
   // TODO [vc-app:promote]: removed field "{mockFieldName}" — clean up surrounding logic
   ```
 
 - **`action: "keep-stub"`** — Leave the existing code for this field in place and add a comment:
+
   ```ts
   // TODO [vc-app:promote]: {mockFieldName} — kept as stub, provide implementation
   ```
@@ -156,6 +165,7 @@ For each entry in `fieldMap`:
 #### 2f: Preserve untouched code
 
 All code outside the mock block and the renamed/deleted field references must remain exactly as-is. This includes:
+
 - Computed properties
 - Watchers
 - Validation logic
@@ -244,6 +254,7 @@ Compile the final report with:
 ## Output Contract
 
 Report format:
+
 ```
 Status: DONE | DONE_WITH_CONCERNS | BLOCKED
 Files modified:

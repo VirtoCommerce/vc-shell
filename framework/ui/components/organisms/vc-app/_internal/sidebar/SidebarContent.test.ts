@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { ref, provide, defineComponent, h } from "vue";
+import { provide, defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
 import { EmbeddedModeKey } from "@framework/injection-keys";
 import SidebarContent from "./SidebarContent.vue";

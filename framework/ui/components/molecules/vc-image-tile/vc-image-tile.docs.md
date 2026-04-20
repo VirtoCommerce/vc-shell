@@ -26,46 +26,50 @@ Square image tile with skeleton loading, fade-in transition, and a slide-up acti
 <script setup lang="ts">
 import { VcImageTile } from "@vc-shell/framework";
 
-function openPreview() { /* open lightbox */ }
-function deleteImage() { /* remove from list */ }
+function openPreview() {
+  /* open lightbox */
+}
+function deleteImage() {
+  /* remove from list */
+}
 </script>
 ```
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `src` | `string` | — | Image source URL |
-| `alt` | `string` | — | Image alt text |
-| `name` | `string` | — | File name displayed in the tray |
-| `imageFit` | `"contain" \| "cover"` | `"contain"` | How the image fits within the tile |
-| `actions` | `VcImageTileActions` | — | Which built-in action buttons to show |
-| `thumbnailSize` | `ThumbnailSize` | — | Load a thumbnail variant instead of full-size image |
+| Prop            | Type                   | Default     | Description                                         |
+| --------------- | ---------------------- | ----------- | --------------------------------------------------- |
+| `src`           | `string`               | —           | Image source URL                                    |
+| `alt`           | `string`               | —           | Image alt text                                      |
+| `name`          | `string`               | —           | File name displayed in the tray                     |
+| `imageFit`      | `"contain" \| "cover"` | `"contain"` | How the image fits within the tile                  |
+| `actions`       | `VcImageTileActions`   | —           | Which built-in action buttons to show               |
+| `thumbnailSize` | `ThumbnailSize`        | —           | Load a thumbnail variant instead of full-size image |
 
 ## VcImageTileActions Interface
 
 ```ts
 interface VcImageTileActions {
-  preview?: boolean;  // Fullscreen/maximize button (default visible)
-  edit?: boolean;     // Pencil edit button
-  remove?: boolean;   // Trash delete button
+  preview?: boolean; // Fullscreen/maximize button (default visible)
+  edit?: boolean; // Pencil edit button
+  remove?: boolean; // Trash delete button
 }
 ```
 
 ## Events
 
-| Event | Description |
-|-------|-------------|
+| Event     | Description            |
+| --------- | ---------------------- |
 | `preview` | Preview button clicked |
-| `edit` | Edit button clicked |
-| `remove` | Remove button clicked |
+| `edit`    | Edit button clicked    |
+| `remove`  | Remove button clicked  |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot      | Description                                             |
+| --------- | ------------------------------------------------------- |
 | `overlay` | Overlay content on top of the image (e.g., drag handle) |
-| `actions` | Additional action buttons in the tray |
+| `actions` | Additional action buttons in the tray                   |
 
 ## Common Patterns
 
@@ -88,14 +92,7 @@ interface VcImageTileActions {
 ### All Actions Enabled
 
 ```vue
-<VcImageTile
-  src="/img/photo.jpg"
-  name="photo.jpg"
-  :actions="{ preview: true, edit: true, remove: true }"
-  @preview="onPreview"
-  @edit="onEdit"
-  @remove="onRemove"
-/>
+<VcImageTile src="/img/photo.jpg" name="photo.jpg" :actions="{ preview: true, edit: true, remove: true }" @preview="onPreview" @edit="onEdit" @remove="onRemove" />
 ```
 
 ### Cover Fit for Photos
@@ -123,19 +120,19 @@ When `src` is not provided or the image is still loading, a shimmer animation sk
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--image-tile-radius` | `8px` | Corner radius |
-| `--image-tile-border` | `var(--secondary-200)` | Border color |
-| `--image-tile-shadow` | `0 1px 2px rgb(0 0 0 / 0.05)` | Default shadow |
-| `--image-tile-shadow-hover` | `0 4px 12px rgb(0 0 0 / 0.1)` | Hover shadow |
-| `--image-tile-tray-bg` | `rgba(255, 255, 255, 0.85)` | Tray background |
-| `--image-tile-tray-blur` | `12px` | Tray backdrop blur |
-| `--image-tile-skeleton-from` | `var(--secondary-100)` | Skeleton gradient start |
-| `--image-tile-skeleton-to` | `var(--secondary-200)` | Skeleton gradient end |
-| `--image-tile-action-color` | `var(--secondary-600)` | Action button color |
-| `--image-tile-action-hover` | `var(--primary-500)` | Action button hover color |
-| `--image-tile-action-danger` | `var(--danger-500)` | Danger action hover color |
+| Variable                     | Default                       | Description               |
+| ---------------------------- | ----------------------------- | ------------------------- |
+| `--image-tile-radius`        | `8px`                         | Corner radius             |
+| `--image-tile-border`        | `var(--secondary-200)`        | Border color              |
+| `--image-tile-shadow`        | `0 1px 2px rgb(0 0 0 / 0.05)` | Default shadow            |
+| `--image-tile-shadow-hover`  | `0 4px 12px rgb(0 0 0 / 0.1)` | Hover shadow              |
+| `--image-tile-tray-bg`       | `rgba(255, 255, 255, 0.85)`   | Tray background           |
+| `--image-tile-tray-blur`     | `12px`                        | Tray backdrop blur        |
+| `--image-tile-skeleton-from` | `var(--secondary-100)`        | Skeleton gradient start   |
+| `--image-tile-skeleton-to`   | `var(--secondary-200)`        | Skeleton gradient end     |
+| `--image-tile-action-color`  | `var(--secondary-600)`        | Action button color       |
+| `--image-tile-action-hover`  | `var(--primary-500)`          | Action button hover color |
+| `--image-tile-action-danger` | `var(--danger-500)`           | Danger action hover color |
 
 ## Accessibility
 

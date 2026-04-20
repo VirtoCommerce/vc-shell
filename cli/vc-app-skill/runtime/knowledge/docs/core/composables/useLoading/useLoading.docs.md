@@ -11,7 +11,7 @@ Aggregates multiple reactive boolean loading refs into a single computed that is
 ## Quick Start
 
 ```typescript
-import { useLoading } from '@vc-shell/framework';
+import { useLoading } from "@vc-shell/framework";
 
 const combinedLoading = useLoading(loadingA, loadingB, loadingC);
 // combinedLoading.value === true when ANY of the three is true
@@ -21,14 +21,14 @@ const combinedLoading = useLoading(loadingA, loadingB, loadingC);
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `...args` | `Readonly<Ref<boolean>>[]` | Yes | One or more reactive boolean refs to aggregate. Accepts `Ref<boolean>`, `ComputedRef<boolean>`, or any `Readonly<Ref<boolean>>`. |
+| Parameter | Type                       | Required | Description                                                                                                                      |
+| --------- | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `...args` | `Readonly<Ref<boolean>>[]` | Yes      | One or more reactive boolean refs to aggregate. Accepts `Ref<boolean>`, `ComputedRef<boolean>`, or any `Readonly<Ref<boolean>>`. |
 
 ### Returns
 
-| Type | Description |
-|------|-------------|
+| Type                   | Description                                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
 | `ComputedRef<boolean>` | `true` if any of the input refs is `true`, `false` otherwise. Re-evaluates whenever any input changes. |
 
 ## How It Works
@@ -36,7 +36,7 @@ const combinedLoading = useLoading(loadingA, loadingB, loadingC);
 The implementation is a single `computed` that calls `Array.some()` on the input refs:
 
 ```typescript
-computed(() => args.some((item) => item.value))
+computed(() => args.some((item) => item.value));
 ```
 
 Because `computed` tracks all `.value` accesses, Vue knows to re-evaluate whenever any of the input refs changes. The `some()` short-circuits on the first `true`, so it is efficient even with many inputs.
@@ -45,7 +45,10 @@ Because `computed` tracks all `.value` accesses, Vue knows to re-evaluate whenev
 
 ```vue
 <template>
-  <VcBlade title="Order Details" :loading="isLoading">
+  <VcBlade
+    title="Order Details"
+    :loading="isLoading"
+  >
     <div class="tw-grid tw-grid-cols-2 tw-gap-4">
       <VcCard title="Order Info">
         <p>{{ order?.number }}</p>
@@ -54,15 +57,18 @@ Because `computed` tracks all `.value` accesses, Vue knows to re-evaluate whenev
         <p>{{ customer?.name }}</p>
       </VcCard>
     </div>
-    <VcDataTable :items="lineItems" :columns="columns" />
+    <VcDataTable
+      :items="lineItems"
+      :columns="columns"
+    />
   </VcBlade>
 </template>
 
 <script setup lang="ts">
-import { useLoading } from '@vc-shell/framework';
-import { useOrder } from '../composables/useOrder';
-import { useCustomer } from '../composables/useCustomer';
-import { useLineItems } from '../composables/useLineItems';
+import { useLoading } from "@vc-shell/framework";
+import { useOrder } from "../composables/useOrder";
+import { useCustomer } from "../composables/useCustomer";
+import { useLineItems } from "../composables/useLineItems";
 
 const { order, loading: orderLoading } = useOrder(props.orderId);
 const { customer, loading: customerLoading } = useCustomer(props.customerId);
@@ -76,8 +82,8 @@ const isLoading = useLoading(orderLoading, customerLoading, lineItemsLoading);
 ## Recipe: Combining with useAsync
 
 ```typescript
-import { useLoading } from '@vc-shell/framework';
-import { useAsync } from '@vc-shell/framework';
+import { useLoading } from "@vc-shell/framework";
+import { useAsync } from "@vc-shell/framework";
 
 const { loading: saveLoading, action: save } = useAsync(saveItem);
 const { loading: deleteLoading, action: remove } = useAsync(deleteItem);
@@ -92,8 +98,8 @@ const isBusy = useLoading(saveLoading, deleteLoading, validateLoading);
 If you have a variable number of loading sources (e.g., loaded from a plugin system), collect them into an array and spread:
 
 ```typescript
-import { useLoading } from '@vc-shell/framework';
-import { Ref } from 'vue';
+import { useLoading } from "@vc-shell/framework";
+import { Ref } from "vue";
 
 const loadingRefs: Ref<boolean>[] = [];
 

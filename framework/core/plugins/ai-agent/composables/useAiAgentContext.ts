@@ -1,10 +1,9 @@
-import { inject, ref, computed, watch, onUnmounted, type Ref, type ComputedRef } from "vue";
+import { inject, ref, computed, watch, onUnmounted, type Ref } from "vue";
 import { AiAgentServiceKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { deepMergeChanges } from "@core/plugins/ai-agent/utils/deep-merge-changes";
 import type { IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
 import type {
-  ISuggestion,
   UseAiAgentContextOptions,
   UseAiAgentContextReturn,
   IPreviewChangesPayload,

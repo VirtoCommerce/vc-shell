@@ -15,26 +15,35 @@ Also exports `provideLanguages()` for framework-level initialization.
 
 ```vue
 <script setup lang="ts">
-import { useLanguages } from '@vc-shell/framework';
-import { ref, onMounted } from 'vue';
+import { useLanguages } from "@vc-shell/framework";
+import { ref, onMounted } from "vue";
 
 const { currentLocale, setLocale, getFlag, getCountryCode } = useLanguages();
-const flagUrl = ref('');
+const flagUrl = ref("");
 
 onMounted(async () => {
   flagUrl.value = await getFlag(currentLocale.value);
 });
 
 function switchToGerman() {
-  setLocale('de-DE');
+  setLocale("de-DE");
 }
 </script>
 
 <template>
   <div class="tw-flex tw-items-center tw-gap-2">
-    <img v-if="flagUrl" :src="flagUrl" alt="flag" class="tw-w-6 tw-h-4" />
+    <img
+      v-if="flagUrl"
+      :src="flagUrl"
+      alt="flag"
+      class="tw-w-6 tw-h-4"
+    />
     <span>{{ currentLocale }}</span>
-    <VcButton size="sm" @click="switchToGerman">Deutsch</VcButton>
+    <VcButton
+      size="sm"
+      @click="switchToGerman"
+      >Deutsch</VcButton
+    >
   </div>
 </template>
 ```
@@ -47,19 +56,19 @@ None.
 
 ### Returns (`ILanguageService`)
 
-| Property / Method | Type | Description |
-|-------------------|------|-------------|
-| `currentLocale` | `ComputedRef<string>` | The currently active locale code (e.g., `"en-US"`, `"de-DE"`). |
-| `setLocale` | `(locale: string) => void` | Switches the application locale. This updates `vue-i18n`'s locale and triggers re-rendering of all translated text. |
-| `getLocaleByTag` | `(localeTag: string) => string \| undefined` | Resolves a locale tag to its display string (e.g., `"en-US"` to `"English (United States)"`). Returns `undefined` if the tag is not recognized. |
-| `resolveCamelCaseLocale` | `(locale: string) => string` | Converts a locale code to camelCase format (e.g., `"en-US"` to `"enUs"`). Useful for dynamic property access on objects keyed by locale. |
-| `getFlag` | `(language: string) => Promise<string>` | Fetches a flag image URL for the given language/locale. Returns a promise because flags may be loaded lazily. |
-| `getCountryCode` | `(language: string) => string` | Extracts the country code from a language tag (e.g., `"en-US"` to `"US"`, `"de-DE"` to `"DE"`). |
+| Property / Method        | Type                                         | Description                                                                                                                                     |
+| ------------------------ | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `currentLocale`          | `ComputedRef<string>`                        | The currently active locale code (e.g., `"en-US"`, `"de-DE"`).                                                                                  |
+| `setLocale`              | `(locale: string) => void`                   | Switches the application locale. This updates `vue-i18n`'s locale and triggers re-rendering of all translated text.                             |
+| `getLocaleByTag`         | `(localeTag: string) => string \| undefined` | Resolves a locale tag to its display string (e.g., `"en-US"` to `"English (United States)"`). Returns `undefined` if the tag is not recognized. |
+| `resolveCamelCaseLocale` | `(locale: string) => string`                 | Converts a locale code to camelCase format (e.g., `"en-US"` to `"enUs"`). Useful for dynamic property access on objects keyed by locale.        |
+| `getFlag`                | `(language: string) => Promise<string>`      | Fetches a flag image URL for the given language/locale. Returns a promise because flags may be loaded lazily.                                   |
+| `getCountryCode`         | `(language: string) => string`               | Extracts the country code from a language tag (e.g., `"en-US"` to `"US"`, `"de-DE"` to `"DE"`).                                                 |
 
 ### Additional Exports
 
-| Export | Description |
-|--------|-------------|
+| Export               | Description                                                                                                                                                                                                 |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `provideLanguages()` | Creates and provides the language service via Vue injection. Returns existing service if already provided in the current tree. Falls back to a module-level singleton if no injection context is available. |
 
 ## How It Works
@@ -77,19 +86,17 @@ The fallback behavior means `useLanguages()` is safe to call in module `install(
 
 ```vue
 <script setup lang="ts">
-import { useLanguages } from '@vc-shell/framework';
-import { ref, onMounted, watch } from 'vue';
+import { useLanguages } from "@vc-shell/framework";
+import { ref, onMounted, watch } from "vue";
 
 const { currentLocale, setLocale, getFlag } = useLanguages();
 
-const availableLocales = ['en-US', 'de-DE', 'fr-FR', 'es-ES'];
+const availableLocales = ["en-US", "de-DE", "fr-FR", "es-ES"];
 const flags = ref<Record<string, string>>({});
 
 onMounted(async () => {
   // Pre-fetch all flags in parallel
-  const entries = await Promise.all(
-    availableLocales.map(async (locale) => [locale, await getFlag(locale)] as const),
-  );
+  const entries = await Promise.all(availableLocales.map(async (locale) => [locale, await getFlag(locale)] as const));
   flags.value = Object.fromEntries(entries);
 });
 
@@ -107,7 +114,11 @@ function onLocaleChange(locale: string) {
       :class="{ 'tw-bg-primary-50': locale === currentLocale }"
       @click="onLocaleChange(locale)"
     >
-      <img v-if="flags[locale]" :src="flags[locale]" class="tw-w-6 tw-h-4" />
+      <img
+        v-if="flags[locale]"
+        :src="flags[locale]"
+        class="tw-w-6 tw-h-4"
+      />
       <span>{{ locale }}</span>
     </div>
   </div>
@@ -117,16 +128,14 @@ function onLocaleChange(locale: string) {
 ## Recipe: Locale-Aware Dynamic Property Display
 
 ```typescript
-import { useLanguages } from '@vc-shell/framework';
-import { useDynamicProperties } from '@vc-shell/framework';
+import { useLanguages } from "@vc-shell/framework";
+import { useDynamicProperties } from "@vc-shell/framework";
 
 const { currentLocale } = useLanguages();
 const { getPropertyValue } = useDynamicProperties(/* ... */);
 
 // Read a multilanguage property value for the current locale
-const displayValue = computed(() =>
-  getPropertyValue(property.value, currentLocale.value),
-);
+const displayValue = computed(() => getPropertyValue(property.value, currentLocale.value));
 ```
 
 ## Tips

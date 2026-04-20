@@ -24,7 +24,7 @@ vi.mock("@ui/components/organisms/vc-popup", () => ({
     name: "VcPopup",
     props: ["isMobileFullscreen", "modalWidth"],
     emits: ["close"],
-    setup(_, { slots, emit }) {
+    setup(_, { slots, emit: _emit }) {
       return () =>
         h("div", { class: "mock-popup" }, [
           h("div", { class: "mock-popup-header" }, slots.header?.()),
@@ -49,7 +49,7 @@ vi.mock("swiper/vue", () => ({
   Swiper: defineComponent({
     name: "Swiper",
     emits: ["swiper", "slideChange"],
-    setup(_, { slots, emit }) {
+    setup(_, { slots, emit: _emit }) {
       return () => h("div", { class: "mock-swiper" }, slots.default?.());
     },
   }),

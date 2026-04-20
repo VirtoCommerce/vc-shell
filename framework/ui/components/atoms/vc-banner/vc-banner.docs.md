@@ -21,20 +21,20 @@ A contextual alert component for displaying important messages, warnings, or sta
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `"info" \| "warning" \| "danger" \| "success"` | `"info"` | Semantic color variant |
-| `icon` | `string` | -- | Icon identifier (e.g. `lucide-info`, `lucide-triangle-alert`) |
-| `iconSize` | `IconSize` | `"l"` | Size of the leading icon |
-| `iconVariant` | `IconVariant` | -- | Color variant for the icon |
-| `collapsedHeight` | `number` | `100` | Max height in pixels before content becomes collapsible |
+| Prop              | Type                                           | Default  | Description                                                   |
+| ----------------- | ---------------------------------------------- | -------- | ------------------------------------------------------------- |
+| `variant`         | `"info" \| "warning" \| "danger" \| "success"` | `"info"` | Semantic color variant                                        |
+| `icon`            | `string`                                       | --       | Icon identifier (e.g. `lucide-info`, `lucide-triangle-alert`) |
+| `iconSize`        | `IconSize`                                     | `"l"`    | Size of the leading icon                                      |
+| `iconVariant`     | `IconVariant`                                  | --       | Color variant for the icon                                    |
+| `collapsedHeight` | `number`                                       | `100`    | Max height in pixels before content becomes collapsible       |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
-| `title` | Bold title text above the body content |
-| `default` | Body/description content |
+| Slot      | Description                                                              |
+| --------- | ------------------------------------------------------------------------ |
+| `title`   | Bold title text above the body content                                   |
+| `default` | Body/description content                                                 |
 | `trigger` | Custom expand/collapse trigger (receives `{ isExpanded, toggle }` props) |
 
 ## Features
@@ -69,12 +69,7 @@ For backward compatibility, the deprecated variants `"light-danger"`, `"info-dar
 ### Decline Reason on a Detail Blade
 
 ```vue
-<VcBanner
-  v-if="declineReason"
-  variant="danger"
-  icon="lucide-circle-alert"
-  icon-variant="danger"
->
+<VcBanner v-if="declineReason" variant="danger" icon="lucide-circle-alert" icon-variant="danger">
   <template #title>Decline Reason</template>
   {{ declineReason }}
 </VcBanner>
@@ -112,8 +107,15 @@ Place a banner inside a blade to notify the user of important context before the
       This product has been marked as discontinued. Editing is limited to metadata fields only.
     </VcBanner>
 
-    <VcInput label="Name" v-model="product.name" :disabled="product.isDiscontinued" />
-    <VcTextarea label="Notes" v-model="product.notes" />
+    <VcInput
+      label="Name"
+      v-model="product.name"
+      :disabled="product.isDiscontinued"
+    />
+    <VcTextarea
+      label="Notes"
+      v-model="product.notes"
+    />
   </VcBlade>
 </template>
 ```

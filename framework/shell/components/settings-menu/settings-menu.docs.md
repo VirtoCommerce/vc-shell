@@ -48,13 +48,7 @@ A typical module registers all its settings entries during the module install ph
 ```ts
 // vendor-portal-module/index.ts
 import { markRaw } from "vue";
-import {
-  useSettingsMenu,
-  ThemeSelector,
-  LanguageSelector,
-  ChangePasswordButton,
-  LogoutButton,
-} from "@vc-shell/framework";
+import { useSettingsMenu, ThemeSelector, LanguageSelector, ChangePasswordButton, LogoutButton } from "@vc-shell/framework";
 
 export default {
   install() {
@@ -97,21 +91,21 @@ export default {
 
 ### Registration options
 
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| `id` | `string` | Yes | Unique identifier for the entry |
-| `group` | `string` | Yes | Group name (entries are grouped and separated by dividers) |
-| `order` | `number` | Yes | Sort order within the group (lower = higher position) |
-| `component` | `Component` | Yes | Vue component to render as the menu item |
+| Option      | Type        | Required | Description                                                |
+| ----------- | ----------- | -------- | ---------------------------------------------------------- |
+| `id`        | `string`    | Yes      | Unique identifier for the entry                            |
+| `group`     | `string`    | Yes      | Group name (entries are grouped and separated by dividers) |
+| `order`     | `number`    | Yes      | Sort order within the group (lower = higher position)      |
+| `component` | `Component` | Yes      | Vue component to render as the menu item                   |
 
 ### Group rendering
 
 Groups are separated by a horizontal divider and items within each group are sorted by `order`. Common group names used by convention:
 
-| Group | Description | Typical order range |
-|-------|-------------|-------------------|
-| `"preferences"` | User preferences (theme, language) | 10-29 |
-| `"account"` | Account actions (change password, logout) | 30-100 |
+| Group           | Description                               | Typical order range |
+| --------------- | ----------------------------------------- | ------------------- |
+| `"preferences"` | User preferences (theme, language)        | 10-29               |
+| `"account"`     | Account actions (change password, logout) | 30-100              |
 
 ## Details
 

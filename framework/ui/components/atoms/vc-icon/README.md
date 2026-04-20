@@ -24,26 +24,26 @@ The `VcIcon` component is a versatile and flexible icon component that provides 
 <template>
   <!-- Material Icon -->
   <VcIcon icon="material-home" />
-  
+
   <!-- Bootstrap Icon -->
   <VcIcon icon="bi-house" />
-  
+
   <!-- Lucide Icon -->
   <VcIcon icon="lucide-home" />
-  
+
   <!-- Font Awesome Icon (legacy) -->
   <VcIcon icon="fa-home" />
-  
+
   <!-- Custom SVG Component -->
   <VcIcon :icon="HomeIcon" />
-  
+
   <!-- External SVG Icon -->
   <VcIcon icon="svg:/assets/icons/home.svg" />
 </template>
 
 <script setup lang="ts">
-import { HomeIcon } from 'lucide-vue-next';
-import { VcIcon } from '@framework/ui/components/atoms/vc-icon';
+import { HomeIcon } from "lucide-vue-next";
+import { VcIcon } from "@framework/ui/components/atoms/vc-icon";
 </script>
 ```
 
@@ -53,16 +53,47 @@ The component provides predefined sizes that are consistent across all icon type
 
 ```vue
 <template>
-  <VcIcon icon="material-home" size="xs" /> <!-- 12px -->
-  <VcIcon icon="material-home" size="s" />  <!-- 14px -->
-  <VcIcon icon="material-home" size="m" />  <!-- 18px (default) -->
-  <VcIcon icon="material-home" size="l" />  <!-- 20px -->
-  <VcIcon icon="material-home" size="xl" /> <!-- 22px -->
-  <VcIcon icon="material-home" size="xxl" /> <!-- 30px -->
-  <VcIcon icon="material-home" size="xxxl" /> <!-- 64px -->
-  
+  <VcIcon
+    icon="material-home"
+    size="xs"
+  />
+  <!-- 12px -->
+  <VcIcon
+    icon="material-home"
+    size="s"
+  />
+  <!-- 14px -->
+  <VcIcon
+    icon="material-home"
+    size="m"
+  />
+  <!-- 18px (default) -->
+  <VcIcon
+    icon="material-home"
+    size="l"
+  />
+  <!-- 20px -->
+  <VcIcon
+    icon="material-home"
+    size="xl"
+  />
+  <!-- 22px -->
+  <VcIcon
+    icon="material-home"
+    size="xxl"
+  />
+  <!-- 30px -->
+  <VcIcon
+    icon="material-home"
+    size="xxxl"
+  />
+  <!-- 64px -->
+
   <!-- Custom size (in pixels) -->
-  <VcIcon icon="material-home" :customSize="42" />
+  <VcIcon
+    icon="material-home"
+    :customSize="42"
+  />
 </template>
 ```
 
@@ -72,22 +103,34 @@ Use the `variant` prop to apply predefined colors for status indicators:
 
 ```vue
 <template>
-  <VcIcon icon="material-check_circle" variant="success" /> <!-- Success (green) -->
-  <VcIcon icon="material-warning" variant="warning" /> <!-- Warning (yellow) -->
-  <VcIcon icon="material-error" variant="danger" /> <!-- Danger (red) -->
+  <VcIcon
+    icon="material-check_circle"
+    variant="success"
+  />
+  <!-- Success (green) -->
+  <VcIcon
+    icon="material-warning"
+    variant="warning"
+  />
+  <!-- Warning (yellow) -->
+  <VcIcon
+    icon="material-error"
+    variant="danger"
+  />
+  <!-- Danger (red) -->
 </template>
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `icon` | `string \| Component` | `"lucide-square"` | The icon to display. Can be a string identifier or a component instance |
-| `size` | `"xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl" \| "xxxl"` | `"m"` | Predefined size of the icon |
-| `variant` | `"warning" \| "danger" \| "success"` | `undefined` | Color variant for status indication |
-| `useContainer` | `boolean` | `true` | Whether to wrap the icon in a container for consistent spacing |
-| `customSize` | `number` | `undefined` | Custom size in pixels (overrides `size` prop) |
-| `basePath` | `string` | `"/assets/icons"` | Base path for SVG icons (only for SVG icons) |
+| Prop           | Type                                                   | Default           | Description                                                             |
+| -------------- | ------------------------------------------------------ | ----------------- | ----------------------------------------------------------------------- |
+| `icon`         | `string \| Component`                                  | `"lucide-square"` | The icon to display. Can be a string identifier or a component instance |
+| `size`         | `"xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl" \| "xxxl"` | `"m"`             | Predefined size of the icon                                             |
+| `variant`      | `"warning" \| "danger" \| "success"`                   | `undefined`       | Color variant for status indication                                     |
+| `useContainer` | `boolean`                                              | `true`            | Whether to wrap the icon in a container for consistent spacing          |
+| `customSize`   | `number`                                               | `undefined`       | Custom size in pixels (overrides `size` prop)                           |
+| `basePath`     | `string`                                               | `"/assets/icons"` | Base path for SVG icons (only for SVG icons)                            |
 
 ## Size Normalization
 
@@ -132,14 +175,14 @@ The `VcIcon` component supports inheriting size from CSS styles. This allows you
   </div>
 
   <!-- Direct styling -->
-  <VcIcon 
-    icon="bi-heart" 
+  <VcIcon
+    icon="bi-heart"
     class="custom-icon"
   />
 
   <!-- Styling with hover effects -->
-  <VcIcon 
-    icon="lucide-settings" 
+  <VcIcon
+    icon="lucide-settings"
     class="hover-icon"
   />
 </template>
@@ -185,45 +228,45 @@ Material Symbols support additional customization properties:
 ```vue
 <template>
   <!-- Different icon types -->
-  <VcIcon 
-    icon="material-settings" 
-    material-icon-type="outlined" 
+  <VcIcon
+    icon="material-settings"
+    material-icon-type="outlined"
   />
-  <VcIcon 
-    icon="material-settings" 
-    material-icon-type="rounded" 
+  <VcIcon
+    icon="material-settings"
+    material-icon-type="rounded"
   />
-  <VcIcon 
-    icon="material-settings" 
-    material-icon-type="sharp" 
+  <VcIcon
+    icon="material-settings"
+    material-icon-type="sharp"
   />
-  
+
   <!-- Fill variations -->
-  <VcIcon 
-    icon="material-favorite" 
-    :material-icon-fill="0" 
+  <VcIcon
+    icon="material-favorite"
+    :material-icon-fill="0"
   />
-  <VcIcon 
-    icon="material-favorite" 
-    :material-icon-fill="0.5" 
+  <VcIcon
+    icon="material-favorite"
+    :material-icon-fill="0.5"
   />
-  <VcIcon 
-    icon="material-favorite" 
-    :material-icon-fill="1" 
+  <VcIcon
+    icon="material-favorite"
+    :material-icon-fill="1"
   />
-  
+
   <!-- Weight variations -->
-  <VcIcon 
-    icon="material-favorite" 
-    :material-icon-weight="100" 
+  <VcIcon
+    icon="material-favorite"
+    :material-icon-weight="100"
   />
-  <VcIcon 
-    icon="material-favorite" 
-    :material-icon-weight="400" 
+  <VcIcon
+    icon="material-favorite"
+    :material-icon-weight="400"
   />
-  <VcIcon 
-    icon="material-favorite" 
-    :material-icon-weight="700" 
+  <VcIcon
+    icon="material-favorite"
+    :material-icon-weight="700"
   />
 </template>
 ```
@@ -236,15 +279,21 @@ You can use SVG icons with the `svg:` prefix:
 <template>
   <!-- Using path relative to basePath -->
   <VcIcon icon="svg:menu.svg" />
-  
+
   <!-- Using absolute path -->
   <VcIcon icon="svg:/assets/icons/cart.svg" />
-  
+
   <!-- With custom base path -->
-  <VcIcon icon="svg:star.svg" basePath="/custom/icons/path" />
-  
+  <VcIcon
+    icon="svg:star.svg"
+    basePath="/custom/icons/path"
+  />
+
   <!-- With stroke width -->
-  <VcIcon icon="svg:circle.svg" :stroke-width="1.5" />
+  <VcIcon
+    icon="svg:circle.svg"
+    :stroke-width="1.5"
+  />
 </template>
 ```
 
@@ -258,12 +307,14 @@ The component can wrap icons in a container for consistent spacing:
 <template>
   <!-- With container (default) -->
   <VcIcon icon="material-home" />
-  
+
   <!-- Without container -->
-  <VcIcon icon="material-home" :use-container="false" />
+  <VcIcon
+    icon="material-home"
+    :use-container="false"
+  />
 </template>
 ```
-
 
 ## Best Practices
 

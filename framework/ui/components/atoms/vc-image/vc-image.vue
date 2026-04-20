@@ -80,7 +80,7 @@ function ensureHttps(url: string): string {
       urlObject.protocol = "https:";
       return urlObject.href;
     }
-  } catch (e) {
+  } catch (_e) {
     logger.warn("Invalid URL:", url);
   }
   return url;

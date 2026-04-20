@@ -76,11 +76,7 @@ const units = [
 You can also pass functions for `optionValue` and `optionLabel` for more complex extraction logic:
 
 ```vue
-<VcInputDropdown
-  :option-value="(opt) => opt.code"
-  :option-label="(opt) => `${opt.symbol} ${opt.name}`"
-  :options="currencies"
-/>
+<VcInputDropdown :option-value="(opt) => opt.code" :option-label="(opt) => `${opt.symbol} ${opt.name}`" :options="currencies" />
 ```
 
 ## Searchable Dropdown
@@ -88,14 +84,7 @@ You can also pass functions for `optionValue` and `optionLabel` for more complex
 Enable filtering inside the dropdown with the `searchable` prop. This is useful when the options list is long:
 
 ```vue
-<VcInputDropdown
-  v-model="value"
-  v-model:option="selected"
-  :options="allCountryCodes"
-  searchable
-  label="Phone Number"
-  input-type="tel"
-/>
+<VcInputDropdown v-model="value" v-model:option="selected" :options="allCountryCodes" searchable label="Phone Number" input-type="tel" />
 ```
 
 ## Input Types
@@ -127,13 +116,7 @@ VcInputDropdown inherits all standard form field states:
 <VcInputDropdown v-model="val" v-model:option="opt" :options="opts" loading />
 
 <!-- Error with message -->
-<VcInputDropdown
-  v-model="val"
-  v-model:option="opt"
-  :options="opts"
-  error
-  error-message="This field is required"
-/>
+<VcInputDropdown v-model="val" v-model:option="opt" :options="opts" error error-message="This field is required" />
 
 <!-- Required -->
 <VcInputDropdown v-model="val" v-model:option="opt" :options="opts" required />
@@ -164,7 +147,11 @@ Replace the default dropdown toggle with a custom element using the `button` slo
 ```vue
 <template>
   <VcForm @submit="saveProduct">
-    <VcInput v-model="product.name" label="Product Name" required />
+    <VcInput
+      v-model="product.name"
+      label="Product Name"
+      required
+    />
     <VcInputDropdown
       v-model="product.weight"
       v-model:option="product.weightUnit"
@@ -238,57 +225,57 @@ Replace the default dropdown toggle with a custom element using the `button` slo
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `string \| number \| Date \| null` | -- | Input field value via `v-model` |
-| `option` | `unknown` | -- | Selected dropdown option via `v-model:option` |
-| `options` | `unknown[]` | `[]` | Available options for the dropdown |
-| `optionValue` | `string \| ((opt: unknown) => unknown)` | `"id"` | Property name or function to extract the option value |
-| `optionLabel` | `string \| ((opt: unknown) => string)` | `"title"` | Property name or function to extract the display label |
-| `inputType` | `"text" \| "number" \| "email" \| "tel" \| "password" \| "url" \| "time" \| "date" \| "datetime-local" \| "integer"` | `"text"` | HTML input type |
-| `searchable` | `boolean` | `false` | Enable search filtering in the dropdown |
-| `debounce` | `string \| number` | `0` | Debounce delay (ms) for search input |
-| `clearable` | `boolean` | `false` | Show a clear button on the input |
-| `prefix` | `string` | -- | Static prefix text inside the input |
-| `suffix` | `string` | -- | Static suffix text inside the input |
-| `maxlength` | `string \| number` | `1024` | Maximum character length for the input |
-| `label` | `string` | -- | Field label text |
-| `placeholder` | `string` | -- | Input placeholder text |
-| `hint` | `string` | -- | Hint text below the field |
-| `tooltip` | `string` | -- | Tooltip on the label |
-| `disabled` | `boolean` | `false` | Disable all interactions |
-| `required` | `boolean` | `false` | Mark field as required (shows asterisk) |
-| `loading` | `boolean` | `false` | Show loading spinner |
-| `autofocus` | `boolean` | `false` | Auto-focus on mount |
-| `error` | `boolean` | `false` | External error flag |
-| `errorMessage` | `string` | -- | Error message (sets error state when truthy) |
-| `name` | `string` | -- | HTML name attribute for the input |
+| Prop           | Type                                                                                                                 | Default   | Description                                            |
+| -------------- | -------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------ |
+| `modelValue`   | `string \| number \| Date \| null`                                                                                   | --        | Input field value via `v-model`                        |
+| `option`       | `unknown`                                                                                                            | --        | Selected dropdown option via `v-model:option`          |
+| `options`      | `unknown[]`                                                                                                          | `[]`      | Available options for the dropdown                     |
+| `optionValue`  | `string \| ((opt: unknown) => unknown)`                                                                              | `"id"`    | Property name or function to extract the option value  |
+| `optionLabel`  | `string \| ((opt: unknown) => string)`                                                                               | `"title"` | Property name or function to extract the display label |
+| `inputType`    | `"text" \| "number" \| "email" \| "tel" \| "password" \| "url" \| "time" \| "date" \| "datetime-local" \| "integer"` | `"text"`  | HTML input type                                        |
+| `searchable`   | `boolean`                                                                                                            | `false`   | Enable search filtering in the dropdown                |
+| `debounce`     | `string \| number`                                                                                                   | `0`       | Debounce delay (ms) for search input                   |
+| `clearable`    | `boolean`                                                                                                            | `false`   | Show a clear button on the input                       |
+| `prefix`       | `string`                                                                                                             | --        | Static prefix text inside the input                    |
+| `suffix`       | `string`                                                                                                             | --        | Static suffix text inside the input                    |
+| `maxlength`    | `string \| number`                                                                                                   | `1024`    | Maximum character length for the input                 |
+| `label`        | `string`                                                                                                             | --        | Field label text                                       |
+| `placeholder`  | `string`                                                                                                             | --        | Input placeholder text                                 |
+| `hint`         | `string`                                                                                                             | --        | Hint text below the field                              |
+| `tooltip`      | `string`                                                                                                             | --        | Tooltip on the label                                   |
+| `disabled`     | `boolean`                                                                                                            | `false`   | Disable all interactions                               |
+| `required`     | `boolean`                                                                                                            | `false`   | Mark field as required (shows asterisk)                |
+| `loading`      | `boolean`                                                                                                            | `false`   | Show loading spinner                                   |
+| `autofocus`    | `boolean`                                                                                                            | `false`   | Auto-focus on mount                                    |
+| `error`        | `boolean`                                                                                                            | `false`   | External error flag                                    |
+| `errorMessage` | `string`                                                                                                             | --        | Error message (sets error state when truthy)           |
+| `name`         | `string`                                                                                                             | --        | HTML name attribute for the input                      |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:modelValue` | `string \| number \| Date \| null` | Input value changed |
-| `update:option` | `unknown` | Dropdown selection changed |
-| `change` | `unknown` | Generic change event |
-| `blur` | `Event` | Input lost focus |
+| Event               | Payload                            | Description                |
+| ------------------- | ---------------------------------- | -------------------------- |
+| `update:modelValue` | `string \| number \| Date \| null` | Input value changed        |
+| `update:option`     | `unknown`                          | Dropdown selection changed |
+| `change`            | `unknown`                          | Generic change event       |
+| `blur`              | `Event`                            | Input lost focus           |
 
 ## Slots
 
-| Slot | Scope | Description |
-|------|-------|-------------|
-| `button` | `{ toggleHandler: () => void }` | Replace the dropdown toggle button |
-| `control` | `{ placeholder, focused, modelValue, emitValue }` | Replace the entire input element |
-| `option` | `{ index, opt, selected, toggleOption }` | Custom rendering for each dropdown option |
-| `prepend` | -- | Content before the field (outside) |
-| `append` | -- | Content after the field (outside) |
-| `prepend-inner` | -- | Content inside the field, before the input |
-| `append-inner` | -- | Content inside the field, after the input |
+| Slot            | Scope                                             | Description                                |
+| --------------- | ------------------------------------------------- | ------------------------------------------ |
+| `button`        | `{ toggleHandler: () => void }`                   | Replace the dropdown toggle button         |
+| `control`       | `{ placeholder, focused, modelValue, emitValue }` | Replace the entire input element           |
+| `option`        | `{ index, opt, selected, toggleOption }`          | Custom rendering for each dropdown option  |
+| `prepend`       | --                                                | Content before the field (outside)         |
+| `append`        | --                                                | Content after the field (outside)          |
+| `prepend-inner` | --                                                | Content inside the field, before the input |
+| `append-inner`  | --                                                | Content inside the field, after the input  |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
+| Variable                        | Default              | Description                                               |
+| ------------------------------- | -------------------- | --------------------------------------------------------- |
 | `--input-dropdown-toggle-color` | `var(--primary-500)` | Color of the dropdown toggle button text and chevron icon |
 
 > **Note:** VcInputDropdown inherits all CSS variables from [VcInput](../vc-input/) for input styling and from [VcSelect](../vc-select/) for dropdown styling.
@@ -311,4 +298,3 @@ Replace the default dropdown toggle with a custom element using the `button` slo
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
-

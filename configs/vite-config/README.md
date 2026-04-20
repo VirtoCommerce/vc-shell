@@ -29,10 +29,7 @@ Adds Module Federation to a host application. Merge with your application config
 import { getApplicationConfiguration, getHostFederationConfig } from "@vc-shell/config-generator";
 import { mergeConfig } from "vite";
 
-export default mergeConfig(
-  getApplicationConfiguration(),
-  getHostFederationConfig(),
-);
+export default mergeConfig(getApplicationConfiguration(), getHostFederationConfig());
 ```
 
 Custom shared dependencies:
@@ -58,12 +55,12 @@ export default getDynamicModuleConfiguration({
 });
 ```
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `entry` | `string` | `"./src/modules/index.ts"` | Module entry point |
-| `exposes` | `Record<string, string>` | `{ "./module": entry }` | MF exposes map |
-| `compatibility.framework` | `string` | -- | Compatible framework semver range |
-| `compatibility.modules` | `Record<string, string>` | -- | Compatible module version ranges |
+| Option                    | Type                     | Default                    | Description                       |
+| ------------------------- | ------------------------ | -------------------------- | --------------------------------- |
+| `entry`                   | `string`                 | `"./src/modules/index.ts"` | Module entry point                |
+| `exposes`                 | `Record<string, string>` | `{ "./module": entry }`    | MF exposes map                    |
+| `compatibility.framework` | `string`                 | --                         | Compatible framework semver range |
+| `compatibility.modules`   | `Record<string, string>` | --                         | Compatible module version ranges  |
 
 The module produces a `remoteEntry.js` file that the host loads at runtime.
 

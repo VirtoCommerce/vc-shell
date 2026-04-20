@@ -10,6 +10,7 @@ A rich text editor built on TipTap that supports both Markdown and HTML content.
 - Situations where authors need source-level control over markup
 
 When NOT to use:
+
 - Plain text input -- use [VcTextarea](../vc-textarea/)
 - Short single-line values -- use [VcInput](../vc-input/)
 - Code editing with syntax highlighting -- use a dedicated code editor
@@ -18,7 +19,11 @@ When NOT to use:
 
 ```vue
 <template>
-  <VcEditor v-model="content" label="Description" placeholder="Start typing..." />
+  <VcEditor
+    v-model="content"
+    label="Description"
+    placeholder="Start typing..."
+  />
 </template>
 
 <script setup lang="ts">
@@ -35,13 +40,13 @@ const content = ref("");
 
 The editor header provides four view modes plus a fullscreen toggle:
 
-| Mode | Description |
-|------|-------------|
-| **Editor** (default) | WYSIWYG rich text editing with toolbar |
-| **Preview** | Read-only rendered HTML preview (sanitized via DOMPurify) |
-| **Source** | Raw Markdown/HTML textarea for direct markup editing |
-| **Split** | Side-by-side editor + source view for simultaneous editing |
-| **Fullscreen** | Any mode expanded to fill the entire viewport |
+| Mode                 | Description                                                |
+| -------------------- | ---------------------------------------------------------- |
+| **Editor** (default) | WYSIWYG rich text editing with toolbar                     |
+| **Preview**          | Read-only rendered HTML preview (sanitized via DOMPurify)  |
+| **Source**           | Raw Markdown/HTML textarea for direct markup editing       |
+| **Split**            | Side-by-side editor + source view for simultaneous editing |
+| **Fullscreen**       | Any mode expanded to fill the entire viewport              |
 
 The editor automatically detects whether content is Markdown or HTML based on pattern analysis and outputs in the same format. HTML content is auto-formatted with Prettier in source/split views.
 
@@ -52,11 +57,7 @@ Limit which toolbar buttons appear by passing a `toolbar` array. Only the specif
 `"bold"`, `"italic"`, `"underline"`, `"strikethrough"`, `"heading1"`, `"heading2"`, `"heading3"`, `"bulletList"`, `"orderedList"`, `"blockquote"`, `"link"`, `"image"`, `"table"`, `"fontSize"`, `"separator"`
 
 ```vue
-<VcEditor
-  v-model="content"
-  label="Simple editor"
-  :toolbar="['bold', 'italic', 'separator', 'heading1', 'heading2', 'link']"
-/>
+<VcEditor v-model="content" label="Simple editor" :toolbar="['bold', 'italic', 'separator', 'heading1', 'heading2', 'link']" />
 ```
 
 When no `toolbar` prop is provided, all buttons are shown by default.
@@ -66,12 +67,7 @@ When no `toolbar` prop is provided, all buttons are shown by default.
 The `maxlength` prop enforces a character limit. A counter is displayed in source and split modes, and the counter turns to a warning style when 90% of the limit is reached. Input beyond the limit is blocked.
 
 ```vue
-<VcEditor
-  v-model="content"
-  label="Short description"
-  :maxlength="500"
-  placeholder="Maximum 500 characters..."
-/>
+<VcEditor v-model="content" label="Short description" :maxlength="500" placeholder="Maximum 500 characters..." />
 ```
 
 ### Image Upload
@@ -79,11 +75,7 @@ The `maxlength` prop enforces a character limit. A counter is displayed in sourc
 When `assetsFolder` is provided, the image toolbar button becomes functional. Clicking it opens a file picker for images. Selected files are uploaded via `POST /api/assets?folderUrl=/<assetsFolder>` and inserted at the cursor position.
 
 ```vue
-<VcEditor
-  v-model="content"
-  label="Article body"
-  assets-folder="articles/images"
-/>
+<VcEditor v-model="content" label="Article body" assets-folder="articles/images" />
 ```
 
 Multiple images can be selected at once. The upload accepts any image file type (`image/*`).
@@ -179,15 +171,7 @@ const form = reactive({ description: "" });
 ### Multilanguage Product Description
 
 ```vue
-<VcEditor
-  v-model="descriptions[currentLang]"
-  label="Product description"
-  multilanguage
-  :current-language="currentLang"
-  assets-folder="products/images"
-  :maxlength="5000"
-  required
-/>
+<VcEditor v-model="descriptions[currentLang]" label="Product description" multilanguage :current-language="currentLang" assets-folder="products/images" :maxlength="5000" required />
 ```
 
 ### Minimal Comment Editor
@@ -234,56 +218,56 @@ const content = ref("<h1>Title</h1>");
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `string` | `""` | Content string via `v-model` (Markdown or HTML) |
-| `label` | `string` | -- | Label text above the editor |
-| `placeholder` | `string` | -- | Placeholder when editor is empty |
-| `disabled` | `boolean` | `false` | Disables all editing |
-| `required` | `boolean` | `false` | Shows a required asterisk on the label |
-| `tooltip` | `string` | -- | Tooltip text shown on label hover |
-| `errorMessage` | `string` | -- | Error message below the editor (also activates error styling) |
-| `name` | `string` | -- | Form field name attribute |
-| `toolbar` | `ToolbarNames[]` | all buttons | Array of toolbar button names to show |
-| `maxlength` | `number` | -- | Character limit (counter shown in source/split mode) |
-| `assetsFolder` | `string` | -- | API folder path for image uploads |
-| `extensions` | `Extension[]` | -- | Additional TipTap extensions |
-| `customButtons` | `CustomToolbarItem[]` | -- | Plugin toolbar buttons or dropdowns |
-| `multilanguage` | `boolean` | `false` | Enables multilanguage indicator on the label |
-| `currentLanguage` | `string` | -- | Current language code for multilanguage mode |
+| Prop              | Type                  | Default     | Description                                                   |
+| ----------------- | --------------------- | ----------- | ------------------------------------------------------------- |
+| `modelValue`      | `string`              | `""`        | Content string via `v-model` (Markdown or HTML)               |
+| `label`           | `string`              | --          | Label text above the editor                                   |
+| `placeholder`     | `string`              | --          | Placeholder when editor is empty                              |
+| `disabled`        | `boolean`             | `false`     | Disables all editing                                          |
+| `required`        | `boolean`             | `false`     | Shows a required asterisk on the label                        |
+| `tooltip`         | `string`              | --          | Tooltip text shown on label hover                             |
+| `errorMessage`    | `string`              | --          | Error message below the editor (also activates error styling) |
+| `name`            | `string`              | --          | Form field name attribute                                     |
+| `toolbar`         | `ToolbarNames[]`      | all buttons | Array of toolbar button names to show                         |
+| `maxlength`       | `number`              | --          | Character limit (counter shown in source/split mode)          |
+| `assetsFolder`    | `string`              | --          | API folder path for image uploads                             |
+| `extensions`      | `Extension[]`         | --          | Additional TipTap extensions                                  |
+| `customButtons`   | `CustomToolbarItem[]` | --          | Plugin toolbar buttons or dropdowns                           |
+| `multilanguage`   | `boolean`             | `false`     | Enables multilanguage indicator on the label                  |
+| `currentLanguage` | `string`              | --          | Current language code for multilanguage mode                  |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event               | Payload               | Description                                                   |
+| ------------------- | --------------------- | ------------------------------------------------------------- |
 | `update:modelValue` | `string \| undefined` | Emitted when content changes (from WYSIWYG or source editing) |
-| `upload-image` | -- | Emitted when image upload is triggered |
+| `upload-image`      | --                    | Emitted when image upload is triggered                        |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot    | Description                                           |
+| ------- | ----------------------------------------------------- |
 | `error` | Custom error message markup (replaces default VcHint) |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--vc-editor-border` | `var(--neutrals-300)` | Default border color |
-| `--vc-editor-background` | `transparent` | Editor background |
-| `--vc-editor-surface` | `var(--additional-50)` | Content area surface color |
-| `--vc-editor-text-primary` | `var(--neutrals-900)` | Primary text color |
-| `--vc-editor-text-secondary` | `var(--neutrals-500)` | Secondary text color (char counter) |
-| `--vc-editor-text-muted` | `var(--neutrals-400)` | Muted text color (placeholder) |
-| `--vc-editor-text-disabled` | `var(--neutrals-500)` | Text color when disabled |
-| `--vc-editor-background-disabled` | `var(--neutrals-200)` | Background when disabled |
-| `--vc-editor-focus-border` | `var(--primary-500)` | Border color on focus |
-| `--vc-editor-focus-ring-color` | `color-mix(in srgb, var(--primary-500) 30%, transparent)` | Focus ring color |
-| `--vc-editor-error-border` | `var(--danger-500)` | Border color on error |
-| `--vc-editor-error-ring-color` | `rgba(239, 68, 68, 0.2)` | Error ring color |
-| `--vc-editor-error-text` | `var(--danger-500)` | Error message text color |
-| `--vc-editor-separator` | `var(--neutrals-200)` | Divider lines (blockquote border, table borders, hr) |
-| `--vc-editor-table-header` | `var(--neutrals-100)` | Table header cell background |
+| Variable                          | Default                                                   | Description                                          |
+| --------------------------------- | --------------------------------------------------------- | ---------------------------------------------------- |
+| `--vc-editor-border`              | `var(--neutrals-300)`                                     | Default border color                                 |
+| `--vc-editor-background`          | `transparent`                                             | Editor background                                    |
+| `--vc-editor-surface`             | `var(--additional-50)`                                    | Content area surface color                           |
+| `--vc-editor-text-primary`        | `var(--neutrals-900)`                                     | Primary text color                                   |
+| `--vc-editor-text-secondary`      | `var(--neutrals-500)`                                     | Secondary text color (char counter)                  |
+| `--vc-editor-text-muted`          | `var(--neutrals-400)`                                     | Muted text color (placeholder)                       |
+| `--vc-editor-text-disabled`       | `var(--neutrals-500)`                                     | Text color when disabled                             |
+| `--vc-editor-background-disabled` | `var(--neutrals-200)`                                     | Background when disabled                             |
+| `--vc-editor-focus-border`        | `var(--primary-500)`                                      | Border color on focus                                |
+| `--vc-editor-focus-ring-color`    | `color-mix(in srgb, var(--primary-500) 30%, transparent)` | Focus ring color                                     |
+| `--vc-editor-error-border`        | `var(--danger-500)`                                       | Border color on error                                |
+| `--vc-editor-error-ring-color`    | `rgba(239, 68, 68, 0.2)`                                  | Error ring color                                     |
+| `--vc-editor-error-text`          | `var(--danger-500)`                                       | Error message text color                             |
+| `--vc-editor-separator`           | `var(--neutrals-200)`                                     | Divider lines (blockquote border, table borders, hr) |
+| `--vc-editor-table-header`        | `var(--neutrals-100)`                                     | Table header cell background                         |
 
 ## Accessibility
 
@@ -302,4 +286,3 @@ const content = ref("<h1>Title</h1>");
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
-

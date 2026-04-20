@@ -8,20 +8,21 @@ The `ChangePassword` component renders a `VcPopup` with three validated input fi
 
 ## Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
+| Prop     | Type      | Default | Description                                                                                  |
+| -------- | --------- | ------- | -------------------------------------------------------------------------------------------- |
 | `forced` | `boolean` | `false` | When true, the user cannot dismiss the dialog -- cancelling signs out and redirects to login |
-| `login` | `string` | -- | The current user's login name (for context) |
+| `login`  | `string`  | --      | The current user's login name (for context)                                                  |
 
 ## Events
 
-| Event | Description |
-|---|---|
+| Event   | Description                                                                                  |
+| ------- | -------------------------------------------------------------------------------------------- |
 | `close` | Emitted when the dialog should close (cancel in non-forced mode, or after successful change) |
 
 ## Behavior
 
 ### Normal mode (`forced: false`)
+
 - User fills in current password, new password, and confirmation.
 - Real-time validation runs on each keystroke (via `validatePassword` API call).
 - Errors are shown inline (field-level) and below the footer (API errors like password policy violations).
@@ -29,6 +30,7 @@ The `ChangePassword` component renders a `VcPopup` with three validated input fi
 - Save button calls `changeUserPassword()`. On success, emits `close`.
 
 ### Forced mode (`forced: true`)
+
 - An info banner explains that a password change is required.
 - Cancel button signs the user out and redirects to `/login`.
 - Save button changes the password and redirects to `/` on success.
@@ -43,12 +45,7 @@ The `ChangePassword` component renders a `VcPopup` with three validated input fi
 ## Usage
 
 ```vue
-<ChangePassword
-  v-if="showChangePassword"
-  :forced="mustChangePassword"
-  :login="currentUser.userName"
-  @close="showChangePassword = false"
-/>
+<ChangePassword v-if="showChangePassword" :forced="mustChangePassword" :login="currentUser.userName" @close="showChangePassword = false" />
 ```
 
 ### Typical trigger locations
@@ -58,11 +55,11 @@ The `ChangePassword` component renders a `VcPopup` with three validated input fi
 
 ## Form Fields
 
-| Field | Validation | Description |
-|---|---|---|
-| Current Password | `required`, `min:6` | Verifies the user knows their current password |
-| New Password | `required`, `min:6`, platform policy | The desired new password |
-| Confirm Password | `required`, `min:6`, must match new | Confirmation of the new password |
+| Field            | Validation                           | Description                                    |
+| ---------------- | ------------------------------------ | ---------------------------------------------- |
+| Current Password | `required`, `min:6`                  | Verifies the user knows their current password |
+| New Password     | `required`, `min:6`, platform policy | The desired new password                       |
+| Confirm Password | `required`, `min:6`, must match new  | Confirmation of the new password               |
 
 ## Error Codes
 

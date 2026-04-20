@@ -146,6 +146,7 @@ export default defineAppModule({
 ```
 
 Toast options:
+
 - `mode`: `"auto"` (show and auto-dismiss), `"progress"` (show with progress bar), `"silent"` (no toast)
 - `severity`: `"info"` (default), `"warning"`, `"error"`, `"critical"`
 
@@ -174,9 +175,13 @@ setNotificationHandler((message) => {
 });
 
 // or watch pattern:
-watch(moduleNotifications, (newVal) => {
-  // manual toast management
-}, { deep: true });
+watch(
+  moduleNotifications,
+  (newVal) => {
+    // manual toast management
+  },
+  { deep: true },
+);
 ```
 
 **AFTER:**

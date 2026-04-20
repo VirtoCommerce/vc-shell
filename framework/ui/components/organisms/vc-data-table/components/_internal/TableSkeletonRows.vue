@@ -75,7 +75,7 @@ const ROW_WIDTHS = ["95%", "80%", "88%", "72%", "90%"];
 
 function getSkeletonProps(
   col: VcColumnProps,
-  rowIndex: number,
+  _rowIndex: number,
 ): { variant: "block" | "circle"; width?: string; height?: string } {
   const type = col.type || "text";
 

@@ -1,4 +1,4 @@
-import { ref, nextTick } from "vue";
+import { ref } from "vue";
 import { mountWithSetup } from "@framework/test-helpers";
 
 const mockButtons = ref<Array<{ id: string; onClose?: () => void }>>([]);

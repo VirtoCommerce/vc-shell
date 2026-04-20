@@ -1,4 +1,4 @@
-import { App, inject, shallowRef, computed, ComputedRef, readonly as vueReadonly } from "vue";
+import { App, inject, shallowRef, computed, ComputedRef } from "vue";
 import type { BladeInstanceConstructor } from "@core/blade-navigation/types";
 import { createLogger } from "@core/utilities";
 import { getBladeConfig } from "@core/blade-navigation/bladeConfigRegistry";

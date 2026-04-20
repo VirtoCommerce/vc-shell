@@ -75,8 +75,7 @@ const emit = defineEmits<Emits>();
 ```typescript
 import { useBlade } from "@vc-shell/framework";
 
-const { param, options, openBlade, closeSelf, callParent } =
-  useBlade<{ sellerProduct?: SellerProduct }>();
+const { param, options, openBlade, closeSelf, callParent } = useBlade<{ sellerProduct?: SellerProduct }>();
 ```
 
 If the Props interface has other non-blade props, keep only those:

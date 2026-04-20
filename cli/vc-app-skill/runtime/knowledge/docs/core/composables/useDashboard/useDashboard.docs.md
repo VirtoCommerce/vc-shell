@@ -98,19 +98,19 @@ registerDashboardWidget({
 
 The `size` property defines the widget's grid dimensions:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `width` | `number` | Number of grid columns the widget spans |
-| `height` | `number` | Number of grid rows the widget spans |
+| Property | Type     | Description                             |
+| -------- | -------- | --------------------------------------- |
+| `width`  | `number` | Number of grid columns the widget spans |
+| `height` | `number` | Number of grid rows the widget spans    |
 
 ### Widget position
 
 The optional `position` property sets the initial grid coordinates:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `x` | `number` | Column index (0-based) |
-| `y` | `number` | Row index (0-based) |
+| Property | Type     | Description            |
+| -------- | -------- | ---------------------- |
+| `x`      | `number` | Column index (0-based) |
+| `y`      | `number` | Row index (0-based)    |
 
 ### Custom props
 
@@ -357,38 +357,38 @@ Returns the injected `IDashboardService` instance. Throws `InjectionError` if th
 
 #### IDashboardService Interface
 
-| Method | Type | Description |
-|--------|------|-------------|
-| `registerWidget` | `(widget: DashboardWidget) => void` | Register a widget (throws on duplicate ID) |
-| `getWidgets` | `() => DashboardWidget[]` | Get all registered widgets filtered by current user's permissions |
-| `updateWidgetPosition` | `(widgetId: string, position: DashboardWidgetPosition) => void` | Update a widget's grid position (throws if widget not found) |
-| `getLayout` | `() => ReadonlyMap<string, DashboardWidgetPosition>` | Get the current layout map |
+| Method                 | Type                                                            | Description                                                       |
+| ---------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `registerWidget`       | `(widget: DashboardWidget) => void`                             | Register a widget (throws on duplicate ID)                        |
+| `getWidgets`           | `() => DashboardWidget[]`                                       | Get all registered widgets filtered by current user's permissions |
+| `updateWidgetPosition` | `(widgetId: string, position: DashboardWidgetPosition) => void` | Update a widget's grid position (throws if widget not found)      |
+| `getLayout`            | `() => ReadonlyMap<string, DashboardWidgetPosition>`            | Get the current layout map                                        |
 
 ### Standalone Exports
 
-| Function | Description |
-|----------|-------------|
+| Function                          | Description                                             |
+| --------------------------------- | ------------------------------------------------------- |
 | `registerDashboardWidget(widget)` | Pre-register a widget before the service is initialized |
-| `provideDashboardService()` | Create and provide the service in a root component |
+| `provideDashboardService()`       | Create and provide the service in a root component      |
 
 ### DashboardWidget
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `id` | `string` | Yes | Unique widget identifier |
-| `name` | `string` | Yes | Display title |
-| `component` | `Component` | Yes | Vue component to render |
-| `size` | `{ width: number; height: number }` | Yes | Grid size (columns x rows) |
-| `position` | `{ x: number; y: number }` | No | Initial grid position |
-| `permissions` | `string[]` | No | Required permissions for visibility (OR logic) |
-| `props` | `Record<string, unknown>` | No | Props passed to the widget component |
+| Property      | Type                                | Required | Description                                    |
+| ------------- | ----------------------------------- | -------- | ---------------------------------------------- |
+| `id`          | `string`                            | Yes      | Unique widget identifier                       |
+| `name`        | `string`                            | Yes      | Display title                                  |
+| `component`   | `Component`                         | Yes      | Vue component to render                        |
+| `size`        | `{ width: number; height: number }` | Yes      | Grid size (columns x rows)                     |
+| `position`    | `{ x: number; y: number }`          | No       | Initial grid position                          |
+| `permissions` | `string[]`                          | No       | Required permissions for visibility (OR logic) |
+| `props`       | `Record<string, unknown>`           | No       | Props passed to the widget component           |
 
 ### DashboardWidgetPosition
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `x` | `number` | Column index (0-based) |
-| `y` | `number` | Row index (0-based) |
+| Property | Type     | Description            |
+| -------- | -------- | ---------------------- |
+| `x`      | `number` | Column index (0-based) |
+| `y`      | `number` | Row index (0-based)    |
 
 ## Related
 

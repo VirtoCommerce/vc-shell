@@ -57,7 +57,7 @@ export interface Emits {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits<Emits>();
+const _emit = defineEmits<Emits>();
 const { isMobile, isDesktop } = useResponsive();
 
 const locale = window.navigator.language;

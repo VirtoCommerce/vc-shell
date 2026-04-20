@@ -14,9 +14,18 @@ A semantic `<fieldset>` wrapper that groups related form controls under a shared
 
 ```vue
 <template>
-  <VcInputGroup label="Customer profile" hint="All fields in this section are related">
-    <VcInput v-model="firstName" label="First name" />
-    <VcInput v-model="lastName" label="Last name" />
+  <VcInputGroup
+    label="Customer profile"
+    hint="All fields in this section are related"
+  >
+    <VcInput
+      v-model="firstName"
+      label="First name"
+    />
+    <VcInput
+      v-model="lastName"
+      label="Last name"
+    />
   </VcInputGroup>
 </template>
 
@@ -31,17 +40,17 @@ const lastName = ref("");
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | -- | Group label rendered as a `<legend>` |
-| `tooltip` | `string` | -- | Tooltip on the label's info icon |
-| `hint` | `string` | -- | Helper text below the group |
-| `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction for child controls |
-| `role` | `"group" \| "radiogroup"` | `"group"` | ARIA role for the fieldset |
-| `disabled` | `boolean` | `false` | Disables all controls in the group |
-| `error` / `errorMessage` | `boolean` / `string` | -- | Group-level error styling and message |
-| `required` | `boolean` | `false` | Shows required indicator on the label |
-| `name` | `string` | -- | Shared `name` propagated to child controls |
+| Prop                     | Type                         | Default      | Description                                |
+| ------------------------ | ---------------------------- | ------------ | ------------------------------------------ |
+| `label`                  | `string`                     | --           | Group label rendered as a `<legend>`       |
+| `tooltip`                | `string`                     | --           | Tooltip on the label's info icon           |
+| `hint`                   | `string`                     | --           | Helper text below the group                |
+| `orientation`            | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction for child controls        |
+| `role`                   | `"group" \| "radiogroup"`    | `"group"`    | ARIA role for the fieldset                 |
+| `disabled`               | `boolean`                    | `false`      | Disables all controls in the group         |
+| `error` / `errorMessage` | `boolean` / `string`         | --           | Group-level error styling and message      |
+| `required`               | `boolean`                    | `false`      | Shows required indicator on the label      |
+| `name`                   | `string`                     | --           | Shared `name` propagated to child controls |
 
 ## Common Patterns
 
@@ -58,11 +67,7 @@ const lastName = ref("");
 ### Checkbox Group with Error
 
 ```vue
-<VcInputGroup
-  label="Features"
-  :error="selectedFeatures.length === 0"
-  error-message="Select at least one feature"
->
+<VcInputGroup label="Features" :error="selectedFeatures.length === 0" error-message="Select at least one feature">
   <VcCheckbox v-model="selectedFeatures" value="search">Search</VcCheckbox>
   <VcCheckbox v-model="selectedFeatures" value="filters">Filters</VcCheckbox>
   <VcCheckbox v-model="selectedFeatures" value="export">Export</VcCheckbox>
@@ -80,11 +85,11 @@ const lastName = ref("");
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
-| `default` | The grouped form controls |
-| `error` | Custom error message markup |
-| `hint` | Custom hint text markup |
+| Slot      | Description                 |
+| --------- | --------------------------- |
+| `default` | The grouped form controls   |
+| `error`   | Custom error message markup |
+| `hint`    | Custom hint text markup     |
 
 ## Accessibility
 

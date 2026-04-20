@@ -34,19 +34,19 @@ const methods = [
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `T` | — | Selected value (v-model) |
-| `options` | `RadioGroupOption<T>[]` | `[]` | Options to render as radio buttons |
-| `label` | `string` | — | Group label (rendered as fieldset legend) |
-| `tooltip` | `string` | — | Tooltip on the label |
-| `hint` | `string` | — | Hint text below the group |
-| `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction of options |
-| `name` | `string` | auto-generated | Shared name for native radio inputs |
-| `disabled` | `boolean` | `false` | Disable all radio buttons |
-| `required` | `boolean` | `false` | Mark group as required |
-| `error` | `boolean` | `false` | External error flag |
-| `errorMessage` | `string` | — | Error message text |
+| Prop           | Type                         | Default        | Description                               |
+| -------------- | ---------------------------- | -------------- | ----------------------------------------- |
+| `modelValue`   | `T`                          | —              | Selected value (v-model)                  |
+| `options`      | `RadioGroupOption<T>[]`      | `[]`           | Options to render as radio buttons        |
+| `label`        | `string`                     | —              | Group label (rendered as fieldset legend) |
+| `tooltip`      | `string`                     | —              | Tooltip on the label                      |
+| `hint`         | `string`                     | —              | Hint text below the group                 |
+| `orientation`  | `"vertical" \| "horizontal"` | `"vertical"`   | Layout direction of options               |
+| `name`         | `string`                     | auto-generated | Shared name for native radio inputs       |
+| `disabled`     | `boolean`                    | `false`        | Disable all radio buttons                 |
+| `required`     | `boolean`                    | `false`        | Mark group as required                    |
+| `error`        | `boolean`                    | `false`        | External error flag                       |
+| `errorMessage` | `string`                     | —              | Error message text                        |
 
 ## RadioGroupOption Interface
 
@@ -54,20 +54,20 @@ const methods = [
 interface RadioGroupOption<V = string | number | boolean> {
   label: string;
   value: V;
-  disabled?: boolean;  // Disable individual options
+  disabled?: boolean; // Disable individual options
 }
 ```
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:modelValue` | `T` | Selected value changed |
+| Event               | Payload | Description            |
+| ------------------- | ------- | ---------------------- |
+| `update:modelValue` | `T`     | Selected value changed |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot      | Description                                                   |
+| --------- | ------------------------------------------------------------- |
 | `default` | Custom radio button layout (replaces options-based rendering) |
 
 ## Common Patterns
@@ -104,26 +104,13 @@ interface RadioGroupOption<V = string | number | boolean> {
 ### Validation Error
 
 ```vue
-<VcRadioGroup
-  v-model="selected"
-  label="Shipping Method"
-  required
-  :error="!selected"
-  error-message="Select a shipping method"
-  :options="shippingOptions"
-/>
+<VcRadioGroup v-model="selected" label="Shipping Method" required :error="!selected" error-message="Select a shipping method" :options="shippingOptions" />
 ```
 
 ### Custom Slot Layout
 
 ```vue
-<VcRadioGroup
-  v-model="frequency"
-  label="Newsletter Frequency"
-  hint="Custom layout via default slot"
-  orientation="horizontal"
-  name="newsletter-frequency"
->
+<VcRadioGroup v-model="frequency" label="Newsletter Frequency" hint="Custom layout via default slot" orientation="horizontal" name="newsletter-frequency">
   <VcRadioButton v-model="frequency" value="daily" label="Daily" />
   <VcRadioButton v-model="frequency" value="weekly" label="Weekly" />
   <VcRadioButton v-model="frequency" value="monthly" label="Monthly" />
@@ -148,4 +135,3 @@ interface RadioGroupOption<V = string | number | boolean> {
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
-

@@ -16,10 +16,10 @@
 
 # [2.0.0-alpha.29](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.28...v2.0.0-alpha.29) (2026-03-26)
 
-
 ### Bug Fixes
 
-* **vite-config:** fix named sub-entries for framework path resolution ([2e4cdd1](https://github.com/VirtoCommerce/vc-shell/commit/2e4cdd10d6afc7bef32562715eb89ea7a5a5d307))
+- **vite-config:** fix named sub-entries for framework path resolution ([2e4cdd1](https://github.com/VirtoCommerce/vc-shell/commit/2e4cdd10d6afc7bef32562715eb89ea7a5a5d307))
+
 # [2.0.0-alpha.28](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.27...v2.0.0-alpha.28) (2026-03-26)
 
 **Note:** Version bump only for package @vc-shell/config-generator
@@ -66,15 +66,14 @@
 
 # [2.0.0-alpha.17](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.16...v2.0.0-alpha.17) (2026-03-23)
 
-
 ### Bug Fixes
 
-* **defineBlade:** register blade config at module scope, not setup time ([7d80498](https://github.com/VirtoCommerce/vc-shell/commit/7d804989ac285c1fb2d277e131c7e159292a5f41))
-
+- **defineBlade:** register blade config at module scope, not setup time ([7d80498](https://github.com/VirtoCommerce/vc-shell/commit/7d804989ac285c1fb2d277e131c7e159292a5f41))
 
 ### Features
 
-* **vite-config:** add viteBladePlugin for defineBlade macro transform ([adee11c](https://github.com/VirtoCommerce/vc-shell/commit/adee11ca10431eb3f7705fdf4129509f3b7710f7))
+- **vite-config:** add viteBladePlugin for defineBlade macro transform ([adee11c](https://github.com/VirtoCommerce/vc-shell/commit/adee11ca10431eb3f7705fdf4129509f3b7710f7))
+
 # [2.0.0-alpha.16](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.15...v2.0.0-alpha.16) (2026-03-20)
 
 **Note:** Version bump only for package @vc-shell/config-generator
@@ -101,29 +100,29 @@
 
 # [2.0.0-alpha.10](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) (2026-03-13)
 
-
 ### Features
 
-* **mf-host:** add mfHostConfig() vite helper for optimizeDeps ([501841d](https://github.com/VirtoCommerce/vc-shell/commit/501841d457ad9f3c671c41723b65045fae075d28))
-* **mf-host:** import shared deps from mf-config instead of duplicating ([51d2df1](https://github.com/VirtoCommerce/vc-shell/commit/51d2df126ac45ca388c7eb5ce8943fc324938a25))
+- **mf-host:** add mfHostConfig() vite helper for optimizeDeps ([501841d](https://github.com/VirtoCommerce/vc-shell/commit/501841d457ad9f3c671c41723b65045fae075d28))
+- **mf-host:** import shared deps from mf-config instead of duplicating ([51d2df1](https://github.com/VirtoCommerce/vc-shell/commit/51d2df126ac45ca388c7eb5ce8943fc324938a25))
+
 # [2.0.0-alpha.9](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.8...v2.0.0-alpha.9) (2026-03-12)
 
-
 ### Bug Fixes
 
-* topological build order, deprecation fixes, and dependency updates ([bf01eaf](https://github.com/VirtoCommerce/vc-shell/commit/bf01eaf7574eda5ae393941b553cbea5918a768f))
-# [2.0.0-alpha.8](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.7...v2.0.0-alpha.8) (2026-03-12)
+- topological build order, deprecation fixes, and dependency updates ([bf01eaf](https://github.com/VirtoCommerce/vc-shell/commit/bf01eaf7574eda5ae393941b553cbea5918a768f))
 
+# [2.0.0-alpha.8](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.7...v2.0.0-alpha.8) (2026-03-12)
 
 ### Features
 
-* **mf:** extract Module Federation loader into @vc-shell/mf-config and @vc-shell/mf-host ([9b079c2](https://github.com/VirtoCommerce/vc-shell/commit/9b079c27bc1497d89849b909f62c1403eff0c9b4))
-# [2.0.0-alpha.7](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) (2026-03-11)
+- **mf:** extract Module Federation loader into @vc-shell/mf-config and @vc-shell/mf-host ([9b079c2](https://github.com/VirtoCommerce/vc-shell/commit/9b079c27bc1497d89849b909f62c1403eff0c9b4))
 
+# [2.0.0-alpha.7](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) (2026-03-11)
 
 ### Bug Fixes
 
-* remove duplicate changelog entries caused by multiline regex bug ([2f27d4c](https://github.com/VirtoCommerce/vc-shell/commit/2f27d4c2ca81452ddc1042af47a4648348e7e323))
+- remove duplicate changelog entries caused by multiline regex bug ([2f27d4c](https://github.com/VirtoCommerce/vc-shell/commit/2f27d4c2ca81452ddc1042af47a4648348e7e323))
+
 # [2.0.0-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2026-03-10)
 
 ### Bug Fixes

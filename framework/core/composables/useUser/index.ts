@@ -152,7 +152,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
       result = await securityClient.validatePasswordResetToken(userId, {
         token,
       } as ValidatePasswordResetTokenRequest);
-    } catch (e) {
+    } catch (_e) {
       //TODO: log error
     } finally {
       loading.value = false;

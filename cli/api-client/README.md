@@ -5,11 +5,11 @@
 This guide describes the process of generating an API client to access the VC Platform API from your custom application.
 
 !!! note
-    Platform Manager REST Client offers generated REST API methods that make it easy to interact with the existing VirtoCommerce Platform API.
+Platform Manager REST Client offers generated REST API methods that make it easy to interact with the existing VirtoCommerce Platform API.
 
 ## Prerequisites
 
-* .NET Core 6.0, particularly if you are using MacOS or Linux.
+- .NET Core 6.0, particularly if you are using MacOS or Linux.
 
 ## Generate TypeScript API clients
 
@@ -22,6 +22,7 @@ Using command
 ```bash
 yarn add @vc-shell/api-client-generator cross-env
 ```
+
 <br>
 
 `cross-env` runs scripts that set and use environment variables across platforms.
@@ -44,57 +45,57 @@ Add the dependencies to your project's **package.json**:
 
 2. Configure client generation in your project. Inside your project's **package.json** file, add a `"generate-api-client"` command to the list of scripts:
 
-    ```title="vc-app-extend/package.json" linenums="1"
-    {
-        "scripts": {
-        ...
-        "generate-api-client": cross-env api-client-generator --APP_PLATFORM_MODULES='[Virtocommerce.MarketplaceVendor,Virtocommerce.Catalog,Virtocommerce.Orders]' --APP_API_CLIENT_DIRECTORY=./src/api_client/
-        }
-    }
-    ```
+   ```title="vc-app-extend/package.json" linenums="1"
+   {
+       "scripts": {
+       ...
+       "generate-api-client": cross-env api-client-generator --APP_PLATFORM_MODULES='[Virtocommerce.MarketplaceVendor,Virtocommerce.Catalog,Virtocommerce.Orders]' --APP_API_CLIENT_DIRECTORY=./src/api_client/
+       }
+   }
+   ```
 
-    The options are listed in the table below:
+   The options are listed in the table below:
 
-    |          Options           	|                        Description                            	|                          Example                          	|
-    |-----------------------------	|----------------------------------------------------------------	|------------------------------------------------------------	|
-    | `--APP_PLATFORM_MODULES`     	| Platform modules to generate API client.<br>{==string[]==} <br> Supports spaces in module lists: `[Module1, Module2]` or `[Module1,Module2]`<br>Customize the `--APP_PLATFORM_MODULES` list<br>to match your project's requirements.	| `--APP_PLATFORM_MODULES='[Virtocommerce.MarketplaceVendor, Virtocommerce.Orders, Virtocommerce.Catalog]'` 	|
-    | `--APP_API_CLIENT_DIRECTORY` 	| Output directory for generated API clients. <br>{==string==} 	| `--APP_API_CLIENT_DIRECTORY=./src/api_client/`                	|
-    | `--APP_PLATFORM_URL`         	| Platform URL to obtain client API configs. <br>{==string==} 	    | `--APP_PLATFORM_URL=https://vcmp-dev.govirto.com/`       	|
-    | `--APP_PACKAGE_NAME`         	| Package name for generated API clients. <br>{==string==} 	    | `--APP_PACKAGE_NAME=@api-client`       	|
-    | `--APP_PACKAGE_VERSION`         	| Package version for generated API clients. <br>{==string==} 	    | `--APP_PACKAGE_VERSION=1.1.0`       	|
-    | `--APP_OUT_DIR`         	| Output directory for generated API clients. <br>{==string==} 	    | `--APP_OUT_DIR=./src/api_client/`       	|
-    | `--APP_TYPE_STYLE`           | Sets the type style for generated DTOs. Can be 'Class' or 'Interface'.<br>{==string==} | `--APP_TYPE_STYLE=Interface`                                |
-    | `--APP_BUILD_DIR`         	| Directory where TypeScript files will be compiled. <br>{==string==} 	    | `--APP_BUILD_DIR=lib` (default is "dist")      	|
-    | `--SKIP_BUILD`         	| Skip build step. <br>{==boolean==} 	    | `--SKIP_BUILD=true`       	|
-    | `--VERBOSE`         	| Enable verbose logging. <br>{==boolean==} 	    | `--VERBOSE=true`       	|
+   | Options                      | Description                                                                                                                                                                                                                          | Example                                                                                                   |
+   | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+   | `--APP_PLATFORM_MODULES`     | Platform modules to generate API client.<br>{==string[]==} <br> Supports spaces in module lists: `[Module1, Module2]` or `[Module1,Module2]`<br>Customize the `--APP_PLATFORM_MODULES` list<br>to match your project's requirements. | `--APP_PLATFORM_MODULES='[Virtocommerce.MarketplaceVendor, Virtocommerce.Orders, Virtocommerce.Catalog]'` |
+   | `--APP_API_CLIENT_DIRECTORY` | Output directory for generated API clients. <br>{==string==}                                                                                                                                                                         | `--APP_API_CLIENT_DIRECTORY=./src/api_client/`                                                            |
+   | `--APP_PLATFORM_URL`         | Platform URL to obtain client API configs. <br>{==string==}                                                                                                                                                                          | `--APP_PLATFORM_URL=https://vcmp-dev.govirto.com/`                                                        |
+   | `--APP_PACKAGE_NAME`         | Package name for generated API clients. <br>{==string==}                                                                                                                                                                             | `--APP_PACKAGE_NAME=@api-client`                                                                          |
+   | `--APP_PACKAGE_VERSION`      | Package version for generated API clients. <br>{==string==}                                                                                                                                                                          | `--APP_PACKAGE_VERSION=1.1.0`                                                                             |
+   | `--APP_OUT_DIR`              | Output directory for generated API clients. <br>{==string==}                                                                                                                                                                         | `--APP_OUT_DIR=./src/api_client/`                                                                         |
+   | `--APP_TYPE_STYLE`           | Sets the type style for generated DTOs. Can be 'Class' or 'Interface'.<br>{==string==}                                                                                                                                               | `--APP_TYPE_STYLE=Interface`                                                                              |
+   | `--APP_BUILD_DIR`            | Directory where TypeScript files will be compiled. <br>{==string==}                                                                                                                                                                  | `--APP_BUILD_DIR=lib` (default is "dist")                                                                 |
+   | `--SKIP_BUILD`               | Skip build step. <br>{==boolean==}                                                                                                                                                                                                   | `--SKIP_BUILD=true`                                                                                       |
+   | `--VERBOSE`                  | Enable verbose logging. <br>{==boolean==}                                                                                                                                                                                            | `--VERBOSE=true`                                                                                          |
 
-    !!! note
-        For the `--APP_TYPE_STYLE` parameter, use **exactly** `"Class"` or `"Interface"` (case-sensitive). Any other value will cause an error.
+   !!! note
+   For the `--APP_TYPE_STYLE` parameter, use **exactly** `"Class"` or `"Interface"` (case-sensitive). Any other value will cause an error.
 
-    !!! tip
-        Use `--APP_TYPE_STYLE=Interface` for better TypeScript integration and smaller bundle sizes. Use `--APP_TYPE_STYLE=Class` when you need runtime type checking or class-specific features.
+   !!! tip
+   Use `--APP_TYPE_STYLE=Interface` for better TypeScript integration and smaller bundle sizes. Use `--APP_TYPE_STYLE=Class` when you need runtime type checking or class-specific features.
 
 3. Configure Platform URL and other settings in your project's **.env** file:
 
-    ```title="vc-app-extend/.env"
-    APP_PLATFORM_URL=https://vcmp-dev.govirto.com/
-    APP_PLATFORM_MODULES=[Virtocommerce.MarketplaceVendor,Virtocommerce.Catalog,Virtocommerce.Orders]
-    APP_API_CLIENT_DIRECTORY=./src/api_client/
-    APP_PACKAGE_NAME=@my-app/api-client
-    APP_PACKAGE_VERSION=1.0.0
-    APP_BUILD_DIR=dist
-    VERBOSE=true
-    SKIP_BUILD=false
-    ```
+   ```title="vc-app-extend/.env"
+   APP_PLATFORM_URL=https://vcmp-dev.govirto.com/
+   APP_PLATFORM_MODULES=[Virtocommerce.MarketplaceVendor,Virtocommerce.Catalog,Virtocommerce.Orders]
+   APP_API_CLIENT_DIRECTORY=./src/api_client/
+   APP_PACKAGE_NAME=@my-app/api-client
+   APP_PACKAGE_VERSION=1.0.0
+   APP_BUILD_DIR=dist
+   VERBOSE=true
+   SKIP_BUILD=false
+   ```
 
-    !!! note
-        All configuration options can be set via environment variables in `.env` file or passed as command line arguments. Environment variables take precedence over CLI arguments.
+   !!! note
+   All configuration options can be set via environment variables in `.env` file or passed as command line arguments. Environment variables take precedence over CLI arguments.
 
 4. Generate the API clients using the following command:
 
-    ```
-    yarn generate-api-client
-    ```
+   ```
+   yarn generate-api-client
+   ```
 
 This command generates the required API clients for your custom application. Now you can effortlessly access the VC Platform API from your custom application using the generated API client.
 
@@ -125,7 +126,7 @@ API client now includes metadata to track the generation:
 
 The generator handles multiple API clients effectively:
 
-- Creates standardized exports with both short names (`./{moduleName}`) and full names (`./virtocommerce.{moduleName}`) 
+- Creates standardized exports with both short names (`./{moduleName}`) and full names (`./virtocommerce.{moduleName}`)
 - Prevents duplicate module exports by intelligently merging with existing ones
 - Automatically removes `module` and `types` fields that conflict with multiple exports
 - Works properly with incremental generation (can add new APIs without breaking existing ones)
@@ -142,11 +143,11 @@ This enables both simple usage for single-API packages and proper subpath export
 
 ```js
 // Single API package (using root export)
-import { MyClient } from '@myapp/api';
+import { MyClient } from "@myapp/api";
 
 // Multi-API package (using subpath exports)
-import { ClientA } from '@myapp/api/moduleA';
-import { ClientB } from '@myapp/api/moduleB';
+import { ClientA } from "@myapp/api/moduleA";
+import { ClientB } from "@myapp/api/moduleB";
 ```
 
 ### Directory Creation
@@ -223,6 +224,7 @@ If you encounter issues during API client generation:
 #### APP_TYPE_STYLE Error
 
 If you see an error like:
+
 ```
 Error converting value "$(APP_TYPE_STYLE)" to type 'NJsonSchema.CodeGeneration.TypeScript.TypeScriptTypeStyle'
 ```
@@ -230,11 +232,13 @@ Error converting value "$(APP_TYPE_STYLE)" to type 'NJsonSchema.CodeGeneration.T
 This means the `APP_TYPE_STYLE` parameter was not properly validated or passed to NSwag:
 
 **Solution:**
+
 1. Ensure you're using exactly `"Class"` or `"Interface"` (case-sensitive)
 2. Check that you're passing the parameter correctly: `--APP_TYPE_STYLE=Interface`
 3. Enable verbose logging to see what value is being passed: `--VERBOSE=true`
 
 **Example of correct usage:**
+
 ```bash
 yarn generate-api-client --APP_TYPE_STYLE=Interface --VERBOSE=true
 ```
@@ -242,6 +246,7 @@ yarn generate-api-client --APP_TYPE_STYLE=Interface --VERBOSE=true
 #### NSwag Command Failed
 
 If NSwag fails with exit code, check:
+
 1. .NET Core 6.0 or later is installed
 2. The platform URL is accessible
 3. The specified modules exist on the platform

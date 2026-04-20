@@ -29,41 +29,41 @@ Renders a VirtoCommerce platform dynamic property as the appropriate form contro
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `property` | `T` | - | Property object with `id` and metadata |
-| `modelValue` | `any` | - | Current property value (v-model) |
-| `valueType` | `string` | - | Type: ShortText, LongText, Number, Integer, DateTime, Boolean, Measure, Color |
-| `name` | `string` | - | Property name for display and field identification |
-| `required` | `boolean` | - | Whether the field is required |
-| `disabled` | `boolean` | `false` | Disables the input |
-| `dictionary` | `boolean` | `false` | Uses VcSelect/VcMultivalue with options |
-| `multivalue` | `boolean` | `false` | Supports multiple values |
-| `multilanguage` | `boolean` | `false` | Supports localized values |
-| `optionsGetter` | `Function` | - | Async loader for dictionary options |
-| `measurementsGetter` | `Function` | - | Async loader for measurement units |
-| `rules` | `object` | - | Validation rules: `{ min, max, regex }` |
+| Prop                 | Type       | Default | Description                                                                   |
+| -------------------- | ---------- | ------- | ----------------------------------------------------------------------------- |
+| `property`           | `T`        | -       | Property object with `id` and metadata                                        |
+| `modelValue`         | `any`      | -       | Current property value (v-model)                                              |
+| `valueType`          | `string`   | -       | Type: ShortText, LongText, Number, Integer, DateTime, Boolean, Measure, Color |
+| `name`               | `string`   | -       | Property name for display and field identification                            |
+| `required`           | `boolean`  | -       | Whether the field is required                                                 |
+| `disabled`           | `boolean`  | `false` | Disables the input                                                            |
+| `dictionary`         | `boolean`  | `false` | Uses VcSelect/VcMultivalue with options                                       |
+| `multivalue`         | `boolean`  | `false` | Supports multiple values                                                      |
+| `multilanguage`      | `boolean`  | `false` | Supports localized values                                                     |
+| `optionsGetter`      | `Function` | -       | Async loader for dictionary options                                           |
+| `measurementsGetter` | `Function` | -       | Async loader for measurement units                                            |
+| `rules`              | `object`   | -       | Validation rules: `{ min, max, regex }`                                       |
 
 ## Value Type to Component Mapping
 
-| valueType | dictionary | multivalue | Component |
-|-----------|-----------|------------|-----------|
-| ShortText | false | false | VcInput |
-| ShortText | false | true | VcMultivalue |
-| ShortText | true | false | VcSelect |
-| ShortText | true | true | VcMultivalue (with options) |
-| LongText | - | - | VcTextarea |
-| Number | - | false | VcInput (number) |
-| Number | - | true | VcMultivalue (number) |
-| Integer | - | false | VcInput (integer, step=1) |
-| Integer | - | true | VcMultivalue (integer) |
-| DateTime | - | - | VcInput (datetime-local) |
-| Boolean | - | - | VcSwitch |
-| Measure | - | - | VcInputDropdown |
-| Color | false | false | VcInput (color) |
-| Color | false | true | VcMultivalue (color) |
-| Color | true | false | VcSelect (with swatches) |
-| Color | true | true | VcMultivalue (with swatches) |
+| valueType | dictionary | multivalue | Component                    |
+| --------- | ---------- | ---------- | ---------------------------- |
+| ShortText | false      | false      | VcInput                      |
+| ShortText | false      | true       | VcMultivalue                 |
+| ShortText | true       | false      | VcSelect                     |
+| ShortText | true       | true       | VcMultivalue (with options)  |
+| LongText  | -          | -          | VcTextarea                   |
+| Number    | -          | false      | VcInput (number)             |
+| Number    | -          | true       | VcMultivalue (number)        |
+| Integer   | -          | false      | VcInput (integer, step=1)    |
+| Integer   | -          | true       | VcMultivalue (integer)       |
+| DateTime  | -          | -          | VcInput (datetime-local)     |
+| Boolean   | -          | -          | VcSwitch                     |
+| Measure   | -          | -          | VcInputDropdown              |
+| Color     | false      | false      | VcInput (color)              |
+| Color     | false      | true       | VcMultivalue (color)         |
+| Color     | true       | false      | VcSelect (with swatches)     |
+| Color     | true       | true       | VcMultivalue (with swatches) |
 
 ## Recipe: Rendering a List of Dynamic Properties
 
@@ -85,9 +85,7 @@ async function loadDictionaryOptions(propertyId: string, keyword?: string) {
 }
 
 function handlePropertyUpdate(property: any, newValue: any) {
-  property.values = Array.isArray(newValue)
-    ? newValue.map((v) => ({ value: v }))
-    : [{ value: newValue }];
+  property.values = Array.isArray(newValue) ? newValue.map((v) => ({ value: v })) : [{ value: newValue }];
 }
 </script>
 
@@ -114,28 +112,13 @@ function handlePropertyUpdate(property: any, newValue: any) {
 ## Recipe: Dynamic Property with Validation
 
 ```vue
-<VcDynamicProperty
-  :property="skuProperty"
-  :model-value="skuProperty.values?.[0]?.value"
-  value-type="ShortText"
-  name="SKU"
-  :required="true"
-  :rules="{ regex: '^[A-Z0-9-]+$', min: 3, max: 50 }"
-  @update:model-value="(val) => updateProperty(skuProperty, val)"
-/>
+<VcDynamicProperty :property="skuProperty" :model-value="skuProperty.values?.[0]?.value" value-type="ShortText" name="SKU" :required="true" :rules="{ regex: '^[A-Z0-9-]+$', min: 3, max: 50 }" @update:model-value="(val) => updateProperty(skuProperty, val)" />
 ```
 
 ## Recipe: Measurement Property with Units
 
 ```vue
-<VcDynamicProperty
-  :property="weightProperty"
-  :model-value="weightProperty.values?.[0]?.value"
-  value-type="Measure"
-  name="Weight"
-  :measurements-getter="loadMeasurementUnits"
-  @update:model-value="(val) => updateProperty(weightProperty, val)"
-/>
+<VcDynamicProperty :property="weightProperty" :model-value="weightProperty.values?.[0]?.value" value-type="Measure" name="Weight" :measurements-getter="loadMeasurementUnits" @update:model-value="(val) => updateProperty(weightProperty, val)" />
 ```
 
 ## Common Mistakes

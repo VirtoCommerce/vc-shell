@@ -18,7 +18,10 @@ A toggle switch component for binary on/off choices. Renders as a sliding track 
 
 ```vue
 <template>
-  <VcSwitch v-model="isEnabled" label="Enable feature" />
+  <VcSwitch
+    v-model="isEnabled"
+    label="Enable feature"
+  />
 </template>
 
 <script setup lang="ts">
@@ -36,12 +39,7 @@ const isEnabled = ref(false);
 The `label` prop renders text above the switch. Use `hint` for helper text below the track, and `labelTooltip` for an info icon on the label itself.
 
 ```vue
-<VcSwitch
-  v-model="settings.darkMode"
-  label="Dark mode"
-  hint="Changes take effect immediately"
-  label-tooltip="Applies to the admin panel only"
-/>
+<VcSwitch v-model="settings.darkMode" label="Dark mode" hint="Changes take effect immediately" label-tooltip="Applies to the admin panel only" />
 ```
 
 > **Important:** The `tooltip` prop is deprecated. It previously rendered as hint text below the switch (not as a true tooltip). Use `hint` for text below the switch, or `labelTooltip` for the label info icon. A console warning is emitted in development mode if `tooltip` is used.
@@ -52,12 +50,7 @@ By default, `v-model` maps `true` to the checked (on) state and `false` to unche
 
 ```vue
 <!-- Data model: isHidden=true means the item is NOT visible -->
-<VcSwitch
-  v-model="product.isHidden"
-  label="Visible on storefront"
-  :true-value="false"
-  :false-value="true"
-/>
+<VcSwitch v-model="product.isHidden" label="Visible on storefront" :true-value="false" :false-value="true" />
 ```
 
 When `trueValue` is `false`, the switch shows as "on" when `modelValue` is `false`, which lets you present affirmative labels ("Visible") even when the underlying boolean is negative ("isHidden").
@@ -109,12 +102,7 @@ const form = reactive({
 <VcSwitch :model-value="false" label="Unavailable feature" disabled />
 
 <!-- Error state -->
-<VcSwitch
-  v-model="value"
-  label="Accept terms"
-  :error="true"
-  error-message="You must accept the terms"
-/>
+<VcSwitch v-model="value" label="Accept terms" :error="true" error-message="You must accept the terms" />
 ```
 
 ### In a Settings Form
@@ -127,14 +115,23 @@ Switches work well stacked in settings panels:
     <VcRow>
       <VcCol size="6">
         <div class="tw-space-y-4">
-          <VcSwitch v-model="settings.emailNotifications" label="Email notifications" />
-          <VcSwitch v-model="settings.pushNotifications" label="Push notifications" />
+          <VcSwitch
+            v-model="settings.emailNotifications"
+            label="Email notifications"
+          />
+          <VcSwitch
+            v-model="settings.pushNotifications"
+            label="Push notifications"
+          />
           <VcSwitch
             v-model="settings.marketingEmails"
             label="Marketing emails"
             hint="Receive news about promotions and updates"
           />
-          <VcSwitch v-model="settings.twoFactorAuth" label="Two-factor authentication" />
+          <VcSwitch
+            v-model="settings.twoFactorAuth"
+            label="Two-factor authentication"
+          />
         </div>
       </VcCol>
     </VcRow>
@@ -179,12 +176,7 @@ Use a switch to show or hide additional fields dynamically:
 ```vue
 <VcSwitch v-model="hasExpiration" label="Set expiration date" />
 
-<VcDatePicker
-  v-if="hasExpiration"
-  v-model="expirationDate"
-  label="Expiration date"
-  required
-/>
+<VcDatePicker v-if="hasExpiration" v-model="expirationDate" label="Expiration date" required />
 ```
 
 ## Common Mistakes
@@ -235,52 +227,52 @@ const isActive = ref(true);
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `boolean \| undefined` | -- | Bound value via `v-model` |
-| `label` | `string` | -- | Label text above the switch |
-| `hint` | `string` | -- | Helper text displayed below the switch |
-| `labelTooltip` | `string` | -- | Tooltip shown on the label info icon |
-| `tooltip` | `string` | -- | **Deprecated.** Use `hint` or `labelTooltip` instead |
-| `trueValue` | `boolean` | `true` | Value that represents the checked state |
-| `falseValue` | `boolean` | `false` | Value that represents the unchecked state |
-| `disabled` | `boolean` | `false` | Disables the switch |
-| `required` | `boolean` | `false` | Shows a required indicator on the label |
-| `error` | `boolean` | `false` | Enables error styling |
-| `errorMessage` | `string` | -- | Error message displayed below the switch |
-| `name` | `string` | -- | HTML name attribute for the hidden input |
+| Prop           | Type                   | Default | Description                                          |
+| -------------- | ---------------------- | ------- | ---------------------------------------------------- |
+| `modelValue`   | `boolean \| undefined` | --      | Bound value via `v-model`                            |
+| `label`        | `string`               | --      | Label text above the switch                          |
+| `hint`         | `string`               | --      | Helper text displayed below the switch               |
+| `labelTooltip` | `string`               | --      | Tooltip shown on the label info icon                 |
+| `tooltip`      | `string`               | --      | **Deprecated.** Use `hint` or `labelTooltip` instead |
+| `trueValue`    | `boolean`              | `true`  | Value that represents the checked state              |
+| `falseValue`   | `boolean`              | `false` | Value that represents the unchecked state            |
+| `disabled`     | `boolean`              | `false` | Disables the switch                                  |
+| `required`     | `boolean`              | `false` | Shows a required indicator on the label              |
+| `error`        | `boolean`              | `false` | Enables error styling                                |
+| `errorMessage` | `string`               | --      | Error message displayed below the switch             |
+| `name`         | `string`               | --      | HTML name attribute for the hidden input             |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event               | Payload                | Description                        |
+| ------------------- | ---------------------- | ---------------------------------- |
 | `update:modelValue` | `boolean \| undefined` | Emitted when the switch is toggled |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot    | Description                                                       |
+| ------- | ----------------------------------------------------------------- |
 | `error` | Custom error message markup. Replaces the default `VcHint` error. |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--switch-width` | `36px` | Track width |
-| `--switch-height` | `20px` | Track height |
-| `--switch-thumb-size` | `16px` | Thumb diameter |
-| `--switch-translate` | `16px` | Thumb travel distance when checked |
-| `--switch-active-color` | `var(--primary-500)` | Track color when checked |
-| `--switch-inactive-color` | `var(--neutrals-300)` | Track color when unchecked |
-| `--switch-hover-active-color` | `var(--primary-600)` | Hover track color when checked |
-| `--switch-hover-inactive-color` | `var(--neutrals-400)` | Hover track color when unchecked |
-| `--switch-thumb-color` | `var(--additional-50)` | Thumb background color |
-| `--switch-thumb-shadow` | `0 1px 3px rgba(0,0,0,0.1)` | Thumb box shadow |
-| `--switch-focus-ring-color` | `var(--primary-100)` | Focus ring color |
-| `--switch-error-ring-color` | `var(--danger-100)` | Error ring color |
-| `--switch-error-border-color` | `var(--danger-500)` | Error border color |
-| `--switch-border-radius` | `9999px` | Track border radius |
-| `--switch-disabled-opacity` | `0.5` | Opacity when disabled |
+| Variable                        | Default                     | Description                        |
+| ------------------------------- | --------------------------- | ---------------------------------- |
+| `--switch-width`                | `36px`                      | Track width                        |
+| `--switch-height`               | `20px`                      | Track height                       |
+| `--switch-thumb-size`           | `16px`                      | Thumb diameter                     |
+| `--switch-translate`            | `16px`                      | Thumb travel distance when checked |
+| `--switch-active-color`         | `var(--primary-500)`        | Track color when checked           |
+| `--switch-inactive-color`       | `var(--neutrals-300)`       | Track color when unchecked         |
+| `--switch-hover-active-color`   | `var(--primary-600)`        | Hover track color when checked     |
+| `--switch-hover-inactive-color` | `var(--neutrals-400)`       | Hover track color when unchecked   |
+| `--switch-thumb-color`          | `var(--additional-50)`      | Thumb background color             |
+| `--switch-thumb-shadow`         | `0 1px 3px rgba(0,0,0,0.1)` | Thumb box shadow                   |
+| `--switch-focus-ring-color`     | `var(--primary-100)`        | Focus ring color                   |
+| `--switch-error-ring-color`     | `var(--danger-100)`         | Error ring color                   |
+| `--switch-error-border-color`   | `var(--danger-500)`         | Error border color                 |
+| `--switch-border-radius`        | `9999px`                    | Track border radius                |
+| `--switch-disabled-opacity`     | `0.5`                       | Opacity when disabled              |
 
 ## Accessibility
 
@@ -302,4 +294,3 @@ const isActive = ref(true);
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
-

@@ -31,11 +31,13 @@ Use Glob to find all `*.ts` files in `apiClientDir`. Exclude `*.d.ts` files.
 Read each file and extract the following by regex/text scan:
 
 **Client classes** — match `class \w+Client`:
+
 ```
 Pattern: /class (\w+Client)\b/g
 ```
 
 **Search query types** — match NSwag search query class names:
+
 ```
 Patterns:
   /class (Search\w+Query)\b/g
@@ -43,42 +45,50 @@ Patterns:
 ```
 
 **Search result types** — match NSwag search result class names:
+
 ```
 Pattern: /class (Search\w+Result)\b/g
 ```
 
 **Create/Update commands**:
+
 ```
 Pattern: /class (Create\w+Command)\b/g
 Pattern: /class (Update\w+Command)\b/g
 ```
 
 **Entity types** — infer from client methods and command names:
+
 - From `Search<Entity>Query` → entity = `Entity`
 - From `Create<Entity>Command` → entity = `Entity`
 - Look for `class <Entity>\b` and `class <Entity>Details\b`
 
 **Delete methods** — match client method signatures:
+
 ```
 Pattern: /async delete(\w+)s?\(.*ids.*string/g
 ```
 
 **Search methods** — match client method signatures:
+
 ```
 Pattern: /async search(\w+)\(/g
 ```
 
 **Get methods**:
+
 ```
 Pattern: /async get(\w+)\(/g
 ```
 
 **Create methods**:
+
 ```
 Pattern: /async create(\w+)\(/g
 ```
 
 **Update methods**:
+
 ```
 Pattern: /async update(\w+)\(/g
 ```
@@ -86,6 +96,7 @@ Pattern: /async update(\w+)\(/g
 ### Step 3: Build entity model
 
 For each discovered entity, collect:
+
 - `clientClass`: the `*Client` class name (e.g., `UserSecurityClient`)
 - `clientFile`: relative path from `apiClientDir` (e.g., `virtocommerce.mymodule`)
 - `entityName`: PascalCase entity name (e.g., `TeamMember`, `Order`)
@@ -108,6 +119,7 @@ If `entityHint` is provided, filter/rank results to prefer entities matching the
 Return the analysis result as structured JSON in your response. Do NOT write any files.
 
 Format:
+
 ```json
 {
   "apiClientDir": "<absolute path>",
@@ -127,7 +139,9 @@ Format:
       "deleteMethod": "deleteUsers"
     }
   ],
-  "primaryEntity": { /* best match or first entity */ }
+  "primaryEntity": {
+    /* best match or first entity */
+  }
 }
 ```
 
@@ -138,6 +152,7 @@ Returns JSON in response text. Does NOT write files to disk.
 ## Self-Check
 
 Before completing, verify:
+
 - [ ] All `*.ts` files in `apiClientDir` were scanned (not just the first one)
 - [ ] `clientClass` ends with `Client`
 - [ ] `searchMethod`, `getMethod`, etc. are camelCase method names (not class names)

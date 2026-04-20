@@ -56,7 +56,7 @@ import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import type { MobileSwipeAction } from "@ui/components/organisms/vc-data-table/types";
 
-const props = withDefaults(
+const _props = withDefaults(
   defineProps<{
     /** Whether sheet is open */
     open: boolean;

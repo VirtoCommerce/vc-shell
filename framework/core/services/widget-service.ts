@@ -1,10 +1,7 @@
-import { Component, ref, ComponentInternalInstance, ComputedRef, Ref } from "vue";
+import { Component, ComputedRef, Ref } from "vue";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
 import { cloneDeep } from "lodash-es";
 import { createBladeScopedRegistry, createPreregistrationBus } from "@core/services/_internal";
-import { createLogger } from "@core/utilities";
-
-const logger = createLogger("widget-service");
 
 export type WidgetEventHandler = (...args: unknown[]) => void;
 

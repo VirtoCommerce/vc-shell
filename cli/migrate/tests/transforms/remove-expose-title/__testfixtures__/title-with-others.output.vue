@@ -13,6 +13,6 @@ const onItemClick = () => {};
 
 exposeToChildren({
   reload,
-  onItemClick
+  onItemClick,
 });
 </script>

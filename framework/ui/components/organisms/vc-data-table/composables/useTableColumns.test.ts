@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ref, computed, nextTick } from "vue";
+import { ref, nextTick } from "vue";
 import { useTableColumns } from "@ui/components/organisms/vc-data-table/composables/useTableColumns";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 import type { VcColumnProps } from "@ui/components/organisms/vc-data-table/types";
@@ -81,11 +81,7 @@ describe("useTableColumns — columnState initialization", () => {
 
   it("honors declared px widths end-to-end — engine output matches ratios", () => {
     // Regression test: VcColumn :width="200" was silently ignored before fix.
-    const cols = [
-      makeColumn("a", { width: 200 }),
-      makeColumn("b", { width: 300 }),
-      makeColumn("c", { width: 100 }),
-    ];
+    const cols = [makeColumn("a", { width: 200 }), makeColumn("b", { width: 300 }), makeColumn("c", { width: 100 })];
     const visibleColumns = ref(cols);
 
     const { columnState, engineOutput } = useTableColumns({

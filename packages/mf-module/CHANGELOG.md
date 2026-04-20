@@ -20,10 +20,10 @@
 
 # [2.0.0-alpha.28](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.27...v2.0.0-alpha.28) (2026-03-26)
 
-
 ### Bug Fixes
 
-* **mf-module:** Set base path for MF bundle to match platform app routing ([#218](https://github.com/VirtoCommerce/vc-shell/issues/218)) ([60925b2](https://github.com/VirtoCommerce/vc-shell/commit/60925b2a4e99232c3d6404e8b01b03771f9ae724))
+- **mf-module:** Set base path for MF bundle to match platform app routing ([#218](https://github.com/VirtoCommerce/vc-shell/issues/218)) ([60925b2](https://github.com/VirtoCommerce/vc-shell/commit/60925b2a4e99232c3d6404e8b01b03771f9ae724))
+
 # [2.0.0-alpha.27](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.26...v2.0.0-alpha.27) (2026-03-25)
 
 **Note:** Version bump only for package @vc-shell/mf-module
@@ -94,12 +94,10 @@
 
 # [2.0.0-alpha.10](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) (2026-03-13)
 
-
 ### Bug Fixes
 
-* **mf-module:** add exports field for proper ESM resolution ([a951353](https://github.com/VirtoCommerce/vc-shell/commit/a951353743aa0d583c7cb206b6a84be3781b8477))
-
+- **mf-module:** add exports field for proper ESM resolution ([a951353](https://github.com/VirtoCommerce/vc-shell/commit/a951353743aa0d583c7cb206b6a84be3781b8477))
 
 ### Features
 
-* **mf-module:** create package for remote module build config ([5cde74b](https://github.com/VirtoCommerce/vc-shell/commit/5cde74b8c7e6369da79d98c5d43edbc451681744))
+- **mf-module:** create package for remote module build config ([5cde74b](https://github.com/VirtoCommerce/vc-shell/commit/5cde74b8c7e6369da79d98c5d43edbc451681744))

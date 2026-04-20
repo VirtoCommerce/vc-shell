@@ -7,15 +7,9 @@
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { ref, defineComponent, nextTick, h } from "vue";
+import { ref, defineComponent, nextTick } from "vue";
 import VcApp from "./vc-app.vue";
-import {
-  AppRootElementKey,
-  BladeRoutesKey,
-  ModulesLoadErrorKey,
-  IsMobileKey,
-  IsDesktopKey,
-} from "@framework/injection-keys";
+import { BladeRoutesKey, ModulesLoadErrorKey, IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import { BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
 
 // ============================================================================
@@ -135,7 +129,7 @@ const isDesktopRef = ref(true);
 
 const VcLoadingStub = defineComponent({
   name: "VcLoading",
-  props: ["active"],
+  props: { active: null },
   template: "<div class='mock-vc-loading' v-if='active'>Loading...</div>",
 });
 

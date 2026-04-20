@@ -123,7 +123,10 @@ For applications built on the VC-Shell framework, manage breadcrumb state reacti
 
 ```vue
 <template>
-  <VcBreadcrumbs :items="breadcrumbs" separated />
+  <VcBreadcrumbs
+    :items="breadcrumbs"
+    separated
+  />
 </template>
 
 <script setup lang="ts">
@@ -148,11 +151,11 @@ remove(["products", "categories"]);
 
 **Composable API:**
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `breadcrumbs` | `ComputedRef<Breadcrumbs[]>` | Reactive array of current items |
-| `push` | `(item: Breadcrumbs) => void` | Add an item (deduplicates by `id`) |
-| `remove` | `(ids: string[]) => void` | Remove items by their IDs |
+| Method        | Signature                     | Description                        |
+| ------------- | ----------------------------- | ---------------------------------- |
+| `breadcrumbs` | `ComputedRef<Breadcrumbs[]>`  | Reactive array of current items    |
+| `push`        | `(item: Breadcrumbs) => void` | Add an item (deduplicates by `id`) |
+| `remove`      | `(ids: string[]) => void`     | Remove items by their IDs          |
 
 > **Note:** When `push` is called with an `id` that already exists, the existing entry is updated in place rather than duplicated.
 
@@ -237,27 +240,27 @@ clickHandler: () => { navigate(); return true; }
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `items` | `Breadcrumbs[]` | `[]` | Array of breadcrumb items to display |
-| `variant` | `"default" \| "light"` | `"default"` | Visual style variant |
-| `separated` | `boolean` | `false` | Show `/` separators between items |
-| `collapsed` | `boolean` | `false` | Force all items into the dropdown |
+| Prop        | Type                   | Default     | Description                          |
+| ----------- | ---------------------- | ----------- | ------------------------------------ |
+| `items`     | `Breadcrumbs[]`        | `[]`        | Array of breadcrumb items to display |
+| `variant`   | `"default" \| "light"` | `"default"` | Visual style variant                 |
+| `separated` | `boolean`              | `false`     | Show `/` separators between items    |
+| `collapsed` | `boolean`              | `false`     | Force all items into the dropdown    |
 
 ## Slots
 
-| Slot | Scope | Description |
-|------|-------|-------------|
+| Slot      | Scope                                      | Description                                                        |
+| --------- | ------------------------------------------ | ------------------------------------------------------------------ |
 | `trigger` | `{ click: () => void, isActive: boolean }` | Custom dropdown trigger button replacing the default ellipsis icon |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--separator-color` | `var(--neutrals-400)` | Color of the `/` separator character |
-| `--breadcrumbs-item-border-color` | `var(--secondary-300)` | Border color of breadcrumb items |
-| `--breadcrumbs-expand-button-color` | `var(--neutrals-500)` | Color of the overflow "more" button |
-| `--breadcrumbs-expand-button-color-hover` | `var(--neutrals-600)` | Hover color of the overflow button |
+| Variable                                  | Default                | Description                          |
+| ----------------------------------------- | ---------------------- | ------------------------------------ |
+| `--separator-color`                       | `var(--neutrals-400)`  | Color of the `/` separator character |
+| `--breadcrumbs-item-border-color`         | `var(--secondary-300)` | Border color of breadcrumb items     |
+| `--breadcrumbs-expand-button-color`       | `var(--neutrals-500)`  | Color of the overflow "more" button  |
+| `--breadcrumbs-expand-button-color-hover` | `var(--neutrals-600)`  | Hover color of the overflow button   |
 
 ## Accessibility
 

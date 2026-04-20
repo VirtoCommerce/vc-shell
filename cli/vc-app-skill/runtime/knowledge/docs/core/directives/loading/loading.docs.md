@@ -14,20 +14,20 @@ Unlike a standalone loading component, `v-loading` scopes the overlay to the ele
 
 ## API
 
-| Binding | Type | Description |
-|---------|------|-------------|
-| `v-loading="true"` | `boolean` | Show/hide the loading overlay |
-| `v-loading="options"` | `LoadingOptions` | Show with configuration (see below) |
-| `v-loading:1000="true"` | `arg: string` | Set custom z-index (default: `9999`) |
+| Binding                 | Type             | Description                          |
+| ----------------------- | ---------------- | ------------------------------------ |
+| `v-loading="true"`      | `boolean`        | Show/hide the loading overlay        |
+| `v-loading="options"`   | `LoadingOptions` | Show with configuration (see below)  |
+| `v-loading:1000="true"` | `arg: string`    | Set custom z-index (default: `9999`) |
 
 ### LoadingOptions
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `size` | `"small" \| "medium" \| "large"` | -- | Spinner size via `data-loading-size` attribute |
-| `color` | `string` | -- | Custom spinner color (sets `--v-loading-spinner-color`) |
-| `blur` | `boolean` | `true` | Enable backdrop blur; `false` adds `v-loading--no-blur` |
-| `fullscreen` | `boolean` | `false` | Fullscreen overlay via `v-loading--fullscreen` |
+| Property     | Type                             | Default | Description                                             |
+| ------------ | -------------------------------- | ------- | ------------------------------------------------------- |
+| `size`       | `"small" \| "medium" \| "large"` | --      | Spinner size via `data-loading-size` attribute          |
+| `color`      | `string`                         | --      | Custom spinner color (sets `--v-loading-spinner-color`) |
+| `blur`       | `boolean`                        | `true`  | Enable backdrop blur; `false` adds `v-loading--no-blur` |
+| `fullscreen` | `boolean`                        | `false` | Fullscreen overlay via `v-loading--fullscreen`          |
 
 ## How It Works
 
@@ -45,7 +45,10 @@ Because the directive modifies the element directly (not through Vue reactivity)
 
 ```vue
 <template>
-  <div v-loading="isLoading" class="tw-min-h-[200px]">
+  <div
+    v-loading="isLoading"
+    class="tw-min-h-[200px]"
+  >
     <p>Order details will appear here</p>
   </div>
 </template>
@@ -72,7 +75,10 @@ async function loadOrder() {
 <template>
   <!-- Small spinner with brand color, no blur -->
   <div v-loading="{ size: 'small', color: 'var(--primary-500)', blur: false }">
-    <img :src="thumbnailUrl" alt="Product thumbnail" />
+    <img
+      :src="thumbnailUrl"
+      alt="Product thumbnail"
+    />
   </div>
 </template>
 ```
@@ -104,9 +110,18 @@ async function loadOrder() {
 
 ```vue
 <template>
-  <VcBlade title="Products" :closable="true">
-    <div v-loading="loading" class="tw-p-4">
-      <VcDataTable :items="products" :columns="columns" />
+  <VcBlade
+    title="Products"
+    :closable="true"
+  >
+    <div
+      v-loading="loading"
+      class="tw-p-4"
+    >
+      <VcDataTable
+        :items="products"
+        :columns="columns"
+      />
     </div>
   </VcBlade>
 </template>
@@ -146,10 +161,10 @@ Passing an options object when you want to hide the spinner does not work as exp
 
 ## CSS Classes Reference
 
-| Class | Applied When | Effect |
-|-------|-------------|--------|
-| `v-loading` | Value is truthy | Shows the spinner overlay |
-| `v-loading--no-blur` | `blur: false` | Disables backdrop blur filter |
+| Class                   | Applied When       | Effect                             |
+| ----------------------- | ------------------ | ---------------------------------- |
+| `v-loading`             | Value is truthy    | Shows the spinner overlay          |
+| `v-loading--no-blur`    | `blur: false`      | Disables backdrop blur filter      |
 | `v-loading--fullscreen` | `fullscreen: true` | Overlay covers the entire viewport |
 
 ## Related

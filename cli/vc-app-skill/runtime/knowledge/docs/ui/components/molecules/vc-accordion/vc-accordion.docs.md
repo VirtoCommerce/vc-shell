@@ -10,6 +10,7 @@ Collapsible content sections with smooth CSS grid animations, customizable colla
 - Expandable form sections or configuration panels
 
 When NOT to use:
+
 - For navigation groups -- use `VcMenuGroup`
 - For tab-based content switching -- use `VcTabs`
 - For single collapsible panels without siblings -- use `VcAccordionItem` directly
@@ -18,7 +19,10 @@ When NOT to use:
 
 ```vue
 <template>
-  <VcAccordion :items="faqItems" variant="bordered" />
+  <VcAccordion
+    :items="faqItems"
+    variant="bordered"
+  />
 </template>
 
 <script setup lang="ts">
@@ -38,12 +42,12 @@ const faqItems = [
 
 Four variants control the visual grouping and spacing of accordion items.
 
-| Variant | Description |
-|---------|-------------|
-| `default` | Items stacked with shared top/bottom borders, no gaps |
-| `bordered` | Single outer border wrapping all items, items separated by inner borders |
-| `separated` | Card-like items with 12px gaps between them, each with its own border |
-| `ghost` | Transparent background, minimal styling, no borders or padding |
+| Variant     | Description                                                              |
+| ----------- | ------------------------------------------------------------------------ |
+| `default`   | Items stacked with shared top/bottom borders, no gaps                    |
+| `bordered`  | Single outer border wrapping all items, items separated by inner borders |
+| `separated` | Card-like items with 12px gaps between them, each with its own border    |
+| `ghost`     | Transparent background, minimal styling, no borders or padding           |
 
 ```vue
 <VcAccordion :items="items" variant="separated" />
@@ -55,7 +59,10 @@ Use `v-model` to control which items are expanded. In single mode, the value is 
 
 ```vue
 <template>
-  <VcAccordion v-model="openItem" :items="items" />
+  <VcAccordion
+    v-model="openItem"
+    :items="items"
+  />
   <p>Currently open: {{ openItem }}</p>
 </template>
 
@@ -136,7 +143,11 @@ The `content` property in `AccordionItem` accepts both strings and Vue component
 
 ```vue
 <template>
-  <VcAccordion v-model="activeQuestion" :items="faqs" variant="separated" />
+  <VcAccordion
+    v-model="activeQuestion"
+    :items="faqs"
+    variant="separated"
+  />
 </template>
 
 <script setup lang="ts">
@@ -181,61 +192,61 @@ Both render together -- items-prop items appear first, then slot content. Omit `
 
 ```ts
 interface AccordionItem {
-  id?: string | number;        // Unique identifier (falls back to array index)
-  title: string;               // Header text
+  id?: string | number; // Unique identifier (falls back to array index)
+  title: string; // Header text
   content?: string | Component; // Body content (string or Vue component)
-  titleSlot?: Component;       // Custom title component (alternative to #title slot)
-  collapsedHeight?: number;    // Per-item collapsed height override (px)
-  maxExpandedHeight?: number;  // Per-item max expanded height override (px)
-  disabled?: boolean;          // Prevents toggling this item
+  titleSlot?: Component; // Custom title component (alternative to #title slot)
+  collapsedHeight?: number; // Per-item collapsed height override (px)
+  maxExpandedHeight?: number; // Per-item max expanded height override (px)
+  disabled?: boolean; // Prevents toggling this item
 }
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `items` | `AccordionItem[]` | `[]` | Array of items to render |
-| `modelValue` | `(string \| number) \| (string \| number)[]` | -- | Controlled expanded state via `v-model` |
-| `multiple` | `boolean` | `false` | Allow multiple items to be expanded simultaneously |
-| `variant` | `"default" \| "bordered" \| "separated" \| "ghost"` | `"default"` | Visual style variant |
-| `collapsedHeight` | `number` | `0` | Default collapsed height in pixels for all items |
-| `maxExpandedHeight` | `number` | -- | Maximum expanded height (content scrolls if exceeded) |
+| Prop                | Type                                                | Default     | Description                                           |
+| ------------------- | --------------------------------------------------- | ----------- | ----------------------------------------------------- |
+| `items`             | `AccordionItem[]`                                   | `[]`        | Array of items to render                              |
+| `modelValue`        | `(string \| number) \| (string \| number)[]`        | --          | Controlled expanded state via `v-model`               |
+| `multiple`          | `boolean`                                           | `false`     | Allow multiple items to be expanded simultaneously    |
+| `variant`           | `"default" \| "bordered" \| "separated" \| "ghost"` | `"default"` | Visual style variant                                  |
+| `collapsedHeight`   | `number`                                            | `0`         | Default collapsed height in pixels for all items      |
+| `maxExpandedHeight` | `number`                                            | --          | Maximum expanded height (content scrolls if exceeded) |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event               | Payload                                      | Description                          |
+| ------------------- | -------------------------------------------- | ------------------------------------ |
 | `update:modelValue` | `(string \| number) \| (string \| number)[]` | Emitted when expanded item(s) change |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot      | Description                                                      |
+| --------- | ---------------------------------------------------------------- |
 | `default` | Place `VcAccordionItem` components directly for custom rendering |
 
 ### VcAccordionItem Slots
 
-| Slot | Description |
-|------|-------------|
-| `title` | Custom title rendering (replaces the `title` prop text) |
-| `default` | Content body of the accordion item |
+| Slot      | Description                                             |
+| --------- | ------------------------------------------------------- |
+| `title`   | Custom title rendering (replaces the `title` prop text) |
+| `default` | Content body of the accordion item                      |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--accordion-item-border-color` | `var(--neutrals-200)` | Border color for items and dividers |
-| `--accordion-item-border-radius` | `6px` | Border radius of item containers |
-| `--accordion-item-header-padding` | `12px 16px` | Header button padding |
-| `--accordion-item-header-background` | `var(--additional-50)` | Header background color |
-| `--accordion-item-header-background-hover` | `var(--neutrals-50)` | Header background on hover |
-| `--accordion-item-header-color` | `var(--secondary-950)` | Header text color |
-| `--accordion-item-content-padding` | `16px` | Content body padding |
-| `--accordion-item-content-background` | `var(--additional-50)` | Content body background |
-| `--accordion-item-transition-duration` | `300ms` | Expand/collapse animation duration |
-| `--accordion-item-fade-height` | `60px` | Fade gradient height on collapsed preview |
-| `--accordion-item-focus-ring-color` | `var(--primary-100)` | Focus ring color for keyboard navigation |
+| Variable                                   | Default                | Description                               |
+| ------------------------------------------ | ---------------------- | ----------------------------------------- |
+| `--accordion-item-border-color`            | `var(--neutrals-200)`  | Border color for items and dividers       |
+| `--accordion-item-border-radius`           | `6px`                  | Border radius of item containers          |
+| `--accordion-item-header-padding`          | `12px 16px`            | Header button padding                     |
+| `--accordion-item-header-background`       | `var(--additional-50)` | Header background color                   |
+| `--accordion-item-header-background-hover` | `var(--neutrals-50)`   | Header background on hover                |
+| `--accordion-item-header-color`            | `var(--secondary-950)` | Header text color                         |
+| `--accordion-item-content-padding`         | `16px`                 | Content body padding                      |
+| `--accordion-item-content-background`      | `var(--additional-50)` | Content body background                   |
+| `--accordion-item-transition-duration`     | `300ms`                | Expand/collapse animation duration        |
+| `--accordion-item-fade-height`             | `60px`                 | Fade gradient height on collapsed preview |
+| `--accordion-item-focus-ring-color`        | `var(--primary-100)`   | Focus ring color for keyboard navigation  |
 
 > **Note:** The `ghost` variant overrides several variables to transparent/zero values for minimal appearance.
 

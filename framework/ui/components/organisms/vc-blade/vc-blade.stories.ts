@@ -1,7 +1,7 @@
-import type { Meta, StoryFn, StoryObj } from "@storybook/vue3-vite";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { ref, computed, provide, h } from "vue";
 import { VcBlade } from "@ui/components/organisms/vc-blade";
-import { ToolbarServiceKey, WidgetServiceKey, BladeLoadingKey } from "@framework/injection-keys";
+import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
 import { VcInput } from "@ui/components/molecules/vc-input";
 import { VcSelect } from "@ui/components/molecules/vc-select";
 import { VcCard } from "@ui/components/atoms/vc-card";

@@ -4,18 +4,18 @@ A single-line text input component for forms in vc-shell applications. Supports 
 
 ## When to Use
 
-| Scenario | Component |
-|----------|-----------|
-| Single-line text: names, emails, URLs, phone numbers | **VcInput** |
-| Password entry with show/hide toggle | **VcInput** `type="password"` |
-| Numeric entry (integers or decimals) | **VcInput** `type="number"` or `type="integer"` |
-| Input with prefix/suffix text or inner icons | **VcInput** with `prefix`/`suffix` props or slots |
-| Multi-line text | [VcTextarea](../vc-textarea/) |
-| Rich text / HTML editing | [VcEditor](../vc-editor/) |
-| Selecting from a dropdown list | [VcSelect](../vc-select/) |
-| Currency with formatting and currency selector | [VcInputCurrency](../vc-input-currency/) |
-| Date or date-time picking | [VcDatePicker](../vc-date-picker/) (also available via `type="date"`) |
-| Color selection | [VcColorInput](../vc-color-input/) (also available via `type="color"`) |
+| Scenario                                             | Component                                                              |
+| ---------------------------------------------------- | ---------------------------------------------------------------------- |
+| Single-line text: names, emails, URLs, phone numbers | **VcInput**                                                            |
+| Password entry with show/hide toggle                 | **VcInput** `type="password"`                                          |
+| Numeric entry (integers or decimals)                 | **VcInput** `type="number"` or `type="integer"`                        |
+| Input with prefix/suffix text or inner icons         | **VcInput** with `prefix`/`suffix` props or slots                      |
+| Multi-line text                                      | [VcTextarea](../vc-textarea/)                                          |
+| Rich text / HTML editing                             | [VcEditor](../vc-editor/)                                              |
+| Selecting from a dropdown list                       | [VcSelect](../vc-select/)                                              |
+| Currency with formatting and currency selector       | [VcInputCurrency](../vc-input-currency/)                               |
+| Date or date-time picking                            | [VcDatePicker](../vc-date-picker/) (also available via `type="date"`)  |
+| Color selection                                      | [VcColorInput](../vc-color-input/) (also available via `type="color"`) |
 
 > **Note:** When you set `type="date"`, `type="datetime-local"`, or `type="color"`, VcInput internally delegates to VcDatePicker or VcColorInput. All props are forwarded automatically. You can use VcInput as a single entry point for all these types, but for date/color-specific options (like `datePickerOptions`), consider using the dedicated component directly.
 
@@ -27,7 +27,11 @@ The simplest possible usage -- a text input bound to a reactive ref:
 
 ```vue
 <template>
-  <VcInput v-model="productName" label="Product Name" placeholder="Enter product name" />
+  <VcInput
+    v-model="productName"
+    label="Product Name"
+    placeholder="Enter product name"
+  />
 </template>
 
 <script setup lang="ts">
@@ -46,19 +50,19 @@ This renders a labeled text input with placeholder text. The value is two-way bo
 
 VcInput supports the following `type` values. Each type adjusts the native `<input>` behavior and, in some cases, adds extra UI or filtering logic.
 
-| Type | Behavior |
-|------|----------|
-| `text` (default) | Standard single-line text input |
-| `password` | Masked input with a built-in show/hide toggle button |
-| `email` | Native email keyboard on mobile, browser email validation hints |
-| `number` | Numeric input; blocks `-`, `e`, `+` keys; emits parsed `number` or `null` |
-| `integer` | Like `number` but blocks decimal points and non-digit keys; emits truncated integers |
-| `tel` | Telephone keyboard on mobile devices |
-| `url` | URL keyboard on mobile devices |
-| `time` | Native time input |
-| `date` | Delegates to **VcDatePicker** with locale-aware formatting |
-| `datetime-local` | Delegates to **VcDatePicker** in datetime mode |
-| `color` | Delegates to **VcColorInput** |
+| Type             | Behavior                                                                             |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| `text` (default) | Standard single-line text input                                                      |
+| `password`       | Masked input with a built-in show/hide toggle button                                 |
+| `email`          | Native email keyboard on mobile, browser email validation hints                      |
+| `number`         | Numeric input; blocks `-`, `e`, `+` keys; emits parsed `number` or `null`            |
+| `integer`        | Like `number` but blocks decimal points and non-digit keys; emits truncated integers |
+| `tel`            | Telephone keyboard on mobile devices                                                 |
+| `url`            | URL keyboard on mobile devices                                                       |
+| `time`           | Native time input                                                                    |
+| `date`           | Delegates to **VcDatePicker** with locale-aware formatting                           |
+| `datetime-local` | Delegates to **VcDatePicker** in datetime mode                                       |
+| `color`          | Delegates to **VcColorInput**                                                        |
 
 ### Number vs. Integer
 
@@ -124,12 +128,7 @@ const form = reactive({
 ### Multiple Rules
 
 ```vue
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="form.email"
-  name="contactEmail"
-  :rules="{ required: true, email: true, max: 128 }"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="form.email" name="contactEmail" :rules="{ required: true, email: true, max: 128 }">
   <VcInput
     v-model="form.email"
     type="email"
@@ -192,12 +191,7 @@ Shows a spinning loader icon inside the field. The input remains interactive.
 Error state is activated when `error` is `true` or `errorMessage` is truthy. The border turns red and an error ring appears. If `errorMessage` is provided, it displays below the field with a slide-up animation.
 
 ```vue
-<VcInput
-  v-model="email"
-  label="Email"
-  :error="true"
-  error-message="Please enter a valid email address"
-/>
+<VcInput v-model="email" label="Email" :error="true" error-message="Please enter a valid email address" />
 ```
 
 ### Required
@@ -252,7 +246,11 @@ All four positional slots receive a `{ focus }` function in their scope, which y
 
 ```vue
 <template #prepend-inner="{ focus }">
-  <VcIcon icon="lucide-search" @click="focus" class="tw-cursor-pointer" />
+  <VcIcon
+    icon="lucide-search"
+    @click="focus"
+    class="tw-cursor-pointer"
+  />
 </template>
 ```
 
@@ -273,13 +271,13 @@ Replaces the native `<input>` element entirely while keeping the VcInput shell (
 </VcInput>
 ```
 
-| Scope property | Type | Description |
-|----------------|------|-------------|
-| `modelValue` | `string \| number \| Date \| null` | Current field value |
-| `emitValue` | `(value) => void` | Call this to update the model (respects debounce) |
-| `placeholder` | `string \| undefined` | The placeholder prop value |
-| `editable` | `boolean \| undefined` | Whether the field is disabled |
-| `focused` | `boolean \| undefined` | Whether autofocus is set |
+| Scope property | Type                               | Description                                       |
+| -------------- | ---------------------------------- | ------------------------------------------------- |
+| `modelValue`   | `string \| number \| Date \| null` | Current field value                               |
+| `emitValue`    | `(value) => void`                  | Call this to update the model (respects debounce) |
+| `placeholder`  | `string \| undefined`              | The placeholder prop value                        |
+| `editable`     | `boolean \| undefined`             | Whether the field is disabled                     |
+| `focused`      | `boolean \| undefined`             | Whether autofocus is set                          |
 
 ### error / hint slots
 
@@ -302,10 +300,10 @@ Override the default error message or hint text rendering.
 
 Two size variants are available:
 
-| Size | Height | Use case |
-|------|--------|----------|
-| `"default"` | 36px | Standard forms, blade detail pages |
-| `"small"` | 32px | Compact UI, table inline editing, toolbars |
+| Size        | Height | Use case                                   |
+| ----------- | ------ | ------------------------------------------ |
+| `"default"` | 36px   | Standard forms, blade detail pages         |
+| `"small"`   | 32px   | Compact UI, table inline editing, toolbars |
 
 ```vue
 <VcInput v-model="tag" label="Tag" size="small" placeholder="Enter tag" />
@@ -342,11 +340,7 @@ Prefix and suffix elements are non-interactive (`pointer-events: none`) and do n
 Delays the `update:modelValue` emission by the specified number of milliseconds. Useful for search fields to avoid firing API requests on every keystroke.
 
 ```vue
-<VcInput
-  v-model="searchQuery"
-  placeholder="Search products..."
-  :debounce="300"
-/>
+<VcInput v-model="searchQuery" placeholder="Search products..." :debounce="300" />
 ```
 
 When debounce is set, the internal `temp` value updates immediately (so the user sees their typing), but the `v-model` update and any `@update:model-value` handlers fire only after the debounce period elapses without further input.
@@ -358,12 +352,7 @@ When debounce is set, the internal `temp` value updates immediately (so the user
 When a field supports multiple languages, enable the language badge on the label:
 
 ```vue
-<VcInput
-  v-model="localizedName"
-  label="Product Name"
-  multilanguage
-  current-language="en-US"
-/>
+<VcInput v-model="localizedName" label="Product Name" multilanguage current-language="en-US" />
 ```
 
 This renders a small language indicator (e.g., "EN-US") next to the label, signaling to the user which language they are editing.
@@ -375,12 +364,7 @@ This renders a small language indicator (e.g., "EN-US") next to the label, signa
 Display additional context about a field via a tooltip icon next to the label:
 
 ```vue
-<VcInput
-  v-model="slug"
-  label="URL Slug"
-  tooltip="The URL-friendly version of the product name. Used in the storefront URL."
-  placeholder="my-product"
-/>
+<VcInput v-model="slug" label="URL Slug" tooltip="The URL-friendly version of the product name. Used in the storefront URL." placeholder="my-product" />
 ```
 
 ---
@@ -616,12 +600,7 @@ The `required` prop on VcInput only adds a visual asterisk. It does NOT perform 
 <VcInput v-model="form.name" label="Name" required />
 
 <!-- CORRECT: Field enforces the rule; VcInput displays the result -->
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="form.name"
-  name="name"
-  rules="required"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="form.name" name="name" rules="required">
   <VcInput
     v-model="form.name"
     label="Name"
@@ -675,51 +654,51 @@ VcInput blocks the minus key for both `number` and `integer` types. If you need 
 
 ### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `string \| number \| Date \| null` | `undefined` | Bound value via `v-model` |
-| `type` | `"text" \| "password" \| "email" \| "tel" \| "url" \| "time" \| "number" \| "integer" \| "date" \| "datetime-local" \| "color"` | `"text"` | Input type. `date`/`datetime-local` delegate to VcDatePicker; `color` delegates to VcColorInput |
-| `label` | `string` | -- | Label text displayed above the field |
-| `placeholder` | `string` | -- | Placeholder text inside the field |
-| `hint` | `string` | -- | Help text displayed below the field |
-| `tooltip` | `string` | -- | Tooltip text shown on hover next to the label |
-| `prefix` | `string` | -- | Static text rendered before the input value |
-| `suffix` | `string` | -- | Static text rendered after the input value |
-| `name` | `string` | `"Field"` | HTML `name` attribute on the native input |
-| `clearable` | `boolean` | `false` | Shows a clear (x) button when the field has a value |
-| `disabled` | `boolean` | `false` | Disables the input (also inherits from `VcInputGroup` context) |
-| `required` | `boolean` | `false` | Adds a red asterisk to the label (visual only, no validation) |
-| `loading` | `boolean` | `false` | Shows a spinning loader icon inside the field |
-| `autofocus` | `boolean` | `false` | Auto-focuses the input on mount |
-| `error` | `boolean` | `false` | Activates error styling (red border and ring) |
-| `errorMessage` | `string` | -- | Error text shown below the field; also activates error styling when truthy |
-| `debounce` | `string \| number` | -- | Delay in ms before emitting model updates |
-| `maxlength` | `string \| number` | `"1024"` | Maximum character length |
-| `step` | `string` | `"1"` | Step granularity for number inputs |
-| `size` | `"default" \| "small"` | `"default"` | Field height variant (36px / 32px) |
-| `multilanguage` | `boolean` | `false` | Shows a language indicator badge on the label |
-| `currentLanguage` | `string` | -- | Language code to display in the multilanguage badge |
-| `datePickerOptions` | `VueDatePickerProps` | -- | Options forwarded to VcDatePicker (only when `type` is `date` or `datetime-local`) |
+| Prop                | Type                                                                                                                            | Default     | Description                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------- |
+| `modelValue`        | `string \| number \| Date \| null`                                                                                              | `undefined` | Bound value via `v-model`                                                                       |
+| `type`              | `"text" \| "password" \| "email" \| "tel" \| "url" \| "time" \| "number" \| "integer" \| "date" \| "datetime-local" \| "color"` | `"text"`    | Input type. `date`/`datetime-local` delegate to VcDatePicker; `color` delegates to VcColorInput |
+| `label`             | `string`                                                                                                                        | --          | Label text displayed above the field                                                            |
+| `placeholder`       | `string`                                                                                                                        | --          | Placeholder text inside the field                                                               |
+| `hint`              | `string`                                                                                                                        | --          | Help text displayed below the field                                                             |
+| `tooltip`           | `string`                                                                                                                        | --          | Tooltip text shown on hover next to the label                                                   |
+| `prefix`            | `string`                                                                                                                        | --          | Static text rendered before the input value                                                     |
+| `suffix`            | `string`                                                                                                                        | --          | Static text rendered after the input value                                                      |
+| `name`              | `string`                                                                                                                        | `"Field"`   | HTML `name` attribute on the native input                                                       |
+| `clearable`         | `boolean`                                                                                                                       | `false`     | Shows a clear (x) button when the field has a value                                             |
+| `disabled`          | `boolean`                                                                                                                       | `false`     | Disables the input (also inherits from `VcInputGroup` context)                                  |
+| `required`          | `boolean`                                                                                                                       | `false`     | Adds a red asterisk to the label (visual only, no validation)                                   |
+| `loading`           | `boolean`                                                                                                                       | `false`     | Shows a spinning loader icon inside the field                                                   |
+| `autofocus`         | `boolean`                                                                                                                       | `false`     | Auto-focuses the input on mount                                                                 |
+| `error`             | `boolean`                                                                                                                       | `false`     | Activates error styling (red border and ring)                                                   |
+| `errorMessage`      | `string`                                                                                                                        | --          | Error text shown below the field; also activates error styling when truthy                      |
+| `debounce`          | `string \| number`                                                                                                              | --          | Delay in ms before emitting model updates                                                       |
+| `maxlength`         | `string \| number`                                                                                                              | `"1024"`    | Maximum character length                                                                        |
+| `step`              | `string`                                                                                                                        | `"1"`       | Step granularity for number inputs                                                              |
+| `size`              | `"default" \| "small"`                                                                                                          | `"default"` | Field height variant (36px / 32px)                                                              |
+| `multilanguage`     | `boolean`                                                                                                                       | `false`     | Shows a language indicator badge on the label                                                   |
+| `currentLanguage`   | `string`                                                                                                                        | --          | Language code to display in the multilanguage badge                                             |
+| `datePickerOptions` | `VueDatePickerProps`                                                                                                            | --          | Options forwarded to VcDatePicker (only when `type` is `date` or `datetime-local`)              |
 
 ### Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event               | Payload                                         | Description                                                                                                                         |
+| ------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `update:modelValue` | `string \| number \| Date \| null \| undefined` | Emitted when the value changes. For `number`/`integer` types, the payload is a parsed number or `null`. Respects `debounce` if set. |
-| `blur` | `Event` | Emitted when the native input loses focus |
-| `focus` | -- | Emitted when the native input receives focus |
+| `blur`              | `Event`                                         | Emitted when the native input loses focus                                                                                           |
+| `focus`             | --                                              | Emitted when the native input receives focus                                                                                        |
 
 ### Slots
 
-| Slot | Scope | Description |
-|------|-------|-------------|
-| `prepend` | `{ focus: () => void }` | Content **outside** the field border, to the left |
-| `append` | `{ focus: () => void }` | Content **outside** the field border, to the right |
-| `prepend-inner` | `{ focus: () => void }` | Content **inside** the field border, to the left |
-| `append-inner` | `{ focus: () => void }` | Content **inside** the field border, to the right |
-| `control` | `{ editable, focused, modelValue, emitValue, placeholder }` | Replaces the native `<input>` element entirely |
-| `error` | -- | Custom error message markup (replaces default VcHint error) |
-| `hint` | -- | Custom hint text markup (replaces default VcHint) |
+| Slot            | Scope                                                       | Description                                                 |
+| --------------- | ----------------------------------------------------------- | ----------------------------------------------------------- |
+| `prepend`       | `{ focus: () => void }`                                     | Content **outside** the field border, to the left           |
+| `append`        | `{ focus: () => void }`                                     | Content **outside** the field border, to the right          |
+| `prepend-inner` | `{ focus: () => void }`                                     | Content **inside** the field border, to the left            |
+| `append-inner`  | `{ focus: () => void }`                                     | Content **inside** the field border, to the right           |
+| `control`       | `{ editable, focused, modelValue, emitValue, placeholder }` | Replaces the native `<input>` element entirely              |
+| `error`         | --                                                          | Custom error message markup (replaces default VcHint error) |
+| `hint`          | --                                                          | Custom hint text markup (replaces default VcHint)           |
 
 ---
 
@@ -727,25 +706,25 @@ VcInput blocks the minus key for both `number` and `integer` types. If you need 
 
 VcInput uses CSS custom properties for theming, defined on `:root`. Override these to customize the appearance across your application.
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--input-height` | `36px` | Height of the default size field |
-| `--input-height-small` | `32px` | Height of the small size field |
-| `--input-border-radius` | `6px` | Border radius of the field wrapper |
-| `--input-border-color` | `var(--neutrals-300)` | Border color in the normal state |
-| `--input-padding` | `12px` | Horizontal padding inside the field |
-| `--input-background-color` | `var(--additional-50)` | Background color of the field |
-| `--input-placeholder-color` | `var(--neutrals-400)` | Color of placeholder text |
-| `--input-text-color` | `var(--neutrals-800)` | Color of the input text |
-| `--input-clear-color` | `var(--neutrals-400)` | Color of the clear and show/hide buttons |
-| `--input-clear-color-hover` | `var(--neutrals-600)` | Hover color of the clear and show/hide buttons |
-| `--input-disabled-text-color` | `var(--neutrals-500)` | Text color when disabled |
-| `--input-disabled-bg-color` | `var(--neutrals-200)` | Background color when disabled |
-| `--input-text-color-error` | `var(--danger-500)` | Text color in error state |
-| `--input-border-color-error` | `var(--danger-500)` | Border color in error state |
-| `--input-border-color-focus` | `var(--primary-500)` | Border color when focused |
-| `--input-focus-ring-color` | `var(--primary-100)` | Focus ring color (3px outline) |
-| `--input-error-ring-color` | `var(--danger-100)` | Error ring color (3px outline) |
+| Variable                      | Default                | Description                                    |
+| ----------------------------- | ---------------------- | ---------------------------------------------- |
+| `--input-height`              | `36px`                 | Height of the default size field               |
+| `--input-height-small`        | `32px`                 | Height of the small size field                 |
+| `--input-border-radius`       | `6px`                  | Border radius of the field wrapper             |
+| `--input-border-color`        | `var(--neutrals-300)`  | Border color in the normal state               |
+| `--input-padding`             | `12px`                 | Horizontal padding inside the field            |
+| `--input-background-color`    | `var(--additional-50)` | Background color of the field                  |
+| `--input-placeholder-color`   | `var(--neutrals-400)`  | Color of placeholder text                      |
+| `--input-text-color`          | `var(--neutrals-800)`  | Color of the input text                        |
+| `--input-clear-color`         | `var(--neutrals-400)`  | Color of the clear and show/hide buttons       |
+| `--input-clear-color-hover`   | `var(--neutrals-600)`  | Hover color of the clear and show/hide buttons |
+| `--input-disabled-text-color` | `var(--neutrals-500)`  | Text color when disabled                       |
+| `--input-disabled-bg-color`   | `var(--neutrals-200)`  | Background color when disabled                 |
+| `--input-text-color-error`    | `var(--danger-500)`    | Text color in error state                      |
+| `--input-border-color-error`  | `var(--danger-500)`    | Border color in error state                    |
+| `--input-border-color-focus`  | `var(--primary-500)`   | Border color when focused                      |
+| `--input-focus-ring-color`    | `var(--primary-100)`   | Focus ring color (3px outline)                 |
+| `--input-error-ring-color`    | `var(--danger-100)`    | Error ring color (3px outline)                 |
 
 ### Theming Example
 
@@ -792,4 +771,3 @@ VcInput follows WAI-ARIA best practices for form fields:
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
-

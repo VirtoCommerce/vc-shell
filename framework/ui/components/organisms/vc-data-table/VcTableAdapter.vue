@@ -184,7 +184,7 @@ import type { ITableColumns, IActionBuilderResult } from "@core/types";
 const props = withDefaults(
   defineProps<{
     columns: ITableColumns[];
-    items: T[];
+    items?: T[];
     itemActionBuilder?: (item: T) => IActionBuilderResult<T>[] | undefined;
     sort?: string;
     multiselect?: boolean;
@@ -373,7 +373,7 @@ const paginationConfig = computed<DataTablePagination | undefined>(() => {
 const effectiveColumns = computed(() => props.columns.filter((col) => col.visible !== false));
 
 // NotFound state detection
-const isNotFoundState = computed(
+const _isNotFoundState = computed(
   () => props.items.length === 0 && (!!props.searchValue || (props.activeFilterCount ?? 0) > 0),
 );
 

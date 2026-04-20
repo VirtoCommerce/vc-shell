@@ -11,40 +11,40 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `layout` | `"filmstrip" \| "grid"` | `"filmstrip"` | Layout mode — filmstrip shows a single scrollable row with expand/collapse; grid shows the classic multi-row auto-fill layout. |
-| `label` | `string` | `undefined` | Label text displayed in the gallery header. |
-| `required` | `boolean` | `false` | Shows a required indicator (`*`) on the label. |
-| `images` | `ICommonAsset[]` | `[]` | Array of image assets to display. |
-| `disabled` | `boolean` | `false` | Disables all interactive actions. |
-| `multiple` | `boolean` | `false` | Allow selecting multiple files in upload dialog. |
-| `loading` | `boolean` | `false` | Shows a loading overlay with spinner on the gallery. |
-| `itemActions` | `{ preview?: boolean; edit?: boolean; remove?: boolean }` | `{ preview: true, edit: true, remove: true }` | Per-tile action visibility. |
-| `rules` | `IValidationRules` | `undefined` | Validation rules for uploaded files. |
-| `name` | `string` | `"Gallery"` | Field name for validation messages. |
-| `accept` | `string` | `undefined` | Accepted file extensions. |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Tile size preset. Sizes are smaller on mobile. |
-| `gap` | `number` | `8` | Gap between tiles in pixels. |
-| `imagefit` | `"contain" \| "cover"` | `"contain"` | How images fit within tiles. |
-| `thumbnailSize` | `ThumbnailSize` | auto from `size` | Thumbnail size for tile images. Auto-mapped: sm→128x128, md→216x216, lg→348x348. Preview thumbnails use 64x64. |
+| Prop            | Type                                                      | Default                                       | Description                                                                                                                    |
+| --------------- | --------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `layout`        | `"filmstrip" \| "grid"`                                   | `"filmstrip"`                                 | Layout mode — filmstrip shows a single scrollable row with expand/collapse; grid shows the classic multi-row auto-fill layout. |
+| `label`         | `string`                                                  | `undefined`                                   | Label text displayed in the gallery header.                                                                                    |
+| `required`      | `boolean`                                                 | `false`                                       | Shows a required indicator (`*`) on the label.                                                                                 |
+| `images`        | `ICommonAsset[]`                                          | `[]`                                          | Array of image assets to display.                                                                                              |
+| `disabled`      | `boolean`                                                 | `false`                                       | Disables all interactive actions.                                                                                              |
+| `multiple`      | `boolean`                                                 | `false`                                       | Allow selecting multiple files in upload dialog.                                                                               |
+| `loading`       | `boolean`                                                 | `false`                                       | Shows a loading overlay with spinner on the gallery.                                                                           |
+| `itemActions`   | `{ preview?: boolean; edit?: boolean; remove?: boolean }` | `{ preview: true, edit: true, remove: true }` | Per-tile action visibility.                                                                                                    |
+| `rules`         | `IValidationRules`                                        | `undefined`                                   | Validation rules for uploaded files.                                                                                           |
+| `name`          | `string`                                                  | `"Gallery"`                                   | Field name for validation messages.                                                                                            |
+| `accept`        | `string`                                                  | `undefined`                                   | Accepted file extensions.                                                                                                      |
+| `size`          | `"sm" \| "md" \| "lg"`                                    | `"md"`                                        | Tile size preset. Sizes are smaller on mobile.                                                                                 |
+| `gap`           | `number`                                                  | `8`                                           | Gap between tiles in pixels.                                                                                                   |
+| `imagefit`      | `"contain" \| "cover"`                                    | `"contain"`                                   | How images fit within tiles.                                                                                                   |
+| `thumbnailSize` | `ThumbnailSize`                                           | auto from `size`                              | Thumbnail size for tile images. Auto-mapped: sm→128x128, md→216x216, lg→348x348. Preview thumbnails use 64x64.                 |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `upload` | `(files: FileList, startingSortOrder?: number)` | Emitted when files are selected or dropped. |
-| `sort` | `ICommonAsset[]` | Emitted after drag-and-drop reorder with the new order. |
-| `edit` | `ICommonAsset` | Emitted when the edit action is triggered. |
-| `remove` | `ICommonAsset` | Emitted when the remove action is triggered. |
+| Event    | Payload                                         | Description                                             |
+| -------- | ----------------------------------------------- | ------------------------------------------------------- |
+| `upload` | `(files: FileList, startingSortOrder?: number)` | Emitted when files are selected or dropped.             |
+| `sort`   | `ICommonAsset[]`                                | Emitted after drag-and-drop reorder with the new order. |
+| `edit`   | `ICommonAsset`                                  | Emitted when the edit action is triggered.              |
+| `remove` | `ICommonAsset`                                  | Emitted when the remove action is triggered.            |
 
 ## Slots
 
-| Slot | Scope | Description |
-|------|-------|-------------|
-| `item` | `{ image, index, actions }` | Custom tile rendering. |
-| `empty` | -- | Custom empty state when disabled with no images. |
-| `footer` | `{ images }` | Content below the grid. |
+| Slot     | Scope                       | Description                                      |
+| -------- | --------------------------- | ------------------------------------------------ |
+| `item`   | `{ image, index, actions }` | Custom tile rendering.                           |
+| `empty`  | --                          | Custom empty state when disabled with no images. |
+| `footer` | `{ images }`                | Content below the grid.                          |
 
 ## Features
 
@@ -61,41 +61,19 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 ## Basic Usage
 
 ```vue
-<VcGallery
-  label="Product Images"
-  required
-  :images="product.images"
-  imagefit="cover"
-  @upload="handleUpload"
-  @sort="handleSort"
-  @edit="handleEdit"
-  @remove="handleRemove"
-/>
+<VcGallery label="Product Images" required :images="product.images" imagefit="cover" @upload="handleUpload" @sort="handleSort" @edit="handleEdit" @remove="handleRemove" />
 ```
 
 ## Filmstrip Layout (Default)
 
 ```vue
-<VcGallery
-  label="Images"
-  :images="product.images"
-  imagefit="cover"
-  @upload="handleUpload"
-  @sort="handleSort"
-  @remove="handleRemove"
-/>
+<VcGallery label="Images" :images="product.images" imagefit="cover" @upload="handleUpload" @sort="handleSort" @remove="handleRemove" />
 ```
 
 ## Classic Grid Layout
 
 ```vue
-<VcGallery
-  layout="grid"
-  label="Attachments"
-  :images="product.images"
-  @upload="handleUpload"
-  @sort="handleSort"
-/>
+<VcGallery layout="grid" label="Attachments" :images="product.images" @upload="handleUpload" @sort="handleSort" />
 ```
 
 ## Recipe: Product Image Gallery in a Blade
@@ -145,9 +123,7 @@ function handleRemove(image: ICommonAsset) {
       @edit="handleEdit"
       @remove="handleRemove"
     />
-    <VcHint class="tw-mt-2">
-      Drag images to reorder. The first image is used as the primary thumbnail.
-    </VcHint>
+    <VcHint class="tw-mt-2"> Drag images to reorder. The first image is used as the primary thumbnail. </VcHint>
   </VcBlade>
 </template>
 ```
@@ -155,12 +131,7 @@ function handleRemove(image: ICommonAsset) {
 ## Recipe: Read-Only Gallery (Disabled)
 
 ```vue
-<VcGallery
-  :images="order.attachments"
-  disabled
-  :item-actions="{ preview: true, edit: false, remove: false }"
-  size="sm"
->
+<VcGallery :images="order.attachments" disabled :item-actions="{ preview: true, edit: false, remove: false }" size="sm">
   <template #empty>
     <div class="tw-text-center tw-text-gray-400 tw-py-8">
       No attachments for this order.

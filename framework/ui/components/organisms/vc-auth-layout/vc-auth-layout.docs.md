@@ -18,34 +18,39 @@ A full-page centered authentication layout for login, registration, password res
     subtitle="Welcome back"
   >
     <form @submit.prevent="handleLogin">
-      <VcInput v-model="email" label="Email" />
-      <VcInput v-model="password" label="Password" type="password" />
+      <VcInput
+        v-model="email"
+        label="Email"
+      />
+      <VcInput
+        v-model="password"
+        label="Password"
+        type="password"
+      />
       <button type="submit">Sign In</button>
     </form>
-    <template #footer>
-      <a href="/terms">Terms of Service</a> | <a href="/privacy">Privacy Policy</a>
-    </template>
+    <template #footer> <a href="/terms">Terms of Service</a> | <a href="/privacy">Privacy Policy</a> </template>
   </VcAuthLayout>
 </template>
 ```
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `logo` | `string` | - | Path or URL to the logo image |
-| `logoAlt` | `string` | `"Logo"` | Alt text for the logo |
-| `title` | `string` | - | Card heading |
-| `subtitle` | `string` | - | Card subheading |
-| `background` | `string` | - | Background image URL (preloaded) |
-| `bgColor` | `string` | - | Background color CSS override |
+| Prop         | Type     | Default  | Description                      |
+| ------------ | -------- | -------- | -------------------------------- |
+| `logo`       | `string` | -        | Path or URL to the logo image    |
+| `logoAlt`    | `string` | `"Logo"` | Alt text for the logo            |
+| `title`      | `string` | -        | Card heading                     |
+| `subtitle`   | `string` | -        | Card subheading                  |
+| `background` | `string` | -        | Background image URL (preloaded) |
+| `bgColor`    | `string` | -        | Background color CSS override    |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot      | Description                                           |
+| --------- | ----------------------------------------------------- |
 | `default` | Form content (fields, buttons, SSO providers, errors) |
-| `footer` | Below-card area (terms, privacy links) |
+| `footer`  | Below-card area (terms, privacy links)                |
 
 ## Features
 
@@ -71,10 +76,27 @@ The layout uses a `<main>` element as the page landmark and an `<h2>` for the ca
     subtitle="Enter your credentials or use a social provider"
     background="/img/auth-bg.jpg"
   >
-    <form @submit.prevent="handleLogin" class="tw-space-y-4">
-      <VcInput v-model="email" label="Email" type="email" required />
-      <VcInput v-model="password" label="Password" type="password" required />
-      <VcButton type="submit" variant="primary" class="tw-w-full">
+    <form
+      @submit.prevent="handleLogin"
+      class="tw-space-y-4"
+    >
+      <VcInput
+        v-model="email"
+        label="Email"
+        type="email"
+        required
+      />
+      <VcInput
+        v-model="password"
+        label="Password"
+        type="password"
+        required
+      />
+      <VcButton
+        type="submit"
+        variant="primary"
+        class="tw-w-full"
+      >
         Sign In
       </VcButton>
     </form>
@@ -82,16 +104,27 @@ The layout uses a `<main>` element as the page landmark and an `<h2>` for the ca
     <div class="tw-my-4 tw-text-center tw-text-sm tw-text-gray-500">or</div>
 
     <div class="tw-space-y-2">
-      <VcButton variant="outline" class="tw-w-full" @click="loginWithGoogle">
+      <VcButton
+        variant="outline"
+        class="tw-w-full"
+        @click="loginWithGoogle"
+      >
         Continue with Google
       </VcButton>
-      <VcButton variant="outline" class="tw-w-full" @click="loginWithAzure">
+      <VcButton
+        variant="outline"
+        class="tw-w-full"
+        @click="loginWithAzure"
+      >
         Continue with Azure AD
       </VcButton>
     </div>
 
     <template #footer>
-      <nav aria-label="Legal links" class="tw-text-sm tw-text-gray-500">
+      <nav
+        aria-label="Legal links"
+        class="tw-text-sm tw-text-gray-500"
+      >
         <a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a>
       </nav>
     </template>
@@ -108,15 +141,36 @@ The layout uses a `<main>` element as the page landmark and an `<h2>` for the ca
     title="Reset Password"
     subtitle="Enter your email to receive a reset link"
   >
-    <form @submit.prevent="sendResetLink" class="tw-space-y-4">
-      <VcInput v-model="email" label="Email" type="email" required />
-      <VcBanner v-if="successMessage" variant="success" icon="lucide-circle-check">
+    <form
+      @submit.prevent="sendResetLink"
+      class="tw-space-y-4"
+    >
+      <VcInput
+        v-model="email"
+        label="Email"
+        type="email"
+        required
+      />
+      <VcBanner
+        v-if="successMessage"
+        variant="success"
+        icon="lucide-circle-check"
+      >
         {{ successMessage }}
       </VcBanner>
-      <VcBanner v-if="errorMessage" variant="danger" icon="lucide-circle-alert">
+      <VcBanner
+        v-if="errorMessage"
+        variant="danger"
+        icon="lucide-circle-alert"
+      >
         {{ errorMessage }}
       </VcBanner>
-      <VcButton type="submit" variant="primary" class="tw-w-full" :disabled="isSending">
+      <VcButton
+        type="submit"
+        variant="primary"
+        class="tw-w-full"
+        :disabled="isSending"
+      >
         Send Reset Link
       </VcButton>
     </form>

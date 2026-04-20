@@ -40,38 +40,40 @@ const toolbar = ref<IBladeToolbar[]>([
 
 ### Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `data` | `Ref<T>` | required | Reactive data object for the form |
-| `canSaveOverride` | `ComputedRef<boolean>` | — | Additional condition for canSave |
-| `autoBeforeClose` | `boolean \| ComputedRef<boolean>` | `true` | Close guard behavior |
-| `autoBeforeUnload` | `boolean` | `true` | Browser tab close guard |
-| `closeConfirmMessage` | `MaybeRefOrGetter<string>` | — | Custom unsaved changes message |
-| `onRevert` | `() => void \| Promise<void>` | — | Custom revert handler |
+| Option                | Type                              | Default  | Description                       |
+| --------------------- | --------------------------------- | -------- | --------------------------------- |
+| `data`                | `Ref<T>`                          | required | Reactive data object for the form |
+| `canSaveOverride`     | `ComputedRef<boolean>`            | —        | Additional condition for canSave  |
+| `autoBeforeClose`     | `boolean \| ComputedRef<boolean>` | `true`   | Close guard behavior              |
+| `autoBeforeUnload`    | `boolean`                         | `true`   | Browser tab close guard           |
+| `closeConfirmMessage` | `MaybeRefOrGetter<string>`        | —        | Custom unsaved changes message    |
+| `onRevert`            | `() => void \| Promise<void>`     | —        | Custom revert handler             |
 
 ### Returns
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `setBaseline()` | `() => void` | Snapshot current data as pristine. Call after load and after save |
-| `markReady()` | `() => void` | Mark form ready without resetting pristine snapshot. Computes modification state from current data vs setup-time snapshot |
-| `revert()` | `() => void \| Promise<void>` | Revert data to pristine (or call onRevert) |
-| `canSave` | `ComputedRef<boolean>` | `isReady && valid && modified && canSaveOverride` |
-| `isModified` | `ComputedRef<boolean>` | Data differs from pristine (false until setBaseline) |
-| `isReady` | `ComputedRef<boolean>` | setBaseline() called at least once |
-| `formMeta` | vee-validate meta | Form validation state |
-| `setFieldError` | function | Set field error programmatically |
-| `errorBag` | Ref | All field errors |
+| Property        | Type                          | Description                                                                                                               |
+| --------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `setBaseline()` | `() => void`                  | Snapshot current data as pristine. Call after load and after save                                                         |
+| `markReady()`   | `() => void`                  | Mark form ready without resetting pristine snapshot. Computes modification state from current data vs setup-time snapshot |
+| `revert()`      | `() => void \| Promise<void>` | Revert data to pristine (or call onRevert)                                                                                |
+| `canSave`       | `ComputedRef<boolean>`        | `isReady && valid && modified && canSaveOverride`                                                                         |
+| `isModified`    | `ComputedRef<boolean>`        | Data differs from pristine (false until setBaseline)                                                                      |
+| `isReady`       | `ComputedRef<boolean>`        | setBaseline() called at least once                                                                                        |
+| `formMeta`      | vee-validate meta             | Form validation state                                                                                                     |
+| `setFieldError` | function                      | Set field error programmatically                                                                                          |
+| `errorBag`      | Ref                           | All field errors                                                                                                          |
 
 ## Lifecycle
 
 ### Standard (edit existing entity)
+
 ```
 Mount → Load data → setBaseline() → User edits → Save → setBaseline()
                                                   └→ Cancel → revert()
 ```
 
 ### Pre-filled (create from template)
+
 ```
 Mount → Pre-fill data → markReady() → canSave = true immediately
                                        └→ Save → setBaseline()
@@ -139,12 +141,12 @@ onMounted(async () => {
 
 ### setBaseline vs markReady
 
-| | `setBaseline()` | `markReady()` |
-|--|-----------------|---------------|
-| Sets `isReady` | yes | yes |
-| Updates pristine snapshot | yes (current data → pristine) | no (keeps setup-time snapshot) |
-| `trackerIsModified` after call | `false` | computed: `data !== pristineSnapshot` |
-| Use case | Load / Save — "this is the clean state" | Pre-fill — "form is ready, changes are intentional" |
+|                                | `setBaseline()`                         | `markReady()`                                       |
+| ------------------------------ | --------------------------------------- | --------------------------------------------------- |
+| Sets `isReady`                 | yes                                     | yes                                                 |
+| Updates pristine snapshot      | yes (current data → pristine)           | no (keeps setup-time snapshot)                      |
+| `trackerIsModified` after call | `false`                                 | computed: `data !== pristineSnapshot`               |
+| Use case                       | Load / Save — "this is the clean state" | Pre-fill — "form is ready, changes are intentional" |
 
 ### How it works
 

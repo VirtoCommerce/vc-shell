@@ -13,19 +13,9 @@ Naming convention: `use<Entity>` (singular) for details, `use<Entity>s` (plural)
 ## Full Code Skeleton
 
 ```ts
-import {
-  useModificationTracker,
-  useApiClient,
-  useAsync,
-  useLoading,
-} from "@vc-shell/framework";
+import { useModificationTracker, useApiClient, useAsync, useLoading } from "@vc-shell/framework";
 import type { AsyncAction } from "@vc-shell/framework";
-import {
-  XxxClient,
-  XxxType,
-  CreateXxxCommand,
-  UpdateXxxCommand,
-} from "../../api_client/xxx-client";
+import { XxxClient, XxxType, CreateXxxCommand, UpdateXxxCommand } from "../../api_client/xxx-client";
 import { computed, ComputedRef, Ref, ref } from "vue";
 
 // NOTE: useI18n is NOT imported here. Translations belong in blade components.
@@ -50,15 +40,11 @@ export default (): IUseXxx => {
   // --- Entity ref and modification tracker ---
   // entityRef is internal; currentValue is exposed as `entity`
   const entityRef = ref({} as XxxType) as Ref<XxxType>;
-  const { currentValue, pristineValue, resetModificationState, isModified } =
-    useModificationTracker(entityRef);
+  const { currentValue, pristineValue, resetModificationState, isModified } = useModificationTracker(entityRef);
 
   // --- CRUD operations (each has its own loading ref) ---
 
-  const { action: getXxx, loading: getXxxLoading } = useAsync<
-    { id: string },
-    void
-  >(async (args) => {
+  const { action: getXxx, loading: getXxxLoading } = useAsync<{ id: string }, void>(async (args) => {
     if (!args?.id) {
       throw new Error("Id is required");
     }
@@ -74,10 +60,7 @@ export default (): IUseXxx => {
     resetModificationState();
   });
 
-  const { action: createXxx, loading: createXxxLoading } = useAsync<
-    XxxType,
-    void
-  >(async (details) => {
+  const { action: createXxx, loading: createXxxLoading } = useAsync<XxxType, void>(async (details) => {
     const client = await getApiClient();
 
     const command = {
@@ -93,10 +76,7 @@ export default (): IUseXxx => {
     resetModificationState();
   });
 
-  const { action: updateXxx, loading: updateXxxLoading } = useAsync<
-    XxxType,
-    void
-  >(async (details) => {
+  const { action: updateXxx, loading: updateXxxLoading } = useAsync<XxxType, void>(async (details) => {
     if (!details?.id) {
       throw new Error("Id is required");
     }
@@ -116,10 +96,7 @@ export default (): IUseXxx => {
     resetModificationState();
   });
 
-  const { action: deleteXxx, loading: deleteXxxLoading } = useAsync<
-    { id: string },
-    void
-  >(async (args) => {
+  const { action: deleteXxx, loading: deleteXxxLoading } = useAsync<{ id: string }, void>(async (args) => {
     if (!args?.id) {
       throw new Error("Id is required");
     }
@@ -138,12 +115,7 @@ export default (): IUseXxx => {
   // --- Return ---
   return {
     // Aggregate all async loading refs into a single computed boolean
-    loading: useLoading(
-      getXxxLoading,
-      createXxxLoading,
-      updateXxxLoading,
-      deleteXxxLoading,
-    ),
+    loading: useLoading(getXxxLoading, createXxxLoading, updateXxxLoading, deleteXxxLoading),
     // currentValue is the reactive entity — alias as `entity` for the blade
     entity: currentValue,
     modified: computed(() => isModified.value),
@@ -278,16 +250,14 @@ export default (): IUseXxx => {
     return route?.params?.ownerId as string;
   }
 
-  const { action: getXxx, loading: getXxxLoading } = useAsync<{ id: string }>(
-    async (args) => {
-      const client = await getApiClient();
-      const ownerId = await getOwnerId();
+  const { action: getXxx, loading: getXxxLoading } = useAsync<{ id: string }>(async (args) => {
+    const client = await getApiClient();
+    const ownerId = await getOwnerId();
 
-      const result = await client.getXxx(args.id, ownerId);
-      currentValue.value = result;
-      resetModificationState();
-    },
-  );
+    const result = await client.getXxx(args.id, ownerId);
+    currentValue.value = result;
+    resetModificationState();
+  });
 
   // ...
 };

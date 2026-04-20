@@ -277,63 +277,63 @@ Returns the injected `MenuService` instance. Throws `InjectionError` if the serv
 
 #### MenuService Interface
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `addMenuItem` | `(item: MenuItem) => void` | Add a menu item (deduplicates by identity) |
-| `removeMenuItem` | `(item: MenuItem) => void` | Remove a menu item |
-| `menuItems` | `Ref<MenuItem[]>` | Reactive array of all registered menu items (grouped and sorted) |
-| `menuBadges` | `Ref<Map<string, MenuItemBadgeConfig>>` | Reactive map of badge configs keyed by routeId or groupId |
+| Property         | Type                                    | Description                                                      |
+| ---------------- | --------------------------------------- | ---------------------------------------------------------------- |
+| `addMenuItem`    | `(item: MenuItem) => void`              | Add a menu item (deduplicates by identity)                       |
+| `removeMenuItem` | `(item: MenuItem) => void`              | Remove a menu item                                               |
+| `menuItems`      | `Ref<MenuItem[]>`                       | Reactive array of all registered menu items (grouped and sorted) |
+| `menuBadges`     | `Ref<Map<string, MenuItemBadgeConfig>>` | Reactive map of badge configs keyed by routeId or groupId        |
 
 ### Standalone Exports
 
-| Function | Description |
-|----------|-------------|
-| `addMenuItem(item)` | Pre-register a menu item before the service is initialized |
+| Function                         | Description                                                        |
+| -------------------------------- | ------------------------------------------------------------------ |
+| `addMenuItem(item)`              | Pre-register a menu item before the service is initialized         |
 | `removeRegisteredMenuItem(item)` | Remove a pre-registered item (works before and after service init) |
-| `setMenuBadge(id, config)` | Set a badge on a menu item by routeId or groupId |
-| `getMenuBadge(id)` | Get badge config for a menu item |
-| `removeMenuBadge(id)` | Remove a badge from a menu item |
-| `getMenuBadges()` | Get the reactive badge registry map |
-| `provideMenuService()` | Create and provide the service in a root component |
+| `setMenuBadge(id, config)`       | Set a badge on a menu item by routeId or groupId                   |
+| `getMenuBadge(id)`               | Get badge config for a menu item                                   |
+| `removeMenuBadge(id)`            | Remove a badge from a menu item                                    |
+| `getMenuBadges()`                | Get the reactive badge registry map                                |
+| `provideMenuService()`           | Create and provide the service in a root component                 |
 
 ### MenuItem Properties
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `title` | `string` | Yes | Display text |
-| `icon` | `string` | Yes | Icon class (e.g., `"fas fa-shopping-cart"`) |
-| `priority` | `number` | Yes | Sort order (lower = higher in the list) |
-| `routeId` | `string` | No | Blade route name (also used as identity key) |
-| `url` | `string` | No | External URL |
-| `id` | `string \| number` | No | Explicit identity key |
-| `permissions` | `string \| string[]` | No | Required permissions for visibility |
-| `group` | `string` | No | Group name (deprecated, use `groupConfig`) |
-| `groupIcon` | `string` | No | Group icon (deprecated, use `groupConfig`) |
-| `groupConfig` | `object` | No | Group configuration: `{ id, title?, icon?, priority?, permissions?, badge? }` |
-| `inGroupPriority` | `number` | No | Sort order within a group (deprecated, use item's `priority`) |
-| `badge` | `MenuItemBadgeConfig` | No | Inline badge configuration |
-| `children` | `MenuItem[]` | No | Child items (populated automatically for groups) |
+| Property          | Type                  | Required | Description                                                                   |
+| ----------------- | --------------------- | -------- | ----------------------------------------------------------------------------- |
+| `title`           | `string`              | Yes      | Display text                                                                  |
+| `icon`            | `string`              | Yes      | Icon class (e.g., `"fas fa-shopping-cart"`)                                   |
+| `priority`        | `number`              | Yes      | Sort order (lower = higher in the list)                                       |
+| `routeId`         | `string`              | No       | Blade route name (also used as identity key)                                  |
+| `url`             | `string`              | No       | External URL                                                                  |
+| `id`              | `string \| number`    | No       | Explicit identity key                                                         |
+| `permissions`     | `string \| string[]`  | No       | Required permissions for visibility                                           |
+| `group`           | `string`              | No       | Group name (deprecated, use `groupConfig`)                                    |
+| `groupIcon`       | `string`              | No       | Group icon (deprecated, use `groupConfig`)                                    |
+| `groupConfig`     | `object`              | No       | Group configuration: `{ id, title?, icon?, priority?, permissions?, badge? }` |
+| `inGroupPriority` | `number`              | No       | Sort order within a group (deprecated, use item's `priority`)                 |
+| `badge`           | `MenuItemBadgeConfig` | No       | Inline badge configuration                                                    |
+| `children`        | `MenuItem[]`          | No       | Child items (populated automatically for groups)                              |
 
 ### MenuItemBadgeConfig
 
 Accepts a full object or shorthand values:
 
-| Form | Example | Description |
-|------|---------|-------------|
-| `number` | `5` | Numeric count |
-| `string` | `"New"` | Text label |
-| `Ref<number \| string>` | `ref(3)` | Reactive value |
-| `ComputedRef<number \| string>` | `computed(() => count.value)` | Computed value |
-| `() => number \| string` | `() => items.length` | Getter function |
-| `MenuItemBadge` | `{ content: 5, variant: "danger", isDot: false }` | Full config object |
+| Form                            | Example                                           | Description        |
+| ------------------------------- | ------------------------------------------------- | ------------------ |
+| `number`                        | `5`                                               | Numeric count      |
+| `string`                        | `"New"`                                           | Text label         |
+| `Ref<number \| string>`         | `ref(3)`                                          | Reactive value     |
+| `ComputedRef<number \| string>` | `computed(() => count.value)`                     | Computed value     |
+| `() => number \| string`        | `() => items.length`                              | Getter function    |
+| `MenuItemBadge`                 | `{ content: 5, variant: "danger", isDot: false }` | Full config object |
 
 #### MenuItemBadge Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `content` | `string \| number \| Ref \| ComputedRef \| Function` | -- | Badge content |
-| `variant` | `"primary" \| "success" \| "warning" \| "danger" \| "info" \| "secondary"` | `"primary"` | Color variant |
-| `isDot` | `boolean` | `false` | Show as dot indicator only (ignores content) |
+| Property  | Type                                                                       | Default     | Description                                  |
+| --------- | -------------------------------------------------------------------------- | ----------- | -------------------------------------------- |
+| `content` | `string \| number \| Ref \| ComputedRef \| Function`                       | --          | Badge content                                |
+| `variant` | `"primary" \| "success" \| "warning" \| "danger" \| "info" \| "secondary"` | `"primary"` | Color variant                                |
+| `isDot`   | `boolean`                                                                  | `false`     | Show as dot indicator only (ignores content) |
 
 ## Related
 

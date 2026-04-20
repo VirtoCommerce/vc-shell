@@ -1,4 +1,4 @@
-import { computed, ComputedRef } from "vue";
+import { ComputedRef } from "vue";
 import { createSharedComposable } from "@vueuse/core";
 import { _createInternalUserLogic, IUserInternalAPI } from "@core/composables/useUser"; // Import the internal logic
 import { SecurityResult, IdentityResult, LoginType, UserDetail, SignInResult } from "@core/api/platform";

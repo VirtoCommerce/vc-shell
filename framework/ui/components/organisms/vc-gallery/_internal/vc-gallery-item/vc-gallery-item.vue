@@ -39,7 +39,7 @@ import { useResponsive } from "@framework/core/composables/useResponsive";
 import type { ThumbnailSize } from "@core/utilities/thumbnail";
 
 export interface Props {
-  image: AssetLike;
+  image?: AssetLike;
   readonly?: boolean;
   actions?: {
     preview?: boolean;

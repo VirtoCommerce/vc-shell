@@ -20,19 +20,19 @@ A small indicator component for displaying counts, status dots, or short text la
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `content` | `string \| number` | -- | Text or number displayed inside the badge |
-| `variant` | `"primary" \| "success" \| "warning" \| "danger" \| "info" \| "secondary"` | `"primary"` | Color variant |
-| `size` | `"s" \| "m"` | `"m"` | Badge size |
-| `isDot` | `boolean` | `false` | Renders as a small dot without text |
-| `inline` | `boolean` | `false` | Renders as an inline element without absolute positioning |
-| `clickable` | `boolean` | `false` | Makes the badge respond to click events |
-| `disabled` | `boolean` | `false` | Disables interaction on clickable badges |
-| `customPosition` | `boolean` | `false` | Enables custom `top`/`right` positioning |
-| `top` | `string` | -- | Custom top offset (requires `customPosition`) |
-| `right` | `string` | -- | Custom right offset (requires `customPosition`) |
-| `ariaLabel` | `string` | -- | Custom accessible label for the badge |
+| Prop             | Type                                                                       | Default     | Description                                               |
+| ---------------- | -------------------------------------------------------------------------- | ----------- | --------------------------------------------------------- |
+| `content`        | `string \| number`                                                         | --          | Text or number displayed inside the badge                 |
+| `variant`        | `"primary" \| "success" \| "warning" \| "danger" \| "info" \| "secondary"` | `"primary"` | Color variant                                             |
+| `size`           | `"s" \| "m"`                                                               | `"m"`       | Badge size                                                |
+| `isDot`          | `boolean`                                                                  | `false`     | Renders as a small dot without text                       |
+| `inline`         | `boolean`                                                                  | `false`     | Renders as an inline element without absolute positioning |
+| `clickable`      | `boolean`                                                                  | `false`     | Makes the badge respond to click events                   |
+| `disabled`       | `boolean`                                                                  | `false`     | Disables interaction on clickable badges                  |
+| `customPosition` | `boolean`                                                                  | `false`     | Enables custom `top`/`right` positioning                  |
+| `top`            | `string`                                                                   | --          | Custom top offset (requires `customPosition`)             |
+| `right`          | `string`                                                                   | --          | Custom right offset (requires `customPosition`)           |
+| `ariaLabel`      | `string`                                                                   | --          | Custom accessible label for the badge                     |
 
 ## Common Patterns
 
@@ -65,12 +65,7 @@ A small indicator component for displaying counts, status dots, or short text la
 ### Clickable Badge with Dismiss
 
 ```vue
-<VcBadge
-  :content="count"
-  clickable
-  variant="primary"
-  @click="clearNotifications"
->
+<VcBadge :content="count" clickable variant="primary" @click="clearNotifications">
   <VcIcon icon="lucide-inbox" size="xl" />
 </VcBadge>
 ```
@@ -104,13 +99,7 @@ const statusVariantMap: Record<string, string> = {
 Fine-tune the badge position relative to its parent:
 
 ```vue
-<VcBadge
-  content="NEW"
-  variant="info"
-  custom-position
-  top="-4px"
-  right="-12px"
->
+<VcBadge content="NEW" variant="info" custom-position top="-4px" right="-12px">
   <img src="/product.jpg" class="tw-w-16 tw-h-16 tw-rounded" />
 </VcBadge>
 ```

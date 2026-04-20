@@ -20,7 +20,7 @@ const StubWidget = defineComponent({
   name: "StubWidget",
   props: ["onClose"],
   emits: ["close"],
-  setup(_, { emit }) {
+  setup(_, { emit: _emit }) {
     return () => h("div", { class: "stub-widget" }, "Widget Content");
   },
 });

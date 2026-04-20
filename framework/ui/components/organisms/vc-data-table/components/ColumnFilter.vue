@@ -153,7 +153,7 @@ interface Props {
   /** Backend field name for this filter */
   field: string;
   /** Filter type: text, select, or dateRange */
-  filterType: FilterType;
+  filterType?: FilterType;
   /** Options array for select filter (value/label pairs) */
   filterOptions?: FilterOption[];
   /** Whether to allow multiple selection for select filter */

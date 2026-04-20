@@ -68,7 +68,9 @@ const { showConfirmation } = usePopup();
 
 const images = computed({
   get: () => item.value?.images ?? [],
-  set: (val) => { if (item.value) item.value.images = val; },
+  set: (val) => {
+    if (item.value) item.value.images = val;
+  },
 });
 
 const assets = useAssetsManager(images, {
@@ -101,13 +103,7 @@ Use when assets are a secondary concern shown as a widget badge. Clicking the wi
 ```ts
 // widgets/useEntityWidgets.ts
 import { computed, markRaw, type Ref, type ComputedRef } from "vue";
-import {
-  useBlade,
-  useBladeWidgets,
-  useAssetsManager,
-  usePopup,
-  type UseBladeWidgetsReturn,
-} from "@vc-shell/framework";
+import { useBlade, useBladeWidgets, useAssetsManager, usePopup, type UseBladeWidgetsReturn } from "@vc-shell/framework";
 
 interface Options {
   item: Ref<Entity | undefined>;
@@ -145,7 +141,7 @@ export function useEntityWidgets({ item, disabled, isVisible }: Options): UseBla
         openBlade({
           name: "AssetsManager",
           options: {
-            manager: markRaw(assetsManager),  // markRaw prevents Vue from making it reactive
+            manager: markRaw(assetsManager), // markRaw prevents Vue from making it reactive
             disabled: disabled.value,
           },
         }),
@@ -186,14 +182,18 @@ Each manager operates on a different writable computed pointing to a different a
 // Gallery assets (images)
 const productImages = computed({
   get: () => item.value.productData?.images ?? [],
-  set: (val) => { if (item.value.productData) item.value.productData.images = val; },
+  set: (val) => {
+    if (item.value.productData) item.value.productData.images = val;
+  },
 });
 const imageAssets = useAssetsManager(productImages, { uploadPath: () => `/catalog/${item.value.id}` });
 
 // Widget assets (files)
 const productFiles = computed({
   get: () => (item.value?.productData?.assets ?? []) as Asset[],
-  set: (val) => { if (item.value?.productData) item.value.productData.assets = val; },
+  set: (val) => {
+    if (item.value?.productData) item.value.productData.assets = val;
+  },
 });
 const fileAssets = useAssetsManager(productFiles, { uploadPath: () => `/catalog/${item.value.id}` });
 ```
@@ -202,12 +202,12 @@ const fileAssets = useAssetsManager(productFiles, { uploadPath: () => `/catalog/
 
 ## Key Points
 
-| Concern | Approach |
-|---|---|
-| Binding to entity | Writable `computed` — getter reads nested array, setter writes it back |
-| Upload path | Callback `() => string` — resolved at upload time, so entity ID is available |
-| Remove confirmation | Pass `confirmRemove` returning `Promise<boolean>` via `usePopup().showConfirmation` |
-| Passing to AssetsManager blade | Wrap with `markRaw()` — prevents Vue from making the manager deeply reactive |
-| Multiple asset types | Create separate `useAssetsManager` instances per array (images vs files) |
-| Gallery edit | Open `AssetsDetails` blade, pass `assetEditHandler` and `assetRemoveHandler` callbacks |
-| Widget visibility | Use `isVisible: computed(() => !!param.value)` to hide on "create new" mode |
+| Concern                        | Approach                                                                               |
+| ------------------------------ | -------------------------------------------------------------------------------------- |
+| Binding to entity              | Writable `computed` — getter reads nested array, setter writes it back                 |
+| Upload path                    | Callback `() => string` — resolved at upload time, so entity ID is available           |
+| Remove confirmation            | Pass `confirmRemove` returning `Promise<boolean>` via `usePopup().showConfirmation`    |
+| Passing to AssetsManager blade | Wrap with `markRaw()` — prevents Vue from making the manager deeply reactive           |
+| Multiple asset types           | Create separate `useAssetsManager` instances per array (images vs files)               |
+| Gallery edit                   | Open `AssetsDetails` blade, pass `assetEditHandler` and `assetRemoveHandler` callbacks |
+| Widget visibility              | Use `isVisible: computed(() => !!param.value)` to hide on "create new" mode            |

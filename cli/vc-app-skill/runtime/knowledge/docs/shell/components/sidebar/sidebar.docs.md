@@ -10,37 +10,31 @@ On mobile, the sidebar teleports itself out of the normal DOM flow to overlay th
 
 ## Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `isExpanded` | `boolean` | (required) | Whether the sidebar is currently open |
-| `position` | `"left" \| "right"` | `"right"` | Slide-in direction |
-| `render` | `"always" \| "mobile" \| "desktop"` | `"always"` | When to render as a sidebar vs. inline |
-| `title` | `string` | -- | Optional title shown in the sidebar header |
-| `closeCross` | `boolean` | `true` | Whether to show the close button |
+| Prop         | Type                                | Default    | Description                                |
+| ------------ | ----------------------------------- | ---------- | ------------------------------------------ |
+| `isExpanded` | `boolean`                           | (required) | Whether the sidebar is currently open      |
+| `position`   | `"left" \| "right"`                 | `"right"`  | Slide-in direction                         |
+| `render`     | `"always" \| "mobile" \| "desktop"` | `"always"` | When to render as a sidebar vs. inline     |
+| `title`      | `string`                            | --         | Optional title shown in the sidebar header |
+| `closeCross` | `boolean`                           | `true`     | Whether to show the close button           |
 
 ## Events
 
-| Event | Payload | Description |
-|---|---|---|
-| `close` | -- | Emitted when the user closes the sidebar |
+| Event   | Payload | Description                              |
+| ------- | ------- | ---------------------------------------- |
+| `close` | --      | Emitted when the user closes the sidebar |
 
 ## Slots
 
-| Slot | Scope | Description |
-|---|---|---|
-| `header` | `{ close: () => void }` | Custom header content; receives a `close` function |
-| `content` | -- | The main sidebar body content |
+| Slot      | Scope                   | Description                                        |
+| --------- | ----------------------- | -------------------------------------------------- |
+| `header`  | `{ close: () => void }` | Custom header content; receives a `close` function |
+| `content` | --                      | The main sidebar body content                      |
 
 ## Usage
 
 ```vue
-<Sidebar
-  :is-expanded="showFilters"
-  position="right"
-  render="always"
-  title="Filters"
-  @close="showFilters = false"
->
+<Sidebar :is-expanded="showFilters" position="right" render="always" title="Filters" @close="showFilters = false">
   <template #content>
     <FilterPanel />
   </template>
@@ -50,11 +44,7 @@ On mobile, the sidebar teleports itself out of the normal DOM flow to overlay th
 ### Mobile-only sidebar
 
 ```vue
-<Sidebar
-  :is-expanded="showDetails"
-  render="mobile"
-  @close="showDetails = false"
->
+<Sidebar :is-expanded="showDetails" render="mobile" @close="showDetails = false">
   <template #content>
     <DetailView />
   </template>

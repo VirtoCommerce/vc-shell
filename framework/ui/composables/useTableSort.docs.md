@@ -14,11 +14,11 @@ The sort expression is formatted as `"property:DIRECTION"` (e.g., `"createdDate:
 ## Basic Usage
 
 ```typescript
-import { useTableSort } from '@vc-shell/framework';
+import { useTableSort } from "@vc-shell/framework";
 
 const { sortExpression, handleSortChange, resetSort } = useTableSort({
-  initialProperty: 'createdDate',
-  initialDirection: 'DESC',
+  initialProperty: "createdDate",
+  initialDirection: "DESC",
 });
 
 // Wire to VcTable
@@ -34,19 +34,19 @@ watch(sortExpression, (sort) => {
 
 ### Parameters (Options)
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `initialProperty` | `string` | `null` | Column property to sort by initially |
-| `initialDirection` | `"ASC" \| "DESC"` | `null` | Initial sort direction |
+| Option             | Type              | Default | Description                          |
+| ------------------ | ----------------- | ------- | ------------------------------------ |
+| `initialProperty`  | `string`          | `null`  | Column property to sort by initially |
+| `initialDirection` | `"ASC" \| "DESC"` | `null`  | Initial sort direction               |
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `currentSort` | `WritableComputedRef<TableSortState>` | Current `{ property, direction }` state |
-| `sortExpression` | `Ref<string \| undefined>` | Formatted string (e.g., `"name:ASC"`) or `undefined` when no sort |
-| `handleSortChange` | `(sortParam: string) => void` | Handle column header click; accepts `"field"` or `"field:DIR"` |
-| `resetSort` | `() => void` | Reset to initial sort options (or clear if none) |
+| Property           | Type                                  | Description                                                       |
+| ------------------ | ------------------------------------- | ----------------------------------------------------------------- |
+| `currentSort`      | `WritableComputedRef<TableSortState>` | Current `{ property, direction }` state                           |
+| `sortExpression`   | `Ref<string \| undefined>`            | Formatted string (e.g., `"name:ASC"`) or `undefined` when no sort |
+| `handleSortChange` | `(sortParam: string) => void`         | Handle column header click; accepts `"field"` or `"field:DIR"`    |
+| `resetSort`        | `() => void`                          | Reset to initial sort options (or clear if none)                  |
 
 ### TableSortState
 
@@ -60,6 +60,7 @@ interface TableSortState {
 ## Sort Cycling
 
 When clicking the same column without an explicit direction:
+
 1. First click: `ASC`
 2. Second click: `DESC`
 3. Third click: sort cleared (`undefined`)
@@ -87,7 +88,7 @@ async function loadItems() {
   loading.value = true;
   try {
     const response = await api.searchProducts({
-      sort: sortExpression.value,  // "createdDate:DESC"
+      sort: sortExpression.value, // "createdDate:DESC"
       skip: 0,
       take: 20,
     });
@@ -108,9 +109,21 @@ watch(sortExpression, () => loadItems(), { immediate: true });
     :sort-expression="sortExpression"
     @header-click="handleSortChange"
   >
-    <VcColumn id="name" header="Name" sortable />
-    <VcColumn id="createdDate" header="Created" sortable />
-    <VcColumn id="price" header="Price" sortable />
+    <VcColumn
+      id="name"
+      header="Name"
+      sortable
+    />
+    <VcColumn
+      id="createdDate"
+      header="Created"
+      sortable
+    />
+    <VcColumn
+      id="price"
+      header="Price"
+      sortable
+    />
   </VcTable>
 </template>
 ```

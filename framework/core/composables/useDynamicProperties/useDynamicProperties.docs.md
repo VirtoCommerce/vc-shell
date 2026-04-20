@@ -16,42 +16,41 @@ Internally uses a strategy pattern — each property type (regular, boolean, dic
 ```typescript
 import { useDynamicProperties } from "@vc-shell/framework";
 
-const { getPropertyValue, setPropertyValue, loadDictionaries, loadMeasurements, loading } =
-  useDynamicProperties({
-    searchDictionary: (criteria) => api.searchPropertyDictionaryItems(criteria),
-    searchMeasurements: (measureId, locale) => api.searchMeasurements(measureId, locale),
-  });
+const { getPropertyValue, setPropertyValue, loadDictionaries, loadMeasurements, loading } = useDynamicProperties({
+  searchDictionary: (criteria) => api.searchPropertyDictionaryItems(criteria),
+  searchMeasurements: (measureId, locale) => api.searchMeasurements(measureId, locale),
+});
 ```
 
 ## API
 
 ### Options
 
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| `searchDictionary` | `(criteria: IBasePropertyDictionaryItemSearchCriteria) => Promise<IBasePropertyDictionaryItem[] \| undefined>` | Yes | API function to search dictionary items by property ID and keyword |
-| `searchMeasurements` | `(measureId: string, locale?: string) => Promise<IBaseMeasurementDictionaryItem[] \| undefined>` | No | API function for loading measurement units. Only needed for measure-type properties |
+| Option               | Type                                                                                                           | Required | Description                                                                         |
+| -------------------- | -------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------- |
+| `searchDictionary`   | `(criteria: IBasePropertyDictionaryItemSearchCriteria) => Promise<IBasePropertyDictionaryItem[] \| undefined>` | Yes      | API function to search dictionary items by property ID and keyword                  |
+| `searchMeasurements` | `(measureId: string, locale?: string) => Promise<IBaseMeasurementDictionaryItem[] \| undefined>`               | No       | API function for loading measurement units. Only needed for measure-type properties |
 
 ### Returns
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `getPropertyValue` | `(property, locale) => PropertyDisplayValue` | Read display value for a property. Returns string, boolean, or array depending on type. Does NOT mutate the property. |
-| `setPropertyValue` | `(params: SetPropertyValueParams) => void` | Write value to a property. Handles type-specific transformation and empty cleanup. |
-| `loadDictionaries` | `(propertyId, keyword?, locale?) => Promise<...>` | Load dictionary items. If locale is provided, resolves localized values. |
-| `loadMeasurements` | `(measureId, keyword?, locale?) => Promise<...>` | Load measurement units. No-op if `searchMeasurements` was not provided. |
-| `loading` | `ComputedRef<boolean>` | Whether a dictionary lookup is in progress. |
+| Property           | Type                                              | Description                                                                                                           |
+| ------------------ | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `getPropertyValue` | `(property, locale) => PropertyDisplayValue`      | Read display value for a property. Returns string, boolean, or array depending on type. Does NOT mutate the property. |
+| `setPropertyValue` | `(params: SetPropertyValueParams) => void`        | Write value to a property. Handles type-specific transformation and empty cleanup.                                    |
+| `loadDictionaries` | `(propertyId, keyword?, locale?) => Promise<...>` | Load dictionary items. If locale is provided, resolves localized values.                                              |
+| `loadMeasurements` | `(measureId, keyword?, locale?) => Promise<...>`  | Load measurement units. No-op if `searchMeasurements` was not provided.                                               |
+| `loading`          | `ComputedRef<boolean>`                            | Whether a dictionary lookup is in progress.                                                                           |
 
 ### SetPropertyValueParams
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `property` | `IBaseProperty` | The property object to update. Modified in place. |
-| `value` | `string \| IBasePropertyValue[] \| (IBasePropertyDictionaryItem & { value: string })[]` | The new value. Type depends on property configuration. |
-| `dictionary` | `IBasePropertyDictionaryItem[]?` | Dictionary items. Required when setting a dictionary value. |
-| `locale` | `string?` | Current locale for multilanguage properties. |
-| `unitOfMeasureId` | `string?` | Unit of measure ID for measure-type properties. |
-| `colorCode` | `string?` | Color hex code for color-type properties. |
+| Field             | Type                                                                                    | Description                                                 |
+| ----------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `property`        | `IBaseProperty`                                                                         | The property object to update. Modified in place.           |
+| `value`           | `string \| IBasePropertyValue[] \| (IBasePropertyDictionaryItem & { value: string })[]` | The new value. Type depends on property configuration.      |
+| `dictionary`      | `IBasePropertyDictionaryItem[]?`                                                        | Dictionary items. Required when setting a dictionary value. |
+| `locale`          | `string?`                                                                               | Current locale for multilanguage properties.                |
+| `unitOfMeasureId` | `string?`                                                                               | Unit of measure ID for measure-type properties.             |
+| `colorCode`       | `string?`                                                                               | Color hex code for color-type properties.                   |
 
 ### PropertyDisplayValue
 
@@ -65,13 +64,13 @@ type PropertyDisplayValue = string | IBasePropertyValue[] | boolean;
 
 The composable resolves a strategy handler based on property flags:
 
-| Priority | Condition | Strategy | Handles |
-|----------|-----------|----------|---------|
-| 1 | `valueType === "Measure"` | measureStrategy | Numeric input with unit dropdown |
-| 2 | `valueType === "Color"` && !dictionary | colorStrategy | Color picker, multivalue colors |
-| 3 | `valueType === "Boolean"` | booleanStrategy | Checkbox/switch |
-| 4 | `dictionary === true` | dictionaryStrategy | Select dropdowns with localized options |
-| 5 | (default) | regularStrategy | ShortText, LongText, Number, Integer, DateTime |
+| Priority | Condition                              | Strategy           | Handles                                        |
+| -------- | -------------------------------------- | ------------------ | ---------------------------------------------- |
+| 1        | `valueType === "Measure"`              | measureStrategy    | Numeric input with unit dropdown               |
+| 2        | `valueType === "Color"` && !dictionary | colorStrategy      | Color picker, multivalue colors                |
+| 3        | `valueType === "Boolean"`              | booleanStrategy    | Checkbox/switch                                |
+| 4        | `dictionary === true`                  | dictionaryStrategy | Select dropdowns with localized options        |
+| 5        | (default)                              | regularStrategy    | ShortText, LongText, Number, Integer, DateTime |
 
 ### Value Getting
 
@@ -124,11 +123,10 @@ This ensures that `useBladeForm`'s deep comparison correctly detects "no change"
 <script setup lang="ts">
 import { useDynamicProperties } from "@vc-shell/framework";
 
-const { getPropertyValue, setPropertyValue, loadDictionaries, loadMeasurements } =
-  useDynamicProperties({
-    searchDictionary: searchDictionaryItems,
-    searchMeasurements: searchMeasurementItems,
-  });
+const { getPropertyValue, setPropertyValue, loadDictionaries, loadMeasurements } = useDynamicProperties({
+  searchDictionary: searchDictionaryItems,
+  searchMeasurements: searchMeasurementItems,
+});
 </script>
 ```
 

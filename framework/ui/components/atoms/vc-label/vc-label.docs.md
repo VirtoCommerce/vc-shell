@@ -22,31 +22,31 @@ A form field label component with support for required indicators, info tooltips
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `required` | `boolean` | `false` | Shows a red asterisk after the label text |
-| `error` | `boolean` | `false` | Renders the label in error state (danger color) |
-| `htmlFor` | `string` | -- | Links the label to an input; when set, renders as `<label for="...">` |
-| `tooltipIcon` | `string` | `"lucide-info"` | Icon used for the tooltip trigger |
-| `multilanguage` | `boolean` | `false` | Shows a language indicator badge |
-| `currentLanguage` | `string` | -- | Language code displayed in the badge (e.g. `"EN"`, `"DE"`) |
+| Prop              | Type      | Default         | Description                                                           |
+| ----------------- | --------- | --------------- | --------------------------------------------------------------------- |
+| `required`        | `boolean` | `false`         | Shows a red asterisk after the label text                             |
+| `error`           | `boolean` | `false`         | Renders the label in error state (danger color)                       |
+| `htmlFor`         | `string`  | --              | Links the label to an input; when set, renders as `<label for="...">` |
+| `tooltipIcon`     | `string`  | `"lucide-info"` | Icon used for the tooltip trigger                                     |
+| `multilanguage`   | `boolean` | `false`         | Shows a language indicator badge                                      |
+| `currentLanguage` | `string`  | --              | Language code displayed in the badge (e.g. `"EN"`, `"DE"`)            |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
-| `default` | Label text content |
+| Slot      | Description                                  |
+| --------- | -------------------------------------------- |
+| `default` | Label text content                           |
 | `tooltip` | Content displayed inside the tooltip popover |
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|---|---|---|
-| `--label-text-color` | `var(--neutrals-700)` | Default text color |
-| `--label-required-color` | `var(--danger-500)` | Color of the required asterisk |
-| `--label-tooltip-color` | `var(--neutrals-400)` | Tooltip icon color |
-| `--label-lang-color` | `var(--neutrals-500)` | Language badge text color |
-| `--label-error-color` | `var(--danger-500)` | Text color in error state |
+| Variable                 | Default               | Description                    |
+| ------------------------ | --------------------- | ------------------------------ |
+| `--label-text-color`     | `var(--neutrals-700)` | Default text color             |
+| `--label-required-color` | `var(--danger-500)`   | Color of the required asterisk |
+| `--label-tooltip-color`  | `var(--neutrals-400)` | Tooltip icon color             |
+| `--label-lang-color`     | `var(--neutrals-500)` | Language badge text color      |
+| `--label-error-color`    | `var(--danger-500)`   | Text color in error state      |
 
 ## Common Patterns
 
@@ -92,11 +92,13 @@ Compose VcLabel, an input, and VcHint into a reusable field pattern:
 ```vue
 <template>
   <div class="tw-space-y-1">
-    <VcLabel html-for="slug" required :error="!!slugError">
+    <VcLabel
+      html-for="slug"
+      required
+      :error="!!slugError"
+    >
       URL Slug
-      <template #tooltip>
-        The URL-friendly identifier for this page. Auto-generated from the title if left blank.
-      </template>
+      <template #tooltip> The URL-friendly identifier for this page. Auto-generated from the title if left blank. </template>
     </VcLabel>
     <VcInput
       id="slug"
@@ -105,8 +107,11 @@ Compose VcLabel, an input, and VcHint into a reusable field pattern:
       aria-describedby="slug-hint"
       aria-required="true"
     />
-    <VcHint id="slug-hint" :error="!!slugError">
-      {{ slugError || 'Lowercase letters, numbers, and hyphens only.' }}
+    <VcHint
+      id="slug-hint"
+      :error="!!slugError"
+    >
+      {{ slugError || "Lowercase letters, numbers, and hyphens only." }}
     </VcHint>
   </div>
 </template>

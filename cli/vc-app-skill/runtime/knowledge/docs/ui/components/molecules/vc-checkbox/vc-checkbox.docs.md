@@ -48,9 +48,21 @@ const selected = ref<string[]>([]);
 </script>
 
 <template>
-  <VcCheckbox v-model="selected" value="express">Express shipping</VcCheckbox>
-  <VcCheckbox v-model="selected" value="insurance">Shipping insurance</VcCheckbox>
-  <VcCheckbox v-model="selected" value="gift">Gift wrapping</VcCheckbox>
+  <VcCheckbox
+    v-model="selected"
+    value="express"
+    >Express shipping</VcCheckbox
+  >
+  <VcCheckbox
+    v-model="selected"
+    value="insurance"
+    >Shipping insurance</VcCheckbox
+  >
+  <VcCheckbox
+    v-model="selected"
+    value="gift"
+    >Gift wrapping</VcCheckbox
+  >
   <!-- selected.value might be ["express", "gift"] -->
 </template>
 ```
@@ -59,11 +71,11 @@ const selected = ref<string[]>([]);
 
 Three sizes are available via the `size` prop:
 
-| Size | Value | Pixel dimension |
-|------|-------|-----------------|
-| Small | `"s"` (default) | 16 x 16 px |
-| Medium | `"m"` | 20 x 20 px |
-| Large | `"l"` | 24 x 24 px |
+| Size   | Value           | Pixel dimension |
+| ------ | --------------- | --------------- |
+| Small  | `"s"` (default) | 16 x 16 px      |
+| Medium | `"m"`           | 20 x 20 px      |
+| Large  | `"l"`           | 24 x 24 px      |
 
 ```vue
 <VcCheckbox v-model="val" size="s">Small checkbox</VcCheckbox>
@@ -99,9 +111,21 @@ function toggleAll(checked: boolean) {
     Select all
   </VcCheckbox>
 
-  <VcCheckbox v-model="selected" value="A">Option A</VcCheckbox>
-  <VcCheckbox v-model="selected" value="B">Option B</VcCheckbox>
-  <VcCheckbox v-model="selected" value="C">Option C</VcCheckbox>
+  <VcCheckbox
+    v-model="selected"
+    value="A"
+    >Option A</VcCheckbox
+  >
+  <VcCheckbox
+    v-model="selected"
+    value="B"
+    >Option B</VcCheckbox
+  >
+  <VcCheckbox
+    v-model="selected"
+    value="C"
+    >Option C</VcCheckbox
+  >
 </template>
 ```
 
@@ -155,11 +179,7 @@ const form = reactive({
 <VcCheckbox :model-value="true" disabled>Cannot be changed</VcCheckbox>
 
 <!-- Error -->
-<VcCheckbox
-  v-model="val"
-  :error="true"
-  error-message="This field is required"
->
+<VcCheckbox v-model="val" :error="true" error-message="This field is required">
   I have read the disclaimer
 </VcCheckbox>
 ```
@@ -173,9 +193,21 @@ Use `VcInputGroup` to add a shared label and semantic grouping:
 ```vue
 <template>
   <VcInputGroup label="Delivery options">
-    <VcCheckbox v-model="deliveryOptions" value="courier">Courier delivery</VcCheckbox>
-    <VcCheckbox v-model="deliveryOptions" value="pickup">Store pickup</VcCheckbox>
-    <VcCheckbox v-model="deliveryOptions" value="postal">Postal service</VcCheckbox>
+    <VcCheckbox
+      v-model="deliveryOptions"
+      value="courier"
+      >Courier delivery</VcCheckbox
+    >
+    <VcCheckbox
+      v-model="deliveryOptions"
+      value="pickup"
+      >Store pickup</VcCheckbox
+    >
+    <VcCheckbox
+      v-model="deliveryOptions"
+      value="postal"
+      >Postal service</VcCheckbox
+    >
   </VcInputGroup>
 </template>
 
@@ -246,68 +278,64 @@ const selected = ref<string[]>([]);
 <VcCheckbox v-model="val" indeterminate>Select all</VcCheckbox>
 
 <!-- ✅ Use a computed + handler to manage the select-all logic -->
-<VcCheckbox
-  :model-value="allSelected"
-  :indeterminate="someSelected && !allSelected"
-  @update:model-value="toggleAll"
->
+<VcCheckbox :model-value="allSelected" :indeterminate="someSelected && !allSelected" @update:model-value="toggleAll">
   Select all
 </VcCheckbox>
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `boolean \| T[]` | `undefined` | Bound value via `v-model`. Boolean for single, array for multi-select. |
-| `value` | `T` | -- | Value added to the array when checked (array mode only) |
-| `label` | `string` | -- | Label text displayed above the checkbox |
-| `tooltip` | `string` | -- | Tooltip on the label info icon |
-| `size` | `"s" \| "m" \| "l"` | `"s"` | Checkbox size variant |
-| `indeterminate` | `boolean` | `false` | Shows the indeterminate (dash) visual state |
-| `trueValue` | `boolean` | `true` | Value emitted when checked (boolean mode) |
-| `falseValue` | `boolean` | `false` | Value emitted when unchecked (boolean mode) |
-| `disabled` | `boolean` | `false` | Disables the checkbox |
-| `required` | `boolean` | `false` | Shows a required indicator |
-| `error` | `boolean` | `false` | Enables error styling |
-| `errorMessage` | `string` | -- | Error message displayed below the checkbox |
-| `name` | `string` | `"Field"` | HTML name attribute |
-| `outline` | `boolean` | `false` | Applies outline style variant |
+| Prop            | Type                | Default     | Description                                                            |
+| --------------- | ------------------- | ----------- | ---------------------------------------------------------------------- |
+| `modelValue`    | `boolean \| T[]`    | `undefined` | Bound value via `v-model`. Boolean for single, array for multi-select. |
+| `value`         | `T`                 | --          | Value added to the array when checked (array mode only)                |
+| `label`         | `string`            | --          | Label text displayed above the checkbox                                |
+| `tooltip`       | `string`            | --          | Tooltip on the label info icon                                         |
+| `size`          | `"s" \| "m" \| "l"` | `"s"`       | Checkbox size variant                                                  |
+| `indeterminate` | `boolean`           | `false`     | Shows the indeterminate (dash) visual state                            |
+| `trueValue`     | `boolean`           | `true`      | Value emitted when checked (boolean mode)                              |
+| `falseValue`    | `boolean`           | `false`     | Value emitted when unchecked (boolean mode)                            |
+| `disabled`      | `boolean`           | `false`     | Disables the checkbox                                                  |
+| `required`      | `boolean`           | `false`     | Shows a required indicator                                             |
+| `error`         | `boolean`           | `false`     | Enables error styling                                                  |
+| `errorMessage`  | `string`            | --          | Error message displayed below the checkbox                             |
+| `name`          | `string`            | `"Field"`   | HTML name attribute                                                    |
+| `outline`       | `boolean`           | `false`     | Applies outline style variant                                          |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event               | Payload          | Description                          |
+| ------------------- | ---------------- | ------------------------------------ |
 | `update:modelValue` | `boolean \| T[]` | Emitted when the checkbox is toggled |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
-| `default` | Inline text or content displayed next to the checkbox |
-| `icon` | Replace the check/indeterminate icon with custom markup |
-| `error` | Custom error message markup |
+| Slot      | Description                                             |
+| --------- | ------------------------------------------------------- |
+| `default` | Inline text or content displayed next to the checkbox   |
+| `icon`    | Replace the check/indeterminate icon with custom markup |
+| `error`   | Custom error message markup                             |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--checkbox-size-s` | `16px` | Small variant size |
-| `--checkbox-size-m` | `20px` | Medium variant size |
-| `--checkbox-size-l` | `24px` | Large variant size |
-| `--checkbox-border-color` | `var(--neutrals-300)` | Default border color |
-| `--checkbox-border-color-hover` | `var(--neutrals-400)` | Border color on hover |
-| `--checkbox-bg-color` | `var(--additional-50)` | Unchecked background |
-| `--checkbox-checked-bg-color` | `var(--primary-500)` | Checked background color |
-| `--checkbox-checked-border-color` | `var(--primary-500)` | Checked border color |
-| `--checkbox-indeterminate-bg-color` | `var(--primary-500)` | Indeterminate background |
+| Variable                              | Default                | Description              |
+| ------------------------------------- | ---------------------- | ------------------------ |
+| `--checkbox-size-s`                   | `16px`                 | Small variant size       |
+| `--checkbox-size-m`                   | `20px`                 | Medium variant size      |
+| `--checkbox-size-l`                   | `24px`                 | Large variant size       |
+| `--checkbox-border-color`             | `var(--neutrals-300)`  | Default border color     |
+| `--checkbox-border-color-hover`       | `var(--neutrals-400)`  | Border color on hover    |
+| `--checkbox-bg-color`                 | `var(--additional-50)` | Unchecked background     |
+| `--checkbox-checked-bg-color`         | `var(--primary-500)`   | Checked background color |
+| `--checkbox-checked-border-color`     | `var(--primary-500)`   | Checked border color     |
+| `--checkbox-indeterminate-bg-color`   | `var(--primary-500)`   | Indeterminate background |
 | `--checkbox-indeterminate-line-color` | `var(--additional-50)` | Indeterminate dash color |
-| `--checkbox-error-border-color` | `var(--danger-500)` | Error state border |
-| `--checkbox-error-ring-color` | `var(--danger-100)` | Error ring color |
-| `--checkbox-focus-ring-color` | `var(--primary-100)` | Focus ring color |
-| `--checkbox-border-radius` | `4px` | Corner radius |
-| `--checkbox-disabled-opacity` | `0.5` | Opacity when disabled |
-| `--checkbox-transition-duration` | `200ms` | Animation duration |
+| `--checkbox-error-border-color`       | `var(--danger-500)`    | Error state border       |
+| `--checkbox-error-ring-color`         | `var(--danger-100)`    | Error ring color         |
+| `--checkbox-focus-ring-color`         | `var(--primary-100)`   | Focus ring color         |
+| `--checkbox-border-radius`            | `4px`                  | Corner radius            |
+| `--checkbox-disabled-opacity`         | `0.5`                  | Opacity when disabled    |
+| `--checkbox-transition-duration`      | `200ms`                | Animation duration       |
 
 ## Accessibility
 
@@ -327,4 +355,3 @@ const selected = ref<string[]>([]);
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
-

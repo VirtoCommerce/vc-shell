@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h, ref } from "vue";
+import { h, ref } from "vue";
 import Interceptor from "./interceptor";
 
 // Mock useErrorHandler

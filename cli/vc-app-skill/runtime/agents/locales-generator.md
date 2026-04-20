@@ -61,6 +61,7 @@ For each key, derive its English value using this algorithm:
 For unknown suffixes: split by `_`, convert each word to Title Case, join with space.
 
 Examples:
+
 - `TEAM.MENU.TITLE` → `"Team"`
 - `TEAM.PAGES.LIST.TITLE` → `"Team"`
 - `TEAM.PAGES.LIST.TOOLBAR.ADD` → `"Add"`
@@ -112,6 +113,7 @@ export { en };
 ## Output Contract
 
 Files written to disk:
+
 1. `{targetDir}/locales/en.json`
 2. `{targetDir}/locales/index.ts`
 
@@ -120,6 +122,7 @@ Returns a summary listing number of keys extracted and any keys with uncertain v
 ## Self-Check
 
 Before completing, verify:
+
 - [ ] All files in `generatedFiles` were read (not just the first)
 - [ ] Both `$t('...')` and `t('...')` patterns were captured
 - [ ] Keys with template literal interpolation (`${...}`) were excluded

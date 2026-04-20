@@ -18,7 +18,7 @@ Follows the same event-callback pattern as VueUse's `useOffsetPagination`.
 ## Basic Usage
 
 ```typescript
-import { useDataTablePagination } from '@vc-shell/framework';
+import { useDataTablePagination } from "@vc-shell/framework";
 
 const pagination = useDataTablePagination({
   pageSize: 20,
@@ -28,35 +28,30 @@ const pagination = useDataTablePagination({
 ```
 
 ```vue
-<VcDataTable
-  :items="items"
-  :total-count="pagination.totalCount"
-  :pagination="pagination"
-  @pagination-click="pagination.goToPage"
-/>
+<VcDataTable :items="items" :total-count="pagination.totalCount" :pagination="pagination" @pagination-click="pagination.goToPage" />
 ```
 
 ## API
 
 ### Parameters (Options)
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `totalCount` | `MaybeRefOrGetter<number>` | *required* | Total item count from API response |
-| `pageSize` | `MaybeRefOrGetter<number>` | `20` | Items per page |
+| Option         | Type                                              | Default     | Description                                      |
+| -------------- | ------------------------------------------------- | ----------- | ------------------------------------------------ |
+| `totalCount`   | `MaybeRefOrGetter<number>`                        | _required_  | Total item count from API response               |
+| `pageSize`     | `MaybeRefOrGetter<number>`                        | `20`        | Items per page                                   |
 | `onPageChange` | `(state: { page: number; skip: number }) => void` | `undefined` | Event callback fired when `goToPage()` is called |
 
 ### Returns (`reactive()` object)
 
-| Property | Type | Description |
-|---|---|---|
-| `currentPage` | `number` | Current 1-based page number (writable) |
-| `pages` | `number` (readonly) | Total number of pages |
-| `skip` | `number` (readonly) | Current skip offset for API calls |
-| `pageSize` | `number` (readonly) | Resolved page size |
-| `totalCount` | `number` (readonly) | Resolved total item count |
-| `goToPage` | `(page: number) => void` | Navigate to page; fires `onPageChange` |
-| `reset` | `() => void` | Reset to page 1; does NOT fire `onPageChange` |
+| Property      | Type                     | Description                                   |
+| ------------- | ------------------------ | --------------------------------------------- |
+| `currentPage` | `number`                 | Current 1-based page number (writable)        |
+| `pages`       | `number` (readonly)      | Total number of pages                         |
+| `skip`        | `number` (readonly)      | Current skip offset for API calls             |
+| `pageSize`    | `number` (readonly)      | Resolved page size                            |
+| `totalCount`  | `number` (readonly)      | Resolved total item count                     |
+| `goToPage`    | `(page: number) => void` | Navigate to page; fires `onPageChange`        |
+| `reset`       | `() => void`             | Reset to page 1; does NOT fire `onPageChange` |
 
 All properties are auto-unwrapped by `reactive()` — no `.value` access needed in script or template.
 
@@ -99,8 +94,16 @@ const { sortField, sortOrder, sortExpression } = useDataTableSort({
     v-model:sort-field="sortField"
     v-model:sort-order="sortOrder"
   >
-    <VcColumn id="name" header="Name" sortable />
-    <VcColumn id="createdDate" header="Created" sortable />
+    <VcColumn
+      id="name"
+      header="Name"
+      sortable
+    />
+    <VcColumn
+      id="createdDate"
+      header="Created"
+      sortable
+    />
   </VcDataTable>
 </template>
 ```
@@ -135,11 +138,7 @@ export function useOffers() {
 Blade then simply binds:
 
 ```vue
-<VcDataTable
-  :total-count="pagination.totalCount"
-  :pagination="pagination"
-  @pagination-click="pagination.goToPage"
-/>
+<VcDataTable :total-count="pagination.totalCount" :pagination="pagination" @pagination-click="pagination.goToPage" />
 ```
 
 ## Details

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { ref, nextTick } from "vue";
 import { useTableSelectionV2 } from "@ui/components/organisms/vc-data-table/composables/useTableSelectionV2";
 

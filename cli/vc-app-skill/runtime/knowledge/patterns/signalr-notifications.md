@@ -45,18 +45,17 @@ Each notification type can have a custom Vue SFC that controls how it renders in
     :notification="notification"
     @click="onClick"
   >
-    <VcHint v-if="notification.description" class="tw-mb-1">
+    <VcHint
+      v-if="notification.description"
+      class="tw-mb-1"
+    >
       {{ notification.description }}
     </VcHint>
   </NotificationTemplate>
 </template>
 
 <script lang="ts" setup>
-import {
-  NotificationTemplate,
-  useNotificationContext,
-  useBlade,
-} from "@vc-shell/framework";
+import { NotificationTemplate, useNotificationContext, useBlade } from "@vc-shell/framework";
 import type { PushNotification } from "@vc-shell/framework";
 import { computed } from "vue";
 
@@ -68,9 +67,7 @@ interface IOrderShippedNotification extends PushNotification {
 const notificationRef = useNotificationContext<IOrderShippedNotification>();
 const notification = computed(() => notificationRef.value);
 
-const color = computed(() =>
-  notification.value.trackingNumber ? "var(--success-400)" : "var(--primary-500)"
-);
+const color = computed(() => (notification.value.trackingNumber ? "var(--success-400)" : "var(--primary-500)"));
 
 const { openBlade } = useBlade();
 
@@ -82,12 +79,12 @@ async function onClick() {
 
 ### `NotificationTemplate` props
 
-| Prop           | Type               | Description                                    |
-|----------------|--------------------|------------------------------------------------|
-| `title`        | `string`           | Notification title text                        |
-| `notification` | `PushNotification`  | Full notification object (used for timestamp)  |
-| `icon`         | `string`           | Lucide icon name, e.g. `"lucide-truck"`        |
-| `color`        | `string`           | CSS color/variable for the icon circle         |
+| Prop           | Type               | Description                                   |
+| -------------- | ------------------ | --------------------------------------------- |
+| `title`        | `string`           | Notification title text                       |
+| `notification` | `PushNotification` | Full notification object (used for timestamp) |
+| `icon`         | `string`           | Lucide icon name, e.g. `"lucide-truck"`       |
+| `color`        | `string`           | CSS color/variable for the icon circle        |
 
 The default slot renders below the title/timestamp. Use it for description text, progress bars, or action links.
 
@@ -120,13 +117,13 @@ export default defineAppModule({
 
 The `toast` object controls how the notification appears as a popup.
 
-| Property        | Type                                        | Description                                          |
-|-----------------|---------------------------------------------|------------------------------------------------------|
-| `mode`          | `"auto" \| "progress" \| "silent"`          | `auto` = fire-and-forget; `progress` = persistent until complete; `silent` = no toast |
-| `severity`      | `Severity \| (msg) => Severity`             | Static or dynamic: `"info"`, `"warning"`, `"error"`, `"critical"` |
-| `timeout`       | `number`                                    | Override default timeout (ms). Defaults: info=5s, warning=8s, error/critical=persistent |
-| `isComplete`    | `(msg) => boolean`                          | For `"progress"` mode: returns true when the operation finishes |
-| `completedType` | `(msg) => string`                           | For `"progress"` mode: final toast variant (`"success"` or `"error"`) |
+| Property        | Type                               | Description                                                                             |
+| --------------- | ---------------------------------- | --------------------------------------------------------------------------------------- |
+| `mode`          | `"auto" \| "progress" \| "silent"` | `auto` = fire-and-forget; `progress` = persistent until complete; `silent` = no toast   |
+| `severity`      | `Severity \| (msg) => Severity`    | Static or dynamic: `"info"`, `"warning"`, `"error"`, `"critical"`                       |
+| `timeout`       | `number`                           | Override default timeout (ms). Defaults: info=5s, warning=8s, error/critical=persistent |
+| `isComplete`    | `(msg) => boolean`                 | For `"progress"` mode: returns true when the operation finishes                         |
+| `completedType` | `(msg) => string`                  | For `"progress"` mode: final toast variant (`"success"` or `"error"`)                   |
 
 #### Toast mode examples
 
@@ -186,19 +183,19 @@ const { messages, unreadCount, markAsRead } = useBladeNotifications({
 
 **Parameters:**
 
-| Field      | Type                        | Description                                      |
-|------------|-----------------------------|--------------------------------------------------|
-| `types`    | `string[]`                  | Notification type(s) to subscribe to             |
-| `filter`   | `(msg) => boolean`          | Optional: further filter by message fields       |
-| `onMessage`| `(msg) => void`             | Callback fired for each matching notification    |
+| Field       | Type               | Description                                   |
+| ----------- | ------------------ | --------------------------------------------- |
+| `types`     | `string[]`         | Notification type(s) to subscribe to          |
+| `filter`    | `(msg) => boolean` | Optional: further filter by message fields    |
+| `onMessage` | `(msg) => void`    | Callback fired for each matching notification |
 
 **Returns:**
 
-| Field        | Type                      | Description                                    |
-|--------------|---------------------------|------------------------------------------------|
-| `messages`   | `ComputedRef<T[]>`        | Matching unread messages from the realtime queue |
-| `unreadCount`| `ComputedRef<number>`     | Count of matching unread messages               |
-| `markAsRead` | `(msg) => void`           | Mark a specific message as read                 |
+| Field         | Type                  | Description                                      |
+| ------------- | --------------------- | ------------------------------------------------ |
+| `messages`    | `ComputedRef<T[]>`    | Matching unread messages from the realtime queue |
+| `unreadCount` | `ComputedRef<number>` | Count of matching unread messages                |
+| `markAsRead`  | `(msg) => void`       | Mark a specific message as read                  |
 
 ---
 
@@ -215,6 +212,7 @@ src/modules/orders/
 ```
 
 `notifications/index.ts` barrel:
+
 ```ts
 export { default as OrderShippedEvent } from "./OrderShippedEvent.vue";
 ```

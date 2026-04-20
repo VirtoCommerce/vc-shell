@@ -15,7 +15,7 @@
  */
 
 import type { ComponentInternalInstance, Slots, VNode } from "vue";
-import type { VcColumnProps, ColumnInstance } from "@ui/components/organisms/vc-data-table/types";
+import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/types";
 
 // Re-export for backward compatibility (ColumnInstance now lives in types.ts)
 export type { ColumnInstance };

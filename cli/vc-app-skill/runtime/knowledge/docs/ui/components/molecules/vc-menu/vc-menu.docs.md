@@ -20,11 +20,27 @@ Compositional navigation menu component for building sidebar navigation with sec
       :active="currentRoute === '/dashboard'"
       @click="navigate('/dashboard')"
     />
-    <VcMenuGroup group-id="catalog" icon="lucide-box" title="Catalog">
-      <VcMenuItem title="Products" nested @click="navigate('/products')" />
-      <VcMenuItem title="Categories" nested @click="navigate('/categories')" />
+    <VcMenuGroup
+      group-id="catalog"
+      icon="lucide-box"
+      title="Catalog"
+    >
+      <VcMenuItem
+        title="Products"
+        nested
+        @click="navigate('/products')"
+      />
+      <VcMenuItem
+        title="Categories"
+        nested
+        @click="navigate('/categories')"
+      />
     </VcMenuGroup>
-    <VcMenuItem icon="lucide-settings" title="Settings" @click="navigate('/settings')" />
+    <VcMenuItem
+      icon="lucide-settings"
+      title="Settings"
+      @click="navigate('/settings')"
+    />
   </VcMenu>
 </template>
 
@@ -35,15 +51,15 @@ import { VcMenu, VcMenuItem, VcMenuGroup } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `expanded` | `boolean` | `true` | Show full menu (titles visible) or collapsed (icons only) |
-| `loading` | `boolean` | `false` | Show skeleton loading placeholders instead of content |
+| Prop       | Type      | Default | Description                                               |
+| ---------- | --------- | ------- | --------------------------------------------------------- |
+| `expanded` | `boolean` | `true`  | Show full menu (titles visible) or collapsed (icons only) |
+| `loading`  | `boolean` | `false` | Show skeleton loading placeholders instead of content     |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot      | Description                              |
+| --------- | ---------------------------------------- |
 | `default` | Menu items (`VcMenuItem`, `VcMenuGroup`) |
 
 ## Common Patterns
@@ -70,21 +86,9 @@ import { VcMenu, VcMenuItem, VcMenuGroup } from "@vc-shell/framework";
 ### Items with Badges
 
 ```vue
-<VcMenuItem
-  icon="lucide-shopping-cart"
-  title="New Orders"
-  :badge="{ content: 5, variant: 'primary' }"
-/>
-<VcMenuItem
-  icon="lucide-alert-triangle"
-  title="Returns"
-  :badge="{ content: 99, variant: 'danger' }"
-/>
-<VcMenuItem
-  icon="lucide-bell"
-  title="Notifications"
-  :badge="{ isDot: true, variant: 'warning' }"
-/>
+<VcMenuItem icon="lucide-shopping-cart" title="New Orders" :badge="{ content: 5, variant: 'primary' }" />
+<VcMenuItem icon="lucide-alert-triangle" title="Returns" :badge="{ content: 99, variant: 'danger' }" />
+<VcMenuItem icon="lucide-bell" title="Notifications" :badge="{ isDot: true, variant: 'warning' }" />
 ```
 
 ### Collapsed State
@@ -93,9 +97,9 @@ When `expanded` is `false`, the menu shows only icons and letter abbreviations. 
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--vc-menu-gap` | `2px` | Gap between menu items |
+| Variable        | Default | Description            |
+| --------------- | ------- | ---------------------- |
+| `--vc-menu-gap` | `2px`   | Gap between menu items |
 
 ## Accessibility
 

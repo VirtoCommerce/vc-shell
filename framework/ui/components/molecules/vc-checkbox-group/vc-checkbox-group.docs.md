@@ -34,20 +34,20 @@ const channels = [
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `T[]` | `[]` | Selected values (v-model) |
-| `options` | `CheckboxGroupOption<T>[]` | `[]` | Options to render as checkboxes |
-| `label` | `string` | — | Group label (rendered as fieldset legend) |
-| `tooltip` | `string` | — | Tooltip on the label |
-| `hint` | `string` | — | Hint text below the group |
-| `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction of options |
-| `size` | `"s" \| "m" \| "l"` | `"s"` | Checkbox size for all items |
-| `name` | `string` | auto-generated | Shared name for native checkboxes |
-| `disabled` | `boolean` | `false` | Disable all checkboxes |
-| `required` | `boolean` | `false` | Mark group as required |
-| `error` | `boolean` | `false` | External error flag |
-| `errorMessage` | `string` | — | Error message text |
+| Prop           | Type                         | Default        | Description                               |
+| -------------- | ---------------------------- | -------------- | ----------------------------------------- |
+| `modelValue`   | `T[]`                        | `[]`           | Selected values (v-model)                 |
+| `options`      | `CheckboxGroupOption<T>[]`   | `[]`           | Options to render as checkboxes           |
+| `label`        | `string`                     | —              | Group label (rendered as fieldset legend) |
+| `tooltip`      | `string`                     | —              | Tooltip on the label                      |
+| `hint`         | `string`                     | —              | Hint text below the group                 |
+| `orientation`  | `"vertical" \| "horizontal"` | `"vertical"`   | Layout direction of options               |
+| `size`         | `"s" \| "m" \| "l"`          | `"s"`          | Checkbox size for all items               |
+| `name`         | `string`                     | auto-generated | Shared name for native checkboxes         |
+| `disabled`     | `boolean`                    | `false`        | Disable all checkboxes                    |
+| `required`     | `boolean`                    | `false`        | Mark group as required                    |
+| `error`        | `boolean`                    | `false`        | External error flag                       |
+| `errorMessage` | `string`                     | —              | Error message text                        |
 
 ## CheckboxGroupOption Interface
 
@@ -55,20 +55,20 @@ const channels = [
 interface CheckboxGroupOption<V = string | number | boolean> {
   label: string;
   value: V;
-  disabled?: boolean;  // Disable individual options
+  disabled?: boolean; // Disable individual options
 }
 ```
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:modelValue` | `T[]` | Selected values changed |
+| Event               | Payload | Description             |
+| ------------------- | ------- | ----------------------- |
+| `update:modelValue` | `T[]`   | Selected values changed |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot      | Description                                               |
+| --------- | --------------------------------------------------------- |
 | `default` | Custom checkbox layout (replaces options-based rendering) |
 
 ## Common Patterns
@@ -105,26 +105,13 @@ interface CheckboxGroupOption<V = string | number | boolean> {
 ### Validation Error
 
 ```vue
-<VcCheckboxGroup
-  v-model="selected"
-  label="Required Selection"
-  required
-  :error="selected.length === 0"
-  error-message="Select at least one option"
-  :options="options"
-/>
+<VcCheckboxGroup v-model="selected" label="Required Selection" required :error="selected.length === 0" error-message="Select at least one option" :options="options" />
 ```
 
 ### Custom Slot Layout
 
 ```vue
-<VcCheckboxGroup
-  v-model="flags"
-  label="Feature Flags"
-  hint="Custom layout via default slot"
-  orientation="horizontal"
-  name="feature-flags"
->
+<VcCheckboxGroup v-model="flags" label="Feature Flags" hint="Custom layout via default slot" orientation="horizontal" name="feature-flags">
   <VcCheckbox v-model="flags" value="feature-a">Feature A</VcCheckbox>
   <VcCheckbox v-model="flags" value="feature-b">Feature B</VcCheckbox>
   <VcCheckbox v-model="flags" value="feature-c">Feature C</VcCheckbox>
@@ -148,4 +135,3 @@ interface CheckboxGroupOption<V = string | number | boolean> {
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
-

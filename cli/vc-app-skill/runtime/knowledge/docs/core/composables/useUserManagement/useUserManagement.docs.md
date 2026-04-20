@@ -17,29 +17,45 @@ Uses `createSharedComposable` from VueUse, so all callers share the same state i
 
 ```vue
 <script setup lang="ts">
-import { useUserManagement } from '@vc-shell/framework';
-import { ref } from 'vue';
+import { useUserManagement } from "@vc-shell/framework";
+import { ref } from "vue";
 
 const { signIn, loading, isAuthenticated } = useUserManagement();
-const username = ref('');
-const password = ref('');
-const errorMessage = ref('');
+const username = ref("");
+const password = ref("");
+const errorMessage = ref("");
 
 async function handleLogin() {
-  errorMessage.value = '';
+  errorMessage.value = "";
   const result = await signIn(username.value, password.value);
   if (!result.succeeded) {
-    errorMessage.value = result.error ?? 'Login failed';
+    errorMessage.value = result.error ?? "Login failed";
   }
 }
 </script>
 
 <template>
   <form @submit.prevent="handleLogin">
-    <VcInput v-model="username" label="Username" />
-    <VcInput v-model="password" label="Password" type="password" />
-    <p v-if="errorMessage" class="tw-text-red-500">{{ errorMessage }}</p>
-    <VcButton type="submit" :loading="loading">Sign In</VcButton>
+    <VcInput
+      v-model="username"
+      label="Username"
+    />
+    <VcInput
+      v-model="password"
+      label="Password"
+      type="password"
+    />
+    <p
+      v-if="errorMessage"
+      class="tw-text-red-500"
+    >
+      {{ errorMessage }}
+    </p>
+    <VcButton
+      type="submit"
+      :loading="loading"
+      >Sign In</VcButton
+    >
   </form>
 </template>
 ```
@@ -52,21 +68,21 @@ None.
 
 ### Returns
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `user` | `ComputedRef<UserDetail \| undefined>` | Current user details. |
-| `loading` | `ComputedRef<boolean>` | Whether any operation is in progress. |
-| `isAdministrator` | `ComputedRef<boolean \| undefined>` | Admin status of the current user. |
-| `isAuthenticated` | `ComputedRef<boolean>` | Whether user session is active. |
-| `signIn` | `(username: string, password: string) => Promise<SignInResult>` | Authenticates with username/password. Performs cookie-based login, obtains an OAuth token with offline_access scope, and loads user details. Returns `{ succeeded: true }` on success or `{ succeeded: false, error: string }` on failure. |
-| `signOut` | `() => Promise<void>` | Clears session, auth data, and localStorage. Handles both standard and external SSO sign-out. |
-| `loadUser` | `() => Promise<UserDetail>` | Loads/reloads user info from the server. Deduplicates concurrent calls. |
-| `validateToken` | `(userId: string, token: string) => Promise<boolean>` | Validates a password-reset token. Returns `true` if valid. |
-| `validatePassword` | `(password: string) => Promise<IdentityResult>` | Validates a password against the platform's password policy (length, complexity, etc.). |
-| `resetPasswordByToken` | `(userId: string, password: string, token: string) => Promise<SecurityResult>` | Resets a user's password using a reset token. Returns `{ succeeded: true }` on success. |
-| `requestPasswordReset` | `(loginOrEmail: string) => Promise<RequestPasswordResult>` | Sends a password-reset email to the user. Returns `{ succeeded: true }` on success. |
-| `changeUserPassword` | `(oldPassword: string, newPassword: string) => Promise<SecurityResult \| undefined>` | Changes the current user's password. Requires the old password for verification. |
-| `getLoginType` | `() => Promise<LoginType[]>` | Returns available login types (password-based, external SSO providers, etc.). Used to render the appropriate sign-in UI. |
+| Property               | Type                                                                                 | Description                                                                                                                                                                                                                                |
+| ---------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `user`                 | `ComputedRef<UserDetail \| undefined>`                                               | Current user details.                                                                                                                                                                                                                      |
+| `loading`              | `ComputedRef<boolean>`                                                               | Whether any operation is in progress.                                                                                                                                                                                                      |
+| `isAdministrator`      | `ComputedRef<boolean \| undefined>`                                                  | Admin status of the current user.                                                                                                                                                                                                          |
+| `isAuthenticated`      | `ComputedRef<boolean>`                                                               | Whether user session is active.                                                                                                                                                                                                            |
+| `signIn`               | `(username: string, password: string) => Promise<SignInResult>`                      | Authenticates with username/password. Performs cookie-based login, obtains an OAuth token with offline_access scope, and loads user details. Returns `{ succeeded: true }` on success or `{ succeeded: false, error: string }` on failure. |
+| `signOut`              | `() => Promise<void>`                                                                | Clears session, auth data, and localStorage. Handles both standard and external SSO sign-out.                                                                                                                                              |
+| `loadUser`             | `() => Promise<UserDetail>`                                                          | Loads/reloads user info from the server. Deduplicates concurrent calls.                                                                                                                                                                    |
+| `validateToken`        | `(userId: string, token: string) => Promise<boolean>`                                | Validates a password-reset token. Returns `true` if valid.                                                                                                                                                                                 |
+| `validatePassword`     | `(password: string) => Promise<IdentityResult>`                                      | Validates a password against the platform's password policy (length, complexity, etc.).                                                                                                                                                    |
+| `resetPasswordByToken` | `(userId: string, password: string, token: string) => Promise<SecurityResult>`       | Resets a user's password using a reset token. Returns `{ succeeded: true }` on success.                                                                                                                                                    |
+| `requestPasswordReset` | `(loginOrEmail: string) => Promise<RequestPasswordResult>`                           | Sends a password-reset email to the user. Returns `{ succeeded: true }` on success.                                                                                                                                                        |
+| `changeUserPassword`   | `(oldPassword: string, newPassword: string) => Promise<SecurityResult \| undefined>` | Changes the current user's password. Requires the old password for verification.                                                                                                                                                           |
+| `getLoginType`         | `() => Promise<LoginType[]>`                                                         | Returns available login types (password-based, external SSO providers, etc.). Used to render the appropriate sign-in UI.                                                                                                                   |
 
 ## How It Works
 
@@ -82,9 +98,9 @@ Token data is stored in localStorage under `vc_auth_data` and survives page relo
 
 ```vue
 <script setup lang="ts">
-import { useUserManagement } from '@vc-shell/framework';
-import { ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useUserManagement } from "@vc-shell/framework";
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 const { validateToken, validatePassword, resetPasswordByToken, loading } = useUserManagement();
 const route = useRoute();
@@ -92,39 +108,39 @@ const router = useRouter();
 
 const userId = route.query.userId as string;
 const token = route.query.token as string;
-const newPassword = ref('');
-const confirmPassword = ref('');
-const error = ref('');
+const newPassword = ref("");
+const confirmPassword = ref("");
+const error = ref("");
 const tokenValid = ref(false);
 
 // Validate the token on mount
 onMounted(async () => {
   tokenValid.value = await validateToken(userId, token);
   if (!tokenValid.value) {
-    error.value = 'This reset link has expired or is invalid.';
+    error.value = "This reset link has expired or is invalid.";
   }
 });
 
 async function handleReset() {
-  error.value = '';
+  error.value = "";
 
   if (newPassword.value !== confirmPassword.value) {
-    error.value = 'Passwords do not match.';
+    error.value = "Passwords do not match.";
     return;
   }
 
   // Validate against password policy
   const validation = await validatePassword(newPassword.value);
   if (!validation.succeeded) {
-    error.value = validation.errors?.join(', ') ?? 'Password does not meet requirements.';
+    error.value = validation.errors?.join(", ") ?? "Password does not meet requirements.";
     return;
   }
 
   const result = await resetPasswordByToken(userId, newPassword.value, token);
   if (result.succeeded) {
-    router.push({ name: 'SignIn', query: { message: 'Password reset successfully' } });
+    router.push({ name: "SignIn", query: { message: "Password reset successfully" } });
   } else {
-    error.value = result.errors?.join(', ') ?? 'Reset failed.';
+    error.value = result.errors?.join(", ") ?? "Reset failed.";
   }
 }
 </script>
@@ -134,8 +150,8 @@ async function handleReset() {
 
 ```vue
 <script setup lang="ts">
-import { useUserManagement } from '@vc-shell/framework';
-import { ref, onMounted } from 'vue';
+import { useUserManagement } from "@vc-shell/framework";
+import { ref, onMounted } from "vue";
 
 const { getLoginType, signIn } = useUserManagement();
 const loginTypes = ref<LoginType[]>([]);
@@ -144,20 +160,24 @@ const showPasswordForm = ref(false);
 onMounted(async () => {
   loginTypes.value = await getLoginType();
   // Show password form only if password auth is available
-  showPasswordForm.value = loginTypes.value.some((t) => t.loginProvider === 'password');
+  showPasswordForm.value = loginTypes.value.some((t) => t.loginProvider === "password");
 });
 </script>
 
 <template>
   <div>
-    <form v-if="showPasswordForm" @submit.prevent="handlePasswordLogin">
+    <form
+      v-if="showPasswordForm"
+      @submit.prevent="handlePasswordLogin"
+    >
       <!-- standard username/password form -->
     </form>
 
-    <div v-for="provider in loginTypes.filter((t) => t.loginProvider !== 'password')" :key="provider.loginProvider">
-      <VcButton @click="redirectToSSO(provider)">
-        Sign in with {{ provider.loginProvider }}
-      </VcButton>
+    <div
+      v-for="provider in loginTypes.filter((t) => t.loginProvider !== 'password')"
+      :key="provider.loginProvider"
+    >
+      <VcButton @click="redirectToSSO(provider)"> Sign in with {{ provider.loginProvider }} </VcButton>
     </div>
   </div>
 </template>

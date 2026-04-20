@@ -36,63 +36,65 @@ app.use(aiAgentPlugin, {
 
 ### Plugin Options: `AiAgentPluginOptions`
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `config` | `Partial<IAiAgentConfig>` | `{}` | Panel configuration (see below) |
-| `addGlobalToolbarButton` | `boolean` | `true` | Adds an AI button to every blade's toolbar |
+| Option                   | Type                      | Default | Description                                |
+| ------------------------ | ------------------------- | ------- | ------------------------------------------ |
+| `config`                 | `Partial<IAiAgentConfig>` | `{}`    | Panel configuration (see below)            |
+| `addGlobalToolbarButton` | `boolean`                 | `true`  | Adds an AI button to every blade's toolbar |
 
 ### `IAiAgentConfig`
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `url` | `string` | `""` | Chatbot iframe URL (required) |
-| `title` | `string` | `"Virto OZ"` | Panel header title |
-| `width` | `number` | `362` | Panel width in pixels |
-| `expandedWidth` | `number` | `500` | Panel width when expanded |
-| `allowedOrigins` | `string[]` | `["*"]` | Allowed origins for postMessage validation |
+| Field            | Type       | Default      | Description                                |
+| ---------------- | ---------- | ------------ | ------------------------------------------ |
+| `url`            | `string`   | `""`         | Chatbot iframe URL (required)              |
+| `title`          | `string`   | `"Virto OZ"` | Panel header title                         |
+| `width`          | `number`   | `362`        | Panel width in pixels                      |
+| `expandedWidth`  | `number`   | `500`        | Panel width when expanded                  |
+| `allowedOrigins` | `string[]` | `["*"]`      | Allowed origins for postMessage validation |
 
 ### Composable: `useAiAgent()`
 
 Access the AI agent service from any component within the app.
 
-| Return | Type | Description |
-|--------|------|-------------|
-| `panelState` | `Ref<"closed" \| "open" \| "expanded">` | Current panel state |
-| `isOpen` | `ComputedRef<boolean>` | Whether the panel is visible |
-| `isExpanded` | `ComputedRef<boolean>` | Whether the panel is in expanded mode |
-| `totalItemsCount` | `ComputedRef<number>` | Number of context items |
-| `config` | `Ref<IAiAgentConfig>` | Current configuration |
-| `context` | `ComputedRef<IAiAgentContext>` | Full reactive context |
-| `openPanel()` | `() => void` | Open the AI panel |
-| `closePanel()` | `() => void` | Close the AI panel |
-| `togglePanel()` | `() => void` | Toggle open/close |
-| `expandPanel()` | `() => void` | Expand to larger width |
-| `collapsePanel()` | `() => void` | Collapse to normal width |
-| `setConfig()` | `(config: Partial<IAiAgentConfig>) => void` | Update configuration |
-| `sendMessage()` | `(type, payload) => void` | Send message to chatbot iframe |
-| `onMessage()` | `(handler) => () => void` | Register message handler (returns unsubscribe) |
+| Return            | Type                                        | Description                                    |
+| ----------------- | ------------------------------------------- | ---------------------------------------------- |
+| `panelState`      | `Ref<"closed" \| "open" \| "expanded">`     | Current panel state                            |
+| `isOpen`          | `ComputedRef<boolean>`                      | Whether the panel is visible                   |
+| `isExpanded`      | `ComputedRef<boolean>`                      | Whether the panel is in expanded mode          |
+| `totalItemsCount` | `ComputedRef<number>`                       | Number of context items                        |
+| `config`          | `Ref<IAiAgentConfig>`                       | Current configuration                          |
+| `context`         | `ComputedRef<IAiAgentContext>`              | Full reactive context                          |
+| `openPanel()`     | `() => void`                                | Open the AI panel                              |
+| `closePanel()`    | `() => void`                                | Close the AI panel                             |
+| `togglePanel()`   | `() => void`                                | Toggle open/close                              |
+| `expandPanel()`   | `() => void`                                | Expand to larger width                         |
+| `collapsePanel()` | `() => void`                                | Collapse to normal width                       |
+| `setConfig()`     | `(config: Partial<IAiAgentConfig>) => void` | Update configuration                           |
+| `sendMessage()`   | `(type, payload) => void`                   | Send message to chatbot iframe                 |
+| `onMessage()`     | `(handler) => () => void`                   | Register message handler (returns unsubscribe) |
 
 ### Composable: `useAiAgentContext(options)`
 
 Binds blade data to the AI agent context. Call this in each blade that should participate in AI interactions.
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `dataRef` | `Ref<T> \| Ref<T[]>` | Data to send (single object for details, array for list) |
-| `suggestions` | `ISuggestion[]` | Custom suggestion cards for the chatbot UI |
+| Option        | Type                 | Description                                              |
+| ------------- | -------------------- | -------------------------------------------------------- |
+| `dataRef`     | `Ref<T> \| Ref<T[]>` | Data to send (single object for details, array for list) |
+| `suggestions` | `ISuggestion[]`      | Custom suggestion cards for the chatbot UI               |
 
-| Return | Type | Description |
-|--------|------|-------------|
-| `previewState.isActive` | `ComputedRef<boolean>` | Whether AI-suggested changes are being previewed |
-| `previewState.changedFields` | `ComputedRef<string[]>` | List of field names with pending changes |
+| Return                       | Type                    | Description                                      |
+| ---------------------------- | ----------------------- | ------------------------------------------------ |
+| `previewState.isActive`      | `ComputedRef<boolean>`  | Whether AI-suggested changes are being previewed |
+| `previewState.changedFields` | `ComputedRef<string[]>` | List of field names with pending changes         |
 
 ### PostMessage Protocol
 
 **Shell to Chatbot:**
+
 - `INIT_CONTEXT` -- Initial context when chatbot loads (user, blade, items, suggestions, token)
 - `UPDATE_CONTEXT` -- Context updates when blade/items change
 
 **Chatbot to Shell:**
+
 - `CHAT_READY` -- Chatbot finished loading
 - `NAVIGATE_TO_APP` -- Open a specific blade
 - `PREVIEW_CHANGES` -- Preview data changes in the form
@@ -110,9 +112,7 @@ Binds blade data to the AI agent context. Call this in each blade that should pa
 const product = ref<Product>({});
 const { previewState } = useAiAgentContext({
   dataRef: product,
-  suggestions: [
-    { id: "translate", title: "Translate", icon: "translation", prompt: "Translate to English" },
-  ],
+  suggestions: [{ id: "translate", title: "Translate", icon: "translation", prompt: "Translate to English" }],
 });
 
 // In a list blade

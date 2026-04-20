@@ -64,7 +64,7 @@ export interface IParentCallArgs {
 
 /** @deprecated Stub — use `Component` directly */
 
-export type BladeInstanceConstructor<T extends Component = Component> = Component & {
+export type BladeInstanceConstructor<_T extends Component = Component> = Component & {
   menuItem?: MenuItemConfig;
   [key: string]: any;
 };

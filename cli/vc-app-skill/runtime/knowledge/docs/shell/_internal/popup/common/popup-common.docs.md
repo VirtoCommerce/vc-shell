@@ -12,18 +12,18 @@ These components provide ready-to-use modal dialogs for common scenarios. Each v
 
 The foundation component. Wraps `VcPopup` and adds footer action buttons based on the `mode`.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `title` | `string` | -- | Dialog title |
-| `variant` | `PopupVariant` | `"default"` | Visual style: `"default"`, `"warning"`, `"error"`, `"info"` |
-| `mode` | `"acknowledge" \| "confirm"` | `"acknowledge"` | `acknowledge` = single OK button; `confirm` = Confirm + Cancel |
-| `actionLabel` | `string` | `""` | Label for the single button in acknowledge mode |
-| `confirmLabel` | `string` | `""` | Label for the confirm button |
-| `cancelLabel` | `string` | `""` | Label for the cancel button |
-| `confirmAsText` | `boolean` | `false` | Render confirm button as text-only style |
-| `closable` | `boolean` | `true` | Show close (X) button in the header |
-| `isMobileFullscreen` | `boolean` | `true` | Expand to fullscreen on mobile |
-| `closeOnConfirm` | `boolean` | `false` | Auto-close the popup after confirm is emitted |
+| Prop                 | Type                         | Default         | Description                                                    |
+| -------------------- | ---------------------------- | --------------- | -------------------------------------------------------------- |
+| `title`              | `string`                     | --              | Dialog title                                                   |
+| `variant`            | `PopupVariant`               | `"default"`     | Visual style: `"default"`, `"warning"`, `"error"`, `"info"`    |
+| `mode`               | `"acknowledge" \| "confirm"` | `"acknowledge"` | `acknowledge` = single OK button; `confirm` = Confirm + Cancel |
+| `actionLabel`        | `string`                     | `""`            | Label for the single button in acknowledge mode                |
+| `confirmLabel`       | `string`                     | `""`            | Label for the confirm button                                   |
+| `cancelLabel`        | `string`                     | `""`            | Label for the cancel button                                    |
+| `confirmAsText`      | `boolean`                    | `false`         | Render confirm button as text-only style                       |
+| `closable`           | `boolean`                    | `true`          | Show close (X) button in the header                            |
+| `isMobileFullscreen` | `boolean`                    | `true`          | Expand to fullscreen on mobile                                 |
+| `closeOnConfirm`     | `boolean`                    | `false`         | Auto-close the popup after confirm is emitted                  |
 
 Events: `close`, `confirm`
 
@@ -34,17 +34,13 @@ Slots: `header`, `default` (content), `footer` (receives `{ close, confirm }`)
 A confirm dialog styled with the `warning` variant. Shows Confirm and Cancel buttons.
 
 ```vue
-<VcPopupWarning
-  title="Delete item?"
-  @close="onCancel"
-  @confirm="onDelete"
->
+<VcPopupWarning title="Delete item?" @close="onCancel" @confirm="onDelete">
   <p>This action cannot be undone.</p>
 </VcPopupWarning>
 ```
 
-| Prop | Type | Description |
-|---|---|---|
+| Prop    | Type     | Description  |
+| ------- | -------- | ------------ |
 | `title` | `string` | Dialog title |
 
 Events: `close`, `confirm`
@@ -55,16 +51,13 @@ Slots: `header`, `default`
 An acknowledge dialog styled with the `error` variant. Shows a single OK button.
 
 ```vue
-<VcPopupError
-  title="Operation Failed"
-  @close="dismiss"
->
+<VcPopupError title="Operation Failed" @close="dismiss">
   <p>Could not save changes. Please try again.</p>
 </VcPopupError>
 ```
 
-| Prop | Type | Description |
-|---|---|---|
+| Prop    | Type     | Description  |
+| ------- | -------- | ------------ |
 | `title` | `string` | Dialog title |
 
 Events: `close`
@@ -75,16 +68,13 @@ Slots: `header`, `default`
 An acknowledge dialog styled with the `info` variant. Shows a single OK button.
 
 ```vue
-<VcPopupInfo
-  title="Information"
-  @close="dismiss"
->
+<VcPopupInfo title="Information" @close="dismiss">
   <p>Your changes have been saved successfully.</p>
 </VcPopupInfo>
 ```
 
-| Prop | Type | Description |
-|---|---|---|
+| Prop    | Type     | Description  |
+| ------- | -------- | ------------ |
 | `title` | `string` | Dialog title |
 
 Events: `close`
@@ -95,12 +85,7 @@ Slots: `header`, `default`
 ### Confirmation before destructive action
 
 ```vue
-<VcPopupWarning
-  v-if="showDeleteConfirm"
-  title="Delete Order"
-  @confirm="deleteOrder"
-  @close="showDeleteConfirm = false"
->
+<VcPopupWarning v-if="showDeleteConfirm" title="Delete Order" @confirm="deleteOrder" @close="showDeleteConfirm = false">
   Are you sure you want to delete this order?
 </VcPopupWarning>
 ```
@@ -108,12 +93,7 @@ Slots: `header`, `default`
 ### Custom footer in VcPopupBase
 
 ```vue
-<VcPopupBase
-  variant="warning"
-  mode="confirm"
-  title="Custom Actions"
-  @close="onClose"
->
+<VcPopupBase variant="warning" mode="confirm" title="Custom Actions" @close="onClose">
   <template #footer="{ close, confirm }">
     <VcButton variant="danger" @click="confirm">Delete Forever</VcButton>
     <VcButton @click="close">Keep</VcButton>

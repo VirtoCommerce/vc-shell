@@ -13,15 +13,15 @@ Manages color theme registration, switching, and persistence. Themes are applied
 
 ```vue
 <script setup lang="ts">
-import { useTheme } from '@vc-shell/framework';
+import { useTheme } from "@vc-shell/framework";
 
 const { themes, currentThemeKey, currentLocalizedName, next, setTheme, register } = useTheme();
 
 // Register a dark theme from your module
-register({ key: 'dark', localizationKey: 'CORE.THEMES.DARK' });
+register({ key: "dark", localizationKey: "CORE.THEMES.DARK" });
 
 // Switch to it explicitly
-setTheme('dark');
+setTheme("dark");
 
 // Or cycle through all registered themes (light -> dark -> light -> ...)
 next();
@@ -39,28 +39,28 @@ next();
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `themes` | `ComputedRef<DisplayTheme[]>` | All registered themes with their `key` and localized `name`. Reactive -- updates when themes are registered/unregistered. |
-| `currentThemeKey` | `Ref<string>` | Active theme key (e.g., `"light"`, `"dark"`). Two-way reactive -- setting it switches the theme. |
-| `currentLocalizedName` | `ComputedRef<string>` | Localized display name of the active theme (e.g., "Light", "Dark"). Falls back to capitalized key. |
-| `next` | `() => void` | Cycle to the next registered theme in order. Wraps around at the end. |
-| `setTheme` | `(themeKey: string) => void` | Switch to a specific registered theme. Logs a warning if the key is not registered. |
-| `register` | `(themes: ThemeDefinition \| ThemeDefinition[]) => void` | Add one or more themes to the global registry. Duplicates (by key) are silently ignored. |
-| `unregister` | `(keys: string \| string[]) => void` | Remove themes from the registry by key. |
+| Property               | Type                                                     | Description                                                                                                               |
+| ---------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `themes`               | `ComputedRef<DisplayTheme[]>`                            | All registered themes with their `key` and localized `name`. Reactive -- updates when themes are registered/unregistered. |
+| `currentThemeKey`      | `Ref<string>`                                            | Active theme key (e.g., `"light"`, `"dark"`). Two-way reactive -- setting it switches the theme.                          |
+| `currentLocalizedName` | `ComputedRef<string>`                                    | Localized display name of the active theme (e.g., "Light", "Dark"). Falls back to capitalized key.                        |
+| `next`                 | `() => void`                                             | Cycle to the next registered theme in order. Wraps around at the end.                                                     |
+| `setTheme`             | `(themeKey: string) => void`                             | Switch to a specific registered theme. Logs a warning if the key is not registered.                                       |
+| `register`             | `(themes: ThemeDefinition \| ThemeDefinition[]) => void` | Add one or more themes to the global registry. Duplicates (by key) are silently ignored.                                  |
+| `unregister`           | `(keys: string \| string[]) => void`                     | Remove themes from the registry by key.                                                                                   |
 
 ### ThemeDefinition
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `key` | `string` | Yes | Unique theme identifier. Used as the `data-theme` attribute value on `<html>` and as the localStorage persistence key. |
-| `localizationKey` | `string` | No | i18n key for the display name (e.g., `"CORE.THEMES.DARK"`). Falls back to the capitalized `key` (e.g., `"Dark"`). |
+| Field             | Type     | Required | Description                                                                                                            |
+| ----------------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `key`             | `string` | Yes      | Unique theme identifier. Used as the `data-theme` attribute value on `<html>` and as the localStorage persistence key. |
+| `localizationKey` | `string` | No       | i18n key for the display name (e.g., `"CORE.THEMES.DARK"`). Falls back to the capitalized `key` (e.g., `"Dark"`).      |
 
 ### DisplayTheme
 
-| Field | Type | Description |
-|---|---|---|
-| `key` | `string` | Theme identifier |
+| Field  | Type     | Description                                                                  |
+| ------ | -------- | ---------------------------------------------------------------------------- |
+| `key`  | `string` | Theme identifier                                                             |
 | `name` | `string` | Localized display name, resolved from `localizationKey` or capitalized `key` |
 
 ## How It Works
@@ -77,16 +77,16 @@ next();
 
 ```typescript
 // my-module/index.ts
-import type { App } from 'vue';
-import { useTheme } from '@vc-shell/framework';
+import type { App } from "vue";
+import { useTheme } from "@vc-shell/framework";
 
 export default {
   install(app: App) {
     const { register } = useTheme();
 
     register([
-      { key: 'ocean', localizationKey: 'MY_MODULE.THEMES.OCEAN' },
-      { key: 'forest', localizationKey: 'MY_MODULE.THEMES.FOREST' },
+      { key: "ocean", localizationKey: "MY_MODULE.THEMES.OCEAN" },
+      { key: "forest", localizationKey: "MY_MODULE.THEMES.FOREST" },
     ]);
   },
 };
@@ -113,7 +113,7 @@ Then define your theme's CSS variables scoped by the `data-theme` attribute:
 
 ```vue
 <script setup lang="ts">
-import { useTheme } from '@vc-shell/framework';
+import { useTheme } from "@vc-shell/framework";
 
 const { themes, currentThemeKey, setTheme } = useTheme();
 </script>

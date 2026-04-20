@@ -22,14 +22,14 @@ import { VcSkeleton } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `"text" \| "circle" \| "block"` | `"text"` | Shape variant: text rows, circular, or rectangular |
-| `rows` | `number` | `1` | Number of text rows (only for `variant="text"`) |
-| `width` | `string \| number` | -- | Custom width for circle/block (number = px) |
-| `height` | `string \| number` | -- | Custom height for circle/block (number = px) |
-| `animated` | `boolean` | `true` | Enables pulse animation |
-| `ariaLabel` | `string` | `"Loading..."` | Screen reader announcement |
+| Prop        | Type                            | Default        | Description                                        |
+| ----------- | ------------------------------- | -------------- | -------------------------------------------------- |
+| `variant`   | `"text" \| "circle" \| "block"` | `"text"`       | Shape variant: text rows, circular, or rectangular |
+| `rows`      | `number`                        | `1`            | Number of text rows (only for `variant="text"`)    |
+| `width`     | `string \| number`              | --             | Custom width for circle/block (number = px)        |
+| `height`    | `string \| number`              | --             | Custom height for circle/block (number = px)       |
+| `animated`  | `boolean`                       | `true`         | Enables pulse animation                            |
+| `ariaLabel` | `string`                        | `"Loading..."` | Screen reader announcement                         |
 
 ## Common Patterns
 
@@ -52,9 +52,17 @@ The last row automatically renders at 60% width for a natural paragraph feel.
 ```vue
 <template>
   <div class="tw-border tw-rounded-lg tw-overflow-hidden tw-shadow-sm">
-    <VcSkeleton variant="block" width="100%" height="200px" />
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      height="200px"
+    />
     <div class="tw-p-4">
-      <VcSkeleton variant="block" width="60%" height="20px" />
+      <VcSkeleton
+        variant="block"
+        width="60%"
+        height="20px"
+      />
       <div class="tw-mt-3">
         <VcSkeleton :rows="3" />
       </div>
@@ -68,10 +76,22 @@ The last row automatically renders at 60% width for a natural paragraph feel.
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <div v-for="i in 3" :key="i" class="tw-flex tw-gap-4 tw-items-center">
-      <VcSkeleton variant="circle" :width="40" :height="40" />
+    <div
+      v-for="i in 3"
+      :key="i"
+      class="tw-flex tw-gap-4 tw-items-center"
+    >
+      <VcSkeleton
+        variant="circle"
+        :width="40"
+        :height="40"
+      />
       <div class="tw-flex-1">
-        <VcSkeleton variant="block" width="40%" height="14px" />
+        <VcSkeleton
+          variant="block"
+          width="40%"
+          height="14px"
+        />
         <div class="tw-mt-2">
           <VcSkeleton :rows="1" />
         </div>
@@ -83,13 +103,13 @@ The last row automatically renders at 60% width for a natural paragraph feel.
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|---|---|---|
-| `--vc-skeleton-bg` | `var(--neutrals-200)` | Shape background color |
-| `--vc-skeleton-highlight` | `var(--neutrals-300)` | Highlight color (for future shimmer) |
-| `--vc-skeleton-border-radius` | `6px` | Corner radius for text rows and blocks |
-| `--vc-skeleton-row-height` | `16px` | Height of each text row |
-| `--vc-skeleton-row-gap` | `12px` | Vertical gap between text rows |
+| Variable                      | Default               | Description                            |
+| ----------------------------- | --------------------- | -------------------------------------- |
+| `--vc-skeleton-bg`            | `var(--neutrals-200)` | Shape background color                 |
+| `--vc-skeleton-highlight`     | `var(--neutrals-300)` | Highlight color (for future shimmer)   |
+| `--vc-skeleton-border-radius` | `6px`                 | Corner radius for text rows and blocks |
+| `--vc-skeleton-row-height`    | `16px`                | Height of each text row                |
+| `--vc-skeleton-row-gap`       | `12px`                | Vertical gap between text rows         |
 
 ## Accessibility
 

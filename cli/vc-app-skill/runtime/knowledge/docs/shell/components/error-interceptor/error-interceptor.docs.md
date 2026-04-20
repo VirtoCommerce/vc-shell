@@ -17,16 +17,16 @@ The component is renderless -- it renders its default slot and passes the curren
 
 ## Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
+| Prop      | Type      | Default | Description                                      |
+| --------- | --------- | ------- | ------------------------------------------------ |
 | `capture` | `boolean` | `false` | Force error capture even outside a blade context |
 
 ## Slot Props
 
-| Prop | Type | Description |
-|---|---|---|
+| Prop    | Type                       | Description                             |
+| ------- | -------------------------- | --------------------------------------- |
 | `error` | `DisplayableError \| null` | The captured error, or null if no error |
-| `reset` | `() => void` | Clears the error state |
+| `reset` | `() => void`               | Clears the error state                  |
 
 ## Usage
 

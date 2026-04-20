@@ -10,12 +10,7 @@ Generic worked example for the plural list composable shape.
 
 ```ts
 import { useApiClient, useAsync, useLoading } from "@vc-shell/framework";
-import {
-  SearchXxxQuery,
-  SearchXxxResult,
-  XxxType,
-  XxxClient,
-} from "../../../../api_client/<module-client-file>";
+import { SearchXxxQuery, SearchXxxResult, XxxType, XxxClient } from "../../../../api_client/<module-client-file>";
 import type { SearchXxxQuery as ISearchXxxQuery } from "../../../../api_client/<module-client-file>";
 import { computed, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -39,7 +34,7 @@ interface IUseXxxsOptions {
 
 export default (options?: IUseXxxsOptions): IUseXxxs => {
   const { getApiClient } = useApiClient(XxxClient);
-  const route = useRoute();   // for extracting route params (e.g., ownerId, parentId)
+  const route = useRoute(); // for extracting route params (e.g., ownerId, parentId)
 
   const pageSize = options?.pageSize || 20;
 
@@ -90,12 +85,7 @@ export default (options?: IUseXxxsOptions): IUseXxxs => {
 
 ```ts
 import { useApiClient, useAsync, useLoading } from "@vc-shell/framework";
-import {
-  SearchUsersQuery,
-  SearchUsersResult,
-  User,
-  UserSecurityClient,
-} from "../../../../api_client/virtocommerce.mymodule";
+import { SearchUsersQuery, SearchUsersResult, User, UserSecurityClient } from "../../../../api_client/virtocommerce.mymodule";
 import type { SearchUsersQuery as ISearchUsersQuery } from "../../../../api_client/virtocommerce.mymodule";
 import { computed, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -158,7 +148,9 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
 ## Key Rules
 
 ### File location
+
 Each composable lives in its own subdirectory with an `index.ts`:
+
 ```
 composables/
 ├── useXxxs/
@@ -167,39 +159,52 @@ composables/
 ```
 
 ### Default export (not named)
+
 The composable is a **default export** (a factory function). Named exports are the interfaces only. The barrel (`composables/index.ts`) wraps it with a named export:
+
 ```ts
 export { default as useXxxs } from "./useXxxs";
 ```
 
 ### Type aliasing
+
 NSwag generates classes with the same name as their interfaces. Import the class for runtime use, and import the interface type separately with an alias:
+
 ```ts
-import { SearchXxxQuery, XxxClient } from "...";            // class (runtime)
+import { SearchXxxQuery, XxxClient } from "..."; // class (runtime)
 import type { SearchXxxQuery as ISearchXxxQuery } from "..."; // interface (type-only)
 ```
 
 ### `useAsync` signature
+
 `useAsync<TArg>(fn)` — generic `TArg` is the type of the argument passed to the action:
+
 ```ts
 const { action: getXxxs, loading: getXxxsLoading } = useAsync<ISearchXxxQuery>(async (query) => {
   // query is typed as ISearchXxxQuery | undefined
 });
 ```
+
 `action` is the callable — invoke it as `getXxxs(query)`.
 
 ### `useLoading`
+
 Wrap loading refs with `useLoading` for consistent boolean ref behavior:
+
 ```ts
 loading: useLoading(getXxxsLoading),
 ```
+
 If there are multiple async operations (e.g., search + delete), pass all loading refs:
+
 ```ts
 loading: useLoading(getXxxsLoading, deleteXxxLoading),
 ```
 
 ### Route params
+
 Use `useRoute()` to access route params when the API requires a parent entity ID (e.g., `ownerId`, `orderId`). Access inside the async function, not at module scope:
+
 ```ts
 const route = useRoute();
 // inside useAsync callback:
@@ -207,15 +212,18 @@ const parentId = route?.params?.parentId as string;
 ```
 
 ### No `useI18n` in composables
+
 i18n belongs in blade components only. Composables must not import or use `useI18n`.
 
 ### `searchQuery` is mutable
+
 The `searchQuery` ref is returned with `Ref<ISearchXxxQuery>` (not `readonly`) because the blade reads it to construct reload/pagination calls:
+
 ```ts
 // In blade:
 const reload = async () => {
   await getXxxs({
-    ...searchQuery.value,          // preserve existing params
+    ...searchQuery.value, // preserve existing params
     skip: (currentPage.value - 1) * (searchQuery.value?.take ?? 20),
     sort: sortExpression.value,
   });
@@ -223,15 +231,19 @@ const reload = async () => {
 ```
 
 ### `currentPage` computation
+
 ```ts
 currentPage: computed(() => Math.floor((searchQuery.value.skip || 0) / pageSize) + 1),
 ```
+
 Derived from `skip` — no separate state needed.
 
 ### `pages` computation
+
 ```ts
 pages: computed(() => Math.ceil((searchResult.value?.totalCount || 0) / pageSize)),
 ```
+
 Total number of pages for pagination component.
 
 ---

@@ -3,7 +3,7 @@ import { mount } from "@vue/test-utils";
 import TableSelectAllBar from "./TableSelectAllBar.vue";
 
 vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string, ...args: unknown[]) => k }),
+  useI18n: () => ({ t: (k: string, ..._args: unknown[]) => k }),
 }));
 
 const stubs = {

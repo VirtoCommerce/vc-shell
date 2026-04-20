@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { restoreFromUrl } from "@core/blade-navigation/utils/restoreFromUrl";
 import { createBladeStack } from "@core/blade-navigation/useBladeStack";
 import type { IBladeRegistry, IBladeRegistrationData } from "@core/composables/useBladeRegistry";
-import type { IBladeStack, ParsedBladeUrl } from "@core/blade-navigation/types";
+import type { IBladeStack } from "@core/blade-navigation/types";
 
 // Mock notification to avoid backend registration requirement in tests
 vi.mock("@core/notifications/notification", () => ({

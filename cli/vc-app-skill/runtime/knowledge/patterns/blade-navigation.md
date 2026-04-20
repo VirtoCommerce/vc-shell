@@ -9,15 +9,7 @@ Blades are stacked panels rendered by `VcBladeNavigation`. Navigation between bl
 ```ts
 import { useBlade } from "@vc-shell/framework";
 
-const {
-  openBlade,
-  closeSelf,
-  callParent,
-  exposeToChildren,
-  onBeforeClose,
-  param,
-  options,
-} = useBlade<OptionsType>();
+const { openBlade, closeSelf, callParent, exposeToChildren, onBeforeClose, param, options } = useBlade<OptionsType>();
 ```
 
 `useBlade()` must be called inside `<script setup>` of a blade component. It uses provide/inject to wire the blade hierarchy.
@@ -58,6 +50,7 @@ entity.value.name = options.value?.prefilledName ?? "";
 ## `openBlade()` — Open a child blade
 
 Full signature:
+
 ```ts
 openBlade({
   name: string,           // defineBlade name of the target blade
@@ -133,7 +126,7 @@ const { callParent } = useBlade();
 
 // In details blade after save:
 await updateXxx(entity.value);
-callParent("reload");   // calls parent's reload() function
+callParent("reload"); // calls parent's reload() function
 closeSelf();
 ```
 
@@ -170,19 +163,19 @@ const { showConfirmation } = usePopup();
 onBeforeClose(async () => {
   if (modified.value) {
     // returns true to BLOCK close, false to ALLOW close
-    return !(await showConfirmation(
-      unref(computed(() => t("MODULE.PAGES.ALERTS.CLOSE_CONFIRMATION"))),
-    ));
+    return !(await showConfirmation(unref(computed(() => t("MODULE.PAGES.ALERTS.CLOSE_CONFIRMATION")))));
   }
-  return false;   // no unsaved changes — allow close
+  return false; // no unsaved changes — allow close
 });
 ```
 
 Return value semantics:
+
 - `false` → close is allowed
 - `true` → close is blocked (user stays on the blade)
 
 The pattern `!(await showConfirmation(...))` works as:
+
 - User clicks "Confirm" → `showConfirmation` returns `true` → `!true` = `false` → close allowed
 - User clicks "Cancel" → `showConfirmation` returns `false` → `!false` = `true` → close blocked
 

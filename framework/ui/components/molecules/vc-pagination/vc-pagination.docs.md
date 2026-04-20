@@ -71,7 +71,10 @@ The most common use case is paginating a data table:
 
 ```vue
 <template>
-  <VcDataTable :items="pagedItems" :columns="columns" />
+  <VcDataTable
+    :items="pagedItems"
+    :columns="columns"
+  />
   <VcPagination
     :pages="Math.ceil(totalItems / pageSize)"
     :current-page="currentPage"
@@ -143,8 +146,7 @@ Combine VcPagination with a page-size dropdown for a complete pagination toolbar
     />
     <span class="tw-text-sm tw-text-gray-500">
       {{ (currentPage - 1) * pageSize + 1 }}
-      - {{ Math.min(currentPage * pageSize, totalItems) }}
-      of {{ totalItems }}
+      - {{ Math.min(currentPage * pageSize, totalItems) }} of {{ totalItems }}
     </span>
   </div>
 </template>
@@ -243,36 +245,36 @@ currentPage.value = Math.min(currentPage.value, totalPages.value);
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `pages` | `number` | `1` | Total number of pages |
-| `currentPage` | `number` | `1` | Currently active page (1-based) |
-| `maxPages` | `number` | -- | Override visible page button count. Default: 3 on mobile, 5 on desktop |
-| `showFirstLast` | `boolean` | `true` | Show first/last page navigation buttons |
-| `variant` | `"default" \| "minimal"` | `"default"` | Visual style variant |
+| Prop            | Type                     | Default     | Description                                                            |
+| --------------- | ------------------------ | ----------- | ---------------------------------------------------------------------- |
+| `pages`         | `number`                 | `1`         | Total number of pages                                                  |
+| `currentPage`   | `number`                 | `1`         | Currently active page (1-based)                                        |
+| `maxPages`      | `number`                 | --          | Override visible page button count. Default: 3 on mobile, 5 on desktop |
+| `showFirstLast` | `boolean`                | `true`      | Show first/last page navigation buttons                                |
+| `variant`       | `"default" \| "minimal"` | `"default"` | Visual style variant                                                   |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event       | Payload  | Description                                                                 |
+| ----------- | -------- | --------------------------------------------------------------------------- |
 | `itemClick` | `number` | Emitted when any page button is clicked. Payload is the 1-based page number |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--pagination-item-width` | `29px` | Width of each page button |
-| `--pagination-item-height` | `29px` | Height of each page button |
-| `--pagination-item-color` | `var(--neutrals-500)` | Default text color |
-| `--pagination-item-color-hover` | `var(--primary-500)` | Hover text color |
-| `--pagination-item-color-current` | `var(--additional-50)` | Current page text color |
-| `--pagination-item-background-color` | `var(--additional-50)` | Default background |
-| `--pagination-item-background-color-hover` | `var(--primary-100)` | Hover background |
-| `--pagination-item-background-color-current` | `var(--primary-500)` | Current page background |
-| `--pagination-item-color-disabled` | `var(--neutrals-400)` | Disabled button text color |
-| `--pagination-item-background-color-disabled` | `var(--neutrals-100)` | Disabled button background |
-| `--pagination-item-border-color` | `var(--secondary-100)` | Default border color |
-| `--pagination-focus-ring-color` | `var(--primary-100)` | Focus ring color for keyboard navigation |
+| Variable                                      | Default                | Description                              |
+| --------------------------------------------- | ---------------------- | ---------------------------------------- |
+| `--pagination-item-width`                     | `29px`                 | Width of each page button                |
+| `--pagination-item-height`                    | `29px`                 | Height of each page button               |
+| `--pagination-item-color`                     | `var(--neutrals-500)`  | Default text color                       |
+| `--pagination-item-color-hover`               | `var(--primary-500)`   | Hover text color                         |
+| `--pagination-item-color-current`             | `var(--additional-50)` | Current page text color                  |
+| `--pagination-item-background-color`          | `var(--additional-50)` | Default background                       |
+| `--pagination-item-background-color-hover`    | `var(--primary-100)`   | Hover background                         |
+| `--pagination-item-background-color-current`  | `var(--primary-500)`   | Current page background                  |
+| `--pagination-item-color-disabled`            | `var(--neutrals-400)`  | Disabled button text color               |
+| `--pagination-item-background-color-disabled` | `var(--neutrals-100)`  | Disabled button background               |
+| `--pagination-item-border-color`              | `var(--secondary-100)` | Default border color                     |
+| `--pagination-focus-ring-color`               | `var(--primary-100)`   | Focus ring color for keyboard navigation |
 
 ## Accessibility
 

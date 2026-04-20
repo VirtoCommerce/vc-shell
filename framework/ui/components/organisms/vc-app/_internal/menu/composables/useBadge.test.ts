@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { mountWithSetup } from "@framework/test-helpers";
 
 const mockBadges = ref(new Map<string, unknown>());
@@ -9,7 +9,7 @@ vi.mock("@core/composables/useMenuService", () => ({
   }),
 }));
 
-import { useBadge, type ResolvedBadge } from "./useBadge";
+import { useBadge } from "./useBadge";
 
 describe("useBadge", () => {
   beforeEach(() => {

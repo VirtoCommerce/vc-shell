@@ -23,23 +23,23 @@ That's it. The CLI will:
 
 Before running the migration, review the key breaking changes:
 
-| Change | Impact | Automated? |
-|--------|--------|:----------:|
-| `createAppModule` → `defineAppModule` | All module entry points | Yes |
-| `useBladeNavigation` → `useBlade` | All blade composable usage | Yes |
-| `useNotifications` → `useBladeNotifications` | Notification composable | Yes |
-| Blade Props/Emits boilerplate removal | All blade components | Yes |
-| Import path splitting (ai-agent, extensions) | Imports of moved symbols | Yes |
-| Deprecated injection key renames (6 symbols) | Injection key references | Yes |
-| `useWidgets` → `useBladeWidgets` | Widget registration | Partial* |
-| Composable return type renames (20 types) | Type annotations | Yes |
-| VcBanner variant prop values | Template attributes | Yes |
-| VcSwitch `tooltip` → `hint` | Template attributes | Yes |
-| VcIcon `useContainer` removal | Template attributes | Yes |
-| Font Awesome → Material Symbols icons | Icon class names | Diagnostic |
-| SCSS `@import` → `@use` | Stylesheet imports | Diagnostic |
-| Menu `group`/`groupIcon` → `groupConfig` | Menu configuration | Diagnostic |
-| Manual `.d.ts` shims → `@vc-shell/framework/globals` | tsconfig.json | Yes |
+| Change                                               | Impact                     | Automated? |
+| ---------------------------------------------------- | -------------------------- | :--------: |
+| `createAppModule` → `defineAppModule`                | All module entry points    |    Yes     |
+| `useBladeNavigation` → `useBlade`                    | All blade composable usage |    Yes     |
+| `useNotifications` → `useBladeNotifications`         | Notification composable    |    Yes     |
+| Blade Props/Emits boilerplate removal                | All blade components       |    Yes     |
+| Import path splitting (ai-agent, extensions)         | Imports of moved symbols   |    Yes     |
+| Deprecated injection key renames (6 symbols)         | Injection key references   |    Yes     |
+| `useWidgets` → `useBladeWidgets`                     | Widget registration        | Partial\*  |
+| Composable return type renames (20 types)            | Type annotations           |    Yes     |
+| VcBanner variant prop values                         | Template attributes        |    Yes     |
+| VcSwitch `tooltip` → `hint`                          | Template attributes        |    Yes     |
+| VcIcon `useContainer` removal                        | Template attributes        |    Yes     |
+| Font Awesome → Material Symbols icons                | Icon class names           | Diagnostic |
+| SCSS `@import` → `@use`                              | Stylesheet imports         | Diagnostic |
+| Menu `group`/`groupIcon` → `groupConfig`             | Menu configuration         | Diagnostic |
+| Manual `.d.ts` shims → `@vc-shell/framework/globals` | tsconfig.json              |    Yes     |
 
 \* `useWidgets` is renamed automatically, but `registerWidget`/`unregisterWidget` calls require manual migration to the declarative `useBladeWidgets([...])` API.
 
@@ -53,13 +53,13 @@ Before running the migration, review the key breaking changes:
 npx @vc-shell/migrate [options]
 ```
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--to <version>` | Target framework version | `2.0.0` |
+| Option               | Description                                                                              | Default        |
+| -------------------- | ---------------------------------------------------------------------------------------- | -------------- |
+| `--to <version>`     | Target framework version                                                                 | `2.0.0`        |
 | `--transform <name>` | Run only a specific transform (bypasses version filter — runs even if already on target) | all applicable |
-| `--dry-run` | Preview changes without writing files | `false` |
-| `--list` | List all available transforms and exit | |
-| `--cwd <path>` | Working directory (your app root) | `.` |
+| `--dry-run`          | Preview changes without writing files                                                    | `false`        |
+| `--list`             | List all available transforms and exit                                                   |                |
+| `--cwd <path>`       | Working directory (your app root)                                                        | `.`            |
 
 ### Examples
 
@@ -114,13 +114,13 @@ Applied:
 
 ### Transform categories
 
-| Category | Behavior |
-|----------|----------|
-| **Script transforms** | Modify `<script>` blocks in `.vue` files and `.ts` files using jscodeshift AST manipulation |
-| **Template transforms** | Modify `<template>` blocks in `.vue` files using string-based pattern matching |
-| **Script + Template** | Both (e.g., `blade-props-simplification` removes props from script AND attributes from template) |
-| **Config transforms** | Modify project configuration files like `tsconfig.json` |
-| **Diagnostic** | Report issues via warnings but never modify files — manual action required |
+| Category                | Behavior                                                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| **Script transforms**   | Modify `<script>` blocks in `.vue` files and `.ts` files using jscodeshift AST manipulation      |
+| **Template transforms** | Modify `<template>` blocks in `.vue` files using string-based pattern matching                   |
+| **Script + Template**   | Both (e.g., `blade-props-simplification` removes props from script AND attributes from template) |
+| **Config transforms**   | Modify project configuration files like `tsconfig.json`                                          |
+| **Diagnostic**          | Report issues via warnings but never modify files — manual action required                       |
 
 ### Format preservation
 
@@ -224,14 +224,14 @@ Moves symbols to sub-entry points: `aiAgentPlugin`, `useAiAgent`, etc. → `@vc-
 
 Renames 6 deprecated injection key aliases:
 
-| Old | New |
-|-----|-----|
-| `navigationViewLocation` | `NavigationViewLocationKey` |
-| `BladeInstance` | `BladeInstanceKey` |
-| `NotificationTemplatesSymbol` | `NotificationTemplatesKey` |
-| `BLADE_BACK_BUTTON` | `BladeBackButtonKey` |
-| `TOOLBAR_SERVICE` | `ToolbarServiceKey` |
-| `EMBEDDED_MODE` | `EmbeddedModeKey` |
+| Old                           | New                         |
+| ----------------------------- | --------------------------- |
+| `navigationViewLocation`      | `NavigationViewLocationKey` |
+| `BladeInstance`               | `BladeInstanceKey`          |
+| `NotificationTemplatesSymbol` | `NotificationTemplatesKey`  |
+| `BLADE_BACK_BUTTON`           | `BladeBackButtonKey`        |
+| `TOOLBAR_SERVICE`             | `ToolbarServiceKey`         |
+| `EMBEDDED_MODE`               | `EmbeddedModeKey`           |
 
 ### `widgets-migration` <sup>2.0.0</sup>
 
@@ -278,6 +278,7 @@ If something goes wrong after migration:
 2. **Run TypeScript check** — `npx tsc --noEmit` catches type errors introduced by renames. Most should be caught by the transforms, but edge cases exist.
 
 3. **Re-run a single transform** — if one specific transform caused issues:
+
    ```bash
    git checkout -- .  # revert all changes
    npx @vc-shell/migrate --transform define-app-module  # run just that one
@@ -318,6 +319,7 @@ If something goes wrong after migration:
 ### Adding a new transform
 
 1. Create `src/transforms/my-transform.ts` following the jscodeshift signature:
+
    ```ts
    import type { API, FileInfo, Options } from "jscodeshift";
    import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
@@ -335,6 +337,7 @@ If something goes wrong after migration:
    ```
 
 2. Register in `src/transforms/registry.ts`:
+
    ```ts
    {
      name: "my-transform",

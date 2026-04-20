@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 // Mock i18n before importing the composable
 vi.mock("@core/plugins/i18n", () => ({

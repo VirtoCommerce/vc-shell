@@ -31,8 +31,7 @@ const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options): 
   const src = fileInfo.source;
 
   if (fileInfo.path.endsWith(".ts")) {
-    const hasTriple =
-      TOTAL_COUNT_RE.test(src) && PAGES_RE.test(src) && CURRENT_PAGE_RE.test(src);
+    const hasTriple = TOTAL_COUNT_RE.test(src) && PAGES_RE.test(src) && CURRENT_PAGE_RE.test(src);
     if (hasTriple) {
       api.report(
         `${fileInfo.path}: Manual pagination triple (totalCount/pages/currentPage). Replace with useDataTablePagination(). See migration guide: useDataTablePagination.`,

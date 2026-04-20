@@ -26,6 +26,7 @@ This agent does NOT write files. It reads the module source tree and produces a 
 Read `{targetDir}/index.ts` (or `{targetDir}/index.js` if TypeScript variant is absent).
 
 Extract:
+
 - **Module name** — from the `defineAppModule` call's first argument or the `id` / `name` field in the object argument
 - **Blade registrations** — from the `blades` key in `defineAppModule`. Each entry maps a blade component import to its registration. Collect the import paths to locate blade files.
 - **All imports** — record import paths and specifiers for cross-referencing
@@ -140,6 +141,7 @@ Combine all extracted data into the output contract structure.
 ## Self-Check
 
 Before completing, verify:
+
 - [ ] All `.vue` files in `pages/` have been discovered and typed correctly as `list`, `details`, or `custom`
 - [ ] All composables in `composables/` (including nested index.ts patterns) have been discovered with their exports listed
 - [ ] API connection status is accurate — reflects actual `useApiClient` usage, not just the presence of import paths

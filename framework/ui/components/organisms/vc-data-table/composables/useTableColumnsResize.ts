@@ -1,6 +1,6 @@
 import { ref, watch, type Ref, onBeforeUnmount } from "vue";
 import type { ColumnState, ColumnSpec } from "../types";
-import { computeColumnWidths, DEFAULT_MIN_COLUMN_PX, type EngineOutput } from "./useColumnWidthEngine";
+import { DEFAULT_MIN_COLUMN_PX, type EngineOutput } from "./useColumnWidthEngine";
 
 export interface UseTableColumnsResizeOptions {
   columnState: Ref<ColumnState>;

@@ -121,7 +121,7 @@
  * - Drag & drop for row reorder
  * - Slots for actions, expansion, group header/footer
  */
-import { computed, TransitionGroup } from "vue";
+import { computed } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 import type { VcColumnProps } from "@ui/components/organisms/vc-data-table/types";
 import type { GroupedData } from "@ui/components/organisms/vc-data-table/composables/useTableRowGrouping";

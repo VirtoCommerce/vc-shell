@@ -1,4 +1,4 @@
-import { defineComponent, h, provide, inject } from "vue";
+import { defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
 import { provideAppBarState, useAppBarState } from "./useAppBarState";
 

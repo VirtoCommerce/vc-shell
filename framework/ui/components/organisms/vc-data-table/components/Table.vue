@@ -9,10 +9,10 @@
 </template>
 
 <script setup lang="ts" generic="T extends Record<string, any> = Record<string, any>">
-import { provide, reactive, toRefs, computed, type ComputedRef } from "vue";
+import { provide, reactive, computed, type ComputedRef } from "vue";
 import { TableContextKey } from "@ui/components/organisms/vc-data-table/keys";
 
-interface TableContext<T> {
+interface TableContext<_T> {
   selectedRowIndex: ComputedRef<number | undefined>;
   setSelectedRowIndex: (index: number | undefined) => void;
   variant: ComputedRef<string | undefined>;

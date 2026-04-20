@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { ref } from "vue";
 import VcColumn from "./VcColumn.vue";
 import { ColumnCollectorKey } from "@ui/components/organisms/vc-data-table/keys";
 

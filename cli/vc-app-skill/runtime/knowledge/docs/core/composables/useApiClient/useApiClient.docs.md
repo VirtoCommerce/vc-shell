@@ -187,10 +187,7 @@ const { action: loadDashboardData } = useAsync(async () => {
   const orderClient = await getOrderClient();
   const customerClient = await getCustomerClient();
 
-  const [orders, customers] = await Promise.all([
-    orderClient.searchOrders({ take: 5, sort: "createdDate:DESC" }),
-    customerClient.searchCustomers({ take: 5, sort: "createdDate:DESC" }),
-  ]);
+  const [orders, customers] = await Promise.all([orderClient.searchOrders({ take: 5, sort: "createdDate:DESC" }), customerClient.searchCustomers({ take: 5, sort: "createdDate:DESC" })]);
 
   recentOrders.value = orders.results ?? [];
   recentCustomers.value = customers.results ?? [];
@@ -263,25 +260,25 @@ const response = await fetch("https://api.weather.com/forecast");
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `c` | `new (baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) => ApiClient` | Yes | API client constructor class. Must implement `IAuthApiBase`. |
+| Parameter | Type                                                                                                             | Required | Description                                                  |
+| --------- | ---------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------ |
+| `c`       | `new (baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) => ApiClient` | Yes      | API client constructor class. Must implement `IAuthApiBase`. |
 
 ### Returns: `UseApiClientReturn<ApiClient>`
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property       | Type                       | Description                                                            |
+| -------------- | -------------------------- | ---------------------------------------------------------------------- |
 | `getApiClient` | `() => Promise<ApiClient>` | Async factory that returns a configured, authenticated client instance |
 
 ### IAuthApiBase Interface
 
 All generated API client classes implement this interface:
 
-| Property / Method | Type | Description |
-|-------------------|------|-------------|
-| `authToken` | `string` | Current authentication token |
-| `setAuthToken` | `(token: string) => void` | Sets the authentication token |
-| `getBaseUrl` | `(defaultUrl: string, baseUrl: string) => string` | Resolves the API base URL |
+| Property / Method | Type                                              | Description                   |
+| ----------------- | ------------------------------------------------- | ----------------------------- |
+| `authToken`       | `string`                                          | Current authentication token  |
+| `setAuthToken`    | `(token: string) => void`                         | Sets the authentication token |
+| `getBaseUrl`      | `(defaultUrl: string, baseUrl: string) => string` | Resolves the API base URL     |
 
 ### Generated Client Classes
 

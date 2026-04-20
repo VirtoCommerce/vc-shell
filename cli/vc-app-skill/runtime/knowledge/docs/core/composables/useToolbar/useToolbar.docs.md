@@ -170,10 +170,7 @@ By default, all methods operate on the current blade. Pass an explicit `targetBl
 
 ```typescript
 // Register a button on a specific child blade
-registerToolbarItem(
-  { id: "child-action", title: "Action", clickHandler: () => {} },
-  "ChildBlade",
-);
+registerToolbarItem({ id: "child-action", title: "Action", clickHandler: () => {} }, "ChildBlade");
 
 // Clear another blade's toolbar
 clearBladeToolbarItems("ChildBlade");
@@ -325,42 +322,42 @@ function helperFunction() {
 
 ### Parameters
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `options` | `UseToolbarOptions` | No | `{}` | Configuration options |
+| Parameter | Type                | Required | Default | Description           |
+| --------- | ------------------- | -------- | ------- | --------------------- |
+| `options` | `UseToolbarOptions` | No       | `{}`    | Configuration options |
 
 #### UseToolbarOptions
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `autoCleanup` | `boolean` | `true` | Clear all toolbar items for the current blade on component unmount |
+| Option        | Type      | Default | Description                                                        |
+| ------------- | --------- | ------- | ------------------------------------------------------------------ |
+| `autoCleanup` | `boolean` | `true`  | Clear all toolbar items for the current blade on component unmount |
 
 ### Returns: `UseToolbarReturn`
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `registerToolbarItem` | `(item: IToolbarItem, targetBladeId?: string) => void` | Register a toolbar button (scoped to current blade by default) |
-| `unregisterToolbarItem` | `(id: string, targetBladeId?: string) => void` | Remove a toolbar button by ID |
-| `updateToolbarItem` | `(id: string, partial: Partial<IToolbarItem>, targetBladeId?: string) => void` | Update properties of an existing toolbar button |
-| `getToolbarItems` | `(targetBladeId?: string) => IToolbarItem[]` | Get all toolbar items for a blade |
-| `clearBladeToolbarItems` | `(targetBladeId?: string) => void` | Remove all toolbar items for a blade |
-| `isToolbarItemRegistered` | `(id: string) => boolean` | Check if a toolbar item with the given ID exists |
-| `registeredToolbarItems` | `IToolbarRegistration[]` | All registered toolbar items across all blades |
+| Property                  | Type                                                                           | Description                                                    |
+| ------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `registerToolbarItem`     | `(item: IToolbarItem, targetBladeId?: string) => void`                         | Register a toolbar button (scoped to current blade by default) |
+| `unregisterToolbarItem`   | `(id: string, targetBladeId?: string) => void`                                 | Remove a toolbar button by ID                                  |
+| `updateToolbarItem`       | `(id: string, partial: Partial<IToolbarItem>, targetBladeId?: string) => void` | Update properties of an existing toolbar button                |
+| `getToolbarItems`         | `(targetBladeId?: string) => IToolbarItem[]`                                   | Get all toolbar items for a blade                              |
+| `clearBladeToolbarItems`  | `(targetBladeId?: string) => void`                                             | Remove all toolbar items for a blade                           |
+| `isToolbarItemRegistered` | `(id: string) => boolean`                                                      | Check if a toolbar item with the given ID exists               |
+| `registeredToolbarItems`  | `IToolbarRegistration[]`                                                       | All registered toolbar items across all blades                 |
 
 ### IToolbarItem
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `id` | `string` | Yes | Unique identifier for the button |
-| `title` | `string \| Ref<string> \| ComputedRef<string>` | No | Button label (supports reactive values) |
-| `icon` | `string \| (() => string)` | No | Icon class (e.g., `"fas fa-save"`) or a function returning one |
-| `clickHandler` | `(app?) => void` | No | Click callback |
-| `disabled` | `boolean \| ComputedRef<boolean>` | No | Whether the button is disabled |
-| `isVisible` | `boolean \| Ref<boolean> \| ComputedRef<boolean> \| ((blade?) => boolean)` | No | Controls button visibility |
-| `priority` | `number` | No | Sort order (higher = displayed first, default `0`) |
-| `separator` | `"left" \| "right" \| "both"` | No | Adds a visual divider next to the button |
-| `permissions` | `string \| string[]` | No | Required permission(s) to display the button |
-| `bladeId` | `string` | No | Target blade ID (auto-resolved from context) |
+| Property       | Type                                                                       | Required | Description                                                    |
+| -------------- | -------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
+| `id`           | `string`                                                                   | Yes      | Unique identifier for the button                               |
+| `title`        | `string \| Ref<string> \| ComputedRef<string>`                             | No       | Button label (supports reactive values)                        |
+| `icon`         | `string \| (() => string)`                                                 | No       | Icon class (e.g., `"fas fa-save"`) or a function returning one |
+| `clickHandler` | `(app?) => void`                                                           | No       | Click callback                                                 |
+| `disabled`     | `boolean \| ComputedRef<boolean>`                                          | No       | Whether the button is disabled                                 |
+| `isVisible`    | `boolean \| Ref<boolean> \| ComputedRef<boolean> \| ((blade?) => boolean)` | No       | Controls button visibility                                     |
+| `priority`     | `number`                                                                   | No       | Sort order (higher = displayed first, default `0`)             |
+| `separator`    | `"left" \| "right" \| "both"`                                              | No       | Adds a visual divider next to the button                       |
+| `permissions`  | `string \| string[]`                                                       | No       | Required permission(s) to display the button                   |
+| `bladeId`      | `string`                                                                   | No       | Target blade ID (auto-resolved from context)                   |
 
 ## Related
 

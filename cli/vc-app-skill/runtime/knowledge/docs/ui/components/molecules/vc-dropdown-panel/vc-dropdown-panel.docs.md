@@ -13,7 +13,12 @@ Floating dropdown panel positioned relative to an anchor element, with header, s
 
 ```vue
 <template>
-  <button ref="anchorEl" @click="open = !open">Toggle Panel</button>
+  <button
+    ref="anchorEl"
+    @click="open = !open"
+  >
+    Toggle Panel
+  </button>
   <VcDropdownPanel
     v-model:show="open"
     :anchor-ref="anchorEl"
@@ -36,43 +41,39 @@ const open = ref(false);
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `show` | `boolean` | — | Panel visibility (v-model:show) |
-| `anchorRef` | `HTMLElement \| null` | `null` | Anchor element for floating positioning |
-| `title` | `string` | `""` | Header title text (header hidden when empty and no `#header` slot) |
-| `placement` | `Placement` | `"bottom-start"` | Floating UI placement relative to anchor |
-| `width` | `string` | `"280px"` | Panel min-width |
-| `maxWidth` | `string` | `"400px"` | Panel max-width |
-| `maxHeight` | `number` | `350` | Max height in pixels (clamped by viewport) |
-| `contentScrollable` | `boolean` | `true` | Enable scrolling in the content area |
-| `closeOnClickOutside` | `boolean` | `true` | Close when clicking outside |
-| `closeOnEscape` | `boolean` | `true` | Close on Escape key |
+| Prop                  | Type                  | Default          | Description                                                        |
+| --------------------- | --------------------- | ---------------- | ------------------------------------------------------------------ |
+| `show`                | `boolean`             | —                | Panel visibility (v-model:show)                                    |
+| `anchorRef`           | `HTMLElement \| null` | `null`           | Anchor element for floating positioning                            |
+| `title`               | `string`              | `""`             | Header title text (header hidden when empty and no `#header` slot) |
+| `placement`           | `Placement`           | `"bottom-start"` | Floating UI placement relative to anchor                           |
+| `width`               | `string`              | `"280px"`        | Panel min-width                                                    |
+| `maxWidth`            | `string`              | `"400px"`        | Panel max-width                                                    |
+| `maxHeight`           | `number`              | `350`            | Max height in pixels (clamped by viewport)                         |
+| `contentScrollable`   | `boolean`             | `true`           | Enable scrolling in the content area                               |
+| `closeOnClickOutside` | `boolean`             | `true`           | Close when clicking outside                                        |
+| `closeOnEscape`       | `boolean`             | `true`           | Close on Escape key                                                |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event         | Payload   | Description              |
+| ------------- | --------- | ------------------------ |
 | `update:show` | `boolean` | Panel visibility changed |
 
 ## Slots
 
-| Slot | Props | Description |
-|------|-------|-------------|
-| `default` | — | Scrollable content area |
-| `header` | `{ close }` | Custom header (replaces default title + close button) |
-| `footer` | — | Footer area, typically for action buttons |
+| Slot      | Props       | Description                                           |
+| --------- | ----------- | ----------------------------------------------------- |
+| `default` | —           | Scrollable content area                               |
+| `header`  | `{ close }` | Custom header (replaces default title + close button) |
+| `footer`  | —           | Footer area, typically for action buttons             |
 
 ## Common Patterns
 
 ### Filter Panel with Footer Actions
 
 ```vue
-<VcDropdownPanel
-  v-model:show="showFilters"
-  :anchor-ref="filterButton"
-  title="Filters"
->
+<VcDropdownPanel v-model:show="showFilters" :anchor-ref="filterButton" title="Filters">
   <div class="tw-p-4 tw-flex tw-flex-col tw-gap-2">
     <VcCheckbox v-model="filters.active">Active only</VcCheckbox>
     <VcCheckbox v-model="filters.inStock">In stock</VcCheckbox>
@@ -102,12 +103,7 @@ const open = ref(false);
 ### Scrollable List
 
 ```vue
-<VcDropdownPanel
-  v-model:show="open"
-  :anchor-ref="anchor"
-  title="Long Content"
-  :max-height="250"
->
+<VcDropdownPanel v-model:show="open" :anchor-ref="anchor" title="Long Content" :max-height="250">
   <div class="tw-py-1">
     <div
       v-for="item in items"
@@ -122,17 +118,17 @@ const open = ref(false);
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--dropdown-panel-bg` | `var(--additional-50)` | Panel background |
-| `--dropdown-panel-border-color` | `var(--neutrals-200)` | Border color |
-| `--dropdown-panel-border-radius` | `6px` | Corner radius |
-| `--dropdown-panel-shadow` | `0 4px 16px rgba(0,0,0,0.08)` | Box shadow |
-| `--dropdown-panel-z-index` | `10001` | Z-index |
-| `--dropdown-panel-title-color` | `var(--neutrals-900)` | Title text color |
-| `--dropdown-panel-close-color` | `var(--neutrals-400)` | Close button color |
-| `--dropdown-panel-close-hover-color` | `var(--neutrals-600)` | Close button hover color |
-| `--dropdown-panel-footer-bg` | `var(--neutrals-50)` | Footer background |
+| Variable                             | Default                       | Description              |
+| ------------------------------------ | ----------------------------- | ------------------------ |
+| `--dropdown-panel-bg`                | `var(--additional-50)`        | Panel background         |
+| `--dropdown-panel-border-color`      | `var(--neutrals-200)`         | Border color             |
+| `--dropdown-panel-border-radius`     | `6px`                         | Corner radius            |
+| `--dropdown-panel-shadow`            | `0 4px 16px rgba(0,0,0,0.08)` | Box shadow               |
+| `--dropdown-panel-z-index`           | `10001`                       | Z-index                  |
+| `--dropdown-panel-title-color`       | `var(--neutrals-900)`         | Title text color         |
+| `--dropdown-panel-close-color`       | `var(--neutrals-400)`         | Close button color       |
+| `--dropdown-panel-close-hover-color` | `var(--neutrals-600)`         | Close button hover color |
+| `--dropdown-panel-footer-bg`         | `var(--neutrals-50)`          | Footer background        |
 
 ## Accessibility
 

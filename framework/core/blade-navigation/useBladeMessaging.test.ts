@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { createBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
 import { createBladeStack } from "@core/blade-navigation/useBladeStack";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";

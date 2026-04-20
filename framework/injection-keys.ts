@@ -9,7 +9,7 @@ import type { BladeFormInjection } from "@core/composables/useBladeForm/types";
 import type { IWidgetService } from "@core/services/widget-service";
 import type { IWidgetScope } from "@core/services/widget-service";
 import type { IDashboardService } from "@core/services/dashboard-service";
-import type { GlobalSearchState } from "@core/services/global-search-service";
+import type { GlobalSearchState as _GlobalSearchState } from "@core/services/global-search-service";
 import type { MenuService } from "@core/services/menu-service";
 import type { ISettingsMenuService } from "@core/services/settings-menu-service";
 import type { IAppBarWidgetService } from "@core/services/app-bar-menu-service";

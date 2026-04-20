@@ -34,12 +34,14 @@ This document provides an overview of all services and their corresponding compo
 The Widget Service manages UI components that can be dynamically registered to blades in the application. It provides a central registry for managing widget instances across the application.
 
 **Key Features:**
+
 - Register and unregister widgets to specific blades
 - Track active widgets
 - Get widgets associated with specific blades
 - Update widget properties
 
 **API:**
+
 ```typescript
 interface IWidgetService {
   registerWidget: (widget: IWidget, bladeId: string) => void;
@@ -62,6 +64,7 @@ interface IWidgetService {
 The Menu Service manages the application's navigation menu structure. It provides functionality for registering, organizing, and retrieving menu items, including support for grouping items and localization.
 
 **Key Features:**
+
 - Add and remove menu items
 - Automatic grouping of menu items
 - Priority-based ordering
@@ -69,6 +72,7 @@ The Menu Service manages the application's navigation menu structure. It provide
 - Pre-registration mechanism for items added before service initialization
 
 **API:**
+
 ```typescript
 interface MenuService {
   addMenuItem: (item: MenuItem) => void;
@@ -84,12 +88,14 @@ interface MenuService {
 The Dashboard Service manages and organizes dashboard widgets. It provides functionality for registering widgets, updating their positions, and retrieving widgets based on user permissions.
 
 **Key Features:**
+
 - Register dashboard widgets
 - Retrieve widgets with permission checking
 - Update widget positions
 - Get the layout of dashboard widgets
 
 **API:**
+
 ```typescript
 interface IDashboardService {
   registerWidget: (widget: DashboardWidget) => void;
@@ -106,6 +112,7 @@ interface IDashboardService {
 The App Bar Mobile Buttons Service manages the buttons displayed in the mobile application bar. It provides functionality for registering, organizing, and retrieving these buttons.
 
 **Key Features:**
+
 - Register and unregister mobile buttons
 - Retrieve buttons with permission checking
 - Support for prioritization and ordering
@@ -117,6 +124,7 @@ The App Bar Mobile Buttons Service manages the buttons displayed in the mobile a
 The Global Search Service provides a centralized mechanism for searching across the application. It allows registering search providers and executing search operations.
 
 **Key Features:**
+
 - Register search providers
 - Execute search operations
 - Handle search results
@@ -128,6 +136,7 @@ The Global Search Service provides a centralized mechanism for searching across 
 The App Bar Menu Service manages the menu items displayed in the application bar. It provides functionality for registering, organizing, and retrieving these menu items.
 
 **Key Features:**
+
 - Register and manage app bar menu items
 - Support for grouping and organization
 - Priority-based ordering
@@ -139,6 +148,7 @@ The App Bar Menu Service manages the menu items displayed in the application bar
 The Settings Menu Service manages the items displayed in the settings menu. It provides functionality for registering, organizing, and retrieving settings menu items.
 
 **Key Features:**
+
 - Register and manage settings menu items
 - Support for grouping and organization
 - Priority-based ordering
@@ -150,6 +160,7 @@ The Settings Menu Service manages the items displayed in the settings menu. It p
 The Toolbar Service manages toolbar items that can be associated with specific blades in the application. It provides functionality for registering, organizing, and accessing blade-specific toolbar actions.
 
 **Key Features:**
+
 - Register and unregister toolbar items for specific blades
 - Get toolbar items associated with a specific blade
 - Update toolbar item properties dynamically
@@ -157,6 +168,7 @@ The Toolbar Service manages toolbar items that can be associated with specific b
 - Pre-registration mechanism for items added before service initialization
 
 **API:**
+
 ```typescript
 interface IToolbarService {
   registerToolbarItem: (toolbarItem: IToolbarItem, bladeId: string) => void;
@@ -165,15 +177,7 @@ interface IToolbarService {
   clearBladeToolbarItems: (bladeId: string) => void;
   registeredToolbarItems: IToolbarRegistration[];
   isToolbarItemRegistered: (id: string) => boolean;
-  updateToolbarItem: ({
-    id,
-    bladeId,
-    toolbarItem,
-  }: {
-    id: string;
-    bladeId: string;
-    toolbarItem: Partial<IToolbarItem>;
-  }) => void;
+  updateToolbarItem: ({ id, bladeId, toolbarItem }: { id: string; bladeId: string; toolbarItem: Partial<IToolbarItem> }) => void;
 }
 ```
 
@@ -186,30 +190,35 @@ interface IToolbarService {
 The useWidgets composable provides access to the Widget Service within Vue components. It also includes functions for providing the Widget Service to child components.
 
 **Key Functions:**
+
 - `provideWidgetService()`: Creates and provides the Widget Service to the component tree
 - `useWidgets()`: Retrieves the Widget Service instance from the component's injection context
 - `registerWidget()`: Utility function to pre-register widgets before service initialization
 
 **Usage Example:**
+
 ```typescript
-import { useWidgets } from '@vc-shell/framework';
+import { useWidgets } from "@vc-shell/framework";
 
 export default {
   setup() {
     const widgetService = useWidgets();
-    
+
     // Register a widget to a blade
-    widgetService.registerWidget({
-      id: 'my-widget',
-      component: MyWidgetComponent,
-      title: 'My Widget'
-    }, 'blade-id');
-    
-    return { 
+    widgetService.registerWidget(
+      {
+        id: "my-widget",
+        component: MyWidgetComponent,
+        title: "My Widget",
+      },
+      "blade-id",
+    );
+
+    return {
       // Access widget service methods
-      getWidgets: widgetService.getWidgets 
+      getWidgets: widgetService.getWidgets,
     };
-  }
+  },
 };
 ```
 
@@ -220,29 +229,31 @@ export default {
 The useMenuService composable provides access to the Menu Service within Vue components. It also includes functions for providing the Menu Service to child components.
 
 **Key Functions:**
+
 - `provideMenuService()`: Creates and provides the Menu Service to the component tree
 - `useMenuService()`: Retrieves the Menu Service instance from the component's injection context
 - `addMenuItem()`: Utility function to pre-register menu items before service initialization
 
 **Usage Example:**
+
 ```typescript
-import { useMenuService } from '@vc-shell/framework';
+import { useMenuService } from "@vc-shell/framework";
 
 export default {
   setup() {
     const menuService = useMenuService();
-    
+
     // Add a menu item
     menuService.addMenuItem({
-      title: 'New Item',
-      path: '/new-item',
-      priority: 100
+      title: "New Item",
+      path: "/new-item",
+      priority: 100,
     });
-    
-    return { 
-      menuItems: menuService.menuItems 
+
+    return {
+      menuItems: menuService.menuItems,
     };
-  }
+  },
 };
 ```
 
@@ -253,30 +264,32 @@ export default {
 The useDashboard composable provides access to the Dashboard Service within Vue components. It also includes functions for providing the Dashboard Service to child components.
 
 **Key Functions:**
+
 - `provideDashboardService()`: Creates and provides the Dashboard Service to the component tree
 - `useDashboard()`: Retrieves the Dashboard Service instance from the component's injection context
 - `registerDashboardWidget()`: Utility function to pre-register dashboard widgets before service initialization
 
 **Usage Example:**
+
 ```typescript
-import { useDashboard } from '@vc-shell/framework';
+import { useDashboard } from "@vc-shell/framework";
 
 export default {
   setup() {
     const dashboardService = useDashboard();
-    
+
     // Register a dashboard widget
     dashboardService.registerWidget({
-      id: 'sales-widget',
-      name: 'Sales Overview',
+      id: "sales-widget",
+      name: "Sales Overview",
       component: SalesWidgetComponent,
-      size: { width: 2, height: 1 }
+      size: { width: 2, height: 1 },
     });
-    
-    return { 
-      widgets: dashboardService.getWidgets() 
+
+    return {
+      widgets: dashboardService.getWidgets(),
     };
-  }
+  },
 };
 ```
 
@@ -287,6 +300,7 @@ export default {
 The useAppBarMobileButtons composable provides access to the App Bar Mobile Buttons Service within Vue components.
 
 **Key Functions:**
+
 - `provideAppBarMobileButtonsService()`: Creates and provides the service to the component tree
 - `useAppBarMobileButtons()`: Retrieves the service instance from the component's injection context
 
@@ -297,6 +311,7 @@ The useAppBarMobileButtons composable provides access to the App Bar Mobile Butt
 The useGlobalSearch composable provides access to the Global Search Service within Vue components.
 
 **Key Functions:**
+
 - `provideGlobalSearchService()`: Creates and provides the service to the component tree
 - `useGlobalSearch()`: Retrieves the service instance from the component's injection context
 
@@ -307,6 +322,7 @@ The useGlobalSearch composable provides access to the Global Search Service with
 The useAppBarWidget composable provides functionality for managing widgets in the application bar.
 
 **Key Functions:**
+
 - Retrieve and manage app bar widgets
 - Register custom app bar widgets
 
@@ -317,8 +333,9 @@ The useAppBarWidget composable provides functionality for managing widgets in th
 The useSettingsMenu composable provides access to the Settings Menu Service within Vue components.
 
 **Key Functions:**
+
 - `provideSettingsMenuService()`: Creates and provides the service to the component tree
-- `useSettingsMenu()`: Retrieves the service instance from the component's injection context 
+- `useSettingsMenu()`: Retrieves the service instance from the component's injection context
 
 ### useToolbar
 
@@ -327,6 +344,7 @@ The useSettingsMenu composable provides access to the Settings Menu Service with
 The useToolbar composable provides access to the Toolbar Service within Vue components, with a focus on blade-specific toolbar actions.
 
 **Key Functions:**
+
 - `useToolbar()`: Retrieves the Toolbar Service instance, automatically associated with the current blade
 - `registerToolbarItem()`: Registers a toolbar item for the current blade
 - `unregisterToolbarItem()`: Removes a toolbar item from the current blade
@@ -335,31 +353,32 @@ The useToolbar composable provides access to the Toolbar Service within Vue comp
 - `clearBladeToolbarItems()`: Removes all toolbar items for the current blade
 
 **Usage Example:**
+
 ```typescript
-import { useToolbar } from '@vc-shell/framework';
+import { useToolbar } from "@vc-shell/framework";
 
 export default {
   setup() {
     const toolbar = useToolbar();
-    
+
     // Register a toolbar item for the current blade
     toolbar.registerToolbarItem({
-      id: 'save-button',
-      title: 'Save',
-      icon: 'material-save',
+      id: "save-button",
+      title: "Save",
+      icon: "material-save",
       priority: 100,
       clickHandler: () => {
         // Action when clicked
         saveData();
-      }
+      },
     });
-    
-    // The useToolbar composable automatically cleans up 
+
+    // The useToolbar composable automatically cleans up
     // items when the component unmounts
-    
+
     return {
       // Other component logic
     };
-  }
+  },
 };
-``` 
+```

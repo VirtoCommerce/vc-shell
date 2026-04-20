@@ -18,19 +18,19 @@ A small text component for displaying helper text, validation messages, or suppl
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | -- | Optional id for linking with `aria-describedby` on the associated input |
-| `error` | `boolean` | `false` | Shows the hint in error state (danger color) |
+| Prop    | Type      | Default | Description                                                             |
+| ------- | --------- | ------- | ----------------------------------------------------------------------- |
+| `id`    | `string`  | --      | Optional id for linking with `aria-describedby` on the associated input |
+| `error` | `boolean` | `false` | Shows the hint in error state (danger color)                            |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--hint-color` | `var(--neutrals-500)` | Default text color |
-| `--hint-error-color` | `var(--danger-500)` | Text color in error state |
-| `--hint-font-size` | `12px` | Font size |
-| `--hint-line-height` | `1.4` | Line height |
+| Variable             | Default               | Description               |
+| -------------------- | --------------------- | ------------------------- |
+| `--hint-color`       | `var(--neutrals-500)` | Default text color        |
+| `--hint-error-color` | `var(--danger-500)`   | Text color in error state |
+| `--hint-font-size`   | `12px`                | Font size                 |
+| `--hint-line-height` | `1.4`                 | Line height               |
 
 ## Common Patterns
 
@@ -82,10 +82,11 @@ const isOverLimit = computed(() => remaining.value < 0);
 </script>
 
 <template>
-  <VcTextarea label="Description" v-model="description" />
-  <VcHint :error="isOverLimit">
-    {{ remaining }} characters remaining
-  </VcHint>
+  <VcTextarea
+    label="Description"
+    v-model="description"
+  />
+  <VcHint :error="isOverLimit"> {{ remaining }} characters remaining </VcHint>
 </template>
 ```
 
@@ -95,9 +96,17 @@ Show helper text by default, but swap to an error message when validation fails:
 
 ```vue
 <template>
-  <VcInput label="Slug" v-model="slug" :error="!!slugError" aria-describedby="slug-hint" />
-  <VcHint id="slug-hint" :error="!!slugError">
-    {{ slugError || 'URL-friendly identifier. Use lowercase letters and hyphens.' }}
+  <VcInput
+    label="Slug"
+    v-model="slug"
+    :error="!!slugError"
+    aria-describedby="slug-hint"
+  />
+  <VcHint
+    id="slug-hint"
+    :error="!!slugError"
+  >
+    {{ slugError || "URL-friendly identifier. Use lowercase letters and hyphens." }}
   </VcHint>
 </template>
 ```

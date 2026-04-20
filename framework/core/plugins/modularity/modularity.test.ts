@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createApp, App } from "vue";
+import { createApp } from "vue";
 
 // ── Helper ────────────────────────────────────────────────────────────────────
 

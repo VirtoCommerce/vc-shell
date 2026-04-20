@@ -64,7 +64,7 @@ export interface UseTableInlineEditOptions<T extends Record<string, any>> {
  * ```
  */
 export function useTableInlineEdit<T extends Record<string, any>>(options: UseTableInlineEditOptions<T>) {
-  const { items, rules, onCellUpdate, onSave, onCancel } = options;
+  const { items, rules: _rules, onCellUpdate, onSave, onCancel } = options;
 
   const isEditing = ref(false);
 

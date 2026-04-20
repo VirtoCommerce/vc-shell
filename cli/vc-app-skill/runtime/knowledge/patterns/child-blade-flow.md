@@ -13,10 +13,14 @@ const { openBlade } = useBlade();
 
 openBlade({
   name: "ProductDetails",
-  param: product.id,                    // string — entity ID, appears in URL
-  options: { mode: "edit", origin: "catalog" },  // object — runtime-only, not in URL
-  onOpen() { selectedItemId.value = product.id; },
-  onClose() { selectedItemId.value = undefined; },
+  param: product.id, // string — entity ID, appears in URL
+  options: { mode: "edit", origin: "catalog" }, // object — runtime-only, not in URL
+  onOpen() {
+    selectedItemId.value = product.id;
+  },
+  onClose() {
+    selectedItemId.value = undefined;
+  },
 });
 ```
 
@@ -93,10 +97,12 @@ onBeforeClose(async () => {
 ```
 
 Return value semantics:
+
 - `false` — close is **allowed**
 - `true` — close is **blocked** (user stays on the blade)
 
 The `!(await showConfirmation(...))` idiom:
+
 - User clicks "Confirm" (discard) -> `true` -> `!true` = `false` -> close allowed
 - User clicks "Cancel" (stay) -> `false` -> `!false` = `true` -> close blocked
 
@@ -187,8 +193,12 @@ function onItemClick(event: { data: { id?: string } }) {
   openBlade({
     name: "ProductDetails",
     param: event.data.id,
-    onOpen() { selectedItemId.value = event.data.id; },
-    onClose() { selectedItemId.value = undefined; },
+    onOpen() {
+      selectedItemId.value = event.data.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
   });
 }
 
@@ -250,7 +260,9 @@ A "middle" blade acts as both child (calls its parent) and parent (exposes metho
 const { openBlade, callParent, exposeToChildren, closeSelf } = useBlade();
 
 // As a parent — expose reload for child blades
-async function reload() { await loadOrder(param.value!); }
+async function reload() {
+  await loadOrder(param.value!);
+}
 exposeToChildren({ reload });
 
 // As a child — open sub-details blade

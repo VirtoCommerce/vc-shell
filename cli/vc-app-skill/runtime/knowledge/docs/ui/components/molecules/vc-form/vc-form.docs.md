@@ -4,11 +4,11 @@ A lightweight `<form>` wrapper that provides consistent styling, prevents defaul
 
 ## When to Use
 
-| Scenario | Component |
-|----------|-----------|
-| Blade detail view with editable fields | **VcForm** |
-| Popup with a short input form | **VcForm** |
-| Read-only display of data | Plain `<div>` or `VcField` |
+| Scenario                               | Component                  |
+| -------------------------------------- | -------------------------- |
+| Blade detail view with editable fields | **VcForm**                 |
+| Popup with a short input form          | **VcForm**                 |
+| Read-only display of data              | Plain `<div>` or `VcField` |
 
 > **Important:** VcForm renders a native `<form>` element with `novalidate`. All validation is handled by **vee-validate** `Field` components, not by the browser.
 
@@ -20,8 +20,16 @@ A lightweight `<form>` wrapper that provides consistent styling, prevents defaul
 <template>
   <VcForm @submit="handleSubmit">
     <div class="tw-space-y-4">
-      <VcInput v-model="name" label="Name" required />
-      <VcInput v-model="email" label="Email" required />
+      <VcInput
+        v-model="name"
+        label="Name"
+        required
+      />
+      <VcInput
+        v-model="email"
+        label="Email"
+        required
+      />
       <VcButton type="submit">Save</VcButton>
     </div>
   </VcForm>
@@ -73,12 +81,7 @@ Use `VcRow` and `VcCol` inside VcForm to create multi-column layouts that match 
 VcForm itself does **not** manage validation. Validation is provided by wrapping each input with the `Field` component from `vee-validate`. This is the standard pattern used across the entire codebase:
 
 ```vue
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="form.fieldName"
-  name="fieldName"
-  rules="required"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="form.fieldName" name="fieldName" rules="required">
   <VcInput
     v-model="form.fieldName"
     label="Field Label"
@@ -105,12 +108,7 @@ This same pattern works with all VcShell inputs:
 
 ```vue
 <!-- VcSelect -->
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="form.category"
-  name="category"
-  rules="required"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="form.category" name="category" rules="required">
   <VcSelect
     v-model="form.category"
     label="Category"
@@ -125,12 +123,7 @@ This same pattern works with all VcShell inputs:
 </Field>
 
 <!-- VcTextarea -->
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="form.description"
-  name="description"
-  rules="required|min:10"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="form.description" name="description" rules="required|min:10">
   <VcTextarea
     v-model="form.description"
     label="Description"
@@ -411,10 +404,7 @@ const validateSku = (value: string) => {
   const debouncedValidation = useDebounceFn(async () => {
     const errors = await validateOffer({ ...offer.value, sku: value });
     const skuErrors = errors?.filter((e) => e.propertyName?.toLowerCase() === "sku");
-    setFieldError(
-      "sku",
-      skuErrors.map((e) => t(`ERRORS.${e.errorCode}`, { value: e.attemptedValue })).join("\n"),
-    );
+    setFieldError("sku", skuErrors.map((e) => t(`ERRORS.${e.errorCode}`, { value: e.attemptedValue })).join("\n"));
   }, 1000);
 
   debouncedValidation();
@@ -429,12 +419,7 @@ const validateSku = (value: string) => {
 
 ```vue
 <!-- BAD: vee-validate never learns about value changes -->
-<Field
-  v-slot="{ errorMessage, errors }"
-  :model-value="form.name"
-  name="name"
-  rules="required"
->
+<Field v-slot="{ errorMessage, errors }" :model-value="form.name" name="name" rules="required">
   <VcInput
     v-model="form.name"
     label="Name"
@@ -444,12 +429,7 @@ const validateSku = (value: string) => {
 </Field>
 
 <!-- GOOD: handleChange keeps vee-validate in sync -->
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="form.name"
-  name="name"
-  rules="required"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="form.name" name="name" rules="required">
   <VcInput
     v-model="form.name"
     label="Name"
@@ -464,21 +444,12 @@ const validateSku = (value: string) => {
 
 ```vue
 <!-- BAD: Field does not track the current value -->
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  name="name"
-  rules="required"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" name="name" rules="required">
   <VcInput v-model="form.name" label="Name" />
 </Field>
 
 <!-- GOOD: Field receives the value and can validate it -->
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="form.name"
-  name="name"
-  rules="required"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="form.name" name="name" rules="required">
   <VcInput
     v-model="form.name"
     label="Name"
@@ -514,28 +485,28 @@ disabled: computed(() => !modified.value),
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `ariaLabel` | `string` | `undefined` | Accessible label for the `<form>` element |
-| `ariaLabelledby` | `string` | `undefined` | ID of an element that labels the form |
+| Prop             | Type     | Default     | Description                               |
+| ---------------- | -------- | ----------- | ----------------------------------------- |
+| `ariaLabel`      | `string` | `undefined` | Accessible label for the `<form>` element |
+| `ariaLabelledby` | `string` | `undefined` | ID of an element that labels the form     |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `submit` | -- | Emitted on form submission. Native `submit` is already `preventDefault`-ed. |
+| Event    | Payload | Description                                                                 |
+| -------- | ------- | --------------------------------------------------------------------------- |
+| `submit` | --      | Emitted on form submission. Native `submit` is already `preventDefault`-ed. |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot      | Description                                                     |
+| --------- | --------------------------------------------------------------- |
 | `default` | Form content -- inputs, buttons, fieldsets, VcRow/VcCol layouts |
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--form-gap` | `1rem` | Default gap between form children (when using flex gap) |
+| Variable     | Default | Description                                             |
+| ------------ | ------- | ------------------------------------------------------- |
+| `--form-gap` | `1rem`  | Default gap between form children (when using flex gap) |
 
 ## Accessibility
 

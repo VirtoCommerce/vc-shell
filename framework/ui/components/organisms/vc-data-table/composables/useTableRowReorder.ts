@@ -2,7 +2,7 @@ import { ref, Ref, watch, onBeforeUnmount } from "vue";
 import { TableItem } from "@ui/components/organisms/vc-data-table/types";
 import { createLogger } from "@core/utilities";
 
-const logger = createLogger("vc-table-row-reorder");
+const _logger = createLogger("vc-table-row-reorder");
 
 const ROW_SELECTOR = ".vc-table-row, .vc-table-composition__row";
 

@@ -50,7 +50,11 @@ This is how vc-shell achieves its modular architecture: modules can extend each 
     <form><!-- main form fields --></form>
 
     <!-- Other modules can inject components here -->
-    <ExtensionPoint name="seller:commissions" separator gap="1rem" />
+    <ExtensionPoint
+      name="seller:commissions"
+      separator
+      gap="1rem"
+    />
   </VcBlade>
 </template>
 
@@ -74,7 +78,9 @@ add({
   priority: 10,
 });
 
-export default defineAppModule({ /* ... */ });
+export default defineAppModule({
+  /* ... */
+});
 ```
 
 When the seller details page renders, `CommissionFields` appears automatically below the main form -- with a separator and 1rem gap.
@@ -125,7 +131,7 @@ Components are sorted by `priority` (ascending). Lower numbers render first:
 ```typescript
 add({ id: "a", component: A, priority: 20 }); // Renders second
 add({ id: "b", component: B, priority: 10 }); // Renders first
-add({ id: "c", component: C });                // priority=0, renders first (tie)
+add({ id: "c", component: C }); // priority=0, renders first (tie)
 ```
 
 Default priority is `0`. Components with the same priority render in registration order.
@@ -171,7 +177,10 @@ Use in templates:
 
 ```vue
 <template>
-  <div v-if="hasComponents" class="extensions-area">
+  <div
+    v-if="hasComponents"
+    class="extensions-area"
+  >
     <component
       v-for="ext in components"
       :key="ext.id"
@@ -208,10 +217,12 @@ remove("my-unique-id");
 ```
 
 **`add()` behavior:**
+
 - If a component with the same `id` already exists, it is **replaced** (not duplicated).
 - This makes `add()` idempotent -- safe to call multiple times.
 
 **`remove()` behavior:**
+
 - Removes the component by `id`. No-op if not found.
 
 ### ExtensionPoint Component (Declarative)
@@ -230,14 +241,14 @@ import { ExtensionPoint } from "@vc-shell/framework";
 
 **Props:**
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | required | Extension point name |
-| `separator` | `boolean` | `false` | Adds an `<hr>` before components |
-| `separatorClass` | `string` | default style | Custom CSS class for the `<hr>` |
-| `wrapperClass` | `string` | none | CSS class for the wrapper `<div>` |
-| `gap` | `string` | none | CSS gap between components (e.g. `"1rem"`) |
-| `filter` | `Record<string, unknown>` | none | Filter components by `meta` fields |
+| Prop             | Type                      | Default       | Description                                |
+| ---------------- | ------------------------- | ------------- | ------------------------------------------ |
+| `name`           | `string`                  | required      | Extension point name                       |
+| `separator`      | `boolean`                 | `false`       | Adds an `<hr>` before components           |
+| `separatorClass` | `string`                  | default style | Custom CSS class for the `<hr>`            |
+| `wrapperClass`   | `string`                  | none          | CSS class for the wrapper `<div>`          |
+| `gap`            | `string`                  | none          | CSS gap between components (e.g. `"1rem"`) |
+| `filter`         | `Record<string, unknown>` | none          | Filter components by `meta` fields         |
 
 **Rendering modes:**
 
@@ -249,12 +260,7 @@ The component has three rendering modes, chosen automatically:
 
 ```vue
 <!-- Layout mode: separator + gap -->
-<ExtensionPoint
-  name="seller:commissions"
-  separator
-  gap="1rem"
-  wrapper-class="tw-p-4"
-/>
+<ExtensionPoint name="seller:commissions" separator gap="1rem" wrapper-class="tw-p-4" />
 
 <!-- Plain mode: no wrapper -->
 <ExtensionPoint name="seller:commissions" />
@@ -266,8 +272,14 @@ When you need full control over how extensions are rendered, use the scoped slot
 
 ```vue
 <template>
-  <ExtensionPoint name="order:actions" v-slot="{ components, hasComponents }">
-    <div v-if="hasComponents" class="action-bar tw-flex tw-gap-2">
+  <ExtensionPoint
+    name="order:actions"
+    v-slot="{ components, hasComponents }"
+  >
+    <div
+      v-if="hasComponents"
+      class="action-bar tw-flex tw-gap-2"
+    >
       <component
         v-for="ext in components"
         :key="ext.id"
@@ -281,10 +293,10 @@ When you need full control over how extensions are rendered, use the scoped slot
 
 The scoped slot receives:
 
-| Slot prop | Type | Description |
-|-----------|------|-------------|
-| `components` | `ExtensionComponent[]` | Sorted, filtered list |
-| `hasComponents` | `boolean` | Whether the list is non-empty |
+| Slot prop       | Type                   | Description                   |
+| --------------- | ---------------------- | ----------------------------- |
+| `components`    | `ExtensionComponent[]` | Sorted, filtered list         |
+| `hasComponents` | `boolean`              | Whether the list is non-empty |
 
 ### Metadata Filtering
 
@@ -293,8 +305,8 @@ The `<ExtensionPoint>` component supports filtering by metadata fields. Only com
 ```typescript
 // Plugin registers two components with different meta
 const { add } = useExtensionPoint("order:details");
-add({ id: "info-panel",  component: InfoPanel,  meta: { type: "info" } });
-add({ id: "action-btn",  component: ActionBtn,  meta: { type: "action" } });
+add({ id: "info-panel", component: InfoPanel, meta: { type: "info" } });
+add({ id: "action-btn", component: ActionBtn, meta: { type: "action" } });
 ```
 
 ```vue
@@ -318,8 +330,8 @@ const { add } = useExtensionPoint(ExtensionPoints.AUTH_AFTER_FORM);
 
 Currently defined constants:
 
-| Constant | Value | Location |
-|----------|-------|----------|
+| Constant                          | Value               | Location                           |
+| --------------------------------- | ------------------- | ---------------------------------- |
 | `ExtensionPoints.AUTH_AFTER_FORM` | `"auth:after-form"` | Login page, below the sign-in form |
 
 App-level extension point names (e.g., `"seller:commissions"`) are the app's responsibility to define. Consider creating a shared constants file in your application.
@@ -377,7 +389,11 @@ export default defineAppModule({ locales: { en } });
 <template>
   <div class="commission-fields">
     <h3>{{ $t("COMMISSIONS.TITLE") }}</h3>
-    <VcInput v-if="editable" v-model="rate" label="Commission Rate (%)" />
+    <VcInput
+      v-if="editable"
+      v-model="rate"
+      label="Commission Rate (%)"
+    />
     <span v-else>{{ rate }}%</span>
   </div>
 </template>
@@ -452,9 +468,9 @@ Use metadata to categorize extensions and filter them in different locations:
 ```typescript
 // Plugin registers multiple components with different categories
 const { add } = useExtensionPoint("product:details");
-add({ id: "specs-tab",     component: SpecsTab,     meta: { zone: "tabs" }, priority: 10 });
-add({ id: "review-tab",    component: ReviewTab,     meta: { zone: "tabs" }, priority: 20 });
-add({ id: "quick-action",  component: QuickAction,   meta: { zone: "toolbar" } });
+add({ id: "specs-tab", component: SpecsTab, meta: { zone: "tabs" }, priority: 10 });
+add({ id: "review-tab", component: ReviewTab, meta: { zone: "tabs" }, priority: 20 });
+add({ id: "quick-action", component: QuickAction, meta: { zone: "toolbar" } });
 ```
 
 ```vue
@@ -462,11 +478,17 @@ add({ id: "quick-action",  component: QuickAction,   meta: { zone: "toolbar" } }
 <template>
   <VcBlade title="Product Details">
     <div class="toolbar">
-      <ExtensionPoint name="product:details" :filter="{ zone: 'toolbar' }" />
+      <ExtensionPoint
+        name="product:details"
+        :filter="{ zone: 'toolbar' }"
+      />
     </div>
 
     <div class="tabs">
-      <ExtensionPoint name="product:details" :filter="{ zone: 'tabs' }" />
+      <ExtensionPoint
+        name="product:details"
+        :filter="{ zone: 'tabs' }"
+      />
     </div>
   </VcBlade>
 </template>
@@ -488,6 +510,7 @@ add({ id: "my-fields", component: MyFields });
 The dev-mode console warning (`Extension point "seller:comissions" is not declared`) will alert you to this. Always check the console in development.
 
 > **Tip:** Define constants for your extension point names in a shared file:
+>
 > ```typescript
 > // shared/extension-points.ts
 > export const EP = {
@@ -547,10 +570,7 @@ function someUtility() {
 Declares an extension point (host-side). Returns reactive computed refs.
 
 ```typescript
-function defineExtensionPoint<M = Record<string, unknown>>(
-  name: string,
-  options?: ExtensionPointOptions,
-): DefineExtensionPointReturn<M>;
+function defineExtensionPoint<M = Record<string, unknown>>(name: string, options?: ExtensionPointOptions): DefineExtensionPointReturn<M>;
 
 interface DefineExtensionPointReturn<M> {
   /** Sorted list of registered components (by priority, ascending) */
@@ -603,23 +623,20 @@ interface ExtensionComponent {
 
 ### `<ExtensionPoint>` Component
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | required | Extension point name |
-| `separator` | `boolean` | `false` | Adds `<hr>` before components |
-| `separatorClass` | `string` | built-in style | CSS class for the separator |
-| `wrapperClass` | `string` | none | CSS class for the wrapper div |
-| `gap` | `string` | none | CSS gap value (e.g. `"1rem"`) |
-| `filter` | `Record<string, unknown>` | none | Filter by meta field equality |
+| Prop             | Type                      | Default        | Description                   |
+| ---------------- | ------------------------- | -------------- | ----------------------------- |
+| `name`           | `string`                  | required       | Extension point name          |
+| `separator`      | `boolean`                 | `false`        | Adds `<hr>` before components |
+| `separatorClass` | `string`                  | built-in style | CSS class for the separator   |
+| `wrapperClass`   | `string`                  | none           | CSS class for the wrapper div |
+| `gap`            | `string`                  | none           | CSS gap value (e.g. `"1rem"`) |
+| `filter`         | `Record<string, unknown>` | none           | Filter by meta field equality |
 
 **Scoped slot:**
 
 ```typescript
 defineSlots<{
-  default?: (props: {
-    components: ExtensionComponent[];
-    hasComponents: boolean;
-  }) => any;
+  default?: (props: { components: ExtensionComponent[]; hasComponents: boolean }) => any;
 }>();
 ```
 
@@ -641,20 +658,20 @@ type ExtensionPointName = "auth:after-form";
 
 These are used internally by `defineExtensionPoint` and `useExtensionPoint`. You typically do not call them directly, but they are available for testing and dev tools:
 
-| Function | Description |
-|----------|-------------|
-| `declarePoint(name, options)` | Declare a point. No-op if already declared. |
-| `getPoint(name)` | Get reactive state. Creates undeclared entry if missing. |
-| `getRegistry()` | Get the full reactive registry (for dev tools). |
+| Function                      | Description                                              |
+| ----------------------------- | -------------------------------------------------------- |
+| `declarePoint(name, options)` | Declare a point. No-op if already declared.              |
+| `getPoint(name)`              | Get reactive state. Creates undeclared entry if missing. |
+| `getRegistry()`               | Get the full reactive registry (for dev tools).          |
 
 ---
 
 ## Related
 
-| Resource | Path | Description |
-|----------|------|-------------|
-| Modularity Plugin | `core/plugins/modularity/` | Module definition and registration |
-| Extension Point Store | `core/plugins/extension-points/store.ts` | Reactive registry implementation |
-| ExtensionPoint Component | `core/plugins/extension-points/ExtensionPoint.vue` | Declarative render component |
-| Types | `core/plugins/extension-points/types.ts` | `ExtensionComponent`, `ExtensionPointOptions` |
-| Seller Details (usage example) | `apps/vendor-portal/src/modules/seller-details/` | Real-world extension point host |
+| Resource                       | Path                                               | Description                                   |
+| ------------------------------ | -------------------------------------------------- | --------------------------------------------- |
+| Modularity Plugin              | `core/plugins/modularity/`                         | Module definition and registration            |
+| Extension Point Store          | `core/plugins/extension-points/store.ts`           | Reactive registry implementation              |
+| ExtensionPoint Component       | `core/plugins/extension-points/ExtensionPoint.vue` | Declarative render component                  |
+| Types                          | `core/plugins/extension-points/types.ts`           | `ExtensionComponent`, `ExtensionPointOptions` |
+| Seller Details (usage example) | `apps/vendor-portal/src/modules/seller-details/`   | Real-world extension point host               |

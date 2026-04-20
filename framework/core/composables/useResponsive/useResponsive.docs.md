@@ -21,7 +21,10 @@ const { isMobile, isDesktop } = useResponsive();
 <template>
   <VcBlade title="Orders">
     <!-- Vue auto-unwraps refs from script setup — no .value needed -->
-    <div v-if="isDesktop" class="tw-flex tw-gap-4">
+    <div
+      v-if="isDesktop"
+      class="tw-flex tw-gap-4"
+    >
       <OrdersTable />
       <OrdersSummary />
     </div>
@@ -38,13 +41,13 @@ None. The composable reads breakpoint state from the framework's provide/inject 
 
 ### Returns (`UseResponsiveReturn`)
 
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `isMobile` | `Ref<boolean>` | `false` | `true` when viewport width < 1024px |
-| `isDesktop` | `Ref<boolean>` | `true` | `true` when viewport width >= 1024px |
-| `isPhone` | `Ref<boolean>` | `false` | `true` when viewport width < 480px |
-| `isTablet` | `Ref<boolean>` | `false` | `true` when 480px <= viewport width < 1024px |
-| `isTouch` | `boolean` | `false` | `true` on touch-capable devices (not reactive — set once at app init) |
+| Property    | Type           | Default | Description                                                           |
+| ----------- | -------------- | ------- | --------------------------------------------------------------------- |
+| `isMobile`  | `Ref<boolean>` | `false` | `true` when viewport width < 1024px                                   |
+| `isDesktop` | `Ref<boolean>` | `true`  | `true` when viewport width >= 1024px                                  |
+| `isPhone`   | `Ref<boolean>` | `false` | `true` when viewport width < 480px                                    |
+| `isTablet`  | `Ref<boolean>` | `false` | `true` when 480px <= viewport width < 1024px                          |
+| `isTouch`   | `boolean`      | `false` | `true` on touch-capable devices (not reactive — set once at app init) |
 
 Breakpoint thresholds: phone < 480px, tablet 480–1023px, desktop >= 1024px. These match the framework's `setupBreakpoints()` configuration.
 
@@ -89,9 +92,23 @@ const { openBlade } = useBlade();
         mobile-role="title"
       />
       <!-- Extra columns visible only on desktop -->
-      <VcColumn id="sku" :title="t('SKU')" :sortable="true" />
-      <VcColumn id="price" :title="t('PRICE')" type="money" :sortable="true" />
-      <VcColumn id="createdDate" :title="t('DATE')" type="date-ago" :sortable="true" />
+      <VcColumn
+        id="sku"
+        :title="t('SKU')"
+        :sortable="true"
+      />
+      <VcColumn
+        id="price"
+        :title="t('PRICE')"
+        type="money"
+        :sortable="true"
+      />
+      <VcColumn
+        id="createdDate"
+        :title="t('DATE')"
+        type="date-ago"
+        :sortable="true"
+      />
     </VcDataTable>
   </VcBlade>
 </template>
@@ -120,6 +137,7 @@ const { isTouch } = useResponsive();
 ## Common Mistakes
 
 **Wrong: using `$isMobile.value` in template (deprecated)**
+
 ```vue
 <template>
   <!-- $isMobile is a global property — requires .value, no auto-unwrap -->
@@ -128,6 +146,7 @@ const { isTouch } = useResponsive();
 ```
 
 **Correct: using `useResponsive()` destructure**
+
 ```vue
 <script setup lang="ts">
 import { useResponsive } from "@vc-shell/framework";
@@ -142,6 +161,7 @@ const { isMobile } = useResponsive();
 ---
 
 **Wrong: using `inject(IsMobileKey)` directly**
+
 ```vue
 <script setup lang="ts">
 import { inject, ref } from "vue";
@@ -152,6 +172,7 @@ const isMobile = inject(IsMobileKey, ref(false));
 ```
 
 **Correct: using `useResponsive()`**
+
 ```vue
 <script setup lang="ts">
 import { useResponsive } from "@vc-shell/framework";

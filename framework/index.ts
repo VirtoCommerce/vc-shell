@@ -274,7 +274,7 @@ function setupRouterGuards(router: Router) {
           localStorage.setItem("redirectAfterLogin", to.fullPath);
           return { name: "Login" };
         }
-      } catch (e) {
+      } catch (_e) {
         localStorage.setItem("redirectAfterLogin", to.fullPath);
         return { name: "Login" };
       }

@@ -14,9 +14,18 @@ A simple layout primitive that arranges child elements in a horizontal flexbox r
 ```vue
 <template>
   <VcRow>
-    <VcImage src="/img/a.jpg" size="xl" />
-    <VcImage src="/img/b.jpg" size="xl" />
-    <VcImage src="/img/c.jpg" size="xl" />
+    <VcImage
+      src="/img/a.jpg"
+      size="xl"
+    />
+    <VcImage
+      src="/img/b.jpg"
+      size="xl"
+    />
+    <VcImage
+      src="/img/c.jpg"
+      size="xl"
+    />
   </VcRow>
 </template>
 
@@ -38,7 +47,11 @@ The `--row-gap` CSS variable (default `0`) controls spacing. You can also overri
 ```vue
 <template>
   <VcRow class="tw-gap-4">
-    <div v-for="i in 4" :key="i" class="tw-p-4 tw-bg-gray-100 tw-rounded">
+    <div
+      v-for="i in 4"
+      :key="i"
+      class="tw-p-4 tw-bg-gray-100 tw-rounded"
+    >
       Item {{ i }}
     </div>
   </VcRow>
@@ -50,7 +63,11 @@ The `--row-gap` CSS variable (default `0`) controls spacing. You can also overri
 ```vue
 <template>
   <VcRow class="tw-gap-4">
-    <div v-for="card in cards" :key="card.id" class="tw-w-64 tw-p-4 tw-border tw-rounded tw-shadow-sm">
+    <div
+      v-for="card in cards"
+      :key="card.id"
+      class="tw-w-64 tw-p-4 tw-border tw-rounded tw-shadow-sm"
+    >
       <h3 class="tw-font-medium">{{ card.title }}</h3>
       <p class="tw-text-sm tw-text-gray-600">{{ card.description }}</p>
     </div>
@@ -64,11 +81,20 @@ The `--row-gap` CSS variable (default `0`) controls spacing. You can also overri
 <template>
   <VcRow class="tw-gap-6">
     <VcCol :size="1">
-      <VcImage :src="product.imageUrl" size="xl" />
+      <VcImage
+        :src="product.imageUrl"
+        size="xl"
+      />
     </VcCol>
     <VcCol :size="2">
-      <VcInput label="Product Name" v-model="product.name" />
-      <VcInput label="SKU" v-model="product.sku" />
+      <VcInput
+        label="Product Name"
+        v-model="product.name"
+      />
+      <VcInput
+        label="SKU"
+        v-model="product.sku"
+      />
     </VcCol>
   </VcRow>
 </template>
@@ -84,10 +110,25 @@ Use VcRow to place a section label next to a group of fields in a blade detail v
     <VcCol :size="1">
       <span class="tw-font-medium tw-text-sm tw-text-gray-700">Pricing</span>
     </VcCol>
-    <VcCol :size="3" class="tw-gap-3">
-      <VcInput label="List Price" v-model="form.listPrice" type="number" />
-      <VcInput label="Sale Price" v-model="form.salePrice" type="number" />
-      <VcSelect label="Currency" v-model="form.currency" :options="currencies" />
+    <VcCol
+      :size="3"
+      class="tw-gap-3"
+    >
+      <VcInput
+        label="List Price"
+        v-model="form.listPrice"
+        type="number"
+      />
+      <VcInput
+        label="Sale Price"
+        v-model="form.salePrice"
+        type="number"
+      />
+      <VcSelect
+        label="Currency"
+        v-model="form.currency"
+        :options="currencies"
+      />
     </VcCol>
   </VcRow>
 </template>
@@ -95,9 +136,9 @@ Use VcRow to place a section label next to a group of fields in a blade detail v
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|---|---|---|
-| `--row-gap` | `0` | Gap between child elements |
+| Variable    | Default | Description                |
+| ----------- | ------- | -------------------------- |
+| `--row-gap` | `0`     | Gap between child elements |
 
 ## Tips
 

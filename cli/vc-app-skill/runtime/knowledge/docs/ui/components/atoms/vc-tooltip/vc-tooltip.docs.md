@@ -7,7 +7,11 @@ A floating tooltip that appears on hover or focus to provide contextual informat
 ```vue
 <template>
   <VcTooltip>
-    <VcButton size="icon" icon="lucide-trash-2" aria-label="Delete" />
+    <VcButton
+      size="icon"
+      icon="lucide-trash-2"
+      aria-label="Delete"
+    />
     <template #tooltip>Delete selected items</template>
   </VcTooltip>
 </template>
@@ -32,12 +36,12 @@ VcTooltip supports 12 placement positions relative to the trigger element. The t
 
 ### All placement options
 
-| Primary | Start Variant | End Variant |
-|---------|--------------|-------------|
-| `top` | `top-start` | `top-end` |
+| Primary  | Start Variant  | End Variant  |
+| -------- | -------------- | ------------ |
+| `top`    | `top-start`    | `top-end`    |
 | `bottom` | `bottom-start` | `bottom-end` |
-| `left` | `left-start` | `left-end` |
-| `right` | `right-start` | `right-end` |
+| `left`   | `left-start`   | `left-end`   |
+| `right`  | `right-start`  | `right-end`  |
 
 The `start` and `end` variants align the tooltip to the beginning or end of the trigger element along the cross axis:
 
@@ -70,11 +74,11 @@ Three visual themes control the tooltip's appearance.
 </VcTooltip>
 ```
 
-| Variant | Background | Text Color | Use Case |
-|---------|------------|------------|----------|
-| `default` | `var(--additional-50)` (light) | `var(--neutrals-700)` | General-purpose tooltips |
-| `dark` | `var(--neutrals-800)` | `var(--additional-50)` (white) | High-contrast tooltips, dark UI areas |
-| `info` | `var(--primary-600)` | `var(--additional-50)` (white) | Branded or informational tooltips |
+| Variant   | Background                     | Text Color                     | Use Case                              |
+| --------- | ------------------------------ | ------------------------------ | ------------------------------------- |
+| `default` | `var(--additional-50)` (light) | `var(--neutrals-700)`          | General-purpose tooltips              |
+| `dark`    | `var(--neutrals-800)`          | `var(--additional-50)` (white) | High-contrast tooltips, dark UI areas |
+| `info`    | `var(--primary-600)`           | `var(--additional-50)` (white) | Branded or informational tooltips     |
 
 ## Delayed Display
 
@@ -115,10 +119,10 @@ Control the distance between the trigger and the tooltip:
 <VcTooltip :offset="{ mainAxis: 8, crossAxis: 10 }">...</VcTooltip>
 ```
 
-| Axis | Direction | Default |
-|------|-----------|---------|
-| `mainAxis` | Away from the trigger (perpendicular to placement edge) | `8` |
-| `crossAxis` | Along the trigger edge (parallel to placement edge) | `0` |
+| Axis        | Direction                                               | Default |
+| ----------- | ------------------------------------------------------- | ------- |
+| `mainAxis`  | Away from the trigger (perpendicular to placement edge) | `8`     |
+| `crossAxis` | Along the trigger edge (parallel to placement edge)     | `0`     |
 
 ## Width Control
 
@@ -177,7 +181,12 @@ The `#tooltip` slot accepts any HTML or Vue components, not just text:
 ```vue
 <template>
   <div class="tw-flex tw-gap-1">
-    <VcTooltip v-for="action in actions" :key="action.id" placement="top" variant="dark">
+    <VcTooltip
+      v-for="action in actions"
+      :key="action.id"
+      placement="top"
+      variant="dark"
+    >
       <VcButton
         variant="ghost"
         size="icon"
@@ -203,7 +212,10 @@ const actions = [
 
 ```vue
 <template>
-  <VcTooltip placement="top" :max-width="400">
+  <VcTooltip
+    placement="top"
+    :max-width="400"
+  >
     <span class="tw-truncate tw-max-w-[200px] tw-block">
       {{ longProductName }}
     </span>
@@ -270,38 +282,38 @@ const actions = [
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `placement` | `TooltipPlacement` | `"bottom"` | Position relative to the trigger (12 options) |
-| `variant` | `"default" \| "dark" \| "info"` | `"default"` | Visual theme |
-| `arrow` | `boolean` | `true` | Show directional arrow pointing at the trigger |
-| `delay` | `number` | `0` | Milliseconds to wait before showing |
-| `maxWidth` | `number \| string` | `240` | Maximum width (number = px, string = CSS value) |
-| `offset` | `{ mainAxis?: number; crossAxis?: number }` | `{ mainAxis: 8 }` | Distance from the trigger element |
-| `disabled` | `boolean` | `false` | Suppress the tooltip entirely |
+| Prop        | Type                                        | Default           | Description                                     |
+| ----------- | ------------------------------------------- | ----------------- | ----------------------------------------------- |
+| `placement` | `TooltipPlacement`                          | `"bottom"`        | Position relative to the trigger (12 options)   |
+| `variant`   | `"default" \| "dark" \| "info"`             | `"default"`       | Visual theme                                    |
+| `arrow`     | `boolean`                                   | `true`            | Show directional arrow pointing at the trigger  |
+| `delay`     | `number`                                    | `0`               | Milliseconds to wait before showing             |
+| `maxWidth`  | `number \| string`                          | `240`             | Maximum width (number = px, string = CSS value) |
+| `offset`    | `{ mainAxis?: number; crossAxis?: number }` | `{ mainAxis: 8 }` | Distance from the trigger element               |
+| `disabled`  | `boolean`                                   | `false`           | Suppress the tooltip entirely                   |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot      | Description                                               |
+| --------- | --------------------------------------------------------- |
 | `default` | Trigger element that activates the tooltip on hover/focus |
-| `tooltip` | Content rendered inside the floating tooltip panel |
+| `tooltip` | Content rendered inside the floating tooltip panel        |
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--tooltip-bg` | `var(--additional-50)` | Default variant background |
-| `--tooltip-text` | `var(--neutrals-700)` | Default variant text color |
-| `--tooltip-dark-bg` | `var(--neutrals-800)` | Dark variant background |
-| `--tooltip-dark-text` | `var(--additional-50)` | Dark variant text color |
-| `--tooltip-info-bg` | `var(--primary-600)` | Info variant background |
-| `--tooltip-info-text` | `var(--additional-50)` | Info variant text color |
-| `--tooltip-border-radius` | `6px` | Corner radius |
-| `--tooltip-font-size` | `12px` | Text size |
-| `--tooltip-padding-x` | `10px` | Horizontal padding |
-| `--tooltip-padding-y` | `6px` | Vertical padding |
-| `--tooltip-z-index` | `1002` | Stacking order |
+| Variable                  | Default                | Description                |
+| ------------------------- | ---------------------- | -------------------------- |
+| `--tooltip-bg`            | `var(--additional-50)` | Default variant background |
+| `--tooltip-text`          | `var(--neutrals-700)`  | Default variant text color |
+| `--tooltip-dark-bg`       | `var(--neutrals-800)`  | Dark variant background    |
+| `--tooltip-dark-text`     | `var(--additional-50)` | Dark variant text color    |
+| `--tooltip-info-bg`       | `var(--primary-600)`   | Info variant background    |
+| `--tooltip-info-text`     | `var(--additional-50)` | Info variant text color    |
+| `--tooltip-border-radius` | `6px`                  | Corner radius              |
+| `--tooltip-font-size`     | `12px`                 | Text size                  |
+| `--tooltip-padding-x`     | `10px`                 | Horizontal padding         |
+| `--tooltip-padding-y`     | `6px`                  | Vertical padding           |
+| `--tooltip-z-index`       | `1002`                 | Stacking order             |
 
 ## Accessibility
 

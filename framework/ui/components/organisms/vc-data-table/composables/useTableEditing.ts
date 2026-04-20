@@ -10,7 +10,7 @@
  *
  * Inspired by PrimeVue DataTable editMode patterns.
  */
-import { ref, watch, toRaw, type Ref, type ComputedRef } from "vue";
+import { ref, watch, toRaw, type Ref } from "vue";
 
 /**
  * Safe deep clone that handles Date objects and other non-serializable types.

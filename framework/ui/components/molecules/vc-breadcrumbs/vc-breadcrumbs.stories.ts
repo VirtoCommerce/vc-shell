@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcBreadcrumbs } from "@ui/components/molecules/vc-breadcrumbs";
-import { ref, watch, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 // Import for example only - not needed in projects where useBreadcrumbs is already injected
 import { useBreadcrumbs } from "@core/composables/useBreadcrumbs";
 
@@ -323,7 +323,7 @@ export const WithUseBreadcrumbs: Story = {
           id: page.id,
           title: page.title,
           icon: page.icon,
-          clickHandler: (id) => {
+          clickHandler: (_id) => {
             console.log(`Navigating back to ${page.title}`);
             currentPage.value = page.title;
             return true; // Returning true updates breadcrumbs to this point
@@ -398,7 +398,7 @@ export const WithUseBreadcrumbs: Story = {
  * With click handlers for navigation
  */
 export const WithClickHandlers: Story = {
-  render: (args) => ({
+  render: (_args) => ({
     components: { VcBreadcrumbs },
     setup() {
       // Create items with click handlers

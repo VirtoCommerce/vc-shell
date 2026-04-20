@@ -13,7 +13,7 @@ import {
   bladeMessagingInstance,
   bladeRegistryInstance,
 } from "@core/blade-navigation/singletons";
-import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
+import type { IBladeRegistry as _IBladeRegistry } from "@core/composables/useBladeRegistry";
 import {
   BladeVNode,
   IBladeEvent,
@@ -22,7 +22,7 @@ import {
   BladeDescriptor,
   BladeDescriptorKey,
 } from "@core/blade-navigation/types";
-import { buildUrlFromStack, createUrlSync, getTenantPrefix } from "@core/blade-navigation/utils/urlSync";
+import { createUrlSync, getTenantPrefix } from "@core/blade-navigation/utils/urlSync";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-blade-navigation-adapter");

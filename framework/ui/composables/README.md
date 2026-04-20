@@ -22,16 +22,16 @@ A composable for adaptive rendering of elements in a container that automaticall
 <template>
   <div ref="containerRef">
     <!-- Visible elements -->
-    <div 
-      v-for="item in visibleItems" 
+    <div
+      v-for="item in visibleItems"
       :key="item.id"
       :data-item-key="item.id"
     >
       {{ item.content }}
     </div>
-    
+
     <!-- Dropdown menu for hidden elements -->
-    <dropdown-menu 
+    <dropdown-menu
       v-if="showMoreButton"
       :items="hiddenItems"
     />
@@ -39,29 +39,29 @@ A composable for adaptive rendering of elements in a container that automaticall
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useAdaptiveItems } from 'framework/ui/composables/useAdaptiveItems';
+import { ref, computed } from "vue";
+import { useAdaptiveItems } from "framework/ui/composables/useAdaptiveItems";
 
 const containerRef = ref(null);
 const items = ref([
-  { id: '1', content: 'Item 1' },
-  { id: '2', content: 'Item 2' },
+  { id: "1", content: "Item 1" },
+  { id: "2", content: "Item 2" },
   // ...
 ]);
 
-const { 
-  visibleItems,      // Elements that fit in the container
-  hiddenItems,       // Elements that don't fit
-  showMoreButton,    // Flag indicating if "More" button should be shown
-  recalculate,       // Function for manual recalculation
-  updateObserver     // Function to update the observer
+const {
+  visibleItems, // Elements that fit in the container
+  hiddenItems, // Elements that don't fit
+  showMoreButton, // Flag indicating if "More" button should be shown
+  recalculate, // Function for manual recalculation
+  updateObserver, // Function to update the observer
 } = useAdaptiveItems({
   containerRef,
   items,
-  getItemKey: (item) => item.id,             // Function to get unique element key
-  moreButtonWidth: 80,                       // Width of the "More" button
-  calculationStrategy: 'forward',            // Strategy: 'forward' or 'reverse'
-  initialItemWidth: 100                      // Initial estimate of element width
+  getItemKey: (item) => item.id, // Function to get unique element key
+  moreButtonWidth: 80, // Width of the "More" button
+  calculationStrategy: "forward", // Strategy: 'forward' or 'reverse'
+  initialItemWidth: 100, // Initial estimate of element width
 });
 </script>
 ```
@@ -71,8 +71,8 @@ const {
 For the composable to work correctly, you need to add the `data-item-key` attribute to each element:
 
 ```vue
-<div 
-  v-for="item in visibleItems" 
+<div
+  v-for="item in visibleItems"
   :key="item.id"
   :data-item-key="item.id" <!-- Required for size measurement -->
 >
@@ -86,37 +86,37 @@ For the composable to work correctly, you need to add the `data-item-key` attrib
 function useAdaptiveItems<T>(options: {
   // Reference to the container
   containerRef: Ref<HTMLElement | null>;
-  
+
   // List of items
   items: Ref<T[]> | ComputedRef<T[]>;
-  
+
   // Function to get unique key for an item
   getItemKey: (item: T) => string;
-  
+
   // Width of the "More" button
   moreButtonWidth: number;
-  
+
   // Calculation strategy: 'forward' (from beginning) or 'reverse' (from end)
-  calculationStrategy?: 'forward' | 'reverse';
-  
+  calculationStrategy?: "forward" | "reverse";
+
   // Initial estimate of item width (before measurement)
   initialItemWidth?: number;
 }): {
   // Elements that fit in the container
   visibleItems: Ref<T[]>;
-  
+
   // Elements that don't fit
   hiddenItems: Ref<T[]>;
-  
+
   // Flag indicating if "More" button should be shown
   showMoreButton: Ref<boolean>;
-  
+
   // Function for manual recalculation
   recalculate: () => void;
-  
+
   // Function to update the observer (if the list of elements has changed)
   updateObserver: () => void;
-}
+};
 ```
 
 #### Calculation Strategies
@@ -135,7 +135,7 @@ const { visibleItems, hiddenItems, showMoreButton } = useAdaptiveItems({
   getItemKey: (item) => item.id,
   moreButtonWidth: 100,
   calculationStrategy: "reverse", // Show last elements, hide first ones
-  initialItemWidth: 100
+  initialItemWidth: 100,
 });
 ```
 
@@ -148,7 +148,7 @@ const { visibleItems, hiddenItems, showMoreButton } = useAdaptiveItems({
   getItemKey: (item) => item.id,
   moreButtonWidth: 70,
   calculationStrategy: "forward", // Show first elements, hide last ones
-  initialItemWidth: 60
+  initialItemWidth: 60,
 });
 ```
 

@@ -44,7 +44,7 @@ type Story = StoryObj<typeof meta>;
  * Basic usage of the hint component with default styling.
  */
 export const Default: Story = {
-  render: (args) => ({
+  render: (_args) => ({
     components: { VcHint },
     setup() {
       return { args };
@@ -57,7 +57,7 @@ export const Default: Story = {
  * Hint with rich text content including links.
  */
 export const WithRichContent: Story = {
-  render: (args) => ({
+  render: (_args) => ({
     components: { VcHint },
     setup() {
       return {};
@@ -82,7 +82,7 @@ export const WithRichContent: Story = {
  * Hint shown below a form field.
  */
 export const FormFieldHint: Story = {
-  render: (args) => ({
+  render: (_args) => ({
     components: { VcHint },
     setup() {
       return {};
@@ -112,7 +112,7 @@ export const FormFieldHint: Story = {
  * Multiple hints with different content.
  */
 export const MultipleHints: Story = {
-  render: (args) => ({
+  render: (_args) => ({
     components: { VcHint },
     setup() {
       return {};

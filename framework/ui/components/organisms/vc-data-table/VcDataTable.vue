@@ -384,7 +384,7 @@
  * Orchestration logic (sub-composable wiring, watchers, event handlers, derived
  * computeds) is extracted into useDataTableOrchestrator for independent testability.
  */
-import { ref, computed, provide, watch, onBeforeUnmount, useSlots, type Ref, type VNode } from "vue";
+import { ref, computed, provide, watch, onBeforeUnmount, useSlots, type VNode } from "vue";
 import { useElementSize } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import {
@@ -417,12 +417,10 @@ import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type {
   VcColumnProps,
   VcDataTableExtendedProps,
-  FilterValue,
   EditChange,
   TableAction,
   SortMeta,
   MobileSwipeAction,
-  TableStateConfig,
   TableFitMode,
 } from "@ui/components/organisms/vc-data-table/types";
 import type { PersistedStateV2 } from "@ui/components/organisms/vc-data-table/types";
@@ -883,7 +881,7 @@ const {
   selection,
   sort,
   editing,
-  expansion,
+  expansion: _expansion,
   rowGrouping,
   inlineEdit,
   cols,

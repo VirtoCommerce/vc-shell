@@ -31,20 +31,20 @@ const isLoading = ref(true);
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+| Prop     | Type      | Default | Description                 |
+| -------- | --------- | ------- | --------------------------- |
 | `active` | `boolean` | `false` | Controls overlay visibility |
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|---|---|---|
-| `--loading-bar-color` | `var(--primary-500)` | Progress bar fill color |
-| `--loading-bar-track` | `var(--primary-100)` | Progress bar track background |
-| `--loading-overlay-bg` | `rgba(255,255,255,0.6)` | Overlay background color |
-| `--loading-bar-width` | `140px` | Width of the progress bar |
-| `--loading-bar-height` | `4px` | Height of the progress bar |
-| `--loading-z-index` | `9998` | Z-index of the overlay layer |
+| Variable               | Default                 | Description                   |
+| ---------------------- | ----------------------- | ----------------------------- |
+| `--loading-bar-color`  | `var(--primary-500)`    | Progress bar fill color       |
+| `--loading-bar-track`  | `var(--primary-100)`    | Progress bar track background |
+| `--loading-overlay-bg` | `rgba(255,255,255,0.6)` | Overlay background color      |
+| `--loading-bar-width`  | `140px`                 | Width of the progress bar     |
+| `--loading-bar-height` | `4px`                   | Height of the progress bar    |
+| `--loading-z-index`    | `9998`                  | Z-index of the overlay layer  |
 
 ## Recipe: Loading State in a Blade
 
@@ -55,11 +55,17 @@ Blades have a built-in loading mechanism, but you can use VcLoading to cover a s
   <VcBlade title="Product Details">
     <div class="tw-relative tw-min-h-[200px]">
       <VcLoading :active="isLoadingChart" />
-      <RevenueChart v-if="chartData" :data="chartData" />
+      <RevenueChart
+        v-if="chartData"
+        :data="chartData"
+      />
     </div>
 
     <!-- The rest of the blade loads independently -->
-    <VcInput v-model="product.name" label="Name" />
+    <VcInput
+      v-model="product.name"
+      label="Name"
+    />
   </VcBlade>
 </template>
 ```
@@ -89,7 +95,10 @@ Override the bar color to match a specific status or brand theme:
 
 ```vue
 <template>
-  <div class="tw-relative tw-h-40" style="--loading-bar-color: var(--success-500); --loading-bar-track: var(--success-100);">
+  <div
+    class="tw-relative tw-h-40"
+    style="--loading-bar-color: var(--success-500); --loading-bar-track: var(--success-100);"
+  >
     <VcLoading :active="isSaving" />
     <span>Saving changes...</span>
   </div>

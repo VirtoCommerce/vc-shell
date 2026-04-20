@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts" setup generic="T">
-import { computed, getCurrentInstance, nextTick, onBeforeUnmount, ref, Transition, watch, type Ref } from "vue";
+import { computed, getCurrentInstance, nextTick, onBeforeUnmount, ref, watch, type Ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloatingPosition, type FloatingOffset, useTeleportTarget } from "@ui/composables";
 import type { Placement } from "@floating-ui/vue";

@@ -63,6 +63,7 @@ export function useMultilanguage() {
 ```
 
 Key points:
+
 - `currentLocale` and `languages` are module-level refs (shared across blades in the same module).
 - Deduplicate concurrent `getLanguages` calls with a promise guard if multiple blades mount simultaneously.
 - `useLanguages()` from the framework provides `getLocaleByTag` (display name) and `getFlag` (async flag URL).
@@ -75,7 +76,10 @@ Use the blade's `#actions` slot to position the language picker in the toolbar a
 
 ```vue
 <template>
-  <VcBlade :title="bladeTitle" :toolbar-items="bladeToolbar">
+  <VcBlade
+    :title="bladeTitle"
+    :toolbar-items="bladeToolbar"
+  >
     <template #actions>
       <MultilanguageSelector
         v-if="isMultilanguage"
@@ -131,19 +135,9 @@ Guard against undefined with `??` — when a language has no content yet, the fi
 `VcInput` and `VcEditor` both accept `:multilanguage` and `:current-language` props. These add a visual language indicator on the field label.
 
 ```vue
-<VcInput
-  v-model="localizedName"
-  :label="t('MY_MODULE.FIELDS.NAME')"
-  multilanguage
-  :current-language="currentLocale"
-/>
+<VcInput v-model="localizedName" :label="t('MY_MODULE.FIELDS.NAME')" multilanguage :current-language="currentLocale" />
 
-<VcEditor
-  v-model="localizedDescription"
-  :label="t('MY_MODULE.FIELDS.DESCRIPTION')"
-  multilanguage
-  :current-language="currentLocale"
-/>
+<VcEditor v-model="localizedDescription" :label="t('MY_MODULE.FIELDS.DESCRIPTION')" multilanguage :current-language="currentLocale" />
 ```
 
 - `multilanguage` (boolean) — enables the language indicator badge on the label.

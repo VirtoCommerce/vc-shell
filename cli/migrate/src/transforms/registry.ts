@@ -276,7 +276,8 @@ export const transforms: VersionedTransform[] = [
   },
   {
     name: "remove-app-module-options",
-    description: "Remove `{ router }` second argument from .use(AppModule, { router }) — defineAppModule takes no options",
+    description:
+      "Remove `{ router }` second argument from .use(AppModule, { router }) — defineAppModule takes no options",
     introducedIn: "2.0.0-alpha.33",
     transformPath: t("remove-app-module-options"),
     fileExtensions: [".ts"],
@@ -284,14 +285,15 @@ export const transforms: VersionedTransform[] = [
   },
   {
     name: "vc-blade-loading-prop",
-    description: "Convert <VcBlade v-loading=\"X\"> to <VcBlade :loading=\"X\"> — use built-in blade loading prop",
+    description: 'Convert <VcBlade v-loading="X"> to <VcBlade :loading="X"> — use built-in blade loading prop',
     introducedIn: "2.0.0-alpha.33",
     transformPath: t("vc-blade-loading-prop"),
     fileExtensions: [".vue"],
   },
   {
     name: "use-data-table-pagination-audit",
-    description: "Detect manual pagination boilerplate (totalCount/pages/currentPage triple, onPaginationClick) — migrate to useDataTablePagination",
+    description:
+      "Detect manual pagination boilerplate (totalCount/pages/currentPage triple, onPaginationClick) — migrate to useDataTablePagination",
     introducedIn: "2.0.0-alpha.33",
     diagnosticOnly: true,
     migrationGuideSection: "Guide 41",

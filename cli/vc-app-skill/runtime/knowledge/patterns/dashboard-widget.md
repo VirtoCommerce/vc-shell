@@ -34,13 +34,13 @@ export * from "./composables";
 
 ```ts
 interface DashboardWidget {
-  id: string;                          // unique across all registered widgets
-  name: string;                        // display name
-  component: Component;                // widget Vue component, wrapped in markRaw()
-  size: { width: number; height: number };  // grid units
+  id: string; // unique across all registered widgets
+  name: string; // display name
+  component: Component; // widget Vue component, wrapped in markRaw()
+  size: { width: number; height: number }; // grid units
   position?: { x: number; y: number }; // optional initial grid position
-  permissions?: string[];              // optional: restrict visibility by permission
-  props?: Record<string, unknown>;     // optional: static props passed to component
+  permissions?: string[]; // optional: restrict visibility by permission
+  props?: Record<string, unknown>; // optional: static props passed to component
 }
 ```
 
@@ -66,28 +66,25 @@ The widget component is a plain Vue SFC placed in `src/modules/xxx/components/`:
 </template>
 
 <script lang="ts" setup>
-import {
-  DashboardWidgetCard,
-  DashboardStatItem,
-} from "@vc-shell/framework";
+import { DashboardWidgetCard, DashboardStatItem } from "@vc-shell/framework";
 import { ref, onMounted } from "vue";
 import useXxxs from "../composables/useXxxs";
 
 const { getXxxs, totalCount, loading } = useXxxs();
 
 onMounted(async () => {
-  await getXxxs({ take: 0 });   // fetch count only
+  await getXxxs({ take: 0 }); // fetch count only
 });
 </script>
 ```
 
 ### Available dashboard sub-components from `@vc-shell/framework`
 
-| Component             | Description                                 |
-|-----------------------|---------------------------------------------|
-| `DashboardWidgetCard` | Card wrapper with title slot                |
-| `DashboardStatItem`   | Single stat row: label + value + loading    |
-| `DashboardBarChart`   | Horizontal bar chart for breakdown stats    |
+| Component             | Description                              |
+| --------------------- | ---------------------------------------- |
+| `DashboardWidgetCard` | Card wrapper with title slot             |
+| `DashboardStatItem`   | Single stat row: label + value + loading |
+| `DashboardBarChart`   | Horizontal bar chart for breakdown stats |
 
 ---
 
@@ -101,6 +98,7 @@ src/modules/xxx/
 ```
 
 `components/index.ts` barrel:
+
 ```ts
 export { default as XxxDashboardCard } from "./XxxDashboardCard.vue";
 ```

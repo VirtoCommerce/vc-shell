@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { defineComponent, h, provide, ref } from "vue";
 import { mount } from "@vue/test-utils";
 import { InputGroupContextKey, type InputGroupContext } from "@ui/components/molecules/vc-input-group/context";

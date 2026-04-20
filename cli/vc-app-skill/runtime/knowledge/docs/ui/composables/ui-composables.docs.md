@@ -8,14 +8,14 @@ All composables are exported from `framework/ui/composables/index.ts` and availa
 
 ## Exports
 
-| Composable | Purpose |
-|---|---|
-| `useAdaptiveItems` | Measures and distributes items into visible/hidden groups based on container width |
-| `useScrollArrows` | Tracks scroll overflow state and provides animated scroll-by-arrow controls |
-| `useFloatingPosition` | Wrapper around `@floating-ui/vue` with sensible defaults for dropdowns/tooltips |
-| `useTeleportTarget` | Resolves a consistent teleport target (explicit target, app root, or body) |
-| `useFormField` | Shared form field logic: unique IDs, ARIA attributes, InputGroup integration |
-| `useCollapsible` | Expand/collapse panel with measured content height and CSS transitions |
+| Composable            | Purpose                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| `useAdaptiveItems`    | Measures and distributes items into visible/hidden groups based on container width |
+| `useScrollArrows`     | Tracks scroll overflow state and provides animated scroll-by-arrow controls        |
+| `useFloatingPosition` | Wrapper around `@floating-ui/vue` with sensible defaults for dropdowns/tooltips    |
+| `useTeleportTarget`   | Resolves a consistent teleport target (explicit target, app root, or body)         |
+| `useFormField`        | Shared form field logic: unique IDs, ARIA attributes, InputGroup integration       |
+| `useCollapsible`      | Expand/collapse panel with measured content height and CSS transitions             |
 
 ## API Details
 

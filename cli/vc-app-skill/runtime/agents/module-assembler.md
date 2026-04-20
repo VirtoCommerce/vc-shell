@@ -37,6 +37,7 @@ When `mode: "append"`:
 5. Use the Edit tool (not Write tool) for all file modifications in append mode
 
 Specifically in append mode:
+
 - `pages/index.ts` — append new `export { default as NewBlade } from "./new-blade.vue"` lines
 - `composables/index.ts` — append new composable export lines
 - `{targetDir}/index.ts` — no changes needed (namespace import `* as pages` picks up new pages automatically)
@@ -45,6 +46,7 @@ Specifically in append mode:
 ### Step 1: Derive naming variables
 
 From `moduleName` compute:
+
 - `moduleClassName` = PascalCase of `moduleName` (e.g., `Team`, `CatalogItems`)
 - `targetDir` = directory containing the generated files (parent of `pages/`, `composables/`, `locales/`)
 
@@ -53,10 +55,12 @@ To find `targetDir`: take the directory of the first file in `generatedFiles` th
 ### Step 2: Identify generated pages and composables
 
 From `generatedFiles`, classify each file:
+
 - Files under `*/pages/*.vue` → page components
 - Files under `*/composables/**/*.ts` but NOT `*/composables/index.ts` → composable implementations
 
 For each page file, derive its export name:
+
 - `team-list.vue` → `TeamList`
 - `team-details.vue` → `TeamDetails`
 - `{moduleName}-list.vue` → PascalCase(`moduleName`) + `List`
@@ -69,6 +73,7 @@ For each composable directory (e.g., `useTeamMembers/`), derive its export name 
 Write to: `{targetDir}/pages/index.ts`
 
 Export each page component as a named export:
+
 ```ts
 export { default as TeamList } from "./team-list.vue";
 export { default as TeamDetails } from "./team-details.vue";
@@ -83,6 +88,7 @@ Write to: `{targetDir}/composables/index.ts`
 If the file was already created by a generator agent (list-blade-generator or details-blade-generator), read it and ensure all composables have an export. Otherwise create it with all discovered composables.
 
 Format:
+
 ```ts
 export { default as useTeamMembers } from "./useTeamMembers";
 export { default as useTeamMember } from "./useTeamMember";
@@ -93,6 +99,7 @@ export { default as useTeamMember } from "./useTeamMember";
 Write to: `{targetDir}/index.ts`
 
 Follow `module-structure.md` exactly:
+
 ```ts
 import * as pages from "./pages";
 import * as locales from "./locales";
@@ -111,14 +118,17 @@ Do NOT re-export locales. Do NOT use a default export for locales.
 Read `appModulesRegistryPath` (e.g., `src/modules/index.ts`).
 
 Parse existing exports to detect if the module is already registered:
+
 - Check for `export { default as {moduleClassName} }` or `export * from "./{moduleName}"`
 
 If NOT already registered, append:
+
 ```ts
 export { default as {moduleClassName} } from "./{moduleName}";
 ```
 
 **Critical rules for registry update:**
+
 - Read the existing file first — NEVER overwrite it from scratch
 - Append the new export at the end of the file
 - Preserve all existing export lines exactly
@@ -130,12 +140,14 @@ export { default as {moduleClassName} } from "./{moduleName}";
 Find the app entry point: look for `src/main.ts` relative to the project root (the parent of `src/modules/`).
 
 Read `main.ts` and check if `{moduleClassName}` is already imported and used:
+
 - Check for `import { ... {moduleClassName} ... } from "./modules"` (or `from "@/modules"`)
 - Check for `app.use({moduleClassName})`
 
 If NOT already registered:
 
 1. **Update the modules import.** Find the existing `import { ... } from "./modules"` line. Add `{moduleClassName}` to its named imports. If no such import exists, add:
+
    ```ts
    import { {moduleClassName} } from "./modules";
    ```
@@ -146,6 +158,7 @@ If NOT already registered:
    - BEFORE `app.use(router)` (router must come after all modules)
 
 **Critical rules:**
+
 - Read the file first — NEVER overwrite from scratch
 - Use Edit tool for surgical changes
 - Preserve all existing imports and app.use() calls
@@ -155,6 +168,7 @@ If NOT already registered:
 ## Output Contract
 
 Files written to disk:
+
 1. `{targetDir}/pages/index.ts` (created or updated)
 2. `{targetDir}/composables/index.ts` (created or updated)
 3. `{targetDir}/index.ts` (created)
@@ -166,6 +180,7 @@ Returns a summary of all files created/modified and confirmation of registry reg
 ## Self-Check
 
 Before completing, verify:
+
 - [ ] `defineAppModule({ blades: pages, locales })` — both `pages` and `locales` are passed
 - [ ] `export * from "./pages"` and `export * from "./composables"` are in module `index.ts`
 - [ ] `locales` is NOT re-exported (no `export * from "./locales"`)

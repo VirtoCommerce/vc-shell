@@ -17,30 +17,30 @@ An image display component with predefined sizes, aspect ratio control, and a pl
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `src` | `string` | — | Image URL; shows a placeholder icon when empty |
-| `size` | `"auto" \| "xxs" \| "xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl"` | `"auto"` | Predefined width |
-| `aspect` | `"1x1" \| "16x9" \| "4x3" \| "3x2"` | `"1x1"` | Aspect ratio of the container |
-| `background` | `"cover" \| "contain" \| "auto"` | `"cover"` | CSS background-size mode |
-| `rounded` | `boolean` | `false` | Applies fully rounded corners (circular on 1x1) |
-| `bordered` | `boolean` | `false` | Adds a subtle border |
-| `clickable` | `boolean` | `false` | Makes the image interactive with cursor and click event |
-| `emptyIcon` | `string` | `"lucide-image"` | Icon shown when `src` is empty |
-| `alt` | `string` | — | Accessible alt text |
-| `thumbnailSize` | `ThumbnailSize` | — | Load a thumbnail variant instead of full-size image. Values: `"sm"`, `"md"`, `"lg"`, `"64x64"`, `"128x128"`, `"168x168"`, `"216x216"`, `"348x348"` |
+| Prop            | Type                                                            | Default          | Description                                                                                                                                        |
+| --------------- | --------------------------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src`           | `string`                                                        | —                | Image URL; shows a placeholder icon when empty                                                                                                     |
+| `size`          | `"auto" \| "xxs" \| "xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl"` | `"auto"`         | Predefined width                                                                                                                                   |
+| `aspect`        | `"1x1" \| "16x9" \| "4x3" \| "3x2"`                             | `"1x1"`          | Aspect ratio of the container                                                                                                                      |
+| `background`    | `"cover" \| "contain" \| "auto"`                                | `"cover"`        | CSS background-size mode                                                                                                                           |
+| `rounded`       | `boolean`                                                       | `false`          | Applies fully rounded corners (circular on 1x1)                                                                                                    |
+| `bordered`      | `boolean`                                                       | `false`          | Adds a subtle border                                                                                                                               |
+| `clickable`     | `boolean`                                                       | `false`          | Makes the image interactive with cursor and click event                                                                                            |
+| `emptyIcon`     | `string`                                                        | `"lucide-image"` | Icon shown when `src` is empty                                                                                                                     |
+| `alt`           | `string`                                                        | —                | Accessible alt text                                                                                                                                |
+| `thumbnailSize` | `ThumbnailSize`                                                 | —                | Load a thumbnail variant instead of full-size image. Values: `"sm"`, `"md"`, `"lg"`, `"64x64"`, `"128x128"`, `"168x168"`, `"216x216"`, `"348x348"` |
 
 ## Size Reference
 
-| Size | Width |
-|------|-------|
-| `xxs` | 24px |
-| `xs` | 32px |
-| `s` | 48px |
-| `m` | 64px |
-| `l` | 96px |
-| `xl` | 128px |
-| `xxl` | 145px |
+| Size   | Width          |
+| ------ | -------------- |
+| `xxs`  | 24px           |
+| `xs`   | 32px           |
+| `s`    | 48px           |
+| `m`    | 64px           |
+| `l`    | 96px           |
+| `xl`   | 128px          |
+| `xxl`  | 145px          |
 | `auto` | 100% of parent |
 
 ## Common Patterns
@@ -48,48 +48,25 @@ An image display component with predefined sizes, aspect ratio control, and a pl
 ### Product Thumbnail in a List
 
 ```vue
-<VcImage
-  :src="product.primaryImage"
-  size="s"
-  aspect="1x1"
-  bordered
-  :alt="product.name"
-/>
+<VcImage :src="product.primaryImage" size="s" aspect="1x1" bordered :alt="product.name" />
 ```
 
 ### Profile Avatar
 
 ```vue
-<VcImage
-  :src="user.avatarUrl"
-  size="m"
-  rounded
-  :alt="user.displayName"
-/>
+<VcImage :src="user.avatarUrl" size="m" rounded :alt="user.displayName" />
 ```
 
 ### Widescreen Banner
 
 ```vue
-<VcImage
-  :src="category.bannerUrl"
-  aspect="16x9"
-  background="cover"
-  alt="Category banner"
-/>
+<VcImage :src="category.bannerUrl" aspect="16x9" background="cover" alt="Category banner" />
 ```
 
 ### Clickable Gallery Image
 
 ```vue
-<VcImage
-  :src="image.url"
-  size="l"
-  bordered
-  clickable
-  :alt="image.caption"
-  @click="openLightbox(image)"
-/>
+<VcImage :src="image.url" size="l" bordered clickable :alt="image.caption" @click="openLightbox(image)" />
 ```
 
 ### Empty State Placeholder

@@ -25,7 +25,10 @@ Push notifications are displayed in the notification dropdown. Each notification
     :icon="style.icon"
     :notification="notification"
   >
-    <VcHint v-if="notification.description" class="tw-mb-1">
+    <VcHint
+      v-if="notification.description"
+      class="tw-mb-1"
+    >
       {{ notification.description }}
     </VcHint>
   </NotificationTemplate>
@@ -47,24 +50,24 @@ const style = {
 
 ### `NotificationTemplate` props
 
-| Prop           | Type            | Description                                      |
-|----------------|-----------------|--------------------------------------------------|
-| `title`        | `string`        | Notification title text                          |
+| Prop           | Type                | Description                                      |
+| -------------- | ------------------- | ------------------------------------------------ |
+| `title`        | `string`            | Notification title text                          |
 | `notification` | `IPushNotification` | Full notification object (for timestamp display) |
-| `icon`         | `string`        | Lucide icon name, e.g., `"lucide-check"`         |
-| `color`        | `string`        | CSS color or variable for the icon background    |
+| `icon`         | `string`            | Lucide icon name, e.g., `"lucide-check"`         |
+| `color`        | `string`            | CSS color or variable for the icon background    |
 
 The default slot renders below the title/timestamp row. Use it for additional details.
 
 ### Icon + color conventions
 
-| Event type    | Color                       | Icon                    |
-|---------------|-----------------------------|-------------------------|
-| Created       | `var(--success-400)`        | `lucide-check`          |
-| Updated       | `var(--primary-500)`        | `lucide-pencil`         |
-| Deleted       | `var(--danger-500)`         | `lucide-trash-2`        |
-| Error/Failed  | `var(--danger-500)`         | `lucide-x-circle`       |
-| Processing    | `var(--warning-400)`        | `lucide-loader`         |
+| Event type   | Color                | Icon              |
+| ------------ | -------------------- | ----------------- |
+| Created      | `var(--success-400)` | `lucide-check`    |
+| Updated      | `var(--primary-500)` | `lucide-pencil`   |
+| Deleted      | `var(--danger-500)`  | `lucide-trash-2`  |
+| Error/Failed | `var(--danger-500)`  | `lucide-x-circle` |
+| Processing   | `var(--warning-400)` | `lucide-loader`   |
 
 ---
 
@@ -100,7 +103,10 @@ Full typed template example:
     :icon="style.icon"
     :notification="notification"
   >
-    <VcHint v-if="notification.orderId" class="tw-mb-1">
+    <VcHint
+      v-if="notification.orderId"
+      class="tw-mb-1"
+    >
       Order #{{ notification.orderNumber }}
     </VcHint>
   </NotificationTemplate>
@@ -163,6 +169,7 @@ src/modules/xxx/
 ```
 
 `notifications/index.ts` barrel:
+
 ```ts
 export { default as XxxCreatedDomainEvent } from "./XxxCreatedDomainEvent.vue";
 ```

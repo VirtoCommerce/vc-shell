@@ -13,17 +13,24 @@ Captures and normalizes errors within a component's subtree using Vue's `onError
 
 ```vue
 <script setup lang="ts">
-import { useErrorHandler } from '@vc-shell/framework';
+import { useErrorHandler } from "@vc-shell/framework";
 
 // capture: true prevents the error from propagating further up the tree
 const { error, reset } = useErrorHandler(true);
 </script>
 
 <template>
-  <div v-if="error" class="tw-p-4 tw-bg-red-50 tw-border tw-border-red-200 tw-rounded">
+  <div
+    v-if="error"
+    class="tw-p-4 tw-bg-red-50 tw-border tw-border-red-200 tw-rounded"
+  >
     <p class="tw-text-red-700 tw-font-semibold">{{ error.message }}</p>
     <p class="tw-text-red-500 tw-text-sm tw-mt-1">{{ error.details }}</p>
-    <VcButton class="tw-mt-2" @click="reset">Dismiss</VcButton>
+    <VcButton
+      class="tw-mt-2"
+      @click="reset"
+      >Dismiss</VcButton
+    >
   </div>
   <slot v-else />
 </template>
@@ -33,28 +40,29 @@ const { error, reset } = useErrorHandler(true);
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `capture` | `boolean` | No | If `true`, prevents the error from propagating further up the component tree (the error is "swallowed" at this level). If `false` or `undefined`, the error continues propagating to parent error handlers. |
+| Parameter | Type      | Required | Description                                                                                                                                                                                                 |
+| --------- | --------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `capture` | `boolean` | No       | If `true`, prevents the error from propagating further up the component tree (the error is "swallowed" at this level). If `false` or `undefined`, the error continues propagating to parent error handlers. |
 
 ### Returns
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `error` | `Ref<DisplayableError \| null>` | The most recently captured error, or `null` if no error has occurred or it has been reset. |
-| `reset` | `() => void` | Clears the error state (sets `error` to `null`) and emits a `reset` event on the component instance. |
+| Property | Type                            | Description                                                                                          |
+| -------- | ------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `error`  | `Ref<DisplayableError \| null>` | The most recently captured error, or `null` if no error has occurred or it has been reset.           |
+| `reset`  | `() => void`                    | Clears the error state (sets `error` to `null`) and emits a `reset` event on the component instance. |
 
 ### DisplayableError
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `message` | `string` | Short, user-facing error message suitable for display in the UI. |
-| `details` | `string` | Detailed technical description (stack trace, API error body, etc.). |
-| `originalError` | `unknown` | The original thrown value, preserved for programmatic inspection. |
+| Property        | Type      | Description                                                         |
+| --------------- | --------- | ------------------------------------------------------------------- |
+| `message`       | `string`  | Short, user-facing error message suitable for display in the UI.    |
+| `details`       | `string`  | Detailed technical description (stack trace, API error body, etc.). |
+| `originalError` | `unknown` | The original thrown value, preserved for programmatic inspection.   |
 
 ### Emitted Events
 
 The composable emits events on the current component instance (accessible via `@error` and `@reset` in the parent template):
+
 - `error` -- emitted with the `DisplayableError` when an error is captured
 - `reset` -- emitted when `reset()` is called
 
@@ -75,7 +83,7 @@ Create a reusable error boundary that wraps any blade content:
 ```vue
 <!-- ErrorBoundary.vue -->
 <script setup lang="ts">
-import { useErrorHandler } from '@vc-shell/framework';
+import { useErrorHandler } from "@vc-shell/framework";
 
 const props = defineProps<{
   fallbackMessage?: string;
@@ -85,13 +93,23 @@ const { error, reset } = useErrorHandler(true);
 </script>
 
 <template>
-  <div v-if="error" class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-8">
-    <VcIcon icon="fas fa-exclamation-triangle" class="tw-text-4xl tw-text-warning-500 tw-mb-4" />
+  <div
+    v-if="error"
+    class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-8"
+  >
+    <VcIcon
+      icon="fas fa-exclamation-triangle"
+      class="tw-text-4xl tw-text-warning-500 tw-mb-4"
+    />
     <h3 class="tw-text-lg tw-font-semibold">
-      {{ fallbackMessage ?? 'Something went wrong' }}
+      {{ fallbackMessage ?? "Something went wrong" }}
     </h3>
     <p class="tw-text-sm tw-text-gray-500 tw-mt-2">{{ error.message }}</p>
-    <VcButton class="tw-mt-4" @click="reset">Try Again</VcButton>
+    <VcButton
+      class="tw-mt-4"
+      @click="reset"
+      >Try Again</VcButton
+    >
   </div>
   <slot v-else />
 </template>
@@ -113,17 +131,20 @@ Usage in a blade:
 
 ```vue
 <template>
-  <ChildBlade @error="onChildError" @reset="onChildReset" />
+  <ChildBlade
+    @error="onChildError"
+    @reset="onChildReset"
+  />
 </template>
 
 <script setup lang="ts">
 function onChildError(error: DisplayableError) {
-  console.error('Child blade error:', error.message);
+  console.error("Child blade error:", error.message);
   // Optionally show a notification or log to external service
 }
 
 function onChildReset() {
-  console.log('Child blade error was dismissed');
+  console.log("Child blade error was dismissed");
 }
 </script>
 ```

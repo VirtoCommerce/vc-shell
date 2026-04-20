@@ -18,6 +18,7 @@ description: Performs AI-powered manual migrations on files identified by MIGRAT
 ## Knowledge Loading
 
 For each topic in `topics`:
+
 1. Read the migration prompt from `migrationPromptPath` — these contain specific transformation rules with BEFORE/AFTER examples
 2. If `patternPath` is provided, read the pattern file — this shows what correct target code looks like
 
@@ -28,6 +29,7 @@ Do NOT read all prompts upfront. Load each topic's knowledge just before process
 ### Topic Order
 
 Process topics in this order (dependencies first):
+
 1. `notification-migration` — may create new files and restructure directories
 2. `nswag-class-to-interface` — type-level changes that affect all other code
 3. `use-assets-migration` — rewires assets handlers and may add manager wiring used by blades/widgets
@@ -54,6 +56,7 @@ For each affected file in the current topic:
 8. **If still broken after 3 attempts:** Restore from backup copy (`cp {filepath}.bak {filepath}`), delete backup (`rm -f {filepath}.bak`), keep the failure in the report as "needs manual intervention", continue to next file
 
 Before step 4, always create a backup:
+
 - `cp {filepath} {filepath}.bak`
 - Delete the backup after a successful commit for that file
 

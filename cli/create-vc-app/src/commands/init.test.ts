@@ -30,7 +30,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("generates without module when --module-name is not provided", async () => {
-    const projectName = path.basename(root);
+    const _projectName = path.basename(root);
     await initCommand(
       { _: [root], type: "standalone", overwrite: true } as unknown as Record<string, unknown>,
       templateRoot,

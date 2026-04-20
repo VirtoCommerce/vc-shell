@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { defineComponent, h, provide, ref } from "vue";
+import { defineComponent, h, ref } from "vue";
 import { mount } from "@vue/test-utils";
 import { mountWithSetup } from "@framework/test-helpers";
 

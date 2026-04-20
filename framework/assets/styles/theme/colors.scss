@@ -1,114 +1,113 @@
 :root[data-theme="light"] {
   // Primary
-  --primary-50: #EFF7FC;
-  --primary-100: #DAEDF7;
-  --primary-200: #B0DAEE;
-  --primary-300: #85C6E6;
-  --primary-400: #5BB2DD;
-  --primary-500: #319ED4; /* default */
-  --primary-600: #288DBF;
-  --primary-700: #237AA5;
-  --primary-800: #1D678C;
+  --primary-50: #eff7fc;
+  --primary-100: #daedf7;
+  --primary-200: #b0daee;
+  --primary-300: #85c6e6;
+  --primary-400: #5bb2dd;
+  --primary-500: #319ed4; /* default */
+  --primary-600: #288dbf;
+  --primary-700: #237aa5;
+  --primary-800: #1d678c;
   --primary-900: #185573;
-  --primary-950: #154B66;
+  --primary-950: #154b66;
 
   // Secondary
-  --secondary-50: #F4F7F9;
-  --secondary-100: #ECF1F5;
-  --secondary-200: #DBE4EC;
-  --secondary-300: #CAD8E4;
-  --secondary-400: #BACBDB;
-  --secondary-500: #A9BFD2; /* default */
-  --secondary-600: #81A1BD;
-  --secondary-700: #5983A8;
+  --secondary-50: #f4f7f9;
+  --secondary-100: #ecf1f5;
+  --secondary-200: #dbe4ec;
+  --secondary-300: #cad8e4;
+  --secondary-400: #bacbdb;
+  --secondary-500: #a9bfd2; /* default */
+  --secondary-600: #81a1bd;
+  --secondary-700: #5983a8;
   --secondary-800: #436480;
-  --secondary-900: #2E4558;
+  --secondary-900: #2e4558;
   --secondary-950: #243544;
 
   // Accent
-  --accent-50: #EFF7FC;
-  --accent-100: #DAEDF7;
-  --accent-200: #B0DAEE;
-  --accent-300: #85C6E6;
-  --accent-400: #5BB2DD;
-  --accent-500: #319ED4; /* default */
-  --accent-600: #288DBF;
-  --accent-700: #237AA5;
-  --accent-800: #1D678C;
+  --accent-50: #eff7fc;
+  --accent-100: #daedf7;
+  --accent-200: #b0daee;
+  --accent-300: #85c6e6;
+  --accent-400: #5bb2dd;
+  --accent-500: #319ed4; /* default */
+  --accent-600: #288dbf;
+  --accent-700: #237aa5;
+  --accent-800: #1d678c;
   --accent-900: #185573;
-  --accent-950: #154B66;
+  --accent-950: #154b66;
 
   // Neutrals
-  --neutrals-50: #FAFAFA;
-  --neutrals-100: #F5F5F5;
-  --neutrals-200: #EBEBEB;
-  --neutrals-300: #D4D4D4;
-  --neutrals-400: #A3A3A3;
+  --neutrals-50: #fafafa;
+  --neutrals-100: #f5f5f5;
+  --neutrals-200: #ebebeb;
+  --neutrals-300: #d4d4d4;
+  --neutrals-400: #a3a3a3;
   --neutrals-500: #737373; /* default */
   --neutrals-600: #525252;
   --neutrals-700: #404040;
   --neutrals-800: #262626;
   --neutrals-900: #171717;
-  --neutrals-950: #0A0A0A;
+  --neutrals-950: #0a0a0a;
 
   // Additional
-  --additional-50: #FFFFFF;
+  --additional-50: #ffffff;
   --additional-950: #000000;
 
   // States
 
   // Warning
-  --warning-50: #FFF6D6;
-  --warning-100: #FFF2C4;
-  --warning-200: #FFE7A0;
-  --warning-300: #FFDA7C;
-  --warning-400: #FFCB59;
-  --warning-500: #FFBA35; /* default */
-  --warning-600: #FC9E00;
-  --warning-700: #B46B0F;
-  --warning-800: #8C4F00;
-  --warning-900: #542D00;
-  --warning-950: #381D00;
-
+  --warning-50: #fff6d6;
+  --warning-100: #fff2c4;
+  --warning-200: #ffe7a0;
+  --warning-300: #ffda7c;
+  --warning-400: #ffcb59;
+  --warning-500: #ffba35; /* default */
+  --warning-600: #fc9e00;
+  --warning-700: #b46b0f;
+  --warning-800: #8c4f00;
+  --warning-900: #542d00;
+  --warning-950: #381d00;
 
   // Danger
-  --danger-50: #FFE9E8;
-  --danger-100:#FFD9D9;
-  --danger-200: #FFB5B5;
-  --danger-300: #FF9191;
-  --danger-400: #FF6E6E;
-  --danger-500: #FF4A4A; /* default */
-  --danger-600: #FF0808;
-  --danger-700: #C40000;
+  --danger-50: #ffe9e8;
+  --danger-100: #ffd9d9;
+  --danger-200: #ffb5b5;
+  --danger-300: #ff9191;
+  --danger-400: #ff6e6e;
+  --danger-500: #ff4a4a; /* default */
+  --danger-600: #ff0808;
+  --danger-700: #c40000;
   --danger-800: #820000;
   --danger-900: #400000;
-  --danger-950: #1F0000;
+  --danger-950: #1f0000;
 
   // Success
-  --success-50: #E4F4E2;
-  --success-100: #C8E9CB;
-  --success-200: #A9D4BA;
-  --success-300: #8DC6A4;
-  --success-400: #72B98F;
-  --success-500: #57AB79; /* default */
-  --success-600: #43875F;
+  --success-50: #e4f4e2;
+  --success-100: #c8e9cb;
+  --success-200: #a9d4ba;
+  --success-300: #8dc6a4;
+  --success-400: #72b98f;
+  --success-500: #57ab79; /* default */
+  --success-600: #43875f;
   --success-700: #316144;
-  --success-800: #1E3C2A;
-  --success-900: #0B1610;
+  --success-800: #1e3c2a;
+  --success-900: #0b1610;
   --success-950: #020403;
 
   // Info
-  --info-50: #EDF8FD;
-  --info-100: #E3EFF5;
-  --info-200: #C4DEEB;
-  --info-300: #A6CDE1;
-  --info-400: #87BCD6;
-  --info-500: #69ABCC; /* default */
-  --info-600: #4093BD;
+  --info-50: #edf8fd;
+  --info-100: #e3eff5;
+  --info-200: #c4deeb;
+  --info-300: #a6cde1;
+  --info-400: #87bcd6;
+  --info-500: #69abcc; /* default */
+  --info-600: #4093bd;
   --info-700: #327393;
   --info-800: #245269;
-  --info-900: #15313F;
-  --info-950: #0E212A;
+  --info-900: #15313f;
+  --info-950: #0e212a;
 
   // ─── Overlay Tokens ──────────────────────────────────────────────
   // Base color for overlay scrim (light frosted glass)
@@ -120,10 +119,10 @@
   // Derived from neutrals — adapts to palette automatically
   --shadow-color: var(--neutrals-950);
   --shadow-sm: 0 12px 28px rgb(from var(--shadow-color) r g b / 10%);
-  --shadow-md: 0 24px 48px rgb(from var(--shadow-color) r g b / 16%),
-               0 8px 20px rgb(from var(--shadow-color) r g b / 10%);
-  --shadow-lg: 0 28px 64px rgb(from var(--shadow-color) r g b / 22%),
-               0 10px 24px rgb(from var(--shadow-color) r g b / 16%);
+  --shadow-md:
+    0 24px 48px rgb(from var(--shadow-color) r g b / 16%), 0 8px 20px rgb(from var(--shadow-color) r g b / 10%);
+  --shadow-lg:
+    0 28px 64px rgb(from var(--shadow-color) r g b / 22%), 0 10px 24px rgb(from var(--shadow-color) r g b / 16%);
 
   // ─── Surface Tokens ──────────────────────────────────────────────
   --surface-color: var(--additional-50);
@@ -142,131 +141,131 @@
 // neutrals; text reuses light-theme neutral values at reversed positions.
 :root[data-theme="dark"] {
   // Primary — subtle dark tint at low end (matches Figma surfaces), bright at high end
-  --primary-50: #272E33;   // table header bg / subtle highlight (Figma surface)
-  --primary-100: #2B3237;
-  --primary-200: #1B2531;  // from Figma — blue-tinted surface
-  --primary-300: #19212C;  // from Figma — deeper blue-tinted surface
-  --primary-400: #1F6FEB;
-  --primary-500: #388BFD; /* default */
-  --primary-600: #58A6FF;
-  --primary-700: #79C0FF;
-  --primary-800: #A5D6FF;
-  --primary-900: #CAE8FF;
-  --primary-950: #DDF4FF;
+  --primary-50: #272e33; // table header bg / subtle highlight (Figma surface)
+  --primary-100: #2b3237;
+  --primary-200: #1b2531; // from Figma — blue-tinted surface
+  --primary-300: #19212c; // from Figma — deeper blue-tinted surface
+  --primary-400: #1f6feb;
+  --primary-500: #388bfd; /* default */
+  --primary-600: #58a6ff;
+  --primary-700: #79c0ff;
+  --primary-800: #a5d6ff;
+  --primary-900: #cae8ff;
+  --primary-950: #ddf4ff;
 
   // Secondary — subtle dark tint at low end
-  --secondary-50: #272E33;
-  --secondary-100: #2B3237;
-  --secondary-200: #2E353B;
-  --secondary-300: #3D474F;
-  --secondary-400: #5983A8;
-  --secondary-500: #81A1BD; /* default */
-  --secondary-600: #A9BFD2;
-  --secondary-700: #BACBDB;
-  --secondary-800: #CAD8E4;
-  --secondary-900: #DBE4EC;
-  --secondary-950: #ECF1F5;
+  --secondary-50: #272e33;
+  --secondary-100: #2b3237;
+  --secondary-200: #2e353b;
+  --secondary-300: #3d474f;
+  --secondary-400: #5983a8;
+  --secondary-500: #81a1bd; /* default */
+  --secondary-600: #a9bfd2;
+  --secondary-700: #bacbdb;
+  --secondary-800: #cad8e4;
+  --secondary-900: #dbe4ec;
+  --secondary-950: #ecf1f5;
 
   // Accent — matches primary
-  --accent-50: #272E33;
-  --accent-100: #2B3237;
-  --accent-200: #1B2531;
-  --accent-300: #19212C;
-  --accent-400: #1F6FEB;
-  --accent-500: #388BFD; /* default */
-  --accent-600: #58A6FF;
-  --accent-700: #79C0FF;
-  --accent-800: #A5D6FF;
-  --accent-900: #CAE8FF;
-  --accent-950: #DDF4FF;
+  --accent-50: #272e33;
+  --accent-100: #2b3237;
+  --accent-200: #1b2531;
+  --accent-300: #19212c;
+  --accent-400: #1f6feb;
+  --accent-500: #388bfd; /* default */
+  --accent-600: #58a6ff;
+  --accent-700: #79c0ff;
+  --accent-800: #a5d6ff;
+  --accent-900: #cae8ff;
+  --accent-950: #ddf4ff;
 
   // Neutrals — Figma surfaces (50–300), readable text (400–950).
   // 300→400 = intentional contrast jump (surface-to-text boundary).
-  --neutrals-50: #1F2428;  // deepest background (sidebar)
-  --neutrals-100: #242A2E; // main content bg ← KEY COLOR from Figma
-  --neutrals-200: #272E33; // elevated surfaces / cards
-  --neutrals-300: #2E353B; // borders, dividers
-  --neutrals-400: #6E7681; // muted text / disabled (WCAG ~3.5:1 large text)
-  --neutrals-500: #8B949E; /* default — secondary text (WCAG AA ~5:1) */
-  --neutrals-600: #A3A3A3; // secondary text (from Figma, 27×)
-  --neutrals-700: #D4D4D4; // body text (= light 300)
-  --neutrals-800: #EBEBEB; // primary text (from Figma, 83×)
-  --neutrals-900: #F5F5F5; // headings (= light 100)
-  --neutrals-950: #FAFAFA; // max contrast (= light 50)
+  --neutrals-50: #1f2428; // deepest background (sidebar)
+  --neutrals-100: #242a2e; // main content bg ← KEY COLOR from Figma
+  --neutrals-200: #272e33; // elevated surfaces / cards
+  --neutrals-300: #2e353b; // borders, dividers
+  --neutrals-400: #6e7681; // muted text / disabled (WCAG ~3.5:1 large text)
+  --neutrals-500: #8b949e; /* default — secondary text (WCAG AA ~5:1) */
+  --neutrals-600: #a3a3a3; // secondary text (from Figma, 27×)
+  --neutrals-700: #d4d4d4; // body text (= light 300)
+  --neutrals-800: #ebebeb; // primary text (from Figma, 83×)
+  --neutrals-900: #f5f5f5; // headings (= light 100)
+  --neutrals-950: #fafafa; // max contrast (= light 50)
 
   // Additional — main bg + primary text from Figma
-  --additional-50: #242A2E;
-  --additional-950: #EBEBEB;
+  --additional-50: #242a2e;
+  --additional-950: #ebebeb;
 
   // Warning — tinted dark surfaces, bright text range
-  --warning-50: #3B2300;
-  --warning-100: #4D2D00;
-  --warning-200: #6B3D00;
-  --warning-300: #8A5000;
-  --warning-400: #A86800;
-  --warning-500: #D29922; /* default */
-  --warning-600: #E3B341;
-  --warning-700: #F0C955;
-  --warning-800: #F5DB80;
-  --warning-900: #F8E8AA;
-  --warning-950: #FEF3C7;
+  --warning-50: #3b2300;
+  --warning-100: #4d2d00;
+  --warning-200: #6b3d00;
+  --warning-300: #8a5000;
+  --warning-400: #a86800;
+  --warning-500: #d29922; /* default */
+  --warning-600: #e3b341;
+  --warning-700: #f0c955;
+  --warning-800: #f5db80;
+  --warning-900: #f8e8aa;
+  --warning-950: #fef3c7;
 
   // Danger
-  --danger-50: #3B1010;
+  --danger-50: #3b1010;
   --danger-100: #551818;
   --danger-200: #752222;
-  --danger-300: #952D2D;
-  --danger-400: #C23030;
-  --danger-500: #DA3633; /* default */
-  --danger-600: #F85149;
-  --danger-700: #FF7B72;
-  --danger-800: #FFA198;
-  --danger-900: #FFC1BA;
-  --danger-950: #FFDCD7;
+  --danger-300: #952d2d;
+  --danger-400: #c23030;
+  --danger-500: #da3633; /* default */
+  --danger-600: #f85149;
+  --danger-700: #ff7b72;
+  --danger-800: #ffa198;
+  --danger-900: #ffc1ba;
+  --danger-950: #ffdcd7;
 
   // Success
-  --success-50: #0D2818;
+  --success-50: #0d2818;
   --success-100: #133820;
-  --success-200: #1A4D2A;
+  --success-200: #1a4d2a;
   --success-300: #236336;
-  --success-400: #2D7D44;
-  --success-500: #3FB950; /* default */
-  --success-600: #56D364;
-  --success-700: #7EE787;
-  --success-800: #A5F0AD;
-  --success-900: #C8F7CE;
-  --success-950: #DAFBE1;
+  --success-400: #2d7d44;
+  --success-500: #3fb950; /* default */
+  --success-600: #56d364;
+  --success-700: #7ee787;
+  --success-800: #a5f0ad;
+  --success-900: #c8f7ce;
+  --success-950: #dafbe1;
 
   // Info
-  --info-50: #0D2340;
+  --info-50: #0d2340;
   --info-100: #103358;
   --info-200: #154575;
-  --info-300: #1B5A96;
-  --info-400: #2272B8;
-  --info-500: #4898D6; /* default */
-  --info-600: #6CB6FF;
-  --info-700: #8CCBFF;
-  --info-800: #ADDAFF;
-  --info-900: #CCE7FF;
-  --info-950: #DDF4FF;
+  --info-300: #1b5a96;
+  --info-400: #2272b8;
+  --info-500: #4898d6; /* default */
+  --info-600: #6cb6ff;
+  --info-700: #8ccbff;
+  --info-800: #addaff;
+  --info-900: #cce7ff;
+  --info-950: #ddf4ff;
 
   // ─── Overlay Tokens ──────────────────────────────────────────────
-  --overlay-color: #1F2428;
+  --overlay-color: #1f2428;
   --overlay-bg: rgb(from var(--overlay-color) r g b / 80%);
   --overlay-blur: 4px;
 
   // ─── Shadow Tokens ───────────────────────────────────────────────
-  --shadow-color: #07090C;
+  --shadow-color: #07090c;
   --shadow-sm: 0 12px 28px rgb(from var(--shadow-color) r g b / 30%);
-  --shadow-md: 0 24px 48px rgb(from var(--shadow-color) r g b / 40%),
-               0 8px 20px rgb(from var(--shadow-color) r g b / 30%);
-  --shadow-lg: 0 28px 64px rgb(from var(--shadow-color) r g b / 48%),
-               0 10px 24px rgb(from var(--shadow-color) r g b / 40%);
+  --shadow-md:
+    0 24px 48px rgb(from var(--shadow-color) r g b / 40%), 0 8px 20px rgb(from var(--shadow-color) r g b / 30%);
+  --shadow-lg:
+    0 28px 64px rgb(from var(--shadow-color) r g b / 48%), 0 10px 24px rgb(from var(--shadow-color) r g b / 40%);
 
   // ─── Surface Tokens ──────────────────────────────────────────────
-  --surface-color: var(--neutrals-100);   // #242A2E
+  --surface-color: var(--neutrals-100); // #242A2E
   --surface-elevated: var(--neutrals-200); // #272E33
-  --surface-border: var(--neutrals-300);   // #2E353B
+  --surface-border: var(--neutrals-300); // #2E353B
 
   // ─── Frosted Glass ───────────────────────────────────────────────
   --glass-blur: 6px;

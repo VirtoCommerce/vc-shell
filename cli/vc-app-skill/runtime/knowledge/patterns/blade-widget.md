@@ -25,7 +25,7 @@ useBladeWidgets([
     icon: "lucide-tag",
     title: "MODULE.WIDGETS.CHILD_LIST.TITLE",
     badge: computed(() => childCount.value),
-    isVisible: computed(() => !!param.value),   // hide on "create new"
+    isVisible: computed(() => !!param.value), // hide on "create new"
     onClick: () => openBlade({ name: "ChildEntityList", options: { entityId: entity.value.id } }),
     onRefresh: async () => {
       childCount.value = await loadChildCount(entity.value.id);
@@ -66,10 +66,11 @@ export function useXxxWidgets(options: UseXxxWidgetsOptions): UseBladeWidgetsRet
       title: "XXX.WIDGETS.RELATED_ITEMS.TITLE",
       badge: relatedCount,
       isVisible,
-      onClick: () => openBlade({
-        name: "RelatedItemsList",
-        options: { parentId: item.value?.id },
-      }),
+      onClick: () =>
+        openBlade({
+          name: "RelatedItemsList",
+          options: { parentId: item.value?.id },
+        }),
     },
   ]);
 }
@@ -96,9 +97,9 @@ const { refreshAll } = useXxxWidgets({
 
 ```ts
 interface HeadlessWidgetDeclaration {
-  id: string;                                              // unique within the blade
-  icon: string;                                            // lucide icon name
-  title: string;                                           // i18n key or plain string
+  id: string; // unique within the blade
+  icon: string; // lucide icon name
+  title: string; // i18n key or plain string
   badge?: Ref<number | string> | ComputedRef<number | string>;
   loading?: Ref<boolean> | ComputedRef<boolean>;
   disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
@@ -112,8 +113,8 @@ interface HeadlessWidgetDeclaration {
 
 ```ts
 interface UseBladeWidgetsReturn {
-  refresh: (widgetId: string) => void;   // trigger onRefresh for one widget
-  refreshAll: () => void;                // trigger onRefresh for all widgets
+  refresh: (widgetId: string) => void; // trigger onRefresh for one widget
+  refreshAll: () => void; // trigger onRefresh for all widgets
 }
 ```
 
@@ -124,6 +125,7 @@ Call `refreshAll()` from `onMounted` or after data loads to populate badge count
 ## Lifecycle
 
 `useBladeWidgets()` automatically:
+
 - Registers all widgets with the `WidgetService` on `onMounted`
 - Unregisters all widgets from the `WidgetService` on `onUnmounted`
 

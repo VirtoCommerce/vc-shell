@@ -6,9 +6,7 @@
 import { computed } from "vue";
 import { useBlade } from "@vc-shell/framework";
 
-const {
-  exposeToChildren
-} = useBlade();
+const { exposeToChildren } = useBlade();
 
 defineBlade({
   name: "MyBlade",

@@ -1,5 +1,5 @@
 import { App, watch, ref, InjectionKey } from "vue";
-import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { PushNotification } from "@core/api/platform";
 import { useNotificationStore, type NotificationStore } from "@core/notifications";
 import { useUserManagement } from "@core/composables/useUserManagement";

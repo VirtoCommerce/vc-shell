@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { ref, computed, defineComponent, h } from "vue";
+import { ref, defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
 import { IsMobileKey } from "@framework/injection-keys";
 
@@ -8,7 +8,7 @@ const mockExternalWidgets: Record<string, unknown>[] = [];
 
 vi.mock("@core/composables/useWidgets", () => ({
   useWidgets: () => ({
-    getWidgets: (bladeId: string) => mockWidgets.value,
+    getWidgets: (_bladeId: string) => mockWidgets.value,
     registerWidget: vi.fn(),
     unregisterWidget: vi.fn(),
     getAllExternalWidgets: () => mockExternalWidgets,

@@ -21,12 +21,12 @@ The module exports `AssetsManagerModule` (a Vue plugin) and the `AssetsManager` 
 
 The blade reads its configuration from `options` via `useBlade<AssetsManagerOptions>()` (not props):
 
-| Option | Type | Description |
-|---|---|---|
-| `title` | `string?` | Custom blade title (defaults to i18n `ASSETS_MANAGER.TITLE`) |
-| `manager` | `UseAssetsManagerReturn` | The asset manager instance from `useAssetsManager()`. **Must be wrapped in `markRaw()`** |
-| `disabled` | `boolean?` | When true, hides upload/delete actions and disables reordering |
-| `hiddenFields` | `string[]?` | Fields to hide in the detail view |
+| Option         | Type                     | Description                                                                              |
+| -------------- | ------------------------ | ---------------------------------------------------------------------------------------- |
+| `title`        | `string?`                | Custom blade title (defaults to i18n `ASSETS_MANAGER.TITLE`)                             |
+| `manager`      | `UseAssetsManagerReturn` | The asset manager instance from `useAssetsManager()`. **Must be wrapped in `markRaw()`** |
+| `disabled`     | `boolean?`               | When true, hides upload/delete actions and disables reordering                           |
+| `hiddenFields` | `string[]?`              | Fields to hide in the detail view                                                        |
 
 > **Breaking change:** The old options (`assets`, `loading`, `assetsUploadHandler`, `assetsEditHandler`, `assetsRemoveHandler`) have been removed. Pass a single `manager` instance instead. See [migration guide #32](../../../migration/32-use-assets-manager.md).
 
@@ -71,9 +71,9 @@ openBlade({
 
 ## Toolbar
 
-| Button | Condition | Action |
-|---|---|---|
-| Add | `!disabled` | Opens file picker for upload |
+| Button | Condition                      | Action                                           |
+| ------ | ------------------------------ | ------------------------------------------------ |
+| Add    | `!disabled`                    | Opens file picker for upload                     |
 | Delete | `!disabled` and items selected | Calls `manager.removeMany()` with selected items |
 
 ## Tips

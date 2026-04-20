@@ -82,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, TransitionGroup, type Ref, type ComputedRef } from "vue";
+import { computed, inject, ref } from "vue";
 import { TableContextKey, FillerWidthKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-data-table/keys";
 
 const props = withDefaults(

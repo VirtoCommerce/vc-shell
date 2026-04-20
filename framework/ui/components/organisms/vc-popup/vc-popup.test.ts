@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { ref, nextTick } from "vue";
+import { ref } from "vue";
 import { IsMobileKey } from "@framework/injection-keys";
 
 // Mock @headlessui/vue with minimal functional stubs

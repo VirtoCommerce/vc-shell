@@ -103,8 +103,8 @@ const props = withDefaults(
     userId: string;
     userName: string;
     token: string;
-    logo: string;
-    background: string;
+    logo?: string;
+    background?: string;
   }>(),
   {
     background: "/assets/background.jpg",

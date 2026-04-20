@@ -9,11 +9,11 @@ Toolbar items are defined as `ref<IBladeToolbar[]>` in blade `<script setup>`. E
 ```ts
 interface IBladeToolbar {
   id: string;
-  title: ComputedRef<string>;       // must be computed for reactivity with i18n
-  icon: string;                     // lucide icon name, e.g., "lucide-save"
+  title: ComputedRef<string>; // must be computed for reactivity with i18n
+  icon: string; // lucide icon name, e.g., "lucide-save"
   clickHandler: () => void | Promise<void>;
-  isVisible?: boolean | ComputedRef<boolean>;   // static or reactive
-  disabled?: ComputedRef<boolean>;              // must be ComputedRef for reactivity
+  isVisible?: boolean | ComputedRef<boolean>; // static or reactive
+  disabled?: ComputedRef<boolean>; // must be ComputedRef for reactivity
 }
 ```
 
@@ -61,7 +61,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       callParent("reload");
       closeSelf();
     },
-    isVisible: !!param.value,                              // only when editing
+    isVisible: !!param.value, // only when editing
     disabled: computed(() => !(modified.value && !isDisabled.value)),
   },
   {
@@ -73,7 +73,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       callParent("reload");
       closeSelf();
     },
-    isVisible: !param.value,                               // only when creating
+    isVisible: !param.value, // only when creating
     disabled: computed(() => !(modified.value && !isDisabled.value)),
   },
   {
@@ -83,7 +83,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       resetEntries();
     },
-    isVisible: !!param.value,                              // only when editing
+    isVisible: !!param.value, // only when editing
     disabled: computed(() => !modified.value),
   },
   {
@@ -91,24 +91,20 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("MODULE.PAGES.DETAILS.TOOLBAR.DELETE")),
     icon: "lucide-trash-2",
     async clickHandler() {
-      if (
-        param.value &&
-        (await showConfirmation(
-          computed(() => t("MODULE.PAGES.DETAILS.POPUP.ALERT.DELETE")),
-        ))
-      ) {
+      if (param.value && (await showConfirmation(computed(() => t("MODULE.PAGES.DETAILS.POPUP.ALERT.DELETE"))))) {
         await deleteXxx({ id: param.value });
         callParent("reload");
         closeSelf();
       }
     },
-    isVisible: !!param.value,                              // hidden when creating
+    isVisible: !!param.value, // hidden when creating
     disabled: computed(() => false),
   },
 ]);
 ```
 
 Where `isDisabled` comes from vee-validate `useForm`:
+
 ```ts
 const { meta } = useForm({ validateOnMount: false });
 const isDisabled = computed(() => !meta.value.dirty || !meta.value.valid);
@@ -118,21 +114,23 @@ const isDisabled = computed(() => !meta.value.dirty || !meta.value.valid);
 
 ## Conditional Visibility Rules
 
-| Condition                     | `isVisible` value          | Effect                                |
-|-------------------------------|----------------------------|---------------------------------------|
-| Always show                   | omit entirely              | Item is always visible                |
-| Edit existing only            | `!!param.value`            | Hidden when `param` is undefined/null |
-| Create new only               | `!param.value`             | Hidden when `param` has a value       |
-| Reactive condition            | `computed(() => expr)`     | Re-evaluated whenever deps change     |
+| Condition          | `isVisible` value      | Effect                                |
+| ------------------ | ---------------------- | ------------------------------------- |
+| Always show        | omit entirely          | Item is always visible                |
+| Edit existing only | `!!param.value`        | Hidden when `param` is undefined/null |
+| Create new only    | `!param.value`         | Hidden when `param` has a value       |
+| Reactive condition | `computed(() => expr)` | Re-evaluated whenever deps change     |
 
 ### Static vs reactive `isVisible`
 
 Use **static boolean** (`!!param.value`) when the visibility is fixed at setup time and will not change during the blade's lifetime:
+
 ```ts
 isVisible: !!param.value,   // evaluated once at setup — fine for create/edit split
 ```
 
 Use **`computed`** when visibility must track reactive state:
+
 ```ts
 isVisible: computed(() => !!someReactiveRef.value),
 ```

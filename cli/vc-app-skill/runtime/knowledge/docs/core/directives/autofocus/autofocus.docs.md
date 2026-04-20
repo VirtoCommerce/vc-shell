@@ -12,8 +12,8 @@ The directive is registered globally by the framework, so no manual import is ne
 
 ## API
 
-| Binding | Type | Description |
-|---------|------|-------------|
+| Binding                   | Type      | Description                                         |
+| ------------------------- | --------- | --------------------------------------------------- |
 | `v-autofocus="condition"` | `boolean` | Focus the element on mount if `condition` is truthy |
 
 The directive only acts on the `mounted` hook. It does not re-focus on updates.
@@ -40,7 +40,10 @@ export const autofocus = {
 ```vue
 <template>
   <!-- The search field gets focus as soon as the blade opens -->
-  <input v-autofocus="true" placeholder="Search orders..." />
+  <input
+    v-autofocus="true"
+    placeholder="Search orders..."
+  />
 </template>
 ```
 
@@ -68,7 +71,10 @@ const isEditMode = computed(() => !!props.param);
 
 ```vue
 <template>
-  <VcPopup v-model:show="showDialog" title="Rename Item">
+  <VcPopup
+    v-model:show="showDialog"
+    title="Rename Item"
+  >
     <VcInput
       v-autofocus="showDialog"
       v-model="newName"

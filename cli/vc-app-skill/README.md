@@ -7,6 +7,7 @@ An AI coding skill for scaffolding and generating VirtoCommerce Shell applicatio
 `vc-app-skill` installs a set of AI-readable skill files (markdown prompts, knowledge base, slash commands) into your AI coding tool's configuration directory. Once installed, your AI assistant gains deep knowledge of the VirtoCommerce Shell framework — enabling it to scaffold apps, connect to platform APIs, generate full UI modules, and follow framework conventions automatically.
 
 The skill covers:
+
 - Creating standalone apps from templates
 - Connecting to VirtoCommerce platform and generating typed API clients
 - Intent-driven module generation (list + details blades, composables, locales) with mock or API data
@@ -58,6 +59,7 @@ Scaffold a new VirtoCommerce Shell application interactively.
 ```
 
 Prompts for:
+
 - App name and npm package name
 - Target directory
 
@@ -72,6 +74,7 @@ Connect to a VirtoCommerce platform instance and generate typed API clients.
 ```
 
 Walks through:
+
 1. Writing `.env` with platform URL
 2. Writing `.env.local` with auth credentials
 3. Generating NSwag API clients from the platform's Swagger endpoints
@@ -86,6 +89,7 @@ Add an empty module skeleton to the current project.
 ```
 
 Generates:
+
 - `src/modules/<name>/` directory with `index.ts`, `pages/`, `composables/`, `locales/`
 - Registers the module in the app's module list
 
@@ -98,6 +102,7 @@ Full intent-driven module generation. This is the main power feature — it walk
 ```
 
 **Create flow** (new module):
+
 - **Phase 1: Intent** — describe what the module does, pick blade types (list+details, list-only, details-only), configure menu entry
 - **Phase 2: Data Source** — select API entity, choose columns/fields, pick CRUD methods. If no API client exists, generates with mock data automatically
 - **Phase 3: Generation** — dispatches specialized agents to generate blades, composables, locales, and barrel files
@@ -105,6 +110,7 @@ Full intent-driven module generation. This is the main power feature — it walk
 
 **Enhance flow** (existing module):
 When the module already exists, generate detects it and switches to enhance mode:
+
 - **Phase E1: Module Analysis** — analyzes existing blades, composables, locales, API status
 - **Phase E2: Intent Parsing** — describe changes in free text, parsed into action plan
 - **Phase E3: Data Source** — only if new entity is involved
@@ -209,17 +215,17 @@ cli/vc-app-skill/
 
 The skill dispatches specialized agents for different tasks:
 
-| Agent | Purpose |
-|---|---|
-| `api-analyzer` | Discovers entities and CRUD methods in API client files |
-| `list-blade-generator` | Generates list blade + plural composable |
-| `details-blade-generator` | Generates details blade + singular composable |
-| `locales-generator` | Scans generated files for i18n keys, writes locale JSON |
-| `module-assembler` | Creates barrel files and registers module (create + append modes) |
-| `type-checker` | Runs vue-tsc, iteratively fixes type errors |
-| `promote-agent` | Transforms mock composables/blades/locales to use real API |
-| `module-analyzer` | Analyzes existing module structure (read-only) |
-| `blade-enhancer` | Surgical edits to existing blades/composables/locales |
+| Agent                     | Purpose                                                           |
+| ------------------------- | ----------------------------------------------------------------- |
+| `api-analyzer`            | Discovers entities and CRUD methods in API client files           |
+| `list-blade-generator`    | Generates list blade + plural composable                          |
+| `details-blade-generator` | Generates details blade + singular composable                     |
+| `locales-generator`       | Scans generated files for i18n keys, writes locale JSON           |
+| `module-assembler`        | Creates barrel files and registers module (create + append modes) |
+| `type-checker`            | Runs vue-tsc, iteratively fixes type errors                       |
+| `promote-agent`           | Transforms mock composables/blades/locales to use real API        |
+| `module-analyzer`         | Analyzes existing module structure (read-only)                    |
+| `blade-enhancer`          | Surgical edits to existing blades/composables/locales             |
 
 ### Running locally
 

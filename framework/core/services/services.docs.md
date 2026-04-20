@@ -13,25 +13,25 @@ Every service follows the same architecture:
 
 ### Internal Building Blocks (`_internal/`)
 
-| Helper | Purpose |
-|---|---|
-| `createPreregistrationBus` | Generic bus that stores items by key and replays them into a service. Supports live-register (after service is up) and broadcast. |
-| `createBladeScopedRegistry` | Reactive `Map<bladeId, Item[]>` with register/unregister/update/clear. Used by WidgetService and ToolbarService. |
-| `createSimpleMapRegistry` | Reactive `Map<id, Item>` with sorted computed output. Used by SettingsMenuService and AppBarMenuService. |
+| Helper                      | Purpose                                                                                                                           |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `createPreregistrationBus`  | Generic bus that stores items by key and replays them into a service. Supports live-register (after service is up) and broadcast. |
+| `createBladeScopedRegistry` | Reactive `Map<bladeId, Item[]>` with register/unregister/update/clear. Used by WidgetService and ToolbarService.                  |
+| `createSimpleMapRegistry`   | Reactive `Map<id, Item>` with sorted computed output. Used by SettingsMenuService and AppBarMenuService.                          |
 
 ## Services
 
-| Service | Factory | Module-level API | Key Type |
-|---|---|---|---|
-| **MenuService** | `createMenuService()` | `addMenuItem()`, `removeRegisteredMenuItem()`, `setMenuBadge()` | `MenuItem` |
-| **WidgetService** | `createWidgetService()` | `registerWidget()`, `registerExternalWidget()` | `IWidget` |
-| **ToolbarService** | `createToolbarService()` | `registerToolbarItem()` | `IToolbarItem` |
-| **DashboardService** | `createDashboardService()` | `registerDashboardWidget()` | `DashboardWidget` |
-| **SettingsMenuService** | `createSettingsMenuService()` | `addSettingsMenuItem()` | `ISettingsMenuItem` |
-| **AppBarWidgetService** | `createAppBarWidgetService()` | `addAppBarWidget()` | `AppBarWidget` |
-| **AppBarMobileButtonsService** | `createAppBarMobileButtonsService()` | (direct API) | `AppBarButtonContent` |
-| **GlobalSearchService** | `createGlobalSearchService()` | (direct API) | per-blade search state |
-| **LanguageService** | `createLanguageService()` | (direct API) | locale strings |
+| Service                        | Factory                              | Module-level API                                                | Key Type               |
+| ------------------------------ | ------------------------------------ | --------------------------------------------------------------- | ---------------------- |
+| **MenuService**                | `createMenuService()`                | `addMenuItem()`, `removeRegisteredMenuItem()`, `setMenuBadge()` | `MenuItem`             |
+| **WidgetService**              | `createWidgetService()`              | `registerWidget()`, `registerExternalWidget()`                  | `IWidget`              |
+| **ToolbarService**             | `createToolbarService()`             | `registerToolbarItem()`                                         | `IToolbarItem`         |
+| **DashboardService**           | `createDashboardService()`           | `registerDashboardWidget()`                                     | `DashboardWidget`      |
+| **SettingsMenuService**        | `createSettingsMenuService()`        | `addSettingsMenuItem()`                                         | `ISettingsMenuItem`    |
+| **AppBarWidgetService**        | `createAppBarWidgetService()`        | `addAppBarWidget()`                                             | `AppBarWidget`         |
+| **AppBarMobileButtonsService** | `createAppBarMobileButtonsService()` | (direct API)                                                    | `AppBarButtonContent`  |
+| **GlobalSearchService**        | `createGlobalSearchService()`        | (direct API)                                                    | per-blade search state |
+| **LanguageService**            | `createLanguageService()`            | (direct API)                                                    | locale strings         |
 
 ## Usage
 
@@ -48,10 +48,7 @@ addMenuItem({
   priority: 10,
 });
 
-registerWidget(
-  { id: "order-stats", component: OrderStatsWidget },
-  "OrderDetails",
-);
+registerWidget({ id: "order-stats", component: OrderStatsWidget }, "OrderDetails");
 ```
 
 ### Using inside a component
@@ -59,8 +56,8 @@ registerWidget(
 ```typescript
 import { useMenu, useToolbar } from "@vc-shell/framework";
 
-const { menuItems } = useMenu();           // reactive menu tree
-const { toolbarItems } = useToolbar();     // toolbar items for current blade
+const { menuItems } = useMenu(); // reactive menu tree
+const { toolbarItems } = useToolbar(); // toolbar items for current blade
 ```
 
 ### Menu badges

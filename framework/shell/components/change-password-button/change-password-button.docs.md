@@ -45,13 +45,7 @@ Combine with other account-related settings entries in a module setup:
 
 ```ts
 // my-module/index.ts
-import {
-  useSettingsMenu,
-  ChangePasswordButton,
-  LogoutButton,
-  ThemeSelector,
-  LanguageSelector,
-} from "@vc-shell/framework";
+import { useSettingsMenu, ChangePasswordButton, LogoutButton, ThemeSelector, LanguageSelector } from "@vc-shell/framework";
 
 export default {
   install() {

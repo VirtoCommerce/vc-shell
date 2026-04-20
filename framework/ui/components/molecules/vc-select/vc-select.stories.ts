@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcSelect } from "@ui/components/molecules/vc-select";
-import { ref, h, computed, provide } from "vue";
+import { ref, provide } from "vue";
 import { BladeLoadingKey } from "@framework/injection-keys";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { VcButton } from "@ui/components/atoms/vc-button";
 
 /**
  * `VcSelect` is a versatile dropdown component for selecting single or multiple options.

@@ -384,7 +384,7 @@ function createExportsConfig(
       const normalizedExistingKey = normalizeExportPath(existingKey);
       if (!normalizedExistingKey || normalizedExistingKey === ".") continue; // Skip if key normalizes to nothing or root
 
-      const coreModuleOfExistingKey = getCoreModuleName(normalizedExistingKey);
+      const _coreModuleOfExistingKey = getCoreModuleName(normalizedExistingKey);
 
       // If this existing key is already defined by the new generation, skip (new one takes precedence).
       // Otherwise, preserve it. This means custom keys for regenerated modules are kept,
@@ -512,8 +512,8 @@ function handlePackageJson(packageJsonPath: string, generatedModules: string[], 
 
   let packageJson = { ...defaultPackageJson };
   let existingExports: Record<string, unknown> | undefined;
-  let existingModule: string | undefined;
-  let existingTypes: string | undefined;
+  let _existingModule: string | undefined;
+  let _existingTypes: string | undefined;
 
   if (existsSync(packageJsonPath)) {
     try {
@@ -523,11 +523,11 @@ function handlePackageJson(packageJsonPath: string, generatedModules: string[], 
 
         // Save existing module and types if present
         if (typeof existingPackageJson.module === "string") {
-          existingModule = existingPackageJson.module as string;
+          _existingModule = existingPackageJson.module as string;
         }
 
         if (typeof existingPackageJson.types === "string") {
-          existingTypes = existingPackageJson.types as string;
+          _existingTypes = existingPackageJson.types as string;
         }
 
         // Preserve user-defined fields that shouldn't be changed by the generator
@@ -586,7 +586,7 @@ function handlePackageJson(packageJsonPath: string, generatedModules: string[], 
     }
   }
   const uniqueFinalCoreModules = Array.from(coreModulesFromExports);
-  const isSingleModuleScenario = uniqueFinalCoreModules.length === 1;
+  const _isSingleModuleScenario = uniqueFinalCoreModules.length === 1;
 
   // Handle module and types fields (top-level in package.json)
   // These are generally for older systems or when there's a clear "main" export.

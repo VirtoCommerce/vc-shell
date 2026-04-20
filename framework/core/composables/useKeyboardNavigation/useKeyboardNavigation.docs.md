@@ -14,11 +14,11 @@ The composable supports two attachment modes: **auto-attach** on mount via a CSS
 
 ```vue
 <script setup lang="ts">
-import { useKeyboardNavigation } from '@vc-shell/framework';
-import { ref } from 'vue';
+import { useKeyboardNavigation } from "@vc-shell/framework";
+import { ref } from "vue";
 
 const menuRef = ref<HTMLElement | null>(null);
-const items = ref(['Dashboard', 'Products', 'Orders', 'Settings']);
+const items = ref(["Dashboard", "Products", "Orders", "Settings"]);
 
 const { initKeyboardNavigation, focusFirstElement } = useKeyboardNavigation({
   itemSelector: '[role="menuitem"]',
@@ -43,7 +43,10 @@ function openMenu() {
 </script>
 
 <template>
-  <div ref="menuRef" role="menu">
+  <div
+    ref="menuRef"
+    role="menu"
+  >
     <div
       v-for="item in items"
       :key="item"
@@ -61,26 +64,26 @@ function openMenu() {
 
 ### Parameters (Options Object)
 
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| `containerSelector` | `string` | `'[role="menu"]'` | CSS selector to auto-find the container on mount. Set to empty string to disable auto-attach. |
-| `itemSelector` | `string` | `'[tabindex="0"]'` | CSS selector for focusable items inside the container. |
-| `onEnter` | `(el: HTMLElement) => void` | `undefined` | Called when Enter or Space is pressed on a focused item. Falls back to `el.click()` if not provided. |
-| `onEscape` | `() => void` | `undefined` | Called when Escape is pressed. Typically used to close the menu or popover. |
-| `loop` | `boolean` | `true` | When `true`, pressing ArrowDown on the last item wraps to the first, and ArrowUp on the first wraps to the last. |
+| Parameter           | Type                        | Default            | Description                                                                                                      |
+| ------------------- | --------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `containerSelector` | `string`                    | `'[role="menu"]'`  | CSS selector to auto-find the container on mount. Set to empty string to disable auto-attach.                    |
+| `itemSelector`      | `string`                    | `'[tabindex="0"]'` | CSS selector for focusable items inside the container.                                                           |
+| `onEnter`           | `(el: HTMLElement) => void` | `undefined`        | Called when Enter or Space is pressed on a focused item. Falls back to `el.click()` if not provided.             |
+| `onEscape`          | `() => void`                | `undefined`        | Called when Escape is pressed. Typically used to close the menu or popover.                                      |
+| `loop`              | `boolean`                   | `true`             | When `true`, pressing ArrowDown on the last item wraps to the first, and ArrowUp on the first wraps to the last. |
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `initKeyboardNavigation` | `(el: HTMLElement) => void` | Manually attach keyboard listener to an element. Cleans up any previous attachment first. |
-| `cleanupKeyboardNavigation` | `() => void` | Remove listener and reset state. Called automatically on `onBeforeUnmount`. |
-| `focusNextElement` | `() => void` | Move focus to the next item. Wraps if `loop` is `true`. |
-| `focusPreviousElement` | `() => void` | Move focus to the previous item. Wraps if `loop` is `true`. |
-| `focusFirstElement` | `() => void` | Focus the first matching item in the container. |
-| `focusLastElement` | `() => void` | Focus the last matching item in the container. |
-| `setFocusedIndex` | `(index: number) => void` | Set focus to a specific index. No-op if index is out of bounds. |
-| `getFocusedIndex` | `() => number` | Get the currently focused index (`-1` if no item is focused). |
+| Property                    | Type                        | Description                                                                               |
+| --------------------------- | --------------------------- | ----------------------------------------------------------------------------------------- |
+| `initKeyboardNavigation`    | `(el: HTMLElement) => void` | Manually attach keyboard listener to an element. Cleans up any previous attachment first. |
+| `cleanupKeyboardNavigation` | `() => void`                | Remove listener and reset state. Called automatically on `onBeforeUnmount`.               |
+| `focusNextElement`          | `() => void`                | Move focus to the next item. Wraps if `loop` is `true`.                                   |
+| `focusPreviousElement`      | `() => void`                | Move focus to the previous item. Wraps if `loop` is `true`.                               |
+| `focusFirstElement`         | `() => void`                | Focus the first matching item in the container.                                           |
+| `focusLastElement`          | `() => void`                | Focus the last matching item in the container.                                            |
+| `setFocusedIndex`           | `(index: number) => void`   | Set focus to a specific index. No-op if index is out of bounds.                           |
+| `getFocusedIndex`           | `() => number`              | Get the currently focused index (`-1` if no item is focused).                             |
 
 ## How It Works
 
@@ -99,26 +102,25 @@ Auto-attach happens in `onMounted`: if `containerSelector` is set and a matching
 
 ```vue
 <script setup lang="ts">
-import { useKeyboardNavigation } from '@vc-shell/framework';
-import { ref, watch, nextTick } from 'vue';
+import { useKeyboardNavigation } from "@vc-shell/framework";
+import { ref, watch, nextTick } from "vue";
 
 const dropdownRef = ref<HTMLElement | null>(null);
 const isOpen = ref(false);
 const suggestions = ref<string[]>([]);
 
-const { initKeyboardNavigation, cleanupKeyboardNavigation, focusFirstElement } =
-  useKeyboardNavigation({
-    containerSelector: '', // disable auto-attach
-    itemSelector: '.suggestion-item',
-    onEnter: (el) => {
-      selectSuggestion(el.dataset.value!);
-      isOpen.value = false;
-    },
-    onEscape: () => {
-      isOpen.value = false;
-    },
-    loop: true,
-  });
+const { initKeyboardNavigation, cleanupKeyboardNavigation, focusFirstElement } = useKeyboardNavigation({
+  containerSelector: "", // disable auto-attach
+  itemSelector: ".suggestion-item",
+  onEnter: (el) => {
+    selectSuggestion(el.dataset.value!);
+    isOpen.value = false;
+  },
+  onEscape: () => {
+    isOpen.value = false;
+  },
+  loop: true,
+});
 
 watch(isOpen, async (open) => {
   if (open) {
@@ -139,8 +141,15 @@ function selectSuggestion(value: string) {
 
 <template>
   <div>
-    <VcInput @focus="isOpen = true" @input="fetchSuggestions" />
-    <div v-if="isOpen" ref="dropdownRef" class="suggestion-dropdown">
+    <VcInput
+      @focus="isOpen = true"
+      @input="fetchSuggestions"
+    />
+    <div
+      v-if="isOpen"
+      ref="dropdownRef"
+      class="suggestion-dropdown"
+    >
       <div
         v-for="item in suggestions"
         :key="item"

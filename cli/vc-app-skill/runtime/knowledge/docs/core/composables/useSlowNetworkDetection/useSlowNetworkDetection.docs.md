@@ -17,14 +17,18 @@ The composable is initialized automatically at app startup. To reactively read t
 
 ```vue
 <script setup lang="ts">
-import { useSlowNetworkDetection } from '@vc-shell/framework';
+import { useSlowNetworkDetection } from "@vc-shell/framework";
 
 const { isSlowNetwork } = useSlowNetworkDetection();
 </script>
 
 <template>
   <VcBlade title="Products">
-    <VcBanner v-if="isSlowNetwork" variant="warning" icon="lucide-wifi">
+    <VcBanner
+      v-if="isSlowNetwork"
+      variant="warning"
+      icon="lucide-wifi"
+    >
       <template #title>Slow connection</template>
       Loading may take longer than usual.
     </VcBanner>
@@ -38,19 +42,19 @@ const { isSlowNetwork } = useSlowNetworkDetection();
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `isSlowNetwork` | `Readonly<Ref<boolean>>` | `true` when the network is slow (either channel active). Read-only. |
-| `trackRequest` | `(id: string) => void` | Start tracking a request. If it isn't untracked within 10 s, it counts as slow. |
-| `untrackRequest` | `(id: string) => void` | Stop tracking a request. Cancels the timer or decrements the slow count. |
+| Property         | Type                     | Description                                                                     |
+| ---------------- | ------------------------ | ------------------------------------------------------------------------------- |
+| `isSlowNetwork`  | `Readonly<Ref<boolean>>` | `true` when the network is slow (either channel active). Read-only.             |
+| `trackRequest`   | `(id: string) => void`   | Start tracking a request. If it isn't untracked within 10 s, it counts as slow. |
+| `untrackRequest` | `(id: string) => void`   | Stop tracking a request. Cancels the timer or decrements the slow count.        |
 
 ### Constants
 
-| Name | Value | Purpose |
-|---|---|---|
-| `SLOW_REQUEST_THRESHOLD_MS` | `10000` | Time before a pending request is considered slow |
-| `DISMISS_DELAY_MS` | `3000` | Delay before hiding the notification after recovery |
-| `SLOW_EFFECTIVE_TYPES` | `["slow-2g", "2g"]` | Connection types flagged as slow |
+| Name                        | Value               | Purpose                                             |
+| --------------------------- | ------------------- | --------------------------------------------------- |
+| `SLOW_REQUEST_THRESHOLD_MS` | `10000`             | Time before a pending request is considered slow    |
+| `DISMISS_DELAY_MS`          | `3000`              | Delay before hiding the notification after recovery |
+| `SLOW_EFFECTIVE_TYPES`      | `["slow-2g", "2g"]` | Connection types flagged as slow                    |
 
 ## How It Works
 
@@ -74,18 +78,18 @@ The fetch interceptor in `framework/core/interceptors/index.ts` calls `trackRequ
 
 ```vue
 <script setup lang="ts">
-import { watch } from 'vue';
-import { useSlowNetworkDetection } from '@vc-shell/framework';
+import { watch } from "vue";
+import { useSlowNetworkDetection } from "@vc-shell/framework";
 
 const { isSlowNetwork } = useSlowNetworkDetection();
 
 // Switch to a lightweight polling interval when the network is slow
-const pollInterval = computed(() => isSlowNetwork.value ? 30000 : 5000);
+const pollInterval = computed(() => (isSlowNetwork.value ? 30000 : 5000));
 
 // Warn before navigating away during slow network + unsaved changes
 watch(isSlowNetwork, (slow) => {
   if (slow) {
-    console.info('Network is slow — consider disabling auto-refresh');
+    console.info("Network is slow — consider disabling auto-refresh");
   }
 });
 </script>
@@ -96,7 +100,7 @@ watch(isSlowNetwork, (slow) => {
 If you bypass the standard fetch interceptor (e.g., direct `XMLHttpRequest` or third-party SDK), you can manually track the request:
 
 ```ts
-import { useSlowNetworkDetection } from '@vc-shell/framework';
+import { useSlowNetworkDetection } from "@vc-shell/framework";
 
 const { trackRequest, untrackRequest } = useSlowNetworkDetection();
 

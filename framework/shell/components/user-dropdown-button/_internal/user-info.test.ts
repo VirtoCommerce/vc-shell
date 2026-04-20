@@ -39,7 +39,7 @@ function mountUserInfo(props = {}) {
     global: {
       mocks: {
         $t: (key: string) => key,
-        $te: (key: string) => false,
+        $te: (_key: string) => false,
       },
     },
   });

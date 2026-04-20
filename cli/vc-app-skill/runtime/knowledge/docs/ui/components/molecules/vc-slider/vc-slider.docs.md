@@ -13,10 +13,16 @@ A content carousel component built on Swiper.js for displaying slides with optio
 
 ```vue
 <template>
-  <VcSlider :slides="products" navigation>
+  <VcSlider
+    :slides="products"
+    navigation
+  >
     <template #default="{ slide }">
       <div class="tw-w-48">
-        <img :src="slide.imageUrl" class="tw-rounded" />
+        <img
+          :src="slide.imageUrl"
+          class="tw-rounded"
+        />
         <p>{{ slide.name }}</p>
       </div>
     </template>
@@ -36,14 +42,14 @@ const products = [
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `slides` | `Record<string, unknown>[] \| unknown[]` | `[]` | Array of slide data objects |
-| `navigation` | `boolean` | `false` | Show previous/next navigation buttons |
-| `slidesPerView` | `string \| "auto"` | `"auto"` | Number of visible slides at once |
-| `spaceBetweenSlides` | `number` | `10` | Gap between slides in pixels |
-| `overflow` | `boolean` | `false` | Allow slides to be visible outside the container bounds |
-| `ariaLabel` | `string` | `"Content carousel"` | Accessible label for the slider region |
+| Prop                 | Type                                     | Default              | Description                                             |
+| -------------------- | ---------------------------------------- | -------------------- | ------------------------------------------------------- |
+| `slides`             | `Record<string, unknown>[] \| unknown[]` | `[]`                 | Array of slide data objects                             |
+| `navigation`         | `boolean`                                | `false`              | Show previous/next navigation buttons                   |
+| `slidesPerView`      | `string \| "auto"`                       | `"auto"`             | Number of visible slides at once                        |
+| `spaceBetweenSlides` | `number`                                 | `10`                 | Gap between slides in pixels                            |
+| `overflow`           | `boolean`                                | `false`              | Allow slides to be visible outside the container bounds |
+| `ariaLabel`          | `string`                                 | `"Content carousel"` | Accessible label for the slider region                  |
 
 ## Common Patterns
 
@@ -89,11 +95,11 @@ const products = [
 
 ## Slots
 
-| Slot | Scope | Description |
-|------|-------|-------------|
-| `default` | `{ slide }` | Content for each slide |
-| `prevBtn` | -- | Custom previous navigation button |
-| `nextBtn` | -- | Custom next navigation button |
+| Slot      | Scope       | Description                       |
+| --------- | ----------- | --------------------------------- |
+| `default` | `{ slide }` | Content for each slide            |
+| `prevBtn` | --          | Custom previous navigation button |
+| `nextBtn` | --          | Custom next navigation button     |
 
 ## Accessibility
 
@@ -117,4 +123,3 @@ const products = [
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
-

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { ref, nextTick } from "vue";
+import { ref } from "vue";
 import { mountWithSetup } from "@framework/test-helpers";
 
 // Mock @floating-ui/vue
@@ -76,7 +76,7 @@ describe("useFloatingPosition", () => {
   });
 
   it("uses explicit middleware when provided", async () => {
-    const { flip } = await import("@floating-ui/vue");
+    const { flip: _flip } = await import("@floating-ui/vue");
     const referenceEl = ref<HTMLElement | null>(null);
     const floatingEl = ref<HTMLElement | null>(null);
     const customMiddleware = [{ name: "custom", fn: vi.fn() }];

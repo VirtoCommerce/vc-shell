@@ -221,7 +221,7 @@ const isCustomIcon = computed(() => {
         typeof normalizedIconName.value === "string" ? normalizedIconName.value : String(normalizedIconName.value);
       const resolved = resolveComponent(iconName);
       return resolved !== iconName;
-    } catch (e) {
+    } catch (_e) {
       return false;
     }
   }
@@ -230,7 +230,7 @@ const isCustomIcon = computed(() => {
   try {
     const resolved = resolveComponent(props.icon);
     return resolved !== props.icon; // If resolved is different from original string, it's a component name
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 });
@@ -252,7 +252,7 @@ const safeIcon = computed(() => {
       typeof normalizedIconName.value === "string" ? normalizedIconName.value : String(normalizedIconName.value);
     const resolved = resolveComponent(iconName);
     return resolved !== iconName ? resolved : "i"; // Return resolved component or fallback to 'i'
-  } catch (e) {
+  } catch (_e) {
     return "i";
   }
 });

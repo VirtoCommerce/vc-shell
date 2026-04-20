@@ -34,30 +34,30 @@ const user = reactive({ name: "John", role: "Admin" });
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isReady` | `boolean` | *required* | When false, shows a full-screen loading spinner. |
-| `logo` | `string` | -- | Logo image URL for the sidebar/top bar. |
-| `title` | `string` | -- | Application title shown in the sidebar. |
-| `version` | `string` | -- | App version string (informational). |
-| `avatar` | `string` | -- | User avatar image URL. |
-| `name` | `string` | -- | Current user display name. |
-| `role` | `string` | -- | Current user role label. |
-| `disableMenu` | `boolean` | `false` | Hide navigation menu items. |
-| `disableAppHub` | `boolean` | `false` | Hide the Applications section inside the App Hub. |
-| `showSearch` | `boolean` | `false` | Show a search input in the sidebar that filters menu items by title. |
-| `searchPlaceholder` | `string` | `"Search keyword"` | Placeholder text for the sidebar search input. Falls back to i18n key `SHELL.SIDEBAR.SEARCH_PLACEHOLDER`. |
+| Prop                | Type      | Default            | Description                                                                                               |
+| ------------------- | --------- | ------------------ | --------------------------------------------------------------------------------------------------------- |
+| `isReady`           | `boolean` | _required_         | When false, shows a full-screen loading spinner.                                                          |
+| `logo`              | `string`  | --                 | Logo image URL for the sidebar/top bar.                                                                   |
+| `title`             | `string`  | --                 | Application title shown in the sidebar.                                                                   |
+| `version`           | `string`  | --                 | App version string (informational).                                                                       |
+| `avatar`            | `string`  | --                 | User avatar image URL.                                                                                    |
+| `name`              | `string`  | --                 | Current user display name.                                                                                |
+| `role`              | `string`  | --                 | Current user role label.                                                                                  |
+| `disableMenu`       | `boolean` | `false`            | Hide navigation menu items.                                                                               |
+| `disableAppHub`     | `boolean` | `false`            | Hide the Applications section inside the App Hub.                                                         |
+| `showSearch`        | `boolean` | `false`            | Show a search input in the sidebar that filters menu items by title.                                      |
+| `searchPlaceholder` | `string`  | `"Search keyword"` | Placeholder text for the sidebar search input. Falls back to i18n key `SHELL.SIDEBAR.SEARCH_PLACEHOLDER`. |
 
 ## Slots
 
-| Slot | Props | Description |
-|------|-------|-------------|
-| `layout` | `{ isMobile, sidebar, appsList, switchApp, openRoot, handleMenuItemClick }` | Override the entire layout (sidebar + navigation). |
-| `menu` | `{ expanded, onItemClick, searchQuery }` | Custom navigation menu. `searchQuery` contains the current search input value (empty string when search is inactive). |
-| `sidebar-header` | `{ logo, expanded, isMobile }` | Custom sidebar header. |
-| `sidebar-footer` | `{ avatar, name, role }` | Custom sidebar footer (user info). |
-| `workspace` | `{ isAuthenticated }` | Override the blade navigation workspace. |
-| `app-hub` | `{ appsList, switchApp }` | Custom content for the Applications section of the App Hub. |
+| Slot             | Props                                                                       | Description                                                                                                           |
+| ---------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `layout`         | `{ isMobile, sidebar, appsList, switchApp, openRoot, handleMenuItemClick }` | Override the entire layout (sidebar + navigation).                                                                    |
+| `menu`           | `{ expanded, onItemClick, searchQuery }`                                    | Custom navigation menu. `searchQuery` contains the current search input value (empty string when search is inactive). |
+| `sidebar-header` | `{ logo, expanded, isMobile }`                                              | Custom sidebar header.                                                                                                |
+| `sidebar-footer` | `{ avatar, name, role }`                                                    | Custom sidebar footer (user info).                                                                                    |
+| `workspace`      | `{ isAuthenticated }`                                                       | Override the blade navigation workspace.                                                                              |
+| `app-hub`        | `{ appsList, switchApp }`                                                   | Custom content for the Applications section of the App Hub.                                                           |
 
 ## Architecture
 
@@ -88,7 +88,13 @@ If you use the `menu` slot to provide a custom menu, the `searchQuery` prop is p
 
 ```vue
 <template>
-  <VcApp :is-ready="true" logo="/logo.svg" title="Admin" show-search search-placeholder="Find a module...">
+  <VcApp
+    :is-ready="true"
+    logo="/logo.svg"
+    title="Admin"
+    show-search
+    search-placeholder="Find a module..."
+  >
     <!-- Default menu with built-in filtering — no extra code needed -->
   </VcApp>
 </template>
@@ -98,7 +104,12 @@ If you use the `menu` slot to provide a custom menu, the `searchQuery` prop is p
 
 ```vue
 <template>
-  <VcApp :is-ready="true" logo="/logo.svg" title="Admin" show-search>
+  <VcApp
+    :is-ready="true"
+    logo="/logo.svg"
+    title="Admin"
+    show-search
+  >
     <template #menu="{ expanded, onItemClick, searchQuery }">
       <MyCustomMenu
         :expanded="expanded"
@@ -157,15 +168,27 @@ Replace the default user info section with a custom footer:
 
 ```vue
 <template>
-  <VcApp :is-ready="true" logo="/logo.svg" title="Admin">
+  <VcApp
+    :is-ready="true"
+    logo="/logo.svg"
+    title="Admin"
+  >
     <template #sidebar-footer="{ avatar, name, role }">
       <div class="tw-flex tw-items-center tw-gap-3 tw-p-3">
-        <img :src="avatar" class="tw-w-8 tw-h-8 tw-rounded-full" />
+        <img
+          :src="avatar"
+          class="tw-w-8 tw-h-8 tw-rounded-full"
+        />
         <div>
           <div class="tw-text-sm tw-font-medium">{{ name }}</div>
           <div class="tw-text-xs tw-text-gray-500">{{ role }}</div>
         </div>
-        <VcButton variant="ghost" size="icon" icon="lucide-log-out" @click="logout" />
+        <VcButton
+          variant="ghost"
+          size="icon"
+          icon="lucide-log-out"
+          @click="logout"
+        />
       </div>
     </template>
   </VcApp>

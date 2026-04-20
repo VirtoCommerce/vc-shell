@@ -1,9 +1,11 @@
 # Global Search Service
 
 ## Purpose
+
 `createGlobalSearchService` keeps search visibility state and search query text per blade.
 
 ## Source
+
 `framework/core/services/global-search-service/index.ts`
 
 ## API
@@ -19,10 +21,12 @@ interface GlobalSearchState {
 ```
 
 ## Behavior
+
 - State is scoped to a service instance.
 - `toggleSearch` flips visibility for a blade key.
 - `closeSearch` always sets visibility to `false`.
 - `setSearchQuery` updates the per-blade query string.
 
 ## Usage
+
 Use via `useGlobalSearch` / `provideGlobalSearch` composables.

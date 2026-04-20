@@ -2,9 +2,9 @@
 
 Two composables for the widget system — one for the **blade side**, one for the **widget side**.
 
-| Composable | Called from | Purpose |
-|---|---|---|
-| `useBladeWidgets` | Blade component | Register headless widgets + get `refresh()` / `refreshAll()` |
+| Composable         | Called from               | Purpose                                                                |
+| ------------------ | ------------------------- | ---------------------------------------------------------------------- |
+| `useBladeWidgets`  | Blade component           | Register headless widgets + get `refresh()` / `refreshAll()`           |
 | `useWidgetTrigger` | External widget component | Register trigger callbacks (`onRefresh`, `onClick`) via provide/inject |
 
 Headless widgets are defined as plain configuration objects with reactive refs for dynamic values like badge counts and loading states. External component-based widgets use `useWidgetTrigger` to register their refresh callbacks so the hosting blade can trigger them.
@@ -18,25 +18,25 @@ Headless widgets are defined as plain configuration objects with reactive refs f
 ## Basic Usage
 
 ```typescript
-import { useBladeWidgets } from '@vc-shell/framework';
+import { useBladeWidgets } from "@vc-shell/framework";
 
 const { refreshAll } = useBladeWidgets([
   {
-    id: 'ChildListWidget',
-    icon: 'lucide-tag',
-    title: 'MODULE.WIDGETS.CHILD_LIST.TITLE',
+    id: "ChildListWidget",
+    icon: "lucide-tag",
+    title: "MODULE.WIDGETS.CHILD_LIST.TITLE",
     badge: childCount,
     loading: childLoading,
-    onClick: () => openBlade({ name: 'ChildList' }),
+    onClick: () => openBlade({ name: "ChildList" }),
     onRefresh: () => reloadChildren(),
   },
   {
-    id: 'NotesWidget',
-    icon: 'lucide-star',
-    title: 'MODULE.WIDGETS.NOTES.TITLE',
+    id: "NotesWidget",
+    icon: "lucide-star",
+    title: "MODULE.WIDGETS.NOTES.TITLE",
     badge: notesCount,
     isVisible: computed(() => !!item.value?.id),
-    onClick: () => openBlade({ name: 'NotesList' }),
+    onClick: () => openBlade({ name: "NotesList" }),
   },
 ]);
 
@@ -49,30 +49,30 @@ refreshAll();
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `widgets` | `HeadlessWidgetDeclaration[]` | Yes | Array of widget declarations |
+| Parameter | Type                          | Required | Description                  |
+| --------- | ----------------------------- | -------- | ---------------------------- |
+| `widgets` | `HeadlessWidgetDeclaration[]` | Yes      | Array of widget declarations |
 
 ### HeadlessWidgetDeclaration
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `id` | `string` | Yes | Unique widget identifier |
-| `icon` | `string` | Yes | Icon name (e.g., `"lucide-tag"`) |
-| `title` | `string` | Yes | i18n key or display title |
-| `badge` | `Ref<number \| string>` | No | Badge counter value |
-| `loading` | `Ref<boolean>` | No | Show loading indicator |
-| `disabled` | `Ref<boolean> \| boolean` | No | Disable the widget |
-| `isVisible` | `ComputedRef<boolean> \| boolean` | No | Toggle visibility |
-| `onClick` | `() => void` | No | Action when widget is clicked |
-| `onRefresh` | `() => void \| Promise<void>` | No | Called by `refresh(id)` or `refreshAll()` |
+| Field       | Type                              | Required | Description                               |
+| ----------- | --------------------------------- | -------- | ----------------------------------------- |
+| `id`        | `string`                          | Yes      | Unique widget identifier                  |
+| `icon`      | `string`                          | Yes      | Icon name (e.g., `"lucide-tag"`)          |
+| `title`     | `string`                          | Yes      | i18n key or display title                 |
+| `badge`     | `Ref<number \| string>`           | No       | Badge counter value                       |
+| `loading`   | `Ref<boolean>`                    | No       | Show loading indicator                    |
+| `disabled`  | `Ref<boolean> \| boolean`         | No       | Disable the widget                        |
+| `isVisible` | `ComputedRef<boolean> \| boolean` | No       | Toggle visibility                         |
+| `onClick`   | `() => void`                      | No       | Action when widget is clicked             |
+| `onRefresh` | `() => void \| Promise<void>`     | No       | Called by `refresh(id)` or `refreshAll()` |
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `refresh` | `(widgetId: string) => void` | Trigger `onRefresh` on a specific widget |
-| `refreshAll` | `() => void` | Trigger `onRefresh` on all widgets that have one |
+| Property     | Type                         | Description                                      |
+| ------------ | ---------------------------- | ------------------------------------------------ |
+| `refresh`    | `(widgetId: string) => void` | Trigger `onRefresh` on a specific widget         |
+| `refreshAll` | `() => void`                 | Trigger `onRefresh` on all widgets that have one |
 
 ## useWidgetTrigger
 
@@ -81,7 +81,7 @@ Widget-side composable for external component-based widgets. Registers a trigger
 ### Basic Usage
 
 ```typescript
-import { useWidgetTrigger } from '@vc-shell/framework';
+import { useWidgetTrigger } from "@vc-shell/framework";
 
 // Inside an external widget component:
 useWidgetTrigger({ onRefresh: loadData });
@@ -89,14 +89,14 @@ useWidgetTrigger({ onRefresh: loadData });
 
 ### IWidgetTrigger
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `icon` | `string` | No | Lucide icon name for dropdown rendering |
-| `title` | `string` | No | Display title (fallback: widget's title) |
-| `badge` | `Ref<number \| string>` | No | Reactive badge value |
-| `onClick` | `() => void` | No | Handler called when widget is clicked in dropdown |
-| `onRefresh` | `() => void \| Promise<void>` | No | Handler called to refresh widget data |
-| `disabled` | `Ref<boolean> \| boolean` | No | Disabled state |
+| Field       | Type                          | Required | Description                                       |
+| ----------- | ----------------------------- | -------- | ------------------------------------------------- |
+| `icon`      | `string`                      | No       | Lucide icon name for dropdown rendering           |
+| `title`     | `string`                      | No       | Display title (fallback: widget's title)          |
+| `badge`     | `Ref<number \| string>`       | No       | Reactive badge value                              |
+| `onClick`   | `() => void`                  | No       | Handler called when widget is clicked in dropdown |
+| `onRefresh` | `() => void \| Promise<void>` | No       | Handler called to refresh widget data             |
+| `disabled`  | `Ref<boolean> \| boolean`     | No       | Disabled state                                    |
 
 ### How It Works
 
@@ -139,13 +139,7 @@ registerExternalWidget({
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import {
-  loading as vLoading,
-  useBlade,
-  injectBladeContext,
-  useWidgetTrigger,
-  VcWidget,
-} from "@vc-shell/framework";
+import { loading as vLoading, useBlade, injectBladeContext, useWidgetTrigger, VcWidget } from "@vc-shell/framework";
 
 const ctx = injectBladeContext();
 const entityId = computed(() => (ctx.value.item as { id?: string })?.id ?? "");
@@ -183,7 +177,7 @@ const { refresh, refreshAll } = useBladeWidgets([]);
 
 async function save() {
   await api.saveEntity(entity.value);
-  refreshAll();           // refresh all widgets (including MessageWidget)
+  refreshAll(); // refresh all widgets (including MessageWidget)
   // or: refresh("MessageWidget");  // refresh a specific widget by ID
 }
 </script>
@@ -246,11 +240,13 @@ async function save() {
 ## Prerequisites
 
 **`useBladeWidgets`**:
+
 - Must be called inside a blade component rendered by `VcBladeSlot` (requires `BladeDescriptorKey` injection).
 - `WidgetService` must be provided in the component tree (automatically available in vc-shell apps).
 - Calling outside a blade context throws an error with a descriptive message.
 
 **`useWidgetTrigger`**:
+
 - Must be called inside a widget component rendered by `WidgetContainer` (requires `WidgetScopeKey` injection).
 - If called outside a widget scope, logs a warning and does nothing (does not throw).
 

@@ -17,12 +17,7 @@ Every validated field follows the same three-part contract:
 3. `handleChange` keeps vee-validate in sync on every update
 
 ```vue
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="item.name"
-  name="name"
-  rules="required"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="item.name" name="name" rules="required">
   <VcInput
     v-model="item.name"
     label="Name"
@@ -45,12 +40,7 @@ The same pattern applies to every vc-shell input. Only the inner component chang
 ### VcSelect
 
 ```vue
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="item.categoryId"
-  name="categoryId"
-  rules="required"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="item.categoryId" name="categoryId" rules="required">
   <VcSelect
     v-model="item.categoryId"
     label="Category"
@@ -69,12 +59,7 @@ The same pattern applies to every vc-shell input. Only the inner component chang
 ### VcEditor (Rich Text)
 
 ```vue
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="item.description"
-  name="description"
-  rules="required"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="item.description" name="description" rules="required">
   <VcEditor
     v-model="item.description"
     label="Description"
@@ -89,12 +74,7 @@ The same pattern applies to every vc-shell input. Only the inner component chang
 ### VcTextarea
 
 ```vue
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="item.notes"
-  name="notes"
-  rules="required|min:10"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="item.notes" name="notes" rules="required|min:10">
   <VcTextarea
     v-model="item.notes"
     label="Notes"
@@ -123,29 +103,29 @@ Rules are composed with `|` (pipe) in the `rules` string.
 
 ### Standard Rules (from @vee-validate/rules)
 
-| Rule | Example | Description |
-|------|---------|-------------|
-| `required` | `"required"` | Must have a value |
-| `email` | `"required\|email"` | Valid email format |
-| `min:N` | `"required\|min:3"` | Minimum string length |
-| `max:N` | `"max:255"` | Maximum string length |
-| `min_value:N` | `"min_value:0"` | Minimum numeric value |
-| `between:N,M` | `"between:1,100"` | Numeric range |
-| `numeric` | `"numeric"` | Digits only |
-| `alpha_dash` | `"alpha_dash"` | Letters, digits, dashes, underscores |
-| `regex:P` | `"regex:^[A-Z]+"` | Custom regex match |
-| `confirmed:F` | `"confirmed:password"` | Must match another field |
-| `url` | `"url"` | Valid URL format |
+| Rule          | Example                | Description                          |
+| ------------- | ---------------------- | ------------------------------------ |
+| `required`    | `"required"`           | Must have a value                    |
+| `email`       | `"required\|email"`    | Valid email format                   |
+| `min:N`       | `"required\|min:3"`    | Minimum string length                |
+| `max:N`       | `"max:255"`            | Maximum string length                |
+| `min_value:N` | `"min_value:0"`        | Minimum numeric value                |
+| `between:N,M` | `"between:1,100"`      | Numeric range                        |
+| `numeric`     | `"numeric"`            | Digits only                          |
+| `alpha_dash`  | `"alpha_dash"`         | Letters, digits, dashes, underscores |
+| `regex:P`     | `"regex:^[A-Z]+"`      | Custom regex match                   |
+| `confirmed:F` | `"confirmed:password"` | Must match another field             |
+| `url`         | `"url"`                | Valid URL format                     |
 
 ### Custom vc-shell Rules
 
-| Rule | Params | Description |
-|------|--------|-------------|
-| `bigint` | -- | Value is a safe integer (`Number.isSafeInteger`) |
-| `mindimensions` | `[width, height]` | Image meets minimum pixel dimensions |
-| `fileWeight` | `[sizeInKB]` | File size under limit (KB) |
-| `before` | `[targetDate]` | Date is before target |
-| `after` | `[targetDate]` | Date is after target |
+| Rule            | Params            | Description                                      |
+| --------------- | ----------------- | ------------------------------------------------ |
+| `bigint`        | --                | Value is a safe integer (`Number.isSafeInteger`) |
+| `mindimensions` | `[width, height]` | Image meets minimum pixel dimensions             |
+| `fileWeight`    | `[sizeInKB]`      | File size under limit (KB)                       |
+| `before`        | `[targetDate]`    | Date is before target                            |
+| `after`         | `[targetDate]`    | Date is after target                             |
 
 ---
 
@@ -196,12 +176,7 @@ When rules depend on reactive state, use a computed or `:rules` binding:
 
 ```vue
 <!-- Conditionally required -->
-<Field
-  :rules="item.trackInventory ? 'required|bigint|min_value:0' : 'bigint|min_value:0'"
-  :model-value="item.quantity"
-  name="quantity"
-  v-slot="{ errorMessage, handleChange, errors }"
->
+<Field :rules="item.trackInventory ? 'required|bigint|min_value:0' : 'bigint|min_value:0'" :model-value="item.quantity" name="quantity" v-slot="{ errorMessage, handleChange, errors }">
   <VcInput
     v-model="item.quantity"
     type="number"
@@ -276,12 +251,7 @@ const endDateRules = computed(() => `required|after:${startDate.value}`);
 ### Password Confirmation
 
 ```vue
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="password"
-  name="password"
-  rules="required|min:8"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="password" name="password" rules="required|min:8">
   <VcInput
     v-model="password"
     type="password"
@@ -293,12 +263,7 @@ const endDateRules = computed(() => `required|after:${startDate.value}`);
   />
 </Field>
 
-<Field
-  v-slot="{ errorMessage, handleChange, errors }"
-  :model-value="confirmPassword"
-  name="confirmPassword"
-  rules="required|confirmed:password"
->
+<Field v-slot="{ errorMessage, handleChange, errors }" :model-value="confirmPassword" name="confirmPassword" rules="required|confirmed:password">
   <VcInput
     v-model="confirmPassword"
     type="password"

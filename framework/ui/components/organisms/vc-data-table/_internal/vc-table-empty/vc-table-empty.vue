@@ -50,7 +50,6 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { Ref } from "vue";
 import { TableEmptyAction } from "@ui/components/organisms/vc-data-table/types";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcIcon } from "@ui/components/atoms/vc-icon";

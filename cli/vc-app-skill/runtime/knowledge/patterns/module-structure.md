@@ -72,6 +72,7 @@ export * from "./composables";
 ```
 
 **Rules:**
+
 - `blades: pages` — passes the pages namespace object (all named exports from `pages/index.ts`)
 - `locales` — passes the locales namespace object
 - Re-export `pages` and `composables` so callers can import blades/composables directly from the module package
@@ -89,6 +90,7 @@ export { default as XxxDetails } from "./xxx-details.vue";
 ```
 
 Real example:
+
 ```ts
 export { default as TeamList } from "./team-list.vue";
 export { default as TeamMemberDetails } from "./team-member-details.vue";
@@ -106,12 +108,14 @@ export { default as useXxx } from "./useXxx";
 ```
 
 Real example:
+
 ```ts
 export { default as useTeamMembers } from "./useTeamMembers";
 export { default as useTeamMember } from "./useTeamMember";
 ```
 
 For list-only modules, only the plural composable is exported:
+
 ```ts
 export { default as useCatalogItems } from "./useCatalogItems";
 ```
@@ -153,6 +157,7 @@ export * from "./composables";
 ```
 
 `notifications/index.ts` barrel:
+
 ```ts
 export { default as XxxCreatedDomainEvent } from "./XxxCreatedDomainEvent.vue";
 ```
@@ -191,10 +196,11 @@ The module assembler registers the new module in the app's module registry, typi
 
 ```ts
 export { default as Orders } from "./orders";
-export { default as Team } from "./team";    // ← added by assembler
+export { default as Team } from "./team"; // ← added by assembler
 ```
 
 The assembler must:
+
 1. Read existing `src/modules/index.ts`
 2. Parse existing exports to avoid duplicates
 3. Append a new named export for the new module

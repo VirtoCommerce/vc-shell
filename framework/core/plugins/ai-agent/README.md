@@ -5,7 +5,7 @@ A Vue plugin for integrating an AI assistant panel into VC-Shell applications.
 ## Features
 
 - ENV-based configuration (`APP_AI_AGENT_URL`)
-- Automatic AI button in blade toolbars (via wildcard "*" support)
+- Automatic AI button in blade toolbars (via wildcard "\*" support)
 - Two operation modes:
   - **List blade** - batch operations with multiple selected items
   - **Details blade** - single object editing with preview
@@ -75,7 +75,7 @@ watch(
   (val) => {
     aiData.value = val ? [val] : [];
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 );
 
 // Connect to AI agent with preview support
@@ -136,10 +136,10 @@ Vue plugin for AI agent integration.
 
 **Options:**
 
-| Option                  | Type                      | Default | Description                      |
-| ----------------------- | ------------------------- | ------- | -------------------------------- |
-| `config`                | `Partial<IAiAgentConfig>` | `{}`    | AI agent configuration           |
-| `addGlobalToolbarButton` | `boolean`                 | `true`  | Add AI button to all toolbars    |
+| Option                   | Type                      | Default | Description                   |
+| ------------------------ | ------------------------- | ------- | ----------------------------- |
+| `config`                 | `Partial<IAiAgentConfig>` | `{}`    | AI agent configuration        |
+| `addGlobalToolbarButton` | `boolean`                 | `true`  | Add AI button to all toolbars |
 
 ### useAiAgentContext
 

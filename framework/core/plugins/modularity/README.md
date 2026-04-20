@@ -1,6 +1,7 @@
 # Modularity Plugin
 
 The Modularity Plugin provides:
+
 - **Dynamic Module Loading** via Module Federation
 - **Extensions System** for cross-module communication
 - **Module Registration** via `createAppModule()`
@@ -22,6 +23,7 @@ registerRemoteModules(app, { router, appName: "vendor-portal" });
 ```
 
 The function:
+
 1. Fetches the module registry from `/api/frontend-modules`
 2. Filters modules by framework version compatibility
 3. Registers all compatible remotes via MF runtime
@@ -113,26 +115,26 @@ The Extensions System enables communication between the application and its modu
 
 ```typescript
 export default {
-  install(app) { /* ... */ },
+  install(app) {
+    /* ... */
+  },
   extensions: {
     inbound: {
-      'customization-point': { someConfig: true }
+      "customization-point": { someConfig: true },
     },
     outbound: {
-      'extension-point': [
-        { id: 'MyExtension', component: MyComponent }
-      ]
-    }
-  }
-}
+      "extension-point": [{ id: "MyExtension", component: MyComponent }],
+    },
+  },
+};
 ```
 
 ### Using Extensions Helper
 
 ```typescript
-import { inject } from 'vue';
+import { inject } from "vue";
 
 const extensionsHelper = inject(extensionsHelperSymbol);
-const outbound = extensionsHelper.getOutboundExtensions('extension-point');
-const inbound = extensionsHelper.getInboundExtensions('module-id', 'customization-point');
+const outbound = extensionsHelper.getOutboundExtensions("extension-point");
+const inbound = extensionsHelper.getInboundExtensions("module-id", "customization-point");
 ```

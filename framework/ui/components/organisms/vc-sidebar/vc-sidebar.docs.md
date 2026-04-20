@@ -15,7 +15,12 @@ A slide-over panel for contextual workflows, settings, and detail views. Support
 <template>
   <VcButton @click="open = true">Open Sidebar</VcButton>
 
-  <VcSidebar v-model="open" title="Settings" position="right" size="md">
+  <VcSidebar
+    v-model="open"
+    title="Settings"
+    position="right"
+    size="md"
+  >
     <div class="tw-p-4">Sidebar content</div>
 
     <template #footer>
@@ -34,41 +39,41 @@ const open = ref(false);
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `boolean` | *required* | Open/close state (v-model). |
-| `position` | `"left" \| "right" \| "bottom"` | `"right"` | Slide-in direction. |
-| `size` | `"sm" \| "md" \| "lg" \| "full"` | `"sm"` | Panel size preset (300/380/520px or full viewport). |
-| `variant` | `"default" \| "elevated" \| "minimal"` | `"default"` | Visual style. |
-| `width` | `number \| string` | -- | Custom width override (left/right positions). |
-| `height` | `number \| string` | -- | Custom height override (bottom position). |
-| `title` | `string` | `""` | Header title text. |
-| `subtitle` | `string` | `""` | Header subtitle text. |
-| `showOverlay` | `boolean` | `true` | Show backdrop overlay. |
-| `closeOnOverlay` | `boolean` | `true` | Close when clicking overlay. |
-| `closeOnEscape` | `boolean` | `true` | Close on Escape key. |
-| `closeButton` | `boolean` | `true` | Show close button in header. |
-| `trapFocus` | `boolean` | `true` | Trap keyboard focus inside panel. |
-| `lockScroll` | `boolean` | `true` | Prevent body scroll while open. |
-| `inset` | `boolean` | `true` | Add rounded inset gap from viewport edges. |
-| `draggable` | `boolean` | `false` | Enable swipe-to-dismiss (bottom only). |
-| `dragHandle` | `boolean` | `false` | Show iOS-style drag handle bar. |
+| Prop             | Type                                   | Default     | Description                                         |
+| ---------------- | -------------------------------------- | ----------- | --------------------------------------------------- |
+| `modelValue`     | `boolean`                              | _required_  | Open/close state (v-model).                         |
+| `position`       | `"left" \| "right" \| "bottom"`        | `"right"`   | Slide-in direction.                                 |
+| `size`           | `"sm" \| "md" \| "lg" \| "full"`       | `"sm"`      | Panel size preset (300/380/520px or full viewport). |
+| `variant`        | `"default" \| "elevated" \| "minimal"` | `"default"` | Visual style.                                       |
+| `width`          | `number \| string`                     | --          | Custom width override (left/right positions).       |
+| `height`         | `number \| string`                     | --          | Custom height override (bottom position).           |
+| `title`          | `string`                               | `""`        | Header title text.                                  |
+| `subtitle`       | `string`                               | `""`        | Header subtitle text.                               |
+| `showOverlay`    | `boolean`                              | `true`      | Show backdrop overlay.                              |
+| `closeOnOverlay` | `boolean`                              | `true`      | Close when clicking overlay.                        |
+| `closeOnEscape`  | `boolean`                              | `true`      | Close on Escape key.                                |
+| `closeButton`    | `boolean`                              | `true`      | Show close button in header.                        |
+| `trapFocus`      | `boolean`                              | `true`      | Trap keyboard focus inside panel.                   |
+| `lockScroll`     | `boolean`                              | `true`      | Prevent body scroll while open.                     |
+| `inset`          | `boolean`                              | `true`      | Add rounded inset gap from viewport edges.          |
+| `draggable`      | `boolean`                              | `false`     | Enable swipe-to-dismiss (bottom only).              |
+| `dragHandle`     | `boolean`                              | `false`     | Show iOS-style drag handle bar.                     |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:modelValue` | `boolean` | v-model update. |
-| `close` | `SidebarCloseReason` | Reason: `"overlay"`, `"escape"`, or `"action"`. |
+| Event               | Payload              | Description                                     |
+| ------------------- | -------------------- | ----------------------------------------------- |
+| `update:modelValue` | `boolean`            | v-model update.                                 |
+| `close`             | `SidebarCloseReason` | Reason: `"overlay"`, `"escape"`, or `"action"`. |
 
 ## Slots
 
-| Slot | Props | Description |
-|------|-------|-------------|
-| `default` | -- | Main content area. |
-| `header` | `{ close }` | Custom header replacing title + close button. |
-| `actions` | `{ close }` | Extra buttons in the header actions area. |
-| `footer` | -- | Sticky footer area. |
+| Slot      | Props       | Description                                   |
+| --------- | ----------- | --------------------------------------------- |
+| `default` | --          | Main content area.                            |
+| `header`  | `{ close }` | Custom header replacing title + close button. |
+| `actions` | `{ close }` | Extra buttons in the header actions area.     |
+| `footer`  | --          | Sticky footer area.                           |
 
 ## Features
 
@@ -86,11 +91,11 @@ When `position="bottom"` and `draggable` is true, users can swipe the panel down
 
 ### Size Presets
 
-| Size | Width/Height |
-|------|-------------|
-| `sm` | 300px |
-| `md` | 380px |
-| `lg` | 520px |
+| Size   | Width/Height  |
+| ------ | ------------- |
+| `sm`   | 300px         |
+| `md`   | 380px         |
+| `lg`   | 520px         |
 | `full` | Full viewport |
 
 Override with the `width` or `height` prop for custom dimensions.
@@ -138,20 +143,53 @@ function resetFilters() {
 </script>
 
 <template>
-  <VcButton icon="lucide-filter" @click="showFilters = true">Filters</VcButton>
+  <VcButton
+    icon="lucide-filter"
+    @click="showFilters = true"
+    >Filters</VcButton
+  >
 
-  <VcSidebar v-model="showFilters" title="Filters" position="right" size="sm">
+  <VcSidebar
+    v-model="showFilters"
+    title="Filters"
+    position="right"
+    size="sm"
+  >
     <div class="tw-p-4 tw-space-y-4">
-      <VcSelect label="Status" v-model="filters.status" :options="statusOptions" />
-      <VcInput label="Date From" v-model="filters.dateFrom" type="date" />
-      <VcInput label="Date To" v-model="filters.dateTo" type="date" />
-      <VcSelect label="Category" v-model="filters.category" :options="categoryOptions" />
+      <VcSelect
+        label="Status"
+        v-model="filters.status"
+        :options="statusOptions"
+      />
+      <VcInput
+        label="Date From"
+        v-model="filters.dateFrom"
+        type="date"
+      />
+      <VcInput
+        label="Date To"
+        v-model="filters.dateTo"
+        type="date"
+      />
+      <VcSelect
+        label="Category"
+        v-model="filters.category"
+        :options="categoryOptions"
+      />
     </div>
 
     <template #footer>
       <div class="tw-flex tw-gap-2 tw-p-4">
-        <VcButton variant="primary" @click="applyFilters">Apply</VcButton>
-        <VcButton variant="outline" @click="resetFilters">Reset</VcButton>
+        <VcButton
+          variant="primary"
+          @click="applyFilters"
+          >Apply</VcButton
+        >
+        <VcButton
+          variant="outline"
+          @click="resetFilters"
+          >Reset</VcButton
+        >
       </div>
     </template>
   </VcSidebar>

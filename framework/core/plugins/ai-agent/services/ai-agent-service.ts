@@ -5,7 +5,6 @@ import type {
   IAiAgentConfig,
   IAiAgentContext,
   AiAgentMessageType,
-  IAiAgentMessage,
   IPreviewChangesPayload,
   ISuggestion,
   AiAgentContextType,

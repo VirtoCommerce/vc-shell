@@ -35,27 +35,27 @@ Module developers do not install this plugin. It is registered once by the frame
 
 ### Plugin Options
 
-| Option | Type | Description |
-|--------|------|-------------|
+| Option    | Type                  | Description                                                                |
+| --------- | --------------------- | -------------------------------------------------------------------------- |
 | `creator` | `string \| undefined` | Filters `SendSystemEvents` messages to only those matching this creator ID |
 
 ### Exports
 
-| Export | Type | Description |
-|--------|------|-------------|
-| `signalR` | `Plugin` | Vue plugin object with `install()` method |
+| Export                       | Type           | Description                                   |
+| ---------------------------- | -------------- | --------------------------------------------- |
+| `signalR`                    | `Plugin`       | Vue plugin object with `install()` method     |
 | `updateSignalRCreatorSymbol` | `InjectionKey` | Injection key for the creator update function |
 
 ### Provided Injectables
 
-| Key | Type | Description |
-|-----|------|-------------|
+| Key                          | Type                                     | Description                                   |
+| ---------------------------- | ---------------------------------------- | --------------------------------------------- |
 | `updateSignalRCreatorSymbol` | `(creator: string \| undefined) => void` | Updates the SignalR creator filter at runtime |
 
 ### Global Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property                | Type                                     | Description                                                         |
+| ----------------------- | ---------------------------------------- | ------------------------------------------------------------------- |
 | `$updateSignalRCreator` | `(creator: string \| undefined) => void` | Same as the injectable, accessible via `this.$updateSignalRCreator` |
 
 ## Connection Lifecycle

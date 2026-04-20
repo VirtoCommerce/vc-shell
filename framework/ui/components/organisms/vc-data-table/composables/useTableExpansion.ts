@@ -91,7 +91,7 @@ export function useTableExpansion<T extends Record<string, any>>(
    * Note: Uses index=0 for key generation to match expandedRowKeys computation
    * The key should be based on dataKey field, not array index
    */
-  const isRowExpanded = (item: T, index: number): boolean => {
+  const isRowExpanded = (item: T, _index: number): boolean => {
     // Use 0 as index because expandedRowKeys also uses 0
     // This ensures keys match when dataKey field doesn't exist (fallback to row-0)
     const key = getItemKey(item, 0);

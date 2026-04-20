@@ -38,14 +38,14 @@ Module developers do not need to call this function. It is invoked once during t
 
 Installs all error handlers on the given Vue app instance.
 
-| Behavior | Description |
-|----------|-------------|
-| Chains to existing `errorHandler` | Does not replace a previously registered Vue error handler; calls it after processing |
-| Idempotent for window listeners | Uses `__VC_GLOBAL_ERROR_HANDLERS_INSTALLED__` guard to prevent duplicate listeners |
-| Deduplication | Same error (by `name:message` key) is suppressed for 3 seconds |
-| Notification IDs | Each toast gets a unique `notificationId` prefixed by source (`global-vue-`, `global-rejection-`, `global-error-`) |
-| SSR-safe | Skips `window` event listeners when `typeof window === "undefined"` |
-| Map cleanup | The deduplication map auto-prunes entries older than 3 seconds when it exceeds 50 entries |
+| Behavior                          | Description                                                                                                        |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Chains to existing `errorHandler` | Does not replace a previously registered Vue error handler; calls it after processing                              |
+| Idempotent for window listeners   | Uses `__VC_GLOBAL_ERROR_HANDLERS_INSTALLED__` guard to prevent duplicate listeners                                 |
+| Deduplication                     | Same error (by `name:message` key) is suppressed for 3 seconds                                                     |
+| Notification IDs                  | Each toast gets a unique `notificationId` prefixed by source (`global-vue-`, `global-rejection-`, `global-error-`) |
+| SSR-safe                          | Skips `window` event listeners when `typeof window === "undefined"`                                                |
+| Map cleanup                       | The deduplication map auto-prunes entries older than 3 seconds when it exceeds 50 entries                          |
 
 ## Usage
 
@@ -112,8 +112,8 @@ try {
   await apiClient.updateOrder(order);
 } catch (err) {
   const parsed = parseError(err);
-  console.log(parsed.message);  // Human-readable message
-  console.log(parsed.details);  // Additional details (e.g., validation errors)
+  console.log(parsed.message); // Human-readable message
+  console.log(parsed.details); // Additional details (e.g., validation errors)
 }
 ```
 

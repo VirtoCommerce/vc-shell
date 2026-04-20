@@ -138,10 +138,12 @@ Delete widget `.vue` files that only render a standard sidebar item (icon + titl
 **Keep** the `.vue` component only if it has custom rendering beyond the standard widget layout.
 
 **Delete:**
+
 - `widgets/ChildListWidget.vue` (if it only shows icon, title, badge, click)
 - `widgets/RelatedItemsWidget.vue` (same)
 
 **Keep:**
+
 - `widgets/CustomChartWidget.vue` (has custom chart rendering)
 
 ## RULE 4: Remove Old Imports

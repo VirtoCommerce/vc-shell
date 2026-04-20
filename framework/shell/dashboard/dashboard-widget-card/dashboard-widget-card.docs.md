@@ -24,7 +24,10 @@ import { DashboardWidgetCard } from "@vc-shell/framework";
 </script>
 
 <template>
-  <DashboardWidgetCard header="Products" icon="lucide-package-open">
+  <DashboardWidgetCard
+    header="Products"
+    icon="lucide-package-open"
+  >
     <template #content>
       <div class="tw-p-4">Widget body content here</div>
     </template>
@@ -34,21 +37,21 @@ import { DashboardWidgetCard } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `header` | `string` | `undefined` | Card title text |
-| `icon` | `string` | `undefined` | Icon displayed next to the header |
-| `loading` | `boolean` | `false` | Shows a loading overlay on the body |
+| Prop      | Type      | Default     | Description                         |
+| --------- | --------- | ----------- | ----------------------------------- |
+| `header`  | `string`  | `undefined` | Card title text                     |
+| `icon`    | `string`  | `undefined` | Icon displayed next to the header   |
+| `loading` | `boolean` | `false`     | Shows a loading overlay on the body |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
-| `header` | Override the entire header area (replaces default icon + title) |
-| `actions` | Action buttons in the header row (right side) |
-| `stats` | KPI stat items below the header |
-| `content` | Main body content |
-| `footer` | Footer area with links or actions |
+| Slot      | Description                                                     |
+| --------- | --------------------------------------------------------------- |
+| `header`  | Override the entire header area (replaces default icon + title) |
+| `actions` | Action buttons in the header row (right side)                   |
+| `stats`   | KPI stat items below the header                                 |
+| `content` | Main body content                                               |
+| `footer`  | Footer area with links or actions                               |
 
 ## Common Patterns
 
@@ -134,7 +137,11 @@ onMounted(() => loadData());
 </script>
 
 <template>
-  <DashboardWidgetCard header="System Status" icon="lucide-activity" :loading="loading">
+  <DashboardWidgetCard
+    header="System Status"
+    icon="lucide-activity"
+    :loading="loading"
+  >
     <template #content>
       <!-- Content shown when not loading -->
     </template>
@@ -164,11 +171,11 @@ dashboard.register({
 
 ## Companion Components
 
-| Component | Description |
-|-----------|-------------|
-| `DashboardStatItem` | Single KPI stat with value, label, and optional color variant |
-| `DashboardFeedList` | Scrollable list container for feed rows |
-| `DashboardFeedRow` | Individual feed item with icon, title, subtitle, and meta slots |
+| Component           | Description                                                     |
+| ------------------- | --------------------------------------------------------------- |
+| `DashboardStatItem` | Single KPI stat with value, label, and optional color variant   |
+| `DashboardFeedList` | Scrollable list container for feed rows                         |
+| `DashboardFeedRow`  | Individual feed item with icon, title, subtitle, and meta slots |
 
 ## Tip: Set a Minimum Height
 

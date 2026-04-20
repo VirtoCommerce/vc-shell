@@ -53,14 +53,7 @@ The component uses two `v-model` bindings:
 - **`v-model:option`** -- the selected currency code (type `string`)
 
 ```vue
-<VcInputCurrency
-  v-model="amount"
-  v-model:option="selectedCurrency"
-  :options="currencyList"
-  option-label="title"
-  option-value="value"
-  label="Total"
-/>
+<VcInputCurrency v-model="amount" v-model:option="selectedCurrency" :options="currencyList" option-label="title" option-value="value" label="Total" />
 ```
 
 The dropdown portion renders the available currencies. Use `optionLabel` and `optionValue` to map your data structure to display labels and values.
@@ -86,21 +79,15 @@ The `precision` prop controls the number of decimal places (0--15). The formatti
 
 The `currencyDisplay` prop controls how the currency symbol appears inside the input field:
 
-| Value | Example | Description |
-|-------|---------|-------------|
-| `"hidden"` (default) | `1,234.56` | No currency symbol shown |
-| `"symbol"` | `$1,234.56` | Locale currency symbol |
-| `"code"` | `USD 1,234.56` | ISO currency code |
-| `"name"` | `1,234.56 US dollars` | Full currency name |
+| Value                | Example               | Description              |
+| -------------------- | --------------------- | ------------------------ |
+| `"hidden"` (default) | `1,234.56`            | No currency symbol shown |
+| `"symbol"`           | `$1,234.56`           | Locale currency symbol   |
+| `"code"`             | `USD 1,234.56`        | ISO currency code        |
+| `"name"`             | `1,234.56 US dollars` | Full currency name       |
 
 ```vue
-<VcInputCurrency
-  v-model="amount"
-  v-model:option="currency"
-  :options="currencies"
-  currency-display="symbol"
-  label="Price"
-/>
+<VcInputCurrency v-model="amount" v-model:option="currency" :options="currencies" currency-display="symbol" label="Price" />
 ```
 
 ### Prefix and Suffix
@@ -108,21 +95,9 @@ The `currencyDisplay` prop controls how the currency symbol appears inside the i
 Add static text decorations before or after the input value:
 
 ```vue
-<VcInputCurrency
-  v-model="amount"
-  v-model:option="currency"
-  :options="currencies"
-  prefix="$"
-  label="Price with prefix"
-/>
+<VcInputCurrency v-model="amount" v-model:option="currency" :options="currencies" prefix="$" label="Price with prefix" />
 
-<VcInputCurrency
-  v-model="amount"
-  v-model:option="currency"
-  :options="currencies"
-  suffix="per unit"
-  label="Unit price"
-/>
+<VcInputCurrency v-model="amount" v-model:option="currency" :options="currencies" suffix="per unit" label="Unit price" />
 ```
 
 ### Validation with vee-validate Field
@@ -185,14 +160,7 @@ const form = reactive({
 <VcInputCurrency v-model="price" v-model:option="currency" :options="currencies" label="Price" clearable />
 
 <!-- Error -->
-<VcInputCurrency
-  v-model="price"
-  v-model:option="currency"
-  :options="currencies"
-  label="Price"
-  :error="true"
-  error-message="Please enter a valid amount"
-/>
+<VcInputCurrency v-model="price" v-model:option="currency" :options="currencies" label="Price" :error="true" error-message="Please enter a valid amount" />
 ```
 
 ## Recipes
@@ -252,15 +220,7 @@ A common pattern in e-commerce blade forms:
 When working with many currencies, enable the dropdown search:
 
 ```vue
-<VcInputCurrency
-  v-model="amount"
-  v-model:option="currency"
-  :options="allWorldCurrencies"
-  option-label="name"
-  option-value="code"
-  searchable
-  label="Payment amount"
-/>
+<VcInputCurrency v-model="amount" v-model:option="currency" :options="allWorldCurrencies" option-label="name" option-value="code" searchable label="Payment amount" />
 ```
 
 ## Common Mistakes
@@ -311,46 +271,46 @@ const price = ref<number | null>(100);
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `number \| null` | -- | Numeric value via `v-model` |
-| `option` | `string` | -- | Selected currency code via `v-model:option` |
-| `options` | `unknown[]` | `[]` | Available currency options for the dropdown |
-| `optionValue` | `string \| Function` | `"id"` | Property or function to extract the option value |
-| `optionLabel` | `string \| Function` | `"title"` | Property or function to extract the option label |
-| `precision` | `0-15` | `2` | Number of decimal places |
-| `currencyDisplay` | `"symbol" \| "code" \| "name" \| "hidden"` | `"hidden"` | How the currency symbol is displayed |
-| `label` | `string` | -- | Label text above the field |
-| `placeholder` | `string` | -- | Placeholder text |
-| `hint` | `string` | -- | Helper text below the field |
-| `tooltip` | `string` | -- | Tooltip on the label info icon |
-| `prefix` | `string` | -- | Static text before the input value |
-| `suffix` | `string` | -- | Static text after the input value |
-| `clearable` | `boolean` | `false` | Shows a clear button |
-| `loading` | `boolean` | `false` | Shows a spinning loader |
-| `disabled` | `boolean` | `false` | Disables the entire component |
-| `required` | `boolean` | `false` | Shows a required indicator |
-| `error` | `boolean` | `false` | Enables error styling |
-| `errorMessage` | `string` | -- | Error message below the field |
-| `name` | `string` | -- | HTML name attribute |
-| `autofocus` | `boolean` | `false` | Focus on mount |
-| `maxlength` | `string \| number` | `1024` | Maximum input length |
-| `debounce` | `string \| number` | `0` | Debounce for search input (ms) |
-| `searchable` | `boolean` | `false` | Enable search in the currency dropdown |
+| Prop              | Type                                       | Default    | Description                                      |
+| ----------------- | ------------------------------------------ | ---------- | ------------------------------------------------ |
+| `modelValue`      | `number \| null`                           | --         | Numeric value via `v-model`                      |
+| `option`          | `string`                                   | --         | Selected currency code via `v-model:option`      |
+| `options`         | `unknown[]`                                | `[]`       | Available currency options for the dropdown      |
+| `optionValue`     | `string \| Function`                       | `"id"`     | Property or function to extract the option value |
+| `optionLabel`     | `string \| Function`                       | `"title"`  | Property or function to extract the option label |
+| `precision`       | `0-15`                                     | `2`        | Number of decimal places                         |
+| `currencyDisplay` | `"symbol" \| "code" \| "name" \| "hidden"` | `"hidden"` | How the currency symbol is displayed             |
+| `label`           | `string`                                   | --         | Label text above the field                       |
+| `placeholder`     | `string`                                   | --         | Placeholder text                                 |
+| `hint`            | `string`                                   | --         | Helper text below the field                      |
+| `tooltip`         | `string`                                   | --         | Tooltip on the label info icon                   |
+| `prefix`          | `string`                                   | --         | Static text before the input value               |
+| `suffix`          | `string`                                   | --         | Static text after the input value                |
+| `clearable`       | `boolean`                                  | `false`    | Shows a clear button                             |
+| `loading`         | `boolean`                                  | `false`    | Shows a spinning loader                          |
+| `disabled`        | `boolean`                                  | `false`    | Disables the entire component                    |
+| `required`        | `boolean`                                  | `false`    | Shows a required indicator                       |
+| `error`           | `boolean`                                  | `false`    | Enables error styling                            |
+| `errorMessage`    | `string`                                   | --         | Error message below the field                    |
+| `name`            | `string`                                   | --         | HTML name attribute                              |
+| `autofocus`       | `boolean`                                  | `false`    | Focus on mount                                   |
+| `maxlength`       | `string \| number`                         | `1024`     | Maximum input length                             |
+| `debounce`        | `string \| number`                         | `0`        | Debounce for search input (ms)                   |
+| `searchable`      | `boolean`                                  | `false`    | Enable search in the currency dropdown           |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:model-value` | `number \| null` | Emitted when the numeric value changes |
-| `update:option` | `unknown` | Emitted when the currency selection changes |
-| `change` | `number \| null` | Emitted on value change (alias) |
-| `blur` | `Event` | Emitted when the input loses focus |
+| Event                | Payload          | Description                                 |
+| -------------------- | ---------------- | ------------------------------------------- |
+| `update:model-value` | `number \| null` | Emitted when the numeric value changes      |
+| `update:option`      | `unknown`        | Emitted when the currency selection changes |
+| `change`             | `number \| null` | Emitted on value change (alias)             |
+| `blur`               | `Event`          | Emitted when the input loses focus          |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
+| Variable                    | Default              | Description                  |
+| --------------------------- | -------------------- | ---------------------------- |
 | `--input-curr-toggle-color` | `var(--primary-500)` | Dropdown toggle accent color |
 
 Additionally inherits all `--input-*` CSS variables from VcInput/VcInputDropdown.
@@ -374,4 +334,3 @@ Additionally inherits all `--input-*` CSS variables from VcInput/VcInputDropdown
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
-

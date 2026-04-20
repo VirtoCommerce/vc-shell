@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h, ref, computed } from "vue";
+import { defineComponent, h, ref } from "vue";
 import GridstackDashboard from "./GridstackDashboard.vue";
 
 // Mock gridstack CSS import

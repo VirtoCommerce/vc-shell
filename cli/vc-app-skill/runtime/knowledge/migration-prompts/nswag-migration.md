@@ -8,6 +8,7 @@ description: AI transformation rules for NSwag class→interface DTO migration.
 You are tasked with fixing TypeScript errors caused by migrating NSwag-generated API clients from class-based to interface-based data models.
 
 **Context:**
+
 - API Client CLASSES (e.g., `*Client` classes) remain unchanged — they still have constructors
 - DATA MODEL types (DTOs, Commands, Queries, etc.) are now INTERFACES instead of classes
 - Interfaces cannot be instantiated with `new` — use object literals with type assertions instead
@@ -120,24 +121,14 @@ When a framework function expects a constructor function (callable with `new`), 
 
 ```typescript
 // BEFORE — Framework expects constructor
-const { loadItems } = useFrameworkHook<Type1, Type2>(
-  fetchFunction,
-  ItemClass,
-  OtherClass,
-);
+const { loadItems } = useFrameworkHook<Type1, Type2>(fetchFunction, ItemClass, OtherClass);
 
 // AFTER — Create factory functions
-const createItem = (data?: Partial<ItemType>): ItemType =>
-  ({ ...data } as ItemType);
+const createItem = (data?: Partial<ItemType>): ItemType => ({ ...data }) as ItemType;
 
-const createOther = (data?: Partial<OtherType>): OtherType =>
-  ({ ...data } as OtherType);
+const createOther = (data?: Partial<OtherType>): OtherType => ({ ...data }) as OtherType;
 
-const { loadItems } = useFrameworkHook<Type1, Type2>(
-  fetchFunction,
-  createItem,
-  createOther,
-);
+const { loadItems } = useFrameworkHook<Type1, Type2>(fetchFunction, createItem, createOther);
 ```
 
 ## RULE 4: Image Import Conflict with Global DOM Type
@@ -165,14 +156,14 @@ import { Image as ApiImage, Entity } from "@your-api-package";
 
 ```typescript
 // BEFORE
-items.map((x) => x.id)
-items.filter((item) => item.active)
-data.forEach((d) => process(d))
+items.map((x) => x.id);
+items.filter((item) => item.active);
+data.forEach((d) => process(d));
 
 // AFTER
-items.map((x: ItemType) => x.id)
-items.filter((item: ItemType) => item.active)
-data.forEach((d: DataType) => process(d))
+items.map((x: ItemType) => x.id);
+items.filter((item: ItemType) => item.active);
+data.forEach((d: DataType) => process(d));
 ```
 
 ## RULE 6: Type Mismatch in Function Arguments
@@ -183,25 +174,28 @@ Check if the function signature expects a different type (often an ID instead of
 
 ```typescript
 // BEFORE
-someFunction(asset)  // asset is full object
+someFunction(asset); // asset is full object
 
 // AFTER
-someFunction(asset.id)  // pass the id property
+someFunction(asset.id); // pass the id property
 ```
 
 ## Important Notes
 
 1. **API Client Classes are NOT affected** — Do NOT modify client classes like `*Client`. They remain classes with constructors:
+
    ```typescript
    const { getApiClient } = useApiClient(MyApiClient); // No change needed
    ```
 
 2. **Spread operators work with interfaces:**
+
    ```typescript
    const updated = { ...existingItem, name: "New Name" }; // Works fine
    ```
 
 3. **Required properties must be provided** when using type assertions:
+
    ```typescript
    const details: ItemDetails = {
      sku: item.sku || "",
@@ -210,6 +204,7 @@ someFunction(asset.id)  // pass the id property
    ```
 
 4. **Generic type parameters need updating too:**
+
    ```typescript
    // BEFORE
    const { action } = useAsync<ISearchQuery>(...)
@@ -219,6 +214,7 @@ someFunction(asset.id)  // pass the id property
    ```
 
 5. **Interfaces with all optional properties** can use empty object:
+
    ```typescript
    const query: SearchQuery = {}; // OK if all properties are optional
    ```
@@ -230,13 +226,13 @@ someFunction(asset.id)  // pass the id property
 
 ## Quick Reference Table
 
-| Error Code | Pattern | Fix |
-|------------|---------|-----|
-| TS2724 | `IXxx` not found | Remove "I" prefix from import |
-| TS2693 | Type used as value | Replace `new Type({})` with `{} as Type` |
-| TS2866 | Import conflicts with global | Use `type` import or rename |
-| TS7006 | Implicit any | Add explicit type annotation |
-| TS2345 | Type not assignable | Check if property (like `.id`) should be passed |
+| Error Code | Pattern                      | Fix                                             |
+| ---------- | ---------------------------- | ----------------------------------------------- |
+| TS2724     | `IXxx` not found             | Remove "I" prefix from import                   |
+| TS2693     | Type used as value           | Replace `new Type({})` with `{} as Type`        |
+| TS2866     | Import conflicts with global | Use `type` import or rename                     |
+| TS7006     | Implicit any                 | Add explicit type annotation                    |
+| TS2345     | Type not assignable          | Check if property (like `.id`) should be passed |
 
 ## Verification
 

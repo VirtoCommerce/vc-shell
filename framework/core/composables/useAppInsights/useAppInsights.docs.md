@@ -13,8 +13,8 @@ Integrates Azure Application Insights page-view tracking with Vue Router and the
 The typical setup happens once in your app's router configuration:
 
 ```typescript
-import { useAppInsights } from '@vc-shell/framework';
-import { createRouter, createWebHistory } from 'vue-router';
+import { useAppInsights } from "@vc-shell/framework";
+import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({ history: createWebHistory(), routes });
 
@@ -36,16 +36,16 @@ export default router;
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `setupPageTracking.beforeEach` | `(route: { name: string }) => void` | Call in router `beforeEach` to start page-view timing and generate a new trace ID |
-| `setupPageTracking.afterEach` | `(route: { name: string; fullPath: string }) => void` | Call in router `afterEach` to stop page-view timing and flush the telemetry event |
-| `appInsights` | `ApplicationInsights` | Raw Application Insights instance for custom telemetry (trackEvent, trackException, trackMetric, etc.) |
+| Property                       | Type                                                  | Description                                                                                            |
+| ------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `setupPageTracking.beforeEach` | `(route: { name: string }) => void`                   | Call in router `beforeEach` to start page-view timing and generate a new trace ID                      |
+| `setupPageTracking.afterEach`  | `(route: { name: string; fullPath: string }) => void` | Call in router `afterEach` to stop page-view timing and flush the telemetry event                      |
+| `appInsights`                  | `ApplicationInsights`                                 | Raw Application Insights instance for custom telemetry (trackEvent, trackException, trackMetric, etc.) |
 
 ### Injection Key
 
-| Key | Type | Description |
-|---|---|---|
+| Key                     | Type                                     | Description                                                                                       |
+| ----------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `AppInsightsOptionsKey` | `InjectionKey<AppInsightsPluginOptions>` | Optional. Provide this at app level with `{ appName: 'Vendor Portal' }` to prefix all page names. |
 
 ## How It Works
@@ -61,13 +61,13 @@ If `AppInsightsOptionsKey` is provided with an `appName`, page names are formatt
 ## Recipe: Tracking Custom Events Alongside Page Views
 
 ```typescript
-import { useAppInsights } from '@vc-shell/framework';
+import { useAppInsights } from "@vc-shell/framework";
 
 const { appInsights } = useAppInsights();
 
 function trackOrderPlaced(orderId: string, total: number) {
   appInsights.trackEvent({
-    name: 'OrderPlaced',
+    name: "OrderPlaced",
     properties: { orderId },
     measurements: { orderTotal: total },
   });
@@ -75,7 +75,7 @@ function trackOrderPlaced(orderId: string, total: number) {
 
 function trackSearchPerformed(query: string, resultCount: number) {
   appInsights.trackEvent({
-    name: 'SearchPerformed',
+    name: "SearchPerformed",
     properties: { query },
     measurements: { resultCount },
   });
@@ -87,13 +87,13 @@ function trackSearchPerformed(query: string, resultCount: number) {
 In your app's entry point, provide the options so page names are prefixed:
 
 ```typescript
-import { createApp, provide } from 'vue';
-import { AppInsightsOptionsKey } from '@vc-shell/framework';
+import { createApp, provide } from "vue";
+import { AppInsightsOptionsKey } from "@vc-shell/framework";
 
 const app = createApp(App);
 
 app.provide(AppInsightsOptionsKey, {
-  appName: 'Vendor Portal',
+  appName: "Vendor Portal",
   // ... other AppInsightsPluginOptions
 });
 ```

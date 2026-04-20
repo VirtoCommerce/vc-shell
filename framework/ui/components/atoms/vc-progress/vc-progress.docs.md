@@ -26,11 +26,11 @@ const uploadPercent = ref(45);
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `number` | `0` | Current progress (0--100). Clamped automatically. |
-| `variant` | `"default" \| "striped"` | `"default"` | Visual style; `striped` adds an animated diagonal pattern |
-| `ariaLabel` | `string` | `"Progress"` | Accessible label describing what the bar represents |
+| Prop        | Type                     | Default      | Description                                               |
+| ----------- | ------------------------ | ------------ | --------------------------------------------------------- |
+| `value`     | `number`                 | `0`          | Current progress (0--100). Clamped automatically.         |
+| `variant`   | `"default" \| "striped"` | `"default"`  | Visual style; `striped` adds an animated diagonal pattern |
+| `ariaLabel` | `string`                 | `"Progress"` | Accessible label describing what the bar represents       |
 
 ## Common Patterns
 
@@ -43,7 +43,10 @@ const uploadPercent = ref(45);
       <span>Importing catalog...</span>
       <span>{{ progress }}%</span>
     </div>
-    <VcProgress :value="progress" :variant="progress === 100 ? 'striped' : 'default'" />
+    <VcProgress
+      :value="progress"
+      :variant="progress === 100 ? 'striped' : 'default'"
+    />
   </div>
 </template>
 ```
@@ -53,7 +56,10 @@ const uploadPercent = ref(45);
 ```vue
 <template>
   <div class="tw-space-y-4">
-    <div v-for="stage in stages" :key="stage.label">
+    <div
+      v-for="stage in stages"
+      :key="stage.label"
+    >
       <span class="tw-text-sm">{{ stage.label }}</span>
       <VcProgress :value="stage.value" />
     </div>
@@ -74,7 +80,10 @@ const uploadPercent = ref(45);
       :value="(usedGB / totalGB) * 100"
       aria-label="Storage usage"
     />
-    <VcHint v-if="usedGB / totalGB > 0.9" error>
+    <VcHint
+      v-if="usedGB / totalGB > 0.9"
+      error
+    >
       You are running low on storage.
     </VcHint>
   </div>
@@ -105,11 +114,17 @@ async function handleUpload(files: FileList) {
 
 <template>
   <VcBlade title="Import Products">
-    <VcButton :disabled="isUploading" @click="triggerUpload">
-      {{ isUploading ? 'Uploading...' : 'Select File' }}
+    <VcButton
+      :disabled="isUploading"
+      @click="triggerUpload"
+    >
+      {{ isUploading ? "Uploading..." : "Select File" }}
     </VcButton>
 
-    <div v-if="isUploading" class="tw-mt-4">
+    <div
+      v-if="isUploading"
+      class="tw-mt-4"
+    >
       <VcProgress
         :value="uploadProgress"
         variant="striped"
@@ -123,13 +138,13 @@ async function handleUpload(files: FileList) {
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|---|---|---|
-| `--progressbar-height` | `8px` | Bar height |
-| `--progressbar-border-radius` | `9999px` | Border radius (pill shape) |
-| `--progressbar-background-color` | `var(--neutrals-200)` | Track background |
-| `--progressbar-foreground-color` | `var(--primary-500)` | Fill color |
-| `--progressbar-striped-bg` | gradient | Striped variant background |
+| Variable                         | Default               | Description                |
+| -------------------------------- | --------------------- | -------------------------- |
+| `--progressbar-height`           | `8px`                 | Bar height                 |
+| `--progressbar-border-radius`    | `9999px`              | Border radius (pill shape) |
+| `--progressbar-background-color` | `var(--neutrals-200)` | Track background           |
+| `--progressbar-foreground-color` | `var(--primary-500)`  | Fill color                 |
+| `--progressbar-striped-bg`       | gradient              | Striped variant background |
 
 ## Tips
 

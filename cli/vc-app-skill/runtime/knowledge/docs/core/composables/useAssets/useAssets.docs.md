@@ -13,16 +13,16 @@ Handles file upload, removal, and editing for `ICommonAsset` arrays (images, doc
 
 ```vue
 <script setup lang="ts">
-import { useAssets } from '@vc-shell/framework';
-import { ref } from 'vue';
-import type { ICommonAsset } from '@vc-shell/framework';
+import { useAssets } from "@vc-shell/framework";
+import { ref } from "vue";
+import type { ICommonAsset } from "@vc-shell/framework";
 
 const { upload, remove, edit, loading } = useAssets();
 const assets = ref<ICommonAsset[]>([]);
 
 async function onFilesSelected(fileList: FileList) {
   const maxSort = Math.max(0, ...assets.value.map((a) => a.sortOrder ?? 0));
-  const newAssets = await upload(fileList, 'catalog/products/images', maxSort);
+  const newAssets = await upload(fileList, "catalog/products/images", maxSort);
   assets.value = [...assets.value, ...newAssets];
 }
 
@@ -36,7 +36,10 @@ function onUpdateAltText(asset: ICommonAsset, altText: string) {
 </script>
 
 <template>
-  <VcBlade title="Product Images" :loading="loading">
+  <VcBlade
+    title="Product Images"
+    :loading="loading"
+  >
     <VcGallery
       :assets="assets"
       @upload="onFilesSelected"
@@ -50,12 +53,12 @@ function onUpdateAltText(asset: ICommonAsset, altText: string) {
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `upload` | `(files: FileList, uploadPath: string, startingSortOrder?: number) => Promise<ICommonAsset[]>` | Upload files in parallel batches (max 4 concurrent). Returns only successfully uploaded assets. Sort orders are assigned incrementally from `startingSortOrder + 1`. |
-| `remove` | `(filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]` | Return a new array with deleted items removed. Matching is done by `url` field. The original array is not mutated. |
-| `edit` | `(updatedFiles: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]` | Merge updated fields into existing assets (matched by `url`). If `updatedFiles.length === initialAssetArr.length`, the entire array is replaced (reorder mode). |
-| `loading` | `ComputedRef<boolean>` | Whether an upload or remove operation is currently in progress. |
+| Property  | Type                                                                                           | Description                                                                                                                                                          |
+| --------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `upload`  | `(files: FileList, uploadPath: string, startingSortOrder?: number) => Promise<ICommonAsset[]>` | Upload files in parallel batches (max 4 concurrent). Returns only successfully uploaded assets. Sort orders are assigned incrementally from `startingSortOrder + 1`. |
+| `remove`  | `(filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]`           | Return a new array with deleted items removed. Matching is done by `url` field. The original array is not mutated.                                                   |
+| `edit`    | `(updatedFiles: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]`            | Merge updated fields into existing assets (matched by `url`). If `updatedFiles.length === initialAssetArr.length`, the entire array is replaced (reorder mode).      |
+| `loading` | `ComputedRef<boolean>`                                                                         | Whether an upload or remove operation is currently in progress.                                                                                                      |
 
 ## How It Works
 
@@ -74,7 +77,7 @@ Both `remove` and `edit` use `lodash-es` `cloneDeep` to create a new array, so t
 ## Recipe: Drag-and-Drop Reorder with Sort Order Update
 
 ```typescript
-import { useAssets } from '@vc-shell/framework';
+import { useAssets } from "@vc-shell/framework";
 
 const { edit } = useAssets();
 const assets = ref<ICommonAsset[]>([]);
@@ -95,25 +98,25 @@ function onDragEnd(reorderedList: ICommonAsset[]) {
 
 ```vue
 <script setup lang="ts">
-import { useAssets } from '@vc-shell/framework';
-import { ref, watch } from 'vue';
+import { useAssets } from "@vc-shell/framework";
+import { ref, watch } from "vue";
 
 const { upload, loading } = useAssets();
 const assets = ref<ICommonAsset[]>([]);
-const statusMessage = ref('');
+const statusMessage = ref("");
 
 watch(loading, (isLoading) => {
-  statusMessage.value = isLoading ? 'Uploading files...' : '';
+  statusMessage.value = isLoading ? "Uploading files..." : "";
 });
 
 async function handleUpload(files: FileList) {
   statusMessage.value = `Uploading ${files.length} file(s)...`;
   try {
-    const uploaded = await upload(files, 'catalog/products/images');
+    const uploaded = await upload(files, "catalog/products/images");
     assets.value = [...assets.value, ...uploaded];
     statusMessage.value = `Successfully uploaded ${uploaded.length} file(s)`;
   } catch (err) {
-    statusMessage.value = 'Upload failed. Please try again.';
+    statusMessage.value = "Upload failed. Please try again.";
   }
 }
 </script>

@@ -32,22 +32,22 @@ const component = getBladeComponent("OrderDetails");
 
 ### Returns
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `registeredBladesMap` | `ComputedRef<ReadonlyMap<string, IBladeRegistrationData>>` | Reactive readonly map of all registered blades |
-| `getBlade` | `(name: string) => IBladeRegistrationData \| undefined` | Get registration data (component, route, permissions) by blade name |
-| `getBladeComponent` | `(name: string) => BladeInstanceConstructor \| undefined` | Get the Vue component for a blade name (falls back to global components) |
-| `getBladeByRoute` | `(route: string) => { name, data } \| undefined` | Reverse lookup: find a blade by its URL route segment (O(1)) |
+| Property              | Type                                                       | Description                                                              |
+| --------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `registeredBladesMap` | `ComputedRef<ReadonlyMap<string, IBladeRegistrationData>>` | Reactive readonly map of all registered blades                           |
+| `getBlade`            | `(name: string) => IBladeRegistrationData \| undefined`    | Get registration data (component, route, permissions) by blade name      |
+| `getBladeComponent`   | `(name: string) => BladeInstanceConstructor \| undefined`  | Get the Vue component for a blade name (falls back to global components) |
+| `getBladeByRoute`     | `(route: string) => { name, data } \| undefined`           | Reverse lookup: find a blade by its URL route segment (O(1))             |
 
 ### IBladeRegistrationData
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `component` | `BladeInstanceConstructor` | The Vue component for the blade |
-| `route` | `string?` | URL route segment (e.g. `"orders"`) |
-| `isWorkspace` | `boolean?` | Whether this blade opens as a workspace root |
-| `routable` | `boolean?` | Whether this blade supports URL-based navigation |
-| `permissions` | `string \| string[]?` | Required permissions to access this blade |
+| Property      | Type                       | Description                                      |
+| ------------- | -------------------------- | ------------------------------------------------ |
+| `component`   | `BladeInstanceConstructor` | The Vue component for the blade                  |
+| `route`       | `string?`                  | URL route segment (e.g. `"orders"`)              |
+| `isWorkspace` | `boolean?`                 | Whether this blade opens as a workspace root     |
+| `routable`    | `boolean?`                 | Whether this blade supports URL-based navigation |
+| `permissions` | `string \| string[]?`      | Required permissions to access this blade        |
 
 ## Common Patterns
 
@@ -91,8 +91,8 @@ function resolveDeepLink(routeSegment: string) {
 }
 
 // Works with or without leading slash
-resolveDeepLink("orders");   // { name: "OrdersList", data: { ... } }
-resolveDeepLink("/orders");  // Same result
+resolveDeepLink("orders"); // { name: "OrdersList", data: { ... } }
+resolveDeepLink("/orders"); // Same result
 ```
 
 ### Listing all registered blades

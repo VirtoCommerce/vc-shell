@@ -1,7 +1,7 @@
 import type { JSCodeshift } from "jscodeshift";
 
 /** Regex that matches a full import statement (possibly spanning multiple lines via line continuation). */
-const IMPORT_LINE_RE = /^(\s*import\s+(?:[^'"]*?\s+from\s+)?['"][^'"]+['"]\s*;?\s*)$/;
+const _IMPORT_LINE_RE = /^(\s*import\s+(?:[^'"]*?\s+from\s+)?['"][^'"]+['"]\s*;?\s*)$/;
 
 /** Extracts the source module string from an import statement line. */
 function extractSource(importLine: string): string | null {

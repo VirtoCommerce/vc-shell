@@ -33,11 +33,11 @@ const languages = [
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `string` | `""` | Currently selected language value |
-| `options` | `LanguageOption[]` | `[]` | Available language options |
-| `disabled` | `boolean` | `false` | Disables interaction |
+| Prop         | Type               | Default | Description                       |
+| ------------ | ------------------ | ------- | --------------------------------- |
+| `modelValue` | `string`           | `""`    | Currently selected language value |
+| `options`    | `LanguageOption[]` | `[]`    | Available language options        |
+| `disabled`   | `boolean`          | `false` | Disables interaction              |
 
 Each `LanguageOption` has: `{ value: string; label: string; flag?: string }`.
 
@@ -65,23 +65,36 @@ const languages = [
 
 const currentName = computed({
   get: () => product.value.names[currentLang.value] ?? "",
-  set: (val) => { product.value.names[currentLang.value] = val; },
+  set: (val) => {
+    product.value.names[currentLang.value] = val;
+  },
 });
 
 const currentDescription = computed({
   get: () => product.value.descriptions[currentLang.value] ?? "",
-  set: (val) => { product.value.descriptions[currentLang.value] = val; },
+  set: (val) => {
+    product.value.descriptions[currentLang.value] = val;
+  },
 });
 </script>
 
 <template>
   <VcBlade title="Edit Product">
     <template #actions>
-      <MultilanguageSelector v-model="currentLang" :options="languages" />
+      <MultilanguageSelector
+        v-model="currentLang"
+        :options="languages"
+      />
     </template>
 
-    <VcInput v-model="currentName" label="Name" />
-    <VcTextarea v-model="currentDescription" label="Description" />
+    <VcInput
+      v-model="currentName"
+      label="Name"
+    />
+    <VcTextarea
+      v-model="currentDescription"
+      label="Description"
+    />
   </VcBlade>
 </template>
 ```

@@ -5,6 +5,7 @@ The pattern is identical to the details pattern, but the blade is oriented aroun
 existing item or creating a new one via an "add URL" flow rather than a traditional form.
 
 Key patterns shown here that differ from team-module:
+
 - `isWorkspace: false` (child blade, not sidebar nav) — videos is opened FROM another blade
 - `callParent` with multiple methods from the same child blade
 - `rowActions` on VcDataTable — per-row action buttons
@@ -110,7 +111,7 @@ import { VideosEmptyGridTemplateNew } from "../components";
 // PATTERN: defineBlade without isWorkspace — this blade is embedded, not a top-level workspace
 defineBlade({
   name: "Videos",
-  isWorkspace: true,  // true here because it can be a workspace entry-point too
+  isWorkspace: true, // true here because it can be a workspace entry-point too
 });
 
 // PATTERN: typed options from parent blade
@@ -274,7 +275,10 @@ exposeToChildren({ reload, markProductDirty });
       <div class="tw-p-4">
         <VcForm>
           <!-- PATTERN: v-if="!param" = create-only section -->
-          <div v-if="!param" class="tw-mb-4 tw-flex tw-flex-row">
+          <div
+            v-if="!param"
+            class="tw-mb-4 tw-flex tw-flex-row"
+          >
             <Field
               v-slot="{ errorMessage, handleChange, errors }"
               :label="t('VIDEOS.PAGES.DETAILS.FIELDS.ADD.TITLE')"
@@ -296,7 +300,12 @@ exposeToChildren({ reload, markProductDirty });
                   <VcButton
                     :disabled="previewDisabled"
                     small
-                    @click="async (e: MouseEvent) => { await getVideo(); handleChange(e); }"
+                    @click="
+                      async (e: MouseEvent) => {
+                        await getVideo();
+                        handleChange(e);
+                      }
+                    "
                   >
                     {{ $t("VIDEOS.PAGES.DETAILS.FIELDS.ADD.ADD_BUTTON") }}
                   </VcButton>
@@ -309,7 +318,12 @@ exposeToChildren({ reload, markProductDirty });
           <div v-if="!!param || newVideoLoaded">
             <VcRow>
               <VcCol :size="1">
-                <VcImage size="xl" :src="video?.thumbnailUrl" bordered background="contain" />
+                <VcImage
+                  size="xl"
+                  :src="video?.thumbnailUrl"
+                  bordered
+                  background="contain"
+                />
               </VcCol>
               <VcCol :size="2">
                 <!-- PATTERN: VcField for read-only display fields -->
@@ -326,10 +340,23 @@ exposeToChildren({ reload, markProductDirty });
                 />
               </VcCol>
             </VcRow>
-            <VcInput v-model="video.name" :label="$t('VIDEOS.PAGES.DETAILS.FIELDS.NAME.TITLE')" required disabled />
-            <VcTextarea v-model="video.description" :label="t('VIDEOS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')" disabled />
+            <VcInput
+              v-model="video.name"
+              :label="$t('VIDEOS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
+              required
+              disabled
+            />
+            <VcTextarea
+              v-model="video.description"
+              :label="t('VIDEOS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
+              disabled
+            />
             <!-- PATTERN: VcVideo component for embedded video preview -->
-            <VcVideo :source="video?.embedUrl" :label="$t('VIDEOS.PAGES.DETAILS.FIELDS.PREVIEW.TITLE')" size="xxl" />
+            <VcVideo
+              :source="video?.embedUrl"
+              :label="$t('VIDEOS.PAGES.DETAILS.FIELDS.PREVIEW.TITLE')"
+              size="xxl"
+            />
           </div>
         </VcForm>
       </div>
@@ -385,21 +412,21 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       closeSelf();
     },
     disabled: computed(() => !newVideoLoaded.value),
-    isVisible: computed(() => !param.value),  // only visible in create mode
+    isVisible: computed(() => !param.value), // only visible in create mode
   },
   {
     id: "delete",
     title: computed(() => t("VIDEOS.PAGES.DETAILS.TOOLBAR.DELETE")),
     icon: "lucide-trash-2",
     async clickHandler() {
-      if (await showConfirmation(t("VIDEOS.PAGES.DETAILS.DELETE_CONFIRMATION.MESSAGE")) && video.value.id) {
+      if ((await showConfirmation(t("VIDEOS.PAGES.DETAILS.DELETE_CONFIRMATION.MESSAGE"))) && video.value.id) {
         await deleteVideos([video.value.id]);
         callParent("reload");
         callParent("markProductDirty");
         closeSelf();
       }
     },
-    isVisible: computed(() => !!param.value),  // only visible in edit mode
+    isVisible: computed(() => !!param.value), // only visible in edit mode
   },
 ]);
 
@@ -433,12 +460,12 @@ const validateUrl = async () => {
 
 ## Summary: Edit-blade vs Details-blade naming
 
-| Aspect | Details blade | Edit blade |
-|---|---|---|
-| Name convention | `*Details` (e.g. `TeamMemberDetails`) | `*Edit` (e.g. `VideoEdit`) |
-| Typical use | Full form with vee-validate | Lighter editing or multi-step create |
-| `onBeforeClose` | Common (unsaved changes guard) | Optional |
-| Difference | N/A | Same pattern — just a naming convention |
+| Aspect          | Details blade                         | Edit blade                              |
+| --------------- | ------------------------------------- | --------------------------------------- |
+| Name convention | `*Details` (e.g. `TeamMemberDetails`) | `*Edit` (e.g. `VideoEdit`)              |
+| Typical use     | Full form with vee-validate           | Lighter editing or multi-step create    |
+| `onBeforeClose` | Common (unsaved changes guard)        | Optional                                |
+| Difference      | N/A                                   | Same pattern — just a naming convention |
 
 Both patterns use identical framework APIs. The "edit" name is used when the blade
 primarily handles a simplified or specialized editing flow.

@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { mount, flushPromises } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import { ref } from "vue";
 import ForgotPassword from "./ForgotPassword.vue";
 
 // ── Mocks ───────────────────────────────────────────────────────────────────
 
 vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string, params?: Record<string, string>) => k, locale: { value: "en" } }),
+  useI18n: () => ({ t: (k: string, _params?: Record<string, string>) => k, locale: { value: "en" } }),
 }));
 
 const mockRouterPush = vi.fn();

@@ -8,13 +8,13 @@ The framework migrated from Moment.js to `date-fns`. These utilities handle the 
 
 ## Exports
 
-| Export | Description |
-|---|---|
-| `formatDateRelative` | Formats a date as relative time (e.g., "3 hours ago", "2 days ago") |
-| `formatDateWithPattern` | Formats a date using a Moment.js-compatible format string |
-| `convertMomentFormat` | Converts a Moment.js format string to date-fns format |
-| `resolveLocale` | Async: loads and caches a date-fns locale by code (e.g., "fr", "de") |
-| `resolveLocaleSync` | Sync: returns cached locale or falls back to `enUS` while loading |
+| Export                  | Description                                                          |
+| ----------------------- | -------------------------------------------------------------------- |
+| `formatDateRelative`    | Formats a date as relative time (e.g., "3 hours ago", "2 days ago")  |
+| `formatDateWithPattern` | Formats a date using a Moment.js-compatible format string            |
+| `convertMomentFormat`   | Converts a Moment.js format string to date-fns format                |
+| `resolveLocale`         | Async: loads and caches a date-fns locale by code (e.g., "fr", "de") |
+| `resolveLocaleSync`     | Sync: returns cached locale or falls back to `enUS` while loading    |
 
 ## Usage
 
@@ -48,30 +48,30 @@ formatDateWithPattern("2024-03-15T14:30:00Z", "LLL", "de");
 ```typescript
 import { convertMomentFormat } from "@vc-shell/framework";
 
-convertMomentFormat("YYYY-MM-DD");  // => "yyyy-MM-dd"
-convertMomentFormat("DD/MM/YYYY");  // => "dd/MM/yyyy"
-convertMomentFormat("LLL");         // => "PPp"
-convertMomentFormat("dddd");        // => "EEEE"
+convertMomentFormat("YYYY-MM-DD"); // => "yyyy-MM-dd"
+convertMomentFormat("DD/MM/YYYY"); // => "dd/MM/yyyy"
+convertMomentFormat("LLL"); // => "PPp"
+convertMomentFormat("dddd"); // => "EEEE"
 ```
 
 ### Token mapping reference
 
-| Moment | date-fns | Meaning |
-|--------|----------|---------|
-| `YYYY` | `yyyy` | 4-digit year |
-| `YY` | `yy` | 2-digit year |
-| `DD` | `dd` | Day of month (zero-padded) |
-| `D` | `d` | Day of month |
-| `Do` | `do` | Day ordinal |
-| `dddd` | `EEEE` | Weekday name |
-| `ddd` | `EEE` | Weekday abbreviation |
-| `A` | `a` | AM/PM |
-| `L` | `P` | Localized date |
-| `LL` | `PP` | Localized date (long) |
-| `LLL` | `PPp` | Localized date + time |
-| `LLLL` | `PPPp` | Localized date + time (full) |
-| `LT` | `p` | Localized time |
-| `LTS` | `pp` | Localized time with seconds |
+| Moment | date-fns | Meaning                      |
+| ------ | -------- | ---------------------------- |
+| `YYYY` | `yyyy`   | 4-digit year                 |
+| `YY`   | `yy`     | 2-digit year                 |
+| `DD`   | `dd`     | Day of month (zero-padded)   |
+| `D`    | `d`      | Day of month                 |
+| `Do`   | `do`     | Day ordinal                  |
+| `dddd` | `EEEE`   | Weekday name                 |
+| `ddd`  | `EEE`    | Weekday abbreviation         |
+| `A`    | `a`      | AM/PM                        |
+| `L`    | `P`      | Localized date               |
+| `LL`   | `PP`     | Localized date (long)        |
+| `LLL`  | `PPp`    | Localized date + time        |
+| `LLLL` | `PPPp`   | Localized date + time (full) |
+| `LT`   | `p`      | Localized time               |
+| `LTS`  | `pp`     | Localized time with seconds  |
 
 ### Locale resolution
 

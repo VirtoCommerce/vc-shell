@@ -1,4 +1,4 @@
-import { join, dirname } from "node:path";
+import { join } from "node:path";
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { parse as parseSFC } from "@vue/compiler-sfc";
 

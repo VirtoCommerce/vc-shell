@@ -18,9 +18,7 @@ import { usePopup } from "@vc-shell/framework";
 const { showConfirmation, showError } = usePopup();
 
 async function deleteProduct(id: string) {
-  const confirmed = await showConfirmation(
-    "Are you sure you want to delete this product?"
-  );
+  const confirmed = await showConfirmation("Are you sure you want to delete this product?");
   if (!confirmed) return;
 
   try {
@@ -33,7 +31,10 @@ async function deleteProduct(id: string) {
 
 <template>
   <VcBlade title="Product">
-    <VcButton variant="danger" @click="deleteProduct(product.id)">
+    <VcButton
+      variant="danger"
+      @click="deleteProduct(product.id)"
+    >
       Delete
     </VcButton>
   </VcBlade>
@@ -44,28 +45,28 @@ async function deleteProduct(id: string) {
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `options` | `MaybeRef<UsePopupProps<T>>` | No | Configuration for a custom popup component. Omit for built-in dialogs only. |
+| Parameter | Type                         | Required | Description                                                                 |
+| --------- | ---------------------------- | -------- | --------------------------------------------------------------------------- |
+| `options` | `MaybeRef<UsePopupProps<T>>` | No       | Configuration for a custom popup component. Omit for built-in dialogs only. |
 
 #### `UsePopupProps<T>`
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `component` | `ComponentPublicInstanceConstructor` | Yes | The popup component to render |
-| `props` | `RawProps<T>` | No | Props to pass to the component (typed from the component's `defineProps`) |
-| `emits` | `RawEmits<T>` | No | Event handlers (typed from the component's `defineEmits`) |
-| `slots` | `Record<string, string \| Component \| Slot>` | No | Named slots — strings render as text, components render as VNodes |
+| Field       | Type                                          | Required | Description                                                               |
+| ----------- | --------------------------------------------- | -------- | ------------------------------------------------------------------------- |
+| `component` | `ComponentPublicInstanceConstructor`          | Yes      | The popup component to render                                             |
+| `props`     | `RawProps<T>`                                 | No       | Props to pass to the component (typed from the component's `defineProps`) |
+| `emits`     | `RawEmits<T>`                                 | No       | Event handlers (typed from the component's `defineEmits`)                 |
+| `slots`     | `Record<string, string \| Component \| Slot>` | No       | Named slots — strings render as text, components render as VNodes         |
 
 ### Returns (`IUsePopup`)
 
-| Method | Signature | Description |
-|---|---|---|
-| `open` | `() => void` | Push the popup onto the stack and render it |
-| `close` | `() => void` | Remove the popup from the stack |
+| Method             | Signature                                              | Description                                                                                         |
+| ------------------ | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `open`             | `() => void`                                           | Push the popup onto the stack and render it                                                         |
+| `close`            | `() => void`                                           | Remove the popup from the stack                                                                     |
 | `showConfirmation` | `(message: string \| Ref<string>) => Promise<boolean>` | Warning dialog with Confirm/Cancel buttons. Resolves `true` on confirm, `false` on cancel or close. |
-| `showError` | `(message: string \| Ref<string>) => void` | Error-styled popup with a close button |
-| `showInfo` | `(message: string \| Ref<string>) => void` | Info-styled popup with a close button |
+| `showError`        | `(message: string \| Ref<string>) => void`             | Error-styled popup with a close button                                                              |
+| `showInfo`         | `(message: string \| Ref<string>) => void`             | Info-styled popup with a close button                                                               |
 
 ## How It Works
 
@@ -86,9 +87,7 @@ const { showConfirmation, showError } = usePopup();
 const { closeSelf } = useBlade();
 
 async function deleteOrder(id: string) {
-  const confirmed = await showConfirmation(
-    "Are you sure you want to delete this order? This action cannot be undone."
-  );
+  const confirmed = await showConfirmation("Are you sure you want to delete this order? This action cannot be undone.");
   if (!confirmed) return;
 
   try {
@@ -139,14 +138,20 @@ const { open, close } = usePopup(
   computed(() => ({
     component: ConfirmPopup,
     props: { message: `Delete ${selectedCount.value} items?` },
-    emits: { onConfirm: () => { performDelete(); close(); } },
-  }))
+    emits: {
+      onConfirm: () => {
+        performDelete();
+        close();
+      },
+    },
+  })),
 );
 ```
 
 ## Common Mistakes
 
 **Wrong: not awaiting showConfirmation**
+
 ```ts
 // The delete runs immediately — confirmation is ignored
 showConfirmation("Delete?");
@@ -154,6 +159,7 @@ await api.deleteProduct(id); // runs before user clicks!
 ```
 
 **Correct: await the result**
+
 ```ts
 const confirmed = await showConfirmation("Delete?");
 if (!confirmed) return;
@@ -163,6 +169,7 @@ await api.deleteProduct(id);
 ---
 
 **Wrong: nesting many popups**
+
 ```ts
 // 3+ deep popup stacks confuse users
 const a = await showConfirmation("Step 1?");
@@ -175,6 +182,7 @@ if (a) {
 ```
 
 **Correct: use a blade for multi-step workflows**
+
 ```ts
 // Complex flows belong in blades, not popups
 openBlade({ name: "WizardBlade", options: { step: 1 } });

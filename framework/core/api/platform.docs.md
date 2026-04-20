@@ -21,38 +21,38 @@ Each API client class extends `AuthApiBase`, which automatically attaches the Be
 
 All clients extend `AuthApiBase` and accept an optional `baseUrl` and `http` fetch implementation.
 
-| Client | Description |
-|--------|-------------|
-| `ExternalSignInClient` | External authentication provider sign-in |
-| `AppsClient` | Application descriptor operations |
-| `AuthorizationClient` | Permission and role checking |
-| `ChangeLogClient` | Platform change log / audit trail |
-| `DiagnosticsClient` | System diagnostics and health |
-| `DynamicPropertiesClient` | Dynamic property CRUD and dictionary management |
-| `JobsClient` | Background job management |
-| `LocalizableSettingsClient` | Localizable setting values |
-| `ModulesClient` | Platform module management (install, update, restart) |
-| `OAuthAppsClient` | OAuth application registration |
-| `PushNotificationClient` | Push notification search and mark-as-read |
-| `SecurityClient` | User management, roles, permissions, password operations |
-| `SettingClient` | Platform settings CRUD |
+| Client                      | Description                                              |
+| --------------------------- | -------------------------------------------------------- |
+| `ExternalSignInClient`      | External authentication provider sign-in                 |
+| `AppsClient`                | Application descriptor operations                        |
+| `AuthorizationClient`       | Permission and role checking                             |
+| `ChangeLogClient`           | Platform change log / audit trail                        |
+| `DiagnosticsClient`         | System diagnostics and health                            |
+| `DynamicPropertiesClient`   | Dynamic property CRUD and dictionary management          |
+| `JobsClient`                | Background job management                                |
+| `LocalizableSettingsClient` | Localizable setting values                               |
+| `ModulesClient`             | Platform module management (install, update, restart)    |
+| `OAuthAppsClient`           | OAuth application registration                           |
+| `PushNotificationClient`    | Push notification search and mark-as-read                |
+| `SecurityClient`            | User management, roles, permissions, password operations |
+| `SettingClient`             | Platform settings CRUD                                   |
 
 ## Key DTOs (Interfaces)
 
-| Interface | Description |
-|-----------|-------------|
-| `PushNotification` | Push notification payload: `id`, `title`, `notifyType`, `isNew`, `finished`, etc. |
-| `PushNotificationSearchCriteria` | Search criteria for notification queries |
-| `ApplicationUser` | Platform user with roles, permissions, logins |
-| `Role` | Security role with permissions |
-| `Permission` | Individual permission entry |
-| `DynamicProperty` | Dynamic property definition |
-| `DynamicObjectProperty` | Property value bound to an object |
-| `ModuleDescriptor` | Module metadata (id, version, dependencies) |
-| `ChangeLogSearchCriteria` | Audit log search parameters |
-| `ChangeLogSearchResult` | Paginated audit log results |
-| `ObjectSettingEntry` | Setting entry with value and metadata |
-| `License` | Platform license information |
+| Interface                        | Description                                                                       |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| `PushNotification`               | Push notification payload: `id`, `title`, `notifyType`, `isNew`, `finished`, etc. |
+| `PushNotificationSearchCriteria` | Search criteria for notification queries                                          |
+| `ApplicationUser`                | Platform user with roles, permissions, logins                                     |
+| `Role`                           | Security role with permissions                                                    |
+| `Permission`                     | Individual permission entry                                                       |
+| `DynamicProperty`                | Dynamic property definition                                                       |
+| `DynamicObjectProperty`          | Property value bound to an object                                                 |
+| `ModuleDescriptor`               | Module metadata (id, version, dependencies)                                       |
+| `ChangeLogSearchCriteria`        | Audit log search parameters                                                       |
+| `ChangeLogSearchResult`          | Paginated audit log results                                                       |
+| `ObjectSettingEntry`             | Setting entry with value and metadata                                             |
+| `License`                        | Platform license information                                                      |
 
 ## Base Class
 
@@ -93,7 +93,7 @@ const securityClient = new SecurityClient();
 const user = await securityClient.getCurrentUser();
 
 console.log(`Logged in as: ${user.userName}`);
-console.log(`Roles: ${user.roles?.map(r => r.name).join(", ")}`);
+console.log(`Roles: ${user.roles?.map((r) => r.name).join(", ")}`);
 console.log(`Is admin: ${user.isAdministrator}`);
 ```
 

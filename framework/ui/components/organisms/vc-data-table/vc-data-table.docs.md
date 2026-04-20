@@ -20,12 +20,12 @@ Columns are defined as `<VcColumn>` child components -- no configuration objects
 
 ## When to Use
 
-| Scenario | Component |
-|----------|-----------|
-| Tabular data with sorting, selection, pagination | **VcDataTable** |
-| Simple short list without table features | `v-for` with custom markup |
-| Image/card grid layout | [VcGallery](../vc-gallery) |
-| Key-value detail display | [VcField](../../molecules/vc-field) or [VcCard](../../atoms/vc-card) |
+| Scenario                                         | Component                                                            |
+| ------------------------------------------------ | -------------------------------------------------------------------- |
+| Tabular data with sorting, selection, pagination | **VcDataTable**                                                      |
+| Simple short list without table features         | `v-for` with custom markup                                           |
+| Image/card grid layout                           | [VcGallery](../vc-gallery)                                           |
+| Key-value detail display                         | [VcField](../../molecules/vc-field) or [VcCard](../../atoms/vc-card) |
 
 Use VcDataTable whenever you need structured rows and columns with any combination of sorting, filtering, inline editing, or column management. **Do not use** VcDataTable for simple lists of 5-10 items that need no table features -- a plain `v-for` loop is lighter. For thumbnail/card grids, prefer VcGallery.
 
@@ -68,10 +68,28 @@ The simplest possible table -- pass an array and declare columns:
 ```vue
 <template>
   <VcDataTable :items="products">
-    <VcColumn id="name" field="name" title="Name" />
-    <VcColumn id="price" field="price" title="Price" type="money" />
-    <VcColumn id="stock" field="stock" title="Stock" type="number" />
-    <VcColumn id="status" field="status" title="Status" />
+    <VcColumn
+      id="name"
+      field="name"
+      title="Name"
+    />
+    <VcColumn
+      id="price"
+      field="price"
+      title="Price"
+      type="money"
+    />
+    <VcColumn
+      id="stock"
+      field="stock"
+      title="Stock"
+      type="number"
+    />
+    <VcColumn
+      id="status"
+      field="status"
+      title="Status"
+    />
   </VcDataTable>
 </template>
 
@@ -82,7 +100,7 @@ import { VcDataTable, VcColumn } from "@vc-shell/framework";
 const products = ref([
   { id: "1", name: "Laptop", price: 1299.99, currency: "USD", stock: 45, status: "In Stock" },
   { id: "2", name: "Mouse", price: 49.99, currency: "USD", stock: 120, status: "In Stock" },
-  { id: "3", name: "Monitor", price: 599.00, currency: "USD", stock: 0, status: "Out of Stock" },
+  { id: "3", name: "Monitor", price: 599.0, currency: "USD", stock: 0, status: "Out of Stock" },
 ]);
 </script>
 ```
@@ -201,9 +219,25 @@ Mark columns as sortable and bind the sort state:
     v-model:sort-order="sortOrder"
     @sort="handleSort"
   >
-    <VcColumn id="name" field="name" title="Name" sortable />
-    <VcColumn id="price" field="price" title="Price" type="money" sortable />
-    <VcColumn id="stock" field="stock" title="Stock" type="number" />
+    <VcColumn
+      id="name"
+      field="name"
+      title="Name"
+      sortable
+    />
+    <VcColumn
+      id="price"
+      field="price"
+      title="Price"
+      type="money"
+      sortable
+    />
+    <VcColumn
+      id="stock"
+      field="stock"
+      title="Stock"
+      type="number"
+    />
   </VcDataTable>
 </template>
 
@@ -235,12 +269,7 @@ Allow users to remove sorting entirely (3-state cycle: asc -> desc -> none):
 Hold Shift and click additional columns to sort by multiple fields:
 
 ```vue
-<VcDataTable
-  :items="products"
-  sort-mode="multiple"
-  v-model:multi-sort-meta="multiSort"
-  @sort="handleSort"
->
+<VcDataTable :items="products" sort-mode="multiple" v-model:multi-sort-meta="multiSort" @sort="handleSort">
   <VcColumn id="category" field="category" title="Category" sortable />
   <VcColumn id="name" field="name" title="Name" sortable />
   <VcColumn id="price" field="price" title="Price" type="money" sortable />
@@ -273,8 +302,17 @@ When the backend sort field differs from the column id:
     v-model:selection="selected"
     selection-mode="multiple"
   >
-    <VcColumn id="name" field="name" title="Name" />
-    <VcColumn id="price" field="price" title="Price" type="money" />
+    <VcColumn
+      id="name"
+      field="name"
+      title="Name"
+    />
+    <VcColumn
+      id="price"
+      field="price"
+      title="Price"
+      type="money"
+    />
   </VcDataTable>
 
   <p>{{ selected.length }} items selected</p>
@@ -290,11 +328,7 @@ A checkbox column is automatically prepended. A "Select All" banner appears when
 ### Single Selection (radio)
 
 ```vue
-<VcDataTable
-  :items="products"
-  v-model:selection="selectedProduct"
-  selection-mode="single"
->
+<VcDataTable :items="products" v-model:selection="selectedProduct" selection-mode="single">
   <VcColumn id="name" field="name" title="Name" />
 </VcDataTable>
 ```
@@ -313,12 +347,7 @@ For explicit control over checkbox column placement:
 ### Disabling Selection on Specific Rows
 
 ```vue
-<VcDataTable
-  :items="products"
-  v-model:selection="selected"
-  selection-mode="multiple"
-  :is-row-selectable="(item) => item.stock > 0"
->
+<VcDataTable :items="products" v-model:selection="selected" selection-mode="multiple" :is-row-selectable="(item) => item.stock > 0">
   <VcColumn id="name" field="name" title="Name" />
 </VcDataTable>
 ```
@@ -330,14 +359,7 @@ Out-of-stock rows will have a disabled (grayed-out) checkbox.
 For server-side "select all" that includes items not currently visible:
 
 ```vue
-<VcDataTable
-  :items="products"
-  v-model:selection="selected"
-  v-model:select-all-active="allSelected"
-  selection-mode="multiple"
-  :total-count="totalCount"
-  @select-all="handleSelectAll"
->
+<VcDataTable :items="products" v-model:selection="selected" v-model:select-all-active="allSelected" selection-mode="multiple" :total-count="totalCount" @select-all="handleSelectAll">
   <VcColumn id="name" field="name" title="Name" />
 </VcDataTable>
 ```
@@ -365,8 +387,17 @@ function handleSelectAll(event: { selected: boolean }) {
     :total-count="totalCount"
     @pagination-click="onPageChange"
   >
-    <VcColumn id="name" field="name" title="Name" />
-    <VcColumn id="price" field="price" title="Price" type="money" />
+    <VcColumn
+      id="name"
+      field="name"
+      title="Name"
+    />
+    <VcColumn
+      id="price"
+      field="price"
+      title="Price"
+      type="money"
+    />
   </VcDataTable>
 </template>
 
@@ -398,10 +429,30 @@ Click any editable cell to activate its editor. Press Enter or click away to com
 
 ```vue
 <template>
-  <VcDataTable :items="products" edit-mode="cell" @cell-edit-complete="onCellSave">
-    <VcColumn id="name" field="name" title="Name" editable />
-    <VcColumn id="price" field="price" title="Price" type="money" editable />
-    <VcColumn id="stock" field="stock" title="Stock" type="number" />
+  <VcDataTable
+    :items="products"
+    edit-mode="cell"
+    @cell-edit-complete="onCellSave"
+  >
+    <VcColumn
+      id="name"
+      field="name"
+      title="Name"
+      editable
+    />
+    <VcColumn
+      id="price"
+      field="price"
+      title="Price"
+      type="money"
+      editable
+    />
+    <VcColumn
+      id="stock"
+      field="stock"
+      title="Stock"
+      type="number"
+    />
   </VcDataTable>
 </template>
 
@@ -439,12 +490,7 @@ function onRowSave(event: { data: Product; newData: Product; index: number }) {
 All editable cells are active at once -- useful for price lists, inventory grids, or spreadsheet-like UIs.
 
 ```vue
-<VcDataTable
-  :items="products"
-  edit-mode="inline"
-  :validation-rules="validationRules"
-  @edit-save="onBulkSave"
->
+<VcDataTable :items="products" edit-mode="inline" :validation-rules="validationRules" @edit-save="onBulkSave">
   <VcColumn id="name" field="name" title="Name" editable />
   <VcColumn id="price" field="price" title="Price" type="money" editable />
   <VcColumn id="stock" field="stock" title="Stock" type="number" editable />
@@ -518,18 +564,18 @@ VcDataTable uses a **weight-based engine** to compute exact pixel widths for eve
 
 **`fitMode` prop** controls what happens to leftover space:
 
-| Value | Behavior |
-|-------|----------|
-| `"gap"` (default) | A filler pseudo-element absorbs unused space at the right end. |
-| `"fit"` | All column weights are normalized so columns fill the entire container width. |
+| Value             | Behavior                                                                      |
+| ----------------- | ----------------------------------------------------------------------------- |
+| `"gap"` (default) | A filler pseudo-element absorbs unused space at the right end.                |
+| `"fit"`           | All column weights are normalized so columns fill the entire container width. |
 
 **Width prop contract:**
 
-| Declaration | Meaning |
-|-------------|---------|
-| `width="200"` or `:width="200"` | Initial 200 px hint |
-| `width="20%"` | Initial hint based on 20% of available width |
-| `width` omitted | Auto — splits remaining space equally among all auto columns |
+| Declaration                     | Meaning                                                      |
+| ------------------------------- | ------------------------------------------------------------ |
+| `width="200"` or `:width="200"` | Initial 200 px hint                                          |
+| `width="20%"`                   | Initial hint based on 20% of available width                 |
+| `width` omitted                 | Auto — splits remaining space equally among all auto columns |
 
 After initialization the column lives in the weight model. Container resizes recompute px values without changing weights.
 
@@ -592,9 +638,22 @@ Enable drag-and-drop row reordering with a drag handle column:
     :reorderable-rows="true"
     @row-reorder="onReorder"
   >
-    <VcColumn id="drag" :row-reorder="true" :width="40" />
-    <VcColumn id="name" field="name" title="Name" />
-    <VcColumn id="priority" field="priority" title="Priority" type="number" />
+    <VcColumn
+      id="drag"
+      :row-reorder="true"
+      :width="40"
+    />
+    <VcColumn
+      id="name"
+      field="name"
+      title="Name"
+    />
+    <VcColumn
+      id="priority"
+      field="priority"
+      title="Priority"
+      type="number"
+    />
   </VcDataTable>
 </template>
 
@@ -617,16 +676,35 @@ Show additional detail below a row when the user clicks the expand toggle:
 
 ```vue
 <template>
-  <VcDataTable :items="orders" v-model:expanded-rows="expandedRows">
-    <VcColumn id="expand" :expander="true" :width="40" />
-    <VcColumn id="orderNumber" field="number" title="Order #" />
-    <VcColumn id="total" field="total" title="Total" type="money" />
+  <VcDataTable
+    :items="orders"
+    v-model:expanded-rows="expandedRows"
+  >
+    <VcColumn
+      id="expand"
+      :expander="true"
+      :width="40"
+    />
+    <VcColumn
+      id="orderNumber"
+      field="number"
+      title="Order #"
+    />
+    <VcColumn
+      id="total"
+      field="total"
+      title="Total"
+      type="money"
+    />
 
     <template #expansion="{ data }">
       <div class="tw-p-4">
         <h4 class="tw-font-semibold tw-mb-2">Order Items</h4>
         <ul>
-          <li v-for="item in data.lineItems" :key="item.id">
+          <li
+            v-for="item in data.lineItems"
+            :key="item.id"
+          >
             {{ item.name }} x{{ item.quantity }} -- {{ item.price }}
           </li>
         </ul>
@@ -643,12 +721,7 @@ const expandedRows = ref<Order[]>([]);
 Customize expand/collapse icons:
 
 ```vue
-<VcDataTable
-  :items="orders"
-  v-model:expanded-rows="expandedRows"
-  expanded-row-icon="lucide-minus-circle"
-  collapsed-row-icon="lucide-plus-circle"
->
+<VcDataTable :items="orders" v-model:expanded-rows="expandedRows" expanded-row-icon="lucide-minus-circle" collapsed-row-icon="lucide-plus-circle">
   ...
 </VcDataTable>
 ```
@@ -664,12 +737,25 @@ Use `isRowExpandable` to control which rows show the expand toggle. Rows that fa
     v-model:expanded-rows="expandedRows"
     :is-row-expandable="(order) => order.lineItems.length > 0"
   >
-    <VcColumn id="expand" :expander="true" :width="40" />
-    <VcColumn id="orderNumber" field="number" title="Order #" />
+    <VcColumn
+      id="expand"
+      :expander="true"
+      :width="40"
+    />
+    <VcColumn
+      id="orderNumber"
+      field="number"
+      title="Order #"
+    />
 
     <template #expansion="{ data }">
       <div class="tw-p-4">
-        <p v-for="item in data.lineItems" :key="item.id">{{ item.name }}</p>
+        <p
+          v-for="item in data.lineItems"
+          :key="item.id"
+        >
+          {{ item.name }}
+        </p>
       </div>
     </template>
   </VcDataTable>
@@ -694,8 +780,17 @@ Group rows by a field value. Each group gets a subheader row.
     :expandable-row-groups="true"
     v-model:expanded-row-groups="expandedGroups"
   >
-    <VcColumn id="name" field="name" title="Name" />
-    <VcColumn id="price" field="price" title="Price" type="money" />
+    <VcColumn
+      id="name"
+      field="name"
+      title="Name"
+    />
+    <VcColumn
+      id="price"
+      field="price"
+      title="Price"
+      type="money"
+    />
 
     <template #groupheader="{ data }">
       <strong>{{ data.category }}</strong> ({{ getCategoryCount(data.category) }} items)
@@ -762,13 +857,7 @@ Add the `filter` prop to a VcColumn to render a filter control in its header.
 **Date range filter** -- start/end date pickers:
 
 ```vue
-<VcColumn
-  id="createdDate"
-  field="createdDate"
-  title="Created"
-  type="datetime"
-  :filter="{ range: ['startDate', 'endDate'] }"
-/>
+<VcColumn id="createdDate" field="createdDate" title="Created" type="datetime" :filter="{ range: ['startDate', 'endDate'] }" />
 ```
 
 The `range` tuple specifies the two backend field names emitted in the `@filter` event payload.
@@ -843,11 +932,7 @@ A filter icon button appears in the toolbar. Clicking it opens the global filter
 Column filters and global filters work together. The `@filter` event merges all active filter values into a single flat object:
 
 ```vue
-<VcDataTable
-  :items="products"
-  :global-filters="globalFilters"
-  @filter="handleFilter"
->
+<VcDataTable :items="products" :global-filters="globalFilters" @filter="handleFilter">
   <VcColumn id="name" field="name" title="Name" :filter="true" />
   <VcColumn id="status" field="status" title="Status" :filter="{ options: statusOptions }" />
 </VcDataTable>
@@ -865,14 +950,7 @@ function handleFilter(event: { filters: Record<string, unknown> }) {
 ## Search Bar
 
 ```vue
-<VcDataTable
-  :items="products"
-  searchable
-  v-model:search-value="searchQuery"
-  search-placeholder="Search products..."
-  :search-debounce="300"
-  @search="onSearch"
->
+<VcDataTable :items="products" searchable v-model:search-value="searchQuery" search-placeholder="Search products..." :search-debounce="300" @search="onSearch">
   <VcColumn id="name" field="name" title="Name" />
 </VcDataTable>
 ```
@@ -904,8 +982,17 @@ Load more data as the user scrolls down:
     scroll-height="500px"
     @load-more="loadNextPage"
   >
-    <VcColumn id="name" field="name" title="Name" />
-    <VcColumn id="price" field="price" title="Price" type="money" />
+    <VcColumn
+      id="name"
+      field="name"
+      title="Name"
+    />
+    <VcColumn
+      id="price"
+      field="price"
+      title="Price"
+      type="money"
+    />
   </VcDataTable>
 </template>
 
@@ -931,10 +1018,7 @@ async function loadNextPage() {
 Persist column widths, column order, hidden columns, sort, and filters across page reloads:
 
 ```vue
-<VcDataTable
-  :items="products"
-  state-key="product-list"
->
+<VcDataTable :items="products" state-key="product-list">
   <VcColumn id="name" field="name" title="Name" sortable />
   <VcColumn id="price" field="price" title="Price" type="money" sortable />
 </VcDataTable>
@@ -957,12 +1041,7 @@ Use sessionStorage instead of localStorage:
 Listen to state events:
 
 ```vue
-<VcDataTable
-  :items="products"
-  state-key="product-list"
-  @state-save="onStateSave"
-  @state-restore="onStateRestore"
->
+<VcDataTable :items="products" state-key="product-list" @state-save="onStateSave" @state-restore="onStateRestore">
   ...
 </VcDataTable>
 ```
@@ -980,13 +1059,7 @@ Per-row action buttons that appear on hover or in a dropdown menu.
 Quick action buttons appear on the right side of the row on hover. Extra actions overflow into a dropdown.
 
 ```vue
-<VcDataTable
-  :items="products"
-  :row-actions="getActions"
-  row-actions-mode="inline"
-  :max-quick-actions="3"
-  @row-action="onAction"
->
+<VcDataTable :items="products" :row-actions="getActions" row-actions-mode="inline" :max-quick-actions="3" @row-action="onAction">
   <VcColumn id="name" field="name" title="Name" />
   <VcColumn id="price" field="price" title="Price" type="money" />
 </VcDataTable>
@@ -1012,11 +1085,7 @@ function onAction(event: { action: TableAction; item: Product; index: number }) 
 All actions in a three-dot dropdown menu:
 
 ```vue
-<VcDataTable
-  :items="products"
-  :row-actions="getActions"
-  row-actions-mode="dropdown"
->
+<VcDataTable :items="products" :row-actions="getActions" row-actions-mode="dropdown">
   ...
 </VcDataTable>
 ```
@@ -1026,11 +1095,7 @@ All actions in a three-dot dropdown menu:
 Render actions in a dedicated column (always visible, not overlay):
 
 ```vue
-<VcDataTable
-  :items="products"
-  :row-actions="getActions"
-  row-actions-position="column"
->
+<VcDataTable :items="products" :row-actions="getActions" row-actions-position="column">
   ...
 </VcDataTable>
 ```
@@ -1067,22 +1132,17 @@ On mobile screens, VcDataTable automatically switches from a table to a card lay
 
 **Mobile roles:**
 
-| Role | Description | Max count |
-|------|-------------|-----------|
-| `"title"` | Bold heading at the top of the card | 1 |
-| `"image"` | Thumbnail on the left side | 1 |
-| `"field"` | Label + value pair in a 2x2 grid | 4 |
-| `"status"` | Badge/chip at the bottom | Multiple |
+| Role       | Description                         | Max count |
+| ---------- | ----------------------------------- | --------- |
+| `"title"`  | Bold heading at the top of the card | 1         |
+| `"image"`  | Thumbnail on the left side          | 1         |
+| `"field"`  | Label + value pair in a 2x2 grid    | 4         |
+| `"status"` | Badge/chip at the bottom            | Multiple  |
 
 ### Pull-to-Refresh (mobile)
 
 ```vue
-<VcDataTable
-  :items="products"
-  :pull-to-refresh="true"
-  :pull-to-refresh-text="{ pull: 'Pull down', release: 'Release to refresh', refreshing: 'Loading...' }"
-  @pull-refresh="reload"
->
+<VcDataTable :items="products" :pull-to-refresh="true" :pull-to-refresh-text="{ pull: 'Pull down', release: 'Release to refresh', refreshing: 'Loading...' }" @pull-refresh="reload">
   ...
 </VcDataTable>
 ```
@@ -1160,9 +1220,26 @@ For inline editing mode, enable adding/removing rows directly in the table:
     @row-remove="onRowRemove"
     @edit-save="onBulkSave"
   >
-    <VcColumn id="name" field="name" title="Name" editable />
-    <VcColumn id="price" field="price" title="Price" type="money" editable />
-    <VcColumn id="stock" field="stock" title="Stock" type="number" editable />
+    <VcColumn
+      id="name"
+      field="name"
+      title="Name"
+      editable
+    />
+    <VcColumn
+      id="price"
+      field="price"
+      title="Price"
+      type="money"
+      editable
+    />
+    <VcColumn
+      id="stock"
+      field="stock"
+      title="Stock"
+      type="number"
+      editable
+    />
   </VcDataTable>
 </template>
 
@@ -1184,11 +1261,11 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 **Add button positions:**
 
-| Position | Description |
-|----------|-------------|
-| `"header"` | Above the table body |
-| `"footer"` | Below the table body |
-| `"none"` | No built-in button (trigger via external button or slot) |
+| Position   | Description                                              |
+| ---------- | -------------------------------------------------------- |
+| `"header"` | Above the table body                                     |
+| `"footer"` | Below the table body                                     |
+| `"none"`   | No built-in button (trigger via external button or slot) |
 
 ---
 
@@ -1196,47 +1273,47 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | **required** | Unique column identifier. Must be unique within the table. |
-| `field` | `string` | same as `id` | Data field path to read from each row item. |
-| `title` | `string` | -- | Header text displayed in the column header. |
-| `type` | `CellType` | `"text"` | Cell formatter: `"text"`, `"number"`, `"money"`, `"date"`, `"datetime"`, `"date-ago"`, `"time"`, `"image"`, `"link"`, `"html"`, `"status"`, `"status-icon"`. |
-| `currencyField` | `string` | `"currency"` | Field to read currency code from (for `type="money"`). |
-| `format` | `string` | -- | Date/number format string (e.g. `"DD.MM.YYYY"`). |
-| `width` | `string \| number` | -- | Column width in px or CSS value (e.g. `200`, `"150px"`). |
-| `minWidth` | `string \| number` | `60` | Minimum column width during resize. |
-| `maxWidth` | `string \| number` | -- | Maximum column width during resize. |
-| `align` | `"start" \| "center" \| "end"` | -- | Cell text alignment. |
-| `headerAlign` | `"start" \| "center" \| "end"` | same as `align` | Header text alignment. |
-| `sortable` | `boolean` | `false` | Enable sorting on this column. |
-| `sortField` | `string` | same as `id` | Backend field name used in sort events. |
-| `filter` | `ColumnFilterConfig` | -- | Filter config: `true` (text), `"field"` (text with custom field), `{ options }` (select), `{ range }` (date range). |
-| `filterField` | `string` | same as `id` | Backend field name used in filter events. |
-| `filterPlaceholder` | `string` | -- | Placeholder text for the filter input. |
-| `visible` | `boolean` | `true` | Initial visibility. Hidden columns can be toggled via column switcher. |
-| `alwaysVisible` | `boolean` | `false` | Keep visible when `showAllColumns=false` (blade narrows). |
-| `editable` | `boolean` | `false` | Enable inline editing for this column's cells. |
-| `rules` | `Record<string, unknown>` | -- | Validation rules for the editable cell. |
-| `class` | `string` | -- | CSS class applied to header and body cells. |
-| `headerClass` | `string` | -- | CSS class applied only to the header cell. |
-| `bodyClass` | `string` | -- | CSS class applied only to body cells. |
-| `lineClamp` | `number` | `2` | Max lines to display before truncating. `0` = no clamp. |
-| `selectionMode` | `"single" \| "multiple"` | -- | Renders a selection checkbox/radio column. |
-| `rowEditor` | `boolean` | `false` | Renders save/cancel buttons for row edit mode. |
-| `rowReorder` | `boolean` | `false` | Renders a drag handle for row reordering. |
-| `expander` | `boolean` | `false` | Renders an expand/collapse toggle. |
-| `mobileRole` | `"title" \| "image" \| "field" \| "status"` | -- | Role in mobile card layout. |
-| `mobileVisible` | `boolean` | `false` | Whether column is visible on mobile (hidden unless `mobileRole` set). |
+| Prop                | Type                                        | Default         | Description                                                                                                                                                  |
+| ------------------- | ------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                | `string`                                    | **required**    | Unique column identifier. Must be unique within the table.                                                                                                   |
+| `field`             | `string`                                    | same as `id`    | Data field path to read from each row item.                                                                                                                  |
+| `title`             | `string`                                    | --              | Header text displayed in the column header.                                                                                                                  |
+| `type`              | `CellType`                                  | `"text"`        | Cell formatter: `"text"`, `"number"`, `"money"`, `"date"`, `"datetime"`, `"date-ago"`, `"time"`, `"image"`, `"link"`, `"html"`, `"status"`, `"status-icon"`. |
+| `currencyField`     | `string`                                    | `"currency"`    | Field to read currency code from (for `type="money"`).                                                                                                       |
+| `format`            | `string`                                    | --              | Date/number format string (e.g. `"DD.MM.YYYY"`).                                                                                                             |
+| `width`             | `string \| number`                          | --              | Column width in px or CSS value (e.g. `200`, `"150px"`).                                                                                                     |
+| `minWidth`          | `string \| number`                          | `60`            | Minimum column width during resize.                                                                                                                          |
+| `maxWidth`          | `string \| number`                          | --              | Maximum column width during resize.                                                                                                                          |
+| `align`             | `"start" \| "center" \| "end"`              | --              | Cell text alignment.                                                                                                                                         |
+| `headerAlign`       | `"start" \| "center" \| "end"`              | same as `align` | Header text alignment.                                                                                                                                       |
+| `sortable`          | `boolean`                                   | `false`         | Enable sorting on this column.                                                                                                                               |
+| `sortField`         | `string`                                    | same as `id`    | Backend field name used in sort events.                                                                                                                      |
+| `filter`            | `ColumnFilterConfig`                        | --              | Filter config: `true` (text), `"field"` (text with custom field), `{ options }` (select), `{ range }` (date range).                                          |
+| `filterField`       | `string`                                    | same as `id`    | Backend field name used in filter events.                                                                                                                    |
+| `filterPlaceholder` | `string`                                    | --              | Placeholder text for the filter input.                                                                                                                       |
+| `visible`           | `boolean`                                   | `true`          | Initial visibility. Hidden columns can be toggled via column switcher.                                                                                       |
+| `alwaysVisible`     | `boolean`                                   | `false`         | Keep visible when `showAllColumns=false` (blade narrows).                                                                                                    |
+| `editable`          | `boolean`                                   | `false`         | Enable inline editing for this column's cells.                                                                                                               |
+| `rules`             | `Record<string, unknown>`                   | --              | Validation rules for the editable cell.                                                                                                                      |
+| `class`             | `string`                                    | --              | CSS class applied to header and body cells.                                                                                                                  |
+| `headerClass`       | `string`                                    | --              | CSS class applied only to the header cell.                                                                                                                   |
+| `bodyClass`         | `string`                                    | --              | CSS class applied only to body cells.                                                                                                                        |
+| `lineClamp`         | `number`                                    | `2`             | Max lines to display before truncating. `0` = no clamp.                                                                                                      |
+| `selectionMode`     | `"single" \| "multiple"`                    | --              | Renders a selection checkbox/radio column.                                                                                                                   |
+| `rowEditor`         | `boolean`                                   | `false`         | Renders save/cancel buttons for row edit mode.                                                                                                               |
+| `rowReorder`        | `boolean`                                   | `false`         | Renders a drag handle for row reordering.                                                                                                                    |
+| `expander`          | `boolean`                                   | `false`         | Renders an expand/collapse toggle.                                                                                                                           |
+| `mobileRole`        | `"title" \| "image" \| "field" \| "status"` | --              | Role in mobile card layout.                                                                                                                                  |
+| `mobileVisible`     | `boolean`                                   | `false`         | Whether column is visible on mobile (hidden unless `mobileRole` set).                                                                                        |
 
 ### Slots
 
-| Slot | Props | Description |
-|------|-------|-------------|
-| `#body` | `{ data: T, field: string, index: number }` | Custom cell rendering. |
-| `#editor` | `{ data: T, field: string, index: number, editorCallback: Function }` | Custom inline editor. |
-| `#header` | `{ column: VcColumnProps }` | Custom header cell content. |
-| `#filter` | `{ field, value, updateValue, applyFilter, clearFilter, startDate, endDate, ... }` | Custom filter UI. |
+| Slot      | Props                                                                              | Description                 |
+| --------- | ---------------------------------------------------------------------------------- | --------------------------- |
+| `#body`   | `{ data: T, field: string, index: number }`                                        | Custom cell rendering.      |
+| `#editor` | `{ data: T, field: string, index: number, editorCallback: Function }`              | Custom inline editor.       |
+| `#header` | `{ column: VcColumnProps }`                                                        | Custom header cell content. |
+| `#filter` | `{ field, value, updateValue, applyFilter, clearFilter, startDate, endDate, ... }` | Custom filter UI.           |
 
 ---
 
@@ -1244,146 +1321,146 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ### Data
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `items` | `T[]` | `[]` | Array of data items to display. |
-| `dataKey` | `string` | `"id"` | Field name used as unique row identifier. |
-| `loading` | `boolean` | `false` | Show loading overlay. |
-| `skeletonRows` | `number` | -- | Number of skeleton rows during initial loading. |
+| Prop           | Type      | Default | Description                                     |
+| -------------- | --------- | ------- | ----------------------------------------------- |
+| `items`        | `T[]`     | `[]`    | Array of data items to display.                 |
+| `dataKey`      | `string`  | `"id"`  | Field name used as unique row identifier.       |
+| `loading`      | `boolean` | `false` | Show loading overlay.                           |
+| `skeletonRows` | `number`  | --      | Number of skeleton rows during initial loading. |
 
 ### Selection
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `selection` | `T \| T[]` | -- | Selected item(s). Use with `v-model:selection`. |
-| `selectionMode` | `"single" \| "multiple"` | -- | Row selection mode. |
-| `isRowSelectable` | `(data: T) => boolean` | -- | Per-row function to disable selection. |
-| `compareSelectionBy` | `"equals" \| "field"` | -- | Compare items by deep equality or by `dataKey` field. |
-| `selectAll` | `boolean` | `false` | Enable "select all" header checkbox. |
-| `selectAllActive` | `boolean` | `false` | Whether "select all" (including non-visible items) is active. Use with `v-model:selectAllActive`. |
-| `activeItemId` | `string` | -- | ID of the highlighted row. Use with `v-model:activeItemId`. |
+| Prop                 | Type                     | Default | Description                                                                                       |
+| -------------------- | ------------------------ | ------- | ------------------------------------------------------------------------------------------------- |
+| `selection`          | `T \| T[]`               | --      | Selected item(s). Use with `v-model:selection`.                                                   |
+| `selectionMode`      | `"single" \| "multiple"` | --      | Row selection mode.                                                                               |
+| `isRowSelectable`    | `(data: T) => boolean`   | --      | Per-row function to disable selection.                                                            |
+| `compareSelectionBy` | `"equals" \| "field"`    | --      | Compare items by deep equality or by `dataKey` field.                                             |
+| `selectAll`          | `boolean`                | `false` | Enable "select all" header checkbox.                                                              |
+| `selectAllActive`    | `boolean`                | `false` | Whether "select all" (including non-visible items) is active. Use with `v-model:selectAllActive`. |
+| `activeItemId`       | `string`                 | --      | ID of the highlighted row. Use with `v-model:activeItemId`.                                       |
 
 ### Sorting
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `sortField` | `string` | -- | Currently sorted field. Use with `v-model:sortField`. |
-| `sortOrder` | `1 \| -1 \| 0` | `0` | Sort direction. Use with `v-model:sortOrder`. |
-| `sortMode` | `"single" \| "multiple"` | `"single"` | Single or multi-column sort. |
-| `multiSortMeta` | `SortMeta[]` | `[]` | Multi-sort metadata. Use with `v-model:multiSortMeta`. |
-| `removableSort` | `boolean` | `false` | Allow 3-state sort cycle (asc -> desc -> none). |
+| Prop            | Type                     | Default    | Description                                            |
+| --------------- | ------------------------ | ---------- | ------------------------------------------------------ |
+| `sortField`     | `string`                 | --         | Currently sorted field. Use with `v-model:sortField`.  |
+| `sortOrder`     | `1 \| -1 \| 0`           | `0`        | Sort direction. Use with `v-model:sortOrder`.          |
+| `sortMode`      | `"single" \| "multiple"` | `"single"` | Single or multi-column sort.                           |
+| `multiSortMeta` | `SortMeta[]`             | `[]`       | Multi-sort metadata. Use with `v-model:multiSortMeta`. |
+| `removableSort` | `boolean`                | `false`    | Allow 3-state sort cycle (asc -> desc -> none).        |
 
 ### Editing
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `editMode` | `"cell" \| "row" \| "inline"` | -- | Inline editing mode. |
-| `editingRows` | `T[]` | -- | Currently editing rows. Use with `v-model:editingRows`. |
-| `addRow` | `AddRowConfig` | -- | Add-row button configuration for inline edit mode. |
-| `validationRules` | `Record<string, (value, row) => string \| true>` | -- | Field-level validators for inline editing. |
+| Prop              | Type                                             | Default | Description                                             |
+| ----------------- | ------------------------------------------------ | ------- | ------------------------------------------------------- |
+| `editMode`        | `"cell" \| "row" \| "inline"`                    | --      | Inline editing mode.                                    |
+| `editingRows`     | `T[]`                                            | --      | Currently editing rows. Use with `v-model:editingRows`. |
+| `addRow`          | `AddRowConfig`                                   | --      | Add-row button configuration for inline edit mode.      |
+| `validationRules` | `Record<string, (value, row) => string \| true>` | --      | Field-level validators for inline editing.              |
 
 ### Visual
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `striped` | `boolean` | `false` | Alternate row backgrounds. |
-| `bordered` | `boolean` | `false` | Border around the table. |
-| `showGridlines` | `boolean` | `false` | Grid lines between cells. |
-| `rowHover` | `boolean` | `true` | Highlight rows on hover. |
-| `size` | `"small" \| "normal" \| "large"` | `"normal"` | Row density. |
-| `variant` | `"default" \| "striped" \| "bordered"` | `"default"` | Visual variant. |
-| `rowClass` | `(data: T) => string \| object` | -- | Per-row CSS class function. |
-| `rowStyle` | `(data: T) => object` | -- | Per-row inline style function. |
+| Prop            | Type                                   | Default     | Description                    |
+| --------------- | -------------------------------------- | ----------- | ------------------------------ |
+| `striped`       | `boolean`                              | `false`     | Alternate row backgrounds.     |
+| `bordered`      | `boolean`                              | `false`     | Border around the table.       |
+| `showGridlines` | `boolean`                              | `false`     | Grid lines between cells.      |
+| `rowHover`      | `boolean`                              | `true`      | Highlight rows on hover.       |
+| `size`          | `"small" \| "normal" \| "large"`       | `"normal"`  | Row density.                   |
+| `variant`       | `"default" \| "striped" \| "bordered"` | `"default"` | Visual variant.                |
+| `rowClass`      | `(data: T) => string \| object`        | --          | Per-row CSS class function.    |
+| `rowStyle`      | `(data: T) => object`                  | --          | Per-row inline style function. |
 
 ### Column Management
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `resizableColumns` | `boolean` | `true` | Allow column resize by dragging header borders. |
-| `reorderableColumns` | `boolean` | `true` | Allow column reorder by dragging headers. |
-| `showAllColumns` | `boolean` | `true` | When `false`, only `alwaysVisible` columns are shown. |
-| `columnSwitcher` | `boolean \| "auto" \| "defined"` | `true` | Column visibility toggle panel. |
+| Prop                 | Type                             | Default | Description                                           |
+| -------------------- | -------------------------------- | ------- | ----------------------------------------------------- |
+| `resizableColumns`   | `boolean`                        | `true`  | Allow column resize by dragging header borders.       |
+| `reorderableColumns` | `boolean`                        | `true`  | Allow column reorder by dragging headers.             |
+| `showAllColumns`     | `boolean`                        | `true`  | When `false`, only `alwaysVisible` columns are shown. |
+| `columnSwitcher`     | `boolean \| "auto" \| "defined"` | `true`  | Column visibility toggle panel.                       |
 
 ### Scrolling
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `scrollable` | `boolean` | `false` | Enable scroll within the table container. |
-| `scrollHeight` | `string` | -- | Fixed height for the scroll container (e.g. `"400px"`). |
-| `infiniteScroll` | `boolean` | `false` | Enable infinite scroll. |
-| `infiniteScrollDistance` | `number` | `100` | Distance in px from bottom to trigger `@load-more`. |
+| Prop                     | Type      | Default | Description                                             |
+| ------------------------ | --------- | ------- | ------------------------------------------------------- |
+| `scrollable`             | `boolean` | `false` | Enable scroll within the table container.               |
+| `scrollHeight`           | `string`  | --      | Fixed height for the scroll container (e.g. `"400px"`). |
+| `infiniteScroll`         | `boolean` | `false` | Enable infinite scroll.                                 |
+| `infiniteScrollDistance` | `number`  | `100`   | Distance in px from bottom to trigger `@load-more`.     |
 
 ### Row Actions
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `rowActions` | `(item: T) => TableAction[]` | -- | Per-row action items. |
-| `rowActionsMode` | `"inline" \| "dropdown"` | `"inline"` | Action display mode. |
-| `rowActionsPosition` | `"overlay" \| "column"` | `"overlay"` | Float over row or fixed column. |
-| `maxQuickActions` | `number` | `4` | Max quick actions before overflow dropdown. |
+| Prop                 | Type                         | Default     | Description                                 |
+| -------------------- | ---------------------------- | ----------- | ------------------------------------------- |
+| `rowActions`         | `(item: T) => TableAction[]` | --          | Per-row action items.                       |
+| `rowActionsMode`     | `"inline" \| "dropdown"`     | `"inline"`  | Action display mode.                        |
+| `rowActionsPosition` | `"overlay" \| "column"`      | `"overlay"` | Float over row or fixed column.             |
+| `maxQuickActions`    | `number`                     | `4`         | Max quick actions before overflow dropdown. |
 
 ### Expandable Rows
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `expandedRows` | `T[]` | `[]` | Expanded rows. Use with `v-model:expandedRows`. |
-| `expandedRowIcon` | `string` | `"lucide-chevron-down"` | Icon for expanded state. |
-| `collapsedRowIcon` | `string` | `"lucide-chevron-right"` | Icon for collapsed state. |
-| `isRowExpandable` | `(data: T) => boolean` | -- | Per-row predicate to hide the expand toggle. |
+| Prop               | Type                   | Default                  | Description                                     |
+| ------------------ | ---------------------- | ------------------------ | ----------------------------------------------- |
+| `expandedRows`     | `T[]`                  | `[]`                     | Expanded rows. Use with `v-model:expandedRows`. |
+| `expandedRowIcon`  | `string`               | `"lucide-chevron-down"`  | Icon for expanded state.                        |
+| `collapsedRowIcon` | `string`               | `"lucide-chevron-right"` | Icon for collapsed state.                       |
+| `isRowExpandable`  | `(data: T) => boolean` | --                       | Per-row predicate to hide the expand toggle.    |
 
 ### Row Grouping
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `groupRowsBy` | `string \| string[]` | -- | Field(s) to group rows by. |
-| `rowGroupMode` | `"subheader" \| "rowspan"` | `"subheader"` | Group display mode. |
-| `expandableRowGroups` | `boolean` | `false` | Allow collapsing/expanding groups. |
-| `expandedRowGroups` | `string[]` | -- | Expanded group keys. Use with `v-model:expandedRowGroups`. |
+| Prop                  | Type                       | Default       | Description                                                |
+| --------------------- | -------------------------- | ------------- | ---------------------------------------------------------- |
+| `groupRowsBy`         | `string \| string[]`       | --            | Field(s) to group rows by.                                 |
+| `rowGroupMode`        | `"subheader" \| "rowspan"` | `"subheader"` | Group display mode.                                        |
+| `expandableRowGroups` | `boolean`                  | `false`       | Allow collapsing/expanding groups.                         |
+| `expandedRowGroups`   | `string[]`                 | --            | Expanded group keys. Use with `v-model:expandedRowGroups`. |
 
 ### Pagination
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `pagination` | `DataTablePagination` | -- | `{ currentPage, pages, pageSize?, variant? }`. Omit to hide. |
-| `totalCount` | `number` | -- | Total item count (for "Showing X of Y" and select-all). |
-| `totalLabel` | `string` | -- | Label for the total counter. |
+| Prop         | Type                  | Default | Description                                                  |
+| ------------ | --------------------- | ------- | ------------------------------------------------------------ |
+| `pagination` | `DataTablePagination` | --      | `{ currentPage, pages, pageSize?, variant? }`. Omit to hide. |
+| `totalCount` | `number`              | --      | Total item count (for "Showing X of Y" and select-all).      |
+| `totalLabel` | `string`              | --      | Label for the total counter.                                 |
 
 ### Search
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `searchable` | `boolean` | `false` | Show search bar. |
-| `searchValue` | `string` | -- | Search input value. Use with `v-model:searchValue`. |
-| `searchPlaceholder` | `string` | `"Search..."` | Placeholder text. |
-| `searchDebounce` | `number` | `300` | Debounce delay in ms. |
+| Prop                | Type      | Default       | Description                                         |
+| ------------------- | --------- | ------------- | --------------------------------------------------- |
+| `searchable`        | `boolean` | `false`       | Show search bar.                                    |
+| `searchValue`       | `string`  | --            | Search input value. Use with `v-model:searchValue`. |
+| `searchPlaceholder` | `string`  | `"Search..."` | Placeholder text.                                   |
+| `searchDebounce`    | `number`  | `300`         | Debounce delay in ms.                               |
 
 ### Filters
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `globalFilters` | `GlobalFilterConfig[]` | -- | Global filter panel configuration. |
+| Prop            | Type                   | Default | Description                        |
+| --------------- | ---------------------- | ------- | ---------------------------------- |
+| `globalFilters` | `GlobalFilterConfig[]` | --      | Global filter panel configuration. |
 
 ### State Persistence
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `stateKey` | `string` | -- | Key for persisting state. Omit to disable persistence. |
-| `stateStorage` | `"local" \| "session"` | `"local"` | Storage backend. |
+| Prop           | Type                   | Default   | Description                                            |
+| -------------- | ---------------------- | --------- | ------------------------------------------------------ |
+| `stateKey`     | `string`               | --        | Key for persisting state. Omit to disable persistence. |
+| `stateStorage` | `"local" \| "session"` | `"local"` | Storage backend.                                       |
 
 ### Empty States
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `emptyState` | `TableStateConfig` | -- | `{ icon?, title?, description?, actionLabel?, actionHandler? }` |
-| `notFoundState` | `TableStateConfig` | -- | Same shape, shown when search/filters are active. |
+| Prop            | Type               | Default | Description                                                     |
+| --------------- | ------------------ | ------- | --------------------------------------------------------------- |
+| `emptyState`    | `TableStateConfig` | --      | `{ icon?, title?, description?, actionLabel?, actionHandler? }` |
+| `notFoundState` | `TableStateConfig` | --      | Same shape, shown when search/filters are active.               |
 
 ### Mobile
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `pullToRefresh` | `boolean` | `false` | Enable pull-to-refresh on mobile. |
-| `pullToRefreshText` | `PullToRefreshTextConfig` | -- | Custom text for pull/release/refreshing states. |
-| `reorderableRows` | `boolean` | `false` | Enable row drag-and-drop. |
+| Prop                | Type                      | Default | Description                                     |
+| ------------------- | ------------------------- | ------- | ----------------------------------------------- |
+| `pullToRefresh`     | `boolean`                 | `false` | Enable pull-to-refresh on mobile.               |
+| `pullToRefreshText` | `PullToRefreshTextConfig` | --      | Custom text for pull/release/refreshing states. |
+| `reorderableRows`   | `boolean`                 | `false` | Enable row drag-and-drop.                       |
 
 ---
 
@@ -1391,105 +1468,105 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ### Selection Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:selection` | `T \| T[]` | v-model update for selection. |
-| `update:selectAll` | `boolean` | v-model update for select-all checkbox. |
-| `update:selectAllActive` | `boolean` | v-model update for "select all" active state. |
-| `row-select` | `{ data: T, originalEvent: Event }` | Row selected. |
-| `row-unselect` | `{ data: T, originalEvent: Event }` | Row deselected. |
-| `row-select-all` | `{ data: T[], originalEvent: Event }` | All visible rows selected. |
-| `row-unselect-all` | `{ data: T[], originalEvent: Event }` | All visible rows deselected. |
-| `select-all` | `{ selected: boolean }` | "Select all" banner toggle (includes non-visible). |
+| Event                    | Payload                               | Description                                        |
+| ------------------------ | ------------------------------------- | -------------------------------------------------- |
+| `update:selection`       | `T \| T[]`                            | v-model update for selection.                      |
+| `update:selectAll`       | `boolean`                             | v-model update for select-all checkbox.            |
+| `update:selectAllActive` | `boolean`                             | v-model update for "select all" active state.      |
+| `row-select`             | `{ data: T, originalEvent: Event }`   | Row selected.                                      |
+| `row-unselect`           | `{ data: T, originalEvent: Event }`   | Row deselected.                                    |
+| `row-select-all`         | `{ data: T[], originalEvent: Event }` | All visible rows selected.                         |
+| `row-unselect-all`       | `{ data: T[], originalEvent: Event }` | All visible rows deselected.                       |
+| `select-all`             | `{ selected: boolean }`               | "Select all" banner toggle (includes non-visible). |
 
 ### Editing Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:editingRows` | `T[]` | v-model update for currently editing rows. |
-| `cell-edit-init` | `{ data: T, field: string, index: number }` | Cell entered edit mode. |
-| `cell-edit-complete` | `{ data: T, field: string, newValue: unknown, index: number }` | Cell edit committed. |
-| `cell-edit-cancel` | `{ data: T, field: string, index: number }` | Cell edit cancelled. |
-| `row-edit-init` | `{ data: T, index: number }` | Row entered edit mode. |
-| `row-edit-save` | `{ data: T, newData: T, index: number }` | Row edits saved. |
-| `row-edit-cancel` | `{ data: T, index: number }` | Row edits cancelled. |
-| `edit-save` | `{ changes: EditChange<T>[] }` | Bulk inline edits saved. |
-| `edit-cancel` | -- | Bulk inline editing cancelled. |
-| `row-add` | `{ defaults: Record<string, unknown>, cancel: () => void }` | New row being added. |
-| `row-remove` | `{ data: T, index: number, cancel: () => void }` | Row being removed. |
+| Event                | Payload                                                        | Description                                |
+| -------------------- | -------------------------------------------------------------- | ------------------------------------------ |
+| `update:editingRows` | `T[]`                                                          | v-model update for currently editing rows. |
+| `cell-edit-init`     | `{ data: T, field: string, index: number }`                    | Cell entered edit mode.                    |
+| `cell-edit-complete` | `{ data: T, field: string, newValue: unknown, index: number }` | Cell edit committed.                       |
+| `cell-edit-cancel`   | `{ data: T, field: string, index: number }`                    | Cell edit cancelled.                       |
+| `row-edit-init`      | `{ data: T, index: number }`                                   | Row entered edit mode.                     |
+| `row-edit-save`      | `{ data: T, newData: T, index: number }`                       | Row edits saved.                           |
+| `row-edit-cancel`    | `{ data: T, index: number }`                                   | Row edits cancelled.                       |
+| `edit-save`          | `{ changes: EditChange<T>[] }`                                 | Bulk inline edits saved.                   |
+| `edit-cancel`        | --                                                             | Bulk inline editing cancelled.             |
+| `row-add`            | `{ defaults: Record<string, unknown>, cancel: () => void }`    | New row being added.                       |
+| `row-remove`         | `{ data: T, index: number, cancel: () => void }`               | Row being removed.                         |
 
 ### Sorting Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:sortField` | `string` | v-model update for sorted field. |
-| `update:sortOrder` | `number` | v-model update for sort direction. |
-| `update:multiSortMeta` | `SortMeta[]` | v-model update for multi-sort. |
-| `sort` | `{ sortField?, sortOrder?, multiSortMeta? }` | Sort changed -- use for server-side sorting. |
+| Event                  | Payload                                      | Description                                  |
+| ---------------------- | -------------------------------------------- | -------------------------------------------- |
+| `update:sortField`     | `string`                                     | v-model update for sorted field.             |
+| `update:sortOrder`     | `number`                                     | v-model update for sort direction.           |
+| `update:multiSortMeta` | `SortMeta[]`                                 | v-model update for multi-sort.               |
+| `sort`                 | `{ sortField?, sortOrder?, multiSortMeta? }` | Sort changed -- use for server-side sorting. |
 
 ### Filtering Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event    | Payload                                                    | Description               |
+| -------- | ---------------------------------------------------------- | ------------------------- |
 | `filter` | `{ filters: Record<string, unknown>, filteredValue: T[] }` | Any filter value changed. |
 
 ### Row Interaction Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `row-click` | `{ data: T, index: number, originalEvent: Event }` | Row clicked. |
-| `row-action` | `{ action: TableAction, item: T, index: number }` | Row action triggered. |
+| Event        | Payload                                            | Description           |
+| ------------ | -------------------------------------------------- | --------------------- |
+| `row-click`  | `{ data: T, index: number, originalEvent: Event }` | Row clicked.          |
+| `row-action` | `{ action: TableAction, item: T, index: number }`  | Row action triggered. |
 
 ### Reorder Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `row-reorder` | `{ dragIndex, dropIndex, value: T[] }` | Row drag-and-drop completed. |
-| `column-resize-end` | `{ columns: { id, width }[] }` | Column resize completed. |
-| `column-reorder` | `{ columns: { id, ... }[] }` | Column reorder completed. |
+| Event               | Payload                                | Description                  |
+| ------------------- | -------------------------------------- | ---------------------------- |
+| `row-reorder`       | `{ dragIndex, dropIndex, value: T[] }` | Row drag-and-drop completed. |
+| `column-resize-end` | `{ columns: { id, width }[] }`         | Column resize completed.     |
+| `column-reorder`    | `{ columns: { id, ... }[] }`           | Column reorder completed.    |
 
 ### Expansion Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:expandedRows` | `T[]` | v-model update for expanded rows. |
-| `row-expand` | `{ data: T, originalEvent: Event }` | Row expanded. |
-| `row-collapse` | `{ data: T, originalEvent: Event }` | Row collapsed. |
-| `update:expandedRowGroups` | `string[]` | v-model update for expanded groups. |
-| `rowgroup-expand` | `{ data: string, originalEvent: Event }` | Row group expanded. |
-| `rowgroup-collapse` | `{ data: string, originalEvent: Event }` | Row group collapsed. |
+| Event                      | Payload                                  | Description                         |
+| -------------------------- | ---------------------------------------- | ----------------------------------- |
+| `update:expandedRows`      | `T[]`                                    | v-model update for expanded rows.   |
+| `row-expand`               | `{ data: T, originalEvent: Event }`      | Row expanded.                       |
+| `row-collapse`             | `{ data: T, originalEvent: Event }`      | Row collapsed.                      |
+| `update:expandedRowGroups` | `string[]`                               | v-model update for expanded groups. |
+| `rowgroup-expand`          | `{ data: string, originalEvent: Event }` | Row group expanded.                 |
+| `rowgroup-collapse`        | `{ data: string, originalEvent: Event }` | Row group collapsed.                |
 
 ### Other Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `pagination-click` | `number` | Page button clicked. |
-| `update:searchValue` | `string` | v-model update for search input. |
-| `search` | `string` | Debounced search value. |
-| `load-more` | -- | Infinite scroll threshold reached. |
-| `pull-refresh` | -- | Mobile pull-to-refresh triggered. |
-| `state-save` | `DataTablePersistedState` | State saved to storage. |
-| `state-restore` | `DataTablePersistedState` | State restored from storage. |
-| `update:activeItemId` | `string \| undefined` | v-model update for active row. |
+| Event                 | Payload                   | Description                        |
+| --------------------- | ------------------------- | ---------------------------------- |
+| `pagination-click`    | `number`                  | Page button clicked.               |
+| `update:searchValue`  | `string`                  | v-model update for search input.   |
+| `search`              | `string`                  | Debounced search value.            |
+| `load-more`           | --                        | Infinite scroll threshold reached. |
+| `pull-refresh`        | --                        | Mobile pull-to-refresh triggered.  |
+| `state-save`          | `DataTablePersistedState` | State saved to storage.            |
+| `state-restore`       | `DataTablePersistedState` | State restored from storage.       |
+| `update:activeItemId` | `string \| undefined`     | v-model update for active row.     |
 
 ---
 
 ## VcDataTable Slots Reference
 
-| Slot | Props | Description |
-|------|-------|-------------|
-| `default` | -- | VcColumn declarations (required). |
-| `header` | -- | Custom header content above the table. |
-| `footer` | -- | Custom footer content below the table body. |
-| `search-header-actions` | -- | Extra buttons in the search toolbar (beside filter icon). |
-| `selection-banner` | `{ count, totalCount, isSelectAll, selectAll, clearSelection }` | Custom selection banner. |
-| `expansion` | `{ data: T, index: number }` | Content rendered below an expanded row. |
-| `empty` | -- | Custom empty state (no items, no search). |
-| `not-found` | -- | Custom not-found state (no items + active search/filters). |
-| `loading` | -- | Custom loading state. |
-| `groupheader` | `{ data: T, index: number }` | Custom row group header. |
-| `groupfooter` | `{ data: T, index: number }` | Custom row group footer. |
-| `pagination` | `{ pages, currentPage, onPageClick }` | Custom pagination replacing built-in VcPagination. |
+| Slot                    | Props                                                           | Description                                                |
+| ----------------------- | --------------------------------------------------------------- | ---------------------------------------------------------- |
+| `default`               | --                                                              | VcColumn declarations (required).                          |
+| `header`                | --                                                              | Custom header content above the table.                     |
+| `footer`                | --                                                              | Custom footer content below the table body.                |
+| `search-header-actions` | --                                                              | Extra buttons in the search toolbar (beside filter icon).  |
+| `selection-banner`      | `{ count, totalCount, isSelectAll, selectAll, clearSelection }` | Custom selection banner.                                   |
+| `expansion`             | `{ data: T, index: number }`                                    | Content rendered below an expanded row.                    |
+| `empty`                 | --                                                              | Custom empty state (no items, no search).                  |
+| `not-found`             | --                                                              | Custom not-found state (no items + active search/filters). |
+| `loading`               | --                                                              | Custom loading state.                                      |
+| `groupheader`           | `{ data: T, index: number }`                                    | Custom row group header.                                   |
+| `groupfooter`           | `{ data: T, index: number }`                                    | Custom row group footer.                                   |
+| `pagination`            | `{ pages, currentPage, onPageClick }`                           | Custom pagination replacing built-in VcPagination.         |
 
 ---
 
@@ -1535,7 +1612,9 @@ A typical list blade with search, pagination, row actions, and empty states -- m
         icon: 'lucide-search-x',
         title: $t('PRODUCTS.LIST.NOT_FOUND'),
         actionLabel: $t('PRODUCTS.LIST.CLEAR_SEARCH'),
-        actionHandler: () => { searchValue = ''; },
+        actionHandler: () => {
+          searchValue = '';
+        },
       }"
       @search="onSearch"
       @row-click="onRowClick"
@@ -1635,10 +1714,34 @@ Handle sorting and paging entirely on the backend:
     @sort="onSort"
     @pagination-click="onPage"
   >
-    <VcColumn id="number" field="number" title="Order #" sortable />
-    <VcColumn id="customer" field="customerName" title="Customer" sortable sort-field="customer.name" />
-    <VcColumn id="total" field="total" title="Total" type="money" sortable align="end" />
-    <VcColumn id="date" field="createdDate" title="Date" type="datetime" sortable />
+    <VcColumn
+      id="number"
+      field="number"
+      title="Order #"
+      sortable
+    />
+    <VcColumn
+      id="customer"
+      field="customerName"
+      title="Customer"
+      sortable
+      sort-field="customer.name"
+    />
+    <VcColumn
+      id="total"
+      field="total"
+      title="Total"
+      type="money"
+      sortable
+      align="end"
+    />
+    <VcColumn
+      id="date"
+      field="createdDate"
+      title="Date"
+      type="datetime"
+      sortable
+    />
   </VcDataTable>
 </template>
 
@@ -1649,7 +1752,11 @@ const page = ref(1);
 
 async function fetchOrders() {
   loading.value = true;
-  const { items, totalCount: total, pages } = await api.searchOrders({
+  const {
+    items,
+    totalCount: total,
+    pages,
+  } = await api.searchOrders({
     sort: sortOrder.value !== 0 ? `${sortField.value}:${sortOrder.value === 1 ? "ASC" : "DESC"}` : undefined,
     skip: (page.value - 1) * 20,
     take: 20,
@@ -1660,8 +1767,14 @@ async function fetchOrders() {
   loading.value = false;
 }
 
-function onSort() { page.value = 1; fetchOrders(); }
-function onPage(p: number) { page.value = p; fetchOrders(); }
+function onSort() {
+  page.value = 1;
+  fetchOrders();
+}
+function onPage(p: number) {
+  page.value = p;
+  fetchOrders();
+}
 </script>
 ```
 
@@ -1678,11 +1791,42 @@ function onPage(p: number) { page.value = p; fetchOrders(); }
     @row-add="onRowAdd"
     @row-remove="onRowRemove"
   >
-    <VcColumn id="sku" field="sku" title="SKU" editable />
-    <VcColumn id="name" field="name" title="Product Name" editable />
-    <VcColumn id="listPrice" field="listPrice" title="List Price" type="money" editable align="end" />
-    <VcColumn id="salePrice" field="salePrice" title="Sale Price" type="money" editable align="end" />
-    <VcColumn id="minQuantity" field="minQuantity" title="Min Qty" type="number" editable align="end" />
+    <VcColumn
+      id="sku"
+      field="sku"
+      title="SKU"
+      editable
+    />
+    <VcColumn
+      id="name"
+      field="name"
+      title="Product Name"
+      editable
+    />
+    <VcColumn
+      id="listPrice"
+      field="listPrice"
+      title="List Price"
+      type="money"
+      editable
+      align="end"
+    />
+    <VcColumn
+      id="salePrice"
+      field="salePrice"
+      title="Sale Price"
+      type="money"
+      editable
+      align="end"
+    />
+    <VcColumn
+      id="minQuantity"
+      field="minQuantity"
+      title="Min Qty"
+      type="number"
+      editable
+      align="end"
+    />
   </VcDataTable>
 </template>
 
@@ -1691,8 +1835,7 @@ const rules = {
   sku: (v: unknown) => (v ? true : "SKU is required"),
   name: (v: unknown) => (v ? true : "Name is required"),
   listPrice: (v: unknown) => (Number(v) > 0 ? true : "Must be greater than 0"),
-  salePrice: (v: unknown, row: any) =>
-    Number(v) <= Number(row.listPrice) ? true : "Sale price cannot exceed list price",
+  salePrice: (v: unknown, row: any) => (Number(v) <= Number(row.listPrice) ? true : "Sale price cannot exceed list price"),
 };
 
 function onSave(event: { changes: EditChange[] }) {
@@ -1836,13 +1979,13 @@ const isSelectable = (item) => item.stock > 0;
 
 ## Related Components
 
-| Component | Description |
-|-----------|-------------|
+| Component                      | Description                                                                                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
 | **VcTableAdapter** (`VcTable`) | Legacy API wrapper around VcDataTable. Exported as `VcTable` for backward compatibility. Use VcDataTable directly for new code. |
-| **VcColumn** | Renderless column definition component. Must be a direct child of VcDataTable. |
-| **TableColumnSwitcher** | Column visibility panel -- built into VcDataTable, no separate usage needed. |
-| **VcPagination** | Pagination molecule -- used internally when the `pagination` prop is set. Can be used standalone. |
-| **TableSearchHeader** | Search bar + toolbar -- built into VcDataTable when `searchable` is `true`. |
+| **VcColumn**                   | Renderless column definition component. Must be a direct child of VcDataTable.                                                  |
+| **TableColumnSwitcher**        | Column visibility panel -- built into VcDataTable, no separate usage needed.                                                    |
+| **VcPagination**               | Pagination molecule -- used internally when the `pagination` prop is set. Can be used standalone.                               |
+| **TableSearchHeader**          | Search bar + toolbar -- built into VcDataTable when `searchable` is `true`.                                                     |
 
 ---
 

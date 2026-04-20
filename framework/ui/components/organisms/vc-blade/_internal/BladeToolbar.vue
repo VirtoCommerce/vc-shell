@@ -35,7 +35,7 @@ import ToolbarDesktop from "@ui/components/organisms/vc-blade/_internal/toolbar/
 import { useToolbarRegistration } from "@ui/components/organisms/vc-blade/_internal/composables/useToolbarRegistration";
 
 export interface Props {
-  items: IBladeToolbar[];
+  items?: IBladeToolbar[];
 }
 
 const props = withDefaults(defineProps<Props>(), {

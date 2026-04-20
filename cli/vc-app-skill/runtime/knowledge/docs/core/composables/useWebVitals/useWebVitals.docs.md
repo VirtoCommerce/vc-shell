@@ -12,16 +12,16 @@ Registers Core Web Vitals observers (FCP, LCP, CLS, INP, TTFB) and reports metri
 ## Quick Start
 
 ```typescript
-import { useWebVitals } from '@vc-shell/framework';
+import { useWebVitals } from "@vc-shell/framework";
 
 // Option 1: Default behavior -- logs to console.warn in dev mode, silent in production
 useWebVitals();
 
 // Option 2: Custom callback for production analytics
 useWebVitals((metric) => {
-  analytics.track('web-vital', {
-    name: metric.name,     // "FCP", "LCP", "CLS", "INP", or "TTFB"
-    value: metric.value,   // milliseconds (or unitless for CLS)
+  analytics.track("web-vital", {
+    name: metric.name, // "FCP", "LCP", "CLS", "INP", or "TTFB"
+    value: metric.value, // milliseconds (or unitless for CLS)
     rating: metric.rating, // "good", "needs-improvement", or "poor"
   });
 });
@@ -32,7 +32,7 @@ Call this once after `app.mount()` in your application entry point:
 ```typescript
 // main.ts
 const app = createApp(App);
-app.mount('#app');
+app.mount("#app");
 
 // Register Web Vitals observers after mount
 useWebVitals();
@@ -42,17 +42,17 @@ useWebVitals();
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `callback` | `(metric: IWebVitalsMetric) => void` | No | Custom handler for each metric. Defaults to `console.warn` formatted output in dev mode; no-op in production. |
+| Parameter  | Type                                 | Required | Description                                                                                                   |
+| ---------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `callback` | `(metric: IWebVitalsMetric) => void` | No       | Custom handler for each metric. Defaults to `console.warn` formatted output in dev mode; no-op in production. |
 
 ### IWebVitalsMetric
 
-| Field | Type | Description |
-|---|---|---|
-| `name` | `string` | Metric name: `"FCP"` (First Contentful Paint), `"LCP"` (Largest Contentful Paint), `"CLS"` (Cumulative Layout Shift), `"INP"` (Interaction to Next Paint), `"TTFB"` (Time to First Byte) |
-| `value` | `number` | Metric value in milliseconds for all metrics except CLS, which is a unitless score |
-| `rating` | `"good" \| "needs-improvement" \| "poor"` | Performance rating based on Google's thresholds (e.g., LCP < 2500ms = "good") |
+| Field    | Type                                      | Description                                                                                                                                                                              |
+| -------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`   | `string`                                  | Metric name: `"FCP"` (First Contentful Paint), `"LCP"` (Largest Contentful Paint), `"CLS"` (Cumulative Layout Shift), `"INP"` (Interaction to Next Paint), `"TTFB"` (Time to First Byte) |
+| `value`  | `number`                                  | Metric value in milliseconds for all metrics except CLS, which is a unitless score                                                                                                       |
+| `rating` | `"good" \| "needs-improvement" \| "poor"` | Performance rating based on Google's thresholds (e.g., LCP < 2500ms = "good")                                                                                                            |
 
 ### Returns
 
@@ -75,7 +75,7 @@ The default callback formats CLS values to 4 decimal places (since CLS is a dime
 ## Recipe: Sending Web Vitals to Application Insights
 
 ```typescript
-import { useWebVitals, useAppInsights } from '@vc-shell/framework';
+import { useWebVitals, useAppInsights } from "@vc-shell/framework";
 
 const { appInsights } = useAppInsights();
 
@@ -96,14 +96,14 @@ This sends each Web Vital as a custom metric to Application Insights, where you 
 ## Recipe: Conditional Reporting Based on Rating
 
 ```typescript
-import { useWebVitals } from '@vc-shell/framework';
+import { useWebVitals } from "@vc-shell/framework";
 
 useWebVitals((metric) => {
   // Only report poor metrics to reduce noise
-  if (metric.rating === 'poor') {
-    fetch('/api/telemetry/web-vitals', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+  if (metric.rating === "poor") {
+    fetch("/api/telemetry/web-vitals", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         metric: metric.name,
         value: metric.value,

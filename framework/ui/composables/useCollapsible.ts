@@ -1,4 +1,4 @@
-import { ref, computed, watch, type Ref, type CSSProperties } from "vue";
+import { ref, computed, type Ref, type CSSProperties } from "vue";
 import { useResizeObserver } from "@vueuse/core";
 
 export interface UseCollapsibleOptions {

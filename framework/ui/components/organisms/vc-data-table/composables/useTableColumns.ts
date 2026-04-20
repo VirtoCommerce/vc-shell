@@ -289,9 +289,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
       needsPropsReinit = false;
     }
 
-    const visibleRegular = orderedVisibleColumns.value
-      .filter((c) => !isSpecialColumn(c.props))
-      .map((c) => c.props.id);
+    const visibleRegular = orderedVisibleColumns.value.filter((c) => !isSpecialColumn(c.props)).map((c) => c.props.id);
 
     const cols = visibleRegular
       .filter((id) => columnState.value.specs[id])
@@ -375,13 +373,19 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
           if (state.specs[id]) state.specs[id] = { ...state.specs[id], weight: avgWeight };
         }
 
-        normalizeWeights(state.specs, newIds.filter((id) => state.specs[id]));
+        normalizeWeights(
+          state.specs,
+          newIds.filter((id) => state.specs[id]),
+        );
         columnState.value = state;
       } else if (justHiddenIds.length > 0) {
         // Columns were hidden. Renormalize remaining visible so they fill space.
         const state = { ...columnState.value };
         state.specs = { ...state.specs };
-        normalizeWeights(state.specs, newIds.filter((id) => state.specs[id]));
+        normalizeWeights(
+          state.specs,
+          newIds.filter((id) => state.specs[id]),
+        );
         columnState.value = state;
       }
 

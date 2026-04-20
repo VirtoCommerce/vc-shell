@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcBanner } from "@ui/components/atoms/vc-banner";
-import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 /**
  * `VcBanner` is a contextual alert component for displaying important messages.

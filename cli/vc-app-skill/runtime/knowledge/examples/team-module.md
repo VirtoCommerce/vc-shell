@@ -9,6 +9,7 @@ list-blade + details-blade pattern with `defineBlade`, `useDataTableSort`, `useM
 ## `index.ts` — Module entry point
 
 <!-- PATTERN: defineAppModule — minimal entry point wiring blades + locales -->
+
 ```typescript
 import * as pages from "./pages";
 import * as locales from "./locales";
@@ -25,6 +26,7 @@ export * from "./composables";
 ## `pages/index.ts` — Re-export all page blades
 
 <!-- PATTERN: barrel export for pages used by defineAppModule -->
+
 ```typescript
 export { default as TeamList } from "./team-list.vue";
 export { default as TeamMemberDetails } from "./team-member-details.vue";
@@ -35,6 +37,7 @@ export { default as TeamMemberDetails } from "./team-member-details.vue";
 ## `composables/index.ts`
 
 <!-- PATTERN: barrel export for composables -->
+
 ```typescript
 export { default as useTeamMembers } from "./useTeamMembers";
 export { default as useTeamMember } from "./useTeamMember";
@@ -45,6 +48,7 @@ export { default as useTeamMember } from "./useTeamMember";
 ## `locales/index.ts`
 
 <!-- PATTERN: locale barrel — import JSON and re-export by language key -->
+
 ```typescript
 import en from "./en.json";
 export { en };
@@ -144,7 +148,7 @@ export { en };
       >
         <template #body="{ data }">
           <VcStatus :variant="data.isLockedOut ? 'danger' : 'success'">
-            {{ data.isLockedOut ? t('TEAM.PAGES.LIST.TABLE.STATUS.LOCKED') : t('TEAM.PAGES.LIST.TABLE.STATUS.ACTIVE') }}
+            {{ data.isLockedOut ? t("TEAM.PAGES.LIST.TABLE.STATUS.LOCKED") : t("TEAM.PAGES.LIST.TABLE.STATUS.ACTIVE") }}
           </VcStatus>
         </template>
       </VcColumn>
@@ -484,9 +488,9 @@ const { t } = useI18n({ useScope: "global" });
 const {
   userDetails,
   loading,
-  modified,      // from useModificationTracker — true when data differs from pristine
+  modified, // from useModificationTracker — true when data differs from pristine
   createTeamMember,
-  resetEntries,  // resets to pristineValue
+  resetEntries, // resets to pristineValue
   deleteTeamMember,
   updateTeamMember,
   sendTeamMemberInvitation,
@@ -500,9 +504,7 @@ const isOwnerReadonly = computed(() => userDetails.value?.role === "vcmp-owner-r
 const isCurrentUser = computed(() => userDetails.value?.userName === user.value?.userName);
 const isOwnerReadonlyComputed = computed(() => isOwnerReadonly.value && !isCurrentUser.value);
 
-const title = computed(() =>
-  param.value ? userDetails.value.firstName + " " + userDetails.value.lastName : t("TEAM.PAGES.DETAILS.TITLE"),
-);
+const title = computed(() => (param.value ? userDetails.value.firstName + " " + userDetails.value.lastName : t("TEAM.PAGES.DETAILS.TITLE")));
 
 const sendInviteStatus = ref(false);
 
@@ -519,7 +521,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       try {
         await createTeamMember(userDetails.value, sendInviteStatus.value);
-        callParent("reload");  // PATTERN: call parent's exposed reload function
+        callParent("reload"); // PATTERN: call parent's exposed reload function
         closeSelf();
       } catch (e) {
         if (e === "EMAIL_ALREADY_EXISTS") {
@@ -529,7 +531,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         }
       }
     },
-    isVisible: !param.value,   // PATTERN: isVisible for create-only button
+    isVisible: !param.value, // PATTERN: isVisible for create-only button
     disabled: computed(() => !(!isDisabled.value && modified.value)),
   },
   {
@@ -547,7 +549,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         }
       }
     },
-    isVisible: !!param.value,  // PATTERN: isVisible for edit-only button
+    isVisible: !!param.value, // PATTERN: isVisible for edit-only button
     disabled: computed(() => !(!isDisabled.value && modified.value)),
   },
   {
@@ -555,7 +557,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("TEAM.PAGES.DETAILS.TOOLBAR.RESET")),
     icon: "lucide-undo-2",
     clickHandler() {
-      resetEntries();  // PATTERN: reset to pristine value
+      resetEntries(); // PATTERN: reset to pristine value
     },
     isVisible: !!param.value,
     disabled: computed(() => !!param.value && !modified.value),
@@ -601,9 +603,7 @@ const isActive = computed({
 const assetsHandler = {
   loading: imageLoading,
   async upload(files: FileList) {
-    photoHandler.value = (await uploadImage(files, `entities/${userDetails.value?.ownerId}/users`)).map(
-      (x) => ({ ...x } as Image),
-    );
+    photoHandler.value = (await uploadImage(files, `entities/${userDetails.value?.ownerId}/users`)).map((x) => ({ ...x }) as Image);
   },
   remove: (file: Image) => {
     photoHandler.value = removeImage([file as unknown as ICommonAsset], photoHandler.value);
@@ -656,12 +656,7 @@ onBeforeClose(async () => {
 
 ```typescript
 import { useApiClient, useAsync, useLoading } from "@vc-shell/framework";
-import {
-  SearchUsersQuery,
-  SearchUsersResult,
-  User,
-  UserSecurityClient,
-} from "../../../../api_client/virtocommerce.mymodule";
+import { SearchUsersQuery, SearchUsersResult, User, UserSecurityClient } from "../../../../api_client/virtocommerce.mymodule";
 import type { SearchUsersQuery as ISearchUsersQuery } from "../../../../api_client/virtocommerce.mymodule";
 import { computed, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -686,14 +681,12 @@ export default (options?: { pageSize?: number; sort?: string }): IUseTeamMembers
   const searchResult = ref<SearchUsersResult>();
 
   // PATTERN: useAsync<InputType> — wraps API call, returns { action, loading }
-  const { action: getTeamMembers, loading: getTeamMembersLoading } = useAsync<ISearchUsersQuery>(
-    async (query) => {
-      const client = await getApiClient();
-      const ownerId = route?.params?.ownerId as string;
-      searchQuery.value = { ...searchQuery.value, ...query };
-      searchResult.value = await client.searchUsers({ ...searchQuery.value, ownerId } as SearchUsersQuery);
-    },
-  );
+  const { action: getTeamMembers, loading: getTeamMembersLoading } = useAsync<ISearchUsersQuery>(async (query) => {
+    const client = await getApiClient();
+    const ownerId = route?.params?.ownerId as string;
+    searchQuery.value = { ...searchQuery.value, ...query };
+    searchResult.value = await client.searchUsers({ ...searchQuery.value, ownerId } as SearchUsersQuery);
+  });
 
   return {
     loading: useLoading(getTeamMembersLoading),
@@ -718,17 +711,7 @@ export default (options?: { pageSize?: number; sort?: string }): IUseTeamMembers
 
 ```typescript
 import { useModificationTracker, useApiClient, useAsync, useLoading } from "@vc-shell/framework";
-import {
-  UserDetails,
-  CreateUserCommand,
-  UpdateUserCommand,
-  SendUserInvitationCommand,
-  ValidationFailure,
-  ValidateUserQuery,
-  UserSecurityClient,
-  SearchUsersQuery,
-  User,
-} from "../../../../api_client/virtocommerce.mymodule";
+import { UserDetails, CreateUserCommand, UpdateUserCommand, SendUserInvitationCommand, ValidationFailure, ValidateUserQuery, UserSecurityClient, SearchUsersQuery, User } from "../../../../api_client/virtocommerce.mymodule";
 import type { UserDetails as IUserDetails, User as IUser } from "../../../../api_client/virtocommerce.mymodule";
 import { computed, ComputedRef, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -762,9 +745,7 @@ export default (): IUseTeamMember => {
     const ownerId = route?.params?.ownerId as string;
     if (!args?.id) throw new Error("Id is required");
 
-    const result = await client
-      .searchUsers({ ownerId, objectIds: [args.id] } as SearchUsersQuery)
-      .then((res) => res.results?.find((x) => x.id === args.id));
+    const result = await client.searchUsers({ ownerId, objectIds: [args.id] } as SearchUsersQuery).then((res) => res.results?.find((x) => x.id === args.id));
 
     if (result) {
       currentValue.value = result;
@@ -772,63 +753,52 @@ export default (): IUseTeamMember => {
     resetModificationState();
   });
 
-  const { action: createTeamMember, loading: createTeamMemberLoading } = useAsync<IUser>(
-    async (details, inviteStatus) => {
-      const client = await getApiClient();
-      const ownerId = route?.params?.ownerId as string;
+  const { action: createTeamMember, loading: createTeamMemberLoading } = useAsync<IUser>(async (details, inviteStatus) => {
+    const client = await getApiClient();
+    const ownerId = route?.params?.ownerId as string;
 
-      const command = {
-        userDetails: { ...details } as UserDetails,
-        sendInvitation: inviteStatus,
-        ownerId,
-      } as CreateUserCommand;
+    const command = {
+      userDetails: { ...details } as UserDetails,
+      sendInvitation: inviteStatus,
+      ownerId,
+    } as CreateUserCommand;
 
-      // PATTERN: validate before create, throw string error code for blade to handle
-      const validationResult = await validateTeamMember(command.userDetails);
-      if (validationResult.length && validationResult[0].errorCode === "EMAIL_ALREADY_EXISTS") {
-        throw validationResult[0].errorCode;
-      }
+    // PATTERN: validate before create, throw string error code for blade to handle
+    const validationResult = await validateTeamMember(command.userDetails);
+    if (validationResult.length && validationResult[0].errorCode === "EMAIL_ALREADY_EXISTS") {
+      throw validationResult[0].errorCode;
+    }
 
-      await client.createUser(command);
-      resetModificationState();
-    },
-  );
+    await client.createUser(command);
+    resetModificationState();
+  });
 
-  const { action: updateTeamMember, loading: updateTeamMemberLoading } = useAsync<IUser, void>(
-    async (details) => {
-      const client = await getApiClient();
-      if (!details?.id || !details?.ownerId) throw new Error("Id and ownerId are required");
+  const { action: updateTeamMember, loading: updateTeamMemberLoading } = useAsync<IUser, void>(async (details) => {
+    const client = await getApiClient();
+    if (!details?.id || !details?.ownerId) throw new Error("Id and ownerId are required");
 
-      await client.updateUser({
-        ownerId: details.ownerId,
-        userId: details.id,
-        userDetails: { ...details } as UserDetails,
-      } as UpdateUserCommand);
+    await client.updateUser({
+      ownerId: details.ownerId,
+      userId: details.id,
+      userDetails: { ...details } as UserDetails,
+    } as UpdateUserCommand);
 
-      resetModificationState();
-    },
-  );
+    resetModificationState();
+  });
 
-  const { action: sendTeamMemberInvitation, loading: sendTeamMemberInvitationLoading } = useAsync<{ id: string }, void>(
-    async (args) => {
-      if (!args?.id) throw new Error("Id is required");
-      const client = await getApiClient();
-      await client.sendUserInvitation({ userId: args?.id } as SendUserInvitationCommand);
-    },
-  );
+  const { action: sendTeamMemberInvitation, loading: sendTeamMemberInvitationLoading } = useAsync<{ id: string }, void>(async (args) => {
+    if (!args?.id) throw new Error("Id is required");
+    const client = await getApiClient();
+    await client.sendUserInvitation({ userId: args?.id } as SendUserInvitationCommand);
+  });
 
-  const { action: deleteTeamMember, loading: deleteTeamMemberLoading } = useAsync<{ id: string }, void>(
-    async (args) => {
-      if (!args?.id) throw new Error("Id is required");
-      const client = await getApiClient();
-      return await client.deleteUsers([args.id]);
-    },
-  );
+  const { action: deleteTeamMember, loading: deleteTeamMemberLoading } = useAsync<{ id: string }, void>(async (args) => {
+    if (!args?.id) throw new Error("Id is required");
+    const client = await getApiClient();
+    return await client.deleteUsers([args.id]);
+  });
 
-  const { action: validateTeamMember, loading: validateTeamMemberLoading } = useAsync<
-    UserDetails,
-    ValidationFailure[]
-  >(async (details) => {
+  const { action: validateTeamMember, loading: validateTeamMemberLoading } = useAsync<UserDetails, ValidationFailure[]>(async (details) => {
     const client = await getApiClient();
     return await client.validateUser({ user: details } as ValidateUserQuery);
   });
@@ -840,14 +810,7 @@ export default (): IUseTeamMember => {
 
   return {
     // PATTERN: useLoading(a, b, c, ...) — combines multiple loading refs into one
-    loading: useLoading(
-      createTeamMemberLoading,
-      updateTeamMemberLoading,
-      sendTeamMemberInvitationLoading,
-      deleteTeamMemberLoading,
-      validateTeamMemberLoading,
-      getTeamMemberLoading,
-    ),
+    loading: useLoading(createTeamMemberLoading, updateTeamMemberLoading, sendTeamMemberInvitationLoading, deleteTeamMemberLoading, validateTeamMemberLoading, getTeamMemberLoading),
     userDetails: currentValue,
     modified: computed(() => isModified.value),
     createTeamMember,

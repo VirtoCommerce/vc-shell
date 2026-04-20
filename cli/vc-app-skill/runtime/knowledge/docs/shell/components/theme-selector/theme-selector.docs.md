@@ -50,8 +50,8 @@ const { register, setTheme, currentTheme } = useTheme();
 
 // Register available themes during app initialization
 register([
-  { key: "light" },    // Default light theme
-  { key: "dark" },     // Dark mode
+  { key: "light" }, // Default light theme
+  { key: "dark" }, // Dark mode
   { key: "contrast" }, // High-contrast accessibility theme
 ]);
 

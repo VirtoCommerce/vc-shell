@@ -130,7 +130,7 @@ describe("useSlowNetworkDetection", () => {
     }
 
     it("detects slow-2g as slow network", async () => {
-      const connection = mockConnection("slow-2g");
+      const _connection = mockConnection("slow-2g");
       const mod = await import("./index");
       const { isSlowNetwork } = mod.useSlowNetworkDetection();
       expect(isSlowNetwork.value).toBe(true);
@@ -139,7 +139,7 @@ describe("useSlowNetworkDetection", () => {
     });
 
     it("detects 2g as slow network", async () => {
-      const connection = mockConnection("2g");
+      const _connection = mockConnection("2g");
       const mod = await import("./index");
       const { isSlowNetwork } = mod.useSlowNetworkDetection();
       expect(isSlowNetwork.value).toBe(true);
@@ -148,7 +148,7 @@ describe("useSlowNetworkDetection", () => {
     });
 
     it("does not flag 4g as slow", async () => {
-      const connection = mockConnection("4g");
+      const _connection = mockConnection("4g");
       const mod = await import("./index");
       const { isSlowNetwork } = mod.useSlowNetworkDetection();
       expect(isSlowNetwork.value).toBe(false);
@@ -157,7 +157,7 @@ describe("useSlowNetworkDetection", () => {
     });
 
     it("reacts to connection type changes", async () => {
-      const connection = mockConnection("4g");
+      const _connection = mockConnection("4g");
       const mod = await import("./index");
       const { isSlowNetwork } = mod.useSlowNetworkDetection();
       expect(isSlowNetwork.value).toBe(false);

@@ -1,6 +1,6 @@
 import { inject, provide } from "vue";
 import { createAiAgentService, type IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
-import { AiAgentServiceKey, EmbeddedModeKey, LanguageServiceKey, ToolbarServiceKey } from "@framework/injection-keys";
+import { AiAgentServiceKey, LanguageServiceKey, ToolbarServiceKey } from "@framework/injection-keys";
 import type {
   IAiAgentService,
   IAiAgentConfig,

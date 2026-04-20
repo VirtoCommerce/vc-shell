@@ -31,6 +31,7 @@ PushNotification (SignalR)
 ### `useNotificationStore()`
 
 Returns the shared `NotificationStore` singleton. Resolution order:
+
 1. Vue `inject()` (inside component setup or `app.runWithContext()`)
 2. Module-level singleton fallback (ensures microfrontend modules share state)
 
@@ -38,20 +39,20 @@ Returns the shared `NotificationStore` singleton. Resolution order:
 
 ### `NotificationStore` Interface
 
-| Member | Type | Description |
-|--------|------|-------------|
-| `registry` | `Map<string, NotificationTypeConfig>` | Registered notification type configurations |
-| `history` | `Ref<PushNotification[]>` | All notifications (loaded from API + ingested) |
-| `realtime` | `Ref<PushNotification[]>` | Session-only notifications from SignalR |
-| `unreadCount` | `ComputedRef<number>` | Count of unread notifications in history |
-| `hasUnread` | `ComputedRef<boolean>` | Whether any unread notifications exist |
-| `registerType(type, config)` | `(string, NotificationTypeConfig) => void` | Register a notification type with toast/template config |
-| `ingest(message)` | `(PushNotification) => void` | Process an incoming notification (upsert, toast, notify subscribers) |
-| `markAsRead(message)` | `(PushNotification) => void` | Mark a single notification as read |
-| `markAllAsRead()` | `() => Promise<void>` | Optimistic mark-all-as-read with server sync and rollback on failure |
-| `loadHistory(take?)` | `(number?) => Promise<void>` | Load notification history from the API (default: 10) |
-| `subscribe(opts)` | `({types, filter?, handler?}) => () => void` | Subscribe to notification types; returns unsubscribe function |
-| `getByType(type)` | `(string) => PushNotification[]` | Filter history by `notifyType` |
+| Member                       | Type                                         | Description                                                          |
+| ---------------------------- | -------------------------------------------- | -------------------------------------------------------------------- |
+| `registry`                   | `Map<string, NotificationTypeConfig>`        | Registered notification type configurations                          |
+| `history`                    | `Ref<PushNotification[]>`                    | All notifications (loaded from API + ingested)                       |
+| `realtime`                   | `Ref<PushNotification[]>`                    | Session-only notifications from SignalR                              |
+| `unreadCount`                | `ComputedRef<number>`                        | Count of unread notifications in history                             |
+| `hasUnread`                  | `ComputedRef<boolean>`                       | Whether any unread notifications exist                               |
+| `registerType(type, config)` | `(string, NotificationTypeConfig) => void`   | Register a notification type with toast/template config              |
+| `ingest(message)`            | `(PushNotification) => void`                 | Process an incoming notification (upsert, toast, notify subscribers) |
+| `markAsRead(message)`        | `(PushNotification) => void`                 | Mark a single notification as read                                   |
+| `markAllAsRead()`            | `() => Promise<void>`                        | Optimistic mark-all-as-read with server sync and rollback on failure |
+| `loadHistory(take?)`         | `(number?) => Promise<void>`                 | Load notification history from the API (default: 10)                 |
+| `subscribe(opts)`            | `({types, filter?, handler?}) => () => void` | Subscribe to notification types; returns unsubscribe function        |
+| `getByType(type)`            | `(string) => PushNotification[]`             | Filter history by `notifyType`                                       |
 
 **File:** `store.ts`
 
@@ -65,9 +66,9 @@ Blade-level notification subscription (Level 2). Automatically unsubscribes when
 
 ```typescript
 interface BladeNotificationOptions<T extends PushNotification> {
-  types: string[];                // Notification types to subscribe to
-  filter?: (msg: T) => boolean;   // Optional message filter
-  onMessage?: (msg: T) => void;   // Callback for each matching message
+  types: string[]; // Notification types to subscribe to
+  filter?: (msg: T) => boolean; // Optional message filter
+  onMessage?: (msg: T) => void; // Callback for each matching message
 }
 ```
 
@@ -75,9 +76,9 @@ interface BladeNotificationOptions<T extends PushNotification> {
 
 ```typescript
 interface BladeNotificationReturn<T extends PushNotification> {
-  messages: ComputedRef<T[]>;     // Filtered unread messages from realtime
+  messages: ComputedRef<T[]>; // Filtered unread messages from realtime
   unreadCount: ComputedRef<number>; // Count of matching unread messages
-  markAsRead: (msg: T) => void;   // Mark a specific message as read
+  markAsRead: (msg: T) => void; // Mark a specific message as read
 }
 ```
 
@@ -112,26 +113,26 @@ Handles toast popup display based on `NotificationTypeConfig.toast` settings. Cr
 
 #### Toast Modes
 
-| Mode | Behavior |
-|------|----------|
-| `"auto"` | Single fire-and-forget toast with severity-based timeout |
+| Mode         | Behavior                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------- |
+| `"auto"`     | Single fire-and-forget toast with severity-based timeout                                    |
 | `"progress"` | Persistent toast updated on each message; auto-completes when `isComplete()` returns `true` |
-| `"silent"` | No toast displayed |
+| `"silent"`   | No toast displayed                                                                          |
 
 ### Types
 
 **File:** `types.ts`
 
-| Type | Description |
-|------|-------------|
-| `Severity` | `"info" \| "warning" \| "error" \| "critical"` |
-| `ToastConfig` | Toast behavior: mode, severity (static or function), timeout, isComplete, completedType |
-| `NotificationTypeConfig` | Per-type config: optional Vue `template` component, `toast` config, `groupBy` field |
-| `ModuleNotificationsConfig` | Record mapping `notifyType` strings to `NotificationTypeConfig` |
-| `NotificationAction` | Action button in notification UI: label, icon, handler, visibility |
-| `NotificationSubscription` | Internal subscriber record: id, types, filter, handler |
-| `SEVERITY_TIMEOUTS` | Default timeouts: info=5s, warning=8s, error=persistent, critical=persistent |
-| `EXCLUDED_NOTIFICATION_TYPES` | Types excluded from ingestion (e.g. `"IndexProgressPushNotification"`) |
+| Type                          | Description                                                                             |
+| ----------------------------- | --------------------------------------------------------------------------------------- |
+| `Severity`                    | `"info" \| "warning" \| "error" \| "critical"`                                          |
+| `ToastConfig`                 | Toast behavior: mode, severity (static or function), timeout, isComplete, completedType |
+| `NotificationTypeConfig`      | Per-type config: optional Vue `template` component, `toast` config, `groupBy` field     |
+| `ModuleNotificationsConfig`   | Record mapping `notifyType` strings to `NotificationTypeConfig`                         |
+| `NotificationAction`          | Action button in notification UI: label, icon, handler, visibility                      |
+| `NotificationSubscription`    | Internal subscriber record: id, types, filter, handler                                  |
+| `SEVERITY_TIMEOUTS`           | Default timeouts: info=5s, warning=8s, error=persistent, critical=persistent            |
+| `EXCLUDED_NOTIFICATION_TYPES` | Types excluded from ingestion (e.g. `"IndexProgressPushNotification"`)                  |
 
 ## Usage Examples
 
@@ -155,9 +156,9 @@ store.registerType("CatalogExportCompleted", {
   template: ExportNotificationTemplate,
   toast: {
     mode: "progress",
-    severity: (msg) => msg.finished ? "info" : "warning",
+    severity: (msg) => (msg.finished ? "info" : "warning"),
     isComplete: (msg) => !!msg.finished,
-    completedType: (msg) => msg.errorCount ? "error" : "success",
+    completedType: (msg) => (msg.errorCount ? "error" : "success"),
   },
   groupBy: "jobId",
 });

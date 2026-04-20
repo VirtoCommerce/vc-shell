@@ -12,6 +12,7 @@ All icons in the v2 framework must use the `lucide-` prefix. Replace all `materi
 Scan ALL `.vue` and `.ts` files in the affected module for icon strings. For each non-lucide icon, choose the closest semantic match from the lucide icon set (https://lucide.dev/icons).
 
 When choosing a replacement:
+
 - Match by **meaning**, not by visual similarity — e.g., `material-delete` → `lucide-trash-2` (both mean "delete")
 - Use the most specific icon available — e.g., `material-person_add` → `lucide-user-plus` (not just `lucide-user`)
 - When no perfect match exists, pick the closest conceptual equivalent and note it in the report
@@ -81,6 +82,7 @@ Icons appear in these contexts — check ALL of them:
 ## RULE 3: Perform Replacements In-Place
 
 This is a **mechanical replacement** — do not restructure code. For each icon string found:
+
 1. Identify the icon name (e.g., `material-edit_square`)
 2. Determine the semantic meaning (e.g., "edit with square indicator")
 3. Find the best lucide match (e.g., `lucide-square-pen`)

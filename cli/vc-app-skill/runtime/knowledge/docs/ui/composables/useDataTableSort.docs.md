@@ -21,20 +21,16 @@ The sort expression is formatted as `"field:DIRECTION"` (e.g., `"createdDate:DES
 ## Basic Usage
 
 ```typescript
-import { useDataTableSort } from '@vc-shell/framework';
+import { useDataTableSort } from "@vc-shell/framework";
 
 const { sortField, sortOrder, sortExpression, resetSort } = useDataTableSort({
-  initialField: 'createdDate',
-  initialDirection: 'DESC',
+  initialField: "createdDate",
+  initialDirection: "DESC",
 });
 ```
 
 ```vue
-<VcDataTable
-  v-model:sort-field="sortField"
-  v-model:sort-order="sortOrder"
-  :items="items"
->
+<VcDataTable v-model:sort-field="sortField" v-model:sort-order="sortOrder" :items="items">
   <VcColumn id="name" header="Name" sortable />
   <VcColumn id="createdDate" header="Created" sortable />
 </VcDataTable>
@@ -44,27 +40,27 @@ const { sortField, sortOrder, sortExpression, resetSort } = useDataTableSort({
 
 ### Parameters (Options)
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `initialField` | `string` | `undefined` | Column field to sort by initially |
-| `initialDirection` | `"ASC" \| "DESC"` | `undefined` | Initial sort direction |
+| Option             | Type              | Default     | Description                       |
+| ------------------ | ----------------- | ----------- | --------------------------------- |
+| `initialField`     | `string`          | `undefined` | Column field to sort by initially |
+| `initialDirection` | `"ASC" \| "DESC"` | `undefined` | Initial sort direction            |
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `sortField` | `Ref<string \| undefined>` | Current sort field; bind with `v-model:sort-field` |
-| `sortOrder` | `Ref<number>` | Numeric sort order: `1` = ASC, `-1` = DESC, `0` = none; bind with `v-model:sort-order` |
-| `sortExpression` | `ComputedRef<string \| undefined>` | Formatted string (e.g., `"name:ASC"`) or `undefined` when no sort is active |
-| `resetSort` | `() => void` | Reset to the initial field/direction passed to the composable |
+| Property         | Type                               | Description                                                                            |
+| ---------------- | ---------------------------------- | -------------------------------------------------------------------------------------- |
+| `sortField`      | `Ref<string \| undefined>`         | Current sort field; bind with `v-model:sort-field`                                     |
+| `sortOrder`      | `Ref<number>`                      | Numeric sort order: `1` = ASC, `-1` = DESC, `0` = none; bind with `v-model:sort-order` |
+| `sortExpression` | `ComputedRef<string \| undefined>` | Formatted string (e.g., `"name:ASC"`) or `undefined` when no sort is active            |
+| `resetSort`      | `() => void`                       | Reset to the initial field/direction passed to the composable                          |
 
 ## Direction Mapping
 
 | `sortOrder` value | Direction | `sortExpression` |
-|---|---|---|
-| `1` | ASC | `"field:ASC"` |
-| `-1` | DESC | `"field:DESC"` |
-| `0` | none | `undefined` |
+| ----------------- | --------- | ---------------- |
+| `1`               | ASC       | `"field:ASC"`    |
+| `-1`              | DESC      | `"field:DESC"`   |
+| `0`               | none      | `undefined`      |
 
 When `sortOrder` is `0`, `sortExpression` returns `undefined` regardless of `sortField`.
 
@@ -87,7 +83,7 @@ async function loadItems() {
   loading.value = true;
   try {
     const response = await api.searchProducts({
-      sort: sortExpression.value,  // e.g. "createdDate:DESC" or undefined
+      sort: sortExpression.value, // e.g. "createdDate:DESC" or undefined
       skip: 0,
       take: 20,
     });
@@ -108,9 +104,21 @@ watch(sortExpression, () => loadItems(), { immediate: true });
     :items="items"
     :loading="loading"
   >
-    <VcColumn id="name" header="Name" sortable />
-    <VcColumn id="createdDate" header="Created" sortable />
-    <VcColumn id="price" header="Price" sortable />
+    <VcColumn
+      id="name"
+      header="Name"
+      sortable
+    />
+    <VcColumn
+      id="createdDate"
+      header="Created"
+      sortable
+    />
+    <VcColumn
+      id="price"
+      header="Price"
+      sortable
+    />
   </VcDataTable>
 </template>
 ```

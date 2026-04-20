@@ -252,7 +252,7 @@ export const WithoutLabel: Story = {
  * Multiple switch variants demonstrating different states and configurations.
  */
 export const Variants: Story = {
-  render: (args) => ({
+  render: (_args) => ({
     components: { VcSwitch, VcHint },
     setup() {
       const value1 = ref(true);

@@ -8,7 +8,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createApp, ref, computed } from "vue";
-import type { Ref, ComputedRef } from "vue";
+import type { Ref } from "vue";
 import { useDataTableOrchestrator } from "./useDataTableOrchestrator";
 import type { VcDataTableOrchestratorOptions } from "./useDataTableOrchestrator";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
@@ -38,7 +38,7 @@ type TestItem = { id: string; name: string; [key: string]: unknown };
 function buildOptions(
   overrides: Partial<VcDataTableOrchestratorOptions<TestItem>> = {},
 ): VcDataTableOrchestratorOptions<TestItem> {
-  const items = ref<TestItem[]>([]) as Ref<TestItem[]>;
+  const _items = ref<TestItem[]>([]) as Ref<TestItem[]>;
   const visibleColumns = computed<ColumnInstance[]>(() => []);
   const declaredColumns = computed<ColumnInstance[]>(() => []);
   const dataDiscoveredColumns = computed<ColumnInstance[]>(() => []);

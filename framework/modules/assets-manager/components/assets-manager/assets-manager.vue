@@ -117,7 +117,6 @@ import type { AssetLike, UseAssetsManagerReturn } from "@core/composables/useAss
 import { IBladeToolbar } from "@core/types";
 import { ref, computed, unref } from "vue";
 import { useI18n } from "vue-i18n";
-import { formatDateRelative } from "@core/utilities/date";
 import { isImage, readableSize, getExtensionColor, getExtensionLabel } from "@core/utilities/assets";
 import { useBlade } from "@core/composables/useBlade";
 import { createLogger } from "@core/utilities";

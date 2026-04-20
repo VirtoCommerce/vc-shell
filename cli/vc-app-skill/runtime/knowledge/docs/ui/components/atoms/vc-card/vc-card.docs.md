@@ -4,12 +4,12 @@ A bordered container with an optional header, icon, action buttons, and collapsi
 
 ## When to Use
 
-| Scenario | Component |
-|----------|-----------|
-| Grouping form fields or content with a header | **VcCard** |
-| Scrollable content wrapper without a header | [VcContainer](../vc-container/) |
+| Scenario                                      | Component                                                                    |
+| --------------------------------------------- | ---------------------------------------------------------------------------- |
+| Grouping form fields or content with a header | **VcCard**                                                                   |
+| Scrollable content wrapper without a header   | [VcContainer](../vc-container/)                                              |
 | Collapsible section with rich toggle behavior | [VcAccordion](../../molecules/vc-accordion/) (for multiple exclusive panels) |
-| Alert or notification banner | [VcBanner](../vc-banner/) |
+| Alert or notification banner                  | [VcBanner](../vc-banner/)                                                    |
 
 Use VcCard to visually separate content sections on a blade -- especially when you need a titled header, action buttons, or collapsible body. **Do not use** VcCard for dismissible alerts or status messages (use `VcBanner`), and avoid nesting VcCard when a simple `VcContainer` with padding would suffice.
 
@@ -66,11 +66,11 @@ Three variants control the header's background and text color to communicate sem
 </VcCard>
 ```
 
-| Variant | Header Background | Header Text | Use Case |
-|---------|-------------------|-------------|----------|
-| `default` | `var(--secondary-50)` (light gray) | `var(--secondary-950)` (dark) | Standard content grouping |
-| `success` | `var(--success-100)` (light green) | `var(--success-600)` (green) | Positive state confirmation |
-| `danger` | `var(--danger-100)` (light red) | `var(--danger-600)` (red) | Errors, warnings, destructive content |
+| Variant   | Header Background                  | Header Text                   | Use Case                              |
+| --------- | ---------------------------------- | ----------------------------- | ------------------------------------- |
+| `default` | `var(--secondary-50)` (light gray) | `var(--secondary-950)` (dark) | Standard content grouping             |
+| `success` | `var(--success-100)` (light green) | `var(--success-600)` (green)  | Positive state confirmation           |
+| `danger`  | `var(--danger-100)` (light red)    | `var(--danger-600)` (red)     | Errors, warnings, destructive content |
 
 ## Collapsible Sections
 
@@ -193,24 +193,61 @@ When `fill` is `true`, the card body applies `display: flex` to allow child cont
 ```vue
 <template>
   <div class="tw-flex tw-flex-col tw-gap-4">
-    <VcCard header="Basic Information" icon="lucide-file-text">
+    <VcCard
+      header="Basic Information"
+      icon="lucide-file-text"
+    >
       <div class="tw-p-4 tw-grid tw-grid-cols-2 tw-gap-4">
-        <VcInput v-model="form.name" label="Product Name" required />
-        <VcInput v-model="form.sku" label="SKU" required />
-        <VcInput v-model="form.price" label="Price" type="number" />
-        <VcSelect v-model="form.category" label="Category" :options="categories" />
+        <VcInput
+          v-model="form.name"
+          label="Product Name"
+          required
+        />
+        <VcInput
+          v-model="form.sku"
+          label="SKU"
+          required
+        />
+        <VcInput
+          v-model="form.price"
+          label="Price"
+          type="number"
+        />
+        <VcSelect
+          v-model="form.category"
+          label="Category"
+          :options="categories"
+        />
       </div>
     </VcCard>
 
-    <VcCard header="SEO Settings" icon="lucide-search" is-collapsable is-collapsed>
+    <VcCard
+      header="SEO Settings"
+      icon="lucide-search"
+      is-collapsable
+      is-collapsed
+    >
       <div class="tw-p-4 tw-grid tw-grid-cols-2 tw-gap-4">
-        <VcInput v-model="form.metaTitle" label="Meta Title" />
-        <VcInput v-model="form.metaDescription" label="Meta Description" />
-        <VcInput v-model="form.slug" label="URL Slug" />
+        <VcInput
+          v-model="form.metaTitle"
+          label="Meta Title"
+        />
+        <VcInput
+          v-model="form.metaDescription"
+          label="Meta Description"
+        />
+        <VcInput
+          v-model="form.slug"
+          label="URL Slug"
+        />
       </div>
     </VcCard>
 
-    <VcCard header="Inventory" icon="lucide-warehouse" is-collapsable>
+    <VcCard
+      header="Inventory"
+      icon="lucide-warehouse"
+      is-collapsable
+    >
       <div class="tw-p-4">
         <!-- inventory fields -->
       </div>
@@ -229,8 +266,16 @@ When `fill` is `true`, the card body applies `display: flex` to allow child cont
     :icon="errors.length > 0 ? 'lucide-alert-triangle' : 'lucide-check-circle'"
   >
     <div class="tw-p-4">
-      <ul v-if="errors.length > 0" class="tw-list-disc tw-pl-4 tw-space-y-1">
-        <li v-for="error in errors" :key="error">{{ error }}</li>
+      <ul
+        v-if="errors.length > 0"
+        class="tw-list-disc tw-pl-4 tw-space-y-1"
+      >
+        <li
+          v-for="error in errors"
+          :key="error"
+        >
+          {{ error }}
+        </li>
       </ul>
       <p v-else>All validations passed.</p>
     </div>
@@ -241,11 +286,7 @@ When `fill` is `true`, the card body applies `display: flex` to allow child cont
 import { computed } from "vue";
 
 const errors = ref<string[]>([]);
-const validationHeader = computed(() =>
-  errors.value.length > 0
-    ? `${errors.value.length} Validation Error(s)`
-    : "Validation Passed"
-);
+const validationHeader = computed(() => (errors.value.length > 0 ? `${errors.value.length} Validation Error(s)` : "Validation Passed"));
 </script>
 ```
 
@@ -295,47 +336,47 @@ const validationHeader = computed(() =>
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `header` | `string` | -- | Title text displayed in the card header |
-| `icon` | `string` | -- | Icon identifier shown before the title |
-| `variant` | `"default" \| "success" \| "danger"` | `"default"` | Header color variant |
-| `isCollapsable` | `boolean` | `false` | Enables collapse/expand on header click |
-| `isCollapsed` | `boolean` | `false` | Controls the collapsed state (requires `isCollapsable`) |
-| `fill` | `boolean` | `false` | Makes body content fill available vertical space via flex |
+| Prop            | Type                                 | Default     | Description                                               |
+| --------------- | ------------------------------------ | ----------- | --------------------------------------------------------- |
+| `header`        | `string`                             | --          | Title text displayed in the card header                   |
+| `icon`          | `string`                             | --          | Icon identifier shown before the title                    |
+| `variant`       | `"default" \| "success" \| "danger"` | `"default"` | Header color variant                                      |
+| `isCollapsable` | `boolean`                            | `false`     | Enables collapse/expand on header click                   |
+| `isCollapsed`   | `boolean`                            | `false`     | Controls the collapsed state (requires `isCollapsable`)   |
+| `fill`          | `boolean`                            | `false`     | Makes body content fill available vertical space via flex |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `header:click` | -- | Emitted when the header is clicked (always, regardless of collapsable state) |
-| `state:collapsed` | `boolean` | Emitted when the collapsed state changes (`true` = collapsed) |
+| Event             | Payload   | Description                                                                  |
+| ----------------- | --------- | ---------------------------------------------------------------------------- |
+| `header:click`    | --        | Emitted when the header is clicked (always, regardless of collapsable state) |
+| `state:collapsed` | `boolean` | Emitted when the collapsed state changes (`true` = collapsed)                |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
-| `default` | Card body content |
-| `header` | Custom header content (replaces the default title + icon) |
-| `actions` | Action buttons rendered on the right side of the header |
+| Slot      | Description                                               |
+| --------- | --------------------------------------------------------- |
+| `default` | Card body content                                         |
+| `header`  | Custom header content (replaces the default title + icon) |
+| `actions` | Action buttons rendered on the right side of the header   |
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--card-background` | `var(--additional-50)` | Card body background |
-| `--card-border-color` | `var(--neutrals-200)` | Border color |
-| `--card-border-radius` | `6px` | Corner radius |
-| `--card-header-background` | `var(--secondary-50)` | Default header background |
-| `--card-header-color` | `var(--secondary-950)` | Default header text color |
-| `--card-header-background-success` | `var(--success-100)` | Success variant header background |
-| `--card-header-background-danger` | `var(--danger-100)` | Danger variant header background |
-| `--card-header-color-success` | `var(--success-600)` | Success variant header text |
-| `--card-header-color-danger` | `var(--danger-600)` | Danger variant header text |
-| `--card-header-padding-hor` | `24px` | Header horizontal padding |
-| `--card-header-padding-vert` | `17px` | Header vertical padding |
-| `--card-hover-shadow` | `0 2px 8px rgba(0,0,0,0.06)` | Hover shadow |
-| `--card-focus-ring-color` | `var(--primary-300)` | Focus ring for collapsable headers |
+| Variable                           | Default                      | Description                        |
+| ---------------------------------- | ---------------------------- | ---------------------------------- |
+| `--card-background`                | `var(--additional-50)`       | Card body background               |
+| `--card-border-color`              | `var(--neutrals-200)`        | Border color                       |
+| `--card-border-radius`             | `6px`                        | Corner radius                      |
+| `--card-header-background`         | `var(--secondary-50)`        | Default header background          |
+| `--card-header-color`              | `var(--secondary-950)`       | Default header text color          |
+| `--card-header-background-success` | `var(--success-100)`         | Success variant header background  |
+| `--card-header-background-danger`  | `var(--danger-100)`          | Danger variant header background   |
+| `--card-header-color-success`      | `var(--success-600)`         | Success variant header text        |
+| `--card-header-color-danger`       | `var(--danger-600)`          | Danger variant header text         |
+| `--card-header-padding-hor`        | `24px`                       | Header horizontal padding          |
+| `--card-header-padding-vert`       | `17px`                       | Header vertical padding            |
+| `--card-hover-shadow`              | `0 2px 8px rgba(0,0,0,0.06)` | Hover shadow                       |
+| `--card-focus-ring-color`          | `var(--primary-300)`         | Focus ring for collapsable headers |
 
 ## Accessibility
 

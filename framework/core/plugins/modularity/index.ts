@@ -1,4 +1,4 @@
-import { App, Component, inject, resolveComponent } from "vue";
+import { App, Component, inject } from "vue";
 import { i18n } from "@core/plugins/i18n";
 import type { BladeInstanceConstructor } from "@core/blade-navigation/types";
 import { createLogger } from "@core/utilities";
@@ -144,7 +144,7 @@ export function createAppModule(
   pages: Record<string, BladeInstanceConstructor>,
   locales?: Record<string, object>,
   notificationTemplates?: Record<string, Component & { notifyType?: string }>,
-  components?: Record<string, Component>,
+  _components?: Record<string, Component>,
 ) {
   return defineAppModule({
     blades: pages,

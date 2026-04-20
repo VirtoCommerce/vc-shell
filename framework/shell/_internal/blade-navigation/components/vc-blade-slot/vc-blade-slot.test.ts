@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h, ref, computed } from "vue";
+import { defineComponent, h } from "vue";
 import VcBladeSlot from "./vc-blade-slot.vue";
 
 // Mock all heavy dependencies

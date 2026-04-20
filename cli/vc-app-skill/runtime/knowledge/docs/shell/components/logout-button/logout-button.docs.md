@@ -61,7 +61,7 @@ export default {
     settingsMenu.register({
       id: "logout-button",
       group: "account",
-      order: 100,  // High order places it at the bottom
+      order: 100, // High order places it at the bottom
       component: LogoutButton,
     });
   },

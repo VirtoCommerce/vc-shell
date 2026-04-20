@@ -1,5 +1,4 @@
 import { mountWithSetup } from "@framework/test-helpers";
-import { ref } from "vue";
 
 const mockRoute = {
   path: "/products",

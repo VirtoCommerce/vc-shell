@@ -167,7 +167,7 @@ describe("widget-service", () => {
   });
 
   it("cloneWidget returns a deep copy of a widget", async () => {
-    const { createWidgetService, cloneWidget } = await loadWidgetServiceModule();
+    const { cloneWidget } = await loadWidgetServiceModule();
 
     const widget = {
       id: "w1",

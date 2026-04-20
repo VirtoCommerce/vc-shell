@@ -31,11 +31,11 @@ With custom branding:
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `logo` | `string` | - | Override logo image URL |
-| `background` | `string` | - | Custom background image URL |
-| `composable` | `() => { forgotPassword }` | - | Custom composable providing `forgotPassword(args)` |
+| Prop         | Type                       | Default | Description                                        |
+| ------------ | -------------------------- | ------- | -------------------------------------------------- |
+| `logo`       | `string`                   | -       | Override logo image URL                            |
+| `background` | `string`                   | -       | Custom background image URL                        |
+| `composable` | `() => { forgotPassword }` | -       | Custom composable providing `forgotPassword(args)` |
 
 ## Recipe: Custom Reset Flow with a Different API
 

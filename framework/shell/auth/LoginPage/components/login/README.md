@@ -13,12 +13,13 @@ Currently, the Login component supports the following extension points:
 ### 1. Create Your Extension Component
 
 First, create your custom component:
+
 ```vue
 <!-- MyLoginExtension.vue -->
 <template>
-<div class="my-login-extension">
-<!-- Your custom content -->
-</div>
+  <div class="my-login-extension">
+    <!-- Your custom content -->
+  </div>
 </template>
 <script lang="ts" setup>
 // Your component logic
@@ -30,15 +31,15 @@ First, create your custom component:
 In your module's entry point, register the extension:
 
 ```typescript
-import MyLoginExtension from './components/MyLoginExtension.vue';
+import MyLoginExtension from "./components/MyLoginExtension.vue";
 export default {
   install(app) {
-  // Module installation logic
+    // Module installation logic
   },
-extensions: {
-    'login-after-form': [{id: 'MyLoginExtension', component: MyLoginExtensionComponent}]
-  }
-}
+  extensions: {
+    "login-after-form": [{ id: "MyLoginExtension", component: MyLoginExtensionComponent }],
+  },
+};
 ```
 
 ## Extension Points Details
@@ -46,7 +47,7 @@ extensions: {
 ### login-after-form
 
 This extension point appears after the login form and before any error messages. Extensions will be rendered with:
+
 - A horizontal separator line above
 - Centered alignment
 - Proper spacing from the login form
-

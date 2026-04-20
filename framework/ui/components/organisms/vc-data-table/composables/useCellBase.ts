@@ -1,4 +1,4 @@
-import { computed, type Ref, toRef } from "vue";
+import { computed } from "vue";
 
 /**
  * Common props for all editable cell components

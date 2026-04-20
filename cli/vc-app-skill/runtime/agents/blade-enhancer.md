@@ -29,6 +29,7 @@ description: Performs surgical edits on existing module files to add columns, fi
 ### Action Schema by Type
 
 **`add-column`:**
+
 ```json
 {
   "type": "add-column",
@@ -50,6 +51,7 @@ description: Performs surgical edits on existing module files to add columns, fi
 ```
 
 **`add-field`:**
+
 ```json
 {
   "type": "add-field",
@@ -68,6 +70,7 @@ description: Performs surgical edits on existing module files to add columns, fi
 ```
 
 **`add-logic`:**
+
 ```json
 {
   "type": "add-logic",
@@ -86,6 +89,7 @@ description: Performs surgical edits on existing module files to add columns, fi
 ```
 
 **`add-toolbar-action`:**
+
 ```json
 {
   "type": "add-toolbar-action",
@@ -102,6 +106,7 @@ description: Performs surgical edits on existing module files to add columns, fi
 ```
 
 **`link-blades`:**
+
 ```json
 {
   "type": "link-blades",
@@ -126,6 +131,7 @@ Before making edits, Read these files if paths are provided:
 2. From `index.md`, identify `.docs.md` files for any components referenced in the actions (VcColumn, VcInput, VcBlade, etc.) and Read them from `{docsRoot}/`
 
 Then, for EACH action:
+
 1. Read the `target` file to understand its current structure
 2. Read any composable files referenced by the target blade
 3. Scan `{targetDir}/locales/` for ALL `.json` files — these will ALL need locale key additions
@@ -167,10 +173,7 @@ Then, for EACH action:
    ```
 4. If `column.hasBodySlot` is true, use the open/close tag form with the provided `bodySlotTemplate`:
    ```vue
-   <VcColumn
-     id="{column.id}"
-     ...attributes...
-   >
+   <VcColumn id="{column.id}" ...attributes...>
      <template #body="{ data }">
        {column.bodySlotTemplate}
      </template>
@@ -181,6 +184,7 @@ Then, for EACH action:
 **Step 2: Add locale keys**
 
 For EVERY `.json` file in `{targetDir}/locales/`:
+
 1. Read the file
 2. Navigate to the table header key section (e.g., `{I18N_PREFIX}.PAGES.LIST.TABLE.HEADER`)
 3. Add the new key: `"{SCREAMING_SNAKE(column.id)}": "{column.title}"`
@@ -197,11 +201,7 @@ For EVERY `.json` file in `{targetDir}/locales/`:
    - If `section` is specified: narrow search to that form section
 3. Construct the form field element:
    ```vue
-   <{field.component}
-     :label="t('{I18N_PREFIX}.PAGES.DETAILS.FIELDS.{SCREAMING_SNAKE(field.name)}')"
-     v-model="item.{field.name}"
-     {...additional props from field.props}
-   />
+   <{field.component} :label="t('{I18N_PREFIX}.PAGES.DETAILS.FIELDS.{SCREAMING_SNAKE(field.name)}')" v-model="item.{field.name}" {...additional props from field.props} />
    ```
    Use `v-model` or `:modelValue` based on `field.bindingType`.
 4. Use the Edit tool to insert after the identified closing tag
@@ -216,6 +216,7 @@ For EVERY `.json` file in `{targetDir}/locales/`:
 **Step 3: Add locale keys**
 
 For EVERY `.json` file in `{targetDir}/locales/`:
+
 1. Read the file
 2. Navigate to the details fields key section (e.g., `{I18N_PREFIX}.PAGES.DETAILS.FIELDS`)
 3. Add the new key: `"{SCREAMING_SNAKE(field.name)}": "{field.label}"`
@@ -244,6 +245,7 @@ For EVERY `.json` file in `{targetDir}/locales/`:
 **Step 3: Add locale keys (if the logic introduces user-facing strings)**
 
 For EVERY `.json` file in `{targetDir}/locales/`:
+
 1. Add relevant locale keys following the module's existing key pattern
 2. Use the Edit tool for insertion
 
@@ -281,6 +283,7 @@ For EVERY `.json` file in `{targetDir}/locales/`:
 **Step 3: Add locale keys**
 
 For EVERY `.json` file in `{targetDir}/locales/`:
+
 1. Navigate to the toolbar key section (e.g., `{I18N_PREFIX}.PAGES.{PAGE_TYPE}.TOOLBAR`)
 2. Add the new key: `"{SCREAMING_SNAKE(action.id)}": "{action.label}"`
 3. If the toolbar section doesn't exist in the locale structure, create it
@@ -304,6 +307,7 @@ Based on `link.trigger`:
 - **`row-click`**: Ensure `@item-click` handler on `<VcDataTable>` calls the open blade function. If `@item-click` already exists, update its handler.
 
 - **`button`**: Add a `<VcButton>` at the appropriate location:
+
   ```vue
   <VcButton
     :label="t('{I18N_PREFIX}.PAGES.{PAGE_TYPE}.ACTIONS.{SCREAMING_SNAKE(link.destinationBlade)}')"
@@ -332,6 +336,7 @@ Based on `link.trigger`:
 **Step 4: Add locale keys**
 
 For EVERY `.json` file in `{targetDir}/locales/`:
+
 1. Add the button/link label key following the module's key pattern
 2. Use the Edit tool for insertion
 
@@ -346,6 +351,7 @@ If the target file has a non-standard structure (e.g., custom table component in
 ## Output Contract
 
 Report format:
+
 ```
 Status: DONE | DONE_WITH_CONCERNS | BLOCKED
 Actions applied:

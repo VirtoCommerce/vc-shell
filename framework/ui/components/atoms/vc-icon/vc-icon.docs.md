@@ -17,37 +17,37 @@ A unified icon component that renders icons from multiple libraries. Lucide Icon
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `icon` | `string \| Component` | `"lucide-square"` | Icon identifier or Vue component |
-| `size` | `"xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl" \| "xxxl"` | `"m"` | Predefined size |
-| `variant` | `"warning" \| "danger" \| "success"` | — | Semantic color variant |
-| `customSize` | `number` | — | Custom size in pixels (overrides `size`) |
-| `ariaLabel` | `string` | — | Accessible label for meaningful icons |
-| `basePath` | `string` | `"/assets/icons"` | Base path for SVG sprite icons |
+| Prop         | Type                                                   | Default           | Description                              |
+| ------------ | ------------------------------------------------------ | ----------------- | ---------------------------------------- |
+| `icon`       | `string \| Component`                                  | `"lucide-square"` | Icon identifier or Vue component         |
+| `size`       | `"xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl" \| "xxxl"` | `"m"`             | Predefined size                          |
+| `variant`    | `"warning" \| "danger" \| "success"`                   | —                 | Semantic color variant                   |
+| `customSize` | `number`                                               | —                 | Custom size in pixels (overrides `size`) |
+| `ariaLabel`  | `string`                                               | —                 | Accessible label for meaningful icons    |
+| `basePath`   | `string`                                               | `"/assets/icons"` | Base path for SVG sprite icons           |
 
 ## Size Reference
 
-| Size | Pixels |
-|------|--------|
-| `xs` | 12px |
-| `s` | 14px |
-| `m` | 18px |
-| `l` | 20px |
-| `xl` | 22px |
-| `xxl` | 30px |
-| `xxxl` | 64px |
+| Size   | Pixels |
+| ------ | ------ |
+| `xs`   | 12px   |
+| `s`    | 14px   |
+| `m`    | 18px   |
+| `l`    | 20px   |
+| `xl`   | 22px   |
+| `xxl`  | 30px   |
+| `xxxl` | 64px   |
 
 ## Icon Prefix Guide
 
-| Prefix | Library | Status |
-|--------|---------|--------|
-| `lucide-` | Lucide Icons | Standard (recommended) |
-| `fa-` / `fas fa-` | Font Awesome | Deprecated |
-| `bi-` | Bootstrap Icons | Deprecated |
-| `material-` | Material Symbols | Deprecated |
-| `svg:` | SVG sprite file | Supported |
-| _(Component)_ | Vue component instance | Supported |
+| Prefix            | Library                | Status                 |
+| ----------------- | ---------------------- | ---------------------- |
+| `lucide-`         | Lucide Icons           | Standard (recommended) |
+| `fa-` / `fas fa-` | Font Awesome           | Deprecated             |
+| `bi-`             | Bootstrap Icons        | Deprecated             |
+| `material-`       | Material Symbols       | Deprecated             |
+| `svg:`            | SVG sprite file        | Supported              |
+| _(Component)_     | Vue component instance | Supported              |
 
 ## Common Patterns
 
@@ -75,12 +75,7 @@ A unified icon component that renders icons from multiple libraries. Lucide Icon
 ### Meaningful Icon with Accessible Label
 
 ```vue
-<VcIcon
-  icon="lucide-triangle-alert"
-  variant="warning"
-  size="l"
-  aria-label="Warning: low stock"
-/>
+<VcIcon icon="lucide-triangle-alert" variant="warning" size="l" aria-label="Warning: low stock" />
 ```
 
 ### Custom Vue Component as Icon
@@ -92,7 +87,10 @@ import MyCustomIcon from "./MyCustomIcon.vue";
 </script>
 
 <template>
-  <VcIcon :icon="MyCustomIcon" size="l" />
+  <VcIcon
+    :icon="MyCustomIcon"
+    size="l"
+  />
 </template>
 ```
 

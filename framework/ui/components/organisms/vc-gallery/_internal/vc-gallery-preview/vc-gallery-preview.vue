@@ -133,7 +133,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch, toRef } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Keyboard, FreeMode } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -148,7 +148,7 @@ import { getThumbnailUrl } from "@core/utilities/thumbnail";
 
 export interface Props {
   images?: AssetLike[];
-  index: number;
+  index?: number;
 }
 
 export interface Emits {

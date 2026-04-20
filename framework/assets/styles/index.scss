@@ -1,7 +1,5 @@
-@use './theme/z-index';
-@use './theme/colors.scss';
-
-
+@use "./theme/z-index";
+@use "./theme/colors.scss";
 
 @tailwind base;
 
@@ -28,21 +26,20 @@ button,
 input,
 select,
 textarea {
-   font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 ::-webkit-input-placeholder {
-   font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 :-moz-placeholder {
-   font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 ::-moz-placeholder {
-   font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 :-ms-input-placeholder {
-   font-family: "Plus Jakarta Sans", sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
-
 
 @tailwind components;
 @tailwind utilities;

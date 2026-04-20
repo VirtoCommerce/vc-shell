@@ -40,20 +40,20 @@ dashboard.registerWidget({
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `showDragHandles` | `boolean` | `false` | Shows visible drag handle icons on widgets |
-| `resizable` | `boolean` | `false` | Enables widget resize handles |
-| `ariaLabel` | `string` | `"Dashboard widgets..."` | Accessible label for the grid container |
+| Prop              | Type      | Default                  | Description                                |
+| ----------------- | --------- | ------------------------ | ------------------------------------------ |
+| `showDragHandles` | `boolean` | `false`                  | Shows visible drag handle icons on widgets |
+| `resizable`       | `boolean` | `false`                  | Enables widget resize handles              |
+| `ariaLabel`       | `string`  | `"Dashboard widgets..."` | Accessible label for the grid container    |
 
 ## Exposed Methods
 
-| Method | Description |
-|--------|-------------|
-| `rearrangeWidgets()` | Re-layout all widgets to fill gaps |
-| `recalculateLayout()` | Recalculate grid dimensions |
-| `saveLayout()` | Persist current layout to localStorage |
-| `useBuiltInPositions()` | Reset to default widget positions |
+| Method                  | Description                            |
+| ----------------------- | -------------------------------------- |
+| `rearrangeWidgets()`    | Re-layout all widgets to fill gaps     |
+| `recalculateLayout()`   | Recalculate grid dimensions            |
+| `saveLayout()`          | Persist current layout to localStorage |
+| `useBuiltInPositions()` | Reset to default widget positions      |
 
 ## Recipe: Registering Dashboard Widgets in a Module
 
@@ -107,7 +107,10 @@ function resetLayout() {
 <template>
   <div>
     <button @click="resetLayout">Reset Layout</button>
-    <DraggableDashboard ref="dashboardRef" :resizable="true" />
+    <DraggableDashboard
+      ref="dashboardRef"
+      :resizable="true"
+    />
   </div>
 </template>
 ```

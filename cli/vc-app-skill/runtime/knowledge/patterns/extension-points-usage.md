@@ -17,10 +17,10 @@ Cross-module UI composition without compile-time dependencies. One module declar
 
 ### Two Roles
 
-| Role | API | Purpose |
-|------|-----|---------|
-| **Host** | `<ExtensionPoint>` or `defineExtensionPoint()` | Declares a named region that accepts plugins |
-| **Plugin** | `useExtensionPoint()` | Registers components into a named region |
+| Role       | API                                            | Purpose                                      |
+| ---------- | ---------------------------------------------- | -------------------------------------------- |
+| **Host**   | `<ExtensionPoint>` or `defineExtensionPoint()` | Declares a named region that accepts plugins |
+| **Plugin** | `useExtensionPoint()`                          | Registers components into a named region     |
 
 Neither side imports the other. They communicate through a shared **name string**.
 
@@ -63,14 +63,14 @@ import { ExtensionPoint } from "@vc-shell/framework";
 
 **Props:**
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | required | Extension point name |
-| `separator` | `boolean` | `false` | Adds `<hr>` before components |
-| `separatorClass` | `string` | built-in | Custom CSS class for `<hr>` |
-| `wrapperClass` | `string` | none | CSS class for wrapper div |
-| `gap` | `string` | none | CSS gap (e.g. `"1rem"`) |
-| `filter` | `Record<string, unknown>` | none | Filter by meta field equality |
+| Prop             | Type                      | Default  | Description                   |
+| ---------------- | ------------------------- | -------- | ----------------------------- |
+| `name`           | `string`                  | required | Extension point name          |
+| `separator`      | `boolean`                 | `false`  | Adds `<hr>` before components |
+| `separatorClass` | `string`                  | built-in | Custom CSS class for `<hr>`   |
+| `wrapperClass`   | `string`                  | none     | CSS class for wrapper div     |
+| `gap`            | `string`                  | none     | CSS gap (e.g. `"1rem"`)       |
+| `filter`         | `Record<string, unknown>` | none     | Filter by meta field equality |
 
 ### Composable: `defineExtensionPoint()`
 
@@ -128,7 +128,9 @@ add({
   priority: 10,
 });
 
-export default defineAppModule({ /* locales, blades, etc. */ });
+export default defineAppModule({
+  /* locales, blades, etc. */
+});
 ```
 
 ### Using Framework Constants
@@ -149,8 +151,8 @@ add({
 
 Currently defined framework constants:
 
-| Constant | Value | Location |
-|----------|-------|----------|
+| Constant                          | Value               | Location                       |
+| --------------------------------- | ------------------- | ------------------------------ |
 | `ExtensionPoints.AUTH_AFTER_FORM` | `"auth:after-form"` | Login page, below sign-in form |
 
 ### Removing a Registration
@@ -199,19 +201,25 @@ Categorize extensions with `meta` and render different subsets in different loca
 
 ```typescript
 const { add } = useExtensionPoint("product:details");
-add({ id: "specs-tab",    component: SpecsTab,    meta: { zone: "tabs" },    priority: 10 });
-add({ id: "review-tab",   component: ReviewTab,   meta: { zone: "tabs" },    priority: 20 });
-add({ id: "quick-action", component: QuickAction,  meta: { zone: "toolbar" } });
+add({ id: "specs-tab", component: SpecsTab, meta: { zone: "tabs" }, priority: 10 });
+add({ id: "review-tab", component: ReviewTab, meta: { zone: "tabs" }, priority: 20 });
+add({ id: "quick-action", component: QuickAction, meta: { zone: "toolbar" } });
 ```
 
 ```vue
 <template>
   <VcBlade title="Product Details">
     <div class="toolbar">
-      <ExtensionPoint name="product:details" :filter="{ zone: 'toolbar' }" />
+      <ExtensionPoint
+        name="product:details"
+        :filter="{ zone: 'toolbar' }"
+      />
     </div>
     <div class="tabs">
-      <ExtensionPoint name="product:details" :filter="{ zone: 'tabs' }" />
+      <ExtensionPoint
+        name="product:details"
+        :filter="{ zone: 'tabs' }"
+      />
     </div>
   </VcBlade>
 </template>
@@ -259,7 +267,9 @@ add({
   priority: 20,
 });
 
-export default defineAppModule({ /* ... */ });
+export default defineAppModule({
+  /* ... */
+});
 ```
 
 **Step 3 -- The injected component:**
@@ -286,22 +296,22 @@ const carrier = ref("FedEx");
 
 ## Common Mistakes
 
-| Mistake | Symptom | Fix |
-|---------|---------|-----|
-| Typo in extension point name | Component registered but never rendered | Check dev console for `"Extension point X is not declared"` warning. Use shared constants. |
-| Duplicate `id` across modules | Later registration silently replaces the earlier one | Prefix IDs with module name: `"shipping:tracking-tab"` |
-| Forgetting `import { ExtensionPoint }` in host template | Vue renders nothing (unknown component) | Add the import in `<script setup>` |
-| Calling `defineExtensionPoint` outside setup context | Computed refs not reactive | Call inside `<script setup>` or a composable used during setup |
+| Mistake                                                 | Symptom                                              | Fix                                                                                        |
+| ------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Typo in extension point name                            | Component registered but never rendered              | Check dev console for `"Extension point X is not declared"` warning. Use shared constants. |
+| Duplicate `id` across modules                           | Later registration silently replaces the earlier one | Prefix IDs with module name: `"shipping:tracking-tab"`                                     |
+| Forgetting `import { ExtensionPoint }` in host template | Vue renders nothing (unknown component)              | Add the import in `<script setup>`                                                         |
+| Calling `defineExtensionPoint` outside setup context    | Computed refs not reactive                           | Call inside `<script setup>` or a composable used during setup                             |
 
 ---
 
 ## Related
 
-| Resource | Path |
-|----------|------|
+| Resource                            | Path                                                               |
+| ----------------------------------- | ------------------------------------------------------------------ |
 | Extension Points Plugin (full docs) | `framework/core/plugins/extension-points/extension-points.docs.md` |
-| Store implementation | `framework/core/plugins/extension-points/store.ts` |
-| ExtensionPoint component | `framework/core/plugins/extension-points/ExtensionPoint.vue` |
-| Types | `framework/core/plugins/extension-points/types.ts` |
-| Public API exports | `framework/core/plugins/extension-points/public.ts` |
-| Framework host usage | `framework/shell/auth/LoginPage/components/login/Login.vue` |
+| Store implementation                | `framework/core/plugins/extension-points/store.ts`                 |
+| ExtensionPoint component            | `framework/core/plugins/extension-points/ExtensionPoint.vue`       |
+| Types                               | `framework/core/plugins/extension-points/types.ts`                 |
+| Public API exports                  | `framework/core/plugins/extension-points/public.ts`                |
+| Framework host usage                | `framework/shell/auth/LoginPage/components/login/Login.vue`        |

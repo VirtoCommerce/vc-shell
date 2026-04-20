@@ -44,34 +44,34 @@ import { SettingsMenuItem } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | `undefined` | Menu item label |
-| `icon` | `string \| Component` | `undefined` | Icon name or component |
-| `image` | `string` | `undefined` | Image URL (alternative to icon) |
-| `value` | `string` | `undefined` | Current value displayed on the right |
-| `showChevron` | `boolean` | `false` | Shows right chevron for sub-menus (auto-enabled when `submenu` slot is provided) |
-| `isActive` | `boolean` | `false` | Highlights the item (auto-managed when `submenu` slot is provided) |
-| `disabled` | `boolean` | `false` | Disables click interaction |
-| `triggerAction` | `"click" \| "hover" \| "none"` | `"click"` | What interaction opens the item |
+| Prop            | Type                           | Default     | Description                                                                      |
+| --------------- | ------------------------------ | ----------- | -------------------------------------------------------------------------------- |
+| `title`         | `string`                       | `undefined` | Menu item label                                                                  |
+| `icon`          | `string \| Component`          | `undefined` | Icon name or component                                                           |
+| `image`         | `string`                       | `undefined` | Image URL (alternative to icon)                                                  |
+| `value`         | `string`                       | `undefined` | Current value displayed on the right                                             |
+| `showChevron`   | `boolean`                      | `false`     | Shows right chevron for sub-menus (auto-enabled when `submenu` slot is provided) |
+| `isActive`      | `boolean`                      | `false`     | Highlights the item (auto-managed when `submenu` slot is provided)               |
+| `disabled`      | `boolean`                      | `false`     | Disables click interaction                                                       |
+| `triggerAction` | `"click" \| "hover" \| "none"` | `"click"`   | What interaction opens the item                                                  |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `trigger:click` | -- | Emitted when the item is clicked (only when `triggerAction="click"`) |
-| `trigger:hover` | -- | Emitted when hovered (only when `triggerAction="hover"`) |
+| Event           | Payload | Description                                                          |
+| --------------- | ------- | -------------------------------------------------------------------- |
+| `trigger:click` | --      | Emitted when the item is clicked (only when `triggerAction="click"`) |
+| `trigger:hover` | --      | Emitted when hovered (only when `triggerAction="hover"`)             |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
-| `trigger` | Custom trigger content (replaces the entire row) |
-| `icon` | Custom icon area |
-| `title` | Custom title content |
-| `additional` | Custom right-side content (replaces `value` display) |
-| `submenu` | **Sub-menu items.** Desktop: floating dropdown. Mobile: inline accordion. Chevron auto-shown. |
-| `content` | Legacy slot for arbitrary content below the trigger |
+| Slot         | Description                                                                                   |
+| ------------ | --------------------------------------------------------------------------------------------- |
+| `trigger`    | Custom trigger content (replaces the entire row)                                              |
+| `icon`       | Custom icon area                                                                              |
+| `title`      | Custom title content                                                                          |
+| `additional` | Custom right-side content (replaces `value` display)                                          |
+| `submenu`    | **Sub-menu items.** Desktop: floating dropdown. Mobile: inline accordion. Chevron auto-shown. |
+| `content`    | Legacy slot for arbitrary content below the trigger                                           |
 
 ## Common Patterns
 
@@ -95,7 +95,7 @@ const currentTheme = ref("light");
   <SettingsMenuItem
     icon="lucide-palette"
     title="Theme"
-    :value="themes.find(t => t.key === currentTheme)?.name"
+    :value="themes.find((t) => t.key === currentTheme)?.name"
   >
     <template #submenu>
       <VcDropdownItem
@@ -112,42 +112,27 @@ const currentTheme = ref("light");
 
 **What happens on each platform:**
 
-| Platform | Behavior |
-|----------|----------|
-| Desktop | Click triggers a floating panel to the right of the item |
-| Mobile | Click expands an inline list below the item with chevron rotation |
+| Platform | Behavior                                                          |
+| -------- | ----------------------------------------------------------------- |
+| Desktop  | Click triggers a floating panel to the right of the item          |
+| Mobile   | Click expands an inline list below the item with chevron rotation |
 
 ### Simple action item (no sub-menu)
 
 ```vue
-<SettingsMenuItem
-  icon="lucide-log-out"
-  title="Sign Out"
-  @trigger:click="handleSignOut"
-/>
+<SettingsMenuItem icon="lucide-log-out" title="Sign Out" @trigger:click="handleSignOut" />
 ```
 
 ### Item with user avatar image
 
 ```vue
-<SettingsMenuItem
-  :image="user.avatarUrl"
-  :title="user.displayName"
-  :value="user.roleName"
-  :show-chevron="true"
-  @trigger:click="openUserMenu"
-/>
+<SettingsMenuItem :image="user.avatarUrl" :title="user.displayName" :value="user.roleName" :show-chevron="true" @trigger:click="openUserMenu" />
 ```
 
 ### Disabled item
 
 ```vue
-<SettingsMenuItem
-  icon="lucide-shield"
-  title="Security Settings"
-  disabled
-  value="Admin only"
-/>
+<SettingsMenuItem icon="lucide-shield" title="Security Settings" disabled value="Admin only" />
 ```
 
 ### Custom submenu content
@@ -169,21 +154,8 @@ The `submenu` slot can contain any content, not just `VcDropdownItem`:
 Before (manual dropdown management):
 
 ```vue
-<SettingsMenuItem
-  ref="menuItemRef"
-  icon="lucide-palette"
-  title="Theme"
-  :value="currentTheme"
-  :show-chevron="true"
-  :is-active="isOpen"
-  @trigger:click="isOpen = !isOpen"
-/>
-<VcDropdownPanel
-  v-model:show="isOpen"
-  :anchor-ref="menuItemRef?.triggerRef ?? null"
-  placement="right-start"
-  width="180px"
->
+<SettingsMenuItem ref="menuItemRef" icon="lucide-palette" title="Theme" :value="currentTheme" :show-chevron="true" :is-active="isOpen" @trigger:click="isOpen = !isOpen" />
+<VcDropdownPanel v-model:show="isOpen" :anchor-ref="menuItemRef?.triggerRef ?? null" placement="right-start" width="180px">
   <!-- options -->
 </VcDropdownPanel>
 ```
@@ -191,11 +163,7 @@ Before (manual dropdown management):
 After (submenu slot):
 
 ```vue
-<SettingsMenuItem
-  icon="lucide-palette"
-  title="Theme"
-  :value="currentTheme"
->
+<SettingsMenuItem icon="lucide-palette" title="Theme" :value="currentTheme">
   <template #submenu>
     <!-- same options, no wrapper needed -->
   </template>
@@ -203,6 +171,7 @@ After (submenu slot):
 ```
 
 **What changes:**
+
 - Remove `ref`, `isOpen`, `:show-chevron`, `:is-active`, `@trigger:click` toggle -- all auto-managed
 - Remove `VcDropdownPanel` wrapper entirely
 - Move dropdown content into `#submenu` slot

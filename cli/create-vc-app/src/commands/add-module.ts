@@ -67,7 +67,7 @@ export async function addModuleCommand(args: Record<string, unknown>, templateRo
     try {
       addModuleToMain(mainTsPath, moduleName);
       console.log(pc.green(`  ✔ Updated src/main.ts — added import & app.use(${pascalName})`));
-    } catch (e) {
+    } catch (_e) {
       console.warn(pc.yellow(`  ⚠ Could not auto-update src/main.ts. Add manually:`));
       console.warn(pc.yellow(`    import ${pascalName} from "./modules/${kebabName}";`));
       console.warn(pc.yellow(`    app.use(${pascalName}, { router });`));
@@ -80,7 +80,7 @@ export async function addModuleCommand(args: Record<string, unknown>, templateRo
     try {
       addMenuItemToBootstrap(bootstrapPath, moduleName);
       console.log(pc.green(`  ✔ Updated src/bootstrap.ts — added menu item "${toSentenceCase(moduleName)}"`));
-    } catch (e) {
+    } catch (_e) {
       console.warn(pc.yellow(`  ⚠ Could not auto-update src/bootstrap.ts. Add addMenuItem() manually.`));
     }
   }

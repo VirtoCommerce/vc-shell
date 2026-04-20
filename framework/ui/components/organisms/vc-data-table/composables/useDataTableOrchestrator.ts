@@ -428,9 +428,8 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
    */
   const measureAvailableWidth = (): number => {
     if (!cachedWrapper || !cachedWrapper.isConnected) {
-      cachedWrapper = (tableContainerRef.value?.querySelector(
-        ".vc-table-composition__row-transition-wrapper",
-      ) ?? null) as HTMLElement | null;
+      cachedWrapper = (tableContainerRef.value?.querySelector(".vc-table-composition__row-transition-wrapper") ??
+        null) as HTMLElement | null;
     }
     if (!cachedWrapper || cachedWrapper.clientWidth <= 0) return 0;
 

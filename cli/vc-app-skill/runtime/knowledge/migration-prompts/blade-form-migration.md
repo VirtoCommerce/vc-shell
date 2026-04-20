@@ -19,7 +19,11 @@ const { item, loading, load, save } = useMyDetails();
 const { onBeforeClose } = useBlade();
 const { showConfirmation } = usePopup();
 
-const { errorBag, setFieldError, meta: formMeta } = useForm({
+const {
+  errorBag,
+  setFieldError,
+  meta: formMeta,
+} = useForm({
   initialValues: item,
 });
 
@@ -34,9 +38,7 @@ onBeforeClose(async () => {
   return true;
 });
 
-const canSave = computed(
-  () => isModified.value && formMeta.value.valid && !loading.value,
-);
+const canSave = computed(() => isModified.value && formMeta.value.valid && !loading.value);
 
 async function handleSave() {
   await save(item.value);
@@ -61,9 +63,13 @@ const { canSave, isModified, setBaseline, revert, setFieldError, errorBag } = us
   closeConfirmMessage: () => t("MY_MODULE.ALERTS.CLOSE_CONFIRMATION"),
 });
 
-watch(item, () => {
-  if (item.value) setBaseline();
-}, { once: true });
+watch(
+  item,
+  () => {
+    if (item.value) setBaseline();
+  },
+  { once: true },
+);
 
 async function handleSave() {
   await save(item.value);
@@ -216,7 +222,10 @@ Remove `:modified` prop from `<VcBlade>` — it is auto-detected via provide/inj
 
 ```vue
 <template>
-  <VcBlade :modified="isModified" :closable="true">
+  <VcBlade
+    :modified="isModified"
+    :closable="true"
+  >
     <!-- content -->
   </VcBlade>
 </template>

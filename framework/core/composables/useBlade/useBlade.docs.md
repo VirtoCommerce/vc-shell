@@ -44,7 +44,9 @@ openBlade({ name: "OrderDetails", param: "order-123" });
 import { useBlade } from "@vc-shell/framework";
 
 // Typed options — no manual casting needed
-interface BladeOptions { sellerProduct?: SellerProduct }
+interface BladeOptions {
+  sellerProduct?: SellerProduct;
+}
 const { param, options, callParent } = useBlade<BladeOptions>();
 
 console.log(options.value?.sellerProduct); // typed as SellerProduct | undefined
@@ -70,7 +72,10 @@ const blade = useBlade();
 `useBlade<TOptions>()` accepts an optional generic to type the `options` computed ref:
 
 ```typescript
-interface MyOptions { productId: string; mode: "edit" | "create" }
+interface MyOptions {
+  productId: string;
+  mode: "edit" | "create";
+}
 const { options } = useBlade<MyOptions>();
 // options.value is MyOptions | undefined — no manual casting needed
 ```
@@ -83,68 +88,68 @@ Without the generic, `options.value` defaults to `Record<string, unknown> | unde
 
 These are reactive `ComputedRef` values that reflect the current blade's state. Accessing them outside blade context throws a runtime error.
 
-| Property   | Type                                                  | Description                                             |
-|------------|-------------------------------------------------------|---------------------------------------------------------|
-| `id`       | `ComputedRef<string>`                                 | The current blade's unique ID within the blade stack    |
-| `param`    | `ComputedRef<string \| undefined>`                    | Route parameter passed when the blade was opened        |
-| `options`  | `ComputedRef<TOptions \| undefined>`                  | Additional options object passed to the blade. Type is `Record<string, unknown>` by default; provide a generic to get a typed ref: `useBlade<MyOptions>()` |
-| `query`    | `ComputedRef<Record<string, string> \| undefined>`    | URL query parameters scoped to this blade               |
-| `closable` | `ComputedRef<boolean>`                                | `true` when this blade has a parent (i.e., can be closed) |
-| `expanded` | `ComputedRef<boolean>`                                | `true` when this blade is the active (rightmost) blade  |
-| `name`     | `ComputedRef<string>`                                 | The blade's registered component name                   |
+| Property   | Type                                               | Description                                                                                                                                                |
+| ---------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`       | `ComputedRef<string>`                              | The current blade's unique ID within the blade stack                                                                                                       |
+| `param`    | `ComputedRef<string \| undefined>`                 | Route parameter passed when the blade was opened                                                                                                           |
+| `options`  | `ComputedRef<TOptions \| undefined>`               | Additional options object passed to the blade. Type is `Record<string, unknown>` by default; provide a generic to get a typed ref: `useBlade<MyOptions>()` |
+| `query`    | `ComputedRef<Record<string, string> \| undefined>` | URL query parameters scoped to this blade                                                                                                                  |
+| `closable` | `ComputedRef<boolean>`                             | `true` when this blade has a parent (i.e., can be closed)                                                                                                  |
+| `expanded` | `ComputedRef<boolean>`                             | `true` when this blade is the active (rightmost) blade                                                                                                     |
+| `name`     | `ComputedRef<string>`                              | The blade's registered component name                                                                                                                      |
 
 #### Navigation Methods (work everywhere)
 
-| Method      | Signature                                                        | Description                                            |
-|-------------|------------------------------------------------------------------|--------------------------------------------------------|
+| Method      | Signature                                                              | Description                                                                                 |
+| ----------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | `openBlade` | `(event: BladeOpenEvent & { isWorkspace?: boolean }) => Promise<void>` | Open a blade as a child of the current blade, or as a workspace root if `isWorkspace: true` |
 
 #### Action Methods (blade context required)
 
-| Method          | Signature                               | Description                                        |
-|-----------------|-----------------------------------------|----------------------------------------------------|
-| `closeSelf`     | `() => Promise<boolean>`                | Close the current blade. Returns `true` if a guard prevented closure. Respects `onBeforeClose` guards. |
-| `closeChildren` | `() => Promise<void>`                   | Close all child blades of the current blade        |
-| `replaceWith`   | `(event: BladeOpenEvent) => Promise<void>` | Replace the current blade with a different one in the same position (destroys the old blade) |
+| Method          | Signature                                  | Description                                                                                                    |
+| --------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `closeSelf`     | `() => Promise<boolean>`                   | Close the current blade. Returns `true` if a guard prevented closure. Respects `onBeforeClose` guards.         |
+| `closeChildren` | `() => Promise<void>`                      | Close all child blades of the current blade                                                                    |
+| `replaceWith`   | `(event: BladeOpenEvent) => Promise<void>` | Replace the current blade with a different one in the same position (destroys the old blade)                   |
 | `coverWith`     | `(event: BladeOpenEvent) => Promise<void>` | Cover the current blade — hides it and opens a new blade on top. Closing the new blade reveals the hidden one. |
 
 #### Communication Methods (blade context required)
 
-| Method              | Signature                                                      | Description                                                    |
-|---------------------|----------------------------------------------------------------|----------------------------------------------------------------|
-| `callParent`        | `<T = unknown>(method: string, args?: unknown) => Promise<T>`  | Invoke a method exposed by the parent blade                    |
-| `exposeToChildren`  | `(methods: Record<string, (...args: unknown[]) => unknown>) => void` | Expose methods that child blades can call via `callParent` |
+| Method             | Signature                                                            | Description                                                |
+| ------------------ | -------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `callParent`       | `<T = unknown>(method: string, args?: unknown) => Promise<T>`        | Invoke a method exposed by the parent blade                |
+| `exposeToChildren` | `(methods: Record<string, (...args: unknown[]) => unknown>) => void` | Expose methods that child blades can call via `callParent` |
 
 #### Guards and Errors (blade context required)
 
-| Method          | Signature                                    | Description                                         |
-|-----------------|----------------------------------------------|-----------------------------------------------------|
-| `onBeforeClose` | `(guard: () => Promise<boolean>) => void`    | Register a guard that can prevent blade closure      |
-| `setError`      | `(error: unknown) => void`                   | Display an error banner on the blade                 |
-| `clearError`    | `() => void`                                 | Clear the blade error banner                         |
+| Method          | Signature                                 | Description                                     |
+| --------------- | ----------------------------------------- | ----------------------------------------------- |
+| `onBeforeClose` | `(guard: () => Promise<boolean>) => void` | Register a guard that can prevent blade closure |
+| `setError`      | `(error: unknown) => void`                | Display an error banner on the blade            |
+| `clearError`    | `() => void`                              | Clear the blade error banner                    |
 
 #### Banner Management (blade context required)
 
-| Method         | Signature                                                    | Description                                                    |
-|----------------|--------------------------------------------------------------|----------------------------------------------------------------|
-| `addBanner`    | `(options: Omit<IBladeBanner, "id" \| "_system">) => string` | Add a custom banner to the blade. Returns the banner's unique ID. |
-| `removeBanner` | `(id: string) => void`                                       | Remove a specific banner by its ID                             |
+| Method         | Signature                                                    | Description                                                             |
+| -------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| `addBanner`    | `(options: Omit<IBladeBanner, "id" \| "_system">) => string` | Add a custom banner to the blade. Returns the banner's unique ID.       |
+| `removeBanner` | `(id: string) => void`                                       | Remove a specific banner by its ID                                      |
 | `clearBanners` | `() => void`                                                 | Remove all custom banners (system error/modified banners are preserved) |
 
 #### Lifecycle Hooks (blade context required)
 
-| Method          | Signature                         | Description                                              |
-|-----------------|-----------------------------------|----------------------------------------------------------|
-| `onActivated`   | `(callback: () => void) => void`  | Register a callback fired when this blade becomes the active (rightmost) blade. Only fires on transitions, not on initial mount. |
-| `onDeactivated` | `(callback: () => void) => void`  | Register a callback fired when this blade loses active status (another blade opens on top). |
+| Method          | Signature                        | Description                                                                                                                      |
+| --------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `onActivated`   | `(callback: () => void) => void` | Register a callback fired when this blade becomes the active (rightmost) blade. Only fires on transitions, not on initial mount. |
+| `onDeactivated` | `(callback: () => void) => void` | Register a callback fired when this blade loses active status (another blade opens on top).                                      |
 
 > **Note:** Each hook can only be registered once per `useBlade()` call. A second registration logs a warning and is ignored. Use `onMounted` for initial-mount logic — `onActivated` only fires on subsequent activations.
 
 #### Deprecated
 
-| Method             | Signature                                               | Description                         |
-|--------------------|---------------------------------------------------------|-------------------------------------|
-| `provideBladeData` | `(data: MaybeRef<Record<string, unknown>>) => void`     | **Deprecated.** Use `defineBladeContext()` instead. |
+| Method             | Signature                                           | Description                                         |
+| ------------------ | --------------------------------------------------- | --------------------------------------------------- |
+| `provideBladeData` | `(data: MaybeRef<Record<string, unknown>>) => void` | **Deprecated.** Use `defineBladeContext()` instead. |
 
 ### BladeOpenEvent
 
@@ -186,8 +191,12 @@ openBlade({
   name: "FulfillmentCenterDetails",
   param: centerId,
   options: { mode: "edit" },
-  onOpen() { selectedItemId.value = centerId; },
-  onClose() { selectedItemId.value = undefined; },
+  onOpen() {
+    selectedItemId.value = centerId;
+  },
+  onClose() {
+    selectedItemId.value = undefined;
+  },
 });
 
 // Open as workspace (replaces entire blade stack)
@@ -317,6 +326,7 @@ async function onSave() {
 ```
 
 > **Tip:** `callParent` is generic. If the parent method returns a value, you can type it:
+>
 > ```typescript
 > const count = await callParent<number>("getOffersCount");
 > ```
@@ -419,11 +429,7 @@ addBanner({
 // Banner with custom render function
 addBanner({
   variant: "info",
-  render: () => h("span", [
-    "Data synced from ",
-    h("b", "Warehouse A"),
-    " at 14:32",
-  ]),
+  render: () => h("span", ["Data synced from ", h("b", "Warehouse A"), " at 14:32"]),
 });
 
 // Remove a specific banner
@@ -438,14 +444,14 @@ clearBanners();
 
 The options object passed to `addBanner`:
 
-| Property      | Type                              | Default  | Description                                        |
-|---------------|-----------------------------------|----------|----------------------------------------------------|
-| `variant`     | `"danger" \| "warning" \| "info" \| "success"` | required | Color scheme and default icon              |
-| `message`     | `string`                          | --       | Plain text message                                 |
-| `render`      | `() => VNode`                     | --       | Custom render function (takes priority over message) |
-| `dismissible` | `boolean`                         | `false`  | Show a close button to dismiss the banner          |
-| `icon`        | `string`                          | --       | Override the default variant icon (lucide icon name) |
-| `action`      | `{ label: string; handler: () => void }` | --  | Action button displayed on the right side          |
+| Property      | Type                                           | Default  | Description                                          |
+| ------------- | ---------------------------------------------- | -------- | ---------------------------------------------------- |
+| `variant`     | `"danger" \| "warning" \| "info" \| "success"` | required | Color scheme and default icon                        |
+| `message`     | `string`                                       | --       | Plain text message                                   |
+| `render`      | `() => VNode`                                  | --       | Custom render function (takes priority over message) |
+| `dismissible` | `boolean`                                      | `false`  | Show a close button to dismiss the banner            |
+| `icon`        | `string`                                       | --       | Override the default variant icon (lucide icon name) |
+| `action`      | `{ label: string; handler: () => void }`       | --       | Action button displayed on the right side            |
 
 > **Note:** `addBanner` returns a unique string ID. Use it with `removeBanner(id)` to programmatically remove a specific banner. `clearBanners()` removes all custom banners but preserves system banners (error and unsaved changes).
 
@@ -489,6 +495,7 @@ const isLoading = computed(() => ctx.value.loading as boolean);
 ```
 
 > **When to use which:**
+>
 > - `defineBladeContext` / `injectBladeContext` -- for sharing data with **child widgets and nested components** within the same blade's component tree (via provide/inject).
 > - `callParent` / `exposeToChildren` -- for **cross-blade communication** between parent and child blades in the blade stack.
 
@@ -514,8 +521,12 @@ function onRowClick(event: { data: { id?: string } }) {
   openBlade({
     name: "ProductDetails",
     param: event.data.id,
-    onOpen() { selectedItemId.value = event.data.id; },
-    onClose() { selectedItemId.value = undefined; },
+    onOpen() {
+      selectedItemId.value = event.data.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
   });
 }
 
@@ -577,7 +588,9 @@ const item = ref<Order>();
 
 defineBladeContext({ item }); // share with widgets
 
-async function reload() { await loadOrder(props.param!); }
+async function reload() {
+  await loadOrder(props.param!);
+}
 exposeToChildren({ reload }); // child ShipmentDetails can callParent("reload")
 
 function openShipment(id: string) {
@@ -651,7 +664,9 @@ openBlade({ name: "OrderDetails", param: orderId });
 ```vue
 <!-- BAD -- child calls callParent("reload") but parent never exposed it -->
 <script setup lang="ts">
-async function reload() { /* ... */ }
+async function reload() {
+  /* ... */
+}
 // Missing: exposeToChildren({ reload })
 // or: defineExpose({ reload })
 </script>
@@ -660,7 +675,9 @@ async function reload() { /* ... */ }
 ```vue
 <!-- GOOD -- explicitly expose methods for children -->
 <script setup lang="ts">
-async function reload() { /* ... */ }
+async function reload() {
+  /* ... */
+}
 exposeToChildren({ reload });
 // Also expose title for breadcrumbs
 defineExpose({ reload, title });
@@ -709,12 +726,16 @@ defineBladeContext({ item, loading });
 
 ```typescript
 // BAD -- accesses the ComputedRef object, not the value
-if (param) { /* always truthy -- it's a ComputedRef object */ }
+if (param) {
+  /* always truthy -- it's a ComputedRef object */
+}
 ```
 
 ```typescript
 // GOOD -- access the reactive value
-if (param.value) { /* correct -- checks the actual string */ }
+if (param.value) {
+  /* correct -- checks the actual string */
+}
 ```
 
 ---
@@ -730,11 +751,11 @@ if (param.value) { /* correct -- checks the actual string */ }
 
 ## Related
 
-| Resource | Description |
-|----------|-------------|
-| [`defineBladeContext` / `injectBladeContext`](../useBladeContext.docs.md) | Share reactive blade data with descendant widgets |
-| [`useBladeRegistry`](../useBladeRegistry/) | Look up registered blade components by name |
-| [`VcBlade`](../../../ui/components/organisms/vc-blade/) | The blade UI shell component (header, toolbar, content area) |
-| [`VcBladeNavigation`](../../../shared/components/blade-navigation/) | The container component that renders the blade stack |
-| [`useToolbar`](../../../shared/composables/useToolbar/) | Dynamic toolbar management for blades |
-| [`usePopup`](../../../shared/composables/usePopup/) | Confirmation dialogs, commonly used in close guards |
+| Resource                                                                  | Description                                                  |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| [`defineBladeContext` / `injectBladeContext`](../useBladeContext.docs.md) | Share reactive blade data with descendant widgets            |
+| [`useBladeRegistry`](../useBladeRegistry/)                                | Look up registered blade components by name                  |
+| [`VcBlade`](../../../ui/components/organisms/vc-blade/)                   | The blade UI shell component (header, toolbar, content area) |
+| [`VcBladeNavigation`](../../../shared/components/blade-navigation/)       | The container component that renders the blade stack         |
+| [`useToolbar`](../../../shared/composables/useToolbar/)                   | Dynamic toolbar management for blades                        |
+| [`usePopup`](../../../shared/composables/usePopup/)                       | Confirmation dialogs, commonly used in close guards          |

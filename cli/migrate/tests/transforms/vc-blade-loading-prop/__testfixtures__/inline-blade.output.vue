@@ -1,5 +1,9 @@
 <template>
-  <VcBlade :loading="loading" :title="title" width="50%">
+  <VcBlade
+    :loading="loading"
+    :title="title"
+    width="50%"
+  >
     <div>content</div>
   </VcBlade>
 </template>

@@ -180,7 +180,11 @@
 <script
   lang="ts"
   setup
-  generic="V = string | string[] | null, T = unknown, P extends { results?: T[]; totalCount?: number } | undefined = undefined"
+  generic="
+    V = string | string[] | null,
+    T = unknown,
+    P extends { results?: T[]; totalCount?: number } | undefined = undefined
+  "
 >
 import { ref, computed, watch, watchEffect, nextTick } from "vue";
 import { useFormField } from "@ui/composables/useFormField";
@@ -322,22 +326,19 @@ defineSlots<{
   "no-options": (props: any) => any;
 }>();
 
-const props = withDefaults(
-  defineProps<SelectProps<V>>(),
-  {
-    optionValue: "id",
-    optionLabel: "title",
-    debounce: 500,
-    clearable: true,
-    name: "Field",
-    emitValue: true,
-    mapOptions: true,
-    size: "default",
-    options: (): T[] => [],
-    outline: true,
-    placement: "bottom",
-  },
-);
+const props = withDefaults(defineProps<SelectProps<V>>(), {
+  optionValue: "id",
+  optionLabel: "title",
+  debounce: 500,
+  clearable: true,
+  name: "Field",
+  emitValue: true,
+  mapOptions: true,
+  size: "default",
+  options: (): T[] => [],
+  outline: true,
+  placement: "bottom",
+});
 
 const emit = defineEmits<{
   /**
@@ -355,11 +356,20 @@ const emit = defineEmits<{
   close: [];
 }>();
 
-const { t } = useI18n({ useScope: "global" });
+const { t: _t } = useI18n({ useScope: "global" });
 const bladeLoading = useBladeLoading();
 
-const { fieldId, labelId, errorId, hintId, invalid, resolvedDisabled, resolvedName, ariaRequired, ariaDescribedBy } =
-  useFormField(props);
+const {
+  fieldId,
+  labelId,
+  errorId,
+  hintId,
+  invalid,
+  resolvedDisabled,
+  resolvedName: _resolvedName,
+  ariaRequired,
+  ariaDescribedBy,
+} = useFormField(props);
 const listboxId = computed(() => `${fieldId.value}-listbox`);
 
 // --- Subcomponent refs ---

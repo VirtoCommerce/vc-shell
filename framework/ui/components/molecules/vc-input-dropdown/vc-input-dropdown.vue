@@ -202,7 +202,7 @@ export interface VcInputDropdownEmits {
   (event: "blur", value: Event): void;
 }
 
-const props = withDefaults(defineProps<VcInputDropdownProps>(), {
+const _props = withDefaults(defineProps<VcInputDropdownProps>(), {
   debounce: 0,
   searchable: false,
   inputType: "text",

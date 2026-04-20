@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import GlobalFiltersPanel from "./GlobalFiltersPanel.vue";
 
 vi.mock("vue-i18n", () => ({

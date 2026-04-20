@@ -20,7 +20,10 @@ The component uses a vertical layout by default (label above value), but support
 
 ```vue
 <template>
-  <VcField label="Customer Name" model-value="John Doe" />
+  <VcField
+    label="Customer Name"
+    model-value="John Doe"
+  />
 </template>
 
 <script setup lang="ts">
@@ -30,27 +33,27 @@ import { VcField } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | -- | Field label text |
-| `modelValue` | `string \| number \| Date` | -- | Field content to display |
-| `type` | `"text" \| "date" \| "date-ago" \| "link" \| "email"` | `"text"` | Content type for formatting |
-| `copyable` | `boolean` | `false` | Show a copy-to-clipboard button |
-| `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction of label and value |
-| `aspectRatio` | `[number, number]` | `[1, 1]` | Column width ratio for label and value in horizontal mode |
-| `tooltip` | `string` | -- | Tooltip shown on the label |
+| Prop          | Type                                                  | Default      | Description                                               |
+| ------------- | ----------------------------------------------------- | ------------ | --------------------------------------------------------- |
+| `label`       | `string`                                              | --           | Field label text                                          |
+| `modelValue`  | `string \| number \| Date`                            | --           | Field content to display                                  |
+| `type`        | `"text" \| "date" \| "date-ago" \| "link" \| "email"` | `"text"`     | Content type for formatting                               |
+| `copyable`    | `boolean`                                             | `false`      | Show a copy-to-clipboard button                           |
+| `orientation` | `"vertical" \| "horizontal"`                          | `"vertical"` | Layout direction of label and value                       |
+| `aspectRatio` | `[number, number]`                                    | `[1, 1]`     | Column width ratio for label and value in horizontal mode |
+| `tooltip`     | `string`                                              | --           | Tooltip shown on the label                                |
 
 ## Type Formatting
 
 Each `type` value renders the content differently:
 
-| Type | Behavior |
-|------|----------|
-| `"text"` | Renders the value as plain text |
-| `"date"` | Formats the value as a localized date string |
+| Type         | Behavior                                                 |
+| ------------ | -------------------------------------------------------- |
+| `"text"`     | Renders the value as plain text                          |
+| `"date"`     | Formats the value as a localized date string             |
 | `"date-ago"` | Formats the value as relative time (e.g., "3 hours ago") |
-| `"link"` | Renders as a clickable `<a>` tag opening in a new tab |
-| `"email"` | Renders as a clickable `mailto:` link |
+| `"link"`     | Renders as a clickable `<a>` tag opening in a new tab    |
+| `"email"`    | Renders as a clickable `mailto:` link                    |
 
 ## Common Patterns
 
@@ -59,11 +62,31 @@ Each `type` value renders the content differently:
 ```vue
 <template>
   <div class="tw-flex tw-flex-col tw-gap-4">
-    <VcField label="Order Number" model-value="ORD-2024-1234" copyable />
-    <VcField label="Created" :model-value="order.createdDate" type="date" />
-    <VcField label="Last Modified" :model-value="order.modifiedDate" type="date-ago" />
-    <VcField label="Store URL" :model-value="order.storeUrl" type="link" />
-    <VcField label="Contact Email" :model-value="order.email" type="email" />
+    <VcField
+      label="Order Number"
+      model-value="ORD-2024-1234"
+      copyable
+    />
+    <VcField
+      label="Created"
+      :model-value="order.createdDate"
+      type="date"
+    />
+    <VcField
+      label="Last Modified"
+      :model-value="order.modifiedDate"
+      type="date-ago"
+    />
+    <VcField
+      label="Store URL"
+      :model-value="order.storeUrl"
+      type="link"
+    />
+    <VcField
+      label="Contact Email"
+      :model-value="order.email"
+      type="email"
+    />
   </div>
 </template>
 ```
@@ -104,9 +127,21 @@ The copy button provides visual feedback (checkmark icon for 1 second) after a s
 
 ```vue
 <template>
-  <VcField label="Order ID" :model-value="order.id" copyable />
-  <VcField label="Tracking Number" :model-value="shipment.trackingNumber" copyable />
-  <VcField label="API Key" :model-value="apiKey" copyable />
+  <VcField
+    label="Order ID"
+    :model-value="order.id"
+    copyable
+  />
+  <VcField
+    label="Tracking Number"
+    :model-value="shipment.trackingNumber"
+    copyable
+  />
+  <VcField
+    label="API Key"
+    :model-value="apiKey"
+    copyable
+  />
 </template>
 ```
 
@@ -135,8 +170,8 @@ const displayFields = computed(() => [
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
+| Variable      | Default  | Description                                  |
+| ------------- | -------- | -------------------------------------------- |
 | `--field-gap` | `0.5rem` | Gap between label and value in vertical mode |
 
 ## Accessibility
@@ -170,4 +205,3 @@ The `type` prop affects rendering, not validation. Setting `type="email"` does n
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
-

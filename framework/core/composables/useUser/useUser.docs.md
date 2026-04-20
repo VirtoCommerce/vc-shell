@@ -16,17 +16,26 @@ Uses `createSharedComposable` from VueUse, so all callers across the entire appl
 
 ```vue
 <script setup lang="ts">
-import { useUser } from '@vc-shell/framework';
+import { useUser } from "@vc-shell/framework";
 
 const { user, isAuthenticated, isAdministrator, loading } = useUser();
 </script>
 
 <template>
-  <div v-if="loading" class="tw-animate-pulse">Loading user...</div>
+  <div
+    v-if="loading"
+    class="tw-animate-pulse"
+  >
+    Loading user...
+  </div>
 
   <div v-else-if="isAuthenticated">
     <p>Welcome, {{ user?.userName }}</p>
-    <span v-if="isAdministrator" class="tw-badge tw-badge-primary">Admin</span>
+    <span
+      v-if="isAdministrator"
+      class="tw-badge tw-badge-primary"
+      >Admin</span
+    >
   </div>
 
   <div v-else>
@@ -43,15 +52,15 @@ None.
 
 ### Returns
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `user` | `ComputedRef<UserDetail \| undefined>` | Current user details (userName, email, id, etc.), or `undefined` if not authenticated. |
-| `loading` | `ComputedRef<boolean>` | Whether a user operation (loadUser, signOut) is in progress. |
-| `isAuthenticated` | `ComputedRef<boolean>` | Whether a user session is active. Derived from `user.userName != null`. |
-| `isAdministrator` | `ComputedRef<boolean \| undefined>` | Whether the current user has admin privileges. `undefined` if user is not loaded. |
-| `loadUser` | `() => Promise<UserDetail>` | Loads/reloads user info from the server. Deduplicates concurrent calls -- if two components call `loadUser()` at the same time, only one API request is made. |
-| `signOut` | `() => Promise<void>` | Signs out the current user, clears auth data from localStorage, and resets the user state. Handles both standard and external (SSO) sign-out flows. |
-| `getAccessToken` | `() => Promise<string \| null>` | Returns the current OAuth access token. Automatically refreshes using the refresh token if the access token has expired or will expire within 60 seconds. Returns `null` if no auth data exists. |
+| Property          | Type                                   | Description                                                                                                                                                                                      |
+| ----------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `user`            | `ComputedRef<UserDetail \| undefined>` | Current user details (userName, email, id, etc.), or `undefined` if not authenticated.                                                                                                           |
+| `loading`         | `ComputedRef<boolean>`                 | Whether a user operation (loadUser, signOut) is in progress.                                                                                                                                     |
+| `isAuthenticated` | `ComputedRef<boolean>`                 | Whether a user session is active. Derived from `user.userName != null`.                                                                                                                          |
+| `isAdministrator` | `ComputedRef<boolean \| undefined>`    | Whether the current user has admin privileges. `undefined` if user is not loaded.                                                                                                                |
+| `loadUser`        | `() => Promise<UserDetail>`            | Loads/reloads user info from the server. Deduplicates concurrent calls -- if two components call `loadUser()` at the same time, only one API request is made.                                    |
+| `signOut`         | `() => Promise<void>`                  | Signs out the current user, clears auth data from localStorage, and resets the user state. Handles both standard and external (SSO) sign-out flows.                                              |
+| `getAccessToken`  | `() => Promise<string \| null>`        | Returns the current OAuth access token. Automatically refreshes using the refresh token if the access token has expired or will expire within 60 seconds. Returns `null` if no auth data exists. |
 
 ## How It Works
 
@@ -68,9 +77,11 @@ The composable delegates to `_createInternalUserLogic()`, which manages:
 ## Recipe: Route Guard Based on Authentication
 
 ```typescript
-import { useUser } from '@vc-shell/framework';
+import { useUser } from "@vc-shell/framework";
 
-const router = createRouter({ /* ... */ });
+const router = createRouter({
+  /* ... */
+});
 
 router.beforeEach(async (to) => {
   const { isAuthenticated, loadUser } = useUser();
@@ -85,7 +96,7 @@ router.beforeEach(async (to) => {
   }
 
   if (to.meta.requiresAuth && !isAuthenticated.value) {
-    return { name: 'SignIn' };
+    return { name: "SignIn" };
   }
 });
 ```
@@ -95,25 +106,33 @@ router.beforeEach(async (to) => {
 ```vue
 <template>
   <div class="tw-flex tw-items-center tw-gap-2">
-    <VcAvatar :name="user?.userName" size="sm" />
+    <VcAvatar
+      :name="user?.userName"
+      size="sm"
+    />
     <div>
       <p class="tw-text-sm tw-font-medium">{{ user?.userName }}</p>
       <p class="tw-text-xs tw-text-gray-500">{{ user?.email }}</p>
     </div>
-    <VcButton size="sm" variant="ghost" @click="handleSignOut">Sign Out</VcButton>
+    <VcButton
+      size="sm"
+      variant="ghost"
+      @click="handleSignOut"
+      >Sign Out</VcButton
+    >
   </div>
 </template>
 
 <script setup lang="ts">
-import { useUser } from '@vc-shell/framework';
-import { useRouter } from 'vue-router';
+import { useUser } from "@vc-shell/framework";
+import { useRouter } from "vue-router";
 
 const { user, signOut } = useUser();
 const router = useRouter();
 
 async function handleSignOut() {
   await signOut();
-  router.push({ name: 'SignIn' });
+  router.push({ name: "SignIn" });
 }
 </script>
 ```
@@ -121,7 +140,7 @@ async function handleSignOut() {
 ## Recipe: Adding Access Token to Custom API Calls
 
 ```typescript
-import { useUser } from '@vc-shell/framework';
+import { useUser } from "@vc-shell/framework";
 
 const { getAccessToken } = useUser();
 
@@ -130,7 +149,7 @@ async function fetchCustomEndpoint(url: string) {
 
   const response = await fetch(url, {
     headers: {
-      Authorization: token ? `Bearer ${token}` : '',
+      Authorization: token ? `Bearer ${token}` : "",
     },
   });
 

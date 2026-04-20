@@ -31,13 +31,13 @@ const notification = computed(() => notificationRef.value);
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | -- | Notification headline text |
-| `notification` | `IPushNotification` | -- | Full notification object (required for timestamp) |
-| `icon` | `string` | `undefined` | Icon name displayed in a circular badge |
-| `color` | `string` | `undefined` | Background color for the icon badge |
-| `severity` | `string` | `undefined` | Semantic severity level |
+| Prop           | Type                | Default     | Description                                       |
+| -------------- | ------------------- | ----------- | ------------------------------------------------- |
+| `title`        | `string`            | --          | Notification headline text                        |
+| `notification` | `IPushNotification` | --          | Full notification object (required for timestamp) |
+| `icon`         | `string`            | `undefined` | Icon name displayed in a circular badge           |
+| `color`        | `string`            | `undefined` | Background color for the icon badge               |
+| `severity`     | `string`            | `undefined` | Semantic severity level                           |
 
 ## Recipe: Custom Notification for Order Events
 
@@ -129,7 +129,10 @@ const isRunning = computed(() => (notification.value as any).isRunning ?? false)
     icon="lucide-upload"
     color="var(--info-500)"
   >
-    <div v-if="isRunning" class="tw-mt-1">
+    <div
+      v-if="isRunning"
+      class="tw-mt-1"
+    >
       <div class="tw-h-2 tw-bg-gray-200 tw-rounded">
         <div
           class="tw-h-full tw-bg-blue-500 tw-rounded tw-transition-all"
@@ -138,7 +141,12 @@ const isRunning = computed(() => (notification.value as any).isRunning ?? false)
       </div>
       <span class="tw-text-xs tw-text-gray-500">{{ progress }}% complete</span>
     </div>
-    <p v-else class="tw-text-sm tw-text-green-600">Import completed.</p>
+    <p
+      v-else
+      class="tw-text-sm tw-text-green-600"
+    >
+      Import completed.
+    </p>
   </NotificationTemplate>
 </template>
 ```

@@ -32,6 +32,7 @@ const assetsManager = useAssetsManager(imagesRef, {
 ```
 
 Notes:
+
 - `uploadPath` must be a function (`() => string`), not a static string.
 - If no confirmation is needed, omit `confirmRemove`.
 

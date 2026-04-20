@@ -21,13 +21,13 @@ The service follows the same provide/inject singleton pattern as other framework
 ## Basic Usage
 
 ```typescript
-import { useAppBarWidget } from '@vc-shell/framework';
+import { useAppBarWidget } from "@vc-shell/framework";
 
 const appBarService = useAppBarWidget();
 
 const widgetId = appBarService.register({
-  icon: 'bell',
-  title: 'Notifications',
+  icon: "bell",
+  title: "Notifications",
   order: 10,
   onClick: () => openNotifications(),
 });
@@ -41,29 +41,29 @@ None.
 
 ### Returns (`IAppBarWidgetService`)
 
-| Property / Method | Type | Description |
-|-------------------|------|-------------|
-| `register` | `(options: registerAppBarWidgetOptions) => string` | Registers a widget in the app bar, returns the assigned ID |
-| `unregister` | `(id: string) => void` | Removes a widget from the app bar by ID |
-| `items` | `ComputedRef<AppBarWidget[]>` | Reactive list of all registered app bar widgets |
+| Property / Method | Type                                               | Description                                                |
+| ----------------- | -------------------------------------------------- | ---------------------------------------------------------- |
+| `register`        | `(options: registerAppBarWidgetOptions) => string` | Registers a widget in the app bar, returns the assigned ID |
+| `unregister`      | `(id: string) => void`                             | Removes a widget from the app bar by ID                    |
+| `items`           | `ComputedRef<AppBarWidget[]>`                      | Reactive list of all registered app bar widgets            |
 
 ### registerAppBarWidgetOptions
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | `string` | No | Custom ID; auto-generated if omitted |
-| `order` | `number` | No | Sort order in the app bar (lower = further left) |
-| `title` | `string` | No | Tooltip or label text |
-| `icon` | `Component \| string` | No | Lucide icon name or a Vue component |
-| `component` | `Component` | No | Custom Vue component to render instead of default icon button |
-| `props` | `Record<string, unknown>` | No | Props to pass to the custom component |
-| `onClick` | `() => void` | No | Click handler for the default icon button |
-| `slot` | `string` | No | Named slot target for placement control |
+| Field       | Type                      | Required | Description                                                   |
+| ----------- | ------------------------- | -------- | ------------------------------------------------------------- |
+| `id`        | `string`                  | No       | Custom ID; auto-generated if omitted                          |
+| `order`     | `number`                  | No       | Sort order in the app bar (lower = further left)              |
+| `title`     | `string`                  | No       | Tooltip or label text                                         |
+| `icon`      | `Component \| string`     | No       | Lucide icon name or a Vue component                           |
+| `component` | `Component`               | No       | Custom Vue component to render instead of default icon button |
+| `props`     | `Record<string, unknown>` | No       | Props to pass to the custom component                         |
+| `onClick`   | `() => void`              | No       | Click handler for the default icon button                     |
+| `slot`      | `string`                  | No       | Named slot target for placement control                       |
 
 ### Additional Exports
 
-| Export | Description |
-|--------|-------------|
+| Export                  | Description                                                             |
+| ----------------------- | ----------------------------------------------------------------------- |
 | `provideAppBarWidget()` | Creates and provides the service. Flushes pre-registered items on init. |
 
 ## Common Patterns
@@ -71,14 +71,14 @@ None.
 ### Simple icon button widget
 
 ```typescript
-import { useAppBarWidget } from '@vc-shell/framework';
+import { useAppBarWidget } from "@vc-shell/framework";
 
 const { register, unregister } = useAppBarWidget();
 
 // Register a simple icon button
 const id = register({
-  icon: 'lucide-refresh-cw',
-  title: 'Sync Data',
+  icon: "lucide-refresh-cw",
+  title: "Sync Data",
   order: 5,
   onClick: () => syncAllData(),
 });
@@ -87,16 +87,16 @@ const id = register({
 ### Registering a custom component widget
 
 ```typescript
-import { useAppBarWidget } from '@vc-shell/framework';
-import { markRaw, onUnmounted } from 'vue';
-import LanguagePicker from './LanguagePicker.vue';
+import { useAppBarWidget } from "@vc-shell/framework";
+import { markRaw, onUnmounted } from "vue";
+import LanguagePicker from "./LanguagePicker.vue";
 
 const { register, unregister } = useAppBarWidget();
 
 const id = register({
   component: markRaw(LanguagePicker),
   order: 20,
-  title: 'Language',
+  title: "Language",
 });
 
 onUnmounted(() => unregister(id));
@@ -105,17 +105,17 @@ onUnmounted(() => unregister(id));
 ### Widget with dynamic props
 
 ```typescript
-import { useAppBarWidget } from '@vc-shell/framework';
-import { markRaw } from 'vue';
-import SyncStatusIndicator from './SyncStatusIndicator.vue';
+import { useAppBarWidget } from "@vc-shell/framework";
+import { markRaw } from "vue";
+import SyncStatusIndicator from "./SyncStatusIndicator.vue";
 
 const { register } = useAppBarWidget();
 
 register({
   component: markRaw(SyncStatusIndicator),
   props: {
-    status: syncStatus,         // Can be reactive
-    lastSyncTime: lastSyncAt,   // Will be passed as props to the component
+    status: syncStatus, // Can be reactive
+    lastSyncTime: lastSyncAt, // Will be passed as props to the component
   },
   order: 1,
 });
@@ -124,14 +124,14 @@ register({
 ### Listing all registered widgets
 
 ```typescript
-import { useAppBarWidget } from '@vc-shell/framework';
+import { useAppBarWidget } from "@vc-shell/framework";
 
 const { items } = useAppBarWidget();
 
 // Iterate over all widgets (sorted by order)
 watchEffect(() => {
   console.log(`${items.value.length} widgets in app bar`);
-  items.value.forEach(w => console.log(`  - ${w.title ?? w.id}`));
+  items.value.forEach((w) => console.log(`  - ${w.title ?? w.id}`));
 });
 ```
 
@@ -158,7 +158,7 @@ Widgets are not automatically removed when a component unmounts. If your module 
 ```typescript
 const { register, unregister } = useAppBarWidget();
 
-const id = register({ icon: 'lucide-bell', onClick: handleClick });
+const id = register({ icon: "lucide-bell", onClick: handleClick });
 
 onUnmounted(() => {
   unregister(id);

@@ -34,20 +34,20 @@ push({
 
 ### Returns
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `breadcrumbs` | `ComputedRef<Breadcrumbs[]>` | Reactive array of current breadcrumb items |
-| `push` | `(breadcrumb: Breadcrumbs) => void` | Add a breadcrumb (deduplicates by `id`, updates in place if exists) |
-| `remove` | `(ids: string[]) => void` | Remove breadcrumbs by their IDs |
+| Property      | Type                                | Description                                                         |
+| ------------- | ----------------------------------- | ------------------------------------------------------------------- |
+| `breadcrumbs` | `ComputedRef<Breadcrumbs[]>`        | Reactive array of current breadcrumb items                          |
+| `push`        | `(breadcrumb: Breadcrumbs) => void` | Add a breadcrumb (deduplicates by `id`, updates in place if exists) |
+| `remove`      | `(ids: string[]) => void`           | Remove breadcrumbs by their IDs                                     |
 
 ### Breadcrumbs Interface
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `id` | `string` | Yes | Unique identifier for the breadcrumb |
-| `title` | `MaybeRef<string \| undefined>` | Yes | Display text (can be reactive) |
-| `icon` | `string?` | No | Icon identifier |
-| `clickHandler` | `(id: string) => void \| boolean \| Promise<void \| boolean>` | No | Click callback; return `false` to prevent trail trimming |
+| Property       | Type                                                          | Required | Description                                              |
+| -------------- | ------------------------------------------------------------- | -------- | -------------------------------------------------------- |
+| `id`           | `string`                                                      | Yes      | Unique identifier for the breadcrumb                     |
+| `title`        | `MaybeRef<string \| undefined>`                               | Yes      | Display text (can be reactive)                           |
+| `icon`         | `string?`                                                     | No       | Icon identifier                                          |
+| `clickHandler` | `(id: string) => void \| boolean \| Promise<void \| boolean>` | No       | Click callback; return `false` to prevent trail trimming |
 
 ## Common Patterns
 

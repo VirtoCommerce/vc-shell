@@ -39,14 +39,14 @@ Module developers use the composable or global property directly -- no registrat
 
 ### Global Property
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property     | Type                                                        | Description                                               |
+| ------------ | ----------------------------------------------------------- | --------------------------------------------------------- |
 | `$hasAccess` | `(permissions: string \| string[] \| undefined) => boolean` | Checks if the current user has the required permission(s) |
 
 ### Composable: `usePermissions()`
 
-| Export | Type | Description |
-|--------|------|-------------|
+| Export      | Type                                                        | Description                           |
+| ----------- | ----------------------------------------------------------- | ------------------------------------- |
 | `hasAccess` | `(permissions: string \| string[] \| undefined) => boolean` | Returns `true` if the user has access |
 
 #### `hasAccess` Logic
@@ -63,19 +63,13 @@ Module developers use the composable or global property directly -- no registrat
 ```vue
 <template>
   <!-- Single permission check -->
-  <VcButton v-if="$hasAccess('order:create')">
-    Create Order
-  </VcButton>
+  <VcButton v-if="$hasAccess('order:create')"> Create Order </VcButton>
 
   <!-- Multiple permissions (OR logic: any one is enough) -->
-  <VcButton v-if="$hasAccess(['order:update', 'order:manage'])">
-    Edit Order
-  </VcButton>
+  <VcButton v-if="$hasAccess(['order:update', 'order:manage'])"> Edit Order </VcButton>
 
   <!-- No permission required (undefined = always visible) -->
-  <VcButton v-if="$hasAccess(undefined)">
-    View Dashboard
-  </VcButton>
+  <VcButton v-if="$hasAccess(undefined)"> View Dashboard </VcButton>
 </template>
 ```
 
@@ -109,11 +103,11 @@ export default defineAppModule({
     OrdersList: {
       component: OrdersListBlade,
       route: "orders",
-      permissions: ["order:read"],  // Required to access this blade
+      permissions: ["order:read"], // Required to access this blade
     },
     OrderDetails: {
       component: OrderDetailsBlade,
-      permissions: ["order:read", "order:manage"],  // OR logic
+      permissions: ["order:read", "order:manage"], // OR logic
     },
   },
 });
@@ -129,7 +123,7 @@ const toolbar = useToolbar([
     id: "save",
     title: "Save",
     icon: "lucide-save",
-    permissions: "order:update",  // Only shown if user has this permission
+    permissions: "order:update", // Only shown if user has this permission
     clickHandler: () => saveOrder(),
   },
   {

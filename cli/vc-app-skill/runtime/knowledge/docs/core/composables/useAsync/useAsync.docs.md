@@ -3,6 +3,7 @@
 Wraps an asynchronous function with reactive `loading` state, reactive `error` state, and automatic error notifications. This is the standard way to handle API calls, saves, deletes, and other async operations throughout VC-Shell applications.
 
 When the returned `action` is called, `useAsync` automatically:
+
 1. Sets `loading` to `true` and clears any previous `error`
 2. Executes your async function
 3. On failure: parses the error into a `DisplayableError`, stores it in `error`, logs it, optionally shows a toast notification, and re-throws
@@ -23,7 +24,11 @@ import { OrderClient } from "@api/orders";
 
 const { getApiClient } = useApiClient(OrderClient);
 
-const { loading, error, action: loadOrder } = useAsync<string>(async (id) => {
+const {
+  loading,
+  error,
+  action: loadOrder,
+} = useAsync<string>(async (id) => {
   const client = await getApiClient();
   return await client.getOrderById(id);
 });
@@ -44,41 +49,38 @@ import { useAsync } from "@vc-shell/framework";
 
 ### Parameters
 
-| Parameter     | Type                            | Required | Description                                      |
-|---------------|---------------------------------|----------|--------------------------------------------------|
-| `innerAction` | `AsyncAction<Payload, Result>`  | Yes      | The async function to wrap                       |
-| `options`     | `UseAsyncOptions`               | No       | Configuration for notifications                  |
+| Parameter     | Type                           | Required | Description                     |
+| ------------- | ------------------------------ | -------- | ------------------------------- |
+| `innerAction` | `AsyncAction<Payload, Result>` | Yes      | The async function to wrap      |
+| `options`     | `UseAsyncOptions`              | No       | Configuration for notifications |
 
 #### Type Aliases
 
 ```typescript
-type AsyncAction<Payload = void, Result = void> = (
-  payload?: Payload,
-  ...rest: any[]
-) => Promise<Result>;
+type AsyncAction<Payload = void, Result = void> = (payload?: Payload, ...rest: any[]) => Promise<Result>;
 ```
 
 #### UseAsyncOptions
 
-| Option          | Type      | Default | Description                                          |
-|-----------------|-----------|---------|------------------------------------------------------|
-| `notify`        | `boolean` | `true`  | Show an error toast notification on failure           |
+| Option          | Type      | Default | Description                                              |
+| --------------- | --------- | ------- | -------------------------------------------------------- |
+| `notify`        | `boolean` | `true`  | Show an error toast notification on failure              |
 | `notifyTimeout` | `number`  | `8000`  | Duration in milliseconds before the toast auto-dismisses |
 
 ### Returns: `UseAsyncReturn<Payload, Result>`
 
-| Property  | Type                                        | Description                                                       |
-|-----------|---------------------------------------------|-------------------------------------------------------------------|
-| `loading` | `DeepReadonly<Ref<boolean>>`                | Reactive loading state -- `true` while the action is executing    |
-| `error`   | `DeepReadonly<Ref<DisplayableError \| null>>` | Reactive error -- set on failure, cleared on next invocation      |
-| `action`  | `AsyncAction<Payload, Result>`              | Wrapped function with the same signature as `innerAction`         |
+| Property  | Type                                          | Description                                                    |
+| --------- | --------------------------------------------- | -------------------------------------------------------------- |
+| `loading` | `DeepReadonly<Ref<boolean>>`                  | Reactive loading state -- `true` while the action is executing |
+| `error`   | `DeepReadonly<Ref<DisplayableError \| null>>` | Reactive error -- set on failure, cleared on next invocation   |
+| `action`  | `AsyncAction<Payload, Result>`                | Wrapped function with the same signature as `innerAction`      |
 
 ### Type Parameters
 
-| Name      | Default | Description                                            |
-|-----------|---------|--------------------------------------------------------|
-| `Payload` | `void`  | Type of the first argument passed to `action`          |
-| `Result`  | `void`  | Return type of the async operation                     |
+| Name      | Default | Description                                   |
+| --------- | ------- | --------------------------------------------- |
+| `Payload` | `void`  | Type of the first argument passed to `action` |
+| `Result`  | `void`  | Return type of the async operation            |
 
 ---
 
@@ -117,12 +119,10 @@ await loadProduct("prod-42");
 When the inner function returns a value, it becomes the resolved value of `action`:
 
 ```typescript
-const { action: validateSeller } = useAsync<Seller, ValidationFailure[]>(
-  async (seller) => {
-    const client = await getApiClient();
-    return await client.validateSeller(seller);
-  },
-);
+const { action: validateSeller } = useAsync<Seller, ValidationFailure[]>(async (seller) => {
+  const client = await getApiClient();
+  return await client.validateSeller(seller);
+});
 
 const failures = await validateSeller(sellerData);
 // failures is typed as ValidationFailure[]
@@ -134,14 +134,25 @@ The `error` ref contains a parsed `DisplayableError` after a failure. It is auto
 
 ```vue
 <template>
-  <VcAlert v-if="error" variant="error">
+  <VcAlert
+    v-if="error"
+    variant="error"
+  >
     {{ error.message }}
   </VcAlert>
-  <VcButton :loading="loading" @click="save">Save</VcButton>
+  <VcButton
+    :loading="loading"
+    @click="save"
+    >Save</VcButton
+  >
 </template>
 
 <script setup lang="ts">
-const { loading, error, action: save } = useAsync(async () => {
+const {
+  loading,
+  error,
+  action: save,
+} = useAsync(async () => {
   await saveOrder(order.value);
 });
 </script>
@@ -153,18 +164,30 @@ By default, `useAsync` shows a toast notification on failure. The notification i
 
 ```typescript
 // Default: shows toast on error
-const { action: save } = useAsync(async () => { /* ... */ });
+const { action: save } = useAsync(async () => {
+  /* ... */
+});
 
 // Explicit: custom timeout
-const { action: save } = useAsync(async () => { /* ... */ }, {
-  notify: true,
-  notifyTimeout: 5000,
-});
+const { action: save } = useAsync(
+  async () => {
+    /* ... */
+  },
+  {
+    notify: true,
+    notifyTimeout: 5000,
+  },
+);
 
 // Silent: no toast notification
-const { action: silentRefresh } = useAsync(async () => { /* ... */ }, {
-  notify: false,
-});
+const { action: silentRefresh } = useAsync(
+  async () => {
+    /* ... */
+  },
+  {
+    notify: false,
+  },
+);
 ```
 
 ### Combining with useApiClient
@@ -190,9 +213,15 @@ const { action: search, loading } = useAsync<SearchQuery>(async (query) => {
 When a blade has multiple async operations, combine their loading states into one:
 
 ```typescript
-const { action: load, loading: loadLoading } = useAsync<string>(async (id) => { /* ... */ });
-const { action: save, loading: saveLoading } = useAsync<Product>(async (p) => { /* ... */ });
-const { action: remove, loading: deleteLoading } = useAsync<string>(async (id) => { /* ... */ });
+const { action: load, loading: loadLoading } = useAsync<string>(async (id) => {
+  /* ... */
+});
+const { action: save, loading: saveLoading } = useAsync<Product>(async (p) => {
+  /* ... */
+});
+const { action: remove, loading: deleteLoading } = useAsync<string>(async (id) => {
+  /* ... */
+});
 
 // Single reactive boolean: true if ANY operation is running
 const loading = useLoading(loadLoading, saveLoading, deleteLoading);
@@ -220,19 +249,15 @@ export function useFulfillmentCenter() {
     details.value = await client.getFulfillmentCenterById(id!);
   });
 
-  const { action: save, loading: saveLoading } = useAsync<FulfillmentCenter>(
-    async (data) => {
-      const client = await getApiClient();
-      await client.updateFulfillmentCenter({ fulfillmentCenter: data });
-    },
-  );
+  const { action: save, loading: saveLoading } = useAsync<FulfillmentCenter>(async (data) => {
+    const client = await getApiClient();
+    await client.updateFulfillmentCenter({ fulfillmentCenter: data });
+  });
 
-  const { action: remove, loading: deleteLoading } = useAsync<string>(
-    async (id) => {
-      const client = await getApiClient();
-      await client.deleteFulfillmentCenter([id!]);
-    },
-  );
+  const { action: remove, loading: deleteLoading } = useAsync<string>(async (id) => {
+    const client = await getApiClient();
+    await client.deleteFulfillmentCenter([id!]);
+  });
 
   return {
     details,
@@ -341,14 +366,18 @@ async function onSave() {
 ```typescript
 // BAD -- creates a new loading ref each call, template never sees it
 async function loadData() {
-  const { action, loading } = useAsync(async () => { /* ... */ });
+  const { action, loading } = useAsync(async () => {
+    /* ... */
+  });
   await action();
 }
 ```
 
 ```typescript
 // GOOD -- create at setup time, call the action later
-const { action: loadData, loading } = useAsync(async () => { /* ... */ });
+const { action: loadData, loading } = useAsync(async () => {
+  /* ... */
+});
 
 onMounted(() => loadData());
 ```
@@ -381,9 +410,9 @@ const { action: save, loading: saveLoading } = useAsync(async () => saveData());
 
 ## Related
 
-| Resource | Description |
-|----------|-------------|
-| [`useApiClient`](../useApiClient/) | Provides typed API client instances to pass into `useAsync` |
-| [`useLoading`](../useLoading/) | Combines multiple `loading` refs into a single boolean |
-| [`useModificationTracker`](../useModificationTracker/) | Tracks dirty state for forms -- often used alongside `useAsync` for save operations |
-| [`notification`](../../../shared/components/notifications/) | The toast notification system used by `useAsync` for error display |
+| Resource                                                    | Description                                                                         |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [`useApiClient`](../useApiClient/)                          | Provides typed API client instances to pass into `useAsync`                         |
+| [`useLoading`](../useLoading/)                              | Combines multiple `loading` refs into a single boolean                              |
+| [`useModificationTracker`](../useModificationTracker/)      | Tracks dirty state for forms -- often used alongside `useAsync` for save operations |
+| [`notification`](../../../shared/components/notifications/) | The toast notification system used by `useAsync` for error display                  |

@@ -12,12 +12,12 @@ Prevents the browser tab from closing when unsaved changes exist by hooking into
 
 ```vue
 <script setup lang="ts">
-import { useBeforeUnload } from '@vc-shell/framework';
-import { ref, computed } from 'vue';
+import { useBeforeUnload } from "@vc-shell/framework";
+import { ref, computed } from "vue";
 
 // Suppose your blade has a form with a "dirty" flag
-const originalName = ref('Widget A');
-const currentName = ref('Widget A');
+const originalName = ref("Widget A");
+const currentName = ref("Widget A");
 
 const isModified = computed(() => originalName.value !== currentName.value);
 
@@ -27,7 +27,10 @@ useBeforeUnload(isModified);
 
 <template>
   <VcBlade title="Edit Widget">
-    <VcInput v-model="currentName" label="Name" />
+    <VcInput
+      v-model="currentName"
+      label="Name"
+    />
     <VcButton @click="save">Save</VcButton>
   </VcBlade>
 </template>
@@ -37,14 +40,14 @@ useBeforeUnload(isModified);
 
 ### Parameters
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `modified` | `ComputedRef<boolean>` | Yes | When `true`, the browser shows a leave-confirmation dialog on tab close or refresh |
+| Parameter  | Type                   | Required | Description                                                                        |
+| ---------- | ---------------------- | -------- | ---------------------------------------------------------------------------------- |
+| `modified` | `ComputedRef<boolean>` | Yes      | When `true`, the browser shows a leave-confirmation dialog on tab close or refresh |
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
+| Property   | Type                   | Description                                                             |
+| ---------- | ---------------------- | ----------------------------------------------------------------------- |
 | `modified` | `ComputedRef<boolean>` | Pass-through of the input ref, useful for chaining or template bindings |
 
 ## How It Works
@@ -57,13 +60,13 @@ Because the listener is added in `onBeforeMount` (not `setup`), it avoids attach
 
 ```vue
 <script setup lang="ts">
-import { useBeforeUnload } from '@vc-shell/framework';
-import { ref, computed, watch } from 'vue';
+import { useBeforeUnload } from "@vc-shell/framework";
+import { ref, computed, watch } from "vue";
 
 const props = defineProps<{ productId: string }>();
 
-const product = ref({ name: '', price: 0 });
-const snapshot = ref({ name: '', price: 0 });
+const product = ref({ name: "", price: 0 });
+const snapshot = ref({ name: "", price: 0 });
 
 // Load data and take a snapshot of the original state
 async function load() {
@@ -73,9 +76,7 @@ async function load() {
 }
 
 // Deep-compare current vs. snapshot
-const isModified = computed(() =>
-  JSON.stringify(product.value) !== JSON.stringify(snapshot.value),
-);
+const isModified = computed(() => JSON.stringify(product.value) !== JSON.stringify(snapshot.value));
 
 // Guard the browser tab
 useBeforeUnload(isModified);
@@ -84,7 +85,7 @@ useBeforeUnload(isModified);
 defineExpose({
   onBeforeClose: () => {
     if (isModified.value) {
-      return confirm('You have unsaved changes. Discard?');
+      return confirm("You have unsaved changes. Discard?");
     }
     return true;
   },

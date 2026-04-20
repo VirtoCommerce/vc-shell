@@ -1,4 +1,4 @@
-import { computed, type ComputedRef, type Ref, toValue, type MaybeRefOrGetter } from "vue";
+import { computed, type Ref, toValue, type MaybeRefOrGetter } from "vue";
 
 /**
  * Base interface for items that can be controlled through toggling

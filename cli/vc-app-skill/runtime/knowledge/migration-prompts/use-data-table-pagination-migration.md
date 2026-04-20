@@ -33,6 +33,7 @@ const pagination = useDataTablePagination({
 ### 1c. Replace the three computed in the return
 
 **Before:**
+
 ```ts
 return {
   totalCount: computed(() => searchResult.value?.totalCount || 0),
@@ -43,6 +44,7 @@ return {
 ```
 
 **After:**
+
 ```ts
 return {
   pagination,
@@ -53,6 +55,7 @@ return {
 ### 1d. Update the return type interface (if present)
 
 **Before:**
+
 ```ts
 export interface IUseList {
   totalCount: ComputedRef<number>;
@@ -63,6 +66,7 @@ export interface IUseList {
 ```
 
 **After:**
+
 ```ts
 export interface IUseList {
   pagination: UseDataTablePaginationReturn;
@@ -75,31 +79,27 @@ export interface IUseList {
 ### 2a. Replace VcDataTable pagination bindings
 
 **Before:**
+
 ```vue
-<VcDataTable
-  :total-count="totalCount"
-  :pagination="{ currentPage, pages }"
-  @pagination-click="onPaginationClick"
-/>
+<VcDataTable :total-count="totalCount" :pagination="{ currentPage, pages }" @pagination-click="onPaginationClick" />
 ```
 
 **After:**
+
 ```vue
-<VcDataTable
-  :total-count="pagination.totalCount"
-  :pagination="pagination"
-  @pagination-click="pagination.goToPage"
-/>
+<VcDataTable :total-count="pagination.totalCount" :pagination="pagination" @pagination-click="pagination.goToPage" />
 ```
 
 ### 2b. Update the composable destructure
 
 **Before:**
+
 ```ts
 const { items, totalCount, pages, currentPage, searchQuery, loadItems } = useList();
 ```
 
 **After:**
+
 ```ts
 const { items, pagination, searchQuery, loadItems } = useList();
 ```
@@ -109,6 +109,7 @@ const { items, pagination, searchQuery, loadItems } = useList();
 Remove the entire function — it's redundant; `pagination.goToPage` fires the composable's `onPageChange`.
 
 **Delete:**
+
 ```ts
 async function onPaginationClick(page: number) {
   await loadItems({
@@ -123,6 +124,7 @@ async function onPaginationClick(page: number) {
 If the blade has a `reload()` helper that recomputes skip from currentPage, use `pagination.skip`:
 
 **Before:**
+
 ```ts
 const reload = async () => {
   await loadItems({
@@ -134,6 +136,7 @@ const reload = async () => {
 ```
 
 **After:**
+
 ```ts
 const reload = async () => {
   await loadItems({

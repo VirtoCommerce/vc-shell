@@ -17,7 +17,11 @@ Read-only rating display component that visualizes a numeric value as stars, a s
 
 ```vue
 <template>
-  <VcRating :model-value="4" :max="5" label="Customer Rating" />
+  <VcRating
+    :model-value="4"
+    :max="5"
+    label="Customer Rating"
+  />
 </template>
 
 <script setup lang="ts">
@@ -88,12 +92,7 @@ If no `placeholder` is provided and the value is falsy, the component renders an
 Add a label above the rating and an optional tooltip for context:
 
 ```vue
-<VcRating
-  :model-value="4"
-  :max="5"
-  label="Average Rating"
-  tooltip="Based on verified purchases only"
-/>
+<VcRating :model-value="4" :max="5" label="Average Rating" tooltip="Based on verified purchases only" />
 ```
 
 The label is rendered using the internal `VcLabel` component with consistent styling across all form fields.
@@ -130,8 +129,14 @@ Display the rating alongside other product information in a typical detail blade
 ```vue
 <template>
   <div class="tw-flex tw-flex-col tw-gap-4">
-    <VcField label="Product Name" :model-value="product.name" />
-    <VcField label="SKU" :model-value="product.sku" />
+    <VcField
+      label="Product Name"
+      :model-value="product.name"
+    />
+    <VcField
+      label="SKU"
+      :model-value="product.sku"
+    />
     <VcRating
       :model-value="product.averageRating"
       :max="5"
@@ -140,12 +145,13 @@ Display the rating alongside other product information in a typical detail blade
       tooltip="Based on verified purchases"
     >
       <template #details>
-        <span class="tw-text-sm tw-text-gray-500 tw-ml-2">
-          ({{ product.reviewCount }} reviews)
-        </span>
+        <span class="tw-text-sm tw-text-gray-500 tw-ml-2"> ({{ product.reviewCount }} reviews) </span>
       </template>
     </VcRating>
-    <VcField label="Price" :model-value="formatCurrency(product.price)" />
+    <VcField
+      label="Price"
+      :model-value="formatCurrency(product.price)"
+    />
   </div>
 </template>
 ```
@@ -213,31 +219,31 @@ Use the `"star-and-text"` or `"text"` variant in table cell slots for a compact 
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `number` | -- | Current rating value to display |
-| `max` | `number` | `5` | Maximum rating value (defines the scale) |
-| `variant` | `"stars" \| "star-and-text" \| "text"` | `"stars"` | Display variant |
-| `label` | `string` | -- | Field label text above the rating |
-| `tooltip` | `string` | -- | Tooltip shown on the label |
-| `placeholder` | `string` | -- | Text shown when `modelValue` is falsy |
+| Prop          | Type                                   | Default   | Description                              |
+| ------------- | -------------------------------------- | --------- | ---------------------------------------- |
+| `modelValue`  | `number`                               | --        | Current rating value to display          |
+| `max`         | `number`                               | `5`       | Maximum rating value (defines the scale) |
+| `variant`     | `"stars" \| "star-and-text" \| "text"` | `"stars"` | Display variant                          |
+| `label`       | `string`                               | --        | Field label text above the rating        |
+| `tooltip`     | `string`                               | --        | Tooltip shown on the label               |
+| `placeholder` | `string`                               | --        | Text shown when `modelValue` is falsy    |
 
 ## Slots
 
-| Slot | Scope | Description |
-|------|-------|-------------|
-| `details` | -- | Additional content below the rating (available in `star-and-text` and `text` variants) |
+| Slot      | Scope | Description                                                                            |
+| --------- | ----- | -------------------------------------------------------------------------------------- |
+| `details` | --    | Additional content below the rating (available in `star-and-text` and `text` variants) |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--rating-placeholder-color` | `var(--neutrals-400)` | Color of the placeholder text |
-| `--rating-star-size` | `1em` | Size of star icons |
-| `--rating-gap` | `2px` | Gap between star icons |
-| `--rating-special-color` | `var(--warning-500)` | Color of filled stars |
-| `--rating-special-color-hover` | `var(--warning-600)` | Hover color for star icons (reserved for future interactive mode) |
-| `--rating-special-color-disabled` | `var(--warning-200)` | Disabled color for star icons (reserved for future use) |
+| Variable                          | Default               | Description                                                       |
+| --------------------------------- | --------------------- | ----------------------------------------------------------------- |
+| `--rating-placeholder-color`      | `var(--neutrals-400)` | Color of the placeholder text                                     |
+| `--rating-star-size`              | `1em`                 | Size of star icons                                                |
+| `--rating-gap`                    | `2px`                 | Gap between star icons                                            |
+| `--rating-special-color`          | `var(--warning-500)`  | Color of filled stars                                             |
+| `--rating-special-color-hover`    | `var(--warning-600)`  | Hover color for star icons (reserved for future interactive mode) |
+| `--rating-special-color-disabled` | `var(--warning-200)`  | Disabled color for star icons (reserved for future use)           |
 
 ## Accessibility
 
@@ -255,4 +261,3 @@ Use the `"star-and-text"` or `"text"` variant in table cell slots for a compact 
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
-

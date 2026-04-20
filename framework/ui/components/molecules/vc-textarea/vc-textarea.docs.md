@@ -17,7 +17,11 @@ A multi-line text input field for entering and editing large blocks of text. Pro
 
 ```vue
 <template>
-  <VcTextarea v-model="description" label="Description" placeholder="Enter description..." />
+  <VcTextarea
+    v-model="description"
+    label="Description"
+    placeholder="Enter description..."
+  />
 </template>
 
 <script setup lang="ts">
@@ -35,12 +39,7 @@ const description = ref("");
 Set `maxlength` to restrict the number of characters. The browser enforces the limit natively on the `<textarea>` element.
 
 ```vue
-<VcTextarea
-  v-model="bio"
-  label="Short bio"
-  maxlength="200"
-  hint="Maximum 200 characters"
-/>
+<VcTextarea v-model="bio" label="Short bio" maxlength="200" hint="Maximum 200 characters" />
 ```
 
 > **Tip:** Combine `maxlength` with a `hint` slot to show a live character counter if your form requires one.
@@ -50,12 +49,7 @@ Set `maxlength` to restrict the number of characters. The browser enforces the l
 Use `hint` for helper text below the field, and `tooltip` for an info icon on the label.
 
 ```vue
-<VcTextarea
-  v-model="notes"
-  label="Internal notes"
-  hint="These notes are visible only to administrators"
-  tooltip="Will not appear on the public storefront"
-/>
+<VcTextarea v-model="notes" label="Internal notes" hint="These notes are visible only to administrators" tooltip="Will not appear on the public storefront" />
 ```
 
 When an error message is present, the hint is automatically hidden and replaced by the error message. The transition between them is animated.
@@ -65,13 +59,7 @@ When an error message is present, the hint is automatically hidden and replaced 
 When editing translatable content, enable the language badge on the label:
 
 ```vue
-<VcTextarea
-  v-model="localizedDescription"
-  label="Description"
-  multilanguage
-  current-language="en-US"
-  placeholder="Enter description in English..."
-/>
+<VcTextarea v-model="localizedDescription" label="Description" multilanguage current-language="en-US" placeholder="Enter description in English..." />
 ```
 
 ### Validation with vee-validate Field
@@ -119,12 +107,7 @@ const form = reactive({
 <VcTextarea v-model="value" label="Read-only notes" disabled />
 
 <!-- Error state -->
-<VcTextarea
-  v-model="value"
-  label="Comments"
-  :error="true"
-  error-message="Comments must not be empty"
-/>
+<VcTextarea v-model="value" label="Comments" :error="true" error-message="Comments must not be empty" />
 ```
 
 ## Recipes
@@ -139,7 +122,11 @@ A typical product-editing blade with a description textarea and character limit:
     <VcContainer>
       <VcRow>
         <VcCol size="8">
-          <VcInput v-model="product.name" label="Product name" required />
+          <VcInput
+            v-model="product.name"
+            label="Product name"
+            required
+          />
         </VcCol>
       </VcRow>
       <VcRow>
@@ -174,12 +161,7 @@ A typical product-editing blade with a description textarea and character limit:
 Override the default error rendering with the `error` slot:
 
 ```vue
-<VcTextarea
-  v-model="value"
-  label="JSON payload"
-  :error="!!jsonError"
-  :error-message="jsonError"
->
+<VcTextarea v-model="value" label="JSON payload" :error="!!jsonError" :error-message="jsonError">
   <template #error>
     <div class="tw-flex tw-items-center tw-gap-1 tw-text-[color:var(--danger-500)] tw-text-xs tw-mt-1">
       <VcIcon icon="lucide-alert-triangle" size="xs" />
@@ -239,57 +221,57 @@ const description = ref<string>("");
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `string` | `undefined` | Bound value via `v-model` |
-| `label` | `string` | -- | Label text displayed above the textarea |
-| `placeholder` | `string` | -- | Placeholder text inside the empty textarea |
-| `hint` | `string` | -- | Helper text displayed below the field |
-| `tooltip` | `string` | -- | Tooltip on the label info icon |
-| `maxlength` | `string` | `"1024"` | Maximum character count (native HTML attribute) |
-| `required` | `boolean` | `false` | Shows a required indicator on the label |
-| `error` | `boolean` | `false` | Enables error styling (red border + ring) |
-| `errorMessage` | `string` | -- | Error message text below the field |
-| `disabled` | `boolean` | `false` | Disables the textarea |
-| `name` | `string` | `"Field"` | HTML name attribute |
-| `multilanguage` | `boolean` | `false` | Shows language badge on the label |
-| `currentLanguage` | `string` | -- | Language code displayed in the badge |
+| Prop              | Type      | Default     | Description                                     |
+| ----------------- | --------- | ----------- | ----------------------------------------------- |
+| `modelValue`      | `string`  | `undefined` | Bound value via `v-model`                       |
+| `label`           | `string`  | --          | Label text displayed above the textarea         |
+| `placeholder`     | `string`  | --          | Placeholder text inside the empty textarea      |
+| `hint`            | `string`  | --          | Helper text displayed below the field           |
+| `tooltip`         | `string`  | --          | Tooltip on the label info icon                  |
+| `maxlength`       | `string`  | `"1024"`    | Maximum character count (native HTML attribute) |
+| `required`        | `boolean` | `false`     | Shows a required indicator on the label         |
+| `error`           | `boolean` | `false`     | Enables error styling (red border + ring)       |
+| `errorMessage`    | `string`  | --          | Error message text below the field              |
+| `disabled`        | `boolean` | `false`     | Disables the textarea                           |
+| `name`            | `string`  | `"Field"`   | HTML name attribute                             |
+| `multilanguage`   | `boolean` | `false`     | Shows language badge on the label               |
+| `currentLanguage` | `string`  | --          | Language code displayed in the badge            |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event               | Payload               | Description                      |
+| ------------------- | --------------------- | -------------------------------- |
 | `update:modelValue` | `string \| undefined` | Emitted on every input keystroke |
 
 ## Slots
 
-| Slot | Description |
-|------|-------------|
+| Slot    | Description                                                       |
+| ------- | ----------------------------------------------------------------- |
 | `error` | Custom error message markup. Replaces the default `VcHint` error. |
-| `hint` | Custom hint text markup. Replaces the default `VcHint`. |
+| `hint`  | Custom hint text markup. Replaces the default `VcHint`.           |
 
 ## Exposed Methods
 
-| Method | Description |
-|--------|-------------|
+| Method    | Description                                              |
+| --------- | -------------------------------------------------------- |
 | `focus()` | Programmatically focuses the native `<textarea>` element |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--textarea-height` | `120px` | Minimum height of the textarea |
-| `--textarea-border-color` | `var(--neutrals-300)` | Default border color |
-| `--textarea-border-color-focus` | `var(--primary-500)` | Border color on focus |
-| `--textarea-border-color-error` | `var(--danger-500)` | Border color in error state |
-| `--textarea-border-radius` | `6px` | Corner radius |
-| `--textarea-background-color` | `transparent` | Background color |
-| `--textarea-text-color` | `var(--neutrals-800)` | Text color |
-| `--textarea-text-color-error` | `var(--danger-500)` | Text color in error state |
-| `--textarea-placeholder-color` | `var(--neutrals-400)` | Placeholder text color |
-| `--textarea-focus-ring-color` | `var(--primary-100)` | Focus ring color |
-| `--textarea-error-ring-color` | `var(--danger-100)` | Error ring color |
-| `--textarea-disabled-text-color` | `var(--neutrals-500)` | Text color when disabled |
+| Variable                         | Default               | Description                    |
+| -------------------------------- | --------------------- | ------------------------------ |
+| `--textarea-height`              | `120px`               | Minimum height of the textarea |
+| `--textarea-border-color`        | `var(--neutrals-300)` | Default border color           |
+| `--textarea-border-color-focus`  | `var(--primary-500)`  | Border color on focus          |
+| `--textarea-border-color-error`  | `var(--danger-500)`   | Border color in error state    |
+| `--textarea-border-radius`       | `6px`                 | Corner radius                  |
+| `--textarea-background-color`    | `transparent`         | Background color               |
+| `--textarea-text-color`          | `var(--neutrals-800)` | Text color                     |
+| `--textarea-text-color-error`    | `var(--danger-500)`   | Text color in error state      |
+| `--textarea-placeholder-color`   | `var(--neutrals-400)` | Placeholder text color         |
+| `--textarea-focus-ring-color`    | `var(--primary-100)`  | Focus ring color               |
+| `--textarea-error-ring-color`    | `var(--danger-100)`   | Error ring color               |
+| `--textarea-disabled-text-color` | `var(--neutrals-500)` | Text color when disabled       |
 
 ## Accessibility
 
@@ -311,4 +293,3 @@ const description = ref<string>("");
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
-

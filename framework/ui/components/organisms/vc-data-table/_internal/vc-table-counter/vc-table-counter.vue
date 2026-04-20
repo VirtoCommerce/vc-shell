@@ -7,8 +7,8 @@
 
 <script lang="ts" setup>
 export interface Props {
-  label: string;
-  value: number;
+  label?: string;
+  value?: number;
 }
 
 withDefaults(defineProps<Props>(), {

@@ -1,4 +1,4 @@
-import { provide, inject, computed } from "vue";
+import { provide, inject } from "vue";
 import { provideAppBarMobileButtonsService } from "@core/composables/useAppBarMobileButtons";
 import { provideDashboardService } from "@core/composables/useDashboard";
 import {

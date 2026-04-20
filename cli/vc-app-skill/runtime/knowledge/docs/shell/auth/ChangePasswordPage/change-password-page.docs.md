@@ -35,11 +35,11 @@ With custom branding:
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `forced` | `boolean` | `false` | Show expired-password info banner and adjusted title |
-| `logo` | `string` | - | Override logo image URL |
-| `background` | `string` | - | Custom background image URL |
+| Prop         | Type      | Default | Description                                          |
+| ------------ | --------- | ------- | ---------------------------------------------------- |
+| `forced`     | `boolean` | `false` | Show expired-password info banner and adjusted title |
+| `logo`       | `string`  | -       | Override logo image URL                              |
+| `background` | `string`  | -       | Custom background image URL                          |
 
 ## Recipe: Router Configuration with Forced Mode
 

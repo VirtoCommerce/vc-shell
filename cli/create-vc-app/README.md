@@ -10,11 +10,11 @@ npx create-vc-app [project-name]
 
 Interactive prompts guide you through project setup. Three project types are available:
 
-| Type | Description |
-|------|-------------|
-| **Standalone App** | Full application with bundled modules |
+| Type               | Description                                        |
+| ------------------ | -------------------------------------------------- |
+| **Standalone App** | Full application with bundled modules              |
 | **Dynamic Module** | Remote module loaded by host via Module Federation |
-| **Host App** | Shell that loads dynamic modules at runtime |
+| **Host App**       | Shell that loads dynamic modules at runtime        |
 
 ### Non-Interactive Mode
 
@@ -33,20 +33,20 @@ npx create-vc-app my-shell --type host-app --dashboard --tenant-routes --ai-agen
 
 ### Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--type <type>` | Project type: `standalone` \| `dynamic-module` \| `host-app` | _(prompted)_ |
-| `--name`, `--app-name` | Application name | Directory name |
-| `--package-name` | npm package name | App name (validated) |
-| `--module-name` | Initial module name | App name in title case |
-| `--base-path` | Base path for the application | `/apps/<name>/` |
-| `--tenant-routes` | Include tenant routing (`/:tenantId` prefix) | `false` |
-| `--ai-agent` | Include AI Agent configuration | `false` |
-| `--dashboard` | Include Dashboard with widgets | `false` |
-| `--mocks` | Include sample module with mock data | `false` |
-| `--overwrite` | Overwrite existing files without confirmation | `false` |
-| `--help`, `-h` | Show help | — |
-| `--version`, `-v` | Show version | — |
+| Option                 | Description                                                  | Default                |
+| ---------------------- | ------------------------------------------------------------ | ---------------------- |
+| `--type <type>`        | Project type: `standalone` \| `dynamic-module` \| `host-app` | _(prompted)_           |
+| `--name`, `--app-name` | Application name                                             | Directory name         |
+| `--package-name`       | npm package name                                             | App name (validated)   |
+| `--module-name`        | Initial module name                                          | App name in title case |
+| `--base-path`          | Base path for the application                                | `/apps/<name>/`        |
+| `--tenant-routes`      | Include tenant routing (`/:tenantId` prefix)                 | `false`                |
+| `--ai-agent`           | Include AI Agent configuration                               | `false`                |
+| `--dashboard`          | Include Dashboard with widgets                               | `false`                |
+| `--mocks`              | Include sample module with mock data                         | `false`                |
+| `--overwrite`          | Overwrite existing files without confirmation                | `false`                |
+| `--help`, `-h`         | Show help                                                    | —                      |
+| `--version`, `-v`      | Show version                                                 | —                      |
 
 ## Add a Module to Existing Project
 
@@ -57,6 +57,7 @@ npx create-vc-app add-module <module-name>
 ```
 
 This will:
+
 1. Create `src/modules/<module-name>/` with list + details pages
 2. Update `src/main.ts` — add import and `app.use()`
 3. Update `src/bootstrap.ts` — add menu item

@@ -149,7 +149,7 @@ describe("useBlade() lifecycle hooks", () => {
     const mockStack = createMockBladeStack();
     (mockStack.activeBlade as any).value = { id: "other-blade" };
 
-    const { result } = mountWithBladeContext(
+    const { result: _result } = mountWithBladeContext(
       () => {
         const blade = useBlade();
         blade.onActivated(callback);
@@ -172,7 +172,7 @@ describe("useBlade() lifecycle hooks", () => {
     const mockStack = createMockBladeStack();
     (mockStack.activeBlade as any).value = { id: "blade-1" };
 
-    const { result } = mountWithBladeContext(
+    const { result: _result } = mountWithBladeContext(
       () => {
         const blade = useBlade();
         blade.onDeactivated(callback);

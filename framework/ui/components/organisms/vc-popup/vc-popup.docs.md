@@ -4,13 +4,13 @@ A modal dialog component built on [HeadlessUI Dialog](https://headlessui.com/vue
 
 ## When to Use
 
-| Scenario | Component |
-|----------|-----------|
-| Confirmation prompt ("Delete this item?") | **VcPopup** |
-| Error or success alert after an API call | **VcPopup** |
+| Scenario                                          | Component   |
+| ------------------------------------------------- | ----------- |
+| Confirmation prompt ("Delete this item?")         | **VcPopup** |
+| Error or success alert after an API call          | **VcPopup** |
 | Short form that must block background interaction | **VcPopup** |
-| Side panel for contextual workflows | VcSidebar |
-| Stacked detail views (master-detail) | VcBlade |
+| Side panel for contextual workflows               | VcSidebar   |
+| Stacked detail views (master-detail)              | VcBlade     |
 
 > **Tip:** Prefer blades for CRUD workflows. Reserve popups for brief, interruptive interactions such as confirmations and alerts.
 
@@ -22,7 +22,10 @@ A modal dialog component built on [HeadlessUI Dialog](https://headlessui.com/vue
 <template>
   <VcButton @click="showPopup = true">Open Popup</VcButton>
 
-  <VcPopup v-model="showPopup" title="Hello World">
+  <VcPopup
+    v-model="showPopup"
+    title="Hello World"
+  >
     <template #content>
       <p>This is a simple popup with a title and content.</p>
     </template>
@@ -60,12 +63,12 @@ The `variant` prop adds a semantic icon and color to the popup. Available values
 
 When `variant` is anything other than `"default"`, a large icon is rendered to the left of the content area:
 
-| Variant | Icon | Color token |
-|---------|------|-------------|
+| Variant   | Icon                    | Color token     |
+| --------- | ----------------------- | --------------- |
 | `warning` | `lucide-triangle-alert` | `--warning-500` |
-| `error` | `lucide-circle-alert` | `--danger-500` |
-| `success` | `lucide-circle-check` | `--success-500` |
-| `info` | `lucide-info` | `--info-500` |
+| `error`   | `lucide-circle-alert`   | `--danger-500`  |
+| `success` | `lucide-circle-check`   | `--success-500` |
+| `info`    | `lucide-info`           | `--info-500`    |
 
 ### Title
 
@@ -107,12 +110,7 @@ Fine-tune each channel independently:
 
 ```vue
 <!-- Allow close button only; prevent overlay and Escape -->
-<VcPopup
-  v-model="open"
-  title="Mandatory Action"
-  :close-on-overlay="false"
-  :close-on-escape="false"
->
+<VcPopup v-model="open" title="Mandatory Action" :close-on-overlay="false" :close-on-escape="false">
   <!-- ... -->
 </VcPopup>
 ```
@@ -164,8 +162,19 @@ The footer area sits below a separator line. It exposes a scoped `close` functio
 ```vue
 <template #footer="{ close }">
   <div class="tw-flex tw-justify-end tw-w-full tw-gap-3">
-    <VcButton variant="outline" @click="close">Cancel</VcButton>
-    <VcButton color="danger" @click="deleteItem(); close()">Delete</VcButton>
+    <VcButton
+      variant="outline"
+      @click="close"
+      >Cancel</VcButton
+    >
+    <VcButton
+      color="danger"
+      @click="
+        deleteItem();
+        close();
+      "
+      >Delete</VcButton
+    >
   </div>
 </template>
 ```
@@ -179,7 +188,10 @@ Use `v-model` to bind visibility to a reactive boolean. The popup emits `update:
 ```vue
 <template>
   <VcButton @click="isOpen = true">Open</VcButton>
-  <VcPopup v-model="isOpen" title="Controlled">
+  <VcPopup
+    v-model="isOpen"
+    title="Controlled"
+  >
     <template #content>Visible state: {{ isOpen }}</template>
   </VcPopup>
 </template>
@@ -191,6 +203,7 @@ const isOpen = ref(false);
 ```
 
 > **Tip:** You can also use `v-if` instead of `v-model` for a simpler pattern when you do not need animated exit transitions:
+>
 > ```vue
 > <VcPopup v-if="showPopup" title="Simple" @close="showPopup = false">
 > ```
@@ -214,9 +227,9 @@ The `modalWidth` prop accepts a Tailwind CSS max-width class. The default is `"t
 
 Two props control fullscreen behavior:
 
-| Prop | Effect |
-|------|--------|
-| `isFullscreen` | Full viewport on **all** screen sizes |
+| Prop                 | Effect                                                                  |
+| -------------------- | ----------------------------------------------------------------------- |
+| `isFullscreen`       | Full viewport on **all** screen sizes                                   |
 | `isMobileFullscreen` | Full viewport on **mobile only** (detected via `IsMobileKey` injection) |
 
 ```vue
@@ -239,7 +252,11 @@ The most common pattern. Uses the `warning` variant and a two-button footer.
 
 ```vue
 <template>
-  <VcButton color="danger" @click="confirmDelete">Delete Order</VcButton>
+  <VcButton
+    color="danger"
+    @click="confirmDelete"
+    >Delete Order</VcButton
+  >
 
   <VcPopup
     v-model="showConfirm"
@@ -247,13 +264,19 @@ The most common pattern. Uses the `warning` variant and a two-button footer.
     variant="warning"
     :close-on-overlay="false"
   >
-    <template #content>
-      Are you sure you want to delete this order? This action cannot be undone.
-    </template>
+    <template #content> Are you sure you want to delete this order? This action cannot be undone. </template>
     <template #footer="{ close }">
       <div class="tw-flex tw-justify-end tw-w-full tw-gap-3">
-        <VcButton variant="outline" @click="close">Cancel</VcButton>
-        <VcButton color="danger" @click="onDeleteConfirmed(close)">Delete</VcButton>
+        <VcButton
+          variant="outline"
+          @click="close"
+          >Cancel</VcButton
+        >
+        <VcButton
+          color="danger"
+          @click="onDeleteConfirmed(close)"
+          >Delete</VcButton
+        >
       </div>
     </template>
   </VcPopup>
@@ -297,11 +320,11 @@ async function handleDelete() {
 
 The composable provides three convenience methods:
 
-| Method | Variant | Returns |
-|--------|---------|---------|
+| Method                      | Variant | Returns            |
+| --------------------------- | ------- | ------------------ |
 | `showConfirmation(message)` | warning | `Promise<boolean>` |
-| `showError(message)` | error | `void` |
-| `showInfo(message)` | info | `void` |
+| `showError(message)`        | error   | `void`             |
+| `showInfo(message)`         | info    | `void`             |
 
 ### Popup with Form and Validation
 
@@ -309,7 +332,11 @@ Use `Field` from `vee-validate` inside the popup content for inline validation.
 
 ```vue
 <template>
-  <VcPopup v-model="showForm" title="Add Note" modal-width="tw-max-w-lg">
+  <VcPopup
+    v-model="showForm"
+    title="Add Note"
+    modal-width="tw-max-w-lg"
+  >
     <template #content>
       <VcForm class="tw-space-y-4">
         <Field
@@ -347,8 +374,16 @@ Use `Field` from `vee-validate` inside the popup content for inline validation.
     </template>
     <template #footer="{ close }">
       <div class="tw-flex tw-justify-end tw-w-full tw-gap-3">
-        <VcButton variant="outline" @click="close">Cancel</VcButton>
-        <VcButton :disabled="!meta.valid" @click="save(close)">Save</VcButton>
+        <VcButton
+          variant="outline"
+          @click="close"
+          >Cancel</VcButton
+        >
+        <VcButton
+          :disabled="!meta.valid"
+          @click="save(close)"
+          >Save</VcButton
+        >
       </div>
     </template>
   </VcPopup>
@@ -438,7 +473,13 @@ Or display a richer error popup in-template:
 
 <!-- GOOD: call close from the slot scope -->
 <template #footer="{ close }">
-  <VcButton @click="doSomething(); close()">Confirm</VcButton>
+  <VcButton
+    @click="
+      doSomething();
+      close();
+    "
+    >Confirm</VcButton
+  >
 </template>
 ```
 
@@ -463,45 +504,45 @@ Or display a richer error popup in-template:
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modelValue` | `boolean` | `undefined` | Controlled visibility via `v-model`. When omitted, the popup is visible if mounted. |
-| `title` | `string` | `undefined` | Dialog title text rendered in the header bar. |
-| `closable` | `boolean` | `true` | Show the close button (X) and allow dismissal. When `false`, all dismiss channels are disabled. |
-| `variant` | `"default" \| "error" \| "warning" \| "success" \| "info"` | `"default"` | Semantic variant that determines the icon and its color. |
-| `modalWidth` | `string` | `"tw-max-w-md"` | Tailwind max-width class applied to the dialog panel. |
-| `isMobileFullscreen` | `boolean` | `false` | Expand to fullscreen on mobile viewports only. |
-| `isFullscreen` | `boolean` | `false` | Expand to fullscreen on all viewports. |
-| `closeOnOverlay` | `boolean` | Inherits `closable` | Whether clicking the backdrop overlay closes the popup. |
-| `closeOnEscape` | `boolean` | Inherits `closable` | Whether pressing the Escape key closes the popup. |
+| Prop                 | Type                                                       | Default             | Description                                                                                     |
+| -------------------- | ---------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------- |
+| `modelValue`         | `boolean`                                                  | `undefined`         | Controlled visibility via `v-model`. When omitted, the popup is visible if mounted.             |
+| `title`              | `string`                                                   | `undefined`         | Dialog title text rendered in the header bar.                                                   |
+| `closable`           | `boolean`                                                  | `true`              | Show the close button (X) and allow dismissal. When `false`, all dismiss channels are disabled. |
+| `variant`            | `"default" \| "error" \| "warning" \| "success" \| "info"` | `"default"`         | Semantic variant that determines the icon and its color.                                        |
+| `modalWidth`         | `string`                                                   | `"tw-max-w-md"`     | Tailwind max-width class applied to the dialog panel.                                           |
+| `isMobileFullscreen` | `boolean`                                                  | `false`             | Expand to fullscreen on mobile viewports only.                                                  |
+| `isFullscreen`       | `boolean`                                                  | `false`             | Expand to fullscreen on all viewports.                                                          |
+| `closeOnOverlay`     | `boolean`                                                  | Inherits `closable` | Whether clicking the backdrop overlay closes the popup.                                         |
+| `closeOnEscape`      | `boolean`                                                  | Inherits `closable` | Whether pressing the Escape key closes the popup.                                               |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `update:modelValue` | `boolean` | Emitted with `false` when the popup requests to close. Used by `v-model`. |
-| `close` | `PopupCloseReason` | Reason the popup was closed: `"overlay"`, `"escape"`, or `"action"`. |
+| Event               | Payload            | Description                                                               |
+| ------------------- | ------------------ | ------------------------------------------------------------------------- |
+| `update:modelValue` | `boolean`          | Emitted with `false` when the popup requests to close. Used by `v-model`. |
+| `close`             | `PopupCloseReason` | Reason the popup was closed: `"overlay"`, `"escape"`, or `"action"`.      |
 
 ## Slots
 
-| Slot | Scoped Props | Description |
-|------|--------------|-------------|
-| `header` | -- | Replaces the default title text. The close button (X) remains visible beside the slot content. |
-| `content` | -- | Main body area of the popup. |
-| `footer` | `{ close: () => void }` | Footer area below a separator line. Call `close()` to dismiss the popup from any button. |
+| Slot      | Scoped Props            | Description                                                                                    |
+| --------- | ----------------------- | ---------------------------------------------------------------------------------------------- |
+| `header`  | --                      | Replaces the default title text. The close button (X) remains visible beside the slot content. |
+| `content` | --                      | Main body area of the popup.                                                                   |
+| `footer`  | `{ close: () => void }` | Footer area below a separator line. Call `close()` to dismiss the popup from any button.       |
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--popup-border-radius` | `6px` | Border radius of the dialog panel |
-| `--popup-shadow` | `var(--shadow-md)` | Box shadow around the panel |
-| `--popup-overlay-blur` | `var(--overlay-blur)` | Backdrop blur amount |
-| `--popup-bg` | `var(--additional-50)` | Background color of the dialog panel |
-| `--popup-header-color` | `var(--primary-700)` | Title text color |
-| `--popup-content-text-color` | `var(--primary-700)` | Content text color |
-| `--popup-footer-separator` | `var(--neutrals-200)` | Footer top border color |
-| `--popup-overlay` | `var(--overlay-bg)` | Overlay background color |
+| Variable                     | Default                | Description                          |
+| ---------------------------- | ---------------------- | ------------------------------------ |
+| `--popup-border-radius`      | `6px`                  | Border radius of the dialog panel    |
+| `--popup-shadow`             | `var(--shadow-md)`     | Box shadow around the panel          |
+| `--popup-overlay-blur`       | `var(--overlay-blur)`  | Backdrop blur amount                 |
+| `--popup-bg`                 | `var(--additional-50)` | Background color of the dialog panel |
+| `--popup-header-color`       | `var(--primary-700)`   | Title text color                     |
+| `--popup-content-text-color` | `var(--primary-700)`   | Content text color                   |
+| `--popup-footer-separator`   | `var(--neutrals-200)`  | Footer top border color              |
+| `--popup-overlay`            | `var(--overlay-bg)`    | Overlay background color             |
 
 ## Accessibility
 

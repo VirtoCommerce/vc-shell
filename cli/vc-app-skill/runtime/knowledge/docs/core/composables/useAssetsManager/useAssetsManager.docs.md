@@ -20,31 +20,31 @@ const assets = useAssetsManager(ref, options);
 
 ### Parameters
 
-| Parameter | Type | Description |
-|---|---|---|
-| `source` | `Ref<AssetLike[] \| undefined \| null>` | Reactive ref to the asset array. Accepts `ref()`, `toRef()`, or `computed({ get, set })`. `undefined`/`null` values are treated as empty array. The composable holds an internal copy and syncs both ways. |
-| `options` | `UseAssetsManagerOptions` | Configuration (see below) |
+| Parameter | Type                                    | Description                                                                                                                                                                                                |
+| --------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `source`  | `Ref<AssetLike[] \| undefined \| null>` | Reactive ref to the asset array. Accepts `ref()`, `toRef()`, or `computed({ get, set })`. `undefined`/`null` values are treated as empty array. The composable holds an internal copy and syncs both ways. |
+| `options` | `UseAssetsManagerOptions`               | Configuration (see below)                                                                                                                                                                                  |
 
 ### Options
 
-| Option | Type | Required | Description |
-|---|---|---|---|
-| `uploadPath` | `() => string` | Yes | Upload destination path (function — evaluated at upload time) |
-| `confirmRemove` | `() => Promise<boolean> \| boolean` | No | Called before remove. Return `false` to cancel. Omit for silent remove. |
-| `assetKey` | `string` | No | Key for matching items (default: `"url"`) |
-| `concurrency` | `number` | No | Max concurrent uploads (default: 4) |
+| Option          | Type                                | Required | Description                                                             |
+| --------------- | ----------------------------------- | -------- | ----------------------------------------------------------------------- |
+| `uploadPath`    | `() => string`                      | Yes      | Upload destination path (function — evaluated at upload time)           |
+| `confirmRemove` | `() => Promise<boolean> \| boolean` | No       | Called before remove. Return `false` to cancel. Omit for silent remove. |
+| `assetKey`      | `string`                            | No       | Key for matching items (default: `"url"`)                               |
+| `concurrency`   | `number`                            | No       | Max concurrent uploads (default: 4)                                     |
 
 ### Return (`UseAssetsManagerReturn`)
 
-| Property | Type | Description |
-|---|---|---|
-| `items` | `Ref<AssetLike[]>` | Reactive asset array (internal ref, safe to bind to templates) |
-| `upload` | `(files: FileList, startingSortOrder?: number) => Promise<void>` | Upload files, append to array |
-| `remove` | `(item: AssetLike) => Promise<void>` | Remove single item (with confirmation if configured) |
-| `removeMany` | `(items: AssetLike[]) => Promise<void>` | Remove multiple items (one confirmation for batch) |
-| `reorder` | `(items: AssetLike[]) => void` | Replace array with new order |
-| `updateItem` | `(item: AssetLike) => void` | Update single item metadata by `assetKey` |
-| `loading` | `ComputedRef<boolean>` | True during upload |
+| Property     | Type                                                             | Description                                                    |
+| ------------ | ---------------------------------------------------------------- | -------------------------------------------------------------- |
+| `items`      | `Ref<AssetLike[]>`                                               | Reactive asset array (internal ref, safe to bind to templates) |
+| `upload`     | `(files: FileList, startingSortOrder?: number) => Promise<void>` | Upload files, append to array                                  |
+| `remove`     | `(item: AssetLike) => Promise<void>`                             | Remove single item (with confirmation if configured)           |
+| `removeMany` | `(items: AssetLike[]) => Promise<void>`                          | Remove multiple items (one confirmation for batch)             |
+| `reorder`    | `(items: AssetLike[]) => void`                                   | Replace array with new order                                   |
+| `updateItem` | `(item: AssetLike) => void`                                      | Update single item metadata by `assetKey`                      |
+| `loading`    | `ComputedRef<boolean>`                                           | True during upload                                             |
 
 ## Usage Examples
 
@@ -57,7 +57,9 @@ import { toRef } from "vue";
 const assets = useAssetsManager(
   computed({
     get: () => entity.value.images ?? [],
-    set: (val) => { entity.value.images = val; },
+    set: (val) => {
+      entity.value.images = val;
+    },
   }),
   {
     uploadPath: () => `entities/${entity.value?.id ?? "new"}`,
@@ -82,8 +84,10 @@ Wrap a single value in a computed array:
 
 ```typescript
 const photoAssets = computed({
-  get: () => user.value?.iconUrl ? [{ url: user.value.iconUrl }] : [],
-  set: (val) => { user.value!.iconUrl = val[0]?.url; },
+  get: () => (user.value?.iconUrl ? [{ url: user.value.iconUrl }] : []),
+  set: (val) => {
+    user.value!.iconUrl = val[0]?.url;
+  },
 });
 
 const photo = useAssetsManager(photoAssets, {
@@ -109,7 +113,7 @@ const assets = useAssetsManager(productAssetsRef, {
 openBlade({
   name: "AssetsManager",
   options: {
-    manager: markRaw(assets),  // IMPORTANT: prevents reactive proxy unwrap
+    manager: markRaw(assets), // IMPORTANT: prevents reactive proxy unwrap
     disabled: !canEdit.value,
   },
 });
@@ -137,7 +141,7 @@ interface AssetLike {
   url?: string;
   name?: string;
   sortOrder?: number;
-  [key: string]: any;  // compatible with Image, ProductImage, Asset, etc.
+  [key: string]: any; // compatible with Image, ProductImage, Asset, etc.
 }
 ```
 

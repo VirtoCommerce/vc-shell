@@ -70,12 +70,7 @@ When `multiple` is `false` (default), only one file can be selected per interact
 Integrate with vee-validate for file validation rules such as size limits:
 
 ```vue
-<VcFileUpload
-  accept=".pdf, .doc, .docx"
-  name="documents"
-  :rules="{ size: 5 }"
-  @upload="uploadDocuments"
-/>
+<VcFileUpload accept=".pdf, .doc, .docx" name="documents" :rules="{ size: 5 }" @upload="uploadDocuments" />
 ```
 
 When validation fails, the error is displayed below the drop zone using the built-in `VcHint` component. The `upload` event is only emitted when validation passes.
@@ -140,7 +135,11 @@ The disabled state reduces opacity and applies `pointer-events: none`.
 ```vue
 <template>
   <VcForm @submit="saveProduct">
-    <VcInput v-model="product.name" label="Product Name" required />
+    <VcInput
+      v-model="product.name"
+      label="Product Name"
+      required
+    />
     <VcFileUpload
       accept=".jpg, .png, .webp"
       :multiple="true"
@@ -177,14 +176,7 @@ async function onImagesSelected(files: FileList) {
 ## Recipe: CSV Data Import
 
 ```vue
-<VcFileUpload
-  accept=".csv"
-  icon="lucide-file-spreadsheet"
-  :custom-text="{ dragHere: 'Drop CSV file here', browse: 'Browse files' }"
-  :error-message="importError"
-  :loading="isImporting"
-  @upload="importCsv"
-/>
+<VcFileUpload accept=".csv" icon="lucide-file-spreadsheet" :custom-text="{ dragHere: 'Drop CSV file here', browse: 'Browse files' }" :error-message="importError" :loading="isImporting" @upload="importCsv" />
 ```
 
 ```ts
@@ -263,50 +255,50 @@ async function onUpload(files: FileList) {
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `accept` | `string` | `".jpg, .png, .jpeg, .webp, .heic, .svg"` | Accepted file types (HTML accept attribute format) |
-| `multiple` | `boolean` | `false` | Allow selecting multiple files |
-| `loading` | `boolean` | `false` | Show loading spinner overlay |
-| `icon` | `string` | `"lucide-cloud-upload"` | Icon displayed in the upload zone |
-| `customText` | `{ dragHere: string; browse: string }` | -- | Override default drag/browse instruction text |
-| `rules` | `IValidationRules` | -- | Vee-validate validation rules (e.g., `{ size: 5 }`) |
-| `name` | `string` | `"Gallery"` | Form field name attribute |
-| `label` | `string` | -- | Field label text |
-| `tooltip` | `string` | -- | Tooltip on the label |
-| `disabled` | `boolean` | `false` | Disable all interactions |
-| `required` | `boolean` | `false` | Mark field as required |
-| `error` | `boolean` | `false` | External error flag |
-| `errorMessage` | `string` | -- | Error message text (sets error state when truthy) |
+| Prop           | Type                                   | Default                                   | Description                                         |
+| -------------- | -------------------------------------- | ----------------------------------------- | --------------------------------------------------- |
+| `accept`       | `string`                               | `".jpg, .png, .jpeg, .webp, .heic, .svg"` | Accepted file types (HTML accept attribute format)  |
+| `multiple`     | `boolean`                              | `false`                                   | Allow selecting multiple files                      |
+| `loading`      | `boolean`                              | `false`                                   | Show loading spinner overlay                        |
+| `icon`         | `string`                               | `"lucide-cloud-upload"`                   | Icon displayed in the upload zone                   |
+| `customText`   | `{ dragHere: string; browse: string }` | --                                        | Override default drag/browse instruction text       |
+| `rules`        | `IValidationRules`                     | --                                        | Vee-validate validation rules (e.g., `{ size: 5 }`) |
+| `name`         | `string`                               | `"Gallery"`                               | Form field name attribute                           |
+| `label`        | `string`                               | --                                        | Field label text                                    |
+| `tooltip`      | `string`                               | --                                        | Tooltip on the label                                |
+| `disabled`     | `boolean`                              | `false`                                   | Disable all interactions                            |
+| `required`     | `boolean`                              | `false`                                   | Mark field as required                              |
+| `error`        | `boolean`                              | `false`                                   | External error flag                                 |
+| `errorMessage` | `string`                               | --                                        | Error message text (sets error state when truthy)   |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event    | Payload    | Description                                                                          |
+| -------- | ---------- | ------------------------------------------------------------------------------------ |
 | `upload` | `FileList` | Emitted when valid files are selected or dropped. Only fires after validation passes |
 
 ## Slots
 
-| Slot | Scope | Description |
-|------|-------|-------------|
-| `error` | -- | Custom error content. Replaces the default `VcHint` error display |
+| Slot    | Scope | Description                                                       |
+| ------- | ----- | ----------------------------------------------------------------- |
+| `error` | --    | Custom error content. Replaces the default `VcHint` error display |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--file-upload-border-color` | `var(--neutrals-200)` | Default border color |
-| `--file-upload-border-color-hover` | `var(--neutrals-400)` | Hover border color |
-| `--file-upload-border-color-dragover` | `var(--primary-500)` | Border color while dragging over |
-| `--file-upload-border-color-error` | `var(--danger-500)` | Error state border color |
-| `--file-upload-border-radius` | `6px` | Corner radius |
-| `--file-upload-drag-bg` | `var(--neutrals-100)` | Background color during drag-over |
-| `--file-upload-background-color` | `transparent` | Default background color |
-| `--file-upload-icon-color` | `var(--neutrals-400)` | Upload icon color |
-| `--file-upload-text-color` | `var(--neutrals-400)` | Instruction text color |
-| `--file-upload-error-color` | `var(--danger-500)` | Error text color |
-| `--file-upload-focus-ring-color` | `var(--primary-100)` | Focus ring color |
-| `--file-upload-error-ring-color` | `var(--danger-100)` | Error state ring color |
+| Variable                              | Default               | Description                       |
+| ------------------------------------- | --------------------- | --------------------------------- |
+| `--file-upload-border-color`          | `var(--neutrals-200)` | Default border color              |
+| `--file-upload-border-color-hover`    | `var(--neutrals-400)` | Hover border color                |
+| `--file-upload-border-color-dragover` | `var(--primary-500)`  | Border color while dragging over  |
+| `--file-upload-border-color-error`    | `var(--danger-500)`   | Error state border color          |
+| `--file-upload-border-radius`         | `6px`                 | Corner radius                     |
+| `--file-upload-drag-bg`               | `var(--neutrals-100)` | Background color during drag-over |
+| `--file-upload-background-color`      | `transparent`         | Default background color          |
+| `--file-upload-icon-color`            | `var(--neutrals-400)` | Upload icon color                 |
+| `--file-upload-text-color`            | `var(--neutrals-400)` | Instruction text color            |
+| `--file-upload-error-color`           | `var(--danger-500)`   | Error text color                  |
+| `--file-upload-focus-ring-color`      | `var(--primary-100)`  | Focus ring color                  |
+| `--file-upload-error-ring-color`      | `var(--danger-100)`   | Error state ring color            |
 
 ## Accessibility
 
@@ -317,6 +309,7 @@ async function onUpload(files: FileList) {
 - `aria-required` is set when the field is required.
 - Enter and Space keys trigger the file browser dialog.
 - The disabled state applies `pointer-events: none` and reduced opacity.
+
 ## Related Components
 
 - [VcGallery](../../organisms/vc-gallery/) -- Full image gallery with preview, reorder, drag-and-drop sorting, and upload
@@ -326,4 +319,3 @@ async function onUpload(files: FileList) {
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
-

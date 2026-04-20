@@ -13,15 +13,15 @@ Manages custom action buttons in the mobile app bar. Uses provide/inject to shar
 
 ```vue
 <script setup lang="ts">
-import { useAppBarMobileButtons } from '@vc-shell/framework';
-import { onUnmounted, computed, ref } from 'vue';
+import { useAppBarMobileButtons } from "@vc-shell/framework";
+import { onUnmounted, computed, ref } from "vue";
 
 const { register, unregister } = useAppBarMobileButtons();
 const unreadCount = ref(3);
 
 register({
-  id: 'notifications-btn',
-  icon: 'fas fa-bell',
+  id: "notifications-btn",
+  icon: "fas fa-bell",
   onClick: () => openNotificationsPanel(),
   order: 10,
   badge: computed(() => unreadCount.value > 0),
@@ -29,7 +29,7 @@ register({
 });
 
 // Always clean up when the component is destroyed
-onUnmounted(() => unregister('notifications-btn'));
+onUnmounted(() => unregister("notifications-btn"));
 </script>
 ```
 
@@ -37,27 +37,27 @@ onUnmounted(() => unregister('notifications-btn'));
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
-| `registeredButtons` | `ComputedRef<AppBarButtonContent[]>` | All registered buttons (unfiltered, unsorted). Useful for debugging. |
-| `register` | `(button: AppBarButtonContent) => void` | Add or update a button by `id`. If a button with the same ID already exists, it is replaced. |
-| `unregister` | `(buttonId: string) => void` | Remove a button by `id`. No-op if the ID does not exist. |
-| `getButton` | `(buttonId: string) => AppBarButtonContent \| undefined` | Look up a single button by ID. |
-| `getButtons` | `ComputedRef<AppBarButtonContent[]>` | Visible buttons sorted by `order` (ascending). Filters out buttons where `isVisible` is `false`. |
+| Property            | Type                                                     | Description                                                                                      |
+| ------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `registeredButtons` | `ComputedRef<AppBarButtonContent[]>`                     | All registered buttons (unfiltered, unsorted). Useful for debugging.                             |
+| `register`          | `(button: AppBarButtonContent) => void`                  | Add or update a button by `id`. If a button with the same ID already exists, it is replaced.     |
+| `unregister`        | `(buttonId: string) => void`                             | Remove a button by `id`. No-op if the ID does not exist.                                         |
+| `getButton`         | `(buttonId: string) => AppBarButtonContent \| undefined` | Look up a single button by ID.                                                                   |
+| `getButtons`        | `ComputedRef<AppBarButtonContent[]>`                     | Visible buttons sorted by `order` (ascending). Filters out buttons where `isVisible` is `false`. |
 
 ### AppBarButtonContent
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `id` | `string` | Yes | Unique identifier. Used for register/unregister/lookup. |
-| `icon` | `Component \| string` | No | Icon component or CSS class string (e.g., `'fas fa-bell'`). |
-| `component` | `Component` | No | Custom Vue component to render instead of a default icon button. |
-| `props` | `Record<string, unknown>` | No | Props passed to the custom `component`. |
-| `onClick` | `() => void` | No | Click handler for the default button rendering. |
-| `onClose` | `() => void` | No | Close/dismiss handler (e.g., for popover-style buttons). |
-| `order` | `number` | No | Sort priority. Lower values appear first. Defaults to 0 if omitted. |
-| `isVisible` | `MaybeRef<boolean>` | No | Reactive visibility toggle. When `false`, the button is excluded from `getButtons`. Defaults to `true`. |
-| `badge` | `MaybeRef<boolean>` | No | Show a small badge indicator on the button (e.g., for unread notifications). |
+| Field       | Type                      | Required | Description                                                                                             |
+| ----------- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| `id`        | `string`                  | Yes      | Unique identifier. Used for register/unregister/lookup.                                                 |
+| `icon`      | `Component \| string`     | No       | Icon component or CSS class string (e.g., `'fas fa-bell'`).                                             |
+| `component` | `Component`               | No       | Custom Vue component to render instead of a default icon button.                                        |
+| `props`     | `Record<string, unknown>` | No       | Props passed to the custom `component`.                                                                 |
+| `onClick`   | `() => void`              | No       | Click handler for the default button rendering.                                                         |
+| `onClose`   | `() => void`              | No       | Close/dismiss handler (e.g., for popover-style buttons).                                                |
+| `order`     | `number`                  | No       | Sort priority. Lower values appear first. Defaults to 0 if omitted.                                     |
+| `isVisible` | `MaybeRef<boolean>`       | No       | Reactive visibility toggle. When `false`, the button is excluded from `getButtons`. Defaults to `true`. |
+| `badge`     | `MaybeRef<boolean>`       | No       | Show a small badge indicator on the button (e.g., for unread notifications).                            |
 
 ## Setup
 
@@ -65,7 +65,7 @@ onUnmounted(() => unregister('notifications-btn'));
 
 ```typescript
 // Inside VcApp.vue setup
-import { provideAppBarMobileButtonsService } from '@vc-shell/framework';
+import { provideAppBarMobileButtonsService } from "@vc-shell/framework";
 
 provideAppBarMobileButtonsService();
 ```
@@ -74,15 +74,15 @@ provideAppBarMobileButtonsService();
 
 ```vue
 <script setup lang="ts">
-import { useAppBarMobileButtons } from '@vc-shell/framework';
-import { ref, computed, onUnmounted } from 'vue';
+import { useAppBarMobileButtons } from "@vc-shell/framework";
+import { ref, computed, onUnmounted } from "vue";
 
 const { register, unregister } = useAppBarMobileButtons();
 const isFilterActive = ref(false);
 
 register({
-  id: 'product-list-filter',
-  icon: computed(() => isFilterActive.value ? 'fas fa-filter' : 'far fa-filter'),
+  id: "product-list-filter",
+  icon: computed(() => (isFilterActive.value ? "fas fa-filter" : "far fa-filter")),
   onClick: () => {
     isFilterActive.value = !isFilterActive.value;
     // Open or close the filter panel
@@ -91,7 +91,7 @@ register({
   badge: isFilterActive,
 });
 
-onUnmounted(() => unregister('product-list-filter'));
+onUnmounted(() => unregister("product-list-filter"));
 </script>
 ```
 
@@ -101,20 +101,20 @@ If you need more than an icon and a click handler (e.g., a dropdown or popover),
 
 ```vue
 <script setup lang="ts">
-import { useAppBarMobileButtons } from '@vc-shell/framework';
-import { onUnmounted, markRaw } from 'vue';
-import LanguageSwitcher from './LanguageSwitcher.vue';
+import { useAppBarMobileButtons } from "@vc-shell/framework";
+import { onUnmounted, markRaw } from "vue";
+import LanguageSwitcher from "./LanguageSwitcher.vue";
 
 const { register, unregister } = useAppBarMobileButtons();
 
 register({
-  id: 'language-switcher',
+  id: "language-switcher",
   component: markRaw(LanguageSwitcher),
-  props: { position: 'bottom-right' },
+  props: { position: "bottom-right" },
   order: 50,
 });
 
-onUnmounted(() => unregister('language-switcher'));
+onUnmounted(() => unregister("language-switcher"));
 </script>
 ```
 

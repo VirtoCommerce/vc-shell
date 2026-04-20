@@ -84,7 +84,7 @@ import { VcIcon } from "@ui/components/atoms";
 import { VcButton } from "@ui/components/atoms";
 import { VcInput } from "@ui/components/molecules";
 
-const props = withDefaults(
+const _props = withDefaults(
   defineProps<{
     /**
      * Search input value
@@ -137,7 +137,7 @@ const emit = defineEmits<{
   filterToggle: [isOpen: boolean];
 }>();
 
-const slots = useSlots();
+const _slots = useSlots();
 const searchInputRef = ref<InstanceType<typeof VcInput> | null>(null);
 const isFilterOpen = ref(false);
 

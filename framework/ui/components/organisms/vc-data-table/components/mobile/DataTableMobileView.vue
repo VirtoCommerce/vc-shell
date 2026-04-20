@@ -77,7 +77,6 @@
  */
 import { computed, unref } from "vue";
 import type {
-  MobileCardLayout,
   MobileSwipeAction,
   TableEmptyAction,
   ColumnInstance,

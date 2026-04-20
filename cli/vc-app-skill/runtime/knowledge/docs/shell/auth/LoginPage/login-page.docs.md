@@ -34,13 +34,13 @@ SSO-only mode:
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `logo` | `string` | - | Override logo image URL |
-| `background` | `string` | - | Custom background image URL |
-| `title` | `string` | i18n `LOGIN.TITLE` | Page heading text |
-| `subtitle` | `string` | i18n `LOGIN.SUBTITLE` | Page subheading text |
-| `ssoOnly` | `boolean` | `false` | Hide credentials form, show only SSO providers |
+| Prop         | Type      | Default               | Description                                    |
+| ------------ | --------- | --------------------- | ---------------------------------------------- |
+| `logo`       | `string`  | -                     | Override logo image URL                        |
+| `background` | `string`  | -                     | Custom background image URL                    |
+| `title`      | `string`  | i18n `LOGIN.TITLE`    | Page heading text                              |
+| `subtitle`   | `string`  | i18n `LOGIN.SUBTITLE` | Page subheading text                           |
+| `ssoOnly`    | `boolean` | `false`               | Hide credentials form, show only SSO providers |
 
 ## Recipe: Router Configuration
 

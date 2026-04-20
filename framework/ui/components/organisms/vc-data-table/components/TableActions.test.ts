@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import TableActions from "./TableActions.vue";
 import { TableContextKey } from "@ui/components/organisms/vc-data-table/keys";
 

@@ -10,6 +10,7 @@ Toast notification component with type-based styling, auto-dismiss timer, swipe-
 - Rich notifications with custom component content
 
 When NOT to use:
+
 - For persistent alerts or banners -- use a dedicated alert component
 - For inline field validation -- use `VcHint` or form-level error display
 - For modal confirmations requiring user action -- use a dialog/modal
@@ -48,9 +49,9 @@ notification.error("Network error. Please try again.");
 notification.warning("You have unsaved changes");
 
 // With options
-notification("Quick note", { timeout: 2000 });           // Dismiss after 2 seconds
-notification("Please wait...", { timeout: false });        // Persistent (no auto-dismiss)
-notification("Hover me", { pauseOnHover: true });          // Pause timer on hover (default)
+notification("Quick note", { timeout: 2000 }); // Dismiss after 2 seconds
+notification("Please wait...", { timeout: false }); // Persistent (no auto-dismiss)
+notification("Hover me", { pauseOnHover: true }); // Pause timer on hover (default)
 ```
 
 Each call returns a unique `id` that can be used to update or remove the notification later.
@@ -99,11 +100,11 @@ Available positions: `"top-center"`, `"top-right"`, `"top-left"`, `"bottom-cente
 
 Each type displays a distinct icon and colored left accent border.
 
-| Type | Icon | Accent Color | Use Case |
-|------|------|-------------|----------|
-| `default` | Info circle | `--notification-info` | General information |
-| `success` | Check circle | `--notification-success` | Successful operations |
-| `error` | Alert circle | `--notification-error` | Failed operations, errors |
+| Type      | Icon           | Accent Color             | Use Case                     |
+| --------- | -------------- | ------------------------ | ---------------------------- |
+| `default` | Info circle    | `--notification-info`    | General information          |
+| `success` | Check circle   | `--notification-success` | Successful operations        |
+| `error`   | Alert circle   | `--notification-error`   | Failed operations, errors    |
 | `warning` | Alert triangle | `--notification-warning` | Caution, destructive actions |
 
 ### Custom Component Content
@@ -176,11 +177,11 @@ function deleteItem(item: { id: string; name: string }) {
   softDelete(item.id);
   const UndoContent = defineComponent({
     setup() {
-      const undo = () => { restoreItem(item.id); notification.remove(notifId); };
-      return () => h("div", { class: "tw-flex tw-gap-3" }, [
-        h("span", `"${item.name}" deleted.`),
-        h("button", { class: "tw-text-[color:var(--primary-600)] tw-underline", onClick: undo }, "Undo"),
-      ]);
+      const undo = () => {
+        restoreItem(item.id);
+        notification.remove(notifId);
+      };
+      return () => h("div", { class: "tw-flex tw-gap-3" }, [h("span", `"${item.name}" deleted.`), h("button", { class: "tw-text-[color:var(--primary-600)] tw-underline", onClick: undo }, "Undo")]);
     },
   });
   const notifId = notification(UndoContent, { timeout: 8000, pauseOnHover: true });
@@ -228,60 +229,60 @@ notification("Please wait...", { timeout: false });
 
 These props are used internally by the notification system. You rarely need to set them directly.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `content` | `string \| Component` | -- | Notification message or custom component |
-| `notificationId` | `number \| string` | -- | Unique identifier |
-| `updateId` | `number \| string` | -- | ID for update tracking |
-| `type` | `"default" \| "success" \| "error" \| "warning"` | `"default"` | Notification type (determines icon and accent color) |
-| `timeout` | `number \| boolean` | `5000` | Auto-dismiss delay in ms, or `false` to disable |
-| `pauseOnHover` | `boolean` | `true` | Pause timeout while mouse hovers over the toast |
-| `limit` | `number` | -- | Maximum number of visible notifications |
-| `position` | `NotificationPosition` | `"top-center"` | Screen position for the toast |
-| `dismissing` | `boolean` | -- | Programmatic dismissal trigger |
-| `toastIndex` | `number` | `0` | Stack index (0 = front/newest) |
-| `toastsCount` | `number` | -- | Total number of toasts in the position stack |
-| `expanded` | `boolean` | `true` | Whether the toast group is in expanded (hovered) state |
-| `visibleToasts` | `number` | `3` | Maximum visible toasts in collapsed stack |
-| `onReportHeight` | `(id, height) => void` | -- | Callback to report measured height to container |
+| Prop             | Type                                             | Default        | Description                                            |
+| ---------------- | ------------------------------------------------ | -------------- | ------------------------------------------------------ |
+| `content`        | `string \| Component`                            | --             | Notification message or custom component               |
+| `notificationId` | `number \| string`                               | --             | Unique identifier                                      |
+| `updateId`       | `number \| string`                               | --             | ID for update tracking                                 |
+| `type`           | `"default" \| "success" \| "error" \| "warning"` | `"default"`    | Notification type (determines icon and accent color)   |
+| `timeout`        | `number \| boolean`                              | `5000`         | Auto-dismiss delay in ms, or `false` to disable        |
+| `pauseOnHover`   | `boolean`                                        | `true`         | Pause timeout while mouse hovers over the toast        |
+| `limit`          | `number`                                         | --             | Maximum number of visible notifications                |
+| `position`       | `NotificationPosition`                           | `"top-center"` | Screen position for the toast                          |
+| `dismissing`     | `boolean`                                        | --             | Programmatic dismissal trigger                         |
+| `toastIndex`     | `number`                                         | `0`            | Stack index (0 = front/newest)                         |
+| `toastsCount`    | `number`                                         | --             | Total number of toasts in the position stack           |
+| `expanded`       | `boolean`                                        | `true`         | Whether the toast group is in expanded (hovered) state |
+| `visibleToasts`  | `number`                                         | `3`            | Maximum visible toasts in collapsed stack              |
+| `onReportHeight` | `(id, height) => void`                           | --             | Callback to report measured height to container        |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
+| Event   | Payload                         | Description                                        |
+| ------- | ------------------------------- | -------------------------------------------------- |
 | `close` | `number \| string \| undefined` | Toast dismissed (by user click, timeout, or swipe) |
 
 ## Notification Service Methods
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `notification()` | `(message: string \| Component, options?: NotificationOptions) => string \| number` | Show a default notification |
-| `notification.success()` | `(message: string \| Component) => string \| number` | Show a success notification |
-| `notification.error()` | `(message: string \| Component) => string \| number` | Show an error notification |
-| `notification.warning()` | `(message: string \| Component) => string \| number` | Show a warning notification |
-| `notification.update()` | `(id, options: Partial<NotificationOptions>) => void` | Update an existing notification |
-| `notification.remove()` | `(id: string \| number) => void` | Remove a specific notification |
-| `notification.clearAll()` | `() => void` | Remove all notifications |
-| `notification.setPosition()` | `(position: NotificationPosition) => void` | Change the global position |
+| Method                       | Signature                                                                           | Description                     |
+| ---------------------------- | ----------------------------------------------------------------------------------- | ------------------------------- |
+| `notification()`             | `(message: string \| Component, options?: NotificationOptions) => string \| number` | Show a default notification     |
+| `notification.success()`     | `(message: string \| Component) => string \| number`                                | Show a success notification     |
+| `notification.error()`       | `(message: string \| Component) => string \| number`                                | Show an error notification      |
+| `notification.warning()`     | `(message: string \| Component) => string \| number`                                | Show a warning notification     |
+| `notification.update()`      | `(id, options: Partial<NotificationOptions>) => void`                               | Update an existing notification |
+| `notification.remove()`      | `(id: string \| number) => void`                                                    | Remove a specific notification  |
+| `notification.clearAll()`    | `() => void`                                                                        | Remove all notifications        |
+| `notification.setPosition()` | `(position: NotificationPosition) => void`                                          | Change the global position      |
 
 ## CSS Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `--notification-background` | `var(--additional-50)` | Toast background color |
-| `--notification-border-radius` | `6px` | Corner radius |
-| `--notification-border-color` | `var(--neutrals-200)` | Border color |
-| `--notification-content-color` | `var(--neutrals-800)` | Text color |
-| `--notification-shadow` | `0 4px 12px rgba(0,0,0,0.08)` | Default box shadow |
-| `--notification-hover-shadow` | `0 4px 16px rgba(0,0,0,0.12)` | Box shadow on hover |
-| `--notification-dismiss-color` | `var(--neutrals-400)` | Dismiss button icon color |
-| `--notification-dismiss-hover-color` | `var(--neutrals-600)` | Dismiss button hover color |
-| `--notification-success` | `var(--success-500)` | Success accent and icon color |
-| `--notification-error` | `var(--danger-500)` | Error accent and icon color |
-| `--notification-warning` | `var(--warning-500)` | Warning accent and icon color |
-| `--notification-info` | `var(--info-500)` | Info/default accent and icon color |
-| `--notification-accent-width` | `3px` | Left accent border width |
-| `--notification-focus-ring-color` | `var(--primary-100)` | Focus ring color on dismiss button |
+| Variable                             | Default                       | Description                        |
+| ------------------------------------ | ----------------------------- | ---------------------------------- |
+| `--notification-background`          | `var(--additional-50)`        | Toast background color             |
+| `--notification-border-radius`       | `6px`                         | Corner radius                      |
+| `--notification-border-color`        | `var(--neutrals-200)`         | Border color                       |
+| `--notification-content-color`       | `var(--neutrals-800)`         | Text color                         |
+| `--notification-shadow`              | `0 4px 12px rgba(0,0,0,0.08)` | Default box shadow                 |
+| `--notification-hover-shadow`        | `0 4px 16px rgba(0,0,0,0.12)` | Box shadow on hover                |
+| `--notification-dismiss-color`       | `var(--neutrals-400)`         | Dismiss button icon color          |
+| `--notification-dismiss-hover-color` | `var(--neutrals-600)`         | Dismiss button hover color         |
+| `--notification-success`             | `var(--success-500)`          | Success accent and icon color      |
+| `--notification-error`               | `var(--danger-500)`           | Error accent and icon color        |
+| `--notification-warning`             | `var(--warning-500)`          | Warning accent and icon color      |
+| `--notification-info`                | `var(--info-500)`             | Info/default accent and icon color |
+| `--notification-accent-width`        | `3px`                         | Left accent border width           |
+| `--notification-focus-ring-color`    | `var(--primary-100)`          | Focus ring color on dismiss button |
 
 ## Accessibility
 

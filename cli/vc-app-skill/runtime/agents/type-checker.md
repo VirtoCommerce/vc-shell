@@ -23,11 +23,13 @@ No pattern files needed. This agent works with TypeScript diagnostics directly.
 ### Step 1: Run vue-tsc
 
 From `projectRoot`, run:
+
 ```bash
 cd {projectRoot} && npx vue-tsc --noEmit 2>&1
 ```
 
 Capture all output. If `vue-tsc` is not available, fall back to:
+
 ```bash
 cd {projectRoot} && npx tsc --noEmit 2>&1
 ```
@@ -35,6 +37,7 @@ cd {projectRoot} && npx tsc --noEmit 2>&1
 ### Step 2: Filter errors to generated files only
 
 Parse the output for TypeScript error lines. Each error line has format:
+
 ```
 {filepath}({line},{col}): error TS{code}: {message}
 ```
@@ -48,27 +51,34 @@ If no errors match the generated files, report **PASS** and stop.
 For each error in the generated files, attempt to fix using these patterns:
 
 **TS2339 — Property does not exist on type:**
+
 - If `entity.{field}` and `{field}` is not on the entity type, add `?` optional chaining: `entity.value?.{field}`
 - If it's a missing property on an imported type, add a type assertion: `(entity.value as any).{field}` as a last resort
 
 **TS2345 — Argument type mismatch:**
+
 - If passing `string | undefined` where `string` is expected, add non-null assertion: `value!`
 - If command class is missing a required field, add it from the entity with a comment
 
 **TS2304 — Cannot find name:**
+
 - If a composable function name is wrong, check the composable file and correct the import/destructure
 - If an imported type is missing, check the api client file for the correct class name
 
 **TS7006 — Parameter implicitly has 'any' type:**
+
 - Add explicit type annotation from context (e.g., `(query: ISearch{Entity}Query)`)
 
 **TS2554 — Expected N arguments but got M:**
+
 - Check the method signature in the api client file and adjust the call
 
 **TS1005 — Expected token:**
+
 - Syntax error — re-read the generated file and fix malformed syntax
 
 For each fix:
+
 1. Read the affected generated file
 2. Apply the minimal fix (Edit tool, targeted replacement)
 3. Note the fix applied
@@ -108,6 +118,7 @@ Returns a text report with PASS/FAIL status, fixes applied, and any remaining er
 ## Self-Check
 
 Before completing, verify:
+
 - [ ] `vue-tsc` (or `tsc`) was run from `projectRoot`, not from a subdirectory
 - [ ] Only errors in `generatedFiles` were addressed — no fixes to unrelated files
 - [ ] Fixes were minimal (targeted Edit calls, not full file rewrites)

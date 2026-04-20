@@ -391,7 +391,7 @@ watch(
           plugins: [prettierPluginHtml],
           vueIndentScriptAndStyle: true,
         });
-      } catch (e) {
+      } catch (_e) {
         formattedSource.value = value || "";
       }
     } else {

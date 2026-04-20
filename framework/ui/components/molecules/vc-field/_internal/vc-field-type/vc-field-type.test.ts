@@ -4,7 +4,7 @@ import VcFieldType from "./vc-field-type.vue";
 
 // Mock date utility
 vi.mock("@core/utilities/date", () => ({
-  formatDateRelative: (d: Date) => "2 days ago",
+  formatDateRelative: (_d: Date) => "2 days ago",
 }));
 
 describe("VcFieldType", () => {

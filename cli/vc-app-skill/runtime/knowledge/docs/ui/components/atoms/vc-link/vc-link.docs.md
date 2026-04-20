@@ -27,16 +27,16 @@ function openDetails() {
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `active` | `boolean` | `false` | Highlights the link as currently selected |
+| Prop       | Type      | Default | Description                                    |
+| ---------- | --------- | ------- | ---------------------------------------------- |
+| `active`   | `boolean` | `false` | Highlights the link as currently selected      |
 | `disabled` | `boolean` | `false` | Prevents interaction and applies muted styling |
 
 ## Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `click` | none | Fired when the link is clicked (suppressed when `disabled`) |
+| Event   | Payload | Description                                                 |
+| ------- | ------- | ----------------------------------------------------------- |
+| `click` | none    | Fired when the link is clicked (suppressed when `disabled`) |
 
 ## Common Patterns
 
@@ -45,8 +45,16 @@ function openDetails() {
 ```vue
 <template>
   <div class="tw-flex tw-gap-4">
-    <VcLink :active="currentTab === 'home'" @click="currentTab = 'home'">Home</VcLink>
-    <VcLink :active="currentTab === 'products'" @click="currentTab = 'products'">Products</VcLink>
+    <VcLink
+      :active="currentTab === 'home'"
+      @click="currentTab = 'home'"
+      >Home</VcLink
+    >
+    <VcLink
+      :active="currentTab === 'products'"
+      @click="currentTab = 'products'"
+      >Products</VcLink
+    >
     <VcLink disabled>Admin</VcLink>
   </div>
 </template>
@@ -105,13 +113,13 @@ const activeTab = ref("Overview");
 
 ## CSS Custom Properties
 
-| Variable | Default | Description |
-|---|---|---|
-| `--link-text-color` | `var(--primary-500)` | Default text color |
-| `--link-text-color-hover` | `var(--primary-400)` | Text color on hover |
-| `--link-text-color-active` | `var(--primary-700)` | Text color in active state |
-| `--link-text-color-disabled` | `var(--neutrals-300)` | Text color when disabled |
-| `--link-focus-ring-color` | `primary-500 at 30%` | Focus ring color |
+| Variable                     | Default               | Description                |
+| ---------------------------- | --------------------- | -------------------------- |
+| `--link-text-color`          | `var(--primary-500)`  | Default text color         |
+| `--link-text-color-hover`    | `var(--primary-400)`  | Text color on hover        |
+| `--link-text-color-active`   | `var(--primary-700)`  | Text color in active state |
+| `--link-text-color-disabled` | `var(--neutrals-300)` | Text color when disabled   |
+| `--link-focus-ring-color`    | `primary-500 at 30%`  | Focus ring color           |
 
 ## Tips
 

@@ -29,16 +29,16 @@ const items = settingsMenu.items.value;
 
 ### Returns (`ISettingsMenuService`)
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `register` | `(options: RegisterSettingsMenuItemOptions) => string` | Register a settings menu item; returns the item ID |
-| `unregister` | `(id: string) => void` | Remove a settings menu item by ID |
-| `items` | `ComputedRef<ISettingsMenuItem[]>` | Reactive array of all registered settings menu items |
+| Property     | Type                                                   | Description                                          |
+| ------------ | ------------------------------------------------------ | ---------------------------------------------------- |
+| `register`   | `(options: RegisterSettingsMenuItemOptions) => string` | Register a settings menu item; returns the item ID   |
+| `unregister` | `(id: string) => void`                                 | Remove a settings menu item by ID                    |
+| `items`      | `ComputedRef<ISettingsMenuItem[]>`                     | Reactive array of all registered settings menu items |
 
 ### Related Exports
 
-| Export | Description |
-|--------|-------------|
+| Export                  | Description                                        |
+| ----------------------- | -------------------------------------------------- |
 | `provideSettingsMenu()` | Create and provide the service in a root component |
 
 ## Common Patterns

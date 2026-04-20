@@ -15,7 +15,7 @@ Internally, it delegates to `useMenuExpanded()` to share reactive state with oth
 
 ```vue
 <script setup lang="ts">
-import { useSidebarState } from '@vc-shell/framework';
+import { useSidebarState } from "@vc-shell/framework";
 
 const { isExpanded, isPinned, togglePin, openMenu, closeMenu } = useSidebarState();
 </script>
@@ -24,10 +24,17 @@ const { isExpanded, isPinned, togglePin, openMenu, closeMenu } = useSidebarState
   <div class="tw-flex tw-items-center">
     <!-- Show full label when expanded, icon-only when collapsed -->
     <VcIcon icon="fas fa-box" />
-    <span v-if="isExpanded" class="tw-ml-2">Products</span>
+    <span
+      v-if="isExpanded"
+      class="tw-ml-2"
+      >Products</span
+    >
 
     <!-- Pin/unpin toggle button -->
-    <button @click="togglePin" class="tw-ml-auto">
+    <button
+      @click="togglePin"
+      class="tw-ml-auto"
+    >
       <VcIcon :icon="isPinned ? 'fas fa-thumbtack' : 'fas fa-thumbtack tw-rotate-45'" />
     </button>
   </div>
@@ -38,21 +45,21 @@ const { isExpanded, isPinned, togglePin, openMenu, closeMenu } = useSidebarState
 
 ### Returns -- State
 
-| Property | Type | Description |
-|---|---|---|
-| `isPinned` | `Ref<boolean>` | Sidebar is pinned open by the user. Persisted to localStorage so it survives page reloads. |
-| `isHoverExpanded` | `Ref<boolean>` | Sidebar is temporarily expanded because the mouse is hovering over it (desktop only). |
-| `isMenuOpen` | `Ref<boolean>` | Mobile menu overlay is visible. |
-| `isExpanded` | `ComputedRef<boolean>` | Derived: `isPinned || isHoverExpanded`. Use this when you just need to know if sidebar content is visible. |
+| Property          | Type                   | Description                                                                                |
+| ----------------- | ---------------------- | ------------------------------------------------------------------------------------------ | --- | ------------------------------------------------------------------------------------ |
+| `isPinned`        | `Ref<boolean>`         | Sidebar is pinned open by the user. Persisted to localStorage so it survives page reloads. |
+| `isHoverExpanded` | `Ref<boolean>`         | Sidebar is temporarily expanded because the mouse is hovering over it (desktop only).      |
+| `isMenuOpen`      | `Ref<boolean>`         | Mobile menu overlay is visible.                                                            |
+| `isExpanded`      | `ComputedRef<boolean>` | Derived: `isPinned                                                                         |     | isHoverExpanded`. Use this when you just need to know if sidebar content is visible. |
 
 ### Returns -- Actions
 
-| Property | Type | Description |
-|---|---|---|
-| `togglePin` | `() => void` | Toggle pinned state. Persists the new value to localStorage immediately. |
+| Property           | Type                       | Description                                                                                                      |
+| ------------------ | -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `togglePin`        | `() => void`               | Toggle pinned state. Persists the new value to localStorage immediately.                                         |
 | `setHoverExpanded` | `(value: boolean) => void` | Set hover expansion. Opening has a 200ms delay to prevent flicker from brief mouse passes; closing is immediate. |
-| `openMenu` | `() => void` | Show the mobile menu overlay. |
-| `closeMenu` | `() => void` | Hide the mobile menu overlay. |
+| `openMenu`         | `() => void`               | Show the mobile menu overlay.                                                                                    |
+| `closeMenu`        | `() => void`               | Hide the mobile menu overlay.                                                                                    |
 
 ## Setup
 
@@ -60,7 +67,7 @@ const { isExpanded, isPinned, togglePin, openMenu, closeMenu } = useSidebarState
 
 ```typescript
 // Inside VcApp.vue setup
-import { provideSidebarState } from '@vc-shell/framework';
+import { provideSidebarState } from "@vc-shell/framework";
 
 provideSidebarState();
 ```
@@ -69,8 +76,8 @@ provideSidebarState();
 
 ```vue
 <script setup lang="ts">
-import { useSidebarState } from '@vc-shell/framework';
-import { useBladeContext } from '@vc-shell/framework';
+import { useSidebarState } from "@vc-shell/framework";
+import { useBladeContext } from "@vc-shell/framework";
 
 const { closeMenu, isMenuOpen } = useSidebarState();
 const { openBlade } = useBladeContext();
@@ -83,7 +90,7 @@ async function navigateToProducts() {
 
   await openBlade({
     component: ProductListBlade,
-    param: { catalogId: 'default' },
+    param: { catalogId: "default" },
   });
 }
 </script>
@@ -100,18 +107,19 @@ async function navigateToProducts() {
 
 ```vue
 <script setup lang="ts">
-import { useSidebarState } from '@vc-shell/framework';
-import { computed } from 'vue';
+import { useSidebarState } from "@vc-shell/framework";
+import { computed } from "vue";
 
 const { isExpanded } = useSidebarState();
 
-const contentClass = computed(() =>
-  isExpanded.value ? 'tw-ml-64' : 'tw-ml-16',
-);
+const contentClass = computed(() => (isExpanded.value ? "tw-ml-64" : "tw-ml-16"));
 </script>
 
 <template>
-  <div :class="contentClass" class="tw-transition-all tw-duration-200">
+  <div
+    :class="contentClass"
+    class="tw-transition-all tw-duration-200"
+  >
     <slot />
   </div>
 </template>

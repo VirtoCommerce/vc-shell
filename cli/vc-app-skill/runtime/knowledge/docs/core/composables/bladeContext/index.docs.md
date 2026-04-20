@@ -15,7 +15,7 @@ The pattern follows a "define once, inject anywhere" approach: the blade compone
 
 ```typescript
 // In a blade's <script setup>
-import { defineBladeContext, injectBladeContext } from '@vc-shell/framework';
+import { defineBladeContext, injectBladeContext } from "@vc-shell/framework";
 
 // Provide context — refs/computeds are auto-unwrapped for consumers
 defineBladeContext({ item, disabled, loading });
@@ -26,7 +26,7 @@ defineBladeContext(computed(() => ({ id: item.value?.id })));
 
 ```typescript
 // In a widget or nested component
-import { injectBladeContext } from '@vc-shell/framework';
+import { injectBladeContext } from "@vc-shell/framework";
 
 const ctx = injectBladeContext();
 // Refs are already unwrapped — access values directly, no .value needed
@@ -38,9 +38,9 @@ const item = computed(() => ctx.value.item as { id: string; name: string });
 
 ### defineBladeContext
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `data` | `MaybeRefOrGetter<Record<string, unknown>>` | Yes | Plain object, ref, or getter to expose |
+| Parameter | Type                                        | Required | Description                            |
+| --------- | ------------------------------------------- | -------- | -------------------------------------- |
+| `data`    | `MaybeRefOrGetter<Record<string, unknown>>` | Yes      | Plain object, ref, or getter to expose |
 
 Returns `void`. Must be called in the blade's `<script setup>`.
 
@@ -82,11 +82,13 @@ const customer = ref({ id: "cust-1", name: "Acme Corp" });
 const loading = ref(false);
 
 // Expose the customer data to all descendant widgets
-defineBladeContext(computed(() => ({
-  id: customer.value?.id,
-  name: customer.value?.name,
-  loading: loading.value,
-})));
+defineBladeContext(
+  computed(() => ({
+    id: customer.value?.id,
+    name: customer.value?.name,
+    loading: loading.value,
+  })),
+);
 </script>
 ```
 

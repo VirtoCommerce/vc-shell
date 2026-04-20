@@ -17,26 +17,36 @@ Use `framework/ui/components/organisms/vc-app/index.ts` exports:
 ## Minimal custom shell contract
 
 1. Provide app-level injections in root setup:
+
 - `provide("bladeRoutes", [])` (or real routes).
 - `provide(AppRootElementKey, appRootRef)` for scoped teleports.
+
 2. Call state providers once in root setup:
+
 - `provideSidebarState()`
 - `provideAppBarState()`
+
 3. Run shell bootstrap:
+
 - `useShellBootstrap(features, { isEmbedded, internalRoutes, dynamicModules, context })`
+
 4. Handle shell lifecycle/navigation:
+
 - `useShellLifecycle({ isReady })`
 - `useShellNavigation()`
+
 5. Render layout + workspace + popup container using `composition/*` blocks.
 
 ## Required events and slots
 
 Layouts:
+
 - `VcAppDesktopLayout` emits: `logo:click`, `item:click`, `switch-app`.
 - `VcAppMobileLayout` emits: `item:click`, `switch-app`.
 - Both expose `#app-hub="{ appsList, switchApp }"` slot.
 
 Menu sidebar (`VcAppMenuSidebar`):
+
 - Required slots in desktop mode: `widgets`, `widgets-active-content`, `app-hub`.
 - Required slots in mobile mode: `widgets`, `widgets-active-content`, `navmenu`, `user-dropdown`.
 
@@ -44,15 +54,16 @@ Menu sidebar (`VcAppMenuSidebar`):
 
 `VcApp` exposes named slots for granular customization without full shell rebuild:
 
-| Slot | Scope | Replaces |
-|------|-------|----------|
-| `#layout` | `{ isMobile, sidebar, appsList, switchApp, openRoot, handleMenuItemClick }` | Entire DesktopLayout/MobileLayout |
-| `#menu` | `{ expanded, onItemClick }` | VcAppMenu navigation |
-| `#sidebar-header` | `{ logo, expanded, isMobile }` | SidebarHeader |
-| `#sidebar-footer` | `{ avatar, name, role }` | UserDropdownButton |
-| `#workspace` | `{ isAuthenticated }` | VcBladeNavigation + VcAiAgentPanel |
+| Slot              | Scope                                                                       | Replaces                           |
+| ----------------- | --------------------------------------------------------------------------- | ---------------------------------- |
+| `#layout`         | `{ isMobile, sidebar, appsList, switchApp, openRoot, handleMenuItemClick }` | Entire DesktopLayout/MobileLayout  |
+| `#menu`           | `{ expanded, onItemClick }`                                                 | VcAppMenu navigation               |
+| `#sidebar-header` | `{ logo, expanded, isMobile }`                                              | SidebarHeader                      |
+| `#sidebar-footer` | `{ avatar, name, role }`                                                    | UserDropdownButton                 |
+| `#workspace`      | `{ isAuthenticated }`                                                       | VcBladeNavigation + VcAiAgentPanel |
 
 Example — custom menu:
+
 ```vue
 <VcApp :is-ready="true" logo="...">
   <template #menu="{ expanded, onItemClick }">

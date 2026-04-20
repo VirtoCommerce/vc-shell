@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computed, defineComponent, h, provide, ref } from "vue";
+import { computed, defineComponent, h, provide } from "vue";
 import { mount } from "@vue/test-utils";
 import { useTableContext } from "./useTableContext";
 import { TableContextKey, type TableContext } from "@ui/components/organisms/vc-data-table/keys";

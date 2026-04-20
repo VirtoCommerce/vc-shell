@@ -12,18 +12,25 @@ Monitors the browser's network connectivity and shows a persistent notification 
 
 ```vue
 <script setup lang="ts">
-import { useConnectionStatus } from '@vc-shell/framework';
+import { useConnectionStatus } from "@vc-shell/framework";
 
 const { isOnline } = useConnectionStatus();
 </script>
 
 <template>
   <VcBlade title="Order Details">
-    <div v-if="!isOnline" class="tw-bg-yellow-100 tw-p-2 tw-rounded tw-mb-4">
+    <div
+      v-if="!isOnline"
+      class="tw-bg-yellow-100 tw-p-2 tw-rounded tw-mb-4"
+    >
       You are offline. Changes will not be saved until connectivity is restored.
     </div>
 
-    <VcButton :disabled="!isOnline" @click="save">Save Order</VcButton>
+    <VcButton
+      :disabled="!isOnline"
+      @click="save"
+      >Save Order</VcButton
+    >
   </VcBlade>
 </template>
 ```
@@ -32,8 +39,8 @@ const { isOnline } = useConnectionStatus();
 
 ### Returns
 
-| Property | Type | Description |
-|---|---|---|
+| Property   | Type                     | Description                                                                                                     |
+| ---------- | ------------------------ | --------------------------------------------------------------------------------------------------------------- |
 | `isOnline` | `Readonly<Ref<boolean>>` | `true` when the browser has network connectivity, `false` when offline. Read-only to prevent external mutation. |
 
 ## How It Works
@@ -41,6 +48,7 @@ const { isOnline } = useConnectionStatus();
 On the very first call to `useConnectionStatus()`, the composable initializes a watcher on `@vueuse/core`'s `useNetwork().isOnline`. This watcher runs with `{ immediate: true }`, so the state is correct from the start. Subsequent calls skip initialization and return the same shared reactive state.
 
 When the network drops:
+
 1. A warning notification is shown with a stable ID (`vc-framework-offline-status`) so it cannot be duplicated.
 2. The CSS class `vc-offline` is added to `document.documentElement`.
 3. A warning is logged via `createLogger`.
@@ -51,21 +59,25 @@ When connectivity is restored, the notification is removed, the CSS class is cle
 
 ```vue
 <script setup lang="ts">
-import { useConnectionStatus } from '@vc-shell/framework';
-import { watch, ref } from 'vue';
+import { useConnectionStatus } from "@vc-shell/framework";
+import { watch, ref } from "vue";
 
 const { isOnline } = useConnectionStatus();
 const pendingSave = ref(false);
-const formData = ref({ name: '' });
+const formData = ref({ name: "" });
 
 // Auto-save on changes, but only when online
-watch(formData, () => {
-  if (isOnline.value) {
-    saveToServer(formData.value);
-  } else {
-    pendingSave.value = true;
-  }
-}, { deep: true });
+watch(
+  formData,
+  () => {
+    if (isOnline.value) {
+      saveToServer(formData.value);
+    } else {
+      pendingSave.value = true;
+    }
+  },
+  { deep: true },
+);
 
 // Flush pending save when connectivity returns
 watch(isOnline, (online) => {

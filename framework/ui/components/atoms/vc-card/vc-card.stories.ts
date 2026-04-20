@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcCard } from ".";
 import { VcInput } from "@ui/components/molecules/vc-input";
-import { VcCol } from "@ui/components/atoms/vc-col";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { provide, ref } from "vue";
 import { BladeLoadingKey } from "@framework/injection-keys";

@@ -16,19 +16,25 @@ import { Search, Plus, Trash2 } from "lucide-vue-next";
 </script>
 <template>
   <Search :size="16" />
-  <Plus :size="20" class="tw-text-[var(--primary-500)]" />
-  <Trash2 :size="16" color="currentColor" />
+  <Plus
+    :size="20"
+    class="tw-text-[var(--primary-500)]"
+  />
+  <Trash2
+    :size="16"
+    color="currentColor"
+  />
 </template>
 ```
 
 ### Props
 
-| Prop        | Type             | Default       | Description               |
-| ----------- | ---------------- | ------------- | ------------------------- |
-| `size`      | `number\|string` | `24`          | Width and height in px    |
-| `color`     | `string`         | `currentColor`| SVG stroke color          |
-| `strokeWidth` | `number`       | `2`           | SVG stroke width          |
-| `absoluteStrokeWidth` | `boolean` | `false`  | Scale stroke with size    |
+| Prop                  | Type             | Default        | Description            |
+| --------------------- | ---------------- | -------------- | ---------------------- |
+| `size`                | `number\|string` | `24`           | Width and height in px |
+| `color`               | `string`         | `currentColor` | SVG stroke color       |
+| `strokeWidth`         | `number`         | `2`            | SVG stroke width       |
+| `absoluteStrokeWidth` | `boolean`        | `false`        | Scale stroke with size |
 
 ---
 
@@ -67,24 +73,24 @@ Replace `<i class="fas fa-*">` or `<i class="far fa-*">` with the imported Lucid
 <i class="fas fa-plus"></i>
 
 <!-- After (Lucide) -->
-<Search :size="16" />
+<search :size="16" />
 <Plus :size="16" />
 ```
 
 **Common FA → Lucide mappings:**
 
-| FontAwesome class      | Lucide component   |
-| ---------------------- | ------------------ |
-| `fa-search`            | `Search`           |
-| `fa-plus`              | `Plus`             |
-| `fa-trash` / `fa-trash-alt` | `Trash2`      |
-| `fa-edit` / `fa-pencil` | `Pencil`          |
-| `fa-check`             | `Check`            |
-| `fa-times` / `fa-xmark` | `X`               |
-| `fa-chevron-down`      | `ChevronDown`      |
-| `fa-eye`               | `Eye`              |
-| `fa-download`          | `Download`         |
-| `fa-upload`            | `Upload`           |
+| FontAwesome class           | Lucide component |
+| --------------------------- | ---------------- |
+| `fa-search`                 | `Search`         |
+| `fa-plus`                   | `Plus`           |
+| `fa-trash` / `fa-trash-alt` | `Trash2`         |
+| `fa-edit` / `fa-pencil`     | `Pencil`         |
+| `fa-check`                  | `Check`          |
+| `fa-times` / `fa-xmark`     | `X`              |
+| `fa-chevron-down`           | `ChevronDown`    |
+| `fa-eye`                    | `Eye`            |
+| `fa-download`               | `Download`       |
+| `fa-upload`                 | `Upload`         |
 
 ### Bootstrap Icons to Lucide
 
@@ -96,20 +102,20 @@ Replace `<i class="bi bi-*">` with the imported Lucide component.
 <i class="bi bi-plus-lg"></i>
 
 <!-- After (Lucide) -->
-<Search :size="16" />
+<search :size="16" />
 <Plus :size="16" />
 ```
 
 **Common BI → Lucide mappings:**
 
-| Bootstrap Icons class  | Lucide component   |
-| ---------------------- | ------------------ |
-| `bi-search`            | `Search`           |
-| `bi-plus-lg`           | `Plus`             |
-| `bi-trash`             | `Trash2`           |
-| `bi-pencil`            | `Pencil`           |
-| `bi-check-lg`          | `Check`            |
-| `bi-x-lg`              | `X`                |
+| Bootstrap Icons class | Lucide component |
+| --------------------- | ---------------- |
+| `bi-search`           | `Search`         |
+| `bi-plus-lg`          | `Plus`           |
+| `bi-trash`            | `Trash2`         |
+| `bi-pencil`           | `Pencil`         |
+| `bi-check-lg`         | `Check`          |
+| `bi-x-lg`             | `X`              |
 
 ---
 
@@ -117,11 +123,11 @@ Replace `<i class="bi bi-*">` with the imported Lucide component.
 
 Migrating from CSS font icons to Lucide significantly reduces bundle size:
 
-| System                       | Bundle cost       | Tree-shakeable |
-| ---------------------------- | ----------------- | -------------- |
-| FontAwesome CSS font          | ~400 KB (always)  | No             |
-| Bootstrap Icons CSS font      | ~200 KB (always)  | No             |
-| Lucide (lucide-vue-next)      | ~1-2 KB per icon  | Yes            |
+| System                   | Bundle cost      | Tree-shakeable |
+| ------------------------ | ---------------- | -------------- |
+| FontAwesome CSS font     | ~400 KB (always) | No             |
+| Bootstrap Icons CSS font | ~200 KB (always) | No             |
+| Lucide (lucide-vue-next) | ~1-2 KB per icon | Yes            |
 
 CSS font-based icons load their entire glyph font regardless of how many icons are actually used in the application. Lucide components are individual SVG files — bundlers (Vite/Rollup) tree-shake unused imports, so only icons actually referenced in your code are included in the final bundle.
 

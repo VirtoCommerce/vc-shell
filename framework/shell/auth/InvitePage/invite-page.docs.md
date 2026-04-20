@@ -36,13 +36,13 @@ With custom branding:
 
 ## Key Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `userId` | `string` | **required** | Invited user's ID from the link |
-| `userName` | `string` | **required** | Invited user's email (shown as disabled field) |
-| `token` | `string` | **required** | Invitation token from the email link |
-| `logo` | `string` | `/assets/logo-white.svg` | Logo image URL |
-| `background` | `string` | `/assets/background.jpg` | Background image URL |
+| Prop         | Type     | Default                  | Description                                    |
+| ------------ | -------- | ------------------------ | ---------------------------------------------- |
+| `userId`     | `string` | **required**             | Invited user's ID from the link                |
+| `userName`   | `string` | **required**             | Invited user's email (shown as disabled field) |
+| `token`      | `string` | **required**             | Invitation token from the email link           |
+| `logo`       | `string` | `/assets/logo-white.svg` | Logo image URL                                 |
+| `background` | `string` | `/assets/background.jpg` | Background image URL                           |
 
 ## Recipe: Router Configuration
 
@@ -67,6 +67,7 @@ const routes = [
 ```
 
 The invitation email link typically looks like:
+
 ```
 https://your-app.com/invite?userId=abc123&userName=jane@example.com&token=xyz789...
 ```

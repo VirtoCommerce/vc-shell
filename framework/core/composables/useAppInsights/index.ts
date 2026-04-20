@@ -2,7 +2,7 @@ import { inject, type InjectionKey } from "vue";
 import { AppInsightsPluginOptions } from "vue3-application-insights";
 import { generateW3CId } from "@microsoft/applicationinsights-core-js";
 import { useUserManagement } from "@core/composables/useUserManagement";
-import { ApplicationInsights, Snippet } from "@microsoft/applicationinsights-web";
+import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 
 export const AppInsightsOptionsKey: InjectionKey<AppInsightsPluginOptions> = Symbol("AppInsightsOptions");
 export const AppInsightsInstanceKey: InjectionKey<ApplicationInsights | null> = Symbol("AppInsightsInstance");

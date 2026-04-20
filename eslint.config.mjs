@@ -10,6 +10,8 @@ export default [
       "**/node_modules/**",
       "**/dist/**",
       "cli/create-vc-app/src/templates/**",
+      "cli/migrate/tests/**/__testfixtures__/**",
+      "configs/vite-config/src/templates/**",
       "api-client.ts",
       ".worktrees/**",
     ],
@@ -35,6 +37,15 @@ export default [
     },
   },
 
+  // Test files: relax Vue rules that apply to component props — test stubs
+  // commonly use array-form props which is fine for mocks.
+  {
+    files: ["**/*.test.{ts,vue}", "**/*.spec.{ts,vue}"],
+    rules: {
+      "vue/require-prop-types": "off",
+    },
+  },
+
   // Prettier (must be last among formatting configs)
   vuePrettierConfig,
 
@@ -45,7 +56,15 @@ export default [
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-require-imports": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+        },
+      ],
       "@typescript-eslint/triple-slash-reference": "off",
       "vue/multi-word-component-names": "off",
       "vue/require-default-prop": "off",

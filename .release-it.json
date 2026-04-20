@@ -25,7 +25,7 @@
     }
   },
   "hooks": {
-    "after:bump": "tsx scripts/release-hooks.ts after-bump ${version}",
-    "before:stage": "git add cli/ configs/ packages/ framework/package.json apps/ CHANGELOG.md"
+    "after:bump": "tsx scripts/release-hooks.ts after-bump ${version} && yarn install",
+    "before:stage": "git add cli/ configs/ packages/ framework/package.json apps/ CHANGELOG.md yarn.lock"
   }
 }

@@ -48,6 +48,12 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Lockfile drift hint
+        if: failure()
+        run: |
+          echo "::error title=yarn.lock is out of sync with package manifests::The previous step failed with YN0028 because yarn.lock does not match the current workspace versions. Run 'yarn install' locally, commit the updated yarn.lock, and push. See docs/superpowers/specs/2026-04-20-fix-ci-lockfile-design.md for context."
+          exit 1
+
       - name: Type check framework
         run: yarn workspace @vc-shell/framework run type-check
 

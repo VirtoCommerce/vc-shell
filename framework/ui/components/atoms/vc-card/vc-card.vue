@@ -25,7 +25,7 @@
     </div>
     <!-- Normal header -->
     <div
-      v-else-if="header && $slots['header']"
+      v-else-if="header || $slots['header']"
       class="vc-card__header"
       :role="isCollapsable ? 'button' : undefined"
       :tabindex="isCollapsable ? 0 : undefined"

@@ -61,7 +61,7 @@
       tag="div"
       :name="isColumnReordering ? 'vc-table-col-swap' : ''"
       class="vc-table-composition__row-transition-wrapper"
-      :style="{ '--filler-width': fillerWidth.value > 0 ? `${fillerWidth.value}px` : '0px' }"
+      :style="{ '--filler-width': fillerWidth > 0 ? `${fillerWidth}px` : '0px' }"
     >
       <slot />
     </TransitionGroup>

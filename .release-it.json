@@ -26,6 +26,6 @@
   },
   "hooks": {
     "after:bump": "tsx scripts/release-hooks.ts after-bump ${version}",
-    "before:stage": "git add cli/vc-app-skill/runtime/"
+    "before:stage": "git add cli/ configs/ packages/ framework/package.json apps/ CHANGELOG.md"
   }
 }

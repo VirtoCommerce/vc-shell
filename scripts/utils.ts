@@ -1,79 +1,47 @@
 import fs from "fs-extra";
 import { writeFileSync } from "node:fs";
 import path from "node:path";
-import { gt as isVersionGreater } from "semver";
 
-// Updates the boilerplate template package versions to stay aligned with repository packages.
-export async function updateBoilerplatePkgVersions() {
-  const version = fs.readJsonSync("package.json").version;
+type VersionMap = Record<string, string>;
 
-  // v2 templates: each project type has its own _package.json.ejs
+function loadPeerVersions(cwd: string): VersionMap | null {
+  const peerVersionsPath = path.join(cwd, "configs/peer-versions.json");
+  if (!fs.existsSync(peerVersionsPath)) {
+    console.warn(
+      "⚠ configs/peer-versions.json not found — scaffold template peer-dep sync skipped.\n" +
+        "  Only @vc-shell/* will be bumped. Restore the file to re-enable peer sync.",
+    );
+    return null;
+  }
+  try {
+    const raw = fs.readJsonSync(peerVersionsPath);
+    if (!raw || typeof raw !== "object" || !raw.versions || typeof raw.versions !== "object") {
+      console.warn(
+        "⚠ configs/peer-versions.json has no `versions` object — scaffold template peer-dep sync skipped.",
+      );
+      return null;
+    }
+    return raw.versions as VersionMap;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(
+      `⚠ Failed to parse configs/peer-versions.json (${msg}) — scaffold template peer-dep sync skipped.`,
+    );
+    return null;
+  }
+}
+
+// Updates the boilerplate template package versions to stay aligned with the curated peer-versions map.
+export async function updateBoilerplatePkgVersions(cwd: string = process.cwd()) {
+  const version = fs.readJsonSync(path.join(cwd, "package.json")).version;
+
   const templatePkgPaths = [
-    "cli/create-vc-app/src/templates/standalone/_package.json.ejs",
-    "cli/create-vc-app/src/templates/host-app/_package.json.ejs",
-    "cli/create-vc-app/src/templates/dynamic-module/_package.json.ejs",
+    path.join(cwd, "cli/create-vc-app/src/templates/standalone/_package.json.ejs"),
+    path.join(cwd, "cli/create-vc-app/src/templates/host-app/_package.json.ejs"),
+    path.join(cwd, "cli/create-vc-app/src/templates/dynamic-module/_package.json.ejs"),
   ];
 
-  // Find a reference app to sync common dependency versions from
-  const appsDirectory = path.resolve("apps");
-  let matchedAppPackage:
-    | { dependencies?: Record<string, string>; devDependencies?: Record<string, string> }
-    | undefined;
-
-  if (fs.existsSync(appsDirectory)) {
-    const appEntries = fs.readdirSync(appsDirectory, { withFileTypes: true });
-
-    for (const entry of appEntries) {
-      if (!entry.isDirectory()) {
-        continue;
-      }
-
-      const appPackagePath = path.join(appsDirectory, entry.name, "package.json");
-      if (!fs.existsSync(appPackagePath)) {
-        continue;
-      }
-
-      const appPackage = fs.readJsonSync(appPackagePath);
-      const combinedDependencies = {
-        ...(appPackage.dependencies ?? {}),
-        ...(appPackage.devDependencies ?? {}),
-      };
-      const hasModules = Object.keys(combinedDependencies).some((dep) => dep.startsWith("@vcmp-"));
-
-      if (appPackage.name?.startsWith("app-") && hasModules) {
-        matchedAppPackage = appPackage;
-        break;
-      }
-    }
-  }
-
-  const syncCommonDependencies = (
-    targetDeps: Record<string, string> | undefined,
-    sourceDeps: Record<string, string> | undefined,
-  ) => {
-    if (!targetDeps || !sourceDeps) {
-      return;
-    }
-
-    Object.keys(targetDeps).forEach((dep) => {
-      if (dep.startsWith("@vc-shell/") || dep.startsWith("@vcmp-")) {
-        return;
-      }
-
-      if (sourceDeps[dep]) {
-        const targetVersion = targetDeps[dep].replace(/^[\^~]/, "");
-        const sourceVersion = sourceDeps[dep].replace(/^[\^~]/, "");
-
-        try {
-          if (isVersionGreater(sourceVersion, targetVersion)) {
-            targetDeps[dep] = sourceDeps[dep];
-          }
-        } catch {
-          // If version comparison fails, keep current version
-        }
-      }
-    });
-  };
+  const peerVersions = loadPeerVersions(cwd);
 
   for (const pkgPath of templatePkgPaths) {
     if (!fs.existsSync(pkgPath)) {
@@ -82,23 +50,30 @@ export async function updateBoilerplatePkgVersions() {
 
     const boilerplatePkg = fs.readJsonSync(pkgPath);
 
-    // Update all @vc-shell/* dependencies to keep generated templates in sync with monorepo releases.
-    ["dependencies", "devDependencies"].forEach((depType) => {
-      if (!boilerplatePkg[depType]) {
-        return;
-      }
-
-      Object.keys(boilerplatePkg[depType]).forEach((dep) => {
-        if (dep.startsWith("@vc-shell/")) {
-          boilerplatePkg[depType][dep] = "^" + version;
+    // Bump @vc-shell/* deps to current repo version.
+    for (const depType of ["dependencies", "devDependencies"] as const) {
+      const deps = boilerplatePkg[depType];
+      if (!deps) continue;
+      for (const name of Object.keys(deps)) {
+        if (name.startsWith("@vc-shell/")) {
+          deps[name] = `^${version}`;
         }
-      });
-    });
+      }
+    }
 
-    // Sync common dependency versions from reference app
-    if (matchedAppPackage) {
-      syncCommonDependencies(boilerplatePkg.dependencies, matchedAppPackage.dependencies);
-      syncCommonDependencies(boilerplatePkg.devDependencies, matchedAppPackage.devDependencies);
+    // Apply intersection sync from peer-versions map (if loaded).
+    if (peerVersions) {
+      for (const depType of ["dependencies", "devDependencies"] as const) {
+        const deps = boilerplatePkg[depType];
+        if (!deps) continue;
+        for (const name of Object.keys(deps)) {
+          if (name.startsWith("@vc-shell/")) continue;
+          const peerVersion = peerVersions[name];
+          if (!peerVersion) continue;
+          if (deps[name] === peerVersion) continue;
+          deps[name] = peerVersion;
+        }
+      }
     }
 
     writeFileSync(pkgPath, JSON.stringify(boilerplatePkg, null, 2) + "\n");
@@ -106,10 +81,10 @@ export async function updateBoilerplatePkgVersions() {
   }
 }
 
-// Updates @vc-shell/* dependencies in all apps to match current framework version
-export async function updateAppsDependencies() {
-  const version = fs.readJsonSync("package.json").version;
-  const appsDirectory = path.resolve("apps");
+// Updates @vc-shell/* dependencies in all apps to match current framework version.
+export async function updateAppsDependencies(cwd: string = process.cwd()) {
+  const version = fs.readJsonSync(path.join(cwd, "package.json")).version;
+  const appsDirectory = path.join(cwd, "apps");
 
   if (!fs.existsSync(appsDirectory)) {
     return;
@@ -131,20 +106,19 @@ export async function updateAppsDependencies() {
     const appPackage = fs.readJsonSync(appPackagePath);
     let updated = false;
 
-    // Update @vc-shell/* dependencies in both dependencies and devDependencies
-    ["dependencies", "devDependencies"].forEach((depType) => {
-      if (appPackage[depType]) {
-        Object.keys(appPackage[depType]).forEach((dep) => {
-          if (dep.startsWith("@vc-shell/")) {
-            const newVersion = `^${version}`;
-            if (appPackage[depType][dep] !== newVersion) {
-              appPackage[depType][dep] = newVersion;
-              updated = true;
-            }
+    for (const depType of ["dependencies", "devDependencies"] as const) {
+      const deps = appPackage[depType];
+      if (!deps) continue;
+      for (const name of Object.keys(deps)) {
+        if (name.startsWith("@vc-shell/")) {
+          const newVersion = `^${version}`;
+          if (deps[name] !== newVersion) {
+            deps[name] = newVersion;
+            updated = true;
           }
-        });
+        }
       }
-    });
+    }
 
     if (updated) {
       writeFileSync(appPackagePath, JSON.stringify(appPackage, null, 2) + "\n");

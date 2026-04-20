@@ -80,23 +80,10 @@ export async function run(options: RunOptions): Promise<void> {
 
   if (selected.length === 0) {
     console.log(chalk.green("No transforms needed for this version range."));
-    return;
+    if (!options.updateDeps) {
+      return;
+    }
   }
-
-  console.log(chalk.blue(`Running ${selected.length} transform(s)${options.dryRun ? " (dry run)" : ""}:`));
-  selected.forEach((t) => console.log(chalk.gray(`  - ${t.name}: ${t.description}`)));
-
-  const srcDir = join(cwd, "src");
-  if (!existsSync(srcDir)) {
-    console.log(chalk.yellow(`Warning: No src/ directory found in ${cwd}. Is --cwd correct?`));
-    return;
-  }
-
-  const allExcludes = [...DEFAULT_EXCLUDES, ...(options.exclude ?? [])];
-  const sourceFiles = findFiles(srcDir, [".ts", ".vue"], allExcludes);
-
-  // Pre-pass: collect notification type mappings for auto-migration
-  const notifyMap = collectNotifyTypeMap(srcDir);
 
   let totalModified = 0;
   let totalSkipped = 0;
@@ -104,123 +91,141 @@ export async function run(options: RunOptions): Promise<void> {
   let totalRolledBack = 0;
   let totalWarnings = 0;
   const allReports: TransformReport[] = [];
+  let sourceFiles: string[] = [];
 
-  for (const t of selected) {
-    console.log(chalk.blue(`\nRunning: ${t.name}...`));
+  if (selected.length > 0) {
+    console.log(chalk.blue(`Running ${selected.length} transform(s)${options.dryRun ? " (dry run)" : ""}:`));
+    selected.forEach((t) => console.log(chalk.gray(`  - ${t.name}: ${t.description}`)));
 
-    const mod: TransformModule = await import(t.transformPath);
-    const transform = mod.default;
-    const parser = mod.parser ?? "tsx";
-    const j = jscodeshift.withParser(parser);
+    const srcDir = join(cwd, "src");
+    if (!existsSync(srcDir)) {
+      console.log(chalk.yellow(`Warning: No src/ directory found in ${cwd}. Is --cwd correct?`));
+      return;
+    }
 
-    const report: TransformReport = {
-      name: t.name,
-      filesModified: [],
-      filesSkipped: [],
-      filesErrored: [],
-      filesExcluded: [],
-      filesRolledBack: [],
-      reports: [],
-    };
+    const allExcludes = [...DEFAULT_EXCLUDES, ...(options.exclude ?? [])];
+    sourceFiles = findFiles(srcDir, [".ts", ".vue"], allExcludes);
 
-    const api = {
-      jscodeshift: j,
-      j,
-      stats: () => {},
-      report: (msg: string) => report.reports.push(msg),
-    };
+    // Pre-pass: collect notification type mappings for auto-migration
+    const notifyMap = collectNotifyTypeMap(srcDir);
 
-    if (t.scope === "project") {
-      try {
-        transform({ path: cwd, source: "" }, api as any, { cwd, dryRun: options.dryRun } as any);
-      } catch (err) {
-        report.filesErrored.push({
-          path: cwd,
-          error: err instanceof Error ? err.message : String(err),
-        });
-      }
-    } else {
-      const files = sourceFiles.filter((f) => {
-        if (t.fileExtensions) {
-          return t.fileExtensions.some((ext) => f.endsWith(ext));
-        }
-        return true;
-      });
+    for (const t of selected) {
+      console.log(chalk.blue(`\nRunning: ${t.name}...`));
 
-      for (const filePath of files) {
+      const mod: TransformModule = await import(t.transformPath);
+      const transform = mod.default;
+      const parser = mod.parser ?? "tsx";
+      const j = jscodeshift.withParser(parser);
+
+      const report: TransformReport = {
+        name: t.name,
+        filesModified: [],
+        filesSkipped: [],
+        filesErrored: [],
+        filesExcluded: [],
+        filesRolledBack: [],
+        reports: [],
+      };
+
+      const api = {
+        jscodeshift: j,
+        j,
+        stats: () => {},
+        report: (msg: string) => report.reports.push(msg),
+      };
+
+      if (t.scope === "project") {
         try {
-          let source = readFileSync(filePath, "utf-8");
-          // Pre-dedup: clean up any duplicate imports from previous partial migrations
-          try {
-            source = preDedupSource(source, filePath, j);
-          } catch {
-            // Pre-dedup failed — proceed with original source
-          }
-          // Pass per-file notifyTypeMap if this file's module has notifications
-          const fileNotifyMap = notifyMap.get(dirname(filePath));
-          let result = transform(
-            { path: filePath, source },
-            api as any,
-            { cwd, ...(fileNotifyMap ? { notifyTypeMap: fileNotifyMap } : {}) } as any,
-          );
-
-          if (result != null && result !== source) {
-            try {
-              const deduped = deduplicateImportSpecifiers(result, j);
-              if (deduped !== result) {
-                result = deduped;
-              }
-            } catch {
-              // Dedup failed — use result as-is
-            }
-
-            // Idempotency: if after dedup the result equals original, skip
-            if (result === source) {
-              report.filesSkipped.push(filePath);
-              continue;
-            }
-
-            const validationError = parseValidate(filePath, result, parser);
-            if (validationError) {
-              report.filesRolledBack.push({ path: filePath, error: validationError });
-            } else {
-              if (!options.dryRun) {
-                writeFileAtomic.sync(filePath, result);
-              }
-              report.filesModified.push(filePath);
-            }
-          } else {
-            report.filesSkipped.push(filePath);
-          }
+          transform({ path: cwd, source: "" }, api as any, { cwd, dryRun: options.dryRun } as any);
         } catch (err) {
           report.filesErrored.push({
-            path: filePath,
+            path: cwd,
             error: err instanceof Error ? err.message : String(err),
           });
         }
+      } else {
+        const files = sourceFiles.filter((f) => {
+          if (t.fileExtensions) {
+            return t.fileExtensions.some((ext) => f.endsWith(ext));
+          }
+          return true;
+        });
+
+        for (const filePath of files) {
+          try {
+            let source = readFileSync(filePath, "utf-8");
+            // Pre-dedup: clean up any duplicate imports from previous partial migrations
+            try {
+              source = preDedupSource(source, filePath, j);
+            } catch {
+              // Pre-dedup failed — proceed with original source
+            }
+            // Pass per-file notifyTypeMap if this file's module has notifications
+            const fileNotifyMap = notifyMap.get(dirname(filePath));
+            let result = transform(
+              { path: filePath, source },
+              api as any,
+              { cwd, ...(fileNotifyMap ? { notifyTypeMap: fileNotifyMap } : {}) } as any,
+            );
+
+            if (result != null && result !== source) {
+              try {
+                const deduped = deduplicateImportSpecifiers(result, j);
+                if (deduped !== result) {
+                  result = deduped;
+                }
+              } catch {
+                // Dedup failed — use result as-is
+              }
+
+              // Idempotency: if after dedup the result equals original, skip
+              if (result === source) {
+                report.filesSkipped.push(filePath);
+                continue;
+              }
+
+              const validationError = parseValidate(filePath, result, parser);
+              if (validationError) {
+                report.filesRolledBack.push({ path: filePath, error: validationError });
+              } else {
+                if (!options.dryRun) {
+                  writeFileAtomic.sync(filePath, result);
+                }
+                report.filesModified.push(filePath);
+              }
+            } else {
+              report.filesSkipped.push(filePath);
+            }
+          } catch (err) {
+            report.filesErrored.push({
+              path: filePath,
+              error: err instanceof Error ? err.message : String(err),
+            });
+          }
+        }
       }
-    }
 
-    if (report.filesModified.length > 0) {
-      console.log(chalk.green(`  Modified: ${report.filesModified.length} file(s)`));
-    }
-    if (report.reports.length > 0) {
-      report.reports.forEach((w) => console.log(chalk.yellow(`  ⚠ ${w}`)));
-    }
-    if (report.filesRolledBack.length > 0) {
-      report.filesRolledBack.forEach((e) => console.log(chalk.yellow(`  ⟲ ${e.path}: rolled back (${e.error})`)));
-    }
-    if (report.filesErrored.length > 0) {
-      report.filesErrored.forEach((e) => console.log(chalk.red(`  ✗ ${e.path}: ${e.error}`)));
-    }
+      if (report.filesModified.length > 0) {
+        console.log(chalk.green(`  Modified: ${report.filesModified.length} file(s)`));
+      }
+      if (report.reports.length > 0) {
+        report.reports.forEach((w) => console.log(chalk.yellow(`  ⚠ ${w}`)));
+      }
+      if (report.filesRolledBack.length > 0) {
+        report.filesRolledBack.forEach((e) => console.log(chalk.yellow(`  ⟲ ${e.path}: rolled back (${e.error})`)));
+      }
+      if (report.filesErrored.length > 0) {
+        report.filesErrored.forEach((e) => console.log(chalk.red(`  ✗ ${e.path}: ${e.error}`)));
+      }
 
-    allReports.push(report);
+      allReports.push(report);
 
-    totalModified += report.filesModified.length;
-    totalSkipped += report.filesSkipped.length;
-    totalExcluded += report.filesExcluded.length;
-    totalRolledBack += report.filesRolledBack.length;
-    totalWarnings += report.reports.length;
+      totalModified += report.filesModified.length;
+      totalSkipped += report.filesSkipped.length;
+      totalExcluded += report.filesExcluded.length;
+      totalRolledBack += report.filesRolledBack.length;
+      totalWarnings += report.reports.length;
+    }
   }
 
   let depChanges: string[] = [];

@@ -30,18 +30,15 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
 
   if (!hasUseWidgets) return null;
 
+  api.report(`${fileInfo.path}: useWidgets() → useBladeWidgets() — API completely changed. Manual rewrite required.`);
   api.report(
-    `${fileInfo.path}: useWidgets() → useBladeWidgets() — API completely changed. Manual rewrite required.`,
+    `  Old: const { registerWidget, clearBladeWidgets, updateActiveWidget } = useWidgets(); registerWidget({...}, bladeId);`,
   );
   api.report(
-    `  Old: const { registerWidget, clearBladeWidgets } = useWidgets(); registerWidget({...}, bladeId);`,
+    `  New: const { refreshAll } = useXxxWidgets(...); // UseXxxWidgetsReturn extends UseBladeWidgetsReturn`,
   );
-  api.report(
-    `  New: const { refresh, refreshAll } = useBladeWidgets([ { id, icon, title, badge, onClick, onRefresh } ]);`,
-  );
-  api.report(
-    `  Auto-lifecycle: no onUnmounted/clearBladeWidgets needed. See migration guide #13.`,
-  );
+  api.report(`  Mapping: updateActiveWidget() → refreshAll() from your module widgets composable return.`);
+  api.report(`  Auto-lifecycle: no onUnmounted/clearBladeWidgets needed. See migration guide #13.`);
 
   return null; // diagnostic-only
 }

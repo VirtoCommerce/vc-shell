@@ -18,7 +18,7 @@ For each blade that calls `registerWidget()`, create a `widgets/useXxxWidgets.ts
 import { useWidgets, useBlade } from "@vc-shell/framework";
 import type { BladeInstance } from "@vc-shell/framework";
 import { onMounted, onUnmounted } from "vue";
-import OffersWidget from "../widgets/OffersWidget.vue";
+import ChildListWidget from "../widgets/ChildListWidget.vue";
 
 const { registerWidget, clearBladeWidgets } = useWidgets();
 const { openBlade } = useBlade();
@@ -26,11 +26,11 @@ const { openBlade } = useBlade();
 onMounted(() => {
   registerWidget(
     {
-      id: "OffersWidget",
-      component: OffersWidget,
+      id: "ChildListWidget",
+      component: ChildListWidget,
       props: {
-        count: offersCount,
-        onClick: () => openBlade({ name: "OffersList", options: { productId: entity.value.id } }),
+        count: childCount,
+        onClick: () => openBlade({ name: "ChildEntityList", options: { entityId: entity.value.id } }),
       },
     },
     bladeContext.id,
@@ -45,35 +45,35 @@ onUnmounted(() => {
 **AFTER:**
 
 ```typescript
-// widgets/useProductWidgets.ts
+// widgets/useEntityWidgets.ts
 import { useBladeWidgets, useBlade } from "@vc-shell/framework";
 import type { UseBladeWidgetsReturn } from "@vc-shell/framework";
 import { computed, type Ref } from "vue";
 
-interface UseProductWidgetsOptions {
-  item: Ref<Product | undefined>;
+interface UseEntityWidgetsOptions {
+  item: Ref<Entity | undefined>;
   isVisible: Ref<boolean> | boolean;
-  offersCount: Ref<number>;
+  childCount: Ref<number>;
 }
 
-export function useProductWidgets(options: UseProductWidgetsOptions): UseBladeWidgetsReturn {
-  const { item, isVisible, offersCount } = options;
+export function useEntityWidgets(options: UseEntityWidgetsOptions): UseBladeWidgetsReturn {
+  const { item, isVisible, childCount } = options;
   const { openBlade } = useBlade();
 
   return useBladeWidgets([
     {
-      id: "OffersWidget",
+      id: "ChildListWidget",
       icon: "lucide-tag",
-      title: "PRODUCTS.WIDGETS.OFFERS.TITLE",
-      badge: computed(() => offersCount.value),
+      title: "MODULE.WIDGETS.CHILD_LIST.TITLE",
+      badge: computed(() => childCount.value),
       isVisible,
       onClick: () =>
         openBlade({
-          name: "OffersList",
-          options: { productId: item.value?.id },
+          name: "ChildEntityList",
+          options: { entityId: item.value?.id },
         }),
       onRefresh: async () => {
-        // load offers count logic here
+        // load child count logic here
       },
     },
   ]);
@@ -89,14 +89,14 @@ Import the new composable and destructure `{ refreshAll }`.
 ```typescript
 // XxxDetails.vue <script setup>
 import { useWidgets } from "@vc-shell/framework";
-import OffersWidget from "../widgets/OffersWidget.vue";
-import AssociationsWidget from "../widgets/AssociationsWidget.vue";
+import ChildListWidget from "../widgets/ChildListWidget.vue";
+import RelatedItemsWidget from "../widgets/RelatedItemsWidget.vue";
 
 const { registerWidget, clearBladeWidgets } = useWidgets();
 
 onMounted(() => {
-  registerWidget({ id: "OffersWidget", component: OffersWidget, props: { ... } }, bladeId);
-  registerWidget({ id: "AssociationsWidget", component: AssociationsWidget, props: { ... } }, bladeId);
+  registerWidget({ id: "ChildListWidget", component: ChildListWidget, props: { ... } }, bladeId);
+  registerWidget({ id: "RelatedItemsWidget", component: RelatedItemsWidget, props: { ... } }, bladeId);
 });
 
 onUnmounted(() => {
@@ -108,15 +108,27 @@ onUnmounted(() => {
 
 ```typescript
 // XxxDetails.vue <script setup>
-import { useProductWidgets } from "../widgets/useProductWidgets";
+import { useEntityWidgets } from "../widgets/useEntityWidgets";
 
 const isExisting = computed(() => !!param.value);
 
-const { refreshAll } = useProductWidgets({
+const { refreshAll } = useEntityWidgets({
   item: entity,
   isVisible: isExisting,
-  offersCount,
+  childCount,
 });
+```
+
+If the old code used `updateActiveWidget()`, replace it with `refreshAll()` from the widget composable return:
+
+```typescript
+// BEFORE
+const { updateActiveWidget } = useWidgets();
+updateActiveWidget();
+
+// AFTER
+const { refreshAll } = useEntityWidgets({ item: entity, isVisible: isExisting, childCount });
+refreshAll();
 ```
 
 ## RULE 3: Remove Widget .vue Components
@@ -126,8 +138,8 @@ Delete widget `.vue` files that only render a standard sidebar item (icon + titl
 **Keep** the `.vue` component only if it has custom rendering beyond the standard widget layout.
 
 **Delete:**
-- `widgets/OffersWidget.vue` (if it only shows icon, title, badge, click)
-- `widgets/AssociationsWidget.vue` (same)
+- `widgets/ChildListWidget.vue` (if it only shows icon, title, badge, click)
+- `widgets/RelatedItemsWidget.vue` (same)
 
 **Keep:**
 - `widgets/CustomChartWidget.vue` (has custom chart rendering)
@@ -142,8 +154,14 @@ import { useWidgets } from "@vc-shell/framework";
 import type { BladeInstance } from "@vc-shell/framework"; // if only used for widgets
 import { registerWidget, unregisterWidget, clearBladeWidgets } from "...";
 import { onUnmounted } from "vue"; // if only used for widget cleanup
-import OffersWidget from "../widgets/OffersWidget.vue"; // deleted component
+import ChildListWidget from "../widgets/ChildListWidget.vue"; // deleted component
 ```
+
+## RULE 5: `defineBladeContext` only for external widgets
+
+Do not add `defineBladeContext()` by default in this migration.
+
+Add it only if the blade hosts external widget components that use `injectBladeContext()`.
 
 ## Verification
 
@@ -155,3 +173,4 @@ After migration:
 4. Confirm clicking a widget opens the correct child blade
 5. Confirm widgets are hidden when `isVisible` is false (e.g., on "create new" blades)
 6. Confirm no console errors about widget registration/cleanup on blade close
+7. Confirm `updateActiveWidget()` calls are removed and replaced with `refreshAll()` from `useEntityWidgets` return

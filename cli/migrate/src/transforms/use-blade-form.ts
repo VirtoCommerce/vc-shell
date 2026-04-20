@@ -28,15 +28,13 @@ function coreTransform(fileInfo: FileInfo, api: { report: (msg: string) => void 
     diagnostics.push(
       `    → useForm() (vee-validate) found — replace with useBladeForm({ data: yourRef, closeConfirmMessage: computed(() => t("...")) }).`,
     );
-    diagnostics.push(
-      `      useBladeForm replaces: useForm + onBeforeClose + modified tracking. Remove all three.`,
-    );
+    diagnostics.push(`      useBladeForm replaces: useForm + onBeforeClose + modified tracking. Remove all three.`);
   }
 
   // Detect handleSubmit usage
   if (/handleSubmit/.test(source)) {
     diagnostics.push(
-      `    → handleSubmit() detected — replace with validate() from useBladeForm(). validate() returns { valid, errors }.`,
+      `    → handleSubmit() detected — useBladeForm() does not expose validate(). Use formMeta.value.valid for validation state, or keep Field-level validation with vee-validate.`,
     );
   }
 
@@ -81,7 +79,7 @@ function coreTransform(fileInfo: FileInfo, api: { report: (msg: string) => void 
   // Detect resetForm
   if (/resetForm\s*\(/.test(source)) {
     diagnostics.push(
-      `    → resetForm() call found — available from useBladeForm() return. Verify usage is compatible.`,
+      `    → resetForm() call found — useBladeForm() exposes revert() instead (restores data to last baseline). Replace resetForm() with revert().`,
     );
   }
 

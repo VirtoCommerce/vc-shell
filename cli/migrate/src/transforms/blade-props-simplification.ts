@@ -51,10 +51,8 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
 
   // --- Guard: only process actual blade pages (have defineOptions/defineBlade) ---
   // Reusable components may also have expanded/closable props but should NOT be simplified.
-  const hasDefineOptions =
-    root.find(j.CallExpression, { callee: { name: "defineOptions" } }).size() > 0;
-  const hasDefineBlade =
-    root.find(j.CallExpression, { callee: { name: "defineBlade" } }).size() > 0;
+  const hasDefineOptions = root.find(j.CallExpression, { callee: { name: "defineOptions" } }).size() > 0;
+  const hasDefineBlade = root.find(j.CallExpression, { callee: { name: "defineBlade" } }).size() > 0;
 
   if (!hasDefineOptions && !hasDefineBlade) {
     api.report(

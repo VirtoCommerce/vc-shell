@@ -1,7 +1,10 @@
 <template>
   <div>
     <VcButton @click="save">Save</VcButton>
-    <VcInput v-model="name" label="Name" />
+    <VcInput
+      v-model="name"
+      label="Name"
+    />
   </div>
 </template>
 

@@ -1,7 +1,19 @@
 <template>
-  <div v-if="bladeLoading" class="vc-editor vc-editor--skeleton">
-    <VcSkeleton v-if="label" variant="block" :width="60 + (label?.length || 0) * 4" :height="11" />
-    <VcSkeleton variant="block" width="100%" :height="320" />
+  <div
+    v-if="bladeLoading"
+    class="vc-editor vc-editor--skeleton"
+  >
+    <VcSkeleton
+      v-if="label"
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="11"
+    />
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="320"
+    />
   </div>
   <div
     v-else

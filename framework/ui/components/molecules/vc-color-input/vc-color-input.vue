@@ -1,7 +1,19 @@
 <template>
-  <div v-if="bladeLoading" class="vc-color-input vc-color-input--skeleton">
-    <VcSkeleton v-if="label" variant="block" :width="60 + (label?.length || 0) * 4" :height="11" />
-    <VcSkeleton variant="block" width="100%" :height="36" />
+  <div
+    v-if="bladeLoading"
+    class="vc-color-input vc-color-input--skeleton"
+  >
+    <VcSkeleton
+      v-if="label"
+      variant="block"
+      :width="60 + (label?.length || 0) * 4"
+      :height="11"
+    />
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="36"
+    />
   </div>
   <div
     v-else

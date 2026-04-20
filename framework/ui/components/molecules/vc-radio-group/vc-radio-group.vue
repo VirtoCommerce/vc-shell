@@ -5,7 +5,7 @@
     class="vc-radio-group vc-radio-group--skeleton"
   >
     <div
-      v-for="i in (options?.length || 3)"
+      v-for="i in options?.length || 3"
       :key="i"
       class="vc-radio-group__skeleton-item"
     >

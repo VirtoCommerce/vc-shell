@@ -289,6 +289,15 @@ export const transforms: VersionedTransform[] = [
     transformPath: t("vc-blade-loading-prop"),
     fileExtensions: [".vue"],
   },
+  {
+    name: "use-data-table-pagination-audit",
+    description: "Detect manual pagination boilerplate (totalCount/pages/currentPage triple, onPaginationClick) — migrate to useDataTablePagination",
+    introducedIn: "2.0.0-alpha.33",
+    diagnosticOnly: true,
+    migrationGuideSection: "Guide 41",
+    transformPath: t("use-data-table-pagination-audit"),
+    fileExtensions: [".ts", ".vue"],
+  },
 ];
 
 export function selectTransforms(currentVersion: string, targetVersion: string): VersionedTransform[] {

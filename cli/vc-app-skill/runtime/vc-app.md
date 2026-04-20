@@ -1457,6 +1457,42 @@ Run:
 
 Display the output to the user. If the command fails, stop and show the error.
 
+### Step 2.5: Regenerate API clients with Interface style
+
+1. **Detect config location:**
+   - Read `package.json`. If the `generate-api-client` script contains `--APP_PLATFORM_MODULES`, configuration is inline in package.json.
+   - Otherwise, read `.env`. If it contains `APP_PLATFORM_MODULES`, configuration is in the .env file.
+
+2. **Add `APP_TYPE_STYLE=Interface`:**
+   - If inline in package.json: append `--APP_TYPE_STYLE=Interface` to the `generate-api-client` script arguments.
+   - If in `.env`: add or update the line `APP_TYPE_STYLE=Interface`.
+
+3. **Hard gate — verify platform accessibility:**
+   - Check for `APP_PLATFORM_URL` in `.env.local` or `.env`.
+   - If not found, **STOP** with this error:
+     ```
+     Error: Platform URL not configured.
+
+     API clients must be regenerated with Interface style before migration can continue.
+
+     1. Create .env.local with: APP_PLATFORM_URL=https://your-platform-url
+     2. Ensure the platform is running and accessible
+     3. Re-run /vc-app migrate
+     ```
+   - If found, run:
+     ```bash
+     yarn generate-api-client
+     ```
+   - If the generator fails (platform unreachable), **STOP** with the same error.
+
+4. **Verify generated types compile:**
+   ```bash
+   npx vue-tsc --noEmit 2>&1 | head -20
+   ```
+   If there are errors in `src/api_client/` files, the generator produced invalid output — **STOP** and ask the user to check the platform API and re-run.
+
+5. On success, continue to Step 3.
+
 ### Step 3: Install dependencies
 
 Run:
@@ -1475,18 +1511,36 @@ Parse the "Manual Migration Required" section. Extract each topic heading and th
 
 Map topic headings to migration prompt files and pattern files:
 
-| Report Heading contains | Migration Prompt | Pattern |
-|---|---|---|
-| Widget | `{KNOWLEDGE_BASE}/migration-prompts/widgets-migration.md` | `{KNOWLEDGE_BASE}/patterns/blade-widget.md` |
-| Form Management / useBladeForm | `{KNOWLEDGE_BASE}/migration-prompts/blade-form-migration.md` | `{KNOWLEDGE_BASE}/patterns/form-validation.md` |
-| Injection Key | `{KNOWLEDGE_BASE}/migration-prompts/blade-props-migration.md` | `{KNOWLEDGE_BASE}/patterns/blade-navigation.md` |
-| NSwag / DTO / Clone-then-mutate | `{KNOWLEDGE_BASE}/migration-prompts/nswag-migration.md` | — |
-| Reusable Blade Components | `{KNOWLEDGE_BASE}/migration-prompts/blade-props-migration.md` | `{KNOWLEDGE_BASE}/patterns/child-blade-flow.md` |
-| Notification | `{KNOWLEDGE_BASE}/migration-prompts/notifications-migration.md` | `{KNOWLEDGE_BASE}/patterns/signalr-notifications.md` |
+| Report Heading contains (or equals transform name) | Canonical topic name | Migration Prompt | Pattern |
+|---|---|---|---|
+| Widget / widgets-migration | `widgets-migration` | `{KNOWLEDGE_BASE}/migration-prompts/widgets-migration.md` | `{KNOWLEDGE_BASE}/patterns/blade-widget.md` |
+| Form Management / useBladeForm / use-blade-form | `use-blade-form` | `{KNOWLEDGE_BASE}/migration-prompts/blade-form-migration.md` | `{KNOWLEDGE_BASE}/patterns/form-validation.md` |
+| Injection Key / remove-deprecated-aliases | `remove-deprecated-aliases` | `{KNOWLEDGE_BASE}/migration-prompts/blade-props-migration.md` | `{KNOWLEDGE_BASE}/patterns/blade-navigation.md` |
+| NSwag / DTO / Clone-then-mutate / nswag-class-to-interface | `nswag-class-to-interface` | `{KNOWLEDGE_BASE}/migration-prompts/nswag-migration.md` | — |
+| Reusable Blade Components / blade-props-simplification | `blade-props-simplification` | `{KNOWLEDGE_BASE}/migration-prompts/blade-props-migration.md` | `{KNOWLEDGE_BASE}/patterns/child-blade-flow.md` |
+| Notification / notification-migration | `notification-migration` | `{KNOWLEDGE_BASE}/migration-prompts/notifications-migration.md` | `{KNOWLEDGE_BASE}/patterns/signalr-notifications.md` |
+| VcTable / DataTable / vctable-audit | `vctable-audit` | `{KNOWLEDGE_BASE}/migration-prompts/datatable-migration.md` | `{KNOWLEDGE_BASE}/patterns/datatable-pattern.md` |
+| Icon / material- / bi- / fa- / icon-audit | `icon-audit` | `{KNOWLEDGE_BASE}/migration-prompts/icon-migration.md` | — |
+| Assets API / useAssets / useAssetsManager / use-assets-migration | `use-assets-migration` | `{KNOWLEDGE_BASE}/migration-prompts/use-assets-migration.md` | `{KNOWLEDGE_BASE}/patterns/assets-management.md` |
+| Manual Migration Audit / useExternalWidgets / moment / useFunctions / manual-migration-audit | `manual-migration-audit` | `{KNOWLEDGE_BASE}/migration-prompts/manual-migration-audit.md` | — |
+| Pagination / useDataTablePagination / use-data-table-pagination-audit | `use-data-table-pagination-audit` | `{KNOWLEDGE_BASE}/migration-prompts/use-data-table-pagination-migration.md` | — |
 
-Build the `topics` array for the migration-agent, including only topics that appear in the report.
+Build the `topics` array for the migration-agent using the canonical topic names above.
 
-### Step 5: Dispatch migration-agent
+Hard gate:
+1. If a heading from "Manual Migration Required" does not match any row, add it to `unmappedTopics`.
+2. If a mapped row references a missing migration prompt file, add it to `missingPrompts`.
+3. If `unmappedTopics` or `missingPrompts` is non-empty, **STOP** and print both lists. Do not silently skip actionable topics.
+
+### Step 5: Dispatch migration-agent (with partial recovery)
+
+**Before dispatching, check for partial completion** from a previous run:
+1. Parse `MIGRATION_REPORT.md` and collect topics already marked as completed (`### ✅ ...` headings).
+2. If `.vc-app-migrate-state.json` exists, load completed topics from it.
+3. Union both sources into `alreadyCompletedTopics`.
+4. Run `npx vue-tsc --noEmit`. If it fails, do **not** infer completion from file diffs.
+5. Use `git diff --name-only` only as a weak signal for "in-progress" topics, not as completion proof.
+6. Dispatch only topics not in `alreadyCompletedTopics`.
 
 If there are topics to process, dispatch the migration-agent subagent:
 
@@ -1509,9 +1563,9 @@ If there are topics to process, dispatch the migration-agent subagent:
 }
 ```
 
-### Step 6: Type-check verification
+### Step 6: Type-check and build verification
 
-After migration-agent completes, run:
+After migration-agent completes, run type-check:
 
 ```bash
 npx vue-tsc --noEmit
@@ -1521,11 +1575,41 @@ If there are remaining TypeScript errors:
 1. Show the errors to the user
 2. Attempt to fix iteratively — read each error, fix the file, re-check (max 3 rounds)
 
+After type-check passes, run a full build:
+
+```bash
+yarn build
+```
+
+If the build fails (Vite resolve errors, missing assets, etc.):
+1. Show the error to the user
+2. Attempt to fix iteratively (max 2 rounds) — common issues: missing imports, deleted files still referenced, CSS import paths
+3. If still failing after 2 rounds, **STOP** and mark migration as incomplete (do not print "Migration complete")
+
+### Step 6.5: Run Prettier across the project
+
+After type-check/build are green, run formatting:
+
+1. If `package.json` has a `prettier` script:
+   ```bash
+   yarn prettier --write .
+   ```
+2. Otherwise run:
+   ```bash
+   npx prettier --write .
+   ```
+
+If Prettier fails, stop and show the error.
+
 ### Step 7: Update report and summarize
 
 Update `MIGRATION_REPORT.md`:
 - For each topic the agent successfully completed, add ✅ to the heading
 - Add a "Completed by AI" section listing what was done
+
+Write `.vc-app-migrate-state.json` in project root:
+- Store per-topic status (`completed`/`failed`), affected files, and timestamp
+- This state is used by Step 5 for automatic resume on the next `/vc-app migrate` run
 
 Print summary to user:
 

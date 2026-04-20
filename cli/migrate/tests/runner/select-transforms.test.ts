@@ -52,6 +52,7 @@ describe("selectTransforms", () => {
       "remove-expose-title",
       "remove-app-module-options",
       "vc-blade-loading-prop",
+      "use-data-table-pagination-audit",
     ]);
   });
 

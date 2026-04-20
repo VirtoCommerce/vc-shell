@@ -38,6 +38,12 @@ function createFileList(...names: string[]): FileList {
   return dt.files;
 }
 
+function createMixedFileList(entries: Array<{ name: string; type: string }>): FileList {
+  const dt = new DataTransfer();
+  entries.forEach(({ name, type }) => dt.items.add(new File(["x"], name, { type })));
+  return dt.files;
+}
+
 describe("useGalleryUpload", () => {
   it("deduplicates filenames against existing images", () => {
     const images = ref<AssetLike[]>([{ name: "photo.png", sortOrder: 0 }]);
@@ -69,6 +75,53 @@ describe("useGalleryUpload", () => {
     const { onUpload } = useGalleryUpload(images, { onUpload: onEmit });
 
     onUpload(createFileList());
+
+    expect(onEmit).not.toHaveBeenCalled();
+  });
+
+  it("filters out non-image files (drop from OS)", () => {
+    const images = ref<AssetLike[]>([]);
+    const onEmit = vi.fn();
+    const { onUpload } = useGalleryUpload(images, { onUpload: onEmit });
+
+    onUpload(
+      createMixedFileList([
+        { name: "photo.png", type: "image/png" },
+        { name: "doc.pdf", type: "application/pdf" },
+        { name: "archive.zip", type: "application/zip" },
+        { name: "pic.jpg", type: "image/jpeg" },
+      ]),
+    );
+
+    const [files] = onEmit.mock.calls[0];
+    expect(files.length).toBe(2);
+    expect(files[0].name).toBe("photo.png");
+    expect(files[1].name).toBe("pic.jpg");
+  });
+
+  it("falls back to extension check when MIME type is missing", () => {
+    const images = ref<AssetLike[]>([]);
+    const onEmit = vi.fn();
+    const { onUpload } = useGalleryUpload(images, { onUpload: onEmit });
+
+    onUpload(
+      createMixedFileList([
+        { name: "photo.webp", type: "" },
+        { name: "notes.txt", type: "" },
+      ]),
+    );
+
+    const [files] = onEmit.mock.calls[0];
+    expect(files.length).toBe(1);
+    expect(files[0].name).toBe("photo.webp");
+  });
+
+  it("does not emit when every file is non-image", () => {
+    const images = ref<AssetLike[]>([]);
+    const onEmit = vi.fn();
+    const { onUpload } = useGalleryUpload(images, { onUpload: onEmit });
+
+    onUpload(createMixedFileList([{ name: "doc.pdf", type: "application/pdf" }]));
 
     expect(onEmit).not.toHaveBeenCalled();
   });

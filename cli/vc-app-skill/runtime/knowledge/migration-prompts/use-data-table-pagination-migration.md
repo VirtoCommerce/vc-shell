@@ -144,13 +144,19 @@ const reload = async () => {
 };
 ```
 
-## Rule 3: VcTable / VcTableAdapter is out of scope
+## Rule 3: VcTable / VcTableAdapter — skip that file (not the whole topic)
 
-If the template still uses `<VcTable>` (not `<VcDataTable>`), this migration does NOT apply — it targets `VcDataTable`'s object `:pagination` prop only. Migrate the table component first (see datatable-migration).
+Per-file check. If a specific blade page still uses `<VcTable>` (legacy adapter, with `:pages` + `:current-page` scalar props), SKIP that file — migrating pagination against a different table API would break the bindings. But:
 
-## Rule 4: Infinite-scroll tables are out of scope
+- **Still migrate the composable** if other callers (pages with `<VcDataTable>`) exist — the composable change is independent of any single consumer.
+- **Still migrate other pages** in the same `affectedFiles` list that DO use `<VcDataTable>`.
+- In your report, mark the skipped file(s) as `needs vctable-audit first` so the user knows why.
 
-If the VcDataTable uses `:infinite-scroll="true"`, skip this topic — pagination is not used.
+Do not skip the entire topic just because one file is out of scope.
+
+## Rule 4: Infinite-scroll tables — skip that file
+
+If a specific VcDataTable uses `:infinite-scroll="true"`, pagination is not used — skip that file. Same per-file rule as Rule 3.
 
 ## Behavioral notes
 

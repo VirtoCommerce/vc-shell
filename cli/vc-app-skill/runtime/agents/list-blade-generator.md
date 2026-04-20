@@ -10,9 +10,9 @@ description: Generates a list blade Vue component and its plural composable for 
   "required": {
     "moduleName": "string — kebab-case module name (e.g., 'team', 'catalog-items')",
     "entityName": "string — PascalCase entity name (e.g., 'TeamMember', 'Order')",
-    "entityTypePath": "string — import path for entity types (e.g., '../../api_client/virtocommerce.marketplace')",
-    "clientClass": "string — NSwag client class name (e.g., 'VcmpSellerSecurityClient')",
-    "searchMethod": "string — camelCase search method on client (e.g., 'searchSellerUsers')",
+    "entityTypePath": "string — import path for entity types (e.g., '../../api_client/virtocommerce.mymodule')",
+    "clientClass": "string — NSwag client class name (e.g., 'UserSecurityClient')",
+    "searchMethod": "string — camelCase search method on client (e.g., 'searchUsers')",
     "columns": [
       {
         "name": "string — field name (camelCase)",
@@ -100,7 +100,7 @@ Follow the skeleton from `composable-list.md` exactly:
 - Use `useAsync<ISearch{EntityName}Query>` for the `{getFnName}` action
 - Return `loading`, `{listVarName}`, `totalCount`, `currentPage`, `pages`, `searchQuery`, `{getFnName}`
 
-If the `searchMethod` uses a non-standard pluralization (e.g., `searchSellerUsers` for `SellerUser`), match the client method name exactly.
+If the `searchMethod` uses a non-standard pluralization (e.g., `searchUsers` for `User`), match the client method name exactly.
 
 ### Step 3: Classify columns and assign VcColumn attributes
 

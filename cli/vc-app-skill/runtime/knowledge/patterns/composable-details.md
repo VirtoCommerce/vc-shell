@@ -1,6 +1,6 @@
 # Details Composable Pattern (`use<Entity>`)
 
-Reference source: `apps/vendor-portal/src/modules/team/composables/useTeamMember/index.ts`
+Generic worked example for the canonical `useTeamMember` / `useEntity` composable shape.
 
 ## Overview
 
@@ -263,9 +263,9 @@ export default (): IUseXxx => {
 
 ---
 
-## Route Params (when entity scope requires sellerId / tenantId)
+## Route Params (when entity scope requires a parent ownerId / tenantId)
 
-Some API calls require a scope parameter (e.g., `sellerId`) extracted from the route. Use `useRoute()`:
+Some API calls require a scope parameter (e.g., `ownerId`) extracted from the route. Use `useRoute()`:
 
 ```ts
 import { useRoute } from "vue-router";
@@ -274,16 +274,16 @@ export default (): IUseXxx => {
   const route = useRoute();
   const { getApiClient } = useApiClient(XxxClient);
 
-  async function getSellerId(): Promise<string> {
-    return route?.params?.sellerId as string;
+  async function getOwnerId(): Promise<string> {
+    return route?.params?.ownerId as string;
   }
 
   const { action: getXxx, loading: getXxxLoading } = useAsync<{ id: string }>(
     async (args) => {
       const client = await getApiClient();
-      const sellerId = await getSellerId();
+      const ownerId = await getOwnerId();
 
-      const result = await client.getXxx(args.id, sellerId);
+      const result = await client.getXxx(args.id, ownerId);
       currentValue.value = result;
       resetModificationState();
     },

@@ -196,7 +196,7 @@ describe("nswag-class-to-interface-core — Rule D (IPrefix type removal)", () =
       coreTransform,
       {
         path: "test.ts",
-        source: `import { IOffer } from "../../api_client/virtocommerce.marketplacevendor";
+        source: `import { IOffer } from "../../api_client/virtocommerce.mymodule";
 const item = ref<IOffer>();
 function process(data: IOffer): IOffer { return data; }`,
       },
@@ -216,7 +216,7 @@ describe("nswag-class-to-interface-core — Rule E (import deduplication)", () =
       coreTransform,
       {
         path: "test.ts",
-        source: `import { IOffer, Offer, VcmpSellerCatalogClient } from "../../api_client/virtocommerce.marketplacevendor";
+        source: `import { IOffer, Offer, VcmpSellerCatalogClient } from "../../api_client/virtocommerce.mymodule";
 const item = ref<IOffer>(new Offer());`,
       },
       defaultOptions,
@@ -238,7 +238,7 @@ describe("nswag-class-to-interface-core — Rule D + Rule C combined", () => {
       coreTransform,
       {
         path: "test.ts",
-        source: `import { IOffer, Offer } from "../../api_client/virtocommerce.marketplacevendor";
+        source: `import { IOffer, Offer } from "../../api_client/virtocommerce.mymodule";
 const item = ref<IOffer>(new Offer());`,
       },
       defaultOptions,
@@ -319,7 +319,7 @@ describe("Vue SFC support", () => {
       (fileInfo, api, options) => coreTransform(fileInfo, api, options),
       {
         path: "components/test.vue",
-        source: `import { Offer } from "../../api_client/virtocommerce.marketplacevendor";
+        source: `import { Offer } from "../../api_client/virtocommerce.mymodule";
 const item = new Offer();`,
       },
       defaultOptions,
@@ -335,13 +335,13 @@ describe("Package import matching", () => {
       (fileInfo, api, options) => coreTransform(fileInfo, api, options),
       {
         path: "test.ts",
-        source: `import { Offer } from "@vcmp-vendor-portal/api/marketplacevendor";
+        source: `import { Offer } from "@my-app/api/mymodule";
 const x = new Offer();`,
       },
       {
         dtoClassNames,
         interfaceToClass,
-        packageName: "@vcmp-vendor-portal/api",
+        packageName: "@my-app/api",
       },
     );
     expect(result).toContain("{} as Offer");
@@ -359,7 +359,7 @@ const x = new Offer();`,
       {
         dtoClassNames,
         interfaceToClass,
-        packageName: "@vcmp-vendor-portal/api",
+        packageName: "@my-app/api",
       },
     );
     expect(result).toBeNull();

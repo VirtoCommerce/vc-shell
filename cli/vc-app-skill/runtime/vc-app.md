@@ -161,7 +161,7 @@ Interactive platform connection dialog. This configures environment variables an
 ### Dialog
 
 1. **Ask the user:** What is the platform URL? (e.g., `https://admin.example.com` or `https://localhost:5001`)
-2. **Ask the user:** Which platform modules do you need API clients for? (comma-separated, e.g., `VirtoCommerce.Orders,VirtoCommerce.Catalog,VirtoCommerce.MarketplaceVendor`)
+2. **Ask the user:** Which platform modules do you need API clients for? (comma-separated, e.g., `VirtoCommerce.Orders,VirtoCommerce.Catalog,VirtoCommerce.MyModule`)
 
 ### Execution
 
@@ -369,8 +369,8 @@ If an API client directory does exist, proceed with the interactive dialog:
 3. **Present discovered entities to the user.** Show a numbered list:
    ```
    Discovered API entities:
-     1. SellerUser (VcmpSellerSecurityClient) — search, get, create, update, delete
-     2. TeamMember (VcmpSellerSecurityClient) — search, get, update
+     1. User (UserSecurityClient) — search, get, create, update, delete
+     2. TeamMember (UserSecurityClient) — search, get, update
      ...
    Select an entity (number):
    ```
@@ -379,7 +379,7 @@ If an API client directory does exist, proceed with the interactive dialog:
 
 5. **Read the entity's type file** to discover available fields. Use Grep to find the entity class definition and extract its properties. Present them to the user:
    ```
-   Fields on SellerUser:
+   Fields on User:
      1. id (string)
      2. userName (string)
      3. email (string)
@@ -400,11 +400,11 @@ If an API client directory does exist, proceed with the interactive dialog:
    - Default: all available operations checked
    ```
    Available CRUD methods:
-     [x] search (searchSellerUsers)
-     [x] get (getSellerUser)
-     [x] create (createSellerUser)
-     [x] update (updateSellerUser)
-     [x] delete (deleteSellerUsers)
+     [x] search (searchUsers)
+     [x] get (getUser)
+     [x] create (createUser)
+     [x] update (updateUser)
+     [x] delete (deleteUsers)
    Uncheck any you don't need (comma-separated numbers to toggle, or Enter to accept all):
    ```
 

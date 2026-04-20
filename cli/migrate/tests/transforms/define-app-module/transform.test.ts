@@ -74,22 +74,22 @@ describe("define-app-module (jscodeshift)", () => {
     const input = readFileSync(join(FIXTURES, "notifications-auto.input.ts"), "utf8");
     const notifyTypeMap = {
       "./components/notifications": {
-        OfferCreatedDomainEvent: "OfferCreatedDomainEvent.vue",
-        OfferDeletedDomainEvent: "OfferDeletedDomainEvent.vue",
+        EntityCreatedDomainEvent: "EntityCreatedDomainEvent.vue",
+        EntityDeletedDomainEvent: "EntityDeletedDomainEvent.vue",
       },
     };
-    const result = applyTransform(transform, { path: "modules/offers/index.ts", source: input }, { notifyTypeMap });
+    const result = applyTransform(transform, { path: "modules/entities/index.ts", source: input }, { notifyTypeMap });
     expect(result).not.toBeNull();
     expect(result).not.toContain("notificationTemplates");
     expect(result).toContain(
-      'import OfferCreatedDomainEvent from "./components/notifications/OfferCreatedDomainEvent.vue"',
+      'import EntityCreatedDomainEvent from "./components/notifications/EntityCreatedDomainEvent.vue"',
     );
     expect(result).toContain(
-      'import OfferDeletedDomainEvent from "./components/notifications/OfferDeletedDomainEvent.vue"',
+      'import EntityDeletedDomainEvent from "./components/notifications/EntityDeletedDomainEvent.vue"',
     );
     expect(result).toContain("notifications:");
     expect(result).toContain('mode: "auto"');
-    expect(result).toContain("template: OfferCreatedDomainEvent");
+    expect(result).toContain("template: EntityCreatedDomainEvent");
   });
 
   it("falls back to notificationTemplates when no notifyTypeMap", () => {

@@ -15,8 +15,8 @@ describe("define-options-to-blade", () => {
     expect(result).not.toBeNull();
     expect(result).toContain("defineBlade(");
     expect(result).not.toContain("defineOptions(");
-    expect(result).toContain('name: "Offers"');
-    expect(result).toContain('url: "/offers"');
+    expect(result).toContain('name: "Entities"');
+    expect(result).toContain('url: "/entities"');
   });
 
   it("removes notifyType property", () => {
@@ -25,8 +25,8 @@ describe("define-options-to-blade", () => {
     expect(result).not.toBeNull();
     expect(result).toContain("defineBlade(");
     expect(result).not.toContain("notifyType");
-    expect(result).toContain('name: "Offer"');
-    expect(result).toContain('url: "/offer"');
+    expect(result).toContain('name: "Entity"');
+    expect(result).toContain('url: "/entity"');
   });
 
   it("skips defineOptions without blade fields", () => {
@@ -45,9 +45,9 @@ describe("define-options-to-blade", () => {
     const input = `<template><div>{{ notification.title }}</div></template>
 <script setup lang="ts">
 defineOptions({
-  name: "OfferCreatedDomainEvent",
+  name: "EntityCreatedDomainEvent",
   inheritAttrs: false,
-  notifyType: "OfferCreatedDomainEvent",
+  notifyType: "EntityCreatedDomainEvent",
 });
 </script>`;
     const result = applyTransform(transform, { path: "test.vue", source: input });

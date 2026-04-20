@@ -1,7 +1,6 @@
 # Form Validation Pattern
 
-Reference source: `apps/vendor-portal/src/modules/products/components/ProductDetailsBase.vue`
-Secondary source: `apps/vendor-portal/src/modules/offers/pages/offers-details.vue`
+Generic worked example for form validation in details blades.
 
 ## Overview
 

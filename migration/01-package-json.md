@@ -69,4 +69,4 @@ Run:
 yarn install
 ```
 
-Then proceed to [02-css-import.md](./02-css-import.md).
+Then proceed to [03-moment-to-datefns.md](./03-moment-to-datefns.md) or the [migration index](./README.md).

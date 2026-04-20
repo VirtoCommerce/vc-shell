@@ -10,13 +10,13 @@ description: Generates a details blade Vue component and its singular composable
   "required": {
     "moduleName": "string — kebab-case module name (e.g., 'team', 'catalog-items')",
     "entityName": "string — PascalCase entity name (e.g., 'TeamMember', 'Order')",
-    "entityTypePath": "string — import path for entity types (e.g., '../../api_client/virtocommerce.marketplace')",
-    "clientClass": "string — NSwag client class name (e.g., 'VcmpSellerSecurityClient')",
+    "entityTypePath": "string — import path for entity types (e.g., '../../api_client/virtocommerce.mymodule')",
+    "clientClass": "string — NSwag client class name (e.g., 'MyEntityClient')",
     "crudMethods": {
-      "get": "string? — camelCase get method on client (e.g., 'getSellerUser')",
-      "create": "string? — camelCase create method (e.g., 'createSellerUser')",
-      "update": "string? — camelCase update method (e.g., 'updateSellerUser')",
-      "delete": "string? — camelCase delete method (e.g., 'deleteSellerUsers')"
+      "get": "string? — camelCase get method on client (e.g., 'getUser')",
+      "create": "string? — camelCase create method (e.g., 'createUser')",
+      "update": "string? — camelCase update method (e.g., 'updateUser')",
+      "delete": "string? — camelCase delete method (e.g., 'deleteUsers')"
     },
     "fields": [
       {

@@ -1,6 +1,6 @@
 # Example: Team Module (Full List + Details Pattern)
 
-This is a complete, real-world module from `apps/vendor-portal` showing the canonical
+This is a complete worked example showing the canonical
 list-blade + details-blade pattern with `defineBlade`, `useDataTableSort`, `useModificationTracker`,
 `Field` validation, `callParent`, `exposeToChildren`, and `onBeforeClose`.
 
@@ -168,7 +168,7 @@ defineBlade({
   name: "Team",
   url: "/team",
   isWorkspace: true,
-  permissions: [UserPermissions.SellerUsersManage],
+  permissions: [UserPermissions.UsersManage],
   menuItem: {
     title: "TEAM.MENU.TITLE",
     icon: "lucide-users",
@@ -463,7 +463,7 @@ exposeToChildren({ reload });
 import { computed, ref, onMounted, unref, WritableComputedRef } from "vue";
 import { useUser, IBladeToolbar, usePopup, useAssets, useBlade, ICommonAsset } from "@vc-shell/framework";
 import { Field, useForm } from "vee-validate";
-import type { Image, SellerUser as ISellerUser } from "../../../api_client/virtocommerce.marketplacevendor";
+import type { Image, User as IUser } from "../../../api_client/virtocommerce.mymodule";
 import { useI18n } from "vue-i18n";
 import { useTeamMember } from "../composables";
 import { roles } from "../common";
@@ -479,7 +479,7 @@ defineBlade({
 const { user } = useUser();
 const { upload: uploadImage, remove: removeImage, loading: imageLoading } = useAssets();
 // PATTERN: typed options generic on useBlade<OptionsType>
-const { onBeforeClose, param, options, callParent, closeSelf } = useBlade<{ user: ISellerUser }>();
+const { onBeforeClose, param, options, callParent, closeSelf } = useBlade<{ user: IUser }>();
 const { t } = useI18n({ useScope: "global" });
 const {
   userDetails,
@@ -601,7 +601,7 @@ const isActive = computed({
 const assetsHandler = {
   loading: imageLoading,
   async upload(files: FileList) {
-    photoHandler.value = (await uploadImage(files, `vendors/${userDetails.value?.sellerId}/users`)).map(
+    photoHandler.value = (await uploadImage(files, `entities/${userDetails.value?.ownerId}/users`)).map(
       (x) => ({ ...x } as Image),
     );
   },
@@ -657,41 +657,41 @@ onBeforeClose(async () => {
 ```typescript
 import { useApiClient, useAsync, useLoading } from "@vc-shell/framework";
 import {
-  SearchSellerUsersQuery,
-  SearchSellerUsersResult,
-  SellerUser,
-  VcmpSellerSecurityClient,
-} from "../../../../api_client/virtocommerce.marketplacevendor";
-import type { SearchSellerUsersQuery as ISearchSellerUsersQuery } from "../../../../api_client/virtocommerce.marketplacevendor";
+  SearchUsersQuery,
+  SearchUsersResult,
+  User,
+  UserSecurityClient,
+} from "../../../../api_client/virtocommerce.mymodule";
+import type { SearchUsersQuery as ISearchUsersQuery } from "../../../../api_client/virtocommerce.mymodule";
 import { computed, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
 
 interface IUseTeamMembers {
   readonly loading: Ref<boolean>;
-  readonly membersList: Ref<SellerUser[]>;
+  readonly membersList: Ref<User[]>;
   readonly totalCount: Ref<number>;
   readonly pages: Ref<number>;
   currentPage: Ref<number>;
-  searchQuery: Ref<ISearchSellerUsersQuery>;
-  getTeamMembers: (query?: ISearchSellerUsersQuery) => Promise<void>;
+  searchQuery: Ref<ISearchUsersQuery>;
+  getTeamMembers: (query?: ISearchUsersQuery) => Promise<void>;
 }
 
 export default (options?: { pageSize?: number; sort?: string }): IUseTeamMembers => {
-  const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
+  const { getApiClient } = useApiClient(UserSecurityClient);
   const route = useRoute();
 
   const loading = ref(false);
   const pageSize = options?.pageSize || 20;
-  const searchQuery = ref<ISearchSellerUsersQuery>({ take: pageSize, sort: options?.sort });
-  const searchResult = ref<SearchSellerUsersResult>();
+  const searchQuery = ref<ISearchUsersQuery>({ take: pageSize, sort: options?.sort });
+  const searchResult = ref<SearchUsersResult>();
 
   // PATTERN: useAsync<InputType> — wraps API call, returns { action, loading }
-  const { action: getTeamMembers, loading: getTeamMembersLoading } = useAsync<ISearchSellerUsersQuery>(
+  const { action: getTeamMembers, loading: getTeamMembersLoading } = useAsync<ISearchUsersQuery>(
     async (query) => {
       const client = await getApiClient();
-      const sellerId = route?.params?.sellerId as string;
+      const ownerId = route?.params?.ownerId as string;
       searchQuery.value = { ...searchQuery.value, ...query };
-      searchResult.value = await client.searchSellerUsers({ ...searchQuery.value, sellerId } as SearchSellerUsersQuery);
+      searchResult.value = await client.searchUsers({ ...searchQuery.value, ownerId } as SearchUsersQuery);
     },
   );
 
@@ -719,39 +719,39 @@ export default (options?: { pageSize?: number; sort?: string }): IUseTeamMembers
 ```typescript
 import { useModificationTracker, useApiClient, useAsync, useLoading } from "@vc-shell/framework";
 import {
-  SellerUserDetails,
-  CreateSellerUserCommand,
-  UpdateSellerUserCommand,
-  SendSellerUserInvitationCommand,
+  UserDetails,
+  CreateUserCommand,
+  UpdateUserCommand,
+  SendUserInvitationCommand,
   ValidationFailure,
-  ValidateSellerUserQuery,
-  VcmpSellerSecurityClient,
-  SearchSellerUsersQuery,
-  SellerUser,
-} from "../../../../api_client/virtocommerce.marketplacevendor";
-import type { SellerUserDetails as ISellerUserDetails, SellerUser as ISellerUser } from "../../../../api_client/virtocommerce.marketplacevendor";
+  ValidateUserQuery,
+  UserSecurityClient,
+  SearchUsersQuery,
+  User,
+} from "../../../../api_client/virtocommerce.mymodule";
+import type { UserDetails as IUserDetails, User as IUser } from "../../../../api_client/virtocommerce.mymodule";
 import { computed, ComputedRef, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
 
 interface IUseTeamMember {
   loading: ComputedRef<boolean>;
-  userDetails: Ref<SellerUser>;
+  userDetails: Ref<User>;
   modified: ComputedRef<boolean>;
-  createTeamMember: (details: ISellerUser, inviteStatus: boolean) => Promise<void>;
-  updateTeamMember: (details: ISellerUser) => Promise<void>;
+  createTeamMember: (details: IUser, inviteStatus: boolean) => Promise<void>;
+  updateTeamMember: (details: IUser) => Promise<void>;
   sendTeamMemberInvitation: (args: { id: string }) => Promise<void>;
   deleteTeamMember: (args: { id: string }) => Promise<void>;
-  validateTeamMember: (details: SellerUserDetails) => Promise<ValidationFailure[]>;
+  validateTeamMember: (details: UserDetails) => Promise<ValidationFailure[]>;
   resetEntries: () => void;
   getTeamMember: (args: { id: string }) => Promise<void>;
   resetModificationState: () => void;
 }
 
 export default (): IUseTeamMember => {
-  const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
+  const { getApiClient } = useApiClient(UserSecurityClient);
   const route = useRoute();
 
-  const userDetails = ref({} as SellerUser) as Ref<SellerUser>;
+  const userDetails = ref({} as User) as Ref<User>;
 
   // PATTERN: useModificationTracker — currentValue is reactive proxy of userDetails
   // isModified is true when currentValue differs from pristineValue (deep compare)
@@ -759,11 +759,11 @@ export default (): IUseTeamMember => {
 
   const { action: getTeamMember, loading: getTeamMemberLoading } = useAsync<{ id: string }>(async (args) => {
     const client = await getApiClient();
-    const sellerId = route?.params?.sellerId as string;
+    const ownerId = route?.params?.ownerId as string;
     if (!args?.id) throw new Error("Id is required");
 
     const result = await client
-      .searchSellerUsers({ sellerId, objectIds: [args.id] } as SearchSellerUsersQuery)
+      .searchUsers({ ownerId, objectIds: [args.id] } as SearchUsersQuery)
       .then((res) => res.results?.find((x) => x.id === args.id));
 
     if (result) {
@@ -772,16 +772,16 @@ export default (): IUseTeamMember => {
     resetModificationState();
   });
 
-  const { action: createTeamMember, loading: createTeamMemberLoading } = useAsync<ISellerUser>(
+  const { action: createTeamMember, loading: createTeamMemberLoading } = useAsync<IUser>(
     async (details, inviteStatus) => {
       const client = await getApiClient();
-      const sellerId = route?.params?.sellerId as string;
+      const ownerId = route?.params?.ownerId as string;
 
       const command = {
-        userDetails: { ...details } as SellerUserDetails,
+        userDetails: { ...details } as UserDetails,
         sendInvitation: inviteStatus,
-        sellerId,
-      } as CreateSellerUserCommand;
+        ownerId,
+      } as CreateUserCommand;
 
       // PATTERN: validate before create, throw string error code for blade to handle
       const validationResult = await validateTeamMember(command.userDetails);
@@ -789,21 +789,21 @@ export default (): IUseTeamMember => {
         throw validationResult[0].errorCode;
       }
 
-      await client.createSellerUser(command);
+      await client.createUser(command);
       resetModificationState();
     },
   );
 
-  const { action: updateTeamMember, loading: updateTeamMemberLoading } = useAsync<ISellerUser, void>(
+  const { action: updateTeamMember, loading: updateTeamMemberLoading } = useAsync<IUser, void>(
     async (details) => {
       const client = await getApiClient();
-      if (!details?.id || !details?.sellerId) throw new Error("Id and sellerId are required");
+      if (!details?.id || !details?.ownerId) throw new Error("Id and ownerId are required");
 
-      await client.updateSellerUser({
-        sellerId: details.sellerId,
-        sellerUserId: details.id,
-        userDetails: { ...details } as SellerUserDetails,
-      } as UpdateSellerUserCommand);
+      await client.updateUser({
+        ownerId: details.ownerId,
+        userId: details.id,
+        userDetails: { ...details } as UserDetails,
+      } as UpdateUserCommand);
 
       resetModificationState();
     },
@@ -813,7 +813,7 @@ export default (): IUseTeamMember => {
     async (args) => {
       if (!args?.id) throw new Error("Id is required");
       const client = await getApiClient();
-      await client.sendUserInvitation({ sellerUserId: args?.id } as SendSellerUserInvitationCommand);
+      await client.sendUserInvitation({ userId: args?.id } as SendUserInvitationCommand);
     },
   );
 
@@ -821,16 +821,16 @@ export default (): IUseTeamMember => {
     async (args) => {
       if (!args?.id) throw new Error("Id is required");
       const client = await getApiClient();
-      return await client.deleteSellerUsers([args.id]);
+      return await client.deleteUsers([args.id]);
     },
   );
 
   const { action: validateTeamMember, loading: validateTeamMemberLoading } = useAsync<
-    SellerUserDetails,
+    UserDetails,
     ValidationFailure[]
   >(async (details) => {
     const client = await getApiClient();
-    return await client.validateUser({ sellerUser: details } as ValidateSellerUserQuery);
+    return await client.validateUser({ user: details } as ValidateUserQuery);
   });
 
   async function resetEntries() {

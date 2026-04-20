@@ -2,7 +2,7 @@
 
 Describes the plural composable that handles search, pagination, and sort for a list blade. Named with the **plural** entity name: `useTeamMembers`, `useCatalogItems`, `useOrders`.
 
-Source: extracted from `apps/vendor-portal/src/modules/team/composables/useTeamMembers/index.ts`.
+Generic worked example for the plural list composable shape.
 
 ---
 
@@ -39,7 +39,7 @@ interface IUseXxxsOptions {
 
 export default (options?: IUseXxxsOptions): IUseXxxs => {
   const { getApiClient } = useApiClient(XxxClient);
-  const route = useRoute();   // for extracting route params (e.g., sellerId, parentId)
+  const route = useRoute();   // for extracting route params (e.g., ownerId, parentId)
 
   const pageSize = options?.pageSize || 20;
 
@@ -91,23 +91,23 @@ export default (options?: IUseXxxsOptions): IUseXxxs => {
 ```ts
 import { useApiClient, useAsync, useLoading } from "@vc-shell/framework";
 import {
-  SearchSellerUsersQuery,
-  SearchSellerUsersResult,
-  SellerUser,
-  VcmpSellerSecurityClient,
-} from "../../../../api_client/virtocommerce.marketplacevendor";
-import type { SearchSellerUsersQuery as ISearchSellerUsersQuery } from "../../../../api_client/virtocommerce.marketplacevendor";
+  SearchUsersQuery,
+  SearchUsersResult,
+  User,
+  UserSecurityClient,
+} from "../../../../api_client/virtocommerce.mymodule";
+import type { SearchUsersQuery as ISearchUsersQuery } from "../../../../api_client/virtocommerce.mymodule";
 import { computed, Ref, ref } from "vue";
 import { useRoute } from "vue-router";
 
 interface IUseTeamMembers {
   readonly loading: Ref<boolean>;
-  readonly membersList: Ref<SellerUser[]>;
+  readonly membersList: Ref<User[]>;
   readonly totalCount: Ref<number>;
   readonly pages: Ref<number>;
   currentPage: Ref<number>;
-  searchQuery: Ref<ISearchSellerUsersQuery>;
-  getTeamMembers: (query?: ISearchSellerUsersQuery) => Promise<void>;
+  searchQuery: Ref<ISearchUsersQuery>;
+  getTeamMembers: (query?: ISearchUsersQuery) => Promise<void>;
 }
 
 interface IUseTeamMembersOptions {
@@ -116,29 +116,29 @@ interface IUseTeamMembersOptions {
 }
 
 export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
-  const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
+  const { getApiClient } = useApiClient(UserSecurityClient);
   const route = useRoute();
 
   const pageSize = options?.pageSize || 20;
-  const searchQuery = ref<ISearchSellerUsersQuery>({
+  const searchQuery = ref<ISearchUsersQuery>({
     take: pageSize,
     sort: options?.sort,
   });
 
-  const searchResult = ref<SearchSellerUsersResult>();
+  const searchResult = ref<SearchUsersResult>();
 
-  async function GetSellerId(): Promise<string> {
-    const result = route?.params?.sellerId as string;
+  async function GetOwnerId(): Promise<string> {
+    const result = route?.params?.ownerId as string;
     return result;
   }
 
-  const { action: getTeamMembers, loading: getTeamMembersLoading } = useAsync<ISearchSellerUsersQuery>(async (query) => {
+  const { action: getTeamMembers, loading: getTeamMembersLoading } = useAsync<ISearchUsersQuery>(async (query) => {
     const client = await getApiClient();
-    const sellerId = await GetSellerId();
+    const ownerId = await GetOwnerId();
     searchQuery.value = { ...searchQuery.value, ...query };
 
-    const command = { ...searchQuery.value, sellerId } as SearchSellerUsersQuery;
-    searchResult.value = await client.searchSellerUsers(command);
+    const command = { ...searchQuery.value, ownerId } as SearchUsersQuery;
+    searchResult.value = await client.searchUsers(command);
   });
 
   return {
@@ -199,7 +199,7 @@ loading: useLoading(getXxxsLoading, deleteXxxLoading),
 ```
 
 ### Route params
-Use `useRoute()` to access route params when the API requires a parent entity ID (e.g., `sellerId`, `orderId`). Access inside the async function, not at module scope:
+Use `useRoute()` to access route params when the API requires a parent entity ID (e.g., `ownerId`, `orderId`). Access inside the async function, not at module scope:
 ```ts
 const route = useRoute();
 // inside useAsync callback:
@@ -238,7 +238,7 @@ Total number of pages for pagination component.
 
 ## Composable Without Route Params
 
-When the API doesn't need a parent ID (module is not nested under a seller/store/etc.):
+When the API doesn't need a parent ID (module is not nested under an owner/store/etc.):
 
 ```ts
 const { action: getXxxs, loading: getXxxsLoading } = useAsync<ISearchXxxQuery>(async (query) => {

@@ -50,7 +50,7 @@ This is how vc-shell achieves its modular architecture: modules can extend each 
     <form><!-- main form fields --></form>
 
     <!-- Other modules can inject components here -->
-    <ExtensionPoint name="seller:commissions" separator gap="1rem" />
+    <ExtensionPoint name="entity:custom-fields" separator gap="1rem" />
   </VcBlade>
 </template>
 
@@ -62,14 +62,14 @@ import { ExtensionPoint } from "@vc-shell/framework";
 **Plugin module** -- registers a component into that extension point:
 
 ```typescript
-// modules/marketplace-commissions/index.ts
+// modules/entity-extensions/index.ts
 import { defineAppModule, useExtensionPoint } from "@vc-shell/framework";
-import CommissionFields from "./components/CommissionFields.vue";
+import CustomFields from "./components/CustomFields.vue";
 
-const { add } = useExtensionPoint("seller:commissions");
+const { add } = useExtensionPoint("entity:custom-fields");
 add({
-  id: "marketplace-commission",
-  component: CommissionFields,
+  id: "entity-extension",
+  component: CustomFields,
   props: { showAdvanced: true },
   priority: 10,
 });
@@ -77,7 +77,7 @@ add({
 export default defineAppModule({ /* ... */ });
 ```
 
-When the seller details page renders, `CommissionFields` appears automatically below the main form -- with a separator and 1rem gap.
+When the seller details page renders, `CustomFields` appears automatically below the main form -- with a separator and 1rem gap.
 
 ---
 
@@ -91,9 +91,9 @@ Extension points follow a two-role architecture:
 HOST (declares)                      PLUGIN (registers)
 -----------------                    ------------------
 "I have a slot called                "I want to put my
- seller:commissions                   CommissionFields
+ entity:custom-fields                   CustomFields
  where plugins can                    component in the
- inject content."                     seller:commissions slot."
+ inject content."                     entity:custom-fields slot."
 
       |                                       |
       v                                       v
@@ -110,8 +110,8 @@ Neither side imports the other. They communicate through a shared **name string*
 
 Plugins can register components **before** the host declares the extension point. The reactive store handles this gracefully:
 
-1. Plugin calls `useExtensionPoint("seller:commissions")` and `add(...)` -- the store creates an undeclared entry and stores the component.
-2. Later, host calls `defineExtensionPoint("seller:commissions")` -- the store upgrades the entry to "declared" and preserves all previously registered components.
+1. Plugin calls `useExtensionPoint("entity:custom-fields")` and `add(...)` -- the store creates an undeclared entry and stores the component.
+2. Later, host calls `defineExtensionPoint("entity:custom-fields")` -- the store upgrades the entry to "declared" and preserves all previously registered components.
 3. The host's `components` computed ref reactively picks up the registered components.
 
 This means module load order does not matter. Remote modules loaded via Module Federation may install in any sequence, and extensions still work.
@@ -159,7 +159,7 @@ Used in pages or components that **accept** plugin content. Declares the extensi
 ```typescript
 import { defineExtensionPoint } from "@vc-shell/framework";
 
-const { components, hasComponents } = defineExtensionPoint("seller:commissions", {
+const { components, hasComponents } = defineExtensionPoint("entity:custom-fields", {
   description: "Commission fee fields in the seller details form",
 });
 
@@ -192,7 +192,7 @@ Used in modules that **provide** content to an extension point. Returns `add` an
 import { useExtensionPoint } from "@vc-shell/framework";
 import MyComponent from "./MyComponent.vue";
 
-const { add, remove } = useExtensionPoint("seller:commissions");
+const { add, remove } = useExtensionPoint("entity:custom-fields");
 
 // Register a component
 add({
@@ -220,7 +220,7 @@ The `<ExtensionPoint>` component is the easiest way to render extensions in a te
 
 ```vue
 <template>
-  <ExtensionPoint name="seller:commissions" />
+  <ExtensionPoint name="entity:custom-fields" />
 </template>
 
 <script setup lang="ts">
@@ -250,14 +250,14 @@ The component has three rendering modes, chosen automatically:
 ```vue
 <!-- Layout mode: separator + gap -->
 <ExtensionPoint
-  name="seller:commissions"
+  name="entity:custom-fields"
   separator
   gap="1rem"
   wrapper-class="tw-p-4"
 />
 
 <!-- Plain mode: no wrapper -->
-<ExtensionPoint name="seller:commissions" />
+<ExtensionPoint name="entity:custom-fields" />
 ```
 
 ### Scoped Slots for Custom Rendering
@@ -322,7 +322,7 @@ Currently defined constants:
 |----------|-------|----------|
 | `ExtensionPoints.AUTH_AFTER_FORM` | `"auth:after-form"` | Login page, below the sign-in form |
 
-App-level extension point names (e.g., `"seller:commissions"`) are the app's responsibility to define. Consider creating a shared constants file in your application.
+App-level extension point names (e.g., `"entity:custom-fields"`) are the app's responsibility to define. Consider creating a shared constants file in your application.
 
 ---
 
@@ -344,7 +344,7 @@ Scenario: You want to add commission fee fields to the Seller Details page, whic
 
     <ExtensionPoint
       v-if="sellerDetails?.id"
-      name="seller:commissions"
+      name="entity:custom-fields"
       wrapper-class="tw-p-2"
     />
   </VcBlade>
@@ -356,13 +356,13 @@ Scenario: You want to add commission fee fields to the Seller Details page, whic
 ```typescript
 // commissions/index.ts
 import { defineAppModule, useExtensionPoint } from "@vc-shell/framework";
-import CommissionFields from "./components/CommissionFields.vue";
+import CustomFields from "./components/CustomFields.vue";
 import en from "./locales/en.json";
 
-const { add } = useExtensionPoint("seller:commissions");
+const { add } = useExtensionPoint("entity:custom-fields");
 add({
   id: "commission-fields",
-  component: CommissionFields,
+  component: CustomFields,
   props: { editable: true },
   priority: 10,
 });
@@ -370,10 +370,10 @@ add({
 export default defineAppModule({ locales: { en } });
 ```
 
-**Step 3:** `CommissionFields.vue` receives props and renders:
+**Step 3:** `CustomFields.vue` receives props and renders:
 
 ```vue
-<!-- commissions/components/CommissionFields.vue -->
+<!-- commissions/components/CustomFields.vue -->
 <template>
   <div class="commission-fields">
     <h3>{{ $t("COMMISSIONS.TITLE") }}</h3>
@@ -433,14 +433,14 @@ The host renders them in order: ShippingInfo, PaymentInfo, OrderNotes.
 If you call `add()` with an `id` that already exists, the component is replaced:
 
 ```typescript
-const { add } = useExtensionPoint("seller:commissions");
+const { add } = useExtensionPoint("entity:custom-fields");
 
 // Original registration (e.g., from another module or earlier in the code)
-add({ id: "commission-fields", component: OldCommissionFields, priority: 10 });
+add({ id: "commission-fields", component: OldCustomFields, priority: 10 });
 
 // Override with a new component (same id)
-add({ id: "commission-fields", component: NewCommissionFields, priority: 10 });
-// Only NewCommissionFields is rendered
+add({ id: "commission-fields", component: NewCustomFields, priority: 10 });
+// Only NewCustomFields is rendered
 ```
 
 This is useful for overriding default behavior provided by a base module.
@@ -482,7 +482,7 @@ add({ id: "quick-action",  component: QuickAction,   meta: { zone: "toolbar" } }
 // WRONG -- typo: "seller:comissions" (single 'm')
 const { add } = useExtensionPoint("seller:comissions");
 add({ id: "my-fields", component: MyFields });
-// Component is registered but never rendered because the host declared "seller:commissions"
+// Component is registered but never rendered because the host declared "entity:custom-fields"
 ```
 
 The dev-mode console warning (`Extension point "seller:comissions" is not declared`) will alert you to this. Always check the console in development.
@@ -491,7 +491,7 @@ The dev-mode console warning (`Extension point "seller:comissions" is not declar
 > ```typescript
 > // shared/extension-points.ts
 > export const EP = {
->   SELLER_COMMISSIONS: "seller:commissions",
+>   ENTITY_CUSTOM_FIELDS: "entity:custom-fields",
 >   ORDER_SIDEBAR: "order:sidebar",
 > } as const;
 > ```
@@ -501,7 +501,7 @@ The dev-mode console warning (`Extension point "seller:comissions" is not declar
 ```vue
 <!-- WRONG -- ExtensionPoint is not imported -->
 <template>
-  <ExtensionPoint name="seller:commissions" />
+  <ExtensionPoint name="entity:custom-fields" />
 </template>
 
 <script setup lang="ts">
@@ -523,7 +523,7 @@ add({ id: "my-component", component: ComponentB });
 Use globally unique IDs. A good convention is `module-name:component-name`:
 
 ```typescript
-add({ id: "marketplace:commission-fields", component: CommissionFields });
+add({ id: "module:custom-fields", component: CustomFields });
 add({ id: "shipping:delivery-estimate", component: DeliveryEstimate });
 ```
 
@@ -657,4 +657,3 @@ These are used internally by `defineExtensionPoint` and `useExtensionPoint`. You
 | Extension Point Store | `core/plugins/extension-points/store.ts` | Reactive registry implementation |
 | ExtensionPoint Component | `core/plugins/extension-points/ExtensionPoint.vue` | Declarative render component |
 | Types | `core/plugins/extension-points/types.ts` | `ExtensionComponent`, `ExtensionPointOptions` |
-| Seller Details (usage example) | `apps/vendor-portal/src/modules/seller-details/` | Real-world extension point host |

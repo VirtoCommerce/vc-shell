@@ -16,9 +16,9 @@ description: Performs surgical edits on a prototype module to replace mock data 
       "entityName": "string — PascalCase entity name"
     },
     "dataSource": {
-      "clientClass": "string — NSwag client class name (e.g., 'VcmpSellerSecurityClient')",
-      "entityType": "string — PascalCase entity type (e.g., 'SellerUser')",
-      "entityTypePath": "string — import path for entity types (e.g., '../../api_client/virtocommerce.marketplace')",
+      "clientClass": "string — NSwag client class name (e.g., 'MyEntityClient')",
+      "entityType": "string — PascalCase entity type (e.g., 'MyEntity')",
+      "entityTypePath": "string — import path for entity types (e.g., '../../api_client/virtocommerce.mymodule')",
       "searchMethod": "string? — camelCase search method on client",
       "getMethod": "string? — camelCase get method on client",
       "createMethod": "string? — camelCase create method on client",
@@ -235,7 +235,7 @@ Compile the final report with:
   - `DONE_WITH_CONCERNS` — transformations applied but with fallback pattern-matching or ambiguities
   - `BLOCKED` — cannot proceed (all files missing, or critical error)
 
-- **Files modified:** list each file with a one-line summary of changes (e.g., `"composables/useTeamMembers/index.ts — replaced mock data source with VcmpSellerSecurityClient API calls, renamed 3 fields"`)
+- **Files modified:** list each file with a one-line summary of changes (e.g., `"composables/useTeamMembers/index.ts — replaced mock data source with UserSecurityClient API calls, renamed 3 fields"`)
 
 - **Warnings:** list all warnings collected during Steps 1-5
 

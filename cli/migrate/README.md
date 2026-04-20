@@ -77,7 +77,7 @@ npx @vc-shell/migrate --transform blade-props-simplification --dry-run
 npx @vc-shell/migrate --list
 
 # Migrate a specific app in a monorepo
-npx @vc-shell/migrate --cwd apps/vendor-portal
+npx @vc-shell/migrate --cwd apps/my-app
 ```
 
 ## Recommended workflow

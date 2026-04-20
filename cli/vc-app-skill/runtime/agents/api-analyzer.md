@@ -86,15 +86,15 @@ Pattern: /async update(\w+)\(/g
 ### Step 3: Build entity model
 
 For each discovered entity, collect:
-- `clientClass`: the `*Client` class name (e.g., `VcmpSellerSecurityClient`)
-- `clientFile`: relative path from `apiClientDir` (e.g., `virtocommerce.marketplacevendor`)
+- `clientClass`: the `*Client` class name (e.g., `UserSecurityClient`)
+- `clientFile`: relative path from `apiClientDir` (e.g., `virtocommerce.mymodule`)
 - `entityName`: PascalCase entity name (e.g., `TeamMember`, `Order`)
 - `searchQueryClass`: `Search<Entity>Query` or `Search<Entity>sQuery` if found
 - `searchResultClass`: `Search<Entity>Result` if found
 - `entityClass`: `<Entity>` if found as a standalone class
 - `entityDetailsClass`: `<Entity>Details` if found
-- `searchMethod`: camelCase method name on client (e.g., `searchSellerUsers`)
-- `getMethod`: camelCase method name (e.g., `getSellerUser`) or null
+- `searchMethod`: camelCase method name on client (e.g., `searchUsers`)
+- `getMethod`: camelCase method name (e.g., `getUser`) or null
 - `createMethod`: camelCase method name or null
 - `updateMethod`: camelCase method name or null
 - `deleteMethod`: camelCase method name or null
@@ -113,18 +113,18 @@ Format:
   "apiClientDir": "<absolute path>",
   "entities": [
     {
-      "clientClass": "VcmpSellerSecurityClient",
-      "clientFile": "virtocommerce.marketplacevendor",
-      "entityName": "SellerUser",
-      "searchQueryClass": "SearchSellerUsersQuery",
-      "searchResultClass": "SearchSellerUsersResult",
-      "entityClass": "SellerUser",
+      "clientClass": "UserSecurityClient",
+      "clientFile": "virtocommerce.mymodule",
+      "entityName": "User",
+      "searchQueryClass": "SearchUsersQuery",
+      "searchResultClass": "SearchUsersResult",
+      "entityClass": "User",
       "entityDetailsClass": null,
-      "searchMethod": "searchSellerUsers",
-      "getMethod": "getSellerUser",
-      "createMethod": "createSellerUser",
-      "updateMethod": "updateSellerUser",
-      "deleteMethod": "deleteSellerUsers"
+      "searchMethod": "searchUsers",
+      "getMethod": "getUser",
+      "createMethod": "createUser",
+      "updateMethod": "updateUser",
+      "deleteMethod": "deleteUsers"
     }
   ],
   "primaryEntity": { /* best match or first entity */ }

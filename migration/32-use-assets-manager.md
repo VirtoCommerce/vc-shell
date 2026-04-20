@@ -258,7 +258,7 @@ A component that builds a handler object from `useAssets()` and opens the Assets
 ```diff
  <script setup lang="ts">
 -import { useBladeNavigation, usePopup, useAssets } from "@vc-shell/framework";
--import { Asset } from "@api/marketplacevendor";
+-import { Asset } from "@api/mymodule";
 +import { markRaw } from "vue";
 +import { useBlade, usePopup, useAssetsManager, type AssetLike } from "@vc-shell/framework";
 

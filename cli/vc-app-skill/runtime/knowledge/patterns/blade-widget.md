@@ -1,6 +1,6 @@
 # Blade Widget Pattern
 
-Blade widgets are sidebar items displayed alongside a details blade. They allow navigation to related child blades (e.g., "Offers for this product", "Associated items"). Each widget shows an icon, a title, and an optional reactive badge count.
+Blade widgets are sidebar items displayed alongside a details blade. They allow navigation to related child blades (e.g., "Children of this entity", "Associated items"). Each widget shows an icon, a title, and an optional reactive badge count.
 
 Blade widgets use `useBladeWidgets()` — the headless widget API. No `.vue` component is needed per widget; the framework renders a standard `<VcWidget>` from the config object.
 
@@ -17,18 +17,18 @@ import { useBladeWidgets, useBlade } from "@vc-shell/framework";
 import { computed } from "vue";
 
 const { openBlade } = useBlade();
-const offersCount = ref(0);
+const childCount = ref(0);
 
 useBladeWidgets([
   {
-    id: "OffersWidget",
+    id: "ChildListWidget",
     icon: "lucide-tag",
-    title: "PRODUCTS.WIDGETS.OFFERS.TITLE",
-    badge: computed(() => offersCount.value),
+    title: "MODULE.WIDGETS.CHILD_LIST.TITLE",
+    badge: computed(() => childCount.value),
     isVisible: computed(() => !!param.value),   // hide on "create new"
-    onClick: () => openBlade({ name: "OffersList", options: { productId: entity.value.id } }),
+    onClick: () => openBlade({ name: "ChildEntityList", options: { entityId: entity.value.id } }),
     onRefresh: async () => {
-      offersCount.value = await loadOffersCount(entity.value.id);
+      childCount.value = await loadChildCount(entity.value.id);
     },
   },
 ]);

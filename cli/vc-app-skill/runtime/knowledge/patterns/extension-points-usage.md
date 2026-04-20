@@ -50,7 +50,7 @@ The simplest approach -- declares the point and renders registered components in
 
     <ExtensionPoint
       v-if="sellerDetails?.id"
-      name="seller:commissions"
+      name="entity:custom-fields"
       wrapper-class="tw-p-2"
     />
   </VcBlade>
@@ -118,12 +118,12 @@ A module registers components into an extension point declared by another module
 ```typescript
 // commissions-module/index.ts
 import { defineAppModule, useExtensionPoint } from "@vc-shell/framework";
-import CommissionFields from "./components/CommissionFields.vue";
+import CustomFields from "./components/CustomFields.vue";
 
-const { add } = useExtensionPoint("seller:commissions");
+const { add } = useExtensionPoint("entity:custom-fields");
 add({
-  id: "marketplace:commission-fields",
-  component: CommissionFields,
+  id: "module:custom-fields",
+  component: CustomFields,
   props: { editable: true },
   priority: 10,
 });
@@ -156,7 +156,7 @@ Currently defined framework constants:
 ### Removing a Registration
 
 ```typescript
-const { add, remove } = useExtensionPoint("seller:commissions");
+const { add, remove } = useExtensionPoint("entity:custom-fields");
 add({ id: "my-fields", component: MyFields });
 
 // Later (e.g., during cleanup):
@@ -172,8 +172,8 @@ Props are passed via the `props` field in `add()` and bound with `v-bind`:
 ```typescript
 add({
   id: "commission-fields",
-  component: CommissionFields,
-  props: { editable: true, sellerId: "abc-123" },
+  component: CustomFields,
+  props: { editable: true, entityId: "abc-123" },
   priority: 10,
 });
 ```
@@ -184,7 +184,7 @@ The injected component receives them as standard Vue props:
 <script setup lang="ts">
 const props = defineProps<{
   editable?: boolean;
-  sellerId?: string;
+  entityId?: string;
 }>();
 </script>
 ```
@@ -304,5 +304,4 @@ const carrier = ref("FedEx");
 | ExtensionPoint component | `framework/core/plugins/extension-points/ExtensionPoint.vue` |
 | Types | `framework/core/plugins/extension-points/types.ts` |
 | Public API exports | `framework/core/plugins/extension-points/public.ts` |
-| Real-world host usage | `apps/vendor-portal/src/modules/seller-details/pages/seller-details-edit.vue` |
 | Framework host usage | `framework/shell/auth/LoginPage/components/login/Login.vue` |

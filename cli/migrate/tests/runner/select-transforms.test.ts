@@ -1,5 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { selectTransforms } from "../../src/transforms/registry";
+import { selectTransforms, transforms } from "../../src/transforms/registry";
+
+describe("transforms registry", () => {
+  it("exposes every transform by name for explicit --transform invocation", () => {
+    // Explicit --transform <name> bypasses the version filter in runner.ts,
+    // so every transform must be reachable by name in the registry.
+    const names = transforms.map((t) => t.name);
+    expect(names).toContain("remove-global-components");
+    expect(new Set(names).size).toBe(names.length); // no duplicate names
+  });
+});
 
 describe("selectTransforms", () => {
   it("selects all transforms when migrating from 1.x to 2.0.0", () => {
@@ -13,7 +23,9 @@ describe("selectTransforms", () => {
       "remove-deprecated-aliases",
       "blade-props-simplification",
       "define-expose-to-children",
+      "blade-events-cleanup",
       "define-options-to-blade",
+      "icon-replace",
       "icon-audit",
       "scss-safe-use",
       "widgets-migration",
@@ -37,6 +49,10 @@ describe("selectTransforms", () => {
       "dynamic-properties-refactor",
       "window-globals",
       "remove-global-components",
+      "remove-expose-title",
+      "remove-app-module-options",
+      "vc-blade-loading-prop",
+      "use-data-table-pagination-audit",
     ]);
   });
 

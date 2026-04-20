@@ -2,7 +2,7 @@
 
 Describes the full structure of a list blade: workspace entry point with `VcBlade` + `VcDataTable`, sort, pagination, toolbar, and child blade navigation.
 
-Source: extracted from `apps/vendor-portal/src/modules/orders/pages/orders-list.vue` and `apps/vendor-portal/src/modules/offers/pages/offers-list.vue`.
+Generic worked example for a typical list blade (search, sort, pagination, row actions).
 
 ---
 

@@ -1,6 +1,13 @@
 <template>
-  <div v-if="bladeLoading" class="vc-file-upload__container vc-file-upload--skeleton">
-    <VcSkeleton variant="block" width="100%" :height="120" />
+  <div
+    v-if="bladeLoading"
+    class="vc-file-upload__container vc-file-upload--skeleton"
+  >
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="120"
+    />
   </div>
   <div
     v-else

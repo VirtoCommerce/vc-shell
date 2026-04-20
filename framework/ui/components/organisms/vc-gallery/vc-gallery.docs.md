@@ -23,7 +23,7 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 | `itemActions` | `{ preview?: boolean; edit?: boolean; remove?: boolean }` | `{ preview: true, edit: true, remove: true }` | Per-tile action visibility. |
 | `rules` | `IValidationRules` | `undefined` | Validation rules for uploaded files. |
 | `name` | `string` | `"Gallery"` | Field name for validation messages. |
-| `accept` | `string` | `undefined` | Accepted file extensions. |
+| `accept` | `string` | `"image/*"` | Accepted file MIME types / extensions. Gallery is image-only by default — non-image files dropped from the OS are filtered out. Override (e.g. `"image/png,image/jpeg"`) to narrow further. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Tile size preset. Sizes are smaller on mobile. |
 | `gap` | `number` | `8` | Gap between tiles in pixels. |
 | `imagefit` | `"contain" \| "cover"` | `"contain"` | How images fit within tiles. |

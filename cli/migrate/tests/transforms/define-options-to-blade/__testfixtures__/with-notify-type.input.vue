@@ -1,9 +1,9 @@
 <template><div>test</div></template>
 <script setup lang="ts">
 defineOptions({
-  name: "Offer",
-  url: "/offer",
+  name: "Entity",
+  url: "/entity",
   routable: false,
-  notifyType: ["OfferCreatedDomainEvent", "OfferDeletedDomainEvent"],
+  notifyType: ["EntityCreatedDomainEvent", "EntityDeletedDomainEvent"],
 });
 </script>

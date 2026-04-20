@@ -6,49 +6,37 @@ import { useDataTablePagination } from "./useDataTablePagination";
 describe("useDataTablePagination", () => {
   describe("initialization", () => {
     it("initializes with page 1, skip 0, default pageSize 20", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTablePagination({ totalCount: ref(100) }),
-      );
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(100) }));
       expect(result.currentPage).toBe(1);
       expect(result.skip).toBe(0);
       expect(result.pageSize).toBe(20);
     });
 
     it("computes pages from totalCount and pageSize", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTablePagination({ totalCount: ref(95), pageSize: 20 }),
-      );
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(95), pageSize: 20 }));
       expect(result.pages).toBe(5); // ceil(95/20) = 5
     });
 
     it("accepts custom pageSize", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTablePagination({ totalCount: ref(50), pageSize: 10 }),
-      );
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(50), pageSize: 10 }));
       expect(result.pageSize).toBe(10);
       expect(result.pages).toBe(5);
     });
 
     it("returns pages=0 when totalCount is 0", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTablePagination({ totalCount: ref(0) }),
-      );
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(0) }));
       expect(result.pages).toBe(0);
     });
 
     it("exposes totalCount as a reactive property", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTablePagination({ totalCount: ref(95), pageSize: 20 }),
-      );
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(95), pageSize: 20 }));
       expect(result.totalCount).toBe(95);
     });
   });
 
   describe("goToPage", () => {
     it("updates currentPage and skip", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTablePagination({ totalCount: ref(100), pageSize: 20 }),
-      );
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(100), pageSize: 20 }));
       result.goToPage(3);
       expect(result.currentPage).toBe(3);
       expect(result.skip).toBe(40); // (3-1)*20
@@ -65,18 +53,14 @@ describe("useDataTablePagination", () => {
     });
 
     it("does not throw when onPageChange is not provided", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTablePagination({ totalCount: ref(100) }),
-      );
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(100) }));
       expect(() => result.goToPage(2)).not.toThrow();
     });
   });
 
   describe("reset", () => {
     it("resets currentPage to 1", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTablePagination({ totalCount: ref(100), pageSize: 20 }),
-      );
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(100), pageSize: 20 }));
       result.goToPage(4);
       expect(result.currentPage).toBe(4);
       result.reset();
@@ -98,9 +82,7 @@ describe("useDataTablePagination", () => {
 
   describe("direct VcDataTable binding", () => {
     it("return object has plain numbers passable as :pagination prop", () => {
-      const { result } = mountWithSetup(() =>
-        useDataTablePagination({ totalCount: ref(45), pageSize: 10 }),
-      );
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(45), pageSize: 10 }));
       result.goToPage(2);
       // reactive() unwraps refs — VcDataTable receives plain numbers
       expect(result.currentPage).toBe(2);
@@ -114,9 +96,7 @@ describe("useDataTablePagination", () => {
   describe("reactivity", () => {
     it("pages and totalCount recompute when totalCount changes", () => {
       const totalCount = ref(100);
-      const { result } = mountWithSetup(() =>
-        useDataTablePagination({ totalCount, pageSize: 20 }),
-      );
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount, pageSize: 20 }));
       expect(result.pages).toBe(5);
       expect(result.totalCount).toBe(100);
       totalCount.value = 50;

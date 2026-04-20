@@ -11,7 +11,7 @@ export interface TableContext<T = any> {
 
 export const TableContextKey: InjectionKey<TableContext> = Symbol("TableContext");
 export const ColumnCollectorKey: InjectionKey<ColumnCollector> = Symbol("ColumnCollector");
-export const HasFlexColumnsKey: InjectionKey<Ref<boolean>> = Symbol("HasFlexColumns");
+export const FillerWidthKey: InjectionKey<ComputedRef<number>> = Symbol("FillerWidth");
 export const IsColumnReorderingKey: InjectionKey<Ref<boolean>> = Symbol("IsColumnReordering");
 
 export interface FilterContext {

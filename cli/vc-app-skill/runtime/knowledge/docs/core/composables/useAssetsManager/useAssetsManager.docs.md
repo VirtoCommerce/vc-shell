@@ -56,12 +56,12 @@ import { toRef } from "vue";
 
 const assets = useAssetsManager(
   computed({
-    get: () => offer.value.images ?? [],
-    set: (val) => { offer.value.images = val; },
+    get: () => entity.value.images ?? [],
+    set: (val) => { entity.value.images = val; },
   }),
   {
-    uploadPath: () => `offers/${offer.value?.id ?? "new"}`,
-    confirmRemove: () => showConfirmation(t("OFFERS.ALERTS.IMAGE_DELETE")),
+    uploadPath: () => `entities/${entity.value?.id ?? "new"}`,
+    confirmRemove: () => showConfirmation(t("MODULE.ALERTS.IMAGE_DELETE")),
   },
 );
 ```

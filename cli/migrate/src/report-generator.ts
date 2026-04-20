@@ -85,7 +85,7 @@ const form = useBladeForm({
   data: item,  // your reactive data ref
   closeConfirmMessage: computed(() => t("CLOSE_CONFIRMATION")),
 });
-// form.modified, form.isValid, form.validate(), form.resetForm(), form.setBaseline()
+// form.canSave, form.isModified, form.setBaseline(), form.markReady(), form.revert()
 // onBeforeClose is handled automatically — DELETE it
 \`\`\``,
     guide: "migration/37-use-blade-form.md",
@@ -153,6 +153,50 @@ const { replaceWith } = useBlade();
 await replaceWith({ name: "EditOrder", param: order.id });
 \`\`\``,
     guide: "migration/12-replace-cover.md",
+  },
+
+  "use-assets-migration": {
+    title: "Assets API Migration (useAssets → useAssetsManager)",
+    description:
+      "`useAssets()` and legacy `AssetsHandler` patterns require migration to `useAssetsManager()`. " +
+      "The transform auto-renames `ICommonAsset` → `AssetLike`, but handler wiring/openBlade options often need manual updates.",
+    example: `\`\`\`ts
+// OLD:
+const { upload, remove, edit } = useAssets(imagesRef, uploadPath);
+
+// NEW:
+const assetsManager = useAssetsManager(imagesRef, {
+  uploadPath: () => uploadPath.value,
+  confirmRemove: () => showConfirmation(t("DELETE_CONFIRMATION")),
+});
+
+// For AssetsManager blade:
+openBlade({
+  name: "AssetsManager",
+  options: {
+    manager: markRaw(assetsManager),
+  },
+});
+\`\`\``,
+    guide: "migration/32-use-assets-manager.md",
+  },
+
+  "manual-migration-audit": {
+    title: "Manual Migration Audit Findings",
+    description:
+      "The audit found patterns that are not safely auto-rewritable (e.g., `useExternalWidgets`, `moment`, `useFunctions`, direct `closeBlade()`). " +
+      "These require targeted manual refactors before final type-check/build.",
+    example: `\`\`\`ts
+// useFunctions() removed:
+// OLD:
+const { debounce } = useFunctions();
+const debounced = debounce(search, 300);
+
+// NEW:
+import { useDebounceFn } from "@vueuse/core";
+const debounced = useDebounceFn(search, 300);
+\`\`\``,
+    guide: "migration/03-moment-to-datefns.md",
   },
 };
 

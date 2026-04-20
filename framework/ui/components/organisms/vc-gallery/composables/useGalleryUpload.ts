@@ -5,15 +5,25 @@ interface UseGalleryUploadOptions {
   onUpload: (files: FileList, startingSortOrder?: number) => void;
 }
 
+const IMAGE_EXT_RE = /\.(apng|avif|bmp|gif|heic|heif|ico|jfif|jpe?g|pjp(eg)?|png|svg|tiff?|webp)$/i;
+
+function isImageFile(file: File): boolean {
+  if (file.type) return file.type.startsWith("image/");
+  return IMAGE_EXT_RE.test(file.name);
+}
+
 export function useGalleryUpload(images: Ref<AssetLike[]>, options: UseGalleryUploadOptions) {
   function onUpload(files: FileList) {
     if (!files || !files.length) return;
+
+    const imageFiles = Array.from(files).filter(isImageFile);
+    if (!imageFiles.length) return;
 
     const currentImages = toValue(images);
     const existingNames = currentImages.map((img) => img.name);
     const uploadedFiles: File[] = [];
 
-    Array.from(files).forEach((file) => {
+    imageFiles.forEach((file) => {
       let fileName = file.name;
 
       if (existingNames.includes(fileName)) {

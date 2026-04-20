@@ -41,6 +41,8 @@ const { widgets } = useWidgets();`,
     });
     expect(reports.length).toBeGreaterThan(0);
     expect(reports[0]).toContain("API completely changed");
+    expect(reports.join("\n")).toContain("updateActiveWidget()");
+    expect(reports.join("\n")).toContain("refreshAll()");
   });
 
   it("emits diagnostic for .vue files via SFC wrapper", () => {

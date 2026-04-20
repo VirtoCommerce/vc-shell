@@ -75,10 +75,25 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
       }
     });
 
-    if (!hasUseBlade && frameworkImports.size() > 0) {
-      const firstImport = frameworkImports.at(0).get();
-      const specifiers = firstImport.node.specifiers || [];
-      specifiers.push(j.importSpecifier(j.identifier("useBlade")));
+    if (!hasUseBlade) {
+      if (frameworkImports.size() > 0) {
+        // Append useBlade to existing @vc-shell/framework import
+        const firstImport = frameworkImports.at(0).get();
+        const specifiers = firstImport.node.specifiers || [];
+        specifiers.push(j.importSpecifier(j.identifier("useBlade")));
+      } else {
+        // No framework import exists — create one
+        const newImport = j.importDeclaration(
+          [j.importSpecifier(j.identifier("useBlade"))],
+          j.literal("@vc-shell/framework"),
+        );
+        const allImports = root.find(j.ImportDeclaration);
+        if (allImports.size() > 0) {
+          j(allImports.at(-1).get()).insertAfter(newImport);
+        } else {
+          root.find(j.Program).get("body").unshift(newImport);
+        }
+      }
     }
 
     // Add const { exposeToChildren } = useBlade(); after last import
@@ -87,10 +102,7 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
       const prop = j.objectProperty(j.identifier("exposeToChildren"), j.identifier("exposeToChildren"));
       (prop as any).shorthand = true;
       const decl = j.variableDeclaration("const", [
-        j.variableDeclarator(
-          j.objectPattern([prop]),
-          j.callExpression(j.identifier("useBlade"), []),
-        ),
+        j.variableDeclarator(j.objectPattern([prop]), j.callExpression(j.identifier("useBlade"), [])),
       ]);
       j(imports.at(-1).get()).insertAfter(decl);
     }

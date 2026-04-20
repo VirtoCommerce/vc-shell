@@ -333,6 +333,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: "gallery",
   uploadIcon: "lucide-cloud-upload",
   name: "Gallery",
+  accept: "image/*",
   itemActions: () => ({ preview: true, edit: true, remove: true }),
 });
 

@@ -13,6 +13,15 @@ function makeColumn(id: string, overrides: Record<string, unknown> = {}): Column
   } as ColumnInstance;
 }
 
+const DEFAULT_AVAILABLE_WIDTH = 1000;
+
+function createOptions(overrides: Record<string, unknown> = {}) {
+  return {
+    getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
+    ...overrides,
+  };
+}
+
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
 describe("useTableColumns — orderedVisibleColumns", () => {
@@ -20,29 +29,25 @@ describe("useTableColumns — orderedVisibleColumns", () => {
     const cols = [makeColumn("name"), makeColumn("email"), makeColumn("price")];
     const visibleColumns = ref(cols);
 
-    const { orderedVisibleColumns } = useTableColumns({ visibleColumns });
+    const { orderedVisibleColumns } = useTableColumns({ visibleColumns, ...createOptions() });
 
     expect(orderedVisibleColumns.value).toHaveLength(3);
     expect(orderedVisibleColumns.value.map((c) => c.props.id)).toEqual(["name", "email", "price"]);
   });
 
   it("filters out null/undefined entries in orderedVisibleColumns computed", () => {
-    // Note: null entries that bypass the watcher's filter will be excluded by the
-    // orderedVisibleColumns computed (which has its own null guard). This tests
-    // that the computed handles columns with null props gracefully.
     const validCols = [makeColumn("name"), makeColumn("email")];
     const visibleColumns = ref(validCols);
 
-    const { orderedVisibleColumns } = useTableColumns({ visibleColumns });
+    const { orderedVisibleColumns } = useTableColumns({ visibleColumns, ...createOptions() });
 
-    // All valid columns should appear
     expect(orderedVisibleColumns.value).toHaveLength(2);
     expect(orderedVisibleColumns.value.map((c) => c.props.id)).toEqual(["name", "email"]);
   });
 });
 
-describe("useTableColumns — columnWidths initialization", () => {
-  it("populates columnWidths from column props on init (immediate watcher)", () => {
+describe("useTableColumns — columnState initialization", () => {
+  it("populates columnState specs from column props on init (immediate watcher)", () => {
     const cols = [
       makeColumn("name", { width: 200 }),
       makeColumn("email", { width: 300 }),
@@ -50,39 +55,99 @@ describe("useTableColumns — columnWidths initialization", () => {
     ];
     const visibleColumns = ref(cols);
 
-    const { columnWidths } = useTableColumns({ visibleColumns });
+    const { columnState } = useTableColumns({ visibleColumns, ...createOptions() });
 
-    expect(columnWidths.value).toHaveLength(3);
-    expect(columnWidths.value.find((c) => c.id === "name")?.width).toBe(200);
-    expect(columnWidths.value.find((c) => c.id === "email")?.width).toBe(300);
-    expect(columnWidths.value.find((c) => c.id === "price")?.width).toBe(100);
+    expect(columnState.value.order).toHaveLength(3);
+    expect(columnState.value.order).toEqual(["name", "email", "price"]);
+    // All three columns should have specs with normalized weights
+    expect(columnState.value.specs["name"]).toBeDefined();
+    expect(columnState.value.specs["email"]).toBeDefined();
+    expect(columnState.value.specs["price"]).toBeDefined();
+    // The immediate watcher assigns equal weights (normalization of zero-init)
+    const totalWeight = Object.values(columnState.value.specs).reduce((s, spec) => s + spec.weight, 0);
+    expect(totalWeight).toBeCloseTo(1.0, 5);
   });
 
-  it("stores 0 for columns without an explicit width", () => {
+  it("assigns equal weights for columns without an explicit width", () => {
     const cols = [makeColumn("name"), makeColumn("email")];
     const visibleColumns = ref(cols);
 
-    const { columnWidths } = useTableColumns({ visibleColumns });
+    const { columnState } = useTableColumns({ visibleColumns, ...createOptions() });
 
-    expect(columnWidths.value.find((c) => c.id === "name")?.width).toBe(0);
+    // Both columns get equal weight
+    expect(columnState.value.specs["name"].weight).toBeCloseTo(0.5, 2);
+    expect(columnState.value.specs["email"].weight).toBeCloseTo(0.5, 2);
   });
 
-  it("stores 0 for columns with percentage width (non-pixel)", () => {
+  it("honors declared px widths end-to-end — engine output matches ratios", () => {
+    // Regression test: VcColumn :width="200" was silently ignored before fix.
+    const cols = [
+      makeColumn("a", { width: 200 }),
+      makeColumn("b", { width: 300 }),
+      makeColumn("c", { width: 100 }),
+    ];
+    const visibleColumns = ref(cols);
+
+    const { columnState, engineOutput } = useTableColumns({
+      visibleColumns,
+      getAvailableWidth: () => 600,
+      fitMode: "fit",
+    });
+
+    // Weights should reflect 200/300/100 ratio (normalized to sum=1).
+    expect(columnState.value.specs["a"].weight).toBeCloseTo(200 / 600, 2);
+    expect(columnState.value.specs["b"].weight).toBeCloseTo(300 / 600, 2);
+    expect(columnState.value.specs["c"].weight).toBeCloseTo(100 / 600, 2);
+    // Engine output exactly matches declared widths in fit mode.
+    expect(engineOutput.value.widths["a"]).toBe(200);
+    expect(engineOutput.value.widths["b"]).toBe(300);
+    expect(engineOutput.value.widths["c"]).toBe(100);
+  });
+
+  it("honors declared minWidth in specs after init", () => {
+    const cols = [makeColumn("big", { width: 100, minWidth: 150 }), makeColumn("small", { width: 100 })];
+    const visibleColumns = ref(cols);
+
+    const { columnState } = useTableColumns({
+      visibleColumns,
+      getAvailableWidth: () => 400,
+    });
+
+    expect(columnState.value.specs["big"].minPx).toBe(150);
+    expect(columnState.value.specs["small"].minPx).toBe(40); // default fallback
+  });
+
+  it("honors declared maxWidth in specs after init", () => {
+    const cols = [makeColumn("capped", { width: 500, maxWidth: 250 })];
+    const visibleColumns = ref(cols);
+
+    const { columnState } = useTableColumns({
+      visibleColumns,
+      getAvailableWidth: () => 1000,
+    });
+
+    expect(columnState.value.specs["capped"].maxPx).toBe(250);
+  });
+
+  it("handles percentage width columns via weight system", () => {
     const cols = [makeColumn("name", { width: "50%" })];
     const visibleColumns = ref(cols);
 
-    const { columnWidths } = useTableColumns({ visibleColumns });
+    const { columnState } = useTableColumns({ visibleColumns, ...createOptions() });
 
-    expect(columnWidths.value.find((c) => c.id === "name")?.width).toBe(0);
+    // Single column should have weight 1.0 (normalized)
+    expect(columnState.value.specs["name"].weight).toBeCloseTo(1.0, 2);
   });
 
-  it("parses pixel string widths (e.g. '150px') to numeric values", () => {
-    const cols = [makeColumn("name", { width: "150px" })];
+  it("parses pixel string widths (e.g. '150px') into weights", () => {
+    const cols = [makeColumn("name", { width: "150px" }), makeColumn("email", { width: "150px" })];
     const visibleColumns = ref(cols);
 
-    const { columnWidths } = useTableColumns({ visibleColumns });
+    const { columnState } = useTableColumns({ visibleColumns, ...createOptions() });
 
-    expect(columnWidths.value.find((c) => c.id === "name")?.width).toBe(150);
+    // Both have equal pixel width, so equal weight
+    expect(columnState.value.specs["name"].weight).toBeCloseTo(0.5, 2);
+    expect(columnState.value.specs["email"].weight).toBeCloseTo(0.5, 2);
   });
 });
 
@@ -91,44 +156,25 @@ describe("useTableColumns — totalColumns", () => {
     const cols = [makeColumn("name"), makeColumn("email"), makeColumn("price")];
     const visibleColumns = ref(cols);
 
-    const { totalColumns } = useTableColumns({ visibleColumns });
+    const { totalColumns } = useTableColumns({ visibleColumns, ...createOptions() });
 
     expect(totalColumns.value).toBe(3);
   });
 
-  it("adds 1 when hasSelectionColumn=true and isSelectionViaColumn=false", () => {
+  it("counts only visible columns (selection handled externally)", () => {
     const cols = [makeColumn("name"), makeColumn("email")];
     const visibleColumns = ref(cols);
-    const hasSelectionColumn = computed(() => true);
-    const isSelectionViaColumn = computed(() => false);
 
-    const { totalColumns } = useTableColumns({
-      visibleColumns,
-      hasSelectionColumn,
-      isSelectionViaColumn,
-    });
+    const { totalColumns } = useTableColumns({ visibleColumns, ...createOptions() });
 
-    expect(totalColumns.value).toBe(3); // 2 data cols + 1 selection col
-  });
-
-  it("does NOT add 1 when isSelectionViaColumn=true", () => {
-    const cols = [makeColumn("name"), makeColumn("email")];
-    const visibleColumns = ref(cols);
-    const hasSelectionColumn = computed(() => true);
-    const isSelectionViaColumn = computed(() => true);
-
-    const { totalColumns } = useTableColumns({
-      visibleColumns,
-      hasSelectionColumn,
-      isSelectionViaColumn,
-    });
-
+    // totalColumns simply counts visibleColumns — implicit selection cells
+    // are handled by the DOM measurement, not by this composable.
     expect(totalColumns.value).toBe(2);
   });
 });
 
-describe("useTableColumns — column width guard (never drop entries for hidden columns)", () => {
-  it("temporarily hiding a column does NOT remove its entry from columnWidths", async () => {
+describe("useTableColumns — column state guard (never drop entries for hidden columns)", () => {
+  it("temporarily hiding a column does NOT remove its entry from columnState", async () => {
     const allCols = [
       makeColumn("name", { width: 200 }),
       makeColumn("email", { width: 300 }),
@@ -136,10 +182,10 @@ describe("useTableColumns — column width guard (never drop entries for hidden 
     ];
     const visibleColumns = ref(allCols);
 
-    const { columnWidths } = useTableColumns({ visibleColumns });
+    const { columnState } = useTableColumns({ visibleColumns, ...createOptions() });
 
     // Initial state: all 3 tracked
-    expect(columnWidths.value).toHaveLength(3);
+    expect(columnState.value.order).toHaveLength(3);
 
     // Simulate hiding 'email' (as if hiddenColumnIds caused it to be filtered out)
     visibleColumns.value = [makeColumn("name", { width: 200 }), makeColumn("price", { width: 100 })];
@@ -147,17 +193,17 @@ describe("useTableColumns — column width guard (never drop entries for hidden 
     // Watcher flushes asynchronously
     await nextTick();
 
-    // Guard: email should STILL be in columnWidths (not dropped)
-    expect(columnWidths.value).toHaveLength(3);
-    expect(columnWidths.value.find((c) => c.id === "email")).toBeTruthy();
+    // Guard: email should STILL be in columnState.order (not dropped)
+    expect(columnState.value.order).toHaveLength(3);
+    expect(columnState.value.specs["email"]).toBeTruthy();
   });
 
   it("appends genuinely new columns when they appear for the first time", async () => {
     const visibleColumns = ref([makeColumn("name"), makeColumn("email")]);
 
-    const { columnWidths } = useTableColumns({ visibleColumns });
+    const { columnState } = useTableColumns({ visibleColumns, ...createOptions() });
 
-    expect(columnWidths.value).toHaveLength(2);
+    expect(columnState.value.order).toHaveLength(2);
 
     // A new column appears (e.g. added to the template)
     visibleColumns.value = [makeColumn("name"), makeColumn("email"), makeColumn("price", { width: 120 })];
@@ -165,75 +211,56 @@ describe("useTableColumns — column width guard (never drop entries for hidden 
     // Watcher flushes asynchronously after reactive change outside setup
     await nextTick();
 
-    expect(columnWidths.value).toHaveLength(3);
-    expect(columnWidths.value.find((c) => c.id === "price")?.width).toBe(120);
+    expect(columnState.value.order).toHaveLength(3);
+    expect(columnState.value.specs["price"]).toBeTruthy();
   });
 
   it("does NOT re-add an already-tracked column that comes back into view", async () => {
     const allCols = [makeColumn("name"), makeColumn("email")];
     const visibleColumns = ref(allCols);
 
-    const { columnWidths } = useTableColumns({ visibleColumns });
-    expect(columnWidths.value).toHaveLength(2);
+    const { columnState } = useTableColumns({ visibleColumns, ...createOptions() });
+    expect(columnState.value.order).toHaveLength(2);
 
     // Hide email
     visibleColumns.value = [makeColumn("name")];
     await nextTick();
-    expect(columnWidths.value).toHaveLength(2); // still 2 (email preserved)
+    expect(columnState.value.order).toHaveLength(2); // still 2 (email preserved)
 
     // Show email again
     visibleColumns.value = [makeColumn("name"), makeColumn("email")];
     await nextTick();
-    expect(columnWidths.value).toHaveLength(2); // still 2, not 3
+    expect(columnState.value.order).toHaveLength(2); // still 2, not 3
   });
 });
 
-describe("useTableColumns — special columns are excluded from columnWidths", () => {
-  it("selectionMode columns are not added to columnWidths", () => {
+describe("useTableColumns — special columns are excluded from columnState", () => {
+  it("selectionMode columns are not added to columnState specs", () => {
     const cols = [makeColumn("__sel__", { selectionMode: "multiple" }), makeColumn("name"), makeColumn("email")];
     const visibleColumns = ref(cols);
 
-    const { columnWidths } = useTableColumns({ visibleColumns });
+    const { columnState } = useTableColumns({ visibleColumns, ...createOptions() });
 
     // Only data columns tracked — not the selection column
-    expect(columnWidths.value.find((c) => c.id === "__sel__")).toBeUndefined();
-    expect(columnWidths.value).toHaveLength(2);
+    expect(columnState.value.specs["__sel__"]).toBeUndefined();
+    expect(columnState.value.order).toHaveLength(2);
   });
 });
 
 describe("useTableColumns — getEffectiveColumnWidth", () => {
-  it("returns px for resized columns", () => {
+  it("returns px string from engine output for data columns", () => {
     const cols = [makeColumn("name", { width: 200 })];
     const visibleColumns = ref(cols);
-    const { columnWidths, getEffectiveColumnWidth } = useTableColumns({ visibleColumns });
-    columnWidths.value = [{ id: "name", width: 250 }];
+    const { getEffectiveColumnWidth, engineOutput } = useTableColumns({ visibleColumns, ...createOptions() });
+    // Simulate engine output
+    engineOutput.value = { widths: { name: 250 }, fillerWidth: 0 };
     expect(getEffectiveColumnWidth({ id: "name" } as VcColumnProps)).toBe("250px");
   });
 
   it("returns fixed px for special columns", () => {
     const cols = [makeColumn("sel", { selectionMode: "multiple" } as any)];
     const visibleColumns = ref(cols);
-    const { getEffectiveColumnWidth } = useTableColumns({ visibleColumns });
+    const { getEffectiveColumnWidth } = useTableColumns({ visibleColumns, ...createOptions() });
     expect(getEffectiveColumnWidth({ id: "sel", selectionMode: "multiple" } as unknown as VcColumnProps)).toBe("40px");
-  });
-});
-
-describe("useTableColumns — hasFlexColumns", () => {
-  it("returns true when at least one visible data column has no explicit width", () => {
-    const cols = [makeColumn("name", { width: 200 }), makeColumn("email")]; // email has no width
-    const visibleColumns = ref(cols);
-
-    const { hasFlexColumns } = useTableColumns({ visibleColumns });
-
-    expect(hasFlexColumns.value).toBe(true);
-  });
-
-  it("returns false when all visible data columns have explicit pixel widths", () => {
-    const cols = [makeColumn("name", { width: 200 }), makeColumn("email", { width: 300 })];
-    const visibleColumns = ref(cols);
-
-    const { hasFlexColumns } = useTableColumns({ visibleColumns });
-
-    expect(hasFlexColumns.value).toBe(false);
   });
 });

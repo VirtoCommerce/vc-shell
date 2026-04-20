@@ -177,7 +177,11 @@
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T, P extends { results?: T[]; totalCount?: number } | undefined = undefined">
+<script
+  lang="ts"
+  setup
+  generic="V = string | string[] | null, T = unknown, P extends { results?: T[]; totalCount?: number } | undefined = undefined"
+>
 import { ref, computed, watch, watchEffect, nextTick } from "vue";
 import { useFormField } from "@ui/composables/useFormField";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
@@ -201,6 +205,45 @@ import DOMPurify from "dompurify";
 
 type ArrayElementType<U> = U extends Array<infer V> ? V : never;
 type Option = P extends { results?: T[]; totalCount?: number } ? T & ArrayElementType<Required<P>["results"]> : T;
+
+type BaseSelectProps = {
+  mapOptions?: boolean;
+  hint?: string;
+  prefix?: string;
+  suffix?: string;
+  loading?: boolean;
+  clearable?: boolean;
+  multiple?: boolean;
+  options?: ((keyword?: string, skip?: number, ids?: string[]) => Promise<P>) | T[];
+  optionValue?: OptionProp<Option>;
+  optionLabel?: OptionProp<Option>;
+  debounce?: number | string;
+  placeholder?: string;
+  searchable?: boolean;
+  multilanguage?: boolean;
+  currentLanguage?: string;
+  size?: "default" | "small";
+  outline?: boolean;
+  placement?:
+    | "top"
+    | "right"
+    | "bottom"
+    | "left"
+    | "top-start"
+    | "top-end"
+    | "bottom-start"
+    | "bottom-end"
+    | "right-start"
+    | "right-end"
+    | "left-start"
+    | "left-end";
+};
+
+type SelectProps<ModelValueType> = IFormFieldProps &
+  BaseSelectProps & {
+    modelValue?: ModelValueType;
+    emitValue?: boolean;
+  };
 
 defineSlots<{
   /**
@@ -280,42 +323,7 @@ defineSlots<{
 }>();
 
 const props = withDefaults(
-  defineProps<
-    IFormFieldProps & {
-      modelValue?: Option | Option[] | string | string[] | null;
-      mapOptions?: boolean;
-      hint?: string;
-      prefix?: string;
-      suffix?: string;
-      loading?: boolean;
-      clearable?: boolean;
-      multiple?: boolean;
-      options?: ((keyword?: string, skip?: number, ids?: string[]) => Promise<P>) | T[];
-      optionValue?: OptionProp<Option>;
-      optionLabel?: OptionProp<Option>;
-      emitValue?: boolean;
-      debounce?: number | string;
-      placeholder?: string;
-      searchable?: boolean;
-      multilanguage?: boolean;
-      currentLanguage?: string;
-      size?: "default" | "small";
-      outline?: boolean;
-      placement?:
-        | "top"
-        | "right"
-        | "bottom"
-        | "left"
-        | "top-start"
-        | "top-end"
-        | "bottom-start"
-        | "bottom-end"
-        | "right-start"
-        | "right-end"
-        | "left-start"
-        | "left-end";
-    }
-  >(),
+  defineProps<SelectProps<V>>(),
   {
     optionValue: "id",
     optionLabel: "title",
@@ -336,7 +344,7 @@ const emit = defineEmits<{
    * Emitted when the component needs to change the model; Is also used by v-model
    */
 
-  "update:modelValue": [inputValue: Option | Option[] | string | string[] | null];
+  "update:modelValue": [inputValue: V];
   /**
    * Emitted when user wants to filter a value
    */

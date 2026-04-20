@@ -61,7 +61,7 @@
       tag="div"
       :name="isColumnReordering ? 'vc-table-col-swap' : ''"
       class="vc-table-composition__row-transition-wrapper"
-      :class="{ 'vc-table-composition__row-transition-wrapper--no-filler': hasFlexColumns }"
+      :style="{ '--filler-width': fillerWidth.value > 0 ? `${fillerWidth.value}px` : '0px' }"
     >
       <slot />
     </TransitionGroup>
@@ -82,8 +82,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, TransitionGroup, type Ref } from "vue";
-import { TableContextKey, HasFlexColumnsKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-data-table/keys";
+import { computed, inject, ref, TransitionGroup, type Ref, type ComputedRef } from "vue";
+import { TableContextKey, FillerWidthKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-data-table/keys";
 
 const props = withDefaults(
   defineProps<{
@@ -150,7 +150,10 @@ const emit = defineEmits<{
 }>();
 
 const tableContext = inject(TableContextKey, null);
-const hasFlexColumns = inject(HasFlexColumnsKey, ref(false));
+const fillerWidth = inject(
+  FillerWidthKey,
+  computed(() => 0),
+);
 const isColumnReordering = inject(IsColumnReorderingKey, ref(false));
 const isDragging = ref(false);
 
@@ -314,18 +317,12 @@ const handleDrop = (event: DragEvent) => {
     // Note: Do NOT use overflow: hidden here - it clips positioned elements
     // like dropdown menus. Individual cells handle their own overflow.
 
-    // Filler pseudo-element absorbs leftover space when ALL columns have fixed widths.
-    // Columns with width use flex: 0 1 auto (no grow, can shrink), and this filler fills
-    // any remaining width — preventing visual jumps after resize.
+    // Filler pseudo-element absorbs leftover space computed by the weight engine.
+    // Width is controlled via --filler-width CSS variable set on the element.
     &::after {
       content: "";
-      flex: 1 1 0;
+      flex: 0 0 var(--filler-width, 0px);
       min-width: 0;
-    }
-
-    // When flex-grow columns exist, disable the filler so it doesn't compete for space
-    &--no-filler::after {
-      display: none;
     }
   }
 

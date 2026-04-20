@@ -1457,9 +1457,9 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ## Recipes
 
-### Recipe 1: Products List Blade
+### Recipe 1: Entity List Blade
 
-A typical list blade with search, pagination, row actions, and empty states -- modeled after real vendor-portal usage.
+A typical list blade with search, pagination, row actions, and empty states.
 
 ```vue
 <template>

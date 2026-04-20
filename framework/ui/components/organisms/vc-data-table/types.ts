@@ -874,3 +874,37 @@ export interface EditChange<T = any> {
   oldValue: unknown;
   newValue: unknown;
 }
+
+// ============================================================================
+// Column Width Engine Types
+// ============================================================================
+
+/** Sizing specification for a single column in the weight engine */
+export interface ColumnSpec {
+  /** Runtime proportion (0..1, sum of visible columns ≈ 1.0) */
+  weight: number;
+  /** Resolved minimum width in px (default: 40) */
+  minPx: number;
+  /** Resolved maximum width in px (default: Infinity) */
+  maxPx: number;
+}
+
+/** Atomic state holding both column order and sizing */
+export interface ColumnState {
+  /** Authoritative ordered list of column IDs */
+  order: string[];
+  /** Sizing specs keyed by column ID — O(1) lookup */
+  specs: Record<string, ColumnSpec>;
+}
+
+/** Table width distribution mode */
+export type TableFitMode = "fit" | "gap";
+
+/** Persisted state v2 — weight-based (replaces v1 pixel-based format) */
+export interface PersistedStateV2 {
+  v: 2;
+  order: string[];
+  weights: Record<string, number>;
+  hiddenColumnIds?: string[];
+  shownColumnIds?: string[];
+}

@@ -137,8 +137,7 @@ function coreTransform(fileInfo: FileInfo, api: API, options: Options): string |
         }
 
         // Only add notificationTemplates if it's not `undefined`
-        const isUndefinedArg =
-          args[2].type === "Identifier" && (args[2] as any).name === "undefined";
+        const isUndefinedArg = args[2].type === "Identifier" && (args[2] as any).name === "undefined";
         if (!isUndefinedArg) {
           properties.push(j.property("init", j.identifier("notificationTemplates"), args[2] as any));
           if (args[2].type === "Identifier" && args[2].name === "notificationTemplates") {

@@ -66,6 +66,7 @@ Work through these guides in order. Each is self-contained with before/after exa
 | 29 | [VcTable → VcDataTable](./29-vc-table-to-data-table.md) | **Breaking** | Old VcTable removed; `VcTableAdapter` provides backward compat |
 | 30 | [Type Shims → Globals](./30-shims-to-globals.md) | Deprecated | Manual `shims-vue.d.ts` / `vue-i18n.d.ts` → `@vc-shell/framework/globals` |
 | 31 | [useDataTableSort](./31-use-data-table-sort.md) | Optional | Replace manual sort boilerplate with `useDataTableSort` composable |
+| 32 | [useAssets → useAssetsManager](./32-use-assets-manager.md) | Deprecated | `useAssets()` handler bundle → `useAssetsManager()` ref-mutating composable |
 | 33 | [Locale Exports](./33-locale-exports.md) | **Breaking** | `dist/locales/*.json` wildcard → named `@vc-shell/framework/locales/<lang>` exports |
 | 34 | [App Hub Rename](./34-app-hub-rename.md) | **Breaking** | `disableAppSwitcher` → `disableAppHub`, `#app-switcher` → `#app-hub`, `useAppSwitcher` → `useAppHub` |
 | 35 | [defineBlade](./35-define-blade.md) | Deprecated | `defineOptions()` with blade fields → `defineBlade()` macro |
@@ -73,6 +74,8 @@ Work through these guides in order. Each is self-contained with before/after exa
 | 37 | [useBladeForm](./37-use-blade-form.md) | Optional | Replace manual useForm + useModificationTracker + useBeforeUnload with useBladeForm |
 | 38 | [Dynamic Properties Refactor](./38-dynamic-properties-refactor.md) | **Breaking** | useDynamicProperties: remove generics/constructors, options-based API |
 | 39 | [Transparent Blade Skeletons](./39-blade-skeleton.md) | Informational | Layout-aware skeleton loading via `useBladeLoading()` composable |
+| 40 | [Remove Global Component Registration](./40-remove-global-components.md) | **Breaking** | Explicit imports required for all `Vc*` components and directives (no more `app.component()` auto-registration) |
+| 41 | [useDataTablePagination](./41-use-data-table-pagination.md) | Optional | Replace manual `totalCount`/`pages`/`currentPage` + `onPaginationClick` with `useDataTablePagination` composable |
 
 ## Severity Legend
 

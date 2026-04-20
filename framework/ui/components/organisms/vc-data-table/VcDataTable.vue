@@ -409,7 +409,7 @@ import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/v
 import {
   ColumnCollectorKey,
   FilterContextKey,
-  HasFlexColumnsKey,
+  FillerWidthKey,
   IsColumnReorderingKey,
 } from "@ui/components/organisms/vc-data-table/keys";
 import { useResponsive } from "@framework/core/composables/useResponsive";
@@ -423,11 +423,13 @@ import type {
   SortMeta,
   MobileSwipeAction,
   TableStateConfig,
+  TableFitMode,
 } from "@ui/components/organisms/vc-data-table/types";
-import type { DataTablePersistedState } from "@ui/components/organisms/vc-data-table/composables";
+import type { PersistedStateV2 } from "@ui/components/organisms/vc-data-table/types";
 import { vLoading } from "@core/directives";
 
-const props = withDefaults(defineProps<VcDataTableExtendedProps<T>>(), {
+const props = withDefaults(defineProps<VcDataTableExtendedProps<T> & { fitMode?: TableFitMode }>(), {
+  fitMode: "gap",
   items: () => [],
   dataKey: "id",
   selectionMode: undefined,
@@ -562,9 +564,9 @@ const emit = defineEmits<{
 
   // === State ===
   /** Emitted when table state is saved to storage */
-  "state-save": [state: DataTablePersistedState];
+  "state-save": [state: PersistedStateV2];
   /** Emitted when table state is restored from storage */
-  "state-restore": [state: DataTablePersistedState];
+  "state-restore": [state: PersistedStateV2];
 
   // === Expandable Rows ===
   /** v-model update for currently expanded rows */
@@ -987,8 +989,11 @@ provide(FilterContextKey, {
   activeFilterCount,
 });
 
-// Provide hasFlexColumns for TableRow filler control
-provide(HasFlexColumnsKey, cols.hasFlexColumns);
+// Provide engine-controlled filler width for TableRow
+provide(
+  FillerWidthKey,
+  computed(() => cols.engineOutput.value.fillerWidth),
+);
 
 // Provide column reordering state so TableRow enables FLIP animation only during drag
 provide(IsColumnReorderingKey, isColumnReordering);

@@ -220,9 +220,7 @@ const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options): 
 
   if (toAdd.length > 0 || changed) {
     // Find or create @vc-shell/framework/ui import
-    const uiImports = root
-      .find(j.ImportDeclaration)
-      .filter((path) => path.node.source.value === FRAMEWORK_UI_SOURCE);
+    const uiImports = root.find(j.ImportDeclaration).filter((path) => path.node.source.value === FRAMEWORK_UI_SOURCE);
 
     if (uiImports.length > 0) {
       // Merge into existing

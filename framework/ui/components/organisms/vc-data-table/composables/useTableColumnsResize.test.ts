@@ -1,33 +1,71 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { ref } from "vue";
 import { mountWithSetup } from "@framework/test-helpers";
-import { useTableColumnsResize, type ResizableColumn } from "./useTableColumnsResize";
+import { useTableColumnsResize } from "./useTableColumnsResize";
+import type { ColumnState } from "../types";
+import type { EngineOutput } from "./useColumnWidthEngine";
 
-function makeColumns(): ResizableColumn[] {
-  return [
-    { id: "name", width: 200 },
-    { id: "price", width: 150 },
-    { id: "stock", width: 100 },
-  ];
+/**
+ * Build a ColumnState with equal weights for the given column IDs.
+ */
+function makeColumnState(ids: string[]): ColumnState {
+  const weight = 1 / ids.length;
+  const specs: Record<string, { weight: number; minPx: number; maxPx: number }> = {};
+  for (const id of ids) {
+    specs[id] = { weight, minPx: 40, maxPx: Infinity };
+  }
+  return { order: ids, specs };
+}
+
+/**
+ * Build a ColumnState with explicit weights (as pixel-like values that get normalized).
+ */
+function makeColumnStateFromWidths(widthMap: Record<string, number>): ColumnState {
+  const entries = Object.entries(widthMap);
+  const total = entries.reduce((s, [, w]) => s + w, 0);
+  const specs: Record<string, { weight: number; minPx: number; maxPx: number }> = {};
+  const order: string[] = [];
+  for (const [id, w] of entries) {
+    order.push(id);
+    specs[id] = { weight: total > 0 ? w / total : 1 / entries.length, minPx: 40, maxPx: Infinity };
+  }
+  return { order, specs };
+}
+
+function makeEngineOutput(widthMap: Record<string, number>, fillerWidth = 0): EngineOutput {
+  return { widths: widthMap, fillerWidth };
 }
 
 function setup(
-  cols?: ResizableColumn[],
+  state?: ColumnState,
+  engineOut?: EngineOutput,
   opts: {
-    getColumnElement?: (id: string) => HTMLElement | null;
-    onResizeEnd?: (cols: ResizableColumn[]) => void;
+    onResizeEnd?: () => void;
+    availableWidth?: number;
+    specialColumnsWidth?: number;
+    getVisibleRegularColumnIds?: () => string[];
   } = {},
 ) {
-  const columns = ref(cols ?? makeColumns());
+  const columnState = ref(state ?? makeColumnState(["name", "price", "stock"]));
+  const engineOutput = ref(engineOut ?? makeEngineOutput({ name: 200, price: 150, stock: 100 }));
+  const recompute = vi.fn();
+  const availableWidth = opts.availableWidth ?? 450;
+
   return {
     ...mountWithSetup(() =>
       useTableColumnsResize({
-        columns,
-        minColumnWidth: 60,
-        ...opts,
+        columnState,
+        engineOutput,
+        recompute,
+        getAvailableWidth: () => availableWidth,
+        minColumnWidth: 40,
+        getVisibleRegularColumnIds: opts.getVisibleRegularColumnIds,
+        onResizeEnd: opts.onResizeEnd,
       }),
     ),
-    columns,
+    columnState,
+    engineOutput,
+    recompute,
   };
 }
 
@@ -58,8 +96,7 @@ describe("useTableColumnsResize", () => {
   });
 
   it("handleResizeStart sets isResizing and body styles", () => {
-    const mocks = mockElements({ name: 200, price: 150, stock: 100 });
-    const { result } = setup(undefined, mocks);
+    const { result } = setup();
     result.handleResizeStart("name", { pageX: 100 } as MouseEvent);
 
     expect(result.isResizing.value).toBe(true);
@@ -69,16 +106,9 @@ describe("useTableColumnsResize", () => {
     document.dispatchEvent(new MouseEvent("mouseup"));
   });
 
-  it("handleResizeStart is no-op for non-existent column", () => {
-    const { result } = setup();
-    result.handleResizeStart("nonexistent", { pageX: 100 } as MouseEvent);
-    expect(result.isResizing.value).toBe(false);
-  });
-
   it("onResizeEnd callback is called on mouseup", () => {
     const onResizeEnd = vi.fn();
-    const mocks = mockElements({ name: 200, price: 150, stock: 100 });
-    const { result } = setup(undefined, { ...mocks, onResizeEnd });
+    const { result } = setup(undefined, undefined, { onResizeEnd });
     result.handleResizeStart("name", { pageX: 100 } as MouseEvent);
 
     document.dispatchEvent(new MouseEvent("mouseup"));
@@ -88,68 +118,22 @@ describe("useTableColumnsResize", () => {
   });
 });
 
-// Shared WeakMap for mock element widths
-const mockElWidths = new WeakMap<object, number>();
-
-function mockElements(widthMap: Record<string, number>, parentRight?: number) {
-  const elements = new Map<string, { el: ReturnType<typeof createMockEl> }>();
-  const totalWidth = parentRight ?? Object.values(widthMap).reduce((s, w) => s + w, 0);
-
-  let left = 0;
-  function createMockEl(width: number) {
-    const colLeft = left;
-    const colRight = left + width;
-    left = colRight;
-    const el = {
-      getBoundingClientRect: () => ({ width, left: colLeft, right: colRight }),
-      style: { transition: "", width: "", minWidth: "", maxWidth: "", flex: "", flexShrink: "" },
-      parentElement: {
-        getBoundingClientRect: () => ({ right: totalWidth }),
-      },
-    } as unknown as HTMLElement;
-    mockElWidths.set(el, width);
-    return el;
-  }
-
-  for (const [id, width] of Object.entries(widthMap)) {
-    elements.set(id, { el: createMockEl(width) });
-  }
-  return {
-    getColumnElement: (id: string) => elements.get(id)?.el ?? null,
-  };
-}
-
-const originalGetComputedStyle = window.getComputedStyle;
-beforeEach(() => {
-  window.getComputedStyle = ((el: Element) => {
-    const width = mockElWidths.get(el);
-    if (width !== undefined) {
-      return { width: `${width}px` } as CSSStyleDeclaration;
-    }
-    return originalGetComputedStyle(el);
-  }) as typeof window.getComputedStyle;
-});
-afterEach(() => {
-  window.getComputedStyle = originalGetComputedStyle;
-});
-
-function flushRAF() {
-  vi.advanceTimersByTime(16);
-}
-
-describe("equal resize across all right neighbors", () => {
+describe("weight-based resize behavior", () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
 
-  it("growing a column shrinks all right neighbors equally", () => {
-    const cols = [
-      { id: "a", width: 300 },
-      { id: "b", width: 250 },
-      { id: "c", width: 250 },
-      { id: "d", width: 200 },
-    ];
-    const mocks = mockElements({ a: 300, b: 250, c: 250, d: 200 });
-    const { result, columns } = setup(cols, mocks);
+  function flushRAF() {
+    vi.advanceTimersByTime(16);
+  }
+
+  it("growing a column increases its weight and decreases right neighbor weights", () => {
+    const state = makeColumnStateFromWidths({ a: 300, b: 250, c: 250, d: 200 });
+    const engineOut = makeEngineOutput({ a: 300, b: 250, c: 250, d: 200 });
+    const totalAvailable = 1000;
+    const { result, columnState } = setup(state, engineOut, { availableWidth: totalAvailable });
+
+    const initialWeightA = columnState.value.specs["a"].weight;
+    const initialWeightB = columnState.value.specs["b"].weight;
 
     result.handleResizeStart("a", { pageX: 300 } as MouseEvent);
     const moveEvent = new MouseEvent("mousemove", { clientX: 400 });
@@ -158,45 +142,19 @@ describe("equal resize across all right neighbors", () => {
     flushRAF();
     document.dispatchEvent(new MouseEvent("mouseup"));
 
-    const totalBefore = 300 + 250 + 250 + 200;
-    const totalAfter = columns.value.reduce((s, c) => s + c.width, 0);
-    expect(Math.abs(totalAfter - totalBefore)).toBeLessThanOrEqual(columns.value.length);
-    expect(columns.value[0].width).toBe(400);
-    expect(columns.value[1].width).toBeLessThan(250);
-    expect(columns.value[2].width).toBeLessThan(250);
-    expect(columns.value[3].width).toBeLessThan(200);
+    // Column A's weight should have increased
+    expect(columnState.value.specs["a"].weight).toBeGreaterThan(initialWeightA);
+    // Right neighbors should have decreased
+    expect(columnState.value.specs["b"].weight).toBeLessThan(initialWeightB);
   });
 
-  it("stops when all right neighbors hit minColumnWidth", () => {
-    const cols = [
-      { id: "a", width: 200 },
-      { id: "b", width: 80 },
-      { id: "c", width: 80 },
-    ];
-    const mocks = mockElements({ a: 200, b: 80, c: 80 });
-    const { result, columns } = setup(cols, mocks);
+  it("shrinking a column decreases its weight and increases right neighbor weights", () => {
+    const state = makeColumnStateFromWidths({ a: 400, b: 100, c: 100 });
+    const engineOut = makeEngineOutput({ a: 400, b: 100, c: 100 });
+    const { result, columnState } = setup(state, engineOut, { availableWidth: 600 });
 
-    result.handleResizeStart("a", { pageX: 200 } as MouseEvent);
-    const moveEvent = new MouseEvent("mousemove", { clientX: 600 });
-    Object.defineProperty(moveEvent, "pageX", { value: 600 });
-    document.dispatchEvent(moveEvent);
-    flushRAF();
-    document.dispatchEvent(new MouseEvent("mouseup"));
-
-    // B and C can only give 20px each (80-60=20), total = 40
-    expect(columns.value[1].width).toBe(60);
-    expect(columns.value[2].width).toBe(60);
-    expect(columns.value[0].width).toBe(240);
-  });
-
-  it("shrinking a column grows right neighbors proportionally", () => {
-    const cols = [
-      { id: "a", width: 400 },
-      { id: "b", width: 100 },
-      { id: "c", width: 100 },
-    ];
-    const mocks = mockElements({ a: 400, b: 100, c: 100 });
-    const { result, columns } = setup(cols, mocks);
+    const initialWeightA = columnState.value.specs["a"].weight;
+    const initialWeightB = columnState.value.specs["b"].weight;
 
     result.handleResizeStart("a", { pageX: 400 } as MouseEvent);
     const moveEvent = new MouseEvent("mousemove", { clientX: 300 });
@@ -205,19 +163,16 @@ describe("equal resize across all right neighbors", () => {
     flushRAF();
     document.dispatchEvent(new MouseEvent("mouseup"));
 
-    expect(columns.value[0].width).toBe(300);
-    const neighborTotal = columns.value[1].width + columns.value[2].width;
-    expect(neighborTotal).toBe(300); // Gained 100
+    expect(columnState.value.specs["a"].weight).toBeLessThan(initialWeightA);
+    expect(columnState.value.specs["b"].weight).toBeGreaterThan(initialWeightB);
   });
 
   it("left columns are not affected during resize", () => {
-    const cols = [
-      { id: "a", width: 200 },
-      { id: "b", width: 200 },
-      { id: "c", width: 200 },
-    ];
-    const mocks = mockElements({ a: 200, b: 200, c: 200 });
-    const { result, columns } = setup(cols, mocks);
+    const state = makeColumnStateFromWidths({ a: 200, b: 200, c: 200 });
+    const engineOut = makeEngineOutput({ a: 200, b: 200, c: 200 });
+    const { result, columnState } = setup(state, engineOut, { availableWidth: 600 });
+
+    const initialWeightA = columnState.value.specs["a"].weight;
 
     result.handleResizeStart("b", { pageX: 400 } as MouseEvent);
     const moveEvent = new MouseEvent("mousemove", { clientX: 450 });
@@ -226,65 +181,106 @@ describe("equal resize across all right neighbors", () => {
     flushRAF();
     document.dispatchEvent(new MouseEvent("mouseup"));
 
-    expect(columns.value[0].width).toBe(200); // A unchanged
-    expect(columns.value[1].width).toBeGreaterThan(200); // B grew
-    expect(columns.value[2].width).toBeLessThan(200); // C shrunk
+    // Column A should be unchanged (not a right neighbor of B)
+    expect(columnState.value.specs["a"].weight).toBeCloseTo(initialWeightA, 5);
   });
 
-  it("last column grows into filler without neighbors", () => {
-    const cols = [
-      { id: "a", width: 200 },
-      { id: "b", width: 200 },
-    ];
-    // parentRight = 500 → filler ~100
-    const mocks = mockElements({ a: 200, b: 200 }, 500);
-    const { result, columns } = setup(cols, mocks);
-
-    result.handleResizeStart("b", { pageX: 400 } as MouseEvent);
-    const moveEvent = new MouseEvent("mousemove", { clientX: 450 });
-    Object.defineProperty(moveEvent, "pageX", { value: 450 });
-    document.dispatchEvent(moveEvent);
-    flushRAF();
-    document.dispatchEvent(new MouseEvent("mouseup"));
-
-    expect(columns.value[1].width).toBe(250);
-    expect(columns.value[0].width).toBe(200); // Unchanged
-  });
-
-  it("pins all columns to DOM widths on drag start (flex-shrink fix)", () => {
-    const cols = [
-      { id: "a", width: 500 },
-      { id: "b", width: 500 },
-    ];
-    // DOM says 300+300 (flex-shrunk from stored 500+500)
-    const mocks = mockElements({ a: 300, b: 300 });
-    const { result, columns } = setup(cols, mocks);
+  it("weights remain normalized (sum to ~1.0) after resize", () => {
+    const state = makeColumnStateFromWidths({ a: 300, b: 200, c: 100 });
+    const engineOut = makeEngineOutput({ a: 300, b: 200, c: 100 });
+    const { result, columnState } = setup(state, engineOut, { availableWidth: 600 });
 
     result.handleResizeStart("a", { pageX: 300 } as MouseEvent);
-
-    expect(columns.value[0].width).toBe(300);
-    expect(columns.value[1].width).toBe(300);
-
-    document.dispatchEvent(new MouseEvent("mouseup"));
-  });
-
-  it("neighbor give + filler combined for max growth", () => {
-    const cols = [
-      { id: "a", width: 200 },
-      { id: "b", width: 100 },
-    ];
-    // parentRight = 350 → filler = 50. Neighbor give = 100-60=40. Max = 90.
-    const mocks = mockElements({ a: 200, b: 100 }, 350);
-    const { result, columns } = setup(cols, mocks);
-
-    result.handleResizeStart("a", { pageX: 200 } as MouseEvent);
     const moveEvent = new MouseEvent("mousemove", { clientX: 400 });
     Object.defineProperty(moveEvent, "pageX", { value: 400 });
     document.dispatchEvent(moveEvent);
     flushRAF();
     document.dispatchEvent(new MouseEvent("mouseup"));
 
-    expect(columns.value[0].width).toBe(290); // Grew by 90
-    expect(columns.value[1].width).toBe(60); // At min
+    const totalWeight = Object.values(columnState.value.specs).reduce((s, spec) => s + spec.weight, 0);
+    expect(totalWeight).toBeCloseTo(1.0, 2);
+  });
+
+  it("resizes only rendered columns when hidden columns remain in persisted order", () => {
+    const state: ColumnState = {
+      order: ["a", "hidden", "b", "c"],
+      specs: {
+        a: { weight: 0.4, minPx: 40, maxPx: Infinity },
+        hidden: { weight: 0, minPx: 40, maxPx: Infinity },
+        b: { weight: 0.35, minPx: 40, maxPx: Infinity },
+        c: { weight: 0.25, minPx: 40, maxPx: Infinity },
+      },
+    };
+    const engineOut = makeEngineOutput({ a: 180, b: 157, c: 113 });
+    const { result, columnState, engineOutput } = setup(state, engineOut, { availableWidth: 450 });
+
+    const initialHiddenWeight = columnState.value.specs["hidden"].weight;
+    const initialWeightA = columnState.value.specs["a"].weight;
+    const initialWeightB = columnState.value.specs["b"].weight;
+
+    result.handleResizeStart("a", { pageX: 200 } as MouseEvent);
+    const moveEvent = new MouseEvent("mousemove", { clientX: 260 });
+    Object.defineProperty(moveEvent, "pageX", { value: 260 });
+    document.dispatchEvent(moveEvent);
+    flushRAF();
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    // Hidden column is not part of render/output during resize.
+    expect(engineOutput.value.widths).not.toHaveProperty("hidden");
+    // Visible neighbors are resized, hidden stays untouched.
+    expect(columnState.value.specs["a"].weight).toBeGreaterThan(initialWeightA);
+    expect(columnState.value.specs["b"].weight).toBeLessThan(initialWeightB);
+    expect(columnState.value.specs["hidden"].weight).toBe(initialHiddenWeight);
+  });
+
+  it("uses explicit visible regular ids when engine output is not initialized yet", () => {
+    const state: ColumnState = {
+      order: ["a", "hidden", "b", "c"],
+      specs: {
+        a: { weight: 0.4, minPx: 40, maxPx: Infinity },
+        hidden: { weight: 0, minPx: 40, maxPx: Infinity },
+        b: { weight: 0.35, minPx: 40, maxPx: Infinity },
+        c: { weight: 0.25, minPx: 40, maxPx: Infinity },
+      },
+    };
+    const engineOut = makeEngineOutput({});
+    const { result, columnState, recompute } = setup(state, engineOut, {
+      availableWidth: 450,
+      getVisibleRegularColumnIds: () => ["a", "b", "c"],
+    });
+
+    result.handleResizeStart("a", { pageX: 200 } as MouseEvent);
+    const moveEvent = new MouseEvent("mousemove", { clientX: 260 });
+    Object.defineProperty(moveEvent, "pageX", { value: 260 });
+    document.dispatchEvent(moveEvent);
+    flushRAF();
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    // Only visible regular columns (a, b, c) had their weights adjusted.
+    // The hidden column is not part of the resize redistribution.
+    expect(columnState.value.specs["a"].weight).toBeGreaterThan(0.4);
+    expect(columnState.value.specs["b"].weight).toBeLessThan(0.35);
+    expect(columnState.value.specs["c"].weight).toBeLessThan(0.25);
+    expect(columnState.value.specs["hidden"].weight).toBe(0);
+    // recompute() is delegated to the caller — called after the state commit.
+    expect(recompute).toHaveBeenCalled();
+  });
+
+  it("preserves unbounded maxPx during clone and does not collapse widths to min", () => {
+    const state = makeColumnStateFromWidths({ a: 200, b: 200, c: 200 });
+    const engineOut = makeEngineOutput({ a: 200, b: 200, c: 200 });
+    const { result, engineOutput } = setup(state, engineOut, { availableWidth: 600 });
+
+    result.handleResizeStart("a", { pageX: 200 } as MouseEvent);
+    const moveEvent = new MouseEvent("mousemove", { clientX: 260 });
+    Object.defineProperty(moveEvent, "pageX", { value: 260 });
+    document.dispatchEvent(moveEvent);
+    flushRAF();
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    expect(engineOutput.value.widths["a"]).toBeGreaterThan(40);
+    expect(engineOutput.value.widths["b"]).toBeGreaterThan(40);
+    expect(engineOutput.value.widths["c"]).toBeGreaterThan(40);
+    expect(engineOutput.value.fillerWidth).toBe(0);
   });
 });

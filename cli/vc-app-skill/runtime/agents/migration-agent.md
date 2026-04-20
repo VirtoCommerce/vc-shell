@@ -28,11 +28,15 @@ Do NOT read all prompts upfront. Load each topic's knowledge just before process
 ### Topic Order
 
 Process topics in this order (dependencies first):
-1. `notifications-migration` — may create new files and restructure directories
-2. `nswag-migration` — type-level changes that affect all other code
-3. `widgets-migration` — creates new composable files referenced by blades
-4. `blade-form-migration` — depends on correct types from nswag
-5. `blade-props-migration` — final cleanup of reusable components
+1. `notification-migration` — may create new files and restructure directories
+2. `nswag-class-to-interface` — type-level changes that affect all other code
+3. `use-assets-migration` — rewires assets handlers and may add manager wiring used by blades/widgets
+4. `widgets-migration` — creates new composable files referenced by blades
+5. `use-blade-form` — depends on correct types from nswag
+6. `blade-props-simplification` — final cleanup of reusable components
+7. `vctable-audit` — VcTable → VcDataTable component and API rewrite
+8. `icon-audit` — replace all non-lucide icons with lucide equivalents (last among mechanical manual edits)
+9. `manual-migration-audit` — catch-all manual refactors (run last to avoid overlap)
 
 Skip topics not present in the `topics` input.
 
@@ -42,12 +46,16 @@ For each affected file in the current topic:
 
 1. **Read the file** completely
 2. **Apply transformation rules** from the loaded migration prompt — follow the BEFORE/AFTER patterns exactly
-3. **Create new files if required** by the prompt (e.g. `widgets/useXxxWidgets.ts` for widget migration)
+3. **Create new files if required** by the prompt (e.g. `widgets/useXxxWidgets.ts` and `widgets/useXxxCount.ts` for widget migration — new files go in the `widgets/` directory at the module level, NOT in `composables/`)
 4. **Write the modified file**
 5. **Type-check:** Run `cd {cwd} && npx vue-tsc --noEmit 2>&1 | head -30` to check for errors
 6. **If errors in this file:** Read error messages, fix, re-check. Max 3 attempts.
 7. **If fixed or clean:** Commit: `fix(migrate): {topic name} — {filename}`
-8. **If still broken after 3 attempts:** Revert the file (`git checkout -- {filepath}`), report as "needs manual intervention", continue to next file
+8. **If still broken after 3 attempts:** Restore from backup copy (`cp {filepath}.bak {filepath}`), delete backup (`rm -f {filepath}.bak`), keep the failure in the report as "needs manual intervention", continue to next file
+
+Before step 4, always create a backup:
+- `cp {filepath} {filepath}.bak`
+- Delete the backup after a successful commit for that file
 
 ### Important Rules
 

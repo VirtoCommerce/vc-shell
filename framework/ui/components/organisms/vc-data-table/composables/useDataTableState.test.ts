@@ -2,6 +2,21 @@ import { describe, expect, it, beforeEach, vi, afterEach } from "vitest";
 import { defineComponent, ref, nextTick } from "vue";
 import { mount, flushPromises } from "@vue/test-utils";
 import { useDataTableState } from "@ui/components/organisms/vc-data-table/composables/useDataTableState";
+import type { ColumnState } from "@ui/components/organisms/vc-data-table/types";
+
+/**
+ * Build a ColumnState from a simple weight map { id: weight }.
+ */
+function makeColumnState(weights: Record<string, number>): ColumnState {
+  const order = Object.keys(weights);
+  const specs: Record<string, { weight: number; minPx: number; maxPx: number }> = {};
+  for (const [id, w] of Object.entries(weights)) {
+    specs[id] = { weight: w, minPx: 40, maxPx: Infinity };
+  }
+  return { order, specs };
+}
+
+const DEFAULT_AVAILABLE_WIDTH = 1000;
 
 describe("useDataTableState", () => {
   beforeEach(() => {
@@ -10,12 +25,13 @@ describe("useDataTableState", () => {
   });
 
   it("restores hidden and shown column ids synchronously during setup", () => {
+    // Persisted as v2 format
     localStorage.setItem(
       "VC_DATATABLE_PRODUCTS-LIST",
       JSON.stringify({
-        v: 1,
-        columnWidths: { img: 0 },
-        columnOrder: ["img"],
+        v: 2,
+        order: ["img"],
+        weights: { img: 1.0 },
         hiddenColumnIds: ["sellerId"],
         shownColumnIds: ["createdDate"],
       }),
@@ -28,12 +44,14 @@ describe("useDataTableState", () => {
       setup() {
         const hiddenColumnIds = ref(new Set<string>());
         const shownColumnIds = ref(new Set<string>());
+        const columnState = ref<ColumnState>({ order: [], specs: {} });
         useDataTableState({
           stateKey: ref("products-list"),
           stateStorage: ref("local"),
-          columnWidths: ref([]),
+          columnState,
           hiddenColumnIds,
           shownColumnIds,
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
         });
         hiddenAtSetup = new Set(hiddenColumnIds.value);
         shownAtSetup = new Set(shownColumnIds.value);
@@ -54,12 +72,14 @@ describe("useDataTableState", () => {
       setup() {
         const hiddenColumnIds = ref(new Set<string>());
         shownColumnIdsRef = ref(new Set<string>());
+        const columnState = ref<ColumnState>(makeColumnState({ name: 0.5, price: 0.5 }));
         useDataTableState({
           stateKey: ref("products-list"),
           stateStorage: ref("local"),
-          columnWidths: ref([]),
+          columnState,
           hiddenColumnIds,
           shownColumnIds: shownColumnIdsRef,
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
         });
         return () => null;
       },
@@ -94,11 +114,13 @@ describe("useDataTableState — hiddenColumnIds persistence (debounce)", () => {
     const Harness = defineComponent({
       setup() {
         hiddenRef = ref(new Set<string>());
+        const columnState = ref<ColumnState>(makeColumnState({ name: 0.5, price: 0.5 }));
         useDataTableState({
           stateKey: ref("my-table"),
           stateStorage: ref("local"),
-          columnWidths: ref([]),
+          columnState,
           hiddenColumnIds: hiddenRef,
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
         });
         return () => null;
       },
@@ -118,24 +140,25 @@ describe("useDataTableState — hiddenColumnIds persistence (debounce)", () => {
     const raw = localStorage.getItem("VC_DATATABLE_MY-TABLE");
     expect(raw).toBeTruthy();
     const state = JSON.parse(raw!);
-    expect(state.v).toBe(1);
+    expect(state.v).toBe(2);
     expect(state.hiddenColumnIds).toContain("sellerId");
     expect(state.hiddenColumnIds).toContain("createdDate");
 
     wrapper.unmount();
   });
 
-  it("columnWidths changes persist to localStorage after debounce", async () => {
-    let columnWidthsRef = ref<{ id: string; width: number }[]>([]);
+  it("columnState changes persist to localStorage after debounce", async () => {
+    let columnStateRef = ref<ColumnState>(makeColumnState({ name: 0.5, price: 0.5 }));
 
     const Harness = defineComponent({
       setup() {
-        columnWidthsRef = ref([{ id: "name", width: 200 }]);
+        columnStateRef = ref<ColumnState>(makeColumnState({ name: 0.5, price: 0.5 }));
         useDataTableState({
           stateKey: ref("my-table"),
           stateStorage: ref("local"),
-          columnWidths: columnWidthsRef,
+          columnState: columnStateRef,
           hiddenColumnIds: ref(new Set<string>()),
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
         });
         return () => null;
       },
@@ -143,7 +166,8 @@ describe("useDataTableState — hiddenColumnIds persistence (debounce)", () => {
 
     const wrapper = mount(Harness);
 
-    columnWidthsRef.value = [{ id: "name", width: 350 }];
+    // Update the column state
+    columnStateRef.value = makeColumnState({ name: 0.7, price: 0.3 });
 
     // Flush Vue's watcher queue first, then advance the debounce timer
     await flushPromises();
@@ -153,7 +177,10 @@ describe("useDataTableState — hiddenColumnIds persistence (debounce)", () => {
     const raw = localStorage.getItem("VC_DATATABLE_MY-TABLE");
     expect(raw).toBeTruthy();
     const state = JSON.parse(raw!);
-    expect(state.columnWidths).toEqual({ name: 350 });
+    expect(state.v).toBe(2);
+    expect(state.weights).toBeDefined();
+    expect(state.weights["name"]).toBeCloseTo(0.7, 2);
+    expect(state.weights["price"]).toBeCloseTo(0.3, 2);
 
     wrapper.unmount();
   });
@@ -171,11 +198,13 @@ describe("useDataTableState — sessionStorage mode", () => {
     const Harness = defineComponent({
       setup() {
         hiddenRef = ref(new Set<string>());
+        const columnState = ref<ColumnState>(makeColumnState({ name: 0.5, price: 0.5 }));
         useDataTableState({
           stateKey: ref("sess-table"),
           stateStorage: ref("session"),
-          columnWidths: ref([]),
+          columnState,
           hiddenColumnIds: hiddenRef,
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
         });
         return () => null;
       },
@@ -200,11 +229,13 @@ describe("useDataTableState — restore from persisted state", () => {
     sessionStorage.clear();
   });
 
-  it("restores hiddenColumnIds from localStorage on mount", () => {
+  it("restores hiddenColumnIds from localStorage on mount (v2 format)", () => {
     localStorage.setItem(
       "VC_DATATABLE_RESTORE-TEST",
       JSON.stringify({
-        v: 1,
+        v: 2,
+        order: ["name"],
+        weights: { name: 1.0 },
         hiddenColumnIds: ["price", "sku"],
         shownColumnIds: [],
       }),
@@ -215,11 +246,13 @@ describe("useDataTableState — restore from persisted state", () => {
     const Harness = defineComponent({
       setup() {
         const hiddenColumnIds = ref(new Set<string>());
+        const columnState = ref<ColumnState>({ order: [], specs: {} });
         useDataTableState({
           stateKey: ref("restore-test"),
           stateStorage: ref("local"),
-          columnWidths: ref([]),
+          columnState,
           hiddenColumnIds,
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
         });
         hiddenAtSetup = new Set(hiddenColumnIds.value);
         return () => null;
@@ -230,6 +263,43 @@ describe("useDataTableState — restore from persisted state", () => {
 
     expect(hiddenAtSetup.has("price")).toBe(true);
     expect(hiddenAtSetup.has("sku")).toBe(true);
+
+    wrapper.unmount();
+  });
+
+  it("migrates v1 persisted state to v2 on restore", () => {
+    localStorage.setItem(
+      "VC_DATATABLE_MIGRATE-TEST",
+      JSON.stringify({
+        v: 1,
+        columnWidths: { name: 200, price: 100 },
+        columnOrder: ["name", "price"],
+        hiddenColumnIds: ["stock"],
+      }),
+    );
+
+    let hiddenAtSetup = new Set<string>();
+
+    const Harness = defineComponent({
+      setup() {
+        const hiddenColumnIds = ref(new Set<string>());
+        const columnState = ref<ColumnState>({ order: [], specs: {} });
+        useDataTableState({
+          stateKey: ref("migrate-test"),
+          stateStorage: ref("local"),
+          columnState,
+          hiddenColumnIds,
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
+        });
+        hiddenAtSetup = new Set(hiddenColumnIds.value);
+        return () => null;
+      },
+    });
+
+    const wrapper = mount(Harness);
+
+    // v1 migration should still restore hidden columns
+    expect(hiddenAtSetup.has("stock")).toBe(true);
 
     wrapper.unmount();
   });
@@ -248,11 +318,13 @@ describe("useDataTableState — restore from persisted state", () => {
     const Harness = defineComponent({
       setup() {
         const hiddenColumnIds = ref(new Set<string>());
+        const columnState = ref<ColumnState>({ order: [], specs: {} });
         useDataTableState({
           stateKey: ref("bad-schema"),
           stateStorage: ref("local"),
-          columnWidths: ref([]),
+          columnState,
           hiddenColumnIds,
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
         });
         hiddenAtSetup = new Set(hiddenColumnIds.value);
         return () => null;
@@ -274,31 +346,29 @@ describe("useDataTableState — resetState", () => {
     sessionStorage.clear();
   });
 
-  it("resetState clears storage and resets columnWidths, hiddenColumnIds", async () => {
+  it("resetState clears storage and resets columnState, hiddenColumnIds", async () => {
     localStorage.setItem(
       "VC_DATATABLE_RESET-TEST",
       JSON.stringify({
-        v: 1,
-        columnWidths: { name: 200, price: 150 },
-        columnOrder: ["name", "price"],
+        v: 2,
+        order: ["name", "price"],
+        weights: { name: 0.6, price: 0.4 },
         hiddenColumnIds: ["stock"],
       }),
     );
 
     const Harness = defineComponent({
       setup() {
-        const columnWidths = ref([
-          { id: "name", width: 200 },
-          { id: "price", width: 150 },
-        ]);
+        const columnState = ref<ColumnState>(makeColumnState({ name: 0.6, price: 0.4 }));
         const hiddenColumnIds = ref(new Set<string>(["stock"]));
         const { resetState } = useDataTableState({
           stateKey: ref("reset-test"),
           stateStorage: ref("local"),
-          columnWidths,
+          columnState,
           hiddenColumnIds,
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
         });
-        return { resetState, columnWidths, hiddenColumnIds };
+        return { resetState, columnState, hiddenColumnIds };
       },
       render: () => null,
     });
@@ -310,7 +380,8 @@ describe("useDataTableState — resetState", () => {
     await nextTick();
 
     expect(localStorage.getItem("VC_DATATABLE_RESET-TEST")).toBeNull();
-    expect(vm.columnWidths).toEqual([]);
+    expect(vm.columnState.order).toEqual([]);
+    expect(vm.columnState.specs).toEqual({});
     expect(vm.hiddenColumnIds.size).toBe(0);
 
     wrapper.unmount();
@@ -329,11 +400,13 @@ describe("useDataTableState — clearState", () => {
     const Harness = defineComponent({
       setup() {
         const hiddenColumnIds = ref(new Set<string>(["col1"]));
+        const columnState = ref<ColumnState>(makeColumnState({ name: 1.0 }));
         const { clearState } = useDataTableState({
           stateKey: ref("clear-test"),
           stateStorage: ref("local"),
-          columnWidths: ref([]),
+          columnState,
           hiddenColumnIds,
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
         });
         clearStateFn = clearState;
         return () => null;
@@ -345,8 +418,6 @@ describe("useDataTableState — clearState", () => {
     // Allow any pending debounce to flush
     await new Promise((resolve) => setTimeout(resolve, 220));
 
-    // Verify something was saved
-    // (hiddenColumnIds has col1 but watcher may or may not have fired — just verify clearState works)
     clearStateFn!();
 
     expect(localStorage.getItem("VC_DATATABLE_CLEAR-TEST")).toBeNull();

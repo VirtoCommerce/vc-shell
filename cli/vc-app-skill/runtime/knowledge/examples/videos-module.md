@@ -342,7 +342,7 @@ import { computed, ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { IBladeToolbar, usePopup, useBlade } from "@vc-shell/framework";
 import { Video } from "../../../api_client/virtocommerce.catalog";
-import { CreateVideoCommand } from "../../../api_client/virtocommerce.marketplacevendor";
+import { CreateVideoCommand } from "../../../api_client/virtocommerce.mymodule";
 import { useVideo, useVideos } from "../composables";
 import { Field, useForm } from "vee-validate";
 

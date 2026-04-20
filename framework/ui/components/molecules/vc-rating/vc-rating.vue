@@ -1,8 +1,20 @@
 <template>
-  <div v-if="bladeLoading" class="vc-rating vc-rating--skeleton">
-    <VcSkeleton v-for="i in 5" :key="i" variant="circle" :width="20" :height="20" />
+  <div
+    v-if="bladeLoading"
+    class="vc-rating vc-rating--skeleton"
+  >
+    <VcSkeleton
+      v-for="i in 5"
+      :key="i"
+      variant="circle"
+      :width="20"
+      :height="20"
+    />
   </div>
-  <div v-else class="vc-rating">
+  <div
+    v-else
+    class="vc-rating"
+  >
     <!-- Rating label -->
     <VcLabel
       v-if="label"

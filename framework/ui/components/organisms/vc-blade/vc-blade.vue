@@ -117,7 +117,18 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, inject, provide, computed, onMounted, nextTick, watch, getCurrentInstance, useAttrs, watchEffect } from "vue";
+import {
+  ref,
+  inject,
+  provide,
+  computed,
+  onMounted,
+  nextTick,
+  watch,
+  getCurrentInstance,
+  useAttrs,
+  watchEffect,
+} from "vue";
 import { IBladeToolbar } from "@core/types";
 import { useBladeStack } from "@core/blade-navigation";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";

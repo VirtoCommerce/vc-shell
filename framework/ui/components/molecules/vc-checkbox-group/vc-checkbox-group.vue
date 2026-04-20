@@ -5,7 +5,7 @@
     class="vc-checkbox-group vc-checkbox-group--skeleton"
   >
     <div
-      v-for="i in (options?.length || 3)"
+      v-for="i in options?.length || 3"
       :key="i"
       class="vc-checkbox-group__skeleton-item"
     >

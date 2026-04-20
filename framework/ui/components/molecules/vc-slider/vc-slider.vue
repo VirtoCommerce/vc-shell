@@ -1,6 +1,13 @@
 <template>
-  <div v-if="bladeLoading" class="vc-slider vc-slider--skeleton">
-    <VcSkeleton variant="block" width="100%" :height="20" />
+  <div
+    v-if="bladeLoading"
+    class="vc-slider vc-slider--skeleton"
+  >
+    <VcSkeleton
+      variant="block"
+      width="100%"
+      :height="20"
+    />
   </div>
   <div
     v-else

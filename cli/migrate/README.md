@@ -56,7 +56,7 @@ npx @vc-shell/migrate [options]
 | Option | Description | Default |
 |--------|-------------|---------|
 | `--to <version>` | Target framework version | `2.0.0` |
-| `--transform <name>` | Run only a specific transform | all applicable |
+| `--transform <name>` | Run only a specific transform (bypasses version filter — runs even if already on target) | all applicable |
 | `--dry-run` | Preview changes without writing files | `false` |
 | `--list` | List all available transforms and exit | |
 | `--cwd <path>` | Working directory (your app root) | `.` |
@@ -77,7 +77,7 @@ npx @vc-shell/migrate --transform blade-props-simplification --dry-run
 npx @vc-shell/migrate --list
 
 # Migrate a specific app in a monorepo
-npx @vc-shell/migrate --cwd apps/vendor-portal
+npx @vc-shell/migrate --cwd apps/my-app
 ```
 
 ## Recommended workflow

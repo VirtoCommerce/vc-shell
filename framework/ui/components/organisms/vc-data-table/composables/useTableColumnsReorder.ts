@@ -1,13 +1,9 @@
-import { ref, Ref, onBeforeUnmount } from "vue";
+import { ref, type Ref, onBeforeUnmount } from "vue";
+import type { ColumnState } from "../types";
 
-export interface ReorderableColumn {
-  id: string;
-  [key: string]: any;
-}
-
-export interface UseTableColumnsReorderOptions<T extends ReorderableColumn> {
-  columns: Ref<T[]>;
-  onReorderEnd?: (columns: T[]) => void;
+export interface UseTableColumnsReorderOptions {
+  columnState: Ref<ColumnState>;
+  onReorderEnd?: () => void;
 }
 
 /**
@@ -18,8 +14,8 @@ export interface UseTableColumnsReorderOptions<T extends ReorderableColumn> {
  * - Smooth transitions
  * - Throttling for performance
  */
-export function useTableColumnsReorder<T extends ReorderableColumn>(options: UseTableColumnsReorderOptions<T>) {
-  const { columns, onReorderEnd } = options;
+export function useTableColumnsReorder(options: UseTableColumnsReorderOptions) {
+  const { columnState, onReorderEnd } = options;
 
   const isDragging = ref(false);
   let draggedColumnId: string | null = null;
@@ -86,8 +82,9 @@ export function useTableColumnsReorder<T extends ReorderableColumn>(options: Use
     const middleX = rect.left + rect.width / 2;
     const mouseX = event.clientX;
 
-    const dragIndex = columns.value.findIndex((col) => col.id === draggedColumnId);
-    const dropIndex = columns.value.findIndex((col) => col.id === hoveredColumnId);
+    const order = columnState.value.order;
+    const dragIndex = order.indexOf(draggedColumnId);
+    const dropIndex = order.indexOf(hoveredColumnId);
 
     // Only swap if:
     // 1. Moving left and cursor is past the left half of target
@@ -98,8 +95,10 @@ export function useTableColumnsReorder<T extends ReorderableColumn>(options: Use
     const shouldSwap = (movingLeft && mouseX < middleX) || (movingRight && mouseX > middleX);
 
     if (shouldSwap && dragIndex !== -1 && dropIndex !== -1 && dragIndex !== dropIndex) {
-      const [movedColumn] = columns.value.splice(dragIndex, 1);
-      columns.value.splice(dropIndex, 0, movedColumn);
+      const newOrder = [...order];
+      const [movedId] = newOrder.splice(dragIndex, 1);
+      newOrder.splice(dropIndex, 0, movedId);
+      columnState.value = { ...columnState.value, order: newOrder };
     }
   };
 
@@ -126,7 +125,7 @@ export function useTableColumnsReorder<T extends ReorderableColumn>(options: Use
 
     // Callback
     if (onReorderEnd) {
-      onReorderEnd(columns.value);
+      onReorderEnd();
     }
   };
 

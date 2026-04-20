@@ -5,7 +5,7 @@
   >
     <!-- Skeleton header -->
     <div
-      v-if="header && bladeLoading"
+      v-if="(header || $slots['header']) && bladeLoading"
       class="vc-card__header"
     >
       <div class="vc-card__header-content">
@@ -25,7 +25,7 @@
     </div>
     <!-- Normal header -->
     <div
-      v-else-if="header"
+      v-else-if="header && $slots['header']"
       class="vc-card__header"
       :role="isCollapsable ? 'button' : undefined"
       :tabindex="isCollapsable ? 0 : undefined"

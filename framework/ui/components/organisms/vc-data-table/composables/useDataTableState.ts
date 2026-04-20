@@ -1,5 +1,8 @@
 import { type Ref, type ComputedRef, watch, nextTick, onBeforeUnmount } from "vue";
+import type { ColumnState, ColumnSpec, PersistedStateV2 } from "../types";
+import { normalizeWeights } from "./useColumnWidthEngine";
 
+/** Legacy v1 persisted state shape (for migration) */
 export interface DataTablePersistedState {
   /** Schema version — bump when adding/renaming/removing fields. */
   v: 1;
@@ -12,13 +15,14 @@ export interface DataTablePersistedState {
 export interface UseDataTableStateOptions {
   stateKey: Ref<string | undefined>;
   stateStorage: Ref<"local" | "session"> | ComputedRef<"local" | "session">;
-  columnWidths: Ref<{ id: string; width: number }[]>;
+  columnState: Ref<ColumnState>;
   hiddenColumnIds: Ref<Set<string>>;
   shownColumnIds?: Ref<Set<string>>;
+  getAvailableWidth?: () => number;
   /** Called after state is saved (for `state-save` emit). */
-  onStateSave?: (state: DataTablePersistedState) => void;
+  onStateSave?: (state: PersistedStateV2) => void;
   /** Called after state is restored (for `state-restore` emit). */
-  onStateRestore?: (state: DataTablePersistedState) => void;
+  onStateRestore?: (state: PersistedStateV2) => void;
 }
 
 export interface UseDataTableStateReturn {
@@ -28,11 +32,41 @@ export interface UseDataTableStateReturn {
 }
 
 const DEBOUNCE_MS = 150;
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
+
+function migrateV1toV2(state: DataTablePersistedState): PersistedStateV2 | null {
+  if (state.v !== 1 || !state.columnWidths) return null;
+  const entries = Object.entries(state.columnWidths as Record<string, number>);
+  const pxValues = entries.filter(([, w]) => (w as number) > 0);
+  const totalPx = pxValues.reduce((s, [, w]) => s + (w as number), 0);
+
+  if (totalPx <= 0) return null; // corrupted — discard
+
+  const weights: Record<string, number> = {};
+  for (const [id, px] of entries) {
+    weights[id] = (px as number) > 0 ? (px as number) / totalPx : 0;
+  }
+
+  return {
+    v: 2,
+    order: state.columnOrder ?? Object.keys(state.columnWidths),
+    weights,
+    hiddenColumnIds: state.hiddenColumnIds,
+    shownColumnIds: state.shownColumnIds,
+  };
+}
 
 export function useDataTableState(options: UseDataTableStateOptions): UseDataTableStateReturn {
-  const { stateKey, stateStorage, columnWidths, hiddenColumnIds, shownColumnIds, onStateSave, onStateRestore } =
-    options;
+  const {
+    stateKey,
+    stateStorage,
+    columnState,
+    hiddenColumnIds,
+    shownColumnIds,
+    getAvailableWidth,
+    onStateSave,
+    onStateRestore,
+  } = options;
 
   // Counter instead of boolean: multiple restore paths run concurrently during
   // setup and each schedules its own nextTick to decrement. A boolean would let
@@ -53,7 +87,7 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     }
   }
 
-  function readPersistedState(): DataTablePersistedState | null {
+  function readPersistedState(): PersistedStateV2 | null {
     const storageKey = getStorageKey();
     if (!storageKey) return null;
 
@@ -72,52 +106,48 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     try {
       const state = JSON.parse(raw) as unknown;
       if (typeof state !== "object" || state === null) return null;
-      const s = state as DataTablePersistedState;
-      if (s.v !== SCHEMA_VERSION) return null;
-      // Minimal shape validation — discard corrupt data
-      if (s.columnOrder !== undefined && !Array.isArray(s.columnOrder)) return null;
-      if (s.columnWidths !== undefined && typeof s.columnWidths !== "object") return null;
-      if (s.hiddenColumnIds !== undefined && !Array.isArray(s.hiddenColumnIds)) return null;
-      if (s.shownColumnIds !== undefined && !Array.isArray(s.shownColumnIds)) return null;
-      return s;
+      const s = state as { v?: number };
+
+      // v2 — direct use
+      if (s.v === SCHEMA_VERSION) {
+        const v2 = state as PersistedStateV2;
+        // Minimal shape validation
+        if (!Array.isArray(v2.order)) return null;
+        if (typeof v2.weights !== "object" || v2.weights === null) return null;
+        if (v2.hiddenColumnIds !== undefined && !Array.isArray(v2.hiddenColumnIds)) return null;
+        if (v2.shownColumnIds !== undefined && !Array.isArray(v2.shownColumnIds)) return null;
+        return v2;
+      }
+
+      // v1 — migrate
+      if (s.v === 1) {
+        return migrateV1toV2(state as DataTablePersistedState);
+      }
+
+      return null;
     } catch {
       return null;
     }
   }
 
   // Read persisted state eagerly — before watchers activate.
-  // Column widths will be applied later via a dedicated watcher (see below).
   let pendingState = readPersistedState();
 
-  // Pending column width/order data — applied when useTableColumns finishes
-  // initializing columnWidths (i.e., when columns are registered).
-  let pendingColumnRestore: { widths: Record<string, number>; order: string[] } | null =
-    pendingState?.columnWidths && pendingState?.columnOrder
-      ? { widths: pendingState.columnWidths, order: pendingState.columnOrder }
-      : null;
+  // Pending column weight/order data — applied when useTableColumns finishes
+  // initializing columnState (i.e., when columns are registered).
+  let pendingColumnRestore: { weights: Record<string, number>; order: string[] } | null =
+    pendingState?.weights && pendingState?.order ? { weights: pendingState.weights, order: pendingState.order } : null;
 
-  function buildState(): DataTablePersistedState {
-    const state: DataTablePersistedState = { v: SCHEMA_VERSION };
-
-    // Column widths + order (derive order from the array position)
-    if (columnWidths.value.length > 0) {
-      const widths: Record<string, number> = {};
-      const order: string[] = [];
-      for (const cw of columnWidths.value) {
-        widths[cw.id] = cw.width;
-        order.push(cw.id);
-      }
-      state.columnWidths = widths;
-      state.columnOrder = order;
-    }
-
-    // Hidden columns — always persist (even empty array) so that restore
-    // correctly overrides data-discovered columns that default to hidden.
+  function buildState(): PersistedStateV2 {
+    const state: PersistedStateV2 = {
+      v: 2,
+      order: columnState.value.order,
+      weights: Object.fromEntries(Object.entries(columnState.value.specs).map(([id, s]) => [id, s.weight])),
+    };
     state.hiddenColumnIds = [...hiddenColumnIds.value];
     if (shownColumnIds) {
       state.shownColumnIds = [...shownColumnIds.value];
     }
-
     return state;
   }
 
@@ -172,7 +202,7 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
 
     // Reset runtime state
     restoringCount++;
-    columnWidths.value = [];
+    columnState.value = { order: [], specs: {} };
     hiddenColumnIds.value = new Set();
     if (shownColumnIds) {
       shownColumnIds.value = new Set();
@@ -184,57 +214,62 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
   }
 
   function applyColumnRestore(
-    currentWidths: { id: string; width: number }[],
-    pending: { widths: Record<string, number>; order: string[] },
+    currentState: ColumnState,
+    pending: { weights: Record<string, number>; order: string[] },
   ): void {
     restoringCount++;
 
-    const { widths, order } = pending;
+    const { weights, order } = pending;
+    const newOrder: string[] = [];
+    const newSpecs: Record<string, ColumnSpec> = {};
 
-    // Build restored array from persisted order
-    const restored: { id: string; width: number }[] = [];
+    // Rebuild from persisted order
     for (const id of order) {
-      const persistedWidth = widths[id];
-      const currentCol = currentWidths.find((c) => c.id === id);
-      if (persistedWidth != null) {
-        restored.push({ id, width: persistedWidth });
-      } else if (currentCol) {
-        restored.push({ id, width: currentCol.width });
+      if (weights[id] !== undefined) {
+        newOrder.push(id);
+        newSpecs[id] = {
+          weight: weights[id],
+          minPx: currentState.specs[id]?.minPx ?? 40,
+          maxPx: currentState.specs[id]?.maxPx ?? Infinity,
+        };
       }
     }
 
-    // Merge: keep current columns that aren't in the saved state
-    // (new columns added to the template since last save)
-    const restoredIds = new Set(restored.map((c) => c.id));
-    for (const cw of currentWidths) {
-      if (!restoredIds.has(cw.id)) {
-        restored.push(cw);
+    // Append new columns not in saved state
+    for (const id of currentState.order) {
+      if (!newSpecs[id]) {
+        newOrder.push(id);
+        newSpecs[id] = currentState.specs[id] ?? { weight: 0, minPx: 40, maxPx: Infinity };
       }
     }
 
-    columnWidths.value = restored;
+    // Don't normalize here — weights were saved already normalized for visible
+    // columns. Normalizing across ALL columns (including hidden) would dilute
+    // visible weights. The engine only sees visible columns and handles their
+    // proportions correctly.
+    columnState.value = { order: newOrder, specs: newSpecs };
 
     void nextTick(() => {
       restoringCount--;
     });
   }
 
-  // Column widths are typically available by now (slot-based extraction is sync).
+  // Column state is typically available by now (slot-based extraction is sync).
   // If not yet (inject/provide path), a watcher picks them up.
   if (pendingColumnRestore) {
-    if (columnWidths.value.length > 0) {
+    if (columnState.value.order.length > 0) {
       // Columns are already available (slot-based extraction) — apply immediately
-      applyColumnRestore(columnWidths.value, pendingColumnRestore);
+      applyColumnRestore(columnState.value, pendingColumnRestore);
       pendingColumnRestore = null;
     } else {
       // Columns not yet registered (inject/provide path) — wait via watcher
       const stopColumnWatch = watch(
-        columnWidths,
-        (currentWidths) => {
+        columnState,
+        (currentState) => {
           if (!pendingColumnRestore) return;
-          if (currentWidths.length === 0) return;
+          if (currentState.order.length === 0) return;
 
-          applyColumnRestore(currentWidths, pendingColumnRestore!);
+          applyColumnRestore(currentState, pendingColumnRestore!);
           pendingColumnRestore = null;
 
           void nextTick(() => {
@@ -274,6 +309,8 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     if (!stateKey.value) return;
     // Don't save while columns haven't been restored yet
     if (pendingColumnRestore) return;
+    // Don't save when container has no width yet
+    if (getAvailableWidth && getAvailableWidth() <= 0) return;
 
     if (debounceTimer != null) {
       clearTimeout(debounceTimer);
@@ -286,8 +323,8 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
 
   // Watch only column-related persisted sources
   const watchedSources = shownColumnIds
-    ? [columnWidths, hiddenColumnIds, shownColumnIds]
-    : [columnWidths, hiddenColumnIds];
+    ? [columnState, hiddenColumnIds, shownColumnIds]
+    : [columnState, hiddenColumnIds];
   watch(watchedSources, debouncedSave, { deep: true });
 
   onBeforeUnmount(() => {

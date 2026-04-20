@@ -31,10 +31,7 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
 
     // Find replaceCurrentBlade property
     const replaceIdx = firstArg.properties.findIndex(
-      (p: any) =>
-        p.type === "ObjectProperty" &&
-        p.key.type === "Identifier" &&
-        p.key.name === "replaceCurrentBlade",
+      (p: any) => p.type === "ObjectProperty" && p.key.type === "Identifier" && p.key.name === "replaceCurrentBlade",
     );
 
     if (replaceIdx === -1) return;
@@ -86,9 +83,7 @@ function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string 
       }
 
       // Remove openBlade from destructuring if no longer used anywhere
-      const remainingOpenBlade = root
-        .find(j.CallExpression, { callee: { name: "openBlade" } })
-        .size();
+      const remainingOpenBlade = root.find(j.CallExpression, { callee: { name: "openBlade" } }).size();
       if (remainingOpenBlade === 0) {
         const openBladeIdx = decl.id.properties.findIndex(
           (p: any) => p.type === "ObjectProperty" && p.key.type === "Identifier" && p.key.name === "openBlade",

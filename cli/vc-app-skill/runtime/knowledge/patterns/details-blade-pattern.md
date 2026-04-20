@@ -1,7 +1,6 @@
 # Details Blade Pattern
 
-Reference source: `apps/vendor-portal/src/modules/team/pages/team-member-details.vue`
-Secondary source: `apps/vendor-portal/src/modules/offers/pages/offers-details.vue`
+Generic worked example for a typical details blade (form-based, validation, modification tracking).
 
 ## Overview
 
@@ -507,8 +506,6 @@ The `VcDataTable` here is read-only — no toolbar, no selection, no pagination 
 
 For details blades that display data without editing (e.g., order details, transaction history), use `VcField` instead of `VcInput`. This is a common pattern for view-only pages.
 
-Source: `apps/vendor-portal/src/modules/orders/pages/order-details.vue`
-
 ```vue
 <VcCard :header="$t('MODULE.SECTIONS.INFO.TITLE')">
   <div class="tw-p-4 tw-space-y-4">
@@ -556,8 +553,6 @@ Use `VcField` when:
 ## Contextual Banners Pattern (VcBanner)
 
 Use `VcBanner` at the top of a form to show contextual alerts, warnings, or informational messages based on entity state.
-
-Source: `apps/vendor-portal/src/modules/offers/pages/offers-details.vue`, `seller-details-edit.vue`
 
 ```vue
 <!-- Error banner (shown conditionally) -->
@@ -619,27 +614,25 @@ Use banners when:
 
 Blade widgets appear as icon buttons in the blade sidebar, showing related entities with badge counts. Clicking a widget opens a child blade.
 
-Source: `apps/vendor-portal/src/modules/products/widgets/useProductWidgets.ts`
-
 ```ts
 import { useBladeWidgets, type UseBladeWidgetsReturn } from "@vc-shell/framework";
 
-export function useProductWidgets(options: { item: Ref<Product | undefined> }): UseBladeWidgetsReturn {
+export function useEntityWidgets(options: { item: Ref<Entity | undefined> }): UseBladeWidgetsReturn {
   const { item } = options;
   const { openBlade } = useBlade();
 
-  const { count: offersCount, loading: offersLoading, refresh: refreshOffers } = useOfferCount(item);
+  const { count: childCount, loading: childLoading, refresh: refreshChildren } = useChildCount(item);
 
   const widgets = useBladeWidgets([
     {
-      id: "OffersWidget",
+      id: "ChildListWidget",
       icon: "lucide-tag",
-      title: "PRODUCTS.PAGES.DETAILS.WIDGETS.OFFERS",
-      badge: offersCount,
-      loading: offersLoading,
+      title: "MODULE.PAGES.DETAILS.WIDGETS.CHILD_LIST",
+      badge: childCount,
+      loading: childLoading,
       isVisible: computed(() => !!item.value?.id),
-      onClick: () => openBlade({ name: "Offers", options: { product: item.value } }),
-      onRefresh: refreshOffers,
+      onClick: () => openBlade({ name: "ChildList", options: { entity: item.value } }),
+      onRefresh: refreshChildren,
     },
     // ... more widgets
   ]);
@@ -650,11 +643,11 @@ export function useProductWidgets(options: { item: Ref<Product | undefined> }): 
 
 Use in the blade:
 ```ts
-const { widgets } = useProductWidgets({ item: entity });
+const { widgets } = useEntityWidgets({ item: entity });
 ```
 
 Use widgets when:
-- Entity has related sub-entities (product → offers, videos, assets)
+- Entity has related sub-entities (parent → children, attachments, history)
 - You want sidebar navigation with counts
 - Each widget opens a different child blade
 

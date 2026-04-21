@@ -24,6 +24,65 @@ The workflow:
 - Publishes the updated packages to npm with the appropriate dist-tag.
 - Verifies the published dist-tags.
 
+## Release Cycles
+
+Typical paths through the workflow, assuming the repo is currently at `2.0.0-alpha.33`.
+
+### Cut another alpha
+
+Work accumulates in `main` via PRs. When ready to publish a dev preview:
+
+- Actions → Release → Run workflow
+- `release-type: patch`, `prerelease: alpha`, `dry-run: false`
+- Result: `2.0.0-alpha.34`, npm dist-tag `alpha` updated. `CHANGELOG.md` unchanged.
+
+Consumers:
+
+```bash
+npm install @vc-shell/framework@alpha
+```
+
+Repeat as many times as needed — `alpha.35`, `alpha.36`, etc. Each run picks up all commits landed since the previous alpha.
+
+### Promote alpha to beta
+
+When the alpha line is stable enough to invite broader testing:
+
+- Actions → Release → Run workflow
+- `release-type: patch`, `prerelease: beta`, `dry-run: false`
+- Result: `2.0.0-beta.0`, npm dist-tag `beta` created. `alpha` dist-tag stays at its last alpha version.
+
+Subsequent betas: `patch` + `beta` again → `2.0.0-beta.1`, `beta.2`, etc.
+
+### Release candidate
+
+Same pattern with `prerelease: rc` → `2.0.0-rc.0`, `rc.1`, etc.
+
+### Cut a stable release
+
+When ready to ship:
+
+- Actions → Release → Run workflow
+- `release-type: minor` (or whatever final bump you want), `prerelease: none`, `dry-run: false`
+- Result: `2.0.0` (clean, no suffix), npm dist-tag `latest` updated.
+- `CHANGELOG.md` gets a new section consolidating every commit from the previous stable tag to `HEAD` — including everything that shipped in alpha/beta/rc along the way.
+
+After stable, the next alpha cycle starts from the next version (e.g. `2.1.0-alpha.0`).
+
+### Comparison to PR previews
+
+PR previews (automatic, per commit, dist-tag `pr-<N>`) and prereleases (manual, incremented counter, dist-tag `alpha`/`beta`/`rc`) are separate channels:
+
+|           | PR preview                        | alpha/beta/rc                            |
+| --------- | --------------------------------- | ---------------------------------------- |
+| Trigger   | Automatic on every PR push        | Manual via `Release` workflow            |
+| Version   | `<current>-pr<N>.<sha7>`          | `<next>-alpha.N` (counter increments)    |
+| npm tag   | `pr-<N>` (removed when PR closes) | `alpha` / `beta` / `rc` (permanent)      |
+| Audience  | Maintainer debug loop             | External testers / CI of downstream apps |
+| CHANGELOG | Skipped                           | Skipped                                  |
+
+See [CONTRIBUTING.md — Testing PR Previews](./CONTRIBUTING.md#testing-pr-previews) for the PR flow.
+
 ## Commit Convention
 
 Releases rely on [Conventional Commits](https://www.conventionalcommits.org/). PR titles are validated by the `PR Title` workflow on every pull request. Detailed conventions: [`.github/COMMIT_CONVENTION.md`](./.github/COMMIT_CONVENTION.md).

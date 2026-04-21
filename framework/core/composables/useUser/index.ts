@@ -58,9 +58,6 @@ export interface UseUserReturn {
 /** @deprecated Use UseUserReturn instead */
 export type IAppUserAPI = UseUserReturn;
 
-const user: Ref<UserDetail | undefined> = ref();
-const authData: Ref<TokenData | null> = ref(null);
-
 function readAuthData(): TokenData | null {
   try {
     const stored = localStorage.getItem(AUTH_STORAGE_KEY);
@@ -138,6 +135,8 @@ async function fetchToken(params: Record<string, string>): Promise<TokenData | n
 
 export function _createInternalUserLogic(): IUserInternalAPI {
   const loading: Ref<boolean> = ref(false);
+  const user: Ref<UserDetail | undefined> = ref();
+  const authData: Ref<TokenData | null> = ref(null);
 
   const { storage: externalSignInStorage, signOut: externalSignOut } = useExternalProvider();
 
@@ -403,8 +402,17 @@ export function _createInternalUserLogic(): IUserInternalAPI {
   };
 }
 
-export const useUser = createSharedComposable((): UseUserReturn => {
-  const internals = _createInternalUserLogic();
+// Single shared instance across the entire application.
+// All callers of useUser()/useUserManagement() observe the same internals.
+// NOTE: createSharedComposable reference-counts subscribers via tryOnScopeDispose and
+// disposes the factory when the count drops to zero. Our app bootstrap calls
+// useUserManagement() from the interceptor registration (outside any component scope),
+// which pins the singleton: a no-scope subscriber is never decremented, so the
+// instance survives component mount/unmount cycles for the lifetime of the app.
+export const _sharedInternalUserLogic = createSharedComposable(_createInternalUserLogic);
+
+export const useUser = (): UseUserReturn => {
+  const internals = _sharedInternalUserLogic();
   return {
     user: internals.user,
     loading: internals.loading,
@@ -414,4 +422,4 @@ export const useUser = createSharedComposable((): UseUserReturn => {
     signOut: internals.signOut,
     getAccessToken: internals.getAccessToken,
   };
-});
+};

@@ -117,7 +117,7 @@ describe("loadUser() - parallelization", () => {
     const logic = _createInternalUserLogic();
     await logic.loadUser();
 
-    // user is module-level ref; loadUser sets it to the getCurrentUser() result
+    // loadUser sets user.value to the getCurrentUser() result; logic.user exposes it as a computed
     expect(logic.user.value?.userName).toBe("user@vc.com");
     expect(logic.user.value?.isAdministrator).toBe(false);
   });

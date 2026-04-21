@@ -63,7 +63,7 @@ The composable delegates to `_createInternalUserLogic()`, which manages:
 
 3. **Token refresh**: `getAccessToken()` checks the expiration time with a 60-second buffer. If the token is expired or about to expire and a refresh token is available, it makes a `POST /connect/token` request with `grant_type: refresh_token`.
 
-4. **Shared state**: `createSharedComposable` from VueUse ensures all calls to `useUser()` return the same reactive refs. The underlying `user` ref is module-level, so it persists across component lifecycles.
+4. **Shared state**: `createSharedComposable` from VueUse wraps `_createInternalUserLogic` so every call to `useUser()` or `useUserManagement()` reads from the same singleton internal logic. The `user` ref lives inside that singleton. App bootstrap registers `useUserManagement()` outside any component scope, which pins the singleton for the app lifetime — transient component mount/unmount cycles don't discard it.
 
 ## Recipe: Route Guard Based on Authentication
 
@@ -140,7 +140,7 @@ async function fetchCustomEndpoint(url: string) {
 
 ## Tips
 
-- **`loadUser` deduplicates concurrent calls.** If your app loads multiple blades simultaneously and each calls `loadUser()`, only one API request is made. All calls resolve with the same result.
+- **`loadUser` deduplicates concurrent calls across composables.** If multiple blades call `loadUser()` simultaneously — or if `useUser()` and `useUserManagement()` are both used in the same flow — only one API request is made. `useUser` and `useUserManagement` share the singleton internal logic, so request deduplication works across both.
 - **Token refresh is transparent.** `getAccessToken()` handles expiration checking and refresh internally. You never need to manually check token expiration or call a refresh endpoint.
 - **`isAuthenticated` checks `userName`, not the token.** A user is considered authenticated if `user.value?.userName` is not null. This means the user could have an expired token but still appear "authenticated" until the next API call fails.
 - **`signOut` clears localStorage.** After sign-out, the `vc_auth_data` key is removed from localStorage. Any cached tokens are gone permanently.

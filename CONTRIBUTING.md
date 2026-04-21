@@ -61,13 +61,13 @@ Every push to a PR (opened from a branch in this repository) automatically publi
 To test a preview in a consuming project:
 
 ```bash
-npm install @vc-shell/framework@pr-<N>
+yarn add @vc-shell/framework@pr-<N>
 ```
 
 Or pin to a specific commit:
 
 ```bash
-npm install @vc-shell/framework@<current>-pr<N>.<sha7>
+yarn add @vc-shell/framework@<current>-pr<N>.<sha7>
 ```
 
 Previews use the exact PR commit — each push creates a new version. The `pr-<N>` dist-tag is automatically removed when the PR closes; pinned exact-version installs continue to work (versions remain in npm for archaeology).

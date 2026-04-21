@@ -53,13 +53,16 @@ Before running the migration, review the key breaking changes:
 npx @vc-shell/migrate [options]
 ```
 
-| Option               | Description                                                                              | Default        |
-| -------------------- | ---------------------------------------------------------------------------------------- | -------------- |
-| `--to <version>`     | Target framework version                                                                 | `2.0.0`        |
-| `--transform <name>` | Run only a specific transform (bypasses version filter — runs even if already on target) | all applicable |
-| `--dry-run`          | Preview changes without writing files                                                    | `false`        |
-| `--list`             | List all available transforms and exit                                                   |                |
-| `--cwd <path>`       | Working directory (your app root)                                                        | `.`            |
+| Option                    | Description                                                                              | Default        |
+| ------------------------- | ---------------------------------------------------------------------------------------- | -------------- |
+| `--to <version>`          | Target framework version                                                                 | `2.0.0`        |
+| `--transform <name>`      | Run only a specific transform (bypasses version filter — runs even if already on target) | all applicable |
+| `--dry-run`               | Preview changes without writing files                                                    | `false`        |
+| `--list`                  | List all available transforms and exit                                                   |                |
+| `--cwd <path>`            | Working directory (your app root)                                                        | `.`            |
+| `--update-deps`           | Also bump `@vc-shell/*` and align peer-dep versions in `package.json`                    | `false`        |
+| `--exclude <patterns...>` | Additional exclude patterns for files/directories                                        | `[]`           |
+| `--no-report`             | Skip `MIGRATION_REPORT.md` generation                                                    | `false`        |
 
 ### Examples
 
@@ -79,6 +82,25 @@ npx @vc-shell/migrate --list
 # Migrate a specific app in a monorepo
 npx @vc-shell/migrate --cwd apps/my-app
 ```
+
+## Peer dependency alignment
+
+When run with `--update-deps`, the migrator also updates `package.json` dependency versions, not just your source code:
+
+- **`@vc-shell/*` packages** — bumped to the target framework version (`--to`).
+- **Peer dependencies** — intersection-aligned with a curated list of recommended versions (ESLint, Vite, TypeScript, VueUse, `vue-router`, etc.). Any dep present in **both** your `package.json` and the curated list is updated to the curated value. Nothing is added, nothing is removed.
+
+The curated list lives at [`configs/peer-versions.json`](../../configs/peer-versions.json) in the framework repo and is maintained by the framework team.
+
+**This flag works even when your current framework version equals the target** — useful when you want to realign peer-dep versions with the latest recommended set without changing the framework version.
+
+Example:
+
+```bash
+npx @vc-shell/migrate --update-deps --dry-run
+```
+
+Run `yarn install` after accepting the changes to refresh your lockfile.
 
 ## Recommended workflow
 

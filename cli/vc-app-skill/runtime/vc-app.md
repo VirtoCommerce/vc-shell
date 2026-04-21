@@ -1538,6 +1538,8 @@ Run:
 {resolved_migrate_command} --update-deps
 ```
 
+`--update-deps` bumps all `@vc-shell/*` dependencies to the target framework version **and** aligns peer-dep versions (ESLint, Vite, TypeScript, VueUse, `vue-router`, etc.) with the curated set at `configs/peer-versions.json` in the framework repo. Intersection-only — nothing is added or removed from the user's `package.json`.
+
 Display the output to the user. If the command fails, stop and show the error.
 
 ### Step 2.5: Regenerate API clients with Interface style

@@ -16,7 +16,12 @@ module.exports = {
     publish: false,
   },
   github: {
-    release: false,
+    // Create a GitHub Release entry only for stable releases; prereleases
+    // (alpha/beta/rc) only produce git tags + npm publish to avoid cluttering
+    // the Releases tab with intermediate dev versions.
+    release: !isPrerelease,
+    releaseName: "v${version}",
+    draft: false,
   },
   plugins: {
     "@release-it/conventional-changelog": {

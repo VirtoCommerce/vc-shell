@@ -205,39 +205,19 @@ npm install @vc-shell/framework@pr-<N>
 
 See [CONTRIBUTING.md — Testing PR Previews](./CONTRIBUTING.md#testing-pr-previews) for details, including the fork-PR caveat and exact-commit install pattern.
 
-### Local Development with an App
+### Local Development via portal: Protocol
 
-If you have an existing vc-shell application (e.g. from a separate repository) and want to develop against local framework packages:
+If your app lives outside this monorepo and you want to debug against a local build of `@vc-shell/framework` without moving the app.
 
-1. **Copy or clone** the app into the `apps/` directory:
-
-```bash
-cp -r /path/to/my-vc-app apps/my-vc-app
-```
-
-2. **Run the setup script** to link the app to the monorepo:
+**Quick setup** — drop your app into `apps/<name>/` (this directory is gitignored and not a Yarn workspace) and run:
 
 ```bash
 yarn setup:apps
 ```
 
-This script automatically:
+The script rewrites every `@vc-shell/*` dependency in the app's `package.json` to a `portal:` path pointing at the matching package in this repository, then runs `yarn install` inside the app directory. You still need to set `preserveSymlinks: true` on both the app's `tsconfig.json` and Vite config (see step 3 below). After setup, start the app from its own directory (`cd apps/<name> && yarn dev`).
 
-- **Removes `yarn.lock`** from each app — the app's standalone lockfile creates a separate resolution tree that bypasses Yarn workspace resolution; removing it lets the monorepo's root lockfile take over
-- **Syncs `@vc-shell/*` versions** — if the app's dependency ranges (e.g. `"@vc-shell/framework": "^1.0.0"`) don't match the local package version, Yarn will fetch from npm instead of using the local workspace package; the script updates all ranges to `^<current-monorepo-version>`
-- **Runs `yarn install`** to resolve everything through workspace
-
-3. **Start the app** (where `<app-name>` is the `name` field from the app's `package.json`):
-
-```bash
-yarn workspace <app-name> run serve
-```
-
-> **Note:** The app must be built on `@vc-shell/framework`. The `apps/*` glob is already included in the root `workspaces` field, so any directory placed in `apps/` with a valid `package.json` is automatically recognized as a workspace. The `apps/` directory is not shipped — it exists purely for local development and debugging of the framework against real applications.
-
-### Local Development via portal: Protocol
-
-If your app lives outside this monorepo and you want to debug against a local build of `@vc-shell/framework` without moving the app:
+**Manual setup** (same flow in full detail):
 
 1. **Build framework locally** in the vc-shell clone:
 

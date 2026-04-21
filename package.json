@@ -46,7 +46,6 @@
     "pre-commit": "yarn lint-staged && yarn check:locales && yarn check:layers"
   },
   "workspaces": [
-    "apps/*",
     "framework",
     "cli/*",
     "configs/*",

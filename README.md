@@ -222,43 +222,7 @@ yarn workspace <app-name> run serve
 
 ## Contributing
 
-### Getting Set Up
-
-1. Fork the repository and clone your fork
-2. Install dependencies: `yarn install`
-3. Build all packages: `yarn build`
-4. Create a feature branch: `git checkout -b feat/my-feature`
-
-### Commit Convention
-
-This project uses [Conventional Commits](https://www.conventionalcommits.org/) enforced by commitlint. Commit messages must follow this format:
-
-```
-<type>(<scope>): <subject>
-```
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`
-
-See [`.github/COMMIT_CONVENTION.md`](./.github/COMMIT_CONVENTION.md) for full details and examples.
-
-### Pre-commit Hooks
-
-Husky runs these checks automatically on each commit:
-
-- **lint-staged** — ESLint + Prettier + Stylelint on staged files
-- **check:locales** — validates locale file consistency
-- **commitlint** — enforces conventional commit message format
-
-### Before Submitting a PR
-
-```bash
-yarn lint                           # Fix lint issues
-yarn typecheck                      # Type check
-yarn test:unit                      # Run unit tests
-yarn check:circular                 # No circular dependencies
-```
-
-A [pull request template](./.github/PULL_REQUEST_TEMPLATE.md) is provided to guide your PR description.
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for development setup, workflow, and PR requirements.
 
 ## Architecture
 

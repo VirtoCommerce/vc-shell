@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "framework/**"
+      - "cli/**"
+      - "configs/**"
+      - "packages/**"
+      - "**/*.json"
+      - "**/*.md"
+      - "**/*.yml"
+      - "**/*.yaml"
+      - "eslint.config.mjs"
+      - ".prettierrc"
+      - ".prettierignore"
+      - ".stylelintrc.json"
+      - "yarn.lock"
+      - ".github/workflows/ci.yml"
+  push:
+    branches:
+      - main
+      - dev
+      - "feat/**"
+    paths:
+      - "framework/**"
+      - "cli/**"
+      - "configs/**"
+      - "packages/**"
+      - "**/*.json"
+      - "**/*.md"
+      - "**/*.yml"
+      - "**/*.yaml"
+      - "eslint.config.mjs"
+      - ".prettierrc"
+      - ".prettierignore"
+      - ".stylelintrc.json"
+      - "yarn.lock"
+      - ".github/workflows/ci.yml"
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: "yarn.lock"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Lockfile drift hint
+        if: failure()
+        run: |
+          echo "::error title=yarn.lock is out of sync with package manifests::The previous step failed with YN0028 because yarn.lock does not match the current workspace versions. Run 'yarn install' locally, commit the updated yarn.lock, and push. See docs/superpowers/specs/2026-04-20-fix-ci-lockfile-design.md for context."
+          exit 1
+
+      - name: Lint check
+        run: yarn lint:check
+
+      - name: Format check
+        run: yarn format:check
+
+      - name: Stylelint check
+        run: yarn stylelint:check
+
+      - name: Type check
+        run: yarn typecheck
+
+      - name: Locales check
+        run: yarn check:locales
+
+      - name: Circular deps check
+        run: yarn check:circular
+
+      - name: Layer violations check
+        run: yarn check:layers
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: "yarn.lock"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Lockfile drift hint
+        if: failure()
+        run: |
+          echo "::error title=yarn.lock is out of sync with package manifests::The previous step failed with YN0028 because yarn.lock does not match the current workspace versions. Run 'yarn install' locally, commit the updated yarn.lock, and push. See docs/superpowers/specs/2026-04-20-fix-ci-lockfile-design.md for context."
+          exit 1
+
+      - name: Run framework tests
+        run: yarn workspace @vc-shell/framework run test

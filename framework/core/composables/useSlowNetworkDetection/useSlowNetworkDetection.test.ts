@@ -157,7 +157,7 @@ describe("useSlowNetworkDetection", () => {
     });
 
     it("reacts to connection type changes", async () => {
-      const _connection = mockConnection("4g");
+      const connection = mockConnection("4g");
       const mod = await import("./index");
       const { isSlowNetwork } = mod.useSlowNetworkDetection();
       expect(isSlowNetwork.value).toBe(false);

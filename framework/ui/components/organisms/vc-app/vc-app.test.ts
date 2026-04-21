@@ -89,6 +89,13 @@ vi.mock("@core/notifications/notification", () => ({
   },
 }));
 
+vi.mock("@shell/_internal/blade-navigation/components", () => ({
+  VcBladeNavigation: defineComponent({
+    name: "VcBladeNavigation",
+    template: "<div class='mock-blade-nav' />",
+  }),
+}));
+
 // Stub sub-components
 vi.mock("@ui/components/organisms/vc-app/_internal/layouts/DesktopLayout.vue", () => ({
   default: defineComponent({
@@ -133,11 +140,6 @@ const VcLoadingStub = defineComponent({
   template: "<div class='mock-vc-loading' v-if='active'>Loading...</div>",
 });
 
-const VcBladeNavigationStub = defineComponent({
-  name: "VcBladeNavigation",
-  template: "<div class='mock-blade-nav' />",
-});
-
 function mountApp(propsOverride: Record<string, unknown> = {}) {
   return mount(VcApp, {
     props: {
@@ -157,7 +159,6 @@ function mountApp(propsOverride: Record<string, unknown> = {}) {
       },
       components: {
         VcLoading: VcLoadingStub,
-        VcBladeNavigation: VcBladeNavigationStub,
       },
     },
   });

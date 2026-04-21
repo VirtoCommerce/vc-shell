@@ -38,14 +38,14 @@ export default defineConfig({
         branches: 50,
       },
     },
-    setupFiles: ["./vitest-axe.setup.ts"],
+    setupFiles: [resolve(__dirname, "./vitest-axe.setup.ts")],
     include: ["**/*.{test,spec}.{js,ts,jsx,tsx}"],
     exclude: [
       "**/node_modules/**",
       "**/dist/**",
       "**/.worktrees/**",
-      "ui/__tests__/stories-snapshot.test.ts",
-      "ui/__tests__/stories-visual.test.ts",
+      "**/ui/__tests__/stories-snapshot.test.ts",
+      "**/ui/__tests__/stories-visual.test.ts",
     ],
   },
   resolve: {

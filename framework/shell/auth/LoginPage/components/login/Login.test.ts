@@ -5,9 +5,13 @@ import Login from "./Login.vue";
 
 // ── Mocks ───────────────────────────────────────────────────────────────────
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k, locale: { value: "en" } }),
-}));
+vi.mock("vue-i18n", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("vue-i18n")>();
+  return {
+    ...actual,
+    useI18n: () => ({ t: (k: string) => k, locale: { value: "en" } }),
+  };
+});
 
 const mockPush = vi.fn();
 vi.mock("vue-router", () => ({
@@ -16,6 +20,7 @@ vi.mock("vue-router", () => ({
 }));
 
 vi.mock("vee-validate", () => ({
+  defineRule: vi.fn(),
   useIsFormValid: () => ref(true),
   useForm: () => ({ validateField: vi.fn() }),
   Field: {

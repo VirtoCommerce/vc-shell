@@ -5,9 +5,13 @@ import ChangePassword from "./ChangePassword.vue";
 
 // ── Mocks ───────────────────────────────────────────────────────────────────
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k, locale: { value: "en" } }),
-}));
+vi.mock("vue-i18n", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("vue-i18n")>();
+  return {
+    ...actual,
+    useI18n: () => ({ t: (k: string) => k, locale: { value: "en" } }),
+  };
+});
 
 const mockRouterPush = vi.fn();
 vi.mock("vue-router", () => ({

@@ -116,7 +116,7 @@ yarn release major
 To regenerate **all** changelogs from full git history:
 
 ```bash
-yarn generate-changelogs
+yarn generate:changelogs
 ```
 
 This regenerates:

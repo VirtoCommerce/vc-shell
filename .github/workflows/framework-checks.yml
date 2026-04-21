@@ -55,7 +55,7 @@ jobs:
           exit 1
 
       - name: Type check framework
-        run: yarn workspace @vc-shell/framework run type-check
+        run: yarn workspace @vc-shell/framework run check:types
 
       - name: Run framework tests
         run: yarn workspace @vc-shell/framework run test

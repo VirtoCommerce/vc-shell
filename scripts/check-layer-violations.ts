@@ -11,7 +11,7 @@
  *   npx tsx scripts/check-layer-violations.ts
  *
  * Add to package.json scripts:
- *   "check-layers": "tsx scripts/check-layer-violations.ts"
+ *   "check:layers": "tsx scripts/check-layer-violations.ts"
  */
 
 import { readFileSync, readdirSync, statSync } from "node:fs";

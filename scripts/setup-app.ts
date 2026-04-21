@@ -11,7 +11,7 @@
  *   3. Runs yarn install
  *
  * Usage:
- *   yarn setup-apps
+ *   yarn setup:apps
  */
 
 import { existsSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";

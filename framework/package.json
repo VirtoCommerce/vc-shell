@@ -57,8 +57,8 @@
     "build": "shx rm -rf ./dist && tsx scripts/build.mts",
     "build:lib": "vite build",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist && tsc-alias -p tsconfig.json --outDir dist",
-    "type-check": "vue-tsc --noEmit",
-    "check-locales": "tsx scripts/check-locales.mts",
+    "check:types": "vue-tsc --noEmit",
+    "check:locales": "tsx scripts/check-locales.mts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"

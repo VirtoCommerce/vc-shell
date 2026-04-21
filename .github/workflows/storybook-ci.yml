@@ -102,7 +102,7 @@ jobs:
 
       - name: Build
         run: |
-          yarn storybook-build
+          yarn build:storybook
         env:
           NODE_OPTIONS: '--max-old-space-size=6144'
 
@@ -112,7 +112,7 @@ jobs:
 
       - name: Packaging
         run: |
-          yarn storybook-compress
+          yarn build:storybook:compress
 
       - name: Set URLs
         id: urls

@@ -10,10 +10,11 @@ description: Structured bug fix workflow — diagnose from git history, minimal 
 3. Do targeted investigation (max 5 file reads) to identify root cause
 4. Present a 1-2 sentence diagnosis and proposed fix BEFORE implementing
 5. Implement the minimal fix — do NOT refactor surrounding code
-6. Run `cd framework && npx tsc --noEmit` to verify no TypeScript errors
+6. Run `yarn typecheck` to verify no TypeScript errors
 7. Check for regressions in directly related functionality
 
 CONSTRAINTS:
+
 - Do NOT spend more than 5 minutes exploring without proposing a fix
 - Do NOT over-engineer — fix the bug, nothing more
 - Reuse existing components (see CLAUDE.md "Reusable Components" section)

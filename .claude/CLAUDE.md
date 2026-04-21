@@ -11,19 +11,21 @@ Monorepo for VirtoCommerce admin shell framework — Vue 3 + TypeScript componen
 ```bash
 yarn install                    # Install all workspace dependencies
 yarn build                      # Build all publishable packages
-yarn build-framework            # Build only @vc-shell/framework
-yarn storybook-serve            # Storybook dev server on :6006
-yarn storybook-build            # Production Storybook build
+yarn build:framework            # Build only @vc-shell/framework
+yarn dev:storybook              # Storybook dev server on :6006
+yarn build:storybook            # Production Storybook build
 yarn lint                       # ESLint with --fix across framework/cli/configs
-yarn check-locales              # Validate locale files (runs on pre-commit hook)
+yarn check:locales              # Validate locale files (runs on pre-commit hook)
 ```
 
-**TypeScript check** (no built-in script — run manually):
+**TypeScript check**:
+
 ```bash
-cd framework && npx tsc --noEmit
+yarn typecheck
 ```
 
 **Tests** (vitest, jsdom environment):
+
 ```bash
 cd framework && npx vitest run          # Run all tests once
 cd framework && npx vitest              # Watch mode
@@ -34,6 +36,7 @@ cd framework && npx vitest run path/to/file.test.ts  # Single test file
 Test files live alongside source code (e.g. `composables/useBladeStack.test.ts`). Config: `framework/vitest.config.ts`.
 
 **Vendor Portal app** (reference app):
+
 ```bash
 yarn workspace app-vendor-portal run serve   # Dev server (requires framework build first)
 ```
@@ -58,6 +61,7 @@ vc-shell/
 ### Key Architectural Patterns
 
 **Blade Navigation** — The core UI paradigm. Blades are stacked panels (like Azure Portal). Key files:
+
 - `shell/_internal/blade-nav/` — VcBladeNavigation, VcBladeSlot (rendering layer)
 - `core/blade-navigation/` — blade stack logic and composables
 - `core/composables/useBlade/` — `useBlade()` unified API (openBlade, closeSelf, callParent, etc.)
@@ -73,9 +77,9 @@ vc-shell/
 
 Active development area. Two table implementations coexist:
 
-| Component | File | Role |
-|-----------|------|------|
-| `VcDataTable` | `framework/ui/components/organisms/vc-table/VcDataTable.vue` | New compositional table |
+| Component        | File                                                            | Role                                               |
+| ---------------- | --------------------------------------------------------------- | -------------------------------------------------- |
+| `VcDataTable`    | `framework/ui/components/organisms/vc-table/VcDataTable.vue`    | New compositional table                            |
 | `VcTableAdapter` | `framework/ui/components/organisms/vc-table/VcTableAdapter.vue` | Adapter: wraps VcDataTable with legacy VcTable API |
 
 Sub-components are in `vc-table/components/`, composables in `vc-table/composables/`. Check these directories before building new table features — most functionality already exists (column switching, global filters, cell renderers, search header, row actions, virtual scroll, etc.).
@@ -107,6 +111,7 @@ Sub-components are in `vc-table/components/`, composables in `vc-table/composabl
 ## Storybook Story Standard
 
 All story files must follow `.storybook/STORY_STANDARD.md`. Key rules:
+
 - Import from `@storybook/vue3-vite` (NOT `@storybook/vue3`)
 - Use `satisfies Meta<typeof Component>` + `StoryObj`
 - Follow the tiered system: Tier 1 (simple atoms, 3+ stories), Tier 2 (interactive, 6+ stories), Tier 3 (organisms, 10+ stories)
@@ -120,7 +125,7 @@ All story files must follow `.storybook/STORY_STANDARD.md`. Key rules:
 - Reuse existing components and composables — check `vc-table/components/` and `vc-table/composables/` before building new table features.
 - Map to VcDataTable's built-in features rather than reimplementing from scratch.
 - When fixing bugs, check `git log --oneline -15` early — regressions from recent commits are common.
-- After editing code, verify with `cd framework && npx tsc --noEmit` to catch TypeScript errors immediately.
+- After editing code, verify with `yarn typecheck` to catch TypeScript errors immediately.
 - After completing a task or during planning, verify no circular dependencies or barrel import cycles are introduced. Use `npx madge --circular --extensions ts,vue framework/` or manual inspection of import chains.
 
 ## Debugging Tips

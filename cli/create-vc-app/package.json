@@ -10,7 +10,7 @@
   "scripts": {
     "build": "vite build && yarn postbuild",
     "test": "vitest run --config vitest.config.ts",
-    "type-check": "vue-tsc --noEmit",
+    "check:types": "vue-tsc --noEmit",
     "postbuild": "shx cp -R src/templates dist/"
   },
   "devDependencies": {

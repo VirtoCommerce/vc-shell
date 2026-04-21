@@ -25,10 +25,11 @@ Look for corresponding `.stories.ts` files in the same directories.
 Run a production Storybook build to catch compilation errors:
 
 ```bash
-yarn storybook-build 2>&1 | tail -30
+yarn build:storybook 2>&1 | tail -30
 ```
 
 This catches:
+
 - TypeScript errors in story files
 - Missing imports or broken component references
 - Template compilation errors
@@ -39,7 +40,7 @@ This catches:
 Report success. Optionally launch Storybook dev server for visual verification:
 
 ```bash
-yarn storybook-serve
+yarn dev:storybook
 ```
 
 Then use Playwright MCP to take screenshots of the affected stories for visual confirmation.
@@ -47,6 +48,7 @@ Then use Playwright MCP to take screenshots of the affected stories for visual c
 ### 4. If build fails
 
 Analyze the error output:
+
 - Parse the Vite/Rollup error messages
 - Identify which component or story is failing
 - Check for common issues:
@@ -58,4 +60,4 @@ Analyze the error output:
 
 - **HMR loop**: vc-table stories have a known infinite HMR reload (~1s remount). This doesn't affect production builds but makes dev server screenshots unreliable for table stories.
 - **Docgen errors**: The `stripInvalidDocgen` plugin in `.storybook/main.ts` handles `__docgenInfo` assignment errors from barrel re-exports. If you see `ReferenceError` about `__docgenInfo`, the plugin may need updating.
-- **Framework CSS**: Storybook resolves `@vc-shell/framework/dist/index.css` to SCSS sources if no built dist exists. Run `yarn build-framework` first if you see styling issues.
+- **Framework CSS**: Storybook resolves `@vc-shell/framework/dist/index.css` to SCSS sources if no built dist exists. Run `yarn build:framework` first if you see styling issues.

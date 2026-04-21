@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "case \"$CLAUDE_FILE_PATH\" in */framework/*.ts|*/framework/*.vue) cd framework && npx tsc --noEmit --pretty 2>&1 | head -40;; esac"
+            "command": "case \"$CLAUDE_FILE_PATH\" in */framework/*.ts|*/framework/*.vue) yarn typecheck --pretty 2>&1 | head -40;; esac"
           }
         ]
       },
@@ -56,7 +56,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "case \"$CLAUDE_FILE_PATH\" in */framework/*.ts|*/framework/*.vue) cd framework && npx tsc --noEmit --pretty 2>&1 | head -40;; esac"
+            "command": "case \"$CLAUDE_FILE_PATH\" in */framework/*.ts|*/framework/*.vue) yarn typecheck --pretty 2>&1 | head -40;; esac"
           }
         ]
       },

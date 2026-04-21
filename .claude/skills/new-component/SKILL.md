@@ -11,11 +11,13 @@ Scaffold a new VC-Shell framework UI component following all project conventions
 ## Arguments
 
 Parse the user's input for:
+
 - **Component name** (required): e.g. `VcDatePicker`, `VcColorInput`
 - **Atomic level** (required): `atom`, `molecule`, or `organism`
 - **Has internal sub-components** (optional, default: no)
 
 Example invocations:
+
 - `/new-component VcRating atom`
 - `/new-component VcTimeline organism --with-internals`
 
@@ -24,6 +26,7 @@ Example invocations:
 ### 1. Determine placement
 
 Map atomic level to directory:
+
 - `atom` → `framework/ui/components/atoms/`
 - `molecule` → `framework/ui/components/molecules/`
 - `organism` → `framework/ui/components/organisms/`
@@ -111,13 +114,14 @@ If the user specified `--with-internals`, create an empty `_internal/` subdirect
 ### 4. Register in parent barrel export
 
 Add the export to the parent level `index.ts` barrel file (e.g. `molecules/index.ts`):
+
 ```typescript
 export * from "./{kebab-name}";
 ```
 
 ### 5. Verify
 
-Run: `cd framework && npx tsc --noEmit` to ensure the new component compiles.
+Run: `yarn typecheck` to ensure the new component compiles.
 
 ## Conventions Reference
 

@@ -40,7 +40,7 @@ const checks: Check[] = [
   {
     name: "Circular deps",
     command: "yarn",
-    args: ["check-circular"],
+    args: ["check:circular"],
   },
 ];
 

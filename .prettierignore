@@ -2,4 +2,7 @@ node_modules
 dist
 *.js
 api-client.ts
+framework/core/api/platform.ts
+cli/migrate/tests/**/__testfixtures__
+configs/vite-config/src/templates
 cli/create-vc-app/src/templates

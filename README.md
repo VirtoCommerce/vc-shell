@@ -32,18 +32,18 @@
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Vue 3 (Composition API, `<script setup>`) |
-| Language | TypeScript (strict mode) |
-| Build | Vite 6 |
-| Styling | Tailwind CSS (`tw-` prefix) + SCSS custom properties |
-| Package Manager | Yarn 4 Berry (workspaces) |
-| Testing | Vitest + Vue Test Utils |
-| Storybook | Storybook 10 |
-| Linting | ESLint 9 + Prettier |
-| Charts | Unovis |
-| Forms | VeeValidate |
+| Layer           | Technology                                           |
+| --------------- | ---------------------------------------------------- |
+| Framework       | Vue 3 (Composition API, `<script setup>`)            |
+| Language        | TypeScript (strict mode)                             |
+| Build           | Vite 6                                               |
+| Styling         | Tailwind CSS (`tw-` prefix) + SCSS custom properties |
+| Package Manager | Yarn 4 Berry (workspaces)                            |
+| Testing         | Vitest + Vue Test Utils                              |
+| Storybook       | Storybook 10                                         |
+| Linting         | ESLint 9 + Prettier                                  |
+| Charts          | Unovis                                               |
+| Forms           | VeeValidate                                          |
 
 ## Monorepo Structure
 
@@ -123,17 +123,17 @@ npx @vc-shell/create-vc-app my-app
 
 ```bash
 yarn build                          # Build all publishable packages
-yarn build-framework                # Build only @vc-shell/framework
+yarn build:framework                # Build only @vc-shell/framework
 yarn build:analyze                  # Build with bundle analyzer
-yarn build-cli:config               # Build @vc-shell/config-generator
-yarn build-cli:api-client           # Build @vc-shell/api-client-generator
-yarn build-cli:create-vc-app        # Build @vc-shell/create-vc-app
+yarn build:cli:config               # Build @vc-shell/config-generator
+yarn build:cli:api-client           # Build @vc-shell/api-client-generator
+yarn build:cli:create-vc-app        # Build @vc-shell/create-vc-app
 ```
 
 #### Development
 
 ```bash
-yarn storybook-serve                # Storybook dev server at :6006
+yarn dev:storybook                  # Storybook dev server at :6006
 ```
 
 #### Test
@@ -146,19 +146,25 @@ yarn test:storybook                 # Run Storybook interaction tests
 yarn test:snapshot:update           # Update Storybook snapshots
 ```
 
-#### Lint & Type Check
+#### Lint, Format & Type Check
 
 ```bash
-yarn lint                           # ESLint with auto-fix
-cd framework && npx tsc --noEmit    # TypeScript validation
+yarn lint                           # ESLint with --fix (dev)
+yarn lint:check                     # ESLint verification (CI)
+yarn format                         # Prettier --write (dev)
+yarn format:check                   # Prettier verification (CI)
+yarn stylelint                      # Stylelint --fix (dev)
+yarn stylelint:check                # Stylelint verification (CI)
+yarn typecheck                      # Framework type check
+yarn check                          # Umbrella: all verifications (lint + format + stylelint + typecheck + locales + circular + layers)
 ```
 
 #### Code Quality
 
 ```bash
-yarn check-locales                  # Validate locale files
-yarn check-circular                 # Detect circular dependencies (madge)
-yarn check-layers                   # Enforce layer dependency direction
+yarn check:locales                  # Validate locale files
+yarn check:circular                 # Detect circular dependencies (madge)
+yarn check:layers                   # Enforce layer dependency direction
 ```
 
 #### API Client Generation
@@ -197,10 +203,11 @@ cp -r /path/to/my-vc-app apps/my-vc-app
 2. **Run the setup script** to link the app to the monorepo:
 
 ```bash
-yarn setup-apps
+yarn setup:apps
 ```
 
 This script automatically:
+
 - **Removes `yarn.lock`** from each app — the app's standalone lockfile creates a separate resolution tree that bypasses Yarn workspace resolution; removing it lets the monorepo's root lockfile take over
 - **Syncs `@vc-shell/*` versions** — if the app's dependency ranges (e.g. `"@vc-shell/framework": "^1.0.0"`) don't match the local package version, Yarn will fetch from npm instead of using the local workspace package; the script updates all ranges to `^<current-monorepo-version>`
 - **Runs `yarn install`** to resolve everything through workspace
@@ -239,16 +246,16 @@ See [`.github/COMMIT_CONVENTION.md`](./.github/COMMIT_CONVENTION.md) for full de
 Husky runs these checks automatically on each commit:
 
 - **lint-staged** — ESLint + Prettier + Stylelint on staged files
-- **check-locales** — validates locale file consistency
+- **check:locales** — validates locale file consistency
 - **commitlint** — enforces conventional commit message format
 
 ### Before Submitting a PR
 
 ```bash
 yarn lint                           # Fix lint issues
-cd framework && npx tsc --noEmit    # Type check
+yarn typecheck                      # Type check
 yarn test:unit                      # Run unit tests
-yarn check-circular                 # No circular dependencies
+yarn check:circular                 # No circular dependencies
 ```
 
 A [pull request template](./.github/PULL_REQUEST_TEMPLATE.md) is provided to guide your PR description.
@@ -269,7 +276,9 @@ openBlade({ name: "OrderDetails", param: "order-123" });
 openBlade({ name: "OrdersList", isWorkspace: true });
 closeSelf();
 const result = await callParent("reload");
-onActivated(() => { /* refresh data */ });
+onActivated(() => {
+  /* refresh data */
+});
 </script>
 ```
 
@@ -287,7 +296,7 @@ export default defineAppModule({
   blades: { OrdersList, OrderDetails },
   locales: { en, de },
   notifications: {
-    "OrderChanged": { toast: { mode: "auto" } },
+    OrderChanged: { toast: { mode: "auto" } },
   },
 });
 ```
@@ -311,12 +320,15 @@ Consumer modules contribute to extension points by registering components at tho
 The framework follows **Atomic Design** methodology:
 
 ### Atoms (base building blocks)
+
 `VcBadge` `VcBanner` `VcButton` `VcCard` `VcContainer` `VcHint` `VcIcon` `VcImage` `VcLabel` `VcLink` `VcLoading` `VcProgress` `VcSkeleton` `VcStatus` `VcTooltip` and more
 
 ### Molecules (composite form elements)
+
 `VcInput` `VcSelect` `VcDatePicker` `VcEditor` `VcFileUpload` `VcCheckbox` `VcRadioGroup` `VcSwitch` `VcSlider` `VcAccordion` `VcDropdown` `VcPagination` `VcTextarea` `VcMultivalue` `VcColorInput` `VcInputCurrency` and more
 
 ### Organisms (complex UI blocks)
+
 `VcBlade` `VcDataTable` `VcGallery` `VcImageUpload` `VcPopup` `VcSidebar` `VcApp` `VcAuthLayout` `VcDynamicProperty`
 
 ### Live Demo
@@ -325,13 +337,13 @@ Explore all components interactively: **[Storybook](https://vc-shell-storybook.g
 
 ## Documentation
 
-| Resource | Description |
-|----------|-------------|
+| Resource                                             | Description                    |
+| ---------------------------------------------------- | ------------------------------ |
 | [Storybook](https://vc-shell-storybook.govirto.com/) | Interactive component explorer |
-| [WHATS_NEW.md](./WHATS_NEW.md) | v2.0.0 feature highlights |
-| [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) | Migration from v1 to v2 |
-| [RELEASING.md](./RELEASING.md) | Release process documentation |
-| [CHANGELOG.md](./CHANGELOG.md) | Full changelog |
+| [WHATS_NEW.md](./WHATS_NEW.md)                       | v2.0.0 feature highlights      |
+| [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)           | Migration from v1 to v2        |
+| [RELEASING.md](./RELEASING.md)                       | Release process documentation  |
+| [CHANGELOG.md](./CHANGELOG.md)                       | Full changelog                 |
 
 ## License
 

@@ -87,7 +87,7 @@ async function onLogin(user) {
 ## Tips
 
 - The component only shows locales that have been registered with vue-i18n. If a locale file is missing, the language will not appear in the selector.
-- Use the `check-locales` script (`yarn check-locales`) to validate that all locale files have the same keys. Missing keys fall back to the `fallbackLocale`.
+- Use the `check:locales` script (`yarn check:locales`) to validate that all locale files have the same keys. Missing keys fall back to the `fallbackLocale`.
 - The `LanguageSelector` changes the UI language. To let users switch the content editing language for multilingual fields (e.g., product names), use the `MultilanguageSelector` component instead.
 
 ## Related Components

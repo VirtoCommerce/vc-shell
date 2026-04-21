@@ -19,9 +19,9 @@
     "vue3"
   ],
   "scripts": {
-    "sync-docs": "node bin/sync-docs.cjs",
-    "knowledge-stats": "node bin/knowledge-stats.cjs",
-    "sync-to-docs": "node bin/sync-to-docs.cjs"
+    "sync:docs": "node bin/sync-docs.cjs",
+    "knowledge:stats": "node bin/knowledge-stats.cjs",
+    "sync:to-docs": "node bin/sync-to-docs.cjs"
   },
   "publishConfig": {
     "access": "public",

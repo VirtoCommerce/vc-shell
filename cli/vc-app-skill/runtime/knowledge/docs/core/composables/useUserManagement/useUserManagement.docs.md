@@ -2,7 +2,7 @@
 
 Shared composable exposing the full user management API: sign-in, sign-out, password reset, token validation, and login type discovery. This composable extends the same internal logic as `useUser` but surfaces the administrative and authentication-flow methods that `useUser` intentionally hides. The separation ensures that regular blades only have access to read-only user state, while auth pages and admin screens get the full API.
 
-Uses `createSharedComposable` from VueUse, so all callers share the same state instance. Internally, it calls `_createInternalUserLogic()` -- the same factory used by `useUser` -- so both composables operate on the same underlying user ref and auth data.
+Both `useUser()` and `useUserManagement()` read from the same singleton internal logic, so everything is shared: the `user` ref, `authData`, the `loading` ref, in-flight request deduplication (`loadUser`), and the underlying `SecurityClient` instance. The two composables are thin selectors over a single source of truth — picking a narrow read-only slice or the full management slice.
 
 ## When to Use
 
@@ -86,7 +86,7 @@ None.
 
 ## How It Works
 
-The composable creates (or reuses) the internal user logic via `_createInternalUserLogic()`. The `signIn` flow has three phases:
+The composable reads from the singleton internal user logic (instantiated lazily on first call to `useUser()` or `useUserManagement()`). The `signIn` flow has three phases:
 
 1. **Cookie login**: Calls `securityClient.login()` to establish a server-side session cookie.
 2. **OAuth token**: Fetches an OAuth token via `POST /connect/token` with `grant_type: password` and `scope: offline_access`. The refresh token enables automatic token renewal.

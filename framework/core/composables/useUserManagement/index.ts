@@ -1,6 +1,5 @@
 import { ComputedRef } from "vue";
-import { createSharedComposable } from "@vueuse/core";
-import { _createInternalUserLogic, IUserInternalAPI } from "@core/composables/useUser"; // Import the internal logic
+import { _sharedInternalUserLogic } from "@core/composables/useUser";
 import { SecurityResult, IdentityResult, LoginType, UserDetail, SignInResult } from "@core/api/platform";
 import type { RequestPasswordResult } from "@core/types";
 
@@ -26,10 +25,8 @@ export interface UseUserManagementReturn {
 /** @deprecated Use UseUserManagementReturn instead */
 export type IUserManagementAPI = UseUserManagementReturn;
 
-export const useUserManagement = createSharedComposable((): UseUserManagementReturn => {
-  // Utilize the same internal logic instance
-  const internals: IUserInternalAPI = _createInternalUserLogic();
-
+export const useUserManagement = (): UseUserManagementReturn => {
+  const internals = _sharedInternalUserLogic();
   return {
     user: internals.user,
     loading: internals.loading,
@@ -45,4 +42,4 @@ export const useUserManagement = createSharedComposable((): UseUserManagementRet
     signIn: internals.signIn,
     signOut: internals.signOut,
   };
-});
+};

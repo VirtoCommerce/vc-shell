@@ -1,6 +1,7 @@
 import { provide, inject } from "vue";
 import { provideAppBarMobileButtonsService } from "@core/composables/useAppBarMobileButtons";
 import { provideDashboardService } from "@core/composables/useDashboard";
+import { usePlatformLocaleSync } from "@core/composables/usePlatformLocaleSync";
 import {
   SettingsMenuServiceKey,
   EmbeddedModeKey,
@@ -39,6 +40,9 @@ export function useShellBootstrap(options: ShellBootstrapOptions) {
 
   // 2. Provide injection keys
   provide(EmbeddedModeKey, options.isEmbedded);
+  if (options.isEmbedded) {
+    usePlatformLocaleSync();
+  }
   if (options.internalRoutes) {
     provide(InternalRoutesKey, options.internalRoutes);
   }

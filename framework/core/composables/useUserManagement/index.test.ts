@@ -1,6 +1,6 @@
 import { computed } from "vue";
 
-// Mock the internal user logic and createSharedComposable
+// Mock the internal user logic
 const mockInternals = {
   user: computed(() => ({ id: "u1", userName: "admin" })),
   loading: computed(() => false),
@@ -18,13 +18,7 @@ const mockInternals = {
 };
 
 vi.mock("@core/composables/useUser", () => ({
-  _createInternalUserLogic: () => mockInternals,
-}));
-
-// We need to mock createSharedComposable to just call the fn directly
-// since the real one needs a component scope
-vi.mock("@vueuse/core", () => ({
-  createSharedComposable: (fn: () => any) => fn,
+  _sharedInternalUserLogic: () => mockInternals,
 }));
 
 import { useUserManagement } from "./index";

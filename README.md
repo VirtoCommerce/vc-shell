@@ -5,6 +5,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/VirtoCommerce/vc-shell/actions/workflows/ci.yml"><img src="https://github.com/VirtoCommerce/vc-shell/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://www.npmjs.com/package/@vc-shell/framework"><img src="https://img.shields.io/npm/v/@vc-shell/framework/alpha?color=orange&label=%40vc-shell%2Fframework" alt="alpha version"></a>
   <a href="https://github.com/VirtoCommerce/vc-shell/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-VC--OSL-green" alt="License"></a>
   <a href="https://vc-shell-storybook.govirto.com/"><img src="https://img.shields.io/badge/storybook-live%20demo-ff4785" alt="Storybook"></a>
@@ -139,8 +140,9 @@ yarn dev:storybook                  # Storybook dev server at :6006
 #### Test
 
 ```bash
-yarn test                           # Run tests in watch mode
-yarn test:unit                      # Run unit tests (single run)
+yarn test                           # Run tests (single run, CI-friendly)
+yarn test:watch                     # Run tests in watch mode (interactive)
+yarn test:unit                      # Run unit tests against framework/vitest.config
 yarn test:coverage                  # Tests with coverage report
 yarn test:storybook                 # Run Storybook interaction tests
 yarn test:snapshot:update           # Update Storybook snapshots
@@ -190,6 +192,18 @@ yarn clean                          # Remove all node_modules + dist directories
 yarn changed                        # List commits since last release tag
 yarn diff                           # Diff stats since last release tag
 ```
+
+### Testing PR Previews
+
+Every push to a PR in this repository automatically publishes preview versions of all managed packages to npm with a `pr-<N>` dist-tag. The preview workflow comments on the PR with install instructions.
+
+Install a PR preview in a consuming project:
+
+```bash
+npm install @vc-shell/framework@pr-<N>
+```
+
+See [CONTRIBUTING.md — Testing PR Previews](./CONTRIBUTING.md#testing-pr-previews) for details, including the fork-PR caveat and exact-commit install pattern.
 
 ### Local Development with an App
 

@@ -56,4 +56,4 @@ Detailed conventions: [`.github/COMMIT_CONVENTION.md`](./.github/COMMIT_CONVENTI
 
 ## Releasing
 
-Releases are cut from `main` by maintainers. Contributors don't need to update `CHANGELOG.md` — it's auto-generated from conventional commit messages on release.
+Releases are cut from `main` by maintainers via the `Release` GitHub Actions workflow. Contributors don't need to update `CHANGELOG.md` — stable releases auto-generate entries from conventional commit messages. See [`RELEASING.md`](./RELEASING.md) for details.

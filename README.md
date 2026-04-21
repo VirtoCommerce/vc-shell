@@ -177,8 +177,9 @@ yarn generate:api-client
 
 #### Release
 
+See [RELEASING.md](./RELEASING.md) for the release process.
+
 ```bash
-yarn release                        # Interactive release workflow
 yarn release:dry                    # Dry run (preview changes)
 ```
 

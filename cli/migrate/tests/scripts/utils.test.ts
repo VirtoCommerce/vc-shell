@@ -225,10 +225,7 @@ describe("updateBoilerplatePkgVersions (rewritten)", () => {
     );
     const configsDir = join(root, "configs");
     mkdirSync(configsDir, { recursive: true });
-    writeFileSync(
-      join(configsDir, "peer-versions.json"),
-      JSON.stringify({ description: "no versions key" }, null, 2),
-    );
+    writeFileSync(join(configsDir, "peer-versions.json"), JSON.stringify({ description: "no versions key" }, null, 2));
 
     await updateBoilerplatePkgVersions(root);
 

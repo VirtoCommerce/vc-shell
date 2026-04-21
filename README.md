@@ -235,6 +235,86 @@ yarn workspace <app-name> run serve
 
 > **Note:** The app must be built on `@vc-shell/framework`. The `apps/*` glob is already included in the root `workspaces` field, so any directory placed in `apps/` with a valid `package.json` is automatically recognized as a workspace. The `apps/` directory is not shipped — it exists purely for local development and debugging of the framework against real applications.
 
+### Local Development via portal: Protocol
+
+If your app lives outside this monorepo and you want to debug against a local build of `@vc-shell/framework` without moving the app:
+
+1. **Build framework locally** in the vc-shell clone:
+
+   ```bash
+   yarn build:framework
+   ```
+
+   The `portal:` protocol symlinks to the package directory — it does not build on demand. Re-run `yarn build:framework` after each framework change (no watch mode yet).
+
+2. **Replace the `@vc-shell/*` entries** in your app's `package.json` with absolute `portal:` paths to the corresponding packages in this repository:
+
+   ```json
+   {
+     "dependencies": {
+       "@vc-shell/framework": "portal:/absolute/path/to/vc-shell/framework",
+       "@vc-shell/config-generator": "portal:/absolute/path/to/vc-shell/configs/vite-config",
+       "@vc-shell/api-client-generator": "portal:/absolute/path/to/vc-shell/cli/api-client"
+     }
+   }
+   ```
+
+   Include every `@vc-shell/*` package the app actually imports — portal entries are not auto-discovered like workspace deps.
+
+3. **Enable preserveSymlinks on the app side** so the app's bundler and TypeScript follow the portal symlink back to the real package on disk. Skipping this creates two copies of Vue (one through the symlink, one through the app's own `node_modules`), breaking reactivity with warnings like "Vue has already been registered".
+
+   In the app's `tsconfig.json`:
+
+   ```json
+   {
+     "compilerOptions": {
+       "preserveSymlinks": true
+     }
+   }
+   ```
+
+   In the app's Vite config:
+
+   ```ts
+   export default defineConfig({
+     resolve: {
+       preserveSymlinks: true,
+     },
+   });
+   ```
+
+4. **Match peer-dependency versions.** The portal-linked framework brings its own `node_modules/`; if the app has a different `vue` or `vue-router` version, you still end up with dual instances. Verify with:
+
+   ```bash
+   # Inside the app
+   yarn why vue
+   # Inside the vc-shell clone
+   yarn why vue
+   ```
+
+   Both commands should report the same version. If they diverge, bump the app's `package.json` to match the vc-shell framework peer range.
+
+5. **Install and run the app as usual:**
+
+   ```bash
+   yarn install
+   yarn dev   # or whatever the app's dev script is called
+   ```
+
+#### Troubleshooting
+
+- **"Vue has already been registered" / lost reactivity** — `preserveSymlinks` is not enabled on either Vite or TypeScript. Check both configs.
+- **Changes in `framework/` not reflected in the app** — `portal:` doesn't trigger rebuilds. Run `yarn build:framework` in the vc-shell clone after edits, then restart the app's dev server (Vite HMR may not pick up changes to symlinked `dist/`).
+- **Type errors after rebuild** — stale `.tsbuildinfo` or `dist/` remnants. Clean vc-shell with `yarn clean` (and rebuild) before retrying.
+- **Yarn refuses to install with lockfile conflicts** — the app's `yarn.lock` may reference npm-registry versions of `@vc-shell/*`. Delete the app's `yarn.lock` and re-run `yarn install` so Yarn re-resolves through portal entries.
+
+#### When to use which approach
+
+| Situation                                                                                                                      | Recommended                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| You want the app built into this monorepo (running its dev server via `yarn workspace`, checking CI here, cross-package edits) | [Local Development with an App](#local-development-with-an-app) (`apps/` + `yarn setup:apps`) |
+| Your app is in a separate repo and should stay there; you just need a short debug loop against a local framework build         | `portal:` protocol (this section)                                                             |
+
 ## Contributing
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for development setup, workflow, and PR requirements.

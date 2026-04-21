@@ -6,6 +6,7 @@ const mockRegisterMobileButton = vi.fn();
 const mockRegisterSettingsMenuItem = vi.fn();
 const mockProvide = vi.fn();
 const mockProvideAiAgentService = vi.fn();
+const mockUsePlatformLocaleSync = vi.fn();
 
 vi.mock("vue", async (importOriginal) => {
   const actual = await importOriginal<typeof import("vue")>();
@@ -30,6 +31,10 @@ vi.mock("../../../../../core/composables/useGlobalSearch", () => ({
 
 vi.mock("../../../../../core/composables/useDashboard", () => ({
   provideDashboardService: vi.fn(),
+}));
+
+vi.mock("../../../../../core/composables/usePlatformLocaleSync", () => ({
+  usePlatformLocaleSync: () => mockUsePlatformLocaleSync(),
 }));
 
 const mockHasUnread = ref(false);
@@ -211,6 +216,20 @@ describe("useShellBootstrap", () => {
       bootstrapInScope(createOptions({ internalRoutes: routes }));
 
       expect(mockProvide).toHaveBeenCalledWith(InternalRoutesKey, routes);
+    });
+  });
+
+  describe("platform locale sync", () => {
+    it("invokes usePlatformLocaleSync when embedded", () => {
+      bootstrapInScope(createOptions({ isEmbedded: true }));
+
+      expect(mockUsePlatformLocaleSync).toHaveBeenCalledTimes(1);
+    });
+
+    it("does NOT invoke usePlatformLocaleSync when not embedded", () => {
+      bootstrapInScope(createOptions({ isEmbedded: false }));
+
+      expect(mockUsePlatformLocaleSync).not.toHaveBeenCalled();
     });
   });
 });

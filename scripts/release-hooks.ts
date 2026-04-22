@@ -1,6 +1,7 @@
 import { updateAppsDependencies, updateBoilerplatePkgVersions } from "./utils";
 import {
   addVersionBumpNotes,
+  formatFilesWithPrettier,
   generatePackageChangelogs,
   syncSkillDocs,
   syncSkillVersion,
@@ -222,6 +223,8 @@ async function consolidateStableChangelogs(version: string, stage: boolean): Pro
     changelogFiles.push(changelogPath);
     console.log(`  + ${pkg.displayName}`);
   }
+
+  formatFilesWithPrettier(changelogFiles);
 
   if (stage) {
     // before:release runs after initial staging, so restage regenerated changelogs.

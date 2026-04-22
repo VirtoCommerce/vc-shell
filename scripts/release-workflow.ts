@@ -19,6 +19,17 @@ function runCommand(command: string, args: string[]) {
   }
 }
 
+export function formatFilesWithPrettier(filePaths: string[]) {
+  const targets = [...new Set(filePaths)].filter((filePath) => fs.existsSync(filePath));
+
+  if (targets.length === 0) {
+    return;
+  }
+
+  console.log("\n[changelog] Formatting changelogs with Prettier...");
+  runCommand("yarn", ["prettier", "--write", ...targets]);
+}
+
 function writeJsonFile(filePath: string, data: unknown) {
   fs.writeFileSync(filePath, `${JSON.stringify(data, null, 2)}\n`);
 }
@@ -205,11 +216,15 @@ function generateChangelogForPackage(pkg: ReleasePackageConfig, releaseCount: nu
 
 export function generatePackageChangelogs(releaseCount: number) {
   console.log("\n[changelog] Generating package changelogs...");
+  const changelogFiles: string[] = [];
 
   for (const pkg of releasePackages) {
     console.log(`  -> ${pkg.displayName}`);
     generateChangelogForPackage(pkg, releaseCount);
+    changelogFiles.push(path.join(pkg.path, "CHANGELOG.md"));
   }
+
+  formatFilesWithPrettier(changelogFiles);
 }
 
 export function generateRootChangelog(releaseCount: number) {
@@ -226,6 +241,8 @@ export function generateRootChangelog(releaseCount: number) {
     "-t",
     "v",
   ]);
+
+  formatFilesWithPrettier(["CHANGELOG.md"]);
 }
 
 const SKILL_DIR = path.resolve("cli/vc-app-skill");

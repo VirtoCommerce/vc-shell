@@ -1,30 +1,27 @@
 # [2.0.0-alpha.34](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.33...v2.0.0-alpha.34) (2026-04-22)
 
-
 ### Bug Fixes
 
-* **datatable:** normalise date-range filter values to YYYY-MM-DD ([d89864a](https://github.com/VirtoCommerce/vc-shell/commit/d89864aa635e7479137fb0ad501197adf335f99e))
-* **migrate:** datatable prompt forbids 'removed filters for green build' shortcut ([af5ae8e](https://github.com/VirtoCommerce/vc-shell/commit/af5ae8e4259b435729e6cea9e4c61d74b41d3952))
-* **migrate:** use-data-table-pagination prompt — per-file scope skip ([8949f01](https://github.com/VirtoCommerce/vc-shell/commit/8949f01da97b69c15fc6e3a2fca951608731979c))
-
+- **datatable:** normalise date-range filter values to YYYY-MM-DD ([d89864a](https://github.com/VirtoCommerce/vc-shell/commit/d89864aa635e7479137fb0ad501197adf335f99e))
+- **migrate:** datatable prompt forbids 'removed filters for green build' shortcut ([af5ae8e](https://github.com/VirtoCommerce/vc-shell/commit/af5ae8e4259b435729e6cea9e4c61d74b41d3952))
+- **migrate:** use-data-table-pagination prompt — per-file scope skip ([8949f01](https://github.com/VirtoCommerce/vc-shell/commit/8949f01da97b69c15fc6e3a2fca951608731979c))
 
 ### chore
 
-* **scripts:** normalize yarn scripts per industry standards ([1cdd0cb](https://github.com/VirtoCommerce/vc-shell/commit/1cdd0cb517d2436ef2a509c6b6c358f6a48630d1))
-
+- **scripts:** normalize yarn scripts per industry standards ([1cdd0cb](https://github.com/VirtoCommerce/vc-shell/commit/1cdd0cb517d2436ef2a509c6b6c358f6a48630d1))
 
 ### Features
 
-* **migrate:** add use-data-table-pagination-audit + AI migration prompt ([0c2e7b6](https://github.com/VirtoCommerce/vc-shell/commit/0c2e7b6efba387d9fafe04e5bdcd21ea20500259))
-* **migrate:** expand v2 migration tooling — icon/asset/audit prompts and blade-event cleanup ([f4788d4](https://github.com/VirtoCommerce/vc-shell/commit/f4788d4d9c588157ca5c11facfe558a69c254c2e)), closes [#41](https://github.com/VirtoCommerce/vc-shell/issues/41)
-
+- **migrate:** add use-data-table-pagination-audit + AI migration prompt ([0c2e7b6](https://github.com/VirtoCommerce/vc-shell/commit/0c2e7b6efba387d9fafe04e5bdcd21ea20500259))
+- **migrate:** expand v2 migration tooling — icon/asset/audit prompts and blade-event cleanup ([f4788d4](https://github.com/VirtoCommerce/vc-shell/commit/f4788d4d9c588157ca5c11facfe558a69c254c2e)), closes [#41](https://github.com/VirtoCommerce/vc-shell/issues/41)
 
 ### BREAKING CHANGES
 
-* **scripts:** for external consumers: old script names
-(storybook-serve, build-framework, check-locales etc) are removed.
-Legacy aliases are deliberately not provided — they would perpetuate
-the non-standard naming this commit eliminates.
+- **scripts:** for external consumers: old script names
+  (storybook-serve, build-framework, check-locales etc) are removed.
+  Legacy aliases are deliberately not provided — they would perpetuate
+  the non-standard naming this commit eliminates.
+
 # [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
 
 ### Bug Fixes

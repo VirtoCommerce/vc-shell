@@ -1,22 +1,20 @@
 # [2.0.0-alpha.34](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.33...v2.0.0-alpha.34) (2026-04-22)
 
-
 ### chore
 
-* **scripts:** normalize yarn scripts per industry standards ([1cdd0cb](https://github.com/VirtoCommerce/vc-shell/commit/1cdd0cb517d2436ef2a509c6b6c358f6a48630d1))
-
+- **scripts:** normalize yarn scripts per industry standards ([1cdd0cb](https://github.com/VirtoCommerce/vc-shell/commit/1cdd0cb517d2436ef2a509c6b6c358f6a48630d1))
 
 ### Features
 
-* **migrate, configs, scripts:** peer-versions.json as canonical source ([3199202](https://github.com/VirtoCommerce/vc-shell/commit/3199202ad190d9260b4bec99f6839232ebcfa839))
-
+- **migrate, configs, scripts:** peer-versions.json as canonical source ([3199202](https://github.com/VirtoCommerce/vc-shell/commit/3199202ad190d9260b4bec99f6839232ebcfa839))
 
 ### BREAKING CHANGES
 
-* **scripts:** for external consumers: old script names
-(storybook-serve, build-framework, check-locales etc) are removed.
-Legacy aliases are deliberately not provided — they would perpetuate
-the non-standard naming this commit eliminates.
+- **scripts:** for external consumers: old script names
+  (storybook-serve, build-framework, check-locales etc) are removed.
+  Legacy aliases are deliberately not provided — they would perpetuate
+  the non-standard naming this commit eliminates.
+
 # [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app

@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/VirtoCommerce/vc-shell/actions/workflows/ci.yml"><img src="https://github.com/VirtoCommerce/vc-shell/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="https://www.npmjs.com/package/@vc-shell/framework"><img src="https://img.shields.io/npm/v/@vc-shell/framework/alpha?color=orange&label=%40vc-shell%2Fframework" alt="alpha version"></a>
+  <a href="https://www.npmjs.com/package/@vc-shell/framework"><img src="https://img.shields.io/npm/v/@vc-shell/framework?color=orange&label=%40vc-shell%2Fframework" alt="npm version"></a>
   <a href="https://github.com/VirtoCommerce/vc-shell/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-VC--OSL-green" alt="License"></a>
   <a href="https://vc-shell-storybook.govirto.com/"><img src="https://img.shields.io/badge/storybook-live%20demo-ff4785" alt="Storybook"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen" alt="Node.js"></a>
@@ -17,19 +17,34 @@
 
 ## Overview
 
-**vc-shell** is a monorepo containing the core UI framework, CLI tools, shared configs, and reference applications for VirtoCommerce back-office development. It provides a complete design system of 60+ reusable Vue 3 components, a blade-based navigation paradigm, and a dynamic module system for building extensible admin applications.
+**vc-shell** is a monorepo containing the core UI framework, CLI tools, shared configs, and reference applications for VirtoCommerce back-office development. It provides a complete Vue 3 design system, a blade-based navigation paradigm, and a dynamic module system for building extensible admin applications.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Tech Stack](#tech-stack)
+- [Monorepo Structure](#monorepo-structure)
+- [Getting Started](#getting-started)
+- [Development](#development)
+- [Testing PR Previews](#testing-pr-previews)
+- [Local Development via `portal:` Protocol](#local-development-via-portal-protocol)
+- [Architecture](#architecture)
+- [Component Library](#component-library)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
 
 ### Key Features
 
 - **Blade Navigation** — stacked panel navigation with `useBlade()` composable for opening, closing, and communicating between blades
-- **60+ UI Components** — Atomic Design hierarchy (atoms, molecules, organisms) with Tailwind CSS styling
+- **Component Library** — Atomic Design hierarchy (atoms, molecules, organisms) with Tailwind CSS styling
 - **Dynamic Module System** — runtime-loaded Vue plugins with semver compatibility and extension points
 - **VcDataTable** — compositional table with declarative `<VcColumn>` API, virtual scroll, column switching, global filters, drag-and-drop reorder, and state persistence
 - **Rich Text Editor** — Tiptap-based editor with tables, images, links, and markdown support
 - **Dashboard & Widgets** — grid-based dashboard with GridStack, customizable widget system
 - **Responsive Design** — mobile-first with dedicated mobile component variants
 - **i18n** — built-in internationalization via vue-i18n
-- **44+ Composables** — reusable logic for API clients, assets, notifications, settings, permissions, and more
+- **Core Composables** — reusable logic for API clients, assets, notifications, settings, permissions, and more
 
 ## Tech Stack
 
@@ -53,14 +68,14 @@ vc-shell/
 ├── framework/                  # @vc-shell/framework — main UI library
 │   ├── core/                   #   API clients, composables, plugins, services
 │   │   ├── api/                #     Generated API clients
-│   │   ├── composables/        #     44+ composables (useBlade, useAsync, etc.)
+│   │   ├── composables/        #     Composables (useBlade, useAsync, etc.)
 │   │   ├── plugins/            #     Modularity, extensions, AI agent
 │   │   └── services/           #     Menu, Dashboard, Toolbar, GlobalSearch
 │   ├── ui/                     #   Vue components (Atomic Design)
 │   │   └── components/
-│   │       ├── atoms/          #     20+ base components (Button, Badge, Icon...)
-│   │       ├── molecules/      #     28+ form & interactive (Input, Select, Editor...)
-│   │       └── organisms/      #     9 complex components (Table, Blade, Gallery...)
+│   │       ├── atoms/          #     Base components (Button, Badge, Icon...)
+│   │       ├── molecules/      #     Form & interactive components (Input, Select, Editor...)
+│   │       └── organisms/      #     Complex components (Table, Blade, Gallery...)
 │   ├── shell/                  #   App chrome: sidebar, auth, dashboard, settings
 │   ├── modules/                #   Built-in modules (assets, assets-manager)
 │   └── assets/styles/          #   SCSS theme & CSS custom properties
@@ -81,7 +96,7 @@ vc-shell/
 │   └── mf-module/              #   @vc-shell/mf-module
 │
 ├── apps/                       # Apps for local framework development & debugging
-│   └── ...                     #   Place vc-shell apps here (see "Local Development with an App")
+│   └── ...                     #   Place vc-shell apps here (see "Local Development via portal: Protocol")
 │
 └── .storybook/                 # Storybook configuration
 ```
@@ -93,7 +108,59 @@ vc-shell/
 - **Node.js** >= 22
 - **Yarn** 4.x (Corepack: `corepack enable`)
 
-### Installation
+### Create a New App
+
+There are two official workflows for creating vc-shell applications:
+
+1. **CLI scaffolder** (`@vc-shell/create-vc-app`) — deterministic project bootstrap from templates
+2. **AI skill** (`@vc-shell/vc-app-skill`) — intent-driven app and module generation in AI coding tools
+
+#### Option A: CLI Scaffolder (`@vc-shell/create-vc-app`)
+
+Create a new project interactively:
+
+```bash
+npx @vc-shell/create-vc-app my-app
+```
+
+Or use non-interactive flags:
+
+```bash
+npx @vc-shell/create-vc-app my-app --type standalone --module-name "Products" --dashboard --mocks
+```
+
+Add a module to an existing app:
+
+```bash
+npx @vc-shell/create-vc-app add-module orders
+```
+
+See full options and project types in [`cli/create-vc-app/README.md`](./cli/create-vc-app/README.md).
+
+#### Option B: AI Skill (`@vc-shell/vc-app-skill`) for Claude Code and Codex
+
+Install skill runtime:
+
+```bash
+# Claude Code runtime (default)
+npx @vc-shell/vc-app-skill@alpha install
+
+# Codex runtime
+npx @vc-shell/vc-app-skill@alpha install --runtime codex
+```
+
+Restart your AI tool session, then use slash commands in your app workspace:
+
+```text
+/vc-app create
+/vc-app connect
+/vc-app generate
+/vc-app add-module orders
+```
+
+See full command reference in [`cli/vc-app-skill/README.md`](./cli/vc-app-skill/README.md).
+
+### Contribute to This Monorepo
 
 ```bash
 # Clone the repository
@@ -105,15 +172,6 @@ yarn install
 
 # Build all packages
 yarn build
-```
-
-### Quick Start with Scaffolder
-
-Create a new vc-shell application from a template:
-
-```bash
-# Interactive project scaffolder
-npx @vc-shell/create-vc-app my-app
 ```
 
 ## Development
@@ -205,7 +263,9 @@ npm install @vc-shell/framework@pr-<N>
 
 See [CONTRIBUTING.md — Testing PR Previews](./CONTRIBUTING.md#testing-pr-previews) for details, including the fork-PR caveat and exact-commit install pattern.
 
-### Local Development via portal: Protocol
+### Local Development via `portal:` Protocol
+
+This repository supports one local-linking approach: Yarn `portal:`.
 
 If your app lives outside this monorepo and you want to debug against a local build of `@vc-shell/framework` without moving the app.
 
@@ -288,71 +348,21 @@ The script rewrites every `@vc-shell/*` dependency in the app's `package.json` t
 - **Type errors after rebuild** — stale `.tsbuildinfo` or `dist/` remnants. Clean vc-shell with `yarn clean` (and rebuild) before retrying.
 - **Yarn refuses to install with lockfile conflicts** — the app's `yarn.lock` may reference npm-registry versions of `@vc-shell/*`. Delete the app's `yarn.lock` and re-run `yarn install` so Yarn re-resolves through portal entries.
 
-#### When to use which approach
-
-| Situation                                                                                                                      | Recommended                                                                                   |
-| ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| You want the app built into this monorepo (running its dev server via `yarn workspace`, checking CI here, cross-package edits) | [Local Development with an App](#local-development-with-an-app) (`apps/` + `yarn setup:apps`) |
-| Your app is in a separate repo and should stay there; you just need a short debug loop against a local framework build         | `portal:` protocol (this section)                                                             |
-
 ## Contributing
 
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for development setup, workflow, and PR requirements.
 
 ## Architecture
 
-### Blade Navigation
+vc-shell follows a blade-first modular architecture:
 
-Blades are the core navigation paradigm — stacked panels that open from left to right. The `useBlade()` composable provides a unified API for navigation, communication, lifecycle, and error management:
+- **Blade Navigation** — stacked panel UX with context-aware navigation and blade-to-blade messaging
+- **Module Runtime** — modules are Vue plugins that register blades, locales, and notification contracts
+- **Extension Points** — cross-module composition via named slots and registration APIs
 
-```vue
-<script setup lang="ts">
-import { useBlade } from "@vc-shell/framework";
+For implementation details, patterns, and code examples, see:
 
-const { param, openBlade, closeSelf, callParent, onActivated } = useBlade();
-
-openBlade({ name: "OrderDetails", param: "order-123" });
-openBlade({ name: "OrdersList", isWorkspace: true });
-closeSelf();
-const result = await callParent("reload");
-onActivated(() => {
-  /* refresh data */
-});
-</script>
-```
-
-### Modules
-
-Modules are defined with `defineAppModule()` and registered as Vue plugins. Each module declares its blades, locales, and notification types:
-
-```typescript
-import { defineAppModule } from "@vc-shell/framework";
-import { OrdersList, OrderDetails } from "./components";
-import en from "./locales/en.json";
-import de from "./locales/de.json";
-
-export default defineAppModule({
-  blades: { OrdersList, OrderDetails },
-  locales: { en, de },
-  notifications: {
-    OrderChanged: { toast: { mode: "auto" } },
-  },
-});
-```
-
-Blade components are auto-registered in BladeRegistry by their `name` property, enabling navigation via `openBlade({ name: "OrdersList" })`.
-
-### Extension Points
-
-The framework supports declarative extension points for cross-module customization:
-
-```typescript
-import { defineExtensionPoint } from "@vc-shell/framework/extensions";
-
-const { ExtensionPoint, extensions } = defineExtensionPoint("order-details-toolbar");
-```
-
-Consumer modules contribute to extension points by registering components at those named slots.
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md)
 
 ## Component Library
 
@@ -376,13 +386,16 @@ Explore all components interactively: **[Storybook](https://vc-shell-storybook.g
 
 ## Documentation
 
-| Resource                                             | Description                    |
-| ---------------------------------------------------- | ------------------------------ |
-| [Storybook](https://vc-shell-storybook.govirto.com/) | Interactive component explorer |
-| [WHATS_NEW.md](./WHATS_NEW.md)                       | v2.0.0 feature highlights      |
-| [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)           | Migration from v1 to v2        |
-| [RELEASING.md](./RELEASING.md)                       | Release process documentation  |
-| [CHANGELOG.md](./CHANGELOG.md)                       | Full changelog                 |
+| Resource                                              | Description                                 |
+| ----------------------------------------------------- | ------------------------------------------- |
+| [Storybook](https://vc-shell-storybook.govirto.com/)  | Interactive component explorer              |
+| [ARCHITECTURE.md](./ARCHITECTURE.md)                  | Architecture guide and patterns             |
+| [create-vc-app README](./cli/create-vc-app/README.md) | Scaffolder usage and flags                  |
+| [vc-app-skill README](./cli/vc-app-skill/README.md)   | AI skill commands for app/module generation |
+| [WHATS_NEW.md](./WHATS_NEW.md)                        | v2.0.0 feature highlights                   |
+| [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)            | Migration from v1 to v2                     |
+| [RELEASING.md](./RELEASING.md)                        | Release process documentation               |
+| [CHANGELOG.md](./CHANGELOG.md)                        | Full changelog                              |
 
 ## License
 

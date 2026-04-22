@@ -46,7 +46,7 @@ This component has no props. All content is driven by the settings menu service 
 A typical module registers all its settings entries during the module install phase:
 
 ```ts
-// my-module/index.ts
+// vendor-portal-module/index.ts
 import { markRaw } from "vue";
 import { useSettingsMenu, ThemeSelector, LanguageSelector, ChangePasswordButton, LogoutButton } from "@vc-shell/framework";
 

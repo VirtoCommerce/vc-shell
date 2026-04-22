@@ -67,7 +67,7 @@ const isVisuallyExpanded = computed(() => isExpanded.value || isHoverExpanded.va
 
 ## Details
 
-- **Storage key scoping**: The key is scoped per application using the first URL path segment: `VC_APP_MENU_EXPANDED_{appName}`. For example, if the app is hosted at `/my-app/`, the key is `VC_APP_MENU_EXPANDED_my-app`. This allows multiple vc-shell apps on the same domain to maintain independent sidebar states.
+- **Storage key scoping**: The key is scoped per application using the first URL path segment: `VC_APP_MENU_EXPANDED_{appName}`. For example, if the app is hosted at `/vendor-portal/`, the key is `VC_APP_MENU_EXPANDED_vendor-portal`. This allows multiple vc-shell apps on the same domain to maintain independent sidebar states.
 - **Hover delay**: Opening uses a 200ms debounce to prevent accidental expansion when the cursor briefly passes over the sidebar. Closing is immediate to feel responsive.
 - **Cleanup**: Pending hover timeouts are cleaned up via `onScopeDispose` to prevent memory leaks when the composable's effect scope is destroyed.
 - **Default state**: The sidebar starts pinned open (`true`) on first visit, which is the most user-friendly default for new users.

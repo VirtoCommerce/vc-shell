@@ -1,3 +1,46 @@
+# [2.0.0-alpha.34](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.33...v2.0.0-alpha.34) (2026-04-22)
+
+
+* refactor!: remove global component and directive registration ([7643d8f](https://github.com/VirtoCommerce/vc-shell/commit/7643d8fcba40bdd4d5e6a8be244a6c1978eec3fb))
+
+
+### Bug Fixes
+
+* **migrate:** --transform bypasses version filter ([85072d1](https://github.com/VirtoCommerce/vc-shell/commit/85072d1059a3dbda11259cdbe80899ce3bf50c6a))
+* **migrate:** --update-deps at same version + baseline drift check ([39fea4a](https://github.com/VirtoCommerce/vc-shell/commit/39fea4a6fb243766dbc1f1d31a0c207741a98dd0))
+* **migrate:** define-expose-to-children adds useBlade import when missing ([ee7ed7d](https://github.com/VirtoCommerce/vc-shell/commit/ee7ed7db0ba16f2669d59b75b7a35385088feeee))
+
+
+### Features
+
+* **migrate, configs, scripts:** peer-versions.json as canonical source ([3199202](https://github.com/VirtoCommerce/vc-shell/commit/3199202ad190d9260b4bec99f6839232ebcfa839))
+* **migrate:** add remove-expose-title and remove-app-module-options ([3a76ff7](https://github.com/VirtoCommerce/vc-shell/commit/3a76ff738fd9ef99fd96acd821280f8a7d66b210))
+* **migrate:** add use-data-table-pagination-audit + AI migration prompt ([0c2e7b6](https://github.com/VirtoCommerce/vc-shell/commit/0c2e7b6efba387d9fafe04e5bdcd21ea20500259))
+* **migrate:** add vc-blade-loading-prop transform ([0cb72f3](https://github.com/VirtoCommerce/vc-shell/commit/0cb72f39bc55a98cab0c9a786a1da3bb52e75d3e))
+* **migrate:** expand v2 migration tooling — icon/asset/audit prompts and blade-event cleanup ([f4788d4](https://github.com/VirtoCommerce/vc-shell/commit/f4788d4d9c588157ca5c11facfe558a69c254c2e)), closes [#41](https://github.com/VirtoCommerce/vc-shell/issues/41)
+* **tests:** enhance test helpers and add vitest environment for consistency ([6cd30ac](https://github.com/VirtoCommerce/vc-shell/commit/6cd30ac65b83dd756803b9ccb4278bd8679be930))
+
+
+### BREAKING CHANGES
+
+* Framework no longer registers Vc* components and
+directives globally via app.component()/app.directive(). All 64 UI
+components and 2 directives (v-loading, v-autofocus) must now be
+explicitly imported from @vc-shell/framework/ui.
+
+- Delete global-components.ts type augmentation
+- Remove registerComponentsAndDirectives() from framework plugin
+- Remove GlobalComponents augmentations from 10 module/shell files
+- Remove app.component() registration from blade-navigation plugin
+- Add explicit imports to 25 framework .vue files
+- Add vLoading/vAutofocus directive aliases for Vue auto-registration
+- Add VcLanguageSelector to molecules barrel export
+- Add directive re-export to @vc-shell/framework/ui entry point
+- Add remove-global-components CLI migrator transform with 6 tests
+- Add migration/40-remove-global-components.md guide
+- Add ai-agent/components exception to layer violation checker
+
+Automated migration: npx @vc-shell/migrate --transform remove-global-components
 # [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
 
 ### Bug Fixes

@@ -1,3 +1,69 @@
+# [2.0.0-alpha.34](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.33...v2.0.0-alpha.34) (2026-04-22)
+
+
+* refactor!: remove global component and directive registration ([7643d8f](https://github.com/VirtoCommerce/vc-shell/commit/7643d8fcba40bdd4d5e6a8be244a6c1978eec3fb))
+
+
+### Bug Fixes
+
+* **ci:** sync yarn.lock and unblock framework-checks pipeline ([5cf0670](https://github.com/VirtoCommerce/vc-shell/commit/5cf0670b9abd84cd9c52aa7c7c1488439c1a0bee))
+* **datatable:** normalise date-range filter values to YYYY-MM-DD ([d89864a](https://github.com/VirtoCommerce/vc-shell/commit/d89864aa635e7479137fb0ad501197adf335f99e))
+* **deps:** add jsdom to framework devDependencies ([5060c2a](https://github.com/VirtoCommerce/vc-shell/commit/5060c2abe2ebdd077ba7e3fbe0a232e66822dfed))
+* **table:** account for implicit selection cell in available width calculation ([a060668](https://github.com/VirtoCommerce/vc-shell/commit/a060668c064db3e2a16f654f8bc42e94b9276521))
+* **table:** allow resize to consume filler space in gap mode ([57dfdac](https://github.com/VirtoCommerce/vc-shell/commit/57dfdacace4564cf08c6ab9a037a1039ec79941a))
+* **table:** clamp resize to right neighbors capacity, freeze left columns during drag ([af76531](https://github.com/VirtoCommerce/vc-shell/commit/af765312d5e015166ebc06f626ddaf4a7a6b0385))
+* **table:** DOM-based width measurement, remove hardcoded constants, smart show/hide redistribution ([2f4da13](https://github.com/VirtoCommerce/vc-shell/commit/2f4da13aac321bf1d55a8ae2f11c8899b03d79bd))
+* **table:** preserve filler on user resize, normalize weights on container resize ([4ac256c](https://github.com/VirtoCommerce/vc-shell/commit/4ac256cb12154aa9bc18d533a960303ba2fbb63c))
+* **table:** preserve restored column widths — cancel props reinit on state restore ([203fe79](https://github.com/VirtoCommerce/vc-shell/commit/203fe79fcbbc1c3a80e52592a1aa764c3850ec78))
+* **table:** preserve restored weights on init, normalize resize weights to sum=1 ([52c9528](https://github.com/VirtoCommerce/vc-shell/commit/52c9528a4f9b936d6d02a997399bda2be1b5a076))
+* **table:** proportional scaling on container resize preserves filler ratio ([5446799](https://github.com/VirtoCommerce/vc-shell/commit/5446799c14fc1a4266d576f389cf793d78611ad5))
+* **table:** recompute widths on column show/hide, equal weight redistribution ([3b35e27](https://github.com/VirtoCommerce/vc-shell/commit/3b35e272f7b7963fd8871b06e065ecb7943906ab))
+* **table:** subtract row padding and drag-handle gap from available width for engine ([d840fa1](https://github.com/VirtoCommerce/vc-shell/commit/d840fa19e388021c816e222a63ccbf6019d88435))
+* **tests:** update vue-i18n mocks for consistency across components ([0b73433](https://github.com/VirtoCommerce/vc-shell/commit/0b73433c5ee0317bd525a34a3937af54fb7f7c28))
+* **vc-card:** render header only when header prop or slot provided ([5a1d4bc](https://github.com/VirtoCommerce/vc-shell/commit/5a1d4bc373611385be7a052609e9f7bed037e2cd))
+* **vc-data-table:** remove initial column layout glitch ([2bdcc88](https://github.com/VirtoCommerce/vc-shell/commit/2bdcc8878d5760154be8b66dbf15c17904ecc2d8))
+
+
+### chore
+
+* **scripts:** normalize yarn scripts per industry standards ([1cdd0cb](https://github.com/VirtoCommerce/vc-shell/commit/1cdd0cb517d2436ef2a509c6b6c358f6a48630d1))
+
+
+### Features
+
+* **i18n:** sync shell locale from platform NG_TRANSLATE_LANG_KEY in embedded mode ([4adc6b0](https://github.com/VirtoCommerce/vc-shell/commit/4adc6b0f647b33e1ed6d1fb44835fc165e9edb9b))
+* **table:** add ColumnSpec, ColumnState, TableFitMode, PersistedStateV2 types ([42c5414](https://github.com/VirtoCommerce/vc-shell/commit/42c541450abf9a7dfb4664067db9e0987c24dbcb))
+* **table:** add storybook stories for fit/gap modes and width constraints ([1c0422b](https://github.com/VirtoCommerce/vc-shell/commit/1c0422b582351a75301f9c04496c1ea50657e589))
+* **table:** add weight-based column width engine with unit tests ([280eaa3](https://github.com/VirtoCommerce/vc-shell/commit/280eaa3ee90cb4add77deafdac76d750474ed748))
+* **tests:** enhance test helpers and add vitest environment for consistency ([6cd30ac](https://github.com/VirtoCommerce/vc-shell/commit/6cd30ac65b83dd756803b9ccb4278bd8679be930))
+* **vc-gallery:** filter non-image files on upload ([8a3c042](https://github.com/VirtoCommerce/vc-shell/commit/8a3c042e00e825b28b55fe0d5c9b4044291e207c))
+* **vc-select:** add V generic for modelValue/update:modelValue types ([8c69d86](https://github.com/VirtoCommerce/vc-shell/commit/8c69d86b5cfc9a1f5bfb8f132bc60233058a6c10))
+
+
+### BREAKING CHANGES
+
+* **scripts:** for external consumers: old script names
+(storybook-serve, build-framework, check-locales etc) are removed.
+Legacy aliases are deliberately not provided — they would perpetuate
+the non-standard naming this commit eliminates.
+* Framework no longer registers Vc* components and
+directives globally via app.component()/app.directive(). All 64 UI
+components and 2 directives (v-loading, v-autofocus) must now be
+explicitly imported from @vc-shell/framework/ui.
+
+- Delete global-components.ts type augmentation
+- Remove registerComponentsAndDirectives() from framework plugin
+- Remove GlobalComponents augmentations from 10 module/shell files
+- Remove app.component() registration from blade-navigation plugin
+- Add explicit imports to 25 framework .vue files
+- Add vLoading/vAutofocus directive aliases for Vue auto-registration
+- Add VcLanguageSelector to molecules barrel export
+- Add directive re-export to @vc-shell/framework/ui entry point
+- Add remove-global-components CLI migrator transform with 6 tests
+- Add migration/40-remove-global-components.md guide
+- Add ai-agent/components exception to layer violation checker
+
+Automated migration: npx @vc-shell/migrate --transform remove-global-components
 # [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
 
 ### Bug Fixes

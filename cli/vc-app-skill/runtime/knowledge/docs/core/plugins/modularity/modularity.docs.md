@@ -703,16 +703,16 @@ export default defineAppModule({});
 A module can extend another module's UI by using extension points (see the [Extension Points Plugin](../extension-points/extension-points.docs.md)):
 
 ```typescript
-// modules/entity-extensions/index.ts
+// modules/marketplace-commissions/index.ts
 import { defineAppModule, useExtensionPoint } from "@vc-shell/framework";
-import CustomFields from "./components/CustomFields.vue";
+import CommissionFields from "./components/CommissionFields.vue";
 import en from "./locales/en.json";
 
-// Register into the entity details extension point
-const { add } = useExtensionPoint("entity:custom-fields");
+// Register into the seller details extension point
+const { add } = useExtensionPoint("seller:commissions");
 add({
-  id: "entity-extension",
-  component: CustomFields,
+  id: "marketplace-commission",
+  component: CommissionFields,
   props: { showAdvanced: true },
   priority: 10,
 });
@@ -733,7 +733,7 @@ The host blade declares the extension point:
     <!-- Other modules can inject components here -->
     <ExtensionPoint
       v-if="sellerDetails?.id"
-      name="entity:custom-fields"
+      name="seller:commissions"
       wrapper-class="tw-p-2"
     />
   </VcBlade>

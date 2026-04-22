@@ -22,21 +22,21 @@ import { useBladeWidgets } from "@vc-shell/framework";
 
 const { refreshAll } = useBladeWidgets([
   {
-    id: "ChildListWidget",
+    id: "OffersWidget",
     icon: "lucide-tag",
-    title: "MODULE.WIDGETS.CHILD_LIST.TITLE",
-    badge: childCount,
-    loading: childLoading,
-    onClick: () => openBlade({ name: "ChildList" }),
-    onRefresh: () => reloadChildren(),
+    title: "OFFERS.TITLE",
+    badge: offersCount,
+    loading: offersLoading,
+    onClick: () => openBlade({ name: "OffersList" }),
+    onRefresh: () => reloadOffers(),
   },
   {
-    id: "NotesWidget",
+    id: "ReviewsWidget",
     icon: "lucide-star",
-    title: "MODULE.WIDGETS.NOTES.TITLE",
-    badge: notesCount,
+    title: "REVIEWS.TITLE",
+    badge: reviewsCount,
     isVisible: computed(() => !!item.value?.id),
-    onClick: () => openBlade({ name: "NotesList" }),
+    onClick: () => openBlade({ name: "ReviewsList" }),
   },
 ]);
 
@@ -119,7 +119,7 @@ import { MessageWidget } from "./components/widgets";
 registerExternalWidget({
   id: "MessageWidget",
   component: markRaw(MessageWidget),
-  targetBlades: ["EntityDetails", "AnotherDetails"],
+  targetBlades: ["ProductDetails", "OrderDetails"],
   isVisible: (blade?: BladeDescriptor) => !!blade?.param,
 });
 ```
@@ -176,61 +176,61 @@ import { useBladeWidgets } from "@vc-shell/framework";
 const { refresh, refreshAll } = useBladeWidgets([]);
 
 async function save() {
-  await api.saveEntity(entity.value);
+  await api.saveProduct(product.value);
   refreshAll(); // refresh all widgets (including MessageWidget)
   // or: refresh("MessageWidget");  // refresh a specific widget by ID
 }
 </script>
 ```
 
-## Recipe: Entity Detail Blade with Multiple Widgets
+## Recipe: Product Detail Blade with Multiple Widgets
 
 ```vue
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useBladeWidgets, defineBladeContext } from "@vc-shell/framework";
 
-const entity = ref({ id: "ent-1", name: "Sample" });
-const childCount = ref(0);
-const notesCount = ref(0);
-const childLoading = ref(false);
+const product = ref({ id: "prod-1", name: "Widget A" });
+const offersCount = ref(0);
+const reviewsCount = ref(0);
+const offersLoading = ref(false);
 
-// Expose entity data to widgets
-defineBladeContext(computed(() => ({ id: entity.value?.id })));
+// Expose product data to widgets
+defineBladeContext(computed(() => ({ id: product.value?.id })));
 
-async function reloadChildren() {
-  childLoading.value = true;
+async function reloadOffers() {
+  offersLoading.value = true;
   try {
-    const result = await api.searchChildren({ entityId: entity.value.id });
-    childCount.value = result.totalCount;
+    const result = await api.searchOffers({ productId: product.value.id });
+    offersCount.value = result.totalCount;
   } finally {
-    childLoading.value = false;
+    offersLoading.value = false;
   }
 }
 
 const { refreshAll } = useBladeWidgets([
   {
-    id: "ChildListWidget",
+    id: "OffersWidget",
     icon: "lucide-tag",
-    title: "MODULE.WIDGETS.CHILD_LIST",
-    badge: childCount,
-    loading: childLoading,
-    isVisible: computed(() => !!entity.value?.id),
-    onClick: () => openBlade({ name: "ChildList" }),
-    onRefresh: reloadChildren,
+    title: "PRODUCT.WIDGETS.OFFERS",
+    badge: offersCount,
+    loading: offersLoading,
+    isVisible: computed(() => !!product.value?.id),
+    onClick: () => openBlade({ name: "OffersList" }),
+    onRefresh: reloadOffers,
   },
   {
-    id: "NotesWidget",
+    id: "ReviewsWidget",
     icon: "lucide-star",
-    title: "MODULE.WIDGETS.NOTES",
-    badge: notesCount,
-    isVisible: computed(() => !!entity.value?.id),
-    onClick: () => openBlade({ name: "NotesList" }),
+    title: "PRODUCT.WIDGETS.REVIEWS",
+    badge: reviewsCount,
+    isVisible: computed(() => !!product.value?.id),
+    onClick: () => openBlade({ name: "ReviewsList" }),
   },
 ]);
 
 async function save() {
-  await api.saveEntity(entity.value);
+  await api.saveProduct(product.value);
   // Refresh all widget counts after saving
   refreshAll();
 }

@@ -551,6 +551,40 @@ Columns are reorderable by default. Drag a column header to a new position. Disa
 </VcDataTable>
 ```
 
+### Column Width Model
+
+VcDataTable uses a **weight-based engine** to compute exact pixel widths for every column deterministically, based on the container's available width.
+
+**How it works:**
+
+1. Developer declares initial widths via the `VcColumn` `width` prop (px, %, or omitted for auto).
+2. At runtime, these declarations become proportional weights. The engine converts weights to exact pixel values by distributing `availableWidth` proportionally.
+3. When a user resizes a column, only the weights change — the engine recomputes all pixel widths from the new weights on the next render.
+4. Clicking **Reset columns** returns all columns to their declarative hints.
+
+**`fitMode` prop** controls what happens to leftover space:
+
+| Value             | Behavior                                                                      |
+| ----------------- | ----------------------------------------------------------------------------- |
+| `"gap"` (default) | A filler pseudo-element absorbs unused space at the right end.                |
+| `"fit"`           | All column weights are normalized so columns fill the entire container width. |
+
+**Width prop contract:**
+
+| Declaration                     | Meaning                                                      |
+| ------------------------------- | ------------------------------------------------------------ |
+| `width="200"` or `:width="200"` | Initial 200 px hint                                          |
+| `width="20%"`                   | Initial hint based on 20% of available width                 |
+| `width` omitted                 | Auto — splits remaining space equally among all auto columns |
+
+After initialization the column lives in the weight model. Container resizes recompute px values without changing weights.
+
+**`minWidth` / `maxWidth`:**
+
+- `minWidth` and `maxWidth` are enforced by the engine on every computation pass.
+- Default `minWidth` is 40 px when not specified.
+- In crisis (sum of all `minWidth` values exceeds available width), the engine squeezes columns below their minimums and emits a console warning rather than breaking layout.
+
 ### Column Switcher
 
 A built-in panel lets users show/hide columns. Enabled by default when `column-switcher` is truthy.
@@ -991,6 +1025,10 @@ Persist column widths, column order, hidden columns, sort, and filters across pa
 ```
 
 **Storage key format:** `VC_DATATABLE_PRODUCT-LIST` (uppercased `state-key`).
+
+**Schema version:** The persisted state uses the **v2 schema**, which stores column weights, column order, and hidden/shown column IDs. `containerWidth` is no longer stored because weights are container-independent — the engine recomputes pixel values from weights on every mount.
+
+If an older browser tab wrote **v1** state (pixel-based widths), it is automatically migrated to v2 on first load. No manual migration is needed.
 
 Use sessionStorage instead of localStorage:
 
@@ -1534,9 +1572,9 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ## Recipes
 
-### Recipe 1: Entity List Blade
+### Recipe 1: Products List Blade
 
-A typical list blade with search, pagination, row actions, and empty states.
+A typical list blade with search, pagination, row actions, and empty states -- modeled after real vendor-portal usage.
 
 ```vue
 <template>

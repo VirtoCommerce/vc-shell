@@ -1,3 +1,9 @@
+# [2.0.0-alpha.34](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.33...v2.0.0-alpha.34) (2026-04-22)
+
+
+### Bug Fixes
+
+* **tests:** update vue-i18n mocks for consistency across components ([0b73433](https://github.com/VirtoCommerce/vc-shell/commit/0b73433c5ee0317bd525a34a3937af54fb7f7c28))
 # [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
 
 **Note:** Version bump only for package @vc-shell/mf-module

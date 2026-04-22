@@ -14,6 +14,7 @@ The skill covers:
 - Enhancing existing modules with surgical modifications (add columns, fields, toolbar actions, logic, blade links)
 - Generating full multi-module applications from a free-text prompt (design command)
 - Promoting prototype modules from mock data to real API clients
+- Migrating existing apps to the latest `@vc-shell/framework` version (runs the CLI migrator, regenerates API clients, completes AI-assisted manual refactors)
 - Following vc-shell conventions: Vue 3 + TypeScript, Tailwind with `tw-` prefix, `<script setup>`, BEM class names
 
 ## Installation
@@ -154,6 +155,28 @@ When you generate a module without an API client, it uses mock data with `// vc-
 - **Phase 4: Code Transformation** — replaces mock code with real API calls, renames fields, updates locales
 - **Phase 5: Cleanup** — type-checks, removes prototype marker on success
 
+### `/vc-app migrate`
+
+Fully automatic migration of an existing app to the latest `@vc-shell/framework` version. Runs the CLI migrator for mechanical transforms, regenerates API clients with the new Interface-style output, installs updated dependencies, and dispatches AI agents to complete manual refactors flagged in `MIGRATION_REPORT.md`.
+
+```
+/vc-app migrate
+```
+
+Flow:
+
+- **Step 1: Pre-flight** — verifies the project uses `@vc-shell/framework`; warns on uncommitted changes
+- **Step 2: CLI migrator** — runs `@vc-shell/migrate --update-deps` to apply mechanical transforms and align peer-dependency versions (including `@vc-shell/*`, ESLint, Vite, TypeScript, VueUse, `vue-router` and other curated peer deps)
+- **Step 2.5: API client regeneration** — adds `APP_TYPE_STYLE=Interface`, runs `generate-api-client`, verifies types compile
+- **Step 3: Install** — `yarn install` to refresh the lockfile
+- **Step 4: Parse report** — reads `MIGRATION_REPORT.md`, maps "Manual Migration Required" topics to migration prompts and patterns
+- **Step 5: AI migration** — dispatches `migration-agent` on affected files per topic (supports partial resume via `.vc-app-migrate-state.json`)
+- **Step 6: Verify** — runs `vue-tsc --noEmit` and `yarn build`, iteratively fixes type errors
+- **Step 6.5: Format** — runs Prettier across the project
+- **Step 7: Summary** — updates the report and prints a completion summary with remaining issues
+
+Handles topics: widgets, form management (`useBladeForm`), injection-key renames, NSwag class-to-interface, blade props simplification, notifications, VcTable → VcDataTable, icon replacements, assets API, pagination, and a manual-audit catch-all.
+
 ## Update
 
 ```bash
@@ -215,17 +238,18 @@ cli/vc-app-skill/
 
 The skill dispatches specialized agents for different tasks:
 
-| Agent                     | Purpose                                                           |
-| ------------------------- | ----------------------------------------------------------------- |
-| `api-analyzer`            | Discovers entities and CRUD methods in API client files           |
-| `list-blade-generator`    | Generates list blade + plural composable                          |
-| `details-blade-generator` | Generates details blade + singular composable                     |
-| `locales-generator`       | Scans generated files for i18n keys, writes locale JSON           |
-| `module-assembler`        | Creates barrel files and registers module (create + append modes) |
-| `type-checker`            | Runs vue-tsc, iteratively fixes type errors                       |
-| `promote-agent`           | Transforms mock composables/blades/locales to use real API        |
-| `module-analyzer`         | Analyzes existing module structure (read-only)                    |
-| `blade-enhancer`          | Surgical edits to existing blades/composables/locales             |
+| Agent                     | Purpose                                                                    |
+| ------------------------- | -------------------------------------------------------------------------- |
+| `api-analyzer`            | Discovers entities and CRUD methods in API client files                    |
+| `list-blade-generator`    | Generates list blade + plural composable                                   |
+| `details-blade-generator` | Generates details blade + singular composable                              |
+| `locales-generator`       | Scans generated files for i18n keys, writes locale JSON                    |
+| `module-assembler`        | Creates barrel files and registers module (create + append modes)          |
+| `type-checker`            | Runs vue-tsc, iteratively fixes type errors                                |
+| `promote-agent`           | Transforms mock composables/blades/locales to use real API                 |
+| `migration-agent`         | Applies AI-assisted manual migrations on files flagged by the migrate flow |
+| `module-analyzer`         | Analyzes existing module structure (read-only)                             |
+| `blade-enhancer`          | Surgical edits to existing blades/composables/locales                      |
 
 ### Running locally
 

@@ -32,6 +32,10 @@ const COMMIT_GROUP_ORDER = {
   "Other Changes": 12,
 };
 
+function escapeGitHubMentions(text) {
+  return text.replace(/@([\w-]+(?:\/[\w-]+)*)/g, "`@$1`");
+}
+
 function createStableWriterOpts() {
   return {
     // Keep all commits in one stable section instead of splitting on alpha/beta/rc tags.
@@ -60,7 +64,7 @@ function createStableWriterOpts() {
         type,
         scope: commit.scope === "*" ? "" : commit.scope,
         shortHash: typeof commit.hash === "string" ? commit.hash.slice(0, 7) : commit.shortHash,
-        subject,
+        subject: escapeGitHubMentions(subject),
         references: Array.isArray(commit.references) ? commit.references : [],
       };
     },

@@ -9,6 +9,10 @@ import {
 } from "./release-workflow";
 import { releasePackages } from "./release-packages";
 
+function escapeGitHubMentions(text: string): string {
+  return text.replace(/@([\w-]+(?:\/[\w-]+)*)/g, "`@$1`");
+}
+
 const COMMIT_TYPE_TITLES: Record<string, string> = {
   feat: "Features",
   fix: "Bug Fixes",
@@ -157,7 +161,7 @@ async function consolidateStableChangelogs(version: string, stage: boolean): Pro
           type,
           scope: commit.scope === "*" ? "" : commit.scope,
           shortHash: typeof commit.hash === "string" ? commit.hash.slice(0, 7) : commit.shortHash,
-          subject,
+          subject: escapeGitHubMentions(subject),
           references: Array.isArray(commit.references) ? commit.references : [],
         };
       },

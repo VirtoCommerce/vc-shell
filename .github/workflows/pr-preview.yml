@@ -1,3 +1,10 @@
+# PR Preview
+# On every PR push publishes a preview of all managed packages to npm
+# with a pr-<N> dist-tag. Fork PRs get an explanatory comment instead.
+# PR close triggers cleanup that removes the pr-<N> dist-tag.
+#
+# See .github/workflows/README.md for the full workflow overview.
+
 name: PR Preview
 
 on:

@@ -1,3 +1,11 @@
+# Storybook CI
+# Builds the Storybook bundle and a Docker image, then (from main /
+# feat/redesign / pull_request) pushes the image to ghcr.io and deploys
+# it to the vcmp-dev ArgoCD environment for hosted preview at
+# https://vc-shell-storybook.govirto.com/.
+#
+# See .github/workflows/README.md for the full workflow overview.
+#
 # v1.0.0.vcmp
 name: Storybook CI
 

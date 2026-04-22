@@ -1,3 +1,10 @@
+# PR Title
+# Validates pull request titles against Conventional Commits. Since we
+# squash-merge, the PR title becomes the commit message on main and
+# drives auto-generated CHANGELOG entries on stable releases.
+#
+# See .github/workflows/README.md for the full workflow overview.
+
 name: PR Title
 
 on:

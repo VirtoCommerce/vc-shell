@@ -1,3 +1,15 @@
+# Release
+# Cuts a release from main — manually triggered (workflow_dispatch).
+# Inputs: release-type (patch/minor/major), prerelease channel (none/
+# alpha/beta/rc), dry-run (bool). Runs preflight (yarn check), builds
+# packages, bumps versions, commits and tags via release-it, and
+# publishes to npm with the matching dist-tag. For stable releases
+# (prerelease: none) it also updates CHANGELOG.md (consolidating commits
+# from the previous stable tag) and creates a GitHub Release entry.
+#
+# See RELEASING.md for the full release flow and
+# .github/workflows/README.md for the workflow overview.
+
 name: Release
 
 on:

@@ -1,3 +1,11 @@
+# CI
+# Pre-merge gate. Two parallel jobs: static-checks (lint:check,
+# format:check, stylelint:check, typecheck, check:locales, check:circular,
+# check:layers) and test (framework unit tests). Both must pass for
+# branch-protection to allow a merge into main.
+#
+# See .github/workflows/README.md for the full workflow overview.
+
 name: CI
 
 on:

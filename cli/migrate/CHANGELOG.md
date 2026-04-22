@@ -1,3 +1,13 @@
+# [2.0.0-alpha.35](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.34...v2.0.0-alpha.35) (2026-04-22)
+
+### Bug Fixes
+
+- **release:** update changelog and release-it configuration ([767c312](https://github.com/VirtoCommerce/vc-shell/commit/767c3123773a02a4badc3bcf89661e535d5f26c8))
+
+### Features
+
+- **setup:** introduce unsetup script and enhance setup process ([0b0ad7f](https://github.com/VirtoCommerce/vc-shell/commit/0b0ad7f2a47564783b3914f58f04d5cc21ce828e))
+
 # [2.0.0-alpha.34](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.33...v2.0.0-alpha.34) (2026-04-22)
 
 - refactor!: remove global component and directive registration ([7643d8f](https://github.com/VirtoCommerce/vc-shell/commit/7643d8fcba40bdd4d5e6a8be244a6c1978eec3fb))

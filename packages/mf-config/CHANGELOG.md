@@ -1,3 +1,7 @@
+# [2.0.0-alpha.35](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.34...v2.0.0-alpha.35) (2026-04-22)
+
+**Note:** Version bump only for package @vc-shell/mf-config
+
 # [2.0.0-alpha.34](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.33...v2.0.0-alpha.34) (2026-04-22)
 
 **Note:** Version bump only for package @vc-shell/mf-config

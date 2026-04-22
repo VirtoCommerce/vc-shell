@@ -1,3 +1,9 @@
+# [2.0.0-alpha.35](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.34...v2.0.0-alpha.35) (2026-04-22)
+
+### Features
+
+- **setup:** introduce unsetup script and enhance setup process ([0b0ad7f](https://github.com/VirtoCommerce/vc-shell/commit/0b0ad7f2a47564783b3914f58f04d5cc21ce828e))
+
 # [2.0.0-alpha.34](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.33...v2.0.0-alpha.34) (2026-04-22)
 
 **Note:** Version bump only for package @vc-shell/config-generator

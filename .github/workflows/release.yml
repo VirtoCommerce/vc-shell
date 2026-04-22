@@ -37,6 +37,10 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write
+      deployments: write
+    environment:
+      name: ${{ inputs.prerelease == 'none' && 'npm-latest' || format('npm-{0}', inputs.prerelease) }}
+      url: https://www.npmjs.com/package/@vc-shell/framework
     env:
       PRERELEASE_CHANNEL: ${{ inputs.prerelease }}
     steps:

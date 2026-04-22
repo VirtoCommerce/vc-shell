@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { ref, computed, nextTick, provide } from "vue";
+import { createMockBladeReturn, createMockPopup } from "@framework/test-mock-factories";
 
 // ---- Mocks ----
 
-const mockOnBeforeClose = vi.fn();
-const mockShowConfirmation = vi.fn();
+const mockBlade = createMockBladeReturn();
+const mockPopup = createMockPopup();
 
 vi.mock("vee-validate", () => ({
   useForm: vi.fn(() => ({
@@ -15,15 +16,11 @@ vi.mock("vee-validate", () => ({
 }));
 
 vi.mock("@core/composables/useBlade", () => ({
-  useBlade: vi.fn(() => ({
-    onBeforeClose: mockOnBeforeClose,
-  })),
+  useBlade: vi.fn(() => mockBlade),
 }));
 
 vi.mock("@core/composables/usePopup", () => ({
-  usePopup: vi.fn(() => ({
-    showConfirmation: mockShowConfirmation,
-  })),
+  usePopup: vi.fn(() => mockPopup),
 }));
 
 vi.mock("@core/composables/useBeforeUnload", () => ({
@@ -279,26 +276,26 @@ describe("useBladeForm", () => {
     it("registers onBeforeClose guard by default", () => {
       const data = ref({ name: "initial" });
       useBladeForm({ data });
-      expect(mockOnBeforeClose).toHaveBeenCalledOnce();
+      expect(mockBlade.onBeforeClose).toHaveBeenCalledOnce();
     });
 
     it("does not register guard when autoBeforeClose is false", () => {
       const data = ref({ name: "initial" });
       useBladeForm({ data, autoBeforeClose: false });
-      expect(mockOnBeforeClose).not.toHaveBeenCalled();
+      expect(mockBlade.onBeforeClose).not.toHaveBeenCalled();
     });
 
     it("guard allows close when not modified", async () => {
       const data = ref({ name: "initial" });
       useBladeForm({ data });
 
-      const guardFn = mockOnBeforeClose.mock.calls[0][0];
+      const guardFn = mockBlade.onBeforeClose.mock.calls[0][0];
       const shouldBlock = await guardFn();
       expect(shouldBlock).toBe(false);
     });
 
     it("guard shows confirmation when modified", async () => {
-      mockShowConfirmation.mockResolvedValue(false); // user declines to leave
+      mockPopup.showConfirmation.mockResolvedValue(false); // user declines to leave
 
       const data = ref({ name: "initial" });
       const { setBaseline } = useBladeForm({ data });
@@ -307,15 +304,17 @@ describe("useBladeForm", () => {
       data.value.name = "changed";
       await nextTick();
 
-      const guardFn = mockOnBeforeClose.mock.calls[0][0];
+      const guardFn = mockBlade.onBeforeClose.mock.calls[0][0];
       const shouldBlock = await guardFn();
 
-      expect(mockShowConfirmation).toHaveBeenCalledWith("You have unsaved changes. Are you sure you want to leave?");
+      expect(mockPopup.showConfirmation).toHaveBeenCalledWith(
+        "You have unsaved changes. Are you sure you want to leave?",
+      );
       expect(shouldBlock).toBe(true);
     });
 
     it("guard lets close when user confirms", async () => {
-      mockShowConfirmation.mockResolvedValue(true); // user confirms leave
+      mockPopup.showConfirmation.mockResolvedValue(true); // user confirms leave
 
       const data = ref({ name: "initial" });
       const { setBaseline } = useBladeForm({ data });
@@ -324,13 +323,13 @@ describe("useBladeForm", () => {
       data.value.name = "changed";
       await nextTick();
 
-      const guardFn = mockOnBeforeClose.mock.calls[0][0];
+      const guardFn = mockBlade.onBeforeClose.mock.calls[0][0];
       const shouldBlock = await guardFn();
       expect(shouldBlock).toBe(false);
     });
 
     it("guard respects ComputedRef<boolean> condition", async () => {
-      mockShowConfirmation.mockResolvedValue(false);
+      mockPopup.showConfirmation.mockResolvedValue(false);
 
       const condition = ref(false);
       const data = ref({ name: "initial" });
@@ -343,22 +342,22 @@ describe("useBladeForm", () => {
       data.value.name = "changed";
       await nextTick();
 
-      const guardFn = mockOnBeforeClose.mock.calls[0][0];
+      const guardFn = mockBlade.onBeforeClose.mock.calls[0][0];
 
       // Condition is false => should not guard even though modified
       let shouldBlock = await guardFn();
       expect(shouldBlock).toBe(false);
-      expect(mockShowConfirmation).not.toHaveBeenCalled();
+      expect(mockPopup.showConfirmation).not.toHaveBeenCalled();
 
       // Condition becomes true => should guard
       condition.value = true;
       shouldBlock = await guardFn();
       expect(shouldBlock).toBe(true);
-      expect(mockShowConfirmation).toHaveBeenCalledOnce();
+      expect(mockPopup.showConfirmation).toHaveBeenCalledOnce();
     });
 
     it("uses custom closeConfirmMessage when provided", async () => {
-      mockShowConfirmation.mockResolvedValue(false);
+      mockPopup.showConfirmation.mockResolvedValue(false);
 
       const data = ref({ name: "initial" });
       const { setBaseline } = useBladeForm({
@@ -370,10 +369,10 @@ describe("useBladeForm", () => {
       data.value.name = "changed";
       await nextTick();
 
-      const guardFn = mockOnBeforeClose.mock.calls[0][0];
+      const guardFn = mockBlade.onBeforeClose.mock.calls[0][0];
       await guardFn();
 
-      expect(mockShowConfirmation).toHaveBeenCalledWith("Custom message!");
+      expect(mockPopup.showConfirmation).toHaveBeenCalledWith("Custom message!");
     });
   });
 

@@ -1,10 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import DataTableBody from "./DataTableBody.vue";
-
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k }),
-}));
 
 const stubs = {
   DataTableRow: { template: '<div class="data-table-row-stub"><slot /></div>' },

@@ -1,23 +1,18 @@
 import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import ChangePassword from "./change-password.vue";
+import { createMockUserManagement } from "@framework/test-mock-factories";
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k, locale: ref("en") }),
-}));
-
-const mockChangeUserPassword = vi.fn().mockResolvedValue({ succeeded: true });
-const mockSignOut = vi.fn().mockResolvedValue(undefined);
-const mockValidatePassword = vi.fn().mockResolvedValue({ errors: [] });
+const mockUserManagement = createMockUserManagement({
+  changeUserPassword: vi.fn().mockResolvedValue({ succeeded: true }),
+  loading: computed(() => false),
+  validatePassword: vi.fn().mockResolvedValue({ errors: [] }),
+  signOut: vi.fn().mockResolvedValue(undefined),
+});
 
 vi.mock("@core/composables/useUserManagement", () => ({
-  useUserManagement: () => ({
-    changeUserPassword: mockChangeUserPassword,
-    loading: ref(false),
-    validatePassword: mockValidatePassword,
-    signOut: mockSignOut,
-  }),
+  useUserManagement: () => mockUserManagement,
 }));
 
 const mockPush = vi.fn();
@@ -102,7 +97,7 @@ describe("ChangePassword", () => {
     const w = factory({ forced: true });
     const cancelBtn = w.findAll('[data-stub="VcButton"]')[0];
     await cancelBtn.trigger("click");
-    expect(mockSignOut).toHaveBeenCalled();
+    expect(mockUserManagement.signOut).toHaveBeenCalled();
     expect(mockPush).toHaveBeenCalledWith("/login");
   });
 });

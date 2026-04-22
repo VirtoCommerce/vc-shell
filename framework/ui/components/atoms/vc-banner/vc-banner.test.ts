@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import VcBanner from "./vc-banner.vue";
 
@@ -21,8 +21,10 @@ describe("VcBanner", () => {
   });
 
   it("maps legacy variant light-danger to danger", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const w = mountBanner({ variant: "light-danger" }, { default: "x" });
     expect(w.find(".vc-banner--danger").exists()).toBe(true);
+    warnSpy.mockRestore();
   });
 
   it("sets role=alert for danger variant", () => {

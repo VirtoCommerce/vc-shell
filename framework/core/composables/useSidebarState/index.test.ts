@@ -59,9 +59,13 @@ describe("provideSidebarState", () => {
 
 describe("useSidebarState", () => {
   it("throws when used without provider", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     expect(() => {
       mountWithSetup(() => useSidebarState());
     }).toThrow("useSidebarState() requires provideSidebarState() in a parent component");
+    warnSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 
   it("returns provided state from parent", () => {

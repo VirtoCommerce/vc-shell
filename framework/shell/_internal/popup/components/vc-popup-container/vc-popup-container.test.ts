@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h, reactive } from "vue";
+import { defineComponent, h, markRaw, reactive } from "vue";
 import VcPopupContainer from "./vc-popup-container.vue";
 import { PopupPluginKey } from "@shell/_internal/popup/keys";
 import type { PopupPlugin } from "@shell/_internal/popup/types";
@@ -22,15 +22,17 @@ vi.mock("@shell/_internal/popup/utils", () => {
   };
 });
 
-const DummyPopup = defineComponent({
-  name: "DummyPopup",
-  props: ["title"],
-  emits: ["close"],
-  setup(props, { slots }) {
-    return () =>
-      h("div", { class: "dummy-popup" }, [h("span", { class: "popup-title" }, props.title), slots.default?.()]);
-  },
-});
+const DummyPopup = markRaw(
+  defineComponent({
+    name: "DummyPopup",
+    props: ["title"],
+    emits: ["close"],
+    setup(props, { slots }) {
+      return () =>
+        h("div", { class: "dummy-popup" }, [h("span", { class: "popup-title" }, props.title), slots.default?.()]);
+    },
+  }),
+);
 
 function mountContainer(popups: PopupPlugin["popups"] = []) {
   const popupPlugin = reactive({ popups }) as PopupPlugin;
@@ -108,6 +110,6 @@ describe("VcPopupContainer", () => {
         close: vi.fn(),
       },
     ]);
-    expect(wrapper.html()).toContain("Hello World");
+    expect(wrapper.text()).toContain("Hello World");
   });
 });

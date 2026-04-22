@@ -2,13 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import VcImageTile from "@ui/components/molecules/vc-image-tile/vc-image-tile.vue";
 
-// Mock vue-i18n
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({
-    t: (key: string) => key,
-  }),
-}));
-
 // Mock useImageLoad
 vi.mock("@ui/components/organisms/vc-gallery/composables/useImageLoad", () => ({
   useImageLoad: () => ({

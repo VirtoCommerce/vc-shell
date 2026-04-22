@@ -4,6 +4,21 @@ import jscodeshift from "jscodeshift";
 import type { Transform } from "../transforms/types.js";
 
 /**
+ * Normalize fixture output for stable comparisons across environments/formatters.
+ * Keeps semantic differences, but ignores newline/trailing-whitespace noise and
+ * trailing commas before closing delimiters.
+ */
+function normalizeFixtureOutput(content: string): string {
+  return content
+    .replace(/\r\n?/g, "\n")
+    .split("\n")
+    .map((line) => line.trimEnd())
+    .join("\n")
+    .replace(/,(?=\s*[}\]])/g, "")
+    .trim();
+}
+
+/**
  * Apply a jscodeshift transform to source code and return the result.
  */
 export function applyTransform(
@@ -58,5 +73,9 @@ export function defineFixtureTest(transform: Transform, fixturesDir: string, fix
   if (expected === null) {
     return { result, expected: null, match: result === null };
   }
-  return { result, expected, match: result === expected };
+
+  const normalizedResult = normalizeFixtureOutput(result ?? "");
+  const normalizedExpected = normalizeFixtureOutput(expected);
+
+  return { result, expected, match: normalizedResult === normalizedExpected };
 }

@@ -11,6 +11,7 @@ import { ref, defineComponent, nextTick } from "vue";
 import VcApp from "./vc-app.vue";
 import { BladeRoutesKey, ModulesLoadErrorKey, IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import { BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
+import { createMockSidebarState } from "@framework/test-mock-factories";
 
 // ============================================================================
 // Mocks
@@ -49,26 +50,13 @@ vi.mock("@ui/components/organisms/vc-app/composables/useShellNavigation", () => 
   }),
 }));
 
+const mockSidebar = createMockSidebarState({ isPinned: ref(true), isExpanded: ref(true) });
 vi.mock("@core/composables/useSidebarState", () => ({
-  provideSidebarState: () => ({
-    isExpanded: ref(true),
-    toggle: vi.fn(),
-    collapse: vi.fn(),
-    expand: vi.fn(),
-  }),
+  provideSidebarState: () => mockSidebar,
 }));
 
 vi.mock("@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarState", () => ({
   provideAppBarState: vi.fn(),
-}));
-
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-  }),
 }));
 
 vi.mock("vue-router", () => ({

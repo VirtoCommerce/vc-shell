@@ -1,10 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import TableColumnSwitcher from "./TableColumnSwitcher.vue";
-
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k }),
-}));
 
 const columns = [
   { id: "name", label: "Name", visible: true },

@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from "vitest";
 import transform from "../../../src/transforms/composable-return-types";
 import { applyTransform } from "../../../src/utils/test-helpers";

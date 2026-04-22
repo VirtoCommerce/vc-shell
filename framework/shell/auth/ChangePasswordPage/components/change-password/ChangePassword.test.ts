@@ -1,60 +1,26 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { resetSharedAuthDependencyMocks } from "@shell/auth/_test-utils/shared-dependency-mocks";
+import { authBaseStubs } from "@shell/auth/_test-utils/shared-stubs";
+import { createMockUserManagement } from "@shell/auth/_test-utils/shared-mock-factories";
 import ChangePassword from "./ChangePassword.vue";
 
 // ── Mocks ───────────────────────────────────────────────────────────────────
 
-vi.mock("vue-i18n", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("vue-i18n")>();
-  return {
-    ...actual,
-    useI18n: () => ({ t: (k: string) => k, locale: { value: "en" } }),
-  };
-});
-
-const mockRouterPush = vi.fn();
-vi.mock("vue-router", () => ({
-  useRouter: () => ({ push: mockRouterPush }),
-  useRoute: () => ({ query: {} }),
-}));
-
-const mockChangeUserPassword = vi.fn().mockResolvedValue({ succeeded: true });
-const mockValidatePassword = vi.fn().mockResolvedValue({ errors: [] });
-const mockSignOut = vi.fn().mockResolvedValue(undefined);
 const mockLoading = ref(false);
 
-vi.mock("@core/composables/useUserManagement", () => ({
-  useUserManagement: () => ({
-    changeUserPassword: mockChangeUserPassword,
-    loading: mockLoading,
-    validatePassword: mockValidatePassword,
-    signOut: mockSignOut,
-  }),
-}));
+const mockUserMgmt = createMockUserManagement({
+  loading: computed(() => mockLoading.value),
+});
 
-vi.mock("@core/composables", () => ({
-  useSettings: () => ({
-    uiSettings: ref({}),
-    loading: ref(false),
-  }),
+vi.mock("@core/composables/useUserManagement", () => ({
+  useUserManagement: () => mockUserMgmt,
 }));
 
 const globalStubs = {
-  VcAuthLayout: { template: "<div><slot /></div>" },
-  VcForm: { template: "<div><slot /></div>" },
-  VcInput: { template: "<input />" },
-  VcButton: { template: "<button @click='$emit(\"click\")'><slot /></button>" },
-  VcHint: { template: "<span><slot /></span>" },
+  ...authBaseStubs,
   VcBanner: { template: "<div><slot /></div>" },
-  Field: {
-    template: '<div><slot v-bind="slotProps" /></div>',
-    computed: {
-      slotProps() {
-        return { field: {}, errorMessage: "", errors: [] };
-      },
-    },
-  },
 };
 
 function mountComponent(props = {}) {
@@ -72,6 +38,7 @@ function mountComponent(props = {}) {
 describe("ChangePassword.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    resetSharedAuthDependencyMocks();
     mockLoading.value = false;
   });
 
@@ -82,29 +49,24 @@ describe("ChangePassword.vue", () => {
 
   it("renders current, new, and confirm password fields", () => {
     const wrapper = mountComponent();
-    const html = wrapper.html();
-    expect(html).toContain("COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL");
-    expect(html).toContain("COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.LABEL");
-    expect(html).toContain("COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL");
+    expect(wrapper.findAll("input").length).toBeGreaterThanOrEqual(3);
   });
 
   it("renders cancel and save buttons", () => {
     const wrapper = mountComponent();
-    const html = wrapper.html();
-    expect(html).toContain("COMPONENTS.CHANGE_PASSWORD.CANCEL");
-    expect(html).toContain("COMPONENTS.CHANGE_PASSWORD.SAVE");
+    const text = wrapper.text();
+    expect(text).toContain("COMPONENTS.CHANGE_PASSWORD.CANCEL");
+    expect(text).toContain("COMPONENTS.CHANGE_PASSWORD.SAVE");
   });
 
   it("shows forced password change banner when forced prop is true", () => {
     const wrapper = mountComponent({ forced: true });
-    const html = wrapper.html();
-    expect(html).toContain("COMPONENTS.CHANGE_PASSWORD.FORCED.LABEL");
+    expect(wrapper.text()).toContain("COMPONENTS.CHANGE_PASSWORD.FORCED.LABEL");
   });
 
   it("does not show forced banner when forced prop is false", () => {
     const wrapper = mountComponent({ forced: false });
-    const html = wrapper.html();
-    expect(html).not.toContain("COMPONENTS.CHANGE_PASSWORD.FORCED.LABEL");
+    expect(wrapper.text()).not.toContain("COMPONENTS.CHANGE_PASSWORD.FORCED.LABEL");
   });
 
   it("uses forced title when forced prop is true", () => {

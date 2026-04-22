@@ -4,10 +4,6 @@ import { computed } from "vue";
 import DataTableRow from "./DataTableRow.vue";
 import { TableContextKey, ColumnCollectorKey } from "@ui/components/organisms/vc-data-table/keys";
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k }),
-}));
-
 const stubs = {
   DataTableCellRenderer: { template: '<div class="cell-renderer-stub" />' },
   TableRowActions: { template: '<div class="row-actions-stub" />' },

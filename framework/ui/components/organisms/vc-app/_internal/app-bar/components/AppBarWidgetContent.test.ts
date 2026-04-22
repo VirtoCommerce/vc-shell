@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { defineComponent, h, ref } from "vue";
+import { defineComponent, h, markRaw, ref } from "vue";
 import { mount } from "@vue/test-utils";
 
 const mockCurrentWidget = ref<Record<string, unknown> | undefined>(undefined);
@@ -16,14 +16,16 @@ vi.mock("@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBar
 
 import AppBarWidgetContent from "./AppBarWidgetContent.vue";
 
-const StubWidget = defineComponent({
-  name: "StubWidget",
-  props: ["onClose"],
-  emits: ["close"],
-  setup(_, { emit: _emit }) {
-    return () => h("div", { class: "stub-widget" }, "Widget Content");
-  },
-});
+const StubWidget = markRaw(
+  defineComponent({
+    name: "StubWidget",
+    props: ["onClose"],
+    emits: ["close"],
+    setup(_, { emit: _emit }) {
+      return () => h("div", { class: "stub-widget" }, "Widget Content");
+    },
+  }),
+);
 
 describe("AppBarWidgetContent", () => {
   beforeEach(() => {

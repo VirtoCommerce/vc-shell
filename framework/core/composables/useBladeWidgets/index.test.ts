@@ -12,14 +12,7 @@ function createMockWidgetService(overrides: Partial<IWidgetService> = {}): IWidg
     registerWidget: vi.fn(),
     unregisterWidget: vi.fn(),
     getWidgets: vi.fn(() => []),
-    clearBladeWidgets: vi.fn(),
-    registeredWidgets: [],
-    isActiveWidget: vi.fn(() => false),
-    setActiveWidget: vi.fn(),
-    updateActiveWidget: vi.fn(),
-    isWidgetRegistered: vi.fn(() => false),
     updateWidget: vi.fn(),
-    resolveWidgetProps: vi.fn(() => ({})),
     getExternalWidgetsForBlade: vi.fn(() => []),
     getAllExternalWidgets: vi.fn(() => []),
     cloneWidget: vi.fn((w) => w),
@@ -238,7 +231,12 @@ describe("useWidgetTrigger", () => {
     };
 
     // No WidgetScopeKey provided — should not throw
-    expect(() => mount(Wrapper)).not.toThrow();
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      expect(() => mount(Wrapper)).not.toThrow();
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 
   it("passes full trigger contract (onRefresh, onClick, badge)", () => {

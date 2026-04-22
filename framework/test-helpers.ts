@@ -52,8 +52,11 @@ export function createMockBladeStack(): IBladeStack {
     replaceCurrentBlade: vi.fn().mockResolvedValue(undefined),
     coverCurrentBlade: vi.fn().mockResolvedValue(undefined),
     registerBeforeClose: vi.fn(),
+    unregisterBeforeClose: vi.fn(),
     setBladeError: vi.fn(),
     clearBladeError: vi.fn(),
+    setBladeTitle: vi.fn(),
+    _restoreStack: vi.fn(),
   } as unknown as IBladeStack;
 }
 
@@ -64,6 +67,7 @@ export function createMockBladeMessaging(): IBladeMessaging {
   return {
     callParent: vi.fn().mockResolvedValue(undefined),
     exposeToChildren: vi.fn(),
+    cleanup: vi.fn(),
   } as unknown as IBladeMessaging;
 }
 

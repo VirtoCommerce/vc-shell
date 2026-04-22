@@ -15,15 +15,6 @@ vi.mock("@core/notifications/notification", () => ({
   },
 }));
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  }),
-}));
-
 // Reset module-level singleton between tests
 beforeEach(async () => {
   mockOnlineRef.value = true;

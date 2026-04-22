@@ -1,4 +1,5 @@
 import { mountWithSetup } from "@framework/test-helpers";
+import { createMockBladeReturn } from "@framework/test-mock-factories";
 
 const mockPush = vi.fn();
 const mockRoutes = [
@@ -16,11 +17,9 @@ vi.mock("vue-router", () => ({
   useRoute: () => mockRoute,
 }));
 
-const mockOpenBlade = vi.fn();
+const mockBlade = createMockBladeReturn();
 vi.mock("@core/composables/useBlade", () => ({
-  useBlade: () => ({
-    openBlade: mockOpenBlade,
-  }),
+  useBlade: () => mockBlade,
 }));
 
 const mockNavigateToMainRoute = vi.fn();
@@ -46,7 +45,7 @@ describe("useShellNavigation", () => {
     const { result } = mountWithSetup(() => useShellNavigation());
 
     result.handleMenuItemClick({ routeId: "MyBlade" } as any);
-    expect(mockOpenBlade).toHaveBeenCalledWith({ name: "MyBlade", isWorkspace: true });
+    expect(mockBlade.openBlade).toHaveBeenCalledWith({ name: "MyBlade", isWorkspace: true });
   });
 
   it("handleMenuItemClick navigates by url when no routeId", () => {

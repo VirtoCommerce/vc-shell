@@ -66,12 +66,14 @@ function mountWithAiContext<T>(setupFn: () => T, service: ReturnType<typeof crea
 
 describe("useAiAgentContext", () => {
   it("returns dummy preview state when service not provided", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const dataRef = ref({ id: "1", objectType: "Product", name: "Test" });
     const { result } = mountWithAiContext(() => useAiAgentContext({ dataRef }));
 
     expect(result.previewState.isActive.value).toBe(false);
     expect(result.previewState.changedFields.value).toEqual([]);
     expect(typeof result.clearPreview).toBe("function");
+    warnSpy.mockRestore();
   });
 
   it("sets context data on mount via _setContextData", async () => {

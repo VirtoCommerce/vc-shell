@@ -1,26 +1,16 @@
-import { describe, it, expect, vi } from "vitest";
-
-async function loadLanguageServiceModule() {
-  vi.resetModules();
-  return import("@core/services/language-service");
-}
-
-async function loadDashboardServiceModule() {
-  vi.resetModules();
-  return import("@core/services/dashboard-service");
-}
+import { describe, it, expect, vi, beforeAll } from "vitest";
+import { createLanguageService } from "@core/services/language-service";
+import { createDashboardService } from "@core/services/dashboard-service";
 
 describe("language-service", () => {
-  it("resolves unknown locales to 'en'", async () => {
-    const { createLanguageService } = await loadLanguageServiceModule();
+  it("resolves unknown locales to 'en'", () => {
     localStorage.removeItem("VC_LANGUAGE_SETTINGS");
     const service = createLanguageService();
 
     expect(service.resolveCamelCaseLocale("zzZZ")).toBe("en");
   });
 
-  it("falls back to a supported locale in setLocale", async () => {
-    const { createLanguageService } = await loadLanguageServiceModule();
+  it("falls back to a supported locale in setLocale", () => {
     localStorage.removeItem("VC_LANGUAGE_SETTINGS");
     const service = createLanguageService();
 
@@ -31,9 +21,7 @@ describe("language-service", () => {
 });
 
 describe("dashboard-service", () => {
-  it("works without implicit composable dependencies and supports injected access checks", async () => {
-    const { createDashboardService } = await loadDashboardServiceModule();
-
+  it("works without implicit composable dependencies and supports injected access checks", () => {
     const permissiveService = createDashboardService();
     permissiveService.registerWidget({
       id: "widget-1",
@@ -57,8 +45,7 @@ describe("dashboard-service", () => {
     expect(restrictiveService.getWidgets()).toHaveLength(0);
   });
 
-  it("returns a copy of layout map from getLayout", async () => {
-    const { createDashboardService } = await loadDashboardServiceModule();
+  it("returns a copy of layout map from getLayout", () => {
     const service = createDashboardService();
 
     service.registerWidget({
@@ -75,8 +62,7 @@ describe("dashboard-service", () => {
     expect(service.getLayout().has("external-mutation")).toBe(false);
   });
 
-  it("throws on duplicate widget ID", async () => {
-    const { createDashboardService } = await loadDashboardServiceModule();
+  it("throws on duplicate widget ID", () => {
     const service = createDashboardService();
 
     service.registerWidget({
@@ -96,8 +82,7 @@ describe("dashboard-service", () => {
     ).toThrow("Widget with id dup already registered");
   });
 
-  it("updates widget position", async () => {
-    const { createDashboardService } = await loadDashboardServiceModule();
+  it("updates widget position", () => {
     const service = createDashboardService();
 
     service.registerWidget({
@@ -113,8 +98,7 @@ describe("dashboard-service", () => {
     expect(layout.get("w1")).toEqual({ x: 5, y: 10 });
   });
 
-  it("throws on updating position for non-existent widget", async () => {
-    const { createDashboardService } = await loadDashboardServiceModule();
+  it("throws on updating position for non-existent widget", () => {
     const service = createDashboardService();
 
     expect(() => service.updateWidgetPosition("nonexistent", { x: 0, y: 0 })).toThrow(
@@ -122,40 +106,7 @@ describe("dashboard-service", () => {
     );
   });
 
-  it("preregistration deduplicates by widget id", async () => {
-    const { registerDashboardWidget, createDashboardService } = await loadDashboardServiceModule();
-
-    registerDashboardWidget({
-      id: "pre-w",
-      name: "V1",
-      component: {} as any,
-      size: { width: 1, height: 1 },
-    });
-    registerDashboardWidget({
-      id: "pre-w",
-      name: "V2",
-      component: {} as any,
-      size: { width: 1, height: 1 },
-    });
-
-    const service = createDashboardService();
-    // Bus deduplicates preregistered items, so only V2 is replayed
-    expect(service.getWidgets()).toHaveLength(1);
-    expect(service.getWidgets()[0].name).toBe("V2");
-  });
-
-  it("disposes service instance via bus", async () => {
-    const { createDashboardService, dashboardBus } = await loadDashboardServiceModule();
-    const service = createDashboardService();
-
-    expect(dashboardBus.instanceCount).toBe(1);
-    dashboardBus.dispose(service);
-    expect(dashboardBus.instanceCount).toBe(0);
-  });
-
-  it("filters widgets by permissions", async () => {
-    const { createDashboardService } = await loadDashboardServiceModule();
-
+  it("filters widgets by permissions", () => {
     const service = createDashboardService({
       hasAccess: (perms) => perms?.includes("admin") ?? false,
     });
@@ -179,5 +130,61 @@ describe("dashboard-service", () => {
     expect(widgets).toHaveLength(2);
     expect(widgets.map((w) => w.id)).toContain("admin-widget");
     expect(widgets.map((w) => w.id)).toContain("public-widget");
+  });
+
+  describe("preregistration (isolated module)", () => {
+    let registerDashboardWidget: Awaited<typeof import("@core/services/dashboard-service")>["registerDashboardWidget"];
+    let createDashboardServiceIsolated: Awaited<
+      typeof import("@core/services/dashboard-service")
+    >["createDashboardService"];
+
+    beforeAll(async () => {
+      vi.resetModules();
+      const mod = await import("@core/services/dashboard-service");
+      registerDashboardWidget = mod.registerDashboardWidget;
+      createDashboardServiceIsolated = mod.createDashboardService;
+    });
+
+    it("preregistration deduplicates by widget id", () => {
+      registerDashboardWidget({
+        id: "pre-w",
+        name: "V1",
+        component: {} as any,
+        size: { width: 1, height: 1 },
+      });
+      registerDashboardWidget({
+        id: "pre-w",
+        name: "V2",
+        component: {} as any,
+        size: { width: 1, height: 1 },
+      });
+
+      const service = createDashboardServiceIsolated();
+      // Bus deduplicates preregistered items, so only V2 is replayed
+      expect(service.getWidgets()).toHaveLength(1);
+      expect(service.getWidgets()[0].name).toBe("V2");
+    });
+  });
+
+  describe("dispose (isolated module)", () => {
+    let createDashboardServiceIsolated: Awaited<
+      typeof import("@core/services/dashboard-service")
+    >["createDashboardService"];
+    let dashboardBus: Awaited<typeof import("@core/services/dashboard-service")>["dashboardBus"];
+
+    beforeAll(async () => {
+      vi.resetModules();
+      const mod = await import("@core/services/dashboard-service");
+      createDashboardServiceIsolated = mod.createDashboardService;
+      dashboardBus = mod.dashboardBus;
+    });
+
+    it("disposes service instance via bus", () => {
+      const service = createDashboardServiceIsolated();
+
+      expect(dashboardBus.instanceCount).toBe(1);
+      dashboardBus.dispose(service);
+      expect(dashboardBus.instanceCount).toBe(0);
+    });
   });
 });

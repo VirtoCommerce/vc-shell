@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { defineComponent, h, inject } from "vue";
 import { mount } from "@vue/test-utils";
 import { WidgetServiceKey } from "@framework/injection-keys";
@@ -7,6 +7,8 @@ import { createWidgetService } from "@core/services/widget-service";
 
 describe("useWidgets", () => {
   it("throws InjectionError when no service is provided", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const TestComp = defineComponent({
       setup() {
         expect(() => useWidgets()).toThrow("WidgetService");
@@ -15,6 +17,8 @@ describe("useWidgets", () => {
     });
 
     mount(TestComp);
+    warnSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 
   it("returns injected service", () => {

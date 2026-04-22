@@ -1,12 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref } from "vue";
 import Sidebar from "./sidebar.vue";
 import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
-
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k, locale: ref("en") }),
-}));
 
 const VcSidebarStub = {
   template: '<div data-stub="VcSidebar"><slot name="header" :close="() => {}" /><slot /></div>',

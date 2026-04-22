@@ -1,12 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { ref } from "vue";
 import ChangePasswordButton from "./change-password-button.vue";
 import { CloseSettingsMenuKey } from "@framework/injection-keys";
-
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k, locale: ref("en") }),
-}));
 
 const mockOpen = vi.fn();
 vi.mock("@core/composables/usePopup", () => ({

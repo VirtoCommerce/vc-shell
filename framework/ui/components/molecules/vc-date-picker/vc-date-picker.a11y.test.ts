@@ -1,4 +1,8 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+// Use real vue-i18n — this test uses createI18n with real messages
+vi.unmock("vue-i18n");
+
 import { mount, VueWrapper } from "@vue/test-utils";
 import axe from "axe-core";
 import { createI18n } from "vue-i18n";

@@ -1,6 +1,7 @@
 import { defineComponent, h, provide } from "vue";
 import { mount } from "@vue/test-utils";
 import { mountWithSetup } from "@framework/test-helpers";
+import { vi } from "vitest";
 import { AppBarMobileButtonsServiceKey } from "@framework/injection-keys";
 import { createAppBarMobileButtonsService } from "@core/services/app-bar-mobile-buttons-service";
 import { provideAppBarMobileButtonsService, useAppBarMobileButtons } from "./index";
@@ -9,15 +10,23 @@ import { InjectionError } from "@core/utilities";
 describe("useAppBarMobileButtons", () => {
   describe("without provider", () => {
     it("throws InjectionError when no service is provided", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       expect(() => {
         mountWithSetup(() => useAppBarMobileButtons());
       }).toThrow(InjectionError);
+      warnSpy.mockRestore();
+      errorSpy.mockRestore();
     });
 
     it("error message mentions AppBarMobileButtonsService", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       expect(() => {
         mountWithSetup(() => useAppBarMobileButtons());
       }).toThrow(/AppBarMobileButtonsService/);
+      warnSpy.mockRestore();
+      errorSpy.mockRestore();
     });
   });
 

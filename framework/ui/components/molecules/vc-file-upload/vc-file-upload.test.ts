@@ -24,13 +24,6 @@ vi.mock("@ui/composables/useFormField", () => ({
   }),
 }));
 
-// Mock vue-i18n
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({
-    t: (key: string) => key,
-  }),
-}));
-
 describe("VcFileUpload", () => {
   const mountComponent = (props: Record<string, unknown> = {}) =>
     mount(VcFileUpload as any, {

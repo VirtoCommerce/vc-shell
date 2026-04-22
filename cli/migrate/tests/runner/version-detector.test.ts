@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from "vitest";
 import { detectFrameworkVersion } from "../../src/version-detector";
 import { mkdtempSync, writeFileSync, mkdirSync } from "node:fs";

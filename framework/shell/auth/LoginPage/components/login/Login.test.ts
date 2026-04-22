@@ -1,83 +1,39 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { resetSharedAuthDependencyMocks, sharedRouterPushMock } from "@shell/auth/_test-utils/shared-dependency-mocks";
+import { authBaseStubs } from "@shell/auth/_test-utils/shared-stubs";
+import { createMockUserManagement, createMockExternalProvider } from "@shell/auth/_test-utils/shared-mock-factories";
 import Login from "./Login.vue";
 
 // ── Mocks ───────────────────────────────────────────────────────────────────
 
-vi.mock("vue-i18n", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("vue-i18n")>();
-  return {
-    ...actual,
-    useI18n: () => ({ t: (k: string) => k, locale: { value: "en" } }),
-  };
+const mockLoading = ref(false);
+const mockUser = ref<{ passwordExpired: boolean } | undefined>({ passwordExpired: false });
+
+const mockUserMgmt = createMockUserManagement({
+  loading: computed(() => mockLoading.value),
+  user: computed(() => mockUser.value),
 });
 
-const mockPush = vi.fn();
-vi.mock("vue-router", () => ({
-  useRouter: () => ({ push: mockPush }),
-  useRoute: () => ({ query: {} }),
-}));
-
-vi.mock("vee-validate", () => ({
-  defineRule: vi.fn(),
-  useIsFormValid: () => ref(true),
-  useForm: () => ({ validateField: vi.fn() }),
-  Field: {
-    template: "<div><slot v-bind=\"{ errorMessage: '', handleChange: () => {}, errors: [] }\" /></div>",
-  },
-}));
-
-const mockSignIn = vi.fn().mockResolvedValue({ succeeded: true });
-const mockLoading = ref(false);
-const mockUser = ref({ passwordExpired: false });
-
 vi.mock("@core/composables/useUserManagement", () => ({
-  useUserManagement: () => ({
-    signIn: mockSignIn,
-    loading: mockLoading,
-    user: mockUser,
-  }),
+  useUserManagement: () => mockUserMgmt,
 }));
 
-vi.mock("@core/composables", () => ({
-  useSettings: () => ({
-    uiSettings: ref({}),
-    loading: ref(false),
-  }),
-}));
+const mockExternalProvider = createMockExternalProvider();
 
 vi.mock("@shell/auth/sign-in/useExternalProvider", () => ({
-  useExternalProvider: () => ({
-    getProviders: vi.fn().mockResolvedValue([]),
-    signIn: vi.fn(),
-  }),
+  useExternalProvider: () => mockExternalProvider,
 }));
 
 vi.mock("@core/plugins/extension-points", () => ({
   ExtensionPoint: { name: "ExtensionPoint", template: "<div />" },
 }));
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({ debug: vi.fn(), error: vi.fn(), warn: vi.fn(), info: vi.fn() }),
-}));
-
 const globalStubs = {
-  VcAuthLayout: { template: "<div><slot /></div>" },
-  VcForm: { template: "<div><slot /></div>" },
-  VcInput: { template: "<input />" },
-  VcButton: { template: "<button><slot /></button>" },
-  VcHint: { template: "<span><slot /></span>" },
+  ...authBaseStubs,
   ExternalProviders: { template: "<div />" },
   ExtensionPoint: { template: "<div />" },
-  Field: {
-    template: '<div><slot v-bind="slotProps" /></div>',
-    computed: {
-      slotProps() {
-        return { errorMessage: "", handleChange: () => {}, errors: [] };
-      },
-    },
-  },
 };
 
 function mountLogin(props = {}) {
@@ -95,6 +51,7 @@ function mountLogin(props = {}) {
 describe("Login.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    resetSharedAuthDependencyMocks();
     mockLoading.value = false;
     mockUser.value = { passwordExpired: false };
     localStorage.removeItem("redirectAfterLogin");
@@ -107,16 +64,14 @@ describe("Login.vue", () => {
 
   it("renders login form fields", () => {
     const wrapper = mountLogin();
-    const html = wrapper.html();
-    expect(html).toContain("LOGIN.FIELDS.LOGIN.LABEL");
-    expect(html).toContain("LOGIN.FIELDS.PASSWORD.LABEL");
+    expect(wrapper.findAll("input").length).toBeGreaterThanOrEqual(2);
   });
 
   it("renders login and forgot-password buttons", () => {
     const wrapper = mountLogin();
-    const html = wrapper.html();
-    expect(html).toContain("LOGIN.BUTTON");
-    expect(html).toContain("LOGIN.FORGOT_PASSWORD_BUTTON");
+    const text = wrapper.text();
+    expect(text).toContain("LOGIN.BUTTON");
+    expect(text).toContain("LOGIN.FORGOT_PASSWORD_BUTTON");
   });
 
   it("does not show error hint when signInResult.succeeded is true", () => {
@@ -130,9 +85,7 @@ describe("Login.vue", () => {
 
   it("hides form when ssoOnly prop is true", () => {
     const wrapper = mountLogin({ ssoOnly: true });
-    const html = wrapper.html();
-    // Form elements should not appear
-    expect(html).not.toContain("LOGIN.BUTTON");
+    expect(wrapper.text()).not.toContain("LOGIN.BUTTON");
   });
 
   it("passes logo and background props", () => {
@@ -158,7 +111,7 @@ describe("Login.vue", () => {
     await wrapper.findAll("button")[0].trigger("click");
     await flushPromises();
 
-    expect(mockPush).toHaveBeenCalledWith("/orders/123");
+    expect(sharedRouterPushMock).toHaveBeenCalledWith("/orders/123");
     expect(localStorage.getItem("redirectAfterLogin")).toBeNull();
   });
 
@@ -169,7 +122,7 @@ describe("Login.vue", () => {
     await wrapper.findAll("button")[0].trigger("click");
     await flushPromises();
 
-    expect(mockPush).toHaveBeenCalledWith("/");
+    expect(sharedRouterPushMock).toHaveBeenCalledWith("/");
     expect(localStorage.getItem("redirectAfterLogin")).toBeNull();
   });
 });

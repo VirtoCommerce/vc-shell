@@ -3,12 +3,6 @@ import { mount } from "@vue/test-utils";
 import { defineComponent, h, nextTick } from "vue";
 import VcGalleryPreview from "./vc-gallery-preview.vue";
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({
-    t: (key: string) => key,
-  }),
-}));
-
 vi.mock("@framework/core/composables/useResponsive", () => {
   const { ref } = require("vue");
   return {

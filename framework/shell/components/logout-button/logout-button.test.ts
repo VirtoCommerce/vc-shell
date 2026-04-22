@@ -3,16 +3,11 @@ import { mount } from "@vue/test-utils";
 import { computed, ref } from "vue";
 import LogoutButton from "./logout-button.vue";
 import { CloseSettingsMenuKey } from "@framework/injection-keys";
+import { createMockUserManagement } from "@framework/test-mock-factories";
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k, locale: ref("en") }),
-}));
-
-const mockSignOut = vi.fn().mockResolvedValue(undefined);
+const mockUserManagement = createMockUserManagement();
 vi.mock("@core/composables/useUserManagement", () => ({
-  useUserManagement: () => ({
-    signOut: mockSignOut,
-  }),
+  useUserManagement: () => mockUserManagement,
 }));
 
 const mockPush = vi.fn();
@@ -76,7 +71,7 @@ describe("LogoutButton", () => {
     await vi.waitFor(() => {
       expect(closeFn).toHaveBeenCalled();
       expect(mockCloseBlade).toHaveBeenCalledWith("child-1");
-      expect(mockSignOut).toHaveBeenCalled();
+      expect(mockUserManagement.signOut).toHaveBeenCalled();
       expect(mockPush).toHaveBeenCalledWith({ name: "Login" });
     });
   });
@@ -88,7 +83,7 @@ describe("LogoutButton", () => {
     await vi.waitFor(() => {
       expect(mockCloseBlade).toHaveBeenCalledWith("child-1");
     });
-    expect(mockSignOut).not.toHaveBeenCalled();
+    expect(mockUserManagement.signOut).not.toHaveBeenCalled();
     expect(mockPush).not.toHaveBeenCalled();
   });
 });

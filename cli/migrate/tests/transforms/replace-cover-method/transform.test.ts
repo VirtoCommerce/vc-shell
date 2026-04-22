@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from "vitest";
 import transform from "../../../src/transforms/replace-cover-method";
 import { applyTransform } from "../../../src/utils/test-helpers";

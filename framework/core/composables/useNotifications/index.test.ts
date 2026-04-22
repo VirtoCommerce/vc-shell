@@ -17,15 +17,6 @@ vi.mock("@core/notifications", () => ({
   useNotificationStore: () => mockStore,
 }));
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  }),
-}));
-
 import { useNotifications } from "./index";
 
 describe("useNotifications", () => {

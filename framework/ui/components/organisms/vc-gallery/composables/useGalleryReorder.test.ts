@@ -1,41 +1,63 @@
 import { describe, it, expect, vi } from "vitest";
-import { ref } from "vue";
+import { defineComponent, h, ref } from "vue";
+import { mount } from "@vue/test-utils";
 import { useGalleryReorder } from "./useGalleryReorder";
 import type { AssetLike } from "@core/composables/useAssetsManager";
 
+function mountGalleryReorder(images: AssetLike[], disabled = false) {
+  let result!: ReturnType<typeof useGalleryReorder>;
+  const Comp = defineComponent({
+    setup() {
+      result = useGalleryReorder(ref(images), { disabled: ref(disabled), onSort: vi.fn() });
+      return () => h("div");
+    },
+  });
+  const wrapper = mount(Comp);
+  return { result, wrapper };
+}
+
 describe("useGalleryReorder", () => {
   it("disableDrag is true when images <= 1", () => {
-    const images = ref<AssetLike[]>([{ name: "a.png", sortOrder: 0 }]);
-    const { disableDrag } = useGalleryReorder(images, { disabled: ref(false), onSort: vi.fn() });
-    expect(disableDrag.value).toBe(true);
+    const { result, wrapper } = mountGalleryReorder([{ name: "a.png", sortOrder: 0 }], false);
+    expect(result.disableDrag.value).toBe(true);
+    wrapper.unmount();
   });
 
   it("disableDrag is false when images > 1", () => {
-    const images = ref<AssetLike[]>([
-      { name: "a.png", sortOrder: 0 },
-      { name: "b.png", sortOrder: 1 },
-    ]);
-    const { disableDrag } = useGalleryReorder(images, { disabled: ref(false), onSort: vi.fn() });
-    expect(disableDrag.value).toBe(false);
+    const { result, wrapper } = mountGalleryReorder(
+      [
+        { name: "a.png", sortOrder: 0 },
+        { name: "b.png", sortOrder: 1 },
+      ],
+      false,
+    );
+    expect(result.disableDrag.value).toBe(false);
+    wrapper.unmount();
   });
 
   it("disableDrag is true when disabled prop is true", () => {
-    const images = ref<AssetLike[]>([
-      { name: "a.png", sortOrder: 0 },
-      { name: "b.png", sortOrder: 1 },
-    ]);
-    const { disableDrag } = useGalleryReorder(images, { disabled: ref(true), onSort: vi.fn() });
-    expect(disableDrag.value).toBe(true);
+    const { result, wrapper } = mountGalleryReorder(
+      [
+        { name: "a.png", sortOrder: 0 },
+        { name: "b.png", sortOrder: 1 },
+      ],
+      true,
+    );
+    expect(result.disableDrag.value).toBe(true);
+    wrapper.unmount();
   });
 
   it("returns isDragging and draggedId refs", () => {
-    const images = ref<AssetLike[]>([
-      { name: "a.png", sortOrder: 0 },
-      { name: "b.png", sortOrder: 1 },
-    ]);
-    const { isDragging, draggedId } = useGalleryReorder(images, { disabled: ref(false), onSort: vi.fn() });
-    expect(isDragging.value).toBe(false);
-    expect(draggedId.value).toBeUndefined();
+    const { result, wrapper } = mountGalleryReorder(
+      [
+        { name: "a.png", sortOrder: 0 },
+        { name: "b.png", sortOrder: 1 },
+      ],
+      false,
+    );
+    expect(result.isDragging.value).toBe(false);
+    expect(result.draggedId.value).toBeUndefined();
+    wrapper.unmount();
   });
 
   // Handle-based drag is managed by SortableJS internally via the `handle` option.

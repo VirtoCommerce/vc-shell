@@ -3,10 +3,6 @@ import { mount } from "@vue/test-utils";
 import { ref } from "vue";
 import ThemeSelector from "./theme-selector.vue";
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k, locale: ref("en") }),
-}));
-
 const mockSetTheme = vi.fn();
 vi.mock("@core/composables/useTheme", () => ({
   useTheme: () => ({

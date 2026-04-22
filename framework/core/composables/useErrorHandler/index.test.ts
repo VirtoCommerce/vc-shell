@@ -1,15 +1,18 @@
 import { describe, it, expect, vi } from "vitest";
+import { computed } from "vue";
 import { mountWithSetup } from "@framework/test-helpers";
+import { createMockUserManagement } from "@framework/test-mock-factories";
 
 // Mock dependencies
 vi.mock("@core/composables/useAppInsights", () => ({
   useAppInsights: () => ({ appInsights: null }),
 }));
 
+const mockUserManagement = createMockUserManagement({
+  user: computed(() => ({ id: "user1", userName: "testuser" }) as any),
+});
 vi.mock("@core/composables/useUserManagement", () => ({
-  useUserManagement: () => ({
-    user: { value: { id: "user1", userName: "testuser" } },
-  }),
+  useUserManagement: () => mockUserManagement,
 }));
 
 vi.mock("@core/utilities/error", () => ({
@@ -28,15 +31,6 @@ vi.mock("@core/utilities/error", () => ({
       this.originalError = originalError;
     }
   },
-}));
-
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  }),
 }));
 
 import { useErrorHandler } from "./index";

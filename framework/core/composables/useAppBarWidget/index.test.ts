@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { defineComponent, h, inject } from "vue";
 import { mount } from "@vue/test-utils";
 import { AppBarWidgetServiceKey } from "@framework/injection-keys";
@@ -7,6 +7,8 @@ import { createAppBarWidgetService } from "@core/services/app-bar-menu-service";
 
 describe("useAppBarWidget", () => {
   it("throws InjectionError when no service is provided", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const TestComp = defineComponent({
       setup() {
         expect(() => useAppBarWidget()).toThrow("AppBarWidgetService");
@@ -15,6 +17,8 @@ describe("useAppBarWidget", () => {
     });
 
     mount(TestComp);
+    warnSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 
   it("returns injected service", () => {

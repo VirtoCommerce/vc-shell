@@ -33,15 +33,23 @@ describe("useLanguages", () => {
 
   describe("with injection context but no provider", () => {
     it("throws InjectionError when service is not provided", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       expect(() => {
         mountWithSetup(() => useLanguages());
       }).toThrow(InjectionError);
+      warnSpy.mockRestore();
+      errorSpy.mockRestore();
     });
 
     it("error message mentions LanguageService", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       expect(() => {
         mountWithSetup(() => useLanguages());
       }).toThrow(/LanguageService/);
+      warnSpy.mockRestore();
+      errorSpy.mockRestore();
     });
   });
 

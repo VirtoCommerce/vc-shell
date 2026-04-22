@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { defineComponent, h, inject } from "vue";
 import { mount } from "@vue/test-utils";
 import { DashboardServiceKey } from "@framework/injection-keys";
@@ -7,6 +7,8 @@ import { createDashboardService } from "@core/services/dashboard-service";
 
 describe("useDashboard", () => {
   it("throws InjectionError when no service is provided", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const TestComp = defineComponent({
       setup() {
         expect(() => useDashboard()).toThrow("DashboardService");
@@ -15,6 +17,8 @@ describe("useDashboard", () => {
     });
 
     mount(TestComp);
+    warnSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 
   it("returns injected service", () => {

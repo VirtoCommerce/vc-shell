@@ -1,4 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
+
+// Use real vue-i18n — this test uses createI18n with real messages
+vi.unmock("vue-i18n");
+
 import { ref, defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
 import { createI18n } from "vue-i18n";
@@ -37,7 +41,13 @@ describe("VcAppMenu", () => {
       },
     });
 
-    const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });
+    const i18n = createI18n({
+      legacy: false,
+      locale: "en",
+      fallbackWarn: false,
+      missingWarn: false,
+      messages: { en: {} },
+    });
 
     const wrapper = mount(VcAppMenu, {
       global: {

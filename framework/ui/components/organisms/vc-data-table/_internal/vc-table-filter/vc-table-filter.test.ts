@@ -1,12 +1,8 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref } from "vue";
 import VcTableFilter from "./vc-table-filter.vue";
 import { IsMobileKey } from "@framework/injection-keys";
-
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k }),
-}));
 
 const stubs = {
   VcButton: {

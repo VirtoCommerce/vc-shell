@@ -1,13 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
-
-async function loadMenuServiceModule() {
-  vi.resetModules();
-  return import("@core/services/menu-service");
-}
+import { describe, it, expect, vi, beforeAll } from "vitest";
+import { createMenuService } from "@core/services/menu-service";
 
 describe("menu-service", () => {
-  it("removes item from source state and does not re-add it after rebuild", async () => {
-    const { createMenuService } = await loadMenuServiceModule();
+  it("removes item from source state and does not re-add it after rebuild", () => {
     const service = createMenuService();
 
     service.addMenuItem({ title: "A", priority: 1, url: "/a" } as any);
@@ -20,8 +15,7 @@ describe("menu-service", () => {
     expect(service.menuItems.value.map((item) => item.title)).toEqual(["B", "C"]);
   });
 
-  it("keeps runtime state isolated between service instances", async () => {
-    const { createMenuService } = await loadMenuServiceModule();
+  it("keeps runtime state isolated between service instances", () => {
     const firstService = createMenuService();
     const secondService = createMenuService();
 
@@ -31,8 +25,7 @@ describe("menu-service", () => {
     expect(secondService.menuItems.value).toHaveLength(0);
   });
 
-  it("groups items by group property", async () => {
-    const { createMenuService } = await loadMenuServiceModule();
+  it("groups items by group property", () => {
     const service = createMenuService();
 
     service.addMenuItem({ title: "Item A", priority: 1, group: "Settings", groupIcon: "fas fa-cog" } as any);
@@ -43,8 +36,7 @@ describe("menu-service", () => {
     expect(service.menuItems.value[0].title).toBe("Settings");
   });
 
-  it("groups items by groupConfig", async () => {
-    const { createMenuService } = await loadMenuServiceModule();
+  it("groups items by groupConfig", () => {
     const service = createMenuService();
 
     service.addMenuItem({
@@ -63,8 +55,7 @@ describe("menu-service", () => {
     expect(service.menuItems.value[0].groupId).toBe("admin-group");
   });
 
-  it("sorts items by priority", async () => {
-    const { createMenuService } = await loadMenuServiceModule();
+  it("sorts items by priority", () => {
     const service = createMenuService();
 
     service.addMenuItem({ title: "Z", priority: 3, url: "/z" } as any);
@@ -74,54 +65,8 @@ describe("menu-service", () => {
     expect(service.menuItems.value.map((i) => i.title)).toEqual(["A", "M", "Z"]);
   });
 
-  it("badge system: set, get, remove", async () => {
-    const { createMenuService, setMenuBadge, getMenuBadge, removeMenuBadge, getMenuBadges } =
-      await loadMenuServiceModule();
-    const service = createMenuService();
-
-    setMenuBadge("route-1", 5);
-    expect(getMenuBadge("route-1")).toBe(5);
-    expect(service.menuBadges.value.get("route-1")).toBe(5);
-
-    removeMenuBadge("route-1");
-    expect(getMenuBadge("route-1")).toBeUndefined();
-
-    const badges = getMenuBadges();
-    expect(badges.value.size).toBe(0);
-  });
-
-  it("badge getMenuBadge falls back to preregistered badges when no service exists", async () => {
-    const { setMenuBadge, getMenuBadge } = await loadMenuServiceModule();
-
-    setMenuBadge("early-badge", 42);
-    expect(getMenuBadge("early-badge")).toBe(42);
-  });
-
-  it("preregistration deduplicates items", async () => {
-    const { addMenuItem, createMenuService } = await loadMenuServiceModule();
-
-    addMenuItem({ title: "Dup", priority: 1, url: "/dup" } as any);
-    addMenuItem({ title: "Dup", priority: 1, url: "/dup" } as any);
-
-    const service = createMenuService();
-    expect(service.menuItems.value).toHaveLength(1);
-  });
-
-  it("disposes service instance via bus", async () => {
-    const { createMenuService, menuServiceBus } = await loadMenuServiceModule();
-    const service = createMenuService();
-
-    expect(menuServiceBus.instanceCount).toBe(1);
-    menuServiceBus.dispose(service);
-    expect(menuServiceBus.instanceCount).toBe(0);
-  });
-
   describe("identity and deduplication", () => {
-    it("removeMenuItem matches finalized item from menuItems.value against raw storage", async () => {
-      // This is the critical scenario: user gets item from menuItems.value
-      // (which has been through finalizeMenuItems) and passes it to removeMenuItem.
-      // Must work even though finalized item may have extra fields.
-      const { createMenuService } = await loadMenuServiceModule();
+    it("removeMenuItem matches finalized item from menuItems.value against raw storage", () => {
       const service = createMenuService();
 
       service.addMenuItem({ title: "A", priority: 1, url: "/a" } as any);
@@ -134,8 +79,7 @@ describe("menu-service", () => {
       expect(service.menuItems.value[0].title).toBe("B");
     });
 
-    it("removeMenuItem matches by id when both items have explicit id", async () => {
-      const { createMenuService } = await loadMenuServiceModule();
+    it("removeMenuItem matches by id when both items have explicit id", () => {
       const service = createMenuService();
 
       service.addMenuItem({ title: "A", priority: 1, id: 10, url: "/a" } as any);
@@ -147,8 +91,7 @@ describe("menu-service", () => {
       expect(service.menuItems.value[0].title).toBe("B");
     });
 
-    it("removeMenuItem matches by url when both items have url (no routeId)", async () => {
-      const { createMenuService } = await loadMenuServiceModule();
+    it("removeMenuItem matches by url when both items have url (no routeId)", () => {
       const service = createMenuService();
 
       service.addMenuItem({ title: "Orders", priority: 1, url: "/orders" } as any);
@@ -160,8 +103,7 @@ describe("menu-service", () => {
       expect(service.menuItems.value[0].title).toBe("Products");
     });
 
-    it("removeMenuItem matches by routeId", async () => {
-      const { createMenuService } = await loadMenuServiceModule();
+    it("removeMenuItem matches by routeId", () => {
       const service = createMenuService();
 
       service.addMenuItem({ title: "Orders", priority: 1, url: "/orders", routeId: "Orders" } as any);
@@ -173,8 +115,7 @@ describe("menu-service", () => {
       expect(service.menuItems.value[0].title).toBe("Products");
     });
 
-    it("group children with identical routeId+url are deduplicated (last wins)", async () => {
-      const { createMenuService } = await loadMenuServiceModule();
+    it("group children with identical routeId+url are deduplicated (last wins)", () => {
       const service = createMenuService();
 
       service.addMenuItem({
@@ -197,8 +138,7 @@ describe("menu-service", () => {
       expect(service.menuItems.value[0].children![0].title).toBe("Users Updated");
     });
 
-    it("identity is symmetric — determined by highest-priority field on each item independently", async () => {
-      const { createMenuService } = await loadMenuServiceModule();
+    it("identity is symmetric — determined by highest-priority field on each item independently", () => {
       const service = createMenuService();
 
       service.addMenuItem({ title: "Page", priority: 1, url: "/page", routeId: "PageRoute" } as any);
@@ -212,10 +152,7 @@ describe("menu-service", () => {
       expect(service.menuItems.value).toHaveLength(0);
     });
 
-    it("finalized items without explicit id have id undefined", async () => {
-      // Documents the auto-id removal. External consumers of menuItems.value
-      // should use routeId/url/title as fallback identifiers.
-      const { createMenuService } = await loadMenuServiceModule();
+    it("finalized items without explicit id have id undefined", () => {
       const service = createMenuService();
 
       service.addMenuItem({ title: "Orders", priority: 1, url: "/orders", routeId: "Orders" } as any);
@@ -227,8 +164,7 @@ describe("menu-service", () => {
       expect(item.title).toBe("Orders");
     });
 
-    it("groupConfig updates group properties on second registration", async () => {
-      const { createMenuService } = await loadMenuServiceModule();
+    it("groupConfig updates group properties on second registration", () => {
       const service = createMenuService();
 
       service.addMenuItem({
@@ -253,8 +189,7 @@ describe("menu-service", () => {
       expect(group.children).toHaveLength(2);
     });
 
-    it("standalone items with same routeId but different url are deduplicated (last wins)", async () => {
-      const { createMenuService } = await loadMenuServiceModule();
+    it("standalone items with same routeId but different url are deduplicated (last wins)", () => {
       const service = createMenuService();
 
       service.addMenuItem({ title: "V1", priority: 1, url: "/old-path", routeId: "Orders" } as any);
@@ -266,8 +201,7 @@ describe("menu-service", () => {
       expect(service.menuItems.value[0].url).toBe("/new-path");
     });
 
-    it("standalone items with same url but different routeId coexist", async () => {
-      const { createMenuService } = await loadMenuServiceModule();
+    it("standalone items with same url but different routeId coexist", () => {
       const service = createMenuService();
 
       service.addMenuItem({ title: "PageA", priority: 1, url: "/shared", routeId: "RouteA" } as any);
@@ -277,40 +211,110 @@ describe("menu-service", () => {
       expect(service.menuItems.value).toHaveLength(2);
     });
   });
+});
+
+describe("menu-service badges", () => {
+  let setMenuBadge: typeof import("@core/services/menu-service").setMenuBadge;
+  let getMenuBadge: typeof import("@core/services/menu-service").getMenuBadge;
+  let removeMenuBadge: typeof import("@core/services/menu-service").removeMenuBadge;
+  let getMenuBadges: typeof import("@core/services/menu-service").getMenuBadges;
+  let createService: typeof import("@core/services/menu-service").createMenuService;
+
+  beforeAll(async () => {
+    vi.resetModules();
+    const mod = await import("@core/services/menu-service");
+    setMenuBadge = mod.setMenuBadge;
+    getMenuBadge = mod.getMenuBadge;
+    removeMenuBadge = mod.removeMenuBadge;
+    getMenuBadges = mod.getMenuBadges;
+    createService = mod.createMenuService;
+  });
+
+  it("badge system: set, get, remove", () => {
+    const service = createService();
+
+    setMenuBadge("route-1", 5);
+    expect(getMenuBadge("route-1")).toBe(5);
+    expect(service.menuBadges.value.get("route-1")).toBe(5);
+
+    removeMenuBadge("route-1");
+    expect(getMenuBadge("route-1")).toBeUndefined();
+
+    const badges = getMenuBadges();
+    expect(badges.value.size).toBe(0);
+  });
+
+  it("badge getMenuBadge falls back to preregistered badges when no service exists", () => {
+    setMenuBadge("early-badge", 42);
+    expect(getMenuBadge("early-badge")).toBe(42);
+  });
+});
+
+describe("menu-service preregistration", () => {
+  let addMenuItem: typeof import("@core/services/menu-service").addMenuItem;
+  let createService: typeof import("@core/services/menu-service").createMenuService;
+
+  beforeAll(async () => {
+    vi.resetModules();
+    const mod = await import("@core/services/menu-service");
+    addMenuItem = mod.addMenuItem;
+    createService = mod.createMenuService;
+  });
+
+  it("preregistration deduplicates items", () => {
+    addMenuItem({ title: "Dup", priority: 1, url: "/dup" } as any);
+    addMenuItem({ title: "Dup", priority: 1, url: "/dup" } as any);
+
+    const service = createService();
+    expect(service.menuItems.value).toHaveLength(1);
+  });
+
+  it("disposes service instance via bus", async () => {
+    vi.resetModules();
+    const mod = await import("@core/services/menu-service");
+    const service = mod.createMenuService();
+
+    expect(mod.menuServiceBus.instanceCount).toBe(1);
+    mod.menuServiceBus.dispose(service);
+    expect(mod.menuServiceBus.instanceCount).toBe(0);
+  });
 
   describe("removeRegisteredMenuItem", () => {
     it("cleans bus store so replay does not resurrect item", async () => {
-      const { addMenuItem, removeRegisteredMenuItem, createMenuService } = await loadMenuServiceModule();
+      vi.resetModules();
+      const mod = await import("@core/services/menu-service");
 
-      addMenuItem({ title: "Temp", priority: 1, url: "/temp" } as any);
-      removeRegisteredMenuItem({ url: "/temp" } as any);
+      mod.addMenuItem({ title: "Temp", priority: 1, url: "/temp" } as any);
+      mod.removeRegisteredMenuItem({ url: "/temp" } as any);
 
-      const service = createMenuService();
+      const service = mod.createMenuService();
       expect(service.menuItems.value).toHaveLength(0);
     });
 
     it("propagates removal to live service instances", async () => {
-      const { addMenuItem, removeRegisteredMenuItem, createMenuService } = await loadMenuServiceModule();
+      vi.resetModules();
+      const mod = await import("@core/services/menu-service");
 
-      addMenuItem({ title: "Live", priority: 1, url: "/live", routeId: "Live" } as any);
-      const service = createMenuService();
+      mod.addMenuItem({ title: "Live", priority: 1, url: "/live", routeId: "Live" } as any);
+      const service = mod.createMenuService();
       expect(service.menuItems.value).toHaveLength(1);
 
-      removeRegisteredMenuItem({ routeId: "Live" } as any);
+      mod.removeRegisteredMenuItem({ routeId: "Live" } as any);
       expect(service.menuItems.value).toHaveLength(0);
     });
 
     it("removes grouped item from bus store without affecting siblings", async () => {
-      const { addMenuItem, removeRegisteredMenuItem, createMenuService } = await loadMenuServiceModule();
+      vi.resetModules();
+      const mod = await import("@core/services/menu-service");
 
-      addMenuItem({
+      mod.addMenuItem({
         title: "Users",
         priority: 1,
         url: "/users",
         routeId: "Users",
         groupConfig: { id: "admin", title: "Admin", icon: "fas fa-shield" },
       } as any);
-      addMenuItem({
+      mod.addMenuItem({
         title: "Roles",
         priority: 2,
         url: "/roles",
@@ -318,9 +322,9 @@ describe("menu-service", () => {
         groupConfig: { id: "admin", title: "Admin" },
       } as any);
 
-      removeRegisteredMenuItem({ routeId: "Users" } as any);
+      mod.removeRegisteredMenuItem({ routeId: "Users" } as any);
 
-      const service = createMenuService();
+      const service = mod.createMenuService();
       expect(service.menuItems.value).toHaveLength(1);
       expect(service.menuItems.value[0].children).toHaveLength(1);
       expect(service.menuItems.value[0].children![0].title).toBe("Roles");

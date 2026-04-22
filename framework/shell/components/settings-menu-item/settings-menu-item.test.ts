@@ -1,12 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref } from "vue";
 import SettingsMenuItem from "./settings-menu-item.vue";
 import { IsMobileKey } from "@framework/injection-keys";
-
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k, locale: { value: "en" } }),
-}));
 
 const stubs = {
   VcIcon: { template: '<i data-stub="VcIcon" />', props: ["icon", "size", "customSize"] },

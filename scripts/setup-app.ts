@@ -72,6 +72,19 @@ function rewriteVcShellDepsToPortal(appDir: string): boolean {
     }
   }
 
+  // Ensure transitive @vc-shell workspace:* deps from portal-linked packages
+  // can be resolved in isolated apps/* installs.
+  const resolutions = (appPkg.resolutions ??= {}) as Record<string, string>;
+  for (const [dep, workspaceRelPath] of Object.entries(PACKAGE_TO_WORKSPACE_PATH)) {
+    const portalTarget = `portal:${path.join(ROOT, workspaceRelPath)}`;
+    if (resolutions[dep] !== portalTarget) {
+      const from = resolutions[dep] ?? "(not set)";
+      console.log(`  resolutions.${dep}: ${from} -> ${portalTarget}`);
+      resolutions[dep] = portalTarget;
+      changed = true;
+    }
+  }
+
   if (changed) {
     writeFileSync(pkgPath, JSON.stringify(appPkg, null, 2) + "\n");
   }

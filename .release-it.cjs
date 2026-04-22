@@ -93,7 +93,7 @@ module.exports = {
     requireCleanWorkingDir: true,
     requireBranch: ["main"],
     requireUpstream: true,
-    requireCommits: true,
+    requireCommits: isPrerelease,
     tagName: "v${version}",
     commitMessage: "release: v${version}",
     tagAnnotation: "v${version}",

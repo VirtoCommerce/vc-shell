@@ -15,7 +15,14 @@ yarn build:framework            # Build only @vc-shell/framework
 yarn dev:storybook              # Storybook dev server on :6006
 yarn build:storybook            # Production Storybook build
 yarn lint                       # ESLint with --fix across framework/cli/configs
+yarn format                     # Prettier across framework/cli/configs/packages
+yarn stylelint                  # Stylelint --fix on framework .vue/.css/.scss
 yarn check:locales              # Validate locale files (runs on pre-commit hook)
+yarn check:circular             # madge --circular check on framework/
+yarn check:layers               # Architecture layer-violations guard
+yarn check                      # Aggregate gate: lint + format + stylelint + typecheck + locales + circular + layers
+yarn test                       # Root-level vitest run (no cd needed)
+yarn generate:api-client        # Regenerate API client from platform modules
 ```
 
 **TypeScript check**:
@@ -54,6 +61,7 @@ vc-shell/
     assets/styles/        #   SCSS: theme/colors.scss defines CSS custom properties
   cli/                    # CLI tools (api-client generator, create-vc-app scaffolder)
   configs/                # Shared configs (ts-config, vite-config, release-config)
+  packages/               # Module Federation packages (mf-host, mf-module, mf-config)
   apps/vendor-portal/     # Reference app consuming the framework
   .storybook/             # Storybook configuration (stories in framework/ui/**)
 ```
@@ -67,9 +75,9 @@ vc-shell/
 - `core/composables/useBlade/` — `useBlade()` unified API (openBlade, closeSelf, callParent, etc.)
 - Blades use provide/inject via injection keys for dependency injection between parent/child blades
 
-**Dynamic Module Loading** — Modules are loaded at runtime via `useDynamicModules()` from `core/plugins/modularity/`. Each module is a Vue plugin with optional extensions and version compatibility metadata. Modules declare framework/app compatibility via semver ranges.
+**Dynamic Module Loading** — Modules are defined via `defineAppModule()` / `createAppModule()` from `core/plugins/modularity/`. Each module is a Vue plugin with optional extensions and version compatibility metadata. Modules declare framework/app compatibility via semver ranges.
 
-**Extensions System** — Inbound (app customizes module) and outbound (module extends app) extensions, accessed via `extensionsHelper`. See `core/plugins/extension-points/`.
+**Extensions System** — Inbound (app customizes module) and outbound (module extends app) extensions, exposed via `defineExtensionPoint()` / `useExtensionPoint()`. See `core/plugins/extension-points/`.
 
 **Services** — Singleton services registered via provide/inject: WidgetService, MenuService, DashboardService, ToolbarService, GlobalSearchService, SettingsMenuService. Each has a corresponding `use*` composable in `core/composables/`.
 
@@ -77,12 +85,12 @@ vc-shell/
 
 Active development area. Two table implementations coexist:
 
-| Component        | File                                                            | Role                                               |
-| ---------------- | --------------------------------------------------------------- | -------------------------------------------------- |
-| `VcDataTable`    | `framework/ui/components/organisms/vc-table/VcDataTable.vue`    | New compositional table                            |
-| `VcTableAdapter` | `framework/ui/components/organisms/vc-table/VcTableAdapter.vue` | Adapter: wraps VcDataTable with legacy VcTable API |
+| Component        | File                                                                 | Role                                               |
+| ---------------- | -------------------------------------------------------------------- | -------------------------------------------------- |
+| `VcDataTable`    | `framework/ui/components/organisms/vc-data-table/VcDataTable.vue`    | New compositional table                            |
+| `VcTableAdapter` | `framework/ui/components/organisms/vc-data-table/VcTableAdapter.vue` | Adapter: wraps VcDataTable with legacy VcTable API |
 
-Sub-components are in `vc-table/components/`, composables in `vc-table/composables/`. Check these directories before building new table features — most functionality already exists (column switching, global filters, cell renderers, search header, row actions, virtual scroll, etc.).
+Sub-components are in `vc-data-table/components/` (and `_internal/`), composables in `vc-data-table/composables/`. Check these directories before building new table features — most functionality already exists (column switching, global filters, cell renderers, search header, row actions, virtual scroll, etc.).
 
 ## Code Style & Conventions
 
@@ -101,7 +109,7 @@ Sub-components are in `vc-table/components/`, composables in `vc-table/composabl
 
 ## Gotchas
 
-- **Storybook HMR loop**: vc-table stories have a known infinite HMR reload (~1s remount). Playwright snapshots may appear empty; use screenshots instead.
+- **Storybook HMR loop**: vc-data-table stories have a known infinite HMR reload (~1s remount). Playwright snapshots may appear empty; use screenshots instead.
 - **Vue watcher + immediate**: `watch(computed, ..., { immediate: true })` fires again during post-setup flush if computed returns new array reference (fails `Object.is`). Guard with set-equality checks.
 - **Flex column layout**: Columns use `flex: 0 1 auto` with `min-width: 0`. Head/cell padding MUST match — both use `--table-cell-padding-x` (defined in `Table.vue`). No inter-column gap (gap: 0 on transition-wrapper); spacing is cell-padding-only. The `::after` filler pseudo-element absorbs leftover space.
 - **Row drag-and-drop**: `event.preventDefault()` in `dragover` MUST be called on EVERY event or `drop` never fires. No early returns before it.
@@ -122,7 +130,7 @@ All story files must follow `.storybook/STORY_STANDARD.md`. Key rules:
 ## Implementation Guidelines
 
 - Prefer simple, minimal fixes. Do not over-engineer. Only modify code related to the task at hand.
-- Reuse existing components and composables — check `vc-table/components/` and `vc-table/composables/` before building new table features.
+- Reuse existing components and composables — check `vc-data-table/components/` and `vc-data-table/composables/` before building new table features.
 - Map to VcDataTable's built-in features rather than reimplementing from scratch.
 - When fixing bugs, check `git log --oneline -15` early — regressions from recent commits are common.
 - After editing code, verify with `yarn typecheck` to catch TypeScript errors immediately.

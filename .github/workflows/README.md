@@ -59,7 +59,7 @@ Steps:
 1. Checkout with `secrets.REPO_TOKEN` (vc-ci bot, admin) so the release commit and tag push past the ruleset.
 2. `yarn install --immutable` → `yarn check` → `yarn build`.
 3. Configure git user as `vc-ci`.
-4. Run `release-it` with the computed args. `PRERELEASE_CHANNEL` is exposed to `.release-it.cjs`, which conditionally enables/disables the CHANGELOG plugin and GitHub Release creation.
+4. Run `release-it` with the computed args. `PRERELEASE_CHANNEL` is exposed to `.release-it.cjs`, which conditionally enables/disables the CHANGELOG plugin and GitHub Release creation. During `after:bump`, release-it runs `yarn install` with `YARN_ENABLE_IMMUTABLE_INSTALLS=false` so the lockfile can be updated after workspace version bump.
 5. For non-dry runs: configure npm auth and `yarn publish:packages --tag <channel>`, then verify dist-tags.
 
 Creates a **GitHub Release** entry only for stable releases (`prerelease: none`). Prereleases produce a git tag and npm publish but skip the Release entry to avoid cluttering `/releases`.
@@ -90,5 +90,5 @@ Two jobs:
 - **Node 22** — matches `engines.node` in root `package.json`.
 - **Yarn 4 via Corepack** — `corepack enable` is always called before `yarn install`.
 - **Yarn cache** — `actions/setup-node@v4` with `cache: "yarn"` restores / saves `.yarn/cache` keyed on `yarn.lock`.
-- **`--immutable`** — every `yarn install` in CI uses `--immutable` to fail fast on lockfile drift. `ci.yml` has a dedicated "Lockfile drift hint" step that annotates the failure with recovery instructions.
+- **`--immutable`** — CI install steps use `--immutable` to fail fast on lockfile drift, except the release-it `after:bump` hook where immutable is intentionally disabled to refresh `yarn.lock` after version bump. `ci.yml` has a dedicated "Lockfile drift hint" step that annotates the failure with recovery instructions.
 - **Path filtering** — `ci.yml` is scoped to changes that can affect build/lint/tests; docs-only commits skip heavy verification.

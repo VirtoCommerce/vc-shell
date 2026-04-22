@@ -131,7 +131,7 @@ module.exports = {
   hooks: {
     "before:release": "tsx scripts/release-hooks.ts before-release ${version}",
     "after:bump":
-      "tsx scripts/release-hooks.ts after-bump ${version} && yarn install",
+      "tsx scripts/release-hooks.ts after-bump ${version} && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install",
     "before:stage": isPrerelease
       ? "git add cli/ configs/ packages/ framework/package.json apps/ yarn.lock"
       : "git add cli/ configs/ packages/ framework/package.json apps/ CHANGELOG.md yarn.lock",

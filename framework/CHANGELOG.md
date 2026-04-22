@@ -1,45 +1,563 @@
-# [2.0.0-alpha.35](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.34...v2.0.0-alpha.35) (2026-04-22)
+# Changelog
+
+# [2.0.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3...v2.0.0) (2026-04-22)
+
+### Features
+
+- add blade catch-all route handling in VcBladeNavigationComponent ([cb7920a](https://github.com/VirtoCommerce/vc-shell/commit/cb7920a3563d9224a160c00f728b5e5a84277f7f))
+- add date utility module (locale resolver, format converter, wrappers) ([ee17b24](https://github.com/VirtoCommerce/vc-shell/commit/ee17b248f2dca17b9936b719ce2dc9a916c722de))
+- add useDataTableSort composable for VcDataTable sort state management ([4eafe65](https://github.com/VirtoCommerce/vc-shell/commit/4eafe65a02b7af23dc4f5196c2583e09de47ec5a))
+- add Vue module augmentation type declarations ([f1b8f48](https://github.com/VirtoCommerce/vc-shell/commit/f1b8f4817a849d4fbe4eb8c820214d942f691e93))
+- **app-hub:** add App Hub with search, app switcher, and widgets panel ([8a92ecc](https://github.com/VirtoCommerce/vc-shell/commit/8a92ecc10336dde2cef16a99ffa8f9b04c4554ba))
+- **auth:** parallelize getCurrentUser and getAccessToken in loadUser() ([325cced](https://github.com/VirtoCommerce/vc-shell/commit/325cced26e33e15861c3203d7a9b99183c0fa057))
+- **blade-navigation:** add BladeDefinition, BladeMenuItemConfig, BladeConfig types ([813786b](https://github.com/VirtoCommerce/vc-shell/commit/813786be215ba0d73e9269863a218277b36f17e4))
+- **blade-navigation:** add global bladeConfigRegistry for defineBlade ([2957c70](https://github.com/VirtoCommerce/vc-shell/commit/2957c70a751a7a47b8a40fd47e57797e0ad9ea73))
+- **blade-navigation:** split replaceCurrentBlade into replace and cover operations ([8e1de52](https://github.com/VirtoCommerce/vc-shell/commit/8e1de522ec9763db6bbfa8c59a2842c903d68ddc))
+- **blade-registry:** read from bladeConfigRegistry + handle menu registration ([235fc51](https://github.com/VirtoCommerce/vc-shell/commit/235fc51f78e05c9958ad5096f85b69ccd8417c0b))
+- **blade:** add addBanner/removeBanner/clearBanners to useBlade() ([773362f](https://github.com/VirtoCommerce/vc-shell/commit/773362f8958782509b5e153c1c2889fffebf92a8))
+- **blade:** add IBladeBanner interface and BladeBannersKey injection key ([8c8ceb8](https://github.com/VirtoCommerce/vc-shell/commit/8c8ceb808b5f18f16f021d1c91d152308f59a4fc))
+- **blade:** provide BladeBannersKey in VcBladeSlot ([86c47e7](https://github.com/VirtoCommerce/vc-shell/commit/86c47e788afb8090364ebfefca10ae5db332b54e))
+- **blade:** rewrite BladeStatusBanners for unified banner list with custom banners support ([887c5b9](https://github.com/VirtoCommerce/vc-shell/commit/887c5b9c66ad3afcc95c9b03a50943ac3bb5b46c))
+- **CellEditableWrapper:** add validateOnMount prop for eager validation ([3d0e022](https://github.com/VirtoCommerce/vc-shell/commit/3d0e022d39f3b862abed0c8c4b337057fd94c638))
+- **core:** add error ref and deferred notification to useAsync ([82e0167](https://github.com/VirtoCommerce/vc-shell/commit/82e01675223339982ea9292588e92fc594410a1d))
+- **core:** add global error handlers for unhandled errors and rejections ([3c27dcf](https://github.com/VirtoCommerce/vc-shell/commit/3c27dcf778a4910507c74646086390bc9673d931))
+- **core:** add offline guard and 30s timeout to fetch interceptor ([12c7519](https://github.com/VirtoCommerce/vc-shell/commit/12c75193b96ae5b3abf9564fe5066196685ec830))
+- **core:** add useBladeForm markReady for prefilled entities ([9ba3803](https://github.com/VirtoCommerce/vc-shell/commit/9ba380313282dffb5109f83da3d65663b3103e32))
+- **core:** add useConnectionStatus composable for network awareness ([77246b1](https://github.com/VirtoCommerce/vc-shell/commit/77246b1c1509e611cda1dda9589d5e14a1431e62))
+- **core:** add useSlowNetworkDetection composable — request timer channel ([188d97e](https://github.com/VirtoCommerce/vc-shell/commit/188d97eb365a5a6cff8860765be09ea62b701704))
+- **core:** export parseError/DisplayableError and add pending notification utility ([f710aab](https://github.com/VirtoCommerce/vc-shell/commit/f710aab3a4b0489c3e3b294f26d7e2e76881e0f7))
+- customize asset file naming in Vite configuration ([33f17e3](https://github.com/VirtoCommerce/vc-shell/commit/33f17e3c060fe97dbf3fa5a053c8b8a666a6affc))
+- **dashboard-charts:** add chart components with Unovis integration ([559917c](https://github.com/VirtoCommerce/vc-shell/commit/559917c1e65e48713555bd8d62c022f10a534af5))
+- **dashboard:** redesign widget cards and add new sub-components ([46aecea](https://github.com/VirtoCommerce/vc-shell/commit/46aecea106f6b6b3793fe90bca7d542098206574))
+- **DataTableHeader:** show required asterisk in edit mode ([f597b83](https://github.com/VirtoCommerce/vc-shell/commit/f597b83e72e4432d7aeb5bd460debbbece9d4e1e))
+- **dynamic-modules:** add hash-based cache busting for module assets ([eb47537](https://github.com/VirtoCommerce/vc-shell/commit/eb475375fad72f4c00016e0e8d9298cdbc44a321))
+- **dynamicProperties:** strategy-based refactor with clean API ([befd1c4](https://github.com/VirtoCommerce/vc-shell/commit/befd1c4192366f6103c0a39deb17b782dcc57d30))
+- export useAssetsManager from core composables barrel ([c8bafb8](https://github.com/VirtoCommerce/vc-shell/commit/c8bafb890b0e324b30cd6d810f1b5de6d54dd80c))
+- **framework:** add global defineBlade() type declaration ([4b5b227](https://github.com/VirtoCommerce/vc-shell/commit/4b5b22725c0b381aecb583bd7efd11ea94bd34c9))
+- **framework:** add useDataTablePagination composable ([8085a04](https://github.com/VirtoCommerce/vc-shell/commit/8085a0402c60d03a7eb575004106ca8cf2fcfee4))
+- **framework:** export pre-registration functions for external modules ([7a4c854](https://github.com/VirtoCommerce/vc-shell/commit/7a4c8540dcdf807d5309c04701460c4bf7e5df38))
+- **gallery:** add filmstrip layout with swiper, fullscreen preview, mobile UX improvements ([08f476b](https://github.com/VirtoCommerce/vc-shell/commit/08f476b7fb6ae244aeeb80e88e426f44a61dffa2))
+- **gallery:** filmstrip layout, thumbnail support, mobile UX improvements ([519fd76](https://github.com/VirtoCommerce/vc-shell/commit/519fd768222a01397988a139d07bcf43147a9454))
+- **global-filters:** use VcSidebar bottom sheet on mobile ([6e4a090](https://github.com/VirtoCommerce/vc-shell/commit/6e4a0903c7b41d95fc4044eb326f3483e110a240))
+- **i18n:** add typed locale exports for framework translations ([d1e1b29](https://github.com/VirtoCommerce/vc-shell/commit/d1e1b29575b2ba5e6e935e6b2e653ae73fdb258d))
+- **i18n:** sync shell locale from platform NG_TRANSLATE_LANG_KEY in embedded mode ([4adc6b0](https://github.com/VirtoCommerce/vc-shell/commit/4adc6b0f647b33e1ed6d1fb44835fc165e9edb9b))
+- **icons:** migrate from FontAwesome and Material to Lucide icons ([1165217](https://github.com/VirtoCommerce/vc-shell/commit/1165217459ccac086aa5eab381deb43be46d7746))
+- **image:** add thumbnail URL utility and thumbnailSize prop to image components ([4f35180](https://github.com/VirtoCommerce/vc-shell/commit/4f3518040275d6a415e4735bd32fd15b8db8c38f))
+- **login:** introduce SSO-only login page mode with conditional form rendering and enhanced sign-in error message parsing from API responses ([6fec3fb](https://github.com/VirtoCommerce/vc-shell/commit/6fec3fb025c710e7022ed1c8637ea1a59fb9831d))
+- **menu-service:** add removeRegisteredMenuItem for bus-level item removal ([cb587b8](https://github.com/VirtoCommerce/vc-shell/commit/cb587b849c31e1cd6b6d99c82ff8e22261d6074a))
+- **menu:** implement badge functionality for menu items ([5f9c798](https://github.com/VirtoCommerce/vc-shell/commit/5f9c798bce1a4cb79a4534537187e8d827ed627a))
+- **mf:** extract Module Federation loader into @vc-shell/mf-config and @vc-shell/mf-host ([9b079c2](https://github.com/VirtoCommerce/vc-shell/commit/9b079c27bc1497d89849b909f62c1403eff0c9b4))
+- **modularity,dropdown:** support notifications config in defineAppModule, use store in dropdown ([eb96c22](https://github.com/VirtoCommerce/vc-shell/commit/eb96c228b0e8f8d5efa6bd5d31cd8f3e70ae3dc8))
+- **modularity:** add ModulesReadyKey and ModulesLoadErrorKey injection keys ([bafd2b0](https://github.com/VirtoCommerce/vc-shell/commit/bafd2b0fa9385ec07b89b6f1e75b7babfb6fffa6))
+- **modularity:** add optional components parameter to createAppModule function shim ([52696b9](https://github.com/VirtoCommerce/vc-shell/commit/52696b92c71c15618f600e291bb8e99097703454))
+- **modularity:** signal module load completion via injection keys ([9f9e0ae](https://github.com/VirtoCommerce/vc-shell/commit/9f9e0aec5174579e7ba75f19984fbdac8cb7e549))
+- multi-entry Vite build with ui, ai-agent, extensions sub-entries ([db93322](https://github.com/VirtoCommerce/vc-shell/commit/db93322ce7a732e895d3769f2392e3009b10bd15))
+- **notifications:** add barrel exports for notifications module ([f10526f](https://github.com/VirtoCommerce/vc-shell/commit/f10526ffe639700a82c96d73b533f3ef78c9b9c9))
+- **notifications:** add core types for notification system redesign ([402cbbc](https://github.com/VirtoCommerce/vc-shell/commit/402cbbc83de926aa7cd025173c7c838eb3c0b3a4))
+- **notifications:** add NotificationContextKey injection key ([325de54](https://github.com/VirtoCommerce/vc-shell/commit/325de540aea20bab3f9981d55419b9e8882faf10))
+- **notifications:** add NotificationStore with types and tests ([921fd84](https://github.com/VirtoCommerce/vc-shell/commit/921fd8461416e02234b4bce9eb299b1767660ad4))
+- **notifications:** add ToastController with progress/auto/silent modes ([9eb6268](https://github.com/VirtoCommerce/vc-shell/commit/9eb62687245bd63788d76d67e7185237c6c3e9e8))
+- **notifications:** add useBladeNotifications composable with auto-cleanup ([af18fd8](https://github.com/VirtoCommerce/vc-shell/commit/af18fd869d2b4874732592292dda0fa46578d07e))
+- **notifications:** add useNotificationContext composable ([fa73deb](https://github.com/VirtoCommerce/vc-shell/commit/fa73debbcabc2378c1a0c0a90dba589a134c2c87))
+- **notifications:** add useNotificationStore singleton composable ([596d1d6](https://github.com/VirtoCommerce/vc-shell/commit/596d1d677cd72b6f6e4a6e24583d3a6d8cc4152a))
+- **notifications:** integrate ToastController into store.ingest and wire SignalR ([8c7be3e](https://github.com/VirtoCommerce/vc-shell/commit/8c7be3ea06a94341a82f9741e34d5e4a2eccb4a2))
+- **perf:** add performance marks to modularity loader ([59eadf7](https://github.com/VirtoCommerce/vc-shell/commit/59eadf7294be177d29324519e8108439aba59ba7))
+- **perf:** defer AppInsights SDK and SignalR connection to post-paint in framework install ([c4ebb45](https://github.com/VirtoCommerce/vc-shell/commit/c4ebb45d0f15a0e7eab3addae8e32f16f9e1c81b))
+- **perf:** install web-vitals and create useWebVitals composable ([b0ba458](https://github.com/VirtoCommerce/vc-shell/commit/b0ba458e9e9a08685d306e1bc307c459a5716d5e))
+- **popup:** usePopup composable documentation and tests ([bef8e8b](https://github.com/VirtoCommerce/vc-shell/commit/bef8e8b9f0c30f4986a15c7127870abe95862056))
+- **responsive-composable:** introduce useResponsive composable to replace global properties and injection keys ([1280853](https://github.com/VirtoCommerce/vc-shell/commit/1280853cf10ec6cf432b5e7eb88b0991430dfc20))
+- **settings-menu-item:** add submenu slot with responsive desktop/mobile behavior ([cd2d75f](https://github.com/VirtoCommerce/vc-shell/commit/cd2d75ff5b8ea52d69d7bc381144788accd54422))
+- **shared:** wire ErrorInterceptor to blade.error and cancel deferred toasts ([d7f02f6](https://github.com/VirtoCommerce/vc-shell/commit/d7f02f61fdc980dd32afc2b1ad9a228900dee78c))
+- **shell:** add notification bell button to SidebarHeader ([02fbe5e](https://github.com/VirtoCommerce/vc-shell/commit/02fbe5e566f629bb011ebddfcf4b6eeb2730ce16))
+- **shell:** remove notifications widget from AppHub ([5b9811f](https://github.com/VirtoCommerce/vc-shell/commit/5b9811f942125c7085ad958128cd14917760a8fd))
+- **shell:** unify notification bell with AppHub pattern ([6ac1547](https://github.com/VirtoCommerce/vc-shell/commit/6ac1547824b0132043e025d01a94c13d921250e1))
+- **shell:** wire notification bell popover in DesktopLayout ([c0fccca](https://github.com/VirtoCommerce/vc-shell/commit/c0fcccae35d69bf0b722616eba3fba9cf4a17ef0))
+- **signalr:** add mountComplete guard to SignalR plugin and export notifyMountComplete ([a89b62b](https://github.com/VirtoCommerce/vc-shell/commit/a89b62b82c10630cade2558587c8690a46171e78))
+- **skeleton:** transparent blade skeleton via provide/inject ([89d3285](https://github.com/VirtoCommerce/vc-shell/commit/89d328529bf8c647c0a3648f53a845510c49f689))
+- **slow-network:** add effectiveType detection channel ([3369bb2](https://github.com/VirtoCommerce/vc-shell/commit/3369bb2131deb2603177d10b9e61101748e6a77c))
+- **slow-network:** add notification management with dismiss delay and offline suppression ([1708b87](https://github.com/VirtoCommerce/vc-shell/commit/1708b879ee777f1fc0cab7d29edfd73379060eb1))
+- **slow-network:** integrate request tracking into interceptor and initialize at startup ([6d55e35](https://github.com/VirtoCommerce/vc-shell/commit/6d55e35097643b8868a882162c1716920ecb4586))
+- **stories:** add row actions column position stories ([cac88df](https://github.com/VirtoCommerce/vc-shell/commit/cac88df844f4d1bcce62f4d9304924ff587c630f))
+- **storybook:** add auth page stories for Login, ForgotPassword, ResetPassword, ChangePassword, Invite ([1c1940f](https://github.com/VirtoCommerce/vc-shell/commit/1c1940f50b5a366549012cc4a81ed85797110b4a))
+- **storybook:** enrich VcApp stories with mock data and widgets ([9e3e0db](https://github.com/VirtoCommerce/vc-shell/commit/9e3e0db835f7e84c1a7ca649454cde5cad28cdd2))
+- **storybook:** reorganize navigation to functional categories and add test integration ([eb9ba96](https://github.com/VirtoCommerce/vc-shell/commit/eb9ba96865b0cd30fe1a248c46a6b320d04ea785))
+- **styles:** add z-index token scale as CSS custom properties ([39c5c1d](https://github.com/VirtoCommerce/vc-shell/commit/39c5c1d4329ab9eeeb11ccb8befaf685d0e34ff8))
+- **table:** add ColumnSpec, ColumnState, TableFitMode, PersistedStateV2 types ([42c5414](https://github.com/VirtoCommerce/vc-shell/commit/42c541450abf9a7dfb4664067db9e0987c24dbcb))
+- **table:** add storybook stories for fit/gap modes and width constraints ([1c0422b](https://github.com/VirtoCommerce/vc-shell/commit/1c0422b582351a75301f9c04496c1ea50657e589))
+- **table:** add weight-based column width engine with unit tests ([280eaa3](https://github.com/VirtoCommerce/vc-shell/commit/280eaa3ee90cb4add77deafdac76d750474ed748))
+- **table:** auto-scale column widths when container resizes via ResizeObserver ([9957fd1](https://github.com/VirtoCommerce/vc-shell/commit/9957fd11310b9f743df1c2db7a36dd4ed5ddce35))
+- **table:** proportional column resize + full reset via column switcher ([d9af649](https://github.com/VirtoCommerce/vc-shell/commit/d9af6498efcea0875ffb0991cbaca36eb06a7329))
+- **tests:** enhance test helpers and add vitest environment for consistency ([6cd30ac](https://github.com/VirtoCommerce/vc-shell/commit/6cd30ac65b83dd756803b9ccb4278bd8679be930))
+- **theme:** add global overlay, shadow, surface, and glass design tokens ([3509103](https://github.com/VirtoCommerce/vc-shell/commit/3509103ba47172ce8201c491934ebe79dddb5a26))
+- **ui:** UX polish and export normalization ([931e1a1](https://github.com/VirtoCommerce/vc-shell/commit/931e1a1b423d0b4470600369afa8dab1980889dd))
+- **useAssetsManager:** accept nullable source ref ([05d5da7](https://github.com/VirtoCommerce/vc-shell/commit/05d5da71c4934b8ddb8cd63293f0a7f855dc86e7))
+- **useAssetsManager:** implement remove and removeMany with confirmation ([9f9589c](https://github.com/VirtoCommerce/vc-shell/commit/9f9589c74b074a8473c9dc535b8704ab07c3b2fc))
+- **useAssetsManager:** implement reorder and updateItem ([4946433](https://github.com/VirtoCommerce/vc-shell/commit/4946433097ee63702c27fb65010d2e7bc286768e))
+- **useAssetsManager:** implement upload with batch concurrency ([cd34520](https://github.com/VirtoCommerce/vc-shell/commit/cd3452092099a6721125e30d81cdc735af0e9c87))
+- **useAssetsManager:** skeleton with AssetLike type, items, loading ([3cd9f2b](https://github.com/VirtoCommerce/vc-shell/commit/3cd9f2bca101278d546f23bb2309d845226c9fe9))
+- **useBlade:** add onActivated/onDeactivated lifecycle hooks ([2fcea43](https://github.com/VirtoCommerce/vc-shell/commit/2fcea434ea109f00d9f1749f61d5420e4cf3a0bb))
+- **useBlade:** add TOptions generic for typed blade options ([fadc1c9](https://github.com/VirtoCommerce/vc-shell/commit/fadc1c9cde673dbb4692307881b765b6cc5042c6))
+- **useBladeForm:** unified form state management for blades ([a25bc23](https://github.com/VirtoCommerce/vc-shell/commit/a25bc23b717433e056a11fdc9c3d52e333cc8790))
+- **vc-app-skill:** enrich knowledge base with When to Use sections, patterns, and sync-docs script ([c82ed63](https://github.com/VirtoCommerce/vc-shell/commit/c82ed639d748bdc8fd2d9c39435ee37baedd0563))
+- **vc-app:** add sidebar menu batch reveal to VcAppMenu.vue ([5f37762](https://github.com/VirtoCommerce/vc-shell/commit/5f3776225fea463a13652a15c3e564760049b3aa))
+- **vc-app:** add sidebar search bar for menu filtering ([72f17fc](https://github.com/VirtoCommerce/vc-shell/commit/72f17fc5b0e77e4e87457c5a29262345da50317d))
+- **vc-app:** add tabbed Menu/Hub switcher with swipe gestures in mobile sidebar ([126897a](https://github.com/VirtoCommerce/vc-shell/commit/126897ae90100a4ae93df24fcf684f587498d2b6))
+- **vc-app:** add workspace loading gate and error state to vc-app.vue ([842c0c5](https://github.com/VirtoCommerce/vc-shell/commit/842c0c5b14150aa930e8bc9127e2eaf9ac740a37))
+- **vc-banner:** refactor VcBanner component with enhanced styling and add Storybook documentation ([b36d383](https://github.com/VirtoCommerce/vc-shell/commit/b36d38335783a7664d703231330ebcd475955ea9))
+- **vc-blade:** replace spinner overlay with skeleton loading placeholders ([5eda1fe](https://github.com/VirtoCommerce/vc-shell/commit/5eda1fe1506ca2aebc3736c63f42015d11e53960))
+- **vc-data-table:** add isRowExpandable prop for conditional row expansion ([f8b5bb5](https://github.com/VirtoCommerce/vc-shell/commit/f8b5bb5bf6d59f3bedf60ef43cda07777ed33ea9))
+- **vc-data-table:** refactor table empty and not-found states with new `TableStateConfig` props, enhance `TableEmpty` component, and improve `formatDate` utility to handle invalid dates ([32283c5](https://github.com/VirtoCommerce/vc-shell/commit/32283c5c715d1742c8ffb395de5dd689a27f0437))
+- **vc-gallery:** extract composables with unit tests ([dc52944](https://github.com/VirtoCommerce/vc-shell/commit/dc52944ec9e5a2972571422d5cafeb84abab638b))
+- **vc-gallery:** filter non-image files on upload ([8a3c042](https://github.com/VirtoCommerce/vc-shell/commit/8a3c042e00e825b28b55fe0d5c9b4044291e207c))
+- **vc-gallery:** redesign preview modal with light theme and polished UI ([8de2fdc](https://github.com/VirtoCommerce/vc-shell/commit/8de2fdc64b49dab99e691b5b419d5b3510c47b21))
+- **vc-gallery:** redesign with CSS Grid, slide-up tray and dark preview ([c62d727](https://github.com/VirtoCommerce/vc-shell/commit/c62d727a534528d11ffa6e2762dba371b759b2ec))
+- **vc-image-upload:** add single-image upload component ([0fb3e12](https://github.com/VirtoCommerce/vc-shell/commit/0fb3e12c1ec4936bf7dcf003311aec52c6425c0d))
+- **vc-loading:** replace dots loader with bar sweep and add instant preloader ([019e8d6](https://github.com/VirtoCommerce/vc-shell/commit/019e8d6fb5736f766bdba2841c3b5cf7f00b3b77))
+- **vc-select:** add useSelectDataSource composable with cache layer ([4f4e724](https://github.com/VirtoCommerce/vc-shell/commit/4f4e7246cd40cc09623e0f283ea32032f9ee0da1))
+- **vc-select:** add V generic for modelValue/update:modelValue types ([8c69d86](https://github.com/VirtoCommerce/vc-shell/commit/8c69d86b5cfc9a1f5bfb8f132bc60233058a6c10))
+- **vc-skeleton:** add circle and block shape variants with configurable dimensions ([64eaa92](https://github.com/VirtoCommerce/vc-shell/commit/64eaa92c5a853f79f7f8602c2723c53b5e9f1a28))
+- **vc-table:** add ActiveItemHighlight storybook story ([6e36b12](https://github.com/VirtoCommerce/vc-shell/commit/6e36b1240d30ab53603a52ccbc1f1d9db38671f3))
+- **vc-table:** add activeItemId prop and emit to BaseVcDataTable ([033cada](https://github.com/VirtoCommerce/vc-shell/commit/033cada35d31a48b55cbc57e29a116753b4a111b))
+- **vc-table:** add activeItemId to VcDataTableProps type ([aa18ec7](https://github.com/VirtoCommerce/vc-shell/commit/aa18ec7e112ee4709ef877e2084a7bd087294d5a))
+- **vc-table:** add column-aware skeleton rows for initial loading state ([297606d](https://github.com/VirtoCommerce/vc-shell/commit/297606d2027aa0e6c829ad4ba0c378df0ec946ed))
+- **vc-table:** add empty and not-found state storybook stories ([753f703](https://github.com/VirtoCommerce/vc-shell/commit/753f703a9d4b7bfd3b2b6e5adc256792df69d254))
+- **vc-table:** wire activeItemId into VcDataTable for row highlighting ([87f0b78](https://github.com/VirtoCommerce/vc-shell/commit/87f0b789ffbc64b008af491ac9d928e722dcafe3))
+- **vc-toast:** enhance toast component with stacking and two-phase dismissal animations ([cc2b4fb](https://github.com/VirtoCommerce/vc-shell/commit/cc2b4fb89b151a378c3e58f3c46adc5d208b767d))
+- **VcBlade:** auto-read expanded/closable from BladeDescriptor, self-handle close ([1f76506](https://github.com/VirtoCommerce/vc-shell/commit/1f765061bea1b3678e0e197d12d03d8c2505d046))
+- **VcDataTable:** add actions position prop to VcDataTable component ([de8c9ee](https://github.com/VirtoCommerce/vc-shell/commit/de8c9eebad9d8cd6a2da3318e9067eb6062325bf))
+- **VcDataTable:** add rowActionsPosition prop for column-mode actions ([c170209](https://github.com/VirtoCommerce/vc-shell/commit/c1702094ab24bc6fadd71ffa0ba4ff99505524e0))
+- **VcDataTable:** enable inline editing in mobile card view ([ff08e0f](https://github.com/VirtoCommerce/vc-shell/commit/ff08e0f604cebe647763beca543dc3b4816c6be4))
+- **VcDataTable:** thread isEditing and isNewRow props for validation ([a550fef](https://github.com/VirtoCommerce/vc-shell/commit/a550fef53b97a9038e32c3e1ba1ee3644e070a36))
+- **VcDataTable:** unify inline editing validation via VeeValidate ([c3e5160](https://github.com/VirtoCommerce/vc-shell/commit/c3e5160d5bda11b24092de9ac2545ce8b96a919a))
+- **VcIcon:** make Lucide icons the standard, deprecate legacy icon packs ([d58888f](https://github.com/VirtoCommerce/vc-shell/commit/d58888f151ca2a41fa000a8efe737f2461815649))
+- **widgets:** add defineBladeContext / injectBladeContext composables ([a601ea3](https://github.com/VirtoCommerce/vc-shell/commit/a601ea3deb87c65a72572f34e503a5db7e296185))
+- **widgets:** add guarded() click handler utility ([ae452ee](https://github.com/VirtoCommerce/vc-shell/commit/ae452ee804dc97172a8ea7cc2b40372e27599ecd))
+- **widgets:** add useBladeWidgets composable (Stage 1 baseline) ([a885386](https://github.com/VirtoCommerce/vc-shell/commit/a885386c981446a360f239cf7fd2e4fad612bb8e))
+- **widgets:** add useBladeWidgets composable with TDD ([6cf9e03](https://github.com/VirtoCommerce/vc-shell/commit/6cf9e0354a1a8ad6124fe61d9f8a25a3bc538473))
+- **widgets:** add useWidget composable with TDD ([7b90b7c](https://github.com/VirtoCommerce/vc-shell/commit/7b90b7ce40fb498801c18cb7730bec99199846cb))
+- **widgets:** add WidgetIdKey, WidgetProvider, wrap containers ([5fb2588](https://github.com/VirtoCommerce/vc-shell/commit/5fb2588d791439874a1c4ea62a3abcf3bf1416e2))
+- **widgets:** extend useBladeWidgets with headless declarations ([76fbdd2](https://github.com/VirtoCommerce/vc-shell/commit/76fbdd226456211981a8dd5ad4a0442f4fa45269))
+- **widgets:** extend useBladeWidgets with headless declarations ([513a6bf](https://github.com/VirtoCommerce/vc-shell/commit/513a6bfd80c6d9a39c29e64f357c4ddcb8d1c415))
+- **widgets:** render headless widgets in WidgetContainers and inject kind for external widgets ([6b85dbe](https://github.com/VirtoCommerce/vc-shell/commit/6b85dbe8e2c843631e92fac274451cd90e090798))
 
 ### Bug Fixes
 
-- **release:** update changelog and release-it configuration ([767c312](https://github.com/VirtoCommerce/vc-shell/commit/767c3123773a02a4badc3bcf89661e535d5f26c8))
-
-# [2.0.0-alpha.34](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.33...v2.0.0-alpha.34) (2026-04-22)
-
-- refactor!: remove global component and directive registration ([7643d8f](https://github.com/VirtoCommerce/vc-shell/commit/7643d8fcba40bdd4d5e6a8be244a6c1978eec3fb))
-
-### Bug Fixes
-
+- add fallback timer for select visibility checks ([323c393](https://github.com/VirtoCommerce/vc-shell/commit/323c3931778e5eb30a7306d111a0dd4866ac77d7))
+- add promise deduplication to loadUser() to prevent concurrent duplicate API calls ([ec83ab6](https://github.com/VirtoCommerce/vc-shell/commit/ec83ab6298648c5386467fcb88624e8154379f4b))
+- **ai-agent:** address code review — extract flushPendingInit, replace console.debug with logger ([03ca531](https://github.com/VirtoCommerce/vc-shell/commit/03ca531b64e5809317163c0beaf48ee715abb596))
+- **ai-agent:** fix blade ID mismatch preventing context from reaching chatbot ([88a5a1e](https://github.com/VirtoCommerce/vc-shell/commit/88a5a1ef2c532c8980df119d5826a0412d3b0593))
+- **ai-agent:** remove itemsCount badge from agent header ([5a6b4fa](https://github.com/VirtoCommerce/vc-shell/commit/5a6b4fa957402e4fe2766bafc86b416f3996e3b0))
+- **app-hub:** improve panel sizing and widget scroll behavior ([72fc8df](https://github.com/VirtoCommerce/vc-shell/commit/72fc8dfc838141eab0734c4dbbc29098ad530707))
+- **assets-manager:** guard defaultAssets.value in upload deduplication ([21b6aa2](https://github.com/VirtoCommerce/vc-shell/commit/21b6aa258b372569d77dd1b528d2a8da12992991))
+- **assets:** use lastIndexOf for file name/extension parsing ([251075e](https://github.com/VirtoCommerce/vc-shell/commit/251075e6ddabb960388262374cfb52ff5078a785))
+- **auth:** validate redirect path after login to prevent open redirect ([5bd710f](https://github.com/VirtoCommerce/vc-shell/commit/5bd710f140afca096834e6b9f4ef7a37301cac2d))
+- **blade-navigation:** remove slide transition that caused visual glitch on blade switch ([06be549](https://github.com/VirtoCommerce/vc-shell/commit/06be549f2a4e488fc415d80c8284912317a21f36))
+- **blade:** hide toolbar skeleton on mobile instead of applying mobile class ([1a594f2](https://github.com/VirtoCommerce/vc-shell/commit/1a594f291bc80fd77ac8555d64d4e25564ffbe14))
+- **BladeMessaging:** prevent callParent() errors from showing as toast notifications ([9b5fa63](https://github.com/VirtoCommerce/vc-shell/commit/9b5fa639c30d99a8ca24ff2a38157c3853071b16))
+- **blade:** restore expand/collapse button in vc-blade ([4c3abbe](https://github.com/VirtoCommerce/vc-shell/commit/4c3abbed1604835e316e24da86c35a714b1ca200))
+- **bladeRouterGuard:** preserve route parameters during URL restoration ([efa002a](https://github.com/VirtoCommerce/vc-shell/commit/efa002a7c82699c9ff9b960671d7b3222f75d08a))
+- **blade:** two-line mobile header layout to prevent title truncation ([335d2ec](https://github.com/VirtoCommerce/vc-shell/commit/335d2ec8d310000b8c5b5aa7433d3ae033116318))
+- **blade:** watch shortErrorMessage for updates, re-export IBladeBanner, add dismiss-error test ([60298dd](https://github.com/VirtoCommerce/vc-shell/commit/60298ddd29bb8d32a553a57eef15f7c05aabb609))
+- break circular dependency between injection-keys and useBladeWidgets ([99a2f02](https://github.com/VirtoCommerce/vc-shell/commit/99a2f022b4f72e3c8d22b9de32fd796f8b03bbf2))
+- **build:** suppress empty chunk, mixed import, and date-fns locale warnings ([d973302](https://github.com/VirtoCommerce/vc-shell/commit/d97330264de9f0f03474d919fcee971c6864989c))
 - **ci:** sync yarn.lock and unblock framework-checks pipeline ([5cf0670](https://github.com/VirtoCommerce/vc-shell/commit/5cf0670b9abd84cd9c52aa7c7c1488439c1a0bee))
+- **core data-fns:** improve `toDate` utility to validate Date objects ([302a5e9](https://github.com/VirtoCommerce/vc-shell/commit/302a5e924cc30d290f3cfb22b03ace93113f73fc))
+- **core:** resolve circular dependencies via lazy notification imports ([16a99ec](https://github.com/VirtoCommerce/vc-shell/commit/16a99ec8554ffd989e99b2e3c71b2d22ef56d7de))
+- **DataTableHeader:** guard column switcher UI with v-if when only spacer needed ([6850f32](https://github.com/VirtoCommerce/vc-shell/commit/6850f32fea7fe3ded758a2f3bf6606541463a0fa))
+- **DataTableMobileCard:** prevent error message truncation in editing mode ([ebe50aa](https://github.com/VirtoCommerce/vc-shell/commit/ebe50aa580efd13ae058aea8ebc61fd75aa4c743))
 - **datatable:** normalise date-range filter values to YYYY-MM-DD ([d89864a](https://github.com/VirtoCommerce/vc-shell/commit/d89864aa635e7479137fb0ad501197adf335f99e))
+- **defineBlade:** register blade config at module scope, not setup time ([7d80498](https://github.com/VirtoCommerce/vc-shell/commit/7d804989ac285c1fb2d277e131c7e159292a5f41))
 - **deps:** add jsdom to framework devDependencies ([5060c2a](https://github.com/VirtoCommerce/vc-shell/commit/5060c2abe2ebdd077ba7e3fbe0a232e66822dfed))
+- **dynamic-properties:** handle missing localizedValues in multilanguage dictionary select ([b1a0445](https://github.com/VirtoCommerce/vc-shell/commit/b1a0445e55b9672d98b1c4edb2d0a7b57465dda4))
+- export UseAiAgentContextReturn from ai-agent public API and break colorUtils circular dep ([85693ae](https://github.com/VirtoCommerce/vc-shell/commit/85693ae2326b3b11003663350dbab61e529cc349))
+- **filters:** call onFilterChange after every useFilterState mutation ([208a9a0](https://github.com/VirtoCommerce/vc-shell/commit/208a9a0d8af6b11b89441528b6f7bc0ebc46c012))
+- **framework:** add viteBladePlugin to library build config ([78381b9](https://github.com/VirtoCommerce/vc-shell/commit/78381b9ef4f0bcba0c6f1bd374ad73c52fab0366))
+- **framework:** expose defineBlade global type via globals.d.ts reference ([7c24305](https://github.com/VirtoCommerce/vc-shell/commit/7c243059b18fcb6f8588425c08d3bd2856db03db))
+- **framework:** fix vc-select reactivity and assets-details binding ([5f37bd7](https://github.com/VirtoCommerce/vc-shell/commit/5f37bd7a8095a27438fb94c2cdf967c212217282))
+- **gallery:** review fixes, mobile tap-to-reveal, label prop, drag improvements ([c4c2b79](https://github.com/VirtoCommerce/vc-shell/commit/c4c2b79c8d41cb7b380e3bc9a3fe74b71258ac7e))
+- **login:** remove .prevent modifier on VcForm custom submit event ([bb7aef8](https://github.com/VirtoCommerce/vc-shell/commit/bb7aef8494787fa3a32ec8b1813c9eda841de933))
+- **modularity:** update notification import path ([f2ac212](https://github.com/VirtoCommerce/vc-shell/commit/f2ac212317517c10f0dba7cd97f893741dedf14e))
+- **navigation:** inject missing dependency in vc-blade-navigation component ([7c950a0](https://github.com/VirtoCommerce/vc-shell/commit/7c950a07f44b28fbe9e3cd7899e182fc406a8ef6))
+- **notifications:** address architectural review findings ([4429f1c](https://github.com/VirtoCommerce/vc-shell/commit/4429f1ccf77830d3d36efa537d93c4c463ffaced))
+- **notifications:** address code review findings ([1104f68](https://github.com/VirtoCommerce/vc-shell/commit/1104f681ed26d775632b769e618b623d81480078))
+- **notifications:** decouple toast dismissal from notification badge state ([d6d08f1](https://github.com/VirtoCommerce/vc-shell/commit/d6d08f14e6aaf3cd88451c2b80b72b2596a27d02))
+- **notifications:** export NotificationContextKey from framework public API ([28a989d](https://github.com/VirtoCommerce/vc-shell/commit/28a989d26ea4b5e5f59fc48e34756829bdfe401c))
+- **notifications:** preserve unread dot layout and fix sort/markAsRead timing ([7b54853](https://github.com/VirtoCommerce/vc-shell/commit/7b548530bd3a58c9353acd84b3bf0bde90117ce2))
+- **notifications:** remove broken hasUnreadNotifications, add loadHistory tests ([9f25854](https://github.com/VirtoCommerce/vc-shell/commit/9f2585430b6eba78920e1037951a39a77b26205a))
+- **notifications:** replace VcDropdown with VcScrollableContainer in dropdown ([d635694](https://github.com/VirtoCommerce/vc-shell/commit/d6356940fca5ad450cf4b592d283021468d6f08d))
+- prevent false modification detections by treating empty values as equivalent and avoid emitting editor updates when content is set programmatically ([8af41de](https://github.com/VirtoCommerce/vc-shell/commit/8af41de42e08c7265fd6ddfb20de743cb75f4fe5))
+- **release:** update changelog and release-it configuration ([767c312](https://github.com/VirtoCommerce/vc-shell/commit/767c3123773a02a4badc3bcf89661e535d5f26c8))
+- remove duplicate changelog entries caused by multiline regex bug ([2f27d4c](https://github.com/VirtoCommerce/vc-shell/commit/2f27d4c2ca81452ddc1042af47a4648348e7e323))
+- resolve TypeScript build errors in storybook helpers and VcDataTable slots ([24fc068](https://github.com/VirtoCommerce/vc-shell/commit/24fc0687bc92f3dfd7cebd2a1f67a6a90330e516))
+- resolve vue-tsc build errors for generic components ([a8955e5](https://github.com/VirtoCommerce/vc-shell/commit/a8955e5ada0940345f149298653dd4bd96c6a574))
+- **rnd-114:** isolated authData refs causing the previous user's token to persist after logout and re-login (#219) ([acb6406](https://github.com/VirtoCommerce/vc-shell/commit/acb640635ecafdcae61bd5423dd9fc7e24398c3f)), closes [#219](https://github.com/VirtoCommerce/vc-shell/issues/219)
+- **services:** wrap registered components with markRaw to avoid reactivity overhead ([f47fc44](https://github.com/VirtoCommerce/vc-shell/commit/f47fc448f575e2df0c6a234da0cd87068ff24d3c))
+- **shared:** prevent duplicate toast+banner on blade load errors ([89a021c](https://github.com/VirtoCommerce/vc-shell/commit/89a021c63944c3ac4e9ecc2c0ce8d90ffde8339f))
+- **shell:** group bell and burger icons in sidebar header toolbar ([33d350a](https://github.com/VirtoCommerce/vc-shell/commit/33d350a141e928add771650125d74755f81feca9))
+- **shell:** normalize icon paths in AppHub ([c3e2b40](https://github.com/VirtoCommerce/vc-shell/commit/c3e2b400c5d97fc4bbc7e8b7d3482cb582d82a2f))
+- **shell:** update tests and cleanup for notification bell feature ([ab75831](https://github.com/VirtoCommerce/vc-shell/commit/ab758316b982c5ac137285cb6a1c1cb1f4437517))
+- **sidebar, dropdown:** align JS z-index defaults with token scale ([431bccd](https://github.com/VirtoCommerce/vc-shell/commit/431bccda9660cbfc9314fc4184a35cc3fadb17a4))
+- **slow-network:** update tests and docs for 10s detection threshold ([f49e446](https://github.com/VirtoCommerce/vc-shell/commit/f49e4464481147e1b718c3867b3280c1acf200e3))
+- suppress Vue "injection not found" warnings for appInsights and vee-validate ([1e09dad](https://github.com/VirtoCommerce/vc-shell/commit/1e09dad4bd6b0fd39c127acdc57182a0122982b5))
 - **table:** account for implicit selection cell in available width calculation ([a060668](https://github.com/VirtoCommerce/vc-shell/commit/a060668c064db3e2a16f654f8bc42e94b9276521))
+- **TableAddRowButton:** add CSS variable fallback for mobile view ([d5a3821](https://github.com/VirtoCommerce/vc-shell/commit/d5a382155ad80aefa422d9cb4da27cb8b83af1b5))
 - **table:** allow resize to consume filler space in gap mode ([57dfdac](https://github.com/VirtoCommerce/vc-shell/commit/57dfdacace4564cf08c6ab9a037a1039ec79941a))
 - **table:** clamp resize to right neighbors capacity, freeze left columns during drag ([af76531](https://github.com/VirtoCommerce/vc-shell/commit/af765312d5e015166ebc06f626ddaf4a7a6b0385))
+- **table:** disable FLIP animation on cells during container resize ([40eee44](https://github.com/VirtoCommerce/vc-shell/commit/40eee44eabd287256dffa414b10169665597b38c))
 - **table:** DOM-based width measurement, remove hardcoded constants, smart show/hide redistribution ([2f4da13](https://github.com/VirtoCommerce/vc-shell/commit/2f4da13aac321bf1d55a8ae2f11c8899b03d79bd))
 - **table:** preserve filler on user resize, normalize weights on container resize ([4ac256c](https://github.com/VirtoCommerce/vc-shell/commit/4ac256cb12154aa9bc18d533a960303ba2fbb63c))
 - **table:** preserve restored column widths — cancel props reinit on state restore ([203fe79](https://github.com/VirtoCommerce/vc-shell/commit/203fe79fcbbc1c3a80e52592a1aa764c3850ec78))
 - **table:** preserve restored weights on init, normalize resize weights to sum=1 ([52c9528](https://github.com/VirtoCommerce/vc-shell/commit/52c9528a4f9b936d6d02a997399bda2be1b5a076))
 - **table:** proportional scaling on container resize preserves filler ratio ([5446799](https://github.com/VirtoCommerce/vc-shell/commit/5446799c14fc1a4266d576f389cf793d78611ad5))
 - **table:** recompute widths on column show/hide, equal weight redistribution ([3b35e27](https://github.com/VirtoCommerce/vc-shell/commit/3b35e272f7b7963fd8871b06e065ecb7943906ab))
+- **table:** render expander icon via VcIcon instead of bare <i> tag ([1b04fc6](https://github.com/VirtoCommerce/vc-shell/commit/1b04fc6e3641b271ca65e5a33653cb5e9d58e375))
+- **TableRow:** remove excessive gap between table cells ([49e92e2](https://github.com/VirtoCommerce/vc-shell/commit/49e92e2bca06af7c606eb80e70934f08f8fa6c5e))
+- **TableRow:** use tw-gap-2 for balanced cell spacing ([e3779cf](https://github.com/VirtoCommerce/vc-shell/commit/e3779cf9ccfc6c1bab6508220c65c20ea2f3fc41))
 - **table:** subtract row padding and drag-handle gap from available width for engine ([d840fa1](https://github.com/VirtoCommerce/vc-shell/commit/d840fa19e388021c816e222a63ccbf6019d88435))
+- **table:** use selection-cell class for skeleton rows, fix cell-content flex sizing ([7f7cce9](https://github.com/VirtoCommerce/vc-shell/commit/7f7cce9316b5a0b9dd922310a9d93eee78c33bb9))
+- **teleport:** remove defer attribute that prevented rendering inside skeleton-guarded blades ([5be89d3](https://github.com/VirtoCommerce/vc-shell/commit/5be89d34165862939fcb44d5d7b7f3fed1cb77f1))
 - **tests:** update vue-i18n mocks for consistency across components ([0b73433](https://github.com/VirtoCommerce/vc-shell/commit/0b73433c5ee0317bd525a34a3937af54fb7f7c28))
+- **test:** update BladeHeader tests to use closable prop instead of expandable descriptor ([d37244b](https://github.com/VirtoCommerce/vc-shell/commit/d37244b8b2874a694679c663065e0a4161123395))
+- **theme-selector:** update notification mock path in tests ([c46aed1](https://github.com/VirtoCommerce/vc-shell/commit/c46aed1128abbb3b93623129de31b40809618408))
+- **ToolbarMobile:** scope disabled button opacity to :disabled pseudo-class ([a723942](https://github.com/VirtoCommerce/vc-shell/commit/a72394267a36a0240299ef432b340f450ebee724))
+- topological build order, deprecation fixes, and dependency updates ([bf01eaf](https://github.com/VirtoCommerce/vc-shell/commit/bf01eaf7574eda5ae393941b553cbea5918a768f))
+- **ui:** accessibility fixes ([97fb917](https://github.com/VirtoCommerce/vc-shell/commit/97fb917d8c8f6003e1074379d35d9e2397d237e6))
+- **ui:** add select-all toolbar in mobile table view ([a8a9c8f](https://github.com/VirtoCommerce/vc-shell/commit/a8a9c8fc6b9f31f4e896af885f541b253f9e77c0))
+- **ui:** add text truncation to form components and fix widget chevron alignment ([b17b19e](https://github.com/VirtoCommerce/vc-shell/commit/b17b19e14c2cce115134c81dfb42d33b61bb04f4))
+- **ui:** adjust BladeHeader flex layout and remove TableCell horizontal padding ([03afb1a](https://github.com/VirtoCommerce/vc-shell/commit/03afb1a631f2dd80c1540ec592853c657e76ace9))
+- **ui:** collapse scroll arrow space when arrows are hidden ([b266287](https://github.com/VirtoCommerce/vc-shell/commit/b2662876698f64941b0b5ceb1ca02e48e5eb7fd2))
+- **ui:** CSS consistency and tree-shaking improvements ([a459728](https://github.com/VirtoCommerce/vc-shell/commit/a459728462063138fe7227c1080adeb94a9bac95))
+- **ui:** improve accessibility, type safety, and code quality across UI kit ([f212649](https://github.com/VirtoCommerce/vc-shell/commit/f212649f80f6abe5d37a065bbf0663a948029361))
+- **ui:** increase vc-menu item click target area ([52a1679](https://github.com/VirtoCommerce/vc-shell/commit/52a16797c48e298192a093ddf9b7d1c7f88a14ce))
+- **ui:** increase z-index for dropdown, select, and multivalue to 10001 ([68bf908](https://github.com/VirtoCommerce/vc-shell/commit/68bf9087975aa4eb85989ecad65344219983dfe6))
+- **ui:** reduce dropdown item font size and normalize BladeToolbar line endings ([48b880d](https://github.com/VirtoCommerce/vc-shell/commit/48b880d04ede646194f2ba3df9941d0de5735efe))
+- **ui:** refine blade loading states and media/date interactions ([32eb9ae](https://github.com/VirtoCommerce/vc-shell/commit/32eb9ae7d691c07edc3d4af7d6f9b2d9bfab86fa))
+- **ui:** replace VcInput discriminated union Props with single interface ([b25b153](https://github.com/VirtoCommerce/vc-shell/commit/b25b153eb81a13f879bfd2d14be63c333ea3f9a6))
+- **ui:** resolve pagination and image fallback type errors ([c5c4a2f](https://github.com/VirtoCommerce/vc-shell/commit/c5c4a2fea9141ea39fa21b2cc0b23cfc78947a00))
+- use relative path for injection-keys re-export to fix d.ts alias resolution ([67364e1](https://github.com/VirtoCommerce/vc-shell/commit/67364e1e2ceda1b1a49ee19187fae6e1d82e17bf))
+- **useAssetsManager:** consistent array replacement in updateItem, normalize uploadPath ([6fdeb11](https://github.com/VirtoCommerce/vc-shell/commit/6fdeb115f68159c70570b38a056a6b0876ab55a3))
+- **useAssetsManager:** guard against undefined assetsRef.value ([53ef130](https://github.com/VirtoCommerce/vc-shell/commit/53ef1304e6aa6f36214056ccc7dc24ab7730845f))
+- **useBladeMessaging:** silently return undefined when parent method not found ([b56d88f](https://github.com/VirtoCommerce/vc-shell/commit/b56d88f856a81d6fa76ca390144f67374580b903))
+- **useModificationTracker:** synchronously reset isModified value for immediate updates ([3c3fab4](https://github.com/VirtoCommerce/vc-shell/commit/3c3fab475d8827ef3630dfdefdde7103c6dc393c))
+- **usePermissions:** read permissions reactively instead of caching in module-level ref ([b87af19](https://github.com/VirtoCommerce/vc-shell/commit/b87af194ff86c634a98a4bac584d38d65b5b48cf))
+- **useTableInlineEdit:** reuse parent VeeValidate form context ([2edab69](https://github.com/VirtoCommerce/vc-shell/commit/2edab6969c9e3f8cbeefd843271762bb7c42353c))
+- **validation:** update error type references from IIdentityError to IdentityError ([c6ab523](https://github.com/VirtoCommerce/vc-shell/commit/c6ab523fe28597ff52b91f3bbbcf53d4bf393a6e))
+- **vc-app:** correct BEM selector for mobile flex-col on main-content ([791bc59](https://github.com/VirtoCommerce/vc-shell/commit/791bc59fde97a190628addc67b88a28668780f2e))
+- **vc-app:** move notification badge from logo to mobile bell button ([3e95e55](https://github.com/VirtoCommerce/vc-shell/commit/3e95e55b077c0c00a181cd0c5e182f9eb358ecd2))
+- **vc-app:** show notification bell on mobile and use VcSidebar bottom sheet ([aab267e](https://github.com/VirtoCommerce/vc-shell/commit/aab267e5304c4288189205d90e29ed44628fd395))
+- **vc-blade:** fix mobile back button visibility and breadcrumbs overflow in header ([04f79f3](https://github.com/VirtoCommerce/vc-shell/commit/04f79f3e21b9d808a41a427acfef6c6c9d47b89d))
+- **vc-button:** rename icon class to BEM modifier and reduce icon-title gap ([ba2297d](https://github.com/VirtoCommerce/vc-shell/commit/ba2297d5c06de19c8a40df1207f13587991a8a08))
 - **vc-card:** render header only when header prop or slot provided ([5a1d4bc](https://github.com/VirtoCommerce/vc-shell/commit/5a1d4bc373611385be7a052609e9f7bed037e2cd))
+- **vc-data-table:** prevent column width corruption from ResizeObserver ([10b73b9](https://github.com/VirtoCommerce/vc-shell/commit/10b73b92370cfd0e9c335e9f197795c1faf2a4fb))
 - **vc-data-table:** remove initial column layout glitch ([2bdcc88](https://github.com/VirtoCommerce/vc-shell/commit/2bdcc8878d5760154be8b66dbf15c17904ecc2d8))
+- **vc-data-table:** rewrite column resize with equal distribution ([f92641c](https://github.com/VirtoCommerce/vc-shell/commit/f92641c30726181f5e0f7258c30a75a4cc58e947))
+- **vc-data-table:** unify cell padding for header and body alignment ([544e2c0](https://github.com/VirtoCommerce/vc-shell/commit/544e2c075edec560acadeb5096671c7b95091475))
+- **vc-dropdown-panel:** prevent panel close when clicking inside child VcSelect dropdown ([d82513a](https://github.com/VirtoCommerce/vc-shell/commit/d82513a873aaa3af1424d934091d231e5e1b38b2))
+- **vc-editor:** prevent phantom modifications from tiptap markdown normalization ([bb81f14](https://github.com/VirtoCommerce/vc-shell/commit/bb81f140df11331b86892c5bda6cd160d866f061))
+- **vc-gallery:** eliminate image flicker on filmstrip expand/collapse ([869bc82](https://github.com/VirtoCommerce/vc-shell/commit/869bc82077104751ce1bd7e7e1e5e1e8747c8343))
+- **vc-gallery:** fix cross-row drag reorder in CSS Grid layout ([2407d2d](https://github.com/VirtoCommerce/vc-shell/commit/2407d2db0ac02bf4d1042d7e3a487336c68b6677))
+- **vc-gallery:** fix review findings across gallery components ([5bf9fb5](https://github.com/VirtoCommerce/vc-shell/commit/5bf9fb518f10b93b29c9922b69e951dba7a50812))
+- **vc-gallery:** fix stories interactivity and upload tile layout ([30f0a02](https://github.com/VirtoCommerce/vc-shell/commit/30f0a021d8b504e48790b7bf888ddf9bb4545f6f))
+- **vc-gallery:** handle undefined images prop on mount ([4338c8e](https://github.com/VirtoCommerce/vc-shell/commit/4338c8ea035e37b3eba8a909310b6146948a3527))
+- **vc-gallery:** restrict drag to handle and improve upload UX ([5c6bf75](https://github.com/VirtoCommerce/vc-shell/commit/5c6bf752480be95d97bd8cc7f3137a2dd3ae870e))
+- **vc-popup:** add z-index token to overlay and container ([c5505c1](https://github.com/VirtoCommerce/vc-shell/commit/c5505c1837bb783af6479d64adf8483a3f01fad2))
+- **vc-select:** resolve primitive modelValue when emitValue is false ([3cc38ac](https://github.com/VirtoCommerce/vc-shell/commit/3cc38acd4dbccd788575aab6218897ab33ab67f8))
+- **vc-select:** tone down no-options empty state text styling ([37a35e9](https://github.com/VirtoCommerce/vc-shell/commit/37a35e96d466c221fe5e0e8a50179f76ae98b204))
+- **vc-sidebar:** prevent infinite recursion in focus trap ([3221237](https://github.com/VirtoCommerce/vc-shell/commit/3221237032f855543b64183b1238e3e2dcac423c))
+- **vc-table:** align row-action emit typing for mobile actions ([bc42336](https://github.com/VirtoCommerce/vc-shell/commit/bc42336cc6df48181ae21e1d1e7dc7ca15d64bb1))
+- **vc-table:** consistent null-guarding in handleRowClick activeItemId toggle ([acb5479](https://github.com/VirtoCommerce/vc-shell/commit/acb5479b1d960f777da703c75006361ba43b09cb))
+- **vc-table:** optimize global listeners and filter state callback ([94b73a0](https://github.com/VirtoCommerce/vc-shell/commit/94b73a0f7521c983863219ab47d9a6713d67ae70))
+- **vc-table:** relax generic constraint from Record<string, unknown> to Record<string, any> ([615733b](https://github.com/VirtoCommerce/vc-shell/commit/615733b77df77b0f6be55d7677089909b0c5e208))
+- **vc-table:** separate active row highlight from checkbox selection ([55d26b4](https://github.com/VirtoCommerce/vc-shell/commit/55d26b455d7e01ca07d53a0350201d163050e0aa))
+- **vc-table:** use correct injection key for row actions hover visibility ([b750c3f](https://github.com/VirtoCommerce/vc-shell/commit/b750c3fc06ff36b9379d3e5eb6ddd6ff9019c978))
+- **vc-widget:** suppress duplicate hover state when widgets render inside dropdown ([9557328](https://github.com/VirtoCommerce/vc-shell/commit/9557328a3b71218f8ca3a4bc9831152f55d887fa))
+- **VcDataTable:** emit cell-edit-complete in mobile inline edit mode ([0bdfe06](https://github.com/VirtoCommerce/vc-shell/commit/0bdfe06bbd9086c27b5d29fc2067182ca6daee11))
+- **VcDataTable:** fix red asterisk color and pass validateOnMount to cell components ([61fcf3f](https://github.com/VirtoCommerce/vc-shell/commit/61fcf3fc9113a0ecb84ce9a99d4cfb0c3ee64346))
+- **VcDataTable:** revert unintended pagination v-if change ([da081ee](https://github.com/VirtoCommerce/vc-shell/commit/da081ee58000c1a3744209ddc12597aabfbd4003))
+- **VcDataTable:** show add-row button in mobile view ([236d59f](https://github.com/VirtoCommerce/vc-shell/commit/236d59f9ae651356fbd4308fa812e53dfae9fd02))
+- **VcDataTable:** validate empty fields on mount and move asterisk before title ([aca63ad](https://github.com/VirtoCommerce/vc-shell/commit/aca63ad56ddf0515a84b3160d201e8eb27a93ede))
+- widen exposeToChildren type signature to accept typed functions ([0fad830](https://github.com/VirtoCommerce/vc-shell/commit/0fad83088db7075c3e5267b0ed9a7702c1acbcfb))
+- **widgets:** fix IWidget type compatibility in useExternalWidgets ([bca5d29](https://github.com/VirtoCommerce/vc-shell/commit/bca5d29794c9c360676e6bd43500a3190219ab42))
+- **widgets:** move v-else to WidgetProvider to fix adjacent v-if requirement ([8c05898](https://github.com/VirtoCommerce/vc-shell/commit/8c05898249a6c985e997c85c892dde1f5dd1e652))
+- **widgets:** narrow widgetService type for TS strict closure inference ([9373ee0](https://github.com/VirtoCommerce/vc-shell/commit/9373ee0d5841e0f7bd61e8636aced95dd0352139))
+- **widgets:** replace v-loading with skeleton placeholders, fix dropdown widget styling ([5c44acc](https://github.com/VirtoCommerce/vc-shell/commit/5c44accdb52ca1d4502e2d0357a884e5764fb4ec))
+- **widgets:** use direct import path for internal useWidgets ([2bc61cd](https://github.com/VirtoCommerce/vc-shell/commit/2bc61cd315ce4956bf661ddc916a60754383667b))
 
-### chore
+### Performance Improvements
 
+- **dashboard:** lazy-load chart components and GridstackDashboard ([4f628dc](https://github.com/VirtoCommerce/vc-shell/commit/4f628dc1d172c6a888330bb70e373b835bd35153))
+
+### Code Refactoring
+
+- add dev warning to useAssets() pointing to useAssetsManager ([b9426e6](https://github.com/VirtoCommerce/vc-shell/commit/b9426e6c89bc897965a04d1695940539ec6f0323))
+- adjust unread accent positioning by introducing a logo-specific modifier class ([4cee7f1](https://github.com/VirtoCommerce/vc-shell/commit/4cee7f169a28aaaf14bfcb71f173ea06a1c11949))
+- **api:** regenerate platform API client with interface type style ([e6eef0e](https://github.com/VirtoCommerce/vc-shell/commit/e6eef0e4f3cb9082e3b108f3e02cc1566a580ccb))
+- **assets-details:** migrate from ICommonAsset to AssetLike ([0642e50](https://github.com/VirtoCommerce/vc-shell/commit/0642e503a5dd3ecffcaedd54e40c803b8d528d33))
+- **assets-manager:** rewrite upload deduplication logic ([30d6d5a](https://github.com/VirtoCommerce/vc-shell/commit/30d6d5a3b3bb5776353bff42aba85e113b7aa077))
+- **assets-manager:** use UseAssetsManagerReturn via options instead of 3 handler props ([4062a62](https://github.com/VirtoCommerce/vc-shell/commit/4062a62e828bb0680a38cd09aeb9127978acb3f9))
+- **assets:** replace file type icons with colored extension badges ([133ffde](https://github.com/VirtoCommerce/vc-shell/commit/133ffde4869b097b2a0f1d9347ddcc9737711579))
+- **blade-context:** auto-unwrap nested refs in defineBladeContext ([311038c](https://github.com/VirtoCommerce/vc-shell/commit/311038cf89be170e69fca7b9807ec924e52cc584))
+- **blade-navigation:** add maximized and breadcrumbs to BladeDescriptor ([832f643](https://github.com/VirtoCommerce/vc-shell/commit/832f6438665021d5ec4c24cad8c5da4eefb495e6))
+- **blade-navigation:** migrate to useBlade/useBladeStack API ([8a5a78b](https://github.com/VirtoCommerce/vc-shell/commit/8a5a78b232adeca42161cec66f1da16291bca4d4))
+- **blade-navigation:** replace deprecated types with simple stubs ([f2b31a6](https://github.com/VirtoCommerce/vc-shell/commit/f2b31a670369d08fc678dc0512f5e9f33e5d4558))
+- **blade-navigation:** simplify blade-slot rendering and URL restoration ([74a490e](https://github.com/VirtoCommerce/vc-shell/commit/74a490e50ddc053e02dd74c872aad1026d516c39))
+- **blade-slot:** provide enriched BladeDescriptor, remove BladeInstanceKey ([b5a40c4](https://github.com/VirtoCommerce/vc-shell/commit/b5a40c4a15e7f19c2778ceec409b569c17a0f523))
+- break core/types ↔ blade-navigation/types cycle with import type ([7b85761](https://github.com/VirtoCommerce/vc-shell/commit/7b857611365c770f28bd06581388564f77dd3009))
+- break ui/types → ui/components cycle with import type ([33b186d](https://github.com/VirtoCommerce/vc-shell/commit/33b186d307cafec3b8e27b5d2e4f06d4764d241f))
+- **change-password:** use VcBanner instead of VcStatus for forced password notice ([b93ed8d](https://github.com/VirtoCommerce/vc-shell/commit/b93ed8df82fdcae281dff76585b4e59f3c4c6155))
+- clean up code formatting and improve readability across multiple files ([9f710b5](https://github.com/VirtoCommerce/vc-shell/commit/9f710b5ceba270475709735c139e061c66c96b18))
+- **composables:** move loose files into folders, rename useBladeContext to bladeContext ([18828a9](https://github.com/VirtoCommerce/vc-shell/commit/18828a95dfb7b527b5dd4acbf28711479452be34))
+- configure path aliases and migrate imports ([bfffc3c](https://github.com/VirtoCommerce/vc-shell/commit/bfffc3cbe8029cf875e49941061b582825cad9a6))
+- convert @core/types imports to import type across framework ([d8f29d4](https://github.com/VirtoCommerce/vc-shell/commit/d8f29d4de6b10235e329a1d3b32b006300125bcd))
+- convert remaining core←shared imports to import type ([94a168d](https://github.com/VirtoCommerce/vc-shell/commit/94a168daa4de2672ad2522dd0d5b765e404a7e6d))
+- **core:** adapt code to interface-based API types ([138f70b](https://github.com/VirtoCommerce/vc-shell/commit/138f70b8b96fdac80b686f2c15686c65dbbcb8cf))
+- **core:** eliminate all layer violations — core/ no longer depends on shell/ or ui/ ([cd7c3ae](https://github.com/VirtoCommerce/vc-shell/commit/cd7c3ae9fabab5a070efd0801257696d20a183ef))
+- **core:** make user composables a true singleton ([72391b6](https://github.com/VirtoCommerce/vc-shell/commit/72391b610e0bd520b0814641eedfc5163058236a))
+- create curated barrel files for sub-entry points, remove deprecated aliases ([bcd6790](https://github.com/VirtoCommerce/vc-shell/commit/bcd6790355135e895ec2d370c0ac7bf8d984f241))
+- delete IBladeInstance, BladeInstanceKey, DEFAULT_BLADE_INSTANCE, vc-blade-view ([2ce5e08](https://github.com/VirtoCommerce/vc-shell/commit/2ce5e08f89cdff8b5bc58f37b31cd916d8b1bd40))
+- delete shared/ directory — dissolution complete ([1100cbc](https://github.com/VirtoCommerce/vc-shell/commit/1100cbcc0edde2d6eb77f07f1d51ddc5ce7b6fe6))
+- deprecate ICommonAsset as AssetLike alias, mark AssetsHandler deprecated ([4377dde](https://github.com/VirtoCommerce/vc-shell/commit/4377dde9dbfa5bc081b1cb9bcbaadd811bb7a3f6))
+- eliminate 118 circular dependencies (136 → 18) ([280c197](https://github.com/VirtoCommerce/vc-shell/commit/280c1970b30d1b032a23e9ab160d7d850a756134))
+- enhance global type definitions and update package metadata ([29b38d9](https://github.com/VirtoCommerce/vc-shell/commit/29b38d9e5d1efdbde8be65f4a19624964c0a015a))
+- extract blade router guard into standalone utility ([7e2a590](https://github.com/VirtoCommerce/vc-shell/commit/7e2a5900d521131e578205b31be734d975b72ff3))
+- framework public API restructuring — dissolve shared/ into core/ui/shell/modules ([3b5accf](https://github.com/VirtoCommerce/vc-shell/commit/3b5accf975209d1aae8aff2379bf0caf5c4fdc18))
+- **framework:** apply ESLint flat config lint fixes and code improvements ([e5596a1](https://github.com/VirtoCommerce/vc-shell/commit/e5596a16cd563719f6f19f0a44d38ae460b7c3df))
+- **framework:** useDataTablePagination returns reactive() object ([5ab3095](https://github.com/VirtoCommerce/vc-shell/commit/5ab3095278cdbab51687e8a576f83225896d4eb7))
+- **global-search:** remove GlobalSearchKey and related composables ([d2e98f8](https://github.com/VirtoCommerce/vc-shell/commit/d2e98f82d6b1b7a6890527387d44594f2fe7d04c))
+- improve code readability and component properties in VcDataTable ([08a822f](https://github.com/VirtoCommerce/vc-shell/commit/08a822f2525687ad4987e242f3a99774f946a826))
+- improve custom extension merging logic in vc-editor component ([ff80652](https://github.com/VirtoCommerce/vc-shell/commit/ff80652313f31b839990039ed4f5fbcb40816f25))
+- **login:** redesign form layout and update copy ([0206517](https://github.com/VirtoCommerce/vc-shell/commit/02065178c3998081ad88369288a38858c4c79dae))
+- **menu-service:** pure buildMenuTree, immutable groups, remove VueUse ([384143f](https://github.com/VirtoCommerce/vc-shell/commit/384143f71e34210c4cd3e15512a28e59b87c906b))
+- **menu-service:** single-source identity, remove auto-id generation ([7037b05](https://github.com/VirtoCommerce/vc-shell/commit/7037b05c90dbaf7e90ed5c630ed1f3fddba86f80))
+- migrate all consumers from BladeInstanceKey to BladeDescriptorKey ([4f41319](https://github.com/VirtoCommerce/vc-shell/commit/4f4131946d8c9c30783301d74f327065c29661cc))
+- migrate from moment.js to date-fns ([1777fea](https://github.com/VirtoCommerce/vc-shell/commit/1777fea2b5cf1ab9671eeeed7c5a7a4f65c386d9))
+- migrate isMobile/isDesktop injection to typed symbol keys ([db6ab58](https://github.com/VirtoCommerce/vc-shell/commit/db6ab58371bfd6f56577e19c1b52e39b65e58321))
+- **modularity:** move menu registration to BladeRegistry, simplify defineAppModule ([abac3e6](https://github.com/VirtoCommerce/vc-shell/commit/abac3e6968e53f54fdb32c3a052aba2c80e7a700))
+- **modularity:** replace createAppModule with defineAppModule ([c697f81](https://github.com/VirtoCommerce/vc-shell/commit/c697f81d04f0da98bd433688678437682af71fcb))
+- **modules:** migrate assets blades to useBlade() and VcDataTable ([94eddee](https://github.com/VirtoCommerce/vc-shell/commit/94eddee8a61bf3c32cec19c8213180e2124898af))
+- **molecules, shell:** migrate z-index values to tokens ([4a800d2](https://github.com/VirtoCommerce/vc-shell/commit/4a800d29f2d6022f6b0210cd4d4066145d244fd7))
+- move auth pages and shell pages from shared/ to shell/ ([edd382c](https://github.com/VirtoCommerce/vc-shell/commit/edd382c80efd14521f5d316f74862b6a3790491c))
+- move built-in modules from shared/modules/ to modules/ ([32a551f](https://github.com/VirtoCommerce/vc-shell/commit/32a551fb02935c285b2b18b135fd1db64a41547d))
+- move dashboard components from shared/ to shell/dashboard/ ([fd605ce](https://github.com/VirtoCommerce/vc-shell/commit/fd605ce0eaa16b67f1c18918614ea6385eac7fed))
+- move popup to shell/\_internal/ (has UI dependencies) ([15a6424](https://github.com/VirtoCommerce/vc-shell/commit/15a642441d7b09df4098b40fabbbf1a12d36cb5a))
+- move shell components from shared/ to shell/components/ ([6b43856](https://github.com/VirtoCommerce/vc-shell/commit/6b438562db145f15ca996d3b6650bd5a8cd3ef97))
+- **multilanguage-selector:** align visual style with UI kit conventions ([d427969](https://github.com/VirtoCommerce/vc-shell/commit/d427969b5cbf787b14cdf1cf7ec8af6d9e1840ed))
+- **notifications:** deprecated wrappers, framework exports, template icon/severity props ([838125c](https://github.com/VirtoCommerce/vc-shell/commit/838125c19fd17bb3e7f613dc6b762823a31b131c))
+- **notifications:** extract explicit interfaces for NotificationStore and IToastController ([0438a7a](https://github.com/VirtoCommerce/vc-shell/commit/0438a7a876b9715ded3e4774c1a6003c1d10b401))
+- **notifications:** provide/inject store, typed API client, server-first markAllAsRead ([6b8aeb3](https://github.com/VirtoCommerce/vc-shell/commit/6b8aeb30b27bfcd1701975b95c086f7441bc21fa))
+- **notifications:** remove pending queue and add clear-all button ([d55ad47](https://github.com/VirtoCommerce/vc-shell/commit/d55ad470a8a849107b86bb5b079ab684d8315f30))
+- **notifications:** renderer uses provide instead of template props ([164039a](https://github.com/VirtoCommerce/vc-shell/commit/164039a45cd185999ac0559bb3396f8aaffa431a))
+- remove legacy dynamic views module ([3a673a8](https://github.com/VirtoCommerce/vc-shell/commit/3a673a89156c36ef1e1908f80e012104f36fa54e))
+- remove moment plugin and window.moment global ([d899beb](https://github.com/VirtoCommerce/vc-shell/commit/d899beb2cfe675f84bad8e64550f3f0ee800aabf))
+- remove test-only exports and deprecated string-key provides ([85f0a12](https://github.com/VirtoCommerce/vc-shell/commit/85f0a12ce777a6c989c2f1a58e6e7cc109f3523c))
+- remove unused components and update package resolutions ([26ff398](https://github.com/VirtoCommerce/vc-shell/commit/26ff398739d75b23f7f700542920a117e0022ff3))
+- rename App Switcher to App Hub ([1646b22](https://github.com/VirtoCommerce/vc-shell/commit/1646b2276791f2448e0e69e77ca25c96857a3975))
+- rename vc-table to vc-data-table, extract usePopup to core composables ([15cc93d](https://github.com/VirtoCommerce/vc-shell/commit/15cc93dc871d6d23344aa8d0fff7074528fea001))
+- replace @core/composables barrel with direct paths ([e9c896e](https://github.com/VirtoCommerce/vc-shell/commit/e9c896efb4a85517a3e587b3fd1bc3954b1a41fa))
+- replace @shared and @core/services barrels with direct paths ([2d46d59](https://github.com/VirtoCommerce/vc-shell/commit/2d46d593283a74bb5b4ff569eb43b2851df7ae1a))
+- replace @ui/components barrel with direct component paths ([9dda97c](https://github.com/VirtoCommerce/vc-shell/commit/9dda97ce5a09129ad13b27109949fe4c25f54e22))
+- replace barrel imports in dynamic module ([c31e9a1](https://github.com/VirtoCommerce/vc-shell/commit/c31e9a192d8ce7001ec3e4c65ba881a1e90b6575))
+- replace barrel imports with direct paths in core ([2f417c6](https://github.com/VirtoCommerce/vc-shell/commit/2f417c6fe015935c31a574828c23549eb820bbc9))
+- replace defineExpose with exposeToChildren and register blade title via VcBlade ([15ef621](https://github.com/VirtoCommerce/vc-shell/commit/15ef621b096d67711fef821ac14766cd414b7739))
+- replace moment with date-fns in framework components ([090aa2f](https://github.com/VirtoCommerce/vc-shell/commit/090aa2fa77b8cce98f4a14b14bc7dcb1243e22c1))
+- replace reactive with shallowReactive in dashboard service state ([a511b0f](https://github.com/VirtoCommerce/vc-shell/commit/a511b0fdff897f16d2d7a346c61dfb104a114635))
+- rewrite framework/index.ts with curated exports, inline SharedModule ([664f2df](https://github.com/VirtoCommerce/vc-shell/commit/664f2dffa770408b859b97afdfab384404406d2e))
+- shared/ now re-exports from new domain locations (transitional) ([cce4aa5](https://github.com/VirtoCommerce/vc-shell/commit/cce4aa564559d7316638561e7ce4bf1b7b028375))
+- split notifications into core/ (logic) + shell/\_internal/ (rendering) ([1ff127e](https://github.com/VirtoCommerce/vc-shell/commit/1ff127e2778a7d51c13fedfdaacc4342d983f020))
+- streamline component exports and remove async component definitions ([fb1d76c](https://github.com/VirtoCommerce/vc-shell/commit/fb1d76c9ac8a1974472e1c43ab3c09d41a0b5ee3))
+- **table:** address code review feedback — declared widths, type hole, rAF throttle ([651af29](https://github.com/VirtoCommerce/vc-shell/commit/651af2952828724a7078bd5abfaafcd242a4c83c))
+- **table:** address second-pass review — resetFromProps recompute, deduped warn, integration tests ([0c03ef4](https://github.com/VirtoCommerce/vc-shell/commit/0c03ef4ab34f49e9b4654658068f83c2ee92e5ae))
+- **table:** replace pixel widths with weight-based engine across all composables and UI ([b47b5b8](https://github.com/VirtoCommerce/vc-shell/commit/b47b5b82077927c6f2cab2567e61251bffc78af4))
+- **tests:** replace mocks with provide for responsive state in AppBar and Blade components ([d863d76](https://github.com/VirtoCommerce/vc-shell/commit/d863d76201ecfe68feef6405d81843f48d695d77))
+- **toolbar-mobile:** use global design tokens for overlay, shadow, glass ([8e54b09](https://github.com/VirtoCommerce/vc-shell/commit/8e54b098ef95b05fbf15fe786ac88f1493ccbd82))
+- **types:** remove vueUtils and use vue-component-type-helpers for popup typing ([42e6b3e](https://github.com/VirtoCommerce/vc-shell/commit/42e6b3e1af40fab0b54a6c376e190d33c5adf273))
+- **types:** update IBaseProperty interfaces to use undefined instead of null ([fc29b1e](https://github.com/VirtoCommerce/vc-shell/commit/fc29b1e1bee324efab417ea301e96ae56f91b32e))
+- **ui:** add generic type parameters to form components for type-safe v-model ([d30f7c8](https://github.com/VirtoCommerce/vc-shell/commit/d30f7c8d0c9dbe6e6406c835b1d9db7d75cf4b3a))
+- **ui:** BEM modifier migration from \_ to -- ([a3fcdb8](https://github.com/VirtoCommerce/vc-shell/commit/a3fcdb85a5c18bbf46bc7619338ff4fd6a368228))
+- **ui:** critical type safety and architecture fixes ([628851b](https://github.com/VirtoCommerce/vc-shell/commit/628851b8807a1b05d40a8097c3c7cd881861022b))
+- **ui:** extract shared slide-up transition CSS to global styles ([df62fa4](https://github.com/VirtoCommerce/vc-shell/commit/df62fa44b5697b8cf468cc10f74425a58abbd0ff))
+- **ui:** extract useCollapsible composable from VcAccordionItem ([fcc1be4](https://github.com/VirtoCommerce/vc-shell/commit/fcc1be43afeda42f60e96068bf4b9ece960f6148))
+- **ui:** extract VcImageTile molecule from duplicated gallery/upload code ([a71a20b](https://github.com/VirtoCommerce/vc-shell/commit/a71a20b4937d6be2406e4f33fe34d2bfe9a2c177))
+- **ui:** migrate critical and atom/molecule z-index values to tokens ([3df344e](https://github.com/VirtoCommerce/vc-shell/commit/3df344e4facc519ae3205a018df165efe3bfbadb))
+- **ui:** migrate VcFileUpload to useFormField and IFormFieldProps ([17eed7c](https://github.com/VirtoCommerce/vc-shell/commit/17eed7c0c754069d603d897586e9ca64559f49d5))
+- **ui:** redesign BladeStatusBanners with inline expand details ([27cb2cf](https://github.com/VirtoCommerce/vc-shell/commit/27cb2cfc25c5bbde553800337bd3e06a506dd28d))
+- **ui:** redesign menu spacing and nested item styling ([95076e8](https://github.com/VirtoCommerce/vc-shell/commit/95076e8daffc16e18d816efbca53d398720469bc))
+- **ui:** remove VcPaginator component exports and source ([caf2cd9](https://github.com/VirtoCommerce/vc-shell/commit/caf2cd962ff3727b52adb0db8d3d3d9f5e0a0293))
+- **ui:** standardize BEM modifier separator from \_ to -- ([1030e3f](https://github.com/VirtoCommerce/vc-shell/commit/1030e3f4c3557c3d8bf04caa5aa969171b71dc7c))
+- **ui:** standardize focus and error ring styles across form controls ([73932a1](https://github.com/VirtoCommerce/vc-shell/commit/73932a1d2ea36a143e2a7606144b7787e5557363))
+- update usePopup imports to core composables ([6f3f687](https://github.com/VirtoCommerce/vc-shell/commit/6f3f68723f6cc817663db1a74556eb991ac85cd8))
+- **user-dropdown-button:** enhance styling and layout ([bfb71f3](https://github.com/VirtoCommerce/vc-shell/commit/bfb71f3a48118b24b90f47cb76e748611bcafca3))
+- **user-info:** update avatar fallback and typography to match new design ([adac87c](https://github.com/VirtoCommerce/vc-shell/commit/adac87ca9d8dab841885a21d20c6a1fac5b5d662))
+- **useTableInlineEdit:** unify validation via VeeValidate form context ([9e9e86d](https://github.com/VirtoCommerce/vc-shell/commit/9e9e86d40c2a74b95ef2118215f846c1561594f8))
+- **vc-app-menu:** wire overlay to global --overlay-bg token ([478c3f7](https://github.com/VirtoCommerce/vc-shell/commit/478c3f7c46b22fe37c7e06551c4fb8dd03ab7016))
+- **vc-app, sidebar:** migrate z-index values to tokens ([f71147e](https://github.com/VirtoCommerce/vc-shell/commit/f71147e7eb1d6c4e22a339199913f1afa15fcdf0))
+- **vc-blade, vc-editor, vc-gallery:** migrate z-index values to tokens ([0139513](https://github.com/VirtoCommerce/vc-shell/commit/01395137c690ead98dc3233a2a17b3e9a81b40c8))
+- **vc-blade:** simplify aria-label handling and update blade injection ([ac4d491](https://github.com/VirtoCommerce/vc-shell/commit/ac4d49172ed540e0825bf497c6dd416433a1bc42))
+- **vc-data-table:** migrate all z-index values to tokens ([c0b80e1](https://github.com/VirtoCommerce/vc-shell/commit/c0b80e1444124ed544cba81c46628cea598bc8fd))
+- **vc-gallery:** migrate from ICommonAsset to AssetLike ([6f4254e](https://github.com/VirtoCommerce/vc-shell/commit/6f4254e2699429f338aebf03d179c8611377115a))
+- **vc-gallery:** replace line indicator with live-swap FLIP reorder ([34314ce](https://github.com/VirtoCommerce/vc-shell/commit/34314ceec9e48cebe100290b82c53eefb8b632ca))
+- **vc-image-upload:** migrate from ICommonAsset to AssetLike ([ca6d082](https://github.com/VirtoCommerce/vc-shell/commit/ca6d082f0597470177065866b06e306e900780f6))
+- **vc-image-upload:** redesign preview as gallery-style tile ([a59b93e](https://github.com/VirtoCommerce/vc-shell/commit/a59b93e611fc7b767921d7cb397c90fd435c1b39))
+- **vc-popup:** add close reasons, configurable dismiss, and variant support ([a77e349](https://github.com/VirtoCommerce/vc-shell/commit/a77e349ecf2a6a5524b61eea2403cedfef2fa3f7))
+- **vc-popup:** wire overlay and shadow to global design tokens ([175b14e](https://github.com/VirtoCommerce/vc-shell/commit/175b14ee53b99ba4a7a9d79517fd6d76cf4440a8))
+- **vc-select:** remove old composables replaced by useSelectDataSource ([4a62db7](https://github.com/VirtoCommerce/vc-shell/commit/4a62db7e7af0c1ac41b675a4aedb1d071de0aa87))
+- **vc-select:** replace 3 composables with useSelectDataSource ([c15f672](https://github.com/VirtoCommerce/vc-shell/commit/c15f6724188d0ff05750b2e21f2caffc47198c41))
+- **vc-select:** update useSelectSelection to accept displayItems, resolvedDefaults, cachedItems ([ddfcb9f](https://github.com/VirtoCommerce/vc-shell/commit/ddfcb9fe0a9b0ea1770f92b9c5c32a840fec2ba9))
+- **vc-sidebar:** use global design tokens for overlay, shadow, glass ([4522c3c](https://github.com/VirtoCommerce/vc-shell/commit/4522c3c23e4096546ae430ce7c62330ffab29fdd))
+- **vc-table:** delegate row highlighting from VcTableAdapter to VcDataTable activeItemId ([2e82f83](https://github.com/VirtoCommerce/vc-shell/commit/2e82f8337463a7ac16702928e83890f07a841eaa))
+- **vc-table:** update empty state button variant and minor formatting ([c18f4cb](https://github.com/VirtoCommerce/vc-shell/commit/c18f4cb11aabf42ecf5e013faa9b66064278f631))
+- **VcDataTable:** migrate stories from StoryFn to StoryObj API ([ae4dffb](https://github.com/VirtoCommerce/vc-shell/commit/ae4dffb6147010eb9c583ca16a5830f94ae01a71))
+- **widgets:** extract shared headless helpers and harden guarded() release ([7eaa68e](https://github.com/VirtoCommerce/vc-shell/commit/7eaa68e9b475ddb000a7b4e382cb9605cad63b3f))
+- **widgets:** internalize useWidgets, add deprecated re-export via shared ([5abaa05](https://github.com/VirtoCommerce/vc-shell/commit/5abaa0579e6f97cfdefb0b7466974289acd1d092))
+- **widgets:** remove ComponentWidgetDeclaration — useBladeWidgets is headless-only ([2d2bb74](https://github.com/VirtoCommerce/vc-shell/commit/2d2bb749bdab8fd12b5598abff62af89f6340fff))
+- **widgets:** remove guarded() utility — unnecessary complexity ([6b5fa34](https://github.com/VirtoCommerce/vc-shell/commit/6b5fa34bab1a67547495b7b65fb3bcccafed5a99))
+- **widgets:** replace useExternalWidgets with automatic blade data resolution ([d5aafb9](https://github.com/VirtoCommerce/vc-shell/commit/d5aafb93d1cb230bf1d78205ff4d245f61e0bec5))
+- **widgets:** replace useWidget with useWidgetTrigger and WidgetScope ([ac1389a](https://github.com/VirtoCommerce/vc-shell/commit/ac1389aef0f24f46a72bfc5045434972371b71b2))
+- **widgets:** update blade widget service and add WidgetDropdownItem ([06aa737](https://github.com/VirtoCommerce/vc-shell/commit/06aa7373fb53b515dbac06f2fc30b1b19bd24eac))
+
+### Documentation
+
+- add @deprecated JSDoc to legacy blade props/emits types ([9464c1e](https://github.com/VirtoCommerce/vc-shell/commit/9464c1e35b19431532816ed9dcb7d0f2cafa4f15))
+- add architecture docs and shell-features-v2 RFC ([26a568d](https://github.com/VirtoCommerce/vc-shell/commit/26a568d9510248754cf909ef081f947dcb7d1d9e))
+- add deprecation markers and widget DX migration guide ([af80a2c](https://github.com/VirtoCommerce/vc-shell/commit/af80a2c9ff75ac11ba2c11616af5dbad1fdda41e))
+- add documentation for plugins, notifications, directives, types, utilities, and constants ([4a664b9](https://github.com/VirtoCommerce/vc-shell/commit/4a664b96561abebc094d164fdf18d140c9ab3da4))
+- add documentation for remaining public APIs ([638eaf9](https://github.com/VirtoCommerce/vc-shell/commit/638eaf960a9ee1c4484f4f2549becefc2f97dc90))
+- add useBlade() migration guide and update VcIcon documentation ([1545223](https://github.com/VirtoCommerce/vc-shell/commit/1545223db4aadffcc4da1d27321db0d1c4f5a6a9))
+- add useDataTableSort migration guide and docs ([496dbc7](https://github.com/VirtoCommerce/vc-shell/commit/496dbc770fe4cae50459868916236cb3efc72334))
+- **assets-manager:** document blade options breaking change and enhance codemod ([69cc786](https://github.com/VirtoCommerce/vc-shell/commit/69cc7865a5678a093d972e6e39f955d722fcc133))
+- **blade-navigation:** update docs for Smart VcBlade pattern ([ac069fb](https://github.com/VirtoCommerce/vc-shell/commit/ac069fbcef63e634e701e69c284cf7257a6882ce))
+- **blade:** add BannerWithRenderFunction story for custom render() banners ([eed9779](https://github.com/VirtoCommerce/vc-shell/commit/eed9779d72deea97b0154b4e58519a7c459aab6c))
+- **blade:** add custom banners section to vc-blade.docs.md ([86adf95](https://github.com/VirtoCommerce/vc-shell/commit/86adf953eaf08deb6e6abc41e8efee58162a15bd))
+- **blade:** update useBlade docs, add banner stories, fix ResizeObserver error in stories ([376e258](https://github.com/VirtoCommerce/vc-shell/commit/376e25869a1174cd48cea153438147b2993dc8ef))
+- complete project research for startup performance optimization ([8f73cb0](https://github.com/VirtoCommerce/vc-shell/commit/8f73cb08a0dd591339ff32611e052d50c95bb906))
+- **composables:** add co-located documentation for all 38 composables ([76d70e3](https://github.com/VirtoCommerce/vc-shell/commit/76d70e30e760621127221b7dd7ad4c96854abe71))
+- **dynamicProperties:** update docs for strategy-based API ([86ed0fa](https://github.com/VirtoCommerce/vc-shell/commit/86ed0fa8c9bb468a891bc9df37a2cbaf8f8457de))
+- enrich all remaining 88 Tier C docs with examples and recipes ([5a0de8d](https://github.com/VirtoCommerce/vc-shell/commit/5a0de8d5976a757c028731bc5fbafd7edfd0453e))
+- **migrate:** add README and integrate into monorepo build/publish ([a443821](https://github.com/VirtoCommerce/vc-shell/commit/a443821caf246e4f423483ead441ebf2c98a3264))
+- **migration:** add callParent args pitfall and notification styles import ([0b4aaba](https://github.com/VirtoCommerce/vc-shell/commit/0b4aabacc9017f46387e5a6b4643ec8b5f81ba77))
+- **notifications:** document useNotificationContext and migration ([def3789](https://github.com/VirtoCommerce/vc-shell/commit/def3789fb6bdb09596b26a764ed2d2eeb7e8e4c2))
+- rewrite 10 flagship docs to comprehensive developer guides ([cded0bc](https://github.com/VirtoCommerce/vc-shell/commit/cded0bcd688234611bce44ab134ee4692257543d))
+- rewrite 23 Tier B docs to comprehensive developer guides ([527115d](https://github.com/VirtoCommerce/vc-shell/commit/527115db38cc02d764eabf57a5de4af36cf335a2))
+- **shared:** standardize shared component stories and add documentation ([ea4383e](https://github.com/VirtoCommerce/vc-shell/commit/ea4383e74fa6a4af14bd13a7dffc1f26d52baafa))
+- **slow-network:** add useSlowNetworkDetection.docs.md ([d0c1ac1](https://github.com/VirtoCommerce/vc-shell/commit/d0c1ac1c2e548bef9d1dbbe61f94e30b1281e96f))
+- standardize all Storybook story meta sections ([344efe3](https://github.com/VirtoCommerce/vc-shell/commit/344efe3211a00d4062d4e5706cc2a9f3a3c89ab8))
+- standardize Storybook stories and add co-located component documentation ([c5eedf4](https://github.com/VirtoCommerce/vc-shell/commit/c5eedf417141f57aec9bdc0f7f3c3d6d93854149))
+- **table:** document weight-based column engine and updated APIs ([4b0f74b](https://github.com/VirtoCommerce/vc-shell/commit/4b0f74b42d75e3d91668905a7d4dbae797f598da))
+- update references from IBladeInstance to BladeDescriptor ([ef380d8](https://github.com/VirtoCommerce/vc-shell/commit/ef380d80df9247fdc70e42aed411a48239a294fa))
+- update useBlade docs, migration guide, and codemod spec for blade props simplification ([8ff41ff](https://github.com/VirtoCommerce/vc-shell/commit/8ff41ff84fa04553feb595b2adc48600f2b1d821))
+
+### Tests
+
+- **a11y:** add Storybook addon-a11y and axe-core vitest integration ([57313dc](https://github.com/VirtoCommerce/vc-shell/commit/57313dc5d0803cae5f7bc28fd0fed8af198d3437))
+- **auth:** add failing tests for parallelized loadUser() ([0e9b7c6](https://github.com/VirtoCommerce/vc-shell/commit/0e9b7c6b144660597aa17366a1155243908461c5))
+- **blade:** update BladeStatusBanners tests for unified banner list ([611eabc](https://github.com/VirtoCommerce/vc-shell/commit/611eabcaddb3f76739839e951529ac38ecb5b728))
+- **core:** add unit tests for composables, services, utilities, and plugins ([ab62c3c](https://github.com/VirtoCommerce/vc-shell/commit/ab62c3cd67add1c2f9c62568529b4187ebeb15eb))
+- fix broken tests after API changes and update snapshots ([0e67e03](https://github.com/VirtoCommerce/vc-shell/commit/0e67e0307577d64c2b3ffc35e2a4cd578b0a0b0b))
+- **menu-service:** add comprehensive identity and deduplication tests ([3b9a738](https://github.com/VirtoCommerce/vc-shell/commit/3b9a738573ad132f1674f254911d66c3add8b8dc))
+- **menu-service:** add VcAppMenu smoke test for items without explicit id ([e9492ae](https://github.com/VirtoCommerce/vc-shell/commit/e9492ae598117965737354a4d05d28d6a43f20ac))
+- **shared:** add unit tests for shared components, pages, and composables ([f886b6d](https://github.com/VirtoCommerce/vc-shell/commit/f886b6d98acb609b172d94457820c1644b400b79))
+- **table:** update existing tests for weight-based column engine ([6366fa0](https://github.com/VirtoCommerce/vc-shell/commit/6366fa0c8d57d923df0d96fa3999706cf82cfcc7))
+- **ui:** add ARIA propagation tests for VcInput, VcCheckbox, VcButton, VcSelect ([188f88f](https://github.com/VirtoCommerce/vc-shell/commit/188f88f918b75214bdae82ae92077bf31d2967c6))
+- **ui:** add unit tests for atoms, molecules, organisms, and composables ([a608e85](https://github.com/VirtoCommerce/vc-shell/commit/a608e85da304ecf52d28fb5233483c3da47c4e74))
+- **ui:** align mocks and assertions with updated components ([9d034f1](https://github.com/VirtoCommerce/vc-shell/commit/9d034f16282d8e653749a1b51dc20fc47aca4cdd))
+- update package-metadata tests for new exports map and sideEffects ([33df040](https://github.com/VirtoCommerce/vc-shell/commit/33df04073453de7fea43d94852f4cbe4ee88a796))
+- update vc-blade stories and tests to use BladeDescriptor ([a31d347](https://github.com/VirtoCommerce/vc-shell/commit/a31d347e7b61a612a78ee5dc243064e4a20d1bd2))
+- **useBlade:** add missing onDeactivated duplicate registration test ([35c4bf5](https://github.com/VirtoCommerce/vc-shell/commit/35c4bf52529a694e6791a7deafe89d88595d8f8b))
+- **vc-field, vc-image-tile, BladeToolbarSkeleton:** update tests for component rendering and behavior ([2f71da3](https://github.com/VirtoCommerce/vc-shell/commit/2f71da38b596ca230465e0aac09c4e76d0abb5d5))
+- **vc-select:** add search, pagination, resolve tests for useSelectDataSource ([f0be92a](https://github.com/VirtoCommerce/vc-shell/commit/f0be92a09d8ab44333bb91385c3db035b81872dd))
+- **vc-select:** enhance test setup with timer management to prevent leaks ([f1c773f](https://github.com/VirtoCommerce/vc-shell/commit/f1c773f5552700caa35cca57f497338237076192))
+
+### Styles
+
+- add visual desaturation hint when browser is offline ([7153339](https://github.com/VirtoCommerce/vc-shell/commit/71533398596a22d7d959f32c1df67942558eb617))
+- adjust vc-menu item and subitem heights for improved layout ([bc7e56e](https://github.com/VirtoCommerce/vc-shell/commit/bc7e56e810519125f1e5d7460a6914c314fa2929))
+- autoformat multi-line imports and expressions ([7d6e5e7](https://github.com/VirtoCommerce/vc-shell/commit/7d6e5e7edd35ba449ece2a9a2271c61571204227))
+- **lint:** one-time cleanup of pre-existing violations and tech debt ([a7113c5](https://github.com/VirtoCommerce/vc-shell/commit/a7113c5d25b5b4dc9da20f6bc40c54b57fe46422))
+- **menu-service:** type-only Component import, remove redundant title assignment ([ca29bb2](https://github.com/VirtoCommerce/vc-shell/commit/ca29bb29e504219c82e7931038f9b0cdbe8cf656))
+- **ui:** reformat skeleton blocks, imports and test setup ([16db427](https://github.com/VirtoCommerce/vc-shell/commit/16db427fda130725ff5d134ef2a321ffad919c05))
+- **validation:** normalize line endings in rules.ts ([40663b2](https://github.com/VirtoCommerce/vc-shell/commit/40663b2e3543739465a616842687f199464ca522))
+
+### Chores
+
+- add @shell and @modules path aliases ([ae682fb](https://github.com/VirtoCommerce/vc-shell/commit/ae682fbe37309862fe21ff33afe4d715080704cc))
+- add date-fns dependency ([4a78d85](https://github.com/VirtoCommerce/vc-shell/commit/4a78d85f85dbef173b352bcab09974ec59dc5c01))
+- add missing lodash-es dependency (prereq for API restructuring) ([a3c9b2d](https://github.com/VirtoCommerce/vc-shell/commit/a3c9b2ded41d2e2453b43fa693d2270c0ed8413c))
+- **auth:** move ChangePasswordPage to auth ([f0b422d](https://github.com/VirtoCommerce/vc-shell/commit/f0b422dc95515763fbee773eaea880a8abd4e12c))
+- disable CSS code splitting in Vite configuration ([d32f653](https://github.com/VirtoCommerce/vc-shell/commit/d32f653b06e25e331b01b64d6f5a07aaf39c9ed5))
+- fix trailing newline and remove dead CSS variable ([8b0001a](https://github.com/VirtoCommerce/vc-shell/commit/8b0001abff7b2e94f54d41d0cdcfac00934c20ab))
+- lint ([c001cdf](https://github.com/VirtoCommerce/vc-shell/commit/c001cdf1a880d9e1818b7dea4293800ce7e6b71d))
+- **release:** enhance release process and update dependencies ([4c7f10a](https://github.com/VirtoCommerce/vc-shell/commit/4c7f10a0bbd6e18bb09a2671ac1214d9cf4b5736))
+- **release:** v2.0.0-alpha.7 ([adf49e7](https://github.com/VirtoCommerce/vc-shell/commit/adf49e74bd3617d3aa51c9d4db94474294b3b925))
+- remove moment dependency and update bundler configs ([6a83d98](https://github.com/VirtoCommerce/vc-shell/commit/6a83d987fc1d0880da6614330eedc963153323e2))
+- remove outdated framework docs and blade-navigation-v2 stories ([f96ebe7](https://github.com/VirtoCommerce/vc-shell/commit/f96ebe704c45fd3f806304727b44ebb7e93a616d))
 - **scripts:** normalize yarn scripts per industry standards ([1cdd0cb](https://github.com/VirtoCommerce/vc-shell/commit/1cdd0cb517d2436ef2a509c6b6c358f6a48630d1))
+- **storybook:** add shared component stories and update existing ([aadeb60](https://github.com/VirtoCommerce/vc-shell/commit/aadeb60e021fad74e2917fc3cd8366436035b5cc))
+- **types:** add CoreBladeExposed type to blade-navigation components ([f795cb5](https://github.com/VirtoCommerce/vc-shell/commit/f795cb57f4d003c875e0b6f0fa3b61e21f6a8658))
+- **ui:** remove dev artifacts and update CLAUDE.md ([f540a47](https://github.com/VirtoCommerce/vc-shell/commit/f540a475b3147001db5fbce92103748538c5e653))
+- update @module-federation/vite to version 1.12.2 and refactor dynamic module configuration ([912ca95](https://github.com/VirtoCommerce/vc-shell/commit/912ca9547fdd9fb65b0c5a2ffbb012e139706283))
+- update changelogs for multiple packages, including bug fixes and feature enhancements ([72e690f](https://github.com/VirtoCommerce/vc-shell/commit/72e690f5e21aaaf22ce34ff41ec60fb11ed1d018))
+- update dependencies and improve alias configuration ([5ecd1fd](https://github.com/VirtoCommerce/vc-shell/commit/5ecd1fd9e4f5206aa04d11633e4c42442a012b81))
+- update dependencies in yarn.lock and add typings for blade macros ([77e74c6](https://github.com/VirtoCommerce/vc-shell/commit/77e74c6abb45c2420b0473e85befbabf81bd7b13))
+- update German and English translations, add common phrases ([dc2907a](https://github.com/VirtoCommerce/vc-shell/commit/dc2907ab967eec3322112f6fcc98e39a6a6211e0))
 
-### Features
+### Other Changes
 
-- **i18n:** sync shell locale from platform NG_TRANSLATE_LANG_KEY in embedded mode ([4adc6b0](https://github.com/VirtoCommerce/vc-shell/commit/4adc6b0f647b33e1ed6d1fb44835fc165e9edb9b))
-- **table:** add ColumnSpec, ColumnState, TableFitMode, PersistedStateV2 types ([42c5414](https://github.com/VirtoCommerce/vc-shell/commit/42c541450abf9a7dfb4664067db9e0987c24dbcb))
-- **table:** add storybook stories for fit/gap modes and width constraints ([1c0422b](https://github.com/VirtoCommerce/vc-shell/commit/1c0422b582351a75301f9c04496c1ea50657e589))
-- **table:** add weight-based column width engine with unit tests ([280eaa3](https://github.com/VirtoCommerce/vc-shell/commit/280eaa3ee90cb4add77deafdac76d750474ed748))
-- **tests:** enhance test helpers and add vitest environment for consistency ([6cd30ac](https://github.com/VirtoCommerce/vc-shell/commit/6cd30ac65b83dd756803b9ccb4278bd8679be930))
-- **vc-gallery:** filter non-image files on upload ([8a3c042](https://github.com/VirtoCommerce/vc-shell/commit/8a3c042e00e825b28b55fe0d5c9b4044291e207c))
-- **vc-select:** add V generic for modelValue/update:modelValue types ([8c69d86](https://github.com/VirtoCommerce/vc-shell/commit/8c69d86b5cfc9a1f5bfb8f132bc60233058a6c10))
+- feat!(blade): unify useBlade() API, deprecate useBladeNavigation() and useBladeContext() ([d07d829](https://github.com/VirtoCommerce/vc-shell/commit/d07d829b34720797e99f860014a835906ae11cd6))
+- Feat/research (#216) ([f028d9e](https://github.com/VirtoCommerce/vc-shell/commit/f028d9e1fe410a18fec4e127a65860cfb2309e36)), closes [#216](https://github.com/VirtoCommerce/vc-shell/issues/216)
+- Feat/research (#217) ([174beee](https://github.com/VirtoCommerce/vc-shell/commit/174beeef16d0f9c7d6a5b96f0cc375bc50eb06d2)), closes [#217](https://github.com/VirtoCommerce/vc-shell/issues/217)
+- Feat/vc table compositional (#215) ([2194f2f](https://github.com/VirtoCommerce/vc-shell/commit/2194f2fb82009e3dd5f2e17389b7fb03dd74b603)), closes [#215](https://github.com/VirtoCommerce/vc-shell/issues/215)
+- Feat/virto oz (#214) ([21250c9](https://github.com/VirtoCommerce/vc-shell/commit/21250c93ebb2d096b7accdde6b02a73782fc6535)), closes [#214](https://github.com/VirtoCommerce/vc-shell/issues/214)
+- Merge branch 'worktree-ui-kit-quality-fixes' ([a3d2d28](https://github.com/VirtoCommerce/vc-shell/commit/a3d2d287ed2a7b01d80955b087c87130d7e8d010))
+- Merge remote-tracking branch 'origin/main' ([bb2c2da](https://github.com/VirtoCommerce/vc-shell/commit/bb2c2da88fd9ac8d58eb0a84451d80bfba3f2547))
+- refactor!: remove global component and directive registration ([7643d8f](https://github.com/VirtoCommerce/vc-shell/commit/7643d8fcba40bdd4d5e6a8be244a6c1978eec3fb))
+
+### merge
+
+- integrate headless-widgets worktree into main ([0b09daa](https://github.com/VirtoCommerce/vc-shell/commit/0b09daa86fb138784790a80e304a36f4e4ce322d))
+
+### release
+
+- v1.2.3 ([6270dab](https://github.com/VirtoCommerce/vc-shell/commit/6270dab6a5a8149c8380d17d55b77531bad13531))
+- v1.2.4-beta.2 ([d4cf91e](https://github.com/VirtoCommerce/vc-shell/commit/d4cf91ea30b40f13cc7ca13e7d11c8da13459175))
+- v1.2.4-beta.3 ([d42e7a8](https://github.com/VirtoCommerce/vc-shell/commit/d42e7a822a2b2c7a5f89bf83d97babc2e4b3fa07))
+- v1.2.4-beta.4 ([55336cc](https://github.com/VirtoCommerce/vc-shell/commit/55336ccab2cfd7e697fd64e962262359ac9eb37f))
+- v1.2.4-beta.5 ([4cc2527](https://github.com/VirtoCommerce/vc-shell/commit/4cc2527f06178114fd3db9f781b1d6fd868a7a61))
+- v1.2.4-beta.6 ([86734c4](https://github.com/VirtoCommerce/vc-shell/commit/86734c47306da89feb6b16685287744bb2855cc8))
+- v1.2.4-beta.7 ([cc6ef5c](https://github.com/VirtoCommerce/vc-shell/commit/cc6ef5c98d3f8b6489126a950e994335016ea35d))
+- v1.2.4-beta.8 ([25aa324](https://github.com/VirtoCommerce/vc-shell/commit/25aa3246d45b375af4fffcc256a447d05dfda64c))
+- v2.0.0-alpha.10 ([5a9c0af](https://github.com/VirtoCommerce/vc-shell/commit/5a9c0af632a17e2d01dcd0dc07a166aabe6fe903))
+- v2.0.0-alpha.11 ([4e5d63e](https://github.com/VirtoCommerce/vc-shell/commit/4e5d63ee34bb825d8e363e40fbac27e711261f9e))
+- v2.0.0-alpha.12 ([7143a74](https://github.com/VirtoCommerce/vc-shell/commit/7143a74ae0bdd3d70f0133b69d380b82c10526c1))
+- v2.0.0-alpha.13 ([c422678](https://github.com/VirtoCommerce/vc-shell/commit/c42267854f9ed51215e8363165c9bfe077c313a3))
+- v2.0.0-alpha.14 ([0c91031](https://github.com/VirtoCommerce/vc-shell/commit/0c91031706843ccbc2f5d32093c8655c6bbc718f))
+- v2.0.0-alpha.15 ([fa8958e](https://github.com/VirtoCommerce/vc-shell/commit/fa8958e7241117ebff164a2d399f13f74d48b55f))
+- v2.0.0-alpha.16 ([79ab2b1](https://github.com/VirtoCommerce/vc-shell/commit/79ab2b1022258332c327e742ab0adf1b8fde35ce))
+- v2.0.0-alpha.17 ([408e4af](https://github.com/VirtoCommerce/vc-shell/commit/408e4af487f37b8aff790398d5a992820c8f05a2))
+- v2.0.0-alpha.18 ([2466e35](https://github.com/VirtoCommerce/vc-shell/commit/2466e359313c9d78893d2473474ec5ce46ad49ca))
+- v2.0.0-alpha.19 ([9d5a075](https://github.com/VirtoCommerce/vc-shell/commit/9d5a075e0a722c6c7371706f582b59bbf570ef37))
+- v2.0.0-alpha.2 ([223c859](https://github.com/VirtoCommerce/vc-shell/commit/223c8596dbad42704072ffc0dd1c4b8361227af0))
+- v2.0.0-alpha.20 ([98bd4a6](https://github.com/VirtoCommerce/vc-shell/commit/98bd4a62ffa933bbfdae16ef7e46777084f15190))
+- v2.0.0-alpha.21 ([bbd0d70](https://github.com/VirtoCommerce/vc-shell/commit/bbd0d70464ff5c0dafbc67ed3bf8ea36f65b0a7a))
+- v2.0.0-alpha.22 ([ec455eb](https://github.com/VirtoCommerce/vc-shell/commit/ec455eba6bb91ae5fdbea64817ce1650116b9d50))
+- v2.0.0-alpha.23 ([65b2144](https://github.com/VirtoCommerce/vc-shell/commit/65b214434ef1630069aecd6f2eaf916531bf37ef))
+- v2.0.0-alpha.24 ([05ff510](https://github.com/VirtoCommerce/vc-shell/commit/05ff5107b81e0280447872ea52771fc47cb3cd67))
+- v2.0.0-alpha.25 ([19d09b9](https://github.com/VirtoCommerce/vc-shell/commit/19d09b998861836b288aba36a6d18d7b26cff0b7))
+- v2.0.0-alpha.26 ([ee6818c](https://github.com/VirtoCommerce/vc-shell/commit/ee6818ceb60b24d26b7011f2584c8d23f6b4fd3e))
+- v2.0.0-alpha.27 ([f43652d](https://github.com/VirtoCommerce/vc-shell/commit/f43652d1aae8af36d5d2f00312492ea9de57f2f1))
+- v2.0.0-alpha.28 ([7954dfd](https://github.com/VirtoCommerce/vc-shell/commit/7954dfddf1126d00038b8f66a6fe3efc5c19cfe8))
+- v2.0.0-alpha.29 ([ffa72cf](https://github.com/VirtoCommerce/vc-shell/commit/ffa72cf458eed77c78955c88d211a82ead152b0f))
+- v2.0.0-alpha.3 ([23e82c2](https://github.com/VirtoCommerce/vc-shell/commit/23e82c2423efb5cddf8ea891ea5d5e84832a6acd))
+- v2.0.0-alpha.30 ([2db7f17](https://github.com/VirtoCommerce/vc-shell/commit/2db7f17d74afe97e3c6dfef2de436a797f0c32f4))
+- v2.0.0-alpha.31 ([8d92fba](https://github.com/VirtoCommerce/vc-shell/commit/8d92fbad5954c71164e7815193b3496e569a5703))
+- v2.0.0-alpha.32 ([1ed5533](https://github.com/VirtoCommerce/vc-shell/commit/1ed5533a6a20081e655f2e628bf824de40472f5d))
+- v2.0.0-alpha.33 ([49cad36](https://github.com/VirtoCommerce/vc-shell/commit/49cad36a454534136b52576e6a0d97dfe48ae895))
+- v2.0.0-alpha.34 ([78bed5a](https://github.com/VirtoCommerce/vc-shell/commit/78bed5af3aeb7ace2eb9f58ddde3235fced47b37))
+- v2.0.0-alpha.35 ([05d6f25](https://github.com/VirtoCommerce/vc-shell/commit/05d6f2562c939dd4a2e7e4e7a3d80948beccbef1))
+- v2.0.0-alpha.4 ([a3098f9](https://github.com/VirtoCommerce/vc-shell/commit/a3098f9ccc128c4ad3b4d8b5cbcbf8ea7a0f6df5))
+- v2.0.0-alpha.5 ([3cae61a](https://github.com/VirtoCommerce/vc-shell/commit/3cae61a852a8f88aac8e0c51affad4517c8c5eca))
+- v2.0.0-alpha.6 ([9196b2c](https://github.com/VirtoCommerce/vc-shell/commit/9196b2c232094d8d7750963718777096c0cc9864))
+- v2.0.0-alpha.8 ([8228f12](https://github.com/VirtoCommerce/vc-shell/commit/8228f12bffc014ae0f8f28b3ef3fa0ac02bc33e2))
+- v2.0.0-alpha.9 ([ef631bd](https://github.com/VirtoCommerce/vc-shell/commit/ef631bdbccbf2be1afbc592418e680e79d2c1fbe))
 
 ### BREAKING CHANGES
 
@@ -66,702 +584,18 @@
 
 Automated migration: npx @vc-shell/migrate --transform remove-global-components
 
-# [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
-
-### Bug Fixes
-
-- **rnd-114:** isolated authData refs causing the previous user's token to persist after logout and re-login ([#219](https://github.com/VirtoCommerce/vc-shell/issues/219)) ([acb6406](https://github.com/VirtoCommerce/vc-shell/commit/acb640635ecafdcae61bd5423dd9fc7e24398c3f))
-- **sidebar, dropdown:** align JS z-index defaults with token scale ([431bccd](https://github.com/VirtoCommerce/vc-shell/commit/431bccda9660cbfc9314fc4184a35cc3fadb17a4))
-- **ui:** refine blade loading states and media/date interactions ([32eb9ae](https://github.com/VirtoCommerce/vc-shell/commit/32eb9ae7d691c07edc3d4af7d6f9b2d9bfab86fa))
-- **ui:** resolve pagination and image fallback type errors ([c5c4a2f](https://github.com/VirtoCommerce/vc-shell/commit/c5c4a2fea9141ea39fa21b2cc0b23cfc78947a00))
-- **vc-data-table:** prevent column width corruption from ResizeObserver ([10b73b9](https://github.com/VirtoCommerce/vc-shell/commit/10b73b92370cfd0e9c335e9f197795c1faf2a4fb))
-- **vc-data-table:** rewrite column resize with equal distribution ([f92641c](https://github.com/VirtoCommerce/vc-shell/commit/f92641c30726181f5e0f7258c30a75a4cc58e947))
-- **vc-data-table:** unify cell padding for header and body alignment ([544e2c0](https://github.com/VirtoCommerce/vc-shell/commit/544e2c075edec560acadeb5096671c7b95091475))
-- **vc-gallery:** eliminate image flicker on filmstrip expand/collapse ([869bc82](https://github.com/VirtoCommerce/vc-shell/commit/869bc82077104751ce1bd7e7e1e5e1e8747c8343))
-- **vc-popup:** add z-index token to overlay and container ([c5505c1](https://github.com/VirtoCommerce/vc-shell/commit/c5505c1837bb783af6479d64adf8483a3f01fad2))
-
-### Features
-
-- **core:** add useBladeForm markReady for prefilled entities ([9ba3803](https://github.com/VirtoCommerce/vc-shell/commit/9ba380313282dffb5109f83da3d65663b3103e32))
-- **framework:** add useDataTablePagination composable ([8085a04](https://github.com/VirtoCommerce/vc-shell/commit/8085a0402c60d03a7eb575004106ca8cf2fcfee4))
-- **skeleton:** transparent blade skeleton via provide/inject ([89d3285](https://github.com/VirtoCommerce/vc-shell/commit/89d328529bf8c647c0a3648f53a845510c49f689))
-- **styles:** add z-index token scale as CSS custom properties ([39c5c1d](https://github.com/VirtoCommerce/vc-shell/commit/39c5c1d4329ab9eeeb11ccb8befaf685d0e34ff8))
-- **vc-data-table:** add isRowExpandable prop for conditional row expansion ([f8b5bb5](https://github.com/VirtoCommerce/vc-shell/commit/f8b5bb5bf6d59f3bedf60ef43cda07777ed33ea9))
-
-# [2.0.0-alpha.32](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.31...v2.0.0-alpha.32) (2026-04-02)
-
-### Bug Fixes
-
-- **vc-editor:** prevent phantom modifications from tiptap markdown normalization ([bb81f14](https://github.com/VirtoCommerce/vc-shell/commit/bb81f140df11331b86892c5bda6cd160d866f061))
-
-# [2.0.0-alpha.31](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.30...v2.0.0-alpha.31) (2026-04-01)
-
-### Bug Fixes
-
-- **assets:** use lastIndexOf for file name/extension parsing ([251075e](https://github.com/VirtoCommerce/vc-shell/commit/251075e6ddabb960388262374cfb52ff5078a785))
-- **blade:** hide toolbar skeleton on mobile instead of applying mobile class ([1a594f2](https://github.com/VirtoCommerce/vc-shell/commit/1a594f291bc80fd77ac8555d64d4e25564ffbe14))
-- **blade:** two-line mobile header layout to prevent title truncation ([335d2ec](https://github.com/VirtoCommerce/vc-shell/commit/335d2ec8d310000b8c5b5aa7433d3ae033116318))
-- **gallery:** review fixes, mobile tap-to-reveal, label prop, drag improvements ([c4c2b79](https://github.com/VirtoCommerce/vc-shell/commit/c4c2b79c8d41cb7b380e3bc9a3fe74b71258ac7e))
-- **slow-network:** update tests and docs for 10s detection threshold ([f49e446](https://github.com/VirtoCommerce/vc-shell/commit/f49e4464481147e1b718c3867b3280c1acf200e3))
-- **table:** render expander icon via VcIcon instead of bare <i> tag ([1b04fc6](https://github.com/VirtoCommerce/vc-shell/commit/1b04fc6e3641b271ca65e5a33653cb5e9d58e375))
-- **table:** use selection-cell class for skeleton rows, fix cell-content flex sizing ([7f7cce9](https://github.com/VirtoCommerce/vc-shell/commit/7f7cce9316b5a0b9dd922310a9d93eee78c33bb9))
-- use relative path for injection-keys re-export to fix d.ts alias resolution ([67364e1](https://github.com/VirtoCommerce/vc-shell/commit/67364e1e2ceda1b1a49ee19187fae6e1d82e17bf))
-- **widgets:** replace v-loading with skeleton placeholders, fix dropdown widget styling ([5c44acc](https://github.com/VirtoCommerce/vc-shell/commit/5c44accdb52ca1d4502e2d0357a884e5764fb4ec))
-
-### Features
-
-- **dynamicProperties:** strategy-based refactor with clean API ([befd1c4](https://github.com/VirtoCommerce/vc-shell/commit/befd1c4192366f6103c0a39deb17b782dcc57d30))
-- **gallery:** add filmstrip layout with swiper, fullscreen preview, mobile UX improvements ([08f476b](https://github.com/VirtoCommerce/vc-shell/commit/08f476b7fb6ae244aeeb80e88e426f44a61dffa2))
-- **image:** add thumbnail URL utility and thumbnailSize prop to image components ([4f35180](https://github.com/VirtoCommerce/vc-shell/commit/4f3518040275d6a415e4735bd32fd15b8db8c38f))
-- **table:** auto-scale column widths when container resizes via ResizeObserver ([9957fd1](https://github.com/VirtoCommerce/vc-shell/commit/9957fd11310b9f743df1c2db7a36dd4ed5ddce35))
-- **table:** proportional column resize + full reset via column switcher ([d9af649](https://github.com/VirtoCommerce/vc-shell/commit/d9af6498efcea0875ffb0991cbaca36eb06a7329))
-- **useBladeForm:** unified form state management for blades ([a25bc23](https://github.com/VirtoCommerce/vc-shell/commit/a25bc23b717433e056a11fdc9c3d52e333cc8790))
-
-# [2.0.0-alpha.30](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.29...v2.0.0-alpha.30) (2026-03-30)
-
-### Bug Fixes
-
-- **blade:** restore expand/collapse button in vc-blade ([4c3abbe](https://github.com/VirtoCommerce/vc-shell/commit/4c3abbed1604835e316e24da86c35a714b1ca200))
-- **blade:** watch shortErrorMessage for updates, re-export IBladeBanner, add dismiss-error test ([60298dd](https://github.com/VirtoCommerce/vc-shell/commit/60298ddd29bb8d32a553a57eef15f7c05aabb609))
-
-### Features
-
-- **blade:** add addBanner/removeBanner/clearBanners to useBlade() ([773362f](https://github.com/VirtoCommerce/vc-shell/commit/773362f8958782509b5e153c1c2889fffebf92a8))
-- **blade:** add IBladeBanner interface and BladeBannersKey injection key ([8c8ceb8](https://github.com/VirtoCommerce/vc-shell/commit/8c8ceb808b5f18f16f021d1c91d152308f59a4fc))
-- **blade:** provide BladeBannersKey in VcBladeSlot ([86c47e7](https://github.com/VirtoCommerce/vc-shell/commit/86c47e788afb8090364ebfefca10ae5db332b54e))
-- **blade:** rewrite BladeStatusBanners for unified banner list with custom banners support ([887c5b9](https://github.com/VirtoCommerce/vc-shell/commit/887c5b9c66ad3afcc95c9b03a50943ac3bb5b46c))
-
-# [2.0.0-alpha.29](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.28...v2.0.0-alpha.29) (2026-03-26)
-
-### Bug Fixes
-
-- **navigation:** inject missing dependency in vc-blade-navigation component ([7c950a0](https://github.com/VirtoCommerce/vc-shell/commit/7c950a07f44b28fbe9e3cd7899e182fc406a8ef6))
-- **test:** update BladeHeader tests to use closable prop instead of expandable descriptor ([d37244b](https://github.com/VirtoCommerce/vc-shell/commit/d37244b8b2874a694679c663065e0a4161123395))
-
-### Features
-
-- **popup:** usePopup composable documentation and tests ([bef8e8b](https://github.com/VirtoCommerce/vc-shell/commit/bef8e8b9f0c30f4986a15c7127870abe95862056))
-- **responsive-composable:** introduce useResponsive composable to replace global properties and injection keys ([1280853](https://github.com/VirtoCommerce/vc-shell/commit/1280853cf10ec6cf432b5e7eb88b0991430dfc20))
-
-# [2.0.0-alpha.28](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.27...v2.0.0-alpha.28) (2026-03-26)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.27](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.26...v2.0.0-alpha.27) (2026-03-25)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.26](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.25...v2.0.0-alpha.26) (2026-03-25)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.25](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.24...v2.0.0-alpha.25) (2026-03-25)
-
-### Bug Fixes
-
-- break circular dependency between injection-keys and useBladeWidgets ([99a2f02](https://github.com/VirtoCommerce/vc-shell/commit/99a2f022b4f72e3c8d22b9de32fd796f8b03bbf2))
-- **framework:** add viteBladePlugin to library build config ([78381b9](https://github.com/VirtoCommerce/vc-shell/commit/78381b9ef4f0bcba0c6f1bd374ad73c52fab0366))
-
-# [2.0.0-alpha.24](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.23...v2.0.0-alpha.24) (2026-03-25)
-
-### Bug Fixes
-
-- **assets-manager:** guard defaultAssets.value in upload deduplication ([21b6aa2](https://github.com/VirtoCommerce/vc-shell/commit/21b6aa258b372569d77dd1b528d2a8da12992991))
-- **auth:** validate redirect path after login to prevent open redirect ([5bd710f](https://github.com/VirtoCommerce/vc-shell/commit/5bd710f140afca096834e6b9f4ef7a37301cac2d))
-- **services:** wrap registered components with markRaw to avoid reactivity overhead ([f47fc44](https://github.com/VirtoCommerce/vc-shell/commit/f47fc448f575e2df0c6a234da0cd87068ff24d3c))
-- **ui:** reduce dropdown item font size and normalize BladeToolbar line endings ([48b880d](https://github.com/VirtoCommerce/vc-shell/commit/48b880d04ede646194f2ba3df9941d0de5735efe))
-- **useAssetsManager:** consistent array replacement in updateItem, normalize uploadPath ([6fdeb11](https://github.com/VirtoCommerce/vc-shell/commit/6fdeb115f68159c70570b38a056a6b0876ab55a3))
-- **useAssetsManager:** guard against undefined assetsRef.value ([53ef130](https://github.com/VirtoCommerce/vc-shell/commit/53ef1304e6aa6f36214056ccc7dc24ab7730845f))
-- **usePermissions:** read permissions reactively instead of caching in module-level ref ([b87af19](https://github.com/VirtoCommerce/vc-shell/commit/b87af194ff86c634a98a4bac584d38d65b5b48cf))
-- **validation:** update error type references from IIdentityError to IdentityError ([c6ab523](https://github.com/VirtoCommerce/vc-shell/commit/c6ab523fe28597ff52b91f3bbbcf53d4bf393a6e))
-
-### Documentation
-
-- **assets-manager:** document blade options breaking change and enhance codemod ([69cc786](https://github.com/VirtoCommerce/vc-shell/commit/69cc7865a5678a093d972e6e39f955d722fcc133))
-
-### Features
-
-- export useAssetsManager from core composables barrel ([c8bafb8](https://github.com/VirtoCommerce/vc-shell/commit/c8bafb890b0e324b30cd6d810f1b5de6d54dd80c))
-- **framework:** export pre-registration functions for external modules ([7a4c854](https://github.com/VirtoCommerce/vc-shell/commit/7a4c8540dcdf807d5309c04701460c4bf7e5df38))
-- **i18n:** add typed locale exports for framework translations ([d1e1b29](https://github.com/VirtoCommerce/vc-shell/commit/d1e1b29575b2ba5e6e935e6b2e653ae73fdb258d))
-- **useAssetsManager:** accept nullable source ref ([05d5da7](https://github.com/VirtoCommerce/vc-shell/commit/05d5da71c4934b8ddb8cd63293f0a7f855dc86e7))
-- **useAssetsManager:** implement remove and removeMany with confirmation ([9f9589c](https://github.com/VirtoCommerce/vc-shell/commit/9f9589c74b074a8473c9dc535b8704ab07c3b2fc))
-- **useAssetsManager:** implement reorder and updateItem ([4946433](https://github.com/VirtoCommerce/vc-shell/commit/4946433097ee63702c27fb65010d2e7bc286768e))
-- **useAssetsManager:** implement upload with batch concurrency ([cd34520](https://github.com/VirtoCommerce/vc-shell/commit/cd3452092099a6721125e30d81cdc735af0e9c87))
-- **useAssetsManager:** skeleton with AssetLike type, items, loading ([3cd9f2b](https://github.com/VirtoCommerce/vc-shell/commit/3cd9f2bca101278d546f23bb2309d845226c9fe9))
-- **vc-app-skill:** enrich knowledge base with When to Use sections, patterns, and sync-docs script ([c82ed63](https://github.com/VirtoCommerce/vc-shell/commit/c82ed639d748bdc8fd2d9c39435ee37baedd0563))
-- **vc-app:** add sidebar search bar for menu filtering ([72f17fc](https://github.com/VirtoCommerce/vc-shell/commit/72f17fc5b0e77e4e87457c5a29262345da50317d)), closes [#menu](https://github.com/VirtoCommerce/vc-shell/issues/menu) [#menu](https://github.com/VirtoCommerce/vc-shell/issues/menu)
-
-### BREAKING CHANGES
-
 - **assets-manager:** notice
 
 * use-assets-migration codemod: detect openBlade("AssetsManager") with
   old handler options and missing markRaw()
 
-# [2.0.0-alpha.23](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.22...v2.0.0-alpha.23) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.22](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.21...v2.0.0-alpha.22) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.21](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.20...v2.0.0-alpha.21) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.20](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.18...v2.0.0-alpha.20) (2026-03-23)
-
-### Bug Fixes
-
-- **theme-selector:** update notification mock path in tests ([c46aed1](https://github.com/VirtoCommerce/vc-shell/commit/c46aed1128abbb3b93623129de31b40809618408))
-
-# [2.0.0-alpha.19](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.18...v2.0.0-alpha.19) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.18](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.17...v2.0.0-alpha.18) (2026-03-23)
-
-### Bug Fixes
-
-- add fallback timer for select visibility checks ([323c393](https://github.com/VirtoCommerce/vc-shell/commit/323c3931778e5eb30a7306d111a0dd4866ac77d7))
-
-# [2.0.0-alpha.17](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.16...v2.0.0-alpha.17) (2026-03-23)
-
-### Bug Fixes
-
-- **defineBlade:** register blade config at module scope, not setup time ([7d80498](https://github.com/VirtoCommerce/vc-shell/commit/7d804989ac285c1fb2d277e131c7e159292a5f41))
-- **framework:** expose defineBlade global type via globals.d.ts reference ([7c24305](https://github.com/VirtoCommerce/vc-shell/commit/7c243059b18fcb6f8588425c08d3bd2856db03db))
-- **framework:** fix vc-select reactivity and assets-details binding ([5f37bd7](https://github.com/VirtoCommerce/vc-shell/commit/5f37bd7a8095a27438fb94c2cdf967c212217282))
-- **notifications:** export NotificationContextKey from framework public API ([28a989d](https://github.com/VirtoCommerce/vc-shell/commit/28a989d26ea4b5e5f59fc48e34756829bdfe401c))
-
-### Features
-
-- add useDataTableSort composable for VcDataTable sort state management ([4eafe65](https://github.com/VirtoCommerce/vc-shell/commit/4eafe65a02b7af23dc4f5196c2583e09de47ec5a))
-- **blade-navigation:** add BladeDefinition, BladeMenuItemConfig, BladeConfig types ([813786b](https://github.com/VirtoCommerce/vc-shell/commit/813786be215ba0d73e9269863a218277b36f17e4))
-- **blade-navigation:** add global bladeConfigRegistry for defineBlade ([2957c70](https://github.com/VirtoCommerce/vc-shell/commit/2957c70a751a7a47b8a40fd47e57797e0ad9ea73))
-- **blade-registry:** read from bladeConfigRegistry + handle menu registration ([235fc51](https://github.com/VirtoCommerce/vc-shell/commit/235fc51f78e05c9958ad5096f85b69ccd8417c0b))
-- **framework:** add global defineBlade() type declaration ([4b5b227](https://github.com/VirtoCommerce/vc-shell/commit/4b5b22725c0b381aecb583bd7efd11ea94bd34c9))
-- **notifications:** add NotificationContextKey injection key ([325de54](https://github.com/VirtoCommerce/vc-shell/commit/325de540aea20bab3f9981d55419b9e8882faf10))
-- **notifications:** add useNotificationContext composable ([fa73deb](https://github.com/VirtoCommerce/vc-shell/commit/fa73debbcabc2378c1a0c0a90dba589a134c2c87))
-
-# [2.0.0-alpha.16](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.15...v2.0.0-alpha.16) (2026-03-20)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.15](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.14...v2.0.0-alpha.15) (2026-03-20)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.14](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.13...v2.0.0-alpha.14) (2026-03-20)
-
-### Bug Fixes
-
-- **notifications:** decouple toast dismissal from notification badge state ([d6d08f1](https://github.com/VirtoCommerce/vc-shell/commit/d6d08f14e6aaf3cd88451c2b80b72b2596a27d02))
-
-# [2.0.0-alpha.13](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.12...v2.0.0-alpha.13) (2026-03-20)
-
-### Bug Fixes
-
-- **ToolbarMobile:** scope disabled button opacity to :disabled pseudo-class ([a723942](https://github.com/VirtoCommerce/vc-shell/commit/a72394267a36a0240299ef432b340f450ebee724))
-- **vc-sidebar:** prevent infinite recursion in focus trap ([3221237](https://github.com/VirtoCommerce/vc-shell/commit/3221237032f855543b64183b1238e3e2dcac423c))
-- widen exposeToChildren type signature to accept typed functions ([0fad830](https://github.com/VirtoCommerce/vc-shell/commit/0fad83088db7075c3e5267b0ed9a7702c1acbcfb))
-
-### Features
-
-- add Vue module augmentation type declarations ([f1b8f48](https://github.com/VirtoCommerce/vc-shell/commit/f1b8f4817a849d4fbe4eb8c820214d942f691e93))
-
-# [2.0.0-alpha.12](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.11...v2.0.0-alpha.12) (2026-03-19)
-
-### Bug Fixes
-
-- **ai-agent:** address code review — extract flushPendingInit, replace console.debug with logger ([03ca531](https://github.com/VirtoCommerce/vc-shell/commit/03ca531b64e5809317163c0beaf48ee715abb596))
-- **ai-agent:** fix blade ID mismatch preventing context from reaching chatbot ([88a5a1e](https://github.com/VirtoCommerce/vc-shell/commit/88a5a1ef2c532c8980df119d5826a0412d3b0593))
-- **ai-agent:** remove itemsCount badge from agent header ([5a6b4fa](https://github.com/VirtoCommerce/vc-shell/commit/5a6b4fa957402e4fe2766bafc86b416f3996e3b0))
-- **BladeMessaging:** prevent callParent() errors from showing as toast notifications ([9b5fa63](https://github.com/VirtoCommerce/vc-shell/commit/9b5fa639c30d99a8ca24ff2a38157c3853071b16))
-- **bladeRouterGuard:** preserve route parameters during URL restoration ([efa002a](https://github.com/VirtoCommerce/vc-shell/commit/efa002a7c82699c9ff9b960671d7b3222f75d08a))
-- **DataTableHeader:** guard column switcher UI with v-if when only spacer needed ([6850f32](https://github.com/VirtoCommerce/vc-shell/commit/6850f32fea7fe3ded758a2f3bf6606541463a0fa))
-- **DataTableMobileCard:** prevent error message truncation in editing mode ([ebe50aa](https://github.com/VirtoCommerce/vc-shell/commit/ebe50aa580efd13ae058aea8ebc61fd75aa4c743))
-- export UseAiAgentContextReturn from ai-agent public API and break colorUtils circular dep ([85693ae](https://github.com/VirtoCommerce/vc-shell/commit/85693ae2326b3b11003663350dbab61e529cc349))
-- **notifications:** preserve unread dot layout and fix sort/markAsRead timing ([7b54853](https://github.com/VirtoCommerce/vc-shell/commit/7b548530bd3a58c9353acd84b3bf0bde90117ce2))
-- suppress Vue "injection not found" warnings for appInsights and vee-validate ([1e09dad](https://github.com/VirtoCommerce/vc-shell/commit/1e09dad4bd6b0fd39c127acdc57182a0122982b5))
-- **TableAddRowButton:** add CSS variable fallback for mobile view ([d5a3821](https://github.com/VirtoCommerce/vc-shell/commit/d5a382155ad80aefa422d9cb4da27cb8b83af1b5))
-- **TableRow:** remove excessive gap between table cells ([49e92e2](https://github.com/VirtoCommerce/vc-shell/commit/49e92e2bca06af7c606eb80e70934f08f8fa6c5e))
-- **TableRow:** use tw-gap-2 for balanced cell spacing ([e3779cf](https://github.com/VirtoCommerce/vc-shell/commit/e3779cf9ccfc6c1bab6508220c65c20ea2f3fc41))
-- **ui:** add select-all toolbar in mobile table view ([a8a9c8f](https://github.com/VirtoCommerce/vc-shell/commit/a8a9c8fc6b9f31f4e896af885f541b253f9e77c0))
-- **ui:** add text truncation to form components and fix widget chevron alignment ([b17b19e](https://github.com/VirtoCommerce/vc-shell/commit/b17b19e14c2cce115134c81dfb42d33b61bb04f4))
-- **ui:** adjust BladeHeader flex layout and remove TableCell horizontal padding ([03afb1a](https://github.com/VirtoCommerce/vc-shell/commit/03afb1a631f2dd80c1540ec592853c657e76ace9))
-- **ui:** increase vc-menu item click target area ([52a1679](https://github.com/VirtoCommerce/vc-shell/commit/52a16797c48e298192a093ddf9b7d1c7f88a14ce))
-- **ui:** increase z-index for dropdown, select, and multivalue to 10001 ([68bf908](https://github.com/VirtoCommerce/vc-shell/commit/68bf9087975aa4eb85989ecad65344219983dfe6))
-- **useBladeMessaging:** silently return undefined when parent method not found ([b56d88f](https://github.com/VirtoCommerce/vc-shell/commit/b56d88f856a81d6fa76ca390144f67374580b903))
-- **useModificationTracker:** synchronously reset isModified value for immediate updates ([3c3fab4](https://github.com/VirtoCommerce/vc-shell/commit/3c3fab475d8827ef3630dfdefdde7103c6dc393c))
-- **useTableInlineEdit:** reuse parent VeeValidate form context ([2edab69](https://github.com/VirtoCommerce/vc-shell/commit/2edab6969c9e3f8cbeefd843271762bb7c42353c))
-- **VcDataTable:** emit cell-edit-complete in mobile inline edit mode ([0bdfe06](https://github.com/VirtoCommerce/vc-shell/commit/0bdfe06bbd9086c27b5d29fc2067182ca6daee11))
-- **VcDataTable:** fix red asterisk color and pass validateOnMount to cell components ([61fcf3f](https://github.com/VirtoCommerce/vc-shell/commit/61fcf3fc9113a0ecb84ce9a99d4cfb0c3ee64346))
-- **VcDataTable:** revert unintended pagination v-if change ([da081ee](https://github.com/VirtoCommerce/vc-shell/commit/da081ee58000c1a3744209ddc12597aabfbd4003))
-- **VcDataTable:** show add-row button in mobile view ([236d59f](https://github.com/VirtoCommerce/vc-shell/commit/236d59f9ae651356fbd4308fa812e53dfae9fd02))
-- **VcDataTable:** validate empty fields on mount and move asterisk before title ([aca63ad](https://github.com/VirtoCommerce/vc-shell/commit/aca63ad56ddf0515a84b3160d201e8eb27a93ede))
-- **widgets:** fix IWidget type compatibility in useExternalWidgets ([bca5d29](https://github.com/VirtoCommerce/vc-shell/commit/bca5d29794c9c360676e6bd43500a3190219ab42))
-- **widgets:** move v-else to WidgetProvider to fix adjacent v-if requirement ([8c05898](https://github.com/VirtoCommerce/vc-shell/commit/8c05898249a6c985e997c85c892dde1f5dd1e652))
-- **widgets:** narrow widgetService type for TS strict closure inference ([9373ee0](https://github.com/VirtoCommerce/vc-shell/commit/9373ee0d5841e0f7bd61e8636aced95dd0352139))
-- **widgets:** use direct import path for internal useWidgets ([2bc61cd](https://github.com/VirtoCommerce/vc-shell/commit/2bc61cd315ce4956bf661ddc916a60754383667b))
-
-### Features
-
-- **blade-navigation:** split replaceCurrentBlade into replace and cover operations ([8e1de52](https://github.com/VirtoCommerce/vc-shell/commit/8e1de522ec9763db6bbfa8c59a2842c903d68ddc))
-- **CellEditableWrapper:** add validateOnMount prop for eager validation ([3d0e022](https://github.com/VirtoCommerce/vc-shell/commit/3d0e022d39f3b862abed0c8c4b337057fd94c638))
-- **core:** add useSlowNetworkDetection composable — request timer channel ([188d97e](https://github.com/VirtoCommerce/vc-shell/commit/188d97eb365a5a6cff8860765be09ea62b701704))
-- customize asset file naming in Vite configuration ([33f17e3](https://github.com/VirtoCommerce/vc-shell/commit/33f17e3c060fe97dbf3fa5a053c8b8a666a6affc))
-- **DataTableHeader:** show required asterisk in edit mode ([f597b83](https://github.com/VirtoCommerce/vc-shell/commit/f597b83e72e4432d7aeb5bd460debbbece9d4e1e))
-- **modularity:** add optional components parameter to createAppModule function shim ([52696b9](https://github.com/VirtoCommerce/vc-shell/commit/52696b92c71c15618f600e291bb8e99097703454))
-- multi-entry Vite build with ui, ai-agent, extensions sub-entries ([db93322](https://github.com/VirtoCommerce/vc-shell/commit/db93322ce7a732e895d3769f2392e3009b10bd15))
-- **settings-menu-item:** add submenu slot with responsive desktop/mobile behavior ([cd2d75f](https://github.com/VirtoCommerce/vc-shell/commit/cd2d75ff5b8ea52d69d7bc381144788accd54422))
-- **slow-network:** add effectiveType detection channel ([3369bb2](https://github.com/VirtoCommerce/vc-shell/commit/3369bb2131deb2603177d10b9e61101748e6a77c))
-- **slow-network:** add notification management with dismiss delay and offline suppression ([1708b87](https://github.com/VirtoCommerce/vc-shell/commit/1708b879ee777f1fc0cab7d29edfd73379060eb1))
-- **slow-network:** integrate request tracking into interceptor and initialize at startup ([6d55e35](https://github.com/VirtoCommerce/vc-shell/commit/6d55e35097643b8868a882162c1716920ecb4586))
-- **stories:** add row actions column position stories ([cac88df](https://github.com/VirtoCommerce/vc-shell/commit/cac88df844f4d1bcce62f4d9304924ff587c630f))
-- **storybook:** reorganize navigation to functional categories and add test integration ([eb9ba96](https://github.com/VirtoCommerce/vc-shell/commit/eb9ba96865b0cd30fe1a248c46a6b320d04ea785))
-- **useBlade:** add onActivated/onDeactivated lifecycle hooks ([2fcea43](https://github.com/VirtoCommerce/vc-shell/commit/2fcea434ea109f00d9f1749f61d5420e4cf3a0bb))
-- **useBlade:** add TOptions generic for typed blade options ([fadc1c9](https://github.com/VirtoCommerce/vc-shell/commit/fadc1c9cde673dbb4692307881b765b6cc5042c6))
-- **VcBlade:** auto-read expanded/closable from BladeDescriptor, self-handle close ([1f76506](https://github.com/VirtoCommerce/vc-shell/commit/1f765061bea1b3678e0e197d12d03d8c2505d046))
-- **VcDataTable:** add actions position prop to VcDataTable component ([de8c9ee](https://github.com/VirtoCommerce/vc-shell/commit/de8c9eebad9d8cd6a2da3318e9067eb6062325bf))
-- **VcDataTable:** add rowActionsPosition prop for column-mode actions ([c170209](https://github.com/VirtoCommerce/vc-shell/commit/c1702094ab24bc6fadd71ffa0ba4ff99505524e0))
-- **VcDataTable:** enable inline editing in mobile card view ([ff08e0f](https://github.com/VirtoCommerce/vc-shell/commit/ff08e0f604cebe647763beca543dc3b4816c6be4))
-- **VcDataTable:** thread isEditing and isNewRow props for validation ([a550fef](https://github.com/VirtoCommerce/vc-shell/commit/a550fef53b97a9038e32c3e1ba1ee3644e070a36))
-- **VcIcon:** make Lucide icons the standard, deprecate legacy icon packs ([d58888f](https://github.com/VirtoCommerce/vc-shell/commit/d58888f151ca2a41fa000a8efe737f2461815649))
-- **widgets:** add defineBladeContext / injectBladeContext composables ([a601ea3](https://github.com/VirtoCommerce/vc-shell/commit/a601ea3deb87c65a72572f34e503a5db7e296185))
-- **widgets:** add guarded() click handler utility ([ae452ee](https://github.com/VirtoCommerce/vc-shell/commit/ae452ee804dc97172a8ea7cc2b40372e27599ecd))
-- **widgets:** add useBladeWidgets composable (Stage 1 baseline) ([a885386](https://github.com/VirtoCommerce/vc-shell/commit/a885386c981446a360f239cf7fd2e4fad612bb8e))
-- **widgets:** add useBladeWidgets composable with TDD ([6cf9e03](https://github.com/VirtoCommerce/vc-shell/commit/6cf9e0354a1a8ad6124fe61d9f8a25a3bc538473))
-- **widgets:** add useWidget composable with TDD ([7b90b7c](https://github.com/VirtoCommerce/vc-shell/commit/7b90b7ce40fb498801c18cb7730bec99199846cb))
-- **widgets:** add WidgetIdKey, WidgetProvider, wrap containers ([5fb2588](https://github.com/VirtoCommerce/vc-shell/commit/5fb2588d791439874a1c4ea62a3abcf3bf1416e2))
-- **widgets:** extend useBladeWidgets with headless declarations ([76fbdd2](https://github.com/VirtoCommerce/vc-shell/commit/76fbdd226456211981a8dd5ad4a0442f4fa45269))
-- **widgets:** extend useBladeWidgets with headless declarations ([513a6bf](https://github.com/VirtoCommerce/vc-shell/commit/513a6bfd80c6d9a39c29e64f357c4ddcb8d1c415))
-- **widgets:** render headless widgets in WidgetContainers and inject kind for external widgets ([6b85dbe](https://github.com/VirtoCommerce/vc-shell/commit/6b85dbe8e2c843631e92fac274451cd90e090798))
-
-# [2.0.0-alpha.11](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.10...v2.0.0-alpha.11) (2026-03-13)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.10](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) (2026-03-13)
-
-- feat!(blade): unify useBlade() API, deprecate useBladeNavigation() and useBladeContext() ([d07d829](https://github.com/VirtoCommerce/vc-shell/commit/d07d829b34720797e99f860014a835906ae11cd6))
-
-### Bug Fixes
-
-- **notifications:** address architectural review findings ([4429f1c](https://github.com/VirtoCommerce/vc-shell/commit/4429f1ccf77830d3d36efa537d93c4c463ffaced))
-- **notifications:** address code review findings ([1104f68](https://github.com/VirtoCommerce/vc-shell/commit/1104f681ed26d775632b769e618b623d81480078))
-- **notifications:** remove broken hasUnreadNotifications, add loadHistory tests ([9f25854](https://github.com/VirtoCommerce/vc-shell/commit/9f2585430b6eba78920e1037951a39a77b26205a))
-- **notifications:** replace VcDropdown with VcScrollableContainer in dropdown ([d635694](https://github.com/VirtoCommerce/vc-shell/commit/d6356940fca5ad450cf4b592d283021468d6f08d))
-- **vc-button:** rename icon class to BEM modifier and reduce icon-title gap ([ba2297d](https://github.com/VirtoCommerce/vc-shell/commit/ba2297d5c06de19c8a40df1207f13587991a8a08))
-- **vc-select:** resolve primitive modelValue when emitValue is false ([3cc38ac](https://github.com/VirtoCommerce/vc-shell/commit/3cc38acd4dbccd788575aab6218897ab33ab67f8))
-
-### Features
-
-- **icons:** migrate from FontAwesome and Material to Lucide icons ([1165217](https://github.com/VirtoCommerce/vc-shell/commit/1165217459ccac086aa5eab381deb43be46d7746))
-- **modularity,dropdown:** support notifications config in defineAppModule, use store in dropdown ([eb96c22](https://github.com/VirtoCommerce/vc-shell/commit/eb96c228b0e8f8d5efa6bd5d31cd8f3e70ae3dc8))
-- **notifications:** add barrel exports for notifications module ([f10526f](https://github.com/VirtoCommerce/vc-shell/commit/f10526ffe639700a82c96d73b533f3ef78c9b9c9))
-- **notifications:** add core types for notification system redesign ([402cbbc](https://github.com/VirtoCommerce/vc-shell/commit/402cbbc83de926aa7cd025173c7c838eb3c0b3a4))
-- **notifications:** add NotificationStore with types and tests ([921fd84](https://github.com/VirtoCommerce/vc-shell/commit/921fd8461416e02234b4bce9eb299b1767660ad4))
-- **notifications:** add ToastController with progress/auto/silent modes ([9eb6268](https://github.com/VirtoCommerce/vc-shell/commit/9eb62687245bd63788d76d67e7185237c6c3e9e8))
-- **notifications:** add useBladeNotifications composable with auto-cleanup ([af18fd8](https://github.com/VirtoCommerce/vc-shell/commit/af18fd869d2b4874732592292dda0fa46578d07e))
-- **notifications:** add useNotificationStore singleton composable ([596d1d6](https://github.com/VirtoCommerce/vc-shell/commit/596d1d677cd72b6f6e4a6e24583d3a6d8cc4152a))
-- **notifications:** integrate ToastController into store.ingest and wire SignalR ([8c7be3e](https://github.com/VirtoCommerce/vc-shell/commit/8c7be3ea06a94341a82f9741e34d5e4a2eccb4a2))
-
-### BREAKING CHANGES
-
 - `useBladeNavigation()` and `useBladeContext()` are removed.
   Use `useBlade()` everywhere. The old `useBlade()` that returned `ComputedRef<IBladeInstance>`
   is replaced with a new API returning destructured properties and methods.
-
-# [2.0.0-alpha.9](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.8...v2.0.0-alpha.9) (2026-03-12)
-
-### Bug Fixes
-
-- topological build order, deprecation fixes, and dependency updates ([bf01eaf](https://github.com/VirtoCommerce/vc-shell/commit/bf01eaf7574eda5ae393941b553cbea5918a768f))
-- **ui:** replace VcInput discriminated union Props with single interface ([b25b153](https://github.com/VirtoCommerce/vc-shell/commit/b25b153eb81a13f879bfd2d14be63c333ea3f9a6))
-
-# [2.0.0-alpha.8](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.7...v2.0.0-alpha.8) (2026-03-12)
-
-### Bug Fixes
-
-- add promise deduplication to loadUser() to prevent concurrent duplicate API calls ([ec83ab6](https://github.com/VirtoCommerce/vc-shell/commit/ec83ab6298648c5386467fcb88624e8154379f4b))
-- resolve vue-tsc build errors for generic components ([a8955e5](https://github.com/VirtoCommerce/vc-shell/commit/a8955e5ada0940345f149298653dd4bd96c6a574))
-
-### Features
-
-- **mf:** extract Module Federation loader into @vc-shell/mf-config and @vc-shell/mf-host ([9b079c2](https://github.com/VirtoCommerce/vc-shell/commit/9b079c27bc1497d89849b909f62c1403eff0c9b4))
-- **vc-select:** add useSelectDataSource composable with cache layer ([4f4e724](https://github.com/VirtoCommerce/vc-shell/commit/4f4e7246cd40cc09623e0f283ea32032f9ee0da1))
-
-# [2.0.0-alpha.7](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) (2026-03-11)
-
-### Bug Fixes
-
-- remove duplicate changelog entries caused by multiline regex bug ([2f27d4c](https://github.com/VirtoCommerce/vc-shell/commit/2f27d4c2ca81452ddc1042af47a4648348e7e323))
-- **vc-gallery:** handle undefined images prop on mount ([4338c8e](https://github.com/VirtoCommerce/vc-shell/commit/4338c8ea035e37b3eba8a909310b6146948a3527))
-
-### Code Refactoring
-
-- remove legacy dynamic views module ([3a673a8](https://github.com/VirtoCommerce/vc-shell/commit/3a673a89156c36ef1e1908f80e012104f36fa54e))
-
-### BREAKING CHANGES
-
 - removed createDynamicAppModule,
   useDetailsFactory, useListFactory, DynamicBladeList,
   DynamicBladeForm, DynamicModuleRegistryState and
   all dynamic schema types from the framework.
-
-# [2.0.0-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2026-03-10)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2026-03-10)
-
-### Code Refactoring
-
-- extract blade router guard into standalone utility ([7e2a590](https://github.com/VirtoCommerce/vc-shell/commit/7e2a5900d521131e578205b31be734d975b72ff3))
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2026-03-10)
-
-### Features
-
-- add blade catch-all route handling in VcBladeNavigationComponent ([cb7920a](https://github.com/VirtoCommerce/vc-shell/commit/cb7920a3563d9224a160c00f728b5e5a84277f7f))
-
-# [2.0.0-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) (2026-03-10)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.2) (2026-03-10)
-
-### Code Refactoring
-
-- remove unused components and update package resolutions ([26ff398](https://github.com/VirtoCommerce/vc-shell/commit/26ff398739d75b23f7f700542920a117e0022ff3))
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.0...v2.0.0-alpha.1) (2026-03-10)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-# [2.0.0-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.0) (2026-03-10)
-
-### Features
-
-- **a11y:** add ARIA attributes to blades, popups, and blade navigation ([12454c6](https://github.com/VirtoCommerce/vc-shell/commit/12454c628683d36fba9efea6e24224d1e0a029e4))
-- **ai-agent:** add embedded mode support with iframe messaging ([d605a2d](https://github.com/VirtoCommerce/vc-shell/commit/d605a2dedaf223718a0dccd6eaad94fbeddae1c0))
-- **core:** add Module Federation support and remove legacy UMD globals ([18c4026](https://github.com/VirtoCommerce/vc-shell/commit/18c402677846dfff8f077dccb7a782fcf5a778e0))
-- **blade-nav:** enforce workspace permissions in BladeStack ([edfe789](https://github.com/VirtoCommerce/vc-shell/commit/edfe7898828eaf1c2fde5abc00a7c13b1bdc9a2f))
-- add Lato font family ([8384890](https://github.com/VirtoCommerce/vc-shell/commit/83848902a6b83122663070e9056863d85ae7f11f))
-- **vc-menu:** add loading prop with skeleton placeholders ([d0bb25c](https://github.com/VirtoCommerce/vc-shell/commit/d0bb25c345c977fbb32e1492c74db4bfdcc94413))
-- **vc-menu-group:** add section variant, grid animation, chevron transition ([c5f04f1](https://github.com/VirtoCommerce/vc-shell/commit/c5f04f1fd2f0df3bcf3749feb8cbb32e1295eca8))
-- **vc-menu:** add loading and variant to type definitions ([4d64610](https://github.com/VirtoCommerce/vc-shell/commit/4d646106ef86e74bf9761ebbb461b8200c749b64))
-
-### Bug Fixes
-
-- **ui:** improve collapsed sidebar UX and embedded AI agent context ([c87e16d](https://github.com/VirtoCommerce/vc-shell/commit/c87e16df0b70069f919ea20676f3aa3b66d447d9))
-- **shell-nav:** logo click navigates to main route without clearing stack ([f9f8f78](https://github.com/VirtoCommerce/vc-shell/commit/f9f8f785153bc0e4027f4553fce7c070ea43aa14))
-- **shell-nav:** openRoot no longer clears blade stack ([547ae53](https://github.com/VirtoCommerce/vc-shell/commit/547ae5363b7b96d30cc2ad65fc9ec97191116f26))
-- **vc-menu:** move font and padding to app level, add activeItemId ([3018007](https://github.com/VirtoCommerce/vc-shell/commit/30180073b684ebd5c6f77df62fde1bd740b32720))
-- **notifications:** fix toast width, centering, expand/collapse UX ([a5a5423](https://github.com/VirtoCommerce/vc-shell/commit/a5a54239ec9e3b3ebe897a25fb0657397d123fdb))
-
-### Documentation
-
-- **vc-menu:** update stories with sections, nesting, loading, badges ([4426976](https://github.com/VirtoCommerce/vc-shell/commit/44269767f013f769bb6f4ae4e8362075e93ba9f1))
-
-### Styles
-
-- **vc-menu-item:** update design tokens to match Figma mockup ([0c634cf](https://github.com/VirtoCommerce/vc-shell/commit/0c634cf5cef63201d264b36b7d880adfc07175a8))
-
-### Code Refactoring
-
-- **table:** extract orchestration logic into useDataTableOrchestrator ([86e946e](https://github.com/VirtoCommerce/vc-shell/commit/86e946e559749dc53d71e7fb7da52471ece0ec3c))
-- **navigation:** improve blade stack management and extension points ([6817743](https://github.com/VirtoCommerce/vc-shell/commit/6817743aa38efed0c9d98496c8adaa032a458548))
-- **ui:** standardize component prop/emit types and remove any usage ([a7a587a](https://github.com/VirtoCommerce/vc-shell/commit/a7a587a5848dbb9acbfce6d9235e4b0e196b4a18))
-- **core:** standardize composable return types with \*Return naming convention ([f84452b](https://github.com/VirtoCommerce/vc-shell/commit/f84452bc23d523bdc252d70f2e6d22a3b6fd1d07))
-- **loader-mf:** clarify route re-resolution happens after module installation ([6b7bbd3](https://github.com/VirtoCommerce/vc-shell/commit/6b7bbd3d732c6c8f017c016013dd8004cc7f6dcb))
-- **loader-mf:** consume SHARED_DEP_NAMES from shared-deps.ts, fix stale comment ([b2eb9f8](https://github.com/VirtoCommerce/vc-shell/commit/b2eb9f829204c636bb214962ea6f38cec79b2af2))
-- **vc-menu:** rework skeleton and migrate main-menu to VcMenu ([5066677](https://github.com/VirtoCommerce/vc-shell/commit/50666775cb8e2d7f8f2bfa1078aa602482e64c52))
-- enhance VcDataTable and related components for improved accessibility and styling ([4cc8ce2](https://github.com/VirtoCommerce/vc-shell/commit/4cc8ce2d0e721e0d574f68e8ca0d829533fc1d90))
-- replace native checkbox in TableCheckbox with VcCheckbox ([e0a0be2](https://github.com/VirtoCommerce/vc-shell/commit/e0a0be282d53b4a42fbde0f2e99f7a842714dc0a))
-- replace native buttons in table components with VcButton ([5ec395e](https://github.com/VirtoCommerce/vc-shell/commit/5ec395e163eb4d08240f513ee0fda93ce5e829e7))
-
-### Tests
-
-- add unit and accessibility tests across framework ([59086a9](https://github.com/VirtoCommerce/vc-shell/commit/59086a90690a13bfb186685bc423b73cfb406dc8))
-
-## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
-
-### Code Refactoring
-
-- improve code readability and component properties in VcDataTable ([08a822f](https://github.com/VirtoCommerce/vc-shell/commit/08a822f2525687ad4987e242f3a99774f946a826))
-- streamline component exports and remove async component definitions ([fb1d76c](https://github.com/VirtoCommerce/vc-shell/commit/fb1d76c9ac8a1974472e1c43ab3c09d41a0b5ee3))
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.2.4-beta.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.6...v1.2.4-beta.7) (2026-03-04)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
-
-### Features
-
-- **vc-data-table:** refactor table empty and not-found states with new `TableStateConfig` props, enhance `TableEmpty` component, and improve `formatDate` utility to handle invalid dates ([32283c5](https://github.com/VirtoCommerce/vc-shell/commit/32283c5c715d1742c8ffb395de5dd689a27f0437))
-- **storybook:** add auth page stories for Login, ForgotPassword, ResetPassword, ChangePassword, Invite ([1c1940f](https://github.com/VirtoCommerce/vc-shell/commit/1c1940f50b5a366549012cc4a81ed85797110b4a))
-- **vc-table:** add empty and not-found state storybook stories ([753f703](https://github.com/VirtoCommerce/vc-shell/commit/753f703a9d4b7bfd3b2b6e5adc256792df69d254))
-- **vc-table:** add ActiveItemHighlight storybook story ([6e36b12](https://github.com/VirtoCommerce/vc-shell/commit/6e36b1240d30ab53603a52ccbc1f1d9db38671f3))
-- **vc-table:** wire activeItemId into VcDataTable for row highlighting ([87f0b78](https://github.com/VirtoCommerce/vc-shell/commit/87f0b789ffbc64b008af491ac9d928e722dcafe3))
-- **vc-table:** add activeItemId prop and emit to BaseVcDataTable ([033cada](https://github.com/VirtoCommerce/vc-shell/commit/033cada35d31a48b55cbc57e29a116753b4a111b))
-- **vc-table:** add activeItemId to VcDataTableProps type ([aa18ec7](https://github.com/VirtoCommerce/vc-shell/commit/aa18ec7e112ee4709ef877e2084a7bd087294d5a))
-- **theme:** add global overlay, shadow, surface, and glass design tokens ([3509103](https://github.com/VirtoCommerce/vc-shell/commit/3509103ba47172ce8201c491934ebe79dddb5a26))
-
-### Bug Fixes
-
-- resolve TypeScript build errors in storybook helpers and VcDataTable slots ([24fc068](https://github.com/VirtoCommerce/vc-shell/commit/24fc0687bc92f3dfd7cebd2a1f67a6a90330e516))
-- **core data-fns:** improve `toDate` utility to validate Date objects ([302a5e9](https://github.com/VirtoCommerce/vc-shell/commit/302a5e924cc30d290f3cfb22b03ace93113f73fc))
-- **vc-select:** tone down no-options empty state text styling ([37a35e9](https://github.com/VirtoCommerce/vc-shell/commit/37a35e96d466c221fe5e0e8a50179f76ae98b204))
-- **vc-table:** separate active row highlight from checkbox selection ([55d26b4](https://github.com/VirtoCommerce/vc-shell/commit/55d26b455d7e01ca07d53a0350201d163050e0aa))
-- **vc-table:** consistent null-guarding in handleRowClick activeItemId toggle ([acb5479](https://github.com/VirtoCommerce/vc-shell/commit/acb5479b1d960f777da703c75006361ba43b09cb))
-
-### Code Refactoring
-
-- **user-info:** update avatar fallback and typography to match new design ([adac87c](https://github.com/VirtoCommerce/vc-shell/commit/adac87ca9d8dab841885a21d20c6a1fac5b5d662))
-- **vc-table:** delegate row highlighting from VcTableAdapter to VcDataTable activeItemId ([2e82f83](https://github.com/VirtoCommerce/vc-shell/commit/2e82f8337463a7ac16702928e83890f07a841eaa))
-- **vc-app-menu:** wire overlay to global --overlay-bg token ([478c3f7](https://github.com/VirtoCommerce/vc-shell/commit/478c3f7c46b22fe37c7e06551c4fb8dd03ab7016))
-- **vc-popup:** wire overlay and shadow to global design tokens ([175b14e](https://github.com/VirtoCommerce/vc-shell/commit/175b14ee53b99ba4a7a9d79517fd6d76cf4440a8))
-- **toolbar-mobile:** use global design tokens for overlay, shadow, glass ([8e54b09](https://github.com/VirtoCommerce/vc-shell/commit/8e54b098ef95b05fbf15fe786ac88f1493ccbd82))
-- **vc-sidebar:** use global design tokens for overlay, shadow, glass ([4522c3c](https://github.com/VirtoCommerce/vc-shell/commit/4522c3c23e4096546ae430ce7c62330ffab29fdd))
-
-## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-04)
-
-### Features
-
-- **modularity:** signal module load completion via injection keys ([9f9e0ae](https://github.com/VirtoCommerce/vc-shell/commit/9f9e0aec5174579e7ba75f19984fbdac8cb7e549))
-- **vc-table:** add column-aware skeleton rows for initial loading state ([297606d](https://github.com/VirtoCommerce/vc-shell/commit/297606d2027aa0e6c829ad4ba0c378df0ec946ed))
-- **vc-blade:** replace spinner overlay with skeleton loading placeholders ([5eda1fe](https://github.com/VirtoCommerce/vc-shell/commit/5eda1fe1506ca2aebc3736c63f42015d11e53960))
-- **vc-skeleton:** add circle and block shape variants with configurable dimensions ([64eaa92](https://github.com/VirtoCommerce/vc-shell/commit/64eaa92c5a853f79f7f8602c2723c53b5e9f1a28))
-- **auth:** parallelize getCurrentUser and getAccessToken in loadUser() ([325cced](https://github.com/VirtoCommerce/vc-shell/commit/325cced26e33e15861c3203d7a9b99183c0fa057))
-- **perf:** defer AppInsights SDK and SignalR connection to post-paint in framework install ([c4ebb45](https://github.com/VirtoCommerce/vc-shell/commit/c4ebb45d0f15a0e7eab3addae8e32f16f9e1c81b))
-- **signalr:** add mountComplete guard to SignalR plugin and export notifyMountComplete ([a89b62b](https://github.com/VirtoCommerce/vc-shell/commit/a89b62b82c10630cade2558587c8690a46171e78))
-- **vc-app:** add sidebar menu batch reveal to VcAppMenu.vue ([5f37762](https://github.com/VirtoCommerce/vc-shell/commit/5f3776225fea463a13652a15c3e564760049b3aa))
-- **vc-app:** add workspace loading gate and error state to vc-app.vue ([842c0c5](https://github.com/VirtoCommerce/vc-shell/commit/842c0c5b14150aa930e8bc9127e2eaf9ac740a37))
-- **modularity:** add ModulesReadyKey and ModulesLoadErrorKey injection keys ([bafd2b0](https://github.com/VirtoCommerce/vc-shell/commit/bafd2b0fa9385ec07b89b6f1e75b7babfb6fffa6))
-- **perf:** add performance marks to modularity loader ([59eadf7](https://github.com/VirtoCommerce/vc-shell/commit/59eadf7294be177d29324519e8108439aba59ba7))
-- **perf:** install web-vitals and create useWebVitals composable ([b0ba458](https://github.com/VirtoCommerce/vc-shell/commit/b0ba458e9e9a08685d306e1bc307c459a5716d5e))
-- **vc-app:** add tabbed Menu/Hub switcher with swipe gestures in mobile sidebar ([126897a](https://github.com/VirtoCommerce/vc-shell/commit/126897ae90100a4ae93df24fcf684f587498d2b6))
-- **vc-loading:** replace dots loader with bar sweep and add instant preloader ([019e8d6](https://github.com/VirtoCommerce/vc-shell/commit/019e8d6fb5736f766bdba2841c3b5cf7f00b3b77))
-- **global-filters:** use VcSidebar bottom sheet on mobile ([6e4a090](https://github.com/VirtoCommerce/vc-shell/commit/6e4a0903c7b41d95fc4044eb326f3483e110a240))
-- **vc-toast:** enhance toast component with stacking and two-phase dismissal animations ([cc2b4fb](https://github.com/VirtoCommerce/vc-shell/commit/cc2b4fb89b151a378c3e58f3c46adc5d208b767d))
-- **login:** introduce SSO-only login page mode with conditional form rendering and enhanced sign-in error message parsing from API responses ([6fec3fb](https://github.com/VirtoCommerce/vc-shell/commit/6fec3fb025c710e7022ed1c8637ea1a59fb9831d))
-- **menu-service:** add removeRegisteredMenuItem for bus-level item removal ([cb587b8](https://github.com/VirtoCommerce/vc-shell/commit/cb587b849c31e1cd6b6d99c82ff8e22261d6074a))
-- add date utility module (locale resolver, format converter, wrappers) ([ee17b24](https://github.com/VirtoCommerce/vc-shell/commit/ee17b248f2dca17b9936b719ce2dc9a916c722de))
-- **vc-gallery:** redesign preview modal with light theme and polished UI ([8de2fdc](https://github.com/VirtoCommerce/vc-shell/commit/8de2fdc64b49dab99e691b5b419d5b3510c47b21))
-- **vc-banner:** refactor VcBanner component with enhanced styling and add Storybook documentation ([b36d383](https://github.com/VirtoCommerce/vc-shell/commit/b36d38335783a7664d703231330ebcd475955ea9))
-- **vc-image-upload:** add single-image upload component New VcImageUpload for avatar/logo use-cases, extracted from gallery's variant="file-upload" mode. Supports preview, remove, validation rules. Legacy gallery shim renders VcImageUpload when variant="file-upload". ([0fb3e12](https://github.com/VirtoCommerce/vc-shell/commit/0fb3e12c1ec4936bf7dcf003311aec52c6425c0d))
-- **vc-gallery:** redesign with CSS Grid, slide-up tray and dark preview Rewrite gallery layout using CSS Grid with responsive auto-fill/minmax and semantic size presets (sm/md/lg). Redesign tile hover with slide-up frosted-glass action tray, add skeleton shimmer loading states, dark preview lightbox with crossfade transitions. Old props deprecated with runtime warnings. Remove gallery-specific variant from VcFileUpload. ([c62d727](https://github.com/VirtoCommerce/vc-shell/commit/c62d727a534528d11ffa6e2762dba371b759b2ec))
-- **vc-gallery:** extract composables with unit tests Extract reorder, upload, preview, and image-loading logic from monolithic vc-gallery.vue into dedicated composables for better testability and reuse. ([dc52944](https://github.com/VirtoCommerce/vc-shell/commit/dc52944ec9e5a2972571422d5cafeb84abab638b))
-- **ui:** UX polish and export normalization - VcCheckbox: add check-out exit animation via <Transition> wrapper (scale-down + fade with asymmetric 60% faster exit timing) - Blade slot: add slide-in transition (opacity + translateX) with appear for new blade opening - VcPaginator, VcInputDropdown: remove duplicate default exports, keep only named exports for consistency ([931e1a1](https://github.com/VirtoCommerce/vc-shell/commit/931e1a1b423d0b4470600369afa8dab1980889dd))
-- **core:** add offline guard and 30s timeout to fetch interceptor API requests (/api/\*) now fail fast with a friendly error when the browser is offline and abort after 30s timeout. Non-API requests bypass these guards entirely. External AbortSignal composition is preserved so component-level cancellation still works. ([12c7519](https://github.com/VirtoCommerce/vc-shell/commit/12c75193b96ae5b3abf9564fe5066196685ec830))
-- **core:** add useConnectionStatus composable for network awareness Singleton composable backed by VueUse useNetwork(). On offline transition: shows persistent warning notification, adds html.vc-offline CSS class. On online transition: removes notification and CSS class. Initialized in framework install() via app.runWithContext(). ([77246b1](https://github.com/VirtoCommerce/vc-shell/commit/77246b1c1509e611cda1dda9589d5e14a1431e62))
-- **core:** add global error handlers for unhandled errors and rejections Adds setupGlobalErrorHandlers plugin that chains into app.config.errorHandler and registers window-level listeners for unhandledrejection and error events. Includes time-based deduplication (3s window) and idempotency guard to prevent duplicate listeners on repeated framework installs. Wired into framework install() after setupApplicationInsights. ([3c27dcf](https://github.com/VirtoCommerce/vc-shell/commit/3c27dcf778a4910507c74646086390bc9673d931))
-- **shared:** wire ErrorInterceptor to blade.error and cancel deferred toasts ErrorInterceptor now injects BladeDescriptorKey + BladeStackKey to propagate caught errors to blade.error for red banner display. When catching an error, it also cancels any pending useAsync deferred toast via cancelPendingErrorNotification, preventing duplicate banner+toast for load errors. Degrades gracefully outside blade context. ([d7f02f6](https://github.com/VirtoCommerce/vc-shell/commit/d7f02f61fdc980dd32afc2b1ad9a228900dee78c))
-- **core:** add error ref and deferred notification to useAsync useAsync now returns an `error` ref (DisplayableError | null) that is set on failure and cleared on next invocation. Notifications are enabled by default but deferred via setTimeout(0) so ErrorInterceptor can cancel them when it catches the same error for blade banner display. This prevents duplicate toast+banner for load errors while still showing toasts for save/delete errors caught by module try/catch. ([82e0167](https://github.com/VirtoCommerce/vc-shell/commit/82e01675223339982ea9292588e92fc594410a1d))
-- **core:** export parseError/DisplayableError and add pending notification utility Exports parseError and DisplayableError from the utilities barrel so they can be consumed by useAsync. Adds a shared WeakMap-based utility (pendingErrorNotifications) that decouples useAsync deferred toasts from ErrorInterceptor's cancellation logic. ([f710aab](https://github.com/VirtoCommerce/vc-shell/commit/f710aab3a4b0489c3e3b294f26d7e2e76881e0f7))
-- **shell:** unify notification bell with AppHub pattern - Bell icon transitions to X when notifications panel is open (same rotation animation as burger menu) - Remove title/header from notification VcDropdownPanel (consistent with AppHub's headerless popover) - Remove unread red dot from burger button (notifications indicator now belongs to bell only) ([6ac1547](https://github.com/VirtoCommerce/vc-shell/commit/6ac1547824b0132043e025d01a94c13d921250e1))
-- **shell:** remove notifications widget from AppHub Notifications are now accessed via the standalone bell icon in the sidebar header. Remove widget registration, auto-open on unread logic, and clean up unused imports. ([5b9811f](https://github.com/VirtoCommerce/vc-shell/commit/5b9811f942125c7085ad958128cd14917760a8fd))
-- **shell:** wire notification bell popover in DesktopLayout Add VcDropdownPanel with NotificationDropdown anchored to the bell button. Implements mutual exclusion: opening bell closes AppHub and vice versa. Closes on route change. ([c0fccca](https://github.com/VirtoCommerce/vc-shell/commit/c0fcccae35d69bf0b722616eba3fba9cf4a17ef0))
-- **shell:** add notification bell button to SidebarHeader Add a bell icon button between logo and burger menu in the sidebar header. Visible when sidebar is expanded, shows unread indicator dot. ([02fbe5e](https://github.com/VirtoCommerce/vc-shell/commit/02fbe5e566f629bb011ebddfcf4b6eeb2730ce16))
-
-### Bug Fixes
-
-- **vc-table:** relax generic constraint from Record<string, unknown> to Record<string, any> ([615733b](https://github.com/VirtoCommerce/vc-shell/commit/615733b77df77b0f6be55d7677089909b0c5e208))
-- **teleport:** remove defer attribute that prevented rendering inside skeleton-guarded blades ([5be89d3](https://github.com/VirtoCommerce/vc-shell/commit/5be89d34165862939fcb44d5d7b7f3fed1cb77f1))
-- **filters:** call onFilterChange after every useFilterState mutation ([208a9a0](https://github.com/VirtoCommerce/vc-shell/commit/208a9a0d8af6b11b89441528b6f7bc0ebc46c012))
-- **vc-app:** move notification badge from logo to mobile bell button ([3e95e55](https://github.com/VirtoCommerce/vc-shell/commit/3e95e55b077c0c00a181cd0c5e182f9eb358ecd2))
-- **vc-app:** show notification bell on mobile and use VcSidebar bottom sheet ([aab267e](https://github.com/VirtoCommerce/vc-shell/commit/aab267e5304c4288189205d90e29ed44628fd395))
-- **vc-app:** correct BEM selector for mobile flex-col on main-content ([791bc59](https://github.com/VirtoCommerce/vc-shell/commit/791bc59fde97a190628addc67b88a28668780f2e))
-- **vc-dropdown-panel:** prevent panel close when clicking inside child VcSelect dropdown ([d82513a](https://github.com/VirtoCommerce/vc-shell/commit/d82513a873aaa3af1424d934091d231e5e1b38b2))
-- **vc-blade:** fix mobile back button visibility and breadcrumbs overflow in header ([04f79f3](https://github.com/VirtoCommerce/vc-shell/commit/04f79f3e21b9d808a41a427acfef6c6c9d47b89d))
-- **vc-widget:** suppress duplicate hover state when widgets render inside dropdown ([9557328](https://github.com/VirtoCommerce/vc-shell/commit/9557328a3b71218f8ca3a4bc9831152f55d887fa))
-- prevent false modification detections by treating empty values as equivalent and avoid emitting editor updates when content is set programmatically ([8af41de](https://github.com/VirtoCommerce/vc-shell/commit/8af41de42e08c7265fd6ddfb20de743cb75f4fe5))
-- **dynamic-properties:** handle missing localizedValues in multilanguage dictionary select ([b1a0445](https://github.com/VirtoCommerce/vc-shell/commit/b1a0445e55b9672d98b1c4edb2d0a7b57465dda4))
-- **vc-table:** use correct injection key for row actions hover visibility ([b750c3f](https://github.com/VirtoCommerce/vc-shell/commit/b750c3fc06ff36b9379d3e5eb6ddd6ff9019c978))
-- **ui:** collapse scroll arrow space when arrows are hidden ([b266287](https://github.com/VirtoCommerce/vc-shell/commit/b2662876698f64941b0b5ceb1ca02e48e5eb7fd2))
-- **login:** remove .prevent modifier on VcForm custom submit event ([bb7aef8](https://github.com/VirtoCommerce/vc-shell/commit/bb7aef8494787fa3a32ec8b1813c9eda841de933))
-- **blade-navigation:** remove slide transition that caused visual glitch on blade switch ([06be549](https://github.com/VirtoCommerce/vc-shell/commit/06be549f2a4e488fc415d80c8284912317a21f36))
-- **build:** suppress empty chunk, mixed import, and date-fns locale warnings ([d973302](https://github.com/VirtoCommerce/vc-shell/commit/d97330264de9f0f03474d919fcee971c6864989c))
-- **vc-gallery:** fix review findings across gallery components ([5bf9fb5](https://github.com/VirtoCommerce/vc-shell/commit/5bf9fb518f10b93b29c9922b69e951dba7a50812))
-- **vc-gallery:** restrict drag to handle and improve upload UX ([5c6bf75](https://github.com/VirtoCommerce/vc-shell/commit/5c6bf752480be95d97bd8cc7f3137a2dd3ae870e))
-- **vc-table:** align row-action emit typing for mobile actions ([bc42336](https://github.com/VirtoCommerce/vc-shell/commit/bc42336cc6df48181ae21e1d1e7dc7ca15d64bb1))
-- **vc-gallery:** fix cross-row drag reorder in CSS Grid layout ([2407d2d](https://github.com/VirtoCommerce/vc-shell/commit/2407d2db0ac02bf4d1042d7e3a487336c68b6677))
-- **vc-gallery:** fix stories interactivity and upload tile layout ([30f0a02](https://github.com/VirtoCommerce/vc-shell/commit/30f0a021d8b504e48790b7bf888ddf9bb4545f6f))
-- **vc-table:** optimize global listeners and filter state callback ([94b73a0](https://github.com/VirtoCommerce/vc-shell/commit/94b73a0f7521c983863219ab47d9a6713d67ae70))
-- **ui:** CSS consistency and tree-shaking improvements - VcDropdown: replace hardcoded focus ring with CSS custom properties - Table components: remove wrong Tailwind blue hex fallbacks (~31 instances across DataTableHeader, ColumnFilter, TableSelectAllBar, TableGroupRow, GlobalFiltersButton, TableRowActions, TableColumnSwitcher, TableHead, TableRow, TableActions) - VcLink, VcEditor: replace rgba(59,130,246,0.3) with color-mix(var(--primary-500)) - Replace wholesale lodash-es imports with selective imports in vc-dynamic-property, DataTableCellRenderer, MobileCellRenderer ([a459728](https://github.com/VirtoCommerce/vc-shell/commit/a459728462063138fe7227c1080adeb94a9bac95))
-- **ui:** accessibility fixes - Add 44px touch target via ::after pseudo-element on VcButton (WCAG 2.5.8) - Replace <div> with semantic <button>/<span> in VcBreadcrumbsItem - Wrap VcSelect chip remove icon in accessible <button> with aria-label - Add aria-pressed for VcButton selected state with tests - Consolidate VcInput password toggle into single button ([97fb917](https://github.com/VirtoCommerce/vc-shell/commit/97fb917d8c8f6003e1074379d35d9e2397d237e6))
-- **shared:** prevent duplicate toast+banner on blade load errors Two root causes fixed: 1. WeakMap reference mismatch: useAsync stores original Error in WeakMap but useErrorHandler wraps it via parseError() → DisplayableError. cancelPendingErrorNotification now falls back to originalError lookup. 2. Error propagation: ErrorInterceptor inside a blade context now stops error propagation (capture=true), preventing the global error handler from showing a duplicate toast for errors already shown as blade banner. ([89a021c](https://github.com/VirtoCommerce/vc-shell/commit/89a021c63944c3ac4e9ecc2c0ce8d90ffde8339f))
-- **core:** resolve circular dependencies via lazy notification imports useAsync and pendingErrorNotifications had top-level imports of @shared/components/notifications/core/notification which transitively pulled in @ui/components → @core/composables, creating circular deps. Replace with dynamic imports that resolve lazily at call time. Remove barrel re-exports of pendingErrorNotifications and useConnectionStatus that also triggered circular chains. Update useAsync tests to use vi.runAllTimersAsync() for microtask flush after dynamic import. ([16a99ec](https://github.com/VirtoCommerce/vc-shell/commit/16a99ec8554ffd989e99b2e3c71b2d22ef56d7de))
-- **table:** disable FLIP animation on cells during container resize TransitionGroup with name="vc-table-col-swap" in TableRow applied FLIP move animations on every re-render where cell positions changed, not just during column reorder. When blades narrow, flex cells shift and any coinciding Vue re-render triggered a 250ms sliding animation, causing visible horizontal "jumping" of rows. Conditionally enable the TransitionGroup name only during actual column drag-and-drop reorder via provided IsColumnReorderingKey. ([40eee44](https://github.com/VirtoCommerce/vc-shell/commit/40eee44eabd287256dffa414b10169665597b38c))
-- **shell:** normalize icon paths in AppHub Add normalizeIconUrl — if iconUrl does not start with / or http, a leading slash is prepended so the path resolves from the domain root. Fixes display of application icons with relative paths (e.g. Modules/…). ([c3e2b40](https://github.com/VirtoCommerce/vc-shell/commit/c3e2b400c5d97fc4bbc7e8b7d3482cb582d82a2f))
-- **shell:** group bell and burger icons in sidebar header toolbar Wrap notification bell, actions slot, and burger button in a shared toolbar container with gap-3 spacing. Prevents justify-between from spreading icons across the full header width. ([33d350a](https://github.com/VirtoCommerce/vc-shell/commit/33d350a141e928add771650125d74755f81feca9))
-- **shell:** update tests and cleanup for notification bell feature - Remove widget registration test (widget no longer registered) - Fix mobile button test to use correct ID "notifications" - Clean up unused mockRegisterWidget and AppBarWidgetServiceKey - Remove unused MenuBurgerIcon import from SidebarHeader - Add aria-label to notification bell button ([ab75831](https://github.com/VirtoCommerce/vc-shell/commit/ab758316b982c5ac137285cb6a1c1cb1f4437517))
-- **ui:** improve accessibility, type safety, and code quality across UI kit - Add aria-required to useFormField and all 9 form components (WCAG 1.3.1) - Add aria-label to VcPopup close button, use currentColor for SVG fill - Add html-for to VcLabel in VcInput, VcTextarea, VcColorInput, VcCheckbox, VcSwitch - Standardize error display guards to `invalid && errorMessage` in VcDatePicker, VcColorInput, VcCheckbox, VcRadioButton (fixes VcDatePicker never showing errors) - Replace div-based clear/toggle buttons with semantic <button> in VcInput - Add defineSlots to VcSwitch and VcRadioButton for slot type inference - Remove dead "no-option" slot from VcSelect defineSlots - Add focus return to trigger on Escape in VcSelect and VcMultivalue (WCAG 2.4.3) - Deprecate VcSwitch tooltip prop with dev-only console.warn - Add missing :error="true" on VcHint in SelectTrigger and VcMultivalue - Extend IFormFieldProps in VcInputCurrency (removes 7 duplicate prop declarations) - Fix useKeyboardNavigation double-registration when initKeyboardNavigation is called after onMounted auto-attach - Break circular imports in vc-blade by using direct component import paths instead of @ui/components barrel - Delete unused useDataTableOrchestrator.ts (516 lines dead code) ([f212649](https://github.com/VirtoCommerce/vc-shell/commit/f212649f80f6abe5d37a065bbf0663a948029361))
-
-### Performance Improvements
-
-- **dashboard:** lazy-load chart components and GridstackDashboard ([4f628dc](https://github.com/VirtoCommerce/vc-shell/commit/4f628dc1d172c6a888330bb70e373b835bd35153))
-
-### Documentation
-
-- complete project research for startup performance optimization ([8f73cb0](https://github.com/VirtoCommerce/vc-shell/commit/8f73cb08a0dd591339ff32611e052d50c95bb906))
-
-### Styles
-
-- **menu-service:** type-only Component import, remove redundant title assignment ([ca29bb2](https://github.com/VirtoCommerce/vc-shell/commit/ca29bb29e504219c82e7931038f9b0cdbe8cf656))
-- add visual desaturation hint when browser is offline Applies 30% grayscale filter to .vc-app when html.vc-offline class is present. The class is toggled by useConnectionStatus composable. ([7153339](https://github.com/VirtoCommerce/vc-shell/commit/71533398596a22d7d959f32c1df67942558eb617))
-
-### Code Refactoring
-
-- **blade-navigation:** simplify blade-slot rendering and URL restoration ([74a490e](https://github.com/VirtoCommerce/vc-shell/commit/74a490e50ddc053e02dd74c872aad1026d516c39))
-- replace barrel imports in dynamic module ([c31e9a1](https://github.com/VirtoCommerce/vc-shell/commit/c31e9a192d8ce7001ec3e4c65ba881a1e90b6575))
-- replace @shared and @core/services barrels with direct paths ([2d46d59](https://github.com/VirtoCommerce/vc-shell/commit/2d46d593283a74bb5b4ff569eb43b2851df7ae1a))
-- replace @ui/components barrel with direct component paths ([9dda97c](https://github.com/VirtoCommerce/vc-shell/commit/9dda97ce5a09129ad13b27109949fe4c25f54e22))
-- replace @core/composables barrel with direct paths ([e9c896e](https://github.com/VirtoCommerce/vc-shell/commit/e9c896efb4a85517a3e587b3fd1bc3954b1a41fa))
-- convert @core/types imports to import type across framework ([d8f29d4](https://github.com/VirtoCommerce/vc-shell/commit/d8f29d4de6b10235e329a1d3b32b006300125bcd))
-- replace barrel imports with direct paths in core ([2f417c6](https://github.com/VirtoCommerce/vc-shell/commit/2f417c6fe015935c31a574828c23549eb820bbc9))
-- convert remaining core←shared imports to import type ([94a168d](https://github.com/VirtoCommerce/vc-shell/commit/94a168daa4de2672ad2522dd0d5b765e404a7e6d))
-- break ui/types → ui/components cycle with import type ([33b186d](https://github.com/VirtoCommerce/vc-shell/commit/33b186d307cafec3b8e27b5d2e4f06d4764d241f))
-- break core/types ↔ blade-navigation/types cycle with import type ([7b85761](https://github.com/VirtoCommerce/vc-shell/commit/7b857611365c770f28bd06581388564f77dd3009))
-- **multilanguage-selector:** align visual style with UI kit conventions ([d427969](https://github.com/VirtoCommerce/vc-shell/commit/d427969b5cbf787b14cdf1cf7ec8af6d9e1840ed))
-- **notifications:** remove pending queue and add clear-all button ([d55ad47](https://github.com/VirtoCommerce/vc-shell/commit/d55ad470a8a849107b86bb5b079ab684d8315f30))
-- **menu-service:** pure buildMenuTree, immutable groups, remove VueUse ([384143f](https://github.com/VirtoCommerce/vc-shell/commit/384143f71e34210c4cd3e15512a28e59b87c906b))
-- **menu-service:** single-source identity, remove auto-id generation ([7037b05](https://github.com/VirtoCommerce/vc-shell/commit/7037b05c90dbaf7e90ed5c630ed1f3fddba86f80))
-- migrate from moment.js to date-fns ([1777fea](https://github.com/VirtoCommerce/vc-shell/commit/1777fea2b5cf1ab9671eeeed7c5a7a4f65c386d9))
-- remove moment plugin and window.moment global ([d899beb](https://github.com/VirtoCommerce/vc-shell/commit/d899beb2cfe675f84bad8e64550f3f0ee800aabf))
-- replace moment with date-fns in framework components ([090aa2f](https://github.com/VirtoCommerce/vc-shell/commit/090aa2fa77b8cce98f4a14b14bc7dcb1243e22c1))
-- adjust unread accent positioning by introducing a logo-specific modifier class ([4cee7f1](https://github.com/VirtoCommerce/vc-shell/commit/4cee7f169a28aaaf14bfcb71f173ea06a1c11949))
-- **vc-image-upload:** redesign preview as gallery-style tile ([a59b93e](https://github.com/VirtoCommerce/vc-shell/commit/a59b93e611fc7b767921d7cb397c90fd435c1b39))
-- **vc-popup:** add close reasons, configurable dismiss, and variant support ([a77e349](https://github.com/VirtoCommerce/vc-shell/commit/a77e349ecf2a6a5524b61eea2403cedfef2fa3f7))
-- **vc-gallery:** replace line indicator with live-swap FLIP reorder ([34314ce](https://github.com/VirtoCommerce/vc-shell/commit/34314ceec9e48cebe100290b82c53eefb8b632ca))
-- **ui:** extract useCollapsible composable from VcAccordionItem ([fcc1be4](https://github.com/VirtoCommerce/vc-shell/commit/fcc1be43afeda42f60e96068bf4b9ece960f6148))
-- **ui:** redesign BladeStatusBanners with inline expand details ([27cb2cf](https://github.com/VirtoCommerce/vc-shell/commit/27cb2cfc25c5bbde553800337bd3e06a506dd28d))
-- **ui:** remove VcPaginator component exports and source ([caf2cd9](https://github.com/VirtoCommerce/vc-shell/commit/caf2cd962ff3727b52adb0db8d3d3d9f5e0a0293))
-- **ui:** BEM modifier migration from _ to -- Standardize BEM modifier separator across all components: - vc-button, vc-button-group: \_loading/\_text/\_selected etc → --loading/--text/--selected - vc-icon, use-icon: \_size/\_color modifiers → --size/--color - vc-label, vc-container, vc-card, vc-status: all _ modifiers → -- - vc-pagination: **item_current/disabled → **item--current/--disabled - vc-gallery-item: \_readonly/\_hover → --readonly/--hover - vc-app_mobile → vc-app--mobile across 12 files (app, row, blade, toast, date-picker, multivalue, dynamic-blade-form, user-dropdown) ([a3fcdb8](https://github.com/VirtoCommerce/vc-shell/commit/a3fcdb85a5c18bbf46bc7619338ff4fd6a368228))
-- **ui:** critical type safety and architecture fixes - Type all 43 VcDataTable emit events with Vue 3.3 tuple syntax - Migrate vc-editor-button from runtime to TypeScript defineProps - Replace string injection key "$filterContext" with typed FilterContextKey Symbol - Fix stray v-if → v-else-if in VcDynamicProperty Color+dictionary branch ([628851b](https://github.com/VirtoCommerce/vc-shell/commit/628851b8807a1b05d40a8097c3c7cd881861022b))
-- **ui:** extract shared slide-up transition CSS to global styles Move duplicated .slide-up-\* transition classes from 12 component <style> blocks into framework/assets/styles/index.scss. ([df62fa4](https://github.com/VirtoCommerce/vc-shell/commit/df62fa44b5697b8cf468cc10f74425a58abbd0ff))
-- **ui:** standardize BEM modifier separator from \_ to -- Migrate 7 form components to canonical BEM double-dash modifier convention: VcInput, VcSelect, VcTextarea, VcDatePicker, VcColorInput, VcMultivalue, VcRadioButton - Template class bindings: vc-component_modifier → vc-component--modifier - SCSS selectors: &\_modifier → &--modifier - Eliminates visual ambiguity between \_modifier and \_\_element ([1030e3f](https://github.com/VirtoCommerce/vc-shell/commit/1030e3f4c3557c3d8bf04caa5aa969171b71dc7c))
-- **ui:** migrate VcFileUpload to useFormField and IFormFieldProps - Extend Props with IFormFieldProps (adds label, tooltip, disabled, required, error, errorMessage) - Use useFormField for ARIA IDs, InputGroup integration, resolved disabled/name - Dual error source: external errorMessage prop takes priority over vee-validate - Add disabled state with CSS modifier and JS guards - Replace barrel imports with direct paths - Remove getCurrentInstance dependency - Add Disabled and WithErrorMessage stories ([17eed7c](https://github.com/VirtoCommerce/vc-shell/commit/17eed7c0c754069d603d897586e9ca64559f49d5))
-
-### Tests
-
-- **auth:** add failing tests for parallelized loadUser() ([0e9b7c6](https://github.com/VirtoCommerce/vc-shell/commit/0e9b7c6b144660597aa17366a1155243908461c5))
-- **menu-service:** add VcAppMenu smoke test for items without explicit id ([e9492ae](https://github.com/VirtoCommerce/vc-shell/commit/e9492ae598117965737354a4d05d28d6a43f20ac))
-- **menu-service:** add comprehensive identity and deduplication tests ([3b9a738](https://github.com/VirtoCommerce/vc-shell/commit/3b9a738573ad132f1674f254911d66c3add8b8dc))
-- **a11y:** add Storybook addon-a11y and axe-core vitest integration - Install @storybook/addon-a11y for interactive accessibility panel in Storybook UI - Add axe-core based toHaveNoViolations custom vitest matcher - Wire addon-a11y/preview annotations into Storybook vitest setup - Add a11y tests for VcButton, VcInput, VcTextarea, VcCheckbox (15 tests) ([57313dc](https://github.com/VirtoCommerce/vc-shell/commit/57313dc5d0803cae5f7bc28fd0fed8af198d3437))
-- **ui:** add ARIA propagation tests for VcInput, VcCheckbox, VcButton, VcSelect - 45 new tests covering aria-required, aria-invalid, aria-describedby, aria-labelledby, label association, disabled state, error display - Fix VcInput missing :error="true" on error VcHint (role="alert") - Add coverage thresholds to vitest.config.ts (30% lines, 25% functions, 50% branches) ([188f88f](https://github.com/VirtoCommerce/vc-shell/commit/188f88f918b75214bdae82ae92077bf31d2967c6))
-
-## [1.2.4-beta.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.3...v1.2.4-beta.4) (2026-02-24)
-
-### Features
-
-- **storybook:** enrich VcApp stories with mock data and widgets ([9e3e0db](https://github.com/VirtoCommerce/vc-shell/commit/9e3e0db835f7e84c1a7ca649454cde5cad28cdd2))
-- **dynamic-modules:** add hash-based cache busting for module assets ([eb47537](https://github.com/VirtoCommerce/vc-shell/commit/eb475375fad72f4c00016e0e8d9298cdbc44a321))
-- **dashboard-charts:** add chart components with Unovis integration ([559917c](https://github.com/VirtoCommerce/vc-shell/commit/559917c1e65e48713555bd8d62c022f10a534af5))
-
-### Bug Fixes
-
-- **app-hub:** improve panel sizing and widget scroll behavior ([72fc8df](https://github.com/VirtoCommerce/vc-shell/commit/72fc8dfc838141eab0734c4dbbc29098ad530707))
-
-### Code Refactoring
-
-- **ui:** standardize focus and error ring styles across form controls ([73932a1](https://github.com/VirtoCommerce/vc-shell/commit/73932a1d2ea36a143e2a7606144b7787e5557363))
-- **login:** redesign form layout and update copy ([0206517](https://github.com/VirtoCommerce/vc-shell/commit/02065178c3998081ad88369288a38858c4c79dae))
-
-## [1.2.4-beta.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.2...v1.2.4-beta.3) (2026-02-20)
-
-### Features
-
-- **app-hub:** add App Hub with search, app switcher, and widgets panel ([8a92ecc](https://github.com/VirtoCommerce/vc-shell/commit/8a92ecc10336dde2cef16a99ffa8f9b04c4554ba))
-- **dashboard:** redesign widget cards and add new sub-components ([46aecea](https://github.com/VirtoCommerce/vc-shell/commit/46aecea106f6b6b3793fe90bca7d542098206574))
-
-### Documentation
-
-- add architecture docs and shell-features-v2 RFC ([26a568d](https://github.com/VirtoCommerce/vc-shell/commit/26a568d9510248754cf909ef081f947dcb7d1d9e))
-
-### Code Refactoring
-
-- **widgets:** update blade widget service and add WidgetDropdownItem ([06aa737](https://github.com/VirtoCommerce/vc-shell/commit/06aa7373fb53b515dbac06f2fc30b1b19bd24eac))
-- configure path aliases and migrate imports ([bfffc3c](https://github.com/VirtoCommerce/vc-shell/commit/bfffc3cbe8029cf875e49941061b582825cad9a6))
-
-## [1.2.4-beta.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.1...v1.2.4-beta.2) (2026-02-16)
-
-### Bug Fixes
-
-- **modularity:** update notification import path ([f2ac212](https://github.com/VirtoCommerce/vc-shell/commit/f2ac212317517c10f0dba7cd97f893741dedf14e))
-
-## [1.2.4-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.0...v1.2.4-beta.1) (2026-02-16)
-
-### Code Refactoring
-
-- clean up code and remove redundant lines in useBladeRegistry, vc-button, and vc-link components ([8167a0a](https://github.com/VirtoCommerce/vc-shell/commit/8167a0ac571f392885c744f3e248a4258a99a7c3))
-
-## [1.2.4-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3-beta.1...v1.2.4-beta.0) (2026-02-16)
-
-### Features
-
-- **locales:** add table, toolbar and multivalue translations ([e43be52](https://github.com/VirtoCommerce/vc-shell/commit/e43be52a95545b7f079d9e8dabde53c2e78cd636))
-- **shared:** update auth components and menu state management ([e9bf476](https://github.com/VirtoCommerce/vc-shell/commit/e9bf4768ace2a2615d2ce72b1a4c17e38f0a34ed))
-- **core:** add module dependency ordering and update framework exports ([81ed54e](https://github.com/VirtoCommerce/vc-shell/commit/81ed54ed571a7f849b51535ea2589404fda72a7d))
-- **ui:** add VcDropdownPanel, VcPaginator and shared composables ([ce67f25](https://github.com/VirtoCommerce/vc-shell/commit/ce67f2560afc43810d277081757de8e2b8eff48d))
-- **vc-auth-layout:** add VcAuthLayout component for authentication layout ([c9a05a3](https://github.com/VirtoCommerce/vc-shell/commit/c9a05a3481641b3f619097ba6ef91da5529456cc))
-- **vc-select:** enhance VcSelect component with new dropdown structure and options handling ([9a9efe5](https://github.com/VirtoCommerce/vc-shell/commit/9a9efe58be6b70861e17bffbd869cd590fa20008))
-- **vc-blade:** introduce new Blade components and refactor existing structure ([3bdbbe2](https://github.com/VirtoCommerce/vc-shell/commit/3bdbbe2fcbfc2fbf9f0cff1d0cf851974ba6f1ae))
-- **vc-app:** enhance VcApp component with new layout options and mobile actions ([394105c](https://github.com/VirtoCommerce/vc-shell/commit/394105c9c1aed7ffa101afafcb02268b9bcbc6a7))
-- **pages:** add ForgotPasswordPage and update ChangePasswordPage ([cfd1874](https://github.com/VirtoCommerce/vc-shell/commit/cfd18749fec952ebaf4ce6df611c4e5ddd9caed5))
-- **composables:** enhance toolbar and app bar services with improved injection and cleanup ([b992f6b](https://github.com/VirtoCommerce/vc-shell/commit/b992f6bed2dad0178f465dbd70c6b09995c1c54c))
-- **extension-points:** implement new extension point system with defineExtensionPoint and ExtensionPoint component ([34b139c](https://github.com/VirtoCommerce/vc-shell/commit/34b139ccc7e8fee2d6f4ea3d72cbc8586f877489))
-- **ui-components:** replace GenericDropdown with VcDropdown across multiple components ([0fb5edc](https://github.com/VirtoCommerce/vc-shell/commit/0fb5edcb26a25c80ba88b0f62eb97f2612d8224e))
-- **ui-components:** replace GenericDropdown with VcDropdown and introduce VcSidebar component ([c182200](https://github.com/VirtoCommerce/vc-shell/commit/c182200c32e343db83d7b14b17dae21fbd428ca9))
-- **ui-components:** add VcColorInput and VcDatePicker components with storybook examples ([f35b9f1](https://github.com/VirtoCommerce/vc-shell/commit/f35b9f1dd132bca2c2df0535bd9c7e1a54cb4aa5))
-- **ui-components:** enhance accessibility and styling for form elements ([a7b1d2c](https://github.com/VirtoCommerce/vc-shell/commit/a7b1d2c8927bee0adf56f758460ba9b1aa8a65f2))
-- **draggable-dashboard:** implement GridstackDashboard component and refactor existing dashboard structure ([cd61462](https://github.com/VirtoCommerce/vc-shell/commit/cd614627ae23a9c43a2d51c57815932db0ffd2a3))
-- **blade-navigation:** introduce new architecture and migration to useBladeContext API ([9181724](https://github.com/VirtoCommerce/vc-shell/commit/91817249a198a1b076b18f1d6a9f228886bed035))
-- **vc-button:** introduce VcButtonGroup component and enhance button functionality ([4c42348](https://github.com/VirtoCommerce/vc-shell/commit/4c4234846f7e0f891fd4b4484720cc6eaf9f4224))
-- **menu:** implement badge functionality for menu items ([5f9c798](https://github.com/VirtoCommerce/vc-shell/commit/5f9c798bce1a4cb79a4534537187e8d827ed627a))
-
-### Bug Fixes
-
-- **composables:** implement 3-state sort cycling and fix adaptive items ([484f51f](https://github.com/VirtoCommerce/vc-shell/commit/484f51f31bc76e1178bda09a9fb4765743426d23))
-- **ui-components:** improve accessibility and fix type errors ([d874e75](https://github.com/VirtoCommerce/vc-shell/commit/d874e75e57c34124431c817851dfdc210d05dfd3))
-- **vc-date-picker:** improve internal value type handling ([7a282a1](https://github.com/VirtoCommerce/vc-shell/commit/7a282a110cf749fbb7ee0f2b1eeb99f1f0fa70c3))
-
-### Code Refactoring
-
-- **shared:** migrate GenericDropdown to VcDropdown and update exports ([dcdbb91](https://github.com/VirtoCommerce/vc-shell/commit/dcdbb916410ecf537343da76d9f60045bf4f6e89))
-- **vc-multivalue:** extract composables and sub-components ([2336673](https://github.com/VirtoCommerce/vc-shell/commit/2336673cacd5cfb5d9243393dd074c80fcc9864e))
-- **vc-table:** improve type safety and internal component structure ([5e1e410](https://github.com/VirtoCommerce/vc-shell/commit/5e1e410cf025d0c2b83a27dd1855108c1a88415d))
-- **vc-container:** remove pull-to-refresh functionality and clean up component ([edda2d4](https://github.com/VirtoCommerce/vc-shell/commit/edda2d46849fc651d2d42e87e55dca879d941c8b))
-- **vc-table:** migrate to VcDataTable and enhance API ([3e64a1f](https://github.com/VirtoCommerce/vc-shell/commit/3e64a1ffa49c0dc7aab39463d8310da60cfc5b54))
-
-## [1.2.3-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3...v1.2.3-beta.1) (2026-01-26)
-
-### Features
-
-- enhance AI agent panel with internationalization and UI improvements ([cdf0b7a](https://github.com/VirtoCommerce/vc-shell/commit/cdf0b7af14c02a51ffc261f9bac5c3da7916bf65))
-- enhance AI agent context management and configuration ([a98c7ed](https://github.com/VirtoCommerce/vc-shell/commit/a98c7ed2a2b54977f02e620493873ca2abacd47a))
-- integrate AI agent plugin into VC-Shell framework ([706f015](https://github.com/VirtoCommerce/vc-shell/commit/706f015f436ecc4ca19831e7159213b0759df6bc))
-- enhance framework with AI agent integration ([dcb1fef](https://github.com/VirtoCommerce/vc-shell/commit/dcb1fef55f25755d1903c26f18f6cca588eab286))
-
-### Bug Fixes
-
-- improve error handling and token refresh logic in useUser composable ([2900d9c](https://github.com/VirtoCommerce/vc-shell/commit/2900d9cc2b4465d9457c3e57338a915fe6a3a3e6))
-- adjust AI agent panel configuration and styling ([ebdd57a](https://github.com/VirtoCommerce/vc-shell/commit/ebdd57ac50342cacf79968253d8240c685062d89))
-
-### Code Refactoring
-
-- implement centralized logging across composables, components and services ([e27cae6](https://github.com/VirtoCommerce/vc-shell/commit/e27cae64e59b3f8231812297322543e0c5434096))
 
 ## [1.2.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.2...v1.2.3) (2026-01-12)
 
@@ -774,89 +608,6 @@ Automated migration: npx @vc-shell/migrate --transform remove-global-components
 ### Features
 
 - **menu:** implement badge functionality for menu items ([34f3fe8](https://github.com/VirtoCommerce/vc-shell/commit/34f3fe8b7c68f1987bbf90ac7c6ca9156d60e27a))
-
-## [1.2.3-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.14...v1.2.3-beta.0) (2025-12-26)
-
-### Features
-
-- enhance AI agent context management and configuration ([a98c7ed](https://github.com/VirtoCommerce/vc-shell/commit/a98c7ed2a2b54977f02e620493873ca2abacd47a))
-- integrate AI agent plugin into VC-Shell framework ([706f015](https://github.com/VirtoCommerce/vc-shell/commit/706f015f436ecc4ca19831e7159213b0759df6bc))
-- enhance framework with AI agent integration ([dcb1fef](https://github.com/VirtoCommerce/vc-shell/commit/dcb1fef55f25755d1903c26f18f6cca588eab286))
-- **ui:** add VcAccordion component with customizable items and storybook documentation ([cc40911](https://github.com/VirtoCommerce/vc-shell/commit/cc409114b0e52008e24a7cfe59204949295a6307))
-
-### Bug Fixes
-
-- improve error handling and token refresh logic in useUser composable ([2900d9c](https://github.com/VirtoCommerce/vc-shell/commit/2900d9cc2b4465d9457c3e57338a915fe6a3a3e6))
-- adjust AI agent panel configuration and styling ([ebdd57a](https://github.com/VirtoCommerce/vc-shell/commit/ebdd57ac50342cacf79968253d8240c685062d89))
-- update type definitions in useDynamicProperties ([df5ca52](https://github.com/VirtoCommerce/vc-shell/commit/df5ca52cbf3d2ac6036b85028ffb231ad30c0795))
-- handle boolean property values correctly in useDynamicProperties and vc-dynamic-property ([5286329](https://github.com/VirtoCommerce/vc-shell/commit/5286329598f6701ebb457b1bfec5aee872834204))
-
-### Code Refactoring
-
-- implement centralized logging across composables, components and services ([e27cae6](https://github.com/VirtoCommerce/vc-shell/commit/e27cae64e59b3f8231812297322543e0c5434096))
-
-## [1.1.99-alpha.14](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.13...v1.1.99-alpha.14) (2025-11-27)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.13](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.12...v1.1.99-alpha.13) (2025-11-27)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.12](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.11...v1.1.99-alpha.12) (2025-11-27)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.10...v1.1.99-alpha.11) (2025-11-27)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.9...v1.1.99-alpha.10) (2025-11-27)
-
-### Code Refactoring
-
-- enhance type safety and improve documentation in composables ([3323d86](https://github.com/VirtoCommerce/vc-shell/commit/3323d86b0049a01628846daeab8ca1d24bed92f3))
-
-## [1.1.99-alpha.9](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.8...v1.1.99-alpha.9) (2025-11-26)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.7...v1.1.99-alpha.8) (2025-11-25)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.6...v1.1.99-alpha.7) (2025-11-25)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.5...v1.1.99-alpha.6) (2025-11-25)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.4...v1.1.99-alpha.5) (2025-11-25)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.3...v1.1.99-alpha.4) (2025-11-25)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.1.99-alpha.3) (2025-11-25)
-
-### Features
-
-- integrate custom authentication provider checks in useSettings and useExternalProvider ([64bced4](https://github.com/VirtoCommerce/vc-shell/commit/64bced453e364958807ca5746b0babc8aa581490))
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-- **auth:** introduce customizable authentication provider system with PlatformAuthProvider and authProviderManager for enhanced flexibility ([424af98](https://github.com/VirtoCommerce/vc-shell/commit/424af98fe04f60b54cc2baf1db1c6d3dc184f9bc))
-
-### Bug Fixes
-
-- **locales:** add newline for better readability in localization check output ([ee8c2fd](https://github.com/VirtoCommerce/vc-shell/commit/ee8c2fd873f2c4a0a8c4d574c2c8b715215fbe4d))
-
-### Code Refactoring
-
-- **auth:** replace PlatformAuthProvider checks with centralized feature flagging for improved flexibility ([a2710ac](https://github.com/VirtoCommerce/vc-shell/commit/a2710acf5662ffff2886d26b7dba5e14369170a2))
-- **auth:** streamline configuration logging and enhance notification handling for custom authentication providers ([52e8552](https://github.com/VirtoCommerce/vc-shell/commit/52e8552f4d77eaf207bffdc1b26259b89e11e998))
 
 ## [1.2.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.0...v1.2.1) (2025-11-13)
 
@@ -873,57 +624,6 @@ Automated migration: npx @vc-shell/migrate --transform remove-global-components
 ### Bug Fixes
 
 - handle boolean property values correctly in useDynamicProperties and vc-dynamic-property ([5286329](https://github.com/VirtoCommerce/vc-shell/commit/5286329598f6701ebb457b1bfec5aee872834204))
-
-## [1.1.99-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.1...v1.1.99-alpha.2) (2025-11-07)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.0...v1.1.99-alpha.1) (2025-11-07)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.99-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.5...v1.1.99-alpha.0) (2025-11-07)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.98-rc.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.1.98-rc.5) (2025-11-07)
-
-### Features
-
-- integrate custom authentication provider checks in useSettings and useExternalProvider ([64bced4](https://github.com/VirtoCommerce/vc-shell/commit/64bced453e364958807ca5746b0babc8aa581490))
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-- **auth:** introduce customizable authentication provider system with PlatformAuthProvider and authProviderManager for enhanced flexibility ([424af98](https://github.com/VirtoCommerce/vc-shell/commit/424af98fe04f60b54cc2baf1db1c6d3dc184f9bc))
-
-### Bug Fixes
-
-- **locales:** add newline for better readability in localization check output ([ee8c2fd](https://github.com/VirtoCommerce/vc-shell/commit/ee8c2fd873f2c4a0a8c4d574c2c8b715215fbe4d))
-
-### Code Refactoring
-
-- **auth:** replace PlatformAuthProvider checks with centralized feature flagging for improved flexibility ([a2710ac](https://github.com/VirtoCommerce/vc-shell/commit/a2710acf5662ffff2886d26b7dba5e14369170a2))
-- **auth:** streamline configuration logging and enhance notification handling for custom authentication providers ([52e8552](https://github.com/VirtoCommerce/vc-shell/commit/52e8552f4d77eaf207bffdc1b26259b89e11e998))
-
-## [1.1.98-rc.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.3...v1.1.98-rc.4) (2025-10-24)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.98-rc.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.2...v1.1.98-rc.3) (2025-10-24)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.98-rc.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.1...v1.1.98-rc.2) (2025-10-24)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.98-rc.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.0...v1.1.98-rc.1) (2025-10-24)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.98-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.97...v1.1.98-rc.0) (2025-10-24)
-
-### Bug Fixes
-
-- **locales:** add newline for better readability in localization check output ([2ecdede](https://github.com/VirtoCommerce/vc-shell/commit/2ecdede43d7f76421944954484b5c313ffe40b7a))
 
 ## [1.1.97](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.96...v1.1.97) (2025-10-24)
 
@@ -966,37 +666,6 @@ Automated migration: npx @vc-shell/migrate --transform remove-global-components
 ## [1.1.91](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.5...v1.1.91) (2025-10-17)
 
 **Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.91-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.4...v1.1.91-alpha.5) (2025-10-14)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.91-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.3...v1.1.91-alpha.4) (2025-10-14)
-
-### Bug Fixes
-
-- **locales:** add newline for better readability in localization check output ([ee8c2fd](https://github.com/VirtoCommerce/vc-shell/commit/ee8c2fd873f2c4a0a8c4d574c2c8b715215fbe4d))
-
-## [1.1.91-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.2...v1.1.91-alpha.3) (2025-10-14)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.91-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.1...v1.1.91-alpha.2) (2025-10-14)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.91-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.1) (2025-10-14)
-
-### Features
-
-- integrate custom authentication provider checks in useSettings and useExternalProvider ([64bced4](https://github.com/VirtoCommerce/vc-shell/commit/64bced453e364958807ca5746b0babc8aa581490))
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-- **auth:** introduce customizable authentication provider system with PlatformAuthProvider and authProviderManager for enhanced flexibility ([424af98](https://github.com/VirtoCommerce/vc-shell/commit/424af98fe04f60b54cc2baf1db1c6d3dc184f9bc))
-
-### Code Refactoring
-
-- **auth:** replace PlatformAuthProvider checks with centralized feature flagging for improved flexibility ([a2710ac](https://github.com/VirtoCommerce/vc-shell/commit/a2710acf5662ffff2886d26b7dba5e14369170a2))
-- **auth:** streamline configuration logging and enhance notification handling for custom authentication providers ([52e8552](https://github.com/VirtoCommerce/vc-shell/commit/52e8552f4d77eaf207bffdc1b26259b89e11e998))
 
 ## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
@@ -1052,18 +721,6 @@ Automated migration: npx @vc-shell/migrate --transform remove-global-components
 
 - **vc-select:** enhance option value retrieval to support primitive types and improve label filtering ([90c9530](https://github.com/VirtoCommerce/vc-shell/commit/90c9530c66e31df7216db9b873fba275c566d8f7))
 
-## [1.1.84-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83...v1.1.84-alpha.0) (2025-09-30)
-
-### Bug Fixes
-
-- **vc-select:** add fallback visibility check for iframe support in dropdown component ([dd3fc7d](https://github.com/VirtoCommerce/vc-shell/commit/dd3fc7d498c1a0d694804332c3fac3513bb4e78f))
-
-### Code Refactoring
-
-- **useMenuExpanded:** implement dynamic storage key generation for menu state based on application path ([a9f5d4b](https://github.com/VirtoCommerce/vc-shell/commit/a9f5d4b90916e7e6633d89d4efe407ab7b823a7a))
-- **loader:** remove unused extensions handling from module installation process ([c797ea7](https://github.com/VirtoCommerce/vc-shell/commit/c797ea7fb54c0c2db52e52420f853c2b4ae63947))
-- **extensions:** remove unused extensions helper and related exports ([3263910](https://github.com/VirtoCommerce/vc-shell/commit/326391052b3036c00cdb13cc83048e1308277039))
-
 ## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
 
 ### Features
@@ -1080,17 +737,6 @@ Automated migration: npx @vc-shell/migrate --transform remove-global-components
 ### Code Refactoring
 
 - **ExtensionSlot:** clean up template and script structure for improved readability ([397c1a3](https://github.com/VirtoCommerce/vc-shell/commit/397c1a3045515d379b5e4f5e972db6b01da42c24))
-
-## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
-
-### Features
-
-- **useModificationTracker:** add pristineValue reference to track original state ([adaf67d](https://github.com/VirtoCommerce/vc-shell/commit/adaf67d34ceac0b7b490c2906a7b3f25b57c32e1))
-- **extension-points:** introduce new extension system with composables for slot management and data exchange ([b427cd4](https://github.com/VirtoCommerce/vc-shell/commit/b427cd4a141d4dc39c454b12259b2a8c566179b9))
-
-### Code Refactoring
-
-- **login:** replace afterLoginFormExtensions with ExtensionSlot for improved slot management ([fec517c](https://github.com/VirtoCommerce/vc-shell/commit/fec517c481af76b1d3dc9a0077eef1feab0bccf6))
 
 ## [1.1.82](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.81...v1.1.82) (2025-09-23)
 
@@ -1684,12 +1330,6 @@ Automated migration: npx @vc-shell/migrate --transform remove-global-components
 
 - **global style:** update base styles with Roboto font and tailwind configurations ([51722bf](https://github.com/VirtoCommerce/vc-shell/commit/51722bff7933816d2cbab9fecb7a7c05fcb8d2d3))
 
-## [1.1.0-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...v1.1.0-alpha.2) (2025-02-25)
-
-### Features
-
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
 ## [1.0.340](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.339...v1.0.340) (2025-02-06)
 
 ### Features
@@ -1776,10 +1416,6 @@ Automated migration: npx @vc-shell/migrate --transform remove-global-components
 - signalR creator injection key ([192caa1](https://github.com/VirtoCommerce/vc-shell/commit/192caa145f39775bca5e69231ba9e400431a474e))
 
 ## [1.0.328](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0-alpha.1...v1.0.328) (2024-11-14)
-
-**Note:** Version bump only for package @vc-shell/framework
-
-## [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.327...v1.1.0-alpha.1) (2024-11-13)
 
 **Note:** Version bump only for package @vc-shell/framework
 

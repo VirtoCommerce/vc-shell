@@ -1,186 +1,66 @@
-# [2.0.0-alpha.35](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.34...v2.0.0-alpha.35) (2026-04-22)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.34](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.33...v2.0.0-alpha.34) (2026-04-22)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.33](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.32...v2.0.0-alpha.33) (2026-04-14)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.32](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.31...v2.0.0-alpha.32) (2026-04-02)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.31](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.30...v2.0.0-alpha.31) (2026-04-01)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.30](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.29...v2.0.0-alpha.30) (2026-03-30)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.29](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.28...v2.0.0-alpha.29) (2026-03-26)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.28](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.27...v2.0.0-alpha.28) (2026-03-26)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.27](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.26...v2.0.0-alpha.27) (2026-03-25)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.26](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.25...v2.0.0-alpha.26) (2026-03-25)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.25](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.24...v2.0.0-alpha.25) (2026-03-25)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.24](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.23...v2.0.0-alpha.24) (2026-03-25)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.23](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.22...v2.0.0-alpha.23) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.22](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.21...v2.0.0-alpha.22) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.21](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.20...v2.0.0-alpha.21) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.20](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.18...v2.0.0-alpha.20) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.19](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.18...v2.0.0-alpha.19) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.18](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.17...v2.0.0-alpha.18) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.17](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.16...v2.0.0-alpha.17) (2026-03-23)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.16](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.15...v2.0.0-alpha.16) (2026-03-20)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.15](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.14...v2.0.0-alpha.15) (2026-03-20)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.14](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.13...v2.0.0-alpha.14) (2026-03-20)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.13](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.12...v2.0.0-alpha.13) (2026-03-20)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.12](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.11...v2.0.0-alpha.12) (2026-03-19)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.11](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.10...v2.0.0-alpha.11) (2026-03-13)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.10](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) (2026-03-13)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.9](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.8...v2.0.0-alpha.9) (2026-03-12)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.8](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.7...v2.0.0-alpha.8) (2026-03-12)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.7](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) (2026-03-11)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2026-03-10)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2026-03-10)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2026-03-10)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) (2026-03-10)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.2) (2026-03-10)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0-alpha.0...v2.0.0-alpha.1) (2026-03-10)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-# [2.0.0-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.8...v2.0.0-alpha.0) (2026-03-10)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.2.4-beta.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.7...v1.2.4-beta.8) (2026-03-04)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.2.4-beta.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.6...v1.2.4-beta.7) (2026-03-04)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.2.4-beta.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.5...v1.2.4-beta.6) (2026-03-04)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.2.4-beta.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.4...v1.2.4-beta.5) (2026-03-04)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.2.4-beta.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.3...v1.2.4-beta.4) (2026-02-24)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.2.4-beta.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.2...v1.2.4-beta.3) (2026-02-20)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.2.4-beta.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.1...v1.2.4-beta.2) (2026-02-16)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.2.4-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.4-beta.0...v1.2.4-beta.1) (2026-02-16)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.2.4-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3-beta.1...v1.2.4-beta.0) (2026-02-16)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.2.3-beta.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3...v1.2.3-beta.1) (2026-01-26)
-
-**Note:** Version bump only for package @vc-shell/ts-config
+# Changelog
+
+# [2.0.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3...v2.0.0) (2026-04-22)
+
+### Styles
+
+- **lint:** one-time cleanup of pre-existing violations and tech debt ([a7113c5](https://github.com/VirtoCommerce/vc-shell/commit/a7113c5d25b5b4dc9da20f6bc40c54b57fe46422))
+
+### Chores
+
+- bump package versions to 1.2.4-beta.4 for api-client-generator, create-vc-app, ts-config, and release-config ([1b590c9](https://github.com/VirtoCommerce/vc-shell/commit/1b590c9e7733b1784b7ac3a992a745dfc666a236))
+- **release:** v2.0.0-alpha.7 ([adf49e7](https://github.com/VirtoCommerce/vc-shell/commit/adf49e74bd3617d3aa51c9d4db94474294b3b925))
+- update changelogs for multiple packages, including bug fixes and feature enhancements ([72e690f](https://github.com/VirtoCommerce/vc-shell/commit/72e690f5e21aaaf22ce34ff41ec60fb11ed1d018))
+
+### Other Changes
+
+- Feat/research (#216) ([f028d9e](https://github.com/VirtoCommerce/vc-shell/commit/f028d9e1fe410a18fec4e127a65860cfb2309e36)), closes [#216](https://github.com/VirtoCommerce/vc-shell/issues/216)
+- Feat/research (#217) ([174beee](https://github.com/VirtoCommerce/vc-shell/commit/174beeef16d0f9c7d6a5b96f0cc375bc50eb06d2)), closes [#217](https://github.com/VirtoCommerce/vc-shell/issues/217)
+- Feat/vc table compositional (#215) ([2194f2f](https://github.com/VirtoCommerce/vc-shell/commit/2194f2fb82009e3dd5f2e17389b7fb03dd74b603)), closes [#215](https://github.com/VirtoCommerce/vc-shell/issues/215)
+- Feat/virto oz (#214) ([21250c9](https://github.com/VirtoCommerce/vc-shell/commit/21250c93ebb2d096b7accdde6b02a73782fc6535)), closes [#214](https://github.com/VirtoCommerce/vc-shell/issues/214)
+
+### release
+
+- v1.2.3 ([6270dab](https://github.com/VirtoCommerce/vc-shell/commit/6270dab6a5a8149c8380d17d55b77531bad13531))
+- v1.2.4-beta.2 ([d4cf91e](https://github.com/VirtoCommerce/vc-shell/commit/d4cf91ea30b40f13cc7ca13e7d11c8da13459175))
+- v1.2.4-beta.3 ([d42e7a8](https://github.com/VirtoCommerce/vc-shell/commit/d42e7a822a2b2c7a5f89bf83d97babc2e4b3fa07))
+- v1.2.4-beta.5 ([4cc2527](https://github.com/VirtoCommerce/vc-shell/commit/4cc2527f06178114fd3db9f781b1d6fd868a7a61))
+- v1.2.4-beta.6 ([86734c4](https://github.com/VirtoCommerce/vc-shell/commit/86734c47306da89feb6b16685287744bb2855cc8))
+- v1.2.4-beta.7 ([cc6ef5c](https://github.com/VirtoCommerce/vc-shell/commit/cc6ef5c98d3f8b6489126a950e994335016ea35d))
+- v1.2.4-beta.8 ([25aa324](https://github.com/VirtoCommerce/vc-shell/commit/25aa3246d45b375af4fffcc256a447d05dfda64c))
+- v2.0.0-alpha.10 ([5a9c0af](https://github.com/VirtoCommerce/vc-shell/commit/5a9c0af632a17e2d01dcd0dc07a166aabe6fe903))
+- v2.0.0-alpha.11 ([4e5d63e](https://github.com/VirtoCommerce/vc-shell/commit/4e5d63ee34bb825d8e363e40fbac27e711261f9e))
+- v2.0.0-alpha.12 ([7143a74](https://github.com/VirtoCommerce/vc-shell/commit/7143a74ae0bdd3d70f0133b69d380b82c10526c1))
+- v2.0.0-alpha.13 ([c422678](https://github.com/VirtoCommerce/vc-shell/commit/c42267854f9ed51215e8363165c9bfe077c313a3))
+- v2.0.0-alpha.14 ([0c91031](https://github.com/VirtoCommerce/vc-shell/commit/0c91031706843ccbc2f5d32093c8655c6bbc718f))
+- v2.0.0-alpha.15 ([fa8958e](https://github.com/VirtoCommerce/vc-shell/commit/fa8958e7241117ebff164a2d399f13f74d48b55f))
+- v2.0.0-alpha.16 ([79ab2b1](https://github.com/VirtoCommerce/vc-shell/commit/79ab2b1022258332c327e742ab0adf1b8fde35ce))
+- v2.0.0-alpha.17 ([408e4af](https://github.com/VirtoCommerce/vc-shell/commit/408e4af487f37b8aff790398d5a992820c8f05a2))
+- v2.0.0-alpha.18 ([2466e35](https://github.com/VirtoCommerce/vc-shell/commit/2466e359313c9d78893d2473474ec5ce46ad49ca))
+- v2.0.0-alpha.19 ([9d5a075](https://github.com/VirtoCommerce/vc-shell/commit/9d5a075e0a722c6c7371706f582b59bbf570ef37))
+- v2.0.0-alpha.2 ([223c859](https://github.com/VirtoCommerce/vc-shell/commit/223c8596dbad42704072ffc0dd1c4b8361227af0))
+- v2.0.0-alpha.20 ([98bd4a6](https://github.com/VirtoCommerce/vc-shell/commit/98bd4a62ffa933bbfdae16ef7e46777084f15190))
+- v2.0.0-alpha.21 ([bbd0d70](https://github.com/VirtoCommerce/vc-shell/commit/bbd0d70464ff5c0dafbc67ed3bf8ea36f65b0a7a))
+- v2.0.0-alpha.22 ([ec455eb](https://github.com/VirtoCommerce/vc-shell/commit/ec455eba6bb91ae5fdbea64817ce1650116b9d50))
+- v2.0.0-alpha.23 ([65b2144](https://github.com/VirtoCommerce/vc-shell/commit/65b214434ef1630069aecd6f2eaf916531bf37ef))
+- v2.0.0-alpha.24 ([05ff510](https://github.com/VirtoCommerce/vc-shell/commit/05ff5107b81e0280447872ea52771fc47cb3cd67))
+- v2.0.0-alpha.25 ([19d09b9](https://github.com/VirtoCommerce/vc-shell/commit/19d09b998861836b288aba36a6d18d7b26cff0b7))
+- v2.0.0-alpha.26 ([ee6818c](https://github.com/VirtoCommerce/vc-shell/commit/ee6818ceb60b24d26b7011f2584c8d23f6b4fd3e))
+- v2.0.0-alpha.27 ([f43652d](https://github.com/VirtoCommerce/vc-shell/commit/f43652d1aae8af36d5d2f00312492ea9de57f2f1))
+- v2.0.0-alpha.28 ([7954dfd](https://github.com/VirtoCommerce/vc-shell/commit/7954dfddf1126d00038b8f66a6fe3efc5c19cfe8))
+- v2.0.0-alpha.29 ([ffa72cf](https://github.com/VirtoCommerce/vc-shell/commit/ffa72cf458eed77c78955c88d211a82ead152b0f))
+- v2.0.0-alpha.3 ([23e82c2](https://github.com/VirtoCommerce/vc-shell/commit/23e82c2423efb5cddf8ea891ea5d5e84832a6acd))
+- v2.0.0-alpha.30 ([2db7f17](https://github.com/VirtoCommerce/vc-shell/commit/2db7f17d74afe97e3c6dfef2de436a797f0c32f4))
+- v2.0.0-alpha.31 ([8d92fba](https://github.com/VirtoCommerce/vc-shell/commit/8d92fbad5954c71164e7815193b3496e569a5703))
+- v2.0.0-alpha.32 ([1ed5533](https://github.com/VirtoCommerce/vc-shell/commit/1ed5533a6a20081e655f2e628bf824de40472f5d))
+- v2.0.0-alpha.33 ([49cad36](https://github.com/VirtoCommerce/vc-shell/commit/49cad36a454534136b52576e6a0d97dfe48ae895))
+- v2.0.0-alpha.34 ([78bed5a](https://github.com/VirtoCommerce/vc-shell/commit/78bed5af3aeb7ace2eb9f58ddde3235fced47b37))
+- v2.0.0-alpha.35 ([05d6f25](https://github.com/VirtoCommerce/vc-shell/commit/05d6f2562c939dd4a2e7e4e7a3d80948beccbef1))
+- v2.0.0-alpha.4 ([a3098f9](https://github.com/VirtoCommerce/vc-shell/commit/a3098f9ccc128c4ad3b4d8b5cbcbf8ea7a0f6df5))
+- v2.0.0-alpha.5 ([3cae61a](https://github.com/VirtoCommerce/vc-shell/commit/3cae61a852a8f88aac8e0c51affad4517c8c5eca))
+- v2.0.0-alpha.6 ([9196b2c](https://github.com/VirtoCommerce/vc-shell/commit/9196b2c232094d8d7750963718777096c0cc9864))
+- v2.0.0-alpha.8 ([8228f12](https://github.com/VirtoCommerce/vc-shell/commit/8228f12bffc014ae0f8f28b3ef3fa0ac02bc33e2))
+- v2.0.0-alpha.9 ([ef631bd](https://github.com/VirtoCommerce/vc-shell/commit/ef631bdbccbf2be1afbc592418e680e79d2c1fbe))
 
 ## [1.2.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.2...v1.2.3) (2026-01-12)
 
@@ -190,103 +70,11 @@
 
 **Note:** Version bump only for package @vc-shell/ts-config
 
-## [1.2.3-beta.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.14...v1.2.3-beta.0) (2025-12-26)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.14](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.13...v1.1.99-alpha.14) (2025-11-27)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.13](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.12...v1.1.99-alpha.13) (2025-11-27)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.12](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.11...v1.1.99-alpha.12) (2025-11-27)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.10...v1.1.99-alpha.11) (2025-11-27)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.9...v1.1.99-alpha.10) (2025-11-27)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.9](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.8...v1.1.99-alpha.9) (2025-11-26)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.7...v1.1.99-alpha.8) (2025-11-25)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.6...v1.1.99-alpha.7) (2025-11-25)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.5...v1.1.99-alpha.6) (2025-11-25)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.4...v1.1.99-alpha.5) (2025-11-25)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.3...v1.1.99-alpha.4) (2025-11-25)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.1...v1.1.99-alpha.3) (2025-11-25)
-
-### Features
-
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-
 ## [1.2.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.0...v1.2.1) (2025-11-13)
 
 **Note:** Version bump only for package @vc-shell/ts-config
 
 ## [1.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.2...v1.2.0) (2025-11-13)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.1...v1.1.99-alpha.2) (2025-11-07)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.99-alpha.0...v1.1.99-alpha.1) (2025-11-07)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.99-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.5...v1.1.99-alpha.0) (2025-11-07)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.98-rc.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.4...v1.1.98-rc.5) (2025-11-07)
-
-### Features
-
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-
-## [1.1.98-rc.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.3...v1.1.98-rc.4) (2025-10-24)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.98-rc.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.2...v1.1.98-rc.3) (2025-10-24)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.98-rc.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.1...v1.1.98-rc.2) (2025-10-24)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.98-rc.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.98-rc.0...v1.1.98-rc.1) (2025-10-24)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.98-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.97...v1.1.98-rc.0) (2025-10-24)
 
 **Note:** Version bump only for package @vc-shell/ts-config
 
@@ -318,28 +106,6 @@
 
 **Note:** Version bump only for package @vc-shell/ts-config
 
-## [1.1.91-alpha.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.4...v1.1.91-alpha.5) (2025-10-14)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.91-alpha.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.3...v1.1.91-alpha.4) (2025-10-14)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.91-alpha.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.2...v1.1.91-alpha.3) (2025-10-14)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.91-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.91-alpha.1...v1.1.91-alpha.2) (2025-10-14)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.91-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.90...v1.1.91-alpha.1) (2025-10-14)
-
-### Features
-
-- update auth providers and fix tsx path in pre-commit hook ([a92d957](https://github.com/VirtoCommerce/vc-shell/commit/a92d957e2b0a0be177519e7256af9279d3419713))
-
 ## [1.1.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.89...v1.1.90) (2025-10-08)
 
 **Note:** Version bump only for package @vc-shell/ts-config
@@ -368,15 +134,7 @@
 
 **Note:** Version bump only for package @vc-shell/ts-config
 
-## [1.1.84-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83...v1.1.84-alpha.0) (2025-09-30)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
 ## [1.1.83](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.83-alpha.0...v1.1.83) (2025-09-30)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.83-alpha.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.82...v1.1.83-alpha.0) (2025-09-24)
 
 **Note:** Version bump only for package @vc-shell/ts-config
 
@@ -746,12 +504,6 @@
 
 **Note:** Version bump only for package @vc-shell/ts-config
 
-## [1.1.0-alpha.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.340...v1.1.0-alpha.2) (2025-02-25)
-
-### Features
-
-- partial redesign ([846e215](https://github.com/VirtoCommerce/vc-shell/commit/846e2152c6e48753622ca7cf3a71300323c99d51))
-
 ## [1.0.340](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.339...v1.0.340) (2025-02-06)
 
 **Note:** Version bump only for package @vc-shell/ts-config
@@ -801,10 +553,6 @@
 **Note:** Version bump only for package @vc-shell/ts-config
 
 ## [1.0.328](https://github.com/VirtoCommerce/vc-shell/compare/v1.1.0-alpha.1...v1.0.328) (2024-11-14)
-
-**Note:** Version bump only for package @vc-shell/ts-config
-
-## [1.1.0-alpha.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.327...v1.1.0-alpha.1) (2024-11-13)
 
 **Note:** Version bump only for package @vc-shell/ts-config
 

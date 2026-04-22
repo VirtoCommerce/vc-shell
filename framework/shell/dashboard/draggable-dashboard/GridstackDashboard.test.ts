@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h, ref } from "vue";
+import { defineComponent, h, markRaw, ref } from "vue";
 import GridstackDashboard from "./GridstackDashboard.vue";
 
 // Mock gridstack CSS import
@@ -44,6 +44,16 @@ const WidgetA = defineComponent({
     return h("div", { class: "widget-a" }, "Widget A content");
   },
 });
+
+function createWidget(overrides: Record<string, unknown> = {}) {
+  return {
+    id: "w1",
+    name: "Widget 1",
+    component: markRaw(WidgetA),
+    size: { width: 4, height: 2 },
+    ...overrides,
+  };
+}
 
 function mountGridstack(props = {}, widgets: any[] = []) {
   mockWidgets.value = widgets;
@@ -92,17 +102,15 @@ describe("GridstackDashboard", () => {
 
   it("renders widget items from the dashboard service", () => {
     const wrapper = mountGridstack({}, [
-      { id: "w1", name: "Widget 1", component: WidgetA, size: { width: 4, height: 2 } },
-      { id: "w2", name: "Widget 2", component: WidgetA, size: { width: 6, height: 3 } },
+      createWidget(),
+      createWidget({ id: "w2", name: "Widget 2", size: { width: 6, height: 3 } }),
     ]);
     const items = wrapper.findAll(".grid-stack-item");
     expect(items).toHaveLength(2);
   });
 
   it("sets gs-id, gs-w, gs-h attributes on grid items", () => {
-    const wrapper = mountGridstack({}, [
-      { id: "w1", name: "Widget 1", component: WidgetA, size: { width: 4, height: 2 } },
-    ]);
+    const wrapper = mountGridstack({}, [createWidget()]);
     const item = wrapper.find(".grid-stack-item");
     expect(item.attributes("gs-id")).toBe("w1");
     expect(item.attributes("gs-w")).toBe("4");
@@ -110,32 +118,24 @@ describe("GridstackDashboard", () => {
   });
 
   it("sets role=listitem on grid items", () => {
-    const wrapper = mountGridstack({}, [
-      { id: "w1", name: "Widget 1", component: WidgetA, size: { width: 4, height: 2 } },
-    ]);
+    const wrapper = mountGridstack({}, [createWidget()]);
     const item = wrapper.find(".grid-stack-item");
     expect(item.attributes("role")).toBe("listitem");
   });
 
   it("generates aria-label for each widget", () => {
-    const wrapper = mountGridstack({}, [
-      { id: "w1", name: "Widget 1", component: WidgetA, size: { width: 4, height: 2 } },
-    ]);
+    const wrapper = mountGridstack({}, [createWidget()]);
     const item = wrapper.find(".grid-stack-item");
     expect(item.attributes("aria-label")).toBe("Widget 1, widget 1 of 1. Drag to reorder.");
   });
 
   it("does not show drag handles when showDragHandles is false", () => {
-    const wrapper = mountGridstack({ showDragHandles: false }, [
-      { id: "w1", component: WidgetA, size: { width: 4, height: 2 } },
-    ]);
+    const wrapper = mountGridstack({ showDragHandles: false }, [createWidget()]);
     expect(wrapper.find(".vc-gridstack-dashboard__drag-handle").exists()).toBe(false);
   });
 
   it("shows drag handles when showDragHandles is true", () => {
-    const wrapper = mountGridstack({ showDragHandles: true }, [
-      { id: "w1", component: WidgetA, size: { width: 4, height: 2 } },
-    ]);
+    const wrapper = mountGridstack({ showDragHandles: true }, [createWidget()]);
     expect(wrapper.find(".vc-gridstack-dashboard__drag-handle").exists()).toBe(true);
   });
 
@@ -147,9 +147,7 @@ describe("GridstackDashboard", () => {
   });
 
   it("uses widget position when provided", () => {
-    const wrapper = mountGridstack({}, [
-      { id: "w1", component: WidgetA, size: { width: 4, height: 2 }, position: { x: 3, y: 5 } },
-    ]);
+    const wrapper = mountGridstack({}, [createWidget({ position: { x: 3, y: 5 } })]);
     const item = wrapper.find(".grid-stack-item");
     expect(item.attributes("gs-x")).toBe("3");
     expect(item.attributes("gs-y")).toBe("5");
@@ -157,9 +155,7 @@ describe("GridstackDashboard", () => {
 
   it("uses layout position over widget built-in position", () => {
     mockLayout.value = new Map([["w1", { x: 8, y: 1 }]]);
-    const wrapper = mountGridstack({}, [
-      { id: "w1", component: WidgetA, size: { width: 4, height: 2 }, position: { x: 0, y: 0 } },
-    ]);
+    const wrapper = mountGridstack({}, [createWidget({ position: { x: 0, y: 0 } })]);
     const item = wrapper.find(".grid-stack-item");
     expect(item.attributes("gs-x")).toBe("8");
     expect(item.attributes("gs-y")).toBe("1");
@@ -184,7 +180,7 @@ describe("GridstackDashboard", () => {
   });
 
   it("falls back to widget.id when name is not set for aria-label", () => {
-    const wrapper = mountGridstack({}, [{ id: "my-widget", component: WidgetA, size: { width: 4, height: 2 } }]);
+    const wrapper = mountGridstack({}, [createWidget({ id: "my-widget", name: undefined })]);
     const item = wrapper.find(".grid-stack-item");
     expect(item.attributes("aria-label")).toContain("my-widget");
   });

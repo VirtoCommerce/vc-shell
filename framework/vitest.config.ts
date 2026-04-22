@@ -25,6 +25,30 @@ const frameworkAliases = {
   "@vc-shell/framework": resolve(__dirname, "./index.ts"),
 };
 
+const sourceCoverageInclude = [
+  "core/**/*.{ts,vue}",
+  "ui/**/*.{ts,vue}",
+  "shell/**/*.{ts,vue}",
+  "modules/**/*.{ts,vue}",
+  "index.ts",
+];
+
+const sourceCoverageExclude = [
+  "**/node_modules/**",
+  "**/dist/**",
+  "**/storybook-static/**",
+  "**/.yarn/**",
+  "**/apps/**/dist/**",
+  "**/*.d.ts",
+  "**/*.stories.*",
+  "**/*.{test,spec}.{js,ts,jsx,tsx,vue}",
+  "**/__tests__/**",
+  "**/__mocks__/**",
+  "**/tests/**",
+  "shell/_internal/_storybook-helpers.ts",
+  "core/api/platform.ts",
+];
+
 export default defineConfig({
   plugins: [vue()],
   test: {
@@ -32,13 +56,16 @@ export default defineConfig({
     environment: "jsdom",
     coverage: {
       reporter: ["text", "json", "html"],
+      include: sourceCoverageInclude,
+      exclude: sourceCoverageExclude,
       thresholds: {
-        lines: 30,
-        functions: 25,
-        branches: 50,
+        statements: 72,
+        lines: 72,
+        functions: 55,
+        branches: 74,
       },
     },
-    setupFiles: [resolve(__dirname, "./vitest-axe.setup.ts")],
+    setupFiles: [resolve(__dirname, "./vitest-mocks.setup.ts"), resolve(__dirname, "./vitest-axe.setup.ts")],
     include: ["**/*.{test,spec}.{js,ts,jsx,tsx}"],
     exclude: [
       "**/node_modules/**",

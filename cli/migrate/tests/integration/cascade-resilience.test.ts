@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from "vitest";
 import jscodeshift from "jscodeshift";
 import useBladeTransform from "../../src/transforms/use-blade-migration";

@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from "vitest";
 import jscodeshift from "jscodeshift";
 import { wrapForSFC, wrapForSFCTemplate, wrapForSFCBoth } from "../../src/utils/vue-sfc-wrapper";

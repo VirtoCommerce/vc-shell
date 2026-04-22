@@ -1,11 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import DataTableCellRenderer from "./DataTableCellRenderer.vue";
 import { ColumnCollectorKey } from "@ui/components/organisms/vc-data-table/keys";
-
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k }),
-}));
 
 const stubs = {
   TableCheckbox: { template: '<div class="table-checkbox-stub" />' },

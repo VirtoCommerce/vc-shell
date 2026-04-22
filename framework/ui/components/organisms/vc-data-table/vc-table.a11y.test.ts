@@ -1,10 +1,14 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+// Use real vue-i18n — this test uses createI18n with real messages
+vi.unmock("vue-i18n");
+
 import { mount, VueWrapper } from "@vue/test-utils";
 import axe from "axe-core";
 import { createI18n } from "vue-i18n";
 import VcDataTable from "@ui/components/organisms/vc-data-table/VcDataTable.vue";
 
-const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });
+const i18n = createI18n({ legacy: false, locale: "en", fallbackWarn: false, missingWarn: false, messages: { en: {} } });
 
 describe("VcDataTable a11y", () => {
   let wrapper: VueWrapper;

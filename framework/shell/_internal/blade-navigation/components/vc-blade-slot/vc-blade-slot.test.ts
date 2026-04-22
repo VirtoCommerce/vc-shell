@@ -67,13 +67,13 @@ describe("vc-blade-slot.vue", () => {
 
   it("renders when blade component is resolved", () => {
     const wrapper = mountSlot();
-    expect(wrapper.html()).toContain("blade-content");
+    expect(wrapper.text()).toContain("blade-content");
   });
 
   it("does not render blade when registry returns undefined", () => {
     mockGetBladeComponent.mockReturnValue(undefined);
     const wrapper = mountSlot();
-    expect(wrapper.html()).not.toContain("blade-content");
+    expect(wrapper.text()).not.toContain("blade-content");
   });
 
   it("resolves blade from registry using descriptor.name", () => {

@@ -1,15 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { mountWithSetup } from "@framework/test-helpers";
 import { useTableSort } from "./useTableSort";
-
-// Mock createLogger
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    debug: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-  }),
-}));
 
 describe("useTableSort", () => {
   describe("initialization", () => {

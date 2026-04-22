@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { createApp, defineComponent, h } from "vue";
 import { createBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { IBladeRegistrationData } from "@core/composables/useBladeRegistry";
@@ -81,11 +81,13 @@ describe("createBladeRegistry", () => {
       const registry = createBladeRegistry(app);
       const first = makeRegistrationData({ route: "/orders" });
       const second = makeRegistrationData({ route: "/orders-v2" });
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       registry._registerBladeFn("Orders", first);
       registry._registerBladeFn("Orders", second, true);
 
       expect(registry.getBlade("Orders")).toMatchObject(second);
+      warnSpy.mockRestore();
     });
 
     it("error message suggests allowOverwrite", () => {

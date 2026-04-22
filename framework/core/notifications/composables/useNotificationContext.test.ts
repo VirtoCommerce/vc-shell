@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { computed, defineComponent, h, provide } from "vue";
 import { mount } from "@vue/test-utils";
 import { NotificationContextKey } from "../types";
@@ -40,7 +40,12 @@ describe("useNotificationContext", () => {
       },
     });
 
-    mount(Child);
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      mount(Child);
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 
   it("supports generic typing for extended notification types", () => {

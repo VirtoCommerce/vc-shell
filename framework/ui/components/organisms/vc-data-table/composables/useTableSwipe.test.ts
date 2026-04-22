@@ -30,7 +30,13 @@ describe("provideTableSwipe + useTableSwipe", () => {
           return () => h("div");
         },
       });
-      mount(Comp);
+      mount(Comp, {
+        global: {
+          config: {
+            warnHandler: () => undefined,
+          },
+        },
+      });
     }).toThrow("useTableSwipe must be used within a provider");
   });
 

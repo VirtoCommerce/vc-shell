@@ -1,4 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
+
+// Use real vue-i18n — this test uses createI18n with real messages
+vi.unmock("vue-i18n");
+
 import { mount } from "@vue/test-utils";
 import { defineComponent, h, nextTick } from "vue";
 import { createNotificationStore } from "@core/notifications";

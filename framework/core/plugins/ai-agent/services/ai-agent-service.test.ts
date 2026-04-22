@@ -3,15 +3,6 @@ import { nextTick } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { createAiAgentService } from "./ai-agent-service";
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    debug: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-  }),
-}));
-
 describe("createAiAgentService", () => {
   const userGetter = () => ({ id: "user-1", userName: "admin" });
   const bladeGetter = () => ({ id: "offers", name: "OfferDetails", title: "Offer #1" });

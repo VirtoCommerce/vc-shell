@@ -1,15 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { convertColorNameToHex, isValidHexColor, normalizeHexColor } from "./colorUtils";
 
-// Mock createLogger to avoid side effects
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    debug: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-  }),
-}));
-
 describe("colorUtils", () => {
   describe("isValidHexColor", () => {
     it("returns true for valid 6-digit hex with #", () => {

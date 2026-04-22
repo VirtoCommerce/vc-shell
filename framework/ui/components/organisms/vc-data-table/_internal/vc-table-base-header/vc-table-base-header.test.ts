@@ -1,11 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref } from "vue";
 import VcTableBaseHeader from "./vc-table-base-header.vue";
-
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k }),
-}));
 
 const stubs = {
   VcInput: {

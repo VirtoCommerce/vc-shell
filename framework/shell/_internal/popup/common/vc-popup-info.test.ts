@@ -2,10 +2,6 @@ import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
 import VcPopupInfo from "./vc-popup-info.vue";
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (key: string) => key }),
-}));
-
 const VcPopupBaseStub = {
   name: "VcPopupBase",
   template: `<div class="vc-popup-base-stub">

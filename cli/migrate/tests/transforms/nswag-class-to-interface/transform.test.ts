@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from "vitest";
 import { coreTransform } from "../../../src/transforms/nswag-class-to-interface-core";
 import { applyTransform, applyTransformWithReports } from "../../../src/utils/test-helpers";

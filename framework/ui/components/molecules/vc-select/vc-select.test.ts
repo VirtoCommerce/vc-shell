@@ -1,4 +1,8 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+// Use real vue-i18n — this test uses createI18n with real messages
+vi.unmock("vue-i18n");
+
 import { mount } from "@vue/test-utils";
 import { createI18n } from "vue-i18n";
 import VcSelect from "@ui/components/molecules/vc-select/vc-select.vue";
@@ -24,7 +28,7 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });
+const i18n = createI18n({ legacy: false, locale: "en", fallbackWarn: false, missingWarn: false, messages: { en: {} } });
 
 describe("VcSelect", () => {
   const mountSelect = (props: Record<string, unknown> = {}) =>

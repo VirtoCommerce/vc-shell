@@ -3,13 +3,6 @@ import { mount } from "@vue/test-utils";
 import { defineComponent, h } from "vue";
 import SelectDropdown from "./SelectDropdown.vue";
 
-// Mock vue-i18n
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({
-    t: (key: string) => key,
-  }),
-}));
-
 // Mock useTeleportTarget — return body
 vi.mock("@ui/composables", () => ({
   useTeleportTarget: () => ({ teleportTarget: "body" }),

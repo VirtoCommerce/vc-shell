@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from "vitest";
 import jscodeshift from "jscodeshift";
 import { deduplicateImportSpecifiers } from "../../src/utils/import-dedup";

@@ -2,10 +2,6 @@ import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import MultivalueDropdown from "./MultivalueDropdown.vue";
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k }),
-}));
-
 vi.mock("@ui/composables", () => ({
   useTeleportTarget: () => ({ teleportTarget: "body" }),
 }));

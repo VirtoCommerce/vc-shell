@@ -123,6 +123,7 @@ import { useSettings } from "@core/composables";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { VcAuthLayout, VcBanner, VcButton, VcForm, VcHint, VcInput } from "@ui/components";
+import { validatePasswordChange } from "@shell/auth/utils";
 
 interface IChangePassForm {
   isValid: boolean;
@@ -182,13 +183,13 @@ async function changePassword() {
 function validateForm() {
   nextTick(async () => {
     if (form.password || form.confirmPassword) {
-      form.errors = (await validatePassword(form.password)).errors ?? [];
-      if (form.confirmPassword !== form.password) {
-        (form.errors as IdentityError[]).push({ code: "Repeat-password" });
-      }
-      if (form.confirmPassword === form.currentPassword && form.password === form.currentPassword) {
-        (form.errors as IdentityError[]).push({ code: "Equal-passwords" });
-      }
+      const serverErrors = (await validatePassword(form.password)).errors ?? [];
+      const clientErrors = validatePasswordChange({
+        password: form.password,
+        confirmPassword: form.confirmPassword,
+        currentPassword: form.currentPassword,
+      });
+      form.errors = [...serverErrors, ...clientErrors];
       form.isValid = form.errors.length == 0;
     }
   });

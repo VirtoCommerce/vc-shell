@@ -2,16 +2,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { computed, defineComponent, h, nextTick, ref } from "vue";
 import { mount } from "@vue/test-utils";
 import MobileLayout from "@ui/components/organisms/vc-app/_internal/layouts/MobileLayout.vue";
+import { createMockSidebarState } from "@framework/test-mock-factories";
 
-const sidebarState = {
-  isMenuOpen: ref(false),
-  openMenu: vi.fn(() => {
-    sidebarState.isMenuOpen.value = true;
-  }),
-  closeMenu: vi.fn(() => {
-    sidebarState.isMenuOpen.value = false;
-  }),
-};
+const sidebarState = createMockSidebarState();
+// Wire openMenu/closeMenu to actually toggle isMenuOpen for test assertions
+(sidebarState.openMenu as ReturnType<typeof vi.fn>).mockImplementation(() => {
+  sidebarState.isMenuOpen.value = true;
+});
+(sidebarState.closeMenu as ReturnType<typeof vi.fn>).mockImplementation(() => {
+  sidebarState.isMenuOpen.value = false;
+});
 
 const blades = ref([{ id: "workspace", name: "Dashboard", title: "Dashboard", visible: true }] as unknown[]);
 const activeBlade = computed(() => blades.value[blades.value.length - 1] as Record<string, unknown> | undefined);

@@ -4,13 +4,6 @@ import { computed, ref } from "vue";
 import { BladeDescriptorKey, BladeBannersKey, BladeStackKey } from "@core/blade-navigation/types";
 import type { BladeDescriptor, IBladeBanner, IBladeStack } from "@core/blade-navigation/types";
 
-// Mock vue-i18n
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({
-    t: (key: string) => key,
-  }),
-}));
-
 // Mock useCollapsible
 vi.mock("@ui/composables/useCollapsible", () => ({
   useCollapsible: () => ({

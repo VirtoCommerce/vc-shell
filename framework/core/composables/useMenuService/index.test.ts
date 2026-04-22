@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { defineComponent, h, inject } from "vue";
 import { mount } from "@vue/test-utils";
 import { MenuServiceKey } from "@framework/injection-keys";
@@ -15,7 +15,14 @@ describe("useMenuService", () => {
       },
     });
 
-    mount(TestComp);
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      mount(TestComp);
+    } finally {
+      warnSpy.mockRestore();
+      errorSpy.mockRestore();
+    }
   });
 
   it("returns injected service", () => {

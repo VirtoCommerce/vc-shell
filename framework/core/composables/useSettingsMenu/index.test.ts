@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { defineComponent, h, inject } from "vue";
 import { mount } from "@vue/test-utils";
 import { SettingsMenuServiceKey } from "@framework/injection-keys";
@@ -7,6 +7,8 @@ import { createSettingsMenuService } from "@core/services/settings-menu-service"
 
 describe("useSettingsMenu", () => {
   it("throws InjectionError when no service is provided", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const TestComp = defineComponent({
       setup() {
         expect(() => useSettingsMenu()).toThrow("SettingsMenuService");
@@ -15,6 +17,8 @@ describe("useSettingsMenu", () => {
     });
 
     mount(TestComp);
+    warnSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 
   it("returns injected service", () => {

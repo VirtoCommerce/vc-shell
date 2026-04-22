@@ -1,14 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  }),
-}));
-
 import { useAssets } from "./index";
 import type { ICommonAsset } from "@core/types";
 

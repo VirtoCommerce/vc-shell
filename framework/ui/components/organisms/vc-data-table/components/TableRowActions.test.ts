@@ -4,10 +4,6 @@ import { computed } from "vue";
 import TableRowActions from "./TableRowActions.vue";
 import { TableContextKey } from "@ui/components/organisms/vc-data-table/keys";
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k }),
-}));
-
 const stubs = {
   VcIcon: { template: '<i class="vc-icon-stub" />', props: ["icon", "size"] },
   VcButton: {

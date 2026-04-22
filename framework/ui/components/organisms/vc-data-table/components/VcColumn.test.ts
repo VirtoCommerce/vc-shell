@@ -12,7 +12,8 @@ describe("VcColumn", () => {
         provide: { [ColumnCollectorKey as symbol]: collector },
       },
     });
-    expect(w.html()).toBe("");
+    expect(w.findAll("*")).toHaveLength(0);
+    expect(w.text()).toBe("");
   });
 
   it("registers with ColumnCollector on mount", () => {
@@ -45,7 +46,8 @@ describe("VcColumn", () => {
     const w = mount(VcColumn, {
       props: { id: "name" },
     });
-    expect(w.html()).toBe("");
+    expect(w.findAll("*")).toHaveLength(0);
+    expect(w.text()).toBe("");
   });
 
   it("passes props correctly to collector", () => {

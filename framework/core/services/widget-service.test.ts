@@ -1,13 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
-
-async function loadWidgetServiceModule() {
-  vi.resetModules();
-  return import("@core/services/widget-service");
-}
+import { createWidgetService } from "@core/services/widget-service";
 
 describe("widget-service: trigger contract", () => {
-  it("accepts a widget with trigger and stores it", async () => {
-    const { createWidgetService } = await loadWidgetServiceModule();
+  it("accepts a widget with trigger and stores it", () => {
     const service = createWidgetService();
 
     const onRefresh = vi.fn();
@@ -36,8 +31,7 @@ describe("widget-service: trigger contract", () => {
 });
 
 describe("widget-service: register and retrieve", () => {
-  it("registers a widget and retrieves it by blade", async () => {
-    const { createWidgetService } = await loadWidgetServiceModule();
+  it("registers a widget and retrieves it by blade", () => {
     const service = createWidgetService();
 
     service.registerWidget({ id: "my-widget", component: {} as any, title: "My Widget" }, "blade-1");
@@ -47,8 +41,7 @@ describe("widget-service: register and retrieve", () => {
     expect(widgets[0].id).toBe("my-widget");
   });
 
-  it("unregisters a widget from a blade", async () => {
-    const { createWidgetService } = await loadWidgetServiceModule();
+  it("unregisters a widget from a blade", () => {
     const service = createWidgetService();
 
     service.registerWidget({ id: "w1", component: {} as any }, "blade-1");
@@ -59,8 +52,7 @@ describe("widget-service: register and retrieve", () => {
 });
 
 describe("widget-service: updateWidget", () => {
-  it("updates trigger.onRefresh on a registered widget", async () => {
-    const { createWidgetService } = await loadWidgetServiceModule();
+  it("updates trigger.onRefresh on a registered widget", () => {
     const service = createWidgetService();
 
     const onRefresh = vi.fn();
@@ -78,13 +70,11 @@ describe("widget-service: updateWidget", () => {
     const widgets = service.getWidgets("blade-1");
     expect(widgets[0].trigger?.onRefresh).toBe(onRefresh);
 
-    // Call onRefresh directly
     widgets[0].trigger?.onRefresh?.();
     expect(onRefresh).toHaveBeenCalledOnce();
   });
 
-  it("updates widget properties via updateWidget", async () => {
-    const { createWidgetService } = await loadWidgetServiceModule();
+  it("updates widget properties via updateWidget", () => {
     const service = createWidgetService();
 
     service.registerWidget(
@@ -102,8 +92,7 @@ describe("widget-service: updateWidget", () => {
     expect(widgets[0].title).toBe("New Title");
   });
 
-  it("stores trigger with onRefresh on a widget", async () => {
-    const { createWidgetService } = await loadWidgetServiceModule();
+  it("stores trigger with onRefresh on a widget", () => {
     const service = createWidgetService();
 
     const onRefresh = vi.fn();

@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect } from "vitest";
 import { tmpdir } from "node:os";
 import { selectTransforms } from "../../src/transforms/registry";

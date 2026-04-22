@@ -1,17 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { defineComponent, shallowReactive, DefineComponent, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
 import { PopupPluginKey } from "@core/composables/usePopup/keys";
 import type { PopupPlugin, UsePopupProps, UsePopupInternal } from "@core/composables/usePopup/types";
 import { usePopup } from "./index";
 import { registerPopupPreset, _resetPopupPresets } from "./preset-registry";
-
-// Mock vue-i18n
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({
-    t: (key: string) => key,
-  }),
-}));
 
 // Mock preset components (simple defineComponent stubs)
 const MockWarning = defineComponent({ name: "MockWarning", emits: ["close", "confirm"], template: "<div />" });

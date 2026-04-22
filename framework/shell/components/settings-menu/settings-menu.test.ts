@@ -3,10 +3,6 @@ import { mount } from "@vue/test-utils";
 import { ref, defineComponent, markRaw } from "vue";
 import SettingsMenu from "./settings-menu.vue";
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k, locale: ref("en") }),
-}));
-
 const DummyComp = markRaw(
   defineComponent({
     props: { label: String },

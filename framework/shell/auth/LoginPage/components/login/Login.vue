@@ -123,6 +123,7 @@ import { useUserManagement } from "@core/composables/useUserManagement";
 import { ExternalSignInProviderInfo, SignInResult } from "@core/api/platform";
 import { default as ExternalProviders } from "@shell/auth/sign-in/external-providers.vue";
 import { useExternalProvider } from "@shell/auth/sign-in/useExternalProvider";
+import { resolveSafeRedirectPath, formatSignInError } from "@shell/auth/utils";
 import { ExtensionPoint } from "@core/plugins/extension-points";
 import { createLogger } from "@core/utilities";
 import { VcAuthLayout, VcButton, VcForm, VcHint, VcInput } from "@ui/components";
@@ -164,17 +165,6 @@ const form = reactive({
   password: "",
 });
 
-function resolveSafeRedirectPath(candidate: string | null): string {
-  if (!candidate) return "/";
-
-  const redirectPath = candidate.trim();
-  if (!redirectPath.startsWith("/") || redirectPath.startsWith("//")) {
-    return "/";
-  }
-
-  return redirectPath;
-}
-
 const login = async () => {
   if (!isValid.value) return;
 
@@ -197,15 +187,7 @@ const login = async () => {
   }
 
   // Error handling
-  if (signInResult.value.status === 401) {
-    signInResult.value.error = "The login or password is incorrect.";
-  } else if (signInResult.value.status) {
-    signInResult.value.error = "Authentication error (code: " + signInResult.value.status + ").";
-  } else if (signInResult.value.error) {
-    signInResult.value.error = "Authentication error: " + signInResult.value.error;
-  } else {
-    signInResult.value.error = "The login or password is incorrect.";
-  }
+  signInResult.value.error = formatSignInError(signInResult.value);
 
   form.password = "";
   validateField("password");

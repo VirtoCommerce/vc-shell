@@ -1,5 +1,6 @@
 import { ref, nextTick } from "vue";
 import { mountWithSetup } from "@framework/test-helpers";
+import { createMockUserManagement } from "@framework/test-mock-factories";
 
 const mockIsAuthenticated = ref(false);
 const mockLoadHistory = vi.fn().mockResolvedValue(undefined);
@@ -7,10 +8,9 @@ const mockGetApps = vi.fn().mockResolvedValue(undefined);
 const mockAppsList = ref([]);
 const mockSwitchApp = vi.fn();
 
+const mockUserManagement = createMockUserManagement({ isAuthenticated: mockIsAuthenticated });
 vi.mock("@core/composables/useUserManagement", () => ({
-  useUserManagement: () => ({
-    isAuthenticated: mockIsAuthenticated,
-  }),
+  useUserManagement: () => mockUserManagement,
 }));
 
 vi.mock("@core/notifications", () => ({

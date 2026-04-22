@@ -1,4 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
+
+// Use real vue-i18n — this test uses createI18n with real messages
+vi.unmock("vue-i18n");
+
 import { mount } from "@vue/test-utils";
 import { h } from "vue";
 import { createI18n } from "vue-i18n";
@@ -12,7 +16,7 @@ vi.mock("./composables/useGalleryPreview", () => ({
   }),
 }));
 
-const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });
+const i18n = createI18n({ legacy: false, locale: "en", fallbackWarn: false, missingWarn: false, messages: { en: {} } });
 
 describe("VcGallery item actions", () => {
   it("triggers preview callback and emits edit/remove from item slot actions", async () => {

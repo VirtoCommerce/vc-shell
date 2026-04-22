@@ -21,15 +21,6 @@ vi.mock("@core/composables/useConnectionStatus", () => ({
   }),
 }));
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    debug: vi.fn(),
-  }),
-}));
-
 // Must be imported after vi.stubGlobal for navigator.connection mock
 let useSlowNetworkDetection: (typeof import("./index"))["useSlowNetworkDetection"];
 let _resetForTest: (typeof import("./index"))["_resetForTest"];

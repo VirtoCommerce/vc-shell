@@ -2,13 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { ref } from "vue";
 
-// Mock vue-i18n
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({
-    t: (key: string) => key,
-  }),
-}));
-
 // Mock useGalleryPreview
 vi.mock("@ui/components/organisms/vc-gallery/composables/useGalleryPreview", () => ({
   useGalleryPreview: () => ({

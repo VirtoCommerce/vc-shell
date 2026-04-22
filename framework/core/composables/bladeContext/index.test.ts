@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { ref, computed, defineComponent, h, nextTick, type ComputedRef } from "vue";
 import { mount } from "@vue/test-utils";
 import { defineBladeContext, injectBladeContext } from ".";
@@ -83,6 +83,8 @@ describe("defineBladeContext / injectBladeContext", () => {
   });
 
   it("throws InjectionError when no context provided", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     expect(() => {
       mount(
         defineComponent({
@@ -93,6 +95,8 @@ describe("defineBladeContext / injectBladeContext", () => {
         }),
       );
     }).toThrow("BladeContext");
+    warnSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 
   it("grandchild component accesses unwrapped context from ancestor blade", () => {

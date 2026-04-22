@@ -1,18 +1,9 @@
-import { describe, it, expect, vi } from "vitest";
-
-async function loadAppBarMenuServiceModule() {
-  vi.resetModules();
-  return import("@core/services/app-bar-menu-service");
-}
-
-async function loadSettingsMenuServiceModule() {
-  vi.resetModules();
-  return import("@core/services/settings-menu-service");
-}
+import { describe, it, expect, vi, beforeAll } from "vitest";
+import { createAppBarWidgetService } from "@core/services/app-bar-menu-service";
+import { createSettingsMenuService } from "@core/services/settings-menu-service";
 
 describe("app-bar-menu-service", () => {
-  it("keeps widget collections isolated across service instances", async () => {
-    const { createAppBarWidgetService } = await loadAppBarMenuServiceModule();
+  it("keeps widget collections isolated across service instances", () => {
     const firstService = createAppBarWidgetService();
     const secondService = createAppBarWidgetService();
 
@@ -22,8 +13,7 @@ describe("app-bar-menu-service", () => {
     expect(secondService.items.value).toHaveLength(0);
   });
 
-  it("registers and unregisters widgets", async () => {
-    const { createAppBarWidgetService } = await loadAppBarMenuServiceModule();
+  it("registers and unregisters widgets", () => {
     const service = createAppBarWidgetService();
 
     const id = service.register({ id: "w1", icon: "icon-1" });
@@ -33,8 +23,7 @@ describe("app-bar-menu-service", () => {
     expect(service.items.value).toHaveLength(0);
   });
 
-  it("sorts items by order", async () => {
-    const { createAppBarWidgetService } = await loadAppBarMenuServiceModule();
+  it("sorts items by order", () => {
     const service = createAppBarWidgetService();
 
     service.register({ id: "b", order: 2, icon: "icon-b" });
@@ -44,8 +33,7 @@ describe("app-bar-menu-service", () => {
     expect(service.items.value.map((i) => i.id)).toEqual(["a", "b", "c"]);
   });
 
-  it("auto-generates id if not provided", async () => {
-    const { createAppBarWidgetService } = await loadAppBarMenuServiceModule();
+  it("auto-generates id if not provided", () => {
     const service = createAppBarWidgetService();
 
     const id = service.register({ icon: "icon-1" });
@@ -53,8 +41,7 @@ describe("app-bar-menu-service", () => {
     expect(service.items.value).toHaveLength(1);
   });
 
-  it("stores widget title and search terms", async () => {
-    const { createAppBarWidgetService } = await loadAppBarMenuServiceModule();
+  it("stores widget title and search terms", () => {
     const service = createAppBarWidgetService();
 
     service.register({
@@ -68,39 +55,69 @@ describe("app-bar-menu-service", () => {
     expect(service.items.value[0].searchTerms).toEqual(["alerts", "inbox"]);
   });
 
-  it("preregistration deduplicates items with same id", async () => {
-    const { addAppBarWidget, createAppBarWidgetService } = await loadAppBarMenuServiceModule();
+  describe("preregistration deduplicates", () => {
+    let addAppBarWidget: typeof import("@core/services/app-bar-menu-service").addAppBarWidget;
+    let createService: typeof import("@core/services/app-bar-menu-service").createAppBarWidgetService;
 
-    addAppBarWidget({ id: "pre-widget", icon: "v1" });
-    addAppBarWidget({ id: "pre-widget", icon: "v2" });
+    beforeAll(async () => {
+      vi.resetModules();
+      const mod = await import("@core/services/app-bar-menu-service");
+      addAppBarWidget = mod.addAppBarWidget;
+      createService = mod.createAppBarWidgetService;
+    });
 
-    const service = createAppBarWidgetService();
-    expect(service.items.value).toHaveLength(1);
-    expect(service.items.value[0].icon).toBe("v2");
+    it("preregistration deduplicates items with same id", () => {
+      addAppBarWidget({ id: "pre-widget", icon: "v1" });
+      addAppBarWidget({ id: "pre-widget", icon: "v2" });
+
+      const service = createService();
+      expect(service.items.value).toHaveLength(1);
+      expect(service.items.value[0].icon).toBe("v2");
+    });
   });
 
-  it("live-broadcasts to existing services when preregistering", async () => {
-    const { addAppBarWidget, createAppBarWidgetService } = await loadAppBarMenuServiceModule();
+  describe("preregistration live-broadcasts", () => {
+    let addAppBarWidget: typeof import("@core/services/app-bar-menu-service").addAppBarWidget;
+    let createService: typeof import("@core/services/app-bar-menu-service").createAppBarWidgetService;
 
-    const service = createAppBarWidgetService();
-    addAppBarWidget({ id: "late-widget", icon: "late-icon" });
+    beforeAll(async () => {
+      vi.resetModules();
+      const mod = await import("@core/services/app-bar-menu-service");
+      addAppBarWidget = mod.addAppBarWidget;
+      createService = mod.createAppBarWidgetService;
+    });
 
-    expect(service.items.value).toHaveLength(1);
+    it("live-broadcasts to existing services when preregistering", () => {
+      const service = createService();
+      addAppBarWidget({ id: "late-widget", icon: "late-icon" });
+
+      expect(service.items.value).toHaveLength(1);
+    });
   });
 
-  it("disposes service instance via bus", async () => {
-    const { createAppBarWidgetService, appBarWidgetBus } = await loadAppBarMenuServiceModule();
-    const service = createAppBarWidgetService();
+  describe("preregistration dispose", () => {
+    let appBarWidgetBus: typeof import("@core/services/app-bar-menu-service").appBarWidgetBus;
+    let createService: typeof import("@core/services/app-bar-menu-service").createAppBarWidgetService;
 
-    expect(appBarWidgetBus.instanceCount).toBe(1);
-    appBarWidgetBus.dispose(service);
-    expect(appBarWidgetBus.instanceCount).toBe(0);
+    beforeAll(async () => {
+      vi.resetModules();
+      const mod = await import("@core/services/app-bar-menu-service");
+      appBarWidgetBus = mod.appBarWidgetBus;
+      createService = mod.createAppBarWidgetService;
+    });
+
+    it("disposes service instance via bus", () => {
+      const service = createService();
+
+      expect(appBarWidgetBus.instanceCount).toBe(1);
+      appBarWidgetBus.dispose(service);
+      expect(appBarWidgetBus.instanceCount).toBe(0);
+    });
   });
 });
 
 describe("settings-menu-service", () => {
-  it("keeps menu items isolated across service instances", async () => {
-    const { createSettingsMenuService } = await loadSettingsMenuServiceModule();
+  it("keeps menu items isolated across service instances", () => {
     const firstService = createSettingsMenuService();
     const secondService = createSettingsMenuService();
 
@@ -110,8 +127,7 @@ describe("settings-menu-service", () => {
     expect(secondService.items.value).toHaveLength(0);
   });
 
-  it("registers and unregisters items", async () => {
-    const { createSettingsMenuService } = await loadSettingsMenuServiceModule();
+  it("registers and unregisters items", () => {
     const service = createSettingsMenuService();
 
     const id = service.register({ id: "s1", component: {} as any });
@@ -121,8 +137,7 @@ describe("settings-menu-service", () => {
     expect(service.items.value).toHaveLength(0);
   });
 
-  it("sorts items by order", async () => {
-    const { createSettingsMenuService } = await loadSettingsMenuServiceModule();
+  it("sorts items by order", () => {
     const service = createSettingsMenuService();
 
     service.register({ id: "b", order: 2, component: {} as any });
@@ -131,23 +146,44 @@ describe("settings-menu-service", () => {
     expect(service.items.value.map((i) => i.id)).toEqual(["a", "b"]);
   });
 
-  it("preregistration deduplicates items with same id", async () => {
-    const { addSettingsMenuItem, createSettingsMenuService } = await loadSettingsMenuServiceModule();
+  describe("preregistration deduplicates", () => {
+    let addSettingsMenuItem: typeof import("@core/services/settings-menu-service").addSettingsMenuItem;
+    let createService: typeof import("@core/services/settings-menu-service").createSettingsMenuService;
 
-    addSettingsMenuItem({ id: "pre-s", component: {} as any, order: 1 });
-    addSettingsMenuItem({ id: "pre-s", component: {} as any, order: 2 });
+    beforeAll(async () => {
+      vi.resetModules();
+      const mod = await import("@core/services/settings-menu-service");
+      addSettingsMenuItem = mod.addSettingsMenuItem;
+      createService = mod.createSettingsMenuService;
+    });
 
-    const service = createSettingsMenuService();
-    expect(service.items.value).toHaveLength(1);
-    expect(service.items.value[0].order).toBe(2);
+    it("preregistration deduplicates items with same id", () => {
+      addSettingsMenuItem({ id: "pre-s", component: {} as any, order: 1 });
+      addSettingsMenuItem({ id: "pre-s", component: {} as any, order: 2 });
+
+      const service = createService();
+      expect(service.items.value).toHaveLength(1);
+      expect(service.items.value[0].order).toBe(2);
+    });
   });
 
-  it("disposes service instance via bus", async () => {
-    const { createSettingsMenuService, settingsMenuBus } = await loadSettingsMenuServiceModule();
-    const service = createSettingsMenuService();
+  describe("preregistration dispose", () => {
+    let settingsMenuBus: typeof import("@core/services/settings-menu-service").settingsMenuBus;
+    let createService: typeof import("@core/services/settings-menu-service").createSettingsMenuService;
 
-    expect(settingsMenuBus.instanceCount).toBe(1);
-    settingsMenuBus.dispose(service);
-    expect(settingsMenuBus.instanceCount).toBe(0);
+    beforeAll(async () => {
+      vi.resetModules();
+      const mod = await import("@core/services/settings-menu-service");
+      settingsMenuBus = mod.settingsMenuBus;
+      createService = mod.createSettingsMenuService;
+    });
+
+    it("disposes service instance via bus", () => {
+      const service = createService();
+
+      expect(settingsMenuBus.instanceCount).toBe(1);
+      settingsMenuBus.dispose(service);
+      expect(settingsMenuBus.instanceCount).toBe(0);
+    });
   });
 });

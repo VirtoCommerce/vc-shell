@@ -1,53 +1,20 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { ref } from "vue";
+import { resetSharedAuthDependencyMocks } from "@shell/auth/_test-utils/shared-dependency-mocks";
+import { authBaseStubs } from "@shell/auth/_test-utils/shared-stubs";
+import { createMockUserManagement } from "@shell/auth/_test-utils/shared-mock-factories";
 import ForgotPassword from "./ForgotPassword.vue";
 
 // ── Mocks ───────────────────────────────────────────────────────────────────
 
-vi.mock("vue-i18n", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("vue-i18n")>();
-  return {
-    ...actual,
-    useI18n: () => ({ t: (k: string) => k, locale: { value: "en" } }),
-  };
-});
-
-const mockRouterPush = vi.fn();
-vi.mock("vue-router", () => ({
-  useRouter: () => ({ push: mockRouterPush }),
-  useRoute: () => ({ query: {} }),
-}));
-
-const mockRequestPasswordReset = vi.fn().mockResolvedValue(undefined);
+const mockUserMgmt = createMockUserManagement();
 
 vi.mock("@core/composables/useUserManagement", () => ({
-  useUserManagement: () => ({
-    requestPasswordReset: mockRequestPasswordReset,
-  }),
-}));
-
-vi.mock("@core/composables", () => ({
-  useSettings: () => ({
-    uiSettings: ref({}),
-    loading: ref(false),
-  }),
+  useUserManagement: () => mockUserMgmt,
 }));
 
 const globalStubs = {
-  VcAuthLayout: { template: "<div><slot /></div>" },
-  VcForm: { template: "<div><slot /></div>" },
-  VcInput: { template: "<input />" },
-  VcButton: { template: "<button @click='$emit(\"click\")'><slot /></button>" },
-  VcHint: { template: "<span><slot /></span>" },
-  Field: {
-    template: '<div><slot v-bind="slotProps" /></div>',
-    computed: {
-      slotProps() {
-        return { errorMessage: "", handleChange: () => {}, errors: [] };
-      },
-    },
-  },
+  ...authBaseStubs,
 };
 
 function mountComponent(props = {}) {
@@ -65,6 +32,7 @@ function mountComponent(props = {}) {
 describe("ForgotPassword.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    resetSharedAuthDependencyMocks();
   });
 
   it("renders the component", () => {
@@ -74,20 +42,17 @@ describe("ForgotPassword.vue", () => {
 
   it("renders email input field", () => {
     const wrapper = mountComponent();
-    const html = wrapper.html();
-    expect(html).toContain("FORGOT_PASSWORD.FIELDS.EMAIL.LABEL");
+    expect(wrapper.findAll("input").length).toBeGreaterThanOrEqual(1);
   });
 
   it("renders send button", () => {
     const wrapper = mountComponent();
-    const html = wrapper.html();
-    expect(html).toContain("FORGOT_PASSWORD.SEND_BUTTON");
+    expect(wrapper.text()).toContain("FORGOT_PASSWORD.SEND_BUTTON");
   });
 
   it("renders back to login button", () => {
     const wrapper = mountComponent();
-    const html = wrapper.html();
-    expect(html).toContain("FORGOT_PASSWORD.BACK_TO_LOGIN");
+    expect(wrapper.text()).toContain("FORGOT_PASSWORD.BACK_TO_LOGIN");
   });
 
   it("does not show error hint by default", () => {

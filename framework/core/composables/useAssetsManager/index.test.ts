@@ -1,14 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  }),
-}));
-
 import { ref } from "vue";
 import { useAssetsManager } from "./index";
 import type { AssetLike } from "./index";

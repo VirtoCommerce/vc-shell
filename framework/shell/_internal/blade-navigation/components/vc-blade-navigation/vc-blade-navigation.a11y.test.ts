@@ -6,6 +6,9 @@ import { ref } from "vue";
 import { createRouter, createMemoryHistory } from "vue-router";
 import VcBladeNavigation from "@shell/_internal/blade-navigation/components/vc-blade-navigation/vc-blade-navigation-new.vue";
 
+// Use real vue-i18n — this test creates a full i18n instance with real messages
+vi.unmock("vue-i18n");
+
 // Mock blade-navigation composables and utils to avoid full plugin setup
 vi.mock("@core/blade-navigation/useBladeStack", () => ({
   useBladeStack: () => ({
@@ -29,7 +32,7 @@ vi.mock("@core/blade-navigation/useBladeMessaging", () => ({
 
 vi.mock("@core/blade-navigation/utils/urlSync", () => ({
   buildUrlFromStack: vi.fn().mockReturnValue("/"),
-  createUrlSync: vi.fn().mockReturnValue({ syncUrlReplace: vi.fn(), stop: vi.fn() }),
+  createUrlSync: vi.fn().mockReturnValue({ syncUrlPush: vi.fn(), syncUrlReplace: vi.fn() }),
   getTenantPrefix: vi.fn().mockReturnValue(""),
 }));
 

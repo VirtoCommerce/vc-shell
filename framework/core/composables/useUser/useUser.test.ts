@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { defineComponent, h } from "vue";
+import { defineComponent, h, ref } from "vue";
 import { mount } from "@vue/test-utils";
 import { expectNoVueWarnings } from "@framework/test-helpers";
 
@@ -9,19 +9,11 @@ import { expectNoVueWarnings } from "@framework/test-helpers";
 const mockGetCurrentUser = vi.fn();
 const mockPerformanceMark = vi.fn();
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    debug: vi.fn(),
-    error: vi.fn(),
-    warn: vi.fn(),
-  }),
-}));
+import { createMockExternalProvider } from "@framework/test-mock-factories";
 
+const mockExternalProvider = createMockExternalProvider({ storage: ref({}) });
 vi.mock("@core/composables/useExternalProvider", () => ({
-  useExternalProvider: () => ({
-    storage: { value: null },
-    signOut: vi.fn(),
-  }),
+  useExternalProvider: () => mockExternalProvider,
 }));
 
 vi.mock("@core/api/platform", () => ({

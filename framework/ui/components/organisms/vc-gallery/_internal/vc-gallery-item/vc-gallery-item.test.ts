@@ -1,9 +1,13 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+// Use real vue-i18n — this test uses createI18n with real messages
+vi.unmock("vue-i18n");
+
 import { mount } from "@vue/test-utils";
 import { createI18n } from "vue-i18n";
 import VcGalleryItem from "./vc-gallery-item.vue";
 
-const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });
+const i18n = createI18n({ legacy: false, locale: "en", fallbackWarn: false, missingWarn: false, messages: { en: {} } });
 
 beforeAll(() => {
   if (!window.matchMedia) {

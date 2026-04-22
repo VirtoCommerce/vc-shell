@@ -4,15 +4,6 @@ import { defineComponent, h, provide } from "vue";
 import { mount } from "@vue/test-utils";
 import type { PushNotification } from "@core/api/platform";
 
-// Mock dependencies
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    debug: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-  }),
-}));
-
 vi.mock("@core/api/platform", () => ({
   PushNotificationClient: class {
     markAllAsRead = vi.fn().mockResolvedValue(undefined);

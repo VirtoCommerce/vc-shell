@@ -9,15 +9,6 @@ vi.mock("@core/plugins/i18n", () => ({
   },
 }));
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    warn: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  }),
-}));
-
 // Must import after mocks
 import { useTheme } from "./index";
 

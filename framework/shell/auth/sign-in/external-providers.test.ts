@@ -4,10 +4,6 @@ import ExternalProviders from "./external-providers.vue";
 
 // ── Mocks ───────────────────────────────────────────────────────────────────
 
-vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string) => k, locale: { value: "en" } }),
-}));
-
 vi.mock("vue-router", () => ({
   useRouter: () => ({ push: vi.fn() }),
   useRoute: () => ({ query: {} }),

@@ -3,14 +3,6 @@ import { describe, it, expect, vi } from "vitest";
 // Module-scope so behavioral tests below can configure getCurrentUser per-call.
 const mockGetCurrentUser = vi.fn();
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    debug: vi.fn(),
-    error: vi.fn(),
-    warn: vi.fn(),
-  }),
-}));
-
 vi.mock("@core/composables/useExternalProvider", () => ({
   useExternalProvider: () => ({
     storage: { value: null },

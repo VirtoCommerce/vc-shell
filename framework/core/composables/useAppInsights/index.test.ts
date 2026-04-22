@@ -1,5 +1,6 @@
-import { ref, defineComponent, h } from "vue";
+import { computed, defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
+import { createMockUserManagement } from "@framework/test-mock-factories";
 
 // Mock external dependencies before importing the module under test
 const mockStartTrackPage = vi.fn();
@@ -23,10 +24,11 @@ vi.mock("@microsoft/applicationinsights-core-js", () => ({
   generateW3CId: () => "mock-w3c-id",
 }));
 
+const mockUserManagement = createMockUserManagement({
+  user: computed(() => ({ id: "user-123", userName: "testuser" }) as any),
+});
 vi.mock("@core/composables/useUserManagement", () => ({
-  useUserManagement: () => ({
-    user: ref({ id: "user-123", userName: "testuser" }),
-  }),
+  useUserManagement: () => mockUserManagement,
 }));
 
 // Must import after mocks are set up

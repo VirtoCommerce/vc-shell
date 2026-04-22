@@ -59,7 +59,7 @@ describe("ColumnFilter", () => {
   it("renders with dateRange filterType", () => {
     const w = factory({
       filterType: "dateRange",
-      rangeFields: { startField: "start", endField: "end" },
+      rangeFields: ["start", "end"],
     });
     expect(w.exists()).toBe(true);
   });

@@ -20,6 +20,9 @@ describe("VcField", () => {
             template: '<div class="stub-field-type"><slot /></div>',
             props: ["value", "type"],
           },
+          VcLink: {
+            template: '<a class="stub-link"><slot /></a>',
+          },
           VcButton: true,
         },
       },

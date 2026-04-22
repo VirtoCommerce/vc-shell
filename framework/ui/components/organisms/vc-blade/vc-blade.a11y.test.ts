@@ -1,10 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+// Use real vue-i18n — this test uses createI18n with real messages
+vi.unmock("vue-i18n");
+
 import { defineComponent, h, provide, computed, ref } from "vue";
 import { mount, VueWrapper } from "@vue/test-utils";
 import axe from "axe-core";
 import { createI18n } from "vue-i18n";
 import VcBlade from "@ui/components/organisms/vc-blade/vc-blade.vue";
-import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
+import { BladeBackButtonKey, ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
 import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey } from "@core/blade-navigation/types";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
@@ -42,11 +46,11 @@ vi.mock("@shell/_internal/blade-navigation/plugin-v2", () => ({
 // Also mock urlSync to avoid router dependency in useBlade
 vi.mock("@core/blade-navigation/utils/urlSync", () => ({
   buildUrlFromStack: vi.fn().mockReturnValue("/"),
-  createUrlSync: vi.fn().mockReturnValue({ stop: vi.fn() }),
+  createUrlSync: vi.fn().mockReturnValue({ syncUrlPush: vi.fn(), syncUrlReplace: vi.fn() }),
   getTenantPrefix: vi.fn().mockReturnValue(""),
 }));
 
-const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });
+const i18n = createI18n({ legacy: false, locale: "en", fallbackWarn: false, missingWarn: false, messages: { en: {} } });
 
 /**
  * VcBlade requires blade injection context. We wrap it in a parent component
@@ -55,6 +59,7 @@ const i18n = createI18n({ legacy: false, locale: "en", messages: { en: {} } });
 function createBladeWrapper(bladeProps: Record<string, unknown> = {}) {
   return defineComponent({
     setup() {
+      provide(BladeBackButtonKey, null as any);
       provide(ToolbarServiceKey, createToolbarService());
       provide(WidgetServiceKey, createWidgetService());
       provide(BladeStackKey, {

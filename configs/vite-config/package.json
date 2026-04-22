@@ -16,7 +16,7 @@
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/compiler-sfc": "^3.5.30",
     "vite": "^6.3.3",
-    "vite-plugin-checker": "^0.9.1",
+    "vite-plugin-checker": "^0.13.0",
     "vite-plugin-circular-dependency": "^0.5.0",
     "vite-plugin-mkcert": "^1.17.1",
     "vue": "^3.5.30"

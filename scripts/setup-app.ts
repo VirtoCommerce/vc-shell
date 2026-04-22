@@ -6,25 +6,38 @@
  * but is NOT a workspace — it keeps its own node_modules and yarn.lock.
  *
  * What it does, per app in apps/:
- *   1. Reads app's package.json; for every @vc-shell/* dep rewrites the
- *      range to a portal: URL pointing at the local package in this repo.
- *   2. Ensures preserveSymlinks: true in app's tsconfig.json (if present).
- *   3. Ensures resolve.preserveSymlinks: true in app's vite.config.{ts,js,mjs}
- *      (if present and contains a defineConfig object literal).
- *   4. Runs `yarn install` inside the app directory.
+ *   1. Saves a one-time backup snapshot to .vc-shell/setup-apps-backup.json.
+ *   2. Rewrites @vc-shell/* deps in package.json to portal: absolute paths.
+ *   3. Ensures compilerOptions.preserveSymlinks=true in tsconfig files.
+ *   4. Ensures resolve.preserveSymlinks=true in vite config.
+ *   5. Runs yarn install inside the app directory.
  *
- * The root yarn.lock is untouched — apps/* is no longer part of workspaces.
- *
- * Usage:
- *   yarn setup:apps
+ * Use `yarn unsetup:apps` to restore the backup and revert local app coupling.
  */
 
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import spawn from "cross-spawn";
 
 const ROOT = path.resolve(__dirname, "..");
 const APPS_DIR = path.join(ROOT, "apps");
+const BACKUP_FILE = ".vc-shell/setup-apps-backup.json";
+
+const TSCONFIG_CANDIDATES = ["tsconfig.json", "tsconfig.app.json"];
+const VITE_CONFIG_CANDIDATES = [
+  "vite.config.ts",
+  "vite.config.js",
+  "vite.config.mjs",
+  "vite.config.mts",
+  "vite.config.cts",
+  "vite.config.cjs",
+];
+
+type AppSetupBackup = {
+  version: 1;
+  createdAt: string;
+  files: Record<string, string | null>;
+};
 
 const PACKAGE_TO_WORKSPACE_PATH: Record<string, string> = {
   "@vc-shell/framework": "framework",
@@ -38,6 +51,32 @@ const PACKAGE_TO_WORKSPACE_PATH: Record<string, string> = {
   "@vc-shell/mf-host": "packages/mf-host",
   "@vc-shell/mf-module": "packages/mf-module",
 };
+
+function ensureSetupBackup(appDir: string) {
+  const backupPath = path.join(appDir, BACKUP_FILE);
+  if (existsSync(backupPath)) {
+    console.log(`  ${BACKUP_FILE}: backup already exists`);
+    return;
+  }
+
+  const filesToBackup = ["package.json", "yarn.lock", ...TSCONFIG_CANDIDATES, ...VITE_CONFIG_CANDIDATES];
+  const files: Record<string, string | null> = {};
+
+  for (const relPath of filesToBackup) {
+    const absPath = path.join(appDir, relPath);
+    files[relPath] = existsSync(absPath) ? readFileSync(absPath, "utf-8") : null;
+  }
+
+  const snapshot: AppSetupBackup = {
+    version: 1,
+    createdAt: new Date().toISOString(),
+    files,
+  };
+
+  mkdirSync(path.dirname(backupPath), { recursive: true });
+  writeFileSync(backupPath, JSON.stringify(snapshot, null, 2) + "\n");
+  console.log(`  ${BACKUP_FILE}: backup created`);
+}
 
 function rewriteVcShellDepsToPortal(appDir: string): boolean {
   const pkgPath = path.join(appDir, "package.json");
@@ -88,28 +127,45 @@ function rewriteVcShellDepsToPortal(appDir: string): boolean {
   if (changed) {
     writeFileSync(pkgPath, JSON.stringify(appPkg, null, 2) + "\n");
   }
+
   return changed;
 }
 
 function ensureTsconfigPreserveSymlinks(appDir: string) {
-  const candidates = ["tsconfig.json", "tsconfig.app.json"];
-  for (const name of candidates) {
+  for (const name of TSCONFIG_CANDIDATES) {
     const tsconfigPath = path.join(appDir, name);
     if (!existsSync(tsconfigPath)) continue;
 
     const raw = readFileSync(tsconfigPath, "utf-8");
-    // Skip JSON-with-comments parsing; use a safe regex for already-set case
+
     if (/"preserveSymlinks"\s*:\s*true/.test(raw)) {
       console.log(`  ${name}: preserveSymlinks already true`);
       continue;
     }
-    console.log(`  ${name}: NOTE — add "preserveSymlinks": true under compilerOptions manually`);
+
+    if (/"preserveSymlinks"\s*:\s*false/.test(raw)) {
+      const updated = raw.replace(/"preserveSymlinks"\s*:\s*false/g, '"preserveSymlinks": true');
+      writeFileSync(tsconfigPath, updated);
+      console.log(`  ${name}: updated preserveSymlinks false -> true`);
+      continue;
+    }
+
+    if (/^([ \t]*)"compilerOptions"\s*:\s*\{/m.test(raw)) {
+      const updated = raw.replace(
+        /^([ \t]*)"compilerOptions"\s*:\s*\{/m,
+        (match, indent: string) => `${match}\n${indent}  "preserveSymlinks": true,`,
+      );
+      writeFileSync(tsconfigPath, updated);
+      console.log(`  ${name}: added compilerOptions.preserveSymlinks = true`);
+      continue;
+    }
+
+    console.log(`  ${name}: skip (no compilerOptions block found)`);
   }
 }
 
 function ensureViteConfigPreserveSymlinks(appDir: string) {
-  const candidates = ["vite.config.ts", "vite.config.js", "vite.config.mjs"];
-  for (const name of candidates) {
+  for (const name of VITE_CONFIG_CANDIDATES) {
     const vitePath = path.join(appDir, name);
     if (!existsSync(vitePath)) continue;
 
@@ -118,7 +174,55 @@ function ensureViteConfigPreserveSymlinks(appDir: string) {
       console.log(`  ${name}: preserveSymlinks already true`);
       continue;
     }
-    console.log(`  ${name}: NOTE — add resolve: { preserveSymlinks: true } manually`);
+
+    // Common host-app template:
+    // export default getApplicationConfiguration(mfHostConfig());
+    if (/export\s+default\s+getApplicationConfiguration\(\s*mfHostConfig\(\)\s*\)\s*;?/m.test(raw)) {
+      const updated = raw.replace(
+        /export\s+default\s+getApplicationConfiguration\(\s*mfHostConfig\(\)\s*\)\s*;?/m,
+        [
+          "const mfConfig = mfHostConfig();",
+          "",
+          "export default getApplicationConfiguration({",
+          "  ...mfConfig,",
+          "  resolve: {",
+          "    ...(mfConfig.resolve ?? {}),",
+          "    preserveSymlinks: true,",
+          "  },",
+          "});",
+        ].join("\n"),
+      );
+      writeFileSync(vitePath, updated);
+      console.log(`  ${name}: added resolve.preserveSymlinks via mfHostConfig wrapper`);
+      continue;
+    }
+
+    // Common standalone template:
+    // export default getApplicationConfiguration({ ... });
+    if (/export\s+default\s+getApplicationConfiguration\(\s*\{/m.test(raw)) {
+      const updated = raw.replace(
+        /export\s+default\s+getApplicationConfiguration\(\s*\{/m,
+        ["export default getApplicationConfiguration({", "  resolve: {", "    preserveSymlinks: true,", "  },"].join(
+          "\n",
+        ),
+      );
+      writeFileSync(vitePath, updated);
+      console.log(`  ${name}: added resolve.preserveSymlinks to getApplicationConfiguration`);
+      continue;
+    }
+
+    // Generic defineConfig(...) object literal
+    if (/export\s+default\s+defineConfig\(\s*\{/m.test(raw)) {
+      const updated = raw.replace(
+        /export\s+default\s+defineConfig\(\s*\{/m,
+        ["export default defineConfig({", "  resolve: {", "    preserveSymlinks: true,", "  },"].join("\n"),
+      );
+      writeFileSync(vitePath, updated);
+      console.log(`  ${name}: added resolve.preserveSymlinks to defineConfig`);
+      continue;
+    }
+
+    console.log(`  ${name}: skip (unrecognized config pattern)`);
   }
 }
 
@@ -150,6 +254,7 @@ function run() {
 
     console.log(`\n${path.relative(ROOT, appDir)}:`);
 
+    ensureSetupBackup(appDir);
     rewriteVcShellDepsToPortal(appDir);
     ensureTsconfigPreserveSymlinks(appDir);
     ensureViteConfigPreserveSymlinks(appDir);
@@ -165,7 +270,7 @@ function run() {
     process.exit(1);
   }
 
-  console.log("\nDone. See README `Local Development via portal: Protocol` for the full flow.");
+  console.log("\nDone. To roll back local portal setup run `yarn unsetup:apps`.");
 }
 
 run();

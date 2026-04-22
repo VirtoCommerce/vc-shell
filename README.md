@@ -275,7 +275,13 @@ If your app lives outside this monorepo and you want to debug against a local bu
 yarn setup:apps
 ```
 
-The script rewrites every `@vc-shell/*` dependency in the app's `package.json` to a `portal:` path pointing at the matching package in this repository, then runs `yarn install` inside the app directory. You still need to set `preserveSymlinks: true` on both the app's `tsconfig.json` and Vite config (see step 3 below). After setup, start the app from its own directory (`cd apps/<name> && yarn dev`).
+The script rewrites every `@vc-shell/*` dependency in the app's `package.json` to a `portal:` path pointing at the matching package in this repository, enables `preserveSymlinks` in app `tsconfig` and Vite config, stores a rollback snapshot at `.vc-shell/setup-apps-backup.json`, and runs `yarn install` inside the app directory. After setup, start the app from its own directory (`cd apps/<name> && yarn dev`).
+
+To rollback app coupling and restore original files:
+
+```bash
+yarn unsetup:apps
+```
 
 **Manual setup** (same flow in full detail):
 
@@ -302,6 +308,8 @@ The script rewrites every `@vc-shell/*` dependency in the app's `package.json` t
    Include every `@vc-shell/*` package the app actually imports — portal entries are not auto-discovered like workspace deps.
 
 3. **Enable preserveSymlinks on the app side** so the app's bundler and TypeScript follow the portal symlink back to the real package on disk. Skipping this creates two copies of Vue (one through the symlink, one through the app's own `node_modules`), breaking reactivity with warnings like "Vue has already been registered".
+
+   If you used `yarn setup:apps`, this step is applied automatically.
 
    In the app's `tsconfig.json`:
 

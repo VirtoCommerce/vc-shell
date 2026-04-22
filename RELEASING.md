@@ -93,7 +93,7 @@ Commit types that surface in `CHANGELOG.md` (Angular preset):
 - `fix` → Bug Fixes
 - `perf` → Performance Improvements
 
-Filtered out (not shown in public changelog): `chore`, `docs`, `test`, `ci`, `build`, `style`, `refactor`, `revert`.
+For stable consolidation (`2.x.y` without prerelease suffix), changelog generation now keeps all conventional commit types from the stable baseline range (including `chore`, `docs`, `test`, `ci`, `build`, `style`, `refactor`, `revert`) so alpha/beta/rc work is not lost.
 
 ## Managed Packages
 
@@ -117,9 +117,11 @@ Before triggering the workflow in production, you can simulate locally:
 ```bash
 yarn release:dry                          # simulates stable release
 PRERELEASE_CHANNEL=alpha yarn release:dry # simulates alpha release (no CHANGELOG)
+RELEASE_PREFLIGHT_NO_CACHE=1 yarn release:dry # force full preflight (ignore cache)
 ```
 
 Output shows what release-it would do without making changes.
+`yarn release:dry` caches the last successful preflight run in `.yarn/.cache/release-preflight.json` and skips repeated checks when git state and inputs are unchanged.
 
 ## Regenerating Full Changelog
 

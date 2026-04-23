@@ -35,7 +35,11 @@ if (!fs.existsSync(cacheDir)) {
   fs.mkdirSync(cacheDir, { recursive: true });
 }
 
-const child = spawn(process.execPath, ["-e", `
+const child = spawn(
+  process.execPath,
+  [
+    "-e",
+    `
   const fs = require("fs");
   const { execSync } = require("child_process");
 
@@ -54,7 +58,7 @@ const child = spawn(process.execPath, ["-e", `
 
   let latest = null;
   try {
-    latest = execSync("npm view @vc-shell/vc-app-skill@alpha version", { encoding: "utf8", timeout: 10000, windowsHide: true }).trim();
+    latest = execSync("npm view @vc-shell/vc-app-skill@latest version", { encoding: "utf8", timeout: 10000, windowsHide: true }).trim();
   } catch (e) {}
 
   const result = {
@@ -65,10 +69,13 @@ const child = spawn(process.execPath, ["-e", `
   };
 
   fs.writeFileSync(cacheFile, JSON.stringify(result));
-`], {
-  stdio: "ignore",
-  windowsHide: true,
-  detached: true
-});
+`,
+  ],
+  {
+    stdio: "ignore",
+    windowsHide: true,
+    detached: true,
+  },
+);
 
 child.unref();

@@ -68,9 +68,6 @@ interface FrameworkInstallArgs {
     locale: string;
     fallbackLocale: string;
   };
-  signalR?: {
-    creator?: string;
-  };
   applicationInsights?: {
     instrumentationKey: string;
     appName?: string;
@@ -183,7 +180,7 @@ function installPlugins(app: App, args: FrameworkInstallArgs) {
   app.use(VcPopupHandler);
   app.use(AssetsDetailsModule);
   app.use(AssetsManagerModule);
-  app.use(signalR, args.signalR);
+  app.use(signalR);
   app.use(permissions);
   app.use<[]>(Vue3TouchEvents);
 
@@ -356,6 +353,7 @@ export {
   useBladeNotifications,
   useNotificationStore,
   useNotificationContext,
+  useBroadcastFilter,
   NotificationContextKey,
 } from "@core/notifications";
 export { notification } from "@core/notifications/notification";
@@ -367,6 +365,7 @@ export type {
   NotificationAction,
   BladeNotificationOptions,
   BladeNotificationReturn,
+  UseBroadcastFilterReturn,
 } from "@core/notifications";
 
 // Core
@@ -384,8 +383,8 @@ export * from "@core/plugins/validation";
 // i18n (public singleton)
 export { i18n } from "@core/plugins/i18n";
 
-// SignalR (public symbols)
-export { signalR, updateSignalRCreatorSymbol } from "@core/plugins/signalR";
+// SignalR
+export { signalR } from "@core/plugins/signalR";
 
 // Blade navigation (public composables + types)
 export * from "@core/blade-navigation";

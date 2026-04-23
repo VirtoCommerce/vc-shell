@@ -225,4 +225,33 @@ describe("NotificationStore", () => {
       expect(store.getByType("B")).toHaveLength(1);
     });
   });
+
+  describe("broadcastFilter", () => {
+    it("accepts all broadcast messages when no filter is set", () => {
+      store.ingest(makePush({ id: "1", creator: "seller-A" }), { broadcast: true });
+      store.ingest(makePush({ id: "2", creator: "seller-B" }), { broadcast: true });
+      expect(store.history.value).toHaveLength(2);
+    });
+
+    it("filters broadcast messages when filter is set", () => {
+      store.setBroadcastFilter((msg) => msg.creator === "seller-A");
+      store.ingest(makePush({ id: "1", creator: "seller-A" }), { broadcast: true });
+      store.ingest(makePush({ id: "2", creator: "seller-B" }), { broadcast: true });
+      expect(store.history.value).toHaveLength(1);
+      expect(store.history.value[0].id).toBe("1");
+    });
+
+    it("does not filter non-broadcast messages even when filter is set", () => {
+      store.setBroadcastFilter((msg) => msg.creator === "seller-A");
+      store.ingest(makePush({ id: "1", creator: "admin-user" }));
+      expect(store.history.value).toHaveLength(1);
+    });
+
+    it("clearBroadcastFilter removes the filter", () => {
+      store.setBroadcastFilter((msg) => msg.creator === "seller-A");
+      store.clearBroadcastFilter();
+      store.ingest(makePush({ id: "1", creator: "seller-B" }), { broadcast: true });
+      expect(store.history.value).toHaveLength(1);
+    });
+  });
 });

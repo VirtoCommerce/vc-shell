@@ -11,6 +11,7 @@ The first step is to update your application's `package.json` file.
 Many key dependencies have been updated in the new framework version. Ensure you are using versions compatible with the new `@vc-shell/framework`.
 
 Key version changes include:
+
 - `vite`: `5.3.6` -> `^6.3.3`
 - `@vitejs/plugin-vue`: `5.0.3` -> `^5.2.3`
 - `vue`: `^3.4.19` -> `^3.5.13`
@@ -39,15 +40,16 @@ As part of unifying the visual style, the framework has moved away from **Font A
 
 Instead, it is recommended to use the following icon sets, which are fully supported by the `VcIcon` component:
 
--   **Material Symbols** (prefix `material-`)
--   **Lucide Icons** (prefix `lucide-`)
--   **Bootstrap Icons** (prefix `bi-`)
+- **Material Symbols** (prefix `material-`)
+- **Lucide Icons** (prefix `lucide-`)
+- **Bootstrap Icons** (prefix `bi-`)
 
 ### Old Approach (Deprecated)
 
 Previously, Font Awesome was used for icons.
 
 **Example:**
+
 ```vue
 <VcIcon icon="fas fa-save" />
 <VcIcon icon="far fa-user-circle" />
@@ -64,6 +66,7 @@ You need to find equivalents for the old icons in the new sets and replace them 
 3.  **Replace the icons** in your code.
 
 **Replacement Example:**
+
 ```vue
 <!-- Old way -->
 <VcIcon icon="fas fa-save" />
@@ -75,6 +78,7 @@ You need to find equivalents for the old icons in the new sets and replace them 
 <VcIcon icon="material-home" />
 <VcIcon icon="material-delete" />
 ```
+
 This transition will help ensure a consistent and modern look for your application.
 
 ## 3. Updating Styles and Assets
@@ -97,20 +101,23 @@ The framework now automatically loads all necessary base styles.
 In line with modern Sass standards, the `@import` rule is being phased out. The new framework version recommends using `@use`, which offers better performance and resolves name conflicts by introducing namespaces.
 
 **Old Approach (Deprecated):**
+
 ```scss
 // src/styles/index.scss
 @tailwind components;
-@import 'custom';
+@import "custom";
 @tailwind utilities;
 ```
 
 **New Approach:**
+
 ```scss
 // src/styles/index.scss
 @tailwind components;
-@use 'custom';
+@use "custom";
 @tailwind utilities;
 ```
+
 You should review all `.scss` files in your project and make this change.
 
 ### 3.3. Restructure Style Files
@@ -119,6 +126,7 @@ The SCSS file structure has been simplified. The files `base.scss` and `colors.s
 
 **Old Structure:**
 Your `src/styles/` directory contained:
+
 - `base.scss`
 - `colors.scss`
 - `custom.scss`
@@ -126,6 +134,7 @@ Your `src/styles/` directory contained:
 
 **New Structure:**
 This directory should now only contain:
+
 - `custom.scss`
 - `index.scss`
 
@@ -133,14 +142,17 @@ This directory should now only contain:
 
 1.  **Delete unnecessary files**: Remove `src/styles/base.scss` and `src/styles/colors.scss`.
 2.  **Update `src/styles/index.scss`**:
+
     ```scss
-    @use 'custom';
+    @use "custom";
 
     @tailwind base;
     @tailwind components;
     @tailwind utilities;
     ```
+
     Note the addition of `@tailwind base;`, which was previously in `base.scss`.
+
 3.  **Move custom styles**: If you had any custom styles in `colors.scss` or `base.scss`, move them to `custom.scss`.
 
 ## 4. Updating TypeScript Declaration File (`shims-vue.d.ts`)
@@ -156,6 +168,7 @@ You need to extend the `ComponentCustomProperties` interface with types for `vue
 1.  **Replace the content of `shims-vue.d.ts`**: Update the file to match the new structure.
 
     **Updated `shims-vue.d.ts`:**
+
     ```typescript
     /* eslint-disable */
 
@@ -185,13 +198,13 @@ You need to extend the `ComponentCustomProperties` interface with types for `vue
     }
 
     export {};
-
     ```
+
     **Key Changes:**
-    -   Added declaration for `$t: (key: string, ...args: any[]) => string;`.
-    -   Added declaration for `$mergeLocaleMessage`, with its type imported from `vue-i18n`'s `Composer`.
-    -   The `ComponentCustomProperties` interface now extends the base `_ComponentCustomProperties` type from Vue for better compatibility.
-    -   Imports have been updated to use `import type`, which is a modern TypeScript practice.
+    - Added declaration for `$t: (key: string, ...args: any[]) => string;`.
+    - Added declaration for `$mergeLocaleMessage`, with its type imported from `vue-i18n`'s `Composer`.
+    - The `ComponentCustomProperties` interface now extends the base `_ComponentCustomProperties` type from Vue for better compatibility.
+    - Imports have been updated to use `import type`, which is a modern TypeScript practice.
 
 ## 5. Working with Generic Components (e.g., `VcTable`)
 
@@ -200,11 +213,13 @@ With the update to Vue 3.3+, the way to define and use type-safe generic compone
 ### The Problem: Lack of Type Inference in Older Versions
 
 In older versions, components like `VcTable` were not truly generic. This meant that when you passed an array of typed items (e.g., `IProductAssociation[]`) to the `:items` prop, the type information was lost within the component. As a result:
--   Slot props (like the `item` in a cell template) defaulted to `any`.
--   Event payloads (like the array of selected items) also defaulted to `any`.
--   This forced developers to use manual type casting and led to potential runtime errors and a poor developer experience in the IDE.
+
+- Slot props (like the `item` in a cell template) defaulted to `any`.
+- Event payloads (like the array of selected items) also defaulted to `any`.
+- This forced developers to use manual type casting and led to potential runtime errors and a poor developer experience in the IDE.
 
 **Example of the old, non-generic `VcTable` usage:**
+
 ```vue
 <template>
   <!-- ... -->
@@ -234,6 +249,7 @@ The recommended way to provide an explicit type to a generic component is by usi
 2.  Add a comment `<!-- @vue-generic {YourItemType} -->` directly above the component instance.
 
 **Example of migrating `VcTable` in an `Associations` component:**
+
 ```vue
 <script setup lang="ts">
 import { IProductAssociation } from "@vc-shell/api-client";
@@ -257,10 +273,12 @@ function onSelectionChanged(selectedItems: IProductAssociation[], type: string) 
   </VcTable>
 </template>
 ```
+
 **Key Benefits:**
--   **Type-Safe Slots:** The `item` in the slot is now correctly inferred as `IProductAssociation`.
--   **Type-Safe Events:** The `$event` payload for the `@selection-changed` event is correctly typed as `IProductAssociation[]`, so no casting is needed.
--   **Improved IDE Support:** You get full autocompletion and type-checking in your editor.
+
+- **Type-Safe Slots:** The `item` in the slot is now correctly inferred as `IProductAssociation`.
+- **Type-Safe Events:** The `$event` payload for the `@selection-changed` event is correctly typed as `IProductAssociation[]`, so no casting is needed.
+- **Improved IDE Support:** You get full autocompletion and type-checking in your editor.
 
 This change is crucial for building robust and maintainable applications and should be applied to all instances of `VcTable` and other generic components in your project.
 
@@ -273,6 +291,7 @@ Adding custom buttons and widgets to the top application bar (App Bar) has been 
 Previously, `toolbar` and `toolbar:prepend` slots were used in `VcApp`.
 
 **Example in `App.vue`:**
+
 ```vue
 <!-- App.vue -->
 <template>
@@ -300,26 +319,27 @@ Widgets are now registered programmatically. This allows any module to add eleme
 2.  **Register widgets using `useAppBarWidget`**: In a suitable location (e.g., the `setup` script of `App.vue` for global widgets, or within a specific module), call `register` from `useAppBarWidget`.
 
     **Example:**
+
     ```typescript
     // Inside the setup block of a component like App.vue
-    import { onMounted } from 'vue';
-    import { useAppBarWidget } from '@vc-shell/framework';
-    import LanguageSelector from './components/LanguageSelector.vue';
-    import MyCustomBackButton from './components/MyCustomBackButton.vue';
+    import { onMounted } from "vue";
+    import { useAppBarWidget } from "@vc-shell/framework";
+    import LanguageSelector from "./components/LanguageSelector.vue";
+    import MyCustomBackButton from "./components/MyCustomBackButton.vue";
 
     onMounted(() => {
       const { register } = useAppBarWidget();
 
       // Register a widget to appear at the end (right side)
       register({
-        id: 'language-selector',
+        id: "language-selector",
         component: LanguageSelector,
         order: 100, // Higher order means further to the right
       });
 
       // Register a widget to appear at the beginning (left side)
       register({
-        id: 'custom-back-button',
+        id: "custom-back-button",
         component: MyCustomBackButton,
         order: 10, // Lower order means further to the left
       });
@@ -335,6 +355,7 @@ Previously, adding or removing items from the user dropdown menu was done via a 
 In `App.vue`, you could override the default menu items.
 
 **Example of removing the "Change Password" item:**
+
 ```vue
 <!-- App.vue -->
 <template>
@@ -368,35 +389,38 @@ The new approach allows for centralized and dynamic management of settings menu 
 2.  **Add a new menu item**: To add an item, create a component for it (preferably using `SettingsMenuItem` as a base) and register it with `useSettingsMenu`.
 
     **Example:**
+
     ```typescript
     // In a suitable place, like a component's setup or a plugin
-    import { useSettingsMenu } from '@vc-shell/framework';
-    import MyCustomSettings from './MyCustomSettings.vue';
-    import { onUnmounted } from 'vue';
+    import { useSettingsMenu } from "@vc-shell/framework";
+    import MyCustomSettings from "./MyCustomSettings.vue";
+    import { onUnmounted } from "vue";
 
     const settingsMenu = useSettingsMenu();
 
     const itemId = settingsMenu.register({
-      id: 'my-custom-settings',
+      id: "my-custom-settings",
       component: MyCustomSettings,
       order: 150,
-      props: { settingTitle: 'My Custom Setting' },
+      props: { settingTitle: "My Custom Setting" },
     });
 
     onUnmounted(() => {
       settingsMenu.unregister(itemId);
     });
     ```
+
 3.  **Remove an existing menu item**: To remove a default framework item, call `unregister` with the item's ID.
 
     ```typescript
-    import { useSettingsMenu } from '@vc-shell/framework';
+    import { useSettingsMenu } from "@vc-shell/framework";
 
     const settingsMenu = useSettingsMenu();
 
     // Remove the default "Change Password" item by its ID
-    settingsMenu.unregister('change-password');
+    settingsMenu.unregister("change-password");
     ```
+
     This can be done in your `main.ts` or root `App.vue` to ensure it's removed on application startup.
 
 ## 8. Dashboard Migration
@@ -408,6 +432,7 @@ The dashboard architecture has been completely overhauled. The old static-grid d
 The dashboard page (`src/pages/Dashboard.vue`) contained a static layout using `VcRow` and `VcCol`. Widgets were imported from modules and placed directly into the template.
 
 **Old `Dashboard.vue` Example:**
+
 ```vue
 <template>
   <VcContainer class="dashboard ...">
@@ -433,6 +458,7 @@ The new approach uses a single `<DraggableDashboard />` component that automatic
 
 1.  **Replace the content of `src/pages/Dashboard.vue`**:
     Completely replace the file's content with the following:
+
     ```vue
     <template>
       <DraggableDashboard />
@@ -447,6 +473,7 @@ The new approach uses a single `<DraggableDashboard />` component that automatic
     In the `index.ts` of each module that provides a dashboard widget, call the `registerDashboardWidget` function from `@vc-shell/framework`.
 
     **Example of registering a widget in a module's `index.ts`:**
+
     ```typescript
     import * as components from "./components";
     import { createAppModule, registerDashboardWidget } from "@vc-shell/framework";
@@ -463,6 +490,7 @@ The new approach uses a single `<DraggableDashboard />` component that automatic
       // ... rest of the module configuration
     });
     ```
+
     You must do this for all modules that provide dashboard widgets. This decouples the dashboard page from specific widget implementations, making the system fully modular.
 
 ## 9. Removal of Dynamic Views Module (`shared/modules/dynamic`)
@@ -473,21 +501,22 @@ The legacy **Dynamic Views** system — a schema-driven UI that rendered blades 
 
 The following exports no longer exist in `@vc-shell/framework`:
 
-| Category | Removed exports |
-|----------|----------------|
-| **Module factory** | `createDynamicAppModule` |
-| **Blade factories** | `useDetailsFactory`, `useListFactory` |
-| **Blade pages** | `DynamicBladeList`, `DynamicBladeForm` |
-| **Schema types** | `DynamicSchema`, `DynamicGridSchema`, `DynamicDetailsSchema`, `ControlSchema`, `FormContentSchema`, `ListContentSchema`, `SettingsSchema`, `OverridesSchema`, and all field schema types (`InputSchema`, `SelectSchema`, `CardSchema`, etc.) |
-| **Composables** | `useDynamicViewsUtils`, `useToolbarReducer`, `useTableTemplates`, `useFilterBuilder` |
-| **Components** | `SchemaRender`, all field renderers (InputField, SelectField, Card, Fieldset, etc.) |
-| **Injection keys** | `DynamicModuleRegistryStateKey`, `DynamicModuleRegistryState`, `DynamicRegisteredEntry` |
+| Category            | Removed exports                                                                                                                                                                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Module factory**  | `createDynamicAppModule`                                                                                                                                                                                                                     |
+| **Blade factories** | `useDetailsFactory`, `useListFactory`                                                                                                                                                                                                        |
+| **Blade pages**     | `DynamicBladeList`, `DynamicBladeForm`                                                                                                                                                                                                       |
+| **Schema types**    | `DynamicSchema`, `DynamicGridSchema`, `DynamicDetailsSchema`, `ControlSchema`, `FormContentSchema`, `ListContentSchema`, `SettingsSchema`, `OverridesSchema`, and all field schema types (`InputSchema`, `SelectSchema`, `CardSchema`, etc.) |
+| **Composables**     | `useDynamicViewsUtils`, `useToolbarReducer`, `useTableTemplates`, `useFilterBuilder`                                                                                                                                                         |
+| **Components**      | `SchemaRender`, all field renderers (InputField, SelectField, Card, Fieldset, etc.)                                                                                                                                                          |
+| **Injection keys**  | `DynamicModuleRegistryStateKey`, `DynamicModuleRegistryState`, `DynamicRegisteredEntry`                                                                                                                                                      |
 
 ### Migration Steps
 
 Modules that used `createDynamicAppModule()` must be rewritten to use direct Vue component registration via `createAppModule()`.
 
 **Old Approach (Removed):**
+
 ```typescript
 // module/index.ts
 import { createDynamicAppModule } from "@vc-shell/framework";
@@ -503,6 +532,7 @@ export default createDynamicAppModule({
 ```
 
 **New Approach:**
+
 ```typescript
 // module/index.ts
 import { createAppModule } from "@vc-shell/framework";
@@ -515,6 +545,7 @@ export default createAppModule(pages, locales);
 Instead of JSON schemas describing blade content, you now write standard Vue `<script setup>` components that use framework UI components directly (`VcInput`, `VcSelect`, `VcCard`, `VcTable`, etc.).
 
 **Old JSON schema approach:**
+
 ```json
 {
   "settings": {
@@ -522,25 +553,38 @@ Instead of JSON schemas describing blade content, you now write standard Vue `<s
     "component": "DynamicBladeForm",
     "composable": "useProductDetails"
   },
-  "content": [{
-    "id": "productForm",
-    "component": "vc-form",
-    "children": [
-      { "id": "name", "component": "vc-input", "property": "name", "label": "Name" },
-      { "id": "category", "component": "vc-select", "property": "categoryId", "label": "Category" }
-    ]
-  }]
+  "content": [
+    {
+      "id": "productForm",
+      "component": "vc-form",
+      "children": [
+        { "id": "name", "component": "vc-input", "property": "name", "label": "Name" },
+        { "id": "category", "component": "vc-select", "property": "categoryId", "label": "Category" }
+      ]
+    }
+  ]
 }
 ```
 
 **New Vue component approach:**
+
 ```vue
 <!-- pages/product-details.vue -->
 <template>
-  <VcBlade title="Product Details" :toolbar-items="bladeToolbar">
+  <VcBlade
+    title="Product Details"
+    :toolbar-items="bladeToolbar"
+  >
     <VcForm>
-      <VcInput v-model="item.name" label="Name" />
-      <VcSelect v-model="item.categoryId" label="Category" :options="categories" />
+      <VcInput
+        v-model="item.name"
+        label="Name"
+      />
+      <VcSelect
+        v-model="item.categoryId"
+        label="Category"
+        :options="categories"
+      />
     </VcForm>
   </VcBlade>
 </template>
@@ -561,10 +605,10 @@ This migration eliminates the indirection layer of JSON schemas and gives you fu
 
 The new `useBlade()` is a single composable that replaces **all** previous blade navigation patterns:
 
-| Old (deprecated) | New |
-|-------------------|-----|
-| `useBladeNavigation()` | `useBlade()` |
-| `useBladeContext()` | `useBlade()` |
+| Old (deprecated)                              | New                                          |
+| --------------------------------------------- | -------------------------------------------- |
+| `useBladeNavigation()`                        | `useBlade()`                                 |
+| `useBladeContext()`                           | `useBlade()`                                 |
 | `useBlade()` (legacy, returned `ComputedRef`) | `useBlade()` (new, returns destructured API) |
 
 **Key difference:** the old `useBladeNavigation()` required wrapping blade names in `{ blade: resolveBladeByName("X") }` or `{ blade: { name: "X" } }`. The new `useBlade().openBlade()` takes `{ name: "X" }` directly — simpler and cleaner.
@@ -573,34 +617,34 @@ The new `useBlade()` is a single composable that replaces **all** previous blade
 
 ### Quick Reference: `useBladeNavigation()` → `useBlade()`
 
-| `useBladeNavigation()` (deprecated) | `useBlade()` (new) |
-|--------------------------------------|---------------------|
-| `const { openBlade } = useBladeNavigation()` | `const { openBlade } = useBlade()` |
+| `useBladeNavigation()` (deprecated)                         | `useBlade()` (new)                                |
+| ----------------------------------------------------------- | ------------------------------------------------- |
+| `const { openBlade } = useBladeNavigation()`                | `const { openBlade } = useBlade()`                |
 | `const { openBlade, onBeforeClose } = useBladeNavigation()` | `const { openBlade, onBeforeClose } = useBlade()` |
-| `openBlade({ blade: resolveBladeByName("X")!, param })` | `openBlade({ name: "X", param })` |
-| `openBlade({ blade: { name: "X" }, options })` | `openBlade({ name: "X", options })` |
-| `openBlade({ blade: markRaw(Component), param })` | `openBlade({ name: "ComponentName", param })` |
-| `onParentCall({ method: "reload" })` | `callParent("reload")` |
-| `onParentCall({ method: "fn", args: val })` | `callParent("fn", val)` |
-| `resolveBladeByName("X")` | Not needed — pass `name` directly |
+| `openBlade({ blade: resolveBladeByName("X")!, param })`     | `openBlade({ name: "X", param })`                 |
+| `openBlade({ blade: { name: "X" }, options })`              | `openBlade({ name: "X", options })`               |
+| `openBlade({ blade: markRaw(Component), param })`           | `openBlade({ name: "ComponentName", param })`     |
+| `onParentCall({ method: "reload" })`                        | `callParent("reload")`                            |
+| `onParentCall({ method: "fn", args: val })`                 | `callParent("fn", val)`                           |
+| `resolveBladeByName("X")`                                   | Not needed — pass `name` directly                 |
 
 Also replaces legacy patterns:
 
-| Legacy pattern | `useBlade()` (new) |
-|----------------|---------------------|
+| Legacy pattern                                | `useBlade()` (new)                       |
+| --------------------------------------------- | ---------------------------------------- |
 | `const blade = useBlade()` + `blade.value.id` | `const { id } = useBlade()` + `id.value` |
-| `const { openBlade } = useBladeContext()` | `const { openBlade } = useBlade()` |
-| `inject(BladeInstance)` for blade ID | `const { id } = useBlade()` |
+| `const { openBlade } = useBladeContext()`     | `const { openBlade } = useBlade()`       |
+| `inject(BladeInstance)` for blade ID          | `const { id } = useBlade()`              |
 
 ### Behavior by context
 
-| Method | Inside blade | Outside blade |
-|--------|-------------|---------------|
-| `openBlade()` | Opens child (parentId auto-set) + URL sync | Opens blade (no parentId) + URL sync |
-| `closeSelf()` | Closes current blade | Throws: "requires blade context" |
-| `closeChildren()` | Closes all children of current blade | Throws: "requires blade context" |
-| `id`, `param`, etc. | ComputedRef with value | Throws on `.value` access |
-| `callParent()` | Calls parent method | Throws |
+| Method              | Inside blade                               | Outside blade                        |
+| ------------------- | ------------------------------------------ | ------------------------------------ |
+| `openBlade()`       | Opens child (parentId auto-set) + URL sync | Opens blade (no parentId) + URL sync |
+| `closeSelf()`       | Closes current blade                       | Throws: "requires blade context"     |
+| `closeChildren()`   | Closes all children of current blade       | Throws: "requires blade context"     |
+| `id`, `param`, etc. | ComputedRef with value                     | Throws on `.value` access            |
+| `callParent()`      | Calls parent method                        | Throws                               |
 
 ### Migration Examples
 
@@ -669,10 +713,10 @@ await closeChildren(); // respects onBeforeClose guards
 
 The guard boolean semantics are **inverted** between the legacy and new API:
 
-| Legacy `useBladeNavigation().onBeforeClose` | New `useBlade().onBeforeClose` |
-|---------------------------------------------|-------------------------------|
-| `return false` → **prevent** close | `return true` → **prevent** close |
-| `return true` / `undefined` → allow close | `return false` / `undefined` → allow close |
+| Legacy `useBladeNavigation().onBeforeClose` | New `useBlade().onBeforeClose`             |
+| ------------------------------------------- | ------------------------------------------ |
+| `return false` → **prevent** close          | `return true` → **prevent** close          |
+| `return true` / `undefined` → allow close   | `return false` / `undefined` → allow close |
 
 ```ts
 // Before (legacy)
@@ -702,6 +746,7 @@ The widget registration system has been redesigned for better developer experien
 ### Old Approach (Deprecated)
 
 **Slot-based (removed):**
+
 ```vue
 <template>
   <VcBlade>
@@ -713,12 +758,12 @@ The widget registration system has been redesigned for better developer experien
 ```
 
 **Manual `registerWidget` / `unregisterWidget` (deprecated):**
+
 ```ts
 const { registerWidget, unregisterWidget } = useWidgets();
 const { id: bladeId } = useBlade();
 
-registerWidget({ id: "MyWidget", component: MyWidget, props: { item },
-  updateFunctionName: "updateCount" }, bladeId.value);
+registerWidget({ id: "MyWidget", component: MyWidget, props: { item }, updateFunctionName: "updateCount" }, bladeId.value);
 registerWidget({ id: "OtherWidget", component: OtherWidget, props: { item } }, bladeId.value);
 
 onUnmounted(() => {
@@ -728,10 +773,13 @@ onUnmounted(() => {
 ```
 
 **`defineExpose` for widget refresh (deprecated):**
+
 ```ts
 // Inside widget component
 defineExpose({
-  updateCount: () => { populateCounter(); },
+  updateCount: () => {
+    populateCounter();
+  },
 });
 ```
 
@@ -749,11 +797,11 @@ const { refresh, refreshAll } = useBladeWidgets([
     id: "OffersWidget",
     icon: "lucide-tag",
     title: "PRODUCTS.WIDGETS.OFFERS.TITLE",
-    badge: offersCount,           // Ref<number | string>
-    loading: offersLoading,       // Ref<boolean>
+    badge: offersCount, // Ref<number | string>
+    loading: offersLoading, // Ref<boolean>
     isVisible: computed(() => !!props.param),
     onClick: () => openBlade({ name: "OffersList" }),
-    onRefresh: loadOffers,        // called by refresh("OffersWidget") or refreshAll()
+    onRefresh: loadOffers, // called by refresh("OffersWidget") or refreshAll()
   },
   {
     id: "ReviewsWidget",
@@ -777,32 +825,32 @@ refresh("OffersWidget");
 
 #### `HeadlessWidgetDeclaration` fields
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `id` | `string` | Yes | Unique widget identifier |
-| `icon` | `string` | Yes | Icon name (e.g., `"lucide-tag"`) |
-| `title` | `string` | Yes | i18n key or display title |
-| `badge` | `Ref<number \| string>` | No | Badge counter value |
-| `loading` | `Ref<boolean>` | No | Show loading indicator |
-| `disabled` | `Ref<boolean> \| boolean` | No | Disable the widget |
-| `isVisible` | `ComputedRef<boolean> \| boolean` | No | Toggle visibility |
-| `onClick` | `() => void` | No | Action when widget is clicked |
-| `onRefresh` | `() => void \| Promise<void>` | No | Called by `refresh(id)` or `refreshAll()` |
+| Field       | Type                              | Required | Description                               |
+| ----------- | --------------------------------- | -------- | ----------------------------------------- |
+| `id`        | `string`                          | Yes      | Unique widget identifier                  |
+| `icon`      | `string`                          | Yes      | Icon name (e.g., `"lucide-tag"`)          |
+| `title`     | `string`                          | Yes      | i18n key or display title                 |
+| `badge`     | `Ref<number \| string>`           | No       | Badge counter value                       |
+| `loading`   | `Ref<boolean>`                    | No       | Show loading indicator                    |
+| `disabled`  | `Ref<boolean> \| boolean`         | No       | Disable the widget                        |
+| `isVisible` | `ComputedRef<boolean> \| boolean` | No       | Toggle visibility                         |
+| `onClick`   | `() => void`                      | No       | Action when widget is clicked             |
+| `onRefresh` | `() => void \| Promise<void>`     | No       | Called by `refresh(id)` or `refreshAll()` |
 
 #### Return value
 
-| Property | Type | Description |
-|---|---|---|
-| `refresh` | `(widgetId: string) => void` | Trigger `onRefresh` on a specific widget |
-| `refreshAll` | `() => void` | Trigger `onRefresh` on all widgets that have one |
+| Property     | Type                         | Description                                      |
+| ------------ | ---------------------------- | ------------------------------------------------ |
+| `refresh`    | `(widgetId: string) => void` | Trigger `onRefresh` on a specific widget         |
+| `refreshAll` | `() => void`                 | Trigger `onRefresh` on all widgets that have one |
 
 #### When to use headless vs component widgets
 
-| | Headless (`useBladeWidgets`) | Component (SFC) |
-|---|---|---|
-| Blade-local, standard VcWidget visual | **Preferred** | |
-| External module widget | | Required |
-| Custom UI beyond VcWidget | | Required |
+|                                       | Headless (`useBladeWidgets`) | Component (SFC) |
+| ------------------------------------- | ---------------------------- | --------------- |
+| Blade-local, standard VcWidget visual | **Preferred**                |                 |
+| External module widget                |                              | Required        |
+| Custom UI beyond VcWidget             |                              | Required        |
 
 ### Migration Steps
 
@@ -842,6 +890,7 @@ External widgets from other modules now receive blade data via `defineBladeConte
 **Convention:** All blades expose their main entity as `item`. This is the standard contract — external widgets always access `ctx.value.item`.
 
 **Blade side (one line, replaces `provideBladeData`):**
+
 ```ts
 // Before
 const { provideBladeData } = useBlade();
@@ -853,6 +902,7 @@ defineBladeContext({ item });
 ```
 
 **External widget side (replaces props from `config.requiredData`):**
+
 ```ts
 // Before — widget received props via config.requiredData resolution
 const props = defineProps<{ id: string; objectType: string }>();
@@ -863,6 +913,7 @@ const bladeItem = computed(() => ctx.value.item as { id?: string; objectType?: s
 ```
 
 **Registration (simplified — no config needed):**
+
 ```ts
 // Before
 registerExternalWidget({
@@ -880,6 +931,7 @@ registerExternalWidget({
 ```
 
 **What gets removed:**
+
 - `config.requiredData` / `config.optionalData` / `config.fieldMapping` / `config.propsResolver`
 - `provideBladeData` from `useBlade()`
 - `resolveWidgetProps` logic
@@ -887,6 +939,7 @@ registerExternalWidget({
 - Widget `defineExpose({ updateFn })` — use `onRefresh` callback instead
 
 **Notes:**
+
 - `defineBladeContext` accepts plain objects or computed refs
 - `injectBladeContext()` returns `ComputedRef` — access via `.value`
 - Throws if no context found (blade forgot to call `defineBladeContext`)
@@ -900,11 +953,11 @@ This section covers the migration of applications consuming `@vc-shell/framework
 
 ### 12.1 Version Summary
 
-| Package | Old | New | Type |
-|---------|-----|-----|------|
-| `vue` | ^3.5.13 | ^3.5.30 | Minor (no breaking changes) |
-| `vue-router` | ^4.x | ^5.0.3 | **Major** |
-| `vue-tsc` | ^2.2.10 | ^3.2.5 | **Major** |
+| Package      | Old     | New     | Type                        |
+| ------------ | ------- | ------- | --------------------------- |
+| `vue`        | ^3.5.13 | ^3.5.30 | Minor (no breaking changes) |
+| `vue-router` | ^4.x    | ^5.0.3  | **Major**                   |
+| `vue-tsc`    | ^2.2.10 | ^3.2.5  | **Major**                   |
 
 ### 12.2 Updating `package.json`
 
@@ -1041,19 +1094,20 @@ Phase 4 — Verify
 
 ### What changed
 
-| Before | After |
-|--------|-------|
-| `createAppModule(pages, locales, templates)` | `defineAppModule({ blades, locales, notificationTemplates })` |
-| Positional arguments | Named options object |
-| Mutates component objects (`isBlade`, `moduleUid`, etc.) | No mutation — metadata stored in BladeRegistry |
-| `moduleComponents` parameter (4th arg) | Removed — register components via direct import |
-| `moduleOptions` / `dependsOn` (5th arg) | Removed — unused |
+| Before                                                   | After                                                         |
+| -------------------------------------------------------- | ------------------------------------------------------------- |
+| `createAppModule(pages, locales, templates)`             | `defineAppModule({ blades, locales, notificationTemplates })` |
+| Positional arguments                                     | Named options object                                          |
+| Mutates component objects (`isBlade`, `moduleUid`, etc.) | No mutation — metadata stored in BladeRegistry                |
+| `moduleComponents` parameter (4th arg)                   | Removed — register components via direct import               |
+| `moduleOptions` / `dependsOn` (5th arg)                  | Removed — unused                                              |
 
 ### Migration steps
 
 **Step 1: Replace `createAppModule` with `defineAppModule`**
 
 Before:
+
 ```ts
 import { createAppModule } from "@vc-shell/framework";
 import * as pages from "./pages";
@@ -1063,6 +1117,7 @@ export default createAppModule(pages, locales);
 ```
 
 After:
+
 ```ts
 import { defineAppModule } from "@vc-shell/framework";
 import * as blades from "./pages";
@@ -1077,11 +1132,13 @@ export default defineAppModule({
 **Step 2: If you used `notificationTemplates` (3rd argument)**
 
 Before:
+
 ```ts
 export default createAppModule(pages, locales, notificationTemplates);
 ```
 
 After:
+
 ```ts
 export default defineAppModule({
   blades: pages,
@@ -1106,15 +1163,15 @@ The notification system has been redesigned with a unified `NotificationStore`. 
 
 ### Quick Reference
 
-| Before | After |
-|---|---|
+| Before                                       | After                                                          |
+| -------------------------------------------- | -------------------------------------------------------------- |
 | `createAppModule(pages, locales, templates)` | `defineAppModule({ blades, locales, notifications: { ... } })` |
-| `useNotifications(type)` | `useBladeNotifications({ types: [...] })` |
-| `setNotificationHandler(fn)` | `onMessage` option in `useBladeNotifications` |
-| `moduleNotifications` watch | `messages` computed from `useBladeNotifications` |
-| `notifyType` in `defineOptions` on blades | Remove — use `useBladeNotifications` explicitly |
-| `notifyType` in `defineOptions` on templates | Remove — bind via module config `notifications` |
-| `hasUnreadNotifications` import | `useNotificationStore().hasUnread` |
+| `useNotifications(type)`                     | `useBladeNotifications({ types: [...] })`                      |
+| `setNotificationHandler(fn)`                 | `onMessage` option in `useBladeNotifications`                  |
+| `moduleNotifications` watch                  | `messages` computed from `useBladeNotifications`               |
+| `notifyType` in `defineOptions` on blades    | Remove — use `useBladeNotifications` explicitly                |
+| `notifyType` in `defineOptions` on templates | Remove — bind via module config `notifications`                |
+| `hasUnreadNotifications` import              | `useNotificationStore().hasUnread`                             |
 
 ### Module Directory Structure
 
@@ -1138,12 +1195,14 @@ my-module/
 ### Step 1: Module Registration
 
 **Before:**
+
 ```ts
 import * as notificationTemplates from "./components/notifications";
 export default createAppModule(pages, locales, notificationTemplates);
 ```
 
 **After:**
+
 ```ts
 import MyEventTemplate from "./notifications/MyEventTemplate.vue";
 
@@ -1165,25 +1224,27 @@ export default defineAppModule({
 
 **`toast` options:**
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `mode` | `"auto" \| "progress" \| "silent"` | — | Toast display mode |
-| `severity` | `"info" \| "warning" \| "error" \| "critical"` | `"info"` | Controls toast timeout and type (`info`=5s, `warning`=8s, `error`/`critical`=persistent) |
-| `timeout` | `number` | severity-based | Override timeout (ms) |
-| `isComplete` | `(msg) => boolean` | `msg.finished` | For `progress` mode: when to complete |
-| `completedType` | `(msg) => "success" \| "error"` | `() => "success"` | For `progress` mode: toast type on completion |
+| Option          | Type                                           | Default           | Description                                                                              |
+| --------------- | ---------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------- |
+| `mode`          | `"auto" \| "progress" \| "silent"`             | —                 | Toast display mode                                                                       |
+| `severity`      | `"info" \| "warning" \| "error" \| "critical"` | `"info"`          | Controls toast timeout and type (`info`=5s, `warning`=8s, `error`/`critical`=persistent) |
+| `timeout`       | `number`                                       | severity-based    | Override timeout (ms)                                                                    |
+| `isComplete`    | `(msg) => boolean`                             | `msg.finished`    | For `progress` mode: when to complete                                                    |
+| `completedType` | `(msg) => "success" \| "error"`                | `() => "success"` | For `progress` mode: toast type on completion                                            |
 
 ### Step 2: Remove `notifyType` from Blade `defineOptions`
 
 **Before:**
+
 ```ts
 defineOptions({
   name: "MyBlade",
-  notifyType: "MyDomainEvent",  // implicit subscription
+  notifyType: "MyDomainEvent", // implicit subscription
 });
 ```
 
 **After:**
+
 ```ts
 defineOptions({
   name: "MyBlade",
@@ -1194,19 +1255,23 @@ defineOptions({
 ### Step 3: Replace `useNotifications` in Blades
 
 **Before:**
+
 ```ts
 const { markAsRead, setNotificationHandler } = useNotifications("MyDomainEvent");
 
 setNotificationHandler((message) => {
   if (message.title) {
     notification.success(message.title, {
-      onClose() { markAsRead(message); },
+      onClose() {
+        markAsRead(message);
+      },
     });
   }
 });
 ```
 
 **After:**
+
 ```ts
 const { messages } = useBladeNotifications({
   types: ["MyDomainEvent"],
@@ -1218,29 +1283,39 @@ const { messages } = useBladeNotifications({
 ### Step 4: Replace `moduleNotifications` Watch (Progress Pattern)
 
 **Before:**
+
 ```ts
 const { moduleNotifications, markAsRead } = useNotifications("MyProgressEvent");
 const notificationId = ref();
 
-watch(moduleNotifications, (newVal) => {
-  newVal.forEach((message) => {
-    if (!message.finished) {
-      if (!notificationId.value) {
-        notificationId.value = notification(message.title, { timeout: false });
+watch(
+  moduleNotifications,
+  (newVal) => {
+    newVal.forEach((message) => {
+      if (!message.finished) {
+        if (!notificationId.value) {
+          notificationId.value = notification(message.title, { timeout: false });
+        } else {
+          notification.update(notificationId.value, { content: message.title });
+        }
       } else {
-        notification.update(notificationId.value, { content: message.title });
+        notification.update(notificationId.value, {
+          timeout: 5000,
+          type: "success",
+          onClose() {
+            markAsRead(message);
+            notificationId.value = undefined;
+          },
+        });
       }
-    } else {
-      notification.update(notificationId.value, {
-        timeout: 5000, type: "success",
-        onClose() { markAsRead(message); notificationId.value = undefined; },
-      });
-    }
-  });
-}, { deep: true });
+    });
+  },
+  { deep: true },
+);
 ```
 
 **After:**
+
 ```ts
 // Module config handles the progress toast automatically:
 // notifications: { MyProgressEvent: { toast: { mode: "progress" } } }
@@ -1255,16 +1330,18 @@ useBladeNotifications({
 ### Step 5: Remove `notifyType` from Template Components
 
 **Before:**
+
 ```vue
 <script setup>
 defineOptions({
   inheritAttrs: false,
-  notifyType: "MyDomainEvent",  // static property on constructor
+  notifyType: "MyDomainEvent", // static property on constructor
 });
 </script>
 ```
 
 **After:**
+
 ```vue
 <script setup>
 // notifyType removed — binding is in module config
@@ -1304,11 +1381,11 @@ The blade replacement API has been split into two distinct methods with clear se
 
 ### What Changed
 
-| Before | After | Behavior |
-|--------|-------|----------|
-| `replaceWith(event)` | `replaceWith(event)` | **Changed:** Now truly replaces the blade — destroys old, creates new at same index with same `parentId`. |
-| _(no equivalent)_ | `coverWith(event)` | **New:** Old `replaceWith` behavior — hides current blade, opens new one on top. Closing reveals hidden blade. |
-| `openBlade({ replaceCurrentBlade: true })` | _(unchanged)_ | Legacy adapter maps to `coverCurrentBlade` for backward compatibility. |
+| Before                                     | After                | Behavior                                                                                                       |
+| ------------------------------------------ | -------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `replaceWith(event)`                       | `replaceWith(event)` | **Changed:** Now truly replaces the blade — destroys old, creates new at same index with same `parentId`.      |
+| _(no equivalent)_                          | `coverWith(event)`   | **New:** Old `replaceWith` behavior — hides current blade, opens new one on top. Closing reveals hidden blade. |
+| `openBlade({ replaceCurrentBlade: true })` | _(unchanged)_        | Legacy adapter maps to `coverCurrentBlade` for backward compatibility.                                         |
 
 ### When to Use Which
 
@@ -1350,16 +1427,16 @@ VcBlade is now **context-aware** — it reads `expanded` and `closable` from the
 
 ### What Changed
 
-| Before (deprecated) | After (new) |
-|---|---|
-| Declare `expanded`, `closable`, `param`, `options` in Props | Use `useBlade()` to access all of these |
+| Before (deprecated)                                                             | After (new)                                                                 |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Declare `expanded`, `closable`, `param`, `options` in Props                     | Use `useBlade()` to access all of these                                     |
 | Declare `close:blade`, `expand:blade`, `collapse:blade`, `parent:call` in Emits | Not needed — VcBlade handles close internally, `callParent()` replaces emit |
-| Forward props: `:expanded="expanded"` `:closable="closable"` | Not needed — VcBlade reads from BladeDescriptor |
-| Forward events: `@close="$emit('close:blade')"` | Not needed — VcBlade calls `closeSelf()` internally |
-| `emit("parent:call", { method: "reload" })` | `callParent("reload")` |
-| `emit("close:blade")` | `closeSelf()` |
-| `props.param` | `param.value` from `useBlade()` |
-| `props.options?.myField` (untyped) | `options.value?.myField` from `useBlade<{ myField: string }>()` (typed) |
+| Forward props: `:expanded="expanded"` `:closable="closable"`                    | Not needed — VcBlade reads from BladeDescriptor                             |
+| Forward events: `@close="$emit('close:blade')"`                                 | Not needed — VcBlade calls `closeSelf()` internally                         |
+| `emit("parent:call", { method: "reload" })`                                     | `callParent("reload")`                                                      |
+| `emit("close:blade")`                                                           | `closeSelf()`                                                               |
+| `props.param`                                                                   | `param.value` from `useBlade()`                                             |
+| `props.options?.myField` (untyped)                                              | `options.value?.myField` from `useBlade<{ myField: string }>()` (typed)     |
 
 ### New Features
 
@@ -1368,7 +1445,10 @@ VcBlade is now **context-aware** — it reads `expanded` and `closable` from the
 `useBlade()` now accepts a generic for typed access to blade options:
 
 ```typescript
-interface MyOptions { productId: string; mode: "edit" | "create" }
+interface MyOptions {
+  productId: string;
+  mode: "edit" | "create";
+}
 const { options } = useBlade<MyOptions>();
 // options.value is MyOptions | undefined — no manual cast needed
 ```
@@ -1501,12 +1581,12 @@ The framework package now exposes multiple entry points. This allows consuming a
 
 ### 14.1 Entry Points
 
-| Entry point | Contents | Usage |
-|-------------|----------|-------|
-| `@vc-shell/framework` | Full framework: core + ui + shell + modules | Default — use in apps |
-| `@vc-shell/framework/ui` | Standalone UI kit: atoms, molecules, organisms — no core dependencies | Use in packages that only need UI components |
-| `@vc-shell/framework/ai-agent` | AI agent plugin (opt-in) | Import only when enabling AI agent features |
-| `@vc-shell/framework/extensions` | Extension points system (opt-in) | Import only when building extension-aware modules |
+| Entry point                      | Contents                                                              | Usage                                             |
+| -------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------- |
+| `@vc-shell/framework`            | Full framework: core + ui + shell + modules                           | Default — use in apps                             |
+| `@vc-shell/framework/ui`         | Standalone UI kit: atoms, molecules, organisms — no core dependencies | Use in packages that only need UI components      |
+| `@vc-shell/framework/ai-agent`   | AI agent plugin (opt-in)                                              | Import only when enabling AI agent features       |
+| `@vc-shell/framework/extensions` | Extension points system (opt-in)                                      | Import only when building extension-aware modules |
 
 ```typescript
 // Full framework (default)
@@ -1526,23 +1606,25 @@ import { extensionsHelper } from "@vc-shell/framework/extensions";
 
 The following symbols have been removed. Use the listed alternatives instead:
 
-| Removed symbol | Alternative |
-|----------------|-------------|
-| `GenericDropdown` | `VcDropdown` |
-| `navigationViewLocation` | `NavigationViewLocationKey` |
-| `BladeInstance` | `BladeInstanceKey` |
-| `NotificationTemplatesSymbol` | `NotificationTemplatesKey` |
-| `BLADE_BACK_BUTTON` | `BladeBackButtonKey` |
-| `TOOLBAR_SERVICE` | `ToolbarServiceKey` |
-| `EMBEDDED_MODE` | `EmbeddedModeKey` |
+| Removed symbol                         | Alternative                                   |
+| -------------------------------------- | --------------------------------------------- |
+| `GenericDropdown`                      | `VcDropdown`                                  |
+| `navigationViewLocation`               | `NavigationViewLocationKey`                   |
+| `BladeInstance`                        | `BladeInstanceKey`                            |
+| `NotificationTemplatesSymbol`          | `NotificationTemplatesKey`                    |
+| `BLADE_BACK_BUTTON`                    | `BladeBackButtonKey`                          |
+| `TOOLBAR_SERVICE`                      | `ToolbarServiceKey`                           |
+| `EMBEDDED_MODE`                        | `EmbeddedModeKey`                             |
 | `_warnStringKey` / `_warnedStringKeys` | Removed — test-only internals, no replacement |
 
 **Before:**
+
 ```typescript
 import { BladeInstance, TOOLBAR_SERVICE, EMBEDDED_MODE } from "@vc-shell/framework";
 ```
 
 **After:**
+
 ```typescript
 import { BladeInstanceKey, ToolbarServiceKey, EmbeddedModeKey } from "@vc-shell/framework";
 ```
@@ -1552,12 +1634,14 @@ import { BladeInstanceKey, ToolbarServiceKey, EmbeddedModeKey } from "@vc-shell/
 String-based injection keys (`inject("isMobile")`, `inject("isDesktop")`, etc.) are no longer provided by the framework. Use typed injection keys instead.
 
 **Before:**
+
 ```typescript
 const isMobile = inject("isMobile");
 const isDesktop = inject("isDesktop");
 ```
 
 **After:**
+
 ```typescript
 import { inject } from "vue";
 import { IsMobileKey, IsDesktopKey } from "@vc-shell/framework";
@@ -1572,17 +1656,18 @@ All injection keys follow the `*Key` naming convention and are exported from `@v
 
 The `shared/` directory has been dissolved. Its contents have been reorganized into purpose-specific directories:
 
-| Old location (`shared/`) | New location |
-|--------------------------|--------------|
-| `shared/components/blade-navigation/` | `shell/_internal/blade-nav/` (rendering) + `core/blade-navigation/` (logic) |
-| `shared/components/notifications/` | `shell/_internal/notifications/` (renderer) + `core/notifications/` (logic) |
-| `shared/components/popup/` | `shell/_internal/popup/` |
-| `shared/components/` (auth, settings, sidebar) | `shell/auth/`, `shell/components/`, `shell/dashboard/` |
-| `shared/composables/` (UI composables) | `ui/composables/` |
-| `shared/composables/` (logic composables) | `core/composables/` |
-| `shared/modules/` | `modules/` (built-in modules: assets, assets-manager) |
+| Old location (`shared/`)                       | New location                                                                |
+| ---------------------------------------------- | --------------------------------------------------------------------------- |
+| `shared/components/blade-navigation/`          | `shell/_internal/blade-nav/` (rendering) + `core/blade-navigation/` (logic) |
+| `shared/components/notifications/`             | `shell/_internal/notifications/` (renderer) + `core/notifications/` (logic) |
+| `shared/components/popup/`                     | `shell/_internal/popup/`                                                    |
+| `shared/components/` (auth, settings, sidebar) | `shell/auth/`, `shell/components/`, `shell/dashboard/`                      |
+| `shared/composables/` (UI composables)         | `ui/composables/`                                                           |
+| `shared/composables/` (logic composables)      | `core/composables/`                                                         |
+| `shared/modules/`                              | `modules/` (built-in modules: assets, assets-manager)                       |
 
 **New directory layout:**
+
 ```
 framework/
   core/         # API clients, composables, plugins, services, types, blade-navigation logic
@@ -1640,3 +1725,20 @@ The framework no longer registers `Vc*` components and directives globally. All 
 **Automated:** `npx @vc-shell/migrate --transform remove-global-components`
 
 See [migration/40-remove-global-components.md](./migration/40-remove-global-components.md) for details.
+
+## SignalR Broadcast Filter
+
+The `signalR: { creator }` option and `updateSignalRCreatorSymbol` injection key have been removed. The SignalR plugin now always listens to both `Send` and `SendSystemEvents` channels.
+
+If your app filtered broadcast notifications by creator (e.g., vendor-portal filtering by seller ID), replace:
+
+```diff
+-import { updateSignalRCreatorSymbol } from "@vc-shell/framework";
+-const updateSignalRCreator = inject(updateSignalRCreatorSymbol);
+-updateSignalRCreator?.(sellerId);
++import { useBroadcastFilter } from "@vc-shell/framework";
++const { setBroadcastFilter } = useBroadcastFilter();
++setBroadcastFilter((msg) => msg.creator === sellerId);
+```
+
+See [migration/42-broadcast-filter.md](./migration/42-broadcast-filter.md) for details.

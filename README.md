@@ -182,7 +182,8 @@ yarn build
 
 ```bash
 yarn build                          # Build all publishable packages
-yarn build:framework                # Build only @vc-shell/framework
+yarn build:framework                # Build only @vc-shell/framework (hidden source maps)
+yarn build:framework:debug          # Build framework with full source maps (browser auto-loads)
 yarn build:analyze                  # Build with bundle analyzer
 yarn build:cli:config               # Build @vc-shell/config-generator
 yarn build:cli:api-client           # Build @vc-shell/api-client-generator
@@ -355,6 +356,19 @@ yarn unsetup:apps
 - **Changes in `framework/` not reflected in the app** — `portal:` doesn't trigger rebuilds. Run `yarn build:framework` in the vc-shell clone after edits, then restart the app's dev server (Vite HMR may not pick up changes to symlinked `dist/`).
 - **Type errors after rebuild** — stale `.tsbuildinfo` or `dist/` remnants. Clean vc-shell with `yarn clean` (and rebuild) before retrying.
 - **Yarn refuses to install with lockfile conflicts** — the app's `yarn.lock` may reference npm-registry versions of `@vc-shell/*`. Delete the app's `yarn.lock` and re-run `yarn install` so Yarn re-resolves through portal entries.
+
+### Debugging Framework Source Maps
+
+The framework build always generates `.map` files so source maps are available when you need them:
+
+| Build command                | Source maps                                                      | Browser auto-loads? |
+| ---------------------------- | ---------------------------------------------------------------- | ------------------- |
+| `yarn build:framework`       | Hidden (`.map` files generated, no `sourceMappingURL` in bundle) | No                  |
+| `yarn build:framework:debug` | Full (`.map` files + `sourceMappingURL` comment)                 | Yes                 |
+
+**For local debugging**, use `yarn build:framework:debug` — Chrome DevTools will automatically load source maps and show original TypeScript/Vue sources.
+
+**For production builds**, `.map` files are still generated (hidden mode) but not referenced from the bundle. To use them, open Chrome DevTools → Sources tab, right-click the JS file → "Add source map...", and point to the `.map` file.
 
 ## Contributing
 

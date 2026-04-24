@@ -7,14 +7,16 @@ const COMMIT_TYPE_TITLES = {
   fix: "Bug Fixes",
   perf: "Performance Improvements",
   revert: "Reverts",
+  refactor: "Code Refactoring",
   docs: "Documentation",
   style: "Styles",
-  refactor: "Code Refactoring",
   test: "Tests",
   build: "Build System",
   ci: "Continuous Integration",
   chore: "Chores",
 };
+
+const CHANGELOG_INCLUDED_TYPES = new Set(["feat", "fix", "perf", "revert", "refactor"]);
 
 const COMMIT_GROUP_ORDER = {
   "BREAKING CHANGES": 0,
@@ -46,6 +48,11 @@ function createStableWriterOpts() {
         : [];
 
       const typeKey = typeof commit.type === "string" ? commit.type.toLowerCase() : "";
+
+      if (!CHANGELOG_INCLUDED_TYPES.has(typeKey) && notes.length === 0) {
+        return undefined;
+      }
+
       const type = COMMIT_TYPE_TITLES[typeKey] || typeKey || "Other Changes";
       const subject =
         typeof commit.subject === "string" && commit.subject.trim()

@@ -87,26 +87,34 @@ export function useContainer(): IUseContainer {
     return renderRoot;
   }
 
+  const pendingMounts = new Map<NotificationPosition, Promise<void>>();
+
   async function appendInstance(options: NotificationOptions) {
-    // Determine the notification position
     const position = options.position || (defaultOptions.position as NotificationPosition);
 
-    // Check if an instance already exists for this position
-    const existingInstance = getInstanceByPosition(position);
+    // Wait for any in-flight mount for this position to finish first
+    const pending = pendingMounts.get(position);
+    if (pending) {
+      await pending;
+    }
 
-    if (!existingInstance) {
-      // Create a new root element for the position
-      const dom = generateRoot(position);
-      // Lazy import to break circular dependency (NotificationContainer → useContainer)
-      const { default: NotificationContainer } =
-        await import("@shell/_internal/notifications/components/notification-container");
-      const instance = createApp(NotificationContainer, {
-        ...(options as Record<string, unknown>),
-        position, // Pass the position to the component
-      });
-      instance.provide(NotificationContainerStateKey, { notificationContainers, actions });
-      instance.mount(dom);
-      saveInstance(instance, dom.id, position);
+    if (!getInstanceByPosition(position)) {
+      const mountPromise = (async () => {
+        const dom = generateRoot(position);
+        const { default: NotificationContainer } =
+          await import("@shell/_internal/notifications/components/notification-container");
+        const instance = createApp(NotificationContainer, {
+          ...(options as Record<string, unknown>),
+          position,
+        });
+        instance.provide(NotificationContainerStateKey, { notificationContainers, actions });
+        instance.mount(dom);
+        saveInstance(instance, dom.id, position);
+      })();
+
+      pendingMounts.set(position, mountPromise);
+      await mountPromise;
+      pendingMounts.delete(position);
     }
 
     nextTick(() => {
@@ -126,8 +134,9 @@ export function useContainer(): IUseContainer {
     add(options: NotificationOptions) {
       const position = options.position || (defaultOptions.position as NotificationPosition);
       const containers = notificationContainers[position];
+      const exists = containers.value.find((item) => item.notificationId === options.notificationId);
 
-      if (!containers.value.find((item) => item.notificationId === options.notificationId)) {
+      if (!exists) {
         nextTick(() => {
           containers.value.push(options);
           if (options.onOpen && typeof options?.onOpen === "function") {

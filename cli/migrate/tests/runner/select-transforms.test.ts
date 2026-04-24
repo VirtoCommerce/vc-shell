@@ -57,22 +57,25 @@ describe("selectTransforms", () => {
     ]);
   });
 
-  it("skips early transforms when migrating from alpha.8", () => {
+  it("includes earlier prerelease transforms when migrating from alpha.8 to stable", () => {
     const selected = selectTransforms("2.0.0-alpha.8", "2.0.0");
     const names = selected.map((t) => t.name);
-    expect(names).not.toContain("define-app-module");
-    expect(names).not.toContain("use-blade-migration");
-    expect(names).toContain("notification-migration");
-    expect(names).toContain("rewrite-imports");
+    // Prerelease retrofit: transforms introduced in earlier alphas are included
+    // because users may not have run the migrator at each alpha bump.
+    expect(names).toContain("define-app-module"); // alpha.5 — retrofit
+    expect(names).toContain("use-blade-migration"); // alpha.8 — equal to current, retrofit
+    expect(names).toContain("notification-migration"); // alpha.10 — after current
+    expect(names).toContain("rewrite-imports"); // 2.0.0 — after current
   });
 
-  it("skips first 3 transforms when migrating from alpha.10", () => {
+  it("includes all prerelease transforms when migrating from alpha.10 to stable", () => {
     const selected = selectTransforms("2.0.0-alpha.10", "2.0.0");
     const names = selected.map((t) => t.name);
-    expect(names).not.toContain("define-app-module");
-    expect(names).not.toContain("use-blade-migration");
-    expect(names).not.toContain("notification-migration");
-    expect(names).toContain("rewrite-imports");
+    // All three are retrofit — same major.minor.patch prerelease range
+    expect(names).toContain("define-app-module"); // alpha.5
+    expect(names).toContain("use-blade-migration"); // alpha.8
+    expect(names).toContain("notification-migration"); // alpha.10
+    expect(names).toContain("rewrite-imports"); // 2.0.0
   });
 
   it("returns empty when already on target version", () => {
@@ -99,6 +102,22 @@ describe("selectTransforms", () => {
     expect(names).toContain("define-app-module");
     expect(names).toContain("rewrite-imports"); // introducedIn: "2.0.0"
     expect(names).not.toContain("use-blade-migration"); // introducedIn: alpha.8
+  });
+
+  it("does NOT retrofit prerelease transforms when target is also prerelease (alpha → alpha)", () => {
+    // alpha.10 → alpha.28: only include alpha.10 < x <= alpha.28
+    // Earlier alphas (alpha.5, alpha.8) are retrofit because current is prerelease
+    const selected = selectTransforms("2.0.0-alpha.10", "2.0.0-alpha.28");
+    const names = selected.map((t) => t.name);
+    // Retrofit still applies — user at alpha.10 may not have run migrator for alpha.5/8
+    expect(names).toContain("define-app-module"); // alpha.5 — retrofit
+    expect(names).toContain("use-blade-migration"); // alpha.8 — retrofit
+    // alpha.24 and alpha.27 are after current
+    expect(names).toContain("nswag-class-to-interface"); // alpha.24
+    expect(names).toContain("app-hub-rename"); // alpha.27
+    // alpha.31+ exceeds target alpha.28 — should NOT be included
+    expect(names).not.toContain("use-blade-form"); // alpha.31
+    expect(names).not.toContain("dynamic-properties-refactor"); // alpha.31
   });
 
   it("selects alpha transforms up to target + all stable 2.0.0 transforms", () => {

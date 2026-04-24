@@ -23,7 +23,7 @@ export interface NotificationStore {
 
   // Actions
   registerType(type: string, config: NotificationTypeConfig): void;
-  ingest(message: PushNotification): void;
+  ingest(message: PushNotification, opts?: { broadcast?: boolean }): void;
   markAsRead(message: PushNotification): void;
   markAllAsRead(): Promise<void>;
   loadHistory(take?: number): Promise<void>;
@@ -33,6 +33,8 @@ export interface NotificationStore {
     handler?: (msg: PushNotification) => void;
   }): () => void;
   getByType(type: string): PushNotification[];
+  setBroadcastFilter(fn: (msg: PushNotification) => boolean): void;
+  clearBroadcastFilter(): void;
 }
 
 export function createNotificationStore(options?: NotificationStoreOptions): NotificationStore {
@@ -41,6 +43,8 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
   const realtime = ref<PushNotification[]>([]);
   const subscribers = new Map<number, NotificationSubscription>();
   let subscriberCounter = 0;
+  const broadcastFilter = ref<((msg: PushNotification) => boolean) | null>(null);
+  let broadcastFilterWarned = false;
 
   const toastHandle = options?.toastHandle ?? createToastController().handle;
   const notificationsClient = new PushNotificationClient();
@@ -57,7 +61,20 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
     registry.set(type, config);
   }
 
-  function ingest(message: PushNotification) {
+  function ingest(message: PushNotification, opts?: { broadcast?: boolean }) {
+    if (opts?.broadcast) {
+      if (broadcastFilter.value) {
+        if (!broadcastFilter.value(message)) return;
+      } else if (import.meta.env.DEV && !broadcastFilterWarned) {
+        broadcastFilterWarned = true;
+        logger.warn(
+          "Broadcast notifications received without a filter. " +
+            "Call useBroadcastFilter() in your App.vue to filter by creator/seller. " +
+            "See: MIGRATION_GUIDE.md#broadcast-filter",
+        );
+      }
+    }
+
     if (message.notifyType && EXCLUDED_NOTIFICATION_TYPES.includes(message.notifyType)) {
       return;
     }
@@ -153,6 +170,14 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
     return history.value.filter((n) => n.notifyType === type);
   }
 
+  function setBroadcastFilter(fn: (msg: PushNotification) => boolean) {
+    broadcastFilter.value = fn;
+  }
+
+  function clearBroadcastFilter() {
+    broadcastFilter.value = null;
+  }
+
   return {
     // State
     registry,
@@ -171,5 +196,7 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
     loadHistory,
     subscribe,
     getByType,
+    setBroadcastFilter,
+    clearBroadcastFilter,
   };
 }

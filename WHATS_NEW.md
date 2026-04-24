@@ -72,6 +72,8 @@ See [migration/39-blade-skeleton.md](./migration/39-blade-skeleton.md) for detai
 
 - **`useNotificationContext()`** — New composable for accessing notification data inside custom templates. Replaces implicit props with an explicit pull-based API. Custom templates no longer need `defineProps` or `inheritAttrs: false`.
 
+- **`useBroadcastFilter()`** — New composable for filtering broadcast push notifications (`SendSystemEvents`). Replaces the error-prone `signalR: { creator }` / `updateSignalRCreator` pattern. The SignalR plugin now always listens to both channels; apps set a filter function to control which broadcast messages are accepted. Dev-mode warning appears if broadcast messages arrive without a filter configured.
+
 ---
 
 ## Widgets
@@ -181,4 +183,4 @@ New high-level composable that eliminates boilerplate when working with assets (
 
 - **`shared/` dissolved** — The `shared/` directory has been removed. Its contents moved to domain-appropriate locations: `core/` (logic), `ui/` (components), `shell/` (app chrome: auth, sidebar, dashboard, settings), and `modules/` (built-in modules). Public API imports from `@vc-shell/framework` are unchanged.
 
-- **No global component registration** — The framework no longer calls `app.component()` for Vc* components and `app.directive()` for directives during plugin installation. Import them explicitly from `@vc-shell/framework/ui`. This enables proper tree-shaking of unused components. Automated codemod: `npx @vc-shell/migrate --transform remove-global-components`. See [migration guide #40](./migration/40-remove-global-components.md).
+- **No global component registration** — The framework no longer calls `app.component()` for Vc\* components and `app.directive()` for directives during plugin installation. Import them explicitly from `@vc-shell/framework/ui`. This enables proper tree-shaking of unused components. Automated codemod: `npx @vc-shell/migrate --transform remove-global-components`. See [migration guide #40](./migration/40-remove-global-components.md).

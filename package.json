@@ -14,6 +14,7 @@
     "build": "yarn workspaces foreach -v --worktree --topological-dev --from '{@vc-shell/mf-config,@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/create-vc-app,@vc-shell/migrate,@vc-shell/framework,@vc-shell/mf-host,@vc-shell/mf-module}' run build",
     "build:analyze": "ANALYZE=true yarn build",
     "build:framework": "yarn workspace @vc-shell/framework run build",
+    "build:framework:debug": "cross-env APP_ENV=development yarn workspace @vc-shell/framework run build",
     "build:cli:config": "yarn workspace @vc-shell/config-generator run build",
     "build:cli:api-client": "yarn workspace @vc-shell/api-client-generator run build",
     "build:cli:create-vc-app": "yarn workspace @vc-shell/create-vc-app run build",

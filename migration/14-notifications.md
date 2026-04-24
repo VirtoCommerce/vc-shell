@@ -2,13 +2,13 @@
 
 ## What Changed
 
-| Old | New |
-|-----|-----|
+| Old                                          | New                                                            |
+| -------------------------------------------- | -------------------------------------------------------------- |
 | `createAppModule(pages, locales, templates)` | `defineAppModule({ blades, locales, notifications: { ... } })` |
-| `useNotifications(type)` | `useBladeNotifications({ types: [...] })` |
-| `setNotificationHandler(fn)` | `onMessage` option |
-| `moduleNotifications` watch | `messages` computed |
-| `notifyType` in `defineOptions` | Remove — use `useBladeNotifications` or module config |
+| `useNotifications(type)`                     | `useBladeNotifications({ types: [...] })`                      |
+| `setNotificationHandler(fn)`                 | `onMessage` option                                             |
+| `moduleNotifications` watch                  | `messages` computed                                            |
+| `notifyType` in `defineOptions`              | Remove — use `useBladeNotifications` or module config          |
 
 ## Backward Compatibility
 
@@ -45,6 +45,18 @@ Toast options: `mode` (`"auto"` | `"progress"` | `"silent"`), `severity` (`"info
 
 ## Step 3: Replace useNotifications in Blades
 
+Toast display is now automatic (configured via `defineAppModule` in Step 1). In blades, only use `useBladeNotifications` for **data reload** and **filtering**.
+
+**Delete entirely:**
+
+- `watch(moduleNotifications, ...)` blocks
+- `notification()` / `notification.update()` toast calls
+- `notificationId` refs for tracking toast state
+- `markAsRead()` inside toast `onClose` handlers
+- `setNotificationHandler(...)` calls
+
+**Extract into `onMessage`:** only data-reload logic (e.g., `getTasks()`, `refreshData()`).
+
 ```diff
 -const { markAsRead, setNotificationHandler } = useNotifications("MyDomainEvent");
 -setNotificationHandler((message) => {
@@ -52,23 +64,50 @@ Toast options: `mode` (`"auto"` | `"progress"` | `"silent"`), `severity` (`"info
 -    notification.success(message.title, { onClose() { markAsRead(message); } });
 -  }
 -});
-+const { messages } = useBladeNotifications({
++useBladeNotifications({
 +  types: ["MyDomainEvent"],
 +  onMessage: () => reloadData(),
 +});
 ```
 
-## Step 4: Progress Pattern
+## Step 4: Watch Pattern with Toast Management
+
+The most common pattern: `watch(moduleNotifications, ...)` with manual toast creation/update and data reloading mixed together. The toast logic is now handled by module config — only extract the data reload part.
 
 ```diff
--const { moduleNotifications, markAsRead } = useNotifications("MyProgressEvent");
--watch(moduleNotifications, (newVal) => { /* manual toast management */ }, { deep: true });
-+// Module config: notifications: { MyProgressEvent: { toast: { mode: "progress" } } }
+-const { moduleNotifications, markAsRead } = useNotifications("MyEvent");
+-const notificationId = ref();
+-
+-watch(
+-  moduleNotifications,
+-  (newVal) => {
+-    newVal.forEach((message) => {
+-      // Data reload — KEEP, move to onMessage
+-      if (message.entityId === param.value) {
+-        getTasks({ id: message.entityId, jobId: message.jobId });
+-      }
+-      // Toast management — DELETE (handled by module config toast settings)
+-      if (!message.finished) {
+-        notificationId.value = notification(message.title, { timeout: false });
+-      } else {
+-        notification.update(notificationId.value, {
+-          type: message.title === "failed" ? "error" : "success",
+-          onClose() { markAsRead(message); notificationId.value = undefined; },
+-        });
+-      }
+-    });
+-  },
+-  { deep: true },
+-);
++// Toast: defineAppModule({ notifications: { MyEvent: { toast: { mode: "progress" } } } })
 +useBladeNotifications({
-+  types: ["MyProgressEvent"],
-+  filter: (msg) => msg.entityId === props.param,
-+  onMessage: (msg) => refreshData(msg),
++  types: ["MyEvent"],
++  filter: (msg) => msg.entityId === param.value,
++  onMessage: (msg) => {
++    getTasks({ id: msg.entityId, jobId: msg.jobId });
++  },
 +});
++// DELETE: notificationId ref, watch block, notification()/notification.update()
 ```
 
 ## Step 5: Notification Template Props → Composable
@@ -108,6 +147,7 @@ const notificationRef = useNotificationContext<IMyNotification>();
 ## Directory Structure
 
 Move `components/notifications/` → `notifications/` at module root:
+
 ```
 my-module/
   notifications/    ← was components/notifications/

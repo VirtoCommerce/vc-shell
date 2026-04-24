@@ -152,17 +152,28 @@ Toast options:
 
 ## RULE 4: Replace useNotifications in Blades
 
-Replace `useNotifications()` with `useBladeNotifications()`. Remove `setNotificationHandler`, `moduleNotifications` watch, and `notifyType` from `defineOptions`.
+Replace `useNotifications()` with `useBladeNotifications()`. Remove `setNotificationHandler`, the entire `watch(moduleNotifications, ...)` block, manual toast management, and `notifyType` from `defineOptions`.
+
+### What to DELETE (toast management is now automatic via module config):
+
+- The entire `watch(moduleNotifications/messages, ..., { deep: true })` block
+- All `notification()` / `notification.update()` calls related to notification messages
+- The `notificationId` ref used for toast tracking
+- `setNotificationHandler(...)` calls
+- `markAsRead()` calls inside toast `onClose` handlers
+- `notifyType` from `defineOptions`/`defineBlade`
+
+### What to EXTRACT into `onMessage`:
+
+- Only **data-reload logic** from the watch callback (e.g., `getTasks()`, `refreshData()`, `reload()`)
+- Add `filter` if the callback had blade-specific conditions (e.g., `message.profileId === param.value`)
+
+### Simple case: `setNotificationHandler`
 
 **BEFORE:**
 
 ```typescript
-defineOptions({
-  name: "MyBlade",
-  notifyType: "MyDomainEvent",
-});
-
-const { markAsRead, setNotificationHandler, moduleNotifications } = useNotifications("MyDomainEvent");
+const { markAsRead, setNotificationHandler } = useNotifications("MyDomainEvent");
 
 setNotificationHandler((message) => {
   if (message.title) {
@@ -173,12 +184,54 @@ setNotificationHandler((message) => {
     });
   }
 });
+```
 
-// or watch pattern:
+**AFTER:**
+
+```typescript
+useBladeNotifications({
+  types: ["MyDomainEvent"],
+});
+```
+
+### Complex case: `watch` with toast management + data reload
+
+**BEFORE:**
+
+```typescript
+const { moduleNotifications, markAsRead } = useNotifications("ImportPushNotification");
+const notificationId = ref();
+
 watch(
   moduleNotifications,
   (newVal) => {
-    // manual toast management
+    (newVal as ImportPushNotification[]).forEach((message) => {
+      const messageContent = message.profileName ? `${message.profileName}: ${message.title}` : message.title;
+
+      // DATA RELOAD — extract this into onMessage
+      if (!importStarted.value && message.profileId === param.value) {
+        getTasks({ profileId: message.profileId, importJobId: message.jobId });
+      }
+
+      // TOAST MANAGEMENT — delete all of this (handled by module config)
+      if (!message.finished) {
+        if (!notificationId.value && messageContent) {
+          notificationId.value = notification(messageContent, { timeout: false });
+        } else {
+          notification.update(notificationId.value, { content: messageContent });
+        }
+      } else {
+        notification.update(notificationId.value, {
+          timeout: 5000,
+          content: messageContent,
+          type: message.title === "Import failed" ? "error" : "success",
+          onClose() {
+            markAsRead(message);
+            notificationId.value = undefined;
+          },
+        });
+      }
+    });
   },
   { deep: true },
 );
@@ -187,27 +240,22 @@ watch(
 **AFTER:**
 
 ```typescript
-defineOptions({
-  name: "MyBlade",
-  // notifyType removed
-});
-
-const { messages } = useBladeNotifications({
-  types: ["MyDomainEvent"],
-  onMessage: () => reloadData(),
-});
-```
-
-For progress notifications:
-
-```typescript
-// Module config: notifications: { MyProgressEvent: { toast: { mode: "progress" } } }
 useBladeNotifications({
-  types: ["MyProgressEvent"],
-  filter: (msg) => msg.entityId === param.value,
-  onMessage: (msg) => refreshData(msg),
+  types: ["ImportPushNotification"],
+  filter: (msg) => (msg as ImportPushNotification).profileId === param.value,
+  onMessage: (msg) => {
+    if (!importStarted.value) {
+      getTasks({
+        profileId: (msg as ImportPushNotification).profileId,
+        importJobId: (msg as ImportPushNotification).jobId,
+      });
+    }
+  },
 });
+// DELETE: notificationId ref, watch block, notification()/notification.update() calls
 ```
+
+Toast appearance is configured in `defineAppModule({ notifications: { ImportPushNotification: { toast: { mode: "progress" } } } })`. The `markAsRead` is handled automatically.
 
 ## Verification
 

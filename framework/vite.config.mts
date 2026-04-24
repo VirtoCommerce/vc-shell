@@ -44,7 +44,7 @@ export default getLibraryConfiguration({
   build: {
     target: "esnext",
     cssCodeSplit: false,
-    sourcemap: mode === "development",
+    sourcemap: mode === "development" ? true : "hidden",
     lib: {
       entry: {
         framework: path.resolve(frameworkRoot, "index.ts"),

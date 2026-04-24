@@ -63,19 +63,22 @@ const { canSave, isModified, setBaseline, revert, setFieldError, errorBag } = us
   closeConfirmMessage: () => t("MY_MODULE.ALERTS.CLOSE_CONFIRMATION"),
 });
 
-watch(
-  item,
-  () => {
-    if (item.value) setBaseline();
-  },
-  { once: true },
-);
+// Call setBaseline() AFTER data is loaded in onMounted.
+// Do NOT use watch(item, ..., { once: true }) — it only detects ref
+// replacement (item.value = newData), not in-place mutations
+// (Object.assign(item.value, newData)).
+onMounted(async () => {
+  await load(param.value);
+  setBaseline();
+});
 
 async function handleSave() {
   await save(item.value);
   setBaseline();
 }
 ```
+
+**IMPORTANT — `setBaseline()` placement:** Always call `setBaseline()` AFTER the async load completes, inside `onMounted` or after the load function returns. A `watch(data, ..., { once: true })` watcher fails when the composable mutates data in-place via `Object.assign(data.value, loadedData)` instead of replacing the ref — the watcher never fires because the `.value` reference doesn't change.
 
 ## RULE 2: Remove onBeforeClose Entirely
 

@@ -47,4 +47,14 @@ describe("VcCard", () => {
     const w = mountCard({ header: "T", isCollapsable: true }, { default: "B" });
     expect(w.find(".vc-card__header").attributes("aria-expanded")).toBeDefined();
   });
+
+  it("applies fill modifier to body-wrapper when fill=true", () => {
+    const w = mountCard({ fill: true }, { default: "B" });
+    expect(w.find(".vc-card__body-wrapper--fill").exists()).toBe(true);
+  });
+
+  it("does not apply fill modifier when fill is falsy", () => {
+    const w = mountCard({}, { default: "B" });
+    expect(w.find(".vc-card__body-wrapper--fill").exists()).toBe(false);
+  });
 });

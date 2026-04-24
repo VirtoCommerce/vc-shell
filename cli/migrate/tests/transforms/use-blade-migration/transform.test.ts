@@ -61,7 +61,53 @@ onBeforeClose(() => {
     expect(reports[0]).toContain("multiple returns");
   });
 
-  it("skips files without useBladeNavigation", () => {
+  it("rewrites openBlade({ blade: resolveBladeByName('X')! }) to openBlade({ name: 'X' })", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { useBlade } from "@vc-shell/framework";
+const { openBlade, resolveBladeByName } = useBlade();
+openBlade({ blade: resolveBladeByName("OrderDetails")!, param: orderId });`,
+    });
+    expect(result).toContain('name: "OrderDetails"');
+    expect(result).not.toContain("blade:");
+    expect(result).not.toContain("resolveBladeByName");
+  });
+
+  it("removes second boolean arg from openBlade(opts, true)", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { useBlade } from "@vc-shell/framework";
+const { openBlade, resolveBladeByName } = useBlade();
+openBlade({ blade: resolveBladeByName("MyBlade")!, param: id }, true);`,
+    });
+    expect(result).toContain('name: "MyBlade"');
+    expect(result).not.toContain(", true");
+    expect(result).not.toContain("resolveBladeByName");
+  });
+
+  it("handles resolveBladeByName without non-null assertion", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { useBlade } from "@vc-shell/framework";
+const { openBlade, resolveBladeByName } = useBlade();
+openBlade({ blade: resolveBladeByName("Blade"), param: id });`,
+    });
+    expect(result).toContain('name: "Blade"');
+    expect(result).not.toContain("resolveBladeByName");
+  });
+
+  it("triggers on resolveBladeByName even when useBladeNavigation is already renamed", () => {
+    const result = applyTransform(transform, {
+      path: "test.ts",
+      source: `import { useBlade } from "@vc-shell/framework";
+const { openBlade, resolveBladeByName } = useBlade();
+openBlade({ blade: resolveBladeByName("X")!, param: id });`,
+    });
+    expect(result).not.toBeNull();
+    expect(result).toContain('name: "X"');
+  });
+
+  it("skips files without useBladeNavigation or resolveBladeByName", () => {
     const result = applyTransform(transform, {
       path: "test.ts",
       source: `import { ref } from "vue";`,

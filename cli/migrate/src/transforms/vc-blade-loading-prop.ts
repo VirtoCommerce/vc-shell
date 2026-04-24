@@ -22,8 +22,10 @@ import type { Transform } from "./types.js";
 // [^>]* keeps each match confined to one tag.
 const VCBLADE_TAG_RE = /<VcBlade(\s[^>]*?)?(\s*\/?)>/g;
 
-// Match v-loading="..." or v-loading='...' (quoted value only).
-const V_LOADING_RE = /(\s)v-loading=(["'])([^"']*)\2/;
+// Match v-loading="...", v-loading:arg="...", v-loading.modifier="..." (quoted value only).
+// Vue directive arguments (e.g. v-loading:1001) and modifiers are stripped —
+// the :loading prop doesn't use them.
+const V_LOADING_RE = /(\s)v-loading(?::[^\s="']+)?(?:\.[^\s="']+)*\s*=(["'])([^"']*)\2/;
 
 const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options): string | null => {
   if (!fileInfo.path.endsWith(".vue")) return null;

@@ -20,6 +20,14 @@ const PATTERNS: Array<{ pattern: RegExp; message: string }> = [
     pattern: /\bcloseBlade\s*\(/,
     message: "closeBlade() is removed. Use closeSelf() from useBlade() instead.",
   },
+  {
+    pattern: /\bresolveBladeByName\b/,
+    message: "resolveBladeByName() is removed. Pass name directly: openBlade({ name: 'BladeName', param }).",
+  },
+  {
+    pattern: /\bonParentCall\b/,
+    message: "onParentCall() is removed. Use callParent() from useBlade(): callParent('methodName', args).",
+  },
 ];
 
 function checkDoubleUseBlade(source: string, filePath: string, api: API): void {

@@ -25,6 +25,11 @@ describe("vc-blade-loading-prop", () => {
     expect(match).toBe(true);
   });
 
+  it("converts v-loading:arg (directive with argument) to :loading; leaves inner v-loading:arg alone", () => {
+    const { match } = defineFixtureTest(transform, FIXTURES, "directive-arg", "vue");
+    expect(match).toBe(true);
+  });
+
   it("does not touch files where VcBlade already uses :loading", () => {
     const inputPath = join(FIXTURES, "no-loading.input.vue");
     const input = readFileSync(inputPath, "utf8");

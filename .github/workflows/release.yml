@@ -33,7 +33,7 @@ on:
           - alpha
           - beta
           - rc
-        default: alpha
+        default: none
       dry-run:
         description: "Dry-run only (no commit / push / publish)"
         type: boolean

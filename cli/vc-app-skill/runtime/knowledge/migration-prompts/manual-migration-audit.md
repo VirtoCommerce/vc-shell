@@ -90,7 +90,45 @@ await closeSelf();
 
 If `closeBlade(index)` was used to close by index, refactor to close current blade only (or use explicit navigation logic) — do not keep index-based close calls.
 
-## RULE 5: Consolidate multiple `useBlade()` calls per file
+## RULE 5: Remove `resolveBladeByName` — pass name directly to `openBlade`
+
+**BEFORE:**
+
+```typescript
+const { openBlade, resolveBladeByName } = useBlade();
+openBlade({ blade: resolveBladeByName("OrderDetails")!, param: orderId });
+```
+
+**AFTER:**
+
+```typescript
+const { openBlade } = useBlade();
+openBlade({ name: "OrderDetails", param: orderId });
+```
+
+Remove `resolveBladeByName` from the destructuring. The `blade` property in the openBlade argument is replaced by `name` (string).
+
+## RULE 6: Replace `onParentCall` with `callParent`
+
+**BEFORE:**
+
+```typescript
+const { onParentCall } = useBladeNavigation();
+onParentCall({ method: "reload" });
+onParentCall({ method: "updateItem", args: newItem });
+```
+
+**AFTER:**
+
+```typescript
+const { callParent } = useBlade();
+await callParent("reload");
+await callParent("updateItem", newItem);
+```
+
+Note: `callParent` is async and returns a Promise. Add `await` if the result matters.
+
+## RULE 7: Consolidate multiple `useBlade()` calls per file
 
 Use one `useBlade()` destructuring per component/composable unless there is a strong technical reason.
 
@@ -111,7 +149,7 @@ const { openBlade, closeSelf, callParent, param } = useBlade();
 
 After migration:
 
-1. Search and remove stale APIs: `useExternalWidgets`, `import moment`, `useFunctions(`, `closeBlade(`.
+1. Search and remove stale APIs: `useExternalWidgets`, `import moment`, `useFunctions(`, `closeBlade(`, `resolveBladeByName`, `onParentCall`.
 2. Search for duplicate `useBlade()` calls in the same file and consolidate.
 3. Run `npx vue-tsc --noEmit`.
 4. Run `yarn build`.

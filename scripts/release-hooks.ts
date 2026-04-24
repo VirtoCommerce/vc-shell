@@ -54,6 +54,7 @@ async function runAfterBump(version: string) {
 
   syncWorkspacePackageVersions(version);
   await updateBoilerplatePkgVersions();
+  // TODO remove this once we have a way to update apps dependencies automatically
   await updateAppsDependencies();
   syncSkillVersion(version);
   syncSkillDocs();

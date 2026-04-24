@@ -88,6 +88,7 @@ import VcBreadcrumbsItem from "@ui/components/molecules/vc-breadcrumbs/_internal
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
+import { VcButton } from "@ui/components/atoms/vc-button";
 
 export interface Props {
   items?: Breadcrumbs[];

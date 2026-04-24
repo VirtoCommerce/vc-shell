@@ -63,7 +63,10 @@
     <div
       :id="cardBodyId"
       class="vc-card__body-wrapper"
-      :class="{ 'vc-card__body-wrapper--collapsed': isCollapsedInternal }"
+      :class="{
+        'vc-card__body-wrapper--collapsed': isCollapsedInternal,
+        'vc-card__body-wrapper--fill': fill,
+      }"
     >
       <div
         :class="[{ 'tw-flex': fill }, 'vc-card__body']"
@@ -221,6 +224,23 @@ $variants: success, danger;
 
     &--collapsed {
       grid-template-rows: 0fr;
+    }
+
+    // Fill mode: absorb remaining height of the card's flex column so that
+    // body content (e.g. VcDataTable) is bounded and can manage its own scroll.
+    // `minmax(0, 1fr)` is required — plain `1fr` resolves to `minmax(auto, 1fr)`,
+    // whose `auto` minimum lets the grid row expand past the card under
+    // tall content, pushing footer elements (pagination) outside the card.
+    &--fill {
+      @apply tw-grow tw-min-h-0;
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    // Keep the collapse animation consistent when fill is active —
+    // interpolating between `minmax(0, 1fr)` and `minmax(0, 0fr)` preserves
+    // the matching track syntax required for a smooth transition.
+    &--fill#{&}--collapsed {
+      grid-template-rows: minmax(0, 0fr);
     }
   }
 

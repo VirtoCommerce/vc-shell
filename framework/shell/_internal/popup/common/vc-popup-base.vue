@@ -55,6 +55,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import VcPopup, { type PopupVariant } from "@ui/components/organisms/vc-popup/vc-popup.vue";
+import { VcButton } from "@ui/components/atoms/vc-button";
 
 export interface Props {
   title?: string;

@@ -11,7 +11,7 @@
           v-if="forced"
           class="tw-mb-4"
         >
-          <vc-status
+          <VcStatus
             extend
             :outline="false"
             variant="info-dark"
@@ -26,7 +26,7 @@
                 <p>{{ t("COMPONENTS.CHANGE_PASSWORD.FORCED.LABEL") }}</p>
               </div>
             </div>
-          </vc-status>
+          </VcStatus>
         </div>
 
         <Field

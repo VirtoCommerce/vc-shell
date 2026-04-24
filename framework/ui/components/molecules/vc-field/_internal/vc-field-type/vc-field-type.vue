@@ -57,6 +57,7 @@
 
 <script lang="ts" setup>
 import { formatDateRelative } from "@core/utilities/date";
+import { VcLink } from "@ui/components/atoms/vc-link";
 
 export interface Props {
   type: "text" | "date" | "date-ago" | "link" | "email";

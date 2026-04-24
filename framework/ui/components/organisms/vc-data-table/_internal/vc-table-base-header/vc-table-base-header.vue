@@ -73,6 +73,7 @@
 <script lang="ts" setup>
 import VcTableFilter from "@ui/components/organisms/vc-data-table/_internal/vc-table-filter/vc-table-filter.vue";
 import { VcInput } from "@ui/components/molecules";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 
 export interface Props {

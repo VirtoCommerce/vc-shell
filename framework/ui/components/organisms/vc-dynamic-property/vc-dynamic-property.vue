@@ -351,6 +351,8 @@ import { VcSelect } from "@ui/components/molecules/vc-select";
 import { VcInput } from "@ui/components/molecules/vc-input";
 import { VcTextarea } from "@ui/components/molecules/vc-textarea";
 import { VcSwitch } from "@ui/components/molecules/vc-switch";
+import { VcMultivalue } from "@ui/components/molecules/vc-multivalue";
+import { VcInputDropdown } from "@ui/components/molecules/vc-input-dropdown";
 import { cloneDeep } from "lodash-es";
 import { convertColorNameToHex } from "@core/utilities";
 

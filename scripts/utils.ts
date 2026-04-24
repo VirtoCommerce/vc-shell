@@ -16,17 +16,13 @@ function loadPeerVersions(cwd: string): VersionMap | null {
   try {
     const raw = fs.readJsonSync(peerVersionsPath);
     if (!raw || typeof raw !== "object" || !raw.versions || typeof raw.versions !== "object") {
-      console.warn(
-        "⚠ configs/peer-versions.json has no `versions` object — scaffold template peer-dep sync skipped.",
-      );
+      console.warn("⚠ configs/peer-versions.json has no `versions` object — scaffold template peer-dep sync skipped.");
       return null;
     }
     return raw.versions as VersionMap;
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.warn(
-      `⚠ Failed to parse configs/peer-versions.json (${msg}) — scaffold template peer-dep sync skipped.`,
-    );
+    console.warn(`⚠ Failed to parse configs/peer-versions.json (${msg}) — scaffold template peer-dep sync skipped.`);
     return null;
   }
 }
@@ -78,56 +74,5 @@ export async function updateBoilerplatePkgVersions(cwd: string = process.cwd()) 
 
     writeFileSync(pkgPath, JSON.stringify(boilerplatePkg, null, 2) + "\n");
     console.log(`  ✓ Updated ${path.basename(path.dirname(pkgPath))} template to ^${version}`);
-  }
-}
-
-// Updates @vc-shell/* dependencies in all apps to match current framework version.
-export async function updateAppsDependencies(cwd: string = process.cwd()) {
-  const version = fs.readJsonSync(path.join(cwd, "package.json")).version;
-  const appsDirectory = path.join(cwd, "apps");
-
-  if (!fs.existsSync(appsDirectory)) {
-    return;
-  }
-
-  const appEntries = fs.readdirSync(appsDirectory, { withFileTypes: true });
-  let updatedCount = 0;
-
-  for (const entry of appEntries) {
-    if (!entry.isDirectory()) {
-      continue;
-    }
-
-    const appPackagePath = path.join(appsDirectory, entry.name, "package.json");
-    if (!fs.existsSync(appPackagePath)) {
-      continue;
-    }
-
-    const appPackage = fs.readJsonSync(appPackagePath);
-    let updated = false;
-
-    for (const depType of ["dependencies", "devDependencies"] as const) {
-      const deps = appPackage[depType];
-      if (!deps) continue;
-      for (const name of Object.keys(deps)) {
-        if (name.startsWith("@vc-shell/")) {
-          const newVersion = `^${version}`;
-          if (deps[name] !== newVersion) {
-            deps[name] = newVersion;
-            updated = true;
-          }
-        }
-      }
-    }
-
-    if (updated) {
-      writeFileSync(appPackagePath, JSON.stringify(appPackage, null, 2) + "\n");
-      console.log(`  ✓ Updated ${appPackage.name} @vc-shell/* dependencies to ^${version}`);
-      updatedCount++;
-    }
-  }
-
-  if (updatedCount > 0) {
-    console.log(`\n  Updated ${updatedCount} app(s) in apps/ directory`);
   }
 }

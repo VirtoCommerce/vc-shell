@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0...v2.0.1) (2026-04-24)
+
+### Features
+
+- enhance migrate transforms, fix notification race condition, update migration docs (#221) ([3c2134d](https://github.com/VirtoCommerce/vc-shell/commit/3c2134d0fa1016a2e4e075a12bb9df9a31b3d381)), closes [#221](https://github.com/VirtoCommerce/vc-shell/issues/221)
+
 # [2.0.0](https://github.com/VirtoCommerce/vc-shell/compare/v1.2.3...v2.0.0) (2026-04-22)
 
 ### Features

@@ -17,7 +17,12 @@ The notification system receives `PushNotification` messages from the platform S
 ```
 PushNotification (SignalR)
         |
-        v
+  ┌─────┴─────┐
+  Send     SendSystemEvents
+  |            |
+  |     broadcastFilter?
+  |            |
+  v            v
   NotificationStore.ingest()
         |
         +---> history[]  (persistent, loaded from API)
@@ -47,7 +52,9 @@ Returns the shared `NotificationStore` singleton. Resolution order:
 | `unreadCount`                | `ComputedRef<number>`                        | Count of unread notifications in history                             |
 | `hasUnread`                  | `ComputedRef<boolean>`                       | Whether any unread notifications exist                               |
 | `registerType(type, config)` | `(string, NotificationTypeConfig) => void`   | Register a notification type with toast/template config              |
-| `ingest(message)`            | `(PushNotification) => void`                 | Process an incoming notification (upsert, toast, notify subscribers) |
+| `ingest(message, opts?)`     | `(PushNotification, {broadcast?}?) => void`  | Process an incoming notification; broadcast messages are filtered    |
+| `setBroadcastFilter(fn)`     | `((PushNotification) => boolean) => void`    | Set filter for broadcast messages (SendSystemEvents)                 |
+| `clearBroadcastFilter()`     | `() => void`                                 | Remove the broadcast filter                                          |
 | `markAsRead(message)`        | `(PushNotification) => void`                 | Mark a single notification as read                                   |
 | `markAllAsRead()`            | `() => Promise<void>`                        | Optimistic mark-all-as-read with server sync and rollback on failure |
 | `loadHistory(take?)`         | `(number?) => Promise<void>`                 | Load notification history from the API (default: 10)                 |
@@ -103,6 +110,35 @@ interface IOrderNotification extends PushNotification {
 
 const notificationRef = useNotificationContext<IOrderNotification>();
 // notificationRef.value.orderId, notificationRef.value.title, etc.
+```
+
+### `useBroadcastFilter()`
+
+Controls which broadcast push notifications (`SendSystemEvents`) are accepted by the store. Targeted notifications (`Send`) are always accepted regardless of filter.
+
+**File:** `composables/useBroadcastFilter.ts`
+
+#### Returns
+
+```typescript
+interface UseBroadcastFilterReturn {
+  setBroadcastFilter(fn: (msg: PushNotification) => boolean): void;
+  clearBroadcastFilter(): void;
+}
+```
+
+#### Example
+
+```typescript
+import { useBroadcastFilter } from "@vc-shell/framework";
+
+const { setBroadcastFilter, clearBroadcastFilter } = useBroadcastFilter();
+
+// Accept only notifications for the current seller
+setBroadcastFilter((msg) => msg.creator === currentSellerId);
+
+// Remove filter (accept all broadcast messages)
+clearBroadcastFilter();
 ```
 
 ### Toast Controller

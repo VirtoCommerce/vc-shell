@@ -73,10 +73,15 @@ export const ShellIndicatorsKey: InjectionKey<ComputedRef<boolean>> = Symbol("Sh
 export const AiAgentServiceKey: InjectionKey<IAiAgentService> = Symbol("AiAgentService");
 
 // Breakpoint keys
+/** @deprecated Use `useResponsive()` composable instead. */
 export const IsMobileKey: InjectionKey<Ref<boolean>> = Symbol("IsMobile");
+/** @deprecated Use `useResponsive()` composable instead. */
 export const IsDesktopKey: InjectionKey<Ref<boolean>> = Symbol("IsDesktop");
+/** @deprecated Use `useResponsive()` composable instead. */
 export const IsPhoneKey: InjectionKey<Ref<boolean>> = Symbol("IsPhone");
+/** @deprecated Use `useResponsive()` composable instead. */
 export const IsTabletKey: InjectionKey<Ref<boolean>> = Symbol("IsTablet");
+/** @deprecated Use `useResponsive()` composable instead. */
 export const IsTouchKey: InjectionKey<boolean> = Symbol("IsTouch");
 
 // Routing keys

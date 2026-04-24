@@ -61,6 +61,42 @@ const save = () => {};
 </script>
 ```
 
+## Directives
+
+Directives follow the same explicit-import rule as components. `v-loading` and `v-autofocus` are no longer auto-registered globally.
+
+```ts
+// <script setup> — Vue auto-binds locally-scoped variables whose name starts with `v`
+// to the same-named template directive (`vLoading` → `v-loading`).
+import { vLoading, vAutofocus } from "@vc-shell/framework/ui";
+```
+
+Both directives are re-exported from `@vc-shell/framework/ui` as `vLoading` / `vAutofocus` aliases (the underlying symbols are `loading` / `autofocus` from `@vc-shell/framework/core/directives`).
+
+If you cannot use `<script setup>`, register them at bootstrap instead:
+
+```ts
+import { createApp } from "vue";
+import { vLoading, vAutofocus } from "@vc-shell/framework/ui";
+
+const app = createApp(App);
+app.directive("loading", vLoading);
+app.directive("autofocus", vAutofocus);
+```
+
+### v-loading default z-index changed
+
+The `v-loading` default z-index was lowered from **9999** to **9000** in v2.0 so popups and modals render above the spinner without extra overrides. If your code relied on the overlay sitting above a custom modal layer, pass an explicit z-index via the directive argument:
+
+```vue
+<template>
+  <!-- Directive argument sets --v-loading-z-index on the host element -->
+  <div v-loading:9999="isLoading">...</div>
+</template>
+```
+
+You can also override globally via the CSS custom property `--v-loading-z-index` on the host element.
+
 ## Manual Steps
 
 The automated codemod handles most cases. These patterns require manual migration:

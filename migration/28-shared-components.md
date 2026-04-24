@@ -32,3 +32,48 @@ If you import from internal paths:
 ```bash
 grep -rn "shared/components/sidebar\|shared/components/generic-dropdown" src/
 ```
+
+## Related: `usePopup` Promoted to Public Composable
+
+**Severity:** New (non-breaking, additive)
+**Automated:** No (import path update only)
+
+`usePopup()` was previously an internal composable reachable only through deep `shared/components/popup-handler` paths. It is now a first-class public composable under `@core/composables/usePopup`, re-exported from the main package barrel.
+
+### Migration
+
+```diff
+-import { usePopup } from "@vc-shell/framework/shared/components/popup-handler/composables";
++import { usePopup } from "@vc-shell/framework";
+```
+
+If you already import from the `@vc-shell/framework` barrel — **no changes needed**; the barrel now points to the public location.
+
+### What `usePopup` Exposes
+
+```typescript
+import { usePopup } from "@vc-shell/framework";
+
+const popup = usePopup();
+
+// Simple confirmation / info / error flows driven by registered popup presets:
+const confirmed = await popup.showConfirmation("Are you sure?");
+popup.showError("Something went wrong.");
+popup.showInfo("Saved.");
+
+// Custom popup component:
+const custom = usePopup({
+  component: MyPopupComponent,
+  props: { title: "Custom" },
+});
+custom.open();
+custom.close();
+```
+
+The shell's popup plugin (installed by `VcApp`) registers the `warning`, `error`, and `info` presets — `showConfirmation`/`showError`/`showInfo` will log and no-op if those presets are not registered.
+
+### How to Find (Old Deep Imports)
+
+```bash
+grep -rn "shared/components/popup-handler\|popup-handler/composables" src/
+```

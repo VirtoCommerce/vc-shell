@@ -35,6 +35,9 @@ Work through these guides in order. Each is self-contained with before/after exa
 | 13  | [Widgets](./13-widgets.md)                             | Deprecated   | `registerWidget()` → `useBladeWidgets()`               |
 | 14  | [Notifications](./14-notifications.md)                 | Deprecated   | `useNotifications()` → `useBladeNotifications()`       |
 | 15  | [Extension Points](./15-extension-points.md)           | **Breaking** | `useExtensionSlot` → `defineExtensionPoint`            |
+| 43  | [getModulesLibraryConfiguration](./43-modules-library-config.md)     | **Breaking** | `getDynamicModuleConfiguration` → `getModulesLibraryConfiguration` (ES library build) |
+| 44  | [createModule() Removal](./44-create-module-removal.md)              | **Breaking** | Lightweight `createModule()` helper removed — use `defineAppModule()`                 |
+| 45  | [useDynamicModules() Removal](./45-dynamic-module-loader-removal.md) | **Breaking** | Custom CDN-based runtime loader removed — use `@vc-shell/mf-host`/`mf-module` or static imports |
 
 ### Phase 3 — UI Components (if you use these features)
 
@@ -77,6 +80,10 @@ Work through these guides in order. Each is self-contained with before/after exa
 | 40  | [Remove Global Component Registration](./40-remove-global-components.md) | **Breaking**  | Explicit imports required for all `Vc*` components and directives (no more `app.component()` auto-registration)  |
 | 41  | [useDataTablePagination](./41-use-data-table-pagination.md)              | Optional      | Replace manual `totalCount`/`pages`/`currentPage` + `onPaginationClick` with `useDataTablePagination` composable |
 | 42  | [Broadcast Filter](./42-broadcast-filter.md)                             | **Breaking**  | `updateSignalRCreator` → `useBroadcastFilter()` composable                                                       |
+| 46  | [CSS BEM Class Migration](./46-css-bem-class-migration.md)               | **Breaking**  | Component modifier classes renamed from `_modifier` → `--modifier` (strict BEM)                                  |
+| 47  | [VcButton Props](./47-vc-button-props.md)                                | **Breaking**  | `small`/`outline`/`raised` props removed; `size="base"`/`"xs"` aliases replaced by `"default"`/`"sm"`            |
+| 48  | [Menu Icon Type Change](./48-menu-icon-type-change.md)                   | **Breaking**  | `MenuItemConfig.icon` narrowed from `string \| Component` to `string` only; `ToolbarMenu<T>` removed             |
+| 49  | [Component Prop Removals](./49-component-props-removals.md)              | **Breaking**  | VcContainer `usePtr`, VcStatus `outline`, VcEditor `extensions`, VcField `modelValue` removed/changed            |
 
 ## Severity Legend
 

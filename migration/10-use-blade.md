@@ -82,6 +82,35 @@ The guard semantics are **inverted**:
 | `id`, `param`, etc. | ComputedRef with value | Throws on `.value` access |
 | `callParent()` | Calls parent method | Throws |
 
+## Removed Types
+
+The following public type exports are gone in v2.0:
+
+| Removed | Replacement |
+|---------|-------------|
+| `ToolbarMenu<T>` | `IBladeToolbar` (from `@vc-shell/framework`) |
+| `ComponentPublicInstanceConstructor` | Use `Component` from `vue`, or the helpers from `vue-component-type-helpers` |
+
+`ToolbarMenu<T>` was a generic wrapper that merged a component-typed `options` field onto `IBladeToolbar`. The blade toolbar API now takes `IBladeToolbar` directly — pass component props inline instead of threading them through a generic:
+
+```diff
+-import type { ToolbarMenu } from "@vc-shell/framework";
+-const toolbar: ToolbarMenu<{ component: typeof MyIcon }>[] = [...];
++import type { IBladeToolbar } from "@vc-shell/framework";
++const toolbar: IBladeToolbar[] = [...];
+```
+
+`ComponentPublicInstanceConstructor` was an internal helper used to type `usePopup()` generics. Migrate to the standard `Component` type or to `vue-component-type-helpers` (which `usePopup` itself now uses internally):
+
+```diff
+-import type { ComponentPublicInstanceConstructor } from "@vc-shell/framework";
+-function openPopup<T extends ComponentPublicInstanceConstructor<any>>(comp: T) { ... }
++import type { Component } from "vue";
++function openPopup<T extends Component>(comp: T) { ... }
+```
+
+The related `NotificationTemplateConstructor` type and `NotificationTemplatesKey` injection key were also removed.
+
 ## How to Find
 
 ```bash

@@ -90,3 +90,34 @@ It will:
 - Rename `#app-switcher` → `#app-hub` in templates
 - Rename `useAppSwitcher` → `useAppHub` in script imports and usage
 - Rename `IUseAppSwitcher` → `IUseAppHub` type references
+
+## Related: `VcApp` `@logo-click` Removed
+
+**Severity:** Breaking
+**Automated:** No (manual cleanup)
+
+The `logo-click` event emitted by `VcApp` was removed as part of the same shell refactor. The logo click behavior is now owned by `VcApp` itself and dispatched through internal shell navigation (`useShellNavigation().openRoot()`), so there is no public event to listen to.
+
+### Before
+
+```vue
+<VcApp @logo-click="(goToRoot) => router.push(goToRoot())" />
+```
+
+The old signature was `(e: "logo-click", goToRoot: () => void)` and consumers typically forwarded `goToRoot()` to the router.
+
+### After
+
+Remove the listener. `VcApp` now handles logo clicks internally — clicking the logo navigates to the root blade / dashboard via `useShellNavigation().openRoot()` without any external wiring.
+
+```vue
+<VcApp />
+```
+
+If you need custom behavior when the shell returns to root, override the desktop/mobile `layout` slot and bind your own handler to the nested layout's `@logo:click` event (the desktop/mobile layouts still emit `logo:click` internally — only the top-level `VcApp` event was removed).
+
+### How to Find
+
+```bash
+grep -rn "@logo-click\|@logoClick\|@logo-click=" src/
+```

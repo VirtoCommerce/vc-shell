@@ -32,12 +32,20 @@ In v1.x, `vue` and `vue-router` were bundled as direct dependencies of the frame
 ```jsonc
 // package.json
 "dependencies": {
-  "vue": "^3.5.13",       // Required — was implicit before
-  "vue-router": "^5.0.3", // Required — was implicit before
+  "vue": "^3.5.13",       // Required — peer range: >=3.4.0
+  "vue-router": "^5.0.3", // Required — peer range: >=4.2.0 (current major is 5)
 }
 ```
 
-If you already had `vue` and `vue-router` in your dependencies (most apps do), just update the version.
+The framework declares these as:
+
+```jsonc
+// @vc-shell/framework peerDependencies
+"vue": ">=3.4.0",
+"vue-router": ">=4.2.0"
+```
+
+The peer range for `vue-router` is intentionally wide and accepts both 4.x and 5.x, but v2.0 of the framework is developed and tested against **vue-router 5** — use `^5.0.3` in your app. If you already had `vue` and `vue-router` in your dependencies (most apps do), bump to these versions.
 
 ## Remove Obsolete Packages
 
@@ -52,6 +60,47 @@ These are no longer needed — the framework loads fonts and icons internally. S
 `moment` is no longer a dependency. If your app imported it transitively through the framework, you'll need to either:
 - Remove moment usage entirely (recommended) — see [03-moment-to-datefns.md](./03-moment-to-datefns.md)
 - Or add `moment` as your own direct dependency if you still need it
+
+## G13: Wildcard `"./*"` export removed — deep imports no longer work
+
+In v1.2.3, `@vc-shell/framework`'s `package.json` included a catch-all export:
+
+```jsonc
+// v1.2.3 framework/package.json (removed in v2)
+"exports": {
+  ".": { "import": "./dist/framework.js", "types": "./dist/index.d.ts" },
+  "./tailwind.config": "./tailwind.config.ts",
+  "./*": "./*"   // <-- removed in v2
+}
+```
+
+This allowed consumers to reach into the package with deep imports like:
+
+```ts
+// No longer works in v2
+import { useBlade } from "@vc-shell/framework/core/composables/useBlade";
+import SomeComponent from "@vc-shell/framework/ui/components/organisms/vc-blade/vc-blade.vue";
+```
+
+In v2 the `"./*"` wildcard is gone. Only these subpath entries are exported:
+
+- `@vc-shell/framework` — main entry
+- `@vc-shell/framework/ui`
+- `@vc-shell/framework/ai-agent`
+- `@vc-shell/framework/extensions`
+- `@vc-shell/framework/globals`
+- `@vc-shell/framework/locales/en`
+- `@vc-shell/framework/locales/de`
+- `@vc-shell/framework/locales/types`
+- `@vc-shell/framework/tailwind.config`
+- `@vc-shell/framework/dist/index.css`
+
+Any deep import outside this list will fail with `ERR_PACKAGE_PATH_NOT_EXPORTED` under Node's ESM resolver (and bundlers that respect `exports`). Migrate to the named entry points above — most symbols (`useBlade`, injection keys, services, UI components, composables) are re-exported from `@vc-shell/framework` or `@vc-shell/framework/ui`.
+
+```diff
+-import { useBlade } from "@vc-shell/framework/core/composables/useBlade";
++import { useBlade } from "@vc-shell/framework";
+```
 
 ## Update All @vc-shell Packages
 

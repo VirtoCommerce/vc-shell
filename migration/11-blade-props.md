@@ -182,6 +182,194 @@ onDeactivated(() => {
 });
 ```
 
+## G17: `IBladeToolbar.isVisible` callback receives `BladeDescriptor`
+
+The callback form of `IBladeToolbar.isVisible` (used for dynamically hiding toolbar buttons per blade) changed its argument type.
+
+**Before (v1.x)** — callback received an `IBladeInstance`:
+
+```typescript
+// framework/core/types/index.ts (v1.2.3)
+export interface IBladeToolbar {
+  // ...
+  isVisible?:
+    | boolean
+    | Ref<boolean | undefined>
+    | ComputedRef<boolean | undefined>
+    | ((blade?: IBladeInstance) => boolean | undefined);
+}
+```
+
+**After (v2.0)** — callback receives a `BladeDescriptor`:
+
+```typescript
+// framework/core/types/index.ts (v2.0)
+export interface IBladeToolbar {
+  // ...
+  isVisible?:
+    | boolean
+    | Ref<boolean | undefined>
+    | ComputedRef<boolean | undefined>
+    | ((blade?: BladeDescriptor) => boolean | undefined);
+}
+```
+
+### Migration
+
+Update toolbar definitions that inspect the passed blade:
+
+```typescript
+// ❌ Before — typed as IBladeInstance
+const toolbar: IBladeToolbar[] = [
+  {
+    id: "save",
+    title: "Save",
+    isVisible: (blade?: IBladeInstance) => !blade?.error,
+    clickHandler: () => save(),
+  },
+];
+
+// ✅ After — typed as BladeDescriptor
+const toolbar: IBladeToolbar[] = [
+  {
+    id: "save",
+    title: "Save",
+    isVisible: (blade?: BladeDescriptor) => !blade?.error,
+    clickHandler: () => save(),
+  },
+];
+```
+
+Most toolbar definitions use implicit inference and need no edits. Only explicitly typed callbacks require updating the parameter annotation and import:
+
+```typescript
+import type { BladeDescriptor } from "@vc-shell/framework";
+```
+
+## G25: `@reset:error` emit removed from VcBlade
+
+VcBlade no longer declares or emits a `reset:error` event. The event existed in v1.x:
+
+```typescript
+// framework/ui/components/organisms/vc-blade/vc-blade.vue (v1.2.3)
+export interface Emits {
+  (event: "close"): void;
+  (event: "expand"): void;
+  (event: "collapse"): void;
+  (event: "reset:error"): void;   // ← removed in v2.0
+}
+```
+
+In v2.0 the Emits interface contains only `close`, `expand`, and `collapse`. Error state is now managed centrally by the blade stack and surfaced via `useBlade()`:
+
+```typescript
+const { setError, clearError } = useBlade();
+
+// Show an error banner on the current blade
+setError(new Error("Failed to save"));
+
+// Clear the banner (replaces @reset:error handler)
+clearError();
+```
+
+### Migration
+
+Remove any `@reset:error` listeners from `<VcBlade>` usages and replace the handler with a call to `clearError()`:
+
+```vue
+<!-- ❌ Before -->
+<VcBlade @reset:error="handleResetError">
+  <!-- ... -->
+</VcBlade>
+
+<script setup lang="ts">
+function handleResetError() {
+  errorState.value = null;
+}
+</script>
+
+<!-- ✅ After -->
+<VcBlade>
+  <!-- ... -->
+</VcBlade>
+
+<script setup lang="ts">
+import { useBlade } from "@vc-shell/framework";
+
+const { clearError } = useBlade();
+// Call clearError() directly wherever the old handler was triggered.
+</script>
+```
+
+The legacy error banner's "dismiss" action now routes through the shared blade error state, so no explicit wiring from consumer blades is needed.
+
+## G26: `expandable` prop removed from VcBlade
+
+The `expandable` prop no longer exists on VcBlade in v2.0. In v1.x, `expandable` appeared only in `withDefaults` (set to `true`) but was not declared in the `Props` interface — the actual "expandable" state came from the injected `IBladeInstance` (which defaulted to `false` for standalone mode):
+
+```typescript
+// framework/ui/components/organisms/vc-blade/vc-blade.vue (v1.2.3)
+export interface Props {
+  icon?: string;
+  title?: string;
+  subtitle?: string;
+  width?: number | string;
+  expanded?: boolean;
+  closable?: boolean;
+  toolbarItems?: IBladeToolbar[];
+  modified?: boolean;
+  // no `expandable` field
+}
+
+withDefaults(defineProps<Props>(), {
+  width: "30%",
+  closable: true,
+  expandable: true,       // ← dropped in v2.0
+  toolbarItems: () => [],
+  modified: undefined,
+});
+```
+
+In v2.0 the prop is gone entirely. Whether the expand/maximize button is shown is driven by the blade's `BladeDescriptor.maximized` state (injected via `BladeDescriptorKey` / `BladeMaximizedKey`), not by a component prop:
+
+```typescript
+// framework/ui/components/organisms/vc-blade/vc-blade.vue (v2.0)
+export interface Props {
+  icon?: string;
+  title?: string;
+  subtitle?: string;
+  width?: number | string;
+  expanded?: boolean;
+  closable?: boolean;
+  toolbarItems?: IBladeToolbar[];
+  modified?: boolean;
+  loading?: boolean;
+  // `expandable` removed
+}
+```
+
+### Migration
+
+Remove `:expandable="..."` bindings from any `<VcBlade>` template. The expand button now appears automatically when the blade is mounted inside `VcBladeSlot` (blade navigation) and is hidden in standalone usage (Storybook, ad-hoc):
+
+```vue
+<!-- ❌ Before — explicit prop -->
+<VcBlade
+  :title="title"
+  :expandable="true"
+  :closable="true"
+>
+  <!-- ... -->
+</VcBlade>
+
+<!-- ✅ After — expand behavior determined by blade context -->
+<VcBlade :title="title">
+  <!-- ... -->
+</VcBlade>
+```
+
+If you need to programmatically toggle the maximized state, write to `BladeDescriptor.maximized` via the blade stack rather than a prop — `VcBlade` listens to the injected `BladeMaximizedKey` ref and updates accordingly.
+
 ## Automated Migration
 
 ```bash

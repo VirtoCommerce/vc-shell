@@ -19,22 +19,20 @@ This centralized approach has several advantages:
 
 ### Blade Navigation
 
-| Key                         | Type                                   | Description                                  |
-| --------------------------- | -------------------------------------- | -------------------------------------------- |
-| `NavigationViewLocationKey` | `BladeVNode`                           | Current blade VNode location in navigation   |
-| `BladeDescriptorKey`        | `ComputedRef<BladeDescriptor>`         | Current blade descriptor metadata            |
-| `BladeBackButtonKey`        | `Component \| undefined`               | Custom back button component for a blade     |
-| `BladeDataKey`              | _(from blade-navigation types)_        | Data passed between parent/child blades      |
-| `BladeContextKey`           | `ComputedRef<Record<string, unknown>>` | Blade-exposed context for widgets/extensions |
-| `BladeRoutesKey`            | `BladeRoutesRecord[]`                  | Registered blade routes                      |
-| `InternalRoutesKey`         | `BladeRoutesRecord[]`                  | Internal framework routes                    |
+| Key                  | Type                                   | Description                                  |
+| -------------------- | -------------------------------------- | -------------------------------------------- |
+| `BladeDescriptorKey` | `ComputedRef<BladeDescriptor>`         | Current blade descriptor metadata            |
+| `BladeBackButtonKey` | `Component \| undefined`               | Custom back button component for a blade     |
+| `BladeDataKey`       | _(from blade-navigation types)_        | Data passed between parent/child blades      |
+| `BladeContextKey`    | `ComputedRef<Record<string, unknown>>` | Blade-exposed context for widgets/extensions |
+| `BladeRoutesKey`     | `BladeRoutesRecord[]`                  | Registered blade routes                      |
+| `InternalRoutesKey`  | `BladeRoutesRecord[]`                  | Internal framework routes                    |
 
 ### Notifications
 
-| Key                        | Type                                | Description                                 |
-| -------------------------- | ----------------------------------- | ------------------------------------------- |
-| `NotificationTemplatesKey` | `NotificationTemplateConstructor[]` | Registered notification template components |
-| `NotificationStoreKey`     | `NotificationStore`                 | Shared notification store singleton         |
+| Key                    | Type                | Description                         |
+| ---------------------- | ------------------- | ----------------------------------- |
+| `NotificationStoreKey` | `NotificationStore` | Shared notification store singleton |
 
 ### Services
 
@@ -42,7 +40,6 @@ This centralized approach has several advantages:
 | ------------------------------- | ----------------------------- | ------------------------------ |
 | `WidgetServiceKey`              | `IWidgetService`              | Widget registration and lookup |
 | `DashboardServiceKey`           | `IDashboardService`           | Dashboard widget management    |
-| `GlobalSearchKey`               | `GlobalSearchState`           | Global search state            |
 | `MenuServiceKey`                | `MenuService`                 | Main navigation menu           |
 | `SettingsMenuServiceKey`        | `ISettingsMenuService`        | Settings sidebar menu          |
 | `AppBarWidgetServiceKey`        | `IAppBarWidgetService`        | App bar widget slots           |
@@ -81,14 +78,23 @@ This centralized approach has several advantages:
 
 ### Legacy Aliases (Deprecated)
 
-| Deprecated                    | Use Instead                 |
-| ----------------------------- | --------------------------- |
-| `navigationViewLocation`      | `NavigationViewLocationKey` |
-| `BladeDescriptor`             | `BladeDescriptorKey`        |
-| `NotificationTemplatesSymbol` | `NotificationTemplatesKey`  |
-| `BLADE_BACK_BUTTON`           | `BladeBackButtonKey`        |
-| `TOOLBAR_SERVICE`             | `ToolbarServiceKey`         |
-| `EMBEDDED_MODE`               | `EmbeddedModeKey`           |
+| Deprecated          | Use Instead          |
+| ------------------- | -------------------- |
+| `BladeDescriptor`   | `BladeDescriptorKey` |
+| `BLADE_BACK_BUTTON` | `BladeBackButtonKey` |
+| `TOOLBAR_SERVICE`   | `ToolbarServiceKey`  |
+| `EMBEDDED_MODE`     | `EmbeddedModeKey`    |
+
+### Removed Keys (No Replacement)
+
+These keys existed in v1.2.3 but have been removed from the framework entirely. There is no drop-in symbol replacement.
+
+| Removed                       | Notes                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| `navigationViewLocation`      | Internal framework concern — no public replacement                             |
+| `BladeInstance`               | Use `useBlade()` composable, or `inject(BladeDescriptorKey)`                   |
+| `NotificationTemplatesSymbol` | Template system replaced by `NotificationStoreKey` + `useBladeNotifications()` |
+| `GlobalSearchKey`             | Internal concern now — no public replacement                                   |
 
 ## Usage Examples
 

@@ -122,6 +122,8 @@ function resetLayout() {
 - **Widget registration**: Widgets must be registered via `useDashboard().registerWidget()` before the dashboard mounts. The component reads the widget registry and creates grid items for each.
 - **markRaw requirement**: Widget components must be wrapped in `markRaw()` when registering to prevent Vue from making them reactive (which would cause performance issues with the grid system).
 - **Responsive behavior**: On mobile viewports, widgets stack vertically in a single column. Drag-and-drop is disabled on touch devices for better usability.
+- **Module-ready gate**: When the host injects `ModulesReadyKey` (provided by `@vc-shell/mf-host`'s `registerRemoteModules`), the grid is held back until remote modules finish installing. This prevents widgets from mounting before their owning module's `defineAppModule.install` has merged its locales into vue-i18n — which would render translation keys instead of translated strings. Hosts without Module Federation (or tests/Storybook) inject nothing, and a fallback `ref(true)` keeps behavior unchanged.
+- **Loading skeletons**: While `ModulesReadyKey` is `false`, the dashboard renders a CSS-grid of pulsing placeholder cards instead of an empty container. Card sizes are restored from the last persisted layout in `localStorage` (so returning users see placeholders matching their real widgets); first-time visitors get a default layout of four 6×6 placeholders. Animations respect `prefers-reduced-motion`.
 
 ## Tips
 

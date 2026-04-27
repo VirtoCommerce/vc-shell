@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.1...v2.0.2) (2026-04-27)
+
+### Bug Fixes
+
+- **mf:** share `@vc-shell/framework` subpath exports to prevent duplicate bundling ([f53f812](https://github.com/VirtoCommerce/vc-shell/commit/f53f812f9dcaae4876847ed03f9552fae737323e))
+
 ## [2.0.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0...v2.0.1) (2026-04-24)
 
 **Note:** Version bump only for package @vc-shell/mf-config

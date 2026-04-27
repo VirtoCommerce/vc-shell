@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.1...v2.0.2) (2026-04-27)
+
+### Bug Fixes
+
+- add missing explicit imports for Vc\* UI components ([05775b9](https://github.com/VirtoCommerce/vc-shell/commit/05775b90c0e38cfccc2362ecb6838afaf6def339))
+- **dashboard:** gate widget rendering until remote modules install ([2d9c0c2](https://github.com/VirtoCommerce/vc-shell/commit/2d9c0c224494d82698925fd64ebda3bce2b16f1b))
+
 ## [2.0.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.0...v2.0.1) (2026-04-24)
 
 ### Features

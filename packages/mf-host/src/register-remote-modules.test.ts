@@ -35,6 +35,13 @@ vi.mock("@vc-shell/framework", () => ({
   ModulesLoadErrorKey: MockModulesLoadErrorKey,
 }));
 
+// Subpath exports of @vc-shell/framework — must be mocked individually so the
+// test stays isolated from the real built bundle. The contents are irrelevant
+// here; we only assert that they are wired into the shared scope.
+vi.mock("@vc-shell/framework/ui", () => ({}));
+vi.mock("@vc-shell/framework/ai-agent", () => ({}));
+vi.mock("@vc-shell/framework/extensions", () => ({}));
+
 // Mock package.json imports
 vi.mock("@vc-shell/framework/package.json", () => ({
   default: { version: "1.2.4" },
@@ -57,6 +64,7 @@ vi.mock("@vueuse/core/package.json", () => ({
 
 import { createInstance } from "@module-federation/runtime";
 import { satisfies } from "semver";
+import { SHARED_DEPS_BASE } from "@vc-shell/mf-config";
 import { registerRemoteModules, type ModuleRegistryEntry } from "./register-remote-modules";
 
 function createTestApp() {
@@ -569,7 +577,7 @@ describe("registerRemoteModules", () => {
     expect(marks).toEqual(["vc:modules-start", "vc:modules-loaded", "vc:modules-installed", "vc:modules-done"]);
   });
 
-  it("createInstance() receives all 7 shared deps", async () => {
+  it("createInstance() receives every shared dep declared in SHARED_DEPS_BASE", async () => {
     const modules: ModuleRegistryEntry[] = [{ id: "test-mod", entry: "http://cdn/remoteEntry.js", version: "1.0.0" }];
 
     (global.fetch as any).mockResolvedValue({
@@ -585,15 +593,12 @@ describe("registerRemoteModules", () => {
 
     const createInstanceCall = vi.mocked(createInstance).mock.calls[0][0];
     const sharedKeys = Object.keys(createInstanceCall.shared!);
-    const expectedDeps = [
-      "vue",
-      "vue-router",
-      "vue-i18n",
-      "vee-validate",
-      "lodash-es",
-      "@vueuse/core",
-      "@vc-shell/framework",
-    ];
+    const expectedDeps = Object.keys(SHARED_DEPS_BASE);
     expect(sharedKeys.sort()).toEqual(expectedDeps.sort());
+
+    // Sanity check: framework subpath exports must be shared too — otherwise
+    // remotes that import from "@vc-shell/framework/ui" bundle a duplicate copy.
+    expect(sharedKeys).toContain("@vc-shell/framework");
+    expect(sharedKeys).toContain("@vc-shell/framework/ui");
   });
 });

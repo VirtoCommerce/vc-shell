@@ -8,6 +8,11 @@ export interface SharedDepConfig {
 /**
  * Base shared dependency definitions for Module Federation.
  * Both host and remote use the same dep list with singleton negotiation.
+ *
+ * Subpath entries (e.g. "@vc-shell/framework/ui") are required because Module
+ * Federation matches `shared` by exact import specifier — without them, every
+ * `from "@vc-shell/framework/ui"` import gets bundled into the remote chunk,
+ * producing duplicate framework copies and breaking provide/inject DI.
  */
 export const SHARED_DEPS_BASE: Record<string, Omit<SharedDepConfig, "import">> = {
   vue: { singleton: true, requiredVersion: "^3.4.0" },
@@ -16,7 +21,10 @@ export const SHARED_DEPS_BASE: Record<string, Omit<SharedDepConfig, "import">> =
   "vee-validate": { singleton: true, requiredVersion: "^4.12.0" },
   "lodash-es": { singleton: true },
   "@vueuse/core": { singleton: true },
-  "@vc-shell/framework": { singleton: true },
+  "@vc-shell/framework": { singleton: true, requiredVersion: "^2.0.0" },
+  "@vc-shell/framework/ui": { singleton: true, requiredVersion: "^2.0.0" },
+  "@vc-shell/framework/ai-agent": { singleton: true, requiredVersion: "^2.0.0" },
+  "@vc-shell/framework/extensions": { singleton: true, requiredVersion: "^2.0.0" },
 };
 
 /**
@@ -25,7 +33,16 @@ export const SHARED_DEPS_BASE: Record<string, Omit<SharedDepConfig, "import">> =
  * to build their runtime shared config, ensuring build and runtime stay in sync.
  */
 export const SHARED_DEP_NAMES = Object.keys(SHARED_DEPS_BASE) as ReadonlyArray<
-  "vue" | "vue-router" | "vue-i18n" | "vee-validate" | "lodash-es" | "@vueuse/core" | "@vc-shell/framework"
+  | "vue"
+  | "vue-router"
+  | "vue-i18n"
+  | "vee-validate"
+  | "lodash-es"
+  | "@vueuse/core"
+  | "@vc-shell/framework"
+  | "@vc-shell/framework/ui"
+  | "@vc-shell/framework/ai-agent"
+  | "@vc-shell/framework/extensions"
 >;
 
 /**

@@ -13,6 +13,9 @@ import * as VeeValidate from "vee-validate";
 import * as LodashEs from "lodash-es";
 import * as VueuseCore from "@vueuse/core";
 import * as Framework from "@vc-shell/framework";
+import * as FrameworkUi from "@vc-shell/framework/ui";
+import * as FrameworkAiAgent from "@vc-shell/framework/ai-agent";
+import * as FrameworkExtensions from "@vc-shell/framework/extensions";
 
 // Read versions from package.json to avoid rollup warnings about missing named exports
 import vuePkg from "vue/package.json";
@@ -32,6 +35,13 @@ const RUNTIME_LIBS: Record<string, { lib: () => unknown; version: string }> = {
   "lodash-es": { lib: () => LodashEs, version: lodashEsPkg.version },
   "@vueuse/core": { lib: () => VueuseCore, version: vueusePkg.version },
   "@vc-shell/framework": { lib: () => Framework, version: frameworkPkg.version },
+  // Subpath exports of @vc-shell/framework — must be shared individually because
+  // Module Federation matches `shared` by exact import specifier. Without these,
+  // every `from "@vc-shell/framework/ui"` import in a remote gets bundled locally,
+  // producing a duplicate framework copy and breaking provide/inject DI.
+  "@vc-shell/framework/ui": { lib: () => FrameworkUi, version: frameworkPkg.version },
+  "@vc-shell/framework/ai-agent": { lib: () => FrameworkAiAgent, version: frameworkPkg.version },
+  "@vc-shell/framework/extensions": { lib: () => FrameworkExtensions, version: frameworkPkg.version },
 };
 
 const SHARED_LIBS = Object.fromEntries(

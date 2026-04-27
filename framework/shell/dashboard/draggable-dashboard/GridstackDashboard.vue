@@ -4,6 +4,21 @@
     class="vc-gridstack-dashboard"
   >
     <div
+      v-if="!modulesReady"
+      class="vc-gridstack-dashboard__skeleton-grid"
+      role="status"
+      aria-busy="true"
+      :aria-label="ariaLabel"
+    >
+      <DashboardWidgetSkeleton
+        v-for="(item, index) in skeletonItems"
+        :key="`skeleton-${index}`"
+        class="vc-gridstack-dashboard__skeleton-item"
+        :style="skeletonItemStyle(item)"
+      />
+    </div>
+    <div
+      v-else
       ref="gridRef"
       class="grid-stack vc-gridstack-dashboard__grid"
       role="list"
@@ -105,12 +120,55 @@
  * - Support for built-in widget positions
  * - Accessibility support
  */
-import { ref, computed, onMounted, nextTick } from "vue";
+import { ref, computed, onMounted, nextTick, inject, watch } from "vue";
 import type { IDashboardWidget, DashboardWidgetPosition } from "@shell/dashboard/draggable-dashboard/types";
 import { useDashboard } from "@core/composables/useDashboard";
 import { useGridstack } from "@shell/dashboard/draggable-dashboard/composables/useGridstack";
 import VcContainer from "@ui/components/atoms/vc-container/vc-container.vue";
+import DashboardWidgetSkeleton from "@shell/dashboard/draggable-dashboard/DashboardWidgetSkeleton.vue";
+import { ModulesReadyKey } from "@framework/injection-keys";
+import { LAYOUT_STORAGE_KEY } from "@shell/dashboard/draggable-dashboard/composables/useGridstackAdapter";
 import "gridstack/dist/gridstack.min.css";
+
+interface SkeletonItem {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+// Default placeholders shown when there's no persisted layout yet (first visit).
+// 6×6 matches the typical real widget size in vc-shell apps.
+const DEFAULT_SKELETONS: SkeletonItem[] = [
+  { x: 0, y: 0, w: 6, h: 6 },
+  { x: 6, y: 0, w: 6, h: 6 },
+  { x: 0, y: 6, w: 6, h: 6 },
+  { x: 6, y: 6, w: 6, h: 6 },
+];
+
+function readPersistedSkeletons(): SkeletonItem[] | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(LAYOUT_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return null;
+    const items = parsed
+      .filter(
+        (n: unknown): n is SkeletonItem =>
+          !!n &&
+          typeof n === "object" &&
+          typeof (n as SkeletonItem).w === "number" &&
+          typeof (n as SkeletonItem).h === "number" &&
+          typeof (n as SkeletonItem).x === "number" &&
+          typeof (n as SkeletonItem).y === "number",
+      )
+      .map((n) => ({ x: n.x, y: n.y, w: n.w, h: n.h }));
+    return items.length > 0 ? items : null;
+  } catch {
+    return null;
+  }
+}
 
 // Props
 interface Props {
@@ -131,6 +189,26 @@ const props = withDefaults(defineProps<Props>(), {
 // Refs
 const gridRef = ref<HTMLElement | null>(null);
 const liveAnnouncement = ref("");
+
+// Gate dashboard rendering until remote modules finish installing.
+// Without this, widgets preregistered during loadRemote() can mount before
+// their owning module's `defineAppModule.install` runs `mergeLocaleMessage`,
+// causing missing translations. Fallback `ref(true)` keeps tests/stories and
+// hosts without MF working unchanged.
+const modulesReady = inject(ModulesReadyKey, ref(true));
+
+// Skeleton placeholders shown until modules finish loading. Pulled from the last
+// persisted layout (so returning users see card sizes matching their real dashboard);
+// fallback to a generic 4-card grid on first visit.
+const skeletonItems = computed<SkeletonItem[]>(() => {
+  if (modulesReady.value) return [];
+  return readPersistedSkeletons() ?? DEFAULT_SKELETONS;
+});
+
+const skeletonItemStyle = (item: SkeletonItem): Record<string, string> => ({
+  gridColumn: `${item.x + 1} / span ${item.w}`,
+  gridRow: `${item.y + 1} / span ${item.h}`,
+});
 
 // Dashboard service
 const dashboard = useDashboard();
@@ -172,12 +250,18 @@ const announceToScreenReader = (message: string): void => {
   }, 1000);
 };
 
-// Initialize grid on mount
-onMounted(async () => {
+const tryInitGrid = async (): Promise<void> => {
   await nextTick();
   if (gridRef.value && !isInitialized.value) {
     initGrid(gridRef.value);
   }
+};
+
+onMounted(tryInitGrid);
+
+// When modules finish loading, the v-if mounts gridRef — initialize gridstack then.
+watch(modulesReady, (ready) => {
+  if (ready) tryInitGrid();
 });
 
 // Public methods
@@ -225,6 +309,23 @@ defineExpose({
   &__grid {
     padding: 24px 18px;
     min-height: calc(80px * 8 + 24px * 2); // 8 rows minimum
+  }
+
+  // Skeleton grid mirrors gridstack's 12-column geometry. Row height and gap are
+  // tuned so a 6×6 placeholder visually matches a real 6×6 widget rendered by
+  // gridstack (which collapses margins differently than a plain CSS grid).
+  &__skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 55px;
+    gap: 20px;
+    padding: 24px 18px;
+    min-height: calc(55px * 8 + 24px * 2);
+  }
+
+  &__skeleton-item {
+    min-width: 0;
+    min-height: 0;
   }
 
   // Widget item styling

@@ -1,8 +1,9 @@
-import { defineComponent, markRaw, onUnmounted } from "vue";
+import { defineComponent, markRaw, onUnmounted, ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import DraggableDashboard from "@shell/dashboard/draggable-dashboard/DraggableDashboard.vue";
 import { provideDashboardService } from "@core/composables/useDashboard";
 import { LAYOUT_STORAGE_KEY } from "@shell/dashboard/draggable-dashboard";
+import { ModulesReadyKey } from "@framework/injection-keys";
 
 const MetricWidget = defineComponent({
   name: "MetricWidget",
@@ -165,4 +166,22 @@ export const ResizableWidgets: Story = {
     showDragHandles: true,
     resizable: true,
   },
+};
+
+/**
+ * While remote modules are still loading, the dashboard renders pulsing skeleton
+ * placeholders instead of an empty container. Sizes come from the last persisted
+ * layout, with a 4-card fallback for first-time visitors.
+ */
+export const LoadingSkeletons: Story = {
+  decorators: [
+    (storyFn) => {
+      const modulesReady = ref(false);
+      return {
+        components: { Story: storyFn() },
+        provide: { [ModulesReadyKey as symbol]: modulesReady },
+        template: "<Story />",
+      };
+    },
+  ],
 };

@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { mount } from "@vue/test-utils";
+import { mount, flushPromises } from "@vue/test-utils";
 import { defineComponent, h, markRaw, ref } from "vue";
 import GridstackDashboard from "./GridstackDashboard.vue";
+import { ModulesReadyKey } from "@framework/injection-keys";
+import { LAYOUT_STORAGE_KEY } from "@shell/dashboard/draggable-dashboard/composables/useGridstackAdapter";
 
 // Mock gridstack CSS import
 vi.mock("gridstack/dist/gridstack.min.css", () => ({}));
@@ -55,7 +57,7 @@ function createWidget(overrides: Record<string, unknown> = {}) {
   };
 }
 
-function mountGridstack(props = {}, widgets: any[] = []) {
+function mountGridstack(props = {}, widgets: any[] = [], modulesReady?: ReturnType<typeof ref<boolean>>) {
   mockWidgets.value = widgets;
   return mount(GridstackDashboard, {
     props,
@@ -63,6 +65,7 @@ function mountGridstack(props = {}, widgets: any[] = []) {
       stubs: {
         VcContainer: VcContainerStub,
       },
+      provide: modulesReady ? { [ModulesReadyKey as symbol]: modulesReady } : {},
     },
   });
 }
@@ -183,5 +186,65 @@ describe("GridstackDashboard", () => {
     const wrapper = mountGridstack({}, [createWidget({ id: "my-widget", name: undefined })]);
     const item = wrapper.find(".grid-stack-item");
     expect(item.attributes("aria-label")).toContain("my-widget");
+  });
+
+  describe("modules-ready gate", () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it("hides the grid and shows skeletons while modulesReady=false", () => {
+      const wrapper = mountGridstack({}, [], ref(false));
+      expect(wrapper.find(".grid-stack").exists()).toBe(false);
+      expect(wrapper.find(".vc-gridstack-dashboard__skeleton-grid").exists()).toBe(true);
+      expect(wrapper.findAll(".dashboard-widget-skeleton").length).toBeGreaterThan(0);
+    });
+
+    it("does not call initGrid until modulesReady becomes true", async () => {
+      const ready = ref(false);
+      mountGridstack({}, [createWidget()], ready);
+      await flushPromises();
+      expect(mockInitGrid).not.toHaveBeenCalled();
+
+      ready.value = true;
+      await flushPromises();
+      expect(mockInitGrid).toHaveBeenCalledTimes(1);
+    });
+
+    it("treats missing ModulesReadyKey as ready (default behaviour)", async () => {
+      mountGridstack({}, [createWidget()]);
+      await flushPromises();
+      expect(mockInitGrid).toHaveBeenCalledTimes(1);
+    });
+
+    it("renders default 4 skeletons when no persisted layout exists", () => {
+      const wrapper = mountGridstack({}, [], ref(false));
+      expect(wrapper.findAll(".dashboard-widget-skeleton")).toHaveLength(4);
+    });
+
+    it("renders skeletons matching persisted layout size when localStorage has saved positions", () => {
+      localStorage.setItem(
+        LAYOUT_STORAGE_KEY,
+        JSON.stringify([
+          { id: "a", x: 0, y: 0, w: 4, h: 3 },
+          { id: "b", x: 4, y: 0, w: 8, h: 5 },
+        ]),
+      );
+      const wrapper = mountGridstack({}, [], ref(false));
+      expect(wrapper.findAll(".dashboard-widget-skeleton")).toHaveLength(2);
+    });
+
+    it("falls back to default skeletons when localStorage payload is malformed", () => {
+      localStorage.setItem(LAYOUT_STORAGE_KEY, "{not-json");
+      const wrapper = mountGridstack({}, [], ref(false));
+      expect(wrapper.findAll(".dashboard-widget-skeleton")).toHaveLength(4);
+    });
+
+    it("marks the skeleton region as aria-busy for assistive tech", () => {
+      const wrapper = mountGridstack({}, [], ref(false));
+      const region = wrapper.find(".vc-gridstack-dashboard__skeleton-grid");
+      expect(region.attributes("aria-busy")).toBe("true");
+      expect(region.attributes("role")).toBe("status");
+    });
   });
 });

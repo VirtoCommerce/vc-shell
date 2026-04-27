@@ -19,20 +19,20 @@ This centralized approach has several advantages:
 
 ### Blade Navigation
 
-| Key                         | Type                                   | Description                                  |
-| --------------------------- | -------------------------------------- | -------------------------------------------- |
-| `BladeDescriptorKey`        | `ComputedRef<BladeDescriptor>`         | Current blade descriptor metadata            |
-| `BladeBackButtonKey`        | `Component \| undefined`               | Custom back button component for a blade     |
-| `BladeDataKey`              | _(from blade-navigation types)_        | Data passed between parent/child blades      |
-| `BladeContextKey`           | `ComputedRef<Record<string, unknown>>` | Blade-exposed context for widgets/extensions |
-| `BladeRoutesKey`            | `BladeRoutesRecord[]`                  | Registered blade routes                      |
-| `InternalRoutesKey`         | `BladeRoutesRecord[]`                  | Internal framework routes                    |
+| Key                  | Type                                   | Description                                  |
+| -------------------- | -------------------------------------- | -------------------------------------------- |
+| `BladeDescriptorKey` | `ComputedRef<BladeDescriptor>`         | Current blade descriptor metadata            |
+| `BladeBackButtonKey` | `Component \| undefined`               | Custom back button component for a blade     |
+| `BladeDataKey`       | _(from blade-navigation types)_        | Data passed between parent/child blades      |
+| `BladeContextKey`    | `ComputedRef<Record<string, unknown>>` | Blade-exposed context for widgets/extensions |
+| `BladeRoutesKey`     | `BladeRoutesRecord[]`                  | Registered blade routes                      |
+| `InternalRoutesKey`  | `BladeRoutesRecord[]`                  | Internal framework routes                    |
 
 ### Notifications
 
-| Key                        | Type                                | Description                                 |
-| -------------------------- | ----------------------------------- | ------------------------------------------- |
-| `NotificationStoreKey`     | `NotificationStore`                 | Shared notification store singleton         |
+| Key                    | Type                | Description                         |
+| ---------------------- | ------------------- | ----------------------------------- |
+| `NotificationStoreKey` | `NotificationStore` | Shared notification store singleton |
 
 ### Services
 
@@ -89,12 +89,12 @@ This centralized approach has several advantages:
 
 These keys existed in v1.2.3 but have been removed from the framework entirely. There is no drop-in symbol replacement.
 
-| Removed                       | Notes                                                                                 |
-| ----------------------------- | ------------------------------------------------------------------------------------- |
-| `navigationViewLocation`      | Internal framework concern — no public replacement                                    |
-| `BladeInstance`               | Use `useBlade()` composable, or `inject(BladeDescriptorKey)`                          |
-| `NotificationTemplatesSymbol` | Template system replaced by `NotificationStoreKey` + `useBladeNotifications()`        |
-| `GlobalSearchKey`             | Internal concern now — no public replacement                                          |
+| Removed                       | Notes                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| `navigationViewLocation`      | Internal framework concern — no public replacement                             |
+| `BladeInstance`               | Use `useBlade()` composable, or `inject(BladeDescriptorKey)`                   |
+| `NotificationTemplatesSymbol` | Template system replaced by `NotificationStoreKey` + `useBladeNotifications()` |
+| `GlobalSearchKey`             | Internal concern now — no public replacement                                   |
 
 ## Usage Examples
 

@@ -44,4 +44,27 @@ describe("DataTableCellRenderer", () => {
     const w = factory();
     expect(w.vm).toBeDefined();
   });
+
+  describe("expander column", () => {
+    const expanderColumn = {
+      instance: {},
+      props: { id: "expander", expander: true },
+      slots: {},
+    };
+
+    it("renders expander button by default", () => {
+      const w = factory({ column: expanderColumn });
+      expect(w.html()).toContain("vc-button-stub");
+    });
+
+    it("renders expander button when canExpand is true", () => {
+      const w = factory({ column: expanderColumn, canExpand: true });
+      expect(w.html()).toContain("vc-button-stub");
+    });
+
+    it("hides expander button when canExpand is false", () => {
+      const w = factory({ column: expanderColumn, canExpand: false });
+      expect(w.html()).not.toContain("vc-button-stub");
+    });
+  });
 });

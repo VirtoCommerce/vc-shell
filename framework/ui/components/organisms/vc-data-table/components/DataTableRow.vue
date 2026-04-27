@@ -86,6 +86,7 @@
           :is-selected="isSelected"
           :is-selectable="isSelectable"
           :is-expanded="isExpanded"
+          :can-expand="expandable"
           :expanded-icon="expandedIcon"
           :collapsed-icon="collapsedIcon"
           :is-new-row="isNewRow"

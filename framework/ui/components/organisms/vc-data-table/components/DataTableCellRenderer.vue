@@ -19,6 +19,7 @@
   <!-- Expander column body (expand/collapse button) -->
   <template v-else-if="column.props.expander">
     <VcButton
+      v-if="canExpand"
       variant="ghost"
       size="icon-sm"
       :data-is-expanded="isExpanded"
@@ -140,32 +141,39 @@ import { VcIcon } from "@ui/components/atoms/vc-icon";
 import DynamicCellRenderer from "@ui/components/organisms/vc-data-table/components/cells/DynamicCellRenderer.vue";
 import { SlotProxy } from "@ui/components/organisms/vc-data-table/components/_internal/SlotProxy";
 
-const props = defineProps<{
-  /** Column instance from ColumnCollector */
-  column: ColumnInstance;
-  /** Row data item (original) */
-  item: T;
-  /** Row data for editing (copy from editingMeta, or same as item if not editing) */
-  editingRowData: T;
-  /** Row index */
-  index: number;
-  /** Is this cell currently being edited */
-  isCellEditing?: boolean;
-  /** Is this row currently being edited */
-  isRowEditing?: boolean;
-  /** Is this row selected */
-  isSelected?: boolean;
-  /** Can this row be selected */
-  isSelectable?: boolean;
-  /** Is this row expanded */
-  isExpanded?: boolean;
-  /** Icon for expanded state */
-  expandedIcon?: string;
-  /** Icon for collapsed state */
-  collapsedIcon?: string;
-  /** Whether this row is newly added (for eager validation) */
-  isNewRow?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    /** Column instance from ColumnCollector */
+    column: ColumnInstance;
+    /** Row data item (original) */
+    item: T;
+    /** Row data for editing (copy from editingMeta, or same as item if not editing) */
+    editingRowData: T;
+    /** Row index */
+    index: number;
+    /** Is this cell currently being edited */
+    isCellEditing?: boolean;
+    /** Is this row currently being edited */
+    isRowEditing?: boolean;
+    /** Is this row selected */
+    isSelected?: boolean;
+    /** Can this row be selected */
+    isSelectable?: boolean;
+    /** Is this row expanded */
+    isExpanded?: boolean;
+    /** Whether this row is allowed to expand. When false, the expander button is hidden. */
+    canExpand?: boolean;
+    /** Icon for expanded state */
+    expandedIcon?: string;
+    /** Icon for collapsed state */
+    collapsedIcon?: string;
+    /** Whether this row is newly added (for eager validation) */
+    isNewRow?: boolean;
+  }>(),
+  {
+    canExpand: true,
+  },
+);
 
 const emit = defineEmits<{
   /** Selection checkbox changed */

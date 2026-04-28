@@ -181,6 +181,42 @@ export const HorizontalAspectRatio: Story = {
 };
 
 /**
+ * Horizontal field without a label — value still respects `aspectRatio[1]`,
+ * preserving form-grid alignment with sibling fields.
+ */
+export const HorizontalNoLabel: Story = {
+  args: {
+    label: undefined,
+    orientation: "horizontal",
+    aspectRatio: [1, 2],
+    modelValue: "Aligned with labeled siblings",
+  },
+};
+
+/**
+ * Field with a copy button. The icon-only button uses `size="icon-sm"`
+ * for proper inline sizing alongside the value.
+ */
+export const Copyable: Story = {
+  args: {
+    type: "text",
+    modelValue: "Click the icon to copy this value",
+    copyable: true,
+  },
+};
+
+/**
+ * Email field with a copy button — anchor uses link colors and underlines on hover.
+ */
+export const EmailCopyable: Story = {
+  args: {
+    type: "email",
+    modelValue: "email@virtocommerce.com",
+    copyable: true,
+  },
+};
+
+/**
  * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
  * to simulate the blade loading context.
  */

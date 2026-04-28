@@ -73,4 +73,15 @@ describe("VcField", () => {
     const wrapper = mountComponent({ type: "date", modelValue: "2024-01-01" });
     expect(wrapper.find(".vc-field").exists()).toBe(true);
   });
+
+  it("reserves an empty label track in horizontal mode when label is omitted", () => {
+    const wrapper = mountComponent({ orientation: "horizontal" });
+    expect(wrapper.find(".vc-field__label--empty").exists()).toBe(true);
+    expect(wrapper.find(".stub-label").exists()).toBe(false);
+  });
+
+  it("does not reserve a label track in vertical mode when label is omitted", () => {
+    const wrapper = mountComponent({ orientation: "vertical" });
+    expect(wrapper.find(".vc-field__label").exists()).toBe(false);
+  });
 });

@@ -5,16 +5,22 @@
     :class="[`vc-field--${orientation}`]"
   >
     <div
-      v-if="label"
+      v-if="label || orientation === 'horizontal'"
       class="vc-field__label"
+      :class="{ 'vc-field__label--empty': !label }"
+      :style="orientation === 'horizontal' ? { flex: `${aspectRatio[0]} 1 0%` } : undefined"
     >
       <VcSkeleton
+        v-if="label"
         variant="block"
         :width="60 + (label?.length || 0) * 4"
         :height="11"
       />
     </div>
-    <div class="vc-field__value">
+    <div
+      class="vc-field__value"
+      :style="orientation === 'horizontal' ? { flex: `${aspectRatio[1]} 1 0%` } : undefined"
+    >
       <VcSkeleton
         variant="block"
         :width="120"
@@ -29,11 +35,12 @@
   >
     <!-- Label -->
     <div
-      v-if="label"
+      v-if="label || orientation === 'horizontal'"
       class="vc-field__label"
+      :class="{ 'vc-field__label--empty': !label }"
       :style="orientation === 'horizontal' ? { flex: `${aspectRatio[0]} 1 0%` } : undefined"
     >
-      <VcLabel>
+      <VcLabel v-if="label">
         <span>{{ label }}</span>
         <template
           v-if="tooltip"
@@ -74,7 +81,8 @@
       <VcButton
         v-if="copyable"
         :icon="copyIcon"
-        icon-size="m"
+        size="icon-sm"
+        icon-size="s"
         class="vc-field__copy"
         text
         aria-label="Copy to clipboard"
@@ -88,10 +96,12 @@
 import { computed, ref } from "vue";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
+import { VcLabel } from "@ui/components/atoms/vc-label";
+import { VcLink } from "@ui/components/atoms/vc-link";
+import { VcButton } from "@ui/components/atoms/vc-button";
+import { formatDateRelative } from "@core/utilities/date";
 
 const bladeLoading = useBladeLoading();
-import { VcLabel } from "@ui/components/atoms/vc-label";
-import { formatDateRelative } from "@core/utilities/date";
 
 export interface VcFieldProps {
   label?: string;
@@ -176,7 +186,13 @@ function onLinkClick() {
   }
 
   &__link {
-    @apply tw-text-sm;
+    @apply tw-text-sm tw-text-[color:var(--link-text-color)] tw-no-underline tw-cursor-pointer tw-transition tw-duration-200 tw-max-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap;
+    @apply hover:tw-text-[color:var(--link-text-color-hover)] hover:tw-underline;
+    @apply focus-visible:tw-outline-none focus-visible:tw-ring-[3px] focus-visible:tw-ring-[color:var(--link-focus-ring-color)] focus-visible:tw-rounded-sm;
+  }
+
+  &__label--empty {
+    @apply tw-min-h-0;
   }
 
   &__copy {

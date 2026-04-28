@@ -196,6 +196,15 @@ For read-only display, `VcField` is lighter and cleaner than a disabled `VcInput
 
 The `type` prop affects rendering, not validation. Setting `type="email"` does not validate the email format -- it only renders the value as a `mailto:` link. For input validation, use VcInput with validation rules.
 
+## Horizontal Layout Without Label
+
+In `orientation="horizontal"` the component reserves the `aspectRatio[0]` track even when `label` is omitted. This keeps a column of `VcField`s aligned with their labeled siblings in a form grid. Use vertical orientation if you do not want this reservation.
+
+```vue
+<!-- Reserves the label column to align with sibling fields -->
+<VcField orientation="horizontal" :aspect-ratio="[1, 2]" model-value="No label" />
+```
+
 ## Related Components
 
 - [VcInput](../vc-input/) -- editable text field (use instead when user input is needed)

@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/migrate",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "type": "module",
   "bin": "./dist/cli.js",
   "main": "./dist/cli.js",

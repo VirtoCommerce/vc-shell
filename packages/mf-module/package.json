@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/mf-module",
   "description": "Module Federation build config for VC Shell remote modules",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -33,7 +33,7 @@
     "vue": "^3.5.30"
   },
   "peerDependencies": {
-    "@vc-shell/config-generator": "^2.0.2",
+    "@vc-shell/config-generator": "^2.0.3",
     "@vitejs/plugin-vue": "^5.0.0",
     "vite": "^5.0.0 || ^6.0.0"
   },

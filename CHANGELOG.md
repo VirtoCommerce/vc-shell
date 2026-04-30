@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.2...v2.0.3) (2026-04-30)
+
+### Bug Fixes
+
+- **vc-data-table:** hide expander chevron when isRowExpandable returns false ([49bcd47](https://github.com/VirtoCommerce/vc-shell/commit/49bcd470b792923fe84c66438fca89a3c873b172))
+- **vc-field:** import VcLink/VcButton, fix link styling, copy icon size, label-less horizontal layout ([d658f5b](https://github.com/VirtoCommerce/vc-shell/commit/d658f5b4c6b75f0f3b592b1c47c1bd9933a32d82))
+
 ## [2.0.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.1...v2.0.2) (2026-04-27)
 
 ### Bug Fixes

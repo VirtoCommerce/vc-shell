@@ -384,6 +384,10 @@ interface IBladeToolbar {
 
 > **Tip:** Content is hidden (not unmounted) while loading, so `onMounted` hooks still fire.
 
+> **Note:** During `loading=true`, the header keeps its **close/expand controls operational** — only the icon, title, and subtitle are replaced with skeleton placeholders. Users can always close or maximize a loading blade. The `actions` slot, breadcrumbs, and modified-status dot are hidden until loading finishes.
+
+> **Note:** The toolbar zone uses an in-place skeleton: `BladeToolbar` itself renders skeleton buttons/widgets when its `loading` prop is true (no separate skeleton component is mounted). On mobile, the toolbar is omitted entirely while loading.
+
 Merge multiple loading sources with `useLoading`:
 
 ```ts

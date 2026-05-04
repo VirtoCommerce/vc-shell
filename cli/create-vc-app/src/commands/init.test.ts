@@ -31,10 +31,7 @@ describe("initCommand — standalone", () => {
 
   it("generates without module when --module-name is not provided", async () => {
     const _projectName = path.basename(root);
-    await initCommand(
-      { _: [root], type: "standalone", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", overwrite: true }, templateRoot);
 
     const mainTs = readGenerated(root, "src/main.ts");
 
@@ -53,10 +50,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("generates with module when --module-name is provided", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", "module-name": "Orders", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", "module-name": "Orders", overwrite: true }, templateRoot);
 
     const mainTs = readGenerated(root, "src/main.ts");
 
@@ -74,10 +68,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("generates with mocks when --mocks is provided", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", mocks: true, overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", mocks: true, overwrite: true }, templateRoot);
 
     const mainTs = readGenerated(root, "src/main.ts");
 
@@ -94,10 +85,7 @@ describe("initCommand — standalone", () => {
 
   it("generates with both module and mocks", async () => {
     await initCommand(
-      { _: [root], type: "standalone", "module-name": "Reviews", mocks: true, overwrite: true } as unknown as Record<
-        string,
-        unknown
-      >,
+      { _: [root], type: "standalone", "module-name": "Reviews", mocks: true, overwrite: true },
       templateRoot,
     );
 
@@ -113,10 +101,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("includes dashboard when --dashboard is set", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", dashboard: true, overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", dashboard: true, overwrite: true }, templateRoot);
 
     const bootstrap = readGenerated(root, "src/bootstrap.ts");
 
@@ -126,10 +111,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("excludes dashboard by default in non-interactive mode", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", overwrite: true }, templateRoot);
 
     const bootstrap = readGenerated(root, "src/bootstrap.ts");
 
@@ -138,10 +120,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("includes AI agent config when --ai-agent is set", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", "ai-agent": true, overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", "ai-agent": true, overwrite: true }, templateRoot);
 
     const mainTs = readGenerated(root, "src/main.ts");
 
@@ -150,10 +129,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("excludes AI agent config by default", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", overwrite: true }, templateRoot);
 
     const mainTs = readGenerated(root, "src/main.ts");
 
@@ -161,10 +137,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("includes tenant routes when --tenant-routes is set", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", "tenant-routes": true, overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", "tenant-routes": true, overwrite: true }, templateRoot);
 
     const routes = readGenerated(root, "src/router/routes.ts");
 
@@ -173,10 +146,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("excludes tenant routes by default", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", overwrite: true }, templateRoot);
 
     const routes = readGenerated(root, "src/router/routes.ts");
 
@@ -186,10 +156,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("dashboard adds routes and pages", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", dashboard: true, overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", dashboard: true, overwrite: true }, templateRoot);
 
     const routes = readGenerated(root, "src/router/routes.ts");
 
@@ -198,10 +165,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("no dashboard route when dashboard is off", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", overwrite: true }, templateRoot);
 
     const routes = readGenerated(root, "src/router/routes.ts");
 
@@ -219,7 +183,7 @@ describe("initCommand — standalone", () => {
         dashboard: true,
         mocks: true,
         overwrite: true,
-      } as unknown as Record<string, unknown>,
+      },
       templateRoot,
     );
 
@@ -255,10 +219,7 @@ describe("initCommand — standalone", () => {
   });
 
   it("has no extra blank lines in main.ts", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", overwrite: true }, templateRoot);
 
     const mainTs = readGenerated(root, "src/main.ts");
 
@@ -279,10 +240,7 @@ describe("initCommand — standalone module locales", () => {
   });
 
   it("module pages use $t() for all user-facing strings", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", "module-name": "Orders", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", "module-name": "Orders", overwrite: true }, templateRoot);
 
     const listVue = readGenerated(root, "src/modules/orders/pages/list.vue");
     const detailsVue = readGenerated(root, "src/modules/orders/pages/details.vue");
@@ -311,10 +269,7 @@ describe("initCommand — standalone module locales", () => {
   });
 
   it("locales en.json has all required keys", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", "module-name": "Orders", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", "module-name": "Orders", overwrite: true }, templateRoot);
 
     const locales = JSON.parse(readGenerated(root, "src/modules/orders/locales/en.json"));
 
@@ -333,10 +288,7 @@ describe("initCommand — standalone module locales", () => {
   });
 
   it("module index.ts imports and passes locales", async () => {
-    await initCommand(
-      { _: [root], type: "standalone", "module-name": "Orders", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "standalone", "module-name": "Orders", overwrite: true }, templateRoot);
 
     const indexTs = readGenerated(root, "src/modules/orders/index.ts");
 
@@ -358,10 +310,7 @@ describe("initCommand — dynamic-module", () => {
   });
 
   it("always generates module even without --module-name", async () => {
-    await initCommand(
-      { _: [root], type: "dynamic-module", overwrite: true } as unknown as Record<string, unknown>,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "dynamic-module", overwrite: true }, templateRoot);
 
     // Module files are rendered into src/modules/ (flat, not nested for dynamic-module)
     expect(fileExists(root, "src/modules/index.ts")).toBe(true);
@@ -370,13 +319,7 @@ describe("initCommand — dynamic-module", () => {
   });
 
   it("uses provided --module-name", async () => {
-    await initCommand(
-      { _: [root], type: "dynamic-module", "module-name": "Reviews", overwrite: true } as unknown as Record<
-        string,
-        unknown
-      >,
-      templateRoot,
-    );
+    await initCommand({ _: [root], type: "dynamic-module", "module-name": "Reviews", overwrite: true }, templateRoot);
 
     const indexTs = readGenerated(root, "src/modules/index.ts");
     expect(indexTs).toContain("defineAppModule");

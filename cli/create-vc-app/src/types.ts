@@ -23,3 +23,20 @@ export interface GeneratorContext {
   renderTemplate: (templatePath: string, outputPath: string, data?: Record<string, unknown>) => void;
   renderDir: (templateDir: string, outputDir: string, data?: Record<string, unknown>) => void;
 }
+
+export interface CLIArgs {
+  _: string[];
+  help?: boolean;
+  version?: boolean;
+  type?: string;
+  name?: string;
+  "app-name"?: string;
+  "package-name"?: string;
+  "module-name"?: string;
+  "base-path"?: string;
+  mocks?: boolean;
+  overwrite?: boolean;
+  "tenant-routes"?: boolean;
+  "ai-agent"?: boolean;
+  dashboard?: boolean;
+}

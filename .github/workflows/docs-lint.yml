@@ -1,0 +1,22 @@
+name: docs-lint
+
+on:
+  pull_request:
+    paths:
+      - "framework/**/*.docs.md"
+      - "framework/**/*.stories.ts"
+      - "cli/docs-sync/**"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: yarn workspace @vc-shell/docs-sync build
+      - run: yarn workspace @vc-shell/docs-sync exec docs-sync lint

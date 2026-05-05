@@ -1,0 +1,56 @@
+# Requires repository secret VC_DOCS_BOT_TOKEN — a personal access token
+# (or GitHub App installation token) with write access to VirtoCommerce/vc-docs
+# (specifically: contents:write and pull-requests:write).
+# Set up via Settings → Secrets and variables → Actions.
+name: sync-docs
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  sync:
+    if: ${{ !github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: VirtoCommerce/vc-docs
+          path: vc-docs
+          token: ${{ secrets.VC_DOCS_BOT_TOKEN }}
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: yarn workspace @vc-shell/docs-sync build
+      - name: Run sync
+        run: |
+          yarn workspace @vc-shell/docs-sync exec docs-sync sync \
+            --target ./vc-docs \
+            --report ./sync-report.md
+      - name: Open PR
+        env:
+          GH_TOKEN: ${{ secrets.VC_DOCS_BOT_TOKEN }}
+        run: |
+          BRANCH="auto/sync-vc-shell-${{ github.event.release.tag_name }}"
+          cd vc-docs
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "No changes to sync."
+            exit 0
+          fi
+          git checkout -b "$BRANCH"
+          git config user.email "bot@virto.dev"
+          git config user.name "vc-shell-docs-bot"
+          git add .
+          git commit -m "docs: sync from vc-shell@${{ github.event.release.tag_name }}"
+          git push origin "$BRANCH"
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "docs: sync from vc-shell@${{ github.event.release.tag_name }}" \
+            --body-file ../sync-report.md \
+            --label auto-generated

@@ -45,7 +45,10 @@
     "diff": "LAST_TAG=$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null) && git diff --stat \"${LAST_TAG}\"..HEAD || git diff --stat",
     "clean": "find . -name node_modules -type d -prune -exec rm -rf {} + && find . -name dist -type d -prune -exec rm -rf {} +",
     "lint-staged": "lint-staged",
-    "pre-commit": "yarn lint-staged && yarn check:locales && yarn check:layers"
+    "pre-commit": "yarn lint-staged && yarn check:locales && yarn check:layers",
+    "docs:sync": "yarn workspace @vc-shell/docs-sync exec docs-sync sync --target ../vc-docs",
+    "docs:lint": "yarn workspace @vc-shell/docs-sync exec docs-sync lint",
+    "docs:screenshot": "yarn workspace @vc-shell/docs-sync exec docs-sync screenshot"
   },
   "workspaces": [
     "framework",

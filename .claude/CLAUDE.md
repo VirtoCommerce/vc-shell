@@ -136,6 +136,18 @@ All story files must follow `.storybook/STORY_STANDARD.md`. Key rules:
 - After editing code, verify with `yarn typecheck` to catch TypeScript errors immediately.
 - After completing a task or during planning, verify no circular dependencies or barrel import cycles are introduced. Use `npx madge --circular --extensions ts,vue framework/` or manual inspection of import chains.
 
+## Documentation
+
+`*.docs.md` files in `framework/` are the source of truth for vc-docs. The `cli/docs-sync` package transforms and publishes them.
+
+```bash
+yarn docs:lint                                       # validate *.docs.md template compliance
+yarn docs:sync                                       # sync to ../vc-docs (must exist as a sibling checkout)
+yarn docs:screenshot --story <id> --out <path>.png   # capture a Storybook screenshot per style guide
+```
+
+CI auto-syncs on framework releases. See `cli/docs-sync/README.md` for details.
+
 ## Debugging Tips
 
 - Check git history first for regression bugs: `git log --oneline -15` and `git diff HEAD~3`

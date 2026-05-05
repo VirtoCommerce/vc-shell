@@ -1,0 +1,17 @@
+{
+  "extends": "@vc-shell/ts-config/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "es2022",
+    "declaration": false,
+    "declarationMap": false,
+    "composite": false,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules", "tests"]
+}

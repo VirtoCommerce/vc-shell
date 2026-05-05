@@ -1,3 +1,9 @@
+---
+title: useBlade
+category: composables
+group: blade-navigation
+---
+
 # useBlade
 
 Unified composable for blade navigation, identity, communication, guards, and error management in VC-Shell applications. This is the primary API for working with the blade navigation system -- the stacked panel paradigm (similar to Azure Portal) that drives every screen in a VC-Shell app.
@@ -644,6 +650,9 @@ function goToOrders() {
 
 ## Common Mistakes
 
+!!! warning "Blade-specific methods throw outside blade context"
+Methods like `closeSelf`, `callParent`, `onBeforeClose`, and `setError` require a blade context (i.e., must be called from inside a blade component's `<script setup>`). Calling them from a dashboard card, a toolbar handler, or a plain composable throws a descriptive runtime error. Only `openBlade` works everywhere.
+
 ### Calling blade-specific methods outside blade context
 
 ```typescript
@@ -740,12 +749,16 @@ if (param.value) {
 
 ---
 
+<!-- internal:start -->
+
 ## How It Works Under the Hood
 
 1. **Plugin setup:** `BladeNavigationPlugin` (plugin-v2) installs a `BladeStack` and `BladeMessaging` singleton and provides them via Vue's dependency injection.
 2. **Inside a blade:** `VcBladeSlot` provides a `BladeDescriptor` ref for each blade instance. `useBlade()` injects this descriptor to access identity, register guards, and set errors.
 3. **Outside a blade:** `useBlade()` falls back to the singleton instances. Only `openBlade` works because it does not need a blade descriptor.
 4. **URL sync:** When blades with a `url` property are opened or closed, `useBlade()` synchronizes the browser URL via `createUrlSync`, enabling deep linking and back/forward navigation.
+
+<!-- internal:end -->
 
 ---
 

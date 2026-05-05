@@ -1,3 +1,10 @@
+---
+title: Services
+category: concepts
+group: root
+slug: services
+---
+
 # Core Services
 
 Singleton service layer for registering and querying application-level entities: menu items, widgets, toolbar buttons, dashboard widgets, settings panels, app-bar items, and more.
@@ -11,6 +18,8 @@ Every service follows the same architecture:
 3. **Module-level helper** (e.g., `addMenuItem()`, `registerWidget()`) -- lets modules register items at import time, before the Vue app mounts.
 4. **Corresponding `use*` composable** (in `core/composables/`) -- injects the service instance via provide/inject for use inside components.
 
+<!-- internal:start -->
+
 ### Internal Building Blocks (`_internal/`)
 
 | Helper                      | Purpose                                                                                                                           |
@@ -18,6 +27,8 @@ Every service follows the same architecture:
 | `createPreregistrationBus`  | Generic bus that stores items by key and replays them into a service. Supports live-register (after service is up) and broadcast. |
 | `createBladeScopedRegistry` | Reactive `Map<bladeId, Item[]>` with register/unregister/update/clear. Used by WidgetService and ToolbarService.                  |
 | `createSimpleMapRegistry`   | Reactive `Map<id, Item>` with sorted computed output. Used by SettingsMenuService and AppBarMenuService.                          |
+
+<!-- internal:end -->
 
 ## Services
 
@@ -78,8 +89,12 @@ removeMenuBadge("OrdersList");
 - `MenuService` builds a tree from flat items: items with `group` or `groupConfig` are nested under group nodes, sorted by `priority`.
 - `DashboardService` accepts a `hasAccess` callback for permission-based widget filtering.
 
-## Related
+<!-- internal:start -->
+
+## Related (internal paths)
 
 - `framework/core/composables/` -- `useMenu`, `useToolbar`, `useWidgets`, `useDashboard`, etc.
 - `framework/core/services/_internal/` -- shared registry and bus implementations
 - `framework/core/plugins/` -- services are created and provided during plugin installation
+
+<!-- internal:end -->

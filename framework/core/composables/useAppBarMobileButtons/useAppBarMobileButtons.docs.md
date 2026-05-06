@@ -1,3 +1,9 @@
+---
+title: useAppBarMobileButtons
+category: composables
+group: services
+---
+
 # useAppBarMobileButtons
 
 Manages custom action buttons in the mobile app bar. Uses provide/inject to share a singleton service across the component tree. This composable gives any blade or module the ability to register, update, and remove buttons that appear in the top app bar on mobile devices. Buttons are sorted by their `order` property and can include icons, custom Vue components, click handlers, badges, and reactive visibility toggles. The service is scoped to the VcApp tree and automatically cleans up when the scope is disposed.
@@ -59,6 +65,8 @@ onUnmounted(() => unregister("notifications-btn"));
 | `isVisible` | `MaybeRef<boolean>`       | No       | Reactive visibility toggle. When `false`, the button is excluded from `getButtons`. Defaults to `true`. |
 | `badge`     | `MaybeRef<boolean>`       | No       | Show a small badge indicator on the button (e.g., for unread notifications).                            |
 
+<!-- internal:start -->
+
 ## Setup
 
 `provideAppBarMobileButtonsService()` must be called once in the app root (VcApp). It is idempotent -- calling it again in the same injection tree returns the existing service. Descendant components then call `useAppBarMobileButtons()` to register buttons.
@@ -69,6 +77,8 @@ import { provideAppBarMobileButtonsService } from "@vc-shell/framework";
 
 provideAppBarMobileButtonsService();
 ```
+
+<!-- internal:end -->
 
 ## Recipe: Filter Toggle Button That Reflects Active State
 

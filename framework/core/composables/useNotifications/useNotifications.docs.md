@@ -1,3 +1,9 @@
+---
+title: useNotifications
+category: composables
+group: notifications
+---
+
 # useNotifications
 
 Provides access to the push-notification system: reading notification history, filtering by type, marking as read, and registering handlers for real-time notifications. This composable wraps the Pinia-based `useNotificationStore` and adds type-based filtering and subscription management. It subscribes to specific notification types via the store's pub/sub system and automatically unsubscribes when the component scope is disposed.

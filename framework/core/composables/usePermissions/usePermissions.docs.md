@@ -1,6 +1,15 @@
+---
+title: usePermissions
+category: composables
+group: user
+---
+
 # usePermissions
 
 Checks whether the current user has specific platform permissions. This composable reads the authenticated user's permission list and provides a `hasAccess` function for conditional UI rendering and access control. It is client-side only -- it does not enforce server-side authorization.
+
+!!! warning "Client-side only"
+`usePermissions` is a UI guard, not a security boundary. Always enforce authorization on the server side as well.
 
 ## When to Use
 

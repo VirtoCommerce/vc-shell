@@ -1,3 +1,9 @@
+---
+title: useSidebarState
+category: composables
+group: ui-state
+---
+
 # useSidebarState
 
 Controls the sidebar (left navigation panel) expansion, pinning, hover, and mobile menu state. This composable exposes a unified API for reading and toggling all sidebar states from any component within the VcApp tree. The sidebar has three independent dimensions: **pinned** (user explicitly locked it open, persisted to localStorage), **hover-expanded** (mouse is hovering over the collapsed sidebar on desktop), and **mobile menu** (overlay drawer on small screens). The derived `isExpanded` computed combines pinned and hover states for convenience.
@@ -61,6 +67,8 @@ const { isExpanded, isPinned, togglePin, openMenu, closeMenu } = useSidebarState
 | `openMenu`         | `() => void`               | Show the mobile menu overlay.                                                                                    |
 | `closeMenu`        | `() => void`               | Hide the mobile menu overlay.                                                                                    |
 
+<!-- internal:start -->
+
 ## Setup
 
 `provideSidebarState()` must be called once in VcApp's setup. It is idempotent -- if called multiple times in the same injection tree, it returns the existing instance. All descendant components then call `useSidebarState()` to access the shared state.
@@ -71,6 +79,8 @@ import { provideSidebarState } from "@vc-shell/framework";
 
 provideSidebarState();
 ```
+
+<!-- internal:end -->
 
 ## Recipe: Auto-Close Mobile Menu After Navigation
 

@@ -1,6 +1,14 @@
+---
+title: VcLink
+category: components
+group: navigation
+---
+
 # VcLink
 
 A clickable inline link element styled as a button, used for navigation or triggering actions within text or toolbars. Despite its link-like appearance, VcLink renders as a native `<button>` element, which provides correct keyboard behavior and avoids the need for an `href` attribute when the action is handled in JavaScript.
+
+::storybook id="action-vclink--default"
 
 ## When to Use
 
@@ -37,6 +45,8 @@ function openDetails() {
 | Event   | Payload | Description                                                 |
 | ------- | ------- | ----------------------------------------------------------- |
 | `click` | none    | Fired when the link is clicked (suppressed when `disabled`) |
+
+::storybook id="action-vclink--navigation-example" height="250"
 
 ## Common Patterns
 
@@ -138,3 +148,15 @@ const activeTab = ref("Overview");
 ## Related Components
 
 - [VcButton](../vc-button/) -- for primary actions and form submissions
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcLink lives in `framework/ui/components/atoms/vc-link/`.
+- Renders as a native `<button type="button">` with all default button styles reset via CSS (no background, no border, no padding). The link appearance is achieved purely through color and text-decoration.
+- The `active` prop adds `.vc-link--active` modifier which applies `--link-text-color-active` and removes the hover underline to signal current selection.
+- The `disabled` prop sets both the native `disabled` attribute (removes from tab order) and `aria-disabled="true"` (for assistive technologies that still read disabled buttons).
+- No `href` prop is intentional — VcLink is for JS-driven navigation (e.g., `openBlade`, `router.push`). For real anchor links, use `<a>` or `<router-link>` directly.
+
+<!-- internal:end -->

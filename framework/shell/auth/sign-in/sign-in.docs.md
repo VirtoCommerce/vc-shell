@@ -1,3 +1,10 @@
+---
+title: SignIn
+category: composables
+group: utilities
+internal: true
+---
+
 # SignIn (External Providers)
 
 Components and composable for SSO / external authentication provider integration. Renders provider buttons on the login page and handles the external sign-in redirect flow. This module supports any OAuth2/OpenID Connect provider configured on the VirtoCommerce Platform (Google, Azure AD, ADFS, Okta, etc.) and provides a clean abstraction over the redirect-based authentication flow.

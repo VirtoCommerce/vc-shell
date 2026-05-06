@@ -1,6 +1,14 @@
+---
+title: VcMenu
+category: components
+group: navigation
+---
+
 # VcMenu
 
 Compositional navigation menu component for building sidebar navigation with sections, groups, nested items, badges, and loading skeletons.
+
+::storybook id="navigation-vcmenu--default"
 
 ## When to Use
 
@@ -64,6 +72,8 @@ import { VcMenu, VcMenuItem, VcMenuGroup } from "@vc-shell/framework";
 
 ## Common Patterns
 
+::storybook id="navigation-vcmenu--sections"
+
 ### Section Groups with Nested Items
 
 ```vue
@@ -93,6 +103,8 @@ import { VcMenu, VcMenuItem, VcMenuGroup } from "@vc-shell/framework";
 
 ### Collapsed State
 
+::storybook id="navigation-vcmenu--collapsed"
+
 When `expanded` is `false`, the menu shows only icons and letter abbreviations. Groups show tooltips on hover. The container width should be reduced (e.g., 64px).
 
 ## CSS Variables
@@ -113,3 +125,15 @@ When `expanded` is `false`, the menu shows only icons and letter abbreviations. 
 - [VcMenuItem](../vc-menu/) — individual menu item with icon, title, badge
 - [VcMenuGroup](../vc-menu/) — collapsible group container (supports `variant="section"` for top-level sections)
 - [VcDropdown](../vc-dropdown/) — contextual dropdown menus
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- `VcMenuExpandedKey` is the provide/inject key (`framework/ui/components/molecules/vc-menu/constants.ts`) used by `VcMenu` to broadcast the `expanded` state down to all `VcMenuItem` and `VcMenuGroup` descendants. Components can also override it locally via their own `expanded` prop.
+- `VcMenuGroup` persists its open/closed state in `localStorage` with a key scoped to `vc_menu_<appName>_<groupId>_open`, where `appName` is derived from the first URL path segment.
+- The loading skeleton in `VcMenu` is hardcoded to mimic a realistic 2-section structure. It does not reflect actual slot content.
+- `VcMenuItem` uses a `VcTooltip` that activates only when the menu is collapsed (`!menuExpanded`), showing the item title on hover.
+- `VcMenuGroup` children animate via CSS `grid-template-rows: 0fr → 1fr` transition — no JS required.
+
+<!-- internal:end -->

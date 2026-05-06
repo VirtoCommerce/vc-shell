@@ -1,3 +1,9 @@
+---
+title: VcPopup
+category: components
+group: feedback
+---
+
 # VcPopup
 
 A modal dialog component built on [HeadlessUI Dialog](https://headlessui.com/vue/dialog). Use it for confirmations, alerts, error messages, and focused form interactions that require the user's immediate attention.
@@ -12,7 +18,10 @@ A modal dialog component built on [HeadlessUI Dialog](https://headlessui.com/vue
 | Side panel for contextual workflows               | VcSidebar   |
 | Stacked detail views (master-detail)              | VcBlade     |
 
-> **Tip:** Prefer blades for CRUD workflows. Reserve popups for brief, interruptive interactions such as confirmations and alerts.
+!!! tip "Prefer blades for CRUD workflows"
+Reserve popups for brief, interruptive interactions such as confirmations and alerts. Use `VcBlade` for CRUD detail views and `VcSidebar` for contextual side panels.
+
+::storybook id="overlay-vcpopup--default"
 
 ---
 
@@ -48,6 +57,8 @@ const showPopup = ref(false);
 ## Features
 
 ### Variants
+
+::storybook id="overlay-vcpopup--variants" height="500"
 
 The `variant` prop adds a semantic icon and color to the popup. Available values: `"default"`, `"info"`, `"success"`, `"warning"`, `"error"`.
 
@@ -247,6 +258,8 @@ Two props control fullscreen behavior:
 ## Recipes
 
 ### Confirmation Dialog
+
+::storybook id="overlay-vcpopup--with-footer" height="400"
 
 The most common pattern. Uses the `warning` variant and a two-button footer.
 

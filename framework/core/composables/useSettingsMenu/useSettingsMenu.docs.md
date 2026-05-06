@@ -1,3 +1,9 @@
+---
+title: useSettingsMenu
+category: composables
+group: services
+---
+
 # useSettingsMenu
 
 Accesses the settings menu service for registering and managing items in the application settings sidebar.

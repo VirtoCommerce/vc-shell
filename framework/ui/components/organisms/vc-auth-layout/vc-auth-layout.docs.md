@@ -1,6 +1,17 @@
+---
+title: VcAuthLayout
+category: components
+group: layout
+---
+
 # VcAuthLayout
 
 A full-page centered authentication layout for login, registration, password reset, and other auth-related screens. VcAuthLayout renders a vertically and horizontally centered card on top of an optional background image, with a logo, title, subtitle, form content area, and a footer slot for legal links. It is the standard layout for all pre-authentication pages in VirtoCommerce admin applications.
+
+::storybook id="layout-vcauthlayout--default"
+
+!!! warning "Use outside VcApp"
+VcAuthLayout is a full-page layout meant to replace `VcApp`, not nest inside it. Your router should switch between VcAuthLayout (for auth routes) and VcApp (for authenticated routes) at the top level.
 
 ## When to Use
 
@@ -131,6 +142,8 @@ The layout uses a `<main>` element as the page landmark and an `<h2>` for the ca
   </VcAuthLayout>
 </template>
 ```
+
+::storybook id="layout-vcauthlayout--with-sso-providers" height="500"
 
 ## Recipe: Password Reset Page
 

@@ -1,3 +1,10 @@
+---
+title: Global Error Handler
+category: concepts
+group: root
+slug: global-error-handler
+---
+
 # Global Error Handler Plugin
 
 Catches unhandled errors across the application and displays user-facing toast notifications. Covers Vue component errors, unhandled promise rejections, and uncaught JavaScript errors.

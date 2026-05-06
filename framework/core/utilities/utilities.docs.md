@@ -1,3 +1,10 @@
+---
+title: Utilities Overview
+category: reference
+group: api
+slug: utilities-overview
+---
+
 # Framework Utilities
 
 Utility functions exported from `@vc-shell/framework` via `core/utilities/index.ts`.

@@ -1,3 +1,10 @@
+---
+title: DashboardWidgetSkeleton
+category: composables
+group: utilities
+internal: true
+---
+
 # DashboardWidgetSkeleton
 
 Internal placeholder card used by `GridstackDashboard` while remote modules are still loading. Mimics the shape of `DashboardWidgetCard` (header with icon + title, stats row, content lines) with a shimmer animation. Not exported from `@vc-shell/framework` — consumed only inside the dashboard organism.

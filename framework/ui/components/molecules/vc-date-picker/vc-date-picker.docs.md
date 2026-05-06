@@ -1,6 +1,17 @@
+---
+title: VcDatePicker
+category: components
+group: form
+---
+
+!!! note "Large reference page"
+This page is long. Use the section links in the sidebar or your browser's in-page search (Ctrl/Cmd+F) to jump to the section you need.
+
 # VcDatePicker
 
 A date and datetime picker that wraps the [VueDatePicker](https://vue3datepicker.com/) library with the standard form field chrome (label, hint, error, focus ring). Formats dates using the browser's locale and automatically detects 12-hour vs. 24-hour time format.
+
+::storybook id="form-vcdatepicker--default"
 
 ## When to Use
 
@@ -38,6 +49,8 @@ const date = ref<Date | null>(null);
 ## Features
 
 ### Date vs. DateTime Mode
+
+::storybook id="form-vcdatepicker--date-time"
 
 The `type` prop controls whether the picker shows a date-only calendar or includes an inline time picker.
 
@@ -129,6 +142,8 @@ const form = reactive({
 ```
 
 ### States
+
+::storybook id="form-vcdatepicker--with-error"
 
 ```vue
 <!-- Required -->
@@ -345,3 +360,15 @@ Uses the same `--input-*` variables as VcInput for consistent styling across all
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- Wraps the third-party `VueDatePicker` component. The underlying library is `@vuepic/vue-datepicker`.
+- 12h/24h auto-detection uses the `Intl.DateTimeFormat` API with a sentinel date (midnight on 2023-01-01) to check if the locale's time representation contains "AM" or "PM".
+- The `datePickerOptions` prop is spread onto `<VueDatePicker>` via `v-bind`. Props explicitly set on `VcDatePicker` take precedence over `datePickerOptions` entries of the same name.
+- The `maxDate` for date-only mode is capped at `9999-12-31` to prevent the underlying library from crashing on out-of-range dates.
+- Source file: `framework/ui/components/molecules/vc-date-picker/vc-date-picker.vue`
+
+<!-- internal:end -->

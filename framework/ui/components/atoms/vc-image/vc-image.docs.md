@@ -1,6 +1,14 @@
+---
+title: VcImage
+category: components
+group: media
+---
+
 # VcImage
 
 An image display component with predefined sizes, aspect ratio control, and a placeholder for missing sources. Renders images as CSS backgrounds with automatic HTTPS enforcement.
+
+::storybook id="data-display-vcimage--default"
 
 ## When to Use
 
@@ -29,6 +37,8 @@ An image display component with predefined sizes, aspect ratio control, and a pl
 | `emptyIcon`     | `string`                                                        | `"lucide-image"` | Icon shown when `src` is empty                                                                                                                     |
 | `alt`           | `string`                                                        | —                | Accessible alt text                                                                                                                                |
 | `thumbnailSize` | `ThumbnailSize`                                                 | —                | Load a thumbnail variant instead of full-size image. Values: `"sm"`, `"md"`, `"lg"`, `"64x64"`, `"128x128"`, `"168x168"`, `"216x216"`, `"348x348"` |
+
+::storybook id="data-display-vcimage--size-variants" height="300"
 
 ## Size Reference
 
@@ -83,7 +93,23 @@ An image display component with predefined sizes, aspect ratio control, and a pl
 - Focus ring appears on `:focus-visible` for clickable images
 - HTTP URLs are automatically upgraded to HTTPS when the page is served over HTTPS
 
+!!! tip "Use thumbnailSize for faster load times"
+When displaying images in lists or grids, pass a `thumbnailSize` (e.g. `"128x128"`) to request a pre-scaled variant from the platform CDN instead of loading the full-resolution original. This significantly reduces bandwidth and speeds up initial render.
+
 ## Related Components
 
 - [VcIcon](../vc-icon/) — for symbolic icons rather than photographic content
 - [VcImageTile](../../molecules/vc-image-tile/) — combines VcImage with overlay actions for gallery use
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcImage lives in `framework/ui/components/atoms/vc-image/`.
+- Images are rendered as CSS `background-image` on a `<div>` rather than an `<img>` tag; this enables `background-size: cover/contain` and preserves aspect-ratio without JS.
+- HTTPS enforcement: the `src` watcher rewrites `http://` to `https://` when `window.location.protocol === 'https:'`.
+- `thumbnailSize` appends a query parameter to the URL compatible with Virto Commerce image proxy: `?size=128x128`. This is a platform-specific convention.
+- Aspect ratios are implemented as Tailwind aspect-ratio utility classes (`tw-aspect-square`, `tw-aspect-video`, etc.).
+- Clickable mode adds `role="button"` and forwards keyboard Enter/Space to the click handler, consistent with other atom-level interactive components.
+
+<!-- internal:end -->

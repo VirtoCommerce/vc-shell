@@ -1,3 +1,10 @@
+---
+title: ErrorInterceptor
+category: composables
+group: utilities
+internal: true
+---
+
 # Error Interceptor
 
 A renderless component that captures Vue `onErrorCaptured` errors and surfaces them to child slots or the blade error banner.

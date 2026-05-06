@@ -1,3 +1,10 @@
+---
+title: AI Agent
+category: concepts
+group: root
+slug: ai-agent
+---
+
 # AI Agent Plugin
 
 Integrates an AI assistant panel (chatbot iframe) into the vc-shell application. Provides blade-aware context passing, bidirectional postMessage communication, and preview/apply workflows.

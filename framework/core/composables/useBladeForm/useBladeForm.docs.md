@@ -1,3 +1,9 @@
+---
+title: useBladeForm
+category: composables
+group: forms
+---
+
 # useBladeForm
 
 Unified form state management for blades. Replaces manual combination of `useForm` + `useModificationTracker` + `useBeforeUnload` + `onBeforeClose` with a single composable.
@@ -152,8 +158,8 @@ onMounted(async () => {
 
 At composable creation, `useBladeForm` takes a snapshot of `data` (the **setup-time snapshot**). When `markReady()` is called:
 
-1. `isReady` → `true` (gates `canSave` and the deep watcher)
-2. `trackerIsModified` = `!semanticEqual(data, setupTimeSnapshot)` — since data was mutated during `onMounted`, this evaluates to `true`
+1. `isReady` → `true` (gates `canSave` and subsequent edit tracking)
+2. Modification state is computed by comparing the current data to the setup-time snapshot — since data was mutated during `onMounted`, `isModified` evaluates to `true`
 3. Subsequent edits are tracked normally by the deep watcher
 
 After save, call `setBaseline()` as usual to capture the saved state as the new pristine snapshot.
@@ -164,6 +170,10 @@ After save, call `setBaseline()` as usual to capture the saved state as the new 
 - Validation rules stay in template (`<Field rules="...">`).
 - `setBaseline()` must be called after data is loaded — before that, `canSave` and `isModified` are `false`.
 
+<!-- internal:start -->
+
 ## Migration
 
 See `MIGRATION_GUIDE.md` for step-by-step instructions on migrating existing modules.
+
+<!-- internal:end -->

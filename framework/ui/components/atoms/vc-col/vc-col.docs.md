@@ -1,6 +1,14 @@
+---
+title: VcCol
+category: components
+group: layout
+---
+
 # VcCol
 
-A flexbox column layout primitive that stacks its children vertically. Designed to work with `VcRow` for proportional multi-column layouts. The `size` prop maps directly to `flex-grow`, so columns with higher values consume more horizontal space relative to their siblings.
+A flexbox column layout primitive that stacks its children vertically.
+
+::storybook id="layout-vccol--default" Designed to work with `VcRow` for proportional multi-column layouts. The `size` prop maps directly to `flex-grow`, so columns with higher values consume more horizontal space relative to their siblings.
 
 ## When to Use
 
@@ -67,6 +75,8 @@ A flexbox column layout primitive that stacks its children vertically. Designed 
   <VcInput label="Email" v-model="form.email" />
 </VcCol>
 ```
+
+::storybook id="layout-vccol--content-layout" height="400"
 
 ## Recipe: Blade Detail Form with Sidebar
 

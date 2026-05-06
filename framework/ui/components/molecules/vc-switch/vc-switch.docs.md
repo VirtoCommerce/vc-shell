@@ -1,6 +1,17 @@
+---
+title: VcSwitch
+category: components
+group: form
+---
+
 # VcSwitch
 
 A toggle switch component for binary on/off choices. Renders as a sliding track with a thumb indicator and supports labels, hints, validation, and value inversion.
+
+!!! note "Large reference"
+This page is over 200 lines. Use the section headings to jump directly to what you need: [Quick Start](#quick-start), [Features](#features), [Props](#props), [CSS Variables](#css-variables).
+
+::storybook id="form-vcswitch--default"
 
 ## When to Use
 
@@ -45,6 +56,8 @@ The `label` prop renders text above the switch. Use `hint` for helper text below
 > **Important:** The `tooltip` prop is deprecated. It previously rendered as hint text below the switch (not as a true tooltip). Use `hint` for text below the switch, or `labelTooltip` for the label info icon. A console warning is emitted in development mode if `tooltip` is used.
 
 ### Value Inversion with trueValue / falseValue
+
+::storybook id="form-vcswitch--variants"
 
 By default, `v-model` maps `true` to the checked (on) state and `false` to unchecked (off). The `trueValue` and `falseValue` props let you invert the mapping when your data model uses opposite semantics.
 
@@ -294,3 +307,15 @@ const isActive = ref(true);
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- VcSwitch renders a hidden `<input type="checkbox">` with `role="switch"`. Visual state is driven by CSS (`:checked + .vc-switch__slider`). No JavaScript DOM manipulation needed for toggling.
+- `invertValue` handles the `trueValue`/`falseValue` mapping — both on read (for rendering) and on write (for emitting). When `trueValue` is `false`, the display is inverted.
+- The `tooltip` prop is kept for backward compatibility (legacy vc-shell code used it as hint text). A dev-mode `console.warn` nudges maintainers to migrate. The prop is mapped to `hintText` computed.
+- `useFormField` injects validation context (error, disabled, name) from a parent form provider.
+- Source file: `framework/ui/components/molecules/vc-switch/vc-switch.vue`
+
+<!-- internal:end -->

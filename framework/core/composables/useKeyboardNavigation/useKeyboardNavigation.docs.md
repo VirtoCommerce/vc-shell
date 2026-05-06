@@ -1,3 +1,9 @@
+---
+title: useKeyboardNavigation
+category: composables
+group: ui-state
+---
+
 # useKeyboardNavigation
 
 Implements keyboard navigation (Arrow keys, Tab, Enter, Escape) within a container of focusable elements. This composable provides full WAI-ARIA-style keyboard interaction for custom menus, dropdowns, autocomplete lists, and other composite widgets that are not natively keyboard-accessible. It manages a focused-item index, handles wrap-around (looping), and automatically attaches/detaches event listeners tied to the component lifecycle.
@@ -85,6 +91,8 @@ function openMenu() {
 | `setFocusedIndex`           | `(index: number) => void`   | Set focus to a specific index. No-op if index is out of bounds.                           |
 | `getFocusedIndex`           | `() => number`              | Get the currently focused index (`-1` if no item is focused).                             |
 
+<!-- internal:start -->
+
 ## How It Works
 
 The composable listens for `keydown` events on the container element and handles:
@@ -97,6 +105,8 @@ The composable listens for `keydown` events on the container element and handles
 On each key event, the composable re-queries the container for matching items (`itemSelector`), so it naturally handles dynamic lists where items are added or removed. The focused index is validated against the current item count before every operation to prevent stale-index bugs.
 
 Auto-attach happens in `onMounted`: if `containerSelector` is set and a matching element exists in the DOM, keyboard navigation is initialized automatically. Cleanup happens in `onBeforeUnmount`.
+
+<!-- internal:end -->
 
 ## Recipe: Keyboard-Navigable Autocomplete Dropdown
 

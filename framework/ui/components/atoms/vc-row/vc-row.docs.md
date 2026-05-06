@@ -1,6 +1,14 @@
+---
+title: VcRow
+category: components
+group: layout
+---
+
 # VcRow
 
-A simple layout primitive that arranges child elements in a horizontal flexbox row, automatically switching to a CSS grid on mobile viewports. VcRow has no props of its own — it is a purely presentational wrapper that applies consistent flex behavior and responsive breakpoints so you do not have to repeat the same Tailwind utilities across every horizontal layout.
+A simple layout primitive that arranges child elements in a horizontal flexbox row
+
+::storybook id="layout-vcrow--default", automatically switching to a CSS grid on mobile viewports. VcRow has no props of its own — it is a purely presentational wrapper that applies consistent flex behavior and responsive breakpoints so you do not have to repeat the same Tailwind utilities across every horizontal layout.
 
 ## When to Use
 
@@ -99,6 +107,8 @@ The `--row-gap` CSS variable (default `0`) controls spacing. You can also overri
   </VcRow>
 </template>
 ```
+
+::storybook id="layout-vcrow--with-cards" height="300"
 
 ## Recipe: Form Section with Label and Fields
 

@@ -1,3 +1,9 @@
+---
+title: VcForm
+category: components
+group: form
+---
+
 # VcForm
 
 A lightweight `<form>` wrapper that provides consistent styling, prevents default browser submission, and serves as the standard container for validated form fields in blade detail views.
@@ -15,6 +21,8 @@ A lightweight `<form>` wrapper that provides consistent styling, prevents defaul
 ---
 
 ## Quick Start
+
+::storybook id="form-vcform--basic"
 
 ```vue
 <template>
@@ -49,6 +57,9 @@ function handleSubmit() {
 ```
 
 ---
+
+!!! note "Form validation is handled by vee-validate"
+VcForm itself does not validate fields — it only provides the `<form>` wrapper. Use vee-validate's `Field` component around each input that needs validation rules.
 
 ## Features
 
@@ -173,6 +184,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 ```
 
 ---
+
+::storybook id="form-vcform--with-fieldsets" height="500"
 
 ## Recipes
 
@@ -302,6 +315,8 @@ onBeforeClose(async () => {
 });
 </script>
 ```
+
+::storybook id="form-vcform--horizontal-layout" height="400"
 
 ### Form with Mixed Field Types
 

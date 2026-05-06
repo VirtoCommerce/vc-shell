@@ -1,6 +1,14 @@
+---
+title: VcContainer
+category: components
+group: layout
+---
+
 # VcContainer
 
 A scrollable content wrapper that fills its parent, provides configurable padding, and optionally shows an inset shadow to indicate overflow. The standard building block for blade body content.
+
+::storybook id="layout-vccontainer--default"
 
 ## When to Use
 
@@ -10,6 +18,8 @@ A scrollable content wrapper that fills its parent, provides configurable paddin
 - When NOT to use: for grouped/titled sections, use [VcCard](../vc-card/); for simple column stacking, use [VcCol](../vc-col/)
 
 ## Basic Usage
+
+::storybook id="layout-vccontainer--with-shadow" height="300"
 
 ```vue
 <VcContainer shadow>

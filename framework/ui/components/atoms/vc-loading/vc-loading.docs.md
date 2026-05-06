@@ -1,6 +1,14 @@
+---
+title: VcLoading
+category: components
+group: feedback
+---
+
 # VcLoading
 
 A lightweight animated loading overlay that displays a sweeping progress bar over its parent container. The overlay uses a translucent backdrop with a subtle blur effect, drawing user attention to the animated bar while keeping the underlying content partially visible so users retain context about what is loading.
+
+::storybook id="layout-vcloading--default"
 
 ## When to Use
 
@@ -45,6 +53,8 @@ const isLoading = ref(true);
 | `--loading-bar-width`  | `140px`                 | Width of the progress bar     |
 | `--loading-bar-height` | `4px`                   | Height of the progress bar    |
 | `--loading-z-index`    | `9998`                  | Z-index of the overlay layer  |
+
+::storybook id="layout-vcloading--interactive"
 
 ## Recipe: Loading State in a Blade
 
@@ -123,3 +133,14 @@ Override the bar color to match a specific status or brand theme:
 
 - **VcBlade** -- blades use VcLoading internally for their loading state
 - [VcProgress](../vc-progress/) -- determinate progress bar when percentage is known
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- The overlay is a single `<div>` with `v-show` (not `v-if`) so it remains in the DOM and retains animation state. `display: none` from `v-show` removes it from the paint tree when inactive.
+- The sweeping bar is a child `<div>` animated via `@keyframes vc-loading-sweep` (translateX from `-100%` to `100%`).
+- `backdrop-filter: blur(3px)` is applied to the overlay div directly; older Safari requires `-webkit-backdrop-filter` as a fallback.
+- Source: `framework/ui/components/atoms/vc-loading/vc-loading.vue`
+
+<!-- internal:end -->

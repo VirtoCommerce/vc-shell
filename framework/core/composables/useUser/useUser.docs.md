@@ -1,3 +1,9 @@
+---
+title: useUser
+category: composables
+group: user
+---
+
 # useUser
 
 Shared composable providing read-only access to the current user's session state. Returns reactive user details, authentication status, and core session operations (load, sign out, get access token). This is the primary composable for user-related reads in regular blades and components. It deliberately exposes a narrow API surface -- no sign-in, password reset, or admin operations -- to encourage separation of concerns between user consumption and user management.

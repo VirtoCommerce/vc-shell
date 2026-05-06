@@ -1,3 +1,9 @@
+---
+title: VcBlade
+category: components
+group: layout
+---
+
 # VcBlade
 
 The foundational container component of the VirtoCommerce admin shell. Blades are stacked panels -- inspired by the Azure Portal -- that form the primary navigation paradigm. Every screen in a vc-shell application is a blade.
@@ -34,6 +40,8 @@ Traditional admin panels use page-based routing: click a link, the entire viewpo
 | Full-page route without blade stack               | Vue Router view                              |
 | Scrollable content section inside a blade         | [VcContainer](../../molecules/vc-container/) |
 
+::storybook id="navigation-vcblade--default"
+
 Use VcBlade for every screen in a vc-shell application -- it is the standard container that integrates with the navigation system, toolbar, breadcrumbs, and unsaved-changes guards. **Do not use** VcBlade for transient dialogs (use `VcPopup` / `usePopup()`) or for content areas that do not need their own header and close button.
 
 ## Quick Start
@@ -54,7 +62,8 @@ defineOptions({ name: "MyFirstBlade", url: "/my-first-blade" });
 </script>
 ```
 
-> **Tip:** Every blade needs a `name` in `defineOptions`. This is how other blades reference it: `openBlade({ name: "MyFirstBlade" })`. The `url` is optional and controls the URL segment.
+!!! tip "Every blade needs a name"
+Every blade must define a `name` in `defineOptions`. This is how other blades reference it: `openBlade({ name: "MyFirstBlade" })`. The `url` is optional and controls the URL segment.
 
 ## Blade Anatomy
 
@@ -374,6 +383,8 @@ interface IBladeToolbar {
 
 ## Loading State and Skeleton
 
+::storybook id="navigation-vcblade--loading" height="500"
+
 `loading` shows skeleton placeholders for header, toolbar, and content:
 
 ```vue
@@ -412,6 +423,8 @@ useBeforeUnload(hasChanges); // Browser tab close warning
 ```
 
 ## Custom Banners
+
+::storybook id="navigation-vcblade--custom-banners" height="500"
 
 Add informational, warning, or success banners to a blade programmatically. Banners appear between the header and toolbar, sorted by severity.
 
@@ -679,6 +692,8 @@ openBlade({ name: "ProductsList" });
 | `usePopup()`                                    | Confirmation dialogs and error messages.                                           |
 | `useBladeWidgets()`                             | Register contextual widgets for the blade widget area.                             |
 
+<!-- internal:start -->
+
 ## Content Skeleton Mode
 
 When `loading=true`, VcBlade provides `BladeLoadingKey` to all descendant components via Vue's provide/inject. Each framework UI component automatically renders a skeleton placeholder matching its visual footprint.
@@ -708,3 +723,5 @@ import { useBladeLoading } from "@vc-shell/framework";
 const bladeLoading = useBladeLoading();
 // bladeLoading.value === true when parent VcBlade is loading
 ```
+
+<!-- internal:end -->

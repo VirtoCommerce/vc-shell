@@ -1,6 +1,17 @@
+---
+title: VcInputDropdown
+category: components
+group: form
+---
+
+!!! note "Large reference page"
+This page is long. Use the section links in the sidebar or your browser's in-page search (Ctrl/Cmd+F) to jump to the section you need.
+
 # VcInputDropdown
 
 A composite component that combines a text input field with a dropdown option selector in a single control. The user types a value in the input while also selecting a category, unit, or format from the attached dropdown.
+
+::storybook id="form-vcinputdropdown--default"
 
 ## When to Use
 
@@ -41,6 +52,8 @@ const unit = ref("cm");
 The component uses a dual `v-model` pattern: `v-model` controls the input value, and `v-model:option` controls the selected dropdown option.
 
 ## Object Options
+
+::storybook id="form-vcinputdropdown--with-object-options"
 
 When options are objects instead of primitives, use `optionValue` and `optionLabel` to tell the component which properties to use:
 
@@ -105,6 +118,8 @@ The `inputType` prop controls the HTML input type, enabling browser-native behav
 Supported types: `"text"`, `"password"`, `"email"`, `"tel"`, `"number"`, `"integer"`, `"url"`, `"time"`, `"date"`, `"datetime-local"`.
 
 ## Component States
+
+::storybook id="form-vcinputdropdown--states"
 
 VcInputDropdown inherits all standard form field states:
 
@@ -298,3 +313,14 @@ Replace the default dropdown toggle with a custom element using the `button` slo
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- Internally composed of two elements side-by-side: a `VcInput` for the text portion and a `VcSelect`-like dropdown panel for the option portion.
+- The `button` slot replaces only the dropdown toggle button element, not the entire dropdown panel.
+- The `option` slot receives `{ index, opt, selected, toggleOption }` — `toggleOption` must be called to actually select the item.
+- Source file: `framework/ui/components/molecules/vc-input-dropdown/vc-input-dropdown.vue`
+
+<!-- internal:end -->

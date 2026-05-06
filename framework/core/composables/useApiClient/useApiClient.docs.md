@@ -1,6 +1,15 @@
+---
+title: useApiClient
+category: composables
+group: data
+---
+
 # useApiClient
 
 Creates a typed API client instance for communicating with VirtoCommerce platform APIs. The composable accepts a generated client class constructor and returns an async factory function that produces a configured, authenticated client. Base URL resolution and authentication token injection are handled automatically.
+
+!!! tip "Always call getApiClient inside async functions"
+`getApiClient` is async. Never call it at the top level of `<script setup>` — always call it inside the async function you pass to `useAsync`. Storing the client in a variable outside the function gives you a stale reference when tokens rotate.
 
 ## When to Use
 
@@ -291,7 +300,7 @@ API clients are generated from Swagger/OpenAPI specs using the `@vc-shell/api-cl
 
 ## Related
 
-- [useAsync](../useAsync/) -- wraps async API calls with loading/error state management
-- [CLI API Client Generator](../../../../cli/) -- generates typed client classes from Swagger specs
-- [useToolbar](../useToolbar/) -- disable toolbar buttons during API calls using the loading ref
-- [useNotifications](../useNotifications/) -- display success/error messages after API operations
+- [`useAsync`](../useAsync/) -- wraps async API calls with loading/error state management
+- CLI API Client Generator (`@vc-shell/api-client-generator`) -- generates typed client classes from Swagger specs
+- [`useToolbar`](../useToolbar/) -- disable toolbar buttons during API calls using the loading ref
+- [`useNotifications`](../useNotifications/) -- display success/error messages after API operations

@@ -1,6 +1,14 @@
+---
+title: VcGallery
+category: components
+group: data-display
+---
+
 # VcGallery
 
 A responsive multi-image gallery with drag-and-drop reorder, file upload, lightbox preview, and per-image actions. VcGallery renders images in a CSS grid that auto-fills based on the container width, with a built-in upload zone tile at the end of the grid. It is the standard component for managing collections of images such as product photos, media libraries, and document attachments.
+
+::storybook id="data-display-vcgallery--default"
 
 ## When to Use
 
@@ -64,11 +72,15 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 <VcGallery label="Product Images" required :images="product.images" imagefit="cover" @upload="handleUpload" @sort="handleSort" @edit="handleEdit" @remove="handleRemove" />
 ```
 
+::storybook id="data-display-vcgallery--filmstrip-default" height="400"
+
 ## Filmstrip Layout (Default)
 
 ```vue
 <VcGallery label="Images" :images="product.images" imagefit="cover" @upload="handleUpload" @sort="handleSort" @remove="handleRemove" />
 ```
+
+::storybook id="data-display-vcgallery--grid-layout" height="400"
 
 ## Classic Grid Layout
 
@@ -127,6 +139,8 @@ function handleRemove(image: ICommonAsset) {
   </VcBlade>
 </template>
 ```
+
+::storybook id="data-display-vcgallery--disabled" height="300"
 
 ## Recipe: Read-Only Gallery (Disabled)
 

@@ -1,8 +1,19 @@
+---
+title: VcSelect
+category: components
+group: form
+---
+
 # VcSelect
 
 A dropdown list component for selecting one or multiple values. Supports synchronous and asynchronous data sources, search with debounce, infinite scrolling, custom option templates, and full integration with the framework's validation system.
 
 VcSelect is one of the most widely used components in vc-shell. It covers most selection scenarios: from a simple dropdown with a static list to searching via a server API with pagination.
+
+!!! note "Large reference"
+This page is over 200 lines. Use the section headings to jump directly to what you need: [Quick Start](#quick-start), [Data Sources](#data-sources), [Multiple Selection](#multiple-selection), [Slots](#slots), [Props](#props).
+
+::storybook id="form-vcselect--basic"
 
 ## When to Use
 
@@ -82,6 +93,8 @@ In this case `optionValue` and `optionLabel` are not needed — the component us
 
 ### Async Function (Server API)
 
+::storybook id="form-vcselect--async-options" height="450"
+
 To load data from a server, pass a function instead of an array. This is the most powerful mode — it automatically provides:
 
 - Search with debounce (500ms by default)
@@ -142,6 +155,8 @@ const loadProducts = async (keyword?: string, skip?: number, ids?: string[]) => 
 
 ## Multiple Selection
 
+::storybook id="form-vcselect--multiple-selection"
+
 Add `multiple` to enable selecting several values. The model becomes an array:
 
 ```vue
@@ -178,6 +193,8 @@ Selected values are displayed as chips with a remove button. The `clearable` but
 
 ## Search and Filtering
 
+::storybook id="form-vcselect--searchable"
+
 Enable `searchable` to add a search field to the dropdown:
 
 ```vue
@@ -191,6 +208,8 @@ Enable `searchable` to add a search field to the dropdown:
 ---
 
 ## Custom Option Rendering
+
+::storybook id="form-vcselect--custom-option-slot" height="450"
 
 Use the `#option` slot for full control over how each option is rendered:
 
@@ -678,3 +697,16 @@ Don't forget `:key` with cascading selects, otherwise the second select will ret
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- VcSelect is split into three layers: `vc-select.vue` (orchestrator), `SelectTrigger.vue` (trigger button + chips), `SelectDropdown.vue` (popup list).
+- Composable split: `useSelectDataSource` (options loading, infinite scroll, search), `useSelectSelection` (model-to-option mapping, toggle, remove), `useSelectValueMapping` (optionValue/optionLabel getters), `useSelectDropdown` (Floating UI positioning), `useSelectVisibility` (IntersectionObserver for lazy open).
+- `emitValue: true` (default) means `modelValue` is always a primitive (string/number/boolean). `emitValue: false` means full option object. The `mapOptions` flag controls whether resolved objects are stored in the cache for label resolution.
+- Infinite scroll is driven by `useIntersectionObserver` on a 1px sentinel element inside the dropdown viewport.
+- Keyboard navigation is managed by `useKeyboardNavigation` (`core/composables/`) — arrow keys, Enter, Escape. The composable attaches/detaches listeners when the dropdown opens/closes.
+- Source files: `framework/ui/components/molecules/vc-select/`
+
+<!-- internal:end -->

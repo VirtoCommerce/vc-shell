@@ -1,6 +1,14 @@
+---
+title: VcCard
+category: components
+group: layout
+---
+
 # VcCard
 
-A bordered container with an optional header, icon, action buttons, and collapsible body. VcCard groups related content into visually distinct sections on blades and detail views. It supports three color variants for semantic meaning and smooth animated collapse/expand.
+A bordered container with an optional header, icon, action buttons, and collapsible body.
+
+::storybook id="data-display-vccard--default" VcCard groups related content into visually distinct sections on blades and detail views. It supports three color variants for semantic meaning and smooth animated collapse/expand.
 
 ## When to Use
 
@@ -45,6 +53,8 @@ The icon renders at `xl` size using the `VcIcon` component. It inherits the head
 
 ## Variants
 
+::storybook id="data-display-vccard--all-variants" height="400"
+
 Three variants control the header's background and text color to communicate semantic meaning.
 
 ```vue
@@ -73,6 +83,8 @@ Three variants control the header's background and text color to communicate sem
 | `danger`  | `var(--danger-100)` (light red)    | `var(--danger-600)` (red)     | Errors, warnings, destructive content |
 
 ## Collapsible Sections
+
+::storybook id="data-display-vccard--collapsable" height="300"
 
 Enable collapse/expand behavior by setting `is-collapsable`. The card header becomes clickable and shows a chevron indicator.
 
@@ -173,7 +185,8 @@ Replace the entire header content using the `#header` slot. This overrides the d
 </VcCard>
 ```
 
-> **Note:** The `header` prop must be set (even to an empty string) for the header section to render. If neither `header` prop nor `#header` slot is provided, no header is displayed.
+!!! note "Header required for header section"
+The `header` prop must be set (even to an empty string) for the header section to render. If neither `header` prop nor `#header` slot is provided, no header is displayed.
 
 ## Fill Mode
 

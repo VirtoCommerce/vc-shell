@@ -1,3 +1,9 @@
+---
+title: useAppBarWidget
+category: composables
+group: services
+---
+
 # useAppBarWidget
 
 Provides access to the app bar widget service for registering custom widgets (buttons, icons, dropdowns) in the application's top navigation bar. Uses Vue's provide/inject system.

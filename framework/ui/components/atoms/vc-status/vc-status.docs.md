@@ -1,6 +1,14 @@
+---
+title: VcStatus
+category: components
+group: feedback
+---
+
 # VcStatus
 
 A colored badge that communicates the state of an entity -- such as an order, product, or workflow step -- using semantic color variants.
+
+::storybook id="data-display-vcstatus--default"
 
 ## When to Use
 
@@ -30,6 +38,8 @@ import { VcStatus } from "@vc-shell/framework";
 | `dot`     | `boolean`                                                                                    | `false`  | Renders as a small colored circle without text                               |
 
 ## Common Patterns
+
+::storybook id="data-display-vcstatus--all-variants" height="450"
 
 ### Status in a Table Cell
 
@@ -116,3 +126,13 @@ Each variant has its own set of CSS variables following the pattern `--status-{v
 
 - [VcStatusIcon](../vc-status-icon/) -- boolean check/cross icon for active/inactive states
 - [VcBadge](../vc-badge/) -- numeric count badge overlay
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- The `extend` prop switches a CSS class; all color theming is done via `--status-{variant}-*` CSS variables scoped under `.vc-status`.
+- Special variants `"light-danger"`, `"info-dark"`, and `"primary"` are kept for backward compatibility and mapped via a `variantClassMap` in `vc-status.vue`.
+- Source: `framework/ui/components/atoms/vc-status/vc-status.vue`
+
+<!-- internal:end -->

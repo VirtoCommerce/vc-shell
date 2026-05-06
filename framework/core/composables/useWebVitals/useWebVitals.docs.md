@@ -1,3 +1,9 @@
+---
+title: useWebVitals
+category: composables
+group: utilities
+---
+
 # useWebVitals
 
 Registers Core Web Vitals observers (FCP, LCP, CLS, INP, TTFB) and reports metrics via a callback. Core Web Vitals are Google's standardized set of real-user performance metrics that measure loading speed, interactivity, and visual stability. This composable wraps the `web-vitals` npm package and normalizes its output into a simple `{ name, value, rating }` shape. In development mode, metrics are logged to the console by default so you can catch performance regressions early without setting up external analytics.

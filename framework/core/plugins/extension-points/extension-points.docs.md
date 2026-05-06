@@ -1,3 +1,13 @@
+---
+title: Extension Points
+category: concepts
+group: root
+slug: extension-points
+---
+
+!!! tip "Navigation"
+This page is long. Use the [Table of Contents](#table-of-contents) to jump to the section you need.
+
 # Extension Points Plugin
 
 Extension points enable **cross-module UI composition** without direct imports. One module declares a named slot ("I accept plugins here"), and other modules inject components into that slot -- at any time, in any order. The system is fully reactive and order-independent.

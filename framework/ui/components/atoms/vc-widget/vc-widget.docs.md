@@ -1,6 +1,14 @@
+---
+title: VcWidget
+category: components
+group: misc
+---
+
 # VcWidget
 
 A clickable widget tile with an icon, title, and optional badge counter. Used in blade toolbars and sidebars to trigger blade-level actions or navigation.
+
+::storybook id="data-display-vcwidget--default"
 
 ## When to Use
 
@@ -48,6 +56,8 @@ function openNotifications() {
 | Event   | Payload | Description                                                   |
 | ------- | ------- | ------------------------------------------------------------- |
 | `click` | none    | Fired when the widget is clicked (suppressed when `disabled`) |
+
+::storybook id="data-display-vcwidget--sidebar-layout" height="350"
 
 ## Common Patterns
 
@@ -112,3 +122,15 @@ Badge values above 99 are automatically displayed as "99+".
 - [VcBadge](../vc-badge/) -- used internally for the count badge overlay
 - [VcIcon](../vc-icon/) -- used internally for the widget icon
 - [VcButton](../vc-button/) -- for standard action buttons
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcWidget lives in `framework/ui/components/atoms/vc-widget/`.
+- The badge overlay is rendered by embedding `VcBadge` with `isDot`/`content` derived from the `value` prop; values above 99 are truncated to `"99+"` in the component template.
+- `isExpanded` applies `.vc-widget--expanded` modifier; used by the shell sidebar to visually distinguish active navigation state.
+- `horizontal` applies `.vc-widget--horizontal` modifier which switches the internal flex direction from `column` to `row`.
+- The widget registers as a keyboard-interactive element (`role="button"`, Enter/Space handlers) rather than using a `<button>` to allow embedding arbitrary icon components without nesting interactive elements.
+
+<!-- internal:end -->

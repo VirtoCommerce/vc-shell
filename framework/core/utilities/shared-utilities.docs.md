@@ -1,3 +1,10 @@
+---
+title: Shared Utilities
+category: reference
+group: api
+slug: shared-utilities
+---
+
 # Shared Utilities
 
 Helper functions and TypeScript type utilities used across the shared layer of the framework.

@@ -1,6 +1,14 @@
+---
+title: VcDropdownPanel
+category: components
+group: navigation
+---
+
 # VcDropdownPanel
 
 Floating dropdown panel positioned relative to an anchor element, with header, scrollable content, and optional footer. Built on `@floating-ui/vue`.
+
+::storybook id="overlay-vcdropdownpanel--default"
 
 ## When to Use
 
@@ -69,6 +77,8 @@ const open = ref(false);
 | `footer`  | —           | Footer area, typically for action buttons             |
 
 ## Common Patterns
+
+::storybook id="overlay-vcdropdownpanel--with-footer"
 
 ### Filter Panel with Footer Actions
 
@@ -142,3 +152,15 @@ const open = ref(false);
 
 - [VcDropdown](../vc-dropdown/) — headless dropdown for simple item lists
 - [VcSelect](../vc-select/) — form field selection dropdown
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- Click-outside detection uses a `pointerdown` listener on `document` rather than a backdrop overlay. This ensures clicks on high-z-index siblings (sidebar, other teleported panels) are still caught.
+- `panelAnchorRegistry` (`panel-anchor-registry.ts`) is a `WeakMap<Element, HTMLElement | null>` that maps each open panel's DOM element to its anchor. This is used to distinguish child panels (whose anchor lives inside this panel) from sibling/parent panels when deciding whether to close on outside click.
+- Nested VcSelect dropdowns teleported to `<body>` are exempt from click-outside via an ARIA `aria-controls` check: if the clicked `.vc-select__dropdown` has an `id` that matches an `aria-controls` attribute inside this panel, the close is suppressed.
+- The panel exposes a `close()` method via `defineExpose` for use with template refs.
+- `useTeleportTarget` resolves the teleport destination (typically `body`) respecting any custom portal container.
+
+<!-- internal:end -->

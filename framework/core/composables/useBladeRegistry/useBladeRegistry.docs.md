@@ -1,3 +1,9 @@
+---
+title: useBladeRegistry
+category: composables
+group: blade-navigation
+---
+
 # useBladeRegistry
 
 Provides read-only access to the blade registry -- a central map of all registered blade components, their routes, and metadata.
@@ -129,7 +135,7 @@ function canAccessBlade(bladeName: string): boolean {
 
 ## Notes
 
-- The composable must be called after `createBladeRegistry()` has provided the registry via `BladeRegistryKey`. Calling it too early (e.g., outside a setup function or before app bootstrap) throws an error.
+- The composable must be called after the navigation plugin has initialized. Calling it too early (e.g., outside a setup function or before app bootstrap) throws an error.
 - `getBladeComponent()` falls back to Vue's global component registry if the blade is not found in the framework registry. This supports legacy components registered via `app.component()`.
 - The `registeredBladesMap` is a `ComputedRef` wrapping a `ReadonlyMap`, so it updates reactively when new modules are loaded.
 
@@ -147,6 +153,10 @@ if (!registration) {
 
 ## Related
 
-- [useBlade](../useBlade/) -- opens and manages blades by name
-- [Dynamic Module Loading](../../plugins/modularity/) -- registers blades during module initialization
-- `framework/injection-keys.ts` -- `BladeRegistryKey` (defined in the composable file, not in injection-keys.ts)
+- [`useBlade`](../useBlade/) -- opens and manages blades by name
+- Dynamic Module Loading -- registers blades during module initialization
+
+<!-- internal:start -->
+
+- `createBladeRegistry()` in `framework/core/composables/useBladeRegistry/index.ts` -- factory called by the navigation plugin; `BladeRegistryKey` is defined here
+<!-- internal:end -->

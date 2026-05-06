@@ -1,3 +1,10 @@
+---
+title: useBladeWidgets
+category: composables
+group: blade-navigation
+slug: useBladeWidgets
+---
+
 # useBladeWidgets / useWidgetTrigger
 
 Two composables for the widget system — one for the **blade side**, one for the **widget side**.
@@ -239,21 +246,24 @@ async function save() {
 
 ## Prerequisites
 
+!!! warning "Call site requirements"
+`useBladeWidgets` must be called inside a blade component's `<script setup>` — it requires blade context to be present. `useWidgetTrigger` must be called inside a widget component rendered by `WidgetContainer`. Calling either outside their required scope produces a runtime error or silent no-op respectively.
+
 **`useBladeWidgets`**:
 
-- Must be called inside a blade component rendered by `VcBladeSlot` (requires `BladeDescriptorKey` injection).
-- `WidgetService` must be provided in the component tree (automatically available in vc-shell apps).
+- Must be called inside a blade component's `<script setup>`.
+- Widget service must be provided in the component tree (automatically available in vc-shell apps).
 - Calling outside a blade context throws an error with a descriptive message.
 
 **`useWidgetTrigger`**:
 
-- Must be called inside a widget component rendered by `WidgetContainer` (requires `WidgetScopeKey` injection).
+- Must be called inside a widget component rendered by `WidgetContainer`.
 - If called outside a widget scope, logs a warning and does nothing (does not throw).
 
 ## Details
 
-- **Lifecycle management**: Widgets are registered in `onMounted` and unregistered in `onUnmounted`. This ensures the WidgetService always reflects the currently visible blades.
-- **Blade ID resolution**: The composable injects `BladeDescriptorKey` to determine which blade the widgets belong to. Each blade has its own isolated widget list.
+- **Lifecycle management**: Widgets are registered in `onMounted` and unregistered in `onUnmounted`. This ensures the widget service always reflects the currently visible blades.
+- **Blade ID resolution**: The composable injects the blade descriptor to determine which blade the widgets belong to. Each blade has its own isolated widget list.
 - **Trigger pattern**: The `onRefresh` callback is stored as a `trigger` on the registered widget. When `refresh(id)` or `refreshAll()` is called, the trigger is invoked. Widgets without `onRefresh` are silently skipped.
 
 ## Tips
@@ -294,8 +304,12 @@ const { refreshAll } = useBladeWidgets([]);
 
 ## Related
 
-- `defineBladeContext` / `injectBladeContext` -- expose/consume blade data in external widgets
+- [`defineBladeContext` / `injectBladeContext`](../bladeContext/) -- expose/consume blade data in external widgets
 - `registerExternalWidget` -- register a component-based widget globally for target blades
-- `WidgetService` in `@core/services/widget-service` -- underlying service
-- `WidgetScope` in `vc-blade/_internal/widgets/WidgetScope.vue` -- provides `WidgetScopeKey` to widget components
-- `VcBladeSlot` -- the blade wrapper that provides `BladeDescriptorKey`
+
+<!-- internal:start -->
+
+- `WidgetService` in `framework/core/services/widget-service/` -- underlying service
+- `WidgetScope` in `framework/ui/components/organisms/vc-blade/_internal/widgets/WidgetScope.vue` -- provides `WidgetScopeKey` to widget components
+- `VcBladeSlot` in `framework/shell/_internal/blade-nav/` -- provides `BladeDescriptorKey` to blade components
+<!-- internal:end -->

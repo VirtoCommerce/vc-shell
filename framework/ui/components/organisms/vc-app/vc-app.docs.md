@@ -1,6 +1,17 @@
+---
+title: VcApp
+category: components
+group: layout
+---
+
 # VcApp
 
 The root application shell that bootstraps the VirtoCommerce admin UI. It provides the desktop sidebar / mobile top bar layout, blade navigation workspace, popup container, module loading, and service registration. Every VirtoCommerce admin application must render exactly one `VcApp` at the root of its authenticated route tree.
+
+::storybook id="layout-vcapp--desktop-expanded"
+
+!!! note "One VcApp per application"
+Every VirtoCommerce admin application must render exactly one `VcApp` at the root of its authenticated route tree. Multiple instances cause service registration conflicts.
 
 ## When to Use
 
@@ -59,6 +70,8 @@ const user = reactive({ name: "John", role: "Admin" });
 | `workspace`      | `{ isAuthenticated }`                                                       | Override the blade navigation workspace.                                                                              |
 | `app-hub`        | `{ appsList, switchApp }`                                                   | Custom content for the Applications section of the App Hub.                                                           |
 
+<!-- internal:start -->
+
 ## Architecture
 
 VcApp orchestrates several internal systems:
@@ -68,6 +81,8 @@ VcApp orchestrates several internal systems:
 3. **Module Loading** -- consumes `DynamicModulesKey` for runtime module registration; shows error notifications on failure. Modules declare routes, menu items, and services.
 4. **Services** -- bootstraps shell services (Menu, Toolbar, Settings, Dashboard, GlobalSearch, etc.) via `useShellBootstrap`. These services are available to all child components through provide/inject.
 
+<!-- internal:end -->
+
 ## Features
 
 ### Responsive Layout Switching
@@ -75,6 +90,8 @@ VcApp orchestrates several internal systems:
 On desktop viewports, VcApp renders a collapsible sidebar on the left with navigation menu items, user info in the footer, and the blade workspace on the right. On mobile viewports, the sidebar is replaced by a top bar with a hamburger menu that opens a slide-over navigation panel.
 
 ### Sidebar Menu Search
+
+::storybook id="layout-vcapp--with-sidebar-search" height="500"
 
 When `showSearch` is `true`, a search input appears at the top of the sidebar (desktop) or mobile navigation panel. It filters menu items in real time (300ms debounce) by matching the search query against translated item titles:
 
@@ -133,6 +150,8 @@ The App Hub is a popover panel (desktop) or a swipeable tab (mobile) that combin
 - **Widgets** — registered app bar widgets (notifications, background tasks, etc.). Clicking a widget expands its content inline (desktop) or navigates to its panel (mobile). Widgets are registered via `useAppBarWidget()` and can display badges for unread counts.
 
 On desktop, the App Hub opens from the sidebar header menu button (`AppHubPopover`). On mobile, it appears as a second tab ("Hub") in the slide-out navigation panel — users can swipe between Menu and Hub tabs.
+
+::storybook id="layout-vcapp--mobile" height="500"
 
 ## Recipe: Minimal App Setup
 

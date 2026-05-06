@@ -1,3 +1,9 @@
+---
+title: useLanguages
+category: composables
+group: user
+---
+
 # useLanguages
 
 Provides access to the language service for locale management: getting/setting the current locale, resolving locale tags, and fetching country flags. The service is created once via `provideLanguages()` at the framework level and shared through Vue's injection system. If called outside an injection context (e.g., during module initialization), a fallback singleton service is used so the composable never throws.

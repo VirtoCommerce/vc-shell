@@ -1,3 +1,10 @@
+---
+title: LogoutButton
+category: composables
+group: utilities
+internal: true
+---
+
 # LogoutButton
 
 Settings menu action that signs the user out, closes all open blades, and redirects to the login page. This component encapsulates the full sign-out flow: it injects `CloseSettingsMenuKey` to dismiss the parent menu before navigation, calls `useUserManagement().signOut()` to clear the authentication token, and uses `useBladeStack()` to close open child blades so the user does not return to stale blade state on next login.

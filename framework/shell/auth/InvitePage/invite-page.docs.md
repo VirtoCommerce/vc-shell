@@ -1,3 +1,10 @@
+---
+title: InvitePage
+category: composables
+group: utilities
+internal: true
+---
+
 # InvitePage
 
 Invitation acceptance page where an invited user sets their password. Validates the invitation token on mount, displays the pre-filled email, and provides password/confirm fields. On successful acceptance, the user is automatically signed in and redirected to the main application. This page is the final step in the user invitation flow initiated from the VirtoCommerce Platform admin.

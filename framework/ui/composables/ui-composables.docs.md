@@ -1,3 +1,10 @@
+---
+title: UI Composables
+category: composables
+group: ui-state
+slug: ui-composables-overview
+---
+
 # UI Composables
 
 Shared composables for the VC-Shell UI component library. These provide reusable logic for layout, positioning, form fields, and scroll behavior.

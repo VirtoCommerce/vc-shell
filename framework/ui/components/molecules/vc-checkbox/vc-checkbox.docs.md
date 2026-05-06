@@ -1,6 +1,17 @@
+---
+title: VcCheckbox
+category: components
+group: form
+---
+
 # VcCheckbox
 
 A checkbox component supporting boolean toggling, array-based multi-selection, indeterminate state, three size variants, and animated check/uncheck transitions. Works as both a standalone boolean toggle and a member of a multi-select group.
+
+!!! note "Large reference"
+This page is over 200 lines. Use the section headings to jump directly to what you need: [Quick Start](#quick-start), [Features](#features), [Props](#props), [CSS Variables](#css-variables).
+
+::storybook id="form-vccheckbox--basic"
 
 ## When to Use
 
@@ -69,6 +80,8 @@ const selected = ref<string[]>([]);
 
 ### Size Variants
 
+::storybook id="form-vccheckbox--sizes"
+
 Three sizes are available via the `size` prop:
 
 | Size   | Value           | Pixel dimension |
@@ -84,6 +97,8 @@ Three sizes are available via the `size` prop:
 ```
 
 ### Indeterminate State (Select All)
+
+::storybook id="form-vccheckbox--indeterminate"
 
 The `indeterminate` prop renders a horizontal dash instead of a checkmark. This is commonly used for "select all" checkboxes where only some children are selected.
 
@@ -355,3 +370,15 @@ const selected = ref<string[]>([]);
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- VcCheckbox uses a visually hidden native `<input type="checkbox">` for full keyboard and screen reader support. The custom visual (`vc-checkbox__custom-input`) mirrors its state via CSS sibling selectors (`:checked + .vc-checkbox__custom-input`).
+- Indeterminate state is set imperatively (`checkboxRef.value.indeterminate = val`) since HTML does not support `indeterminate` as an attribute — a watcher syncs the prop to the DOM property.
+- Check/uncheck icons use Vue `<Transition name="vc-checkbox-check">` with `@keyframes` animations for the scale/opacity effect.
+- `useFormField` injects validation context (error, disabled, name) from a parent form provider.
+- Source file: `framework/ui/components/molecules/vc-checkbox/vc-checkbox.vue`
+
+<!-- internal:end -->

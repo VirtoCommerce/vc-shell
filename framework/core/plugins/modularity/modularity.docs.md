@@ -1,3 +1,13 @@
+---
+title: Modularity
+category: concepts
+group: root
+slug: modularity
+---
+
+!!! tip "Navigation"
+This page is long. Use the [Table of Contents](#table-of-contents) to jump to the section you need.
+
 # Modularity Plugin
 
 The modularity plugin is the backbone of every vc-shell application. It defines how features are packaged as **modules**, how those modules are registered at runtime, and how they integrate with the framework's blade navigation, localization, menu, and notification systems.

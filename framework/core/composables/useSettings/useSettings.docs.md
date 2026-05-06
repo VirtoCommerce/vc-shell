@@ -1,3 +1,9 @@
+---
+title: useSettings
+category: composables
+group: services
+---
+
 # useSettings
 
 Loads and manages UI customization settings (logo, title, avatar) from the platform's Settings API. Supports overriding defaults with custom values.

@@ -1,3 +1,9 @@
+---
+title: useAssets
+category: composables
+group: data
+---
+
 # useAssets
 
 Handles file upload, removal, and editing for `ICommonAsset` arrays (images, documents, etc.). This composable encapsulates the platform's asset storage API, handling multipart form upload with batched concurrency (max 4 simultaneous uploads), sort-order assignment, URL decoding, and immutable array operations for remove and edit. It returns a new array from every operation rather than mutating in place, which plays well with Vue's reactivity system and makes undo/redo patterns straightforward.
@@ -131,5 +137,6 @@ async function handleUpload(files: FileList) {
 
 ## Related
 
-- `ICommonAsset` type in `@core/types`
+- `ICommonAsset` -- type imported from `@vc-shell/framework`
 - `VcGallery` / `VcImageTile` -- UI components that consume asset arrays
+- [`useAssetsManager`](../useAssetsManager/) -- higher-level composable that wraps `useAssets` with two-way sync

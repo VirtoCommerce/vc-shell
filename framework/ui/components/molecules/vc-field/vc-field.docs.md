@@ -1,3 +1,9 @@
+---
+title: VcField
+category: components
+group: form
+---
+
 # VcField
 
 Read-only display component for labeled information, supporting various content types like text, dates, links, and emails.
@@ -18,6 +24,8 @@ The component uses a vertical layout by default (label above value), but support
 
 ## Basic Usage
 
+::storybook id="form-vcfield--default"
+
 ```vue
 <template>
   <VcField
@@ -30,6 +38,9 @@ The component uses a vertical layout by default (label above value), but support
 import { VcField } from "@vc-shell/framework";
 </script>
 ```
+
+!!! tip "Prefer VcField over disabled VcInput for read-only data"
+VcField renders without form-field chrome (borders, focus rings, placeholders) and formats content in a type-aware way. A disabled `VcInput` carries unnecessary visual noise for display-only scenarios.
 
 ## Key Props
 
@@ -91,6 +102,8 @@ Each `type` value renders the content differently:
 </template>
 ```
 
+::storybook id="form-vcfield--link" height="300"
+
 ### Horizontal Layout with Custom Ratio
 
 Use horizontal layout for compact key-value displays where the label and value sit side by side. The `aspectRatio` controls the relative widths of the label and value columns:
@@ -120,6 +133,8 @@ Use horizontal layout for compact key-value displays where the label and value s
   </div>
 </template>
 ```
+
+::storybook id="form-vcfield--horizontal"
 
 ### Copyable ID Fields
 
@@ -210,6 +225,8 @@ In `orientation="horizontal"` the component reserves the `aspectRatio[0]` track 
 - [VcInput](../vc-input/) -- editable text field (use instead when user input is needed)
 - [VcLabel](../../atoms/vc-label/) -- standalone label atom used internally
 - [VcCol](../../atoms/vc-col/) -- column layout atom used for aspect ratio
+
+::storybook id="form-vcfield--skeleton"
 
 ## Skeleton / Loading State
 

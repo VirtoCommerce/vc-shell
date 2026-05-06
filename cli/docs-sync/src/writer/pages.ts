@@ -92,7 +92,7 @@ export async function writePagesFiles(targetRoot: string, args: WritePagesArgs):
         PAGES_MARKER +
         `title: ${groupTitle}\n` +
         `nav:\n` +
-        sorted.map((p) => `  - ${path.basename(p.target)}`).join("\n") +
+        sorted.map((p) => `  - ${p.title}: ${path.basename(p.target)}`).join("\n") +
         "\n";
 
       const filePath = path.join(targetRoot, top, group, ".pages");

@@ -36,7 +36,7 @@ describe("writePagesFiles", () => {
     });
     const group = await fs.readFile(path.join(tmp, "components/form/.pages"), "utf8");
     const lines = group.split("\n").filter((l) => l.startsWith("  - "));
-    expect(lines).toEqual(["  - vc-checkbox.md", "  - vc-input.md", "  - vc-select.md"]);
+    expect(lines).toEqual(["  - VcCheckbox: vc-checkbox.md", "  - VcInput: vc-input.md", "  - VcSelect: vc-select.md"]);
   });
 
   it("does NOT emit .pages for concepts (mixed-folder)", async () => {

@@ -38,10 +38,12 @@ jobs:
       - run: yarn install --immutable
       - run: yarn workspace @vc-shell/docs-sync build
       - name: Run sync
+        env:
+          WORKSPACE_DIR: ${{ github.workspace }}
         run: |
           yarn workspace @vc-shell/docs-sync exec docs-sync sync \
-            --target ./vc-docs \
-            --report ./sync-report.md
+            --target "$WORKSPACE_DIR/vc-docs" \
+            --report "$WORKSPACE_DIR/sync-report.md"
       - name: Open PR
         env:
           GH_TOKEN: ${{ secrets.REPO_TOKEN }}
@@ -82,5 +84,5 @@ jobs:
             --base "$BASE" \
             --head "$BRANCH" \
             --title "$TITLE" \
-            --body-file ../sync-report.md \
+            --body-file "$GITHUB_WORKSPACE/sync-report.md" \
             --label auto-generated

@@ -1,0 +1,176 @@
+# vc-docs sync report — vc-shell@v2.0.3 — 2026-05-08T12:56:54.763Z
+
+## Summary
+
+- Created: 0
+- Updated: 1
+- Unchanged: 126
+- Skipped (no frontmatter): 0
+- Skipped (internal): 24
+- Skipped (invalid frontmatter): 0
+- Orphaned: 0
+- Errors: 0
+
+## Updated
+
+- plugins/permissions.md (← core/plugins/permissions/permissions.docs.md)
+
+## Unchanged
+
+- reference/api/injection-keys.md (← injection-keys.docs.md)
+- reference/api/platform-client.md (← core/api/platform.docs.md)
+- composables/blade-navigation/blade-nav-composables.md (← core/blade-navigation/blade-nav-composables.docs.md)
+- plugins/notifications.md (← core/notifications/notifications.docs.md)
+- composables/services/index.md (← core/services/services.docs.md)
+- reference/api/types-core.md (← core/types/types.docs.md)
+- reference/api/shared-utilities.md (← core/utilities/shared-utilities.docs.md)
+- reference/api/utilities-overview.md (← core/utilities/utilities.docs.md)
+- reference/modules/assets.md (← modules/assets/assets-details.docs.md)
+- reference/modules/assets-manager.md (← modules/assets-manager/assets-manager.docs.md)
+- reference/api/types-ui.md (← ui/types/ui-types.docs.md)
+- composables/ui-state/ui-composables-overview.md (← ui/composables/ui-composables.docs.md)
+- composables/data/useDataTablePagination.md (← ui/composables/useDataTablePagination.docs.md)
+- composables/data/useDataTableSort.md (← ui/composables/useDataTableSort.docs.md)
+- composables/data/useTableSelection.md (← ui/composables/useTableSelection.docs.md)
+- composables/data/useTableSort.md (← ui/composables/useTableSort.docs.md)
+- composables/blade-navigation/useBladeContext.md (← core/composables/bladeContext/index.docs.md)
+- composables/data/useApiClient.md (← core/composables/useApiClient/useApiClient.docs.md)
+- composables/services/useAppBarMobileButtons.md (← core/composables/useAppBarMobileButtons/useAppBarMobileButtons.docs.md)
+- composables/services/useAppBarWidget.md (← core/composables/useAppBarWidget/useAppBarWidget.docs.md)
+- composables/utilities/useAppInsights.md (← core/composables/useAppInsights/useAppInsights.docs.md)
+- composables/data/useAssets.md (← core/composables/useAssets/useAssets.docs.md)
+- composables/utilities/useAsync.md (← core/composables/useAsync/useAsync.docs.md)
+- composables/data/useAssetsManager.md (← core/composables/useAssetsManager/useAssetsManager.docs.md)
+- composables/utilities/useBeforeUnload.md (← core/composables/useBeforeUnload/useBeforeUnload.docs.md)
+- composables/blade-navigation/useBlade.md (← core/composables/useBlade/useBlade.docs.md)
+- composables/forms/useBladeForm.md (← core/composables/useBladeForm/useBladeForm.docs.md)
+- composables/blade-navigation/useBladeRegistry.md (← core/composables/useBladeRegistry/useBladeRegistry.docs.md)
+- composables/blade-navigation/useBladeWidgets.md (← core/composables/useBladeWidgets/index.docs.md)
+- composables/ui-state/useBreadcrumbs.md (← core/composables/useBreadcrumbs/useBreadcrumbs.docs.md)
+- composables/ui-state/useConnectionStatus.md (← core/composables/useConnectionStatus/useConnectionStatus.docs.md)
+- composables/services/useDashboard.md (← core/composables/useDashboard/useDashboard.docs.md)
+- composables/forms/useDynamicProperties.md (← core/composables/useDynamicProperties/useDynamicProperties.docs.md)
+- composables/utilities/useErrorHandler.md (← core/composables/useErrorHandler/useErrorHandler.docs.md)
+- composables/utilities/useFunctions.md (← core/composables/useFunctions/useFunctions.docs.md)
+- composables/ui-state/useKeyboardNavigation.md (← core/composables/useKeyboardNavigation/useKeyboardNavigation.docs.md)
+- composables/user/useLanguages.md (← core/composables/useLanguages/useLanguages.docs.md)
+- composables/services/useMenuService.md (← core/composables/useMenuService/useMenuService.docs.md)
+- composables/ui-state/useLoading.md (← core/composables/useLoading/useLoading.docs.md)
+- composables/ui-state/useMenuExpanded.md (← core/composables/useMenuExpanded/index.docs.md)
+- composables/forms/useModificationTracker.md (← core/composables/useModificationTracker/useModificationTracker.docs.md)
+- composables/notifications/useNotifications.md (← core/composables/useNotifications/useNotifications.docs.md)
+- composables/user/usePlatformLocaleSync.md (← core/composables/usePlatformLocaleSync/usePlatformLocaleSync.docs.md)
+- composables/user/usePermissions.md (← core/composables/usePermissions/usePermissions.docs.md)
+- composables/notifications/usePopup.md (← core/composables/usePopup/usePopup.docs.md)
+- composables/services/useSettings.md (← core/composables/useSettings/useSettings.docs.md)
+- composables/services/useSettingsMenu.md (← core/composables/useSettingsMenu/useSettingsMenu.docs.md)
+- composables/ui-state/useSidebarState.md (← core/composables/useSidebarState/useSidebarState.docs.md)
+- composables/ui-state/useResponsive.md (← core/composables/useResponsive/useResponsive.docs.md)
+- composables/ui-state/useSlowNetworkDetection.md (← core/composables/useSlowNetworkDetection/useSlowNetworkDetection.docs.md)
+- composables/services/useToolbar.md (← core/composables/useToolbar/useToolbar.docs.md)
+- composables/ui-state/useTheme.md (← core/composables/useTheme/useTheme.docs.md)
+- composables/user/useUser.md (← core/composables/useUser/useUser.docs.md)
+- composables/utilities/useWebVitals.md (← core/composables/useWebVitals/useWebVitals.docs.md)
+- composables/services/useWidgets.md (← core/composables/useWidgets/useWidgets.docs.md)
+- reference/api/directives/v-autofocus.md (← core/directives/autofocus/autofocus.docs.md)
+- reference/api/directives/v-loading.md (← core/directives/loading/loading.docs.md)
+- plugins/ai-agent.md (← core/plugins/ai-agent/ai-agent.docs.md)
+- plugins/extension-points.md (← core/plugins/extension-points/extension-points.docs.md)
+- plugins/global-error-handler.md (← core/plugins/global-error-handler/global-error-handler.docs.md)
+- plugins/i18n.md (← core/plugins/i18n/i18n.docs.md)
+- plugins/modularity.md (← core/plugins/modularity/modularity.docs.md)
+- plugins/signalr.md (← core/plugins/signalR/signalR.docs.md)
+- plugins/validation.md (← core/plugins/validation/validation.docs.md)
+- reference/api/date-utilities.md (← core/utilities/date/date-utilities.docs.md)
+- reference/api/thumbnail.md (← core/utilities/thumbnail/thumbnail.docs.md)
+- components/form/multilanguage-selector.md (← ui/components/molecules/multilanguage-selector/multilanguage-selector.docs.md)
+- components/navigation/vc-breadcrumbs.md (← ui/components/molecules/vc-breadcrumbs/vc-breadcrumbs.docs.md)
+- components/form/vc-checkbox-group.md (← ui/components/molecules/vc-checkbox-group/vc-checkbox-group.docs.md)
+- components/form/vc-checkbox.md (← ui/components/molecules/vc-checkbox/vc-checkbox.docs.md)
+- components/data-display/vc-accordion.md (← ui/components/molecules/vc-accordion/vc-accordion.docs.md)
+- components/form/vc-date-picker.md (← ui/components/molecules/vc-date-picker/vc-date-picker.docs.md)
+- components/navigation/vc-dropdown.md (← ui/components/molecules/vc-dropdown/vc-dropdown.docs.md)
+- components/form/vc-color-input.md (← ui/components/molecules/vc-color-input/vc-color-input.docs.md)
+- components/navigation/vc-dropdown-panel.md (← ui/components/molecules/vc-dropdown-panel/vc-dropdown-panel.docs.md)
+- components/form/vc-editor.md (← ui/components/molecules/vc-editor/vc-editor.docs.md)
+- components/form/vc-field.md (← ui/components/molecules/vc-field/vc-field.docs.md)
+- components/form/vc-form.md (← ui/components/molecules/vc-form/vc-form.docs.md)
+- components/data-display/vc-image-tile.md (← ui/components/molecules/vc-image-tile/vc-image-tile.docs.md)
+- components/form/vc-file-upload.md (← ui/components/molecules/vc-file-upload/vc-file-upload.docs.md)
+- components/form/vc-input.md (← ui/components/molecules/vc-input/vc-input.docs.md)
+- components/form/vc-input-currency.md (← ui/components/molecules/vc-input-currency/vc-input-currency.docs.md)
+- components/form/vc-input-dropdown.md (← ui/components/molecules/vc-input-dropdown/vc-input-dropdown.docs.md)
+- components/form/vc-multivalue.md (← ui/components/molecules/vc-multivalue/vc-multivalue.docs.md)
+- components/form/vc-input-group.md (← ui/components/molecules/vc-input-group/vc-input-group.docs.md)
+- components/navigation/vc-menu.md (← ui/components/molecules/vc-menu/vc-menu.docs.md)
+- components/navigation/vc-pagination.md (← ui/components/molecules/vc-pagination/vc-pagination.docs.md)
+- components/form/vc-rating.md (← ui/components/molecules/vc-rating/vc-rating.docs.md)
+- components/form/vc-radio-group.md (← ui/components/molecules/vc-radio-group/vc-radio-group.docs.md)
+- components/form/vc-radio-button.md (← ui/components/molecules/vc-radio-button/vc-radio-button.docs.md)
+- components/form/vc-select.md (← ui/components/molecules/vc-select/vc-select.docs.md)
+- components/form/vc-switch.md (← ui/components/molecules/vc-switch/vc-switch.docs.md)
+- components/form/vc-textarea.md (← ui/components/molecules/vc-textarea/vc-textarea.docs.md)
+- components/form/vc-slider.md (← ui/components/molecules/vc-slider/vc-slider.docs.md)
+- components/feedback/vc-toast.md (← ui/components/molecules/vc-toast/vc-toast.docs.md)
+- components/layout/vc-auth-layout.md (← ui/components/organisms/vc-auth-layout/vc-auth-layout.docs.md)
+- components/layout/vc-app.md (← ui/components/organisms/vc-app/vc-app.docs.md)
+- components/layout/vc-blade.md (← ui/components/organisms/vc-blade/vc-blade.docs.md)
+- components/data-display/vc-data-table.md (← ui/components/organisms/vc-data-table/vc-data-table.docs.md)
+- components/form/vc-dynamic-property.md (← ui/components/organisms/vc-dynamic-property/vc-dynamic-property.docs.md)
+- components/media/vc-image-upload.md (← ui/components/organisms/vc-image-upload/vc-image-upload.docs.md)
+- components/data-display/vc-gallery.md (← ui/components/organisms/vc-gallery/vc-gallery.docs.md)
+- components/feedback/vc-popup.md (← ui/components/organisms/vc-popup/vc-popup.docs.md)
+- components/layout/vc-sidebar.md (← ui/components/organisms/vc-sidebar/vc-sidebar.docs.md)
+- components/misc/vc-badge.md (← ui/components/atoms/vc-badge/vc-badge.docs.md)
+- components/layout/vc-card.md (← ui/components/atoms/vc-card/vc-card.docs.md)
+- components/misc/vc-button.md (← ui/components/atoms/vc-button/vc-button.docs.md)
+- components/feedback/vc-banner.md (← ui/components/atoms/vc-banner/vc-banner.docs.md)
+- components/layout/vc-col.md (← ui/components/atoms/vc-col/vc-col.docs.md)
+- components/layout/vc-container.md (← ui/components/atoms/vc-container/vc-container.docs.md)
+- components/feedback/vc-hint.md (← ui/components/atoms/vc-hint/vc-hint.docs.md)
+- components/media/vc-image.md (← ui/components/atoms/vc-image/vc-image.docs.md)
+- components/misc/vc-icon.md (← ui/components/atoms/vc-icon/vc-icon.docs.md)
+- components/navigation/vc-link.md (← ui/components/atoms/vc-link/vc-link.docs.md)
+- components/feedback/vc-loading.md (← ui/components/atoms/vc-loading/vc-loading.docs.md)
+- components/misc/vc-label.md (← ui/components/atoms/vc-label/vc-label.docs.md)
+- components/feedback/vc-progress.md (← ui/components/atoms/vc-progress/vc-progress.docs.md)
+- components/layout/vc-row.md (← ui/components/atoms/vc-row/vc-row.docs.md)
+- components/layout/vc-scrollable-container.md (← ui/components/atoms/vc-scrollable-container/vc-scrollable-container.docs.md)
+- components/feedback/vc-skeleton.md (← ui/components/atoms/vc-skeleton/vc-skeleton.docs.md)
+- components/feedback/vc-status-icon.md (← ui/components/atoms/vc-status-icon/vc-status-icon.docs.md)
+- components/feedback/vc-tooltip.md (← ui/components/atoms/vc-tooltip/vc-tooltip.docs.md)
+- components/feedback/vc-status.md (← ui/components/atoms/vc-status/vc-status.docs.md)
+- components/media/vc-video.md (← ui/components/atoms/vc-video/vc-video.docs.md)
+- components/misc/vc-widget.md (← ui/components/atoms/vc-widget/vc-widget.docs.md)
+- composables/data/table-composables.md (← ui/components/organisms/vc-data-table/composables/table-composables.docs.md)
+
+## Skipped
+
+- core/composables/useUserManagement/useUserManagement.docs.md — reason: internal
+- shell/auth/ChangePasswordPage/change-password-page.docs.md — reason: internal
+- shell/auth/ForgotPasswordPage/forgot-password-page.docs.md — reason: internal
+- shell/auth/InvitePage/invite-page.docs.md — reason: internal
+- shell/auth/LoginPage/login-page.docs.md — reason: internal
+- shell/auth/ResetPasswordPage/reset-password-page.docs.md — reason: internal
+- shell/auth/sign-in/sign-in.docs.md — reason: internal
+- shell/dashboard/dashboard-charts/dashboard-charts.docs.md — reason: internal
+- shell/dashboard/dashboard-widget-card/dashboard-widget-card.docs.md — reason: internal
+- shell/dashboard/draggable-dashboard/dashboard-widget-skeleton.docs.md — reason: internal
+- shell/dashboard/draggable-dashboard/draggable-dashboard.docs.md — reason: internal
+- shell/components/error-interceptor/error-interceptor.docs.md — reason: internal
+- shell/components/language-selector/language-selector.docs.md — reason: internal
+- shell/components/change-password-button/change-password-button.docs.md — reason: internal
+- shell/components/change-password/change-password.docs.md — reason: internal
+- shell/components/logout-button/logout-button.docs.md — reason: internal
+- shell/components/notification-template/notification-template.docs.md — reason: internal
+- shell/components/notification-dropdown/notification-dropdown.docs.md — reason: internal
+- shell/components/settings-menu-item/settings-menu-item.docs.md — reason: internal
+- shell/components/sidebar/sidebar.docs.md — reason: internal
+- shell/components/settings-menu/settings-menu.docs.md — reason: internal
+- shell/components/theme-selector/theme-selector.docs.md — reason: internal
+- shell/components/user-dropdown-button/user-dropdown-button.docs.md — reason: internal
+- shell/\_internal/popup/common/popup-common.docs.md — reason: internal
+
+## Errors
+
+(none)

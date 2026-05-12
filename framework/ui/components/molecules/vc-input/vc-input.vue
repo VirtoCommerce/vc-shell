@@ -2,7 +2,9 @@
   <!-- Skeleton mode -->
   <div
     v-if="bladeLoading"
+    v-bind="rootAttrs"
     class="vc-input vc-input--skeleton"
+    :class="$attrs.class"
   >
     <VcSkeleton
       v-if="label"
@@ -20,6 +22,7 @@
   <!-- Backward compat delegation: date types -->
   <VcDatePicker
     v-else-if="type === 'date' || type === 'datetime-local'"
+    v-bind="attrs"
     :model-value="modelValue"
     :type="type"
     :date-picker-options="datePickerOptions"
@@ -45,6 +48,7 @@
   <!-- Backward compat delegation: color type -->
   <VcColorInput
     v-else-if="type === 'color'"
+    v-bind="attrs"
     :model-value="(modelValue as string) ?? null"
     :label="label"
     :placeholder="placeholder"
@@ -69,8 +73,10 @@
   <!-- Clean text input -->
   <div
     v-else
+    v-bind="rootAttrs"
     class="vc-input"
     :class="[
+      $attrs.class,
       `vc-input--${type}`,
       {
         'vc-input--clearable': clearable,
@@ -262,7 +268,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, ref, unref, watch, type VNode } from "vue";
+import { computed, ref, unref, useAttrs, watch, type VNode } from "vue";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcHint } from "@ui/components/atoms/vc-hint";
@@ -339,12 +345,22 @@ export interface Emits {
   (event: "focus"): void;
 }
 
+defineOptions({
+  inheritAttrs: false,
+});
+
 const props = withDefaults(defineProps<Props>(), {
   type: "text",
   name: "Field",
   maxlength: "1024",
   step: "1",
   size: "default",
+});
+
+const attrs = useAttrs();
+const rootAttrs = computed(() => {
+  const { class: _class, ...rest } = attrs;
+  return rest;
 });
 
 const emit = defineEmits<Emits>();

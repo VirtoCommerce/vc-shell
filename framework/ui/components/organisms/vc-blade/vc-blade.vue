@@ -1,6 +1,7 @@
 <template>
   <div
     ref="bladeRef"
+    v-bind="rootAttrs"
     class="vc-blade"
     role="region"
     :class="[
@@ -76,6 +77,7 @@
 
     <!-- Toolbar zone -->
     <BladeToolbar
+      data-test-id="blade-toolbar"
       class="vc-blade__toolbar"
       :items="toolbarItems"
       :loading="showSkeleton"
@@ -200,6 +202,10 @@ const isClosable = computed(() => {
 });
 
 const attrs = useAttrs();
+const rootAttrs = computed(() => {
+  const { class: _class, style: _style, onClose: _onClose, ...rest } = attrs;
+  return rest;
+});
 
 function handleClose() {
   if (attrs.onClose) {

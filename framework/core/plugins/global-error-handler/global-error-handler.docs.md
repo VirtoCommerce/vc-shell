@@ -1,6 +1,6 @@
 ---
 title: Global Error Handler
-category: concepts
+category: plugins
 group: root
 slug: global-error-handler
 ---

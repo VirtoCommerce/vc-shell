@@ -51,4 +51,40 @@ describe("writePagesFiles", () => {
     }
     expect(exists).toBe(false);
   });
+
+  it("emits a flat plugins/.pages with explicit titles, alphabetical", async () => {
+    await writePagesFiles(tmp, {
+      synced: [
+        { target: "plugins/signalr.md", title: "SignalR" },
+        { target: "plugins/ai-agent.md", title: "AI Agent" },
+        { target: "plugins/i18n.md", title: "Internationalization" },
+      ],
+    });
+    const pagesFile = await fs.readFile(path.join(tmp, "plugins/.pages"), "utf8");
+    expect(pagesFile).toContain("AUTO-GENERATED FROM vc-shell");
+    expect(pagesFile).toContain("title: Plugins");
+    const lines = pagesFile.split("\n").filter((l) => l.startsWith("  - "));
+    expect(lines).toEqual([
+      "  - AI Agent: ai-agent.md",
+      "  - Internationalization: i18n.md",
+      "  - SignalR: signalr.md",
+    ]);
+  });
+
+  it("emits Overview: index.md first when a group has an index page", async () => {
+    await writePagesFiles(tmp, {
+      synced: [
+        { target: "composables/services/useDashboard.md", title: "useDashboard" },
+        { target: "composables/services/index.md", title: "Services" },
+        { target: "composables/services/useToolbar.md", title: "useToolbar" },
+      ],
+    });
+    const pagesFile = await fs.readFile(path.join(tmp, "composables/services/.pages"), "utf8");
+    const lines = pagesFile.split("\n").filter((l) => l.startsWith("  - "));
+    expect(lines).toEqual([
+      "  - Overview: index.md",
+      "  - useDashboard: useDashboard.md",
+      "  - useToolbar: useToolbar.md",
+    ]);
+  });
 });

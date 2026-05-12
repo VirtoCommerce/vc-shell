@@ -1,6 +1,6 @@
 ---
 title: Validation
-category: concepts
+category: plugins
 group: root
 slug: validation
 ---

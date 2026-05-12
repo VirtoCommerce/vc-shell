@@ -1,8 +1,8 @@
 ---
 title: Services
-category: concepts
-group: root
-slug: services
+category: composables
+group: services
+placement: index
 ---
 
 # Core Services

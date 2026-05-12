@@ -6,6 +6,7 @@ export interface Frontmatter {
   category: Category;
   group: string;
   slug?: string;
+  placement?: "index";
   internal?: boolean;
 }
 

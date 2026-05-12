@@ -6,7 +6,8 @@ import type { Frontmatter, ChangeKind } from "../types.js";
 export function computeTargetPath(fm: Frontmatter, sourceFilename: string): string {
   const slug = fm.slug ?? sourceFilename.replace(/\.docs\.md$/, "");
   const groupPart = fm.group === "root" ? "" : fm.group;
-  return [fm.category, groupPart, `${slug}.md`].filter(Boolean).join("/");
+  const filename = fm.placement === "index" ? "index.md" : `${slug}.md`;
+  return [fm.category, groupPart, filename].filter(Boolean).join("/");
 }
 
 export interface WriteResult {

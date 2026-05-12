@@ -30,6 +30,37 @@ describe("computeTargetPath", () => {
     const fm: Frontmatter = { title: "v-loading", category: "reference", group: "api/directives", slug: "v-loading" };
     expect(computeTargetPath(fm, "loading.docs.md")).toBe("reference/api/directives/v-loading.md");
   });
+
+  it("emits plugins/<slug>.md for category=plugins, group=root", () => {
+    const fm: Frontmatter = {
+      title: "AI Agent",
+      category: "plugins",
+      group: "root",
+      slug: "ai-agent",
+    };
+    expect(computeTargetPath(fm, "ai-agent.docs.md")).toBe("plugins/ai-agent.md");
+  });
+
+  it("emits <category>/<group>/index.md when placement=index", () => {
+    const fm: Frontmatter = {
+      title: "Services",
+      category: "composables",
+      group: "services",
+      placement: "index",
+    };
+    expect(computeTargetPath(fm, "services.docs.md")).toBe("composables/services/index.md");
+  });
+
+  it("ignores slug when placement=index", () => {
+    const fm: Frontmatter = {
+      title: "Services",
+      category: "composables",
+      group: "services",
+      slug: "services-overview",
+      placement: "index",
+    };
+    expect(computeTargetPath(fm, "services.docs.md")).toBe("composables/services/index.md");
+  });
 });
 
 describe("writeMarkdown", () => {

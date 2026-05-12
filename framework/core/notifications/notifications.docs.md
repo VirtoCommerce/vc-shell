@@ -1,6 +1,6 @@
 ---
 title: Notifications
-category: concepts
+category: plugins
 group: root
 slug: notifications
 ---

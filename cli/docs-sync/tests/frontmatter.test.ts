@@ -47,4 +47,37 @@ describe("validateFrontmatter", () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it("accepts category: plugins with group: root", () => {
+    const result = validateFrontmatter({
+      title: "AI Agent",
+      category: "plugins",
+      group: "root",
+      slug: "ai-agent",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts placement: index when group is named", () => {
+    const result = validateFrontmatter({
+      title: "Services",
+      category: "composables",
+      group: "services",
+      placement: "index",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects placement: index when group is root", () => {
+    const result = validateFrontmatter({
+      title: "Foo",
+      category: "concepts",
+      group: "root",
+      placement: "index",
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toContain("placement");
+    }
+  });
 });

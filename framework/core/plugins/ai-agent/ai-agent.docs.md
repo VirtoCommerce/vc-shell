@@ -1,6 +1,6 @@
 ---
 title: AI Agent
-category: concepts
+category: plugins
 group: root
 slug: ai-agent
 ---

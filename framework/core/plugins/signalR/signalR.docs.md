@@ -1,6 +1,6 @@
 ---
 title: SignalR
-category: concepts
+category: plugins
 group: root
 slug: signalr
 ---

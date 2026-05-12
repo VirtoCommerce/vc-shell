@@ -8,6 +8,7 @@ const schema = z
     category: z.enum(ALLOWED_CATEGORIES),
     group: z.string().min(1),
     slug: z.string().optional(),
+    placement: z.enum(["index"]).optional(),
     internal: z.boolean().optional(),
   })
   .refine(
@@ -16,7 +17,11 @@ const schema = z
       message: `group "${data.group}" is not allowed for category "${data.category}". Allowed: ${ALLOWED_GROUPS[data.category]?.join(", ") ?? "none"}`,
       path: ["group"],
     }),
-  );
+  )
+  .refine((data) => !(data.placement === "index" && data.group === "root"), {
+    message: "placement: index requires a named group, not 'root'",
+    path: ["placement"],
+  });
 
 export type ValidationResult = { success: true; data: Frontmatter } | { success: false; error: string };
 

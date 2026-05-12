@@ -1,6 +1,6 @@
 ---
 title: Extension Points
-category: concepts
+category: plugins
 group: root
 slug: extension-points
 ---

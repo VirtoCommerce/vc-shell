@@ -1,6 +1,6 @@
 ---
 title: Modularity
-category: concepts
+category: plugins
 group: root
 slug: modularity
 ---

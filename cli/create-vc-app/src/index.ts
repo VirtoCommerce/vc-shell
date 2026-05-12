@@ -6,26 +6,10 @@ import { fileURLToPath } from "node:url";
 import mainPkg from "../package.json";
 import { initCommand } from "./commands/init";
 import { addModuleCommand } from "./commands/add-module";
+import type { CLIArgs } from "./types.js";
 
 // Resolved from entry point — works both in source (tsx) and built (dist/index.js)
 const templateRoot = path.resolve(fileURLToPath(import.meta.url), "..", "templates");
-
-interface CLIArgs {
-  _: string[];
-  help?: boolean;
-  version?: boolean;
-  type?: string;
-  name?: string;
-  "app-name"?: string;
-  "package-name"?: string;
-  "module-name"?: string;
-  "base-path"?: string;
-  mocks?: boolean;
-  overwrite?: boolean;
-  "tenant-routes"?: boolean;
-  "ai-agent"?: boolean;
-  dashboard?: boolean;
-}
 
 function showHelp() {
   console.log(`
@@ -79,9 +63,9 @@ async function main() {
   const subcommand = args._[0];
 
   if (subcommand === "add-module") {
-    await addModuleCommand(args as unknown as Record<string, unknown>, templateRoot);
+    await addModuleCommand(args, templateRoot);
   } else {
-    await initCommand(args as unknown as Record<string, unknown>, templateRoot);
+    await initCommand(args, templateRoot);
   }
 }
 

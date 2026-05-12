@@ -2,7 +2,7 @@ import prompts from "prompts";
 import pc from "picocolors";
 import path from "node:path";
 import fs from "node:fs";
-import type { ProjectOptions, ProjectType } from "../types.js";
+import type { CLIArgs, ProjectOptions, ProjectType } from "../types.js";
 import {
   isValidPackageName,
   toValidPackageName,
@@ -19,9 +19,13 @@ const PROJECT_TYPES: { title: string; value: ProjectType }[] = [
   { title: "Dynamic Module — remote module loaded by host via Module Federation", value: "dynamic-module" },
 ];
 
-export async function initCommand(args: Record<string, unknown>, templateRoot: string): Promise<void> {
+function isProjectType(value: unknown): value is ProjectType {
+  return typeof value === "string" && PROJECT_TYPES.some((t) => t.value === value);
+}
+
+export async function initCommand(args: CLIArgs, templateRoot: string): Promise<void> {
   const cwd = process.cwd();
-  const argName = (args._ as string[])?.[0] || (args.name as string) || (args["app-name"] as string);
+  const argName = args._?.[0] || args.name || args["app-name"];
   let dir = argName;
   const defaultAppName = !dir ? "vc-app" : dir;
   const getProjectName = () => (dir === "." ? path.basename(path.resolve()) : dir!);
@@ -35,32 +39,37 @@ export async function initCommand(args: Record<string, unknown>, templateRoot: s
     dir = dir || defaultAppName;
     const root = path.resolve(cwd, dir);
 
+    if (!isProjectType(args.type)) {
+      const valid = PROJECT_TYPES.map((t) => t.value).join(", ");
+      console.error(pc.red(`Unknown project type: "${args.type}". Valid types: ${valid}`));
+      process.exit(1);
+    }
+
     if (fs.existsSync(root) && !isDirEmpty(root) && !args.overwrite) {
       console.error(pc.red(`Target directory "${dir}" is not empty. Use --overwrite to overwrite.`));
       process.exit(1);
     }
 
     const projectName = getProjectName();
-    const projectType = args.type as ProjectType;
+    const projectType = args.type;
 
     // For standalone, module is opt-in: only generated when --module-name is explicitly provided.
     // For dynamic-module, module is always required — default to project name.
-    const explicitModule = args["module-name"] as string | undefined;
+    const explicitModule = args["module-name"];
     const moduleName =
       projectType === "dynamic-module" ? explicitModule || toSentenceCase(projectName) : explicitModule || undefined;
 
     options = {
       projectName: toKebabCase(projectName),
       packageName:
-        (args["package-name"] as string) ||
-        (isValidPackageName(projectName) ? projectName : toValidPackageName(projectName)),
+        args["package-name"] || (isValidPackageName(projectName) ? projectName : toValidPackageName(projectName)),
       projectType,
       moduleName,
-      basePath: (args["base-path"] as string) || toValidBasePath(`/apps/${toKebabCase(projectName)}/`),
-      tenantRoutes: (args["tenant-routes"] as boolean) || false,
-      aiAgent: (args["ai-agent"] as boolean) || false,
-      dashboard: (args.dashboard as boolean) || false,
-      mocks: (args.mocks as boolean) || false,
+      basePath: args["base-path"] || toValidBasePath(`/apps/${toKebabCase(projectName)}/`),
+      tenantRoutes: args["tenant-routes"] || false,
+      aiAgent: args["ai-agent"] || false,
+      dashboard: args.dashboard || false,
+      mocks: args.mocks || false,
     };
   } else {
     // Interactive mode — split into phases so computed defaults are resolved before use

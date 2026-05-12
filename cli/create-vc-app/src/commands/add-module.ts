@@ -5,10 +5,11 @@ import fs from "node:fs";
 import { toKebabCase, toPascalCase, toSentenceCase, buildTemplateData } from "../engine/helpers.js";
 import { renderDir } from "../engine/template.js";
 import { addModuleToMain, addMenuItemToBootstrap } from "../engine/codegen.js";
+import type { CLIArgs } from "../types.js";
 
-export async function addModuleCommand(args: Record<string, unknown>, templateRoot: string): Promise<void> {
+export async function addModuleCommand(args: CLIArgs, templateRoot: string): Promise<void> {
   const cwd = process.cwd();
-  const argModuleName = (args._ as string[])?.[1];
+  const argModuleName = args._?.[1];
 
   // Validate: is this a vc-shell project?
   const pkgPath = path.join(cwd, "package.json");

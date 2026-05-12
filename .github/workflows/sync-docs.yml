@@ -1,7 +1,7 @@
-# Requires repository secret VC_DOCS_BOT_TOKEN — a personal access token
-# (or GitHub App installation token) with write access to VirtoCommerce/vc-docs
-# (specifically: contents:write and pull-requests:write).
-# Set up via Settings → Secrets and variables → Actions.
+# Uses the org-wide REPO_TOKEN secret (PAT or GitHub App installation token)
+# that must have contents:write and pull-requests:write on VirtoCommerce/vc-docs.
+# Same secret is used by release.yml and storybook-ci.yml in this repo and by
+# deploy.yml in vc-docs. Configure via Settings → Secrets and variables → Actions.
 name: sync-docs
 
 on:
@@ -28,7 +28,7 @@ jobs:
         with:
           repository: VirtoCommerce/vc-docs
           path: vc-docs
-          token: ${{ secrets.VC_DOCS_BOT_TOKEN }}
+          token: ${{ secrets.REPO_TOKEN }}
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.target_branch || 'main' }}
       - uses: actions/setup-node@v4
         with:
@@ -44,7 +44,7 @@ jobs:
             --report ./sync-report.md
       - name: Open PR
         env:
-          GH_TOKEN: ${{ secrets.VC_DOCS_BOT_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
           EVENT_NAME: ${{ github.event_name }}
           INPUT_TARGET_BRANCH: ${{ inputs.target_branch }}
           INPUT_REF_LABEL: ${{ inputs.ref_label }}

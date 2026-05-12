@@ -7,10 +7,20 @@ name: sync-docs
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: "vc-docs branch to checkout and open the PR against (defaults to main)"
+        required: false
+        default: main
+      ref_label:
+        description: "Label used in the auto-PR branch name and title (defaults to a UTC timestamp)"
+        required: false
+        default: ""
 
 jobs:
   sync:
-    if: ${{ !github.event.release.prerelease }}
+    if: ${{ github.event_name == 'workflow_dispatch' || !github.event.release.prerelease }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +29,7 @@ jobs:
           repository: VirtoCommerce/vc-docs
           path: vc-docs
           token: ${{ secrets.VC_DOCS_BOT_TOKEN }}
-          ref: main
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.target_branch || 'main' }}
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -35,8 +45,28 @@ jobs:
       - name: Open PR
         env:
           GH_TOKEN: ${{ secrets.VC_DOCS_BOT_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_TARGET_BRANCH: ${{ inputs.target_branch }}
+          INPUT_REF_LABEL: ${{ inputs.ref_label }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
-          BRANCH="auto/sync-vc-shell-${{ github.event.release.tag_name }}"
+          set -euo pipefail
+
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            BASE="$INPUT_TARGET_BRANCH"
+            LABEL="$INPUT_REF_LABEL"
+            if [[ -z "$LABEL" ]]; then
+              LABEL="manual-$(date -u +%Y%m%d-%H%M%S)"
+            fi
+            BRANCH="auto/sync-vc-shell-${LABEL}"
+            TITLE="docs: manual sync from vc-shell (${LABEL})"
+          else
+            BASE="main"
+            LABEL="$RELEASE_TAG"
+            BRANCH="auto/sync-vc-shell-${LABEL}"
+            TITLE="docs: sync from vc-shell@${LABEL}"
+          fi
+
           cd vc-docs
           if [[ -z "$(git status --porcelain)" ]]; then
             echo "No changes to sync."
@@ -46,11 +76,11 @@ jobs:
           git config user.email "bot@virto.dev"
           git config user.name "vc-shell-docs-bot"
           git add .
-          git commit -m "docs: sync from vc-shell@${{ github.event.release.tag_name }}"
+          git commit -m "$TITLE"
           git push origin "$BRANCH"
           gh pr create \
-            --base main \
+            --base "$BASE" \
             --head "$BRANCH" \
-            --title "docs: sync from vc-shell@${{ github.event.release.tag_name }}" \
+            --title "$TITLE" \
             --body-file ../sync-report.md \
             --label auto-generated

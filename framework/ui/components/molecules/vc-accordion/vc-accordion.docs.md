@@ -1,3 +1,9 @@
+---
+title: VcAccordion
+category: components
+group: data-display
+---
+
 # VcAccordion
 
 Collapsible content sections with smooth CSS grid animations, customizable collapsed heights with fade-out preview, and four visual variants. Supports both data-driven rendering via `items` array and slot-based composition with `VcAccordionItem`.
@@ -16,6 +22,8 @@ When NOT to use:
 - For single collapsible panels without siblings -- use `VcAccordionItem` directly
 
 ## Quick Start
+
+::storybook id="action-vcaccordion--default"
 
 ```vue
 <template>
@@ -37,6 +45,9 @@ const faqItems = [
 ```
 
 ## Features
+
+!!! tip "Use v-model to control initial open state"
+Without `v-model`, no items are expanded on mount. Pass an initial value to pre-open a specific item.
 
 ### Visual Variants
 
@@ -78,6 +89,8 @@ const items = [
 </script>
 ```
 
+::storybook id="action-vcaccordion--bordered-variant"
+
 ### Multiple Open Items
 
 Set `multiple` to `true` to allow expanding several items simultaneously. The `v-model` value becomes an array.
@@ -85,6 +98,8 @@ Set `multiple` to `true` to allow expanding several items simultaneously. The `v
 ```vue
 <VcAccordion v-model="openItems" :items="items" :multiple="true" />
 ```
+
+::storybook id="action-vcaccordion--multiple-open"
 
 ### Partial Content Preview (collapsedHeight)
 
@@ -261,6 +276,8 @@ interface AccordionItem {
 ## Related Components
 
 - [VcAccordionItem](./_internal/vc-accordion-item/) -- individual accordion panel (used internally and available via the default slot)
+
+::storybook id="action-vcaccordion--skeleton"
 
 ## Skeleton / Loading State
 

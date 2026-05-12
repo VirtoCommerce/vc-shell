@@ -1,3 +1,10 @@
+---
+title: v-loading
+category: reference
+group: api/directives
+slug: v-loading
+---
+
 # v-loading Directive
 
 Displays a loading overlay with a spinner on any element. Supports size variants, custom color, blur backdrop, fullscreen mode, and z-index control.

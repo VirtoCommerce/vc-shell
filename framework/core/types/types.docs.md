@@ -1,3 +1,10 @@
+---
+title: Core Types
+category: reference
+group: api
+slug: types-core
+---
+
 # Core Types
 
 Shared TypeScript interfaces and types used across the vc-shell framework for validation, menus, toolbars, tables, assets, and service abstractions.

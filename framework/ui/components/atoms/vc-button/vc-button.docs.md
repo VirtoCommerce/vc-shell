@@ -1,6 +1,14 @@
+---
+title: VcButton
+category: components
+group: misc
+---
+
 # VcButton
 
-A versatile button component supporting 9 style variants, 5 size options, loading state, and icon integration. VcButton is the primary interactive element for triggering actions throughout the application -- from toolbar buttons and form submissions to inline table actions and navigation.
+A versatile button component supporting 9 style variants, 5 size options, loading state, and icon integration. VcButton is the primary interactive element for triggering actions throughout the application — from toolbar buttons and form submissions to inline table actions and navigation.
+
+::storybook id="action-vcbutton--primary"
 
 ## When to Use
 
@@ -32,6 +40,8 @@ import { VcButton } from "@vc-shell/framework";
 ## Variants
 
 VcButton provides 9 visual variants organized into three emphasis levels.
+
+::storybook id="action-vcbutton--all-variants" height="500"
 
 ### Filled Variants (High Emphasis)
 
@@ -85,6 +95,8 @@ No border or background, used for inline or de-emphasized actions.
 
 Five size options cover all common use cases from toolbar icons to prominent CTAs.
 
+::storybook id="action-vcbutton--all-sizes"
+
 ```vue
 <VcButton size="sm">Small</VcButton>
 <VcButton size="default">Default</VcButton>
@@ -101,7 +113,8 @@ Five size options cover all common use cases from toolbar icons to prominent CTA
 | `icon`    | 36x36px | 0 (square)                    | Toolbar icon buttons                |
 | `icon-sm` | 24x24px | 0 (square)                    | Table cell actions, inline controls |
 
-> **Note:** Legacy aliases `xs` (maps to `sm`) and `base` (maps to `default`) are supported for backward compatibility.
+!!! note "Legacy size aliases"
+`xs` (maps to `sm`) and `base` (maps to `default`) are supported for backward compatibility but should not be used in new code.
 
 ## Icons
 
@@ -121,6 +134,8 @@ VcButton supports icons via the `icon` prop. Icons appear to the left of the but
 The `icon` prop accepts a string (icon identifier like `lucide-plus`) or a Vue component.
 
 ## Loading State
+
+::storybook id="action-vcbutton--loading"
 
 When `loading` is `true`, the button shows a spinner in place of its icon and becomes non-interactive:
 
@@ -213,6 +228,9 @@ VcButton integrates with `VcButtonGroup` via provide/inject. The group can set a
 </template>
 ```
 
+!!! warning "Don't disable buttons during async actions"
+Use the `loading` prop, not `disabled`. A disabled button gives no progress feedback; a loading button shows a spinner and announces busy state via `aria-busy`.
+
 ## Common Mistakes
 
 ### Missing aria-label on icon-only buttons
@@ -300,6 +318,15 @@ All visual properties are customizable through CSS custom properties. Each varia
 
 ## Related Components
 
-- [VcIcon](../vc-icon/) -- used internally for button icons
-- [VcBadge](../vc-badge/) -- can wrap a button to show notification counts
-- [VcButtonGroup](./vc-button-group.vue) -- groups buttons with shared size context
+- [VcIcon](../vc-icon/) — used internally for button icons
+- [VcBadge](../vc-badge/) — can wrap a button to show notification counts
+- `VcButtonGroup` — groups buttons with shared size context (see component source for usage)
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcButton calls `e.preventDefault()` on click to support `link` variant pattern. Form submit buttons must use `type="submit"` to bypass this.
+- `VcButtonGroup` integration is via provide/inject (`vcButtonGroupSize` injection key in `framework/injection-keys.ts`).
+- Size aliases `xs`/`base` are kept for vendor-portal backward compatibility — slated for removal in v3.
+<!-- internal:end -->

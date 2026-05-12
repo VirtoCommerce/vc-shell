@@ -1,3 +1,10 @@
+---
+title: SettingsMenuItem
+category: composables
+group: utilities
+internal: true
+---
+
 # SettingsMenuItem
 
 Individual menu row used inside the settings menu. Displays an icon, title, optional current value, and a chevron indicator for sub-menus. Supports click and hover trigger actions.

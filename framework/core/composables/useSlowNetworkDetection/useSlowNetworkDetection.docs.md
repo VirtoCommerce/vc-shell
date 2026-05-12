@@ -1,3 +1,9 @@
+---
+title: useSlowNetworkDetection
+category: composables
+group: ui-state
+---
+
 # useSlowNetworkDetection
 
 Detects slow network conditions and shows a persistent warning notification so users know why the UI is unresponsive. Two detection channels work together: a **proactive** channel reads `navigator.connection.effectiveType` to catch weak connections before any request is made, and a **reactive** channel flags API requests that have been pending for more than 10 seconds. The notification auto-dismisses with a 3-second delay after conditions clear, preventing flicker. When the browser goes fully offline, the slow-network notification is suppressed in favor of the existing offline notification from `useConnectionStatus`.
@@ -56,6 +62,8 @@ const { isSlowNetwork } = useSlowNetworkDetection();
 | `DISMISS_DELAY_MS`          | `3000`              | Delay before hiding the notification after recovery |
 | `SLOW_EFFECTIVE_TYPES`      | `["slow-2g", "2g"]` | Connection types flagged as slow                    |
 
+<!-- internal:start -->
+
 ## How It Works
 
 ### Channel 1: effectiveType (proactive)
@@ -73,6 +81,7 @@ The fetch interceptor in `framework/core/interceptors/index.ts` calls `trackRequ
 3. If `isSlowNetwork` goes back to `true` within those 3 seconds → cancel dismiss, notification stays
 4. If the browser goes offline → immediately hide the slow notification (the offline notification takes over)
 5. If the browser comes back online and `isSlowNetwork` is still `true` → re-show
+<!-- internal:end -->
 
 ## Recipe: Custom Slow-Network Behavior in a Blade
 

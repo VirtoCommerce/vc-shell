@@ -1,3 +1,12 @@
+---
+title: useAsync
+category: composables
+group: utilities
+---
+
+!!! note "Large reference"
+This page is long. Use the section headings to navigate: [Quick Start](#quick-start), [API Reference](#api-reference), [Features](#features), [Recipes](#recipes), [Common Mistakes](#common-mistakes).
+
 # useAsync
 
 Wraps an asynchronous function with reactive `loading` state, reactive `error` state, and automatic error notifications. This is the standard way to handle API calls, saves, deletes, and other async operations throughout VC-Shell applications.
@@ -400,11 +409,15 @@ const { action: save, loading: saveLoading } = useAsync(async () => saveData());
 
 ---
 
+<!-- internal:start -->
+
 ## Internals
 
 - Errors are parsed via `parseError()` into `DisplayableError` objects that have a user-friendly `message` property.
 - Toast notifications are deferred with `setTimeout(0)` and registered via `setPendingErrorNotification`. The `ErrorInterceptor` (blade-level `onErrorCaptured`) can call `cancelPendingErrorNotification` to suppress the toast when a blade error banner is shown instead.
 - The notification module is lazy-imported to avoid circular dependencies with `@core/composables`.
+
+<!-- internal:end -->
 
 ---
 

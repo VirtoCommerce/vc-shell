@@ -1,3 +1,10 @@
+---
+title: DashboardWidgetCard
+category: composables
+group: utilities
+internal: true
+---
+
 # DashboardWidgetCard
 
 Modern dashboard widget card with header, optional KPI stats area, action buttons, content body, and footer. Used within the GridStack dashboard layout for displaying metrics, feeds, and charts.

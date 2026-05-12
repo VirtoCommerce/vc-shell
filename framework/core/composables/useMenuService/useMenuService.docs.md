@@ -1,3 +1,12 @@
+---
+title: useMenuService
+category: composables
+group: services
+---
+
+!!! tip "Long page"
+Use the section headings to jump directly to what you need: [Quick Start](#quick-start), [Grouping Menu Items](#grouping-menu-items), [Badges and Indicators](#badges-and-indicators), or [API Reference](#api-reference).
+
 # useMenuService
 
 Accesses the navigation menu service for adding, removing, and badging menu items in the application sidebar. The service supports a pre-registration pattern that allows modules to declare menu items before the service is initialized, and a grouping system that organizes items into collapsible sections.

@@ -1,3 +1,9 @@
+---
+title: VcImageTile
+category: components
+group: data-display
+---
+
 # VcImageTile
 
 Square image tile with skeleton loading, fade-in transition, and a slide-up action tray on hover (desktop) or tap (touch devices).
@@ -9,6 +15,8 @@ Square image tile with skeleton loading, fade-in transition, and a slide-up acti
 - When NOT to use: for the full gallery experience with upload/reorder, use `VcGallery` (which uses VcImageTile internally)
 
 ## Basic Usage
+
+::storybook id="action-vcimagetile--default"
 
 ```vue
 <template>
@@ -73,6 +81,8 @@ interface VcImageTileActions {
 
 ## Common Patterns
 
+::storybook id="action-vcimagetile--all-actions"
+
 ### Image Grid
 
 ```vue
@@ -113,6 +123,8 @@ interface VcImageTileActions {
   </template>
 </VcImageTile>
 ```
+
+::storybook id="action-vcimagetile--skeleton"
 
 ### Skeleton State
 

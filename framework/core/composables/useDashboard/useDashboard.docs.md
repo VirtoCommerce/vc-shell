@@ -1,3 +1,12 @@
+---
+title: useDashboard
+category: composables
+group: services
+---
+
+!!! tip "Long page"
+Use the section headings to jump directly to what you need: [Quick Start](#quick-start), [Widget Registration](#widget-registration), [Permission-Based Visibility](#permission-based-visibility), or [API Reference](#api-reference).
+
 # useDashboard
 
 Accesses the dashboard service for registering and managing dashboard widgets. Widgets are permission-aware, support layout positioning, and can be pre-registered during module setup before the service is initialized.

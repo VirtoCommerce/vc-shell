@@ -1,4 +1,11 @@
-# Permissions Plugin
+---
+title: Permissions
+category: plugins
+group: root
+slug: permissions
+---
+
+# Permissions
 
 Permission-based access control plugin. Exposes a global `$hasAccess` helper for checking user permissions throughout the application.
 

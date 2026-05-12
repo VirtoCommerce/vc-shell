@@ -1,3 +1,9 @@
+---
+title: useResponsive
+category: composables
+group: ui-state
+---
+
 # useResponsive
 
 Reactive breakpoint state for building responsive blade UIs. Returns refs that indicate the current viewport category (phone, tablet, mobile, desktop) and whether the device supports touch input. Replaces the legacy `$isMobile.value` global properties in templates and `inject(IsMobileKey)` in script setup with a single, consistent API.
@@ -53,11 +59,15 @@ Breakpoint thresholds: phone < 480px, tablet 480–1023px, desktop >= 1024px. Th
 
 Note: `isMobile` is the union of `isPhone` and `isTablet` — it covers all viewports below the desktop threshold.
 
+<!-- internal:start -->
+
 ## How It Works
 
 Under the hood, `useResponsive()` calls `inject()` for each breakpoint key (`IsMobileKey`, `IsDesktopKey`, etc.) with sensible defaults. The framework's root `VcApp` component provides these refs during app initialization using VueUse's `useBreakpoints`. Because the return values are the same `Ref<boolean>` instances provided at the app level, they are reactive and shared across all components.
 
 The defaults ensure the composable works even outside the VcApp provider tree (e.g., in unit tests or Storybook), defaulting to desktop mode.
+
+<!-- internal:end -->
 
 ## Recipe: Responsive Blade with Mobile Card Layout
 

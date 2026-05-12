@@ -1,3 +1,9 @@
+---
+title: usePlatformLocaleSync
+category: composables
+group: user
+---
+
 # usePlatformLocaleSync
 
 One-way reactive bridge from the VirtoCommerce platform's locale storage key (`NG_TRANSLATE_LANG_KEY`, set by AngularJS + angular-translate) to the shell's language service.

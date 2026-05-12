@@ -228,4 +228,52 @@ describe("BladeHeader", () => {
     const wrapper = factory({ title: "Test", titleId: "blade-title-42" });
     expect(wrapper.find(".vc-blade-header__title").attributes("id")).toBe("blade-title-42");
   });
+
+  describe("loading state", () => {
+    it("hides title/subtitle text when loading=true", () => {
+      const wrapper = factory({ title: "My Blade", subtitle: "Sub", loading: true });
+      expect(wrapper.find(".vc-blade-header__title").exists()).toBe(false);
+      expect(wrapper.find(".vc-blade-header__subtitle").exists()).toBe(false);
+    });
+
+    it("renders skeleton placeholders inside content when loading=true", () => {
+      const wrapper = factory({ loading: true });
+      expect(wrapper.find(".vc-blade-header__content--loading").exists()).toBe(true);
+    });
+
+    it("keeps close button operational when loading=true", async () => {
+      const wrapper = factory({ closable: true, loading: true }, { maximized: false });
+      const buttons = wrapper.findAll(".vc-blade-header__button");
+      // expand + close
+      expect(buttons.length).toBe(2);
+      await buttons[buttons.length - 1].trigger("click");
+      expect(wrapper.emitted("close")).toBeTruthy();
+    });
+
+    it("hides modified status dot when loading=true", () => {
+      const wrapper = factory({ modified: true, loading: true });
+      expect(wrapper.find(".vc-blade-header__status-edited").exists()).toBe(false);
+    });
+
+    it("hides actions slot when loading=true", () => {
+      const wrapper = mount(BladeHeader, {
+        props: { title: "Test", loading: true },
+        slots: { actions: '<button class="action-btn">Save</button>' },
+        global: {
+          provide: {
+            [BladeDescriptorKey as symbol]: computed<BladeDescriptor>(() => ({
+              id: "blade-1",
+              name: "TestBlade",
+              visible: true,
+            })),
+            [IsMobileKey as symbol]: ref(false),
+            [IsDesktopKey as symbol]: ref(true),
+          },
+          stubs: { VcIcon: true, teleport: true },
+          mocks: { $t: (k: string) => k },
+        },
+      });
+      expect(wrapper.find(".vc-blade-header__actions").exists()).toBe(false);
+    });
+  });
 });

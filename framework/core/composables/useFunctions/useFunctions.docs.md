@@ -1,3 +1,9 @@
+---
+title: useFunctions
+category: composables
+group: utilities
+---
+
 # useFunctions
 
 Provides lightweight utility functions for timing control: debounce, throttle, delay, and once. These are thin, dependency-free implementations that cover the most common use cases without pulling in lodash or other large utility libraries. The composable returns plain functions, not reactive wrappers, making them suitable for event handlers, API calls, and other imperative code paths where you do not need VueUse's reactive cancellation features.

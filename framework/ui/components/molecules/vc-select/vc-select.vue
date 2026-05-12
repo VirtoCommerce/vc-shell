@@ -2,7 +2,9 @@
   <!-- Skeleton mode -->
   <div
     v-if="bladeLoading"
+    v-bind="rootAttrs"
     class="vc-select vc-select--skeleton"
+    :class="$attrs.class"
   >
     <VcSkeleton
       v-if="label"
@@ -21,15 +23,19 @@
   <div
     v-else
     ref="selectRootRef"
+    v-bind="rootAttrs"
     class="vc-select"
-    :class="{
-      'vc-select--opened': isOpened,
-      'vc-select--error': invalid,
-      'vc-select--disabled': resolvedDisabled,
-      'vc-select--has-hint-or-error': invalid || hint,
-      'vc-select--no-outline': !outline,
-      'vc-select--focused': isFocused,
-    }"
+    :class="[
+      $attrs.class,
+      {
+        'vc-select--opened': isOpened,
+        'vc-select--error': invalid,
+        'vc-select--disabled': resolvedDisabled,
+        'vc-select--has-hint-or-error': invalid || hint,
+        'vc-select--no-outline': !outline,
+        'vc-select--focused': isFocused,
+      },
+    ]"
   >
     <!-- Select label -->
     <VcLabel
@@ -186,7 +192,7 @@
     P extends { results?: T[]; totalCount?: number } | undefined = undefined
   "
 >
-import { ref, computed, watch, watchEffect, nextTick } from "vue";
+import { ref, computed, watch, watchEffect, nextTick, useAttrs } from "vue";
 import { useFormField } from "@ui/composables/useFormField";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import { useIntersectionObserver } from "@vueuse/core";
@@ -248,6 +254,10 @@ type SelectProps<ModelValueType> = IFormFieldProps &
     modelValue?: ModelValueType;
     emitValue?: boolean;
   };
+
+defineOptions({
+  inheritAttrs: false,
+});
 
 defineSlots<{
   /**
@@ -338,6 +348,12 @@ const props = withDefaults(defineProps<SelectProps<V>>(), {
   options: (): T[] => [],
   outline: true,
   placement: "bottom",
+});
+
+const attrs = useAttrs();
+const rootAttrs = computed(() => {
+  const { class: _class, ...rest } = attrs;
+  return rest;
 });
 
 const emit = defineEmits<{

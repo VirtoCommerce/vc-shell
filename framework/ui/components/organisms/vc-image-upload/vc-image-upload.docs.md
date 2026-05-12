@@ -1,6 +1,14 @@
+---
+title: VcImageUpload
+category: components
+group: media
+---
+
 # VcImageUpload
 
 A single-image upload organism that displays either a drag-and-drop upload zone or an image tile with preview and remove actions. VcImageUpload manages three visual states automatically: an interactive dropzone when no image is set, an image tile with action overlays when an image is provided, and a disabled empty state with a hint message. It integrates with vee-validate for file validation (size, format) and supports lightbox preview via the built-in VcImageTile component.
+
+::storybook id="data-display-vcimageupload--empty"
 
 ## When to Use
 
@@ -30,6 +38,8 @@ A single-image upload organism that displays either a drag-and-drop upload zone 
 | -------- | -------------- | ------------------------------------------- |
 | `upload` | `FileList`     | Emitted when files are selected or dropped. |
 | `remove` | `ICommonAsset` | Emitted when the remove button is clicked.  |
+
+::storybook id="data-display-vcimageupload--with-image" height="300"
 
 ## Visual States
 
@@ -82,6 +92,8 @@ function handleRemove() {
   </VcBlade>
 </template>
 ```
+
+::storybook id="data-display-vcimageupload--loading" height="250"
 
 ## Recipe: Conditional Upload with Loading State
 

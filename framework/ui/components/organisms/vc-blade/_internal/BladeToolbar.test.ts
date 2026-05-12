@@ -114,4 +114,44 @@ describe("BladeToolbar", () => {
     const desktop = wrapper.findComponent({ name: "ToolbarDesktop" });
     expect(desktop.exists()).toBe(true);
   });
+
+  describe("loading state", () => {
+    it("renders skeleton placeholders instead of toolbar buttons when loading=true", () => {
+      const wrapper = factory({ loading: true });
+      expect(wrapper.find(".vc-blade-toolbar-skeleton__buttons").exists()).toBe(true);
+      expect(wrapper.find(".toolbar-desktop-stub").exists()).toBe(false);
+      expect(wrapper.find(".toolbar-mobile-stub").exists()).toBe(false);
+    });
+
+    it("hides widgets-container slot when loading=true", () => {
+      const wrapper = factory(
+        { loading: true },
+        { "widgets-container": '<div class="widget-container-test">Widgets</div>' },
+      );
+      expect(wrapper.find(".widget-container-test").exists()).toBe(false);
+      expect(wrapper.find(".vc-blade-toolbar-skeleton__widgets").exists()).toBe(true);
+    });
+
+    it("applies loading class on toolbar root", () => {
+      const wrapper = factory({ loading: true });
+      expect(wrapper.find(".vc-blade-toolbar--loading").exists()).toBe(true);
+    });
+
+    it("does not render toolbar at all on mobile when loading=true", () => {
+      const wrapper = mount(BladeToolbar, {
+        props: { items: [], loading: true },
+        global: {
+          stubs: {
+            ToolbarMobile: { template: "<div />" },
+            ToolbarDesktop: { template: "<div />" },
+          },
+          provide: {
+            [IsMobileKey as symbol]: ref(true),
+            [IsDesktopKey as symbol]: ref(false),
+          },
+        },
+      });
+      expect(wrapper.find(".vc-blade-toolbar").exists()).toBe(false);
+    });
+  });
 });

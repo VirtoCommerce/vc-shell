@@ -1,3 +1,9 @@
+---
+title: useAppInsights
+category: composables
+group: utilities
+---
+
 # useAppInsights
 
 Integrates Azure Application Insights page-view tracking with Vue Router and the current user context. This composable bridges the `vue3-application-insights` plugin with the vc-shell framework by automatically enriching every page-view event with the authenticated user's ID and name, generating fresh W3C trace IDs per navigation for distributed tracing, and optionally prefixing page names with the application name (e.g., `[Vendor Portal] Dashboard`).

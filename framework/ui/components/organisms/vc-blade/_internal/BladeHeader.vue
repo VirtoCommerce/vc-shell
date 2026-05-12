@@ -9,7 +9,7 @@
 
     <div class="vc-blade-header__status-container">
       <div
-        v-if="typeof modified !== 'undefined'"
+        v-if="!loading && typeof modified !== 'undefined'"
         ref="tooltipIconRef"
         :class="{
           'vc-blade-header__status-not-edited': !modified,
@@ -36,7 +36,17 @@
       </div>
 
       <div
-        v-if="icon"
+        v-if="loading"
+        class="vc-blade-header__icon"
+      >
+        <VcSkeleton
+          variant="circle"
+          :width="24"
+          :height="24"
+        />
+      </div>
+      <div
+        v-else-if="icon"
         class="vc-blade-header__icon"
       >
         <VcIcon
@@ -46,7 +56,27 @@
       </div>
 
       <div class="vc-blade-header__wrapper">
-        <div class="vc-blade-header__content">
+        <div
+          v-if="loading"
+          class="vc-blade-header__content vc-blade-header__content--loading"
+        >
+          <VcSkeleton
+            variant="block"
+            :width="180"
+            :height="19"
+          />
+          <div class="tw-mt-1.5">
+            <VcSkeleton
+              variant="block"
+              :width="120"
+              :height="12"
+            />
+          </div>
+        </div>
+        <div
+          v-else
+          class="vc-blade-header__content"
+        >
           <div
             :id="titleId"
             class="vc-blade-header__title"
@@ -65,7 +95,7 @@
         </div>
 
         <div
-          v-if="$slots['actions']"
+          v-if="!loading && $slots['actions']"
           class="vc-blade-header__actions"
         >
           <slot name="actions"></slot>
@@ -73,27 +103,24 @@
       </div>
 
       <div
-        v-if="!isMobile"
+        v-if="!isMobile && closable"
         class="vc-blade-header__controls"
       >
-        <template v-if="closable">
-          <div
-            v-if="descriptor?.maximized"
-            class="vc-blade-header__button"
-            @click="onCollapse"
-          >
-            <VcIcon icon="lucide-minus" />
-          </div>
-          <div
-            v-else
-            class="vc-blade-header__button"
-            @click="onExpand"
-          >
-            <VcIcon icon="lucide-panel-top" />
-          </div>
-        </template>
         <div
-          v-if="closable"
+          v-if="descriptor?.maximized"
+          class="vc-blade-header__button"
+          @click="onCollapse"
+        >
+          <VcIcon icon="lucide-minus" />
+        </div>
+        <div
+          v-else
+          class="vc-blade-header__button"
+          @click="onExpand"
+        >
+          <VcIcon icon="lucide-panel-top" />
+        </div>
+        <div
           class="vc-blade-header__button"
           @click="onClose"
         >
@@ -106,6 +133,7 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { ref, inject } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { shift } from "@floating-ui/vue";
@@ -120,6 +148,8 @@ export interface Props {
   modified?: boolean;
   /** Id to apply to the title element, for aria-labelledby linking from VcBlade */
   titleId?: string;
+  /** When true, shows skeleton placeholders for icon/title/subtitle while keeping controls usable */
+  loading?: boolean;
 }
 const props = defineProps<Props>();
 

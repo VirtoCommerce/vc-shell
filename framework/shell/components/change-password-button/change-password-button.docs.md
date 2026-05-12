@@ -1,3 +1,10 @@
+---
+title: ChangePasswordButton
+category: composables
+group: utilities
+internal: true
+---
+
 # ChangePasswordButton
 
 Settings menu action that opens the change-password popup through the popup handler system. This component bridges the settings menu and the password change form: it injects `CloseSettingsMenuKey` to dismiss the parent menu before showing the password popup, ensuring a clean transition. The popup itself renders a form with current password, new password, and confirm password fields, with real-time password policy validation.

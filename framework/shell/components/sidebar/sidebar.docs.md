@@ -1,3 +1,10 @@
+---
+title: Sidebar
+category: composables
+group: utilities
+internal: true
+---
+
 # Sidebar Component
 
 A responsive sidebar wrapper that conditionally renders content inside a `VcSidebar` panel or inline, based on viewport and expansion state.

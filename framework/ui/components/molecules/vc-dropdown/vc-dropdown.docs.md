@@ -1,3 +1,12 @@
+---
+title: VcDropdown
+category: components
+group: navigation
+---
+
+!!! tip "Quick reference"
+Jump to [Props](#props) · [Events](#events) · [Slots](#slots) · [CSS Variables](#css-variables) · [Accessibility](#accessibility)
+
 # VcDropdown
 
 A headless, accessible dropdown primitive for building menus and listboxes. Provides floating positioning via `@floating-ui`, full keyboard navigation, slot-based rendering, and configurable close behavior. This is a low-level building block -- for form field selection, use VcSelect instead.
@@ -16,6 +25,8 @@ When NOT to use:
 - For navigation menus -- use [VcMenu](../vc-menu/)
 
 ## Quick Start
+
+::storybook id="overlay-vcdropdown--action-menu"
 
 ```vue
 <template>
@@ -96,6 +107,8 @@ Build rich action menus by customizing the `#item` slot with icons, labels, and 
 ```
 
 ### Listbox Mode (Selection Switcher)
+
+::storybook id="overlay-vcdropdown--workspace-switcher"
 
 Use `role="listbox"` for option-selection patterns. Combine with `isItemActive` to highlight the current selection and `aria-selected` is set automatically.
 
@@ -369,3 +382,17 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 - [VcDropdownPanel](../vc-dropdown-panel/) -- floating panel with header, footer, and scrollable content
 - [VcSelect](../vc-select/) -- form field dropdown for selecting values with label and validation
 - [VcMenu](../vc-menu/) -- sidebar navigation menu
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- `VcDropdown` is a generic component (`generic="T"`). TypeScript infers `T` from the `items` prop, giving type-safe `item-click` payloads and slot props.
+- Floating positioning uses `useFloatingPosition` (a thin wrapper around `@floating-ui/vue`) with `autoUpdate: true` when `floating` is enabled — the panel recalculates its position on scroll/resize.
+- Teleport target is determined by `useTeleportTarget`. When `floating` is `true`, the panel is teleported to avoid z-index stacking context issues.
+- Keyboard navigation (`ArrowDown`, `ArrowUp`, `Home`, `End`, `Enter`/`Space`, `Escape`) is handled in `onPanelKeydown`. Escape also attaches a document-level listener when the dropdown is open to catch events that bubble past the panel.
+- `syncFocusedIndex` is called on open to pre-focus the active item (via `isItemActive`) or the first item.
+- The `VcDropdownItem` internal sub-component (in `_internal/VcDropdownItem.vue`) is used by `VcBreadcrumbs` for its overflow menu items.
+- Default `zIndex` is `9300` (matches the CSS custom property `--z-critical-dropdown`).
+
+<!-- internal:end -->

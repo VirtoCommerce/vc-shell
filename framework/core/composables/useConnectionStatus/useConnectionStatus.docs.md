@@ -1,3 +1,9 @@
+---
+title: useConnectionStatus
+category: composables
+group: ui-state
+---
+
 # useConnectionStatus
 
 Monitors the browser's network connectivity and shows a persistent notification when the user goes offline. This composable wraps `@vueuse/core`'s `useNetwork()` and adds framework-specific behavior: it displays a warning notification via the vc-shell notification system, applies a `vc-offline` CSS class to `<html>` for global styling hooks, and logs state changes through the framework logger. The state is a module-level singleton, so only one set of event listeners is ever created regardless of how many components call the composable.
@@ -43,6 +49,8 @@ const { isOnline } = useConnectionStatus();
 | ---------- | ------------------------ | --------------------------------------------------------------------------------------------------------------- |
 | `isOnline` | `Readonly<Ref<boolean>>` | `true` when the browser has network connectivity, `false` when offline. Read-only to prevent external mutation. |
 
+<!-- internal:start -->
+
 ## How It Works
 
 On the very first call to `useConnectionStatus()`, the composable initializes a watcher on `@vueuse/core`'s `useNetwork().isOnline`. This watcher runs with `{ immediate: true }`, so the state is correct from the start. Subsequent calls skip initialization and return the same shared reactive state.
@@ -54,6 +62,8 @@ When the network drops:
 3. A warning is logged via `createLogger`.
 
 When connectivity is restored, the notification is removed, the CSS class is cleared, and an info message is logged.
+
+<!-- internal:end -->
 
 ## Recipe: Disabling Auto-Save While Offline
 

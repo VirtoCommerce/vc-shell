@@ -1,6 +1,14 @@
+---
+title: VcInputGroup
+category: components
+group: form
+---
+
 # VcInputGroup
 
 A semantic `<fieldset>` wrapper that groups related form controls under a shared label, error state, and ARIA context. Propagates `disabled` and `name` to child controls via provide/inject.
+
+::storybook id="form-vcinputgroup--form-fields"
 
 ## When to Use
 
@@ -55,6 +63,8 @@ const lastName = ref("");
 ## Common Patterns
 
 ### Radio Group
+
+::storybook id="form-vcinputgroup--radios-horizontal"
 
 ```vue
 <VcInputGroup label="Payment method" role="radiogroup" orientation="horizontal" name="payment">
@@ -111,3 +121,14 @@ const lastName = ref("");
 - [VcRadioButton](../vc-radio-button/) -- radio buttons to group
 - [VcInput](../vc-input/) -- text inputs to group
 - [VcSelect](../vc-select/) -- selects to group
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- `disabled` and `name` are provided via Vue's provide/inject mechanism using injection keys from `framework/injection-keys.ts`. Child form controls (`VcInput`, `VcRadioButton`, etc.) inject these to inherit group-level state automatically.
+- The `orientation` prop controls flex direction (`column` vs `row`) on the fieldset's content area.
+- Source file: `framework/ui/components/molecules/vc-input-group/vc-input-group.vue`
+- Context file: `framework/ui/components/molecules/vc-input-group/context.ts`
+
+<!-- internal:end -->

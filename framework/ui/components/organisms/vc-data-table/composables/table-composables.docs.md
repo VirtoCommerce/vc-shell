@@ -1,3 +1,10 @@
+---
+title: Table Composables
+category: composables
+group: data
+slug: table-composables
+---
+
 # VcTable Composables
 
 Composables that power VcDataTable's functionality. Each handles a single concern and is wired together by the table component. Module developers rarely use these directly -- they are consumed internally by `VcDataTable.vue`.
@@ -144,14 +151,32 @@ register({
 
 - `useTableColumns` never removes entries from `columnState` — hidden columns preserve their weight and order for when they reappear. Use `engineOutput` (not `columnState` directly) to read computed pixel widths for rendering.
 - Call `recompute()` (returned by `useTableColumns`) whenever the container width changes to force the engine to redistribute widths without altering weights.
-- `useDataTableState` stores the v2 schema (weights, order, hidden/shown IDs). It automatically migrates v1 state (pixel-based) on the first restore. Guard against save-during-restore loops with the `isRestoring` flag.
+- `useDataTableState` stores the v2 schema (weights, order, hidden/shown IDs). It auto-migrates v1 state (pixel-based) on the first restore.
 - `useColumnWidthEngine` functions are pure — pass immutable copies of `specs` when testing or previewing layouts without committing to state.
+- `useVirtualScroll` requires a fixed `itemSize` (row height in pixels) for accurate positioning.
+
+<!-- internal:start -->
+
+### Contributor notes
+
+- `useDataTableState`: Guard against save-during-restore loops with the `isRestoring` flag.
 - `useTableRowReorder`: `event.preventDefault()` in `dragover` MUST be called on every event or `drop` never fires.
 - `useTableColumnsResize` applies DOM-level px changes during drag for 60fps performance, then commits final weights to `columnState` on mouseup. No `ResizeObserver` scaling is involved.
-- `useVirtualScroll` requires a fixed `itemSize` (row height in pixels) for accurate positioning.
+
+<!-- internal:end -->
 
 ## Related
 
-- `framework/ui/components/organisms/vc-table/VcDataTable.vue` -- main consumer
-- `framework/ui/components/organisms/vc-table/VcTableAdapter.vue` -- legacy API adapter
-- `framework/ui/components/organisms/vc-table/components/` -- sub-components (TableHead, TableRow, cells)
+- [VcDataTable](../../vc-data-table) -- the main consumer of these composables
+- [VcColumn](../../vc-data-table) -- declarative column definitions
+
+<!-- internal:start -->
+
+## Source references
+
+- `framework/ui/components/organisms/vc-data-table/VcDataTable.vue` -- main consumer
+- `framework/ui/components/organisms/vc-data-table/VcTableAdapter.vue` -- legacy API adapter
+- `framework/ui/components/organisms/vc-data-table/components/` -- sub-components (TableHead, TableRow, cells)
+- `framework/ui/components/organisms/vc-data-table/composables/` -- full composable list
+
+<!-- internal:end -->

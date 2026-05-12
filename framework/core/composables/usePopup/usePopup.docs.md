@@ -1,6 +1,15 @@
+---
+title: usePopup
+category: composables
+group: notifications
+---
+
 # usePopup
 
 Programmatic popup management for modal dialogs. Returns methods to open confirmation, error, and info dialogs, as well as fully custom popup components with typed props and emits. Popups are rendered in a dedicated container at the app root level, ensuring they overlay all other content including blades and sidebars.
+
+!!! tip "Always await showConfirmation"
+`showConfirmation` returns a `Promise<boolean>`. Always `await` it before executing the guarded action, or the action will run before the user responds.
 
 ## When to Use
 

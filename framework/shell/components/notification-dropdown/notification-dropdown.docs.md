@@ -1,3 +1,10 @@
+---
+title: NotificationDropdown
+category: composables
+group: utilities
+internal: true
+---
+
 # NotificationDropdown
 
 Dropdown panel that displays the push notification history in reverse chronological order. This component renders a scrollable list of all received push notifications, backed by the `useNotifications()` composable. It automatically marks unread notifications as read when the dropdown is closed (unmounted), updating the unread badge count in the toolbar.

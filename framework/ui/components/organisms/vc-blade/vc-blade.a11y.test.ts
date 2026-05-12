@@ -111,9 +111,7 @@ describe("VcBlade a11y", () => {
             template:
               '<div role="heading" aria-level="2"><h2 :id="titleId">{{ title }}</h2><slot /><slot name="prepend" /><slot name="actions" /></div>',
           },
-          BladeHeaderSkeleton: true,
           BladeToolbar: true,
-          BladeToolbarSkeleton: true,
           BladeContentSkeleton: true,
           BladeStatusBanners: true,
           WidgetContainer: true,

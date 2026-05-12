@@ -1,3 +1,10 @@
+---
+title: UI Types
+category: reference
+group: api
+slug: types-ui
+---
+
 # UI Types
 
 TypeScript interfaces for UI component props shared across all form field components in the framework.

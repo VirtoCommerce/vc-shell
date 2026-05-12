@@ -1,3 +1,10 @@
+---
+title: SettingsMenu
+category: composables
+group: utilities
+internal: true
+---
+
 # SettingsMenu
 
 Container component that renders registered settings menu items grouped by category and sorted by order. Items are registered through the `useSettingsMenu` service, not through component props. This decoupled architecture allows any module in the application to contribute settings entries without modifying the menu component itself.

@@ -1,3 +1,9 @@
+---
+title: useBreadcrumbs
+category: composables
+group: ui-state
+---
+
 # useBreadcrumbs
 
 Manages a reactive breadcrumb trail for blade navigation. Supports push, remove, and automatic trail trimming on click.

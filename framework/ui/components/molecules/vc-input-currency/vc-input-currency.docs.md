@@ -1,6 +1,17 @@
+---
+title: VcInputCurrency
+category: components
+group: form
+---
+
+!!! note "Large reference page"
+This page is long. Use the section links in the sidebar or your browser's in-page search (Ctrl/Cmd+F) to jump to the section you need.
+
 # VcInputCurrency
 
 A specialized currency input that combines locale-aware number formatting (grouping separators, decimal precision) with a dropdown for selecting the currency. Built on top of [vue-currency-input](https://dm4t2.github.io/vue-currency-input/) and [VcInputDropdown](../vc-input-dropdown/).
+
+::storybook id="form-vcinputcurrency--default"
 
 ## When to Use
 
@@ -59,6 +70,8 @@ The component uses two `v-model` bindings:
 The dropdown portion renders the available currencies. Use `optionLabel` and `optionValue` to map your data structure to display labels and values.
 
 ### Precision Control
+
+::storybook id="form-vcinputcurrency--precision-options"
 
 The `precision` prop controls the number of decimal places (0--15). The formatting engine rounds and pads the value accordingly.
 
@@ -145,6 +158,8 @@ const form = reactive({
 ```
 
 ### States
+
+::storybook id="form-vcinputcurrency--with-error"
 
 ```vue
 <!-- Required -->
@@ -334,3 +349,15 @@ Additionally inherits all `--input-*` CSS variables from VcInput/VcInputDropdown
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- Built as a wrapper around `VcInputDropdown`. The numeric input side uses `vue-currency-input` for locale-aware formatting; the right side is `VcInputDropdown`'s built-in dropdown.
+- The minus key (`-`) and exponential notation key (`e`) are blocked at the `keydown` level, not via `input` validation.
+- `precision` is forwarded directly to `vue-currency-input`'s `CurrencyInputOptions`.
+- `currencyDisplay` maps to the `vue-currency-input` option of the same name.
+- Source file: `framework/ui/components/molecules/vc-input-currency/vc-input-currency.vue`
+
+<!-- internal:end -->

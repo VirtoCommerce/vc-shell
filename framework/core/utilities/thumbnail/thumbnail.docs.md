@@ -1,3 +1,10 @@
+---
+title: Thumbnail Utility
+category: reference
+group: api
+slug: thumbnail
+---
+
 # Thumbnail URL Utility
 
 Transforms full-size image URLs into thumbnail variants by appending size suffixes before the file extension. VirtoCommerce backend generates thumbnails automatically with these suffixes.

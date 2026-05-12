@@ -1,6 +1,7 @@
 <template>
   <div
     ref="bladeRef"
+    v-bind="rootAttrs"
     class="vc-blade"
     role="region"
     :class="[
@@ -15,64 +16,59 @@
     :aria-labelledby="props.title && !showSkeleton ? bladeTitleId : undefined"
     :aria-label="!props.title || showSkeleton ? $t('COMPONENTS.ORGANISMS.VC_BLADE.PANEL') : undefined"
   >
-    <!-- Header zone: v-show keeps BladeHeader mounted to avoid Teleport unmount bug -->
-    <template v-if="!(isMobile && blades.length === 1 && !$slots['actions'])">
-      <BladeHeaderSkeleton
-        v-if="showSkeleton"
-        class="vc-blade__header"
-      />
-      <BladeHeader
-        v-show="!showSkeleton"
-        class="vc-blade__header"
-        :closable="isClosable"
-        :icon="icon"
-        :title="title"
-        :subtitle="subtitle"
-        :modified="effectiveModified"
-        :title-id="bladeTitleId"
-        @close="handleClose"
-        @expand="handleExpand"
-        @collapse="handleCollapse"
-      >
-        <template #prepend>
-          <component
-            :is="backButton"
-            v-if="backButton && isMobile"
-            class="vc-blade__back-button"
-          />
+    <!-- Header zone -->
+    <BladeHeader
+      v-if="!(isMobile && blades.length === 1 && !$slots['actions'])"
+      class="vc-blade__header"
+      :closable="isClosable"
+      :icon="icon"
+      :title="title"
+      :subtitle="subtitle"
+      :modified="effectiveModified"
+      :title-id="bladeTitleId"
+      :loading="showSkeleton"
+      @close="handleClose"
+      @expand="handleExpand"
+      @collapse="handleCollapse"
+    >
+      <template #prepend>
+        <component
+          :is="backButton"
+          v-if="backButton && isMobile"
+          class="vc-blade__back-button"
+        />
 
-          <div
-            v-if="descriptor?.breadcrumbs?.length && isDesktop"
-            class="vc-blade__breadcrumbs"
-          >
-            <VcBreadcrumbs
-              :items="descriptor?.breadcrumbs"
-              collapsed
-            >
-              <template #trigger="{ click, isActive }">
-                <VcButton
-                  text
-                  icon="lucide-ellipsis-vertical"
-                  icon-size="xl"
-                  class="vc-blade__breadcrumbs-button"
-                  :class="{
-                    'vc-blade__breadcrumbs-button--active': isActive,
-                  }"
-                  @click="click"
-                />
-              </template>
-            </VcBreadcrumbs>
-          </div>
-        </template>
-
-        <template
-          v-if="$slots['actions']"
-          #actions
+        <div
+          v-if="!showSkeleton && descriptor?.breadcrumbs?.length && isDesktop"
+          class="vc-blade__breadcrumbs"
         >
-          <slot name="actions"></slot>
-        </template>
-      </BladeHeader>
-    </template>
+          <VcBreadcrumbs
+            :items="descriptor?.breadcrumbs"
+            collapsed
+          >
+            <template #trigger="{ click, isActive }">
+              <VcButton
+                text
+                icon="lucide-ellipsis-vertical"
+                icon-size="xl"
+                class="vc-blade__breadcrumbs-button"
+                :class="{
+                  'vc-blade__breadcrumbs-button--active': isActive,
+                }"
+                @click="click"
+              />
+            </template>
+          </VcBreadcrumbs>
+        </div>
+      </template>
+
+      <template
+        v-if="$slots['actions']"
+        #actions
+      >
+        <slot name="actions"></slot>
+      </template>
+    </BladeHeader>
 
     <BladeStatusBanners
       v-if="!showSkeleton"
@@ -80,14 +76,11 @@
     />
 
     <!-- Toolbar zone -->
-    <BladeToolbarSkeleton
-      v-if="showSkeleton"
-      class="vc-blade__toolbar"
-    />
     <BladeToolbar
-      v-else
+      data-test-id="blade-toolbar"
       class="vc-blade__toolbar"
       :items="toolbarItems"
+      :loading="showSkeleton"
     >
       <template #widgets-container>
         <WidgetContainer :blade-id="bladeId" />
@@ -121,9 +114,7 @@ import { ref, inject, provide, computed, getCurrentInstance, useAttrs, watchEffe
 import { IBladeToolbar } from "@core/types";
 import { useBladeStack } from "@core/blade-navigation";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
-import BladeHeaderSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeHeaderSkeleton.vue";
 import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolbar.vue";
-import BladeToolbarSkeleton from "@ui/components/organisms/vc-blade/_internal/BladeToolbarSkeleton.vue";
 import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcBreadcrumbs } from "@ui/components/molecules/vc-breadcrumbs";
@@ -211,6 +202,10 @@ const isClosable = computed(() => {
 });
 
 const attrs = useAttrs();
+const rootAttrs = computed(() => {
+  const { class: _class, style: _style, onClose: _onClose, ...rest } = attrs;
+  return rest;
+});
 
 function handleClose() {
   if (attrs.onClose) {

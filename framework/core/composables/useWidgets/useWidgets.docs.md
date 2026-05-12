@@ -1,3 +1,9 @@
+---
+title: useWidgets
+category: composables
+group: services
+---
+
 # useWidgets
 
 Provides access to the `IWidgetService` singleton for managing blade widget registrations, activation state, and external widgets. This is the low-level composable for direct widget service interaction. It exposes the full widget lifecycle API: registering widgets to specific blades, querying registered widgets, tracking active widget state, and managing external (cross-module) widget registrations.
@@ -59,6 +65,8 @@ None.
 | `registerWidget(widget, bladeId)`      | Global pre-registration. Widgets registered this way are picked up when `provideWidgetService()` creates the service. Use in module `install()`.       |
 | `registerExternalWidget(registration)` | Global pre-registration for cross-module widgets. These widgets are rendered in blades owned by other modules.                                         |
 
+<!-- internal:start -->
+
 ## How It Works
 
 The widget system has three layers:
@@ -70,6 +78,8 @@ The widget system has three layers:
 3. **Runtime access** (`useWidgets()`): Components inject the service and use it to query or modify widget state.
 
 The service tracks active widgets (which widget is currently expanded/focused) separately from registrations, enabling the widget panel to highlight the active widget and call its update function.
+
+<!-- internal:end -->
 
 ## Recipe: Pre-Registering a Widget from a Module
 

@@ -1,6 +1,17 @@
+---
+title: VcRadioButton
+category: components
+group: form
+---
+
 # VcRadioButton
 
 A radio button component for selecting a single option from a group. Supports string, number, and boolean value types.
+
+!!! note "Large reference"
+This page is over 200 lines. Use the section headings to jump directly to what you need: [Basic Usage](#basic-usage), [Common Patterns](#common-patterns), [Props](#key-props), [Accessibility](#accessibility).
+
+::storybook id="form-vcradiobutton--default"
 
 ## Overview
 
@@ -115,6 +126,8 @@ const priority = ref(2);
 
 ### Binary Mode
 
+::storybook id="form-vcradiobutton--binary"
+
 In binary mode, clicking toggles between `true` and `false` rather than comparing to a `value`. This is useful for standalone boolean options:
 
 ```vue
@@ -201,3 +214,15 @@ Do not mix `binary` mode with regular `value` comparison in the same group. Bina
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- VcRadioButton wraps a native `<input type="radio">` with custom CSS appearance. `checked` state is computed via `isEqual` (lodash) to support object-typed values.
+- `binary` mode: `onChange` emits `!checked.value` (a boolean toggle) instead of `props.value`. Do not mix binary and value modes within the same group.
+- The `name` attribute is critical for native keyboard group navigation — always set the same `name` across a group.
+- `useFormField` injects validation context (error, disabled, name) from a parent form provider.
+- Source file: `framework/ui/components/molecules/vc-radio-button/vc-radio-button.vue`
+
+<!-- internal:end -->

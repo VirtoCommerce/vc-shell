@@ -1,3 +1,9 @@
+---
+title: useErrorHandler
+category: composables
+group: utilities
+---
+
 # useErrorHandler
 
 Captures and normalizes errors within a component's subtree using Vue's `onErrorCaptured` hook. This composable acts as an error boundary: it catches errors thrown by any child component, normalizes them into a `DisplayableError` with a user-friendly `message` and technical `details`, automatically reports them to Application Insights with user context, and emits events so parent components can react. It also includes re-entrancy protection to prevent infinite error loops when the error display itself triggers an error.

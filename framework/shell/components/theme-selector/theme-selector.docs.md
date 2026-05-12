@@ -1,3 +1,10 @@
+---
+title: ThemeSelector
+category: composables
+group: utilities
+internal: true
+---
+
 # ThemeSelector
 
 Settings menu entry that shows the current theme and opens a cascading submenu to switch between registered themes. Uses the `useTheme()` composable for theme management and shows a toast notification when the theme changes, confirming the switch to the user.

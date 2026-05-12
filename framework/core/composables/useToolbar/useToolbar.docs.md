@@ -1,3 +1,12 @@
+---
+title: useToolbar
+category: composables
+group: services
+---
+
+!!! tip "Long page"
+Use the section headings to jump directly to what you need: [Quick Start](#quick-start), [Updating Button State Dynamically](#updating-button-state-dynamically), [Visibility and Permissions](#visibility-and-permissions), or [API Reference](#api-reference).
+
 # useToolbar
 
 Manages toolbar buttons for blades. Each blade in the application has its own toolbar area at the top of the blade header. `useToolbar` provides a scoped API to register, update, and remove buttons within that toolbar. It automatically resolves the current blade context and cleans up registered items when the component unmounts.

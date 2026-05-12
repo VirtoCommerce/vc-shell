@@ -1,6 +1,14 @@
+---
+title: VcVideo
+category: components
+group: media
+---
+
 # VcVideo
 
 An embedded video player that renders an iframe for external video sources (YouTube, Vimeo, etc.) with an optional label and tooltip. When no source URL is provided, the component displays a centered film icon placeholder instead of a blank space, giving users a clear visual cue that a video can be attached.
+
+::storybook id="data-display-vcvideo--default"
 
 ## When to Use
 
@@ -31,6 +39,8 @@ import { VcVideo } from "@vc-shell/framework";
 | `source`  | `string` | --      | Embed URL for the video (e.g., YouTube embed link) |
 | `label`   | `string` | --      | Label text displayed above the video               |
 | `tooltip` | `string` | --      | Tooltip text shown on the label's info icon        |
+
+::storybook id="data-display-vcvideo--with-tooltip" height="400"
 
 ## Common Patterns
 
@@ -111,8 +121,23 @@ When `source` is not provided, VcVideo renders a centered film icon placeholder 
 - `loading="lazy"` defers iframe load until visible
 - Placeholder state uses `role="img"` with `aria-label="No video source"`
 
+!!! warning "Always use embed URLs, not watch URLs"
+YouTube watch URLs (`youtube.com/watch?v=...`) will be blocked by the browser's frame policy. Always convert to the embed format (`youtube.com/embed/VIDEO_ID`). Vimeo similarly requires `player.vimeo.com/video/VIDEO_ID`.
+
 ## Related Components
 
 - [VcLabel](../vc-label/) -- used internally for the label with tooltip
 - [VcIcon](../vc-icon/) -- renders the placeholder film icon
 - [VcRow](../vc-row/) / [VcCol](../vc-col/) -- layout primitives for placing video alongside other content
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcVideo lives in `framework/ui/components/atoms/vc-video/`.
+- The component is a thin wrapper around a native `<iframe>` — no custom video controls are implemented.
+- The `sandbox` attribute is hardcoded to `allow-scripts allow-same-origin allow-presentation allow-popups`. Apps that need additional iframe permissions must wrap the component or use a plain `<iframe>`.
+- The label is rendered via `VcLabel` (internal atom) with the `tooltip` prop forwarded as the VcLabel tooltip slot content.
+- Placeholder state (`source` is falsy) swaps the iframe for a `<div>` with `role="img"` containing a `VcIcon` with `lucide-film`.
+
+<!-- internal:end -->

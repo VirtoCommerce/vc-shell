@@ -1,3 +1,10 @@
+---
+title: ChangePassword
+category: composables
+group: utilities
+internal: true
+---
+
 # Change Password Component
 
 A modal dialog for changing the current user's password, with real-time validation and forced-change support.

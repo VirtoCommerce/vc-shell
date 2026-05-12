@@ -1,3 +1,9 @@
+---
+title: useDataTablePagination
+category: composables
+group: data
+---
+
 # useDataTablePagination
 
 Manages page-level pagination state for `VcDataTable`. Derives `pages`, `skip`, `totalCount` from a reactive input, and fires an optional `onPageChange` callback when the page changes. Returns a `reactive()` object — all properties are plain values (no `.value` needed), and the object is directly passable as the VcDataTable `:pagination` prop.
@@ -159,6 +165,6 @@ Blade then simply binds:
 
 ## Related
 
-- [`useDataTableSort`](./useDataTableSort.docs.md) — sort state composable for VcDataTable
-- `VcDataTable` `:pagination` prop — accepts `DataTablePagination` object
-- `DataTablePagination` type — defined in `vc-data-table/types.ts`
+- [`useDataTableSort`](./useDataTableSort.docs.md) -- sort state composable for VcDataTable
+- `VcDataTable` `:pagination` prop -- accepts `DataTablePagination` object
+- `DataTablePagination` -- type exported from `@vc-shell/framework`

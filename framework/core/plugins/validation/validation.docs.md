@@ -1,3 +1,13 @@
+---
+title: Validation
+category: plugins
+group: root
+slug: validation
+---
+
+!!! tip "Zero setup"
+All vee-validate standard rules plus custom vc-shell rules are registered automatically — no per-component imports needed.
+
 # Validation Plugin
 
 Form validation integration using vee-validate. Registers all standard validation rules plus custom vc-shell rules for image dimensions, file weight, date comparisons, and BigInt safety.

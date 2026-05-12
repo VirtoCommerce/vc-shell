@@ -1,3 +1,10 @@
+---
+title: Assets Manager
+category: reference
+group: modules
+slug: assets-manager
+---
+
 # Assets Manager Module
 
 A built-in blade module for managing file assets (images, documents, archives). Provides upload, delete, reorder, and preview functionality via a table-based UI.
@@ -32,17 +39,27 @@ The blade reads its configuration from `options` via `useBlade<AssetsManagerOpti
 
 ## Usage
 
-Open the Assets Manager as a child blade:
+The canonical pattern is to bind the manager to a writable `computed` over a field of the parent entity, so that uploads/removes/reorders propagate back into the form. `confirmRemove` is wired to the framework's popup service rather than `window.confirm`.
 
 ```typescript
-import { markRaw } from "vue";
-import { useBlade, useAssetsManager } from "@vc-shell/framework";
+import { computed, markRaw } from "vue";
+import { useBlade, useAssetsManager, usePopup } from "@vc-shell/framework";
 
 const { openBlade } = useBlade();
+const { showConfirmation } = usePopup();
 
-const assetsManager = useAssetsManager(product.assets, {
-  uploadPath: () => `/catalog/${product.id}`,
-  confirmRemove: () => confirm("Delete selected assets?"),
+// Two-way binding: the manager mutates `productAssets.value`, which writes
+// straight back to `item.value.productData.assets`.
+const productAssets = computed({
+  get: () => item.value?.productData?.assets ?? [],
+  set: (val) => {
+    if (item.value?.productData) item.value.productData.assets = val;
+  },
+});
+
+const assetsManager = useAssetsManager(productAssets, {
+  uploadPath: () => `/catalog/${item.value?.id}`,
+  confirmRemove: () => showConfirmation("Are you sure you want to delete the selected assets?"),
 });
 
 openBlade({
@@ -54,7 +71,6 @@ openBlade({
     // manager.items.value and manager.loading.value access.
     manager: markRaw(assetsManager),
     disabled: !canEdit.value,
-    hiddenFields: ["sortOrder"],
   },
 });
 ```
@@ -66,8 +82,8 @@ openBlade({
 - **Delete**: Toolbar delete button (requires selection) and per-row action button.
 - **Reorder**: Drag-and-drop row reordering when not in readonly mode.
 - **Detail view**: Clicking a row opens an `AssetsDetails` child blade for single-asset editing.
-- **Mobile**: Responsive card layout for mobile viewports.
-- **Empty state**: Shows upload prompt when no assets exist (or "No assets" in readonly mode).
+- **Non-image assets**: Files without an image extension render a colored badge with the uppercased extension (`PDF`, `DOCX`, `ZIP`, ...) instead of a thumbnail.
+- **Empty state**: Shows upload prompt when no assets exist; the empty-state action button opens the file picker.
 
 ## Toolbar
 
@@ -81,11 +97,72 @@ openBlade({
 - **Always use `markRaw()` when passing manager through blade options.** Blade descriptors are stored in `ref<BladeDescriptor[]>()`, which creates a deep reactive proxy. Vue auto-unwraps `Ref` values inside reactive objects, so `manager.items` would become a plain array instead of `Ref<AssetLike[]>` — breaking `.value` access. `markRaw()` prevents this by telling Vue not to make the manager reactive.
 - The `manager` object (from `useAssetsManager()`) owns the reactive asset list and all mutation methods. The blade reads `manager.items` and calls `manager.upload()`, `manager.remove()`, `manager.removeMany()`, `manager.reorder()`, and `manager.updateItem()`.
 - The `disabled` prop makes the entire blade readonly: no upload, no delete, no reorder.
-- Asset thumbnails use `isImage()` from shared utilities to determine if an image preview or a file-type icon should be shown.
+- Asset thumbnails use `isImage()` from `@core/utilities/assets` to decide between an image preview (`VcImage`) and a colored extension badge (`getExtensionColor` + `getExtensionLabel`).
 - The module uses `useBlade()` internally to open the detail sub-blade.
+- The `manager` instance can be reused as a `useBladeWidgets` badge source — its `items.value.length` updates reactively as uploads/removes happen inside the blade, so a parent widget showing the asset count refreshes without an extra round-trip.
+
+## Recipes
+
+### Open from a blade widget
+
+Most callers don't open `AssetsManager` directly — they expose it as one of the parent blade's widgets. The widget shows the asset count as a live badge and opens the manager on click. The manager is created once per parent blade and reused across openings.
+
+```typescript
+import { computed, markRaw, type Ref, type ComputedRef } from "vue";
+import { useBlade, useBladeWidgets, useAssetsManager, usePopup } from "@vc-shell/framework";
+
+interface Entity {
+  id?: string;
+  productData?: { assets?: Asset[] };
+}
+
+export function useEntityWidgets(opts: { item: Ref<Entity | undefined>; disabled: ComputedRef<boolean>; isVisible: ComputedRef<boolean> }) {
+  const { item, disabled, isVisible } = opts;
+  const { openBlade } = useBlade();
+  const { showConfirmation } = usePopup();
+
+  const entityAssets = computed({
+    get: () => item.value?.productData?.assets ?? [],
+    set: (val) => {
+      if (item.value?.productData) item.value.productData.assets = val;
+    },
+  });
+
+  const assetsManager = useAssetsManager(entityAssets, {
+    uploadPath: () => `/catalog/${item.value?.id}`,
+    confirmRemove: () => showConfirmation("Are you sure you want to delete the selected assets?"),
+  });
+
+  const assetsCount = computed(() => entityAssets.value.length);
+
+  return useBladeWidgets([
+    {
+      id: "AssetsWidget",
+      icon: "lucide-file",
+      title: "WIDGETS.ASSETS",
+      badge: assetsCount,
+      isVisible,
+      onClick: () =>
+        openBlade({
+          name: "AssetsManager",
+          options: {
+            manager: markRaw(assetsManager),
+            disabled: disabled.value,
+          },
+        }),
+    },
+  ]);
+}
+```
+
+Key points:
+
+- `useAssetsManager` is invoked once at widget-setup time, not inside `onClick`. Recreating it per click would lose pending state and break optimistic updates.
+- `disabled.value` is unwrapped at click time. Passing the raw `ComputedRef` would work too, but the blade reads `options.value?.disabled` as a plain value.
+- `assetsCount` reads from the source array (not from `assetsManager.items`), but both stay in sync because the manager mutates the same array via the setter.
 
 ## Related
 
 - `framework/core/composables/useAssetsManager/` -- `useAssetsManager`, `AssetLike`, `UseAssetsManagerReturn`
-- `framework/shared/utilities/assets.ts` -- `isImage`, `getFileThumbnail`, `readableSize`
-- `framework/core/utilities/date/` -- `formatDateRelative` for creation dates
+- `framework/core/utilities/assets.ts` -- `isImage`, `readableSize`, `getExtensionColor`, `getExtensionLabel`
+- `framework/modules/assets/components/assets-details/` -- `AssetsDetails` child blade opened on row click

@@ -1,3 +1,9 @@
+---
+title: Blade Navigation Composables
+category: composables
+group: blade-navigation
+---
+
 # Blade Navigation Composables
 
 The core composables that implement the blade navigation system -- the stacked-panel UI paradigm used throughout VirtoCommerce admin applications.
@@ -14,7 +20,9 @@ Blade navigation manages an ordered stack of blade descriptors (plain data objec
 
 - Build or extend the blade navigation infrastructure itself (plugin authors, framework internals)
 - Need direct access to the blade stack state machine (`useBladeStack`) or inter-blade messaging (`useBladeMessaging`)
-- When NOT to use: for everyday blade operations in modules -- prefer `useBlade()` from `core/composables/useBlade/`, which wraps these low-level composables with a cleaner, context-aware API
+- When NOT to use: for everyday blade operations in modules -- prefer `useBlade()`, which wraps these low-level composables with a cleaner, context-aware API
+
+<!-- internal:start -->
 
 ## Exports
 
@@ -23,6 +31,8 @@ export { useBladeNavigation } from "./useBladeNavigationAdapter";
 export { createBladeStack, useBladeStack } from "./useBladeStack";
 export { createBladeMessaging, useBladeMessaging } from "./useBladeMessaging";
 ```
+
+<!-- internal:end -->
 
 ## useBladeStack
 
@@ -139,7 +149,7 @@ The plain data object stored in the stack for each blade:
 
 ## Tips
 
-- Prefer `useBlade()` / `useBladeContext()` (from `core/composables/useBlade/`) for new code -- they provide a cleaner API than the legacy adapter.
+- Prefer `useBlade()` / `useBladeContext()` for new code -- they provide a cleaner API than the legacy adapter.
 - Close guards return `true` to PREVENT closing (opposite of the legacy convention where `false` prevented closing). The adapter handles the inversion.
 - `replaceCurrentBlade` destroys the current blade and creates a new one at the same index with the same `parentId`. Use `coverCurrentBlade` to hide instead of destroy — the covering blade's `callParent` reaches the hidden blade's exposed methods.
 - URL sync only updates the address bar for blades that have a `url` segment. Third-level detail panels without URLs leave the previous URL intact.
@@ -147,6 +157,12 @@ The plain data object stored in the stack for each blade:
 
 ## Related
 
+- [`useBlade`](../composables/useBlade/) -- recommended API for everyday blade operations
+- [`useBladeContext`](../composables/bladeContext/) -- share reactive blade data with descendant components
+
+<!-- internal:start -->
+
 - `framework/core/composables/useBlade/` -- `useBlade()`, `useBladeContext()` (new API)
-- `framework/shared/components/blade-navigation/plugin-v2.ts` -- plugin that creates and provides the stack/messaging
-- `framework/shared/components/blade-navigation/types.ts` -- `BladeDescriptor`, `IBladeStack`, `IBladeMessaging`
+- `framework/shell/_internal/blade-nav/plugin-v2.ts` -- plugin that creates and provides the stack/messaging
+- `framework/core/blade-navigation/types/index.ts` -- `BladeDescriptor`, `IBladeStack`, `IBladeMessaging`
+<!-- internal:end -->

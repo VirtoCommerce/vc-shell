@@ -1,3 +1,10 @@
+---
+title: useBladeContext
+category: composables
+group: blade-navigation
+slug: useBladeContext
+---
+
 # useBladeContext (defineBladeContext / injectBladeContext)
 
 Exposes blade-level data to descendant widgets, extensions, and nested components via Vue's provide/inject mechanism. This pair of functions eliminates the need for prop drilling when child widgets or extension points need access to the parent blade's entity data, loading flags, or other shared state.
@@ -96,7 +103,7 @@ defineBladeContext(
 
 - **Automatic ref unwrapping**: `defineBladeContext` shallow-unwraps all ref/computed values in the provided object. Consumers get plain values directly (`ctx.value.item` instead of `ctx.value.item.value`). This works reactively — when the source ref changes, the context updates automatically.
 - **Reactivity**: The provided context is always wrapped in a `computed`, so consumers receive a `ComputedRef` regardless of whether the provider passed a plain object, a ref, or a getter. Changes propagate automatically.
-- **Injection key**: Uses `BladeContextKey` from `framework/injection-keys.ts`. This is a framework-level Symbol, so there is no risk of key collision with application code.
+- **Injection key**: Uses `BladeContextKey` (a framework-level Symbol), so there is no risk of key collision with application code.
 - **Error handling**: `injectBladeContext` throws an `InjectionError` with a descriptive message if called outside a blade component tree. This fails fast during development rather than silently returning `undefined`.
 - **Scope**: The context is scoped to the Vue component subtree. Each blade in the stack has its own context, so nested blades do not leak data upward or sideways.
 
@@ -108,6 +115,11 @@ defineBladeContext(
 
 ## Related
 
+- [`useBladeWidgets`](../useBladeWidgets/) -- widgets that consume blade context
+- [`useBlade`](../useBlade/) -- cross-blade communication via `callParent` / `exposeToChildren`
+
+<!-- internal:start -->
+
 - `BladeContextKey` in `framework/injection-keys.ts`
-- `useBladeWidgets` -- widgets that consume blade context
-- `useBladeStack` -- manages the blade navigation stack
+- `useBladeStack` in `framework/core/blade-navigation/` -- manages the blade navigation stack
+<!-- internal:end -->

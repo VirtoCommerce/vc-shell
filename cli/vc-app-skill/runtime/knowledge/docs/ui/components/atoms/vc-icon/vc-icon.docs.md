@@ -1,6 +1,14 @@
+---
+title: VcIcon
+category: components
+group: misc
+---
+
 # VcIcon
 
 A unified icon component that renders icons from multiple libraries. Lucide Icons (`lucide-` prefix) are the standard; legacy libraries (FontAwesome, Bootstrap, Material) are deprecated.
+
+::storybook id="layout-vcicon--basic"
 
 ## When to Use
 
@@ -26,6 +34,8 @@ A unified icon component that renders icons from multiple libraries. Lucide Icon
 | `ariaLabel`  | `string`                                               | —                 | Accessible label for meaningful icons    |
 | `basePath`   | `string`                                               | `"/assets/icons"` | Base path for SVG sprite icons           |
 
+::storybook id="layout-vcicon--all-sizes" height="300"
+
 ## Size Reference
 
 | Size   | Pixels |
@@ -37,6 +47,8 @@ A unified icon component that renders icons from multiple libraries. Lucide Icon
 | `xl`   | 22px   |
 | `xxl`  | 30px   |
 | `xxxl` | 64px   |
+
+::storybook id="layout-vcicon--all-variants" height="200"
 
 ## Icon Prefix Guide
 
@@ -106,3 +118,15 @@ import MyCustomIcon from "./MyCustomIcon.vue";
 - [VcButton](../vc-button/) — uses VcIcon internally for button icons
 - [VcImage](../vc-image/) — for photos and larger imagery
 - [VcBanner](../vc-banner/) — uses VcIcon for the leading alert icon
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcIcon lives in `framework/ui/components/atoms/vc-icon/`.
+- Icon resolution is handled by a switch on the string prefix: `lucide-` maps to the Lucide component registry; `fa-` / `fas fa-` / `bi-` / `material-` are legacy paths kept for backward compatibility and will be removed in v3.
+- The `svg:` prefix loads from an SVG sprite at `basePath` (default `/assets/icons`) using a `<use>` element. Sprite must be included in the app's static assets.
+- `customSize` takes a number and sets `width`/`height` inline; it overrides the `size` prop class entirely.
+- Color variants (`warning`, `danger`, `success`) apply CSS custom property overrides (`--icon-color`) rather than inline style to allow theme-level customization.
+
+<!-- internal:end -->

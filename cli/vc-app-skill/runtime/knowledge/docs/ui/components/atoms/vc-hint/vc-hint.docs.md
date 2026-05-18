@@ -1,6 +1,14 @@
+---
+title: VcHint
+category: components
+group: feedback
+---
+
 # VcHint
 
 A small text component for displaying helper text, validation messages, or supplementary guidance below form fields. It renders as a lightweight `<div>` with muted styling in its default state and switches to a danger color with `role="alert"` when the `error` prop is set, ensuring screen readers announce validation problems immediately.
+
+::storybook id="data-display-vchint--default"
 
 ## When to Use
 
@@ -33,6 +41,8 @@ A small text component for displaying helper text, validation messages, or suppl
 | `--hint-line-height` | `1.4`                 | Line height               |
 
 ## Common Patterns
+
+::storybook id="data-display-vchint--form-field-hint"
 
 ### Helper Text Below an Input
 
@@ -129,3 +139,13 @@ Show helper text by default, but swap to an error message when validation fails:
 - [VcLabel](../vc-label/) -- field label component, typically placed above the input
 - [VcBanner](../vc-banner/) -- for longer or more prominent alert messages
 - [VcInput](../../molecules/vc-input/) -- form input component often paired with VcHint
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcHint is a single `<div>` element — no wrapper. `role="alert"` is toggled reactively via `:role` binding when `error` prop changes.
+- CSS variables are scoped with `.vc-hint` selector in `vc-hint.vue` `<style scoped>`.
+- Source: `framework/ui/components/atoms/vc-hint/vc-hint.vue`
+
+<!-- internal:end -->

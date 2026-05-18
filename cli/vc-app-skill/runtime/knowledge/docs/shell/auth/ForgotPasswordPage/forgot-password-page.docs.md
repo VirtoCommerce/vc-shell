@@ -1,3 +1,10 @@
+---
+title: ForgotPasswordPage
+category: composables
+group: utilities
+internal: true
+---
+
 # ForgotPasswordPage
 
 Password recovery page where the user enters their email to receive a reset link. Shows a masked-email confirmation on success. This page is part of the standard authentication flow in vc-shell and handles the first step of password recovery: collecting the user's email address and dispatching a reset email through the platform API.

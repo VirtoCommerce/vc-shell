@@ -1,3 +1,9 @@
+---
+title: useDataTableSort
+category: composables
+group: data
+---
+
 # useDataTableSort
 
 Manages page-level sort state for `VcDataTable` using numeric sort order conventions (`1` = ASC, `-1` = DESC, `0` = none). Provides `sortField` and `sortOrder` refs for `v-model` binding directly on `VcDataTable`, plus a `sortExpression` computed string for API calls.

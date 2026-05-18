@@ -1,6 +1,14 @@
+---
+title: VcStatusIcon
+category: components
+group: feedback
+---
+
 # VcStatusIcon
 
 A simple boolean status indicator that displays a green check icon for active/success or a muted cross icon for inactive/failure. It is designed for compact spaces like table cells and lists where a full text label would be too verbose.
+
+::storybook id="data-display-vcstatusicon--both-statuses"
 
 ## When to Use
 
@@ -104,6 +112,8 @@ import { VcStatusIcon } from "@vc-shell/framework";
 </template>
 ```
 
+::storybook id="data-display-vcstatusicon--in-context"
+
 ## Recipe: Status Icon with Custom Label
 
 VcStatusIcon is intentionally minimal. If you need a text label next to the icon, compose it yourself:
@@ -146,3 +156,13 @@ VcStatusIcon is intentionally minimal. If you need a text label next to the icon
 - [VcStatus](../vc-status/) -- labeled multi-variant status badge for richer state display
 - [VcIcon](../vc-icon/) -- standalone icon component used internally
 - [VcBadge](../vc-badge/) -- inline pill badges for multi-state indicators
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcStatusIcon wraps two `VcIcon` instances in a single `<span>` with `v-if`/`v-else` switching on the `status` prop.
+- Icon size inherits from parent font-size; no dedicated size prop is exposed.
+- Source: `framework/ui/components/atoms/vc-status-icon/vc-status-icon.vue`
+
+<!-- internal:end -->

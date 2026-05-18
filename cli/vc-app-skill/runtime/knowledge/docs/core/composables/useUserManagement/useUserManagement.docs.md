@@ -1,3 +1,10 @@
+---
+title: useUserManagement
+category: composables
+group: user
+internal: true
+---
+
 # useUserManagement
 
 Shared composable exposing the full user management API: sign-in, sign-out, password reset, token validation, and login type discovery. This composable extends the same internal logic as `useUser` but surfaces the administrative and authentication-flow methods that `useUser` intentionally hides. The separation ensures that regular blades only have access to read-only user state, while auth pages and admin screens get the full API.

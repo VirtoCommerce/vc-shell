@@ -1,3 +1,10 @@
+---
+title: PopupCommon
+category: composables
+group: utilities
+internal: true
+---
+
 # Popup Common Components
 
 Pre-configured popup variants for warning, error, and info dialogs. Built on a shared `VcPopupBase` component that wraps the `VcPopup` organism.

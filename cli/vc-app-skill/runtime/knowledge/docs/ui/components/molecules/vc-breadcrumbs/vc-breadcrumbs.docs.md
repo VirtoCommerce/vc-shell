@@ -1,6 +1,17 @@
+---
+title: VcBreadcrumbs
+category: components
+group: navigation
+---
+
+!!! tip "Quick reference"
+Jump to [Props](#props) · [Slots](#slots) · [CSS Variables](#css-variables) · [Accessibility](#accessibility)
+
 # VcBreadcrumbs
 
 Navigation breadcrumb trail that displays the user's location within a hierarchy and adaptively collapses middle items into a dropdown when horizontal space is limited.
+
+::storybook id="navigation-vcbreadcrumbs--default"
 
 ## When to Use
 
@@ -51,6 +62,8 @@ interface Breadcrumbs {
 
 ## Adaptive Overflow
 
+::storybook id="navigation-vcbreadcrumbs--many-items"
+
 VcBreadcrumbs monitors the container width with `useAdaptiveItems` and automatically collapses middle items into a dropdown when they do not fit. The first and last items stay visible; overflow items appear behind a "more" button (vertical ellipsis).
 
 The collapse algorithm uses a reverse strategy -- it hides items starting from the left (after the first) so the current page (last item) always remains visible.
@@ -63,6 +76,8 @@ The collapse algorithm uses a reverse strategy -- it hides items starting from t
 ```
 
 ## Separated Style
+
+::storybook id="navigation-vcbreadcrumbs--separated"
 
 Enable slash separators between items with the `separated` prop:
 
@@ -275,3 +290,15 @@ clickHandler: () => { navigate(); return true; }
 - [VcDropdown](../vc-dropdown/) -- Used internally to render the overflow menu
 - [VcBreadcrumbsItem](./_internal/vc-breadcrumbs-item/) -- Internal sub-component for individual breadcrumb rendering
 - [VcButton](../../atoms/vc-button/) -- Can be used inside the `trigger` slot for a styled overflow button
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- Overflow detection uses `useAdaptiveItems` composable with `calculationStrategy: "reverse"` — items are hidden starting from the second item (left side), keeping the last item (current page) always visible.
+- `MORE_BUTTON_WIDTH = 36` and `INITIAL_ITEM_WIDTH = 60` are conservative estimates used in the initial layout pass before DOM measurement.
+- The `VcDropdown` instance for the overflow menu uses `floating` and `placement="bottom-start"`.
+- `VcBreadcrumbsItem` is an internal sub-component in `_internal/vc-breadcrumbs-item/` — not exported from the index.
+- The `useBreadcrumbs` composable lives in `framework/core/composables/useBreadcrumbs/`.
+
+<!-- internal:end -->

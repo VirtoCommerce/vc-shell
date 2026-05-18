@@ -1,3 +1,10 @@
+---
+title: DraggableDashboard
+category: composables
+group: utilities
+internal: true
+---
+
 # DraggableDashboard
 
 Gridstack.js-powered dashboard container that renders registered widgets in a drag-and-drop grid layout. Automatically persists layout changes to localStorage and supports widget resizing. This is the main dashboard component used as the landing page in vc-shell applications, providing a customizable overview with KPI widgets, charts, quick actions, and data summaries.

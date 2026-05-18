@@ -1,3 +1,9 @@
+---
+title: useAssetsManager
+category: composables
+group: data
+---
+
 # useAssetsManager
 
 High-level composable for managing asset arrays (images, documents, files). Wraps upload, remove, reorder, and metadata editing operations, mutating a reactive ref directly — no manual wiring needed.
@@ -147,7 +153,12 @@ interface AssetLike {
 
 ## Related
 
-- `framework/modules/assets-manager/` — AssetsManager blade (table UI for managing assets)
-- `framework/modules/assets/` — AssetsDetails blade (single asset editing)
-- `framework/ui/components/organisms/vc-gallery/` — VcGallery component
-- `framework/core/composables/useAssets/` — deprecated low-level composable
+- `VcGallery` -- gallery component that integrates with `useAssetsManager` events
+- [`useAssets`](../useAssets/) -- lower-level composable for manual upload/remove operations
+
+<!-- internal:start -->
+
+- `framework/modules/assets-manager/` -- AssetsManager blade (table UI for managing assets)
+- `framework/modules/assets/` -- AssetsDetails blade (single asset editing)
+- `framework/ui/components/organisms/vc-gallery/` -- VcGallery component source
+<!-- internal:end -->

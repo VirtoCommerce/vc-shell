@@ -1,6 +1,14 @@
+---
+title: VcLabel
+category: components
+group: misc
+---
+
 # VcLabel
 
 A form field label component with support for required indicators, info tooltips, multilanguage badges, and error states. Renders as a `<label>` when linked to an input via `htmlFor`, or a `<div>` otherwise. VcLabel is the standard way to label any form control in the framework and is used internally by most input molecules (VcInput, VcSelect, VcTextarea, etc.).
+
+::storybook id="data-display-vclabel--default"
 
 ## When to Use
 
@@ -47,6 +55,8 @@ A form field label component with support for required indicators, info tooltips
 | `--label-tooltip-color`  | `var(--neutrals-400)` | Tooltip icon color             |
 | `--label-lang-color`     | `var(--neutrals-500)` | Language badge text color      |
 | `--label-error-color`    | `var(--danger-500)`   | Text color in error state      |
+
+::storybook id="data-display-vclabel--required" height="200"
 
 ## Common Patterns
 
@@ -144,8 +154,22 @@ Use a different icon for the tooltip trigger:
 - Tooltip icon is focusable and keyboard-accessible via the underlying VcTooltip component
 - Error state changes the visual color but does not add ARIA attributes to the label; pair with `aria-invalid` and `aria-describedby` on the input
 
+::storybook id="data-display-vclabel--with-form-field" height="300"
+
 ## Related Components
 
 - [VcHint](../vc-hint/) -- helper/error text placed below the input
 - [VcTooltip](../vc-tooltip/) -- used internally for the info tooltip
 - [VcInput](../../molecules/vc-input/) -- form input component commonly paired with VcLabel
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcLabel lives in `framework/ui/components/atoms/vc-label/`.
+- The element type (`<label>` vs `<div>`) is determined by a computed `tag` that checks whether `htmlFor` is a non-empty string.
+- The tooltip trigger is rendered by `VcTooltip` (internal molecule); the `tooltipIcon` prop simply passes through to an inner `VcIcon` instance.
+- `multilanguage` + `currentLanguage` render a small pill via an inline `<span>` with `.vc-label__lang` class — not a separate component.
+- VcLabel is the canonical label primitive consumed by `VcInput`, `VcSelect`, `VcTextarea`, `VcCheckbox`, and `VcRadioButton` in `framework/ui/components/molecules/`.
+
+<!-- internal:end -->

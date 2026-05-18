@@ -1,6 +1,14 @@
+---
+title: VcSkeleton
+category: components
+group: feedback
+---
+
 # VcSkeleton
 
 A loading placeholder component that renders animated shimmer shapes (text lines, circles, or rectangular blocks) to indicate content is being fetched.
+
+::storybook id="layout-vcskeleton--default"
 
 ## When to Use
 
@@ -46,6 +54,8 @@ The last row automatically renders at 60% width for a natural paragraph feel.
 ```vue
 <VcSkeleton variant="circle" :width="48" :height="48" />
 ```
+
+::storybook id="layout-vcskeleton--card-skeleton" height="450"
 
 ### Card Skeleton
 
@@ -121,3 +131,13 @@ The last row automatically renders at 60% width for a natural paragraph feel.
 
 - [VcLoading](../vc-loading/) -- animated overlay for sections already rendered
 - [VcProgress](../vc-progress/) -- determinate progress bar
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- The `text` variant uses an `Array(rows).fill(0)` to render `<span>` elements via `v-for`. The last row gets a `width: 60%` inline style for a natural paragraph taper.
+- Animation uses a CSS `@keyframes` pulse (opacity oscillation), not a moving shimmer, for simplicity and performance.
+- Source: `framework/ui/components/atoms/vc-skeleton/vc-skeleton.vue`
+
+<!-- internal:end -->

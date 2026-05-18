@@ -1,6 +1,17 @@
+---
+title: VcTextarea
+category: components
+group: form
+---
+
+!!! note "Large reference page"
+This page is long. Use the section links in the sidebar or your browser's in-page search (Ctrl/Cmd+F) to jump to the section you need.
+
 # VcTextarea
 
 A multi-line text input field for entering and editing large blocks of text. Provides label, placeholder, hint text, validation error display, character limits, and multilanguage support out of the box.
+
+::storybook id="form-vctextarea--default"
 
 ## When to Use
 
@@ -99,6 +110,8 @@ const form = reactive({
 
 ### States
 
+::storybook id="form-vctextarea--with-error"
+
 ```vue
 <!-- Required field -->
 <VcTextarea v-model="value" label="Address" required />
@@ -111,6 +124,8 @@ const form = reactive({
 ```
 
 ## Recipes
+
+::storybook id="form-vctextarea--with-max-length"
 
 ### Product Description in a Blade Form
 
@@ -293,3 +308,15 @@ const description = ref<string>("");
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- The native `<textarea>` element is exposed via `defineExpose({ focus })` so parent components can call `focus()` programmatically.
+- The `invalid` computed is `props.error || !!props.errorMessage` — either flag alone triggers error styling.
+- There is no debounce on the textarea; all `input` events fire `update:modelValue` immediately.
+- The `disabled` state is inherited from the nearest `VcInputGroup` ancestor via provide/inject (when used inside a group).
+- Source file: `framework/ui/components/molecules/vc-textarea/vc-textarea.vue`
+
+<!-- internal:end -->

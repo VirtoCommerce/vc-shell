@@ -1,3 +1,9 @@
+---
+title: useLoading
+category: composables
+group: ui-state
+---
+
 # useLoading
 
 Aggregates multiple reactive boolean loading refs into a single computed that is `true` when any source is loading. This is a minimal utility composable -- just one line of logic -- but it solves a very common problem in blade development: when a component depends on several async data sources, you need a single flag for the loading overlay. Instead of writing `computed(() => loadingA.value || loadingB.value || loadingC.value)` in every blade, `useLoading` provides a clean, readable shorthand that scales to any number of sources.
@@ -31,6 +37,8 @@ const combinedLoading = useLoading(loadingA, loadingB, loadingC);
 | ---------------------- | ------------------------------------------------------------------------------------------------------ |
 | `ComputedRef<boolean>` | `true` if any of the input refs is `true`, `false` otherwise. Re-evaluates whenever any input changes. |
 
+<!-- internal:start -->
+
 ## How It Works
 
 The implementation is a single `computed` that calls `Array.some()` on the input refs:
@@ -40,6 +48,8 @@ computed(() => args.some((item) => item.value));
 ```
 
 Because `computed` tracks all `.value` accesses, Vue knows to re-evaluate whenever any of the input refs changes. The `some()` short-circuits on the first `true`, so it is efficient even with many inputs.
+
+<!-- internal:end -->
 
 ## Recipe: Blade with Multiple Data Sources
 

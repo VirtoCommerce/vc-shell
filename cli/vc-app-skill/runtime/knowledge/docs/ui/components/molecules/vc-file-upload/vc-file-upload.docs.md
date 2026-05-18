@@ -1,3 +1,9 @@
+---
+title: VcFileUpload
+category: components
+group: form
+---
+
 # VcFileUpload
 
 Drag-and-drop file upload zone with file type filtering, validation, loading state, and error display. Provides both drag-and-drop and click-to-browse interactions in a single drop zone.
@@ -14,6 +20,8 @@ Drag-and-drop file upload zone with file type filtering, validation, loading sta
 - For a simple file input without the drag-and-drop zone, use a native `<input type="file">` wrapped in your own UI
 
 ## Quick Start
+
+::storybook id="form-vcfileupload--default"
 
 ```vue
 <template>
@@ -75,6 +83,9 @@ Integrate with vee-validate for file validation rules such as size limits:
 
 When validation fails, the error is displayed below the drop zone using the built-in `VcHint` component. The `upload` event is only emitted when validation passes.
 
+!!! warning "FileList is not a plain Array"
+The `upload` event emits a `FileList` object, not `File[]`. Always convert with `Array.from(files)` before calling array methods like `.map()` or `.filter()`.
+
 ## Loading State
 
 Show a loading overlay while files are being processed or uploaded:
@@ -102,6 +113,8 @@ Override the default drag-and-drop instructions and icon:
 
 The default icon is `"lucide-cloud-upload"`. The default text is pulled from the `COMPONENTS.MOLECULES.VC_FILE_UPLOAD.DRAG_HERE` and `COMPONENTS.MOLECULES.VC_FILE_UPLOAD.BROWSE` locale keys.
 
+::storybook id="form-vcfileupload--loading"
+
 ## Error Display
 
 Errors can come from three sources (by priority): the `errorMessage` prop, vee-validate `rules`, or the `error` slot for fully custom rendering.
@@ -119,6 +132,8 @@ Errors can come from three sources (by priority): the `errorMessage` prop, vee-v
 ```
 
 When any error is present, the drop zone border changes to the error color and a ring appears.
+
+::storybook id="form-vcfileupload--with-error-message"
 
 ## Disabled State
 
@@ -315,6 +330,8 @@ async function onUpload(files: FileList) {
 - [VcGallery](../../organisms/vc-gallery/) -- Full image gallery with preview, reorder, drag-and-drop sorting, and upload
 - [VcImageTile](../vc-image-tile/) -- Image display tile used inside galleries
 - [VcHint](../../atoms/vc-hint/) -- Used internally for error message display
+
+::storybook id="form-vcfileupload--skeleton"
 
 ## Skeleton / Loading State
 

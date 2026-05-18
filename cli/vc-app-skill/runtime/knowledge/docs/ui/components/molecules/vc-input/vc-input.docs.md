@@ -1,6 +1,17 @@
+---
+title: VcInput
+category: components
+group: form
+---
+
+!!! note "Large reference page"
+This page is long. Use the section links in the sidebar or your browser's in-page search (Ctrl/Cmd+F) to jump to the section you need.
+
 # VcInput
 
 A single-line text input component for forms in vc-shell applications. Supports multiple input types (text, number, password, email, and more), prefix/suffix decorations, inner/outer slot content, built-in clearable state, password visibility toggle, loading indicator, debounced model updates, and integration with vee-validate for validation.
+
+::storybook id="form-vcinput--default"
 
 ## When to Use
 
@@ -44,9 +55,13 @@ const productName = ref("");
 
 This renders a labeled text input with placeholder text. The value is two-way bound via `v-model`.
 
+::storybook id="form-vcinput--all-states" height="450"
+
 ---
 
 ## Input Types
+
+::storybook id="form-vcinput--input-types" height="500"
 
 VcInput supports the following `type` values. Each type adjusts the native `<input>` behavior and, in some cases, adds extra UI or filtering logic.
 
@@ -297,6 +312,8 @@ Override the default error message or hint text rendering.
 ---
 
 ## Sizes
+
+::storybook id="form-vcinput--all-sizes"
 
 Two size variants are available:
 
@@ -771,3 +788,16 @@ VcInput follows WAI-ARIA best practices for form fields:
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- The `type="date"`, `type="datetime-local"`, and `type="color"` values trigger internal delegation — the component renders `VcDatePicker` or `VcColorInput` instead of a native `<input>`. All forwarded props are passed via `v-bind="$attrs"`.
+- Debounce is implemented via a `useDebounceFn` wrapper from VueUse. The internal `temp` ref holds the raw typing value; the `modelValue` update is deferred.
+- `number` / `integer` type filtering uses `keydown` event guards — not `input` event filtering — to block `-`, `+`, `e`, and (for `integer`) `.` keys before they reach the input.
+- `type="password"` show/hide toggle is controlled by `showPassword` ref; the native `input` type toggles between `"password"` and `"text"`.
+- The `control` slot replaces the native `<input>` with an arbitrary element. The `emitValue` scope function wraps the debounce logic, so custom controls respect the `debounce` prop automatically.
+- Source file: `framework/ui/components/molecules/vc-input/vc-input.vue`
+
+<!-- internal:end -->

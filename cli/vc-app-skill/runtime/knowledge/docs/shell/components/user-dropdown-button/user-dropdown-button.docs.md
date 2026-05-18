@@ -1,3 +1,10 @@
+---
+title: UserDropdownButton
+category: composables
+group: utilities
+internal: true
+---
+
 # UserDropdownButton
 
 User account trigger displayed in the shell sidebar footer. Shows the user's avatar, display name, and role. On desktop it opens a floating settings menu dropdown anchored to the button; on mobile it opens a full sidebar panel that slides in from the left. The component automatically adapts its layout based on the sidebar's expanded/collapsed state.

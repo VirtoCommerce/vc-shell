@@ -1,3 +1,9 @@
+---
+title: VcEditor
+category: components
+group: form
+---
+
 # VcEditor
 
 A rich text editor built on TipTap that supports both Markdown and HTML content. Includes a customizable toolbar, multiple view modes (WYSIWYG, preview, source, split), fullscreen editing, image upload, character limits, and plugin-style custom toolbar buttons.
@@ -16,6 +22,8 @@ When NOT to use:
 - Code editing with syntax highlighting -- use a dedicated code editor
 
 ## Quick Start
+
+::storybook id="form-vceditor--default" height="500"
 
 ```vue
 <template>
@@ -50,6 +58,9 @@ The editor header provides four view modes plus a fullscreen toggle:
 
 The editor automatically detects whether content is Markdown or HTML based on pattern analysis and outputs in the same format. HTML content is auto-formatted with Prettier in source/split views.
 
+!!! note "Content format is auto-detected"
+VcEditor detects whether content is Markdown or HTML and outputs in the same format. If you pass Markdown input, you will get Markdown output. If you need HTML output, start with HTML content.
+
 ### Custom Toolbar Configuration
 
 Limit which toolbar buttons appear by passing a `toolbar` array. Only the specified buttons will render. Available toolbar names:
@@ -79,6 +90,8 @@ When `assetsFolder` is provided, the image toolbar button becomes functional. Cl
 ```
 
 Multiple images can be selected at once. The upload accepts any image file type (`image/*`).
+
+::storybook id="form-vceditor--custom-toolbar" height="500"
 
 ### Custom Toolbar Buttons (Plugin System)
 
@@ -132,6 +145,8 @@ Pass extra TipTap extensions via the `extensions` prop to augment the built-in s
 ```vue
 <VcEditor v-model="content" :extensions="[Highlight.configure({ multicolor: true })]" />
 ```
+
+::storybook id="form-vceditor--with-custom-buttons" height="500"
 
 ### Validation with vee-validate Field
 
@@ -282,6 +297,8 @@ const content = ref("<h1>Title</h1>");
 
 - [VcTextarea](../vc-textarea/) -- plain multi-line text input (no formatting)
 - [VcInput](../vc-input/) -- single-line text input
+
+::storybook id="form-vceditor--skeleton"
 
 ## Skeleton / Loading State
 

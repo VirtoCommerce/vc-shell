@@ -1,6 +1,17 @@
+---
+title: VcColorInput
+category: components
+group: form
+---
+
+!!! tip "Quick reference"
+See [Key Props](#key-props) for the full prop table, or jump to [Common Patterns](#common-patterns) for copy-paste examples.
+
 # VcColorInput
 
 A color input that combines a text field for hex values with a clickable color swatch that opens the native browser color picker. Accepts hex codes and CSS color names.
+
+::storybook id="form-vccolorinput--default"
 
 ## Overview
 
@@ -52,6 +63,8 @@ const color = ref<string | null>(null);
 ## Common Patterns
 
 ### With Validation
+
+::storybook id="form-vccolorinput--with-error"
 
 ```vue
 <template>
@@ -198,3 +211,14 @@ The native color picker does not support alpha/transparency. If you need RGBA co
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint. No additional props or configuration needed.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- The swatch button is a native `<button type="button">` that triggers a hidden `<input type="color">` via programmatic `.click()`. The native color picker is not visible — only the swatch button is.
+- Color synchronization: typing in the text field updates `modelValue` directly; selecting from the native picker emits the new hex value and also updates the text field.
+- The component does NOT validate hex format — any string is accepted as-is and the swatch will display whatever color the browser interprets.
+- Source file: `framework/ui/components/molecules/vc-color-input/vc-color-input.vue`
+
+<!-- internal:end -->

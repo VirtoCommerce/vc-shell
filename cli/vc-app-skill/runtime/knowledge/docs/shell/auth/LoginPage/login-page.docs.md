@@ -1,3 +1,10 @@
+---
+title: LoginPage
+category: composables
+group: utilities
+internal: true
+---
+
 # LoginPage
 
 Full-page login screen with username/password form, SSO external provider support, and forgot-password navigation. Wraps `VcAuthLayout` and uses `useUserManagement` for authentication. This is the primary entry point for user authentication in vc-shell applications, supporting both standard credential-based login and SSO/external provider authentication.

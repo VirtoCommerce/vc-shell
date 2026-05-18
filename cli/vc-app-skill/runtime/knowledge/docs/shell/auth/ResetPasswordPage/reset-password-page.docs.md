@@ -1,3 +1,10 @@
+---
+title: ResetPasswordPage
+category: composables
+group: utilities
+internal: true
+---
+
 # ResetPasswordPage
 
 Password reset page reached via an email link containing a token. Validates the token on mount, then shows password and confirm-password fields. On success, the user is automatically signed in and redirected to the main application. This page is the second step of the password recovery flow, following the `ForgotPasswordPage` which dispatches the reset email.

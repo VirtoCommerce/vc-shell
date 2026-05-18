@@ -1,3 +1,9 @@
+---
+title: MultilanguageSelector
+category: components
+group: form
+---
+
 # MultilanguageSelector
 
 Compact circular flag button that opens a dropdown for selecting a content language. Designed for use in detail blades where entities have multilingual fields (e.g., product name, offer description, category title). This is distinct from the `LanguageSelector` settings entry, which changes the application UI locale -- `MultilanguageSelector` controls which language version of the content the user is editing.
@@ -9,6 +15,8 @@ Compact circular flag button that opens a dropdown for selecting a content langu
 - Do NOT use for switching the application UI locale (use `LanguageSelector` instead)
 
 ## Basic Usage
+
+::storybook id="shared-multilanguageselector--interactive"
 
 ```vue
 <script setup lang="ts">
@@ -40,6 +48,8 @@ const languages = [
 | `disabled`   | `boolean`          | `false` | Disables interaction              |
 
 Each `LanguageOption` has: `{ value: string; label: string; flag?: string }`.
+
+::storybook id="shared-multilanguageselector--disabled"
 
 ## Recipe: Multilingual Product Editing Blade
 

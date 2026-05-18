@@ -1,3 +1,9 @@
+---
+title: useTableSelection
+category: composables
+group: data
+---
+
 # useTableSelection
 
 Manages table row selection state including multi-select, select-all, and programmatic selection. This composable provides a complete external selection API for VcDataTable, enabling bulk operations like delete, export, or status changes on selected rows.

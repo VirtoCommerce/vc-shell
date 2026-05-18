@@ -1,6 +1,14 @@
+---
+title: VcDynamicProperty
+category: components
+group: form
+---
+
 # VcDynamicProperty
 
 Renders a VirtoCommerce platform dynamic property as the appropriate form control, automatically selecting the input component based on value type, dictionary, and multivalue flags. VcDynamicProperty eliminates the need for manual `v-if` chains when rendering properties whose type is determined at runtime — it maps each combination of `valueType`, `dictionary`, and `multivalue` to the correct input molecule and passes through all relevant props.
+
+::storybook id="data-display-vcdynamicproperty--default"
 
 ## When to Use
 
@@ -43,6 +51,8 @@ Renders a VirtoCommerce platform dynamic property as the appropriate form contro
 | `optionsGetter`      | `Function` | -       | Async loader for dictionary options                                           |
 | `measurementsGetter` | `Function` | -       | Async loader for measurement units                                            |
 | `rules`              | `object`   | -       | Validation rules: `{ min, max, regex }`                                       |
+
+::storybook id="data-display-vcdynamicproperty--property-form" height="500"
 
 ## Value Type to Component Mapping
 
@@ -108,6 +118,8 @@ function handlePropertyUpdate(property: any, newValue: any) {
   </div>
 </template>
 ```
+
+::storybook id="data-display-vcdynamicproperty--required-with-validation" height="300"
 
 ## Recipe: Dynamic Property with Validation
 

@@ -1,3 +1,10 @@
+---
+title: Injection Keys
+category: reference
+group: api
+slug: injection-keys
+---
+
 # Injection Keys
 
 Centralized Vue `InjectionKey` symbols for the vc-shell framework's provide/inject dependency injection system. All keys are typed via `InjectionKey<T>` for full TypeScript safety.
@@ -76,6 +83,8 @@ This centralized approach has several advantages:
 | `IsTabletKey`  | `Ref<boolean>` | Tablet breakpoint      |
 | `IsTouchKey`   | `boolean`      | Touch device detection |
 
+<!-- internal:start -->
+
 ### Legacy Aliases (Deprecated)
 
 | Deprecated          | Use Instead          |
@@ -95,6 +104,8 @@ These keys existed in v1.2.3 but have been removed from the framework entirely. 
 | `BladeInstance`               | Use `useBlade()` composable, or `inject(BladeDescriptorKey)`                   |
 | `NotificationTemplatesSymbol` | Template system replaced by `NotificationStoreKey` + `useBladeNotifications()` |
 | `GlobalSearchKey`             | Internal concern now — no public replacement                                   |
+
+<!-- internal:end -->
 
 ## Usage Examples
 

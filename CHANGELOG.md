@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.3...v2.0.4) (2026-05-18)
+
+### Features
+
+- **docs-sync:** introduce Plugins category (#223) ([8ddc48b](https://github.com/VirtoCommerce/vc-shell/commit/8ddc48bffb65964adacd1a3170c2d6c63d312f68)), closes [#223](https://github.com/VirtoCommerce/vc-shell/issues/223)
+
+### Bug Fixes
+
+- **ai-agent:** return undefined from useAiAgent() if not provided (#227) ([d15c26a](https://github.com/VirtoCommerce/vc-shell/commit/d15c26a1ec1eeceac6f96ca66b96fb0b41cf4c46)), closes [#227](https://github.com/VirtoCommerce/vc-shell/issues/227)
+- **create-vc-app:** scope npx examples in README, clean up abandoned host-app (#222) ([5ccd1cd](https://github.com/VirtoCommerce/vc-shell/commit/5ccd1cdc10d078612263bf4fba7b8e643e093f3c)), closes [#222](https://github.com/VirtoCommerce/vc-shell/issues/222)
+- **sync-docs:** use absolute paths for sync target and report (#226) ([c27f12c](https://github.com/VirtoCommerce/vc-shell/commit/c27f12c576f5e5b01b10e460e954ea0cce209606)), closes [#226](https://github.com/VirtoCommerce/vc-shell/issues/226)
+
 ## [2.0.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.2...v2.0.3) (2026-04-30)
 
 ### Bug Fixes

@@ -1,6 +1,14 @@
+---
+title: VcCheckboxGroup
+category: components
+group: form
+---
+
 # VcCheckboxGroup
 
 Accessible checkbox group that wraps multiple checkboxes in a semantic fieldset with shared label, hint, error state, and layout control.
+
+::storybook id="form-vccheckboxgroup--default"
 
 ## When to Use
 
@@ -75,6 +83,8 @@ interface CheckboxGroupOption<V = string | number | boolean> {
 
 ### Horizontal Layout
 
+::storybook id="form-vccheckboxgroup--horizontal"
+
 ```vue
 <VcCheckboxGroup
   v-model="permissions"
@@ -89,6 +99,8 @@ interface CheckboxGroupOption<V = string | number | boolean> {
 ```
 
 ### With Disabled Option
+
+::storybook id="form-vccheckboxgroup--with-disabled-option"
 
 ```vue
 <VcCheckboxGroup
@@ -135,3 +147,14 @@ interface CheckboxGroupOption<V = string | number | boolean> {
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- VcCheckboxGroup delegates rendering to `VcInputGroup` (semantic fieldset wrapper) and renders `VcCheckbox` items from the `options` array, or passes through the default slot for custom layouts.
+- The group generates a unique `name` attribute via `useId()` when none is provided, ensuring native radio group behavior.
+- `normalizedModelValue` guards against non-array `modelValue` to avoid runtime errors when the parent passes `undefined`.
+- Source file: `framework/ui/components/molecules/vc-checkbox-group/vc-checkbox-group.vue`
+
+<!-- internal:end -->

@@ -1,3 +1,10 @@
+---
+title: v-autofocus
+category: reference
+group: api/directives
+slug: v-autofocus
+---
+
 # v-autofocus Directive
 
 Focuses an element when it is mounted, conditionally based on the binding value.

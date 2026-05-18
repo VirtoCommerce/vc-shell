@@ -1,3 +1,10 @@
+---
+title: DashboardCharts
+category: composables
+group: utilities
+internal: true
+---
+
 # DashboardCharts
 
 Suite of dashboard chart components (line, bar, donut) built on Unovis. Each chart accepts a generic data array, a `ChartConfig` for series colors/labels, and supports hover tooltips, legends, and optional range filtering.

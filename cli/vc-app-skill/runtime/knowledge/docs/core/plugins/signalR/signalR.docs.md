@@ -1,3 +1,10 @@
+---
+title: SignalR
+category: plugins
+group: root
+slug: signalr
+---
+
 # SignalR Plugin
 
 Real-time push notification transport via ASP.NET SignalR. Connects to the platform's `/pushNotificationHub` and routes incoming messages to the notification store.

@@ -1,3 +1,9 @@
+---
+title: useModificationTracker
+category: composables
+group: forms
+---
+
 # useModificationTracker
 
 Tracks deep changes to a value and reports whether it has been modified compared to its original (pristine) state. This is the core composable behind the "unsaved changes" detection pattern in vc-shell blades. It handles complex nested objects, arrays, and the common API quirk where `null`, `undefined`, and `""` should be treated as equivalent empty values.

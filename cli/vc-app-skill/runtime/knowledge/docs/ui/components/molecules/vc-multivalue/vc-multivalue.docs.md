@@ -1,6 +1,17 @@
+---
+title: VcMultivalue
+category: components
+group: form
+---
+
+!!! note "Large reference page"
+This page is long. Use the section links in the sidebar or your browser's in-page search (Ctrl/Cmd+F) to jump to the section you need.
+
 # VcMultivalue
 
 A multi-value input component for collecting multiple entries as chips/tags. Supports two distinct modes: **free-form entry** (text, number, date, color) where users type values and press Enter, and **dictionary mode** with a searchable dropdown of predefined options.
+
+::storybook id="form-vcmultivalue--default"
 
 ## When to Use
 
@@ -45,6 +56,8 @@ In the default mode (`multivalue` is `false`), users type a value into the input
 ```
 
 ### Dictionary Mode (Dropdown Selection)
+
+::storybook id="form-vcmultivalue--single-value-mode"
 
 When the `multivalue` prop is `true` and `options` are provided, the component displays a searchable dropdown. Users click the field to open the dropdown, search within options, and select items. Already-selected items are automatically excluded from the dropdown.
 
@@ -138,6 +151,8 @@ const form = reactive({
 ```
 
 ### Custom Rendering with Slots
+
+::storybook id="form-vcmultivalue--custom-option-display"
 
 Use `#option` for dropdown items and `#selected-item` for chips:
 
@@ -344,3 +359,16 @@ The component uses `--multivalue-*` variables that fall back to `--select-*` tok
 When placed inside a `VcBlade` with `loading=true`, the component automatically renders a skeleton placeholder matching its visual footprint — a label block (when the `label` prop is set) and an input-shaped block. No additional props or configuration needed.
 
 This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The component injects the loading state from the nearest `VcBlade` ancestor.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- Composed of internal sub-components in `vc-multivalue/_internal/`: the chip list renderer, the dropdown panel, and the trigger input.
+- Composables are in `vc-multivalue/composables/` — chip management and dropdown open/close state are separated into composables.
+- Free-form mode: each `keydown` for Enter or comma (`','`) triggers a chip add; Backspace on empty input removes the last chip.
+- Dictionary mode: already-selected items are filtered out of the dropdown list reactively.
+- Source file: `framework/ui/components/molecules/vc-multivalue/vc-multivalue.vue`
+- Internal components: `framework/ui/components/molecules/vc-multivalue/_internal/`
+
+<!-- internal:end -->

@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.3...v2.0.4) (2026-05-18)
+
+### Features
+
+- **docs-sync:** introduce Plugins category (#223) ([8ddc48b](https://github.com/VirtoCommerce/vc-shell/commit/8ddc48bffb65964adacd1a3170c2d6c63d312f68)), closes [#223](https://github.com/VirtoCommerce/vc-shell/issues/223)
+
+### Bug Fixes
+
+- **ai-agent:** return undefined from useAiAgent() if not provided (#227) ([d15c26a](https://github.com/VirtoCommerce/vc-shell/commit/d15c26a1ec1eeceac6f96ca66b96fb0b41cf4c46)), closes [#227](https://github.com/VirtoCommerce/vc-shell/issues/227)
+
 ## [2.0.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.2...v2.0.3) (2026-04-30)
 
 ### Bug Fixes

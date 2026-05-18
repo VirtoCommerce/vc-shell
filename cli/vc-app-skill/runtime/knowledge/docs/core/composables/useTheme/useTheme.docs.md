@@ -1,3 +1,9 @@
+---
+title: useTheme
+category: composables
+group: ui-state
+---
+
 # useTheme
 
 Manages color theme registration, switching, and persistence. Themes are applied via a `data-theme` attribute on `<html>`, and the active theme key is persisted to localStorage via `@vueuse/core`'s `useColorMode`. The composable maintains a global registry of theme definitions, supports runtime registration/unregistration from modules, and provides both explicit (`setTheme`) and sequential (`next`) theme switching. A default `"light"` theme is always registered out of the box.
@@ -63,6 +69,8 @@ next();
 | `key`  | `string` | Theme identifier                                                             |
 | `name` | `string` | Localized display name, resolved from `localizationKey` or capitalized `key` |
 
+<!-- internal:start -->
+
 ## How It Works
 
 1. **Registration**: Themes are stored in a module-level `Ref<ThemeDefinition[]>` array. `register()` appends new definitions (skipping duplicates), and `unregister()` removes by key.
@@ -72,6 +80,7 @@ next();
 3. **Reactivity**: A `watchEffect` syncs the cycle-list state to `useColorMode`'s mode whenever the active theme changes.
 
 4. **Localization**: Display names are resolved via `vue-i18n`'s `t()` function using the `localizationKey`. If no key is provided, the theme's `key` is capitalized with lodash.
+<!-- internal:end -->
 
 ## Recipe: Module That Registers a Theme on Install
 

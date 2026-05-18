@@ -1,3 +1,10 @@
+---
+title: ChangePasswordPage
+category: composables
+group: utilities
+internal: true
+---
+
 # ChangePasswordPage
 
 Change password page with current, new, and confirm password fields. Supports a `forced` mode for expired passwords that displays an info banner and is triggered by post-login redirect. This full-page variant is used when the user must change their password before accessing the application (e.g., expired password policy). For voluntary password changes from within the app, the `ChangePasswordButton` in the settings menu opens a popup instead.

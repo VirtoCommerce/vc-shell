@@ -1,6 +1,14 @@
+---
+title: VcRadioGroup
+category: components
+group: form
+---
+
 # VcRadioGroup
 
 Accessible radio button group that wraps radio controls in a semantic fieldset with shared label, hint, error state, and layout control.
+
+::storybook id="form-vcradiogroup--default"
 
 ## When to Use
 
@@ -74,6 +82,8 @@ interface RadioGroupOption<V = string | number | boolean> {
 
 ### Horizontal Layout
 
+::storybook id="form-vcradiogroup--horizontal"
+
 ```vue
 <VcRadioGroup
   v-model="priority"
@@ -88,6 +98,8 @@ interface RadioGroupOption<V = string | number | boolean> {
 ```
 
 ### With Disabled Option
+
+::storybook id="form-vcradiogroup--with-disabled-option"
 
 ```vue
 <VcRadioGroup
@@ -135,3 +147,13 @@ interface RadioGroupOption<V = string | number | boolean> {
 ## Skeleton / Loading State
 
 When placed inside a `VcBlade` with `loading=true`, the component renders a skeleton placeholder matching its shape — a control indicator and label block. No configuration needed.
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- VcRadioGroup delegates rendering to `VcInputGroup` (semantic fieldset wrapper) and renders `VcRadioButton` items from the `options` array, or passes through the default slot for custom layouts.
+- The group generates a unique `name` attribute via `useId()` when none is provided, ensuring native radio group behavior.
+- Source file: `framework/ui/components/molecules/vc-radio-group/vc-radio-group.vue`
+
+<!-- internal:end -->

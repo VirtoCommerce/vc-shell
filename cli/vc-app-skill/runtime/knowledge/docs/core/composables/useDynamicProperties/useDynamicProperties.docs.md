@@ -1,3 +1,9 @@
+---
+title: useDynamicProperties
+category: composables
+group: forms
+---
+
 # useDynamicProperties
 
 Composable for managing dynamic (runtime-defined) property values with support for multilanguage, multivalue, dictionary, color, and measurement property types.

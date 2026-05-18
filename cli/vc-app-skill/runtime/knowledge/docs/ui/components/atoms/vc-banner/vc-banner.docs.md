@@ -1,6 +1,14 @@
+---
+title: VcBanner
+category: components
+group: feedback
+---
+
 # VcBanner
 
 A contextual alert component for displaying important messages, warnings, or status information. VcBanner supports four semantic variants (`info`, `warning`, `danger`, `success`), each with a distinct accent color and left border stripe. Long content is automatically collapsed behind a "Show more" toggle, keeping the blade layout clean while still giving users access to the full message.
+
+::storybook id="action-vcbanner--default"
 
 ## When to Use
 
@@ -18,6 +26,8 @@ A contextual alert component for displaying important messages, warnings, or sta
   You can add components to your app using the CLI.
 </VcBanner>
 ```
+
+::storybook id="action-vcbanner--all-variants" height="500"
 
 ## Key Props
 
@@ -157,3 +167,13 @@ Override the default "Show more" button with a custom trigger:
 - [VcCard](../vc-card/) -- for general-purpose content containers
 - [VcIcon](../vc-icon/) -- used internally for the leading icon
 - [VcBadge](../vc-badge/) -- for inline status pill labels
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- Legacy variants `"light-danger"`, `"info-dark"`, and `"primary"` are mapped in `vc-banner.vue` via a computed `resolvedVariant`. A `console.warn` is emitted in development mode only.
+- The collapse animation is driven by `max-height` CSS transition with a JS-measured `scrollHeight`. The `--vc-banner-collapsed-height` CSS variable is injected inline as a style binding.
+- Source: `framework/ui/components/atoms/vc-banner/vc-banner.vue`
+
+<!-- internal:end -->

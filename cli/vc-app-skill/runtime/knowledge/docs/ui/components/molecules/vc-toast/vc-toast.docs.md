@@ -1,3 +1,12 @@
+---
+title: VcToast
+category: components
+group: feedback
+---
+
+!!! tip "Quick reference"
+Jump to [Props](#props-component) · [Events](#events) · [Notification Service Methods](#notification-service-methods) · [CSS Variables](#css-variables)
+
 # VcToast
 
 Toast notification component with type-based styling, auto-dismiss timer, swipe-to-dismiss on touch devices, and Sonner-style stacking animations. Most applications interact with toasts through the `notification` service rather than mounting the component directly.
@@ -16,6 +25,8 @@ When NOT to use:
 - For modal confirmations requiring user action -- use a dialog/modal
 
 ## Quick Start
+
+::storybook id="overlay-vctoast--notification-service"
 
 The recommended approach is the `notification` service, not direct component usage:
 
@@ -98,6 +109,8 @@ Available positions: `"top-center"`, `"top-right"`, `"top-left"`, `"bottom-cente
 
 ### Notification Types
 
+::storybook id="overlay-vctoast--success"
+
 Each type displays a distinct icon and colored left accent border.
 
 | Type      | Icon           | Accent Color             | Use Case                     |
@@ -128,6 +141,8 @@ notification(OrderNotification, { timeout: 10000, pauseOnHover: true });
 ```
 
 ### Stacking, Swipe, and Auto-dismiss
+
+::storybook id="overlay-vctoast--multiple-notifications"
 
 Toasts use Sonner-style stacking: the newest toast is in front, older toasts scale down behind it, and hovering expands the full stack. Only 3 toasts are visible by default in the collapsed state.
 
@@ -298,3 +313,16 @@ These props are used internally by the notification system. You rarely need to s
 
 - [VcHint](../../atoms/vc-hint/) -- inline hint/error text for form fields
 - [VcIcon](../../atoms/vc-icon/) -- used internally for type-specific icons
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- `VcToast` is managed by the notification system's container component (in `framework/shell/_internal/notifications/`). Direct mounting is unusual and bypasses the stacking/positioning logic.
+- Stacking CSS uses data attributes (`data-mounted`, `data-removed`, `data-expanded`, `data-front`, `data-y-position`, `data-visible`, `data-swiping`, `data-swiped-out`) rather than class bindings for animation state — this matches the Sonner pattern and avoids Vue transition conflicts.
+- `TIME_BEFORE_UNMOUNT = 200ms` — the toast sets `data-removed="true"` to trigger CSS exit animation, then emits `close` after 200ms to remove it from the reactive list.
+- The `Timer` helper (defined inline) is a pauseable/resumeable setTimeout — `pause()` records remaining time, `resume()` restarts from remaining. Used for `pauseOnHover`.
+- Height reporting via `ResizeObserver` + `onReportHeight` callback allows the container to compute accurate stack offsets using `getBoundingClientRect()` on an `height: auto` snapshot.
+- Swipe detection uses pointer capture (`setPointerCapture`) to track moves even when the pointer leaves the element. Threshold: 45px displacement or velocity > 0.11 px/ms.
+
+<!-- internal:end -->

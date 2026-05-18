@@ -1,3 +1,10 @@
+---
+title: NotificationTemplate
+category: composables
+group: utilities
+internal: true
+---
+
 # NotificationTemplate
 
 Base template for rendering a single push notification with title, relative timestamp, optional icon, and a default slot for extra detail content. This component provides the standard layout that all notification types share, while allowing domain-specific content to be injected through the default slot.

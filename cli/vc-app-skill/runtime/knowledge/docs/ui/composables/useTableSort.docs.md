@@ -1,3 +1,9 @@
+---
+title: useTableSort
+category: composables
+group: data
+---
+
 # useTableSort
 
 Manages table sort state with three-state cycling (ASC, DESC, none) and a formatted sort expression string. This composable externalizes the sort logic from VcDataTable, making it easy to drive server-side sorting, persist sort preferences, or share sort state across multiple components.

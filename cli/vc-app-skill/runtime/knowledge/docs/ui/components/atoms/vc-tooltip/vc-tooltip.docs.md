@@ -1,8 +1,16 @@
+---
+title: VcTooltip
+category: components
+group: feedback
+---
+
 # VcTooltip
 
 A floating tooltip that appears on hover or focus to provide contextual information about a trigger element. Powered by Floating UI for automatic positioning, collision detection, and arrow alignment. The tooltip is teleported to the document body for proper stacking above all content.
 
 ## Quick Start
+
+::storybook id="overlay-vctooltip--default"
 
 ```vue
 <template>
@@ -54,6 +62,8 @@ The `start` and `end` variants align the tooltip to the beginning or end of the 
 ```
 
 ## Variants
+
+::storybook id="overlay-vctooltip--variants"
 
 Three visual themes control the tooltip's appearance.
 
@@ -172,7 +182,8 @@ The `#tooltip` slot accepts any HTML or Vue components, not just text:
 </VcTooltip>
 ```
 
-> **Caution:** Tooltips should not contain interactive content (buttons, links, inputs). If you need interactive content in a floating panel, use a popover or dropdown component instead.
+!!! warning "No interactive content inside tooltips"
+Tooltips should not contain interactive content (buttons, links, inputs). The tooltip panel has `pointer-events: none` — clicks and keyboard focus inside it are blocked. If you need interactive content in a floating panel, use a popover or dropdown component instead.
 
 ## Recipes
 
@@ -330,3 +341,16 @@ const actions = [
 - [VcHint](../vc-hint/) -- inline hint text below form fields (always visible)
 - [VcLabel](../vc-label/) -- label component with built-in tooltip support via its own `#tooltip` slot
 - [VcIcon](../vc-icon/) -- commonly used as a tooltip trigger for info indicators
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcTooltip uses `@floating-ui/vue` (`useFloating`, `autoUpdate`, `flip`, `shift`, `arrow`, `offset` middleware).
+- The tooltip content is teleported to `<body>` via Vue's `<Teleport>` to escape stacking contexts.
+- Show/hide state is managed with a single `isVisible` ref toggled by `mouseenter`/`mouseleave` and `focusin`/`focusout` on the trigger slot wrapper.
+- The delay timer is stored in a `timeoutId` ref and cleared on `mouseleave` to cancel pending show.
+- Arrow positioning is handled by the `arrowEl` template ref passed to the `arrow` middleware; position is applied via `:style` on the arrow element.
+- Source: `framework/ui/components/atoms/vc-tooltip/vc-tooltip.vue`
+
+<!-- internal:end -->

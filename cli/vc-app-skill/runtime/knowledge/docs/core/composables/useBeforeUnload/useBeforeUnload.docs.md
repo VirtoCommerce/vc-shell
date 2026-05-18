@@ -1,3 +1,9 @@
+---
+title: useBeforeUnload
+category: composables
+group: utilities
+---
+
 # useBeforeUnload
 
 Prevents the browser tab from closing when unsaved changes exist by hooking into the native `beforeunload` event. This composable is the last line of defense against accidental data loss -- it triggers the browser's built-in "Leave site?" confirmation dialog whenever the user tries to close or refresh the tab while the `modified` flag is `true`. It complements in-app guards (like blade `onBeforeClose`) by covering the case where the user bypasses the application entirely via the browser chrome.

@@ -1,3 +1,10 @@
+---
+title: LanguageSelector
+category: composables
+group: utilities
+internal: true
+---
+
 # LanguageSelector
 
 Settings menu entry that displays the current UI language and opens a cascading submenu for switching between available locales. Uses the framework `useLanguages` composable and the global vue-i18n locale list. When the user selects a different language, the entire application UI updates immediately without a page reload.

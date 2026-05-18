@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.3...v2.0.4) (2026-05-18)
+
+### Bug Fixes
+
+- **create-vc-app:** scope npx examples in README, clean up abandoned host-app (#222) ([5ccd1cd](https://github.com/VirtoCommerce/vc-shell/commit/5ccd1cdc10d078612263bf4fba7b8e643e093f3c)), closes [#222](https://github.com/VirtoCommerce/vc-shell/issues/222)
+
 ## [2.0.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.2...v2.0.3) (2026-04-30)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app

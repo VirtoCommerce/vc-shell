@@ -1,6 +1,14 @@
+---
+title: VcScrollableContainer
+category: components
+group: layout
+---
+
 # VcScrollableContainer
 
-A container component that wraps overflowing content with auto-hiding scroll arrows at the top and bottom edges. The native scrollbar is hidden via CSS, replaced by subtle chevron indicators that appear only when scrolling in that direction is possible. Users can hover over an arrow to scroll continuously or use keyboard arrow keys when the viewport is focused.
+A container component that wraps overflowing content with auto-hiding scroll arrows at the top and bottom edges.
+
+::storybook id="layout-vcscrollablecontainer--default" The native scrollbar is hidden via CSS, replaced by subtle chevron indicators that appear only when scrolling in that direction is possible. Users can hover over an arrow to scroll continuously or use keyboard arrow keys when the viewport is focused.
 
 ## When to Use
 
@@ -49,6 +57,8 @@ import { VcScrollableContainer } from "@vc-shell/framework";
 | ------------------- | -------------------------- | -------------------------------------------- |
 | `viewportRef`       | `Ref<HTMLElement \| null>` | Direct reference to the viewport DOM element |
 | `updateScrollState` | `() => void`               | Manually recalculate arrow visibility        |
+
+::storybook id="layout-vcscrollablecontainer--custom-speed" height="350"
 
 ## Recipe: Sidebar Filter List in a Blade
 

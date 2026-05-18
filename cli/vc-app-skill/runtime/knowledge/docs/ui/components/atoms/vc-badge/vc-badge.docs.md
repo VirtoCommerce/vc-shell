@@ -1,6 +1,14 @@
+---
+title: VcBadge
+category: components
+group: misc
+---
+
 # VcBadge
 
 A small indicator component for displaying counts, status dots, or short text labels. Supports two rendering modes: **positioned overlay** on a slotted element (e.g., notification count on a bell icon), or **standalone inline** badge (e.g., a tag/pill label in a list). Inline badges use a softer color palette with tinted backgrounds, while overlay badges use solid fills for maximum contrast.
+
+::storybook id="data-display-vcbadge--default"
 
 ## When to Use
 
@@ -18,6 +26,8 @@ A small indicator component for displaying counts, status dots, or short text la
 </VcBadge>
 ```
 
+::storybook id="data-display-vcbadge--variants" height="300"
+
 ## Key Props
 
 | Prop             | Type                                                                       | Default     | Description                                               |
@@ -33,6 +43,8 @@ A small indicator component for displaying counts, status dots, or short text la
 | `top`            | `string`                                                                   | --          | Custom top offset (requires `customPosition`)             |
 | `right`          | `string`                                                                   | --          | Custom right offset (requires `customPosition`)           |
 | `ariaLabel`      | `string`                                                                   | --          | Custom accessible label for the badge                     |
+
+::storybook id="data-display-vcbadge--use-cases" height="350"
 
 ## Common Patterns
 
@@ -125,3 +137,15 @@ Fine-tune the badge position relative to its parent:
 - [VcIcon](../vc-icon/) -- commonly used as slotted content inside badges
 - [VcBanner](../vc-banner/) -- for longer contextual messages and alerts
 - [VcStatus](../vc-status/) -- labeled multi-variant status indicator
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- VcBadge lives in `framework/ui/components/atoms/vc-badge/`.
+- Overlay mode uses `position: absolute` on the badge element; the parent slot wrapper is set to `position: relative` via the `.vc-badge` CSS class.
+- The `inline` prop switches the root element from `<span class="vc-badge">` (overlay) to `<span class="vc-badge--inline">` with no position context.
+- Color palette tokens: overlay uses `--{variant}-500` fills; inline uses `--{variant}-50` background + `--{variant}-700` text, defined in `framework/assets/styles/theme/colors.scss`.
+- Clickable mode integrates `role="button"` and keyboard handlers directly in the component — no separate button wrapper — to preserve the overlay stacking context.
+
+<!-- internal:end -->

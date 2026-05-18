@@ -1,3 +1,9 @@
+---
+title: VcRating
+category: components
+group: form
+---
+
 # VcRating
 
 Read-only rating display component that visualizes a numeric value as stars, a star-and-text combination, or plain text. Designed for displaying aggregate ratings in detail views, list columns, and dashboards.
@@ -15,6 +21,8 @@ Read-only rating display component that visualizes a numeric value as stars, a s
 
 ## Quick Start
 
+::storybook id="form-vcrating--stars"
+
 ```vue
 <template>
   <VcRating
@@ -28,6 +36,9 @@ Read-only rating display component that visualizes a numeric value as stars, a s
 import { VcRating } from "@vc-shell/framework";
 </script>
 ```
+
+!!! tip "Display-only component"
+VcRating is a read-only display component. It does not support user interaction for selecting a rating. For interactive rating input, build a custom component.
 
 ## Display Variants
 
@@ -55,6 +66,8 @@ Shows a single filled star icon alongside a numeric fraction. Compact and precis
 
 Displays just the numeric fraction. Minimal footprint for dense layouts like table cells.
 
+::storybook id="form-vcrating--text-only"
+
 ```vue
 <VcRating :model-value="8" :max="10" variant="text" />
 <!-- Renders: 8/10 -->
@@ -73,6 +86,8 @@ The default scale is 1-5 stars. Override with the `max` prop for different scale
 ```
 
 > **Tip:** For scales larger than 5, prefer the `"star-and-text"` or `"text"` variant. Rendering 10 individual star icons can be visually crowded.
+
+::storybook id="form-vcrating--star-and-text"
 
 ## Placeholder for No Rating
 
@@ -257,6 +272,8 @@ Use the `"star-and-text"` or `"text"` variant in table cell slots for a compact 
 - [VcField](../vc-field/) -- Read-only field display, often used alongside ratings in detail views
 - [VcLabel](../../atoms/vc-label/) -- Label atom used internally for the label and tooltip
 - [VcIcon](../../atoms/vc-icon/) -- Renders the star icons internally
+
+::storybook id="form-vcrating--skeleton"
 
 ## Skeleton / Loading State
 

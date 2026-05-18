@@ -1,3 +1,9 @@
+---
+title: VcDataTable
+category: components
+group: data-display
+---
+
 # VcDataTable
 
 The flagship data table component for VirtoCommerce admin shell. VcDataTable provides a fully declarative, template-driven API for building interactive tables with sorting, selection, inline editing, filtering, pagination, column management, row reordering, and more.
@@ -107,6 +113,8 @@ const products = ref([
 
 > **Note:** Each item must have a unique identifier field. The default is `id` -- override with the `data-key` prop if your field is named differently (e.g., `data-key="sku"`).
 
+::storybook id="data-display-vcdatatable--basic"
+
 ---
 
 ## Column Types
@@ -207,6 +215,8 @@ For any rendering not covered by built-in types, use the `#body` slot:
 
 ## Sorting
 
+::storybook id="data-display-vcdatatable--with-sorting" height="500"
+
 ### Single Column Sort
 
 Mark columns as sortable and bind the sort state:
@@ -292,6 +302,8 @@ When the backend sort field differs from the column id:
 ---
 
 ## Selection
+
+::storybook id="data-display-vcdatatable--with-selection" height="450"
 
 ### Multiple Selection (checkboxes)
 
@@ -1014,6 +1026,9 @@ async function loadNextPage() {
 ---
 
 ## State Persistence
+
+!!! tip "Use unique state keys"
+Every table in your application must have a distinct `state-key`. Two tables sharing the same key will silently overwrite each other's persisted column widths, order, and sort state.
 
 Persist column widths, column order, hidden columns, sort, and filters across page reloads:
 
@@ -1861,6 +1876,9 @@ function onRowRemove(event: { data: PriceEntry; cancel: () => void }) {
 ---
 
 ## Common Mistakes
+
+!!! warning "Performance: avoid mutating the items array in-place"
+Always replace `items` with a new array reference instead of using `splice` or `push` directly on the reactive array. Vue cannot track in-place mutations reliably in all scenarios, and VcDataTable's row reorder logic depends on receiving a fresh array to reset the pending-reorder state.
 
 ### 1. Missing `dataKey` with non-`id` identifiers
 

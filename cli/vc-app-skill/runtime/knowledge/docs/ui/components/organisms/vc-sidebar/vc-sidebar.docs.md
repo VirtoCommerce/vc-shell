@@ -1,6 +1,17 @@
+---
+title: VcSidebar
+category: components
+group: layout
+---
+
 # VcSidebar
 
 A slide-over panel for contextual workflows, settings, and detail views. Supports left, right, and bottom positions with animated transitions, focus trapping, scroll locking, and swipe-to-dismiss gestures. VcSidebar is built for use cases where a full blade is too heavy but a popup is too small — settings panels, filter drawers, item detail previews, and mobile bottom sheets.
+
+::storybook id="overlay-vcsidebar--elevated-panel"
+
+!!! tip "Sidebar vs Popup vs Blade"
+Use VcSidebar for contextual workflows that need persistent visibility. Use `VcPopup` for brief confirmation dialogs. Use `VcBlade` for primary CRUD content that belongs in the navigation stack.
 
 ## When to Use
 
@@ -103,6 +114,8 @@ Override with the `width` or `height` prop for custom dimensions.
 ## Common Patterns
 
 ### Bottom Sheet with Swipe-to-Dismiss
+
+::storybook id="overlay-vcsidebar--bottom-sheet" height="500"
 
 ```vue
 <VcSidebar v-model="open" position="bottom" size="md" draggable drag-handle>

@@ -1,3 +1,10 @@
+---
+title: Date Utilities
+category: reference
+group: api
+slug: date-utilities
+---
+
 # Date Utilities
 
 Pure functions for date formatting, relative time display, and Moment.js-to-date-fns format conversion. Built on `date-fns` with locale-aware output.

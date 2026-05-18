@@ -1,6 +1,14 @@
+---
+title: VcProgress
+category: components
+group: feedback
+---
+
 # VcProgress
 
 A horizontal progress bar that visualizes the completion percentage of a task or process. The bar fills smoothly from left to right using a CSS `transform` transition, and an optional striped variant adds an animated diagonal pattern to indicate active processing.
+
+::storybook id="layout-vcprogress--default"
 
 ## When to Use
 
@@ -50,6 +58,8 @@ const uploadPercent = ref(45);
   </div>
 </template>
 ```
+
+::storybook id="layout-vcprogress--striped"
 
 ### Multiple Progress Stages
 
@@ -164,3 +174,13 @@ async function handleUpload(files: FileList) {
 
 - [VcLoading](../vc-loading/) -- indeterminate loading overlay when percentage is unknown
 - [VcHint](../vc-hint/) -- helper text to display percentage or status message below the bar
+
+<!-- internal:start -->
+
+## Architecture notes
+
+- The fill width is driven by `transform: scaleX(value / 100)` with `transform-origin: left`, not `width`, for smoother GPU-accelerated animation.
+- The `value` prop is clamped via `Math.min(100, Math.max(0, props.value))` in a computed.
+- Source: `framework/ui/components/atoms/vc-progress/vc-progress.vue`
+
+<!-- internal:end -->

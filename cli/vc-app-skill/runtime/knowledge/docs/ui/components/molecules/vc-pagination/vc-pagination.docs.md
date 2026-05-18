@@ -1,6 +1,17 @@
+---
+title: VcPagination
+category: components
+group: navigation
+---
+
+!!! tip "Quick reference"
+Jump to [Props](#props) · [Events](#events) · [CSS Variables](#css-variables) · [Accessibility](#accessibility)
+
 # VcPagination
 
 Page navigation control with first/previous/next/last buttons and a sliding window of page numbers. Automatically adapts the number of visible page buttons for mobile viewports.
+
+::storybook id="navigation-vcpagination--default"
 
 ## When to Use
 
@@ -38,6 +49,8 @@ function onPageChange(page: number) {
 ```
 
 ## Sliding Page Window
+
+::storybook id="navigation-vcpagination--many-pages"
 
 VcPagination displays a sliding window of page number buttons centered on the current page. The window size adapts automatically:
 
@@ -290,3 +303,15 @@ currentPage.value = Math.min(currentPage.value, totalPages.value);
 
 - [VcDataTable](../../organisms/vc-table) -- Data table that commonly pairs with pagination for large datasets
 - [VcSelect](../vc-select/) -- Can be used alongside pagination for a "rows per page" selector
+
+<!-- internal:start -->
+
+## Architecture Notes
+
+- `localCurrentPage` is an internal ref synced from `props.currentPage` via a watcher. This prevents the UI from jumping when the parent has not yet updated the prop after an `itemClick` event.
+- Responsive defaults: `MAX_PAGES_MOBILE = 3`, `MAX_PAGES_DESKTOP = 5`. Both are overridden by `maxPages` prop.
+- `effectiveShowFirstLast` defaults to `true` when `showFirstLast` prop is `undefined`.
+- The `setPage` function clamps clicks to valid range `[1, props.pages]` and handles both `number` and `string` inputs (supports programmatic usage).
+- The `variant` prop is defined but currently unused in the template — reserved for a future "minimal" style.
+
+<!-- internal:end -->

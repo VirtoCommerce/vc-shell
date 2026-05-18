@@ -122,13 +122,12 @@ function mountWithAiAgentProvider(options?: {
 }
 
 describe("useAiAgent", () => {
-  it("throws when service is not provided", () => {
+  it("returns undefined when service is not provided", () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     try {
-      expect(() => {
-        mountWithSetup(() => useAiAgent());
-      }).toThrow();
+      const { result } = mountWithSetup(() => useAiAgent());
+      expect(result).toBeUndefined();
     } finally {
       warnSpy.mockRestore();
       errorSpy.mockRestore();

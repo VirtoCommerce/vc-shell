@@ -7,7 +7,7 @@ import type {
   IAiAgentMessage,
   IAiAgentBladeContext,
 } from "@core/plugins/ai-agent/types";
-import { createLogger, InjectionError } from "@core/utilities";
+import { createLogger } from "@core/utilities";
 import { useUser } from "@core/composables/useUser";
 import { useBlade } from "@core/composables/useBlade";
 import { useBladeStack } from "@core/blade-navigation";
@@ -183,11 +183,11 @@ export interface UseAiAgentReturn {
  * });
  * ```
  */
-export function useAiAgent(): UseAiAgentReturn {
+export function useAiAgent(): UseAiAgentReturn | undefined {
   const service = inject(AiAgentServiceKey);
   if (!service) {
     logger.error("AiAgentService not found. Did you forget to call provideAiAgentService()?");
-    throw new InjectionError("AiAgentService");
+    return;
   }
 
   return {

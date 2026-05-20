@@ -1,6 +1,5 @@
 import { ref, type App, type Plugin } from "vue";
 import type { Router } from "vue-router";
-import * as semver from "semver";
 import { createInstance } from "@module-federation/runtime";
 import { SHARED_DEPS_BASE } from "@vc-shell/mf-config";
 
@@ -25,7 +24,7 @@ import lodashEsPkg from "lodash-es/package.json";
 import vueusePkg from "@vueuse/core/package.json";
 import frameworkPkg from "@vc-shell/framework/package.json";
 
-const REGISTRY_URL = "/api/frontend-modules";
+import type { AppManifestResponse } from "@vc-shell/framework";
 
 const RUNTIME_LIBS: Record<string, { lib: () => unknown; version: string }> = {
   vue: { lib: () => Vue, version: vuePkg.version },
@@ -56,26 +55,38 @@ const SHARED_LIBS = Object.fromEntries(
 
 // --- Types ---
 
-export interface ModuleRegistryEntry {
+interface ModuleRegistryEntry {
   id: string;
   entry: string;
   version: string;
-  compatibleWith?: {
-    dependencies?: Record<string, string>;
-    requires?: Record<string, string>;
-  };
-}
-
-interface ModuleRegistry {
-  modules: ModuleRegistryEntry[];
+  remoteName: string;
+  exposedKey: string;
 }
 
 export interface RegisterRemoteModulesOptions {
   router: Router;
   appName: string;
+  /**
+   * Optional manifest endpoint override. Defaults to
+   * `/api/apps/${encodeURIComponent(appName)}/manifest`.
+   * Useful for ops debugging or non-standard deployments.
+   */
+  manifestUrl?: string;
 }
 
 // --- Helper functions ---
+
+function defaultManifestUrl(appName: string): string {
+  return `/api/apps/${encodeURIComponent(appName)}/manifest`;
+}
+
+function buildEntryUrl(filePath: string, hash?: string): string {
+  return hash ? `${filePath}?v=${encodeURIComponent(hash)}` : filePath;
+}
+
+function stripLeadingDotSlash(s: string): string {
+  return s.replace(/^\.\//, "");
+}
 
 /** Resolve Vue plugin(s) from MF module exports. */
 function resolvePlugins(exports: unknown): Plugin[] {
@@ -97,23 +108,11 @@ function resolvePlugins(exports: unknown): Plugin[] {
   return plugins;
 }
 
-/** Convert NuGet-style version range notation to semver. */
-function humanizeRange(range: string): string {
-  const exact = range.match(/^\[\s*([^\],]+?)\s*\]$/);
-  if (exact) return exact[1];
-  const m = range.match(/^([[\(])\s*([^,]*?)\s*,\s*([^)\]]*?)\s*([)\]])$/);
-  if (!m) return range;
-  const [, openBracket, lower, upper, closeBracket] = m;
-  const parts: string[] = [];
-  if (lower) parts.push(`${openBracket === "[" ? ">=" : ">"}${lower}`);
-  if (upper) parts.push(`${closeBracket === "]" ? "<=" : "<"}${upper}`);
-  return parts.join(" ") || range;
-}
-
 // --- Main function ---
 
 /**
- * Discover and load remote MF modules from the server registry.
+ * Discover and load remote MF modules from the platform's backoffice
+ * modularity manifest endpoint.
  *
  * Call this in your app's main.ts BEFORE app.mount():
  * ```ts
@@ -121,9 +120,9 @@ function humanizeRange(range: string): string {
  * registerRemoteModules(app, { router, appName: "my-app" });
  * ```
  *
- * The function is fire-and-forget (async internally).
- * It provides `ModulesReadyKey` and `ModulesLoadErrorKey` refs via app.provide()
- * so components can react to loading state.
+ * The function is fire-and-forget (async internally). It provides
+ * `ModulesReadyKey` and `ModulesLoadErrorKey` refs via `app.provide()` so
+ * components can react to loading state.
  */
 export function registerRemoteModules(app: App, options: RegisterRemoteModulesOptions): void {
   const { ModulesReadyKey, ModulesLoadErrorKey } = Framework;
@@ -131,71 +130,59 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
   const modulesReady = ref(false);
   const modulesLoadError = ref(false);
 
-  // Capture the original URL before the blade router guard can redirect it away.
-  // During async module loading, the guard may not find workspaces (not registered yet)
-  // and redirect to root — losing the tenant prefix and blade URL.
-  const _initialUrl = window.location.hash.replace(/^#/, "") || "/";
-
   app.provide(ModulesReadyKey, modulesReady);
   app.provide(ModulesLoadErrorKey, modulesLoadError);
 
-  // Fire-and-forget async loading
   (async () => {
     try {
       performance.mark("vc:modules-start");
 
-      const frameworkVersion = frameworkPkg.version;
+      // 1. Fetch manifest
+      const manifestUrl = options.manifestUrl ?? defaultManifestUrl(options.appName);
 
-      // 1. Build provides dict
-      const provides: Record<string, string> = {};
-      for (const [name, entry] of Object.entries(SHARED_LIBS)) {
-        provides[name] = entry.version;
-      }
-
-      // 2. Fetch registry
-      const response = await fetch(REGISTRY_URL, {
-        method: "POST",
+      const response = await fetch(manifestUrl, {
+        method: "GET",
         credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ appName: options.appName, provides }),
+        headers: { Accept: "application/json" },
       });
-      if (response.status === 401 || response.status === 403) {
-        modulesReady.value = true;
-        performance.mark("vc:modules-done");
-        return;
-      }
+
       if (!response.ok) {
-        throw new Error(`Registry fetch failed: ${response.status} ${response.statusText}`);
-      }
-      const registry: ModuleRegistry = await response.json();
-      const modules = Array.isArray(registry.modules)
-        ? registry.modules.filter(
-            (m): m is ModuleRegistryEntry =>
-              typeof m?.id === "string" && typeof m?.entry === "string" && typeof m?.version === "string",
-          )
-        : [];
-
-      // 3. Compatibility filter
-      const compatible = modules.filter((mod) => {
-        const fwRange = mod.compatibleWith?.dependencies?.["@vc-shell/framework"];
-        if (!fwRange) return true;
-        const range = humanizeRange(fwRange);
-        const coerced = semver.coerce(frameworkVersion)?.version ?? frameworkVersion;
-        const ok = semver.satisfies(coerced, range);
-        if (!ok)
-          console.warn(
-            `[mf-host] Module "${mod.id}" v${mod.version} requires framework ${range}, current ${frameworkVersion}. Skipping.`,
-          );
-        return ok;
-      });
-
-      if (compatible.length === 0) {
+        // Unified policy: 401/403/404/5xx → warn + skip, no loadError.
+        console.warn(
+          `[mf-host] manifest endpoint ${manifestUrl} returned HTTP ${response.status}; skipping plugin discovery.`,
+        );
         modulesReady.value = true;
         performance.mark("vc:modules-done");
         return;
       }
 
-      // 4. Init MF runtime
+      const manifest = (await response.json()) as AppManifestResponse;
+
+      // 2. Validate plugins[] structurally (NSwag emits everything as optional)
+      const validPlugins = (manifest.plugins ?? []).filter(
+        (p) =>
+          typeof p?.id === "string" &&
+          typeof p?.version === "string" &&
+          typeof p?.entry?.path === "string" &&
+          typeof p?.remote?.name === "string" &&
+          typeof p?.remote?.exposed === "string",
+      );
+
+      const entries: ModuleRegistryEntry[] = validPlugins.map((p) => ({
+        id: p.id!,
+        entry: buildEntryUrl(p.entry!.path!, p.entry!.hash),
+        version: p.version!,
+        remoteName: p.remote!.name!,
+        exposedKey: stripLeadingDotSlash(p.remote!.exposed!),
+      }));
+
+      if (entries.length === 0) {
+        modulesReady.value = true;
+        performance.mark("vc:modules-done");
+        return;
+      }
+
+      // 3. Init MF runtime
       const shared: Record<string, any> = {};
       for (const [name, entry] of Object.entries(SHARED_LIBS)) {
         shared[name] = {
@@ -206,41 +193,48 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
       }
       const mfInstance = createInstance({
         name: "host",
-        remotes: compatible.map((mod) => ({ name: mod.id, entry: mod.entry, type: "module" as const })),
+        remotes: entries.map((e) => ({ name: e.remoteName, entry: e.entry, type: "module" as const })),
         shared,
       });
 
-      // 5. Load all in parallel
+      // 4. Load all remotes in parallel
       const results = await Promise.allSettled(
-        compatible.map(async (mod) => ({ mod, exports: await mfInstance.loadRemote(`${mod.id}/module`) })),
+        entries.map(async (e) => ({
+          entry: e,
+          exports: await mfInstance.loadRemote(`${e.remoteName}/${e.exposedKey}`),
+        })),
       );
 
       performance.mark("vc:modules-loaded");
 
-      const loaded: { mod: ModuleRegistryEntry; exports: unknown }[] = [];
-      const failed: { mod: ModuleRegistryEntry; error: unknown }[] = [];
+      const loaded: { entry: ModuleRegistryEntry; exports: unknown }[] = [];
+      const failed: { entry: ModuleRegistryEntry; error: unknown }[] = [];
       for (let i = 0; i < results.length; i++) {
         const r = results[i];
         if (r.status === "fulfilled") loaded.push(r.value);
-        else failed.push({ mod: compatible[i], error: r.reason });
+        else failed.push({ entry: entries[i], error: r.reason });
       }
 
-      for (const { mod, error } of failed) console.error(`[mf-host] Failed to load "${mod.id}":`, error);
+      for (const { entry, error } of failed) {
+        console.error(`[mf-host] Failed to load "${entry.id}":`, error);
+      }
 
-      // 6. Install plugins
-      for (const { mod, exports } of loaded) {
+      // 5. Install plugins
+      for (const { entry, exports } of loaded) {
         const plugins = resolvePlugins(exports);
         if (plugins.length > 0) {
           for (const plugin of plugins) app.use(plugin, { router: options.router });
-          console.info(`[mf-host] "${mod.id}" v${mod.version} installed (${plugins.length} sub-module(s)).`);
+          console.info(`[mf-host] "${entry.id}" v${entry.version} installed (${plugins.length} sub-module(s)).`);
         } else {
-          console.error(`[mf-host] "${mod.id}" has no install function. Skipping.`);
+          console.error(`[mf-host] "${entry.id}" has no install function. Skipping.`);
         }
       }
 
       if (failed.length > 0) {
         console.warn(
-          `[mf-host] ${loaded.length}/${compatible.length} modules loaded. Failed: [${failed.map((f) => f.mod.id).join(", ")}]`,
+          `[mf-host] ${loaded.length}/${entries.length} plugins loaded. Failed: [${failed
+            .map((f) => f.entry.id)
+            .join(", ")}]`,
         );
       }
 

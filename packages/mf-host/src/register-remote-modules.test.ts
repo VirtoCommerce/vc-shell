@@ -2,30 +2,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createApp, type App } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
-// Create a mock loadRemote that we can control per-test
 const mockLoadRemote = vi.fn();
 
-// Mock MF runtime BEFORE importing module under test
 vi.mock("@module-federation/runtime", () => ({
   createInstance: vi.fn(() => ({ loadRemote: mockLoadRemote })),
 }));
 
-// Mock semver
-vi.mock("semver", () => ({
-  satisfies: vi.fn((version: string, range: string) => {
-    const majorRange = range.match(/\^(\d+)/)?.[1];
-    const majorVersion = version.split(".")[0];
-    if (majorRange) return majorRange === majorVersion;
-    return true;
-  }),
-  coerce: vi.fn((version: string) => {
-    const m = version.match(/^(\d+\.\d+\.\d+)/);
-    return m ? { version: m[1] } : null;
-  }),
-}));
-
-// Mock @vc-shell/framework to provide injection keys
-// vi.hoisted runs before vi.mock hoisting, making symbols available to the factory
 const { MockModulesReadyKey, MockModulesLoadErrorKey } = vi.hoisted(() => ({
   MockModulesReadyKey: Symbol("ModulesReady"),
   MockModulesLoadErrorKey: Symbol("ModulesLoadError"),
@@ -35,37 +17,22 @@ vi.mock("@vc-shell/framework", () => ({
   ModulesLoadErrorKey: MockModulesLoadErrorKey,
 }));
 
-// Subpath exports of @vc-shell/framework — must be mocked individually so the
-// test stays isolated from the real built bundle. The contents are irrelevant
-// here; we only assert that they are wired into the shared scope.
 vi.mock("@vc-shell/framework/ui", () => ({}));
 vi.mock("@vc-shell/framework/ai-agent", () => ({}));
 vi.mock("@vc-shell/framework/extensions", () => ({}));
 
-// Mock package.json imports
 vi.mock("@vc-shell/framework/package.json", () => ({
   default: { version: "1.2.4" },
 }));
-vi.mock("vue/package.json", () => ({
-  default: { version: "3.5.0" },
-}));
-vi.mock("vue-router/package.json", () => ({
-  default: { version: "4.5.0" },
-}));
-vi.mock("vue-i18n/package.json", () => ({
-  default: { version: "9.10.0" },
-}));
-vi.mock("lodash-es/package.json", () => ({
-  default: { version: "4.17.21" },
-}));
-vi.mock("@vueuse/core/package.json", () => ({
-  default: { version: "10.7.1" },
-}));
+vi.mock("vue/package.json", () => ({ default: { version: "3.5.0" } }));
+vi.mock("vue-router/package.json", () => ({ default: { version: "4.5.0" } }));
+vi.mock("vue-i18n/package.json", () => ({ default: { version: "9.10.0" } }));
+vi.mock("lodash-es/package.json", () => ({ default: { version: "4.17.21" } }));
+vi.mock("@vueuse/core/package.json", () => ({ default: { version: "10.7.1" } }));
 
 import { createInstance } from "@module-federation/runtime";
-import { satisfies } from "semver";
 import { SHARED_DEPS_BASE } from "@vc-shell/mf-config";
-import { registerRemoteModules, type ModuleRegistryEntry } from "./register-remote-modules";
+import { registerRemoteModules } from "./register-remote-modules";
 
 function createTestApp() {
   const app = createApp({ template: "<div />" });
@@ -87,9 +54,27 @@ function spyProvide(app: App) {
   return provided;
 }
 
-/** Flush all pending microtasks so the fire-and-forget IIFE completes. */
 function flushPromises() {
   return new Promise<void>((resolve) => setTimeout(resolve, 0));
+}
+
+function manifest200(plugins: any[]) {
+  return {
+    ok: true,
+    status: 200,
+    json: () => Promise.resolve({ appId: "test-app", version: "1.0.0", title: "Test", plugins }),
+  };
+}
+
+function makePlugin(overrides: Record<string, any> = {}) {
+  return {
+    id: "marketplace-reviews",
+    version: "1.0.0",
+    entry: { type: "script", path: "/Modules/$(X)/plugins/test-app/remoteEntry.js" },
+    contentFiles: [],
+    remote: { name: "VirtoCommerce.MarketplaceReviews", exposed: "./Module" },
+    ...overrides,
+  };
 }
 
 describe("registerRemoteModules", () => {
@@ -99,284 +84,279 @@ describe("registerRemoteModules", () => {
     global.performance = { mark: vi.fn() } as any;
   });
 
-  it("provides ModulesReadyKey and ModulesLoadErrorKey", async () => {
-    const { app, router } = createTestApp();
-    const provided = spyProvide(app);
+  describe("provide setup", () => {
+    it("provides ModulesReadyKey and ModulesLoadErrorKey", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      (global.fetch as any).mockResolvedValue(manifest200([]));
 
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules: [] }),
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      expect(provided.has(MockModulesReadyKey)).toBe(true);
+      expect(provided.has(MockModulesLoadErrorKey)).toBe(true);
     });
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+    it("sets modulesReady=true after empty manifest", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      (global.fetch as any).mockResolvedValue(manifest200([]));
 
-    expect(provided.has(MockModulesReadyKey)).toBe(true);
-    expect(provided.has(MockModulesLoadErrorKey)).toBe(true);
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      expect(provided.get(MockModulesReadyKey).value).toBe(true);
+    });
   });
 
-  it("sets modulesReady=true after loading empty registry", async () => {
-    const { app, router } = createTestApp();
-    const provided = spyProvide(app);
+  describe("fetch — endpoint and method", () => {
+    it("sends GET to /api/apps/<appName>/manifest with no body", async () => {
+      const { app, router } = createTestApp();
+      (global.fetch as any).mockResolvedValue(manifest200([]));
 
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules: [] }),
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/apps/test-app/manifest",
+        expect.objectContaining({
+          method: "GET",
+          credentials: "same-origin",
+          headers: { Accept: "application/json" },
+        }),
+      );
+      const init = (global.fetch as any).mock.calls[0][1];
+      expect(init.body).toBeUndefined();
     });
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+    it("encodes appName with special characters", async () => {
+      const { app, router } = createTestApp();
+      (global.fetch as any).mockResolvedValue(manifest200([]));
 
-    const modulesReady = provided.get(MockModulesReadyKey);
-    expect(modulesReady.value).toBe(true);
-  });
+      registerRemoteModules(app, { router, appName: "my/app name" });
+      await flushPromises();
 
-  it("loads modules in parallel via Promise.allSettled", async () => {
-    const { app, router } = createTestApp();
-
-    const modules: ModuleRegistryEntry[] = [
-      { id: "mod-a", entry: "/a/remoteEntry.js", version: "1.0.0" },
-      { id: "mod-b", entry: "/b/remoteEntry.js", version: "1.0.0" },
-      { id: "mod-c", entry: "/c/remoteEntry.js", version: "1.0.0" },
-    ];
-
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules }),
+      expect(global.fetch).toHaveBeenCalledWith("/api/apps/my%2Fapp%20name/manifest", expect.anything());
     });
 
-    const fakeModuleA = { install: vi.fn() };
-    const fakeModuleB = { install: vi.fn() };
-    const fakeModuleC = { install: vi.fn() };
+    it("uses manifestUrl override when provided", async () => {
+      const { app, router } = createTestApp();
+      (global.fetch as any).mockResolvedValue(manifest200([]));
 
-    mockLoadRemote
-      .mockResolvedValueOnce({ default: fakeModuleA })
-      .mockResolvedValueOnce({ default: fakeModuleB })
-      .mockResolvedValueOnce({ default: fakeModuleC });
+      registerRemoteModules(app, { router, appName: "test-app", manifestUrl: "https://custom.example/manifest" });
+      await flushPromises();
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
-
-    expect(mockLoadRemote).toHaveBeenCalledTimes(3);
-    expect(mockLoadRemote).toHaveBeenCalledWith("mod-a/module");
-    expect(mockLoadRemote).toHaveBeenCalledWith("mod-b/module");
-    expect(mockLoadRemote).toHaveBeenCalledWith("mod-c/module");
-
-    expect(fakeModuleA.install).toHaveBeenCalled();
-    expect(fakeModuleB.install).toHaveBeenCalled();
-    expect(fakeModuleC.install).toHaveBeenCalled();
+      expect(global.fetch).toHaveBeenCalledWith("https://custom.example/manifest", expect.anything());
+    });
   });
 
-  it("initializes MF runtime with all compatible remotes", async () => {
-    const { app, router } = createTestApp();
+  describe("mapping — plugin → remote", () => {
+    it("loads one valid plugin via createInstance + loadRemote", async () => {
+      const { app, router } = createTestApp();
+      (global.fetch as any).mockResolvedValue(manifest200([makePlugin()]));
+      mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
 
-    const modules: ModuleRegistryEntry[] = [{ id: "reviews", entry: "/reviews/remoteEntry.js", version: "1.0.0" }];
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules }),
+      expect(createInstance).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: "host",
+          remotes: [
+            {
+              name: "VirtoCommerce.MarketplaceReviews",
+              entry: "/Modules/$(X)/plugins/test-app/remoteEntry.js",
+              type: "module",
+            },
+          ],
+        }),
+      );
+      expect(mockLoadRemote).toHaveBeenCalledWith("VirtoCommerce.MarketplaceReviews/Module");
     });
 
-    const fakeModule = { install: vi.fn() };
-    mockLoadRemote.mockResolvedValue({ default: fakeModule });
+    it("appends ?v=<hash> to entry url when plugin.entry.hash is set", async () => {
+      const { app, router } = createTestApp();
+      (global.fetch as any).mockResolvedValue(
+        manifest200([
+          makePlugin({
+            entry: { type: "script", path: "/plugins/p/remoteEntry.js", hash: "abc/def 1" },
+          }),
+        ]),
+      );
+      mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-    expect(createInstance).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: "host",
-        remotes: [{ name: "reviews", entry: "/reviews/remoteEntry.js", type: "module" }],
-      }),
-    );
-  });
-
-  it("sends POST request with appName and provides dictionary", async () => {
-    const { app, router } = createTestApp();
-
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules: [] }),
+      const remotes = (createInstance as any).mock.calls[0][0].remotes;
+      expect(remotes[0].entry).toBe("/plugins/p/remoteEntry.js?v=abc%2Fdef%201");
     });
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+    it("leaves entry url untouched when hash is absent", async () => {
+      const { app, router } = createTestApp();
+      (global.fetch as any).mockResolvedValue(manifest200([makePlugin()]));
+      mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
 
-    expect(global.fetch).toHaveBeenCalledWith(
-      "/api/frontend-modules",
-      expect.objectContaining({
-        method: "POST",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-      }),
-    );
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-    const callArgs = (global.fetch as any).mock.calls[0];
-    const body = JSON.parse(callArgs[1].body);
-    expect(body.appName).toBe("test-app");
-    expect(body.provides).toBeDefined();
-    expect(body.provides["@vc-shell/framework"]).toBe("1.2.4");
-  });
-
-  it("filters incompatible modules by framework version (client-side)", async () => {
-    const { app, router } = createTestApp();
-
-    const modules: ModuleRegistryEntry[] = [
-      {
-        id: "old-module",
-        entry: "/modules/old/remoteEntry.js",
-        version: "0.1.0",
-        compatibleWith: { dependencies: { "@vc-shell/framework": "^2.0.0" } },
-      },
-    ];
-
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules }),
+      const remotes = (createInstance as any).mock.calls[0][0].remotes;
+      expect(remotes[0].entry).toBe("/Modules/$(X)/plugins/test-app/remoteEntry.js");
     });
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+    it("strips leading ./ from remote.exposed when building loadRemote key", async () => {
+      const { app, router } = createTestApp();
+      (global.fetch as any).mockResolvedValue(
+        manifest200([makePlugin({ remote: { name: "ModX", exposed: "./Module" } })]),
+      );
+      mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
 
-    // Framework version is 1.2.4 (from mocked package.json), module requires ^2.0.0
-    expect(mockLoadRemote).not.toHaveBeenCalled();
-  });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-  it("sets modulesLoadError=true on fetch failure", async () => {
-    const { app, router } = createTestApp();
-    const provided = spyProvide(app);
-
-    (global.fetch as any).mockRejectedValue(new Error("Network error"));
-
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
-
-    const loadError = provided.get(MockModulesLoadErrorKey);
-    expect(loadError.value).toBe(true);
-  });
-
-  it("sets modulesReady=true on 401 (not authenticated — silent skip)", async () => {
-    const { app, router } = createTestApp();
-    const provided = spyProvide(app);
-
-    (global.fetch as any).mockResolvedValue({
-      ok: false,
-      status: 401,
-      statusText: "Unauthorized",
+      expect(mockLoadRemote).toHaveBeenCalledWith("ModX/Module");
     });
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+    it("filters out plugins missing required fields", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      (global.fetch as any).mockResolvedValue(
+        manifest200([
+          makePlugin(),
+          { id: "no-entry", version: "1", remote: { name: "X", exposed: "./M" } },
+          { id: "no-remote", version: "1", entry: { type: "script", path: "/x" } },
+          makePlugin({ id: null }),
+        ]),
+      );
+      mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
 
-    // 401 means not authenticated — modules are skipped, not an error
-    const modulesReady = provided.get(MockModulesReadyKey);
-    expect(modulesReady.value).toBe(true);
-    const loadError = provided.get(MockModulesLoadErrorKey);
-    expect(loadError.value).toBe(false);
-  });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-  it("sets modulesLoadError=true on non-auth HTTP error", async () => {
-    const { app, router } = createTestApp();
-    const provided = spyProvide(app);
-
-    (global.fetch as any).mockResolvedValue({
-      ok: false,
-      status: 500,
-      statusText: "Internal Server Error",
+      expect(mockLoadRemote).toHaveBeenCalledTimes(1);
+      expect(provided.get(MockModulesReadyKey).value).toBe(true);
     });
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+    it("does nothing when plugins array is empty", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      (global.fetch as any).mockResolvedValue(manifest200([]));
 
-    const loadError = provided.get(MockModulesLoadErrorKey);
-    expect(loadError.value).toBe(true);
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      expect(createInstance).not.toHaveBeenCalled();
+      expect(mockLoadRemote).not.toHaveBeenCalled();
+      expect(provided.get(MockModulesReadyKey).value).toBe(true);
+    });
   });
 
-  it("continues loading remaining modules if one fails", async () => {
-    const { app, router } = createTestApp();
-    const provided = spyProvide(app);
+  describe("error handling", () => {
+    function nonOk(status: number) {
+      return { ok: false, status };
+    }
 
-    const modules: ModuleRegistryEntry[] = [
-      { id: "broken", entry: "/broken/remoteEntry.js", version: "1.0.0" },
-      { id: "working", entry: "/working/remoteEntry.js", version: "1.0.0" },
-    ];
+    it("HTTP 401 → warn + skip, modulesReady=true, modulesLoadError=false", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      (global.fetch as any).mockResolvedValue(nonOk(401));
 
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules }),
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      expect(provided.get(MockModulesReadyKey).value).toBe(true);
+      expect(provided.get(MockModulesLoadErrorKey).value).toBe(false);
+      expect(warn).toHaveBeenCalled();
+      warn.mockRestore();
     });
 
-    const workingModule = { install: vi.fn() };
-    mockLoadRemote
-      .mockRejectedValueOnce(new Error("Module load failed"))
-      .mockResolvedValueOnce({ default: workingModule });
+    it("HTTP 403 → warn + skip", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      (global.fetch as any).mockResolvedValue(nonOk(403));
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-    expect(workingModule.install).toHaveBeenCalled();
-
-    const modulesReady = provided.get(MockModulesReadyKey);
-    expect(modulesReady.value).toBe(true);
-  });
-
-  it("handles module that exports install directly (not as default)", async () => {
-    const { app, router } = createTestApp();
-
-    const modules: ModuleRegistryEntry[] = [{ id: "direct", entry: "/direct/remoteEntry.js", version: "1.0.0" }];
-
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules }),
+      expect(provided.get(MockModulesReadyKey).value).toBe(true);
+      expect(provided.get(MockModulesLoadErrorKey).value).toBe(false);
     });
 
-    const directModule = { install: vi.fn() };
-    mockLoadRemote.mockResolvedValue(directModule);
+    it("HTTP 404 → warn + skip", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      (global.fetch as any).mockResolvedValue(nonOk(404));
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-    expect(directModule.install).toHaveBeenCalled();
-  });
-
-  it("skips modules with invalid registry entries", async () => {
-    const { app, router } = createTestApp();
-
-    const modules = [
-      { id: "valid", entry: "/valid/remoteEntry.js", version: "1.0.0" },
-      { id: null, entry: "/bad/remoteEntry.js", version: "1.0.0" },
-      { id: "no-entry", version: "1.0.0" },
-    ];
-
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules }),
+      expect(provided.get(MockModulesReadyKey).value).toBe(true);
+      expect(provided.get(MockModulesLoadErrorKey).value).toBe(false);
     });
 
-    const validModule = { install: vi.fn() };
-    mockLoadRemote.mockResolvedValue({ default: validModule });
+    it("HTTP 500 → warn + skip (same policy)", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      (global.fetch as any).mockResolvedValue(nonOk(500));
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-    expect(mockLoadRemote).toHaveBeenCalledTimes(1);
-    expect(mockLoadRemote).toHaveBeenCalledWith("valid/module");
+      expect(provided.get(MockModulesReadyKey).value).toBe(true);
+      expect(provided.get(MockModulesLoadErrorKey).value).toBe(false);
+    });
+
+    it("network/throw error → modulesLoadError=true", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      (global.fetch as any).mockRejectedValue(new Error("Network down"));
+
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      expect(provided.get(MockModulesLoadErrorKey).value).toBe(true);
+      expect(provided.get(MockModulesReadyKey).value).toBe(false);
+    });
+
+    it("continues installing remaining plugins when one loadRemote fails", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+      (global.fetch as any).mockResolvedValue(
+        manifest200([
+          makePlugin({ id: "broken", remote: { name: "Broken", exposed: "./Module" } }),
+          makePlugin({ id: "working", remote: { name: "Working", exposed: "./Module" } }),
+        ]),
+      );
+
+      const workingInstall = vi.fn();
+      mockLoadRemote
+        .mockRejectedValueOnce(new Error("boom"))
+        .mockResolvedValueOnce({ default: { install: workingInstall } });
+
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      expect(workingInstall).toHaveBeenCalled();
+      expect(provided.get(MockModulesReadyKey).value).toBe(true);
+      expect(provided.get(MockModulesLoadErrorKey).value).toBe(false);
+    });
   });
 
   describe("resolvePlugins — sub-module collection format", () => {
     it("installs all sub-modules from { default: { Rating: { install }, Orders: { install } } }", async () => {
       const { app, router } = createTestApp();
-
-      const modules: ModuleRegistryEntry[] = [{ id: "marketplace", entry: "/mp/remoteEntry.js", version: "1.0.0" }];
-
-      (global.fetch as any).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ modules }),
-      });
+      (global.fetch as any).mockResolvedValue(manifest200([makePlugin()]));
 
       const ratingInstall = vi.fn();
       const ordersInstall = vi.fn();
-
       mockLoadRemote.mockResolvedValue({
         default: {
           Rating: { install: ratingInstall },
@@ -393,20 +373,11 @@ describe("registerRemoteModules", () => {
 
     it("installs namespace-wrapped sub-modules { default: { Rating: { default: { install } } } }", async () => {
       const { app, router } = createTestApp();
-
-      const modules: ModuleRegistryEntry[] = [{ id: "marketplace", entry: "/mp/remoteEntry.js", version: "1.0.0" }];
-
-      (global.fetch as any).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ modules }),
-      });
+      (global.fetch as any).mockResolvedValue(manifest200([makePlugin()]));
 
       const ratingInstall = vi.fn();
-
       mockLoadRemote.mockResolvedValue({
-        default: {
-          Rating: { default: { install: ratingInstall } },
-        },
+        default: { Rating: { default: { install: ratingInstall } } },
       });
 
       registerRemoteModules(app, { router, appName: "test-app" });
@@ -415,190 +386,73 @@ describe("registerRemoteModules", () => {
       expect(ratingInstall).toHaveBeenCalled();
     });
 
-    it("skips modules with null/empty exports (no install found)", async () => {
+    it("handles module that exports install directly (not as default)", async () => {
       const { app, router } = createTestApp();
+      (global.fetch as any).mockResolvedValue(manifest200([makePlugin()]));
 
-      const modules: ModuleRegistryEntry[] = [{ id: "empty-mod", entry: "/empty/remoteEntry.js", version: "1.0.0" }];
+      const directInstall = vi.fn();
+      mockLoadRemote.mockResolvedValue({ install: directInstall });
 
-      (global.fetch as any).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ modules }),
-      });
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
+      expect(directInstall).toHaveBeenCalled();
+    });
+
+    it("skips a plugin whose exports yield no install (null exports)", async () => {
+      const { app, router } = createTestApp();
+      const provided = spyProvide(app);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      (global.fetch as any).mockResolvedValue(manifest200([makePlugin()]));
       mockLoadRemote.mockResolvedValue(null);
 
       registerRemoteModules(app, { router, appName: "test-app" });
       await flushPromises();
 
       expect(mockLoadRemote).toHaveBeenCalledTimes(1);
-    });
-
-    it("skips sub-module entries that are not objects", async () => {
-      const { app, router } = createTestApp();
-
-      const modules: ModuleRegistryEntry[] = [{ id: "mixed", entry: "/mixed/remoteEntry.js", version: "1.0.0" }];
-
-      (global.fetch as any).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ modules }),
-      });
-
-      const validInstall = vi.fn();
-
-      mockLoadRemote.mockResolvedValue({
-        default: {
-          __version: "1.0.0",
-          count: 42,
-          Valid: { install: validInstall },
-        },
-      });
-
-      registerRemoteModules(app, { router, appName: "test-app" });
-      await flushPromises();
-
-      expect(validInstall).toHaveBeenCalled();
+      expect(provided.get(MockModulesReadyKey).value).toBe(true);
     });
   });
 
-  describe("humanizeRange — NuGet-to-npm range conversion via compatibility filter", () => {
-    it("converts [1.0.0,2.0.0) to >=1.0.0 <2.0.0", async () => {
+  describe("shared scope", () => {
+    it("createInstance receives every shared dep declared in SHARED_DEPS_BASE", async () => {
       const { app, router } = createTestApp();
-      const modules: ModuleRegistryEntry[] = [
-        {
-          id: "nuget-range",
-          entry: "/nr/remoteEntry.js",
-          version: "1.0.0",
-          compatibleWith: { dependencies: { "@vc-shell/framework": "[1.0.0,2.0.0)" } },
-        },
-      ];
-
-      (global.fetch as any).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ modules }),
-      });
-
+      (global.fetch as any).mockResolvedValue(manifest200([makePlugin()]));
       mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
 
       registerRemoteModules(app, { router, appName: "test-app" });
       await flushPromises();
 
-      expect(satisfies).toHaveBeenCalledWith(expect.any(String), ">=1.0.0 <2.0.0");
-    });
-
-    it("converts (1.0.0,2.0.0] to >1.0.0 <=2.0.0", async () => {
-      const { app, router } = createTestApp();
-      const modules: ModuleRegistryEntry[] = [
-        {
-          id: "nuget-exclusive",
-          entry: "/ne/remoteEntry.js",
-          version: "1.0.0",
-          compatibleWith: { dependencies: { "@vc-shell/framework": "(1.0.0,2.0.0]" } },
-        },
-      ];
-
-      (global.fetch as any).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ modules }),
-      });
-
-      mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
-
-      registerRemoteModules(app, { router, appName: "test-app" });
-      await flushPromises();
-
-      expect(satisfies).toHaveBeenCalledWith(expect.any(String), ">1.0.0 <=2.0.0");
-    });
-
-    it("converts [1.2.4,] to >=1.2.4 (open upper bound)", async () => {
-      const { app, router } = createTestApp();
-      const modules: ModuleRegistryEntry[] = [
-        {
-          id: "nuget-open",
-          entry: "/no/remoteEntry.js",
-          version: "1.0.0",
-          compatibleWith: { dependencies: { "@vc-shell/framework": "[1.2.4,]" } },
-        },
-      ];
-
-      (global.fetch as any).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ modules }),
-      });
-
-      mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
-
-      registerRemoteModules(app, { router, appName: "test-app" });
-      await flushPromises();
-
-      expect(satisfies).toHaveBeenCalledWith(expect.any(String), ">=1.2.4");
-    });
-
-    it("passes through npm-style ranges like ^1.2.0 unchanged", async () => {
-      const { app, router } = createTestApp();
-      const modules: ModuleRegistryEntry[] = [
-        {
-          id: "npm-range",
-          entry: "/npm/remoteEntry.js",
-          version: "1.0.0",
-          compatibleWith: { dependencies: { "@vc-shell/framework": "^1.2.0" } },
-        },
-      ];
-
-      (global.fetch as any).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ modules }),
-      });
-
-      mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
-
-      registerRemoteModules(app, { router, appName: "test-app" });
-      await flushPromises();
-
-      expect(satisfies).toHaveBeenCalledWith(expect.any(String), "^1.2.0");
+      const sharedKeys = Object.keys((createInstance as any).mock.calls[0][0].shared);
+      expect(sharedKeys.sort()).toEqual(Object.keys(SHARED_DEPS_BASE).sort());
+      expect(sharedKeys).toContain("@vc-shell/framework");
+      expect(sharedKeys).toContain("@vc-shell/framework/ui");
     });
   });
 
-  it("sets performance marks in correct order", async () => {
-    const { app, router } = createTestApp();
+  describe("performance marks", () => {
+    it("emits start → loaded → installed → done in order on the happy path", async () => {
+      const { app, router } = createTestApp();
+      (global.fetch as any).mockResolvedValue(manifest200([makePlugin()]));
+      mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
 
-    const modules: ModuleRegistryEntry[] = [{ id: "mod", entry: "/mod/remoteEntry.js", version: "1.0.0" }];
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules }),
+      const marks = (performance.mark as any).mock.calls.map((c: any[]) => c[0]);
+      expect(marks).toEqual(["vc:modules-start", "vc:modules-loaded", "vc:modules-installed", "vc:modules-done"]);
     });
 
-    mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
+    it("emits start → done (no loaded/installed) when manifest returns 401", async () => {
+      const { app, router } = createTestApp();
+      vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      (global.fetch as any).mockResolvedValue({ ok: false, status: 401 });
 
-    registerRemoteModules(app, { router, appName: "test-app" });
-    await flushPromises();
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
 
-    const marks = (performance.mark as any).mock.calls.map((c: any[]) => c[0]);
-    expect(marks).toEqual(["vc:modules-start", "vc:modules-loaded", "vc:modules-installed", "vc:modules-done"]);
-  });
-
-  it("createInstance() receives every shared dep declared in SHARED_DEPS_BASE", async () => {
-    const modules: ModuleRegistryEntry[] = [{ id: "test-mod", entry: "http://cdn/remoteEntry.js", version: "1.0.0" }];
-
-    (global.fetch as any).mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ modules }),
+      const marks = (performance.mark as any).mock.calls.map((c: any[]) => c[0]);
+      expect(marks).toEqual(["vc:modules-start", "vc:modules-done"]);
     });
-
-    mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
-
-    const { app, router } = createTestApp();
-    registerRemoteModules(app, { router, appName: "test" });
-    await flushPromises();
-
-    const createInstanceCall = vi.mocked(createInstance).mock.calls[0][0];
-    const sharedKeys = Object.keys(createInstanceCall.shared!);
-    const expectedDeps = Object.keys(SHARED_DEPS_BASE);
-    expect(sharedKeys.sort()).toEqual(expectedDeps.sort());
-
-    // Sanity check: framework subpath exports must be shared too — otherwise
-    // remotes that import from "@vc-shell/framework/ui" bundle a duplicate copy.
-    expect(sharedKeys).toContain("@vc-shell/framework");
-    expect(sharedKeys).toContain("@vc-shell/framework/ui");
   });
 });

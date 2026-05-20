@@ -1,6 +1,7 @@
 // @vitest-environment node
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import path from "node:path";
 
 vi.mock("@module-federation/vite", () => ({
   federation: vi.fn((config: any) => ({ name: "mf-plugin", _config: config })),
@@ -89,6 +90,55 @@ describe("dynamicModuleConfiguration (MF)", () => {
     const mfPlugin = (config.plugins as any[]).find((p: any) => p._config);
     expect(mfPlugin._config.exposes["./custom"]).toBe("./src/custom.ts");
     expect(mfPlugin._config.exposes["./module"]).toBeUndefined();
+  });
+
+  describe("appId / moduleRoot — outDir resolution", () => {
+    it('defaults outDir to "dist/mf" when appId is absent', () => {
+      const config = dynamicModuleConfiguration(pkg, {});
+      expect(config.build?.outDir).toBe("dist/mf");
+    });
+
+    it("resolves outDir under process.cwd() when appId is set without moduleRoot", () => {
+      const config = dynamicModuleConfiguration(pkg, { appId: "my-app" });
+      expect(config.build?.outDir).toBe(path.resolve(process.cwd(), "plugins", "my-app"));
+    });
+
+    it("resolves outDir under the provided moduleRoot when both are set", () => {
+      const config = dynamicModuleConfiguration(pkg, {
+        appId: "vendor-portal",
+        moduleRoot: "/abs/module/root",
+      });
+      expect(config.build?.outDir).toBe("/abs/module/root/plugins/vendor-portal");
+    });
+
+    it("enables emptyOutDir whenever appId is set", () => {
+      const config = dynamicModuleConfiguration(pkg, {
+        appId: "my-app",
+        moduleRoot: "/abs/root",
+      });
+      expect(config.build?.emptyOutDir).toBe(true);
+    });
+
+    it("leaves emptyOutDir undefined when appId is absent (preserves Vite default)", () => {
+      const config = dynamicModuleConfiguration(pkg, {});
+      expect(config.build?.emptyOutDir).toBeUndefined();
+    });
+  });
+
+  describe("remoteName — federation name override", () => {
+    it("uses pkg.name as federation name when remoteName is absent", () => {
+      const config = dynamicModuleConfiguration(pkg, {});
+      const mfPlugin = (config.plugins as any[]).find((p: any) => p._config);
+      expect(mfPlugin._config.name).toBe(pkg.name);
+    });
+
+    it("uses remoteName as federation name when provided", () => {
+      const config = dynamicModuleConfiguration(pkg, {
+        remoteName: "VirtoCommerce.MyModule",
+      });
+      const mfPlugin = (config.plugins as any[]).find((p: any) => p._config);
+      expect(mfPlugin._config.name).toBe("VirtoCommerce.MyModule");
+    });
   });
 });
 

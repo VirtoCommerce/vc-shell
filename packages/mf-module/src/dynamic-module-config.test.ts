@@ -45,7 +45,7 @@ describe("dynamicModuleConfiguration (MF)", () => {
     const mfPlugin = (config.plugins as any[]).find((p: any) => p._config);
     expect(mfPlugin._config.name).toBe("reviews");
     expect(mfPlugin._config.filename).toBe("remoteEntry.js");
-    expect(mfPlugin._config.exposes["./module"]).toBe("./src/modules/index.ts");
+    expect(mfPlugin._config.exposes["./Module"]).toBe("./src/modules/index.ts");
   });
 
   it("uses custom entry point when provided", () => {
@@ -55,7 +55,7 @@ describe("dynamicModuleConfiguration (MF)", () => {
     });
 
     const mfPlugin = (config.plugins as any[]).find((p: any) => p._config);
-    expect(mfPlugin._config.exposes["./module"]).toBe("./src/custom.ts");
+    expect(mfPlugin._config.exposes["./Module"]).toBe("./src/custom.ts");
   });
 
   it("sets build target to esnext", () => {
@@ -89,7 +89,7 @@ describe("dynamicModuleConfiguration (MF)", () => {
     });
     const mfPlugin = (config.plugins as any[]).find((p: any) => p._config);
     expect(mfPlugin._config.exposes["./custom"]).toBe("./src/custom.ts");
-    expect(mfPlugin._config.exposes["./module"]).toBeUndefined();
+    expect(mfPlugin._config.exposes["./Module"]).toBeUndefined();
   });
 
   describe("appId / moduleRoot — outDir resolution", () => {

@@ -35,8 +35,11 @@ export default function dynamicModuleConfiguration(
       federation({
         name: remoteName,
         filename: "remoteEntry.js",
+        // "./Module" matches the platform's PluginRemote.exposed default
+        // (AppManifestService.DefaultExposedModule in vc-platform). Plugin
+        // authors who need a different key can override via `options.exposes`.
         exposes: options.exposes ?? {
-          "./module": entry,
+          "./Module": entry,
         },
         shared: { ...REMOTE_SHARED },
         dts: false,

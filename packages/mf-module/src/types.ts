@@ -63,7 +63,8 @@ export interface DynamicModuleOptions extends UserConfig {
   entry?: string;
 
   /**
-   * Custom MF exposes map. Overrides default `{ "./module": entry }`.
+   * Custom MF exposes map. Overrides default `{ "./Module": entry }`
+   * (matches the platform's `PluginRemote.exposed` default).
    */
   exposes?: Record<string, string>;
 

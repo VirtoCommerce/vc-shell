@@ -61,7 +61,7 @@
  * scrollable content, optional footer. Built on @floating-ui/vue.
  */
 import { ref, computed, watch, onBeforeUnmount, nextTick } from "vue";
-import { offset, flip, shift, size, type Placement } from "@floating-ui/vue";
+import { offset, flip, shift, size, type Placement, type ReferenceElement } from "@floating-ui/vue";
 import { VcIcon } from "@ui/components/atoms";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
 import { panelAnchorRegistry } from "@ui/components/molecules/vc-dropdown-panel/panel-anchor-registry";
@@ -69,8 +69,8 @@ import { panelAnchorRegistry } from "@ui/components/molecules/vc-dropdown-panel/
 interface Props {
   /** Whether the panel is visible (v-model:show) */
   show: boolean;
-  /** Anchor element for positioning */
-  anchorRef?: HTMLElement | null;
+  /** Anchor for positioning — accepts an HTMLElement or a floating-ui VirtualElement (`{ getBoundingClientRect, contextElement? }`). Use a VirtualElement when the underlying DOM root can swap dynamically (e.g. wrapping a component whose root element changes via v-if). */
+  anchorRef?: ReferenceElement | null;
   /** Panel header title (hidden if empty and no #header slot) */
   title?: string;
   /** Floating UI placement */
@@ -110,7 +110,16 @@ const { teleportTarget } = useTeleportTarget();
 // Floating UI positioning
 const floatingRef = ref<HTMLElement | null>(null);
 const registeredPanelEl = ref<HTMLElement | null>(null);
-const anchorRefAsRef = computed<HTMLElement | null>(() => props.anchorRef ?? null);
+const anchorRefAsRef = computed<ReferenceElement | null>(() => props.anchorRef ?? null);
+
+// Resolve the underlying DOM anchor for click-outside checks and the child-panel registry.
+// For an HTMLElement, that's the element itself; for a VirtualElement, use its `contextElement`.
+const anchorEl = computed<Element | null>(() => {
+  const a = props.anchorRef;
+  if (!a) return null;
+  if (a instanceof Element) return a;
+  return (a as { contextElement?: Element }).contextElement ?? null;
+});
 
 const { floatingStyle } = useFloatingPosition(anchorRefAsRef, floatingRef, {
   strategy: "fixed",
@@ -142,7 +151,7 @@ const close = () => {
 const registerPanel = () => {
   const panel = floatingRef.value;
   if (!panel) return;
-  panelAnchorRegistry.set(panel, props.anchorRef ?? null);
+  panelAnchorRegistry.set(panel, anchorEl.value);
   registeredPanelEl.value = panel;
 };
 
@@ -162,7 +171,7 @@ const handlePointerDownOutside = (e: PointerEvent) => {
     return;
   }
   // Click on the anchor element — let parent handle the toggle
-  if (props.anchorRef?.contains(target)) {
+  if (anchorEl.value?.contains(target)) {
     return;
   }
   // Handle nested panels (e.g. sub-menus teleported outside this panel).
@@ -218,14 +227,11 @@ watch(
   { immediate: true },
 );
 
-watch(
-  () => props.anchorRef,
-  (anchorRef) => {
-    if (registeredPanelEl.value) {
-      panelAnchorRegistry.set(registeredPanelEl.value, anchorRef ?? null);
-    }
-  },
-);
+watch(anchorEl, (el) => {
+  if (registeredPanelEl.value) {
+    panelAnchorRegistry.set(registeredPanelEl.value, el);
+  }
+});
 
 onBeforeUnmount(() => {
   unregisterPanel();

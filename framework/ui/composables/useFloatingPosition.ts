@@ -6,6 +6,7 @@ import {
   useFloating,
   type Middleware,
   type Placement,
+  type ReferenceElement,
   type Strategy,
 } from "@floating-ui/vue";
 import { computed, toValue, type MaybeRefOrGetter, type Ref } from "vue";
@@ -31,7 +32,7 @@ export interface UseFloatingPositionOptions {
  * Shared floating-ui adapter with reactive placement/offset defaults.
  */
 export function useFloatingPosition(
-  referenceEl: Ref<HTMLElement | null>,
+  referenceEl: Ref<ReferenceElement | null>,
   floatingEl: Ref<HTMLElement | null>,
   options: UseFloatingPositionOptions = {},
 ) {

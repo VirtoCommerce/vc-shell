@@ -54,6 +54,7 @@
 import { VcDropdownPanel } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
+import type { ReferenceElement } from "@floating-ui/vue";
 
 interface Column {
   id: string;
@@ -70,8 +71,8 @@ interface Props {
   visibleColumns?: string[];
   /** Whether panel is visible */
   show: boolean;
-  /** Anchor element for positioning the floating panel */
-  anchorRef?: HTMLElement | null;
+  /** Anchor for positioning the floating panel — HTMLElement or floating-ui VirtualElement. */
+  anchorRef?: ReferenceElement | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {

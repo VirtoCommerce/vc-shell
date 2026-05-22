@@ -225,6 +225,7 @@ import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import type { GlobalFilterConfig } from "@ui/components/organisms/vc-data-table/types";
 import { useColumnFilter } from "@ui/components/organisms/vc-data-table/composables/useColumnFilter";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import type { ReferenceElement } from "@floating-ui/vue";
 
 interface Props {
   /** List of filter configurations (id, label, type, options) */
@@ -233,8 +234,8 @@ interface Props {
   modelValue: Record<string, unknown>;
   /** Whether panel is visible */
   show: boolean;
-  /** Anchor element for positioning the floating panel */
-  anchorRef?: HTMLElement | null;
+  /** Anchor for positioning the floating panel — HTMLElement or floating-ui VirtualElement. */
+  anchorRef?: ReferenceElement | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {

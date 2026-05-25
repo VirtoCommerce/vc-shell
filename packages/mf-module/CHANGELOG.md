@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.4...v2.0.5) (2026-05-25)
+
+### Features
+
+- migrate Module Federation host to backoffice modularity manifest endpoint (#228) ([b767fd8](https://github.com/VirtoCommerce/vc-shell/commit/b767fd821dda91690f23fd7122602f311d884c3f)), closes [#228](https://github.com/VirtoCommerce/vc-shell/issues/228) [vc-platform#3019](https://github.com/vc-platform/issues/3019)
+
 ## [2.0.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.3...v2.0.4) (2026-05-18)
 
 **Note:** Version bump only for package @vc-shell/mf-module

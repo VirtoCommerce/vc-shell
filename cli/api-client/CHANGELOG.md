@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.0.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.4...v2.0.5) (2026-05-25)
+
+**Note:** Version bump only for package @vc-shell/api-client-generator
+
 ## [2.0.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.3...v2.0.4) (2026-05-18)
 
 **Note:** Version bump only for package @vc-shell/api-client-generator

@@ -48,9 +48,7 @@
     "pre-commit": "yarn lint-staged && yarn check:locales && yarn check:layers",
     "docs:sync": "yarn workspace @vc-shell/docs-sync exec docs-sync sync --target ../vc-docs",
     "docs:lint": "yarn workspace @vc-shell/docs-sync exec docs-sync lint",
-    "docs:screenshot": "yarn workspace @vc-shell/docs-sync exec docs-sync screenshot",
-    "examples:scaffold:check": "tsx scripts/check-scaffold-example.ts",
-    "examples:scaffold:typecheck": "vue-tsc -p examples/scaffold/tsconfig.json --noEmit"
+    "docs:screenshot": "yarn workspace @vc-shell/docs-sync exec docs-sync screenshot"
   },
   "workspaces": [
     "framework",

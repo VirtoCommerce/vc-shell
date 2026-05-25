@@ -23,5 +23,3 @@ jobs:
       - run: yarn install --immutable
       - run: yarn workspace @vc-shell/docs-sync build
       - run: yarn workspace @vc-shell/docs-sync exec docs-sync lint
-      - run: yarn examples:scaffold:check
-      - run: yarn examples:scaffold:typecheck

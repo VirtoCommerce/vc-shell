@@ -4,6 +4,12 @@ import { imageSizeLimit } from "./rules/image-size-limit.js";
 import { vueBlockPresent } from "./rules/vue-block-present.js";
 import { materialFeatureWarn } from "./rules/material-feature-warn.js";
 import { mermaidSyntax } from "./rules/mermaid-syntax.js";
+import { bladeMetadataDefineOptions } from "./rules/blade-metadata-define-options.js";
+import { pseudoCodeClientMarker } from "./rules/pseudo-code-client-marker.js";
+import { forbiddenDemoAppMention } from "./rules/forbidden-demo-app-mention.js";
+import { deprecatedCreateAppModule } from "./rules/deprecated-create-app-module.js";
+import { alphaInstallCommand } from "./rules/alpha-install-command.js";
+import { vcAppCommandDrift } from "./rules/vc-app-command-drift.js";
 
 export interface LintFile {
   absPath: string;
@@ -46,6 +52,12 @@ const ALL_RULES: LintRule[] = [
   vueBlockPresent,
   materialFeatureWarn,
   mermaidSyntax,
+  bladeMetadataDefineOptions,
+  pseudoCodeClientMarker,
+  forbiddenDemoAppMention,
+  deprecatedCreateAppModule,
+  alphaInstallCommand,
+  vcAppCommandDrift,
 ];
 
 export async function runLint(args: LintArgs): Promise<LintResult> {

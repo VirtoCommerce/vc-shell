@@ -2,19 +2,39 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import { globby } from "globby";
 import chalk from "chalk";
-import { FRAMEWORK_DIR, STORYBOOK_URL } from "../config.js";
+import { FRAMEWORK_DIR, FRAMEWORK_ROOT, STORYBOOK_URL } from "../config.js";
 import { fetchStorybookIds } from "../storybook/index-fetcher.js";
 import { runLint } from "../lint/runner.js";
 
 export async function runLintCommand(): Promise<{ exitCode: number }> {
-  const sources = await globby(["**/*.docs.md"], { cwd: FRAMEWORK_DIR, absolute: true });
-  const files = await Promise.all(
-    sources.map(async (abs) => ({
+  const frameworkSources = await globby(["**/*.docs.md"], { cwd: FRAMEWORK_DIR, absolute: true });
+  const extraSources = await globby(
+    [
+      "cli/vc-app-skill/README.md",
+      "cli/vc-app-skill/runtime/vc-app.md",
+      "cli/vc-app-skill/commands/vc-app/update.md",
+      "cli/create-vc-app/README.md",
+    ],
+    {
+      cwd: FRAMEWORK_ROOT,
+      absolute: true,
+    },
+  );
+  const frameworkFiles = await Promise.all(
+    frameworkSources.map(async (abs) => ({
       absPath: abs,
       relPath: path.relative(FRAMEWORK_DIR, abs),
       raw: await fs.readFile(abs, "utf8"),
     })),
   );
+  const extraFiles = await Promise.all(
+    extraSources.map(async (abs) => ({
+      absPath: abs,
+      relPath: path.relative(FRAMEWORK_ROOT, abs),
+      raw: await fs.readFile(abs, "utf8"),
+    })),
+  );
+  const files = [...frameworkFiles, ...extraFiles];
 
   let knownStoryIds = new Set<string>();
   try {

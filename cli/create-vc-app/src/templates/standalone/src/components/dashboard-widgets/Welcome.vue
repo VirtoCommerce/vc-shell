@@ -10,11 +10,6 @@
     <p class="dashboard-widget-welcome__welcome-description">
       {{ $t("SHELL.DASHBOARD.WELCOME.DESCRIPTION") }}
     </p>
-    <VcButton
-      variant="secondary"
-      size="base"
-      >{{ $t("SHELL.DASHBOARD.WELCOME.GET_STARTED") }}</VcButton
-    >
   </div>
 </template>
 

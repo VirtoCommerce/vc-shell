@@ -5,7 +5,6 @@
     :toolbar-items="bladeToolbar"
   >
     <!-- Blade contents -->
-    <!-- @vue-generic {MockedItem} -->
     <VcDataTable
       v-model:search-value="searchValue"
       v-model:active-item-id="selectedItemId"
@@ -75,16 +74,9 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, watch } from "vue";
-import {
-  IBladeToolbar,
-  useBlade,
-  usePopup,
-  useTableSort,
-  useFunctions,
-  VcColumn,
-  VcDataTable,
-} from "@vc-shell/framework";
+import { IBladeToolbar, useBlade, usePopup, useTableSort, useFunctions } from "@vc-shell/framework";
 import type { TableAction } from "@vc-shell/framework";
+import { VcColumn, VcDataTable, VcBlade } from "@vc-shell/framework/ui";
 import { useI18n } from "vue-i18n";
 import { useList } from "./../composables";
 import { MockedItem } from "./../composables/useList";

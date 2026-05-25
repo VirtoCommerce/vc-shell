@@ -13,7 +13,7 @@ export function usePermissions(): UsePermissionsReturn {
   function hasAccess(permissions: string | string[] | undefined) {
     const userPermissions = user.value?.permissions ?? [];
 
-    if (!permissions || user.value?.isAdministrator) {
+    if (!permissions || (Array.isArray(permissions) && permissions.length === 0) || user.value?.isAdministrator) {
       return true;
     } else if (Array.isArray(permissions)) {
       return permissions.some((permission) => userPermissions.includes(permission));

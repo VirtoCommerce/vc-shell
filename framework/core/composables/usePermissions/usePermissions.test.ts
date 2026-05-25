@@ -47,6 +47,18 @@ describe("usePermissions()", () => {
     expect(result.hasAccess(undefined)).toBe(true);
   });
 
+  it("hasAccess([]) returns true — empty array means no restriction, same as undefined", () => {
+    mockUser.mockReturnValue(makeUser({ permissions: [] }));
+    const { result } = mountWithSetup(() => usePermissions());
+    expect(result.hasAccess([])).toBe(true);
+  });
+
+  it("hasAccess([]) returns true even for non-admin user with unrelated permissions", () => {
+    mockUser.mockReturnValue(makeUser({ permissions: ["catalog:read"], isAdministrator: false }));
+    const { result } = mountWithSetup(() => usePermissions());
+    expect(result.hasAccess([])).toBe(true);
+  });
+
   it("hasAccess('some:permission') returns true when user has that permission", () => {
     mockUser.mockReturnValue(makeUser({ permissions: ["catalog:read", "some:permission"] }));
     const { result } = mountWithSetup(() => usePermissions());

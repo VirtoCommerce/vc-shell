@@ -8,8 +8,7 @@
       "TITLE": "Dashboard",
       "WELCOME": {
         "TITLE": "Welcome",
-        "DESCRIPTION": "Welcome to Vendor portal! We're so excited to have you on board. \n To get started, we recommend exploring the dashboard and personalizing your settings to match your preferences.",
-        "GET_STARTED": "Get started"
+        "DESCRIPTION": "Welcome to your VC Shell app! Get oriented by exploring the dashboard and personalizing your settings to match your preferences."
       }
     }
   }

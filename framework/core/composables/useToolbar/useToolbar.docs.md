@@ -5,22 +5,68 @@ group: services
 ---
 
 !!! tip "Long page"
-Use the section headings to jump directly to what you need: [Quick Start](#quick-start), [Updating Button State Dynamically](#updating-button-state-dynamically), [Visibility and Permissions](#visibility-and-permissions), or [API Reference](#api-reference).
+Use the section headings to jump directly to what you need: [Primary pattern: array + toolbar-items](#primary-pattern-array--toolbar-items), [When to reach for useToolbar](#when-to-reach-for-usetoolbar), [Quick Start](#quick-start), or [API Reference](#api-reference).
 
 # useToolbar
 
-Manages toolbar buttons for blades. Each blade in the application has its own toolbar area at the top of the blade header. `useToolbar` provides a scoped API to register, update, and remove buttons within that toolbar. It automatically resolves the current blade context and cleans up registered items when the component unmounts.
+`useToolbar` is the framework's **advanced** API for blade toolbar registration. The everyday way to give a blade a toolbar is the `:toolbar-items` prop on `VcBlade` with a plain `IBladeToolbar[]` array — there is no need to call `useToolbar` in the typical case. Reach for `useToolbar` when toolbar items must appear after mount, when a blade needs to mutate another blade's toolbar, or when toolbar composition is driven from a non-blade owner.
 
-## When to Use
+## Primary pattern: array + toolbar-items
 
-- Add action buttons (Save, Delete, Refresh, Export) to a blade's toolbar header
-- Dynamically update button state (disabled, visible, icon) in response to loading or form changes
-- When NOT to use: for global app-bar actions -- use `useAppBarWidget`; for navigation links -- use `useMenuService`
+In a regular blade, declare the toolbar as `ref<IBladeToolbar[]>([...])` and bind it. Reactive fields (`isVisible`, `disabled`, computed `title`) drive visibility and state without any `watch` plumbing. The framework filters items by `permissions` and `isVisible` before render.
+
+```vue title="orders-details.vue"
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { useAsync, usePermissions, VcBlade, type IBladeToolbar } from "@vc-shell/framework";
+
+const { hasAccess } = usePermissions();
+const { loading: saving, action: save } = useAsync(async () => {
+  await saveOrder(order.value);
+});
+
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "save",
+    title: "Save",
+    icon: "lucide-save",
+    disabled: computed(() => saving.value),
+    isVisible: computed(() => isDirty.value && hasAccess("order:update")),
+    clickHandler: () => save(),
+  },
+  {
+    id: "delete",
+    title: "Delete",
+    icon: "lucide-trash",
+    isVisible: computed(() => hasAccess(["order:delete", "order:manage"])),
+    clickHandler: () => confirmDelete(),
+  },
+]);
+</script>
+
+<template>
+  <VcBlade :toolbar-items="bladeToolbar" />
+</template>
+```
+
+Use this pattern for every blade unless you have a concrete reason to register imperatively. `IBladeToolbar` is exported from `@vc-shell/framework`; see [Core types](../../types/) for the full shape. Permission gating goes through `isVisible: computed(() => hasAccess(...))` so it stays reactive when the user's permission set changes.
+
+## When to reach for useToolbar
+
+`useToolbar` becomes the right tool only in these cases:
+
+- **Dynamic registration after mount.** A toolbar item is decided after the blade is already on screen — for example, a button that appears after a long-running operation completes and never has a representation in the initial array.
+- **Cross-blade toolbar mutation.** Code in blade A needs to add or change a button on blade B. Pass `targetBladeId` to the imperative methods.
+- **Non-blade owner.** A composable or service that doesn't live inside a blade `<script setup>` but still needs to contribute toolbar items.
+- **Wildcard / global items.** Toolbar items that appear on every blade through the `*` wildcard bladeId.
+
+In all other cases, declare the array and bind `:toolbar-items`. The imperative API exists to cover edge cases, not to replace the array.
 
 ## Quick Start
 
-```typescript
-<script setup lang="ts">
+Imperative registration from inside a blade, scoped to the current blade context:
+
+```typescript title="<script setup>"
 import { useToolbar } from "@vc-shell/framework";
 
 const { registerToolbarItem } = useToolbar();
@@ -31,58 +77,16 @@ registerToolbarItem({
   icon: "fas fa-save",
   clickHandler: () => saveData(),
 });
-</script>
 ```
 
-The button appears in the current blade's toolbar immediately. When the component unmounts, the button is automatically removed.
+The button appears in the current blade's toolbar immediately. When the component unmounts, the button is automatically removed (controlled by `autoCleanup`).
 
-## Registering Toolbar Buttons
+## Updating button state dynamically
 
-Every toolbar button requires a unique `id`. The remaining properties control appearance, behavior, and ordering.
-
-```typescript
-<script setup lang="ts">
-import { useToolbar } from "@vc-shell/framework";
-
-const { registerToolbarItem } = useToolbar();
-
-// Primary action — highest priority, appears first
-registerToolbarItem({
-  id: "save",
-  title: "Save",
-  icon: "fas fa-save",
-  clickHandler: () => save(),
-  priority: 100,
-});
-
-// Secondary action — lower priority, appears after Save
-registerToolbarItem({
-  id: "refresh",
-  title: "Refresh",
-  icon: "fas fa-sync",
-  clickHandler: () => refresh(),
-  priority: 50,
-});
-
-// Destructive action with permission gate
-registerToolbarItem({
-  id: "delete",
-  title: "Delete",
-  icon: "fas fa-trash",
-  clickHandler: () => confirmDelete(),
-  priority: 10,
-  permissions: "order:delete",
-});
-</script>
-```
-
-> **Note:** The `priority` field controls display order. Higher values appear first (leftmost). The default is `0`.
-
-## Updating Button State Dynamically
-
-Use `updateToolbarItem` to change any property of a registered button without re-registering it. This is the recommended pattern for toggling disabled state during async operations.
+Use `updateToolbarItem` to change any property of a registered button without re-registering it. This is the imperative analogue of binding a reactive `disabled` value in the array pattern.
 
 ```typescript
+// pseudo-code: replace OrderClient with your generated API client
 <script setup lang="ts">
 import { watch } from "vue";
 import { useToolbar, useAsync } from "@vc-shell/framework";
@@ -109,6 +113,8 @@ watch(loading, (isLoading) => {
 </script>
 ```
 
+In the array pattern, the same outcome reads as `disabled: computed(() => loading.value)` on the entry — no `watch` needed. Use `updateToolbarItem` only when the item has been registered imperatively and there is no array reference to mutate.
+
 You can update any subset of `IToolbarItem` properties:
 
 ```typescript
@@ -119,13 +125,11 @@ updateToolbarItem("toggle-publish", {
 });
 ```
 
-## Visibility and Permissions
+## Visibility and permissions
 
-Toolbar items support both reactive visibility and permission-based access control.
+Both reactive visibility and permission gating work the same way whether the item lives in an array or is registered imperatively — the framework filters by `isVisible` and `permissions` before render in either path.
 
 ### Reactive visibility with `isVisible`
-
-The `isVisible` property accepts a boolean, a `Ref<boolean>`, a `ComputedRef<boolean>`, or a function:
 
 ```typescript
 import { computed } from "vue";
@@ -143,25 +147,7 @@ registerToolbarItem({
 
 ### Permission-based registration
 
-Use `usePermissions` alongside `useToolbar` to conditionally register buttons:
-
-```typescript
-import { useToolbar, usePermissions } from "@vc-shell/framework";
-
-const { registerToolbarItem } = useToolbar();
-const { hasAccess } = usePermissions();
-
-if (hasAccess("order:delete")) {
-  registerToolbarItem({
-    id: "delete",
-    title: "Delete",
-    icon: "fas fa-trash",
-    clickHandler: () => deleteOrder(),
-  });
-}
-```
-
-Alternatively, set the `permissions` property on the item itself. The toolbar renderer checks this before displaying the button:
+Set `permissions` on the item; the renderer hides it when the user lacks the listed permission(s) (OR logic on arrays):
 
 ```typescript
 registerToolbarItem({
@@ -169,13 +155,15 @@ registerToolbarItem({
   title: "Delete",
   icon: "fas fa-trash",
   clickHandler: () => deleteOrder(),
-  permissions: ["order:delete"],
+  permissions: ["order:delete", "order:manage"],
 });
 ```
 
-## Cross-Blade Toolbar Management
+Avoid wrapping `registerToolbarItem` in an `if (hasAccess(...))` check unless you specifically want to skip side effects of the registration; the `permissions` field already gates rendering.
 
-By default, all methods operate on the current blade. Pass an explicit `targetBladeId` to manage another blade's toolbar:
+## Cross-blade toolbar management
+
+All methods accept an optional `targetBladeId` second argument. Pass it to register, update, or clear toolbar items on a blade other than the current one:
 
 ```typescript
 // Register a button on a specific child blade
@@ -185,14 +173,15 @@ registerToolbarItem({ id: "child-action", title: "Action", clickHandler: () => {
 clearBladeToolbarItems("ChildBlade");
 ```
 
-## Auto-Cleanup Control
+Pass `"*"` as the bladeId to register a global item that appears on every blade.
 
-By default, all toolbar items registered by a component are removed when that component unmounts (`autoCleanup: true`). Disable this for shared toolbar items that should persist:
+## Auto-cleanup control
+
+By default, items registered through `useToolbar()` inside a component setup are cleared when that component unmounts (`autoCleanup: true`). Disable this for items that should persist beyond the registering component:
 
 ```typescript
 const { registerToolbarItem } = useToolbar({ autoCleanup: false });
 
-// These items survive the component's unmount cycle
 registerToolbarItem({
   id: "global-help",
   title: "Help",
@@ -201,68 +190,38 @@ registerToolbarItem({
 });
 ```
 
+Use `autoCleanup: false` for shared toolbar items registered outside a blade lifecycle (for example, from a module's bootstrap).
+
 ## Recipes
 
-### Complete Blade with Save / Delete / Refresh
+### Dynamic registration after a non-blade action
 
-```typescript
-<script setup lang="ts">
-import { watch } from "vue";
-import { useToolbar, useAsync, usePermissions, useApiClient } from "@vc-shell/framework";
-import { OrderClient } from "@api/orders";
+`useToolbar` shines when a button is decided by a non-blade flow — for example, after a long-running export completes, expose a "Download result" button on the originating blade:
 
-const { registerToolbarItem, updateToolbarItem } = useToolbar();
-const { hasAccess } = usePermissions();
-const { getApiClient } = useApiClient(OrderClient);
+```ts
+// pseudo-code: replace ExportClient with your generated API client
+import { useToolbar, useBlade } from "@vc-shell/framework";
 
-const { loading: saving, action: save } = useAsync(async () => {
-  const client = await getApiClient();
-  await client.updateOrder(order.value);
-});
+const { registerToolbarItem, unregisterToolbarItem } = useToolbar();
+const { id: bladeId } = useBlade();
 
-const { loading: refreshing, action: refresh } = useAsync(async () => {
-  const client = await getApiClient();
-  order.value = await client.getOrderById(props.param);
-});
+async function startExport() {
+  const job = await startServerExport();
+  await waitForCompletion(job.id);
 
-registerToolbarItem({
-  id: "save",
-  title: "Save",
-  icon: "fas fa-save",
-  clickHandler: () => save(),
-  priority: 100,
-});
-
-registerToolbarItem({
-  id: "refresh",
-  title: "Refresh",
-  icon: "fas fa-sync",
-  clickHandler: () => refresh(),
-  priority: 50,
-});
-
-if (hasAccess("order:delete")) {
-  registerToolbarItem({
-    id: "delete",
-    title: "Delete",
-    icon: "fas fa-trash",
-    clickHandler: () => confirmDelete(),
-    priority: 10,
-  });
+  registerToolbarItem(
+    {
+      id: `download-${job.id}`,
+      title: "Download CSV",
+      icon: "lucide-download",
+      clickHandler: () => downloadResult(job.id),
+    },
+    bladeId.value,
+  );
 }
-
-// Disable all buttons while any operation is running
-watch([saving, refreshing], ([s, r]) => {
-  const busy = s || r;
-  updateToolbarItem("save", { disabled: busy });
-  updateToolbarItem("refresh", { disabled: busy });
-});
-</script>
 ```
 
-### Visual Separator Between Button Groups
-
-Use the `separator` property to add a vertical divider:
+### Visual separator between button groups
 
 ```typescript
 registerToolbarItem({
@@ -275,7 +234,21 @@ registerToolbarItem({
 });
 ```
 
-## Common Mistakes
+## Common mistakes
+
+### Reaching for `useToolbar` before considering the array pattern
+
+```typescript
+// Avoid in everyday blades — preferred pattern is the array + :toolbar-items
+const { registerToolbarItem } = useToolbar();
+registerToolbarItem({ id: "save", ... });
+
+// Preferred: declarative array bound to VcBlade
+const bladeToolbar = ref<IBladeToolbar[]>([{ id: "save", ... }]);
+// <VcBlade :toolbar-items="bladeToolbar" />
+```
+
+The array form is shorter, reactive without `watch`/`updateToolbarItem` plumbing, and easier to test.
 
 ### Forgetting the `id` property
 
@@ -299,7 +272,7 @@ registerToolbarItem({
 ### Re-registering instead of updating
 
 ```typescript
-// Wrong -- creates duplicate entries on each loading state change
+// Wrong -- duplicates the entry on each loading state change
 watch(loading, (isLoading) => {
   registerToolbarItem({
     id: "save",
@@ -315,7 +288,7 @@ watch(loading, (isLoading) => {
 });
 ```
 
-### Using useToolbar outside a component setup
+### Using `useToolbar` outside a component setup
 
 ```typescript
 // Wrong -- no component instance, autoCleanup will not work
@@ -324,7 +297,7 @@ function helperFunction() {
   registerToolbarItem({ id: "test", title: "Test" });
 }
 
-// Correct -- call in <script setup> or within setup()
+// Correct -- call in <script setup> or within setup(), or pass autoCleanup: false
 ```
 
 ## API Reference
@@ -368,8 +341,11 @@ function helperFunction() {
 | `permissions`  | `string \| string[]`                                                       | No       | Required permission(s) to display the button                   |
 | `bladeId`      | `string`                                                                   | No       | Target blade ID (auto-resolved from context)                   |
 
+`IToolbarItem` is the shape consumed by `ToolbarService`. The blade-level array binding uses `IBladeToolbar` (see [Core types](../../types/)), a near-identical shape that the framework normalizes into `IToolbarItem` before render.
+
 ## Related
 
 - [useBlade](../useBlade/) -- blade context that toolbar items are scoped to
 - [usePermissions](../usePermissions/) -- conditionally register toolbar items based on permissions
 - [useAsync](../useAsync/) -- wraps async operations with loading state for disabling buttons
+- `IBladeToolbar` in [Core types](../../types/) — the shape used by the `:toolbar-items` array binding

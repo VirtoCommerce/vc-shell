@@ -32,10 +32,11 @@ const meta = {
       },
     },
     anchorRef: {
-      description: "Anchor HTML element for floating positioning",
+      description:
+        "Anchor for floating positioning — accepts an HTMLElement or a floating-ui VirtualElement. Use a VirtualElement when the underlying DOM root can change (e.g. wrapping a component with an internal v-if) so the rect is resolved fresh on every update.",
       control: false,
       table: {
-        type: { summary: "HTMLElement | null" },
+        type: { summary: "ReferenceElement | null" },
         defaultValue: { summary: "null" },
         category: "Data",
       },

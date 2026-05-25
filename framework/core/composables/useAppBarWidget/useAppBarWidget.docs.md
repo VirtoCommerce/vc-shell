@@ -6,23 +6,25 @@ group: services
 
 # useAppBarWidget
 
-Provides access to the app bar widget service for registering custom widgets (buttons, icons, dropdowns) in the application's top navigation bar. Uses Vue's provide/inject system.
+Provides access to the widget service that powers the **Widgets** section of the App hub popover. Modules use it to register cross-app widgets — sync status indicators, language pickers, feature shortcuts — that the shell renders next to the apps grid in the hub. Uses Vue's provide/inject system.
 
 Also exports `provideAppBarWidget()` for framework-level initialization.
 
+> The `useAppBarWidget` name is a holdover from an earlier shell version where widgets rendered directly in the sidebar app-bar. In the current shell, the API name is the only place "app-bar" survives — the actual surface is the App hub popover.
+
 ## Overview
 
-The vc-shell application header (app bar) contains a row of widget slots for global actions: notification bell, language picker, user menu, and more. Modules can add their own widgets to this bar -- for example, a "quick create" button, a sync status indicator, or a custom dropdown.
+In the default VcApp shell, registered widgets render inside the **Widgets** section of the App hub popover (the panel that opens from the app-hub trigger button in the sidebar). The sidebar app-bar itself only holds the notification bell and the app-hub trigger; widgets do not appear there. On mobile, the same widgets surface in the hub tab and fly out below the panel when activated.
 
-The `useAppBarWidget()` composable provides the `IAppBarWidgetService` interface, which allows registering, unregistering, and listing app bar widgets. Widgets can be simple icon buttons with click handlers or fully custom Vue components.
+The `useAppBarWidget()` composable provides the `IAppBarWidgetService` interface, which allows registering, unregistering, and listing widgets. Each widget is either an action widget (an icon plus an `onClick` handler) or a component widget (a custom Vue component that the hub expands inline when clicked).
 
 The service follows the same provide/inject singleton pattern as other framework services. The framework calls `provideAppBarWidget()` during bootstrap; modules consume it via `useAppBarWidget()`.
 
 ## When to Use
 
-- To register a custom widget (notification bell, language picker, user avatar) in the app bar
-- To list or manage currently registered app bar widgets
-- When NOT to use: for blade-level toolbar actions, use `useToolbar()` instead
+- To register a cross-app widget (sync status, language picker, feature shortcut) in the App hub
+- To list or manage currently registered hub widgets
+- When NOT to use: for blade-level toolbar actions, declare an `IBladeToolbar[]` array and pass it to `<VcBlade :toolbar-items>` (use `useToolbar()` only for dynamic registration after mount)
 
 ## Basic Usage
 
@@ -49,16 +51,16 @@ None.
 
 | Property / Method | Type                                               | Description                                                |
 | ----------------- | -------------------------------------------------- | ---------------------------------------------------------- |
-| `register`        | `(options: registerAppBarWidgetOptions) => string` | Registers a widget in the app bar, returns the assigned ID |
-| `unregister`      | `(id: string) => void`                             | Removes a widget from the app bar by ID                    |
-| `items`           | `ComputedRef<AppBarWidget[]>`                      | Reactive list of all registered app bar widgets            |
+| `register`        | `(options: registerAppBarWidgetOptions) => string` | Registers a widget in the App hub, returns the assigned ID |
+| `unregister`      | `(id: string) => void`                             | Removes a widget from the App hub by ID                    |
+| `items`           | `ComputedRef<AppBarWidget[]>`                      | Reactive list of all registered hub widgets                |
 
 ### registerAppBarWidgetOptions
 
 | Field       | Type                      | Required | Description                                                   |
 | ----------- | ------------------------- | -------- | ------------------------------------------------------------- |
 | `id`        | `string`                  | No       | Custom ID; auto-generated if omitted                          |
-| `order`     | `number`                  | No       | Sort order in the app bar (lower = further left)              |
+| `order`     | `number`                  | No       | Sort order in the hub Widgets list (lower = appears first)    |
 | `title`     | `string`                  | No       | Tooltip or label text                                         |
 | `icon`      | `Component \| string`     | No       | Lucide icon name or a Vue component                           |
 | `component` | `Component`               | No       | Custom Vue component to render instead of default icon button |
@@ -136,14 +138,14 @@ const { items } = useAppBarWidget();
 
 // Iterate over all widgets (sorted by order)
 watchEffect(() => {
-  console.log(`${items.value.length} widgets in app bar`);
+  console.log(`${items.value.length} widgets in the App hub`);
   items.value.forEach((w) => console.log(`  - ${w.title ?? w.id}`));
 });
 ```
 
 ### Pre-registration before service exists
 
-If your module code runs before the app bar service is provided (e.g., during module `install()`), use the `addAppBarWidget()` bus function. Items are automatically flushed when `provideAppBarWidget()` runs:
+If your module code runs before the widget service is provided (e.g., during module `install()`), use the `addAppBarWidget()` bus function. Items are automatically flushed when `provideAppBarWidget()` runs:
 
 ```typescript
 import { addAppBarWidget } from "@vc-shell/framework";
@@ -185,7 +187,7 @@ register({ component: markRaw(MyWidget) });
 
 ## Related
 
-- [useToolbar](../useToolbar/) -- blade-level toolbar actions (different scope than app bar)
+- Blade toolbar actions — declare an `IBladeToolbar[]` array and bind it via `<VcBlade :toolbar-items>`; see [useToolbar](../useToolbar/) for the advanced dynamic-registration API
 - [useWidgets](../useWidgets/useWidgets.docs.md) -- blade widget registration system
 - `framework/injection-keys.ts` -- `AppBarWidgetServiceKey`
 - `framework/core/services/app-bar-menu-service.ts` -- the underlying service implementation

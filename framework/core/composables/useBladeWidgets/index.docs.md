@@ -24,33 +24,53 @@ Headless widgets are defined as plain configuration objects with reactive refs f
 
 ## Basic Usage
 
-```typescript
-import { useBladeWidgets } from "@vc-shell/framework";
+In production apps, the widget array is almost never declared inline in the blade's `<script setup>`. The recommended pattern is to extract widget setup into a sibling composable (`useXxxWidgets.ts`) so the blade stays clean, the widgets are testable in isolation, and they can be reused across blades that share a domain.
 
-const { refreshAll } = useBladeWidgets([
-  {
-    id: "OffersWidget",
-    icon: "lucide-tag",
-    title: "OFFERS.TITLE",
-    badge: offersCount,
-    loading: offersLoading,
-    onClick: () => openBlade({ name: "OffersList" }),
-    onRefresh: () => reloadOffers(),
-  },
-  {
-    id: "ReviewsWidget",
-    icon: "lucide-star",
-    title: "REVIEWS.TITLE",
-    badge: reviewsCount,
-    isVisible: computed(() => !!item.value?.id),
-    onClick: () => openBlade({ name: "ReviewsList" }),
-  },
-]);
+```typescript title="modules/products/widgets/useProductWidgets.ts"
+import { useBlade, useBladeWidgets, type UseBladeWidgetsReturn } from "@vc-shell/framework";
+import type { Ref, ComputedRef } from "vue";
+import { useOfferCount } from "./useOfferCount";
 
-// After a save, refresh all widget data
-await saveEntity();
-refreshAll();
+interface Options {
+  item: Ref<Product | undefined>;
+  isVisible: ComputedRef<boolean>;
+}
+
+export function useProductWidgets({ item, isVisible }: Options): UseBladeWidgetsReturn {
+  const { openBlade } = useBlade();
+  const { count: offersCount, loading, refresh } = useOfferCount(item);
+
+  return useBladeWidgets([
+    {
+      id: "OffersWidget",
+      icon: "lucide-tag",
+      title: "OFFERS.TITLE",
+      badge: offersCount,
+      loading,
+      isVisible,
+      onClick: () => openBlade({ name: "OffersList", options: { productId: item.value?.id } }),
+      onRefresh: refresh,
+    },
+  ]);
+}
 ```
+
+```vue title="modules/products/pages/product-details.vue"
+<script setup lang="ts">
+import { useProductWidgets } from "../widgets/useProductWidgets";
+
+const { item } = useProductDetails();
+const isVisible = computed(() => !!item.value?.id);
+const { refreshAll } = useProductWidgets({ item, isVisible });
+
+async function onSave() {
+  await saveProduct();
+  refreshAll();
+}
+</script>
+```
+
+Inline `useBladeWidgets([...])` is fine for one-off widgets, but extracting becomes essential when widget data comes from API calls (which need their own composables anyway).
 
 ## API
 
@@ -119,7 +139,7 @@ A complete example of an external widget that shows an unread message count and 
 **1. Register the external widget (module index.ts):**
 
 ```typescript
-import { createAppModule, registerExternalWidget, BladeDescriptor } from "@vc-shell/framework";
+import { registerExternalWidget, BladeDescriptor } from "@vc-shell/framework";
 import { markRaw } from "vue";
 import { MessageWidget } from "./components/widgets";
 
@@ -304,7 +324,7 @@ const { refreshAll } = useBladeWidgets([]);
 
 ## Related
 
-- [`defineBladeContext` / `injectBladeContext`](../bladeContext/) -- expose/consume blade data in external widgets
+- [`defineBladeContext` / `injectBladeContext`](../bladeContext/index.docs.md) -- expose/consume blade data in external widgets
 - `registerExternalWidget` -- register a component-based widget globally for target blades
 
 <!-- internal:start -->

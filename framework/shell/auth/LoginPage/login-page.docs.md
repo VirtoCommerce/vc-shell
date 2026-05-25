@@ -61,7 +61,7 @@ const routes = [
     component: Login,
     meta: { public: true },
     props: {
-      title: "Vendor Portal",
+      title: "Operations Console",
       subtitle: "Sign in to manage your store",
       logo: "/assets/vendor-logo.svg",
     },

@@ -12,16 +12,18 @@ The foundational container component of the VirtoCommerce admin shell. Blades ar
 
 Traditional admin panels use page-based routing: click a link, the entire viewport changes. Context is lost. Blades solve this by **stacking panels horizontally**. When a user clicks an item in a list, a details blade slides in from the right while the list remains visible. This preserves context, enables comparison, and supports deep drill-down workflows without losing your place.
 
-```
-+----------------+-------------------+---------------------+
-|                |                   |                     |
-|  Products      |  Product Details  |  Edit Variant       |
-|  (workspace)   |  (child blade)    |  (grandchild blade) |
-|                |                   |                     |
-|  [list...]     |  Name: Widget     |  Color: Red         |
-|  [list...]     |  SKU: WDG-001     |  Size: Large        |
-|                |                   |                     |
-+----------------+-------------------+---------------------+
+```mermaid
+flowchart LR
+    subgraph WS["Products (workspace)"]
+        L1["[list...]<br/>[list...]"]
+    end
+    subgraph CH["Product Details (child blade)"]
+        L2["Name: Widget<br/>SKU: WDG-001"]
+    end
+    subgraph GC["Edit Variant (grandchild blade)"]
+        L3["Color: Red<br/>Size: Large"]
+    end
+    WS --> CH --> GC
 ```
 
 | Aspect    | Pages/Routes         | Blades                           |
@@ -33,12 +35,12 @@ Traditional admin panels use page-based routing: click a link, the entire viewpo
 
 ## When to Use
 
-| Scenario                                          | Component                                    |
-| ------------------------------------------------- | -------------------------------------------- |
-| Stacked panel with toolbar, header, and lifecycle | **VcBlade**                                  |
-| One-off confirmation or input dialog              | [VcPopup](../../molecules/vc-popup/)         |
-| Full-page route without blade stack               | Vue Router view                              |
-| Scrollable content section inside a blade         | [VcContainer](../../molecules/vc-container/) |
+| Scenario                                          | Component                                                    |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| Stacked panel with toolbar, header, and lifecycle | **VcBlade**                                                  |
+| One-off confirmation or input dialog              | [VcPopup](../vc-popup/vc-popup.docs.md)                      |
+| Full-page route without blade stack               | Vue Router view                                              |
+| Scrollable content section inside a blade         | [VcContainer](../../atoms/vc-container/vc-container.docs.md) |
 
 ::storybook id="navigation-vcblade--default"
 
@@ -58,12 +60,12 @@ Use VcBlade for every screen in a vc-shell application -- it is the standard con
 </template>
 
 <script setup lang="ts">
-defineOptions({ name: "MyFirstBlade", url: "/my-first-blade" });
+defineBlade({ name: "MyFirstBlade", url: "/my-first-blade" });
 </script>
 ```
 
 !!! tip "Every blade needs a name"
-Every blade must define a `name` in `defineOptions`. This is how other blades reference it: `openBlade({ name: "MyFirstBlade" })`. The `url` is optional and controls the URL segment.
+Every blade must define a `name` in `defineBlade`. This is how other blades reference it: `openBlade({ name: "MyFirstBlade" })`. The `url` is optional and controls the URL segment.
 
 ## Blade Anatomy
 
@@ -87,7 +89,7 @@ A blade has four visual zones, rendered top-to-bottom:
 
 **Toolbar** -- Action buttons from the `toolbarItems` prop. Overflow items automatically collapse into a "More" dropdown (via `ResizeObserver`).
 
-**Status Banners** -- Unified, priority-sorted banner area. System banners: yellow when `modified` is `true`, red when the blade has an error (via `setError()`). Custom banners can be added programmatically via `useBlade().addBanner()` — see [useBlade docs](../../../core/composables/useBlade/useBlade.docs.md#banner-management).
+**Status Banners** -- Unified, priority-sorted banner area. System banners: yellow when `modified` is `true`, red when the blade has an error (via `setError()`). Custom banners can be added programmatically via `useBlade().addBanner()` — see [useBlade docs](../../../../core/composables/useBlade/useBlade.docs.md#banner-management).
 
 **Content Area** -- The `default` slot. Scrolls independently of header and toolbar.
 
@@ -117,7 +119,7 @@ import { computed, ref } from "vue";
 import { useBlade, type IBladeToolbar } from "@vc-shell/framework";
 
 // Registration metadata
-defineOptions({
+defineBlade({
   name: "OfferDetails", // Required: unique blade name
   url: "/offer", // Optional: URL segment
   routable: false, // Optional: exclude from direct URL access
@@ -447,12 +449,12 @@ addBanner({
 </script>
 ```
 
-Four variants are available: `danger`, `warning`, `info`, `success`. System banners (error and unsaved changes) are always present and cannot be removed by `clearBanners()`. For the full API reference, see [useBlade — Banner Management](../../../core/composables/useBlade/useBlade.docs.md#banner-management).
+Four variants are available: `danger`, `warning`, `info`, `success`. System banners (error and unsaved changes) are always present and cannot be removed by `clearBanners()`. For the full API reference, see [useBlade — Banner Management](../../../../core/composables/useBlade/useBlade.docs.md#banner-management).
 
 ## Blade Width Control
 
 ```vue
-<VcBlade :width="350">          <!-- Pixels (number) -->
+<VcBlade width="350px">          <!-- Pixels (number) -->
 <VcBlade width="50%">           <!-- CSS value (string) -->
 <VcBlade>                       <!-- Default: "30%" -->
 ```
@@ -463,12 +465,12 @@ On mobile, width is forced to `100%`. When `expanded` is `true`, the blade fills
 
 ### Master-Detail (List + Details)
 
-The most common vc-shell pattern. Key points from real-world usage (see `offers-list.vue` and `offers-details.vue`):
+The most common vc-shell pattern. Key points:
 
 **List blade** -- Opens a details blade on row click, tracks selected item:
 
 ```ts
-defineOptions({ name: "Offers", url: "/offers", isWorkspace: true });
+defineBlade({ name: "Offers", url: "/offers", isWorkspace: true });
 
 const { openBlade } = useBlade();
 const selectedItemId = ref<string>();
@@ -493,7 +495,7 @@ defineExpose({ title: bladeTitle, reload });
 **Details blade** -- Loads entity, saves, notifies parent, replaces self on create:
 
 ```ts
-defineOptions({ name: "Offer", url: "/offer", routable: false });
+defineBlade({ name: "Offer", url: "/offer", routable: false });
 
 const { callParent, replaceWith, onBeforeClose } = useBlade();
 
@@ -577,7 +579,7 @@ const toolbar = ref([
 defineOptions({});
 
 // CORRECT
-defineOptions({ name: "ProductDetails", url: "/product" });
+defineBlade({ name: "ProductDetails", url: "/product" });
 ```
 
 ### Forgetting to expose the title
@@ -624,17 +626,17 @@ openBlade({ name: "ProductsList" });
 
 ## Props
 
-| Prop           | Type               | Default     | Description                                                  |
-| -------------- | ------------------ | ----------- | ------------------------------------------------------------ |
-| `title`        | `string`           | `undefined` | Title text in the blade header.                              |
-| `subtitle`     | `string`           | `undefined` | Secondary text below the title.                              |
-| `icon`         | `string`           | `undefined` | Icon name (e.g., `"lucide-box"`) displayed before the title. |
-| `width`        | `number \| string` | `"30%"`     | Blade width. Numbers are pixels; strings are CSS values.     |
-| `expanded`     | `boolean`          | `false`     | Whether the blade fills all available width.                 |
-| `closable`     | `boolean`          | `true`      | Whether the close button is shown.                           |
-| `toolbarItems` | `IBladeToolbar[]`  | `[]`        | Action buttons in the toolbar zone.                          |
-| `modified`     | `boolean`          | `undefined` | Shows unsaved changes indicator and banner.                  |
-| `loading`      | `boolean`          | `false`     | Shows skeleton placeholders for all blade zones.             |
+| Prop           | Type               | Default     | Description                                                                                                                                                                               |
+| -------------- | ------------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`        | `string`           | `undefined` | Title text in the blade header.                                                                                                                                                           |
+| `subtitle`     | `string`           | `undefined` | Secondary text below the title.                                                                                                                                                           |
+| `icon`         | `string`           | `undefined` | Icon name (e.g., `"lucide-box"`) displayed before the title.                                                                                                                              |
+| `width`        | `number \| string` | `"30%"`     | Blade width. Numbers are pixels; strings are CSS values.                                                                                                                                  |
+| `expanded`     | `boolean`          | `undefined` | Whether the blade fills all available width. Inside a blade-navigation context this prop is overridden by the active blade's expanded state; in standalone use the prop is read directly. |
+| `closable`     | `boolean`          | `true`      | Whether the close button is shown.                                                                                                                                                        |
+| `toolbarItems` | `IBladeToolbar[]`  | `[]`        | Action buttons in the toolbar zone.                                                                                                                                                       |
+| `modified`     | `boolean`          | `undefined` | Shows unsaved changes indicator and banner.                                                                                                                                               |
+| `loading`      | `boolean`          | `undefined` | Shows skeleton placeholders for all blade zones.                                                                                                                                          |
 
 ## Events
 

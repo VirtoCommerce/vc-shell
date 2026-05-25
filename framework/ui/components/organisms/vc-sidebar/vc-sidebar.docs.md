@@ -126,7 +126,7 @@ Override with the `width` or `height` prop for custom dimensions.
 ### Elevated Variant with Custom Width
 
 ```vue
-<VcSidebar v-model="open" variant="elevated" :width="480" title="Details">
+<VcSidebar v-model="open" variant="elevated" width="480px" title="Details">
   <div class="tw-p-5">Content</div>
 </VcSidebar>
 ```

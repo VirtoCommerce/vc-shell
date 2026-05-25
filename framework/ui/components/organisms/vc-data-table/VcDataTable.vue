@@ -425,6 +425,7 @@ import type {
 } from "@ui/components/organisms/vc-data-table/types";
 import type { PersistedStateV2 } from "@ui/components/organisms/vc-data-table/types";
 import { vLoading } from "@core/directives";
+import type { VirtualElement } from "@floating-ui/vue";
 
 const props = withDefaults(defineProps<VcDataTableExtendedProps<T> & { fitMode?: TableFitMode }>(), {
   fitMode: "gap",
@@ -1084,17 +1085,37 @@ const showGlobalFiltersPanel = ref(false);
 const globalFilterValues = ref<Record<string, unknown>>({});
 const globalFiltersButtonRef = ref<InstanceType<typeof GlobalFiltersButton> | null>(null);
 
-// Computed: get the raw element from the component ref for anchor positioning
-const globalFiltersButtonEl = computed<HTMLElement | null>(() => {
-  return (globalFiltersButtonRef.value as unknown as { $el?: HTMLElement })?.$el ?? null;
+// Wrap the component ref as a floating-ui VirtualElement so the anchor is resolved
+// lazily on every position update. `$el` of a Vue component instance is NOT reactive —
+// when `VcButton`'s inner `v-if="!bladeLoading"` swaps the DOM root after the blade
+// finishes loading, a plain `computed(() => ref.value?.$el)` keeps a stale detached
+// node. Reading `$el` inside `getBoundingClientRect()` (called per autoUpdate frame)
+// always picks up the live element instead.
+const globalFiltersButtonEl = computed<VirtualElement | null>(() => {
+  const inst = globalFiltersButtonRef.value;
+  if (!inst) return null;
+  return {
+    getBoundingClientRect: () =>
+      (inst as unknown as { $el?: HTMLElement }).$el?.getBoundingClientRect() ?? new DOMRect(),
+    get contextElement() {
+      return (inst as unknown as { $el?: HTMLElement }).$el;
+    },
+  };
 });
 
 // Column switcher state
 const showColumnSwitcherPanel = ref(false);
 const dataTableHeaderRef = ref<InstanceType<typeof DataTableHeader> | null>(null);
 
-const columnSwitcherButtonEl = computed<HTMLElement | null>(() => {
-  return dataTableHeaderRef.value?.columnSwitcherEl ?? null;
+const columnSwitcherButtonEl = computed<VirtualElement | null>(() => {
+  const header = dataTableHeaderRef.value;
+  if (!header) return null;
+  return {
+    getBoundingClientRect: () => (header.columnSwitcherEl ?? null)?.getBoundingClientRect() ?? new DOMRect(),
+    get contextElement() {
+      return header.columnSwitcherEl ?? undefined;
+    },
+  };
 });
 
 // Computed: count of active global filters

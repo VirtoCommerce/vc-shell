@@ -19,11 +19,31 @@ A scrollable content wrapper that fills its parent, provides configurable paddin
 
 ## Basic Usage
 
+The most common form is a bare `<VcContainer>` wrapping the blade's body — it fills the parent, scrolls when content overflows, and applies a 16px default padding.
+
+```vue
+<VcContainer>
+  <p>Scrollable content goes here...</p>
+</VcContainer>
+```
+
+When the contained child already manages its own padding (a `VcDataTable`, for example), set `:no-padding="true"` so the wrapper does not stack extra space around it:
+
+```vue
+<VcContainer :no-padding="true">
+  <VcDataTable :items="items">
+    <VcColumn id="name" title="Name" />
+  </VcDataTable>
+</VcContainer>
+```
+
+The `shadow` prop adds an inset shadow as a scroll cue. Use it for content that genuinely overflows by a long way (long forms, free-text editors); the default no-shadow rendering is preferable everywhere else.
+
 ::storybook id="layout-vccontainer--with-shadow" height="300"
 
 ```vue
 <VcContainer shadow>
-  <p>Scrollable content goes here...</p>
+  <p>Long-form content that benefits from a scroll cue...</p>
 </VcContainer>
 ```
 

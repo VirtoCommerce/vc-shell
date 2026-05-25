@@ -153,6 +153,5 @@ const allWidgets = computed(() => [...bladeWidgets.value, ...externalWidgets.val
 
 ## Related
 
-- [useWidget](../useWidget/useWidget.docs.md) -- widget-side composable for registering trigger contracts (badge, refresh)
-- [useBladeWidgets](../useBladeWidgets/) -- lifecycle-managed widget registration for blades (preferred API)
+- [useBladeWidgets](../useBladeWidgets/index.docs.md) -- lifecycle-managed widget registration for blades (preferred API)
 - `framework/core/services/widget-service.ts` -- underlying service implementation

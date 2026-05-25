@@ -176,6 +176,7 @@ import type {
   TableStateConfig,
 } from "@ui/components/organisms/vc-data-table/types";
 import type { ITableColumns, IActionBuilderResult } from "@core/types";
+import type { VirtualElement } from "@floating-ui/vue";
 
 // ============================================================================
 // Props — mirrors old VcTable (TableProps) interface
@@ -308,9 +309,20 @@ const internalSelection = ref(props.selectionItems ?? []) as Ref<T[]>;
 const showLegacyFiltersPanel = ref(false);
 const legacyFiltersButtonRef = ref<InstanceType<typeof GlobalFiltersButton> | null>(null);
 
-const legacyFiltersButtonEl = computed<HTMLElement | null>(
-  () => (legacyFiltersButtonRef.value as unknown as { $el?: HTMLElement })?.$el ?? null,
-);
+// VirtualElement wrapper — resolves $el lazily on every floating-ui update so the
+// inner `v-if="!bladeLoading"` swap in VcButton can't leave a stale detached anchor.
+// See VcDataTable.vue for the rationale.
+const legacyFiltersButtonEl = computed<VirtualElement | null>(() => {
+  const inst = legacyFiltersButtonRef.value;
+  if (!inst) return null;
+  return {
+    getBoundingClientRect: () =>
+      (inst as unknown as { $el?: HTMLElement }).$el?.getBoundingClientRect() ?? new DOMRect(),
+    get contextElement() {
+      return (inst as unknown as { $el?: HTMLElement }).$el;
+    },
+  };
+});
 
 const closeLegacyFiltersPanel = () => {
   showLegacyFiltersPanel.value = false;

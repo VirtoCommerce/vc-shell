@@ -22,18 +22,27 @@ Renders a VirtoCommerce platform dynamic property as the appropriate form contro
 ```vue
 <template>
   <VcDynamicProperty
-    :property="dynamicProperty"
-    :model-value="propertyValue"
-    :value-type="dynamicProperty.valueType"
-    :name="dynamicProperty.name"
-    :required="dynamicProperty.isRequired"
-    :dictionary="dynamicProperty.isDictionary"
-    :multivalue="dynamicProperty.isMultivalue"
+    :property="property"
+    :model-value="property.value"
+    :value-type="property.valueType ?? ''"
+    :name="property.name"
+    :required="property.required"
+    :dictionary="property.dictionary"
+    :multivalue="property.multivalue"
+    :multilanguage="property.multilanguage"
+    :current-language="currentLocale"
+    :rules="{
+      min: property.validationRule?.charCountMin,
+      max: property.validationRule?.charCountMax,
+      regex: property.validationRule?.regExp,
+    }"
     :options-getter="loadDictionaryOptions"
     @update:model-value="handlePropertyUpdate"
   />
 </template>
 ```
+
+The prop names match the `DynamicObjectProperty` shape returned by the platform — pass `property.dictionary`, `property.multivalue`, `property.required` directly without renaming. Always pass `valueType` with a string fallback because the API can return `undefined` for newly-created properties. The `:multilanguage` and `:current-language` props are required when the property supports localized values; the `:rules` object maps the property's `validationRule` to the form-validation engine.
 
 ## Key Props
 

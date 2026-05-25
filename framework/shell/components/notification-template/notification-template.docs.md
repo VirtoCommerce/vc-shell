@@ -175,4 +175,4 @@ const isRunning = computed(() => (notification.value as any).isRunning ?? false)
 ## Related Components
 
 - [NotificationDropdown](../notification-dropdown/notification-dropdown.docs.md) -- parent dropdown container
-- [Notifications](../notifications/notifications.docs.md) -- toast notification system (different from push notifications)
+- [Notifications](../../../core/notifications/notifications.docs.md) -- push notification system (store, registration, blade-scoped subscriptions)

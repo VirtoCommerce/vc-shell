@@ -71,7 +71,7 @@ describe("validateFrontmatter", () => {
   it("rejects placement: index when group is root", () => {
     const result = validateFrontmatter({
       title: "Foo",
-      category: "concepts",
+      category: "plugins",
       group: "root",
       placement: "index",
     });

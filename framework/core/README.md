@@ -319,12 +319,12 @@ The useGlobalSearch composable provides access to the Global Search Service with
 
 **File:** `/framework/core/composables/useAppBarWidget/index.ts`
 
-The useAppBarWidget composable provides functionality for managing widgets in the application bar.
+The useAppBarWidget composable provides functionality for registering widgets that render in the **Widgets** section of the App hub popover (the panel that opens from the app-hub trigger in the sidebar). The API noun "app-bar" is a legacy name; the actual surface is the App hub.
 
 **Key Functions:**
 
-- Retrieve and manage app bar widgets
-- Register custom app bar widgets
+- Retrieve and manage App hub widgets
+- Register custom App hub widgets
 
 ### useSettingsMenu
 

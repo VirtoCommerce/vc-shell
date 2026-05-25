@@ -201,5 +201,5 @@ Do not set `triggerAction="none"` and then rely on `@trigger:click` -- the event
 - [SettingsMenu](../settings-menu/settings-menu.docs.md) -- parent container
 - [ThemeSelector](../theme-selector/theme-selector.docs.md) -- uses SettingsMenuItem with submenu slot
 - [LanguageSelector](../language-selector/language-selector.docs.md) -- uses SettingsMenuItem with submenu slot
-- [VcDropdownPanel](../../ui/components/molecules/vc-dropdown-panel/) -- used internally for desktop sub-menus
-- [VcDropdownItem](../../ui/components/molecules/vc-dropdown/) -- recommended for sub-menu option rows
+- [VcDropdownPanel](../../../ui/components/molecules/vc-dropdown-panel/vc-dropdown-panel.docs.md) -- used internally for desktop sub-menus
+- [VcDropdown](../../../ui/components/molecules/vc-dropdown/vc-dropdown.docs.md) -- recommended for sub-menu option rows

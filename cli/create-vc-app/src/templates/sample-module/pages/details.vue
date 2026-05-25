@@ -125,30 +125,37 @@
 </template>
 
 <script lang="ts" setup>
-import { IBladeToolbar, useBlade, useBeforeUnload, usePopup } from "@vc-shell/framework";
+import { IBladeToolbar, useBlade, useBladeForm, usePopup } from "@vc-shell/framework";
+import {
+  VcBlade,
+  VcCard,
+  VcCol,
+  VcContainer,
+  VcForm,
+  VcInput,
+  VcInputCurrency,
+  VcRow,
+  VcTextarea,
+} from "@vc-shell/framework/ui";
 import { useDetails } from "./../composables";
 import { computed, onMounted, ref } from "vue";
-import { Field, useForm } from "vee-validate";
+import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
-import * as _ from "lodash-es";
 
 defineBlade({
   name: "SampleDetails",
   url: "/sample-details",
 });
 
-const { param, closeSelf, callParent, onBeforeClose } = useBlade();
+const { param, closeSelf, callParent } = useBlade();
 
-const { loading, getItem, saveItem, removeItem, item, currencyOptions, isModified } = useDetails();
+const { loading, getItem, saveItem, removeItem, item, currencyOptions } = useDetails();
 const { showConfirmation } = usePopup();
 const { t } = useI18n({ useScope: "global" });
 
-const { meta } = useForm({
-  validateOnMount: false,
-});
-
-const isDisabled = computed(() => {
-  return !meta.value.dirty || !meta.value.valid;
+const form = useBladeForm({
+  data: item,
+  closeConfirmMessage: computed(() => t("SAMPLE_APP.PAGES.ALERTS.CLOSE_CONFIRMATION")),
 });
 
 const title = computed(() => {
@@ -166,11 +173,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: "Save",
     async clickHandler() {
       await saveItem(item.value);
-
+      form.setBaseline();
       callParent("reload");
       closeSelf();
     },
-    disabled: computed(() => !(isModified.value && !isDisabled.value)),
+    disabled: computed(() => !form.canSave.value),
   },
   {
     id: "delete",
@@ -192,20 +199,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 onMounted(async () => {
   if (param.value) {
     await getItem({ id: param.value });
+    form.setBaseline();
   }
 });
-
-onBeforeClose(async () => {
-  if (!isDisabled.value && isModified.value) {
-    return !(await showConfirmation(t("SAMPLE_APP.PAGES.ALERTS.CLOSE_CONFIRMATION")));
-  }
-  return false;
-});
-
-
-
-
-
-
-useBeforeUnload(computed(() => !isDisabled.value && isModified.value));
 </script>

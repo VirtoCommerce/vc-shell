@@ -19,17 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import {
-  VcBlade,
-  VcContainer,
-  VcForm,
-  VcInput,
-  useBlade,
-  useModificationTracker,
-  usePopup,
-  useBeforeUnload,
-  type IBladeToolbar,
-} from "@vc-shell/framework";
+import { useBlade, useBladeForm, type IBladeToolbar } from "@vc-shell/framework";
+import { VcBlade, VcContainer, VcForm, VcInput } from "@vc-shell/framework/ui";
 import { ref, computed, onMounted } from "vue";
 import use<%- ModuleNamePascalCase %>Details from "../composables/useDetails";
 import { useI18n } from "vue-i18n";
@@ -40,11 +31,14 @@ defineBlade({
 });
 
 const { t } = useI18n({ useScope: "global" });
-const { param, closeSelf, callParent, onBeforeClose } = useBlade();
+const { param, callParent } = useBlade();
 
-const { showConfirmation } = usePopup();
+const { item, loading, getItem, saveItem } = use<%- ModuleNamePascalCase %>Details();
 
-const { item, loading, getItem, saveItem, isModified, resetModificationState } = use<%- ModuleNamePascalCase %>Details();
+const form = useBladeForm({
+  data: item,
+  closeConfirmMessage: computed(() => t("<%- ModuleNameScreamingSnake %>.ALERTS.CLOSE_CONFIRMATION")),
+});
 
 const title = computed(() => {
   return param.value
@@ -57,10 +51,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     id: "save",
     title: t("<%- ModuleNameScreamingSnake %>.PAGES.DETAILS.TOOLBAR.SAVE"),
     icon: "lucide-save",
-    disabled: computed(() => !isModified.value),
+    disabled: computed(() => !form.canSave.value),
     async clickHandler() {
       await saveItem();
-      resetModificationState();
+      form.setBaseline();
       callParent("reload");
     },
   },
@@ -69,15 +63,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 onMounted(async () => {
   if (param.value) {
     await getItem(param.value);
+    form.setBaseline();
   }
 });
-
-onBeforeClose(async () => {
-  if (isModified.value) {
-    return !(await showConfirmation(t("<%- ModuleNameScreamingSnake %>.ALERTS.CLOSE_CONFIRMATION")));
-  }
-  return false;
-});
-
-useBeforeUnload(computed(() => isModified.value));
 </script>

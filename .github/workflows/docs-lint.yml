@@ -6,6 +6,9 @@ on:
       - "framework/**/*.docs.md"
       - "framework/**/*.stories.ts"
       - "cli/docs-sync/**"
+      - "cli/vc-app-skill/runtime/vc-app.md"
+      - "examples/scaffold/**"
+      - "scripts/check-scaffold-example.ts"
 
 jobs:
   lint:

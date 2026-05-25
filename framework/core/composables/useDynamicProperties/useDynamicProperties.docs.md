@@ -163,4 +163,4 @@ useDynamicProperties/
 ## Related
 
 - [useBladeForm](../useBladeForm/useBladeForm.docs.md) — form state management that uses `semanticEqual` for modification detection. `cleanEmptyValues` ensures compatibility.
-- [VcDynamicProperty](../../../../ui/components/organisms/vc-dynamic-property/vc-dynamic-property.docs.md) — UI component that renders dynamic properties
+- [VcDynamicProperty](../../../ui/components/organisms/vc-dynamic-property/vc-dynamic-property.docs.md) — UI component that renders dynamic properties

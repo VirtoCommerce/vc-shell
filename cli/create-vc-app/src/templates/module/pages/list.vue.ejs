@@ -23,14 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import {
-  VcBlade,
-  VcDataTable,
-  VcColumn,
-  useBlade,
-  type IBladeToolbar,
-} from "@vc-shell/framework";
-import { ref } from "vue";
+import { useBlade, type IBladeToolbar } from "@vc-shell/framework";
+import { VcBlade, VcDataTable, VcColumn } from "@vc-shell/framework/ui";
+import { ref, onMounted } from "vue";
 import use<%- ModuleNamePascalCase %>List from "../composables/useList";
 import { useI18n } from "vue-i18n";
 
@@ -76,13 +71,16 @@ function openDetails(item?: { id?: string }) {
   openBlade({
     name: "<%- ModuleNamePascalCase %>Details",
     param: item?.id,
-    onClose() {
-      getItems();
+    async onClose() {
+      await getItems();
     },
   });
 }
 
-getItems();
+onMounted(async () => {
+  await getItems();
+})
+
 
 exposeToChildren({ reload: getItems });
 </script>

@@ -1,5 +1,5 @@
 import { Ref, computed, ref } from "vue";
-import { useAsync, useLoading, useModificationTracker } from "@vc-shell/framework";
+import { useAsync, useLoading } from "@vc-shell/framework";
 import {
   MockedItem,
   addNewMockItem,
@@ -12,8 +12,6 @@ import {
 export default () => {
   const item = ref({}) as Ref<MockedItem>;
 
-  const { isModified, currentValue, resetModificationState } = useModificationTracker(item);
-
   const { loading: itemLoading, action: getItem } = useAsync<{ id: string }>(async (payload) => {
     item.value = await loadMockItem(payload);
   });
@@ -21,14 +19,12 @@ export default () => {
   const { loading: saveLoading, action: saveItem } = useAsync<MockedItem, MockedItem | void>(async (payload) => {
     if (payload) {
       if (payload.id) {
-      const _res = await updateMockItem(payload)
-
-      resetModificationState(_res);
-      return _res;
+        const _res = await updateMockItem(payload);
+        item.value = _res;
+        return _res;
       } else {
         const _res = await addNewMockItem(payload);
-
-        resetModificationState(_res);
+        item.value = _res;
         return _res;
       }
     }
@@ -43,10 +39,9 @@ export default () => {
   const loading = useLoading(itemLoading, saveLoading, removeLoading);
 
   return {
-    item: currentValue,
+    item,
     loading: computed(() => loading.value),
     currencyOptions: computed(() => currencyOptions),
-    isModified,
     getItem,
     saveItem,
     removeItem,

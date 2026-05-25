@@ -39,15 +39,30 @@ import { VcStatusIcon } from "@vc-shell/framework";
 
 ### Boolean Column in a Table
 
+For a simple yes/no indicator, declare the column with `type="status-icon"` — `VcDataTable` renders the icon based on the boolean cell value, no slot needed:
+
 ```vue
 <template>
   <VcColumn
     id="isActive"
-    header="Active"
-    :width="80"
+    title="Active"
+    type="status-icon"
+    width="80px"
+  />
+</template>
+```
+
+Reach for the `#body` slot only when you need a custom predicate or a non-boolean source:
+
+```vue
+<template>
+  <VcColumn
+    id="isActive"
+    title="Active"
+    width="80px"
   >
-    <template #default="{ row }">
-      <VcStatusIcon :status="row.isActive" />
+    <template #body="{ data }">
+      <VcStatusIcon :status="data.isActive && data.confirmed" />
     </template>
   </VcColumn>
 </template>
@@ -57,35 +72,26 @@ import { VcStatusIcon } from "@vc-shell/framework";
 
 ```vue
 <template>
-  <VcDataTable
-    :columns="columns"
-    :items="users"
-  >
+  <VcDataTable :items="users">
     <VcColumn
       id="emailVerified"
-      header="Email"
-      :width="70"
-    >
-      <template #default="{ row }">
-        <VcStatusIcon :status="row.emailVerified" />
-      </template>
-    </VcColumn>
+      title="Email"
+      type="status-icon"
+      width="70px"
+    />
     <VcColumn
       id="isActive"
-      header="Active"
-      :width="70"
-    >
-      <template #default="{ row }">
-        <VcStatusIcon :status="row.isActive" />
-      </template>
-    </VcColumn>
+      title="Active"
+      type="status-icon"
+      width="70px"
+    />
     <VcColumn
       id="hasAvatar"
-      header="Avatar"
-      :width="70"
+      title="Avatar"
+      width="70px"
     >
-      <template #default="{ row }">
-        <VcStatusIcon :status="!!row.avatarUrl" />
+      <template #body="{ data }">
+        <VcStatusIcon :status="!!data.avatarUrl" />
       </template>
     </VcColumn>
   </VcDataTable>

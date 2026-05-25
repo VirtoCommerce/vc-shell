@@ -53,7 +53,7 @@ This component has no props. All content is driven by the settings menu service 
 A typical module registers all its settings entries during the module install phase:
 
 ```ts
-// vendor-portal-module/index.ts
+// settings-module/index.ts
 import { markRaw } from "vue";
 import { useSettingsMenu, ThemeSelector, LanguageSelector, ChangePasswordButton, LogoutButton } from "@vc-shell/framework";
 
@@ -98,12 +98,12 @@ export default {
 
 ### Registration options
 
-| Option      | Type        | Required | Description                                                |
-| ----------- | ----------- | -------- | ---------------------------------------------------------- |
-| `id`        | `string`    | Yes      | Unique identifier for the entry                            |
-| `group`     | `string`    | Yes      | Group name (entries are grouped and separated by dividers) |
-| `order`     | `number`    | Yes      | Sort order within the group (lower = higher position)      |
-| `component` | `Component` | Yes      | Vue component to render as the menu item                   |
+| Option      | Type        | Required | Description                                                                                                                                    |
+| ----------- | ----------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`        | `string`    | No       | Unique identifier for the entry. Auto-generated when omitted.                                                                                  |
+| `group`     | `string`    | No       | Group name (entries are grouped and separated by dividers). Defaults to `"general"`.                                                           |
+| `order`     | `number`    | No       | Sort order within the group (lower = higher position). Defaults to the current registry size at registration time, preserving insertion order. |
+| `component` | `Component` | Yes      | Vue component to render as the menu item.                                                                                                      |
 
 ### Group rendering
 

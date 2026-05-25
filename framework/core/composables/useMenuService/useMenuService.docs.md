@@ -193,6 +193,7 @@ removeRegisteredMenuItem({ routeId: "ReturnsList" } as MenuItem);
 ### Dynamic Badge Based on API Data
 
 ```typescript
+// pseudo-code: replace OrderClient with your generated API client
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { setMenuBadge, useApiClient } from "@vc-shell/framework";

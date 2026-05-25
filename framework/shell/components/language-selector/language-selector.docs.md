@@ -102,4 +102,4 @@ async function onLogin(user) {
 - [SettingsMenu](../settings-menu/settings-menu.docs.md) -- parent container
 - [SettingsMenuItem](../settings-menu-item/settings-menu-item.docs.md) -- base menu item used internally
 - [ThemeSelector](../theme-selector/theme-selector.docs.md) -- sibling preference entry
-- [MultilanguageSelector](../multilanguage-selector/multilanguage-selector.docs.md) -- content language picker (different purpose)
+- [MultilanguageSelector](../../../ui/components/molecules/multilanguage-selector/multilanguage-selector.docs.md) -- content language picker (different purpose)

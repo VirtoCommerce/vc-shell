@@ -1,4 +1,4 @@
-import { Ref } from "vue";
+import { ComputedRef, Ref } from "vue";
 
 // ============================================
 // Core Types

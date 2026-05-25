@@ -8,11 +8,13 @@ group: utilities
 
 Prevents the browser tab from closing when unsaved changes exist by hooking into the native `beforeunload` event. This composable is the last line of defense against accidental data loss -- it triggers the browser's built-in "Leave site?" confirmation dialog whenever the user tries to close or refresh the tab while the `modified` flag is `true`. It complements in-app guards (like blade `onBeforeClose`) by covering the case where the user bypasses the application entirely via the browser chrome.
 
+> Form blades already wire this for you. `useBladeForm` registers `useBeforeUnload(isModified)` by default; pass `autoBeforeUnload: false` if you ever need to opt out. Reach for `useBeforeUnload` directly only when the unsaved state lives outside a form (a kanban board, a wizard, a custom editor not backed by `useBladeForm`).
+
 ## When to Use
 
-- Protect forms or blades with unsaved edits from accidental tab/window close or page refresh
+- Protect non-form blades with unsaved edits (kanban, wizard, custom editor) from accidental tab/window close or page refresh
 - Pair with `useModificationTracker` to get a reactive `modified` flag automatically
-- When NOT to use: for in-app navigation guards (use Vue Router `beforeRouteLeave` or blade `onBeforeClose` instead). This composable only handles the browser-level close/refresh event, not SPA route changes.
+- When NOT to use: inside a blade backed by `useBladeForm` (the form already registers it); for in-app navigation guards (use Vue Router `beforeRouteLeave` or blade `onBeforeClose` instead). This composable only handles the browser-level close/refresh event, not SPA route changes.
 
 ## Quick Start
 

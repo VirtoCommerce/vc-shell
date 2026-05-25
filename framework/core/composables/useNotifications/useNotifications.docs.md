@@ -18,21 +18,35 @@ Provides access to the push-notification system: reading notification history, f
 
 ## Quick Start
 
+In new code, prefer `useBladeNotifications` — it integrates with the blade effect scope and auto-cleans on unmount.
+
+```typescript
+import { useBladeNotifications } from "@vc-shell/framework";
+
+// Blade-scoped subscription with automatic cleanup
+const { messages, unreadCount, markAsRead } = useBladeNotifications({
+  types: ["OrderStatusChanged"],
+  filter: (msg) => msg.orderId === currentOrderId.value,
+  onMessage: () => refreshOrderList(),
+});
+```
+
+Use `useNotifications` (this composable) only in legacy code or when you need to subscribe outside a blade scope:
+
 ```typescript
 import { useNotifications } from "@vc-shell/framework";
 
-// Subscribe to specific notification types
-const { notifications, moduleNotifications, loadFromHistory, markAsRead, markAllAsRead, setNotificationHandler } = useNotifications("OrderStatusChanged");
+// Legacy: type-filtered subscription with manual lifecycle
+const { notifications, setNotificationHandler, loadFromHistory } = useNotifications("OrderStatusChanged");
 
-// Register a handler for real-time notifications
 setNotificationHandler((notification) => {
-  console.log("Order status changed:", notification);
   refreshOrderList();
 });
 
-// Load historical notifications on mount
 onMounted(() => loadFromHistory(50));
 ```
+
+For the canonical blade-side example and the registration of notification types at module load, see the [Notifications system reference](../../notifications/notifications.docs.md).
 
 ## API
 
@@ -155,6 +169,6 @@ onMounted(refreshInventory);
 
 ## Related
 
-- [useBladeNotifications](../useBladeNotifications/) -- preferred replacement with blade lifecycle integration
+- [Notification system reference](../../notifications/notifications.docs.md) -- includes the recommended `useBladeNotifications` composable with blade lifecycle integration
 - `useNotificationStore()` -- direct Pinia-based store access for full control
 - `MIGRATION_GUIDE.md#notifications` -- migration guide from useNotifications to useBladeNotifications

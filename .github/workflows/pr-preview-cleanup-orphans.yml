@@ -40,22 +40,14 @@ jobs:
         with:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
+          scope: "@vc-shell"
           always-auth: true
-
-      - name: Configure npm auth
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          {
-            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}"
-            echo "@vc-shell:registry=https://registry.npmjs.org/"
-            echo "registry=https://registry.npmjs.org/"
-          } > ~/.npmrc
 
       - name: Remove orphan pr dist-tags
         env:
           PR_NUMBERS: ${{ inputs.pr_numbers }}
           DRY_RUN: ${{ inputs.dry_run }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -u
           PACKAGES=(

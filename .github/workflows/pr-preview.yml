@@ -171,21 +171,13 @@ jobs:
         with:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
+          scope: "@vc-shell"
           always-auth: true
-
-      - name: Configure npm auth
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          {
-            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}"
-            echo "@vc-shell:registry=https://registry.npmjs.org/"
-            echo "registry=https://registry.npmjs.org/"
-          } > ~/.npmrc
 
       - name: Remove pr dist-tags
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -u
           TAG="pr-${PR_NUMBER}"

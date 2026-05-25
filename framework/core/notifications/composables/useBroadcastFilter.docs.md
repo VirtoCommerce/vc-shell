@@ -60,7 +60,7 @@ onMounted(() => {
 });
 ```
 
-`creator` is the user that originated the event on the platform side. This is the canonical "show me my own broadcasts" filter used in the vendor portal.
+`creator` is the user that originated the event on the platform side. This is the canonical "show me my own broadcasts" filter in multi-tenant back-office apps.
 
 ### Scope by tenant id
 

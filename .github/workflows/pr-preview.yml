@@ -174,12 +174,21 @@ jobs:
           always-auth: true
 
       - name: Configure npm auth
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          {
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}"
+            echo "@vc-shell:registry=https://registry.npmjs.org/"
+            echo "registry=https://registry.npmjs.org/"
+          } > ~/.npmrc
 
       - name: Remove pr dist-tags
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          TAG="pr-${{ github.event.pull_request.number }}"
+          set -u
+          TAG="pr-${PR_NUMBER}"
           PACKAGES=(
             "@vc-shell/framework"
             "@vc-shell/api-client-generator"
@@ -192,7 +201,21 @@ jobs:
             "@vc-shell/mf-module"
             "@vc-shell/vc-app-skill"
           )
+          FAILED=()
           for PACKAGE in "${PACKAGES[@]}"; do
-            echo "Removing dist-tag $TAG from $PACKAGE..."
-            npm dist-tag rm "$PACKAGE" "$TAG" 2>/dev/null || echo "  (tag $TAG not found on $PACKAGE, skipping)"
+            echo "::group::${PACKAGE} — checking dist-tag ${TAG}"
+            if npm dist-tag ls "$PACKAGE" --registry=https://registry.npmjs.org/ | grep -q "^${TAG}:"; then
+              echo "Removing ${TAG} from ${PACKAGE}..."
+              if ! npm dist-tag rm "$PACKAGE" "$TAG" --registry=https://registry.npmjs.org/; then
+                echo "::error::Failed to remove dist-tag ${TAG} from ${PACKAGE}"
+                FAILED+=("$PACKAGE")
+              fi
+            else
+              echo "Tag ${TAG} not present on ${PACKAGE} — nothing to do."
+            fi
+            echo "::endgroup::"
           done
+          if [ "${#FAILED[@]}" -gt 0 ]; then
+            echo "::error::Cleanup failed for: ${FAILED[*]}"
+            exit 1
+          fi

@@ -1,0 +1,148 @@
+# PR Preview — Orphan dist-tag cleanup (manual)
+#
+# One-off / on-demand workflow to remove stale `pr-<N>` dist-tags left on npm
+# by past PRs whose close-time cleanup did not run successfully.
+#
+# Usage:
+#   - Run via Actions → "PR Preview Cleanup Orphans" → Run workflow
+#   - Inputs:
+#       pr_numbers: comma- or space-separated PR numbers, e.g. "220,221,222"
+#                   or "all" to remove every `pr-*` tag found on managed packages
+#       dry_run:    "true" (default) lists what would be removed but does not modify npm
+#
+# Safety: dry_run is true by default. Re-run with dry_run=false to actually remove.
+
+name: PR Preview Cleanup Orphans
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_numbers:
+        description: 'PR numbers to clean up (e.g. "220,221,222") or "all" to wipe every pr-* tag'
+        required: true
+        default: "all"
+      dry_run:
+        description: "Dry run — only list, do not remove"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+jobs:
+  cleanup-orphans:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+          always-auth: true
+
+      - name: Configure npm auth
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          {
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}"
+            echo "@vc-shell:registry=https://registry.npmjs.org/"
+            echo "registry=https://registry.npmjs.org/"
+          } > ~/.npmrc
+
+      - name: Remove orphan pr dist-tags
+        env:
+          PR_NUMBERS: ${{ inputs.pr_numbers }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -u
+          PACKAGES=(
+            "@vc-shell/framework"
+            "@vc-shell/api-client-generator"
+            "@vc-shell/create-vc-app"
+            "@vc-shell/config-generator"
+            "@vc-shell/migrate"
+            "@vc-shell/ts-config"
+            "@vc-shell/mf-config"
+            "@vc-shell/mf-host"
+            "@vc-shell/mf-module"
+            "@vc-shell/vc-app-skill"
+          )
+
+          if [[ "$PR_NUMBERS" != "all" && ! "$PR_NUMBERS" =~ ^[0-9,[:space:]]+$ ]]; then
+            echo "::error::pr_numbers must be 'all' or a comma/space-separated list of numbers, got: ${PR_NUMBERS}"
+            exit 1
+          fi
+
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Mode: DRY-RUN"
+          else
+            echo "Mode: APPLY"
+          fi
+          echo "Input: ${PR_NUMBERS}"
+          echo ""
+
+          REMOVED=0
+          FAILED=()
+
+          process_tag() {
+            local package="$1"
+            local tag="$2"
+            local version="$3"
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "  [dry-run] would remove ${tag} (was ${version}) from ${package}"
+              return 0
+            fi
+            echo "  removing ${tag} (was ${version}) from ${package}..."
+            if npm dist-tag rm "$package" "$tag" --registry=https://registry.npmjs.org/; then
+              REMOVED=$((REMOVED + 1))
+            else
+              echo "::error::Failed to remove ${tag} from ${package}"
+              FAILED+=("${package}#${tag}")
+            fi
+          }
+
+          for PACKAGE in "${PACKAGES[@]}"; do
+            echo "::group::${PACKAGE}"
+            TAGS_OUTPUT=$(npm dist-tag ls "$PACKAGE" --registry=https://registry.npmjs.org/ || true)
+            if [ -z "$TAGS_OUTPUT" ]; then
+              echo "  (no dist-tags or package unreachable)"
+              echo "::endgroup::"
+              continue
+            fi
+
+            while IFS= read -r LINE; do
+              if [[ "$LINE" =~ ^(pr-([0-9]+)):[[:space:]](.+)$ ]]; then
+                TAG="${BASH_REMATCH[1]}"
+                NUM="${BASH_REMATCH[2]}"
+                VERSION="${BASH_REMATCH[3]}"
+
+                if [ "$PR_NUMBERS" = "all" ]; then
+                  process_tag "$PACKAGE" "$TAG" "$VERSION"
+                else
+                  NORMALIZED=$(echo "$PR_NUMBERS" | tr ',' ' ')
+                  for WANT in $NORMALIZED; do
+                    if [ "$WANT" = "$NUM" ]; then
+                      process_tag "$PACKAGE" "$TAG" "$VERSION"
+                      break
+                    fi
+                  done
+                fi
+              fi
+            done <<< "$TAGS_OUTPUT"
+            echo "::endgroup::"
+          done
+
+          echo ""
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Dry run complete. Re-run with dry_run=false to apply."
+          else
+            echo "Removed: ${REMOVED} dist-tag(s)."
+          fi
+
+          if [ "${#FAILED[@]}" -gt 0 ]; then
+            echo "::error::Failed entries: ${FAILED[*]}"
+            exit 1
+          fi

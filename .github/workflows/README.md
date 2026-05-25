@@ -2,13 +2,14 @@
 
 Overview of every GitHub Actions workflow in this repository. Each workflow file starts with a header comment that repeats the essentials below.
 
-| Workflow       | File               | Trigger                                                                  | Purpose                                                                                                                              | Required for merge? |
-| -------------- | ------------------ | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
-| **CI**         | `ci.yml`           | pull_request, push to main / dev / feat/\*\*                             | Static checks (lint, format, stylelint, typecheck, locales, circular, layers) and framework unit tests                               | Yes                 |
-| **PR Title**   | `pr-title.yml`     | pull_request (opened, edited, synchronize, reopened)                     | Validates the PR title is Conventional Commits format                                                                                | Yes                 |
-| **PR Preview** | `pr-preview.yml`   | pull_request (opened, synchronize, reopened, closed)                     | Publishes preview npm packages with `pr-<N>` dist-tag; removes the tag on PR close; posts install instructions as a PR comment       | No (informational)  |
-| **Release**    | `release.yml`      | workflow_dispatch                                                        | Cuts a release: bumps versions, updates CHANGELOG (stable only), commits and tags, publishes to npm, creates GitHub Release (stable) | N/A (manual)        |
-| **Storybook**  | `storybook-ci.yml` | push to main / feat/redesign, pull_request (indirect), workflow_dispatch | Builds Storybook + Docker image, pushes to ghcr.io, deploys to ArgoCD (`vc-shell-storybook.govirto.com`)                             | No                  |
+| Workflow                       | File                             | Trigger                                                                  | Purpose                                                                                                                              | Required for merge? |
+| ------------------------------ | -------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
+| **CI**                         | `ci.yml`                         | pull_request, push to main / dev / feat/\*\*                             | Static checks (lint, format, stylelint, typecheck, locales, circular, layers) and framework unit tests                               | Yes                 |
+| **PR Title**                   | `pr-title.yml`                   | pull_request (opened, edited, synchronize, reopened)                     | Validates the PR title is Conventional Commits format                                                                                | Yes                 |
+| **PR Preview**                 | `pr-preview.yml`                 | pull_request (opened, synchronize, reopened, closed)                     | Publishes preview npm packages with `pr-<N>` dist-tag; removes the tag on PR close; posts install instructions as a PR comment       | No (informational)  |
+| **PR Preview Cleanup Orphans** | `pr-preview-cleanup-orphans.yml` | workflow_dispatch                                                        | Manually removes stale `pr-<N>` dist-tags left by past PRs (e.g. when the per-PR cleanup failed). Dry-run by default                 | N/A (manual)        |
+| **Release**                    | `release.yml`                    | workflow_dispatch                                                        | Cuts a release: bumps versions, updates CHANGELOG (stable only), commits and tags, publishes to npm, creates GitHub Release (stable) | N/A (manual)        |
+| **Storybook**                  | `storybook-ci.yml`               | push to main / feat/redesign, pull_request (indirect), workflow_dispatch | Builds Storybook + Docker image, pushes to ghcr.io, deploys to ArgoCD (`vc-shell-storybook.govirto.com`)                             | No                  |
 
 ## CI (`ci.yml`)
 
@@ -38,7 +39,18 @@ Three jobs:
 
 - **`publish`** — PRs opened from a branch in this repository (not a fork). Computes a preview version `<current>-pr<N>.<sha7>`, syncs it to every workspace manifest via `scripts/compute-preview-version.ts`, runs `yarn publish:packages --tag pr-<N>`, and updates a PR comment with install instructions.
 - **`notify-fork`** — Fork-origin PRs. Posts a one-time comment explaining previews aren't available for forks (GitHub doesn't expose secrets to fork workflows).
-- **`cleanup`** — On PR close, removes the `pr-<N>` dist-tag from every managed package via `npm dist-tag rm`. Published versions remain in npm for archaeology; only the tag is cleaned up.
+- **`cleanup`** — On PR close, removes the `pr-<N>` dist-tag from every managed package. First runs `npm dist-tag ls` to detect whether the tag exists, then `npm dist-tag rm`. Real failures (auth, registry, scope config) are surfaced as job errors rather than swallowed. Published versions remain in npm for archaeology; only the tag is cleaned up.
+
+If a tag is left behind (e.g. a past cleanup failed silently), use the **PR Preview Cleanup Orphans** workflow below.
+
+### PR Preview Cleanup Orphans (`pr-preview-cleanup-orphans.yml`)
+
+Manual `workflow_dispatch` for catching up stale `pr-<N>` dist-tags. Inputs:
+
+- `pr_numbers` — `"all"` to remove every `pr-*` tag found on the managed packages, or a comma/space-separated list like `"220,221,222"`.
+- `dry_run` — `"true"` (default) only logs what would be removed; `"false"` actually calls `npm dist-tag rm`.
+
+Always run with `dry_run=true` first to inspect the diff, then re-run with `dry_run=false`.
 
 Install a preview in a consuming project:
 

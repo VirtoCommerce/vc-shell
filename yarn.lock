@@ -4626,7 +4626,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.5.0, @types/semver@npm:^7.7.1":
+"@types/semver@npm:^7.7.1":
   version: 7.7.1
   resolution: "@types/semver@npm:7.7.1"
   checksum: 10/8f09e7e6ca3ded67d78ba7a8f7535c8d9cf8ced83c52e7f3ac3c281fe8c689c3fe475d199d94390dc04fc681d51f2358b430bb7b2e21c62de24f2bee2c719068
@@ -5367,13 +5367,11 @@ __metadata:
   resolution: "@vc-shell/mf-host@workspace:packages/mf-host"
   dependencies:
     "@module-federation/runtime": "npm:^2.1.0"
-    "@types/semver": "npm:^7.5.0"
     "@vc-shell/framework": "workspace:*"
     "@vc-shell/mf-config": "workspace:*"
     "@vc-shell/ts-config": "workspace:*"
     "@vueuse/core": "npm:^10.7.1"
     lodash-es: "npm:^4.17.21"
-    semver: "npm:^7.6.2"
     tsc-alias: "npm:^1.8.8"
     typescript: "npm:^5.8.3"
     vee-validate: "npm:^4.12.4"
@@ -17089,7 +17087,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.2, semver@npm:^7.6.3, semver@npm:^7.7.0, semver@npm:^7.7.1, semver@npm:^7.7.3, semver@npm:^7.7.4":
+"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.3, semver@npm:^7.7.0, semver@npm:^7.7.1, semver@npm:^7.7.3, semver@npm:^7.7.4":
   version: 7.7.4
   resolution: "semver@npm:7.7.4"
   bin:

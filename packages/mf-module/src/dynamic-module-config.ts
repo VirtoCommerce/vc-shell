@@ -1,3 +1,4 @@
+import path from "node:path";
 import vue from "@vitejs/plugin-vue";
 import { federation } from "@module-federation/vite";
 import type { UserConfig } from "vite";
@@ -12,6 +13,18 @@ export default function dynamicModuleConfiguration(
 ): UserConfig {
   const entry = options.entry ?? "./src/modules/index.ts";
   const base = process.env.APP_BASE_PATH || `/apps/${pkg.name}/`;
+  const remoteName = options.remoteName ?? pkg.name;
+
+  let outDir: string;
+  let emptyOutDir: boolean | undefined;
+  if (options.appId) {
+    const moduleRoot = options.moduleRoot ?? process.cwd();
+    outDir = path.resolve(moduleRoot, "plugins", options.appId);
+    emptyOutDir = true;
+  } else {
+    outDir = "dist/mf";
+    // emptyOutDir left undefined — preserves Vite's default (auto-clean for inside-root).
+  }
 
   return {
     base,
@@ -20,10 +33,13 @@ export default function dynamicModuleConfiguration(
       stripExternalStyles(),
       vue(),
       federation({
-        name: pkg.name,
+        name: remoteName,
         filename: "remoteEntry.js",
+        // "./Module" matches the platform's PluginRemote.exposed default
+        // (AppManifestService.DefaultExposedModule in vc-platform). Plugin
+        // authors who need a different key can override via `options.exposes`.
         exposes: options.exposes ?? {
-          "./module": entry,
+          "./Module": entry,
         },
         shared: { ...REMOTE_SHARED },
         dts: false,
@@ -31,7 +47,8 @@ export default function dynamicModuleConfiguration(
     ],
     build: {
       target: "esnext",
-      outDir: "dist/mf",
+      outDir,
+      emptyOutDir,
     },
   };
 }

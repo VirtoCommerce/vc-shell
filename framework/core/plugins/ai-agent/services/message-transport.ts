@@ -4,11 +4,7 @@ import type {
   IAiAgentConfig,
   IAiAgentMessage,
   AiAgentMessageType,
-  IPreviewChangesPayload,
   INavigateToAppPayload,
-  IApplyChangesPayload,
-  IDownloadFilePayload,
-  IChatErrorPayload,
   IAiChatMessagePayload,
 } from "@core/plugins/ai-agent/types";
 
@@ -18,7 +14,6 @@ export interface MessageTransportOptions {
   getConfig: () => IAiAgentConfig;
   isEmbedded: boolean;
   navigateToBlade?: (bladeName: string, param?: string, options?: Record<string, unknown>) => void;
-  reloadBlade?: () => void;
 }
 
 export interface MessageTransport {
@@ -31,87 +26,28 @@ export interface MessageTransport {
   startListening: () => void;
   stopListening: () => void;
   onChatReady: (handler: () => void) => () => void;
-  onPreviewChanges: (handler: (payload: IPreviewChangesPayload) => void) => () => void;
   onMessage: (handler: (event: IAiAgentMessage) => void) => () => void;
 }
 
-function downloadFile(payload: IDownloadFilePayload): void {
-  try {
-    const byteCharacters = atob(payload.content);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const blob = new Blob([new Uint8Array(byteNumbers)], { type: payload.contentType });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = payload.filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    logger.debug(`File downloaded: ${payload.filename}`);
-  } catch (error) {
-    logger.error("Failed to download file:", error);
-  }
-}
-
 export function createMessageTransport(options: MessageTransportOptions): MessageTransport {
-  const { getConfig, isEmbedded, navigateToBlade, reloadBlade } = options;
+  const { getConfig, isEmbedded, navigateToBlade } = options;
 
   const iframeRef: ShallowRef<HTMLIFrameElement | null> = shallowRef(null);
   const pendingInitContext = ref(false);
   const isListenerRegistered = ref(false);
 
   const messageHandlers = new Set<(event: IAiAgentMessage) => void>();
-  const previewChangesHandlers = new Set<(payload: IPreviewChangesPayload) => void>();
   const chatReadyHandlers = new Set<() => void>();
 
   /** Shared handler for all chat protocol messages (used by both normal and embedded) */
   function handleChatMessage(type: string, payload: unknown): void {
     switch (type) {
-      case "PREVIEW_CHANGES": {
-        const previewPayload = payload as IPreviewChangesPayload;
-        if (previewChangesHandlers.size === 0) {
-          logger.warn("No preview changes handlers registered!");
-        }
-        previewChangesHandlers.forEach((handler) => {
-          try {
-            handler(previewPayload);
-          } catch (e) {
-            logger.error("Error in preview handler:", e);
-          }
-        });
-        break;
-      }
       case "NAVIGATE_TO_APP": {
         const navPayload = payload as INavigateToAppPayload;
         if (navigateToBlade && navPayload?.bladeName) {
           navigateToBlade(navPayload.bladeName, navPayload.param, navPayload.options);
           logger.debug(`Navigation requested to: ${navPayload.bladeName}`);
         }
-        break;
-      }
-      case "RELOAD_BLADE":
-        if (reloadBlade) {
-          reloadBlade();
-          logger.debug("Blade reload requested");
-        }
-        break;
-      case "DOWNLOAD_FILE": {
-        const dlPayload = payload as IDownloadFilePayload;
-        if (dlPayload) downloadFile(dlPayload);
-        break;
-      }
-      case "APPLY_CHANGES": {
-        const changesPayload = payload as IApplyChangesPayload;
-        logger.warn("APPLY_CHANGES received but not implemented:", changesPayload?.changes);
-        break;
-      }
-      case "CHAT_ERROR": {
-        const errPayload = payload as IChatErrorPayload;
-        logger.error(`Chatbot error [${errPayload?.code}]: ${errPayload?.message}`);
         break;
       }
       default:
@@ -221,13 +157,6 @@ export function createMessageTransport(options: MessageTransportOptions): Messag
       chatReadyHandlers.add(handler);
       return () => {
         chatReadyHandlers.delete(handler);
-      };
-    },
-
-    onPreviewChanges(handler: (payload: IPreviewChangesPayload) => void) {
-      previewChangesHandlers.add(handler);
-      return () => {
-        previewChangesHandlers.delete(handler);
       };
     },
 

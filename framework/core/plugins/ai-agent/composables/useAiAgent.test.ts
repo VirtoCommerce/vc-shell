@@ -13,7 +13,6 @@ const mockBladeReturn = createMockBladeReturn();
 
 const mocks = vi.hoisted(() => ({
   openBlade: vi.fn(),
-  replaceCurrentBlade: vi.fn(),
   getAccessToken: vi.fn(),
   createAiAgentService: vi.fn(),
   registerToolbarItem: vi.fn(),
@@ -42,7 +41,6 @@ vi.mock("@core/blade-navigation", () => ({
   useBladeStack: () => ({
     blades: ref(mocks.blades),
     activeBlade: computed(() => mocks.activeBlade),
-    replaceCurrentBlade: mocks.replaceCurrentBlade,
   }),
 }));
 
@@ -182,7 +180,6 @@ describe("useAiAgent", () => {
 describe("provideAiAgentService", () => {
   beforeEach(() => {
     mocks.openBlade.mockReset().mockResolvedValue(undefined);
-    mocks.replaceCurrentBlade.mockReset().mockResolvedValue(undefined);
     mocks.getAccessToken.mockReset().mockResolvedValue("token");
     mocks.registerToolbarItem.mockReset();
     mocks.createAiAgentService.mockReset().mockImplementation(() => createMockService());
@@ -238,7 +235,7 @@ describe("provideAiAgentService", () => {
     expect(options.tokenGetter).toBe(mocks.getAccessToken);
   });
 
-  it("provides navigate and reload callbacks that use blade APIs", async () => {
+  it("provides navigate callback that uses blade APIs", async () => {
     mocks.activeBlade = {
       name: "products-list",
       param: "p1",
@@ -256,23 +253,6 @@ describe("provideAiAgentService", () => {
       param: "42",
       options: { modal: true },
     });
-
-    options.reloadBlade();
-    await flushPromises();
-    expect(mocks.replaceCurrentBlade).toHaveBeenCalledWith({
-      name: "products-list",
-      param: "p1",
-      query: { q: "text" },
-      options: { icon: "cube" },
-    });
-  });
-
-  it("does not reload blade when there is no active blade", () => {
-    mountWithAiAgentProvider();
-    const [options] = mocks.createAiAgentService.mock.calls[0];
-
-    options.reloadBlade();
-    expect(mocks.replaceCurrentBlade).not.toHaveBeenCalled();
   });
 
   it("handles openBlade rejection in navigate callback without throwing", async () => {

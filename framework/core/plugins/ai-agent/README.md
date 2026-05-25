@@ -8,7 +8,7 @@ A Vue plugin for integrating an AI assistant panel into VC-Shell applications.
 - Automatic AI button in blade toolbars (via wildcard "\*" support)
 - Two operation modes:
   - **List blade** - batch operations with multiple selected items
-  - **Details blade** - single object editing with preview
+  - **Details blade** - single object editing
 - Custom suggestions per blade
 - Reactive data binding between blade and agent
 - Simple integration API with minimal boilerplate
@@ -63,26 +63,13 @@ const onSelectionChanged = (items: IOffer[]) => {
 
 ```typescript
 // offers-details.vue
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { useAiAgentContext } from "@vc-shell/framework";
 
 const offer = ref<IOffer>({});
-const aiData = ref<IOffer[]>([]); // Always array!
 
-// Sync single object to array
-watch(
-  offer,
-  (val) => {
-    aiData.value = val ? [val] : [];
-  },
-  { deep: true, immediate: true },
-);
-
-// Connect to AI agent with preview support
-const { previewState } = useAiAgentContext({ dataRef: aiData });
-
-// Use previewState.isActive to show preview indicator
-// Use previewState.changedFields to highlight changed fields
+// Pass the ref directly — single objects are normalized to arrays internally
+useAiAgentContext({ dataRef: offer });
 ```
 
 ### Custom Suggestions
@@ -122,8 +109,8 @@ const handleAiClick = () => togglePanel();
 // Listen for messages from AI agent
 const { onMessage } = useAiAgent();
 onMessage((message) => {
-  if (message.type === "PREVIEW_CHANGES") {
-    // Handle preview changes
+  if (message.type === "NAVIGATE_TO_APP") {
+    // Handle navigation request
   }
 });
 ```
@@ -150,27 +137,18 @@ Composable for binding blade data to AI agent context.
 ```typescript
 interface UseAiAgentContextOptions<T = Record<string, unknown>> {
   /**
-   * Ref with data - ALWAYS an array:
-   * - For DETAILS blade: array with single object [item]
-   * - For LIST blade: array of selected objects [item1, item2, ...]
+   * Ref with data:
+   * - Ref<T> for DETAILS blade (single object, wrapped in array internally)
+   * - Ref<T[]> for LIST blade (array of selected objects)
    */
-  dataRef: Ref<T[]>;
+  dataRef: Ref<T> | Ref<T[]>;
 
   /** Custom suggestions for this blade */
   suggestions?: ISuggestion[];
 }
 ```
 
-**Returns:**
-
-```typescript
-interface UseAiAgentContextReturn {
-  previewState: {
-    isActive: ComputedRef<boolean>;
-    changedFields: ComputedRef<string[]>;
-  };
-}
-```
+**Returns:** `void`. The composable wires the watcher and unmount cleanup; nothing is exposed to the caller.
 
 ### useAiAgent
 
@@ -246,39 +224,7 @@ interface ISuggestion {
 
 ### Agent -> Shell
 
-**PREVIEW_CHANGES** (form preview)
-
-```typescript
-{
-  type: "PREVIEW_CHANGES",
-  payload: {
-    data: Record<string, unknown>,
-    changedFields?: string[],
-  }
-}
-```
-
-**RELOAD_BLADE** (after save)
-
-```typescript
-{
-  type: "RELOAD_BLADE",
-  payload: { clearSelection?: boolean }
-}
-```
-
-**DOWNLOAD_FILE** (file download)
-
-```typescript
-{
-  type: "DOWNLOAD_FILE",
-  payload: {
-    filename: string,
-    contentType: string,
-    content: string // base64
-  }
-}
-```
+All chat→shell events are emitted when the user clicks a markdown action link inside an assistant message (the chatbot renders `[Open](action:navigate:Blade:id)` style links and forwards the click via postMessage).
 
 **NAVIGATE_TO_APP** (navigation)
 
@@ -286,6 +232,24 @@ interface ISuggestion {
 {
   type: "NAVIGATE_TO_APP",
   payload: { bladeName, param?, options? }
+}
+```
+
+**EXPAND_IN_CHAT** (inline item expansion)
+
+```typescript
+{
+  type: "EXPAND_IN_CHAT",
+  payload: { itemId, itemType }
+}
+```
+
+**SHOW_MORE** (request next page of a result category)
+
+```typescript
+{
+  type: "SHOW_MORE",
+  payload: { category }
 }
 ```
 
@@ -302,14 +266,11 @@ Shell (VcApp)                          Agent (iframe)
      │────── UPDATE_CONTEXT ───────────────>│
      │       (blade, items, suggestions)    │
      │                                       │
-     │<───── PREVIEW_CHANGES ───────────────│
-     │       (updates form in shell)        │
+     │<───── NAVIGATE_TO_APP ───────────────│
+     │       (opens blade by name)          │
      │                                       │
-     │<───── RELOAD_BLADE ──────────────────│
-     │       (refreshes current blade)      │
-     │                                       │
-     │<───── DOWNLOAD_FILE ─────────────────│
-     │       (triggers file download)       │
+     │<───── EXPAND_IN_CHAT / SHOW_MORE ────│
+     │       (markdown action link clicks)  │
      └───────────────────────────────────────┘
 ```
 
@@ -326,7 +287,7 @@ framework/core/plugins/ai-agent/
 ├── composables/
 │   ├── index.ts
 │   ├── useAiAgent.ts           # Panel control
-│   └── useAiAgentContext.ts    # Data binding + preview
+│   └── useAiAgentContext.ts    # Data binding
 └── components/
     ├── index.ts
     ├── VcAiAgentPanel.vue      # Main panel

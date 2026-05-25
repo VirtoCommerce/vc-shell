@@ -1,4 +1,4 @@
-import { ComputedRef, Ref } from "vue";
+import { Ref } from "vue";
 
 // ============================================
 // Core Types
@@ -44,19 +44,6 @@ export interface UseAiAgentContextOptions<T = Record<string, unknown>> {
 
   /** Custom suggestions for this blade */
   suggestions?: ISuggestion[];
-}
-
-/**
- * Return type for useAiAgentContext composable
- */
-export interface UseAiAgentContextReturn {
-  /** Preview state (for details blades) */
-  previewState: {
-    isActive: ComputedRef<boolean>;
-    changedFields: ComputedRef<string[]>;
-  };
-  /** Clears preview state (call after save/discard) */
-  clearPreview: () => void;
 }
 
 // ============================================
@@ -177,12 +164,7 @@ export type ChatToShellMessageType =
   | "CHAT_READY" // Chatbot is loaded and ready
   | "NAVIGATE_TO_APP" // Request to navigate to a blade
   | "EXPAND_IN_CHAT" // Request to expand item in chat
-  | "RELOAD_BLADE" // Request to reload current blade
-  | "PREVIEW_CHANGES" // Request to preview changes in form
-  | "APPLY_CHANGES" // Request to apply data changes
-  | "DOWNLOAD_FILE" // Request to download file
-  | "SHOW_MORE" // Request for more results
-  | "CHAT_ERROR"; // Error notification
+  | "SHOW_MORE"; // Request for more results
 
 /**
  * Combined message types
@@ -265,41 +247,6 @@ export interface INavigateToAppPayload {
   param?: string;
   /** Additional options */
   options?: Record<string, unknown>;
-}
-
-/** Payload for PREVIEW_CHANGES message (Chat -> Shell) */
-export interface IPreviewChangesPayload {
-  /** Updated data to preview */
-  data: Record<string, unknown>;
-  /** List of changed field names */
-  changedFields?: string[];
-}
-
-/** Payload for APPLY_CHANGES message (Chat -> Shell) */
-export interface IApplyChangesPayload {
-  changes: Array<{
-    entityId: string;
-    entityType: string;
-    field: string;
-    oldValue: unknown;
-    newValue: unknown;
-  }>;
-}
-
-/** Payload for DOWNLOAD_FILE message (Chat -> Shell) */
-export interface IDownloadFilePayload {
-  /** Filename for download */
-  filename: string;
-  /** MIME type */
-  contentType: string;
-  /** Base64 encoded content */
-  content: string;
-}
-
-/** Payload for CHAT_ERROR message (Chat -> Shell) */
-export interface IChatErrorPayload {
-  code: string;
-  message: string;
 }
 
 // ============================================

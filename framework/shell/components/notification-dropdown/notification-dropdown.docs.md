@@ -123,4 +123,4 @@ When a notification's `notifyType` matches a registered template key, that compo
 ## Related Components
 
 - [NotificationTemplate](../notification-template/notification-template.docs.md) -- base template for each notification row
-- [Notifications](../notifications/notifications.docs.md) -- toast notification system (different from push notifications)
+- [Notifications](../../../core/notifications/notifications.docs.md) -- push notification system (store, registration, blade-scoped subscriptions)

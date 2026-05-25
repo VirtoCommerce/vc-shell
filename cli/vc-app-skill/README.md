@@ -22,7 +22,7 @@ The skill covers:
 ### Claude Code / Cursor / GitHub Copilot
 
 ```bash
-npx @vc-shell/vc-app-skill@alpha install
+npx @vc-shell/vc-app-skill@latest install
 ```
 
 Installs skill files into `~/.claude/vc-app-skill/` and registers the `/vc-app` slash command.
@@ -30,19 +30,19 @@ Installs skill files into `~/.claude/vc-app-skill/` and registers the `/vc-app` 
 ### OpenCode
 
 ```bash
-npx @vc-shell/vc-app-skill@alpha install --runtime opencode
+npx @vc-shell/vc-app-skill@latest install --runtime opencode
 ```
 
 ### Gemini CLI
 
 ```bash
-npx @vc-shell/vc-app-skill@alpha install --runtime gemini
+npx @vc-shell/vc-app-skill@latest install --runtime gemini
 ```
 
 ### Codex
 
 ```bash
-npx @vc-shell/vc-app-skill@alpha install --runtime codex
+npx @vc-shell/vc-app-skill@latest install --runtime codex
 ```
 
 ### Verify installation
@@ -180,7 +180,7 @@ Handles topics: widgets, form management (`useBladeForm`), injection-key renames
 ## Update
 
 ```bash
-npx @vc-shell/vc-app-skill@alpha install
+npx @vc-shell/vc-app-skill@latest install
 ```
 
 Or from within your AI tool:
@@ -194,7 +194,7 @@ The installer checks the installed version against the package version and overw
 ## Uninstall
 
 ```bash
-npx @vc-shell/vc-app-skill@alpha uninstall
+npx @vc-shell/vc-app-skill@latest uninstall
 ```
 
 Removes skill files from the AI tool's configuration directory. Does not affect your application source code.
@@ -202,7 +202,7 @@ Removes skill files from the AI tool's configuration directory. Does not affect 
 To uninstall for a specific runtime:
 
 ```bash
-npx @vc-shell/vc-app-skill@alpha uninstall --runtime opencode
+npx @vc-shell/vc-app-skill@latest uninstall --runtime opencode
 ```
 
 ## Architecture

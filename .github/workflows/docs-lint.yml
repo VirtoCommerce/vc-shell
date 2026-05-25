@@ -6,6 +6,9 @@ on:
       - "framework/**/*.docs.md"
       - "framework/**/*.stories.ts"
       - "cli/docs-sync/**"
+      - "cli/vc-app-skill/runtime/vc-app.md"
+      - "examples/scaffold/**"
+      - "scripts/check-scaffold-example.ts"
 
 jobs:
   lint:
@@ -20,3 +23,5 @@ jobs:
       - run: yarn install --immutable
       - run: yarn workspace @vc-shell/docs-sync build
       - run: yarn workspace @vc-shell/docs-sync exec docs-sync lint
+      - run: yarn examples:scaffold:check
+      - run: yarn examples:scaffold:typecheck

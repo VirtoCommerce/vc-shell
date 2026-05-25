@@ -49,25 +49,20 @@ Add the dependencies to your project's **package.json**:
    {
        "scripts": {
        ...
-       "generate-api-client": cross-env api-client-generator --APP_PLATFORM_MODULES='[Virtocommerce.MarketplaceVendor,Virtocommerce.Catalog,Virtocommerce.Orders]' --APP_API_CLIENT_DIRECTORY=./src/api_client/
+       "generate-api-client": "cross-env api-client-generator"
        }
    }
    ```
 
    The options are listed in the table below:
 
-   | Options                      | Description                                                                                                                                                                                                                          | Example                                                                                                   |
-   | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
-   | `--APP_PLATFORM_MODULES`     | Platform modules to generate API client.<br>{==string[]==} <br> Supports spaces in module lists: `[Module1, Module2]` or `[Module1,Module2]`<br>Customize the `--APP_PLATFORM_MODULES` list<br>to match your project's requirements. | `--APP_PLATFORM_MODULES='[Virtocommerce.MarketplaceVendor, Virtocommerce.Orders, Virtocommerce.Catalog]'` |
-   | `--APP_API_CLIENT_DIRECTORY` | Output directory for generated API clients. <br>{==string==}                                                                                                                                                                         | `--APP_API_CLIENT_DIRECTORY=./src/api_client/`                                                            |
-   | `--APP_PLATFORM_URL`         | Platform URL to obtain client API configs. <br>{==string==}                                                                                                                                                                          | `--APP_PLATFORM_URL=https://vcmp-dev.govirto.com/`                                                        |
-   | `--APP_PACKAGE_NAME`         | Package name for generated API clients. <br>{==string==}                                                                                                                                                                             | `--APP_PACKAGE_NAME=@api-client`                                                                          |
-   | `--APP_PACKAGE_VERSION`      | Package version for generated API clients. <br>{==string==}                                                                                                                                                                          | `--APP_PACKAGE_VERSION=1.1.0`                                                                             |
-   | `--APP_OUT_DIR`              | Output directory for generated API clients. <br>{==string==}                                                                                                                                                                         | `--APP_OUT_DIR=./src/api_client/`                                                                         |
-   | `--APP_TYPE_STYLE`           | Sets the type style for generated DTOs. Can be 'Class' or 'Interface'.<br>{==string==}                                                                                                                                               | `--APP_TYPE_STYLE=Interface`                                                                              |
-   | `--APP_BUILD_DIR`            | Directory where TypeScript files will be compiled. <br>{==string==}                                                                                                                                                                  | `--APP_BUILD_DIR=lib` (default is "dist")                                                                 |
-   | `--SKIP_BUILD`               | Skip build step. <br>{==boolean==}                                                                                                                                                                                                   | `--SKIP_BUILD=true`                                                                                       |
-   | `--VERBOSE`                  | Enable verbose logging. <br>{==boolean==}                                                                                                                                                                                            | `--VERBOSE=true`                                                                                          |
+   | Options                      | Description                                                                                                                                                                                                                          | Example                                                                  |
+   | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+   | `--APP_PLATFORM_MODULES`     | Platform modules to generate API client.<br>{==string[]==} <br> Supports spaces in module lists: `[Module1, Module2]` or `[Module1,Module2]`<br>Customize the `--APP_PLATFORM_MODULES` list<br>to match your project's requirements. | `--APP_PLATFORM_MODULES='[VirtoCommerce.Catalog, VirtoCommerce.Orders]'` |
+   | `--APP_API_CLIENT_DIRECTORY` | Output directory for generated API clients. <br>{==string==}                                                                                                                                                                         | `--APP_API_CLIENT_DIRECTORY=./src/api_client/`                           |
+   | `--APP_PLATFORM_URL`         | Platform URL to obtain client API configs. <br>{==string==}                                                                                                                                                                          | `--APP_PLATFORM_URL=https://vcmp-dev.govirto.com/`                       |
+   | `--APP_TYPE_STYLE`           | Sets the type style for generated DTOs. Can be 'Class' or 'Interface'.<br>{==string==}                                                                                                                                               | `--APP_TYPE_STYLE=Interface`                                             |
+   | `--VERBOSE`                  | Enable verbose logging. <br>{==boolean==}                                                                                                                                                                                            | `--VERBOSE=true`                                                         |
 
    !!! note
    For the `--APP_TYPE_STYLE` parameter, use **exactly** `"Class"` or `"Interface"` (case-sensitive). Any other value will cause an error.
@@ -78,18 +73,28 @@ Add the dependencies to your project's **package.json**:
 3. Configure Platform URL and other settings in your project's **.env** file:
 
    ```title="vc-app-extend/.env"
-   APP_PLATFORM_URL=https://vcmp-dev.govirto.com/
-   APP_PLATFORM_MODULES=[Virtocommerce.MarketplaceVendor,Virtocommerce.Catalog,Virtocommerce.Orders]
+   APP_PLATFORM_MODULES=[VirtoCommerce.Catalog,VirtoCommerce.Orders]
    APP_API_CLIENT_DIRECTORY=./src/api_client/
-   APP_PACKAGE_NAME=@my-app/api-client
-   APP_PACKAGE_VERSION=1.0.0
-   APP_BUILD_DIR=dist
-   VERBOSE=true
-   SKIP_BUILD=false
+   APP_TYPE_STYLE=Interface
    ```
 
    !!! note
    All configuration options can be set via environment variables in `.env` file or passed as command line arguments. Environment variables take precedence over CLI arguments.
+
+   !!! tip
+   Keep machine-specific Platform URLs out of shared `.env` files. Set `APP_PLATFORM_URL` in `.env.local`, in your shell, or pass `--APP_PLATFORM_URL=...` when running the generator.
+
+   The minimal `.env` above is enough for the default generation mode. By default, the generator writes TypeScript client files into `APP_API_CLIENT_DIRECTORY`; it does not create a generated API package or `package.json`.
+
+   Package mode is optional. Use it only when you intentionally maintain a generated API package. Package mode is enabled with `--PACKAGE=true` or when a `package.json` already exists in `APP_API_CLIENT_DIRECTORY`. In package mode, these additional options apply:
+
+   | Options                 | Description                                          | Example                          |
+   | ----------------------- | ---------------------------------------------------- | -------------------------------- |
+   | `--APP_PACKAGE_NAME`    | Package name for generated API clients.              | `--APP_PACKAGE_NAME=@my-app/api` |
+   | `--APP_PACKAGE_VERSION` | Package version for generated API clients.           | `--APP_PACKAGE_VERSION=1.1.0`    |
+   | `--APP_OUT_DIR`         | Output directory used by generated package metadata. | `--APP_OUT_DIR=dist`             |
+   | `--APP_BUILD_DIR`       | Directory where TypeScript files will be compiled.   | `--APP_BUILD_DIR=lib`            |
+   | `--SKIP_BUILD`          | Skip build step.                                     | `--SKIP_BUILD=true`              |
 
 4. Generate the API clients using the following command:
 
@@ -103,15 +108,15 @@ This command generates the required API clients for your custom application. Now
 
 ### Smart Configuration Merging
 
-The generator now intelligently merges configuration files to preserve your custom settings. When you update an existing API client:
+When package mode is enabled, the generator intelligently merges configuration files to preserve your custom settings. When you update an existing generated API package:
 
 - Custom package.json fields like name, version, description, keywords, author and license are preserved
 - Custom tsconfig.json settings are maintained
 - Exports are intelligently updated to preserve existing paths
 
-### Metadata Tracking
+### Package Metadata Tracking
 
-API client now includes metadata to track the generation:
+When package mode is enabled, the generated API package includes metadata to track the generation:
 
 ```json
 {
@@ -124,6 +129,8 @@ API client now includes metadata to track the generation:
 
 ### Multiple API Exports
 
+This applies when package mode is enabled.
+
 The generator handles multiple API clients effectively:
 
 - Creates standardized exports with both short names (`./{moduleName}`) and full names (`./virtocommerce.{moduleName}`)
@@ -132,6 +139,8 @@ The generator handles multiple API clients effectively:
 - Works properly with incremental generation (can add new APIs without breaking existing ones)
 
 ### Smart Root Export Handling
+
+This applies when package mode is enabled.
 
 The generator now intelligently handles root exports based on the number of API modules:
 
@@ -163,6 +172,8 @@ yarn generate-api-client --VERBOSE=true
 ```
 
 ### Custom Build Directory
+
+This applies when package mode is enabled.
 
 You can specify a custom build directory where TypeScript files will be compiled:
 
@@ -215,9 +226,9 @@ If you encounter issues during API client generation:
 2. Ensure target directories have proper permissions
 3. Check your connectivity to the platform URL
 4. Verify that the specified platform modules exist
-5. If you encounter JSON parsing errors in tsconfig.json or package.json, try using the `--VERBOSE=true` flag to see detailed error messages
-6. Check for duplicate exports in your package.json which might cause conflicts
-7. If you manually modified exports in package.json, ensure they follow the correct format
+5. If package mode is enabled and you encounter JSON parsing errors in tsconfig.json or package.json, try using the `--VERBOSE=true` flag to see detailed error messages
+6. If package mode is enabled, check for duplicate exports in package.json which might cause conflicts
+7. If package mode is enabled and you manually modified exports in package.json, ensure they follow the correct format
 
 ### Common Issues
 

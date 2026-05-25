@@ -6,31 +6,48 @@ group: data
 
 # useApiClient
 
-Creates a typed API client instance for communicating with VirtoCommerce platform APIs. The composable accepts a generated client class constructor and returns an async factory function that produces a configured, authenticated client. Base URL resolution and authentication token injection are handled automatically.
+Creates a typed API client instance for communicating with VirtoCommerce platform APIs. The composable accepts a generated client class constructor (extending `AuthApiBase`) and returns an async factory function that produces a client instance. The composable itself is intentionally thin — it constructs the client and returns it. Platform authentication flows through the session cookie that the browser replays on every same-origin API call; the framework's fetch wrapper enforces timeout, offline checks, and 401-redirect on top.
 
 !!! tip "Always call getApiClient inside async functions"
-`getApiClient` is async. Never call it at the top level of `<script setup>` — always call it inside the async function you pass to `useAsync`. Storing the client in a variable outside the function gives you a stale reference when tokens rotate.
+`getApiClient` is async. Never call it at the top level of `<script setup>` — call it inside the async function you pass to `useAsync`. Holding one client instance for the lifetime of the component couples your code to a single object across action runs; prefer one `await getApiClient()` per action so the call shape stays uniform with `useAsync`.
 
 ## When to Use
 
-- Instantiate a generated VirtoCommerce API client with automatic authentication and base-URL resolution
+- Instantiate a generated VirtoCommerce API client that extends `AuthApiBase`
 - Pair with `useAsync` for loading/error state on every API call in a blade or composable
 - When NOT to use: for third-party or non-platform APIs that do not extend `AuthApiBase` -- use `fetch` or Axios directly
 
 ## Quick Start
 
-```typescript
-<script setup lang="ts">
-import { useApiClient } from "@vc-shell/framework";
-import { OrderClient } from "@api/orders";
+The canonical place to call `useApiClient` is at the top of a domain composable file. The factory is created once per module-scope; every action that needs the client awaits `getApiClient()` from the same closure.
 
-const { getApiClient } = useApiClient(OrderClient);
+```typescript title="modules/orders/composables/useOrder/index.ts"
+// pseudo-code: replace OrderClient with your generated API client
+import { useApiClient, useAsync } from "@vc-shell/framework";
+import { OrderClient, type Order } from "@api/orders";
+import { ref } from "vue";
 
-async function loadOrder(orderId: string) {
-  const client = await getApiClient();
-  const order = await client.getOrderById(orderId);
-  return order;
+export function useOrder() {
+  const { getApiClient } = useApiClient(OrderClient);
+  const item = ref<Order>();
+
+  const { action: loadItem, loading } = useAsync<{ id: string }>(async ({ id }) => {
+    const client = await getApiClient();
+    item.value = await client.getOrderById(id);
+  });
+
+  return { item, loading, loadItem };
 }
+```
+
+If you call `useApiClient` inside a blade's `<script setup>` directly, the same shape works. The composable pattern above is preferred because it keeps API access encapsulated behind a domain interface that the blade consumes.
+
+```vue title="modules/orders/pages/order-details.vue"
+<script setup lang="ts">
+import { useOrder } from "../composables/useOrder";
+
+const { item, loading, loadItem } = useOrder();
+onMounted(() => loadItem({ id: param.value }));
 </script>
 ```
 
@@ -39,6 +56,7 @@ async function loadOrder(orderId: string) {
 The standard pattern for API calls in blades combines `useApiClient` with `useAsync`. This gives you automatic loading state, error handling, and a clean async action:
 
 ```typescript
+// pseudo-code: replace ProductClient with your generated API client
 <script setup lang="ts">
 import { useApiClient, useAsync } from "@vc-shell/framework";
 import { ProductClient, Product } from "@api/catalog";
@@ -78,6 +96,7 @@ The `loading` ref is `true` while the request is in-flight. The `error` ref capt
 When a blade needs data from multiple platform modules, create multiple client instances using destructuring aliases:
 
 ```typescript
+// pseudo-code: replace these clients with your generated API clients
 <script setup lang="ts">
 import { useApiClient, useAsync } from "@vc-shell/framework";
 import { OrderClient } from "@api/orders";
@@ -105,6 +124,7 @@ const { action: loadOrderDetails } = useAsync(async (orderId: string) => {
 API clients generated from VirtoCommerce platform endpoints follow a consistent search pattern with `SearchCriteria` objects:
 
 ```typescript
+// pseudo-code: replace OrderClient with your generated API client
 <script setup lang="ts">
 import { useApiClient, useAsync } from "@vc-shell/framework";
 import { OrderClient, OrderSearchCriteria, OrderSearchResult } from "@api/orders";
@@ -129,60 +149,63 @@ searchOrders();
 
 ## CRUD Operations Pattern
 
-A complete CRUD composable for a domain entity:
+A complete CRUD composable for a domain entity. The toolbar is declared as a plain `IBladeToolbar[]` array and bound via `<VcBlade :toolbar-items>`; reactive `disabled` follows the `loading` refs directly, without a `watch`/`updateToolbarItem` pair:
 
-```typescript
+```vue
+<!-- pseudo-code: replace ProductClient with your generated API client -->
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useApiClient, useAsync, useToolbar } from "@vc-shell/framework";
-import { ProductClient, Product } from "@api/catalog";
+import { computed, onMounted, ref } from "vue";
+import { useApiClient, useAsync, VcBlade, type IBladeToolbar } from "@vc-shell/framework";
+import { ProductClient, type Product } from "@api/catalog";
 
 const props = defineProps<{ param: string }>();
 
 const { getApiClient } = useApiClient(ProductClient);
-const { registerToolbarItem, updateToolbarItem } = useToolbar();
 const product = ref<Product>();
 
-// Load
 const { loading, action: load } = useAsync(async () => {
   const client = await getApiClient();
   product.value = await client.getProductById(props.param);
 });
 
-// Save
 const { loading: saving, action: save } = useAsync(async () => {
   const client = await getApiClient();
   product.value = await client.updateProduct(product.value);
 });
 
-// Delete
 const { loading: deleting, action: remove } = useAsync(async () => {
   const client = await getApiClient();
   await client.deleteProducts([props.param]);
 });
 
-registerToolbarItem({
-  id: "save",
-  title: "Save",
-  icon: "fas fa-save",
-  clickHandler: () => save(),
-  priority: 100,
-});
+const busy = computed(() => saving.value || deleting.value || loading.value);
 
-registerToolbarItem({
-  id: "refresh",
-  title: "Refresh",
-  icon: "fas fa-sync",
-  clickHandler: () => load(),
-  priority: 50,
-});
-
-watch([saving, deleting, loading], ([s, d, l]) => {
-  updateToolbarItem("save", { disabled: s || d || l });
-});
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "save",
+    title: "Save",
+    icon: "fas fa-save",
+    clickHandler: () => save(),
+    disabled: busy,
+  },
+  {
+    id: "refresh",
+    title: "Refresh",
+    icon: "fas fa-sync",
+    clickHandler: () => load(),
+    disabled: busy,
+  },
+]);
 
 onMounted(() => load());
 </script>
+
+<template>
+  <VcBlade
+    :loading="loading"
+    :toolbar-items="bladeToolbar"
+  />
+</template>
 ```
 
 ## Recipes
@@ -281,13 +304,15 @@ const response = await fetch("https://api.weather.com/forecast");
 
 ### IAuthApiBase Interface
 
-All generated API client classes implement this interface:
+All generated API client classes extend `AuthApiBase`, which conforms to this interface:
 
 | Property / Method | Type                                              | Description                   |
 | ----------------- | ------------------------------------------------- | ----------------------------- |
 | `authToken`       | `string`                                          | Current authentication token  |
 | `setAuthToken`    | `(token: string) => void`                         | Sets the authentication token |
 | `getBaseUrl`      | `(defaultUrl: string, baseUrl: string) => string` | Resolves the API base URL     |
+
+The interface is the public contract used by `useApiClient`'s type parameter. In the everyday flow, application code does not call `setAuthToken` — `useApiClient` constructs the client with no arguments, the `authToken` field stays empty, and authentication flows through the session cookie attached by the browser to each same-origin `/api/*` request. `setAuthToken` is the explicit-token path consumed by code that needs to attach a token directly (for example, when calling the API from a context where the cookie is unavailable).
 
 ### Generated Client Classes
 
@@ -302,5 +327,5 @@ API clients are generated from Swagger/OpenAPI specs using the `@vc-shell/api-cl
 
 - [`useAsync`](../useAsync/) -- wraps async API calls with loading/error state management
 - CLI API Client Generator (`@vc-shell/api-client-generator`) -- generates typed client classes from Swagger specs
-- [`useToolbar`](../useToolbar/) -- disable toolbar buttons during API calls using the loading ref
+- Blade toolbar — declare as `ref<IBladeToolbar[]>([...])` and bind via `<VcBlade :toolbar-items>`; see [`useToolbar`](../useToolbar/) for the advanced dynamic-registration API
 - [`useNotifications`](../useNotifications/) -- display success/error messages after API operations

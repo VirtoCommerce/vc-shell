@@ -67,26 +67,26 @@ Module developers do not install this plugin. It is registered once by the frame
 
 ## Connection Lifecycle
 
-```
-User logs in (isAuthenticated = true)
-  |
-  v
-connection.start()  ------>  /pushNotificationHub (WebSocket)
-  |                              |
-  |  <--- "Send" messages -------+
-  |  <--- "SendSystemEvents" ----+  (filtered by creator)
-  |                              |
-  v                              |
-store.ingest(message)            |
-  |                              |
-  +--- toast notification        |
-  +--- subscriber callbacks      |
-  +--- history update            |
-  |                              |
-User logs out                    |
-  |                              |
-  v                              |
-connection.stop()  ------------>-+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant C as SignalR client
+    participant Hub as /pushNotificationHub
+    participant Store as NotificationStore
+
+    U->>C: log in (isAuthenticated = true)
+    C->>Hub: connection.start() (WebSocket)
+    Note over C,Hub: connection open
+
+    Hub-->>C: "Send" (targeted)
+    C->>Store: ingest(message)
+    Hub-->>C: "SendSystemEvents" (broadcast, filtered by creator)
+    C->>Store: ingest(message, { broadcast: true })
+
+    Store->>Store: toast • subscriber callbacks • history update
+
+    U->>C: log out
+    C->>Hub: connection.stop()
 ```
 
 ### Reconnection Behavior

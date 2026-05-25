@@ -38,6 +38,7 @@ The `hasAccess` function evaluates permissions from the current user object (loa
 | Input                            | Result                                                              |
 | -------------------------------- | ------------------------------------------------------------------- |
 | `undefined`                      | `true` -- no permission required, everyone has access               |
+| `[]` (empty array)               | `true` -- empty array means no restriction, same as `undefined`     |
 | `"order:read"`                   | `true` if the user has this exact permission string                 |
 | `["order:read", "order:update"]` | `true` if the user has **any** of the listed permissions (OR logic) |
 | Any value, administrator user    | Always `true` -- administrators bypass all checks                   |
@@ -279,7 +280,7 @@ if (hasAccess("order:delete")) {
 - Permissions are read from `useUserManagement().user.value.permissions` at composable initialization.
 - If `user.value.isAdministrator` is `true`, `hasAccess` always returns `true` regardless of the input.
 - An array input uses OR logic: the user needs at least one of the listed permissions.
-- Passing `undefined` returns `true`, allowing unrestricted access by default.
+- Passing `undefined` or an empty array (`[]`) returns `true`, allowing unrestricted access by default.
 
 ## Related
 

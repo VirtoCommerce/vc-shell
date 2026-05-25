@@ -13,7 +13,7 @@ Manages custom action buttons in the mobile app bar. Uses provide/inject to shar
 - Register custom buttons (icons, components) in the mobile top bar from any blade or module
 - Show notification badges, filter toggles, or action shortcuts in the mobile app bar
 - Dynamically show/hide buttons based on blade state (e.g., only show a "filter" button when a list blade is active)
-- When NOT to use: for desktop-only toolbar actions (use `useToolbar` instead); for buttons inside blade content (just use regular template markup)
+- When NOT to use: for desktop blade toolbar actions, declare an `IBladeToolbar[]` array and pass it to `<VcBlade :toolbar-items>` (reach for `useToolbar` only when toolbar items must be added after mount); for buttons inside blade content, just use regular template markup
 
 ## Quick Start
 
@@ -137,6 +137,6 @@ onUnmounted(() => unregister("language-switcher"));
 
 ## Related
 
-- `useToolbar` -- desktop toolbar actions (different service, different UI placement)
+- Desktop blade toolbar actions — declare an `IBladeToolbar[]` array bound via `<VcBlade :toolbar-items>`; `useToolbar` is the advanced API for dynamic registration after mount
 - `framework/core/services/app-bar-mobile-buttons-service.ts` -- underlying service implementation
 - `VcApp` -- provides the service via `provideAppBarMobileButtonsService()`

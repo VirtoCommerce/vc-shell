@@ -37,8 +37,8 @@ If you are building anything in vc-shell -- a new page, a CRUD flow, a dashboard
   - [Registering Notification Types](#registering-notification-types)
   - [Adding Locales](#adding-locales)
   - [Registering Dashboard Widgets](#registering-dashboard-widgets)
-  - [Module Version Compatibility](#module-version-compatibility)
-  - [Remote Modules (Module Federation)](#remote-modules-module-federation)
+  - [Plugin Compatibility](#plugin-compatibility)
+  - [Plugin Loading (Module Federation)](#plugin-loading-module-federation)
 - [Recipes](#recipes)
   - [Minimal Module (Blades Only)](#minimal-module-blades-only)
   - [Module with CRUD Blades (List + Details)](#module-with-crud-blades-list--details)
@@ -69,24 +69,15 @@ export default defineAppModule({
 ```vue
 <!-- modules/my-feature/pages/MyFeatureList.vue -->
 <template>
-  <VcBlade
-    title="My Feature"
-    :closable="closable"
-    @close="$emit('close:blade')"
-  >
+  <VcBlade title="My Feature">
     <p>Hello from my first module!</p>
   </VcBlade>
 </template>
 
 <script setup lang="ts">
-import { VcBlade } from "@vc-shell/framework";
+import { VcBlade } from "@vc-shell/framework/ui";
 
-defineProps<{ closable?: boolean }>();
-defineEmits(["close:blade"]);
-</script>
-
-<script lang="ts">
-defineOptions({
+defineBlade({
   name: "MyFeatureList",
   url: "/my-feature",
   isWorkspace: true,
@@ -98,6 +89,8 @@ defineOptions({
 });
 </script>
 ```
+
+`VcBlade` reads `expanded` and `closable` directly from the blade descriptor and emits its own close action — blade pages no longer declare those as props or wire up `@close` / `@expand` / `@collapse` emits.
 
 ```json
 // modules/my-feature/locales/en.json
@@ -153,31 +146,12 @@ my-feature-module/
 
 When the host application calls `app.use(module)`, the `install()` function runs the following steps **synchronously and in order**:
 
-```
-app.use(module)
-  |
-  v
-1. BLADE REGISTRATION
-   For each entry in `blades`:
-     - Register in BladeRegistry (name, component, route, permissions)
-     - If blade has `url` + `menuItem` --> register sidebar menu entry
-  |
-  v
-2. NOTIFICATION REGISTRATION (new API)
-   For each entry in `notifications`:
-     - Register type + config in NotificationStore
-  |
-  v
-3. LEGACY NOTIFICATION COMPAT (deprecated)
-   If `notifications` is NOT provided but `notificationTemplates` is:
-     - Register templates with notifyType in NotificationStore
-   If any blade has `notifyType`:
-     - Create automatic toast subscription (with deprecation warning)
-  |
-  v
-4. LOCALE MERGE
-   For each entry in `locales`:
-     - mergeLocaleMessage(langCode, messages) into vue-i18n
+```mermaid
+flowchart TD
+    Entry["app.use(module)"] --> S1["1. BLADE REGISTRATION<br/>For each entry in <code>blades</code>:<br/>• Register in BladeRegistry (name, component, route, permissions)<br/>• If blade has <code>url</code> + <code>menuItem</code> → register sidebar menu entry"]
+    S1 --> S2["2. NOTIFICATION REGISTRATION<br/>For each entry in <code>notifications</code>:<br/>• Register type + config in NotificationStore"]
+    S2 --> S3["3. LEGACY NOTIFICATION COMPAT (deprecated)<br/>If <code>notifications</code> is NOT provided but <code>notificationTemplates</code> is:<br/>• Register templates with notifyType<br/>If any blade has <code>notifyType</code>:<br/>• Create automatic toast subscription (with deprecation warning)"]
+    S3 --> S4["4. LOCALE MERGE<br/>For each entry in <code>locales</code>:<br/>• mergeLocaleMessage(langCode, messages) into vue-i18n"]
 ```
 
 > **Why this order matters:** Blades must be registered before anything references them (e.g., menu items link to blade routes). Notifications are independent. Locales come last because they are purely additive.
@@ -274,15 +248,15 @@ Each blade is registered in the `BladeRegistry` with:
 | `routable`    | `component.routable`               | `true` = gets a Vue Router route (default: `true`) |
 | `permissions` | `component.permissions`            | Required permissions to access the blade           |
 
-> **Tip:** The export key (e.g., `ProductsList` in `{ ProductsList }`) is used as a fallback name when `component.name` is not defined. Always set `defineOptions({ name: "..." })` for clarity.
+> **Tip:** The export key (e.g., `ProductsList` in `{ ProductsList }`) is used as a fallback name when `defineBlade` does not set a name. Always set `defineBlade({ name: "..." })` explicitly.
 
 ### Blade Static Properties
 
-Blades declare their routing, permissions, and menu behavior through **static properties** set via `defineOptions`:
+Blades declare their routing, permissions, and menu behavior through `defineBlade`:
 
 ```vue
-<script lang="ts">
-defineOptions({
+<script setup lang="ts">
+defineBlade({
   // REQUIRED: Unique name for the blade (used in BladeRegistry)
   name: "OrdersList",
 
@@ -310,13 +284,13 @@ defineOptions({
 </script>
 ```
 
-> **Note:** `defineOptions` is a Vue 3.3+ compiler macro. Static properties like `url`, `isWorkspace`, and `menuItem` are vc-shell conventions -- they are read by `defineAppModule` during the install phase, not by Vue itself.
+> **Note:** `defineBlade` is compiled by the VC-Shell Vite plugin. It emits Vue component options and registers blade metadata before module installation.
 
 **Child blades** (detail pages opened from a list) typically do NOT need `url`, `isWorkspace`, or `menuItem`:
 
 ```vue
-<script lang="ts">
-defineOptions({
+<script setup lang="ts">
+defineBlade({
   name: "OrderDetails",
   // No url, no menuItem -- this blade is opened programmatically via openBlade()
 });
@@ -328,8 +302,8 @@ defineOptions({
 Menu items are created **automatically** when a blade has both `url` and `menuItem` static properties. You do not call any menu API yourself.
 
 ```vue
-<script lang="ts">
-defineOptions({
+<script setup lang="ts">
+defineBlade({
   name: "ProductsList",
   url: "/products",
   isWorkspace: true,
@@ -509,64 +483,31 @@ export default defineAppModule({ blades: pages, locales });
 | `permissions` | `string[]`                          | Required permissions (optional)          |
 | `props`       | `Record<string, unknown>`           | Props passed to the component (optional) |
 
-### Module Version Compatibility
+### Plugin Compatibility
 
-Remote modules loaded via Module Federation can declare framework compatibility using semver ranges. The host checks these ranges at load time and skips incompatible modules:
+Plugin compatibility is settled on the Platform side, not in the browser. The Platform validates each plugin's `<dependency>` declarations in **module.manifest** at .NET module install time and refuses incompatible installs. By the time a plugin appears in the manifest endpoint, the dependency graph has already approved it — there is no client-side semver filter.
 
-```json
-// Remote module's manifest (served by the backend)
-{
-  "id": "my-remote-module",
-  "entry": "https://cdn.example.com/my-module/remoteEntry.js",
-  "version": "1.2.0",
-  "compatibleWith": {
-    "dependencies": {
-      "@vc-shell/framework": ">=2.0.0 <3.0.0"
-    }
-  }
-}
-```
+Upgrading the host's framework does not silently drop older plugins; if a plugin becomes incompatible, the Platform admin sees an install-time error first.
 
-At startup, the host:
+### Plugin Loading (Module Federation)
 
-1. Reads the current `@vc-shell/framework` version from `package.json`
-2. Checks each remote module's `compatibleWith.dependencies["@vc-shell/framework"]` range
-3. Skips modules that fail the semver check (with a console warning)
-4. Loads and installs compatible modules
-
-This ensures that a framework major version upgrade does not break deployed remote modules.
-
-### Remote Modules (Module Federation)
-
-vc-shell supports loading modules from remote servers at runtime using Module Federation. This is the primary deployment model for production applications where modules are developed and deployed independently.
+vc-shell loads plugin extensions at runtime via Module Federation. A plugin remote is built by a .NET module's Vue subpackage and discovered by the Platform from the dependency graph. The host fetches a manifest of plugins for its `appId` at boot and installs each as a Vue plugin.
 
 The loading sequence:
 
+```mermaid
+flowchart TD
+    A["App Start (host main.ts)"] --> N1["1. Fetch plugin manifest<br/>GET /api/apps/{appId}/manifest"]
+    N1 --> N2["2. Initialize MF runtime<br/>with shared deps from @vc-shell/mf-config"]
+    N2 --> N3["3. Load each plugin's remoteEntry.js<br/>(Promise.allSettled in parallel)"]
+    N3 --> N4["4. Resolve Vue plugins from each remote's default export"]
+    N4 --> N5["5. app.use(plugin, { router }) for each<br/>→ triggers defineAppModule's install()"]
+    N5 --> N6["6. provide(ModulesReadyKey, true)<br/>→ app.mount('#app')"]
 ```
-App Start
-  |
-  v
-1. Fetch module registry from /api/frontend-modules
-  |
-  v
-2. Filter by framework version compatibility (semver check)
-  |
-  v
-3. Initialize Module Federation runtime with shared deps
-   (vue, vue-router, vue-i18n, @vc-shell/framework, etc.)
-  |
-  v
-4. Load all compatible remote modules in parallel
-  |
-  v
-5. Resolve Vue plugins from each module's exports
-  |
-  v
-6. app.use(plugin) for each module --> triggers defineAppModule's install()
-  |
-  v
-7. Set modulesReady = true --> app renders
-```
+
+Non-OK manifest responses (401 / 403 / 404 / 5xx) are treated as "no plugins" — the host logs a `console.warn`, sets `modulesReady=true`, and mounts without extensions. Only network or parse failures set `modulesLoadError=true`.
+
+See the [Module Federation guide](../guides/module-federation/index.md) for the full plugin-author + host-app walkthrough.
 
 The host shares singleton instances of core dependencies (Vue, Vue Router, vue-i18n, @vc-shell/framework) so that remote modules use the same runtime. This is critical for reactivity, routing, and DI to work across module boundaries.
 
@@ -626,8 +567,12 @@ The list blade (workspace):
 
 ```vue
 <!-- pages/ProductsList.vue -->
-<script lang="ts">
-defineOptions({
+<script setup lang="ts">
+import { useBlade } from "@vc-shell/framework";
+import { VcBlade, VcDataTable, VcColumn } from "@vc-shell/framework/ui";
+import useProducts from "../composables/useProducts";
+
+defineBlade({
   name: "ProductsList",
   url: "/products",
   isWorkspace: true,
@@ -638,11 +583,6 @@ defineOptions({
     priority: 10,
   },
 });
-</script>
-
-<script setup lang="ts">
-import { useBlade, VcBlade, VcDataTable, VcColumn } from "@vc-shell/framework";
-import useProducts from "../composables/useProducts";
 
 const { openBlade } = useBlade();
 const { items, loading, totalCount, load } = useProducts();
@@ -660,15 +600,13 @@ The details blade (child):
 
 ```vue
 <!-- pages/ProductDetails.vue -->
-<script lang="ts">
-defineOptions({
+<script setup lang="ts">
+import { VcBlade } from "@vc-shell/framework/ui";
+
+defineBlade({
   name: "ProductDetails",
   // No url, no menuItem -- opened programmatically
 });
-</script>
-
-<script setup lang="ts">
-import { VcBlade } from "@vc-shell/framework";
 
 const props = defineProps<{
   param?: { productId: string };
@@ -758,7 +696,7 @@ import { ExtensionPoint } from "@vc-shell/framework";
 
 ## Common Mistakes
 
-### Forgetting `defineOptions` on a blade
+### Forgetting `defineBlade` on a blade
 
 ```typescript
 // module/index.ts
@@ -770,11 +708,11 @@ export default defineAppModule({
 ```vue
 <!-- MyBlade.vue -->
 <script setup lang="ts">
-// No defineOptions!
+// No defineBlade!
 </script>
 ```
 
-The blade will be registered with the export key (`"MyBlade"`) as its name, but it will have **no route and no menu entry**. Always add `defineOptions` with at least a `name`.
+The blade will be registered with the export key (`"MyBlade"`) as its name, but it will have **no route and no menu entry** because `defineBlade` is what writes routing, permissions, and menu config into the blade config registry. Always call `defineBlade({ name, url?, menuItem?, ... })` at the top of `<script setup>`.
 
 ### Using `createAppModule` with the new notifications API
 
@@ -821,11 +759,11 @@ export default defineAppModule({
 
 // Module B
 export default defineAppModule({
-  blades: { Dashboard: DashboardB }, // Overwrites Module A's Dashboard!
+  blades: { Dashboard: DashboardB }, // Throws at install time!
 });
 ```
 
-Blade names must be globally unique. Use descriptive, module-prefixed names: `OrdersDashboard`, `ProductsDashboard`.
+`BladeRegistry` throws when a name is registered twice: `Blade 'Dashboard' is already registered`. The error halts module installation, so duplicate names are caught at startup rather than silently shadowing each other. Use descriptive, module-prefixed names: `OrdersDashboard`, `ProductsDashboard`.
 
 ### Locale key collisions
 

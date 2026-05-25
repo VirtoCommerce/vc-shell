@@ -115,8 +115,8 @@ defineBladeContext(
 
 ## Related
 
-- [`useBladeWidgets`](../useBladeWidgets/) -- widgets that consume blade context
-- [`useBlade`](../useBlade/) -- cross-blade communication via `callParent` / `exposeToChildren`
+- [`useBladeWidgets`](../useBladeWidgets/index.docs.md) -- widgets that consume blade context
+- [`useBlade`](../useBlade/useBlade.docs.md) -- cross-blade communication via `callParent` / `exposeToChildren`
 
 <!-- internal:start -->
 

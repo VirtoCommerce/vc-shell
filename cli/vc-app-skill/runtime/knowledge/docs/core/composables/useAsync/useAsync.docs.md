@@ -28,25 +28,26 @@ When the returned `action` is called, `useAsync` automatically:
 ## Quick Start
 
 ```typescript
+// pseudo-code: replace OrderClient with your generated API client
 import { useAsync, useApiClient } from "@vc-shell/framework";
 import { OrderClient } from "@api/orders";
 
 const { getApiClient } = useApiClient(OrderClient);
 
-const {
-  loading,
-  error,
-  action: loadOrder,
-} = useAsync<string>(async (id) => {
+// Alias `loading` and `action` to domain names so multiple useAsync blocks in the
+// same composable can coexist without colliding on `loading` / `action`.
+const { loading: loadOrderLoading, action: loadOrder } = useAsync<string>(async (id) => {
   const client = await getApiClient();
   return await client.getOrderById(id);
 });
 
-// In a blade's onMounted:
 await loadOrder("order-123");
-// loading.value was true during the call, now false
-// error.value is null on success, or a DisplayableError on failure
+// loadOrderLoading.value was true during the call, now false.
+// Errors auto-toast through the default `notify: true` option — no need to read
+// `error` unless you want to render a custom error UI.
 ```
+
+Per-action aliasing scales: a CRUD composable typically has `loadItemLoading`, `saveItemLoading`, `removeItemLoading` from three separate `useAsync` calls. Aggregate them through `useLoading` to drive a single blade-level loading state.
 
 ## API Reference
 
@@ -204,6 +205,7 @@ const { action: silentRefresh } = useAsync(
 The standard pattern for API operations in VC-Shell:
 
 ```typescript
+// pseudo-code: replace VcmpSellerCatalogClient with your generated API client
 import { useAsync, useApiClient } from "@vc-shell/framework";
 import { VcmpSellerCatalogClient } from "@api/client";
 
@@ -246,6 +248,7 @@ The standard VC-Shell pattern: encapsulate all CRUD operations for an entity in 
 
 ```typescript
 // composables/useFulfillmentCenter/index.ts
+// pseudo-code: replace VcmpSellerCatalogClient with your generated API client
 import { useApiClient, useAsync, useLoading } from "@vc-shell/framework";
 import { VcmpSellerCatalogClient, type FulfillmentCenter } from "@api/client";
 
@@ -423,9 +426,9 @@ const { action: save, loading: saveLoading } = useAsync(async () => saveData());
 
 ## Related
 
-| Resource                                                    | Description                                                                         |
-| ----------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| [`useApiClient`](../useApiClient/)                          | Provides typed API client instances to pass into `useAsync`                         |
-| [`useLoading`](../useLoading/)                              | Combines multiple `loading` refs into a single boolean                              |
-| [`useModificationTracker`](../useModificationTracker/)      | Tracks dirty state for forms -- often used alongside `useAsync` for save operations |
-| [`notification`](../../../shared/components/notifications/) | The toast notification system used by `useAsync` for error display                  |
+| Resource                                                   | Description                                                                         |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| [`useApiClient`](../useApiClient/)                         | Provides typed API client instances to pass into `useAsync`                         |
+| [`useLoading`](../useLoading/)                             | Combines multiple `loading` refs into a single boolean                              |
+| [`useModificationTracker`](../useModificationTracker/)     | Tracks dirty state for forms -- often used alongside `useAsync` for save operations |
+| [Notifications](../../notifications/notifications.docs.md) | The notification and toast system used by `useAsync` for error display              |

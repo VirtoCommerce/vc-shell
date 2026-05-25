@@ -684,4 +684,4 @@ These are used internally by `defineExtensionPoint` and `useExtensionPoint`. You
 | Extension Point Store          | `core/plugins/extension-points/store.ts`           | Reactive registry implementation              |
 | ExtensionPoint Component       | `core/plugins/extension-points/ExtensionPoint.vue` | Declarative render component                  |
 | Types                          | `core/plugins/extension-points/types.ts`           | `ExtensionComponent`, `ExtensionPointOptions` |
-| Seller Details (usage example) | `apps/vendor-portal/src/modules/seller-details/`   | Real-world extension point host               |
+| Seller Details (usage example) | Generated seller details module                    | Extension point host                          |

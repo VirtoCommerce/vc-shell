@@ -328,5 +328,5 @@ All visual properties are customizable through CSS custom properties. Each varia
 
 - VcButton calls `e.preventDefault()` on click to support `link` variant pattern. Form submit buttons must use `type="submit"` to bypass this.
 - `VcButtonGroup` integration is via provide/inject (`vcButtonGroupSize` injection key in `framework/injection-keys.ts`).
-- Size aliases `xs`/`base` are kept for vendor-portal backward compatibility — slated for removal in v3.
+- Size aliases `xs`/`base` are kept for backward compatibility — slated for removal in v3.
 <!-- internal:end -->

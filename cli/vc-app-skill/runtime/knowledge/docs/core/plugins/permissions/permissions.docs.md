@@ -122,10 +122,14 @@ export default defineAppModule({
 
 ### Toolbar Button Visibility
 
-Toolbar buttons support a `permissions` property that works the same way:
+Toolbar items are declared as an `IBladeToolbar[]` array and bound to `<VcBlade :toolbar-items>`. The `permissions` property on each entry is filtered out before render when the user lacks the listed permission(s):
 
-```typescript
-const toolbar = useToolbar([
+```vue
+<script setup lang="ts">
+import { ref } from "vue";
+import { VcBlade, type IBladeToolbar } from "@vc-shell/framework";
+
+const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
     title: "Save",
@@ -141,6 +145,11 @@ const toolbar = useToolbar([
     clickHandler: () => deleteOrder(),
   },
 ]);
+</script>
+
+<template>
+  <VcBlade :toolbar-items="bladeToolbar" />
+</template>
 ```
 
 ## Tip: Permission Naming Convention

@@ -11,7 +11,7 @@ Gridstack.js-powered dashboard container that renders registered widgets in a dr
 
 ## When to Use
 
-- Use as the main dashboard view for the shell or vendor portal
+- Use as the main dashboard view for a shell application
 - When you need a customizable widget grid with drag-and-drop rearrangement
 - Do NOT use for static, non-rearrangeable layouts (use a regular grid/flex layout instead)
 

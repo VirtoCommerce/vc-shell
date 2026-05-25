@@ -275,7 +275,7 @@ interface AccordionItem {
 
 ## Related Components
 
-- [VcAccordionItem](./_internal/vc-accordion-item/) -- individual accordion panel (used internally and available via the default slot)
+- **VcAccordionItem** -- internal sub-component for individual accordion panels (used internally and available via the default slot)
 
 ::storybook id="action-vcaccordion--skeleton"
 

@@ -6,7 +6,7 @@ group: utilities
 
 # useAppInsights
 
-Integrates Azure Application Insights page-view tracking with Vue Router and the current user context. This composable bridges the `vue3-application-insights` plugin with the vc-shell framework by automatically enriching every page-view event with the authenticated user's ID and name, generating fresh W3C trace IDs per navigation for distributed tracing, and optionally prefixing page names with the application name (e.g., `[Vendor Portal] Dashboard`).
+Integrates Azure Application Insights page-view tracking with Vue Router and the current user context. This composable bridges the `vue3-application-insights` plugin with the vc-shell framework by automatically enriching every page-view event with the authenticated user's ID and name, generating fresh W3C trace IDs per navigation for distributed tracing, and optionally prefixing page names with the application name (for example, `[Operations Console] Dashboard`).
 
 ## When to Use
 
@@ -42,17 +42,17 @@ export default router;
 
 ### Returns
 
-| Property                       | Type                                                  | Description                                                                                            |
-| ------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `setupPageTracking.beforeEach` | `(route: { name: string }) => void`                   | Call in router `beforeEach` to start page-view timing and generate a new trace ID                      |
-| `setupPageTracking.afterEach`  | `(route: { name: string; fullPath: string }) => void` | Call in router `afterEach` to stop page-view timing and flush the telemetry event                      |
-| `appInsights`                  | `ApplicationInsights`                                 | Raw Application Insights instance for custom telemetry (trackEvent, trackException, trackMetric, etc.) |
+| Property                       | Type                                                  | Description                                                                                                                                                                                                       |
+| ------------------------------ | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `setupPageTracking.beforeEach` | `(route: { name: string }) => void`                   | Call in router `beforeEach` to start page-view timing and generate a new trace ID                                                                                                                                 |
+| `setupPageTracking.afterEach`  | `(route: { name: string; fullPath: string }) => void` | Call in router `afterEach` to stop page-view timing and flush the telemetry event                                                                                                                                 |
+| `appInsights`                  | `ApplicationInsights \| null`                         | Raw Application Insights instance for custom telemetry (`trackEvent`, `trackException`, `trackMetric`, etc.). `null` when the AI plugin is not installed -- `setupPageTracking` handlers are no-ops in that case. |
 
 ### Injection Key
 
-| Key                     | Type                                     | Description                                                                                       |
-| ----------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `AppInsightsOptionsKey` | `InjectionKey<AppInsightsPluginOptions>` | Optional. Provide this at app level with `{ appName: 'Vendor Portal' }` to prefix all page names. |
+| Key                     | Type                                     | Description                                                                                            |
+| ----------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `AppInsightsOptionsKey` | `InjectionKey<AppInsightsPluginOptions>` | Optional. Provide this at app level with `{ appName: 'Operations Console' }` to prefix all page names. |
 
 ## How It Works
 
@@ -99,12 +99,12 @@ import { AppInsightsOptionsKey } from "@vc-shell/framework";
 const app = createApp(App);
 
 app.provide(AppInsightsOptionsKey, {
-  appName: "Vendor Portal",
+  appName: "Operations Console",
   // ... other AppInsightsPluginOptions
 });
 ```
 
-This results in page names like `[Vendor Portal] Dashboard` instead of just `Dashboard`.
+This results in page names like `[Operations Console] Dashboard` instead of just `Dashboard`.
 
 ## Tips
 

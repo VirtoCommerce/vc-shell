@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.5...v2.0.6) (2026-05-25)
+
+### Features
+
+- docs-sync improvements, lint rules, and reference docs alignment (#229) ([a3ddbc2](https://github.com/VirtoCommerce/vc-shell/commit/a3ddbc29a90e55632df702f776e11bc8bc4aec67)), closes [#229](https://github.com/VirtoCommerce/vc-shell/issues/229)
+
 ## [2.0.5](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.4...v2.0.5) (2026-05-25)
 
 **Note:** Version bump only for package @vc-shell/vc-app-skill

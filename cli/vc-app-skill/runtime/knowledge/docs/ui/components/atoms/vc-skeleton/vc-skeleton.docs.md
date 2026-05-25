@@ -52,7 +52,7 @@ The last row automatically renders at 60% width for a natural paragraph feel.
 ### Avatar Placeholder
 
 ```vue
-<VcSkeleton variant="circle" :width="48" :height="48" />
+<VcSkeleton variant="circle" width="48px" :height="48" />
 ```
 
 ::storybook id="layout-vcskeleton--card-skeleton" height="450"
@@ -93,7 +93,7 @@ The last row automatically renders at 60% width for a natural paragraph feel.
     >
       <VcSkeleton
         variant="circle"
-        :width="40"
+        width="40px"
         :height="40"
       />
       <div class="tw-flex-1">

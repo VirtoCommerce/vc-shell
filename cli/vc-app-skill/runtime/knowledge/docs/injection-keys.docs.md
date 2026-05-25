@@ -49,7 +49,7 @@ This centralized approach has several advantages:
 | `DashboardServiceKey`           | `IDashboardService`           | Dashboard widget management    |
 | `MenuServiceKey`                | `MenuService`                 | Main navigation menu           |
 | `SettingsMenuServiceKey`        | `ISettingsMenuService`        | Settings sidebar menu          |
-| `AppBarWidgetServiceKey`        | `IAppBarWidgetService`        | App bar widget slots           |
+| `AppBarWidgetServiceKey`        | `IAppBarWidgetService`        | App hub widget registry        |
 | `AppBarMobileButtonsServiceKey` | `IAppBarMobileButtonsService` | Mobile app bar buttons         |
 | `LanguageServiceKey`            | `ILanguageService`            | Localization service           |
 | `ToolbarServiceKey`             | `IToolbarService`             | Blade toolbar actions          |

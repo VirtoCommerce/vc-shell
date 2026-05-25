@@ -288,7 +288,7 @@ clickHandler: () => { navigate(); return true; }
 ## Related Components
 
 - [VcDropdown](../vc-dropdown/) -- Used internally to render the overflow menu
-- [VcBreadcrumbsItem](./_internal/vc-breadcrumbs-item/) -- Internal sub-component for individual breadcrumb rendering
+- **VcBreadcrumbsItem** -- internal sub-component for individual breadcrumb rendering
 - [VcButton](../../atoms/vc-button/) -- Can be used inside the `trigger` slot for a styled overflow button
 
 <!-- internal:start -->

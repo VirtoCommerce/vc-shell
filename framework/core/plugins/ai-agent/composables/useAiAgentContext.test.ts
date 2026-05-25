@@ -2,11 +2,9 @@ import { ref, computed, defineComponent, h, provide, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
 import { AiAgentServiceKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
-import { useAiAgentContext, clearPreviewState } from "./useAiAgentContext";
+import { useAiAgentContext } from "./useAiAgentContext";
 
 function createMockInternalService() {
-  const previewHandlers: Array<(payload: any) => void> = [];
-
   return {
     panelState: ref("closed"),
     config: ref({}),
@@ -23,16 +21,6 @@ function createMockInternalService() {
     sendMessage: vi.fn(),
     onMessage: vi.fn(() => vi.fn()),
     _setContextData: vi.fn(),
-    _onPreviewChanges: vi.fn((handler: (payload: any) => void) => {
-      previewHandlers.push(handler);
-      return () => {
-        const idx = previewHandlers.indexOf(handler);
-        if (idx >= 0) previewHandlers.splice(idx, 1);
-      };
-    }),
-    _simulatePreviewChanges(payload: any) {
-      previewHandlers.forEach((h) => h(payload));
-    },
     iframeRef: ref(null),
     _setIframeRef: vi.fn(),
     _startListening: vi.fn(),
@@ -65,15 +53,9 @@ function mountWithAiContext<T>(setupFn: () => T, service: ReturnType<typeof crea
 }
 
 describe("useAiAgentContext", () => {
-  it("returns dummy preview state when service not provided", () => {
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  it("is a no-op when service is not provided", () => {
     const dataRef = ref({ id: "1", objectType: "Product", name: "Test" });
-    const { result } = mountWithAiContext(() => useAiAgentContext({ dataRef }));
-
-    expect(result.previewState.isActive.value).toBe(false);
-    expect(result.previewState.changedFields.value).toEqual([]);
-    expect(typeof result.clearPreview).toBe("function");
-    warnSpy.mockRestore();
+    expect(() => mountWithAiContext(() => useAiAgentContext({ dataRef }))).not.toThrow();
   });
 
   it("sets context data on mount via _setContextData", async () => {
@@ -116,38 +98,6 @@ describe("useAiAgentContext", () => {
     expect(call[0][0]).toEqual({ id: "1", objectType: "Product", name: "A" });
   });
 
-  it("applies preview changes from service", async () => {
-    const service = createMockInternalService();
-    const dataRef = ref({ id: "1", objectType: "Product", name: "Old Name", price: 10 });
-    const { result } = mountWithAiContext(() => useAiAgentContext({ dataRef }), service);
-
-    service._simulatePreviewChanges({
-      data: { name: "New Name" },
-      changedFields: ["name"],
-    });
-
-    expect(dataRef.value.name).toBe("New Name");
-    expect(dataRef.value.price).toBe(10); // unchanged
-    expect(result.previewState.isActive.value).toBe(true);
-    expect(result.previewState.changedFields.value).toEqual(["name"]);
-  });
-
-  it("clearPreview resets preview state", async () => {
-    const service = createMockInternalService();
-    const dataRef = ref({ id: "1", objectType: "Product", name: "Test" });
-    const { result } = mountWithAiContext(() => useAiAgentContext({ dataRef }), service);
-
-    service._simulatePreviewChanges({
-      data: { name: "Changed" },
-      changedFields: ["name"],
-    });
-    expect(result.previewState.isActive.value).toBe(true);
-
-    result.clearPreview();
-    expect(result.previewState.isActive.value).toBe(false);
-    expect(result.previewState.changedFields.value).toEqual([]);
-  });
-
   it("clears context on unmount", async () => {
     const service = createMockInternalService();
     const dataRef = ref({ id: "1", objectType: "Product", name: "Test" });
@@ -167,14 +117,5 @@ describe("useAiAgentContext", () => {
 
     await nextTick();
     expect(service._setContextData).toHaveBeenCalledWith(expect.anything(), "details", suggestions, "test-blade-1");
-  });
-});
-
-describe("clearPreviewState (deprecated)", () => {
-  it("logs a deprecation warning", () => {
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-    clearPreviewState({ isActive: computed(() => false), changedFields: computed(() => []) });
-    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("deprecated"));
-    warnSpy.mockRestore();
   });
 });

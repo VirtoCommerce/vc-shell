@@ -44,7 +44,7 @@ export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): I
   const languageService = inject(LanguageServiceKey);
   const { user, getAccessToken } = useUser();
   const { openBlade } = useBlade();
-  const { blades, activeBlade, replaceCurrentBlade } = useBladeStack();
+  const { blades, activeBlade } = useBladeStack();
   const isEmbedded = options?.isEmbedded;
 
   // Create the service
@@ -79,23 +79,6 @@ export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): I
         })
         .catch((error) => {
           logger.warn(`Blade not found or cannot be opened: ${bladeName}`, error);
-        });
-    },
-    reloadBlade: () => {
-      const currentBlade = activeBlade.value;
-      if (!currentBlade) return;
-
-      replaceCurrentBlade({
-        name: currentBlade.name,
-        param: currentBlade.param,
-        query: currentBlade.query,
-        options: currentBlade.options,
-      })
-        .then(() => {
-          logger.debug("Current blade reloaded");
-        })
-        .catch((error) => {
-          logger.warn("Failed to reload current blade", error);
         });
     },
     initialConfig: options?.config,
@@ -177,8 +160,8 @@ export interface UseAiAgentReturn {
  *
  * // Listen for messages from AI agent
  * onMessage((message) => {
- *   if (message.type === 'PREVIEW_CHANGES') {
- *     // Handle preview changes
+ *   if (message.type === 'NAVIGATE_TO_APP') {
+ *     // Handle navigation request
  *   }
  * });
  * ```

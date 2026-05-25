@@ -5,7 +5,6 @@ import type {
   IAiAgentConfig,
   IAiAgentContext,
   AiAgentMessageType,
-  IPreviewChangesPayload,
   ISuggestion,
   AiAgentContextType,
   IAiAgentBladeContext,
@@ -32,8 +31,6 @@ export interface CreateAiAgentServiceOptions {
   tokenGetter?: () => Promise<string | null>;
   /** Function to navigate to blade */
   navigateToBlade?: (bladeName: string, param?: string, options?: Record<string, unknown>) => void;
-  /** Function to reload current blade */
-  reloadBlade?: () => void;
   /** Initial configuration */
   initialConfig?: Partial<IAiAgentConfig>;
   /** Whether the app is running in embedded mode (inside OneShell iframe) */
@@ -59,8 +56,6 @@ export interface IAiAgentServiceInternal extends IAiAgentService {
     suggestions?: ISuggestion[],
     bladeId?: string,
   ) => void;
-  /** Register preview changes handler */
-  _onPreviewChanges: (handler: (payload: IPreviewChangesPayload) => void) => () => void;
 }
 
 /**
@@ -73,7 +68,6 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
     localeGetter,
     tokenGetter,
     navigateToBlade,
-    reloadBlade,
     initialConfig,
     isEmbedded = false,
   } = options;
@@ -94,7 +88,6 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
     getConfig: () => config.value,
     isEmbedded,
     navigateToBlade,
-    reloadBlade,
   });
 
   // Context computed (no timestamp — clean dependency tracking)
@@ -220,6 +213,5 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
     _startListening: transport.startListening,
     _stopListening: transport.stopListening,
     _setContextData,
-    _onPreviewChanges: transport.onPreviewChanges,
   };
 }

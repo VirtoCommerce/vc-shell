@@ -81,25 +81,6 @@ describe("createAiAgentService", () => {
     expect(updateCall![0].payload.items).toEqual([{ id: "1", price: 99 }]);
   });
 
-  it("dispatches PREVIEW_CHANGES to registered handlers", () => {
-    const handler = vi.fn();
-    service._onPreviewChanges(handler);
-
-    window.dispatchEvent(
-      new MessageEvent("message", {
-        data: {
-          type: "PREVIEW_CHANGES",
-          payload: { data: { name: "New Name" }, changedFields: ["name"] },
-        },
-      }),
-    );
-
-    expect(handler).toHaveBeenCalledWith({
-      data: { name: "New Name" },
-      changedFields: ["name"],
-    });
-  });
-
   it("does not send UPDATE_CONTEXT when panel is closed", async () => {
     // Initialize: trigger CHAT_READY
     window.dispatchEvent(new MessageEvent("message", { data: { type: "CHAT_READY" } }));

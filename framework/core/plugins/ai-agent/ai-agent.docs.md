@@ -7,16 +7,15 @@ slug: ai-agent
 
 # AI Agent Plugin
 
-Integrates an AI assistant panel (chatbot iframe) into the vc-shell application. Provides blade-aware context passing, bidirectional postMessage communication, and preview/apply workflows.
+Integrates an AI assistant panel (chatbot iframe) into the vc-shell application. Provides blade-aware context passing and bidirectional postMessage communication.
 
 ## Overview
 
-The AI agent plugin embeds an external chatbot via an iframe panel that slides in from the right side of the application. It automatically sends the current blade context (user, active blade, selected items) to the chatbot and handles incoming commands (navigate, preview changes, download files). The plugin is optional -- if no `APP_AI_AGENT_URL` environment variable or `config.url` is provided, it silently skips installation.
+The AI agent plugin embeds an external chatbot via an iframe panel that slides in from the right side of the application. It automatically sends the current blade context (user, active blade, selected items) to the chatbot and handles incoming commands (navigate, download files). The plugin is optional -- if no `APP_AI_AGENT_URL` environment variable or `config.url` is provided, it silently skips installation.
 
 ## When to Use
 
 - Embed an AI assistant chatbot panel into your vc-shell application with automatic blade context passing
-- Enable preview/apply workflows where AI suggests changes and the user confirms them
 - When NOT to use: if you don't have an AI agent backend -- the plugin silently skips when no `APP_AI_AGENT_URL` is set
 
 ## Installation / Registration
@@ -88,10 +87,7 @@ Binds blade data to the AI agent context. Call this in each blade that should pa
 | `dataRef`     | `Ref<T> \| Ref<T[]>` | Data to send (single object for details, array for list) |
 | `suggestions` | `ISuggestion[]`      | Custom suggestion cards for the chatbot UI               |
 
-| Return                       | Type                    | Description                                      |
-| ---------------------------- | ----------------------- | ------------------------------------------------ |
-| `previewState.isActive`      | `ComputedRef<boolean>`  | Whether AI-suggested changes are being previewed |
-| `previewState.changedFields` | `ComputedRef<string[]>` | List of field names with pending changes         |
+The composable returns `void`. It wires the watcher and the unmount cleanup; nothing is exposed to the caller.
 
 ### PostMessage Protocol
 
@@ -103,12 +99,9 @@ Binds blade data to the AI agent context. Call this in each blade that should pa
 **Chatbot to Shell:**
 
 - `CHAT_READY` -- Chatbot finished loading
-- `NAVIGATE_TO_APP` -- Open a specific blade
-- `PREVIEW_CHANGES` -- Preview data changes in the form
-- `APPLY_CHANGES` -- Apply confirmed changes
-- `RELOAD_BLADE` -- Reload the current blade
-- `DOWNLOAD_FILE` -- Download a file (base64)
-- `CHAT_ERROR` -- Error from chatbot
+- `NAVIGATE_TO_APP` -- Open a specific blade (driven by markdown action links in assistant messages)
+- `EXPAND_IN_CHAT` -- Expand an item inline in the chat (markdown action link)
+- `SHOW_MORE` -- Request the next page of a result category (markdown action link)
 
 ## Usage
 
@@ -117,7 +110,7 @@ Binds blade data to the AI agent context. Call this in each blade that should pa
 ```typescript
 // In a details blade
 const product = ref<Product>({});
-const { previewState } = useAiAgentContext({
+useAiAgentContext({
   dataRef: product,
   suggestions: [{ id: "translate", title: "Translate", icon: "translation", prompt: "Translate to English" }],
 });
@@ -147,17 +140,6 @@ onMessage((message) => {
     console.log("Chatbot wants to navigate to:", message.payload);
   }
 });
-```
-
-### Preview State Visual Feedback
-
-```vue
-<template>
-  <VcInput
-    v-model="product.name"
-    :class="{ 'ai-preview': previewState.changedFields.value.includes('name') }"
-  />
-</template>
 ```
 
 ## Related

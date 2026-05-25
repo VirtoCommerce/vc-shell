@@ -85,12 +85,12 @@ A small indicator component for displaying counts, status dots, or short text la
 ## Recipe: Status Tags in a Table Cell
 
 ```vue
-<VcColumn id="status" header="Status" :width="120">
-  <template #default="{ row }">
+<VcColumn id="status" title="Status" width="120px">
+  <template #body="{ data }">
     <VcBadge
       inline
-      :content="row.status"
-      :variant="statusVariantMap[row.status]"
+      :content="data.status"
+      :variant="statusVariantMap[data.status]"
       size="s"
     />
   </template>

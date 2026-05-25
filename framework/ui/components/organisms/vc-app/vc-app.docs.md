@@ -38,7 +38,7 @@ import { VcApp } from "@vc-shell/framework";
 
 const isReady = ref(true);
 const logoUrl = "/logo.svg";
-const appTitle = "Vendor Portal";
+const appTitle = "Operations Console";
 const user = reactive({ name: "John", role: "Admin" });
 </script>
 ```
@@ -146,8 +146,8 @@ Modules registered via `useDynamicModules()` are loaded at runtime. Each module 
 
 The App Hub is a popover panel (desktop) or a swipeable tab (mobile) that combines two sections:
 
-- **Applications** — tile grid of registered apps (e.g., Vendor Portal, Marketplace Admin). Clicking an app switches context without a full page reload. This section can be hidden with `disableAppHub` or customized via the `app-hub` slot. The list is searchable via a built-in search input inside the hub.
-- **Widgets** — registered app bar widgets (notifications, background tasks, etc.). Clicking a widget expands its content inline (desktop) or navigates to its panel (mobile). Widgets are registered via `useAppBarWidget()` and can display badges for unread counts.
+- **Applications** — tile grid of registered apps (for example, Operations Console or Marketplace Admin). Clicking an app switches context without a full page reload. This section can be hidden with `disableAppHub` or customized via the `app-hub` slot. The list is searchable via a built-in search input inside the hub.
+- **Widgets** — cross-app widgets registered through `useAppBarWidget()` (sync status, background tasks, language picker, and the like). Clicking a widget either runs its `onClick` (for action widgets) or expands its component inline inside the popover with a back-arrow to return (for component widgets). On mobile, the content flies out below the panel. Widgets can display badges for unread counts.
 
 On desktop, the App Hub opens from the sidebar header menu button (`AppHubPopover`). On mobile, it appears as a second tab ("Hub") in the slide-out navigation panel — users can swipe between Menu and Hub tabs.
 
@@ -225,7 +225,7 @@ Replace the default user info section with a custom footer:
 - The `disableMenu` prop is useful for single-purpose apps that do not need sidebar navigation (e.g., a standalone settings page or an embedded widget).
 - Use the `layout` slot only as a last resort for completely custom layouts. For most customizations, the more specific slots (`menu`, `sidebar-header`, `sidebar-footer`) are sufficient.
 - The `version` prop is informational and can be displayed in the sidebar footer or a settings page. It does not affect any runtime behavior.
-- VcApp provides shell services via Vue's provide/inject system. Child components access them through composables like `useMenuService()`, `useToolbarService()`, etc.
+- VcApp provides shell services via Vue's provide/inject system. Child components access them through composables like `useMenuService()`, `useToolbar()`, `useAppBarWidget()`, `useSettingsMenu()`, and `useDashboard()`.
 
 ## Accessibility
 

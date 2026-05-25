@@ -143,7 +143,7 @@ Set a maximum width to prevent wide tooltips from stretching across the screen:
 <VcTooltip>...</VcTooltip>
 
 <!-- Wider tooltip for long content -->
-<VcTooltip :max-width="400">...</VcTooltip>
+<VcTooltip max-width="400px">...</VcTooltip>
 
 <!-- CSS string value -->
 <VcTooltip max-width="50vw">...</VcTooltip>
@@ -165,7 +165,7 @@ Suppress the tooltip dynamically without removing it from the template:
 The `#tooltip` slot accepts any HTML or Vue components, not just text:
 
 ```vue
-<VcTooltip placement="top" :max-width="320">
+<VcTooltip placement="top" max-width="320px">
   <span class="tw-underline tw-decoration-dotted tw-cursor-help">
     Fulfillment status
   </span>
@@ -225,7 +225,7 @@ const actions = [
 <template>
   <VcTooltip
     placement="top"
-    :max-width="400"
+    max-width="400px"
   >
     <span class="tw-truncate tw-max-w-[200px] tw-block">
       {{ longProductName }}

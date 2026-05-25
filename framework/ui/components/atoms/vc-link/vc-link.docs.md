@@ -72,13 +72,29 @@ function openDetails() {
 
 ### Inline Action in a Table Cell
 
+For row actions in a `VcDataTable`, the framework's `:row-actions` builder is the recommended path — it renders a consistent action menu per row without an extra column declaration:
+
 ```vue
-<VcColumn id="actions" header="Actions" :width="120">
-  <template #default="{ row }">
-    <div class="tw-flex tw-gap-3">
-      <VcLink @click="editItem(row)">Edit</VcLink>
-      <VcLink @click="duplicateItem(row)">Copy</VcLink>
-    </div>
+<VcDataTable :items="items" :row-actions="actionBuilder" row-actions-position="column" />
+
+<script setup lang="ts">
+import type { TableAction } from "@vc-shell/framework";
+
+function actionBuilder(item: Item): TableAction[] {
+  return [
+    { icon: "lucide-pencil", title: "Edit", clickHandler: () => editItem(item) },
+    { icon: "lucide-copy", title: "Copy", clickHandler: () => duplicateItem(item) },
+  ];
+}
+</script>
+```
+
+Inline `VcLink` in a cell still fits non-action navigation (open another blade from a name, jump to a docs URL):
+
+```vue
+<VcColumn id="name" title="Name">
+  <template #body="{ data }">
+    <VcLink @click="openItem(data.id)">{{ data.name }}</VcLink>
   </template>
 </VcColumn>
 ```

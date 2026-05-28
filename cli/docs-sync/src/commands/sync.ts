@@ -124,7 +124,7 @@ export async function runSync(args: SyncArgs): Promise<{ exitCode: number }> {
     }
   }
 
-  // Emit .pages files.
+  // Emit .nav.yml files.
   if (!args.dryRun) {
     await writePagesFiles(targetSection, { synced });
   }

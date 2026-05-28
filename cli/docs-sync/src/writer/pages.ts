@@ -41,10 +41,10 @@ const NESTED_TITLES: Record<string, string> = {
   cli: "CLI",
 };
 
-// Folders for which the generator emits .pages.
+// Folders for which the generator emits .nav.yml.
 const AUTO_PAGES_TOP = new Set(["components", "composables", "plugins"]);
 const AUTO_PAGES_REFERENCE_SUB = new Set(["api", "api/directives", "modules"]);
-// concepts/ and reference root NOT in auto set — manual .pages.
+// concepts/ and reference root NOT in auto set — manual .nav.yml.
 
 export interface SyncedPage {
   target: string; // e.g. components/data-display/vc-data-table.md
@@ -71,7 +71,7 @@ export async function writePagesFiles(targetRoot: string, args: WritePagesArgs):
   for (const [top, groups] of byTopFolder) {
     const isAutoTop = AUTO_PAGES_TOP.has(top);
 
-    // Emit top-level .pages for components / composables / plugins.
+    // Emit top-level .nav.yml for components / composables / plugins.
     if (isAutoTop) {
       const hasOnlyRoot = groups.size === 1 && groups.has("");
       let navContent: string;
@@ -86,14 +86,14 @@ export async function writePagesFiles(targetRoot: string, args: WritePagesArgs):
         navContent = order.map((g) => `  - ${g}`).join("\n");
       }
       const yaml = PAGES_MARKER + `title: ${TOP_LEVEL_TITLES[top]}\n` + `nav:\n` + navContent + "\n";
-      const filePath = path.join(targetRoot, top, ".pages");
+      const filePath = path.join(targetRoot, top, ".nav.yml");
       await fs.mkdir(path.dirname(filePath), { recursive: true });
       await writeAtomic(filePath, yaml);
     }
 
-    // Emit per-group .pages.
+    // Emit per-group .nav.yml.
     for (const [group, pages] of groups) {
-      if (!group) continue; // single-file in top folder (e.g. concepts/services.md) — no group .pages
+      if (!group) continue; // single-file in top folder (e.g. concepts/services.md) — no group .nav.yml
       const isReferenceSub = top === "reference" && AUTO_PAGES_REFERENCE_SUB.has(group);
       if (!isAutoTop && !isReferenceSub) continue; // skip mixed/manual folders
 
@@ -108,7 +108,7 @@ export async function writePagesFiles(targetRoot: string, args: WritePagesArgs):
 
       const yaml = PAGES_MARKER + `title: ${groupTitle}\n` + `nav:\n` + navLines.join("\n") + "\n";
 
-      const filePath = path.join(targetRoot, top, group, ".pages");
+      const filePath = path.join(targetRoot, top, group, ".nav.yml");
       await fs.mkdir(path.dirname(filePath), { recursive: true });
       await writeAtomic(filePath, yaml);
     }

@@ -13,20 +13,20 @@ describe("writePagesFiles", () => {
     await fs.rm(tmp, { recursive: true, force: true });
   });
 
-  it("emits a top-level components/.pages with subgroups in declared order", async () => {
+  it("emits a top-level components/.nav.yml with subgroups in declared order", async () => {
     await writePagesFiles(tmp, {
       synced: [
         { target: "components/data-display/vc-data-table.md", title: "VcDataTable" },
         { target: "components/misc/vc-button.md", title: "VcButton" },
       ],
     });
-    const top = await fs.readFile(path.join(tmp, "components/.pages"), "utf8");
+    const top = await fs.readFile(path.join(tmp, "components/.nav.yml"), "utf8");
     expect(top).toContain("AUTO-GENERATED FROM vc-shell");
     expect(top).toContain("title: Components");
     expect(top.indexOf("data-display")).toBeLessThan(top.indexOf("misc"));
   });
 
-  it("emits a per-group .pages alphabetically by title", async () => {
+  it("emits a per-group .nav.yml alphabetically by title", async () => {
     await writePagesFiles(tmp, {
       synced: [
         { target: "components/form/vc-input.md", title: "VcInput" },
@@ -34,25 +34,25 @@ describe("writePagesFiles", () => {
         { target: "components/form/vc-select.md", title: "VcSelect" },
       ],
     });
-    const group = await fs.readFile(path.join(tmp, "components/form/.pages"), "utf8");
+    const group = await fs.readFile(path.join(tmp, "components/form/.nav.yml"), "utf8");
     const lines = group.split("\n").filter((l) => l.startsWith("  - "));
     expect(lines).toEqual(["  - VcCheckbox: vc-checkbox.md", "  - VcInput: vc-input.md", "  - VcSelect: vc-select.md"]);
   });
 
-  it("does NOT emit .pages for concepts (mixed-folder)", async () => {
+  it("does NOT emit .nav.yml for concepts (mixed-folder)", async () => {
     await writePagesFiles(tmp, {
       synced: [{ target: "concepts/services.md", title: "Services" }],
     });
     let exists = true;
     try {
-      await fs.access(path.join(tmp, "concepts/.pages"));
+      await fs.access(path.join(tmp, "concepts/.nav.yml"));
     } catch {
       exists = false;
     }
     expect(exists).toBe(false);
   });
 
-  it("emits a flat plugins/.pages with explicit titles, alphabetical", async () => {
+  it("emits a flat plugins/.nav.yml with explicit titles, alphabetical", async () => {
     await writePagesFiles(tmp, {
       synced: [
         { target: "plugins/signalr.md", title: "SignalR" },
@@ -60,7 +60,7 @@ describe("writePagesFiles", () => {
         { target: "plugins/i18n.md", title: "Internationalization" },
       ],
     });
-    const pagesFile = await fs.readFile(path.join(tmp, "plugins/.pages"), "utf8");
+    const pagesFile = await fs.readFile(path.join(tmp, "plugins/.nav.yml"), "utf8");
     expect(pagesFile).toContain("AUTO-GENERATED FROM vc-shell");
     expect(pagesFile).toContain("title: Plugins");
     const lines = pagesFile.split("\n").filter((l) => l.startsWith("  - "));
@@ -79,7 +79,7 @@ describe("writePagesFiles", () => {
         { target: "composables/services/useToolbar.md", title: "useToolbar" },
       ],
     });
-    const pagesFile = await fs.readFile(path.join(tmp, "composables/services/.pages"), "utf8");
+    const pagesFile = await fs.readFile(path.join(tmp, "composables/services/.nav.yml"), "utf8");
     const lines = pagesFile.split("\n").filter((l) => l.startsWith("  - "));
     expect(lines).toEqual([
       "  - Overview: index.md",

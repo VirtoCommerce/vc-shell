@@ -260,3 +260,53 @@ describe("useTableColumns — getEffectiveColumnWidth", () => {
     expect(getEffectiveColumnWidth({ id: "sel", selectionMode: "multiple" } as unknown as VcColumnProps)).toBe("40px");
   });
 });
+
+describe("useTableColumns — getEffectiveColumnWidth initial fallback (engine not computed yet)", () => {
+  it("falls back to declared px width before engine computes", () => {
+    const cols = [makeColumn("name", { width: 200 })];
+    const visibleColumns = ref(cols);
+    // availableWidth=0 → engine cannot compute → engineOutput stays empty.
+    const { getEffectiveColumnWidth, engineOutput } = useTableColumns({
+      visibleColumns,
+      getAvailableWidth: () => 0,
+    });
+    expect(engineOutput.value.widths["name"]).toBeUndefined();
+    expect(getEffectiveColumnWidth({ id: "name", width: 200 } as VcColumnProps)).toBe("200px");
+  });
+
+  it("falls back to declared px string width ('150px') before engine computes", () => {
+    const cols = [makeColumn("name", { width: "150px" })];
+    const visibleColumns = ref(cols);
+    const { getEffectiveColumnWidth } = useTableColumns({ visibleColumns, getAvailableWidth: () => 0 });
+    expect(getEffectiveColumnWidth({ id: "name", width: "150px" } as unknown as VcColumnProps)).toBe("150px");
+  });
+
+  it("falls back to declared percent width before engine computes", () => {
+    const cols = [makeColumn("name", { width: "50%" })];
+    const visibleColumns = ref(cols);
+    const { getEffectiveColumnWidth } = useTableColumns({ visibleColumns, getAvailableWidth: () => 0 });
+    expect(getEffectiveColumnWidth({ id: "name", width: "50%" } as unknown as VcColumnProps)).toBe("50%");
+  });
+
+  it("returns undefined for auto columns (no declared width) before engine computes", () => {
+    const cols = [makeColumn("name")];
+    const visibleColumns = ref(cols);
+    const { getEffectiveColumnWidth } = useTableColumns({ visibleColumns, getAvailableWidth: () => 0 });
+    expect(getEffectiveColumnWidth({ id: "name" } as VcColumnProps)).toBeUndefined();
+  });
+
+  it("returns undefined for unsupported CSS units (e.g. 10rem) before engine computes", () => {
+    const cols = [makeColumn("name", { width: "10rem" })];
+    const visibleColumns = ref(cols);
+    const { getEffectiveColumnWidth } = useTableColumns({ visibleColumns, getAvailableWidth: () => 0 });
+    expect(getEffectiveColumnWidth({ id: "name", width: "10rem" } as unknown as VcColumnProps)).toBeUndefined();
+  });
+
+  it("engine output takes precedence over declared width once computed", () => {
+    const cols = [makeColumn("name", { width: 200 })];
+    const visibleColumns = ref(cols);
+    const { getEffectiveColumnWidth, engineOutput } = useTableColumns({ visibleColumns, getAvailableWidth: () => 0 });
+    engineOutput.value = { widths: { name: 250 }, fillerWidth: 0 };
+    expect(getEffectiveColumnWidth({ id: "name", width: 200 } as VcColumnProps)).toBe("250px");
+  });
+});

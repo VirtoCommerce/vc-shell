@@ -28,18 +28,13 @@ export function declarePoint(name: string, options: ExtensionPointOptions): void
 /**
  * Get reactive state for an extension point.
  * Creates an undeclared entry if it doesn't exist (plugin registering before host).
- * Warns in dev mode if the point was never declared.
+ * Registering before declaration is a supported flow: plugins register in module
+ * `install()` at app startup, while hosts declare lazily in page/component setup —
+ * so an undeclared entry here is not an error.
  */
 export function getPoint(name: string): ExtensionPointState {
   if (!registry[name]) {
     registry[name] = { declared: false, options: {}, components: [] };
-  }
-
-  if (import.meta.env.DEV && !registry[name].declared) {
-    const declared = Object.keys(registry).filter((k) => registry[k].declared);
-    console.warn(
-      `[vc-shell] Extension point "${name}" is not declared. ` + `Available: ${declared.join(", ") || "(none)"}`,
-    );
   }
 
   return registry[name];

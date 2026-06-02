@@ -282,7 +282,7 @@ jobs:
         id: npm-tag
         run: |
           VERSION=$(node -p "require('./framework/package.json').version")
-          NPM_TAG=$(node -e "const m='$VERSION'.match(/-(alpha|beta|rc)/); console.log(m?m[1]:'latest')")
+          NPM_TAG=$(node -e "const m='$VERSION'.match(/-(alpha|beta|rc|next)/); console.log(m?m[1]:'latest')")
           echo "Version: $VERSION → npm tag: $NPM_TAG"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=$NPM_TAG" >> $GITHUB_OUTPUT

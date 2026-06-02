@@ -4,7 +4,7 @@ Releases are cut from `main` via a GitHub Actions workflow. Only maintainers wit
 
 ## Workflow
 
-1. Go to **Actions** → **Release** in the repository.
+1. Go to **Actions** → **Publish** in the repository.
 2. Click **Run workflow**.
 3. Choose inputs:
    - **Release type**: `patch`, `minor`, or `major` (semver bump).
@@ -32,7 +32,7 @@ Typical paths through the workflow, assuming the repo is currently at `2.0.0-alp
 
 Work accumulates in `main` via PRs. When ready to publish a dev preview:
 
-- Actions → Release → Run workflow
+- Actions → Publish → Run workflow
 - `release-type: patch`, `prerelease: alpha`, `dry-run: false`
 - Result: `2.0.0-alpha.34`, npm dist-tag `alpha` updated. `CHANGELOG.md` unchanged.
 
@@ -48,7 +48,7 @@ Repeat as many times as needed — `alpha.35`, `alpha.36`, etc. Each run picks u
 
 When the alpha line is stable enough to invite broader testing:
 
-- Actions → Release → Run workflow
+- Actions → Publish → Run workflow
 - `release-type: patch`, `prerelease: beta`, `dry-run: false`
 - Result: `2.0.0-beta.0`, npm dist-tag `beta` created. `alpha` dist-tag stays at its last alpha version.
 
@@ -62,7 +62,7 @@ Same pattern with `prerelease: rc` → `2.0.0-rc.0`, `rc.1`, etc.
 
 When ready to ship:
 
-- Actions → Release → Run workflow
+- Actions → Publish → Run workflow
 - `release-type: minor` (or whatever final bump you want), `prerelease: none`, `dry-run: false`
 - Result: `2.0.0` (clean, no suffix), npm dist-tag `latest` updated.
 - `CHANGELOG.md` gets a new section consolidating every commit from the previous stable tag to `HEAD` — including everything that shipped in alpha/beta/rc along the way.
@@ -75,9 +75,9 @@ PR previews (automatic, per commit, dist-tag `pr-<N>`) and prereleases (manual, 
 
 |           | PR preview                        | alpha/beta/rc                            |
 | --------- | --------------------------------- | ---------------------------------------- |
-| Trigger   | Automatic on every PR push        | Manual via `Release` workflow            |
+| Trigger   | Automatic on every PR push        | Manual via `Publish` workflow            |
 | Version   | `<current>-pr<N>.<sha7>`          | `<next>-alpha.N` (counter increments)    |
-| npm tag   | `pr-<N>` (removed when PR closes) | `alpha` / `beta` / `rc` (permanent)      |
+| npm tag   | `pr-<N>` (persists; manual sweep) | `alpha` / `beta` / `rc` (permanent)      |
 | Audience  | Maintainer debug loop             | External testers / CI of downstream apps |
 | CHANGELOG | Skipped                           | Skipped                                  |
 
@@ -140,4 +140,6 @@ Use when bootstrapping or auditing.
 
 ## Auth
 
-The `Release` workflow uses `secrets.REPO_TOKEN` (bot account `vc-ci`, repository admin role) for pushing the release commit and tag to `main`. This token bypasses the branch protection ruleset via the `Repository admin` role. Publishing to npm uses `secrets.NPM_TOKEN`.
+The `release` job of the `Publish` workflow uses `secrets.REPO_TOKEN` (bot account `vc-ci`, repository admin role) for pushing the release commit and tag to `main`. This token bypasses the branch protection ruleset via the `Repository admin` role.
+
+Publishing to npm uses **Trusted Publishing (OIDC)** — no `NPM_TOKEN` is involved. The job declares `id-token: write`, installs an OIDC-capable npm, and `npm publish` mints a one-shot credential from GitHub's OIDC provider and attaches a provenance attestation. Because npm allows only one trusted publisher per package (matched by the caller workflow's filename), all publishing — PR previews and releases — lives in a single workflow file, `publish.yml`, which is the one filename each package must register as a Trusted Publisher on npmjs.com; see [`.github/workflows/README.md` → Trusted Publishing](./.github/workflows/README.md#trusted-publishing-oidc). There is no `NPM_TOKEN` in the repository at all: there is deliberately no automated dist-tag cleanup (that would need a rotating npm write token, which npm caps at a 90-day lifetime), so stale `pr-<N>` preview tags are swept manually by a maintainer when needed.

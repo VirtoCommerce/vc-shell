@@ -4,6 +4,13 @@ export interface ReleasePackageConfig {
   displayName: string;
 }
 
+// ⚠️ Adding a package here is NOT enough to publish it. Publishing uses npm
+// Trusted Publishing (OIDC), so each package must also be registered as a
+// trusted publisher on npmjs.com (Settings → Trusted Publisher → GitHub
+// Actions) with workflow filename `publish.yml`. A package that is listed here
+// but not registered will fail its first publish with a silent 404. See
+// .github/workflows/README.md → "Trusted Publishing".
+
 export const releasePackages: ReleasePackageConfig[] = [
   {
     path: "framework",

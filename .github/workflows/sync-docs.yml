@@ -1,6 +1,6 @@
 # Uses the org-wide REPO_TOKEN secret (PAT or GitHub App installation token)
 # that must have contents:write and pull-requests:write on VirtoCommerce/vc-docs.
-# Same secret is used by release.yml and storybook-ci.yml in this repo and by
+# Same secret is used by publish.yml and storybook-ci.yml in this repo and by
 # deploy.yml in vc-docs. Configure via Settings → Secrets and variables → Actions.
 name: sync-docs
 

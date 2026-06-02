@@ -1,0 +1,310 @@
+# Publish
+# Single workflow that owns ALL npm publishing. npm Trusted Publishing (OIDC)
+# allows only ONE trusted publisher per package and matches the *caller*
+# workflow's filename — so PR-preview and release publishing MUST live in the
+# same file. They cannot be split across two workflows, nor hidden behind a
+# reusable workflow (npm checks the caller, not the reusable one). Register
+# `publish.yml` as the trusted publisher for every package on npmjs.com.
+#
+# Triggers:
+#   - pull_request  → publish a `pr-<N>` preview on push
+#   - workflow_dispatch → cut a release via release-it (patch/minor/major + channel)
+#
+# Publishing is fully token-free (OIDC). `pr-<N>` dist-tags are NOT auto-removed
+# on PR close: npm has no token-less way to mutate dist-tags (dist-tag rm needs a
+# write token, which would reintroduce 90-day token rotation). Preview tags
+# accumulate harmlessly — the underlying versions stay published regardless, and
+# a maintainer can sweep stale tags manually under their own npm login if needed.
+#
+# See .github/workflows/README.md for the overview and RELEASING.md for the
+# release flow.
+
+name: Publish
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      release-type:
+        description: "Release type (patch/minor/major)"
+        type: choice
+        required: true
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
+      prerelease:
+        description: "Prerelease channel (or 'none' for stable)"
+        type: choice
+        required: true
+        options:
+          - none
+          - alpha
+          - beta
+          - rc
+        default: none
+      dry-run:
+        description: "Dry-run only (no commit / push / publish)"
+        type: boolean
+        default: false
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # PR preview — push to a same-repo PR. Publishes every managed package with a
+  # `pr-<N>` dist-tag via OIDC and posts install instructions as a PR comment.
+  # ---------------------------------------------------------------------------
+  pr-preview:
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: pr-preview-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write # mint the OIDC token for npm Trusted Publishing
+    steps:
+      - name: Checkout PR commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.14"
+          cache: "yarn"
+          cache-dependency-path: "yarn.lock"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Pin npm to OIDC-capable version
+        # Trusted Publishing (OIDC) requires npm >= 11.5.1. Pin a known-good
+        # floor so a future breaking npm major can't silently drop OIDC support.
+        run: npm install -g npm@^11.5.1
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build
+        run: yarn build
+
+      - name: Compute preview version
+        id: version
+        run: |
+          yarn tsx scripts/compute-preview-version.ts \
+            "${{ github.event.pull_request.number }}" \
+            "${{ github.event.pull_request.head.sha }}"
+
+      - name: Publish preview packages
+        # Auth is via OIDC (Trusted Publishing) — no NPM_TOKEN in scope here.
+        run: yarn publish:packages --tag "pr-${{ github.event.pull_request.number }}"
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const version = `${{ steps.version.outputs.version }}`;
+            const shortSha = "${{ github.event.pull_request.head.sha }}".slice(0, 7);
+            const marker = "<!-- pr-preview-bot -->";
+
+            const body = `${marker}
+            📦 **Preview published** for commit \`${shortSha}\`
+
+            Install the preview with dist-tag:
+            \`\`\`bash
+            npm install @vc-shell/framework@pr-${prNumber}
+            \`\`\`
+
+            Or pin to the exact commit:
+            \`\`\`bash
+            npm install @vc-shell/framework@${version}
+            \`\`\`
+
+            Published packages (dist-tag \`pr-${prNumber}\`, version \`${version}\`):
+            - @vc-shell/framework
+            - @vc-shell/api-client-generator
+            - @vc-shell/create-vc-app
+            - @vc-shell/config-generator
+            - @vc-shell/migrate
+            - @vc-shell/ts-config
+            - @vc-shell/mf-config
+            - @vc-shell/mf-host
+            - @vc-shell/mf-module
+            - @vc-shell/vc-app-skill
+            `;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const existing = comments.find((c) => c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }
+
+  # ---------------------------------------------------------------------------
+  # Fork PRs — secrets/OIDC aren't available, so just leave an explanatory note.
+  # ---------------------------------------------------------------------------
+  notify-fork:
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post fork-PR notice
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const marker = "<!-- pr-preview-fork-notice -->";
+
+            const body = `${marker}
+            ⚠️ **Preview not available for fork PRs**
+
+            This PR was opened from a fork, so preview publishing is skipped (GitHub secrets are not available in fork workflows). Maintainers can cherry-pick these changes into a branch in this repository to get an automatic preview.
+            `;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const existing = comments.find((c) => c.body && c.body.includes(marker));
+            if (existing) return;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body,
+            });
+
+  # ---------------------------------------------------------------------------
+  # Release — manual. Bumps versions, commits/tags via release-it, and publishes
+  # to npm with the matching dist-tag via OIDC (provenance auto-attached).
+  # ---------------------------------------------------------------------------
+  release:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      deployments: write
+      id-token: write # mint the OIDC token for npm Trusted Publishing
+    environment:
+      name: ${{ inputs.prerelease == 'none' && 'npm-latest' || format('npm-{0}', inputs.prerelease) }}
+      url: https://www.npmjs.com/package/@vc-shell/framework
+    env:
+      PRERELEASE_CHANNEL: ${{ inputs.prerelease }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.REPO_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.14"
+          cache: "yarn"
+          cache-dependency-path: "yarn.lock"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Pin npm to OIDC-capable version
+        # Trusted Publishing (OIDC) requires npm >= 11.5.1. Pin a known-good
+        # floor so a future breaking npm major can't silently drop OIDC support.
+        run: npm install -g npm@^11.5.1
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Preflight checks
+        run: yarn check
+
+      - name: Build
+        run: yarn build
+
+      - name: Configure git user
+        run: |
+          git config user.name "vc-ci"
+          git config user.email "ci@virtocommerce.com"
+
+      - name: Run release-it
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+        run: |
+          ARGS="${{ inputs.release-type }} --ci"
+          if [ "${{ inputs.prerelease }}" != "none" ]; then
+            ARGS="$ARGS --preRelease=${{ inputs.prerelease }}"
+          fi
+          if [ "${{ inputs.dry-run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          echo "release-it args: $ARGS"
+          yarn exec release-it $ARGS
+
+      - name: Determine npm tag
+        if: inputs.dry-run == false
+        id: npm-tag
+        run: |
+          VERSION=$(node -p "require('./framework/package.json').version")
+          NPM_TAG=$(node -e "const m='$VERSION'.match(/-(alpha|beta|rc|next)/); console.log(m?m[1]:'latest')")
+          echo "Version: $VERSION → npm tag: $NPM_TAG"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$NPM_TAG" >> $GITHUB_OUTPUT
+
+      - name: Publish packages to npm
+        if: inputs.dry-run == false
+        # Auth is via OIDC (Trusted Publishing) — no NPM_TOKEN in scope here.
+        # npm publish auto-attaches provenance attestations under OIDC.
+        run: yarn publish:packages --tag "${{ steps.npm-tag.outputs.tag }}"
+
+      - name: Verify npm dist tags
+        if: inputs.dry-run == false
+        run: |
+          PACKAGES=(
+            "@vc-shell/framework"
+            "@vc-shell/ts-config"
+            "@vc-shell/create-vc-app"
+            "@vc-shell/config-generator"
+            "@vc-shell/api-client-generator"
+          )
+          for PACKAGE in "${PACKAGES[@]}"; do
+            echo "Tags for $PACKAGE:"
+            npm dist-tag ls "$PACKAGE" 2>/dev/null || echo "Package not found in npm"
+            echo "---"
+          done

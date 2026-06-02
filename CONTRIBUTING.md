@@ -70,10 +70,10 @@ Or pin to a specific commit:
 yarn add @vc-shell/framework@<current>-pr<N>.<sha7>
 ```
 
-Previews use the exact PR commit — each push creates a new version. The `pr-<N>` dist-tag is automatically removed when the PR closes; pinned exact-version installs continue to work (versions remain in npm for archaeology).
+Previews use the exact PR commit — each push creates a new version. The `pr-<N>` dist-tag is not auto-removed when the PR closes (automated cleanup would need a rotating npm write token, which the OIDC migration deliberately removed; maintainers sweep stale tags manually); pinned exact-version installs continue to work (versions remain in npm for archaeology).
 
 **Fork PRs**: external contributor PRs from forks do not get automatic previews (GitHub secrets are unavailable to fork workflows). Maintainers can cherry-pick fork changes into a branch in this repository to trigger a preview.
 
 ## Releasing
 
-Releases are cut from `main` by maintainers via the `Release` GitHub Actions workflow. Contributors don't need to update `CHANGELOG.md` — stable releases auto-generate entries from conventional commit messages. See [`RELEASING.md`](./RELEASING.md) for details.
+Releases are cut from `main` by maintainers via the `Publish` GitHub Actions workflow (workflow_dispatch). Contributors don't need to update `CHANGELOG.md` — stable releases auto-generate entries from conventional commit messages. See [`RELEASING.md`](./RELEASING.md) for details.

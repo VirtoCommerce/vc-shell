@@ -87,7 +87,9 @@ jobs:
         run: corepack enable
 
       - name: Pin npm to OIDC-capable version
-        run: npm install -g npm@latest
+        # Trusted Publishing (OIDC) requires npm >= 11.5.1. Pin a known-good
+        # floor so a future breaking npm major can't silently drop OIDC support.
+        run: npm install -g npm@^11.5.1
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -243,7 +245,9 @@ jobs:
         run: corepack enable
 
       - name: Pin npm to OIDC-capable version
-        run: npm install -g npm@latest
+        # Trusted Publishing (OIDC) requires npm >= 11.5.1. Pin a known-good
+        # floor so a future breaking npm major can't silently drop OIDC support.
+        run: npm install -g npm@^11.5.1
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -278,7 +282,7 @@ jobs:
         id: npm-tag
         run: |
           VERSION=$(node -p "require('./framework/package.json').version")
-          NPM_TAG=$(node -e "const m='$VERSION'.match(/-(alpha|beta|rc|next)/); console.log(m?m[1]:'latest')")
+          NPM_TAG=$(node -e "const m='$VERSION'.match(/-(alpha|beta|rc)/); console.log(m?m[1]:'latest')")
           echo "Version: $VERSION → npm tag: $NPM_TAG"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=$NPM_TAG" >> $GITHUB_OUTPUT

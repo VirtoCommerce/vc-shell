@@ -17,6 +17,13 @@ import { releasePackages } from "./release-packages";
 
 const DEP_SECTIONS = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"] as const;
 
+// npm Trusted Publishing attaches sigstore provenance, whose verification
+// requires each published manifest's `repository.url` to match the source repo
+// recorded in the OIDC provenance. Inject it (with the monorepo `directory`)
+// just before publishing so every package — current or future — passes, with
+// no per-manifest drift. Must match the GitHub repo exactly.
+const REPOSITORY_URL = "git+https://github.com/VirtoCommerce/vc-shell.git";
+
 const tagIndex = process.argv.indexOf("--tag");
 const tag = tagIndex !== -1 ? process.argv[tagIndex + 1] : "latest";
 
@@ -50,12 +57,36 @@ function rewriteWorkspaceProtocol(manifest: Record<string, unknown>, version: st
   return changed;
 }
 
+function ensureRepository(manifest: Record<string, unknown>, pkgPath: string): boolean {
+  // Always set the canonical repository (with monorepo directory) so sigstore
+  // provenance verification passes. `pkg.path` is already POSIX-style.
+  const desired = { type: "git", url: REPOSITORY_URL, directory: pkgPath };
+  const current = manifest.repository;
+  if (
+    current &&
+    typeof current === "object" &&
+    (current as Record<string, unknown>).url === desired.url &&
+    (current as Record<string, unknown>).directory === desired.directory
+  ) {
+    return false;
+  }
+  manifest.repository = desired;
+  return true;
+}
+
 for (const pkg of releasePackages) {
   const dir = path.resolve(pkg.path);
   const manifestPath = path.join(dir, "package.json");
   const original = readFileSync(manifestPath, "utf8");
   const manifest = JSON.parse(original) as Record<string, unknown>;
-  const rewritten = rewriteWorkspaceProtocol(manifest, manifest.version as string);
+
+  if (manifest.private === true) {
+    throw new Error(`Refusing to publish ${pkg.packageName}: package.json marks it "private": true`);
+  }
+
+  const rewroteWorkspace = rewriteWorkspaceProtocol(manifest, manifest.version as string);
+  const repoChanged = ensureRepository(manifest, pkg.path);
+  const rewritten = rewroteWorkspace || repoChanged;
 
   if (rewritten) {
     writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
@@ -68,6 +99,11 @@ for (const pkg of releasePackages) {
       stdio: "inherit",
       shell: process.platform === "win32",
     });
+    if (result.error) {
+      // spawn itself failed (e.g. npm not on PATH) — surface the real cause
+      // instead of a misleading "signal null" from the status check below.
+      throw result.error;
+    }
     if (result.status !== 0) {
       throw new Error(`Failed to publish ${pkg.packageName} (exit ${result.status ?? "signal " + result.signal})`);
     }

@@ -350,8 +350,9 @@ onBeforeUnmount(() => {
 <style lang="scss">
 .vc-table-row-actions {
   @apply tw-absolute tw-flex tw-right-0 tw-px-2 tw-items-center tw-gap-1;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: -8px 0 8px rgba(255, 255, 255, 0.9);
+  // Theme-aware row background (NOT hardcoded white) so dark theme doesn't flash white
+  background: var(--table-row-bg-odd);
+  box-shadow: -8px 0 8px var(--table-row-bg-odd);
   z-index: var(--z-local-sticky);
 
   // Selected row: match selected background (class toggle, no timing issue)
@@ -521,8 +522,8 @@ onBeforeUnmount(() => {
 // Animation works despite v-show (display:none→flex) because keyframes define their own "from" state.
 @keyframes row-actions-bg-to-hover {
   from {
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: -8px 0 8px rgba(255, 255, 255, 0.9);
+    background: var(--table-row-bg-odd);
+    box-shadow: -8px 0 8px var(--table-row-bg-odd);
   }
   to {
     background: var(--table-row-bg-hover);

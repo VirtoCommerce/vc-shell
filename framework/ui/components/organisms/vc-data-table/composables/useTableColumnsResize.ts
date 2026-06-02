@@ -23,7 +23,7 @@ export interface UseTableColumnsResizeOptions {
  * On drag start, snapshots current weights.
  * During drag, converts pixel delta to weight delta and redistributes
  * among right neighbors. On end, commits to columnState.
- * Container resize calls recompute() after debounce, then rAF-throttled.
+ * Container resize calls recompute() immediately on the first tick, then rAF-throttled.
  */
 export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   const {
@@ -215,18 +215,19 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   // --- Container ResizeObserver: recompute on container resize ---
   //
   // Flow:
-  //   1. Initial burst of ticks during mount/blade-open animation → debounced
-  //      by 100ms to wait for layout to "settle" before the first compute.
-  //   2. After settle, subsequent ticks → throttled via requestAnimationFrame
-  //      to at most one recompute per frame. Prevents layout thrash during
-  //      continuous animations (blade open/close takes ~300ms, 18 ticks).
+  //   1. First tick (mount / blade-open): compute immediately so exact px widths
+  //      land on the first frame. The proportional CSS fallback in
+  //      getEffectiveColumnWidth makes the initial paint correct; this just locks
+  //      in exact px values without any artificial delay.
+  //   2. Subsequent ticks → rAF-throttled to at most one recompute per frame.
+  //      Prevents layout thrash during continuous animations (blade open/close
+  //      takes ~300ms, ~18 ticks).
   //
   // `recompute()` queries DOM (getBoundingClientRect) and runs the engine;
-  // calling it synchronously on every tick can cause visible jank.
+  // calling it on every tick after the first would cause visible jank.
 
   let resizeObserver: ResizeObserver | null = null;
   let settled = false;
-  let settleDebounce: ReturnType<typeof setTimeout> | undefined;
   let rafRecomputeId = 0;
 
   const scheduleRecompute = () => {
@@ -241,20 +242,17 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     if (!containerEl?.value || typeof ResizeObserver === "undefined") return;
 
     settled = false;
-    if (settleDebounce !== undefined) {
-      clearTimeout(settleDebounce);
-      settleDebounce = undefined;
-    }
 
     resizeObserver = new ResizeObserver(() => {
       if (isResizing.value) return;
       if (!settled) {
-        if (settleDebounce !== undefined) clearTimeout(settleDebounce);
-        settleDebounce = setTimeout(() => {
-          settleDebounce = undefined;
-          settled = true;
-          recompute();
-        }, 100);
+        // First observed tick: compute immediately so exact px widths land on the
+        // first frame. The proportional CSS fallback in getEffectiveColumnWidth
+        // already makes the initial paint correct; computing now just locks exact
+        // px without the previous 100ms delay. Weights are proportional, so even a
+        // mid-animation width scales correctly and refines on subsequent ticks.
+        settled = true;
+        recompute();
         return;
       }
       // Post-settle: rAF-throttle to avoid layout thrash during animations.
@@ -276,7 +274,6 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   }
 
   onBeforeUnmount(() => {
-    if (settleDebounce !== undefined) clearTimeout(settleDebounce);
     if (rafRecomputeId) cancelAnimationFrame(rafRecomputeId);
     resizeObserver?.disconnect();
     if (isResizing.value) {

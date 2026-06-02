@@ -284,3 +284,61 @@ describe("weight-based resize behavior", () => {
     expect(engineOutput.value.fillerWidth).toBe(0);
   });
 });
+
+describe("useTableColumnsResize — initial recompute timing (Approach B)", () => {
+  let roCallback: (() => void) | null = null;
+  let observeSpy: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    roCallback = null;
+    observeSpy = vi.fn();
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        constructor(cb: () => void) {
+          roCallback = cb;
+        }
+        observe = observeSpy;
+        disconnect = vi.fn();
+        unobserve = vi.fn();
+      },
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("computes immediately on the first ResizeObserver tick (no 100ms debounce)", () => {
+    const columnState = ref(makeColumnState(["a", "b"]));
+    const engineOutput = ref(makeEngineOutput({}));
+    const recompute = vi.fn();
+    const containerEl = ref<HTMLElement | null>(document.createElement("div"));
+
+    const { wrapper } = mountWithSetup(() =>
+      useTableColumnsResize({
+        columnState,
+        engineOutput,
+        recompute,
+        getAvailableWidth: () => 500,
+        minColumnWidth: 40,
+        containerEl,
+      }),
+    );
+
+    // The containerEl watch (immediate) sets up the observer synchronously.
+    expect(observeSpy).toHaveBeenCalled();
+    expect(typeof roCallback).toBe("function");
+
+    // First tick must call recompute() synchronously — without advancing any timer.
+    roCallback!();
+    expect(recompute).toHaveBeenCalledTimes(1);
+
+    // Post-settle ticks route through scheduleRecompute (rAF-throttled), so a
+    // second synchronous tick must NOT call recompute() again before the frame flushes.
+    roCallback!();
+    expect(recompute).toHaveBeenCalledTimes(1);
+
+    wrapper.unmount();
+  });
+});

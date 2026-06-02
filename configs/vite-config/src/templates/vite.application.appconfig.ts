@@ -82,7 +82,10 @@ const appVendorChunks: Array<{ chunk: string; patterns: RegExp[] }> = [
 const appBasePath = process.env.APP_BASE_PATH || "/";
 const appBasePathWithSlash = appBasePath.endsWith("/") ? appBasePath : `${appBasePath}/`;
 
-const proxyPaths = ["/api", "/connect/token", "/Modules", "/images", "/pushNotificationHub"];
+// NOTE: Vite proxy prefix matching is case-sensitive. The platform serves module
+// assets under lowercase "/modules" (MF remoteEntry.js paths from the app manifest),
+// while legacy paths use "/Modules" — both must be listed.
+const proxyPaths = ["/api", "/connect/token", "/modules", "/Modules", "/images", "/pushNotificationHub"];
 
 const commonProxyOptions = process.env.APP_PLATFORM_URL ? getProxyOptions(process.env.APP_PLATFORM_URL) : "";
 

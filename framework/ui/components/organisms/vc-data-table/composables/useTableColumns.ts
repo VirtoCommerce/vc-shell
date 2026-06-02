@@ -103,9 +103,18 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     if (col.expander) return `${SPECIAL_COLUMN_WIDTHS.expander}px`;
     if (col.rowEditor) return `${SPECIAL_COLUMN_WIDTHS.rowEditor}px`;
     const w = engineOutput.value.widths[col.id];
-    // Returning undefined signals "engine hasn't computed yet" — TableHead/TableCell
-    // use a flex:1 fallback to avoid left-pack flash during the initial render.
     if (w !== undefined && w > 0) return `${w}px`;
+    // Engine hasn't computed yet (first paint — availableWidth not measurable).
+    // Fall back to the column's DECLARED width so the first frame already matches
+    // the engine's fixed/auto layout: TableHead renders `flex: 0 0 <declared>` for
+    // fixed/percent columns and `flex: 1 1 0` for auto columns. For px/auto this is
+    // identical to the engine's result; for percent columns it can differ by a few
+    // px on the first frame (CSS resolves % against the wrapper width, which still
+    // includes special cells, vs the engine's special-cell-excluded availableWidth),
+    // corrected on the first recompute. This eliminates the equal-distribution flash.
+    const declared = parseColumnWidth(col.width, 0);
+    if (declared.type === "px") return `${declared.desiredPx}px`;
+    if (declared.type === "percent" && typeof col.width === "string") return col.width.trim();
     return undefined;
   };
 

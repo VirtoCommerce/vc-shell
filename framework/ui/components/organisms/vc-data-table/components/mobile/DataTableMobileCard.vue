@@ -7,6 +7,7 @@
       'vc-data-table-mobile-card--selected': isSelected,
       'vc-data-table-mobile-card--even': index % 2 === 1,
       'vc-data-table-mobile-card--long-press': isLongPressing,
+      'vc-data-table-mobile-card--reorderable': reorderable,
     }"
     @click="handleClick"
     @contextmenu.prevent
@@ -21,6 +22,45 @@
       class="vc-data-table-mobile-card__content"
       :style="{ transform: `translateX(${translateX}px)` }"
     >
+      <!-- Drag handle (left) -->
+      <div
+        v-if="reorderable"
+        class="vc-data-table-mobile-card__drag-handle"
+        @click.stop
+        @touchstart.stop
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <rect
+            x="2"
+            y="4"
+            width="12"
+            height="1.5"
+            rx="0.75"
+          />
+          <rect
+            x="2"
+            y="7.25"
+            width="12"
+            height="1.5"
+            rx="0.75"
+          />
+          <rect
+            x="2"
+            y="10.5"
+            width="12"
+            height="1.5"
+            rx="0.75"
+          />
+        </svg>
+      </div>
+
       <!-- Selection checkbox -->
       <div
         v-if="showCheckbox"
@@ -37,7 +77,11 @@
       <!-- Card body - Universal layout -->
       <div
         class="vc-data-table-mobile-card__body"
-        :class="{ 'vc-data-table-mobile-card__body--with-checkbox': showCheckbox }"
+        :class="{
+          'vc-data-table-mobile-card__body--with-checkbox': showCheckbox && !reorderable,
+          'vc-data-table-mobile-card__body--with-handle': reorderable && !showCheckbox,
+          'vc-data-table-mobile-card__body--with-handle-and-checkbox': reorderable && showCheckbox,
+        }"
       >
         <!-- Image (left side) -->
         <div
@@ -232,6 +276,8 @@ const props = withDefaults(
     isInlineEditing?: boolean;
     /** Whether this is a new row (for eager validation) */
     isNewRow?: boolean;
+    /** Whether row reorder is enabled (shows the drag handle) */
+    reorderable?: boolean;
   }>(),
   {
     actions: () => [],
@@ -243,6 +289,7 @@ const props = withDefaults(
     moreLabel: "More",
     actionSheetTitle: "Actions",
     cancelLabel: "Cancel",
+    reorderable: false,
   },
 );
 
@@ -619,12 +666,41 @@ onBeforeUnmount(() => {
     @apply tw-absolute tw-left-0 tw-top-0 tw-bottom-0 tw-flex tw-items-center tw-px-3 tw-z-[var(--z-local-sticky)];
   }
 
+  // When a drag handle is present, the checkbox sits to the right of it.
+  &--reorderable &__checkbox {
+    left: 2.5rem;
+  }
+
+  &__drag-handle {
+    @apply tw-absolute tw-left-0 tw-top-0 tw-bottom-0 tw-flex tw-items-center tw-justify-center tw-w-10 tw-z-[var(--z-local-sticky)];
+    color: var(--table-drag-handle-color, var(--neutrals-400));
+    cursor: grab;
+    touch-action: none;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
   &__body {
     @apply tw-flex tw-items-stretch tw-p-4 tw-gap-3 tw-min-h-[72px];
 
+    // Selection-only (non-reorderable) card: make room for the absolute checkbox.
     &--with-checkbox {
-      @apply tw-pl-12; // Space for checkbox
+      @apply tw-pl-12;
     }
+  }
+
+  // Drag-handle offsets. Scoped under the root `--reorderable` modifier so the
+  // higher specificity (0,2,0) reliably overrides the base `tw-p-4` padding
+  // shorthand — an equal-specificity body modifier can lose to the shorthand,
+  // leaving content to slide under the absolutely-positioned handle.
+  &--reorderable &__body {
+    @apply tw-pl-12; // 48px — clear the 40px handle
+  }
+
+  &--reorderable &__body--with-handle-and-checkbox {
+    @apply tw-pl-20; // 80px — 40px handle + 40px checkbox
   }
 
   &__image {

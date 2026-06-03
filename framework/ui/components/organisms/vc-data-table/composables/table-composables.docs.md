@@ -37,7 +37,7 @@ The composables follow a PrimeVue-inspired pattern: each returns reactive state 
 
 | Composable               | Purpose                                                                                                                                                                                                                                                         |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `useTableRowReorder`     | Drag-and-drop row reordering with live-swap at 50% vertical threshold. Commits via `dragend` (always fires) with `drop` as preferred path.                                                                                                                      |
+| `useTableRowReorder`     | Drag-and-drop row reordering via SortableJS (touch + mouse). Dragging is restricted to a handle selector. Commits on SortableJS `onEnd` with `{ dragIndex, dropIndex, value }`. Keeps an optimistic `reorderedItems` buffer until the parent updates `items`.   |
 | `useTableColumnsReorder` | Drag-and-drop column reordering with 50% horizontal threshold. Returns `getReorderHeadProps()` for easy binding.                                                                                                                                                |
 | `useTableColumnsResize`  | Weight-based resize: dragging adjusts the weights of the dragged column and its right neighbor without touching other columns. DOM-based px updates during drag for smooth 60fps; commits new weights to `columnState` on mouseup. No `ResizeObserver` scaling. |
 | `useTableSelectionV2`    | Row selection: single, multiple (checkbox), and row-click modes. Emits `RowSelectEvent` / `RowSelectAllEvent`.                                                                                                                                                  |
@@ -160,7 +160,7 @@ register({
 ### Contributor notes
 
 - `useDataTableState`: Guard against save-during-restore loops with the `isRestoring` flag.
-- `useTableRowReorder`: `event.preventDefault()` in `dragover` MUST be called on every event or `drop` never fires.
+- `useTableRowReorder`: powered by SortableJS with `forceFallback: true` so it works on touch. Dragging is limited to the `handle` selector. The optimistic `reorderedItems`/`pendingReorder` buffer makes Vue the source of DOM truth and hides SortableJS's raw DOM mutation until the parent updates `items`.
 - `useTableColumnsResize` applies DOM-level px changes during drag for 60fps performance, then commits final weights to `columnState` on mouseup. No `ResizeObserver` scaling is involved.
 
 <!-- internal:end -->

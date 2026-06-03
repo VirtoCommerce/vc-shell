@@ -352,4 +352,44 @@ describe("useAssetsManager", () => {
       expect(assets.value[0].name).toBe("new");
     });
   });
+
+  describe("sortOrder normalization on load", () => {
+    it("assigns sequential sortOrder to items loaded without one, preserving order", () => {
+      const assets = ref<AssetLike[]>([
+        { url: "a.jpg", name: "a" },
+        { url: "b.jpg", name: "b" },
+        { url: "c.jpg", name: "c" },
+      ]);
+      const { items } = useAssetsManager(assets, { uploadPath: () => "p" });
+
+      expect(items.value.map((i) => i.url)).toEqual(["a.jpg", "b.jpg", "c.jpg"]);
+      expect(items.value.map((i) => i.sortOrder)).toEqual([0, 1, 2]);
+    });
+
+    it("sorts by existing sortOrder and reindexes 0..n", () => {
+      const assets = ref<AssetLike[]>([
+        { url: "a.jpg", name: "a", sortOrder: 2 },
+        { url: "b.jpg", name: "b", sortOrder: 0 },
+        { url: "c.jpg", name: "c", sortOrder: 1 },
+      ]);
+      const { items } = useAssetsManager(assets, { uploadPath: () => "p" });
+
+      expect(items.value.map((i) => i.url)).toEqual(["b.jpg", "c.jpg", "a.jpg"]);
+      expect(items.value.map((i) => i.sortOrder)).toEqual([0, 1, 2]);
+    });
+
+    it("normalizes again when the source ref is replaced", async () => {
+      const assets = ref<AssetLike[]>([{ url: "a.jpg", name: "a" }]);
+      const { items } = useAssetsManager(assets, { uploadPath: () => "p" });
+
+      assets.value = [
+        { url: "x.jpg", name: "x", sortOrder: 5 },
+        { url: "y.jpg", name: "y", sortOrder: 3 },
+      ];
+      await Promise.resolve();
+
+      expect(items.value.map((i) => i.url)).toEqual(["y.jpg", "x.jpg"]);
+      expect(items.value.map((i) => i.sortOrder)).toEqual([0, 1]);
+    });
+  });
 });

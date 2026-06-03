@@ -135,6 +135,7 @@
 
         <!-- Body -->
         <DataTableBody
+          ref="desktopBodyRef"
           :items="displayItems"
           :loading="loading || bladeLoading"
           :skeleton-rows="props.skeletonRows"
@@ -171,36 +172,6 @@
           @edit-cancel="handleCellEditCancel"
           @cell-value-change="handleCellValueChange"
           @cell-click="handleCellClick"
-          @row-mousedown="
-            (e) => {
-              if (isRowReorderEnabled) onRowMouseDown(e);
-            }
-          "
-          @row-dragstart="
-            (e, item) => {
-              if (isRowReorderEnabled) onRowDragStart(e, item);
-            }
-          "
-          @row-dragover="
-            (e, item) => {
-              if (isRowReorderEnabled) onRowDragOver(e, item);
-            }
-          "
-          @row-dragleave="
-            (e) => {
-              if (isRowReorderEnabled) onRowDragLeave(e);
-            }
-          "
-          @row-dragend="
-            (e) => {
-              if (isRowReorderEnabled) onRowDragEnd(e);
-            }
-          "
-          @row-drop="
-            (e) => {
-              if (isRowReorderEnabled) onRowDrop(e);
-            }
-          "
         >
           <template #row-actions="{ item, index }">
             <TableRowActions
@@ -297,7 +268,9 @@
       </div>
 
       <DataTableMobileView
+        ref="mobileViewRef"
         :items="displayItems"
+        :reorderable="isRowReorderEnabled"
         :columns="visibleColumns"
         :selection="selection.internalSelection.value"
         :selection-mode="effectiveSelectionMode"
@@ -384,7 +357,7 @@
  * Orchestration logic (sub-composable wiring, watchers, event handlers, derived
  * computeds) is extracted into useDataTableOrchestrator for independent testability.
  */
-import { ref, computed, provide, watch, onBeforeUnmount, useSlots, type VNode } from "vue";
+import { ref, computed, provide, watch, watchEffect, onBeforeUnmount, useSlots, type VNode } from "vue";
 import { useElementSize } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import {
@@ -918,13 +891,7 @@ const {
   handleColumnDrop,
 
   // Row reorder state
-  draggedRow,
-  onRowMouseDown,
-  onRowDragStart,
-  onRowDragOver,
-  onRowDragLeave,
-  onRowDragEnd,
-  onRowDrop,
+  rowReorderListRef,
 
   // Derived computeds
   displayItems,
@@ -976,6 +943,18 @@ const {
   dataDiscoveredColumns,
   getItemKey,
   tableContainerRef,
+});
+
+// Template refs for the active view's rows container.
+// These are declared after the orchestrator so rowReorderListRef (from the
+// orchestrator) is already in scope when watchEffect runs.
+const desktopBodyRef = ref<{ listEl?: HTMLElement } | null>(null);
+const mobileViewRef = ref<{ listEl?: HTMLElement } | null>(null);
+
+// Feed the active view's rows container into the orchestrator-owned reorder composable.
+// Only one view is mounted at a time; the composable recreates SortableJS when the element changes.
+watchEffect(() => {
+  rowReorderListRef.value = isMobileView.value ? mobileViewRef.value?.listEl : desktopBodyRef.value?.listEl;
 });
 
 // Provide filter context (values returned by orchestrator, provide() here per plan rules)
@@ -1169,7 +1148,6 @@ const getRowProps = (item: T, index: number) => ({
   // Reorder
   reorderable: isRowReorderEnabled.value,
   showDragHandle: showRowDragHandle.value,
-  isDragging: draggedRow.value === index,
 
   // Expansion
   expandable: hasExpanderColumn.value && canExpand(item),
@@ -1193,7 +1171,7 @@ const getRowProps = (item: T, index: number) => ({
   getCellStyle: cols.getCellStyle,
 
   // Custom class
-  rowClass: [{ "vc-data-table__row--dragging": draggedRow.value === index }, props.rowClass?.(item)],
+  rowClass: props.rowClass?.(item),
 });
 
 // ============================================================================
@@ -1299,10 +1277,6 @@ onBeforeUnmount(() => {
     display: none !important;
   }
 
-  &__row--dragging {
-    @apply tw-opacity-50;
-  }
-
   &__expansion-row {
     @apply tw-bg-neutrals-50 tw-w-full tw-border-b tw-border-[color:var(--table-border-color)];
   }
@@ -1382,6 +1356,24 @@ onBeforeUnmount(() => {
     @apply tw-text-sm;
     color: var(--neutrals-600);
   }
+}
+
+/* SortableJS reorder feedback (applies to the dragged row wrapper / mobile card) */
+// In-list drop-slot placeholder — marks where the row/card will land, staying
+// within its reorder track. This is the primary drag feedback.
+.vc-data-table__row-reorder-ghost {
+  opacity: 0.6;
+  background: var(--primary-50) !important;
+  outline: 1px dashed var(--primary-300);
+  outline-offset: -1px;
+}
+
+// SortableJS's floating clone follows the pointer across the whole screen in
+// fallback mode. Hide it so the drag stays constrained to the list — feedback
+// comes from the placeholder above plus the live row shifting (same effect the
+// column reorder achieves with a transparent drag image).
+.vc-data-table__row-reorder-fallback {
+  opacity: 0 !important;
 }
 
 /* FLIP move animation for row reorder */

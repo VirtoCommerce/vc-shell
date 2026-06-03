@@ -136,6 +136,8 @@ The composable holds an **internal ref** (`_items`) that is the source of truth 
 
 This two-way sync avoids reactivity issues when the source is a `WritableComputed` wrapping deeply nested properties (e.g., `item.value.productData.assets`).
 
+**`sortOrder` normalization:** items entering from the source are ordered by their current `sortOrder` (items without one stay stable at the end) and reassigned a clean sequential `sortOrder` (`0..n`). This guarantees every item carries a `sortOrder` for display and reordering even when the source provides them without one. The normalization is idempotent, so it does not loop on the `_sync()` writeback.
+
 ## Types
 
 ### `AssetLike`

@@ -6,7 +6,6 @@
       'vc-table-composition__row--selected': selected || active,
       'vc-table-composition__row--clickable': isClickable,
       'vc-table-composition__row--header': variant === 'header',
-      'vc-table-composition__row--dragging': isDragging,
       'vc-table-composition__row--reorderable': reorderable,
     }"
     :tabindex="isClickable ? 0 : undefined"
@@ -15,12 +14,6 @@
     @keydown.space.prevent="handleSpacePress($event)"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
-    @mousedown="handleMouseDown"
-    @dragstart="handleDragStart"
-    @dragover="handleDragOver"
-    @dragleave="handleDragLeave"
-    @dragend="handleDragEnd"
-    @drop="handleDrop"
   >
     <!-- Drag handle / spacer (shown when showDragHandle is true, even for non-reorderable header rows) -->
     <div
@@ -133,18 +126,6 @@ const emit = defineEmits<{
   hover: [index: number];
   /** Mouse left row */
   leave: [];
-  /** Mouse down on row */
-  mousedown: [event: MouseEvent];
-  /** Drag started */
-  dragstart: [event: DragEvent];
-  /** Drag over row */
-  dragover: [event: DragEvent];
-  /** Drag left row */
-  dragleave: [event: DragEvent];
-  /** Drag ended */
-  dragend: [event: DragEvent];
-  /** Drop on row */
-  drop: [event: DragEvent];
   /** Space pressed on focusable row (for selection toggle, distinct from click) */
   "space-press": [event: KeyboardEvent];
 }>();
@@ -155,7 +136,6 @@ const fillerWidth = inject(
   computed(() => 0),
 );
 const isColumnReordering = inject(IsColumnReorderingKey, ref(false));
-const isDragging = ref(false);
 
 const isClickable = computed(() => {
   return !!props.clickable;
@@ -189,46 +169,6 @@ const handleMouseLeave = () => {
   }
   // Always emit the event
   emit("leave");
-};
-
-const handleMouseDown = (event: MouseEvent) => {
-  if (props.reorderable) {
-    emit("mousedown", event);
-  }
-};
-
-const handleDragStart = (event: DragEvent) => {
-  if (props.reorderable) {
-    isDragging.value = true;
-    emit("dragstart", event);
-  }
-};
-
-const handleDragOver = (event: DragEvent) => {
-  if (props.reorderable) {
-    event.preventDefault();
-    emit("dragover", event);
-  }
-};
-
-const handleDragLeave = (event: DragEvent) => {
-  if (props.reorderable) {
-    emit("dragleave", event);
-  }
-};
-
-const handleDragEnd = (event: DragEvent) => {
-  if (props.reorderable) {
-    isDragging.value = false;
-    emit("dragend", event);
-  }
-};
-
-const handleDrop = (event: DragEvent) => {
-  if (props.reorderable) {
-    event.preventDefault();
-    emit("drop", event);
-  }
 };
 </script>
 
@@ -265,33 +205,9 @@ const handleDrop = (event: DragEvent) => {
     }
   }
 
-  &--reorderable {
-    @apply tw-cursor-grab;
-
-    &:active {
-      @apply tw-cursor-grabbing;
-    }
-  }
-
-  &--dragging {
-    @apply tw-relative;
-    z-index: var(--z-local-sticky);
-    background-color: var(--primary-50) !important;
-    box-shadow:
-      0 4px 12px -2px rgba(0, 0, 0, 0.12),
-      0 0 0 1px var(--primary-200) !important;
-    border-radius: 6px !important;
-    transform: scale(1.01) !important;
-    cursor: grabbing !important;
-    transition:
-      box-shadow 0.15s ease,
-      transform 0.15s ease,
-      background-color 0.15s ease;
-  }
-
   &-drag-handle {
     @apply tw-flex tw-items-center tw-justify-center tw-w-6 tw-h-6 tw-flex-shrink-0 tw-rounded;
-    cursor: inherit; // Inherit from row (grab when reorderable, default otherwise)
+    cursor: grab;
     color: var(--table-drag-handle-color, var(--neutrals-400));
     transition:
       color 0.15s ease,
@@ -300,6 +216,10 @@ const handleDrop = (event: DragEvent) => {
     &:hover {
       color: var(--table-drag-handle-color-hover, var(--neutrals-600));
       background-color: var(--neutrals-100);
+    }
+
+    &:active {
+      cursor: grabbing;
     }
   }
 

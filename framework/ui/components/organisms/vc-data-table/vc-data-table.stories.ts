@@ -1206,12 +1206,14 @@ export const RowReorder: Story = {
 };
 
 /**
- * VcDataTable with row reorder via reorderableRows prop
+ * VcDataTable with row reorder via the `reorderableRows` prop alone.
  *
- * Set reorderableRows to true to enable drag-and-drop on the entire row.
- * This approach allows dragging from anywhere on the row (no drag handle column).
+ * Setting `reorderableRows` to `true` is enough to enable drag-and-drop — a grip
+ * handle appears automatically on the left of each row and is the only drag affordance
+ * (handle-only drag keeps row clicks and selection working). No dedicated `:row-reorder`
+ * VcColumn is required; that column is optional and only reserves an aligned slot.
  */
-export const RowReorderWithoutHandle: Story = {
+export const RowReorderViaProp: Story = {
   render: () => ({
     components: { VcDataTable, VcColumn },
     setup() {
@@ -1229,8 +1231,8 @@ export const RowReorderWithoutHandle: Story = {
     template: `
     <div style="height: 500px">
       <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
-        <p class="tw-font-semibold tw-mb-1">Row Reorder (Entire Row Draggable)</p>
-        <p class="tw-text-neutrals-600 tw-mb-2">Drag any part of the row to reorder. Uses reorderableRows prop instead of VcColumn.</p>
+        <p class="tw-font-semibold tw-mb-1">Row Reorder (via reorderableRows prop)</p>
+        <p class="tw-text-neutrals-600 tw-mb-2">Enabling <code>reorderableRows</code> shows a drag handle automatically — grab the handle on the left to reorder. No dedicated <code>:row-reorder</code> VcColumn needed.</p>
         <p><strong>Event Log:</strong></p>
         <ul class="tw-list-disc tw-list-inside tw-text-xs">
           <li v-for="(event, i) in eventLog" :key="i">{{ event }}</li>
@@ -1291,6 +1293,66 @@ export const RowReorderWithSelection: Story = {
     </div>
   `,
   }),
+};
+
+/**
+ * Row reorder in the mobile card view.
+ *
+ * On mobile, `reorderableRows` renders a grip handle on the left of each card.
+ * Drag the handle (touch or mouse) to reorder — card swipe actions and long-press
+ * selection keep working because dragging is handle-only. Uses the `withMobileView`
+ * decorator to activate the mobile layout.
+ *
+ * **Note:** View this story on a mobile viewport (375px) to see the card layout.
+ */
+export const MobileRowReorder: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const products = ref([...mockProducts]);
+      const eventLog = ref<string[]>([]);
+
+      const handleRowReorder = (e: { dragIndex: number; dropIndex: number; value: Product[] }) => {
+        eventLog.value.unshift(`Moved row from ${e.dragIndex} to ${e.dropIndex}`);
+        if (eventLog.value.length > 5) eventLog.value.pop();
+        products.value = e.value;
+      };
+
+      return { products, eventLog, handleRowReorder };
+    },
+    template: `
+    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+        <strong>Mobile Row Reorder</strong>
+        <span style="color: #64748b; font-size: 12px;"> (drag the left handle)</span>
+        <ul style="margin: 6px 0 0; padding-left: 16px; font-size: 11px; color: #64748b;">
+          <li v-for="(event, i) in eventLog" :key="i">{{ event }}</li>
+          <li v-if="!eventLog.length" style="list-style: none; margin-left: -16px;">No reorder events yet</li>
+        </ul>
+      </div>
+      <VcDataTable
+        :items="products"
+        :reorderable-rows="true"
+        @row-reorder="handleRowReorder"
+      >
+        <VcColumn id="name" field="name" title="Name" mobile-role="title" />
+        <VcColumn id="price" field="price" title="Price" type="money" mobile-role="field" />
+        <VcColumn id="stock" field="stock" title="Stock" type="number" mobile-role="field" />
+        <VcColumn id="status" field="status" title="Status" type="status" mobile-role="status" />
+      </VcDataTable>
+    </div>
+  `,
+  }),
+};
+MobileRowReorder.decorators = [withMobileView];
+MobileRowReorder.parameters = {
+  viewport: { defaultViewport: "mobile1" },
+  docs: {
+    description: {
+      story:
+        "Row reorder on the mobile card view. Enabling `reorderableRows` shows a left grip handle on each card; drag it to reorder. Handle-only drag preserves swipe actions and long-press selection.",
+    },
+  },
 };
 
 // ============================================================================

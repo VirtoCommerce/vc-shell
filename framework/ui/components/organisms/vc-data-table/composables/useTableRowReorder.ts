@@ -1,224 +1,128 @@
 import { ref, Ref, watch, onBeforeUnmount } from "vue";
+import Sortable from "sortablejs";
 import { TableItem } from "@ui/components/organisms/vc-data-table/types";
-import { createLogger } from "@core/utilities";
 
-const _logger = createLogger("vc-table-row-reorder");
-
-const ROW_SELECTOR = ".vc-table-row, .vc-table-composition__row";
-
-/**
- * Resolve the row HTMLElement from a drag/mouse event.
- * Works both when the event is a native DOM event (currentTarget is the row)
- * and when it is re-emitted through Vue's emit system (currentTarget is null,
- * so we fall back to event.target.closest()).
- */
-function resolveRowElement(event: Event): HTMLElement | null {
-  if (event.currentTarget instanceof HTMLElement) {
-    return event.currentTarget;
-  }
-  if (event.target instanceof HTMLElement) {
-    return event.target.closest<HTMLElement>(ROW_SELECTOR);
-  }
-  return null;
+interface UseTableRowReorderOptions<T> {
+  /** When true, dragging is disabled (SortableJS `disabled` option). */
+  disabled: Ref<boolean>;
+  /** CSS selector for the drag handle element(s). */
+  handle: string;
+  /** Called after a committed reorder. Payload matches the public `@row-reorder` contract. */
+  onReorder: (args: { dragIndex: number; dropIndex: number; value: T[] }) => void;
 }
 
 /**
- * Composable for table row reordering with drag & drop.
+ * Row reordering for VcDataTable, powered by SortableJS.
  *
- * Uses live-swap approach: rows visually swap positions during drag
- * when the cursor crosses the 50% vertical threshold of a target row.
+ * Works on both desktop rows and mobile cards (touch + mouse) because SortableJS
+ * runs in fallback mode (`forceFallback: true`). Dragging is restricted to the
+ * `handle` selector so row click, swipe and long-press gestures are preserved.
  *
- * The composable maintains an internal writable copy of items
- * so it works both with writable refs and readonly prop refs.
- * During drag, `reorderedItems` reflects the current visual order.
- *
- * Reorder is committed via `dragend` (which always fires) with `drop`
- * as a preferred path when available. This avoids relying on `drop`
- * which may not fire if the cursor is not over a row element at release.
+ * The composable keeps an internal `reorderedItems` copy. On drop it commits
+ * optimistically into that copy (so the consuming table can render the new order
+ * immediately and stay the single source of DOM truth — this also hides
+ * SortableJS's raw DOM mutation), then calls `onReorder`. When the parent later
+ * updates `items`, the watcher resyncs and clears `pendingReorder`.
  */
 export function useTableRowReorder<T extends TableItem | string>(
+  listEl: Ref<HTMLElement | undefined>,
   items: Ref<T[]>,
-  onReorder: (args: { dragIndex: number; dropIndex: number; value: T[] }) => void,
+  options: UseTableRowReorderOptions<T>,
 ) {
-  // Internal writable copy — keeps in sync with source when not dragging
   const reorderedItems = ref<T[]>([...items.value]) as Ref<T[]>;
-  let syncing = false;
+  const isDragging = ref(false);
+  // Keeps reorderedItems visible after drop until the parent updates items.
+  const pendingReorder = ref(false);
 
+  let sortableInstance: Sortable | null = null;
+
+  function destroySortable() {
+    if (sortableInstance) {
+      sortableInstance.destroy();
+      sortableInstance = null;
+    }
+  }
+
+  function createSortable(el: HTMLElement) {
+    destroySortable();
+    sortableInstance = Sortable.create(el, {
+      handle: options.handle,
+      animation: 200,
+      forceFallback: true,
+      fallbackTolerance: 3,
+      // `ghostClass` styles the in-list drop placeholder (stays within the reorder
+      // track). `fallbackClass` styles the floating clone that follows the pointer —
+      // we hide it (see CSS) so the drag can't roam the screen; feedback is the
+      // placeholder + live row shifting, matching the column reorder behaviour.
+      ghostClass: "vc-data-table__row-reorder-ghost",
+      fallbackClass: "vc-data-table__row-reorder-fallback",
+      disabled: options.disabled.value,
+      onStart: () => {
+        isDragging.value = true;
+        // Snapshot current order into the internal copy.
+        reorderedItems.value = [...items.value];
+      },
+      onEnd: (evt) => {
+        isDragging.value = false;
+        const oldIndex = evt.oldIndex;
+        const newIndex = evt.newIndex;
+        if (oldIndex == null || newIndex == null || oldIndex === newIndex) return;
+
+        // SortableJS mutates the DOM directly. Undo that move so the real DOM
+        // matches the order Vue last rendered — otherwise Vue's keyed patch and
+        // SortableJS's mutation desync and the rows snap back to their original
+        // positions (the reactive `items` update is correct, only the DOM is wrong).
+        // Vue then re-renders the new order from a known baseline. (vuedraggable pattern.)
+        const parent = evt.from;
+        const dragged = evt.item;
+        if (parent && dragged && dragged.parentElement === parent) {
+          parent.removeChild(dragged);
+          parent.insertBefore(dragged, parent.children[oldIndex] ?? null);
+        }
+
+        const arr = [...items.value];
+        const [moved] = arr.splice(oldIndex, 1);
+        arr.splice(newIndex, 0, moved);
+
+        reorderedItems.value = arr;
+        pendingReorder.value = true;
+        options.onReorder({ dragIndex: oldIndex, dropIndex: newIndex, value: [...arr] });
+      },
+    });
+  }
+
+  // Create/destroy when the list element appears/disappears (v-if / view switch).
+  watch(
+    listEl,
+    (el) => {
+      if (el) createSortable(el);
+      else destroySortable();
+    },
+    { immediate: true },
+  );
+
+  // Reactively toggle the disabled option.
+  watch(options.disabled, (val) => {
+    if (sortableInstance) sortableInstance.option("disabled", val);
+  });
+
+  // Resync internal copy with the source when not dragging.
   watch(
     items,
     (newVal) => {
-      if (!syncing && !isDragging.value) {
+      if (!isDragging.value) {
         reorderedItems.value = [...newVal];
-        // Parent updated items after reorder — stop showing stale reorderedItems
         pendingReorder.value = false;
       }
     },
     { deep: true },
   );
 
-  const draggedRow = ref<number>();
-  const isDragging = ref(false);
-  // Keeps reorderedItems visible after drop until parent updates items
-  const pendingReorder = ref(false);
-  let originalIndex: number | null = null;
-  let dragThrottleTimer: number | null = null;
-  // Prevents double-commit when both drop and dragend fire
-  let dropFired = false;
-
-  function onRowMouseDown(event: MouseEvent) {
-    const row = resolveRowElement(event);
-    if (!row) return;
-    row.draggable = true;
-  }
-
-  function onRowDragStart(event: DragEvent, item: T) {
-    isDragging.value = true;
-    dropFired = false;
-    // Snapshot current items into internal copy
-    reorderedItems.value = [...items.value];
-    const index = reorderedItems.value.indexOf(item);
-
-    draggedRow.value = index;
-    originalIndex = index;
-
-    if (event.dataTransfer) {
-      event.dataTransfer.setData("text", "row-reorder");
-      event.dataTransfer.effectAllowed = "move";
-
-      // Hide default browser ghost — live-swap provides visual feedback
-      const transparentPixel = document.createElement("img");
-      transparentPixel.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-      transparentPixel.style.position = "absolute";
-      transparentPixel.style.top = "-9999px";
-      document.body.appendChild(transparentPixel);
-      event.dataTransfer.setDragImage(transparentPixel, 0, 0);
-      setTimeout(() => transparentPixel.remove(), 0);
-    }
-  }
-
-  function onRowDragOver(event: DragEvent, item: T) {
-    if (!isDragging.value || draggedRow.value === undefined) return;
-
-    // CRITICAL: Must always preventDefault in dragover for `drop` to fire.
-    // Without this, the browser considers the element an invalid drop target.
-    event.preventDefault();
-
-    const currentIndex = reorderedItems.value.indexOf(item);
-    if (currentIndex === draggedRow.value) return;
-
-    // Throttle swaps (50ms) to avoid too frequent updates
-    if (dragThrottleTimer) return;
-    dragThrottleTimer = window.setTimeout(() => {
-      dragThrottleTimer = null;
-    }, 50);
-
-    const rowElement = resolveRowElement(event);
-    if (!rowElement) return;
-
-    // 50% vertical threshold — same logic as column reorder uses horizontally
-    const rect = rowElement.getBoundingClientRect();
-    const middleY = rect.top + rect.height / 2;
-    const mouseY = event.clientY;
-
-    const dragIndex = draggedRow.value;
-    const movingUp = dragIndex > currentIndex;
-    const movingDown = dragIndex < currentIndex;
-
-    const shouldSwap = (movingUp && mouseY < middleY) || (movingDown && mouseY > middleY);
-
-    if (shouldSwap && dragIndex !== currentIndex) {
-      // Live swap in the internal copy
-      const [movedItem] = reorderedItems.value.splice(dragIndex, 1);
-      reorderedItems.value.splice(currentIndex, 0, movedItem);
-      // Track new position of dragged item
-      draggedRow.value = currentIndex;
-    }
-  }
-
-  function onRowDragLeave(_event: DragEvent) {
-    // No border indicators to clean up — live-swap handles visuals
-  }
-
-  /**
-   * Commit the reorder if positions changed.
-   * Called from both onRowDrop and onRowDragEnd (whichever fires first).
-   */
-  function commitReorder() {
-    const didReorder = draggedRow.value !== undefined && originalIndex !== null && draggedRow.value !== originalIndex;
-
-    if (didReorder) {
-      syncing = true;
-      onReorder({
-        dragIndex: originalIndex!,
-        dropIndex: draggedRow.value!,
-        value: [...reorderedItems.value],
-      });
-      syncing = false;
-      pendingReorder.value = true;
-    }
-  }
-
-  /**
-   * dragend always fires on the source element — use as the reliable commit point.
-   * If drop already fired and committed, this is a no-op.
-   */
-  function onRowDragEnd(event: DragEvent) {
-    const rowElement = resolveRowElement(event);
-    if (rowElement) {
-      rowElement.draggable = false;
-    }
-
-    // Fallback commit: drop may not fire if cursor is not over a row at release
-    if (!dropFired) {
-      commitReorder();
-    }
-
-    dropFired = false;
-    cleanup();
-  }
-
-  /**
-   * drop fires on the target row (if cursor is over a valid drop target).
-   * Preferred commit path — marks dropFired so dragend skips the commit.
-   */
-  function onRowDrop(event: DragEvent) {
-    event.preventDefault();
-    dropFired = true;
-
-    commitReorder();
-
-    const rowElement = resolveRowElement(event);
-    if (rowElement) {
-      rowElement.draggable = false;
-    }
-
-    cleanup();
-  }
-
-  function cleanup() {
-    isDragging.value = false;
-    draggedRow.value = undefined;
-    originalIndex = null;
-    if (dragThrottleTimer) {
-      clearTimeout(dragThrottleTimer);
-      dragThrottleTimer = null;
-    }
-  }
-
-  // Cleanup: if component unmounts mid-drag, clear timer and reset state
-  onBeforeUnmount(() => {
-    cleanup();
-  });
+  onBeforeUnmount(destroySortable);
 
   return {
-    draggedRow,
-    pendingReorder,
+    isDragging,
     reorderedItems,
-    onRowMouseDown,
-    onRowDragStart,
-    onRowDragOver,
-    onRowDragLeave,
-    onRowDragEnd,
-    onRowDrop,
+    pendingReorder,
   };
 }

@@ -36,6 +36,7 @@
       <!-- Cards list -->
       <div
         v-if="items.length > 0"
+        ref="listRef"
         class="vc-data-table-mobile-view__list"
       >
         <DataTableMobileCard
@@ -43,6 +44,7 @@
           :key="getItemKey(item, index)"
           :item="item"
           :index="index"
+          :reorderable="reorderable"
           :layout="mobileLayout"
           :is-selected="isItemSelected(item)"
           :is-selectable="isItemSelectable(item)"
@@ -75,7 +77,7 @@
  * - Selection management
  * - Action handling
  */
-import { computed, unref } from "vue";
+import { computed, ref, unref } from "vue";
 import type {
   MobileSwipeAction,
   TableEmptyAction,
@@ -126,6 +128,8 @@ const props = withDefaults(
     isInlineEditing?: boolean;
     /** Set of new row indices */
     newRowIndices?: Set<number>;
+    /** Whether row reorder is enabled */
+    reorderable?: boolean;
   }>(),
   {
     selection: () => [],
@@ -143,6 +147,7 @@ const props = withDefaults(
     pullToRefreshText: undefined,
     isInlineEditing: false,
     newRowIndices: undefined,
+    reorderable: false,
   },
 );
 
@@ -230,10 +235,14 @@ function handleAction(action: MobileSwipeAction<T>, item: T, index: number) {
   emit("action", action, item, index);
 }
 
+const listRef = ref<HTMLElement | null>(null);
+const listEl = computed<HTMLElement | undefined>(() => listRef.value ?? undefined);
+
 // Expose layout status for parent component
 defineExpose({
   hasMobileColumns,
   mobileLayout,
+  listEl,
 });
 </script>
 
@@ -246,6 +255,9 @@ defineExpose({
 
 .vc-data-table-mobile-view {
   @apply tw-relative tw-min-h-[200px] tw-bg-[var(--mobile-view-bg)];
+  // Stretch to fill the scroll container (PullToRefresh → content → here) so the
+  // card list area occupies all free space rather than collapsing to content height.
+  @apply tw-flex tw-flex-col tw-flex-1 tw-min-h-0;
 
   &__empty {
     @apply tw-flex tw-items-center tw-justify-center tw-min-h-[200px] tw-p-8;

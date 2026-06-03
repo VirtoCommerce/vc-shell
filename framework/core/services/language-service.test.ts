@@ -100,14 +100,29 @@ describe("createLanguageService", () => {
   });
 
   describe("getLocaleByTag", () => {
-    it("returns native name for a valid locale tag", () => {
+    it("returns region-qualified native name for a regional locale tag", () => {
       const service = createLanguageService();
-      expect(service.getLocaleByTag("en-US")).toBe("English");
+      expect(service.getLocaleByTag("en-US")).toBe("American English");
+      expect(service.getLocaleByTag("en-GB")).toBe("British English");
+    });
+
+    it("returns distinct names for regional variants of the same language", () => {
+      const service = createLanguageService();
+      const deDE = service.getLocaleByTag("de-DE");
+      const deCH = service.getLocaleByTag("de-CH");
+      expect(deDE).toBeTruthy();
+      expect(deCH).toBeTruthy();
+      expect(deDE).not.toBe(deCH);
     });
 
     it("returns native name for two-letter code", () => {
       const service = createLanguageService();
       expect(service.getLocaleByTag("fr")).toBe("Fran\u00e7ais");
+    });
+
+    it("falls back to base language native name for an invalid regional tag", () => {
+      const service = createLanguageService();
+      expect(service.getLocaleByTag("fr-INVALID!")).toBe("Fran\u00e7ais");
     });
 
     it("returns undefined for empty string", () => {

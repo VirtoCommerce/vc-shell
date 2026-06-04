@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.7](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.6...v2.0.7) (2026-06-04)
+
+### Features
+
+- **framework:** unified table row reorder + locale, theme & extension-point fixes (#235) ([1fb1bd5](https://github.com/VirtoCommerce/vc-shell/commit/1fb1bd541afd02f57150df24969a74df735ebef4)), closes [#235](https://github.com/VirtoCommerce/vc-shell/issues/235)
+- **VCST-5131:** replace npm token with truster publisher configuration (#234) ([e9fe7fa](https://github.com/VirtoCommerce/vc-shell/commit/e9fe7fac36dbe8e9e72e23186ba88057f1af0bc6)), closes [#234](https://github.com/VirtoCommerce/vc-shell/issues/234)
+
+### Bug Fixes
+
+- **vc-data-table:** eliminate initial column width flash on first load (#232) ([f381397](https://github.com/VirtoCommerce/vc-shell/commit/f3813973c22047bd4d2ae50887a258b3e1b85aa4)), closes [#232](https://github.com/VirtoCommerce/vc-shell/issues/232)
+- **vite-config:** proxy lowercase /modules path to platform in dev server (#233) ([6d777db](https://github.com/VirtoCommerce/vc-shell/commit/6d777dbde7ff4dcf14d9bc163918c9f80d668df7)), closes [#233](https://github.com/VirtoCommerce/vc-shell/issues/233)
+
+### Code Refactoring
+
+- **ai-agent:** drop dead chat→shell protocol events (#230) ([77fa6de](https://github.com/VirtoCommerce/vc-shell/commit/77fa6de79cab411e6019f554bd381acbaaa377ce)), closes [#230](https://github.com/VirtoCommerce/vc-shell/issues/230) [virto-oz#12](https://github.com/virto-oz/issues/12)
+
 ## [2.0.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.5...v2.0.6) (2026-05-25)
 
 ### Features

@@ -130,9 +130,7 @@ Plugins can register components **before** the host declares the extension point
 2. Later, host calls `defineExtensionPoint("seller:commissions")` -- the store upgrades the entry to "declared" and preserves all previously registered components.
 3. The host's `components` computed ref reactively picks up the registered components.
 
-This means module load order does not matter. Remote modules loaded via Module Federation may install in any sequence, and extensions still work.
-
-> **Dev warning:** In development mode, if a plugin registers into a point that is never declared, a console warning appears: `Extension point "xyz" is not declared.` This helps catch typos in extension point names.
+This means module load order does not matter. Remote modules loaded via Module Federation may install in any sequence, and extensions still work. Plugins typically register in module `install()` at app startup, while hosts declare lazily when their page mounts -- an undeclared entry in between is a normal, expected state.
 
 ### Priority-Based Sorting
 
@@ -517,7 +515,7 @@ add({ id: "my-fields", component: MyFields });
 // Component is registered but never rendered because the host declared "seller:commissions"
 ```
 
-The dev-mode console warning (`Extension point "seller:comissions" is not declared`) will alert you to this. Always check the console in development.
+There is no console warning for this case -- registering before a host declares the point is a supported flow, so the framework cannot tell a typo apart from a host page that simply has not been opened yet. The most reliable protection is to avoid string literals altogether:
 
 > **Tip:** Define constants for your extension point names in a shared file:
 >

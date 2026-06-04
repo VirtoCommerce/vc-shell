@@ -641,7 +641,7 @@ When `show-all-columns` is `false`, only `image` and `name` remain visible.
 
 ## Row Reorder
 
-Enable drag-and-drop row reordering with a drag handle column:
+Enable drag-and-drop row reordering. A grip handle appears on the left of each row (desktop) or card (mobile) whenever `reorderable-rows` is enabled, and dragging is initiated from that handle. Reorder works on both desktop and touch devices (powered by SortableJS):
 
 ```vue
 <template>
@@ -678,7 +678,7 @@ function onReorder(event: { dragIndex: number; dropIndex: number; value: Product
 </script>
 ```
 
-> **Tip:** The drag handle column renders a grip icon. Without `row-reorder` on a VcColumn, the entire row is draggable (less precise, but works).
+> **Tip:** Setting `:reorderable-rows="true"` is enough — a grip handle is shown automatically and is the only drag affordance (so row clicks, mobile swipe actions, and long-press selection keep working). A dedicated `:row-reorder` VcColumn is optional and simply reserves an aligned column slot for the handle. On mobile, drag the handle to reorder cards.
 
 ---
 

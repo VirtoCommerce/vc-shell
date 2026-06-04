@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/mf-config",
   "description": "Module Federation shared dependency catalog for VC Shell",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

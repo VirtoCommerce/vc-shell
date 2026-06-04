@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.7](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.6...v2.0.7) (2026-06-04)
+
+### Bug Fixes
+
+- **vite-config:** proxy lowercase /modules path to platform in dev server (#233) ([6d777db](https://github.com/VirtoCommerce/vc-shell/commit/6d777dbde7ff4dcf14d9bc163918c9f80d668df7)), closes [#233](https://github.com/VirtoCommerce/vc-shell/issues/233)
+
 ## [2.0.6](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.5...v2.0.6) (2026-05-25)
 
 **Note:** Version bump only for package @vc-shell/config-generator

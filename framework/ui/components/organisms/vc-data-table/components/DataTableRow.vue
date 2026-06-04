@@ -34,12 +34,6 @@
       @space-press="handleRowSpacePress"
       @mouseenter="handleRowMouseEnter"
       @mouseleave="handleRowMouseLeave"
-      @mousedown="handleMouseDown"
-      @dragstart="handleDragStart"
-      @dragover="handleDragOver"
-      @dragleave="handleDragLeave"
-      @dragend="handleDragEnd"
-      @drop="handleDrop"
     >
       <!-- Selection control (only if NOT defined via VcColumn) -->
       <!-- @click.stop prevents checkbox/radio click from bubbling to row-click -->
@@ -185,8 +179,6 @@ const props = defineProps<{
   reorderable?: boolean;
   /** Whether to show drag handle icon */
   showDragHandle?: boolean;
-  /** Whether this row is currently being dragged */
-  isDragging?: boolean;
 
   // === Expansion ===
   /** Whether row expansion is enabled */
@@ -271,19 +263,6 @@ const emit = defineEmits<{
   "cell-value-change": [field: string, value: unknown];
   /** Cell clicked */
   "cell-click": [col: ColumnInstance];
-  // === Drag events (for row reorder) ===
-  /** Mouse down (for row reorder) */
-  mousedown: [event: MouseEvent];
-  /** Drag started */
-  dragstart: [event: DragEvent];
-  /** Drag over */
-  dragover: [event: DragEvent];
-  /** Drag leave */
-  dragleave: [event: DragEvent];
-  /** Drag ended */
-  dragend: [event: DragEvent];
-  /** Drop */
-  drop: [event: DragEvent];
   /** Group expansion toggled */
   "group-toggle": [event: Event];
 }>();
@@ -356,42 +335,5 @@ const handleCellClick = (col: ColumnInstance) => {
 
 const handleGroupToggle = (event: Event) => {
   emit("group-toggle", event);
-};
-
-// Drag event handlers (forwarded to parent for row reorder)
-const handleMouseDown = (event: MouseEvent) => {
-  if (props.reorderable) {
-    emit("mousedown", event);
-  }
-};
-
-const handleDragStart = (event: DragEvent) => {
-  if (props.reorderable) {
-    emit("dragstart", event);
-  }
-};
-
-const handleDragOver = (event: DragEvent) => {
-  if (props.reorderable) {
-    emit("dragover", event);
-  }
-};
-
-const handleDragLeave = (event: DragEvent) => {
-  if (props.reorderable) {
-    emit("dragleave", event);
-  }
-};
-
-const handleDragEnd = (event: DragEvent) => {
-  if (props.reorderable) {
-    emit("dragend", event);
-  }
-};
-
-const handleDrop = (event: DragEvent) => {
-  if (props.reorderable) {
-    emit("drop", event);
-  }
 };
 </script>

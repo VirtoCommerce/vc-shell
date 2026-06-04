@@ -32,6 +32,7 @@
     <!-- Rows — single unified loop for both grouped and non-grouped modes -->
     <TransitionGroup
       v-else
+      ref="rowsContainerRef"
       tag="div"
       name="vc-table-row-swap"
       class="vc-data-table__rows-container"
@@ -63,12 +64,6 @@
           (col) => handleCellClick(item, col.props.field || col.props.id, getEffectiveIndex(item, index), col)
         "
         @group-toggle="(e) => handleGroupToggle(getGroupKey(item), e)"
-        @mousedown="handleRowMouseDown"
-        @dragstart="(e) => handleRowDragStart(e, item)"
-        @dragover="(e) => handleRowDragOver(e, item)"
-        @dragleave="handleRowDragLeave"
-        @dragend="handleRowDragEnd"
-        @drop="handleRowDrop"
       >
         <template #actions>
           <slot
@@ -121,7 +116,7 @@
  * - Drag & drop for row reorder
  * - Slots for actions, expansion, group header/footer
  */
-import { computed } from "vue";
+import { computed, ref, type ComponentPublicInstance } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 import type { VcColumnProps } from "@ui/components/organisms/vc-data-table/types";
 import type { GroupedData } from "@ui/components/organisms/vc-data-table/composables/useTableRowGrouping";
@@ -151,7 +146,6 @@ export interface RowProps<T> {
   showSelectionCell: boolean;
   reorderable: boolean;
   showDragHandle: boolean;
-  isDragging: boolean;
   expandable: boolean;
   isExpanded: boolean;
   expandedIcon: string;
@@ -248,18 +242,6 @@ const emit = defineEmits<{
   "cell-value-change": [field: string, index: number, value: unknown];
   /** Cell clicked */
   "cell-click": [item: Item, field: string, index: number, column: ColumnInstance];
-  /** Row mouse down (for reorder) */
-  "row-mousedown": [event: MouseEvent];
-  /** Row drag start */
-  "row-dragstart": [event: DragEvent, item: Item];
-  /** Row drag over */
-  "row-dragover": [event: DragEvent, item: Item];
-  /** Row drag leave */
-  "row-dragleave": [event: DragEvent];
-  /** Row drag end */
-  "row-dragend": [event: DragEvent];
-  /** Row drop */
-  "row-drop": [event: DragEvent];
 }>();
 
 // ============================================================================
@@ -330,12 +312,24 @@ const handleCellValueChange = (field: string, index: number, value: unknown) =>
   emit("cell-value-change", field, index, value);
 const handleCellClick = (item: Item, field: string, index: number, column: ColumnInstance) =>
   emit("cell-click", item, field, index, column);
-const handleRowMouseDown = (e: MouseEvent) => emit("row-mousedown", e);
-const handleRowDragStart = (e: DragEvent, item: Item) => emit("row-dragstart", e, item);
-const handleRowDragOver = (e: DragEvent, item: Item) => emit("row-dragover", e, item);
-const handleRowDragLeave = (e: DragEvent) => emit("row-dragleave", e);
-const handleRowDragEnd = (e: DragEvent) => emit("row-dragend", e);
-const handleRowDrop = (e: DragEvent) => emit("row-drop", e);
+
+// ============================================================================
+// Rows container ref — exposed for SortableJS attachment
+// ============================================================================
+
+const rowsContainerRef = ref<ComponentPublicInstance | null>(null);
+const listEl = computed<HTMLElement | undefined>(() => {
+  // The rows container is a <TransitionGroup tag="div">; its rendered root <div> is `$el`.
+  return (rowsContainerRef.value?.$el as HTMLElement) ?? undefined;
+});
+
+/**
+ * Exposed for SortableJS attachment (row reorder). This is the live rows-container element.
+ * Consumers MUST `watch` it (not read once) — the `<TransitionGroup>` is recreated when the
+ * body toggles between rows/empty/loading states, so the element changes and SortableJS must
+ * be re-attached. `useTableRowReorder` already handles this via a `watch(listEl, …)`.
+ */
+defineExpose({ listEl });
 </script>
 
 <style lang="scss">

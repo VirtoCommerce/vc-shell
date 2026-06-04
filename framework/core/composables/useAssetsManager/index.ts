@@ -86,6 +86,24 @@ async function processBatched<T, R>(
   return results;
 }
 
+/**
+ * Normalizes a list's `sortOrder`: orders items by their current `sortOrder`
+ * (items without one are kept stable at the end) and reassigns a clean
+ * sequential `sortOrder` (0..n). Guarantees every item has a `sortOrder` on
+ * load — the source may arrive without it. Idempotent: normalizing an
+ * already-normalized list yields the same order and values.
+ */
+function normalizeSortOrder(list: AssetLike[]): AssetLike[] {
+  return list
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => {
+      const ao = a.item.sortOrder ?? Number.MAX_SAFE_INTEGER;
+      const bo = b.item.sortOrder ?? Number.MAX_SAFE_INTEGER;
+      return ao === bo ? a.index - b.index : ao - bo;
+    })
+    .map(({ item }, index) => ({ ...item, sortOrder: index }));
+}
+
 export function useAssetsManager(
   source: Ref<AssetLike[] | undefined | null>,
   options: UseAssetsManagerOptions,
@@ -96,13 +114,16 @@ export function useAssetsManager(
   // written back to source after every mutation.
   // This avoids reactivity issues when source is a WritableComputed
   // wrapping deeply nested properties (e.g. item.value.productData.assets).
-  const _items = ref<AssetLike[]>(source.value ?? []);
+  const _items = ref<AssetLike[]>(normalizeSortOrder(source.value ?? []));
 
-  // Sync: source → internal (e.g. when parent reloads data)
+  // Sync: source → internal (e.g. when parent reloads data). Normalize sortOrder
+  // on the way in so items always carry a clean sequential sortOrder, even when
+  // the source provides them without one. Idempotent, so it does not loop on the
+  // writeback that mutations perform via _sync().
   watch(
     () => source.value,
     (newVal) => {
-      _items.value = newVal ?? [];
+      _items.value = normalizeSortOrder(newVal ?? []);
     },
     { deep: true, immediate: true },
   );

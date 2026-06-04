@@ -311,6 +311,9 @@ defineExpose({
   // get trapped and never reach the parent overflow-y: auto element.
   @apply tw-relative;
   overflow: clip;
+  // Fill the available height of the scroll container so the mobile card view
+  // stretches to all free space instead of collapsing to content height.
+  @apply tw-flex tw-flex-col tw-flex-1 tw-min-h-0;
 
   &__indicator {
     @apply tw-absolute tw-left-0 tw-right-0 tw-top-0 tw-flex tw-items-center tw-justify-center;
@@ -341,6 +344,8 @@ defineExpose({
 
   &__content {
     @apply tw-relative tw-will-change-transform;
+    // Fill height so the wrapped mobile card view can stretch.
+    @apply tw-flex tw-flex-col tw-flex-1 tw-min-h-0;
   }
 }
 

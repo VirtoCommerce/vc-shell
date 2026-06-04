@@ -166,15 +166,11 @@ export interface VcDataTableOrchestratorReturn<T extends Record<string, unknown>
   handleColumnDrop: ReturnType<typeof useTableColumnsReorder>["handleDrop"];
 
   // Row reorder state
-  draggedRow: Ref<number | undefined>;
-  pendingReorder: Ref<boolean>;
   reorderedItems: Ref<T[]>;
-  onRowMouseDown: ReturnType<typeof useTableRowReorder>["onRowMouseDown"];
-  onRowDragStart: (event: DragEvent, item: T) => void;
-  onRowDragOver: (event: DragEvent, item: T) => void;
-  onRowDragLeave: ReturnType<typeof useTableRowReorder>["onRowDragLeave"];
-  onRowDragEnd: ReturnType<typeof useTableRowReorder>["onRowDragEnd"];
-  onRowDrop: ReturnType<typeof useTableRowReorder>["onRowDrop"];
+  pendingReorder: Ref<boolean>;
+  isRowReorderEnabled: ComputedRef<boolean>;
+  showRowDragHandle: ComputedRef<boolean>;
+  rowReorderListRef: Ref<HTMLElement | undefined>;
 
   // Derived computeds
   displayItems: ComputedRef<T[]>;
@@ -183,8 +179,6 @@ export interface VcDataTableOrchestratorReturn<T extends Record<string, unknown>
   selectionColumn: ComputedRef<ColumnInstance | null>;
   hasSelectionColumn: ComputedRef<boolean>;
   isSelectionViaColumn: ComputedRef<boolean>;
-  isRowReorderEnabled: ComputedRef<boolean>;
-  showRowDragHandle: ComputedRef<boolean>;
   expanderColumn: ComputedRef<ColumnInstance | null>;
   hasExpanderColumn: ComputedRef<boolean>;
   computedVariant: ComputedRef<"striped" | "bordered" | "default">;
@@ -236,6 +230,9 @@ export interface VcDataTableOrchestratorReturn<T extends Record<string, unknown>
  * the component and returns all the reactive state and handlers the template
  * needs. The component itself retains provide() calls, DOM refs, and UI state.
  */
+/** SortableJS `handle` selector matching the desktop row and mobile card drag handles. */
+const ROW_REORDER_HANDLE_SELECTOR = ".vc-table-composition__row-drag-handle, .vc-data-table-mobile-card__drag-handle";
+
 export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   options: VcDataTableOrchestratorOptions<T>,
 ): VcDataTableOrchestratorReturn<T> {
@@ -578,19 +575,17 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   });
 
   const isRowReorderEnabled = computed(() => props.reorderableRows || rowReorderColumn.value !== null);
-  const showRowDragHandle = computed(() => rowReorderColumn.value !== null);
+  // Handle is shown whenever reorder is enabled (the handle is the only drag affordance now).
+  const showRowDragHandle = computed(() => isRowReorderEnabled.value);
 
-  const {
-    draggedRow,
-    pendingReorder,
-    reorderedItems,
-    onRowMouseDown,
-    onRowDragStart,
-    onRowDragOver,
-    onRowDragLeave,
-    onRowDragEnd,
-    onRowDrop,
-  } = useTableRowReorder(toRef(props, "items") as Ref<T[]>, (event) => emit("row-reorder", event));
+  // Element of the active view's rows container; bound by VcDataTable.
+  const rowReorderListRef = ref<HTMLElement>();
+
+  const { reorderedItems, pendingReorder } = useTableRowReorder(rowReorderListRef, toRef(props, "items") as Ref<T[]>, {
+    disabled: computed(() => !isRowReorderEnabled.value),
+    handle: ROW_REORDER_HANDLE_SELECTOR,
+    onReorder: (event) => emit("row-reorder", event),
+  });
 
   // ============================================================================
   // Expander Column Detection
@@ -721,7 +716,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   // Only row-reorder dragging changes display order locally
   const displayItems = computed<T[]>(() => {
     // During drag or waiting for parent to update items after drop
-    if ((draggedRow.value !== undefined || pendingReorder.value) && isRowReorderEnabled.value) {
+    if (pendingReorder.value && isRowReorderEnabled.value) {
       return [...(reorderedItems.value as T[])];
     }
 
@@ -1032,16 +1027,12 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     handleColumnDragOver,
     handleColumnDrop,
 
-    // Row reorder state
-    draggedRow,
-    pendingReorder,
+    // Row reorder
     reorderedItems: reorderedItems as Ref<T[]>,
-    onRowMouseDown,
-    onRowDragStart: onRowDragStart as (event: DragEvent, item: T) => void,
-    onRowDragOver: onRowDragOver as (event: DragEvent, item: T) => void,
-    onRowDragLeave,
-    onRowDragEnd,
-    onRowDrop,
+    pendingReorder,
+    isRowReorderEnabled,
+    showRowDragHandle,
+    rowReorderListRef,
 
     // Derived computeds
     displayItems,
@@ -1050,8 +1041,6 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     selectionColumn,
     hasSelectionColumn,
     isSelectionViaColumn,
-    isRowReorderEnabled,
-    showRowDragHandle,
     expanderColumn,
     hasExpanderColumn,
     computedVariant,

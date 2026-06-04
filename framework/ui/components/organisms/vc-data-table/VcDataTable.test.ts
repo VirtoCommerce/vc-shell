@@ -180,15 +180,9 @@ function buildOrchestratorMock() {
     handleColumnDrop: vi.fn(),
 
     // Row reorder state
-    draggedRow: ref(null),
-    pendingReorder: ref(false),
     reorderedItems: ref([]),
-    onRowMouseDown: vi.fn(),
-    onRowDragStart: vi.fn(),
-    onRowDragOver: vi.fn(),
-    onRowDragLeave: vi.fn(),
-    onRowDragEnd: vi.fn(),
-    onRowDrop: vi.fn(),
+    pendingReorder: ref(false),
+    rowReorderListRef: ref(undefined),
 
     // Derived computeds
     displayItems: computed(() => []),

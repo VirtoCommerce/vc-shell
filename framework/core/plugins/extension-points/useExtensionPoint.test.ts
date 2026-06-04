@@ -1,13 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { defineComponent } from "vue";
 import { useExtensionPoint } from "./useExtensionPoint";
 import { getPoint, getRegistry } from "./store";
 import type { ExtensionComponent } from "./types";
 
-// Suppress dev warnings from getPoint about undeclared extension points
 beforeEach(() => {
-  vi.spyOn(console, "warn").mockImplementation(() => {});
-
   // Clear registry between tests by deleting all keys
   const registry = getRegistry();
   for (const key of Object.keys(registry)) {

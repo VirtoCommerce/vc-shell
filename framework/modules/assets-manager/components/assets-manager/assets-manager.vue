@@ -34,6 +34,7 @@
           :title="t('ASSETS_MANAGER.TABLE.HEADER.IMAGE')"
           width="10%"
           always-visible
+          type="image"
         >
           <template #body="{ data }">
             <div class="tw-flex tw-items-center tw-justify-center">

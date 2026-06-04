@@ -68,6 +68,20 @@ export function createLanguageService(): ILanguageService {
 
     const twoLetterLanguageName = localeTag.split("-")[0];
 
+    // For regional tags (e.g. "en-US", "de-CH") use Intl.DisplayNames to produce
+    // region-qualified native names ("American English", "British English").
+    // Otherwise tags differing only by region collapse into identical labels.
+    if (localeTag.includes("-")) {
+      try {
+        const displayName = new Intl.DisplayNames([localeTag], { type: "language" }).of(localeTag);
+        if (displayName && displayName !== localeTag) {
+          return displayName;
+        }
+      } catch {
+        // Invalid locale tag — fall back to the base language name below
+      }
+    }
+
     return ISO6391.getNativeName(twoLetterLanguageName);
   }
 

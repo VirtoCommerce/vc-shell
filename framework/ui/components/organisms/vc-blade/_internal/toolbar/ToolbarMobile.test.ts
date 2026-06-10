@@ -134,12 +134,18 @@ describe("ToolbarMobile", () => {
     expect(firstAction.attributes("disabled")).toBeDefined();
   });
 
-  it("applies primary icon class to first action item", async () => {
+  it("applies the unified action icon class to all items (no per-item primary modifier)", async () => {
     const wrapper = mountToolbar([createToolbarItem({ id: "1" }), createToolbarItem({ id: "2" })]);
 
     await wrapper.find(".vc-blade-toolbar-mobile__pill-more").trigger("click");
-    const firstIcon = wrapper.findAll(".vc-blade-toolbar-mobile__action-icon")[0];
-    expect(firstIcon.classes()).toContain("vc-blade-toolbar-mobile__action-icon--primary");
+    const icons = wrapper.findAll(".vc-blade-toolbar-mobile__action-icon");
+    expect(icons.length).toBeGreaterThan(0);
+    // Expanded toolbar unifies action colors: every icon uses the base class and
+    // the former `--primary` modifier (previously on the first item) is gone.
+    icons.forEach((icon) => {
+      expect(icon.classes()).toContain("vc-blade-toolbar-mobile__action-icon");
+      expect(icon.classes()).not.toContain("vc-blade-toolbar-mobile__action-icon--primary");
+    });
   });
 
   it("resolves function-based icon", () => {

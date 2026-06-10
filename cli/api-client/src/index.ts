@@ -29,7 +29,6 @@ interface ApiClientArgs {
  */
 interface ResolvedConfig {
   platformUrl: string;
-  platformModules: string;
   platformModulesList: string[];
   apiClientDirectory: string;
   packageName?: string;
@@ -855,7 +854,6 @@ function parseAndValidateArgs(): ResolvedConfig {
     process.exit(1);
   }
   const platformModulesList = moduleParse.modules;
-  const platformModules = platformModulesList.join(",");
 
   console.log(
     "api-client-generator %s Parsed %d module(s): %s",
@@ -888,7 +886,6 @@ function parseAndValidateArgs(): ResolvedConfig {
 
   return {
     platformUrl,
-    platformModules,
     platformModulesList,
     apiClientDirectory,
     packageName,

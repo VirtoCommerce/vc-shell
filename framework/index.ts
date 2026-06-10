@@ -28,6 +28,7 @@ import { registerNotificationBackend } from "@shell/_internal/notifications/regi
 import { createBladeRegistry, BladeRegistryKey, IBladeRegistryInstance } from "@core/composables/useBladeRegistry";
 
 import * as coreComposables from "@core/composables";
+import { logFrameworkBuildInfo } from "@core/utilities/buildInfo";
 import "normalize.css";
 import "./assets/styles/fonts.scss";
 import "./assets/styles/index.scss";
@@ -300,6 +301,9 @@ function setupRouterGuards(router: Router) {
 
 export default {
   install(app: App, args: FrameworkInstallArgs): void {
+    // Print framework version banner for debugging (see core/utilities/buildInfo.ts)
+    logFrameworkBuildInfo();
+
     // Register base theme
     coreComposables.useTheme().register([{ key: "light", localizationKey: "core.themes.light" }]);
 

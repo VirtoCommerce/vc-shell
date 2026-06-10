@@ -26,10 +26,11 @@ describe("logFrameworkBuildInfo", () => {
     });
 
     expect(spy).toHaveBeenCalledTimes(1);
-    const message = spy.mock.calls[0].join(" ");
-    expect(message).toContain("@vc-shell/framework");
-    expect(message).toContain("2.0.7");
-    expect(message).toContain("2026-06-09T10:00:00.000Z");
-    expect(message).toContain("a1b2c3d");
+    expect(spy.mock.calls[0]).toHaveLength(3);
+    const formatString = spy.mock.calls[0][0] as string;
+    expect(formatString).toContain("@vc-shell/framework");
+    expect(formatString).toContain("2.0.7");
+    expect(formatString).toContain("2026-06-09T10:00:00.000Z");
+    expect(formatString).toContain("a1b2c3d");
   });
 });

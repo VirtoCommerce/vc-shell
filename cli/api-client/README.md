@@ -56,19 +56,22 @@ Add the dependencies to your project's **package.json**:
 
    The options are listed in the table below:
 
-   | Options                      | Description                                                                                                                                                                                                                          | Example                                                                  |
-   | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-   | `--APP_PLATFORM_MODULES`     | Platform modules to generate API client.<br>{==string[]==} <br> Supports spaces in module lists: `[Module1, Module2]` or `[Module1,Module2]`<br>Customize the `--APP_PLATFORM_MODULES` list<br>to match your project's requirements. | `--APP_PLATFORM_MODULES='[VirtoCommerce.Catalog, VirtoCommerce.Orders]'` |
-   | `--APP_API_CLIENT_DIRECTORY` | Output directory for generated API clients. <br>{==string==}                                                                                                                                                                         | `--APP_API_CLIENT_DIRECTORY=./src/api_client/`                           |
-   | `--APP_PLATFORM_URL`         | Platform URL to obtain client API configs. <br>{==string==}                                                                                                                                                                          | `--APP_PLATFORM_URL=https://vcmp-dev.govirto.com/`                       |
-   | `--APP_TYPE_STYLE`           | Sets the type style for generated DTOs. Can be 'Class' or 'Interface'.<br>{==string==}                                                                                                                                               | `--APP_TYPE_STYLE=Interface`                                             |
-   | `--VERBOSE`                  | Enable verbose logging. <br>{==boolean==}                                                                                                                                                                                            | `--VERBOSE=true`                                                         |
+   | Options                      | Description                                                                                                                                                                                                                                                                   | Example                                                                  |
+   | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+   | `--APP_PLATFORM_MODULES`     | Platform modules to generate API client.<br>{==string[]==} <br> **Always quote the value** so the shell does not split it: `'[Module1, Module2]'`. Spaces inside quotes are fine. The generator validates the value and fails fast with a quoting hint if it looks truncated. | `--APP_PLATFORM_MODULES='[VirtoCommerce.Catalog, VirtoCommerce.Orders]'` |
+   | `--APP_API_CLIENT_DIRECTORY` | Output directory for generated API clients. <br>{==string==}                                                                                                                                                                                                                  | `--APP_API_CLIENT_DIRECTORY=./src/api_client/`                           |
+   | `--APP_PLATFORM_URL`         | Platform URL to obtain client API configs. <br>{==string==}                                                                                                                                                                                                                   | `--APP_PLATFORM_URL=https://vcmp-dev.govirto.com/`                       |
+   | `--APP_TYPE_STYLE`           | Sets the type style for generated DTOs. Can be 'Class' or 'Interface'.<br>{==string==}                                                                                                                                                                                        | `--APP_TYPE_STYLE=Interface`                                             |
+   | `--VERBOSE`                  | Enable verbose logging. <br>{==boolean==}                                                                                                                                                                                                                                     | `--VERBOSE=true`                                                         |
 
    !!! note
    For the `--APP_TYPE_STYLE` parameter, use **exactly** `"Class"` or `"Interface"` (case-sensitive). Any other value will cause an error.
 
    !!! tip
    Use `--APP_TYPE_STYLE=Interface` for better TypeScript integration and smaller bundle sizes. Use `--APP_TYPE_STYLE=Class` when you need runtime type checking or class-specific features.
+
+   !!! warning
+   When passing `--APP_PLATFORM_MODULES` on the command line, wrap the value in quotes. Without quotes, the shell splits `[A, B]` on the space and only the first module is seen — the generator now detects this and exits with an error instead of silently generating a partial client.
 
 3. Configure Platform URL and other settings in your project's **.env** file:
 

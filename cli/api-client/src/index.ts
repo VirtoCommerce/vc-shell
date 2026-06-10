@@ -29,7 +29,7 @@ interface ApiClientArgs {
  */
 interface ResolvedConfig {
   platformUrl: string;
-  platformModules: string;
+  platformModulesList: string[];
   apiClientDirectory: string;
   packageName?: string;
   packageVersion?: string;
@@ -674,6 +674,81 @@ function detectExistingTypeStyle(apiClientDirectory: string): "Class" | "Interfa
 }
 
 /**
+ * Discriminated result of module-list parsing.
+ */
+type PlatformModulesParseResult = { ok: true; modules: string[] } | { ok: false; message: string; hint?: string };
+
+/**
+ * Normalizes and validates the raw APP_PLATFORM_MODULES value into a clean module list.
+ *
+ * Handles three otherwise-silent or cryptic failure modes:
+ * - Repeated flag (`--APP_PLATFORM_MODULES=A --APP_PLATFORM_MODULES=B`) → mri yields an
+ *   array → joined into one comma-separated list (previously threw a TypeError).
+ * - Unquoted value with spaces (`[A, B]`) → the shell splits it and mri parks the tail in
+ *   positional args (`strayArgs`) → detected and reported with a quoting hint.
+ * - Unbalanced brackets (truncated value) → detected and reported.
+ *
+ * Returns a discriminated result; the caller is responsible for printing and exiting.
+ *
+ * @param rawValue   value from process.env (string) or mri (string | string[])
+ * @param strayArgs  mri positional args (`parsedArgs._`)
+ * @param fromEnv    whether the value came from process.env (stray-arg check is skipped then)
+ */
+function parsePlatformModules(
+  rawValue: string | string[] | undefined,
+  strayArgs: string[],
+  fromEnv: boolean,
+): PlatformModulesParseResult {
+  // Repeated flag → mri yields an array. Join into a single comma-separated string.
+  const raw = Array.isArray(rawValue) ? rawValue.join(",") : (rawValue ?? "");
+
+  const openCount = (raw.match(/\[/g) ?? []).length;
+  const closeCount = (raw.match(/\]/g) ?? []).length;
+  const hasUnbalancedBrackets = openCount !== closeCount;
+
+  // Unquoted value with spaces: the shell split it and mri parked the tail in positional
+  // args. Only meaningful for CLI input (values from .env arrive intact as one string), and
+  // only when the value itself looks partial — unbalanced brackets or a trailing comma —
+  // so an unrelated positional argument alongside a complete value does not false-positive.
+  const looksPartial = hasUnbalancedBrackets || raw.trim().endsWith(",");
+  if (!fromEnv && strayArgs.length > 0 && looksPartial) {
+    const reconstructed = [raw, ...strayArgs].join(" ");
+    return {
+      ok: false,
+      message: `APP_PLATFORM_MODULES looks truncated — unexpected extra arguments were received: ${strayArgs.join(
+        ", ",
+      )}`,
+      hint: `This usually means the value was not quoted and the shell split it on spaces.\nWrap the whole value in quotes, e.g.\n  --APP_PLATFORM_MODULES='${reconstructed}'`,
+    };
+  }
+
+  // Unbalanced brackets → the value was truncated (typically missing quotes).
+  if (hasUnbalancedBrackets) {
+    return {
+      ok: false,
+      message: `APP_PLATFORM_MODULES has unbalanced brackets: ${raw}`,
+      hint: `The value appears truncated. Wrap it in quotes, e.g.\n  --APP_PLATFORM_MODULES='[VirtoCommerce.Catalog, VirtoCommerce.Orders]'`,
+    };
+  }
+
+  const modules = raw
+    .replace(/[[\]]/g, "") // Remove brackets
+    .split(",") // Split by comma
+    .map((module) => module.trim()) // Trim whitespace from each module
+    .filter((module) => module.length > 0); // Remove empty entries
+
+  if (modules.length === 0) {
+    return {
+      ok: false,
+      message: `APP_PLATFORM_MODULES did not contain any module names: ${raw}`,
+      hint: `Provide at least one module, e.g.\n  --APP_PLATFORM_MODULES='[VirtoCommerce.Catalog]'`,
+    };
+  }
+
+  return { ok: true, modules };
+}
+
+/**
  * Parses and validates CLI arguments and environment variables into a resolved configuration.
  */
 function parseAndValidateArgs(): ResolvedConfig {
@@ -688,7 +763,11 @@ function parseAndValidateArgs(): ResolvedConfig {
     : rawPlatformUrl
       ? `${rawPlatformUrl}/`
       : rawPlatformUrl;
-  const platformModules = process.env.APP_PLATFORM_MODULES ?? parsedArgs.APP_PLATFORM_MODULES;
+  const platformModulesFromEnv = process.env.APP_PLATFORM_MODULES !== undefined;
+  const rawPlatformModules: string | string[] | undefined = platformModulesFromEnv
+    ? process.env.APP_PLATFORM_MODULES
+    : (parsedArgs.APP_PLATFORM_MODULES as string | string[] | undefined);
+  const strayArgs = ((parsedArgs as unknown as { _?: string[] })._ ?? []).map(String);
   const apiClientDirectory = process.env.APP_API_CLIENT_DIRECTORY ?? parsedArgs.APP_API_CLIENT_DIRECTORY;
   const packageName = process.env.APP_PACKAGE_NAME ?? parsedArgs.APP_PACKAGE_NAME;
   const packageVersion = process.env.APP_PACKAGE_VERSION ?? parsedArgs.APP_PACKAGE_VERSION;
@@ -758,13 +837,30 @@ function parseAndValidateArgs(): ResolvedConfig {
     process.exit(1);
   }
 
-  if (!platformModules) {
+  if (rawPlatformModules === undefined || rawPlatformModules === "") {
     console.error(
       "api-client-generator %s APP_PLATFORM_MODULES is required in .env config or as api-client-generator argument",
       chalk.red("error"),
     );
     process.exit(1);
   }
+
+  const moduleParse = parsePlatformModules(rawPlatformModules, strayArgs, platformModulesFromEnv);
+  if (!moduleParse.ok) {
+    console.error("api-client-generator %s %s", chalk.red("error"), moduleParse.message);
+    if (moduleParse.hint) {
+      console.error(chalk.blue(moduleParse.hint));
+    }
+    process.exit(1);
+  }
+  const platformModulesList = moduleParse.modules;
+
+  console.log(
+    "api-client-generator %s Parsed %d module(s): %s",
+    chalk.blue("info"),
+    platformModulesList.length,
+    chalk.whiteBright(platformModulesList.join(", ")),
+  );
 
   if (!apiClientDirectory) {
     console.error(
@@ -790,7 +886,7 @@ function parseAndValidateArgs(): ResolvedConfig {
 
   return {
     platformUrl,
-    platformModules,
+    platformModulesList,
     apiClientDirectory,
     packageName,
     packageVersion,
@@ -836,12 +932,8 @@ function generateClients(config: ResolvedConfig): string[] {
     }
   }
 
-  // Parse platform modules with improved space handling
-  const platformModulesList = config.platformModules
-    .replace(/[[\]]/g, "") // Remove brackets
-    .split(",") // Split by comma
-    .map((module) => module.trim()) // Trim whitespace from each module
-    .filter((module) => module.length > 0); // Remove empty entries
+  // Module list was parsed and validated in parseAndValidateArgs.
+  const platformModulesList = config.platformModulesList;
 
   const generatedFiles: string[] = [];
 

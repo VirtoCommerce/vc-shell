@@ -37,7 +37,6 @@
         </span>
         <span
           class="vc-blade-toolbar-mobile__action-icon"
-          :class="{ 'vc-blade-toolbar-mobile__action-icon--primary': index === 0 }"
           aria-hidden="true"
         >
           <VcIcon
@@ -264,12 +263,8 @@ $touch-min: 44px;
 
   &__action-icon {
     @apply tw-flex tw-items-center tw-justify-center tw-w-9 tw-h-9 tw-rounded-full tw-shrink-0;
-    background: var(--blade-toolbar-circle-button-bg-color);
+    background: var(--blade-toolbar-circle-button-main-bg-color);
     color: var(--blade-toolbar-circle-button-text-color);
-
-    &--primary {
-      background: var(--blade-toolbar-circle-button-main-bg-color);
-    }
   }
 
   // ── Close FAB (expanded state) ────────────────────────────────────────

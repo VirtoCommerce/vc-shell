@@ -1,6 +1,8 @@
 import vue from "@vitejs/plugin-vue";
 import { getLibraryConfiguration } from "@vc-shell/config-generator";
 import * as path from "node:path";
+import * as fs from "node:fs";
+import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { normalizePath } from "vite";
 import { checker } from "vite-plugin-checker";
@@ -10,6 +12,15 @@ import { viteBladePlugin } from "@vc-shell/config-generator";
 const mode = process.env.APP_ENV as string;
 const frameworkRoot = path.dirname(fileURLToPath(import.meta.url));
 const normalizedFrameworkRoot = normalizePath(frameworkRoot);
+const pkg = JSON.parse(fs.readFileSync(path.resolve(frameworkRoot, "package.json"), "utf-8"));
+
+function getGitHash(): string {
+  try {
+    return execSync("git rev-parse --short HEAD", { cwd: frameworkRoot }).toString().trim();
+  } catch {
+    return "unknown";
+  }
+}
 const frameworkAliases = {
   "@framework": normalizedFrameworkRoot,
   "@core": `${normalizedFrameworkRoot}/core`,
@@ -98,6 +109,11 @@ export default getLibraryConfiguration({
         if (defaultHandler) defaultHandler(warning);
       },
     },
+  },
+  define: {
+    __VC_SHELL_VERSION__: JSON.stringify(pkg.version),
+    __VC_SHELL_BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+    __VC_SHELL_GIT_HASH__: JSON.stringify(getGitHash()),
   },
   envPrefix: "APP_",
 });

@@ -703,9 +703,16 @@ function parsePlatformModules(
   // Repeated flag → mri yields an array. Join into a single comma-separated string.
   const raw = Array.isArray(rawValue) ? rawValue.join(",") : (rawValue ?? "");
 
+  const openCount = (raw.match(/\[/g) ?? []).length;
+  const closeCount = (raw.match(/\]/g) ?? []).length;
+  const hasUnbalancedBrackets = openCount !== closeCount;
+
   // Unquoted value with spaces: the shell split it and mri parked the tail in positional
-  // args. Only meaningful for CLI input — values from .env arrive intact as one string.
-  if (!fromEnv && strayArgs.length > 0) {
+  // args. Only meaningful for CLI input (values from .env arrive intact as one string), and
+  // only when the value itself looks partial — unbalanced brackets or a trailing comma —
+  // so an unrelated positional argument alongside a complete value does not false-positive.
+  const looksPartial = hasUnbalancedBrackets || raw.trim().endsWith(",");
+  if (!fromEnv && strayArgs.length > 0 && looksPartial) {
     const reconstructed = [raw, ...strayArgs].join(" ");
     return {
       ok: false,
@@ -717,9 +724,7 @@ function parsePlatformModules(
   }
 
   // Unbalanced brackets → the value was truncated (typically missing quotes).
-  const openCount = (raw.match(/\[/g) ?? []).length;
-  const closeCount = (raw.match(/\]/g) ?? []).length;
-  if (openCount !== closeCount) {
+  if (hasUnbalancedBrackets) {
     return {
       ok: false,
       message: `APP_PLATFORM_MODULES has unbalanced brackets: ${raw}`,

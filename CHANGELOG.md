@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.8](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.7...v2.0.8) (2026-06-11)
+
+### Features
+
+- **api-client:** robust APP_PLATFORM_MODULES parsing + bundled framework/vc-blade fixes (#236) ([26ce8ec](https://github.com/VirtoCommerce/vc-shell/commit/26ce8ec9726382f08f19b3f2af5589e221a370c3)), closes [#236](https://github.com/VirtoCommerce/vc-shell/issues/236)
+- **framework:** log version, build date and git hash on startup (#237) ([6263714](https://github.com/VirtoCommerce/vc-shell/commit/62637147abbd68970c0f764ab3407f6d950e51de)), closes [#237](https://github.com/VirtoCommerce/vc-shell/issues/237)
+
 ## [2.0.7](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.6...v2.0.7) (2026-06-04)
 
 ### Features

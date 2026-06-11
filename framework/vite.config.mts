@@ -1,7 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import { getLibraryConfiguration } from "@vc-shell/config-generator";
 import * as path from "node:path";
-import * as fs from "node:fs";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { normalizePath } from "vite";
@@ -12,7 +11,6 @@ import { viteBladePlugin } from "@vc-shell/config-generator";
 const mode = process.env.APP_ENV as string;
 const frameworkRoot = path.dirname(fileURLToPath(import.meta.url));
 const normalizedFrameworkRoot = normalizePath(frameworkRoot);
-const pkg = JSON.parse(fs.readFileSync(path.resolve(frameworkRoot, "package.json"), "utf-8"));
 
 function getGitHash(): string {
   try {
@@ -111,7 +109,8 @@ export default getLibraryConfiguration({
     },
   },
   define: {
-    __VC_SHELL_VERSION__: JSON.stringify(pkg.version),
+    // version is read at runtime from package.json (see core/utilities/buildInfo.ts);
+    // only build-time-only facts are injected here.
     __VC_SHELL_BUILD_DATE__: JSON.stringify(new Date().toISOString()),
     __VC_SHELL_GIT_HASH__: JSON.stringify(getGitHash()),
   },

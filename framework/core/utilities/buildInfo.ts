@@ -1,11 +1,14 @@
+import { version as frameworkVersion } from "../../package.json";
+
 /**
- * Build-time constants injected by Vite `define` in `framework/vite.config.mts`
- * during `vite build` of the framework. They are frozen at framework publish
- * time, so a consuming app reads the framework version it was built against.
+ * `version` is read statically from the framework's `package.json`, so it is
+ * always accurate — both in a built/published framework AND when the framework
+ * is consumed from source (Storybook, dev server, Vitest).
  *
- * In dev mode (framework source consumed via alias, Storybook, or Vitest) the
- * `define` is not applied. `typeof <undeclared>` returns `"undefined"` without
- * throwing a ReferenceError, so the guard yields the "dev" fallback.
+ * `buildDate` and `gitHash` are injected by Vite `define` in
+ * `framework/vite.config.mts` during `vite build` of the framework. In source
+ * contexts the `define` is not applied; `typeof <undeclared>` returns
+ * `"undefined"` without throwing a ReferenceError, so they fall back to "dev".
  */
 export interface IFrameworkBuildInfo {
   version: string;
@@ -15,7 +18,7 @@ export interface IFrameworkBuildInfo {
 
 export function getFrameworkBuildInfo(): IFrameworkBuildInfo {
   return {
-    version: typeof __VC_SHELL_VERSION__ !== "undefined" ? __VC_SHELL_VERSION__ : "dev",
+    version: frameworkVersion,
     buildDate: typeof __VC_SHELL_BUILD_DATE__ !== "undefined" ? __VC_SHELL_BUILD_DATE__ : "dev",
     gitHash: typeof __VC_SHELL_GIT_HASH__ !== "undefined" ? __VC_SHELL_GIT_HASH__ : "dev",
   };

@@ -1294,9 +1294,8 @@ onBeforeUnmount(() => {
     @apply tw-flex tw-items-center tw-justify-between tw-gap-2 tw-w-full;
   }
 
-  &__header-title {
-    @apply tw-flex-1 tw-truncate;
-  }
+  // &__header-title / &__header-title-text styles live in HeaderTitle.vue,
+  // which owns the truncation + tooltip behavior for the default header.
 
   &__group-label {
     @apply tw-font-semibold tw-text-sm;

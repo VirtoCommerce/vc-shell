@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
+import { version as frameworkVersion } from "../../package.json";
 import { getFrameworkBuildInfo, logFrameworkBuildInfo } from "./buildInfo";
 
 afterEach(() => {
@@ -6,12 +7,14 @@ afterEach(() => {
 });
 
 describe("getFrameworkBuildInfo", () => {
-  it("falls back to 'dev' when Vite build constants are not defined", () => {
-    // Vitest does not apply the framework's Vite `define`, so the __VC_SHELL_*
-    // constants are genuinely undefined at runtime here — this exercises the
-    // dev-mode fallback path.
+  it("reads version from package.json and falls back to 'dev' for build-time fields in source mode", () => {
+    // Vitest does not apply the framework's Vite `define`, so __VC_SHELL_BUILD_DATE__
+    // and __VC_SHELL_GIT_HASH__ are genuinely undefined here — the dev-mode fallback.
+    // version, however, is read statically from package.json and is always accurate.
     const info = getFrameworkBuildInfo();
-    expect(info).toEqual({ version: "dev", buildDate: "dev", gitHash: "dev" });
+    expect(info.version).toBe(frameworkVersion);
+    expect(info.buildDate).toBe("dev");
+    expect(info.gitHash).toBe("dev");
   });
 });
 

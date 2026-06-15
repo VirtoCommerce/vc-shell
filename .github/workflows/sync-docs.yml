@@ -72,6 +72,11 @@ jobs:
           cd vc-docs
           if [[ -z "$(git status --porcelain)" ]]; then
             echo "No changes to sync."
+            {
+              echo "### docs-sync: nothing to sync"
+              echo ""
+              echo "Generated docs already match \`vc-docs@${BASE}\` — no \`*.docs.md\` changes since the last synced release. No PR created."
+            } >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           git checkout -b "$BRANCH"
@@ -80,9 +85,16 @@ jobs:
           git add .
           git commit -m "$TITLE"
           git push origin "$BRANCH"
-          gh pr create \
+          PR_URL=$(gh pr create \
             --base "$BASE" \
             --head "$BRANCH" \
             --title "$TITLE" \
             --body-file "$GITHUB_WORKSPACE/sync-report.md" \
-            --label auto-generated
+            --label auto-generated)
+          {
+            echo "### docs-sync: PR opened"
+            echo ""
+            echo "Synced docs to \`vc-docs@${BASE}\` via branch \`${BRANCH}\`."
+            echo ""
+            echo "$PR_URL"
+          } >> "$GITHUB_STEP_SUMMARY"

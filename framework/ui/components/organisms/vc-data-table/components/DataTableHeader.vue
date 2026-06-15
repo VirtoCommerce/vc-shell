@@ -60,15 +60,11 @@
         <!-- Default header content -->
         <template v-else>
           <div class="vc-data-table__header-content">
-            <span class="vc-data-table__header-title">
-              <span
-                v-if="isEditing && col.props.rules?.required"
-                class="tw-text-danger-500 tw-mr-0.5"
-                aria-hidden="true"
-                >*</span
-              >
-              {{ col.props.title }}
-            </span>
+            <HeaderTitle
+              :title="col.props.title"
+              :required="!!col.props.rules?.required"
+              :is-editing="isEditing"
+            />
             <ColumnFilter
               v-if="showFilter(col)"
               :field="col.props.filterField || col.props.field || col.props.id"
@@ -185,6 +181,7 @@ import TableRow from "@ui/components/organisms/vc-data-table/components/TableRow
 import TableHead from "@ui/components/organisms/vc-data-table/components/TableHead.vue";
 import TableCheckbox from "@ui/components/organisms/vc-data-table/components/TableCheckbox.vue";
 import ColumnFilter from "@ui/components/organisms/vc-data-table/components/ColumnFilter.vue";
+import HeaderTitle from "@ui/components/organisms/vc-data-table/components/HeaderTitle.vue";
 import { VcIcon, VcTooltip } from "@ui/components/atoms";
 import { SlotProxy } from "@ui/components/organisms/vc-data-table/components/_internal/SlotProxy";
 

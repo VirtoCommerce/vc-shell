@@ -4,6 +4,7 @@ import { VcDataTable, VcColumn } from "@ui/components/organisms/vc-data-table";
 import { VcInput } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
 import { useDataTablePagination } from "@ui/composables/useDataTablePagination";
+import { useDataTableSort } from "@ui/composables/useDataTableSort";
 import { withMobileView } from "../../../../../.storybook/decorators";
 
 /**
@@ -118,54 +119,47 @@ export const Basic: Story = {
 };
 
 /**
- * VcDataTable with sorting
+ * VcDataTable with sorting driven by the `useDataTableSort` composable.
+ *
+ * State is bound via `v-model:sort-field` / `v-model:sort-order`; the table's
+ * default `removableSort` cycle (ASC → DESC → none) flows the numeric order
+ * (1 / -1 / 0) back into the composable refs. The displayed list is a `computed`
+ * derived from that state — when the order is `0` the original order is restored.
  */
 export const WithSorting: Story = {
   render: () => ({
     components: { VcDataTable, VcColumn },
     setup() {
-      const sortField = ref("name");
-      const sortOrder = ref<1 | -1 | 0>(1);
+      const { sortField, sortOrder, sortExpression } = useDataTableSort({
+        initialField: "name",
+        initialDirection: "ASC",
+      });
 
-      const sortedProducts = ref(
-        [...mockProducts].sort((a, b) => {
-          const field = sortField.value as keyof Product;
-          if (sortOrder.value === 0) return 0;
+      const products = computed(() => {
+        if (!sortField.value || sortOrder.value === 0) {
+          return [...mockProducts];
+        }
+        const field = sortField.value as keyof Product;
+        const order = sortOrder.value;
+        return [...mockProducts].sort((a, b) => {
           const aVal = a[field];
           const bVal = b[field];
           if (typeof aVal === "string" && typeof bVal === "string") {
-            return sortOrder.value * aVal.localeCompare(bVal);
+            return order * aVal.localeCompare(bVal);
           }
-          return sortOrder.value * (Number(aVal) - Number(bVal));
-        }),
-      );
-
-      const handleSort = (e: { sortField: string; sortOrder: number }) => {
-        sortField.value = e.sortField;
-        sortOrder.value = e.sortOrder as 1 | -1 | 0;
-        const field = e.sortField as keyof Product;
-        sortedProducts.value = [...mockProducts].sort((a, b) => {
-          if (e.sortOrder === 0) return 0;
-          const aVal = a[field];
-          const bVal = b[field];
-          if (typeof aVal === "string" && typeof bVal === "string") {
-            return e.sortOrder * aVal.localeCompare(bVal);
-          }
-          return e.sortOrder * (Number(aVal) - Number(bVal));
+          return order * (Number(aVal) - Number(bVal));
         });
-      };
+      });
 
-      return { products: sortedProducts, sortField, sortOrder, handleSort };
+      return { products, sortField, sortOrder, sortExpression };
     },
     template: `
     <div style="height: 400px">
-      <p class="tw-mb-2">Sort: {{ sortField }} ({{ sortOrder === 1 ? 'ASC' : sortOrder === -1 ? 'DESC' : 'NONE' }})</p>
+      <p class="tw-mb-2">Sort: {{ sortExpression ?? 'none' }}</p>
       <VcDataTable
         :items="products"
-        :sort-field="sortField"
-        :sort-order="sortOrder"
-        :removable-sort="true"
-        @sort="handleSort"
+        v-model:sort-field="sortField"
+        v-model:sort-order="sortOrder"
       >
         <VcColumn id="name" field="name" title="Name" sortable />
         <VcColumn id="price" field="price" title="Price" type="money" sortable />
@@ -1014,58 +1008,47 @@ export const MultiSort: Story = {
 /**
  * VcDataTable with removable sort (triple-click cycle)
  *
- * Click a column to cycle through: ascending -> descending -> no sort
- * This allows users to completely remove sorting from a column.
+ * Click a column to cycle through: ascending -> descending -> no sort.
+ * State is bound via `v-model:sort-field` / `v-model:sort-order` using the
+ * `useDataTableSort` composable; when the order returns to `0` the original
+ * row order is restored.
  */
 export const RemovableSort: Story = {
   render: () => ({
     components: { VcDataTable, VcColumn },
     setup() {
-      const sortField = ref("");
-      const sortOrder = ref<1 | -1 | 0>(0);
+      const { sortField, sortOrder, sortExpression } = useDataTableSort();
 
-      const sortedProducts = ref([...mockProducts]);
-
-      const handleSort = (e: { sortField: string; sortOrder: number }) => {
-        sortField.value = e.sortField;
-        sortOrder.value = e.sortOrder as 1 | -1 | 0;
-
-        if (e.sortOrder === 0 || !e.sortField) {
-          // No sort - restore original order
-          sortedProducts.value = [...mockProducts];
-        } else {
-          const field = e.sortField as keyof Product;
-          sortedProducts.value = [...mockProducts].sort((a, b) => {
-            const aVal = a[field];
-            const bVal = b[field];
-            if (typeof aVal === "string" && typeof bVal === "string") {
-              return e.sortOrder * aVal.localeCompare(bVal);
-            }
-            return e.sortOrder * (Number(aVal) - Number(bVal));
-          });
+      const products = computed(() => {
+        if (!sortField.value || sortOrder.value === 0) {
+          return [...mockProducts];
         }
-      };
+        const field = sortField.value as keyof Product;
+        const order = sortOrder.value;
+        return [...mockProducts].sort((a, b) => {
+          const aVal = a[field];
+          const bVal = b[field];
+          if (typeof aVal === "string" && typeof bVal === "string") {
+            return order * aVal.localeCompare(bVal);
+          }
+          return order * (Number(aVal) - Number(bVal));
+        });
+      });
 
-      const getSortLabel = () => {
-        if (!sortField.value || sortOrder.value === 0) return "None";
-        return `${sortField.value} (${sortOrder.value === 1 ? "ASC" : "DESC"})`;
-      };
-
-      return { products: sortedProducts, sortField, sortOrder, handleSort, getSortLabel };
+      return { products, sortField, sortOrder, sortExpression };
     },
     template: `
     <div style="height: 450px">
       <div class="tw-mb-4 tw-p-3 tw-bg-success-50 tw-rounded tw-text-sm">
         <p class="tw-font-semibold tw-mb-1">Removable Sort</p>
         <p class="tw-text-neutrals-600 tw-mb-2">Click a column header to cycle: <strong>ASC</strong> -> <strong>DESC</strong> -> <strong>None</strong></p>
-        <p><strong>Current sort:</strong> {{ getSortLabel() }}</p>
+        <p><strong>Current sort:</strong> {{ sortExpression ?? 'None' }}</p>
       </div>
       <VcDataTable
         :items="products"
-        :sort-field="sortField"
-        :sort-order="sortOrder"
+        v-model:sort-field="sortField"
+        v-model:sort-order="sortOrder"
         :removable-sort="true"
-        @sort="handleSort"
       >
         <VcColumn id="name" field="name" title="Name" sortable />
         <VcColumn id="price" field="price" title="Price" type="money" sortable />

@@ -1030,7 +1030,7 @@ async function loadNextPage() {
 !!! tip "Use unique state keys"
 Every table in your application must have a distinct `state-key`. Two tables sharing the same key will silently overwrite each other's persisted column widths, order, and hidden/shown column lists.
 
-Persist column widths, column order, and column visibility across page reloads. Sort, filters, pagination, selection, and search input are session-scoped — they are deliberately excluded from the persisted state so the blade owns them through its own URL or store:
+Persist column widths, column order, and column visibility across page reloads. Column layout is stored in `localStorage`/`sessionStorage` (keyed by `state-key`). Sort, search, and the current page are persisted separately — to the **URL query** — automatically when the table is rendered inside a URL-addressable blade (see [URL query persistence](#url-query-persistence) below). Selection, column filters, and other transient state are session-scoped and are deliberately excluded from any persistence:
 
 ```vue
 <VcDataTable :items="products" state-key="product-list">
@@ -1062,6 +1062,21 @@ Listen to state events:
 ```
 
 > **Tip:** Each table in your application should have a unique `state-key`. If two tables share the same key, they will overwrite each other's persisted state.
+
+### URL query persistence
+
+When a table is rendered inside a **URL-addressable blade** (a workspace or routable blade whose address appears in the address bar), its **sort**, **search**, and **current page** are automatically persisted to the URL query string. Reloading the page — or sharing the link — restores that view.
+
+This works out of the box; you do not wire it up. The behavior is provided through the blade context: tables outside a blade (or in a blade with no URL) simply do not persist (no-op).
+
+- **Namespacing:** query keys are prefixed with the table's `state-key` if set, otherwise with the blade's URL segment — e.g. `?offers_sort=name:DESC&offers_search=foo&offers_page=2`. Give each table a unique `state-key` when several tables can be visible at once (the same rule as column-layout persistence).
+- **Keys:** `<ns>_sort` (`field:ASC` / `field:DESC`), `<ns>_search`, `<ns>_page` (1-based).
+- **History:** changes use `router.replace`, so they do not add browser-history entries.
+- **Scope:** only sort, search, and page. Column layout still uses `localStorage`/`sessionStorage` (above); column filters and selection are not persisted.
+
+On reload the restored values are applied through the table's normal `v-model:sort-field` / `v-model:sort-order` / `v-model:search-value` and `pagination-click` channels, so the owning blade loads data with the restored parameters without any extra code.
+
+If a blade cannot be reopened on reload (e.g. a non-routable blade, or an intermediate blade that is not on the restored URL path), its table query params have no owner — they are automatically dropped from the URL once the restored blades have mounted, so the address bar never accumulates stale query keys.
 
 ---
 

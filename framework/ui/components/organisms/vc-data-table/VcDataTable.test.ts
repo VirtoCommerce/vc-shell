@@ -285,6 +285,11 @@ describe("VcDataTable", () => {
     expect(wrapper.find(".vc-data-table").exists()).toBe(true);
   });
 
+  it("defaults removableSort to true (3-state sort cycle)", () => {
+    const wrapper = mountTable();
+    expect(wrapper.props("removableSort")).toBe(true);
+  });
+
   it("sets aria-busy when loading is true", () => {
     const wrapper = mountTable({ loading: true });
     expect(wrapper.find(".vc-data-table").attributes("aria-busy")).toBe("true");

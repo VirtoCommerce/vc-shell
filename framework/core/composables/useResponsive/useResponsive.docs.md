@@ -200,7 +200,7 @@ const { isMobile } = useResponsive();
 
 ## Migration
 
-See [migration guide #36](../../../../migration/36-use-responsive.md) for automated codemod and manual migration instructions.
+See [migration guide #36](https://github.com/VirtoCommerce/vc-shell/blob/main/migration/36-use-responsive.md) for automated codemod and manual migration instructions.
 
 ## Related
 

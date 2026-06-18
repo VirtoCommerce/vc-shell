@@ -247,3 +247,70 @@ describe("useBlade() lifecycle hooks", () => {
     expect(() => result.onDeactivated(() => {})).toThrow(/onDeactivated\(\) requires blade context/);
   });
 });
+
+// ── activeChildParam ──────────────────────────────────────────────────────────
+
+describe("useBlade() activeChildParam", () => {
+  it("returns the param of the direct child blade", () => {
+    const stack = createMockBladeStack();
+    (stack.blades as unknown as { value: unknown[] }).value = [
+      { id: "test-blade", parentId: "root", visible: true },
+      { id: "child", parentId: "test-blade", param: "order-7", visible: true },
+    ];
+    const { result } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "test-blade" },
+      stack,
+    });
+    expect(result.activeChildParam.value).toBe("order-7");
+  });
+
+  it("is undefined when the blade has no child", () => {
+    const stack = createMockBladeStack();
+    (stack.blades as unknown as { value: unknown[] }).value = [{ id: "test-blade", parentId: "root", visible: true }];
+    const { result } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "test-blade" },
+      stack,
+    });
+    expect(result.activeChildParam.value).toBeUndefined();
+  });
+
+  it("is undefined when the child blade has no param (e.g. add-new)", () => {
+    const stack = createMockBladeStack();
+    (stack.blades as unknown as { value: unknown[] }).value = [
+      { id: "test-blade", parentId: "root", visible: true },
+      { id: "child", parentId: "test-blade", param: undefined, visible: true },
+    ];
+    const { result } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "test-blade" },
+      stack,
+    });
+    expect(result.activeChildParam.value).toBeUndefined();
+  });
+
+  it("reacts to a child blade being opened and closed", async () => {
+    const stack = createMockBladeStack();
+    const blades = stack.blades as unknown as { value: unknown[] };
+    blades.value = [{ id: "test-blade", parentId: "root", visible: true }];
+    const { result } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "test-blade" },
+      stack,
+    });
+    expect(result.activeChildParam.value).toBeUndefined();
+
+    blades.value = [
+      { id: "test-blade", parentId: "root", visible: true },
+      { id: "child", parentId: "test-blade", param: "p-1", visible: true },
+    ];
+    await nextTick();
+    expect(result.activeChildParam.value).toBe("p-1");
+
+    blades.value = [{ id: "test-blade", parentId: "root", visible: true }];
+    await nextTick();
+    expect(result.activeChildParam.value).toBeUndefined();
+  });
+
+  it("is undefined outside blade context (no throw)", () => {
+    const { result } = mountWithoutBladeContext(() => useBlade());
+    expect(result.activeChildParam.value).toBeUndefined();
+  });
+});

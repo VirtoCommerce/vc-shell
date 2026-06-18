@@ -15,6 +15,8 @@ export interface UseBladeReturn<TOptions = Record<string, unknown>> {
   // Identity (read-only) — runtime error outside blade context
   readonly id: ComputedRef<string>;
   readonly param: ComputedRef<string | undefined>;
+  /** param of the direct child blade opened from this blade, or undefined. */
+  readonly activeChildParam: ComputedRef<string | undefined>;
   readonly options: ComputedRef<TOptions | undefined>;
   readonly query: ComputedRef<Record<string, string> | undefined>;
   readonly closable: ComputedRef<boolean>;
@@ -144,6 +146,15 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
   const name = computed(() => {
     if (!descriptor) requireContext("name");
     return descriptor!.value.name;
+  });
+
+  // param of the direct child blade (the entity currently open from this blade).
+  // Reactive over the stack and reload-safe: on reload the child blade is
+  // restored with its param. Returns undefined outside blade context.
+  const activeChildParam = computed<string | undefined>(() => {
+    if (!descriptor) return undefined;
+    const selfId = descriptor.value.id;
+    return bladeStack.blades.value.find((b) => b.parentId === selfId)?.param;
   });
 
   // ── Blade Data ──────────────────────────────────────────────────────────
@@ -319,6 +330,7 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
   return {
     id,
     param,
+    activeChildParam,
     options,
     query,
     closable,

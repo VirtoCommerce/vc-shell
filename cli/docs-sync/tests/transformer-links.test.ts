@@ -23,6 +23,16 @@ describe("rewriteCrossDocLinks", () => {
     expect(out).toContain("[VcLink](../navigation/vc-link.md)");
   });
 
+  it("rewrites a cross-doc link with an anchor, re-appending the fragment", () => {
+    const body = "See [Banner](../vc-link#banner-management).";
+    const out = rewriteCrossDocLinks(body, {
+      sourcePath: "framework/ui/components/atoms/vc-button/vc-button.docs.md",
+      targetPath: "components/misc/vc-button.md",
+      resolveTarget,
+    });
+    expect(out).toContain("[Banner](../navigation/vc-link.md#banner-management)");
+  });
+
   it("leaves external links untouched", () => {
     const body = "See [Vue](https://vuejs.org).";
     const out = rewriteCrossDocLinks(body, {

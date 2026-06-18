@@ -207,7 +207,7 @@ store.registerType("CatalogExportCompleted", {
 });
 ```
 
-Custom templates access the notification via `useNotificationContext()` composable — no props needed. See [NotificationTemplate docs](../../shell/components/notification-template/notification-template.docs.md) for template examples.
+Custom templates access the notification via `useNotificationContext()` composable — no props needed. See the `NotificationTemplate` component for template examples.
 
 ### Subscribing in a blade
 

@@ -58,6 +58,24 @@ describe("useDataTablePagination", () => {
     });
   });
 
+  describe("setPage", () => {
+    it("updates currentPage and skip", () => {
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(100), pageSize: 20 }));
+      result.setPage(3);
+      expect(result.currentPage).toBe(3);
+      expect(result.skip).toBe(40); // (3-1)*20
+    });
+
+    it("does NOT fire onPageChange (pull-restore seed)", () => {
+      const onPageChange = vi.fn();
+      const { result } = mountWithSetup(() =>
+        useDataTablePagination({ totalCount: ref(100), pageSize: 20, onPageChange }),
+      );
+      result.setPage(4);
+      expect(onPageChange).not.toHaveBeenCalled();
+    });
+  });
+
   describe("reset", () => {
     it("resets currentPage to 1", () => {
       const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(100), pageSize: 20 }));

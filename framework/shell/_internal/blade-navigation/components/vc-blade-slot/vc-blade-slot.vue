@@ -23,7 +23,10 @@
 
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, provide, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
+import { useBladeStack } from "@core/blade-navigation/useBladeStack";
+import { createBladeQueryState, TableQueryStateKey } from "@core/blade-navigation/table-query-state";
 import { BladeBackButtonKey } from "@framework/injection-keys";
 import { ErrorInterceptor } from "@shell/components/error-interceptor";
 import { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
@@ -74,6 +77,22 @@ provide(BladeBannersKey, banners);
 provide(
   BladeBackButtonKey,
   computed(() => props.backButton),
+);
+
+// ── Provide per-blade table-query-state service (URL persistence) ─────────────
+// Only meaningful for URL-addressable blades; createBladeQueryState no-ops when
+// the blade has no url. If there is no router context, provide undefined so
+// VcDataTable falls back to no persistence.
+const router = useRouter();
+provide(
+  TableQueryStateKey,
+  router
+    ? createBladeQueryState({
+        descriptor: computed(() => props.descriptor),
+        router,
+        bladeStack: useBladeStack(),
+      })
+    : undefined,
 );
 
 // ── Auto-register exposed methods with BladeMessaging ───────────────────────

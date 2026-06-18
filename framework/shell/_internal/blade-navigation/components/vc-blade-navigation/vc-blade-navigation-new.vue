@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, h, inject, toRef } from "vue";
+import { computed, h, inject, nextTick, onMounted, toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { RouterView, useRouter } from "vue-router";
@@ -53,6 +53,22 @@ const { breadcrumbs, push, remove } = useBreadcrumbs();
 // ── URL sync helper (centralized in urlSync.ts) ─────────────────────────────
 
 const { syncUrlReplace } = createUrlSync(router, bladeStack);
+
+// ── Post-restore URL reconcile ──────────────────────────────────────────────
+// On a fresh load, restoreFromUrl reopens only the workspace + the deepest
+// routable blade. Non-routable blades and intermediate (off-path) blades are
+// NOT reopened, yet their table query params still sit in the address bar.
+// Once the restored blades have mounted, their tables hydrate their own query
+// into the blade descriptors (table-query-state service). Rebuilding the URL
+// from the present descriptors then drops any query owned by an absent blade.
+// Child `mounted` hooks run before this parent's `onMounted`, so the present
+// blades' descriptors are already hydrated here; `nextTick` covers stragglers.
+onMounted(() => {
+  if (bladeStack.blades.value.length === 0) return;
+  void nextTick(() => {
+    syncUrlReplace();
+  });
+});
 
 // ── Blade state ─────────────────────────────────────────────────────────────
 

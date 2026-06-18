@@ -221,6 +221,13 @@ export interface IBladeStack {
   /** Update a blade's title (called by VcBlade when title prop changes) */
   setBladeTitle(bladeId: string, title: string | undefined): void;
 
+  /**
+   * Merge a patch into a blade's URL query. Keys with an empty-string (or
+   * nullish) value are removed. Used to persist table view state (sort/search/
+   * page) so `buildUrlFromStack` includes it on the next URL sync.
+   */
+  updateBladeQuery(bladeId: string, patch: Record<string, string>): void;
+
   /** Restore stack from descriptors (used by HistoryManager — bypasses guards) */
   _restoreStack(descriptors: BladeDescriptor[]): void;
 }

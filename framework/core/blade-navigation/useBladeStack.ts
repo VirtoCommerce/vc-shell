@@ -366,6 +366,34 @@ export function createBladeStack(
     _blades.value = updated;
   }
 
+  // ── Query Management ──────────────────────────────────────────────────────
+
+  function updateBladeQuery(bladeId: string, patch: Record<string, string>): void {
+    const index = _blades.value.findIndex((b) => b.id === bladeId);
+    if (index === -1) return;
+
+    const current = _blades.value[index].query ?? {};
+    const merged: Record<string, string> = { ...current };
+    for (const [key, value] of Object.entries(patch)) {
+      if (value === "" || value == null) {
+        delete merged[key];
+      } else {
+        merged[key] = value;
+      }
+    }
+
+    // No-op if nothing actually changed (avoids redundant reactive updates).
+    const currentKeys = Object.keys(current);
+    const mergedKeys = Object.keys(merged);
+    if (currentKeys.length === mergedKeys.length && mergedKeys.every((k) => current[k] === merged[k])) {
+      return;
+    }
+
+    const updated = [..._blades.value];
+    updated[index] = { ...updated[index], query: merged };
+    _blades.value = updated;
+  }
+
   // ── Internal: Restore (used by HistoryManager) ────────────────────────────
 
   function _restoreStack(descriptors: BladeDescriptor[]): void {
@@ -393,6 +421,7 @@ export function createBladeStack(
     setBladeError,
     clearBladeError,
     setBladeTitle,
+    updateBladeQuery,
     _restoreStack,
   };
 }

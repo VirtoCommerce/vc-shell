@@ -376,6 +376,8 @@ For server-side "select all" that includes items not currently visible:
 </VcDataTable>
 ```
 
+> **Opt-in.** The "Select all N items" banner is shown only when you bind `selectAllActive` (via `v-model:selectAllActive` or a one-way `:selectAllActive`). Its default is `undefined`, so a table that passes `totalCount` only for pagination never surfaces the banner.
+
 ```ts
 const allSelected = ref(false);
 
@@ -1360,15 +1362,15 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ### Selection
 
-| Prop                 | Type                     | Default | Description                                                                                       |
-| -------------------- | ------------------------ | ------- | ------------------------------------------------------------------------------------------------- |
-| `selection`          | `T \| T[]`               | --      | Selected item(s). Use with `v-model:selection`.                                                   |
-| `selectionMode`      | `"single" \| "multiple"` | --      | Row selection mode.                                                                               |
-| `isRowSelectable`    | `(data: T) => boolean`   | --      | Per-row function to disable selection.                                                            |
-| `compareSelectionBy` | `"equals" \| "field"`    | --      | Compare items by deep equality or by `dataKey` field.                                             |
-| `selectAll`          | `boolean`                | `false` | Enable "select all" header checkbox.                                                              |
-| `selectAllActive`    | `boolean`                | `false` | Whether "select all" (including non-visible items) is active. Use with `v-model:selectAllActive`. |
-| `activeItemId`       | `string`                 | --      | ID of the highlighted row. Use with `v-model:activeItemId`.                                       |
+| Prop                 | Type                     | Default     | Description                                                                                                                                                                                                  |
+| -------------------- | ------------------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `selection`          | `T \| T[]`               | --          | Selected item(s). Use with `v-model:selection`.                                                                                                                                                              |
+| `selectionMode`      | `"single" \| "multiple"` | --          | Row selection mode.                                                                                                                                                                                          |
+| `isRowSelectable`    | `(data: T) => boolean`   | --          | Per-row function to disable selection.                                                                                                                                                                       |
+| `compareSelectionBy` | `"equals" \| "field"`    | --          | Compare items by deep equality or by `dataKey` field.                                                                                                                                                        |
+| `selectAll`          | `boolean`                | `false`     | Enable "select all" header checkbox.                                                                                                                                                                         |
+| `selectAllActive`    | `boolean`                | `undefined` | "Select all" (including non-visible items) active state. Binding it (e.g. `v-model:selectAllActive`) opts the table into the cross-page "Select all N items" banner; left unbound, the banner never appears. |
+| `activeItemId`       | `string`                 | --          | ID of the highlighted row. Use with `v-model:activeItemId`.                                                                                                                                                  |
 
 ### Sorting
 

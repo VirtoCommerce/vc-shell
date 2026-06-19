@@ -441,7 +441,7 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T> & { fitMode?:
   pullToRefreshText: undefined,
   totalCount: undefined,
   totalLabel: undefined,
-  selectAllActive: false,
+  selectAllActive: undefined,
   addRow: undefined,
   validationRules: undefined,
   pagination: undefined,

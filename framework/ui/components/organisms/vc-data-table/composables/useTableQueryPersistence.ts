@@ -5,8 +5,6 @@ import type { VcDataTableExtendedProps } from "@ui/components/organisms/vc-data-
 export interface UseTableQueryPersistenceOptions<T extends Record<string, unknown>> {
   /** VcDataTable props (read sortField/sortOrder/searchValue/pagination/stateKey). */
   props: VcDataTableExtendedProps<T>;
-  /** VcDataTable emit. */
-  emit: (event: string, value?: unknown) => void;
   /** Live search UI state owned by VcDataTable. */
   internalSearchValue: Ref<string>;
 }
@@ -16,11 +14,14 @@ export interface UseTableQueryPersistenceOptions<T extends Record<string, unknow
  * optional per-blade ITableQueryStateService. No-op when no service is provided
  * (standalone table or non-URL blade).
  *
- * On init it seeds the parent (v-models + search/pagination events) from the
- * restored URL state, then watches for changes and writes them back (the service
- * debounces). To avoid writing back the just-restored values (the parent echoes
- * them as prop changes on a later tick), each field tracks its last-applied value
- * and skips writes that match it — timing-independent, unlike a transient flag.
+ * This handles the write side: it watches sort/search/page and writes them to the
+ * URL (the service debounces). To avoid writing back values the page just restored
+ * (the parent echoes them as prop changes a tick later), each field remembers its
+ * last-applied value and skips writes that match it.
+ *
+ * It does not push restored state to the page — the page reads it via
+ * useTableQueryState. The only restore-side effect here is seeding the table's own
+ * search box for display, which does not load.
  */
 export function useTableQueryPersistence<T extends Record<string, unknown>>(
   options: UseTableQueryPersistenceOptions<T>,
@@ -28,38 +29,22 @@ export function useTableQueryPersistence<T extends Record<string, unknown>>(
   const service = inject(TableQueryStateKey, undefined);
   if (!service) return;
 
-  const { props, emit, internalSearchValue } = options;
+  const { props, internalSearchValue } = options;
 
-  // ── Restore (synchronous, during setup, before the parent's mounted load) ──
   const restored = service.read(props.stateKey);
 
-  // Seed-and-dedup state: remember what we last pushed/applied per field, so the
-  // parent's prop echo of the restored values does not bounce back into a write.
+  // Last value written per field, so the page's prop echo of the restored values
+  // is not written back.
   let lastSort: string | undefined = restored.sort;
   let lastSearch = restored.search ?? "";
   let lastPage: number | undefined = restored.page;
 
-  if (restored.sort) {
-    const [field, dir] = restored.sort.split(":");
-    if (field) {
-      const order = dir === "DESC" ? -1 : 1;
-      emit("update:sortField", field);
-      emit("update:sortOrder", order);
-      // Mirror a genuine sort so adapter-based tables (which react only to
-      // `@sort`, not the sort-field/sort-order v-models) also restore sort.
-      emit("sort", { sortField: field, sortOrder: order });
-    }
-  }
+  // Show the restored keyword in the table's own search box (display only, no load).
   if (restored.search !== undefined) {
     internalSearchValue.value = restored.search;
-    emit("update:searchValue", restored.search);
-    emit("search", restored.search);
-  }
-  if (restored.page !== undefined) {
-    emit("pagination-click", restored.page);
   }
 
-  // ── Write (push genuine view-state changes back to the URL) ────────────────
+  // Write view-state changes back to the URL.
   function currentSortExpression(): string | undefined {
     const field = props.sortField;
     const order = props.sortOrder;

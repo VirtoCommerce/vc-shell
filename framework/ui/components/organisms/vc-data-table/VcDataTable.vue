@@ -441,7 +441,7 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T> & { fitMode?:
   pullToRefreshText: undefined,
   totalCount: undefined,
   totalLabel: undefined,
-  selectAllActive: false,
+  selectAllActive: undefined,
   addRow: undefined,
   validationRules: undefined,
   pagination: undefined,
@@ -1260,6 +1260,23 @@ onBeforeUnmount(() => {
   // Note: overflow-visible allows absolutely positioned elements like row actions
   // to escape the container bounds. The inner __content element handles scrolling.
   @apply tw-relative tw-flex tw-flex-col tw-grow tw-basis-0 tw-flex-auto tw-h-full tw-overflow-visible;
+
+  // Break the content-inflation feedback loop. The table measures its own inner
+  // wrapper to size columns; if that wrapper is ever wider than its allotted box,
+  // the engine bakes oversized column widths, which keeps the wrapper wide — a
+  // self-reinforcing loop that never recovers (the ResizeObserver sees no further
+  // size change). It happens because every flex ancestor up to the nearest scroll
+  // viewport defaults to `min-width: auto`, so a momentarily-unconstrained table
+  // (long cell content, no column widths yet on a cold mount / view switch / reset)
+  // stretches the whole subtree — including ancestors the framework doesn't own.
+  //
+  // `contain: inline-size` makes this element's width independent of its content,
+  // so the subtree can never push past its allotted width and the wrapper
+  // measurement is always correct. It is size containment only (not layout/paint),
+  // so it does NOT establish a containing block for the absolutely positioned row
+  // actions above, and it constrains the inline axis only — block height/scrolling
+  // are untouched.
+  contain: inline-size;
 
   &__header {
     @apply tw-flex-shrink-0 tw-px-4 tw-py-2;

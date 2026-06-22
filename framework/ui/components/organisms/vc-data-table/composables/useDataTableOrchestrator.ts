@@ -275,6 +275,12 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   // Selection Composable
   // ============================================================================
 
+  // The cross-page "select all" banner is opt-in: it appears only when the
+  // consumer wires the feature up by binding `selectAllActive` (one-way or via
+  // v-model). Its default is `undefined`, so a table that passes `totalCount`
+  // purely for pagination never surfaces a "Select all N items" prompt nobody handles.
+  const selectAllEnabled = computed(() => props.selectAllActive !== undefined);
+
   const selection = useTableSelectionV2<T>({
     items: toRef(props, "items") as Ref<T[]>,
     selection: toRef(props, "selection") as Ref<T | T[] | undefined>,
@@ -284,6 +290,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     getItemKey,
     totalCount: toRef(props, "totalCount") as Ref<number | undefined>,
     selectAllActive: toRef(props, "selectAllActive") as Ref<boolean | undefined>,
+    selectAllEnabled,
     onSelectAllChange: (active: boolean) => {
       emit("update:selectAllActive", active);
       emit("select-all", { selected: active });

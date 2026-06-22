@@ -31,6 +31,12 @@ export interface UseTableSelectionV2Options<T> {
   totalCount?: Ref<number | undefined>;
   /** External "select all" state (v-model:selectAllActive) */
   selectAllActive?: Ref<boolean | undefined>;
+  /**
+   * Whether the consumer opted into the cross-page "select all" feature.
+   * When falsy, the "Select all N items" choice banner stays hidden even if
+   * all visible rows are selected and more items exist.
+   */
+  selectAllEnabled?: Ref<boolean | undefined>;
   /** Callback when "select all" mode changes */
   onSelectAllChange?: (active: boolean) => void;
 }
@@ -103,6 +109,7 @@ export function useTableSelectionV2<T extends Record<string, any>>(
     getItemKey,
     totalCount,
     selectAllActive,
+    selectAllEnabled,
     onSelectAllChange,
   } = options;
 
@@ -181,6 +188,7 @@ export function useTableSelectionV2<T extends Record<string, any>>(
    * Shows when all visible items are selected and more items exist (totalCount > items.length)
    */
   const showSelectAllChoice = computed<boolean>(() => {
+    if (!selectAllEnabled?.value) return false; // Consumer did not opt into cross-page select all
     if (!totalCount?.value) return false;
     if (isSelectAllActive.value) return false; // Already in select all mode
     return allSelected.value && totalCount.value > items.value.length;

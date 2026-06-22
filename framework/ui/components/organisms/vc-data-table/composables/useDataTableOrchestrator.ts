@@ -233,29 +233,6 @@ export interface VcDataTableOrchestratorReturn<T extends Record<string, unknown>
 /** SortableJS `handle` selector matching the desktop row and mobile card drag handles. */
 const ROW_REORDER_HANDLE_SELECTOR = ".vc-table-composition__row-drag-handle, .vc-data-table-mobile-card__drag-handle";
 
-/**
- * Width of the nearest horizontally-scrollable ancestor viewport, or `0` if none.
- *
- * A scroll viewport (`overflow-x: auto | scroll`) is sized by its own parent —
- * its content scrolls inside it — so its `clientWidth` is independent of how wide
- * the table's content is. `overflow-x: hidden` ancestors are deliberately skipped:
- * they clip but can still be stretched wider than their box by the same content
- * inflation we are guarding against, so they are not a trustworthy reference.
- *
- * Used by `measureAvailableWidth` to cap the raw wrapper measurement and break the
- * content-inflation feedback loop (see there). Returns `0` when the table is not
- * inside any scroll viewport, so callers fall back to the unclamped measurement.
- */
-export function findScrollViewportWidth(el: HTMLElement): number {
-  let node = el.parentElement;
-  while (node) {
-    const overflowX = getComputedStyle(node).overflowX;
-    if (overflowX === "auto" || overflowX === "scroll") return node.clientWidth;
-    node = node.parentElement;
-  }
-  return 0;
-}
-
 export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   options: VcDataTableOrchestratorOptions<T>,
 ): VcDataTableOrchestratorReturn<T> {
@@ -460,24 +437,6 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     }
     if (!cachedWrapper || cachedWrapper.clientWidth <= 0) return 0;
 
-    let available = cachedWrapper.clientWidth;
-
-    // Guard against a content-inflation feedback loop. During a cold mount or a
-    // layout reflow (view switch, column reset) the wrapper — and the whole
-    // `.vc-data-table` subtree — can be stretched wider than its allotted box by
-    // its own content: every flex ancestor up to the scroll viewport defaults to
-    // `min-width: auto`, so a momentarily-unconstrained table (long cell content,
-    // no column widths yet) inflates them all. If the engine then bakes column
-    // widths from that inflated measurement, the table stays oversized forever —
-    // the ResizeObserver sees no further size change, so it never recovers.
-    //
-    // Clamp to the nearest scroll viewport, whose width is set by ITS parent and
-    // is therefore immune to our content. In steady state the wrapper is narrower
-    // than the viewport, so this is a no-op; it only bites during inflation, after
-    // which the table shrinks back and the next tick measures the wrapper exactly.
-    const viewportWidth = findScrollViewportWidth(cachedWrapper);
-    if (viewportWidth > 0) available = Math.min(available, viewportWidth);
-
     // Subtract special cells inside the wrapper.
     let specialWidth = 0;
     // 1. Implicit selection cells (not a VcColumn — no data-column-id).
@@ -492,7 +451,7 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
         if (el) specialWidth += el.getBoundingClientRect().width;
       }
     }
-    return Math.max(0, available - specialWidth);
+    return Math.max(0, cachedWrapper.clientWidth - specialWidth);
   };
 
   const cols = useTableColumns({

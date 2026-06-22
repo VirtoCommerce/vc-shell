@@ -9,7 +9,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createApp, ref, computed } from "vue";
 import type { Ref } from "vue";
-import { useDataTableOrchestrator, findScrollViewportWidth } from "./useDataTableOrchestrator";
+import { useDataTableOrchestrator } from "./useDataTableOrchestrator";
 import type { VcDataTableOrchestratorOptions } from "./useDataTableOrchestrator";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 
@@ -333,63 +333,5 @@ describe("useDataTableOrchestrator", () => {
         app.unmount();
       }
     });
-  });
-});
-
-// ============================================================================
-// findScrollViewportWidth — content-inflation guard for measureAvailableWidth
-// ============================================================================
-
-describe("findScrollViewportWidth", () => {
-  const withClientWidth = (el: HTMLElement, w: number): HTMLElement => {
-    Object.defineProperty(el, "clientWidth", { value: w, configurable: true });
-    return el;
-  };
-
-  let attached: HTMLElement[] = [];
-  const make = (clientWidth: number, overflowX?: string): HTMLElement => {
-    const el = withClientWidth(document.createElement("div"), clientWidth);
-    if (overflowX) el.style.overflowX = overflowX;
-    return el;
-  };
-  const chain = (...els: HTMLElement[]): void => {
-    for (let i = 0; i < els.length - 1; i++) els[i].appendChild(els[i + 1]);
-    document.body.appendChild(els[0]);
-    attached.push(els[0]);
-  };
-
-  beforeEach(() => {
-    attached.forEach((el) => el.remove());
-    attached = [];
-  });
-
-  it("returns clientWidth of the nearest overflow-x:auto ancestor, ignoring an inflated child", () => {
-    const viewport = make(952, "auto");
-    const inflated = make(4402); // overflow visible, stretched by content
-    const leaf = make(3920);
-    chain(viewport, inflated, leaf);
-    expect(findScrollViewportWidth(leaf)).toBe(952);
-  });
-
-  it("skips overflow-x:hidden ancestors (clip, not a scroll viewport)", () => {
-    const viewport = make(952, "auto");
-    const clipped = make(4402, "hidden"); // hidden but still inflated → must be skipped
-    const leaf = make(3920);
-    chain(viewport, clipped, leaf);
-    expect(findScrollViewportWidth(leaf)).toBe(952);
-  });
-
-  it("matches overflow-x:scroll viewports too", () => {
-    const viewport = make(800, "scroll");
-    const leaf = make(3000);
-    chain(viewport, leaf);
-    expect(findScrollViewportWidth(leaf)).toBe(800);
-  });
-
-  it("returns 0 when no scrollable ancestor exists (no clamp, legacy behaviour)", () => {
-    const root = make(1000);
-    const leaf = make(3000);
-    chain(root, leaf);
-    expect(findScrollViewportWidth(leaf)).toBe(0);
   });
 });

@@ -35,7 +35,7 @@ The blade reads its configuration from `options` via `useBlade<AssetsManagerOpti
 | `disabled`     | `boolean?`               | When true, hides upload/delete actions and disables reordering                           |
 | `hiddenFields` | `string[]?`              | Fields to hide in the detail view                                                        |
 
-> **Breaking change:** The old options (`assets`, `loading`, `assetsUploadHandler`, `assetsEditHandler`, `assetsRemoveHandler`) have been removed. Pass a single `manager` instance instead. See [migration guide #32](../../../migration/32-use-assets-manager.md).
+> **Breaking change:** The old options (`assets`, `loading`, `assetsUploadHandler`, `assetsEditHandler`, `assetsRemoveHandler`) have been removed. Pass a single `manager` instance instead. See [migration guide #32](https://github.com/VirtoCommerce/vc-shell/blob/main/migration/32-use-assets-manager.md).
 
 ## Usage
 

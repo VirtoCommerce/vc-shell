@@ -11,11 +11,11 @@
       v-model:sort-order="sortOrder"
       :items="data"
       :total-count="totalCount"
-      :pagination="{ currentPage, pages }"
+      :pagination="pagination"
       :searchable="true"
       :state-key="'<%- ModuleNameScreamingSnake %>'"
       @row-click="onRowClick"
-      @pagination-click="onPaginationClick"
+      @pagination-click="pagination.goToPage"
     >
       <!-- Add your columns here -->
       <VcColumn id="name" :title="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.NAME')" sortable />
@@ -25,9 +25,9 @@
 </template>
 
 <script setup lang="ts">
-import { useBlade, useDataTableSort, useTableQueryState, useFunctions, type IBladeToolbar } from "@vc-shell/framework";
+import { useBlade, useDataTableSort, useTableSearch, useDataTablePagination, useFunctions, type IBladeToolbar } from "@vc-shell/framework";
 import { VcBlade, VcDataTable, VcColumn } from "@vc-shell/framework/ui";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import use<%- ModuleNamePascalCase %>List from "../composables/useList";
 import { useI18n } from "vue-i18n";
 
@@ -49,43 +49,29 @@ const { debounce } = useFunctions();
 const PAGE_SIZE = 20;
 
 const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: "<%- ModuleNameScreamingSnake %>",
   initialField: "createdDate",
   initialDirection: "DESC",
 });
 
 const { data, loading, totalCount, getItems } = use<%- ModuleNamePascalCase %>List();
 
-const searchValue = ref<string>();
-const currentPage = ref(1);
-const pages = computed(() => Math.ceil(totalCount.value / PAGE_SIZE) || 0);
-
-// Restore sort/search/page from the URL, then load once below.
-const restored = useTableQueryState("<%- ModuleNameScreamingSnake %>").read();
-if (restored.sort) {
-  const [field, direction] = restored.sort.split(":");
-  sortField.value = field;
-  sortOrder.value = direction === "DESC" ? -1 : 1;
-}
-if (restored.search) searchValue.value = restored.search;
-if (restored.page) currentPage.value = restored.page;
+const { searchValue } = useTableSearch({ stateKey: "<%- ModuleNameScreamingSnake %>" });
+const pagination = useDataTablePagination({ stateKey: "<%- ModuleNameScreamingSnake %>", pageSize: PAGE_SIZE, totalCount });
 
 function load() {
   return getItems({
     sort: sortExpression.value,
     keyword: searchValue.value || undefined,
-    skip: (currentPage.value - 1) * PAGE_SIZE,
+    skip: pagination.skip,
     take: PAGE_SIZE,
   });
 }
 
 // One loader for sort/search/page. Debounced so typing doesn't fetch per keystroke.
 load();
-watch(searchValue, () => (currentPage.value = 1));
-watch([sortExpression, searchValue, currentPage], debounce(load, 300));
-
-const onPaginationClick = (page: number) => {
-  currentPage.value = page;
-};
+watch(searchValue, () => pagination.setPage(1));
+watch([sortExpression, searchValue, () => pagination.skip], debounce(load, 300));
 
 const reload = () => load();
 

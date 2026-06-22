@@ -16,7 +16,7 @@
       selection-mode="multiple"
       :items="data ?? []"
       :row-actions="actionBuilder"
-      :pagination="{ currentPage, pages }"
+      :pagination="pagination"
       :searchable="true"
       :search-placeholder="$t('SAMPLE_APP.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :empty-state="{
@@ -35,7 +35,7 @@
       :total-count="totalCount"
       state-key="SAMPLE_APP"
       @row-click="onItemClick"
-      @pagination-click="onPaginationClick"
+      @pagination-click="pagination.goToPage"
     >
       <VcColumn
         id="imgSrc"
@@ -74,8 +74,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
-import { IBladeToolbar, useBlade, usePopup, useDataTableSort, useTableQueryState, useFunctions } from "@vc-shell/framework";
+import { ref, watch, computed } from "vue";
+import { IBladeToolbar, useBlade, usePopup, useDataTableSort, useTableSearch, useDataTablePagination, useFunctions } from "@vc-shell/framework";
 import type { TableAction } from "@vc-shell/framework";
 import { VcColumn, VcDataTable, VcBlade } from "@vc-shell/framework/ui";
 import { useI18n } from "vue-i18n";
@@ -101,31 +101,22 @@ const { debounce } = useFunctions();
 const PAGE_SIZE = 20;
 
 const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: "SAMPLE_APP",
   initialField: "createdDate",
   initialDirection: "DESC",
 });
 
-const { getItems, removeItems, data, loading, totalCount, pages } = useList({
+const { getItems, removeItems, data, loading, totalCount } = useList({
   sort: sortExpression.value,
   pageSize: PAGE_SIZE,
 });
 
-const searchValue = ref<string>();
-const currentPage = ref(1);
+const { searchValue } = useTableSearch({ stateKey: "SAMPLE_APP" });
+const pagination = useDataTablePagination({ stateKey: "SAMPLE_APP", pageSize: PAGE_SIZE, totalCount });
 const selectedItemId = ref<string>();
 const selectedItems = ref<MockedItem[]>([]);
 
 const selectedIds = computed(() => selectedItems.value.map((item) => item.id).filter(Boolean) as string[]);
-
-// Restore sort/search/page from the URL, then load once below.
-const restored = useTableQueryState("SAMPLE_APP").read();
-if (restored.sort) {
-  const [field, direction] = restored.sort.split(":");
-  sortField.value = field;
-  sortOrder.value = direction === "DESC" ? -1 : 1;
-}
-if (restored.search) searchValue.value = restored.search;
-if (restored.page) currentPage.value = restored.page;
 
 watch(
   param,
@@ -139,14 +130,14 @@ function load() {
   return getItems({
     sort: sortExpression.value,
     keyword: searchValue.value || undefined,
-    skip: (currentPage.value - 1) * PAGE_SIZE,
+    skip: pagination.skip,
   });
 }
 
 // One loader for sort/search/page. Debounced so typing doesn't fetch per keystroke.
 load();
-watch(searchValue, () => (currentPage.value = 1));
-watch([sortExpression, searchValue, currentPage], debounce(load, 300));
+watch(searchValue, () => pagination.setPage(1));
+watch([sortExpression, searchValue, () => pagination.skip], debounce(load, 300));
 
 const clearSearch = () => {
   searchValue.value = "";
@@ -154,10 +145,6 @@ const clearSearch = () => {
 
 const addItem = () => {
   openBlade({ name: "SampleDetails" });
-};
-
-const onPaginationClick = (page: number) => {
-  currentPage.value = page;
 };
 
 const bladeToolbar = ref<IBladeToolbar[]>([

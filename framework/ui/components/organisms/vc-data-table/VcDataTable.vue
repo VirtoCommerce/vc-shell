@@ -386,7 +386,6 @@ import {
   IsColumnReorderingKey,
 } from "@ui/components/organisms/vc-data-table/keys";
 import { useResponsive } from "@framework/core/composables/useResponsive";
-import { useTableQueryPersistence } from "@ui/components/organisms/vc-data-table/composables/useTableQueryPersistence";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type {
   VcColumnProps,
@@ -1011,15 +1010,6 @@ watch(
     }
   },
 );
-
-// ============================================================================
-// URL query persistence (sort / search / page) — opt-in via blade context
-// ============================================================================
-// No-op unless a blade provides ITableQueryStateService (URL-addressable blade).
-useTableQueryPersistence<T>({
-  props,
-  internalSearchValue,
-});
 
 // Infinite scroll handler
 const handleContentScroll = (e: Event) => {

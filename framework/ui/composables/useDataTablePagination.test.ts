@@ -1,6 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
 import { ref, computed } from "vue";
+import { defineComponent, h, nextTick } from "vue";
+import { mount } from "@vue/test-utils";
 import { mountWithSetup } from "@framework/test-helpers";
+import { TableQueryStateKey } from "@core/blade-navigation/table-query-state";
+import type { ITableQueryStateService } from "@core/blade-navigation/table-query-state";
 import { useDataTablePagination } from "./useDataTablePagination";
 
 describe("useDataTablePagination", () => {
@@ -63,10 +67,10 @@ describe("useDataTablePagination", () => {
       const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(100), pageSize: 20 }));
       result.setPage(3);
       expect(result.currentPage).toBe(3);
-      expect(result.skip).toBe(40); // (3-1)*20
+      expect(result.skip).toBe(40);
     });
 
-    it("does NOT fire onPageChange (pull-restore seed)", () => {
+    it("does NOT fire onPageChange", () => {
       const onPageChange = vi.fn();
       const { result } = mountWithSetup(() =>
         useDataTablePagination({ totalCount: ref(100), pageSize: 20, onPageChange }),
@@ -142,6 +146,52 @@ describe("useDataTablePagination", () => {
       expect(result.skip).toBe(40); // (3-1)*20
       size.value = 50;
       expect(result.skip).toBe(100); // (3-1)*50
+    });
+  });
+
+  describe("stateKey URL sync", () => {
+    function harness(
+      service: ITableQueryStateService | undefined,
+      onPageChange?: (s: { page: number; skip: number }) => void,
+    ) {
+      let result!: ReturnType<typeof useDataTablePagination>;
+      const Comp = defineComponent({
+        setup() {
+          result = useDataTablePagination({
+            stateKey: "offers_list",
+            totalCount: ref(100),
+            pageSize: 20,
+            onPageChange,
+          });
+          return () => h("div");
+        },
+      });
+      mount(Comp, { global: { provide: { [TableQueryStateKey as symbol]: service } } });
+      return result;
+    }
+
+    it("seeds currentPage from the restored URL slice without firing onPageChange", () => {
+      const read = vi.fn(() => ({ page: 3 }));
+      const onPageChange = vi.fn();
+      const result = harness({ read, write: vi.fn() }, onPageChange);
+      expect(read).toHaveBeenCalledWith("offers_list");
+      expect(result.currentPage).toBe(3);
+      expect(onPageChange).not.toHaveBeenCalled();
+    });
+
+    it("writes the slice on page change (page 1 clears the param)", async () => {
+      const write = vi.fn();
+      const result = harness({ read: () => ({ page: 3 }), write });
+      await nextTick();
+      expect(write).not.toHaveBeenCalled();
+
+      result.goToPage(4);
+      await nextTick();
+      expect(write).toHaveBeenCalledWith("offers_list", { page: 4 });
+
+      result.goToPage(1);
+      await nextTick();
+      expect(write).toHaveBeenCalledWith("offers_list", { page: undefined });
     });
   });
 });

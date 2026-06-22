@@ -11,21 +11,21 @@ Replace the imperative `VcTable` component (columns array, manual sort handlers,
 
 Full prop/event mapping:
 
-| VcTable prop/event         | VcDataTable equivalent                           |
-| -------------------------- | ------------------------------------------------ |
-| `:columns="columns"`       | `<VcColumn>` child components (see RULE 2)       |
-| `:selected-item-id="id"`   | `v-model:active-item-id="id"`                    |
-| `:sort="sortExpression"`   | `v-model:sort-field` + `v-model:sort-order`      |
-| `:multiselect="true"`      | `:selection-mode="'multiple'"`                   |
-| `@selection-changed="fn"`  | `v-model:selection="ref"`                        |
-| `:search-value="val"`      | `:searchable="true"` (internal state)            |
-| `@search:change="fn"`      | `@search="fn"`                                   |
-| `@item-click="fn"`         | `@row-click="fn"` (different signature)          |
-| `@header-click="fn"`       | Remove (sort is declarative via v-model)         |
-| `@scroll:ptr="fn"`         | `:pull-to-refresh="true"` + `@pull-refresh="fn"` |
-| `:pages` + `:current-page` | `:pagination="{ currentPage, pages }"`           |
-| `:active-filter-count`     | Remove (managed by global-filters internally)    |
-| `<!--@vue-generic {T}-->`  | Remove (no longer needed)                        |
+| VcTable prop/event         | VcDataTable equivalent                                                  |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `:columns="columns"`       | `<VcColumn>` child components (see RULE 2)                              |
+| `:selected-item-id="id"`   | `v-model:active-item-id="id"`                                           |
+| `:sort="sortExpression"`   | `v-model:sort-field` + `v-model:sort-order`                             |
+| `:multiselect="true"`      | `:selection-mode="'multiple'"`                                          |
+| `@selection-changed="fn"`  | `v-model:selection="ref"`                                               |
+| `:search-value="val"`      | `v-model:search-value` bound to `useTableSearch({ stateKey? })`         |
+| `@search:change="fn"`      | `@search="fn"` (or drop; use watcher on `searchValue`)                  |
+| `@item-click="fn"`         | `@row-click="fn"` (different signature)                                 |
+| `@header-click="fn"`       | Remove (sort is declarative via v-model)                                |
+| `@scroll:ptr="fn"`         | `:pull-to-refresh="true"` + `@pull-refresh="fn"`                        |
+| `:pages` + `:current-page` | `:pagination="pagination"` from `useDataTablePagination({ stateKey? })` |
+| `:active-filter-count`     | Remove (managed by global-filters internally)                           |
+| `<!--@vue-generic {T}-->`  | Remove (no longer needed)                                               |
 
 **BEFORE:**
 
@@ -310,7 +310,7 @@ The Props interface keeps `columns` — the parent still passes column definitio
 
 ## RULE 3: Sort Composable Replacement
 
-Replace `useTableSort` with `useDataTableSort`. The new composable returns `sortField` and `sortOrder` as separate refs that bind directly to `v-model:sort-field` and `v-model:sort-order`. Remove the `onHeaderClick` handler entirely.
+Replace `useTableSort` with `useDataTableSort`. The new composable returns `sortField` and `sortOrder` as separate refs that bind directly to `v-model:sort-field` and `v-model:sort-order`. Remove the `onHeaderClick` handler entirely. Pass `stateKey` to persist sort to the blade URL (opt-in; omit for no URL persistence).
 
 **BEFORE:**
 
@@ -339,6 +339,7 @@ watch(sortExpression, async () => {
 import { useDataTableSort } from "@vc-shell/framework";
 
 const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: "my_list", // optional: persists sort to blade URL
   initialField: "createdDate",
   initialDirection: "DESC",
 });
@@ -684,9 +685,13 @@ Key points:
 - The `@filter` event fires when the user applies filters. The `event.filters` object is keyed by filter `id`, with values matching the selected option values.
 - The active filter count badge is managed internally by VcDataTable — no need for a manual `activeFilterCount` computed.
 
-## RULE 8: Pagination — Manual Calculation → useDataTablePagination
+## RULE 8: Pagination and Search — useDataTablePagination + useTableSearch
 
 Replace manual `pages`/`currentPage` computed properties and `@pagination-click` handlers with the `useDataTablePagination` composable. The composable manages skip/page math internally and returns a reactive pagination object that VcDataTable consumes directly.
+
+Pass `stateKey` to persist the current page to the blade URL (opt-in). The table `state-key` prop is column-layout persistence only and does not control URL query state.
+
+For search, replace a bare `ref("")` with `useTableSearch({ stateKey? })`. The returned `searchValue` ref binds to `v-model:search-value` on VcDataTable. With `stateKey`, the keyword is persisted to the blade URL. Without `stateKey`, it behaves like a plain ref.
 
 **BEFORE (composable):**
 
@@ -733,6 +738,7 @@ export function useMyList(options?: { pageSize?: number }) {
   });
 
   const pagination = useDataTablePagination({
+    stateKey: "my_list", // optional: persists current page to blade URL
     pageSize,
     totalCount: computed(() => searchResult.value?.totalCount ?? 0),
     onPageChange: ({ skip }) => loadItems({ ...searchQuery.value, skip }),
@@ -778,12 +784,15 @@ const { items, pagination, loadItems, loading } = useMyList();
 - `totalCount`, `pages`, `currentPage` computed from composable return
 - Manual `onPaginationClick` function in blade pages
 - Manual `skip` calculation `(page - 1) * pageSize`
+- Any `useTableQueryPersistence` or `useTableQueryState().read()` calls — URL query persistence is now handled by `stateKey` on the composables
 
 **What to add:**
 
-- `useDataTablePagination` import in composable
+- `useDataTablePagination` import in composable (with optional `stateKey` for URL persistence)
+- `useTableSearch({ stateKey? })` in the blade to replace a bare `ref("")` for search
 - `pagination` object in composable return
 - `:pagination="pagination"` and `@pagination-click="pagination.goToPage"` in template
+- `v-model:search-value="searchValue"` from `useTableSearch` in template
 
 ## Verification
 

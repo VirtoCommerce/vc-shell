@@ -20,12 +20,14 @@ Generic worked example for a typical list blade (search, sort, pagination, row a
       class="tw-grow tw-basis-0"
       :loading="loading"
       :items="xxxList"
-      :total-count="totalCount"
-      :pagination="{ currentPage, pages }"
+      :total-count="pagination.totalCount"
+      :pagination="pagination"
       v-model:active-item-id="selectedItemId"
       state-key="xxx_list"
       v-model:sort-field="sortField"
       v-model:sort-order="sortOrder"
+      v-model:search-value="searchValue"
+      :searchable="true"
       :pull-to-refresh="true"
       :empty-state="{
         icon: 'lucide-<icon>',
@@ -34,7 +36,7 @@ Generic worked example for a typical list blade (search, sort, pagination, row a
         actionHandler: onAddItem,
       }"
       @row-click="onItemClick"
-      @pagination-click="onPaginationClick"
+      @pagination-click="pagination.goToPage"
       @pull-refresh="reload"
     >
       <!-- Each VcColumn is declared explicitly in the template (NOT via v-for).
@@ -87,9 +89,11 @@ Generic worked example for a typical list blade (search, sort, pagination, row a
 
 **Key VcDataTable props:**
 
-- `state-key` — unique string key for persisting column widths/order/visibility to localStorage. Use snake_case module name (e.g., `"team_list"`, `"catalog_list"`).
+- `state-key` — unique string key for persisting column widths/order/visibility to localStorage. Use snake_case module name (e.g., `"team_list"`, `"catalog_list"`). This prop controls column layout only — URL query persistence (sort/search/page) comes from the composables' `stateKey` option.
 - `v-model:active-item-id` — highlights the currently open row. Bind to `selectedItemId` ref.
 - `v-model:sort-field` and `v-model:sort-order` — two-way sort binding from `useDataTableSort`.
+- `v-model:search-value` and `:searchable="true"` — two-way search binding from `useTableSearch`.
+- `:pagination="pagination"` and `@pagination-click="pagination.goToPage"` — pass the reactive object from `useDataTablePagination` directly.
 - `:pull-to-refresh="true"` — enables mobile pull-to-refresh gesture.
 - `:empty-state` — object with `icon`, `title`, `actionLabel`, `actionHandler`.
 
@@ -191,7 +195,8 @@ If the API defines an enum of statuses, populate the map from those values. If s
 ```vue
 <script lang="ts" setup>
 import { ref, computed, watch, onMounted } from "vue";
-import { IBladeToolbar, useBlade, useDataTableSort } from "@vc-shell/framework";
+import { IBladeToolbar, useBlade, useDataTableSort, useDataTablePagination, useTableSearch } from "@vc-shell/framework";
+import { debounce } from "lodash-es";
 import useXxxs from "../composables/useXxxs";
 import { useI18n } from "vue-i18n";
 
@@ -211,19 +216,32 @@ defineBlade({
 // 2. Core composables
 const { openBlade, exposeToChildren, param } = useBlade();
 const { t } = useI18n({ useScope: "global" });
-const { getXxxs, searchQuery, loading, xxxList, currentPage, pages, totalCount } = useXxxs();
+const { getXxxs, loading, xxxList, totalCount } = useXxxs();
 
-// 3. Sort — provides sortField, sortOrder (for VcDataTable v-model), sortExpression (string for API)
+// 3. Sort — stateKey persists sort to blade URL; omit stateKey to opt out
 const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: "xxx_list",
   initialField: "createdDate",
   initialDirection: "DESC",
 });
 
-// 4. UI state
+// 4. Search — stateKey persists keyword to blade URL; omit stateKey to opt out
+const { searchValue } = useTableSearch({ stateKey: "xxx_list" });
+
+// 5. Pagination — stateKey persists current page to blade URL; omit stateKey to opt out
+// Note: state-key on <VcDataTable> is column-layout persistence only (localStorage).
+// URL query persistence (sort/search/page) is controlled by the stateKey option here.
+const pagination = useDataTablePagination({
+  stateKey: "xxx_list",
+  pageSize: 20,
+  totalCount,
+});
+
+// 6. UI state
 const selectedItemId = ref<string | undefined>();
 const title = computed(() => t("XXX.PAGES.LIST.TITLE"));
 
-// 5. Toolbar
+// 7. Toolbar
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "refresh",
@@ -241,7 +259,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
 ]);
 
-// 6. Status variant mapping (if status column exists)
+// 8. Status variant mapping (if status column exists)
 const statusVariant = (status: string | undefined): "info" | "warning" | "danger" | "success" | "primary" => {
   const map: Record<string, "info" | "warning" | "danger" | "success" | "primary"> = {
     // TODO: adjust status variants to match your API statuses
@@ -256,12 +274,23 @@ const statusVariant = (status: string | undefined): "info" | "warning" | "danger
   return map[status ?? ""] ?? "info";
 };
 
-// 7. Sort reactivity — reload when sort changes
-watch(sortExpression, async (value) => {
-  await getXxxs({ ...searchQuery.value, sort: value });
-});
+// 9. Load function — explicit; called on mount and by watchers
+const load = async () => {
+  await getXxxs({
+    sort: sortExpression.value,
+    keyword: searchValue.value || undefined,
+    skip: pagination.skip,
+    take: 20,
+  });
+};
 
-// 8. Track selected row when param changes (e.g., navigating directly to URL)
+// 10. Reset to page 1 when search changes, then reload
+watch(searchValue, () => pagination.setPage(1));
+
+// 11. Reload when sort, search, or page changes (debounced to coalesce rapid changes)
+watch([sortExpression, searchValue, () => pagination.skip], debounce(load, 300));
+
+// 12. Track selected row when param changes (e.g., navigating directly to URL)
 watch(
   () => param.value,
   () => {
@@ -270,30 +299,15 @@ watch(
   { immediate: true },
 );
 
-// 9. Load data on mount
-onMounted(async () => {
-  await reload();
-});
+// 13. Load data on mount
+onMounted(() => load());
 
-// 10. Reload — reloads current page with current sort
+// 14. Reload helper — used by toolbar and exposed to child blades
 const reload = async () => {
-  await getXxxs({
-    ...searchQuery.value,
-    skip: (currentPage.value - 1) * (searchQuery.value?.take ?? 20),
-    sort: sortExpression.value,
-  });
+  await load();
 };
 
-// 11. Pagination
-const onPaginationClick = async (page: number) => {
-  await getXxxs({
-    ...searchQuery.value,
-    skip: (page - 1) * (searchQuery.value?.take ?? 20),
-    sort: sortExpression.value,
-  });
-};
-
-// 12. Row click → open details blade
+// 15. Row click → open details blade
 const onItemClick = (event: { data: { id?: string } }) => {
   openBlade({
     name: "XxxDetails",
@@ -310,14 +324,14 @@ const onItemClick = (event: { data: { id?: string } }) => {
   });
 };
 
-// 13. Add new item — open details blade with no param (creates new)
+// 16. Add new item — open details blade with no param (creates new)
 function onAddItem() {
   openBlade({
     name: "XxxDetails",
   });
 }
 
-// 14. Expose reload to child blades so details can trigger list refresh after save/delete
+// 17. Expose reload to child blades so details can trigger list refresh after save/delete
 exposeToChildren({ reload });
 </script>
 ```
@@ -334,6 +348,7 @@ exposeToChildren({ reload });
 
 ```ts
 const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: "xxx_list", // optional: persists sort to blade URL
   initialField: "createdDate",
   initialDirection: "DESC",
 });
@@ -342,16 +357,45 @@ const { sortField, sortOrder, sortExpression } = useDataTableSort({
 - `sortField` — reactive ref, two-way bound to `VcDataTable` via `v-model:sort-field`
 - `sortOrder` — reactive ref (`"ASC"` | `"DESC"`), two-way bound via `v-model:sort-order`
 - `sortExpression` — computed string `"field:DIR"` (e.g., `"createdDate:DESC"`), passed to the API
+- `stateKey` — when provided, the composable reads the initial sort from the URL and writes back on change
 
-### Sort watcher pattern
+### `useTableSearch` — search with optional URL persistence
 
 ```ts
-watch(sortExpression, async (value) => {
-  await getXxxs({ ...searchQuery.value, sort: value });
+const { searchValue } = useTableSearch({ stateKey: "xxx_list" });
+```
+
+- Returns `searchValue` ref, two-way bound via `v-model:search-value` on `VcDataTable`.
+- With `stateKey`, restores and persists the keyword to the blade URL.
+- Without `stateKey`, behaves like a plain `ref("")`.
+
+### `useDataTablePagination` — pagination with optional URL persistence
+
+```ts
+const pagination = useDataTablePagination({
+  stateKey: "xxx_list", // optional: persists current page to blade URL
+  pageSize: 20,
+  totalCount,
 });
 ```
 
-Watch `sortExpression` (not `sortField`/`sortOrder` separately) to trigger a reload whenever sort changes.
+- Pass `pagination` directly as `:pagination="pagination"` and `@pagination-click="pagination.goToPage"`.
+- Access `pagination.skip` for API calls, `pagination.setPage(1)` to reset on search change.
+- `stateKey` persists the current page to the blade URL; omit to opt out.
+- The table `state-key` prop is column-layout persistence (localStorage) only and is independent.
+
+### Load + watcher pattern
+
+```ts
+const load = async () => {
+  await getXxxs({ sort: sortExpression.value, keyword: searchValue.value || undefined, skip: pagination.skip, take: 20 });
+};
+watch(searchValue, () => pagination.setPage(1));
+watch([sortExpression, searchValue, () => pagination.skip], debounce(load, 300));
+onMounted(() => load());
+```
+
+Watch `[sortExpression, searchValue, () => pagination.skip]` to reload whenever any query dimension changes. Reset to page 1 when search changes before the reload watcher fires.
 
 ### `exposeToChildren`
 

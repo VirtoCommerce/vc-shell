@@ -46,10 +46,11 @@ const { sortField, sortOrder, sortExpression, resetSort } = useDataTableSort({
 
 ### Parameters (Options)
 
-| Option             | Type              | Default     | Description                       |
-| ------------------ | ----------------- | ----------- | --------------------------------- |
-| `initialField`     | `string`          | `undefined` | Column field to sort by initially |
-| `initialDirection` | `"ASC" \| "DESC"` | `undefined` | Initial sort direction            |
+| Option             | Type                  | Default     | Description                                                                |
+| ------------------ | --------------------- | ----------- | -------------------------------------------------------------------------- |
+| `stateKey`         | `string \| undefined` | `undefined` | When set, restores and persists sort to the blade URL query under this key |
+| `initialField`     | `string`              | `undefined` | Column field to sort by initially                                          |
+| `initialDirection` | `"ASC" \| "DESC"`     | `undefined` | Initial sort direction                                                     |
 
 ### Returns
 
@@ -74,26 +75,25 @@ When `sortOrder` is `0`, `sortExpression` returns `undefined` regardless of `sor
 
 ```vue
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useDataTableSort } from "@vc-shell/framework";
 
 const { sortField, sortOrder, sortExpression, resetSort } = useDataTableSort({
+  stateKey: "products_list",
   initialField: "createdDate",
   initialDirection: "DESC",
 });
 
 const items = ref([]);
 const loading = ref(false);
-const currentPage = ref(1);
-const PAGE_SIZE = 20;
 
-async function loadItems(query: { sort?: string; skip?: number }) {
+async function loadItems() {
   loading.value = true;
   try {
     const response = await api.searchProducts({
-      sort: query.sort, // e.g. "createdDate:DESC" or undefined
-      skip: query.skip ?? 0,
-      take: PAGE_SIZE,
+      sort: sortExpression.value, // e.g. "createdDate:DESC" or undefined
+      skip: 0,
+      take: 20,
     });
     items.value = response.results;
   } finally {
@@ -101,13 +101,8 @@ async function loadItems(query: { sort?: string; skip?: number }) {
   }
 }
 
-// Load from one watcher that reads sort together with search and page, so changing
-// several at once is a single request. { immediate: true } also does the first load.
-watch(
-  () => ({ sort: sortExpression.value, skip: (currentPage.value - 1) * PAGE_SIZE }),
-  (query) => loadItems(query),
-  { immediate: true },
-);
+onMounted(() => loadItems());
+watch(sortExpression, () => loadItems());
 </script>
 
 <template>
@@ -141,13 +136,13 @@ watch(
 - **Sort expression format**: `sortExpression` returns `"field:DIRECTION"` when both `sortField` and a non-zero `sortOrder` are set, otherwise `undefined`. This format is directly compatible with VirtoCommerce Platform search endpoints.
 - **Reset behavior**: `resetSort()` restores `sortField` and `sortOrder` to the values passed at construction time. If no initial options were provided, both are cleared.
 - **Numeric order convention**: `VcDataTable` uses PrimeVue's numeric sort order convention (`1`/`-1`/`0`). This composable encapsulates the mapping so call sites never need to handle the numeric values directly.
-- **Stateless regarding data**: The composable only manages the sort field and direction. Read `sortExpression` from the same loader watcher that reads search and page, instead of giving sort its own `watch(sortExpression, load)`. See VcDataTable → URL query persistence.
+- **Stateless regarding data**: The composable only manages the sort field and direction. Combine it with your own data-fetching logic using `watch(sortExpression, ...)`.
+- **URL state (stateKey)**: When `stateKey` is provided, the composable reads its slice from the blade URL query on creation and writes back on every change (via `router.replace`). Without `stateKey`, behavior is unchanged -- `sortField` and `sortOrder` are plain refs with no URL interaction.
 
 ## Tips
 
 - Always mark columns as `sortable` in your `<VcColumn>` definitions for the sort indicator icon to appear.
-- Use `{ immediate: true }` on the combined loader watcher to trigger the initial (or URL-restored) data load with the correct sort on mount.
-- On reload, seed `sortField`/`sortOrder` from `useTableQueryState(stateKey).read().sort` (`"field:DIR"`) before the loader watcher, so restore costs a single request.
+- Use `{ immediate: true }` on the `watch(sortExpression, ...)` call to trigger the initial data load with the correct sort on mount.
 - Call `resetSort()` alongside any "clear all filters" action to keep sort state consistent with the rest of the filter UI.
 
 ## Related

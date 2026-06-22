@@ -1032,7 +1032,7 @@ async function loadNextPage() {
 !!! tip "Use unique state keys"
 Every table in your application must have a distinct `state-key`. Two tables sharing the same key will silently overwrite each other's persisted column widths, order, and hidden/shown column lists.
 
-Persist column widths, column order, and column visibility across page reloads. Column layout is stored in `localStorage`/`sessionStorage` (keyed by `state-key`). Sort, search, and the current page are persisted separately — to the **URL query** — automatically when the table is rendered inside a URL-addressable blade (see [URL query persistence](#url-query-persistence) below). Selection, column filters, and other transient state are session-scoped and are deliberately excluded from any persistence:
+Persist column widths, column order, and column visibility across page reloads. Column layout is stored in `localStorage`/`sessionStorage` (keyed by `state-key`). Sort, search, and the current page are NOT persisted by the table itself -- use the state composables with a matching `stateKey` instead (see [URL query persistence](#url-query-persistence) below). Selection, column filters, and other transient state are session-scoped and are deliberately excluded from any persistence:
 
 ```vue
 <VcDataTable :items="products" state-key="product-list">
@@ -1067,58 +1067,78 @@ Listen to state events:
 
 ### URL query persistence
 
-When a table is rendered inside a URL-addressable blade (a workspace or routable blade whose address appears in the address bar), its sort, search, and current page are persisted to the URL query string. Reloading the page or sharing the link restores that view.
+Sort, search, and the current page are owned by the state composables, not by `VcDataTable`. The `state-key` prop on `VcDataTable` controls column-layout persistence (localStorage/sessionStorage) only.
 
-Writing the view state to the URL is automatic — you do not wire it up. Tables outside a blade (or in a blade with no URL) do not persist (no-op). Reading it back on reload is done by the page (see below).
+To persist query state to the blade URL, use `useDataTableSort`, `useTableSearch`, and `useDataTablePagination` with a matching `stateKey`. Each composable restores its slice from the URL on creation and persists changes via `router.replace` (no history entries added).
 
-- **Namespacing:** query keys are prefixed with the table's `state-key` if set, otherwise with the blade's URL segment — e.g. `?offers_sort=name:DESC&offers_search=foo&offers_page=2`. Give each table a unique `state-key` when several tables can be visible at once (the same rule as column-layout persistence).
-- **Keys:** `<ns>_sort` (`field:ASC` / `field:DESC`), `<ns>_search`, `<ns>_page` (1-based).
-- **History:** changes use `router.replace`, so they do not add browser-history entries.
-- **Scope:** only sort, search, and page. Column layout still uses `localStorage`/`sessionStorage` (above); column filters and selection are not persisted.
+- **Namespacing:** URL keys are prefixed with the `stateKey` value -- e.g. `?offers_list_sort=name:DESC&offers_list_search=foo&offers_list_page=2`. Use the same string for all three composables on a given page.
+- **Keys:** `<stateKey>_sort` (`field:ASC` / `field:DESC`), `<stateKey>_search`, `<stateKey>_page` (1-based).
+- **Scope:** sort, search, and page only. Column layout still uses localStorage/sessionStorage; column filters and selection are not persisted.
 
-The page reads the persisted values with `useTableQueryState(stateKey)`, seeds its sort/search/page refs in `setup`, and loads once. The table does not push the restored values back into the page, so a reload runs a single request rather than one per restored field.
+Canonical list-page pattern:
 
-```ts
-import { ref, watch } from "vue";
-import { useDataTableSort, useTableQueryState, useFunctions } from "@vc-shell/framework";
+```vue
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from "vue";
+import { useDataTableSort, useDataTablePagination, useTableSearch } from "@vc-shell/framework";
 
-const PAGE_SIZE = 20;
-const { debounce } = useFunctions();
+const STATE_KEY = "offers_list";
+
 const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: STATE_KEY,
   initialField: "createdDate",
   initialDirection: "DESC",
 });
-const searchValue = ref<string>();
-const currentPage = ref(1);
+const { searchValue } = useTableSearch({ stateKey: STATE_KEY });
 
-// Restore from the URL, then load once.
-const restored = useTableQueryState("offers_list").read();
-if (restored.sort) {
-  const [field, dir] = restored.sort.split(":");
-  sortField.value = field;
-  sortOrder.value = dir === "DESC" ? -1 : 1;
-}
-if (restored.search) searchValue.value = restored.search;
-if (restored.page) currentPage.value = restored.page;
+const searchResult = ref<{ results: Offer[]; totalCount: number }>();
+const totalCount = computed(() => searchResult.value?.totalCount ?? 0);
 
-function load() {
-  return loadItems({
+const pagination = useDataTablePagination({
+  stateKey: STATE_KEY,
+  pageSize: 20,
+  totalCount,
+});
+
+async function load() {
+  searchResult.value = await api.searchOffers({
     sort: sortExpression.value,
-    keyword: searchValue.value || undefined,
-    skip: (currentPage.value - 1) * PAGE_SIZE,
+    keyword: searchValue.value,
+    skip: pagination.skip,
+    take: pagination.pageSize,
   });
 }
 
-load();
-watch(searchValue, () => (currentPage.value = 1));
-watch([sortExpression, searchValue, currentPage], debounce(load, 300));
+onMounted(() => load());
+watch(sortExpression, () => load());
+</script>
 
-function onPaginationClick(page: number) {
-  currentPage.value = page;
-}
+<template>
+  <VcDataTable
+    :items="searchResult?.results ?? []"
+    :total-count="pagination.totalCount"
+    :pagination="pagination"
+    v-model:sort-field="sortField"
+    v-model:sort-order="sortOrder"
+    v-model:search-value="searchValue"
+    @pagination-click="pagination.goToPage"
+    state-key="offers_list"
+  >
+    <VcColumn
+      id="name"
+      header="Name"
+      sortable
+    />
+    <VcColumn
+      id="createdDate"
+      header="Created"
+      sortable
+    />
+  </VcDataTable>
+</template>
 ```
 
-If a blade cannot be reopened on reload (e.g. a non-routable blade, or an intermediate blade that is not on the restored URL path), its table query params have no owner — they are automatically dropped from the URL once the restored blades have mounted, so the address bar never accumulates stale query keys.
+The `state-key` on `VcDataTable` here persists column layout to localStorage; the `stateKey` passed to the composables persists query state to the URL. Both use the same string value but serve different purposes.
 
 ---
 

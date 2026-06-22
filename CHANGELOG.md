@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.11...v2.1.0) (2026-06-22)
+
+### Features
+
+- **use-blade:** expose activeChildParam for active-row highlighting (#243) ([519e7c8](https://github.com/VirtoCommerce/vc-shell/commit/519e7c8faae486a020c85d69968e9bb4d86f61a8)), closes [#243](https://github.com/VirtoCommerce/vc-shell/issues/243) [#242](https://github.com/VirtoCommerce/vc-shell/issues/242)
+- **vc-data-table:** opt-in URL-state table composables (#247) ([3a32dc4](https://github.com/VirtoCommerce/vc-shell/commit/3a32dc4372ad14f70e3c5c6b61a3aee5b0950e60)), closes [#247](https://github.com/VirtoCommerce/vc-shell/issues/247) [#246](https://github.com/VirtoCommerce/vc-shell/issues/246) [#246](https://github.com/VirtoCommerce/vc-shell/issues/246)
+
 ## [2.0.11](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.10...v2.0.11) (2026-06-22)
 
 ### Features

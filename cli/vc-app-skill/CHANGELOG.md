@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.11...v2.1.0) (2026-06-22)
+
+### Features
+
+- **vc-data-table:** opt-in URL-state table composables (#247) ([3a32dc4](https://github.com/VirtoCommerce/vc-shell/commit/3a32dc4372ad14f70e3c5c6b61a3aee5b0950e60)), closes [#247](https://github.com/VirtoCommerce/vc-shell/issues/247) [#246](https://github.com/VirtoCommerce/vc-shell/issues/246) [#246](https://github.com/VirtoCommerce/vc-shell/issues/246)
+
 ## [2.0.11](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.10...v2.0.11) (2026-06-22)
 
 **Note:** Version bump only for package @vc-shell/vc-app-skill

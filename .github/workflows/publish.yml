@@ -94,15 +94,19 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Build
-        run: yarn build
-
+      # Bump the version BEFORE building. buildInfo.ts inlines the version from
+      # package.json at build time, so the build must run after the bump for the
+      # banner to report the actually-published version (building first bakes in
+      # the pre-bump version).
       - name: Compute preview version
         id: version
         run: |
           yarn tsx scripts/compute-preview-version.ts \
             "${{ github.event.pull_request.number }}" \
             "${{ github.event.pull_request.head.sha }}"
+
+      - name: Build
+        run: yarn build
 
       - name: Publish preview packages
         # Auth is via OIDC (Trusted Publishing) — no NPM_TOKEN in scope here.
@@ -255,9 +259,9 @@ jobs:
       - name: Preflight checks
         run: yarn check
 
-      - name: Build
-        run: yarn build
-
+      # NB: the build runs inside release-it's `after:bump` hook (see
+      # .release-it.cjs), i.e. AFTER the version bump, so buildInfo.ts inlines the
+      # released version. Do not add a pre-bump `Build` step here.
       - name: Configure git user
         run: |
           git config user.name "vc-ci"

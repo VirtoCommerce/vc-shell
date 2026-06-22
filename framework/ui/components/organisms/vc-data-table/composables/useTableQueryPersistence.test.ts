@@ -6,7 +6,6 @@ import type { ITableQueryStateService } from "@core/blade-navigation/table-query
 import { useTableQueryPersistence } from "./useTableQueryPersistence";
 
 function harness(service: ITableQueryStateService | undefined, initialProps: Record<string, unknown> = {}) {
-  const emitted: Array<[string, unknown]> = [];
   const internalSearchValue = ref("");
 
   const Comp = defineComponent({
@@ -14,7 +13,6 @@ function harness(service: ITableQueryStateService | undefined, initialProps: Rec
     setup(props) {
       useTableQueryPersistence({
         props: props as never,
-        emit: ((event: string, value: unknown) => emitted.push([event, value])) as never,
         internalSearchValue,
       });
       return () => h("div");
@@ -33,30 +31,30 @@ function harness(service: ITableQueryStateService | undefined, initialProps: Rec
     global: { provide: { [TableQueryStateKey as symbol]: service } },
   });
 
-  return { wrapper, emitted, internalSearchValue };
+  return { wrapper, internalSearchValue };
 }
 
 describe("useTableQueryPersistence", () => {
   it("does nothing when no service is provided", async () => {
-    const { emitted } = harness(undefined, { pagination: { currentPage: 1, pages: 5 } });
+    const { internalSearchValue } = harness(undefined, { pagination: { currentPage: 1, pages: 5 } });
     await nextTick();
-    expect(emitted).toEqual([]);
+    expect(internalSearchValue.value).toBe("");
   });
 
-  it("seeds sort/search/page from the service on init", async () => {
+  // The composable does not push restore events to the page (the page reads state
+  // via useTableQueryState). The only restore effect here is seeding the search box.
+  it("seeds only the search box on init and does not write back", async () => {
+    const write = vi.fn();
     const service: ITableQueryStateService = {
       read: () => ({ sort: "name:DESC", search: "foo", page: 3 }),
-      write: vi.fn(),
+      write,
     };
-    const { emitted, internalSearchValue } = harness(service);
+    const { internalSearchValue } = harness(service);
+    await nextTick();
 
-    expect(emitted).toContainEqual(["update:sortField", "name"]);
-    expect(emitted).toContainEqual(["update:sortOrder", -1]);
-    expect(emitted).toContainEqual(["sort", { sortField: "name", sortOrder: -1 }]);
-    expect(emitted).toContainEqual(["update:searchValue", "foo"]);
-    expect(emitted).toContainEqual(["search", "foo"]);
-    expect(emitted).toContainEqual(["pagination-click", 3]);
     expect(internalSearchValue.value).toBe("foo");
+    // Restoring must not bounce the just-read values back into the URL.
+    expect(write).not.toHaveBeenCalled();
   });
 
   it("does NOT write back the value it just restored (echo dedup)", async () => {
@@ -64,7 +62,7 @@ describe("useTableQueryPersistence", () => {
     const service: ITableQueryStateService = { read: () => ({ page: 2 }), write };
     const { wrapper } = harness(service, { pagination: { currentPage: 1, pages: 5 } });
 
-    // Parent applies the restored page (echo) after the pagination-click emit.
+    // Parent applies the restored page (echo) after seeding its own refs.
     await wrapper.setProps({ pagination: { currentPage: 2, pages: 5 } });
     await nextTick();
 

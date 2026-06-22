@@ -277,6 +277,13 @@ const handleSwitchApp = (app: AppDescriptor) => {
   width: var(--app-bar-width);
   background-color: var(--app-bar-background);
   z-index: var(--z-layout-sidebar);
+  // Persistent right divider between the sidebar and the blade content. Rendered
+  // as a box-shadow (not a border) so it sits flush at the right edge, takes no
+  // layout space, and follows the animated width on collapse/expand. Kept on the
+  // base element so it is visible in both pinned and collapsed states — previously
+  // it was only on `--collapsed`, so the divider vanished when the sidebar was
+  // pinned open.
+  box-shadow: 1px 0 0 0 var(--app-bar-border);
 
   // Show collapse button on hover
   &:hover .sidebar-collapse-button {
@@ -286,7 +293,6 @@ const handleSwitchApp = (app: AppDescriptor) => {
 
   &--collapsed {
     width: var(--app-bar-collapsed-width);
-    box-shadow: 1px 0 0 0 var(--app-bar-border);
     transition:
       width var(--app-bar-transition-duration) var(--app-bar-hover-transition-timing-function),
       transform var(--app-bar-transition-duration) var(--app-bar-hover-transition-timing-function);

@@ -1067,16 +1067,56 @@ Listen to state events:
 
 ### URL query persistence
 
-When a table is rendered inside a **URL-addressable blade** (a workspace or routable blade whose address appears in the address bar), its **sort**, **search**, and **current page** are automatically persisted to the URL query string. Reloading the page — or sharing the link — restores that view.
+When a table is rendered inside a URL-addressable blade (a workspace or routable blade whose address appears in the address bar), its sort, search, and current page are persisted to the URL query string. Reloading the page or sharing the link restores that view.
 
-This works out of the box; you do not wire it up. The behavior is provided through the blade context: tables outside a blade (or in a blade with no URL) simply do not persist (no-op).
+Writing the view state to the URL is automatic — you do not wire it up. Tables outside a blade (or in a blade with no URL) do not persist (no-op). Reading it back on reload is done by the page (see below).
 
 - **Namespacing:** query keys are prefixed with the table's `state-key` if set, otherwise with the blade's URL segment — e.g. `?offers_sort=name:DESC&offers_search=foo&offers_page=2`. Give each table a unique `state-key` when several tables can be visible at once (the same rule as column-layout persistence).
 - **Keys:** `<ns>_sort` (`field:ASC` / `field:DESC`), `<ns>_search`, `<ns>_page` (1-based).
 - **History:** changes use `router.replace`, so they do not add browser-history entries.
 - **Scope:** only sort, search, and page. Column layout still uses `localStorage`/`sessionStorage` (above); column filters and selection are not persisted.
 
-On reload the restored values are applied through the table's normal `v-model:sort-field` / `v-model:sort-order` / `v-model:search-value` and `pagination-click` channels, so the owning blade loads data with the restored parameters without any extra code.
+The page reads the persisted values with `useTableQueryState(stateKey)`, seeds its sort/search/page refs in `setup`, and loads once. The table does not push the restored values back into the page, so a reload runs a single request rather than one per restored field.
+
+```ts
+import { ref, watch } from "vue";
+import { useDataTableSort, useTableQueryState, useFunctions } from "@vc-shell/framework";
+
+const PAGE_SIZE = 20;
+const { debounce } = useFunctions();
+const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  initialField: "createdDate",
+  initialDirection: "DESC",
+});
+const searchValue = ref<string>();
+const currentPage = ref(1);
+
+// Restore from the URL, then load once.
+const restored = useTableQueryState("offers_list").read();
+if (restored.sort) {
+  const [field, dir] = restored.sort.split(":");
+  sortField.value = field;
+  sortOrder.value = dir === "DESC" ? -1 : 1;
+}
+if (restored.search) searchValue.value = restored.search;
+if (restored.page) currentPage.value = restored.page;
+
+function load() {
+  return loadItems({
+    sort: sortExpression.value,
+    keyword: searchValue.value || undefined,
+    skip: (currentPage.value - 1) * PAGE_SIZE,
+  });
+}
+
+load();
+watch(searchValue, () => (currentPage.value = 1));
+watch([sortExpression, searchValue, currentPage], debounce(load, 300));
+
+function onPaginationClick(page: number) {
+  currentPage.value = page;
+}
+```
 
 If a blade cannot be reopened on reload (e.g. a non-routable blade, or an intermediate blade that is not on the restored URL path), its table query params have no owner — they are automatically dropped from the URL once the restored blades have mounted, so the address bar never accumulates stale query keys.
 

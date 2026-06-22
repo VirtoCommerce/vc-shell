@@ -22,6 +22,11 @@ export interface UseDataTablePaginationReturn {
   readonly totalCount: number;
   /** Navigate to a specific page. Fires onPageChange if provided. */
   goToPage: (page: number) => void;
+  /**
+   * Set the current page without firing onPageChange. Use to seed the page from a
+   * URL restore in setup, so the seed itself does not trigger a load.
+   */
+  setPage: (page: number) => void;
   /** Reset to page 1. Does NOT fire onPageChange. */
   reset: () => void;
 }
@@ -38,9 +43,13 @@ export function useDataTablePagination(options: UseDataTablePaginationOptions): 
     options.onPageChange?.({ page, skip: skip.value });
   }
 
+  function setPage(page: number) {
+    currentPage.value = page;
+  }
+
   function reset() {
     currentPage.value = 1;
   }
 
-  return reactive({ currentPage, pages, skip, pageSize, totalCount, goToPage, reset });
+  return reactive({ currentPage, pages, skip, pageSize, totalCount, goToPage, setPage, reset });
 }

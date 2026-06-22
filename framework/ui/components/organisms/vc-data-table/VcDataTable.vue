@@ -1018,7 +1018,6 @@ watch(
 // No-op unless a blade provides ITableQueryStateService (URL-addressable blade).
 useTableQueryPersistence<T>({
   props,
-  emit: emit as unknown as (event: string, value?: unknown) => void,
   internalSearchValue,
 });
 

@@ -41,23 +41,25 @@ const pagination = useDataTablePagination({
 
 ### Parameters (Options)
 
-| Option         | Type                                              | Default     | Description                                      |
-| -------------- | ------------------------------------------------- | ----------- | ------------------------------------------------ |
-| `totalCount`   | `MaybeRefOrGetter<number>`                        | _required_  | Total item count from API response               |
-| `pageSize`     | `MaybeRefOrGetter<number>`                        | `20`        | Items per page                                   |
-| `onPageChange` | `(state: { page: number; skip: number }) => void` | `undefined` | Event callback fired when `goToPage()` is called |
+| Option         | Type                                              | Default     | Description                                                                            |
+| -------------- | ------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------- |
+| `stateKey`     | `string \| undefined`                             | `undefined` | When set, restores and persists the current page to the blade URL query under this key |
+| `totalCount`   | `MaybeRefOrGetter<number>`                        | _required_  | Total item count from API response                                                     |
+| `pageSize`     | `MaybeRefOrGetter<number>`                        | `20`        | Items per page                                                                         |
+| `onPageChange` | `(state: { page: number; skip: number }) => void` | `undefined` | Event callback fired when `goToPage()` is called                                       |
 
 ### Returns (`reactive()` object)
 
-| Property      | Type                     | Description                                   |
-| ------------- | ------------------------ | --------------------------------------------- |
-| `currentPage` | `number`                 | Current 1-based page number (writable)        |
-| `pages`       | `number` (readonly)      | Total number of pages                         |
-| `skip`        | `number` (readonly)      | Current skip offset for API calls             |
-| `pageSize`    | `number` (readonly)      | Resolved page size                            |
-| `totalCount`  | `number` (readonly)      | Resolved total item count                     |
-| `goToPage`    | `(page: number) => void` | Navigate to page; fires `onPageChange`        |
-| `reset`       | `() => void`             | Reset to page 1; does NOT fire `onPageChange` |
+| Property      | Type                     | Description                                                                  |
+| ------------- | ------------------------ | ---------------------------------------------------------------------------- |
+| `currentPage` | `number`                 | Current 1-based page number (writable)                                       |
+| `pages`       | `number` (readonly)      | Total number of pages                                                        |
+| `skip`        | `number` (readonly)      | Current skip offset for API calls                                            |
+| `pageSize`    | `number` (readonly)      | Resolved page size                                                           |
+| `totalCount`  | `number` (readonly)      | Resolved total item count                                                    |
+| `goToPage`    | `(page: number) => void` | Navigate to page; fires `onPageChange`                                       |
+| `setPage`     | `(page: number) => void` | Set the page without firing `onPageChange` (used to seed from a URL restore) |
+| `reset`       | `() => void`             | Reset to page 1; does NOT fire `onPageChange`                                |
 
 All properties are auto-unwrapped by `reactive()` — no `.value` access needed in script or template.
 
@@ -65,30 +67,38 @@ All properties are auto-unwrapped by `reactive()` — no `.value` access needed 
 
 ```vue
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useDataTablePagination, useDataTableSort } from "@vc-shell/framework";
+
+const STATE_KEY = "products_list";
 
 // Data layer
 const searchResult = ref<{ results: Item[]; totalCount: number }>();
-const searchQuery = ref({ take: 20, skip: 0 });
 
-async function loadItems(query?: Partial<typeof searchQuery.value>) {
-  searchQuery.value = { ...searchQuery.value, ...query };
-  searchResult.value = await api.search(searchQuery.value);
+async function loadItems() {
+  searchResult.value = await api.search({
+    sort: sortExpression.value,
+    skip: pagination.skip,
+    take: pagination.pageSize,
+  });
 }
-
-// Pagination state
-const pagination = useDataTablePagination({
-  pageSize: 20,
-  totalCount: computed(() => searchResult.value?.totalCount ?? 0),
-  onPageChange: ({ skip }) => loadItems({ skip }),
-});
 
 // Sort state
 const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: STATE_KEY,
   initialField: "createdDate",
   initialDirection: "DESC",
 });
+
+// Pagination state
+const pagination = useDataTablePagination({
+  stateKey: STATE_KEY,
+  pageSize: 20,
+  totalCount: computed(() => searchResult.value?.totalCount ?? 0),
+});
+
+onMounted(() => loadItems());
+watch(sortExpression, () => loadItems());
 </script>
 
 <template>
@@ -150,11 +160,12 @@ Blade then simply binds:
 ## Details
 
 - **`reactive()` return**: The composable wraps its return in `reactive()`, so all `Ref`/`ComputedRef` properties are auto-unwrapped. Access with `pagination.pages` (not `pagination.pages.value`). This allows the object to be passed directly as `:pagination` prop to VcDataTable without intermediate conversion.
-- **Event callback, not load**: `onPageChange` is an event notification (like VueUse's `useOffsetPagination`). The composable does not know about data fetching — it just notifies.
+- **Event callback, not load**: `onPageChange` is an event notification (like VueUse's `useOffsetPagination`). The composable does not know about data fetching -- it just notifies.
 - **No auto-clamp**: When `totalCount` decreases (e.g. after deletion), `currentPage` is NOT automatically clamped. Call `reset()` or `goToPage(1)` explicitly after mutations.
 - **reset() is silent**: `reset()` sets `currentPage = 1` but does NOT fire `onPageChange`. This prevents accidental double-fetches when the consumer resets pagination during a reload.
-- **Pure without callback**: Omit `onPageChange` and the composable works as pure state — useful for unit tests or when the consumer prefers to watch properties reactively.
+- **Pure without callback**: Omit `onPageChange` and the composable works as pure state -- useful for unit tests or when the consumer prefers to watch properties reactively.
 - **Why `reactive()` and not `ref()`**: Pagination is a cohesive group of properties always used together (`pagination.xxx`). `reactive()` is the Vue-idiomatic choice for such objects. `useDataTableSort` returns `ref()`s because its properties are destructured and used with `v-model` individually.
+- **URL state (stateKey)**: When `stateKey` is provided, the composable reads the current page from the blade URL query on creation (via `setPage`, which does not fire `onPageChange`) and persists it on every `goToPage` call. Without `stateKey`, behavior is unchanged.
 
 ## Tips
 

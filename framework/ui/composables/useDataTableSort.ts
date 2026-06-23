@@ -1,4 +1,5 @@
-import { ref, computed, type Ref, type ComputedRef } from "vue";
+import { ref, computed, watch, inject, type Ref, type ComputedRef } from "vue";
+import { TableQueryStateKey } from "@core/blade-navigation/table-query-state";
 
 export type DataTableSortDirection = "ASC" | "DESC";
 export type DataTableSortOrder = 0 | 1 | -1;
@@ -8,6 +9,8 @@ export interface UseDataTableSortOptions {
   initialField?: string;
   /** Initial sort direction. Default: 'ASC' */
   initialDirection?: DataTableSortDirection;
+  /** When set, syncs sort to the blade URL query under this key. */
+  stateKey?: string;
 }
 
 export interface UseDataTableSortReturn {
@@ -48,6 +51,22 @@ export function useDataTableSort(options?: UseDataTableSortOptions): UseDataTabl
     if (!sortField.value || !dir) return undefined;
     return `${sortField.value}:${dir}`;
   });
+
+  if (options?.stateKey) {
+    const service = inject(TableQueryStateKey, undefined);
+    if (service) {
+      const restored = service.read(options.stateKey);
+      if (restored.sort) {
+        const [field, dir] = restored.sort.split(":");
+        if (field) {
+          sortField.value = field;
+          sortOrder.value = dir === "DESC" ? -1 : 1;
+        }
+      }
+      // Registered after seeding, so the restored value is the baseline (no bounce-back write).
+      watch(sortExpression, (value) => service.write(options.stateKey!, { sort: value }));
+    }
+  }
 
   const resetSort = () => {
     sortField.value = initialField;

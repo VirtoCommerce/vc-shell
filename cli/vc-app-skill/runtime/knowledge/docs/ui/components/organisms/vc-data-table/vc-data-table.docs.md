@@ -376,6 +376,8 @@ For server-side "select all" that includes items not currently visible:
 </VcDataTable>
 ```
 
+> **Opt-in.** The "Select all N items" banner is shown only when you bind `selectAllActive` (via `v-model:selectAllActive` or a one-way `:selectAllActive`). Its default is `undefined`, so a table that passes `totalCount` only for pagination never surfaces the banner.
+
 ```ts
 const allSelected = ref(false);
 
@@ -1030,7 +1032,7 @@ async function loadNextPage() {
 !!! tip "Use unique state keys"
 Every table in your application must have a distinct `state-key`. Two tables sharing the same key will silently overwrite each other's persisted column widths, order, and hidden/shown column lists.
 
-Persist column widths, column order, and column visibility across page reloads. Sort, filters, pagination, selection, and search input are session-scoped — they are deliberately excluded from the persisted state so the blade owns them through its own URL or store:
+Persist column widths, column order, and column visibility across page reloads. Column layout is stored in `localStorage`/`sessionStorage` (keyed by `state-key`). Sort, search, and the current page are NOT persisted by the table itself -- use the state composables with a matching `stateKey` instead (see [URL query persistence](#url-query-persistence) below). Selection, column filters, and other transient state are session-scoped and are deliberately excluded from any persistence:
 
 ```vue
 <VcDataTable :items="products" state-key="product-list">
@@ -1062,6 +1064,81 @@ Listen to state events:
 ```
 
 > **Tip:** Each table in your application should have a unique `state-key`. If two tables share the same key, they will overwrite each other's persisted state.
+
+### URL query persistence
+
+Sort, search, and the current page are owned by the state composables, not by `VcDataTable`. The `state-key` prop on `VcDataTable` controls column-layout persistence (localStorage/sessionStorage) only.
+
+To persist query state to the blade URL, use `useDataTableSort`, `useTableSearch`, and `useDataTablePagination` with a matching `stateKey`. Each composable restores its slice from the URL on creation and persists changes via `router.replace` (no history entries added).
+
+- **Namespacing:** URL keys are prefixed with the `stateKey` value -- e.g. `?offers_list_sort=name:DESC&offers_list_search=foo&offers_list_page=2`. Use the same string for all three composables on a given page.
+- **Keys:** `<stateKey>_sort` (`field:ASC` / `field:DESC`), `<stateKey>_search`, `<stateKey>_page` (1-based).
+- **Scope:** sort, search, and page only. Column layout still uses localStorage/sessionStorage; column filters and selection are not persisted.
+
+Canonical list-page pattern:
+
+```vue
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from "vue";
+import { useDataTableSort, useDataTablePagination, useTableSearch } from "@vc-shell/framework";
+
+const STATE_KEY = "offers_list";
+
+const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: STATE_KEY,
+  initialField: "createdDate",
+  initialDirection: "DESC",
+});
+const { searchValue } = useTableSearch({ stateKey: STATE_KEY });
+
+const searchResult = ref<{ results: Offer[]; totalCount: number }>();
+const totalCount = computed(() => searchResult.value?.totalCount ?? 0);
+
+const pagination = useDataTablePagination({
+  stateKey: STATE_KEY,
+  pageSize: 20,
+  totalCount,
+});
+
+async function load() {
+  searchResult.value = await api.searchOffers({
+    sort: sortExpression.value,
+    keyword: searchValue.value,
+    skip: pagination.skip,
+    take: pagination.pageSize,
+  });
+}
+
+onMounted(() => load());
+watch(sortExpression, () => load());
+</script>
+
+<template>
+  <VcDataTable
+    :items="searchResult?.results ?? []"
+    :total-count="pagination.totalCount"
+    :pagination="pagination"
+    v-model:sort-field="sortField"
+    v-model:sort-order="sortOrder"
+    v-model:search-value="searchValue"
+    @pagination-click="pagination.goToPage"
+    state-key="offers_list"
+  >
+    <VcColumn
+      id="name"
+      header="Name"
+      sortable
+    />
+    <VcColumn
+      id="createdDate"
+      header="Created"
+      sortable
+    />
+  </VcDataTable>
+</template>
+```
+
+The `state-key` on `VcDataTable` here persists column layout to localStorage; the `stateKey` passed to the composables persists query state to the URL. Both use the same string value but serve different purposes.
 
 ---
 
@@ -1345,15 +1422,15 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ### Selection
 
-| Prop                 | Type                     | Default | Description                                                                                       |
-| -------------------- | ------------------------ | ------- | ------------------------------------------------------------------------------------------------- |
-| `selection`          | `T \| T[]`               | --      | Selected item(s). Use with `v-model:selection`.                                                   |
-| `selectionMode`      | `"single" \| "multiple"` | --      | Row selection mode.                                                                               |
-| `isRowSelectable`    | `(data: T) => boolean`   | --      | Per-row function to disable selection.                                                            |
-| `compareSelectionBy` | `"equals" \| "field"`    | --      | Compare items by deep equality or by `dataKey` field.                                             |
-| `selectAll`          | `boolean`                | `false` | Enable "select all" header checkbox.                                                              |
-| `selectAllActive`    | `boolean`                | `false` | Whether "select all" (including non-visible items) is active. Use with `v-model:selectAllActive`. |
-| `activeItemId`       | `string`                 | --      | ID of the highlighted row. Use with `v-model:activeItemId`.                                       |
+| Prop                 | Type                     | Default     | Description                                                                                                                                                                                                  |
+| -------------------- | ------------------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `selection`          | `T \| T[]`               | --          | Selected item(s). Use with `v-model:selection`.                                                                                                                                                              |
+| `selectionMode`      | `"single" \| "multiple"` | --          | Row selection mode.                                                                                                                                                                                          |
+| `isRowSelectable`    | `(data: T) => boolean`   | --          | Per-row function to disable selection.                                                                                                                                                                       |
+| `compareSelectionBy` | `"equals" \| "field"`    | --          | Compare items by deep equality or by `dataKey` field.                                                                                                                                                        |
+| `selectAll`          | `boolean`                | `false`     | Enable "select all" header checkbox.                                                                                                                                                                         |
+| `selectAllActive`    | `boolean`                | `undefined` | "Select all" (including non-visible items) active state. Binding it (e.g. `v-model:selectAllActive`) opts the table into the cross-page "Select all N items" banner; left unbound, the banner never appears. |
+| `activeItemId`       | `string`                 | --          | ID of the highlighted row. Use with `v-model:activeItemId`.                                                                                                                                                  |
 
 ### Sorting
 

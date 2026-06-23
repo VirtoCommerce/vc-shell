@@ -1,6 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+import { defineComponent, h, nextTick } from "vue";
+import { mount } from "@vue/test-utils";
 import { mountWithSetup } from "@framework/test-helpers";
 import { useDataTableSort } from "./useDataTableSort";
+import { TableQueryStateKey } from "@core/blade-navigation/table-query-state";
+import type { ITableQueryStateService } from "@core/blade-navigation/table-query-state";
 
 describe("useDataTableSort", () => {
   describe("initialization", () => {
@@ -89,6 +93,56 @@ describe("useDataTableSort", () => {
       const { result } = mountWithSetup(() => useDataTableSort({ initialField: "name", initialDirection: "ASC" }));
       result.sortOrder.value = -1;
       expect(result.sortExpression.value).toBe("name:DESC");
+    });
+  });
+
+  describe("stateKey URL sync", () => {
+    function harness(service: ITableQueryStateService | undefined) {
+      let result!: ReturnType<typeof useDataTableSort>;
+      const Comp = defineComponent({
+        setup() {
+          result = useDataTableSort({ stateKey: "offers_list", initialField: "createdDate", initialDirection: "DESC" });
+          return () => h("div");
+        },
+      });
+      mount(Comp, { global: { provide: { [TableQueryStateKey as symbol]: service } } });
+      return result;
+    }
+
+    it("seeds sortField/sortOrder from the restored URL slice", () => {
+      const read = vi.fn(() => ({ sort: "name:DESC" }));
+      const result = harness({ read, write: vi.fn() });
+      expect(read).toHaveBeenCalledWith("offers_list");
+      expect(result.sortField.value).toBe("name");
+      expect(result.sortOrder.value).toBe(-1);
+      expect(result.sortExpression.value).toBe("name:DESC");
+    });
+
+    it("writes the slice on sort change but not for the just-restored value", async () => {
+      const write = vi.fn();
+      const result = harness({ read: () => ({ sort: "name:DESC" }), write });
+      await nextTick();
+      expect(write).not.toHaveBeenCalled();
+
+      result.sortField.value = "createdDate";
+      result.sortOrder.value = 1;
+      await nextTick();
+      expect(write).toHaveBeenCalledWith("offers_list", { sort: "createdDate:ASC" });
+    });
+
+    it("writes undefined when sort is cleared (sortOrder 0)", async () => {
+      const write = vi.fn();
+      const result = harness({ read: () => ({ sort: "name:DESC" }), write });
+      await nextTick();
+      result.sortOrder.value = 0;
+      await nextTick();
+      expect(write).toHaveBeenCalledWith("offers_list", { sort: undefined });
+    });
+
+    it("no-op when stateKey set but no service provided", () => {
+      const result = harness(undefined);
+      expect(result.sortField.value).toBe("createdDate");
+      expect(result.sortOrder.value).toBe(-1);
     });
   });
 });

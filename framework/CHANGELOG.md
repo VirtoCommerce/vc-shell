@@ -1,5 +1,22 @@
 # Changelog
 
+# [2.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.11...v2.1.0) (2026-06-22)
+
+### Features
+
+- **vc-data-table:** opt-in URL-state table composables (#247) ([3a32dc4](https://github.com/VirtoCommerce/vc-shell/commit/3a32dc4372ad14f70e3c5c6b61a3aee5b0950e60)), closes [#247](https://github.com/VirtoCommerce/vc-shell/issues/247) [#246](https://github.com/VirtoCommerce/vc-shell/issues/246) [#246](https://github.com/VirtoCommerce/vc-shell/issues/246)
+
+## [2.0.11](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.10...v2.0.11) (2026-06-22)
+
+### Features
+
+- **vc-data-table:** persist sort/search/pagination in the URL query (#240) ([889296f](https://github.com/VirtoCommerce/vc-shell/commit/889296f9c05157a8f7af1e6a3ac3e57893c653cb)), closes [#240](https://github.com/VirtoCommerce/vc-shell/issues/240)
+
+### Bug Fixes
+
+- **docs-sync:** resolve anchored cross-doc links and fix broken authored links (#241) ([32fabce](https://github.com/VirtoCommerce/vc-shell/commit/32fabce8e7e130e87cc9722486aaf00a6389ef12)), closes [#241](https://github.com/VirtoCommerce/vc-shell/issues/241)
+- **vc-data-table:** make cross-page "select all" banner opt-in (#244) ([0791f00](https://github.com/VirtoCommerce/vc-shell/commit/0791f002eacbda2865f13209ce8ef27559be447a)), closes [#244](https://github.com/VirtoCommerce/vc-shell/issues/244)
+
 ## [2.0.10](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.9...v2.0.10) (2026-06-15)
 
 **Note:** Version bump only for package @vc-shell/framework

@@ -115,6 +115,6 @@ This results in page names like `[Operations Console] Dashboard` instead of just
 ## Related
 
 - `vue3-application-insights` -- underlying plugin that initializes the Application Insights SDK
-- [useUserManagement](../useUserManagement/useUserManagement.docs.md) -- provides current user context for telemetry enrichment
+- `useUserManagement` -- provides current user context for telemetry enrichment
 - [useErrorHandler](../useErrorHandler/useErrorHandler.docs.md) -- automatically tracks exceptions to Application Insights
 - [useWebVitals](../useWebVitals/useWebVitals.docs.md) -- Core Web Vitals can be piped to Application Insights via a custom callback

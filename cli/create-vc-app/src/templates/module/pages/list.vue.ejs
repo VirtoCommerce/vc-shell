@@ -6,26 +6,28 @@
     width="50%"
   >
     <VcDataTable
+      v-model:search-value="searchValue"
+      v-model:sort-field="sortField"
+      v-model:sort-order="sortOrder"
       :items="data"
       :total-count="totalCount"
-      :current-page="currentPage"
-      :search-value="searchQuery"
+      :pagination="pagination"
+      :searchable="true"
       :state-key="'<%- ModuleNameScreamingSnake %>'"
-      @search:change="(val: string) => { searchQuery = val; getItems(); }"
-      @item-click="openDetails"
-      @pagination-click="(page: number) => { currentPage = page; getItems(); }"
+      @row-click="onRowClick"
+      @pagination-click="pagination.goToPage"
     >
       <!-- Add your columns here -->
-      <VcColumn id="name" :header="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.NAME')" sortable />
-      <VcColumn id="createdDate" :header="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.CREATED_DATE')" type="datetime" sortable />
+      <VcColumn id="name" :title="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.NAME')" sortable />
+      <VcColumn id="createdDate" :title="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.CREATED_DATE')" type="datetime" sortable />
     </VcDataTable>
   </VcBlade>
 </template>
 
 <script setup lang="ts">
-import { useBlade, type IBladeToolbar } from "@vc-shell/framework";
+import { useBlade, useDataTableSort, useTableSearch, useDataTablePagination, useFunctions, type IBladeToolbar } from "@vc-shell/framework";
 import { VcBlade, VcDataTable, VcColumn } from "@vc-shell/framework/ui";
-import { ref, onMounted } from "vue";
+import { ref, watch } from "vue";
 import use<%- ModuleNamePascalCase %>List from "../composables/useList";
 import { useI18n } from "vue-i18n";
 
@@ -42,22 +44,43 @@ defineBlade({
 
 const { t } = useI18n({ useScope: "global" });
 const { openBlade, exposeToChildren } = useBlade();
+const { debounce } = useFunctions();
 
-const {
-  data,
-  loading,
-  totalCount,
-  currentPage,
-  searchQuery,
-  getItems,
-} = use<%- ModuleNamePascalCase %>List();
+const PAGE_SIZE = 20;
+
+const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: "<%- ModuleNameScreamingSnake %>",
+  initialField: "createdDate",
+  initialDirection: "DESC",
+});
+
+const { data, loading, totalCount, getItems } = use<%- ModuleNamePascalCase %>List();
+
+const { searchValue } = useTableSearch({ stateKey: "<%- ModuleNameScreamingSnake %>" });
+const pagination = useDataTablePagination({ stateKey: "<%- ModuleNameScreamingSnake %>", pageSize: PAGE_SIZE, totalCount });
+
+function load() {
+  return getItems({
+    sort: sortExpression.value,
+    keyword: searchValue.value || undefined,
+    skip: pagination.skip,
+    take: PAGE_SIZE,
+  });
+}
+
+// One loader for sort/search/page. Debounced so typing doesn't fetch per keystroke.
+load();
+watch(searchValue, () => pagination.setPage(1));
+watch([sortExpression, searchValue, () => pagination.skip], debounce(load, 300));
+
+const reload = () => load();
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "refresh",
     title: t("<%- ModuleNameScreamingSnake %>.PAGES.LIST.TOOLBAR.REFRESH"),
     icon: "lucide-refresh-cw",
-    clickHandler: () => getItems(),
+    clickHandler: () => reload(),
   },
   {
     id: "add",
@@ -72,15 +95,14 @@ function openDetails(item?: { id?: string }) {
     name: "<%- ModuleNamePascalCase %>Details",
     param: item?.id,
     async onClose() {
-      await getItems();
+      await reload();
     },
   });
 }
 
-onMounted(async () => {
-  await getItems();
-})
+function onRowClick(event: { data: { id?: string } }) {
+  openDetails(event.data);
+}
 
-
-exposeToChildren({ reload: getItems });
+exposeToChildren({ reload });
 </script>

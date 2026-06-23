@@ -46,10 +46,11 @@ const { sortField, sortOrder, sortExpression, resetSort } = useDataTableSort({
 
 ### Parameters (Options)
 
-| Option             | Type              | Default     | Description                       |
-| ------------------ | ----------------- | ----------- | --------------------------------- |
-| `initialField`     | `string`          | `undefined` | Column field to sort by initially |
-| `initialDirection` | `"ASC" \| "DESC"` | `undefined` | Initial sort direction            |
+| Option             | Type                  | Default     | Description                                                                |
+| ------------------ | --------------------- | ----------- | -------------------------------------------------------------------------- |
+| `stateKey`         | `string \| undefined` | `undefined` | When set, restores and persists sort to the blade URL query under this key |
+| `initialField`     | `string`              | `undefined` | Column field to sort by initially                                          |
+| `initialDirection` | `"ASC" \| "DESC"`     | `undefined` | Initial sort direction                                                     |
 
 ### Returns
 
@@ -74,10 +75,11 @@ When `sortOrder` is `0`, `sortExpression` returns `undefined` regardless of `sor
 
 ```vue
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useDataTableSort } from "@vc-shell/framework";
 
 const { sortField, sortOrder, sortExpression, resetSort } = useDataTableSort({
+  stateKey: "products_list",
   initialField: "createdDate",
   initialDirection: "DESC",
 });
@@ -99,8 +101,8 @@ async function loadItems() {
   }
 }
 
-// Reload whenever sort changes; { immediate: true } loads data on mount
-watch(sortExpression, () => loadItems(), { immediate: true });
+onMounted(() => loadItems());
+watch(sortExpression, () => loadItems());
 </script>
 
 <template>
@@ -135,6 +137,7 @@ watch(sortExpression, () => loadItems(), { immediate: true });
 - **Reset behavior**: `resetSort()` restores `sortField` and `sortOrder` to the values passed at construction time. If no initial options were provided, both are cleared.
 - **Numeric order convention**: `VcDataTable` uses PrimeVue's numeric sort order convention (`1`/`-1`/`0`). This composable encapsulates the mapping so call sites never need to handle the numeric values directly.
 - **Stateless regarding data**: The composable only manages the sort field and direction. Combine it with your own data-fetching logic using `watch(sortExpression, ...)`.
+- **URL state (stateKey)**: When `stateKey` is provided, the composable reads its slice from the blade URL query on creation and writes back on every change (via `router.replace`). Without `stateKey`, behavior is unchanged -- `sortField` and `sortOrder` are plain refs with no URL interaction.
 
 ## Tips
 

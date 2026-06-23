@@ -103,15 +103,16 @@ Without the generic, `options.value` defaults to `Record<string, unknown> | unde
 
 These are reactive `ComputedRef` values that reflect the current blade's state. Accessing them outside blade context throws a runtime error.
 
-| Property   | Type                                               | Description                                                                                                                                                |
-| ---------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`       | `ComputedRef<string>`                              | The current blade's unique ID within the blade stack                                                                                                       |
-| `param`    | `ComputedRef<string \| undefined>`                 | Route parameter passed when the blade was opened                                                                                                           |
-| `options`  | `ComputedRef<TOptions \| undefined>`               | Additional options object passed to the blade. Type is `Record<string, unknown>` by default; provide a generic to get a typed ref: `useBlade<MyOptions>()` |
-| `query`    | `ComputedRef<Record<string, string> \| undefined>` | URL query parameters scoped to this blade                                                                                                                  |
-| `closable` | `ComputedRef<boolean>`                             | `true` when this blade has a parent (i.e., can be closed)                                                                                                  |
-| `expanded` | `ComputedRef<boolean>`                             | `true` when this blade is the active (rightmost) blade                                                                                                     |
-| `name`     | `ComputedRef<string>`                              | The blade's registered component name                                                                                                                      |
+| Property           | Type                                               | Description                                                                                                                                                                                                                                                                                    |
+| ------------------ | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`               | `ComputedRef<string>`                              | The current blade's unique ID within the blade stack                                                                                                                                                                                                                                           |
+| `param`            | `ComputedRef<string \| undefined>`                 | Route parameter passed when the blade was opened                                                                                                                                                                                                                                               |
+| `activeChildParam` | `ComputedRef<string \| undefined>`                 | The `param` of the direct child blade opened from this blade (the entity currently shown in the details pane), or `undefined`. Reactive and reload-safe. Bind it to a list table's `:active-item-id` to highlight the open entity's row — it stays correct across reloads, unlike a local ref. |
+| `options`          | `ComputedRef<TOptions \| undefined>`               | Additional options object passed to the blade. Type is `Record<string, unknown>` by default; provide a generic to get a typed ref: `useBlade<MyOptions>()`                                                                                                                                     |
+| `query`            | `ComputedRef<Record<string, string> \| undefined>` | URL query parameters scoped to this blade                                                                                                                                                                                                                                                      |
+| `closable`         | `ComputedRef<boolean>`                             | `true` when this blade has a parent (i.e., can be closed)                                                                                                                                                                                                                                      |
+| `expanded`         | `ComputedRef<boolean>`                             | `true` when this blade is the active (rightmost) blade                                                                                                                                                                                                                                         |
+| `name`             | `ComputedRef<string>`                              | The blade's registered component name                                                                                                                                                                                                                                                          |
 
 #### Navigation Methods (work everywhere)
 
@@ -385,6 +386,30 @@ onActivated(() => {
 onDeactivated(() => {
   // another blade opened on top — e.g., pause polling
 });
+```
+
+### Highlight the row of the open child blade
+
+Bind `activeChildParam` to the table's `active-item-id` so the row of the currently open details blade is highlighted — including after a page reload:
+
+```vue
+<script setup lang="ts">
+const { openBlade, activeChildParam } = useBlade();
+
+function onRowClick(e: { data: { id: string } }) {
+  openBlade({ name: "Details", param: e.data.id });
+}
+</script>
+
+<template>
+  <VcDataTable
+    :items="items"
+    :active-item-id="activeChildParam"
+    @row-click="onRowClick"
+  >
+    <!-- columns -->
+  </VcDataTable>
+</template>
 ```
 
 ### Error Management

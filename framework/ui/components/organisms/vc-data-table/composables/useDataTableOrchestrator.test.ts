@@ -88,7 +88,7 @@ function buildOptions(
     pullToRefreshText: undefined,
     totalCount: undefined,
     totalLabel: undefined,
-    selectAllActive: false,
+    selectAllActive: undefined,
     addRow: undefined,
     validationRules: undefined,
     pagination: undefined,
@@ -293,5 +293,45 @@ describe("useDataTableOrchestrator", () => {
     } finally {
       app.unmount();
     }
+  });
+
+  describe("cross-page select-all is opt-in (showSelectAllChoice gating)", () => {
+    function multiSelectOptions() {
+      const options = buildOptions();
+      options.props.items = [
+        { id: "a", name: "A" },
+        { id: "b", name: "B" },
+      ];
+      options.props.selectionMode = "multiple";
+      options.props.totalCount = 5; // more items than visible → choice would otherwise appear
+      return options;
+    }
+
+    it("does NOT show the choice when selectAllActive is not bound (undefined)", () => {
+      const options = multiSelectOptions();
+      // selectAllActive defaults to undefined in buildOptions → feature off
+      const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));
+
+      try {
+        result.selection.handleSelectAllChange(true); // select all visible rows
+        expect(result.selection.allSelected.value).toBe(true);
+        expect(result.selection.showSelectAllChoice.value).toBe(false);
+      } finally {
+        app.unmount();
+      }
+    });
+
+    it("shows the choice when selectAllActive is bound", () => {
+      const options = multiSelectOptions();
+      options.props.selectAllActive = false; // bound (defined) → feature opted in
+      const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));
+
+      try {
+        result.selection.handleSelectAllChange(true);
+        expect(result.selection.showSelectAllChoice.value).toBe(true);
+      } finally {
+        app.unmount();
+      }
+    });
   });
 });

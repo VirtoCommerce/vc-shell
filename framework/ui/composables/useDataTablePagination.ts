@@ -1,4 +1,5 @@
-import { ref, computed, reactive, type MaybeRefOrGetter, toValue } from "vue";
+import { ref, computed, reactive, watch, inject, type MaybeRefOrGetter, toValue } from "vue";
+import { TableQueryStateKey } from "@core/blade-navigation/table-query-state";
 
 export interface UseDataTablePaginationOptions {
   /** Items per page. Default: 20 */
@@ -7,6 +8,8 @@ export interface UseDataTablePaginationOptions {
   totalCount: MaybeRefOrGetter<number>;
   /** Event callback fired after currentPage updates via goToPage(). */
   onPageChange?: (state: { page: number; skip: number }) => void;
+  /** When set, syncs the current page to the blade URL query under this key. */
+  stateKey?: string;
 }
 
 export interface UseDataTablePaginationReturn {
@@ -22,6 +25,11 @@ export interface UseDataTablePaginationReturn {
   readonly totalCount: number;
   /** Navigate to a specific page. Fires onPageChange if provided. */
   goToPage: (page: number) => void;
+  /**
+   * Set the current page without firing onPageChange. Use to seed the page from a
+   * URL restore, so the seed itself does not trigger a load.
+   */
+  setPage: (page: number) => void;
   /** Reset to page 1. Does NOT fire onPageChange. */
   reset: () => void;
 }
@@ -38,9 +46,26 @@ export function useDataTablePagination(options: UseDataTablePaginationOptions): 
     options.onPageChange?.({ page, skip: skip.value });
   }
 
+  function setPage(page: number) {
+    currentPage.value = page;
+  }
+
   function reset() {
     currentPage.value = 1;
   }
 
-  return reactive({ currentPage, pages, skip, pageSize, totalCount, goToPage, reset });
+  if (options.stateKey) {
+    const service = inject(TableQueryStateKey, undefined);
+    if (service) {
+      const restored = service.read(options.stateKey);
+      if (restored.page != null) setPage(restored.page); // seed without onPageChange
+      // Page 1 is the default: clear the param rather than writing _page=1.
+      watch(
+        () => currentPage.value,
+        (page) => service.write(options.stateKey!, { page: page === 1 ? undefined : page }),
+      );
+    }
+  }
+
+  return reactive({ currentPage, pages, skip, pageSize, totalCount, goToPage, setPage, reset });
 }

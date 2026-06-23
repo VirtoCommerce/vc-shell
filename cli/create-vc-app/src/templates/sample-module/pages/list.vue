@@ -7,6 +7,8 @@
     <!-- Blade contents -->
     <VcDataTable
       v-model:search-value="searchValue"
+      v-model:sort-field="sortField"
+      v-model:sort-order="sortOrder"
       v-model:active-item-id="selectedItemId"
       v-model:selection="selectedItems"
       :loading="loading"
@@ -14,7 +16,7 @@
       selection-mode="multiple"
       :items="data ?? []"
       :row-actions="actionBuilder"
-      :pagination="{ currentPage, pages }"
+      :pagination="pagination"
       :searchable="true"
       :search-placeholder="$t('SAMPLE_APP.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :empty-state="{
@@ -32,9 +34,8 @@
       :total-label="$t('SAMPLE_APP.PAGES.LIST.TABLE.TOTALS')"
       :total-count="totalCount"
       state-key="SAMPLE_APP"
-      @search="onSearchList"
       @row-click="onItemClick"
-      @pagination-click="onPaginationClick"
+      @pagination-click="pagination.goToPage"
     >
       <VcColumn
         id="imgSrc"
@@ -73,8 +74,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, onMounted, watch } from "vue";
-import { IBladeToolbar, useBlade, usePopup, useTableSort, useFunctions } from "@vc-shell/framework";
+import { ref, watch, computed } from "vue";
+import { IBladeToolbar, useBlade, usePopup, useDataTableSort, useTableSearch, useDataTablePagination, useFunctions } from "@vc-shell/framework";
 import type { TableAction } from "@vc-shell/framework";
 import { VcColumn, VcDataTable, VcBlade } from "@vc-shell/framework/ui";
 import { useI18n } from "vue-i18n";
@@ -97,17 +98,21 @@ const { param, openBlade, exposeToChildren } = useBlade();
 const { showConfirmation } = usePopup();
 const { debounce } = useFunctions();
 
-const { sortExpression } = useTableSort({
-  initialProperty: "createdDate",
+const PAGE_SIZE = 20;
+
+const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: "SAMPLE_APP",
+  initialField: "createdDate",
   initialDirection: "DESC",
 });
 
-const { getItems, removeItems, data, loading, totalCount, pages, currentPage, searchQuery } = useList({
+const { getItems, removeItems, data, loading, totalCount } = useList({
   sort: sortExpression.value,
-  pageSize: 20,
+  pageSize: PAGE_SIZE,
 });
 
-const searchValue = ref();
+const { searchValue } = useTableSearch({ stateKey: "SAMPLE_APP" });
+const pagination = useDataTablePagination({ stateKey: "SAMPLE_APP", pageSize: PAGE_SIZE, totalCount });
 const selectedItemId = ref<string>();
 const selectedItems = ref<MockedItem[]>([]);
 
@@ -121,47 +126,25 @@ watch(
   { immediate: true },
 );
 
-onMounted(async () => {
-  await getItems({
-    ...searchQuery.value,
+function load() {
+  return getItems({
     sort: sortExpression.value,
+    keyword: searchValue.value || undefined,
+    skip: pagination.skip,
   });
-});
+}
 
-watch(sortExpression, async (value) => {
-  await getItems({
-    ...searchQuery.value,
-    sort: value,
-  });
-});
+// One loader for sort/search/page. Debounced so typing doesn't fetch per keystroke.
+load();
+watch(searchValue, () => pagination.setPage(1));
+watch([sortExpression, searchValue, () => pagination.skip], debounce(load, 300));
 
-const onSearchList = debounce(async (keyword: string) => {
-  searchValue.value = keyword;
-  await getItems({
-    ...searchQuery.value,
-    keyword,
-  });
-}, 1000);
-
-const clearSearch = async () => {
+const clearSearch = () => {
   searchValue.value = "";
-  await getItems({
-    ...searchQuery.value,
-    keyword: "",
-  });
 };
 
 const addItem = () => {
-  openBlade({
-    name: "SampleDetails",
-  });
-};
-
-const onPaginationClick = async (page: number) => {
-  await getItems({
-    ...searchQuery.value,
-    skip: (page - 1) * (searchQuery.value.take ?? 20),
-  });
+  openBlade({ name: "SampleDetails" });
 };
 
 const bladeToolbar = ref<IBladeToolbar[]>([
@@ -188,11 +171,7 @@ const title = computed(() => t("SAMPLE_APP.PAGES.LIST.TITLE"));
 
 const reload = async () => {
   selectedItems.value = [];
-  await getItems({
-    ...searchQuery.value,
-    skip: (currentPage.value - 1) * (searchQuery.value.take ?? 10),
-    sort: sortExpression.value,
-  });
+  await load();
 };
 
 const onItemClick = (event: { data: MockedItem; index: number; originalEvent: Event }) => {

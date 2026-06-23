@@ -173,6 +173,6 @@ async function fetchCustomEndpoint(url: string) {
 
 ## Related
 
-- [useUserManagement](../useUserManagement/useUserManagement.docs.md) -- extended API with sign-in, password reset, token validation (for auth pages)
+- `useUserManagement` -- extended API with sign-in, password reset, token validation (for auth pages)
 - [usePermissions](../usePermissions/) -- permission checks based on user roles
 - `UserDetail` from `@core/api/platform` -- the user detail type returned by the API

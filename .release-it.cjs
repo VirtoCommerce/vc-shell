@@ -141,8 +141,11 @@ module.exports = {
   },
   hooks: {
     "before:release": "tsx scripts/release-hooks.ts before-release ${version}",
+    // Build AFTER the version bump: buildInfo.ts inlines the version from
+    // package.json at build time, so the bundle must be produced post-bump for
+    // the startup banner to report the released version.
     "after:bump":
-      "tsx scripts/release-hooks.ts after-bump ${version} && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install",
+      "tsx scripts/release-hooks.ts after-bump ${version} && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn install && yarn build",
     "before:stage": isPrerelease
       ? "git add cli/ configs/ packages/ framework/package.json framework/CHANGELOG.md apps/ yarn.lock"
       : "git add cli/ configs/ packages/ framework/package.json apps/ CHANGELOG.md yarn.lock",

@@ -224,6 +224,51 @@ describe("useTableSelectionV2 — selectAll / clearSelection", () => {
   });
 });
 
+describe("useTableSelectionV2 — showSelectAllChoice gating (opt-in)", () => {
+  function baseOptions() {
+    return {
+      items: ref<Item[]>([
+        { id: "a", price: 10, selectable: true },
+        { id: "b", price: 20, selectable: true },
+        { id: "c", price: 30, selectable: true },
+      ]),
+      selectionMode: ref<"single" | "multiple">("multiple"),
+      dataKey: "id",
+      getItemKey: (item: Item) => item.id,
+      totalCount: ref<number | undefined>(10),
+    };
+  }
+
+  it("does NOT show the cross-page choice when the feature is not enabled by the consumer", () => {
+    const opts = baseOptions();
+    const { handleSelectAllChange, showSelectAllChoice } = useTableSelectionV2(opts);
+
+    // All visible rows selected and more items exist (totalCount 10 > 3 visible)
+    handleSelectAllChange(true);
+
+    // Feature not wired up by the consumer → banner must stay hidden
+    expect(showSelectAllChoice.value).toBe(false);
+  });
+
+  it("shows the cross-page choice when the consumer enabled the feature", () => {
+    const opts = { ...baseOptions(), selectAllEnabled: ref<boolean | undefined>(true) };
+    const { handleSelectAllChange, showSelectAllChoice } = useTableSelectionV2(opts);
+
+    handleSelectAllChange(true);
+
+    expect(showSelectAllChoice.value).toBe(true);
+  });
+
+  it("keeps the cross-page choice hidden when selectAllEnabled is false", () => {
+    const opts = { ...baseOptions(), selectAllEnabled: ref<boolean | undefined>(false) };
+    const { handleSelectAllChange, showSelectAllChoice } = useTableSelectionV2(opts);
+
+    handleSelectAllChange(true);
+
+    expect(showSelectAllChoice.value).toBe(false);
+  });
+});
+
 describe("useTableSelectionV2 — external modelValue sync", () => {
   it("updating the selection ref externally reflects in internalSelection", async () => {
     const selectionRef = ref<Item | Item[] | undefined>(undefined);

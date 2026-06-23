@@ -109,8 +109,9 @@ export default getLibraryConfiguration({
     },
   },
   define: {
-    // version is read at runtime from package.json (see core/utilities/buildInfo.ts);
-    // only build-time-only facts are injected here.
+    // version is inlined from package.json at build time by Rollup
+    // (see core/utilities/buildInfo.ts) — the release pipeline therefore builds
+    // AFTER bumping the version. Only build-time facts are injected here.
     __VC_SHELL_BUILD_DATE__: JSON.stringify(new Date().toISOString()),
     __VC_SHELL_GIT_HASH__: JSON.stringify(getGitHash()),
   },

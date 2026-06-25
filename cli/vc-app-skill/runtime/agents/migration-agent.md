@@ -37,8 +37,10 @@ Process topics in this order (dependencies first):
 5. `use-blade-form` — depends on correct types from nswag
 6. `blade-props-simplification` — final cleanup of reusable components
 7. `vctable-audit` — VcTable → VcDataTable component and API rewrite
-8. `icon-audit` — replace all non-lucide icons with lucide equivalents (last among mechanical manual edits)
-9. `manual-migration-audit` — catch-all manual refactors (run last to avoid overlap)
+8. `use-data-table-pagination-audit` — manual pagination boilerplate → `useDataTablePagination()`
+9. `table-url-state-audit` — opt a VcDataTable list into URL-query state (sort/search/page via `stateKey`); run after the table is on VcDataTable and pagination uses the composable
+10. `icon-audit` — replace all non-lucide icons with lucide equivalents (last among mechanical manual edits)
+11. `manual-migration-audit` — catch-all manual refactors (run last to avoid overlap)
 
 Skip topics not present in the `topics` input.
 

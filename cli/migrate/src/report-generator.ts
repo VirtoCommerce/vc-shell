@@ -181,6 +181,29 @@ openBlade({
     guide: "migration/32-use-assets-manager.md",
   },
 
+  "table-url-state-audit": {
+    title: "Table URL State Persistence",
+    description:
+      "These VcDataTable lists do not persist their view (sort, search keyword, current page) to the blade URL. " +
+      "Opt in by passing a shared `stateKey` to `useDataTableSort`, `useTableSearch`, and `useDataTablePagination` so the view survives a reload and travels in shareable links. " +
+      "Reset the page to 1 when the search changes, seed the initial load from `pagination.skip`, and remove any deprecated `useTableQueryState().read()` block.",
+    example: `\`\`\`ts
+// Same stateKey across all three (e.g. "<module>_list"):
+const { sortField, sortOrder, sortExpression } = useDataTableSort({
+  stateKey: "orders_list",
+  initialField: "createdDate",
+  initialDirection: "DESC",
+});
+const { searchValue } = useTableSearch({ stateKey: "orders_list" });
+const pagination = useDataTablePagination({ stateKey: "orders_list", pageSize: 20, totalCount });
+
+// Initial load reads restored values; reset page on search to keep (search, page) consistent:
+onMounted(() => load({ sort: sortExpression.value, keyword: searchValue.value || undefined, skip: pagination.skip }));
+watch(searchValue, () => pagination.setPage(1));
+\`\`\``,
+    guide: "migration/50-table-url-state.md",
+  },
+
   "manual-migration-audit": {
     title: "Manual Migration Audit Findings",
     description:

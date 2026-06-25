@@ -300,6 +300,17 @@ export const transforms: VersionedTransform[] = [
     transformPath: t("use-data-table-pagination-audit"),
     fileExtensions: [".ts", ".vue"],
   },
+  {
+    name: "table-url-state-audit",
+    description:
+      "Detect VcDataTable lists without URL-query state (sort/search/page) — opt in via the composables' stateKey option",
+    introducedIn: "2.1.0",
+    diagnosticOnly: true,
+    migrationGuideSection: "Guide 50",
+    transformPath: t("table-url-state-audit"),
+    fileExtensions: [".ts", ".vue"],
+    after: ["use-data-table-pagination-audit"],
+  },
 ];
 
 export function selectTransforms(currentVersion: string, targetVersion: string): VersionedTransform[] {

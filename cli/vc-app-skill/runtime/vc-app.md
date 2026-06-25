@@ -1613,6 +1613,7 @@ Map topic headings to migration prompt files and pattern files:
 | Assets API / useAssets / useAssetsManager / use-assets-migration                                                                 | `use-assets-migration`            | `{KNOWLEDGE_BASE}/migration-prompts/use-assets-migration.md`                | `{KNOWLEDGE_BASE}/patterns/assets-management.md`     |
 | Manual Migration Audit / useExternalWidgets / moment / useFunctions / resolveBladeByName / onParentCall / manual-migration-audit | `manual-migration-audit`          | `{KNOWLEDGE_BASE}/migration-prompts/manual-migration-audit.md`              | —                                                    |
 | Pagination / useDataTablePagination / use-data-table-pagination-audit                                                            | `use-data-table-pagination-audit` | `{KNOWLEDGE_BASE}/migration-prompts/use-data-table-pagination-migration.md` | —                                                    |
+| Table URL State / stateKey / useTableQueryState / table-url-state-audit                                                          | `table-url-state-audit`           | `{KNOWLEDGE_BASE}/migration-prompts/table-url-state-migration.md`           | `{KNOWLEDGE_BASE}/patterns/list-blade-pattern.md`    |
 
 Build the `topics` array for the migration-agent using the canonical topic names above.
 

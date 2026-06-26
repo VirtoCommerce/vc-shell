@@ -1109,8 +1109,14 @@ async function load() {
   });
 }
 
+// The initial load reads the values already restored from the URL.
 onMounted(() => load());
-watch(sortExpression, () => load());
+
+// Reset to page 1 when the search changes, BEFORE the reload watcher fires.
+watch(searchValue, () => pagination.setPage(1));
+
+// Reload whenever any query dimension changes.
+watch([sortExpression, searchValue, () => pagination.skip], () => load());
 </script>
 
 <template>
@@ -1139,6 +1145,12 @@ watch(sortExpression, () => load());
 ```
 
 The `state-key` on `VcDataTable` here persists column layout to localStorage; the `stateKey` passed to the composables persists query state to the URL. Both use the same string value but serve different purposes.
+
+!!! warning "Reset the page to 1 when the search changes"
+`watch(searchValue, () => pagination.setPage(1))` is required, not optional. Without it, searching while on a later page leaves a stale `<stateKey>_page` in the URL. On the next reload the list requests that page of the **filtered** result set — `skip` overshoots the (smaller) result count and the table renders an empty "nothing found" state even though matches exist on page 1. Resetting to page 1 drops `_page` from the URL and keeps the `(search, page)` pair consistent. Apply the same reset whenever a filter changes.
+
+!!! tip "Composable-owned pagination"
+When `useDataTablePagination` lives inside a list composable (so `onPageChange` can drive the fetch), thread the `stateKey` through as a composable option (`useOffersList({ stateKey })`) instead of hard-coding it — the blade still owns the key. Make sure the **initial** load passes `skip: pagination.skip` so a restored page is applied on first paint.
 
 ---
 
@@ -2068,6 +2080,21 @@ const isSelectable = (item) => item.stock > 0;
 <!-- CORRECT: unique keys -->
 <VcDataTable :items="products" state-key="products-list">...</VcDataTable>
 <VcDataTable :items="orders" state-key="orders-list">...</VcDataTable>
+```
+
+### 9. Not resetting the page when the search changes
+
+```ts
+// WRONG: search persists, but the page is not reset.
+// On a later page, the URL keeps `_page=3`; reloading a narrow search
+// requests page 3 of the filtered set → empty "nothing found" on reload.
+const { searchValue } = useTableSearch({ stateKey: "products_list" });
+watch([sortExpression, searchValue, () => pagination.skip], load);
+
+// CORRECT: reset to page 1 before reloading on a new keyword.
+const { searchValue } = useTableSearch({ stateKey: "products_list" });
+watch(searchValue, () => pagination.setPage(1));
+watch([sortExpression, searchValue, () => pagination.skip], load);
 ```
 
 ---

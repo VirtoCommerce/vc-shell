@@ -25,9 +25,12 @@ export function getFrameworkBuildInfo(): IFrameworkBuildInfo {
 }
 
 export function logFrameworkBuildInfo(info: IFrameworkBuildInfo = getFrameworkBuildInfo()): void {
-  // Direct console.log (not the logger util): the %c CSS styling is not supported
-  // by the logger abstraction, and this banner must always print for debugging.
-  console.log(
+  // Direct console.warn (not console.log, not the logger util): the %c CSS styling
+  // is not supported by the logger abstraction, and this banner must always print.
+  // console.warn is used deliberately — app production builds mark console.log/info/debug
+  // as `pure` in esbuild (see vite.application.appconfig.ts), which strips this banner
+  // during dead-code elimination. console.warn survives that pass.
+  console.warn(
     `%c@vc-shell/framework%c v${info.version} · ${info.buildDate} · ${info.gitHash}`,
     "font-weight:bold;color:#319ED4",
     "color:inherit",

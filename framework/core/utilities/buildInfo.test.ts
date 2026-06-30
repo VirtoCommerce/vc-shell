@@ -20,7 +20,9 @@ describe("getFrameworkBuildInfo", () => {
 
 describe("logFrameworkBuildInfo", () => {
   it("logs exactly one line containing version, build date and git hash", () => {
-    const spy = vi.spyOn(console, "log").mockImplementation(() => {});
+    // console.warn (not console.log) — app production builds mark console.log/info/debug
+    // as `pure` in esbuild and strip them, so the banner uses warn to survive.
+    const spy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     logFrameworkBuildInfo({
       version: "2.0.7",

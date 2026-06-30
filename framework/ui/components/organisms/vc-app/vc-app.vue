@@ -12,6 +12,11 @@
       'vc-app--mobile': isMobile,
     }"
   >
+    <VcEnvironmentBanner
+      v-if="!isEnvironmentIgnored && environmentName"
+      :name="environmentName"
+      :color="environmentColor"
+    />
     <div class="vc-app__main-content">
       <!-- Layout: desktop sidebar or mobile top bar -->
       <slot
@@ -122,6 +127,8 @@ import { useShellBootstrap } from "@ui/components/organisms/vc-app/composables/u
 import { useShellNavigation } from "@ui/components/organisms/vc-app/composables/useShellNavigation";
 import { useShellLifecycle } from "@ui/components/organisms/vc-app/composables/useShellLifecycle";
 import { BladeMessagingKey, BladeStackKey } from "@core/blade-navigation/types";
+import { VcEnvironmentBanner } from "@ui/components/atoms/vc-environment-banner";
+import { useEnvironmentName } from "@core/composables/useEnvironmentName";
 
 export interface Props {
   isReady: boolean;
@@ -211,6 +218,9 @@ watch(modulesLoadError, (hasError) => {
     );
   }
 });
+
+// Environment indicator (derived client-side from the hostname)
+const { environmentName, isIgnored: isEnvironmentIgnored, color: environmentColor } = useEnvironmentName();
 </script>
 
 <style lang="scss">

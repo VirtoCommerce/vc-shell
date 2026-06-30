@@ -30,6 +30,7 @@ export * from "@core/composables/useModificationTracker";
 export * from "@core/composables/useMenuExpanded";
 export * from "@core/composables/usePopup";
 export * from "@core/composables/useResponsive";
+export * from "@core/composables/useEnvironmentName";
 // Note: useConnectionStatus is NOT re-exported here to avoid circular
 // dependency. Import directly from "@core/composables/useConnectionStatus".
 // useBladeSelection and useAiAgent are now part of the ai-agent plugin

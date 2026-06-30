@@ -18,4 +18,5 @@ export * from "@ui/components/atoms/vc-widget";
 export * from "@ui/components/atoms/vc-tooltip";
 export * from "@ui/components/atoms/vc-skeleton";
 export * from "@ui/components/atoms/vc-banner";
+export * from "@ui/components/atoms/vc-environment-banner";
 export * from "@ui/components/atoms/vc-scrollable-container";

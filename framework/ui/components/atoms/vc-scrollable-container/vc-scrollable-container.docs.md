@@ -128,6 +128,13 @@ Replace the default chevrons with custom indicators:
 </VcScrollableContainer>
 ```
 
+## CSS Custom Properties
+
+| Variable               | Default               | Description           |
+| ---------------------- | --------------------- | --------------------- |
+| `--scroll-arrow-size`  | `16px`                | Arrow indicator size  |
+| `--scroll-arrow-color` | `var(--neutrals-400)` | Arrow indicator color |
+
 ## Tips
 
 - The `speed` prop is captured once at mount time and is not reactive. If you need to change speed dynamically, remount the component with a `:key` binding.

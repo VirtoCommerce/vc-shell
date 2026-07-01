@@ -45,9 +45,9 @@ const { searchValue } = useTableSearch({
 
 ### Returns
 
-| Property      | Type          | Description                                              |
-| ------------- | ------------- | -------------------------------------------------------- |
-| `searchValue` | `Ref<string>` | Current search keyword; bind with `v-model:search-value` |
+| Property      | Type                       | Description                                              |
+| ------------- | -------------------------- | -------------------------------------------------------- |
+| `searchValue` | `Ref<string \| undefined>` | Current search keyword; bind with `v-model:search-value` |
 
 ## Details
 

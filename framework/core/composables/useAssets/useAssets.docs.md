@@ -6,6 +6,8 @@ group: data
 
 # useAssets
 
+> **Deprecated.** `useAssets` is deprecated in favor of [`useAssetsManager(ref, options)`](../useAssetsManager/). Calling it logs a DEV console warning. This page is kept as legacy/migration guidance; new code should use `useAssetsManager`, which wraps `useAssets` with two-way sync.
+
 Handles file upload, removal, and editing for `ICommonAsset` arrays (images, documents, etc.). This composable encapsulates the platform's asset storage API, handling multipart form upload with batched concurrency (max 4 simultaneous uploads), sort-order assignment, URL decoding, and immutable array operations for remove and edit. It returns a new array from every operation rather than mutating in place, which plays well with Vue's reactivity system and makes undo/redo patterns straightforward.
 
 ## When to Use
@@ -59,12 +61,12 @@ function onUpdateAltText(asset: ICommonAsset, altText: string) {
 
 ### Returns
 
-| Property  | Type                                                                                           | Description                                                                                                                                                          |
-| --------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `upload`  | `(files: FileList, uploadPath: string, startingSortOrder?: number) => Promise<ICommonAsset[]>` | Upload files in parallel batches (max 4 concurrent). Returns only successfully uploaded assets. Sort orders are assigned incrementally from `startingSortOrder + 1`. |
-| `remove`  | `(filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]`           | Return a new array with deleted items removed. Matching is done by `url` field. The original array is not mutated.                                                   |
-| `edit`    | `(updatedFiles: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]`            | Merge updated fields into existing assets (matched by `url`). If `updatedFiles.length === initialAssetArr.length`, the entire array is replaced (reorder mode).      |
-| `loading` | `ComputedRef<boolean>`                                                                         | Whether an upload or remove operation is currently in progress.                                                                                                      |
+| Property  | Type                                                                                                    | Description                                                                                                                                                          |
+| --------- | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `upload`  | `(files: FileList, uploadPath: string, startingSortOrder?: number) => Promise<ICommonAsset[]>`          | Upload files in parallel batches (max 4 concurrent). Returns only successfully uploaded assets. Sort orders are assigned incrementally from `startingSortOrder + 1`. |
+| `remove`  | `(filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[], assetKey?: string) => ICommonAsset[]` | Return a new array with deleted items removed. Matching is done by `assetKey` (default `"url"`); pass another key to override. The original array is not mutated.    |
+| `edit`    | `(updatedFiles: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]`                     | Merge updated fields into existing assets (matched by `url`). If `updatedFiles.length === initialAssetArr.length`, the entire array is replaced (reorder mode).      |
+| `loading` | `ComputedRef<boolean>`                                                                                  | Whether an upload or remove operation is currently in progress.                                                                                                      |
 
 ## How It Works
 

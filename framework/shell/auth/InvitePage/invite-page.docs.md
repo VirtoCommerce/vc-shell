@@ -56,7 +56,7 @@ With custom branding:
 Set up the route to extract query parameters from the invitation email link:
 
 ```ts
-import Invite from "@vc-shell/framework/shared/pages/InvitePage";
+import { Invite } from "@vc-shell/framework";
 
 const routes = [
   {
@@ -85,7 +85,7 @@ If your platform uses a different invitation API, you can create a wrapper that 
 
 ```vue
 <script setup lang="ts">
-import Invite from "@vc-shell/framework/shared/pages/InvitePage";
+import { Invite } from "@vc-shell/framework";
 import { useRoute } from "vue-router";
 
 const route = useRoute();

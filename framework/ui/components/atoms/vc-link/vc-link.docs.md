@@ -35,10 +35,11 @@ function openDetails() {
 
 ## Key Props
 
-| Prop       | Type      | Default | Description                                    |
-| ---------- | --------- | ------- | ---------------------------------------------- |
-| `active`   | `boolean` | `false` | Highlights the link as currently selected      |
-| `disabled` | `boolean` | `false` | Prevents interaction and applies muted styling |
+| Prop       | Type         | Default | Description                                                                     |
+| ---------- | ------------ | ------- | ------------------------------------------------------------------------------- |
+| `active`   | `boolean`    | `false` | Highlights the link as currently selected                                       |
+| `disabled` | `boolean`    | `false` | Prevents interaction and applies muted styling                                  |
+| `onClick`  | `() => void` | --      | Declared prop, currently unused by the template (use the `click` event instead) |
 
 ## Events
 

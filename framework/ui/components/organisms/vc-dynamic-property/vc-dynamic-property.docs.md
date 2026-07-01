@@ -46,20 +46,25 @@ The prop names match the `DynamicObjectProperty` shape returned by the platform 
 
 ## Key Props
 
-| Prop                 | Type       | Default | Description                                                                   |
-| -------------------- | ---------- | ------- | ----------------------------------------------------------------------------- |
-| `property`           | `T`        | -       | Property object with `id` and metadata                                        |
-| `modelValue`         | `any`      | -       | Current property value (v-model)                                              |
-| `valueType`          | `string`   | -       | Type: ShortText, LongText, Number, Integer, DateTime, Boolean, Measure, Color |
-| `name`               | `string`   | -       | Property name for display and field identification                            |
-| `required`           | `boolean`  | -       | Whether the field is required                                                 |
-| `disabled`           | `boolean`  | `false` | Disables the input                                                            |
-| `dictionary`         | `boolean`  | `false` | Uses VcSelect/VcMultivalue with options                                       |
-| `multivalue`         | `boolean`  | `false` | Supports multiple values                                                      |
-| `multilanguage`      | `boolean`  | `false` | Supports localized values                                                     |
-| `optionsGetter`      | `Function` | -       | Async loader for dictionary options                                           |
-| `measurementsGetter` | `Function` | -       | Async loader for measurement units                                            |
-| `rules`              | `object`   | -       | Validation rules: `{ min, max, regex }`                                       |
+| Prop                 | Type                         | Default    | Description                                                                      |
+| -------------------- | ---------------------------- | ---------- | -------------------------------------------------------------------------------- |
+| `property`           | `T`                          | _required_ | Property object with `id` and metadata                                           |
+| `modelValue`         | `any`                        | _required_ | Current property value (v-model)                                                 |
+| `valueType`          | `string`                     | _required_ | Type: ShortText, LongText, Number, Integer, DateTime, Boolean, Measure, Color    |
+| `name`               | `string`                     | _required_ | Property name for display and field identification                               |
+| `required`           | `boolean`                    | _required_ | Whether the field is required                                                    |
+| `disabled`           | `boolean`                    | `false`    | Disables the input                                                               |
+| `dictionary`         | `boolean`                    | `false`    | Uses VcSelect/VcMultivalue with options                                          |
+| `multivalue`         | `boolean`                    | `false`    | Supports multiple values                                                         |
+| `multilanguage`      | `boolean`                    | `false`    | Supports localized values                                                        |
+| `currentLanguage`    | `string`                     | -          | Active locale used for localized values                                          |
+| `optionsGetter`      | `Function`                   | _required_ | Async loader for dictionary options, called as `(propertyId, keyword?, locale?)` |
+| `measurementsGetter` | `Function`                   | -          | Async loader for measurement units                                               |
+| `optionsValue`       | `string`                     | `"id"`     | Field on each option used as its value (VcSelect mapping)                        |
+| `optionsLabel`       | `string`                     | `"value"`  | Field on each option used as its label (VcSelect mapping)                        |
+| `displayNames`       | `{ name?; languageCode? }[]` | -          | Localized display names used to resolve the field label per locale               |
+| `placeholder`        | `string`                     | -          | Placeholder text for the input                                                   |
+| `rules`              | `object`                     | -          | Validation rules: `{ min, max, regex }`                                          |
 
 ::storybook id="data-display-vcdynamicproperty--property-form" height="500"
 
@@ -99,8 +104,8 @@ async function loadProperties() {
   properties.value = result;
 }
 
-async function loadDictionaryOptions(propertyId: string, keyword?: string) {
-  return await api.searchDictionaryItems(propertyId, keyword);
+async function loadDictionaryOptions(propertyId: string, keyword?: string, locale?: string) {
+  return await api.searchDictionaryItems(propertyId, keyword, locale);
 }
 
 function handlePropertyUpdate(property: any, newValue: any) {
@@ -121,25 +126,27 @@ function handlePropertyUpdate(property: any, newValue: any) {
       :dictionary="prop.isDictionary"
       :multivalue="prop.isMultivalue"
       :multilanguage="prop.isMultilanguage"
-      :options-getter="(kw) => loadDictionaryOptions(prop.id, kw)"
-      @update:model-value="(val) => handlePropertyUpdate(prop, val)"
+      :options-getter="loadDictionaryOptions"
+      @update:model-value="(payload) => handlePropertyUpdate(prop, payload.value)"
     />
   </div>
 </template>
 ```
+
+`update:model-value` emits an object, not a raw value: `{ value, dictionary?, locale?, unitOfMeasureId?, colorCode? }`. Read `payload.value` for the primary value; the other keys carry dictionary items, the active locale, the selected measure unit, and a color code where applicable. `optionsGetter` is invoked as `(propertyId, keyword?, locale?)` — bind it directly rather than wrapping the property id into the first argument.
 
 ::storybook id="data-display-vcdynamicproperty--required-with-validation" height="300"
 
 ## Recipe: Dynamic Property with Validation
 
 ```vue
-<VcDynamicProperty :property="skuProperty" :model-value="skuProperty.values?.[0]?.value" value-type="ShortText" name="SKU" :required="true" :rules="{ regex: '^[A-Z0-9-]+$', min: 3, max: 50 }" @update:model-value="(val) => updateProperty(skuProperty, val)" />
+<VcDynamicProperty :property="skuProperty" :model-value="skuProperty.values?.[0]?.value" value-type="ShortText" name="SKU" :required="true" :rules="{ regex: '^[A-Z0-9-]+$', min: 3, max: 50 }" @update:model-value="(payload) => updateProperty(skuProperty, payload.value)" />
 ```
 
 ## Recipe: Measurement Property with Units
 
 ```vue
-<VcDynamicProperty :property="weightProperty" :model-value="weightProperty.values?.[0]?.value" value-type="Measure" name="Weight" :measurements-getter="loadMeasurementUnits" @update:model-value="(val) => updateProperty(weightProperty, val)" />
+<VcDynamicProperty :property="weightProperty" :model-value="weightProperty.values?.[0]?.value" value-type="Measure" name="Weight" :measurements-getter="loadMeasurementUnits" @update:model-value="(payload) => updateProperty(weightProperty, payload.value)" />
 ```
 
 ## Common Mistakes

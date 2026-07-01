@@ -270,21 +270,21 @@ async function onUpload(files: FileList) {
 
 ## Props
 
-| Prop           | Type                                   | Default                                   | Description                                         |
-| -------------- | -------------------------------------- | ----------------------------------------- | --------------------------------------------------- |
-| `accept`       | `string`                               | `".jpg, .png, .jpeg, .webp, .heic, .svg"` | Accepted file types (HTML accept attribute format)  |
-| `multiple`     | `boolean`                              | `false`                                   | Allow selecting multiple files                      |
-| `loading`      | `boolean`                              | `false`                                   | Show loading spinner overlay                        |
-| `icon`         | `string`                               | `"lucide-cloud-upload"`                   | Icon displayed in the upload zone                   |
-| `customText`   | `{ dragHere: string; browse: string }` | --                                        | Override default drag/browse instruction text       |
-| `rules`        | `IValidationRules`                     | --                                        | Vee-validate validation rules (e.g., `{ size: 5 }`) |
-| `name`         | `string`                               | `"Gallery"`                               | Form field name attribute                           |
-| `label`        | `string`                               | --                                        | Field label text                                    |
-| `tooltip`      | `string`                               | --                                        | Tooltip on the label                                |
-| `disabled`     | `boolean`                              | `false`                                   | Disable all interactions                            |
-| `required`     | `boolean`                              | `false`                                   | Mark field as required                              |
-| `error`        | `boolean`                              | `false`                                   | External error flag                                 |
-| `errorMessage` | `string`                               | --                                        | Error message text (sets error state when truthy)   |
+| Prop           | Type                                         | Default                                   | Description                                         |
+| -------------- | -------------------------------------------- | ----------------------------------------- | --------------------------------------------------- |
+| `accept`       | `string`                                     | `".jpg, .png, .jpeg, .webp, .heic, .svg"` | Accepted file types (HTML accept attribute format)  |
+| `multiple`     | `boolean`                                    | `false`                                   | Allow selecting multiple files                      |
+| `loading`      | `boolean`                                    | `false`                                   | Show loading spinner overlay                        |
+| `icon`         | `string`                                     | `"lucide-cloud-upload"`                   | Icon displayed in the upload zone                   |
+| `customText`   | `{ dragHere: string; browse: string }`       | --                                        | Override default drag/browse instruction text       |
+| `rules`        | `keyof IValidationRules \| IValidationRules` | --                                        | Vee-validate validation rules (e.g., `{ size: 5 }`) |
+| `name`         | `string`                                     | `"Gallery"`                               | Form field name attribute                           |
+| `label`        | `string`                                     | --                                        | Field label text                                    |
+| `tooltip`      | `string`                                     | --                                        | Tooltip on the label                                |
+| `disabled`     | `boolean`                                    | `false`                                   | Disable all interactions                            |
+| `required`     | `boolean`                                    | `false`                                   | Mark field as required                              |
+| `error`        | `boolean`                                    | `false`                                   | External error flag                                 |
+| `errorMessage` | `string`                                     | --                                        | Error message text (sets error state when truthy)   |
 
 ## Events
 
@@ -300,20 +300,20 @@ async function onUpload(files: FileList) {
 
 ## CSS Variables
 
-| Variable                              | Default               | Description                       |
-| ------------------------------------- | --------------------- | --------------------------------- |
-| `--file-upload-border-color`          | `var(--neutrals-200)` | Default border color              |
-| `--file-upload-border-color-hover`    | `var(--neutrals-400)` | Hover border color                |
-| `--file-upload-border-color-dragover` | `var(--primary-500)`  | Border color while dragging over  |
-| `--file-upload-border-color-error`    | `var(--danger-500)`   | Error state border color          |
-| `--file-upload-border-radius`         | `6px`                 | Corner radius                     |
-| `--file-upload-drag-bg`               | `var(--neutrals-100)` | Background color during drag-over |
-| `--file-upload-background-color`      | `transparent`         | Default background color          |
-| `--file-upload-icon-color`            | `var(--neutrals-400)` | Upload icon color                 |
-| `--file-upload-text-color`            | `var(--neutrals-400)` | Instruction text color            |
-| `--file-upload-error-color`           | `var(--danger-500)`   | Error text color                  |
-| `--file-upload-focus-ring-color`      | `var(--primary-100)`  | Focus ring color                  |
-| `--file-upload-error-ring-color`      | `var(--danger-100)`   | Error state ring color            |
+| Variable                              | Default                | Description                       |
+| ------------------------------------- | ---------------------- | --------------------------------- |
+| `--file-upload-border-color`          | `var(--secondary-300)` | Default border color              |
+| `--file-upload-border-color-hover`    | `var(--secondary-400)` | Hover border color                |
+| `--file-upload-border-color-dragover` | `var(--primary-400)`   | Border color while dragging over  |
+| `--file-upload-border-color-error`    | `var(--danger-500)`    | Error state border color          |
+| `--file-upload-border-width`          | `1.5px`                | Drop zone border width            |
+| `--file-upload-border-radius`         | `6px`                  | Corner radius                     |
+| `--file-upload-drag-bg`               | `var(--primary-50)`    | Background color during drag-over |
+| `--file-upload-icon-color`            | `var(--secondary-400)` | Upload icon color                 |
+| `--file-upload-text-color`            | `var(--secondary-500)` | Instruction text color            |
+| `--file-upload-error-color`           | `var(--danger-500)`    | Error text color                  |
+| `--file-upload-focus-ring-color`      | `var(--primary-100)`   | Focus ring color                  |
+| `--file-upload-error-ring-color`      | `var(--danger-100)`    | Error state ring color            |
 
 ## Accessibility
 

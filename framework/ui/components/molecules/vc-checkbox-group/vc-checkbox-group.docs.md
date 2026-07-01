@@ -153,7 +153,7 @@ When placed inside a `VcBlade` with `loading=true`, the component renders a skel
 ## Architecture Notes
 
 - VcCheckboxGroup delegates rendering to `VcInputGroup` (semantic fieldset wrapper) and renders `VcCheckbox` items from the `options` array, or passes through the default slot for custom layouts.
-- The group generates a unique `name` attribute via `useId()` when none is provided, ensuring native radio group behavior.
+- The group generates a unique `name` attribute via `useId()` when none is provided, ensuring native checkbox group naming/behavior.
 - `normalizedModelValue` guards against non-array `modelValue` to avoid runtime errors when the parent passes `undefined`.
 - Source file: `framework/ui/components/molecules/vc-checkbox-group/vc-checkbox-group.vue`
 

@@ -7,6 +7,8 @@ internal: true
 
 # Sidebar Component
 
+> **Deprecated.** The `Sidebar` wrapper is deprecated in favor of `VcSidebar` (`framework/ui/components/organisms/vc-sidebar`) and may be removed in a future release. Use this page as legacy/migration guidance only; build new code on `VcSidebar` directly.
+
 A responsive sidebar wrapper that conditionally renders content inside a `VcSidebar` panel or inline, based on viewport and expansion state.
 
 ## Overview
@@ -62,7 +64,7 @@ When `render="mobile"` and the viewport is desktop, the content slot renders inl
 
 ## Behavior
 
-- **Visibility**: The sidebar is visible when `isExpanded === true` AND the `render` mode matches the current viewport (injected via `IsMobileKey` / `IsDesktopKey`).
+- **Visibility**: The sidebar is visible when `isExpanded === true` AND the `render` mode matches the current viewport (resolved via `useResponsive()` -- `isMobile` / `isDesktop`).
 - **Teleport**: On mobile, the inner `VcSidebar` teleports to the document body for proper overlay stacking.
 - **Close**: Closing the sidebar emits `close` -- the parent must update `isExpanded`.
 
@@ -70,9 +72,9 @@ When `render="mobile"` and the viewport is desktop, the content slot renders inl
 
 - Use `render="mobile"` for panels that should be drawers on phones but inline panels on desktop.
 - The `header` slot receives a `close` function so custom headers can include their own close button.
-- The component injects `IsMobileKey` and `IsDesktopKey` from the framework's injection keys.
+- The component resolves the viewport via `useResponsive()` (`isMobile` / `isDesktop`).
 
 ## Related
 
 - `framework/ui/components/organisms/vc-sidebar/` -- the underlying `VcSidebar` organism
-- `framework/injection-keys.ts` -- `IsMobileKey`, `IsDesktopKey`
+- `framework/core/composables/useResponsive/` -- `isMobile` / `isDesktop` viewport helper

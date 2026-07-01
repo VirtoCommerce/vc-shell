@@ -796,7 +796,7 @@ This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The comp
 - The `type="date"`, `type="datetime-local"`, and `type="color"` values trigger internal delegation — the component renders `VcDatePicker` or `VcColorInput` instead of a native `<input>`. All forwarded props are passed via `v-bind="$attrs"`.
 - Debounce is implemented via a `useDebounceFn` wrapper from VueUse. The internal `temp` ref holds the raw typing value; the `modelValue` update is deferred.
 - `number` / `integer` type filtering uses `keydown` event guards — not `input` event filtering — to block `-`, `+`, `e`, and (for `integer`) `.` keys before they reach the input.
-- `type="password"` show/hide toggle is controlled by `showPassword` ref; the native `input` type toggles between `"password"` and `"text"`.
+- `type="password"` show/hide toggle is controlled by the `internalType` ref; the native `input` type toggles between `"password"` and `"text"`.
 - The `control` slot replaces the native `<input>` with an arbitrary element. The `emitValue` scope function wraps the debounce logic, so custom controls respect the `debounce` prop automatically.
 - Source file: `framework/ui/components/molecules/vc-input/vc-input.vue`
 

@@ -21,8 +21,8 @@ The VirtoCommerce platform uses ASP.NET SignalR to push real-time notifications 
 
 The SignalR plugin establishes a persistent WebSocket connection to the platform hub and listens for two event channels:
 
-- **`Send`** -- broadcast messages sent to all connected clients
-- **`SendSystemEvents`** -- messages filtered by `creator` field, scoped to a specific user or organization
+- **`Send`** -- targeted messages ingested with default routing
+- **`SendSystemEvents`** -- ingested as broadcast (`store.ingest(message, { broadcast: true })`), no creator filtering
 
 Incoming messages are ingested into the `NotificationStore`, which dispatches them to registered notification type handlers and triggers toast notifications based on per-type configuration.
 
@@ -32,38 +32,21 @@ The connection lifecycle is tied to the user's authentication state: it connects
 
 ```typescript
 // Automatic -- installed by the framework during app setup.
-// The `creator` option is typically set to the current user/organization ID.
-app.use(signalR, { creator: currentUserId });
+// The plugin takes no options.
+app.use(signalR);
 ```
 
 Module developers do not install this plugin. It is registered once by the framework during bootstrap.
 
 ## API
 
-### Plugin Options
-
-| Option    | Type                  | Description                                                                |
-| --------- | --------------------- | -------------------------------------------------------------------------- |
-| `creator` | `string \| undefined` | Filters `SendSystemEvents` messages to only those matching this creator ID |
-
 ### Exports
 
-| Export                       | Type           | Description                                   |
-| ---------------------------- | -------------- | --------------------------------------------- |
-| `signalR`                    | `Plugin`       | Vue plugin object with `install()` method     |
-| `updateSignalRCreatorSymbol` | `InjectionKey` | Injection key for the creator update function |
+| Export    | Type     | Description                               |
+| --------- | -------- | ----------------------------------------- |
+| `signalR` | `Plugin` | Vue plugin object with `install()` method |
 
-### Provided Injectables
-
-| Key                          | Type                                     | Description                                   |
-| ---------------------------- | ---------------------------------------- | --------------------------------------------- |
-| `updateSignalRCreatorSymbol` | `(creator: string \| undefined) => void` | Updates the SignalR creator filter at runtime |
-
-### Global Properties
-
-| Property                | Type                                     | Description                                                         |
-| ----------------------- | ---------------------------------------- | ------------------------------------------------------------------- |
-| `$updateSignalRCreator` | `(creator: string \| undefined) => void` | Same as the injectable, accessible via `this.$updateSignalRCreator` |
+The plugin installs with no options: `app.use(signalR)`.
 
 ## Connection Lifecycle
 
@@ -80,7 +63,7 @@ sequenceDiagram
 
     Hub-->>C: "Send" (targeted)
     C->>Store: ingest(message)
-    Hub-->>C: "SendSystemEvents" (broadcast, filtered by creator)
+    Hub-->>C: "SendSystemEvents" (broadcast)
     C->>Store: ingest(message, { broadcast: true })
 
     Store->>Store: toast • subscriber callbacks • history update
@@ -97,24 +80,6 @@ sequenceDiagram
 - **Logout cleanup**: Setting `reconnect = false` before `stop()` prevents reconnection after intentional disconnection
 
 ## Usage
-
-### Updating the Creator Filter
-
-After login or when switching organizations, update the creator to scope system events:
-
-```typescript
-import { inject } from "vue";
-import { updateSignalRCreatorSymbol } from "@vc-shell/framework";
-
-const updateCreator = inject(updateSignalRCreatorSymbol);
-updateCreator?.(currentUser.id);
-```
-
-Or via the global property in Options API (legacy):
-
-```typescript
-this.$updateSignalRCreator(currentUser.id);
-```
 
 ### How Messages Flow
 
@@ -156,13 +121,9 @@ cy.signalR("pushNotificationHub").invoke("Send", {
 });
 ```
 
-## Tip: Creator vs. Broadcast
+## Tip: Send vs. SendSystemEvents
 
-If your notification type should reach all connected clients regardless of who triggered it, use the `Send` channel (the platform sends it as a broadcast). For user-scoped notifications (e.g., "your export is complete"), use `SendSystemEvents` with the `creator` field set to the user's ID on the server side.
-
-## Common Mistake
-
-Do not call `updateCreator` before the SignalR connection is established. The plugin watches the `currentCreator` ref and re-registers the `SendSystemEvents` handler only when the connection state is `"Connected"`. If you set the creator before authentication, it will be applied when the connection starts.
+Both channels ingest into the same `NotificationStore`. `Send` messages are ingested with default routing; `SendSystemEvents` messages are ingested as broadcast (`{ broadcast: true }`). The plugin does not filter either channel by a creator field -- any scoping to a specific user or organization must happen server-side before the message is pushed.
 
 ## Related
 

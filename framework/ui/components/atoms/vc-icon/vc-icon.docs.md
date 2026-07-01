@@ -25,14 +25,15 @@ A unified icon component that renders icons from multiple libraries. Lucide Icon
 
 ## Key Props
 
-| Prop         | Type                                                   | Default           | Description                              |
-| ------------ | ------------------------------------------------------ | ----------------- | ---------------------------------------- |
-| `icon`       | `string \| Component`                                  | `"lucide-square"` | Icon identifier or Vue component         |
-| `size`       | `"xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl" \| "xxxl"` | `"m"`             | Predefined size                          |
-| `variant`    | `"warning" \| "danger" \| "success"`                   | —                 | Semantic color variant                   |
-| `customSize` | `number`                                               | —                 | Custom size in pixels (overrides `size`) |
-| `ariaLabel`  | `string`                                               | —                 | Accessible label for meaningful icons    |
-| `basePath`   | `string`                                               | `"/assets/icons"` | Base path for SVG sprite icons           |
+| Prop           | Type                                                   | Default           | Description                                                                                                                                            |
+| -------------- | ------------------------------------------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `icon`         | `string \| Component`                                  | `"lucide-square"` | Icon identifier or Vue component                                                                                                                       |
+| `size`         | `"xs" \| "s" \| "m" \| "l" \| "xl" \| "xxl" \| "xxxl"` | `"m"`             | Predefined size                                                                                                                                        |
+| `variant`      | `"warning" \| "danger" \| "success"`                   | —                 | Semantic color variant                                                                                                                                 |
+| `customSize`   | `number`                                               | —                 | Custom size in pixels (overrides `size`)                                                                                                               |
+| `ariaLabel`    | `string`                                               | —                 | Accessible label for meaningful icons                                                                                                                  |
+| `basePath`     | `string`                                               | `"/assets/icons"` | Base path for SVG sprite icons                                                                                                                         |
+| `useContainer` | `boolean`                                              | `false`           | Deprecated. Wraps the icon in a fixed-size container; removed in a future version (logs a dev warning). Remove it — icons render correctly without it. |
 
 ::storybook id="layout-vcicon--all-sizes" height="300"
 

@@ -41,18 +41,18 @@ SSO-only mode:
 
 ## Key Props
 
-| Prop         | Type      | Default               | Description                                    |
-| ------------ | --------- | --------------------- | ---------------------------------------------- |
-| `logo`       | `string`  | -                     | Override logo image URL                        |
-| `background` | `string`  | -                     | Custom background image URL                    |
-| `title`      | `string`  | i18n `LOGIN.TITLE`    | Page heading text                              |
-| `subtitle`   | `string`  | i18n `LOGIN.SUBTITLE` | Page subheading text                           |
-| `ssoOnly`    | `boolean` | `false`               | Hide credentials form, show only SSO providers |
+| Prop         | Type      | Default               | Description                                                                  |
+| ------------ | --------- | --------------------- | ---------------------------------------------------------------------------- |
+| `logo`       | `string`  | -                     | Fallback logo image URL (used when the platform UI-settings logo is not set) |
+| `background` | `string`  | -                     | Custom background image URL                                                  |
+| `title`      | `string`  | i18n `LOGIN.TITLE`    | Page heading text                                                            |
+| `subtitle`   | `string`  | i18n `LOGIN.SUBTITLE` | Page subheading text                                                         |
+| `ssoOnly`    | `boolean` | `false`               | Hide credentials form, show only SSO providers                               |
 
 ## Recipe: Router Configuration
 
 ```ts
-import Login from "@vc-shell/framework/shared/pages/LoginPage";
+import { Login } from "@vc-shell/framework";
 
 const routes = [
   {
@@ -73,7 +73,7 @@ const routes = [
 
 ```vue
 <script setup lang="ts">
-import Login from "@vc-shell/framework/shared/pages/LoginPage";
+import { Login } from "@vc-shell/framework";
 </script>
 
 <template>
@@ -94,11 +94,13 @@ The login page supports the `auth:after-form` extension point, allowing modules 
 
 ```ts
 // In your module setup
-import { useExtensions } from "@vc-shell/framework";
+import { markRaw } from "vue";
+import { useExtensionPoint } from "@vc-shell/framework";
 
-const extensions = useExtensions();
+const { add } = useExtensionPoint("auth:after-form");
 
-extensions.register("auth:after-form", {
+add({
+  id: "auth-footer",
   component: markRaw(CustomAuthFooter),
   props: { message: "By signing in, you agree to our Terms of Service." },
 });
@@ -117,7 +119,7 @@ extensions.register("auth:after-form", {
 - **Auth layout**: Renders inside `VcAuthLayout`, which provides the centered card design with the logo at the top and the background image filling the page.
 - **Public route**: This page must be accessible without authentication. The route should have `meta: { public: true }` or be excluded from authentication guards.
 - **SSO auto-detection**: The page fetches available providers asynchronously. If the API call fails or returns an empty list, only the credentials form is shown.
-- **Password expiry flow**: After successful login, if the API response indicates `passwordExpired`, the page redirects to `/change-password?forced=true` instead of the main application.
+- **Password expiry flow**: After successful login, if the API response indicates `passwordExpired`, the page redirects to the `ChangePassword` route (`router.push({ name: "ChangePassword" })`) instead of the main application. No `forced` query param is passed; wire that separately via route props if you need it.
 - **Remember me**: The page does not include a "remember me" checkbox. Session persistence is managed by the platform's token expiration settings.
 
 ## Tips

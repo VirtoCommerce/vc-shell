@@ -131,8 +131,8 @@ Each variant has its own set of CSS variables following the pattern `--status-{v
 
 ## Architecture notes
 
-- The `extend` prop switches a CSS class; all color theming is done via `--status-{variant}-*` CSS variables scoped under `.vc-status`.
-- Special variants `"light-danger"`, `"info-dark"`, and `"primary"` are kept for backward compatibility and mapped via a `variantClassMap` in `vc-status.vue`.
+- The `extend` prop toggles the `vc-status--extended` modifier class; all color theming is done via `--status-{variant}-*` CSS variables scoped under `.vc-status`.
+- Each variant is bound directly as `vc-status--${variant}` and styled through a SCSS `@each $variant in $variants` loop; the special variants `"light-danger"`, `"info-dark"`, and `"primary"` are kept for backward compatibility.
 - Source: `framework/ui/components/atoms/vc-status/vc-status.vue`
 
 <!-- internal:end -->

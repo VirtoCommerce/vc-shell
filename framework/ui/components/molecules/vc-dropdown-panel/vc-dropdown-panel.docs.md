@@ -134,11 +134,12 @@ const open = ref(false);
 | `--dropdown-panel-border-color`      | `var(--neutrals-200)`         | Border color             |
 | `--dropdown-panel-border-radius`     | `6px`                         | Corner radius            |
 | `--dropdown-panel-shadow`            | `0 4px 16px rgba(0,0,0,0.08)` | Box shadow               |
-| `--dropdown-panel-z-index`           | `10001`                       | Z-index                  |
 | `--dropdown-panel-title-color`       | `var(--neutrals-900)`         | Title text color         |
 | `--dropdown-panel-close-color`       | `var(--neutrals-400)`         | Close button color       |
 | `--dropdown-panel-close-hover-color` | `var(--neutrals-600)`         | Close button hover color |
 | `--dropdown-panel-footer-bg`         | `var(--neutrals-50)`          | Footer background        |
+
+The panel's z-index comes from the global `--z-critical-dropdown-panel` token and is not overridable per-instance.
 
 ## Accessibility
 

@@ -44,15 +44,16 @@ VcField renders without form-field chrome (borders, focus rings, placeholders) a
 
 ## Key Props
 
-| Prop          | Type                                                  | Default      | Description                                               |
-| ------------- | ----------------------------------------------------- | ------------ | --------------------------------------------------------- |
-| `label`       | `string`                                              | --           | Field label text                                          |
-| `modelValue`  | `string \| number \| Date`                            | --           | Field content to display                                  |
-| `type`        | `"text" \| "date" \| "date-ago" \| "link" \| "email"` | `"text"`     | Content type for formatting                               |
-| `copyable`    | `boolean`                                             | `false`      | Show a copy-to-clipboard button                           |
-| `orientation` | `"vertical" \| "horizontal"`                          | `"vertical"` | Layout direction of label and value                       |
-| `aspectRatio` | `[number, number]`                                    | `[1, 1]`     | Column width ratio for label and value in horizontal mode |
-| `tooltip`     | `string`                                              | --           | Tooltip shown on the label                                |
+| Prop           | Type                                                  | Default      | Description                                                                          |
+| -------------- | ----------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------ |
+| `label`        | `string`                                              | --           | Field label text                                                                     |
+| `modelValue`   | `string \| number \| Date`                            | --           | Field content to display                                                             |
+| `displayValue` | `string`                                              | --           | Text shown instead of `modelValue`; `modelValue` is still used for copy/link actions |
+| `type`         | `"text" \| "date" \| "date-ago" \| "link" \| "email"` | `"text"`     | Content type for formatting                                                          |
+| `copyable`     | `boolean`                                             | `false`      | Show a copy-to-clipboard button                                                      |
+| `orientation`  | `"vertical" \| "horizontal"`                          | `"vertical"` | Layout direction of label and value                                                  |
+| `aspectRatio`  | `[number, number]`                                    | `[1, 1]`     | Column width ratio for label and value in horizontal mode                            |
+| `tooltip`      | `string`                                              | --           | Tooltip shown on the label                                                           |
 
 ## Type Formatting
 
@@ -185,9 +186,7 @@ const displayFields = computed(() => [
 
 ## CSS Variables
 
-| Variable      | Default  | Description                                  |
-| ------------- | -------- | -------------------------------------------- |
-| `--field-gap` | `0.5rem` | Gap between label and value in vertical mode |
+VcField exposes no CSS custom properties. The gap between label and value is fixed in the component: `0.25rem` in vertical mode and `0.5rem` in horizontal mode.
 
 ## Accessibility
 

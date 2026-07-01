@@ -328,7 +328,7 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 | `closeOnSelect`       | `boolean`                                      | `false`                         | Close after selecting an item                          |
 | `autoFocusPanel`      | `boolean`                                      | `true`                          | Focus the panel element when opened                    |
 | `padded`              | `boolean`                                      | `true`                          | Apply compact padding and rounded item backgrounds     |
-| `zIndex`              | `number`                                       | `10000`                         | Z-index for the floating panel                         |
+| `zIndex`              | `number`                                       | `9300`                          | Z-index for the floating panel                         |
 
 ## Events
 

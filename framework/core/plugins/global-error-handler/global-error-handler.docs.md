@@ -150,6 +150,6 @@ try {
 ## Related
 
 - `framework/core/utilities/error.ts` -- `parseError()` function that extracts readable messages
-- `framework/shared/components/notifications/core/notification.ts` -- `notification.error()` toast API
+- `framework/core/notifications/notification.ts` -- `notification.error()` toast API
 - `framework/core/utilities/logger.ts` -- `createLogger()` for structured console logging
-- `framework/shared/components/error-interceptor/` -- blade-level error boundary that intercepts errors before the global handler
+- `framework/shell/components/error-interceptor/` -- blade-level error boundary that intercepts errors before the global handler

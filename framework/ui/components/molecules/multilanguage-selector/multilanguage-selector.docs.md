@@ -1,12 +1,12 @@
 ---
-title: MultilanguageSelector
+title: VcLanguageSelector
 category: components
 group: form
 ---
 
-# MultilanguageSelector
+# VcLanguageSelector
 
-Compact circular flag button that opens a dropdown for selecting a content language. Designed for use in detail blades where entities have multilingual fields (e.g., product name, offer description, category title). This is distinct from the `LanguageSelector` settings entry, which changes the application UI locale -- `MultilanguageSelector` controls which language version of the content the user is editing.
+Compact circular flag button that opens a dropdown for selecting a content language. Designed for use in detail blades where entities have multilingual fields (e.g., product name, offer description, category title). This is distinct from the `LanguageSelector` settings entry, which changes the application UI locale -- `VcLanguageSelector` controls which language version of the content the user is editing.
 
 ## When to Use
 
@@ -21,7 +21,7 @@ Compact circular flag button that opens a dropdown for selecting a content langu
 ```vue
 <script setup lang="ts">
 import { ref } from "vue";
-import { MultilanguageSelector } from "@vc-shell/framework";
+import { VcLanguageSelector } from "@vc-shell/framework";
 
 const currentLang = ref("en-US");
 
@@ -32,7 +32,7 @@ const languages = [
 </script>
 
 <template>
-  <MultilanguageSelector
+  <VcLanguageSelector
     v-model="currentLang"
     :options="languages"
   />
@@ -58,7 +58,7 @@ A typical use case is a product detail blade where the user can edit the name an
 ```vue
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { MultilanguageSelector } from "@vc-shell/framework";
+import { VcLanguageSelector } from "@vc-shell/framework";
 
 const product = ref({
   names: { "en-US": "Widget", "de-DE": "Widget-Teil" },
@@ -91,7 +91,7 @@ const currentDescription = computed({
 <template>
   <VcBlade title="Edit Product">
     <template #actions>
-      <MultilanguageSelector
+      <VcLanguageSelector
         v-model="currentLang"
         :options="languages"
       />
@@ -132,7 +132,7 @@ onMounted(async () => {
 
 - **Compact layout**: The button renders as a small circle showing the flag of the currently selected language. Clicking it opens a dropdown with all available options.
 - **v-model binding**: The component uses `modelValue` / `update:modelValue` for two-way binding, following the standard Vue 3 v-model convention.
-- **Flag images**: The `flag` property on each option is optional. When provided, it shows the flag image; otherwise, the language code text is displayed.
+- **Flag images**: The `flag` property on each option is optional. When provided, it shows the flag image; otherwise, a globe icon (`lucide-globe`) is displayed.
 - **Dropdown positioning**: The dropdown is positioned relative to the button and adjusts to avoid viewport overflow.
 
 ## Tips

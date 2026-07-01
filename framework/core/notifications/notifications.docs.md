@@ -51,22 +51,22 @@ Returns the shared `NotificationStore` singleton. Resolution order:
 
 ### `NotificationStore` Interface
 
-| Member                       | Type                                         | Description                                                          |
-| ---------------------------- | -------------------------------------------- | -------------------------------------------------------------------- |
-| `registry`                   | `Map<string, NotificationTypeConfig>`        | Registered notification type configurations                          |
-| `history`                    | `Ref<PushNotification[]>`                    | All notifications (loaded from API + ingested)                       |
-| `realtime`                   | `Ref<PushNotification[]>`                    | Session-only notifications from SignalR                              |
-| `unreadCount`                | `ComputedRef<number>`                        | Count of unread notifications in history                             |
-| `hasUnread`                  | `ComputedRef<boolean>`                       | Whether any unread notifications exist                               |
-| `registerType(type, config)` | `(string, NotificationTypeConfig) => void`   | Register a notification type with toast/template config              |
-| `ingest(message, opts?)`     | `(PushNotification, {broadcast?}?) => void`  | Process an incoming notification; broadcast messages are filtered    |
-| `setBroadcastFilter(fn)`     | `((PushNotification) => boolean) => void`    | Set filter for broadcast messages (SendSystemEvents)                 |
-| `clearBroadcastFilter()`     | `() => void`                                 | Remove the broadcast filter                                          |
-| `markAsRead(message)`        | `(PushNotification) => void`                 | Mark a single notification as read                                   |
-| `markAllAsRead()`            | `() => Promise<void>`                        | Optimistic mark-all-as-read with server sync and rollback on failure |
-| `loadHistory(take?)`         | `(number?) => Promise<void>`                 | Load notification history from the API (default: 10)                 |
-| `subscribe(opts)`            | `({types, filter?, handler?}) => () => void` | Subscribe to notification types; returns unsubscribe function        |
-| `getByType(type)`            | `(string) => PushNotification[]`             | Filter history by `notifyType`                                       |
+| Member                       | Type                                         | Description                                                                                                         |
+| ---------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `registry`                   | `Map<string, NotificationTypeConfig>`        | Registered notification type configurations                                                                         |
+| `history`                    | `Ref<PushNotification[]>`                    | All notifications (loaded from API + ingested)                                                                      |
+| `realtime`                   | `Ref<PushNotification[]>`                    | Session-only notifications from SignalR                                                                             |
+| `unreadCount`                | `ComputedRef<number>`                        | Count of unread notifications in history                                                                            |
+| `hasUnread`                  | `ComputedRef<boolean>`                       | Whether any unread notifications exist                                                                              |
+| `registerType(type, config)` | `(string, NotificationTypeConfig) => void`   | Register a notification type with toast/template config                                                             |
+| `ingest(message, opts?)`     | `(PushNotification, {broadcast?}?) => void`  | Process an incoming notification; broadcast messages are filtered                                                   |
+| `setBroadcastFilter(fn)`     | `((PushNotification) => boolean) => void`    | Set filter for broadcast messages (SendSystemEvents)                                                                |
+| `clearBroadcastFilter()`     | `() => void`                                 | Remove the broadcast filter                                                                                         |
+| `markAsRead(message)`        | `(PushNotification) => void`                 | Mark a single notification as read                                                                                  |
+| `markAllAsRead()`            | `() => Promise<void>`                        | Mark-all-as-read: flips local state immediately and syncs to the server; server failure is logged only, no rollback |
+| `loadHistory(take?)`         | `(number?) => Promise<void>`                 | Load notification history from the API (default: 10)                                                                |
+| `subscribe(opts)`            | `({types, filter?, handler?}) => () => void` | Subscribe to notification types; returns unsubscribe function                                                       |
+| `getByType(type)`            | `(string) => PushNotification[]`             | Filter history by `notifyType`                                                                                      |
 
 **File:** `store.ts`
 
@@ -150,7 +150,7 @@ clearBroadcastFilter();
 
 ### Toast Controller
 
-Handles toast popup display based on `NotificationTypeConfig.toast` settings. Created internally by the store.
+Handles toast popup display based on `NotificationTypeConfig.toast` settings. Created internally by the store. `createToastController()` and `createNotificationStore(options?)` are both exported factories for custom shells and test harnesses — pass `createNotificationStore({ toastHandle })` to inject a stub toast handler.
 
 **File:** `toast-controller.ts`
 
@@ -162,20 +162,40 @@ Handles toast popup display based on `NotificationTypeConfig.toast` settings. Cr
 | `"progress"` | Persistent toast updated on each message; auto-completes when `isComplete()` returns `true` |
 | `"silent"`   | No toast displayed                                                                          |
 
+### Imperative `notification` API
+
+Low-level toast helper exported from `index.ts` for firing toasts directly (used by `useBladeNotifications` progress recipes and by framework internals). Call `notification(content, options?)` for a default toast, or use the typed helpers.
+
+**File:** `notification.ts`
+
+| Method                            | Description                                                                 |
+| --------------------------------- | --------------------------------------------------------------------------- |
+| `notification(content, opts?)`    | Show a default toast; returns the notification id                           |
+| `notification.error(...)`         | Show an error-styled toast                                                  |
+| `notification.warning(...)`       | Show a warning-styled toast                                                 |
+| `notification.success(...)`       | Show a success-styled toast                                                 |
+| `notification.update(id, opts)`   | Update an existing toast by id (used for progress toasts)                   |
+| `notification.remove(id?)`        | Dismiss one toast by id, or all if id omitted                               |
+| `notification.clearAll()`         | Dismiss all toasts                                                          |
+| `notification.setPosition(pos)`   | Set the default toast position                                              |
+| `notification.clearPosition(pos)` | Dismiss all toasts at the given position                                    |
+| `notification.debug()`            | Log active toasts and default options; returns `{ active, defaultOptions }` |
+
 ### Types
 
 **File:** `types.ts`
 
-| Type                          | Description                                                                             |
-| ----------------------------- | --------------------------------------------------------------------------------------- |
-| `Severity`                    | `"info" \| "warning" \| "error" \| "critical"`                                          |
-| `ToastConfig`                 | Toast behavior: mode, severity (static or function), timeout, isComplete, completedType |
-| `NotificationTypeConfig`      | Per-type config: optional Vue `template` component, `toast` config, `groupBy` field     |
-| `ModuleNotificationsConfig`   | Record mapping `notifyType` strings to `NotificationTypeConfig`                         |
-| `NotificationAction`          | Action button in notification UI: label, icon, handler, visibility                      |
-| `NotificationSubscription`    | Internal subscriber record: id, types, filter, handler                                  |
-| `SEVERITY_TIMEOUTS`           | Default timeouts: info=5s, warning=8s, error=persistent, critical=persistent            |
-| `EXCLUDED_NOTIFICATION_TYPES` | Types excluded from ingestion (e.g. `"IndexProgressPushNotification"`)                  |
+| Type                          | Description                                                                                                                        |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `Severity`                    | `"info" \| "warning" \| "error" \| "critical"`                                                                                     |
+| `ToastConfig`                 | Toast behavior: mode, severity (static or function), timeout, isComplete, completedType                                            |
+| `NotificationTypeConfig`      | Per-type config: optional Vue `template` component, `toast` config, `groupBy` field                                                |
+| `ModuleNotificationsConfig`   | Record mapping `notifyType` strings to `NotificationTypeConfig`                                                                    |
+| `NotificationAction`          | Action button in notification UI: label, icon, handler, visibility                                                                 |
+| `NotificationSubscription`    | Internal subscriber record: id, types, filter, handler                                                                             |
+| `SEVERITY_TIMEOUTS`           | Default timeouts: info=5s, warning=8s, error=persistent, critical=persistent                                                       |
+| `EXCLUDED_NOTIFICATION_TYPES` | Types excluded from ingestion (e.g. `"IndexProgressPushNotification"`)                                                             |
+| `NotificationContextKey`      | `InjectionKey<ComputedRef<PushNotification>>` — injection key `useNotificationContext()` reads to get the current template payload |
 
 ## Usage Examples
 
@@ -233,13 +253,13 @@ const store = useNotificationStore();
 await store.loadHistory(20);
 console.log(`${store.unreadCount.value} unread notifications`);
 
-await store.markAllAsRead(); // optimistic update with rollback on failure
+await store.markAllAsRead(); // flips local state immediately; server failure is logged only, no rollback
 ```
 
 ## Related
 
-- `framework/injection-keys.ts` -- `NotificationStoreKey`, `NotificationTemplatesKey`
-- `framework/shared/components/notifications/` -- Notification dropdown UI
+- `framework/injection-keys.ts` -- `NotificationStoreKey`
+- `framework/shell/components/notification-dropdown/` -- Notification dropdown UI
 - `framework/core/api/platform.ts` -- `PushNotification`, `PushNotificationClient`
 
 <!-- internal:start -->

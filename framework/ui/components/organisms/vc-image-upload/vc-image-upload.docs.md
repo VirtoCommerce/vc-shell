@@ -19,18 +19,18 @@ A single-image upload organism that displays either a drag-and-drop upload zone 
 
 ## Props
 
-| Prop          | Type                             | Default                            | Description                                    |
-| ------------- | -------------------------------- | ---------------------------------- | ---------------------------------------------- |
-| `image`       | `ICommonAsset`                   | `undefined`                        | The currently displayed image asset.           |
-| `disabled`    | `boolean`                        | `false`                            | Disables upload and remove actions.            |
-| `loading`     | `boolean`                        | `false`                            | Shows a loading spinner on the upload zone.    |
-| `accept`      | `string`                         | `.jpg,.png,.jpeg,.webp,.heic,.svg` | Accepted file extensions.                      |
-| `rules`       | `IValidationRules`               | `undefined`                        | Validation rules (e.g. `{ fileWeight: 300 }`). |
-| `name`        | `string`                         | `"Image"`                          | Field name for validation messages.            |
-| `icon`        | `string`                         | `"lucide-cloud-upload"`            | Upload zone placeholder icon.                  |
-| `placeholder` | `{ text: string; link: string }` | `undefined`                        | Custom text for the upload zone.               |
-| `previewable` | `boolean`                        | `true`                             | Enables lightbox preview on click.             |
-| `removable`   | `boolean`                        | `true`                             | Shows the remove action on the image tile.     |
+| Prop          | Type                                         | Default                            | Description                                                         |
+| ------------- | -------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
+| `image`       | `ICommonAsset`                               | `undefined`                        | The currently displayed image asset.                                |
+| `disabled`    | `boolean`                                    | `false`                            | Disables upload and remove actions.                                 |
+| `loading`     | `boolean`                                    | `false`                            | Shows a loading spinner on the upload zone.                         |
+| `accept`      | `string`                                     | `.jpg,.png,.jpeg,.webp,.heic,.svg` | Accepted file extensions.                                           |
+| `rules`       | `keyof IValidationRules \| IValidationRules` | `undefined`                        | Validation rules (rule name or object, e.g. `{ fileWeight: 300 }`). |
+| `name`        | `string`                                     | `"Image"`                          | Field name for validation messages.                                 |
+| `icon`        | `string`                                     | `"lucide-cloud-upload"`            | Upload zone placeholder icon.                                       |
+| `placeholder` | `{ text: string; link: string }`             | `undefined`                        | Custom text for the upload zone.                                    |
+| `previewable` | `boolean`                                    | `true`                             | Enables lightbox preview on click.                                  |
+| `removable`   | `boolean`                                    | `true`                             | Shows the remove action on the image tile.                          |
 
 ## Events
 

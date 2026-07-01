@@ -107,7 +107,7 @@ Broadcast-only suppression. To suppress targeted messages too, set `toast: false
 ## Tips
 
 - **Install once, early.** Setting the filter in `App.vue` `onMounted` (after authentication) is the canonical placement, so messages arriving before the first blade mounts are already scoped.
-- **Filter exceptions go straight to the console.** If your predicate throws, the message is dropped. Wrap the logic if you are reading off potentially missing fields.
+- **A throwing predicate is not caught.** `ingest` calls the filter without a try/catch, so an exception propagates up through ingestion — it is not logged and the message is not silently dropped. Guard field access inside the predicate (e.g. optional chaining) when reading potentially missing fields.
 - **Do not query the store from inside the filter.** The store is `useBroadcastFilter`'s parent — calling back into it during ingestion causes re-entrancy.
 
 ## Related

@@ -326,20 +326,26 @@ function helperFunction() {
 | `isToolbarItemRegistered` | `(id: string) => boolean`                                                      | Check if a toolbar item with the given ID exists               |
 | `registeredToolbarItems`  | `IToolbarRegistration[]`                                                       | All registered toolbar items across all blades                 |
 
+### Additional Exports
+
+| Export                    | Description                                                                                                                                             |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `provideToolbarService()` | Creates and provides the toolbar service via Vue injection. Idempotent -- returns existing service if already provided. Cleans up via `onScopeDispose`. |
+
 ### IToolbarItem
 
-| Property       | Type                                                                       | Required | Description                                                    |
-| -------------- | -------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
-| `id`           | `string`                                                                   | Yes      | Unique identifier for the button                               |
-| `title`        | `string \| Ref<string> \| ComputedRef<string>`                             | No       | Button label (supports reactive values)                        |
-| `icon`         | `string \| (() => string)`                                                 | No       | Icon class (e.g., `"fas fa-save"`) or a function returning one |
-| `clickHandler` | `(app?) => void`                                                           | No       | Click callback                                                 |
-| `disabled`     | `boolean \| ComputedRef<boolean>`                                          | No       | Whether the button is disabled                                 |
-| `isVisible`    | `boolean \| Ref<boolean> \| ComputedRef<boolean> \| ((blade?) => boolean)` | No       | Controls button visibility                                     |
-| `priority`     | `number`                                                                   | No       | Sort order (higher = displayed first, default `0`)             |
-| `separator`    | `"left" \| "right" \| "both"`                                              | No       | Adds a visual divider next to the button                       |
-| `permissions`  | `string \| string[]`                                                       | No       | Required permission(s) to display the button                   |
-| `bladeId`      | `string`                                                                   | No       | Target blade ID (auto-resolved from context)                   |
+| Property       | Type                                                                                                              | Required | Description                                                    |
+| -------------- | ----------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
+| `id`           | `string`                                                                                                          | Yes      | Unique identifier for the button                               |
+| `title`        | `string \| Ref<string> \| ComputedRef<string>`                                                                    | No       | Button label (supports reactive values)                        |
+| `icon`         | `string \| (() => string)`                                                                                        | No       | Icon class (e.g., `"fas fa-save"`) or a function returning one |
+| `clickHandler` | `(app?) => void`                                                                                                  | No       | Click callback                                                 |
+| `disabled`     | `boolean \| ComputedRef<boolean \| undefined>`                                                                    | No       | Whether the button is disabled                                 |
+| `isVisible`    | `boolean \| Ref<boolean \| undefined> \| ComputedRef<boolean \| undefined> \| ((blade?) => boolean \| undefined)` | No       | Controls button visibility                                     |
+| `priority`     | `number`                                                                                                          | No       | Sort order (higher = displayed first, default `0`)             |
+| `separator`    | `"left" \| "right" \| "both"`                                                                                     | No       | Adds a visual divider next to the button                       |
+| `permissions`  | `string \| string[]`                                                                                              | No       | Required permission(s) to display the button                   |
+| `bladeId`      | `string`                                                                                                          | No       | Target blade ID (auto-resolved from context)                   |
 
 `IToolbarItem` is the shape consumed by `ToolbarService`. The blade-level array binding uses `IBladeToolbar` (see [Core types](../../types/)), a near-identical shape that the framework normalizes into `IToolbarItem` before render.
 

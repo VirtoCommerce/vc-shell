@@ -98,12 +98,13 @@ export default {
 
 ### Registration options
 
-| Option      | Type        | Required | Description                                                                                                                                    |
-| ----------- | ----------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`        | `string`    | No       | Unique identifier for the entry. Auto-generated when omitted.                                                                                  |
-| `group`     | `string`    | No       | Group name (entries are grouped and separated by dividers). Defaults to `"general"`.                                                           |
-| `order`     | `number`    | No       | Sort order within the group (lower = higher position). Defaults to the current registry size at registration time, preserving insertion order. |
-| `component` | `Component` | Yes      | Vue component to render as the menu item.                                                                                                      |
+| Option      | Type                      | Required | Description                                                                                                                                    |
+| ----------- | ------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`        | `string`                  | No       | Unique identifier for the entry. Auto-generated when omitted.                                                                                  |
+| `group`     | `string`                  | No       | Group name (entries are grouped and separated by dividers). Defaults to `"general"`.                                                           |
+| `order`     | `number`                  | No       | Sort order within the group (lower = higher position). Defaults to the current registry size at registration time, preserving insertion order. |
+| `component` | `Component`               | Yes      | Vue component to render as the menu item.                                                                                                      |
+| `props`     | `Record<string, unknown>` | No       | Props bound to the rendered component via `v-bind`.                                                                                            |
 
 ### Group rendering
 
@@ -117,7 +118,7 @@ Groups are separated by a horizontal divider and items within each group are sor
 ## Details
 
 - **Service-driven content**: The menu has no props and renders entirely from the `useSettingsMenu()` registry. This makes it fully extensible -- any module can add entries.
-- **CloseSettingsMenuKey injection**: The menu provides a `CloseSettingsMenuKey` injection to its children. Menu items inject this to close the dropdown before performing their action (e.g., opening a popup or navigating).
+- **CloseSettingsMenuKey injection**: `CloseSettingsMenuKey` is provided by the containing `UserDropdownButton`, not by `SettingsMenu`. `SettingsMenu` itself provides nothing; it only reads `useSettingsMenu().items` and renders them. Menu item children inject the key supplied by the parent dropdown to close it before performing their action (e.g., opening a popup or navigating). Rendering `SettingsMenu` standalone leaves `CloseSettingsMenuKey` undefined for its children.
 - **Ordering**: Items are sorted by `order` within their group. Use consistent order ranges across modules to maintain a predictable menu layout.
 - **Dynamic registration**: Items can be registered at any time, but registering during module `install()` ensures they are available when the menu first renders.
 

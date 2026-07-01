@@ -315,7 +315,7 @@ const selected = ref<string[]>([]);
 | `error`         | `boolean`           | `false`     | Enables error styling                                                  |
 | `errorMessage`  | `string`            | --          | Error message displayed below the checkbox                             |
 | `name`          | `string`            | `"Field"`   | HTML name attribute                                                    |
-| `outline`       | `boolean`           | `false`     | Applies outline style variant                                          |
+| `outline`       | `boolean`           | `false`     | Reserved; declared but currently has no effect                         |
 
 ## Events
 
@@ -333,24 +333,31 @@ const selected = ref<string[]>([]);
 
 ## CSS Variables
 
-| Variable                              | Default                | Description              |
-| ------------------------------------- | ---------------------- | ------------------------ |
-| `--checkbox-size-s`                   | `16px`                 | Small variant size       |
-| `--checkbox-size-m`                   | `20px`                 | Medium variant size      |
-| `--checkbox-size-l`                   | `24px`                 | Large variant size       |
-| `--checkbox-border-color`             | `var(--neutrals-300)`  | Default border color     |
-| `--checkbox-border-color-hover`       | `var(--neutrals-400)`  | Border color on hover    |
-| `--checkbox-bg-color`                 | `var(--additional-50)` | Unchecked background     |
-| `--checkbox-checked-bg-color`         | `var(--primary-500)`   | Checked background color |
-| `--checkbox-checked-border-color`     | `var(--primary-500)`   | Checked border color     |
-| `--checkbox-indeterminate-bg-color`   | `var(--primary-500)`   | Indeterminate background |
-| `--checkbox-indeterminate-line-color` | `var(--additional-50)` | Indeterminate dash color |
-| `--checkbox-error-border-color`       | `var(--danger-500)`    | Error state border       |
-| `--checkbox-error-ring-color`         | `var(--danger-100)`    | Error ring color         |
-| `--checkbox-focus-ring-color`         | `var(--primary-100)`   | Focus ring color         |
-| `--checkbox-border-radius`            | `4px`                  | Corner radius            |
-| `--checkbox-disabled-opacity`         | `0.5`                  | Opacity when disabled    |
-| `--checkbox-transition-duration`      | `200ms`                | Animation duration       |
+| Variable                                | Default                | Description                     |
+| --------------------------------------- | ---------------------- | ------------------------------- |
+| `--checkbox-size-s`                     | `16px`                 | Small variant size              |
+| `--checkbox-size-m`                     | `20px`                 | Medium variant size             |
+| `--checkbox-size-l`                     | `24px`                 | Large variant size              |
+| `--checkbox-border-color`               | `var(--neutrals-300)`  | Default border color            |
+| `--checkbox-border-color-hover`         | `var(--neutrals-400)`  | Border color on hover           |
+| `--checkbox-bg-color`                   | `var(--additional-50)` | Unchecked background            |
+| `--checkbox-checked-bg-color`           | `var(--primary-500)`   | Checked background color        |
+| `--checkbox-checked-border-color`       | `var(--primary-500)`   | Checked border color            |
+| `--checkbox-indeterminate-bg-color`     | `var(--primary-500)`   | Indeterminate background        |
+| `--checkbox-indeterminate-border-color` | `var(--primary-500)`   | Indeterminate border color      |
+| `--checkbox-indeterminate-line-color`   | `var(--additional-50)` | Indeterminate dash color        |
+| `--checkbox-text-color`                 | `var(--neutrals-900)`  | Label text color                |
+| `--checkbox-icon-color`                 | `var(--additional-50)` | Check/dash icon color           |
+| `--checkbox-error-text-color`           | `var(--danger-500)`    | Error message text color        |
+| `--checkbox-required-color`             | `var(--danger-500)`    | Required indicator color        |
+| `--checkbox-label-spacing`              | `0.5rem`               | Spacing below the label         |
+| `--checkbox-text-margin`                | `0.5rem`               | Margin between control and text |
+| `--checkbox-error-border-color`         | `var(--danger-500)`    | Error state border              |
+| `--checkbox-error-ring-color`           | `var(--danger-100)`    | Error ring color                |
+| `--checkbox-focus-ring-color`           | `var(--primary-100)`   | Focus ring color                |
+| `--checkbox-border-radius`              | `4px`                  | Corner radius                   |
+| `--checkbox-disabled-opacity`           | `0.5`                  | Opacity when disabled           |
+| `--checkbox-transition-duration`        | `200ms`                | Animation duration              |
 
 ## Accessibility
 

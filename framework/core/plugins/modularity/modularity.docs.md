@@ -176,12 +176,12 @@ export default defineAppModule({
 
 Key differences:
 
-|                   | `createAppModule`                       | `defineAppModule`                  |
-| ----------------- | --------------------------------------- | ---------------------------------- |
-| API style         | Positional args                         | Named options object               |
-| Notifications     | `notificationTemplates` (legacy)        | `notifications` (new typed config) |
-| Global components | 4th arg registers via `app.component()` | Not supported (use provide/inject) |
-| Status            | **Deprecated** -- will be removed       | **Current** -- use this            |
+|                   | `createAppModule`                                                                   | `defineAppModule`                  |
+| ----------------- | ----------------------------------------------------------------------------------- | ---------------------------------- |
+| API style         | Positional args                                                                     | Named options object               |
+| Notifications     | `notificationTemplates` (legacy)                                                    | `notifications` (new typed config) |
+| Global components | 4th arg accepted for backward compatibility but ignored (no `app.component()` call) | Not supported (use provide/inject) |
+| Status            | **Deprecated** -- will be removed                                                   | **Current** -- use this            |
 
 Migration is a one-line change:
 
@@ -893,13 +893,13 @@ interface ToastConfig {
 
 ## Related
 
-| Resource                | Path                                  | Description                                      |
-| ----------------------- | ------------------------------------- | ------------------------------------------------ |
-| Extension Points Plugin | `core/plugins/extension-points/`      | Cross-module UI extension system                 |
-| BladeRegistry           | `core/composables/useBladeRegistry/`  | Where blades are stored and looked up            |
-| useMenuService          | `core/composables/useMenuService/`    | `addMenuItem()` for sidebar navigation           |
-| useDashboard            | `core/composables/useDashboard/`      | Dashboard widget management                      |
-| NotificationStore       | `core/notifications/`                 | Notification type registration and dispatch      |
-| i18n Plugin             | `core/plugins/i18n/`                  | vue-i18n singleton for locale merging            |
-| mf-host                 | `packages/mf-host/`                   | Module Federation host that loads remote modules |
-| Blade Navigation        | `shared/components/blade-navigation/` | Blade stack rendering and navigation             |
+| Resource                | Path                                 | Description                                      |
+| ----------------------- | ------------------------------------ | ------------------------------------------------ |
+| Extension Points Plugin | `core/plugins/extension-points/`     | Cross-module UI extension system                 |
+| BladeRegistry           | `core/composables/useBladeRegistry/` | Where blades are stored and looked up            |
+| useMenuService          | `core/composables/useMenuService/`   | `addMenuItem()` for sidebar navigation           |
+| useDashboard            | `core/composables/useDashboard/`     | Dashboard widget management                      |
+| NotificationStore       | `core/notifications/`                | Notification type registration and dispatch      |
+| i18n Plugin             | `core/plugins/i18n/`                 | vue-i18n singleton for locale merging            |
+| mf-host                 | `packages/mf-host/`                  | Module Federation host that loads remote modules |
+| Blade Navigation        | `core/blade-navigation/`             | Blade stack logic and navigation                 |

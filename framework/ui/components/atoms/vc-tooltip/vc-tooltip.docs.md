@@ -324,7 +324,8 @@ const actions = [
 | `--tooltip-font-size`     | `12px`                 | Text size                  |
 | `--tooltip-padding-x`     | `10px`                 | Horizontal padding         |
 | `--tooltip-padding-y`     | `6px`                  | Vertical padding           |
-| `--tooltip-z-index`       | `1002`                 | Stacking order             |
+
+Stacking order comes from the global `--z-critical-tooltip` token and is not overridable per-instance.
 
 ## Accessibility
 
@@ -348,9 +349,9 @@ const actions = [
 
 - VcTooltip uses `@floating-ui/vue` (`useFloating`, `autoUpdate`, `flip`, `shift`, `arrow`, `offset` middleware).
 - The tooltip content is teleported to `<body>` via Vue's `<Teleport>` to escape stacking contexts.
-- Show/hide state is managed with a single `isVisible` ref toggled by `mouseenter`/`mouseleave` and `focusin`/`focusout` on the trigger slot wrapper.
-- The delay timer is stored in a `timeoutId` ref and cleared on `mouseleave` to cancel pending show.
-- Arrow positioning is handled by the `arrowEl` template ref passed to the `arrow` middleware; position is applied via `:style` on the arrow element.
+- Show/hide state is managed with a single `tooltipVisible` ref toggled by `mouseenter`/`mouseleave` and `focusin`/`focusout` on the trigger slot wrapper.
+- The delay timer is stored in a `showTimeout` variable (not a ref) and cleared in `hideTooltip`/`onBeforeUnmount` to cancel a pending show.
+- Arrow positioning is handled by the `arrowRef` template ref passed to the `arrow` middleware; position is applied via `:style` on the arrow element.
 - Source: `framework/ui/components/atoms/vc-tooltip/vc-tooltip.vue`
 
 <!-- internal:end -->

@@ -246,7 +246,7 @@ These props are used internally by the notification system. You rarely need to s
 
 | Prop             | Type                                             | Default        | Description                                            |
 | ---------------- | ------------------------------------------------ | -------------- | ------------------------------------------------------ |
-| `content`        | `string \| Component`                            | --             | Notification message or custom component               |
+| `content`        | `string \| VNode \| Component`                   | --             | Notification message or custom component               |
 | `notificationId` | `number \| string`                               | --             | Unique identifier                                      |
 | `updateId`       | `number \| string`                               | --             | ID for update tracking                                 |
 | `type`           | `"default" \| "success" \| "error" \| "warning"` | `"default"`    | Notification type (determines icon and accent color)   |
@@ -269,16 +269,18 @@ These props are used internally by the notification system. You rarely need to s
 
 ## Notification Service Methods
 
-| Method                       | Signature                                                                           | Description                     |
-| ---------------------------- | ----------------------------------------------------------------------------------- | ------------------------------- |
-| `notification()`             | `(message: string \| Component, options?: NotificationOptions) => string \| number` | Show a default notification     |
-| `notification.success()`     | `(message: string \| Component) => string \| number`                                | Show a success notification     |
-| `notification.error()`       | `(message: string \| Component) => string \| number`                                | Show an error notification      |
-| `notification.warning()`     | `(message: string \| Component) => string \| number`                                | Show a warning notification     |
-| `notification.update()`      | `(id, options: Partial<NotificationOptions>) => void`                               | Update an existing notification |
-| `notification.remove()`      | `(id: string \| number) => void`                                                    | Remove a specific notification  |
-| `notification.clearAll()`    | `() => void`                                                                        | Remove all notifications        |
-| `notification.setPosition()` | `(position: NotificationPosition) => void`                                          | Change the global position      |
+| Method                         | Signature                                                                                    | Description                                                                              |
+| ------------------------------ | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `notification()`               | `(message: string \| VNode \| Component, options?: NotificationOptions) => string \| number` | Show a default notification                                                              |
+| `notification.success()`       | `(message: string \| VNode \| Component, options?: NotificationOptions) => string \| number` | Show a success notification                                                              |
+| `notification.error()`         | `(message: string \| VNode \| Component, options?: NotificationOptions) => string \| number` | Show an error notification                                                               |
+| `notification.warning()`       | `(message: string \| VNode \| Component, options?: NotificationOptions) => string \| number` | Show a warning notification                                                              |
+| `notification.update()`        | `(id: string \| number, options: NotificationOptions) => string \| number`                   | Update an existing notification; returns the id                                          |
+| `notification.remove()`        | `(id?: string \| number) => void`                                                            | Remove a specific notification; omitting the id removes all (equivalent to `clearAll()`) |
+| `notification.clearAll()`      | `() => void`                                                                                 | Remove all notifications                                                                 |
+| `notification.clearPosition()` | `(position: NotificationPosition) => void`                                                   | Remove all notifications in one position                                                 |
+| `notification.setPosition()`   | `(position: NotificationPosition) => void`                                                   | Change the global position                                                               |
+| `notification.debug()`         | `() => { active; defaultOptions }`                                                           | Diagnostics helper: logs active toasts and default options, returns them                 |
 
 ## CSS Variables
 

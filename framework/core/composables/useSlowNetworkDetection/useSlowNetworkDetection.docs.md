@@ -168,4 +168,4 @@ trackRequest("my-request-2");
 
 - [`useConnectionStatus`](../useConnectionStatus/useConnectionStatus.docs.md) — offline detection (binary online/offline)
 - [`registerInterceptors`](https://github.com/VirtoCommerce/vc-shell/blob/main/framework/core/interceptors/index.ts) — the fetch wrapper that calls `trackRequest`/`untrackRequest`
-- `notification` from `@shared/components/notifications` — the notification system used to display the warning
+- `notification` from `@core/notifications/notification` — the notification system used to display the warning

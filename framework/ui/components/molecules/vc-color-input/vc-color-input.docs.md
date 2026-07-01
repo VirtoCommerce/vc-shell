@@ -60,6 +60,18 @@ const color = ref<string | null>(null);
 | `error` / `errorMessage` | `boolean` / `string`   | --          | Error styling and validation message                     |
 | `disabled`               | `boolean`              | `false`     | Disables the input and color picker                      |
 
+## Events
+
+| Event               | Payload          | Description                          |
+| ------------------- | ---------------- | ------------------------------------ |
+| `update:modelValue` | `string \| null` | Emitted when the color value changes |
+| `blur`              | `Event`          | Emitted when the text input blurs    |
+| `focus`             | --               | Emitted when the text input focuses  |
+
+## Exposed Methods
+
+- `focus()` -- focuses the text input (accessible via a template ref).
+
 ## Common Patterns
 
 ### With Validation
@@ -194,6 +206,7 @@ Uses the same `--input-*` variables as VcInput, plus:
 
 - `--color-input-swatch-size` -- swatch square size (default 20px)
 - `--color-input-swatch-border-radius`, `--color-input-swatch-border-color`
+- `--color-input-swatch-border-color-hover` -- swatch border color on hover (default var(--neutrals-400))
 
 ## Tip: CSS Color Names
 
@@ -218,7 +231,7 @@ When placed inside a `VcBlade` with `loading=true`, the component automatically 
 
 - The swatch button is a native `<button type="button">` that triggers a hidden `<input type="color">` via programmatic `.click()`. The native color picker is not visible — only the swatch button is.
 - Color synchronization: typing in the text field updates `modelValue` directly; selecting from the native picker emits the new hex value and also updates the text field.
-- The component does NOT validate hex format — any string is accepted as-is and the swatch will display whatever color the browser interprets.
+- The text field accepts any string, but the swatch only updates for valid hex codes or recognized CSS color names; unrecognized input leaves the swatch unchanged.
 - Source file: `framework/ui/components/molecules/vc-color-input/vc-color-input.vue`
 
 <!-- internal:end -->

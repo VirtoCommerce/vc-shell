@@ -277,6 +277,7 @@ const content = ref("<h1>Title</h1>");
 | `--vc-editor-text-disabled`       | `var(--neutrals-500)`                                     | Text color when disabled                             |
 | `--vc-editor-background-disabled` | `var(--neutrals-200)`                                     | Background when disabled                             |
 | `--vc-editor-focus-border`        | `var(--primary-500)`                                      | Border color on focus                                |
+| `--vc-editor-focus-shadow`        | `var(--primary-500)`                                      | Focus shadow color token                             |
 | `--vc-editor-focus-ring-color`    | `color-mix(in srgb, var(--primary-500) 30%, transparent)` | Focus ring color                                     |
 | `--vc-editor-error-border`        | `var(--danger-500)`                                       | Border color on error                                |
 | `--vc-editor-error-ring-color`    | `rgba(239, 68, 68, 0.2)`                                  | Error ring color                                     |

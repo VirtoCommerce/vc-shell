@@ -57,12 +57,15 @@ The `shadow` prop adds an inset shadow as a scroll cue. Use it for content that 
 
 ## CSS Variables
 
-| Variable                    | Default       | Description                          |
-| --------------------------- | ------------- | ------------------------------------ |
-| `--container-padding`       | `16px`        | Inner padding of the scrollable area |
-| `--container-bg`            | `transparent` | Background color                     |
-| `--container-border-radius` | `0`           | Border radius                        |
-| `--container-gap`           | `0`           | Gap between child elements           |
+| Variable                     | Default                                                                                | Description                                                     |
+| ---------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `--container-padding`        | `16px`                                                                                 | Inner padding of the scrollable area                            |
+| `--container-bg`             | `transparent`                                                                          | Background color                                                |
+| `--container-border-radius`  | `0`                                                                                    | Border radius                                                   |
+| `--container-gap`            | `0`                                                                                    | Gap between child elements                                      |
+| `--container-shadow-color`   | `var(--additional-950)`                                                                | Scroll-shadow color (RGB channels used by `--container-shadow`) |
+| `--container-shadow-opacity` | `0.1`                                                                                  | Scroll-shadow opacity                                           |
+| `--container-shadow`         | `0 3px 2px rgba(var(--container-shadow-color), var(--container-shadow-opacity)) inset` | Inset shadow applied when the `shadow` prop is set              |
 
 ## Exposed Methods
 

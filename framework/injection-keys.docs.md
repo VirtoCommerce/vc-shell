@@ -34,6 +34,8 @@ This centralized approach has several advantages:
 | `BladeContextKey`    | `ComputedRef<Record<string, unknown>>` | Blade-exposed context for widgets/extensions |
 | `BladeRoutesKey`     | `BladeRoutesRecord[]`                  | Registered blade routes                      |
 | `InternalRoutesKey`  | `BladeRoutesRecord[]`                  | Internal framework routes                    |
+| `BladeFormKey`       | `BladeFormInjection`                   | Blade form context shared with child fields  |
+| `BladeLoadingKey`    | `Ref<boolean>`                         | Blade loading (skeleton) state for children  |
 
 ### Notifications
 
@@ -74,6 +76,8 @@ This centralized approach has several advantages:
 | `CloseSettingsMenuKey` | `() => void`                    | Callback to close the settings menu                                                          |
 
 ### Breakpoints
+
+> **Deprecated.** All five breakpoint keys below are deprecated in favor of the `useResponsive()` composable. Prefer `useResponsive()` over injecting these keys directly.
 
 | Key            | Type           | Description            |
 | -------------- | -------------- | ---------------------- |
@@ -194,5 +198,5 @@ const service = inject(MenuServiceKey); // MenuService instance
 
 - `framework/core/services/` -- Service implementations provided via these keys
 - `framework/core/notifications/store.ts` -- NotificationStore provided via `NotificationStoreKey`
-- `framework/shared/components/blade-navigation/types.ts` -- Blade types for navigation keys
+- `framework/core/blade-navigation/types/` -- Blade types for navigation keys
 - `framework/core/composables/` -- Composable wrappers for most injection keys

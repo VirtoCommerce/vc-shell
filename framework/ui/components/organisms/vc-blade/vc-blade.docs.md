@@ -359,10 +359,11 @@ interface IBladeToolbar {
   id?: string;
   title?: string | Ref<string> | ComputedRef<string>;
   icon?: string | (() => string);
-  clickHandler?(): void;
-  disabled?: boolean | ComputedRef<boolean>;
-  isVisible?: boolean | Ref<boolean> | ComputedRef<boolean> | ((blade?: BladeDescriptor) => boolean);
+  clickHandler?(app?: Record<string, any> | null): void;
+  disabled?: boolean | ComputedRef<boolean | undefined>;
+  isVisible?: boolean | Ref<boolean | undefined> | ComputedRef<boolean | undefined> | ((blade?: BladeDescriptor) => boolean | undefined);
   separator?: "left" | "right" | "both";
+  permissions?: string | string[];
 }
 ```
 

@@ -28,13 +28,13 @@ import { AssetsDetailsModule } from "@vc-shell/framework";
 
 The blade reads its configuration from `options` via `useBlade<AssetsDetailsOptions>()` (not props):
 
-| Option               | Type                                          | Description                                                                                                                                   |
-| -------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `asset`              | `AssetLike`                                   | The asset to edit. The blade clones it into local state — the source object is never mutated until `assetEditHandler` is called.              |
-| `disabled`           | `boolean?`                                    | When true, every input is read-only and the toolbar Save/Delete buttons are disabled.                                                         |
-| `hiddenFields`       | `string[]?`                                   | Field names to hide. Supported values: `"name"`, `"altText"`, `"description"`. The header (preview, size, created date, URL) is always shown. |
-| `assetEditHandler`   | `(asset: AssetLike) => void \| Promise<void>` | Called by the toolbar Save button with the edited copy. The blade closes itself after the handler resolves.                                   |
-| `assetRemoveHandler` | `(asset: AssetLike) => Promise<void>`         | Called by the toolbar Delete button. The blade closes itself after the handler resolves.                                                      |
+| Option               | Type                                     | Description                                                                                                                                                                              |
+| -------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `asset`              | `AssetLike`                              | The asset to edit. The blade clones it into local state — the source object is never mutated until `assetEditHandler` is called.                                                         |
+| `disabled`           | `boolean?`                               | When true, every input is read-only and the toolbar Save/Delete buttons are disabled.                                                                                                    |
+| `hiddenFields`       | `string[]?`                              | Field names to hide. Supported values: `"name"`, `"altText"`, `"description"`. The header (preview, size, created date, URL) is always shown.                                            |
+| `assetEditHandler`   | `((asset: AssetLike) => void)?`          | Called by the toolbar Save button with the edited copy. The blade closes itself after the handler resolves. If omitted, the Save button performs no action and the blade does not close. |
+| `assetRemoveHandler` | `((asset: AssetLike) => Promise<void>)?` | Called by the toolbar Delete button. The blade closes itself after the handler resolves. If omitted, the Delete button performs no action and the blade does not close.                  |
 
 ## Usage
 

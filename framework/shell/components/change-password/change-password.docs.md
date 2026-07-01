@@ -47,7 +47,7 @@ The `ChangePassword` component renders a `VcPopup` with three validated input fi
 - Field-level: `required` and `min:6` rules via vee-validate's `Field` component.
 - API-level: `validatePassword()` checks the platform's password policy on each input change.
 - Custom checks: confirms that new password matches confirmation and that the new password differs from the current one.
-- Errors are displayed as `IIdentityError` codes mapped to i18n keys: `COMPONENTS.CHANGE_PASSWORD.ERRORS.{code}`.
+- Errors are displayed as `IdentityError` codes mapped to i18n keys: `COMPONENTS.CHANGE_PASSWORD.ERRORS.{code}`.
 
 ## Usage
 
@@ -70,7 +70,7 @@ The `ChangePassword` component renders a `VcPopup` with three validated input fi
 
 ## Error Codes
 
-Common `IIdentityError.code` values (mapped to i18n keys):
+Common `IdentityError.code` values (mapped to i18n keys):
 
 - `PasswordTooShort` -- below minimum length
 - `PasswordRequiresNonAlphanumeric` -- needs special characters
@@ -89,4 +89,4 @@ Common `IIdentityError.code` values (mapped to i18n keys):
 ## Related
 
 - `framework/core/composables/useUserManagement/` -- `changeUserPassword`, `validatePassword`, `signOut`
-- `framework/core/api/platform/` -- `IIdentityError` type
+- `framework/core/api/platform/` -- `IdentityError` type

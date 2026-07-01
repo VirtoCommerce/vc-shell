@@ -145,7 +145,7 @@ Show helper text by default, but swap to an error message when validation fails:
 ## Architecture notes
 
 - VcHint is a single `<div>` element — no wrapper. `role="alert"` is toggled reactively via `:role` binding when `error` prop changes.
-- CSS variables are scoped with `.vc-hint` selector in `vc-hint.vue` `<style scoped>`.
+- The `--hint-*` CSS variables are declared globally on `:root` (not scoped to `.vc-hint`); the component's `<style lang="scss">` block is not scoped.
 - Source: `framework/ui/components/atoms/vc-hint/vc-hint.vue`
 
 <!-- internal:end -->

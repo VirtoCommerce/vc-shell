@@ -32,17 +32,17 @@ Every service follows the same architecture:
 
 ## Services
 
-| Service                        | Factory                              | Module-level API                                                | Key Type               |
-| ------------------------------ | ------------------------------------ | --------------------------------------------------------------- | ---------------------- |
-| **MenuService**                | `createMenuService()`                | `addMenuItem()`, `removeRegisteredMenuItem()`, `setMenuBadge()` | `MenuItem`             |
-| **WidgetService**              | `createWidgetService()`              | `registerWidget()`, `registerExternalWidget()`                  | `IWidget`              |
-| **ToolbarService**             | `createToolbarService()`             | `registerToolbarItem()`                                         | `IToolbarItem`         |
-| **DashboardService**           | `createDashboardService()`           | `registerDashboardWidget()`                                     | `DashboardWidget`      |
-| **SettingsMenuService**        | `createSettingsMenuService()`        | `addSettingsMenuItem()`                                         | `ISettingsMenuItem`    |
-| **AppBarWidgetService**        | `createAppBarWidgetService()`        | `addAppBarWidget()`                                             | `AppBarWidget`         |
-| **AppBarMobileButtonsService** | `createAppBarMobileButtonsService()` | (direct API)                                                    | `AppBarButtonContent`  |
-| **GlobalSearchService**        | `createGlobalSearchService()`        | (direct API)                                                    | per-blade search state |
-| **LanguageService**            | `createLanguageService()`            | (direct API)                                                    | locale strings         |
+| Service                        | Factory                                  | Module-level API                                                                                                          | Key Type                                  |
+| ------------------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **MenuService**                | `createMenuService()`                    | `addMenuItem()`, `removeRegisteredMenuItem()`, `setMenuBadge()`, `removeMenuBadge()`, `getMenuBadge()`, `getMenuBadges()` | `MenuItem`                                |
+| **WidgetService**              | `createWidgetService()`                  | `registerWidget()`, `registerExternalWidget()`                                                                            | `IWidget` / `IExternalWidgetRegistration` |
+| **ToolbarService**             | `createToolbarService()`                 | `registerToolbarItem()`                                                                                                   | `IToolbarItem`                            |
+| **DashboardService**           | `createDashboardService({ hasAccess? })` | `registerDashboardWidget()`                                                                                               | `DashboardWidget`                         |
+| **SettingsMenuService**        | `createSettingsMenuService()`            | `addSettingsMenuItem()`                                                                                                   | `ISettingsMenuItem`                       |
+| **AppBarWidgetService**        | `createAppBarWidgetService()`            | `addAppBarWidget()`                                                                                                       | `AppBarWidget`                            |
+| **AppBarMobileButtonsService** | `createAppBarMobileButtonsService()`     | (direct API)                                                                                                              | `AppBarButtonContent`                     |
+| **GlobalSearchService**        | `createGlobalSearchService()`            | (direct API)                                                                                                              | per-blade search state                    |
+| **LanguageService**            | `createLanguageService()`                | (direct API)                                                                                                              | locale strings                            |
 
 ## Usage
 
@@ -59,7 +59,9 @@ addMenuItem({
   priority: 10,
 });
 
-registerWidget({ id: "order-stats", component: OrderStatsWidget }, "OrderDetails");
+// The `component` field on IWidget is deprecated; prefer headless widgets (via
+// `useBladeWidgets()`) or `registerExternalWidget()`.
+registerWidget({ id: "order-stats", headless: { icon: "lucide-chart-bar" } }, "OrderDetails");
 ```
 
 ### Using inside a component

@@ -125,4 +125,4 @@ html.vc-offline {
 ## Related
 
 - `@vueuse/core` `useNetwork` -- underlying browser API wrapper
-- `notification` from `@shared/components/notifications` -- the notification system used to display the offline warning
+- `notification` from `@core/notifications/notification` -- the notification system used to display the offline warning

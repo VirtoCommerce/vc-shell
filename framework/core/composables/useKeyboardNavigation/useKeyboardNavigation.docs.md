@@ -21,7 +21,7 @@ The composable supports two attachment modes: **auto-attach** on mount via a CSS
 ```vue
 <script setup lang="ts">
 import { useKeyboardNavigation } from "@vc-shell/framework";
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 
 const menuRef = ref<HTMLElement | null>(null);
 const items = ref(["Dashboard", "Products", "Orders", "Settings"]);

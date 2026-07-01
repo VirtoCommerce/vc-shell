@@ -89,6 +89,10 @@ VcApp orchestrates several internal systems:
 
 On desktop viewports, VcApp renders a collapsible sidebar on the left with navigation menu items, user info in the footer, and the blade workspace on the right. On mobile viewports, the sidebar is replaced by a top bar with a hamburger menu that opens a slide-over navigation panel.
 
+### Environment Indicator
+
+VcApp renders a `VcEnvironmentBanner` when an environment name is detected via `useEnvironmentName()` (derived from the current hostname) and the environment is not ignored. The banner surfaces the environment name and color, making it obvious when you are working against a non-production instance.
+
 ### Sidebar Menu Search
 
 ::storybook id="layout-vcapp--with-sidebar-search" height="500"

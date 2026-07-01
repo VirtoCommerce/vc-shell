@@ -42,14 +42,15 @@ function openNotifications() {
 
 ## Key Props
 
-| Prop         | Type               | Default | Description                                                       |
-| ------------ | ------------------ | ------- | ----------------------------------------------------------------- |
-| `icon`       | `string`           | --      | Icon name (Lucide format, e.g., `"lucide-save"`)                  |
-| `title`      | `string`           | --      | Label text below (or beside) the icon                             |
-| `value`      | `string \| number` | --      | Badge count displayed on the icon; numbers above 99 show as "99+" |
-| `disabled`   | `boolean`          | `false` | Prevents clicks and applies muted styling                         |
-| `isExpanded` | `boolean`          | `false` | Expanded visual state                                             |
-| `horizontal` | `boolean`          | `false` | Arranges icon and title side by side instead of stacked           |
+| Prop         | Type               | Default | Description                                                                                                                                                      |
+| ------------ | ------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `icon`       | `string`           | --      | Icon name (Lucide format, e.g., `"lucide-save"`)                                                                                                                 |
+| `title`      | `string`           | --      | Label text below (or beside) the icon                                                                                                                            |
+| `value`      | `string \| number` | --      | Badge count displayed on the icon; numbers above 99 show as "99+"                                                                                                |
+| `disabled`   | `boolean`          | `false` | Prevents clicks and applies muted styling                                                                                                                        |
+| `isExpanded` | `boolean`          | `false` | Expanded visual state                                                                                                                                            |
+| `horizontal` | `boolean`          | `false` | Arranges icon and title side by side instead of stacked                                                                                                          |
+| `widgetId`   | `string`           | --      | Sets the `data-widget-id` attribute on the root element. The root also binds `data-widget-name` from `title`; both are used for widget identification/targeting. |
 
 ## Events
 
@@ -97,16 +98,18 @@ Badge values above 99 are automatically displayed as "99+".
 
 ## CSS Custom Properties
 
-| Variable                     | Default               | Description          |
-| ---------------------------- | --------------------- | -------------------- |
-| `--widget-bg-color`          | `transparent`         | Background color     |
-| `--widget-bg-hover-color`    | `var(--neutrals-50)`  | Background on hover  |
-| `--widget-icon-color`        | `var(--neutrals-700)` | Icon color           |
-| `--widget-icon-hover-color`  | `var(--primary-600)`  | Icon color on hover  |
-| `--widget-title-color`       | `var(--neutrals-600)` | Title text color     |
-| `--widget-title-hover-color` | `var(--primary-600)`  | Title color on hover |
-| `--widget-border-radius`     | `8px`                 | Corner radius        |
-| `--widget-focus-ring-color`  | `var(--primary-300)`  | Focus ring color     |
+| Variable                        | Default               | Description               |
+| ------------------------------- | --------------------- | ------------------------- |
+| `--widget-bg-color`             | `transparent`         | Background color          |
+| `--widget-bg-hover-color`       | `var(--neutrals-50)`  | Background on hover       |
+| `--widget-icon-color`           | `var(--neutrals-700)` | Icon color                |
+| `--widget-icon-hover-color`     | `var(--primary-600)`  | Icon color on hover       |
+| `--widget-icon-disabled-color`  | `var(--neutrals-400)` | Icon color when disabled  |
+| `--widget-title-color`          | `var(--neutrals-600)` | Title text color          |
+| `--widget-title-hover-color`    | `var(--primary-600)`  | Title color on hover      |
+| `--widget-title-disabled-color` | `var(--neutrals-400)` | Title color when disabled |
+| `--widget-border-radius`        | `8px`                 | Corner radius             |
+| `--widget-focus-ring-color`     | `var(--primary-300)`  | Focus ring color          |
 
 ## Accessibility
 
@@ -128,7 +131,7 @@ Badge values above 99 are automatically displayed as "99+".
 ## Architecture notes
 
 - VcWidget lives in `framework/ui/components/atoms/vc-widget/`.
-- The badge overlay is rendered by embedding `VcBadge` with `isDot`/`content` derived from the `value` prop; values above 99 are truncated to `"99+"` in the component template.
+- The badge overlay is rendered by embedding `VcBadge` with `content="truncateCount"`, `custom-position`, `top="-6px"`, and `size="s"`. The `99+` truncation is performed by the shared `formatBadgeCount` utility (via the `truncateCount` computed), not inline in the template.
 - `isExpanded` applies `.vc-widget--expanded` modifier; used by the shell sidebar to visually distinguish active navigation state.
 - `horizontal` applies `.vc-widget--horizontal` modifier which switches the internal flex direction from `column` to `row`.
 - The widget registers as a keyboard-interactive element (`role="button"`, Enter/Space handlers) rather than using a `<button>` to allow embedding arbitrary icon components without nesting interactive elements.

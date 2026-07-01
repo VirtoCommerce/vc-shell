@@ -15,14 +15,32 @@ import { withVcApp, withMobileView } from "../../../../../.storybook/decorators"
 
 // ── Mock blade injection context ─────────────────────────────────────────────
 
-function provideMockBladeContext(overrides: Partial<BladeDescriptor> = {}) {
+/**
+ * Provides the blade injection context that VcBlade reads via `useBlade()`.
+ *
+ * VcBlade derives its state from the navigation stack, NOT from props:
+ * - `closable` = `descriptor.parentId !== undefined` (a child blade is closable;
+ *   omit `parentId` — pass `{ parentId: undefined }` — for a non-closable workspace root).
+ * - `expanded` = the blade is the active (rightmost) one → pass `{ active: true }`.
+ */
+function provideMockBladeContext(overrides: Partial<BladeDescriptor> = {}, opts: { active?: boolean } = {}) {
+  const descriptor = computed<BladeDescriptor>(() => ({
+    id: "story-blade",
+    name: "StoryBlade",
+    visible: true,
+    // Has a parent → closable by default (matches a typical detail blade).
+    parentId: "parent-blade",
+    ...overrides,
+  }));
+
   provide(ToolbarServiceKey, createToolbarService());
   provide(WidgetServiceKey, createWidgetService());
 
-  // Minimal BladeStack mock for useBlade
+  // Minimal BladeStack mock for useBlade. `expanded` is derived from whether this
+  // blade is the active one, so point activeBlade at our descriptor when requested.
   provide(BladeStackKey, {
     blades: ref([]),
-    activeBlade: ref(null),
+    activeBlade: ref(opts.active ? { id: descriptor.value.id } : null),
     openWorkspace: async () => {},
     openBlade: async () => {},
     closeBlade: async () => false,
@@ -46,15 +64,7 @@ function provideMockBladeContext(overrides: Partial<BladeDescriptor> = {}) {
   const banners = ref<IBladeBanner[]>([]);
   provide(BladeBannersKey, banners);
 
-  provide(
-    BladeDescriptorKey,
-    computed<BladeDescriptor>(() => ({
-      id: "story-blade",
-      name: "StoryBlade",
-      visible: true,
-      ...overrides,
-    })),
-  );
+  provide(BladeDescriptorKey, descriptor);
 
   return { banners };
 }
@@ -128,21 +138,6 @@ const meta = {
       control: "text",
       table: { category: "Layout" },
     },
-    closable: {
-      description: "Whether the blade shows a close button",
-      control: "boolean",
-      table: { category: "Behavior" },
-    },
-    expandable: {
-      description: "Whether the blade can be expanded/maximized",
-      control: "boolean",
-      table: { category: "Behavior" },
-    },
-    expanded: {
-      description: "Whether the blade is currently expanded to fill available space",
-      control: "boolean",
-      table: { category: "Layout" },
-    },
     modified: {
       description: "Shows unsaved changes indicator and banner when true",
       control: "boolean",
@@ -172,17 +167,16 @@ export const Default: Story = {
     subtitle: "Manage your catalog",
     icon: "lucide-box",
     width: 500,
-    closable: true,
-    expandable: true,
   },
   render: (args) => ({
     components: { VcBlade },
     setup() {
+      // Child blade (has a parent) → the close button is shown.
       provideMockBladeContext();
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}" @expand="() => {}" @collapse="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">This is the default blade content area.</p>
           <p class="tw-text-xs tw-text-gray-400 tw-mt-2">Use the controls panel to adjust blade properties.</p>
@@ -207,7 +201,7 @@ export const WithToolbar: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <div class="tw-space-y-3">
             <div class="tw-flex tw-justify-between tw-text-sm">
@@ -245,7 +239,7 @@ export const Modified: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">The blade header shows a yellow dot indicating unsaved changes.</p>
           <p class="tw-text-sm tw-text-gray-600 tw-mt-2">The yellow banner below the toolbar confirms modifications.</p>
@@ -271,7 +265,7 @@ export const WithError: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">The red error banner appears when the blade instance has an error.</p>
           <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Click "See details" to open the error popup.</p>
@@ -295,7 +289,7 @@ export const WithActions: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <template #actions>
           <button class="tw-text-xs tw-text-blue-600 tw-border tw-border-blue-600 tw-rounded tw-px-2 tw-py-1 tw-bg-transparent hover:tw-bg-blue-50">
             + Add Product
@@ -314,20 +308,20 @@ export const Expanded: Story = {
     title: "Full Width Blade",
     subtitle: "Expanded to fill space",
     icon: "lucide-maximize",
-    expanded: true,
     toolbarItems: createToolbarItems(3),
   },
   render: (args) => ({
     components: { VcBlade },
     setup() {
-      provideMockBladeContext();
+      // Active (rightmost) blade → expanded, filling the available width.
+      provideMockBladeContext({}, { active: true });
       return { args };
     },
     template: `
       <div style="width: 100%; height: 400px; display: flex;">
-        <VcBlade v-bind="args" @close="() => {}" @expand="() => {}" @collapse="() => {}">
+        <VcBlade v-bind="args">
           <div class="tw-p-6">
-            <p class="tw-text-sm tw-text-gray-600">This blade has expanded=true, filling the available width.</p>
+            <p class="tw-text-sm tw-text-gray-600">This blade is the active one in the stack, so it expands to fill the available width.</p>
           </div>
         </VcBlade>
       </div>
@@ -341,19 +335,19 @@ export const NotClosable: Story = {
     subtitle: "Home workspace",
     icon: "lucide-house",
     width: 500,
-    closable: false,
   },
   render: (args) => ({
     components: { VcBlade },
     setup() {
-      provideMockBladeContext();
+      // Workspace root (no parent) → not closable, so no close button is rendered.
+      provideMockBladeContext({ parentId: undefined });
       return { args };
     },
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">This blade has closable=false — no close button in the header.</p>
-          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Workspace blades typically are not closable.</p>
+          <p class="tw-text-sm tw-text-gray-600">This blade is a workspace root (no parent), so it has no close button.</p>
+          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Closability is derived from stack position, not a prop.</p>
         </div>
       </VcBlade>
     `,
@@ -378,7 +372,7 @@ export const Mobile: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">In mobile mode, the toolbar appears as a floating pill at the bottom.</p>
           <p class="tw-text-sm tw-text-gray-600 tw-mt-2">When there's only one blade, the header is hidden.</p>
@@ -401,7 +395,6 @@ export const CustomWidth: Story = {
           title="Narrow (300px)"
           icon="lucide-minimize"
           :width="300"
-          @close="() => {}"
         >
           <div class="tw-p-4 tw-text-xs tw-text-gray-600">width: 300 (number → pixels)</div>
         </VcBlade>
@@ -410,7 +403,6 @@ export const CustomWidth: Story = {
           title="Wide (60%)"
           icon="lucide-maximize-2"
           width="60%"
-          @close="() => {}"
         >
           <div class="tw-p-4 tw-text-xs tw-text-gray-600">width: "60%" (string → CSS value)</div>
         </VcBlade>
@@ -434,7 +426,7 @@ export const Loading: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">This content is hidden while loading=true.</p>
         </div>
@@ -470,7 +462,7 @@ export const LoadingToggle: Story = {
         >
           {{ loading ? 'Loading...' : 'Loaded — click to reload' }}
         </button>
-        <VcBlade v-bind="args" :loading="loading" @close="() => {}">
+        <VcBlade v-bind="args" :loading="loading">
           <div class="tw-p-6">
             <div class="tw-space-y-3">
               <div class="tw-flex tw-justify-between tw-text-sm">
@@ -508,7 +500,7 @@ export const ToolbarOverflow: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">With 10 toolbar items in a 400px blade, items that don't fit are moved to a "More" dropdown.</p>
           <p class="tw-text-sm tw-text-gray-600 tw-mt-2">This uses the useAdaptiveItems composable with ResizeObserver.</p>
@@ -548,7 +540,7 @@ export const CustomBanners: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">Custom banners added programmatically via useBlade().addBanner().</p>
           <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Banners are sorted by priority: danger > warning > info > success.</p>
@@ -599,7 +591,7 @@ export const AllBannerVariants: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">All four banner variants displayed at once.</p>
           <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Note the priority sort order: danger (top) > warning > info > success (bottom).</p>
@@ -635,7 +627,7 @@ export const BannerWithAction: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">Banners can include action buttons for contextual navigation.</p>
         </div>
@@ -666,7 +658,7 @@ export const ErrorWithCustomBanners: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">System banners (error + unsaved changes) and custom banners coexist,</p>
           <p class="tw-text-sm tw-text-gray-600 tw-mt-1">all sorted by priority: danger > warning > info.</p>
@@ -746,7 +738,7 @@ export const BannerWithRenderFunction: Story = {
       return { args };
     },
     template: `
-      <VcBlade v-bind="args" @close="() => {}">
+      <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">Banners using render() functions for rich custom content:</p>
           <ul class="tw-text-sm tw-text-gray-600 tw-mt-2 tw-list-disc tw-pl-5 tw-space-y-1">
@@ -773,6 +765,7 @@ export const SkeletonWithRealContent: Story = {
   render: (args) => ({
     components: { VcBlade, VcInput, VcSelect, VcCard, VcTextarea },
     setup() {
+      provideMockBladeContext();
       return { args };
     },
     template: `

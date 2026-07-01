@@ -53,7 +53,6 @@ Use VcBlade for every screen in a vc-shell application -- it is the standard con
   <VcBlade
     title="My First Blade"
     icon="lucide-box"
-    @close="$emit('close:blade')"
   >
     <div class="tw-p-4">Hello from a blade!</div>
   </VcBlade>
@@ -63,6 +62,9 @@ Use VcBlade for every screen in a vc-shell application -- it is the standard con
 defineBlade({ name: "MyFirstBlade", url: "/my-first-blade" });
 </script>
 ```
+
+!!! tip "No close/expand wiring needed"
+Inside the navigation stack VcBlade closes itself and reads its expanded/closable state from the stack automatically. You don't declare `expanded`/`closable` props or forward `@close`/`@expand`/`@collapse` events — that wiring is a legacy fallback kept only for standalone (Storybook) use.
 
 !!! tip "Every blade needs a name"
 Every blade must define a `name` in `defineBlade`. This is how other blades reference it: `openBlade({ name: "MyFirstBlade" })`. The `url` is optional and controls the URL segment.
@@ -101,14 +103,9 @@ A blade has four visual zones, rendered top-to-bottom:
     :title="title"
     icon="lucide-tag"
     width="50%"
-    :expanded="expanded"
-    :closable="closable"
     :toolbar-items="toolbar"
     :modified="hasChanges"
     :loading="isLoading"
-    @close="$emit('close:blade')"
-    @expand="$emit('expand:blade')"
-    @collapse="$emit('collapse:blade')"
   >
     <!-- Your content here -->
   </VcBlade>
@@ -125,29 +122,13 @@ defineBlade({
   routable: false, // Optional: exclude from direct URL access
 });
 
-// Standard props injected by the navigation system
-export interface Props {
-  expanded: boolean;
-  closable: boolean;
-  param?: string; // Entity ID
-  options?: { sellerProduct?: object };
-}
+// Navigation state and data come from useBlade() — not props.
+// `param` (entity id) and `options` (rich context) are reactive refs.
+const { openBlade, closeSelf, callParent, onBeforeClose, param, options } = useBlade<{
+  sellerProduct?: object;
+}>();
 
-const props = withDefaults(defineProps<Props>(), {
-  expanded: true,
-  closable: true,
-});
-
-export interface Emits {
-  (event: "close:blade"): void;
-  (event: "expand:blade"): void;
-  (event: "collapse:blade"): void;
-}
-const emit = defineEmits<Emits>();
-
-const { openBlade, closeSelf, callParent, onBeforeClose } = useBlade();
-
-const title = computed(() => (props.param ? "Edit Offer" : "New Offer"));
+const title = computed(() => (param.value ? "Edit Offer" : "New Offer"));
 const isLoading = ref(false);
 const hasChanges = ref(false);
 
@@ -165,6 +146,9 @@ const toolbar = ref<IBladeToolbar[]>([
 defineExpose({ title });
 </script>
 ```
+
+!!! warning "Legacy pattern: `expanded` / `closable` props and `close:blade` emits"
+Older blades declared `defineProps<{ expanded; closable; param }>()`, wired `withDefaults`, and re-emitted `close:blade` / `expand:blade` / `collapse:blade`. This is no longer needed. The navigation stack owns expanded/closable state (a workspace root is not closable, the rightmost blade is expanded), and VcBlade closes itself. Read `param`, `options`, `query`, `expanded`, and `closable` from `useBlade()` instead — see [useBlade docs](../../../../core/composables/useBlade/useBlade.docs.md).
 
 ### defineOptions Reference
 
@@ -310,10 +294,13 @@ const entityId = computed(() => ctx.value.item?.id);
 
 ### Expanded / Collapsed
 
-`expanded` indicates whether this blade is the active (rightmost) one. The navigation system manages it -- just pass through:
+`expanded` indicates whether this blade is the active (rightmost) one. The navigation system manages it entirely -- **don't** declare an `expanded` prop or forward `@expand`/`@collapse`. If you need the current value, read it reactively from `useBlade()`:
 
-```vue
-<VcBlade :expanded="expanded" @expand="$emit('expand:blade')" @collapse="$emit('collapse:blade')">
+```ts
+const { expanded } = useBlade();
+
+// e.g. show a compact layout when this blade is collapsed behind others
+const layout = computed(() => (expanded.value ? "full" : "compact"));
 ```
 
 ### Closing
@@ -555,7 +542,7 @@ const toolbar = ref([
 ### Blade with Data Table
 
 ```vue
-<VcBlade :title="$t('ORDERS.LIST.TITLE')" icon="lucide-file-text" width="50%" :expanded="expanded" :closable="closable" :toolbar-items="toolbar">
+<VcBlade :title="$t('ORDERS.LIST.TITLE')" icon="lucide-file-text" width="50%" :toolbar-items="toolbar">
   <VcDataTable
     v-model:sort-field="sortField" v-model:sort-order="sortOrder"
     v-model:search-value="searchValue" v-model:active-item-id="selectedItemId"
@@ -582,16 +569,6 @@ defineOptions({});
 defineBlade({ name: "ProductDetails", url: "/product" });
 ```
 
-### Forgetting to expose the title
-
-```ts
-// WRONG -- Breadcrumbs show nothing
-const title = computed(() => product.value?.name);
-
-// CORRECT
-defineExpose({ title });
-```
-
 ### Wrong onBeforeClose return value
 
 ```ts
@@ -614,37 +591,29 @@ const { openBlade } = useBlade();
 openBlade({ name: "ProductsList" });
 ```
 
-### Not passing expanded/closable through
-
-```vue
-<!-- WRONG -- hardcoded, ignores navigation system -->
-<VcBlade :expanded="true" :closable="true">
-
-<!-- CORRECT -- pass props from navigation -->
-<VcBlade :expanded="expanded" :closable="closable">
-```
-
 ## Props
 
-| Prop           | Type               | Default     | Description                                                                                                                                                                               |
-| -------------- | ------------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `title`        | `string`           | `undefined` | Title text in the blade header.                                                                                                                                                           |
-| `subtitle`     | `string`           | `undefined` | Secondary text below the title.                                                                                                                                                           |
-| `icon`         | `string`           | `undefined` | Icon name (e.g., `"lucide-box"`) displayed before the title.                                                                                                                              |
-| `width`        | `number \| string` | `"30%"`     | Blade width. Numbers are pixels; strings are CSS values.                                                                                                                                  |
-| `expanded`     | `boolean`          | `undefined` | Whether the blade fills all available width. Inside a blade-navigation context this prop is overridden by the active blade's expanded state; in standalone use the prop is read directly. |
-| `closable`     | `boolean`          | `true`      | Whether the close button is shown.                                                                                                                                                        |
-| `toolbarItems` | `IBladeToolbar[]`  | `[]`        | Action buttons in the toolbar zone.                                                                                                                                                       |
-| `modified`     | `boolean`          | `undefined` | Shows unsaved changes indicator and banner.                                                                                                                                               |
-| `loading`      | `boolean`          | `undefined` | Shows skeleton placeholders for all blade zones.                                                                                                                                          |
+| Prop           | Type               | Default     | Description                                                                                                                                                                                                                                                               |
+| -------------- | ------------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`        | `string`           | `undefined` | Title text in the blade header.                                                                                                                                                                                                                                           |
+| `subtitle`     | `string`           | `undefined` | Secondary text below the title.                                                                                                                                                                                                                                           |
+| `icon`         | `string`           | `undefined` | Icon name (e.g., `"lucide-box"`) displayed before the title.                                                                                                                                                                                                              |
+| `width`        | `number \| string` | `"30%"`     | Blade width. Numbers are pixels; strings are CSS values.                                                                                                                                                                                                                  |
+| ~~`expanded`~~ | `boolean`          | `undefined` | **Deprecated.** Managed by the navigation stack — ignored inside blade navigation, where the active (rightmost) blade is expanded automatically. Read the live value from `useBlade().expanded`. Retained only as a standalone/Storybook fallback.                        |
+| ~~`closable`~~ | `boolean`          | `true`      | **Deprecated.** Managed by the navigation stack — ignored inside blade navigation, where closability is derived from stack position (a workspace root is not closable). Read the live value from `useBlade().closable`. Retained only as a standalone/Storybook fallback. |
+| `toolbarItems` | `IBladeToolbar[]`  | `[]`        | Action buttons in the toolbar zone.                                                                                                                                                                                                                                       |
+| `modified`     | `boolean`          | `undefined` | Shows unsaved changes indicator and banner.                                                                                                                                                                                                                               |
+| `loading`      | `boolean`          | `undefined` | Shows skeleton placeholders for all blade zones.                                                                                                                                                                                                                          |
 
 ## Events
 
-| Event      | Payload | Description                                     |
-| ---------- | ------- | ----------------------------------------------- |
-| `close`    | --      | Close button clicked. Re-emit as `close:blade`. |
-| `expand`   | --      | Blade expanded. Re-emit as `expand:blade`.      |
-| `collapse` | --      | Blade collapsed. Re-emit as `collapse:blade`.   |
+> **Note:** These events fire **only in standalone/Storybook use**. Inside the navigation stack VcBlade closes itself (via `closeSelf()`) and handles expand/collapse internally, so there is nothing to forward. Use `onBeforeClose()` from `useBlade()` to run logic (like an unsaved-changes guard) before the blade closes. A leftover `@close` listener inside blade navigation triggers a dev-mode deprecation warning.
+
+| Event      | Payload | Description                                                        |
+| ---------- | ------- | ------------------------------------------------------------------ |
+| `close`    | --      | Standalone only. Close button clicked.                             |
+| `expand`   | --      | Standalone only. Blade expanded (no `maximized` context present).  |
+| `collapse` | --      | Standalone only. Blade collapsed (no `maximized` context present). |
 
 ## Slots
 

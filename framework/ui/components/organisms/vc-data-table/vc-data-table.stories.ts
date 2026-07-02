@@ -30,6 +30,11 @@ const meta = {
           "Supports sorting, filtering, inline cell editing, row selection, drag-and-drop row reorder, " +
           "column resize and reorder, virtual scrolling, mobile card view, and state persistence.",
       },
+      // This component has 90+ stories. Inline rendering would mount every
+      // VcDataTable instance at once on the Docs page and hang the browser.
+      // Render each story in a lazy iframe instead (mounts only when scrolled
+      // into view). iframeHeight keeps the table visible without inner scroll.
+      story: { inline: false, iframeHeight: 500 },
     },
   },
 } satisfies Meta<typeof VcDataTable>;

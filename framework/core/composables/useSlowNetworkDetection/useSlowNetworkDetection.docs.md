@@ -2,6 +2,7 @@
 title: useSlowNetworkDetection
 category: composables
 group: ui-state
+internal: true
 ---
 
 # useSlowNetworkDetection
@@ -23,7 +24,7 @@ The composable is initialized automatically at app startup. To reactively read t
 
 ```vue
 <script setup lang="ts">
-import { useSlowNetworkDetection } from "@vc-shell/framework";
+import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const { isSlowNetwork } = useSlowNetworkDetection();
 </script>
@@ -90,7 +91,7 @@ The fetch interceptor in `framework/core/interceptors/index.ts` calls `trackRequ
 ```vue
 <script setup lang="ts">
 import { watch } from "vue";
-import { useSlowNetworkDetection } from "@vc-shell/framework";
+import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const { isSlowNetwork } = useSlowNetworkDetection();
 
@@ -111,7 +112,7 @@ watch(isSlowNetwork, (slow) => {
 If you bypass the standard fetch interceptor (e.g., direct `XMLHttpRequest` or third-party SDK), you can manually track the request:
 
 ```ts
-import { useSlowNetworkDetection } from "@vc-shell/framework";
+import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const { trackRequest, untrackRequest } = useSlowNetworkDetection();
 

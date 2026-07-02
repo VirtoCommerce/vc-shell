@@ -2,6 +2,7 @@
 title: useKeyboardNavigation
 category: composables
 group: ui-state
+internal: true
 ---
 
 # useKeyboardNavigation
@@ -20,7 +21,7 @@ The composable supports two attachment modes: **auto-attach** on mount via a CSS
 
 ```vue
 <script setup lang="ts">
-import { useKeyboardNavigation } from "@vc-shell/framework";
+import { useKeyboardNavigation } from "@core/composables/useKeyboardNavigation";
 import { ref, nextTick } from "vue";
 
 const menuRef = ref<HTMLElement | null>(null);
@@ -112,7 +113,7 @@ Auto-attach happens in `onMounted`: if `containerSelector` is set and a matching
 
 ```vue
 <script setup lang="ts">
-import { useKeyboardNavigation } from "@vc-shell/framework";
+import { useKeyboardNavigation } from "@core/composables/useKeyboardNavigation";
 import { ref, watch, nextTick } from "vue";
 
 const dropdownRef = ref<HTMLElement | null>(null);

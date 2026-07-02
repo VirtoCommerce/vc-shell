@@ -2,6 +2,7 @@
 title: useAppBarMobileButtons
 category: composables
 group: services
+internal: true
 ---
 
 # useAppBarMobileButtons
@@ -19,7 +20,7 @@ Manages custom action buttons in the mobile app bar. Uses provide/inject to shar
 
 ```vue
 <script setup lang="ts">
-import { useAppBarMobileButtons } from "@vc-shell/framework";
+import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons";
 import { onUnmounted, computed, ref } from "vue";
 
 const { register, unregister } = useAppBarMobileButtons();
@@ -84,7 +85,7 @@ provideAppBarMobileButtonsService();
 
 ```vue
 <script setup lang="ts">
-import { useAppBarMobileButtons } from "@vc-shell/framework";
+import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons";
 import { ref, computed, onUnmounted } from "vue";
 
 const { register, unregister } = useAppBarMobileButtons();
@@ -111,7 +112,7 @@ If you need more than an icon and a click handler (e.g., a dropdown or popover),
 
 ```vue
 <script setup lang="ts">
-import { useAppBarMobileButtons } from "@vc-shell/framework";
+import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons";
 import { onUnmounted, markRaw } from "vue";
 import LanguageSwitcher from "./LanguageSwitcher.vue";
 

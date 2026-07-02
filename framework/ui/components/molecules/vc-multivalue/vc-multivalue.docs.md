@@ -49,7 +49,7 @@ const tags = ref<Array<{ id?: string }>>([]);
 
 ### Free-form Text Entry
 
-In the default mode (`multivalue` is `false`), users type a value into the input and press **Enter** or **comma** to add it as a chip. This mode works with different input types.
+In the default mode (`multivalue` is `false`), users type a value into the input and press **Enter** to add it as a chip. This mode works with different input types.
 
 ```vue
 <VcMultivalue v-model="tags" label="Keywords" placeholder="Type and press Enter" />
@@ -305,14 +305,14 @@ const selectedArray = ref([{ id: "1", title: "Option 1" }]);
 
 ## Slots
 
-| Slot            | Scope                                                                     | Description                                                |
-| --------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `option`        | `{ item: T, index: number }`                                              | Custom rendering for dropdown options (dictionary mode)    |
-| `selected-item` | `{ value: string \| number, item: T, index: number, remove: () => void }` | Custom rendering for selected value chips                  |
-| `prepend`       | --                                                                        | Content rendered before the field area (inside the border) |
-| `append`        | --                                                                        | Content rendered after the field area (inside the border)  |
-| `error`         | --                                                                        | Custom error message markup (replaces default VcHint)      |
-| `hint`          | --                                                                        | Custom hint markup (replaces default VcHint)               |
+| Slot            | Scope                                                                                   | Description                                                |
+| --------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `option`        | `{ item: T, index: number }`                                                            | Custom rendering for dropdown options (dictionary mode)    |
+| `selected-item` | `{ value: string \| number \| T[keyof T], item: T, index: number, remove: () => void }` | Custom rendering for selected value chips                  |
+| `prepend`       | --                                                                                      | Content rendered before the field area (inside the border) |
+| `append`        | --                                                                                      | Content rendered after the field area (inside the border)  |
+| `error`         | --                                                                                      | Custom error message markup (replaces default VcHint)      |
+| `hint`          | --                                                                                      | Custom hint markup (replaces default VcHint)               |
 
 ## CSS Variables
 
@@ -351,8 +351,7 @@ The component uses `--multivalue-*` variables that fall back to `--select-*` tok
 - Dropdown list has `role="listbox"` with a generated `id`
 - Chip remove buttons are individually focusable
 - Keyboard navigation:
-  - **Enter** / **comma** -- submits the current input as a new value
-  - **Backspace** -- removes the last chip when the input is empty
+  - **Enter** -- submits the current input as a new value (blur also submits, via `onInputSubmit`)
   - **Arrow keys** -- navigate items in the dropdown (dictionary mode)
   - **Escape** -- closes the dropdown
 - The `required` prop sets `aria-required` on the field
@@ -376,7 +375,7 @@ This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The comp
 
 - Composed of internal sub-components in `vc-multivalue/_internal/`: the chip list renderer, the dropdown panel, and the trigger input.
 - Composables are in `vc-multivalue/composables/` — chip management and dropdown open/close state are separated into composables.
-- Free-form mode: each `keydown` for Enter or comma (`','`) triggers a chip add; Backspace on empty input removes the last chip.
+- Free-form mode: Enter (`@keypress.enter`) or blur triggers a chip add. Chip removal is done only via the chip's remove button.
 - Dictionary mode: already-selected items are filtered out of the dropdown list reactively.
 - Source file: `framework/ui/components/molecules/vc-multivalue/vc-multivalue.vue`
 - Internal components: `framework/ui/components/molecules/vc-multivalue/_internal/`

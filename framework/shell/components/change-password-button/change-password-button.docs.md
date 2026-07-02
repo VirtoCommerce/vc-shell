@@ -78,7 +78,7 @@ export default {
 
 - **Flow sequence**: Click button -> close settings menu -> open popup -> user fills form -> submit -> popup closes.
 - **Password validation**: The popup form uses `useUserManagement().validatePassword()` to check the new password against the platform's password policy in real time (minimum length, required character classes, etc.).
-- **Equal password detection**: If the user enters the same value for current and new password, the form shows a specific "Equal-passwords" error without making an API call.
+- **Equal password detection**: If the user enters the same value for current and new password, the form shows a specific "Equal-passwords" error without submitting the password change (the `changeUserPassword` call is skipped; `validatePassword()` still runs on input).
 - **Error handling**: API errors (e.g., incorrect current password) are displayed inline within the popup form.
 
 ## Tips

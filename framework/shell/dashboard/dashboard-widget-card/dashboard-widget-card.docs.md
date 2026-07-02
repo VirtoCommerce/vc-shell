@@ -198,4 +198,4 @@ When the card content is loaded asynchronously, the card may collapse to zero he
 
 - [DraggableDashboard](../draggable-dashboard/draggable-dashboard.docs.md) -- grid layout container
 - [DashboardCharts](../dashboard-charts/dashboard-charts.docs.md) -- chart components for widget content
-- [useDashboard](../../../core/composables/useDashboard/) -- dashboard widget registration service
+- [useDashboard](../../../core/composables/useDashboard/useDashboard.docs.md) -- dashboard widget registration service

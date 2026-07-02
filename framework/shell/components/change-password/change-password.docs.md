@@ -86,6 +86,13 @@ Common `IdentityError.code` values (mapped to i18n keys):
 - In forced mode, there is no way to dismiss the dialog without either changing the password or signing out.
 - The component uses `useRouter()` for navigation after sign-out or successful change.
 
+## CSS Variables
+
+| Variable                        | Default                 | Applies to                   |
+| ------------------------------- | ----------------------- | ---------------------------- |
+| `--change-password-error-color` | `var(--danger-500)`     | Inline API error hints       |
+| `--change-password-text-color`  | `var(--additional-950)` | Forced-mode info banner text |
+
 ## Related
 
 - `framework/core/composables/useUserManagement/` -- `changeUserPassword`, `validatePassword`, `signOut`

@@ -58,8 +58,9 @@ onMounted(async () => {
 
 ```vue
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { ExternalProviders, useExternalProvider } from "@vc-shell/framework";
+import type { ExternalSignInProviderInfo } from "@vc-shell/framework";
 
 const { getProviders } = useExternalProvider();
 const providers = ref<ExternalSignInProviderInfo[]>([]);
@@ -135,4 +136,4 @@ This hides the username/password form and shows only the external provider butto
 
 - **LoginPage** - The primary consumer that renders `ExternalProviders`
 - **VcAuthLayout** - The layout wrapper used by login and other auth pages
-- **LogoutButton** - Uses `useExternalProvider().signOut()` for SSO logout
+- **LogoutButton** - Calls `useUserManagement().signOut()`, which internally delegates to `useExternalProvider().signOut()` when `storage.providerType` is set (SSO session)

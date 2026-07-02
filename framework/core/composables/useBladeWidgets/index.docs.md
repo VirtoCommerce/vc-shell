@@ -82,17 +82,17 @@ Inline `useBladeWidgets([...])` is fine for one-off widgets, but extracting beco
 
 ### HeadlessWidgetDeclaration
 
-| Field       | Type                              | Required | Description                               |
-| ----------- | --------------------------------- | -------- | ----------------------------------------- |
-| `id`        | `string`                          | Yes      | Unique widget identifier                  |
-| `icon`      | `string`                          | Yes      | Icon name (e.g., `"lucide-tag"`)          |
-| `title`     | `string`                          | Yes      | i18n key or display title                 |
-| `badge`     | `Ref<number \| string>`           | No       | Badge counter value                       |
-| `loading`   | `Ref<boolean>`                    | No       | Show loading indicator                    |
-| `disabled`  | `Ref<boolean> \| boolean`         | No       | Disable the widget                        |
-| `isVisible` | `ComputedRef<boolean> \| boolean` | No       | Toggle visibility                         |
-| `onClick`   | `() => void`                      | No       | Action when widget is clicked             |
-| `onRefresh` | `() => void \| Promise<void>`     | No       | Called by `refresh(id)` or `refreshAll()` |
+| Field       | Type                                                     | Required | Description                               |
+| ----------- | -------------------------------------------------------- | -------- | ----------------------------------------- |
+| `id`        | `string`                                                 | Yes      | Unique widget identifier                  |
+| `icon`      | `string`                                                 | Yes      | Icon name (e.g., `"lucide-tag"`)          |
+| `title`     | `string`                                                 | Yes      | i18n key or display title                 |
+| `badge`     | `Ref<number \| string> \| ComputedRef<number \| string>` | No       | Badge counter value                       |
+| `loading`   | `Ref<boolean> \| ComputedRef<boolean>`                   | No       | Show loading indicator                    |
+| `disabled`  | `Ref<boolean> \| boolean`                                | No       | Disable the widget                        |
+| `isVisible` | `ComputedRef<boolean> \| Ref<boolean> \| boolean`        | No       | Toggle visibility                         |
+| `onClick`   | `() => void`                                             | No       | Action when widget is clicked             |
+| `onRefresh` | `() => void \| Promise<void>`                            | No       | Called by `refresh(id)` or `refreshAll()` |
 
 ### Returns
 
@@ -331,5 +331,5 @@ const { refreshAll } = useBladeWidgets([]);
 
 - `WidgetService` in `framework/core/services/widget-service/` -- underlying service
 - `WidgetScope` in `framework/ui/components/organisms/vc-blade/_internal/widgets/WidgetScope.vue` -- provides `WidgetScopeKey` to widget components
-- `VcBladeSlot` in `framework/shell/_internal/blade-nav/` -- provides `BladeDescriptorKey` to blade components
+- `VcBladeSlot` in `framework/shell/_internal/blade-navigation/components/vc-blade-slot/` -- provides `BladeDescriptorKey` to blade components
 <!-- internal:end -->

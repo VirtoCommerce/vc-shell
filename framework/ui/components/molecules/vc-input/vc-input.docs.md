@@ -641,7 +641,7 @@ VcInput only shows the error message when the computed `invalid` state is true. 
 <VcInput v-model="val" label="Name" :error="true" error-message="Required" />
 ```
 
-> **Note:** As of the current implementation, `invalid` is computed as `!!error || !!errorMessage`. So passing only `errorMessage` does work, but it is best practice to pass both for clarity and forward compatibility.
+> **Note:** As of the current implementation, `invalid` is computed as `!!error || !!errorMessage`, and is also true when the parent VcInputGroup is in an error state (see `useFormField.ts` line 19). So passing only `errorMessage` does work, but it is best practice to pass both for clarity and forward compatibility.
 
 ### 4. Expecting negative numbers from type="number"
 

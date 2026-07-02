@@ -66,9 +66,9 @@ formatDateRelative(new Date(Date.now() - 3600000)); // "about 1 hour ago"
 formatDateRelative("2024-01-15", "de"); // "vor etwa 2 Jahren"
 
 // Formatted dates using Moment.js-style patterns (auto-converted to date-fns)
-formatDateWithPattern("2024-01-15", "LL"); // "January 15, 2024"
+formatDateWithPattern("2024-01-15", "LL"); // "Jan 15, 2024"
 formatDateWithPattern("2024-06-01", "DD/MM/YYYY"); // "01/06/2024"
-formatDateWithPattern("2024-01-15", "LL", "de"); // "15. Januar 2024"
+formatDateWithPattern("2024-01-15", "LL", "de"); // "15. Jan. 2024"
 
 // Format conversion
 convertMomentFormat("YYYY-MM-DD"); // "yyyy-MM-dd"

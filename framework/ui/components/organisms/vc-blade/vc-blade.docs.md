@@ -152,13 +152,13 @@ Older blades declared `defineProps<{ expanded; closable; param }>()`, wired `wit
 
 ### defineOptions Reference
 
-| Property      | Type      | Description                                                             |
-| ------------- | --------- | ----------------------------------------------------------------------- |
-| `name`        | `string`  | **Required.** Unique blade identifier for `openBlade({ name: "..." })`. |
-| `url`         | `string`  | URL path segment (e.g., `"/offers"` produces `/#/.../offers`).          |
-| `isWorkspace` | `boolean` | Marks blade as a workspace (root-level, not closable).                  |
-| `routable`    | `boolean` | When `false`, blade cannot be opened via direct URL navigation.         |
-| `menuItem`    | `object`  | Registers a sidebar menu entry: `{ id, title, icon, priority }`.        |
+| Property      | Type      | Description                                                                                                        |
+| ------------- | --------- | ------------------------------------------------------------------------------------------------------------------ |
+| `name`        | `string`  | **Required.** Unique blade identifier for `openBlade({ name: "..." })`.                                            |
+| `url`         | `string`  | URL path segment (e.g., `"/offers"` produces `/#/.../offers`).                                                     |
+| `isWorkspace` | `boolean` | Marks blade as a workspace (root-level, not closable).                                                             |
+| `routable`    | `boolean` | When `false`, blade cannot be opened via direct URL navigation.                                                    |
+| `menuItem`    | `object`  | Registers a sidebar menu entry: `{ title, icon, priority }` (plus optional `groupConfig`, `permissions`, `badge`). |
 
 ### defineExpose
 

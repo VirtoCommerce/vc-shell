@@ -194,10 +194,10 @@ In a typical VC-Shell blade hierarchy, push a breadcrumb each time a child blade
 
 ```vue
 <script setup lang="ts">
-import { useBreadcrumbs, useBladeContext } from "@vc-shell/framework";
+import { useBreadcrumbs, useBlade } from "@vc-shell/framework";
 
 const { breadcrumbs, push } = useBreadcrumbs();
-const { openBlade, closeSelf } = useBladeContext();
+const { openBlade, closeSelf } = useBlade();
 
 function openProductDetail(product: Product) {
   push({

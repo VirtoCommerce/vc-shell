@@ -144,7 +144,7 @@ If you use the `menu` slot to provide a custom menu, the `searchQuery` prop is p
 
 ### Dynamic Module Registration
 
-Modules registered via `useDynamicModules()` are loaded at runtime. Each module can contribute menu items, blades, toolbar actions, settings pages, and dashboard widgets. VcApp handles module loading errors gracefully by displaying notification toasts.
+Modules are provided/consumed via the `DynamicModulesKey` injection (see `injection-keys.ts` and `useShellBootstrap`) and loaded at runtime. Each module can contribute menu items, blades, toolbar actions, settings pages, and dashboard widgets. VcApp handles module loading errors gracefully by displaying notification toasts.
 
 ### App Hub
 

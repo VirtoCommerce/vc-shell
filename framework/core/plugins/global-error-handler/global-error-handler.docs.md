@@ -33,7 +33,6 @@ All caught errors are parsed into human-readable messages via `parseError()` and
 
 ```typescript
 // Automatic -- called by the framework during app initialization.
-import { setupGlobalErrorHandlers } from "@vc-shell/framework";
 setupGlobalErrorHandlers(app);
 ```
 

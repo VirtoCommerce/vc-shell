@@ -111,7 +111,7 @@ add({
 - **Auto-detects SSO providers**: Calls `useExternalProvider().getProviders()` on mount and renders provider buttons only when providers are available
 - **Expired password redirect**: Redirects to the `ChangePassword` route when `user.passwordExpired` is `true` after successful credential authentication
 - **Extension point support**: The `auth:after-form` extension point allows plugins to inject content below the form (terms of service, help links, etc.)
-- **Inline error messages**: Displays error messages for invalid credentials, locked accounts, and server errors directly in the form
+- **Inline error messages**: Displays error messages for invalid credentials and generic authentication errors directly in the form
 - **Forgot password link**: Navigates to the `ForgotPassword` route
 
 ## Details

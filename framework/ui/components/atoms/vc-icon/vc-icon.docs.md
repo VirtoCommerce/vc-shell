@@ -128,6 +128,6 @@ import MyCustomIcon from "./MyCustomIcon.vue";
 - Icon resolution is handled by a switch on the string prefix: `lucide-` maps to the Lucide component registry; `fa-` / `fas fa-` / `bi-` / `material-` are legacy paths kept for backward compatibility and will be removed in v3.
 - The `svg:` prefix loads from an SVG sprite at `basePath` (default `/assets/icons`) using a `<use>` element. Sprite must be included in the app's static assets.
 - `customSize` takes a number and sets `width`/`height` inline; it overrides the `size` prop class entirely.
-- Color variants (`warning`, `danger`, `success`) apply CSS custom property overrides (`--icon-color`) rather than inline style to allow theme-level customization.
+- Color variants (`warning`, `danger`, `success`) resolve to the per-variant CSS custom properties `--icon-color-{success|danger|warning}`. Prefix/registry icons pick these up via variant CSS classes; custom Vue-component icons receive the color inline as `color: var(--icon-color-${variant})`.
 
 <!-- internal:end -->

@@ -123,7 +123,7 @@ When displaying images in lists or grids, pass a `thumbnailSize` (e.g. `"128x128
 - VcImage lives in `framework/ui/components/atoms/vc-image/`.
 - Images are rendered as CSS `background-image` on a `<div>` rather than an `<img>` tag; this enables `background-size: cover/contain` and preserves aspect-ratio without JS.
 - HTTPS enforcement: the `ensureHttps()` helper (called from the `imageHandler` computed and the thumbnail-probe watcher) upgrades `http://` to `https://` when `window.location.protocol === 'https:'`.
-- `thumbnailSize` appends a query parameter to the URL compatible with Virto Commerce image proxy: `?size=128x128`. This is a platform-specific convention.
+- `thumbnailSize` inserts a size suffix before the file extension, compatible with the Virto Commerce thumbnail convention: `photo.jpg` becomes `photo_128x128.jpg`. This is a platform-specific convention.
 - Aspect ratios are implemented as Tailwind aspect-ratio utility classes (`tw-aspect-square`, `tw-aspect-video`, etc.).
 - Clickable mode adds `role="button"` and forwards keyboard Enter/Space to the click handler, consistent with other atom-level interactive components.
 

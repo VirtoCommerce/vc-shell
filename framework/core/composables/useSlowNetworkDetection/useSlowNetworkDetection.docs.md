@@ -54,15 +54,17 @@ const { isSlowNetwork } = useSlowNetworkDetection();
 | `trackRequest`   | `(id: string) => void`   | Start tracking a request. If it isn't untracked within 10 s, it counts as slow. |
 | `untrackRequest` | `(id: string) => void`   | Stop tracking a request. Cancels the timer or decrements the slow count.        |
 
-### Constants
+<!-- internal:start -->
+
+### Internal Constants
+
+These are module-private `const` declarations, not exported symbols — do not `import` them. They document the thresholds baked into the composable.
 
 | Name                        | Value               | Purpose                                             |
 | --------------------------- | ------------------- | --------------------------------------------------- |
 | `SLOW_REQUEST_THRESHOLD_MS` | `10000`             | Time before a pending request is considered slow    |
 | `DISMISS_DELAY_MS`          | `3000`              | Delay before hiding the notification after recovery |
 | `SLOW_EFFECTIVE_TYPES`      | `["slow-2g", "2g"]` | Connection types flagged as slow                    |
-
-<!-- internal:start -->
 
 ## How It Works
 

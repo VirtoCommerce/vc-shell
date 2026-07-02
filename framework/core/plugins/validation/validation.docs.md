@@ -187,7 +187,7 @@ const { handleSubmit, errors } = useForm({
   },
 });
 
-const onSubmit = handleSubmit((values) => {
+const onSubmit = handleSubmit(async (values) => {
   // values is fully validated here
   await saveProduct(values);
 });

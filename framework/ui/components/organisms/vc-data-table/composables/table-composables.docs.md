@@ -97,9 +97,9 @@ type ParsedWidth =
   | { type: "auto"; desiredPx: null }; // undefined, "auto"
 ```
 
-#### `buildInitialWeights(parsed: ParsedWidth[], availableWidth: number): Record<string, number>`
+#### `buildInitialWeights(parsed: { id: string; parsed: ParsedWidth }[], availableWidth: number): Record<string, number>`
 
-Converts an array of `ParsedWidth` values (one per column) into initial weights. Auto columns receive an equal share of the space not claimed by px/% columns.
+Converts an array of `{ id, parsed }` entries (one per column) into initial weights. Auto columns receive an equal share of the space not claimed by px/% columns.
 
 ```ts
 // Example: three columns — 200px, 20%, auto — with 800px available

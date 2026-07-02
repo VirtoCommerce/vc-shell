@@ -278,7 +278,7 @@ defineBlade({
     title: "ORDERS.MENU.TITLE", // i18n key or plain string
     icon: "lucide-shopping-cart", // Icon name (lucide or fas)
     priority: 1, // Lower = higher in menu
-    permissions: ["seller:orders:view"], // Optional override
+    permissions: ["seller:orders:view"], // Optional fallback (used only when the blade has no permissions)
   },
 });
 </script>
@@ -317,7 +317,7 @@ defineBlade({
 </script>
 ```
 
-Under the hood, `defineAppModule` calls `addMenuItem()` from `useMenuService` with:
+Under the hood, the BladeRegistry registration function (invoked during `defineAppModule`'s install) calls `addMenuItem()` from `useMenuService` with:
 
 ```typescript
 addMenuItem({
@@ -383,7 +383,7 @@ export default defineAppModule({
 | Field           | Type                               | Default           | Description                                                                           |
 | --------------- | ---------------------------------- | ----------------- | ------------------------------------------------------------------------------------- |
 | `mode`          | `"auto" \| "progress" \| "silent"` | required          | `auto` = show and auto-dismiss; `progress` = stay until complete; `silent` = no toast |
-| `severity`      | `Severity \| (msg) => Severity`    | `"info"`          | Toast type: `"info"`, `"success"`, `"warning"`, `"error"`                             |
+| `severity`      | `Severity \| (msg) => Severity`    | `"info"`          | Toast type: `"info"`, `"warning"`, `"error"`, `"critical"`                            |
 | `timeout`       | `number`                           | varies            | Auto-dismiss timeout in milliseconds                                                  |
 | `isComplete`    | `(msg) => boolean`                 | `msg.finished`    | For `progress` mode: when to close the toast                                          |
 | `completedType` | `(msg) => "success" \| "error"`    | `() => "success"` | For `progress` mode: final toast type                                                 |
@@ -507,7 +507,7 @@ flowchart TD
 
 Non-OK manifest responses (401 / 403 / 404 / 5xx) are treated as "no plugins" — the host logs a `console.warn`, sets `modulesReady=true`, and mounts without extensions. Only network or parse failures set `modulesLoadError=true`.
 
-See the [Module Federation guide](../guides/module-federation/index.md) for the full plugin-author + host-app walkthrough.
+See [Plugin Loading (Module Federation)](#plugin-loading-module-federation) above and the `packages/mf-host/` package for the full plugin-author + host-app walkthrough.
 
 The host shares singleton instances of core dependencies (Vue, Vue Router, vue-i18n, @vc-shell/framework) so that remote modules use the same runtime. This is critical for reactivity, routing, and DI to work across module boundaries.
 
@@ -853,12 +853,12 @@ interface DashboardWidget {
 
 **`MenuItemConfig`:**
 
-| Field         | Type       | Description                                                     |
-| ------------- | ---------- | --------------------------------------------------------------- |
-| `title`       | `string`   | Display text or i18n key                                        |
-| `icon`        | `string`   | Icon name (lucide-_ or fas fa-_)                                |
-| `priority`    | `number`   | Sort order (lower = higher in menu)                             |
-| `permissions` | `string[]` | Permission override (optional, falls back to blade permissions) |
+| Field         | Type       | Description                                                                                          |
+| ------------- | ---------- | ---------------------------------------------------------------------------------------------------- |
+| `title`       | `string`   | Display text or i18n key                                                                             |
+| `icon`        | `string`   | Icon name (lucide-_ or fas fa-_)                                                                     |
+| `priority`    | `number`   | Sort order (lower = higher in menu)                                                                  |
+| `permissions` | `string[]` | Optional fallback used only when the blade has no `permissions`; blade `permissions` take precedence |
 
 ---
 

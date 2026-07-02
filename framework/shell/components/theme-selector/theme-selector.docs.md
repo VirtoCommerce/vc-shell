@@ -103,7 +103,7 @@ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e)
 ## Details
 
 - **Theme persistence**: The selected theme is persisted to localStorage, so the user's preference survives page reloads and browser restarts.
-- **Toast notification**: When the user switches themes via the selector, a brief toast notification confirms the change (e.g., "Theme changed to Dark").
+- **Toast notification**: When the user switches themes via the selector, a brief toast notification shows the new theme's localized name (e.g., "Dark").
 - **Cascading submenu**: On desktop, selecting the theme entry opens a submenu listing all registered themes. The current theme is highlighted.
 - **CSS custom properties**: Themes work by switching CSS custom properties defined in `framework/assets/styles/theme/colors.scss`. Components reference these variables (e.g., `tw-bg-[var(--primary-500)]`), so theme changes are instant.
 

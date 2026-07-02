@@ -642,15 +642,15 @@ Don't forget `:key` with cascading selects, otherwise the second select will ret
 
 ## Slots
 
-| Slot                             | Scope                                     | Description                                                              |
-| -------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------ |
-| `option`                         | `{ index, opt, selected, toggleOption }`  | Custom option rendering. **You must call `toggleOption(opt)` on click.** |
-| `selected-item`                  | `{ index, opt, selected, removeAtIndex }` | Custom rendering of selected chips (multiple)                            |
-| `control`                        | `{ toggleHandler, isOpened }`             | Full trigger replacement                                                 |
-| `prepend` / `append`             | —                                         | Content outside the field                                                |
-| `prepend-inner` / `append-inner` | —                                         | Content inside the field                                                 |
-| `no-options`                     | —                                         | Shown when there are no options                                          |
-| `error` / `hint`                 | —                                         | Custom rendering of error/hint                                           |
+| Slot                             | Scope                                           | Description                                                              |
+| -------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------ |
+| `option`                         | `{ index, opt, selected, label, toggleOption }` | Custom option rendering. **You must call `toggleOption(opt)` on click.** |
+| `selected-item`                  | `{ index, opt, selected, removeAtIndex }`       | Custom rendering of selected chips (multiple)                            |
+| `control`                        | `{ toggleHandler, isOpened }`                   | Full trigger replacement                                                 |
+| `prepend` / `append`             | —                                               | Content outside the field                                                |
+| `prepend-inner` / `append-inner` | —                                               | Content inside the field                                                 |
+| `no-options`                     | —                                               | Shown when there are no options                                          |
+| `error` / `hint`                 | —                                               | Custom rendering of error/hint                                           |
 
 ## CSS Variables
 

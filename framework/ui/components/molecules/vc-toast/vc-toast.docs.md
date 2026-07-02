@@ -148,7 +148,7 @@ Toasts use Sonner-style stacking: the newest toast is in front, older toasts sca
 
 On touch devices, horizontal swipe dismisses toasts (threshold: 45px or velocity > 0.11px/ms).
 
-The auto-dismiss timer (default 5000ms) pauses on hover. Set `timeout: false` for persistent toasts.
+The auto-dismiss timer (default 3000ms) pauses on hover. Set `timeout: false` for persistent toasts.
 
 ```ts
 notification("Quick flash", { timeout: 1500 });
@@ -250,7 +250,7 @@ These props are used internally by the notification system. You rarely need to s
 | `notificationId` | `number \| string`                               | --             | Unique identifier                                      |
 | `updateId`       | `number \| string`                               | --             | ID for update tracking                                 |
 | `type`           | `"default" \| "success" \| "error" \| "warning"` | `"default"`    | Notification type (determines icon and accent color)   |
-| `timeout`        | `number \| boolean`                              | `5000`         | Auto-dismiss delay in ms, or `false` to disable        |
+| `timeout`        | `number \| boolean`                              | `3000`         | Auto-dismiss delay in ms, or `false` to disable        |
 | `pauseOnHover`   | `boolean`                                        | `true`         | Pause timeout while mouse hovers over the toast        |
 | `limit`          | `number`                                         | --             | Maximum number of visible notifications                |
 | `position`       | `NotificationPosition`                           | `"top-center"` | Screen position for the toast                          |

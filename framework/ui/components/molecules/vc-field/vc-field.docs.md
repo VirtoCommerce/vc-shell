@@ -190,7 +190,7 @@ VcField exposes no CSS custom properties. The gap between label and value is fix
 
 ## Accessibility
 
-- The label is rendered via `VcLabel`, which associates with the field content
+- The label is rendered via `VcLabel` for consistent styling; there is no `for`/`id` association to the value (the value is not a focusable form control)
 - The copy button has `aria-label="Copy to clipboard"`
 - Provides visual feedback (checkmark icon) after successful copy
 
@@ -223,7 +223,6 @@ In `orientation="horizontal"` the component reserves the `aspectRatio[0]` track 
 
 - [VcInput](../vc-input/) -- editable text field (use instead when user input is needed)
 - [VcLabel](../../atoms/vc-label/) -- standalone label atom used internally
-- [VcCol](../../atoms/vc-col/) -- column layout atom used for aspect ratio
 
 ::storybook id="form-vcfield--skeleton"
 

@@ -180,5 +180,4 @@ If you call the composable from a manually managed `effectScope()`, the cleanup 
 - [useNotificationStore](./useNotificationStore.md) — direct store access for app-shell features (dropdown, badge).
 - [useNotificationContext](./useNotificationContext.md) — read the current notification inside a custom template.
 - [useBroadcastFilter](./useBroadcastFilter.md) — control which `SendSystemEvents` broadcasts reach the store.
-- [Notifications concept page.](../../concepts/notifications.md)
-- [Notifications plugin reference.](../../plugins/notifications.md)
+- [Notifications overview.](../notifications.md)

@@ -19,7 +19,7 @@ Columns are defined as `<VcColumn>` child components -- no configuration objects
 
 **Key facts:**
 
-- 82 Storybook stories covering every feature permutation
+- 90 Storybook stories covering every feature permutation
 - Automatic mobile card view on small screens
 - State persistence (column widths, order, sort, filters) to localStorage/sessionStorage
 - Full TypeScript generics -- `VcDataTable<Product>` propagates types to events and slots

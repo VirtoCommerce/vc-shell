@@ -13,7 +13,7 @@ Centralized Vue `InjectionKey` symbols for the vc-shell framework's provide/inje
 
 The vc-shell framework uses Vue's provide/inject mechanism extensively to share services, navigation state, and configuration across the component tree. Instead of relying on global singletons or Pinia stores, the framework creates typed injection keys for each service, allowing components to declare their dependencies explicitly.
 
-All keys are defined in a single file (`framework/injection-keys.ts`) to avoid symbol duplication and ensure type safety. The app shell provides these values at the root during bootstrap; components and composables inject them using the corresponding key.
+Most keys live in `framework/injection-keys.ts` to avoid symbol duplication and ensure type safety; a few blade-stack keys such as `BladeDescriptorKey` are declared in `core/blade-navigation/types` and re-exported from there. The app shell provides these values at the root during bootstrap; components and composables inject them using the corresponding key.
 
 This centralized approach has several advantages:
 
@@ -88,15 +88,6 @@ This centralized approach has several advantages:
 | `IsTouchKey`   | `boolean`      | Touch device detection |
 
 <!-- internal:start -->
-
-### Legacy Aliases (Deprecated)
-
-| Deprecated          | Use Instead          |
-| ------------------- | -------------------- |
-| `BladeDescriptor`   | `BladeDescriptorKey` |
-| `BLADE_BACK_BUTTON` | `BladeBackButtonKey` |
-| `TOOLBAR_SERVICE`   | `ToolbarServiceKey`  |
-| `EMBEDDED_MODE`     | `EmbeddedModeKey`    |
 
 ### Removed Keys (No Replacement)
 

@@ -61,7 +61,8 @@ const component = getBladeComponent("OrderDetails");
 
 ```typescript
 <script setup lang="ts">
-import { useBladeRegistry, useBlade } from "@vc-shell/framework";
+import { useBladeRegistry } from "@vc-shell/framework";
+import { useBlade } from "@vc-shell/framework";
 
 const { getBlade } = useBladeRegistry();
 const { openBlade } = useBlade();
@@ -121,7 +122,8 @@ const workspaceBlades = computed(() =>
 ### Checking permissions before navigation
 
 ```typescript
-import { useBladeRegistry, usePermissions } from "@vc-shell/framework";
+import { useBladeRegistry } from "@vc-shell/framework";
+import { usePermissions } from "@vc-shell/framework";
 
 const { getBlade } = useBladeRegistry();
 const { hasAccess } = usePermissions();

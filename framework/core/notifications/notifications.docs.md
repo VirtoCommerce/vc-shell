@@ -164,7 +164,7 @@ Handles toast popup display based on `NotificationTypeConfig.toast` settings. Cr
 
 ### Imperative `notification` API
 
-Low-level toast helper exported from `index.ts` for firing toasts directly (used by `useBladeNotifications` progress recipes and by framework internals). Call `notification(content, options?)` for a default toast, or use the typed helpers.
+Low-level toast helper exported from `index.ts` for firing toasts directly (used by the Toast Controller for progress toasts and by framework internals). Call `notification(content, options?)` for a default toast, or use the typed helpers.
 
 **File:** `notification.ts`
 

@@ -76,20 +76,18 @@ For testing or injecting client-side notifications:
 
 ```ts
 import { useNotificationStore } from "@vc-shell/framework";
-import { PushNotification } from "@vc-shell/framework";
+import type { PushNotification } from "@vc-shell/framework";
 
 const store = useNotificationStore();
 
-store.ingest(
-  new PushNotification({
-    id: "order-123",
-    notifyType: "OrderCreated",
-    title: "New order received",
-    description: "Order #123 placed by customer.",
-    isNew: true,
-    created: new Date(),
-  }),
-);
+store.ingest({
+  id: "order-123",
+  notifyType: "OrderCreated",
+  title: "New order received",
+  description: "Order #123 placed by customer.",
+  isNew: true,
+  created: new Date(),
+} as PushNotification);
 ```
 
 ### Custom notification templates
@@ -103,9 +101,9 @@ import ImportNotification from "./ImportNotification.vue";
 
 export default defineAppModule({
   notifications: {
-    OrderCreated: { template: OrderNotification },
-    OrderStatusChanged: { template: OrderNotification },
-    CatalogImportCompleted: { template: ImportNotification },
+    OrderCreated: { template: OrderNotification, toast: { mode: "auto" } },
+    OrderStatusChanged: { template: OrderNotification, toast: { mode: "auto" } },
+    CatalogImportCompleted: { template: ImportNotification, toast: { mode: "auto" } },
   },
 });
 ```
@@ -123,7 +121,7 @@ When a notification's `notifyType` matches a registered template, that component
 
 - The dropdown shows all notifications, not just unread ones. Read notifications appear with reduced visual emphasis.
 - There is no clear-history API. `useNotificationStore()` exposes `markAllAsRead()` (flip everything to read) and `loadHistory(take?)` (reload the latest page from the server); neither deletes history.
-- For background task progress (e.g., catalog import), notifications include `progressValue` and `isRunning` fields. The `NotificationTemplate` can render a progress bar when these are present.
+- For background task progress (e.g., catalog import), the progress/completion concept keys off a `finished` flag on the notification payload. When a type is configured with a progress toast (`toast: { mode: "progress" }`), `ToastConfig.isComplete` reads that flag (default `(msg) => !!msg.finished`) to decide when the operation is done.
 - The dropdown does not poll for new notifications -- they arrive in real time via SignalR. If the connection drops, a reconnection is attempted automatically.
 
 ## Related Components

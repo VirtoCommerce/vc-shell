@@ -142,10 +142,9 @@ The `close` event carries a `PopupCloseReason` string so you can react different
 </VcPopup>
 
 <script setup lang="ts">
-import type { PopupCloseReason } from "@vc-shell/framework";
-
-function onClose(reason?: PopupCloseReason) {
-  // reason is "overlay" | "escape" | "action"
+// The reason is the union `"overlay" | "escape" | "action"`.
+// (`PopupCloseReason` is internal to vc-popup.vue and is not re-exported from the framework entry.)
+function onClose(reason?: "overlay" | "escape" | "action") {
   if (reason === "action") {
     // User clicked a button
   }

@@ -46,25 +46,25 @@ The prop names match the `DynamicObjectProperty` shape returned by the platform 
 
 ## Key Props
 
-| Prop                 | Type                         | Default    | Description                                                                      |
-| -------------------- | ---------------------------- | ---------- | -------------------------------------------------------------------------------- |
-| `property`           | `T`                          | _required_ | Property object with `id` and metadata                                           |
-| `modelValue`         | `any`                        | _required_ | Current property value (v-model)                                                 |
-| `valueType`          | `string`                     | _required_ | Type: ShortText, LongText, Number, Integer, DateTime, Boolean, Measure, Color    |
-| `name`               | `string`                     | _required_ | Property name for display and field identification                               |
-| `required`           | `boolean`                    | _required_ | Whether the field is required                                                    |
-| `disabled`           | `boolean`                    | `false`    | Disables the input                                                               |
-| `dictionary`         | `boolean`                    | `false`    | Uses VcSelect/VcMultivalue with options                                          |
-| `multivalue`         | `boolean`                    | `false`    | Supports multiple values                                                         |
-| `multilanguage`      | `boolean`                    | `false`    | Supports localized values                                                        |
-| `currentLanguage`    | `string`                     | -          | Active locale used for localized values                                          |
-| `optionsGetter`      | `Function`                   | _required_ | Async loader for dictionary options, called as `(propertyId, keyword?, locale?)` |
-| `measurementsGetter` | `Function`                   | -          | Async loader for measurement units                                               |
-| `optionsValue`       | `string`                     | `"id"`     | Field on each option used as its value (VcSelect mapping)                        |
-| `optionsLabel`       | `string`                     | `"value"`  | Field on each option used as its label (VcSelect mapping)                        |
-| `displayNames`       | `{ name?; languageCode? }[]` | -          | Localized display names used to resolve the field label per locale               |
-| `placeholder`        | `string`                     | -          | Placeholder text for the input                                                   |
-| `rules`              | `object`                     | -          | Validation rules: `{ min, max, regex }`                                          |
+| Prop                 | Type                         | Default    | Description                                                                                                                                              |
+| -------------------- | ---------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `property`           | `T`                          | _required_ | Property object with `id` and metadata                                                                                                                   |
+| `modelValue`         | `any`                        | _required_ | Current property value (v-model)                                                                                                                         |
+| `valueType`          | `string`                     | _required_ | Type: ShortText, LongText, Number, Integer, DateTime, Boolean, Measure, Color                                                                            |
+| `name`               | `string`                     | _required_ | Property name for display and field identification                                                                                                       |
+| `required`           | `boolean`                    | _required_ | Whether the field is required                                                                                                                            |
+| `disabled`           | `boolean`                    | `false`    | Disables the input                                                                                                                                       |
+| `dictionary`         | `boolean`                    | `false`    | Uses VcSelect/VcMultivalue with options                                                                                                                  |
+| `multivalue`         | `boolean`                    | `false`    | Supports multiple values                                                                                                                                 |
+| `multilanguage`      | `boolean`                    | `false`    | Supports localized values                                                                                                                                |
+| `currentLanguage`    | `string`                     | -          | Active locale used for localized values                                                                                                                  |
+| `optionsGetter`      | `Function`                   | _required_ | Async loader for dictionary options, called as `(propertyId, keyword?, locale?)`                                                                         |
+| `measurementsGetter` | `Function`                   | -          | Async loader for measurement units                                                                                                                       |
+| `optionsValue`       | `string`                     | `"id"`     | Field on each option used as its value (VcSelect mapping)                                                                                                |
+| `optionsLabel`       | `string`                     | `"value"`  | Inert. The option label is fixed to `"value"` when `multilanguage` is true and `"alias"` otherwise; only `optionsValue` is honored for VcSelect mapping. |
+| `displayNames`       | `{ name?; languageCode? }[]` | -          | Localized display names used to resolve the field label per locale                                                                                       |
+| `placeholder`        | `string`                     | -          | Placeholder text for the input                                                                                                                           |
+| `rules`              | `object`                     | -          | Validation rules: `{ min, max, regex }`                                                                                                                  |
 
 ::storybook id="data-display-vcdynamicproperty--property-form" height="500"
 

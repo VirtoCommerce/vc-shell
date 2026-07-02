@@ -139,7 +139,7 @@ async function handleReset() {
   // Validate against password policy
   const validation = await validatePassword(newPassword.value);
   if (!validation.succeeded) {
-    error.value = validation.errors?.join(", ") ?? "Password does not meet requirements.";
+    error.value = validation.errors?.map((e) => e.description).join(", ") ?? "Password does not meet requirements.";
     return;
   }
 
@@ -167,7 +167,7 @@ const showPasswordForm = ref(false);
 onMounted(async () => {
   loginTypes.value = await getLoginType();
   // Show password form only if password auth is available
-  showPasswordForm.value = loginTypes.value.some((t) => t.loginProvider === "password");
+  showPasswordForm.value = loginTypes.value.some((t) => t.hasLoginForm);
 });
 </script>
 
@@ -181,10 +181,10 @@ onMounted(async () => {
     </form>
 
     <div
-      v-for="provider in loginTypes.filter((t) => t.loginProvider !== 'password')"
-      :key="provider.loginProvider"
+      v-for="provider in loginTypes.filter((t) => !t.hasLoginForm)"
+      :key="provider.authenticationType"
     >
-      <VcButton @click="redirectToSSO(provider)"> Sign in with {{ provider.loginProvider }} </VcButton>
+      <VcButton @click="redirectToSSO(provider)"> Sign in with {{ provider.authenticationType }} </VcButton>
     </div>
   </div>
 </template>

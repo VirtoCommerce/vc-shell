@@ -9,7 +9,7 @@ internal: true
 
 Base template for rendering a single push notification with title, relative timestamp, optional icon, and a default slot for extra detail content. This component provides the standard layout that all notification types share, while allowing domain-specific content to be injected through the default slot.
 
-The template displays the notification title, a "time ago" timestamp (e.g., "3 minutes ago"), and optionally a colored icon badge. Custom notification templates extend this base by wrapping it and filling the slot with type-specific content like progress bars, action buttons, or entity links.
+The template displays the notification title and a timestamp — a relative "time ago" string for recent notifications (< 1 day, e.g., "3 minutes ago") or an absolute short date-time for older ones (>= 1 day) — and optionally a colored icon badge. Custom notification templates extend this base by wrapping it and filling the slot with type-specific content like progress bars, action buttons, or entity links.
 
 ## When to Use
 
@@ -166,7 +166,7 @@ const isRunning = computed(() => (notification.value as any).isRunning ?? false)
 
 ## Details
 
-- **Relative timestamps**: The template displays the time elapsed since the notification was created using a "time ago" format (e.g., "2 minutes ago", "1 hour ago"). It is computed once per render from the notification's created time and does not tick on a clock; it recomputes only when the notification data changes.
+- **Timestamps**: For recent notifications (less than a day old) the template shows a relative "time ago" string via `Intl.RelativeTimeFormat` (e.g., "2 minutes ago", "1 hour ago"); for older notifications (>= 1 day) it falls back to an absolute short date-time via `Intl.DateTimeFormat` (`dateStyle: "short"`, `timeStyle: "short"`). It is computed once per render from the notification's created time and does not tick on a clock; it recomputes only when the notification data changes.
 - **Icon badge**: When the `icon` prop is provided, it renders in a small circular badge with the specified `color` background. This helps users quickly identify notification types visually.
 - **Default slot**: The slot content appears below the title and timestamp, providing space for description text, progress indicators, action links, or any custom content.
 - **Read state**: The base template renders no unread/read indicator — it has no `isNew`/read prop. Read-state styling, if any, is handled by the notification dropdown, not this template.

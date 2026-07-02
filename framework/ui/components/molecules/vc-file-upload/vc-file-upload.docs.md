@@ -94,7 +94,7 @@ Show a loading overlay while files are being processed or uploaded:
 <VcFileUpload :loading="isUploading" @upload="onUpload" />
 ```
 
-Set `isUploading` to `true` before the upload and reset in a `finally` block. The loading overlay uses the `v-loading` directive and displays a spinner centered over the drop zone.
+Set `isUploading` to `true` before the upload and reset in a `finally` block. When `loading` is `true`, the drop-zone content is replaced by a centered spinner (VcIcon `lucide-loader-2`) plus an "uploading" label, and pointer events on the drop zone are disabled.
 
 ## Custom Text and Icon
 

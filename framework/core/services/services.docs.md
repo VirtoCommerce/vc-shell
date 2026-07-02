@@ -78,7 +78,7 @@ const { toolbarItems } = useToolbar(); // toolbar items for current blade
 ```typescript
 import { setMenuBadge, removeMenuBadge } from "@vc-shell/framework";
 
-setMenuBadge("OrdersList", { value: computed(() => pendingCount.value) });
+setMenuBadge("OrdersList", { content: computed(() => pendingCount.value) });
 removeMenuBadge("OrdersList");
 ```
 

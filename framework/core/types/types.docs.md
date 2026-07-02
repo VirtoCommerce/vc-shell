@@ -51,25 +51,25 @@ All types are re-exported from `@vc-shell/framework`, so module developers impor
 
 ### Assets
 
-| Type               | Description                                                                                                                                                 |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ICommonAsset`     | Asset record: `url`, `relativeUrl`, `title`, `name`, `size`, `sortOrder`, `typeId`, dates. **Deprecated** (removed in v3.0) — use `AssetLike`.              |
-| `AssetsHandler<T>` | Asset operations: `upload()`, `edit()`, `remove()`, `loading` ref, `noRemoveConfirmation`. **Deprecated** (removed in v3.0) — use `UseAssetsManagerReturn`. |
+| Type               | Description                                                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ICommonAsset`     | Alias of `AssetLike`: declares only `url`, `name`, `sortOrder` plus an open `[key: string]: any` index signature (other fields are untyped passthrough). **Deprecated** (removed in v3.0) — use `AssetLike`. |
+| `AssetsHandler<T>` | Asset operations: `upload()`, `edit()`, `remove()`, `loading` ref, `noRemoveConfirmation`. **Deprecated** (removed in v3.0) — use `UseAssetsManagerReturn`.                                                  |
 
 ### Service Abstractions (`services.ts`)
 
-| Type                           | Description                                                                                        |
-| ------------------------------ | -------------------------------------------------------------------------------------------------- |
-| `ServiceLifecycle<T>`          | Service create/provide/cleanup lifecycle.                                                          |
-| `PreregistrationQueue<T>`      | Queue for items registered before a service initializes: `register()`, `flush()`, `clear()`.       |
-| `RegistryService<TKey, TItem>` | Generic registry: `register()`, `unregister()`, `get()`, `has()`, `getAll()`, `clear()`.           |
-| `ListService<T>`               | Reactive list: `items` ref, `add()`, `remove()`, `find()`, `filter()`.                             |
-| `OrderedListService<T>`        | Extends `ListService` with `reorder()` and `getSorted()`.                                          |
-| `ObservableService<T>`         | Subscribe/getValue pattern for change observation.                                                 |
-| `ServiceResult<T>`             | Async operation result: `success`, `data?`, `error?` with code/message/details.                    |
-| `WidgetRegistration`           | Widget entry: `id`, `component`, `props`, `order`, `isVisible`.                                    |
-| `MenuItemRegistration`         | Menu item entry: `id`, `title`, `icon`, `priority`, `permissions`, `routeId`, `group`, `children`. |
-| `ToolbarItemRegistration`      | Toolbar item entry: `id`, `title`, `icon`, `order`, `disabled`, `clickHandler`, `permissions`.     |
+| Type                           | Description                                                                                               |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `ServiceLifecycle<T>`          | Service create/provide/cleanup lifecycle.                                                                 |
+| `PreregistrationQueue<T>`      | Queue for items registered before a service initializes: `register()`, `flush()`, `clear()`.              |
+| `RegistryService<TKey, TItem>` | Generic registry: `register()`, `unregister()`, `get()`, `has()`, `getAll()`, `clear()`.                  |
+| `ListService<T>`               | Reactive list: `items` ref, `add()`, `remove()`, `find()`, `filter()`.                                    |
+| `OrderedListService<T>`        | Extends `ListService` with `reorder()` and `getSorted()`.                                                 |
+| `ObservableService<T>`         | Subscribe/getValue pattern for change observation.                                                        |
+| `ServiceResult<T>`             | Async operation result: `success`, `data?`, `error?` with code/message/details.                           |
+| `WidgetRegistration`           | Widget entry: `id`, `component`, `props`, `order`, `isVisible`.                                           |
+| `MenuItemRegistration`         | Menu item entry: `id`, `title`, `icon`, `priority`, `permissions`, `routeId`, `url`, `group`, `children`. |
+| `ToolbarItemRegistration`      | Toolbar item entry: `id`, `title`, `icon`, `order`, `disabled`, `clickHandler`, `permissions`.            |
 
 ### Other
 

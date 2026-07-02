@@ -180,7 +180,7 @@ function selectSuggestion(value: string) {
 - **Items are re-queried on every key press.** This means dynamically added or removed items are picked up automatically. You do not need to re-initialize after the list changes.
 - **`loop: false` stops at boundaries.** When looping is disabled, pressing ArrowDown on the last item or ArrowUp on the first item does nothing. This is appropriate for linear navigation patterns.
 - **Clean up if you manually init.** While auto-attached listeners are cleaned up on `onBeforeUnmount`, if you call `initKeyboardNavigation` on a dynamic element, call `cleanupKeyboardNavigation` when that element is removed.
-- **Tab key is intercepted.** The composable handles Tab/Shift+Tab within the container, moving focus between items rather than leaving the container. This follows the WAI-ARIA composite widget pattern.
+- **Tab moves the focused index but is not trapped.** Tab/Shift+Tab advances the composable's focused item, but it does not call `preventDefault`, so the browser's native Tab behavior still applies and focus can leave the container. This follows the WAI-ARIA composite widget pattern.
 
 ## Related
 

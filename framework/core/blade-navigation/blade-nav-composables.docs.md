@@ -2,6 +2,7 @@
 title: Blade Navigation Composables
 category: composables
 group: blade-navigation
+internal: true
 ---
 
 # Blade Navigation Composables

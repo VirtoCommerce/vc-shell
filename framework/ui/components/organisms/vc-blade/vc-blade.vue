@@ -129,7 +129,17 @@ export interface Props {
   title?: string;
   subtitle?: string;
   width?: number | string;
+  /**
+   * @deprecated Managed by the navigation stack — ignored inside blade navigation, where the
+   * active (rightmost) blade is expanded automatically. Read the live value from `useBlade().expanded`.
+   * Retained only as a standalone/Storybook fallback (when no blade context is present).
+   */
   expanded?: boolean;
+  /**
+   * @deprecated Managed by the navigation stack — ignored inside blade navigation, where closability
+   * is derived from stack position (a workspace root is not closable). Read the live value from
+   * `useBlade().closable`. Retained only as a standalone/Storybook fallback (when no blade context is present).
+   */
   closable?: boolean;
   toolbarItems?: IBladeToolbar[];
   modified?: boolean;

@@ -179,7 +179,7 @@ const form = reactive({ description: "" });
 </script>
 ```
 
-> **Note:** VcEditor uses `errorMessage` directly (no separate `error` boolean prop needed). The error state is derived from the truthiness of `errorMessage`.
+> **Note:** VcEditor inherits an `error` boolean prop (from `IFormFieldProps`), but it is unused — it has no effect. Error state is derived solely from the truthiness of `errorMessage`.
 
 ## Recipes
 
@@ -210,7 +210,7 @@ const form = reactive({ description: "" });
 ### 2. Using error prop instead of errorMessage
 
 ```vue
-<!-- WRONG: VcEditor does not have a separate `error` boolean prop -->
+<!-- WRONG: the inherited `error` prop is inert on VcEditor and has no effect -->
 <VcEditor v-model="content" :error="true" error-message="Required" />
 
 <!-- CORRECT: errorMessage alone controls the error state -->
@@ -233,30 +233,31 @@ const content = ref("<h1>Title</h1>");
 
 ## Props
 
-| Prop              | Type                  | Default     | Description                                                   |
-| ----------------- | --------------------- | ----------- | ------------------------------------------------------------- |
-| `modelValue`      | `string`              | `""`        | Content string via `v-model` (Markdown or HTML)               |
-| `label`           | `string`              | --          | Label text above the editor                                   |
-| `placeholder`     | `string`              | --          | Placeholder when editor is empty                              |
-| `disabled`        | `boolean`             | `false`     | Disables all editing                                          |
-| `required`        | `boolean`             | `false`     | Shows a required asterisk on the label                        |
-| `tooltip`         | `string`              | --          | Tooltip text shown on label hover                             |
-| `errorMessage`    | `string`              | --          | Error message below the editor (also activates error styling) |
-| `name`            | `string`              | --          | Form field name attribute                                     |
-| `toolbar`         | `ToolbarNames[]`      | all buttons | Array of toolbar button names to show                         |
-| `maxlength`       | `number`              | --          | Character limit (counter shown in source/split mode)          |
-| `assetsFolder`    | `string`              | --          | API folder path for image uploads                             |
-| `extensions`      | `Extension[]`         | --          | Additional TipTap extensions                                  |
-| `customButtons`   | `CustomToolbarItem[]` | --          | Plugin toolbar buttons or dropdowns                           |
-| `multilanguage`   | `boolean`             | `false`     | Enables multilanguage indicator on the label                  |
-| `currentLanguage` | `string`              | --          | Current language code for multilanguage mode                  |
+| Prop              | Type                  | Default     | Description                                                       |
+| ----------------- | --------------------- | ----------- | ----------------------------------------------------------------- |
+| `modelValue`      | `string`              | `""`        | Content string via `v-model` (Markdown or HTML)                   |
+| `label`           | `string`              | --          | Label text above the editor                                       |
+| `placeholder`     | `string`              | --          | Placeholder when editor is empty                                  |
+| `disabled`        | `boolean`             | `false`     | Disables all editing                                              |
+| `required`        | `boolean`             | `false`     | Shows a required asterisk on the label                            |
+| `tooltip`         | `string`              | --          | Tooltip text shown on label hover                                 |
+| `errorMessage`    | `string`              | --          | Error message below the editor (also activates error styling)     |
+| `error`           | `boolean`             | `false`     | Inherited from `IFormFieldProps`; accepted but unused (no effect) |
+| `name`            | `string`              | --          | Form field name attribute                                         |
+| `toolbar`         | `ToolbarNames[]`      | all buttons | Array of toolbar button names to show                             |
+| `maxlength`       | `number`              | --          | Character limit (counter shown in source/split mode)              |
+| `assetsFolder`    | `string`              | --          | API folder path for image uploads                                 |
+| `extensions`      | `Extension[]`         | --          | Additional TipTap extensions                                      |
+| `customButtons`   | `CustomToolbarItem[]` | --          | Plugin toolbar buttons or dropdowns                               |
+| `multilanguage`   | `boolean`             | `false`     | Enables multilanguage indicator on the label                      |
+| `currentLanguage` | `string`              | --          | Current language code for multilanguage mode                      |
 
 ## Events
 
-| Event               | Payload               | Description                                                   |
-| ------------------- | --------------------- | ------------------------------------------------------------- |
-| `update:modelValue` | `string \| undefined` | Emitted when content changes (from WYSIWYG or source editing) |
-| `upload-image`      | --                    | Emitted when image upload is triggered                        |
+| Event               | Payload               | Description                                                                                                                              |
+| ------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `update:modelValue` | `string \| undefined` | Emitted when content changes (from WYSIWYG or source editing)                                                                            |
+| `upload-image`      | --                    | Declared but currently never emitted; image upload is handled internally via the hidden file input and inserted directly into the editor |
 
 ## Slots
 
@@ -277,6 +278,7 @@ const content = ref("<h1>Title</h1>");
 | `--vc-editor-text-disabled`       | `var(--neutrals-500)`                                     | Text color when disabled                             |
 | `--vc-editor-background-disabled` | `var(--neutrals-200)`                                     | Background when disabled                             |
 | `--vc-editor-focus-border`        | `var(--primary-500)`                                      | Border color on focus                                |
+| `--vc-editor-focus-shadow`        | `var(--primary-500)`                                      | Focus shadow color token                             |
 | `--vc-editor-focus-ring-color`    | `color-mix(in srgb, var(--primary-500) 30%, transparent)` | Focus ring color                                     |
 | `--vc-editor-error-border`        | `var(--danger-500)`                                       | Border color on error                                |
 | `--vc-editor-error-ring-color`    | `rgba(239, 68, 68, 0.2)`                                  | Error ring color                                     |

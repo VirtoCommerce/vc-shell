@@ -73,12 +73,14 @@ If you need to change the locale from code (e.g., based on user profile settings
 
 ```ts
 import { useLanguages } from "@vc-shell/framework";
+import { useI18n } from "vue-i18n";
 
-const { currentLocale, setLocale, availableLocales } = useLanguages();
+const { currentLocale, setLocale } = useLanguages();
+const { availableLocales } = useI18n();
 
 // Set locale on login based on user preference
 async function onLogin(user) {
-  if (user.preferredLocale && availableLocales.value.includes(user.preferredLocale)) {
+  if (user.preferredLocale && availableLocales.includes(user.preferredLocale)) {
     setLocale(user.preferredLocale);
   }
 }

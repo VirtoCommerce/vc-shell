@@ -56,7 +56,7 @@ With custom branding:
 Set up the route to extract query parameters from the invitation email link:
 
 ```ts
-import Invite from "@vc-shell/framework/shared/pages/InvitePage";
+import { Invite } from "@vc-shell/framework";
 
 const routes = [
   {
@@ -79,13 +79,13 @@ The invitation email link typically looks like:
 https://your-app.com/invite?userId=abc123&userName=jane@example.com&token=xyz789...
 ```
 
-## Recipe: Custom Invitation Flow
+## Recipe: Custom Branding
 
-If your platform uses a different invitation API, you can create a wrapper that overrides the default behavior:
+Wrap `Invite` to pass a custom logo while keeping the standard invitation flow (token validation, password set, and auto sign-in are handled internally):
 
 ```vue
 <script setup lang="ts">
-import Invite from "@vc-shell/framework/shared/pages/InvitePage";
+import { Invite } from "@vc-shell/framework";
 import { useRoute } from "vue-router";
 
 const route = useRoute();

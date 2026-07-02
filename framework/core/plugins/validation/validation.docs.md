@@ -21,7 +21,7 @@ This plugin auto-registers every rule from `@vee-validate/rules` (required, emai
 ## When to Use
 
 - Validate form fields in blades using `<Field>` components or `useField()` with declarative rules (`required`, `email`, `min`, etc.)
-- Use custom vc-shell rules: image dimensions (`validateImageMinSize`), file weight, date comparisons, BigInt safety
+- Use custom vc-shell rules: image dimensions (`mindimensions`), file weight, date comparisons, BigInt safety
 - When NOT to use: for API-level validation -- that belongs server-side; for simple presence checks on non-form data -- use plain conditionals
 
 The framework imports this module during setup. No manual installation is needed by module developers.
@@ -34,11 +34,11 @@ The framework imports this module during setup. No manual installation is needed
 
 // Under the hood, the plugin does:
 import { defineRule } from "vee-validate";
-import * as allRules from "@vee-validate/rules";
+import { all } from "@vee-validate/rules";
 
 // Register all standard rules
-Object.entries(allRules).forEach(([name, rule]) => {
-  defineRule(name, rule);
+Object.keys(all).forEach((rule) => {
+  defineRule(rule, all[rule]);
 });
 
 // Then register custom vc-shell rules
@@ -187,7 +187,7 @@ const { handleSubmit, errors } = useForm({
   },
 });
 
-const onSubmit = handleSubmit((values) => {
+const onSubmit = handleSubmit(async (values) => {
   // values is fully validated here
   await saveProduct(values);
 });
@@ -197,12 +197,15 @@ const onSubmit = handleSubmit((values) => {
 
 All custom rules use localized error messages via `i18n.global.t()`. To customize messages, add the corresponding keys to your module's locale file:
 
+`mindimensions` only treats files with a `.jpg`, `.svg`, `.jpeg`, `.png`, `.bmp`, or `.gif` extension as images; any other file fails with `messages.min_dimensions.not_image_error`.
+
 ```typescript
 // locales/en.ts
 export default {
   messages: {
     min_dimensions: {
       error: "Image must be at least {width}x{height} pixels",
+      not_image_error: "File is not a supported image",
     },
     file_weight: "File must not exceed {size} KB",
     before: "Date must be before {target}",
@@ -241,5 +244,5 @@ Do not forget that `mindimensions` and `fileWeight` rules work with File objects
 
 - [vee-validate docs](https://vee-validate.logaretm.com/v4/) -- upstream validation library
 - `framework/core/plugins/i18n/` -- error messages use `i18n.global.t()` for localization
-- Locale keys: `messages.min_dimensions.error`, `messages.file_weight`, `messages.before`, `messages.after`, `messages.bigint`
+- Locale keys: `messages.min_dimensions.error`, `messages.min_dimensions.not_image_error`, `messages.file_weight`, `messages.before`, `messages.after`, `messages.bigint`
 - `framework/ui/components/molecules/vc-field/` -- VcField wrapper component for validation display

@@ -167,9 +167,9 @@ Use a different icon for the tooltip trigger:
 ## Architecture notes
 
 - VcLabel lives in `framework/ui/components/atoms/vc-label/`.
-- The element type (`<label>` vs `<div>`) is determined by a computed `tag` that checks whether `htmlFor` is a non-empty string.
+- The root element type (`<label>` vs `<div>`) is chosen inline via `:is="htmlFor ? 'label' : 'div'"` on the root `<component>` (no `tag` computed exists).
 - The tooltip trigger is rendered by `VcTooltip` (internal molecule); the `tooltipIcon` prop simply passes through to an inner `VcIcon` instance.
-- `multilanguage` + `currentLanguage` render a small pill via an inline `<span>` with `.vc-label__lang` class — not a separate component.
+- `multilanguage` + `currentLanguage` render a small pill via an inline `<div>` with `.vc-label__language` class — not a separate component.
 - VcLabel is the canonical label primitive consumed by `VcInput`, `VcSelect`, `VcTextarea`, `VcCheckbox`, and `VcRadioButton` in `framework/ui/components/molecules/`.
 
 <!-- internal:end -->

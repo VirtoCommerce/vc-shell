@@ -73,20 +73,18 @@ The central engine. Distributes `availableWidth` among visible columns according
 
 ```ts
 interface EngineInput {
-  visibleIds: string[]; // Ordered list of visible column IDs
-  specs: Record<string, ColumnSpec>; // Per-column: weight, minWidth, maxWidth
   availableWidth: number; // Container width in px
-  fitMode: "gap" | "fit"; // "gap" leaves filler space, "fit" fills width
+  columns: { id: string; spec: ColumnSpec }[]; // Ordered visible columns with per-column weight, minPx, maxPx
+  mode: "fit" | "gap"; // "gap" leaves filler space, "fit" fills width
 }
 
 interface EngineOutput {
   widths: Record<string, number>; // Computed px width per column ID
-  totalWidth: number; // Sum of all computed widths
-  overflow: boolean; // true when sum(minWidth) > availableWidth
+  fillerWidth: number; // Leftover space returned to the filler pseudo-element
 }
 ```
 
-In crisis (`overflow: true`), each column receives its `minWidth` regardless of weight, and a console warning is emitted.
+In crisis (when `sum(minPx) > availableWidth`), the engine squeezes columns proportionally below their minimums (`crisisSqueeze`) and emits a `console.warn`.
 
 #### `parseColumnWidth(value: string | number | undefined, availableWidth: number): ParsedWidth`
 
@@ -94,14 +92,14 @@ Parses a `VcColumn` `width` prop into a concrete pixel value.
 
 ```ts
 type ParsedWidth =
-  | { type: "px"; value: number } // "200", 200, "200px"
-  | { type: "pct"; value: number } // "20%" → 0.2 * availableWidth
-  | { type: "auto"; value: undefined }; // undefined, "auto"
+  | { type: "px"; desiredPx: number } // "200", 200, "200px"
+  | { type: "percent"; desiredPx: number } // "20%" → 0.2 * availableWidth
+  | { type: "auto"; desiredPx: null }; // undefined, "auto"
 ```
 
-#### `buildInitialWeights(parsed: ParsedWidth[], availableWidth: number): Record<string, number>`
+#### `buildInitialWeights(parsed: { id: string; parsed: ParsedWidth }[], availableWidth: number): Record<string, number>`
 
-Converts an array of `ParsedWidth` values (one per column) into initial weights. Auto columns receive an equal share of the space not claimed by px/% columns.
+Converts an array of `{ id, parsed }` entries (one per column) into initial weights. Auto columns receive an equal share of the space not claimed by px/% columns.
 
 ```ts
 // Example: three columns — 200px, 20%, auto — with 800px available

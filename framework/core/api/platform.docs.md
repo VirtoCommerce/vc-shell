@@ -31,9 +31,11 @@ All clients extend `AuthApiBase` and accept an optional `baseUrl` and `http` fet
 | Client                      | Description                                              |
 | --------------------------- | -------------------------------------------------------- |
 | `ExternalSignInClient`      | External authentication provider sign-in                 |
+| `AppManifestClient`         | Application manifest descriptor operations               |
 | `AppsClient`                | Application descriptor operations                        |
 | `AuthorizationClient`       | Permission and role checking                             |
 | `ChangeLogClient`           | Platform change log / audit trail                        |
+| `DeveloperToolsClient`      | Developer-tools endpoint                                 |
 | `DiagnosticsClient`         | System diagnostics and health                            |
 | `DynamicPropertiesClient`   | Dynamic property CRUD and dictionary management          |
 | `JobsClient`                | Background job management                                |
@@ -46,20 +48,20 @@ All clients extend `AuthApiBase` and accept an optional `baseUrl` and `http` fet
 
 ## Key DTOs (Interfaces)
 
-| Interface                        | Description                                                                       |
-| -------------------------------- | --------------------------------------------------------------------------------- |
-| `PushNotification`               | Push notification payload: `id`, `title`, `notifyType`, `isNew`, `finished`, etc. |
-| `PushNotificationSearchCriteria` | Search criteria for notification queries                                          |
-| `ApplicationUser`                | Platform user with roles, permissions, logins                                     |
-| `Role`                           | Security role with permissions                                                    |
-| `Permission`                     | Individual permission entry                                                       |
-| `DynamicProperty`                | Dynamic property definition                                                       |
-| `DynamicObjectProperty`          | Property value bound to an object                                                 |
-| `ModuleDescriptor`               | Module metadata (id, version, dependencies)                                       |
-| `ChangeLogSearchCriteria`        | Audit log search parameters                                                       |
-| `ChangeLogSearchResult`          | Paginated audit log results                                                       |
-| `ObjectSettingEntry`             | Setting entry with value and metadata                                             |
-| `License`                        | Platform license information                                                      |
+| Interface                        | Description                                                                      |
+| -------------------------------- | -------------------------------------------------------------------------------- |
+| `PushNotification`               | Push notification payload: `id`, `title`, `notifyType`, `isNew`, `created`, etc. |
+| `PushNotificationSearchCriteria` | Search criteria for notification queries                                         |
+| `ApplicationUser`                | Platform user with roles, permissions, logins                                    |
+| `Role`                           | Security role with permissions                                                   |
+| `Permission`                     | Individual permission entry                                                      |
+| `DynamicProperty`                | Dynamic property definition                                                      |
+| `DynamicObjectProperty`          | Property value bound to an object                                                |
+| `ModuleDescriptor`               | Module metadata (id, version, dependencies)                                      |
+| `ChangeLogSearchCriteria`        | Audit log search parameters                                                      |
+| `ChangeLogSearchResult`          | Paginated audit log results                                                      |
+| `ObjectSettingEntry`             | Setting entry with value and metadata                                            |
+| `License`                        | Platform license information                                                     |
 
 ## Base Class
 
@@ -67,7 +69,7 @@ All clients extend `AuthApiBase` and accept an optional `baseUrl` and `http` fet
 export class AuthApiBase {
   authToken: string;
   setAuthToken(token: string): void;
-  protected getBaseUrl(defaultUrl: string, baseUrl: string): string; // always returns ""
+  getBaseUrl(defaultUrl: string, baseUrl: string): string; // always returns ""
   protected transformOptions(options: RequestInit): Promise<RequestInit>; // sets the Bearer header only if `authToken` is non-empty
 }
 ```
@@ -86,7 +88,7 @@ const criteria: PushNotificationSearchCriteria = { take: 20, skip: 0 };
 const result = await client.searchPushNotification(criteria);
 
 console.log(`Found ${result.totalCount} notifications`);
-for (const notification of result.results ?? []) {
+for (const notification of result.notifyEvents ?? []) {
   console.log(`${notification.title} (${notification.notifyType})`);
 }
 ```
@@ -100,7 +102,7 @@ const securityClient = new SecurityClient();
 const user = await securityClient.getCurrentUser();
 
 console.log(`Logged in as: ${user.userName}`);
-console.log(`Roles: ${user.roles?.map((r) => r.name).join(", ")}`);
+console.log(`Permissions: ${user.permissions?.join(", ")}`);
 console.log(`Is admin: ${user.isAdministrator}`);
 ```
 
@@ -142,7 +144,7 @@ import { SettingClient, ObjectSettingEntry } from "@vc-shell/framework";
 const client = new SettingClient();
 
 // Read a specific setting
-const settings = await client.getValues(["VirtoCommerce.Notifications.SendGrid.ApiKey"]);
+const setting = await client.getGlobalSetting("VirtoCommerce.Notifications.SendGrid.ApiKey");
 
 // Update a setting
 const entry: ObjectSettingEntry = {

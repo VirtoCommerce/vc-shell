@@ -9,7 +9,7 @@ internal: true
 
 Base template for rendering a single push notification with title, relative timestamp, optional icon, and a default slot for extra detail content. This component provides the standard layout that all notification types share, while allowing domain-specific content to be injected through the default slot.
 
-The template displays the notification title, a "time ago" timestamp (e.g., "3 minutes ago"), and optionally a colored icon badge. Custom notification templates extend this base by wrapping it and filling the slot with type-specific content like progress bars, action buttons, or entity links.
+The template displays the notification title and a timestamp — a relative "time ago" string for recent notifications (< 1 day, e.g., "3 minutes ago") or an absolute short date-time for older ones (>= 1 day) — and optionally a colored icon badge. Custom notification templates extend this base by wrapping it and filling the slot with type-specific content like progress bars, action buttons, or entity links.
 
 ## When to Use
 
@@ -38,13 +38,19 @@ const notification = computed(() => notificationRef.value);
 
 ## Key Props
 
-| Prop           | Type                | Default     | Description                                       |
-| -------------- | ------------------- | ----------- | ------------------------------------------------- |
-| `title`        | `string`            | --          | Notification headline text                        |
-| `notification` | `IPushNotification` | --          | Full notification object (required for timestamp) |
-| `icon`         | `string`            | `undefined` | Icon name displayed in a circular badge           |
-| `color`        | `string`            | `undefined` | Background color for the icon badge               |
-| `severity`     | `string`            | `undefined` | Semantic severity level                           |
+| Prop           | Type               | Default     | Description                                                    |
+| -------------- | ------------------ | ----------- | -------------------------------------------------------------- |
+| `title`        | `string`           | --          | Notification headline text                                     |
+| `notification` | `PushNotification` | --          | Full notification object (required for timestamp)              |
+| `icon`         | `string`           | `undefined` | Icon name displayed in a circular badge                        |
+| `color`        | `string`           | `undefined` | Background color for the icon badge                            |
+| `severity`     | `string`           | `undefined` | Accepted but currently unused by the base template (reserved). |
+
+## Events
+
+| Event   | Payload | Description                          |
+| ------- | ------- | ------------------------------------ |
+| `click` | --      | Emitted when the root row is clicked |
 
 ## Recipe: Custom Notification for Order Events
 
@@ -160,16 +166,16 @@ const isRunning = computed(() => (notification.value as any).isRunning ?? false)
 
 ## Details
 
-- **Relative timestamps**: The template displays the time elapsed since the notification was created using a "time ago" format (e.g., "2 minutes ago", "1 hour ago"). This updates reactively.
+- **Timestamps**: For recent notifications (less than a day old) the template shows a relative "time ago" string via `Intl.RelativeTimeFormat` (e.g., "2 minutes ago", "1 hour ago"); for older notifications (>= 1 day) it falls back to an absolute short date-time via `Intl.DateTimeFormat` (`dateStyle: "short"`, `timeStyle: "short"`). It is computed once per render from the notification's created time and does not tick on a clock; it recomputes only when the notification data changes.
 - **Icon badge**: When the `icon` prop is provided, it renders in a small circular badge with the specified `color` background. This helps users quickly identify notification types visually.
 - **Default slot**: The slot content appears below the title and timestamp, providing space for description text, progress indicators, action links, or any custom content.
-- **Unread indicator**: New (unread) notifications have a subtle visual indicator (e.g., a dot or bold title) to distinguish them from read notifications.
+- **Read state**: The base template renders no unread/read indicator — it has no `isNew`/read prop. Read-state styling, if any, is handled by the notification dropdown, not this template.
 
 ## Tips
 
 - Use `useNotificationContext()` to access notification data. No props needed — the renderer provides the notification automatically.
 - Use CSS custom property values for the `color` prop (e.g., `var(--success-500)`) to stay consistent with the active theme.
-- The `severity` prop can be used to apply predefined color schemes without specifying a custom `color`.
+- The `severity` prop is accepted but not yet consumed by the base template — it applies no color scheme. Use the `color` prop for the icon badge color.
 - When creating custom templates, keep the slot content concise. The notification dropdown shows many items in a scrollable list, and overly tall notifications push others out of view.
 
 ## Related Components

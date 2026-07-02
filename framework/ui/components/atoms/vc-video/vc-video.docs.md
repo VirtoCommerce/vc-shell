@@ -42,6 +42,12 @@ import { VcVideo } from "@vc-shell/framework";
 
 ::storybook id="data-display-vcvideo--with-tooltip" height="400"
 
+## Events
+
+| Event   | Payload | Description                                                  |
+| ------- | ------- | ------------------------------------------------------------ |
+| `click` | --      | Declared public emit. Currently the template never fires it. |
+
 ## Common Patterns
 
 ### Video with Label and Tooltip
@@ -111,6 +117,7 @@ When `source` is not provided, VcVideo renders a centered film icon placeholder 
 - Always use the **embed** URL format, not the standard watch URL. For YouTube, use `https://www.youtube.com/embed/VIDEO_ID` instead of `https://www.youtube.com/watch?v=VIDEO_ID`.
 - The iframe has `loading="lazy"`, so videos below the fold are not loaded until the user scrolls to them. This keeps initial page load fast.
 - The `sandbox` attribute restricts iframe capabilities to `allow-scripts allow-same-origin allow-presentation allow-popups` for security. If your video host requires additional permissions, you may need a custom wrapper.
+- The iframe sets a fixed `allow` permissions policy (`accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture`) plus `allowfullscreen`, so embedded players can autoplay, go fullscreen, and use picture-in-picture. These are not configurable per-instance.
 - The iframe renders at a fixed height of 300px. To customize the height, override the iframe styles via a scoped CSS rule targeting `.vc-video__container iframe`.
 - The placeholder has a height of 200px so the layout does not collapse when no source is provided.
 

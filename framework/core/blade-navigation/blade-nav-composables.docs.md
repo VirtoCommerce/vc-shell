@@ -2,6 +2,7 @@
 title: Blade Navigation Composables
 category: composables
 group: blade-navigation
+internal: true
 ---
 
 # Blade Navigation Composables
@@ -27,10 +28,15 @@ Blade navigation manages an ordered stack of blade descriptors (plain data objec
 ## Exports
 
 ```typescript
-export { useBladeNavigation } from "./useBladeNavigationAdapter";
-export { createBladeStack, useBladeStack } from "./useBladeStack";
-export { createBladeMessaging, useBladeMessaging } from "./useBladeMessaging";
+export { useBladeStack } from "@core/blade-navigation/useBladeStack";
+export { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
+export * from "@core/blade-navigation/types";
+export { __registerBladeConfig, getBladeConfig, getAllBladeConfigs } from "@core/blade-navigation/bladeConfigRegistry";
+export { useTableQueryState } from "@core/blade-navigation/table-query-state";
+export type { UseTableQueryStateReturn, TableQueryPatch } from "@core/blade-navigation/table-query-state";
 ```
+
+The `createBladeStack` / `createBladeMessaging` factories are internal (not re-exported); they are consumed directly by the framework rendering layer. `useBladeNavigation` is the adapter API documented below, which lives under `core/composables/useBladeNavigationAdapter/`, not in this package.
 
 <!-- internal:end -->
 
@@ -44,27 +50,28 @@ Creates a new stack instance. Called once by the navigation plugin.
 
 ### API
 
-| Method                                | Description                                                                                                                                |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `openWorkspace(event)`                | Sets the root blade (index 0). Closes all existing blades unconditionally.                                                                 |
-| `openBlade(event)`                    | Opens a child blade after a parent. Closes any blades deeper than the parent (with guard checks).                                          |
-| `closeBlade(bladeId)`                 | Closes a blade and all its children. Returns `true` if a guard prevented closing.                                                          |
-| `closeChildren(parentId)`             | Closes all blades after the given parent.                                                                                                  |
-| `replaceCurrentBlade(event)`          | Destroys the current active blade and creates a new one at the same stack index with the same `parentId`.                                  |
-| `coverCurrentBlade(event)`            | Hides the current active blade (keeps it in the stack) and opens a new blade on top. Closing the covering blade restores the hidden blade. |
-| `registerBeforeClose(bladeId, guard)` | Registers a guard function. Return `true` from the guard to PREVENT closing.                                                               |
-| `unregisterBeforeClose(bladeId)`      | Removes a close guard.                                                                                                                     |
-| `setBladeError(bladeId, error)`       | Sets an error on a blade descriptor (displayed as error banner).                                                                           |
-| `clearBladeError(bladeId)`            | Clears a blade's error.                                                                                                                    |
-| `setBladeTitle(bladeId, title)`       | Updates the blade's title in the descriptor.                                                                                               |
+| Method                                | Description                                                                                                                                        |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `openWorkspace(event)`                | Sets the root blade (index 0). Closes all existing blades unconditionally.                                                                         |
+| `openBlade(event)`                    | Opens a child blade after a parent. Closes any blades deeper than the parent (with guard checks).                                                  |
+| `closeBlade(bladeId)`                 | Closes a blade and all its children. Returns `true` if a guard prevented closing.                                                                  |
+| `closeChildren(parentId)`             | Closes all blades after the given parent.                                                                                                          |
+| `replaceCurrentBlade(event)`          | Destroys the current active blade and creates a new one at the same stack index with the same `parentId`.                                          |
+| `coverCurrentBlade(event)`            | Hides the current active blade (keeps it in the stack) and opens a new blade on top. Closing the covering blade restores the hidden blade.         |
+| `registerBeforeClose(bladeId, guard)` | Registers a guard function. Return `true` from the guard to PREVENT closing.                                                                       |
+| `unregisterBeforeClose(bladeId)`      | Removes a close guard.                                                                                                                             |
+| `setBladeError(bladeId, error)`       | Sets an error on a blade descriptor (displayed as error banner).                                                                                   |
+| `clearBladeError(bladeId)`            | Clears a blade's error.                                                                                                                            |
+| `setBladeTitle(bladeId, title)`       | Updates the blade's title in the descriptor.                                                                                                       |
+| `updateBladeQuery(bladeId, patch)`    | Merges `patch` into the blade descriptor's `query`; keys with empty-string or nullish values are removed. Backs table URL-query-state persistence. |
 
 ### Computed
 
-| Property      | Type                         | Description              |
-| ------------- | ---------------------------- | ------------------------ |
-| `workspace`   | `BladeDescriptor`            | The root blade (index 0) |
-| `blades`      | `readonly BladeDescriptor[]` | Full ordered stack       |
-| `activeBlade` | `BladeDescriptor`            | The last visible blade   |
+| Property      | Type                                        | Description              |
+| ------------- | ------------------------------------------- | ------------------------ |
+| `workspace`   | `ComputedRef<BladeDescriptor \| undefined>` | The root blade (index 0) |
+| `blades`      | `ComputedRef<readonly BladeDescriptor[]>`   | Full ordered stack       |
+| `activeBlade` | `ComputedRef<BladeDescriptor \| undefined>` | The last visible blade   |
 
 ### Composable: `useBladeStack()`
 
@@ -134,18 +141,20 @@ openBlade({
 
 The plain data object stored in the stack for each blade:
 
-| Field      | Type       | Description                                                                |
-| ---------- | ---------- | -------------------------------------------------------------------------- |
-| `id`       | `string`   | Unique instance ID (auto-generated)                                        |
-| `name`     | `string`   | Blade registration name                                                    |
-| `url`      | `string?`  | URL segment for address bar sync                                           |
-| `param`    | `unknown`  | Parameter passed when opening (e.g., entity ID)                            |
-| `query`    | `Record?`  | Query parameters                                                           |
-| `options`  | `unknown`  | Arbitrary options passed to the blade                                      |
-| `parentId` | `string?`  | ID of the parent blade                                                     |
-| `visible`  | `boolean`  | Whether the blade is rendered (false when covered via `coverCurrentBlade`) |
-| `error`    | `unknown?` | Error state for the error banner                                           |
-| `title`    | `string?`  | Dynamic title override                                                     |
+| Field         | Type                       | Description                                                                |
+| ------------- | -------------------------- | -------------------------------------------------------------------------- |
+| `id`          | `string`                   | Unique instance ID (auto-generated)                                        |
+| `name`        | `string`                   | Blade registration name                                                    |
+| `url`         | `string?`                  | URL segment for address bar sync                                           |
+| `param`       | `string?`                  | Parameter passed when opening (e.g., entity ID)                            |
+| `query`       | `Record<string, string>?`  | Query parameters                                                           |
+| `options`     | `Record<string, unknown>?` | Arbitrary options passed to the blade                                      |
+| `parentId`    | `string?`                  | ID of the parent blade                                                     |
+| `visible`     | `boolean`                  | Whether the blade is rendered (false when covered via `coverCurrentBlade`) |
+| `error`       | `unknown?`                 | Error state for the error banner                                           |
+| `title`       | `string?`                  | Dynamic title override                                                     |
+| `maximized`   | `boolean?`                 | Whether this blade is maximized (fullscreen) — set by VcBladeSlot          |
+| `breadcrumbs` | `Breadcrumbs[]?`           | Navigation breadcrumbs — set by VcBladeSlot                                |
 
 ## Tips
 
@@ -163,6 +172,6 @@ The plain data object stored in the stack for each blade:
 <!-- internal:start -->
 
 - `framework/core/composables/useBlade/` -- `useBlade()`, `useBladeContext()` (new API)
-- `framework/shell/_internal/blade-nav/plugin-v2.ts` -- plugin that creates and provides the stack/messaging
+- `framework/shell/_internal/blade-navigation/plugin-v2.ts` -- plugin that creates and provides the stack/messaging
 - `framework/core/blade-navigation/types/index.ts` -- `BladeDescriptor`, `IBladeStack`, `IBladeMessaging`
 <!-- internal:end -->

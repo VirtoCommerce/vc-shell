@@ -20,7 +20,7 @@ decided by the caller (see `useEnvironmentName`).
 ## Props
 
 - `name: string` — environment label to render
-- `color?: 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'danger' | 'neutral'` — badge color (vc-shell theme tokens), default `neutral`
+- `color?: string` — badge color (vc-shell theme tokens); recognized values are `primary | secondary | info | success | warning | danger | neutral`, any other value falls back to neutral via CSS, default `neutral`
 
 ## Quick Start
 

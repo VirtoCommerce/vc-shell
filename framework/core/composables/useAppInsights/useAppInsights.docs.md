@@ -50,9 +50,10 @@ export default router;
 
 ### Injection Key
 
-| Key                     | Type                                     | Description                                                                                            |
-| ----------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `AppInsightsOptionsKey` | `InjectionKey<AppInsightsPluginOptions>` | Optional. Provide this at app level with `{ appName: 'Operations Console' }` to prefix all page names. |
+| Key                      | Type                                        | Description                                                                                            |
+| ------------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `AppInsightsOptionsKey`  | `InjectionKey<AppInsightsPluginOptions>`    | Optional. Provide this at app level with `{ appName: 'Operations Console' }` to prefix all page names. |
+| `AppInsightsInstanceKey` | `InjectionKey<ApplicationInsights \| null>` | Carries the Application Insights instance that `useAppInsights` injects (returned as `appInsights`).   |
 
 ## How It Works
 
@@ -72,7 +73,8 @@ import { useAppInsights } from "@vc-shell/framework";
 const { appInsights } = useAppInsights();
 
 function trackOrderPlaced(orderId: string, total: number) {
-  appInsights.trackEvent({
+  // appInsights is null when the AI plugin is not installed
+  appInsights?.trackEvent({
     name: "OrderPlaced",
     properties: { orderId },
     measurements: { orderTotal: total },
@@ -80,7 +82,7 @@ function trackOrderPlaced(orderId: string, total: number) {
 }
 
 function trackSearchPerformed(query: string, resultCount: number) {
-  appInsights.trackEvent({
+  appInsights?.trackEvent({
     name: "SearchPerformed",
     properties: { query },
     measurements: { resultCount },

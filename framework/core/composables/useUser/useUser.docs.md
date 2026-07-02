@@ -60,7 +60,7 @@ None.
 
 | Property          | Type                                   | Description                                                                                                                                                                                      |
 | ----------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `user`            | `ComputedRef<UserDetail \| undefined>` | Current user details (userName, email, id, etc.), or `undefined` if not authenticated.                                                                                                           |
+| `user`            | `ComputedRef<UserDetail \| undefined>` | Current user details (userName, id, permissions, isAdministrator, etc.), or `undefined` if not authenticated.                                                                                    |
 | `loading`         | `ComputedRef<boolean>`                 | Whether a user operation (loadUser, signOut) is in progress.                                                                                                                                     |
 | `isAuthenticated` | `ComputedRef<boolean>`                 | Whether a user session is active. Derived from `user.userName != null`.                                                                                                                          |
 | `isAdministrator` | `ComputedRef<boolean \| undefined>`    | Whether the current user has admin privileges. `undefined` if user is not loaded.                                                                                                                |
@@ -118,7 +118,7 @@ router.beforeEach(async (to) => {
     />
     <div>
       <p class="tw-text-sm tw-font-medium">{{ user?.userName }}</p>
-      <p class="tw-text-xs tw-text-gray-500">{{ user?.email }}</p>
+      <p class="tw-text-xs tw-text-gray-500">{{ user?.id }}</p>
     </div>
     <VcButton
       size="sm"

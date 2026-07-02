@@ -43,9 +43,9 @@ async function deleteSelected() {
 
 ### Parameters (Options)
 
-| Option    | Type                             | Default | Description                           |
-| --------- | -------------------------------- | ------- | ------------------------------------- |
-| `idField` | `keyof T \| (item: T) => string` | `"id"`  | Field or function to extract item IDs |
+| Option    | Type                                            | Default | Description                           |
+| --------- | ----------------------------------------------- | ------- | ------------------------------------- |
+| `idField` | `keyof T \| ((item: T) => string \| undefined)` | `"id"`  | Field or function to extract item IDs |
 
 ### Returns
 
@@ -159,5 +159,5 @@ const selection2 = useTableSelection<CompositeItem>({
 
 ## Related
 
-- `VcDataTable` -- emits `selection-changed` and `select:all` events
+- `VcTableAdapter` (exported as `VcTable`) -- emits `selection-changed` and `select:all` events
 - `useTableSort` -- often used alongside selection for list blade patterns

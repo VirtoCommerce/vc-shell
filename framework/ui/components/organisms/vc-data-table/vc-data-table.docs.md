@@ -19,7 +19,7 @@ Columns are defined as `<VcColumn>` child components -- no configuration objects
 
 **Key facts:**
 
-- 82 Storybook stories covering every feature permutation
+- 90 Storybook stories covering every feature permutation
 - Automatic mobile card view on small screens
 - State persistence (column widths, order, sort, filters) to localStorage/sessionStorage
 - Full TypeScript generics -- `VcDataTable<Product>` propagates types to events and slots
@@ -266,10 +266,10 @@ Clicking a sortable column header cycles: unsorted -> ascending -> descending.
 
 ### Removable Sort
 
-Allow users to remove sorting entirely (3-state cycle: asc -> desc -> none):
+Enabled by default: the sort cycle is 3-state (asc -> desc -> none), so users can remove sorting entirely. Set `:removable-sort="false"` to force the 2-state cycle (asc -> desc):
 
 ```vue
-<VcDataTable :items="products" :removable-sort="true">
+<VcDataTable :items="products" :removable-sort="false">
   <VcColumn id="name" field="name" title="Name" sortable />
 </VcDataTable>
 ```
@@ -1377,38 +1377,39 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ### Props
 
-| Prop                | Type                                        | Default         | Description                                                                                                                                                  |
-| ------------------- | ------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                | `string`                                    | **required**    | Unique column identifier. Must be unique within the table.                                                                                                   |
-| `field`             | `string`                                    | same as `id`    | Data field path to read from each row item.                                                                                                                  |
-| `title`             | `string`                                    | --              | Header text displayed in the column header.                                                                                                                  |
-| `type`              | `CellType`                                  | `"text"`        | Cell formatter: `"text"`, `"number"`, `"money"`, `"date"`, `"datetime"`, `"date-ago"`, `"time"`, `"image"`, `"link"`, `"html"`, `"status"`, `"status-icon"`. |
-| `currencyField`     | `string`                                    | `"currency"`    | Field to read currency code from (for `type="money"`).                                                                                                       |
-| `format`            | `string`                                    | --              | Date/number format string (e.g. `"DD.MM.YYYY"`).                                                                                                             |
-| `width`             | `string \| number`                          | --              | Column width in px or CSS value (e.g. `200`, `"150px"`).                                                                                                     |
-| `minWidth`          | `string \| number`                          | `60`            | Minimum column width during resize.                                                                                                                          |
-| `maxWidth`          | `string \| number`                          | --              | Maximum column width during resize.                                                                                                                          |
-| `align`             | `"start" \| "center" \| "end"`              | --              | Cell text alignment.                                                                                                                                         |
-| `headerAlign`       | `"start" \| "center" \| "end"`              | same as `align` | Header text alignment.                                                                                                                                       |
-| `sortable`          | `boolean`                                   | `false`         | Enable sorting on this column.                                                                                                                               |
-| `sortField`         | `string`                                    | same as `id`    | Backend field name used in sort events.                                                                                                                      |
-| `filter`            | `ColumnFilterConfig`                        | --              | Filter config: `true` (text), `"field"` (text with custom field), `{ options }` (select), `{ range }` (date range).                                          |
-| `filterField`       | `string`                                    | same as `id`    | Backend field name used in filter events.                                                                                                                    |
-| `filterPlaceholder` | `string`                                    | --              | Placeholder text for the filter input.                                                                                                                       |
-| `visible`           | `boolean`                                   | `true`          | Initial visibility. Hidden columns can be toggled via column switcher.                                                                                       |
-| `alwaysVisible`     | `boolean`                                   | `false`         | Keep visible when `showAllColumns=false` (blade narrows).                                                                                                    |
-| `editable`          | `boolean`                                   | `false`         | Enable inline editing for this column's cells.                                                                                                               |
-| `rules`             | `Record<string, unknown>`                   | --              | Validation rules for the editable cell.                                                                                                                      |
-| `class`             | `string`                                    | --              | CSS class applied to header and body cells.                                                                                                                  |
-| `headerClass`       | `string`                                    | --              | CSS class applied only to the header cell.                                                                                                                   |
-| `bodyClass`         | `string`                                    | --              | CSS class applied only to body cells.                                                                                                                        |
-| `lineClamp`         | `number`                                    | `2`             | Max lines to display before truncating. `0` = no clamp.                                                                                                      |
-| `selectionMode`     | `"single" \| "multiple"`                    | --              | Renders a selection checkbox/radio column.                                                                                                                   |
-| `rowEditor`         | `boolean`                                   | `false`         | Renders save/cancel buttons for row edit mode.                                                                                                               |
-| `rowReorder`        | `boolean`                                   | `false`         | Renders a drag handle for row reordering.                                                                                                                    |
-| `expander`          | `boolean`                                   | `false`         | Renders an expand/collapse toggle.                                                                                                                           |
-| `mobileRole`        | `"title" \| "image" \| "field" \| "status"` | --              | Role in mobile card layout.                                                                                                                                  |
-| `mobileVisible`     | `boolean`                                   | `false`         | Whether column is visible on mobile (hidden unless `mobileRole` set).                                                                                        |
+| Prop                | Type                                                           | Default         | Description                                                                                                                                                  |
+| ------------------- | -------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                | `string`                                                       | **required**    | Unique column identifier. Must be unique within the table.                                                                                                   |
+| `field`             | `string`                                                       | same as `id`    | Data field path to read from each row item.                                                                                                                  |
+| `title`             | `string`                                                       | --              | Header text displayed in the column header.                                                                                                                  |
+| `type`              | `CellType`                                                     | `"text"`        | Cell formatter: `"text"`, `"number"`, `"money"`, `"date"`, `"datetime"`, `"date-ago"`, `"time"`, `"image"`, `"link"`, `"html"`, `"status"`, `"status-icon"`. |
+| `currencyField`     | `string`                                                       | `"currency"`    | Field to read currency code from (for `type="money"`).                                                                                                       |
+| `format`            | `string`                                                       | --              | Date/number format string (e.g. `"DD.MM.YYYY"`).                                                                                                             |
+| `width`             | `string \| number`                                             | --              | Column width in px or CSS value (e.g. `200`, `"150px"`).                                                                                                     |
+| `minWidth`          | `string \| number`                                             | --              | Minimum column width during resize. When unset, the engine applies a 40px minimum.                                                                           |
+| `maxWidth`          | `string \| number`                                             | --              | Maximum column width during resize.                                                                                                                          |
+| `align`             | `"start" \| "center" \| "end"`                                 | --              | Cell text alignment.                                                                                                                                         |
+| `headerAlign`       | `"start" \| "center" \| "end"`                                 | same as `align` | Header text alignment.                                                                                                                                       |
+| `sortable`          | `boolean`                                                      | `false`         | Enable sorting on this column.                                                                                                                               |
+| `sortField`         | `string`                                                       | same as `id`    | Backend field name used in sort events.                                                                                                                      |
+| `filter`            | `ColumnFilterConfig`                                           | --              | Filter config: `true` (text), `"field"` (text with custom field), `{ options }` (select), `{ range }` (date range).                                          |
+| `filterField`       | `string`                                                       | same as `id`    | Backend field name used in filter events.                                                                                                                    |
+| `filterPlaceholder` | `string`                                                       | --              | Placeholder text for the filter input.                                                                                                                       |
+| `visible`           | `boolean`                                                      | `true`          | Initial visibility. Hidden columns can be toggled via column switcher.                                                                                       |
+| `alwaysVisible`     | `boolean`                                                      | `false`         | Keep visible when `showAllColumns=false` (blade narrows).                                                                                                    |
+| `editable`          | `boolean`                                                      | `false`         | Enable inline editing for this column's cells.                                                                                                               |
+| `rules`             | `Record<string, unknown>`                                      | --              | Validation rules for the editable cell.                                                                                                                      |
+| `class`             | `string`                                                       | --              | CSS class applied to header and body cells.                                                                                                                  |
+| `headerClass`       | `string`                                                       | --              | CSS class applied only to the header cell.                                                                                                                   |
+| `bodyClass`         | `string`                                                       | --              | CSS class applied only to body cells.                                                                                                                        |
+| `lineClamp`         | `number`                                                       | `2`             | Max lines to display before truncating. `0` = no clamp.                                                                                                      |
+| `selectionMode`     | `"single" \| "multiple"`                                       | --              | Renders a selection checkbox/radio column.                                                                                                                   |
+| `rowEditor`         | `boolean`                                                      | `false`         | Renders save/cancel buttons for row edit mode.                                                                                                               |
+| `rowReorder`        | `boolean`                                                      | `false`         | Renders a drag handle for row reordering.                                                                                                                    |
+| `expander`          | `boolean`                                                      | `false`         | Renders an expand/collapse toggle.                                                                                                                           |
+| `mobileRole`        | `"title" \| "image" \| "field" \| "status"`                    | --              | Role in mobile card layout.                                                                                                                                  |
+| `mobilePosition`    | `"top-left" \| "top-right" \| "bottom-left" \| "bottom-right"` | --              | Explicit grid position for the mobile card layout.                                                                                                           |
+| `mobileVisible`     | `boolean`                                                      | `true`          | Whether column is visible on mobile.                                                                                                                         |
 
 ### Slots
 
@@ -1446,13 +1447,13 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ### Sorting
 
-| Prop            | Type                     | Default    | Description                                            |
-| --------------- | ------------------------ | ---------- | ------------------------------------------------------ |
-| `sortField`     | `string`                 | --         | Currently sorted field. Use with `v-model:sortField`.  |
-| `sortOrder`     | `1 \| -1 \| 0`           | `0`        | Sort direction. Use with `v-model:sortOrder`.          |
-| `sortMode`      | `"single" \| "multiple"` | `"single"` | Single or multi-column sort.                           |
-| `multiSortMeta` | `SortMeta[]`             | `[]`       | Multi-sort metadata. Use with `v-model:multiSortMeta`. |
-| `removableSort` | `boolean`                | `false`    | Allow 3-state sort cycle (asc -> desc -> none).        |
+| Prop            | Type                     | Default    | Description                                                                |
+| --------------- | ------------------------ | ---------- | -------------------------------------------------------------------------- |
+| `sortField`     | `string`                 | --         | Currently sorted field. Use with `v-model:sortField`.                      |
+| `sortOrder`     | `1 \| -1 \| 0`           | `0`        | Sort direction. Use with `v-model:sortOrder`.                              |
+| `sortMode`      | `"single" \| "multiple"` | `"single"` | Single or multi-column sort.                                               |
+| `multiSortMeta` | `SortMeta[]`             | `[]`       | Multi-sort metadata. Use with `v-model:multiSortMeta`.                     |
+| `removableSort` | `boolean`                | `true`     | 3-state sort cycle (asc -> desc -> none). Set `false` for a 2-state cycle. |
 
 ### Editing
 

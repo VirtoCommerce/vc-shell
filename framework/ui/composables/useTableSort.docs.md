@@ -139,7 +139,7 @@ watch(sortExpression, () => loadItems(), { immediate: true });
 - **Sort expression format**: The `sortExpression` computed returns `"property:DIRECTION"` when active, or `undefined` when no sort is applied. This format is directly compatible with VirtoCommerce Platform search endpoints.
 - **Writable computed**: `currentSort` is a `WritableComputedRef`, so you can set it programmatically: `currentSort.value = { property: "name", direction: "ASC" }`.
 - **Reset behavior**: `resetSort()` returns to the initial options passed to the composable. If no initial options were provided, it clears the sort entirely.
-- **handleSortChange format**: Accepts either `"fieldName"` (triggers cycling) or `"fieldName:DIR"` (sets explicit direction). VcDataTable's `@header-click` event emits in the latter format when the adapter encodes direction.
+- **handleSortChange format**: Accepts either `"fieldName"` (triggers cycling) or `"fieldName:DIR"` (sets explicit direction). `VcTableAdapter`'s `@header-click` event emits in the latter format when the adapter encodes direction.
 
 ## Tips
 
@@ -149,6 +149,5 @@ watch(sortExpression, () => loadItems(), { immediate: true });
 
 ## Related
 
-- `VcDataTable` -- emits header-click events consumed by `handleSortChange`
-- `VcTableAdapter` -- adapts legacy sort prop format
+- `VcTableAdapter` (exported as `VcTable`) -- emits header-click events consumed by `handleSortChange`; adapts legacy sort prop format
 - `useTableSelection` -- often used alongside sort for list blade patterns

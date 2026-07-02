@@ -29,7 +29,7 @@ A responsive multi-image gallery with drag-and-drop reorder, file upload, lightb
 | `multiple`      | `boolean`                                                 | `false`                                       | Allow selecting multiple files in upload dialog.                                                                                                                                            |
 | `loading`       | `boolean`                                                 | `false`                                       | Shows a loading overlay with spinner on the gallery.                                                                                                                                        |
 | `itemActions`   | `{ preview?: boolean; edit?: boolean; remove?: boolean }` | `{ preview: true, edit: true, remove: true }` | Per-tile action visibility.                                                                                                                                                                 |
-| `rules`         | `IValidationRules`                                        | `undefined`                                   | Validation rules for uploaded files.                                                                                                                                                        |
+| `rules`         | `keyof IValidationRules \| IValidationRules`              | `undefined`                                   | Validation rules for uploaded files.                                                                                                                                                        |
 | `name`          | `string`                                                  | `"Gallery"`                                   | Field name for validation messages.                                                                                                                                                         |
 | `accept`        | `string`                                                  | `"image/*"`                                   | Accepted file MIME types / extensions. Gallery is image-only by default — non-image files dropped from the OS are filtered out. Override (e.g. `"image/png,image/jpeg"`) to narrow further. |
 | `size`          | `"sm" \| "md" \| "lg"`                                    | `"md"`                                        | Tile size preset. Sizes are smaller on mobile.                                                                                                                                              |
@@ -190,6 +190,6 @@ function handleRemove(image: ICommonAsset) {
 ## Related Components
 
 - **VcImageUpload** -- single-image upload component
-- **VcImageTile** -- the internal tile component used for each image (topbar with name + drag handle, bottom tray with actions)
+- **VcGalleryItem** -- the internal tile component (`_internal/vc-gallery-item`) rendered for each image (topbar with name + drag handle, bottom tray with actions)
 - **VcFileUpload** -- the file upload drop zone used in empty gallery state
 - **VcLabel** -- used internally when `label` prop is set

@@ -28,7 +28,7 @@ The framework installs this plugin automatically during app setup. Module develo
 ```typescript
 // Automatic -- installed by the framework during app setup.
 // The plugin source is straightforward:
-import { usePermissions } from "@core/composables/usePermissions";
+import { usePermissions } from "@vc-shell/framework";
 import { App } from "vue";
 
 export const permissions = {

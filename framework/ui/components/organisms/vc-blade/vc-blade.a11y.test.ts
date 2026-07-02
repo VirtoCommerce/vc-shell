@@ -56,7 +56,10 @@ const i18n = createI18n({ legacy: false, locale: "en", fallbackWarn: false, miss
  * VcBlade requires blade injection context. We wrap it in a parent component
  * that provides all required injection keys via provide/inject.
  */
-function createBladeWrapper(bladeProps: Record<string, unknown> = {}) {
+function createBladeWrapper(
+  bladeProps: Record<string, unknown> = {},
+  descriptorOverrides: Partial<BladeDescriptor> = {},
+) {
   return defineComponent({
     setup() {
       provide(BladeBackButtonKey, null as any);
@@ -78,10 +81,13 @@ function createBladeWrapper(bladeProps: Record<string, unknown> = {}) {
       } as any);
       provide(
         BladeDescriptorKey,
+        // closable is derived from `parentId` (a child blade is closable), so drive it
+        // via the descriptor — VcBlade ignores the deprecated `closable` prop in-context.
         computed<BladeDescriptor>(() => ({
           id: "test-blade",
           name: "TestBlade",
           visible: true,
+          ...descriptorOverrides,
         })),
       );
 
@@ -97,8 +103,8 @@ describe("VcBlade a11y", () => {
     wrapper?.unmount();
   });
 
-  const mountBlade = (bladeProps: Record<string, unknown> = {}) => {
-    const Wrapper = createBladeWrapper(bladeProps);
+  const mountBlade = (bladeProps: Record<string, unknown> = {}, descriptorOverrides: Partial<BladeDescriptor> = {}) => {
+    const Wrapper = createBladeWrapper(bladeProps, descriptorOverrides);
     wrapper = mount(Wrapper, {
       global: {
         plugins: [i18n],
@@ -107,9 +113,11 @@ describe("VcBlade a11y", () => {
           BladeHeader: {
             // Use <div> (not <header>) to avoid axe landmark-banner-is-top-level violation
             // when nested inside role="region". Still supports :title-id for aria-labelledby tests.
-            props: ["title", "titleId"],
+            // Renders the close button only when `closable` — mirrors the real header so the
+            // closable/non-closable a11y cases produce genuinely different DOM.
+            props: ["title", "titleId", "closable"],
             template:
-              '<div role="heading" aria-level="2"><h2 :id="titleId">{{ title }}</h2><slot /><slot name="prepend" /><slot name="actions" /></div>',
+              '<div role="heading" aria-level="2"><h2 :id="titleId">{{ title }}</h2><button v-if="closable" aria-label="Close" @click="$emit(\'close\')"></button><slot /><slot name="prepend" /><slot name="actions" /></div>',
           },
           BladeToolbar: true,
           BladeContentSkeleton: true,
@@ -131,14 +139,18 @@ describe("VcBlade a11y", () => {
     return wrapper;
   };
 
-  it("has no a11y violations in default state", async () => {
-    const w = mountBlade({ title: "Test Blade", closable: true });
+  it("has no a11y violations for a closable blade (has a parent)", async () => {
+    const w = mountBlade({ title: "Test Blade" }, { parentId: "parent-blade" });
+    // Closable → the header renders an accessible close button.
+    expect(w.find('[aria-label="Close"]').exists()).toBe(true);
     const results = await axe.run(w.element as HTMLElement);
     expect(results).toHaveNoViolations();
   });
 
-  it("has no a11y violations without closable", async () => {
-    const w = mountBlade({ title: "Read-only Blade", closable: false });
+  it("has no a11y violations for a non-closable workspace root (no parent)", async () => {
+    const w = mountBlade({ title: "Read-only Blade" });
+    // No parent → not closable → no close button.
+    expect(w.find('[aria-label="Close"]').exists()).toBe(false);
     const results = await axe.run(w.element as HTMLElement);
     expect(results).toHaveNoViolations();
   });

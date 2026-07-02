@@ -13,7 +13,7 @@ This is the standard mechanism for scoping a multi-tenant app — show a seller 
 ## When to use
 
 - Multi-tenant apps where the same broadcast topic carries events for different tenants (sellers, organizations, departments) and each user should only see their slice.
-- Apps that want to drop noisy `IndexProgressPushNotification` or similar maintenance events for non-admin roles.
+- Apps that want to drop noisy maintenance broadcasts for non-admin roles. (Note: `IndexProgressPushNotification` is already globally dropped via `EXCLUDED_NOTIFICATION_TYPES` and needs no filter.)
 - When NOT to use: filtering targeted notifications. The platform already delivers `Send` messages only to the addressed user; `useBroadcastFilter` does not see them.
 
 ## Quick Start
@@ -92,7 +92,7 @@ If the app supports user switching without a full reload (impersonation, multi-a
 ### Drop a noisy type entirely
 
 ```ts
-setBroadcastFilter((msg) => msg.notifyType !== "IndexProgressPushNotification");
+setBroadcastFilter((msg) => msg.notifyType !== "BulkActionPushNotification");
 ```
 
 Broadcast-only suppression. To suppress targeted messages too, set `toast: false` or `toast: { mode: "silent" }` on the type's `defineAppModule({ notifications })` config — that controls the toast surface; the history still records the event.
@@ -107,7 +107,7 @@ Broadcast-only suppression. To suppress targeted messages too, set `toast: false
 ## Tips
 
 - **Install once, early.** Setting the filter in `App.vue` `onMounted` (after authentication) is the canonical placement, so messages arriving before the first blade mounts are already scoped.
-- **Filter exceptions go straight to the console.** If your predicate throws, the message is dropped. Wrap the logic if you are reading off potentially missing fields.
+- **A throwing predicate is not caught.** `ingest` calls the filter without a try/catch, so an exception propagates up through ingestion — it is not logged and the message is not silently dropped. Guard field access inside the predicate (e.g. optional chaining) when reading potentially missing fields.
 - **Do not query the store from inside the filter.** The store is `useBroadcastFilter`'s parent — calling back into it during ingestion causes re-entrancy.
 
 ## Related

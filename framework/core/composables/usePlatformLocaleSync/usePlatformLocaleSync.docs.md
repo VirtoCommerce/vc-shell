@@ -2,6 +2,7 @@
 title: usePlatformLocaleSync
 category: composables
 group: user
+internal: true
 ---
 
 # usePlatformLocaleSync

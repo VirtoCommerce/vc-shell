@@ -67,20 +67,17 @@ import { DashboardWidgetCard } from "@vc-shell/framework";
 ```vue
 <DashboardWidgetCard header="Orders" icon="lucide-shopping-cart">
   <template #stats>
-    <DashboardStatItem :value="48" label="Total" />
-    <DashboardStatItem :value="12" label="Today" variant="info" />
+    <DashboardStatItem :value="48" label="Total" variant="success" />
+    <DashboardStatItem :value="12" label="Today" />
     <DashboardStatItem :value="3" label="Pending" variant="warning" />
-    <DashboardStatItem :value="1" label="Failed" variant="error" />
+    <DashboardStatItem :value="1" label="Failed" variant="danger" />
   </template>
   <template #content>
     <DashboardFeedList>
-      <DashboardFeedRow v-for="order in recentOrders" :key="order.id">
-        <template #icon>
-          <VcIcon :icon="getOrderIcon(order.status)" size="s" />
-        </template>
-        <template #title>{{ order.number }}</template>
-        <template #subtitle>{{ order.customerName }}</template>
-        <template #meta>{{ formatDateRelative(order.createdDate) }}</template>
+      <DashboardFeedRow v-for="order in recentOrders" :key="order.id" @click="openOrder(order)">
+        <VcIcon :icon="getOrderIcon(order.status)" size="s" />
+        <span>{{ order.number }} — {{ order.customerName }}</span>
+        <template #trailing>{{ formatDateRelative(order.createdDate) }}</template>
       </DashboardFeedRow>
     </DashboardFeedList>
   </template>
@@ -167,22 +164,23 @@ import OrdersWidget from "./OrdersWidget.vue";
 
 const dashboard = useDashboard();
 
-dashboard.register({
+dashboard.registerWidget({
   id: "orders-overview",
+  name: "Orders overview",
   component: markRaw(OrdersWidget),
+  size: { width: 6, height: 4 },
+  position: { x: 0, y: 0 },
   props: { limit: 10 },
-  order: 1,
-  layout: { w: 6, h: 4, x: 0, y: 0 },
 });
 ```
 
 ## Companion Components
 
-| Component           | Description                                                     |
-| ------------------- | --------------------------------------------------------------- |
-| `DashboardStatItem` | Single KPI stat with value, label, and optional color variant   |
-| `DashboardFeedList` | Scrollable list container for feed rows                         |
-| `DashboardFeedRow`  | Individual feed item with icon, title, subtitle, and meta slots |
+| Component           | Description                                                                                                    |
+| ------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `DashboardStatItem` | Single KPI stat with value, label, and optional color variant                                                  |
+| `DashboardFeedList` | Scrollable list container for feed rows                                                                        |
+| `DashboardFeedRow`  | Individual feed item: default slot for leading content, `#trailing` slot for right-side content, emits `click` |
 
 ## Tip: Set a Minimum Height
 
@@ -200,4 +198,4 @@ When the card content is loaded asynchronously, the card may collapse to zero he
 
 - [DraggableDashboard](../draggable-dashboard/draggable-dashboard.docs.md) -- grid layout container
 - [DashboardCharts](../dashboard-charts/dashboard-charts.docs.md) -- chart components for widget content
-- [useDashboard](../../../core/composables/useDashboard/) -- dashboard widget registration service
+- [useDashboard](../../../core/composables/useDashboard/useDashboard.docs.md) -- dashboard widget registration service

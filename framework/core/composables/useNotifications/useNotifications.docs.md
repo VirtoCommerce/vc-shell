@@ -78,7 +78,7 @@ For the canonical blade-side example and the registration of notification types 
 
 4. **Module notifications**: The `moduleNotifications` computed filters the store's real-time queue for items that are new (`isNew: true`) and match the subscribed types.
 
-5. **History**: `loadFromHistory` delegates to the store, which fetches from the platform API and merges into the local history.
+5. **History**: `loadFromHistory` delegates to `store.loadHistory`, which fetches a page from the platform API and replaces the local history with the result (`take` controls page size, default 10). It does not merge with or page onto existing entries.
 
 ## Recipe: Notification Panel with Real-Time Updates
 

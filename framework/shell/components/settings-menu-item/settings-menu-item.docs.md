@@ -51,23 +51,25 @@ import { SettingsMenuItem } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop            | Type                           | Default     | Description                                                                      |
-| --------------- | ------------------------------ | ----------- | -------------------------------------------------------------------------------- |
-| `title`         | `string`                       | `undefined` | Menu item label                                                                  |
-| `icon`          | `string \| Component`          | `undefined` | Icon name or component                                                           |
-| `image`         | `string`                       | `undefined` | Image URL (alternative to icon)                                                  |
-| `value`         | `string`                       | `undefined` | Current value displayed on the right                                             |
-| `showChevron`   | `boolean`                      | `false`     | Shows right chevron for sub-menus (auto-enabled when `submenu` slot is provided) |
-| `isActive`      | `boolean`                      | `false`     | Highlights the item (auto-managed when `submenu` slot is provided)               |
-| `disabled`      | `boolean`                      | `false`     | Disables click interaction                                                       |
-| `triggerAction` | `"click" \| "hover" \| "none"` | `"click"`   | What interaction opens the item                                                  |
+| Prop            | Type                           | Default     | Description                                                                                                                               |
+| --------------- | ------------------------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`         | `string`                       | `undefined` | Menu item label                                                                                                                           |
+| `icon`          | `string \| Component`          | `undefined` | Icon name or component                                                                                                                    |
+| `image`         | `string`                       | `undefined` | Image URL (alternative to icon)                                                                                                           |
+| `emptyIcon`     | `string`                       | `undefined` | Fallback icon shown on the `VcImage` when `image` fails to load                                                                           |
+| `value`         | `string`                       | `undefined` | Current value displayed on the right                                                                                                      |
+| `showChevron`   | `boolean`                      | `false`     | Shows right chevron for sub-menus (auto-enabled when `submenu` slot is provided)                                                          |
+| `isActive`      | `boolean`                      | `false`     | Highlights the item (auto-managed when `submenu` slot is provided)                                                                        |
+| `disabled`      | `boolean`                      | `false`     | Disables click interaction                                                                                                                |
+| `isVisible`     | `boolean`                      | `true`      | Hides the item when `false` via the `--invisible` class                                                                                   |
+| `triggerAction` | `"click" \| "hover" \| "none"` | `"click"`   | What interaction opens the item. Note: `"hover"` is not implemented (no hover handler); only `"click"` and `"none"` have runtime behavior |
 
 ## Events
 
-| Event           | Payload | Description                                                          |
-| --------------- | ------- | -------------------------------------------------------------------- |
-| `trigger:click` | --      | Emitted when the item is clicked (only when `triggerAction="click"`) |
-| `trigger:hover` | --      | Emitted when hovered (only when `triggerAction="hover"`)             |
+| Event           | Payload | Description                                                                                             |
+| --------------- | ------- | ------------------------------------------------------------------------------------------------------- |
+| `trigger:click` | --      | Emitted when the item is clicked (only when `triggerAction="click"`)                                    |
+| `trigger:hover` | --      | Declared but not implemented: `triggerAction="hover"` has no runtime handler, so this event never fires |
 
 ## Slots
 

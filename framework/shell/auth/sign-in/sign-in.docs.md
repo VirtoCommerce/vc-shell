@@ -34,7 +34,7 @@ const { getProviders } = useExternalProvider();
 const providers = ref([]);
 
 onMounted(async () => {
-  providers.value = await getProviders();
+  providers.value = (await getProviders()) ?? [];
 });
 </script>
 ```
@@ -47,26 +47,27 @@ onMounted(async () => {
 
 ## API (`useExternalProvider`)
 
-| Method         | Signature                                       | Description                                             |
-| -------------- | ----------------------------------------------- | ------------------------------------------------------- |
-| `getProviders` | `() => Promise<ExternalSignInProviderInfo[]>`   | Fetch available SSO providers from the platform API     |
-| `signIn`       | `(authenticationType: string) => Promise<void>` | Redirect to external provider login                     |
-| `signOut`      | `(authenticationType: string) => Promise<void>` | Redirect to external provider logout                    |
-| `storage`      | `Ref<{ providerType?: string }>`                | Persisted localStorage ref tracking the active provider |
+| Method         | Signature                                                  | Description                                                                            |
+| -------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `getProviders` | `() => Promise<ExternalSignInProviderInfo[] \| undefined>` | Fetch available SSO providers from the platform API (returns `undefined` on API error) |
+| `signIn`       | `(authenticationType?: string) => Promise<void>`           | Redirect to external provider login (throws if `authenticationType` is missing)        |
+| `signOut`      | `(authenticationType: string) => Promise<void>`            | Redirect to external provider logout                                                   |
+| `storage`      | `Ref<{ providerType?: string }>`                           | Persisted localStorage ref tracking the active provider                                |
 
 ## Recipe: Custom Login Page with SSO and Credentials
 
 ```vue
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { ExternalProviders, useExternalProvider } from "@vc-shell/framework";
+import type { ExternalSignInProviderInfo } from "@vc-shell/framework";
 
 const { getProviders } = useExternalProvider();
 const providers = ref<ExternalSignInProviderInfo[]>([]);
 const hasProviders = computed(() => providers.value.length > 0);
 
 onMounted(async () => {
-  providers.value = await getProviders();
+  providers.value = (await getProviders()) ?? [];
 });
 </script>
 
@@ -127,7 +128,7 @@ This hides the username/password form and shows only the external provider butto
 
 ## Tips
 
-- If no external providers are configured on the platform, `getProviders()` returns an empty array and the `ExternalProviders` component renders nothing.
+- `getProviders()` returns `undefined` on API error (and whatever the API yields otherwise); the examples fall back to `[]`. When there are no providers, the `ExternalProviders` component renders nothing.
 - The `storage.providerType` value is set automatically during sign-in and used by the `LogoutButton` to trigger the correct provider sign-out.
 - For development, you can test SSO flows by configuring a local identity provider (like Keycloak) in the platform's authentication settings.
 
@@ -135,4 +136,4 @@ This hides the username/password form and shows only the external provider butto
 
 - **LoginPage** - The primary consumer that renders `ExternalProviders`
 - **VcAuthLayout** - The layout wrapper used by login and other auth pages
-- **LogoutButton** - Uses `useExternalProvider().signOut()` for SSO logout
+- **LogoutButton** - Calls `useUserManagement().signOut()`, which internally delegates to `useExternalProvider().signOut()` when `storage.providerType` is set (SSO session)

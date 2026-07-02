@@ -236,21 +236,21 @@ const description = ref<string>("");
 
 ## Props
 
-| Prop              | Type      | Default     | Description                                     |
-| ----------------- | --------- | ----------- | ----------------------------------------------- |
-| `modelValue`      | `string`  | `undefined` | Bound value via `v-model`                       |
-| `label`           | `string`  | --          | Label text displayed above the textarea         |
-| `placeholder`     | `string`  | --          | Placeholder text inside the empty textarea      |
-| `hint`            | `string`  | --          | Helper text displayed below the field           |
-| `tooltip`         | `string`  | --          | Tooltip on the label info icon                  |
-| `maxlength`       | `string`  | `"1024"`    | Maximum character count (native HTML attribute) |
-| `required`        | `boolean` | `false`     | Shows a required indicator on the label         |
-| `error`           | `boolean` | `false`     | Enables error styling (red border + ring)       |
-| `errorMessage`    | `string`  | --          | Error message text below the field              |
-| `disabled`        | `boolean` | `false`     | Disables the textarea                           |
-| `name`            | `string`  | `"Field"`   | HTML name attribute                             |
-| `multilanguage`   | `boolean` | `false`     | Shows language badge on the label               |
-| `currentLanguage` | `string`  | --          | Language code displayed in the badge            |
+| Prop              | Type      | Default     | Description                                                                                          |
+| ----------------- | --------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+| `modelValue`      | `string`  | `undefined` | Bound value via `v-model`                                                                            |
+| `label`           | `string`  | --          | Label text displayed above the textarea                                                              |
+| `placeholder`     | `string`  | --          | Placeholder text inside the empty textarea                                                           |
+| `hint`            | `string`  | --          | Helper text displayed below the field                                                                |
+| `tooltip`         | `string`  | --          | Tooltip on the label info icon                                                                       |
+| `maxlength`       | `string`  | `"1024"`    | Maximum character count (native HTML attribute)                                                      |
+| `required`        | `boolean` | `false`     | Shows a required indicator on the label                                                              |
+| `error`           | `boolean` | `false`     | Enables error styling (red border + ring)                                                            |
+| `errorMessage`    | `string`  | --          | Error message text below the field                                                                   |
+| `disabled`        | `boolean` | `false`     | Disables the textarea                                                                                |
+| `name`            | `string`  | `"Field"`   | Field name used for validation/id generation (not applied as an HTML name attribute on the textarea) |
+| `multilanguage`   | `boolean` | `false`     | Shows language badge on the label                                                                    |
+| `currentLanguage` | `string`  | --          | Language code displayed in the badge                                                                 |
 
 ## Events
 

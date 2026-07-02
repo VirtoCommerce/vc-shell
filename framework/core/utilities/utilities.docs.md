@@ -31,7 +31,8 @@ camelToSnake("myPropName"); // "my_prop_name"
 camelToSnake("backgroundColor"); // "background_color"
 
 camelize("some-prop-name"); // "somePropName"
-camelize("SOME_CONSTANT"); // "sOMECONSTANT" (splits on non-word chars)
+camelize("some prop.name"); // "somePropName" (splits on non-word chars)
+camelize("SOME_CONSTANT"); // "SOME_CONSTANT" (unchanged: underscore is a word char)
 
 kebabToCamel("vc-data-table"); // "vcDataTable"
 kebabToCamel("my-component-name"); // "myComponentName"
@@ -65,9 +66,9 @@ formatDateRelative(new Date(Date.now() - 3600000)); // "about 1 hour ago"
 formatDateRelative("2024-01-15", "de"); // "vor etwa 2 Jahren"
 
 // Formatted dates using Moment.js-style patterns (auto-converted to date-fns)
-formatDateWithPattern("2024-01-15", "LL"); // "January 15, 2024"
+formatDateWithPattern("2024-01-15", "LL"); // "Jan 15, 2024"
 formatDateWithPattern("2024-06-01", "DD/MM/YYYY"); // "01/06/2024"
-formatDateWithPattern("2024-01-15", "LL", "de"); // "15. Januar 2024"
+formatDateWithPattern("2024-01-15", "LL", "de"); // "15. Jan. 2024"
 
 // Format conversion
 convertMomentFormat("YYYY-MM-DD"); // "yyyy-MM-dd"
@@ -118,7 +119,7 @@ if (isFrameworkError(err)) {
   console.log(err.code); // e.g. "INJECTION_ERROR"
 }
 
-throw new InjectionError("WidgetService"); // "WidgetService is not provided. ..."
+throw new InjectionError("WidgetService"); // "WidgetService not provided. Make sure to call the corresponding 'provide' function."
 ```
 
 ## ID Generation
@@ -151,11 +152,11 @@ Factory-based logger with level filtering. Default level: `debug` in dev, `warn`
 import { createLogger, loggers } from "@vc-shell/framework";
 
 const log = createLogger("OrdersModule");
-log.info("Module initialized"); // [OrdersModule] Module initialized
-log.error("Failed to load orders", error); // [OrdersModule] Failed to load orders Error: ...
+log.info("Module initialized"); // [@vc-shell/framework#OrdersModule] Module initialized
+log.error("Failed to load orders", error); // [@vc-shell/framework#OrdersModule] Failed to load orders Error: ...
 
 const subLog = log.child("DataSync");
-subLog.debug("Syncing 50 records"); // [OrdersModule:DataSync] Syncing 50 records
+subLog.debug("Syncing 50 records"); // [@vc-shell/framework#OrdersModule:DataSync] Syncing 50 records
 
 log.setLevel("error"); // Only errors will be logged
 ```
@@ -186,4 +187,4 @@ convertMomentFormat("X"); // May not convert as expected
 
 - `framework/core/plugins/global-error-handler/` -- uses `parseError()` for global error catching
 - `framework/core/plugins/i18n/` -- date formatting respects the active locale
-- `framework/core/constants/` -- `UI_CONSTANTS.DEBOUNCE_DEFAULT_MS` for standard delays
+- `framework/core/constants/` -- `COMPONENT_DEFAULTS` (from `@core/constants/defaults`) holds standard delays (e.g. `select.debounce` 500, `input.debounce` 0)

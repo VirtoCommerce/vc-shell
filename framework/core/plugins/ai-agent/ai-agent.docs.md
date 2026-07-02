@@ -61,6 +61,8 @@ app.use(aiAgentPlugin, {
 
 Access the AI agent service from any component within the app.
 
+Returns `UseAiAgentReturn | undefined`. When `provideAiAgentService()` has not run, `useAiAgent()` logs an error and returns `undefined`, so guard the result before destructuring (e.g. `const ai = useAiAgent(); ai?.togglePanel()`).
+
 | Return            | Type                                        | Description                                    |
 | ----------------- | ------------------------------------------- | ---------------------------------------------- |
 | `panelState`      | `Ref<"closed" \| "open" \| "expanded">`     | Current panel state                            |
@@ -123,19 +125,19 @@ useAiAgentContext({ dataRef: selectedItems });
 ### Toggling the Panel Programmatically
 
 ```typescript
-const { togglePanel, isOpen } = useAiAgent();
+const ai = useAiAgent();
 
 function onAiButtonClick() {
-  togglePanel();
+  ai?.togglePanel();
 }
 ```
 
 ### Listening for Chatbot Messages
 
 ```typescript
-const { onMessage } = useAiAgent();
+const ai = useAiAgent();
 
-onMessage((message) => {
+ai?.onMessage((message) => {
   if (message.type === "NAVIGATE_TO_APP") {
     console.log("Chatbot wants to navigate to:", message.payload);
   }

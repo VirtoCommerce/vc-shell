@@ -6,7 +6,7 @@ group: services
 
 # useWidgets
 
-Provides access to the `IWidgetService` singleton for managing blade widget registrations, activation state, and external widgets. This is the low-level composable for direct widget service interaction. It exposes the full widget lifecycle API: registering widgets to specific blades, querying registered widgets, tracking active widget state, and managing external (cross-module) widget registrations.
+Provides access to the `IWidgetService` singleton for managing blade widget registrations and external widgets. This is the low-level composable for direct widget service interaction. It exposes the widget lifecycle API: registering widgets to specific blades, querying and updating registered widgets, and managing external (cross-module) widget registrations.
 
 Also exports `provideWidgetService()` for framework-level initialization and `registerWidget()` / `registerExternalWidget()` for global pre-registration before the service is created.
 
@@ -27,10 +27,8 @@ const widgetService = useWidgets();
 // Query all widgets registered for a specific blade
 const widgets = widgetService.getWidgets("order-details");
 
-// Check if a widget is currently active (visible and expanded)
-if (widgetService.isActiveWidget("order-status-widget")) {
-  // widget is currently in focus
-}
+// Query external widgets contributed by other modules
+const externalWidgets = widgetService.getExternalWidgetsForBlade("order-details");
 ```
 
 ## API
@@ -41,21 +39,15 @@ None.
 
 ### Returns (`IWidgetService`)
 
-| Property / Method            | Type                                                 | Description                                                                                  |
-| ---------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `registerWidget`             | `(widget: IWidget, bladeId: string) => void`         | Registers a widget for a specific blade. The widget will appear in that blade's widget area. |
-| `unregisterWidget`           | `(widgetId: string, bladeId: string) => void`        | Removes a widget from a blade by ID.                                                         |
-| `getWidgets`                 | `(bladeId: string) => IWidget[]`                     | Returns all widgets registered for a specific blade.                                         |
-| `clearBladeWidgets`          | `(bladeId: string) => void`                          | Removes all widgets for a blade (used during blade teardown).                                |
-| `registeredWidgets`          | `IWidgetRegistration[]`                              | All widget registrations across all blades.                                                  |
-| `isActiveWidget`             | `(id: string) => boolean`                            | Checks if a widget is currently active (selected/expanded).                                  |
-| `setActiveWidget`            | `(args) => void`                                     | Sets a widget as active with its exposed instance.                                           |
-| `updateActiveWidget`         | `() => void`                                         | Triggers the active widget's update function. Deprecated -- use headless widgets instead.    |
-| `isWidgetRegistered`         | `(id: string) => boolean`                            | Checks if a widget ID exists in any blade's registry.                                        |
-| `updateWidget`               | `(args) => void`                                     | Updates properties of a registered widget (trigger, badge, etc.).                            |
-| `resolveWidgetProps`         | `(widget, bladeData) => Record<string, unknown>`     | Resolves widget props from blade data. Deprecated.                                           |
-| `getExternalWidgetsForBlade` | `(bladeId: string) => IExternalWidgetRegistration[]` | Gets external widgets that target a specific blade (registered by other modules).            |
-| `getAllExternalWidgets`      | `() => IExternalWidgetRegistration[]`                | Gets all registered external widgets across all modules.                                     |
+| Property / Method            | Type                                                                                           | Description                                                                                  |
+| ---------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `registerWidget`             | `(widget: IWidget, bladeId: string) => void`                                                   | Registers a widget for a specific blade. The widget will appear in that blade's widget area. |
+| `unregisterWidget`           | `(widgetId: string, bladeId: string) => void`                                                  | Removes a widget from a blade by ID.                                                         |
+| `getWidgets`                 | `(bladeId: string) => IWidget[]`                                                               | Returns all widgets registered for a specific blade.                                         |
+| `updateWidget`               | `({ id, bladeId, widget }: { id: string; bladeId: string; widget: Partial<IWidget> }) => void` | Updates properties of a registered widget (trigger, badge, etc.).                            |
+| `getExternalWidgetsForBlade` | `(bladeId: string) => IExternalWidgetRegistration[]`                                           | Gets external widgets that target a specific blade (registered by other modules).            |
+| `getAllExternalWidgets`      | `() => IExternalWidgetRegistration[]`                                                          | Gets all registered external widgets across all modules.                                     |
+| `cloneWidget`                | `<T extends IWidget \| IExternalWidgetRegistration>(widget: T) => T`                           | Returns a deep-ish clone of a widget or external widget registration.                        |
 
 ### Additional Exports
 
@@ -77,7 +69,7 @@ The widget system has three layers:
 
 3. **Runtime access** (`useWidgets()`): Components inject the service and use it to query or modify widget state.
 
-The service tracks active widgets (which widget is currently expanded/focused) separately from registrations, enabling the widget panel to highlight the active widget and call its update function.
+The service stores widget registrations per blade and returns cloned widget definitions on query. It does not track active/expanded/focused state.
 
 <!-- internal:end -->
 
@@ -117,11 +109,10 @@ import ShippingTracker from "./widgets/ShippingTracker.vue";
 export default {
   install() {
     registerExternalWidget({
-      widgetId: "shipping-tracker",
-      bladeId: "order-details", // target blade from another module
+      id: "shipping-tracker",
+      targetBlades: ["order-details"], // target blades from other modules
       component: markRaw(ShippingTracker),
       title: "Shipping",
-      icon: "fas fa-truck",
     });
   },
 };

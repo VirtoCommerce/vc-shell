@@ -136,7 +136,7 @@ The last row automatically renders at 60% width for a natural paragraph feel.
 
 ## Architecture notes
 
-- The `text` variant uses an `Array(rows).fill(0)` to render `<span>` elements via `v-for`. The last row gets a `width: 60%` inline style for a natural paragraph taper.
+- The `text` variant renders rows via `v-for="index in rows"` over `<div class="vc-skeleton__row">` elements. `getRowWidth(index)` returns `60%` for the last row (inline style) for a natural paragraph taper.
 - Animation uses a CSS `@keyframes` pulse (opacity oscillation), not a moving shimmer, for simplicity and performance.
 - Source: `framework/ui/components/atoms/vc-skeleton/vc-skeleton.vue`
 

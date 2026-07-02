@@ -38,6 +38,12 @@ An image display component with predefined sizes, aspect ratio control, and a pl
 | `alt`           | `string`                                                        | —                | Accessible alt text                                                                                                                                |
 | `thumbnailSize` | `ThumbnailSize`                                                 | —                | Load a thumbnail variant instead of full-size image. Values: `"sm"`, `"md"`, `"lg"`, `"64x64"`, `"128x128"`, `"168x168"`, `"216x216"`, `"348x348"` |
 
+## Events
+
+| Event   | Payload | Description                                                 |
+| ------- | ------- | ----------------------------------------------------------- |
+| `click` | —       | Emitted on click/Enter/Space, only when `clickable` is true |
+
 ::storybook id="data-display-vcimage--size-variants" height="300"
 
 ## Size Reference
@@ -52,6 +58,15 @@ An image display component with predefined sizes, aspect ratio control, and a pl
 | `xl`   | 128px          |
 | `xxl`  | 145px          |
 | `auto` | 100% of parent |
+
+## CSS Custom Properties
+
+| Variable                   | Default               | Description                     |
+| -------------------------- | --------------------- | ------------------------------- |
+| `--image-border-radius`    | `6px`                 | Corner radius when `bordered`   |
+| `--image-border-color`     | `var(--neutrals-200)` | Border color when `bordered`    |
+| `--image-empty-icon-color` | `var(--neutrals-400)` | Placeholder icon color          |
+| `--image-focus-ring-color` | `var(--primary-300)`  | Focus ring color when clickable |
 
 ## Common Patterns
 
@@ -107,8 +122,8 @@ When displaying images in lists or grids, pass a `thumbnailSize` (e.g. `"128x128
 
 - VcImage lives in `framework/ui/components/atoms/vc-image/`.
 - Images are rendered as CSS `background-image` on a `<div>` rather than an `<img>` tag; this enables `background-size: cover/contain` and preserves aspect-ratio without JS.
-- HTTPS enforcement: the `src` watcher rewrites `http://` to `https://` when `window.location.protocol === 'https:'`.
-- `thumbnailSize` appends a query parameter to the URL compatible with Virto Commerce image proxy: `?size=128x128`. This is a platform-specific convention.
+- HTTPS enforcement: the `ensureHttps()` helper (called from the `imageHandler` computed and the thumbnail-probe watcher) upgrades `http://` to `https://` when `window.location.protocol === 'https:'`.
+- `thumbnailSize` inserts a size suffix before the file extension, compatible with the Virto Commerce thumbnail convention: `photo.jpg` becomes `photo_128x128.jpg`. This is a platform-specific convention.
 - Aspect ratios are implemented as Tailwind aspect-ratio utility classes (`tw-aspect-square`, `tw-aspect-video`, etc.).
 - Clickable mode adds `role="button"` and forwards keyboard Enter/Space to the click handler, consistent with other atom-level interactive components.
 

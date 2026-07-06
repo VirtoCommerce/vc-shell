@@ -1,30 +1,16 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
 import { defineConfig } from "vitest/config";
 
-const dirname =
-  typeof __dirname !== "undefined"
-    ? __dirname
-    : path.dirname(fileURLToPath(import.meta.url));
-
-// More info at: https://storybook.js.org/docs/writing-tests/test-addon
+// Multi-project setup:
+//  - framework/vitest.config.ts        — unit tests (jsdom)
+//  - vitest.config.storybook.ts        — Storybook story tests (real browser via
+//    @storybook/addon-vitest; each story renders + runs its play function and axe a11y checks)
+//
+// NOTE: the projects MUST be referenced as config files here. An inline project
+// object would not load vitest.config.storybook.ts, silently dropping the
+// storybookTest plugin (and with it the Storybook vite aliases), which breaks
+// every story test with unresolved `@core/...` imports.
 export default defineConfig({
   test: {
-    workspace: [
-      {
-        extends: true,
-        test: {
-          name: "storybook",
-          browser: {
-            enabled: true,
-            headless: true,
-            name: "chromium",
-            provider: "playwright",
-          },
-          setupFiles: [".storybook/vitest.setup.ts"],
-        },
-      },
-    ],
+    projects: ["./framework/vitest.config.ts", "./vitest.config.storybook.ts"],
   },
 });

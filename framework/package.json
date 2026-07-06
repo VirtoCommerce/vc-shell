@@ -122,8 +122,7 @@
     "vue-i18n": "^11.1.11",
     "vue3-application-insights": "^1.1.0",
     "vue3-touch-events": "^4.1.8",
-    "web-vitals": "^5.1.0",
-    "whatwg-fetch": "^3.6.19"
+    "web-vitals": "^5.1.0"
   },
   "peerDependencies": {
     "vee-validate": ">=4.12.0",

@@ -121,7 +121,7 @@ export function useSlowNetworkDetection(): UseSlowNetworkDetectionReturn {
   };
 }
 
-/** Test-only: reset singleton state between tests. No-op in production builds. */
+/** Test-only: reset singleton state between tests. No-op in production builds. @internal — not public API. */
 export const _resetForTest: (() => void) | undefined = import.meta.env.VITEST
   ? () => {
       const connection = (navigator as any).connection;

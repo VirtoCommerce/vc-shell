@@ -80,6 +80,7 @@ function resolveHostString(): string {
 /**
  * Internal factory. Exported for unit tests so they bypass the shared
  * composable cache (mirrors `_createInternalUserLogic` in useUser).
+ * @internal — not public API; use `useEnvironmentName`.
  */
 export function _createEnvironmentNameLogic(): UseEnvironmentNameReturn {
   const fallbackHost = typeof window !== "undefined" ? window.location.hostname : "";

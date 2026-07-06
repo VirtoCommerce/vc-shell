@@ -133,6 +133,7 @@ async function fetchToken(params: Record<string, string>): Promise<TokenData | n
   }
 }
 
+/** @internal — shared user-logic factory; use `useUser` / `useUserManagement`. Not public API. */
 export function _createInternalUserLogic(): IUserInternalAPI {
   const loading: Ref<boolean> = ref(false);
   const user: Ref<UserDetail | undefined> = ref();
@@ -409,6 +410,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
 // useUserManagement() from the interceptor registration (outside any component scope),
 // which pins the singleton: a no-scope subscriber is never decremented, so the
 // instance survives component mount/unmount cycles for the lifetime of the app.
+/** @internal — shared singleton behind useUser/useUserManagement. Not public API. */
 export const _sharedInternalUserLogic = createSharedComposable(_createInternalUserLogic);
 
 export const useUser = (): UseUserReturn => {

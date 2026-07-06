@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
+    "stripInternal": true,
     "types": ["vite/client", "./typings/declarations.d.ts"],
     "paths": {
       "@framework": ["./"],

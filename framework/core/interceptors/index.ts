@@ -6,13 +6,25 @@ import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetecti
 
 const logger = createLogger("interceptors");
 
+type PatchedFetch = typeof window.fetch & { __vcInterceptorsInstalled__?: true };
+
 export function registerInterceptors(router: Router) {
+  // Idempotency guard: a second install would wrap the already-wrapped fetch,
+  // stacking timeouts, duplicate 401 sign-outs and slow-network tracking.
+  // A brand on the function survives module reloads (HMR / test workers) while
+  // living only within this tab.
+  const existing = window.fetch as PatchedFetch;
+  if (existing.__vcInterceptorsInstalled__) {
+    logger.warn("registerInterceptors called twice — ignoring second install");
+    return window.fetch;
+  }
+
   const { fetch: originalFetch } = window;
   const { signOut, isAuthenticated } = useUserManagement();
   const { trackRequest, untrackRequest } = useSlowNetworkDetection();
   let requestCounter = 0;
 
-  window.fetch = async (...args) => {
+  const patched = (async (...args: Parameters<typeof window.fetch>) => {
     /**
      * Overrides the global `fetch` function to handle API calls in demo mode.
      * If `window.__DEMO_MODE__` is true, the fetch is cancelled and a warning is logged.
@@ -104,12 +116,16 @@ export function registerInterceptors(router: Router) {
          */
         if (response.status === 401) {
           if (isAuthenticated.value) {
-            signOut().then(() => {
-              redirect(router);
-              notification.error(
-                "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
-              );
-            });
+            signOut()
+              .catch((err) => {
+                logger.error("signOut failed after 401:", err);
+              })
+              .finally(() => {
+                redirect(router);
+                notification.error(
+                  "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
+                );
+              });
           }
         }
 
@@ -127,9 +143,11 @@ export function registerInterceptors(router: Router) {
         }
       }
     }
-  };
+  }) as PatchedFetch;
 
-  return window.fetch;
+  patched.__vcInterceptorsInstalled__ = true;
+  window.fetch = patched;
+  return patched;
 }
 
 function redirect(router: Router) {

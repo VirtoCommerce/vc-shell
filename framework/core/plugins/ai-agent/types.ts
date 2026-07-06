@@ -67,8 +67,19 @@ export interface IAiAgentConfig {
   width?: number;
   /** Panel width in pixels when expanded (default: 500) */
   expandedWidth?: number;
-  /** Allowed origins for postMessage (default: ["*"]) */
+  /**
+   * Origins accepted for *incoming* postMessage. No default — must be set to
+   * explicit origins (e.g. `["https://chat.example.com"]`) to enable the bridge.
+   * An empty array or a `"*"` wildcard rejects all incoming messages.
+   */
   allowedOrigins?: string[];
+  /**
+   * Explicit parent origin required for *outbound* embedded-mode postMessage.
+   * No default — must be set by the embedder. When absent or `"*"`, outbound
+   * messages to the parent frame are dropped to avoid leaking data (including
+   * access tokens) to arbitrary origins.
+   */
+  parentOrigin?: string;
 }
 
 /**

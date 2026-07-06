@@ -20,7 +20,7 @@ describe("createAiAgentService", () => {
       bladeGetter,
       localeGetter,
       tokenGetter,
-      initialConfig: { url: "https://chat.example.com" },
+      initialConfig: { url: "https://chat.example.com", allowedOrigins: ["https://chat.example.com"] },
     });
 
     // Mock iframe contentWindow
@@ -40,6 +40,7 @@ describe("createAiAgentService", () => {
     window.dispatchEvent(
       new MessageEvent("message", {
         data: { type: "CHAT_READY" },
+        origin: "https://chat.example.com",
       }),
     );
 
@@ -56,13 +57,15 @@ describe("createAiAgentService", () => {
           accessToken: "token-123",
         }),
       }),
-      "*",
+      "https://chat.example.com",
     );
   });
 
   it("sends UPDATE_CONTEXT when context data changes while panel is open", async () => {
     // Initialize: trigger CHAT_READY to set isInitialized
-    window.dispatchEvent(new MessageEvent("message", { data: { type: "CHAT_READY" } }));
+    window.dispatchEvent(
+      new MessageEvent("message", { data: { type: "CHAT_READY" }, origin: "https://chat.example.com" }),
+    );
     await flushPromises();
 
     // Open the panel
@@ -83,7 +86,9 @@ describe("createAiAgentService", () => {
 
   it("does not send UPDATE_CONTEXT when panel is closed", async () => {
     // Initialize: trigger CHAT_READY
-    window.dispatchEvent(new MessageEvent("message", { data: { type: "CHAT_READY" } }));
+    window.dispatchEvent(
+      new MessageEvent("message", { data: { type: "CHAT_READY" }, origin: "https://chat.example.com" }),
+    );
     await flushPromises();
     // Panel stays closed (don't call openPanel)
 

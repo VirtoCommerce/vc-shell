@@ -49,13 +49,30 @@ app.use(aiAgentPlugin, {
 
 ### `IAiAgentConfig`
 
-| Field            | Type       | Default      | Description                                |
-| ---------------- | ---------- | ------------ | ------------------------------------------ |
-| `url`            | `string`   | `""`         | Chatbot iframe URL (required)              |
-| `title`          | `string`   | `"Virto OZ"` | Panel header title                         |
-| `width`          | `number`   | `362`        | Panel width in pixels                      |
-| `expandedWidth`  | `number`   | `500`        | Panel width when expanded                  |
-| `allowedOrigins` | `string[]` | `["*"]`      | Allowed origins for postMessage validation |
+| Field            | Type       | Default      | Description                                                                                         |
+| ---------------- | ---------- | ------------ | --------------------------------------------------------------------------------------------------- |
+| `url`            | `string`   | `""`         | Chatbot iframe URL (required)                                                                       |
+| `title`          | `string`   | `"Virto OZ"` | Panel header title                                                                                  |
+| `width`          | `number`   | `362`        | Panel width in pixels                                                                               |
+| `expandedWidth`  | `number`   | `500`        | Panel width when expanded                                                                           |
+| `allowedOrigins` | `string[]` | `[]`         | Origins accepted for **incoming** postMessage. Required — see below                                 |
+| `parentOrigin`   | `string`   | --           | Explicit parent origin for **outbound** embedded postMessage. Required in embedded mode — see below |
+
+!!! danger "Origins must be configured — secure by default"
+The bridge is locked down by default. Set both fields to explicit origins; a wildcard `"*"` or empty value is refused (the message is dropped and logged), never trusted.
+
+- **`allowedOrigins`** governs messages the shell **accepts**. With the default `[]`, all incoming postMessages are ignored. Set it to the chatbot's origin(s), e.g. `["https://chat.example.com"]`. A `"*"` entry is rejected outright — replace it with explicit origins.
+- **`parentOrigin`** governs messages the shell **sends to the parent frame** in embedded mode (`AI_CONTEXT_UPDATE`, `AI_TOGGLE_PANEL`, etc.). These payloads can carry the access token, so with no explicit `parentOrigin` (or `"*"`) the outbound message is dropped. Set it to the exact host origin, e.g. `"https://host.example.com"`.
+
+```ts
+app.use(AiAgentPlugin, {
+  config: {
+    url: "https://chat.example.com",
+    allowedOrigins: ["https://chat.example.com"], // incoming
+    parentOrigin: "https://host.example.com", // outbound (embedded mode)
+  },
+});
+```
 
 ### Composable: `useAiAgent()`
 

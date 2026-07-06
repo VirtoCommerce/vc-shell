@@ -34,10 +34,15 @@ app.use(aiAgentPlugin, {
   config: {
     title: "AI Assistant",
     width: 400,
+    // Secure by default: the bridge trusts nothing until origins are set.
+    allowedOrigins: ["https://chat.example.com"], // incoming postMessage
+    parentOrigin: "https://host.example.com", // outbound postMessage (embedded mode)
   },
   addGlobalToolbarButton: true, // default: true
 });
 ```
+
+> **Security:** `allowedOrigins` defaults to `[]` and `parentOrigin` is unset — the bridge drops all messages until you configure explicit origins. A `"*"` wildcard is refused, not trusted. This prevents any embedding page from issuing commands or receiving the access token.
 
 ## Usage
 

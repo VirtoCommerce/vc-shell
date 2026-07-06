@@ -193,8 +193,7 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import { Markdown } from "tiptap-markdown";
 import type { Extension } from "@tiptap/core";
 import { FontSize } from "@ui/components/molecules/vc-editor/_internal/extensions/font-size";
-import { format } from "prettier/standalone";
-import * as prettierPluginHtml from "prettier/parser-html";
+import beautify from "js-beautify";
 import DOMPurify from "dompurify";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcHint } from "@ui/components/atoms/vc-hint";
@@ -380,16 +379,17 @@ const formattedSource = ref(props.modelValue || "");
 
 watch(
   () => props.modelValue,
-  async (value) => {
+  (value) => {
     // Detect content type
     detectedType.value = detectContentType(value || "");
 
     if (detectedType.value === "html") {
       try {
-        formattedSource.value = await format(value || "", {
-          parser: "html",
-          plugins: [prettierPluginHtml],
-          vueIndentScriptAndStyle: true,
+        formattedSource.value = beautify.html(value || "", {
+          indent_size: 2,
+          wrap_line_length: 0,
+          preserve_newlines: true,
+          max_preserve_newlines: 1,
         });
       } catch (_e) {
         formattedSource.value = value || "";

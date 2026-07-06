@@ -4432,6 +4432,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/js-beautify@npm:^1.14.3":
+  version: 1.14.3
+  resolution: "@types/js-beautify@npm:1.14.3"
+  checksum: 10/c6f6278c91e9cc8645e5c559bccb64e0890807d30283d53252c2d785a5b885ed57bf1d8583e60a19015c33f81750fc8aafc0b2e4bc9bbb5193032be53aea4ad2
+  languageName: node
+  linkType: hard
+
 "@types/jscodeshift@npm:^17.3.0":
   version: 17.3.0
   resolution: "@types/jscodeshift@npm:17.3.0"
@@ -5289,6 +5296,7 @@ __metadata:
     "@tiptap/starter-kit": "npm:^3.4.2"
     "@tiptap/vue-3": "npm:^3.4.2"
     "@types/dompurify": "npm:^3.0.5"
+    "@types/js-beautify": "npm:^1.14.3"
     "@types/semver": "npm:^7.7.1"
     "@types/sortablejs": "npm:^1.15.9"
     "@unovis/ts": "npm:^1.6.4"
@@ -5312,6 +5320,7 @@ __metadata:
     esbuild: "npm:^0.25.3"
     gridstack: "npm:^12.4.2"
     iso-639-1: "npm:^3.1.0"
+    js-beautify: "npm:^1.15.4"
     jsdom: "npm:^24.1.0"
     lodash-es: "npm:^4.17.21"
     lucide-vue-next: "npm:^0.577.0"
@@ -12818,7 +12827,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-beautify@npm:^1.14.9":
+"js-beautify@npm:^1.14.9, js-beautify@npm:^1.15.4":
   version: 1.15.4
   resolution: "js-beautify@npm:1.15.4"
   dependencies:

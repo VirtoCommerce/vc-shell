@@ -24,13 +24,17 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-vi.mock("@core/utilities", () => ({
-  createLogger: () => ({
-    warn: vi.fn(),
-    debug: vi.fn(),
-  }),
-  generateId: () => mocks.nextId(),
-}));
+vi.mock("@core/utilities", async () => {
+  const actual = await vi.importActual<typeof import("@core/utilities")>("@core/utilities");
+  return {
+    createBackendRegistry: actual.createBackendRegistry,
+    createLogger: () => ({
+      warn: vi.fn(),
+      debug: vi.fn(),
+    }),
+    generateId: () => mocks.nextId(),
+  };
+});
 
 import { notification, setNotificationBackend } from "./notification";
 

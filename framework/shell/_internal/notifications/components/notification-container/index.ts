@@ -1,15 +1,15 @@
 import { VcToast } from "@ui/components/molecules/vc-toast";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { PropType, computed, defineComponent, h, ref, toRaw, reactive, inject } from "vue";
+import { PropType, computed, defineComponent, h, toRaw, inject } from "vue";
 import {
   Content,
   NotificationType,
   NotificationPosition,
   NotificationContainerStateKey,
 } from "@core/notifications/toast-types";
-
-const GAP = 14;
-const VISIBLE_TOASTS = 3;
+import { GAP, VISIBLE_TOASTS, computeToastOffsets } from "./computeToastOffsets";
+import { useToastStack } from "./useToastStack";
+import { i18n } from "@core/plugins/i18n";
 
 const NotificationContainer = defineComponent({
   name: "NotificationContainer",
@@ -72,35 +72,16 @@ const NotificationContainer = defineComponent({
       return notificationContainers[props.position as NotificationPosition].value || [];
     });
 
-    const expanded = ref(false);
-    const interacting = ref(false);
-    let collapseTimer: ReturnType<typeof setTimeout> | null = null;
-
-    function expandStack() {
-      if (collapseTimer) {
-        clearTimeout(collapseTimer);
-        collapseTimer = null;
-      }
-      expanded.value = true;
-    }
-
-    function collapseStack() {
-      if (interacting.value) return;
-      collapseTimer = setTimeout(() => {
-        expanded.value = false;
-        collapseTimer = null;
-      }, 200);
-    }
-
-    // Height tracking: toastId → height
-    const heightsMap = reactive(new Map<string | number, number>());
-
-    function handleHeightReport(toastId: string | number, height: number) {
-      const rounded = Math.round(height);
-      if (heightsMap.get(toastId) !== rounded) {
-        heightsMap.set(toastId, rounded);
-      }
-    }
+    const {
+      expanded,
+      heightsMap,
+      expandStack,
+      collapseStack,
+      reportHeight,
+      forgetHeight,
+      clearHeights,
+      setInteracting,
+    } = useToastStack();
 
     function isComponent(content: Content) {
       return typeof content === "object" && (!!(content as any)?.render || !!(content as any)?.setup);
@@ -108,14 +89,14 @@ const NotificationContainer = defineComponent({
 
     function handleClose(id: string | number | undefined) {
       if (id) {
-        heightsMap.delete(id);
+        forgetHeight(id);
         actions.remove(id);
       }
     }
 
     function handleClearAll() {
       actions.clear();
-      heightsMap.clear();
+      clearHeights();
     }
 
     const isTop = computed(() => (props.position || "top-center").startsWith("top"));
@@ -126,38 +107,26 @@ const NotificationContainer = defineComponent({
       const isExpanded = expanded.value || count <= 1;
       const showClearAll = count > 1;
 
-      // Front toast = newest = last in array
-      const frontToastId = count > 0 ? items[count - 1].notificationId : undefined;
-      const frontHeight = frontToastId !== undefined ? heightsMap.get(frontToastId) || 0 : 0;
+      const layout = computeToastOffsets(
+        items.map((item) => item.notificationId),
+        heightsMap,
+        isExpanded,
+      );
 
       const children = items.map((item, arrayIndex) => {
-        // sonnerIndex: 0 = front/newest, higher = older/back
-        const sonnerIndex = count - 1 - arrayIndex;
-
-        // Expanded offset: sum heights of newer toasts + gap * sonnerIndex
-        let heightSum = 0;
-        for (let i = arrayIndex + 1; i < count; i++) {
-          const id = items[i].notificationId;
-          if (id !== undefined) {
-            heightSum += heightsMap.get(id) || 0;
-          }
-        }
-        const offset = sonnerIndex * GAP + heightSum;
-
-        const initialHeight = item.notificationId !== undefined ? heightsMap.get(item.notificationId) || 0 : 0;
+        const { sonnerIndex, zIndex, offset, initialHeight } = layout.toasts[arrayIndex];
 
         const toastStyle: Record<string, string | number> = {
           "--toasts-before": sonnerIndex,
-          "--z-index": count - sonnerIndex,
+          "--z-index": zIndex,
           "--offset": `${offset}px`,
           "--initial-height": initialHeight ? `${initialHeight}px` : "auto",
         };
 
         const toastProps = {
           ...item,
-          key: item.notificationId,
           onClose: handleClose,
-          onReportHeight: handleHeightReport,
+          onReportHeight: reportHeight,
           toastIndex: sonnerIndex,
           toastsCount: count,
           expanded: isExpanded,
@@ -165,20 +134,24 @@ const NotificationContainer = defineComponent({
           style: toastStyle,
         };
 
-        if (item.content && isComponent(item.content)) {
-          return h(VcToast, {
-            ...toastProps,
-            content: h(toRaw(item.content)),
-          });
-        }
-        return h(VcToast, toastProps);
+        const toastVNode =
+          item.content && isComponent(item.content)
+            ? h(VcToast, { ...toastProps, content: h(toRaw(item.content)) })
+            : h(VcToast, toastProps);
+
+        // The group is an <ol>, so each toast must be a list item
+        // (WCAG 1.3.1 / axe `list`). display:contents keeps the wrapper
+        // layout-transparent while preserving the listitem semantics.
+        return h("li", { key: item.notificationId, style: { display: "contents" } }, [toastVNode]);
       });
 
       // Clear all button — fixed position top-right of toast stack
       let clearAllButton = null;
       if (showClearAll) {
+        // <li>: the group is an <ol>, so every direct child must be a list item
+        // (WCAG 1.3.1 / axe `list`).
         clearAllButton = h(
-          "div",
+          "li",
           {
             class: "notification__clear-all",
             style: {
@@ -186,6 +159,7 @@ const NotificationContainer = defineComponent({
               [isTop.value ? "top" : "bottom"]: "0",
               left: "var(--width, 356px)",
               "margin-left": "8px",
+              "list-style": "none",
               opacity: isExpanded ? "1" : "0",
               "pointer-events": isExpanded ? "auto" : "none",
               transition: "opacity 200ms ease",
@@ -198,28 +172,13 @@ const NotificationContainer = defineComponent({
                 type: "button",
                 onClick: handleClearAll,
               },
-              [h(VcIcon, { icon: "lucide-x", size: "xs", "aria-hidden": "true" }), "Clear all"],
+              [
+                h(VcIcon, { icon: "lucide-x", size: "xs", "aria-hidden": "true" }),
+                i18n.global.t("CORE.NOTIFICATIONS.CLEAR_ALL"),
+              ],
             ),
           ],
         );
-      }
-
-      // Compute total stack height for the group element
-      let groupHeight: number;
-      if (isExpanded && count > 1) {
-        // Expanded: offset of oldest toast + its height
-        const oldestSonnerIdx = count - 1;
-        let hSum = 0;
-        for (let i = 1; i < count; i++) {
-          const id = items[i].notificationId;
-          hSum += id !== undefined ? heightsMap.get(id) || 0 : 0;
-        }
-        const oldestOffset = oldestSonnerIdx * GAP + hSum;
-        const oldestHeight = items[0].notificationId !== undefined ? heightsMap.get(items[0].notificationId) || 0 : 0;
-        groupHeight = oldestOffset + oldestHeight;
-      } else {
-        // Collapsed: front toast height + visible back toasts gap
-        groupHeight = frontHeight + Math.min(count - 1, VISIBLE_TOASTS - 1) * GAP;
       }
 
       return h(
@@ -230,18 +189,18 @@ const NotificationContainer = defineComponent({
           "data-position": props.position || "top-center",
           "data-y-position": isTop.value ? "top" : "bottom",
           style: {
-            "--front-toast-height": `${frontHeight}px`,
+            "--front-toast-height": `${layout.frontHeight}px`,
             "--gap": `${GAP}px`,
             width: "var(--width, 356px)",
-            height: `${groupHeight}px`,
+            height: `${layout.groupHeight}px`,
           },
           onMouseenter: expandStack,
           onMouseleave: collapseStack,
           onPointerdown: () => {
-            interacting.value = true;
+            setInteracting(true);
           },
           onPointerup: () => {
-            interacting.value = false;
+            setInteracting(false);
           },
         },
         [...children, clearAllButton],

@@ -20,7 +20,7 @@ if (typeof window !== "undefined") {
 }
 
 setup((app) => {
-    app.use(framework, {
+  app.use(framework, {
     router: createRouter({
       history: createWebHashHistory(),
       routes: [],
@@ -66,7 +66,6 @@ const preview: Preview = {
         setup: () => {
           const { setTheme } = useTheme();
 
-
           watch(
             () => theme,
             (theme) => {
@@ -88,15 +87,29 @@ const preview: Preview = {
       },
     },
     a11y: {
-      config: {
-        rules: [
+      // Fail stories (and the Vitest a11y run) on any violation.
+      test: "error",
+      // Axe run options — mirrors scripts/a11y-audit.mjs exactly (see
+      // framework/ui/ACCESSIBILITY.md).
+      // NOTE: rule overrides must live HERE (run options), not in `config.rules`:
+      // `runOnly` re-enables every rule carrying the listed tags, overriding
+      // `axe.configure`-level disables — only run-option `rules` win over it.
+      options: {
+        // Scope checks to the documented WCAG 2.1 A/AA target. Axe
+        // "best-practice" rules (landmark-unique, empty-table-header, …) are
+        // intentionally out of scope.
+        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+        rules: {
           // Storybook decorators add extra wrapper elements that break landmark rules
-          { id: "region", enabled: false },
-        ],
+          region: { enabled: false },
+          // Color contrast is governed by the product's brand palette and is
+          // tracked as a separate design decision, not a per-component code fix.
+          "color-contrast": { enabled: false },
+        },
       },
     },
   },
 
-  tags: ["autodocs"]
+  tags: ["autodocs"],
 };
 export default preview;

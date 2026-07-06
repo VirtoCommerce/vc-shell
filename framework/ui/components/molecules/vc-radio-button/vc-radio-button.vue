@@ -31,6 +31,7 @@
         :aria-invalid="invalid || undefined"
         :aria-required="ariaRequired"
         :aria-describedby="ariaDescribedBy"
+        :aria-label="!label ? ariaLabel : undefined"
         :class="{ 'vc-radio-button--error': invalid }"
         tabindex="0"
         @change="onChange"
@@ -75,6 +76,8 @@ const props = withDefaults(
       modelValue?: T;
       /** Allows to select a boolean value. */
       binary?: boolean;
+      /** Accessible name for the radio when no visible `label` is provided. */
+      ariaLabel?: string;
     }
   >(),
   {

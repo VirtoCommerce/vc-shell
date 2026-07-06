@@ -12,6 +12,13 @@ const meta = {
   component: VcCheckbox,
   tags: ["autodocs"],
   argTypes: {
+    ariaLabel: {
+      description: "Accessible name for the input when no visible label is provided",
+      control: "text",
+      table: {
+        type: { summary: "string" },
+      },
+    },
     modelValue: {
       description: "Checkbox value (v-model)",
       control: "boolean",

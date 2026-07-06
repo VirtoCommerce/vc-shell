@@ -83,6 +83,13 @@ const meta = {
     maxHeight: 320,
   },
   argTypes: {
+    ariaLabel: {
+      description: "Accessible name for the panel (required for a named listbox)",
+      control: "text",
+      table: {
+        type: { summary: "string" },
+      },
+    },
     modelValue: {
       control: "boolean",
       table: { category: "Model", type: { summary: "boolean" } },
@@ -330,6 +337,7 @@ export const ScrollableList: Story = {
   args: {
     closeOnSelect: false,
     role: "listbox",
+    ariaLabel: "Audience segments",
     maxHeight: 220,
     items: Array.from({ length: 14 }, (_, index) => ({
       id: `filter-${index + 1}`,
@@ -371,12 +379,8 @@ export const ScrollableList: Story = {
             </VcButton>
           </template>
 
-          <template #item="{ item, click }">
-            <button
-              type="button"
-              class="tw-flex tw-w-[260px] tw-items-center tw-justify-between tw-border-0 tw-bg-transparent tw-px-2 tw-py-1.5 tw-text-left"
-              @click="click"
-            >
+          <template #item="{ item }">
+            <div class="tw-flex tw-w-[260px] tw-items-center tw-justify-between tw-px-2 tw-py-1.5 tw-text-left">
               <div>
                 <p class="tw-text-sm tw-text-neutrals-900">{{ item.title }}</p>
                 <p class="tw-text-xs tw-text-neutrals-500">{{ item.description }}</p>
@@ -385,7 +389,7 @@ export const ScrollableList: Story = {
                 class="tw-h-2 tw-w-2 tw-rounded-full"
                 :class="item.id === activeId ? 'tw-bg-primary-500' : 'tw-bg-neutrals-300'"
               />
-            </button>
+            </div>
           </template>
         </VcDropdown>
       </div>

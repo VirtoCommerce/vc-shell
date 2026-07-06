@@ -5,6 +5,7 @@
       <button
         type="button"
         class="vc-editor-font-selector__button"
+        aria-label="Font size"
         :disabled="disabled"
         @click="toggleSizeDropdown"
       >

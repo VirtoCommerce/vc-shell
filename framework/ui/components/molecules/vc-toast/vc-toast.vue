@@ -30,6 +30,7 @@
       <div
         v-if="typeof content === 'string'"
         class="vc-notification__content"
+        tabindex="0"
       >
         {{ content }}
       </div>

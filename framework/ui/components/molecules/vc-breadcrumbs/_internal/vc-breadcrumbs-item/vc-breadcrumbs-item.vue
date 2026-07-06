@@ -96,7 +96,7 @@ function onClick(): void {
   }
 
   &__title {
-    @apply tw-max-w-[150px] tw-truncate;
+    @apply tw-max-w-[150px] tw-truncate tw-text-sm;
   }
 
   &--error {

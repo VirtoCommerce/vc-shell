@@ -124,9 +124,15 @@ describe("VcImage", () => {
       expect(wrapper.find(".vc-image__container").attributes("role")).toBe("button");
     });
 
-    it("sets role=img when src is provided and not clickable", () => {
-      const wrapper = mountComponent({ src: "https://example.com/img.png" });
+    it("sets role=img when src and alt are provided and not clickable", () => {
+      const wrapper = mountComponent({ src: "https://example.com/img.png", alt: "Product image" });
       expect(wrapper.find(".vc-image__container").attributes("role")).toBe("img");
+    });
+
+    it("does not set role=img without an accessible name (decorative)", () => {
+      // role="img" requires a name; without `alt` the background image is decorative.
+      const wrapper = mountComponent({ src: "https://example.com/img.png" });
+      expect(wrapper.find(".vc-image__container").attributes("role")).toBeUndefined();
     });
 
     it("sets tabindex=0 when clickable", () => {

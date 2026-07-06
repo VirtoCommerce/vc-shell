@@ -253,6 +253,7 @@ const isActive = ref(true);
 | `required`     | `boolean`              | `false` | Shows a required indicator on the label                                                            |
 | `error`        | `boolean`              | `false` | Enables error styling                                                                              |
 | `errorMessage` | `string`               | --      | Error message displayed below the switch                                                           |
+| `ariaLabel`    | `string`               | --      | Accessible name for the switch when no visible `label` is set. Applied only when `label` is empty. |
 | `name`         | `string`               | --      | Field name used for validation/id generation (not rendered as an HTML name attribute on the input) |
 
 ## Events

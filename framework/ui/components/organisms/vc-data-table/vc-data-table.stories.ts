@@ -2138,7 +2138,7 @@ export const WithRowActions: Story = {
       <div class="tw-mb-4 tw-p-3 tw-bg-neutrals-100 tw-rounded tw-text-sm">
         <div class="tw-flex tw-items-center tw-gap-4 tw-mb-3">
           <label class="tw-font-semibold">Max Quick Actions:</label>
-          <select v-model.number="maxQuickActions" class="tw-border tw-rounded tw-px-2 tw-py-1">
+          <select v-model.number="maxQuickActions" aria-label="Max quick actions" class="tw-border tw-rounded tw-px-2 tw-py-1">
             <option :value="1">1 (4 in dropdown)</option>
             <option :value="2">2 (3 in dropdown)</option>
             <option :value="3">3 (2 in dropdown)</option>

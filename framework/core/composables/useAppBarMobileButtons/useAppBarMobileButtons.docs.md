@@ -57,6 +57,7 @@ onUnmounted(() => unregister("notifications-btn"));
 | Field       | Type                      | Required | Description                                                                                             |
 | ----------- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
 | `id`        | `string`                  | Yes      | Unique identifier. Used for register/unregister/lookup.                                                 |
+| `title`     | `string`                  | No       | Accessible name for the icon-only button (used as its `aria-label`; falls back to `id`).                |
 | `icon`      | `Component \| string`     | No       | Icon component or CSS class string (e.g., `'fas fa-bell'`).                                             |
 | `component` | `Component`               | No       | Custom Vue component to render instead of a default icon button.                                        |
 | `props`     | `Record<string, unknown>` | No       | Props passed to the custom `component`.                                                                 |

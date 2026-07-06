@@ -11,46 +11,51 @@
         'vc-breadcrumbs__content--separated': separated,
       }"
     >
-      <VcDropdown
+      <li
         v-if="showMoreButton"
-        :items="hiddenItems"
-        :model-value="showBreadcrumbs"
-        floating
-        variant="secondary"
-        placement="bottom-start"
-        :offset="{
-          mainAxis: 10,
-        }"
-        @item-click="onItemClick"
-        @update:model-value="showBreadcrumbs = $event"
+        class="vc-breadcrumbs__item-wrapper"
       >
-        <template #trigger="{ isActive }">
-          <slot
-            name="trigger"
-            :click="toggleBreadcrumbs"
-            :is-active="isActive"
-          >
-            <VcButton
-              text
-              icon="lucide-ellipsis-vertical"
-              icon-size="xl"
-              data-more-button
-              class="vc-breadcrumbs__expand-button"
-              :class="{
-                'vc-breadcrumbs__expand-button--active': isActive,
-              }"
-              @click="toggleBreadcrumbs"
+        <VcDropdown
+          :items="hiddenItems"
+          :model-value="showBreadcrumbs"
+          floating
+          variant="secondary"
+          placement="bottom-start"
+          :offset="{
+            mainAxis: 10,
+          }"
+          @item-click="onItemClick"
+          @update:model-value="showBreadcrumbs = $event"
+        >
+          <template #trigger="{ isActive }">
+            <slot
+              name="trigger"
+              :click="toggleBreadcrumbs"
+              :is-active="isActive"
+            >
+              <VcButton
+                text
+                icon="lucide-ellipsis-vertical"
+                icon-size="xl"
+                data-more-button
+                aria-label="Show more breadcrumbs"
+                class="vc-breadcrumbs__expand-button"
+                :class="{
+                  'vc-breadcrumbs__expand-button--active': isActive,
+                }"
+                @click="toggleBreadcrumbs"
+              />
+            </slot>
+          </template>
+          <template #item="{ item, click }">
+            <VcDropdownItem
+              :title="typeof item.title === 'string' ? item.title : (item.title?.value ?? '')"
+              :icon="item.icon"
+              @click="click"
             />
-          </slot>
-        </template>
-        <template #item="{ item, click }">
-          <VcDropdownItem
-            :title="typeof item.title === 'string' ? item.title : (item.title?.value ?? '')"
-            :icon="item.icon"
-            @click="click"
-          />
-        </template>
-      </VcDropdown>
+          </template>
+        </VcDropdown>
+      </li>
 
       <template
         v-for="(item, i) in visibleItems"

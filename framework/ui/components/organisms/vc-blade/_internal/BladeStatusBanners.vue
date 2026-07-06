@@ -48,7 +48,11 @@
           :style="errorWrapperStyle"
         >
           <div class="vc-blade-status-banners__error-details">
-            <pre class="vc-blade-status-banners__error-details-text">{{ errorDetailsText }}</pre>
+            <pre
+              class="vc-blade-status-banners__error-details-text"
+              tabindex="0"
+              >{{ errorDetailsText }}</pre
+            >
             <button
               class="vc-blade-status-banners__error-copy"
               :title="t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.COPY_ERROR')"
@@ -92,6 +96,7 @@
           <button
             v-if="banner.dismissible"
             class="vc-blade-status-banners__dismiss"
+            :title="t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.CLOSE')"
             @click="dismissBanner(banner)"
           >
             <VcIcon

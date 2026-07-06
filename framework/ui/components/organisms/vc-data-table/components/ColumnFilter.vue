@@ -12,6 +12,7 @@
       icon-size="xs"
       class="vc-column-filter__trigger"
       :class="{ 'vc-column-filter__trigger--active': hasActiveFilter }"
+      :aria-label="$t('COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_FILTER.TITLE')"
       :aria-expanded="isOpen"
       aria-haspopup="dialog"
       @click="toggleOverlay"

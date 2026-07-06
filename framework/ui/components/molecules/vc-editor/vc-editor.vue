@@ -482,6 +482,16 @@ const editor = useEditor({
   content: props.modelValue,
   editable: !props.disabled,
   extensions: extensions.value,
+  editorProps: {
+    // Expose the contenteditable region as a named multiline textbox
+    // (WCAG 4.1.2 / aria-input-field-name). Without an explicit role the
+    // plain <div> is treated as generic, which prohibits aria-label.
+    attributes: {
+      role: "textbox",
+      "aria-multiline": "true",
+      "aria-label": props.label || "Rich text editor",
+    },
+  },
   onUpdate: ({ editor: tipTapEditor }) => {
     // Skip emit when content was set programmatically from prop change
     if (settingContentFromProp) return;

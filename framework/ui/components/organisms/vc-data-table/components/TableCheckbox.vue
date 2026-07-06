@@ -7,6 +7,7 @@
       :model-value="isChecked"
       :disabled="disabled"
       :indeterminate="indeterminate"
+      :aria-label="ariaLabel"
       @update:model-value="handleChange"
     />
   </div>
@@ -16,12 +17,19 @@
 import { computed } from "vue";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
 
-const props = defineProps<{
-  modelValue?: boolean;
-  checked?: boolean;
-  disabled?: boolean;
-  indeterminate?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    modelValue?: boolean;
+    checked?: boolean;
+    disabled?: boolean;
+    indeterminate?: boolean;
+    /** Accessible name for the selection checkbox. */
+    ariaLabel?: string;
+  }>(),
+  {
+    ariaLabel: "Select row",
+  },
+);
 
 const emit = defineEmits<{
   "update:modelValue": [value: boolean];

@@ -912,8 +912,8 @@ export const CustomMenuSlot: StoryFn = () => {
             <div class="chdr" v-if="expanded">
               <img :src="headerLogo" alt="Logo" class="chdr__logo" />
               <div class="chdr__btns">
-                <button type="button" class="chdr__btn"><VcIcon icon="lucide-bell" size="s" /></button>
-                <button type="button" class="chdr__btn"><VcIcon icon="lucide-search" size="s" /></button>
+                <button type="button" aria-label="Notifications" class="chdr__btn"><VcIcon icon="lucide-bell" size="s" /></button>
+                <button type="button" aria-label="Search" class="chdr__btn"><VcIcon icon="lucide-search" size="s" /></button>
               </div>
             </div>
           </template>

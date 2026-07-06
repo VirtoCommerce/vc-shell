@@ -1,20 +1,31 @@
 <template>
   <div
     class="vc-data-table__body"
+    :role="items.length ? 'rowgroup' : 'presentation'"
     @scroll="$emit('scroll', $event)"
   >
-    <!-- Empty state -->
-    <template v-if="items.length === 0 && !loading">
-      <slot name="empty">
-        <TableEmpty
-          :icon="emptyIcon"
-          :title="emptyTitle"
-          :description="emptyDescription"
-          :action-label="emptyActionLabel"
-          :action-handler="emptyActionHandler"
-        />
-      </slot>
-    </template>
+    <!-- Empty state (wrapped as a single row/cell so it is valid inside role="table";
+         display:contents keeps the wrappers layout-transparent) -->
+    <div
+      v-if="items.length === 0 && !loading"
+      role="row"
+      style="display: contents"
+    >
+      <div
+        role="cell"
+        style="display: contents"
+      >
+        <slot name="empty">
+          <TableEmpty
+            :icon="emptyIcon"
+            :title="emptyTitle"
+            :description="emptyDescription"
+            :action-label="emptyActionLabel"
+            :action-handler="emptyActionHandler"
+          />
+        </slot>
+      </div>
+    </div>
 
     <!-- Loading state — skeleton rows matching column layout -->
     <template v-else-if="loading && items.length === 0">
@@ -34,6 +45,7 @@
       v-else
       ref="rowsContainerRef"
       tag="div"
+      role="presentation"
       name="vc-table-row-swap"
       class="vc-data-table__rows-container"
     >

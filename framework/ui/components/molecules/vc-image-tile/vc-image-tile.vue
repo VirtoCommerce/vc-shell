@@ -29,7 +29,7 @@
     <img
       v-if="src && !imageState.hasError.value"
       :src="resolvedSrc"
-      :alt="alt"
+      :alt="alt ?? name ?? ''"
       class="vc-image-tile__image"
       :class="{ 'vc-image-tile__image--loaded': imageState.isLoaded.value }"
       :style="{ objectFit: imageFit }"

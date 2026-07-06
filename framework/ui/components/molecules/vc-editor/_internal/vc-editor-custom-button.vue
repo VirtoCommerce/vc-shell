@@ -9,6 +9,7 @@
   <VcEditorButton
     v-else-if="isButton(customButton)"
     :icon="customButton.icon"
+    :aria-label="customButton.label"
     :active="isActive"
     :disabled="disabled || isDisabled"
     @action="handleAction"
@@ -19,6 +20,7 @@
   >
     <select
       :disabled="disabled || isDisabled"
+      :aria-label="customButton.label"
       @change="handleDropdownChange"
     >
       <option

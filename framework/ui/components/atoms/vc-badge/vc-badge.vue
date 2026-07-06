@@ -17,7 +17,7 @@
         'vc-badge__badge--inline-medium': size === 'm',
       },
     ]"
-    :role="clickable ? 'button' : undefined"
+    :role="clickable ? 'button' : ariaLabel || isDot ? 'img' : undefined"
     :tabindex="clickable && !disabled ? 0 : undefined"
     :aria-disabled="clickable && disabled ? true : undefined"
     :aria-label="ariaLabel || (isDot ? 'Notification' : undefined)"
@@ -62,7 +62,7 @@
           },
         ]"
         :style="customPositionStyle"
-        :role="clickable ? 'button' : undefined"
+        :role="clickable ? 'button' : ariaLabel || isDot ? 'img' : undefined"
         :tabindex="clickable && !disabled ? 0 : undefined"
         :aria-disabled="clickable && disabled ? true : undefined"
         :aria-label="ariaLabel || (isDot ? 'Notification' : undefined)"

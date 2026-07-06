@@ -56,6 +56,7 @@
         :aria-invalid="invalid || undefined"
         :aria-required="ariaRequired"
         :aria-describedby="ariaDescribedBy"
+        :aria-label="!label ? ariaLabel : undefined"
         tabindex="0"
       />
 
@@ -139,6 +140,8 @@ const props = withDefaults(
       size?: "s" | "m" | "l";
       outline?: boolean;
       indeterminate?: boolean;
+      /** Accessible name for the checkbox when no visible `label` is provided. */
+      ariaLabel?: string;
     }
   >(),
   {

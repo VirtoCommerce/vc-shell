@@ -36,6 +36,7 @@
         <div
           class="vc-dropdown-panel__content"
           :class="{ 'vc-dropdown-panel__content--scrollable': contentScrollable }"
+          :tabindex="contentScrollable ? 0 : undefined"
         >
           <slot />
         </div>

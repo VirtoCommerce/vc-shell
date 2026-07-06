@@ -9,7 +9,7 @@
       {
         'vc-blade--mobile': isMobile,
         'vc-blade--expanded': isExpanded,
-        'vc-blade--maximized': descriptor?.maximized,
+        'vc-blade--maximized': renderingState?.maximized,
       },
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
@@ -39,11 +39,11 @@
         />
 
         <div
-          v-if="!showSkeleton && descriptor?.breadcrumbs?.length && isDesktop"
+          v-if="!showSkeleton && renderingState?.breadcrumbs?.length && isDesktop"
           class="vc-blade__breadcrumbs"
         >
           <VcBreadcrumbs
-            :items="descriptor?.breadcrumbs"
+            :items="renderingState?.breadcrumbs"
             collapsed
           >
             <template #trigger="{ click, isActive }">
@@ -91,6 +91,7 @@
     <div
       ref="contentRef"
       class="vc-blade__content"
+      tabindex="0"
     >
       <div
         class="vc-blade__main"
@@ -122,7 +123,7 @@ import { BladeBackButtonKey, BladeFormKey, BladeLoadingKey } from "@framework/in
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { useBlade } from "../../../../core/composables";
 import { useResponsive } from "@framework/core/composables/useResponsive";
-import { BladeDescriptorKey, BladeMaximizedKey } from "@core/blade-navigation/types";
+import { BladeDescriptorKey, BladeMaximizedKey, BladeRenderingStateKey } from "@core/blade-navigation/types";
 
 export interface Props {
   icon?: string;
@@ -199,6 +200,10 @@ const { id: bladeId } = bladeFull;
 const hasBladeContext = !!inject(BladeDescriptorKey, undefined);
 const maximizedRef = inject(BladeMaximizedKey, undefined);
 
+// Rendering state (maximized/breadcrumbs) — provided by VcBladeSlot separately
+// from the immutable descriptor. Undefined when rendered standalone (Storybook).
+const renderingState = inject(BladeRenderingStateKey, undefined);
+
 // When inside blade navigation, read from BladeDescriptor (ignoring props).
 // When standalone (Storybook), fall back to props.
 const isExpanded = computed(() => {
@@ -254,8 +259,6 @@ if (import.meta.env.DEV && attrs.onClose && hasBladeContext) {
       "Remove @close=\"$emit('close:blade')\" from your template.",
   );
 }
-
-const descriptor = inject(BladeDescriptorKey, undefined);
 
 const backButton = inject(BladeBackButtonKey);
 

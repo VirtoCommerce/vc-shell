@@ -188,12 +188,12 @@ export const CustomNavigation: Story = {
           <vc-image :src="slide.url" class="tw-rounded-md"></vc-image>
         </template>
         <template v-slot:prevBtn>
-          <button class="tw-bg-blue-500 tw-text-white tw-p-2 tw-rounded-full">
+          <button aria-label="Previous slide" class="tw-bg-blue-500 tw-text-white tw-p-2 tw-rounded-full">
             <vc-icon icon="lucide-arrow-left"></vc-icon>
           </button>
         </template>
         <template v-slot:nextBtn>
-          <button class="tw-bg-blue-500 tw-text-white tw-p-2 tw-rounded-full">
+          <button aria-label="Next slide" class="tw-bg-blue-500 tw-text-white tw-p-2 tw-rounded-full">
             <vc-icon icon="lucide-arrow-right"></vc-icon>
           </button>
         </template>

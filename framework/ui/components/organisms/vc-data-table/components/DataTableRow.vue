@@ -54,6 +54,7 @@
           :model-value="isSelected ?? false"
           :value="true"
           :disabled="!isSelectable"
+          aria-label="Select row"
           @update:model-value="handleSelectionChange($event === true)"
         />
       </TableCell>

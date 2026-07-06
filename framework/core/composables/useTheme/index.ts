@@ -1,4 +1,4 @@
-import { BasicColorSchema, useColorMode, useCycleList } from "@vueuse/core";
+import { BasicColorSchema, createSharedComposable, useColorMode, useCycleList } from "@vueuse/core";
 import { computed, watchEffect, ref, type Ref } from "vue";
 import * as _ from "lodash-es";
 import { i18n } from "@core/plugins/i18n";
@@ -35,7 +35,7 @@ const _themeRegistry: Ref<ThemeDefinition[]> = ref([
   { key: "dark", localizationKey: "CORE.THEMES.DARK" },
 ]);
 
-export const useTheme = (): UseThemeReturn => {
+export const useTheme = createSharedComposable((): UseThemeReturn => {
   const { t } = i18n.global;
 
   function register(themesToAdd: ThemeDefinition | ThemeDefinition[]) {
@@ -117,4 +117,4 @@ export const useTheme = (): UseThemeReturn => {
     unregister,
     setTheme,
   };
-};
+});

@@ -102,4 +102,24 @@ describe("useTheme", () => {
     expect(keys).not.toContain("a1");
     expect(keys).not.toContain("b1");
   });
+
+  // useTheme is a shared composable: every caller must observe the same state.
+  it("shares currentThemeKey across separate callers", () => {
+    const first = useTheme();
+    const second = useTheme();
+
+    first.register({ key: "dark", localizationKey: "CORE.THEMES.DARK" });
+    first.setTheme("dark");
+
+    expect(second.currentThemeKey.value).toBe("dark");
+  });
+
+  it("exposes a theme registered after the first call to existing callers", () => {
+    const first = useTheme();
+    const second = useTheme();
+
+    second.register({ key: "aurora" });
+
+    expect(first.themes.value.map((t) => t.key)).toContain("aurora");
+  });
 });

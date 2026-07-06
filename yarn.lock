@@ -5327,7 +5327,6 @@ __metadata:
     tsc-alias: "npm:^1.8.8"
     tsx: "npm:^4.7.1"
     typescript: "npm:^5.8.3"
-    vee-validate: "npm:^4.12.4"
     vite: "npm:^6.3.3"
     vitest: "npm:^3.0.0"
     vue: "npm:^3.5.30"
@@ -5340,9 +5339,12 @@ __metadata:
     web-vitals: "npm:^5.1.0"
     whatwg-fetch: "npm:^3.6.19"
   peerDependencies:
+    vee-validate: ">=4.12.0"
     vue: ">=3.4.0"
     vue-router: ">=4.2.0"
   peerDependenciesMeta:
+    vee-validate:
+      optional: false
     vue:
       optional: false
     vue-router:

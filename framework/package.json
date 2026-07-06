@@ -109,7 +109,6 @@
     "swiper": "^11.2.10",
     "tiptap-markdown": "^0.9.0",
     "truncate-html": "^1.1.1",
-    "vee-validate": "^4.12.4",
     "vue-currency-input": "^3.0.5",
     "vue-i18n": "^11.1.11",
     "vue3-application-insights": "^1.1.0",
@@ -118,10 +117,14 @@
     "whatwg-fetch": "^3.6.19"
   },
   "peerDependencies": {
+    "vee-validate": ">=4.12.0",
     "vue": ">=3.4.0",
     "vue-router": ">=4.2.0"
   },
   "peerDependenciesMeta": {
+    "vee-validate": {
+      "optional": false
+    },
     "vue": {
       "optional": false
     },

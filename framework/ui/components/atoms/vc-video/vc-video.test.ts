@@ -24,7 +24,7 @@ describe("VcVideo", () => {
     const wrapper = mountComponent();
     const placeholder = wrapper.find(".vc-video__placeholder");
     expect(placeholder.attributes("role")).toBe("img");
-    expect(placeholder.attributes("aria-label")).toBe("No video source");
+    expect(placeholder.attributes("aria-label")).toBe("COMPONENTS.ATOMS.VC_VIDEO.NO_SOURCE");
   });
 
   it("renders iframe when source is provided", () => {

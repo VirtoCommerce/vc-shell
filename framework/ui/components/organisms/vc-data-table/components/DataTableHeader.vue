@@ -14,7 +14,7 @@
           v-if="selectionMode === 'multiple'"
           :model-value="allSelected"
           :indeterminate="someSelected"
-          aria-label="Select all rows"
+          :aria-label="$t('COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL_ROWS')"
           @update:model-value="handleSelectAllChange"
         />
       </TableHead>
@@ -46,7 +46,7 @@
             v-if="col.props.selectionMode === 'multiple'"
             :model-value="allSelected"
             :indeterminate="someSelected"
-            aria-label="Select all rows"
+            :aria-label="$t('COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL_ROWS')"
             @update:model-value="handleSelectAllChange"
           />
         </template>

@@ -32,7 +32,7 @@
         v-else
         class="vc-video__placeholder"
         role="img"
-        aria-label="No video source"
+        :aria-label="$t('COMPONENTS.ATOMS.VC_VIDEO.NO_SOURCE')"
       >
         <VcIcon
           icon="lucide-film"

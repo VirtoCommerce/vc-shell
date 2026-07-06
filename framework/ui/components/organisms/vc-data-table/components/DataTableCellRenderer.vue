@@ -12,7 +12,7 @@
       :model-value="isSelected ?? false"
       :value="true"
       :disabled="!isSelectable"
-      aria-label="Select row"
+      :aria-label="$t('COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ROW')"
       @update:model-value="$emit('selection-change', true)"
     />
   </template>

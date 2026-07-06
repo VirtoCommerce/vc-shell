@@ -1,7 +1,7 @@
 <template>
   <nav
     class="vc-pagination"
-    aria-label="Pagination"
+    :aria-label="$t('COMPONENTS.MOLECULES.VC_PAGINATION.LABEL')"
   >
     <!-- Pagination Controls -->
     <div class="vc-pagination__controls">
@@ -12,7 +12,7 @@
         class="vc-pagination__item"
         :class="{ 'vc-pagination__item--disabled': localCurrentPage === 1 }"
         :disabled="localCurrentPage === 1"
-        aria-label="First page"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_PAGINATION.FIRST')"
         @click="setPage(1)"
       >
         <VcIcon
@@ -27,7 +27,7 @@
         class="vc-pagination__item"
         :class="{ 'vc-pagination__item--disabled': localCurrentPage === 1 }"
         :disabled="localCurrentPage === 1"
-        aria-label="Previous page"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_PAGINATION.PREVIOUS')"
         @click="setPage(localCurrentPage - 1)"
       >
         <VcIcon
@@ -46,7 +46,7 @@
           'vc-pagination__item--hover': page !== localCurrentPage,
         }"
         :aria-current="page === localCurrentPage ? 'page' : undefined"
-        :aria-label="`Page ${page}`"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_PAGINATION.PAGE', { page })"
         @click="setPage(page)"
       >
         {{ page }}
@@ -58,7 +58,7 @@
         class="vc-pagination__item"
         :class="{ 'vc-pagination__item--disabled': localCurrentPage === pages }"
         :disabled="localCurrentPage === pages"
-        aria-label="Next page"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_PAGINATION.NEXT')"
         @click="setPage(localCurrentPage + 1)"
       >
         <VcIcon
@@ -74,7 +74,7 @@
         class="vc-pagination__item"
         :class="{ 'vc-pagination__item--disabled': localCurrentPage === pages }"
         :disabled="localCurrentPage === pages"
-        aria-label="Last page"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_PAGINATION.LAST')"
         @click="setPage(pages)"
       >
         <VcIcon

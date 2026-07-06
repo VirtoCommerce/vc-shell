@@ -35,7 +35,7 @@
     >
       <button
         class="sidebar-header__notification-bell"
-        aria-label="Notifications"
+        :aria-label="$t('COMPONENTS.ORGANISMS.VC_APP.NOTIFICATIONS')"
         @click="$emit('toggle-notifications', $event)"
       >
         <div class="sidebar-header__notification-bell-wrap">

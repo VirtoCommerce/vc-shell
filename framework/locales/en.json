@@ -23,10 +23,27 @@
     }
   },
   "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "Clear",
+      "CLEAR_ALL": "Clear all",
+      "CLOSE": "Close",
+      "TOGGLE_DROPDOWN": "Toggle dropdown",
+      "SEARCH_OPTIONS": "Search options",
+      "SELECT_OPTION": "Select option",
+      "CLEAR_SELECTION": "Clear selection",
+      "COPY_TO_CLIPBOARD": "Copy to clipboard",
+      "DELETE_ITEM": "Delete item"
+    },
     "ATOMS": {
       "VC_BANNER": {
         "SHOW_MORE": "Show more",
         "SHOW_LESS": "Show less"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "Scrollable content"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "No video source"
       }
     },
     "MOLECULES": {
@@ -47,10 +64,33 @@
         "DATE_TIME_PLACEHOLDER": "Select date and time"
       },
       "VC_PAGINATION": {
-        "JUMP": "Jump to page:"
+        "JUMP": "Jump to page:",
+        "LABEL": "Pagination",
+        "FIRST": "First page",
+        "PREVIOUS": "Previous page",
+        "NEXT": "Next page",
+        "LAST": "Last page",
+        "PAGE": "Page {page}"
       },
       "VC_MULTIVALUE": {
         "ADD": "Add"
+      },
+      "VC_BREADCRUMBS": {
+        "LABEL": "Breadcrumb",
+        "SHOW_MORE": "Show more breadcrumbs"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "Clear color"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "Clear date"
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "Previous slide",
+        "NEXT": "Next slide"
+      },
+      "VC_TOAST": {
+        "DISMISS": "Dismiss notification"
       }
     },
     "ORGANISMS": {
@@ -88,6 +128,7 @@
         "COLLAPSE": "Collapse"
       },
       "VC_APP": {
+        "NOTIFICATIONS": "Notifications",
         "INTERNAL": {
           "VC_APP_BAR": {
             "BACK": "Back"
@@ -128,6 +169,8 @@
         "NO_CHANGES": "No unsaved changes"
       },
       "VC_TABLE": {
+        "SELECT_ROW": "Select row",
+        "SELECT_ALL_ROWS": "Select all rows",
         "CURRENT_PAGE_SELECTED": "All items in this page are selected.",
         "SELECT_ALL": "Select all items",
         "ALL_SELECTED": "All items are selected.",

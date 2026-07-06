@@ -41,7 +41,7 @@
     <button
       type="button"
       class="vc-notification__dismiss-button"
-      aria-label="Dismiss notification"
+      :aria-label="$t('COMPONENTS.MOLECULES.VC_TOAST.DISMISS')"
       @click.stop="handleClose"
       @keydown.escape="handleClose"
     >

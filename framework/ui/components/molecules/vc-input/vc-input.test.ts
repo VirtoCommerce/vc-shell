@@ -102,7 +102,7 @@ describe("VcInput", () => {
 
   it("has semantic clear button with aria-label", async () => {
     const wrapper = mountInput({ modelValue: "hello", clearable: true });
-    const clearBtn = wrapper.find('button[aria-label="Clear"]');
+    const clearBtn = wrapper.find('button[aria-label="COMPONENTS.CONTROLS.CLEAR"]');
     expect(clearBtn.exists()).toBe(true);
   });
 

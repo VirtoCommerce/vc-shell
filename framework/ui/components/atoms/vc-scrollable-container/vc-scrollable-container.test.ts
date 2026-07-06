@@ -27,7 +27,7 @@ describe("VcScrollableContainer", () => {
     const wrapper = mountComponent();
     const region = wrapper.find("[role='region']");
     expect(region.exists()).toBe(true);
-    expect(region.attributes("aria-label")).toBe("Scrollable content");
+    expect(region.attributes("aria-label")).toBe("COMPONENTS.ATOMS.VC_SCROLLABLE_CONTAINER.LABEL");
   });
 
   it("renders default slot content in the viewport", () => {

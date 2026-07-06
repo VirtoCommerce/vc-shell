@@ -23,10 +23,27 @@
     }
   },
   "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "Löschen",
+      "CLEAR_ALL": "Alle löschen",
+      "CLOSE": "Schließen",
+      "TOGGLE_DROPDOWN": "Dropdown umschalten",
+      "SEARCH_OPTIONS": "Optionen suchen",
+      "SELECT_OPTION": "Option auswählen",
+      "CLEAR_SELECTION": "Auswahl aufheben",
+      "COPY_TO_CLIPBOARD": "In die Zwischenablage kopieren",
+      "DELETE_ITEM": "Element löschen"
+    },
     "ATOMS": {
       "VC_BANNER": {
         "SHOW_MORE": "Mehr anzeigen",
         "SHOW_LESS": "Weniger anzeigen"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "Scrollbarer Inhalt"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "Keine Videoquelle"
       }
     },
     "MOLECULES": {
@@ -47,10 +64,33 @@
         "DATE_TIME_PLACEHOLDER": "Datum und Uhrzeit auswählen"
       },
       "VC_PAGINATION": {
-        "JUMP": "Zur Seite springen:"
+        "JUMP": "Zur Seite springen:",
+        "LABEL": "Seitennummerierung",
+        "FIRST": "Erste Seite",
+        "PREVIOUS": "Vorherige Seite",
+        "NEXT": "Nächste Seite",
+        "LAST": "Letzte Seite",
+        "PAGE": "Seite {page}"
       },
       "VC_MULTIVALUE": {
         "ADD": "Hinzufügen"
+      },
+      "VC_BREADCRUMBS": {
+        "LABEL": "Brotkrümelnavigation",
+        "SHOW_MORE": "Weitere Brotkrümel anzeigen"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "Farbe löschen"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "Datum löschen"
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "Vorherige Folie",
+        "NEXT": "Nächste Folie"
+      },
+      "VC_TOAST": {
+        "DISMISS": "Benachrichtigung schließen"
       }
     },
     "ORGANISMS": {
@@ -88,6 +128,7 @@
         "COLLAPSE": "Einklappen"
       },
       "VC_APP": {
+        "NOTIFICATIONS": "Benachrichtigungen",
         "INTERNAL": {
           "VC_APP_BAR": {
             "BACK": "Zurück"
@@ -128,6 +169,8 @@
         "NO_CHANGES": "Keine ungespeicherten Änderungen"
       },
       "VC_TABLE": {
+        "SELECT_ROW": "Zeile auswählen",
+        "SELECT_ALL_ROWS": "Alle Zeilen auswählen",
         "CURRENT_PAGE_SELECTED": "Alle Elemente auf dieser Seite sind ausgewählt.",
         "SELECT_ALL": "Alle Elemente auswählen",
         "ALL_SELECTED": "Alle Elemente sind ausgewählt.",

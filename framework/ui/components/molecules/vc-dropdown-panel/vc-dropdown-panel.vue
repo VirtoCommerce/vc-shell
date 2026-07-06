@@ -21,7 +21,7 @@
             <button
               type="button"
               class="vc-dropdown-panel__close"
-              aria-label="Close"
+              :aria-label="$t('COMPONENTS.CONTROLS.CLOSE')"
               @click="close"
             >
               <VcIcon

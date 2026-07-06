@@ -72,7 +72,7 @@
                   type="button"
                   class="vc-input-dropdown__toggle-button"
                   tabindex="0"
-                  aria-label="Select option"
+                  :aria-label="$t('COMPONENTS.CONTROLS.SELECT_OPTION')"
                   :aria-expanded="isOpened"
                   aria-haspopup="listbox"
                   @click.stop.prevent="toggleHandler"
@@ -88,7 +88,7 @@
               :icon="isOpened ? 'lucide-chevron-up' : 'lucide-chevron-down'"
               icon-size="s"
               text
-              aria-label="Toggle dropdown"
+              :aria-label="$t('COMPONENTS.CONTROLS.TOGGLE_DROPDOWN')"
               icon-class="vc-input-dropdown__toggle-button-icon"
               @click.stop.prevent="toggleHandler"
             ></VcButton>

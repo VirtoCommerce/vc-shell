@@ -2,7 +2,7 @@
   <div
     class="vc-scrollable-container"
     role="region"
-    aria-label="Scrollable content"
+    :aria-label="$t('COMPONENTS.ATOMS.VC_SCROLLABLE_CONTAINER.LABEL')"
   >
     <div
       class="vc-scrollable-container__arrow"

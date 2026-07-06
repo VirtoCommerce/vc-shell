@@ -98,7 +98,7 @@
             v-if="clearable && textValue && !disabled"
             type="button"
             class="vc-color-input__clear"
-            aria-label="Clear color"
+            :aria-label="$t('COMPONENTS.MOLECULES.VC_COLOR_INPUT.CLEAR')"
             @click="onReset"
           >
             <VcIcon

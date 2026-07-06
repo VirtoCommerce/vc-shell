@@ -98,7 +98,7 @@
             v-if="clearable && internalValue && !disabled"
             type="button"
             class="vc-date-picker__clear"
-            aria-label="Clear date"
+            :aria-label="$t('COMPONENTS.MOLECULES.VC_DATE_PICKER.CLEAR')"
             @click="onReset"
           >
             <VcIcon

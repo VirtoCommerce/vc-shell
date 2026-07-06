@@ -18,7 +18,7 @@
           ref="searchInputRef"
           class="vc-select__search-input"
           tabindex="0"
-          aria-label="Search options"
+          :aria-label="$t('COMPONENTS.CONTROLS.SEARCH_OPTIONS')"
           autocomplete="off"
           @input="emit('input', $event)"
           @keydown.space.stop

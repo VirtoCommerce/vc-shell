@@ -33,7 +33,7 @@ describe("VcMultivalue", () => {
       // The chip remove button emits 'remove' on MultivalueTrigger,
       // which calls removeAtIndex in useMultivalueValues → emits update:model-value
       // VcIcon is stubbed as <vcicon-stub>; find by aria-label attribute
-      const removeButtons = wrapper.findAll('[aria-label="Delete item"]');
+      const removeButtons = wrapper.findAll('[aria-label="COMPONENTS.CONTROLS.DELETE_ITEM"]');
       expect(removeButtons.length).toBeGreaterThan(0);
       await removeButtons[0].trigger("click");
       const emitted = wrapper.emitted("update:model-value");

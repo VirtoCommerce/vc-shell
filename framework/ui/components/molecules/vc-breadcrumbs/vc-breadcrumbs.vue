@@ -1,7 +1,7 @@
 <template>
   <nav
     v-if="items && items.length"
-    aria-label="Breadcrumb"
+    :aria-label="$t('COMPONENTS.MOLECULES.VC_BREADCRUMBS.LABEL')"
     class="vc-breadcrumbs"
   >
     <ol
@@ -38,7 +38,7 @@
                 icon="lucide-ellipsis-vertical"
                 icon-size="xl"
                 data-more-button
-                aria-label="Show more breadcrumbs"
+                :aria-label="$t('COMPONENTS.MOLECULES.VC_BREADCRUMBS.SHOW_MORE')"
                 class="vc-breadcrumbs__expand-button"
                 :class="{
                   'vc-breadcrumbs__expand-button--active': isActive,

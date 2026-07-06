@@ -10,6 +10,13 @@
  */
 import { vi } from "vitest";
 import { ref } from "vue";
+import { config } from "@vue/test-utils";
+
+// ── global $t ────────────────────────────────────────────────────────────────
+// The vue-i18n plugin installs $t as a global property; unit mounts don't run it.
+// Provide an identity $t (returns the key) mirroring the useI18n mock below, so
+// components using $t("...") in templates render without an i18n plugin.
+config.global.mocks.$t = (key: string) => key;
 
 // ── vue-i18n ────────────────────────────────────────────────────────────────
 // Provides useI18n with identity `t()`, createI18n stub, and locale ref.

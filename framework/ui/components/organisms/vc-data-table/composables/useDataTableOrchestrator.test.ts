@@ -139,10 +139,10 @@ describe("useDataTableOrchestrator", () => {
       expect(result).toBeDefined();
       expect(result.selection).toBeDefined();
       // internalSelection should start as an empty array
-      expect(result.selection.internalSelection.value).toEqual([]);
+      expect(result.selection.selected.value).toEqual([]);
       // No items selected, so allSelected / someSelected should be false
-      expect(result.selection.allSelected.value).toBe(false);
-      expect(result.selection.someSelected.value).toBe(false);
+      expect(result.selection.isAllSelected.value).toBe(false);
+      expect(result.selection.isPartiallySelected.value).toBe(false);
     } finally {
       app.unmount();
     }
@@ -313,9 +313,9 @@ describe("useDataTableOrchestrator", () => {
       const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));
 
       try {
-        result.selection.handleSelectAllChange(true); // select all visible rows
-        expect(result.selection.allSelected.value).toBe(true);
-        expect(result.selection.showSelectAllChoice.value).toBe(false);
+        result.selection.onSelectAll(true); // select all visible rows
+        expect(result.selection.isAllSelected.value).toBe(true);
+        expect(result.selection.showSelectAllPrompt.value).toBe(false);
       } finally {
         app.unmount();
       }
@@ -327,8 +327,8 @@ describe("useDataTableOrchestrator", () => {
       const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));
 
       try {
-        result.selection.handleSelectAllChange(true);
-        expect(result.selection.showSelectAllChoice.value).toBe(true);
+        result.selection.onSelectAll(true);
+        expect(result.selection.showSelectAllPrompt.value).toBe(true);
       } finally {
         app.unmount();
       }

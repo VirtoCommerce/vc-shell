@@ -4,50 +4,42 @@ import {
   registerDashboardWidget,
   dashboardBus,
 } from "@core/services/dashboard-service";
-
-export type UseDashboardReturn = IDashboardService;
-import { provide, inject, getCurrentScope, onScopeDispose } from "vue";
 import { DashboardServiceKey } from "@framework/injection-keys";
 import { usePermissions } from "@core/composables/usePermissions";
-import { createLogger, InjectionError } from "@core/utilities";
+import { createLogger } from "@core/utilities";
+import { createServiceRegistry } from "@core/composables/createServiceRegistry";
+
+export type UseDashboardReturn = IDashboardService;
 
 const logger = createLogger("use-dashboard");
 
+const registry = createServiceRegistry<IDashboardService>({
+  key: DashboardServiceKey,
+  bus: dashboardBus,
+  name: "DashboardService",
+  create: () => {
+    let hasAccessResolver: (permissions: string[] | undefined) => boolean = () => true;
+
+    try {
+      const { hasAccess } = usePermissions();
+      hasAccessResolver = (permissions) => hasAccess(permissions);
+    } catch (error) {
+      logger.warn("Permissions composable unavailable, dashboard falls back to allow-all access check", error);
+    }
+
+    return createDashboardService({
+      hasAccess: hasAccessResolver,
+    });
+  },
+  onMissing: () => logger.error("Dashboard service not found"),
+});
+
 export function provideDashboardService(): IDashboardService {
-  const existingService = inject(DashboardServiceKey, null);
-  if (existingService) {
-    return existingService;
-  }
-
-  let hasAccessResolver: (permissions: string[] | undefined) => boolean = () => true;
-
-  try {
-    const { hasAccess } = usePermissions();
-    hasAccessResolver = (permissions) => hasAccess(permissions);
-  } catch (error) {
-    logger.warn("Permissions composable unavailable, dashboard falls back to allow-all access check", error);
-  }
-
-  const service = createDashboardService({
-    hasAccess: hasAccessResolver,
-  });
-
-  provide(DashboardServiceKey, service);
-
-  if (getCurrentScope()) {
-    onScopeDispose(() => dashboardBus.dispose(service));
-  }
-
-  return service;
+  return registry.provide();
 }
 
 export function useDashboard(): UseDashboardReturn {
-  const service = inject(DashboardServiceKey);
-  if (!service) {
-    logger.error("Dashboard service not found");
-    throw new InjectionError("DashboardService");
-  }
-  return service;
+  return registry.use();
 }
 
 export { registerDashboardWidget };

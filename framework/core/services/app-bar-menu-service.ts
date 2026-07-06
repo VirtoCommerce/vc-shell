@@ -1,5 +1,5 @@
 import { ComputedRef, markRaw } from "vue";
-import { createSimpleMapRegistry, createPreregistrationBus } from "@core/services/_internal";
+import { createGenericItemRegistry, createPreregistrationBus } from "@core/services/_internal";
 
 export interface AppBarWidget {
   id: string;
@@ -43,7 +43,8 @@ export function addAppBarWidget(item: registerAppBarWidgetOptions): void {
  * Manages the registration and organization of AppBar menu items
  */
 export function createAppBarWidgetService(): IAppBarWidgetService {
-  const mapRegistry = createSimpleMapRegistry<AppBarWidget, registerAppBarWidgetOptions>({
+  return createGenericItemRegistry<AppBarWidget, registerAppBarWidgetOptions>({
+    bus: appBarWidgetBus,
     createItem: (options, currentSize) => ({
       id: options.id || "",
       order: options.order ?? currentSize,
@@ -58,14 +59,4 @@ export function createAppBarWidgetService(): IAppBarWidgetService {
     }),
     getId: (options) => options.id || "",
   });
-
-  const service: IAppBarWidgetService = {
-    register: (options) => mapRegistry.register(options),
-    unregister: (id) => mapRegistry.unregister(id),
-    items: mapRegistry.sortedItems,
-  };
-
-  appBarWidgetBus.replayInto(service);
-
-  return service;
 }

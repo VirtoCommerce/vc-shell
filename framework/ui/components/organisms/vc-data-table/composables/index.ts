@@ -54,6 +54,11 @@ export type {
   RowSelectEvent,
   RowSelectAllEvent,
 } from "@ui/components/organisms/vc-data-table/composables/useTableSelectionV2";
+export { createTableSelectionFacade } from "@ui/components/organisms/vc-data-table/composables/createTableSelectionFacade";
+export type {
+  TableSelectionFacade,
+  TableSelectionHandlers,
+} from "@ui/components/organisms/vc-data-table/composables/createTableSelectionFacade";
 export { useDataProcessing } from "@ui/components/organisms/vc-data-table/composables/useDataProcessing";
 export type {
   UseDataProcessingOptions,

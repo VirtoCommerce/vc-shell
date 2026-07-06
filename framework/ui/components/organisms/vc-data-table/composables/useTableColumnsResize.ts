@@ -66,19 +66,43 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     return columnState.value.order.filter((id) => renderedIds.has(id) && !!columnState.value.specs[id]);
   };
 
-  const handleResizeStart = (columnId: string, event: MouseEvent) => {
+  // ── Explicit resize lifecycle (input-source agnostic; the tested seam) ──
+  // start → update(deltaPx) → end. The pointer wiring below (handleResize*)
+  // is one driver of this lifecycle; tests can drive it directly without
+  // simulating document events.
+
+  /** Snapshot specs + right neighbors for `columnId`. Returns false if not resizable. */
+  const start = (columnId: string): boolean => {
     const activeOrder = getActiveOrder();
     const idx = activeOrder.indexOf(columnId);
-    if (idx < 0) return;
+    if (idx < 0) return false;
 
     draggedId = columnId;
-    startX = event.pageX;
     initialSpecs = cloneSpecs(columnState.value.specs);
-
     // Find right neighbors in order
     rightNeighborIds = activeOrder.slice(idx + 1).filter((id) => !!initialSpecs[id]);
-
     isResizing.value = true;
+    return true;
+  };
+
+  /** Apply a pixel delta (relative to the drag start) to the active column. */
+  const update = (rawDeltaPx: number) => {
+    if (!isResizing.value || !draggedId) return;
+    applyResize(rawDeltaPx);
+  };
+
+  /** Commit and reset the drag state. */
+  const end = () => {
+    isResizing.value = false;
+    draggedId = "";
+    initialSpecs = {};
+    rightNeighborIds = [];
+  };
+
+  const handleResizeStart = (columnId: string, event: MouseEvent) => {
+    if (!start(columnId)) return;
+
+    startX = event.pageX;
     document.body.style.cursor = "col-resize";
     document.body.style.userSelect = "none";
     document.addEventListener("mousemove", handleResizeMove);
@@ -181,7 +205,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     const rawDelta = event.pageX - startX;
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
-      applyResize(rawDelta);
+      update(rawDelta);
       rafId = 0;
     });
   };
@@ -192,10 +216,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
       cancelAnimationFrame(rafId);
       rafId = 0;
     }
-    isResizing.value = false;
-    draggedId = "";
-    initialSpecs = {};
-    rightNeighborIds = [];
+    end();
     document.body.style.cursor = "";
     document.body.style.userSelect = "";
     document.removeEventListener("mousemove", handleResizeMove);
@@ -290,5 +311,9 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     isResizing,
     handleResizeStart,
     getResizeHeadProps,
+    // Explicit resize lifecycle (input-source agnostic; the tested seam)
+    start,
+    update,
+    end,
   };
 }

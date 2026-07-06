@@ -1,5 +1,5 @@
 import { ComputedRef, markRaw } from "vue";
-import { createSimpleMapRegistry, createPreregistrationBus } from "@core/services/_internal";
+import { createGenericItemRegistry, createPreregistrationBus } from "@core/services/_internal";
 
 export interface ISettingsMenuItem {
   id: string;
@@ -38,7 +38,8 @@ export function addSettingsMenuItem(item: RegisterSettingsMenuItemOptions): void
  * Manages the registration and organization of settings menu items
  */
 export function createSettingsMenuService(): ISettingsMenuService {
-  const mapRegistry = createSimpleMapRegistry<ISettingsMenuItem, RegisterSettingsMenuItemOptions>({
+  return createGenericItemRegistry<ISettingsMenuItem, RegisterSettingsMenuItemOptions>({
+    bus: settingsMenuBus,
     createItem: (options, currentSize) => ({
       id: options.id || "",
       order: options.order ?? currentSize,
@@ -48,14 +49,4 @@ export function createSettingsMenuService(): ISettingsMenuService {
     }),
     getId: (options) => options.id || "",
   });
-
-  const service: ISettingsMenuService = {
-    register: (options) => mapRegistry.register(options),
-    unregister: (id) => mapRegistry.unregister(id),
-    items: mapRegistry.sortedItems,
-  };
-
-  settingsMenuBus.replayInto(service);
-
-  return service;
 }

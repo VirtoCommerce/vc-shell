@@ -285,6 +285,46 @@ describe("weight-based resize behavior", () => {
   });
 });
 
+describe("useTableColumnsResize — explicit start/update/end seam", () => {
+  it("drives a resize without any document events", () => {
+    const state = makeColumnStateFromWidths({ a: 300, b: 250, c: 250 });
+    const engineOut = makeEngineOutput({ a: 300, b: 250, c: 250 });
+    const { result, columnState, recompute } = setup(state, engineOut, { availableWidth: 800 });
+
+    const initialA = columnState.value.specs["a"].weight;
+    const initialB = columnState.value.specs["b"].weight;
+
+    expect(result.start("a")).toBe(true);
+    expect(result.isResizing.value).toBe(true);
+
+    result.update(120); // grow A by 120px
+
+    expect(columnState.value.specs["a"].weight).toBeGreaterThan(initialA);
+    expect(columnState.value.specs["b"].weight).toBeLessThan(initialB);
+    expect(recompute).toHaveBeenCalled();
+
+    result.end();
+    expect(result.isResizing.value).toBe(false);
+  });
+
+  it("start returns false for an unknown column and does not begin a drag", () => {
+    const { result } = setup();
+    expect(result.start("does-not-exist")).toBe(false);
+    expect(result.isResizing.value).toBe(false);
+  });
+
+  it("update is a no-op before start", () => {
+    const state = makeColumnStateFromWidths({ a: 300, b: 300 });
+    const { result, columnState, recompute } = setup(state, makeEngineOutput({ a: 300, b: 300 }), {
+      availableWidth: 600,
+    });
+    const before = columnState.value.specs["a"].weight;
+    result.update(100);
+    expect(columnState.value.specs["a"].weight).toBe(before);
+    expect(recompute).not.toHaveBeenCalled();
+  });
+});
+
 describe("useTableColumnsResize — initial recompute timing (Approach B)", () => {
   let roCallback: (() => void) | null = null;
   let observeSpy: ReturnType<typeof vi.fn>;

@@ -137,10 +137,6 @@ export interface BladeDescriptor {
   error?: unknown;
   /** Blade title — populated at runtime by VcBlade via setBladeTitle() */
   title?: string;
-  /** Whether this blade is maximized (fullscreen) — set by VcBladeSlot */
-  maximized?: boolean;
-  /** Navigation breadcrumbs — set by VcBladeSlot */
-  breadcrumbs?: Breadcrumbs[];
 }
 
 /**
@@ -250,6 +246,20 @@ export const BladeStackKey: InjectionKey<IBladeStack> = Symbol("BladeStack");
 export const BladeMessagingKey: InjectionKey<IBladeMessaging> = Symbol("BladeMessaging");
 export const BladeDescriptorKey: InjectionKey<ComputedRef<BladeDescriptor>> = Symbol("BladeDescriptor");
 export const BladeMaximizedKey: InjectionKey<Ref<boolean>> = Symbol("BladeMaximized");
+
+/**
+ * Per-blade rendering state — view concerns that VcBladeSlot owns and that must
+ * NOT live on the immutable BladeDescriptor (which is plain stack data).
+ * Read this instead of `descriptor.maximized` / `descriptor.breadcrumbs`.
+ */
+export interface BladeRenderingState {
+  /** Whether this blade is maximized (fullscreen) */
+  maximized: boolean;
+  /** Navigation breadcrumbs shown in the blade header */
+  breadcrumbs?: Breadcrumbs[];
+}
+
+export const BladeRenderingStateKey: InjectionKey<ComputedRef<BladeRenderingState>> = Symbol("BladeRenderingState");
 export const BladeDataKey: InjectionKey<ComputedRef<Record<string, unknown>> | Ref<Record<string, unknown>>> =
   Symbol("BladeData");
 

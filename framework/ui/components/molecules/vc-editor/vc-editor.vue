@@ -62,20 +62,20 @@
       <div class="vc-editor__header-actions">
         <VcEditorButton
           icon="lucide-eye"
-          aria-label="Preview"
+          :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.VIEW.PREVIEW')"
           :active="currentMode === 'preview'"
           :disabled="disabled"
           @action="togglePreview"
         />
         <VcEditorButton
           icon="lucide-columns-2"
-          aria-label="Side-by-side view"
+          :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.VIEW.SPLIT')"
           :active="currentMode === 'split'"
           @action="toggleSideBySideView"
         />
         <VcEditorButton
           icon="lucide-code"
-          aria-label="Source code"
+          :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.VIEW.SOURCE')"
           :active="currentMode === 'source'"
           :disabled="disabled"
           @action="toggleSourceView"

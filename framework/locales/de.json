@@ -91,6 +91,37 @@
       },
       "VC_TOAST": {
         "DISMISS": "Benachrichtigung schließen"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "Textformatierung",
+          "BOLD": "Fett",
+          "ITALIC": "Kursiv",
+          "UNDERLINE": "Unterstrichen",
+          "STRIKETHROUGH": "Durchgestrichen",
+          "HEADING_1": "Überschrift 1",
+          "HEADING_2": "Überschrift 2",
+          "HEADING_3": "Überschrift 3",
+          "BULLET_LIST": "Aufzählungsliste",
+          "NUMBERED_LIST": "Nummerierte Liste",
+          "BLOCKQUOTE": "Blockzitat",
+          "INSERT_LINK": "Link einfügen",
+          "INSERT_IMAGE": "Bild einfügen",
+          "INSERT_TABLE": "Tabelle einfügen",
+          "DELETE_TABLE": "Tabelle löschen",
+          "ADD_COLUMN_BEFORE": "Spalte davor einfügen",
+          "ADD_COLUMN_AFTER": "Spalte danach einfügen",
+          "ADD_ROW_BEFORE": "Zeile davor einfügen",
+          "ADD_ROW_AFTER": "Zeile danach einfügen",
+          "DELETE_COLUMN": "Spalte löschen",
+          "DELETE_ROW": "Zeile löschen"
+        },
+        "FONT_SIZE": "Schriftgröße",
+        "VIEW": {
+          "PREVIEW": "Vorschau",
+          "SPLIT": "Nebeneinander-Ansicht",
+          "SOURCE": "Quellcode"
+        }
       }
     },
     "ORGANISMS": {

@@ -91,6 +91,37 @@
       },
       "VC_TOAST": {
         "DISMISS": "Dismiss notification"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "Text formatting",
+          "BOLD": "Bold",
+          "ITALIC": "Italic",
+          "UNDERLINE": "Underline",
+          "STRIKETHROUGH": "Strikethrough",
+          "HEADING_1": "Heading 1",
+          "HEADING_2": "Heading 2",
+          "HEADING_3": "Heading 3",
+          "BULLET_LIST": "Bullet list",
+          "NUMBERED_LIST": "Numbered list",
+          "BLOCKQUOTE": "Blockquote",
+          "INSERT_LINK": "Insert link",
+          "INSERT_IMAGE": "Insert image",
+          "INSERT_TABLE": "Insert table",
+          "DELETE_TABLE": "Delete table",
+          "ADD_COLUMN_BEFORE": "Add column before",
+          "ADD_COLUMN_AFTER": "Add column after",
+          "ADD_ROW_BEFORE": "Add row before",
+          "ADD_ROW_AFTER": "Add row after",
+          "DELETE_COLUMN": "Delete column",
+          "DELETE_ROW": "Delete row"
+        },
+        "FONT_SIZE": "Font size",
+        "VIEW": {
+          "PREVIEW": "Preview",
+          "SPLIT": "Side-by-side view",
+          "SOURCE": "Source code"
+        }
       }
     },
     "ORGANISMS": {

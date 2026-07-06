@@ -73,7 +73,7 @@ describe("VcEditorToolbar", () => {
         customButtons: [],
       },
     });
-    expect(wrapper.find("[aria-label='Bold']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.BOLD']").exists()).toBe(true);
   });
 
   it("renders separator element", () => {
@@ -101,10 +101,10 @@ describe("VcEditorToolbar", () => {
         customButtons: [],
       },
     });
-    expect(wrapper.find("[aria-label='Bold']").exists()).toBe(true);
-    expect(wrapper.find("[aria-label='Italic']").exists()).toBe(true);
-    expect(wrapper.find("[aria-label='Underline']").exists()).toBe(true);
-    expect(wrapper.find("[aria-label='Strikethrough']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.BOLD']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.ITALIC']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.UNDERLINE']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.STRIKETHROUGH']").exists()).toBe(true);
   });
 
   it("renders heading buttons", () => {
@@ -118,9 +118,9 @@ describe("VcEditorToolbar", () => {
         customButtons: [],
       },
     });
-    expect(wrapper.find("[aria-label='Heading 1']").exists()).toBe(true);
-    expect(wrapper.find("[aria-label='Heading 2']").exists()).toBe(true);
-    expect(wrapper.find("[aria-label='Heading 3']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.HEADING_1']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.HEADING_2']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.HEADING_3']").exists()).toBe(true);
   });
 
   it("renders list and blockquote buttons", () => {
@@ -134,9 +134,9 @@ describe("VcEditorToolbar", () => {
         customButtons: [],
       },
     });
-    expect(wrapper.find("[aria-label='Bullet list']").exists()).toBe(true);
-    expect(wrapper.find("[aria-label='Numbered list']").exists()).toBe(true);
-    expect(wrapper.find("[aria-label='Blockquote']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.BULLET_LIST']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.NUMBERED_LIST']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.BLOCKQUOTE']").exists()).toBe(true);
   });
 
   it("renders link and image buttons", () => {
@@ -150,8 +150,8 @@ describe("VcEditorToolbar", () => {
         customButtons: [],
       },
     });
-    expect(wrapper.find("[aria-label='Insert link']").exists()).toBe(true);
-    expect(wrapper.find("[aria-label='Insert image']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.INSERT_LINK']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.INSERT_IMAGE']").exists()).toBe(true);
   });
 
   it("renders table button", () => {
@@ -165,7 +165,7 @@ describe("VcEditorToolbar", () => {
         customButtons: [],
       },
     });
-    expect(wrapper.find("[aria-label='Insert table']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.INSERT_TABLE']").exists()).toBe(true);
   });
 
   it("shows table controls when table is active", () => {
@@ -179,9 +179,9 @@ describe("VcEditorToolbar", () => {
         customButtons: [],
       },
     });
-    expect(wrapper.find("[aria-label='Delete table']").exists()).toBe(true);
-    expect(wrapper.find("[aria-label='Add column before']").exists()).toBe(true);
-    expect(wrapper.find("[aria-label='Add row after']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.DELETE_TABLE']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.ADD_COLUMN_BEFORE']").exists()).toBe(true);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.ADD_ROW_AFTER']").exists()).toBe(true);
   });
 
   it("does not show table controls when table is not active", () => {
@@ -195,7 +195,7 @@ describe("VcEditorToolbar", () => {
         customButtons: [],
       },
     });
-    expect(wrapper.find("[aria-label='Delete table']").exists()).toBe(false);
+    expect(wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.DELETE_TABLE']").exists()).toBe(false);
   });
 
   it("emits uploadImage when image button is clicked", async () => {
@@ -209,7 +209,7 @@ describe("VcEditorToolbar", () => {
         customButtons: [],
       },
     });
-    await wrapper.find("[aria-label='Insert image']").trigger("click");
+    await wrapper.find("[aria-label='COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.INSERT_IMAGE']").trigger("click");
     expect(wrapper.emitted("uploadImage")).toBeTruthy();
   });
 

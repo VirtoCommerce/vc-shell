@@ -30,6 +30,14 @@
       "types": "./dist/core/plugins/extension-points/public.d.ts",
       "import": "./dist/extensions/index.js"
     },
+    "./dashboard": {
+      "types": "./dist/dashboard/index.d.ts",
+      "import": "./dist/dashboard/index.js"
+    },
+    "./charts": {
+      "types": "./dist/charts/index.d.ts",
+      "import": "./dist/charts/index.js"
+    },
     "./globals": {
       "types": "./globals.d.ts"
     },

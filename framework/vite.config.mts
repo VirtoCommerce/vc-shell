@@ -60,6 +60,8 @@ export default getLibraryConfiguration({
         "ui/index": path.resolve(frameworkRoot, "ui/index.ts"),
         "ai-agent/index": path.resolve(frameworkRoot, "core/plugins/ai-agent/public.ts"),
         "extensions/index": path.resolve(frameworkRoot, "core/plugins/extension-points/public.ts"),
+        "dashboard/index": path.resolve(frameworkRoot, "dashboard/index.ts"),
+        "charts/index": path.resolve(frameworkRoot, "charts/index.ts"),
       },
       formats: ["es"],
     },

@@ -25,6 +25,8 @@
   },
   "include": [
     "*.ts",
+    "dashboard/*.ts",
+    "charts/*.ts",
     "package.json",
     "typings",
     "core/**/*.ts",

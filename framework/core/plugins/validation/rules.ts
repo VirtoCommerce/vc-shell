@@ -19,8 +19,15 @@ export const mindimensions = (images: HTMLInputElement, [width, height]: [string
     const URL = window.URL || window.webkitURL;
     return new Promise((resolve) => {
       const image = new Image();
-      image.onerror = () => resolve(false);
+      const objectUrl = URL.createObjectURL(file);
+      // Always release the object URL once the image settles, or it leaks for
+      // the lifetime of the document (one per validated file).
+      image.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(false);
+      };
       image.onload = () => {
+        URL.revokeObjectURL(objectUrl);
         const isValid = image.width >= Number(width) && image.height >= Number(height);
         if (isValid) {
           resolve(true);
@@ -29,7 +36,7 @@ export const mindimensions = (images: HTMLInputElement, [width, height]: [string
         }
       };
 
-      image.src = URL.createObjectURL(file);
+      image.src = objectUrl;
     });
   };
   const list = [];

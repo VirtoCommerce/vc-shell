@@ -62,6 +62,26 @@ describe("useSettings()", () => {
     // After onMounted and API call with null, still empty
     expect(result.uiSettings.value).toEqual({});
   });
+
+  it("does not throw and leaves settings unset when defaultValue is malformed JSON", async () => {
+    mockGetUICustomizationSetting.mockResolvedValue({ defaultValue: "{ not valid json" });
+    const { result, wrapper } = mountWithSetup(() => useSettings());
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    // Malformed JSON is swallowed (logged) — action resolves, settings stay empty
+    expect(result.uiSettings.value).toEqual({});
+  });
+
+  it("parses valid JSON settings from defaultValue", async () => {
+    mockGetUICustomizationSetting.mockResolvedValue({
+      defaultValue: JSON.stringify({ logo: "remote.png", title: "Remote" }),
+    });
+    const { result, wrapper } = mountWithSetup(() => useSettings());
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    expect(result.uiSettings.value.logo).toBe("remote.png");
+    expect(result.uiSettings.value.title).toBe("Remote");
+  });
 });
 
 // ── cleanup ────────────────────────────────────────────────────────────────────

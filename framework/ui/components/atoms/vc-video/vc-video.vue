@@ -21,7 +21,7 @@
           width="100%"
           height="300px"
           frameborder="0"
-          sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
+          :sandbox="sandbox"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
           loading="lazy"
@@ -45,6 +45,7 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 
@@ -52,14 +53,28 @@ export interface Props {
   label?: string;
   tooltip?: string;
   source?: string;
+  /**
+   * Additional iframe sandbox tokens to append to the secure default
+   * (`allow-scripts allow-presentation`). Space-separated.
+   *
+   * Enabling `allow-same-origin` together with `allow-scripts` disables sandbox
+   * protection entirely and is strongly discouraged for untrusted sources.
+   */
+  additionalSandbox?: string;
 }
 
 export interface Emits {
   (event: "click"): void;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 defineEmits<Emits>();
+
+const sandbox = computed(() => {
+  const base = ["allow-scripts", "allow-presentation"];
+  const extra = (props.additionalSandbox ?? "").split(/\s+/).filter(Boolean);
+  return [...new Set([...base, ...extra])].join(" ");
+});
 </script>
 
 <style lang="scss">

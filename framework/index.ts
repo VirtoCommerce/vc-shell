@@ -63,7 +63,7 @@ import "@material-symbols/font-300/index.css";
 
 type I18NParams = Parameters<typeof i18n.global.mergeLocaleMessage>;
 
-interface FrameworkInstallArgs {
+export interface FrameworkInstallArgs {
   router: Router;
   i18n?: {
     locale: string;

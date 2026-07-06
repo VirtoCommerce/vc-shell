@@ -11,20 +11,24 @@ export function resolveSafeRedirectPath(candidate: string | null): string {
   return redirectPath;
 }
 
+/** Minimal translate function shape (compatible with vue-i18n's `t`). */
+type TranslateFn = (key: string, named?: Record<string, unknown>) => string;
+
 /**
- * Maps a sign-in result to a user-facing error message.
+ * Maps a sign-in result to a user-facing, localized error message.
+ * Takes the `t` function so the util stays pure and testable.
  */
-export function formatSignInError(result: { status?: number; error?: string }): string {
+export function formatSignInError(result: { status?: number; error?: string }, t: TranslateFn): string {
   if (result.status === 401) {
-    return "The login or password is incorrect.";
+    return t("LOGIN.ERRORS.INVALID_CREDENTIALS");
   }
   if (result.status) {
-    return "Authentication error (code: " + result.status + ").";
+    return t("LOGIN.ERRORS.AUTH_WITH_CODE", { code: result.status });
   }
   if (result.error) {
-    return "Authentication error: " + result.error;
+    return t("LOGIN.ERRORS.AUTH_GENERIC", { detail: result.error });
   }
-  return "The login or password is incorrect.";
+  return t("LOGIN.ERRORS.INVALID_CREDENTIALS");
 }
 
 export interface PasswordClientError {

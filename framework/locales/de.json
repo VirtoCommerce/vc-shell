@@ -3,9 +3,13 @@
     "THEMES": {
       "LIGHT": "Hell",
       "DARK": "Dunkel"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "Alle löschen"
     }
   },
   "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "Hauptnavigation",
     "USER": {
       "ROLE": {
         "ADMINISTRATOR": "Administrator"
@@ -68,6 +72,10 @@
           },
           "VC_GALLERY_PREVIEW": {
             "COPY_IMAGE_LINK": "Bildlink kopieren"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "Vorherige Bilder",
+            "NEXT": "Nächste Bilder"
           }
         },
         "GALLERY_IS_EMPTY": "Galerie ist leer",
@@ -151,7 +159,8 @@
           "APPLY": "Anwenden",
           "CLEAR": "Löschen",
           "FROM": "Von",
-          "TO": "Bis"
+          "TO": "Bis",
+          "TITLE": "Spalte filtern"
         },
         "GLOBAL_FILTERS": {
           "BUTTON": "Filter",
@@ -289,7 +298,12 @@
     "BUTTON_OK": "Ok",
     "RESET_EMAIL_TEXT": "Wir senden Ihnen eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
     "RESET_EMAIL_SENT": "Eine E-Mail mit Anweisungen wurde an Sie gesendet.",
-    "SSO_NO_PROVIDERS_ERROR": "SSO-Authentifizierung ist nicht konfiguriert. Bitte wenden Sie sich an Ihren Administrator."
+    "SSO_NO_PROVIDERS_ERROR": "SSO-Authentifizierung ist nicht konfiguriert. Bitte wenden Sie sich an Ihren Administrator.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "Anmeldename oder Passwort ist falsch.",
+      "AUTH_WITH_CODE": "Authentifizierungsfehler (Code: {code}).",
+      "AUTH_GENERIC": "Authentifizierungsfehler: {detail}"
+    }
   },
   "FORGOT_PASSWORD": {
     "TITLE": "Passwort zurücksetzen",

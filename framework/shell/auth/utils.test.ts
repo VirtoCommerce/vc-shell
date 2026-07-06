@@ -40,24 +40,30 @@ describe("resolveSafeRedirectPath", () => {
 });
 
 describe("formatSignInError", () => {
-  it("returns incorrect credentials message for 401 status", () => {
-    expect(formatSignInError({ status: 401 })).toBe("The login or password is incorrect.");
+  // Fake translate function: echoes the key and interpolation params so the
+  // tests assert key selection + params, not English wording.
+  const t = (key: string, named?: Record<string, unknown>) => (named ? `${key}:${JSON.stringify(named)}` : key);
+
+  it("returns invalid-credentials key for 401 status", () => {
+    expect(formatSignInError({ status: 401 }, t)).toBe("LOGIN.ERRORS.INVALID_CREDENTIALS");
   });
 
-  it("returns generic auth error with status code for non-401 status", () => {
-    expect(formatSignInError({ status: 500 })).toBe("Authentication error (code: 500).");
+  it("returns auth-with-code key and passes the status code for non-401 status", () => {
+    expect(formatSignInError({ status: 500 }, t)).toBe('LOGIN.ERRORS.AUTH_WITH_CODE:{"code":500}');
   });
 
-  it("includes error text when no status is present", () => {
-    expect(formatSignInError({ error: "Account locked" })).toBe("Authentication error: Account locked");
+  it("returns auth-generic key and passes the error detail when no status is present", () => {
+    expect(formatSignInError({ error: "Account locked" }, t)).toBe(
+      'LOGIN.ERRORS.AUTH_GENERIC:{"detail":"Account locked"}',
+    );
   });
 
-  it("returns default incorrect credentials message for empty result", () => {
-    expect(formatSignInError({})).toBe("The login or password is incorrect.");
+  it("returns invalid-credentials key for empty result", () => {
+    expect(formatSignInError({}, t)).toBe("LOGIN.ERRORS.INVALID_CREDENTIALS");
   });
 
   it("prioritizes status over error text (401 wins)", () => {
-    expect(formatSignInError({ status: 401, error: "wrong" })).toBe("The login or password is incorrect.");
+    expect(formatSignInError({ status: 401, error: "wrong" }, t)).toBe("LOGIN.ERRORS.INVALID_CREDENTIALS");
   });
 });
 

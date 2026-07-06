@@ -3,9 +3,13 @@
     "THEMES": {
       "LIGHT": "Light",
       "DARK": "Dark"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "Clear all"
     }
   },
   "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "Primary navigation",
     "USER": {
       "ROLE": {
         "ADMINISTRATOR": "Administrator"
@@ -68,6 +72,10 @@
           },
           "VC_GALLERY_PREVIEW": {
             "COPY_IMAGE_LINK": "copy image link"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "Previous images",
+            "NEXT": "Next images"
           }
         },
         "GALLERY_IS_EMPTY": "Gallery is empty",
@@ -151,7 +159,8 @@
           "APPLY": "Apply",
           "CLEAR": "Clear",
           "FROM": "From",
-          "TO": "To"
+          "TO": "To",
+          "TITLE": "Filter column"
         },
         "GLOBAL_FILTERS": {
           "BUTTON": "Filters",
@@ -289,7 +298,12 @@
     "BUTTON_OK": "Ok",
     "RESET_EMAIL_TEXT": "We will send you an email with instructions on how to reset your password.",
     "RESET_EMAIL_SENT": "Email with instructions has been sent to you.",
-    "SSO_NO_PROVIDERS_ERROR": "SSO authentication is not configured. Please contact your administrator."
+    "SSO_NO_PROVIDERS_ERROR": "SSO authentication is not configured. Please contact your administrator.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "The login or password is incorrect.",
+      "AUTH_WITH_CODE": "Authentication error (code: {code}).",
+      "AUTH_GENERIC": "Authentication error: {detail}"
+    }
   },
   "FORGOT_PASSWORD": {
     "TITLE": "Reset your password",

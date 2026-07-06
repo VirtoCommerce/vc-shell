@@ -160,5 +160,36 @@ describe("usePopup", () => {
 
       expect(popupPlugin.popups.length).toBe(2);
     });
+
+    // Regression: pushInstance() calls destroy() with the incoming instance to
+    // drop a same-id duplicate. A structural comparator treated every popup that
+    // merely HAS a component as equal, so opening a second popup evicted the first.
+    it("opening a distinct popup does not evict earlier ones", async () => {
+      const StackPopup = defineComponent({ name: "StackPopup", props: { title: String }, setup: () => () => null });
+      const plugin = createPopupPlugin();
+
+      const a = mountWithPopup(
+        () => usePopup({ component: StackPopup as any, props: { title: "A" }, emits: {} }),
+        plugin,
+      ).result;
+      const b = mountWithPopup(
+        () => usePopup({ component: StackPopup as any, props: { title: "B" }, emits: {} }),
+        plugin,
+      ).result;
+      const c = mountWithPopup(
+        () => usePopup({ component: StackPopup as any, props: { title: "C" }, emits: {} }),
+        plugin,
+      ).result;
+
+      a.open();
+      await nextTick();
+      b.open();
+      await nextTick();
+      c.open();
+      await nextTick();
+
+      expect(plugin.popups.length).toBe(3);
+      expect(plugin.popups.map((p) => (p.props as { title: string }).title)).toEqual(["A", "B", "C"]);
+    });
   });
 });

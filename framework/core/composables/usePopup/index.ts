@@ -16,7 +16,6 @@ import type { PopupPlugin, UsePopupInternal, UsePopupProps } from "@core/composa
 import { popupPluginInstance } from "@core/composables/usePopup/singleton";
 import { getPopupPreset } from "@core/composables/usePopup/preset-registry";
 import { useI18n } from "vue-i18n";
-import * as _ from "lodash-es";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-popup");
@@ -61,9 +60,10 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
     }
 
     const popupInstanceInternal = usePopupInternal();
-    const index = popupInstanceInternal?.popups?.findIndex((x) =>
-      _.isEqualWith(x, confirmation, (val) => val.component),
-    );
+    // Match by the unique instance id, not structural equality: each popup carries
+    // its own Symbol, so reference-by-id is the correct — and only safe — comparison
+    // when several popups are stacked.
+    const index = popupInstanceInternal?.popups?.findIndex((x) => x.id === confirmation.id);
 
     if (typeof index === "number" && index !== -1) {
       popupInstanceInternal?.popups?.splice(index, 1);

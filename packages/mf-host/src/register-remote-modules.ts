@@ -72,9 +72,32 @@ export interface RegisterRemoteModulesOptions {
    * Useful for ops debugging or non-standard deployments.
    */
   manifestUrl?: string;
+  /** Budget for the manifest fetch. Default 5000ms. On expiry: warn + skip (modulesReady=true). */
+  manifestTimeoutMs?: number;
+  /** Budget for one remote's loadRemote. Default 10000ms. On expiry: that remote → failed. */
+  loadTimeoutMs?: number;
 }
 
 // --- Helper functions ---
+
+export const DEFAULT_MANIFEST_TIMEOUT_MS = 5000;
+export const DEFAULT_LOAD_TIMEOUT_MS = 10000;
+
+/** Distinguishes a budget expiry from the work's own failure. */
+class TimeoutError extends Error {}
+
+/** Rejects with TimeoutError if `work` has not settled within `ms`. */
+async function withTimeout<T>(work: Promise<T>, ms: number, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new TimeoutError(`${label} timed out after ${ms}ms`)), ms);
+  });
+  try {
+    return await Promise.race([work, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 function defaultManifestUrl(appName: string): string {
   return `/api/apps/${encodeURIComponent(appName)}/manifest`;
@@ -139,12 +162,37 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
 
       // 1. Fetch manifest
       const manifestUrl = options.manifestUrl ?? defaultManifestUrl(options.appName);
+      const manifestTimeoutMs = options.manifestTimeoutMs ?? DEFAULT_MANIFEST_TIMEOUT_MS;
+      const loadTimeoutMs = options.loadTimeoutMs ?? DEFAULT_LOAD_TIMEOUT_MS;
 
-      const response = await fetch(manifestUrl, {
-        method: "GET",
-        credentials: "same-origin",
-        headers: { Accept: "application/json" },
-      });
+      let response: Response;
+      try {
+        response = await withTimeout(
+          fetch(manifestUrl, {
+            method: "GET",
+            credentials: "same-origin",
+            headers: { Accept: "application/json" },
+            signal: AbortSignal.timeout(manifestTimeoutMs),
+          }),
+          manifestTimeoutMs,
+          "manifest fetch",
+        );
+      } catch (error) {
+        const isTimeoutOrAbort =
+          error instanceof TimeoutError || (error instanceof DOMException && error.name === "AbortError");
+        if (!isTimeoutOrAbort) {
+          // Real network failure — let the outer catch set modulesLoadError.
+          throw error;
+        }
+        // Timeout or abort — same policy as an HTTP error: warn + skip, not a loadError.
+        console.warn(
+          `[mf-host] manifest endpoint ${manifestUrl} did not respond within ${manifestTimeoutMs}ms; skipping plugin discovery.`,
+          error,
+        );
+        modulesReady.value = true;
+        performance.mark("vc:modules-done");
+        return;
+      }
 
       if (!response.ok) {
         // Unified policy: 401/403/404/5xx → warn + skip, no loadError.
@@ -197,12 +245,29 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
         shared,
       });
 
-      // 4. Load all remotes in parallel
+      // 4. Load all remotes in parallel, each bounded by loadTimeoutMs.
+      // A hung remote (remoteEntry.js or its chunks never arriving) would
+      // otherwise block Promise.allSettled forever and modulesReady would
+      // never flip. On expiry the remote rejects with TimeoutError and lands
+      // in `failed` — same path as any other load failure.
       const results = await Promise.allSettled(
-        entries.map(async (e) => ({
-          entry: e,
-          exports: await mfInstance.loadRemote(`${e.remoteName}/${e.exposedKey}`),
-        })),
+        entries.map(async (e) => {
+          const work = mfInstance.loadRemote(`${e.remoteName}/${e.exposedKey}`);
+          try {
+            return { entry: e, exports: await withTimeout(work, loadTimeoutMs, `loadRemote "${e.id}"`) };
+          } catch (error) {
+            // A budget expiry does not cancel the underlying load; log a late settle so a
+            // recorded "failed" is never silently contradicted by a later success.
+            if (error instanceof TimeoutError) {
+              work
+                .then(() =>
+                  console.warn(`[mf-host] remote "${e.id}" load completed after its ${loadTimeoutMs}ms budget`),
+                )
+                .catch(() => undefined);
+            }
+            throw error;
+          }
+        }),
       );
 
       performance.mark("vc:modules-loaded");

@@ -139,8 +139,15 @@ export function createMessageTransport(options: MessageTransportOptions): Messag
         logger.warn("Cannot send message: iframe not available");
         return;
       }
-      const config = getConfig();
-      const targetOrigin = config.allowedOrigins?.[0] || "*";
+      const targetOrigin = getConfig().allowedOrigins?.[0];
+      if (!targetOrigin || targetOrigin === "*") {
+        logger.error(
+          "Refusing to send to iframe: aiAgentConfig.allowedOrigins must contain an explicit origin. " +
+            "Message dropped to avoid leaking data (including access tokens) to arbitrary origins.",
+          { type: message.type },
+        );
+        return;
+      }
       iframeRef.value.contentWindow.postMessage(message, targetOrigin);
       logger.debug(`Sent to iframe: ${message.type}`);
     },

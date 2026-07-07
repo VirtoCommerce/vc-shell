@@ -98,3 +98,42 @@ describe("message-transport — outbound sendToParent origin", () => {
     expect(parentPostMessage).toHaveBeenCalledWith(message, "https://host.example.com");
   });
 });
+
+describe("message-transport — outbound sendToIframe origin", () => {
+  let iframePostMessage: ReturnType<typeof vi.fn>;
+
+  function attachIframe(transport: ReturnType<typeof createMessageTransport>) {
+    iframePostMessage = vi.fn();
+    transport.setIframeRef({ contentWindow: { postMessage: iframePostMessage } } as unknown as HTMLIFrameElement);
+  }
+
+  it("drops outbound message when allowedOrigins is empty", () => {
+    const transport = makeTransport({ allowedOrigins: [] });
+    attachIframe(transport);
+    transport.sendToIframe({ type: "INIT_CONTEXT", payload: { accessToken: "secret" } });
+    expect(iframePostMessage).not.toHaveBeenCalled();
+  });
+
+  it('drops outbound message when the first allowedOrigin is "*"', () => {
+    const transport = makeTransport({ allowedOrigins: ["*"] });
+    attachIframe(transport);
+    transport.sendToIframe({ type: "INIT_CONTEXT", payload: { accessToken: "secret" } });
+    expect(iframePostMessage).not.toHaveBeenCalled();
+  });
+
+  it("posts to the first explicit allowedOrigin", () => {
+    const transport = makeTransport({ allowedOrigins: ["https://chat.example.com"] });
+    attachIframe(transport);
+    const message = { type: "INIT_CONTEXT", payload: { accessToken: "secret" } };
+    transport.sendToIframe(message);
+    expect(iframePostMessage).toHaveBeenCalledWith(message, "https://chat.example.com");
+  });
+
+  it("does nothing when the iframe is not available", () => {
+    const transport = makeTransport({ allowedOrigins: ["https://chat.example.com"] });
+    iframePostMessage = vi.fn();
+    // no setIframeRef → contentWindow absent
+    expect(() => transport.sendToIframe({ type: "INIT_CONTEXT" })).not.toThrow();
+    expect(iframePostMessage).not.toHaveBeenCalled();
+  });
+});

@@ -35,7 +35,7 @@ app.use(aiAgentPlugin, {
     title: "AI Assistant",
     width: 400,
     // Secure by default: the bridge trusts nothing until origins are set.
-    allowedOrigins: ["https://chat.example.com"], // incoming postMessage
+    allowedOrigins: ["https://chat.example.com"], // incoming + outbound iframe target
     parentOrigin: "https://host.example.com", // outbound postMessage (embedded mode)
   },
   addGlobalToolbarButton: true, // default: true

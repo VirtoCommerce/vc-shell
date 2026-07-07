@@ -15,6 +15,8 @@ describe("package.json metadata", () => {
       "./ui",
       "./ai-agent",
       "./extensions",
+      "./dashboard",
+      "./charts",
       "./globals",
       "./package.json",
       "./dist/index.css",

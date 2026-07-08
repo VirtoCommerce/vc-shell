@@ -272,6 +272,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (event: "item:click", item: MenuItem): void;
   (event: "switch-app", app: AppDescriptor): void;
+  (event: "logo:click"): void;
 }>();
 
 defineSlots<{

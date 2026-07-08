@@ -10,6 +10,9 @@
   },
   "SHELL": {
     "NAVIGATION_ARIA_LABEL": "Primary navigation",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "Search keyword"
+    },
     "USER": {
       "ROLE": {
         "ADMINISTRATOR": "Administrator"

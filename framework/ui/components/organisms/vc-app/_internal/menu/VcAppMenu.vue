@@ -1,6 +1,6 @@
 <template>
   <VcMenu
-    v-if="filteredMenuItems.length"
+    v-if="filteredMenuItems.length || showLoadingPlaceholders"
     :expanded="expanded"
     class="vc-app-menu"
     :class="{ 'vc-app-menu--collapsed': !expanded }"
@@ -45,16 +45,43 @@
         @click="handleItemClick(item)"
       />
     </template>
+
+    <!-- Placeholders for remote modules still loading. Positions/titles are not
+         known until each module installs, so these are generic rows appended at
+         the end. v-if (not v-show) so they are fully removed from the DOM once
+         modulesReady flips — no lingering hidden nodes. -->
+    <template v-if="showLoadingPlaceholders">
+      <div
+        v-for="n in placeholderCount"
+        :key="`vc-app-menu-skeleton-${n}`"
+        class="vc-app-menu__skeleton-item"
+        aria-hidden="true"
+      >
+        <VcSkeleton
+          variant="circle"
+          :width="20"
+          :height="20"
+        />
+        <VcSkeleton
+          v-if="expanded"
+          variant="block"
+          :width="skeletonWidth(n)"
+          :height="14"
+        />
+      </div>
+    </template>
   </VcMenu>
 </template>
 
 <script lang="ts" setup>
-import { computed, isRef, unref, type Ref } from "vue";
+import { computed, inject, isRef, ref, unref, type Ref } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { useMenuService, usePermissions } from "@core/composables";
 import type { MenuItem, MenuItemBadgeConfig, MenuItemBadge } from "@core/types";
+import { ModulesReadyKey } from "@framework/injection-keys";
 import { VcMenu, VcMenuItem, VcMenuGroup } from "@ui/components/molecules/vc-menu";
+import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import type { VcMenuItemBadge } from "@ui/components/molecules/vc-menu";
 import { stripTenantPrefix } from "@ui/components/organisms/vc-app/_internal/menu/composables/useMenuActiveState";
 
@@ -75,6 +102,17 @@ const route = useRoute();
 const { t } = useI18n();
 const { menuItems, menuBadges } = useMenuService();
 const { hasAccess } = usePermissions();
+
+// Remote modules register their menu items on install, which can lag the shell
+// mount (manifest fetch + remote load). While they load, show a few placeholder
+// rows so the menu does not render a gap. Count is fixed — the number of modules
+// that will add a menu item is not known until each installs. `modulesReady` is
+// provided by the MF host (@vc-shell/mf-host); defaults to ready when no host is present.
+const modulesReady = inject(ModulesReadyKey, ref(true));
+const placeholderCount = 3;
+const skeletonWidths = [92, 70, 104];
+const skeletonWidth = (n: number): number => skeletonWidths[(n - 1) % skeletonWidths.length];
+const showLoadingPlaceholders = computed(() => !modulesReady.value && !props.searchQuery?.trim());
 
 const hasAccessToItem = (item: MenuItem): boolean => hasAccess(item.permissions);
 
@@ -215,6 +253,14 @@ const resolvedBadges = computed(() => {
 
   &--collapsed {
     @apply tw-pl-1 tw-pr-1;
+  }
+
+  &__skeleton-item {
+    @apply tw-flex tw-items-center tw-gap-1.5 tw-h-9 tw-px-1.5;
+  }
+
+  &--collapsed &__skeleton-item {
+    @apply tw-justify-center tw-px-0;
   }
 }
 </style>

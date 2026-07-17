@@ -118,7 +118,6 @@ const cancelText = computed(() => {
   }
 
   &__select-all-link {
-    @apply tw-underline;
     color: var(--table-select-bar-link, var(--primary-700));
   }
 

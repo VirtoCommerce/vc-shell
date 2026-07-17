@@ -8,8 +8,6 @@ group: navigation
 
 Anchored floating panel (popover) positioned relative to an anchor element, with header, scrollable content, and optional footer. Built on `@floating-ui/vue`.
 
-::storybook id="overlay-vcpopover--default"
-
 ## When to Use
 
 - Rich dropdown content with a title bar and action buttons (e.g., filter panels, settings popovers)
@@ -77,8 +75,6 @@ const open = ref(false);
 | `footer`  | —           | Footer area, typically for action buttons             |
 
 ## Common Patterns
-
-::storybook id="overlay-vcpopover--with-footer"
 
 ### Filter Panel with Footer Actions
 

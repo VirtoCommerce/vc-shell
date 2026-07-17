@@ -102,7 +102,7 @@
     </template>
   </AppHubPopover>
 
-  <VcDropdownPanel
+  <VcPopover
     v-model:show="isNotificationsOpen"
     :anchor-ref="notificationAnchorRef"
     placement="right-start"
@@ -110,7 +110,7 @@
     :content-scrollable="false"
   >
     <NotificationDropdown />
-  </VcDropdownPanel>
+  </VcPopover>
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
@@ -126,7 +126,7 @@ import SidebarContent from "@ui/components/organisms/vc-app/_internal/sidebar/Si
 import SidebarCollapseButton from "@ui/components/organisms/vc-app/_internal/sidebar/SidebarCollapseButton.vue";
 import AppHubPopover from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppHubPopover.vue";
 import { NotificationDropdown } from "@shell/components/notification-dropdown";
-import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
+import { VcPopover } from "@ui/components/molecules/vc-popover";
 
 export interface Props {
   logo?: string;

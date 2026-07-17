@@ -57,7 +57,7 @@ VcPagination displays a sliding window of page number buttons centered on the cu
 - **Desktop:** 5 visible page buttons (default)
 - **Mobile:** 3 visible page buttons (default)
 
-The component detects the viewport via the injected `IsMobileKey`. You can override the window size with the `maxPages` prop regardless of viewport.
+The component detects the viewport via `useResponsive()` (`isMobile`). You can override the window size with the `maxPages` prop regardless of viewport.
 
 ```vue
 <!-- Always show exactly 3 page buttons -->
@@ -265,6 +265,7 @@ currentPage.value = Math.min(currentPage.value, totalPages.value);
 | `maxPages`      | `number`                 | --          | Override visible page button count. Default: 3 on mobile, 5 on desktop |
 | `showFirstLast` | `boolean`                | `true`      | Show first/last page navigation buttons                                |
 | `variant`       | `"default" \| "minimal"` | `"default"` | Visual style variant                                                   |
+| `expanded`      | `boolean`                | --          | Declared but currently unused in the template                          |
 
 ## Events
 
@@ -287,6 +288,9 @@ currentPage.value = Math.min(currentPage.value, totalPages.value);
 | `--pagination-item-color-disabled`            | `var(--neutrals-400)`  | Disabled button text color               |
 | `--pagination-item-background-color-disabled` | `var(--neutrals-100)`  | Disabled button background               |
 | `--pagination-item-border-color`              | `var(--secondary-100)` | Default border color                     |
+| `--pagination-item-border-color-hover`        | `var(--neutrals-200)`  | Hover border color                       |
+| `--pagination-item-border-color-current`      | `var(--neutrals-200)`  | Current page border color                |
+| `--pagination-item-border-color-disabled`     | `var(--neutrals-200)`  | Disabled button border color             |
 | `--pagination-focus-ring-color`               | `var(--primary-100)`   | Focus ring color for keyboard navigation |
 
 ## Accessibility

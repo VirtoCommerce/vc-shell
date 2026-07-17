@@ -104,10 +104,11 @@ applySettings({
 
 ```vue
 <script setup lang="ts">
+import { watch } from "vue";
 import { useSettings } from "@vc-shell/framework";
 import { useUserManagement } from "@vc-shell/framework";
 
-const { uiSettings } = useSettings();
+const { uiSettings, applySettings } = useSettings();
 const { user } = useUserManagement();
 
 // Apply user-specific settings after login

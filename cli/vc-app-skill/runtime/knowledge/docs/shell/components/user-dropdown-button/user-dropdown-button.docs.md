@@ -33,12 +33,12 @@ import { UserDropdownButton } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop        | Type      | Default     | Description                   |
-| ----------- | --------- | ----------- | ----------------------------- |
-| `name`      | `string`  | `undefined` | User display name             |
-| `role`      | `string`  | `undefined` | User role label               |
-| `avatarUrl` | `string`  | `undefined` | URL for the user avatar image |
-| `disabled`  | `boolean` | `false`     | Prevents menu from opening    |
+| Prop        | Type      | Default     | Description                                                                                                     |
+| ----------- | --------- | ----------- | --------------------------------------------------------------------------------------------------------------- |
+| `name`      | `string`  | `undefined` | User display name                                                                                               |
+| `role`      | `string`  | `undefined` | User role label                                                                                                 |
+| `avatarUrl` | `string`  | `undefined` | URL for the user avatar image                                                                                   |
+| `disabled`  | `boolean` | `false`     | Visual-only: applies the `--auto-width` layout class. Does not suppress clicks or prevent the menu from opening |
 
 ## Recipe: Wiring to User Management Composable
 
@@ -50,11 +50,11 @@ import { computed } from "vue";
 import { UserDropdownButton } from "@vc-shell/framework";
 import { useUserManagement } from "@vc-shell/framework";
 
-const { currentUser } = useUserManagement();
+const { user } = useUserManagement();
 
-const displayName = computed(() => (currentUser.value ? `${currentUser.value.firstName} ${currentUser.value.lastName}` : ""));
-const role = computed(() => currentUser.value?.roles?.[0]?.name ?? "");
-const avatarUrl = computed(() => currentUser.value?.photoUrl);
+const displayName = computed(() => (user.value ? `${user.value.firstName} ${user.value.lastName}` : ""));
+const role = computed(() => user.value?.roles?.[0]?.name ?? "");
+const avatarUrl = computed(() => user.value?.photoUrl);
 </script>
 
 <template>
@@ -86,7 +86,7 @@ On mobile viewports (`$isMobile`), clicking the button opens a full-height slide
 ## Tips
 
 - The component is typically placed in the sidebar footer slot of the app shell. You rarely need to instantiate it manually -- the framework shell handles its placement.
-- If `disabled` is `true`, clicking the button does nothing and the menu does not open. Use this during critical operations where navigation should be prevented.
+- The `disabled` prop is visual-only (it applies the `--auto-width` layout class). It does not block clicks or prevent the menu from opening; the handler always toggles the menu.
 - All menu items are driven by `useSettingsMenu()` registrations. To add custom items to the user menu, register them via the service rather than modifying this component.
 
 ## Related Components

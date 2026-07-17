@@ -1,5 +1,5 @@
 <template>
-  <VcDropdownPanel
+  <VcPopover
     :show="show"
     :anchor-ref="anchorRef"
     :title="$t('COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_SWITCHER.TITLE')"
@@ -41,7 +41,7 @@
         {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_SWITCHER.RESET") }}
       </VcButton>
     </template>
-  </VcDropdownPanel>
+  </VcPopover>
 </template>
 
 <script setup lang="ts">
@@ -49,9 +49,9 @@
  * TableColumnSwitcher - Panel for toggling column visibility
  *
  * Displays a list of columns with checkboxes to show/hide them.
- * Uses VcDropdownPanel for positioning and backdrop.
+ * Uses VcPopover for positioning and backdrop.
  */
-import { VcDropdownPanel } from "@ui/components/molecules";
+import { VcPopover } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
 import type { ReferenceElement } from "@floating-ui/vue";

@@ -6,6 +6,8 @@ group: data
 
 # useAssets
 
+> **Deprecated.** `useAssets` is deprecated in favor of [`useAssetsManager(ref, options)`](../useAssetsManager/). Calling it logs a DEV console warning. This page is kept as legacy/migration guidance; new code should use `useAssetsManager`, which wraps `useAssets` with two-way sync.
+
 Handles file upload, removal, and editing for `ICommonAsset` arrays (images, documents, etc.). This composable encapsulates the platform's asset storage API, handling multipart form upload with batched concurrency (max 4 simultaneous uploads), sort-order assignment, URL decoding, and immutable array operations for remove and edit. It returns a new array from every operation rather than mutating in place, which plays well with Vue's reactivity system and makes undo/redo patterns straightforward.
 
 ## When to Use
@@ -32,8 +34,8 @@ async function onFilesSelected(fileList: FileList) {
   assets.value = [...assets.value, ...newAssets];
 }
 
-function onDeleteAssets(toDelete: ICommonAsset[]) {
-  assets.value = remove(toDelete, assets.value);
+function onRemoveAsset(toDelete: ICommonAsset) {
+  assets.value = remove([toDelete], assets.value);
 }
 
 function onUpdateAltText(asset: ICommonAsset, altText: string) {
@@ -47,9 +49,9 @@ function onUpdateAltText(asset: ICommonAsset, altText: string) {
     :loading="loading"
   >
     <VcGallery
-      :assets="assets"
+      :images="assets"
       @upload="onFilesSelected"
-      @delete="onDeleteAssets"
+      @remove="onRemoveAsset"
     />
   </VcBlade>
 </template>
@@ -62,7 +64,7 @@ function onUpdateAltText(asset: ICommonAsset, altText: string) {
 | Property  | Type                                                                                           | Description                                                                                                                                                          |
 | --------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `upload`  | `(files: FileList, uploadPath: string, startingSortOrder?: number) => Promise<ICommonAsset[]>` | Upload files in parallel batches (max 4 concurrent). Returns only successfully uploaded assets. Sort orders are assigned incrementally from `startingSortOrder + 1`. |
-| `remove`  | `(filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]`           | Return a new array with deleted items removed. Matching is done by `url` field. The original array is not mutated.                                                   |
+| `remove`  | `(filesToDelete: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]`           | Return a new array with deleted items removed. Matching is done by `url`. The original array is not mutated.                                                         |
 | `edit`    | `(updatedFiles: ICommonAsset[], initialAssetArr: ICommonAsset[]) => ICommonAsset[]`            | Merge updated fields into existing assets (matched by `url`). If `updatedFiles.length === initialAssetArr.length`, the entire array is replaced (reorder mode).      |
 | `loading` | `ComputedRef<boolean>`                                                                         | Whether an upload or remove operation is currently in progress.                                                                                                      |
 
@@ -130,7 +132,7 @@ async function handleUpload(files: FileList) {
 
 ## Tips
 
-- **Sort order starts from `startingSortOrder + 1`.** If you pass `startingSortOrder: 5` and upload 3 files, they get sort orders 6, 7, and 8. Pass `0` or omit it to start from 1.
+- **Sort order starts from `startingSortOrder + 1`.** If you pass `startingSortOrder: 5` and upload 3 files, they get sort orders 6, 7, and 8. Pass `0` to start from 1. Omitting `startingSortOrder` assigns `0` to every uploaded asset (no incremental ordering).
 - **Failed uploads are silently filtered.** If one file in a batch fails, the others still succeed. The returned array only contains successfully uploaded assets. Check the browser console for error logs from the `use-assets` logger.
 - **`remove` matches by `url`, not by `id`.** Assets may not have stable IDs before they are saved to the server. The `url` field is used as the matching key because it is always present after upload.
 - **Each `useAssets()` call creates an independent instance.** Unlike singleton composables, calling `useAssets()` twice gives you two separate `loading` states. This is useful if different parts of your blade upload to different paths.

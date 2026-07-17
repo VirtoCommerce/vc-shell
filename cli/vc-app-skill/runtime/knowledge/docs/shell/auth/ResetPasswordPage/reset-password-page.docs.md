@@ -56,7 +56,7 @@ With custom branding:
 Set up the route to extract query parameters from the password reset email link:
 
 ```ts
-import ResetPassword from "@vc-shell/framework/shared/pages/ResetPasswordPage";
+import { ResetPassword } from "@vc-shell/framework";
 
 const routes = [
   {

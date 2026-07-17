@@ -8,7 +8,7 @@ import { VcEnvironmentBanner } from ".";
  * logic; this component only renders the visual badge.
  */
 const meta = {
-  title: "Atoms/VcEnvironmentBanner",
+  title: "Data Display/VcEnvironmentBanner",
   component: VcEnvironmentBanner,
   tags: ["autodocs"],
   argTypes: {

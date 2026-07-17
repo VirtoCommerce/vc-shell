@@ -47,7 +47,7 @@ onBeforeUnmount(() => {
 
 <style lang="scss">
 // Make __content a flex container so the flex-1 chain works all the way down
-.vc-dropdown-panel__content:has(> .notification-dropdown) {
+.vc-popover__content:has(> .notification-dropdown) {
   @apply tw-flex tw-flex-col tw-min-h-0;
 }
 

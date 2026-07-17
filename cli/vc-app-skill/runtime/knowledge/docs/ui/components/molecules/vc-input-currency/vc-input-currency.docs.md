@@ -319,7 +319,7 @@ const price = ref<number | null>(100);
 | -------------------- | ---------------- | ------------------------------------------- |
 | `update:model-value` | `number \| null` | Emitted when the numeric value changes      |
 | `update:option`      | `unknown`        | Emitted when the currency selection changes |
-| `change`             | `number \| null` | Emitted on value change (alias)             |
+| `change`             | `number \| null` | Declared but not currently emitted          |
 | `blur`               | `Event`          | Emitted when the input loses focus          |
 
 ## CSS Variables

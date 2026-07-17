@@ -75,21 +75,21 @@ None.
 
 ### Returns
 
-| Property               | Type                                                                                 | Description                                                                                                                                                                                                                                |
-| ---------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `user`                 | `ComputedRef<UserDetail \| undefined>`                                               | Current user details.                                                                                                                                                                                                                      |
-| `loading`              | `ComputedRef<boolean>`                                                               | Whether any operation is in progress.                                                                                                                                                                                                      |
-| `isAdministrator`      | `ComputedRef<boolean \| undefined>`                                                  | Admin status of the current user.                                                                                                                                                                                                          |
-| `isAuthenticated`      | `ComputedRef<boolean>`                                                               | Whether user session is active.                                                                                                                                                                                                            |
-| `signIn`               | `(username: string, password: string) => Promise<SignInResult>`                      | Authenticates with username/password. Performs cookie-based login, obtains an OAuth token with offline_access scope, and loads user details. Returns `{ succeeded: true }` on success or `{ succeeded: false, error: string }` on failure. |
-| `signOut`              | `() => Promise<void>`                                                                | Clears session, auth data, and localStorage. Handles both standard and external SSO sign-out.                                                                                                                                              |
-| `loadUser`             | `() => Promise<UserDetail>`                                                          | Loads/reloads user info from the server. Deduplicates concurrent calls.                                                                                                                                                                    |
-| `validateToken`        | `(userId: string, token: string) => Promise<boolean>`                                | Validates a password-reset token. Returns `true` if valid.                                                                                                                                                                                 |
-| `validatePassword`     | `(password: string) => Promise<IdentityResult>`                                      | Validates a password against the platform's password policy (length, complexity, etc.).                                                                                                                                                    |
-| `resetPasswordByToken` | `(userId: string, password: string, token: string) => Promise<SecurityResult>`       | Resets a user's password using a reset token. Returns `{ succeeded: true }` on success.                                                                                                                                                    |
-| `requestPasswordReset` | `(loginOrEmail: string) => Promise<RequestPasswordResult>`                           | Sends a password-reset email to the user. Returns `{ succeeded: true }` on success.                                                                                                                                                        |
-| `changeUserPassword`   | `(oldPassword: string, newPassword: string) => Promise<SecurityResult \| undefined>` | Changes the current user's password. Requires the old password for verification.                                                                                                                                                           |
-| `getLoginType`         | `() => Promise<LoginType[]>`                                                         | Returns available login types (password-based, external SSO providers, etc.). Used to render the appropriate sign-in UI.                                                                                                                   |
+| Property               | Type                                                                                                   | Description                                                                                                                                                                                                                                |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `user`                 | `ComputedRef<UserDetail \| undefined>`                                                                 | Current user details.                                                                                                                                                                                                                      |
+| `loading`              | `ComputedRef<boolean>`                                                                                 | Whether any operation is in progress.                                                                                                                                                                                                      |
+| `isAdministrator`      | `ComputedRef<boolean \| undefined>`                                                                    | Admin status of the current user.                                                                                                                                                                                                          |
+| `isAuthenticated`      | `ComputedRef<boolean>`                                                                                 | Whether user session is active.                                                                                                                                                                                                            |
+| `signIn`               | `(username: string, password: string) => Promise<SignInResult \| { succeeded: boolean; error?: any }>` | Authenticates with username/password. Performs cookie-based login, obtains an OAuth token with offline_access scope, and loads user details. Returns `{ succeeded: true }` on success or `{ succeeded: false, error: string }` on failure. |
+| `signOut`              | `() => Promise<void>`                                                                                  | Clears session, auth data, and localStorage. Handles both standard and external SSO sign-out.                                                                                                                                              |
+| `loadUser`             | `() => Promise<UserDetail>`                                                                            | Loads/reloads user info from the server. Deduplicates concurrent calls.                                                                                                                                                                    |
+| `validateToken`        | `(userId: string, token: string) => Promise<boolean>`                                                  | Validates a password-reset token. Returns `true` if valid.                                                                                                                                                                                 |
+| `validatePassword`     | `(password: string) => Promise<IdentityResult>`                                                        | Validates a password against the platform's password policy (length, complexity, etc.).                                                                                                                                                    |
+| `resetPasswordByToken` | `(userId: string, password: string, token: string) => Promise<SecurityResult>`                         | Resets a user's password using a reset token. Returns `{ succeeded: true }` on success.                                                                                                                                                    |
+| `requestPasswordReset` | `(loginOrEmail: string) => Promise<RequestPasswordResult>`                                             | Sends a password-reset email to the user. Returns `{ succeeded: true }` on success.                                                                                                                                                        |
+| `changeUserPassword`   | `(oldPassword: string, newPassword: string) => Promise<SecurityResult \| undefined>`                   | Changes the current user's password. Requires the old password for verification.                                                                                                                                                           |
+| `getLoginType`         | `() => Promise<LoginType[]>`                                                                           | Returns available login types (password-based, external SSO providers, etc.). Used to render the appropriate sign-in UI.                                                                                                                   |
 
 ## How It Works
 
@@ -139,7 +139,7 @@ async function handleReset() {
   // Validate against password policy
   const validation = await validatePassword(newPassword.value);
   if (!validation.succeeded) {
-    error.value = validation.errors?.join(", ") ?? "Password does not meet requirements.";
+    error.value = validation.errors?.map((e) => e.description).join(", ") ?? "Password does not meet requirements.";
     return;
   }
 
@@ -167,7 +167,7 @@ const showPasswordForm = ref(false);
 onMounted(async () => {
   loginTypes.value = await getLoginType();
   // Show password form only if password auth is available
-  showPasswordForm.value = loginTypes.value.some((t) => t.loginProvider === "password");
+  showPasswordForm.value = loginTypes.value.some((t) => t.hasLoginForm);
 });
 </script>
 
@@ -181,10 +181,10 @@ onMounted(async () => {
     </form>
 
     <div
-      v-for="provider in loginTypes.filter((t) => t.loginProvider !== 'password')"
-      :key="provider.loginProvider"
+      v-for="provider in loginTypes.filter((t) => !t.hasLoginForm)"
+      :key="provider.authenticationType"
     >
-      <VcButton @click="redirectToSSO(provider)"> Sign in with {{ provider.loginProvider }} </VcButton>
+      <VcButton @click="redirectToSSO(provider)"> Sign in with {{ provider.authenticationType }} </VcButton>
     </div>
   </div>
 </template>

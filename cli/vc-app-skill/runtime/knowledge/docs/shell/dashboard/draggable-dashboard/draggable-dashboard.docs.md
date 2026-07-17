@@ -140,6 +140,27 @@ function resetLayout() {
 - The 12-column grid means common widget widths are: 3 (quarter), 4 (third), 6 (half), and 12 (full width).
 - Register widgets during module `install()` before the dashboard component mounts. Late registrations may not be picked up.
 
+## Advanced / Exports
+
+Besides the `DraggableDashboard` component, `draggable-dashboard/index.ts` re-exports these symbols through the framework root, for building a custom Gridstack dashboard:
+
+| Export                    | Kind       | Description                                                 |
+| ------------------------- | ---------- | ----------------------------------------------------------- |
+| `useGridstack`            | composable | Low-level Gridstack integration for a custom dashboard      |
+| `UseGridstackOptions`     | type       | Options for `useGridstack`                                  |
+| `UseGridstackReturn`      | type       | Return shape of `useGridstack`                              |
+| `DashboardWidgetSize`     | type       | Widget size shape: `{ width, height }`                      |
+| `DashboardWidgetPosition` | type       | Widget position shape: `{ x, y }`                           |
+| `DashboardDragEvent`      | type       | Payload emitted on widget drag/reorder                      |
+| `DashboardGridConfig`     | type       | Grid configuration options                                  |
+| `toGridstackWidget`       | function   | Maps an `IDashboardWidget` to a Gridstack widget descriptor |
+| `fromGridstackNode`       | function   | Maps a Gridstack node back to layout data                   |
+| `loadLayoutFromStorage`   | function   | Reads persisted layout from localStorage                    |
+| `saveLayoutToStorage`     | function   | Writes layout to localStorage                               |
+| `mergeLayoutWithWidgets`  | function   | Merges a persisted layout onto the registered widget set    |
+| `clearLayoutStorage`      | function   | Clears the persisted layout                                 |
+| `LAYOUT_STORAGE_KEY`      | constant   | localStorage key used for layout persistence                |
+
 ## Related Components
 
 - [DashboardWidgetCard](../dashboard-widget-card/dashboard-widget-card.docs.md) -- card container for widget content

@@ -1,6 +1,6 @@
 <template>
   <!-- Desktop: dropdown panel anchored to the button -->
-  <VcDropdownPanel
+  <VcPopover
     v-if="!isMobile"
     :show="show"
     :anchor-ref="anchorRef"
@@ -100,7 +100,7 @@
         {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.COLUMN_FILTER.APPLY") }}
       </VcButton>
     </template>
-  </VcDropdownPanel>
+  </VcPopover>
 
   <!-- Mobile: bottom-sheet sidebar -->
   <VcSidebar
@@ -211,14 +211,14 @@
 /**
  * GlobalFiltersPanel - Responsive filter panel
  *
- * Desktop: floating VcDropdownPanel anchored to the filter button.
+ * Desktop: floating VcPopover anchored to the filter button.
  * Mobile: VcSidebar bottom sheet with drag-to-dismiss.
  *
  * Supports text, select (single/multi), and dateRange filter types.
  * Custom filter UI can be provided via named slots.
  */
 import { ref, computed, watch } from "vue";
-import { VcDropdownPanel } from "@ui/components/molecules";
+import { VcPopover } from "@ui/components/molecules";
 import { VcInput, VcSelect } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";

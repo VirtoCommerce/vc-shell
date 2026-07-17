@@ -77,6 +77,24 @@ The card is centered both vertically and horizontally. On narrow viewports, it s
 
 The layout uses a `<main>` element as the page landmark and an `<h2>` for the card title, providing a correct heading hierarchy for screen readers and SEO.
 
+### App Version Footer
+
+When the active route sets `meta.appVersion`, VcAuthLayout renders that string below the card (in a `.vc-auth-layout__version` element). Set it via your Vue Router route meta; when absent, nothing is rendered.
+
+## CSS Custom Properties
+
+| Variable                       | Default                                                         | Description                    |
+| ------------------------------ | --------------------------------------------------------------- | ------------------------------ |
+| `--auth-layout-bg`             | `var(--neutrals-100)`                                           | Page background                |
+| `--auth-layout-card-bg`        | `var(--additional-50)`                                          | Card background                |
+| `--auth-layout-card-border`    | `var(--neutrals-200)`                                           | Card border color              |
+| `--auth-layout-card-shadow`    | `0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)` | Card shadow                    |
+| `--auth-layout-card-radius`    | `12px`                                                          | Card corner radius             |
+| `--auth-layout-card-max-width` | `420px`                                                         | Card / footer max width        |
+| `--auth-layout-title-color`    | `var(--neutrals-900)`                                           | Title text color               |
+| `--auth-layout-subtitle-color` | `var(--neutrals-400)`                                           | Subtitle and footer text color |
+| `--auth-layout-version-color`  | `var(--neutrals-400)`                                           | Version string text color      |
+
 ## Recipe: Sign-In Page with SSO
 
 ```vue

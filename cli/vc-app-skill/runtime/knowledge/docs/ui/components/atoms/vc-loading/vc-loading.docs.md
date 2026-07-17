@@ -52,7 +52,8 @@ const isLoading = ref(true);
 | `--loading-overlay-bg` | `rgba(255,255,255,0.6)` | Overlay background color      |
 | `--loading-bar-width`  | `140px`                 | Width of the progress bar     |
 | `--loading-bar-height` | `4px`                   | Height of the progress bar    |
-| `--loading-z-index`    | `9998`                  | Z-index of the overlay layer  |
+
+> **Note:** The overlay z-index comes from the global `--z-critical-loading` token and is not overridable per-instance.
 
 ::storybook id="layout-vcloading--interactive"
 
@@ -117,7 +118,7 @@ Override the bar color to match a specific status or brand theme:
 
 ## Tips
 
-- VcLoading is hidden with `display: none` when inactive, so it adds zero layout cost when idle.
+- VcLoading is hidden via the `tw-hidden` class when inactive, so it adds zero layout cost when idle.
 - The sweep animation runs on a 1.5-second infinite loop using CSS `@keyframes` — no JavaScript timers involved.
 - The overlay applies `backdrop-filter: blur(3px)` for a frosted-glass effect. If you need a fully opaque overlay, set `--loading-overlay-bg: rgba(255,255,255,1)`.
 - When using inside a scrollable container, the overlay covers only the visible viewport of that container because it is absolutely positioned.
@@ -138,8 +139,8 @@ Override the bar color to match a specific status or brand theme:
 
 ## Architecture notes
 
-- The overlay is a single `<div>` with `v-show` (not `v-if`) so it remains in the DOM and retains animation state. `display: none` from `v-show` removes it from the paint tree when inactive.
-- The sweeping bar is a child `<div>` animated via `@keyframes vc-loading-sweep` (translateX from `-100%` to `100%`).
+- The overlay is a single `<div>` always rendered in the DOM; visibility is toggled via the `vc-loading-overlay--active` class (base state is `tw-hidden`), so it retains animation state when inactive.
+- The sweeping bar is a child `<div>` animated via `@keyframes vc-bar-sweep`, animating the `left` property from `-40%` to `100%`.
 - `backdrop-filter: blur(3px)` is applied to the overlay div directly; older Safari requires `-webkit-backdrop-filter` as a fallback.
 - Source: `framework/ui/components/atoms/vc-loading/vc-loading.vue`
 

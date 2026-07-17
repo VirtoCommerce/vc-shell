@@ -103,5 +103,4 @@ The locale resolver tries the full code first (e.g., `pt-BR`), then the base lan
 
 ## Related
 
-- `framework/ui/components/organisms/vc-table/components/cells/` -- cell renderers use these for date/datetime/date-ago columns
-- `framework/shared/modules/assets-manager/` -- uses `formatDateRelative` for asset timestamps
+- `framework/ui/components/organisms/vc-data-table/components/cells/` -- cell renderers use these for date/datetime/date-ago columns

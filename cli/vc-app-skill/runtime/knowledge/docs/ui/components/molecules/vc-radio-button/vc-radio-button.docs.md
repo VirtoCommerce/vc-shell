@@ -66,15 +66,16 @@ const method = ref("standard");
 
 ## Key Props
 
-| Prop                     | Type                 | Default        | Description                                                     |
-| ------------------------ | -------------------- | -------------- | --------------------------------------------------------------- |
-| `modelValue`             | `T`                  | `undefined`    | Bound value via `v-model` (shared across the group)             |
-| `value`                  | `T`                  | --             | This radio button's value. Selected when `modelValue === value` |
-| `label`                  | `string`             | --             | Text label next to the radio circle                             |
-| `name`                   | `string`             | `"RadioField"` | HTML `name` attribute (must be shared within a group)           |
-| `binary`                 | `boolean`            | `false`        | Enables boolean toggle mode (clicking toggles `true`/`false`)   |
-| `disabled`               | `boolean`            | `false`        | Disables this radio button                                      |
-| `error` / `errorMessage` | `boolean` / `string` | --             | Error styling and message                                       |
+| Prop                     | Type                 | Default        | Description                                                                                       |
+| ------------------------ | -------------------- | -------------- | ------------------------------------------------------------------------------------------------- |
+| `modelValue`             | `T`                  | `undefined`    | Bound value via `v-model` (shared across the group)                                               |
+| `value`                  | `T`                  | --             | This radio button's value. Selected when `modelValue === value`                                   |
+| `label`                  | `string`             | --             | Text label next to the radio circle                                                               |
+| `name`                   | `string`             | `"RadioField"` | HTML `name` attribute (must be shared within a group)                                             |
+| `binary`                 | `boolean`            | `false`        | Enables boolean toggle mode (clicking toggles `true`/`false`)                                     |
+| `disabled`               | `boolean`            | `false`        | Disables this radio button                                                                        |
+| `error` / `errorMessage` | `boolean` / `string` | --             | Error styling and message                                                                         |
+| `ariaLabel`              | `string`             | --             | Accessible name for the input when no visible `label` is set. Applied only when `label` is empty. |
 
 ## Common Patterns
 

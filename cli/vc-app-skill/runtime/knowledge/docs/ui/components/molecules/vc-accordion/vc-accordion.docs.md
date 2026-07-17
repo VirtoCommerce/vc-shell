@@ -53,12 +53,12 @@ Without `v-model`, no items are expanded on mount. Pass an initial value to pre-
 
 Four variants control the visual grouping and spacing of accordion items.
 
-| Variant     | Description                                                              |
-| ----------- | ------------------------------------------------------------------------ |
-| `default`   | Items stacked with shared top/bottom borders, no gaps                    |
-| `bordered`  | Single outer border wrapping all items, items separated by inner borders |
-| `separated` | Card-like items with 12px gaps between them, each with its own border    |
-| `ghost`     | Transparent background, minimal styling, no borders or padding           |
+| Variant     | Description                                                                |
+| ----------- | -------------------------------------------------------------------------- |
+| `default`   | Items stacked with shared top/bottom borders, no gaps                      |
+| `bordered`  | Single outer border wrapping all items, items separated by inner borders   |
+| `separated` | Card-like items with 12px gaps between them, each with its own border      |
+| `ghost`     | Transparent background, minimal styling, no borders and no content padding |
 
 ```vue
 <VcAccordion :items="items" variant="separated" />
@@ -262,6 +262,16 @@ interface AccordionItem {
 | `--accordion-item-transition-duration`     | `300ms`                | Expand/collapse animation duration        |
 | `--accordion-item-fade-height`             | `60px`                 | Fade gradient height on collapsed preview |
 | `--accordion-item-focus-ring-color`        | `var(--primary-100)`   | Focus ring color for keyboard navigation  |
+| `--accordion-item-header-font-size`        | `14px`                 | Header font size                          |
+| `--accordion-item-header-font-weight`      | `500`                  | Header font weight                        |
+| `--accordion-item-header-line-height`      | `20px`                 | Header line height                        |
+| `--accordion-item-header-text-transform`   | `none`                 | Header text transform                     |
+| `--accordion-item-header-gap`              | `0`                    | Gap between header label and icon         |
+| `--accordion-item-icon-margin-left`        | `12px`                 | Left margin of the chevron icon           |
+| `--accordion-item-icon-size`               | `20px`                 | Chevron icon size                         |
+| `--accordion-item-content-color`           | `var(--secondary-950)` | Content body text color                   |
+| `--accordion-item-content-font-size`       | `14px`                 | Content body font size                    |
+| `--accordion-item-content-line-height`     | `20px`                 | Content body line height                  |
 
 > **Note:** The `ghost` variant overrides several variables to transparent/zero values for minimal appearance.
 

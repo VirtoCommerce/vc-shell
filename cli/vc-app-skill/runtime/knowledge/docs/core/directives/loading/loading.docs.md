@@ -25,7 +25,7 @@ Unlike a standalone loading component, `v-loading` scopes the overlay to the ele
 | ----------------------- | ---------------- | ------------------------------------ |
 | `v-loading="true"`      | `boolean`        | Show/hide the loading overlay        |
 | `v-loading="options"`   | `LoadingOptions` | Show with configuration (see below)  |
-| `v-loading:1000="true"` | `arg: string`    | Set custom z-index (default: `9999`) |
+| `v-loading:1000="true"` | `arg: string`    | Set custom z-index (default: `9000`) |
 
 ### LoadingOptions
 
@@ -108,7 +108,7 @@ async function loadOrder() {
   <!-- Use a lower z-index so popups can render above the spinner -->
   <div v-loading:500="isLoading">Content</div>
 
-  <!-- Default z-index is 9999 -->
+  <!-- Default z-index is 9000 -->
   <div v-loading="isLoading">Content</div>
 </template>
 ```

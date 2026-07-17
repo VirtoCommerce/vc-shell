@@ -2,6 +2,7 @@
 title: useBladeRegistry
 category: composables
 group: blade-navigation
+internal: true
 ---
 
 # useBladeRegistry
@@ -26,7 +27,7 @@ Internally, the registry maintains a reactive `Map<string, IBladeRegistrationDat
 ## Basic Usage
 
 ```typescript
-import { useBladeRegistry } from "@vc-shell/framework";
+import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 
 const { getBlade, getBladeComponent } = useBladeRegistry();
 
@@ -61,7 +62,8 @@ const component = getBladeComponent("OrderDetails");
 
 ```typescript
 <script setup lang="ts">
-import { useBladeRegistry, useBlade } from "@vc-shell/framework";
+import { useBladeRegistry } from "@core/composables/useBladeRegistry";
+import { useBlade } from "@vc-shell/framework";
 
 const { getBlade } = useBladeRegistry();
 const { openBlade } = useBlade();
@@ -80,7 +82,7 @@ function navigateTo(bladeName: string, param?: string) {
 ### Deep link resolution
 
 ```typescript
-import { useBladeRegistry } from "@vc-shell/framework";
+import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 
 const { getBladeByRoute } = useBladeRegistry();
 
@@ -105,7 +107,7 @@ resolveDeepLink("/orders"); // Same result
 
 ```typescript
 <script setup lang="ts">
-import { useBladeRegistry } from "@vc-shell/framework";
+import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 
 const { registeredBladesMap } = useBladeRegistry();
 
@@ -121,7 +123,8 @@ const workspaceBlades = computed(() =>
 ### Checking permissions before navigation
 
 ```typescript
-import { useBladeRegistry, usePermissions } from "@vc-shell/framework";
+import { useBladeRegistry } from "@core/composables/useBladeRegistry";
+import { usePermissions } from "@vc-shell/framework";
 
 const { getBlade } = useBladeRegistry();
 const { hasAccess } = usePermissions();

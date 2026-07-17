@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { ref, onMounted } from "vue";
 
-import VcDropdownPanel from "./vc-dropdown-panel.vue";
+import VcPopover from "./vc-popover.vue";
 
 /**
- * `VcDropdownPanel` is a floating dropdown panel positioned relative to an anchor element.
+ * `VcPopover` is a floating dropdown panel positioned relative to an anchor element.
  *
  * Built on `@floating-ui/vue`, it supports:
  * - Configurable placement (top, bottom, left, right and their start/end variants)
@@ -18,8 +18,8 @@ import VcDropdownPanel from "./vc-dropdown-panel.vue";
  * The panel is teleported to the document body for proper z-index stacking.
  */
 const meta = {
-  title: "Overlay/VcDropdownPanel",
-  component: VcDropdownPanel,
+  title: "Overlay/VcPopover",
+  component: VcPopover,
   tags: ["autodocs"],
   argTypes: {
     show: {
@@ -174,20 +174,20 @@ Features:
 \`\`\`vue
 <template>
   <button ref="anchorEl" @click="open = !open">Toggle</button>
-  <VcDropdownPanel
+  <VcPopover
     v-model:show="open"
     :anchor-ref="anchorEl"
     title="My Panel"
   >
     <p>Panel content here</p>
-  </VcDropdownPanel>
+  </VcPopover>
 </template>
 \`\`\`
         `,
       },
     },
   },
-} satisfies Meta<typeof VcDropdownPanel>;
+} satisfies Meta<typeof VcPopover>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -200,7 +200,7 @@ const updateShowAction = (...args: unknown[]) => console.log("update:show", ...a
  */
 export const Default: Story = {
   render: (args) => ({
-    components: { VcDropdownPanel },
+    components: { VcPopover },
     setup() {
       const anchorEl = ref<HTMLElement | null>(null);
       const isOpen = ref(false);
@@ -225,7 +225,7 @@ export const Default: Story = {
         >
           Toggle Panel
         </button>
-        <VcDropdownPanel
+        <VcPopover
           v-bind="args"
           :show="isOpen"
           :anchor-ref="anchorEl"
@@ -234,7 +234,7 @@ export const Default: Story = {
           <div class="tw-p-4">
             <p class="tw-m-0 tw-text-sm">This is the panel content area. It supports any content including forms, lists, or custom layouts.</p>
           </div>
-        </VcDropdownPanel>
+        </VcPopover>
       </div>
     `,
   }),
@@ -255,7 +255,7 @@ export const NoHeader: Story = {
     title: "",
   },
   render: (args) => ({
-    components: { VcDropdownPanel },
+    components: { VcPopover },
     setup() {
       const anchorEl = ref<HTMLElement | null>(null);
       const isOpen = ref(false);
@@ -280,7 +280,7 @@ export const NoHeader: Story = {
         >
           Toggle Panel
         </button>
-        <VcDropdownPanel
+        <VcPopover
           v-bind="args"
           :show="isOpen"
           :anchor-ref="anchorEl"
@@ -289,7 +289,7 @@ export const NoHeader: Story = {
           <div class="tw-p-4">
             <p class="tw-m-0 tw-text-sm">Panel without a header. The title prop is empty and no #header slot is provided.</p>
           </div>
-        </VcDropdownPanel>
+        </VcPopover>
       </div>
     `,
   }),
@@ -307,7 +307,7 @@ export const NoHeader: Story = {
  */
 export const WithFooter: Story = {
   render: (args) => ({
-    components: { VcDropdownPanel },
+    components: { VcPopover },
     setup() {
       const anchorEl = ref<HTMLElement | null>(null);
       const isOpen = ref(false);
@@ -332,7 +332,7 @@ export const WithFooter: Story = {
         >
           Toggle Panel
         </button>
-        <VcDropdownPanel
+        <VcPopover
           v-bind="args"
           :show="isOpen"
           :anchor-ref="anchorEl"
@@ -366,7 +366,7 @@ export const WithFooter: Story = {
               Apply
             </button>
           </template>
-        </VcDropdownPanel>
+        </VcPopover>
       </div>
     `,
   }),
@@ -389,7 +389,7 @@ export const ScrollableContent: Story = {
     maxHeight: 250,
   },
   render: (args) => ({
-    components: { VcDropdownPanel },
+    components: { VcPopover },
     setup() {
       const anchorEl = ref<HTMLElement | null>(null);
       const isOpen = ref(false);
@@ -416,7 +416,7 @@ export const ScrollableContent: Story = {
         >
           Toggle Panel
         </button>
-        <VcDropdownPanel
+        <VcPopover
           v-bind="args"
           :show="isOpen"
           :anchor-ref="anchorEl"
@@ -431,7 +431,7 @@ export const ScrollableContent: Story = {
               {{ item }}
             </div>
           </div>
-        </VcDropdownPanel>
+        </VcPopover>
       </div>
     `,
   }),
@@ -450,7 +450,7 @@ export const ScrollableContent: Story = {
  */
 export const Placements: Story = {
   render: () => ({
-    components: { VcDropdownPanel },
+    components: { VcPopover },
     setup() {
       const anchors = ref<Record<string, HTMLElement | null>>({});
       const openPanels = ref<Record<string, boolean>>({});
@@ -477,7 +477,7 @@ export const Placements: Story = {
           >
             {{ placement }}
           </button>
-          <VcDropdownPanel
+          <VcPopover
             :show="!!openPanels[placement]"
             :anchor-ref="anchors[placement]"
             :placement="placement"
@@ -488,7 +488,7 @@ export const Placements: Story = {
             <div class="tw-p-3 tw-text-xs">
               Placed: <strong>{{ placement }}</strong>
             </div>
-          </VcDropdownPanel>
+          </VcPopover>
         </div>
       </div>
     `,
@@ -508,7 +508,7 @@ export const Placements: Story = {
  */
 export const Interactive: Story = {
   render: (args) => ({
-    components: { VcDropdownPanel },
+    components: { VcPopover },
     setup() {
       const anchorEl = ref<HTMLElement | null>(null);
       const isOpen = ref(false);
@@ -534,7 +534,7 @@ export const Interactive: Story = {
             >
               {{ isOpen ? 'Close' : 'Open' }} Panel
             </button>
-            <VcDropdownPanel
+            <VcPopover
               v-bind="args"
               :show="isOpen"
               :anchor-ref="anchorEl"
@@ -549,7 +549,7 @@ export const Interactive: Story = {
                   <li>Click the X button in the header</li>
                 </ul>
               </div>
-            </VcDropdownPanel>
+            </VcPopover>
           </div>
           <div class="tw-text-xs tw-text-[var(--neutrals-500)]">
             <strong>Event log:</strong>
@@ -578,7 +578,7 @@ export const CustomHeader: Story = {
     title: "",
   },
   render: (args) => ({
-    components: { VcDropdownPanel },
+    components: { VcPopover },
     setup() {
       const anchorEl = ref<HTMLElement | null>(null);
       const isOpen = ref(false);
@@ -603,7 +603,7 @@ export const CustomHeader: Story = {
         >
           Toggle Panel
         </button>
-        <VcDropdownPanel
+        <VcPopover
           v-bind="args"
           :show="isOpen"
           :anchor-ref="anchorEl"
@@ -626,7 +626,7 @@ export const CustomHeader: Story = {
           <div class="tw-p-4">
             <p class="tw-m-0 tw-text-sm">The #header slot receives a <code>close</code> function so custom headers can dismiss the panel.</p>
           </div>
-        </VcDropdownPanel>
+        </VcPopover>
       </div>
     `,
   }),
@@ -645,7 +645,7 @@ export const CustomHeader: Story = {
  */
 export const Accessibility: Story = {
   render: (args) => ({
-    components: { VcDropdownPanel },
+    components: { VcPopover },
     setup() {
       const anchorEl = ref<HTMLElement | null>(null);
       const isOpen = ref(false);
@@ -670,7 +670,7 @@ export const Accessibility: Story = {
         >
           Open Accessible Panel
         </button>
-        <VcDropdownPanel
+        <VcPopover
           v-bind="args"
           :show="isOpen"
           :anchor-ref="anchorEl"
@@ -699,7 +699,7 @@ export const Accessibility: Story = {
               The close button has <code>aria-label="Close"</code>.
             </p>
           </div>
-        </VcDropdownPanel>
+        </VcPopover>
       </div>
     `,
   }),

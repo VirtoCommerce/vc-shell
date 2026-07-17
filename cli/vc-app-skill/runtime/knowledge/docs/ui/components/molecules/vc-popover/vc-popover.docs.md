@@ -1,14 +1,14 @@
 ---
-title: VcDropdownPanel
+title: VcPopover
 category: components
 group: navigation
 ---
 
-# VcDropdownPanel
+# VcPopover
 
-Floating dropdown panel positioned relative to an anchor element, with header, scrollable content, and optional footer. Built on `@floating-ui/vue`.
+Anchored floating panel (popover) positioned relative to an anchor element, with header, scrollable content, and optional footer. Built on `@floating-ui/vue`.
 
-::storybook id="overlay-vcdropdownpanel--default"
+::storybook id="overlay-vcpopover--default"
 
 ## When to Use
 
@@ -27,7 +27,7 @@ Floating dropdown panel positioned relative to an anchor element, with header, s
   >
     Toggle Panel
   </button>
-  <VcDropdownPanel
+  <VcPopover
     v-model:show="open"
     :anchor-ref="anchorEl"
     title="Filter Options"
@@ -35,12 +35,12 @@ Floating dropdown panel positioned relative to an anchor element, with header, s
     <div class="tw-p-4">
       <p>Panel content here</p>
     </div>
-  </VcDropdownPanel>
+  </VcPopover>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { VcDropdownPanel } from "@vc-shell/framework";
+import { VcPopover } from "@vc-shell/framework";
 
 const anchorEl = ref<HTMLElement | null>(null);
 const open = ref(false);
@@ -78,12 +78,12 @@ const open = ref(false);
 
 ## Common Patterns
 
-::storybook id="overlay-vcdropdownpanel--with-footer"
+::storybook id="overlay-vcpopover--with-footer"
 
 ### Filter Panel with Footer Actions
 
 ```vue
-<VcDropdownPanel v-model:show="showFilters" :anchor-ref="filterButton" title="Filters">
+<VcPopover v-model:show="showFilters" :anchor-ref="filterButton" title="Filters">
   <div class="tw-p-4 tw-flex tw-flex-col tw-gap-2">
     <VcCheckbox v-model="filters.active">Active only</VcCheckbox>
     <VcCheckbox v-model="filters.inStock">In stock</VcCheckbox>
@@ -93,13 +93,13 @@ const open = ref(false);
     <VcButton variant="secondary" @click="resetFilters">Reset</VcButton>
     <VcButton @click="applyFilters">Apply</VcButton>
   </template>
-</VcDropdownPanel>
+</VcPopover>
 ```
 
 ### Custom Header
 
 ```vue
-<VcDropdownPanel v-model:show="open" :anchor-ref="anchor">
+<VcPopover v-model:show="open" :anchor-ref="anchor">
   <template #header="{ close }">
     <div class="tw-flex tw-items-center tw-justify-between tw-w-full tw-px-4 tw-py-3">
       <span class="tw-font-semibold">Custom Header</span>
@@ -107,13 +107,13 @@ const open = ref(false);
     </div>
   </template>
   <div class="tw-p-4">Content here</div>
-</VcDropdownPanel>
+</VcPopover>
 ```
 
 ### Scrollable List
 
 ```vue
-<VcDropdownPanel v-model:show="open" :anchor-ref="anchor" title="Long Content" :max-height="250">
+<VcPopover v-model:show="open" :anchor-ref="anchor" title="Long Content" :max-height="250">
   <div class="tw-py-1">
     <div
       v-for="item in items"
@@ -123,22 +123,23 @@ const open = ref(false);
       {{ item.name }}
     </div>
   </div>
-</VcDropdownPanel>
+</VcPopover>
 ```
 
 ## CSS Variables
 
-| Variable                             | Default                       | Description              |
-| ------------------------------------ | ----------------------------- | ------------------------ |
-| `--dropdown-panel-bg`                | `var(--additional-50)`        | Panel background         |
-| `--dropdown-panel-border-color`      | `var(--neutrals-200)`         | Border color             |
-| `--dropdown-panel-border-radius`     | `6px`                         | Corner radius            |
-| `--dropdown-panel-shadow`            | `0 4px 16px rgba(0,0,0,0.08)` | Box shadow               |
-| `--dropdown-panel-z-index`           | `10001`                       | Z-index                  |
-| `--dropdown-panel-title-color`       | `var(--neutrals-900)`         | Title text color         |
-| `--dropdown-panel-close-color`       | `var(--neutrals-400)`         | Close button color       |
-| `--dropdown-panel-close-hover-color` | `var(--neutrals-600)`         | Close button hover color |
-| `--dropdown-panel-footer-bg`         | `var(--neutrals-50)`          | Footer background        |
+| Variable                         | Default                       | Description              |
+| -------------------------------- | ----------------------------- | ------------------------ |
+| `--vc-popover-bg`                | `var(--additional-50)`        | Panel background         |
+| `--vc-popover-border-color`      | `var(--neutrals-200)`         | Border color             |
+| `--vc-popover-border-radius`     | `6px`                         | Corner radius            |
+| `--vc-popover-shadow`            | `0 4px 16px rgba(0,0,0,0.08)` | Box shadow               |
+| `--vc-popover-title-color`       | `var(--neutrals-900)`         | Title text color         |
+| `--vc-popover-close-color`       | `var(--neutrals-400)`         | Close button color       |
+| `--vc-popover-close-hover-color` | `var(--neutrals-600)`         | Close button hover color |
+| `--vc-popover-footer-bg`         | `var(--neutrals-50)`          | Footer background        |
+
+The panel's z-index comes from the global `--z-critical-floating-panel` token and is not overridable per-instance.
 
 ## Accessibility
 

@@ -641,7 +641,7 @@ VcInput only shows the error message when the computed `invalid` state is true. 
 <VcInput v-model="val" label="Name" :error="true" error-message="Required" />
 ```
 
-> **Note:** As of the current implementation, `invalid` is computed as `!!error || !!errorMessage`. So passing only `errorMessage` does work, but it is best practice to pass both for clarity and forward compatibility.
+> **Note:** As of the current implementation, `invalid` is computed as `!!error || !!errorMessage`, and is also true when the parent VcInputGroup is in an error state (see `useFormField.ts` line 19). So passing only `errorMessage` does work, but it is best practice to pass both for clarity and forward compatibility.
 
 ### 4. Expecting negative numbers from type="number"
 
@@ -796,7 +796,7 @@ This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The comp
 - The `type="date"`, `type="datetime-local"`, and `type="color"` values trigger internal delegation — the component renders `VcDatePicker` or `VcColorInput` instead of a native `<input>`. All forwarded props are passed via `v-bind="$attrs"`.
 - Debounce is implemented via a `useDebounceFn` wrapper from VueUse. The internal `temp` ref holds the raw typing value; the `modelValue` update is deferred.
 - `number` / `integer` type filtering uses `keydown` event guards — not `input` event filtering — to block `-`, `+`, `e`, and (for `integer`) `.` keys before they reach the input.
-- `type="password"` show/hide toggle is controlled by `showPassword` ref; the native `input` type toggles between `"password"` and `"text"`.
+- `type="password"` show/hide toggle is controlled by the `internalType` ref; the native `input` type toggles between `"password"` and `"text"`.
 - The `control` slot replaces the native `<input>` with an arbitrary element. The `emitValue` scope function wraps the debounce logic, so custom controls respect the `debounce` prop automatically.
 - Source file: `framework/ui/components/molecules/vc-input/vc-input.vue`
 

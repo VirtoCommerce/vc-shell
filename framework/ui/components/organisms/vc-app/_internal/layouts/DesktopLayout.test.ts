@@ -56,10 +56,10 @@ function mountLayout(props: Record<string, unknown> = {}) {
           name: "NotificationDropdown",
           template: '<div class="stub-notifications" />',
         },
-        VcDropdownPanel: {
-          name: "VcDropdownPanel",
+        VcPopover: {
+          name: "VcPopover",
           props: ["show", "anchorRef", "placement", "width", "contentScrollable"],
-          template: '<div class="stub-dropdown-panel"><slot /></div>',
+          template: '<div class="stub-popover"><slot /></div>',
         },
       },
     },

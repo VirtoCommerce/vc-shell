@@ -58,8 +58,7 @@ resetModificationState(); // currentValue becomes the new pristine baseline
 ```vue
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useModificationTracker } from "@vc-shell/framework";
-import { useBeforeUnload } from "@vueuse/core";
+import { useModificationTracker, useBeforeUnload } from "@vc-shell/framework";
 
 // Simulate API data loaded into a ref
 const apiData = ref({ name: "Widget A", price: 19.99, tags: ["sale"] });

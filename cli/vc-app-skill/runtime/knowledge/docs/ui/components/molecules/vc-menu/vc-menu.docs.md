@@ -111,7 +111,7 @@ When `expanded` is `false`, the menu shows only icons and letter abbreviations. 
 
 | Variable        | Default | Description            |
 | --------------- | ------- | ---------------------- |
-| `--vc-menu-gap` | `2px`   | Gap between menu items |
+| `--vc-menu-gap` | `8px`   | Gap between menu items |
 
 ## Accessibility
 

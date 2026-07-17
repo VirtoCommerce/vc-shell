@@ -74,12 +74,14 @@ The `variant` prop adds a semantic icon and color to the popup. Available values
 
 When `variant` is anything other than `"default"`, a large icon is rendered to the left of the content area:
 
-| Variant   | Icon                    | Color token     |
-| --------- | ----------------------- | --------------- |
-| `warning` | `lucide-triangle-alert` | `--warning-500` |
-| `error`   | `lucide-circle-alert`   | `--danger-500`  |
-| `success` | `lucide-circle-check`   | `--success-500` |
-| `info`    | `lucide-info`           | `--info-500`    |
+| Variant   | Icon                    | Color token (default value)                    |
+| --------- | ----------------------- | ---------------------------------------------- |
+| `warning` | `lucide-triangle-alert` | `--popup-warning-icon-color` (`--warning-500`) |
+| `error`   | `lucide-circle-alert`   | `--popup-error-icon-color` (`--danger-500`)    |
+| `success` | `lucide-circle-check`   | `--popup-success-icon-color` (`--success-500`) |
+| `info`    | `lucide-info`           | `--popup-info-icon-color` (`--info-500`)       |
+
+The icon color is overridable per variant via `--popup-<variant>-icon-color`.
 
 ### Title
 
@@ -140,10 +142,9 @@ The `close` event carries a `PopupCloseReason` string so you can react different
 </VcPopup>
 
 <script setup lang="ts">
-import type { PopupCloseReason } from "@vc-shell/framework";
-
-function onClose(reason?: PopupCloseReason) {
-  // reason is "overlay" | "escape" | "action"
+// The reason is the union `"overlay" | "escape" | "action"`.
+// (`PopupCloseReason` is internal to vc-popup.vue and is not re-exported from the framework entry.)
+function onClose(reason?: "overlay" | "escape" | "action") {
   if (reason === "action") {
     // User clicked a button
   }
@@ -238,10 +239,10 @@ The `modalWidth` prop accepts a Tailwind CSS max-width class. The default is `"t
 
 Two props control fullscreen behavior:
 
-| Prop                 | Effect                                                                  |
-| -------------------- | ----------------------------------------------------------------------- |
-| `isFullscreen`       | Full viewport on **all** screen sizes                                   |
-| `isMobileFullscreen` | Full viewport on **mobile only** (detected via `IsMobileKey` injection) |
+| Prop                 | Effect                                                                       |
+| -------------------- | ---------------------------------------------------------------------------- |
+| `isFullscreen`       | Full viewport on **all** screen sizes                                        |
+| `isMobileFullscreen` | Full viewport on **mobile only** (detected via `useResponsive()` `isMobile`) |
 
 ```vue
 <VcPopup v-model="open" title="Image Editor" is-fullscreen>
@@ -546,16 +547,24 @@ Or display a richer error popup in-template:
 
 ## CSS Custom Properties
 
-| Variable                     | Default                | Description                          |
-| ---------------------------- | ---------------------- | ------------------------------------ |
-| `--popup-border-radius`      | `6px`                  | Border radius of the dialog panel    |
-| `--popup-shadow`             | `var(--shadow-md)`     | Box shadow around the panel          |
-| `--popup-overlay-blur`       | `var(--overlay-blur)`  | Backdrop blur amount                 |
-| `--popup-bg`                 | `var(--additional-50)` | Background color of the dialog panel |
-| `--popup-header-color`       | `var(--primary-700)`   | Title text color                     |
-| `--popup-content-text-color` | `var(--primary-700)`   | Content text color                   |
-| `--popup-footer-separator`   | `var(--neutrals-200)`  | Footer top border color              |
-| `--popup-overlay`            | `var(--overlay-bg)`    | Overlay background color             |
+> **Note:** New themes should override `--vc-popup-border-radius`, `--vc-popup-shadow`, and `--vc-popup-overlay-blur`. The `--popup-*` variables below are deprecated aliases kept for backward compatibility (the `--vc-popup-*` vars fall back to them).
+
+| Variable                     | Default                                                  | Description                          |
+| ---------------------------- | -------------------------------------------------------- | ------------------------------------ |
+| `--popup-border-radius`      | `6px`                                                    | Border radius of the dialog panel    |
+| `--popup-shadow`             | `var(--shadow-md)`                                       | Box shadow around the panel          |
+| `--popup-overlay-blur`       | `var(--overlay-blur)`                                    | Backdrop blur amount                 |
+| `--popup-bg`                 | `var(--additional-50)`                                   | Background color of the dialog panel |
+| `--popup-header-color`       | `var(--primary-700)`                                     | Title text color                     |
+| `--popup-content-text-color` | `var(--primary-700)`                                     | Content text color                   |
+| `--popup-footer-separator`   | `var(--neutrals-200)`                                    | Footer top border color              |
+| `--popup-overlay`            | `var(--overlay-bg)`                                      | Overlay background color             |
+| `--popup-close-btn-bg`       | `var(--neutrals-100)`                                    | Close button (X) background          |
+| `--popup-close-btn-bg-hover` | `color-mix(in srgb, var(--popup-close-btn-bg), #000 5%)` | Close button background on hover     |
+| `--popup-warning-icon-color` | `var(--warning-500)`                                     | Warning variant icon color           |
+| `--popup-error-icon-color`   | `var(--danger-500)`                                      | Error variant icon color             |
+| `--popup-success-icon-color` | `var(--success-500)`                                     | Success variant icon color           |
+| `--popup-info-icon-color`    | `var(--info-500)`                                        | Info variant icon color              |
 
 ## Accessibility
 

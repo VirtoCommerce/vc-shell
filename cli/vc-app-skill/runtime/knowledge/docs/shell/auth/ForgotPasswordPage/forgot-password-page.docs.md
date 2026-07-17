@@ -38,11 +38,11 @@ With custom branding:
 
 ## Key Props
 
-| Prop         | Type                       | Default | Description                                        |
-| ------------ | -------------------------- | ------- | -------------------------------------------------- |
-| `logo`       | `string`                   | -       | Override logo image URL                            |
-| `background` | `string`                   | -       | Custom background image URL                        |
-| `composable` | `() => { forgotPassword }` | -       | Custom composable providing `forgotPassword(args)` |
+| Prop         | Type                       | Default | Description                                                                  |
+| ------------ | -------------------------- | ------- | ---------------------------------------------------------------------------- |
+| `logo`       | `string`                   | -       | Fallback logo image URL (used when the platform UI-settings logo is not set) |
+| `background` | `string`                   | -       | Custom background image URL                                                  |
+| `composable` | `() => { forgotPassword }` | -       | Custom composable providing `forgotPassword(args)`                           |
 
 ## Recipe: Custom Reset Flow with a Different API
 
@@ -73,7 +73,7 @@ export function useCustomPasswordReset() {
 Register the page in your application router:
 
 ```ts
-import ForgotPassword from "@vc-shell/framework/shared/pages/ForgotPasswordPage";
+import { ForgotPassword } from "@vc-shell/framework";
 
 const routes = [
   {

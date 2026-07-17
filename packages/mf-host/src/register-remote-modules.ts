@@ -30,7 +30,11 @@ const RUNTIME_LIBS: Record<string, { lib: () => unknown; version: string }> = {
   vue: { lib: () => Vue, version: vuePkg.version },
   "vue-router": { lib: () => VueRouter, version: vueRouterPkg.version },
   "vue-i18n": { lib: () => VueI18n, version: vueI18nPkg.version },
-  "vee-validate": { lib: () => VeeValidate, version: (VeeValidate as any).version ?? "4.0.0" },
+  // vee-validate blocks the "./package.json" subpath in its exports map and exports no
+  // runtime `version`, so — unlike the deps above — the version cannot be resolved at
+  // build time and must be pinned here. Keep in sync with the installed vee-validate;
+  // it only needs to satisfy the remotes' requiredVersion (^4.12.0 in mf-config).
+  "vee-validate": { lib: () => VeeValidate, version: "4.15.1" },
   "lodash-es": { lib: () => LodashEs, version: lodashEsPkg.version },
   "@vueuse/core": { lib: () => VueuseCore, version: vueusePkg.version },
   "@vc-shell/framework": { lib: () => Framework, version: frameworkPkg.version },
@@ -72,32 +76,9 @@ export interface RegisterRemoteModulesOptions {
    * Useful for ops debugging or non-standard deployments.
    */
   manifestUrl?: string;
-  /** Budget for the manifest fetch. Default 5000ms. On expiry: warn + skip (modulesReady=true). */
-  manifestTimeoutMs?: number;
-  /** Budget for one remote's loadRemote. Default 10000ms. On expiry: that remote → failed. */
-  loadTimeoutMs?: number;
 }
 
 // --- Helper functions ---
-
-export const DEFAULT_MANIFEST_TIMEOUT_MS = 5000;
-export const DEFAULT_LOAD_TIMEOUT_MS = 10000;
-
-/** Distinguishes a budget expiry from the work's own failure. */
-class TimeoutError extends Error {}
-
-/** Rejects with TimeoutError if `work` has not settled within `ms`. */
-async function withTimeout<T>(work: Promise<T>, ms: number, label: string): Promise<T> {
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const timeout = new Promise<never>((_, reject) => {
-    timer = setTimeout(() => reject(new TimeoutError(`${label} timed out after ${ms}ms`)), ms);
-  });
-  try {
-    return await Promise.race([work, timeout]);
-  } finally {
-    clearTimeout(timer);
-  }
-}
 
 function defaultManifestUrl(appName: string): string {
   return `/api/apps/${encodeURIComponent(appName)}/manifest`;
@@ -162,37 +143,12 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
 
       // 1. Fetch manifest
       const manifestUrl = options.manifestUrl ?? defaultManifestUrl(options.appName);
-      const manifestTimeoutMs = options.manifestTimeoutMs ?? DEFAULT_MANIFEST_TIMEOUT_MS;
-      const loadTimeoutMs = options.loadTimeoutMs ?? DEFAULT_LOAD_TIMEOUT_MS;
 
-      let response: Response;
-      try {
-        response = await withTimeout(
-          fetch(manifestUrl, {
-            method: "GET",
-            credentials: "same-origin",
-            headers: { Accept: "application/json" },
-            signal: AbortSignal.timeout(manifestTimeoutMs),
-          }),
-          manifestTimeoutMs,
-          "manifest fetch",
-        );
-      } catch (error) {
-        const isTimeoutOrAbort =
-          error instanceof TimeoutError || (error instanceof DOMException && error.name === "AbortError");
-        if (!isTimeoutOrAbort) {
-          // Real network failure — let the outer catch set modulesLoadError.
-          throw error;
-        }
-        // Timeout or abort — same policy as an HTTP error: warn + skip, not a loadError.
-        console.warn(
-          `[mf-host] manifest endpoint ${manifestUrl} did not respond within ${manifestTimeoutMs}ms; skipping plugin discovery.`,
-          error,
-        );
-        modulesReady.value = true;
-        performance.mark("vc:modules-done");
-        return;
-      }
+      const response = await fetch(manifestUrl, {
+        method: "GET",
+        credentials: "same-origin",
+        headers: { Accept: "application/json" },
+      });
 
       if (!response.ok) {
         // Unified policy: 401/403/404/5xx → warn + skip, no loadError.
@@ -245,65 +201,40 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
         shared,
       });
 
-      // 4. Load all remotes in parallel, each bounded by loadTimeoutMs.
-      // A hung remote (remoteEntry.js or its chunks never arriving) would
-      // otherwise block Promise.allSettled forever and modulesReady would
-      // never flip. On expiry the remote rejects with TimeoutError and lands
-      // in `failed` — same path as any other load failure.
-      const results = await Promise.allSettled(
+      // 4 + 5. Load each remote in parallel and install it the moment IT resolves,
+      // rather than waiting for the whole batch behind a Promise.allSettled barrier.
+      // Otherwise the slowest remote (e.g. a cold dev-server compilation of the shared
+      // framework graph) holds back every other module's menu items and routes, so
+      // nothing appears until all remotes have loaded.
+      const failed: { entry: ModuleRegistryEntry; error: unknown }[] = [];
+      await Promise.allSettled(
         entries.map(async (e) => {
-          const work = mfInstance.loadRemote(`${e.remoteName}/${e.exposedKey}`);
           try {
-            return { entry: e, exports: await withTimeout(work, loadTimeoutMs, `loadRemote "${e.id}"`) };
-          } catch (error) {
-            // A budget expiry does not cancel the underlying load; log a late settle so a
-            // recorded "failed" is never silently contradicted by a later success.
-            if (error instanceof TimeoutError) {
-              work
-                .then(() =>
-                  console.warn(`[mf-host] remote "${e.id}" load completed after its ${loadTimeoutMs}ms budget`),
-                )
-                .catch(() => undefined);
+            const exports = await mfInstance.loadRemote(`${e.remoteName}/${e.exposedKey}`);
+            const plugins = resolvePlugins(exports);
+            if (plugins.length > 0) {
+              for (const plugin of plugins) app.use(plugin, { router: options.router });
+              console.info(`[mf-host] "${e.id}" v${e.version} installed (${plugins.length} sub-module(s)).`);
+            } else {
+              console.error(`[mf-host] "${e.id}" has no install function. Skipping.`);
             }
-            throw error;
+          } catch (error) {
+            failed.push({ entry: e, error });
+            console.error(`[mf-host] Failed to load "${e.id}":`, error);
           }
         }),
       );
 
       performance.mark("vc:modules-loaded");
-
-      const loaded: { entry: ModuleRegistryEntry; exports: unknown }[] = [];
-      const failed: { entry: ModuleRegistryEntry; error: unknown }[] = [];
-      for (let i = 0; i < results.length; i++) {
-        const r = results[i];
-        if (r.status === "fulfilled") loaded.push(r.value);
-        else failed.push({ entry: entries[i], error: r.reason });
-      }
-
-      for (const { entry, error } of failed) {
-        console.error(`[mf-host] Failed to load "${entry.id}":`, error);
-      }
-
-      // 5. Install plugins
-      for (const { entry, exports } of loaded) {
-        const plugins = resolvePlugins(exports);
-        if (plugins.length > 0) {
-          for (const plugin of plugins) app.use(plugin, { router: options.router });
-          console.info(`[mf-host] "${entry.id}" v${entry.version} installed (${plugins.length} sub-module(s)).`);
-        } else {
-          console.error(`[mf-host] "${entry.id}" has no install function. Skipping.`);
-        }
-      }
+      performance.mark("vc:modules-installed");
 
       if (failed.length > 0) {
         console.warn(
-          `[mf-host] ${loaded.length}/${entries.length} plugins loaded. Failed: [${failed
+          `[mf-host] ${entries.length - failed.length}/${entries.length} plugins loaded. Failed: [${failed
             .map((f) => f.entry.id)
             .join(", ")}]`,
         );
       }
-
-      performance.mark("vc:modules-installed");
       modulesReady.value = true;
 
       const resolvedPath = options.router.currentRoute.value.fullPath;

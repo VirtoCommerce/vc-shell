@@ -16,9 +16,9 @@ vi.mock("@core/composables/useSidebarState", () => ({
 const stubs = {
   UserInfo: { name: "UserInfo", template: "<div class='user-info-stub' />" },
   SettingsMenu: { name: "SettingsMenu", template: "<div class='settings-menu-stub' />" },
-  VcDropdownPanel: {
-    name: "VcDropdownPanel",
-    template: "<div class='dropdown-panel-stub'><slot /></div>",
+  VcPopover: {
+    name: "VcPopover",
+    template: "<div class='popover-stub'><slot /></div>",
     props: ["show", "anchorRef", "placement", "width", "maxWidth"],
   },
   UserSidebar: { name: "UserSidebar", template: "<div class='user-sidebar-stub' />" },
@@ -59,11 +59,11 @@ describe("UserDropdownButton", () => {
     expect(wrapper.find(".vc-user-dropdown-button--active").exists()).toBe(false);
   });
 
-  it("renders VcDropdownPanel on desktop", () => {
+  it("renders VcPopover on desktop", () => {
     const wrapper = mount(UserDropdownButton, {
       global: { stubs, ...globalConfig },
     });
-    expect(wrapper.find(".dropdown-panel-stub").exists()).toBe(true);
+    expect(wrapper.find(".popover-stub").exists()).toBe(true);
     expect(wrapper.find(".user-sidebar-stub").exists()).toBe(false);
   });
 
@@ -78,7 +78,7 @@ describe("UserDropdownButton", () => {
       global: { stubs, ...mobileConfig },
     });
     expect(wrapper.find(".user-sidebar-stub").exists()).toBe(true);
-    expect(wrapper.find(".dropdown-panel-stub").exists()).toBe(false);
+    expect(wrapper.find(".popover-stub").exists()).toBe(false);
   });
 
   it("applies auto-width class when disabled", () => {

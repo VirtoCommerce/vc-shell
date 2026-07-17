@@ -2,6 +2,7 @@
 title: useAppBarMobileButtons
 category: composables
 group: services
+internal: true
 ---
 
 # useAppBarMobileButtons
@@ -19,7 +20,7 @@ Manages custom action buttons in the mobile app bar. Uses provide/inject to shar
 
 ```vue
 <script setup lang="ts">
-import { useAppBarMobileButtons } from "@vc-shell/framework";
+import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons";
 import { onUnmounted, computed, ref } from "vue";
 
 const { register, unregister } = useAppBarMobileButtons();
@@ -56,6 +57,7 @@ onUnmounted(() => unregister("notifications-btn"));
 | Field       | Type                      | Required | Description                                                                                             |
 | ----------- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------- |
 | `id`        | `string`                  | Yes      | Unique identifier. Used for register/unregister/lookup.                                                 |
+| `title`     | `string`                  | No       | Accessible name for the icon-only button (used as its `aria-label`; falls back to `id`).                |
 | `icon`      | `Component \| string`     | No       | Icon component or CSS class string (e.g., `'fas fa-bell'`).                                             |
 | `component` | `Component`               | No       | Custom Vue component to render instead of a default icon button.                                        |
 | `props`     | `Record<string, unknown>` | No       | Props passed to the custom `component`.                                                                 |
@@ -84,7 +86,7 @@ provideAppBarMobileButtonsService();
 
 ```vue
 <script setup lang="ts">
-import { useAppBarMobileButtons } from "@vc-shell/framework";
+import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons";
 import { ref, computed, onUnmounted } from "vue";
 
 const { register, unregister } = useAppBarMobileButtons();
@@ -111,7 +113,7 @@ If you need more than an icon and a click handler (e.g., a dropdown or popover),
 
 ```vue
 <script setup lang="ts">
-import { useAppBarMobileButtons } from "@vc-shell/framework";
+import { useAppBarMobileButtons } from "@core/composables/useAppBarMobileButtons";
 import { onUnmounted, markRaw } from "vue";
 import LanguageSwitcher from "./LanguageSwitcher.vue";
 

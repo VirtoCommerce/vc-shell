@@ -167,7 +167,7 @@ VcStatusIcon is intentionally minimal. If you need a text label next to the icon
 
 ## Architecture notes
 
-- VcStatusIcon wraps two `VcIcon` instances in a single `<span>` with `v-if`/`v-else` switching on the `status` prop.
+- VcStatusIcon wraps two `VcIcon` instances in a single `<div class="vc-status-icon">` with `v-if`/`v-else` switching on the `status` prop.
 - Icon size inherits from parent font-size; no dedicated size prop is exposed.
 - Source: `framework/ui/components/atoms/vc-status-icon/vc-status-icon.vue`
 

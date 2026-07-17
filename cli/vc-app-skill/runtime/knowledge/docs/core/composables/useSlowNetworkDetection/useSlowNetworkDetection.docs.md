@@ -2,6 +2,7 @@
 title: useSlowNetworkDetection
 category: composables
 group: ui-state
+internal: true
 ---
 
 # useSlowNetworkDetection
@@ -23,7 +24,7 @@ The composable is initialized automatically at app startup. To reactively read t
 
 ```vue
 <script setup lang="ts">
-import { useSlowNetworkDetection } from "@vc-shell/framework";
+import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const { isSlowNetwork } = useSlowNetworkDetection();
 </script>
@@ -54,15 +55,17 @@ const { isSlowNetwork } = useSlowNetworkDetection();
 | `trackRequest`   | `(id: string) => void`   | Start tracking a request. If it isn't untracked within 10 s, it counts as slow. |
 | `untrackRequest` | `(id: string) => void`   | Stop tracking a request. Cancels the timer or decrements the slow count.        |
 
-### Constants
+<!-- internal:start -->
+
+### Internal Constants
+
+These are module-private `const` declarations, not exported symbols — do not `import` them. They document the thresholds baked into the composable.
 
 | Name                        | Value               | Purpose                                             |
 | --------------------------- | ------------------- | --------------------------------------------------- |
 | `SLOW_REQUEST_THRESHOLD_MS` | `10000`             | Time before a pending request is considered slow    |
 | `DISMISS_DELAY_MS`          | `3000`              | Delay before hiding the notification after recovery |
 | `SLOW_EFFECTIVE_TYPES`      | `["slow-2g", "2g"]` | Connection types flagged as slow                    |
-
-<!-- internal:start -->
 
 ## How It Works
 
@@ -88,7 +91,7 @@ The fetch interceptor in `framework/core/interceptors/index.ts` calls `trackRequ
 ```vue
 <script setup lang="ts">
 import { watch } from "vue";
-import { useSlowNetworkDetection } from "@vc-shell/framework";
+import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const { isSlowNetwork } = useSlowNetworkDetection();
 
@@ -109,7 +112,7 @@ watch(isSlowNetwork, (slow) => {
 If you bypass the standard fetch interceptor (e.g., direct `XMLHttpRequest` or third-party SDK), you can manually track the request:
 
 ```ts
-import { useSlowNetworkDetection } from "@vc-shell/framework";
+import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const { trackRequest, untrackRequest } = useSlowNetworkDetection();
 
@@ -168,4 +171,4 @@ trackRequest("my-request-2");
 
 - [`useConnectionStatus`](../useConnectionStatus/useConnectionStatus.docs.md) — offline detection (binary online/offline)
 - [`registerInterceptors`](https://github.com/VirtoCommerce/vc-shell/blob/main/framework/core/interceptors/index.ts) — the fetch wrapper that calls `trackRequest`/`untrackRequest`
-- `notification` from `@shared/components/notifications` — the notification system used to display the warning
+- `notification` from `@core/notifications/notification` — the notification system used to display the warning

@@ -13,7 +13,7 @@ Permission-based access control plugin. Exposes a global `$hasAccess` helper for
 
 The VirtoCommerce platform uses a role-based permission system where each user is assigned one or more roles, and each role grants a set of named permissions (e.g., `order:read`, `order:create`, `catalog:manage`). The permissions plugin bridges this system into the Vue application layer so that UI elements can be shown or hidden based on the current user's access rights.
 
-The plugin installs the `hasAccess()` function from the `usePermissions()` composable as both a Vue global property (`$hasAccess`) and a provide/inject injectable (`"$hasAccess"`). This means permission checks are available everywhere: in templates via `$hasAccess()`, in composition API code via `usePermissions()`, and in any injecting component.
+The plugin installs the `hasAccess()` function from the `usePermissions()` composable as a Vue global property (`$hasAccess`). This means permission checks are available everywhere: in templates via `$hasAccess()` and in composition API code via `usePermissions()`.
 
 ## When to Use
 
@@ -28,14 +28,13 @@ The framework installs this plugin automatically during app setup. Module develo
 ```typescript
 // Automatic -- installed by the framework during app setup.
 // The plugin source is straightforward:
-import { usePermissions } from "@core/composables/usePermissions";
+import { usePermissions } from "@vc-shell/framework";
 import { App } from "vue";
 
 export const permissions = {
   install(app: App) {
     const { hasAccess } = usePermissions();
     app.config.globalProperties.$hasAccess = hasAccess;
-    app.provide("$hasAccess", hasAccess);
   },
 };
 ```

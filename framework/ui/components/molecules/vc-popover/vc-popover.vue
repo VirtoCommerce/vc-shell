@@ -1,26 +1,26 @@
 <template>
   <Teleport :to="teleportTarget">
-    <Transition name="vc-dropdown-panel-fade">
+    <Transition name="vc-popover-fade">
       <div
         v-if="show"
         ref="floatingRef"
-        class="vc-dropdown-panel"
+        class="vc-popover"
         :style="[floatingStyle, panelStyle]"
         @click.stop
       >
         <!-- Header -->
         <div
           v-if="title || $slots.header"
-          class="vc-dropdown-panel__header"
+          class="vc-popover__header"
         >
           <slot
             name="header"
             :close="close"
           >
-            <span class="vc-dropdown-panel__title">{{ title }}</span>
+            <span class="vc-popover__title">{{ title }}</span>
             <button
               type="button"
-              class="vc-dropdown-panel__close"
+              class="vc-popover__close"
               :aria-label="$t('COMPONENTS.CONTROLS.CLOSE')"
               @click="close"
             >
@@ -34,8 +34,8 @@
 
         <!-- Content (scrollable) -->
         <div
-          class="vc-dropdown-panel__content"
-          :class="{ 'vc-dropdown-panel__content--scrollable': contentScrollable }"
+          class="vc-popover__content"
+          :class="{ 'vc-popover__content--scrollable': contentScrollable }"
           :tabindex="contentScrollable ? 0 : undefined"
         >
           <slot />
@@ -44,7 +44,7 @@
         <!-- Footer (optional) -->
         <div
           v-if="$slots.footer"
-          class="vc-dropdown-panel__footer"
+          class="vc-popover__footer"
         >
           <slot name="footer" />
         </div>
@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 /**
- * VcDropdownPanel - Reusable floating dropdown panel
+ * VcPopover - Reusable anchored floating panel (popover)
  *
  * A Teleported floating panel positioned relative to an anchor element.
  * Features: document-level click-outside close, Escape key close, header with title + close button,
@@ -65,7 +65,9 @@ import { ref, computed, watch, onBeforeUnmount, nextTick } from "vue";
 import { offset, flip, shift, size, type Placement, type ReferenceElement } from "@floating-ui/vue";
 import { VcIcon } from "@ui/components/atoms";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
-import { panelAnchorRegistry } from "@ui/components/molecules/vc-dropdown-panel/panel-anchor-registry";
+import { panelAnchorRegistry } from "@ui/components/molecules/vc-popover/panel-anchor-registry";
+
+defineOptions({ name: "VcPopover" });
 
 interface Props {
   /** Whether the panel is visible (v-model:show) */
@@ -176,10 +178,10 @@ const handlePointerDownOutside = (e: PointerEvent) => {
     return;
   }
   // Handle nested panels (e.g. sub-menus teleported outside this panel).
-  // If the click is inside another .vc-dropdown-panel that does NOT contain
+  // If the click is inside another .vc-popover that does NOT contain
   // our anchor, it's a "child" panel (its anchor lives inside us) — don't close.
   // If that panel DOES contain our anchor, it's a parent/sibling — close as usual.
-  const enclosingPanel = target.closest?.(".vc-dropdown-panel");
+  const enclosingPanel = target.closest?.(".vc-popover");
   if (enclosingPanel && floatingRef.value && enclosingPanel !== floatingRef.value) {
     const enclosingAnchor = panelAnchorRegistry.get(enclosingPanel);
     const clickedInsideChildPanel = Boolean(enclosingAnchor && floatingRef.value.contains(enclosingAnchor));
@@ -245,45 +247,45 @@ defineExpose({ close });
 
 <style lang="scss">
 :root {
-  --dropdown-panel-bg: var(--additional-50);
-  --dropdown-panel-border-color: var(--neutrals-200);
-  --dropdown-panel-border-radius: 6px;
-  --dropdown-panel-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --dropdown-panel-title-color: var(--neutrals-900);
-  --dropdown-panel-close-color: var(--neutrals-400);
-  --dropdown-panel-close-hover-color: var(--neutrals-600);
-  --dropdown-panel-footer-bg: var(--neutrals-50);
+  --vc-popover-bg: var(--additional-50);
+  --vc-popover-border-color: var(--neutrals-200);
+  --vc-popover-border-radius: 6px;
+  --vc-popover-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --vc-popover-title-color: var(--neutrals-900);
+  --vc-popover-close-color: var(--neutrals-400);
+  --vc-popover-close-hover-color: var(--neutrals-600);
+  --vc-popover-footer-bg: var(--neutrals-50);
 }
 
-.vc-dropdown-panel {
-  z-index: var(--z-critical-dropdown-panel);
+.vc-popover {
+  z-index: var(--z-critical-floating-panel);
   @apply tw-overflow-hidden tw-flex tw-flex-col;
   @apply tw-border tw-border-solid;
-  background-color: var(--dropdown-panel-bg);
-  border-color: var(--dropdown-panel-border-color);
-  border-radius: var(--dropdown-panel-border-radius);
-  box-shadow: var(--dropdown-panel-shadow);
+  background-color: var(--vc-popover-bg);
+  border-color: var(--vc-popover-border-color);
+  border-radius: var(--vc-popover-border-radius);
+  box-shadow: var(--vc-popover-shadow);
 
   &__header {
     @apply tw-flex tw-items-center tw-justify-between;
     @apply tw-px-4 tw-py-3;
     @apply tw-border-b tw-border-solid;
-    border-color: var(--dropdown-panel-border-color);
+    border-color: var(--vc-popover-border-color);
   }
 
   &__title {
     @apply tw-font-semibold tw-text-sm;
-    color: var(--dropdown-panel-title-color);
+    color: var(--vc-popover-title-color);
   }
 
   &__close {
     @apply tw-p-1 tw-bg-transparent tw-border-none tw-cursor-pointer;
     @apply tw-transition-colors tw-duration-150;
-    color: var(--dropdown-panel-close-color);
-    border-radius: var(--dropdown-panel-border-radius);
+    color: var(--vc-popover-close-color);
+    border-radius: var(--vc-popover-border-radius);
 
     &:hover {
-      color: var(--dropdown-panel-close-hover-color);
+      color: var(--vc-popover-close-hover-color);
     }
   }
 
@@ -299,32 +301,32 @@ defineExpose({ close });
     @apply tw-flex tw-justify-end tw-gap-2;
     @apply tw-px-4 tw-py-3;
     @apply tw-border-t tw-border-solid;
-    border-color: var(--dropdown-panel-border-color);
-    background-color: var(--dropdown-panel-footer-bg);
-    border-bottom-left-radius: var(--dropdown-panel-border-radius);
-    border-bottom-right-radius: var(--dropdown-panel-border-radius);
+    border-color: var(--vc-popover-border-color);
+    background-color: var(--vc-popover-footer-bg);
+    border-bottom-left-radius: var(--vc-popover-border-radius);
+    border-bottom-right-radius: var(--vc-popover-border-radius);
   }
 }
 
 // Panel transition
-.vc-dropdown-panel-fade-enter-active {
+.vc-popover-fade-enter-active {
   transition:
     opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.vc-dropdown-panel-fade-leave-active {
+.vc-popover-fade-leave-active {
   transition:
     opacity 0.12s ease-in,
     transform 0.12s ease-in;
 }
 
-.vc-dropdown-panel-fade-enter-from {
+.vc-popover-fade-enter-from {
   opacity: 0;
   transform: translateY(-4px) scale(0.98);
 }
 
-.vc-dropdown-panel-fade-leave-to {
+.vc-popover-fade-leave-to {
   opacity: 0;
   transform: translateY(-2px) scale(0.99);
 }

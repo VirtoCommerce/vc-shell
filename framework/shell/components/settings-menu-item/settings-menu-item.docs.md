@@ -21,10 +21,10 @@ The component handles the visual representation of a single menu entry: an icon 
 
 The component includes a `submenu` slot that **automatically adapts to the viewport**:
 
-- **Desktop**: renders a floating `VcDropdownPanel` anchored to the menu item (`placement="right-start"`)
+- **Desktop**: renders a floating `VcPopover` anchored to the menu item (`placement="right-start"`)
 - **Mobile**: renders an inline accordion with animated expand/collapse (via `useCollapsible`)
 
-This removes the need for consumers to manage `VcDropdownPanel`, `isMobile` checks, or z-index issues manually.
+This removes the need for consumers to manage `VcPopover`, `isMobile` checks, or z-index issues manually.
 
 ## When to Use
 
@@ -158,15 +158,15 @@ The `submenu` slot can contain any content, not just `VcDropdownItem`:
 </SettingsMenuItem>
 ```
 
-## Migration: Manual VcDropdownPanel to Submenu Slot
+## Migration: Manual VcPopover to Submenu Slot
 
 Before (manual dropdown management):
 
 ```vue
 <SettingsMenuItem ref="menuItemRef" icon="lucide-palette" title="Theme" :value="currentTheme" :show-chevron="true" :is-active="isOpen" @trigger:click="isOpen = !isOpen" />
-<VcDropdownPanel v-model:show="isOpen" :anchor-ref="menuItemRef?.triggerRef ?? null" placement="right-start" width="180px">
+<VcPopover v-model:show="isOpen" :anchor-ref="menuItemRef?.triggerRef ?? null" placement="right-start" width="180px">
   <!-- options -->
-</VcDropdownPanel>
+</VcPopover>
 ```
 
 After (submenu slot):
@@ -182,7 +182,7 @@ After (submenu slot):
 **What changes:**
 
 - Remove `ref`, `isOpen`, `:show-chevron`, `:is-active`, `@trigger:click` toggle -- all auto-managed
-- Remove `VcDropdownPanel` wrapper entirely
+- Remove `VcPopover` wrapper entirely
 - Move dropdown content into `#submenu` slot
 - Mobile adaptation is automatic (no `isMobile` check needed)
 
@@ -203,5 +203,5 @@ Do not set `triggerAction="none"` and then rely on `@trigger:click` -- the event
 - [SettingsMenu](../settings-menu/settings-menu.docs.md) -- parent container
 - [ThemeSelector](../theme-selector/theme-selector.docs.md) -- uses SettingsMenuItem with submenu slot
 - [LanguageSelector](../language-selector/language-selector.docs.md) -- uses SettingsMenuItem with submenu slot
-- [VcDropdownPanel](../../../ui/components/molecules/vc-dropdown-panel/vc-dropdown-panel.docs.md) -- used internally for desktop sub-menus
+- [VcPopover](../../../ui/components/molecules/vc-popover/vc-popover.docs.md) -- used internally for desktop sub-menus
 - [VcDropdown](../../../ui/components/molecules/vc-dropdown/vc-dropdown.docs.md) -- recommended for sub-menu option rows

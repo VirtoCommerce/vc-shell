@@ -48,17 +48,19 @@ const lastName = ref("");
 
 ## Key Props
 
-| Prop                     | Type                         | Default      | Description                                |
-| ------------------------ | ---------------------------- | ------------ | ------------------------------------------ |
-| `label`                  | `string`                     | --           | Group label rendered as a `<legend>`       |
-| `tooltip`                | `string`                     | --           | Tooltip on the label's info icon           |
-| `hint`                   | `string`                     | --           | Helper text below the group                |
-| `orientation`            | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction for child controls        |
-| `role`                   | `"group" \| "radiogroup"`    | `"group"`    | ARIA role for the fieldset                 |
-| `disabled`               | `boolean`                    | `false`      | Disables all controls in the group         |
-| `error` / `errorMessage` | `boolean` / `string`         | --           | Group-level error styling and message      |
-| `required`               | `boolean`                    | `false`      | Shows required indicator on the label      |
-| `name`                   | `string`                     | --           | Shared `name` propagated to child controls |
+| Prop                     | Type                         | Default      | Description                                                         |
+| ------------------------ | ---------------------------- | ------------ | ------------------------------------------------------------------- |
+| `label`                  | `string`                     | --           | Group label rendered as a `<legend>`                                |
+| `tooltip`                | `string`                     | --           | Tooltip on the label's info icon                                    |
+| `hint`                   | `string`                     | --           | Helper text below the group                                         |
+| `orientation`            | `"vertical" \| "horizontal"` | `"vertical"` | Layout direction for child controls                                 |
+| `role`                   | `"group" \| "radiogroup"`    | `"group"`    | ARIA role for the fieldset                                          |
+| `disabled`               | `boolean`                    | `false`      | Disables all controls in the group                                  |
+| `error` / `errorMessage` | `boolean` / `string`         | --           | Group-level error styling and message                               |
+| `required`               | `boolean`                    | `false`      | Shows required indicator on the label                               |
+| `name`                   | `string`                     | --           | Shared `name` propagated to child controls                          |
+| `ariaLabel`              | `string`                     | --           | Sets `aria-label` on the fieldset                                   |
+| `ariaLabelledby`         | `string`                     | --           | Sets `aria-labelledby` on the fieldset (fallback when no legend id) |
 
 ## Common Patterns
 
@@ -126,7 +128,7 @@ const lastName = ref("");
 
 ## Architecture Notes
 
-- `disabled` and `name` are provided via Vue's provide/inject mechanism using injection keys from `framework/injection-keys.ts`. Child form controls (`VcInput`, `VcRadioButton`, etc.) inject these to inherit group-level state automatically.
+- Group state is provided via `InputGroupContextKey` (defined locally in `./context.ts`), carrying `{ name, disabled, invalid, describedBy }`. Child form controls (`VcInput`, `VcRadioButton`, etc.) inject this context to inherit group-level state automatically.
 - The `orientation` prop controls flex direction (`column` vs `row`) on the fieldset's content area.
 - Source file: `framework/ui/components/molecules/vc-input-group/vc-input-group.vue`
 - Context file: `framework/ui/components/molecules/vc-input-group/context.ts`

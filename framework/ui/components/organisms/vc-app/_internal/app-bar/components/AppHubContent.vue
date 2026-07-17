@@ -476,11 +476,11 @@ function isBadgeActive(widget: AppBarWidget): boolean {
   --app-hub-item-icon-active: var(--primary-500);
 }
 
-// The parent .vc-dropdown-panel__content is flex:1 + overflow:hidden but NOT
+// The parent .vc-popover__content is flex:1 + overflow:hidden but NOT
 // a flex container, so percentage/flex heights inside it don't resolve.
 // Make it a flex container so .app-hub-content can use flex:1 + min-height:0
 // to receive the bounded height from floating-ui's maxHeight.
-.vc-dropdown-panel__content:has(> .app-hub-content) {
+.vc-popover__content:has(> .app-hub-content) {
   display: flex;
   flex-direction: column;
 }

@@ -54,12 +54,14 @@ const { sortField, sortOrder, sortExpression, resetSort } = useDataTableSort({
 
 ### Returns
 
-| Property         | Type                               | Description                                                                            |
-| ---------------- | ---------------------------------- | -------------------------------------------------------------------------------------- |
-| `sortField`      | `Ref<string \| undefined>`         | Current sort field; bind with `v-model:sort-field`                                     |
-| `sortOrder`      | `Ref<number>`                      | Numeric sort order: `1` = ASC, `-1` = DESC, `0` = none; bind with `v-model:sort-order` |
-| `sortExpression` | `ComputedRef<string \| undefined>` | Formatted string (e.g., `"name:ASC"`) or `undefined` when no sort is active            |
-| `resetSort`      | `() => void`                       | Reset to the initial field/direction passed to the composable                          |
+| Property         | Type                               | Description                                                                                                          |
+| ---------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `sortField`      | `Ref<string \| undefined>`         | Current sort field; bind with `v-model:sort-field`                                                                   |
+| `sortOrder`      | `Ref<DataTableSortOrder>`          | Sort order (`DataTableSortOrder = 0 \| 1 \| -1`): `1` = ASC, `-1` = DESC, `0` = none; bind with `v-model:sort-order` |
+| `sortExpression` | `ComputedRef<string \| undefined>` | Formatted string (e.g., `"name:ASC"`) or `undefined` when no sort is active                                          |
+| `resetSort`      | `() => void`                       | Reset to the initial field/direction passed to the composable                                                        |
+
+The `DataTableSortOrder` (`0 | 1 | -1`) and `DataTableSortDirection` (`"ASC" | "DESC"`) types are exported alongside the composable.
 
 ## Direction Mapping
 

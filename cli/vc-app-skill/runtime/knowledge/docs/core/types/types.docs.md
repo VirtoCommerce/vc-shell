@@ -27,60 +27,58 @@ All types are re-exported from `@vc-shell/framework`, so module developers impor
 
 ### Menu System (`menu-types.ts`)
 
-| Type                  | Description                                                                                                            |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `MenuItemConfig`      | Configuration for registering a menu item: `title`, `icon`, `priority`, `permissions`, `group`/`groupConfig`, `badge`. |
-| `MenuItemBadge`       | Badge display config: `content` (static, ref, computed, or function), `variant`, `isDot`.                              |
-| `MenuItemBadgeConfig` | Union: full `MenuItemBadge` object or shorthand `number \| string \| Ref \| ComputedRef \| function`.                  |
-| `MenuItem`            | Runtime menu item extending `MenuItemConfig` with `routeId`, `url`, `children[]`, `groupIcon`, `groupId`.              |
+| Type                  | Description                                                                                                                                                                        |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MenuItemConfig`      | Configuration for registering a menu item: `title`, `icon`, `priority`, `permissions`, `groupConfig`, `badge`. (`group` and `inGroupPriority` are deprecated — use `groupConfig`.) |
+| `MenuItemBadge`       | Badge display config: `content` (static, ref, computed, or function), `variant`, `isDot`.                                                                                          |
+| `MenuItemBadgeConfig` | Union: full `MenuItemBadge` object or shorthand `number \| string \| Ref \| ComputedRef \| function`.                                                                              |
+| `MenuItem`            | Runtime menu item extending `MenuItemConfig` with `routeId`, `url`, `children[]`, `groupId`. (`groupIcon` is deprecated — use `groupConfig.icon`.)                                 |
 
 ### Toolbar
 
-| Type             | Description                                                                                                        |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `IBladeToolbar`  | Toolbar button config: `id`, `icon`, `disabled`, `title`, `isVisible`, `clickHandler`, `separator`, `permissions`. |
-| `ToolbarMenu<T>` | Generic toolbar menu item that infers component props from the provided component type.                            |
+| Type            | Description                                                                                                        |
+| --------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `IBladeToolbar` | Toolbar button config: `id`, `icon`, `disabled`, `title`, `isVisible`, `clickHandler`, `separator`, `permissions`. |
 
 ### Table Columns
 
-| Type                  | Description                                                                                                                                                                  |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ITableColumnsBase`   | Column definition: `id`, `title`, `width`, `field`, `type` (money, date, image, status, etc.), `sortable`, `editable`, `rules`, `filter`, `mobilePosition`, `mobileVisible`. |
-| `ITableColumns`       | Union of `ITableColumnsBase` with specialized image and money column variants.                                                                                               |
-| `IColumnFilterConfig` | Column filter: `true` (text), `string` (custom field), `{ options }` (select), `{ range }` (date range).                                                                     |
-| `IFilterOption`       | Select filter option: `{ value, label }`.                                                                                                                                    |
+| Type                  | Description                                                                                                                                                                                                                                              |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ITableColumnsBase`   | Column definition: `id`, `title`, `width`, `field`, `type` (`money`, `date-ago`, `date`, `time`, `image`, `date-time`, `status`, `status-icon`, `number`, `link`, `html`), `sortable`, `editable`, `rules`, `filter`, `mobilePosition`, `mobileVisible`. |
+| `ITableColumns`       | Union of `ITableColumnsBase` with specialized image and money column variants.                                                                                                                                                                           |
+| `IColumnFilterConfig` | Column filter: `true` (text), `string` (custom field), `{ options }` (select), `{ range }` (date range).                                                                                                                                                 |
+| `IFilterOption`       | Select filter option: `{ value, label }`.                                                                                                                                                                                                                |
 
 ### Assets
 
-| Type               | Description                                                                                |
-| ------------------ | ------------------------------------------------------------------------------------------ |
-| `ICommonAsset`     | Asset record: `url`, `relativeUrl`, `title`, `name`, `size`, `sortOrder`, `typeId`, dates. |
-| `AssetsHandler<T>` | Asset operations: `upload()`, `edit()`, `remove()`, `loading` ref, `noRemoveConfirmation`. |
+| Type               | Description                                                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ICommonAsset`     | Alias of `AssetLike`: declares only `url`, `name`, `sortOrder` plus an open `[key: string]: any` index signature (other fields are untyped passthrough). **Deprecated** (removed in v3.0) — use `AssetLike`. |
+| `AssetsHandler<T>` | Asset operations: `upload()`, `edit()`, `remove()`, `loading` ref, `noRemoveConfirmation`. **Deprecated** (removed in v3.0) — use `UseAssetsManagerReturn`.                                                  |
 
 ### Service Abstractions (`services.ts`)
 
-| Type                           | Description                                                                                        |
-| ------------------------------ | -------------------------------------------------------------------------------------------------- |
-| `ServiceLifecycle<T>`          | Service create/provide/cleanup lifecycle.                                                          |
-| `PreregistrationQueue<T>`      | Queue for items registered before a service initializes: `register()`, `flush()`, `clear()`.       |
-| `RegistryService<TKey, TItem>` | Generic registry: `register()`, `unregister()`, `get()`, `has()`, `getAll()`, `clear()`.           |
-| `ListService<T>`               | Reactive list: `items` ref, `add()`, `remove()`, `find()`, `filter()`.                             |
-| `OrderedListService<T>`        | Extends `ListService` with `reorder()` and `getSorted()`.                                          |
-| `ObservableService<T>`         | Subscribe/getValue pattern for change observation.                                                 |
-| `ServiceResult<T>`             | Async operation result: `success`, `data?`, `error?` with code/message/details.                    |
-| `WidgetRegistration`           | Widget entry: `id`, `component`, `props`, `order`, `isVisible`.                                    |
-| `MenuItemRegistration`         | Menu item entry: `id`, `title`, `icon`, `priority`, `permissions`, `routeId`, `group`, `children`. |
-| `ToolbarItemRegistration`      | Toolbar item entry: `id`, `title`, `icon`, `order`, `disabled`, `clickHandler`, `permissions`.     |
+| Type                           | Description                                                                                               |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `ServiceLifecycle<T>`          | Service create/provide/cleanup lifecycle.                                                                 |
+| `PreregistrationQueue<T>`      | Queue for items registered before a service initializes: `register()`, `flush()`, `clear()`.              |
+| `RegistryService<TKey, TItem>` | Generic registry: `register()`, `unregister()`, `get()`, `has()`, `getAll()`, `clear()`.                  |
+| `ListService<T>`               | Reactive list: `items` ref, `add()`, `remove()`, `find()`, `filter()`.                                    |
+| `OrderedListService<T>`        | Extends `ListService` with `reorder()` and `getSorted()`.                                                 |
+| `ObservableService<T>`         | Subscribe/getValue pattern for change observation.                                                        |
+| `ServiceResult<T>`             | Async operation result: `success`, `data?`, `error?` with code/message/details.                           |
+| `WidgetRegistration`           | Widget entry: `id`, `component`, `props`, `order`, `isVisible`.                                           |
+| `MenuItemRegistration`         | Menu item entry: `id`, `title`, `icon`, `priority`, `permissions`, `routeId`, `url`, `group`, `children`. |
+| `ToolbarItemRegistration`      | Toolbar item entry: `id`, `title`, `icon`, `order`, `disabled`, `clickHandler`, `permissions`.            |
 
 ### Other
 
-| Type                              | Description                                                                                   |
-| --------------------------------- | --------------------------------------------------------------------------------------------- |
-| `IBladeDropdownItem`              | Blade dropdown option: `id`, `title`, `icon`, `clickHandler`.                                 |
-| `IMenuItem<T>`                    | Generic menu item with optional component slot.                                               |
-| `NotificationTemplateConstructor` | Component constructor with a `notifyType` static field.                                       |
-| `IActionBuilderResult<T>`         | Row action definition: `icon`, `title`, `type` (danger/success/warning/info), `clickHandler`. |
-| `RequestPasswordResult`           | Password reset result: `succeeded`, `error`, `errorCode`.                                     |
+| Type                      | Description                                                                                   |
+| ------------------------- | --------------------------------------------------------------------------------------------- |
+| `IBladeDropdownItem`      | Blade dropdown option: `id`, `title`, `icon`, `clickHandler`.                                 |
+| `IMenuItem<T>`            | Generic menu item with optional component slot.                                               |
+| `IActionBuilderResult<T>` | Row action definition: `icon`, `title`, `type` (danger/success/warning/info), `clickHandler`. |
+| `RequestPasswordResult`   | Password reset result: `succeeded`, `error`, `errorCode`.                                     |
 
 ## Usage Examples
 
@@ -94,7 +92,6 @@ const columns: ITableColumns[] = [
     id: "name",
     title: "Product Name",
     sortable: true,
-    type: "text",
   },
   {
     id: "price",

@@ -55,6 +55,7 @@ const { getPropertyValue, setPropertyValue, loadDictionaries, loadMeasurements, 
 | `value`           | `string \| IBasePropertyValue[] \| (IBasePropertyDictionaryItem & { value: string })[]` | The new value. Type depends on property configuration.      |
 | `dictionary`      | `IBasePropertyDictionaryItem[]?`                                                        | Dictionary items. Required when setting a dictionary value. |
 | `locale`          | `string?`                                                                               | Current locale for multilanguage properties.                |
+| `initialProp`     | `IBaseProperty?`                                                                        | Original property snapshot, used to reconcile prior values. |
 | `unitOfMeasureId` | `string?`                                                                               | Unit of measure ID for measure-type properties.             |
 | `colorCode`       | `string?`                                                                               | Color hex code for color-type properties.                   |
 

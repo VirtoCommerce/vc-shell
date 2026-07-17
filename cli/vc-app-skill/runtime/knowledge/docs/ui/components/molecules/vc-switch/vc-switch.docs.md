@@ -240,20 +240,21 @@ const isActive = ref(true);
 
 ## Props
 
-| Prop           | Type                   | Default | Description                                          |
-| -------------- | ---------------------- | ------- | ---------------------------------------------------- |
-| `modelValue`   | `boolean \| undefined` | --      | Bound value via `v-model`                            |
-| `label`        | `string`               | --      | Label text above the switch                          |
-| `hint`         | `string`               | --      | Helper text displayed below the switch               |
-| `labelTooltip` | `string`               | --      | Tooltip shown on the label info icon                 |
-| `tooltip`      | `string`               | --      | **Deprecated.** Use `hint` or `labelTooltip` instead |
-| `trueValue`    | `boolean`              | `true`  | Value that represents the checked state              |
-| `falseValue`   | `boolean`              | `false` | Value that represents the unchecked state            |
-| `disabled`     | `boolean`              | `false` | Disables the switch                                  |
-| `required`     | `boolean`              | `false` | Shows a required indicator on the label              |
-| `error`        | `boolean`              | `false` | Enables error styling                                |
-| `errorMessage` | `string`               | --      | Error message displayed below the switch             |
-| `name`         | `string`               | --      | HTML name attribute for the hidden input             |
+| Prop           | Type                   | Default | Description                                                                                        |
+| -------------- | ---------------------- | ------- | -------------------------------------------------------------------------------------------------- |
+| `modelValue`   | `boolean \| undefined` | --      | Bound value via `v-model`                                                                          |
+| `label`        | `string`               | --      | Label text above the switch                                                                        |
+| `hint`         | `string`               | --      | Helper text displayed below the switch                                                             |
+| `labelTooltip` | `string`               | --      | Tooltip shown on the label info icon                                                               |
+| `tooltip`      | `string`               | --      | **Deprecated.** Use `hint` or `labelTooltip` instead                                               |
+| `trueValue`    | `boolean`              | `true`  | Value that represents the checked state                                                            |
+| `falseValue`   | `boolean`              | `false` | Value that represents the unchecked state                                                          |
+| `disabled`     | `boolean`              | `false` | Disables the switch                                                                                |
+| `required`     | `boolean`              | `false` | Shows a required indicator on the label                                                            |
+| `error`        | `boolean`              | `false` | Enables error styling                                                                              |
+| `errorMessage` | `string`               | --      | Error message displayed below the switch                                                           |
+| `ariaLabel`    | `string`               | --      | Accessible name for the switch when no visible `label` is set. Applied only when `label` is empty. |
+| `name`         | `string`               | --      | Field name used for validation/id generation (not rendered as an HTML name attribute on the input) |
 
 ## Events
 

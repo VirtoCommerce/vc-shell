@@ -35,16 +35,16 @@ VcCard, VcWidget
 
 **Minimum 3 stories.** Required:
 
-| Requirement | Description |
-|-------------|-------------|
-| `tags: ["autodocs"]` | Enables automatic docs page |
-| JSDoc on meta | 2-3 sentence component description |
-| `argTypes` for all props | With `description`, `table.type`, `table.defaultValue` |
-| `argTypes` for slots | With `table.category: "Slots"` |
-| `parameters.docs.description.component` | With inline code usage example |
-| Story: Default | Most common usage |
-| Story: Variants/Sizes | If component has visual variants |
-| Story: Real-World Context | Component used in a realistic scenario |
+| Requirement                             | Description                                            |
+| --------------------------------------- | ------------------------------------------------------ |
+| `tags: ["autodocs"]`                    | Enables automatic docs page                            |
+| JSDoc on meta                           | 2-3 sentence component description                     |
+| `argTypes` for all props                | With `description`, `table.type`, `table.defaultValue` |
+| `argTypes` for slots                    | With `table.category: "Slots"`                         |
+| `parameters.docs.description.component` | With inline code usage example                         |
+| Story: Default                          | Most common usage                                      |
+| Story: Variants/Sizes                   | If component has visual variants                       |
+| Story: Real-World Context               | Component used in a realistic scenario                 |
 
 ### Tier 2 — Standard (atoms/molecules with state and interaction)
 
@@ -52,18 +52,18 @@ VcCard, VcWidget
 VcSwitch, VcCheckbox, VcRadioButton, VcSelect, VcDatePicker, VcPagination, VcToast,
 VcBreadcrumbs, VcDropdown, VcMenu, VcField, VcForm, VcSlider, VcRating, VcAccordion,
 VcInputCurrency, VcInputGroup, VcMultivalue, VcColorInput, VcFileUpload, VcEditor,
-VcInputDropdown, VcDropdownPanel, VcCheckboxGroup, VcRadioGroup, VcImageTile
+VcInputDropdown, VcPopover, VcCheckboxGroup, VcRadioGroup, VcImageTile
 
 **Minimum 6 stories.** Everything from Tier 1, plus:
 
-| Requirement | Description |
-|-------------|-------------|
-| Event argTypes | With `action()` and `table.category: "Events"` |
-| Category grouping | `"Model"`, `"Data"`, `"Appearance"`, `"State"`, `"Layout"`, `"Events"`, `"Slots"` |
-| Story: States | disabled, loading, error, required |
-| Story: Interactive | Uses `ref`, responds to user actions |
-| Story: Accessibility | Demonstrates aria-label, keyboard navigation |
-| Story: Form Context | Component used within a form (if applicable) |
+| Requirement          | Description                                                                       |
+| -------------------- | --------------------------------------------------------------------------------- |
+| Event argTypes       | With `action()` and `table.category: "Events"`                                    |
+| Category grouping    | `"Model"`, `"Data"`, `"Appearance"`, `"State"`, `"Layout"`, `"Events"`, `"Slots"` |
+| Story: States        | disabled, loading, error, required                                                |
+| Story: Interactive   | Uses `ref`, responds to user actions                                              |
+| Story: Accessibility | Demonstrates aria-label, keyboard navigation                                      |
+| Story: Form Context  | Component used within a form (if applicable)                                      |
 
 ### Tier 3 — Complex (organisms)
 
@@ -72,12 +72,12 @@ VcApp, VcDynamicProperty, VcAuthLayout
 
 **Minimum 10 stories.** Everything from Tier 2, plus:
 
-| Requirement | Description |
-|-------------|-------------|
-| Feature stories | Each major feature as a separate named story |
-| Edge cases | Empty state, error state, many items, long content |
-| Mobile stories | If component has mobile variant |
-| Composition stories | Used with other vc-shell components |
+| Requirement         | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| Feature stories     | Each major feature as a separate named story       |
+| Edge cases          | Empty state, error state, many items, long content |
+| Mobile stories      | If component has mobile variant                    |
+| Composition stories | Used with other vc-shell components                |
 
 ## Template
 
@@ -157,7 +157,9 @@ export const Default: Story = {
 };
 
 /** All visual variants side by side. */
-export const AllVariants: Story = { /* ... */ };
+export const AllVariants: Story = {
+  /* ... */
+};
 
 // ... more stories per tier requirements
 ```
@@ -182,22 +184,28 @@ Structure:
 Brief description (1-2 sentences).
 
 ## When to Use
+
 - Use case 1
 - When NOT to use
 
 ## Basic Usage
+
 (code example)
 
 ## Key Props
+
 (table with most important props only — full list in Storybook autodocs)
 
 ## Common Patterns
+
 (2-3 real-world code examples)
 
 ## Accessibility
+
 (keyboard, screen reader, ARIA notes)
 
 ## Related Components
+
 (links to related components)
 ```
 
@@ -225,15 +233,15 @@ Before modifying any existing story file:
 
 Stories use functional categories instead of Atomic Design levels. Use the category that matches the component's primary purpose.
 
-| Category | Components |
-|---|---|
-| **Form** | VcInput, VcTextarea, VcSelect, VcCheckbox, VcCheckboxGroup, VcRadioButton, VcRadioGroup, VcSwitch, VcDatePicker, VcInputCurrency, VcInputDropdown, VcInputGroup, VcColorInput, VcSlider, VcRating, VcFileUpload, VcEditor, VcMultivalue, VcField, VcForm |
-| **Data Display** | VcDataTable, VcBadge, VcStatus, VcStatusIcon, VcLabel, VcHint, VcImage, VcVideo, VcCard, VcWidget, VcDynamicProperty, VcGallery, VcImageUpload |
-| **Navigation** | VcBreadcrumbs, VcMenu, VcPagination, VcBlade, VcBladeNavigation |
-| **Overlay** | VcPopup, VcTooltip, VcDropdown, VcDropdownPanel, VcToast, VcSidebar |
-| **Layout** | VcContainer, VcScrollableContainer, VcRow, VcCol, VcSkeleton, VcProgress, VcIcon, VcLoading, VcApp, VcAuthLayout |
-| **Action** | VcButton, VcButtonGroup, VcLink, VcBanner, VcAccordion, VcImageTile |
-| **Shared** | App-level components (settings, notifications, auth pages) |
+| Category         | Components                                                                                                                                                                                                                                               |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Form**         | VcInput, VcTextarea, VcSelect, VcCheckbox, VcCheckboxGroup, VcRadioButton, VcRadioGroup, VcSwitch, VcDatePicker, VcInputCurrency, VcInputDropdown, VcInputGroup, VcColorInput, VcSlider, VcRating, VcFileUpload, VcEditor, VcMultivalue, VcField, VcForm |
+| **Data Display** | VcDataTable, VcBadge, VcStatus, VcStatusIcon, VcLabel, VcHint, VcImage, VcVideo, VcCard, VcWidget, VcDynamicProperty, VcGallery, VcImageUpload                                                                                                           |
+| **Navigation**   | VcBreadcrumbs, VcMenu, VcPagination, VcBlade, VcBladeNavigation                                                                                                                                                                                          |
+| **Overlay**      | VcPopup, VcTooltip, VcDropdown, VcPopover, VcToast, VcSidebar                                                                                                                                                                                            |
+| **Layout**       | VcContainer, VcScrollableContainer, VcRow, VcCol, VcSkeleton, VcProgress, VcIcon, VcLoading, VcApp, VcAuthLayout                                                                                                                                         |
+| **Action**       | VcButton, VcButtonGroup, VcLink, VcBanner, VcAccordion, VcImageTile                                                                                                                                                                                      |
+| **Shared**       | App-level components (settings, notifications, auth pages)                                                                                                                                                                                               |
 
 ## Automated Testing
 
@@ -250,8 +258,8 @@ To disable snapshot testing for a story or entire component:
 ```typescript
 const meta = {
   parameters: {
-    snapshot: { disable: true },  // Skip all snapshot tests for this component
-    visual: { disable: true },    // Skip all visual tests for this component
+    snapshot: { disable: true }, // Skip all snapshot tests for this component
+    visual: { disable: true }, // Skip all visual tests for this component
   },
 };
 ```

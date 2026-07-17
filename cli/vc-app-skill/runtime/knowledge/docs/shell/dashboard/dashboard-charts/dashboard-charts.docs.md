@@ -61,25 +61,36 @@ const config: ChartConfig = {
 
 ## Key Props (shared across chart types)
 
-| Prop          | Type          | Default     | Description                          |
-| ------------- | ------------- | ----------- | ------------------------------------ |
-| `data`        | `T[]`         | --          | Array of data points                 |
-| `config`      | `ChartConfig` | --          | Series color and label configuration |
-| `xKey`        | `keyof T`     | --          | Key for x-axis values (line/bar)     |
-| `yKeys`       | `(keyof T)[]` | --          | Keys for y-axis series (line/bar)    |
-| `showTooltip` | `boolean`     | `true`      | Enable hover tooltips                |
-| `showLegend`  | `boolean`     | `true`      | Show color legend below chart        |
-| `rangeStart`  | `number`      | `undefined` | Filter data from this x value        |
-| `rangeEnd`    | `number`      | `undefined` | Filter data up to this x value       |
+| Prop          | Type                                           | Default     | Description                          |
+| ------------- | ---------------------------------------------- | ----------- | ------------------------------------ |
+| `data`        | `T[]`                                          | --          | Array of data points                 |
+| `config`      | `ChartConfig`                                  | --          | Series color and label configuration |
+| `xKey`        | `keyof T`                                      | --          | Key for x-axis values (line/bar)     |
+| `yKeys`       | `(keyof T)[]`                                  | --          | Keys for y-axis series (line/bar)    |
+| `showTooltip` | `boolean`                                      | `true`      | Enable hover tooltips                |
+| `showLegend`  | `boolean`                                      | `true`      | Show color legend below chart        |
+| `rangeStart`  | `ChartRangeValue` (`number \| string \| Date`) | `undefined` | Filter data from this x value        |
+| `rangeEnd`    | `ChartRangeValue` (`number \| string \| Date`) | `undefined` | Filter data up to this x value       |
+| `showXAxis`   | `boolean`                                      | `true`      | Show the x-axis (line/bar)           |
+| `showYAxis`   | `boolean`                                      | `true`      | Show the y-axis (line/bar)           |
+| `showGrid`    | `boolean`                                      | `true`      | Show y-axis grid lines (line/bar)    |
+| `numXTicks`   | `number`                                       | `undefined` | Number of x-axis ticks (line/bar)    |
+| `numYTicks`   | `number`                                       | `5`         | Number of y-axis ticks (line/bar)    |
+| `xTickFormat` | `(value: number \| Date) => string`            | `undefined` | Format x-axis tick labels (line/bar) |
+| `yTickFormat` | `(value: number) => string`                    | `undefined` | Format y-axis tick labels (line/bar) |
+| `height`      | `number`                                       | `undefined` | Fixed chart height in px             |
 
 ### Donut-specific props
 
-| Prop              | Type      | Default     | Description                    |
-| ----------------- | --------- | ----------- | ------------------------------ |
-| `valueKey`        | `keyof T` | --          | Key for segment values         |
-| `centralLabel`    | `string`  | `undefined` | Large text in donut center     |
-| `centralSubLabel` | `string`  | `undefined` | Small text below central label |
-| `arcWidth`        | `number`  | `60`        | Donut arc thickness            |
+| Prop              | Type                        | Default     | Description                             |
+| ----------------- | --------------------------- | ----------- | --------------------------------------- |
+| `valueKey`        | `keyof T`                   | --          | Key for segment values                  |
+| `centralLabel`    | `string`                    | `undefined` | Large text in donut center              |
+| `centralSubLabel` | `string`                    | `undefined` | Small text below central label          |
+| `arcWidth`        | `number`                    | `60`        | Donut arc thickness                     |
+| `valueFormat`     | `(value: number) => string` | `undefined` | Formats segment values in tooltip/label |
+| `colorKey`        | `keyof T`                   | `undefined` | Data key holding a per-segment color    |
+| `cornerRadius`    | `number`                    | `4`         | Rounded corner radius of arcs           |
 
 ## ChartConfig Type
 
@@ -91,6 +102,7 @@ type ChartConfig = Record<
   {
     label: string; // Display name in legend and tooltip
     color: string; // CSS color value (hex, var(), rgb, etc.)
+    icon?: string; // Optional icon shown alongside the series label
   }
 >;
 ```

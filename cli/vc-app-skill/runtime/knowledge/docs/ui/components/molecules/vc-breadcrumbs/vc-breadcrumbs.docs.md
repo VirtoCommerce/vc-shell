@@ -194,10 +194,10 @@ In a typical VC-Shell blade hierarchy, push a breadcrumb each time a child blade
 
 ```vue
 <script setup lang="ts">
-import { useBreadcrumbs, useBladeContext } from "@vc-shell/framework";
+import { useBreadcrumbs, useBlade } from "@vc-shell/framework";
 
 const { breadcrumbs, push } = useBreadcrumbs();
-const { openBlade, closeSelf } = useBladeContext();
+const { openBlade, closeSelf } = useBlade();
 
 function openProductDetail(product: Product) {
   push({
@@ -270,12 +270,13 @@ clickHandler: () => { navigate(); return true; }
 
 ## CSS Variables
 
-| Variable                                  | Default                | Description                          |
-| ----------------------------------------- | ---------------------- | ------------------------------------ |
-| `--separator-color`                       | `var(--neutrals-400)`  | Color of the `/` separator character |
-| `--breadcrumbs-item-border-color`         | `var(--secondary-300)` | Border color of breadcrumb items     |
-| `--breadcrumbs-expand-button-color`       | `var(--neutrals-500)`  | Color of the overflow "more" button  |
-| `--breadcrumbs-expand-button-color-hover` | `var(--neutrals-600)`  | Hover color of the overflow button   |
+| Variable                                  | Default                | Description                               |
+| ----------------------------------------- | ---------------------- | ----------------------------------------- |
+| `--separator-color`                       | `var(--neutrals-400)`  | Color of the `/` separator character      |
+| `--breadcrumbs-item-border-color`         | `var(--secondary-300)` | Border color of breadcrumb items          |
+| `--breadcrumbs-item-border-color-hover`   | `var(--secondary-400)` | Border color of breadcrumb items on hover |
+| `--breadcrumbs-expand-button-color`       | `var(--neutrals-500)`  | Color of the overflow "more" button       |
+| `--breadcrumbs-expand-button-color-hover` | `var(--neutrals-600)`  | Hover color of the overflow button        |
 
 ## Accessibility
 

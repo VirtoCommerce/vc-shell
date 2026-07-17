@@ -21,10 +21,10 @@ The component handles the visual representation of a single menu entry: an icon 
 
 The component includes a `submenu` slot that **automatically adapts to the viewport**:
 
-- **Desktop**: renders a floating `VcDropdownPanel` anchored to the menu item (`placement="right-start"`)
+- **Desktop**: renders a floating `VcPopover` anchored to the menu item (`placement="right-start"`)
 - **Mobile**: renders an inline accordion with animated expand/collapse (via `useCollapsible`)
 
-This removes the need for consumers to manage `VcDropdownPanel`, `isMobile` checks, or z-index issues manually.
+This removes the need for consumers to manage `VcPopover`, `isMobile` checks, or z-index issues manually.
 
 ## When to Use
 
@@ -51,23 +51,25 @@ import { SettingsMenuItem } from "@vc-shell/framework";
 
 ## Key Props
 
-| Prop            | Type                           | Default     | Description                                                                      |
-| --------------- | ------------------------------ | ----------- | -------------------------------------------------------------------------------- |
-| `title`         | `string`                       | `undefined` | Menu item label                                                                  |
-| `icon`          | `string \| Component`          | `undefined` | Icon name or component                                                           |
-| `image`         | `string`                       | `undefined` | Image URL (alternative to icon)                                                  |
-| `value`         | `string`                       | `undefined` | Current value displayed on the right                                             |
-| `showChevron`   | `boolean`                      | `false`     | Shows right chevron for sub-menus (auto-enabled when `submenu` slot is provided) |
-| `isActive`      | `boolean`                      | `false`     | Highlights the item (auto-managed when `submenu` slot is provided)               |
-| `disabled`      | `boolean`                      | `false`     | Disables click interaction                                                       |
-| `triggerAction` | `"click" \| "hover" \| "none"` | `"click"`   | What interaction opens the item                                                  |
+| Prop            | Type                           | Default     | Description                                                                                                                               |
+| --------------- | ------------------------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`         | `string`                       | `undefined` | Menu item label                                                                                                                           |
+| `icon`          | `string \| Component`          | `undefined` | Icon name or component                                                                                                                    |
+| `image`         | `string`                       | `undefined` | Image URL (alternative to icon)                                                                                                           |
+| `emptyIcon`     | `string`                       | `undefined` | Fallback icon shown on the `VcImage` when `image` fails to load                                                                           |
+| `value`         | `string`                       | `undefined` | Current value displayed on the right                                                                                                      |
+| `showChevron`   | `boolean`                      | `false`     | Shows right chevron for sub-menus (auto-enabled when `submenu` slot is provided)                                                          |
+| `isActive`      | `boolean`                      | `false`     | Highlights the item (auto-managed when `submenu` slot is provided)                                                                        |
+| `disabled`      | `boolean`                      | `false`     | Disables click interaction                                                                                                                |
+| `isVisible`     | `boolean`                      | `true`      | Hides the item when `false` via the `--invisible` class                                                                                   |
+| `triggerAction` | `"click" \| "hover" \| "none"` | `"click"`   | What interaction opens the item. Note: `"hover"` is not implemented (no hover handler); only `"click"` and `"none"` have runtime behavior |
 
 ## Events
 
-| Event           | Payload | Description                                                          |
-| --------------- | ------- | -------------------------------------------------------------------- |
-| `trigger:click` | --      | Emitted when the item is clicked (only when `triggerAction="click"`) |
-| `trigger:hover` | --      | Emitted when hovered (only when `triggerAction="hover"`)             |
+| Event           | Payload | Description                                                                                             |
+| --------------- | ------- | ------------------------------------------------------------------------------------------------------- |
+| `trigger:click` | --      | Emitted when the item is clicked (only when `triggerAction="click"`)                                    |
+| `trigger:hover` | --      | Declared but not implemented: `triggerAction="hover"` has no runtime handler, so this event never fires |
 
 ## Slots
 
@@ -156,15 +158,15 @@ The `submenu` slot can contain any content, not just `VcDropdownItem`:
 </SettingsMenuItem>
 ```
 
-## Migration: Manual VcDropdownPanel to Submenu Slot
+## Migration: Manual VcPopover to Submenu Slot
 
 Before (manual dropdown management):
 
 ```vue
 <SettingsMenuItem ref="menuItemRef" icon="lucide-palette" title="Theme" :value="currentTheme" :show-chevron="true" :is-active="isOpen" @trigger:click="isOpen = !isOpen" />
-<VcDropdownPanel v-model:show="isOpen" :anchor-ref="menuItemRef?.triggerRef ?? null" placement="right-start" width="180px">
+<VcPopover v-model:show="isOpen" :anchor-ref="menuItemRef?.triggerRef ?? null" placement="right-start" width="180px">
   <!-- options -->
-</VcDropdownPanel>
+</VcPopover>
 ```
 
 After (submenu slot):
@@ -180,7 +182,7 @@ After (submenu slot):
 **What changes:**
 
 - Remove `ref`, `isOpen`, `:show-chevron`, `:is-active`, `@trigger:click` toggle -- all auto-managed
-- Remove `VcDropdownPanel` wrapper entirely
+- Remove `VcPopover` wrapper entirely
 - Move dropdown content into `#submenu` slot
 - Mobile adaptation is automatic (no `isMobile` check needed)
 
@@ -201,5 +203,5 @@ Do not set `triggerAction="none"` and then rely on `@trigger:click` -- the event
 - [SettingsMenu](../settings-menu/settings-menu.docs.md) -- parent container
 - [ThemeSelector](../theme-selector/theme-selector.docs.md) -- uses SettingsMenuItem with submenu slot
 - [LanguageSelector](../language-selector/language-selector.docs.md) -- uses SettingsMenuItem with submenu slot
-- [VcDropdownPanel](../../../ui/components/molecules/vc-dropdown-panel/vc-dropdown-panel.docs.md) -- used internally for desktop sub-menus
+- [VcPopover](../../../ui/components/molecules/vc-popover/vc-popover.docs.md) -- used internally for desktop sub-menus
 - [VcDropdown](../../../ui/components/molecules/vc-dropdown/vc-dropdown.docs.md) -- recommended for sub-menu option rows

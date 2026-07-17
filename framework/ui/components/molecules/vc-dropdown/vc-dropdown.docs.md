@@ -21,7 +21,7 @@ A headless, accessible dropdown primitive for building menus and listboxes. Prov
 When NOT to use:
 
 - For form field selection -- use [VcSelect](../vc-select/)
-- For rich panel content with header/footer/scrollable body -- use [VcDropdownPanel](../vc-dropdown-panel/)
+- For rich panel content with header/footer/scrollable body -- use [VcPopover](../vc-popover/)
 - For navigation menus -- use [VcMenu](../vc-menu/)
 
 ## Quick Start
@@ -380,7 +380,7 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 
 ## Related Components
 
-- [VcDropdownPanel](../vc-dropdown-panel/) -- floating panel with header, footer, and scrollable content
+- [VcPopover](../vc-popover/) -- floating panel with header, footer, and scrollable content
 - [VcSelect](../vc-select/) -- form field dropdown for selecting values with label and validation
 - [VcMenu](../vc-menu/) -- sidebar navigation menu
 
@@ -394,6 +394,6 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 - Keyboard navigation (`ArrowDown`, `ArrowUp`, `Home`, `End`, `Enter`/`Space`, `Escape`) is handled in `onPanelKeydown`. Escape also attaches a document-level listener when the dropdown is open to catch events that bubble past the panel.
 - `syncFocusedIndex` is called on open to pre-focus the active item (via `isItemActive`) or the first item.
 - The `VcDropdownItem` internal sub-component (in `_internal/VcDropdownItem.vue`) is used by `VcBreadcrumbs` for its overflow menu items.
-- Default `zIndex` is `9300` (matches the CSS custom property `--z-critical-dropdown-panel`).
+- Default `zIndex` is `9300` (matches the CSS custom property `--z-critical-floating-panel`).
 
 <!-- internal:end -->

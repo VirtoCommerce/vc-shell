@@ -49,7 +49,7 @@ const tags = ref<Array<{ id?: string }>>([]);
 
 ### Free-form Text Entry
 
-In the default mode (`multivalue` is `false`), users type a value into the input and press **Enter** or **comma** to add it as a chip. This mode works with different input types.
+In the default mode (`multivalue` is `false`), users type a value into the input and press **Enter** to add it as a chip. This mode works with different input types.
 
 ```vue
 <VcMultivalue v-model="tags" label="Keywords" placeholder="Type and press Enter" />
@@ -305,34 +305,44 @@ const selectedArray = ref([{ id: "1", title: "Option 1" }]);
 
 ## Slots
 
-| Slot            | Scope                                                                     | Description                                                |
-| --------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `option`        | `{ item: T, index: number }`                                              | Custom rendering for dropdown options (dictionary mode)    |
-| `selected-item` | `{ value: string \| number, item: T, index: number, remove: () => void }` | Custom rendering for selected value chips                  |
-| `prepend`       | --                                                                        | Content rendered before the field area (inside the border) |
-| `append`        | --                                                                        | Content rendered after the field area (inside the border)  |
-| `error`         | --                                                                        | Custom error message markup (replaces default VcHint)      |
-| `hint`          | --                                                                        | Custom hint markup (replaces default VcHint)               |
+| Slot            | Scope                                                                                   | Description                                                |
+| --------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `option`        | `{ item: T, index: number }`                                                            | Custom rendering for dropdown options (dictionary mode)    |
+| `selected-item` | `{ value: string \| number \| T[keyof T], item: T, index: number, remove: () => void }` | Custom rendering for selected value chips                  |
+| `prepend`       | --                                                                                      | Content rendered before the field area (inside the border) |
+| `append`        | --                                                                                      | Content rendered after the field area (inside the border)  |
+| `error`         | --                                                                                      | Custom error message markup (replaces default VcHint)      |
+| `hint`          | --                                                                                      | Custom hint markup (replaces default VcHint)               |
 
 ## CSS Variables
 
 The component uses `--multivalue-*` variables that fall back to `--select-*` tokens for visual consistency with VcSelect.
 
-| Variable                             | Default                                                                | Description                       |
-| ------------------------------------ | ---------------------------------------------------------------------- | --------------------------------- |
-| `--multivalue-height`                | `36px`                                                                 | Minimum height of the input field |
-| `--multivalue-border-radius`         | `var(--select-border-radius, 6px)`                                     | Border radius                     |
-| `--multivalue-border-color`          | `var(--select-border-color, var(--neutrals-300))`                      | Default border color              |
-| `--multivalue-background-color`      | `var(--select-background-color, transparent)`                          | Field background                  |
-| `--multivalue-text-color`            | `var(--select-text-color, var(--neutrals-800))`                        | Field text color                  |
-| `--multivalue-chip-background-color` | `var(--select-multiple-options-background-color, var(--neutrals-100))` | Chip background                   |
-| `--multivalue-chip-border-color`     | `var(--select-multiple-options-border-color, var(--neutrals-200))`     | Chip border                       |
-| `--multivalue-border-color-focus`    | `var(--select-border-color-focus, var(--primary-500))`                 | Border color on focus             |
-| `--multivalue-focus-ring-color`      | `var(--select-focus-ring-color, var(--primary-100))`                   | Focus ring color                  |
-| `--multivalue-border-color-error`    | `var(--select-border-color-error, var(--danger-500))`                  | Border on error                   |
-| `--multivalue-error-ring-color`      | `var(--select-error-ring-color, var(--danger-100))`                    | Error ring color                  |
-| `--multivalue-disabled-text-color`   | `var(--neutrals-500)`                                                  | Disabled text color               |
-| `--multivalue-loading-color`         | `var(--select-loading-color, var(--info-500))`                         | Loading spinner color             |
+| Variable                                   | Default                                                                                         | Description                       |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------- | --------------------------------- |
+| `--multivalue-height`                      | `36px`                                                                                          | Minimum height of the input field |
+| `--multivalue-border-radius`               | `var(--select-border-radius, 6px)`                                                              | Border radius                     |
+| `--multivalue-border-color`                | `var(--select-border-color, var(--neutrals-300))`                                               | Default border color              |
+| `--multivalue-background-color`            | `var(--select-background-color, transparent)`                                                   | Field background                  |
+| `--multivalue-text-color`                  | `var(--select-text-color, var(--neutrals-800))`                                                 | Field text color                  |
+| `--multivalue-placeholder-color`           | `var(--select-placeholder-color, var(--neutrals-400))`                                          | Placeholder text color            |
+| `--multivalue-padding`                     | `10px`                                                                                          | Field inner padding               |
+| `--multivalue-dropdown-bg`                 | `var(--select-dropdown-bg, var(--additional-50))`                                               | Dropdown panel background         |
+| `--multivalue-dropdown-border`             | `var(--select-dropdown-border, var(--neutrals-200))`                                            | Dropdown panel border             |
+| `--multivalue-dropdown-shadow`             | `var(--select-dropdown-shadow, 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1))` | Dropdown panel shadow             |
+| `--multivalue-search-border-color`         | `var(--select-search-border-color, var(--neutrals-200))`                                        | Search input border color         |
+| `--multivalue-item-hover-background-color` | `var(--select-option-background-color-hover, var(--neutrals-100))`                              | Option row hover background       |
+| `--multivalue-chip-background-color`       | `var(--select-multiple-options-background-color, var(--neutrals-100))`                          | Chip background                   |
+| `--multivalue-chip-border-color`           | `var(--select-multiple-options-border-color, var(--neutrals-200))`                              | Chip border                       |
+| `--multivalue-clear-icon-color`            | `var(--select-clear-color, var(--neutrals-400))`                                                | Clear icon color                  |
+| `--multivalue-clear-icon-color-hover`      | `var(--select-clear-color-hover, var(--neutrals-600))`                                          | Clear icon hover color            |
+| `--multivalue-border-color-focus`          | `var(--select-border-color-focus, var(--primary-500))`                                          | Border color on focus             |
+| `--multivalue-focus-ring-color`            | `var(--select-focus-ring-color, var(--primary-100))`                                            | Focus ring color                  |
+| `--multivalue-border-color-error`          | `var(--select-border-color-error, var(--danger-500))`                                           | Border on error                   |
+| `--multivalue-error-ring-color`            | `var(--select-error-ring-color, var(--danger-100))`                                             | Error ring color                  |
+| `--multivalue-hint-color`                  | `var(--danger-500)`                                                                             | Hint/error message text color     |
+| `--multivalue-disabled-text-color`         | `var(--neutrals-500)`                                                                           | Disabled text color               |
+| `--multivalue-loading-color`               | `var(--select-loading-color, var(--info-500))`                                                  | Loading spinner color             |
 
 ## Accessibility
 
@@ -341,8 +351,7 @@ The component uses `--multivalue-*` variables that fall back to `--select-*` tok
 - Dropdown list has `role="listbox"` with a generated `id`
 - Chip remove buttons are individually focusable
 - Keyboard navigation:
-  - **Enter** / **comma** -- submits the current input as a new value
-  - **Backspace** -- removes the last chip when the input is empty
+  - **Enter** -- submits the current input as a new value (blur also submits, via `onInputSubmit`)
   - **Arrow keys** -- navigate items in the dropdown (dictionary mode)
   - **Escape** -- closes the dropdown
 - The `required` prop sets `aria-required` on the field
@@ -366,7 +375,7 @@ This behavior is powered by `BladeLoadingKey` via Vue's provide/inject. The comp
 
 - Composed of internal sub-components in `vc-multivalue/_internal/`: the chip list renderer, the dropdown panel, and the trigger input.
 - Composables are in `vc-multivalue/composables/` — chip management and dropdown open/close state are separated into composables.
-- Free-form mode: each `keydown` for Enter or comma (`','`) triggers a chip add; Backspace on empty input removes the last chip.
+- Free-form mode: Enter (`@keypress.enter`) or blur triggers a chip add. Chip removal is done only via the chip's remove button.
 - Dictionary mode: already-selected items are filtered out of the dropdown list reactively.
 - Source file: `framework/ui/components/molecules/vc-multivalue/vc-multivalue.vue`
 - Internal components: `framework/ui/components/molecules/vc-multivalue/_internal/`

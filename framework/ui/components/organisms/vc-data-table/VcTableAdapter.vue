@@ -140,8 +140,8 @@
       </template>
     </VcDataTable>
 
-    <!-- Legacy Filters Panel (reuses VcDropdownPanel for consistent styling) -->
-    <VcDropdownPanel
+    <!-- Legacy Filters Panel (reuses VcPopover for consistent styling) -->
+    <VcPopover
       :show="showLegacyFiltersPanel && !!$slots.filters"
       :anchor-ref="legacyFiltersButtonEl"
       :title="$t('COMPONENTS.ORGANISMS.VC_TABLE.GLOBAL_FILTERS.TITLE')"
@@ -155,7 +155,7 @@
           :close-panel="closeLegacyFiltersPanel"
         />
       </div>
-    </VcDropdownPanel>
+    </VcPopover>
   </div>
 </template>
 
@@ -167,7 +167,7 @@ import { useI18n } from "vue-i18n";
 import VcDataTable from "@ui/components/organisms/vc-data-table/VcDataTable.vue";
 import VcColumn from "@ui/components/organisms/vc-data-table/components/VcColumn.vue";
 import { GlobalFiltersButton } from "@ui/components/organisms/vc-data-table/components";
-import { VcDropdownPanel } from "@ui/components/molecules";
+import { VcPopover } from "@ui/components/molecules";
 import type {
   TableAction,
   TableEmptyAction,

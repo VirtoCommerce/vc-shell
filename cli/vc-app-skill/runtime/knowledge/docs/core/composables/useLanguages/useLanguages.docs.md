@@ -67,9 +67,9 @@ None.
 | `currentLocale`          | `ComputedRef<string>`                        | The currently active locale code (e.g., `"en-US"`, `"de-DE"`).                                                                                                                                                                                                                  |
 | `setLocale`              | `(locale: string) => void`                   | Switches the application locale. This updates `vue-i18n`'s locale and triggers re-rendering of all translated text.                                                                                                                                                             |
 | `getLocaleByTag`         | `(localeTag: string) => string \| undefined` | Resolves a locale tag to its native display name. Regional tags stay distinct (e.g., `"en-US"` → `"American English"`, `"en-GB"` → `"British English"`); plain codes resolve to the base native name (`"fr"` → `"Français"`). Returns `undefined` if the tag is not recognized. |
-| `resolveCamelCaseLocale` | `(locale: string) => string`                 | Converts a locale code to camelCase format (e.g., `"en-US"` to `"enUs"`). Useful for dynamic property access on objects keyed by locale.                                                                                                                                        |
+| `resolveCamelCaseLocale` | `(locale: string) => string`                 | Normalizes and validates a locale code to a supported hyphenated lowercase locale (e.g., `"enUS"` to `"en-us"`), falling back to `"en"` if the locale is not supported. Delegates to `resolveSupportedLocale`.                                                                  |
 | `getFlag`                | `(language: string) => Promise<string>`      | Fetches a flag image URL for the given language/locale. Returns a promise because flags may be loaded lazily.                                                                                                                                                                   |
-| `getCountryCode`         | `(language: string) => string`               | Extracts the country code from a language tag (e.g., `"en-US"` to `"US"`, `"de-DE"` to `"DE"`).                                                                                                                                                                                 |
+| `getCountryCode`         | `(language: string) => string`               | Extracts the lowercase country code from a language tag (e.g., `"en-US"` to `"us"`, `"de-DE"` to `"de"`). Falls back to `"xx"` for unknown languages.                                                                                                                           |
 
 ### Additional Exports
 
@@ -149,7 +149,7 @@ const displayValue = computed(() => getPropertyValue(property.value, currentLoca
 - **`setLocale` triggers a full re-render of translated text.** This is expected behavior from Vue I18n. If your app has many translated strings, the switch may cause a brief layout recalculation. There is no way to avoid this.
 - **`getFlag` is async.** Flag images may be loaded from a CDN or bundled as lazy imports. Always await the result before using it in templates.
 - **Fallback singleton is not reactive to injection changes.** If `provideLanguages()` is called after `useLanguages()` was already invoked outside an injection context, the fallback instance is not replaced. This is rarely an issue in practice since `provideLanguages()` runs before module installation.
-- **`resolveCamelCaseLocale` is useful for object property access.** Platform API responses sometimes key multilanguage data by camelCase locale (e.g., `{ enUs: "Hello", deDe: "Hallo" }`).
+- **`resolveCamelCaseLocale` normalizes locale codes.** It returns a supported hyphenated lowercase locale (e.g., `"enUS"` -> `"en-us"`), or `"en"` when the locale is not supported. Despite the name, it does not produce camelCase output.
 
 ## Related
 

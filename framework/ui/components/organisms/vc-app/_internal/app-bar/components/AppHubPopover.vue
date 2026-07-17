@@ -1,5 +1,5 @@
 <template>
-  <VcDropdownPanel
+  <VcPopover
     v-model:show="isOpen"
     :anchor-ref="anchorRef"
     placement="right-start"
@@ -23,13 +23,13 @@
         />
       </template>
     </AppHubContent>
-  </VcDropdownPanel>
+  </VcPopover>
 </template>
 
 <script lang="ts" setup>
 import { computed, watch } from "vue";
 import type { AppDescriptor } from "@core/api/platform";
-import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
+import { VcPopover } from "@ui/components/molecules/vc-popover";
 import { useAppBarWidgets } from "@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarWidgets";
 import AppHubContent from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppHubContent.vue";
 

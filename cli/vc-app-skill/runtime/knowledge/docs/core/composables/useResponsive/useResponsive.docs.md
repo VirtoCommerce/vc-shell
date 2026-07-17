@@ -50,12 +50,12 @@ None. The composable reads breakpoint state from the framework's provide/inject 
 | Property    | Type           | Default | Description                                                           |
 | ----------- | -------------- | ------- | --------------------------------------------------------------------- |
 | `isMobile`  | `Ref<boolean>` | `false` | `true` when viewport width < 1024px                                   |
-| `isDesktop` | `Ref<boolean>` | `true`  | `true` when viewport width >= 1024px                                  |
+| `isDesktop` | `Ref<boolean>` | `true`  | `true` when viewport width > 1024px                                   |
 | `isPhone`   | `Ref<boolean>` | `false` | `true` when viewport width < 480px                                    |
 | `isTablet`  | `Ref<boolean>` | `false` | `true` when 480px <= viewport width < 1024px                          |
 | `isTouch`   | `boolean`      | `false` | `true` on touch-capable devices (not reactive — set once at app init) |
 
-Breakpoint thresholds: phone < 480px, tablet 480–1023px, desktop >= 1024px. These match the framework's `setupBreakpoints()` configuration.
+Breakpoint thresholds: phone < 480px, tablet 480–1023px, desktop > 1024px (bound to `bp.greater("desktop")`, strictly greater than 1024px). These match the framework's `setupBreakpoints()` configuration.
 
 Note: `isMobile` is the union of `isPhone` and `isTablet` — it covers all viewports below the desktop threshold.
 

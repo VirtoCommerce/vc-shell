@@ -32,7 +32,7 @@
     </button>
 
     <!-- Desktop: floating dropdown panel -->
-    <VcDropdownPanel
+    <VcPopover
       v-if="isDesktop"
       v-model:show="isMenuOpened"
       :anchor-ref="buttonRef"
@@ -41,7 +41,7 @@
       max-width="300px"
     >
       <SettingsMenu />
-    </VcDropdownPanel>
+    </VcPopover>
 
     <!-- Mobile: full sidebar fallback -->
     <UserSidebar
@@ -57,7 +57,7 @@ import { CloseSettingsMenuKey } from "@framework/injection-keys";
 import { default as UserInfo } from "@shell/components/user-dropdown-button/_internal/user-info.vue";
 import { default as UserSidebar } from "@shell/components/user-dropdown-button/_internal/user-sidebar.vue";
 import { SettingsMenu } from "@shell/components/settings-menu";
-import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
+import { VcPopover } from "@ui/components/molecules/vc-popover";
 import { useSidebarState } from "@core/composables/useSidebarState";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 

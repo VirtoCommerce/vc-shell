@@ -23,7 +23,9 @@ A date and datetime picker that wraps the [VueDatePicker](https://vue3datepicker
 
 - Free-form text entry -- use [VcInput](../vc-input/)
 - Time-only input -- use `VcInput` with `type="time"`
-- Selecting multiple dates or date ranges -- currently not supported (use VueDatePicker directly)
+- Selecting multiple discrete dates -- not supported (use VueDatePicker directly)
+
+> **Note:** Date ranges are supported. Pass the `range` option through `datePickerOptions`; the component handles range start/end and commits a partial range on close.
 
 > **Note:** `VcInput` with `type="date"` or `type="datetime-local"` automatically delegates to this component internally. You can also use `VcDatePicker` directly for more explicit control over date-specific props.
 

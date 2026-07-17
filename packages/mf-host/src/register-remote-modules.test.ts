@@ -455,4 +455,85 @@ describe("registerRemoteModules", () => {
       expect(marks).toEqual(["vc:modules-start", "vc:modules-done"]);
     });
   });
+
+  describe("eager install", () => {
+    it("installs a remote as soon as it resolves, without waiting for slower remotes", async () => {
+      const { app, router } = createTestApp();
+      (global.fetch as any).mockResolvedValue(
+        manifest200([
+          makePlugin({ id: "slow", remote: { name: "Slow", exposed: "./Module" } }),
+          makePlugin({ id: "fast", remote: { name: "Fast", exposed: "./Module" } }),
+        ]),
+      );
+
+      let resolveSlow!: (value: unknown) => void;
+      const slowPromise = new Promise((resolve) => {
+        resolveSlow = resolve;
+      });
+      const slowInstall = vi.fn();
+      const fastInstall = vi.fn();
+
+      mockLoadRemote.mockImplementation((key: string) =>
+        key.startsWith("Slow/") ? slowPromise : Promise.resolve({ default: { install: fastInstall } }),
+      );
+
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      // Fast remote is installed while the slow one is still pending — no barrier.
+      expect(fastInstall).toHaveBeenCalled();
+      expect(slowInstall).not.toHaveBeenCalled();
+
+      resolveSlow({ default: { install: slowInstall } });
+      await flushPromises();
+
+      expect(slowInstall).toHaveBeenCalled();
+    });
+
+    it("warns with the loaded/total count and the failed plugin ids when some remotes fail", async () => {
+      const { app, router } = createTestApp();
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+      (global.fetch as any).mockResolvedValue(
+        manifest200([
+          makePlugin({ id: "ok-1", remote: { name: "Ok1", exposed: "./Module" } }),
+          makePlugin({ id: "bad", remote: { name: "Bad", exposed: "./Module" } }),
+          makePlugin({ id: "ok-2", remote: { name: "Ok2", exposed: "./Module" } }),
+        ]),
+      );
+      mockLoadRemote.mockImplementation((key: string) =>
+        key.startsWith("Bad/") ? Promise.reject(new Error("boom")) : Promise.resolve({ default: { install: vi.fn() } }),
+      );
+
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("2/3 plugins loaded"));
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("bad"));
+      warn.mockRestore();
+    });
+
+    it("logs one install line per successfully installed remote", async () => {
+      const { app, router } = createTestApp();
+      const info = vi.spyOn(console, "info").mockImplementation(() => undefined);
+      (global.fetch as any).mockResolvedValue(
+        manifest200([
+          makePlugin({ id: "a", remote: { name: "A", exposed: "./Module" } }),
+          makePlugin({ id: "b", remote: { name: "B", exposed: "./Module" } }),
+        ]),
+      );
+      // Distinct exports per remote so app.use does not dedupe a shared plugin object.
+      mockLoadRemote.mockImplementation(() => Promise.resolve({ default: { install: vi.fn() } }));
+
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      const installLines = info.mock.calls
+        .map((c: any[]) => c[0])
+        .filter((m: unknown) => typeof m === "string" && m.includes("installed"));
+      expect(installLines).toHaveLength(2);
+      info.mockRestore();
+    });
+  });
 });

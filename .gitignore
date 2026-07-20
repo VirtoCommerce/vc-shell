@@ -91,3 +91,7 @@ package-lock.json
 .worktrees
 .planning
 .superpowers/
+
+# Local tooling state (kept local, not tracked)
+.serena/
+.claude/settings.json

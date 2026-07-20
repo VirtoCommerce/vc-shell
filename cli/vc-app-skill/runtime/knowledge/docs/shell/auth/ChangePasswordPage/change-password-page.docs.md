@@ -19,12 +19,12 @@ Change password page with current, new, and confirm password fields. Supports a 
 
 ```vue
 <template>
-  <ChangePassword />
+  <ChangePasswordPage />
 </template>
 
 <!-- Forced mode (expired password) -->
 <template>
-  <ChangePassword forced />
+  <ChangePasswordPage forced />
 </template>
 ```
 
@@ -32,7 +32,7 @@ With custom branding:
 
 ```vue
 <template>
-  <ChangePassword
+  <ChangePasswordPage
     forced
     logo="/assets/my-company-logo.svg"
     background="/assets/custom-background.jpg"
@@ -42,24 +42,24 @@ With custom branding:
 
 ## Key Props
 
-| Prop         | Type      | Default | Description                                          |
-| ------------ | --------- | ------- | ---------------------------------------------------- |
-| `forced`     | `boolean` | `false` | Show expired-password info banner and adjusted title |
-| `logo`       | `string`  | -       | Override logo image URL                              |
-| `background` | `string`  | -       | Custom background image URL                          |
+| Prop         | Type      | Default | Description                                                                  |
+| ------------ | --------- | ------- | ---------------------------------------------------------------------------- |
+| `forced`     | `boolean` | `false` | Show expired-password info banner and adjusted title                         |
+| `logo`       | `string`  | -       | Fallback logo image URL (used when the platform UI-settings logo is not set) |
+| `background` | `string`  | -       | Custom background image URL                                                  |
 
 ## Recipe: Router Configuration with Forced Mode
 
 Set up the route so the login page can redirect here when the password is expired:
 
 ```ts
-import ChangePassword from "@vc-shell/framework/shared/pages/ChangePasswordPage";
+import { ChangePasswordPage } from "@vc-shell/framework";
 
 const routes = [
   {
     path: "/change-password",
     name: "ChangePassword",
-    component: ChangePassword,
+    component: ChangePasswordPage,
     props: (route) => ({
       forced: route.query.forced === "true",
     }),

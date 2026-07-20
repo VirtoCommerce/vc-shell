@@ -59,9 +59,9 @@ initOnce(); // still returns cached result
 ## How They Work
 
 - **debounce**: Uses `setTimeout` / `clearTimeout` internally. Each call clears the previous timeout and starts a new one. The function only fires when there is a pause of at least `delay` ms between calls.
-- **throttle**: Uses a `Date.now()` timestamp check. The first call fires immediately and records the timestamp. Subsequent calls are silently dropped until enough time has passed.
+- **throttle**: Uses a `wasThrottled` boolean flag. The first call fires immediately and sets the flag; a `setTimeout` clears the flag after `delay` ms. Calls within that window are silently dropped.
 - **delay**: A simple wrapper around `setTimeout`. Useful for readability when you want to express "do X after Y ms" without creating a raw timeout.
-- **once**: Wraps the function with a boolean guard. After the first call, the result is cached and the original function reference is never called again.
+- **once**: Caches the result in a module-level `WeakMap` keyed by the wrapped function. The first call invokes the function and stores its result; every later call returns the stored value via the map and never re-invokes.
 
 ## Recipe: Debounced Search in a Blade Toolbar
 
@@ -111,7 +111,7 @@ function onSearchInput(value: string) {
 
 - **No cancellation API.** Unlike `@vueuse/core`'s `useDebounceFn`, the `debounce` here does not return a cancel method. If you need to cancel a pending debounce on component unmount, use VueUse instead or manually clear the timeout.
 - **Throttle uses leading-edge firing.** The first call always executes immediately. If you need trailing-edge throttle (fire after the window closes), this implementation does not support it -- use lodash `throttle` with `{ trailing: true }` instead.
-- **`once` caches even `undefined` results.** If the wrapped function returns `undefined`, subsequent calls still skip execution and return `undefined`. The guard is based on "has it been called", not "did it return a truthy value".
+- **`once` caches even `undefined` results.** If the wrapped function returns `undefined`, subsequent calls still skip execution and return `undefined`. Caching is based on the WeakMap having an entry for the function ("has it been called"), not on whether the result was truthy.
 - **`delay(fn, 0)` is not the same as `nextTick`.** `delay` uses `setTimeout(fn, 0)`, which defers to the next macrotask. Vue's `nextTick` defers to the next microtask, which fires sooner. Use `nextTick` for DOM update timing.
 
 ## Related

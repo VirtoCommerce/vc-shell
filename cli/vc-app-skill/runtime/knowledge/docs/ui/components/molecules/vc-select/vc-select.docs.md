@@ -642,36 +642,61 @@ Don't forget `:key` with cascading selects, otherwise the second select will ret
 
 ## Slots
 
-| Slot                             | Scope                                     | Description                                                              |
-| -------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------ |
-| `option`                         | `{ index, opt, selected, toggleOption }`  | Custom option rendering. **You must call `toggleOption(opt)` on click.** |
-| `selected-item`                  | `{ index, opt, selected, removeAtIndex }` | Custom rendering of selected chips (multiple)                            |
-| `control`                        | `{ toggleHandler, isOpened }`             | Full trigger replacement                                                 |
-| `prepend` / `append`             | —                                         | Content outside the field                                                |
-| `prepend-inner` / `append-inner` | —                                         | Content inside the field                                                 |
-| `no-options`                     | —                                         | Shown when there are no options                                          |
-| `error` / `hint`                 | —                                         | Custom rendering of error/hint                                           |
+| Slot                             | Scope                                           | Description                                                              |
+| -------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------ |
+| `option`                         | `{ index, opt, selected, label, toggleOption }` | Custom option rendering. **You must call `toggleOption(opt)` on click.** |
+| `selected-item`                  | `{ index, opt, selected, removeAtIndex }`       | Custom rendering of selected chips (multiple)                            |
+| `control`                        | `{ toggleHandler, isOpened }`                   | Full trigger replacement                                                 |
+| `prepend` / `append`             | —                                               | Content outside the field                                                |
+| `prepend-inner` / `append-inner` | —                                               | Content inside the field                                                 |
+| `no-options`                     | —                                               | Shown when there are no options                                          |
+| `error` / `hint`                 | —                                               | Custom rendering of error/hint                                           |
 
 ## CSS Variables
 
 ```css
 :root {
   --select-height: 36px;
-  --select-height-small: 28px;
-  --select-border-radius: 4px;
+  --select-height-small: 32px;
+  --select-border-radius: 6px;
   --select-border-color: var(--neutrals-300);
-  --select-border-color-focus: var(--primary-100);
-  --select-border-color-error: var(--danger-500);
   --select-text-color: var(--neutrals-800);
-  --select-padding: 10px;
+  --select-padding: 12px;
+
   --select-background-color: var(--additional-50);
-  --select-background-color-disabled: var(--neutrals-200);
+
   --select-placeholder-color: var(--neutrals-400);
-  --select-chevron-color: var(--primary-500);
-  --select-clear-color: var(--primary-500);
+
+  --select-chevron-color: var(--neutrals-500);
+  --select-chevron-color-hover: var(--neutrals-700);
+  --select-clear-color: var(--neutrals-400);
+  --select-clear-color-hover: var(--neutrals-600);
+
+  --select-loading-color: var(--info-500);
+
+  --select-option-background-color-hover: var(--neutrals-100);
+  --select-option-background-color-selected: var(--accent-100);
+  --select-option-check-color: var(--primary-500);
+
+  --select-multiple-options-background-color: var(--neutrals-100);
+  --select-multiple-options-border-color: var(--neutrals-200);
+
   --select-dropdown-bg: var(--additional-50);
-  --select-option-background-color-hover: var(--accent-100);
-  --select-option-background-color-selected: var(--accent-200);
+  --select-dropdown-border: var(--neutrals-200);
+  --select-dropdown-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+
+  --select-search-border-color: var(--neutrals-200);
+  --select-search-background-color: var(--additional-50);
+  --select-border-color-input: var(--secondary-200);
+
+  --select-border-color-focus: var(--primary-500);
+  --select-focus-ring-color: var(--primary-100);
+
+  --select-background-color-disabled: var(--neutrals-200);
+  --select-disabled-text-color: var(--neutrals-500);
+
+  --select-border-color-error: var(--danger-500);
+  --select-error-ring-color: var(--danger-100);
 }
 ```
 

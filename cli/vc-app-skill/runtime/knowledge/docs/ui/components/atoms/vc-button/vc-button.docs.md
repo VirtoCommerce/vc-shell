@@ -265,19 +265,19 @@ Use the `loading` prop, not `disabled`. A disabled button gives no progress feed
 
 ## Props
 
-| Prop        | Type                                                                                                         | Default     | Description                                                     |
-| ----------- | ------------------------------------------------------------------------------------------------------------ | ----------- | --------------------------------------------------------------- |
-| `variant`   | `"primary" \| "secondary" \| "danger" \| "warning" \| "success" \| "info" \| "outline" \| "ghost" \| "link"` | `"primary"` | Visual style variant                                            |
-| `size`      | `"sm" \| "default" \| "lg" \| "icon" \| "icon-sm"`                                                           | `"default"` | Button size                                                     |
-| `icon`      | `string \| Component`                                                                                        | --          | Icon identifier or Vue component                                |
-| `iconClass` | `string`                                                                                                     | --          | Additional CSS class for the icon element                       |
-| `iconSize`  | `IconSize`                                                                                                   | `"s"`       | Size of the icon (`"xs"`, `"s"`, `"m"`, `"l"`, `"xl"`, `"xxl"`) |
-| `loading`   | `boolean`                                                                                                    | `false`     | Shows spinner, disables interaction, sets `aria-busy`           |
-| `disabled`  | `boolean`                                                                                                    | `false`     | Disables the button                                             |
-| `selected`  | `boolean`                                                                                                    | `false`     | Applies selected/active visual state, sets `aria-pressed`       |
-| `text`      | `boolean`                                                                                                    | `false`     | Renders as borderless text in the variant's color               |
-| `type`      | `"button" \| "submit" \| "reset"`                                                                            | `"button"`  | HTML button type                                                |
-| `ariaLabel` | `string`                                                                                                     | --          | Accessible label (required for icon-only buttons)               |
+| Prop        | Type                                                                                                         | Default     | Description                                                               |
+| ----------- | ------------------------------------------------------------------------------------------------------------ | ----------- | ------------------------------------------------------------------------- |
+| `variant`   | `"primary" \| "secondary" \| "danger" \| "warning" \| "success" \| "info" \| "outline" \| "ghost" \| "link"` | `"primary"` | Visual style variant                                                      |
+| `size`      | `"sm" \| "default" \| "lg" \| "icon" \| "icon-sm"`                                                           | `"default"` | Button size                                                               |
+| `icon`      | `string \| Component`                                                                                        | --          | Icon identifier or Vue component                                          |
+| `iconClass` | `string`                                                                                                     | --          | Additional CSS class for the icon element                                 |
+| `iconSize`  | `IconSize`                                                                                                   | `"s"`       | Size of the icon (`"xs"`, `"s"`, `"m"`, `"l"`, `"xl"`, `"xxl"`, `"xxxl"`) |
+| `loading`   | `boolean`                                                                                                    | `false`     | Shows spinner, disables interaction, sets `aria-busy`                     |
+| `disabled`  | `boolean`                                                                                                    | `false`     | Disables the button                                                       |
+| `selected`  | `boolean`                                                                                                    | `false`     | Applies selected/active visual state, sets `aria-pressed`                 |
+| `text`      | `boolean`                                                                                                    | `false`     | Renders as borderless text in the variant's color                         |
+| `type`      | `"button" \| "submit" \| "reset"`                                                                            | `"button"`  | HTML button type                                                          |
+| `ariaLabel` | `string`                                                                                                     | --          | Accessible label (required for icon-only buttons)                         |
 
 ## Events
 
@@ -304,6 +304,7 @@ All visual properties are customizable through CSS custom properties. Each varia
 | `--button-border-radius`                    | `6px`                                     | Corner radius for all buttons |
 | `--button-focus-ring-color`                 | `var(--primary-300)`                      | Focus ring color              |
 | `--button-focus-ring-width`                 | `2px`                                     | Focus ring thickness          |
+| `--button-focus-ring-offset`                | `2px`                                     | Focus ring offset             |
 | `--button-{size}-height`                    | `--button-default-height: 36px`           | Height per size               |
 
 ## Accessibility
@@ -327,6 +328,6 @@ All visual properties are customizable through CSS custom properties. Each varia
 ## Architecture notes
 
 - VcButton calls `e.preventDefault()` on click to support `link` variant pattern. Form submit buttons must use `type="submit"` to bypass this.
-- `VcButtonGroup` integration is via provide/inject (`vcButtonGroupSize` injection key in `framework/injection-keys.ts`).
+- `VcButtonGroup` integration is via provide/inject using the `ButtonGroupKey` injection key defined in `framework/ui/components/atoms/vc-button/types.ts`.
 - Size aliases `xs`/`base` are kept for backward compatibility — slated for removal in v3.
 <!-- internal:end -->

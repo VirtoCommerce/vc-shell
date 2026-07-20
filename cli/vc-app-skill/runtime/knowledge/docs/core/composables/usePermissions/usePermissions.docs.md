@@ -130,13 +130,13 @@ Use `hasAccess` in a blade component to redirect users who lack the required per
 
 ```typescript
 <script setup lang="ts">
-import { usePermissions, useBladeContext } from "@vc-shell/framework";
+import { usePermissions, useBlade } from "@vc-shell/framework";
 
 const { hasAccess } = usePermissions();
-const { closeSelf } = useBladeContext();
+const { closeSelf } = useBlade();
 
 if (!hasAccess("order:read")) {
-  closeSelf();
+  await closeSelf(); // returns Promise<boolean>
   return;
 }
 </script>

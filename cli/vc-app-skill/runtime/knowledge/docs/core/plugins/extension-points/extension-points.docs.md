@@ -582,7 +582,7 @@ function defineExtensionPoint<M = Record<string, unknown>>(name: string, options
 
 interface DefineExtensionPointReturn<M> {
   /** Sorted list of registered components (by priority, ascending) */
-  components: ComputedRef<Array<ExtensionComponent & { meta?: M }>>;
+  components: ComputedRef<Array<Omit<ExtensionComponent, "meta"> & { meta?: M }>>;
   /** True when at least one component is registered */
   hasComponents: ComputedRef<boolean>;
 }

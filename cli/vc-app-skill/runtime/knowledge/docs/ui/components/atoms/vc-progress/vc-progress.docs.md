@@ -148,13 +148,14 @@ async function handleUpload(files: FileList) {
 
 ## CSS Custom Properties
 
-| Variable                         | Default               | Description                |
-| -------------------------------- | --------------------- | -------------------------- |
-| `--progressbar-height`           | `8px`                 | Bar height                 |
-| `--progressbar-border-radius`    | `9999px`              | Border radius (pill shape) |
-| `--progressbar-background-color` | `var(--neutrals-200)` | Track background           |
-| `--progressbar-foreground-color` | `var(--primary-500)`  | Fill color                 |
-| `--progressbar-striped-bg`       | gradient              | Striped variant background |
+| Variable                         | Default               | Description                  |
+| -------------------------------- | --------------------- | ---------------------------- |
+| `--progressbar-height`           | `8px`                 | Bar height                   |
+| `--progressbar-border-radius`    | `9999px`              | Border radius (pill shape)   |
+| `--progressbar-background-color` | `var(--neutrals-200)` | Track background             |
+| `--progressbar-foreground-color` | `var(--primary-500)`  | Fill color                   |
+| `--progressbar-striped-bg`       | gradient              | Striped variant background   |
+| `--progressbar-striped-color`    | `var(--primary-400)`  | Striped variant stripe color |
 
 ## Tips
 
@@ -179,7 +180,7 @@ async function handleUpload(files: FileList) {
 
 ## Architecture notes
 
-- The fill width is driven by `transform: scaleX(value / 100)` with `transform-origin: left`, not `width`, for smoother GPU-accelerated animation.
+- The fill is a full-width (`width: 100%`) element translated horizontally via `transform: translateX(-(100 - value)%)`, not `width`, for smoother GPU-accelerated animation. There is no `scaleX` or `transform-origin: left`.
 - The `value` prop is clamped via `Math.min(100, Math.max(0, props.value))` in a computed.
 - Source: `framework/ui/components/atoms/vc-progress/vc-progress.vue`
 

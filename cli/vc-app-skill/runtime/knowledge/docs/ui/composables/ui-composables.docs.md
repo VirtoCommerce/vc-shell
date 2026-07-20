@@ -15,14 +15,20 @@ All composables are exported from `framework/ui/composables/index.ts` and availa
 
 ## Exports
 
-| Composable            | Purpose                                                                            |
-| --------------------- | ---------------------------------------------------------------------------------- |
-| `useAdaptiveItems`    | Measures and distributes items into visible/hidden groups based on container width |
-| `useScrollArrows`     | Tracks scroll overflow state and provides animated scroll-by-arrow controls        |
-| `useFloatingPosition` | Wrapper around `@floating-ui/vue` with sensible defaults for dropdowns/tooltips    |
-| `useTeleportTarget`   | Resolves a consistent teleport target (explicit target, app root, or body)         |
-| `useFormField`        | Shared form field logic: unique IDs, ARIA attributes, InputGroup integration       |
-| `useCollapsible`      | Expand/collapse panel with measured content height and CSS transitions             |
+| Composable               | Purpose                                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------------------- |
+| `useAdaptiveItems`       | Measures and distributes items into visible/hidden groups based on container width           |
+| `useScrollArrows`        | Tracks scroll overflow state and provides animated scroll-by-arrow controls                  |
+| `useFloatingPosition`    | Wrapper around `@floating-ui/vue` with sensible defaults for dropdowns/tooltips              |
+| `useTeleportTarget`      | Resolves a consistent teleport target (explicit target, app root, or body)                   |
+| `useFormField`           | Shared form field logic: unique IDs, ARIA attributes, InputGroup integration                 |
+| `useCollapsible`         | Expand/collapse panel with measured content height and CSS transitions                       |
+| `useTableSort`           | Sort state for `VcTable`/`VcDataTable`                                                       |
+| `useTableSelection`      | Row selection state (multi-select, select-all, programmatic) for tables                      |
+| `useDataTableSort`       | URL-persistent sort state for `VcDataTable` ([docs](./useDataTableSort.docs.md))             |
+| `useDataTablePagination` | URL-persistent pagination state for `VcDataTable` ([docs](./useDataTablePagination.docs.md)) |
+| `useTableSearch`         | URL-persistent search keyword for `VcDataTable` ([docs](./useTableSearch.docs.md))           |
+| `useBladeLoading`        | Blade-scoped loading/skeleton state                                                          |
 
 ## API Details
 
@@ -104,4 +110,4 @@ const { isExpanded, toggle, wrapperStyle, contentRef, hasOverflow } = useCollaps
 
 - `framework/ui/components/molecules/vc-dropdown/` -- uses `useFloatingPosition`
 - `framework/ui/components/molecules/vc-input/` -- uses `useFormField`
-- `framework/shared/components/sidebar/` -- uses `useScrollArrows`
+- `framework/ui/components/atoms/vc-scrollable-container/` -- uses `useScrollArrows`

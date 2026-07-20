@@ -81,7 +81,7 @@ type AsyncAction<Payload = void, Result = void> = (payload?: Payload, ...rest: a
 
 | Property  | Type                                          | Description                                                    |
 | --------- | --------------------------------------------- | -------------------------------------------------------------- |
-| `loading` | `DeepReadonly<Ref<boolean>>`                  | Reactive loading state -- `true` while the action is executing |
+| `loading` | `Readonly<Ref<boolean>>`                      | Reactive loading state -- `true` while the action is executing |
 | `error`   | `DeepReadonly<Ref<DisplayableError \| null>>` | Reactive error -- set on failure, cleared on next invocation   |
 | `action`  | `AsyncAction<Payload, Result>`                | Wrapped function with the same signature as `innerAction`      |
 

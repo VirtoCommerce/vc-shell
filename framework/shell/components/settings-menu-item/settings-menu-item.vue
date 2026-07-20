@@ -68,7 +68,7 @@
     </div>
 
     <!-- Submenu: desktop dropdown panel -->
-    <VcDropdownPanel
+    <VcPopover
       v-if="hasSubmenu && !isMobile"
       v-model:show="isSubmenuOpen"
       :anchor-ref="triggerRef"
@@ -79,7 +79,7 @@
       <div class="tw-p-1">
         <slot name="submenu" />
       </div>
-    </VcDropdownPanel>
+    </VcPopover>
 
     <!-- Content (legacy slot) -->
     <slot name="content" />
@@ -90,7 +90,7 @@
 import { Component, useSlots, computed, watch, ref } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcImage } from "@ui/components/atoms/vc-image";
-import { VcDropdownPanel } from "@ui/components/molecules/vc-dropdown-panel";
+import { VcPopover } from "@ui/components/molecules/vc-popover";
 import { useCollapsible } from "@ui/composables";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 

@@ -50,21 +50,21 @@ const products = [
 
 ## Key Props
 
-| Prop                 | Type                                     | Default              | Description                                             |
-| -------------------- | ---------------------------------------- | -------------------- | ------------------------------------------------------- |
-| `slides`             | `Record<string, unknown>[] \| unknown[]` | `[]`                 | Array of slide data objects                             |
-| `navigation`         | `boolean`                                | `false`              | Show previous/next navigation buttons                   |
-| `slidesPerView`      | `string \| "auto"`                       | `"auto"`             | Number of visible slides at once                        |
-| `spaceBetweenSlides` | `number`                                 | `10`                 | Gap between slides in pixels                            |
-| `overflow`           | `boolean`                                | `false`              | Allow slides to be visible outside the container bounds |
-| `ariaLabel`          | `string`                                 | `"Content carousel"` | Accessible label for the slider region                  |
+| Prop                 | Type                                     | Default  | Description                                                                           |
+| -------------------- | ---------------------------------------- | -------- | ------------------------------------------------------------------------------------- |
+| `slides`             | `Record<string, unknown>[] \| unknown[]` | `[]`     | Array of slide data objects                                                           |
+| `navigation`         | `boolean`                                | `false`  | Show previous/next navigation buttons                                                 |
+| `slidesPerView`      | `string \| "auto"`                       | `"auto"` | Number of visible slides at once                                                      |
+| `spaceBetweenSlides` | `number`                                 | `10`     | Gap between slides in pixels                                                          |
+| `overflow`           | `boolean`                                | `false`  | Allow slides to be visible outside the container bounds                               |
+| `ariaLabel`          | `string`                                 | --       | Accessible label for the slider region. Falls back to `"Content carousel"` when unset |
 
 ## Common Patterns
 
 ### Fixed Slides Per View
 
 ```vue
-<VcSlider :slides="items" :slides-per-view="3" navigation :space-between-slides="20">
+<VcSlider :slides="items" :slides-per-view="'3'" navigation :space-between-slides="20">
   <template #default="{ slide }">
     <ProductCard :product="slide" />
   </template>
@@ -96,7 +96,7 @@ const products = [
 ### Single Slide View
 
 ```vue
-<VcSlider :slides="banners" :slides-per-view="1" navigation>
+<VcSlider :slides="banners" :slides-per-view="'1'" navigation>
   <template #default="{ slide }">
     <img :src="slide.imageUrl" class="tw-w-full tw-rounded" />
   </template>
@@ -140,7 +140,7 @@ When placed inside a `VcBlade` with `loading=true`, the component automatically 
 
 - VcSlider wraps the `swiper/vue` `<Swiper>` / `<SwiperSlide>` components with the `Navigation` module. Navigation buttons are custom DOM elements (`.vc-slider__prev` / `.vc-slider__next`) referenced by Swiper's `navigation.prevEl` / `nextEl` selectors.
 - `overflow` prop toggles `overflow: visible` on the swiper container, allowing slides to bleed outside bounds — useful for "peek" effects.
-- `slidesPerView="auto"` (default) lets each slide size itself from content. Pass a number for fixed-count layouts.
+- `slidesPerView="auto"` (default) lets each slide size itself from content. Pass a numeric string (e.g. `"3"`) for fixed-count layouts.
 - The `slides` prop accepts any array. Each item is exposed as `{ slide }` in the default scoped slot.
 - Source file: `framework/ui/components/molecules/vc-slider/vc-slider.vue`
 

@@ -2,6 +2,7 @@
 title: useConnectionStatus
 category: composables
 group: ui-state
+internal: true
 ---
 
 # useConnectionStatus
@@ -18,7 +19,7 @@ Monitors the browser's network connectivity and shows a persistent notification 
 
 ```vue
 <script setup lang="ts">
-import { useConnectionStatus } from "@vc-shell/framework";
+import { useConnectionStatus } from "@core/composables/useConnectionStatus";
 
 const { isOnline } = useConnectionStatus();
 </script>
@@ -69,7 +70,7 @@ When connectivity is restored, the notification is removed, the CSS class is cle
 
 ```vue
 <script setup lang="ts">
-import { useConnectionStatus } from "@vc-shell/framework";
+import { useConnectionStatus } from "@core/composables/useConnectionStatus";
 import { watch, ref } from "vue";
 
 const { isOnline } = useConnectionStatus();
@@ -125,4 +126,4 @@ html.vc-offline {
 ## Related
 
 - `@vueuse/core` `useNetwork` -- underlying browser API wrapper
-- `notification` from `@shared/components/notifications` -- the notification system used to display the offline warning
+- `notification` from `@core/notifications/notification` -- the notification system used to display the offline warning

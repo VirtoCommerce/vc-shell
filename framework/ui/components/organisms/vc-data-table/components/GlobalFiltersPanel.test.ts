@@ -9,8 +9,8 @@ const stubs = {
     template: '<div class="vc-select-stub" />',
     props: ["modelValue", "options", "multiple", "clearable", "placeholder", "emitValue", "optionValue", "optionLabel"],
   },
-  VcDropdownPanel: {
-    template: '<div class="vc-dropdown-panel-stub"><slot /><slot name="footer" /></div>',
+  VcPopover: {
+    template: '<div class="vc-popover-stub"><slot /><slot name="footer" /></div>',
     props: ["show", "anchorRef", "title", "width", "maxWidth"],
   },
   VcDatePicker: { template: '<div class="vc-date-picker-stub" />', props: ["modelValue", "variant"] },
@@ -45,7 +45,7 @@ describe("GlobalFiltersPanel", () => {
 
   it("renders dropdown panel", () => {
     const w = factory();
-    expect(w.find(".vc-dropdown-panel-stub").exists()).toBe(true);
+    expect(w.find(".vc-popover-stub").exists()).toBe(true);
   });
 
   it("renders filters from config", () => {

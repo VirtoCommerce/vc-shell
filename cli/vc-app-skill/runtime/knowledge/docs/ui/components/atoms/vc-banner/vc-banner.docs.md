@@ -172,8 +172,8 @@ Override the default "Show more" button with a custom trigger:
 
 ## Architecture notes
 
-- Legacy variants `"light-danger"`, `"info-dark"`, and `"primary"` are mapped in `vc-banner.vue` via a computed `resolvedVariant`. A `console.warn` is emitted in development mode only.
-- The collapse animation is driven by `max-height` CSS transition with a JS-measured `scrollHeight`. The `--vc-banner-collapsed-height` CSS variable is injected inline as a style binding.
+- Legacy variants `"light-danger"`, `"info-dark"`, and `"primary"` are mapped in `vc-banner.vue` via a computed `normalizedVariant` (backed by the `normalizeVariant` function). A `console.warn` is emitted in development mode only.
+- The collapse is driven by an inline `max-height` style bound via `wrapperStyle` from `useCollapsible` (max-height set to the measured `collapsedHeight` in px when collapsed), transitioned in CSS. There is no `--vc-banner-collapsed-height` custom property.
 - Source: `framework/ui/components/atoms/vc-banner/vc-banner.vue`
 
 <!-- internal:end -->

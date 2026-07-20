@@ -6,7 +6,7 @@ group: ui-state
 
 # useTheme
 
-Manages color theme registration, switching, and persistence. Themes are applied via a `data-theme` attribute on `<html>`, and the active theme key is persisted to localStorage via `@vueuse/core`'s `useColorMode`. The composable maintains a global registry of theme definitions, supports runtime registration/unregistration from modules, and provides both explicit (`setTheme`) and sequential (`next`) theme switching. A default `"light"` theme is always registered out of the box.
+Manages color theme registration, switching, and persistence. Themes are applied via a `data-theme` attribute on `<html>`, and the active theme key is persisted to localStorage via `@vueuse/core`'s `useColorMode`. The composable maintains a global registry of theme definitions, supports runtime registration/unregistration from modules, and provides both explicit (`setTheme`) and sequential (`next`) theme switching. Both `"light"` and `"dark"` themes are registered out of the box.
 
 ## When to Use
 
@@ -23,13 +23,13 @@ import { useTheme } from "@vc-shell/framework";
 
 const { themes, currentThemeKey, currentLocalizedName, next, setTheme, register } = useTheme();
 
-// Register a dark theme from your module
-register({ key: "dark", localizationKey: "CORE.THEMES.DARK" });
+// light and dark are registered by default; register a custom theme from your module
+register({ key: "ocean", localizationKey: "MY_MODULE.THEMES.OCEAN" });
 
 // Switch to it explicitly
-setTheme("dark");
+setTheme("ocean");
 
-// Or cycle through all registered themes (light -> dark -> light -> ...)
+// Or cycle through all registered themes (light -> dark -> ocean -> light -> ...)
 next();
 </script>
 
@@ -47,9 +47,9 @@ next();
 
 | Property               | Type                                                     | Description                                                                                                               |
 | ---------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `themes`               | `ComputedRef<DisplayTheme[]>`                            | All registered themes with their `key` and localized `name`. Reactive -- updates when themes are registered/unregistered. |
+| `themes`               | `Ref<DisplayTheme[]>`                                    | All registered themes with their `key` and localized `name`. Reactive -- updates when themes are registered/unregistered. |
 | `currentThemeKey`      | `Ref<string>`                                            | Active theme key (e.g., `"light"`, `"dark"`). Two-way reactive -- setting it switches the theme.                          |
-| `currentLocalizedName` | `ComputedRef<string>`                                    | Localized display name of the active theme (e.g., "Light", "Dark"). Falls back to capitalized key.                        |
+| `currentLocalizedName` | `Ref<string>`                                            | Localized display name of the active theme (e.g., "Light", "Dark"). Falls back to capitalized key.                        |
 | `next`                 | `() => void`                                             | Cycle to the next registered theme in order. Wraps around at the end.                                                     |
 | `setTheme`             | `(themeKey: string) => void`                             | Switch to a specific registered theme. Logs a warning if the key is not registered.                                       |
 | `register`             | `(themes: ThemeDefinition \| ThemeDefinition[]) => void` | Add one or more themes to the global registry. Duplicates (by key) are silently ignored.                                  |

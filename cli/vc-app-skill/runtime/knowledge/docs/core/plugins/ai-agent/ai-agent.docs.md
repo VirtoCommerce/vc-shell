@@ -49,17 +49,36 @@ app.use(aiAgentPlugin, {
 
 ### `IAiAgentConfig`
 
-| Field            | Type       | Default      | Description                                |
-| ---------------- | ---------- | ------------ | ------------------------------------------ |
-| `url`            | `string`   | `""`         | Chatbot iframe URL (required)              |
-| `title`          | `string`   | `"Virto OZ"` | Panel header title                         |
-| `width`          | `number`   | `362`        | Panel width in pixels                      |
-| `expandedWidth`  | `number`   | `500`        | Panel width when expanded                  |
-| `allowedOrigins` | `string[]` | `["*"]`      | Allowed origins for postMessage validation |
+| Field            | Type       | Default      | Description                                                                                                                                               |
+| ---------------- | ---------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `url`            | `string`   | `""`         | Chatbot iframe URL (required)                                                                                                                             |
+| `title`          | `string`   | `"Virto OZ"` | Panel header title                                                                                                                                        |
+| `width`          | `number`   | `362`        | Panel width in pixels                                                                                                                                     |
+| `expandedWidth`  | `number`   | `500`        | Panel width when expanded                                                                                                                                 |
+| `allowedOrigins` | `string[]` | `[]`         | Origins accepted for **incoming** postMessage; the first entry is the target origin for **outbound** messages to the chatbot iframe. Required — see below |
+| `parentOrigin`   | `string`   | --           | Explicit parent origin for **outbound** embedded postMessage. Required in embedded mode — see below                                                       |
+
+!!! danger "Origins must be configured — secure by default"
+The bridge is locked down by default. Set both fields to explicit origins; a wildcard `"*"` or empty value is refused (the message is dropped and logged), never trusted.
+
+- **`allowedOrigins`** governs messages the shell **accepts**, and its first entry is the target origin the shell uses to **send** `INIT_CONTEXT`/`UPDATE_CONTEXT` to the chatbot iframe. With the default `[]`, all incoming postMessages are ignored and outbound iframe messages are dropped (these carry the access token, so they are never sent to `"*"`). Set it to the chatbot's origin(s), e.g. `["https://chat.example.com"]`. A `"*"` entry is rejected outright — replace it with explicit origins.
+- **`parentOrigin`** governs messages the shell **sends to the parent frame** in embedded mode (`AI_CONTEXT_UPDATE`, `AI_TOGGLE_PANEL`, etc.). These payloads can carry the access token, so with no explicit `parentOrigin` (or `"*"`) the outbound message is dropped. Set it to the exact host origin, e.g. `"https://host.example.com"`.
+
+```ts
+app.use(AiAgentPlugin, {
+  config: {
+    url: "https://chat.example.com",
+    allowedOrigins: ["https://chat.example.com"], // incoming
+    parentOrigin: "https://host.example.com", // outbound (embedded mode)
+  },
+});
+```
 
 ### Composable: `useAiAgent()`
 
 Access the AI agent service from any component within the app.
+
+Returns `UseAiAgentReturn | undefined`. When `provideAiAgentService()` has not run, `useAiAgent()` logs an error and returns `undefined`, so guard the result before destructuring (e.g. `const ai = useAiAgent(); ai?.togglePanel()`).
 
 | Return            | Type                                        | Description                                    |
 | ----------------- | ------------------------------------------- | ---------------------------------------------- |
@@ -123,19 +142,19 @@ useAiAgentContext({ dataRef: selectedItems });
 ### Toggling the Panel Programmatically
 
 ```typescript
-const { togglePanel, isOpen } = useAiAgent();
+const ai = useAiAgent();
 
 function onAiButtonClick() {
-  togglePanel();
+  ai?.togglePanel();
 }
 ```
 
 ### Listening for Chatbot Messages
 
 ```typescript
-const { onMessage } = useAiAgent();
+const ai = useAiAgent();
 
-onMessage((message) => {
+ai?.onMessage((message) => {
   if (message.type === "NAVIGATE_TO_APP") {
     console.log("Chatbot wants to navigate to:", message.payload);
   }

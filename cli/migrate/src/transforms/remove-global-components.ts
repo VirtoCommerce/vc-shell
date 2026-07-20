@@ -41,7 +41,7 @@ const UI_COMPONENTS = new Set([
   "VcDatePicker",
   "VcDropdown",
   "VcDropdownItem",
-  "VcDropdownPanel",
+  "VcPopover",
   "VcEditor",
   "VcField",
   "VcFileUpload",

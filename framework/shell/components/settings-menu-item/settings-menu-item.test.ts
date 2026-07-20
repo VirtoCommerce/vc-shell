@@ -7,8 +7,8 @@ import { IsMobileKey } from "@framework/injection-keys";
 const stubs = {
   VcIcon: { template: '<i data-stub="VcIcon" />', props: ["icon", "size", "customSize"] },
   VcImage: { template: '<img data-stub="VcImage" />', props: ["src", "emptyIcon"] },
-  VcDropdownPanel: {
-    template: '<div data-stub="VcDropdownPanel" v-if="show"><slot /></div>',
+  VcPopover: {
+    template: '<div data-stub="VcPopover" v-if="show"><slot /></div>',
     props: ["show", "anchorRef", "placement", "width", "maxWidth"],
     emits: ["update:show"],
   },
@@ -104,17 +104,17 @@ describe("SettingsMenuItem", () => {
       expect(icons.length).toBeGreaterThanOrEqual(1);
     });
 
-    it("desktop: renders VcDropdownPanel for submenu", async () => {
+    it("desktop: renders VcPopover for submenu", async () => {
       const w = factory({}, { submenu: submenuSlot }, false);
       await w.find(".vc-menu-item__trigger").trigger("click");
-      expect(w.find('[data-stub="VcDropdownPanel"]').exists()).toBe(true);
+      expect(w.find('[data-stub="VcPopover"]').exists()).toBe(true);
       expect(w.find(".submenu-item").exists()).toBe(true);
     });
 
     it("mobile: renders inline submenu wrapper", async () => {
       const w = factory({}, { submenu: submenuSlot }, true);
       expect(w.find(".vc-menu-item__submenu-wrapper").exists()).toBe(true);
-      expect(w.find('[data-stub="VcDropdownPanel"]').exists()).toBe(false);
+      expect(w.find('[data-stub="VcPopover"]').exists()).toBe(false);
     });
 
     it("mobile: expands submenu on trigger click", async () => {

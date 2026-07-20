@@ -174,7 +174,7 @@ export const SubmenuSlot: Story = {
 };
 
 /**
- * Legacy pattern: cascading sub-menu with manual VcDropdownPanel.
+ * Legacy pattern: cascading sub-menu with manual VcPopover.
  * Prefer the `submenu` slot instead (see SubmenuSlot story).
  * @deprecated Use the submenu slot pattern instead
  */

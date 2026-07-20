@@ -22,7 +22,7 @@ import { AssetsManagerModule } from "@vc-shell/framework";
 // Exposes: AssetsManager blade component
 ```
 
-The module exports `AssetsManagerModule` (a Vue plugin) and the `AssetsManager` component, which is declared as a global component.
+The module exports `AssetsManagerModule` (a Vue plugin) which registers the `AssetsManager` blade in the blade registry. It is opened by name via `openBlade({ name: "AssetsManager" })`, not used as a global `<AssetsManager>` tag.
 
 ## Options (via `useBlade`)
 

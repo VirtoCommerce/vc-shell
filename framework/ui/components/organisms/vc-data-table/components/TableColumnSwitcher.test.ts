@@ -9,8 +9,8 @@ const columns = [
 ];
 
 const stubs = {
-  VcDropdownPanel: {
-    template: '<div class="vc-dropdown-panel-stub"><slot /><slot name="footer" /></div>',
+  VcPopover: {
+    template: '<div class="vc-popover-stub"><slot /><slot name="footer" /></div>',
     props: ["show", "anchorRef", "title", "width", "maxWidth"],
     emits: ["update:show"],
   },
@@ -43,7 +43,7 @@ function factory(props: Record<string, unknown> = {}) {
 describe("TableColumnSwitcher", () => {
   it("renders panel", () => {
     const w = factory();
-    expect(w.find(".vc-dropdown-panel-stub").exists()).toBe(true);
+    expect(w.find(".vc-popover-stub").exists()).toBe(true);
   });
 
   it("renders a checkbox per column", () => {

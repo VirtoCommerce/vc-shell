@@ -89,6 +89,10 @@ VcApp orchestrates several internal systems:
 
 On desktop viewports, VcApp renders a collapsible sidebar on the left with navigation menu items, user info in the footer, and the blade workspace on the right. On mobile viewports, the sidebar is replaced by a top bar with a hamburger menu that opens a slide-over navigation panel.
 
+### Environment Indicator
+
+VcApp renders a `VcEnvironmentBanner` when an environment name is detected via `useEnvironmentName()` (derived from the current hostname) and the environment is not ignored. The banner surfaces the environment name and color, making it obvious when you are working against a non-production instance.
+
 ### Sidebar Menu Search
 
 ::storybook id="layout-vcapp--with-sidebar-search" height="500"
@@ -140,7 +144,7 @@ If you use the `menu` slot to provide a custom menu, the `searchQuery` prop is p
 
 ### Dynamic Module Registration
 
-Modules registered via `useDynamicModules()` are loaded at runtime. Each module can contribute menu items, blades, toolbar actions, settings pages, and dashboard widgets. VcApp handles module loading errors gracefully by displaying notification toasts.
+Modules are provided/consumed via the `DynamicModulesKey` injection (see `injection-keys.ts` and `useShellBootstrap`) and loaded at runtime. Each module can contribute menu items, blades, toolbar actions, settings pages, and dashboard widgets. VcApp handles module loading errors gracefully by displaying notification toasts.
 
 ### App Hub
 

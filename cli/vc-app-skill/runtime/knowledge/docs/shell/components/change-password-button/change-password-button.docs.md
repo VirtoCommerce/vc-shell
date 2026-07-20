@@ -44,7 +44,7 @@ settingsMenu.register({
 
 ## Key Props
 
-This component has no props. It uses `usePopup()` to open the ChangePassword form and `useUserManagement()` internally for password validation.
+This component has no props. It uses `usePopup()` to open the ChangePassword form and injects `CloseSettingsMenuKey` to dismiss the parent menu. Password validation lives in the ChangePassword popup, not in this button.
 
 ## Recipe: Registering Account Actions in a Module
 
@@ -78,12 +78,12 @@ export default {
 
 - **Flow sequence**: Click button -> close settings menu -> open popup -> user fills form -> submit -> popup closes.
 - **Password validation**: The popup form uses `useUserManagement().validatePassword()` to check the new password against the platform's password policy in real time (minimum length, required character classes, etc.).
-- **Equal password detection**: If the user enters the same value for current and new password, the form shows a specific "Equal-passwords" error without making an API call.
+- **Equal password detection**: If the user enters the same value for current and new password, the form shows a specific "Equal-passwords" error without submitting the password change (the `changeUserPassword` call is skipped; `validatePassword()` still runs on input).
 - **Error handling**: API errors (e.g., incorrect current password) are displayed inline within the popup form.
 
 ## Tips
 
-- The button renders as a `SettingsMenuItem` with a key/lock icon. Its label comes from the i18n key `SETTINGS.CHANGE_PASSWORD`.
+- The button renders as a `SettingsMenuItem` with the `lucide-key` icon. Its label comes from the i18n key `SHELL.ACCOUNT.CHANGE_PASSWORD`.
 - If you need to trigger password change from a different context (not the settings menu), use `usePopup()` directly with the ChangePassword component.
 - The popup is modal -- the user must complete or cancel the password change before interacting with the rest of the application.
 

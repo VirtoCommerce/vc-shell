@@ -28,6 +28,13 @@ The component is renderless -- it renders its default slot and passes the curren
 | --------- | --------- | ------- | ------------------------------------------------ |
 | `capture` | `boolean` | `false` | Force error capture even outside a blade context |
 
+## Events
+
+| Event   | Payload           | Description                             |
+| ------- | ----------------- | --------------------------------------- |
+| `error` | `Error \| string` | Emitted when a new error is captured    |
+| `reset` | --                | Emitted when the error state is cleared |
+
 ## Slot Props
 
 | Prop    | Type                       | Description                             |
@@ -74,7 +81,7 @@ The component is renderless -- it renders its default slot and passes the curren
 import { ErrorInterceptor } from "@vc-shell/framework";
 ```
 
-The component is registered globally -- it can be used in templates without importing.
+The component must be imported before use, as shown above.
 
 ## Tips
 
@@ -86,4 +93,4 @@ The component is registered globally -- it can be used in templates without impo
 
 - `framework/core/composables/useErrorHandler/` -- the underlying composable
 - `framework/core/utilities/pendingErrorNotifications.ts` -- cancels deferred toasts
-- `framework/shared/components/blade-navigation/` -- BladeStack error management
+- `framework/core/blade-navigation/` -- BladeStack error management (types the interceptor injects)

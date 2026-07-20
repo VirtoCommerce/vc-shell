@@ -19,18 +19,18 @@ These components provide ready-to-use modal dialogs for common scenarios. Each v
 
 The foundation component. Wraps `VcPopup` and adds footer action buttons based on the `mode`.
 
-| Prop                 | Type                         | Default         | Description                                                    |
-| -------------------- | ---------------------------- | --------------- | -------------------------------------------------------------- |
-| `title`              | `string`                     | --              | Dialog title                                                   |
-| `variant`            | `PopupVariant`               | `"default"`     | Visual style: `"default"`, `"warning"`, `"error"`, `"info"`    |
-| `mode`               | `"acknowledge" \| "confirm"` | `"acknowledge"` | `acknowledge` = single OK button; `confirm` = Confirm + Cancel |
-| `actionLabel`        | `string`                     | `""`            | Label for the single button in acknowledge mode                |
-| `confirmLabel`       | `string`                     | `""`            | Label for the confirm button                                   |
-| `cancelLabel`        | `string`                     | `""`            | Label for the cancel button                                    |
-| `confirmAsText`      | `boolean`                    | `false`         | Render confirm button as text-only style                       |
-| `closable`           | `boolean`                    | `true`          | Show close (X) button in the header                            |
-| `isMobileFullscreen` | `boolean`                    | `true`          | Expand to fullscreen on mobile                                 |
-| `closeOnConfirm`     | `boolean`                    | `false`         | Auto-close the popup after confirm is emitted                  |
+| Prop                 | Type                         | Default         | Description                                                              |
+| -------------------- | ---------------------------- | --------------- | ------------------------------------------------------------------------ |
+| `title`              | `string`                     | --              | Dialog title                                                             |
+| `variant`            | `PopupVariant`               | `"default"`     | Visual style: `"default"`, `"warning"`, `"error"`, `"success"`, `"info"` |
+| `mode`               | `"acknowledge" \| "confirm"` | `"acknowledge"` | `acknowledge` = single OK button; `confirm` = Confirm + Cancel           |
+| `actionLabel`        | `string`                     | `""`            | Label for the single button in acknowledge mode                          |
+| `confirmLabel`       | `string`                     | `""`            | Label for the confirm button                                             |
+| `cancelLabel`        | `string`                     | `""`            | Label for the cancel button                                              |
+| `confirmAsText`      | `boolean`                    | `false`         | Render confirm button as text-only style                                 |
+| `closable`           | `boolean`                    | `true`          | Show close (X) button in the header                                      |
+| `isMobileFullscreen` | `boolean`                    | `true`          | Expand to fullscreen on mobile                                           |
+| `closeOnConfirm`     | `boolean`                    | `false`         | Auto-close the popup after confirm is emitted                            |
 
 Events: `close`, `confirm`
 
@@ -117,6 +117,14 @@ Slots: `header`, `default`
 - Use `VcPopupBase` directly when you need custom button labels, mixed modes, or a custom footer.
 - All popups are fullscreen on mobile by default. Set `isMobileFullscreen="false"` to keep the centered dialog style.
 - Button labels default to i18n keys: `COMPONENTS.ORGANISMS.VC_POPUP.CONFIRM`, `.CANCEL`, `.OK`.
+
+## CSS Variables
+
+| Variable                     | Default                | Description               |
+| ---------------------------- | ---------------------- | ------------------------- |
+| `--popup-base-confirm-color` | `var(--secondary-700)` | Confirm-button text color |
+
+The deprecated `--confirm-button-color` alias is still honored as a fallback: `--popup-base-confirm-color: var(--confirm-button-color, var(--secondary-700))`. Prefer `--popup-base-confirm-color`.
 
 ## Related
 

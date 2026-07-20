@@ -62,7 +62,7 @@ async function deleteProduct(id: string) {
 
 | Field       | Type                                          | Required | Description                                                               |
 | ----------- | --------------------------------------------- | -------- | ------------------------------------------------------------------------- |
-| `component` | `ComponentPublicInstanceConstructor`          | Yes      | The popup component to render                                             |
+| `component` | `T` (`extends Component`)                     | Yes      | The popup component to render                                             |
 | `props`     | `RawProps<T>`                                 | No       | Props to pass to the component (typed from the component's `defineProps`) |
 | `emits`     | `RawEmits<T>`                                 | No       | Event handlers (typed from the component's `defineEmits`)                 |
 | `slots`     | `Record<string, string \| Component \| Slot>` | No       | Named slots — strings render as text, components render as VNodes         |

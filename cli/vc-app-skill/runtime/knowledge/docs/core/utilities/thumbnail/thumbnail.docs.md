@@ -42,7 +42,7 @@ Transforms full-size image URLs into thumbnail variants by appending size suffix
 Transforms an image URL by inserting a size suffix before the file extension.
 
 ```ts
-import { getThumbnailUrl } from "@core/utilities/thumbnail";
+import { getThumbnailUrl } from "@vc-shell/framework";
 
 getThumbnailUrl("https://cdn.example.com/photo.jpg", "sm");
 // → "https://cdn.example.com/photo_sm.jpg"
@@ -69,7 +69,7 @@ getThumbnailUrl(undefined, "sm");
 Maps a CSS pixel display size to the best-fit thumbnail preset. Picks the smallest thumbnail that is >= the display size.
 
 ```ts
-import { getBestThumbnailSize } from "@core/utilities/thumbnail";
+import { getBestThumbnailSize } from "@vc-shell/framework";
 
 getBestThumbnailSize(48); // → "64x64"
 getBestThumbnailSize(96); // → "128x128"

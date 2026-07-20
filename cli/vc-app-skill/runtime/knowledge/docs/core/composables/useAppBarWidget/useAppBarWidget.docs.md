@@ -57,16 +57,18 @@ None.
 
 ### registerAppBarWidgetOptions
 
-| Field       | Type                      | Required | Description                                                   |
-| ----------- | ------------------------- | -------- | ------------------------------------------------------------- |
-| `id`        | `string`                  | No       | Custom ID; auto-generated if omitted                          |
-| `order`     | `number`                  | No       | Sort order in the hub Widgets list (lower = appears first)    |
-| `title`     | `string`                  | No       | Tooltip or label text                                         |
-| `icon`      | `Component \| string`     | No       | Lucide icon name or a Vue component                           |
-| `component` | `Component`               | No       | Custom Vue component to render instead of default icon button |
-| `props`     | `Record<string, unknown>` | No       | Props to pass to the custom component                         |
-| `onClick`   | `() => void`              | No       | Click handler for the default icon button                     |
-| `slot`      | `string`                  | No       | Named slot target for placement control                       |
+| Field         | Type                         | Required | Description                                                   |
+| ------------- | ---------------------------- | -------- | ------------------------------------------------------------- |
+| `id`          | `string`                     | No       | Custom ID; auto-generated if omitted                          |
+| `order`       | `number`                     | No       | Sort order in the hub Widgets list (lower = appears first)    |
+| `title`       | `string`                     | No       | Tooltip or label text                                         |
+| `icon`        | `Component \| string`        | No       | Lucide icon name or a Vue component                           |
+| `component`   | `Component`                  | No       | Custom Vue component to render instead of default icon button |
+| `props`       | `Record<string, unknown>`    | No       | Props to pass to the custom component                         |
+| `onClick`     | `() => void`                 | No       | Click handler for the default icon button                     |
+| `slot`        | `string`                     | No       | Named slot target for placement control                       |
+| `badge`       | `boolean \| (() => boolean)` | No       | Show a badge indicator; pass a getter for reactive state      |
+| `searchTerms` | `string[]`                   | No       | Extra keywords used to match the widget in hub search         |
 
 ### Additional Exports
 

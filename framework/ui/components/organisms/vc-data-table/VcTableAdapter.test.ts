@@ -97,8 +97,8 @@ vi.mock("@ui/components/organisms/vc-data-table/components", () => ({
 }));
 
 vi.mock("@ui/components/molecules", () => ({
-  VcDropdownPanel: defineComponent({
-    name: "VcDropdownPanel",
+  VcPopover: defineComponent({
+    name: "VcPopover",
     props: ["show", "anchorRef", "title", "width", "maxWidth"],
     template: "<div class='mock-dropdown'><slot /></div>",
   }),

@@ -27,14 +27,15 @@ on:
   workflow_dispatch:
     inputs:
       release-type:
-        description: "Release type (patch/minor/major)"
+        description: "Release type — 'auto' derives it from conventional commits since the last tag"
         type: choice
         required: true
         options:
+          - auto
           - patch
           - minor
           - major
-        default: patch
+        default: auto
       prerelease:
         description: "Prerelease channel (or 'none' for stable)"
         type: choice
@@ -271,7 +272,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
         run: |
-          ARGS="${{ inputs.release-type }} --ci"
+          # 'auto' → pass no increment so @release-it/conventional-changelog derives
+          # the bump (feat→minor, fix→patch, BREAKING/! →major) from the commits since
+          # the last tag. patch/minor/major stay available as an explicit override.
+          ARGS="--ci"
+          if [ "${{ inputs.release-type }}" != "auto" ]; then
+            ARGS="${{ inputs.release-type }} $ARGS"
+          fi
           if [ "${{ inputs.prerelease }}" != "none" ]; then
             ARGS="$ARGS --preRelease=${{ inputs.prerelease }}"
           fi

@@ -7,7 +7,7 @@ Releases are cut from `main` via a GitHub Actions workflow. Only maintainers wit
 1. Go to **Actions** → **Publish** in the repository.
 2. Click **Run workflow**.
 3. Choose inputs:
-   - **Release type**: `patch`, `minor`, or `major` (semver bump).
+   - **Release type**: `auto` (default) derives the semver bump from the conventional commits since the last tag. Pick `patch`, `minor`, or `major` only to force a specific bump.
    - **Prerelease channel**:
      - `none` — stable release (publishes to npm with tag `latest`).
      - `alpha`, `beta`, or `rc` — prerelease (publishes with matching npm tag).
@@ -23,6 +23,20 @@ The workflow:
 - Commits the release bump (`release: v<version>`), creates an annotated tag (`v<version>`), and pushes both to `main`.
 - Publishes the updated packages to npm with the appropriate dist-tag.
 - Verifies the published dist-tags.
+
+## Automatic version selection (`auto`)
+
+With `release-type: auto` you don't pick the bump — `@release-it/conventional-changelog`
+computes it from the commit types since the last `vX.Y.Z` tag:
+
+- any `BREAKING CHANGE` / `!` → **major**
+- any `feat` → **minor**
+- otherwise (`fix`, `perf`, …) → **patch**
+
+**Breaking changes must be marked in the commit title.** Merges are squashed, so the
+PR title becomes the only commit message and the PR body (and any `BREAKING CHANGE:`
+footer) is dropped. A breaking change therefore has to use the `!` form in the PR
+title — `feat(x)!: …` or `fix(x)!: …` — or `auto` will under-bump it to a minor/patch.
 
 ## Release Cycles
 

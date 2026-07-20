@@ -201,48 +201,40 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
         shared,
       });
 
-      // 4. Load all remotes in parallel
-      const results = await Promise.allSettled(
-        entries.map(async (e) => ({
-          entry: e,
-          exports: await mfInstance.loadRemote(`${e.remoteName}/${e.exposedKey}`),
-        })),
+      // 4 + 5. Load each remote in parallel and install it the moment IT resolves,
+      // rather than waiting for the whole batch behind a Promise.allSettled barrier.
+      // Otherwise the slowest remote (e.g. a cold dev-server compilation of the shared
+      // framework graph) holds back every other module's menu items and routes, so
+      // nothing appears until all remotes have loaded.
+      const failed: { entry: ModuleRegistryEntry; error: unknown }[] = [];
+      await Promise.allSettled(
+        entries.map(async (e) => {
+          try {
+            const exports = await mfInstance.loadRemote(`${e.remoteName}/${e.exposedKey}`);
+            const plugins = resolvePlugins(exports);
+            if (plugins.length > 0) {
+              for (const plugin of plugins) app.use(plugin, { router: options.router });
+              console.info(`[mf-host] "${e.id}" v${e.version} installed (${plugins.length} sub-module(s)).`);
+            } else {
+              console.error(`[mf-host] "${e.id}" has no install function. Skipping.`);
+            }
+          } catch (error) {
+            failed.push({ entry: e, error });
+            console.error(`[mf-host] Failed to load "${e.id}":`, error);
+          }
+        }),
       );
 
       performance.mark("vc:modules-loaded");
-
-      const loaded: { entry: ModuleRegistryEntry; exports: unknown }[] = [];
-      const failed: { entry: ModuleRegistryEntry; error: unknown }[] = [];
-      for (let i = 0; i < results.length; i++) {
-        const r = results[i];
-        if (r.status === "fulfilled") loaded.push(r.value);
-        else failed.push({ entry: entries[i], error: r.reason });
-      }
-
-      for (const { entry, error } of failed) {
-        console.error(`[mf-host] Failed to load "${entry.id}":`, error);
-      }
-
-      // 5. Install plugins
-      for (const { entry, exports } of loaded) {
-        const plugins = resolvePlugins(exports);
-        if (plugins.length > 0) {
-          for (const plugin of plugins) app.use(plugin, { router: options.router });
-          console.info(`[mf-host] "${entry.id}" v${entry.version} installed (${plugins.length} sub-module(s)).`);
-        } else {
-          console.error(`[mf-host] "${entry.id}" has no install function. Skipping.`);
-        }
-      }
+      performance.mark("vc:modules-installed");
 
       if (failed.length > 0) {
         console.warn(
-          `[mf-host] ${loaded.length}/${entries.length} plugins loaded. Failed: [${failed
+          `[mf-host] ${entries.length - failed.length}/${entries.length} plugins loaded. Failed: [${failed
             .map((f) => f.entry.id)
             .join(", ")}]`,
         );
       }
-
-      performance.mark("vc:modules-installed");
       modulesReady.value = true;
 
       const resolvedPath = options.router.currentRoute.value.fullPath;

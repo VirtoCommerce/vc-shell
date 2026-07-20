@@ -1,5 +1,17 @@
 # Changelog
 
+# [2.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.1.0...v2.2.0) (2026-07-20)
+
+### Features
+
+- **framework:** accuracy audit with docs, a11y, i18n, security, refactors and tests (#255) ([2312647](https://github.com/VirtoCommerce/vc-shell/commit/2312647df7e06d8ffc2d74378bf2910a1c7b4a8b)), closes [#255](https://github.com/VirtoCommerce/vc-shell/issues/255)
+- **vc-app:** add current environment indicator banner (#251) ([b6e36f9](https://github.com/VirtoCommerce/vc-shell/commit/b6e36f9fe5514fc4a59805f0809263a2d9b73b08)), closes [#251](https://github.com/VirtoCommerce/vc-shell/issues/251)
+- **vc-scheduler:** calendar/scheduler organism (#258) ([694fdf6](https://github.com/VirtoCommerce/vc-shell/commit/694fdf620f10795f4d46d558367bb2719f540a78)), closes [#258](https://github.com/VirtoCommerce/vc-shell/issues/258) [#256](https://github.com/VirtoCommerce/vc-shell/issues/256) [#255](https://github.com/VirtoCommerce/vc-shell/issues/255)
+
+### Bug Fixes
+
+- **framework:** keep version banner in app production builds (#252) ([35396d2](https://github.com/VirtoCommerce/vc-shell/commit/35396d27d93a623506cacedf3522144844a6c680)), closes [#252](https://github.com/VirtoCommerce/vc-shell/issues/252)
+
 # [2.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.11...v2.1.0) (2026-06-22)
 
 ### Features

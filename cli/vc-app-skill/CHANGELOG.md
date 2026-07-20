@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.1.0...v2.2.0) (2026-07-20)
+
+### Features
+
+- **vc-app:** detect and retrofit table URL-query state in existing apps (#249) ([c716dc7](https://github.com/VirtoCommerce/vc-shell/commit/c716dc7140978865eb31509aed0ac248bec5d1ff)), closes [#249](https://github.com/VirtoCommerce/vc-shell/issues/249)
+- **vc-scheduler:** calendar/scheduler organism (#258) ([694fdf6](https://github.com/VirtoCommerce/vc-shell/commit/694fdf620f10795f4d46d558367bb2719f540a78)), closes [#258](https://github.com/VirtoCommerce/vc-shell/issues/258) [#256](https://github.com/VirtoCommerce/vc-shell/issues/256) [#255](https://github.com/VirtoCommerce/vc-shell/issues/255)
+
 # [2.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.11...v2.1.0) (2026-06-22)
 
 ### Features

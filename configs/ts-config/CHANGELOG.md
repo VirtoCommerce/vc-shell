@@ -1,5 +1,9 @@
 # Changelog
 
+# [2.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.1.0...v2.2.0) (2026-07-20)
+
+**Note:** Version bump only for package @vc-shell/ts-config
+
 # [2.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.11...v2.1.0) (2026-06-22)
 
 **Note:** Version bump only for package @vc-shell/ts-config

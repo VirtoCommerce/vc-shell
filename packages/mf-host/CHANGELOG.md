@@ -1,5 +1,12 @@
 # Changelog
 
+# [2.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.1.0...v2.2.0) (2026-07-20)
+
+### Features
+
+- **framework:** accuracy audit with docs, a11y, i18n, security, refactors and tests (#255) ([2312647](https://github.com/VirtoCommerce/vc-shell/commit/2312647df7e06d8ffc2d74378bf2910a1c7b4a8b)), closes [#255](https://github.com/VirtoCommerce/vc-shell/issues/255)
+- **mf-host:** install remotes eagerly as each resolves (#254) ([ec4a7cb](https://github.com/VirtoCommerce/vc-shell/commit/ec4a7cbc466905b05df06b360113057b75339f4d)), closes [#254](https://github.com/VirtoCommerce/vc-shell/issues/254)
+
 # [2.1.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.0.11...v2.1.0) (2026-06-22)
 
 **Note:** Version bump only for package @vc-shell/mf-host

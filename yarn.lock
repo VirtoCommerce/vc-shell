@@ -4432,6 +4432,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/js-beautify@npm:^1.14.3":
+  version: 1.14.3
+  resolution: "@types/js-beautify@npm:1.14.3"
+  checksum: 10/c6f6278c91e9cc8645e5c559bccb64e0890807d30283d53252c2d785a5b885ed57bf1d8583e60a19015c33f81750fc8aafc0b2e4bc9bbb5193032be53aea4ad2
+  languageName: node
+  linkType: hard
+
 "@types/jscodeshift@npm:^17.3.0":
   version: 17.3.0
   resolution: "@types/jscodeshift@npm:17.3.0"
@@ -5289,6 +5296,7 @@ __metadata:
     "@tiptap/starter-kit": "npm:^3.4.2"
     "@tiptap/vue-3": "npm:^3.4.2"
     "@types/dompurify": "npm:^3.0.5"
+    "@types/js-beautify": "npm:^1.14.3"
     "@types/semver": "npm:^7.7.1"
     "@types/sortablejs": "npm:^1.15.9"
     "@unovis/ts": "npm:^1.6.4"
@@ -5312,6 +5320,7 @@ __metadata:
     esbuild: "npm:^0.25.3"
     gridstack: "npm:^12.4.2"
     iso-639-1: "npm:^3.1.0"
+    js-beautify: "npm:^1.15.4"
     jsdom: "npm:^24.1.0"
     lodash-es: "npm:^4.17.21"
     lucide-vue-next: "npm:^0.577.0"
@@ -5327,7 +5336,6 @@ __metadata:
     tsc-alias: "npm:^1.8.8"
     tsx: "npm:^4.7.1"
     typescript: "npm:^5.8.3"
-    vee-validate: "npm:^4.12.4"
     vite: "npm:^6.3.3"
     vitest: "npm:^3.0.0"
     vue: "npm:^3.5.30"
@@ -5338,11 +5346,13 @@ __metadata:
     vue3-application-insights: "npm:^1.1.0"
     vue3-touch-events: "npm:^4.1.8"
     web-vitals: "npm:^5.1.0"
-    whatwg-fetch: "npm:^3.6.19"
   peerDependencies:
+    vee-validate: ">=4.12.0"
     vue: ">=3.4.0"
     vue-router: ">=4.2.0"
   peerDependenciesMeta:
+    vee-validate:
+      optional: false
     vue:
       optional: false
     vue-router:
@@ -12816,7 +12826,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-beautify@npm:^1.14.9":
+"js-beautify@npm:^1.14.9, js-beautify@npm:^1.15.4":
   version: 1.15.4
   resolution: "js-beautify@npm:1.15.4"
   dependencies:
@@ -19872,13 +19882,6 @@ __metadata:
   dependencies:
     iconv-lite: "npm:0.6.3"
   checksum: 10/bbef815eb67f91487c7f2ef96329743f5fd8357d7d62b1119237d25d41c7e452dff8197235b2d3c031365a17f61d3bb73ca49d0ed1582475aa4a670815e79534
-  languageName: node
-  linkType: hard
-
-"whatwg-fetch@npm:^3.6.19":
-  version: 3.6.20
-  resolution: "whatwg-fetch@npm:3.6.20"
-  checksum: 10/2b4ed92acd6a7ad4f626a6cb18b14ec982bbcaf1093e6fe903b131a9c6decd14d7f9c9ca3532663c2759d1bdf01d004c77a0adfb2716a5105465c20755a8c57c
   languageName: node
   linkType: hard
 

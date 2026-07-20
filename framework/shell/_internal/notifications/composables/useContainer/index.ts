@@ -7,6 +7,7 @@ import {
 import { useInstance } from "@shell/_internal/notifications/composables/useInstance";
 import * as _ from "lodash-es";
 import { generateId, createLogger } from "@core/utilities";
+import { i18n } from "@core/plugins/i18n";
 
 const logger = createLogger("notification-container");
 
@@ -107,6 +108,9 @@ export function useContainer(): IUseContainer {
           ...(options as Record<string, unknown>),
           position,
         });
+        // Notifications mount as their own Vue app root, so the main app's plugins
+        // aren't inherited — install i18n here so $t works in VcToast and children.
+        instance.use(i18n);
         instance.provide(NotificationContainerStateKey, { notificationContainers, actions });
         instance.mount(dom);
         saveInstance(instance, dom.id, position);

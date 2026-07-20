@@ -19,6 +19,8 @@
     <div
       v-if="showDragHandle"
       class="vc-table-composition__row-drag-handle"
+      role="presentation"
+      aria-hidden="true"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -52,21 +54,27 @@
     </div>
     <TransitionGroup
       tag="div"
+      role="presentation"
       :name="isColumnReordering ? 'vc-table-col-swap' : ''"
       class="vc-table-composition__row-transition-wrapper"
       :style="{ '--filler-width': fillerWidth > 0 ? `${fillerWidth}px` : '0px' }"
     >
       <slot />
     </TransitionGroup>
-    <!-- Row actions: overlay mode (absolute positioned, current behavior) -->
-    <slot
-      v-if="actionsPosition !== 'column'"
-      name="actions"
-    />
+    <!-- Row actions: overlay mode (absolute positioned, current behavior).
+         Wrapped in a cell so it is a valid child of role="row". -->
+    <div
+      v-if="actionsPosition !== 'column' && $slots.actions"
+      :role="actionsCellRole"
+      class="vc-table-composition__row-actions-cell"
+    >
+      <slot name="actions" />
+    </div>
 
     <!-- Row actions: column mode (fixed zone, always visible) -->
     <div
       v-if="actionsPosition === 'column'"
+      :role="actionsCellRole"
       class="vc-table-composition__row-actions-column"
     >
       <slot name="actions" />
@@ -140,6 +148,10 @@ const isColumnReordering = inject(IsColumnReorderingKey, ref(false));
 const isClickable = computed(() => {
   return !!props.clickable;
 });
+
+// Auxiliary controls (row actions / column switcher) must be a valid child of
+// role="row" — a cell in body rows, a columnheader in the header row.
+const actionsCellRole = computed(() => (props.variant === "header" ? "columnheader" : "cell"));
 
 const handleClick = (event: MouseEvent) => {
   emit("click", event);
@@ -249,6 +261,12 @@ const handleMouseLeave = () => {
   &-actions-column {
     @apply tw-flex tw-items-center tw-justify-end tw-flex-shrink-0;
     min-width: 40px;
+  }
+
+  // Overlay actions wrapper adds a valid role="cell" around the actions without
+  // affecting layout — the actions inside position themselves absolutely.
+  &-actions-cell {
+    display: contents;
   }
 }
 

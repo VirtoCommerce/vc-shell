@@ -21,7 +21,7 @@
             <button
               type="button"
               class="vc-dropdown-panel__close"
-              aria-label="Close"
+              :aria-label="$t('COMPONENTS.CONTROLS.CLOSE')"
               @click="close"
             >
               <VcIcon
@@ -36,6 +36,7 @@
         <div
           class="vc-dropdown-panel__content"
           :class="{ 'vc-dropdown-panel__content--scrollable': contentScrollable }"
+          :tabindex="contentScrollable ? 0 : undefined"
         >
           <slot />
         </div>

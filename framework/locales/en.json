@@ -3,9 +3,16 @@
     "THEMES": {
       "LIGHT": "Light",
       "DARK": "Dark"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "Clear all"
     }
   },
   "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "Primary navigation",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "Search keyword"
+    },
     "USER": {
       "ROLE": {
         "ADMINISTRATOR": "Administrator"
@@ -19,10 +26,27 @@
     }
   },
   "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "Clear",
+      "CLEAR_ALL": "Clear all",
+      "CLOSE": "Close",
+      "TOGGLE_DROPDOWN": "Toggle dropdown",
+      "SEARCH_OPTIONS": "Search options",
+      "SELECT_OPTION": "Select option",
+      "CLEAR_SELECTION": "Clear selection",
+      "COPY_TO_CLIPBOARD": "Copy to clipboard",
+      "DELETE_ITEM": "Delete item"
+    },
     "ATOMS": {
       "VC_BANNER": {
         "SHOW_MORE": "Show more",
         "SHOW_LESS": "Show less"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "Scrollable content"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "No video source"
       }
     },
     "MOLECULES": {
@@ -43,10 +67,64 @@
         "DATE_TIME_PLACEHOLDER": "Select date and time"
       },
       "VC_PAGINATION": {
-        "JUMP": "Jump to page:"
+        "JUMP": "Jump to page:",
+        "LABEL": "Pagination",
+        "FIRST": "First page",
+        "PREVIOUS": "Previous page",
+        "NEXT": "Next page",
+        "LAST": "Last page",
+        "PAGE": "Page {page}"
       },
       "VC_MULTIVALUE": {
         "ADD": "Add"
+      },
+      "VC_BREADCRUMBS": {
+        "LABEL": "Breadcrumb",
+        "SHOW_MORE": "Show more breadcrumbs"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "Clear color"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "Clear date"
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "Previous slide",
+        "NEXT": "Next slide"
+      },
+      "VC_TOAST": {
+        "DISMISS": "Dismiss notification"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "Text formatting",
+          "BOLD": "Bold",
+          "ITALIC": "Italic",
+          "UNDERLINE": "Underline",
+          "STRIKETHROUGH": "Strikethrough",
+          "HEADING_1": "Heading 1",
+          "HEADING_2": "Heading 2",
+          "HEADING_3": "Heading 3",
+          "BULLET_LIST": "Bullet list",
+          "NUMBERED_LIST": "Numbered list",
+          "BLOCKQUOTE": "Blockquote",
+          "INSERT_LINK": "Insert link",
+          "INSERT_IMAGE": "Insert image",
+          "INSERT_TABLE": "Insert table",
+          "DELETE_TABLE": "Delete table",
+          "ADD_COLUMN_BEFORE": "Add column before",
+          "ADD_COLUMN_AFTER": "Add column after",
+          "ADD_ROW_BEFORE": "Add row before",
+          "ADD_ROW_AFTER": "Add row after",
+          "DELETE_COLUMN": "Delete column",
+          "DELETE_ROW": "Delete row"
+        },
+        "FONT_SIZE": "Font size",
+        "VIEW": {
+          "PREVIEW": "Preview",
+          "SPLIT": "Side-by-side view",
+          "SOURCE": "Source code"
+        }
       }
     },
     "ORGANISMS": {
@@ -68,6 +146,10 @@
           },
           "VC_GALLERY_PREVIEW": {
             "COPY_IMAGE_LINK": "copy image link"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "Previous images",
+            "NEXT": "Next images"
           }
         },
         "GALLERY_IS_EMPTY": "Gallery is empty",
@@ -80,6 +162,7 @@
         "COLLAPSE": "Collapse"
       },
       "VC_APP": {
+        "NOTIFICATIONS": "Notifications",
         "INTERNAL": {
           "VC_APP_BAR": {
             "BACK": "Back"
@@ -120,6 +203,8 @@
         "NO_CHANGES": "No unsaved changes"
       },
       "VC_TABLE": {
+        "SELECT_ROW": "Select row",
+        "SELECT_ALL_ROWS": "Select all rows",
         "CURRENT_PAGE_SELECTED": "All items in this page are selected.",
         "SELECT_ALL": "Select all items",
         "ALL_SELECTED": "All items are selected.",
@@ -151,7 +236,8 @@
           "APPLY": "Apply",
           "CLEAR": "Clear",
           "FROM": "From",
-          "TO": "To"
+          "TO": "To",
+          "TITLE": "Filter column"
         },
         "GLOBAL_FILTERS": {
           "BUTTON": "Filters",
@@ -289,7 +375,12 @@
     "BUTTON_OK": "Ok",
     "RESET_EMAIL_TEXT": "We will send you an email with instructions on how to reset your password.",
     "RESET_EMAIL_SENT": "Email with instructions has been sent to you.",
-    "SSO_NO_PROVIDERS_ERROR": "SSO authentication is not configured. Please contact your administrator."
+    "SSO_NO_PROVIDERS_ERROR": "SSO authentication is not configured. Please contact your administrator.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "The login or password is incorrect.",
+      "AUTH_WITH_CODE": "Authentication error (code: {code}).",
+      "AUTH_GENERIC": "Authentication error: {detail}"
+    }
   },
   "FORGOT_PASSWORD": {
     "TITLE": "Reset your password",

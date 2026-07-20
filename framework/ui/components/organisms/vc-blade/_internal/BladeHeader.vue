@@ -107,7 +107,7 @@
         class="vc-blade-header__controls"
       >
         <div
-          v-if="descriptor?.maximized"
+          v-if="renderingState?.maximized"
           class="vc-blade-header__button"
           @click="onCollapse"
         >
@@ -137,7 +137,7 @@ import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { ref, inject } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { shift } from "@floating-ui/vue";
-import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import { BladeRenderingStateKey } from "@core/blade-navigation/types";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
 
 export interface Props {
@@ -160,7 +160,7 @@ const emit = defineEmits<{
 }>();
 
 const { isMobile } = useResponsive();
-const descriptor = inject(BladeDescriptorKey, undefined);
+const renderingState = inject(BladeRenderingStateKey, undefined);
 const tooltipVisible = ref(false);
 const tooltipIconRef = ref<HTMLElement | null>(null);
 const tooltipRef = ref<HTMLElement | null>(null);

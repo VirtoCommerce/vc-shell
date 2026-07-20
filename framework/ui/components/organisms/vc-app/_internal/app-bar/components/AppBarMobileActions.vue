@@ -15,6 +15,7 @@
         :class="{ 'app-bar-mobile-actions__button--active': button.id === currentAction?.id }"
         :icon="button.icon"
         icon-size="l"
+        :aria-label="button.title || button.id"
         @click="handleButtonClick(button)"
       />
       <span

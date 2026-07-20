@@ -24,7 +24,7 @@ describe("VcVideo", () => {
     const wrapper = mountComponent();
     const placeholder = wrapper.find(".vc-video__placeholder");
     expect(placeholder.attributes("role")).toBe("img");
-    expect(placeholder.attributes("aria-label")).toBe("No video source");
+    expect(placeholder.attributes("aria-label")).toBe("COMPONENTS.ATOMS.VC_VIDEO.NO_SOURCE");
   });
 
   it("renders iframe when source is provided", () => {
@@ -54,6 +54,22 @@ describe("VcVideo", () => {
     const iframe = wrapper.find("iframe");
     expect(iframe.attributes("sandbox")).toContain("allow-scripts");
     expect(iframe.attributes("loading")).toBe("lazy");
+  });
+
+  it("default sandbox is secure — no allow-same-origin or allow-popups", () => {
+    const wrapper = mountComponent({ source: "https://example.com" });
+    const sandbox = wrapper.find("iframe").attributes("sandbox") ?? "";
+    expect(sandbox).toContain("allow-scripts");
+    expect(sandbox).toContain("allow-presentation");
+    expect(sandbox).not.toContain("allow-same-origin");
+    expect(sandbox).not.toContain("allow-popups");
+  });
+
+  it("appends additionalSandbox tokens without duplicating the base", () => {
+    const wrapper = mountComponent({ source: "https://example.com", additionalSandbox: "allow-popups allow-scripts" });
+    const sandbox = (wrapper.find("iframe").attributes("sandbox") ?? "").split(" ");
+    expect(sandbox).toContain("allow-popups");
+    expect(sandbox.filter((t) => t === "allow-scripts")).toHaveLength(1);
   });
 
   it("renders label when label prop is provided", () => {

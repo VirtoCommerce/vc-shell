@@ -12,6 +12,7 @@
       :model-value="isSelected ?? false"
       :value="true"
       :disabled="!isSelectable"
+      :aria-label="$t('COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ROW')"
       @update:model-value="$emit('selection-change', true)"
     />
   </template>
@@ -22,6 +23,8 @@
       v-if="canExpand"
       variant="ghost"
       size="icon-sm"
+      :aria-label="isExpanded ? 'Collapse row' : 'Expand row'"
+      :aria-expanded="isExpanded"
       :data-is-expanded="isExpanded"
       @click.stop="$emit('expand-toggle', $event)"
     >

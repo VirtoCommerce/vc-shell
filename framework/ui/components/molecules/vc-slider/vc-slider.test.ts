@@ -69,7 +69,7 @@ describe("VcSlider", () => {
 
   it("has previous and next navigation buttons with aria-labels", () => {
     const wrapper = mountComponent({ navigation: true });
-    expect(wrapper.find('button[aria-label="Previous slide"]').exists()).toBe(true);
-    expect(wrapper.find('button[aria-label="Next slide"]').exists()).toBe(true);
+    expect(wrapper.find('button[aria-label="COMPONENTS.MOLECULES.VC_SLIDER.PREVIOUS"]').exists()).toBe(true);
+    expect(wrapper.find('button[aria-label="COMPONENTS.MOLECULES.VC_SLIDER.NEXT"]').exists()).toBe(true);
   });
 });

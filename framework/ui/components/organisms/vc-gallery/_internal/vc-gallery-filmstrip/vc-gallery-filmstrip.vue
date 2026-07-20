@@ -35,6 +35,7 @@
       v-show="hasOverflow && !loading && !expanded"
       ref="prevRef"
       type="button"
+      :aria-label="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_FILMSTRIP.PREVIOUS')"
       class="vc-gallery-filmstrip__nav vc-gallery-filmstrip__nav--prev"
     >
       <VcIcon
@@ -46,6 +47,7 @@
       v-show="hasOverflow && !loading && !expanded"
       ref="nextRef"
       type="button"
+      :aria-label="t('COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_FILMSTRIP.NEXT')"
       class="vc-gallery-filmstrip__nav vc-gallery-filmstrip__nav--next"
     >
       <VcIcon
@@ -58,12 +60,15 @@
 
 <script lang="ts" setup>
 import { ref, watch, toRef, nextTick } from "vue";
+import { useI18n } from "vue-i18n";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Mousewheel, FreeMode, Grid } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import type { AssetLike } from "@core/composables/useAssetsManager";
+
+const { t } = useI18n({ useScope: "global" });
 
 export interface Props {
   images: AssetLike[];

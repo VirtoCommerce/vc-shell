@@ -49,6 +49,7 @@
           role="switch"
           :checked="invertValue(modelValue)"
           :disabled="resolvedDisabled"
+          :aria-label="!label ? ariaLabel : undefined"
           :aria-checked="!!invertValue(modelValue)"
           :aria-invalid="invalid || undefined"
           :aria-required="ariaRequired"
@@ -109,6 +110,8 @@ export interface Props extends IFormFieldProps {
   labelTooltip?: string;
   trueValue?: boolean;
   falseValue?: boolean;
+  /** Accessible name for the switch when no visible `label` is provided. */
+  ariaLabel?: string;
 }
 
 export interface Emits {

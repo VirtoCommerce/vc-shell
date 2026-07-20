@@ -70,7 +70,7 @@ describe("VcBreadcrumbs", () => {
 
   it("has nav element with aria-label", () => {
     const wrapper = mountComponent();
-    expect(wrapper.find("nav").attributes("aria-label")).toBe("Breadcrumb");
+    expect(wrapper.find("nav").attributes("aria-label")).toBe("COMPONENTS.MOLECULES.VC_BREADCRUMBS.LABEL");
   });
 
   it("renders visible items in an ordered list", () => {

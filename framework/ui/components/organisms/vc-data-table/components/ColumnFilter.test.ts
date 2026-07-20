@@ -22,7 +22,7 @@ function factory(props: Record<string, unknown> = {}) {
       filterType: "text",
       ...props,
     },
-    global: { stubs },
+    global: { stubs, mocks: { $t: (k: string) => k } },
   });
 }
 

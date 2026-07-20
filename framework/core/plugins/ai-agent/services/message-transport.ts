@@ -71,8 +71,23 @@ export function createMessageTransport(options: MessageTransportOptions): Messag
 
   function handleIncomingMessage(event: MessageEvent): void {
     const config = getConfig();
-    const allowedOrigins = config.allowedOrigins || ["*"];
-    if (!allowedOrigins.includes("*") && !allowedOrigins.includes(event.origin)) {
+    const allowedOrigins = config.allowedOrigins ?? [];
+    if (allowedOrigins.length === 0) {
+      logger.warn(
+        "Ignoring postMessage: aiAgentConfig.allowedOrigins is empty. " +
+          "Configure explicit origins to enable the AI agent bridge.",
+        { origin: event.origin, type: event.data?.type },
+      );
+      return;
+    }
+    if (allowedOrigins.includes("*")) {
+      logger.error(
+        "Refusing postMessage with wildcard allowedOrigins. " +
+          'Replace "*" with explicit origins (e.g. ["https://chat.example.com"]).',
+      );
+      return;
+    }
+    if (!allowedOrigins.includes(event.origin)) {
       return;
     }
 
@@ -124,8 +139,15 @@ export function createMessageTransport(options: MessageTransportOptions): Messag
         logger.warn("Cannot send message: iframe not available");
         return;
       }
-      const config = getConfig();
-      const targetOrigin = config.allowedOrigins?.[0] || "*";
+      const targetOrigin = getConfig().allowedOrigins?.[0];
+      if (!targetOrigin || targetOrigin === "*") {
+        logger.error(
+          "Refusing to send to iframe: aiAgentConfig.allowedOrigins must contain an explicit origin. " +
+            "Message dropped to avoid leaking data (including access tokens) to arbitrary origins.",
+          { type: message.type },
+        );
+        return;
+      }
       iframeRef.value.contentWindow.postMessage(message, targetOrigin);
       logger.debug(`Sent to iframe: ${message.type}`);
     },
@@ -135,7 +157,16 @@ export function createMessageTransport(options: MessageTransportOptions): Messag
         logger.warn("Cannot send to parent: not in iframe");
         return;
       }
-      window.parent.postMessage(message, "*");
+      const parentOrigin = getConfig().parentOrigin;
+      if (!parentOrigin || parentOrigin === "*") {
+        logger.error(
+          "Refusing to send to parent: aiAgentConfig.parentOrigin must be an explicit origin. " +
+            "Message dropped to avoid leaking data (including access tokens) to arbitrary origins.",
+          { type: message.type },
+        );
+        return;
+      }
+      window.parent.postMessage(message, parentOrigin);
       logger.debug(`Sent to parent: ${message.type}`);
     },
 

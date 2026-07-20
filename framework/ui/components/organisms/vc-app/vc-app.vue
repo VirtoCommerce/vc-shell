@@ -89,14 +89,14 @@
         name="workspace"
         :is-authenticated="isAuthenticated"
       >
-        <div
+        <main
           v-if="isAuthenticated"
           class="vc-app__workspace"
         >
           <VcBladeNavigation v-if="hasBladeNavigation" />
           <!-- AI Agent Panel (shown when plugin is installed) -->
           <VcAiAgentPanel v-if="aiAgentConfig?.url" />
-        </div>
+        </main>
       </slot>
 
       <!-- Popup container -->

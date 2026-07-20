@@ -1,6 +1,7 @@
 <template>
   <div
     class="vc-table-composition__group-header"
+    role="row"
     :class="{
       'vc-table-composition__group-header--expandable': expandable,
       'vc-table-composition__group-header--expanded': expanded,
@@ -8,7 +9,10 @@
     }"
     @click="handleClick"
   >
-    <div class="vc-table-composition__group-header-content">
+    <div
+      class="vc-table-composition__group-header-content"
+      role="cell"
+    >
       <!-- Expand/Collapse toggle button -->
       <VcButton
         v-if="expandable"

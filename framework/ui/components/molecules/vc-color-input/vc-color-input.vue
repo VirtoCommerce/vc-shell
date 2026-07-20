@@ -82,25 +82,23 @@
               :style="{ backgroundColor: colorValue || '#ffffff' }"
               :aria-label="`Pick color${colorValue ? ': ' + colorValue : ''}`"
               @click="openColorPicker"
-            >
-              <!-- Hidden native color input -->
-              <input
-                ref="colorPickerRef"
-                type="color"
-                :value="colorValue"
-                class="vc-color-input__color-picker-hidden"
-                tabindex="-1"
-                aria-hidden="true"
-                @change="handleColorPickerChange"
-              />
-            </button>
+            ></button>
+            <input
+              ref="colorPickerRef"
+              type="color"
+              :value="colorValue"
+              class="vc-color-input__color-picker-hidden"
+              tabindex="-1"
+              aria-hidden="true"
+              @change="handleColorPickerChange"
+            />
           </div>
 
           <button
             v-if="clearable && textValue && !disabled"
             type="button"
             class="vc-color-input__clear"
-            aria-label="Clear color"
+            :aria-label="$t('COMPONENTS.MOLECULES.VC_COLOR_INPUT.CLEAR')"
             @click="onReset"
           >
             <VcIcon

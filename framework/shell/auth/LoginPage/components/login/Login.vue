@@ -124,6 +124,7 @@ import { ExternalSignInProviderInfo, SignInResult } from "@core/api/platform";
 import { default as ExternalProviders } from "@shell/auth/sign-in/external-providers.vue";
 import { useExternalProvider } from "@shell/auth/sign-in/useExternalProvider";
 import { resolveSafeRedirectPath, formatSignInError } from "@shell/auth/utils";
+import { useI18n } from "vue-i18n";
 import { ExtensionPoint } from "@core/plugins/extension-points";
 import { createLogger } from "@core/utilities";
 import { VcAuthLayout, VcButton, VcForm, VcHint, VcInput } from "@ui/components";
@@ -140,6 +141,7 @@ export interface Props {
 
 const props = defineProps<Props>();
 
+const { t } = useI18n({ useScope: "global" });
 const router = useRouter();
 
 const { validateField } = useForm({ validateOnMount: false });
@@ -187,7 +189,7 @@ const login = async () => {
   }
 
   // Error handling
-  signInResult.value.error = formatSignInError(signInResult.value);
+  signInResult.value.error = formatSignInError(signInResult.value, t);
 
   form.password = "";
   validateField("password");

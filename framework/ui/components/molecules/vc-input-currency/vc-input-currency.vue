@@ -54,6 +54,7 @@
         type="text"
         :disabled="disabled"
         :placeholder="holder"
+        :aria-label="label || undefined"
         class="vc-input-currency__control"
         tabindex="0"
         @blur="handleBlur"

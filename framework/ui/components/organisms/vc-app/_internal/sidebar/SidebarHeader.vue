@@ -35,7 +35,7 @@
     >
       <button
         class="sidebar-header__notification-bell"
-        aria-label="Notifications"
+        :aria-label="$t('COMPONENTS.ORGANISMS.VC_APP.NOTIFICATIONS')"
         @click="$emit('toggle-notifications', $event)"
       >
         <div class="sidebar-header__notification-bell-wrap">
@@ -73,6 +73,8 @@
       <button
         v-if="showBurger"
         class="sidebar-header__menu-button"
+        :aria-label="isMenuOpen ? 'Close menu' : 'Open menu'"
+        :aria-expanded="isMenuOpen"
         @click="$emit('toggle-menu', $event)"
       >
         <div class="sidebar-header__menu-button-wrap">

@@ -35,7 +35,7 @@ An image display component with predefined sizes, aspect ratio control, and a pl
 | `bordered`      | `boolean`                                                       | `false`          | Adds a subtle border                                                                                                                               |
 | `clickable`     | `boolean`                                                       | `false`          | Makes the image interactive with cursor and click event                                                                                            |
 | `emptyIcon`     | `string`                                                        | `"lucide-image"` | Icon shown when `src` is empty                                                                                                                     |
-| `alt`           | `string`                                                        | —                | Accessible alt text                                                                                                                                |
+| `alt`           | `string`                                                        | —                | Accessible alt text. Required to expose `role="img"`; without it the image is decorative                                                           |
 | `thumbnailSize` | `ThumbnailSize`                                                 | —                | Load a thumbnail variant instead of full-size image. Values: `"sm"`, `"md"`, `"lg"`, `"64x64"`, `"128x128"`, `"168x168"`, `"216x216"`, `"348x348"` |
 
 ## Events
@@ -102,7 +102,7 @@ An image display component with predefined sizes, aspect ratio control, and a pl
 
 ## Accessibility
 
-- When `src` is present and no `clickable`, the container has `role="img"` with `aria-label` from `alt`
+- When `src` **and** `alt` are present and not `clickable`, the container has `role="img"` with `aria-label` from `alt`. Without `alt` the image is treated as decorative (no `role`), since `role="img"` requires an accessible name.
 - Clickable images receive `role="button"`, `tabindex="0"`, and keyboard support (Enter/Space)
 - Empty placeholder icon is marked `aria-hidden="true"`
 - Focus ring appears on `:focus-visible` for clickable images

@@ -30,7 +30,11 @@ const RUNTIME_LIBS: Record<string, { lib: () => unknown; version: string }> = {
   vue: { lib: () => Vue, version: vuePkg.version },
   "vue-router": { lib: () => VueRouter, version: vueRouterPkg.version },
   "vue-i18n": { lib: () => VueI18n, version: vueI18nPkg.version },
-  "vee-validate": { lib: () => VeeValidate, version: (VeeValidate as any).version ?? "4.0.0" },
+  // vee-validate blocks the "./package.json" subpath in its exports map and exports no
+  // runtime `version`, so — unlike the deps above — the version cannot be resolved at
+  // build time and must be pinned here. Keep in sync with the installed vee-validate;
+  // it only needs to satisfy the remotes' requiredVersion (^4.12.0 in mf-config).
+  "vee-validate": { lib: () => VeeValidate, version: "4.15.1" },
   "lodash-es": { lib: () => LodashEs, version: lodashEsPkg.version },
   "@vueuse/core": { lib: () => VueuseCore, version: vueusePkg.version },
   "@vc-shell/framework": { lib: () => Framework, version: frameworkPkg.version },

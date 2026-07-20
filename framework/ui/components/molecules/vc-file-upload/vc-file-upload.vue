@@ -35,6 +35,7 @@
       @dragover.stop.prevent="dragOver"
       @dragenter.stop.prevent
       @dragleave.stop.prevent="dragLeave"
+      @click="toggleUploader"
       @keydown.enter="toggleUploader"
       @keydown.space.prevent="toggleUploader"
     >
@@ -60,22 +61,16 @@
 
         <div class="vc-file-upload__text">
           <template v-if="isMobile">
-            <VcLink
-              class="vc-file-upload__link"
-              @click="toggleUploader"
-            >
+            <span class="vc-file-upload__link">
               {{ customText?.browse || t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.TAP_TO_UPLOAD") }}
-            </VcLink>
+            </span>
           </template>
           <template v-else>
             <span>{{ customText?.dragHere || t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.DRAG_HERE") }}</span>
             <br />
-            <VcLink
-              class="vc-file-upload__link"
-              @click="toggleUploader"
-            >
+            <span class="vc-file-upload__link">
               {{ customText?.browse || t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.BROWSE") }}
-            </VcLink>
+            </span>
           </template>
         </div>
       </template>
@@ -117,7 +112,6 @@ import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 const bladeLoading = useBladeLoading();
 import { useField } from "vee-validate";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { VcLink } from "@ui/components/atoms/vc-link";
 import { VcHint } from "@ui/components/atoms/vc-hint";
 import { useI18n } from "vue-i18n";
 import { IValidationRules } from "@core/types";

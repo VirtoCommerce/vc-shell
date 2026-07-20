@@ -52,6 +52,7 @@ const sourceCoverageExclude = [
 export default defineConfig({
   plugins: [vue()],
   test: {
+    name: "unit",
     globals: true,
     environment: "jsdom",
     coverage: {

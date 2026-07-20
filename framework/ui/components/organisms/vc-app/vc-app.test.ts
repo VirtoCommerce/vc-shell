@@ -201,6 +201,14 @@ describe("vc-app", () => {
     expect(wrapper.find(".mock-blade-nav").exists()).toBe(true);
   });
 
+  it("renders the workspace as a <main> landmark when authenticated", async () => {
+    mockIsAppReady.value = true;
+    mockIsAuthenticated.value = true;
+    const wrapper = mountApp({ isReady: true });
+    await nextTick();
+    expect(wrapper.find("main.vc-app__workspace").exists()).toBe(true);
+  });
+
   it("does not render workspace when not authenticated", async () => {
     mockIsAppReady.value = true;
     mockIsAuthenticated.value = false;

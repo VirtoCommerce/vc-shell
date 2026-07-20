@@ -85,7 +85,7 @@
         icon-size="s"
         class="vc-field__copy"
         text
-        aria-label="Copy to clipboard"
+        :aria-label="$t('COMPONENTS.CONTROLS.COPY_TO_CLIPBOARD')"
         @click="onCopy"
       />
     </div>

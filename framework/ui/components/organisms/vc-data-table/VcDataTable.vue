@@ -69,20 +69,20 @@
     <!-- Selection Banner -->
     <slot
       name="selection-banner"
-      :count="selection.internalSelection.value.length"
+      :count="selection.selected.value.length"
       :total-count="props.totalCount"
-      :is-select-all="selection.isSelectAllActive.value"
+      :is-select-all="selection.isSelectAllAcrossPages.value"
       :select-all="selection.selectAll"
-      :clear-selection="selection.clearSelection"
+      :clear-selection="selection.clear"
     >
       <TableSelectAllBar
         v-if="effectiveSelectionMode === 'multiple'"
-        :selection-count="selection.internalSelection.value.length"
+        :selection-count="selection.selected.value.length"
         :total-count="props.totalCount ?? 0"
-        :all-selected="selection.isSelectAllActive.value"
-        :show-select-all-prompt="selection.showSelectAllChoice.value"
+        :all-selected="selection.isSelectAllAcrossPages.value"
+        :show-select-all-prompt="selection.showSelectAllPrompt.value"
         @select-all="selection.selectAll"
-        @cancel="selection.clearSelection"
+        @cancel="selection.clear"
       />
     </slot>
 
@@ -100,8 +100,8 @@
           :show-drag-handle="showRowDragHandle"
           :show-selection-cell="hasSelectionColumn && !isSelectionViaColumn"
           :selection-mode="effectiveSelectionMode"
-          :all-selected="selection.allSelected.value"
-          :some-selected="selection.someSelected.value"
+          :all-selected="selection.isAllSelected.value"
+          :some-selected="selection.isPartiallySelected.value"
           :get-sort-direction="sort.getSortDirection"
           :get-sort-index="sort.getSortIndex"
           :get-column-width="cols.getEffectiveColumnWidth"
@@ -122,7 +122,7 @@
           :show-column-switcher="!!columnSwitcher"
           :column-switcher-active="showColumnSwitcherPanel"
           :actions-position="rowActionsPosition"
-          @select-all="handleSelectAllChange"
+          @select-all="selection.onSelectAll"
           @sort="handleSort"
           @resize-start="handleResizeStart"
           @reorder-start="handleColumnDragStart"
@@ -163,7 +163,7 @@
           @row-click="handleRowClick"
           @row-mouseenter="handleRowMouseEnter"
           @row-mouseleave="handleRowMouseLeave"
-          @selection-change="handleRowSelectionChange"
+          @selection-change="selection.onRowSelect"
           @expand-toggle="(item, index, e) => handleExpandToggle(item, index, e!)"
           @row-edit="handleStartRowEdit"
           @row-save="handleSaveRowEdit"
@@ -254,16 +254,19 @@
     >
       <!-- Mobile: Select all toolbar (appears when selection is active) -->
       <div
-        v-if="effectiveSelectionMode === 'multiple' && (selection.someSelected.value || selection.allSelected.value)"
+        v-if="
+          effectiveSelectionMode === 'multiple' &&
+          (selection.isPartiallySelected.value || selection.isAllSelected.value)
+        "
         class="vc-data-table__mobile-select-toolbar"
       >
         <TableCheckbox
-          :model-value="selection.allSelected.value"
-          :indeterminate="selection.someSelected.value && !selection.allSelected.value"
-          @change="handleSelectAllChange"
+          :model-value="selection.isAllSelected.value"
+          :indeterminate="selection.isPartiallySelected.value && !selection.isAllSelected.value"
+          @change="selection.onSelectAll"
         />
         <span class="vc-data-table__mobile-select-toolbar-text">
-          {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECTED", "Selected") }}: {{ selection.internalSelection.value.length }}
+          {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECTED", "Selected") }}: {{ selection.selected.value.length }}
         </span>
       </div>
 
@@ -272,7 +275,7 @@
         :items="displayItems"
         :reorderable="isRowReorderEnabled"
         :columns="visibleColumns"
-        :selection="selection.internalSelection.value"
+        :selection="selection.selected.value"
         :selection-mode="effectiveSelectionMode"
         :is-row-selectable="props.isRowSelectable"
         :row-actions="rowActions"
@@ -914,8 +917,6 @@ const {
 
   // Event handlers
   handleSort,
-  handleSelectAllChange,
-  handleRowSelectionChange,
   handleRowClick,
   handleAddRow,
   handleRemoveRow,
@@ -1210,13 +1211,13 @@ const paginationShowFirstLast = computed(() => {
 // ============================================================================
 
 defineExpose({
-  // Selection API
+  // Selection API (public keys unchanged; sourced from the selection facade)
   selectAll: selection.selectAll,
-  clearSelection: selection.clearSelection,
-  getSelectionState: selection.getSelectionState,
-  isSelectAllActive: selection.isSelectAllActive,
-  showSelectAllChoice: selection.showSelectAllChoice,
-  selectionInfo: selection.selectionInfo,
+  clearSelection: selection.clear,
+  getSelectionState: selection.getState,
+  isSelectAllActive: selection.isSelectAllAcrossPages,
+  showSelectAllChoice: selection.showSelectAllPrompt,
+  selectionInfo: selection.info,
 
   // Row CRUD API
   addRow: handleAddRow,

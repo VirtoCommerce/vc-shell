@@ -3,6 +3,9 @@ import { useApiClient } from "@core/composables/useApiClient";
 import { computed, Ref, ref, ComputedRef, onMounted } from "vue";
 import { SettingClient } from "@core/api/platform";
 import { useLoading } from "@core/composables/useLoading";
+import { createLogger } from "@core/utilities";
+
+const logger = createLogger("use-settings");
 
 interface IUISetting {
   contrast_logo?: string;
@@ -31,7 +34,17 @@ export function useSettings(): UseSettingsReturn {
     if (customSettingsApplied.value) return;
 
     const result = await (await getApiClient()).getUICustomizationSetting();
-    const settings = await JSON.parse(result.defaultValue ?? null);
+
+    // defaultValue can be empty or malformed JSON — JSON.parse would throw and
+    // reject the whole action, so guard it and treat unparseable settings as absent.
+    let settings: IUISetting | null = null;
+    if (result.defaultValue) {
+      try {
+        settings = JSON.parse(result.defaultValue);
+      } catch (e) {
+        logger.warn("Failed to parse UI customization settings JSON; ignoring.", e);
+      }
+    }
 
     if (settings && !uiSettings.value) {
       uiSettings.value = {

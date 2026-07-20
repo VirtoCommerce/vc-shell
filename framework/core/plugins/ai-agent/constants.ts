@@ -8,7 +8,8 @@ export const DEFAULT_AI_AGENT_CONFIG: IAiAgentConfig = {
   title: "Virto OZ",
   width: 362,
   expandedWidth: 500,
-  allowedOrigins: ["*"],
+  // Secure by default: no origins trusted until the embedder configures them.
+  allowedOrigins: [],
 };
 
 /**

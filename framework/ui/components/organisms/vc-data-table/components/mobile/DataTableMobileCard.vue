@@ -245,6 +245,7 @@ import { useTableSwipe } from "@ui/components/organisms/vc-data-table/composable
 import MobileCellRenderer from "@ui/components/organisms/vc-data-table/components/mobile/MobileCellRenderer.vue";
 import MobileActionSheet from "@ui/components/organisms/vc-data-table/components/mobile/MobileActionSheet.vue";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
+import { VcIcon } from "@ui/components/atoms/vc-icon";
 
 const props = withDefaults(
   defineProps<{

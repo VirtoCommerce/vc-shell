@@ -28,6 +28,9 @@ function mountLayout(props: Record<string, unknown> = {}) {
       ...props,
     },
     global: {
+      mocks: {
+        $t: (key: string) => key,
+      },
       stubs: {
         SidebarHeader: {
           name: "SidebarHeader",
@@ -74,6 +77,13 @@ describe("DesktopLayout", () => {
   it("renders desktop layout root", () => {
     const wrapper = mountLayout();
     expect(wrapper.find(".desktop-layout").exists()).toBe(true);
+  });
+
+  it("renders the sidebar as a <nav> landmark with an aria-label", () => {
+    const wrapper = mountLayout();
+    const nav = wrapper.find("nav.desktop-layout");
+    expect(nav.exists()).toBe(true);
+    expect(nav.attributes("aria-label")).toBe("SHELL.NAVIGATION_ARIA_LABEL");
   });
 
   it("renders spacer element", () => {

@@ -44,7 +44,7 @@ type Story = StoryObj<typeof meta>;
  * Basic usage of the hint component with default styling.
  */
 export const Default: Story = {
-  render: (_args) => ({
+  render: (args) => ({
     components: { VcHint },
     setup() {
       return { args };

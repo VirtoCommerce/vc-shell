@@ -56,7 +56,7 @@ The editor header provides four view modes plus a fullscreen toggle:
 | **Split**            | Side-by-side editor + source view for simultaneous editing |
 | **Fullscreen**       | Any mode expanded to fill the entire viewport              |
 
-The editor automatically detects whether content is Markdown or HTML based on pattern analysis and outputs in the same format. HTML content is auto-formatted with Prettier in source/split views.
+The editor automatically detects whether content is Markdown or HTML based on pattern analysis and outputs in the same format. HTML content is auto-formatted with js-beautify in source/split views.
 
 !!! note "Content format is auto-detected"
 VcEditor detects whether content is Markdown or HTML and outputs in the same format. If you pass Markdown input, you will get Markdown output. If you need HTML output, start with HTML content.

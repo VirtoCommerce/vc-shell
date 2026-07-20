@@ -1,7 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h } from "vue";
+import { defineComponent, h, inject, type ComputedRef } from "vue";
 import VcBladeSlot from "./vc-blade-slot.vue";
+import {
+  BladeDescriptorKey,
+  BladeRenderingStateKey,
+  type BladeDescriptor,
+  type BladeRenderingState,
+} from "@core/blade-navigation/types";
 
 // Mock all heavy dependencies
 const mockGetBladeComponent = vi.fn(() => defineComponent({ setup: () => () => h("div", "blade-content") }));
@@ -109,5 +115,90 @@ describe("vc-blade-slot.vue", () => {
     await wrapper.find("button").trigger("click");
     expect(wrapper.emitted("parentCall")).toBeTruthy();
     expect(wrapper.emitted("parentCall")![0]).toEqual([{ method: "reload" }, "blade-1"]);
+  });
+
+  // ── Immutable descriptor + rendering-state seam ─────────────────────────────
+
+  describe("descriptor / rendering-state seam", () => {
+    // Capture what the blade component sees through the two injections.
+    let captured: {
+      descriptor?: ComputedRef<BladeDescriptor>;
+      renderingState?: ComputedRef<BladeRenderingState>;
+    };
+
+    function mountWithCapture(props: Record<string, unknown> = {}) {
+      captured = {};
+      const BladeComp = defineComponent({
+        setup() {
+          captured.descriptor = inject(BladeDescriptorKey);
+          captured.renderingState = inject(BladeRenderingStateKey);
+          return () => h("div", "blade-content");
+        },
+      });
+      mockGetBladeComponent.mockReturnValue(BladeComp);
+      return mount(VcBladeSlot, {
+        props: {
+          descriptor: { ...baseDescriptor },
+          closable: true,
+          expanded: false,
+          visible: true,
+          ...props,
+        },
+      });
+    }
+
+    it("provides the descriptor as the immutable data object (not enriched)", () => {
+      mountWithCapture();
+      const provided = captured.descriptor!.value;
+      // Same object reference as props.descriptor — no spread/enrichment.
+      expect(provided).toEqual(baseDescriptor);
+      // The old enriched fields must NOT be spread onto the descriptor.
+      expect("maximized" in provided).toBe(false);
+      expect("breadcrumbs" in provided).toBe(false);
+    });
+
+    it("exposes maximized + breadcrumbs via the rendering-state key, not the descriptor", () => {
+      const breadcrumbs = [{ id: "b1", title: "Home" }] as unknown as BladeRenderingState["breadcrumbs"];
+      mountWithCapture({ breadcrumbs });
+
+      const rs = captured.renderingState!.value;
+      expect(rs.maximized).toBe(false);
+      expect(rs.breadcrumbs).toEqual(breadcrumbs);
+
+      // And the descriptor is untouched by these view concerns.
+      expect("maximized" in captured.descriptor!.value).toBe(false);
+      expect("breadcrumbs" in captured.descriptor!.value).toBe(false);
+    });
+
+    it("rendering-state maximized reacts to expand/collapse without mutating the descriptor", async () => {
+      const BladeComp = defineComponent({
+        emits: ["expand:blade", "collapse:blade"],
+        setup(_, { emit }) {
+          captured = {
+            descriptor: inject(BladeDescriptorKey),
+            renderingState: inject(BladeRenderingStateKey),
+          };
+          return () =>
+            h("div", [
+              h("button", { class: "expand", onClick: () => emit("expand:blade") }, "expand"),
+              h("button", { class: "collapse", onClick: () => emit("collapse:blade") }, "collapse"),
+            ]);
+        },
+      });
+      mockGetBladeComponent.mockReturnValue(BladeComp);
+      const wrapper = mount(VcBladeSlot, {
+        props: { descriptor: { ...baseDescriptor }, closable: true, expanded: false, visible: true },
+      });
+
+      expect(captured.renderingState!.value.maximized).toBe(false);
+
+      await wrapper.find("button.expand").trigger("click");
+      expect(captured.renderingState!.value.maximized).toBe(true);
+      // Descriptor stays a pure data object.
+      expect("maximized" in captured.descriptor!.value).toBe(false);
+
+      await wrapper.find("button.collapse").trigger("click");
+      expect(captured.renderingState!.value.maximized).toBe(false);
+    });
   });
 });

@@ -29,7 +29,9 @@ import {
   useTableRowGrouping,
   useTableInlineEdit,
   useDataTableState,
+  createTableSelectionFacade,
 } from "@ui/components/organisms/vc-data-table/composables";
+import type { TableSelectionFacade } from "@ui/components/organisms/vc-data-table/composables";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 import { isSpecialColumn } from "@ui/components/organisms/vc-data-table/utils/columnHelpers";
 import { DEFAULT_MIN_COLUMN_PX } from "@ui/components/organisms/vc-data-table/composables/useColumnWidthEngine";
@@ -123,8 +125,8 @@ export type VcDataTableOrchestratorEmit<T> = {
  * VcDataTable's template and provide() calls.
  */
 export interface VcDataTableOrchestratorReturn<T extends Record<string, unknown>> {
-  // Sub-composable instances (needed for template bindings + expose)
-  selection: ReturnType<typeof useTableSelectionV2<T>>;
+  // Row selection facade (hides the raw useTableSelectionV2 instance)
+  selection: TableSelectionFacade<T>;
   sort: ReturnType<typeof useTableSort>;
   editing: ReturnType<typeof useTableEditing<T>>;
   expansion: ReturnType<typeof useTableExpansion<T>>;
@@ -195,10 +197,8 @@ export interface VcDataTableOrchestratorReturn<T extends Record<string, unknown>
   // Data-discovered IDs watcher stable ref
   dataDiscoveredIds: Ref<Set<string>>;
 
-  // Event handlers
+  // Event handlers (selection handlers live on the `selection` facade)
   handleSort: (col: VcColumnProps, event?: MouseEvent) => void;
-  handleSelectAllChange: (value: boolean) => void;
-  handleRowSelectionChange: (item: T, eventOrValue?: Event | boolean) => void;
   handleRowClick: (item: T, index: number, event: Event) => void;
   handleAddRow: (defaults?: Partial<T>) => void;
   handleRemoveRow: (rowIndex: number) => void;
@@ -795,6 +795,14 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     }
   };
 
+  // Row selection facade — the single, intention-revealing surface the
+  // component consumes. Wraps the raw `selection` instance (hidden impl) and
+  // the two emit-owning handlers above.
+  const selectionFacade: TableSelectionFacade<T> = createTableSelectionFacade(selection, {
+    onRowSelect: handleRowSelectionChange,
+    onSelectAll: handleSelectAllChange,
+  });
+
   const handleRowClick = (item: T, index: number, event: Event) => {
     const itemKey = getItemKey(item, index);
     const isSameItem = props.activeItemId != null && itemKey === String(props.activeItemId);
@@ -992,8 +1000,9 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   // ============================================================================
 
   return {
+    // Row selection facade (hides raw useTableSelectionV2 + emit handlers)
+    selection: selectionFacade,
     // Sub-composable instances
-    selection,
     sort,
     editing,
     expansion,
@@ -1064,10 +1073,8 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     // Data-discovered IDs stable ref
     dataDiscoveredIds,
 
-    // Event handlers
+    // Event handlers (selection handlers are on the `selection` facade)
     handleSort,
-    handleSelectAllChange,
-    handleRowSelectionChange,
     handleRowClick,
     handleAddRow,
     handleRemoveRow,

@@ -13,6 +13,7 @@
     <div
       ref="component"
       class="vc-container__inner"
+      tabindex="0"
       @scroll="onScroll"
     >
       <slot></slot>

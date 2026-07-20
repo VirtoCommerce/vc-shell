@@ -30,6 +30,7 @@
       <div
         v-if="typeof content === 'string'"
         class="vc-notification__content"
+        tabindex="0"
       >
         {{ content }}
       </div>
@@ -40,7 +41,7 @@
     <button
       type="button"
       class="vc-notification__dismiss-button"
-      aria-label="Dismiss notification"
+      :aria-label="$t('COMPONENTS.MOLECULES.VC_TOAST.DISMISS')"
       @click.stop="handleClose"
       @keydown.escape="handleClose"
     >

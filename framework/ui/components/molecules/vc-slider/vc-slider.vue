@@ -44,7 +44,7 @@
           <button
             type="button"
             class="vc-slider__btn"
-            aria-label="Previous slide"
+            :aria-label="$t('COMPONENTS.MOLECULES.VC_SLIDER.PREVIOUS')"
           >
             <VcIcon
               icon="lucide-chevron-left"
@@ -58,7 +58,7 @@
           <button
             type="button"
             class="vc-slider__btn"
-            aria-label="Next slide"
+            :aria-label="$t('COMPONENTS.MOLECULES.VC_SLIDER.NEXT')"
           >
             <VcIcon
               icon="lucide-chevron-right"

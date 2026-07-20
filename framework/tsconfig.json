@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
+    "stripInternal": true,
     "types": ["vite/client", "./typings/declarations.d.ts"],
     "paths": {
       "@framework": ["./"],
@@ -25,6 +26,8 @@
   },
   "include": [
     "*.ts",
+    "dashboard/*.ts",
+    "charts/*.ts",
     "package.json",
     "typings",
     "core/**/*.ts",

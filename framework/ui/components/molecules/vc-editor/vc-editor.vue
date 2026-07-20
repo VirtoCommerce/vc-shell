@@ -62,20 +62,20 @@
       <div class="vc-editor__header-actions">
         <VcEditorButton
           icon="lucide-eye"
-          aria-label="Preview"
+          :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.VIEW.PREVIEW')"
           :active="currentMode === 'preview'"
           :disabled="disabled"
           @action="togglePreview"
         />
         <VcEditorButton
           icon="lucide-columns-2"
-          aria-label="Side-by-side view"
+          :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.VIEW.SPLIT')"
           :active="currentMode === 'split'"
           @action="toggleSideBySideView"
         />
         <VcEditorButton
           icon="lucide-code"
-          aria-label="Source code"
+          :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.VIEW.SOURCE')"
           :active="currentMode === 'source'"
           :disabled="disabled"
           @action="toggleSourceView"
@@ -193,8 +193,7 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import { Markdown } from "tiptap-markdown";
 import type { Extension } from "@tiptap/core";
 import { FontSize } from "@ui/components/molecules/vc-editor/_internal/extensions/font-size";
-import { format } from "prettier/standalone";
-import * as prettierPluginHtml from "prettier/parser-html";
+import beautify from "js-beautify";
 import DOMPurify from "dompurify";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcHint } from "@ui/components/atoms/vc-hint";
@@ -380,16 +379,17 @@ const formattedSource = ref(props.modelValue || "");
 
 watch(
   () => props.modelValue,
-  async (value) => {
+  (value) => {
     // Detect content type
     detectedType.value = detectContentType(value || "");
 
     if (detectedType.value === "html") {
       try {
-        formattedSource.value = await format(value || "", {
-          parser: "html",
-          plugins: [prettierPluginHtml],
-          vueIndentScriptAndStyle: true,
+        formattedSource.value = beautify.html(value || "", {
+          indent_size: 2,
+          wrap_line_length: 0,
+          preserve_newlines: true,
+          max_preserve_newlines: 1,
         });
       } catch (_e) {
         formattedSource.value = value || "";
@@ -482,6 +482,16 @@ const editor = useEditor({
   content: props.modelValue,
   editable: !props.disabled,
   extensions: extensions.value,
+  editorProps: {
+    // Expose the contenteditable region as a named multiline textbox
+    // (WCAG 4.1.2 / aria-input-field-name). Without an explicit role the
+    // plain <div> is treated as generic, which prohibits aria-label.
+    attributes: {
+      role: "textbox",
+      "aria-multiline": "true",
+      "aria-label": props.label || "Rich text editor",
+    },
+  },
   onUpdate: ({ editor: tipTapEditor }) => {
     // Skip emit when content was set programmatically from prop change
     if (settingContentFromProp) return;

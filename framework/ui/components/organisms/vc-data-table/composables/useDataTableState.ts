@@ -303,19 +303,29 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     });
   }
 
-  function debouncedSave(): void {
-    if (restoringCount > 0) return;
-    if (!stateKey.value) return;
+  // Guards shared by the scheduling check and the deferred save, so a restore
+  // starting (or stateKey/width changing) DURING the debounce window can't let a
+  // stale save slip through.
+  function canPersist(): boolean {
+    if (restoringCount > 0) return false;
+    if (!stateKey.value) return false;
     // Don't save while columns haven't been restored yet
-    if (pendingColumnRestore) return;
+    if (pendingColumnRestore) return false;
     // Don't save when container has no width yet
-    if (getAvailableWidth && getAvailableWidth() <= 0) return;
+    if (getAvailableWidth && getAvailableWidth() <= 0) return false;
+    return true;
+  }
+
+  function debouncedSave(): void {
+    if (!canPersist()) return;
 
     if (debounceTimer != null) {
       clearTimeout(debounceTimer);
     }
     debounceTimer = setTimeout(() => {
       debounceTimer = undefined;
+      // Re-check: the debounce window may have started a restore or cleared the key.
+      if (!canPersist()) return;
       saveState();
     }, DEBOUNCE_MS);
   }

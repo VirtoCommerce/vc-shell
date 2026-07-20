@@ -183,7 +183,7 @@
               v-if="clearable && mutatedModel && !resolvedDisabled && type !== 'password'"
               type="button"
               class="vc-input__clear"
-              aria-label="Clear"
+              :aria-label="$t('COMPONENTS.CONTROLS.CLEAR')"
               @click="onReset"
             >
               <VcIcon

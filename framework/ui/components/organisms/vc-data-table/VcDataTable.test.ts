@@ -61,23 +61,21 @@ vi.mock("@ui/components/molecules", () => ({
 // Build a mock that matches the full orchestrator return shape
 function buildOrchestratorMock() {
   return {
-    // Sub-composable instances
+    // Row selection facade (createTableSelectionFacade shape)
     selection: {
-      internalSelection: ref([]),
-      allSelected: computed(() => false),
-      someSelected: computed(() => false),
-      isSelectAllActive: ref(false),
-      showSelectAllChoice: ref(false),
-      selectAll: vi.fn(),
-      clearSelection: vi.fn(),
+      selected: computed(() => []),
+      isAllSelected: computed(() => false),
+      isPartiallySelected: computed(() => false),
+      isSelectAllAcrossPages: ref(false),
+      showSelectAllPrompt: ref(false),
+      info: computed(() => ({ count: 0, total: 0 })),
       isSelected: vi.fn(() => false),
       canSelect: vi.fn(() => true),
-      getSelectionState: vi.fn(),
-      selectionInfo: computed(() => ({ count: 0, total: 0 })),
-      handleRowSelectionChange: vi.fn(),
-      handleSelectAllChange: vi.fn(),
-      handleSelectAllBanner: vi.fn(),
-      handleClearSelection: vi.fn(),
+      getState: vi.fn(),
+      selectAll: vi.fn(),
+      clear: vi.fn(),
+      onRowSelect: vi.fn(),
+      onSelectAll: vi.fn(),
     },
     sort: {
       sortField: ref(undefined),
@@ -208,10 +206,8 @@ function buildOrchestratorMock() {
     // Data-discovered IDs
     dataDiscoveredIds: ref(new Set()),
 
-    // Event handlers
+    // Event handlers (selection handlers live on the selection facade)
     handleSort: vi.fn(),
-    handleSelectAllChange: vi.fn(),
-    handleRowSelectionChange: vi.fn(),
     handleRowClick: vi.fn(),
     handleAddRow: vi.fn(),
     handleRemoveRow: vi.fn(),

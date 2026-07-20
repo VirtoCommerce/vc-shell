@@ -14,8 +14,8 @@ describe("VcDropdown a11y", () => {
     wrapper = mount(VcDropdown as any, {
       props: { ...props },
       slots: {
-        // Use a non-interactive span inside the trigger div (which already has role="button" + tabindex)
-        // to avoid the nested-interactive axe violation (button inside role="button")
+        // The trigger wrapper is a passive container; the interactive control
+        // lives inside the slot. A plain span keeps this unit case simple.
         trigger: "<span>Open menu</span>",
         ...slots,
       },

@@ -2,6 +2,8 @@ import { ComputedRef, ref, computed, Component, MaybeRef, Ref, toValue } from "v
 
 export interface AppBarButtonContent {
   id: string;
+  /** Accessible name / tooltip for the icon-only action button. */
+  title?: string;
   component?: Component;
   props?: Record<string, unknown>;
   icon?: Component | string;

@@ -753,7 +753,7 @@ watch(
   }
 
   &__chevron {
-    @apply tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] tw-opacity-50
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] tw-opacity-50
       tw-transition-transform tw-duration-200
       hover:tw-text-[color:var(--select-chevron-color-hover)] hover:tw-opacity-100;
   }

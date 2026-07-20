@@ -1,33 +1,24 @@
-import { inject, provide, getCurrentScope, onScopeDispose } from "vue";
 import { createSettingsMenuService, ISettingsMenuService, settingsMenuBus } from "@core/services/settings-menu-service";
 import { SettingsMenuServiceKey } from "@framework/injection-keys";
-import { createLogger, InjectionError } from "@core/utilities";
+import { createLogger } from "@core/utilities";
+import { createServiceRegistry } from "@core/composables/createServiceRegistry";
 
 export type UseSettingsMenuReturn = ISettingsMenuService;
 
 const logger = createLogger("use-settings-menu");
 
+const registry = createServiceRegistry<ISettingsMenuService>({
+  key: SettingsMenuServiceKey,
+  create: createSettingsMenuService,
+  bus: settingsMenuBus,
+  name: "SettingsMenuService",
+  onMissing: () => logger.error("Settings menu service not found"),
+});
+
 export function provideSettingsMenu(): ISettingsMenuService {
-  const existingService = inject(SettingsMenuServiceKey, null);
-  if (existingService) {
-    return existingService;
-  }
-
-  const settingsMenuService = createSettingsMenuService();
-  provide(SettingsMenuServiceKey, settingsMenuService);
-
-  if (getCurrentScope()) {
-    onScopeDispose(() => settingsMenuBus.dispose(settingsMenuService));
-  }
-
-  return settingsMenuService;
+  return registry.provide();
 }
 
 export function useSettingsMenu(): UseSettingsMenuReturn {
-  const settingsMenuService = inject(SettingsMenuServiceKey);
-  if (!settingsMenuService) {
-    logger.error("Settings menu service not found");
-    throw new InjectionError("SettingsMenuService");
-  }
-  return settingsMenuService;
+  return registry.use();
 }

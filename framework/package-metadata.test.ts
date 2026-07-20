@@ -15,6 +15,8 @@ describe("package.json metadata", () => {
       "./ui",
       "./ai-agent",
       "./extensions",
+      "./dashboard",
+      "./charts",
       "./globals",
       "./package.json",
       "./dist/index.css",
@@ -66,8 +68,8 @@ describe("package.json metadata", () => {
     expect(pkg).toHaveProperty("dependencies.vue-i18n");
   });
 
-  it("dependencies contains vee-validate", () => {
-    expect(pkg).toHaveProperty("dependencies.vee-validate");
+  it("dependencies does not contain vee-validate", () => {
+    expect(pkg.dependencies).not.toHaveProperty("vee-validate");
   });
 
   it("dependencies contains @vueuse/core", () => {
@@ -95,8 +97,8 @@ describe("package.json metadata", () => {
     expect(pkg.peerDependencies).not.toHaveProperty("vue-i18n");
   });
 
-  it("peerDependencies does not contain vee-validate", () => {
-    expect(pkg.peerDependencies).not.toHaveProperty("vee-validate");
+  it("peerDependencies contains vee-validate", () => {
+    expect(pkg).toHaveProperty("peerDependencies.vee-validate");
   });
 
   it("peerDependencies does not contain @vueuse/core", () => {
@@ -125,8 +127,8 @@ describe("package.json metadata", () => {
     expect(pkg.peerDependenciesMeta).not.toHaveProperty("vue-i18n");
   });
 
-  it("peerDependenciesMeta does not contain vee-validate", () => {
-    expect(pkg.peerDependenciesMeta).not.toHaveProperty("vee-validate");
+  it("peerDependenciesMeta marks vee-validate as optional: false", () => {
+    expect(pkg).toHaveProperty("peerDependenciesMeta.vee-validate.optional", false);
   });
 
   it("peerDependenciesMeta does not contain @vueuse/core", () => {

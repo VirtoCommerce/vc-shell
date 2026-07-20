@@ -54,6 +54,7 @@
           :model-value="isSelected ?? false"
           :value="true"
           :disabled="!isSelectable"
+          :aria-label="$t('COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ROW')"
           @update:model-value="handleSelectionChange($event === true)"
         />
       </TableCell>

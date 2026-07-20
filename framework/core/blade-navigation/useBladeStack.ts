@@ -2,6 +2,13 @@ import { ref, computed, inject } from "vue";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { BladeDescriptor, BladeOpenEvent, IBladeStack } from "@core/blade-navigation/types";
 import { BladeStackKey } from "@core/blade-navigation/types";
+import {
+  createWorkspaceDescriptor,
+  createChildDescriptor,
+  createReplacementDescriptor,
+  createCoveringDescriptor,
+  type DescriptorFactoryContext,
+} from "@core/blade-navigation/descriptorFactory";
 
 let _idCounter = 0;
 
@@ -60,6 +67,13 @@ export function createBladeStack(
     return registration.route;
   }
 
+  // Shared context for the descriptor factories — encodes ID generation and
+  // URL resolution once so all four open paths produce descriptors identically.
+  const _descriptorCtx: DescriptorFactoryContext = {
+    generateId: generateBladeId,
+    resolveUrl: _resolveUrl,
+  };
+
   /**
    * Check guards for a list of blades (deepest first).
    * Returns true if any guard prevented the close.
@@ -110,15 +124,7 @@ export function createBladeStack(
     _closeBladesCleanup([..._blades.value]);
 
     // Create workspace descriptor
-    const descriptor: BladeDescriptor = {
-      id: generateBladeId(),
-      name: event.name,
-      url: _resolveUrl(event.name),
-      // workspace blades don't have param when opened first
-      query: event.query,
-      options: event.options,
-      visible: true,
-    };
+    const descriptor = createWorkspaceDescriptor(event, _descriptorCtx);
 
     _blades.value = [descriptor];
 
@@ -157,16 +163,7 @@ export function createBladeStack(
     _closeBladesCleanup(bladesToClose);
 
     // Create new blade descriptor
-    const descriptor: BladeDescriptor = {
-      id: generateBladeId(),
-      name: event.name,
-      url: _resolveUrl(event.name),
-      param: event.param,
-      query: event.query,
-      options: event.options,
-      parentId,
-      visible: true,
-    };
+    const descriptor = createChildDescriptor(event, parentId, _descriptorCtx);
 
     // Replace blades: keep up to parent (inclusive), append new
     _blades.value = [..._blades.value.slice(0, parentIndex + 1), descriptor];
@@ -234,16 +231,7 @@ export function createBladeStack(
 
     // Create replacement descriptor — keeps the SAME parent as the replaced blade,
     // so the new blade occupies the exact same position in the hierarchy.
-    const descriptor: BladeDescriptor = {
-      id: generateBladeId(),
-      name: event.name,
-      url: _resolveUrl(event.name),
-      param: event.param,
-      query: event.query,
-      options: event.options,
-      parentId: current.parentId,
-      visible: true,
-    };
+    const descriptor = createReplacementDescriptor(event, current.parentId, _descriptorCtx);
 
     // Destroy old blade and put new one at the same index
     _closeBladesCleanup([current]);
@@ -282,16 +270,7 @@ export function createBladeStack(
 
     // Create covering descriptor — parent is the HIDDEN blade (not its parent),
     // so callParent from the covering blade reaches the hidden blade's methods.
-    const descriptor: BladeDescriptor = {
-      id: generateBladeId(),
-      name: event.name,
-      url: _resolveUrl(event.name),
-      param: event.param,
-      query: event.query,
-      options: event.options,
-      parentId: current.id,
-      visible: true,
-    };
+    const descriptor = createCoveringDescriptor(event, current.id, _descriptorCtx);
 
     // Hide current blade (don't destroy it) and append new blade after it
     const updated: BladeDescriptor[] = _blades.value.slice(0, currentIndex);

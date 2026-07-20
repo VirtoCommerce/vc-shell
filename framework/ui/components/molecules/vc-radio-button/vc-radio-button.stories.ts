@@ -17,6 +17,13 @@ const meta = {
     value: "Product 1",
   },
   argTypes: {
+    ariaLabel: {
+      description: "Accessible name for the input when no visible label is provided",
+      control: "text",
+      table: {
+        type: { summary: "string" },
+      },
+    },
     modelValue: {
       description: "Value binding of the radio button (v-model)",
       control: "text",

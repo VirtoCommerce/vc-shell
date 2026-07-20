@@ -31,7 +31,12 @@ import { BladeBackButtonKey } from "@framework/injection-keys";
 import { ErrorInterceptor } from "@shell/components/error-interceptor";
 import { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
 import type { BladeDescriptor, IParentCallArgs, IBladeBanner, CoreBladeExposed } from "@core/blade-navigation/types";
-import { BladeDescriptorKey, BladeMaximizedKey, BladeBannersKey } from "@core/blade-navigation/types";
+import {
+  BladeDescriptorKey,
+  BladeMaximizedKey,
+  BladeBannersKey,
+  BladeRenderingStateKey,
+} from "@core/blade-navigation/types";
 import type { Breadcrumbs } from "@ui/types";
 import type { Component } from "vue";
 
@@ -59,11 +64,18 @@ const bladeComponent = computed(() => {
   return bladeRegistry.getBladeComponent(props.descriptor.name);
 });
 
-// ── Provide enriched BladeDescriptor ─────────────────────────────────────────
+// ── Provide immutable BladeDescriptor (plain stack data, never enriched) ──────
 provide(
   BladeDescriptorKey,
+  computed(() => props.descriptor),
+);
+
+// ── Provide per-blade rendering state (view concerns, not stack data) ─────────
+// maximized/breadcrumbs used to be spread onto the descriptor; they now live
+// here so the descriptor stays a pure data object.
+provide(
+  BladeRenderingStateKey,
   computed(() => ({
-    ...props.descriptor,
     maximized: maximized.value,
     breadcrumbs: props.breadcrumbs,
   })),

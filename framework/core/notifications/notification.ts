@@ -1,6 +1,6 @@
 import { mergeProps } from "vue";
 import { Content, NotificationOptions, NotificationPosition } from "@core/notifications/toast-types";
-import { generateId, createLogger } from "@core/utilities";
+import { generateId, createLogger, createBackendRegistry } from "@core/utilities";
 
 const logger = createLogger("notification");
 
@@ -22,18 +22,19 @@ interface NotificationBackend {
   hasNotification(notificationId: string | number): boolean;
 }
 
-let _backend: NotificationBackend | null = null;
+const backendRegistry = createBackendRegistry<NotificationBackend>();
 
 /**
  * Shell registers the notification backend during plugin install.
  */
 export function setNotificationBackend(backend: NotificationBackend): void {
-  _backend = backend;
+  backendRegistry.register(backend);
 }
 
 // ── Public API ───────────────────────────────────────────────────────────────
 
 function showNotification(content: Content, options: NotificationOptions) {
+  const _backend = backendRegistry.get();
   if (!_backend) {
     logger.debug("Backend not yet registered — notification call ignored.");
     return undefined;
@@ -73,10 +74,11 @@ notification.success = (content: Content, options?: NotificationOptions) =>
   showNotification(content, { ...options, type: "success" });
 
 notification.clearAll = () => {
-  _backend?.actions.clear();
+  backendRegistry.get()?.actions.clear();
 };
 
 notification.remove = (notificationId?: number | string) => {
+  const _backend = backendRegistry.get();
   if (!_backend) return;
   if (notificationId) {
     _backend.actions.dismiss(notificationId);
@@ -86,6 +88,7 @@ notification.remove = (notificationId?: number | string) => {
 };
 
 notification.update = (notificationId: string | number, options: NotificationOptions) => {
+  const _backend = backendRegistry.get();
   if (!_backend) return notificationId;
 
   if (!_backend.hasNotification(notificationId)) {
@@ -134,10 +137,12 @@ notification.update = (notificationId: string | number, options: NotificationOpt
 };
 
 notification.setPosition = (position: NotificationPosition) => {
+  const _backend = backendRegistry.get();
   if (_backend) _backend.defaultOptions.position = position;
 };
 
 notification.clearPosition = (position: NotificationPosition) => {
+  const _backend = backendRegistry.get();
   if (!_backend) return;
 
   const notificationsInPosition = _backend
@@ -152,6 +157,7 @@ notification.clearPosition = (position: NotificationPosition) => {
 };
 
 notification.debug = () => {
+  const _backend = backendRegistry.get();
   if (!_backend) {
     logger.debug("Backend not registered");
     return { active: [], defaultOptions: {} };

@@ -21,6 +21,7 @@
             size="icon"
             :icon="action.icon"
             icon-size="s"
+            :aria-label="action.title || action.name"
             :disabled="action.disabled"
             class="vc-table-row-actions__btn"
             @click="handleActionClick(action)"

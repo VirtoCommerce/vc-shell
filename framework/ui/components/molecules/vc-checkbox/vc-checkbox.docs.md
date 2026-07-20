@@ -300,22 +300,23 @@ const selected = ref<string[]>([]);
 
 ## Props
 
-| Prop            | Type                | Default     | Description                                                            |
-| --------------- | ------------------- | ----------- | ---------------------------------------------------------------------- |
-| `modelValue`    | `boolean \| T[]`    | `undefined` | Bound value via `v-model`. Boolean for single, array for multi-select. |
-| `value`         | `T`                 | --          | Value added to the array when checked (array mode only)                |
-| `label`         | `string`            | --          | Label text displayed above the checkbox                                |
-| `tooltip`       | `string`            | --          | Tooltip on the label info icon                                         |
-| `size`          | `"s" \| "m" \| "l"` | `"s"`       | Checkbox size variant                                                  |
-| `indeterminate` | `boolean`           | `false`     | Shows the indeterminate (dash) visual state                            |
-| `trueValue`     | `boolean`           | `true`      | Value emitted when checked (boolean mode)                              |
-| `falseValue`    | `boolean`           | `false`     | Value emitted when unchecked (boolean mode)                            |
-| `disabled`      | `boolean`           | `false`     | Disables the checkbox                                                  |
-| `required`      | `boolean`           | `false`     | Shows a required indicator                                             |
-| `error`         | `boolean`           | `false`     | Enables error styling                                                  |
-| `errorMessage`  | `string`            | --          | Error message displayed below the checkbox                             |
-| `name`          | `string`            | `"Field"`   | HTML name attribute                                                    |
-| `outline`       | `boolean`           | `false`     | Reserved; declared but currently has no effect                         |
+| Prop            | Type                | Default     | Description                                                                                       |
+| --------------- | ------------------- | ----------- | ------------------------------------------------------------------------------------------------- |
+| `modelValue`    | `boolean \| T[]`    | `undefined` | Bound value via `v-model`. Boolean for single, array for multi-select.                            |
+| `value`         | `T`                 | --          | Value added to the array when checked (array mode only)                                           |
+| `label`         | `string`            | --          | Label text displayed above the checkbox                                                           |
+| `tooltip`       | `string`            | --          | Tooltip on the label info icon                                                                    |
+| `size`          | `"s" \| "m" \| "l"` | `"s"`       | Checkbox size variant                                                                             |
+| `indeterminate` | `boolean`           | `false`     | Shows the indeterminate (dash) visual state                                                       |
+| `trueValue`     | `boolean`           | `true`      | Value emitted when checked (boolean mode)                                                         |
+| `falseValue`    | `boolean`           | `false`     | Value emitted when unchecked (boolean mode)                                                       |
+| `disabled`      | `boolean`           | `false`     | Disables the checkbox                                                                             |
+| `required`      | `boolean`           | `false`     | Shows a required indicator                                                                        |
+| `error`         | `boolean`           | `false`     | Enables error styling                                                                             |
+| `errorMessage`  | `string`            | --          | Error message displayed below the checkbox                                                        |
+| `ariaLabel`     | `string`            | --          | Accessible name for the input when no visible `label` is set. Applied only when `label` is empty. |
+| `name`          | `string`            | `"Field"`   | HTML name attribute                                                                               |
+| `outline`       | `boolean`           | `false`     | Reserved; declared but currently has no effect                                                    |
 
 ## Events
 

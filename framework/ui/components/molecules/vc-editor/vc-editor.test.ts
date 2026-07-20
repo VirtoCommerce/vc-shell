@@ -26,8 +26,7 @@ vi.mock("@tiptap/extension-placeholder", () => ({ Placeholder: { configure: () =
 vi.mock("@tiptap/extension-text-style", () => ({ TextStyle: {} }));
 vi.mock("tiptap-markdown", () => ({ Markdown: { configure: () => ({}) } }));
 vi.mock("@ui/components/molecules/vc-editor/_internal/extensions/font-size", () => ({ FontSize: {} }));
-vi.mock("prettier/standalone", () => ({ format: vi.fn((v: string) => Promise.resolve(v)) }));
-vi.mock("prettier/parser-html", () => ({}));
+vi.mock("js-beautify", () => ({ default: { html: (v: string) => v } }));
 vi.mock("dompurify", () => ({ default: { sanitize: (html: string) => html } }));
 
 import VcEditor from "@ui/components/molecules/vc-editor/vc-editor.vue";

@@ -2,7 +2,7 @@
   <div
     class="vc-editor-toolbar"
     role="toolbar"
-    aria-label="Text formatting"
+    :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.LABEL')"
   >
     <!-- Render buttons based on toolbar prop -->
     <template
@@ -19,7 +19,7 @@
       <VcEditorButton
         v-else-if="item === 'bold'"
         icon="lucide-bold"
-        aria-label="Bold"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.BOLD')"
         :active="editor.isActive('bold')"
         :disabled="!editor.can().toggleBold() || disabled"
         @action="editor.chain().focus().toggleBold().run()"
@@ -29,7 +29,7 @@
       <VcEditorButton
         v-else-if="item === 'italic'"
         icon="lucide-italic"
-        aria-label="Italic"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.ITALIC')"
         :active="editor.isActive('italic')"
         :disabled="!editor.can().toggleItalic() || disabled"
         @action="editor.chain().focus().toggleItalic().run()"
@@ -39,7 +39,7 @@
       <VcEditorButton
         v-else-if="item === 'underline'"
         icon="lucide-underline"
-        aria-label="Underline"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.UNDERLINE')"
         :active="editor.isActive('underline')"
         :disabled="!editor.can().toggleUnderline() || disabled"
         @action="editor.chain().focus().toggleUnderline().run()"
@@ -49,7 +49,7 @@
       <VcEditorButton
         v-else-if="item === 'strikethrough'"
         icon="lucide-strikethrough"
-        aria-label="Strikethrough"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.STRIKETHROUGH')"
         :active="editor.isActive('strike')"
         :disabled="!editor.can().toggleStrike() || disabled"
         @action="editor.chain().focus().toggleStrike().run()"
@@ -59,7 +59,7 @@
       <VcEditorButton
         v-else-if="item === 'heading1'"
         icon="lucide-heading-1"
-        aria-label="Heading 1"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.HEADING_1')"
         :active="editor.isActive('heading', { level: 1 })"
         :disabled="!editor.can().toggleHeading({ level: 1 }) || disabled"
         @action="editor.chain().focus().toggleHeading({ level: 1 }).run()"
@@ -69,7 +69,7 @@
       <VcEditorButton
         v-else-if="item === 'heading2'"
         icon="lucide-heading-2"
-        aria-label="Heading 2"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.HEADING_2')"
         :active="editor.isActive('heading', { level: 2 })"
         :disabled="!editor.can().toggleHeading({ level: 2 }) || disabled"
         @action="editor.chain().focus().toggleHeading({ level: 2 }).run()"
@@ -79,7 +79,7 @@
       <VcEditorButton
         v-else-if="item === 'heading3'"
         icon="lucide-heading-3"
-        aria-label="Heading 3"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.HEADING_3')"
         :active="editor.isActive('heading', { level: 3 })"
         :disabled="!editor.can().toggleHeading({ level: 3 }) || disabled"
         @action="editor.chain().focus().toggleHeading({ level: 3 }).run()"
@@ -89,7 +89,7 @@
       <VcEditorButton
         v-else-if="item === 'bulletList'"
         icon="lucide-list"
-        aria-label="Bullet list"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.BULLET_LIST')"
         :active="editor.isActive('bulletList')"
         :disabled="!editor.can().toggleBulletList() || disabled"
         @action="editor.chain().focus().toggleBulletList().run()"
@@ -99,7 +99,7 @@
       <VcEditorButton
         v-else-if="item === 'orderedList'"
         icon="lucide-list-ordered"
-        aria-label="Numbered list"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.NUMBERED_LIST')"
         :active="editor.isActive('orderedList')"
         :disabled="!editor.can().toggleOrderedList() || disabled"
         @action="editor.chain().focus().toggleOrderedList().run()"
@@ -109,7 +109,7 @@
       <VcEditorButton
         v-else-if="item === 'blockquote'"
         icon="lucide-quote"
-        aria-label="Blockquote"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.BLOCKQUOTE')"
         :active="editor.isActive('blockquote')"
         :disabled="!editor.can().toggleBlockquote() || disabled"
         @action="editor.chain().focus().toggleBlockquote().run()"
@@ -119,7 +119,7 @@
       <VcEditorButton
         v-else-if="item === 'link'"
         icon="lucide-link"
-        aria-label="Insert link"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.INSERT_LINK')"
         :active="editor.isActive('link')"
         :disabled="disabled"
         @action="setLink"
@@ -129,7 +129,7 @@
       <VcEditorButton
         v-else-if="item === 'image'"
         icon="lucide-image"
-        aria-label="Insert image"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.INSERT_IMAGE')"
         :disabled="disabled"
         @action="triggerImageUpload"
       />
@@ -138,7 +138,7 @@
       <VcEditorButton
         v-else-if="item === 'table'"
         icon="lucide-table"
-        aria-label="Insert table"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.INSERT_TABLE')"
         :disabled="disabled"
         @action="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()"
       />
@@ -168,43 +168,43 @@
       <div class="vc-editor-toolbar__separator" />
       <VcEditorButton
         icon="lucide-delete"
-        aria-label="Delete table"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.DELETE_TABLE')"
         :disabled="disabled"
         @action="editor.chain().focus().deleteTable().run()"
       />
       <VcEditorButton
         icon="lucide-arrow-left-from-line"
-        aria-label="Add column before"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.ADD_COLUMN_BEFORE')"
         :disabled="disabled"
         @action="editor.chain().focus().addColumnBefore().run()"
       />
       <VcEditorButton
         icon="lucide-arrow-right-from-line"
-        aria-label="Add column after"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.ADD_COLUMN_AFTER')"
         :disabled="disabled"
         @action="editor.chain().focus().addColumnAfter().run()"
       />
       <VcEditorButton
         icon="lucide-arrow-up-from-line"
-        aria-label="Add row before"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.ADD_ROW_BEFORE')"
         :disabled="disabled"
         @action="editor.chain().focus().addRowBefore().run()"
       />
       <VcEditorButton
         icon="lucide-arrow-down-from-line"
-        aria-label="Add row after"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.ADD_ROW_AFTER')"
         :disabled="disabled"
         @action="editor.chain().focus().addRowAfter().run()"
       />
       <VcEditorButton
         icon="lucide-trash-2"
-        aria-label="Delete column"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.DELETE_COLUMN')"
         :disabled="disabled"
         @action="editor.chain().focus().deleteColumn().run()"
       />
       <VcEditorButton
         icon="lucide-trash"
-        aria-label="Delete row"
+        :aria-label="$t('COMPONENTS.MOLECULES.VC_EDITOR.TOOLBAR.DELETE_ROW')"
         :disabled="disabled"
         @action="editor.chain().focus().deleteRow().run()"
       />

@@ -14,6 +14,13 @@ const meta = {
   component: VcSwitch,
   tags: ["autodocs"],
   argTypes: {
+    ariaLabel: {
+      description: "Accessible name for the switch when no visible label is provided",
+      control: "text",
+      table: {
+        type: { summary: "string" },
+      },
+    },
     modelValue: {
       control: "boolean",
       description: "Current value of the switch (bound to v-model)",
@@ -224,6 +231,7 @@ export const Required: Story = {
 export const WithoutLabel: Story = {
   args: {
     label: "",
+    ariaLabel: "Toggle setting",
   },
   render: (args) => ({
     components: { VcSwitch },

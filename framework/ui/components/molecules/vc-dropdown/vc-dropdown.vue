@@ -1,16 +1,17 @@
 <template>
   <div class="vc-dropdown">
+    <!--
+      Passive container: the trigger control lives inside the slot (a real
+      button that calls `toggle`). Making this wrapper a role="button"/tabindex
+      element on top of that produced nested interactive controls
+      (WCAG 4.1.2 / nested-interactive) and a duplicate tab stop.
+      ARIA state (aria-expanded/haspopup/controls) is exposed to the slot via
+      `is-active` / `panel-id` so consumers can bind it on their own control.
+    -->
     <div
       v-if="$slots.trigger"
       ref="referenceEl"
       class="vc-dropdown__trigger"
-      role="button"
-      tabindex="0"
-      :aria-controls="panelId"
-      :aria-expanded="isOpen"
-      :aria-haspopup="role"
-      @keydown.enter.prevent="toggle"
-      @keydown.space.prevent="toggle"
     >
       <slot
         name="trigger"
@@ -18,6 +19,7 @@
         :toggle="toggle"
         :open="open"
         :close="close"
+        :panel-id="panelId"
       />
     </div>
 
@@ -42,8 +44,9 @@
           }"
           :class="panelClasses"
           :role="role"
+          :aria-label="ariaLabel"
           :aria-activedescendant="activeDescendantId"
-          tabindex="-1"
+          tabindex="0"
           @keydown="onPanelKeydown"
         >
           <div
@@ -132,6 +135,8 @@ export interface VcDropdownProps<T> {
   /** When true (default), applies compact menu padding and rounded item backgrounds.
    *  Set to false for rich content like notifications where items should span full width. */
   padded?: boolean;
+  /** Accessible name for the dropdown panel (menu/listbox). Required for a named listbox. */
+  ariaLabel?: string;
 }
 
 const props = withDefaults(defineProps<VcDropdownProps<T>>(), {
@@ -165,7 +170,13 @@ const emit = defineEmits<{
 defineSlots<{
   item?: (args: { item: T; click: () => void }) => unknown;
   empty?: () => unknown;
-  trigger?: (args: { isActive: boolean; toggle: () => void; open: () => void; close: () => void }) => unknown;
+  trigger?: (args: {
+    isActive: boolean;
+    toggle: () => void;
+    open: () => void;
+    close: () => void;
+    panelId: string;
+  }) => unknown;
   "items-container"?: (args: { items: T[]; close: () => void }) => unknown;
 }>();
 

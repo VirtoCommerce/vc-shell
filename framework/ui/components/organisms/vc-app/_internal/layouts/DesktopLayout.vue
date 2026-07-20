@@ -8,8 +8,9 @@
   />
 
   <!-- Fixed left sidebar -->
-  <div
+  <nav
     class="desktop-layout"
+    :aria-label="$t('SHELL.NAVIGATION_ARIA_LABEL')"
     :class="{
       'desktop-layout--collapsed': !sidebar.isPinned.value,
     }"
@@ -79,7 +80,7 @@
         </template>
       </SidebarContent>
     </div>
-  </div>
+  </nav>
 
   <AppHubPopover
     :show="sidebar.isMenuOpen.value"

@@ -13,3 +13,8 @@ export {
   type SimpleMapRegistry,
   type SimpleMapRegistryOptions,
 } from "@core/services/_internal/createSimpleMapRegistry";
+export {
+  createGenericItemRegistry,
+  type GenericItemService,
+  type GenericItemRegistryOptions,
+} from "@core/services/_internal/createGenericItemRegistry";

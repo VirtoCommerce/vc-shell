@@ -307,28 +307,29 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 
 ## Props
 
-| Prop                  | Type                                           | Default                         | Description                                            |
-| --------------------- | ---------------------------------------------- | ------------------------------- | ------------------------------------------------------ |
-| `modelValue`          | `boolean`                                      | `false`                         | Controls open/closed state via `v-model`               |
-| `items`               | `T[]`                                          | `[]`                            | Items to render in the dropdown                        |
-| `emptyText`           | `string`                                       | `""`                            | Text shown when items array is empty                   |
-| `itemText`            | `(item: T) => string`                          | --                              | Maps an item to display text (default renderer only)   |
-| `isItemActive`        | `(item: T) => boolean`                         | --                              | Marks the currently active item (highlighted state)    |
-| `itemKey`             | `(item: T, index: number) => string \| number` | index                           | Unique key function for items                          |
-| `floating`            | `boolean`                                      | `false`                         | Enable floating positioning via `@floating-ui`         |
-| `teleport`            | `boolean`                                      | --                              | Force teleport to body (defaults to match `floating`)  |
-| `teleportTo`          | `string \| HTMLElement`                        | --                              | Custom teleport target                                 |
-| `placement`           | `Placement`                                    | `"bottom"`                      | Floating UI placement                                  |
-| `offset`              | `{ mainAxis?: number; crossAxis?: number }`    | `{ mainAxis: 0, crossAxis: 0 }` | Offset from the trigger element                        |
-| `variant`             | `"default" \| "secondary"`                     | `"default"`                     | Visual style variant                                   |
-| `maxHeight`           | `number \| string`                             | `300`                           | Maximum panel height (number = px, string = CSS value) |
-| `role`                | `"menu" \| "listbox"`                          | `"menu"`                        | ARIA role for the dropdown panel                       |
-| `closeOnClickOutside` | `boolean`                                      | `true`                          | Close when clicking outside the dropdown               |
-| `closeOnEscape`       | `boolean`                                      | `true`                          | Close on Escape key press                              |
-| `closeOnSelect`       | `boolean`                                      | `false`                         | Close after selecting an item                          |
-| `autoFocusPanel`      | `boolean`                                      | `true`                          | Focus the panel element when opened                    |
-| `padded`              | `boolean`                                      | `true`                          | Apply compact padding and rounded item backgrounds     |
-| `zIndex`              | `number`                                       | `9300`                          | Z-index for the floating panel                         |
+| Prop                  | Type                                           | Default                         | Description                                                    |
+| --------------------- | ---------------------------------------------- | ------------------------------- | -------------------------------------------------------------- |
+| `modelValue`          | `boolean`                                      | `false`                         | Controls open/closed state via `v-model`                       |
+| `items`               | `T[]`                                          | `[]`                            | Items to render in the dropdown                                |
+| `emptyText`           | `string`                                       | `""`                            | Text shown when items array is empty                           |
+| `itemText`            | `(item: T) => string`                          | --                              | Maps an item to display text (default renderer only)           |
+| `isItemActive`        | `(item: T) => boolean`                         | --                              | Marks the currently active item (highlighted state)            |
+| `itemKey`             | `(item: T, index: number) => string \| number` | index                           | Unique key function for items                                  |
+| `floating`            | `boolean`                                      | `false`                         | Enable floating positioning via `@floating-ui`                 |
+| `teleport`            | `boolean`                                      | --                              | Force teleport to body (defaults to match `floating`)          |
+| `teleportTo`          | `string \| HTMLElement`                        | --                              | Custom teleport target                                         |
+| `placement`           | `Placement`                                    | `"bottom"`                      | Floating UI placement                                          |
+| `offset`              | `{ mainAxis?: number; crossAxis?: number }`    | `{ mainAxis: 0, crossAxis: 0 }` | Offset from the trigger element                                |
+| `variant`             | `"default" \| "secondary"`                     | `"default"`                     | Visual style variant                                           |
+| `maxHeight`           | `number \| string`                             | `300`                           | Maximum panel height (number = px, string = CSS value)         |
+| `role`                | `"menu" \| "listbox"`                          | `"menu"`                        | ARIA role for the dropdown panel                               |
+| `ariaLabel`           | `string`                                       | --                              | Accessible name for the panel. Required for a named `listbox`. |
+| `closeOnClickOutside` | `boolean`                                      | `true`                          | Close when clicking outside the dropdown                       |
+| `closeOnEscape`       | `boolean`                                      | `true`                          | Close on Escape key press                                      |
+| `closeOnSelect`       | `boolean`                                      | `false`                         | Close after selecting an item                                  |
+| `autoFocusPanel`      | `boolean`                                      | `true`                          | Focus the panel element when opened                            |
+| `padded`              | `boolean`                                      | `true`                          | Apply compact padding and rounded item backgrounds             |
+| `zIndex`              | `number`                                       | `9300`                          | Z-index for the floating panel                                 |
 
 ## Events
 
@@ -341,12 +342,12 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 
 ## Slots
 
-| Slot              | Props                                                                            | Description                       |
-| ----------------- | -------------------------------------------------------------------------------- | --------------------------------- |
-| `trigger`         | `{ isActive: boolean, toggle: () => void, open: () => void, close: () => void }` | Custom trigger element            |
-| `item`            | `{ item: T, click: () => void }`                                                 | Custom item rendering             |
-| `empty`           | --                                                                               | Content when items array is empty |
-| `items-container` | `{ items: T[], close: () => void }`                                              | Full control over the items list  |
+| Slot              | Props                                                                                             | Description                                                                                                                                                                                                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `trigger`         | `{ isActive: boolean, toggle: () => void, open: () => void, close: () => void, panelId: string }` | Custom trigger element. Render a real interactive control (e.g. `VcButton`) that calls `toggle` — the wrapper is a passive container, so nesting a button inside a `role="button"` wrapper is avoided. Use `panelId` to wire `aria-controls`/`aria-expanded` on your control. |
+| `item`            | `{ item: T, click: () => void }`                                                                  | Custom item rendering                                                                                                                                                                                                                                                         |
+| `empty`           | --                                                                                                | Content when items array is empty                                                                                                                                                                                                                                             |
+| `items-container` | `{ items: T[], close: () => void }`                                                               | Full control over the items list                                                                                                                                                                                                                                              |
 
 ## CSS Variables
 
@@ -364,8 +365,8 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 
 ## Accessibility
 
-- **Trigger element**: has `role="button"`, `tabindex="0"`, `aria-expanded`, and `aria-haspopup` set to the dropdown role
-- **Panel**: uses the specified `role` attribute (`"menu"` or `"listbox"`)
+- **Trigger element**: a passive wrapper — the interactive control lives in the `#trigger` slot. Render a real `<button>` (e.g. `VcButton`) that calls `toggle`; wire `aria-expanded`/`aria-haspopup`/`aria-controls` (via the slot's `panelId`) on it. This avoids nesting interactive controls (WCAG 4.1.2).
+- **Panel**: uses the specified `role` attribute (`"menu"` or `"listbox"`), is keyboard-focusable (`tabindex="0"`), and takes an accessible name from `ariaLabel`
 - **Items**: use `role="menuitem"` (menu mode) or `role="option"` (listbox mode)
 - **Active item tracking**: `aria-activedescendant` on the panel tracks the currently focused item
 - **Listbox selection**: `aria-selected` is set on items when `role="listbox"` and `isItemActive` returns `true`

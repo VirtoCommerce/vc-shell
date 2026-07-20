@@ -1,4 +1,4 @@
-import { provide, inject, getCurrentInstance, getCurrentScope, onScopeDispose } from "vue";
+import { getCurrentInstance } from "vue";
 import {
   MenuService,
   createMenuService,
@@ -11,35 +11,27 @@ import {
   menuServiceBus,
 } from "@core/services/menu-service";
 import { MenuServiceKey } from "@framework/injection-keys";
-import { createLogger, InjectionError } from "@core/utilities";
+import { createLogger } from "@core/utilities";
+import { createServiceRegistry } from "@core/composables/createServiceRegistry";
 
 export type UseMenuServiceReturn = MenuService;
 
 const logger = createLogger("use-menu-service");
 
+const registry = createServiceRegistry<MenuService>({
+  key: MenuServiceKey,
+  create: createMenuService,
+  bus: menuServiceBus,
+  name: "MenuService",
+  onMissing: () => logger.error("Menu service not found in current context. Injection chain:", getCurrentInstance()),
+});
+
 export function provideMenuService(): MenuService {
-  const existingService = inject(MenuServiceKey, null);
-  if (existingService) {
-    return existingService;
-  }
-
-  const service = createMenuService();
-  provide(MenuServiceKey, service);
-
-  if (getCurrentScope()) {
-    onScopeDispose(() => menuServiceBus.dispose(service));
-  }
-
-  return service;
+  return registry.provide();
 }
 
 export function useMenuService(): MenuService {
-  const service = inject(MenuServiceKey);
-  if (!service) {
-    logger.error("Menu service not found in current context. Injection chain:", getCurrentInstance());
-    throw new InjectionError("MenuService");
-  }
-  return service;
+  return registry.use();
 }
 
 export { addMenuItem, removeRegisteredMenuItem, setMenuBadge, getMenuBadge, removeMenuBadge, getMenuBadges };

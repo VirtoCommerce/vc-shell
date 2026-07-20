@@ -3,9 +3,16 @@
     "THEMES": {
       "LIGHT": "Hell",
       "DARK": "Dunkel"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "Alle löschen"
     }
   },
   "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "Hauptnavigation",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "Suchbegriff"
+    },
     "USER": {
       "ROLE": {
         "ADMINISTRATOR": "Administrator"
@@ -19,10 +26,27 @@
     }
   },
   "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "Löschen",
+      "CLEAR_ALL": "Alle löschen",
+      "CLOSE": "Schließen",
+      "TOGGLE_DROPDOWN": "Dropdown umschalten",
+      "SEARCH_OPTIONS": "Optionen suchen",
+      "SELECT_OPTION": "Option auswählen",
+      "CLEAR_SELECTION": "Auswahl aufheben",
+      "COPY_TO_CLIPBOARD": "In die Zwischenablage kopieren",
+      "DELETE_ITEM": "Element löschen"
+    },
     "ATOMS": {
       "VC_BANNER": {
         "SHOW_MORE": "Mehr anzeigen",
         "SHOW_LESS": "Weniger anzeigen"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "Scrollbarer Inhalt"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "Keine Videoquelle"
       }
     },
     "MOLECULES": {
@@ -43,10 +67,64 @@
         "DATE_TIME_PLACEHOLDER": "Datum und Uhrzeit auswählen"
       },
       "VC_PAGINATION": {
-        "JUMP": "Zur Seite springen:"
+        "JUMP": "Zur Seite springen:",
+        "LABEL": "Seitennummerierung",
+        "FIRST": "Erste Seite",
+        "PREVIOUS": "Vorherige Seite",
+        "NEXT": "Nächste Seite",
+        "LAST": "Letzte Seite",
+        "PAGE": "Seite {page}"
       },
       "VC_MULTIVALUE": {
         "ADD": "Hinzufügen"
+      },
+      "VC_BREADCRUMBS": {
+        "LABEL": "Brotkrümelnavigation",
+        "SHOW_MORE": "Weitere Brotkrümel anzeigen"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "Farbe löschen"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "Datum löschen"
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "Vorherige Folie",
+        "NEXT": "Nächste Folie"
+      },
+      "VC_TOAST": {
+        "DISMISS": "Benachrichtigung schließen"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "Textformatierung",
+          "BOLD": "Fett",
+          "ITALIC": "Kursiv",
+          "UNDERLINE": "Unterstrichen",
+          "STRIKETHROUGH": "Durchgestrichen",
+          "HEADING_1": "Überschrift 1",
+          "HEADING_2": "Überschrift 2",
+          "HEADING_3": "Überschrift 3",
+          "BULLET_LIST": "Aufzählungsliste",
+          "NUMBERED_LIST": "Nummerierte Liste",
+          "BLOCKQUOTE": "Blockzitat",
+          "INSERT_LINK": "Link einfügen",
+          "INSERT_IMAGE": "Bild einfügen",
+          "INSERT_TABLE": "Tabelle einfügen",
+          "DELETE_TABLE": "Tabelle löschen",
+          "ADD_COLUMN_BEFORE": "Spalte davor einfügen",
+          "ADD_COLUMN_AFTER": "Spalte danach einfügen",
+          "ADD_ROW_BEFORE": "Zeile davor einfügen",
+          "ADD_ROW_AFTER": "Zeile danach einfügen",
+          "DELETE_COLUMN": "Spalte löschen",
+          "DELETE_ROW": "Zeile löschen"
+        },
+        "FONT_SIZE": "Schriftgröße",
+        "VIEW": {
+          "PREVIEW": "Vorschau",
+          "SPLIT": "Nebeneinander-Ansicht",
+          "SOURCE": "Quellcode"
+        }
       }
     },
     "ORGANISMS": {
@@ -68,6 +146,10 @@
           },
           "VC_GALLERY_PREVIEW": {
             "COPY_IMAGE_LINK": "Bildlink kopieren"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "Vorherige Bilder",
+            "NEXT": "Nächste Bilder"
           }
         },
         "GALLERY_IS_EMPTY": "Galerie ist leer",
@@ -80,6 +162,7 @@
         "COLLAPSE": "Einklappen"
       },
       "VC_APP": {
+        "NOTIFICATIONS": "Benachrichtigungen",
         "INTERNAL": {
           "VC_APP_BAR": {
             "BACK": "Zurück"
@@ -120,6 +203,8 @@
         "NO_CHANGES": "Keine ungespeicherten Änderungen"
       },
       "VC_TABLE": {
+        "SELECT_ROW": "Zeile auswählen",
+        "SELECT_ALL_ROWS": "Alle Zeilen auswählen",
         "CURRENT_PAGE_SELECTED": "Alle Elemente auf dieser Seite sind ausgewählt.",
         "SELECT_ALL": "Alle Elemente auswählen",
         "ALL_SELECTED": "Alle Elemente sind ausgewählt.",
@@ -151,7 +236,8 @@
           "APPLY": "Anwenden",
           "CLEAR": "Löschen",
           "FROM": "Von",
-          "TO": "Bis"
+          "TO": "Bis",
+          "TITLE": "Spalte filtern"
         },
         "GLOBAL_FILTERS": {
           "BUTTON": "Filter",
@@ -289,7 +375,12 @@
     "BUTTON_OK": "Ok",
     "RESET_EMAIL_TEXT": "Wir senden Ihnen eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.",
     "RESET_EMAIL_SENT": "Eine E-Mail mit Anweisungen wurde an Sie gesendet.",
-    "SSO_NO_PROVIDERS_ERROR": "SSO-Authentifizierung ist nicht konfiguriert. Bitte wenden Sie sich an Ihren Administrator."
+    "SSO_NO_PROVIDERS_ERROR": "SSO-Authentifizierung ist nicht konfiguriert. Bitte wenden Sie sich an Ihren Administrator.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "Anmeldename oder Passwort ist falsch.",
+      "AUTH_WITH_CODE": "Authentifizierungsfehler (Code: {code}).",
+      "AUTH_GENERIC": "Authentifizierungsfehler: {detail}"
+    }
   },
   "FORGOT_PASSWORD": {
     "TITLE": "Passwort zurücksetzen",

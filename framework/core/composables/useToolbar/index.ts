@@ -1,8 +1,9 @@
-import { inject, provide, computed, getCurrentInstance, getCurrentScope, onBeforeUnmount, onScopeDispose } from "vue";
+import { inject, computed, getCurrentInstance, onBeforeUnmount } from "vue";
 import { ToolbarServiceKey } from "@framework/injection-keys";
 import { IToolbarItem, IToolbarService, createToolbarService, toolbarBus } from "@core/services/toolbar-service";
 import { FALLBACK_BLADE_ID } from "@core/constants";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import { createServiceRegistry } from "@core/composables/createServiceRegistry";
 
 // Global toolbar service (if not provided through provide/inject)
 let globalToolbarService: IToolbarService | null = null;
@@ -25,20 +26,15 @@ export interface UseToolbarReturn {
   registeredToolbarItems: IToolbarService["registeredToolbarItems"];
 }
 
+const registry = createServiceRegistry<IToolbarService>({
+  key: ToolbarServiceKey,
+  create: createToolbarService,
+  bus: toolbarBus,
+  name: "ToolbarService",
+});
+
 export function provideToolbarService(): IToolbarService {
-  const existingService = inject(ToolbarServiceKey, null);
-  if (existingService) {
-    return existingService;
-  }
-
-  const service = createToolbarService();
-  provide(ToolbarServiceKey, service);
-
-  if (getCurrentScope()) {
-    onScopeDispose(() => toolbarBus.dispose(service));
-  }
-
-  return service;
+  return registry.provide();
 }
 
 /**

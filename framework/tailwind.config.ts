@@ -33,12 +33,6 @@ export default {
           lineHeight: "1.125rem", //18px
         },
       ],
-      s: [
-        "0.875rem", //14px
-        {
-          lineHeight: "1.125rem", //18px
-        },
-      ],
       base: [
         "1rem", //16px
         {

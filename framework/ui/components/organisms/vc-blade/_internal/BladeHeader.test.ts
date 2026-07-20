@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { computed, ref } from "vue";
-import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import { BladeDescriptorKey, BladeRenderingStateKey } from "@core/blade-navigation/types";
 import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
-import type { BladeDescriptor } from "@core/blade-navigation/types";
+import type { BladeDescriptor, BladeRenderingState } from "@core/blade-navigation/types";
 
 // Mock @floating-ui/vue
 vi.mock("@floating-ui/vue", () => ({
@@ -22,12 +22,23 @@ vi.mock("@ui/composables", () => ({
 
 import BladeHeader from "./BladeHeader.vue";
 
-function factory(props: Record<string, unknown> = {}, bladeInstance?: Partial<BladeDescriptor>) {
+// The second arg carries both descriptor overrides and rendering-state fields
+// (maximized/breadcrumbs). Rendering state is now a separate injection from the
+// immutable descriptor, so route those fields to BladeRenderingStateKey.
+function factory(
+  props: Record<string, unknown> = {},
+  bladeInstance?: Partial<BladeDescriptor> & Partial<BladeRenderingState>,
+) {
+  const { maximized, breadcrumbs, ...descriptorOverrides } = bladeInstance ?? {};
   const defaultDescriptor = computed<BladeDescriptor>(() => ({
     id: "test-blade",
     name: "TestBlade",
     visible: true,
-    ...bladeInstance,
+    ...descriptorOverrides,
+  }));
+  const renderingState = computed<BladeRenderingState>(() => ({
+    maximized: maximized ?? false,
+    breadcrumbs,
   }));
 
   return mount(BladeHeader, {
@@ -35,6 +46,7 @@ function factory(props: Record<string, unknown> = {}, bladeInstance?: Partial<Bl
     global: {
       provide: {
         [BladeDescriptorKey as symbol]: defaultDescriptor,
+        [BladeRenderingStateKey as symbol]: renderingState,
         [IsMobileKey as symbol]: ref(false),
         [IsDesktopKey as symbol]: ref(true),
       },
@@ -212,7 +224,6 @@ describe("BladeHeader", () => {
             id: "blade-1",
             name: "TestBlade",
             visible: true,
-            maximized: false,
           })),
           [IsMobileKey as symbol]: ref(true),
           [IsDesktopKey as symbol]: ref(false),

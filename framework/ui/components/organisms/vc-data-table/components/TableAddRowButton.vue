@@ -1,13 +1,18 @@
 <template>
-  <div class="vc-table-add-row">
-    <VcButton
-      variant="link"
-      :icon="icon"
-      icon-size="s"
-      @click="$emit('add')"
-    >
-      {{ displayLabel }}
-    </VcButton>
+  <div
+    class="vc-table-add-row"
+    role="row"
+  >
+    <div role="cell">
+      <VcButton
+        variant="link"
+        :icon="icon"
+        icon-size="s"
+        @click="$emit('add')"
+      >
+        {{ displayLabel }}
+      </VcButton>
+    </div>
   </div>
 </template>
 

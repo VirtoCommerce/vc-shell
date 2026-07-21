@@ -129,3 +129,54 @@ jobs:
 
       - name: Run framework tests
         run: yarn workspace @vc-shell/framework run test
+
+  # Deploy the hosted Storybook preview. storybook-ci.yml is a reusable
+  # (workflow_call) workflow with no push trigger of its own; the caller that
+  # used to invoke it lived in the removed main.yml. This job restores that
+  # invocation. It deliberately omits the `release:` skip guard the other jobs
+  # carry, so the release commit pushed to main also redeploys Storybook.
+  storybook:
+    if: >-
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feat/redesign')
+    permissions:
+      contents: read
+      packages: write
+      deployments: write
+    uses: ./.github/workflows/storybook-ci.yml
+    with:
+      event_name: ${{ github.event_name }}
+    secrets: inherit
+
+  # PR-only validation: build the Storybook bundle so a broken story (bad
+  # import, invalid syntax) fails review instead of only surfacing after merge
+  # on the main-push deploy above. Build only — no Docker image, no ArgoCD
+  # deploy. The full deploy path is the `storybook` job, gated to push.
+  storybook-build:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: "yarn.lock"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build framework
+        run: yarn build
+
+      - name: Build Storybook
+        run: yarn build:storybook
+        env:
+          NODE_OPTIONS: "--max-old-space-size=6144"

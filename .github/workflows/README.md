@@ -2,12 +2,12 @@
 
 Overview of every GitHub Actions workflow in this repository. Each workflow file starts with a header comment that repeats the essentials below.
 
-| Workflow                       | File                             | Trigger                                                                  | Purpose                                                                                                                              | Required for merge? |
-| ------------------------------ | -------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
-| **CI**                         | `ci.yml`                         | pull_request, push to main / dev / feat/\*\*                             | Static checks (lint, format, stylelint, typecheck, locales, circular, layers) and framework unit tests                               | Yes                 |
-| **PR Title**                   | `pr-title.yml`                   | pull_request (opened, edited, synchronize, reopened)                     | Validates the PR title is Conventional Commits format                                                                                | Yes                 |
-| **Publish**                    | `publish.yml`                    | pull_request (opened, synchronize, reopened), workflow_dispatch          | One workflow for all npm publishing: `pr-<N>` previews on PR push and manual releases (version bump, CHANGELOG, tag, publish, GitHub Release). Both publish paths use OIDC — fully token-free | No (PR preview informational); manual for release |
-| **Storybook**                  | `storybook-ci.yml`               | push to main / feat/redesign, pull_request (indirect), workflow_dispatch | Builds Storybook + Docker image, pushes to ghcr.io, deploys to ArgoCD (`vc-shell-storybook.govirto.com`)                             | No                  |
+| Workflow      | File               | Trigger                                                                                                    | Purpose                                                                                                                                                                                       | Required for merge?                               |
+| ------------- | ------------------ | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **CI**        | `ci.yml`           | pull_request, push to main / dev / feat/\*\*                                                               | Static checks (lint, format, stylelint, typecheck, locales, circular, layers) and framework unit tests                                                                                        | Yes                                               |
+| **PR Title**  | `pr-title.yml`     | pull_request (opened, edited, synchronize, reopened)                                                       | Validates the PR title is Conventional Commits format                                                                                                                                         | Yes                                               |
+| **Publish**   | `publish.yml`      | pull_request (opened, synchronize, reopened), workflow_dispatch                                            | One workflow for all npm publishing: `pr-<N>` previews on PR push and manual releases (version bump, CHANGELOG, tag, publish, GitHub Release). Both publish paths use OIDC — fully token-free | No (PR preview informational); manual for release |
+| **Storybook** | `storybook-ci.yml` | reusable (`workflow_call`) — invoked by `ci.yml` on push to main / feat/redesign; also `workflow_dispatch` | Builds Storybook + Docker image, pushes to ghcr.io, deploys to ArgoCD (`vc-shell-storybook.govirto.com`)                                                                                      | No                                                |
 
 ## CI (`ci.yml`)
 
@@ -23,7 +23,12 @@ Splits pre-merge verification into two parallel jobs:
   - `yarn check:layers`
 - **`test`** — `yarn workspace @vc-shell/framework run test` (vitest, single run).
 
-Both are **required status checks** in the branch ruleset on `main`.
+`static-checks` and `test` are **required status checks** in the branch ruleset on `main`.
+
+Two Storybook jobs also live here:
+
+- **`storybook`** — on push to `main` / `feat/redesign` only, calls the reusable `storybook-ci.yml` (with `secrets: inherit`) to build, push the image, and deploy to ArgoCD. It omits the `release:` skip guard the checks carry, so the release commit redeploys Storybook. See [Storybook CI](#storybook-ci-storybook-ciyml).
+- **`storybook-build`** — on `pull_request` only, builds the framework and the Storybook bundle (`yarn build` → `yarn build:storybook`) with no Docker push and no deploy. Catches broken stories in review instead of after merge.
 
 ## PR Title (`pr-title.yml`)
 
@@ -74,6 +79,8 @@ npm install @vc-shell/framework@pr-<N>
 
 ## Storybook CI (`storybook-ci.yml`)
 
+A **reusable** workflow (`workflow_call` + `workflow_dispatch`) — it has no `push` trigger of its own. `ci.yml` invokes it (via a `uses: ./.github/workflows/storybook-ci.yml` job with `secrets: inherit`) on every push to `main` / `feat/redesign`, including the release commit. That caller job intentionally skips the `release:` guard the check/test jobs carry, so a release also redeploys Storybook. PRs do **not** invoke this workflow (it would push an image and deploy to the shared `vcmp-dev` env); they run the lighter build-only `storybook-build` job in `ci.yml` instead.
+
 Two jobs:
 
 - **`ci`** — builds Storybook bundle, packages the Docker image, pushes to `ghcr.io/virtocommerce/vc-shell-storybook`. Emits Jira build info.
@@ -81,12 +88,12 @@ Two jobs:
 
 ## Common Secrets
 
-| Secret                                                  | Used by                                          | Purpose                                                                          |
-| ------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------- |
-| `REPO_TOKEN`                                            | Publish (`release`)                              | PAT for `vc-ci` bot; pushes release commits/tags past the ruleset                |
-| `VCMP_PLATFORM_TOKEN`                                   | Storybook CI (`cd`)                              | ArgoCD deployment via `vc-build`                                                 |
-| `CLIENT_ID`, `CLIENT_SECRET`, `CLOUD_INSTANCE_BASE_URL` | Storybook CI                                     | Jira build info integration (optional)                                           |
-| `GITHUB_TOKEN`                                          | All workflows (built-in)                         | Posting PR comments, creating GitHub Releases                                    |
+| Secret                                                  | Used by                  | Purpose                                                           |
+| ------------------------------------------------------- | ------------------------ | ----------------------------------------------------------------- |
+| `REPO_TOKEN`                                            | Publish (`release`)      | PAT for `vc-ci` bot; pushes release commits/tags past the ruleset |
+| `VCMP_PLATFORM_TOKEN`                                   | Storybook CI (`cd`)      | ArgoCD deployment via `vc-build`                                  |
+| `CLIENT_ID`, `CLIENT_SECRET`, `CLOUD_INSTANCE_BASE_URL` | Storybook CI             | Jira build info integration (optional)                            |
+| `GITHUB_TOKEN`                                          | All workflows (built-in) | Posting PR comments, creating GitHub Releases                     |
 
 > **No `NPM_TOKEN`.** npm publishing is entirely token-free via Trusted Publishing (OIDC); there is no automated `npm dist-tag rm` (see [Publish](#publish-publishyml)), so no npm secret exists in this repo at all. If you reintroduce automated dist-tag mutation, note that npm write tokens are capped at a 90-day lifetime and must be rotated.
 
@@ -104,13 +111,13 @@ How it is wired:
 
 **Adding a package — required npmjs.com step:** Adding an entry to `scripts/release-packages.ts` is not sufficient. Every package must be registered as a Trusted Publisher on npmjs.com (Settings → "Trusted Publisher" → GitHub Actions) with a **single** entry:
 
-| Field             | Value                                                                   |
-| ----------------- | ----------------------------------------------------------------------- |
-| Organization      | `VirtoCommerce`                                                         |
-| Repository        | `vc-shell`                                                              |
-| Workflow filename | `publish.yml`                                                           |
+| Field             | Value                                                                                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Organization      | `VirtoCommerce`                                                                                                                                       |
+| Repository        | `vc-shell`                                                                                                                                            |
+| Workflow filename | `publish.yml`                                                                                                                                         |
 | Environment       | _(leave blank — the release job uses `npm-latest` / `npm-{channel}` environments, but pinning one here would reject PR-preview runs, which use none)_ |
-| Allowed actions   | `npm publish`                                                           |
+| Allowed actions   | `npm publish`                                                                                                                                         |
 
 Notes:
 

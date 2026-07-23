@@ -62,6 +62,17 @@ export interface IMenuItem<T extends Component = Component> {
   clickHandler?(): void;
 }
 
+export interface ShortcutDefinition {
+  /** Single key: "s", "1", "enter", "escape", "f2", "arrowup", "backslash". */
+  key: string;
+  /** Platform primary modifier: Cmd on macOS, Ctrl elsewhere. */
+  mod?: boolean;
+  ctrl?: boolean;
+  meta?: boolean;
+  alt?: boolean;
+  shift?: boolean;
+}
+
 export interface IBladeToolbar {
   id?: string;
   icon?: string | (() => string);
@@ -76,6 +87,8 @@ export interface IBladeToolbar {
   clickHandler?(app?: Record<string, any> | null): void;
   separator?: "left" | "right" | "both";
   permissions?: string | string[];
+  /** Keyboard shortcut that triggers this item's clickHandler. Use `hotkey.*`. */
+  shortcut?: ShortcutDefinition;
 }
 
 export interface IActionBuilderResult<T = {}> {

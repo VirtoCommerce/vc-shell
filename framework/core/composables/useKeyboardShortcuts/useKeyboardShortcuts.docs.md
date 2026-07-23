@@ -137,7 +137,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 ]);
 ```
 
-The dispatcher walks a blade's toolbar items in declaration order and fires the _first_ item whose shortcut matches, then stops -- `save-as` never receives `Cmd/Ctrl+S` as long as `save` is registered ahead of it. There is no runtime warning when this happens today, so treat shortcut collisions within a blade's toolbar as a review-time concern: keep combinations unique per blade.
+The dispatcher walks a blade's toolbar items in declaration order and fires the _first_ item whose shortcut matches, then stops -- `save-as` never receives `Cmd/Ctrl+S` as long as `save` is registered ahead of it. In development, the dispatcher emits a deduplicated `console.warn` on keydown for this case (first item wins, second is named in the warning), for a toolbar item with an unrecognized `shortcut.key`, and for a toolbar item that overrides a built-in (`Esc`, `Cmd/Ctrl+\`). Production stays silent -- these are warnings, not thrown errors -- so still treat shortcut collisions within a blade's toolbar as a review-time concern: keep combinations unique per blade.
 
 ```typescript
 // Correct -- distinct combinations

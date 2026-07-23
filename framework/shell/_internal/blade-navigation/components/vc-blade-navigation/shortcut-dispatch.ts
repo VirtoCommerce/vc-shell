@@ -1,5 +1,12 @@
 import type { IBladeToolbar, ShortcutDefinition } from "@core/types";
-import { hotkey, matchesEvent, isTextInputFocused } from "@core/composables/useKeyboardShortcuts";
+import {
+  hotkey,
+  matchesEvent,
+  isTextInputFocused,
+  formatShortcut,
+  expectedCode,
+  expectedEventKey,
+} from "@core/composables/useKeyboardShortcuts";
 
 interface ActiveBladeLike {
   id: string;
@@ -22,6 +29,53 @@ const EXPAND: ShortcutDefinition = hotkey.mod.backslash;
 
 function hasModifier(def: ShortcutDefinition): boolean {
   return !!(def.mod || def.ctrl || def.meta || def.alt || def.shift);
+}
+
+const _warned = new Set<string>();
+
+function isKnownKey(key: string): boolean {
+  return expectedCode(key) !== undefined || expectedEventKey(key) !== undefined;
+}
+
+function warnOnce(key: string, message: string): void {
+  if (_warned.has(key)) return;
+  _warned.add(key);
+  console.warn(message);
+}
+
+/** Dev-only diagnostics. Pure (warns directly); guard the call with import.meta.env.DEV. */
+export function warnShortcutIssues(bladeId: string, items: IBladeToolbar[], isMac: boolean): void {
+  const builtinAria = new Set([formatShortcut(ESC, isMac).aria, formatShortcut(EXPAND, isMac).aria]);
+  const seen = new Map<string, string>(); // aria -> first item id
+
+  for (const item of items) {
+    const def = item.shortcut;
+    if (!def) continue;
+    const id = item.id ?? "item";
+
+    if (!isKnownKey(def.key)) {
+      warnOnce(`${bladeId}:${id}:unknownkey`, `[shortcut] unknown key "${def.key}" on toolbar item "${id}".`);
+      continue;
+    }
+
+    const aria = formatShortcut(def, isMac).aria;
+
+    if (seen.has(aria)) {
+      warnOnce(
+        `${bladeId}:${aria}:conflict`,
+        `[shortcut] conflict on blade "${bladeId}": items "${seen.get(aria)}" and "${id}" both bind "${aria}". First wins.`,
+      );
+    } else {
+      seen.set(aria, id);
+    }
+
+    if (builtinAria.has(aria)) {
+      warnOnce(
+        `${bladeId}:${aria}:builtin`,
+        `[shortcut] toolbar item "${id}" overrides the built-in "${aria}" on blade "${bladeId}".`,
+      );
+    }
+  }
 }
 
 export function createShortcutDispatcher(deps: ShortcutDispatchDeps) {
@@ -49,6 +103,7 @@ export function createShortcutDispatcher(deps: ShortcutDispatchDeps) {
 
     // 1. Toolbar shortcuts (explicit; win over built-ins).
     const items = deps.getToolbarItems(bladeId);
+    if (import.meta.env.DEV) warnShortcutIssues(bladeId, items, deps.isMac);
     for (const item of items) {
       const def = item.shortcut;
       if (!def) continue;

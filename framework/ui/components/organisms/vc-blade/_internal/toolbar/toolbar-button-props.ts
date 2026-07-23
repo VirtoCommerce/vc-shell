@@ -1,4 +1,5 @@
 import { Ref, ComputedRef } from "vue";
+import type { ShortcutDefinition } from "@core/types";
 
 export interface Props {
   id?: string;
@@ -10,5 +11,6 @@ export interface Props {
   contentDirection?: "row" | "row-reverse" | "column";
   iconClassName?: string;
   titleClassName?: string;
+  shortcut?: ShortcutDefinition;
   onClick?: () => Promise<void> | void;
 }

@@ -224,6 +224,15 @@ export interface IBladeStack {
    */
   updateBladeQuery(bladeId: string, patch: Record<string, string>): void;
 
+  /** Get the stable per-blade maximized ref, creating it (defaulted to `false`) on first access */
+  getMaximizedRef(id: string): Ref<boolean>;
+  /** Whether a blade is currently maximized */
+  isMaximized(id: string): boolean;
+  /** Set a blade's maximized state */
+  setMaximized(id: string, value: boolean): void;
+  /** Toggle a blade's maximized state */
+  toggleMaximized(id: string): void;
+
   /** Restore stack from descriptors (used by HistoryManager — bypasses guards) */
   _restoreStack(descriptors: BladeDescriptor[]): void;
 }

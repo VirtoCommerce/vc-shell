@@ -383,6 +383,7 @@ function onDocumentEscapeKeydown(event: KeyboardEvent) {
     return;
   }
 
+  event.preventDefault();
   closeByReason("escape");
 }
 

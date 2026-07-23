@@ -442,6 +442,7 @@ function handleDocumentKeydown(event: KeyboardEvent) {
 
   if (event.key === "Escape") {
     if (props.closeOnEscape) {
+      event.preventDefault();
       closeByReason("escape");
     }
     return;

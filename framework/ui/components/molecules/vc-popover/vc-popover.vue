@@ -206,6 +206,7 @@ const handlePointerDownOutside = (e: PointerEvent) => {
 // Escape key handler
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === "Escape" && props.show) {
+    e.preventDefault();
     close();
   }
 };

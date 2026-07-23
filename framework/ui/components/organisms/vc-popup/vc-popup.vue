@@ -218,7 +218,12 @@ function closeFromAction(): void {
   emitClose("action");
 }
 
-function handleEscapeKeydown(): void {
+function handleEscapeKeydown(event: KeyboardEvent): void {
+  if (!canCloseOnEscape.value) {
+    return;
+  }
+
+  event.preventDefault();
   pendingDismissReason.value = "escape";
 }
 

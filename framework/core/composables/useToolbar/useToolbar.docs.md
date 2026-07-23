@@ -234,6 +234,24 @@ registerToolbarItem({
 });
 ```
 
+### Keyboard shortcut for a button
+
+Add `shortcut: hotkey.mod.s` to give a button a `Cmd/Ctrl+S`-style shortcut. The button automatically shows an OS-aware `⌘S`/`Ctrl+S` tooltip and sets `aria-keyshortcuts` -- no extra wiring:
+
+```typescript
+import { hotkey } from "@vc-shell/framework";
+
+registerToolbarItem({
+  id: "save",
+  title: "Save",
+  icon: "fas fa-save",
+  clickHandler: () => save(),
+  shortcut: hotkey.mod.s,
+});
+```
+
+See [useKeyboardShortcuts](../useKeyboardShortcuts/) for the full `hotkey` builder, OS adaptation, and accessibility details.
+
 ## Common mistakes
 
 ### Reaching for `useToolbar` before considering the array pattern
@@ -334,18 +352,19 @@ function helperFunction() {
 
 ### IToolbarItem
 
-| Property       | Type                                                                                                              | Required | Description                                                    |
-| -------------- | ----------------------------------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------- |
-| `id`           | `string`                                                                                                          | Yes      | Unique identifier for the button                               |
-| `title`        | `string \| Ref<string> \| ComputedRef<string>`                                                                    | No       | Button label (supports reactive values)                        |
-| `icon`         | `string \| (() => string)`                                                                                        | No       | Icon class (e.g., `"fas fa-save"`) or a function returning one |
-| `clickHandler` | `(app?) => void`                                                                                                  | No       | Click callback                                                 |
-| `disabled`     | `boolean \| ComputedRef<boolean \| undefined>`                                                                    | No       | Whether the button is disabled                                 |
-| `isVisible`    | `boolean \| Ref<boolean \| undefined> \| ComputedRef<boolean \| undefined> \| ((blade?) => boolean \| undefined)` | No       | Controls button visibility                                     |
-| `priority`     | `number`                                                                                                          | No       | Sort order (higher = displayed first, default `0`)             |
-| `separator`    | `"left" \| "right" \| "both"`                                                                                     | No       | Adds a visual divider next to the button                       |
-| `permissions`  | `string \| string[]`                                                                                              | No       | Required permission(s) to display the button                   |
-| `bladeId`      | `string`                                                                                                          | No       | Target blade ID (auto-resolved from context)                   |
+| Property       | Type                                                                                                              | Required | Description                                                                                                                 |
+| -------------- | ----------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `id`           | `string`                                                                                                          | Yes      | Unique identifier for the button                                                                                            |
+| `title`        | `string \| Ref<string> \| ComputedRef<string>`                                                                    | No       | Button label (supports reactive values)                                                                                     |
+| `icon`         | `string \| (() => string)`                                                                                        | No       | Icon class (e.g., `"fas fa-save"`) or a function returning one                                                              |
+| `clickHandler` | `(app?) => void`                                                                                                  | No       | Click callback                                                                                                              |
+| `disabled`     | `boolean \| ComputedRef<boolean \| undefined>`                                                                    | No       | Whether the button is disabled                                                                                              |
+| `isVisible`    | `boolean \| Ref<boolean \| undefined> \| ComputedRef<boolean \| undefined> \| ((blade?) => boolean \| undefined)` | No       | Controls button visibility                                                                                                  |
+| `priority`     | `number`                                                                                                          | No       | Sort order (higher = displayed first, default `0`)                                                                          |
+| `separator`    | `"left" \| "right" \| "both"`                                                                                     | No       | Adds a visual divider next to the button                                                                                    |
+| `permissions`  | `string \| string[]`                                                                                              | No       | Required permission(s) to display the button                                                                                |
+| `bladeId`      | `string`                                                                                                          | No       | Target blade ID (auto-resolved from context)                                                                                |
+| `shortcut`     | `ShortcutDefinition`                                                                                              | No       | Keyboard shortcut that triggers `clickHandler`; build with `hotkey.*`. See [useKeyboardShortcuts](../useKeyboardShortcuts/) |
 
 `IToolbarItem` is the shape consumed by `ToolbarService`. The blade-level array binding uses `IBladeToolbar` (see [Core types](../../types/)), a near-identical shape that the framework normalizes into `IToolbarItem` before render.
 
@@ -354,4 +373,5 @@ function helperFunction() {
 - [useBlade](../useBlade/) -- blade context that toolbar items are scoped to
 - [usePermissions](../usePermissions/) -- conditionally register toolbar items based on permissions
 - [useAsync](../useAsync/) -- wraps async operations with loading state for disabling buttons
+- [useKeyboardShortcuts](../useKeyboardShortcuts/) -- the `hotkey` builder and OS-aware formatting behind the `shortcut` field
 - `IBladeToolbar` in [Core types](../../types/) — the shape used by the `:toolbar-items` array binding

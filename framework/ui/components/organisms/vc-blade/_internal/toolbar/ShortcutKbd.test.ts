@@ -13,7 +13,10 @@ describe("ShortcutKbd", () => {
 
   it("shows + separators when separated", () => {
     const wrapper = mount(ShortcutKbd, { props: { parts: ["Ctrl", "S"], separated: true } });
-    expect(wrapper.text()).toContain("+");
+    const text = wrapper.text();
+    expect(text).toContain("+");
+    expect(text.trim()).not.toMatch(/^\+/);
+    expect(text.match(/\+/g)).toHaveLength(1);
   });
 
   it("no separators when not separated (mac glyphs)", () => {

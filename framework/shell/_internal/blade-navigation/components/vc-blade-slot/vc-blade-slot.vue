@@ -55,7 +55,8 @@ const emit = defineEmits<{
 }>();
 
 const bladeRegistry = useBladeRegistry();
-const maximized = ref(false);
+const bladeStack = useBladeStack();
+const maximized = bladeStack.getMaximizedRef(props.descriptor.id);
 const banners = ref<IBladeBanner[]>([]);
 const bladeInstanceRef = ref<CoreBladeExposed>();
 
@@ -102,7 +103,7 @@ provide(
     ? createBladeQueryState({
         descriptor: computed(() => props.descriptor),
         router,
-        bladeStack: useBladeStack(),
+        bladeStack,
       })
     : undefined,
 );

@@ -1,7 +1,7 @@
 <template>
   <VcTooltip
+    v-if="shortcut"
     placement="bottom"
-    :disabled="!shortcut"
   >
     <button
       class="vc-blade-toolbar-base-button"
@@ -31,12 +31,38 @@
     </button>
     <template #tooltip>
       <ShortcutKbd
-        v-if="shortcut"
         :parts="shortcutFormat.parts"
         :separated="!isMac"
       />
     </template>
   </VcTooltip>
+
+  <button
+    v-else
+    class="vc-blade-toolbar-base-button"
+    :class="buttonClass"
+    :data-test-id="id ?? 'vc-blade-toolbar-button'"
+    v-bind="$attrs"
+    @click="handleClick"
+  >
+    <div
+      class="vc-blade-toolbar-base-button__content"
+      :style="{ flexDirection: contentDirection }"
+    >
+      <VcIcon
+        class="vc-blade-toolbar-base-button__icon"
+        :class="iconClassName"
+        :icon="resolvedIcon"
+        :size="size"
+      />
+      <span
+        class="vc-blade-toolbar-base-button__title"
+        :class="titleClassName"
+      >
+        {{ resolvedTitle }}
+      </span>
+    </div>
+  </button>
 </template>
 
 <script lang="ts" setup>

@@ -219,12 +219,17 @@ function closeFromAction(): void {
 }
 
 function handleEscapeKeydown(event: KeyboardEvent): void {
+  // Always consume Escape while open so it does not leak to the nav-root blade
+  // Esc shortcut (which skips when event.defaultPrevented). This preventDefault
+  // also suppresses Headless UI's internal window-level close(), so we must own
+  // the close decision here instead of relying on the Dialog's @close emit.
+  event.preventDefault();
+
   if (!canCloseOnEscape.value) {
     return;
   }
 
-  event.preventDefault();
-  pendingDismissReason.value = "escape";
+  emitClose("escape");
 }
 
 function handleDialogDismiss(): void {

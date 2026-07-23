@@ -110,6 +110,7 @@ The toolbar button itself (`ToolbarBaseButton`) already does this for you: it ca
 - **Tooltip discovery.** A sighted user discovers the shortcut through the `<kbd>` chips shown on hover/focus of the toolbar button (`ShortcutKbd`, wrapped in `VcTooltip`). This is the only visual affordance; there is no separate "shortcuts list" surface in v1.
 - **No button, no discovery.** Both `aria-keyshortcuts` and the tooltip are properties of the rendered toolbar button -- they exist only because `shortcut` lives on an `IBladeToolbar` item that renders as a button. There is currently no way to advertise a shortcut that isn't attached to a visible button (see [Common mistakes](#common-mistakes)).
 - **Accessible name still comes from the title.** `shortcut` does not change how the button's accessible name is computed -- it still comes from the visible `title` text. Keep `title` non-empty; `shortcut` is additive, not a substitute for a labeled button.
+- **Suppressed behind a modal.** Blade shortcuts (toolbar and built-in) do not fire while a modal (`aria-modal="true"`) is open, so a shortcut never acts on a blade hidden behind it.
 
 ## Common mistakes
 

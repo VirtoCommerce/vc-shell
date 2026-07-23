@@ -27,6 +27,7 @@ describe("createShortcutDispatcher", () => {
     isEnabled: (_item: any) => true,
     closeBlade: vi.fn(),
     toggleMaximized: vi.fn(),
+    isModalOpen: () => false,
   });
 
   it("fires a toolbar shortcut and preventDefaults", async () => {
@@ -118,5 +119,35 @@ describe("createShortcutDispatcher", () => {
     const dispatch = createShortcutDispatcher(deps);
     await dispatch(ev({ code: "KeyE" }));
     expect(clickHandler).not.toHaveBeenCalled();
+  });
+
+  it("does not fire a toolbar shortcut when a modal is open", async () => {
+    const clickHandler = vi.fn();
+    const deps = baseDeps();
+    deps.isModalOpen = () => true;
+    deps.getToolbarItems = () => [{ id: "save", shortcut: { key: "s", mod: true }, clickHandler }];
+    const dispatch = createShortcutDispatcher(deps);
+    const e = ev({ code: "KeyS", ctrlKey: true });
+    await dispatch(e);
+    expect(clickHandler).not.toHaveBeenCalled();
+    expect(e.preventDefault).not.toHaveBeenCalled();
+  });
+
+  it("does not fire built-in Esc when a modal is open", async () => {
+    const deps = baseDeps();
+    deps.isModalOpen = () => true;
+    const dispatch = createShortcutDispatcher(deps);
+    await dispatch(ev({ key: "Escape" }));
+    expect(deps.closeBlade).not.toHaveBeenCalled();
+  });
+
+  it("still fires a toolbar shortcut when no modal is open", async () => {
+    const clickHandler = vi.fn();
+    const deps = baseDeps();
+    deps.isModalOpen = () => false;
+    deps.getToolbarItems = () => [{ id: "save", shortcut: { key: "s", mod: true }, clickHandler }];
+    const dispatch = createShortcutDispatcher(deps);
+    await dispatch(ev({ code: "KeyS", ctrlKey: true }));
+    expect(clickHandler).toHaveBeenCalledOnce();
   });
 });

@@ -117,6 +117,7 @@ const dispatchShortcut = createShortcutDispatcher({
     hasAccess(item.permissions) && resolveVisibility(item.isVisible) && !resolveReactiveBoolean(item.disabled),
   closeBlade: (id) => bladeStack.closeBlade(id),
   toggleMaximized: (id) => bladeStack.toggleMaximized(id),
+  isModalOpen: () => typeof document !== "undefined" && document.querySelector('[aria-modal="true"]') !== null,
 });
 
 useEventListener(window, "keydown", dispatchShortcut);

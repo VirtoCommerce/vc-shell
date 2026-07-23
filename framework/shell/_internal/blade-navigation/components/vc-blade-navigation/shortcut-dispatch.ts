@@ -22,6 +22,8 @@ export interface ShortcutDispatchDeps {
   isEnabled: (item: IBladeToolbar) => boolean;
   closeBlade: (id: string) => void | Promise<unknown>;
   toggleMaximized: (id: string) => void;
+  /** True while a modal (`aria-modal="true"`) is open; blade shortcuts are suppressed while it is. */
+  isModalOpen: () => boolean;
 }
 
 const ESC: ShortcutDefinition = hotkey.escape;
@@ -94,6 +96,7 @@ export function createShortcutDispatcher(deps: ShortcutDispatchDeps) {
   return async function dispatch(event: KeyboardEvent): Promise<void> {
     if (event.repeat) return;
     if (event.defaultPrevented) return;
+    if (deps.isModalOpen()) return; // a modal traps all blade shortcuts
 
     const active = deps.getActiveBlade();
     if (!active) return;

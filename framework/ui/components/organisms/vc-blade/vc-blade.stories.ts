@@ -811,6 +811,19 @@ export const WithShortcut: Story = {
       },
     ] satisfies IBladeToolbar[],
   },
+  parameters: {
+    docs: {
+      source: {
+        code: [
+          'import { hotkey } from "@vc-shell/framework";',
+          "",
+          "const toolbarItems = [",
+          '  { id: "save", title: "Save", icon: "lucide-save", shortcut: hotkey.mod.s, clickHandler() {} },',
+          "];",
+        ].join("\n"),
+      },
+    },
+  },
   render: (args) => ({
     components: { VcBlade },
     setup() {

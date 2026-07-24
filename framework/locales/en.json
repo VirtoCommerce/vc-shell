@@ -200,7 +200,10 @@
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Has unsaved changes",
-        "NO_CHANGES": "No unsaved changes"
+        "NO_CHANGES": "No unsaved changes",
+        "CLOSE": "Close",
+        "MAXIMIZE": "Maximize",
+        "RESTORE": "Restore"
       },
       "VC_TABLE": {
         "SELECT_ROW": "Select row",

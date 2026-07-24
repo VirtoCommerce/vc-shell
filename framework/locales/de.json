@@ -200,7 +200,10 @@
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",
-        "NO_CHANGES": "Keine ungespeicherten Änderungen"
+        "NO_CHANGES": "Keine ungespeicherten Änderungen",
+        "CLOSE": "Schließen",
+        "MAXIMIZE": "Maximieren",
+        "RESTORE": "Wiederherstellen"
       },
       "VC_TABLE": {
         "SELECT_ROW": "Zeile auswählen",

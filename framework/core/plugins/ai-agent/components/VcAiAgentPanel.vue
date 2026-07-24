@@ -29,6 +29,7 @@
 
 <script lang="ts" setup>
 import { computed, onUnmounted, inject } from "vue";
+import { useEventListener } from "@vueuse/core";
 import { AiAgentServiceKey, EmbeddedModeKey } from "@framework/injection-keys";
 import type { IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
 import VcAiAgentHeader from "@core/plugins/ai-agent/components/_internal/VcAiAgentHeader.vue";
@@ -59,6 +60,22 @@ const panelStyle = computed(() => ({
 const closePanel = () => aiAgentService?.closePanel();
 const expandPanel = () => aiAgentService?.expandPanel();
 const collapsePanel = () => aiAgentService?.collapsePanel();
+
+// Consume Escape while the panel is open so the blade-nav shortcut dispatcher
+// (which bails on defaultPrevented) does not close the blade behind it.
+// Capture phase guarantees preventDefault is visible to the dispatcher's
+// bubble-phase listener regardless of registration order.
+useEventListener(
+  window,
+  "keydown",
+  (event: KeyboardEvent) => {
+    if (!isOpen.value) return;
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+    closePanel();
+  },
+  { capture: true },
+);
 
 // Handle iframe ready event
 const onIframeReady = (iframe: HTMLIFrameElement) => {

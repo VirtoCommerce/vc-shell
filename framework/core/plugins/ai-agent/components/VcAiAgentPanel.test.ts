@@ -43,7 +43,7 @@ describe("VcAiAgentPanel - Escape key handling", () => {
     const { closePanel } = mountPanel(true);
 
     const event = new KeyboardEvent("keydown", { key: "Escape", cancelable: true });
-    window.dispatchEvent(event);
+    document.dispatchEvent(event);
 
     expect(closePanel).toHaveBeenCalledOnce();
     expect(event.defaultPrevented).toBe(true);
@@ -53,7 +53,7 @@ describe("VcAiAgentPanel - Escape key handling", () => {
     const { closePanel } = mountPanel(false);
 
     const event = new KeyboardEvent("keydown", { key: "Escape", cancelable: true });
-    window.dispatchEvent(event);
+    document.dispatchEvent(event);
 
     expect(closePanel).not.toHaveBeenCalled();
     expect(event.defaultPrevented).toBe(false);
@@ -63,9 +63,31 @@ describe("VcAiAgentPanel - Escape key handling", () => {
     const { closePanel } = mountPanel(true);
 
     const event = new KeyboardEvent("keydown", { key: "s", cancelable: true });
-    window.dispatchEvent(event);
+    document.dispatchEvent(event);
 
     expect(closePanel).not.toHaveBeenCalled();
     expect(event.defaultPrevented).toBe(false);
+  });
+
+  it("does not close the panel when a higher overlay already prevented default on Escape", () => {
+    const { closePanel } = mountPanel(true);
+
+    const event = new KeyboardEvent("keydown", { key: "Escape", cancelable: true });
+    event.preventDefault();
+    document.dispatchEvent(event);
+
+    expect(closePanel).not.toHaveBeenCalled();
+  });
+
+  it("does not close the panel on Escape while an IME composition is in progress", () => {
+    const { closePanel } = mountPanel(true);
+
+    const event = new KeyboardEvent("keydown", { key: "Escape", cancelable: true, isComposing: true });
+    if (!event.isComposing) {
+      Object.defineProperty(event, "isComposing", { value: true });
+    }
+    document.dispatchEvent(event);
+
+    expect(closePanel).not.toHaveBeenCalled();
   });
 });

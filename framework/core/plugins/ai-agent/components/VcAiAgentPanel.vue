@@ -63,19 +63,18 @@ const collapsePanel = () => aiAgentService?.collapsePanel();
 
 // Consume Escape while the panel is open so the blade-nav shortcut dispatcher
 // (which bails on defaultPrevented) does not close the blade behind it.
-// Capture phase guarantees preventDefault is visible to the dispatcher's
-// bubble-phase listener regardless of registration order.
-useEventListener(
-  window,
-  "keydown",
-  (event: KeyboardEvent) => {
-    if (!isOpen.value) return;
-    if (event.key !== "Escape") return;
-    event.preventDefault();
-    closePanel();
-  },
-  { capture: true },
-);
+// Listening on document's bubble phase still runs before the dispatcher's
+// window bubble-phase listener (target -> ... -> document -> window), while
+// deferring to any overlay above the panel (dropdown/popover/modal) that
+// consumes Escape earlier in the bubble chain.
+useEventListener(document, "keydown", (event: KeyboardEvent) => {
+  if (!isOpen.value) return;
+  if (event.isComposing) return;
+  if (event.defaultPrevented) return; // a higher overlay already consumed Escape
+  if (event.key !== "Escape") return;
+  event.preventDefault();
+  closePanel();
+});
 
 // Handle iframe ready event
 const onIframeReady = (iframe: HTMLIFrameElement) => {

@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { h, ref } from "vue";
 import Interceptor from "./interceptor";
+import { BladeDescriptorKey, BladeStackKey } from "@core/blade-navigation/types";
+import { markSessionExpired, resetSessionExpired } from "@core/utilities/sessionExpiration";
 
 // Mock useErrorHandler
 const mockError = ref<Error | string | null>(null);
@@ -101,5 +103,45 @@ describe("ErrorInterceptor", () => {
     mockError.value = new Error("Test error");
     await wrapper.vm.$nextTick();
     expect(wrapper.find(".interceptor-content").text()).toContain("Test error");
+  });
+});
+
+describe("ErrorInterceptor — blade banner + session expiration", () => {
+  const setBladeError = vi.fn();
+  const clearBladeError = vi.fn();
+
+  function mountWithBlade() {
+    return mount(Interceptor, {
+      props: { capture: false },
+      slots: { default: () => h("div") },
+      global: {
+        provide: {
+          [BladeDescriptorKey as symbol]: ref({ id: "blade-1" }),
+          [BladeStackKey as symbol]: { setBladeError, clearBladeError },
+        },
+      },
+    });
+  }
+
+  beforeEach(() => {
+    mockError.value = null;
+    setBladeError.mockClear();
+    clearBladeError.mockClear();
+    resetSessionExpired();
+  });
+
+  it("sets a blade error banner when an error is captured", async () => {
+    const wrapper = mountWithBlade();
+    mockError.value = new Error("load failed");
+    await wrapper.vm.$nextTick();
+    expect(setBladeError).toHaveBeenCalledWith("blade-1", expect.any(Error));
+  });
+
+  it("suppresses the blade error banner while the session is expired", async () => {
+    markSessionExpired();
+    const wrapper = mountWithBlade();
+    mockError.value = new Error("401 during navigation");
+    await wrapper.vm.$nextTick();
+    expect(setBladeError).not.toHaveBeenCalled();
   });
 });

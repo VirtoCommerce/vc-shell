@@ -2,6 +2,7 @@ import { readonly, ref, type Ref, type DeepReadonly } from "vue";
 import { HasLoading } from "@core/composables/useLoading";
 import { parseError, DisplayableError } from "@core/utilities/error";
 import { setPendingErrorNotification } from "@core/utilities/pendingErrorNotifications";
+import { isSessionExpired } from "@core/utilities/sessionExpiration";
 import { createLogger } from "@core/utilities";
 
 // Lazy-resolved reference to the notification singleton.
@@ -58,7 +59,9 @@ export function useAsync<Payload = void, Result = void>(
       error.value = parsed;
       logger.error("Async action failed:", e);
 
-      if (shouldNotify && e && typeof e === "object") {
+      // While the session is expired the app is redirecting to login — suppress the
+      // toast so the user isn't buried under load errors from the abandoned page.
+      if (shouldNotify && !isSessionExpired() && e && typeof e === "object") {
         const notifId = `async-error-${parsed.message.slice(0, 80)}`;
 
         // Defer notification so ErrorInterceptor can cancel it

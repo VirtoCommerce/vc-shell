@@ -6,10 +6,13 @@ const loggerError = vi.fn();
 const loggerWarn = vi.fn();
 const notificationError = vi.fn();
 
+// Mutable so a test can exercise a 401 arriving while nobody is signed in.
+let authenticated = true;
+
 vi.mock("@core/composables/useUserManagement", () => ({
   useUserManagement: () => ({
     signOut,
-    isAuthenticated: computed(() => true),
+    isAuthenticated: computed(() => authenticated),
   }),
 }));
 
@@ -37,6 +40,7 @@ vi.mock("@core/utilities", () => ({
 }));
 
 import { registerInterceptors } from "./index";
+import { isSessionExpired, resetSessionExpired } from "@core/utilities/sessionExpiration";
 
 function flushMicrotasks() {
   return new Promise((resolve) => setTimeout(resolve, 0));
@@ -60,10 +64,29 @@ describe("registerInterceptors — 401 handling", () => {
     loggerError.mockReset();
     loggerWarn.mockReset();
     notificationError.mockReset();
+    authenticated = true;
+    resetSessionExpired();
   });
 
   afterEach(() => {
     window.fetch = originalFetch;
+    authenticated = true;
+    resetSessionExpired();
+  });
+
+  it("marks the session expired on a 401 so data-load errors get suppressed", async () => {
+    signOut.mockResolvedValue(undefined);
+    const router = createRouter();
+    const originalImpl = vi.fn().mockResolvedValue({ status: 401 });
+    window.fetch = originalImpl as unknown as typeof window.fetch;
+
+    expect(isSessionExpired()).toBe(false);
+
+    const patched = registerInterceptors(router);
+    await patched("/api/platform/test");
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(true);
   });
 
   it("redirects and notifies even when signOut rejects", async () => {
@@ -96,6 +119,41 @@ describe("registerInterceptors — 401 handling", () => {
     expect(loggerError).not.toHaveBeenCalled();
     expect(router.push).toHaveBeenCalledWith("/login");
     expect(notificationError).toHaveBeenCalledOnce();
+  });
+
+  it("handles concurrent 401s from the same dead session exactly once", async () => {
+    signOut.mockResolvedValue(undefined);
+    const router = createRouter();
+    const originalImpl = vi.fn().mockResolvedValue({ status: 401 });
+    window.fetch = originalImpl as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    // Three blade loads racing on the page we were navigating to
+    await Promise.all([patched("/api/platform/a"), patched("/api/platform/b"), patched("/api/platform/c")]);
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(true);
+    expect(signOut).toHaveBeenCalledOnce();
+    expect(router.push).toHaveBeenCalledOnce();
+    expect(notificationError).toHaveBeenCalledOnce();
+  });
+
+  it("does not flag the session when a 401 arrives while nobody is signed in", async () => {
+    authenticated = false;
+    const router = createRouter();
+    const originalImpl = vi.fn().mockResolvedValue({ status: 401 });
+    window.fetch = originalImpl as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/api/platform/test");
+    await flushMicrotasks();
+
+    // Nothing to sign out of, no redirect to perform — and crucially no latched flag,
+    // which would silence every error in the app for the rest of the page's life.
+    expect(isSessionExpired()).toBe(false);
+    expect(signOut).not.toHaveBeenCalled();
+    expect(router.push).not.toHaveBeenCalled();
+    expect(notificationError).not.toHaveBeenCalled();
   });
 });
 

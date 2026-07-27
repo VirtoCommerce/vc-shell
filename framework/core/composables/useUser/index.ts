@@ -15,6 +15,7 @@ import type { RequestPasswordResult } from "@core/types";
 import { createSharedComposable } from "@vueuse/core";
 import { useExternalProvider } from "@core/composables/useExternalProvider";
 import { createLogger } from "@core/utilities";
+import { resetSessionExpired } from "@core/utilities/sessionExpiration";
 
 export interface TokenData {
   token: string | null;
@@ -178,6 +179,10 @@ export function _createInternalUserLogic(): IUserInternalAPI {
     logger.debug("signIn - Entry point");
     try {
       loading.value = true;
+
+      // A fresh sign-in starts a clean session: clear any prior expired flag so
+      // real data-load errors surface again after re-authentication.
+      resetSessionExpired();
 
       // First do the standard login to set cookies/session
       const result = await securityClient.login({ userName: username, password } as LoginRequest);

@@ -11,6 +11,7 @@ function ev(init: Partial<KeyboardEvent> & { code?: string; key?: string }): Key
     shiftKey: false,
     repeat: false,
     defaultPrevented: false,
+    isComposing: false,
     preventDefault: vi.fn(),
     ...init,
   } as unknown as KeyboardEvent;
@@ -149,5 +150,38 @@ describe("createShortcutDispatcher", () => {
     const dispatch = createShortcutDispatcher(deps);
     await dispatch(ev({ code: "KeyS", ctrlKey: true }));
     expect(clickHandler).toHaveBeenCalledOnce();
+  });
+
+  it("consumes the combo for a matched but disabled toolbar item (no browser default)", async () => {
+    const clickHandler = vi.fn();
+    const deps = baseDeps();
+    deps.isEnabled = () => false;
+    deps.getToolbarItems = () => [{ id: "save", shortcut: { key: "s", mod: true }, clickHandler }];
+    const dispatch = createShortcutDispatcher(deps);
+    const e = ev({ code: "KeyS", ctrlKey: true });
+    await dispatch(e);
+    expect(clickHandler).not.toHaveBeenCalled();
+    expect(e.preventDefault).toHaveBeenCalled();
+  });
+
+  it("ignores shortcuts while an IME composition is in progress", async () => {
+    const clickHandler = vi.fn();
+    const deps = baseDeps();
+    deps.getToolbarItems = () => [{ id: "save", shortcut: { key: "s", mod: true }, clickHandler }];
+    const dispatch = createShortcutDispatcher(deps);
+    await dispatch(ev({ code: "KeyS", ctrlKey: true, isComposing: true } as any));
+    expect(clickHandler).not.toHaveBeenCalled();
+  });
+
+  it("does not reject when a matched handler throws, but still consumes the combo", async () => {
+    const clickHandler = vi.fn(() => {
+      throw new Error("boom");
+    });
+    const deps = baseDeps();
+    deps.getToolbarItems = () => [{ id: "save", shortcut: { key: "s", mod: true }, clickHandler }];
+    const dispatch = createShortcutDispatcher(deps);
+    const e = ev({ code: "KeyS", ctrlKey: true });
+    await expect(dispatch(e)).resolves.toBeUndefined();
+    expect(e.preventDefault).toHaveBeenCalled();
   });
 });

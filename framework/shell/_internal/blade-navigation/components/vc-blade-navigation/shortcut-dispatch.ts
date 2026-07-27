@@ -88,6 +88,8 @@ export function createShortcutDispatcher(deps: ShortcutDispatchDeps) {
     inFlight.add(runKey);
     try {
       await run();
+    } catch (error) {
+      if (import.meta.env.DEV) console.error("[shortcut] handler threw", error);
     } finally {
       inFlight.delete(runKey);
     }
@@ -96,6 +98,7 @@ export function createShortcutDispatcher(deps: ShortcutDispatchDeps) {
   return async function dispatch(event: KeyboardEvent): Promise<void> {
     if (event.repeat) return;
     if (event.defaultPrevented) return;
+    if (event.isComposing) return; // don't hijack IME composition (Escape/Enter)
     if (deps.isModalOpen()) return; // a modal traps all blade shortcuts
 
     const active = deps.getActiveBlade();
@@ -112,8 +115,8 @@ export function createShortcutDispatcher(deps: ShortcutDispatchDeps) {
       if (!def) continue;
       if (!matchesEvent(def, event, deps.isMac)) continue;
       if (!hasModifier(def) && isTextInputFocused()) return; // bare key blocked in inputs
-      if (!deps.isEnabled(item)) return;
-      event.preventDefault();
+      event.preventDefault(); // matched toolbar item claims the combo, even if disabled
+      if (!deps.isEnabled(item)) return; // disabled: consumed as a no-op
       await runGuarded(`${bladeId}::${item.id ?? "item"}`, () => item.clickHandler?.());
       return;
     }

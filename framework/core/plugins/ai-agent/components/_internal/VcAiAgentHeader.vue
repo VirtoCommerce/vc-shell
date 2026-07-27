@@ -17,36 +17,93 @@
     </div>
 
     <div class="vc-ai-agent-header__controls">
-      <div
+      <VcTooltip
         v-if="isExpanded"
-        class="vc-ai-agent-header__button"
-        title="Collapse"
-        @click="$emit('collapse')"
+        placement="bottom"
       >
-        <VcIcon icon="lucide-minus" />
-      </div>
-      <div
+        <div
+          class="vc-ai-agent-header__button"
+          role="button"
+          tabindex="0"
+          :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.RESTORE')"
+          :aria-keyshortcuts="expandAria"
+          @click="$emit('collapse')"
+          @keydown.enter.prevent="$emit('collapse')"
+          @keydown.space.prevent="$emit('collapse')"
+        >
+          <VcIcon icon="lucide-minus" />
+        </div>
+        <template #tooltip>
+          <span class="tw-inline-flex tw-items-center tw-gap-2">
+            {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.RESTORE") }}
+            <ShortcutKbd
+              :parts="expandFmt.parts"
+              :separated="!isMac"
+            />
+          </span>
+        </template>
+      </VcTooltip>
+      <VcTooltip
         v-else
-        class="vc-ai-agent-header__button"
-        title="Expand"
-        @click="$emit('expand')"
+        placement="bottom"
       >
-        <VcIcon icon="lucide-panel-top" />
-      </div>
-      <div
-        class="vc-ai-agent-header__button"
-        title="Close"
-        @click="$emit('close')"
-      >
-        <VcIcon icon="lucide-x" />
-      </div>
+        <div
+          class="vc-ai-agent-header__button"
+          role="button"
+          tabindex="0"
+          :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.MAXIMIZE')"
+          :aria-keyshortcuts="expandAria"
+          @click="$emit('expand')"
+          @keydown.enter.prevent="$emit('expand')"
+          @keydown.space.prevent="$emit('expand')"
+        >
+          <VcIcon icon="lucide-panel-top" />
+        </div>
+        <template #tooltip>
+          <span class="tw-inline-flex tw-items-center tw-gap-2">
+            {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.MAXIMIZE") }}
+            <ShortcutKbd
+              :parts="expandFmt.parts"
+              :separated="!isMac"
+            />
+          </span>
+        </template>
+      </VcTooltip>
+      <VcTooltip placement="bottom">
+        <div
+          class="vc-ai-agent-header__button"
+          role="button"
+          tabindex="0"
+          :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.CLOSE')"
+          :aria-keyshortcuts="escapeAria"
+          @click="$emit('close')"
+          @keydown.enter.prevent="$emit('close')"
+          @keydown.space.prevent="$emit('close')"
+        >
+          <VcIcon icon="lucide-x" />
+        </div>
+        <template #tooltip>
+          <span class="tw-inline-flex tw-items-center tw-gap-2">
+            {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.CLOSE") }}
+            <ShortcutKbd
+              :parts="escapeFmt.parts"
+              :separated="!isMac"
+            />
+          </span>
+        </template>
+      </VcTooltip>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import VcVirtoOzLogo from "@core/plugins/ai-agent/components/_internal/VcVirtoOzLogo.vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
+import ShortcutKbd from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
+import { hotkey, formatShortcut, useKeyboardShortcuts } from "@core/composables/useKeyboardShortcuts";
 
 defineProps<{
   title?: string;
@@ -59,6 +116,13 @@ defineEmits<{
   (e: "expand"): void;
   (e: "collapse"): void;
 }>();
+
+const { t } = useI18n();
+const { isMac } = useKeyboardShortcuts();
+const escapeFmt = computed(() => formatShortcut(hotkey.escape, isMac));
+const expandFmt = computed(() => formatShortcut(hotkey.mod.backslash, isMac));
+const escapeAria = computed(() => escapeFmt.value.aria);
+const expandAria = computed(() => expandFmt.value.aria);
 </script>
 
 <style lang="scss">

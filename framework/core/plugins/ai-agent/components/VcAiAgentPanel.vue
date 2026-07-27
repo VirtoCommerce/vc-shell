@@ -34,6 +34,9 @@ import { AiAgentServiceKey, EmbeddedModeKey } from "@framework/injection-keys";
 import type { IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
 import VcAiAgentHeader from "@core/plugins/ai-agent/components/_internal/VcAiAgentHeader.vue";
 import VcAiAgentIframe from "@core/plugins/ai-agent/components/_internal/VcAiAgentIframe.vue";
+import { hotkey, matchesEvent, useKeyboardShortcuts } from "@core/composables/useKeyboardShortcuts";
+
+const { isMac } = useKeyboardShortcuts();
 
 // Inject AI agent service
 const aiAgentService = inject(AiAgentServiceKey) as IAiAgentServiceInternal | undefined;
@@ -71,9 +74,22 @@ useEventListener(document, "keydown", (event: KeyboardEvent) => {
   if (!isOpen.value) return;
   if (event.isComposing) return;
   if (event.defaultPrevented) return; // a higher overlay already consumed Escape
-  if (event.key !== "Escape") return;
-  event.preventDefault();
-  closePanel();
+  if (event.key === "Escape") {
+    event.preventDefault();
+    closePanel();
+    return;
+  }
+  // mod+\ toggles the panel's own expand/collapse while it is open, taking
+  // priority over the blade-nav shortcut dispatcher's window bubble-phase
+  // listener for the same combo (it bails on defaultPrevented).
+  if (matchesEvent(hotkey.mod.backslash, event, isMac)) {
+    event.preventDefault();
+    if (isExpanded.value) {
+      collapsePanel();
+    } else {
+      expandPanel();
+    }
+  }
 });
 
 // Handle iframe ready event

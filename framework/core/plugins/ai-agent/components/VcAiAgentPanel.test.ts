@@ -6,17 +6,20 @@ import { AiAgentServiceKey } from "@framework/injection-keys";
 
 const mountedWrappers: VueWrapper[] = [];
 
-function mountPanel(isOpenValue: boolean) {
+function mountPanel(isOpenValue: boolean, isExpandedValue = false) {
   const isOpen = ref(isOpenValue);
+  const isExpanded = ref(isExpandedValue);
   const closePanel = vi.fn();
+  const expandPanel = vi.fn();
+  const collapsePanel = vi.fn();
   const mockService = {
     config: ref({ url: "", title: "AI Assistant", width: 362, expandedWidth: 500 }),
     isOpen: computed(() => isOpen.value),
-    isExpanded: computed(() => false),
+    isExpanded: computed(() => isExpanded.value),
     totalItemsCount: computed(() => 0),
     closePanel,
-    expandPanel: vi.fn(),
-    collapsePanel: vi.fn(),
+    expandPanel,
+    collapsePanel,
     _setIframeRef: vi.fn(),
   };
 
@@ -29,7 +32,20 @@ function mountPanel(isOpenValue: boolean) {
   });
   mountedWrappers.push(wrapper);
 
-  return { closePanel };
+  return { closePanel, expandPanel, collapsePanel };
+}
+
+function dispatchModBackslash(): KeyboardEvent {
+  const isMac = /Mac|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const event = new KeyboardEvent("keydown", {
+    key: "\\",
+    code: "Backslash",
+    ctrlKey: !isMac,
+    metaKey: isMac,
+    cancelable: true,
+  });
+  document.dispatchEvent(event);
+  return event;
 }
 
 describe("VcAiAgentPanel - Escape key handling", () => {
@@ -89,5 +105,43 @@ describe("VcAiAgentPanel - Escape key handling", () => {
     document.dispatchEvent(event);
 
     expect(closePanel).not.toHaveBeenCalled();
+  });
+});
+
+describe("VcAiAgentPanel - mod+\\ expand/collapse handling", () => {
+  afterEach(() => {
+    while (mountedWrappers.length) {
+      mountedWrappers.pop()?.unmount();
+    }
+  });
+
+  it("expands the panel and prevents default on mod+\\ when open and not expanded", () => {
+    const { expandPanel, collapsePanel } = mountPanel(true, false);
+
+    const event = dispatchModBackslash();
+
+    expect(expandPanel).toHaveBeenCalledOnce();
+    expect(collapsePanel).not.toHaveBeenCalled();
+    expect(event.defaultPrevented).toBe(true);
+  });
+
+  it("collapses the panel and prevents default on mod+\\ when open and expanded", () => {
+    const { expandPanel, collapsePanel } = mountPanel(true, true);
+
+    const event = dispatchModBackslash();
+
+    expect(collapsePanel).toHaveBeenCalledOnce();
+    expect(expandPanel).not.toHaveBeenCalled();
+    expect(event.defaultPrevented).toBe(true);
+  });
+
+  it("does not expand/collapse or prevent default on mod+\\ when closed", () => {
+    const { expandPanel, collapsePanel } = mountPanel(false, false);
+
+    const event = dispatchModBackslash();
+
+    expect(expandPanel).not.toHaveBeenCalled();
+    expect(collapsePanel).not.toHaveBeenCalled();
+    expect(event.defaultPrevented).toBe(false);
   });
 });

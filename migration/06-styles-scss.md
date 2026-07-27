@@ -28,6 +28,7 @@ The framework now auto-loads all required base styles.
 ### Step 3: Restructure style files
 
 **Old structure:**
+
 ```
 src/styles/
   base.scss      ← delete
@@ -37,6 +38,7 @@ src/styles/
 ```
 
 **New structure:**
+
 ```
 src/styles/
   custom.scss
@@ -44,8 +46,9 @@ src/styles/
 ```
 
 **Updated `src/styles/index.scss`:**
+
 ```scss
-@use 'custom';
+@use "custom";
 
 @tailwind base;
 @tailwind components;
@@ -78,11 +81,11 @@ Every palette token (`--primary-*`, `--secondary-*`, `--accent-*`, `--neutrals-*
 
 The global scrollbar tokens in `framework/assets/styles/index.scss` were renamed, and scrollbar behavior changed to hidden-by-default with hover-reveal.
 
-| v1.x              | v2.0                  |
-| ----------------- | --------------------- |
-| `--scroll-color`  | `--scroll-thumb`      |
-| `--scroll-width`  | `--scroll-size`       |
-| (new)             | `--scroll-thumb-hover`|
+| v1.x             | v2.0                   |
+| ---------------- | ---------------------- |
+| `--scroll-color` | `--scroll-thumb`       |
+| `--scroll-width` | `--scroll-size`        |
+| (new)            | `--scroll-thumb-hover` |
 
 **Behavioral change**: scrollbar thumb is transparent by default; it fades in only when the scroll container (or any ancestor) is hovered. The old `--scroll-color-hover`, `--scroll-padding`, `--scroll-shadow-color`, and `--scroll-shadow` tokens are gone.
 
@@ -129,12 +132,12 @@ The tokens are declared on `:root`, so they are available as CSS custom properti
 
 **Four tiers:**
 
-| Tier       | Range       | Tokens                                                                                                                                                            | Use when                                             |
-| ---------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| Local      | -1 … 15     | `--z-local-below` (-1), `--z-local-above` (2), `--z-local-sticky` (10), `--z-local-header` (11)                                                                    | Inside a component, stacking next to a sibling       |
-| Layout     | 40 … 70     | `--z-layout-header` (40), `--z-layout-sidebar` (50), `--z-layout-widget` (54), `--z-layout-toolbar` (60)                                                           | Page chrome visible on scroll                        |
-| Overlay    | 100 … 500   | `--z-overlay-dropdown` (100), `--z-overlay-editor-bubble` (200), `--z-overlay-row-actions` (300), `--z-overlay-drag` (400), `--z-overlay-back-button` (500)        | Pops up on action, inside a blade                    |
-| Critical   | 9000 … 9500 | `--z-critical-loading` (9000), `--z-critical-popup` (9100), `--z-critical-modal` (9200), `--z-critical-dropdown-panel` (9300), `--z-critical-tooltip` (9400), `--z-critical-notification` (9500) | Covers the entire app (teleported)                  |
+| Tier     | Range       | Tokens                                                                                                                                                                                           | Use when                                       |
+| -------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| Local    | -1 … 15     | `--z-local-below` (-1), `--z-local-above` (2), `--z-local-sticky` (10), `--z-local-header` (11)                                                                                                  | Inside a component, stacking next to a sibling |
+| Layout   | 40 … 70     | `--z-layout-header` (40), `--z-layout-sidebar` (50), `--z-layout-widget` (54), `--z-layout-toolbar` (60)                                                                                         | Page chrome visible on scroll                  |
+| Overlay  | 100 … 500   | `--z-overlay-dropdown` (100), `--z-overlay-editor-bubble` (200), `--z-overlay-row-actions` (300), `--z-overlay-drag` (400), `--z-overlay-back-button` (500)                                      | Pops up on action, inside a blade              |
+| Critical | 9000 … 9500 | `--z-critical-loading` (9000), `--z-critical-popup` (9100), `--z-critical-modal` (9200), `--z-critical-floating-panel` (9300), `--z-critical-tooltip` (9400), `--z-critical-notification` (9500) | Covers the entire app (teleported)             |
 
 **Consume from CSS / SCSS:**
 

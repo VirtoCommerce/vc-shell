@@ -74,7 +74,8 @@ function makeBuilder(mods: Partial<Record<Modifier, boolean>>): HotkeyBuilder {
   return new Proxy(
     {},
     {
-      get(_target, prop: string) {
+      get(_target, prop) {
+        if (typeof prop !== "string" || prop === "then") return undefined;
         if (MODIFIERS.has(prop)) {
           return makeBuilder({ ...mods, [prop as Modifier]: true });
         }

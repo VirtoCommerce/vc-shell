@@ -75,4 +75,27 @@ describe("isTextInputFocused", () => {
     div.focus();
     expect(isTextInputFocused()).toBe(true);
   });
+
+  it("false for a checkbox input", () => {
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    document.body.appendChild(input);
+    input.focus();
+    expect(isTextInputFocused()).toBe(false);
+  });
+
+  it("true for a text input (explicit or default type)", () => {
+    const input = document.createElement("input");
+    input.type = "text";
+    document.body.appendChild(input);
+    input.focus();
+    expect(isTextInputFocused()).toBe(true);
+  });
+
+  it("true for a textarea", () => {
+    const textarea = document.createElement("textarea");
+    document.body.appendChild(textarea);
+    textarea.focus();
+    expect(isTextInputFocused()).toBe(true);
+  });
 });

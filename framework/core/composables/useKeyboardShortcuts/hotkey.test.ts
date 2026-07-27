@@ -32,4 +32,16 @@ describe("hotkey builder", () => {
     expect(a).toEqual({ key: "s", mod: true });
     expect(b).toEqual({ key: "e", shift: true });
   });
+
+  it("`.then` access is undefined (not mistaken for a thenable)", () => {
+    expect((hotkey as any).then).toBeUndefined();
+  });
+
+  it("symbol property access is undefined", () => {
+    expect((hotkey as any)[Symbol.iterator]).toBeUndefined();
+  });
+
+  it("regression: hotkey.mod.s still equals { key: 's', mod: true }", () => {
+    expect(hotkey.mod.s).toEqual({ key: "s", mod: true });
+  });
 });

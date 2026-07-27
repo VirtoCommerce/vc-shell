@@ -74,12 +74,26 @@ export function matchesEvent(def: ShortcutDefinition, event: KeyboardEvent, isMa
   return keyMatches(def, event);
 }
 
+/** `<input>` types that do not accept typed text; focus on these must not suppress bare-key shortcuts. */
+const NON_TEXT_INPUT_TYPES: ReadonlySet<string> = new Set([
+  "button",
+  "submit",
+  "reset",
+  "checkbox",
+  "radio",
+  "file",
+  "image",
+  "range",
+  "color",
+]);
+
 /** True when focus is in a text-entry element, where bare-key shortcuts must not fire. */
 export function isTextInputFocused(): boolean {
   const el = document.activeElement as HTMLElement | null;
   if (!el) return false;
   const tag = el.tagName;
-  if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
+  if (tag === "INPUT") return !NON_TEXT_INPUT_TYPES.has((el as HTMLInputElement).type);
+  if (tag === "TEXTAREA" || tag === "SELECT") return true;
   if (el.isContentEditable === true) return true;
   // jsdom does not implement `isContentEditable` (always undefined), so fall back
   // to the raw attribute for test environments; harmless in real browsers.

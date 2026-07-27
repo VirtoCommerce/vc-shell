@@ -4,6 +4,8 @@
     is-mobile-fullscreen
     is-fullscreen
     modal-width="vc-gallery-preview__modal"
+    role="dialog"
+    aria-modal="true"
     @close="$emit('close')"
   >
     <template #header>

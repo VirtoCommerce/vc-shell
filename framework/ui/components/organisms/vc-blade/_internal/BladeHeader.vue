@@ -106,26 +106,81 @@
         v-if="!isMobile && closable"
         class="vc-blade-header__controls"
       >
-        <div
+        <VcTooltip
           v-if="renderingState?.maximized"
-          class="vc-blade-header__button"
-          @click="onCollapse"
+          placement="bottom"
         >
-          <VcIcon icon="lucide-minus" />
-        </div>
-        <div
+          <div
+            class="vc-blade-header__button"
+            role="button"
+            tabindex="0"
+            :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.RESTORE')"
+            :aria-keyshortcuts="expandAria"
+            @click="onCollapse"
+            @keydown.enter.prevent="onCollapse"
+            @keydown.space.prevent="onCollapse"
+          >
+            <VcIcon icon="lucide-minus" />
+          </div>
+          <template #tooltip>
+            <span class="tw-inline-flex tw-items-center tw-gap-2">
+              {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.RESTORE") }}
+              <ShortcutKbd
+                :parts="expandFmt.parts"
+                :separated="!isMac"
+              />
+            </span>
+          </template>
+        </VcTooltip>
+        <VcTooltip
           v-else
-          class="vc-blade-header__button"
-          @click="onExpand"
+          placement="bottom"
         >
-          <VcIcon icon="lucide-panel-top" />
-        </div>
-        <div
-          class="vc-blade-header__button"
-          @click="onClose"
-        >
-          <VcIcon icon="lucide-x" />
-        </div>
+          <div
+            class="vc-blade-header__button"
+            role="button"
+            tabindex="0"
+            :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.MAXIMIZE')"
+            :aria-keyshortcuts="expandAria"
+            @click="onExpand"
+            @keydown.enter.prevent="onExpand"
+            @keydown.space.prevent="onExpand"
+          >
+            <VcIcon icon="lucide-panel-top" />
+          </div>
+          <template #tooltip>
+            <span class="tw-inline-flex tw-items-center tw-gap-2">
+              {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.MAXIMIZE") }}
+              <ShortcutKbd
+                :parts="expandFmt.parts"
+                :separated="!isMac"
+              />
+            </span>
+          </template>
+        </VcTooltip>
+        <VcTooltip placement="bottom">
+          <div
+            class="vc-blade-header__button"
+            role="button"
+            tabindex="0"
+            :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.CLOSE')"
+            :aria-keyshortcuts="escapeAria"
+            @click="onClose"
+            @keydown.enter.prevent="onClose"
+            @keydown.space.prevent="onClose"
+          >
+            <VcIcon icon="lucide-x" />
+          </div>
+          <template #tooltip>
+            <span class="tw-inline-flex tw-items-center tw-gap-2">
+              {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.CLOSE") }}
+              <ShortcutKbd
+                :parts="escapeFmt.parts"
+                :separated="!isMac"
+              />
+            </span>
+          </template>
+        </VcTooltip>
       </div>
     </div>
   </div>
@@ -134,11 +189,15 @@
 <script lang="ts" setup>
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
-import { ref, inject } from "vue";
+import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
+import ShortcutKbd from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
+import { ref, inject, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { shift } from "@floating-ui/vue";
 import { BladeRenderingStateKey } from "@core/blade-navigation/types";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
+import { hotkey, formatShortcut, useKeyboardShortcuts } from "@core/composables/useKeyboardShortcuts";
 
 export interface Props {
   closable?: boolean;
@@ -158,6 +217,13 @@ const emit = defineEmits<{
   expand: [];
   collapse: [];
 }>();
+
+const { t } = useI18n();
+const { isMac } = useKeyboardShortcuts();
+const escapeFmt = computed(() => formatShortcut(hotkey.escape, isMac));
+const expandFmt = computed(() => formatShortcut(hotkey.mod.backslash, isMac));
+const escapeAria = computed(() => escapeFmt.value.aria);
+const expandAria = computed(() => expandFmt.value.aria);
 
 const { isMobile } = useResponsive();
 const renderingState = inject(BladeRenderingStateKey, undefined);

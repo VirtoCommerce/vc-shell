@@ -28,6 +28,30 @@ describe("VcDropdown", () => {
     wrapper.unmount();
   });
 
+  it("calls preventDefault on Escape when open", async () => {
+    const items = [
+      { id: "1", title: "One" },
+      { id: "2", title: "Two" },
+    ];
+
+    const wrapper = mount(VcDropdown as any, {
+      props: {
+        modelValue: true,
+        items,
+        itemText: (item: { title: string }) => item.title,
+      },
+      attachTo: document.body,
+    });
+
+    const event = new KeyboardEvent("keydown", { key: "Escape", cancelable: true });
+    document.dispatchEvent(event);
+    await nextTick();
+
+    expect(event.defaultPrevented).toBe(true);
+
+    wrapper.unmount();
+  });
+
   it("supports arrow navigation and selects focused item on Enter", async () => {
     const items = [
       { id: "1", title: "One" },

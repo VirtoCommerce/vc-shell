@@ -201,6 +201,7 @@ describe("provideAiAgentService", () => {
         id: AI_AGENT_TOOLBAR_BUTTON_ID,
         icon: AI_AGENT_TOOLBAR_BUTTON_ICON,
         title: AI_AGENT_TOOLBAR_BUTTON_TITLE,
+        shortcut: { key: "i", mod: true },
       }),
     );
 

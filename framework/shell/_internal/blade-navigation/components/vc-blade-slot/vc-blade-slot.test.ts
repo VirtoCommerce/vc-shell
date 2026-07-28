@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h, inject, type ComputedRef } from "vue";
+import { defineComponent, h, inject, ref, type ComputedRef } from "vue";
 import VcBladeSlot from "./vc-blade-slot.vue";
 import {
   BladeDescriptorKey,
@@ -21,6 +21,7 @@ vi.mock("@core/composables/useBladeRegistry", () => ({
 vi.mock("@core/blade-navigation/useBladeStack", () => ({
   useBladeStack: () => ({
     setBladeTitle: vi.fn(),
+    getMaximizedRef: () => ref(false),
   }),
 }));
 

@@ -165,6 +165,23 @@ describe("vc-gallery-preview.vue", () => {
     wrapper.unmount();
   });
 
+  it("marks the popup as a modal dialog while open", () => {
+    const wrapper = mount(VcGalleryPreview, {
+      props: { images, index: 0 },
+    });
+    const popup = wrapper.find(".mock-popup");
+    expect(popup.attributes("aria-modal")).toBe("true");
+    expect(popup.attributes("role")).toBe("dialog");
+  });
+
+  it("does not render a modal marker when there is no current image", () => {
+    const wrapper = mount(VcGalleryPreview, {
+      props: { images: [], index: 0 },
+    });
+    expect(wrapper.find(".mock-popup").exists()).toBe(false);
+    expect(wrapper.find('[aria-modal="true"]').exists()).toBe(false);
+  });
+
   it("marks active thumbnail based on index", () => {
     const wrapper = mount(VcGalleryPreview, {
       props: { images, index: 1 },

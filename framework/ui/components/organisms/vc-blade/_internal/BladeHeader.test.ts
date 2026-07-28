@@ -5,10 +5,15 @@ import { BladeDescriptorKey, BladeRenderingStateKey } from "@core/blade-navigati
 import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import type { BladeDescriptor, BladeRenderingState } from "@core/blade-navigation/types";
 
-// Mock @floating-ui/vue
-vi.mock("@floating-ui/vue", () => ({
-  shift: () => ({}),
-}));
+// Mock @floating-ui/vue: keep real exports (VcTooltip needs useFloating/autoUpdate/etc.),
+// override only `shift` (used directly by BladeHeader's own tooltip positioning).
+vi.mock("@floating-ui/vue", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@floating-ui/vue")>();
+  return {
+    ...actual,
+    shift: () => ({}),
+  };
+});
 
 // Mock composables
 vi.mock("@ui/composables", () => ({
@@ -170,6 +175,73 @@ describe("BladeHeader", () => {
     const buttons = wrapper.findAll(".vc-blade-header__button");
     await buttons[0].trigger("click");
     expect(wrapper.emitted("collapse")).toBeTruthy();
+  });
+
+  describe("accessibility / shortcuts", () => {
+    it("close control has role=button, tabindex=0, non-empty aria-label, and aria-keyshortcuts=Escape", () => {
+      const wrapper = factory({ closable: true }, { maximized: false });
+      const buttons = wrapper.findAll(".vc-blade-header__button");
+      const closeButton = buttons[buttons.length - 1];
+      expect(closeButton.attributes("role")).toBe("button");
+      expect(closeButton.attributes("tabindex")).toBe("0");
+      expect(closeButton.attributes("aria-label")).toBeTruthy();
+      expect(closeButton.attributes("aria-keyshortcuts")).toBe("Escape");
+    });
+
+    it("maximize control has role=button, tabindex=0, non-empty aria-label, and aria-keyshortcuts ending in +\\", () => {
+      const wrapper = factory({ closable: true }, { maximized: false });
+      const buttons = wrapper.findAll(".vc-blade-header__button");
+      const expandButton = buttons[0];
+      expect(expandButton.attributes("role")).toBe("button");
+      expect(expandButton.attributes("tabindex")).toBe("0");
+      expect(expandButton.attributes("aria-label")).toBeTruthy();
+      expect(expandButton.attributes("aria-keyshortcuts")).toMatch(/\+\\$/);
+    });
+
+    it("restore control (maximized state) has aria-keyshortcuts ending in +\\ and a non-empty aria-label", () => {
+      const wrapper = factory({ closable: true }, { maximized: true });
+      const buttons = wrapper.findAll(".vc-blade-header__button");
+      const collapseButton = buttons[0];
+      expect(collapseButton.attributes("role")).toBe("button");
+      expect(collapseButton.attributes("tabindex")).toBe("0");
+      expect(collapseButton.attributes("aria-label")).toBeTruthy();
+      expect(collapseButton.attributes("aria-keyshortcuts")).toMatch(/\+\\$/);
+    });
+
+    it("emits expand when expand control is activated via keydown.enter", async () => {
+      const wrapper = factory({ closable: true }, { maximized: false });
+      const buttons = wrapper.findAll(".vc-blade-header__button");
+      await buttons[0].trigger("keydown.enter");
+      expect(wrapper.emitted("expand")).toBeTruthy();
+    });
+
+    it("emits expand when expand control is activated via keydown.space", async () => {
+      const wrapper = factory({ closable: true }, { maximized: false });
+      const buttons = wrapper.findAll(".vc-blade-header__button");
+      await buttons[0].trigger("keydown.space");
+      expect(wrapper.emitted("expand")).toBeTruthy();
+    });
+
+    it("emits close when close control is activated via keydown.enter", async () => {
+      const wrapper = factory({ closable: true }, { maximized: false });
+      const buttons = wrapper.findAll(".vc-blade-header__button");
+      await buttons[buttons.length - 1].trigger("keydown.enter");
+      expect(wrapper.emitted("close")).toBeTruthy();
+    });
+
+    it("emits close when close control is activated via keydown.space", async () => {
+      const wrapper = factory({ closable: true }, { maximized: false });
+      const buttons = wrapper.findAll(".vc-blade-header__button");
+      await buttons[buttons.length - 1].trigger("keydown.space");
+      expect(wrapper.emitted("close")).toBeTruthy();
+    });
+
+    it("emits collapse when collapse control is activated via keydown.enter", async () => {
+      const wrapper = factory({ closable: true }, { maximized: true });
+      const buttons = wrapper.findAll(".vc-blade-header__button");
+      await buttons[0].trigger("keydown.enter");
+      expect(wrapper.emitted("collapse")).toBeTruthy();
+    });
   });
 
   it("renders prepend slot", () => {

@@ -493,4 +493,24 @@ describe("createBladeStack", () => {
       expect(permStack.blades.value).toHaveLength(1);
     });
   });
+
+  // ── maximized store ────────────────────────────────────────────────────────
+
+  describe("maximized store", () => {
+    it("defaults to false and toggles", () => {
+      const stack = createBladeStack(createMockRegistry());
+      const ref = stack.getMaximizedRef("blade-1");
+      expect(ref.value).toBe(false);
+      stack.toggleMaximized("blade-1");
+      expect(ref.value).toBe(true);
+      expect(stack.isMaximized("blade-1")).toBe(true);
+      stack.setMaximized("blade-1", false);
+      expect(ref.value).toBe(false);
+    });
+
+    it("returns the same ref instance for the same id", () => {
+      const stack = createBladeStack(createMockRegistry());
+      expect(stack.getMaximizedRef("blade-1")).toBe(stack.getMaximizedRef("blade-1"));
+    });
+  });
 });

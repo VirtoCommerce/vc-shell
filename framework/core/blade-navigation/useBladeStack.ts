@@ -1,4 +1,4 @@
-import { ref, computed, inject } from "vue";
+import { ref, computed, inject, type Ref } from "vue";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { BladeDescriptor, BladeOpenEvent, IBladeStack } from "@core/blade-navigation/types";
 import { BladeStackKey } from "@core/blade-navigation/types";
@@ -40,6 +40,9 @@ export function createBladeStack(
   const _onOpenCallbacks = new Map<string, () => void>();
   const _onCloseCallbacks = new Map<string, () => void>();
 
+  // Maximized state per blade
+  const _maximized = new Map<string, Ref<boolean>>();
+
   // ── Computed (readonly) ───────────────────────────────────────────────────
   const workspace = computed(() => _blades.value[0]);
 
@@ -58,6 +61,7 @@ export function createBladeStack(
     _beforeCloseGuards.delete(bladeId);
     _onOpenCallbacks.delete(bladeId);
     _onCloseCallbacks.delete(bladeId);
+    _maximized.delete(bladeId);
   }
 
   function _resolveUrl(name: string): string | undefined {
@@ -373,6 +377,27 @@ export function createBladeStack(
     _blades.value = updated;
   }
 
+  // ── Maximized Management ───────────────────────────────────────────────────
+
+  function getMaximizedRef(id: string): Ref<boolean> {
+    let r = _maximized.get(id);
+    if (!r) {
+      r = ref(false);
+      _maximized.set(id, r);
+    }
+    return r;
+  }
+  function isMaximized(id: string): boolean {
+    return _maximized.get(id)?.value ?? false;
+  }
+  function setMaximized(id: string, value: boolean): void {
+    getMaximizedRef(id).value = value;
+  }
+  function toggleMaximized(id: string): void {
+    const r = getMaximizedRef(id);
+    r.value = !r.value;
+  }
+
   // ── Internal: Restore (used by HistoryManager) ────────────────────────────
 
   function _restoreStack(descriptors: BladeDescriptor[]): void {
@@ -401,6 +426,10 @@ export function createBladeStack(
     clearBladeError,
     setBladeTitle,
     updateBladeQuery,
+    getMaximizedRef,
+    isMaximized,
+    setMaximized,
+    toggleMaximized,
     _restoreStack,
   };
 }

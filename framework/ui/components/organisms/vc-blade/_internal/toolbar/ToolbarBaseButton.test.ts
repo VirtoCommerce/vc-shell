@@ -76,4 +76,20 @@ describe("ToolbarBaseButton", () => {
 
     expect(wrapper.text()).toContain("Updated");
   });
+
+  it("sets aria-keyshortcuts when a shortcut is present", () => {
+    const wrapper = mount(ToolbarBaseButton, {
+      props: { id: "save", title: "Save", icon: "lucide-save", shortcut: { key: "s", mod: true } },
+    });
+    const button = wrapper.get("button");
+    // canonical form is OS-independent: Control+S or Meta+S depending on runner
+    expect(button.attributes("aria-keyshortcuts")).toMatch(/\+S$/);
+  });
+
+  it("does not set aria-keyshortcuts without a shortcut", () => {
+    const wrapper = mount(ToolbarBaseButton, {
+      props: { id: "save", title: "Save", icon: "lucide-save" },
+    });
+    expect(wrapper.get("button").attributes("aria-keyshortcuts")).toBeUndefined();
+  });
 });

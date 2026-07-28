@@ -8,6 +8,7 @@ import type {
   IAiAgentBladeContext,
 } from "@core/plugins/ai-agent/types";
 import { createLogger } from "@core/utilities";
+import { hotkey } from "@core/composables/useKeyboardShortcuts";
 import { useUser } from "@core/composables/useUser";
 import { useBlade } from "@core/composables/useBlade";
 import { useBladeStack } from "@core/blade-navigation";
@@ -99,6 +100,7 @@ export function provideAiAgentService(options?: ProvideAiAgentServiceOptions): I
           id: AI_AGENT_TOOLBAR_BUTTON_ID,
           icon: AI_AGENT_TOOLBAR_BUTTON_ICON,
           title: AI_AGENT_TOOLBAR_BUTTON_TITLE,
+          shortcut: hotkey.mod.i,
           clickHandler: () => {
             service.togglePanel();
           },

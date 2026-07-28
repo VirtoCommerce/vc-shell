@@ -1,12 +1,46 @@
 <template>
+  <VcTooltip
+    v-if="shortcut"
+    placement="bottom"
+  >
+    <button
+      class="vc-blade-toolbar-base-button"
+      :class="buttonClass"
+      :data-test-id="id ?? 'vc-blade-toolbar-button'"
+      :aria-keyshortcuts="ariaKeyshortcuts"
+      v-bind="$attrs"
+      @click="handleClick"
+    >
+      <div
+        class="vc-blade-toolbar-base-button__content"
+        :style="{ flexDirection: contentDirection }"
+      >
+        <VcIcon
+          class="vc-blade-toolbar-base-button__icon"
+          :class="iconClassName"
+          :icon="resolvedIcon"
+          :size="size"
+        />
+        <span
+          class="vc-blade-toolbar-base-button__title"
+          :class="titleClassName"
+        >
+          {{ resolvedTitle }}
+        </span>
+      </div>
+    </button>
+    <template #tooltip>
+      <ShortcutKbd
+        :parts="shortcutFormat.parts"
+        :separated="!isMac"
+      />
+    </template>
+  </VcTooltip>
+
   <button
+    v-else
     class="vc-blade-toolbar-base-button"
-    :class="{
-      'vc-blade-toolbar-base-button--disabled': isDisabled || isWaiting,
-      'vc-blade-toolbar-base-button--with-separator-left': separator === 'left',
-      'vc-blade-toolbar-base-button--with-separator-right': separator === 'right',
-      'vc-blade-toolbar-base-button--with-separator-both': separator === 'both',
-    }"
+    :class="buttonClass"
     :data-test-id="id ?? 'vc-blade-toolbar-button'"
     v-bind="$attrs"
     @click="handleClick"
@@ -34,7 +68,10 @@
 <script lang="ts" setup>
 import { computed, isRef, ref, toValue } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
+import ShortcutKbd from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
 import { resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
+import { useKeyboardShortcuts, formatShortcut } from "@core/composables/useKeyboardShortcuts";
 import type { Props } from "@ui/components/organisms/vc-blade/_internal/toolbar/toolbar-button-props";
 
 const props = withDefaults(defineProps<Props>(), {
@@ -48,8 +85,22 @@ defineOptions({
   inheritAttrs: false,
 });
 
+const { isMac } = useKeyboardShortcuts();
+
 const isWaiting = ref(false);
 const isDisabled = computed(() => resolveReactiveBoolean(props.disabled));
+
+const buttonClass = computed(() => ({
+  "vc-blade-toolbar-base-button--disabled": isDisabled.value || isWaiting.value,
+  "vc-blade-toolbar-base-button--with-separator-left": props.separator === "left",
+  "vc-blade-toolbar-base-button--with-separator-right": props.separator === "right",
+  "vc-blade-toolbar-base-button--with-separator-both": props.separator === "both",
+}));
+
+const shortcutFormat = computed(() =>
+  props.shortcut ? formatShortcut(props.shortcut, isMac) : { parts: [], aria: "" },
+);
+const ariaKeyshortcuts = computed(() => (props.shortcut ? shortcutFormat.value.aria : undefined));
 
 const resolvedTitle = computed(() => {
   if (isRef(props.title)) {

@@ -11,6 +11,7 @@ import { createWidgetService } from "@core/services/widget-service";
 import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey, BladeBannersKey } from "@core/blade-navigation/types";
 import type { BladeDescriptor, IBladeBanner } from "@core/blade-navigation/types";
 import type { IBladeToolbar } from "@core/types";
+import { hotkey } from "@core/composables/useKeyboardShortcuts";
 import { withVcApp, withMobileView } from "../../../../../.storybook/decorators";
 
 // ── Mock blade injection context ─────────────────────────────────────────────
@@ -783,6 +784,59 @@ export const SkeletonWithRealContent: Story = {
           </div>
         </VcBlade>
       </div>
+    `,
+  }),
+};
+
+/**
+ * Toolbar item with a keyboard shortcut. The "Save" button declares
+ * `shortcut: hotkey.mod.s` -- hover or focus it to see the OS-aware `⌘S`/`Ctrl+S`
+ * tooltip, and inspect the button to see `aria-keyshortcuts` set automatically.
+ */
+export const WithShortcut: Story = {
+  args: {
+    title: "Order Details",
+    subtitle: "ORD-12345",
+    icon: "lucide-file-text",
+    width: 500,
+    toolbarItems: [
+      {
+        id: "save",
+        title: "Save",
+        icon: "lucide-save",
+        shortcut: hotkey.mod.s,
+        clickHandler: () => {
+          console.log("[Toolbar] Save clicked");
+        },
+      },
+    ] satisfies IBladeToolbar[],
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: [
+          'import { hotkey } from "@vc-shell/framework";',
+          "",
+          "const toolbarItems = [",
+          '  { id: "save", title: "Save", icon: "lucide-save", shortcut: hotkey.mod.s, clickHandler() {} },',
+          "];",
+        ].join("\n"),
+      },
+    },
+  },
+  render: (args) => ({
+    components: { VcBlade },
+    setup() {
+      provideMockBladeContext();
+      return { args };
+    },
+    template: `
+      <VcBlade v-bind="args">
+        <div class="tw-p-6">
+          <p class="tw-text-sm tw-text-gray-600">The "Save" button declares a keyboard shortcut via <code>shortcut: hotkey.mod.s</code>.</p>
+          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Hover or focus the button to see the tooltip; it also carries <code>aria-keyshortcuts</code>.</p>
+        </div>
+      </VcBlade>
     `,
   }),
 };

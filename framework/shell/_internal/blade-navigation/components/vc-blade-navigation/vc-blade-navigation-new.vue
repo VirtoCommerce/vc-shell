@@ -33,13 +33,18 @@ import { computed, h, inject, nextTick, onMounted, toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { RouterView, useRouter } from "vue-router";
-import { watchDebounced } from "@vueuse/core";
+import { useEventListener, watchDebounced } from "@vueuse/core";
 import { VcBladeSlot } from "@shell/_internal/blade-navigation/components/vc-blade-slot";
 import VcMobileBackButton from "@shell/_internal/blade-navigation/components/vc-blade-navigation/_internal/vc-mobile-back-button.vue";
 import { useBladeStack } from "@core/blade-navigation/useBladeStack";
 import { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
 import { createUrlSync } from "@core/blade-navigation/utils/urlSync";
 import { useBreadcrumbs } from "@core/composables/useBreadcrumbs";
+import { useToolbar } from "@core/composables/useToolbar";
+import { usePermissions } from "@core/composables/usePermissions";
+import { useIsMac } from "@core/composables/useKeyboardShortcuts";
+import { resolveVisibility, resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
+import { createShortcutDispatcher } from "./shortcut-dispatch";
 import { AiAgentServiceKey } from "@framework/injection-keys";
 import type { BladeDescriptor, IParentCallArgs } from "@core/blade-navigation/types";
 
@@ -97,6 +102,25 @@ function isBladeVisible(descriptor: BladeDescriptor, index: number): boolean {
   if (!descriptor.visible) return false;
   return index >= bladeCount.value - visibleBladesCount.value;
 }
+
+// ── Keyboard shortcuts ───────────────────────────────────────────────────────
+
+const { getToolbarItems } = useToolbar();
+const { hasAccess } = usePermissions();
+
+const dispatchShortcut = createShortcutDispatcher({
+  isMac: useIsMac(),
+  getActiveBlade: () => bladeStack.activeBlade.value,
+  getToolbarItems: (bladeId) => getToolbarItems(bladeId),
+  isMobile: () => isMobile.value,
+  isEnabled: (item) =>
+    hasAccess(item.permissions) && resolveVisibility(item.isVisible) && !resolveReactiveBoolean(item.disabled),
+  closeBlade: (id) => bladeStack.closeBlade(id),
+  toggleMaximized: (id) => bladeStack.toggleMaximized(id),
+  isModalOpen: () => typeof document !== "undefined" && document.querySelector('[aria-modal="true"]') !== null,
+});
+
+useEventListener(window, "keydown", dispatchShortcut);
 
 // ── Breadcrumbs sync ────────────────────────────────────────────────────────
 

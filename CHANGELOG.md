@@ -1,5 +1,16 @@
 # Changelog
 
+# [2.3.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.2.0...v2.3.0) (2026-07-28)
+
+### Features
+
+- **shortcuts:** framework keyboard shortcuts for blades (Ctrl/Cmd+S, built-in Esc/expand, OS-aware tooltips) (#261) ([eb3675e](https://github.com/VirtoCommerce/vc-shell/commit/eb3675e7ad1df6116e9e4e3bfa3ab457020057b2)), closes [#261](https://github.com/VirtoCommerce/vc-shell/issues/261)
+
+### Bug Fixes
+
+- **framework:** suppress error cascade when a session expires mid-navigation (#262) ([5d8cebf](https://github.com/VirtoCommerce/vc-shell/commit/5d8cebf83bc128aa828a59acd7f7b7de0ccfb587)), closes [#262](https://github.com/VirtoCommerce/vc-shell/issues/262)
+- **ui:** keep table header below teleported overlays (#263) ([5fd61a4](https://github.com/VirtoCommerce/vc-shell/commit/5fd61a436547f7ef312a05de7b9081a5ebdb86e1)), closes [#263](https://github.com/VirtoCommerce/vc-shell/issues/263)
+
 # [2.2.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.1.0...v2.2.0) (2026-07-20)
 
 ### Features

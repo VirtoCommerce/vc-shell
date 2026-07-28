@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useAsync } from "./index";
 import { DisplayableError, parseError } from "@core/utilities/error";
 import { cancelPendingErrorNotification } from "@core/utilities/pendingErrorNotifications";
+import { markSessionExpired, resetSessionExpired } from "@core/utilities/sessionExpiration";
 
 vi.mock("@core/notifications/notification", () => ({
   notification: { error: vi.fn(), remove: vi.fn() },
@@ -13,10 +14,12 @@ describe("useAsync", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
+    resetSessionExpired();
   });
 
   afterEach(() => {
     vi.useRealTimers();
+    resetSessionExpired();
   });
 
   it("should return error ref alongside loading and action", () => {
@@ -107,6 +110,33 @@ describe("useAsync", () => {
 
     await vi.runAllTimersAsync();
     expect(notification.error).not.toHaveBeenCalled();
+  });
+
+  it("should suppress deferred notification when the session has expired", async () => {
+    markSessionExpired();
+    const { action, error } = useAsync(async () => {
+      throw new Error("401 while session expired");
+    });
+    await expect(action()).rejects.toThrow();
+
+    // Error ref is still populated (component-local), but no toast is scheduled
+    expect(error.value).toBeInstanceOf(DisplayableError);
+    await vi.runAllTimersAsync();
+    expect(notification.error).not.toHaveBeenCalled();
+  });
+
+  it("should notify again after a fresh sign-in clears the expired session", async () => {
+    markSessionExpired();
+    // What useUser.signIn does at the start of a new session
+    resetSessionExpired();
+
+    const { action } = useAsync(async () => {
+      throw new Error("real error after re-auth");
+    });
+    await expect(action()).rejects.toThrow();
+
+    await vi.runAllTimersAsync();
+    expect(notification.error).toHaveBeenCalledOnce();
   });
 
   it("should suppress notification when notify: false", async () => {

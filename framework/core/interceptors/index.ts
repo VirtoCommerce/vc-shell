@@ -2,6 +2,7 @@ import { Router } from "vue-router";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { notification } from "@core/notifications/notification";
 import { createLogger } from "@core/utilities";
+import { isSessionExpired, markSessionExpired } from "@core/utilities/sessionExpiration";
 import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const logger = createLogger("interceptors");
@@ -114,19 +115,28 @@ export function registerInterceptors(router: Router) {
         /**
          * If the response is unauthorized, logout the user
          */
-        if (response.status === 401) {
-          if (isAuthenticated.value) {
-            signOut()
-              .catch((err) => {
-                logger.error("signOut failed after 401:", err);
-              })
-              .finally(() => {
-                redirect(router);
-                notification.error(
-                  "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
-                );
-              });
-          }
+        // A 401 on a session we still believe is alive means the cookie died under us.
+        // Flag it before returning the 401 to the caller, so the data-load errors it
+        // triggers (blade banners + toasts on the page that was mid-navigation) are
+        // suppressed in favour of a single clean redirect to login.
+        //
+        // The flag doubles as an "already handling it" latch: concurrent 401s from the
+        // same dead session are suppressed by it but skip this branch, so sign-out,
+        // redirect and toast happen exactly once. It is deliberately not set when we
+        // are not signed in — a 401 we don't act on must not silence the whole app.
+        if (response.status === 401 && !isSessionExpired() && isAuthenticated.value) {
+          markSessionExpired();
+
+          signOut()
+            .catch((err) => {
+              logger.error("signOut failed after 401:", err);
+            })
+            .finally(() => {
+              redirect(router);
+              notification.error(
+                "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
+              );
+            });
         }
 
         return response;

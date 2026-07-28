@@ -2,6 +2,7 @@ import { useErrorHandler } from "@core/composables/useErrorHandler";
 import { defineComponent, inject, watch, type VNode } from "vue";
 import { BladeDescriptorKey, BladeStackKey } from "@core/blade-navigation/types";
 import { cancelPendingErrorNotification } from "@core/utilities/pendingErrorNotifications";
+import { isSessionExpired } from "@core/utilities/sessionExpiration";
 
 export interface Props {
   capture?: boolean;
@@ -50,6 +51,11 @@ export default defineComponent({
         if (newError) {
           // Cancel any deferred useAsync toast — blade banner replaces it
           cancelPendingErrorNotification(newError);
+          // Session expired → redirecting to login. Don't paint a load-error banner
+          // on the page we're leaving; the cancelled toast above is enough cleanup.
+          if (isSessionExpired()) {
+            return;
+          }
           bladeStack!.setBladeError(bladeId, newError);
         } else {
           bladeStack!.clearBladeError(bladeId);

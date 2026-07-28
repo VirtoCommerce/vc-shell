@@ -172,6 +172,8 @@ const {
 
 By default, `useAsync` shows a toast notification on failure. The notification is **deferred** via `setTimeout(0)` so that the `ErrorInterceptor` can cancel it when a blade error banner is already displayed -- this prevents duplicate toast + banner for the same error.
 
+No toast is scheduled at all while the session is flagged as expired. When a platform API call returns 401, the fetch interceptor signs the user out and redirects to the login page; every data load in flight on the page being left fails at the same time. Suppressing those toasts keeps the single "session expired" message from being buried under a cascade of load errors. The `error` ref is still populated as usual -- only the toast is skipped -- and the flag is cleared when a new sign-in begins.
+
 ```typescript
 // Default: shows toast on error
 const { action: save } = useAsync(async () => {
@@ -419,6 +421,7 @@ const { action: save, loading: saveLoading } = useAsync(async () => saveData());
 - Errors are parsed via `parseError()` into `DisplayableError` objects that have a user-friendly `message` property.
 - Toast notifications are deferred with `setTimeout(0)` and registered via `setPendingErrorNotification`. The `ErrorInterceptor` (blade-level `onErrorCaptured`) can call `cancelPendingErrorNotification` to suppress the toast when a blade error banner is shown instead.
 - The notification module is lazy-imported to avoid circular dependencies with `@core/composables`.
+- `isSessionExpired()` from `@core/utilities/sessionExpiration` gates the notification. The flag is set by the fetch interceptor on the 401 that kills the session and cleared by `useUser.signIn`. It is imported directly, not through the `@core/utilities` barrel, for the same circular-dependency reason as `pendingErrorNotifications`.
 
 <!-- internal:end -->
 

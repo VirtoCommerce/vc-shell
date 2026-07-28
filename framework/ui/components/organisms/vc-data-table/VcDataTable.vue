@@ -1268,6 +1268,16 @@ onBeforeUnmount(() => {
   // are untouched.
   contain: inline-size;
 
+  // Confine the table's internal stacking context. The sticky header row
+  // (position: sticky + z-index) and other internal layers create stacking
+  // contexts; without an isolated table root they leak to the app-root level and
+  // paint over teleported overlays (e.g. a VcSelect dropdown opened above the
+  // table). `isolation: isolate` scopes all internal z-index inside the table
+  // without touching their relative order, so app-level overlays always sit on top.
+  // Teleported panels (dropdowns, filters, tooltips) escape the DOM subtree and are
+  // unaffected. Must be on the root — isolating only __content is not enough.
+  isolation: isolate;
+
   &__header {
     @apply tw-flex-shrink-0 tw-px-4 tw-py-2;
   }

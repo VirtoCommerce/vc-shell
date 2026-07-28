@@ -21,6 +21,7 @@ The component is renderless -- it renders its default slot and passes the curren
 2. When inside a blade (`hasBlade = true`), errors are intercepted and forwarded to `bladeStack.setBladeError()`. This displays the error in the blade's built-in error banner and prevents the error from propagating to the global error handler (avoiding duplicate toast notifications).
 3. When not inside a blade or when `capture` is true, errors are captured and exposed via the slot's `error` prop.
 4. Pending `useAsync` error notifications are cancelled via `cancelPendingErrorNotification` when the blade banner takes over.
+5. If the session has expired (a platform API call returned 401 and the app is redirecting to login), the banner is skipped -- the deferred toast is still cancelled in step 4, so the failed load leaves no trace on the page being abandoned.
 
 ## Props
 
@@ -74,6 +75,7 @@ The component is renderless -- it renders its default slot and passes the curren
 - **Inside a blade**: Errors set `BladeDescriptor.error` via the stack. The blade header renders the error banner. Calling `reset` clears the blade error.
 - **Outside a blade** (with `capture`): Errors are stored in a local ref and exposed via slot props. No blade banner is involved.
 - **Error propagation**: When inside a blade, the error is stopped from propagating (prevents duplicate toasts from the global handler). The `capture` prop also stops propagation.
+- **Expired session**: While the session is flagged as expired, no blade banner is set. A dead auth cookie fails every data load on the page at once, and one redirect to login is more useful than a banner on each blade being left behind.
 
 ## Exports
 
@@ -93,4 +95,5 @@ The component must be imported before use, as shown above.
 
 - `framework/core/composables/useErrorHandler/` -- the underlying composable
 - `framework/core/utilities/pendingErrorNotifications.ts` -- cancels deferred toasts
+- `framework/core/utilities/sessionExpiration.ts` -- the expired-session flag that suppresses the banner
 - `framework/core/blade-navigation/` -- BladeStack error management (types the interceptor injects)

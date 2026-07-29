@@ -35,9 +35,14 @@
       "SELECT_OPTION": "Select option",
       "CLEAR_SELECTION": "Clear selection",
       "COPY_TO_CLIPBOARD": "Copy to clipboard",
-      "DELETE_ITEM": "Delete item"
+      "DELETE_ITEM": "Delete item",
+      "SHOW_PASSWORD": "Show password",
+      "HIDE_PASSWORD": "Hide password"
     },
     "ATOMS": {
+      "VC_IMAGE": {
+        "LABEL": "Image"
+      },
       "VC_BANNER": {
         "SHOW_MORE": "Show more",
         "SHOW_LESS": "Show less"

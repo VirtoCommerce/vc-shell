@@ -145,6 +145,11 @@ describe("VcImage", () => {
       expect(wrapper.find(".vc-image__container").attributes("aria-label")).toBe("Product image");
     });
 
+    it("localizes the fallback label of a clickable image with no alt", () => {
+      const wrapper = mountComponent({ clickable: true, src: "https://cdn.example.com/photo.jpg" });
+      expect(wrapper.find(".vc-image__container").attributes("aria-label")).toBe("COMPONENTS.ATOMS.VC_IMAGE.LABEL");
+    });
+
     it("placeholder has aria-hidden", () => {
       const wrapper = mountComponent();
       expect(wrapper.find(".vc-image__placeholder").attributes("aria-hidden")).toBe("true");

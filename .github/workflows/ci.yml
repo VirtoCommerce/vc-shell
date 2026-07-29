@@ -130,6 +130,16 @@ jobs:
       - name: Run framework tests
         run: yarn workspace @vc-shell/framework run test
 
+      # Stories are excluded from `yarn typecheck` (framework/tsconfig.json) and
+      # ESLint reports nothing for an undefined identifier in a story file, so
+      # this is the ONLY gate that catches a broken story — one shipped that way
+      # (VCST-5597). It also carries the axe accessibility assertions.
+      - name: Install Playwright browsers
+        run: yarn dlx playwright install --with-deps chromium
+
+      - name: Run Storybook tests (stories + axe)
+        run: yarn test:storybook
+
   # Deploy the hosted Storybook preview. storybook-ci.yml is a reusable
   # (workflow_call) workflow with no push trigger of its own; the caller that
   # used to invoke it lived in the removed main.yml. This job restores that

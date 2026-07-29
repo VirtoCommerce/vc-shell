@@ -32,7 +32,10 @@ const BASE = process.env.SB_BASE || "http://127.0.0.1:6006";
 const VERBOSE = !!process.env.VERBOSE;
 
 const AXE_OPTIONS = {
-  runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+  // Must stay identical to the a11y run options in .storybook/preview.ts.
+  // Without the 2.2 tags the whole 2.2 class (target-size, dragging-movements)
+  // is silently never evaluated and the run reports clean.
+  runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22a", "wcag22aa"] },
   rules: {
     region: { enabled: false },
     "color-contrast": { enabled: false },

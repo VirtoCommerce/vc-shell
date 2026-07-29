@@ -907,4 +907,11 @@ export interface PersistedStateV2 {
   weights: Record<string, number>;
   hiddenColumnIds?: string[];
   shownColumnIds?: string[];
+  /**
+   * True when `weights` were produced by a user resize (directly, or carried
+   * over from a state that had one). Without it, restored weights are treated
+   * as declarative and re-derived from VcColumn props at the current width —
+   * auto-saved weights from an untouched table must not freeze column sizing.
+   */
+  userSized?: boolean;
 }

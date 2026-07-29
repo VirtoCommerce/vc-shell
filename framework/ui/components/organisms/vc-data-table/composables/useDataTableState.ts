@@ -18,6 +18,12 @@ export interface UseDataTableStateOptions {
   hiddenColumnIds: Ref<Set<string>>;
   shownColumnIds?: Ref<Set<string>>;
   getAvailableWidth?: () => number;
+  /**
+   * Whether column weights currently represent a user resize. Persisted as
+   * `userSized` so a later restore knows whether to freeze the weights or
+   * treat them as declarative (see useTableColumns.markSizingCustomized).
+   */
+  isSizingCustomized?: () => boolean;
   /** Called after state is saved (for `state-save` emit). */
   onStateSave?: (state: PersistedStateV2) => void;
   /** Called after state is restored (for `state-restore` emit). */
@@ -63,6 +69,7 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     hiddenColumnIds,
     shownColumnIds,
     getAvailableWidth,
+    isSizingCustomized,
     onStateSave,
     onStateRestore,
   } = options;
@@ -146,6 +153,9 @@ export function useDataTableState(options: UseDataTableStateOptions): UseDataTab
     state.hiddenColumnIds = [...hiddenColumnIds.value];
     if (shownColumnIds) {
       state.shownColumnIds = [...shownColumnIds.value];
+    }
+    if (isSizingCustomized?.()) {
+      state.userSized = true;
     }
     return state;
   }

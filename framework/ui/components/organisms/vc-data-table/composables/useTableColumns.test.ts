@@ -310,3 +310,72 @@ describe("useTableColumns — getEffectiveColumnWidth initial fallback (engine n
     expect(getEffectiveColumnWidth({ id: "name", width: 200 } as VcColumnProps)).toBe("250px");
   });
 });
+
+describe("useTableColumns — pristine re-derivation (initial-open transient width)", () => {
+  // Blades animate `width` for 300ms, so the first measurement often happens on a
+  // transiently narrow container. While the user has not customized anything, the
+  // weights must be re-derived from declared props at the CURRENT width on every
+  // recompute — otherwise a declared 60px image column inits as weight 60/100=0.6
+  // and renders 840px once the blade reaches 1400px (the reported bug).
+
+  it("re-derives declared px widths at the current width until customized", () => {
+    let available = 100; // mid-animation
+    const cols = [makeColumn("img", { width: 60 }), makeColumn("name"), makeColumn("code"), makeColumn("status")];
+    const { engineOutput, recompute } = useTableColumns({
+      visibleColumns: ref(cols),
+      getAvailableWidth: () => available,
+    });
+
+    // Blade finished opening.
+    available = 1400;
+    recompute();
+
+    expect(engineOutput.value.widths["img"]).toBe(60);
+    // Auto columns split the remainder equally.
+    expect(engineOutput.value.widths["name"]).toBeCloseTo((1400 - 60) / 3, -1);
+  });
+
+  it("stops re-deriving after markSizingCustomized (user resize) — weights scale proportionally", () => {
+    let available = 1000;
+    const cols = [makeColumn("img", { width: 60 }), makeColumn("name"), makeColumn("code")];
+    const { columnState, engineOutput, recompute, markSizingCustomized } = useTableColumns({
+      visibleColumns: ref(cols),
+      getAvailableWidth: () => available,
+    });
+    recompute();
+    expect(engineOutput.value.widths["img"]).toBe(60);
+
+    // Simulate a user resize commit: img stretched to 200px (weight 0.2 at 1000px).
+    markSizingCustomized();
+    const specs = { ...columnState.value.specs };
+    specs["img"] = { ...specs["img"], weight: 0.2 };
+    specs["name"] = { ...specs["name"], weight: 0.4 };
+    specs["code"] = { ...specs["code"], weight: 0.4 };
+    columnState.value = { ...columnState.value, specs };
+    recompute();
+    expect(engineOutput.value.widths["img"]).toBe(200);
+
+    // Container doubles — customized weights scale with it (the blades use-case).
+    available = 2000;
+    recompute();
+    expect(engineOutput.value.widths["img"]).toBe(400);
+  });
+
+  it("keeps a custom column order across pristine re-derivations", () => {
+    let available = 500;
+    const cols = [makeColumn("a"), makeColumn("b"), makeColumn("c")];
+    const { columnState, recompute } = useTableColumns({
+      visibleColumns: ref(cols),
+      reorderableColumns: true,
+      getAvailableWidth: () => available,
+    });
+
+    // Simulate a reorder (order is a customization persisted separately).
+    columnState.value = { ...columnState.value, order: ["c", "a", "b"] };
+
+    available = 900;
+    recompute();
+
+    expect(columnState.value.order).toEqual(["c", "a", "b"]);
+  });
+});

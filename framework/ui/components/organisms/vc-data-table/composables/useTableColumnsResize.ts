@@ -13,6 +13,8 @@ export interface UseTableColumnsResizeOptions {
   minColumnWidth?: number;
   /** Returns ids of currently-visible regular (non-special) columns in display order. */
   getVisibleRegularColumnIds?: () => string[];
+  /** Called when a drag actually begins — before any weight is modified. */
+  onResizeStart?: () => void;
   onResizeEnd?: () => void;
   containerEl?: Ref<HTMLElement | null>;
 }
@@ -33,6 +35,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     getAvailableWidth,
     minColumnWidth = DEFAULT_MIN_COLUMN_PX,
     getVisibleRegularColumnIds,
+    onResizeStart,
     onResizeEnd,
     containerEl,
   } = options;
@@ -82,6 +85,9 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     // Find right neighbors in order
     rightNeighborIds = activeOrder.slice(idx + 1).filter((id) => !!initialSpecs[id]);
     isResizing.value = true;
+    // Weights become user data from this point on — freeze declarative
+    // re-derivation BEFORE the first applyResize writes into columnState.
+    onResizeStart?.();
     return true;
   };
 

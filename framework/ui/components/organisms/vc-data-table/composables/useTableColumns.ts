@@ -53,7 +53,13 @@ export interface UseTableColumnsReturn {
    * Called by the orchestrator after persistence restores ColumnState — the
    * restored weights take precedence over declared VcColumn widths.
    */
-  markStateRestored: () => void;
+  /**
+   * Freezes weights as user data (mouse resize, or restored user-sized state):
+   * declarative re-derivation from VcColumn props stops until resetFromProps().
+   */
+  markSizingCustomized: () => void;
+  /** Whether weights currently represent a user customization (see above). */
+  isSizingCustomized: () => boolean;
 
   // Computed
   orderedVisibleColumns: ComputedRef<ColumnInstance[]>;
@@ -222,8 +228,8 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   /**
    * Initialize weights and specs for all currently-visible regular columns
    * from their declared props (`width`, `minWidth`, `maxWidth`).
-   * Safe to call with availableWidth=0 — percentages resolve to 0 in that case,
-   * so `needsPropsReinit` will remain true until a real width is available.
+   * Skips the columnState write when nothing actually changed, so pristine
+   * re-derivation on every ResizeObserver tick doesn't churn watchers.
    */
   function applyInitFromProps(availableWidth: number): void {
     const regularCols = visibleColumns.value.filter((c) => !isSpecialColumn(c.props));
@@ -243,22 +249,41 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     }
 
     const specs: Record<string, ColumnSpec> = { ...columnState.value.specs };
+    let changed = order.length !== columnState.value.order.length;
     for (const col of regularCols) {
       const fallbackWeight = weights[col.props.id] ?? 1 / regularCols.length;
-      specs[col.props.id] = buildSpec(col.props, availableWidth, fallbackWeight);
+      const next = buildSpec(col.props, availableWidth, fallbackWeight);
+      const prev = specs[col.props.id];
+      if (
+        !prev ||
+        Math.abs(prev.weight - next.weight) > 1e-9 ||
+        prev.minPx !== next.minPx ||
+        prev.maxPx !== next.maxPx
+      ) {
+        specs[col.props.id] = next;
+        changed = true;
+      }
     }
 
-    columnState.value = { order, specs };
+    if (changed) columnState.value = { order, specs };
   }
 
+  // While false, column sizing is purely declarative: weights are a cache of
+  // "declared props × current width" and are re-derived on every recompute. This
+  // is what heals the transient first measurement — blades animate `width` for
+  // ~300ms, so weights built mid-animation would otherwise freeze a declared
+  // 60px column at weight 60/transientWidth and blow it up at the final width.
+  // Once true, weights ARE the user's data (resize / restored user sizing):
+  // frozen and scaled proportionally with the container.
+  let sizingCustomized = false;
+
   /**
-   * Cancel any pending deferred re-init from declared props.
-   * When persistence restores weights, those take precedence over declared
-   * VcColumn widths — so `needsPropsReinit` must be cleared to prevent
-   * recompute() from overwriting restored weights with parsed props.
+   * Freeze weights: the current weights now represent a user customization
+   * (mouse resize, or persisted state saved after one) and must no longer be
+   * overwritten from declared VcColumn props.
    */
-  const markStateRestored = (): void => {
-    needsPropsReinit = false;
+  const markSizingCustomized = (): void => {
+    sizingCustomized = true;
   };
 
   /**
@@ -269,33 +294,23 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   const resetFromProps = (): void => {
     columnState.value = { order: [], specs: {} };
     engineOutput.value = { widths: {}, fillerWidth: 0 };
-    needsPropsReinit = true;
-    const available = options.getAvailableWidth();
-    if (available > 0) {
-      applyInitFromProps(available);
-      needsPropsReinit = false;
-      recompute();
-    }
+    sizingCustomized = false;
+    recompute();
   };
 
   // ============================================================================
   // Engine recomputation
   // ============================================================================
 
-  // When true, the next recompute with a positive availableWidth will re-parse
-  // declared VcColumn props (handles the initial-mount case where DOM was empty).
-  let needsPropsReinit = false;
-
   const recompute = () => {
     const availableWidth = options.getAvailableWidth();
     if (availableWidth <= 0) return;
 
-    // Deferred initial-props parsing: the first watcher run (immediate, pre-mount)
-    // has no DOM to measure. Once DOM is ready and we have a real width, parse
-    // declared props to honor <VcColumn :width="200" min-width="100" />.
-    if (needsPropsReinit) {
+    // Declarative mode: re-derive weights from VcColumn props at the CURRENT
+    // width, so <VcColumn :width="200"> is honored no matter when the first
+    // measurement happened. No-ops when the derived specs are unchanged.
+    if (!sizingCustomized) {
       applyInitFromProps(availableWidth);
-      needsPropsReinit = false;
     }
 
     const visibleRegular = orderedVisibleColumns.value.filter((c) => !isSpecialColumn(c.props)).map((c) => c.props.id);
@@ -337,12 +352,13 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
         // Brand-new or initial columns need specs.
         if (isInitialEmpty && available > 0) {
           // Best case: DOM is ready and we can parse declared props immediately.
+          // (While sizing is declarative, recompute() re-derives at the settled
+          // width anyway — this just seeds specs for the first paint.)
           applyInitFromProps(available);
-          needsPropsReinit = false;
         } else {
           // Fallback: DOM not ready OR we're adding columns to an existing set.
-          // Give new columns a reasonable default weight; if available=0, mark
-          // for a proper props re-init on first recompute() with real width.
+          // Give new columns a reasonable default weight; the declarative-mode
+          // recompute() re-derives from props once a real width is available.
           const state = { ...columnState.value };
           state.order = [...state.order];
           state.specs = { ...state.specs };
@@ -363,8 +379,6 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
           const visibleRegular = newIds.filter((id) => state.specs[id]);
           normalizeWeights(state.specs, visibleRegular);
           columnState.value = state;
-
-          if (isInitialEmpty && available <= 0) needsPropsReinit = true;
         }
       } else if (justShownIds.length > 0) {
         // Previously hidden columns became visible. Give them average weight of
@@ -413,7 +427,8 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     setHeaderRef,
     recompute,
     resetFromProps,
-    markStateRestored,
+    markSizingCustomized,
+    isSizingCustomized: () => sizingCustomized,
     orderedVisibleColumns,
     totalColumns,
     isSpecialColumn,

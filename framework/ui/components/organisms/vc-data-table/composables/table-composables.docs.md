@@ -17,13 +17,13 @@ The composables follow a PrimeVue-inspired pattern: each returns reactive state 
 
 ### Data & State
 
-| Composable             | Purpose                                                                                                                                                                                                                                             |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `useDataTableState`    | Persists column state (v2 schema: weights, order, hidden/shown IDs) to localStorage/sessionStorage. Auto-migrates v1 (pixel-based) state on first load. Key format: `VC_DATATABLE_{KEY}`. Debounced auto-save (150ms) with restore-on-mount.        |
-| `useTableColumns`      | Column ordering, width management via `columnState` (weight store), computed pixel widths via `engineOutput`. Exposes `recompute()` to trigger a recalculation pass. Watches `visibleColumns` and appends new columns without dropping hidden ones. |
-| `useColumnWidthEngine` | Pure functions for deterministic column width computation (see below).                                                                                                                                                                              |
-| `useDataProcessing`    | Client-side sort pipeline (single/multi) and row grouping. Skipped when `lazy: true` (server-side).                                                                                                                                                 |
-| `useTableContext`      | Provides/injects table-level context for sub-components.                                                                                                                                                                                            |
+| Composable             | Purpose                                                                                                                                                                                                                                                                                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useDataTableState`    | Persists column state (v2 schema: weights, order, hidden/shown IDs, `userSized`) to localStorage/sessionStorage. Auto-migrates v1 (pixel-based) state on first load. Key format: `VC_DATATABLE_{KEY}`. Debounced auto-save (150ms) with restore-on-mount.                                                                                         |
+| `useTableColumns`      | Column ordering, width management via `columnState` (weight store), computed pixel widths via `engineOutput`. Exposes `recompute()` to trigger a recalculation pass, which also re-derives weights from `VcColumn` props until `markSizingCustomized()` is called. Watches `visibleColumns` and appends new columns without dropping hidden ones. |
+| `useColumnWidthEngine` | Pure functions for deterministic column width computation (see below).                                                                                                                                                                                                                                                                            |
+| `useDataProcessing`    | Client-side sort pipeline (single/multi) and row grouping. Skipped when `lazy: true` (server-side).                                                                                                                                                                                                                                               |
+| `useTableContext`      | Provides/injects table-level context for sub-components.                                                                                                                                                                                                                                                                                          |
 
 ### Sorting & Filtering
 
@@ -114,12 +114,12 @@ Mutates `specs` in place so that the weights of `visibleIds` sum to 1.0. Called 
 
 ### When weights update
 
-| User action                 | Weight change                                                                           |
-| --------------------------- | --------------------------------------------------------------------------------------- |
-| Column resize (drag border) | Dragged column and right neighbor exchange weight proportionally                        |
-| Column show/hide            | Hidden column's weight is preserved; shown column uses saved or initial weight          |
-| Reset columns               | All weights rebuilt from declarative `width` props                                      |
-| Container resize            | Weights unchanged; engine recomputes px widths from same weights × new `availableWidth` |
+| User action                 | Weight change                                                                                                                                         |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Column resize (drag border) | Dragged column and right neighbor exchange weight proportionally; sizing becomes **customized** (`userSized` persisted)                               |
+| Column show/hide            | Hidden column's weight is preserved; shown column uses saved or initial weight                                                                        |
+| Reset columns               | All weights rebuilt from declarative `width` props; sizing returns to declarative mode                                                                |
+| Container resize            | Declarative mode: weights re-derived from `VcColumn` props at the new width (declared px stay exact). Customized: weights unchanged, px scale with it |
 
 ## Usage
 

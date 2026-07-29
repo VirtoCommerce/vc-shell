@@ -100,7 +100,7 @@ describe("registerInterceptors — 401 handling", () => {
     await flushMicrotasks();
 
     expect(signOut).toHaveBeenCalledOnce();
-    expect(loggerError).toHaveBeenCalledWith("signOut failed after 401:", expect.any(Error));
+    expect(loggerError).toHaveBeenCalledWith("signOut failed after session expiry:", expect.any(Error));
     expect(router.push).toHaveBeenCalledWith("/login");
     expect(notificationError).toHaveBeenCalledOnce();
   });
@@ -154,6 +154,153 @@ describe("registerInterceptors — 401 handling", () => {
     expect(signOut).not.toHaveBeenCalled();
     expect(router.push).not.toHaveBeenCalled();
     expect(notificationError).not.toHaveBeenCalled();
+  });
+});
+
+describe("registerInterceptors — session expiry without a 401", () => {
+  let originalFetch: typeof window.fetch;
+
+  // A platform that redirects instead of answering 401: fetch follows the
+  // redirect transparently, so the interceptor sees a 200 carrying HTML.
+  function loginPageResponse(overrides: Record<string, unknown> = {}) {
+    return {
+      status: 200,
+      ok: true,
+      redirected: true,
+      url: "http://localhost:3000/account/login?ReturnUrl=%2Fapi%2Fplatform%2Ftest",
+      headers: { get: (name: string) => (name.toLowerCase() === "content-type" ? "text/html; charset=utf-8" : null) },
+      ...overrides,
+    };
+  }
+
+  function jsonResponse(status = 200) {
+    return {
+      status,
+      ok: status < 400,
+      redirected: false,
+      url: "http://localhost:3000/api/platform/test",
+      headers: { get: (name: string) => (name.toLowerCase() === "content-type" ? "application/json" : null) },
+    };
+  }
+
+  beforeEach(() => {
+    originalFetch = window.fetch;
+    signOut.mockReset();
+    loggerError.mockReset();
+    notificationError.mockReset();
+    authenticated = true;
+    resetSessionExpired();
+  });
+
+  afterEach(() => {
+    window.fetch = originalFetch;
+    authenticated = true;
+    resetSessionExpired();
+  });
+
+  it("treats an API call answered with an HTML login page as an expired session", async () => {
+    signOut.mockResolvedValue(undefined);
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue(loginPageResponse()) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/api/platform/test");
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(true);
+    expect(signOut).toHaveBeenCalledOnce();
+    expect(router.push).toHaveBeenCalledWith("/login");
+    expect(notificationError).toHaveBeenCalledOnce();
+  });
+
+  it("recognises the login page by its URL when the content type is absent", async () => {
+    signOut.mockResolvedValue(undefined);
+    const router = createRouter();
+    window.fetch = vi
+      .fn()
+      .mockResolvedValue(loginPageResponse({ headers: { get: () => null } })) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/api/platform/test");
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(true);
+  });
+
+  it("acts once for a burst of concurrent requests that all land on the login page", async () => {
+    signOut.mockResolvedValue(undefined);
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue(loginPageResponse()) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await Promise.all([patched("/api/platform/a"), patched("/api/platform/b"), patched("/api/platform/c")]);
+    await flushMicrotasks();
+
+    expect(signOut).toHaveBeenCalledOnce();
+    expect(router.push).toHaveBeenCalledOnce();
+    expect(notificationError).toHaveBeenCalledOnce();
+  });
+
+  it("leaves an ordinary JSON response alone", async () => {
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue(jsonResponse()) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/api/platform/test");
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(false);
+    expect(signOut).not.toHaveBeenCalled();
+    expect(router.push).not.toHaveBeenCalled();
+  });
+
+  // 403 means authenticated-but-unauthorized. Signing the user out would be wrong.
+  it("does not sign out on a 403", async () => {
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue(jsonResponse(403)) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/api/platform/test");
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(false);
+    expect(signOut).not.toHaveBeenCalled();
+    expect(router.push).not.toHaveBeenCalled();
+    expect(notificationError).not.toHaveBeenCalled();
+  });
+
+  // An endpoint that legitimately serves HTML (a rendered template, an export)
+  // must not be mistaken for a session death — the redirect is what makes it one.
+  it("leaves an HTML response that was not redirected alone", async () => {
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue(
+      loginPageResponse({
+        redirected: false,
+        url: "http://localhost:3000/api/platform/notifications/template/preview",
+      }),
+    ) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/api/platform/notifications/template/preview");
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(false);
+    expect(signOut).not.toHaveBeenCalled();
+    expect(router.push).not.toHaveBeenCalled();
+  });
+
+  it("does not act on a login page while nobody is signed in", async () => {
+    authenticated = false;
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue(loginPageResponse()) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/api/platform/test");
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(false);
+    expect(signOut).not.toHaveBeenCalled();
+    expect(router.push).not.toHaveBeenCalled();
   });
 });
 

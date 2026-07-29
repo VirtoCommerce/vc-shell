@@ -370,10 +370,18 @@ const contentRef = ref<HTMLElement | null>(null);
   @apply tw-m-0 tw-rounded-none;
 }
 
-// When mobile widgets are visible (fixed at bottom), offset content so it isn't hidden
+// The mobile widget bar is a fixed 80px band at the bottom of the viewport, so
+// the blade's scroll viewport has to end where the bar begins.
+//
+// `margin-bottom` and not `padding-bottom`: page content is commonly taller than
+// `__main` (which is `h-full`) and scrolls by overflowing it. A scroll container's
+// end padding is only reliably added to the scrollable area for in-flow content —
+// with an overflowing descendant it gets partly swallowed, leaving the last rows
+// stranded under the bar at maximum scroll. Shrinking the scroll viewport instead
+// is independent of how the content inside produces its overflow.
 .vc-blade--mobile:has(.vc-widget-container-mobile) {
   .vc-blade__content {
-    padding-bottom: var(--blade-toolbar-widgets-mobile-height);
+    margin-bottom: var(--blade-toolbar-widgets-mobile-height);
   }
 }
 </style>

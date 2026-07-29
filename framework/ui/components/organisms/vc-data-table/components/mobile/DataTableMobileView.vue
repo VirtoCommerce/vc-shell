@@ -57,11 +57,27 @@
           :cancel-label="cancelLabel"
           :is-inline-editing="isInlineEditing"
           :is-new-row="newRowIndices?.has(index)"
+          :expandable="canExpandRow(item)"
+          :is-expanded="isRowExpanded(item)"
+          :expanded-icon="expandedIcon"
+          :expand-label="expandLabel"
           @click="handleRowClick"
           @select="handleRowSelect"
           @action="handleAction"
           @cell-value-change="(field, value) => emit('cell-value-change', field, index, value)"
-        />
+          @expand-toggle="(item, index, event) => emit('expand-toggle', item, index, event)"
+        >
+          <template
+            v-if="$slots.expansion"
+            #expansion
+          >
+            <slot
+              name="expansion"
+              :data="item"
+              :index="index"
+            />
+          </template>
+        </DataTableMobileCard>
       </div>
     </div>
   </PullToRefresh>
@@ -130,6 +146,14 @@ const props = withDefaults(
     newRowIndices?: Set<number>;
     /** Whether row reorder is enabled */
     reorderable?: boolean;
+    /** Whether a given row can be expanded (false hides the chevron) */
+    canExpandRow?: (item: T) => boolean;
+    /** Whether a given row is currently expanded */
+    isRowExpanded?: (item: T) => boolean;
+    /** Chevron icon for the expander toggle */
+    expandedIcon?: string;
+    /** Accessible label for the expander toggle */
+    expandLabel?: string;
   }>(),
   {
     selection: () => [],
@@ -148,6 +172,10 @@ const props = withDefaults(
     isInlineEditing: false,
     newRowIndices: undefined,
     reorderable: false,
+    canExpandRow: () => false,
+    isRowExpanded: () => false,
+    expandedIcon: "lucide-chevron-down",
+    expandLabel: undefined,
   },
 );
 
@@ -162,6 +190,8 @@ const emit = defineEmits<{
   refresh: [];
   /** Cell value changed during editing */
   "cell-value-change": [field: string, index: number, value: unknown];
+  /** Expander toggle was tapped on a card */
+  "expand-toggle": [item: T, index: number, event: Event];
 }>();
 
 // Provide swipe context for cards

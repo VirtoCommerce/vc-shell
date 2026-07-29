@@ -285,12 +285,27 @@
         :pull-to-refresh-text="pullToRefreshText"
         :is-inline-editing="isInlineEditing"
         :new-row-indices="inlineEdit.newRowIndices.value"
+        :can-expand-row="(item) => hasExpanderColumn && canExpand(item)"
+        :is-row-expanded="isRowExpanded"
+        :expanded-icon="expandedRowIcon"
+        :expand-label="$t('COMPONENTS.ORGANISMS.VC_TABLE.EXPAND_ROW')"
         @click="handleMobileRowClick"
         @select="handleMobileRowSelect"
         @action="handleMobileRowAction"
         @refresh="emit('pull-refresh')"
         @cell-value-change="(field, index, value) => handleCellValueChange(field, index, value)"
+        @expand-toggle="(item, index, e) => handleExpandToggle(item, index, e)"
       >
+        <template
+          v-if="$slots.expansion"
+          #expansion="{ data, index }"
+        >
+          <slot
+            name="expansion"
+            :data="data"
+            :index="index"
+          />
+        </template>
         <template #empty>
           <slot
             v-if="isNotFoundState && $slots['not-found']"

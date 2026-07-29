@@ -208,6 +208,7 @@
       "VC_TABLE": {
         "SELECT_ROW": "Zeile auswählen",
         "SELECT_ALL_ROWS": "Alle Zeilen auswählen",
+        "EXPAND_ROW": "Zeilendetails umschalten",
         "CURRENT_PAGE_SELECTED": "Alle Elemente auf dieser Seite sind ausgewählt.",
         "SELECT_ALL": "Alle Elemente auswählen",
         "ALL_SELECTED": "Alle Elemente sind ausgewählt.",

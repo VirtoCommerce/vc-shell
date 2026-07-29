@@ -172,6 +172,35 @@
             </template>
           </div>
         </div>
+
+        <!-- Expander toggle. `click.stop` keeps a tap on the chevron from also
+             triggering the card's row-click (which opens the details blade). -->
+        <button
+          v-if="expandable"
+          type="button"
+          class="vc-data-table-mobile-card__expander"
+          :class="{ 'vc-data-table-mobile-card__expander--expanded': isExpanded }"
+          :aria-expanded="isExpanded"
+          :aria-label="expandLabel"
+          @click.stop="handleExpandToggle"
+          @touchstart.stop
+        >
+          <VcIcon
+            :icon="expandedIcon"
+            size="s"
+          />
+        </button>
+      </div>
+
+      <!-- Expansion content, rendered inside the swipe-transformed content so it
+           travels with the card. -->
+      <div
+        v-if="expandable && isExpanded"
+        class="vc-data-table-mobile-card__expansion"
+        @click.stop
+        @touchstart.stop
+      >
+        <slot name="expansion" />
       </div>
     </div>
 
@@ -279,6 +308,14 @@ const props = withDefaults(
     isNewRow?: boolean;
     /** Whether row reorder is enabled (shows the drag handle) */
     reorderable?: boolean;
+    /** Whether this row can be expanded (shows the chevron) */
+    expandable?: boolean;
+    /** Whether this row is currently expanded */
+    isExpanded?: boolean;
+    /** Chevron icon for the expander toggle */
+    expandedIcon?: string;
+    /** Accessible label for the expander toggle */
+    expandLabel?: string;
   }>(),
   {
     actions: () => [],
@@ -291,6 +328,10 @@ const props = withDefaults(
     actionSheetTitle: "Actions",
     cancelLabel: "Cancel",
     reorderable: false,
+    expandable: false,
+    isExpanded: false,
+    expandedIcon: "lucide-chevron-down",
+    expandLabel: "Toggle row details",
   },
 );
 
@@ -303,7 +344,13 @@ const emit = defineEmits<{
   action: [action: MobileSwipeAction<T>, item: T, index: number];
   /** Cell value changed during editing */
   "cell-value-change": [field: string, value: unknown];
+  /** Expander toggle was tapped */
+  "expand-toggle": [item: T, index: number, event: Event];
 }>();
+
+function handleExpandToggle(event: Event) {
+  emit("expand-toggle", props.item, props.index, event);
+}
 
 function handleCellUpdate(config: MobileColumnConfig, payload: { field: string; value: unknown }) {
   emit("cell-value-change", config.field || config.id, payload.value);
@@ -715,6 +762,44 @@ onBeforeUnmount(() => {
 
   &__main {
     @apply tw-flex tw-flex-col tw-flex-1 tw-justify-center tw-gap-2 tw-min-w-0;
+  }
+
+  &__expander {
+    // 44px hit area — the iOS/Material minimum for a reliable touch target.
+    @apply tw-flex tw-items-center tw-justify-center tw-flex-shrink-0 tw-w-11 tw-self-center tw-rounded;
+    min-height: 2.75rem;
+    color: var(--table-sort-icon-color, var(--neutrals-400));
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
+
+    &:hover {
+      color: var(--neutrals-600);
+      background-color: var(--neutrals-100);
+    }
+
+    // Chevron points down when collapsed, up when expanded.
+    :deep(svg) {
+      transition: transform 0.2s ease;
+    }
+
+    &--expanded :deep(svg) {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__expansion {
+    // Deliberately no padding and no separator: the slot content owns its own
+    // spacing (it usually already carries some), and screen width is scarce on a
+    // phone — adding any here would just inset the content twice.
+    //
+    // Expansion content comes from a consumer slot and is often laid out for
+    // desktop widths. The card root clips (it has to, for the swipe-actions
+    // strip), so without this the overflowing part would be unreachable on a
+    // phone. `pan-x` lets a horizontal drag scroll here instead of being taken
+    // by the card's swipe gesture.
+    overflow-x: auto;
+    touch-action: pan-x pan-y;
   }
 
   // Title - primary identifier (full width, bold)

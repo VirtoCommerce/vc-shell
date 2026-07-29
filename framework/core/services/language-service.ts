@@ -61,6 +61,13 @@ export function createLanguageService(): ILanguageService {
 
     setVeeI18nLocale(resolvedLocale);
     savedLocale.value = resolvedLocale;
+
+    // Assistive technology picks its pronunciation dictionary from <html lang>.
+    // index.html can only carry a static default, so the language switch is the
+    // only place that can keep it truthful (WCAG 3.1.1 Language of Page).
+    if (typeof document !== "undefined") {
+      document.documentElement.setAttribute("lang", resolvedLocale);
+    }
   }
 
   function getLocaleByTag(localeTag: string) {

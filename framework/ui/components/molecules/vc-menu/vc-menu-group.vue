@@ -9,8 +9,11 @@
     <!-- Section variant header -->
     <button
       v-if="variant === 'section'"
+      type="button"
       class="vc-menu-group__section-header"
       :class="{ 'vc-menu-group__section-header--hidden': !menuExpanded }"
+      :aria-expanded="isOpen"
+      :aria-controls="childrenId"
       @click="toggle"
     >
       <div
@@ -53,6 +56,7 @@
 
     <!-- Children with grid animation -->
     <div
+      :id="childrenId"
       class="vc-menu-group__children-wrapper"
       :class="{
         'vc-menu-group__children-wrapper--open': isOpen,
@@ -67,7 +71,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject } from "vue";
+import { computed, inject, useId } from "vue";
 import type { Component } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
@@ -107,6 +111,10 @@ const injectedExpanded = inject(VcMenuExpandedKey, undefined);
 const menuExpanded = computed(() => {
   return injectedExpanded?.value ?? true;
 });
+
+// Generated rather than derived from groupId, which is caller-supplied and may
+// not be a valid id/selector.
+const childrenId = `vc-menu-group-${useId()}`;
 
 const storageKey = (() => {
   if (typeof window === "undefined") {

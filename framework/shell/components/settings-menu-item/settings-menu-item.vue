@@ -8,13 +8,18 @@
     }"
   >
     <!-- Trigger -->
-    <div
+    <component
+      :is="triggerTag"
       ref="triggerRef"
       class="vc-menu-item__trigger"
+      :type="isTriggerButton ? 'button' : undefined"
+      :disabled="isTriggerButton && disabled ? true : undefined"
+      :aria-haspopup="hasSubmenu ? 'true' : undefined"
+      :aria-expanded="hasSubmenu ? isSubmenuOpen : undefined"
       @click.stop="handleTriggerClick"
     >
       <slot name="trigger">
-        <div class="vc-menu-item__content">
+        <span class="vc-menu-item__content">
           <slot name="icon">
             <VcIcon
               v-if="icon"
@@ -31,7 +36,7 @@
           </slot>
 
           <slot name="title">
-            <p class="vc-menu-item__title">{{ title }}</p>
+            <span class="vc-menu-item__title">{{ title }}</span>
           </slot>
 
           <slot name="additional">
@@ -49,9 +54,9 @@
             class="vc-menu-item__chevron"
             :class="{ 'vc-menu-item__chevron--rotated': isMobile && isSubmenuOpen }"
           />
-        </div>
+        </span>
       </slot>
-    </div>
+    </component>
 
     <!-- Submenu: mobile inline expand -->
     <div
@@ -127,6 +132,11 @@ const emit = defineEmits<{
 }>();
 
 const slots = useSlots();
+
+// A consumer-supplied trigger owns its own semantics — wrapping it in our button
+// would nest interactive elements, so only the default trigger becomes a button.
+const isTriggerButton = computed(() => !slots.trigger);
+const triggerTag = computed(() => (isTriggerButton.value ? "button" : "div"));
 const { isMobile } = useResponsive();
 
 const hasSubmenu = computed(() => !!slots.submenu);
@@ -165,6 +175,7 @@ defineExpose({ triggerRef });
 <style lang="scss">
 :root {
   --menu-item-text-color: var(--additional-950);
+  --menu-item-focus-ring-color: var(--primary-500);
   --menu-item-border-color: var(--neutrals-200);
   --menu-item-bg: transparent;
   --menu-item-bg-hover: var(--neutrals-100);
@@ -180,7 +191,15 @@ defineExpose({ triggerRef });
   &__trigger {
     @apply tw-mx-1 tw-px-2 tw-py-[7px] tw-rounded-md tw-text-sm tw-text-[color:var(--menu-item-text-color)]
       tw-bg-[color:var(--menu-item-bg)] tw-flex tw-flex-row tw-items-center
-      tw-transition-colors tw-duration-150;
+      tw-transition-colors tw-duration-150
+      tw-border-none tw-text-left;
+    // The trigger renders as a <button> by default — reset the UA font so it
+    // keeps inheriting the shell's type scale.
+    font: inherit;
+
+    &:focus-visible {
+      @apply tw-outline-none tw-ring-[3px] tw-ring-[color:var(--menu-item-focus-ring-color)];
+    }
   }
 
   &--clickable {

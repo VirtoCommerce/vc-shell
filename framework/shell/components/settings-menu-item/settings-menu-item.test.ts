@@ -26,6 +26,50 @@ function factory(props: Record<string, unknown> = {}, slots: Record<string, stri
 }
 
 describe("SettingsMenuItem", () => {
+  // The trigger must be a real button: keyboard operability (Enter/Space, tab
+  // order) comes from the element type, not from a click handler on a div.
+  describe("keyboard operability", () => {
+    it("renders the trigger as a native button", () => {
+      const trigger = factory().find(".vc-menu-item__trigger");
+      expect(trigger.element.tagName).toBe("BUTTON");
+      expect(trigger.attributes("type")).toBe("button");
+    });
+
+    it("stays in the tab order", () => {
+      expect(factory().find(".vc-menu-item__trigger").attributes("tabindex")).toBeUndefined();
+    });
+
+    it("reflects disabled on the button element", () => {
+      expect(factory({ disabled: true }).find(".vc-menu-item__trigger").attributes("disabled")).toBeDefined();
+    });
+
+    it("leaves the wrapper unopinionated when a custom trigger slot is supplied", () => {
+      // The consumer owns the semantics there; nesting a button inside ours would be invalid.
+      const trigger = factory({}, { trigger: '<button class="custom-trigger">Custom</button>' }).find(
+        ".vc-menu-item__trigger",
+      );
+      expect(trigger.element.tagName).toBe("DIV");
+    });
+
+    it("announces a submenu as a popup", () => {
+      const trigger = factory({}, { submenu: "<div>Sub</div>" }).find(".vc-menu-item__trigger");
+      expect(trigger.attributes("aria-haspopup")).toBe("true");
+      expect(trigger.attributes("aria-expanded")).toBe("false");
+    });
+
+    it("updates aria-expanded when the submenu opens", async () => {
+      const w = factory({}, { submenu: "<div>Sub</div>" });
+      await w.find(".vc-menu-item__trigger").trigger("click");
+      expect(w.find(".vc-menu-item__trigger").attributes("aria-expanded")).toBe("true");
+    });
+
+    it("omits submenu attributes when there is no submenu", () => {
+      const trigger = factory().find(".vc-menu-item__trigger");
+      expect(trigger.attributes("aria-haspopup")).toBeUndefined();
+      expect(trigger.attributes("aria-expanded")).toBeUndefined();
+    });
+  });
+
   it("renders with title prop", () => {
     const w = factory({ title: "My Title" });
     expect(w.text()).toContain("My Title");

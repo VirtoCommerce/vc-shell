@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="vc-menu-item"
-    @click="$emit('click')"
-  >
+  <div class="vc-menu-item">
     <VcTooltip :placement="menuExpanded ? 'bottom' : 'right'">
       <template
         v-if="!menuExpanded"
@@ -11,16 +8,20 @@
         {{ title }}
       </template>
 
-      <div
+      <button
+        type="button"
         class="vc-menu-item__content"
         :class="{
           'vc-menu-item__content--active': active,
           'vc-menu-item__content--nested': nested,
           'vc-menu-item__content--collapsed': !menuExpanded,
         }"
+        :aria-current="active ? 'page' : undefined"
+        :aria-label="menuExpanded ? undefined : title"
+        @click="$emit('click')"
       >
         <!-- Icon -->
-        <div
+        <span
           v-if="icon"
           class="vc-menu-item__icon"
         >
@@ -28,20 +29,22 @@
             class="vc-menu-item__icon-content"
             :icon="icon"
             size="m"
+            aria-hidden="true"
           />
-        </div>
+        </span>
 
         <!-- Letter abbreviation when collapsed and no icon -->
-        <div
+        <span
           v-else-if="!menuExpanded"
           class="vc-menu-item__letters"
+          aria-hidden="true"
         >
           {{ abbreviation }}
-        </div>
+        </span>
 
         <!-- Title + badge (shown when expanded) -->
         <Transition name="vc-menu-opacity">
-          <div
+          <span
             v-show="menuExpanded"
             class="vc-menu-item__title"
           >
@@ -56,9 +59,9 @@
               class="vc-menu-item__badge"
             />
             <slot name="suffix" />
-          </div>
+          </span>
         </Transition>
-      </div>
+      </button>
     </VcTooltip>
   </div>
 </template>
@@ -141,6 +144,7 @@ const badgeVisible = computed(() => {
   --vc-menu-item-active-bg: var(--secondary-100);
   --vc-menu-item-active-text-color: var(--neutrals-700);
   --vc-menu-item-active-icon-color: var(--secondary-700);
+  --vc-menu-item-focus-ring-color: var(--primary-500);
 
   // Nested sub-items (L3)
   --vc-menu-subitem-height: 28px;
@@ -166,9 +170,16 @@ const badgeVisible = computed(() => {
   }
 
   &__content {
-    @apply tw-flex tw-items-center tw-w-full tw-border-none tw-flex-nowrap
-      tw-box-border tw-cursor-pointer tw-relative tw-select-none;
+    @apply tw-flex tw-items-center tw-w-full tw-border-none tw-bg-transparent tw-flex-nowrap
+      tw-box-border tw-cursor-pointer tw-relative tw-select-none tw-text-left;
+    font: inherit;
     height: var(--vc-menu-item-height);
+
+    &:focus-visible {
+      @apply tw-outline-none tw-ring-[3px] tw-ring-[color:var(--vc-menu-item-focus-ring-color)];
+      // Ring must not be clipped by the item's own overflow-hidden children.
+      z-index: var(--z-local-above);
+    }
     padding: 0 10px 0 var(--vc-menu-item-padding-x);
     gap: var(--vc-menu-item-icon-gap);
     border-radius: var(--vc-menu-item-border-radius);

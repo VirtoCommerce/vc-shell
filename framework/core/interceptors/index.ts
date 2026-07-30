@@ -7,6 +7,38 @@ import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetecti
 
 const logger = createLogger("interceptors");
 
+// Paths a platform redirects an unauthenticated request to.
+const LOGIN_PATH_PATTERN = /(^|\/)(login|signin|sign-in|account\/login|connect\/authorize)(\/|$)/i;
+
+/**
+ * Detects a dead session that no status code reveals.
+ *
+ * Some platform configurations answer an unauthenticated API call with a redirect
+ * to the login page instead of a 401. `fetch` follows that redirect transparently,
+ * so the interceptor sees a 200 carrying HTML: the caller then parses a login page
+ * as data and the UI silently renders "nothing found" while the session is gone.
+ *
+ * HTML alone is not the signal — an endpoint may legitimately serve a rendered
+ * template or an export. It counts only when the request was also redirected away
+ * from the endpoint that was asked. A login-shaped final URL is conclusive on its
+ * own, for platforms that omit the content type.
+ */
+function looksLikeLoginPage(response: Response): boolean {
+  let pathname: string;
+  try {
+    pathname = new URL(response.url, window.location.origin).pathname;
+  } catch {
+    return false;
+  }
+
+  if (LOGIN_PATH_PATTERN.test(pathname)) {
+    return true;
+  }
+
+  const contentType = response.headers?.get?.("content-type") ?? "";
+  return response.redirected === true && contentType.includes("text/html");
+}
+
 type PatchedFetch = typeof window.fetch & { __vcInterceptorsInstalled__?: true };
 
 export function registerInterceptors(router: Router) {
@@ -124,12 +156,18 @@ export function registerInterceptors(router: Router) {
         // same dead session are suppressed by it but skip this branch, so sign-out,
         // redirect and toast happen exactly once. It is deliberately not set when we
         // are not signed in — a 401 we don't act on must not silence the whole app.
-        if (response.status === 401 && !isSessionExpired() && isAuthenticated.value) {
+        // A 401 is the explicit signal; a successful response that is actually the
+        // login page is the same death reported differently (see looksLikeLoginPage).
+        // A 403 is deliberately excluded — authenticated-but-unauthorized is not an
+        // expired session, and signing the user out over it would be wrong.
+        const sessionDied = response.status === 401 || (response.ok && looksLikeLoginPage(response));
+
+        if (sessionDied && !isSessionExpired() && isAuthenticated.value) {
           markSessionExpired();
 
           signOut()
             .catch((err) => {
-              logger.error("signOut failed after 401:", err);
+              logger.error("signOut failed after session expiry:", err);
             })
             .finally(() => {
               redirect(router);

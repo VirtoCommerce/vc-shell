@@ -72,6 +72,38 @@ describe("VcVideo", () => {
     expect(sandbox.filter((t) => t === "allow-scripts")).toHaveLength(1);
   });
 
+  it.each([
+    "https://www.youtube.com/embed/PeXX-V-dwpA",
+    "https://youtube.com/embed/abc",
+    "https://www.youtube-nocookie.com/embed/abc",
+    "https://youtu.be/abc",
+    "https://player.vimeo.com/video/123",
+    "https://vimeo.com/123",
+  ])("grants allow-same-origin to trusted embed host: %s", (source) => {
+    const sandbox = mountComponent({ source }).find("iframe").attributes("sandbox") ?? "";
+    expect(sandbox.split(" ")).toContain("allow-same-origin");
+    expect(sandbox.split(" ")).toContain("allow-scripts");
+    expect(sandbox.split(" ")).toContain("allow-presentation");
+  });
+
+  it("keeps the strict sandbox for an untrusted host", () => {
+    const sandbox = mountComponent({ source: "https://example.com/embed" }).find("iframe").attributes("sandbox") ?? "";
+    expect(sandbox.split(" ")).not.toContain("allow-same-origin");
+  });
+
+  it("does not trust a host that merely ends with a trusted domain", () => {
+    const sandbox =
+      mountComponent({ source: "https://evil-youtube.com/embed/abc" }).find("iframe").attributes("sandbox") ?? "";
+    expect(sandbox.split(" ")).not.toContain("allow-same-origin");
+  });
+
+  it("keeps the strict sandbox for a relative or malformed source", () => {
+    for (const source of ["/assets/uploaded.html", "not a url", "javascript:alert(1)"]) {
+      const sandbox = mountComponent({ source }).find("iframe").attributes("sandbox") ?? "";
+      expect(sandbox.split(" ")).not.toContain("allow-same-origin");
+    }
+  });
+
   it("renders label when label prop is provided", () => {
     const wrapper = mountComponent({ label: "My Video" });
     expect(wrapper.find(".vc-video__label").exists()).toBe(true);

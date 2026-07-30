@@ -23,6 +23,9 @@ const mockInitGrid = vi.fn();
 const mockSaveLayout = vi.fn();
 const mockResetToDefaults = vi.fn();
 
+const mockUpdateWidgetPosition = vi.fn();
+const mockUpdateWidgetSize = vi.fn();
+
 vi.mock("@shell/dashboard/draggable-dashboard/composables/useGridstack", () => ({
   useGridstack: vi.fn(() => ({
     layout: mockLayout,
@@ -30,6 +33,8 @@ vi.mock("@shell/dashboard/draggable-dashboard/composables/useGridstack", () => (
     initGrid: mockInitGrid,
     saveLayout: mockSaveLayout,
     resetToDefaults: mockResetToDefaults,
+    updateWidgetPosition: mockUpdateWidgetPosition,
+    updateWidgetSize: mockUpdateWidgetSize,
   })),
 }));
 
@@ -94,7 +99,9 @@ describe("GridstackDashboard", () => {
   it("renders default aria-label on the grid", () => {
     const wrapper = mountGridstack();
     const grid = wrapper.find(".grid-stack");
-    expect(grid.attributes("aria-label")).toBe("Dashboard widgets. Drag widgets to rearrange.");
+    expect(grid.attributes("aria-label")).toBe(
+      "Dashboard widgets. Drag a widget, or focus one and press Enter to rearrange with the arrow keys.",
+    );
   });
 
   it("renders custom aria-label", () => {
@@ -129,7 +136,11 @@ describe("GridstackDashboard", () => {
   it("generates aria-label for each widget", () => {
     const wrapper = mountGridstack({}, [createWidget()]);
     const item = wrapper.find(".grid-stack-item");
-    expect(item.attributes("aria-label")).toBe("Widget 1, widget 1 of 1. Drag to reorder.");
+    // The label advertises the keyboard route, not dragging — a screen-reader user
+    // cannot drag, so "Drag to reorder" told them to do the one thing they cannot.
+    expect(item.attributes("aria-label")).toBe(
+      "Widget 1, widget 1 of 1. Press Enter to pick up and rearrange with the arrow keys.",
+    );
   });
 
   it("does not show drag handles when showDragHandles is false", () => {
@@ -245,6 +256,89 @@ describe("GridstackDashboard", () => {
       const region = wrapper.find(".vc-gridstack-dashboard__skeleton-grid");
       expect(region.attributes("aria-busy")).toBe("true");
       expect(region.attributes("role")).toBe("status");
+    });
+  });
+
+  // WCAG 2.5.7: reordering and resizing must not require a drag.
+  describe("keyboard reordering", () => {
+    beforeEach(() => {
+      mockUpdateWidgetPosition.mockReset();
+      mockUpdateWidgetSize.mockReset();
+      mockLayout.value = new Map([["a", { x: 2, y: 3 }]]);
+    });
+
+    const mountWithWidget = () =>
+      mountGridstack({ resizable: true }, [
+        { id: "a", name: "Widget A", component: markRaw(WidgetA), size: { width: 6, height: 6 } },
+      ]);
+
+    const item = (wrapper: ReturnType<typeof mountGridstack>) => wrapper.find(".grid-stack-item");
+
+    it("puts every widget in the tab order", () => {
+      expect(item(mountWithWidget()).attributes("tabindex")).toBe("0");
+    });
+
+    it("ignores arrow keys until the widget is picked up", async () => {
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "ArrowRight" });
+      expect(mockUpdateWidgetPosition).not.toHaveBeenCalled();
+    });
+
+    it("moves the widget one cell per arrow press once picked up", async () => {
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+      await item(wrapper).trigger("keydown", { key: "ArrowRight" });
+
+      expect(mockUpdateWidgetPosition).toHaveBeenCalledWith("a", { x: 3, y: 3 });
+    });
+
+    it("never moves a widget to a negative coordinate", async () => {
+      mockLayout.value = new Map([["a", { x: 0, y: 0 }]]);
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+      await item(wrapper).trigger("keydown", { key: "ArrowLeft" });
+
+      expect(mockUpdateWidgetPosition).not.toHaveBeenCalled();
+    });
+
+    it("resizes with Shift held", async () => {
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+      await item(wrapper).trigger("keydown", { key: "ArrowRight", shiftKey: true });
+
+      expect(mockUpdateWidgetSize).toHaveBeenCalledWith("a", { width: 7, height: 6 });
+    });
+
+    it("restores the original position when the move is cancelled with Escape", async () => {
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+      await item(wrapper).trigger("keydown", { key: "ArrowRight" });
+      await item(wrapper).trigger("keydown", { key: "ArrowDown" });
+      mockUpdateWidgetPosition.mockClear();
+
+      await item(wrapper).trigger("keydown", { key: "Escape" });
+
+      expect(mockUpdateWidgetPosition).toHaveBeenLastCalledWith("a", { x: 2, y: 3 });
+    });
+
+    it("marks the picked-up widget so the state is visible, and clears it on drop", async () => {
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+      expect(item(wrapper).classes()).toContain("vc-gridstack-dashboard__item--grabbed");
+
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+      expect(item(wrapper).classes()).not.toContain("vc-gridstack-dashboard__item--grabbed");
+    });
+
+    it("persists the layout when the move is committed", async () => {
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+      await item(wrapper).trigger("keydown", { key: "ArrowRight" });
+      mockSaveLayout.mockClear();
+
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+
+      expect(mockSaveLayout).toHaveBeenCalled();
     });
   });
 });

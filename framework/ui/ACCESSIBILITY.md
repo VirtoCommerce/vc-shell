@@ -1,6 +1,6 @@
 # Accessibility (a11y)
 
-Vc-Shell UI components target **WCAG 2.1 level AA**. Accessibility is verified
+Vc-Shell UI components target **WCAG 2.2 level AA**. Accessibility is verified
 automatically with [axe-core](https://github.com/dequelabs/axe-core) against
 every Storybook story.
 
@@ -31,8 +31,8 @@ panel reports the same violations live.
 
 ## Scope and disabled rules
 
-Checks run only the **WCAG 2.1 A/AA rule tags** (`wcag2a`, `wcag2aa`, `wcag21a`,
-`wcag21aa`) — axe "best-practice" rules such as `landmark-unique` or
+Checks run the **WCAG 2.2 A/AA rule tags** (`wcag2a`, `wcag2aa`, `wcag21a`,
+`wcag21aa`, `wcag22a`, `wcag22aa`) — axe "best-practice" rules such as `landmark-unique` or
 `empty-table-header` are intentionally out of scope. The scope is set via
 `a11y.options.runOnly` in `.storybook/preview.ts` and mirrored in
 `scripts/a11y-audit.mjs`.

@@ -97,6 +97,20 @@ describe("createLanguageService", () => {
       service.setLocale("de");
       expect(mocks.localStorageValue.value).toBe("de");
     });
+
+    // Screen readers pick a pronunciation dictionary from <html lang>. index.html
+    // can only carry a static default, so the switch has to update it (WCAG 3.1.1).
+    it("reflects the locale on the document element", () => {
+      const service = createLanguageService();
+      service.setLocale("de");
+      expect(document.documentElement.getAttribute("lang")).toBe("de");
+    });
+
+    it("writes the resolved locale, not the requested one", () => {
+      const service = createLanguageService();
+      service.setLocale("xx-unknown");
+      expect(document.documentElement.getAttribute("lang")).toBe("en");
+    });
   });
 
   describe("getLocaleByTag", () => {

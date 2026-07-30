@@ -106,10 +106,16 @@ describe("VcInput", () => {
     expect(clearBtn.exists()).toBe(true);
   });
 
-  it("has semantic password toggle with aria-label", () => {
+  it("has semantic password toggle with a localized aria-label", () => {
     const wrapper = mountInput({ modelValue: "secret", type: "password" });
-    const toggleBtn = wrapper.find('button[aria-label="Show password"]');
-    expect(toggleBtn.exists()).toBe(true);
+    const toggleBtn = wrapper.find(".vc-input__showhide");
+    expect(toggleBtn.attributes("aria-label")).toBe("COMPONENTS.CONTROLS.SHOW_PASSWORD");
+  });
+
+  it("switches the password toggle label once the value is revealed", async () => {
+    const wrapper = mountInput({ modelValue: "secret", type: "password" });
+    await wrapper.find(".vc-input__showhide").trigger("click");
+    expect(wrapper.find(".vc-input__showhide").attributes("aria-label")).toBe("COMPONENTS.CONTROLS.HIDE_PASSWORD");
   });
 
   describe("v-model contract", () => {

@@ -196,7 +196,11 @@
               v-if="type === 'password'"
               type="button"
               class="vc-input__showhide"
-              :aria-label="internalType === 'password' ? 'Show password' : 'Hide password'"
+              :aria-label="
+                internalType === 'password'
+                  ? $t('COMPONENTS.CONTROLS.SHOW_PASSWORD')
+                  : $t('COMPONENTS.CONTROLS.HIDE_PASSWORD')
+              "
               @click="internalType = internalType === 'password' ? 'text' : 'password'"
             >
               <VcIcon
@@ -569,6 +573,8 @@ function handleFocus() {
   --input-background-color: var(--additional-50);
   --input-placeholder-color: var(--neutrals-400);
   --input-clear-color: var(--neutrals-400);
+  // WCAG 2.2 SC 2.5.8 minimum target size. Every consumer of VcInput inherits it.
+  --input-adornment-target-size: 24px;
   --input-clear-color-hover: var(--neutrals-600);
   --input-text-color: var(--neutrals-800);
 
@@ -661,14 +667,16 @@ function handleFocus() {
     @apply tw-cursor-pointer tw-pl-3;
   }
 
-  &__clear {
-    @apply tw-border-none tw-bg-transparent tw-outline-none tw-p-0 tw-cursor-pointer
-      tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
-  }
-
+  // Adornment buttons: the icon is 12-14px, so without a minimum box the hit
+  // area is about half the 24px WCAG 2.5.8 target. The box grows inward via
+  // justify-center — the icon keeps its visual size and the input its height.
+  &__clear,
   &__showhide {
     @apply tw-border-none tw-bg-transparent tw-outline-none tw-p-0 tw-cursor-pointer
-      tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center;
+      tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)]
+      tw-flex tw-items-center tw-justify-center;
+    min-width: var(--input-adornment-target-size);
+    min-height: var(--input-adornment-target-size);
   }
 
   &__loading {

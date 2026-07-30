@@ -16,7 +16,7 @@
       :style="imageHandler"
       :role="clickable ? 'button' : src && alt ? 'img' : undefined"
       :tabindex="clickable ? 0 : undefined"
-      :aria-label="alt || (clickable ? 'Image' : undefined)"
+      :aria-label="alt || (clickable ? $t('COMPONENTS.ATOMS.VC_IMAGE.LABEL') : undefined)"
       @click="onClick"
       @keydown.enter.prevent="onClick"
       @keydown.space.prevent="onClick"

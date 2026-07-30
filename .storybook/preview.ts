@@ -95,10 +95,15 @@ const preview: Preview = {
       // `runOnly` re-enables every rule carrying the listed tags, overriding
       // `axe.configure`-level disables — only run-option `rules` win over it.
       options: {
-        // Scope checks to the documented WCAG 2.1 A/AA target. Axe
+        // Scope checks to the documented WCAG 2.2 A/AA target. Axe
         // "best-practice" rules (landmark-unique, empty-table-header, …) are
         // intentionally out of scope.
-        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+        //
+        // The 2.2 tags matter: with only the 2.1 tags a run reports clean while
+        // the whole 2.2 class (target-size, dragging-movements) is never
+        // evaluated — a green gate that means "accessible at 2.1", not
+        // "accessible". Keep this list and scripts/a11y-audit.mjs identical.
+        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22a", "wcag22aa"] },
         rules: {
           // Storybook decorators add extra wrapper elements that break landmark rules
           region: { enabled: false },

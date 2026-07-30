@@ -79,6 +79,7 @@
         "ADD": "Hinzufügen"
       },
       "VC_BREADCRUMBS": {
+        "BACK": "Zurück",
         "LABEL": "Brotkrümelnavigation",
         "SHOW_MORE": "Weitere Brotkrümel anzeigen"
       },

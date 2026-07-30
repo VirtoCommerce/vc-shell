@@ -79,6 +79,7 @@
         "ADD": "Add"
       },
       "VC_BREADCRUMBS": {
+        "BACK": "Back",
         "LABEL": "Breadcrumb",
         "SHOW_MORE": "Show more breadcrumbs"
       },

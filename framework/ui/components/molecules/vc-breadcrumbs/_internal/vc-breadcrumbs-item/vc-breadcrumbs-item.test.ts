@@ -97,4 +97,32 @@ describe("VcBreadcrumbsItem", () => {
     });
     expect(wrapper.find(".vc-breadcrumbs-item__title").attributes("title")).toBe("A Long Breadcrumb Title");
   });
+
+  describe("accessible name", () => {
+    // An icon-only breadcrumb (no title) is how the back control is configured in
+    // item blades. Without a fallback its button has no accessible name at all.
+    it("labels an icon-only button", () => {
+      const wrapper = mount(VcBreadcrumbsItem, {
+        props: { id: "item-1", current: false, icon: "lucide-arrow-left" },
+      });
+      expect(wrapper.find("button").attributes("aria-label")).toBe("COMPONENTS.MOLECULES.VC_BREADCRUMBS.BACK");
+    });
+
+    it("labels a button whose title is an empty string", () => {
+      const wrapper = mount(VcBreadcrumbsItem, {
+        props: { id: "item-1", current: false, title: "", icon: "lucide-arrow-left" },
+      });
+      expect(wrapper.find("button").attributes("aria-label")).toBe("COMPONENTS.MOLECULES.VC_BREADCRUMBS.BACK");
+    });
+
+    it("leaves the name to the visible text when a title is present", () => {
+      const wrapper = mount(VcBreadcrumbsItem, { props: { ...baseProps, icon: "lucide-home" } });
+      expect(wrapper.find("button").attributes("aria-label")).toBeUndefined();
+    });
+
+    it("hides the decorative icon from assistive technology", () => {
+      const wrapper = mount(VcBreadcrumbsItem, { props: { ...baseProps, icon: "lucide-home" } });
+      expect(wrapper.find(".vc-breadcrumbs-item__icon").attributes("aria-hidden")).toBe("true");
+    });
+  });
 });

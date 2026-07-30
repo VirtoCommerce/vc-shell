@@ -49,16 +49,38 @@ import { computed } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 
+/**
+ * Embed hosts that need their own origin to bootstrap a player. Cross-origin by
+ * definition, so `allow-same-origin` cannot be used to reach the parent frame:
+ * the Same-Origin Policy blocks that. It only lets the framed page use its own
+ * storage, which YouTube requires before it can build the player.
+ */
+const TRUSTED_EMBED_HOSTS = ["youtube.com", "youtube-nocookie.com", "youtu.be", "vimeo.com"];
+
+function isTrustedEmbedHost(source: string): boolean {
+  let host: string;
+  try {
+    host = new URL(source).hostname.toLowerCase();
+  } catch {
+    // Relative or malformed source — may resolve to our own origin, stay strict.
+    return false;
+  }
+  // Suffix match must be on a dot boundary, or `evil-youtube.com` would pass.
+  return TRUSTED_EMBED_HOSTS.some((trusted) => host === trusted || host.endsWith(`.${trusted}`));
+}
+
 export interface Props {
   label?: string;
   tooltip?: string;
   source?: string;
   /**
-   * Additional iframe sandbox tokens to append to the secure default
-   * (`allow-scripts allow-presentation`). Space-separated.
+   * Additional iframe sandbox tokens to append to the resolved sandbox.
+   * Space-separated.
    *
-   * Enabling `allow-same-origin` together with `allow-scripts` disables sandbox
-   * protection entirely and is strongly discouraged for untrusted sources.
+   * The base is `allow-scripts allow-presentation`, plus `allow-same-origin`
+   * when `source` points at a known video host. Adding `allow-same-origin`
+   * yourself for a source on the app's own origin lets the framed page remove
+   * its sandbox and reach the parent DOM — do not do it for user-supplied URLs.
    */
   additionalSandbox?: string;
 }
@@ -72,6 +94,9 @@ defineEmits<Emits>();
 
 const sandbox = computed(() => {
   const base = ["allow-scripts", "allow-presentation"];
+  if (props.source && isTrustedEmbedHost(props.source)) {
+    base.push("allow-same-origin");
+  }
   const extra = (props.additionalSandbox ?? "").split(/\s+/).filter(Boolean);
   return [...new Set([...base, ...extra])].join(" ");
 });

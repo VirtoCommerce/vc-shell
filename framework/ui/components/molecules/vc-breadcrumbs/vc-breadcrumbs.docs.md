@@ -285,6 +285,10 @@ clickHandler: () => { navigate(); return true; }
 - The last visible item carries `aria-current="page"` to indicate the current location.
 - Separator characters are marked `aria-hidden="true"` so screen readers skip them.
 - When items overflow, the dropdown is accessible via the trigger button with standard keyboard interaction (Enter/Space to open).
+- An item with an icon and no `title` (a back control, for example) would otherwise have no accessible name — its button falls back to a localized `aria-label` ("Back" / "Zurück"). Items with a visible title set no `aria-label`, so the name is never duplicated.
+
+!!! tip "Prefer a real title over relying on the fallback"
+The fallback keeps an icon-only item usable, but "Back" says less than the destination does. Pass a `title` whenever you know it — screen-reader users then hear where the control leads, and sighted users get the truncation tooltip.
 
 ## Related Components
 

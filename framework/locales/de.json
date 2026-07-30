@@ -35,9 +35,14 @@
       "SELECT_OPTION": "Option auswählen",
       "CLEAR_SELECTION": "Auswahl aufheben",
       "COPY_TO_CLIPBOARD": "In die Zwischenablage kopieren",
-      "DELETE_ITEM": "Element löschen"
+      "DELETE_ITEM": "Element löschen",
+      "SHOW_PASSWORD": "Passwort anzeigen",
+      "HIDE_PASSWORD": "Passwort verbergen"
     },
     "ATOMS": {
+      "VC_IMAGE": {
+        "LABEL": "Bild"
+      },
       "VC_BANNER": {
         "SHOW_MORE": "Mehr anzeigen",
         "SHOW_LESS": "Weniger anzeigen"
@@ -79,6 +84,7 @@
         "ADD": "Hinzufügen"
       },
       "VC_BREADCRUMBS": {
+        "BACK": "Zurück",
         "LABEL": "Brotkrümelnavigation",
         "SHOW_MORE": "Weitere Brotkrümel anzeigen"
       },

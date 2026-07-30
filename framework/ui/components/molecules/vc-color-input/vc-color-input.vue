@@ -305,7 +305,8 @@ defineExpose({ focus });
   --input-focus-ring-color: var(--primary-100);
   --input-error-ring-color: var(--danger-100);
 
-  --color-input-swatch-size: 20px;
+  // WCAG 2.2 SC 2.5.8 minimum target size.
+  --color-input-swatch-size: 24px;
   --color-input-swatch-border-radius: 4px;
   --color-input-swatch-border-color: var(--neutrals-300);
   --color-input-swatch-border-color-hover: var(--neutrals-400);

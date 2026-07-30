@@ -22,6 +22,7 @@
     type="button"
     class="vc-breadcrumbs-item"
     :class="{ 'vc-breadcrumbs-item--light': variant === 'light' }"
+    :aria-label="resolvedTitle ? undefined : $t('COMPONENTS.MOLECULES.VC_BREADCRUMBS.BACK')"
     @click="onClick"
   >
     <VcIcon

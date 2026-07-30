@@ -71,6 +71,7 @@ export interface UseGridstackReturn {
   removeWidget: (widgetId: string) => void;
   /** Update widget position */
   updateWidgetPosition: (widgetId: string, position: DashboardWidgetPosition) => void;
+  updateWidgetSize: (widgetId: string, size: { width: number; height: number }) => void;
   /** Save current layout */
   saveLayout: () => void;
   /** Load layout from storage */
@@ -246,6 +247,21 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
   };
 
   /**
+   * Counterpart of updateWidgetPosition for the size axis, so a widget can be
+   * resized programmatically — keyboard resizing has no drag handle to simulate.
+   */
+  const updateWidgetSize = (widgetId: string, size: { width: number; height: number }): void => {
+    if (!grid.value) return;
+
+    const element = document.querySelector(`[gs-id="${widgetId}"]`);
+    if (element) {
+      isUpdating.value = true;
+      grid.value.update(element as HTMLElement, { w: size.width, h: size.height });
+      isUpdating.value = false;
+    }
+  };
+
+  /**
    * Save current layout to localStorage
    */
   const saveLayout = (): void => {
@@ -361,6 +377,7 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
     addWidget,
     removeWidget,
     updateWidgetPosition,
+    updateWidgetSize,
     saveLayout,
     loadLayout,
     resetToDefaults,

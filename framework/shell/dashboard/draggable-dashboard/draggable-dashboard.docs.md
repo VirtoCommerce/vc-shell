@@ -140,6 +140,23 @@ function resetLayout() {
 - The 12-column grid means common widget widths are: 3 (quarter), 4 (third), 6 (half), and 12 (full width).
 - Register widgets during module `install()` before the dashboard component mounts. Late registrations may not be picked up.
 
+## Accessibility
+
+Widgets can be rearranged without a pointer, which WCAG 2.5.7 Dragging Movements requires:
+
+| Key                 | Action                                                          |
+| ------------------- | --------------------------------------------------------------- |
+| `Tab`               | Move focus between widgets (each one is in the tab order)       |
+| `Enter` / `Space`   | Pick the focused widget up, and drop it again                   |
+| Arrow keys          | While picked up, move the widget one grid cell                  |
+| `Shift` + arrow key | While picked up, resize by one cell (needs `resizable`)         |
+| `Escape`            | Cancel the move and return the widget to where it was picked up |
+
+Every step is announced through the component's `aria-live` region, and the picked-up widget is outlined so the state is visible to sighted keyboard users. Moves are clamped at the grid edges and at the 2×2 minimum widget size, and the layout is persisted when the widget is dropped — the same as after a mouse drag.
+
+!!! note "The widget itself is the control"
+There is no separate "move" button. Gridstack only implements pointer dragging, so the widget is focusable and handles the keys directly. If you render your own interactive elements inside a widget, they keep working — the arrow keys only act while the widget has been explicitly picked up.
+
 ## Advanced / Exports
 
 Besides the `DraggableDashboard` component, `draggable-dashboard/index.ts` re-exports these symbols through the framework root, for building a custom Gridstack dashboard:

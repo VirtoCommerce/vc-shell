@@ -141,8 +141,17 @@ jobs:
       - name: Install Playwright browsers
         run: yarn playwright install --with-deps chromium
 
+      # The Storybook config resolves @vc-shell/config-generator, which is a
+      # workspace package that must be built first — the storybook-build job
+      # does the same for the same reason. Without it every story suite fails
+      # to load before a single assertion runs.
+      - name: Build framework
+        run: yarn build
+
       - name: Run Storybook tests (stories + axe)
         run: yarn test:storybook
+        env:
+          NODE_OPTIONS: "--max-old-space-size=6144"
 
   # Deploy the hosted Storybook preview. storybook-ci.yml is a reusable
   # (workflow_call) workflow with no push trigger of its own; the caller that

@@ -28,6 +28,7 @@
         v-for="(widget, index) in widgets"
         :key="widget.id"
         class="grid-stack-item"
+        :class="{ 'vc-gridstack-dashboard__item--grabbed': grabbedWidgetId === widget.id }"
         :gs-id="widget.id"
         :gs-x="getPosition(widget.id)?.x ?? widget.position?.x ?? 0"
         :gs-y="getPosition(widget.id)?.y ?? widget.position?.y ?? 0"
@@ -36,7 +37,9 @@
         :gs-min-w="2"
         :gs-min-h="2"
         role="listitem"
+        tabindex="0"
         :aria-label="getWidgetAriaLabel(widget, index)"
+        @keydown="onWidgetKeydown($event, widget)"
       >
         <div class="grid-stack-item-content">
           <!-- Drag handle (optional) -->
@@ -183,7 +186,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   showDragHandles: false,
   resizable: false,
-  ariaLabel: "Dashboard widgets. Drag widgets to rearrange.",
+  ariaLabel: "Dashboard widgets. Drag a widget, or focus one and press Enter to rearrange with the arrow keys.",
 });
 
 // Refs
@@ -215,32 +218,125 @@ const dashboard = useDashboard();
 const widgets = computed(() => dashboard.getWidgets() as IDashboardWidget[]);
 
 // Gridstack integration
-const { layout, isInitialized, initGrid, saveLayout, resetToDefaults } = useGridstack(widgets, {
-  resizable: props.resizable,
-  autoSave: true,
-  gridOptions: {
-    draggable: {
-      handle: props.showDragHandles ? ".vc-gridstack-dashboard__drag-handle" : ".grid-stack-item-content",
+const { layout, isInitialized, initGrid, saveLayout, resetToDefaults, updateWidgetPosition, updateWidgetSize } =
+  useGridstack(widgets, {
+    resizable: props.resizable,
+    autoSave: true,
+    gridOptions: {
+      draggable: {
+        handle: props.showDragHandles ? ".vc-gridstack-dashboard__drag-handle" : ".grid-stack-item-content",
+      },
     },
-  },
-  onLayoutChange: (newLayout) => {
-    // Sync with dashboard service
-    for (const [widgetId, position] of newLayout) {
-      dashboard.updateWidgetPosition(widgetId, position);
-    }
-    announceToScreenReader("Widget positions updated");
-  },
-});
+    onLayoutChange: (newLayout) => {
+      // Sync with dashboard service
+      for (const [widgetId, position] of newLayout) {
+        dashboard.updateWidgetPosition(widgetId, position);
+      }
+      announceToScreenReader("Widget positions updated");
+    },
+  });
 
 // Helper to get widget position
 const getPosition = (widgetId: string): DashboardWidgetPosition | undefined => {
   return layout.value.get(widgetId);
 };
 
+// --- Keyboard reordering (WCAG 2.5.7: dragging must have a non-drag alternative) ---
+//
+// Gridstack only offers pointer dragging, so the widget itself becomes the control:
+// Enter/Space picks it up, arrows move it a cell at a time, Shift+arrows resize,
+// Enter drops, Escape restores the position it was picked up from.
+const grabbedWidgetId = ref<string | null>(null);
+const grabbedOrigin = ref<DashboardWidgetPosition | null>(null);
+
+// Mirrors gs-min-w / gs-min-h on the item.
+const MIN_WIDGET_SPAN = 2;
+
+const positionOf = (widget: IDashboardWidget): DashboardWidgetPosition =>
+  layout.value.get(widget.id) ?? widget.position ?? { x: 0, y: 0 };
+
+const widgetName = (widget: IDashboardWidget): string => widget.name || widget.id;
+
+const pickUpWidget = (widget: IDashboardWidget): void => {
+  grabbedWidgetId.value = widget.id;
+  grabbedOrigin.value = { ...positionOf(widget) };
+  announceToScreenReader(
+    `${widgetName(widget)} picked up. Use arrow keys to move, Shift and arrow keys to resize, Enter to drop, Escape to cancel.`,
+  );
+};
+
+const dropWidget = (widget: IDashboardWidget): void => {
+  grabbedWidgetId.value = null;
+  grabbedOrigin.value = null;
+  saveLayout();
+  const { x, y } = positionOf(widget);
+  announceToScreenReader(`${widgetName(widget)} dropped at column ${x + 1}, row ${y + 1}.`);
+};
+
+const cancelWidgetMove = (widget: IDashboardWidget): void => {
+  if (grabbedOrigin.value) {
+    updateWidgetPosition(widget.id, grabbedOrigin.value);
+  }
+  grabbedWidgetId.value = null;
+  grabbedOrigin.value = null;
+  announceToScreenReader(`Move cancelled. ${widgetName(widget)} returned to its original position.`);
+};
+
+const moveWidgetBy = (widget: IDashboardWidget, dx: number, dy: number): void => {
+  const current = positionOf(widget);
+  const next = { x: current.x + dx, y: current.y + dy };
+  // Gridstack clamps silently; refusing the move keeps the announcement honest.
+  if (next.x < 0 || next.y < 0) return;
+
+  updateWidgetPosition(widget.id, next);
+  announceToScreenReader(`${widgetName(widget)} moved to column ${next.x + 1}, row ${next.y + 1}.`);
+};
+
+const resizeWidgetBy = (widget: IDashboardWidget, dw: number, dh: number): void => {
+  const width = Math.max(MIN_WIDGET_SPAN, widget.size.width + dw);
+  const height = Math.max(MIN_WIDGET_SPAN, widget.size.height + dh);
+  if (width === widget.size.width && height === widget.size.height) return;
+
+  updateWidgetSize(widget.id, { width, height });
+  announceToScreenReader(`${widgetName(widget)} resized to ${width} by ${height} cells.`);
+};
+
+const onWidgetKeydown = (event: KeyboardEvent, widget: IDashboardWidget): void => {
+  const isGrabbed = grabbedWidgetId.value === widget.id;
+
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    if (isGrabbed) dropWidget(widget);
+    else pickUpWidget(widget);
+    return;
+  }
+
+  if (event.key === "Escape" && isGrabbed) {
+    event.preventDefault();
+    cancelWidgetMove(widget);
+    return;
+  }
+
+  const dx = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0;
+  const dy = event.key === "ArrowUp" ? -1 : event.key === "ArrowDown" ? 1 : 0;
+  if ((dx === 0 && dy === 0) || !isGrabbed) return;
+
+  event.preventDefault();
+  if (event.shiftKey) {
+    if (props.resizable) resizeWidgetBy(widget, dx, dy);
+  } else {
+    moveWidgetBy(widget, dx, dy);
+  }
+};
+
 // Accessibility helpers
 const getWidgetAriaLabel = (widget: IDashboardWidget, index: number): string => {
   const name = widget.name || widget.id;
-  return `${name}, widget ${index + 1} of ${widgets.value.length}. Drag to reorder.`;
+  const state =
+    grabbedWidgetId.value === widget.id
+      ? "Picked up. Arrow keys move, Enter drops, Escape cancels."
+      : "Press Enter to pick up and rearrange with the arrow keys.";
+  return `${name}, widget ${index + 1} of ${widgets.value.length}. ${state}`;
 };
 
 const announceToScreenReader = (message: string): void => {
@@ -300,6 +396,7 @@ defineExpose({
   --gridstack-placeholder-border: rgba(59, 130, 246, 0.5);
   --gridstack-drag-handle-color: var(--neutrals-400);
   --gridstack-drag-handle-color-hover: var(--neutrals-600);
+  --gridstack-widget-focus-ring-color: var(--primary-500);
 }
 
 .vc-gridstack-dashboard {
@@ -309,6 +406,23 @@ defineExpose({
   &__grid {
     padding: 24px 18px;
     min-height: calc(80px * 8 + 24px * 2); // 8 rows minimum
+  }
+
+  // Widgets are focusable so they can be rearranged from the keyboard.
+  .grid-stack-item:focus-visible {
+    @apply tw-outline-none tw-ring-[3px] tw-ring-[color:var(--gridstack-widget-focus-ring-color)];
+    border-radius: var(--gridstack-widget-border-radius);
+  }
+
+  // Picked up for a keyboard move: the pointer equivalent of "being dragged".
+  &__item--grabbed {
+    z-index: var(--z-local-above);
+
+    .grid-stack-item-content {
+      box-shadow: var(--gridstack-widget-shadow-dragging);
+      outline: 2px dashed var(--gridstack-placeholder-border);
+      outline-offset: 2px;
+    }
   }
 
   // Skeleton grid mirrors gridstack's 12-column geometry. Row height and gap are

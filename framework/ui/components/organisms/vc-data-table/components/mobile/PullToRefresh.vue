@@ -306,11 +306,22 @@ defineExpose({
 }
 
 .vc-pull-to-refresh {
-  // overflow: clip (not hidden!) — clips the pull indicator visually
-  // but does NOT create a scroll container. With `hidden`, touch scroll events
-  // get trapped and never reach the parent overflow-y: auto element.
   @apply tw-relative;
-  overflow: clip;
+  // Clip horizontally only. Clipping BOTH axes made this element the boundary of
+  // its content's overflow, so the card list (which is far taller than the
+  // available height) was silently cut off and the scroll container above —
+  // `.vc-data-table__content`, `overflow-y: auto` — saw nothing to scroll:
+  // the mobile table could not be scrolled at all, by wheel or by touch.
+  // Vertical overflow must stay visible so it propagates to that scroller.
+  // `clip` + `visible` is a legal pair (unlike `hidden` + `visible`, where
+  // `visible` would be coerced to `auto` and trap the scroll here).
+  //
+  // Side effect, accepted: while a pull is held, the content's translateY adds
+  // that many px to the scroller's scrollable extent. It is invisible (the user
+  // is pinned at scrollTop 0 and the growth is below the fold) and reverts
+  // exactly when the spring returns.
+  overflow-x: clip;
+  overflow-y: visible;
   // Fill the available height of the scroll container so the mobile card view
   // stretches to all free space instead of collapsing to content height.
   @apply tw-flex tw-flex-col tw-flex-1 tw-min-h-0;

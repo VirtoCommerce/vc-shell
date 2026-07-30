@@ -10,19 +10,25 @@ vi.mock("@core/composables/useExternalProvider", () => ({
   }),
 }));
 
+// Plain functions, not arrows: these are called with `new` and vitest 4
+// construct-calls the implementation directly (see useUser.test.ts).
 vi.mock("@core/api/platform", () => ({
-  SecurityClient: vi.fn().mockImplementation(() => ({
-    getCurrentUser: mockGetCurrentUser,
-    login: vi.fn(),
-    logout: vi.fn(),
-    validatePasswordResetToken: vi.fn(),
-    validatePassword: vi.fn(),
-    resetPasswordByToken: vi.fn(),
-    requestPasswordReset: vi.fn(),
-    changeCurrentUserPassword: vi.fn(),
-    getLoginTypes: vi.fn(),
-  })),
-  LoginRequest: vi.fn().mockImplementation((args: unknown) => args),
+  SecurityClient: vi.fn(function () {
+    return {
+      getCurrentUser: mockGetCurrentUser,
+      login: vi.fn(),
+      logout: vi.fn(),
+      validatePasswordResetToken: vi.fn(),
+      validatePassword: vi.fn(),
+      resetPasswordByToken: vi.fn(),
+      requestPasswordReset: vi.fn(),
+      changeCurrentUserPassword: vi.fn(),
+      getLoginTypes: vi.fn(),
+    };
+  }),
+  LoginRequest: vi.fn(function (args: unknown) {
+    return args;
+  }),
 }));
 
 // Imported AFTER mocks are registered

@@ -451,6 +451,9 @@ function onPopoverDelete(p: { id: string }) {
   align-items: center;
   gap: 0.25rem;
   padding: 0 0.25rem;
+  // The chip is the clickable target for an event, so it must clear the 24px
+  // minimum of WCAG 2.2 SC 2.5.8 — its text alone is only ~13px tall.
+  min-height: 24px;
   border-radius: 0.25rem;
   background: var(--neutrals-100);
   color: var(--neutrals-900);

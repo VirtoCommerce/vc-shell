@@ -136,7 +136,9 @@ function onChange() {
 
 .vc-radio-button {
   &__label {
-    @apply tw-text-sm tw-flex tw-items-center tw-gap-2 tw-cursor-pointer tw-select-none;
+    // min-h-6 gives stacked radios a 24px pitch so the WCAG 2.2 SC 2.5.8
+    // spacing exception applies without enlarging the 16px dial itself.
+    @apply tw-text-sm tw-flex tw-items-center tw-gap-2 tw-cursor-pointer tw-select-none tw-min-h-6;
   }
 
   input[type="radio"] {

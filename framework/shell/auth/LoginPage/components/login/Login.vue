@@ -115,7 +115,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, Ref } from "vue";
+import { ref, reactive, computed, onMounted, type Ref } from "vue";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useForm } from "vee-validate";
 import { useSettings } from "@core/composables";

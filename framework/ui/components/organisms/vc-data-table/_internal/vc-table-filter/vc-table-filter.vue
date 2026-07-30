@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, computed, Ref } from "vue";
+import { ref, watch, computed, type Ref } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcBadge } from "@ui/components/atoms/vc-badge";

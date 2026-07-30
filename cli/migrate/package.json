@@ -24,7 +24,7 @@
   "devDependencies": {
     "@types/semver": "^7.7.1",
     "typescript": "^5.8.3",
-    "vitest": "^3.0.0"
+    "vitest": "^4.1.10"
   },
   "publishConfig": {
     "access": "public",

@@ -71,7 +71,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { VNode } from "vue";
+import type { VNode } from "vue";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 

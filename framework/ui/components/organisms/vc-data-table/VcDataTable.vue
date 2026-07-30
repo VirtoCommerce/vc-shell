@@ -248,9 +248,12 @@
     </div>
 
     <!-- Mobile: Card view with swipe actions (wrapped for scroll + pagination pinning) -->
+    <!-- tabindex="0": this wrapper scrolls but its cards are not focusable, so without
+         it the list is unreachable by keyboard (WCAG 2.1.1 / axe scrollable-region-focusable). -->
     <div
       v-else
       class="vc-data-table__content"
+      tabindex="0"
     >
       <!-- Mobile: Select all toolbar (appears when selection is active) -->
       <div

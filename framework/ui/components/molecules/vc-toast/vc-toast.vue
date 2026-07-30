@@ -57,7 +57,7 @@
 <script lang="ts" setup>
 import type { Content, NotificationType, NotificationPosition } from "@core/notifications/toast-types";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { Ref, computed, onMounted, onBeforeUnmount, ref, toRefs, watch } from "vue";
+import { computed, onMounted, onBeforeUnmount, ref, toRefs, watch, type Ref } from "vue";
 
 export interface Props {
   content?: Content;

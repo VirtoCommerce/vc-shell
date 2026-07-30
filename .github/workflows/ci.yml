@@ -134,8 +134,12 @@ jobs:
       # ESLint reports nothing for an undefined identifier in a story file, so
       # this is the ONLY gate that catches a broken story — one shipped that way
       # (VCST-5597). It also carries the axe accessibility assertions.
+      # Must use the workspace's own playwright, not `yarn dlx`: dlx resolves a
+      # separate (newer) playwright and installs browsers keyed to its version,
+      # while @vitest/browser looks them up under the version pinned here — the
+      # binary then "doesn't exist" (chromium_headless_shell-<rev>).
       - name: Install Playwright browsers
-        run: yarn dlx playwright install --with-deps chromium
+        run: yarn playwright install --with-deps chromium
 
       - name: Run Storybook tests (stories + axe)
         run: yarn test:storybook

@@ -261,6 +261,7 @@ function onClose(): void {
   --blade-header-mobile-height: 60px;
   --blade-header-background-color: var(--additional-50);
   --blade-header-button-color: var(--neutrals-400);
+  --blade-header-button-target-size: 24px;
   --blade-header-button-color-hover: var(--neutrals-500);
   --blade-header-breadcrumbs-button-color: var(--neutrals-500);
   --blade-header-breadcrumbs-button-color-hover: var(--neutrals-700);
@@ -357,6 +358,11 @@ function onClose(): void {
 
   &__button {
     @apply tw-text-[color:var(--blade-header-button-color)] tw-ml-2.5 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)];
+    // Without a minimum box the hit area is just the ~18px icon, under the 24px
+    // WCAG 2.2 SC 2.5.8 target. Centering keeps the icon visually unchanged.
+    @apply tw-flex tw-items-center tw-justify-center;
+    min-width: var(--blade-header-button-target-size);
+    min-height: var(--blade-header-button-target-size);
   }
 }
 </style>

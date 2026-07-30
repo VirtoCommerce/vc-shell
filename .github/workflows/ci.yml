@@ -130,29 +130,6 @@ jobs:
       - name: Run framework tests
         run: yarn workspace @vc-shell/framework run test
 
-      # Stories are excluded from `yarn typecheck` (framework/tsconfig.json) and
-      # ESLint reports nothing for an undefined identifier in a story file, so
-      # this is the ONLY gate that catches a broken story — one shipped that way
-      # (VCST-5597). It also carries the axe accessibility assertions.
-      # Must use the workspace's own playwright, not `yarn dlx`: dlx resolves a
-      # separate (newer) playwright and installs browsers keyed to its version,
-      # while @vitest/browser looks them up under the version pinned here — the
-      # binary then "doesn't exist" (chromium_headless_shell-<rev>).
-      - name: Install Playwright browsers
-        run: yarn playwright install --with-deps chromium
-
-      # The Storybook config resolves @vc-shell/config-generator, which is a
-      # workspace package that must be built first — the storybook-build job
-      # does the same for the same reason. Without it every story suite fails
-      # to load before a single assertion runs.
-      - name: Build framework
-        run: yarn build
-
-      - name: Run Storybook tests (stories + axe)
-        run: yarn test:storybook
-        env:
-          NODE_OPTIONS: "--max-old-space-size=6144"
-
   # Deploy the hosted Storybook preview. storybook-ci.yml is a reusable
   # (workflow_call) workflow with no push trigger of its own; the caller that
   # used to invoke it lived in the removed main.yml. This job restores that

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { VcDataTable, VcColumn } from "@ui/components/organisms/vc-data-table";
 import { VcInput } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";

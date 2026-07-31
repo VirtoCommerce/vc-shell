@@ -425,3 +425,51 @@ describe("useDataTableState — clearState", () => {
     wrapper.unmount();
   });
 });
+
+describe("useDataTableState — userSized flag", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  function mountHarness(isSizingCustomized: () => boolean) {
+    let columnStateRef = ref<ColumnState>(makeColumnState({ name: 0.5, price: 0.5 }));
+    const Harness = defineComponent({
+      setup() {
+        columnStateRef = ref<ColumnState>(makeColumnState({ name: 0.5, price: 0.5 }));
+        useDataTableState({
+          stateKey: ref("sized-test"),
+          stateStorage: ref("local"),
+          columnState: columnStateRef,
+          hiddenColumnIds: ref(new Set<string>()),
+          getAvailableWidth: () => DEFAULT_AVAILABLE_WIDTH,
+          isSizingCustomized,
+        });
+        return () => null;
+      },
+    });
+    return { wrapper: mount(Harness), columnState: () => columnStateRef };
+  }
+
+  it("omits userSized while sizing is declarative (auto-saved weights must not freeze)", async () => {
+    const { wrapper, columnState } = mountHarness(() => false);
+
+    columnState().value = makeColumnState({ name: 0.7, price: 0.3 });
+    await new Promise((resolve) => setTimeout(resolve, 220));
+
+    const state = JSON.parse(localStorage.getItem("VC_DATATABLE_SIZED-TEST")!);
+    expect(state.userSized).toBeUndefined();
+    wrapper.unmount();
+  });
+
+  it("persists userSized: true after a user resize", async () => {
+    const { wrapper, columnState } = mountHarness(() => true);
+
+    columnState().value = makeColumnState({ name: 0.7, price: 0.3 });
+    await new Promise((resolve) => setTimeout(resolve, 220));
+
+    const state = JSON.parse(localStorage.getItem("VC_DATATABLE_SIZED-TEST")!);
+    expect(state.userSized).toBe(true);
+    wrapper.unmount();
+  });
+});

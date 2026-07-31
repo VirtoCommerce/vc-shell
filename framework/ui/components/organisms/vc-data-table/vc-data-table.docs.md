@@ -1043,7 +1043,9 @@ Persist column widths, column order, and column visibility across page reloads. 
 
 **Storage key format:** `VC_DATATABLE_PRODUCT-LIST` (uppercased `state-key`).
 
-**Schema version:** The persisted state uses the **v2 schema**, which stores column weights, column order, and hidden/shown column IDs. `containerWidth` is no longer stored because weights are container-independent — the engine recomputes pixel values from weights on every mount.
+**Schema version:** The persisted state uses the **v2 schema**, which stores column weights, column order, hidden/shown column IDs, and a `userSized` flag. `containerWidth` is not stored because weights are container-independent — the engine recomputes pixel values from weights on every mount.
+
+**`userSized` and declarative widths:** until the user actually resizes a column, weights are treated as _declarative_ — re-derived from the `VcColumn` `width`/`minWidth`/`maxWidth` props at the current container width on every recompute. This heals weights captured at a transient width (blades animate their `width` for ~300ms, so the first measurement often happens mid-animation) and means `width="60"` renders as 60px at any blade width. A mouse resize sets `userSized: true`: from then on the saved weights are the user's data — restored as-is and scaled proportionally when the blade width changes. Restored states without the flag (including states saved by older versions) stay declarative; column order and hidden/shown IDs are restored either way. **Reset columns** returns the table to the declarative mode.
 
 If an older browser tab wrote **v1** state (pixel-based widths), it is automatically migrated to v2 on first load. No manual migration is needed.
 

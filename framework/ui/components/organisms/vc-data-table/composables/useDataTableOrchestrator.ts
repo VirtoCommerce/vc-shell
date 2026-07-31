@@ -516,12 +516,16 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     hiddenColumnIds,
     shownColumnIds: shownDataDiscoveredColumnIds,
     getAvailableWidth: measureAvailableWidth,
+    isSizingCustomized: () => cols.isSizingCustomized(),
     onStateSave: (state) => emit("state-save", state),
     onStateRestore: (state) => {
-      // Persistence has restored weights — cancel any pending deferred
-      // re-init from declared VcColumn props so recompute() doesn't overwrite
-      // the user's saved column widths with the declarative defaults.
-      cols.markStateRestored();
+      // Freeze the restored weights only when they came from a real user resize
+      // (`userSized`). Auto-saved weights from an untouched table stay
+      // declarative — recompute() re-derives them from VcColumn props at the
+      // current width, which heals states saved at a transient blade width.
+      if (state.userSized) {
+        cols.markSizingCustomized();
+      }
       emit("state-restore", state);
     },
   });
@@ -757,6 +761,9 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     minColumnWidth: DEFAULT_MIN_COLUMN_PX,
     getVisibleRegularColumnIds: () =>
       cols.orderedVisibleColumns.value.filter((col) => !isSpecialColumn(col.props)).map((col) => col.props.id),
+    // A drag turns weights into user data: stop re-deriving them from VcColumn
+    // props, and persist the state with `userSized` from now on.
+    onResizeStart: () => cols.markSizingCustomized(),
     onResizeEnd: () => emit("column-resize-end", { columns: [] }),
     containerEl: tableContainerRef,
   });

@@ -19,6 +19,21 @@
 
 **vc-shell** is a monorepo containing the core UI framework, CLI tools, shared configs, and reference applications for VirtoCommerce back-office development. It provides a complete Vue 3 design system, a blade-based navigation paradigm, and a dynamic module system for building extensible admin applications.
 
+### Key Features
+
+- **Blade Navigation** — stacked panel navigation with `useBlade()` composable for opening, closing, and communicating between blades
+- **Component Library** — Atomic Design hierarchy (atoms, molecules, organisms) with Tailwind CSS styling
+- **Dynamic Module System** — runtime-loaded Vue plugins with semver compatibility, extension points, and Module Federation remotes
+- **VcDataTable** — compositional table with declarative `<VcColumn>` API, virtual scroll, column switching, global filters, inline editing, row grouping, drag-and-drop reorder, and state persistence in `localStorage` or the URL query
+- **VcScheduler** — calendar organism for date-bound periods with a Month grid and Day/Week timeline views, event lanes, and drag-to-edit
+- **Keyboard Shortcuts** — declarative `hotkey` builder on toolbar items, built-in blade shortcuts, and OS-aware tooltips (Cmd on macOS, Ctrl elsewhere)
+- **Accessibility** — WCAG 2.2 A/AA axe-core audit over every Storybook story, keyboard-operable navigation, dashboard, and menus
+- **Rich Text Editor** — Tiptap-based editor with tables, images, links, and markdown support
+- **Dashboard & Widgets** — grid-based dashboard with GridStack, customizable widget system, keyboard-driven widget rearrangement
+- **Responsive Design** — mobile-first with dedicated mobile component variants
+- **i18n** — built-in internationalization via vue-i18n
+- **Core Composables** — reusable logic for API clients, assets, notifications, settings, permissions, and more
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -26,40 +41,35 @@
 - [Monorepo Structure](#monorepo-structure)
 - [Getting Started](#getting-started)
 - [Development](#development)
-- [Testing PR Previews](#testing-pr-previews)
-- [Local Development via `portal:` Protocol](#local-development-via-portal-protocol)
+  - [Common Commands](#common-commands)
+  - [Testing PR Previews](#testing-pr-previews)
+  - [Local Development via `portal:` Protocol](#local-development-via-portal-protocol)
+  - [Debugging Framework Source Maps](#debugging-framework-source-maps)
+- [Contributing](#contributing)
 - [Architecture](#architecture)
 - [Component Library](#component-library)
 - [Documentation](#documentation)
-- [Contributing](#contributing)
 - [License](#license)
-
-### Key Features
-
-- **Blade Navigation** — stacked panel navigation with `useBlade()` composable for opening, closing, and communicating between blades
-- **Component Library** — Atomic Design hierarchy (atoms, molecules, organisms) with Tailwind CSS styling
-- **Dynamic Module System** — runtime-loaded Vue plugins with semver compatibility and extension points
-- **VcDataTable** — compositional table with declarative `<VcColumn>` API, virtual scroll, column switching, global filters, drag-and-drop reorder, and state persistence
-- **Rich Text Editor** — Tiptap-based editor with tables, images, links, and markdown support
-- **Dashboard & Widgets** — grid-based dashboard with GridStack, customizable widget system
-- **Responsive Design** — mobile-first with dedicated mobile component variants
-- **i18n** — built-in internationalization via vue-i18n
-- **Core Composables** — reusable logic for API clients, assets, notifications, settings, permissions, and more
 
 ## Tech Stack
 
-| Layer           | Technology                                           |
-| --------------- | ---------------------------------------------------- |
-| Framework       | Vue 3 (Composition API, `<script setup>`)            |
-| Language        | TypeScript (strict mode)                             |
-| Build           | Vite 6                                               |
-| Styling         | Tailwind CSS (`tw-` prefix) + SCSS custom properties |
-| Package Manager | Yarn 4 Berry (workspaces)                            |
-| Testing         | Vitest + Vue Test Utils                              |
-| Storybook       | Storybook 10                                         |
-| Linting         | ESLint 9 + Prettier                                  |
-| Charts          | Unovis                                               |
-| Forms           | VeeValidate                                          |
+| Layer           | Technology                                             |
+| --------------- | ------------------------------------------------------ |
+| Framework       | Vue 3 (Composition API, `<script setup>`)              |
+| Language        | TypeScript (strict mode)                               |
+| Build           | Vite 6                                                 |
+| Styling         | Tailwind CSS 3 (`tw-` prefix) + SCSS custom properties |
+| Package Manager | Yarn 4 Berry (workspaces)                              |
+| Testing         | Vitest 3 + Vue Test Utils                              |
+| Storybook       | Storybook 10                                           |
+| Linting         | ESLint 9 + Prettier + Stylelint                        |
+| Accessibility   | axe-core (WCAG 2.2 A/AA)                               |
+| Charts          | Unovis                                                 |
+| Forms           | VeeValidate                                            |
+| Editor          | Tiptap 3                                               |
+| Dashboard Grid  | GridStack                                              |
+| Drag & Drop     | SortableJS                                             |
+| i18n            | vue-i18n 11                                            |
 
 ## Monorepo Structure
 
@@ -68,14 +78,17 @@ vc-shell/
 ├── framework/                  # @vc-shell/framework — main UI library
 │   ├── core/                   #   API clients, composables, plugins, services
 │   │   ├── api/                #     Generated API clients
+│   │   ├── blade-navigation/   #     Blade stack state machine and registry
 │   │   ├── composables/        #     Composables (useBlade, useAsync, etc.)
-│   │   ├── plugins/            #     Modularity, extensions, AI agent
-│   │   └── services/           #     Menu, Dashboard, Toolbar, GlobalSearch
+│   │   ├── interceptors/       #     Fetch interceptors (auth, errors)
+│   │   ├── notifications/      #     Notification contracts and store
+│   │   ├── plugins/            #     Modularity, extensions, permissions, i18n, AI agent
+│   │   └── services/           #     Menu, Dashboard, Toolbar, GlobalSearch, Settings
 │   ├── ui/                     #   Vue components (Atomic Design)
 │   │   └── components/
 │   │       ├── atoms/          #     Base components (Button, Badge, Icon...)
 │   │       ├── molecules/      #     Form & interactive components (Input, Select, Editor...)
-│   │       └── organisms/      #     Complex components (Table, Blade, Gallery...)
+│   │       └── organisms/      #     Complex components (Table, Blade, Scheduler, Gallery...)
 │   ├── shell/                  #   App chrome: sidebar, auth, dashboard, settings
 │   ├── modules/                #   Built-in modules (assets, assets-manager)
 │   └── assets/styles/          #   SCSS theme & CSS custom properties
@@ -83,6 +96,7 @@ vc-shell/
 ├── cli/                        # CLI tools
 │   ├── api-client/             #   @vc-shell/api-client-generator
 │   ├── create-vc-app/          #   @vc-shell/create-vc-app — project scaffolder
+│   ├── docs-sync/              #   @vc-shell/docs-sync — publishes *.docs.md to vc-docs (internal)
 │   ├── migrate/                #   @vc-shell/migrate — migration tool
 │   └── vc-app-skill/           #   @vc-shell/vc-app-skill — AI-assisted app generation
 │
@@ -97,6 +111,9 @@ vc-shell/
 │
 ├── apps/                       # Apps for local framework development & debugging
 │   └── ...                     #   Place vc-shell apps here (see "Local Development via portal: Protocol")
+│
+├── migration/                  # Per-topic v1 → v2 migration guides
+├── scripts/                    # Repo automation (app linking, release, a11y audit, layer checks)
 │
 └── .storybook/                 # Storybook configuration
 ```
@@ -137,25 +154,30 @@ npx @vc-shell/create-vc-app add-module orders
 
 See full options and project types in [`cli/create-vc-app/README.md`](./cli/create-vc-app/README.md).
 
-#### Option B: AI Skill (`@vc-shell/vc-app-skill`) for Claude Code and Codex
+#### Option B: AI Skill (`@vc-shell/vc-app-skill`)
 
 Install skill runtime:
 
 ```bash
-# Claude Code runtime (default)
-npx @vc-shell/vc-app-skill@alpha install
+# Claude Code / Cursor / GitHub Copilot (default runtime)
+npx @vc-shell/vc-app-skill@latest install
 
-# Codex runtime
-npx @vc-shell/vc-app-skill@alpha install --runtime codex
+# Other runtimes
+npx @vc-shell/vc-app-skill@latest install --runtime codex
+npx @vc-shell/vc-app-skill@latest install --runtime opencode
+npx @vc-shell/vc-app-skill@latest install --runtime gemini
 ```
 
 Restart your AI tool session, then use slash commands in your app workspace:
 
 ```text
-/vc-app create
-/vc-app connect
-/vc-app generate
-/vc-app add-module orders
+/vc-app create                 # Scaffold a new app
+/vc-app connect                # Connect to a platform API and generate clients
+/vc-app add-module orders      # Add a module to the current app
+/vc-app generate               # Generate blades from intent
+/vc-app design                 # Plan the UI before generating
+/vc-app promote orders         # Promote a local module to a package
+/vc-app migrate                # Migrate an app to a newer framework version
 ```
 
 See full command reference in [`cli/vc-app-skill/README.md`](./cli/vc-app-skill/README.md).
@@ -188,6 +210,8 @@ yarn build:analyze                  # Build with bundle analyzer
 yarn build:cli:config               # Build @vc-shell/config-generator
 yarn build:cli:api-client           # Build @vc-shell/api-client-generator
 yarn build:cli:create-vc-app        # Build @vc-shell/create-vc-app
+yarn build:storybook                # Production Storybook build to storybook-static/
+yarn build:storybook:compress       # Pre-compress the Storybook build for static hosting
 ```
 
 #### Development
@@ -205,7 +229,11 @@ yarn test:unit                      # Run unit tests against framework/vitest.co
 yarn test:coverage                  # Tests with coverage report
 yarn test:storybook                 # Run Storybook interaction tests
 yarn test:snapshot:update           # Update Storybook snapshots
+yarn test:a11y                      # axe-core WCAG 2.2 A/AA audit over a running Storybook
 ```
+
+`test:a11y` drives a real Chromium against an already-running Storybook — start `yarn dev:storybook`
+first, or point it at another instance with `SB_BASE=http://host:port yarn test:a11y`.
 
 #### Lint, Format & Type Check
 
@@ -236,12 +264,25 @@ Generate TypeScript API clients from VirtoCommerce Platform modules:
 yarn generate:api-client
 ```
 
+#### Documentation
+
+`*.docs.md` files co-located with the source are the source of truth for the public docs site.
+CI syncs them on framework releases; run them locally to validate before pushing:
+
+```bash
+yarn docs:lint                      # Validate *.docs.md template compliance
+yarn docs:sync                      # Sync docs to ../vc-docs (sibling checkout required)
+yarn docs:screenshot                # Capture Storybook screenshots for the docs
+```
+
 #### Release
 
 See [RELEASING.md](./RELEASING.md) for the release process.
 
 ```bash
 yarn release:dry                    # Dry run (preview changes)
+yarn publish:packages               # Publish managed packages (used by CI)
+yarn generate:changelogs            # Seed per-package changelogs
 ```
 
 #### Utilities
@@ -250,6 +291,8 @@ yarn release:dry                    # Dry run (preview changes)
 yarn clean                          # Remove all node_modules + dist directories
 yarn changed                        # List commits since last release tag
 yarn diff                           # Diff stats since last release tag
+yarn setup:apps                     # Link apps/* against this repo via portal: (see below)
+yarn unsetup:apps                   # Roll back portal: linking
 ```
 
 ### Testing PR Previews
@@ -392,15 +435,17 @@ The framework follows **Atomic Design** methodology:
 
 ### Atoms (base building blocks)
 
-`VcBadge` `VcBanner` `VcButton` `VcCard` `VcContainer` `VcHint` `VcIcon` `VcImage` `VcLabel` `VcLink` `VcLoading` `VcProgress` `VcSkeleton` `VcStatus` `VcTooltip` and more
+`VcBadge` `VcBanner` `VcButton` `VcButtonGroup` `VcCard` `VcCol` `VcContainer` `VcEnvironmentBanner` `VcHint` `VcIcon` `VcImage` `VcLabel` `VcLink` `VcLoading` `VcProgress` `VcRow` `VcScrollableContainer` `VcSkeleton` `VcStatus` `VcStatusIcon` `VcTooltip` `VcVideo` `VcWidget`
 
 ### Molecules (composite form elements)
 
-`VcInput` `VcSelect` `VcDatePicker` `VcEditor` `VcFileUpload` `VcCheckbox` `VcRadioGroup` `VcSwitch` `VcSlider` `VcAccordion` `VcDropdown` `VcPagination` `VcTextarea` `VcMultivalue` `VcColorInput` `VcInputCurrency` and more
+`VcAccordion` `VcBreadcrumbs` `VcCheckbox` `VcCheckboxGroup` `VcColorInput` `VcDatePicker` `VcDropdown` `VcEditor` `VcField` `VcFileUpload` `VcForm` `VcImageTile` `VcInput` `VcInputCurrency` `VcInputDropdown` `VcInputGroup` `VcLanguageSelector` `VcMenu` `VcMultivalue` `VcPagination` `VcPopover` `VcRadioButton` `VcRadioGroup` `VcRating` `VcSelect` `VcSlider` `VcSwitch` `VcTextarea` `VcToast`
 
 ### Organisms (complex UI blocks)
 
-`VcBlade` `VcDataTable` `VcGallery` `VcImageUpload` `VcPopup` `VcSidebar` `VcApp` `VcAuthLayout` `VcDynamicProperty`
+`VcApp` `VcAuthLayout` `VcBlade` `VcDataTable` (with `VcColumn`) `VcDynamicProperty` `VcGallery` `VcImageUpload` `VcPopup` `VcScheduler` `VcSidebar`
+
+`VcTable` is the legacy-API adapter over `VcDataTable`, kept for backwards compatibility.
 
 ### Live Demo
 
@@ -408,16 +453,21 @@ Explore all components interactively: **[Storybook](https://vc-shell-storybook.g
 
 ## Documentation
 
-| Resource                                              | Description                                 |
-| ----------------------------------------------------- | ------------------------------------------- |
-| [Storybook](https://vc-shell-storybook.govirto.com/)  | Interactive component explorer              |
-| [ARCHITECTURE.md](./ARCHITECTURE.md)                  | Architecture guide and patterns             |
-| [create-vc-app README](./cli/create-vc-app/README.md) | Scaffolder usage and flags                  |
-| [vc-app-skill README](./cli/vc-app-skill/README.md)   | AI skill commands for app/module generation |
-| [WHATS_NEW.md](./WHATS_NEW.md)                        | v2.0.0 feature highlights                   |
-| [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)            | Migration from v1 to v2                     |
-| [RELEASING.md](./RELEASING.md)                        | Release process documentation               |
-| [CHANGELOG.md](./CHANGELOG.md)                        | Full changelog                              |
+| Resource                                              | Description                                  |
+| ----------------------------------------------------- | -------------------------------------------- |
+| [Storybook](https://vc-shell-storybook.govirto.com/)  | Interactive component explorer               |
+| [ARCHITECTURE.md](./ARCHITECTURE.md)                  | Architecture guide and patterns              |
+| [CONTRIBUTING.md](./CONTRIBUTING.md)                  | Development setup, workflow, PR requirements |
+| [create-vc-app README](./cli/create-vc-app/README.md) | Scaffolder usage and flags                   |
+| [vc-app-skill README](./cli/vc-app-skill/README.md)   | AI skill commands for app/module generation  |
+| [ACCESSIBILITY.md](./framework/ui/ACCESSIBILITY.md)   | Accessibility standards and known exceptions |
+| [Storybook README](./.storybook/README.md)            | Story conventions and the story standard     |
+| [docs-sync README](./cli/docs-sync/README.md)         | How `*.docs.md` is transformed and published |
+| [WHATS_NEW.md](./WHATS_NEW.md)                        | v2.0.0 feature highlights                    |
+| [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)            | Migration from v1 to v2                      |
+| [migration/](./migration/README.md)                   | Per-topic v1 → v2 migration guides           |
+| [RELEASING.md](./RELEASING.md)                        | Release process documentation                |
+| [CHANGELOG.md](./CHANGELOG.md)                        | Full changelog                               |
 
 ## License
 

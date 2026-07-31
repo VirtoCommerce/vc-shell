@@ -214,6 +214,7 @@
       "VC_TABLE": {
         "SELECT_ROW": "Select row",
         "SELECT_ALL_ROWS": "Select all rows",
+        "EXPAND_ROW": "Toggle row details",
         "CURRENT_PAGE_SELECTED": "All items in this page are selected.",
         "SELECT_ALL": "Select all items",
         "ALL_SELECTED": "All items are selected.",

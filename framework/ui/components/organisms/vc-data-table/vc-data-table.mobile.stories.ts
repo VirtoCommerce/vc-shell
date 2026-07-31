@@ -413,3 +413,58 @@ MobileAllCellTypes.parameters = {
  * Demonstrates that mobile card layout works for ANY data type, not just products.
  * This example shows a user list with email, role, and active status.
  */
+
+/**
+ * Mobile Expandable Rows
+ *
+ * Expandable rows in the card view: each expandable card gets a chevron on its
+ * right edge and renders the `#expansion` slot inside the card. Only rows that
+ * pass `isRowExpandable` show the toggle.
+ */
+
+export const MobileExpandableRows: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const expandedRows = ref<Product[]>([]);
+      // Only in-stock products carry extra detail worth expanding.
+      const isExpandable = (product: Product) => product.stock > 0;
+      return { products: mockProducts, expandedRows, isExpandable };
+    },
+    template: `
+    <div style="height: 600px">
+      <VcDataTable
+        :items="products"
+        v-model:expanded-rows="expandedRows"
+        :is-row-expandable="isExpandable"
+      >
+        <VcColumn id="expand" :expander="true" :width="40" />
+        <VcColumn id="name" field="name" title="Name" mobile-position="top-left" />
+        <VcColumn id="price" field="price" title="Price" type="money" mobile-position="top-right" />
+        <VcColumn id="stock" field="stock" title="Stock" type="number" mobile-role="field" />
+
+        <template #expansion="{ data }">
+          <!-- The slot owns its spacing — the card adds none. -->
+          <div class="tw-flex tw-flex-col tw-gap-1 tw-px-4 tw-pb-4 tw-pt-1">
+            <div class="tw-text-sm tw-font-semibold">Details</div>
+            <div class="tw-text-sm tw-text-neutrals-600">SKU: {{ data.id }}</div>
+            <div class="tw-text-sm tw-text-neutrals-600">Status: {{ data.status }}</div>
+            <div class="tw-text-sm tw-text-neutrals-600">In stock: {{ data.stock }}</div>
+          </div>
+        </template>
+      </VcDataTable>
+    </div>
+  `,
+  }),
+};
+MobileExpandableRows.decorators = [withMobileView];
+MobileExpandableRows.parameters = {
+  viewport: { defaultViewport: "mobile1" },
+  docs: {
+    description: {
+      story:
+        "Expandable rows in the mobile card view. Tapping the chevron toggles the `#expansion` slot inside the card " +
+        "and does not trigger `row-click`. Out-of-stock rows fail `isRowExpandable`, so they render no toggle.",
+    },
+  },
+};

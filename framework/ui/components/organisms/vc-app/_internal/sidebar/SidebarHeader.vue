@@ -154,6 +154,10 @@ const hasUnread = inject(ShellIndicatorsKey, ref(false));
 
   --app-bar-header-actions-button-color: var(--neutrals-500);
   --app-bar-header-actions-button-active-color: var(--primary-500);
+
+  // WCAG 2.2 SC 2.5.8: minimum hit area for the header's icon-only buttons.
+  // The icons keep their own size; only the button box around them grows.
+  --app-bar-header-button-target-size: 24px;
 }
 
 .sidebar-header {
@@ -209,7 +213,10 @@ const hasUnread = inject(ShellIndicatorsKey, ref(false));
   }
 
   &__notification-bell {
-    @apply tw-cursor-pointer tw-relative;
+    @apply tw-cursor-pointer tw-relative tw-flex tw-items-center tw-justify-center;
+
+    min-width: var(--app-bar-header-button-target-size);
+    min-height: var(--app-bar-header-button-target-size);
 
     &-wrap {
       @apply tw-relative;
@@ -217,7 +224,10 @@ const hasUnread = inject(ShellIndicatorsKey, ref(false));
   }
 
   &__menu-button {
-    @apply tw-cursor-pointer tw-relative;
+    @apply tw-cursor-pointer tw-relative tw-flex tw-items-center tw-justify-center;
+
+    min-width: var(--app-bar-header-button-target-size);
+    min-height: var(--app-bar-header-button-target-size);
 
     &-wrap {
       @apply tw-relative;

@@ -198,6 +198,10 @@ function onClick(e: Event): void {
   --button-link-border-color: transparent;
   --button-link-border-color-hover: transparent;
   --button-link-border-color-disabled: transparent;
+  // WCAG 2.2 SC 2.5.8: the link variant has no height of its own, so a
+  // text-only link button was as short as its line box (18px). The text stays
+  // vertically centred; only the button box grows.
+  --button-link-target-size: 24px;
 
   // FOCUS RING
   --button-focus-ring-color: var(--primary-300);
@@ -349,8 +353,11 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
   }
 
   &.vc-button-link {
-    // Link variant: no padding, no min-height — behaves like inline text
-    @apply tw-p-0 tw-h-auto tw-min-h-0 #{!important};
+    // Link variant: no padding, height driven by content — behaves like inline
+    // text, but keeps a measurable 24px target box (WCAG 2.2 SC 2.5.8)
+    @apply tw-p-0 tw-h-auto #{!important};
+
+    min-height: var(--button-link-target-size);
 
     &:hover:not(:disabled):not(.vc-button--text) {
       @apply tw-opacity-100;

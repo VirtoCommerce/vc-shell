@@ -118,6 +118,20 @@ describe("VcInput", () => {
     expect(wrapper.find(".vc-input__showhide").attributes("aria-label")).toBe("COMPONENTS.CONTROLS.HIDE_PASSWORD");
   });
 
+  it("sets autocomplete on the native input, not on the root wrapper", () => {
+    const wrapper = mountInput({ autocomplete: "username" });
+    // inheritAttrs is false and leftover attrs go to the root div, so an
+    // autocomplete passed as an attribute would never reach the input — hence
+    // the prop. Assert the root does NOT carry it, or the fix is silently lost.
+    expect(wrapper.find("input").attributes("autocomplete")).toBe("username");
+    expect(wrapper.find(".vc-input").attributes("autocomplete")).toBeUndefined();
+  });
+
+  it("leaves autocomplete off the input when the prop is not set", () => {
+    const wrapper = mountInput();
+    expect(wrapper.find("input").attributes("autocomplete")).toBeUndefined();
+  });
+
   describe("v-model contract", () => {
     it("renders modelValue in the input", () => {
       const wrapper = mountInput({ modelValue: "hello" });

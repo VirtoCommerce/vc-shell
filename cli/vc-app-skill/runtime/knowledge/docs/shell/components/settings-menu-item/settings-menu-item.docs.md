@@ -198,6 +198,17 @@ Do not set `triggerAction="none"` and then rely on `@trigger:click` -- the event
 <SettingsMenuItem trigger-action="click" @trigger:click="doSomething" />
 ```
 
+## Accessibility
+
+- The trigger renders as a native `<button type="button">`, so it is in the tab order and Enter/Space activate it. No `tabindex` or `keydown` wiring is needed.
+- Focus ring on `:focus-visible` only, colored via `--menu-item-focus-ring-color`
+- `disabled` is applied to the button element, not only to the click handler — the control is skipped by keyboard navigation instead of being focusable-but-inert
+- With a submenu, the trigger reports `aria-haspopup="true"` and an `aria-expanded` that tracks the open state (both on desktop popover and mobile inline expansion)
+- Without a submenu neither attribute is rendered, so a plain action item is not announced as a menu
+
+!!! warning "A custom `#trigger` slot owns its own semantics"
+When you pass `#trigger`, the wrapper stays a `<div>` — nesting your control inside our button would produce invalid, unusable markup. Render an interactive element (a `<button>` or a link) inside the slot yourself, otherwise that item is not keyboard operable.
+
 ## Related Components
 
 - [SettingsMenu](../settings-menu/settings-menu.docs.md) -- parent container

@@ -109,16 +109,20 @@ When `expanded` is `false`, the menu shows only icons and letter abbreviations. 
 
 ## CSS Variables
 
-| Variable        | Default | Description            |
-| --------------- | ------- | ---------------------- |
-| `--vc-menu-gap` | `8px`   | Gap between menu items |
+| Variable                          | Default              | Description                             |
+| --------------------------------- | -------------------- | --------------------------------------- |
+| `--vc-menu-gap`                   | `8px`                | Gap between menu items                  |
+| `--vc-menu-item-focus-ring-color` | `var(--primary-500)` | Focus ring color on keyboard navigation |
 
 ## Accessibility
 
-- Menu items are keyboard-focusable
-- Groups expand/collapse with animated transitions
-- Active state is explicit via the `active` prop on `VcMenuItem`
-- Collapsed mode shows tooltips for discoverability
+- `VcMenuItem` renders its interactive row as a native `<button type="button">`, so it is in the tab order and the browser maps Enter/Space to activation. There is no `tabindex` juggling and no `keydown` handler to keep in sync.
+- Focus ring on `:focus-visible` only (not on mouse click), colored via `--vc-menu-item-focus-ring-color`
+- The active item exposes `aria-current="page"`, so assistive technology announces the current location — `active` drives both the styling and the attribute
+- When the menu is collapsed to icons the visible title is hidden, so the button carries `aria-label` with the item title; expanded items rely on their visible text instead and set no `aria-label`
+- Icons and letter abbreviations are `aria-hidden="true"` — they are decorative next to the accessible name
+- `VcMenuGroup` with `variant="section"` renders a native button that reports `aria-expanded` and points `aria-controls` at the children wrapper it toggles
+- Collapsed mode shows tooltips for discoverability (in addition to, not instead of, the accessible name)
 
 ## Related Components
 

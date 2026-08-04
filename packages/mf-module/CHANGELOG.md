@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.4.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.3.0...v2.4.0) (2026-08-04)
+
+### Bug Fixes
+
+- **test:** make story tests runnable and gate them in CI (#278) ([d4d56d4](https://github.com/VirtoCommerce/vc-shell/commit/d4d56d4fa0790b9c736d49bf196ebe366cfd5ff4)), closes [#278](https://github.com/VirtoCommerce/vc-shell/issues/278) [#276](https://github.com/VirtoCommerce/vc-shell/issues/276)
+
 # [2.3.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.2.0...v2.3.0) (2026-07-28)
 
 **Note:** Version bump only for package @vc-shell/mf-module

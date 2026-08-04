@@ -780,6 +780,16 @@ const expandedRows = ref<Order[]>([]);
 </script>
 ```
 
+### On mobile
+
+Expandable rows work the same way in the mobile card view — no extra markup. The `expander` column itself is not rendered as a card field (special columns never are); instead each expandable card gets a chevron toggle on its right edge, and the `#expansion` slot renders inside the card, below the card body. Expansion state is shared with the desktop view, so `expanded-rows` behaves identically on both.
+
+Two mobile-specific details:
+
+- Tapping the chevron does not trigger `row-click`, so opening the details of a row and expanding it stay separate gestures.
+- The card adds **no padding** around the expansion — the slot content owns its own spacing. Screen width is scarce on a phone, and slot content usually carries padding already, so anything added here would inset it twice.
+- The expansion area scrolls horizontally when its content is wider than the card. Slot content laid out for desktop widths therefore stays reachable on a phone, though a layout that reflows for narrow screens reads better.
+
 ---
 
 ## Row Grouping
@@ -1043,7 +1053,9 @@ Persist column widths, column order, and column visibility across page reloads. 
 
 **Storage key format:** `VC_DATATABLE_PRODUCT-LIST` (uppercased `state-key`).
 
-**Schema version:** The persisted state uses the **v2 schema**, which stores column weights, column order, and hidden/shown column IDs. `containerWidth` is no longer stored because weights are container-independent — the engine recomputes pixel values from weights on every mount.
+**Schema version:** The persisted state uses the **v2 schema**, which stores column weights, column order, hidden/shown column IDs, and a `userSized` flag. `containerWidth` is not stored because weights are container-independent — the engine recomputes pixel values from weights on every mount.
+
+**`userSized` and declarative widths:** until the user actually resizes a column, weights are treated as _declarative_ — re-derived from the `VcColumn` `width`/`minWidth`/`maxWidth` props at the current container width on every recompute. This heals weights captured at a transient width (blades animate their `width` for ~300ms, so the first measurement often happens mid-animation) and means `width="60"` renders as 60px at any blade width. A mouse resize sets `userSized: true`: from then on the saved weights are the user's data — restored as-is and scaled proportionally when the blade width changes. Restored states without the flag (including states saved by older versions) stay declarative; column order and hidden/shown IDs are restored either way. **Reset columns** returns the table to the declarative mode.
 
 If an older browser tab wrote **v1** state (pixel-based widths), it is automatically migrated to v2 on first load. No manual migration is needed.
 
@@ -1658,20 +1670,20 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ## VcDataTable Slots Reference
 
-| Slot                    | Props                                                           | Description                                                |
-| ----------------------- | --------------------------------------------------------------- | ---------------------------------------------------------- |
-| `default`               | --                                                              | VcColumn declarations (required).                          |
-| `header`                | --                                                              | Custom header content above the table.                     |
-| `footer`                | --                                                              | Custom footer content below the table body.                |
-| `search-header-actions` | --                                                              | Extra buttons in the search toolbar (beside filter icon).  |
-| `selection-banner`      | `{ count, totalCount, isSelectAll, selectAll, clearSelection }` | Custom selection banner.                                   |
-| `expansion`             | `{ data: T, index: number }`                                    | Content rendered below an expanded row.                    |
-| `empty`                 | --                                                              | Custom empty state (no items, no search).                  |
-| `not-found`             | --                                                              | Custom not-found state (no items + active search/filters). |
-| `loading`               | --                                                              | Custom loading state.                                      |
-| `groupheader`           | `{ data: T, index: number }`                                    | Custom row group header.                                   |
-| `groupfooter`           | `{ data: T, index: number }`                                    | Custom row group footer.                                   |
-| `pagination`            | `{ pages, currentPage, onPageClick }`                           | Custom pagination replacing built-in VcPagination.         |
+| Slot                    | Props                                                           | Description                                                  |
+| ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------------ |
+| `default`               | --                                                              | VcColumn declarations (required).                            |
+| `header`                | --                                                              | Custom header content above the table.                       |
+| `footer`                | --                                                              | Custom footer content below the table body.                  |
+| `search-header-actions` | --                                                              | Extra buttons in the search toolbar (beside filter icon).    |
+| `selection-banner`      | `{ count, totalCount, isSelectAll, selectAll, clearSelection }` | Custom selection banner.                                     |
+| `expansion`             | `{ data: T, index: number }`                                    | Content rendered below an expanded row (desktop and mobile). |
+| `empty`                 | --                                                              | Custom empty state (no items, no search).                    |
+| `not-found`             | --                                                              | Custom not-found state (no items + active search/filters).   |
+| `loading`               | --                                                              | Custom loading state.                                        |
+| `groupheader`           | `{ data: T, index: number }`                                    | Custom row group header.                                     |
+| `groupfooter`           | `{ data: T, index: number }`                                    | Custom row group footer.                                     |
+| `pagination`            | `{ pages, currentPage, onPageClick }`                           | Custom pagination replacing built-in VcPagination.           |
 
 ---
 

@@ -1,5 +1,30 @@
 # Changelog
 
+# [2.4.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.3.0...v2.4.0) (2026-08-04)
+
+### Features
+
+- **a11y:** rearrange dashboard widgets from the keyboard (#272) ([fc8504a](https://github.com/VirtoCommerce/vc-shell/commit/fc8504ae0630724b0cc99a9a305af36dd7f99c0b)), closes [#272](https://github.com/VirtoCommerce/vc-shell/issues/272)
+
+### Bug Fixes
+
+- **a11y:** give icon-only breadcrumb buttons an accessible name (#268) ([67de6c2](https://github.com/VirtoCommerce/vc-shell/commit/67de6c2147ff666294fd7cab82d344400c5af2f9)), closes [#268](https://github.com/VirtoCommerce/vc-shell/issues/268)
+- **a11y:** let password managers autofill the login form (#280) ([8acd627](https://github.com/VirtoCommerce/vc-shell/commit/8acd627a3b36795d7cbef0621b54f1546353fcc1)), closes [#280](https://github.com/VirtoCommerce/vc-shell/issues/280)
+- **a11y:** make menu items and settings triggers keyboard operable (#267) ([8323819](https://github.com/VirtoCommerce/vc-shell/commit/8323819368fc8b685f7b70cf362e004d7c550d78)), closes [#267](https://github.com/VirtoCommerce/vc-shell/issues/267) [#255](https://github.com/VirtoCommerce/vc-shell/issues/255)
+- **a11y:** raise adornment hit areas to 24px and localize their labels (#271) ([c82c60a](https://github.com/VirtoCommerce/vc-shell/commit/c82c60aceef0c69429a4d42f8b49d0c777dcd48b)), closes [#271](https://github.com/VirtoCommerce/vc-shell/issues/271) [#255](https://github.com/VirtoCommerce/vc-shell/issues/255)
+- **a11y:** raise the axe scope to WCAG 2.2 (#273) ([5285eb9](https://github.com/VirtoCommerce/vc-shell/commit/5285eb96aaa123c8d585e61f13dddc5a0bb93368)), closes [#273](https://github.com/VirtoCommerce/vc-shell/issues/273) [#269](https://github.com/VirtoCommerce/vc-shell/issues/269)
+- **a11y:** raise the shell's remaining hit areas to 24px (#281) ([e767ecc](https://github.com/VirtoCommerce/vc-shell/commit/e767ecc3d0fe1b1c87215bba03cde1d13bead154)), closes [#281](https://github.com/VirtoCommerce/vc-shell/issues/281) [#271](https://github.com/VirtoCommerce/vc-shell/issues/271)
+- **a11y:** sync html lang in the framework and fix the app template (#274) ([f81318d](https://github.com/VirtoCommerce/vc-shell/commit/f81318d706e7e8b2518cd6c49a44b4bba6501e28)), closes [#274](https://github.com/VirtoCommerce/vc-shell/issues/274) [vendor-portal#146](https://github.com/vendor-portal/issues/146) [vendor-portal#146](https://github.com/vendor-portal/issues/146)
+- **i18n:** translate the remaining VcScheduler strings into German (#279) ([a69a8e7](https://github.com/VirtoCommerce/vc-shell/commit/a69a8e7f4a84ecb1016004eb01721dfda1c7dbb9)), closes [#279](https://github.com/VirtoCommerce/vc-shell/issues/279)
+- **interceptors:** detect an expired session redirected to the login page (#270) ([65caadd](https://github.com/VirtoCommerce/vc-shell/commit/65caadd22266d9fa45d8c8919534fff57cb77991)), closes [#270](https://github.com/VirtoCommerce/vc-shell/issues/270)
+- **test:** make story tests runnable and gate them in CI (#278) ([d4d56d4](https://github.com/VirtoCommerce/vc-shell/commit/d4d56d4fa0790b9c736d49bf196ebe366cfd5ff4)), closes [#278](https://github.com/VirtoCommerce/vc-shell/issues/278) [#276](https://github.com/VirtoCommerce/vc-shell/issues/276)
+- **vc-blade:** stop mobile widgets from covering the end of blade content (#275) ([a131f3e](https://github.com/VirtoCommerce/vc-shell/commit/a131f3e61bdd7d896da0f6aa8e376a9914d70b61)), closes [#275](https://github.com/VirtoCommerce/vc-shell/issues/275)
+- **vc-data-table:** honor declared column widths on first open (#264) ([aa3f798](https://github.com/VirtoCommerce/vc-shell/commit/aa3f79854ac3cf3ebe9478bb0a44d714e4da86de)), closes [#264](https://github.com/VirtoCommerce/vc-shell/issues/264)
+- **vc-data-table:** import the lifecycle hooks the inline-editing story uses (#269) ([ef19eeb](https://github.com/VirtoCommerce/vc-shell/commit/ef19eebbd65b6ed8548468454045869a7fb62a30)), closes [#269](https://github.com/VirtoCommerce/vc-shell/issues/269)
+- **vc-data-table:** restore scrolling in the mobile card view (#276) ([26a0e38](https://github.com/VirtoCommerce/vc-shell/commit/26a0e3811289ae6de90f5f863128bec277e17c3d)), closes [#276](https://github.com/VirtoCommerce/vc-shell/issues/276)
+- **vc-data-table:** support expandable rows in the mobile card view (#265) ([b4d0c93](https://github.com/VirtoCommerce/vc-shell/commit/b4d0c93ce7f73b003a6335718bb612cfa0eea3af)), closes [#265](https://github.com/VirtoCommerce/vc-shell/issues/265)
+- **vc-video:** restore playback on trusted embed hosts (#266) ([749823a](https://github.com/VirtoCommerce/vc-shell/commit/749823a698fd5ebe20e1cb02cf77e4587eb42a59)), closes [#266](https://github.com/VirtoCommerce/vc-shell/issues/266) [#255](https://github.com/VirtoCommerce/vc-shell/issues/255)
+
 # [2.3.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.2.0...v2.3.0) (2026-07-28)
 
 ### Features

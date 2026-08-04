@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.4.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.3.0...v2.4.0) (2026-08-04)
+
+### Bug Fixes
+
+- **a11y:** sync html lang in the framework and fix the app template (#274) ([f81318d](https://github.com/VirtoCommerce/vc-shell/commit/f81318d706e7e8b2518cd6c49a44b4bba6501e28)), closes [#274](https://github.com/VirtoCommerce/vc-shell/issues/274) [vendor-portal#146](https://github.com/vendor-portal/issues/146) [vendor-portal#146](https://github.com/vendor-portal/issues/146)
+
 # [2.3.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.2.0...v2.3.0) (2026-07-28)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app

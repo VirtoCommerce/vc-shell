@@ -32,6 +32,6 @@
     "@vc-shell/ts-config": "workspace:*",
     "tsx": "^4.7.0",
     "typescript": "^5.8.3",
-    "vitest": "^3.1.2"
+    "vitest": "^4.1.10"
   }
 }

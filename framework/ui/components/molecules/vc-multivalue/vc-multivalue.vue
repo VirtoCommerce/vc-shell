@@ -409,7 +409,9 @@ function onSearch(event: Event) {
   }
 
   &__clear {
-    @apply tw-cursor-pointer tw-flex tw-items-center tw-px-3 tw-flex-shrink-0
+    // min-h-6 keeps the clickable area at the 24px minimum of WCAG 2.2 SC 2.5.8;
+    // the icon stays centred, so nothing moves visually.
+    @apply tw-cursor-pointer tw-flex tw-items-center tw-px-3 tw-flex-shrink-0 tw-min-h-6
       tw-text-[color:var(--multivalue-clear-icon-color)]
       hover:tw-text-[color:var(--multivalue-clear-icon-color-hover)];
   }

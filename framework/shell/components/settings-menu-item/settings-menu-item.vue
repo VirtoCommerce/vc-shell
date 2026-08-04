@@ -92,7 +92,10 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { Component, useSlots, computed, watch, ref } from "vue";
+// `Component` is type-only: in an SFC the Vue compiler keeps the import verbatim,
+// so without `type` it survives into the runtime import of the prebundled vue and
+// throws "does not provide an export named 'Component'" (VCST-5619).
+import { useSlots, computed, watch, ref, type Component } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcImage } from "@ui/components/atoms/vc-image";
 import { VcPopover } from "@ui/components/molecules/vc-popover";

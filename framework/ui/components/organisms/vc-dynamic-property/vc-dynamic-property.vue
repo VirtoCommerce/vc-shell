@@ -344,7 +344,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends { [x: string]: any; id?: string }">
-import { ref, onMounted, computed, Ref, watch } from "vue";
+import { ref, onMounted, computed, watch, type Ref } from "vue";
 import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import { VcSelect } from "@ui/components/molecules/vc-select";

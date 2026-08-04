@@ -148,6 +148,48 @@ jobs:
       event_name: ${{ github.event_name }}
     secrets: inherit
 
+  # Story tests: every story renders in Chromium, its play function runs, and
+  # axe checks it (WCAG 2.1 A/AA + 2.2 A/AA). This is the only gate that
+  # executes story code — typecheck excludes *.stories.ts, ESLint sees nothing
+  # wrong in an unimported identifier, and storybook-build only compiles.
+  # `yarn build` first: the Storybook config resolves @vc-shell/config-generator,
+  # a workspace package. The storybookTest plugin starts its own Storybook on
+  # port 6011 (see vitest.config.storybook.ts).
+  storybook-tests:
+    if: ${{ !startsWith(github.event.head_commit.message, 'release:') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: "yarn.lock"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build workspace packages
+        run: yarn build
+
+      # Must be the workspace binary, not `yarn dlx`: dlx resolves a different
+      # playwright and installs browsers under a revision @vitest/browser will
+      # not look for.
+      - name: Install Chromium
+        run: yarn playwright install --with-deps chromium
+
+      - name: Run story tests
+        run: yarn test:storybook
+        env:
+          NODE_OPTIONS: "--max-old-space-size=6144"
+
   # PR-only validation: build the Storybook bundle so a broken story (bad
   # import, invalid syntax) fails review instead of only surfacing after merge
   # on the main-push deploy above. Build only — no Docker image, no ArgoCD

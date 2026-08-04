@@ -16,22 +16,30 @@ vi.mock("@core/composables/useExternalProvider", () => ({
   useExternalProvider: () => mockExternalProvider,
 }));
 
+// These are invoked with `new`, so the implementations must be plain functions:
+// vitest 4 construct-calls the implementation directly, and an arrow function is
+// not constructible ("... is not a constructor"). A normal function that returns
+// an object yields that object from `new`.
 vi.mock("@core/api/platform", () => ({
-  SecurityClient: vi.fn().mockImplementation(() => ({
-    getCurrentUser: mockGetCurrentUser,
-    login: vi.fn(),
-    logout: vi.fn(),
-    validatePasswordResetToken: vi.fn(),
-    validatePassword: vi.fn(),
-    resetPasswordByToken: vi.fn(),
-    requestPasswordReset: vi.fn(),
-    changeCurrentUserPassword: vi.fn(),
-    getLoginTypes: vi.fn(),
-  })),
-  LoginRequest: vi.fn().mockImplementation((args: unknown) => args),
-  ExternalSignInClient: vi.fn().mockImplementation(() => ({
-    getExternalLoginProviders: vi.fn(),
-  })),
+  SecurityClient: vi.fn(function () {
+    return {
+      getCurrentUser: mockGetCurrentUser,
+      login: vi.fn(),
+      logout: vi.fn(),
+      validatePasswordResetToken: vi.fn(),
+      validatePassword: vi.fn(),
+      resetPasswordByToken: vi.fn(),
+      requestPasswordReset: vi.fn(),
+      changeCurrentUserPassword: vi.fn(),
+      getLoginTypes: vi.fn(),
+    };
+  }),
+  LoginRequest: vi.fn(function (args: unknown) {
+    return args;
+  }),
+  ExternalSignInClient: vi.fn(function () {
+    return { getExternalLoginProviders: vi.fn() };
+  }),
 }));
 
 // Import after mocks are registered

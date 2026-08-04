@@ -87,7 +87,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, toRef, VNode, nextTick } from "vue";
+import { ref, computed, toRef, nextTick, type VNode } from "vue";
 import type { Breadcrumbs } from "../../../types/index";
 import VcBreadcrumbsItem from "@ui/components/molecules/vc-breadcrumbs/_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";

@@ -46,6 +46,7 @@
             v-model="form.username"
             :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
             :placeholder="$t('LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
+            autocomplete="username"
             required
             :error="!!errors.length"
             :error-message="errorMessage"
@@ -66,6 +67,7 @@
             :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
             :placeholder="$t('LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
+            autocomplete="current-password"
             required
             :error="!!errors.length"
             :error-message="errorMessage"

@@ -160,6 +160,7 @@
                 :name="resolvedName"
                 :maxlength="maxlength"
                 :autofocus="autofocus"
+                :autocomplete="autocomplete"
                 :aria-invalid="invalid || undefined"
                 :aria-required="ariaRequired"
                 :aria-describedby="ariaDescribedBy"
@@ -326,6 +327,17 @@ export interface Props extends ITextFieldProps {
    * The step attribute is a number that specifies the granularity that the value must adhere to.
    */
   step?: string;
+  /**
+   * Autofill hint for browsers and password managers, set on the native input.
+   *
+   * Needs to be a prop rather than a passthrough attribute: the component sets
+   * `inheritAttrs: false` and binds the leftover attrs to its root element, so
+   * `autocomplete` written on the component would land on the wrapping div and
+   * be ignored.
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete
+   */
+  autocomplete?: string;
   /**
    * VueDatePicker options
    *

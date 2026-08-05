@@ -23,8 +23,17 @@ const mockInitGrid = vi.fn();
 const mockSaveLayout = vi.fn();
 const mockResetToDefaults = vi.fn();
 
-const mockUpdateWidgetPosition = vi.fn();
-const mockUpdateWidgetSize = vi.fn();
+// These write back into mockLayout, the way the real useGridstack does. A mock
+// that only recorded the call is why VCST-5600 shipped: the resize handler read a
+// baseline that never moved, and asserting the call could not see that.
+const mockUpdateWidgetPosition = vi.fn((id: string, position: { x: number; y: number }) => {
+  const previous = mockLayout.value.get(id) ?? {};
+  mockLayout.value = new Map(mockLayout.value).set(id, { ...previous, ...position });
+});
+const mockUpdateWidgetSize = vi.fn((id: string, size: { width: number; height: number }) => {
+  const previous = mockLayout.value.get(id) ?? { x: 0, y: 0 };
+  mockLayout.value = new Map(mockLayout.value).set(id, { ...previous, ...size });
+});
 
 vi.mock("@shell/dashboard/draggable-dashboard/composables/useGridstack", () => ({
   useGridstack: vi.fn(() => ({
@@ -262,8 +271,9 @@ describe("GridstackDashboard", () => {
   // WCAG 2.5.7: reordering and resizing must not require a drag.
   describe("keyboard reordering", () => {
     beforeEach(() => {
-      mockUpdateWidgetPosition.mockReset();
-      mockUpdateWidgetSize.mockReset();
+      // mockClear, not mockReset — the implementations above are the point.
+      mockUpdateWidgetPosition.mockClear();
+      mockUpdateWidgetSize.mockClear();
       mockLayout.value = new Map([["a", { x: 2, y: 3 }]]);
     });
 
@@ -307,6 +317,67 @@ describe("GridstackDashboard", () => {
       await item(wrapper).trigger("keydown", { key: "ArrowRight", shiftKey: true });
 
       expect(mockUpdateWidgetSize).toHaveBeenCalledWith("a", { width: 7, height: 6 });
+    });
+
+    // Each of the next four covers one symptom QA reported on the live dashboard
+    // (VCST-5600): resize stuck at baseline ±1, the other axis snapping back, a
+    // resize announced when nothing changed, and Escape leaving the size behind.
+    it("accumulates resize across presses instead of recomputing from the baseline", async () => {
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+
+      await item(wrapper).trigger("keydown", { key: "ArrowRight", shiftKey: true });
+      expect(mockUpdateWidgetSize).toHaveBeenLastCalledWith("a", { width: 7, height: 6 });
+
+      await item(wrapper).trigger("keydown", { key: "ArrowRight", shiftKey: true });
+      expect(mockUpdateWidgetSize).toHaveBeenLastCalledWith("a", { width: 8, height: 6 });
+    });
+
+    it("resizes only the axis being changed", async () => {
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+
+      await item(wrapper).trigger("keydown", { key: "ArrowRight", shiftKey: true });
+      await item(wrapper).trigger("keydown", { key: "ArrowDown", shiftKey: true });
+
+      // Width stays at the 7 it just reached rather than reverting to 6.
+      expect(mockUpdateWidgetSize).toHaveBeenLastCalledWith("a", { width: 7, height: 7 });
+    });
+
+    it("does not announce a resize that the minimum span refused", async () => {
+      mockLayout.value = new Map([["a", { x: 2, y: 3, width: 2, height: 2 }]]);
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+
+      await item(wrapper).trigger("keydown", { key: "ArrowLeft", shiftKey: true });
+
+      expect(mockUpdateWidgetSize).not.toHaveBeenCalled();
+      expect(wrapper.find('[role="status"]').text()).not.toContain("resized");
+    });
+
+    it("restores the original size when the move is cancelled with Escape", async () => {
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+      await item(wrapper).trigger("keydown", { key: "ArrowRight", shiftKey: true });
+      mockUpdateWidgetSize.mockClear();
+
+      await item(wrapper).trigger("keydown", { key: "Escape" });
+
+      expect(mockUpdateWidgetSize).toHaveBeenLastCalledWith("a", { width: 6, height: 6 });
+    });
+
+    it("announces the row the widget actually landed in, not the one requested", async () => {
+      const wrapper = mountWithWidget();
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+
+      // Gridstack compacts rows, so a requested y can differ from the result.
+      mockUpdateWidgetPosition.mockImplementationOnce((id: string) => {
+        const previous = mockLayout.value.get(id) ?? {};
+        mockLayout.value = new Map(mockLayout.value).set(id, { ...previous, x: 2, y: 0 });
+      });
+      await item(wrapper).trigger("keydown", { key: "ArrowDown" });
+
+      expect(wrapper.find('[role="status"]').text()).toContain("row 1");
     });
 
     it("restores the original position when the move is cancelled with Escape", async () => {

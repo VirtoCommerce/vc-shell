@@ -36,6 +36,17 @@ export interface DashboardWidgetSize {
 }
 
 /**
+ * Where a widget currently sits on the grid: its position plus, when known, its
+ * live size.
+ *
+ * Size is optional because it only becomes known once Gridstack reports it (or a
+ * saved layout supplies it); until then the widget's declared `size` is the
+ * source. Keeping it here is what makes a resize survive both the next keystroke
+ * and a reload — the declared `size` prop is never written back to.
+ */
+export interface DashboardWidgetPlacement extends DashboardWidgetPosition, Partial<DashboardWidgetSize> {}
+
+/**
  * Dashboard widget type
  */
 export interface IDashboardWidget {

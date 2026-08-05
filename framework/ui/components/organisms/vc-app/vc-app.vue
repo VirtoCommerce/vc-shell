@@ -30,6 +30,7 @@
       >
         <component
           :is="isDesktop ? DesktopLayout : MobileLayout"
+          :inert-navigation="hasMaximizedBlade"
           :logo="logo"
           :avatar="avatar"
           :user-name="name"
@@ -105,8 +106,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { inject, provide, ref, watch } from "vue";
+import { computed, inject, provide, ref, watch } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { useBladeStack } from "@core/blade-navigation/useBladeStack";
 import DesktopLayout from "@ui/components/organisms/vc-app/_internal/layouts/DesktopLayout.vue";
 import MobileLayout from "@ui/components/organisms/vc-app/_internal/layouts/MobileLayout.vue";
 import { VcPopupContainer } from "@shell/_internal/popup";
@@ -169,6 +171,15 @@ const props = defineProps<Props>();
 const { isMobile, isDesktop } = useResponsive();
 
 const hasBladeNavigation = Boolean(inject(BladeStackKey, null) && inject(BladeMessagingKey, null));
+
+// A maximized blade covers the sidebar / app bar, so they must leave the tab order
+// and the accessibility tree too — otherwise a keyboard user tabs into navigation
+// that is not visible (VCST-5632). The blades behind it are handled in
+// vc-blade-navigation; this is the chrome around them.
+const bladeStack = hasBladeNavigation ? useBladeStack() : undefined;
+const hasMaximizedBlade = computed(
+  () => bladeStack?.blades.value.some((descriptor) => bladeStack.isMaximized(descriptor.id)) ?? false,
+);
 
 const logger = createLogger("vc-app");
 logger.debug("Init vc-app");

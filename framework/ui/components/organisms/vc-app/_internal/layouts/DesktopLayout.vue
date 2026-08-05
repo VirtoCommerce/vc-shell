@@ -10,6 +10,7 @@
   <!-- Fixed left sidebar -->
   <nav
     class="desktop-layout"
+    :inert="inertNavigation || undefined"
     :aria-label="$t('SHELL.NAVIGATION_ARIA_LABEL')"
     :class="{
       'desktop-layout--collapsed': !sidebar.isPinned.value,
@@ -139,6 +140,14 @@ export interface Props {
   appsList?: AppDescriptor[];
   showSearch?: boolean;
   searchPlaceholder?: string;
+  /**
+   * Removes the sidebar from the tab order and the accessibility tree while a blade
+   * is maximized over it (WCAG 2.4.3 / 4.1.2).
+   *
+   * A prop rather than a plain `inert` attribute on the component: this layout has
+   * two root nodes, so Vue cannot fall an attribute through to one of them.
+   */
+  inertNavigation?: boolean;
 }
 
 withDefaults(defineProps<Props>(), {

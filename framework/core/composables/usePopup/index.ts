@@ -20,6 +20,13 @@ import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-popup");
 
+/**
+ * How long to wait for a closing popup to report its finished leave transition
+ * before unmounting it regardless. Comfortably above the 150ms transition in
+ * `vc-popup`, and only reached by popup components that render no transition.
+ */
+const CLOSE_TRANSITION_FALLBACK_MS = 400;
+
 interface IUsePopup {
   open(): void;
   close(): void;
@@ -74,10 +81,16 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
     return rawPopup ?? customInstance;
   }
 
-  function pushInstance(popup?: UsePopupProps) {
+  function pushInstance(popup?: UsePopupProps & Partial<UsePopupInternal>) {
     if (!popup) {
       return;
     }
+
+    // Every path into the stack goes through here — `open()`, `showConfirmation()`,
+    // `showError()`, `showInfo()` — so this is the one place that reliably sees the
+    // control the user activated, before the popup takes focus.
+    const opener = document.activeElement;
+    popup.opener = opener instanceof HTMLElement && opener !== document.body ? markRaw(opener) : undefined;
 
     destroy(popup);
     popupInstance?.popups?.push(popup);
@@ -88,16 +101,69 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
     pushInstance(resolveInstance(customInstance));
   }
 
+  function removeInstance(instance: UsePopupProps & Partial<UsePopupInternal>) {
+    const index = popupInstance?.popups.indexOf(instance);
+    if (typeof index === "number" && index !== -1) {
+      popupInstance?.popups?.splice(index, 1);
+      restoreFocusTo(instance.opener);
+    }
+    instance.opener = undefined;
+  }
+
+  /**
+   * Returns focus to the control that opened the popup (WCAG 2.4.3 Focus Order).
+   *
+   * Headless UI has its own RestoreFocus, but it does not fire here: visibility is
+   * driven by the surrounding `TransitionRoot`, so its `Dialog` is permanently
+   * "open" and never runs the close path that would restore focus. Removing the
+   * subtree therefore drops focus on `<body>`.
+   *
+   * Only acts when focus was actually lost, so a popup that deliberately moved
+   * focus elsewhere (or one closed while the user was already somewhere else) is
+   * left alone.
+   */
+  function restoreFocusTo(opener?: HTMLElement) {
+    if (!opener || typeof opener.focus !== "function") return;
+
+    // The check has to run *after* the DOM patch, not before it. At this point the
+    // popup's own close button is usually still focused and still connected, so
+    // testing for lost focus here would always say "nothing to do" — and focus then
+    // drops to <body> a tick later, when Vue removes the subtree.
+    nextTick(() => {
+      const active = document.activeElement;
+      const focusWasLost = !active || active === document.body || active === document.documentElement;
+
+      // Something else legitimately took focus (or the opener is gone) — leave it be.
+      if (!focusWasLost || !opener.isConnected) return;
+
+      opener.focus();
+    });
+  }
+
+  /**
+   * Closes in two phases: mark the instance as closing, let the popup play its
+   * leave transition, and only then unmount it.
+   *
+   * Unmounting straight away — which is what this used to do — tore the dialog out
+   * of the DOM before it could run its own close sequence, so Headless UI never
+   * restored focus to the element that opened the popup and the leave animation
+   * never played (VCST-5632). The popup reports the end of its transition through
+   * `PopupInstanceKey.finalize`; the timer is the fallback for popup components
+   * that render no transition at all.
+   */
   function close(customInstance?: UsePopupProps) {
-    const instanceToClose = resolveInstance(customInstance);
+    const instanceToClose = resolveInstance(customInstance) as (UsePopupProps & UsePopupInternal) | undefined;
     if (!instanceToClose) {
       return;
     }
 
     const index = popupInstance?.popups.indexOf(instanceToClose);
-    if (typeof index === "number" && index !== -1) {
-      popupInstance?.popups?.splice(index, 1);
+    if (typeof index !== "number" || index === -1 || instanceToClose.closing) {
+      return;
     }
+
+    instanceToClose.closing = true;
+    setTimeout(() => removeInstance(instanceToClose), CLOSE_TRANSITION_FALLBACK_MS);
   }
 
   function showSimplePopup(
@@ -180,10 +246,13 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
       id: Symbol("vc-popup-instance"),
       close: () => undefined,
       open: () => undefined,
+      finalize: () => undefined,
+      closing: false,
     }) as unknown as UsePopupProps & UsePopupInternal;
 
     popup.close = () => close(popup);
     popup.open = () => open(popup);
+    popup.finalize = () => removeInstance(popup);
 
     return popup;
   }

@@ -21,6 +21,7 @@
         :visible="isBladeVisible(descriptor, index)"
         :breadcrumbs="breadcrumbs.slice(0, index)"
         :back-button="bladeCount > 1 ? mobileBackButtonFor(index) : undefined"
+        :inert="maximizedBladeId !== undefined && descriptor.id !== maximizedBladeId"
         @close="onClose"
         @parent-call="onParentCall"
       />
@@ -79,6 +80,11 @@ onMounted(() => {
 
 const blades = computed(() => bladeStack.blades.value);
 const activeBlade = computed(() => bladeStack.activeBlade.value);
+
+// A maximized blade covers the ones behind it, but they stayed in the tab order and
+// in the accessibility tree — a keyboard user could tab into content hidden behind
+// it (VCST-5632). `inert` removes both in one attribute.
+const maximizedBladeId = computed(() => blades.value.find((descriptor) => bladeStack.isMaximized(descriptor.id))?.id);
 const hasBlades = computed(() => blades.value.length > 0);
 
 const bladeCount = computed(() => {

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { defineComponent, shallowReactive, DefineComponent, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
 import { PopupPluginKey } from "@core/composables/usePopup/keys";
@@ -133,7 +133,7 @@ describe("usePopup", () => {
       expect(popupPlugin.popups.length).toBe(1);
     });
 
-    it("close() removes custom popup from the stack", async () => {
+    it("close() marks the popup as closing and keeps it mounted for its leave transition", async () => {
       const { result, popupPlugin } = mountWithPopup(() =>
         usePopup({
           component: FakePopup as any,
@@ -147,7 +147,164 @@ describe("usePopup", () => {
       expect(popupPlugin.popups.length).toBe(1);
 
       result.close();
-      expect(popupPlugin.popups.length).toBe(0);
+
+      // Still mounted: unmounting here would tear the dialog out of the DOM before
+      // it can run its own close sequence, which is what restores focus to the
+      // opener (VCST-5632). The container unmounts it on `finalize`.
+      expect(popupPlugin.popups.length).toBe(1);
+      expect(popupPlugin.popups[0].closing).toBe(true);
+    });
+
+    it("close() unmounts the popup via the fallback timer when no transition reports back", async () => {
+      vi.useFakeTimers();
+      try {
+        const { result, popupPlugin } = mountWithPopup(() =>
+          usePopup({
+            component: FakePopup as any,
+            props: { title: "Test" },
+            emits: { onConfirm: () => {}, onClose: () => {} },
+          }),
+        );
+
+        result.open();
+        await nextTick();
+        result.close();
+        expect(popupPlugin.popups.length).toBe(1);
+
+        // A popup component that renders no transition never calls finalize, so the
+        // safety timer has to remove it — otherwise it would stay mounted forever.
+        vi.advanceTimersByTime(400);
+        expect(popupPlugin.popups.length).toBe(0);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    // The path the browser actually takes: the popup's leave transition ends and
+    // the container calls finalize. It beats the fallback timer every time, so the
+    // restore has to live here — the first attempt at VCST-5632 restored focus only
+    // on the timer and therefore did nothing in a real app.
+    it("returns focus to the opener when the popup finalizes after its transition", async () => {
+      const trigger = document.createElement("button");
+      document.body.appendChild(trigger);
+      try {
+        trigger.focus();
+
+        const { result, popupPlugin } = mountWithPopup(() =>
+          usePopup({
+            component: FakePopup as any,
+            props: { title: "Test" },
+            emits: { onConfirm: () => {}, onClose: () => {} },
+          }),
+        );
+
+        result.open();
+        await nextTick();
+        (document.activeElement as HTMLElement | null)?.blur?.();
+
+        result.close();
+        expect(popupPlugin.popups.length).toBe(1);
+
+        // What PopupInstanceProvider emits on @after-leave.
+        popupPlugin.popups[0].finalize();
+        await nextTick();
+
+        expect(popupPlugin.popups.length).toBe(0);
+        expect(document.activeElement).toBe(trigger);
+      } finally {
+        trigger.remove();
+      }
+    });
+
+    it("returns focus to the control that opened the popup", async () => {
+      vi.useFakeTimers();
+      const trigger = document.createElement("button");
+      document.body.appendChild(trigger);
+      try {
+        trigger.focus();
+        expect(document.activeElement).toBe(trigger);
+
+        const { result } = mountWithPopup(() =>
+          usePopup({
+            component: FakePopup as any,
+            props: { title: "Test" },
+            emits: { onConfirm: () => {}, onClose: () => {} },
+          }),
+        );
+
+        result.open();
+        await nextTick();
+
+        // The popup normally takes focus; emulate that so the restore path is the
+        // one under test rather than "focus never moved".
+        (document.activeElement as HTMLElement | null)?.blur?.();
+        expect(document.activeElement === trigger).toBe(false);
+
+        result.close();
+        vi.advanceTimersByTime(400);
+        await nextTick();
+
+        expect(document.activeElement).toBe(trigger);
+      } finally {
+        vi.useRealTimers();
+        trigger.remove();
+      }
+    });
+
+    it("leaves focus alone when something else took it while the popup was open", async () => {
+      vi.useFakeTimers();
+      const trigger = document.createElement("button");
+      const elsewhere = document.createElement("button");
+      document.body.append(trigger, elsewhere);
+      try {
+        trigger.focus();
+
+        const { result } = mountWithPopup(() =>
+          usePopup({
+            component: FakePopup as any,
+            props: { title: "Test" },
+            emits: { onConfirm: () => {}, onClose: () => {} },
+          }),
+        );
+
+        result.open();
+        await nextTick();
+        elsewhere.focus();
+
+        result.close();
+        vi.advanceTimersByTime(400);
+        await nextTick();
+
+        // Focus was not lost, so it must not be yanked back to the opener.
+        expect(document.activeElement).toBe(elsewhere);
+      } finally {
+        vi.useRealTimers();
+        trigger.remove();
+        elsewhere.remove();
+      }
+    });
+
+    it("close() is idempotent while a popup is already closing", async () => {
+      vi.useFakeTimers();
+      try {
+        const { result, popupPlugin } = mountWithPopup(() =>
+          usePopup({
+            component: FakePopup as any,
+            props: { title: "Test" },
+            emits: { onConfirm: () => {}, onClose: () => {} },
+          }),
+        );
+
+        result.open();
+        await nextTick();
+        result.close();
+        result.close();
+
+        vi.advanceTimersByTime(400);
+        expect(popupPlugin.popups.length).toBe(0);
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 

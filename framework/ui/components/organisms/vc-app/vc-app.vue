@@ -92,7 +92,9 @@
       >
         <main
           v-if="isAuthenticated"
+          ref="workspaceRef"
           class="vc-app__workspace"
+          tabindex="-1"
         >
           <VcBladeNavigation v-if="hasBladeNavigation" />
           <!-- AI Agent Panel (shown when plugin is installed) -->
@@ -108,6 +110,7 @@
 <script lang="ts" setup>
 import { computed, inject, provide, ref, watch } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { focusIfLoose } from "@core/utilities/focus";
 import { useBladeStack } from "@core/blade-navigation/useBladeStack";
 import DesktopLayout from "@ui/components/organisms/vc-app/_internal/layouts/DesktopLayout.vue";
 import MobileLayout from "@ui/components/organisms/vc-app/_internal/layouts/MobileLayout.vue";
@@ -186,6 +189,17 @@ logger.debug("Init vc-app");
 
 const route = useRoute();
 const isEmbedded = route.query.EmbeddedMode === "true";
+
+// Signing in (and any other route change) used to leave focus on `<body>`, so the
+// next Tab restarted from the top of the document (WCAG 2.4.3). A blade mounting
+// inside the workspace requests focus after this and therefore wins, which is the
+// order we want: the more specific context takes precedence.
+const workspaceRef = ref<HTMLElement | null>(null);
+
+watch(
+  () => route.fullPath,
+  () => focusIfLoose(() => workspaceRef.value),
+);
 
 // App root element ref (for scoped Teleport targets)
 const appRootRef = ref<HTMLElement>();

@@ -5,6 +5,7 @@ export * from "@core/utilities/generateId";
 export * from "@core/utilities/logger";
 export * from "@core/utilities/errorTypes";
 export * from "@core/utilities/error";
+export * from "@core/utilities/focus";
 export * from "./date";
 export * from "@core/utilities/assets";
 export * from "@core/utilities/colorUtils";

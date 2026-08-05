@@ -4,6 +4,7 @@
     v-bind="rootAttrs"
     class="vc-blade"
     role="region"
+    tabindex="-1"
     :class="[
       $attrs.class,
       {
@@ -114,7 +115,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, inject, provide, computed, getCurrentInstance, useAttrs, watchEffect } from "vue";
+import { ref, inject, provide, computed, getCurrentInstance, onMounted, useAttrs, watchEffect } from "vue";
+import { focusIfLoose } from "@core/utilities/focus";
 import { IBladeToolbar } from "@core/types";
 import { useBladeStack } from "@core/blade-navigation";
 import BladeHeader from "@ui/components/organisms/vc-blade/_internal/BladeHeader.vue";
@@ -276,6 +278,12 @@ watchEffect(() => {
 
 const bladeRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);
+// A blade that just opened is the user's new context, but claiming focus is
+// deliberately conditional: clicking a table row leaves focus on that row, which is a
+// sensible place to continue from, and a blade that autofocuses a field keeps it.
+// This only repairs the case where focus was dropped on `<body>` — which happened
+// whenever the control that opened the blade was re-rendered away.
+onMounted(() => focusIfLoose(() => bladeRef.value));
 </script>
 
 <style lang="scss">

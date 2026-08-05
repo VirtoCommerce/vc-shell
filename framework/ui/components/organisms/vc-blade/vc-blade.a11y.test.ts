@@ -9,7 +9,12 @@ import axe from "axe-core";
 import { createI18n } from "vue-i18n";
 import VcBlade from "@ui/components/organisms/vc-blade/vc-blade.vue";
 import { BladeBackButtonKey, ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
-import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey } from "@core/blade-navigation/types";
+import {
+  BladeStackKey,
+  BladeMessagingKey,
+  BladeDescriptorKey,
+  BladeRenderingStateKey,
+} from "@core/blade-navigation/types";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
@@ -59,10 +64,14 @@ const i18n = createI18n({ legacy: false, locale: "en", fallbackWarn: false, miss
 function createBladeWrapper(
   bladeProps: Record<string, unknown> = {},
   descriptorOverrides: Partial<BladeDescriptor> = {},
+  renderingState?: { maximized: boolean; breadcrumbs?: unknown[] },
 ) {
   return defineComponent({
     setup() {
       provide(BladeBackButtonKey, null as any);
+      if (renderingState) {
+        provide(BladeRenderingStateKey, computed(() => renderingState) as any);
+      }
       provide(ToolbarServiceKey, createToolbarService());
       provide(WidgetServiceKey, createWidgetService());
       provide(BladeStackKey, {
@@ -103,8 +112,12 @@ describe("VcBlade a11y", () => {
     wrapper?.unmount();
   });
 
-  const mountBlade = (bladeProps: Record<string, unknown> = {}, descriptorOverrides: Partial<BladeDescriptor> = {}) => {
-    const Wrapper = createBladeWrapper(bladeProps, descriptorOverrides);
+  const mountBlade = (
+    bladeProps: Record<string, unknown> = {},
+    descriptorOverrides: Partial<BladeDescriptor> = {},
+    renderingState?: { maximized: boolean; breadcrumbs?: unknown[] },
+  ) => {
+    const Wrapper = createBladeWrapper(bladeProps, descriptorOverrides, renderingState);
     wrapper = mount(Wrapper, {
       global: {
         plugins: [i18n],
@@ -123,7 +136,12 @@ describe("VcBlade a11y", () => {
           BladeContentSkeleton: true,
           BladeStatusBanners: true,
           WidgetContainer: true,
-          VcBreadcrumbs: true,
+          // Renders the #trigger slot so the overriding button in vc-blade is
+          // actually exercised — the real VcBreadcrumbs labels its own trigger,
+          // and overriding the slot drops that label (VCST-5596).
+          VcBreadcrumbs: {
+            template: '<div><slot name="trigger" :click="() => {}" :is-active="false" /></div>',
+          },
           VcButton: true,
           teleport: true,
         },
@@ -167,6 +185,17 @@ describe("VcBlade a11y", () => {
     // The referenced element should exist in the DOM
     const titleEl = w.find(`#${labelledBy}`);
     expect(titleEl.exists()).toBe(true);
+  });
+
+  it("names the breadcrumbs overflow trigger it supplies through the #trigger slot", async () => {
+    const w = mountBlade({ title: "Item" }, {}, { maximized: false, breadcrumbs: [{ id: "root", title: "Root" }] });
+    await w.vm.$nextTick();
+
+    const trigger = w.find(".vc-blade__breadcrumbs-button");
+    expect(trigger.exists()).toBe(true);
+    // Overriding #trigger replaces VcBreadcrumbs' own labelled button, so vc-blade
+    // has to carry the name itself — without it the control is a bare "button".
+    expect(trigger.attributes("aria-label")).toBe("COMPONENTS.MOLECULES.VC_BREADCRUMBS.SHOW_MORE");
   });
 
   it("falls back to aria-label when no title is provided", async () => {

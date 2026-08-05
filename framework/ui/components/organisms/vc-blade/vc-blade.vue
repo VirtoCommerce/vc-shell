@@ -47,10 +47,13 @@
             collapsed
           >
             <template #trigger="{ click, isActive }">
+              <!-- Overriding #trigger replaces VcBreadcrumbs' own labelled button,
+                   so the accessible name has to be repeated here (WCAG 4.1.2). -->
               <VcButton
                 text
                 icon="lucide-ellipsis-vertical"
                 icon-size="xl"
+                :aria-label="$t('COMPONENTS.MOLECULES.VC_BREADCRUMBS.SHOW_MORE')"
                 class="vc-blade__breadcrumbs-button"
                 :class="{
                   'vc-blade__breadcrumbs-button--active': isActive,
@@ -358,6 +361,12 @@ const contentRef = ref<HTMLElement | null>(null);
 
     &-button {
       @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] !important;
+
+      // WCAG 2.2 SC 2.5.8: the text variant strips padding, leaving the icon's
+      // own 22px as the whole target. Reuses the token PR #271 introduced for the
+      // other header buttons. Only the box grows; the icon is untouched.
+      min-width: var(--blade-header-button-target-size);
+      min-height: var(--blade-header-button-target-size);
 
       &--active {
         @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] !important;

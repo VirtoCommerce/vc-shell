@@ -32,8 +32,8 @@
         :gs-id="widget.id"
         :gs-x="getPosition(widget.id)?.x ?? widget.position?.x ?? 0"
         :gs-y="getPosition(widget.id)?.y ?? widget.position?.y ?? 0"
-        :gs-w="widget.size.width"
-        :gs-h="widget.size.height"
+        :gs-w="sizeOf(widget).width"
+        :gs-h="sizeOf(widget).height"
         :gs-min-w="2"
         :gs-min-h="2"
         role="listitem"
@@ -124,7 +124,11 @@
  * - Accessibility support
  */
 import { ref, computed, onMounted, nextTick, inject, watch } from "vue";
-import type { IDashboardWidget, DashboardWidgetPosition } from "@shell/dashboard/draggable-dashboard/types";
+import type {
+  IDashboardWidget,
+  DashboardWidgetPosition,
+  DashboardWidgetSize,
+} from "@shell/dashboard/draggable-dashboard/types";
 import { useDashboard } from "@core/composables/useDashboard";
 import { useGridstack } from "@shell/dashboard/draggable-dashboard/composables/useGridstack";
 import VcContainer from "@ui/components/atoms/vc-container/vc-container.vue";
@@ -248,6 +252,8 @@ const getPosition = (widgetId: string): DashboardWidgetPosition | undefined => {
 // Enter drops, Escape restores the position it was picked up from.
 const grabbedWidgetId = ref<string | null>(null);
 const grabbedOrigin = ref<DashboardWidgetPosition | null>(null);
+// Escape has to restore the size too, now that Shift+arrows can change it.
+const grabbedOriginSize = ref<DashboardWidgetSize | null>(null);
 
 // Mirrors gs-min-w / gs-min-h on the item.
 const MIN_WIDGET_SPAN = 2;
@@ -255,11 +261,23 @@ const MIN_WIDGET_SPAN = 2;
 const positionOf = (widget: IDashboardWidget): DashboardWidgetPosition =>
   layout.value.get(widget.id) ?? widget.position ?? { x: 0, y: 0 };
 
+// The live size, mirroring positionOf. `widget.size` is only the declared default
+// and is never written back to, so reading it directly made every resize compute
+// from the same baseline instead of from the current size.
+const sizeOf = (widget: IDashboardWidget): DashboardWidgetSize => {
+  const placement = layout.value.get(widget.id);
+  return {
+    width: placement?.width ?? widget.size.width,
+    height: placement?.height ?? widget.size.height,
+  };
+};
+
 const widgetName = (widget: IDashboardWidget): string => widget.name || widget.id;
 
 const pickUpWidget = (widget: IDashboardWidget): void => {
   grabbedWidgetId.value = widget.id;
   grabbedOrigin.value = { ...positionOf(widget) };
+  grabbedOriginSize.value = { ...sizeOf(widget) };
   announceToScreenReader(
     `${widgetName(widget)} picked up. Use arrow keys to move, Shift and arrow keys to resize, Enter to drop, Escape to cancel.`,
   );
@@ -268,18 +286,28 @@ const pickUpWidget = (widget: IDashboardWidget): void => {
 const dropWidget = (widget: IDashboardWidget): void => {
   grabbedWidgetId.value = null;
   grabbedOrigin.value = null;
+  grabbedOriginSize.value = null;
   saveLayout();
   const { x, y } = positionOf(widget);
   announceToScreenReader(`${widgetName(widget)} dropped at column ${x + 1}, row ${y + 1}.`);
 };
 
 const cancelWidgetMove = (widget: IDashboardWidget): void => {
-  if (grabbedOrigin.value) {
-    updateWidgetPosition(widget.id, grabbedOrigin.value);
+  const origin = grabbedOrigin.value;
+  const originSize = grabbedOriginSize.value;
+  const current = sizeOf(widget);
+
+  if (originSize && (originSize.width !== current.width || originSize.height !== current.height)) {
+    updateWidgetSize(widget.id, originSize);
   }
+  if (origin) {
+    updateWidgetPosition(widget.id, origin);
+  }
+
   grabbedWidgetId.value = null;
   grabbedOrigin.value = null;
-  announceToScreenReader(`Move cancelled. ${widgetName(widget)} returned to its original position.`);
+  grabbedOriginSize.value = null;
+  announceToScreenReader(`Move cancelled. ${widgetName(widget)} returned to its original position and size.`);
 };
 
 const moveWidgetBy = (widget: IDashboardWidget, dx: number, dy: number): void => {
@@ -289,16 +317,25 @@ const moveWidgetBy = (widget: IDashboardWidget, dx: number, dy: number): void =>
   if (next.x < 0 || next.y < 0) return;
 
   updateWidgetPosition(widget.id, next);
-  announceToScreenReader(`${widgetName(widget)} moved to column ${next.x + 1}, row ${next.y + 1}.`);
+  // Announce where the widget actually landed, not where it was asked to go —
+  // Gridstack compacts rows, so the two differ.
+  // Announce where the widget actually landed, not where it was asked to go —
+  // Gridstack compacts rows, so the two differ.
+  const landed = positionOf(widget);
+  announceToScreenReader(`${widgetName(widget)} moved to column ${landed.x + 1}, row ${landed.y + 1}.`);
 };
 
 const resizeWidgetBy = (widget: IDashboardWidget, dw: number, dh: number): void => {
-  const width = Math.max(MIN_WIDGET_SPAN, widget.size.width + dw);
-  const height = Math.max(MIN_WIDGET_SPAN, widget.size.height + dh);
-  if (width === widget.size.width && height === widget.size.height) return;
+  const current = sizeOf(widget);
+  // Only the requested axis changes; sending both would drag the untouched one
+  // back to its baseline.
+  const width = dw ? Math.max(MIN_WIDGET_SPAN, current.width + dw) : current.width;
+  const height = dh ? Math.max(MIN_WIDGET_SPAN, current.height + dh) : current.height;
+  if (width === current.width && height === current.height) return;
 
   updateWidgetSize(widget.id, { width, height });
-  announceToScreenReader(`${widgetName(widget)} resized to ${width} by ${height} cells.`);
+  const applied = sizeOf(widget);
+  announceToScreenReader(`${widgetName(widget)} resized to ${applied.width} by ${applied.height} cells.`);
 };
 
 const onWidgetKeydown = (event: KeyboardEvent, widget: IDashboardWidget): void => {

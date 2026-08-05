@@ -7,7 +7,12 @@
 
 import { ref, shallowRef, onUnmounted, watch, nextTick, type Ref, type ShallowRef } from "vue";
 import { GridStack, type GridStackOptions, type GridStackNode } from "gridstack";
-import type { IDashboardWidget, DashboardWidgetPosition } from "@shell/dashboard/draggable-dashboard/types";
+import type {
+  IDashboardWidget,
+  DashboardWidgetPosition,
+  DashboardWidgetPlacement,
+  DashboardWidgetSize,
+} from "@shell/dashboard/draggable-dashboard/types";
 import {
   toGridstackWidget,
   fromGridstackNode,
@@ -48,7 +53,7 @@ export interface UseGridstackOptions {
   /** Auto-save layout to localStorage */
   autoSave?: boolean;
   /** Callback when layout changes */
-  onLayoutChange?: (layout: Map<string, DashboardWidgetPosition>) => void;
+  onLayoutChange?: (layout: Map<string, DashboardWidgetPlacement>) => void;
 }
 
 /**
@@ -57,8 +62,8 @@ export interface UseGridstackOptions {
 export interface UseGridstackReturn {
   /** Reference to GridStack instance */
   grid: ShallowRef<GridStack | null>;
-  /** Current layout map */
-  layout: Ref<Map<string, DashboardWidgetPosition>>;
+  /** Current layout map: live position and, once known, live size */
+  layout: Ref<Map<string, DashboardWidgetPlacement>>;
   /** Whether grid is initialized */
   isInitialized: Ref<boolean>;
   /** Initialize grid on element */
@@ -71,7 +76,7 @@ export interface UseGridstackReturn {
   removeWidget: (widgetId: string) => void;
   /** Update widget position */
   updateWidgetPosition: (widgetId: string, position: DashboardWidgetPosition) => void;
-  updateWidgetSize: (widgetId: string, size: { width: number; height: number }) => void;
+  updateWidgetSize: (widgetId: string, size: DashboardWidgetSize) => void;
   /** Save current layout */
   saveLayout: () => void;
   /** Load layout from storage */
@@ -90,7 +95,7 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
 
   // State
   const grid = shallowRef<GridStack | null>(null);
-  const layout = ref<Map<string, DashboardWidgetPosition>>(new Map());
+  const layout = ref<Map<string, DashboardWidgetPlacement>>(new Map());
   const isInitialized = ref(false);
   const isUpdating = ref(false);
 
@@ -146,7 +151,17 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
     for (const node of nodes) {
       const { id, position } = fromGridstackNode(node);
       if (id) {
-        layout.value.set(id, position);
+        // Size is recorded too, so a mouse resize reaches state and storage. Read
+        // straight off the node rather than via fromGridstackNode, which defaults
+        // a missing w/h to 1 — persisting that invented 1 would shrink the widget.
+        const previous = layout.value.get(id);
+        const width = typeof node.w === "number" ? node.w : previous?.width;
+        const height = typeof node.h === "number" ? node.h : previous?.height;
+        layout.value.set(id, {
+          ...position,
+          ...(typeof width === "number" ? { width } : {}),
+          ...(typeof height === "number" ? { height } : {}),
+        });
       }
     }
 
@@ -231,6 +246,41 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
   };
 
   /**
+   * Records where a widget actually ended up after a programmatic update.
+   *
+   * Reads the values back off the Gridstack node rather than trusting the ones we
+   * asked for: Gridstack clamps to the grid edges and compacts the rows, so the
+   * requested cell and the resulting cell often differ. Writing the requested
+   * values instead is what made the layout state — and every announcement derived
+   * from it — disagree with the DOM.
+   *
+   * `requested` is the fallback for environments where the node is not exposed
+   * (notably unit tests with a stubbed grid).
+   */
+  const recordPlacementFromNode = (
+    widgetId: string,
+    element: Element,
+    requestedPosition?: DashboardWidgetPosition,
+    requestedSize?: DashboardWidgetSize,
+  ): void => {
+    const node = (element as HTMLElement & { gridstackNode?: GridStackNode }).gridstackNode;
+    const previous = layout.value.get(widgetId);
+
+    const x = node?.x ?? requestedPosition?.x ?? previous?.x ?? 0;
+    const y = node?.y ?? requestedPosition?.y ?? previous?.y ?? 0;
+    const width = node?.w ?? requestedSize?.width ?? previous?.width;
+    const height = node?.h ?? requestedSize?.height ?? previous?.height;
+
+    layout.value.set(widgetId, {
+      x,
+      y,
+      ...(typeof width === "number" ? { width } : {}),
+      ...(typeof height === "number" ? { height } : {}),
+    });
+    layout.value = new Map(layout.value);
+  };
+
+  /**
    * Update widget position programmatically
    */
   const updateWidgetPosition = (widgetId: string, position: DashboardWidgetPosition): void => {
@@ -240,8 +290,7 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
     if (element) {
       isUpdating.value = true;
       grid.value.update(element as HTMLElement, { x: position.x, y: position.y });
-      layout.value.set(widgetId, position);
-      layout.value = new Map(layout.value);
+      recordPlacementFromNode(widgetId, element, position);
       isUpdating.value = false;
     }
   };
@@ -250,13 +299,14 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
    * Counterpart of updateWidgetPosition for the size axis, so a widget can be
    * resized programmatically — keyboard resizing has no drag handle to simulate.
    */
-  const updateWidgetSize = (widgetId: string, size: { width: number; height: number }): void => {
+  const updateWidgetSize = (widgetId: string, size: DashboardWidgetSize): void => {
     if (!grid.value) return;
 
     const element = document.querySelector(`[gs-id="${widgetId}"]`);
     if (element) {
       isUpdating.value = true;
       grid.value.update(element as HTMLElement, { w: size.width, h: size.height });
+      recordPlacementFromNode(widgetId, element, undefined, size);
       isUpdating.value = false;
     }
   };
@@ -303,13 +353,17 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
     grid.value.batchUpdate();
 
     for (const widget of widgets.value) {
-      const position = layout.value.get(widget.id);
-      if (position) {
+      const placement = layout.value.get(widget.id);
+      if (placement) {
         const element = document.querySelector(`[gs-id="${widget.id}"]`);
         if (element) {
           grid.value.update(element as HTMLElement, {
-            x: position.x,
-            y: position.y,
+            x: placement.x,
+            y: placement.y,
+            // Restores a persisted size; omitted when unknown so Gridstack keeps
+            // whatever the element already declares.
+            ...(typeof placement.width === "number" ? { w: placement.width } : {}),
+            ...(typeof placement.height === "number" ? { h: placement.height } : {}),
           });
         }
       }

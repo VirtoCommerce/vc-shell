@@ -9,6 +9,7 @@ import type { GridStackWidget, GridStackNode } from "gridstack";
 import type {
   IDashboardWidget,
   DashboardWidgetPosition,
+  DashboardWidgetPlacement,
   DashboardWidgetSize,
 } from "@shell/dashboard/draggable-dashboard/types";
 
@@ -27,14 +28,16 @@ interface LegacyLayoutFormat {
 /**
  * Converts our widget type to Gridstack widget format
  */
-export function toGridstackWidget(widget: IDashboardWidget, position?: DashboardWidgetPosition): GridStackWidget {
-  const pos = position ?? widget.position;
+export function toGridstackWidget(widget: IDashboardWidget, placement?: DashboardWidgetPlacement): GridStackWidget {
+  const pos = placement ?? widget.position;
   return {
     id: widget.id,
     x: pos?.x ?? 0,
     y: pos?.y ?? 0,
-    w: widget.size.width,
-    h: widget.size.height,
+    // A placement size wins over the declared one, so a saved or live resize is
+    // restored instead of snapping back to the widget's default.
+    w: placement?.width ?? widget.size.width,
+    h: placement?.height ?? widget.size.height,
     minW: 2,
     minH: 2,
   };
@@ -64,14 +67,18 @@ export function fromGridstackNode(node: GridStackNode): {
 /**
  * Converts Gridstack nodes array to our layout Map format
  */
-export function gridstackNodesToLayoutMap(nodes: GridStackNode[]): Map<string, DashboardWidgetPosition> {
-  const layout = new Map<string, DashboardWidgetPosition>();
+export function gridstackNodesToLayoutMap(nodes: GridStackNode[]): Map<string, DashboardWidgetPlacement> {
+  const layout = new Map<string, DashboardWidgetPlacement>();
 
   for (const node of nodes) {
     if (node.id) {
       layout.set(node.id, {
         x: node.x ?? 0,
         y: node.y ?? 0,
+        // Size is carried through as well; dropping it here is what used to make
+        // every resize — mouse or keyboard — invisible to state and to storage.
+        ...(typeof node.w === "number" ? { width: node.w } : {}),
+        ...(typeof node.h === "number" ? { height: node.h } : {}),
       });
     }
   }
@@ -82,7 +89,7 @@ export function gridstackNodesToLayoutMap(nodes: GridStackNode[]): Map<string, D
 /**
  * Loads layout from localStorage with legacy format support
  */
-export function loadLayoutFromStorage(): Map<string, DashboardWidgetPosition> | null {
+export function loadLayoutFromStorage(): Map<string, DashboardWidgetPlacement> | null {
   try {
     const stored = localStorage.getItem(LAYOUT_STORAGE_KEY);
     if (!stored) return null;
@@ -94,9 +101,10 @@ export function loadLayoutFromStorage(): Map<string, DashboardWidgetPosition> | 
       return gridstackNodesToLayoutMap(parsed as GridStackNode[]);
     }
 
-    // Legacy format: object with widget IDs as keys
+    // Legacy format: object with widget IDs as keys. It never carried a size, so
+    // those entries stay size-less and fall back to the widget's declared size.
     if (typeof parsed === "object" && parsed !== null) {
-      const layout = new Map<string, DashboardWidgetPosition>();
+      const layout = new Map<string, DashboardWidgetPlacement>();
       for (const [id, pos] of Object.entries(parsed as LegacyLayoutFormat)) {
         if (pos && typeof pos.x === "number" && typeof pos.y === "number") {
           layout.set(id, { x: pos.x, y: pos.y });
@@ -115,16 +123,18 @@ export function loadLayoutFromStorage(): Map<string, DashboardWidgetPosition> | 
 /**
  * Saves layout to localStorage in Gridstack format
  */
-export function saveLayoutToStorage(widgets: IDashboardWidget[], layout: Map<string, DashboardWidgetPosition>): void {
+export function saveLayoutToStorage(widgets: IDashboardWidget[], layout: Map<string, DashboardWidgetPlacement>): void {
   try {
     const gridstackFormat: GridStackWidget[] = widgets.map((widget) => {
-      const pos = layout.get(widget.id);
+      const placement = layout.get(widget.id);
       return {
         id: widget.id,
-        x: pos?.x ?? widget.position?.x ?? 0,
-        y: pos?.y ?? widget.position?.y ?? 0,
-        w: widget.size.width,
-        h: widget.size.height,
+        x: placement?.x ?? widget.position?.x ?? 0,
+        y: placement?.y ?? widget.position?.y ?? 0,
+        // Prefer the live size. Reading `widget.size` unconditionally is what used
+        // to discard every resize on reload, since that prop is never written back.
+        w: placement?.width ?? widget.size.width,
+        h: placement?.height ?? widget.size.height,
       };
     });
 
@@ -149,8 +159,8 @@ export function clearLayoutStorage(): void {
  * Auto-arrange widgets in a grid layout
  * Places widgets side by side when possible, wrapping to next row
  */
-function autoArrangeWidgets(widgets: IDashboardWidget[], columns: number = 12): Map<string, DashboardWidgetPosition> {
-  const layout = new Map<string, DashboardWidgetPosition>();
+function autoArrangeWidgets(widgets: IDashboardWidget[], columns: number = 12): Map<string, DashboardWidgetPlacement> {
+  const layout = new Map<string, DashboardWidgetPlacement>();
 
   // Track occupied cells in each row
   const rowOccupancy: Map<number, number[]> = new Map();
@@ -206,17 +216,19 @@ function autoArrangeWidgets(widgets: IDashboardWidget[], columns: number = 12): 
  */
 export function mergeLayoutWithWidgets(
   widgets: IDashboardWidget[],
-  savedLayout: Map<string, DashboardWidgetPosition> | null,
-): Map<string, DashboardWidgetPosition> {
+  savedLayout: Map<string, DashboardWidgetPlacement> | null,
+): Map<string, DashboardWidgetPlacement> {
   // If we have a saved layout with positions, use it
   if (savedLayout && savedLayout.size > 0) {
-    const layout = new Map<string, DashboardWidgetPosition>();
+    const layout = new Map<string, DashboardWidgetPlacement>();
 
     for (const widget of widgets) {
-      const savedPos = savedLayout.get(widget.id);
+      // Carries the saved size through as well — dropping it here would restore
+      // the position but snap the widget back to its declared size.
+      const savedPlacement = savedLayout.get(widget.id);
       const builtInPos = widget.position;
-      const position = savedPos ?? builtInPos ?? { x: 0, y: 0 };
-      layout.set(widget.id, position);
+      const placement = savedPlacement ?? builtInPos ?? { x: 0, y: 0 };
+      layout.set(widget.id, placement);
     }
 
     return layout;
@@ -226,7 +238,7 @@ export function mergeLayoutWithWidgets(
   const allHavePositions = widgets.every((w) => w.position !== undefined);
 
   if (allHavePositions) {
-    const layout = new Map<string, DashboardWidgetPosition>();
+    const layout = new Map<string, DashboardWidgetPlacement>();
     for (const widget of widgets) {
       layout.set(widget.id, widget.position!);
     }

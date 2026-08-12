@@ -2,7 +2,7 @@ import { Router } from "vue-router";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { notification } from "@core/notifications/notification";
 import { createLogger } from "@core/utilities";
-import { isSessionExpired, markSessionExpired } from "@core/utilities/sessionExpiration";
+import { isSessionExpired, markSessionExpired, SessionExpiredError } from "@core/utilities/sessionExpiration";
 import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const logger = createLogger("interceptors");
@@ -160,7 +160,8 @@ export function registerInterceptors(router: Router) {
         // login page is the same death reported differently (see looksLikeLoginPage).
         // A 403 is deliberately excluded — authenticated-but-unauthorized is not an
         // expired session, and signing the user out over it would be wrong.
-        const sessionDied = response.status === 401 || (response.ok && looksLikeLoginPage(response));
+        const isLoginPageResponse = response.ok && looksLikeLoginPage(response);
+        const sessionDied = response.status === 401 || isLoginPageResponse;
 
         if (sessionDied && !isSessionExpired() && isAuthenticated.value) {
           markSessionExpired();
@@ -175,6 +176,23 @@ export function registerInterceptors(router: Router) {
                 "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
               );
             });
+        }
+
+        // A 200 that is really the login page must not reach the caller — it would be parsed
+        // as data. On a concurrent burst every request then raised its own
+        // "Unexpected token '<', "<!DOCTYPE "..." on a page already redirecting to login,
+        // burying the one message that says what happened (VCST-5688). Failing the request is
+        // the honest answer: it returned no data. All of them fail with the same error, so a
+        // consumer that does surface it shows one message, not one per request.
+        //
+        // Gated on the expiry flag, which the branch above has just set for the first response
+        // of the burst: while nobody is signed in a login page is an expected answer, not a
+        // session death, and failing those requests would break the pre-auth flow.
+        //
+        // A 401 is still returned unchanged: its body is not a document, so nothing tries to
+        // parse markup, and callers may legitimately branch on the status themselves.
+        if (isLoginPageResponse && isSessionExpired()) {
+          throw new SessionExpiredError();
         }
 
         return response;

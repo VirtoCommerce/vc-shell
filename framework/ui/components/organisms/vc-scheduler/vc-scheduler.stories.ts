@@ -600,6 +600,10 @@ export const TimelineView: Story = {
     editable: true,
     quickInfo: true,
   },
+  // This story is specifically about switching views from the toolbar, so it needs the stateful
+  // render. On the default args-bound render the toolbar emitted `update:view` into the void and
+  // the grid never moved, which reads as a broken component in the published Storybook.
+  render: renderInteractive,
   parameters: {
     docs: {
       description: {

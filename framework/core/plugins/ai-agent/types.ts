@@ -175,7 +175,11 @@ export type ChatToShellMessageType =
   | "CHAT_READY" // Chatbot is loaded and ready
   | "NAVIGATE_TO_APP" // Request to navigate to a blade
   | "EXPAND_IN_CHAT" // Request to expand item in chat
-  | "SHOW_MORE"; // Request for more results
+  | "SHOW_MORE" // Request for more results
+  // Request to close the panel. The shell cannot see keystrokes inside a cross-origin
+  // iframe, so once the chatbot takes focus its own Escape has to be relayed with this
+  // message or the panel cannot be closed from the keyboard at all (VCST-5673).
+  | "CLOSE_PANEL";
 
 /**
  * Combined message types

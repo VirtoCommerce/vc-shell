@@ -36,11 +36,14 @@ export function parseError(errorToParse: unknown): DisplayableError {
     return errorToParse;
   }
 
-  // NSwag-generated API clients throw `ApiException`, whose `response` is the raw body as a
-  // STRING, not an object. The Axios branch below would recurse into the string branch, and a
-  // body that is not JSON — an ASP.NET developer exception page, an HTML error page from a proxy
-  // — became the entire short `message`, which modules and `useAsync` render straight to the user
-  // (VCST-5663). A JSON body is delegated unchanged, so the platform's own message still wins.
+  // This is the ONLY error shape this framework's own API layer produces — see `ApiException`
+  // in core/api/platform.ts. It must therefore be matched before the generic `response` branch
+  // below, which handled it wrongly: `response` is a raw body STRING, so that branch recursed
+  // into the string branch and a body that is not JSON (an ASP.NET developer exception page, an
+  // HTML error page from a proxy) became the entire short `message` — which modules and
+  // `useAsync` render straight to the user (VCST-5663).
+  //
+  // A JSON body is delegated unchanged, so the platform's own message still wins.
   if (isApiExceptionWithStringBody(errorToParse)) {
     const { status, response } = errorToParse;
     try {
@@ -51,7 +54,13 @@ export function parseError(errorToParse: unknown): DisplayableError {
     }
   }
 
-  // Handle Axios-style errors, which are instances of Error but have a `response` property.
+  // An Error wrapping a response OBJECT. Nothing in this repo produces that shape — it was
+  // written for Axios, which is not a dependency here and is imported nowhere (it reaches
+  // yarn.lock only transitively, via @module-federation/dts-plugin and @vueuse/integrations).
+  // Believing otherwise is what let the real shape above fall through for so long.
+  //
+  // Kept because `parseError` is public API and a consuming module may use its own HTTP client.
+  // Do not treat it as the path our own API errors take.
   if (errorToParse instanceof Error && "response" in errorToParse && errorToParse.response) {
     // Delegate to parse the nested response object.
     return parseError(errorToParse.response);
@@ -73,11 +82,13 @@ export function parseError(errorToParse: unknown): DisplayableError {
     }
   }
 
-  // Handle plain objects, which are likely API responses.
+  // Handle plain objects.
   if (typeof errorToParse === "object" && errorToParse !== null) {
     const errorObject = errorToParse as Record<string, any>;
 
-    // Check if it conforms to the expected API error response structure.
+    // `{ status, statusText, data }` — also not a shape this repo produces (same Axios
+    // assumption as the `response` branch above); reachable only when a caller hands
+    // `parseError` such an object itself. Our own API errors are handled at the top.
     if ("status" in errorObject && "data" in errorObject) {
       const status = errorObject.status;
       const statusText = errorObject.statusText || "Error"; // TODO: i18n

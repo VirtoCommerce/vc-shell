@@ -29,11 +29,15 @@ describe("parseError", () => {
     expect(result.message).toBe("failed");
   });
 
-  it("parses Axios-style error with response", () => {
-    const axiosError = Object.assign(new Error("Request failed"), {
+  // A synthetic shape: an Error wrapping a response OBJECT. Nothing in this repo produces it
+  // (it was written for Axios, which is not a dependency), so this covers the branch for
+  // consumers with their own HTTP client — not the path our API errors take. See the
+  // ApiException block below for that.
+  it("parses an error wrapping a response object", () => {
+    const wrapped = Object.assign(new Error("Request failed"), {
       response: { status: 404, statusText: "Not Found", data: { message: "not found" } },
     });
-    const result = parseError(axiosError);
+    const result = parseError(wrapped);
     expect(result.message).toBe("404: Not Found");
     expect(result.details).toBe("not found");
   });

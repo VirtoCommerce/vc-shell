@@ -348,12 +348,13 @@ See the [Timeline recipe](#timeline-business-hours-review) below for a full exam
 
 ## CSS Custom Properties
 
-| Property                   | Default               | Description                                                     |
-| -------------------------- | --------------------- | --------------------------------------------------------------- |
-| `--scheduler-border-color` | `var(--neutrals-200)` | Border color for the grid, header, and row separators.          |
-| `--vc-scheduler-event-ink` | `#fff`                | Text color on Month-view event bars/chips.                      |
-| `--z-critical-popup`       | (theme z-index scale) | Stacking context for the "+N more" overflow popover.            |
-| `--z-local-sticky`         | (theme z-index scale) | Timeline view. Stacking context for the sticky two-tier header. |
+| Property                    | Default                | Description                                                                                                                                                                                       |
+| --------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--scheduler-border-color`  | `var(--neutrals-200)`  | Border color for the grid, header, and row separators.                                                                                                                                            |
+| `--scheduler-surface-color` | `var(--additional-50)` | Surface the whole component paints, toolbar and weekday header included. It owns its background because it draws its own border and radius -- do not rely on the host's backdrop showing through. |
+| `--vc-scheduler-event-ink`  | `#fff`                 | Text color on Month-view event bars/chips.                                                                                                                                                        |
+| `--z-critical-popup`        | (theme z-index scale)  | Stacking context for the "+N more" overflow popover.                                                                                                                                              |
+| `--z-local-sticky`          | (theme z-index scale)  | Timeline view. Stacking context for the sticky two-tier header.                                                                                                                                   |
 
 Event fill color comes from `color` (any CSS color or `var(...)` reference) and defaults to `var(--primary-500)`. Event label text is white by default -- see [Common Mistakes](#common-mistakes).
 

@@ -104,6 +104,7 @@
 
       <div
         v-if="!isMobile && closable"
+        ref="controlsRef"
         class="vc-blade-header__controls"
       >
         <VcTooltip
@@ -114,6 +115,7 @@
             class="vc-blade-header__button"
             role="button"
             tabindex="0"
+            data-blade-expand-control
             :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.RESTORE')"
             :aria-keyshortcuts="expandAria"
             @click="onCollapse"
@@ -140,6 +142,7 @@
             class="vc-blade-header__button"
             role="button"
             tabindex="0"
+            data-blade-expand-control
             :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.MAXIMIZE')"
             :aria-keyshortcuts="expandAria"
             @click="onExpand"
@@ -236,14 +239,42 @@ const { floatingStyle } = useFloatingPosition(tooltipIconRef, tooltipRef, {
   middleware: () => [shift()],
 });
 
+const controlsRef = ref<HTMLElement | null>(null);
+
+/**
+ * Maximize and Restore are two separate nodes swapped by `v-if`, so activating one
+ * unmounts it and focus falls to `<body>` (WCAG 2.4.3). Move focus to whichever
+ * control replaced it.
+ *
+ * This is a deliberate handoff, not a repair, so it does not use `focusIfLoose`: the
+ * user pressed this control, and its replacement is where focus belongs. Waiting for
+ * "focus looks lost" would be wrong twice over — at `nextTick` the old button is often
+ * still focused and still in the DOM, so the check says "nothing to fix" and the
+ * button disappears a frame later.
+ *
+ * Runs on the next animation frame rather than `nextTick`: collapsing re-lays-out the
+ * blade stack, which can push the swap past the microtask queue.
+ */
+function keepFocusOnExpandControl(): void {
+  // Skip when focus is elsewhere: a mouse user who clicked something else should not
+  // have focus yanked into the header.
+  if (!controlsRef.value?.contains(document.activeElement)) return;
+
+  requestAnimationFrame(() => {
+    controlsRef.value?.querySelector<HTMLElement>("[data-blade-expand-control]")?.focus();
+  });
+}
+
 function onExpand(): void {
   if (props.closable) {
+    keepFocusOnExpandControl();
     emit("expand");
   }
 }
 
 function onCollapse(): void {
   if (props.closable) {
+    keepFocusOnExpandControl();
     emit("collapse");
   }
 }

@@ -82,9 +82,16 @@ const barStyle = computed(() =>
     ? eventSurfaceStyle(fill.value, true)
     : { background: fill.value, color: `var(--vc-scheduler-event-ink, ${readableInk(fill.value)})` },
 );
-const ariaLabel = computed(
-  () => `${props.event.title}: ${format(props.event.start, "PP")} – ${format(props.event.end, "PP")}`,
-);
+const ariaLabel = computed(() => {
+  const { title, start, end } = props.event;
+  // Bars only ever render all-day spans (useSchedulerEvents.weekSegments skips the rest), and an
+  // all-day end is exclusive: midnight belongs to the previous calendar day. Formatting it raw
+  // announced a one-day event as a two-day range. Same convention as the layout code and the
+  // quick-info popover, which were already correct.
+  const startLabel = format(start, "PP");
+  const endLabel = format(new Date(end.getTime() - 1), "PP");
+  return startLabel === endLabel ? `${title}: ${startLabel}` : `${title}: ${startLabel} – ${endLabel}`;
+});
 </script>
 
 <style lang="scss">

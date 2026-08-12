@@ -163,7 +163,12 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { startOfDay, startOfWeek, format } from "date-fns";
-import { useTimelineTimeGrid, type TimedRect, type AllDaySegment } from "../../composables/useTimelineTimeGrid";
+import {
+  useTimelineTimeGrid,
+  isAllDayEvent,
+  type TimedRect,
+  type AllDaySegment,
+} from "../../composables/useTimelineTimeGrid";
 import { useClickDiscriminator, type ICreateIntent } from "../../composables/useEventInteraction";
 import { autoEventColor, eventSurfaceStyle } from "../../composables/useEventColor";
 import MonthEventPopover from "../month/MonthEventPopover.vue";
@@ -218,6 +223,14 @@ const grid = useTimelineTimeGrid({
 });
 
 function ariaLabel(e: ISchedulerEvent): string {
+  // An all-day end is exclusive (midnight belongs to the previous day) and has no meaningful
+  // time-of-day, so it is announced as whole dates with the last inclusive one. Timed events
+  // keep their real start/end, times included.
+  if (isAllDayEvent(e)) {
+    const startLabel = format(e.start, "PP");
+    const endLabel = format(new Date(e.end.getTime() - 1), "PP");
+    return startLabel === endLabel ? `${e.title}: ${startLabel}` : `${e.title}: ${startLabel} – ${endLabel}`;
+  }
   return `${e.title}: ${format(e.start, "PPp")} – ${format(e.end, "PPp")}`;
 }
 

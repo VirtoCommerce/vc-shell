@@ -64,7 +64,8 @@ export interface AllDaySegment {
 const MIN_TIMED_HEIGHT = 18; // px — keep a one-line label legible for very short events
 const HOUR_MS = 3_600_000;
 
-function isAllDayEvent(e: ISchedulerEvent): boolean {
+/** Exported so views can apply the exclusive-end rule to all-day events when labelling them. */
+export function isAllDayEvent(e: ISchedulerEvent): boolean {
   if (e.allDay !== undefined) return e.allDay;
   return e.end.getTime() - e.start.getTime() >= 86_400_000;
 }

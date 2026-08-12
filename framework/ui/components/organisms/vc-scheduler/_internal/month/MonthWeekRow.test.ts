@@ -48,4 +48,18 @@ describe("MonthWeekRow", () => {
     await more.trigger("click");
     expect(w.emitted("more-click")).toBeTruthy();
   });
+
+  // The overflow control is the only route to the 4th+ event on a day, so it has to be a real
+  // button: as a <div> it was not focusable and had no role (WCAG 2.1.1 / 4.1.2, VCST-5671).
+  // Its visible text is the accessible name; the date comes from the enclosing gridcell.
+  it("renders the overflow control as a button", () => {
+    const overflow = new Array(7).fill(0);
+    overflow[2] = 2;
+    const w = mount(MonthWeekRow, {
+      props: { days, laidOut: [], overflow, timedByDay: new Map(), selectedId: null, editable: true },
+    });
+    const more = w.get(".vc-scheduler__more");
+    expect(more.element.tagName).toBe("BUTTON");
+    expect(more.attributes("type")).toBe("button");
+  });
 });

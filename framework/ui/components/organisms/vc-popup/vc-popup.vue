@@ -3,6 +3,7 @@
     appear
     :show="isVisible"
     as="template"
+    @after-leave="popupInstance?.finalize()"
   >
     <Dialog
       as="div"
@@ -127,8 +128,9 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, getCurrentInstance } from "vue";
+import { computed, ref, inject, getCurrentInstance } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { PopupInstanceKey } from "@core/composables/usePopup/keys";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
@@ -183,7 +185,17 @@ const variantMeta: Record<Exclude<PopupVariant, "default">, { icon: string; clas
   info: { icon: "lucide-info", className: "vc-popup__icon--info" },
 };
 
-const isVisible = computed(() => props.modelValue ?? true);
+// Opened imperatively through usePopup there is no modelValue, so visibility is
+// driven by the instance context instead: `closing` flips to true first, the leave
+// transition runs, and `@after-leave` tells the container to unmount us. Without
+// that sequence the dialog was torn out of the DOM instantly and Headless UI never
+// restored focus to the opener (VCST-5632).
+const popupInstance = inject(PopupInstanceKey, undefined);
+
+const isVisible = computed(() => {
+  if (props.modelValue !== undefined) return props.modelValue;
+  return !popupInstance?.closing.value;
+});
 const canCloseOnOverlay = computed(() => props.closeOnOverlay ?? props.closable);
 const canCloseOnEscape = computed(() => props.closeOnEscape ?? props.closable);
 

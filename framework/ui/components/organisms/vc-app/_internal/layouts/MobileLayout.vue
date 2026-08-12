@@ -3,6 +3,7 @@
   <div
     v-if="showHeader"
     class="mobile-layout"
+    :inert="inertNavigation || undefined"
   >
     <slot
       name="sidebar-header"
@@ -260,6 +261,11 @@ export interface Props {
   appsList?: AppDescriptor[];
   showSearch?: boolean;
   searchPlaceholder?: string;
+  /**
+   * Removes the top bar from the tab order and the accessibility tree while a blade
+   * is maximized over it (WCAG 2.4.3 / 4.1.2). Mirrors DesktopLayout.
+   */
+  inertNavigation?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {

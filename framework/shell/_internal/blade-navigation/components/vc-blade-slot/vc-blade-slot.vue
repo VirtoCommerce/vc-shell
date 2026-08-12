@@ -7,6 +7,7 @@
         v-if="bladeComponent"
         v-show="visible"
         ref="bladeInstanceRef"
+        :inert="inert || undefined"
         :param="descriptor.param"
         :options="descriptor.options"
         :closable="closable"
@@ -47,6 +48,11 @@ const props = defineProps<{
   visible: boolean;
   breadcrumbs?: Breadcrumbs[];
   backButton?: Component;
+  /**
+   * Removes this blade from the tab order and the accessibility tree while another
+   * blade is maximized and covering it (WCAG 2.4.3 / 4.1.2).
+   */
+  inert?: boolean;
 }>();
 
 const emit = defineEmits<{

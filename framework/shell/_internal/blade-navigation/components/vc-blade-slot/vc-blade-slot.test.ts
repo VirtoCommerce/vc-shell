@@ -77,6 +77,20 @@ describe("vc-blade-slot.vue", () => {
     expect(wrapper.text()).toContain("blade-content");
   });
 
+  // A maximized blade covers the ones behind it; without inert they stayed
+  // keyboard-reachable and exposed to assistive tech (VCST-5632).
+  it("marks the blade inert when another blade is maximized over it", () => {
+    const wrapper = mount(VcBladeSlot, {
+      props: { descriptor: baseDescriptor, closable: true, expanded: false, visible: true, inert: true },
+    });
+    expect(wrapper.find("[inert]").exists()).toBe(true);
+  });
+
+  it("does not set inert when no blade is maximized", () => {
+    const wrapper = mountSlot();
+    expect(wrapper.find("[inert]").exists()).toBe(false);
+  });
+
   it("does not render blade when registry returns undefined", () => {
     mockGetBladeComponent.mockReturnValue(undefined);
     const wrapper = mountSlot();

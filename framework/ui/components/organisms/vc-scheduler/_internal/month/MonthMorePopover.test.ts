@@ -30,9 +30,21 @@ describe("MonthMorePopover", () => {
     expect(w.text()).toContain("Flash Deal");
   });
 
+  // This popover is the only route to the 4th+ event on a day, so each row must be a real
+  // control — as StaticText the events were unreachable by keyboard and screen reader
+  // (WCAG 2.1.1 / 4.1.2, VCST-5671). axe cannot catch this: a click handler on a plain <li>
+  // reports no violation.
+  it("renders each overflow event as a button so it is keyboard operable", () => {
+    const w = mountMore();
+    const buttons = w.findAll("li button");
+    expect(buttons).toHaveLength(2);
+    expect(buttons.map((b) => b.attributes("type"))).toEqual(["button", "button"]);
+    expect(buttons[0].text()).toContain("Summer Sale");
+  });
+
   it("emits event-click with the event and an anchor rect when a row is clicked", async () => {
     const w = mountMore();
-    await w.findAll("li")[1].trigger("click");
+    await w.findAll("li button")[1].trigger("click");
     const ev = w.emitted("event-click");
     expect(ev).toBeTruthy();
     expect((ev![0][0] as ISchedulerEvent).id).toBe("b");

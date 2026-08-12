@@ -21,8 +21,12 @@
           :date="d.date"
           :col="col"
         />
-        <div
+        <!-- A real button, not a div: this is the only route to the 4th+ event on a day, so it
+             has to be reachable by Tab and operable by Enter/Space (WCAG 2.1.1, 4.1.2). Its
+             visible text is the accessible name; the date comes from the enclosing gridcell. -->
+        <button
           v-if="overflow[col] > 0"
+          type="button"
           class="vc-scheduler__more"
           @pointerdown.stop
           @click.stop="
@@ -30,7 +34,7 @@
           "
         >
           {{ $t("VC_SCHEDULER.MORE", { count: overflow[col] }) }}
-        </div>
+        </button>
       </MonthDayCell>
     </div>
     <div
@@ -133,10 +137,22 @@ const emit = defineEmits<{
   min-width: 0;
 }
 .vc-scheduler__more {
+  // Strip the native button chrome so the control keeps the plain-text look it had as a div.
+  appearance: none;
+  background: none;
+  border: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font: inherit;
+  text-align: left;
   font-size: 0.6875rem;
   color: var(--neutrals-600);
   cursor: pointer;
   padding: 0 0.25rem;
+  // 24px minimum for WCAG 2.2 SC 2.5.8, matching the month event chip (PR #278). The text
+  // alone is ~13px and this control now sits directly under the chips.
+  min-height: 24px;
   &:hover {
     color: var(--primary-600);
   }

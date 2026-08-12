@@ -264,7 +264,7 @@ A host persisting events must apply these the same way the master/override model
 
 ## Overlapping Events and Overflow
 
-All-day events that overlap in time on the same days are packed into separate stacked lanes automatically -- no configuration needed. When a day would need more lanes than fit, the extra events collapse into a "+N more" link; clicking it opens a popover listing every all-day event on that date.
+All-day events that overlap in time on the same days are packed into separate stacked lanes automatically -- no configuration needed. When a day would need more lanes than fit, the extra events collapse into a "+N more" button; activating it -- by click or by keyboard -- opens a popover listing every all-day event on that date.
 
 ## Custom Slots
 
@@ -496,9 +496,10 @@ const events = [{ id: "a", title: "Promo", start, end, allDay: true, color: "#a2
 
 - The Month grid uses `role="grid"` / `role="row"` / `role="gridcell"` / `role="columnheader"` for the weekday header and day cells, each `gridcell` carrying a full formatted-date `aria-label`.
 - Each event bar and timed chip is a focusable `role="button"` element (`tabindex="0"`) with an `aria-label` built from its title and formatted start/end dates -- activate with click or `Enter`.
-- The "+N more" overflow popover uses `role="dialog"` with an `aria-label` set to the formatted date.
-- The built-in quick-create popover and editor modal reuse `VcPopover`/`VcPopup` respectively, so they inherit those components' accessible naming, focus trapping, and Escape-to-close behavior.
-- The This event/All events scope dialog is a titled `VcPopup` as well. The recurrence editor's weekday toggle buttons expose `aria-pressed` (selected state) and an `aria-label` with the full weekday name, since their visible narrow labels ("S", "M", "T", ...) collide (Sun/Sat, Tue/Thu). The "↻" recurring-occurrence marker is `aria-hidden` -- purely visual, redundant with the event's own accessible name.
+- The "+N more" overflow control is a `<button>` whose visible text is its accessible name; the date it belongs to comes from the enclosing `gridcell`. Activating it moves focus to the first event in the popover, and closing the popover (Escape, or the close button) returns focus to the "+N more" button. Each event inside the popover is a `<button>` too, so a day's 4th and later events are reachable and operable by keyboard.
+- The overflow popover's panel is a `VcPopover`, which supplies a titled header (the formatted date) and Escape-to-close. It does **not** apply `role="dialog"` or trap focus -- `VcPopover` has no focus management of its own, so any popover-based surface that needs focus moved into it does that itself, as the overflow popover above does.
+- The editor modal and the This event/All events scope dialog are `VcPopup`, which is a Headless UI `Dialog` -- those do get accessible naming, a focus trap, focus restore and `inert` on the background from the library. The built-in quick-create popover is a `VcPopover` and focuses its title field on open.
+- The recurrence editor's weekday toggle buttons expose `aria-pressed` (selected state) and an `aria-label` with the full weekday name, since their visible narrow labels ("S", "M", "T", ...) collide (Sun/Sat, Tue/Thu). The "↻" recurring-occurrence marker is `aria-hidden` -- purely visual, redundant with the event's own accessible name.
 - The toolbar's prev/next buttons carry an explicit `aria-label` ("Previous" / "Next") since they are icon-only; the today/view-switch buttons show text labels.
 - Event move/resize (Month view's `editable`) is a pointer-drag interaction with no keyboard equivalent yet; use a form outside VcScheduler for keyboard-only date edits. Timeline view is read-only (click still opens the quick-info popover).
 - Respects `prefers-reduced-motion` -- event/bar transitions and chip hover transitions are disabled.

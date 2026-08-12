@@ -10,6 +10,20 @@ export class DisplayableError extends Error {
     this.originalError = originalError;
   }
 }
+/**
+ * An NSwag `ApiException`: an `Error` carrying the HTTP status plus the raw body as a string.
+ * Matched structurally rather than by class, since the class lives in each generated client.
+ */
+type ApiExceptionLike = Error & { status: number; response: string };
+
+function isApiExceptionWithStringBody(e: unknown): e is ApiExceptionLike {
+  return (
+    e instanceof Error &&
+    typeof (e as { status?: unknown }).status === "number" &&
+    typeof (e as { response?: unknown }).response === "string"
+  );
+}
+
 // TODO: add to docs?
 /**
  * Parses an unknown error type into a standardized DisplayableError.
@@ -20,6 +34,21 @@ export class DisplayableError extends Error {
 export function parseError(errorToParse: unknown): DisplayableError {
   if (errorToParse instanceof DisplayableError) {
     return errorToParse;
+  }
+
+  // NSwag-generated API clients throw `ApiException`, whose `response` is the raw body as a
+  // STRING, not an object. The Axios branch below would recurse into the string branch, and a
+  // body that is not JSON — an ASP.NET developer exception page, an HTML error page from a proxy
+  // — became the entire short `message`, which modules and `useAsync` render straight to the user
+  // (VCST-5663). A JSON body is delegated unchanged, so the platform's own message still wins.
+  if (isApiExceptionWithStringBody(errorToParse)) {
+    const { status, response } = errorToParse;
+    try {
+      return parseError(JSON.parse(response));
+    } catch {
+      const statusLine = `${status}: ${errorToParse.message || "Error"}`; // TODO: i18n
+      return new DisplayableError(statusLine, response || errorToParse.message, errorToParse);
+    }
   }
 
   // Handle Axios-style errors, which are instances of Error but have a `response` property.

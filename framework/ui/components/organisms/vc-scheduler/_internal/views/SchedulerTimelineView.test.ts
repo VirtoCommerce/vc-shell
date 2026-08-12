@@ -78,6 +78,24 @@ describe("SchedulerTimelineView (vertical time grid)", () => {
     expect(w.findAll(".vc-scheduler__tg-allday-bar").length).toBe(1);
     expect(w.findAll(".vc-scheduler__tg-event").length).toBe(0);
   });
+
+  // An all-day end is exclusive, so labelling it raw put the event a day past where it runs and
+  // added a meaningless 12:00 AM. Timed events must keep their times (VCST-5678).
+  it("announces a one-day all-day event as a single date, with no time", () => {
+    const w = mountView({
+      events: [{ id: "ad", title: "Promo", start: new Date(2021, 0, 13), end: new Date(2021, 0, 14), allDay: true }],
+    });
+    const label = w.get(".vc-scheduler__tg-allday-bar").attributes("aria-label");
+    expect(label).toBe("Promo: Jan 13, 2021");
+  });
+
+  it("keeps start and end times in a timed event's label", () => {
+    const w = mountView();
+    const label = w.get(".vc-scheduler__tg-event").attributes("aria-label");
+    expect(label).toContain("Standup");
+    expect(label).toContain("9:00 AM");
+    expect(label).toContain("10:00 AM");
+  });
 });
 
 describe("SchedulerTimelineView — create/edit intents", () => {

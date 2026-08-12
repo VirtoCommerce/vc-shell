@@ -21,6 +21,38 @@ describe("MonthEventBar", () => {
     expect(el.attributes("aria-label")).toContain("Summer Sale");
     expect(w.text()).toContain("Summer Sale");
   });
+  // An all-day end is exclusive, so formatting it raw announced a one-day event as spanning two
+  // days — inconsistent with the quick-info popover for the same event (VCST-5678).
+  it("announces a one-day all-day event as a single date", () => {
+    const w = mount(MonthEventBar, {
+      props: {
+        event: { ...event, start: new Date(2026, 6, 15), end: new Date(2026, 6, 16) },
+        continuesLeft: false,
+        continuesRight: false,
+        selected: false,
+        editable: true,
+      },
+    });
+    const label = w.get(".vc-scheduler__event-bar").attributes("aria-label");
+    expect(label).toContain("Jul 15, 2026");
+    expect(label).not.toContain("Jul 16, 2026");
+    expect(label).not.toContain("–");
+  });
+
+  it("announces a multi-day all-day event up to its last inclusive day", () => {
+    const w = mount(MonthEventBar, {
+      props: {
+        event: { ...event, start: new Date(2026, 6, 15), end: new Date(2026, 6, 18) },
+        continuesLeft: false,
+        continuesRight: false,
+        selected: false,
+        editable: true,
+      },
+    });
+    const label = w.get(".vc-scheduler__event-bar").attributes("aria-label");
+    expect(label).toBe("Summer Sale: Jul 15, 2026 – Jul 17, 2026");
+  });
+
   it("emits select on click", async () => {
     const w = mount(MonthEventBar, {
       props: { event, continuesLeft: false, continuesRight: false, selected: false, editable: true },

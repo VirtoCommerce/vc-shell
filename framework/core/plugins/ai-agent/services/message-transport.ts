@@ -14,6 +14,8 @@ export interface MessageTransportOptions {
   getConfig: () => IAiAgentConfig;
   isEmbedded: boolean;
   navigateToBlade?: (bladeName: string, param?: string, options?: Record<string, unknown>) => void;
+  /** Invoked on a CLOSE_PANEL message — the chatbot's only way to close the panel it has focus in. */
+  closePanel?: () => void;
 }
 
 export interface MessageTransport {
@@ -30,7 +32,7 @@ export interface MessageTransport {
 }
 
 export function createMessageTransport(options: MessageTransportOptions): MessageTransport {
-  const { getConfig, isEmbedded, navigateToBlade } = options;
+  const { getConfig, isEmbedded, navigateToBlade, closePanel } = options;
 
   const iframeRef: ShallowRef<HTMLIFrameElement | null> = shallowRef(null);
   const pendingInitContext = ref(false);
@@ -47,6 +49,17 @@ export function createMessageTransport(options: MessageTransportOptions): Messag
         if (navigateToBlade && navPayload?.bladeName) {
           navigateToBlade(navPayload.bladeName, navPayload.param, navPayload.options);
           logger.debug(`Navigation requested to: ${navPayload.bladeName}`);
+        }
+        break;
+      }
+      // The panel's own Escape handler listens on the host document, which never sees a
+      // keystroke delivered to a cross-origin iframe. So while the chatbot holds focus the
+      // only route back is the chatbot relaying it here (VCST-5673). Closing a panel exposes
+      // nothing, and the sender's origin is already checked before this runs.
+      case "CLOSE_PANEL": {
+        if (closePanel) {
+          closePanel();
+          logger.debug("Panel close requested by the chatbot");
         }
         break;
       }

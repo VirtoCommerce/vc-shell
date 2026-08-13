@@ -19,6 +19,38 @@ import type { ITableQueryStateService } from "@core/blade-navigation/table-query
 import { useDataTablePagination } from "./useDataTablePagination";
 
 describe("useDataTablePagination", () => {
+  // Writing to currentPage behaves like setPage: the page moves but onPageChange never fires, so
+  // the table keeps the previous page's rows. It stays writable — a readonly reactive property is
+  // dropped SILENTLY in a production Vue build, which would break existing consumers with no
+  // error at all — but it now says so.
+  describe("deprecated currentPage assignment", () => {
+    it("warns, changes the page, and does not fire onPageChange", () => {
+      loggerWarn.mockClear();
+      const onPageChange = vi.fn();
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(100), onPageChange }));
+
+      result.currentPage = 3;
+
+      expect(result.currentPage).toBe(3);
+      expect(result.skip).toBe(40);
+      expect(onPageChange).not.toHaveBeenCalled();
+      expect(loggerWarn).toHaveBeenCalledOnce();
+      expect(loggerWarn.mock.calls.flat().join(" ")).toContain("goToPage");
+    });
+
+    it("does not warn for goToPage or setPage", () => {
+      loggerWarn.mockClear();
+      const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(100) }));
+
+      result.goToPage(2);
+      result.setPage(4);
+      result.reset();
+
+      expect(result.currentPage).toBe(1);
+      expect(loggerWarn).not.toHaveBeenCalled();
+    });
+  });
+
   describe("initialization", () => {
     it("initializes with page 1, skip 0, default pageSize 20", () => {
       const { result } = mountWithSetup(() => useDataTablePagination({ totalCount: ref(100) }));
@@ -215,6 +247,14 @@ describe("useDataTablePagination", () => {
       expect(result.restoredPage).toBeUndefined();
       expect(loggerWarn).toHaveBeenCalledOnce();
       expect(loggerWarn.mock.calls.flat().join(" ")).toContain("offers_list");
+    });
+
+    it("does not warn on the internal seed from a restore", () => {
+      loggerWarn.mockClear();
+      const result = harness({ read: () => ({ page: 3 }), write: vi.fn() });
+      // The restore goes through the raw ref, not the deprecated public setter.
+      expect(result.currentPage).toBe(3);
+      expect(loggerWarn).not.toHaveBeenCalled();
     });
 
     it("does not warn when a provider is present", () => {

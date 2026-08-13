@@ -50,17 +50,17 @@ const pagination = useDataTablePagination({
 
 ### Returns (`reactive()` object)
 
-| Property       | Type                             | Description                                                                                |
-| -------------- | -------------------------------- | ------------------------------------------------------------------------------------------ |
-| `currentPage`  | `number`                         | Current 1-based page number (writable)                                                     |
-| `pages`        | `number` (readonly)              | Total number of pages                                                                      |
-| `skip`         | `number` (readonly)              | Current skip offset for API calls                                                          |
-| `pageSize`     | `number` (readonly)              | Resolved page size                                                                         |
-| `totalCount`   | `number` (readonly)              | Resolved total item count                                                                  |
-| `goToPage`     | `(page: number) => void`         | Navigate to page; fires `onPageChange`                                                     |
-| `setPage`      | `(page: number) => void`         | Set the page without firing `onPageChange` (used to seed from a URL restore)               |
-| `reset`        | `() => void`                     | Reset to page 1; does NOT fire `onPageChange`                                              |
-| `restoredPage` | `number \| undefined` (readonly) | The page seeded from the blade URL at setup, or `undefined` if none. See the warning below |
+| Property       | Type                                       | Description                                                                                      |
+| -------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `currentPage`  | `number`                                   | Current 1-based page number. Reading is fully supported; **assigning is deprecated** — see below |
+| `pages`        | `number` (readonly)                        | Total number of pages                                                                            |
+| `skip`         | `number` (readonly)                        | Current skip offset for API calls                                                                |
+| `pageSize`     | `number` (readonly)                        | Resolved page size                                                                               |
+| `totalCount`   | `number` (readonly)                        | Resolved total item count                                                                        |
+| `goToPage`     | `(page: number) => void`                   | Navigate to page; fires `onPageChange`                                                           |
+| `setPage`      | `(page: number) => void`                   | Set the page without firing `onPageChange` (used to seed from a URL restore)                     |
+| `reset`        | `() => void`                               | Reset to page 1; does NOT fire `onPageChange`                                                    |
+| `restoredPage` | `number \| undefined` (readonly, optional) | The page seeded from the blade URL at setup, or `undefined` if none. See the warning below       |
 
 All properties are auto-unwrapped by `reactive()` — no `.value` access needed in script or template.
 
@@ -168,6 +168,8 @@ Blade then simply binds:
 - **Why `reactive()` and not `ref()`**: Pagination is a cohesive group of properties always used together (`pagination.xxx`). `reactive()` is the Vue-idiomatic choice for such objects. `useDataTableSort` returns `ref()`s because its properties are destructured and used with `v-model` individually.
 - **URL state (stateKey)**: When `stateKey` is provided, the composable reads the current page from the blade URL query on creation (via `setPage`, which does not fire `onPageChange`) and persists it on every `goToPage` call. Without `stateKey`, behavior is unchanged.
 - **With `stateKey`, the first load MUST start at `pagination.skip`** -- not at a hardcoded `skip: 0`. The restore deliberately does not fire `onPageChange` (that would load twice), so a load issued with default criteria fetches page 1 while the paginator already shows page N. There is no error and no warning, and clicking page N does nothing because it is already the active page. Use `restoredPage` if the code needs to branch on whether a restore happened, but passing `skip` unconditionally is correct either way.
+- **Do not assign to `currentPage` (deprecated)**: there are three ways to change the page and they behave differently. `goToPage(page)` changes it and fires `onPageChange`. `setPage(page)` changes it silently, for seeding. Assigning `pagination.currentPage = page` is a silent `setPage` -- the URL slice is still written, but `onPageChange` never fires, so the paginator moves to page N while the table keeps page 1's rows. It now logs a deprecation warning. It is deliberately **not** readonly: a production Vue build drops a write to a readonly reactive property silently, so making it readonly would leave existing consumers unable to change the page with no error at all. That tightening belongs in a major version.
+- **`restoredPage` is optional in the interface**: consumers build `UseDataTablePaginationReturn` by hand to re-expose a nested pagination (a facade over two views, for example). A required property would break every such facade at compile time; the composable itself always provides it.
 - **A missing provider is now loud**: `stateKey` only works inside a blade, where `TableQueryState` is provided. Outside one -- and in unit tests -- the feature used to disappear silently, indistinguishable from "the URL had no page". It now logs a warning naming the key.
 
 ## Tips

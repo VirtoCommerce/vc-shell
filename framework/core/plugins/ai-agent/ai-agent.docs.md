@@ -121,6 +121,26 @@ The composable returns `void`. It wires the watcher and the unmount cleanup; not
 - `NAVIGATE_TO_APP` -- Open a specific blade (driven by markdown action links in assistant messages)
 - `EXPAND_IN_CHAT` -- Expand an item inline in the chat (markdown action link)
 - `SHOW_MORE` -- Request the next page of a result category (markdown action link)
+- `CLOSE_PANEL` -- Close the panel. No payload.
+
+### Closing the panel from the keyboard -- the chatbot has to help
+
+The panel closes on `Escape` and toggles on `Ctrl/Cmd+I`, but those handlers listen on the **host** document. A keystroke is delivered to the document that owns the focused element, so once the chatbot takes focus -- most chat UIs autofocus their input on load -- the host never sees it. Nothing the shell can do changes that: the panel is a cross-origin iframe, so its key events are not observable from here.
+
+**An embedded chatbot must therefore relay its own dismiss keys:**
+
+```js
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" || ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "i")) {
+    event.preventDefault();
+    window.parent.postMessage({ type: "CLOSE_PANEL" }, "https://your-shell-origin.example.com");
+  }
+});
+```
+
+Without that relay the only keyboard route out is `Shift+Tab` from the first focusable element in the chat, which lands on the panel header's Close button. That is a route, not a usable one -- relay the keys.
+
+Closing a panel exposes nothing, and the sender's origin is validated against `allowedOrigins` before the message is acted on, so this carries no additional risk beyond the messages already accepted.
 
 ## Usage
 

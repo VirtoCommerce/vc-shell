@@ -62,6 +62,57 @@ describe("message-transport — incoming origin validation", () => {
   });
 });
 
+// The panel's Escape handler listens on the host document, which never sees a keystroke
+// delivered to a cross-origin iframe. Once the chatbot takes focus, relaying it as a message
+// is the only way to close the panel from the keyboard (VCST-5673).
+describe("message-transport — CLOSE_PANEL", () => {
+  let transport: ReturnType<typeof createMessageTransport>;
+  let closePanel: ReturnType<typeof vi.fn>;
+
+  function makeWithClose(allowedOrigins: string[]) {
+    closePanel = vi.fn();
+    return createMessageTransport({
+      getConfig: () => ({ url: "https://chat.example.com", allowedOrigins }) as IAiAgentConfig,
+      isEmbedded: false,
+      closePanel,
+    });
+  }
+
+  function dispatchClosePanel(origin: string) {
+    window.dispatchEvent(new MessageEvent("message", { data: { type: "CLOSE_PANEL" }, origin }));
+  }
+
+  afterEach(() => {
+    transport?.stopListening();
+  });
+
+  it("closes the panel when an allowed origin asks it to", () => {
+    transport = makeWithClose(["https://chat.example.com"]);
+    transport.startListening();
+
+    dispatchClosePanel("https://chat.example.com");
+    expect(closePanel).toHaveBeenCalledOnce();
+  });
+
+  it("ignores the request from an origin that is not allowed", () => {
+    transport = makeWithClose(["https://chat.example.com"]);
+    transport.startListening();
+
+    dispatchClosePanel("https://evil.example.com");
+    expect(closePanel).not.toHaveBeenCalled();
+  });
+
+  it("still notifies generic message handlers so a host can react to it", () => {
+    transport = makeWithClose(["https://chat.example.com"]);
+    const onMessage = vi.fn();
+    transport.onMessage(onMessage);
+    transport.startListening();
+
+    dispatchClosePanel("https://chat.example.com");
+    expect(onMessage).toHaveBeenCalledWith(expect.objectContaining({ type: "CLOSE_PANEL" }));
+  });
+});
+
 describe("message-transport — outbound sendToParent origin", () => {
   const realParent = window.parent;
   let parentPostMessage: ReturnType<typeof vi.fn>;

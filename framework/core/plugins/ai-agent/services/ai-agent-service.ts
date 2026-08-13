@@ -88,6 +88,7 @@ export function createAiAgentService(options: CreateAiAgentServiceOptions): IAiA
     getConfig: () => config.value,
     isEmbedded,
     navigateToBlade,
+    closePanel: () => panel.close(),
   });
 
   // Context computed (no timestamp — clean dependency tracking)

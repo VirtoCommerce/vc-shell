@@ -169,6 +169,8 @@
       },
       "VC_APP": {
         "NOTIFICATIONS": "Benachrichtigungen",
+        "OPEN_MENU": "Menü öffnen",
+        "CLOSE_MENU": "Menü schließen",
         "INTERNAL": {
           "VC_APP_BAR": {
             "BACK": "Zurück"

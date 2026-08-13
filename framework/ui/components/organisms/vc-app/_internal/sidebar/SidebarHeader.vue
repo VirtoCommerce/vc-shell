@@ -73,7 +73,9 @@
       <button
         v-if="showBurger"
         class="sidebar-header__menu-button"
-        :aria-label="isMenuOpen ? 'Close menu' : 'Open menu'"
+        :aria-label="
+          isMenuOpen ? $t('COMPONENTS.ORGANISMS.VC_APP.CLOSE_MENU') : $t('COMPONENTS.ORGANISMS.VC_APP.OPEN_MENU')
+        "
         :aria-expanded="isMenuOpen"
         @click="$emit('toggle-menu', $event)"
       >

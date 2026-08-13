@@ -112,4 +112,21 @@ describe("VcPopupContainer", () => {
     ]);
     expect(wrapper.text()).toContain("Hello World");
   });
+
+  // How the built-in dialogs deliver a plain-text message: a render function
+  // slot goes down the <component :is> branch, so Vue escapes it (VCST-5665).
+  it("renders a render-function slot as text, leaving markup uninterpreted", () => {
+    const wrapper = mountContainer([
+      {
+        id: Symbol("text"),
+        component: DummyPopup as any,
+        props: { title: "Text Slot" },
+        slots: { default: () => h("div", "Delete <h1>Big</h1>?") },
+        close: vi.fn(),
+      },
+    ]);
+
+    expect(wrapper.text()).toContain("Delete <h1>Big</h1>?");
+    expect(wrapper.find("h1").exists()).toBe(false);
+  });
 });

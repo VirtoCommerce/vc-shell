@@ -10,6 +10,7 @@ import {
   MaybeRef,
   unref,
   Component,
+  h,
 } from "vue";
 import { PopupPluginKey } from "@core/composables/usePopup/keys";
 import type { PopupPlugin, UsePopupInternal, UsePopupProps } from "@core/composables/usePopup/types";
@@ -27,12 +28,32 @@ const logger = createLogger("use-popup");
  */
 const CLOSE_TRANSITION_FALLBACK_MS = 400;
 
+export interface PopupMessageOptions {
+  /**
+   * Render the message as HTML instead of text. Off by default: messages are
+   * built by interpolating server data into a translation, and as markup an
+   * entity name can restyle or add links to a dialog the user is meant to
+   * trust. Opt in only for markup you author yourself.
+   */
+  html?: boolean;
+}
+
 interface IUsePopup {
   open(): void;
   close(): void;
-  showConfirmation(message: string | Ref<string>): Promise<boolean>;
-  showError(message: string | Ref<string>): void;
-  showInfo(message: string | Ref<string>): void;
+  showConfirmation(message: string | Ref<string>, options?: PopupMessageOptions): Promise<boolean>;
+  showError(message: string | Ref<string>, options?: PopupMessageOptions): void;
+  showInfo(message: string | Ref<string>, options?: PopupMessageOptions): void;
+}
+
+/**
+ * The popup container renders string slots through `v-html` and everything else
+ * through `<component :is>`. Returning a render function therefore routes the
+ * message down the escaping branch, keeping reactivity for `Ref` messages.
+ */
+function toMessageSlot(message: string | Ref<string>, options?: PopupMessageOptions) {
+  if (options?.html) return message;
+  return () => h("div", { class: "tw-h-full tw-w-full" }, unref(message));
 }
 
 function usePopupInternal() {
@@ -170,6 +191,7 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
     component: Component,
     title: string,
     message: string | Ref<string>,
+    options?: PopupMessageOptions,
   ): UsePopupProps & UsePopupInternal {
     const popup = createInstance({
       component,
@@ -182,7 +204,7 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
         },
       },
       slots: {
-        default: message,
+        default: toMessageSlot(message, options),
       },
     });
 
@@ -190,7 +212,7 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
     return popup;
   }
 
-  function showConfirmation(message: string | Ref<string>): Promise<boolean> {
+  function showConfirmation(message: string | Ref<string>, options?: PopupMessageOptions): Promise<boolean> {
     const warningComponent = getPopupPreset("warning");
     if (!warningComponent) {
       logger.error("Popup preset 'warning' not registered. Ensure shell popup plugin is installed.");
@@ -214,7 +236,7 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
           },
         },
         slots: {
-          default: message,
+          default: toMessageSlot(message, options),
         },
       });
 
@@ -222,22 +244,22 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
     });
   }
 
-  function showError(message: string | Ref<string>) {
+  function showError(message: string | Ref<string>, options?: PopupMessageOptions) {
     const errorComponent = getPopupPreset("error");
     if (!errorComponent) {
       logger.error("Popup preset 'error' not registered. Ensure shell popup plugin is installed.");
       return;
     }
-    showSimplePopup(errorComponent, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.ERROR"), message);
+    showSimplePopup(errorComponent, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.ERROR"), message, options);
   }
 
-  function showInfo(message: string | Ref<string>) {
+  function showInfo(message: string | Ref<string>, options?: PopupMessageOptions) {
     const infoComponent = getPopupPreset("info");
     if (!infoComponent) {
       logger.error("Popup preset 'info' not registered. Ensure shell popup plugin is installed.");
       return;
     }
-    showSimplePopup(infoComponent, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.INFO"), message);
+    showSimplePopup(infoComponent, t("COMPONENTS.ORGANISMS.VC_POPUP.TITLE.INFO"), message, options);
   }
 
   function createInstance<T extends Component = Component>(options: UsePopupProps<T>) {

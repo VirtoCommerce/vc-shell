@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { defineComponent, h, inject, ref, type ComputedRef } from "vue";
 import VcBladeSlot from "./vc-blade-slot.vue";
+import { BLADE_ID_ATTRIBUTE } from "@shell/_internal/blade-navigation/components/vc-blade-navigation/focus-target";
 import {
   BladeDescriptorKey,
   BladeRenderingStateKey,
@@ -89,6 +90,14 @@ describe("vc-blade-slot.vue", () => {
   it("does not set inert when no blade is maximized", () => {
     const wrapper = mountSlot();
     expect(wrapper.find("[inert]").exists()).toBe(false);
+  });
+
+  // Keyboard shortcuts resolve their target blade by walking up from
+  // document.activeElement to this marker (VCST-5680).
+  it("stamps the blade id on the rendered blade so focus can be traced back to it", () => {
+    const wrapper = mountSlot({ id: "blade-42" });
+    // Asserted through the constant the resolver reads, so the two cannot drift.
+    expect(wrapper.find(`[${BLADE_ID_ATTRIBUTE}]`).attributes(BLADE_ID_ATTRIBUTE)).toBe("blade-42");
   });
 
   it("does not render blade when registry returns undefined", () => {

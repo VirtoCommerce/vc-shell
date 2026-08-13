@@ -46,6 +46,7 @@ import { usePermissions } from "@core/composables/usePermissions";
 import { useIsMac } from "@core/composables/useKeyboardShortcuts";
 import { resolveVisibility, resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
 import { createShortcutDispatcher } from "./shortcut-dispatch";
+import { resolveShortcutTargetBlade } from "./focus-target";
 import { AiAgentServiceKey } from "@framework/injection-keys";
 import type { BladeDescriptor, IParentCallArgs } from "@core/blade-navigation/types";
 
@@ -116,7 +117,14 @@ const { hasAccess } = usePermissions();
 
 const dispatchShortcut = createShortcutDispatcher({
   isMac: useIsMac(),
-  getActiveBlade: () => bladeStack.activeBlade.value,
+  // Shortcuts act on the blade holding focus, not on whatever sits on top of
+  // the stack (VCST-5680). Read live: focus moves without the stack changing.
+  getActiveBlade: () =>
+    resolveShortcutTargetBlade(
+      bladeStack.blades.value,
+      bladeStack.activeBlade.value,
+      typeof document !== "undefined" ? document.activeElement : null,
+    ),
   getToolbarItems: (bladeId) => getToolbarItems(bladeId),
   isMobile: () => isMobile.value,
   isEnabled: (item) =>

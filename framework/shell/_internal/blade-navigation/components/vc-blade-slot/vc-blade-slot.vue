@@ -8,6 +8,7 @@
         v-show="visible"
         ref="bladeInstanceRef"
         :inert="inert || undefined"
+        :data-blade-id="descriptor.id"
         :param="descriptor.param"
         :options="descriptor.options"
         :closable="closable"

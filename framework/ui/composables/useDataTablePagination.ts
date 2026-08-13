@@ -1,5 +1,8 @@
 import { ref, computed, reactive, watch, inject, type MaybeRefOrGetter, toValue } from "vue";
 import { TableQueryStateKey } from "@core/blade-navigation/table-query-state";
+import { createLogger } from "@core/utilities";
+
+const logger = createLogger("use-data-table-pagination");
 
 export interface UseDataTablePaginationOptions {
   /** Items per page. Default: 20 */
@@ -32,6 +35,16 @@ export interface UseDataTablePaginationReturn {
   setPage: (page: number) => void;
   /** Reset to page 1. Does NOT fire onPageChange. */
   reset: () => void;
+  /**
+   * The page seeded from the blade URL at setup, or `undefined` when nothing was restored.
+   *
+   * A restore deliberately does not fire `onPageChange` — that would cause a duplicate load —
+   * so without this the consumer had no way to know it happened, and an unconditional first
+   * load at `skip: 0` left the paginator on page N showing page 1's rows (VCST-5664).
+   *
+   * Read it, or simply always pass `skip` to the first load, which is correct either way.
+   */
+  readonly restoredPage: number | undefined;
 }
 
 export function useDataTablePagination(options: UseDataTablePaginationOptions): UseDataTablePaginationReturn {
@@ -54,18 +67,31 @@ export function useDataTablePagination(options: UseDataTablePaginationOptions): 
     currentPage.value = 1;
   }
 
+  let restoredPage: number | undefined;
+
   if (options.stateKey) {
     const service = inject(TableQueryStateKey, undefined);
     if (service) {
       const restored = service.read(options.stateKey);
-      if (restored.page != null) setPage(restored.page); // seed without onPageChange
+      if (restored.page != null) {
+        setPage(restored.page); // seed without onPageChange
+        restoredPage = restored.page;
+      }
       // Page 1 is the default: clear the param rather than writing _page=1.
       watch(
         () => currentPage.value,
         (page) => service.write(options.stateKey!, { page: page === 1 ? undefined : page }),
       );
+    } else {
+      // Without a provider the whole feature silently disappears — no URL sync, no restore —
+      // which is indistinguishable from "the URL had no page". That happens outside a blade and
+      // in unit tests, so say it out loud rather than leaving the caller to wonder.
+      logger.warn(
+        `stateKey "${options.stateKey}" is set but no TableQueryState provider is in scope — ` +
+          "page state will not be synced to the URL or restored from it.",
+      );
     }
   }
 
-  return reactive({ currentPage, pages, skip, pageSize, totalCount, goToPage, setPage, reset });
+  return reactive({ currentPage, pages, skip, pageSize, totalCount, goToPage, setPage, reset, restoredPage });
 }

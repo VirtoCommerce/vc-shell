@@ -1,4 +1,15 @@
 import { describe, it, expect, vi } from "vitest";
+
+// The global setup stubs createLogger with fresh spies per call, so a warning cannot be observed
+// through it. Override locally with a spy we hold, as that setup file instructs.
+const { loggerWarn } = vi.hoisted(() => ({ loggerWarn: vi.fn() }));
+vi.mock("@core/utilities", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@core/utilities")>();
+  return {
+    ...actual,
+    createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: loggerWarn, error: vi.fn() }),
+  };
+});
 import { ref, computed } from "vue";
 import { defineComponent, h, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
@@ -177,6 +188,39 @@ describe("useDataTablePagination", () => {
       expect(read).toHaveBeenCalledWith("offers_list");
       expect(result.currentPage).toBe(3);
       expect(onPageChange).not.toHaveBeenCalled();
+    });
+
+    // A restore does not fire onPageChange (correctly — it would double-load), so this is the
+    // only signal a consumer has that its first load must start at the restored offset.
+    // Without it, an unconditional load at skip 0 left the paginator on page N showing page 1's
+    // rows, with no error and no way out (VCST-5664).
+    it("reports the restored page so the consumer can seed its first load", () => {
+      const result = harness({ read: () => ({ page: 3 }), write: vi.fn() });
+      expect(result.restoredPage).toBe(3);
+      expect(result.skip).toBe(40); // (3 - 1) * 20 — already correct, but only if the caller uses it
+    });
+
+    it("leaves restoredPage undefined when the URL carried no page", () => {
+      const result = harness({ read: () => ({}), write: vi.fn() });
+      expect(result.restoredPage).toBeUndefined();
+      expect(result.currentPage).toBe(1);
+    });
+
+    // Without a provider the feature vanishes entirely — no sync, no restore — and that is
+    // indistinguishable from "the URL had no page". Happens outside a blade and in unit tests.
+    it("warns when stateKey is set but no provider is in scope", () => {
+      loggerWarn.mockClear();
+      const result = harness(undefined);
+
+      expect(result.restoredPage).toBeUndefined();
+      expect(loggerWarn).toHaveBeenCalledOnce();
+      expect(loggerWarn.mock.calls.flat().join(" ")).toContain("offers_list");
+    });
+
+    it("does not warn when a provider is present", () => {
+      loggerWarn.mockClear();
+      harness({ read: () => ({}), write: vi.fn() });
+      expect(loggerWarn).not.toHaveBeenCalled();
     });
 
     it("writes the slice on page change (page 1 clears the param)", async () => {

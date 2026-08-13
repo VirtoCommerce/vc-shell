@@ -16,7 +16,14 @@ export interface UseDataTablePaginationOptions {
 }
 
 export interface UseDataTablePaginationReturn {
-  /** Current 1-based page number (writable) */
+  /**
+   * Current 1-based page number.
+   *
+   * @deprecated Writing to this is a silent `setPage`: the page changes and the URL slice is
+   * written, but `onPageChange` does not fire, so the table keeps showing the previous page's
+   * rows. Call `goToPage(page)` to change the page and load, or `setPage(page)` to seed it
+   * deliberately without loading. Reading stays fully supported.
+   */
   currentPage: number;
   /** Total number of pages */
   readonly pages: number;
@@ -43,8 +50,12 @@ export interface UseDataTablePaginationReturn {
    * load at `skip: 0` left the paginator on page N showing page 1's rows (VCST-5664).
    *
    * Read it, or simply always pass `skip` to the first load, which is correct either way.
+   *
+   * Optional on purpose: consumers build this interface by hand to re-expose a nested
+   * pagination (a facade over two views, say), and a required property would break every one
+   * of them at compile time. Our own composable always provides it.
    */
-  readonly restoredPage: number | undefined;
+  readonly restoredPage?: number;
 }
 
 export function useDataTablePagination(options: UseDataTablePaginationOptions): UseDataTablePaginationReturn {
@@ -93,5 +104,40 @@ export function useDataTablePagination(options: UseDataTablePaginationOptions): 
     }
   }
 
-  return reactive({ currentPage, pages, skip, pageSize, totalCount, goToPage, setPage, reset, restoredPage });
+  // Exposed as a writable computed rather than the raw ref so a direct assignment can be called
+  // out. `reactive()` unwraps both the same way, so reading is unchanged for every consumer.
+  //
+  // Assignment behaves exactly like `setPage` — the URL slice is still written, because that
+  // watch fires on any change to the ref — so the only thing it skips is `onPageChange`. That
+  // makes it a silently-different duplicate of a public method: the paginator moves to page N
+  // while the table keeps page 1's rows, which is the same symptom as VCST-5664 but with no URL
+  // restore involved.
+  //
+  // Warn instead of making it readonly: in a production build Vue drops a write to a readonly
+  // reactive property SILENTLY, so an existing consumer would just stop being able to change the
+  // page, with no error and no failing test. Turning that into a hard error belongs in a major.
+  // Internal callers use the raw ref, so they never trip this.
+  const currentPageModel = computed({
+    get: () => currentPage.value,
+    set: (page: number) => {
+      logger.warn(
+        "Assigning to pagination.currentPage is deprecated: it changes the page without firing " +
+          "onPageChange, so the table keeps the previous page's rows. Use goToPage(page) to " +
+          "change the page and load, or setPage(page) to seed it without loading.",
+      );
+      setPage(page);
+    },
+  });
+
+  return reactive({
+    currentPage: currentPageModel,
+    pages,
+    skip,
+    pageSize,
+    totalCount,
+    goToPage,
+    setPage,
+    reset,
+    restoredPage,
+  });
 }

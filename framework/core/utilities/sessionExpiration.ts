@@ -38,3 +38,21 @@ export function isSessionExpired(): boolean {
 export function resetSessionExpired(): void {
   sessionExpired = false;
 }
+
+/**
+ * Rejection handed to callers whose request landed on the login page instead of data.
+ *
+ * The alternative was to pass the login page's HTML back, which every caller then tried to
+ * `JSON.parse` — so a concurrent burst produced one "Unexpected token '<'" per request on a
+ * page that was already redirecting to login, burying the message that explains what
+ * happened. Failing the request is the honest answer: it returned no data.
+ *
+ * Detect it by `name`, not `instanceof`: this module is duplicated per bundle in a Module
+ * Federation setup, so the class identity is not shared across remotes.
+ */
+export class SessionExpiredError extends Error {
+  constructor(message = "The session has expired, so this request was not completed.") {
+    super(message);
+    this.name = "SessionExpiredError";
+  }
+}

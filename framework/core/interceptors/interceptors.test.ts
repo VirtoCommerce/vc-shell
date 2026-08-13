@@ -204,13 +204,35 @@ describe("registerInterceptors — session expiry without a 401", () => {
     window.fetch = vi.fn().mockResolvedValue(loginPageResponse()) as unknown as typeof window.fetch;
 
     const patched = registerInterceptors(router);
-    await patched("/api/platform/test");
+    await expect(patched("/api/platform/test")).rejects.toMatchObject({ name: "SessionExpiredError" });
     await flushMicrotasks();
 
     expect(isSessionExpired()).toBe(true);
     expect(signOut).toHaveBeenCalledOnce();
     expect(router.push).toHaveBeenCalledWith("/login");
     expect(notificationError).toHaveBeenCalledOnce();
+  });
+
+  // The caller asked for data and got a document. Handing the HTML back made every caller
+  // JSON.parse it, so a burst produced one "Unexpected token '<'" toast per request on a page
+  // that was already redirecting to login (VCST-5688).
+  it("fails the request instead of handing the login page's HTML to the caller", async () => {
+    signOut.mockResolvedValue(undefined);
+    const router = createRouter();
+    const response = loginPageResponse();
+    window.fetch = vi.fn().mockResolvedValue(response) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    const settled = await patched("/api/platform/test").then(
+      (value) => ({ ok: true as const, value }),
+      (error) => ({ ok: false as const, error }),
+    );
+
+    expect(settled.ok).toBe(false);
+    if (!settled.ok) {
+      expect(settled.error).not.toBe(response);
+      expect((settled.error as Error).name).toBe("SessionExpiredError");
+    }
   });
 
   it("recognises the login page by its URL when the content type is absent", async () => {
@@ -221,7 +243,7 @@ describe("registerInterceptors — session expiry without a 401", () => {
       .mockResolvedValue(loginPageResponse({ headers: { get: () => null } })) as unknown as typeof window.fetch;
 
     const patched = registerInterceptors(router);
-    await patched("/api/platform/test");
+    await expect(patched("/api/platform/test")).rejects.toMatchObject({ name: "SessionExpiredError" });
     await flushMicrotasks();
 
     expect(isSessionExpired()).toBe(true);
@@ -233,12 +255,38 @@ describe("registerInterceptors — session expiry without a 401", () => {
     window.fetch = vi.fn().mockResolvedValue(loginPageResponse()) as unknown as typeof window.fetch;
 
     const patched = registerInterceptors(router);
-    await Promise.all([patched("/api/platform/a"), patched("/api/platform/b"), patched("/api/platform/c")]);
+    const results = await Promise.allSettled([
+      patched("/api/platform/a"),
+      patched("/api/platform/b"),
+      patched("/api/platform/c"),
+    ]);
     await flushMicrotasks();
+
+    // Every request in the burst fails, and with the same error — so a consumer that does
+    // surface it shows one de-duplicated message rather than one per request.
+    expect(results.map((r) => r.status)).toEqual(["rejected", "rejected", "rejected"]);
+    const messages = new Set(results.map((r) => (r as PromiseRejectedResult).reason.message));
+    expect(messages.size).toBe(1);
 
     expect(signOut).toHaveBeenCalledOnce();
     expect(router.push).toHaveBeenCalledOnce();
     expect(notificationError).toHaveBeenCalledOnce();
+  });
+
+  // A 401 body is not a document, so nothing parses markup, and callers may branch on the
+  // status themselves — that contract is deliberately unchanged.
+  it("still returns a 401 response to the caller", async () => {
+    signOut.mockResolvedValue(undefined);
+    const router = createRouter();
+    const response = jsonResponse(401);
+    window.fetch = vi.fn().mockResolvedValue(response) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await expect(patched("/api/platform/test")).resolves.toBe(response);
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(true);
+    expect(signOut).toHaveBeenCalledOnce();
   });
 
   it("leaves an ordinary JSON response alone", async () => {
@@ -292,15 +340,41 @@ describe("registerInterceptors — session expiry without a 401", () => {
   it("does not act on a login page while nobody is signed in", async () => {
     authenticated = false;
     const router = createRouter();
-    window.fetch = vi.fn().mockResolvedValue(loginPageResponse()) as unknown as typeof window.fetch;
+    const response = loginPageResponse();
+    window.fetch = vi.fn().mockResolvedValue(response) as unknown as typeof window.fetch;
 
     const patched = registerInterceptors(router);
-    await patched("/api/platform/test");
+    // Also must not fail the request: before sign-in a login page is an expected answer,
+    // not a session death.
+    await expect(patched("/api/platform/test")).resolves.toBe(response);
     await flushMicrotasks();
 
     expect(isSessionExpired()).toBe(false);
     expect(signOut).not.toHaveBeenCalled();
     expect(router.push).not.toHaveBeenCalled();
+  });
+
+  // The sign-in POST goes to /api/platform/security/login, whose pathname matches the
+  // login-page pattern, so its own 200 looks exactly like a session death. It survives only
+  // because useUser.signIn calls resetSessionExpired() BEFORE issuing the request. If that
+  // order is ever swapped, sign-in breaks — this test is here to catch that.
+  it("does not fail the sign-in request itself", async () => {
+    authenticated = false;
+    const router = createRouter();
+    const response = {
+      status: 200,
+      ok: true,
+      redirected: false,
+      url: "http://localhost:3000/api/platform/security/login",
+      headers: { get: () => "application/json" },
+    };
+    window.fetch = vi.fn().mockResolvedValue(response) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await expect(patched("/api/platform/security/login", { method: "POST" })).resolves.toBe(response);
+
+    expect(isSessionExpired()).toBe(false);
+    expect(signOut).not.toHaveBeenCalled();
   });
 });
 

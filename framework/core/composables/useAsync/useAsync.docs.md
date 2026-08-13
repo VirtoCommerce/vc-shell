@@ -422,6 +422,7 @@ const { action: save, loading: saveLoading } = useAsync(async () => saveData());
 - Toast notifications are deferred with `setTimeout(0)` and registered via `setPendingErrorNotification`. The `ErrorInterceptor` (blade-level `onErrorCaptured`) can call `cancelPendingErrorNotification` to suppress the toast when a blade error banner is shown instead.
 - The notification module is lazy-imported to avoid circular dependencies with `@core/composables`.
 - `isSessionExpired()` from `@core/utilities/sessionExpiration` gates the notification. The flag is set by the fetch interceptor on the 401 that kills the session and cleared by `useUser.signIn`. It is imported directly, not through the `@core/utilities` barrel, for the same circular-dependency reason as `pendingErrorNotifications`.
+- On platforms that redirect an unauthenticated API call to the login page instead of answering 401, the interceptor rejects the request with a `SessionExpiredError` rather than handing the page's HTML back. Without that, every caller parsed a document as data and raised its own `Unexpected token '<'` error while the app was already redirecting to login. Actions failing that way carry one identical message, so this suppression and the `notificationId` de-duplication both collapse them to a single toast at most.
 
 <!-- internal:end -->
 

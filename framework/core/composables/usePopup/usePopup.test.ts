@@ -106,6 +106,28 @@ describe("usePopup", () => {
 
       expect(popupPlugin.popups.length).toBe(1);
     });
+
+    // The container renders string slots through v-html, so an entity name
+    // interpolated into the message would be treated as markup (VCST-5665).
+    it.each([
+      ["showConfirmation", (r: any) => r.showConfirmation("Delete <h1>Big</h1>?")],
+      ["showError", (r: any) => r.showError("Failed for <h1>Big</h1>")],
+      ["showInfo", (r: any) => r.showInfo("Done with <h1>Big</h1>")],
+    ])("%s keeps the message off the v-html path by default", (_name, call) => {
+      const { result, popupPlugin } = mountWithPopup(() => usePopup());
+
+      call(result);
+
+      expect(typeof (popupPlugin.popups[0] as any).slots.default).not.toBe("string");
+    });
+
+    it("showConfirmation still passes the raw string when html is opted into", () => {
+      const { result, popupPlugin } = mountWithPopup(() => usePopup());
+
+      result.showConfirmation("Delete <b>Big</b>?", { html: true });
+
+      expect((popupPlugin.popups[0] as any).slots.default).toBe("Delete <b>Big</b>?");
+    });
   });
 
   describe("custom popup component", () => {

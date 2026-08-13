@@ -33,6 +33,7 @@
           :label="t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
           :placeholder="t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')"
           type="password"
+          autocomplete="current-password"
           required
           :error="!!errors.length"
           :error-message="errorMessage"
@@ -55,6 +56,7 @@
           :label="t('COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
           :placeholder="t('COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
           type="password"
+          autocomplete="new-password"
           required
           :error="!!errors.length"
           :error-message="errorMessage"
@@ -77,6 +79,7 @@
           :label="t('COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
           :placeholder="t('COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')"
           type="password"
+          autocomplete="new-password"
           required
           :error="!!errors.length"
           :error-message="errorMessage"

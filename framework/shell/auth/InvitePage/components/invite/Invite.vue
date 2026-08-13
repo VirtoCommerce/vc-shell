@@ -16,6 +16,7 @@
         :label="t('INVITATION.FIELDS.EMAIL.LABEL')"
         :model-value="userName"
         name="username"
+        autocomplete="username"
         disabled
       />
 
@@ -34,6 +35,7 @@
           :label="t('INVITATION.FIELDS.PASSWORD.LABEL')"
           :placeholder="t('INVITATION.FIELDS.PASSWORD.PLACEHOLDER')"
           type="password"
+          autocomplete="new-password"
           :disabled="!form.tokenIsValid"
           :error="!!errors.length"
           :error-message="errorMessage"
@@ -63,6 +65,7 @@
           :placeholder="t('INVITATION.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
           :disabled="!form.tokenIsValid"
           type="password"
+          autocomplete="new-password"
           :error="!!errors.length"
           :error-message="errorMessage"
           required

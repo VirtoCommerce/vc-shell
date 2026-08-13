@@ -83,4 +83,10 @@ describe("ResetPassword.vue", () => {
     const wrapper = mountComponent();
     expect(wrapper.find("div").exists()).toBe(true);
   });
+
+  it("marks both password fields as new so a manager offers to generate one", () => {
+    const wrapper = mountComponent();
+    const tokens = wrapper.findAll("input").map((input) => input.attributes("autocomplete"));
+    expect(tokens).toEqual(["new-password", "new-password"]);
+  });
 });

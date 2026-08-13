@@ -6,6 +6,7 @@ export * from "@core/composables/usePermissions";
 export * from "@core/composables/useAsync";
 export * from "@core/composables/useApiClient";
 export * from "@core/composables/useLoading";
+export * from "@core/composables/useLatestRequest";
 export * from "@core/composables/useErrorHandler";
 export * from "@core/composables/useAssets";
 export * from "@core/composables/useAssetsManager";

@@ -87,6 +87,22 @@ describe("SidebarHeader", () => {
     expect(wrapper.find(".sidebar-header__menu-button").exists()).toBe(false);
   });
 
+  it("localizes the burger label when the menu is closed", () => {
+    const wrapper = mountHeader({ expanded: true, showBurger: true, isMenuOpen: false });
+    // $t is stubbed to return the key, so a raw English string here means the
+    // label never went through i18n.
+    expect(wrapper.find(".sidebar-header__menu-button").attributes("aria-label")).toBe(
+      "COMPONENTS.ORGANISMS.VC_APP.OPEN_MENU",
+    );
+  });
+
+  it("localizes the burger label when the menu is open", () => {
+    const wrapper = mountHeader({ expanded: true, showBurger: true, isMenuOpen: true });
+    expect(wrapper.find(".sidebar-header__menu-button").attributes("aria-label")).toBe(
+      "COMPONENTS.ORGANISMS.VC_APP.CLOSE_MENU",
+    );
+  });
+
   it("emits toggle-menu on burger click", async () => {
     const wrapper = mountHeader({ expanded: true, showBurger: true });
     await wrapper.find(".sidebar-header__menu-button").trigger("click");

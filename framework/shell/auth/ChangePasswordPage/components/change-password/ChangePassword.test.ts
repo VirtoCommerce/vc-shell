@@ -80,4 +80,12 @@ describe("ChangePassword.vue", () => {
     // No error-related hints should appear
     expect(hints.every((h) => !h.text().includes("ERRORS"))).toBe(true);
   });
+
+  it("tells the password manager which field is the current password and which are new", () => {
+    const wrapper = mountComponent();
+    const tokens = wrapper.findAll("input").map((input) => input.attributes("autocomplete"));
+    // Without new-password on the last two, a manager can fill the current
+    // password into them and offer to save the old one back.
+    expect(tokens).toEqual(["current-password", "new-password", "new-password"]);
+  });
 });

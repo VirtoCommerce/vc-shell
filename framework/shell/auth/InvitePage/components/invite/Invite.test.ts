@@ -82,4 +82,12 @@ describe("Invite.vue", () => {
     const wrapper = mountComponent({ userName: "test@example.com" });
     expect(wrapper.exists()).toBe(true);
   });
+
+  it("pairs the invited username with both new-password fields for autofill", () => {
+    const wrapper = mountComponent();
+    const tokens = wrapper.findAll("input").map((input) => input.attributes("autocomplete"));
+    // The username token is what lets a manager store the generated password
+    // against the right account, even though the field is disabled.
+    expect(tokens).toEqual(["username", "new-password", "new-password"]);
+  });
 });

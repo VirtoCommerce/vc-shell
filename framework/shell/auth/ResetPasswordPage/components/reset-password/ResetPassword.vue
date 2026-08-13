@@ -26,6 +26,7 @@
           :label="t('PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
           :placeholder="t('PASSWORDRESET.FIELDS.PASSWORD.PLACEHOLDER')"
           type="password"
+          autocomplete="new-password"
           :disabled="!form.tokenIsValid"
           required
           :error="!!errors.length"
@@ -55,6 +56,7 @@
           :placeholder="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
           :disabled="!form.tokenIsValid"
           type="password"
+          autocomplete="new-password"
           required
           :error="!!errors.length"
           :error-message="errorMessage"

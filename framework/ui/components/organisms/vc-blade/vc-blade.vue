@@ -14,6 +14,7 @@
       },
     ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
+    :aria-busy="props.loading || undefined"
     :aria-labelledby="props.title && !showSkeleton ? bladeTitleId : undefined"
     :aria-label="!props.title || showSkeleton ? $t('COMPONENTS.ORGANISMS.VC_BLADE.PANEL') : undefined"
   >
@@ -125,6 +126,7 @@ import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/Blad
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcBreadcrumbs } from "@ui/components/molecules/vc-breadcrumbs";
 import { BladeBackButtonKey, BladeFormKey, BladeLoadingKey } from "@framework/injection-keys";
+import { useBladeSkeleton } from "@ui/components/organisms/vc-blade/useBladeSkeleton";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { useBlade } from "../../../../core/composables";
 import { useResponsive } from "@framework/core/composables/useResponsive";
@@ -184,7 +186,9 @@ const effectiveModified = computed(() => {
 const instanceUid = getCurrentInstance()?.uid ?? 0;
 const bladeTitleId = `blade-title-${instanceUid}`;
 
-const showSkeleton = computed(() => Boolean(props.loading));
+// Only before the first render of real content — see useBladeSkeleton. A later
+// `loading` (a save, a delete) leaves the controls mounted so focus survives.
+const showSkeleton = useBladeSkeleton(() => Boolean(props.loading));
 
 provide(BladeLoadingKey, showSkeleton);
 

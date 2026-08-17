@@ -45,7 +45,7 @@
  * - Disabled when content is scrolled down (scrollTop > 0)
  * - Disabled when refreshing=true
  */
-import { ref, computed } from "vue";
+import { ref, computed, watch, onUnmounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
@@ -269,8 +269,6 @@ function onTouchEnd() {
 }
 
 // Watch for refreshing prop to animate back when done
-import { watch } from "vue";
-
 watch(
   () => props.refreshing,
   (newValue, oldValue) => {
@@ -282,8 +280,6 @@ watch(
 );
 
 // Cleanup on unmount
-import { onUnmounted } from "vue";
-
 onUnmounted(() => {
   if (animationId.value !== null) {
     cancelAnimationFrame(animationId.value);

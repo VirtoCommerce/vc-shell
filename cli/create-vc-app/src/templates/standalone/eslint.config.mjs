@@ -1,11 +1,16 @@
 import pluginVue from "eslint-plugin-vue";
 import vueTsEslintConfig from "@vue/eslint-config-typescript";
 import vuePrettierConfig from "@vue/eslint-config-prettier";
+import importPlugin from "eslint-plugin-import";
 
 export default [
   {
     ignores: ["**/node_modules/**", "**/dist/**", "api-client.ts"],
   },
+
+  importPlugin.flatConfigs.recommended,
+
+  importPlugin.flatConfigs.typescript,
 
   ...pluginVue.configs["flat/recommended"],
 
@@ -14,6 +19,14 @@ export default [
   vuePrettierConfig,
 
   {
+    settings: {
+      "import/resolver": {
+        typescript: {
+          alwaysTryTypes: true,
+          project: "./tsconfig.json",
+        },
+      },
+    },
     rules: {
       "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
       "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
@@ -26,6 +39,13 @@ export default [
       "vue/require-default-prop": "off",
       "vue/no-v-html": "off",
       "vue/no-template-shadow": "off",
+      // Vite serves `public/` at the site root, so these are not module paths.
+      "import/no-unresolved": ["error", { ignore: ["^/assets/"] }],
+      // TypeScript already covers these, and the rules parse dependency
+      // sources with espree, which chokes on modern syntax in `dist` output.
+      "import/namespace": "off",
+      "import/default": "off",
+      "import/no-named-as-default-member": "off",
     },
   },
 ];

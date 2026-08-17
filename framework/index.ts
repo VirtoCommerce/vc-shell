@@ -15,9 +15,12 @@ import { usePermissions } from "@core/composables/usePermissions";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import Vue3TouchEvents from "vue3-touch-events";
 import * as locales from "@locales";
-import { AppInsightsPlugin, AppInsightsPluginOptions } from "vue3-application-insights";
+import {
+  AppInsightsPlugin,
+  AppInsightsPluginOptions,
+  useAppInsights as useInsightsFromLib,
+} from "vue3-application-insights";
 import { useAppInsights, AppInsightsOptionsKey, AppInsightsInstanceKey } from "@core/composables/useAppInsights";
-import { useAppInsights as useInsightsFromLib } from "vue3-application-insights";
 import { setupGlobalErrorHandlers } from "@core/plugins/global-error-handler";
 import { useConnectionStatus } from "@core/composables/useConnectionStatus";
 import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";

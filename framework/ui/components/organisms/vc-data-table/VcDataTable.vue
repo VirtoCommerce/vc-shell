@@ -416,8 +416,8 @@ import type {
   SortMeta,
   MobileSwipeAction,
   TableFitMode,
+  PersistedStateV2,
 } from "@ui/components/organisms/vc-data-table/types";
-import type { PersistedStateV2 } from "@ui/components/organisms/vc-data-table/types";
 import { vLoading } from "@core/directives";
 import type { VirtualElement } from "@floating-ui/vue";
 

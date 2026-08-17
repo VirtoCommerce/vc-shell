@@ -5,11 +5,11 @@
 This guide describes the process of generating an API client to access the VC Platform API from your custom application.
 
 !!! note
-    Platform Manager REST Client offers generated REST API methods that make it easy to interact with the existing VirtoCommerce Platform API.
+Platform Manager REST Client offers generated REST API methods that make it easy to interact with the existing VirtoCommerce Platform API.
 
 ## Prerequisites
 
-* .NET Core 6.0, particularly if you are using MacOS or Linux.
+- .NET Core 6.0, particularly if you are using MacOS or Linux.
 
 ## Generate TypeScript API clients
 
@@ -22,6 +22,7 @@ Using command
 ```bash
 yarn add @vc-shell/api-client-generator cross-env
 ```
+
 <br>
 
 `cross-env` runs scripts that set and use environment variables across platforms.
@@ -44,44 +45,44 @@ Add the dependencies to your project's **package.json**:
 
 2. Configure client generation in your project. Inside your project's **package.json** file, add a `"generate-api-client"` command to the list of scripts:
 
-    ```title="vc-app-extend/package.json" linenums="1"
-    {
-        "scripts": {
-        ...
-        "generate-api-client": cross-env api-client-generator --APP_PLATFORM_MODULES='[MarketplaceVendor,Catalog,Orders]' --APP_API_CLIENT_DIRECTORY=./src/api_client/
-        }
-    }
-    ```
+   ```title="vc-app-extend/package.json" linenums="1"
+   {
+       "scripts": {
+       ...
+       "generate-api-client": cross-env api-client-generator --APP_PLATFORM_MODULES='[MarketplaceVendor,Catalog,Orders]' --APP_API_CLIENT_DIRECTORY=./src/api_client/
+       }
+   }
+   ```
 
-    The options are listed in the table below:
+   The options are listed in the table below:
 
-    |          Options           	|                        Description                            	|                          Example                          	|
-    |-----------------------------	|----------------------------------------------------------------	|------------------------------------------------------------	|
-    | `--APP_PLATFORM_MODULES`     	| Platform modules to generate API client.<br>{==string[]==} <br> Customize the `--APP_PLATFORM_MODULES` list<br>to match your project's requirements.	| `--APP_PLATFORM_MODULES='[MarketplaceVendor,Orders,Catalog]'` 	|
-    | `--APP_API_CLIENT_DIRECTORY` 	| Output directory for generated API clients. <br>{==string==} 	| `--APP_API_CLIENT_DIRECTORY=./src/api_client/`                	|
-    | `--APP_PLATFORM_URL`         	| Platform URL to obtain client API configs. <br>{==string==} 	    | `--APP_PLATFORM_URL=https://vcmp-dev.govirto.com/`       	|
-    | `--APP_PACKAGE_NAME`         	| Package name for generated API clients. <br>{==string==} 	    | `--APP_PACKAGE_NAME=vc-app-extend`       	|
-    | `--APP_PACKAGE_VERSION`         	| Package version for generated API clients. <br>{==string==} 	    | `--APP_PACKAGE_VERSION=1.0.0`       	|
-     | `--APP_TYPE_STYLE`           | Sets the type style for generated DTOs. Can be 'Class' or 'Interface'.<br>{==string==} | `--APP_TYPE_STYLE=Interface`                                |
-    | `--APP_OUT_DIR`         	| Output directory for generated API clients. <br>{==string==} 	    | `--APP_OUT_DIR=./src/api_client/`       	|
-    | `--APP_BUILD_DIR`         	| Directory where TypeScript files will be compiled. <br>{==string==} 	    | `--APP_BUILD_DIR=lib` (default is "dist")      	|
-    | `--SKIP_BUILD`         	| Skip build step. <br>{==boolean==} 	    | `--SKIP_BUILD=true`       	|
-    | `--VERBOSE`         	| Enable verbose logging. <br>{==boolean==} 	    | `--VERBOSE=true`       	|
+   | Options                      | Description                                                                                                                                          | Example                                                       |
+   | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+   | `--APP_PLATFORM_MODULES`     | Platform modules to generate API client.<br>{==string[]==} <br> Customize the `--APP_PLATFORM_MODULES` list<br>to match your project's requirements. | `--APP_PLATFORM_MODULES='[MarketplaceVendor,Orders,Catalog]'` |
+   | `--APP_API_CLIENT_DIRECTORY` | Output directory for generated API clients. <br>{==string==}                                                                                         | `--APP_API_CLIENT_DIRECTORY=./src/api_client/`                |
+   | `--APP_PLATFORM_URL`         | Platform URL to obtain client API configs. <br>{==string==}                                                                                          | `--APP_PLATFORM_URL=https://vcmp-dev.govirto.com/`            |
+   | `--APP_PACKAGE_NAME`         | Package name for generated API clients. <br>{==string==}                                                                                             | `--APP_PACKAGE_NAME=vc-app-extend`                            |
+   | `--APP_PACKAGE_VERSION`      | Package version for generated API clients. <br>{==string==}                                                                                          | `--APP_PACKAGE_VERSION=1.0.0`                                 |
+   | `--APP_TYPE_STYLE`           | Sets the type style for generated DTOs. Can be 'Class' or 'Interface'.<br>{==string==}                                                               | `--APP_TYPE_STYLE=Interface`                                  |
+   | `--APP_OUT_DIR`              | Output directory for generated API clients. <br>{==string==}                                                                                         | `--APP_OUT_DIR=./src/api_client/`                             |
+   | `--APP_BUILD_DIR`            | Directory where TypeScript files will be compiled. <br>{==string==}                                                                                  | `--APP_BUILD_DIR=lib` (default is "dist")                     |
+   | `--SKIP_BUILD`               | Skip build step. <br>{==boolean==}                                                                                                                   | `--SKIP_BUILD=true`                                           |
+   | `--VERBOSE`                  | Enable verbose logging. <br>{==boolean==}                                                                                                            | `--VERBOSE=true`                                              |
 
 3. Configure Platform URL to ensure your project can access the platform's API configurations. Add the platform URL to your project's **.env** file:
 
-    ```title="vc-app-extend/.env"
-    APP_PLATFORM_URL=https://vcmp-dev.govirto.com/
-    ```
+   ```title="vc-app-extend/.env"
+   APP_PLATFORM_URL=https://vcmp-dev.govirto.com/
+   ```
 
-    !!! note
-        Alternatively, you can specify the Platform URL as a command option in the previous step when running the `"generate-api-client"` command.
+   !!! note
+   Alternatively, you can specify the Platform URL as a command option in the previous step when running the `"generate-api-client"` command.
 
 4. Generate the API clients using the following command:
 
-    ```
-    yarn generate-api-client
-    ```
+   ```
+   yarn generate-api-client
+   ```
 
 This command generates the required API clients for your custom application. Now you can effortlessly access the VC Platform API from your custom application using the generated API client.
 
@@ -112,7 +113,7 @@ API client now includes metadata to track the generation:
 
 The generator handles multiple API clients effectively:
 
-- Creates standardized exports with both short names (`./{moduleName}`) and full names (`./virtocommerce.{moduleName}`) 
+- Creates standardized exports with both short names (`./{moduleName}`) and full names (`./virtocommerce.{moduleName}`)
 - Prevents duplicate module exports by intelligently merging with existing ones
 - Automatically removes `module` and `types` fields that conflict with multiple exports
 - Works properly with incremental generation (can add new APIs without breaking existing ones)
@@ -129,11 +130,11 @@ This enables both simple usage for single-API packages and proper subpath export
 
 ```js
 // Single API package (using root export)
-import { MyClient } from '@myapp/api';
+import { MyClient } from "@myapp/api";
 
 // Multi-API package (using subpath exports)
-import { ClientA } from '@myapp/api/moduleA';
-import { ClientB } from '@myapp/api/moduleB';
+import { ClientA } from "@myapp/api/moduleA";
+import { ClientB } from "@myapp/api/moduleB";
 ```
 
 ### Directory Creation

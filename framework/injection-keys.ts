@@ -6,8 +6,7 @@ import { IToolbarService } from "@core/services/toolbar-service";
 import { IAiAgentService } from "@core/plugins/ai-agent/types";
 import type { BladeFormInjection } from "@core/composables/useBladeForm/types";
 
-import type { IWidgetService } from "@core/services/widget-service";
-import type { IWidgetScope } from "@core/services/widget-service";
+import type { IWidgetService, IWidgetScope } from "@core/services/widget-service";
 import type { IDashboardService } from "@core/services/dashboard-service";
 import type { GlobalSearchState as _GlobalSearchState } from "@core/services/global-search-service";
 import type { MenuService } from "@core/services/menu-service";

@@ -18,14 +18,30 @@
       @pagination-click="pagination.goToPage"
     >
       <!-- Add your columns here -->
-      <VcColumn id="name" :title="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.NAME')" sortable />
-      <VcColumn id="createdDate" :title="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.CREATED_DATE')" type="datetime" sortable />
+      <VcColumn
+        id="name"
+        :title="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.NAME')"
+        sortable
+      />
+      <VcColumn
+        id="createdDate"
+        :title="$t('<%- ModuleNameScreamingSnake %>.PAGES.LIST.COLUMNS.CREATED_DATE')"
+        type="datetime"
+        sortable
+      />
     </VcDataTable>
   </VcBlade>
 </template>
 
 <script setup lang="ts">
-import { useBlade, useDataTableSort, useTableSearch, useDataTablePagination, useFunctions, type IBladeToolbar } from "@vc-shell/framework";
+import {
+  useBlade,
+  useDataTableSort,
+  useTableSearch,
+  useDataTablePagination,
+  useFunctions,
+  type IBladeToolbar,
+} from "@vc-shell/framework";
 import { VcBlade, VcDataTable, VcColumn } from "@vc-shell/framework/ui";
 import { ref, watch } from "vue";
 import use<%- ModuleNamePascalCase %>List from "../composables/useList";
@@ -57,7 +73,11 @@ const { sortField, sortOrder, sortExpression } = useDataTableSort({
 const { data, loading, totalCount, getItems } = use<%- ModuleNamePascalCase %>List();
 
 const { searchValue } = useTableSearch({ stateKey: "<%- ModuleNameScreamingSnake %>" });
-const pagination = useDataTablePagination({ stateKey: "<%- ModuleNameScreamingSnake %>", pageSize: PAGE_SIZE, totalCount });
+const pagination = useDataTablePagination({
+  stateKey: "<%- ModuleNameScreamingSnake %>",
+  pageSize: PAGE_SIZE,
+  totalCount,
+});
 
 function load() {
   return getItems({

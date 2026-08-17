@@ -1,5 +1,4 @@
-import type { RouteLocationNormalized } from "vue-router";
-import type { Router } from "vue-router";
+import type { RouteLocationNormalized, Router } from "vue-router";
 import type { UseBladeRegistryReturn } from "@core/composables/useBladeRegistry";
 import type { IBladeStack } from "@core/blade-navigation/types";
 import { parseBladeUrl, buildUrlFromStack } from "@core/blade-navigation/utils/urlSync";

@@ -75,7 +75,15 @@
 
 <script lang="ts" setup>
 import { ref, watch, computed } from "vue";
-import { IBladeToolbar, useBlade, usePopup, useDataTableSort, useTableSearch, useDataTablePagination, useFunctions } from "@vc-shell/framework";
+import {
+  IBladeToolbar,
+  useBlade,
+  usePopup,
+  useDataTableSort,
+  useTableSearch,
+  useDataTablePagination,
+  useFunctions,
+} from "@vc-shell/framework";
 import type { TableAction } from "@vc-shell/framework";
 import { VcColumn, VcDataTable, VcBlade } from "@vc-shell/framework/ui";
 import { useI18n } from "vue-i18n";

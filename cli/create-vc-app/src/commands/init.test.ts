@@ -2,9 +2,42 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import prettier from "prettier";
 import { initCommand } from "./init.js";
+import { renderDir } from "../engine/template.js";
+import { buildTemplateData } from "../engine/helpers.js";
 
 const templateRoot = path.resolve(import.meta.dirname, "..", "templates");
+
+const SKIP_DIRS = new Set(["node_modules", ".git", ".yarn", "dist"]);
+
+function walkFiles(dir: string, acc: string[] = []): string[] {
+  for (const entry of fs.readdirSync(dir)) {
+    if (SKIP_DIRS.has(entry)) continue;
+    const p = path.join(dir, entry);
+    if (fs.statSync(p).isDirectory()) walkFiles(p, acc);
+    else acc.push(p);
+  }
+  return acc;
+}
+
+/** Paths (relative to `root`) that Prettier would reformat. */
+async function unformattedFiles(root: string): Promise<string[]> {
+  const bad: string[] = [];
+  for (const file of walkFiles(root)) {
+    const info = await prettier.getFileInfo(file, { resolveConfig: true });
+    if (!info.inferredParser || info.ignored) continue;
+
+    const source = fs.readFileSync(file, "utf-8");
+    // Must match the Prettier CLI (which reads `.editorconfig`), otherwise this
+    // only re-asserts whatever `formatGenerated` did rather than checking it.
+    const config = await prettier.resolveConfig(file, { editorconfig: true });
+    if (!(await prettier.check(source, { ...config, filepath: file }))) {
+      bad.push(path.relative(root, file));
+    }
+  }
+  return bad;
+}
 
 function tmpDir(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), "create-vc-app-test-"));
@@ -327,4 +360,90 @@ describe("initCommand — dynamic-module", () => {
     const enJson = JSON.parse(readGenerated(root, "src/modules/locales/en.json"));
     expect(enJson.REVIEWS).toBeDefined();
   });
+});
+
+// Templates are `.ejs`, so `yarn lint` and `yarn format` cannot see them —
+// generating a project and checking the result is the only gate that works.
+describe("initCommand — generated output is formatted", () => {
+  let root: string;
+
+  beforeEach(() => {
+    root = tmpDir();
+  });
+
+  afterEach(() => {
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  const combos: { name: string; args: Record<string, unknown> }[] = [
+    { name: "standalone, no options", args: { type: "standalone" } },
+    {
+      name: "standalone, all flags",
+      args: {
+        type: "standalone",
+        "module-name": "Catalog",
+        "tenant-routes": true,
+        "ai-agent": true,
+        dashboard: true,
+        mocks: true,
+      },
+    },
+    { name: "standalone, dashboard only", args: { type: "standalone", dashboard: true } },
+    { name: "dynamic-module", args: { type: "dynamic-module", "module-name": "Reviews" } },
+  ];
+
+  for (const { name, args } of combos) {
+    it(`is Prettier-clean — ${name}`, async () => {
+      await initCommand({ ...args, _: [root], overwrite: true }, templateRoot);
+
+      expect(await unformattedFiles(root)).toEqual([]);
+    });
+  }
+});
+
+// The formatter above would silently absorb template bugs, so assert on the raw
+// render too: EJS control tags must slurp their own whitespace.
+describe("template rendering leaves no EJS whitespace artifacts", () => {
+  let root: string;
+
+  beforeEach(() => {
+    root = tmpDir();
+  });
+
+  afterEach(() => {
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  const combos = [
+    { name: "no dashboard, no tenant routes", tenantRoutes: false, dashboard: false },
+    { name: "dashboard only", tenantRoutes: false, dashboard: true },
+    { name: "tenant routes only", tenantRoutes: true, dashboard: false },
+    { name: "dashboard and tenant routes", tenantRoutes: true, dashboard: true },
+  ];
+
+  for (const { name, tenantRoutes, dashboard } of combos) {
+    it(`renders routes.ts without stray blank lines — ${name}`, async () => {
+      const data = buildTemplateData({
+        projectName: "demo",
+        packageName: "demo",
+        projectType: "standalone",
+        moduleName: "Orders",
+        basePath: "/apps/demo/",
+        tenantRoutes,
+        dashboard,
+        aiAgent: false,
+        mocks: false,
+      });
+      renderDir(path.join(templateRoot, "standalone", "src", "router"), root, data);
+
+      const routes = fs.readFileSync(path.join(root, "routes.ts"), "utf-8");
+
+      expect(routes).not.toContain("<%");
+      // A blank line directly after `[`, `{` or before `]`, `}` is an EJS
+      // conditional that failed to trim its own newline.
+      expect(routes).not.toMatch(/[[{]\n\s*\n/);
+      expect(routes).not.toMatch(/\n\s*\n\s*[\]}]/);
+      expect(routes).not.toMatch(/\n{3,}/);
+    });
+  }
 });

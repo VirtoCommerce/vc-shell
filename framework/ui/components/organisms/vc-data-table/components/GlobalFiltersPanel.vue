@@ -218,8 +218,7 @@
  * Custom filter UI can be provided via named slots.
  */
 import { ref, computed, watch } from "vue";
-import { VcPopover } from "@ui/components/molecules";
-import { VcInput, VcSelect } from "@ui/components/molecules";
+import { VcPopover, VcInput, VcSelect } from "@ui/components/molecules";
 import { VcButton } from "@ui/components/atoms";
 import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import type { GlobalFilterConfig } from "@ui/components/organisms/vc-data-table/types";

@@ -4,21 +4,21 @@
 
 Messages must be matched by the following regex:
 
-``` js
-/^(revert: )?(feat|fix|docs|style|refactor|perf|test|workflow|ci|chore|types)(\(.+\))?: .{1,50}/
+```js
+/^(revert: )?(feat|fix|docs|style|refactor|perf|test|workflow|ci|chore|types)(\(.+\))?: .{1,50}/;
 ```
 
 ## Examples
 
 Appears under "Features" header, `ui-kit` subheader:
 
-``` text
+```text
 feat(ui-kit): add 'comments' option
 ```
 
 Appears under "Bug Fixes" header, `shell` subheader, with a link to issue #28:
 
-``` text
+```text
 fix(shell): handle events on blur
 
 close #28
@@ -26,7 +26,7 @@ close #28
 
 Appears under "Performance Improvements" header, and under "Breaking Changes" with the breaking change explanation:
 
-``` text
+```text
 perf(api-client): improve vdom diffing by removing 'foo' option
 
 BREAKING CHANGE: The 'foo' option has been removed.
@@ -34,7 +34,7 @@ BREAKING CHANGE: The 'foo' option has been removed.
 
 The following commit and commit `667ecc1` do not appear in the changelog if they are under the same release. If not, the revert commit appears under the "Reverts" header.
 
-``` text
+```text
 revert: feat(ui-kit): add 'comments' option
 
 This reverts commit 667ecc1654a317a13331b17617d973392f415f02.
@@ -42,9 +42,9 @@ This reverts commit 667ecc1654a317a13331b17617d973392f415f02.
 
 ## Full Message Format
 
-A commit message consists of a **header**, **body** and **footer**.  The header has a **type**, **scope** and **subject**:
+A commit message consists of a **header**, **body** and **footer**. The header has a **type**, **scope** and **subject**:
 
-``` text
+```text
 <type>(<scope>): <subject>
 <BLANK LINE>
 <body>
@@ -74,9 +74,9 @@ The scope could be any valid workspace package name. For example `shell`, `ui-ki
 
 The subject contains succinct description of the change:
 
-* use the imperative, present tense: "change" not "changed" nor "changes"
-* don't capitalize first letter
-* no dot (.) at the end
+- use the imperative, present tense: "change" not "changed" nor "changes"
+- don't capitalize first letter
+- no dot (.) at the end
 
 ### Body
 

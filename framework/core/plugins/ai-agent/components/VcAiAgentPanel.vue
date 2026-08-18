@@ -2,6 +2,7 @@
   <Transition name="ai-panel-slide">
     <div
       v-if="isOpen"
+      ref="panelRef"
       class="vc-ai-agent-panel"
       :class="{
         'vc-ai-agent-panel--expanded': isExpanded,
@@ -29,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onUnmounted, inject } from "vue";
+import { computed, onUnmounted, inject, ref } from "vue";
 import { useEventListener } from "@vueuse/core";
 import { AiAgentServiceKey, EmbeddedModeKey } from "@framework/injection-keys";
 import type { IAiAgentServiceInternal } from "@core/plugins/ai-agent/services/ai-agent-service";
@@ -68,6 +69,7 @@ const panelStyle = computed(() => ({
 const closePanel = () => aiAgentService?.closePanel();
 const expandPanel = () => aiAgentService?.expandPanel();
 const collapsePanel = () => aiAgentService?.collapsePanel();
+const panelRef = ref<HTMLElement | null>(null);
 
 // Consume Escape while the panel is open so the blade-nav shortcut dispatcher
 // (which bails on defaultPrevented) does not close the blade behind it.
@@ -84,10 +86,12 @@ useEventListener(document, "keydown", (event: KeyboardEvent) => {
     closePanel();
     return;
   }
-  // mod+\ toggles the panel's own expand/collapse while it is open, taking
-  // priority over the blade-nav shortcut dispatcher's window bubble-phase
-  // listener for the same combo (it bails on defaultPrevented).
+  // The iframe itself is activeElement while the user types in chat. Claim
+  // mod+\ only for panel focus; otherwise the focused blade must receive it.
   if (matchesEvent(hotkey.mod.backslash, event, isMac)) {
+    const activeElement = document.activeElement;
+    if (!activeElement || !panelRef.value?.contains(activeElement)) return;
+
     event.preventDefault();
     if (isExpanded.value) {
       collapsePanel();

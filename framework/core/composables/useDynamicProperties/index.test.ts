@@ -212,6 +212,16 @@ describe("useDynamicProperties", () => {
       setPropertyValue({ property: prop, value: "" });
       expect(prop.values).toHaveLength(0);
     });
+
+    it("keeps an explicit empty values array in the serialized update payload", () => {
+      const { setPropertyValue } = createComposable();
+      const prop: IBaseProperty = { id: "property-1", name: "test", values: [val({ value: "existing" })] };
+
+      setPropertyValue({ property: prop, value: "" });
+      const payload = JSON.parse(JSON.stringify({ offer: { properties: [prop] } }));
+
+      expect(payload.offer.properties[0]).toHaveProperty("values", []);
+    });
   });
 
   describe("loadDictionaries", () => {

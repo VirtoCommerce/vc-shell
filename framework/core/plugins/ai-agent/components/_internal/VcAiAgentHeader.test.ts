@@ -55,6 +55,13 @@ describe("VcAiAgentHeader", () => {
       await buttons[buttons.length - 1].trigger("keydown.space");
       expect(wrapper.emitted("close")).toBeTruthy();
     });
+
+    it("keeps Close as the last header control before focus enters the iframe", () => {
+      const wrapper = factory();
+      const controls = wrapper.findAll('.vc-ai-agent-header__button[tabindex="0"]');
+
+      expect(controls.at(-1)?.attributes("aria-label")).toBe("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.CLOSE");
+    });
   });
 
   describe("maximize control (isExpanded=false)", () => {

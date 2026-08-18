@@ -5,11 +5,14 @@
     :title="title"
     placement="bottom-start"
     :content-scrollable="true"
+    role="dialog"
+    :aria-label="$t('VC_SCHEDULER.MORE_EVENTS')"
     @update:show="(v) => !v && emit('close')"
   >
     <ul
       ref="listRef"
       class="vc-scheduler__more-popover-list"
+      @keydown.esc.stop.prevent="emit('close')"
     >
       <li
         v-for="e in events"
@@ -66,12 +69,14 @@ const anchorEl = computed<ReferenceElement | null>(() =>
 const listRef = ref<HTMLElement | null>(null);
 let opener: HTMLElement | null = null;
 
+const focusFirstEvent = () => nextTick(() => listRef.value?.querySelector<HTMLElement>("button")?.focus());
+
 watch(
   () => props.open,
   (isOpen) => {
     if (isOpen) {
       opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      nextTick(() => listRef.value?.querySelector<HTMLElement>("button")?.focus());
+      focusFirstEvent();
       return;
     }
 
@@ -87,6 +92,8 @@ watch(
       if (target?.isConnected) target.focus();
     });
   },
+  // Mounting with `open` already true is how activating "+N more" renders it.
+  { immediate: true },
 );
 </script>
 

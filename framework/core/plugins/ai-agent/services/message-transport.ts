@@ -55,7 +55,7 @@ export function createMessageTransport(options: MessageTransportOptions): Messag
       // The panel's own Escape handler listens on the host document, which never sees a
       // keystroke delivered to a cross-origin iframe. So while the chatbot holds focus the
       // only route back is the chatbot relaying it here (VCST-5673). Closing a panel exposes
-      // nothing, and the sender's origin is already checked before this runs.
+      // nothing, and the sender's origin and window are checked before this runs.
       case "CLOSE_PANEL": {
         if (closePanel) {
           closePanel();
@@ -101,6 +101,11 @@ export function createMessageTransport(options: MessageTransportOptions): Messag
       return;
     }
     if (!allowedOrigins.includes(event.origin)) {
+      return;
+    }
+
+    const expectedSource = isEmbedded ? window.parent : iframeRef.value?.contentWindow;
+    if (!expectedSource || event.source !== expectedSource) {
       return;
     }
 

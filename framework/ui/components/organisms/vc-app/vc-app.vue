@@ -204,6 +204,18 @@ watch(
   () => focusIfLoose(() => workspaceRef.value),
 );
 
+// Sign-in is not a route change this component can observe: `/login` and the shell
+// are sibling routes, so the watcher above is created only after that navigation
+// has finished. The workspace then mounts later still, when the app reports ready,
+// without any further route change. Its element appearing is the signal.
+watch(
+  workspaceRef,
+  (workspace) => {
+    if (workspace) focusIfLoose(() => workspace);
+  },
+  { flush: "post" },
+);
+
 // App root element ref (for scoped Teleport targets)
 const appRootRef = ref<HTMLElement>();
 provide(AppRootElementKey, appRootRef);

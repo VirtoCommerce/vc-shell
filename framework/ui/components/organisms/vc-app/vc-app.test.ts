@@ -136,6 +136,7 @@ const VcLoadingStub = defineComponent({
 function mountApp(propsOverride: Record<string, unknown> = {}, mountOptions: Record<string, unknown> = {}) {
   const customGlobal = (mountOptions.global ?? {}) as Record<string, any>;
   return mount(VcApp, {
+    ...mountOptions,
     props: {
       isReady: false,
       ...propsOverride,
@@ -211,6 +212,38 @@ describe("vc-app", () => {
     await nextTick();
     expect(wrapper.find(".vc-app__workspace").exists()).toBe(true);
     expect(wrapper.find(".mock-blade-nav").exists()).toBe(true);
+  });
+
+  // Sign-in navigates before this component exists, and the workspace mounts later
+  // still, once the app reports ready — so the route watcher never sees it and focus
+  // is left on <body> (WCAG 2.4.3). The workspace element appearing is the signal.
+  it("moves focus to the workspace once it appears", async () => {
+    mockIsAppReady.value = true;
+    mockIsAuthenticated.value = true;
+    const wrapper = mountApp({ isReady: true }, { attachTo: document.body });
+
+    await nextTick();
+    await nextTick();
+
+    expect(document.activeElement).toBe(wrapper.find("main.vc-app__workspace").element);
+    wrapper.unmount();
+  });
+
+  it("leaves focus alone when something already holds it", async () => {
+    const opener = document.createElement("button");
+    document.body.appendChild(opener);
+    opener.focus();
+
+    mockIsAppReady.value = true;
+    mockIsAuthenticated.value = true;
+    const wrapper = mountApp({ isReady: true }, { attachTo: document.body });
+
+    await nextTick();
+    await nextTick();
+
+    expect(document.activeElement).toBe(opener);
+    wrapper.unmount();
+    opener.remove();
   });
 
   it("renders the workspace as a <main> landmark when authenticated", async () => {

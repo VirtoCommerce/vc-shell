@@ -26,10 +26,11 @@ const mockResetToDefaults = vi.fn();
 // These write back into mockLayout, the way the real useGridstack does. A mock
 // that only recorded the call is why VCST-5600 shipped: the resize handler read a
 // baseline that never moved, and asserting the call could not see that.
-const mockUpdateWidgetPosition = vi.fn((id: string, position: { x: number; y: number }) => {
+const applyMockWidgetPosition = (id: string, position: { x: number; y: number }) => {
   const previous = mockLayout.value.get(id) ?? {};
   mockLayout.value = new Map(mockLayout.value).set(id, { ...previous, ...position });
-});
+};
+const mockUpdateWidgetPosition = vi.fn(applyMockWidgetPosition);
 const mockUpdateWidgetSize = vi.fn((id: string, size: { width: number; height: number }) => {
   const previous = mockLayout.value.get(id) ?? { x: 0, y: 0 };
   mockLayout.value = new Map(mockLayout.value).set(id, { ...previous, ...size });
@@ -58,6 +59,25 @@ const WidgetA = defineComponent({
   name: "WidgetA",
   render() {
     return h("div", { class: "widget-a" }, "Widget A content");
+  },
+});
+
+const mockInnerButtonKeydown = vi.fn();
+const mockInnerInputKeydown = vi.fn();
+const mockInnerControlKeydown = vi.fn();
+const InteractiveWidget = defineComponent({
+  name: "InteractiveWidget",
+  setup() {
+    return () =>
+      h("div", [
+        h("button", { class: "inner-button", onKeydown: mockInnerButtonKeydown }, "Run action"),
+        h("input", { class: "inner-input", onKeydown: mockInnerInputKeydown }),
+        h("a", { class: "inner-link", href: "#target", onKeydown: mockInnerControlKeydown }, "Open"),
+        h("select", { class: "inner-select", onKeydown: mockInnerControlKeydown }, [h("option", "One")]),
+        h("textarea", { class: "inner-textarea", onKeydown: mockInnerControlKeydown }),
+        h("div", { class: "inner-editable", contenteditable: "true", onKeydown: mockInnerControlKeydown }),
+        h("div", { class: "inner-tabindex", tabindex: 0, onKeydown: mockInnerControlKeydown }, "Custom control"),
+      ]);
   },
 });
 
@@ -91,6 +111,10 @@ describe("GridstackDashboard", () => {
     mockInitGrid.mockClear();
     mockSaveLayout.mockClear();
     mockResetToDefaults.mockClear();
+    mockUpdateWidgetPosition.mockImplementation(applyMockWidgetPosition);
+    mockInnerButtonKeydown.mockClear();
+    mockInnerInputKeydown.mockClear();
+    mockInnerControlKeydown.mockClear();
   });
 
   it("renders VcContainer", () => {
@@ -283,6 +307,67 @@ describe("GridstackDashboard", () => {
       ]);
 
     const item = (wrapper: ReturnType<typeof mountGridstack>) => wrapper.find(".grid-stack-item");
+
+    it.each([
+      ["button", ".inner-button", "Enter", mockInnerButtonKeydown],
+      ["input", ".inner-input", " ", mockInnerInputKeydown],
+      ["link", ".inner-link", "Enter", mockInnerControlKeydown],
+      ["select", ".inner-select", "ArrowDown", mockInnerControlKeydown],
+      ["textarea", ".inner-textarea", "ArrowLeft", mockInnerControlKeydown],
+      ["contenteditable", ".inner-editable", "Enter", mockInnerControlKeydown],
+      ["tabindex", ".inner-tabindex", " ", mockInnerControlKeydown],
+    ])("does not grab the widget when %s handles %j", async (_kind, selector, key, handler) => {
+      const wrapper = mountGridstack({ resizable: true }, [
+        { id: "a", name: "Widget A", component: markRaw(InteractiveWidget), size: { width: 6, height: 6 } },
+      ]);
+
+      const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true });
+      wrapper.find(selector).element.dispatchEvent(event);
+      await wrapper.vm.$nextTick();
+
+      expect(handler).toHaveBeenCalledOnce();
+      expect(event.defaultPrevented).toBe(false);
+      expect(item(wrapper).classes()).not.toContain("vc-gridstack-dashboard__item--grabbed");
+    });
+
+    it("does not hijack arrow keys from an inner control while the widget is grabbed", async () => {
+      const wrapper = mountGridstack({ resizable: true }, [
+        { id: "a", name: "Widget A", component: markRaw(InteractiveWidget), size: { width: 6, height: 6 } },
+      ]);
+      await item(wrapper).trigger("keydown", { key: "Enter" });
+      mockUpdateWidgetPosition.mockClear();
+
+      const event = new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, cancelable: true });
+      wrapper.find(".inner-input").element.dispatchEvent(event);
+
+      expect(mockInnerInputKeydown).toHaveBeenCalledOnce();
+      expect(event.defaultPrevented).toBe(false);
+      expect(mockUpdateWidgetPosition).not.toHaveBeenCalled();
+    });
+
+    it("restores widget A when widget B is picked up before Escape", async () => {
+      mockLayout.value = new Map([
+        ["a", { x: 2, y: 3 }],
+        ["b", { x: 5, y: 3 }],
+      ]);
+      const wrapper = mountGridstack({ resizable: true }, [
+        { id: "a", name: "Widget A", component: markRaw(WidgetA), size: { width: 2, height: 2 } },
+        { id: "b", name: "Widget B", component: markRaw(WidgetA), size: { width: 2, height: 2 } },
+      ]);
+      const items = wrapper.findAll(".grid-stack-item");
+
+      await items[0].trigger("keydown", { key: "Enter" });
+      await items[0].trigger("keydown", { key: "ArrowRight" });
+      await items[1].trigger("keydown", { key: "Enter" });
+
+      expect(mockLayout.value.get("a")).toMatchObject({ x: 2, y: 3 });
+      expect(items[0].classes()).not.toContain("vc-gridstack-dashboard__item--grabbed");
+      expect(items[1].classes()).toContain("vc-gridstack-dashboard__item--grabbed");
+
+      await items[1].trigger("keydown", { key: "Escape" });
+
+      expect(mockLayout.value.get("a")).toMatchObject({ x: 2, y: 3 });
+    });
 
     it("puts every widget in the tab order", () => {
       expect(item(mountWithWidget()).attributes("tabindex")).toBe("0");

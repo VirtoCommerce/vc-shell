@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { format } from "date-fns";
 import type { ReferenceElement } from "@floating-ui/vue";
 import { VcPopover } from "@ui/components/molecules/vc-popover";
@@ -71,12 +71,6 @@ let opener: HTMLElement | null = null;
 
 const focusFirstEvent = () => nextTick(() => listRef.value?.querySelector<HTMLElement>("button")?.focus());
 
-onMounted(() => {
-  if (!props.open) return;
-  opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-  focusFirstEvent();
-});
-
 watch(
   () => props.open,
   (isOpen) => {
@@ -98,6 +92,8 @@ watch(
       if (target?.isConnected) target.focus();
     });
   },
+  // Mounting with `open` already true is how activating "+N more" renders it.
+  { immediate: true },
 );
 </script>
 

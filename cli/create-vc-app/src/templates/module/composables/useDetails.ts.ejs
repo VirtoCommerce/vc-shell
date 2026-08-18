@@ -4,6 +4,7 @@ import { useAsync, useLoading } from "@vc-shell/framework";
 export default function use<%- ModuleNamePascalCase %>Details() {
   const item = ref<Record<string, any>>({});
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used by the TODO API call below
   const { loading: itemLoading, action: fetchItem } = useAsync(async (id?: string) => {
     // TODO: Replace with real API call
     // const result = await apiClient.getById(id);

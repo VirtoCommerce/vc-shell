@@ -8,11 +8,11 @@ export interface <%- ModuleNamePascalCase %>ListQuery {
   take?: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function use<%- ModuleNamePascalCase %>List() {
   const data: Ref<Record<string, any>[]> = ref([]);
   const totalCount = ref(0);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used by the TODO API call below
   const { loading: itemsLoading, action: getItems } = useAsync<<%- ModuleNamePascalCase %>ListQuery>(async (query) => {
     // TODO: Replace with real API call
     // const result = await apiClient.search({
@@ -25,6 +25,7 @@ export default function use<%- ModuleNamePascalCase %>List() {
     // totalCount.value = result.totalCount ?? 0;
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used by the TODO API call below
   const { loading: deleteLoading, action: removeItems } = useAsync(async (ids?: string[]) => {
     // TODO: Replace with real API call
     // await Promise.all((ids ?? []).map((id) => apiClient.delete(id)));

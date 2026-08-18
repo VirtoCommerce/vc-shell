@@ -73,6 +73,7 @@ import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 const props = defineProps<{
   isOpened: boolean;
   expanded: MaybeRef<boolean>;
+  inert?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -104,6 +105,7 @@ const wrapperProps = computed<Record<string, unknown>>(() => {
     modelValue: props.isOpened,
     position: "left",
     closeButton: false,
+    inert: props.inert,
     "onUpdate:modelValue": (value: boolean) => {
       if (!value) {
         emit("update:is-opened", false);

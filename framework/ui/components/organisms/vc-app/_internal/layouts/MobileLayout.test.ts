@@ -150,4 +150,11 @@ describe("MobileLayout", () => {
 
     expect(tabButtons[0].classes()).toContain("mobile-layout__tab--active");
   });
+
+  it("makes the slide-out MenuSidebar inert while a maximized blade covers mobile navigation", () => {
+    const wrapper = mountLayout({ inertNavigation: true });
+
+    expect(wrapper.find(".mobile-layout").attributes()).toHaveProperty("inert");
+    expect(wrapper.find(".stub-menu-sidebar").attributes()).toHaveProperty("inert");
+  });
 });

@@ -98,7 +98,10 @@
         >
           <VcBladeNavigation v-if="hasBladeNavigation" />
           <!-- AI Agent Panel (shown when plugin is installed) -->
-          <VcAiAgentPanel v-if="aiAgentConfig?.url" />
+          <VcAiAgentPanel
+            v-if="aiAgentConfig?.url"
+            :inert="hasMaximizedBlade || undefined"
+          />
         </main>
       </slot>
 

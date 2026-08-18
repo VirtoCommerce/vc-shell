@@ -4,6 +4,16 @@ import { nextTick } from "vue";
 import VcSidebar from "@ui/components/organisms/vc-sidebar/vc-sidebar.vue";
 
 describe("VcSidebar", () => {
+  it("applies inert to its teleported root when requested", () => {
+    const wrapper = mount(VcSidebar, {
+      props: { modelValue: true, inert: true },
+      global: { stubs: { teleport: true } },
+    });
+
+    expect(wrapper.find(".vc-sidebar").attributes()).toHaveProperty("inert");
+    wrapper.unmount();
+  });
+
   it("closes by Escape and emits close reason", async () => {
     const wrapper = mount(VcSidebar, {
       props: {

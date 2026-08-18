@@ -202,6 +202,88 @@ describe("usePopup", () => {
       }
     });
 
+    it("reopens the same popup instance as visible and keeps it mounted past the close fallback", async () => {
+      vi.useFakeTimers();
+      try {
+        const { result, popupPlugin } = mountWithPopup(() =>
+          usePopup({
+            component: FakePopup as any,
+            props: { title: "Test" },
+            emits: { onConfirm: () => {}, onClose: () => {} },
+          }),
+        );
+
+        await result.open();
+        result.close();
+        await result.open();
+
+        vi.advanceTimersByTime(400);
+
+        expect(popupPlugin.popups).toHaveLength(1);
+        expect(popupPlugin.popups[0].closing).toBe(false);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it("ignores a stale transition finalize after the popup reopens", async () => {
+      const trigger = document.createElement("button");
+      document.body.appendChild(trigger);
+      const focus = vi.spyOn(trigger, "focus");
+      try {
+        trigger.focus();
+        focus.mockClear();
+
+        const { result, popupPlugin } = mountWithPopup(() =>
+          usePopup({
+            component: FakePopup as any,
+            props: { title: "Test" },
+            emits: { onConfirm: () => {}, onClose: () => {} },
+          }),
+        );
+
+        await result.open();
+        const popup = popupPlugin.popups[0];
+        result.close();
+        await result.open();
+
+        popup.finalize();
+        await nextTick();
+
+        expect(popupPlugin.popups).toHaveLength(1);
+        expect(focus).not.toHaveBeenCalled();
+      } finally {
+        trigger.remove();
+      }
+    });
+
+    it("does not let the first close fallback finish a later close early", async () => {
+      vi.useFakeTimers();
+      try {
+        const { result, popupPlugin } = mountWithPopup(() =>
+          usePopup({
+            component: FakePopup as any,
+            props: { title: "Test" },
+            emits: { onConfirm: () => {}, onClose: () => {} },
+          }),
+        );
+
+        await result.open();
+        result.close();
+        vi.advanceTimersByTime(200);
+
+        await result.open();
+        result.close();
+        vi.advanceTimersByTime(200);
+        expect(popupPlugin.popups).toHaveLength(1);
+
+        vi.advanceTimersByTime(200);
+        expect(popupPlugin.popups).toHaveLength(0);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
     // The path the browser actually takes: the popup's leave transition ends and
     // the container calls finalize. It beats the fallback timer every time, so the
     // restore has to live here — the first attempt at VCST-5632 restored focus only

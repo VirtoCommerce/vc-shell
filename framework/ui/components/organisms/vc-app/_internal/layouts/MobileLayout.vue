@@ -34,6 +34,7 @@
   <MenuSidebar
     :is-opened="sidebar.isMenuOpen.value"
     :expanded="true"
+    :inert="inertNavigation || undefined"
     @update:is-opened="!$event && sidebar.closeMenu()"
   >
     <template #navmenu>

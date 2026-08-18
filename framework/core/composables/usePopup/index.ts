@@ -66,6 +66,7 @@ function usePopupInternal() {
 export function usePopup<T extends Component = Component>(options?: MaybeRef<UsePopupProps<T>>): IUsePopup {
   const { t } = useI18n({ useScope: "global" });
   const popupInstance = usePopupInternal();
+  const closeFallbackTimers = new WeakMap<object, ReturnType<typeof setTimeout>>();
   let rawPopup: (UsePopupProps & UsePopupInternal) | undefined;
 
   if (options) {
@@ -87,7 +88,7 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
       return;
     }
 
-    const popupInstanceInternal = usePopupInternal();
+    const popupInstanceInternal = popupInstance;
     // Match by the unique instance id, not structural equality: each popup carries
     // its own Symbol, so reference-by-id is the correct — and only safe — comparison
     // when several popups are stacked.
@@ -107,11 +108,18 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
       return;
     }
 
+    const alreadyMounted = popupInstance?.popups.some((instance) => instance.id === popup.id);
+
     // Every path into the stack goes through here — `open()`, `showConfirmation()`,
     // `showError()`, `showInfo()` — so this is the one place that reliably sees the
     // control the user activated, before the popup takes focus.
-    const opener = document.activeElement;
-    popup.opener = opener instanceof HTMLElement && opener !== document.body ? markRaw(opener) : undefined;
+    if (!alreadyMounted) {
+      const opener = document.activeElement;
+      popup.opener = opener instanceof HTMLElement && opener !== document.body ? markRaw(opener) : undefined;
+    }
+
+    cancelCloseFallback(popup);
+    popup.closing = false;
 
     destroy(popup);
     popupInstance?.popups?.push(popup);
@@ -123,12 +131,21 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
   }
 
   function removeInstance(instance: UsePopupProps & Partial<UsePopupInternal>) {
+    cancelCloseFallback(instance);
     const index = popupInstance?.popups.indexOf(instance);
     if (typeof index === "number" && index !== -1) {
       popupInstance?.popups?.splice(index, 1);
       restoreFocusTo(instance.opener);
     }
     instance.opener = undefined;
+  }
+
+  function cancelCloseFallback(instance: UsePopupProps & Partial<UsePopupInternal>) {
+    const timer = closeFallbackTimers.get(instance);
+    if (timer !== undefined) {
+      clearTimeout(timer);
+      closeFallbackTimers.delete(instance);
+    }
   }
 
   /**
@@ -184,7 +201,12 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
     }
 
     instanceToClose.closing = true;
-    setTimeout(() => removeInstance(instanceToClose), CLOSE_TRANSITION_FALLBACK_MS);
+    const timer = setTimeout(() => {
+      if (closeFallbackTimers.get(instanceToClose) !== timer) return;
+      closeFallbackTimers.delete(instanceToClose);
+      removeInstance(instanceToClose);
+    }, CLOSE_TRANSITION_FALLBACK_MS);
+    closeFallbackTimers.set(instanceToClose, timer);
   }
 
   function showSimplePopup(
@@ -274,7 +296,9 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
 
     popup.close = () => close(popup);
     popup.open = () => open(popup);
-    popup.finalize = () => removeInstance(popup);
+    popup.finalize = () => {
+      if (popup.closing) removeInstance(popup);
+    };
 
     return popup;
   }

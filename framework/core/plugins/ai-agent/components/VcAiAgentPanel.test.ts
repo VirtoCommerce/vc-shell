@@ -6,7 +6,7 @@ import { AiAgentServiceKey } from "@framework/injection-keys";
 
 const mountedWrappers: VueWrapper[] = [];
 
-function mountPanel(isOpenValue: boolean, isExpandedValue = false) {
+function mountPanel(isOpenValue: boolean, isExpandedValue = false, props: { inert?: boolean } = {}) {
   const isOpen = ref(isOpenValue);
   const isExpanded = ref(isExpandedValue);
   const closePanel = vi.fn();
@@ -24,6 +24,7 @@ function mountPanel(isOpenValue: boolean, isExpandedValue = false) {
   };
 
   const wrapper = shallowMount(VcAiAgentPanel as any, {
+    props,
     global: {
       provide: {
         [AiAgentServiceKey as unknown as symbol]: mockService,
@@ -32,7 +33,7 @@ function mountPanel(isOpenValue: boolean, isExpandedValue = false) {
   });
   mountedWrappers.push(wrapper);
 
-  return { closePanel, expandPanel, collapsePanel };
+  return { wrapper, closePanel, expandPanel, collapsePanel };
 }
 
 function dispatchModBackslash(): KeyboardEvent {
@@ -143,5 +144,11 @@ describe("VcAiAgentPanel - mod+\\ expand/collapse handling", () => {
     expect(expandPanel).not.toHaveBeenCalled();
     expect(collapsePanel).not.toHaveBeenCalled();
     expect(event.defaultPrevented).toBe(false);
+  });
+
+  it("applies inert to the rendered panel when requested", () => {
+    const { wrapper } = mountPanel(true, false, { inert: true });
+
+    expect(wrapper.find(".vc-ai-agent-panel").attributes()).toHaveProperty("inert");
   });
 });

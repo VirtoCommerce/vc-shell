@@ -8,6 +8,7 @@
       class="vc-sidebar"
       :style="containerStyle"
       :aria-hidden="!modelValue"
+      :inert="inert || undefined"
     >
       <Transition name="vc-sidebar-overlay">
         <div
@@ -198,6 +199,7 @@ export interface Props {
   subtitle?: string;
   ariaLabel?: string;
   closeAriaLabel?: string;
+  inert?: boolean;
   closeButton?: boolean;
   inset?: boolean;
   zIndex?: number;

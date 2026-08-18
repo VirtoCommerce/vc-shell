@@ -339,12 +339,19 @@ const resizeWidgetBy = (widget: IDashboardWidget, dw: number, dh: number): void 
 };
 
 const onWidgetKeydown = (event: KeyboardEvent, widget: IDashboardWidget): void => {
+  if (event.target !== event.currentTarget) return;
+
   const isGrabbed = grabbedWidgetId.value === widget.id;
 
   if (event.key === "Enter" || event.key === " ") {
     event.preventDefault();
     if (isGrabbed) dropWidget(widget);
-    else pickUpWidget(widget);
+    else {
+      // Starting another move cancels the unfinished one so its origin is not lost.
+      const grabbedWidget = widgets.value.find((candidate) => candidate.id === grabbedWidgetId.value);
+      if (grabbedWidget) cancelWidgetMove(grabbedWidget);
+      pickUpWidget(widget);
+    }
     return;
   }
 

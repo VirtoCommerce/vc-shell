@@ -1,14 +1,22 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { mount } from "@vue/test-utils";
+import { defineComponent, h, nextTick, onBeforeUnmount, onMounted } from "vue";
 import MonthMorePopover from "./MonthMorePopover.vue";
 import type { ISchedulerEvent } from "../../types";
 
-const VcPopoverStub = {
+const VcPopoverStub = defineComponent({
   name: "VcPopover",
   props: ["show", "anchorRef", "title", "placement", "contentScrollable"],
   emits: ["update:show"],
-  template: `<div v-if="show" class="vc-popover-stub"><slot/></div>`,
-};
+  setup(props, { attrs, emit, slots }) {
+    const onKeydown = (event: KeyboardEvent) => {
+      if (props.show && event.key === "Escape") emit("update:show", false);
+    };
+    onMounted(() => document.addEventListener("keydown", onKeydown));
+    onBeforeUnmount(() => document.removeEventListener("keydown", onKeydown));
+    return () => (props.show ? h("div", { ...attrs, class: "vc-popover-stub" }, slots.default?.()) : null);
+  },
+});
 
 const events: ISchedulerEvent[] = [
   { id: "a", title: "Summer Sale", start: new Date(2026, 6, 1), end: new Date(2026, 6, 6), allDay: true },
@@ -18,7 +26,10 @@ const events: ISchedulerEvent[] = [
 function mountMore() {
   return mount(MonthMorePopover, {
     props: { open: true, date: new Date(2026, 6, 1), events, anchorRect: null },
-    global: { stubs: { VcPopover: VcPopoverStub } },
+    global: {
+      mocks: { $t: (key: string) => key },
+      stubs: { VcPopover: VcPopoverStub },
+    },
   });
 }
 
@@ -54,5 +65,78 @@ describe("MonthMorePopover", () => {
     expect(rect).toBeTruthy();
     expect(typeof rect.top).toBe("number");
     expect(typeof rect.width).toBe("number");
+  });
+
+  it("moves focus into the popover when it is initially mounted open", async () => {
+    const trigger = document.createElement("button");
+    trigger.textContent = "+2 more";
+    document.body.appendChild(trigger);
+    trigger.focus();
+
+    const w = mount(MonthMorePopover, {
+      props: { open: true, date: new Date(2026, 6, 1), events, anchorRect: null },
+      attachTo: document.body,
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: { VcPopover: VcPopoverStub },
+      },
+    });
+    try {
+      await nextTick();
+      expect(document.activeElement).toBe(w.find("li button").element);
+    } finally {
+      w.unmount();
+      trigger.remove();
+    }
+  });
+
+  it("exposes the overflow panel as a named dialog", () => {
+    const w = mountMore();
+    const panel = w.find('[role="dialog"]');
+
+    expect(panel.exists()).toBe(true);
+    expect(panel.attributes("aria-label")).toBe("VC_SCHEDULER.MORE_EVENTS");
+  });
+
+  it("returns focus to the +N more trigger when Escape closes the initially-open popover", async () => {
+    const trigger = document.createElement("button");
+    trigger.textContent = "+2 more";
+    document.body.appendChild(trigger);
+    trigger.focus();
+
+    const w = mount(MonthMorePopover, {
+      props: {
+        open: true,
+        date: new Date(2026, 6, 1),
+        events,
+        anchorRect: null,
+        onClose: () => w.setProps({ open: false }),
+      },
+      attachTo: document.body,
+      global: {
+        mocks: { $t: (key: string) => key },
+        stubs: { VcPopover: VcPopoverStub },
+      },
+    });
+    const escapedToWindow = vi.fn();
+    window.addEventListener("keydown", escapedToWindow);
+    try {
+      await nextTick();
+      const eventButton = w.find("li button").element as HTMLElement;
+      eventButton.focus();
+
+      const escape = new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true });
+      eventButton.dispatchEvent(escape);
+      await nextTick();
+      await nextTick();
+
+      expect(escape.defaultPrevented).toBe(true);
+      expect(escapedToWindow).not.toHaveBeenCalled();
+      expect(document.activeElement).toBe(trigger);
+    } finally {
+      window.removeEventListener("keydown", escapedToWindow);
+      w.unmount();
+      trigger.remove();
+    }
   });
 });

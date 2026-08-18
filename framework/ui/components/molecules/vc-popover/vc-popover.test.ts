@@ -35,6 +35,14 @@ describe("VcPopover", () => {
     expect(wrapper.find(".vc-popover").exists()).toBe(true);
   });
 
+  it("applies opt-in dialog semantics to the floating panel", () => {
+    const wrapper = mountComponent({ show: true, role: "dialog", ariaLabel: "Overflow events" });
+    const panel = wrapper.find(".vc-popover");
+
+    expect(panel.attributes("role")).toBe("dialog");
+    expect(panel.attributes("aria-label")).toBe("Overflow events");
+  });
+
   it("renders title in header when provided", () => {
     const wrapper = mountComponent({ show: true, title: "Panel Title" });
     expect(wrapper.find(".vc-popover__title").text()).toBe("Panel Title");

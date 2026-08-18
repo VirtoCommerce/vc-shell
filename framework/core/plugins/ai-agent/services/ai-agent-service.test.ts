@@ -11,6 +11,7 @@ describe("createAiAgentService", () => {
 
   let service: ReturnType<typeof createAiAgentService>;
   let postMessageSpy: ReturnType<typeof vi.fn>;
+  let iframeWindow: Window;
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -25,8 +26,9 @@ describe("createAiAgentService", () => {
 
     // Mock iframe contentWindow
     postMessageSpy = vi.fn();
+    iframeWindow = { postMessage: postMessageSpy } as unknown as Window;
     const mockIframe = {
-      contentWindow: { postMessage: postMessageSpy },
+      contentWindow: iframeWindow,
     } as unknown as HTMLIFrameElement;
     service._setIframeRef(mockIframe);
   });
@@ -41,6 +43,7 @@ describe("createAiAgentService", () => {
       new MessageEvent("message", {
         data: { type: "CHAT_READY" },
         origin: "https://chat.example.com",
+        source: iframeWindow,
       }),
     );
 
@@ -64,7 +67,11 @@ describe("createAiAgentService", () => {
   it("sends UPDATE_CONTEXT when context data changes while panel is open", async () => {
     // Initialize: trigger CHAT_READY to set isInitialized
     window.dispatchEvent(
-      new MessageEvent("message", { data: { type: "CHAT_READY" }, origin: "https://chat.example.com" }),
+      new MessageEvent("message", {
+        data: { type: "CHAT_READY" },
+        origin: "https://chat.example.com",
+        source: iframeWindow,
+      }),
     );
     await flushPromises();
 
@@ -87,7 +94,11 @@ describe("createAiAgentService", () => {
   it("does not send UPDATE_CONTEXT when panel is closed", async () => {
     // Initialize: trigger CHAT_READY
     window.dispatchEvent(
-      new MessageEvent("message", { data: { type: "CHAT_READY" }, origin: "https://chat.example.com" }),
+      new MessageEvent("message", {
+        data: { type: "CHAT_READY" },
+        origin: "https://chat.example.com",
+        source: iframeWindow,
+      }),
     );
     await flushPromises();
     // Panel stays closed (don't call openPanel)

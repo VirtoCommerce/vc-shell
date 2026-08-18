@@ -10,6 +10,12 @@ function makeTransport(config: Partial<IAiAgentConfig>) {
   });
 }
 
+function attachIframe(transport: ReturnType<typeof createMessageTransport>) {
+  const contentWindow = { postMessage: vi.fn() } as unknown as Window;
+  transport.setIframeRef({ contentWindow } as unknown as HTMLIFrameElement);
+  return contentWindow;
+}
+
 describe("message-transport — incoming origin validation", () => {
   let transport: ReturnType<typeof createMessageTransport>;
 
@@ -17,8 +23,8 @@ describe("message-transport — incoming origin validation", () => {
     transport?.stopListening();
   });
 
-  function dispatchChatReady(origin: string) {
-    window.dispatchEvent(new MessageEvent("message", { data: { type: "CHAT_READY" }, origin }));
+  function dispatchChatReady(origin: string, source?: MessageEventSource | null) {
+    window.dispatchEvent(new MessageEvent("message", { data: { type: "CHAT_READY" }, origin, source }));
   }
 
   it("rejects incoming messages when allowedOrigins is empty", () => {
@@ -53,11 +59,12 @@ describe("message-transport — incoming origin validation", () => {
 
   it("accepts incoming messages from an explicitly allowed origin", () => {
     transport = makeTransport({ allowedOrigins: ["https://chat.example.com"] });
+    const chatbotWindow = attachIframe(transport);
     const onReady = vi.fn();
     transport.onChatReady(onReady);
     transport.startListening();
 
-    dispatchChatReady("https://chat.example.com");
+    dispatchChatReady("https://chat.example.com", chatbotWindow);
     expect(onReady).toHaveBeenCalledOnce();
   });
 });
@@ -78,8 +85,8 @@ describe("message-transport — CLOSE_PANEL", () => {
     });
   }
 
-  function dispatchClosePanel(origin: string) {
-    window.dispatchEvent(new MessageEvent("message", { data: { type: "CLOSE_PANEL" }, origin }));
+  function dispatchClosePanel(origin: string, source?: MessageEventSource | null) {
+    window.dispatchEvent(new MessageEvent("message", { data: { type: "CLOSE_PANEL" }, origin, source }));
   }
 
   afterEach(() => {
@@ -88,9 +95,10 @@ describe("message-transport — CLOSE_PANEL", () => {
 
   it("closes the panel when an allowed origin asks it to", () => {
     transport = makeWithClose(["https://chat.example.com"]);
+    const chatbotWindow = attachIframe(transport);
     transport.startListening();
 
-    dispatchClosePanel("https://chat.example.com");
+    dispatchClosePanel("https://chat.example.com", chatbotWindow);
     expect(closePanel).toHaveBeenCalledOnce();
   });
 
@@ -102,14 +110,71 @@ describe("message-transport — CLOSE_PANEL", () => {
     expect(closePanel).not.toHaveBeenCalled();
   });
 
+  it("ignores CLOSE_PANEL from a window that is not the registered chatbot iframe", () => {
+    transport = makeWithClose(["https://chat.example.com"]);
+    const chatbotWindow = { postMessage: vi.fn() } as unknown as Window;
+    const unrelatedWindow = { postMessage: vi.fn() } as unknown as Window;
+    transport.setIframeRef({ contentWindow: chatbotWindow } as unknown as HTMLIFrameElement);
+    transport.startListening();
+
+    dispatchClosePanel("https://chat.example.com", unrelatedWindow);
+
+    expect(closePanel).not.toHaveBeenCalled();
+  });
+
   it("still notifies generic message handlers so a host can react to it", () => {
     transport = makeWithClose(["https://chat.example.com"]);
+    const chatbotWindow = attachIframe(transport);
     const onMessage = vi.fn();
     transport.onMessage(onMessage);
     transport.startListening();
 
-    dispatchClosePanel("https://chat.example.com");
+    dispatchClosePanel("https://chat.example.com", chatbotWindow);
     expect(onMessage).toHaveBeenCalledWith(expect.objectContaining({ type: "CLOSE_PANEL" }));
+  });
+});
+
+describe("message-transport — embedded parent source", () => {
+  const realParent = window.parent;
+  let transport: ReturnType<typeof createMessageTransport>;
+  let parentWindow: Window;
+  let closePanel: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    parentWindow = { postMessage: vi.fn() } as unknown as Window;
+    closePanel = vi.fn();
+    Object.defineProperty(window, "parent", { value: parentWindow, configurable: true });
+    transport = createMessageTransport({
+      getConfig: () => ({ url: "https://chat.example.com", allowedOrigins: ["https://shell.example.com"] }),
+      isEmbedded: true,
+      closePanel,
+    });
+    transport.startListening();
+  });
+
+  afterEach(() => {
+    transport.stopListening();
+    Object.defineProperty(window, "parent", { value: realParent, configurable: true });
+  });
+
+  function dispatchEmbeddedClose(source: MessageEventSource) {
+    window.dispatchEvent(
+      new MessageEvent("message", {
+        origin: "https://shell.example.com",
+        source,
+        data: { type: "AI_CHAT_MESSAGE", payload: { type: "CLOSE_PANEL" } },
+      }),
+    );
+  }
+
+  it("accepts forwarded messages from its parent window", () => {
+    dispatchEmbeddedClose(parentWindow);
+    expect(closePanel).toHaveBeenCalledOnce();
+  });
+
+  it("rejects forwarded messages from another window at the same origin", () => {
+    dispatchEmbeddedClose({ postMessage: vi.fn() } as unknown as Window);
+    expect(closePanel).not.toHaveBeenCalled();
   });
 });
 
@@ -153,28 +218,28 @@ describe("message-transport — outbound sendToParent origin", () => {
 describe("message-transport — outbound sendToIframe origin", () => {
   let iframePostMessage: ReturnType<typeof vi.fn>;
 
-  function attachIframe(transport: ReturnType<typeof createMessageTransport>) {
+  function attachOutboundIframe(transport: ReturnType<typeof createMessageTransport>) {
     iframePostMessage = vi.fn();
     transport.setIframeRef({ contentWindow: { postMessage: iframePostMessage } } as unknown as HTMLIFrameElement);
   }
 
   it("drops outbound message when allowedOrigins is empty", () => {
     const transport = makeTransport({ allowedOrigins: [] });
-    attachIframe(transport);
+    attachOutboundIframe(transport);
     transport.sendToIframe({ type: "INIT_CONTEXT", payload: { accessToken: "secret" } });
     expect(iframePostMessage).not.toHaveBeenCalled();
   });
 
   it('drops outbound message when the first allowedOrigin is "*"', () => {
     const transport = makeTransport({ allowedOrigins: ["*"] });
-    attachIframe(transport);
+    attachOutboundIframe(transport);
     transport.sendToIframe({ type: "INIT_CONTEXT", payload: { accessToken: "secret" } });
     expect(iframePostMessage).not.toHaveBeenCalled();
   });
 
   it("posts to the first explicit allowedOrigin", () => {
     const transport = makeTransport({ allowedOrigins: ["https://chat.example.com"] });
-    attachIframe(transport);
+    attachOutboundIframe(transport);
     const message = { type: "INIT_CONTEXT", payload: { accessToken: "secret" } };
     transport.sendToIframe(message);
     expect(iframePostMessage).toHaveBeenCalledWith(message, "https://chat.example.com");

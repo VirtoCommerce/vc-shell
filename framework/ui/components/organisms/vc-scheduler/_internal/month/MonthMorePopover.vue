@@ -5,11 +5,14 @@
     :title="title"
     placement="bottom-start"
     :content-scrollable="true"
+    role="dialog"
+    :aria-label="$t('VC_SCHEDULER.MORE_EVENTS')"
     @update:show="(v) => !v && emit('close')"
   >
     <ul
       ref="listRef"
       class="vc-scheduler__more-popover-list"
+      @keydown.esc.stop.prevent="emit('close')"
     >
       <li
         v-for="e in events"
@@ -35,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { format } from "date-fns";
 import type { ReferenceElement } from "@floating-ui/vue";
 import { VcPopover } from "@ui/components/molecules/vc-popover";
@@ -66,12 +69,20 @@ const anchorEl = computed<ReferenceElement | null>(() =>
 const listRef = ref<HTMLElement | null>(null);
 let opener: HTMLElement | null = null;
 
+const focusFirstEvent = () => nextTick(() => listRef.value?.querySelector<HTMLElement>("button")?.focus());
+
+onMounted(() => {
+  if (!props.open) return;
+  opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  focusFirstEvent();
+});
+
 watch(
   () => props.open,
   (isOpen) => {
     if (isOpen) {
       opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      nextTick(() => listRef.value?.querySelector<HTMLElement>("button")?.focus());
+      focusFirstEvent();
       return;
     }
 

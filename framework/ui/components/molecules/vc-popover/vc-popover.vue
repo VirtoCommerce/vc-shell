@@ -6,6 +6,8 @@
         ref="floatingRef"
         class="vc-popover"
         :style="[floatingStyle, panelStyle]"
+        :role="role"
+        :aria-label="ariaLabel"
         @click.stop
       >
         <!-- Header -->
@@ -90,6 +92,10 @@ interface Props {
   closeOnClickOutside?: boolean;
   /** Close on Escape key */
   closeOnEscape?: boolean;
+  /** Optional semantic role for consumers that present a dialog-like panel */
+  role?: string;
+  /** Accessible name used with the optional semantic role */
+  ariaLabel?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {

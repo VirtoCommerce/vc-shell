@@ -46,7 +46,7 @@ jobs:
     steps:
 
       - name: Set up Node 20
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
 
@@ -59,7 +59,7 @@ jobs:
         run: |
           echo "RELEASE_STATUS=true" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -128,17 +128,17 @@ jobs:
           echo "DOCKER_URL=${{ env.DOCKER_REPOSITORY }}/${GITHUB_REPOSITORY_OWNER,,}/${{ env.DOCKER_IMAGE }}:" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.DOCKER_REPOSITORY }}
           username: $GITHUB_ACTOR
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feat/redesign' || inputs.event_name == 'pull_request' }}
           context: .
@@ -194,7 +194,7 @@ jobs:
       CLOUD_URL: https://portal.virtocommerce.cloud
       CLOUD_TOKEN: ${{ secrets.VCMP_PLATFORM_TOKEN  }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install vc-build
         run: |

@@ -21,8 +21,12 @@ describe("useBladeSkeleton", () => {
   // The point of the whole thing: a save re-raises `loading`, and replacing the
   // controls then would unmount whatever the user has focused (WCAG 2.4.3).
   it("does not return to the skeleton when loading is raised again after content has shown", async () => {
+    const entityId = ref("entity-a");
     const loading = ref(true);
-    const skeleton = useBladeSkeleton(() => loading.value);
+    const skeleton = useBladeSkeleton(
+      () => loading.value,
+      () => entityId.value,
+    );
 
     loading.value = false;
     await nextTick();
@@ -42,5 +46,24 @@ describe("useBladeSkeleton", () => {
     await nextTick();
 
     expect(skeleton.value).toBe(false);
+  });
+
+  it("resets the initial-load latch when the same blade instance switches entity context", async () => {
+    const entityId = ref("entity-a");
+    const loading = ref(true);
+    const skeleton = useBladeSkeleton(
+      () => loading.value,
+      () => entityId.value,
+    );
+
+    loading.value = false;
+    await nextTick();
+    expect(skeleton.value).toBe(false);
+
+    loading.value = true;
+    entityId.value = "entity-b";
+    await nextTick();
+
+    expect(skeleton.value).toBe(true);
   });
 });

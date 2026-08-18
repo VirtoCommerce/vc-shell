@@ -185,10 +185,14 @@ const effectiveModified = computed(() => {
 
 const instanceUid = getCurrentInstance()?.uid ?? 0;
 const bladeTitleId = `blade-title-${instanceUid}`;
+const bladeDescriptor = inject(BladeDescriptorKey, undefined);
 
-// Only before the first render of real content — see useBladeSkeleton. A later
+// Only before the first render for this entity — see useBladeSkeleton. A later
 // `loading` (a save, a delete) leaves the controls mounted so focus survives.
-const showSkeleton = useBladeSkeleton(() => Boolean(props.loading));
+const showSkeleton = useBladeSkeleton(
+  () => Boolean(props.loading),
+  () => bladeDescriptor?.value.param,
+);
 
 provide(BladeLoadingKey, showSkeleton);
 
@@ -206,7 +210,7 @@ const bladeFull = useBlade();
 const { id: bladeId } = bladeFull;
 
 // Context detection: are we inside blade navigation (VcBladeSlot)?
-const hasBladeContext = !!inject(BladeDescriptorKey, undefined);
+const hasBladeContext = !!bladeDescriptor;
 const maximizedRef = inject(BladeMaximizedKey, undefined);
 
 // Rendering state (maximized/breadcrumbs) — provided by VcBladeSlot separately

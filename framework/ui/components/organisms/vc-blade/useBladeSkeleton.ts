@@ -9,16 +9,22 @@ import { computed, ref, watch, type ComputedRef } from "vue";
  * focused, dropping focus to `<body>` (WCAG 2.4.3 Focus Order). It also takes
  * the field they were typing in out from under them.
  *
- * So the skeleton is available exactly once, before the first render of real
- * content. After that `loading` is reported through `aria-busy` and each
- * control's own pending state instead.
+ * So the skeleton is available once per entity context, before its first render
+ * of real content. Later `loading` for that entity is reported through
+ * `aria-busy` and each control's own pending state instead.
  */
-export function useBladeSkeleton(isLoading: () => boolean): ComputedRef<boolean> {
+export function useBladeSkeleton(
+  isLoading: () => boolean,
+  contextKey: () => unknown = () => undefined,
+): ComputedRef<boolean> {
   const hasRenderedContent = ref(false);
 
   watch(
-    isLoading,
-    (loading) => {
+    [isLoading, contextKey],
+    ([loading, context], previous) => {
+      if (previous.length > 0 && context !== previous[1]) {
+        hasRenderedContent.value = false;
+      }
       if (!loading) hasRenderedContent.value = true;
     },
     { immediate: true },

@@ -7,6 +7,7 @@
         'vc-ai-agent-panel--expanded': isExpanded,
       }"
       :style="panelStyle"
+      :inert="inert || undefined"
     >
       <VcAiAgentHeader
         :title="config.title"
@@ -37,6 +38,10 @@ import VcAiAgentIframe from "@core/plugins/ai-agent/components/_internal/VcAiAge
 import { hotkey, matchesEvent, useKeyboardShortcuts } from "@core/composables/useKeyboardShortcuts";
 
 const { isMac } = useKeyboardShortcuts();
+
+defineProps<{
+  inert?: boolean;
+}>();
 
 // Inject AI agent service
 const aiAgentService = inject(AiAgentServiceKey) as IAiAgentServiceInternal | undefined;

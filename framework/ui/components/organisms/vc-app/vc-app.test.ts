@@ -55,6 +55,11 @@ vi.mock("@core/composables/useSidebarState", () => ({
   provideSidebarState: () => mockSidebar,
 }));
 
+const mockBladeStack = {
+  blades: ref<{ id: string }[]>([]),
+  isMaximized: vi.fn<(id: string) => boolean>(() => false),
+};
+
 vi.mock("@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBarState", () => ({
   provideAppBarState: vi.fn(),
 }));
@@ -129,6 +134,7 @@ const VcLoadingStub = defineComponent({
 });
 
 function mountApp(propsOverride: Record<string, unknown> = {}, mountOptions: Record<string, unknown> = {}) {
+  const customGlobal = (mountOptions.global ?? {}) as Record<string, any>;
   return mount(VcApp, {
     ...mountOptions,
     props: {
@@ -136,18 +142,21 @@ function mountApp(propsOverride: Record<string, unknown> = {}, mountOptions: Rec
       ...propsOverride,
     },
     global: {
+      ...customGlobal,
       provide: {
         [BladeRoutesKey as symbol]: [],
         [ModulesLoadErrorKey as symbol]: ref(false),
-        [BladeStackKey as symbol]: { blades: ref([]) },
+        [BladeStackKey as symbol]: mockBladeStack,
         [BladeMessagingKey as symbol]: { on: vi.fn(), off: vi.fn() },
         [IsMobileKey as symbol]: isMobileRef,
         [IsDesktopKey as symbol]: isDesktopRef,
         aiAgentConfig: undefined,
         aiAgentAddGlobalToolbarButton: true,
+        ...(customGlobal.provide ?? {}),
       },
       components: {
         VcLoading: VcLoadingStub,
+        ...(customGlobal.components ?? {}),
       },
     },
   });
@@ -164,6 +173,9 @@ describe("vc-app", () => {
     mockIsAuthenticated.value = false;
     isMobileRef.value = false;
     isDesktopRef.value = true;
+    mockBladeStack.blades.value = [];
+    mockBladeStack.isMaximized.mockReset();
+    mockBladeStack.isMaximized.mockReturnValue(false);
   });
 
   it("shows loading state when app is not ready", () => {
@@ -255,6 +267,21 @@ describe("vc-app", () => {
     const wrapper = mountApp({ isReady: true });
     await nextTick();
     expect(wrapper.find(".mock-popup-container").exists()).toBe(true);
+  });
+
+  it("makes the AI panel sibling inert while a blade is maximized", async () => {
+    mockIsAppReady.value = true;
+    mockIsAuthenticated.value = true;
+    mockBladeStack.blades.value = [{ id: "detail" }];
+    mockBladeStack.isMaximized.mockReturnValue(true);
+
+    const wrapper = mountApp(
+      { isReady: true },
+      { global: { provide: { aiAgentConfig: { url: "https://chat.example.com" } } } },
+    );
+    await nextTick();
+
+    expect(wrapper.find(".mock-ai-panel").attributes()).toHaveProperty("inert");
   });
 
   it("calls useShellBootstrap with correct options", () => {

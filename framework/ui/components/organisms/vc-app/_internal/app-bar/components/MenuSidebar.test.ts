@@ -32,7 +32,7 @@ function mountSidebar(
         },
         VcSidebar: {
           name: "VcSidebar",
-          props: ["modelValue", "position", "closeButton"],
+          props: ["modelValue", "position", "closeButton", "inert"],
           template: '<div class="vc-sidebar-stub"><slot /></div>',
         },
       },
@@ -153,5 +153,11 @@ describe("MenuSidebar", () => {
     });
 
     expect(wrapper.find(".vc-sidebar-stub").exists()).toBe(true);
+  });
+
+  it("passes inert to the mobile VcSidebar root", () => {
+    const wrapper = mountSidebar({ inert: true }, { isMobile: true, isDesktop: false });
+
+    expect(wrapper.findComponent({ name: "VcSidebar" }).props("inert")).toBe(true);
   });
 });

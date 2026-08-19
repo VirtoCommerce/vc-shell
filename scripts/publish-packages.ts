@@ -74,6 +74,57 @@ function ensureRepository(manifest: Record<string, unknown>, pkgPath: string): b
   return true;
 }
 
+// The registry rejects concurrent packument writes with a transient
+// "409 Conflict - Failed to save packument", which is easy to hit when several
+// packages are published back-to-back. Retry a few times before giving up.
+const PUBLISH_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 15_000;
+
+function sleepSync(ms: number): void {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function isOnRegistry(packageName: string, version: string): boolean {
+  const result = spawnSync("npm", ["view", `${packageName}@${version}`, "version"], {
+    stdio: ["ignore", "pipe", "ignore"],
+    encoding: "utf8",
+    shell: process.platform === "win32",
+  });
+  return result.status === 0 && result.stdout.trim() !== "";
+}
+
+function publish(packageName: string, version: string, cwd: string): void {
+  for (let attempt = 1; attempt <= PUBLISH_ATTEMPTS; attempt++) {
+    const result = spawnSync("npm", ["publish", "--access", "public", "--tag", tag], {
+      cwd,
+      stdio: "inherit",
+      shell: process.platform === "win32",
+    });
+    if (result.error) {
+      // spawn itself failed (e.g. npm not on PATH) — surface the real cause
+      // instead of a misleading "signal null" from the status check below.
+      throw result.error;
+    }
+    if (result.status === 0) return;
+
+    // A failed publish can still have landed (the 409 above is raised after the
+    // version is saved), and re-running a job over an already-published version
+    // fails with a 403. Either way there is nothing left to do for this package.
+    if (isOnRegistry(packageName, version)) {
+      console.log(`[publish] ${packageName}@${version} is already on the registry — skipping`);
+      return;
+    }
+
+    if (attempt === PUBLISH_ATTEMPTS) {
+      throw new Error(`Failed to publish ${packageName} (exit ${result.status ?? "signal " + result.signal})`);
+    }
+    console.warn(
+      `[publish] ${packageName} attempt ${attempt}/${PUBLISH_ATTEMPTS} failed — retrying in ${RETRY_DELAY_MS / 1000}s`,
+    );
+    sleepSync(RETRY_DELAY_MS);
+  }
+}
+
 for (const pkg of releasePackages) {
   const dir = path.resolve(pkg.path);
   const manifestPath = path.join(dir, "package.json");
@@ -94,19 +145,7 @@ for (const pkg of releasePackages) {
 
   console.log(`\n[publish] ${pkg.displayName} → ${tag}`);
   try {
-    const result = spawnSync("npm", ["publish", "--access", "public", "--tag", tag], {
-      cwd: dir,
-      stdio: "inherit",
-      shell: process.platform === "win32",
-    });
-    if (result.error) {
-      // spawn itself failed (e.g. npm not on PATH) — surface the real cause
-      // instead of a misleading "signal null" from the status check below.
-      throw result.error;
-    }
-    if (result.status !== 0) {
-      throw new Error(`Failed to publish ${pkg.packageName} (exit ${result.status ?? "signal " + result.signal})`);
-    }
+    publish(pkg.packageName, manifest.version as string, dir);
   } finally {
     if (rewritten) {
       // Restore the original manifest so the working tree (and any subsequent

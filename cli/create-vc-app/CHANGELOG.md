@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.5.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.4.0...v2.5.0) (2026-08-19)
+
+### Bug Fixes
+
+- **create-vc-app:** make scaffolded apps build and lint out of the box (#302) ([5b0406f](https://github.com/VirtoCommerce/vc-shell/commit/5b0406f2f9b0950bf69b3ba7d16e312f23efd7c5)), closes [#302](https://github.com/VirtoCommerce/vc-shell/issues/302)
+
 # [2.4.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.3.0...v2.4.0) (2026-08-04)
 
 ### Bug Fixes

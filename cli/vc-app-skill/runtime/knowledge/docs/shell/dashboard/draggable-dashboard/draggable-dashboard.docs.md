@@ -125,7 +125,7 @@ function resetLayout() {
 ## Details
 
 - **Grid system**: Uses Gridstack.js under the hood, which provides a 12-column responsive grid. Widget `size.width` is in grid columns (1-12), `size.height` is in grid rows.
-- **Layout persistence**: When the user rearranges or resizes widgets, the new layout is automatically saved to localStorage. On next visit, the persisted layout is restored.
+- **Layout persistence**: When the user rearranges or resizes widgets, the new layout — position **and** size — is automatically saved to localStorage. On next visit, the persisted layout is restored. A widget's declared `size` is only the default: once the grid reports a live size, that is what is stored and restored.
 - **Widget registration**: Widgets must be registered via `useDashboard().registerWidget()` before the dashboard mounts. The component reads the widget registry and creates grid items for each.
 - **markRaw requirement**: Widget components must be wrapped in `markRaw()` when registering to prevent Vue from making them reactive (which would cause performance issues with the grid system).
 - **Responsive behavior**: On mobile viewports, widgets stack vertically in a single column. Drag-and-drop is disabled on touch devices for better usability.
@@ -144,15 +144,17 @@ function resetLayout() {
 
 Widgets can be rearranged without a pointer, which WCAG 2.5.7 Dragging Movements requires:
 
-| Key                 | Action                                                          |
-| ------------------- | --------------------------------------------------------------- |
-| `Tab`               | Move focus between widgets (each one is in the tab order)       |
-| `Enter` / `Space`   | Pick the focused widget up, and drop it again                   |
-| Arrow keys          | While picked up, move the widget one grid cell                  |
-| `Shift` + arrow key | While picked up, resize by one cell (needs `resizable`)         |
-| `Escape`            | Cancel the move and return the widget to where it was picked up |
+| Key                 | Action                                                                    |
+| ------------------- | ------------------------------------------------------------------------- |
+| `Tab`               | Move focus between widgets (each one is in the tab order)                 |
+| `Enter` / `Space`   | Pick the focused widget up, and drop it again                             |
+| Arrow keys          | While picked up, move the widget one grid cell                            |
+| `Shift` + arrow key | While picked up, resize by one cell (needs `resizable`)                   |
+| `Escape`            | Cancel the move and restore the position **and size** it was picked up at |
 
 Every step is announced through the component's `aria-live` region, and the picked-up widget is outlined so the state is visible to sighted keyboard users. Moves are clamped at the grid edges and at the 2×2 minimum widget size, and the layout is persisted when the widget is dropped — the same as after a mouse drag.
+
+Announcements report where the widget actually ended up rather than the cell it was asked to move to: Gridstack compacts rows, so the two can differ. Repeated resizes accumulate (6 → 7 → 8 cells), and a keypress the minimum span refuses is not announced as a change.
 
 !!! note "The widget itself is the control"
 There is no separate "move" button. Gridstack only implements pointer dragging, so the widget is focusable and handles the keys directly. If you render your own interactive elements inside a widget, they keep working — the arrow keys only act while the widget has been explicitly picked up.

@@ -69,13 +69,38 @@ async function deleteProduct(id: string) {
 
 ### Returns (`IUsePopup`)
 
-| Method             | Signature                                              | Description                                                                                         |
-| ------------------ | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| `open`             | `() => void`                                           | Push the popup onto the stack and render it                                                         |
-| `close`            | `() => void`                                           | Remove the popup from the stack                                                                     |
-| `showConfirmation` | `(message: string \| Ref<string>) => Promise<boolean>` | Warning dialog with Confirm/Cancel buttons. Resolves `true` on confirm, `false` on cancel or close. |
-| `showError`        | `(message: string \| Ref<string>) => void`             | Error-styled popup with a close button                                                              |
-| `showInfo`         | `(message: string \| Ref<string>) => void`             | Info-styled popup with a close button                                                               |
+| Method             | Signature                                                                             | Description                                                                                         |
+| ------------------ | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `open`             | `() => void`                                                                          | Push the popup onto the stack and render it                                                         |
+| `close`            | `() => void`                                                                          | Remove the popup from the stack                                                                     |
+| `showConfirmation` | `(message: string \| Ref<string>, options?: PopupMessageOptions) => Promise<boolean>` | Warning dialog with Confirm/Cancel buttons. Resolves `true` on confirm, `false` on cancel or close. |
+| `showError`        | `(message: string \| Ref<string>, options?: PopupMessageOptions) => void`             | Error-styled popup with a close button                                                              |
+| `showInfo`         | `(message: string \| Ref<string>, options?: PopupMessageOptions) => void`             | Info-styled popup with a close button                                                               |
+
+### `PopupMessageOptions`
+
+| Option | Type      | Default | Description                                       |
+| ------ | --------- | ------- | ------------------------------------------------- |
+| `html` | `boolean` | `false` | Render the message as HTML instead of plain text. |
+
+Messages are rendered as **text** by default. These dialogs are usually built by
+interpolating server data into a translation, and as markup an entity name can
+restyle the dialog or add a working link to one the user is meant to trust:
+
+```ts
+// A product literally named "<h1>Clearance</h1>" changes the dialog's layout
+// when rendered as HTML. As text it simply reads back the name.
+await showConfirmation(t("PRODUCTS.ALERTS.DELETE", { name: product.name }));
+```
+
+Opt in only for markup you author yourself, never for interpolated data:
+
+```ts
+showError(t("TEAM.ERRORS.USER_EXIST", { email }), { html: true });
+```
+
+A slot passed through `usePopup({ slots: { default: "<p>…</p>" } })` is
+unaffected — explicit string slots are still rendered as sanitized HTML.
 
 ## How It Works
 

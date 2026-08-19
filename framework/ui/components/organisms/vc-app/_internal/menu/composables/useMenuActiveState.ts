@@ -1,6 +1,6 @@
-import { computed } from "vue";
+import { computed, toValue } from "vue";
 import type { MaybeRefOrGetter } from "vue";
-import { toValue } from "vue";
+
 import { useRoute } from "vue-router";
 import type { RouteLocationNormalizedLoaded } from "vue-router";
 

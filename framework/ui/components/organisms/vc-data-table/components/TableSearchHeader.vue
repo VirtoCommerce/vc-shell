@@ -80,8 +80,7 @@
 
 <script setup lang="ts">
 import { ref, useSlots } from "vue";
-import { VcIcon } from "@ui/components/atoms";
-import { VcButton } from "@ui/components/atoms";
+import { VcIcon, VcButton } from "@ui/components/atoms";
 import { VcInput } from "@ui/components/molecules";
 
 const _props = withDefaults(

@@ -59,8 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { VcButton } from "@ui/components/atoms/vc-button";
-import { VcButtonGroup } from "@ui/components/atoms/vc-button";
+import { VcButton, VcButtonGroup } from "@ui/components/atoms/vc-button";
 import type { SchedulerView } from "../types";
 
 defineProps<{

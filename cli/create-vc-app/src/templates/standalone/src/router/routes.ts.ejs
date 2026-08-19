@@ -1,43 +1,40 @@
 import { RouteRecordRaw } from "vue-router";
 import App from "../pages/App.vue";
-<% if (dashboard) { %>
+<%_ if (dashboard) { -%>
 import Dashboard from "../pages/Dashboard.vue";
-<% } %>
+<%_ } -%>
 import { Invite, Login, ResetPassword, ForgotPassword, ChangePasswordPage } from "@vc-shell/framework";
-// eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
-// eslint-disable-next-line import/no-unresolved
-import bgImage from "/assets/background.jpg";
+<%_ if (tenantRoutes) { -%>
 
-<% if (tenantRoutes) { %>
 const tenantIdRegex = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
-<% } %>
+<%_ } -%>
 
 export const routes: RouteRecordRaw[] = [
   {
-<% if (tenantRoutes) { %>
+<%_ if (tenantRoutes) { -%>
     path: `/:tenantId(${tenantIdRegex})?`,
-<% } else { %>
+<%_ } else { -%>
     path: "/",
-<% } %>
+<%_ } -%>
     component: App,
     name: "App",
     meta: {
       root: true,
     },
     children: [
-<% if (dashboard) { %>
+<%_ if (dashboard) { -%>
       {
         name: "Dashboard",
         path: "",
-<% if (tenantRoutes) { %>
+<%_ if (tenantRoutes) { -%>
         alias: `/:tenantId(${tenantIdRegex})?`,
-<% } else { %>
+<%_ } else { -%>
         alias: "/",
-<% } %>
+<%_ } -%>
         component: Dashboard,
       },
-<% } %>
+<%_ } -%>
     ],
   },
   {

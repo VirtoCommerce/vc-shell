@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { ref } from "vue";
+import { ref, defineComponent } from "vue";
 import { mount } from "@vue/test-utils";
-import { defineComponent } from "vue";
 import { IsMobileKey, IsDesktopKey, IsPhoneKey, IsTabletKey, IsTouchKey } from "@framework/injection-keys";
 import { useResponsive } from "./index";
 

@@ -10,8 +10,7 @@ vi.mock("@core/utilities", async (importOriginal) => {
     createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: loggerWarn, error: vi.fn() }),
   };
 });
-import { ref, computed } from "vue";
-import { defineComponent, h, nextTick } from "vue";
+import { ref, computed, defineComponent, h, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
 import { mountWithSetup } from "@framework/test-helpers";
 import { TableQueryStateKey } from "@core/blade-navigation/table-query-state";

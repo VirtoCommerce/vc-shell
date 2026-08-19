@@ -25,7 +25,7 @@ interface SearchResult {
 
 export type { MockedItem };
 
-export default (options?: { pageSize?: number, sort?: string }): useClassicAppList => {
+export default (options?: { pageSize?: number; sort?: string }): useClassicAppList => {
   const pageSize = options?.pageSize || 20;
   const searchResult = ref<SearchResult>();
   const searchQuery = ref<SearchQuery>({

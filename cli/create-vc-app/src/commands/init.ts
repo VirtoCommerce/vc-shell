@@ -12,6 +12,7 @@ import {
   buildTemplateData,
 } from "../engine/helpers.js";
 import { renderDir, emptyDir, isDirEmpty } from "../engine/template.js";
+import { formatGenerated } from "../engine/format.js";
 import { printSuccess } from "../output.js";
 
 const PROJECT_TYPES: { title: string; value: ProjectType }[] = [
@@ -236,6 +237,11 @@ export async function initCommand(args: CLIArgs, templateRoot: string): Promise<
   if (options.mocks) {
     renderDir(path.join(templateRoot, "sample-module"), path.join(root, "src/modules/sample"), templateData);
   }
+
+  // 4. Normalise the rendered output — EJS conditionals leave stray blank lines
+  // that Prettier alone would preserve, and template whitespace is not otherwise
+  // checked anywhere.
+  await formatGenerated([root]);
 
   printSuccess(options);
 }

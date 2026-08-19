@@ -14,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-// eslint-disable-next-line import/no-unresolved
 import Welcome from "/assets/welcome.png";
 </script>
 
@@ -40,7 +39,7 @@ import Welcome from "/assets/welcome.png";
   }
 
   &__welcome-description {
-    @apply tw-whitespace-break-spaces tw-text-s tw-max-w-[90%] tw-mx-auto tw-leading-5 tw-font-semibold;
+    @apply tw-whitespace-break-spaces tw-text-sm tw-max-w-[90%] tw-mx-auto tw-leading-5 tw-font-semibold;
   }
 }
 </style>

@@ -1,7 +1,6 @@
-import { App } from "vue";
+import { App<% if (dashboard) { %>, markRaw<% } %> } from "vue";
 <% if (dashboard) { -%>
 import { addMenuItem, registerDashboardWidget } from "@vc-shell/framework";
-import { markRaw } from "vue";
 import Welcome from "./components/dashboard-widgets/Welcome.vue";
 <% } -%>
 

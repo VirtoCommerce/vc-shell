@@ -5,6 +5,7 @@ import fs from "node:fs";
 import { toKebabCase, toPascalCase, toSentenceCase, buildTemplateData } from "../engine/helpers.js";
 import { renderDir } from "../engine/template.js";
 import { addModuleToMain, addMenuItemToBootstrap } from "../engine/codegen.js";
+import { formatGenerated } from "../engine/format.js";
 import type { CLIArgs } from "../types.js";
 
 export async function addModuleCommand(args: CLIArgs, templateRoot: string): Promise<void> {
@@ -85,6 +86,10 @@ export async function addModuleCommand(args: CLIArgs, templateRoot: string): Pro
       console.warn(pc.yellow(`  ⚠ Could not auto-update src/bootstrap.ts. Add addMenuItem() manually.`));
     }
   }
+
+  // 4. Normalise only what this command touched — reformatting the whole
+  // project would rewrite files the user owns.
+  await formatGenerated([moduleDir, mainTsPath, bootstrapPath]);
 
   console.log(`\n  Module "${kebabName}" is ready! Run ${pc.bold(pc.green("yarn serve"))} to see it.\n`);
 }

@@ -179,11 +179,36 @@ jobs:
       - name: Build workspace packages
         run: yarn build
 
+      # Keyed on the resolved playwright version, not yarn.lock: the browser
+      # revision only changes when playwright does, so an unrelated dependency
+      # bump must not throw the cache away.
+      - name: Resolve Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ms-playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
       # Must be the workspace binary, not `yarn dlx`: dlx resolves a different
       # playwright and installs browsers under a revision @vitest/browser will
       # not look for.
-      - name: Install Chromium
+      #
+      # The download is the slow part and it is not always fast: this step has
+      # been observed taking anywhere from 20s to over 20 minutes, which on a
+      # 25-minute job means the tests never get to run. The system libraries
+      # live outside the cached directory, so they are installed either way --
+      # `install-deps` alone is seconds, the browser download is not.
+      - name: Install Chromium and system deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps chromium
+
+      - name: Install system deps for cached Chromium
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: yarn playwright install-deps chromium
 
       - name: Run story tests
         run: yarn test:storybook

@@ -1,10 +1,11 @@
 import { shallowReactive, type Component, type DefineComponent } from "vue";
 
 /**
- * Supported cell types for VcDataTable columns.
- * Maps to cell formatter components.
+ * The cell types VcDataTable ships with. Narrow on purpose: it is the
+ * exhaustive list of built-ins, so a typo in one of these names is a
+ * compile error rather than a silent fallback.
  */
-export type CellType =
+export type BuiltinCellType =
   | "text"
   | "number"
   | "money"
@@ -17,6 +18,12 @@ export type CellType =
   | "html"
   | "status"
   | "status-icon";
+
+/**
+ * A cell type usable on a column. The built-in names keep autocomplete;
+ * `(string & {})` admits custom types registered through {@link useCellRegistry}.
+ */
+export type CellType = BuiltinCellType | (string & {});
 
 /**
  * Configuration for cell type-specific props.
@@ -34,7 +41,7 @@ export interface CellTypeConfig {
  */
 export interface CellRegistration {
   /** The cell type identifier */
-  type: CellType | string;
+  type: CellType;
   /** The Vue component to render for this cell type */
   component: Component | DefineComponent<any, any, any>;
   /** Optional configuration for this cell type */

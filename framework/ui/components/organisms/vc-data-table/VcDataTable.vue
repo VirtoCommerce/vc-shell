@@ -400,12 +400,7 @@ import {
 import { VcPagination } from "@ui/components/molecules";
 import { useDataTableOrchestrator } from "@ui/components/organisms/vc-data-table/composables/useDataTableOrchestrator";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
-import {
-  ColumnCollectorKey,
-  FilterContextKey,
-  FillerWidthKey,
-  IsColumnReorderingKey,
-} from "@ui/components/organisms/vc-data-table/keys";
+import { ColumnCollectorKey, FillerWidthKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-data-table/keys";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type {
@@ -883,12 +878,7 @@ const {
   statePersistence,
 
   // Column filter helpers
-  filterValues,
-  updateFilter,
-  clearFilter,
-  clearAllFilters,
   hasActiveFilters,
-  activeFilterCount,
 
   // Column filter template helpers
   showColumnFilter,
@@ -974,16 +964,6 @@ const mobileViewRef = ref<{ listEl?: HTMLElement } | null>(null);
 // Only one view is mounted at a time; the composable recreates SortableJS when the element changes.
 watchEffect(() => {
   rowReorderListRef.value = isMobileView.value ? mobileViewRef.value?.listEl : desktopBodyRef.value?.listEl;
-});
-
-// Provide filter context (values returned by orchestrator, provide() here per plan rules)
-provide(FilterContextKey, {
-  filterValues,
-  updateFilter,
-  clearFilter,
-  clearAllFilters,
-  hasActiveFilters,
-  activeFilterCount,
 });
 
 // Provide engine-controlled filler width for TableRow

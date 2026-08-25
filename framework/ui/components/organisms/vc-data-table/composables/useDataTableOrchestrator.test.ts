@@ -334,4 +334,21 @@ describe("useDataTableOrchestrator", () => {
       }
     });
   });
+
+  it("keeps hasActiveFilters in the return (drives the empty-state predicate)", () => {
+    const options = buildOptions();
+    const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));
+
+    try {
+      const column = { props: { id: "name", filter: true } } as unknown as ColumnInstance;
+
+      expect(result.hasActiveFilters.value).toBe(false);
+
+      result.handleColumnFilterApply(column, { name: "abc" });
+
+      expect(result.hasActiveFilters.value).toBe(true);
+    } finally {
+      app.unmount();
+    }
+  });
 });

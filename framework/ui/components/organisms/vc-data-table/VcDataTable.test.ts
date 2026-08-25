@@ -147,14 +147,9 @@ function buildOrchestratorMock() {
 
     // Column filter helpers
     colFilter: {},
-    filterValues: ref({}),
-    updateFilter: vi.fn(),
     updateRangeFilter: vi.fn(),
-    clearFilter: vi.fn(),
-    clearAllFilters: vi.fn(),
     buildPayload: vi.fn(),
     hasActiveFilters: computed(() => false),
-    activeFilterCount: computed(() => 0),
 
     // Column filter template helpers
     showColumnFilter: vi.fn(() => false),

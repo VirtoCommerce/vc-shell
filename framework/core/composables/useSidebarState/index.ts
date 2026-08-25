@@ -34,8 +34,7 @@ const SIDEBAR_STATE_KEY: InjectionKey<UseSidebarStateReturn> = Symbol("SidebarSt
 /**
  * Provides sidebar state to the component tree. Must be called once in VcApp setup.
  * Idempotent: returns existing instance if already provided in the current tree.
- * Internally delegates to useMenuExpanded() for shared reactive state,
- * ensuring UserDropdownButton (which uses useMenuExpanded directly) stays in sync.
+ * Internally delegates to useMenuExpanded() so every consumer shares one reactive source.
  */
 export function provideSidebarState(): UseSidebarStateReturn {
   const existing = inject(SIDEBAR_STATE_KEY, null);

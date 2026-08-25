@@ -8,6 +8,9 @@ export interface GlobalSearchState {
   closeSearch: (bladeId: string) => void;
 }
 
+/**
+ * @deprecated Unused; will be removed in the next major. No replacement.
+ */
 export function createGlobalSearchService() {
   const isSearchVisible = ref<Record<string, boolean>>({});
   const searchQuery = ref<Record<string, string>>({});

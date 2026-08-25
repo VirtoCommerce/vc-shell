@@ -148,6 +148,8 @@ yarn docs:screenshot --story <id> --out <path>.png   # capture a Storybook scree
 
 CI auto-syncs on framework releases. See `cli/docs-sync/README.md` for details.
 
+`docs/adr/` holds architecture decision records. Read them before proposing a structural change.
+
 ## Debugging Tips
 
 - Check git history first for regression bugs: `git log --oneline -15` and `git diff HEAD~3`

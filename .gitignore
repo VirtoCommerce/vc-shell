@@ -82,7 +82,8 @@ package-lock.json
 
 *storybook.log
 .playwright-mcp
-/docs/
+/docs/*
+!/docs/adr/
 .mcp.json
 
 # Git worktrees

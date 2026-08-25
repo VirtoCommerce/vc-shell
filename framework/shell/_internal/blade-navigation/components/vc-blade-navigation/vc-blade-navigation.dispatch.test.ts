@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
+import { computed } from "vue";
 import { createShortcutDispatcher } from "./shortcut-dispatch";
+import { createBladeStack } from "@core/blade-navigation/useBladeStack";
+import { buildUrlFromStack } from "@core/blade-navigation/utils/urlSync";
+import type { IBladeStack } from "@core/blade-navigation/types";
+import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 
 function ev(init: Partial<KeyboardEvent> & { code?: string; key?: string }): KeyboardEvent {
   return {
@@ -183,5 +188,97 @@ describe("createShortcutDispatcher", () => {
     const e = ev({ code: "KeyS", ctrlKey: true });
     await expect(dispatch(e)).resolves.toBeUndefined();
     expect(e.preventDefault).toHaveBeenCalled();
+  });
+});
+
+// Esc used to close the blade without syncing the URL: it was the only close
+// path in vc-blade-navigation-new.vue that did not call syncUrlReplace, so the
+// address bar stayed on the closed blade. The stack owns the sync now, so any
+// dispatcher wired straight to closeBlade gets it. The wiring below mirrors the
+// component's; it does not mount it, so it pins the dispatcher/stack pair only.
+describe("Esc against the real blade stack", () => {
+  function registry(): IBladeRegistry {
+    const map = new Map<string, any>([
+      ["Orders", { component: {}, route: "/orders", isWorkspace: true }],
+      ["OrderDetails", { component: {}, route: "/order", isWorkspace: false }],
+    ]);
+    return {
+      registeredBladesMap: computed(() => map),
+      getBlade: (name: string) => map.get(name),
+      getBladeComponent: (name: string) => map.get(name)?.component,
+      getBladeByRoute: (route: string) => {
+        const normalized = route.replace(/^\/+/, "");
+        for (const [name, data] of map.entries()) {
+          if (data.route?.replace(/^\/+/, "") === normalized) return { name, data };
+        }
+        return undefined;
+      },
+    } as IBladeRegistry;
+  }
+
+  function makeRecorder() {
+    const calls: string[] = [];
+    let bound: IBladeStack | undefined;
+    const record = (verb: string) => () => calls.push(`${verb} ${buildUrlFromStack("", bound!.blades.value).path}`);
+    return {
+      calls,
+      bind: (s: IBladeStack) => (bound = s),
+      sink: { push: record("push"), replace: record("replace") },
+    };
+  }
+
+  it("closes the blade AND replaces the URL", async () => {
+    const { calls, bind, sink } = makeRecorder();
+    const stack = createBladeStack(registry(), undefined, sink);
+    bind(stack);
+
+    await stack.openWorkspace({ name: "Orders" });
+    await stack.openBlade({ name: "OrderDetails", param: "1" });
+    calls.length = 0;
+
+    const active = stack.activeBlade.value!;
+    const dispatch = createShortcutDispatcher({
+      isMac: false,
+      getActiveBlade: () => stack.activeBlade.value,
+      getToolbarItems: () => [],
+      isMobile: () => false,
+      isEnabled: () => true,
+      closeBlade: (id) => stack.closeBlade(id),
+      toggleMaximized: () => {},
+      isModalOpen: () => false,
+    });
+
+    await dispatch(ev({ key: "Escape" }));
+
+    expect(stack.blades.value.map((b) => b.name)).toEqual(["Orders"]);
+    expect(stack.activeBlade.value?.id).not.toBe(active.id);
+    expect(calls).toEqual(["replace /orders"]);
+  });
+
+  it("leaves the URL alone when a guard prevents the Esc close", async () => {
+    const { calls, bind, sink } = makeRecorder();
+    const stack = createBladeStack(registry(), undefined, sink);
+    bind(stack);
+
+    await stack.openWorkspace({ name: "Orders" });
+    await stack.openBlade({ name: "OrderDetails", param: "1" });
+    stack.registerBeforeClose(stack.activeBlade.value!.id, async () => true);
+    calls.length = 0;
+
+    const dispatch = createShortcutDispatcher({
+      isMac: false,
+      getActiveBlade: () => stack.activeBlade.value,
+      getToolbarItems: () => [],
+      isMobile: () => false,
+      isEnabled: () => true,
+      closeBlade: (id) => stack.closeBlade(id),
+      toggleMaximized: () => {},
+      isModalOpen: () => false,
+    });
+
+    await dispatch(ev({ key: "Escape" }));
+
+    expect(stack.blades.value).toHaveLength(2);
+    expect(calls).toEqual([]);
   });
 });

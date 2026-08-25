@@ -57,7 +57,9 @@ const messaging = useBladeMessaging();
 const router = useRouter();
 const { breadcrumbs, push, remove } = useBreadcrumbs();
 
-// ── URL sync helper (centralized in urlSync.ts) ─────────────────────────────
+// ── URL sync helper ─────────────────────────────────────────────────────────
+// The stack syncs itself after every navigation action. This instance covers
+// the one write that is not a stack mutation: the post-restore reconcile below.
 
 const { syncUrlReplace } = createUrlSync(router, bladeStack);
 
@@ -158,9 +160,6 @@ watchDebounced(
             const targetBlade = visibleBlades[visibleIndex + 1];
             if (targetBlade) {
               const prevented = await bladeStack.closeBlade(targetBlade.id);
-              if (!prevented) {
-                syncUrlReplace();
-              }
               return !prevented;
             }
             return true;
@@ -179,10 +178,7 @@ watchDebounced(
 // ── Event handlers ──────────────────────────────────────────────────────────
 
 async function onClose(bladeId: string): Promise<void> {
-  const prevented = await bladeStack.closeBlade(bladeId);
-  if (!prevented) {
-    syncUrlReplace();
-  }
+  await bladeStack.closeBlade(bladeId);
 }
 
 async function onParentCall(args: IParentCallArgs, bladeId: string): Promise<void> {
@@ -203,8 +199,7 @@ function mobileBackButtonFor(index: number): ReturnType<typeof h> | undefined {
     onBack: async () => {
       const blade = blades.value[index];
       if (blade) {
-        const prevented = await bladeStack.closeBlade(blade.id);
-        if (!prevented) syncUrlReplace();
+        await bladeStack.closeBlade(blade.id);
       }
     },
   });

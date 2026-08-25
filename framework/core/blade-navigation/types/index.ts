@@ -173,6 +173,28 @@ export interface ParsedBladeUrl {
 }
 
 /**
+ * Where the blade stack writes the URL after a navigation action.
+ *
+ * The stack decides *when* to sync and *which verb* to use; the sink resolves
+ * the location from the stack and talks to the router. That split keeps the
+ * router (and the tenant prefix, which only the router knows) out of the stack.
+ *
+ * `createRouterUrlSink` in `utils/urlSync.ts` is the router-backed implementation.
+ */
+export interface UrlSink {
+  /** Push a history entry for the stack's current URL (blade opened). */
+  push(): void;
+  /** Replace the current history entry with the stack's current URL (blade closed). */
+  replace(): void;
+}
+
+/** Sink for stacks with no router: Storybook, standalone mounts, unit tests. */
+export const NOOP_URL_SINK: UrlSink = Object.freeze({
+  push: () => {},
+  replace: () => {},
+});
+
+/**
  * Public interface for the BladeStack state machine.
  */
 export interface IBladeStack {

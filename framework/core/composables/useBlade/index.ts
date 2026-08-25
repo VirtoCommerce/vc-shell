@@ -8,8 +8,7 @@ import {
 } from "@core/blade-navigation/types";
 import type { BladeOpenEvent, IBladeStack, IBladeBanner } from "@core/blade-navigation/types";
 export type { IBladeBanner } from "@core/blade-navigation/types";
-import { bladeStackInstance, bladeMessagingInstance, bladeNavigationInstance } from "@core/blade-navigation/singletons";
-import { createUrlSync } from "@core/blade-navigation/utils/urlSync";
+import { bladeStackInstance, bladeMessagingInstance } from "@core/blade-navigation/singletons";
 
 export interface UseBladeReturn<TOptions = Record<string, unknown>> {
   // Identity (read-only) — runtime error outside blade context
@@ -105,18 +104,6 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
   // Blade banners — optional (via inject, no error if missing)
   const bannersRef = getCurrentInstance() ? inject(BladeBannersKey, undefined) : undefined;
 
-  // ── URL sync (lazy — only created if router available) ────────────────────
-  let _urlSync: ReturnType<typeof createUrlSync> | undefined;
-
-  function getUrlSync() {
-    if (_urlSync) return _urlSync;
-    const router = bladeNavigationInstance?.router;
-    if (router) {
-      _urlSync = createUrlSync(router, bladeStack);
-    }
-    return _urlSync;
-  }
-
   // ── Identity (read-only) ────────────────────────────────────────────────
   const id = computed(() => {
     if (!descriptor) requireContext("id");
@@ -192,30 +179,18 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
         await bladeStack.openBlade(bladeEvent);
       }
     }
-
-    // URL sync
-    const openedBlade = bladeStack.activeBlade.value;
-    if (openedBlade?.url) {
-      getUrlSync()?.syncUrlPush();
-    }
   }
 
   // ── Actions ──────────────────────────────────────────────────────────────
 
   async function closeSelf(): Promise<boolean> {
     if (!descriptor) requireContext("closeSelf()");
-    const result = await bladeStack.closeBlade(descriptor!.value.id);
-    if (!result) {
-      // Blade was closed — sync URL
-      getUrlSync()?.syncUrlReplace();
-    }
-    return result;
+    return bladeStack.closeBlade(descriptor!.value.id);
   }
 
   async function closeChildren(): Promise<void> {
     if (!descriptor) requireContext("closeChildren()");
     await bladeStack.closeChildren(descriptor!.value.id);
-    getUrlSync()?.syncUrlReplace();
   }
 
   async function replaceWith(event: BladeOpenEvent): Promise<void> {
@@ -224,10 +199,6 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
       ...event,
       parentId: descriptor!.value.parentId,
     });
-    const openedBlade = bladeStack.activeBlade.value;
-    if (openedBlade?.url) {
-      getUrlSync()?.syncUrlReplace();
-    }
   }
 
   async function coverWith(event: BladeOpenEvent): Promise<void> {
@@ -236,10 +207,6 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
       ...event,
       parentId: descriptor!.value.parentId,
     });
-    const openedBlade = bladeStack.activeBlade.value;
-    if (openedBlade?.url) {
-      getUrlSync()?.syncUrlPush();
-    }
   }
 
   // ── Communication ───────────────────────────────────────────────────────

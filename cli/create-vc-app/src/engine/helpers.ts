@@ -57,6 +57,7 @@ export function buildTemplateData(options: {
   tenantRoutes?: boolean;
   aiAgent?: boolean;
   dashboard?: boolean;
+  moduleFederation?: boolean;
   mocks?: boolean;
 }): Record<string, string | boolean> {
   const moduleName = options.moduleName || "";
@@ -83,6 +84,7 @@ export function buildTemplateData(options: {
     data.tenantRoutes = options.tenantRoutes || false;
     data.aiAgent = options.aiAgent || false;
     data.dashboard = options.dashboard || false;
+    data.moduleFederation = options.moduleFederation || false;
     data.mocks = options.mocks || false;
   }
 

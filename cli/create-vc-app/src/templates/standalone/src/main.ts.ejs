@@ -1,4 +1,7 @@
 import VirtoShellFramework, { notification, useUser, useLanguages } from "@vc-shell/framework";
+<% if (moduleFederation) { -%>
+import { registerRemoteModules } from "@vc-shell/mf-host";
+<% } -%>
 import { createApp } from "vue";
 import { router } from "./router";
 import * as locales from "./locales";
@@ -63,6 +66,13 @@ async function startApp() {
     });
   };
 
+<% if (moduleFederation) { -%>
+  // Register remote modules BEFORE mount so the provide/inject keys
+  // (ModulesReadyKey, ModulesLoadErrorKey) are available to mounted components.
+  // Fire-and-forget — sets modulesReady/modulesLoadError when complete.
+  registerRemoteModules(app, { router, appName: "<%- AppName %>" });
+
+<% } -%>
   await router.isReady();
 
   app.mount("#app");

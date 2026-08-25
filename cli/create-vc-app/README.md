@@ -39,6 +39,7 @@ npx @vc-shell/create-vc-app my-module --type dynamic-module --module-name "Revie
 | `--tenant-routes`      | Include tenant routing (`/:tenantId` prefix)     | `false`                |
 | `--ai-agent`           | Include AI Agent configuration                   | `false`                |
 | `--dashboard`          | Include Dashboard with widgets                   | `false`                |
+| `--module-federation`  | Include Module Federation host runtime           | `false`                |
 | `--mocks`              | Include sample module with mock data             | `false`                |
 | `--overwrite`          | Overwrite existing files without confirmation    | `false`                |
 | `--help`, `-h`         | Show help                                        | —                      |

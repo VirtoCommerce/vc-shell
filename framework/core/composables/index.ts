@@ -28,7 +28,6 @@ export * from "@core/composables/useWebVitals";
 export * from "@core/composables/useBladeWidgets";
 export * from "@core/composables/bladeContext";
 export * from "@core/composables/useModificationTracker";
-export * from "@core/composables/useMenuExpanded";
 export * from "@core/composables/usePopup";
 export * from "@core/composables/useResponsive";
 export * from "@core/composables/useEnvironmentName";

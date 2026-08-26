@@ -28,6 +28,7 @@ ${pc.bold("Options (create):")}
   --tenant-routes            Include tenant routing (/:tenantId prefix)
   --ai-agent                 Include AI Agent configuration
   --dashboard                Include Dashboard with widgets
+  --module-federation        Include Module Federation host runtime
   --mocks                    Include sample module with mock data
   --overwrite                Overwrite existing files
   --help, -h                 Show this help
@@ -46,7 +47,7 @@ ${pc.bold("Docs:")} https://docs.virtocommerce.org/platform/developer-guide/late
 async function main() {
   const args = mri<CLIArgs>(argv.slice(2), {
     alias: { h: "help", v: "version" },
-    boolean: ["help", "version", "mocks", "overwrite", "tenant-routes", "ai-agent", "dashboard"],
+    boolean: ["help", "version", "mocks", "overwrite", "tenant-routes", "ai-agent", "dashboard", "module-federation"],
     string: ["type", "name", "app-name", "package-name", "module-name", "base-path"],
   });
 

@@ -101,6 +101,7 @@ Collect project parameters through dialog, then run CLI in **non-interactive mod
    - `--dashboard` — Include a dashboard page
    - `--tenant-routes` — Include tenant-aware routing
    - `--ai-agent` — Include AI agent integration scaffold
+   - `--module-federation` — Include the Module Federation host runtime (load remote modules)
    - `--mocks` — Include sample modules with mock data (demo content to explore the framework)
 
 ### Execution
@@ -110,7 +111,7 @@ Collect project parameters through dialog, then run CLI in **non-interactive mod
 ```bash
 npx @vc-shell/create-vc-app@alpha <projectName> \
   --type standalone \
-  [--dashboard] [--tenant-routes] [--ai-agent] [--mocks]
+  [--dashboard] [--tenant-routes] [--ai-agent] [--module-federation] [--mocks]
 ```
 
 **IMPORTANT:** Do NOT pass `--module-name` — the starter module is opt-in and unnecessary because this skill generates custom modules via `/vc-app generate`.
@@ -125,6 +126,7 @@ Available CLI flags (see `cli/create-vc-app/README.md` for full list):
 | `--dashboard` | Include Dashboard |
 | `--tenant-routes` | Include tenant routing |
 | `--ai-agent` | Include AI Agent config |
+| `--module-federation` | Include Module Federation host runtime |
 | `--mocks` | Include sample modules with mock data (demo content) |
 | `--overwrite` | Overwrite existing files |
 
@@ -1198,7 +1200,7 @@ After the user confirms the plan:
 If `DESIGN_PLAN.needsScaffold` is true, run the `/vc-app create` flow:
 
 - Use `DESIGN_PLAN.appName` as the project name
-- Enable default options (no dashboard, no tenant-routes, no ai-agent, no mocks)
+- Enable default options (no dashboard, no tenant-routes, no ai-agent, no module-federation, no mocks)
 - After scaffold completes, `cd` into the new project directory
 - Update project root for subsequent steps
 

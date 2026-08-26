@@ -70,6 +70,7 @@ export async function initCommand(args: CLIArgs, templateRoot: string): Promise<
       tenantRoutes: args["tenant-routes"] || false,
       aiAgent: args["ai-agent"] || false,
       dashboard: args.dashboard || false,
+      moduleFederation: args["module-federation"] || false,
       mocks: args.mocks || false,
     };
   } else {
@@ -180,6 +181,12 @@ export async function initCommand(args: CLIArgs, templateRoot: string): Promise<
             initial: true,
           },
           {
+            type: projectType === "dynamic-module" ? null : "confirm",
+            name: "moduleFederation",
+            message: "Include Module Federation host (load remote modules)?",
+            initial: false,
+          },
+          {
             name: "mocks",
             type: "confirm",
             message: "Include sample module with mock data?",
@@ -199,6 +206,7 @@ export async function initCommand(args: CLIArgs, templateRoot: string): Promise<
         tenantRoutes: phase2.tenantRoutes || false,
         aiAgent: phase2.aiAgent || false,
         dashboard: phase2.dashboard ?? true,
+        moduleFederation: phase2.moduleFederation || false,
         mocks: phase2.mocks || false,
       };
     } catch (e) {

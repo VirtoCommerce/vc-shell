@@ -124,6 +124,7 @@ describe("buildTemplateData", () => {
       basePath: "/apps/my-app/",
       tenantRoutes: true,
       dashboard: true,
+      moduleFederation: true,
       mocks: false,
     });
     expect(data.AppName).toBe("my-app");
@@ -131,6 +132,12 @@ describe("buildTemplateData", () => {
     expect(data.BasePath).toBe("/apps/my-app/");
     expect(data.tenantRoutes).toBe(true);
     expect(data.dashboard).toBe(true);
+    expect(data.moduleFederation).toBe(true);
     expect(data.mocks).toBe(false);
+  });
+
+  it("defaults moduleFederation to false", () => {
+    const data = buildTemplateData({ moduleName: "Orders", packageName: "my-app" });
+    expect(data.moduleFederation).toBe(false);
   });
 });

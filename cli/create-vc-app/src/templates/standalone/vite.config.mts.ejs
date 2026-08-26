@@ -1,5 +1,11 @@
 import { getApplicationConfiguration } from "@vc-shell/config-generator";
+<%_ if (moduleFederation) { _%>
+import { mfHostConfig } from "@vc-shell/mf-host/vite";
+<%_ } _%>
 
 export default getApplicationConfiguration({
+<%_ if (moduleFederation) { _%>
+  ...mfHostConfig(),
+<%_ } _%>
   // Add you extra Vite configuration here
 });

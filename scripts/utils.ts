@@ -27,6 +27,43 @@ function loadPeerVersions(cwd: string): VersionMap | null {
   }
 }
 
+const DEP_BLOCK_OPEN = /^\s*"(?:dependencies|devDependencies)"\s*:\s*\{\s*$/;
+const DEP_BLOCK_CLOSE = /^\s*\},?\s*$/;
+const DEP_ENTRY = /^(\s*")([^"]+)("\s*:\s*")([^"]*)("\s*,?\s*)$/;
+
+/**
+ * Not parsed as JSON: the templates are `.ejs` and may hold EJS tags at object
+ * level, so `readJsonSync` would throw and a `JSON.stringify` write-back would
+ * drop the tags. Scoped to the dependency blocks because `lint-staged` is both
+ * a dev dependency and a script name.
+ */
+function rewriteDependencyVersions(source: string, version: string, peerVersions: VersionMap | null): string {
+  let inDepBlock = false;
+
+  return source
+    .split("\n")
+    .map((line) => {
+      if (!inDepBlock) {
+        if (DEP_BLOCK_OPEN.test(line)) inDepBlock = true;
+        return line;
+      }
+
+      if (DEP_BLOCK_CLOSE.test(line)) {
+        inDepBlock = false;
+        return line;
+      }
+
+      const entry = DEP_ENTRY.exec(line);
+      if (!entry) return line;
+
+      const [, open, name, middle, current, close] = entry;
+      const next = name.startsWith("@vc-shell/") ? `^${version}` : (peerVersions?.[name] ?? current);
+
+      return next === current ? line : `${open}${name}${middle}${next}${close}`;
+    })
+    .join("\n");
+}
+
 // Updates the boilerplate template package versions to stay aligned with the curated peer-versions map.
 export async function updateBoilerplatePkgVersions(cwd: string = process.cwd()) {
   const version = fs.readJsonSync(path.join(cwd, "package.json")).version;
@@ -44,35 +81,9 @@ export async function updateBoilerplatePkgVersions(cwd: string = process.cwd()) 
       continue;
     }
 
-    const boilerplatePkg = fs.readJsonSync(pkgPath);
+    const source = fs.readFileSync(pkgPath, "utf-8");
 
-    // Bump @vc-shell/* deps to current repo version.
-    for (const depType of ["dependencies", "devDependencies"] as const) {
-      const deps = boilerplatePkg[depType];
-      if (!deps) continue;
-      for (const name of Object.keys(deps)) {
-        if (name.startsWith("@vc-shell/")) {
-          deps[name] = `^${version}`;
-        }
-      }
-    }
-
-    // Apply intersection sync from peer-versions map (if loaded).
-    if (peerVersions) {
-      for (const depType of ["dependencies", "devDependencies"] as const) {
-        const deps = boilerplatePkg[depType];
-        if (!deps) continue;
-        for (const name of Object.keys(deps)) {
-          if (name.startsWith("@vc-shell/")) continue;
-          const peerVersion = peerVersions[name];
-          if (!peerVersion) continue;
-          if (deps[name] === peerVersion) continue;
-          deps[name] = peerVersion;
-        }
-      }
-    }
-
-    writeFileSync(pkgPath, JSON.stringify(boilerplatePkg, null, 2) + "\n");
+    writeFileSync(pkgPath, rewriteDependencyVersions(source, version, peerVersions));
     console.log(`  ✓ Updated ${path.basename(path.dirname(pkgPath))} template to ^${version}`);
   }
 }

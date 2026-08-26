@@ -9,6 +9,7 @@ export interface ProjectOptions {
   tenantRoutes: boolean;
   aiAgent: boolean;
   dashboard: boolean;
+  moduleFederation: boolean;
   mocks: boolean;
 }
 
@@ -39,4 +40,5 @@ export interface CLIArgs {
   "tenant-routes"?: boolean;
   "ai-agent"?: boolean;
   dashboard?: boolean;
+  "module-federation"?: boolean;
 }

@@ -204,6 +204,88 @@ describe("updateBoilerplatePkgVersions (rewritten)", () => {
     expect(warnSpy).toHaveBeenCalled();
   });
 
+  // The templates are `.ejs`, not JSON — a conditional dependency puts an EJS
+  // control tag at object level. Parsing the file would throw and writing it
+  // back through JSON.stringify would delete the tag.
+  it("bumps versions in a template carrying EJS control tags, preserving the tags", async () => {
+    const root = mkdtempSync(join(tmpdir(), "vc-utils-test-"));
+    cleanupPaths.push(root);
+    writeFileSync(
+      join(root, "package.json"),
+      JSON.stringify({ name: "@vc-shell/root", version: "2.0.0-alpha.50" }, null, 2),
+    );
+    const tplDir = join(root, TEMPLATE_REL, "standalone");
+    mkdirSync(tplDir, { recursive: true });
+    writeFileSync(
+      join(tplDir, "_package.json.ejs"),
+      [
+        "{",
+        '  "name": "<%- PackageName %>",',
+        '  "dependencies": {',
+        '    "@vc-shell/framework": "^1.0.0",',
+        "<%_ if (moduleFederation) { _%>",
+        '    "@vc-shell/mf-host": "^1.0.0",',
+        "<%_ } _%>",
+        '    "vue": "^3.0.0"',
+        "  }",
+        "}",
+        "",
+      ].join("\n"),
+    );
+    const configsDir = join(root, "configs");
+    mkdirSync(configsDir, { recursive: true });
+    writeFileSync(
+      join(configsDir, "peer-versions.json"),
+      JSON.stringify({ description: "", versions: { vue: "^3.5.30" } }, null, 2),
+    );
+
+    await updateBoilerplatePkgVersions(root);
+
+    const out = readFileSync(join(tplDir, "_package.json.ejs"), "utf-8");
+    expect(out).toContain("<%_ if (moduleFederation) { _%>");
+    expect(out).toContain("<%_ } _%>");
+    expect(out).toContain('"name": "<%- PackageName %>"');
+    expect(out).toContain('"@vc-shell/framework": "^2.0.0-alpha.50"');
+    expect(out).toContain('"@vc-shell/mf-host": "^2.0.0-alpha.50"');
+    expect(out).toContain('"vue": "^3.5.30"');
+  });
+
+  // `lint-staged` is both a dev dependency and a script name, so a whole-file
+  // rewrite would corrupt the script.
+  it("rewrites a package name only inside dependency blocks", async () => {
+    const root = mkdtempSync(join(tmpdir(), "vc-utils-test-"));
+    cleanupPaths.push(root);
+    writeFileSync(
+      join(root, "package.json"),
+      JSON.stringify({ name: "@vc-shell/root", version: "2.0.0-alpha.50" }, null, 2),
+    );
+    const tplDir = join(root, TEMPLATE_REL, "standalone");
+    mkdirSync(tplDir, { recursive: true });
+    writeFileSync(
+      join(tplDir, "_package.json.ejs"),
+      JSON.stringify(
+        {
+          scripts: { "lint-staged": "lint-staged" },
+          devDependencies: { "lint-staged": "^14.0.0" },
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+    const configsDir = join(root, "configs");
+    mkdirSync(configsDir, { recursive: true });
+    writeFileSync(
+      join(configsDir, "peer-versions.json"),
+      JSON.stringify({ description: "", versions: { "lint-staged": "^15.2.0" } }, null, 2),
+    );
+
+    await updateBoilerplatePkgVersions(root);
+
+    const tpl = JSON.parse(readFileSync(join(tplDir, "_package.json.ejs"), "utf-8"));
+    expect(tpl.scripts["lint-staged"]).toBe("lint-staged");
+    expect(tpl.devDependencies["lint-staged"]).toBe("^15.2.0");
+  });
+
   it("warns and falls back when peer-versions.json has no `versions` object", async () => {
     const root = mkdtempSync(join(tmpdir(), "vc-utils-test-"));
     cleanupPaths.push(root);

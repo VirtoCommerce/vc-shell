@@ -4,7 +4,7 @@ import path from "node:path";
 import os from "node:os";
 import prettier from "prettier";
 import { initCommand } from "./init.js";
-import { renderDir } from "../engine/template.js";
+import { renderDir, renderTemplate } from "../engine/template.js";
 import { buildTemplateData } from "../engine/helpers.js";
 
 const templateRoot = path.resolve(import.meta.dirname, "..", "templates");
@@ -167,6 +167,41 @@ describe("initCommand — standalone", () => {
     const mainTs = readGenerated(root, "src/main.ts");
 
     expect(mainTs).not.toContain("aiAgent:");
+  });
+
+  it("includes Module Federation host when --module-federation is set", async () => {
+    await initCommand({ _: [root], type: "standalone", "module-federation": true, overwrite: true }, templateRoot);
+
+    const mainTs = readGenerated(root, "src/main.ts");
+    const viteConfig = readGenerated(root, "vite.config.mts");
+    const pkg = JSON.parse(readGenerated(root, "package.json"));
+
+    expect(mainTs).toContain('import { registerRemoteModules } from "@vc-shell/mf-host"');
+    // Prettier may wrap the call, so match the parts rather than one literal line.
+    expect(mainTs).toMatch(/registerRemoteModules\(app,\s*\{\s*router,\s*appName: "[^"]+",?\s*\}\);/);
+    // Must run before router.isReady() and mount, so the provide/inject keys
+    // reach mounted components. indexOf returns -1 for a missing needle, so
+    // assert the call is present before comparing offsets.
+    const registerAt = mainTs.indexOf("registerRemoteModules(app,");
+    expect(registerAt).toBeGreaterThan(-1);
+    expect(registerAt).toBeLessThan(mainTs.indexOf("await router.isReady()"));
+    expect(registerAt).toBeLessThan(mainTs.indexOf('app.mount("#app")'));
+    expect(viteConfig).toContain('import { mfHostConfig } from "@vc-shell/mf-host/vite"');
+    expect(viteConfig).toContain("...mfHostConfig()");
+    expect(pkg.dependencies["@vc-shell/mf-host"]).toBeDefined();
+  });
+
+  it("excludes Module Federation host by default", async () => {
+    await initCommand({ _: [root], type: "standalone", overwrite: true }, templateRoot);
+
+    const mainTs = readGenerated(root, "src/main.ts");
+    const viteConfig = readGenerated(root, "vite.config.mts");
+    const pkg = JSON.parse(readGenerated(root, "package.json"));
+
+    expect(mainTs).not.toContain("@vc-shell/mf-host");
+    expect(mainTs).not.toContain("registerRemoteModules");
+    expect(viteConfig).not.toContain("mfHostConfig");
+    expect(pkg.dependencies["@vc-shell/mf-host"]).toBeUndefined();
   });
 
   it("includes tenant routes when --tenant-routes is set", async () => {
@@ -385,10 +420,16 @@ describe("initCommand — generated output is formatted", () => {
         "tenant-routes": true,
         "ai-agent": true,
         dashboard: true,
+        "module-federation": true,
         mocks: true,
       },
     },
     { name: "standalone, dashboard only", args: { type: "standalone", dashboard: true } },
+    { name: "standalone, module federation", args: { type: "standalone", "module-federation": true } },
+    {
+      name: "standalone, module federation with module",
+      args: { type: "standalone", "module-name": "Catalog", "module-federation": true, dashboard: true },
+    },
     { name: "dynamic-module", args: { type: "dynamic-module", "module-name": "Reviews" } },
   ];
 
@@ -444,6 +485,60 @@ describe("template rendering leaves no EJS whitespace artifacts", () => {
       expect(routes).not.toMatch(/[[{]\n\s*\n/);
       expect(routes).not.toMatch(/\n\s*\n\s*[\]}]/);
       expect(routes).not.toMatch(/\n{3,}/);
+    });
+  }
+});
+
+// Same reasoning for the Module Federation conditionals: assert the raw render,
+// not the Prettier-normalised output.
+describe("Module Federation templates render without EJS whitespace artifacts", () => {
+  let root: string;
+
+  beforeEach(() => {
+    root = tmpDir();
+  });
+
+  afterEach(() => {
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  const files = ["src/main.ts.ejs", "vite.config.mts.ejs", "_package.json.ejs"];
+
+  for (const moduleFederation of [false, true]) {
+    it(`renders cleanly with moduleFederation=${moduleFederation}`, () => {
+      const data = buildTemplateData({
+        projectName: "demo",
+        packageName: "demo",
+        moduleName: "Orders",
+        basePath: "/apps/demo/",
+        tenantRoutes: false,
+        dashboard: false,
+        aiAgent: false,
+        moduleFederation,
+        mocks: false,
+      });
+
+      for (const file of files) {
+        // renderTemplate strips the .ejs suffix from the output path.
+        const out = path.join(root, path.basename(file).replace(/\.ejs$/, ""));
+        renderTemplate(path.join(templateRoot, "standalone", file), out, data);
+        const rendered = fs.readFileSync(out, "utf-8");
+
+        expect(rendered, file).not.toContain("<%");
+        expect(rendered, file).not.toMatch(/[[{]\n\s*\n/);
+        expect(rendered, file).not.toMatch(/\n\s*\n\s*[\]}]/);
+        expect(rendered, file).not.toMatch(/\n{3,}/);
+      }
+
+      // The release script rewrites dependency versions in this file, so it must
+      // stay line-oriented and, with the conditional off, valid JSON.
+      const pkg = fs.readFileSync(path.join(root, "_package.json"), "utf-8");
+      if (moduleFederation) {
+        expect(pkg).toContain('"@vc-shell/mf-host"');
+      } else {
+        expect(() => JSON.parse(pkg)).not.toThrow();
+        expect(pkg).not.toContain("mf-host");
+      }
     });
   }
 });

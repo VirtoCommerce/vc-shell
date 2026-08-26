@@ -20,7 +20,6 @@ This document provides an overview of all services and their corresponding compo
     - [useMenuService](#usemenuservice)
     - [useDashboard](#usedashboard)
     - [useAppBarMobileButtons](#useappbarmobilebuttons)
-    - [useGlobalSearch](#useglobalsearch)
     - [useAppBarWidget](#useappbarwidget)
     - [useSettingsMenu](#usesettingsmenu)
     - [useToolbar](#usetoolbar)
@@ -303,17 +302,6 @@ The useAppBarMobileButtons composable provides access to the App Bar Mobile Butt
 
 - `provideAppBarMobileButtonsService()`: Creates and provides the service to the component tree
 - `useAppBarMobileButtons()`: Retrieves the service instance from the component's injection context
-
-### useGlobalSearch
-
-**File:** `/framework/core/composables/useGlobalSearch/index.ts`
-
-The useGlobalSearch composable provides access to the Global Search Service within Vue components.
-
-**Key Functions:**
-
-- `provideGlobalSearchService()`: Creates and provides the service to the component tree
-- `useGlobalSearch()`: Retrieves the service instance from the component's injection context
 
 ### useAppBarWidget
 

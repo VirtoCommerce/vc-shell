@@ -25,10 +25,6 @@ vi.mock("../../../../../core/composables/useAppBarMobileButtons", () => ({
   provideAppBarMobileButtonsService: () => ({ register: mockRegisterMobileButton }),
 }));
 
-vi.mock("../../../../../core/composables/useGlobalSearch", () => ({
-  provideGlobalSearch: vi.fn(),
-}));
-
 vi.mock("../../../../../core/composables/useDashboard", () => ({
   provideDashboardService: vi.fn(),
 }));

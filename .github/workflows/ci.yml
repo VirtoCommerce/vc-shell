@@ -1,8 +1,7 @@
 # CI
-# Pre-merge gate. Two parallel jobs: static-checks (lint:check,
-# format:check, stylelint:check, typecheck, check:locales, check:circular,
-# check:layers) and test (framework unit tests). Both must pass for
-# branch-protection to allow a merge into main.
+# Pre-merge gate. Runs once per commit: pull_request covers topic branches,
+# push covers only main and dev. Trunk runs are never cancelled -- see the
+# concurrency block for why.
 #
 # See .github/workflows/README.md for the full workflow overview.
 
@@ -26,11 +25,14 @@ on:
       - ".stylelintrc.json"
       - "yarn.lock"
       - ".github/workflows/ci.yml"
+  # Trunk only. Topic branches are covered by pull_request; listing them here
+  # too runs CI twice per commit, and the two runs land in different
+  # concurrency groups (refs/heads/<branch> vs refs/pull/<n>/merge) so neither
+  # cancels the other.
   push:
     branches:
       - main
       - dev
-      - "feat/**"
     paths:
       - "framework/**"
       - "cli/**"
@@ -48,8 +50,13 @@ on:
       - ".github/workflows/ci.yml"
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Pull requests: one run per PR, a new push supersedes the previous run.
+  # Trunk: one group per commit, never cancelled. Runs are not created in
+  # commit order, so a shared trunk group lets an older commit's run cancel a
+  # newer one -- and a shared group cancels pending runs too, not just
+  # in-progress ones -- which leaves main HEAD unverified.
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   static-checks:

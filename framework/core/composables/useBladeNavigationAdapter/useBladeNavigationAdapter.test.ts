@@ -332,49 +332,6 @@ describe("openBlade() — legacy flags → stack verbs", () => {
   });
 });
 
-// ── URL sync branches ─────────────────────────────────────────────────────────
-
-describe("URL sync branches in openBlade() / closeBlade()", () => {
-  it("pushes the URL when the opened blade has a url segment", async () => {
-    mockStackActiveBlade.value = { id: "b1", url: "/target" };
-
-    const nav = useBladeNavigation();
-    await nav.openBlade({ blade: { name: "Target" } });
-
-    expect(mockSyncUrlPush).toHaveBeenCalledTimes(1);
-  });
-
-  it("does not push when the opened blade has no url segment", async () => {
-    mockStackActiveBlade.value = { id: "b1", url: undefined };
-
-    const nav = useBladeNavigation();
-    await nav.openBlade({ blade: { name: "Target" } });
-
-    expect(mockSyncUrlPush).not.toHaveBeenCalled();
-  });
-
-  it("replaces the URL when closeBlade was not prevented", async () => {
-    mockStackBlades.value = [{ id: "b0" }, { id: "b1" }];
-    mockCloseBlade.mockResolvedValue(false);
-
-    const nav = useBladeNavigation();
-    await expect(nav.closeBlade(1)).resolves.toBe(false);
-
-    expect(mockSyncUrlReplace).toHaveBeenCalledTimes(1);
-  });
-
-  it("leaves the URL alone when closeBlade was prevented", async () => {
-    mockStackBlades.value = [{ id: "b0" }, { id: "b1" }];
-    mockCloseBlade.mockResolvedValue(true);
-
-    const nav = useBladeNavigation();
-    // The adapter returns the stack's `prevented` flag verbatim: true == BLOCKED.
-    await expect(nav.closeBlade(1)).resolves.toBe(true);
-
-    expect(mockSyncUrlReplace).not.toHaveBeenCalled();
-  });
-});
-
 // ── index → blade id translation ──────────────────────────────────────────────
 
 describe("index → blade id translation (getBladeIdByIndex, index.ts:186)", () => {

@@ -238,20 +238,23 @@ describe("createBladeStack — URL sink", () => {
     });
   });
 
-  describe("parity with the call sites this replaced", () => {
-    // The old callers ran their sync line after every non-throwing return, not
-    // only after a real mutation. The URL is derived from the stack, so on those
-    // paths it resolves to the current URL — but the call must still happen, or
-    // a drifted address bar would stop being repaired.
-
-    it("openWorkspace with the same workspace still pushes", async () => {
+  describe("actions that changed nothing leave the history alone", () => {
+    it("openWorkspace with the same workspace records nothing", async () => {
       await stack.openWorkspace({ name: "Orders" });
       recorder.calls.length = 0;
 
       await stack.openWorkspace({ name: "Orders" });
 
-      expect(verbs(recorder.calls)).toEqual(["push /orders"]);
+      expect(recorder.calls).toEqual([]);
       expect(stack.blades.value).toHaveLength(1);
+    });
+
+    it("clicking the same workspace repeatedly adds one history entry", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openWorkspace({ name: "Orders" });
+
+      expect(verbs(recorder.calls)).toEqual(["push /orders"]);
     });
 
     it("openBlade still pushes when a child guard prevented the open", async () => {
@@ -266,24 +269,28 @@ describe("createBladeStack — URL sink", () => {
       expect(verbs(recorder.calls)).toEqual(["push /orders/order/1"]);
     });
 
-    it("closeBlade of an unknown id still replaces", async () => {
+    it("closeBlade of an unknown id records nothing", async () => {
       await stack.openWorkspace({ name: "Orders" });
       recorder.calls.length = 0;
 
       const prevented = await stack.closeBlade("nope");
 
       expect(prevented).toBe(false);
-      expect(verbs(recorder.calls)).toEqual(["replace /orders"]);
+      expect(recorder.calls).toEqual([]);
     });
 
-    it("closeBlade of the workspace still replaces", async () => {
+    it("closeBlade of the workspace records nothing", async () => {
+      // The workspace blade cannot be closed. Rewriting the URL for that
+      // refusal would replace the history entry of a navigation that never was.
       await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "1" });
       recorder.calls.length = 0;
 
       const prevented = await stack.closeBlade(stack.workspace.value!.id);
 
       expect(prevented).toBe(false);
-      expect(verbs(recorder.calls)).toEqual(["replace /orders"]);
+      expect(recorder.calls).toEqual([]);
+      expect(stack.blades.value).toHaveLength(2);
     });
 
     it("records nothing when the action throws", async () => {
@@ -296,8 +303,6 @@ describe("createBladeStack — URL sink", () => {
     });
 
     it("a denied workspace leaves the stack and the URL where they were", async () => {
-      // Permission-denied is a non-throwing early return: the old call site still
-      // ran its sync, which rebuilt the unchanged location. Same here.
       const denied = createBladeStack(registry(), (p) => p !== "admin", recorder.sink);
       recorder.bind(denied);
       vi.spyOn(console, "warn").mockImplementation(() => {});
@@ -307,7 +312,7 @@ describe("createBladeStack — URL sink", () => {
       await denied.openWorkspace({ name: "Secret" });
 
       expect(denied.workspace.value?.name).toBe("Orders");
-      expect(verbs(recorder.calls)).toEqual(["push /orders"]);
+      expect(recorder.calls).toEqual([]);
     });
 
     it("records nothing when the denied workspace is the first one", async () => {

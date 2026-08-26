@@ -12,6 +12,13 @@ import {
 
 let _idCounter = 0;
 
+/**
+ * What a close attempt did. The public `closeBlade` collapses this back to the
+ * legacy "prevented" boolean, but the URL sync needs to tell a real close from
+ * a refusal (unknown id, or the workspace blade, which cannot be closed).
+ */
+type CloseOutcome = "closed" | "prevented" | "refused";
+
 /** Generate a unique blade instance ID */
 function generateBladeId(): string {
   return `blade_${++_idCounter}_${Math.random().toString(36).slice(2, 8)}`;
@@ -113,11 +120,12 @@ export function createBladeStack(
 
   // ── Actions ───────────────────────────────────────────────────────────────
 
-  async function _openWorkspace(event: BladeOpenEvent): Promise<void> {
+  /** @returns true when the workspace was actually opened. */
+  async function _openWorkspace(event: BladeOpenEvent): Promise<boolean> {
     const currentWorkspace = workspace.value;
 
     // Same workspace — no-op
-    if (currentWorkspace?.name === event.name) return;
+    if (currentWorkspace?.name === event.name) return false;
 
     // Validate blade exists in registry
     const bladeData = bladeRegistry.getBlade(event.name);
@@ -128,7 +136,7 @@ export function createBladeStack(
     // Permission check (workspace only)
     if (hasAccess && bladeData.permissions && !hasAccess(bladeData.permissions)) {
       console.warn(`[BladeStack] Access denied to workspace '${event.name}'`);
-      return;
+      return false;
     }
 
     // Close all existing blades (no guards — workspace switch is unconditional)
@@ -143,6 +151,7 @@ export function createBladeStack(
     if (event.onClose) _onCloseCallbacks.set(descriptor.id, event.onClose);
 
     event.onOpen?.();
+    return true;
   }
 
   async function _openBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
@@ -185,19 +194,19 @@ export function createBladeStack(
     event.onOpen?.();
   }
 
-  async function _closeBlade(bladeId: string): Promise<boolean> {
+  async function _closeBlade(bladeId: string): Promise<CloseOutcome> {
     const index = _blades.value.findIndex((b) => b.id === bladeId);
-    if (index === -1) return false;
+    if (index === -1) return "refused";
 
     // Cannot close the workspace blade
-    if (index === 0) return false;
+    if (index === 0) return "refused";
 
     // Everything from this blade onwards will be closed
     const bladesToClose = _blades.value.slice(index);
 
     // Check guards (deepest first)
     const prevented = await _checkGuards(bladesToClose);
-    if (prevented) return true;
+    if (prevented) return "prevented";
 
     // Cleanup and fire onClose callbacks
     _closeBladesCleanup(bladesToClose);
@@ -213,7 +222,7 @@ export function createBladeStack(
       _blades.value = updated;
     }
 
-    return false;
+    return "closed";
   }
 
   async function _replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
@@ -317,15 +326,16 @@ export function createBladeStack(
   // The sink resolves the location from this stack, so it must run after the
   // mutation. Opens sync only when the resulting blade has a URL segment: a
   // blade without one (e.g. a third-level detail panel) leaves the address bar
-  // on the previous blade. Closes always sync.
+  // on the previous blade. An action that changed nothing never syncs — writing
+  // the URL for a navigation that did not happen grows the history with
+  // duplicate entries.
 
   function _syncOpened(verb: "push" | "replace"): void {
     if (activeBlade.value?.url) urlSink[verb]();
   }
 
   async function openWorkspace(event: BladeOpenEvent): Promise<void> {
-    await _openWorkspace(event);
-    _syncOpened("push");
+    if (await _openWorkspace(event)) _syncOpened("push");
   }
 
   async function openBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
@@ -344,9 +354,9 @@ export function createBladeStack(
   }
 
   async function closeBlade(bladeId: string): Promise<boolean> {
-    const prevented = await _closeBlade(bladeId);
-    if (!prevented) urlSink.replace();
-    return prevented;
+    const outcome = await _closeBlade(bladeId);
+    if (outcome === "closed") urlSink.replace();
+    return outcome === "prevented";
   }
 
   async function closeChildren(parentId: string): Promise<void> {

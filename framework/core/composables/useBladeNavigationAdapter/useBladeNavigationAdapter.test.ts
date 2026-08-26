@@ -421,7 +421,7 @@ describe("index → blade id translation (getBladeIdByIndex, index.ts:186)", () 
 
 // ── Navigation query round-trip ───────────────────────────────────────────────
 
-describe("setNavigationQuery / getNavigationQuery (index.ts:334-372)", () => {
+describe("setNavigationQuery / getNavigationQuery", () => {
   beforeEach(() => {
     mockStackWorkspace.value = { id: "ws", name: "Offers" };
     window.location.hash = "#/offers";
@@ -434,23 +434,21 @@ describe("setNavigationQuery / getNavigationQuery (index.ts:334-372)", () => {
     expect(mockHistoryReplace).toHaveBeenCalledWith("/offers?offers_page=2&offers_keyword=abc");
   });
 
-  it.each([
-    ["abc", { page: 2, keyword: "abc" }],
-    // Suspected bug (index.ts:346-350): decodeURIComponent is applied to the
-    // whole query string, undoing the escaping URLSearchParams just did. The
-    // "&" written as %26 comes back as a separator, so the value is truncated
-    // at it and the remainder becomes a stray param of another namespace.
-    ["a&b", { page: 2, keyword: "a" }],
-    // Survives only because URLSearchParams splits on the FIRST "=".
-    ["x=1", { page: 2, keyword: "x=1" }],
-  ])('round-trips the keyword "%s" through the hash', (keyword, expected) => {
+  it.each([["abc"], ["a&b"], ["x=1"]])('round-trips the keyword "%s" through the hash', (keyword) => {
     const nav = useBladeNavigation();
     nav.setNavigationQuery({ page: 2, keyword });
 
     const written = mockHistoryReplace.mock.calls[0][0] as string;
     window.location.hash = `#${written}`;
 
-    expect(nav.getNavigationQuery()).toEqual(expected);
+    expect(nav.getNavigationQuery()).toEqual({ page: 2, keyword });
+  });
+
+  it("keeps the percent-encoding of separators it wrote", () => {
+    const nav = useBladeNavigation();
+    nav.setNavigationQuery({ keyword: "a&b", note: "x=1" });
+
+    expect(mockHistoryReplace).toHaveBeenCalledWith("/offers?offers_keyword=a%26b&offers_note=x%3D1");
   });
 
   it("reads only keys belonging to the current workspace namespace", () => {
@@ -483,38 +481,44 @@ describe("setNavigationQuery / getNavigationQuery (index.ts:334-372)", () => {
     expect(mockHistoryReplace).toHaveBeenCalledWith("/offers?offers_page=1");
   });
 
-  it("overwrites the whole query string, dropping foreign params already in the hash", () => {
-    // Suspected bug: getNavigationQuery filters by `${prefix}_`, so foreign
-    // namespaces are expected in the hash — but setNavigationQuery replaces the
-    // entire query string and destroys them. Two workspaces cannot hold URL
-    // state at the same time. Pinned as current behaviour.
-    window.location.hash = "#/offers?orders_page=9";
+  it("rewrites only its own namespace, keeping foreign params in the hash", () => {
+    window.location.hash = "#/offers?orders_page=9&offers_page=4";
 
     const nav = useBladeNavigation();
     nav.setNavigationQuery({ page: 1 });
 
-    expect(mockHistoryReplace).toHaveBeenCalledWith("/offers?offers_page=1");
+    expect(mockHistoryReplace).toHaveBeenCalledWith("/offers?orders_page=9&offers_page=1");
   });
 
-  it.each([
-    ["", 0],
-    ["007", 7],
-    ["1e3", 1000],
-  ])('coerces the numeric-looking value "%s" on read', (raw, expected) => {
-    // Suspected bug (index.ts:366-367): every value that Number() accepts is
-    // returned as a number, so an empty string becomes 0, a zero-padded id
-    // loses its padding and exponent notation is expanded. Pinned as current
-    // behaviour, not fixed here.
+  it("drops the whole query string once nothing is left in it", () => {
+    window.location.hash = "#/offers?offers_page=4";
+
+    const nav = useBladeNavigation();
+    nav.setNavigationQuery({});
+
+    expect(mockHistoryReplace).toHaveBeenCalledWith("/offers");
+  });
+
+  it.each([["" as string], ["007"], ["1e3"]])('reads the value "%s" back as text', (raw) => {
+    // Number() accepts all three, but none of them survives the trip as a
+    // number: "" becomes 0, "007" loses its padding, "1e3" expands.
     window.location.hash = `#/offers?offers_keyword=${raw}`;
 
     const nav = useBladeNavigation();
-    expect(nav.getNavigationQuery()).toEqual({ keyword: expected });
+    expect(nav.getNavigationQuery()).toEqual({ keyword: raw });
+  });
+
+  it("still reads plain integers back as numbers", () => {
+    window.location.hash = "#/offers?offers_page=3&offers_skip=0";
+
+    const nav = useBladeNavigation();
+    expect(nav.getNavigationQuery()).toEqual({ page: 3, skip: 0 });
   });
 });
 
 // ── goToRoot route resolution ─────────────────────────────────────────────────
 
-describe("goToRoot() route resolution (index.ts:254-267)", () => {
+describe("goToRoot() route resolution", () => {
   it("prefers the alias of the meta.root route and keeps the current params", () => {
     mockGetRoutes.mockReturnValue([
       { name: "Root", path: "/", meta: { root: true }, aliasOf: undefined },
@@ -551,18 +555,14 @@ describe("goToRoot() route resolution (index.ts:254-267)", () => {
     expect(nav.goToRoot()).toEqual({ path: "/acme" });
   });
 
-  it("resolves to the first alias-less route when NO route declares meta.root", () => {
-    // Suspected bug (index.ts:256): with no meta.root route, `mainRoute` is
-    // undefined, so the predicate degenerates to `r.aliasOf?.path === undefined`
-    // — satisfied by every alias-less route. `find` therefore returns routes[0]
-    // instead of leaving mainRouteAlias undefined and falling through to the
-    // tenant-prefix path. Pinned as current behaviour, not fixed here.
+  it("falls through to the tenant path when NO route declares meta.root", () => {
     mockGetRoutes.mockReturnValue([
       { name: "Login", path: "/login", meta: {}, aliasOf: undefined },
       { name: "Offers", path: "/offers", meta: {}, aliasOf: undefined },
     ]);
+    mockGetTenantPrefix.mockReturnValue("acme");
 
     const nav = useBladeNavigation();
-    expect(nav.goToRoot()).toEqual({ name: "Login", params: {} });
+    expect(nav.goToRoot()).toEqual({ path: "/acme" });
   });
 });

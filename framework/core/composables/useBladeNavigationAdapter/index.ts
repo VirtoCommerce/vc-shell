@@ -162,6 +162,23 @@ function extractBladeName<Blade extends Component>(blade: IBladeEvent<Blade>["bl
   return comp.name || comp.__name || "UnknownBlade";
 }
 
+// ── Utility: hash query handling ───────────────────────────────────────────────
+
+/** Split `#/path?a=1` into its path and its search string (both without markers). */
+function splitHash(hash: string): [path: string, search: string] {
+  const [path, search = ""] = hash.replace(/^#/, "").split("?");
+  return [path, search];
+}
+
+/**
+ * Legacy callers expect numeric query values back as numbers, but only where
+ * that is reversible: "", "007" and "1e3" must survive the round trip as text.
+ */
+function toNumberIfLossless(value: string): string | number {
+  const num = Number(value);
+  return !isNaN(num) && String(num) === value ? num : value;
+}
+
 // ── Per-caller function ────────────────────────────────────────────────────────
 
 export function useBladeNavigation(): IUseBladeNavigation {
@@ -236,7 +253,11 @@ export function useBladeNavigation(): IUseBladeNavigation {
     // Using { path: "/" } would drop the tenant prefix from the URL.
     const routes = router.getRoutes();
     const mainRoute = routes.find((r) => r.meta?.root);
-    const mainRouteAlias = routes.find((r) => r.aliasOf?.path === mainRoute?.path) || mainRoute;
+    // Without a root route the alias predicate would match any alias-less route,
+    // so only look for an alias once the root route is known.
+    const mainRouteAlias = mainRoute
+      ? (routes.find((r) => r.aliasOf?.path === mainRoute.path) ?? mainRoute)
+      : undefined;
 
     if (mainRouteAlias?.name) {
       return {
@@ -321,16 +342,20 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (!ws) return;
 
     const prefix = ws.name.toLowerCase();
-    const cleanQuery: Record<string, string> = {};
+    const [path, search] = splitHash(window.location.hash);
+
+    // Rewrite only this workspace's namespace — the read path expects several
+    // workspaces to hold state in the hash at the same time.
+    const params = new URLSearchParams(search);
+    for (const key of [...params.keys()]) {
+      if (key.startsWith(`${prefix}_`)) params.delete(key);
+    }
     for (const [k, v] of Object.entries(query)) {
-      if (v != null) cleanQuery[`${prefix}_${k}`] = String(v);
+      if (v != null) params.set(`${prefix}_${k}`, String(v));
     }
 
-    router.options.history.replace(
-      decodeURIComponent(
-        `${window.location.hash.substring(1).split("?")[0]}?${new URLSearchParams(cleanQuery).toString()}`,
-      ),
-    );
+    const nextSearch = params.toString();
+    router.options.history.replace(nextSearch ? `${path}?${nextSearch}` : path);
   }
 
   function getNavigationQuery(): Record<string, string | number> | undefined {
@@ -340,14 +365,12 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (!ws) return undefined;
 
     const prefix = ws.name.toLowerCase();
-    const urlParams = new URLSearchParams(window.location.hash.split("?")[1] || "");
+    const urlParams = new URLSearchParams(splitHash(window.location.hash)[1]);
     const result: Record<string, string | number> = {};
 
     for (const [key, value] of urlParams.entries()) {
       if (key.startsWith(`${prefix}_`)) {
-        const cleanKey = key.replace(`${prefix}_`, "");
-        const numValue = Number(value);
-        result[cleanKey] = isNaN(numValue) ? value : numValue;
+        result[key.replace(`${prefix}_`, "")] = toNumberIfLossless(value);
       }
     }
 

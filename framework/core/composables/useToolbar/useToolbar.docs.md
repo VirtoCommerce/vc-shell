@@ -350,6 +350,10 @@ function helperFunction() {
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `provideToolbarService()` | Creates and provides the toolbar service via Vue injection. Idempotent -- returns existing service if already provided. Cleans up via `onScopeDispose`. |
 
+!!! note "When you need it"
+
+    Inside a shell app the framework install already provides the toolbar service, so `provideToolbarService()` returns the existing instance and you do not need to call it. Use it when bootstrapping an isolated tree (stories, tests) that has not installed the framework, the same way as `provideWidgetService()` and `provideDashboardService()`.
+
 ### IToolbarItem
 
 | Property       | Type                                                                                                              | Required | Description                                                                                                                 |

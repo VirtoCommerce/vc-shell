@@ -1,5 +1,7 @@
 # Global Search Service
 
+> **Deprecated.** `createGlobalSearchService` has no callers and will be removed in the next major. There is no replacement.
+
 ## Purpose
 
 `createGlobalSearchService` keeps search visibility state and search query text per blade.

@@ -44,6 +44,10 @@ Every service follows the same architecture:
 | **GlobalSearchService**        | `createGlobalSearchService()`            | (direct API)                                                                                                              | per-blade search state                    |
 | **LanguageService**            | `createLanguageService()`                | (direct API)                                                                                                              | locale strings                            |
 
+!!! warning "Deprecated"
+
+    `createGlobalSearchService()` has no callers and will be removed in the next major. There is no replacement.
+
 ## Usage
 
 ### Registering at module level (before app mount)

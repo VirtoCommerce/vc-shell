@@ -137,14 +137,9 @@ export interface VcDataTableOrchestratorReturn<T extends Record<string, unknown>
 
   // Column filter helpers (returned from useColumnFilter / useFilterState)
   colFilter: ReturnType<typeof useColumnFilter>;
-  filterValues: Ref<Record<string, FilterValue>>;
-  updateFilter: (field: string, value: FilterValue) => void;
   updateRangeFilter: (fields: [string, string], value: { start?: string; end?: string }) => void;
-  clearFilter: (field: string) => void;
-  clearAllFilters: () => void;
   buildPayload: () => Record<string, unknown>;
   hasActiveFilters: ComputedRef<boolean>;
-  activeFilterCount: ComputedRef<number>;
 
   // Column filter template helpers
   showColumnFilter: (col: ColumnInstance) => boolean;
@@ -615,20 +610,13 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   // Column filter helpers (declarative `filter` prop API)
   const colFilter = useColumnFilter();
 
-  const {
-    filterValues,
-    updateFilter,
-    updateRangeFilter,
-    clearFilter,
-    clearAllFilters,
-    buildPayload,
-    hasActiveFilters,
-    activeFilterCount,
-  } = useFilterState({
-    onFilterChange: (payload) => {
-      emit("filter", { filters: payload, filteredValue: props.items });
+  const { filterValues, updateFilter, updateRangeFilter, clearFilter, buildPayload, hasActiveFilters } = useFilterState(
+    {
+      onFilterChange: (payload) => {
+        emit("filter", { filters: payload, filteredValue: props.items });
+      },
     },
-  });
+  );
 
   // Template helpers that bridge VcColumn instances → ColumnFilter props
   const showColumnFilter = (col: ColumnInstance): boolean => {
@@ -1020,14 +1008,9 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
 
     // Column filter helpers
     colFilter,
-    filterValues,
-    updateFilter,
     updateRangeFilter,
-    clearFilter,
-    clearAllFilters,
     buildPayload,
     hasActiveFilters,
-    activeFilterCount,
 
     // Column filter template helpers
     showColumnFilter,

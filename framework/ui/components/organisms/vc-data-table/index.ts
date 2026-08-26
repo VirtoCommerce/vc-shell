@@ -32,6 +32,21 @@ export {
 // Utilities
 export { ColumnCollector } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 
+// Cell registry (extension point) — register custom cell types by column `type`
+export {
+  useCellRegistry,
+  type BuiltinCellType,
+  type CellType,
+  type CellTypeConfig,
+  type CellRegistration,
+  type UseCellRegistryReturn,
+} from "@ui/components/organisms/vc-data-table/composables/useCellRegistry";
+
+export {
+  registerBuiltinCells,
+  BUILTIN_CELL_TYPES,
+} from "@ui/components/organisms/vc-data-table/composables/builtinCells";
+
 // Cell formatters
 export {
   CellDefault,

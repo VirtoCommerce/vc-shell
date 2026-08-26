@@ -1,5 +1,6 @@
 import type { ComponentInternalInstance, ComputedRef, Ref, Slots, VNode } from "vue";
 import type { IActionBuilderResult, ITableColumns } from "@core/types";
+import type { CellType } from "@ui/components/organisms/vc-data-table/composables/useCellRegistry";
 
 // Re-export types used by compositional components
 export type { IActionBuilderResult, ITableColumns };
@@ -119,20 +120,12 @@ export interface CellEditableEmits {
 // VcColumn Types (Declarative Column API)
 // ============================================================================
 
-/** Cell type options matching existing cell formatters */
-export type VcColumnCellType =
-  | "text"
-  | "number"
-  | "money"
-  | "date"
-  | "date-ago"
-  | "time"
-  | "datetime"
-  | "image"
-  | "link"
-  | "html"
-  | "status"
-  | "status-icon";
+/**
+ * Cell type options matching existing cell formatters.
+ * Alias of `CellType` so the declarative and programmatic column APIs accept
+ * the same names, custom registered types included.
+ */
+export type VcColumnCellType = CellType;
 
 // === Declarative Filter Configuration Types ===
 

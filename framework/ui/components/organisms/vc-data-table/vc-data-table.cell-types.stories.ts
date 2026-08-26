@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { ref } from "vue";
-import { VcDataTable, VcColumn } from "@ui/components/organisms/vc-data-table";
+import { defineComponent, h, ref } from "vue";
+import { VcDataTable, VcColumn, useCellRegistry } from "@ui/components/organisms/vc-data-table";
 
 const meta = {
   title: "Data Display/VcDataTable",
@@ -415,3 +415,64 @@ export const AllCellTypes: Story = {
  * Only 3 columns are declared — the remaining keys (id, currency, isActive, createdAt)
  * are auto-discovered and can be toggled on via the switcher.
  */
+
+// =============================================================================
+// CUSTOM CELL TYPE (useCellRegistry)
+// =============================================================================
+
+/**
+ * Custom Cell Type via `useCellRegistry`
+ *
+ * The `rating` type is not built in. Registering a component for it through
+ * `useCellRegistry()` makes `type="rating"` resolvable in every table of the
+ * app — no change to VcDataTable required. Registration is global and reactive,
+ * so already-mounted tables pick the component up.
+ */
+const CellRating = defineComponent({
+  name: "CellRating",
+  props: { value: { type: Number, default: 0 } },
+  setup(props) {
+    const stars = () => Math.max(0, Math.min(5, Math.round(props.value)));
+    return () =>
+      h(
+        "span",
+        {
+          class: "tw-text-[var(--warning-500)]",
+          role: "img",
+          "aria-label": `${stars()} out of 5`,
+        },
+        "\u2605".repeat(stars()) + "\u2606".repeat(5 - stars()),
+      );
+  },
+});
+
+// Module scope, the way an app registers cells from its entry point — not in a
+// component's setup().
+useCellRegistry().register({ type: "rating", component: CellRating, config: { editable: false } });
+
+export const CustomRegisteredCellType: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const items = ref([
+        { id: 1, name: "Wireless Mouse", rating: 5 },
+        { id: 2, name: "Mechanical Keyboard", rating: 4 },
+        { id: 3, name: "USB-C Hub", rating: 2 },
+      ]);
+
+      return { items };
+    },
+    template: `
+    <div style="height: 300px">
+      <div class="tw-mb-4 tw-p-3 tw-bg-info-50 tw-rounded tw-text-sm">
+        <p class="tw-font-semibold">Custom cell type</p>
+        <p class="tw-text-neutrals-600">The Rating column uses <code>type="rating"</code>, registered at runtime through <code>useCellRegistry()</code>.</p>
+      </div>
+      <VcDataTable :items="items" data-key="id">
+        <VcColumn id="name" field="name" title="Product" />
+        <VcColumn id="rating" field="rating" title="Rating" type="rating" width="140px" />
+      </VcDataTable>
+    </div>
+  `,
+  }),
+};

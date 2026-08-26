@@ -21,21 +21,11 @@ import { defineComponent, inject, onMounted, onUnmounted, getCurrentInstance } f
 import type { PropType } from "vue";
 import { ColumnCollectorKey } from "@ui/components/organisms/vc-data-table/keys";
 import type { VcColumnProps, ColumnFilterConfig } from "@ui/components/organisms/vc-data-table/types";
+import type { CellType } from "@ui/components/organisms/vc-data-table/composables/useCellRegistry";
 
-// Cell type options matching existing cell formatters
-export type CellType =
-  | "text"
-  | "number"
-  | "money"
-  | "date"
-  | "date-ago"
-  | "time"
-  | "datetime"
-  | "image"
-  | "link"
-  | "html"
-  | "status"
-  | "status-icon";
+// Re-exported so existing importers of this module keep working; the union
+// itself lives with the registry that consumes it.
+export type { CellType };
 
 export default defineComponent({
   name: "VcColumn",

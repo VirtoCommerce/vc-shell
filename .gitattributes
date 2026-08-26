@@ -1,0 +1,10 @@
+# Store every text file with LF and check it out with LF on all platforms.
+# Without eol=lf a Windows checkout keeps CRLF in the working tree, which is
+# what `endOfLine: "lf"` in .prettierrc would then fight with.
+* text=auto eol=lf
+
+# Auto-detection already leaves these alone; declaring it keeps a stray
+# text= rule from ever reaching them.
+*.png binary
+*.jpg binary
+*.ico binary

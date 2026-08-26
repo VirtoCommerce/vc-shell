@@ -16,18 +16,8 @@ import {
   provideAppBarState,
   useShellBootstrap,
 } from "@ui/components/organisms/vc-app/composition";
-import { provideSidebarState } from "@core/composables/useSidebarState";
+import { provideSidebarState, sidebarStorageKey } from "@core/composables/useSidebarState";
 import { withMobileView } from "../../../../../.storybook/decorators";
-
-/**
- * Build the same localStorage key that useMenuExpanded uses,
- * so we can force the expanded/collapsed state before component setup.
- */
-function getMenuExpandedStorageKey(): string {
-  const pathSegments = window.location.pathname.split("/").filter(Boolean);
-  const appName = pathSegments[0] || "default";
-  return `VC_APP_MENU_EXPANDED_${appName}`;
-}
 
 const MOCK_LOGO =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 30'%3E%3Ctext x='5' y='22' font-family='Arial' font-size='18' font-weight='bold' fill='%23319ED5'%3EVirtoShell%3C/text%3E%3C/svg%3E";
@@ -417,7 +407,7 @@ const meta: Meta = {
   decorators: [
     // Save/restore localStorage to prevent stories from leaking state
     (story) => {
-      const key = getMenuExpandedStorageKey();
+      const key = sidebarStorageKey();
       const saved = localStorage.getItem(key);
       return {
         components: { story },
@@ -445,7 +435,7 @@ export default meta;
  */
 export const DesktopExpanded: StoryFn = () => {
   // Force expanded state before VcApp setup reads localStorage
-  localStorage.setItem(getMenuExpandedStorageKey(), "true");
+  localStorage.setItem(sidebarStorageKey(), "true");
 
   return {
     components: { VcApp },
@@ -475,7 +465,7 @@ DesktopExpanded.parameters = {
  */
 export const DesktopCollapsed: StoryFn = () => {
   // Force collapsed state before VcApp setup reads localStorage
-  localStorage.setItem(getMenuExpandedStorageKey(), "false");
+  localStorage.setItem(sidebarStorageKey(), "false");
 
   return {
     components: { VcApp },
@@ -506,7 +496,7 @@ DesktopCollapsed.parameters = {
  * (via VueUse useBreakpoints).
  */
 export const Mobile: StoryFn = () => {
-  localStorage.setItem(getMenuExpandedStorageKey(), "true");
+  localStorage.setItem(sidebarStorageKey(), "true");
 
   return {
     components: { VcApp },
@@ -546,7 +536,7 @@ Mobile.parameters = {
  * Assemble shell from building blocks instead of using <VcApp /> directly.
  */
 export const CustomShellFromParts: StoryFn = () => {
-  localStorage.setItem(getMenuExpandedStorageKey(), "true");
+  localStorage.setItem(sidebarStorageKey(), "true");
 
   return {
     components: {
@@ -738,7 +728,7 @@ CustomShellFromParts.parameters = {
  * Also customizes sidebar-header and sidebar-footer slots.
  */
 export const CustomMenuSlot: StoryFn = () => {
-  localStorage.setItem(getMenuExpandedStorageKey(), "true");
+  localStorage.setItem(sidebarStorageKey(), "true");
 
   interface CustomMenuItem {
     id: string;
@@ -1009,7 +999,7 @@ CustomMenuSlot.parameters = {
  * and filters menu items in real time by their translated title.
  */
 export const WithSidebarSearch: StoryFn = () => {
-  localStorage.setItem(getMenuExpandedStorageKey(), "true");
+  localStorage.setItem(sidebarStorageKey(), "true");
 
   return {
     components: { VcApp },
@@ -1040,7 +1030,7 @@ WithSidebarSearch.parameters = {
  * Open the slide-out menu to see the search input above the navigation items.
  */
 export const MobileWithSearch: StoryFn = () => {
-  localStorage.setItem(getMenuExpandedStorageKey(), "true");
+  localStorage.setItem(sidebarStorageKey(), "true");
 
   return {
     components: { VcApp },

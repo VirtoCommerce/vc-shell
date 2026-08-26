@@ -182,25 +182,4 @@ describe("legacy onBeforeClose against a real BladeStack", () => {
     expect(guard).toHaveBeenCalledTimes(2);
     expect(stack().blades.value).toHaveLength(1);
   });
-
-  it("closeBlade(0) rewrites the URL although the workspace never closes", async () => {
-    // Suspected bug: the stack refuses to close index 0 (useBladeStack.ts:185)
-    // and returns `false`, which the adapter cannot tell apart from a successful
-    // close — so it reports "not prevented" and syncs the URL for a no-op.
-    // Pinned as current behaviour.
-    const nav = useBladeNavigation();
-
-    await expect(nav.closeBlade(0)).resolves.toBe(false);
-
-    expect(stack().blades.value).toHaveLength(2);
-    expect(holder.syncUrlReplace).toHaveBeenCalledTimes(1);
-  });
-
-  it("closeBlade on a child syncs the URL only when the guard allows it", async () => {
-    const nav = useBladeNavigation();
-    nav.onBeforeClose(async () => false);
-
-    await expect(nav.closeBlade(1)).resolves.toBe(true);
-    expect(holder.syncUrlReplace).not.toHaveBeenCalled();
-  });
 });

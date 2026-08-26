@@ -22,7 +22,7 @@ import {
   BladeDescriptor,
   BladeDescriptorKey,
 } from "@core/blade-navigation/types";
-import { createUrlSync, getTenantPrefix } from "@core/blade-navigation/utils/urlSync";
+import { getTenantPrefix } from "@core/blade-navigation/utils/urlSync";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-blade-navigation-adapter");
@@ -171,10 +171,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
   // Only call inject() when inside a component setup — avoids Vue warning in route guards
   const currentDescriptor = getCurrentInstance() ? inject(BladeDescriptorKey, undefined) : undefined;
 
-  // ── URL sync helpers (centralized in urlSync.ts) ────────────────────────────
-
-  const { syncUrlPush, syncUrlReplace } = createUrlSync(router, bladeStack);
-
   // ── Helpers ──────────────────────────────────────────────────────────────────
 
   function getCurrentBladeId(): string | undefined {
@@ -217,14 +213,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
       const parentId = getCurrentBladeId();
       await bladeStack.openBlade({ ...event, parentId });
     }
-
-    // Sync URL only if the opened blade has a URL segment.
-    // Blades without URLs (e.g. third-level detail panels) should not
-    // change the address bar — the previous blade's URL stays.
-    const openedBlade = bladeStack.activeBlade.value;
-    if (openedBlade?.url) {
-      syncUrlPush();
-    }
   }
 
   // ── closeBlade ─────────────────────────────────────────────────────────────
@@ -236,12 +224,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
       logger.error(`closeBlade: No blade found at index ${index}.`);
       return false;
     }
-    const prevented = await bladeStack.closeBlade(bladeId);
-    if (!prevented) {
-      // Blade was closed — sync URL (replace, no new history entry)
-      syncUrlReplace();
-    }
-    return prevented;
+    return bladeStack.closeBlade(bladeId);
   }
 
   // ── goToRoot ───────────────────────────────────────────────────────────────

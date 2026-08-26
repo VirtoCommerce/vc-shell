@@ -1,7 +1,7 @@
 import { ref, computed, inject, type Ref } from "vue";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
-import type { BladeDescriptor, BladeOpenEvent, IBladeStack } from "@core/blade-navigation/types";
-import { BladeStackKey } from "@core/blade-navigation/types";
+import type { BladeDescriptor, BladeOpenEvent, IBladeStack, UrlSink } from "@core/blade-navigation/types";
+import { BladeStackKey, NOOP_URL_SINK } from "@core/blade-navigation/types";
 import {
   createWorkspaceDescriptor,
   createChildDescriptor,
@@ -23,12 +23,19 @@ function generateBladeId(): string {
  * The stack manages an ordered list of BladeDescriptor objects (plain data).
  * All mutations go through explicit actions — no direct VNode manipulation.
  *
+ * The stack also owns URL sync: every navigation action writes the URL through
+ * `urlSink` with the verb it implies (push for opens, replace for closes), so a
+ * caller cannot mutate the stack and forget the URL.
+ *
  * @param bladeRegistry - Registry for resolving blade names → components
+ * @param hasAccess - Permission check for workspace access
+ * @param urlSink - Where the URL is written. Defaults to a no-op (no router).
  * @internal
  */
 export function createBladeStack(
   bladeRegistry: IBladeRegistry,
   hasAccess?: (permissions: string | string[] | undefined) => boolean,
+  urlSink: UrlSink = NOOP_URL_SINK,
 ): IBladeStack {
   // ── Internal State ────────────────────────────────────────────────────────
   const _blades = ref<BladeDescriptor[]>([]);
@@ -106,7 +113,7 @@ export function createBladeStack(
 
   // ── Actions ───────────────────────────────────────────────────────────────
 
-  async function openWorkspace(event: BladeOpenEvent): Promise<void> {
+  async function _openWorkspace(event: BladeOpenEvent): Promise<void> {
     const currentWorkspace = workspace.value;
 
     // Same workspace — no-op
@@ -138,7 +145,7 @@ export function createBladeStack(
     event.onOpen?.();
   }
 
-  async function openBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
+  async function _openBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
     // Validate blade exists in registry
     if (!bladeRegistry.getBlade(event.name)) {
       throw new Error(`[BladeStack] Blade '${event.name}' not found in registry`);
@@ -178,7 +185,7 @@ export function createBladeStack(
     event.onOpen?.();
   }
 
-  async function closeBlade(bladeId: string): Promise<boolean> {
+  async function _closeBlade(bladeId: string): Promise<boolean> {
     const index = _blades.value.findIndex((b) => b.id === bladeId);
     if (index === -1) return false;
 
@@ -209,7 +216,7 @@ export function createBladeStack(
     return false;
   }
 
-  async function replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
+  async function _replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
     const current = activeBlade.value;
     if (!current) {
       throw new Error("[BladeStack] No active blade to replace");
@@ -248,7 +255,7 @@ export function createBladeStack(
     event.onOpen?.();
   }
 
-  async function coverCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
+  async function _coverCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
     const current = activeBlade.value;
     if (!current) {
       throw new Error("[BladeStack] No active blade to cover");
@@ -290,7 +297,7 @@ export function createBladeStack(
 
   // ── Close Children ──────────────────────────────────────────────────────
 
-  async function closeChildren(parentId: string): Promise<void> {
+  async function _closeChildren(parentId: string): Promise<void> {
     const parentIndex = _blades.value.findIndex((b) => b.id === parentId);
     if (parentIndex === -1) return;
 
@@ -304,6 +311,47 @@ export function createBladeStack(
     // Cleanup and remove
     _closeBladesCleanup(children);
     _blades.value = _blades.value.slice(0, parentIndex + 1);
+  }
+
+  // ── URL sync ──────────────────────────────────────────────────────────────
+  // The sink resolves the location from this stack, so it must run after the
+  // mutation. Opens sync only when the resulting blade has a URL segment: a
+  // blade without one (e.g. a third-level detail panel) leaves the address bar
+  // on the previous blade. Closes always sync.
+
+  function _syncOpened(verb: "push" | "replace"): void {
+    if (activeBlade.value?.url) urlSink[verb]();
+  }
+
+  async function openWorkspace(event: BladeOpenEvent): Promise<void> {
+    await _openWorkspace(event);
+    _syncOpened("push");
+  }
+
+  async function openBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
+    await _openBlade(event);
+    _syncOpened("push");
+  }
+
+  async function replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
+    await _replaceCurrentBlade(event);
+    _syncOpened("replace");
+  }
+
+  async function coverCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
+    await _coverCurrentBlade(event);
+    _syncOpened("push");
+  }
+
+  async function closeBlade(bladeId: string): Promise<boolean> {
+    const prevented = await _closeBlade(bladeId);
+    if (!prevented) urlSink.replace();
+    return prevented;
+  }
+
+  async function closeChildren(parentId: string): Promise<void> {
+    await _closeChildren(parentId);
+    urlSink.replace();
   }
 
   // ── Guards ────────────────────────────────────────────────────────────────

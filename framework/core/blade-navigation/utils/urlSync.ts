@@ -1,5 +1,5 @@
 import type { Router } from "vue-router";
-import type { BladeDescriptor, IBladeStack, ParsedBladeUrl } from "@core/blade-navigation/types";
+import type { BladeDescriptor, IBladeStack, ParsedBladeUrl, UrlSink } from "@core/blade-navigation/types";
 
 /**
  * Build a URL path from the current blade stack.
@@ -123,28 +123,85 @@ export function getTenantPrefix(router: Router): string {
   return (Object.values(params).find((v) => typeof v === "string" && v) as string) || "";
 }
 
+/** A {@link UrlSink} that writes through a router, with a suppression window. */
+export interface RouterUrlSink extends UrlSink {
+  /**
+   * Run `fn` with URL writes disabled.
+   *
+   * The router guard restores the blade stack from the URL: there the URL is
+   * the source, and writing back from inside `beforeEach` would re-enter the
+   * guard. Reference-counted, so nested and overlapping windows are safe;
+   * releases even if `fn` throws.
+   */
+  suppressWhile<T>(fn: () => Promise<T>): Promise<T>;
+}
+
+/**
+ * Creates the router-backed URL sink for a blade stack.
+ *
+ * The stack is read through `getStack` at call time, so the sink can be built
+ * before the stack it writes for (the stack takes the sink as a constructor
+ * argument).
+ *
+ * @param router - Vue Router instance
+ * @param getStack - Resolves the BladeStack whose URL is being written
+ */
+export function createRouterUrlSink(router: Router, getStack: () => IBladeStack | undefined): RouterUrlSink {
+  // A counter, not a boolean: two navigations can overlap (vue-router cancels a
+  // pending navigation, but its async guard still runs to completion), and
+  // save/restore would unsuppress while the other window is still open.
+  let suppressDepth = 0;
+
+  function write(verb: "push" | "replace"): void {
+    if (suppressDepth > 0) return;
+    const stack = getStack();
+    if (!stack) return;
+    router[verb](buildUrlFromStack(getTenantPrefix(router), stack.blades.value));
+  }
+
+  return {
+    push(): void {
+      write("push");
+    },
+    replace(): void {
+      write("replace");
+    },
+    async suppressWhile<T>(fn: () => Promise<T>): Promise<T> {
+      suppressDepth++;
+      try {
+        return await fn();
+      } finally {
+        suppressDepth--;
+      }
+    },
+  };
+}
+
 /**
  * Creates URL sync helpers bound to a specific router and blade stack.
- * Eliminates duplication between VcBladeNavigation and useBladeNavigationAdapter.
+ *
+ * The blade stack syncs itself through a {@link UrlSink} now. This stays for the
+ * two callers that write the URL outside a stack mutation: the post-restore
+ * reconcile in VcBladeNavigation and the debounced table-query-state writer.
  *
  * @param router - Vue Router instance
  * @param bladeStack - BladeStack state machine
  */
 export function createUrlSync(router: Router, bladeStack: IBladeStack) {
+  const sink = createRouterUrlSink(router, () => bladeStack);
+
   /**
    * Push URL to create a browser history entry (for blade open).
    */
   function syncUrlPush(): void {
-    const { path, query } = buildUrlFromStack(getTenantPrefix(router), bladeStack.blades.value);
-    router.push({ path, query });
+    sink.push();
   }
 
   /**
    * Replace URL without creating a history entry (for blade close, cleanup).
    */
   function syncUrlReplace(): void {
-    const { path, query } = buildUrlFromStack(getTenantPrefix(router), bladeStack.blades.value);
-    router.replace({ path, query });
+    sink.replace();
   }
 
   return { syncUrlPush, syncUrlReplace };

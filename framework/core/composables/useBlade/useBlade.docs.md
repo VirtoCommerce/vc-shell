@@ -790,7 +790,7 @@ if (param.value) {
 1. **Plugin setup:** `BladeNavigationPlugin` (plugin-v2) installs a `BladeStack` and `BladeMessaging` singleton and provides them via Vue's dependency injection.
 2. **Inside a blade:** `VcBladeSlot` provides a `BladeDescriptor` ref for each blade instance. `useBlade()` injects this descriptor to access identity, register guards, and set errors.
 3. **Outside a blade:** `useBlade()` falls back to the singleton instances. Only `openBlade` works because it does not need a blade descriptor.
-4. **URL sync:** When blades with a `url` property are opened or closed, `useBlade()` synchronizes the browser URL via `createUrlSync`, enabling deep linking and back/forward navigation.
+4. **URL sync:** When blades with a `url` property are opened or closed, the blade stack synchronizes the browser URL itself (push on open, replace on close), enabling deep linking and back/forward navigation. `useBlade()` only mutates the stack.
 
 <!-- internal:end -->
 

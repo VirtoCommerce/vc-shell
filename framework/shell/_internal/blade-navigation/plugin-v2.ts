@@ -1,9 +1,11 @@
 import { Router } from "vue-router";
 import { App } from "vue";
 import { BladeNavigationPlugin, BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
+import type { IBladeStack } from "@core/blade-navigation/types";
 import { createBladeStack } from "@core/blade-navigation/useBladeStack";
 import { createBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
 import { bladeRouterGuard } from "@core/blade-navigation/utils/bladeRouterGuard";
+import { createRouterUrlSink } from "@core/blade-navigation/utils/urlSync";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 import { usePermissions } from "@core/composables/usePermissions";
@@ -69,8 +71,14 @@ export const VcBladeNavigationComponent = {
     // Get permission checker for workspace access control
     const { hasAccess } = app.runWithContext(() => usePermissions());
 
-    // Create BladeStack with permission enforcement
-    const bladeStack = createBladeStack(bladeRegistry, hasAccess);
+    // Create BladeStack with permission enforcement.
+    // The stack owns URL sync: it writes through the sink after every navigation
+    // action, so no caller has to remember to sync. The sink reads the stack
+    // lazily because it is built first.
+    const stackHolder: { current?: IBladeStack } = {};
+    const urlSink = createRouterUrlSink(router, () => stackHolder.current);
+    const bladeStack = createBladeStack(bladeRegistry, hasAccess, urlSink);
+    stackHolder.current = bladeStack;
     app.provide(BladeStackKey, bladeStack);
     setBladeStackInstance(bladeStack);
 
@@ -96,6 +104,11 @@ export const VcBladeNavigationComponent = {
     // Fires on: direct URL entry, deep links, back/forward (popstate)
     // The adapter's router.push()/replace() also triggers this, but
     // restoreFromUrl is idempotent — if stack already matches URL, it's a no-op.
-    router.beforeEach((to) => bladeRouterGuard(to, bladeStack, bladeRegistry, hasAccess, router));
+    // Writes are suppressed for the duration: the guard restores the stack FROM
+    // the URL, and letting the stack write back from inside beforeEach would
+    // re-enter the guard. The guard returns its own redirect when it needs one.
+    router.beforeEach((to) =>
+      urlSink.suppressWhile(() => bladeRouterGuard(to, bladeStack, bladeRegistry, hasAccess, router)),
+    );
   },
 };

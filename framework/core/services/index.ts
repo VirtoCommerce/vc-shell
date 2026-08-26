@@ -1,7 +1,6 @@
 export * from "@core/services/app-bar-menu-service";
 export * from "@core/services/app-bar-mobile-buttons-service";
 export * from "@core/services/dashboard-service";
-export * from "@core/services/global-search-service";
 export * from "@core/services/language-service";
 export * from "@core/services/menu-service";
 export * from "@core/services/settings-menu-service";

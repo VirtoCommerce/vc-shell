@@ -41,12 +41,7 @@ Every service follows the same architecture:
 | **SettingsMenuService**        | `createSettingsMenuService()`            | `addSettingsMenuItem()`                                                                                                   | `ISettingsMenuItem`                       |
 | **AppBarWidgetService**        | `createAppBarWidgetService()`            | `addAppBarWidget()`                                                                                                       | `AppBarWidget`                            |
 | **AppBarMobileButtonsService** | `createAppBarMobileButtonsService()`     | (direct API)                                                                                                              | `AppBarButtonContent`                     |
-| **GlobalSearchService**        | `createGlobalSearchService()`            | (direct API)                                                                                                              | per-blade search state                    |
 | **LanguageService**            | `createLanguageService()`                | (direct API)                                                                                                              | locale strings                            |
-
-!!! warning "Deprecated"
-
-    `createGlobalSearchService()` has no callers and will be removed in the next major. There is no replacement.
 
 ## Usage
 

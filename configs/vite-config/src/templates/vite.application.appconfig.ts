@@ -3,6 +3,7 @@ import * as fs from "node:fs";
 import { loadEnv, defineConfig, ProxyOptions, type PluginOption, normalizePath, type Alias } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "node:path";
+import { createRequire } from "node:module";
 import { checker } from "vite-plugin-checker";
 import circleDependency from "vite-plugin-circular-dependency";
 import { viteBladePlugin } from "../plugins/viteBladePlugin";
@@ -17,7 +18,43 @@ process.env = {
 };
 
 const isDemo = mode === "development" && !process.env.APP_PLATFORM_URL;
-const isMonorepo = fs.existsSync(path.resolve(process.cwd(), "./../../framework/package.json"));
+
+// Whether to alias @vc-shell/framework to the checked-out source instead of the
+// installed package. Decided by what the app's own dependency resolves to, not
+// by directory layout: apps/ are not workspaces, they are linked to the local
+// packages with yarn `portal:` (scripts/setup-app.ts), and an app sitting inside
+// the repo may deliberately pin a published build — a preview package from a PR,
+// say. The old `does ../../framework/package.json exist` test could not tell
+// those apart and always won, so the pinned version was silently ignored.
+//
+// APP_FRAMEWORK_SOURCE=false forces the installed package, =true forces source.
+const frameworkSourceDir = path.resolve(process.cwd(), "./../../framework");
+
+function resolveInstalledFrameworkDir(): string | undefined {
+  try {
+    const require = createRequire(path.join(process.cwd(), "package.json"));
+    return path.dirname(fs.realpathSync(require.resolve("@vc-shell/framework/package.json")));
+  } catch {
+    return undefined;
+  }
+}
+
+function detectFrameworkSourceLink(): boolean {
+  const override = process.env.APP_FRAMEWORK_SOURCE;
+  if (override === "true") return true;
+  if (override === "false") return false;
+
+  if (!fs.existsSync(path.join(frameworkSourceDir, "package.json"))) return false;
+
+  const resolved = resolveInstalledFrameworkDir();
+  // Dependencies not installed yet — keep the old layout answer rather than
+  // dropping the source aliases on someone mid-setup.
+  if (!resolved) return true;
+
+  return resolved === fs.realpathSync(frameworkSourceDir);
+}
+
+const isMonorepo = detectFrameworkSourceLink();
 const hash = Math.floor(Math.random() * 90000) + 10000;
 
 const getProxyOptions = (targetUrl: ProxyOptions["target"], options: Omit<ProxyOptions, "target"> = {}) => {

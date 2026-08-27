@@ -7,24 +7,14 @@
 
 name: CI
 
+# No `paths:` filter. This workflow produces the checks branch protection
+# requires, and a filtered-out workflow never reports them, so the PR waits
+# forever on a check that will not start. 52 tracked files matched none of the
+# old patterns, including .storybook/*.ts, the root vitest configs, scripts/*.ts,
+# commitlint.config.ts, .husky/* and .gitattributes.
 on:
   workflow_dispatch:
   pull_request:
-    paths:
-      - "framework/**"
-      - "cli/**"
-      - "configs/**"
-      - "packages/**"
-      - "**/*.json"
-      - "**/*.md"
-      - "**/*.yml"
-      - "**/*.yaml"
-      - "eslint.config.mjs"
-      - ".prettierrc"
-      - ".prettierignore"
-      - ".stylelintrc.json"
-      - "yarn.lock"
-      - ".github/workflows/ci.yml"
   # Trunk only. Topic branches are covered by pull_request; listing them here
   # too runs CI twice per commit, and the two runs land in different
   # concurrency groups (refs/heads/<branch> vs refs/pull/<n>/merge) so neither
@@ -33,21 +23,6 @@ on:
     branches:
       - main
       - dev
-    paths:
-      - "framework/**"
-      - "cli/**"
-      - "configs/**"
-      - "packages/**"
-      - "**/*.json"
-      - "**/*.md"
-      - "**/*.yml"
-      - "**/*.yaml"
-      - "eslint.config.mjs"
-      - ".prettierrc"
-      - ".prettierignore"
-      - ".stylelintrc.json"
-      - "yarn.lock"
-      - ".github/workflows/ci.yml"
 
 concurrency:
   # Pull requests: one run per PR, a new push supersedes the previous run.
@@ -254,3 +229,35 @@ jobs:
         run: yarn build:storybook
         env:
           NODE_OPTIONS: "--max-old-space-size=6144"
+
+  # The single check branch protection should require. It runs on every event,
+  # even when a dependency fails, so it always reports a result -- unlike the
+  # jobs it watches, which report nothing when their event or condition skips
+  # them and leave a required check pending forever.
+  #
+  # Pointing protection here instead of at the individual jobs means adding,
+  # renaming or splitting a job needs no ruleset change. The cost is that the
+  # `needs` list below is now load-bearing: a job dropped from it stops gating.
+  ci-gate:
+    if: always()
+    needs: [static-checks, test, storybook-tests, storybook-build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check results of required jobs
+        env:
+          # A skipped job is a pass: storybook-build is pull-request only, and
+          # everything skips on a `release:` commit.
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS"
+          bad=$(printf '%s' "$NEEDS" | jq -r '
+            to_entries
+            | map(select(.value.result != "success" and .value.result != "skipped"))
+            | map("\(.key)=\(.value.result)")
+            | join(", ")')
+          if [ -n "$bad" ]; then
+            echo "::error title=CI gate failed::$bad"
+            exit 1
+          fi
+          echo "All required jobs succeeded or were skipped."

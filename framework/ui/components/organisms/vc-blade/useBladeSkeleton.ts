@@ -1,4 +1,4 @@
-import { computed, ref, watch, type ComputedRef } from "vue";
+import { computed, getCurrentInstance, nextTick, onMounted, ref, watch, type ComputedRef } from "vue";
 
 /**
  * Decides when a blade may replace its content with skeletons.
@@ -18,6 +18,12 @@ export function useBladeSkeleton(
   contextKey: () => unknown = () => undefined,
 ): ComputedRef<boolean> {
   const hasRenderedContent = ref(false);
+  let armed = false;
+
+  function arm() {
+    armed = true;
+    if (!isLoading()) hasRenderedContent.value = true;
+  }
 
   watch(
     [isLoading, contextKey],
@@ -25,10 +31,22 @@ export function useBladeSkeleton(
       if (previous.length > 0 && context !== previous[1]) {
         hasRenderedContent.value = false;
       }
-      if (!loading) hasRenderedContent.value = true;
+      if (!loading && armed) hasRenderedContent.value = true;
     },
     { immediate: true },
   );
+
+  // Not armed during setup. `loading` is false at that point for every blade —
+  // the fetch starts in the parent page's onMounted, and a child finishes setup
+  // before the parent's hook runs — so latching there would record "content has
+  // shown" before anything was even requested, and the skeleton could never
+  // appear. nextTick pushes arming past the parent's onMounted; this component's
+  // own hook alone is still too early.
+  if (getCurrentInstance()) {
+    onMounted(() => void nextTick(arm));
+  } else {
+    void nextTick(arm);
+  }
 
   return computed(() => isLoading() && !hasRenderedContent.value);
 }

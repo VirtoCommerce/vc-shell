@@ -194,37 +194,6 @@ describe("createBladeStack — URL sink", () => {
       expect(recorder.calls).toEqual([]);
     });
 
-    it("closeChildren replaces even when there are no children", async () => {
-      await stack.openWorkspace({ name: "Orders" });
-      recorder.calls.length = 0;
-
-      await stack.closeChildren(stack.workspace.value!.id);
-
-      expect(verbs(recorder.calls)).toEqual(["replace /orders"]);
-    });
-
-    it("closeChildren replaces even when a guard prevents the close", async () => {
-      await stack.openWorkspace({ name: "Orders" });
-      const workspaceId = stack.workspace.value!.id;
-      await stack.openBlade({ name: "OrderDetails", param: "1" });
-      stack.registerBeforeClose(stack.activeBlade.value!.id, async () => true);
-      recorder.calls.length = 0;
-
-      await stack.closeChildren(workspaceId);
-
-      expect(stack.blades.value).toHaveLength(2);
-      expect(verbs(recorder.calls)).toEqual(["replace /orders/order/1"]);
-    });
-
-    it("closeChildren of an unknown parent still replaces", async () => {
-      await stack.openWorkspace({ name: "Orders" });
-      recorder.calls.length = 0;
-
-      await stack.closeChildren("nope");
-
-      expect(verbs(recorder.calls)).toEqual(["replace /orders"]);
-    });
-
     it("closeChildren replaces after closing children", async () => {
       await stack.openWorkspace({ name: "Orders" });
       const workspaceId = stack.workspace.value!.id;
@@ -257,7 +226,7 @@ describe("createBladeStack — URL sink", () => {
       expect(verbs(recorder.calls)).toEqual(["push /orders"]);
     });
 
-    it("openBlade still pushes when a child guard prevented the open", async () => {
+    it("openBlade records nothing when a child guard prevented the open", async () => {
       await stack.openWorkspace({ name: "Orders" });
       await stack.openBlade({ name: "OrderDetails", param: "1" });
       stack.registerBeforeClose(stack.activeBlade.value!.id, async () => true);
@@ -265,8 +234,55 @@ describe("createBladeStack — URL sink", () => {
 
       await stack.openBlade({ name: "OrderDetails", param: "2", parentId: stack.workspace.value!.id });
 
-      // Stack unchanged, so the location is still the existing child's.
-      expect(verbs(recorder.calls)).toEqual(["push /orders/order/1"]);
+      expect(recorder.calls).toEqual([]);
+      expect(stack.blades.value).toHaveLength(2);
+      expect(stack.activeBlade.value?.param).toBe("1");
+    });
+
+    it("openBlade pushes once when the guard lets the second open through", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      const workspaceId = stack.workspace.value!.id;
+      await stack.openBlade({ name: "OrderDetails", param: "1" });
+      let prevent = true;
+      stack.registerBeforeClose(stack.activeBlade.value!.id, async () => prevent);
+      recorder.calls.length = 0;
+
+      await stack.openBlade({ name: "OrderDetails", param: "2", parentId: workspaceId });
+      prevent = false;
+      await stack.openBlade({ name: "OrderDetails", param: "2", parentId: workspaceId });
+
+      expect(verbs(recorder.calls)).toEqual(["push /orders/order/2"]);
+    });
+
+    it("closeChildren records nothing when there are no children", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      recorder.calls.length = 0;
+
+      await stack.closeChildren(stack.workspace.value!.id);
+
+      expect(recorder.calls).toEqual([]);
+    });
+
+    it("closeChildren records nothing when a guard prevents the close", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      const workspaceId = stack.workspace.value!.id;
+      await stack.openBlade({ name: "OrderDetails", param: "1" });
+      stack.registerBeforeClose(stack.activeBlade.value!.id, async () => true);
+      recorder.calls.length = 0;
+
+      await stack.closeChildren(workspaceId);
+
+      expect(stack.blades.value).toHaveLength(2);
+      expect(recorder.calls).toEqual([]);
+    });
+
+    it("closeChildren of an unknown parent records nothing", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      recorder.calls.length = 0;
+
+      await stack.closeChildren("nope");
+
+      expect(recorder.calls).toEqual([]);
     });
 
     it("closeBlade of an unknown id records nothing", async () => {

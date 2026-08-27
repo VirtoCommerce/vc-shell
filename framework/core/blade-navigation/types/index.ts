@@ -240,6 +240,14 @@ export interface IBladeStack {
   setBladeTitle(bladeId: string, title: string | undefined): void;
 
   /**
+   * Breadcrumb trail for a blade: its visible ancestors, outermost first, each
+   * carrying the real blade id and its runtime title (falling back to the blade
+   * name). Reads `blades`, so call it inside a computed to stay reactive.
+   * Clicking a crumb closes everything opened after that blade.
+   */
+  trailFor(bladeId: string): Breadcrumbs[];
+
+  /**
    * Merge a patch into a blade's URL query. Keys with an empty-string (or
    * nullish) value are removed. Used to persist table view state (sort/search/
    * page) so `buildUrlFromStack` includes it on the next URL sync.

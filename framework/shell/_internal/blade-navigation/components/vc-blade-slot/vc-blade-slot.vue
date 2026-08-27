@@ -47,6 +47,7 @@ const props = defineProps<{
   closable: boolean;
   expanded: boolean;
   visible: boolean;
+  /** @deprecated The trail comes from the blade stack — ignored when the stack provides one. */
   breadcrumbs?: Breadcrumbs[];
   backButton?: Component;
   /**
@@ -72,6 +73,10 @@ const bladeComponent = computed(() => {
   return bladeRegistry.getBladeComponent(props.descriptor.name);
 });
 
+// The trail is a projection of the stack. The deprecated `breadcrumbs` prop only
+// still serves stacks that predate `trailFor`.
+const breadcrumbs = computed(() => bladeStack.trailFor?.(props.descriptor.id) ?? props.breadcrumbs);
+
 // ── Provide immutable BladeDescriptor (plain stack data, never enriched) ──────
 provide(
   BladeDescriptorKey,
@@ -85,7 +90,7 @@ provide(
   BladeRenderingStateKey,
   computed(() => ({
     maximized: maximized.value,
-    breadcrumbs: props.breadcrumbs,
+    breadcrumbs: breadcrumbs.value,
   })),
 );
 

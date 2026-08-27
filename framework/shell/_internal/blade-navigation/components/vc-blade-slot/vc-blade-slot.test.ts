@@ -19,10 +19,14 @@ vi.mock("@core/composables/useBladeRegistry", () => ({
   }),
 }));
 
+// `undefined` = a stack without trailFor, so the deprecated prop still shows through.
+let mockTrail: BladeRenderingState["breadcrumbs"];
+
 vi.mock("@core/blade-navigation/useBladeStack", () => ({
   useBladeStack: () => ({
     setBladeTitle: vi.fn(),
     getMaximizedRef: () => ref(false),
+    trailFor: () => mockTrail,
   }),
 }));
 
@@ -70,6 +74,7 @@ function mountSlot(overrides = {}) {
 describe("vc-blade-slot.vue", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockTrail = undefined;
     mockGetBladeComponent.mockReturnValue(defineComponent({ setup: () => () => h("div", "blade-content") }));
   });
 
@@ -179,6 +184,13 @@ describe("vc-blade-slot.vue", () => {
       // The old enriched fields must NOT be spread onto the descriptor.
       expect("maximized" in provided).toBe(false);
       expect("breadcrumbs" in provided).toBe(false);
+    });
+
+    it("takes the breadcrumb trail from the stack and ignores the deprecated prop", () => {
+      mockTrail = [{ id: "blade-0", title: "All orders" }];
+      mountWithCapture({ breadcrumbs: [{ id: "0", title: "TestBlade" }] });
+
+      expect(captured.renderingState!.value.breadcrumbs).toEqual([{ id: "blade-0", title: "All orders" }]);
     });
 
     it("exposes maximized + breadcrumbs via the rendering-state key, not the descriptor", () => {

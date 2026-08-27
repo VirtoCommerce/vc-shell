@@ -20,6 +20,7 @@ vi.mock("@core/blade-navigation/useBladeStack", () => ({
     registerBeforeClose: vi.fn(),
     setBladeError: vi.fn(),
     clearBladeError: vi.fn(),
+    trailFor: vi.fn(() => []),
   }),
 }));
 
@@ -34,14 +35,6 @@ vi.mock("@core/blade-navigation/utils/urlSync", () => ({
   buildUrlFromStack: vi.fn().mockReturnValue("/"),
   createUrlSync: vi.fn().mockReturnValue({ syncUrlPush: vi.fn(), syncUrlReplace: vi.fn() }),
   getTenantPrefix: vi.fn().mockReturnValue(""),
-}));
-
-vi.mock("@core/composables/useBreadcrumbs", () => ({
-  useBreadcrumbs: () => ({
-    breadcrumbs: ref([]),
-    push: vi.fn(),
-    remove: vi.fn(),
-  }),
 }));
 
 const i18n = createI18n({

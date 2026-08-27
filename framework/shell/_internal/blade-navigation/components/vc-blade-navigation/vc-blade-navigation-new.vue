@@ -19,7 +19,6 @@
         :closable="index > 0"
         :expanded="descriptor.id === activeBlade?.id"
         :visible="isBladeVisible(descriptor, index)"
-        :breadcrumbs="breadcrumbs.slice(0, index)"
         :back-button="bladeCount > 1 ? mobileBackButtonFor(index) : undefined"
         :inert="maximizedBladeId !== undefined && descriptor.id !== maximizedBladeId"
         @close="onClose"
@@ -30,17 +29,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, h, inject, nextTick, onMounted, toRef } from "vue";
+import { computed, h, inject, nextTick, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { RouterView, useRouter } from "vue-router";
-import { useEventListener, watchDebounced } from "@vueuse/core";
+import { useEventListener } from "@vueuse/core";
 import { VcBladeSlot } from "@shell/_internal/blade-navigation/components/vc-blade-slot";
 import VcMobileBackButton from "@shell/_internal/blade-navigation/components/vc-blade-navigation/_internal/vc-mobile-back-button.vue";
 import { useBladeStack } from "@core/blade-navigation/useBladeStack";
 import { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
 import { createUrlSync } from "@core/blade-navigation/utils/urlSync";
-import { useBreadcrumbs } from "@core/composables/useBreadcrumbs";
 import { useToolbar } from "@core/composables/useToolbar";
 import { usePermissions } from "@core/composables/usePermissions";
 import { useIsMac } from "@core/composables/useKeyboardShortcuts";
@@ -55,7 +53,6 @@ const { t } = useI18n();
 const bladeStack = useBladeStack();
 const messaging = useBladeMessaging();
 const router = useRouter();
-const { breadcrumbs, push, remove } = useBreadcrumbs();
 
 // ── URL sync helper ─────────────────────────────────────────────────────────
 // The stack syncs itself after every navigation action. This instance covers
@@ -138,43 +135,6 @@ const dispatchShortcut = createShortcutDispatcher({
 
 useEventListener(window, "keydown", dispatchShortcut);
 
-// ── Breadcrumbs sync ────────────────────────────────────────────────────────
-
-watchDebounced(
-  blades,
-  (newVal) => {
-    // Clear existing breadcrumbs
-    breadcrumbs.value.forEach((bc) => bc && remove([bc.id]));
-
-    // Rebuild from current blade stack (skip hidden blades from coverCurrentBlade)
-    newVal
-      .filter((b) => b.visible)
-      .forEach((descriptor, index) => {
-        push({
-          id: index.toString(),
-          title: toRef({ title: descriptor.name }, "title"),
-          clickHandler: async (id) => {
-            const visibleIndex = parseInt(id);
-            // Map visible index back to actual blade in stack
-            const visibleBlades = blades.value.filter((b) => b.visible);
-            const targetBlade = visibleBlades[visibleIndex + 1];
-            if (targetBlade) {
-              const prevented = await bladeStack.closeBlade(targetBlade.id);
-              return !prevented;
-            }
-            return true;
-          },
-        });
-      });
-  },
-  {
-    deep: true,
-    immediate: true,
-    flush: "post",
-    debounce: 10,
-  },
-);
-
 // ── Event handlers ──────────────────────────────────────────────────────────
 
 async function onClose(bladeId: string): Promise<void> {
@@ -193,14 +153,12 @@ async function onParentCall(args: IParentCallArgs, bladeId: string): Promise<voi
 // ── Mobile back button ──────────────────────────────────────────────────────
 
 function mobileBackButtonFor(index: number): ReturnType<typeof h> | undefined {
-  if (index <= 0) return undefined;
+  const blade = blades.value[index];
+  if (index <= 0 || !blade) return undefined;
   return h(VcMobileBackButton, {
-    breadcrumbs: breadcrumbs.value.slice(0, index),
+    breadcrumbs: bladeStack.trailFor(blade.id),
     onBack: async () => {
-      const blade = blades.value[index];
-      if (blade) {
-        await bladeStack.closeBlade(blade.id);
-      }
+      await bladeStack.closeBlade(blade.id);
     },
   });
 }

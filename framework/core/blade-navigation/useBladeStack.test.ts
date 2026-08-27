@@ -513,4 +513,54 @@ describe("createBladeStack", () => {
       expect(stack.getMaximizedRef("blade-1")).toBe(stack.getMaximizedRef("blade-1"));
     });
   });
+
+  // ── trailFor ───────────────────────────────────────────────────────────────
+
+  describe("trailFor", () => {
+    beforeEach(async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "1" });
+      await stack.openBlade({ name: "ProductDetails", param: "2" });
+    });
+
+    it("returns the visible ancestors in order, with the real blade ids", () => {
+      const [workspace, details, deepest] = stack.blades.value;
+
+      expect(stack.trailFor(deepest.id)).toEqual([
+        expect.objectContaining({ id: workspace.id, title: "Orders" }),
+        expect.objectContaining({ id: details.id, title: "OrderDetails" }),
+      ]);
+    });
+
+    it("uses the runtime title set via setBladeTitle over the blade name", () => {
+      const [workspace, details, deepest] = stack.blades.value;
+      stack.setBladeTitle(workspace.id, "All orders");
+      stack.setBladeTitle(details.id, "Order #1042");
+
+      expect(stack.trailFor(deepest.id).map((crumb) => crumb.title)).toEqual(["All orders", "Order #1042"]);
+    });
+
+    it("returns an empty trail for the workspace and for an unknown id", () => {
+      expect(stack.trailFor(stack.blades.value[0].id)).toEqual([]);
+      expect(stack.trailFor("nope")).toEqual([]);
+    });
+
+    it("skips a blade hidden by coverCurrentBlade", async () => {
+      await stack.coverCurrentBlade({ name: "Settings" });
+      const [workspace, details, hidden, covering] = stack.blades.value;
+
+      expect(hidden.visible).toBe(false);
+      expect(stack.trailFor(covering.id).map((crumb) => crumb.id)).toEqual([workspace.id, details.id]);
+    });
+
+    it("closes everything opened after the clicked crumb", async () => {
+      const [, details, deepest] = stack.blades.value;
+      const crumb = stack.trailFor(deepest.id).find((c) => c.id === details.id);
+
+      await crumb?.clickHandler?.(details.id);
+
+      expect(stack.blades.value).toHaveLength(2);
+      expect(stack.activeBlade.value?.id).toBe(details.id);
+    });
+  });
 });

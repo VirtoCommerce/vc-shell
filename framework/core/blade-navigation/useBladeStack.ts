@@ -1,6 +1,7 @@
 import { ref, computed, inject, type Ref } from "vue";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { BladeDescriptor, BladeOpenEvent, IBladeStack, UrlSink } from "@core/blade-navigation/types";
+import type { Breadcrumbs } from "@core/types/breadcrumbs";
 import { BladeStackKey, NOOP_URL_SINK } from "@core/blade-navigation/types";
 import {
   createWorkspaceDescriptor,
@@ -411,6 +412,24 @@ export function createBladeStack(
     _blades.value = updated;
   }
 
+  // ── Breadcrumb Trail ──────────────────────────────────────────────────────
+
+  function trailFor(bladeId: string): Breadcrumbs[] {
+    const index = _blades.value.findIndex((b) => b.id === bladeId);
+    if (index === -1) return [];
+
+    return _blades.value
+      .slice(0, index)
+      .filter((b) => b.visible)
+      .map((b) => ({
+        id: b.id,
+        title: b.title ?? b.name,
+        clickHandler: async (id: string) => {
+          await closeChildren(id);
+        },
+      }));
+  }
+
   // ── Query Management ──────────────────────────────────────────────────────
 
   function updateBladeQuery(bladeId: string, patch: Record<string, string>): void {
@@ -487,6 +506,7 @@ export function createBladeStack(
     setBladeError,
     clearBladeError,
     setBladeTitle,
+    trailFor,
     updateBladeQuery,
     getMaximizedRef,
     isMaximized,

@@ -56,6 +56,7 @@ export function createMockBladeStack(): IBladeStack {
     setBladeError: vi.fn(),
     clearBladeError: vi.fn(),
     setBladeTitle: vi.fn(),
+    trailFor: vi.fn(() => []),
     _restoreStack: vi.fn(),
     getMaximizedRef: vi.fn(() => ref(false)),
     isMaximized: vi.fn(() => false),

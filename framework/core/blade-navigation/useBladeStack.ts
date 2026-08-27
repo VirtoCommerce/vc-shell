@@ -154,7 +154,8 @@ export function createBladeStack(
     return true;
   }
 
-  async function _openBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
+  /** @returns true when the blade was actually opened. */
+  async function _openBlade(event: BladeOpenEvent & { parentId?: string }): Promise<boolean> {
     // Validate blade exists in registry
     if (!bladeRegistry.getBlade(event.name)) {
       throw new Error(`[BladeStack] Blade '${event.name}' not found in registry`);
@@ -176,7 +177,7 @@ export function createBladeStack(
     // Check guards (deepest first)
     if (bladesToClose.length > 0) {
       const prevented = await _checkGuards(bladesToClose);
-      if (prevented) return;
+      if (prevented) return false;
     }
 
     // Cleanup closing blades
@@ -192,6 +193,7 @@ export function createBladeStack(
     if (event.onClose) _onCloseCallbacks.set(descriptor.id, event.onClose);
 
     event.onOpen?.();
+    return true;
   }
 
   async function _closeBlade(bladeId: string): Promise<CloseOutcome> {
@@ -225,7 +227,8 @@ export function createBladeStack(
     return "closed";
   }
 
-  async function _replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
+  /** @returns true when the blade was actually replaced. */
+  async function _replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<boolean> {
     const current = activeBlade.value;
     if (!current) {
       throw new Error("[BladeStack] No active blade to replace");
@@ -245,7 +248,7 @@ export function createBladeStack(
     const bladesToClose = _blades.value.slice(currentIndex + 1);
     if (bladesToClose.length > 0) {
       const prevented = await _checkGuards(bladesToClose);
-      if (prevented) return;
+      if (prevented) return false;
       _closeBladesCleanup(bladesToClose);
     }
 
@@ -262,9 +265,11 @@ export function createBladeStack(
     if (event.onClose) _onCloseCallbacks.set(descriptor.id, event.onClose);
 
     event.onOpen?.();
+    return true;
   }
 
-  async function _coverCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
+  /** @returns true when the covering blade was actually opened. */
+  async function _coverCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<boolean> {
     const current = activeBlade.value;
     if (!current) {
       throw new Error("[BladeStack] No active blade to cover");
@@ -284,7 +289,7 @@ export function createBladeStack(
     const bladesToClose = _blades.value.slice(currentIndex + 1);
     if (bladesToClose.length > 0) {
       const prevented = await _checkGuards(bladesToClose);
-      if (prevented) return;
+      if (prevented) return false;
       _closeBladesCleanup(bladesToClose);
     }
 
@@ -302,24 +307,27 @@ export function createBladeStack(
     if (event.onClose) _onCloseCallbacks.set(descriptor.id, event.onClose);
 
     event.onOpen?.();
+    return true;
   }
 
   // ── Close Children ──────────────────────────────────────────────────────
 
-  async function _closeChildren(parentId: string): Promise<void> {
+  /** @returns true when children were actually closed. */
+  async function _closeChildren(parentId: string): Promise<boolean> {
     const parentIndex = _blades.value.findIndex((b) => b.id === parentId);
-    if (parentIndex === -1) return;
+    if (parentIndex === -1) return false;
 
     const children = _blades.value.slice(parentIndex + 1);
-    if (children.length === 0) return;
+    if (children.length === 0) return false;
 
     // Check guards (deepest first)
     const prevented = await _checkGuards(children);
-    if (prevented) return;
+    if (prevented) return false;
 
     // Cleanup and remove
     _closeBladesCleanup(children);
     _blades.value = _blades.value.slice(0, parentIndex + 1);
+    return true;
   }
 
   // ── URL sync ──────────────────────────────────────────────────────────────
@@ -339,18 +347,15 @@ export function createBladeStack(
   }
 
   async function openBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
-    await _openBlade(event);
-    _syncOpened("push");
+    if (await _openBlade(event)) _syncOpened("push");
   }
 
   async function replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
-    await _replaceCurrentBlade(event);
-    _syncOpened("replace");
+    if (await _replaceCurrentBlade(event)) _syncOpened("replace");
   }
 
   async function coverCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void> {
-    await _coverCurrentBlade(event);
-    _syncOpened("push");
+    if (await _coverCurrentBlade(event)) _syncOpened("push");
   }
 
   async function closeBlade(bladeId: string): Promise<boolean> {
@@ -360,8 +365,7 @@ export function createBladeStack(
   }
 
   async function closeChildren(parentId: string): Promise<void> {
-    await _closeChildren(parentId);
-    urlSink.replace();
+    if (await _closeChildren(parentId)) urlSink.replace();
   }
 
   // ── Guards ────────────────────────────────────────────────────────────────

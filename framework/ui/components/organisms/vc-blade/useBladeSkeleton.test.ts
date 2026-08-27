@@ -104,18 +104,4 @@ describe("useBladeSkeleton", () => {
 
     expect(skeleton()).toBe(false);
   });
-
-  it("still latches when called outside a component instance", async () => {
-    const loading = ref(true);
-    const skeleton = useBladeSkeleton(() => loading.value);
-
-    expect(skeleton.value).toBe(true);
-
-    loading.value = false;
-    await nextTick();
-    loading.value = true;
-    await nextTick();
-
-    expect(skeleton.value).toBe(false);
-  });
 });

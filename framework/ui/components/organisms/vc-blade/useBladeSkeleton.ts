@@ -1,4 +1,4 @@
-import { computed, getCurrentInstance, nextTick, onMounted, ref, watch, type ComputedRef } from "vue";
+import { computed, nextTick, onMounted, ref, watch, type ComputedRef } from "vue";
 
 /**
  * Decides when a blade may replace its content with skeletons.
@@ -42,11 +42,7 @@ export function useBladeSkeleton(
   // shown" before anything was even requested, and the skeleton could never
   // appear. nextTick pushes arming past the parent's onMounted; this component's
   // own hook alone is still too early.
-  if (getCurrentInstance()) {
-    onMounted(() => void nextTick(arm));
-  } else {
-    void nextTick(arm);
-  }
+  onMounted(() => void nextTick(arm));
 
   return computed(() => isLoading() && !hasRenderedContent.value);
 }

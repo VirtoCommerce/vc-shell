@@ -113,10 +113,21 @@
         </div>
       </div>
     </div>
+
+    <!-- Shown instead of skeletons once content exists. It blocks the pointer and
+         nothing else: hiding, disabling or `inert`-ing the content would drop focus
+         to <body> exactly as unmounting did. Keyboard input still reaches the form,
+         so a user mid-edit is never locked out. `aria-hidden` because the blade
+         itself already carries `aria-busy`. -->
+    <div
+      v-if="showBusyOverlay"
+      class="vc-blade__busy"
+      aria-hidden="true"
+    />
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, inject, provide, computed, getCurrentInstance, onMounted, useAttrs, watchEffect } from "vue";
+import { ref, inject, provide, computed, getCurrentInstance, onMounted, useAttrs, watch, watchEffect } from "vue";
 import { focusIfLoose } from "@core/utilities/focus";
 import { IBladeToolbar } from "@core/types";
 import { useBladeStack } from "@core/blade-navigation";
@@ -126,7 +137,6 @@ import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/Blad
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcBreadcrumbs } from "@ui/components/molecules/vc-breadcrumbs";
 import { BladeBackButtonKey, BladeFormKey, BladeLoadingKey } from "@framework/injection-keys";
-import { useBladeSkeleton } from "@ui/components/organisms/vc-blade/useBladeSkeleton";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
 import { useBlade } from "../../../../core/composables";
 import { useResponsive } from "@framework/core/composables/useResponsive";
@@ -187,12 +197,25 @@ const instanceUid = getCurrentInstance()?.uid ?? 0;
 const bladeTitleId = `blade-title-${instanceUid}`;
 const bladeDescriptor = inject(BladeDescriptorKey, undefined);
 
-// Only before the first render for this entity — see useBladeSkeleton. A later
-// `loading` (a save, a delete) leaves the controls mounted so focus survives.
-const showSkeleton = useBladeSkeleton(
-  () => Boolean(props.loading),
-  () => bladeDescriptor?.value.param,
-);
+// Same two-state treatment VcDataTable already uses (VcDataTable.vue:667-680):
+// a skeleton stands in for content that has never rendered, and every later
+// `loading` shows an overlay over the content that is already there.
+//
+// The overlay is what makes the latch safe. Closing it early used to leave the
+// blade with no indication at all for the rest of the load, which is how a save
+// also came to unmount the focused control — there was nothing else to show. Now
+// an early close costs an overlay instead of skeletons, and nothing is unmounted
+// once content exists, so focus survives (WCAG 2.4.3 Focus Order).
+const hasLoadedOnce = ref(false);
+
+watch([() => Boolean(props.loading), () => bladeDescriptor?.value.param], ([loading, param], previous) => {
+  // A different entity in the same blade instance has nothing rendered for it.
+  if (previous?.length && param !== previous[1]) hasLoadedOnce.value = false;
+  if (!loading && previous?.[0]) hasLoadedOnce.value = true;
+});
+
+const showSkeleton = computed(() => Boolean(props.loading) && !hasLoadedOnce.value);
+const showBusyOverlay = computed(() => Boolean(props.loading) && hasLoadedOnce.value);
 
 provide(BladeLoadingKey, showSkeleton);
 
@@ -286,6 +309,19 @@ watchEffect(() => {
 
 const bladeRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);
+
+// Seatbelt, not a correctness mechanism. `loading` is supposed to mean "nothing to
+// show yet", when nothing inside the blade can hold focus. A blade that raises it
+// for a save anyway would unmount whatever the user has focused and drop focus to
+// <body>, so the next Tab restarts from the top of the document (WCAG 2.4.3 Focus
+// Order). Park focus on the blade instead, so Tab resumes from here.
+watch(showSkeleton, (skeleton) => {
+  const root = bladeRef.value;
+  if (!skeleton || !root) return;
+  if (document.activeElement && root.contains(document.activeElement)) {
+    root.focus({ preventScroll: true });
+  }
+});
 // A blade that just opened is the user's new context, but claiming focus is
 // deliberately conditional: clicking a table row leaves focus on that row, which is a
 // sensible place to continue from, and a blade that autofocuses a field keeps it.
@@ -311,6 +347,11 @@ onMounted(() => focusIfLoose(() => bladeRef.value));
   // Use shared transition timing for synchronized animations with AI panel
   transition: width var(--app-panel-transition-duration, 0.3s)
     var(--app-panel-transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
+
+  &__busy {
+    @apply tw-absolute tw-inset-0 tw-z-10 tw-cursor-wait;
+    background-color: color-mix(in srgb, var(--blade-background-color) 45%, transparent);
+  }
 
   &__back-button {
     @apply tw-mr-[14px];

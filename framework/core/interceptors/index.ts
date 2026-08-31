@@ -109,9 +109,67 @@ export function registerInterceptors(router: Router) {
         }
       }
 
-      // Scope hardening only to platform API calls
+      function isSameOrigin(input: RequestInfo | URL): boolean {
+        const raw = typeof input === "string" ? input : input instanceof Request ? input.url : input.toString();
+
+        try {
+          return new URL(raw, window.location.origin).origin === window.location.origin;
+        } catch {
+          return false;
+        }
+      }
+
+      /**
+       * Act on a response that says the session is gone.
+       *
+       * A 401 on a session we still believe is alive means the cookie died under us.
+       * Flagging it before the response reaches the caller suppresses the data-load
+       * errors it triggers (blade banners + toasts on the page that was mid-navigation)
+       * in favour of a single clean redirect to login.
+       *
+       * The flag doubles as an "already handling it" latch: concurrent 401s from the
+       * same dead session are suppressed by it but skip this branch, so sign-out,
+       * redirect and toast happen exactly once. It is deliberately not set when we
+       * are not signed in — a 401 we don't act on must not silence the whole app.
+       *
+       * A 403 is deliberately excluded — authenticated-but-unauthorized is not an
+       * expired session, and signing the user out over it would be wrong.
+       */
+      function handleSessionDeath(sessionDied: boolean): void {
+        if (!sessionDied || isSessionExpired() || !isAuthenticated.value) return;
+
+        markSessionExpired();
+
+        signOut()
+          .catch((err) => {
+            logger.error("signOut failed after session expiry:", err);
+          })
+          .finally(() => {
+            redirect(router);
+            notification.error(
+              "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
+            );
+          });
+      }
+
+      // Timeout, offline refusal and slow-request tracking are hardening for the
+      // platform API and stay scoped to it. A dead session is not: the cookie is
+      // global, and the request that first reveals it need not be an API call.
+      // SignalR negotiates against /pushNotificationHub, so its 401 arrives outside
+      // /api/ — and when the API answers the same dead session with a 403 (which is
+      // deliberately not treated as expiry) that hub 401 is the only unambiguous
+      // signal there is. Returning it unexamined left the app logged in forever.
+      //
+      // Only the status counts here. The login-page heuristic below stays API-only:
+      // an endpoint under /api/ has no business returning a rendered login page,
+      // while a non-API same-origin request may serve HTML perfectly legitimately.
       if (!isApiRequest(resource)) {
-        return originalFetch(...args);
+        if (!isSameOrigin(resource)) {
+          return originalFetch(...args);
+        }
+        const response = await originalFetch(...args);
+        handleSessionDeath(response.status === 401);
+        return response;
       }
 
       if (!navigator.onLine) {
@@ -144,39 +202,8 @@ export function registerInterceptors(router: Router) {
           signal: controller.signal,
         });
 
-        /**
-         * If the response is unauthorized, logout the user
-         */
-        // A 401 on a session we still believe is alive means the cookie died under us.
-        // Flag it before returning the 401 to the caller, so the data-load errors it
-        // triggers (blade banners + toasts on the page that was mid-navigation) are
-        // suppressed in favour of a single clean redirect to login.
-        //
-        // The flag doubles as an "already handling it" latch: concurrent 401s from the
-        // same dead session are suppressed by it but skip this branch, so sign-out,
-        // redirect and toast happen exactly once. It is deliberately not set when we
-        // are not signed in — a 401 we don't act on must not silence the whole app.
-        // A 401 is the explicit signal; a successful response that is actually the
-        // login page is the same death reported differently (see looksLikeLoginPage).
-        // A 403 is deliberately excluded — authenticated-but-unauthorized is not an
-        // expired session, and signing the user out over it would be wrong.
         const isLoginPageResponse = response.ok && looksLikeLoginPage(response);
-        const sessionDied = response.status === 401 || isLoginPageResponse;
-
-        if (sessionDied && !isSessionExpired() && isAuthenticated.value) {
-          markSessionExpired();
-
-          signOut()
-            .catch((err) => {
-              logger.error("signOut failed after session expiry:", err);
-            })
-            .finally(() => {
-              redirect(router);
-              notification.error(
-                "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
-              );
-            });
-        }
+        handleSessionDeath(response.status === 401 || isLoginPageResponse);
 
         // A 200 that is really the login page must not reach the caller — it would be parsed
         // as data. On a concurrent burst every request then raised its own

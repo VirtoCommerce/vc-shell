@@ -497,6 +497,79 @@ describe("registerInterceptors — a dead session revealed outside /api/", () =>
   });
 });
 
+describe("registerInterceptors — external cancellation", () => {
+  let originalFetch: typeof window.fetch;
+
+  beforeEach(() => {
+    originalFetch = window.fetch;
+    authenticated = true;
+    resetSessionExpired();
+  });
+
+  afterEach(() => {
+    window.fetch = originalFetch;
+    resetSessionExpired();
+  });
+
+  it("passes a signal of its own to the underlying fetch", async () => {
+    const impl = vi.fn().mockResolvedValue({ status: 200 });
+    window.fetch = impl as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    await patched("/api/platform/test");
+
+    expect(impl.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+  });
+
+  // The caller's signal has to reach the request that is actually in flight,
+  // which is not the caller's — the interceptor makes its own to enforce the
+  // timeout, and links the two.
+  it("aborts the in-flight request when the caller's signal fires", async () => {
+    let seen: AbortSignal | undefined;
+    window.fetch = vi.fn((_url: unknown, init: RequestInit) => {
+      seen = init.signal ?? undefined;
+      return new Promise(() => {});
+    }) as unknown as typeof window.fetch;
+
+    const controller = new AbortController();
+    const patched = registerInterceptors(createRouter());
+    void patched("/api/platform/test", { signal: controller.signal });
+    await flushMicrotasks();
+
+    expect(seen?.aborted).toBe(false);
+    controller.abort();
+    expect(seen?.aborted).toBe(true);
+  });
+
+  it("aborts immediately when the caller's signal is already aborted", async () => {
+    let seen: AbortSignal | undefined;
+    window.fetch = vi.fn((_url: unknown, init: RequestInit) => {
+      seen = init.signal ?? undefined;
+      return new Promise(() => {});
+    }) as unknown as typeof window.fetch;
+
+    const controller = new AbortController();
+    controller.abort();
+
+    const patched = registerInterceptors(createRouter());
+    void patched("/api/platform/test", { signal: controller.signal });
+    await flushMicrotasks();
+
+    expect(seen?.aborted).toBe(true);
+  });
+
+  // An external abort is not a timeout, and must not be reported as one.
+  it("reports a caller abort as itself, not as a timeout", async () => {
+    window.fetch = vi.fn(() =>
+      Promise.reject(new DOMException("Aborted", "AbortError")),
+    ) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+
+    await expect(patched("/api/platform/test", { signal: new AbortController().signal })).rejects.toThrow("Aborted");
+  });
+});
+
 describe("registerInterceptors — idempotency", () => {
   let originalFetch: typeof window.fetch;
 

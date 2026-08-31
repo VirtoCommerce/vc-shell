@@ -2,11 +2,9 @@ import { computed, ref, ComputedRef } from "vue";
 import * as _ from "lodash-es";
 import type { ICommonAsset } from "@core/types";
 import { createLogger } from "@core/utilities";
+import { uploadAssets } from "@core/composables/useAssetsManager/uploadAssets";
 
 const logger = createLogger("use-assets");
-
-/** Maximum number of concurrent uploads */
-const MAX_CONCURRENT_UPLOADS = 4;
 
 export interface UseAssetsReturn {
   upload: (files: FileList, uploadPath: string, startingSortOrder?: number) => Promise<ICommonAsset[]>;
@@ -17,61 +15,6 @@ export interface UseAssetsReturn {
 
 /** @deprecated Use UseAssetsReturn instead */
 export type IUseAssets = UseAssetsReturn;
-
-/**
- * Uploads a single file and returns the asset
- */
-async function uploadSingleFile(
-  file: File,
-  uploadPath: string,
-  index: number,
-  startingSortOrder?: number,
-): Promise<ICommonAsset | null> {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const result = await fetch(`/api/assets?folderUrl=/${uploadPath}`, {
-    method: "POST",
-    body: formData,
-  });
-
-  const response = await result.json();
-
-  if (response?.length) {
-    const uploadedFile = response[0];
-    uploadedFile.createdDate = new Date();
-    uploadedFile.sortOrder =
-      startingSortOrder !== undefined && startingSortOrder >= 0 ? startingSortOrder + index + 1 : 0;
-    uploadedFile.url = uploadedFile.url ? decodeURI(uploadedFile.url) : "";
-
-    if ("size" in uploadedFile) {
-      uploadedFile.size = file.size;
-    }
-
-    return uploadedFile;
-  }
-
-  return null;
-}
-
-/**
- * Processes items in batches with concurrency limit
- */
-async function processBatched<T, R>(
-  items: T[],
-  processor: (item: T, index: number) => Promise<R>,
-  concurrency: number,
-): Promise<R[]> {
-  const results: R[] = [];
-
-  for (let i = 0; i < items.length; i += concurrency) {
-    const batch = items.slice(i, i + concurrency);
-    const batchResults = await Promise.all(batch.map((item, batchIndex) => processor(item, i + batchIndex)));
-    results.push(...batchResults);
-  }
-
-  return results;
-}
 
 export function useAssets(): UseAssetsReturn {
   const loading = ref(false);
@@ -86,17 +29,7 @@ export function useAssets(): UseAssetsReturn {
     try {
       loading.value = true;
 
-      const fileArray = Array.from(files);
-
-      // Upload files in parallel batches
-      const uploadResults = await processBatched(
-        fileArray,
-        (file, index) => uploadSingleFile(file, uploadPath, index, startingSortOrder),
-        MAX_CONCURRENT_UPLOADS,
-      );
-
-      // Filter out null results and return successful uploads
-      return uploadResults.filter((asset): asset is ICommonAsset => asset !== null);
+      return await uploadAssets<ICommonAsset>(files, { uploadPath, startingSortOrder });
     } catch (error) {
       logger.error("Upload failed:", error);
       throw error;

@@ -95,6 +95,15 @@ export interface FrameworkInstallArgs {
    * ```
    */
   aiAgent?: AiAgentPluginOptions;
+
+  /**
+   * Builds the instance `useApiClient` hands out.
+   *
+   * Left unset, clients are constructed exactly as before. Supply one to route
+   * every client through your own transport — a shared base URL, a test double,
+   * or instrumentation.
+   */
+  apiClientFactory?: coreComposables.ApiClientFactory;
 }
 
 export interface VcShellFrameworkPlugin {
@@ -312,6 +321,9 @@ export default {
 
     // HTTP Interceptors
     window.fetch = registerInterceptors(args.router);
+
+    // Must precede any module that builds a client during its own install.
+    coreComposables.setApiClientFactory(args.apiClientFactory);
 
     setupI18n(app, args);
     setupBreakpoints(app);

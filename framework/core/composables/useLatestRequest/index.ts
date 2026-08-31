@@ -37,10 +37,18 @@ export interface UseLatestRequestReturn {
  * }
  * ```
  *
- * This discards the late result rather than cancelling the request: the
- * generated API clients build their own `RequestInit` and take no `AbortSignal`,
- * so there is nothing to cancel through. Aborting would additionally save the
- * round trip and belongs with a client that accepts a signal.
+ * This discards the late result rather than cancelling the request. To also save
+ * the round trip, give the client a signal and abort it when a newer request
+ * supersedes the last:
+ *
+ * ```ts
+ * const controller = new AbortController();
+ * const { getApiClient } = useApiClient(SearchClient, { signal: controller.signal });
+ * ```
+ *
+ * The two compose rather than replace each other: aborting stops the request that
+ * is still in flight, and `isCurrent()` still guards a response that had already
+ * come back before the newer request started.
  */
 export function useLatestRequest(): UseLatestRequestReturn {
   const pending = ref(false);

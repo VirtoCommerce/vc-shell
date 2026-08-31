@@ -295,6 +295,13 @@ const response = await fetch("https://api.weather.com/forecast");
 | Parameter | Type                                                                                                             | Required | Description                                                  |
 | --------- | ---------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------ |
 | `c`       | `new (baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) => ApiClient` | Yes      | API client constructor class. Must implement `IAuthApiBase`. |
+| `options` | `UseApiClientOptions`                                                                                            | No       | Cancellation. Omit for the default construction.             |
+
+### `UseApiClientOptions`
+
+| Option   | Type          | Description                                      |
+| -------- | ------------- | ------------------------------------------------ |
+| `signal` | `AbortSignal` | Cancels every request the returned client makes. |
 
 ### Returns: `UseApiClientReturn<ApiClient>`
 
@@ -313,6 +320,38 @@ All generated API client classes extend `AuthApiBase`, which conforms to this in
 | `getBaseUrl`      | `(defaultUrl: string, baseUrl: string) => string` | Resolves the API base URL     |
 
 The interface is the public contract used by `useApiClient`'s type parameter. In the everyday flow, application code does not call `setAuthToken` — `useApiClient` constructs the client with no arguments, the `authToken` field stays empty, and authentication flows through the session cookie attached by the browser to each same-origin `/api/*` request. `setAuthToken` is the explicit-token path consumed by code that needs to attach a token directly (for example, when calling the API from a context where the cookie is unavailable).
+
+### Cancelling requests
+
+The generated clients build their own `RequestInit` and take no `AbortSignal` of their own. Pass one to `useApiClient` instead and it travels through the `http` seam every operation already routes through:
+
+```typescript
+const controller = new AbortController();
+const { getApiClient } = useApiClient(SearchClient, { signal: controller.signal });
+
+const client = await getApiClient();
+const results = await client.search(criteria);
+
+// Later — abandons whatever is still in flight on this client.
+controller.abort();
+```
+
+The signal belongs to the client instance, not to one call, and `getApiClient()` returns a fresh instance per call — so give each cancellable unit of work its own client and its own controller.
+
+Without a signal the client is constructed exactly as before: no `http` is passed, so it resolves `window.fetch` — and with it the framework interceptor — at request time.
+
+### Replacing how clients are built
+
+`apiClientFactory` on the framework install options replaces the construction itself, for a shared base URL, instrumentation, or a test double:
+
+```typescript
+app.use(VirtoShellFramework, {
+  router,
+  apiClientFactory: (ctor, { signal }) => new ctor(import.meta.env.VITE_API_URL, http(signal)),
+});
+```
+
+It is a module-level registry rather than provide/inject on purpose: `useApiClient` is called at module top level in several places, outside any component, where `inject()` returns `undefined`.
 
 ### Generated Client Classes
 

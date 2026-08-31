@@ -21,10 +21,18 @@ one. This composable fills that gap.
 - When NOT to use: for a single request with no concurrent sibling — plain `useAsync` is enough
 
 !!! note "Discards, does not cancel"
-The superseded request still completes; its result is thrown away. The generated
-API clients build their own `RequestInit` and accept no `AbortSignal`, so there
-is nothing to cancel through. Aborting would additionally save the round trip and
-belongs with a client that takes a signal.
+On its own, the superseded request still completes and its result is thrown away.
+To also save the round trip, hand the client a signal and abort it when a newer
+request supersedes the last:
+
+```typescript
+const controller = new AbortController();
+const { getApiClient } = useApiClient(SearchClient, { signal: controller.signal });
+```
+
+The two compose rather than replace each other: aborting stops a request still in
+flight, and `isCurrent()` still guards a response that came back before the newer
+request started.
 
 ## Quick Start
 

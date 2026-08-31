@@ -74,9 +74,12 @@ export async function restoreFromUrl(
   if (parsed.bladeUrl) {
     const bladeMatch = bladeRegistry.getBladeByRoute(parsed.bladeUrl);
     if (bladeMatch) {
-      // Idempotency: skip if child already exists with same name and param.
-      // This means the blade was opened programmatically (normal operation)
-      // and syncUrlPush just triggered the guard — not a page restore.
+      // Skip if the child is already open with the same name and param. The
+      // guard runs on every catch-all navigation, including a back/forward to a
+      // URL the stack already matches, and `openBlade` — unlike `openWorkspace`
+      // — has no same-target no-op of its own, so without this it would stack a
+      // duplicate. (It used to also cover the stack's own URL writes re-entering
+      // the guard; `RouterUrlSink.suppressWhile` handles that case now.)
       const existingChild = bladeStack.blades.value.find((b) => b.name === bladeMatch.name && b.param === parsed.param);
       if (existingChild) {
         return false;

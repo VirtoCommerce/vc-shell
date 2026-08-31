@@ -51,6 +51,17 @@ export interface UseModificationTrackerReturn<T> {
 /**
  * Composable for tracking value changes (including deeply nested objects).
  *
+ * @deprecated Use `useBladeForm`, which owns validation, the dirty flag, the
+ * unsaved-changes guard and the close prompt together. This tracks only the
+ * dirty flag and has no callers left in the framework or the reference app;
+ * `cli/migrate`'s `use-blade-form` transform flags the `useForm` +
+ * `useBeforeUnload` + `useModificationTracker` combination for the same move.
+ *
+ * Its comparator is deliberately left as it is. It differs from
+ * `useBladeForm`'s: an empty array counts as empty there, and does not here.
+ * Aligning them would change the dirty flag for anyone still on this
+ * composable, which is not worth doing to code that is on its way out.
+ *
  * @template T Type of the tracked value.
  * @param initialValueProp Initial value or Ref to it.
  * @returns {UseModificationTrackerReturn<T>} Object with `currentValue`, `isModified` and `resetModificationState`.

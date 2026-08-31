@@ -6,6 +6,17 @@ group: forms
 
 # useModificationTracker
 
+!!! warning "Deprecated — use `useBladeForm`"
+`useBladeForm` owns validation, the dirty flag, the unsaved-changes guard and the
+close prompt together, where this tracks only the dirty flag. It has no callers
+left in the framework or the reference app, and `cli/migrate`'s `use-blade-form`
+transform already flags the `useForm` + `useBeforeUnload` +
+`useModificationTracker` combination for the same move.
+
+    Its comparator is deliberately not being aligned with `useBladeForm`'s: an
+    empty array counts as empty there and not here, and changing that would move
+    the dirty flag under anyone still on this composable.
+
 Tracks deep changes to a value and reports whether it has been modified compared to its original (pristine) state. This is the core composable behind the "unsaved changes" detection pattern in vc-shell blades. It handles complex nested objects, arrays, and the common API quirk where `null`, `undefined`, and `""` should be treated as equivalent empty values.
 
 The composable maintains two copies of the data: the `pristineValue` (the clean baseline) and the `currentValue` (the working copy bound to form fields). Any deep difference between the two sets `isModified` to `true`.

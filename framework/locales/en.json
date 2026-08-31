@@ -1,5 +1,10 @@
 {
   "CORE": {
+    "ERRORS": {
+      "SESSION_EXPIRED": "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
+      "NETWORK_UNAVAILABLE": "Network unavailable. Please check your connection.",
+      "REQUEST_TIMED_OUT": "Request timed out. Please try again."
+    },
     "THEMES": {
       "LIGHT": "Light",
       "DARK": "Dark"

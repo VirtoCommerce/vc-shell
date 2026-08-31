@@ -2,6 +2,7 @@ import { Router } from "vue-router";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { notification } from "@core/notifications/notification";
 import { createLogger } from "@core/utilities";
+import { i18n } from "@core/plugins/i18n";
 import { isSessionExpired, markSessionExpired, SessionExpiredError } from "@core/utilities/sessionExpiration";
 import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
@@ -146,9 +147,7 @@ export function registerInterceptors(router: Router) {
           })
           .finally(() => {
             redirect(router);
-            notification.error(
-              "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
-            );
+            notification.error(i18n.global.t("CORE.ERRORS.SESSION_EXPIRED"));
           });
       }
 
@@ -174,7 +173,7 @@ export function registerInterceptors(router: Router) {
 
       if (!navigator.onLine) {
         logger.warn("Request blocked: browser is offline", resource);
-        return Promise.reject(new Error("Network unavailable. Please check your connection."));
+        return Promise.reject(new Error(i18n.global.t("CORE.ERRORS.NETWORK_UNAVAILABLE")));
       }
 
       const requestId = String(++requestCounter);
@@ -225,7 +224,7 @@ export function registerInterceptors(router: Router) {
         return response;
       } catch (e) {
         if (didTimeout) {
-          throw new Error("Request timed out. Please try again.");
+          throw new Error(i18n.global.t("CORE.ERRORS.REQUEST_TIMED_OUT"));
         }
         throw e;
       } finally {

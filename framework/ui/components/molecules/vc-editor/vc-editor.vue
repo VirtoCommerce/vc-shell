@@ -19,14 +19,14 @@
     v-else
     class="vc-editor"
     :class="{
-      'vc-editor--error': !!errorMessage,
+      'vc-editor--error': invalid,
       'vc-editor--disabled': disabled,
       'vc-editor--focused': isFocused,
       'vc-editor--fullscreen': isFullscreen,
       'vc-editor--side-by-side': currentMode === 'split',
     }"
     :aria-label="label"
-    :aria-invalid="!!errorMessage || undefined"
+    :aria-invalid="invalid || undefined"
     :aria-disabled="disabled || undefined"
   >
     <VcLabel
@@ -35,7 +35,7 @@
       :required="required"
       :multilanguage="multilanguage"
       :current-language="currentLanguage"
-      :error="!!errorMessage"
+      :error="invalid"
     >
       <span>{{ label }}</span>
       <template
@@ -163,6 +163,7 @@
       <div v-if="errorMessage && !isFullscreen">
         <slot name="error">
           <VcHint
+            :id="errorId"
             class="vc-editor__error-hint"
             :error="true"
           >
@@ -197,6 +198,7 @@ import beautify from "js-beautify";
 import DOMPurify from "dompurify";
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcHint } from "@ui/components/atoms/vc-hint";
+import { useFormField } from "@ui/composables/useFormField";
 import VcEditorToolbar from "@ui/components/molecules/vc-editor/_internal/vc-editor-toolbar.vue";
 import VcEditorButton from "@ui/components/molecules/vc-editor/_internal/vc-editor-button.vue";
 import type { CustomToolbarItem } from "@ui/components/molecules/vc-editor/_internal/toolbar-types";
@@ -250,6 +252,10 @@ const props = withDefaults(defineProps<VcEditorProps>(), {
 });
 
 const emit = defineEmits<VcEditorEmits>();
+
+// The same source of ids and invalid state every other form control uses, so a
+// group-level invalid reaches the editor and the error element can be referenced.
+const { errorId, invalid, ariaDescribedBy } = useFormField(props);
 
 const isFocused = ref(false);
 const isFullscreen = ref(false);
@@ -478,6 +484,25 @@ function toggleSideBySideView() {
 // programmatically from prop watcher (e.g., language switch), not from user input.
 let settingContentFromProp = false;
 
+// Tiptap takes these once at creation, so anything reactive has to be pushed
+// back in through setOptions — see the watcher below. `aria-describedby` is the
+// reason: it appears only while an error is showing.
+const editableAttributes = computed<Record<string, string>>(() => {
+  const attrs: Record<string, string> = {
+    // Expose the contenteditable region as a named multiline textbox
+    // (WCAG 4.1.2 / aria-input-field-name). Without an explicit role the
+    // plain <div> is treated as generic, which prohibits aria-label.
+    role: "textbox",
+    "aria-multiline": "true",
+    "aria-label": props.label || "Rich text editor",
+  };
+  // The error element is not rendered in fullscreen, and pointing at an id that
+  // does not exist is worse than pointing at nothing.
+  if (ariaDescribedBy.value && !isFullscreen.value) attrs["aria-describedby"] = ariaDescribedBy.value;
+  if (invalid.value) attrs["aria-invalid"] = "true";
+  return attrs;
+});
+
 const editor = useEditor({
   content: props.modelValue,
   editable: !props.disabled,
@@ -486,11 +511,7 @@ const editor = useEditor({
     // Expose the contenteditable region as a named multiline textbox
     // (WCAG 4.1.2 / aria-input-field-name). Without an explicit role the
     // plain <div> is treated as generic, which prohibits aria-label.
-    attributes: {
-      role: "textbox",
-      "aria-multiline": "true",
-      "aria-label": props.label || "Rich text editor",
-    },
+    attributes: editableAttributes.value,
   },
   onUpdate: ({ editor: tipTapEditor }) => {
     // Skip emit when content was set programmatically from prop change
@@ -548,6 +569,12 @@ watch(
     editor.value?.setEditable(!isDisabled);
   },
 );
+
+// An error appearing has to reach the live contenteditable node, which tiptap
+// already rendered with the attributes it was created with.
+watch(editableAttributes, (attributes) => {
+  editor.value?.setOptions({ editorProps: { attributes } });
+});
 
 onBeforeUnmount(() => {
   editor.value?.destroy();

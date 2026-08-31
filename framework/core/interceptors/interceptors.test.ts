@@ -378,6 +378,125 @@ describe("registerInterceptors — session expiry without a 401", () => {
   });
 });
 
+describe("registerInterceptors — a dead session revealed outside /api/", () => {
+  let originalFetch: typeof window.fetch;
+
+  beforeEach(() => {
+    originalFetch = window.fetch;
+    signOut.mockReset();
+    signOut.mockResolvedValue(undefined);
+    loggerError.mockReset();
+    notificationError.mockReset();
+    authenticated = true;
+    resetSessionExpired();
+  });
+
+  afterEach(() => {
+    window.fetch = originalFetch;
+    authenticated = true;
+    resetSessionExpired();
+  });
+
+  // The bug this covers: SignalR negotiates against /pushNotificationHub, so its
+  // 401 never reached the check, and when the API answered the same dead session
+  // with a 403 nothing signed the user out at all.
+  it("signs out on a 401 from the notification hub", async () => {
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue({ status: 401 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/pushNotificationHub/negotiate?negotiateVersion=1", { method: "POST" });
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(true);
+    expect(signOut).toHaveBeenCalledOnce();
+    expect(router.push).toHaveBeenCalledWith("/login");
+  });
+
+  it("still hands the 401 back to the caller", async () => {
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue({ status: 401 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    const response = await patched("/pushNotificationHub/negotiate");
+
+    expect(response.status).toBe(401);
+  });
+
+  it("acts once when the hub retries against the same dead session", async () => {
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue({ status: 401 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/pushNotificationHub/negotiate");
+    await patched("/pushNotificationHub/negotiate");
+    await patched("/pushNotificationHub/negotiate");
+    await flushMicrotasks();
+
+    expect(signOut).toHaveBeenCalledOnce();
+    expect(notificationError).toHaveBeenCalledOnce();
+  });
+
+  it("leaves a cross-origin 401 alone", async () => {
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue({ status: 401 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("https://third-party.example.com/whoami");
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(false);
+    expect(signOut).not.toHaveBeenCalled();
+  });
+
+  // The login-page heuristic stays API-only: a non-API same-origin request may
+  // legitimately answer with a redirect to HTML, and failing those would break
+  // ordinary page loads.
+  it("does not treat a redirected HTML response outside /api/ as expiry", async () => {
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue({
+      status: 200,
+      ok: true,
+      redirected: true,
+      url: "https://localhost/some/page",
+      headers: { get: () => "text/html" },
+    }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/some/page");
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(false);
+    expect(signOut).not.toHaveBeenCalled();
+  });
+
+  it("does not act on a hub 401 while nobody is signed in", async () => {
+    authenticated = false;
+    const router = createRouter();
+    window.fetch = vi.fn().mockResolvedValue({ status: 401 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/pushNotificationHub/negotiate");
+    await flushMicrotasks();
+
+    expect(isSessionExpired()).toBe(false);
+    expect(signOut).not.toHaveBeenCalled();
+  });
+
+  it("does not apply the API timeout to a hub request", async () => {
+    const router = createRouter();
+    const impl = vi.fn().mockResolvedValue({ status: 200 });
+    window.fetch = impl as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(router);
+    await patched("/pushNotificationHub/negotiate");
+
+    // Hardening stays scoped to /api/: the hub's own long-lived requests must not
+    // be aborted after 30s, so no AbortSignal is injected here.
+    expect(impl).toHaveBeenCalledWith("/pushNotificationHub/negotiate");
+  });
+});
+
 describe("registerInterceptors — idempotency", () => {
   let originalFetch: typeof window.fetch;
 

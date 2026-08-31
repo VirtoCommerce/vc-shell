@@ -21,19 +21,46 @@ export const signalR = {
         .configureLogging(LogLevel.Information)
         .build();
 
+    // Retrying a rejected negotiate every 5s forever produced a console full of
+    // 401s and never recovered: without a fresh cookie the answer cannot change.
+    // Back off instead, and give up entirely once the failure is an auth failure —
+    // the fetch interceptor sees the same 401 and is already signing the user out.
+    const RETRY_BASE_MS = 5000;
+    const RETRY_MAX_MS = 60000;
+    let retryAttempt = 0;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+
+    function isUnauthorized(err: unknown): boolean {
+      // @microsoft/signalr reports the negotiate status in the error message only.
+      return err instanceof Error && /\b401\b/.test(err.message);
+    }
+
     const start = () => {
       connection
         .start()
         .then(() => {
+          retryAttempt = 0;
           logger.info("Connected.");
         })
         .catch((err: unknown) => {
           logger.error("Connection Error: ", err);
-          setTimeout(() => start(), 5000);
+
+          if (isUnauthorized(err)) {
+            logger.warn("Not authenticated — stopping reconnect attempts until sign-in.");
+            return;
+          }
+
+          const delay = Math.min(RETRY_BASE_MS * 2 ** retryAttempt, RETRY_MAX_MS);
+          retryAttempt++;
+          retryTimer = setTimeout(() => start(), delay);
         });
     };
 
     async function stop() {
+      // A pending retry would otherwise outlive the sign-out that stopped us and
+      // reconnect against a session that is gone.
+      clearTimeout(retryTimer);
+      retryTimer = undefined;
       await connection.stop();
     }
 
@@ -54,6 +81,9 @@ export const signalR = {
       async (value) => {
         if (value) {
           reconnect = true;
+          // A fresh sign-in starts from the base delay rather than inheriting the
+          // backoff the previous session ended on.
+          retryAttempt = 0;
           start();
         } else {
           reconnect = false;

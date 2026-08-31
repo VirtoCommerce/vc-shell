@@ -23,6 +23,7 @@ import {
   BladeDescriptorKey,
 } from "@core/blade-navigation/types";
 import { getTenantPrefix } from "@core/blade-navigation/utils/urlSync";
+import { resolveMainRoute } from "@core/blade-navigation/utils/navigateToMainRoute";
 import { createLogger } from "@core/utilities";
 
 const logger = createLogger("use-blade-navigation-adapter");
@@ -251,17 +252,11 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
     // Navigate by route name, preserving current params (tenant prefix).
     // Using { path: "/" } would drop the tenant prefix from the URL.
-    const routes = router.getRoutes();
-    const mainRoute = routes.find((r) => r.meta?.root);
-    // Without a root route the alias predicate would match any alias-less route,
-    // so only look for an alias once the root route is known.
-    const mainRouteAlias = mainRoute
-      ? (routes.find((r) => r.aliasOf?.path === mainRoute.path) ?? mainRoute)
-      : undefined;
+    const mainRoute = resolveMainRoute(router);
 
-    if (mainRouteAlias?.name) {
+    if (mainRoute?.name) {
       return {
-        name: mainRouteAlias.name,
+        name: mainRoute.name,
         params: router.currentRoute.value.params,
       };
     }

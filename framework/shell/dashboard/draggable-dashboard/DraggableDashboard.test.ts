@@ -61,10 +61,13 @@ describe("DraggableDashboard", () => {
     expect(gs.props("resizable")).toBe(true);
   });
 
-  it("passes default ariaLabel", () => {
+  // The wording belongs to GridstackDashboard. Asserting the string here is what
+  // pinned the stale label through three releases (VCST-5805) — assert that the
+  // wrapper stays out of the way instead.
+  it("leaves the default ariaLabel to GridstackDashboard", () => {
     const wrapper = mountDashboard();
     const gs = wrapper.findComponent(GridstackDashboardStub);
-    expect(gs.props("ariaLabel")).toBe("Dashboard widgets. Drag widgets to rearrange.");
+    expect(gs.props("ariaLabel")).toBeUndefined();
   });
 
   it("passes custom ariaLabel", () => {

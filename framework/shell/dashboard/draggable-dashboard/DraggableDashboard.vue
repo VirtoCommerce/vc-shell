@@ -30,14 +30,17 @@ interface Props {
   showDragHandles?: boolean;
   /** Enable widget resizing */
   resizable?: boolean;
-  /** Aria label for the dashboard container */
+  /**
+   * Aria label for the dashboard container. Left without a default here on
+   * purpose: this is a pass-through, and GridstackDashboard owns the wording.
+   * A copy in both places is how they came to disagree (VCST-5805).
+   */
   ariaLabel?: string;
 }
 
 withDefaults(defineProps<Props>(), {
   showDragHandles: false,
   resizable: false,
-  ariaLabel: "Dashboard widgets. Drag widgets to rearrange.",
 });
 
 // State

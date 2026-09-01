@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { BladeDescriptorKey, BladeRenderingStateKey } from "@core/blade-navigation/types";
 import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import type { BladeDescriptor, BladeRenderingState } from "@core/blade-navigation/types";
@@ -358,5 +358,83 @@ describe("BladeHeader", () => {
       });
       expect(wrapper.find(".vc-blade-header__actions").exists()).toBe(false);
     });
+  });
+});
+
+describe("BladeHeader expand-control focus handoff", () => {
+  /**
+   * Maximize and Restore are two nodes swapped by `v-if`, so whichever the user
+   * activated stops existing and focus falls to `<body>` (WCAG 2.4.3).
+   *
+   * Two things change that state: this header's own control, and the `mod+\`
+   * shortcut, which calls `toggleMaximized` on the blade stack and never reaches
+   * the header's handlers. Driving the handoff from the state itself is what
+   * covers both — hooking it to the click handler covered only one, which is how
+   * VCST-5812 was found after the button path had been fixed.
+   */
+  function mountWithMaximized(maximized: ReturnType<typeof ref<boolean>>) {
+    const descriptor = computed<BladeDescriptor>(() => ({
+      id: "test-blade",
+      name: "TestBlade",
+      visible: true,
+    }));
+    const renderingState = computed<BladeRenderingState>(() => ({ maximized: maximized.value ?? false }));
+
+    return mount(BladeHeader, {
+      attachTo: document.body,
+      props: { title: "Blade", closable: true, expandable: true },
+      global: {
+        provide: {
+          [BladeDescriptorKey as symbol]: descriptor,
+          [BladeRenderingStateKey as symbol]: renderingState,
+          [IsMobileKey as symbol]: ref(false),
+          [IsDesktopKey as symbol]: ref(true),
+        },
+      },
+    });
+  }
+
+  /** `keepFocusOnExpandControl` defers to the next frame, past the DOM patch. */
+  const afterFrame = () => new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+
+  it("moves focus to the replacement control when the state is toggled from outside", async () => {
+    const maximized = ref(false);
+    const wrapper = mountWithMaximized(maximized);
+
+    const control = wrapper.element.querySelector<HTMLElement>("[data-blade-expand-control]");
+    expect(control).toBeTruthy();
+    control!.focus();
+    expect(document.activeElement).toBe(control);
+
+    // What the shortcut does: flip the state without touching the header.
+    maximized.value = true;
+    await nextTick();
+    await afterFrame();
+
+    const replacement = wrapper.element.querySelector<HTMLElement>("[data-blade-expand-control]");
+    expect(replacement).toBeTruthy();
+    expect(replacement).not.toBe(control);
+    expect(document.activeElement).toBe(replacement);
+
+    wrapper.unmount();
+  });
+
+  // A mouse user who clicked elsewhere must not have focus yanked into the header.
+  it("leaves focus alone when it is not on the header controls", async () => {
+    const outside = document.createElement("input");
+    document.body.appendChild(outside);
+    outside.focus();
+
+    const maximized = ref(false);
+    const wrapper = mountWithMaximized(maximized);
+
+    maximized.value = true;
+    await nextTick();
+    await afterFrame();
+
+    expect(document.activeElement).toBe(outside);
+
+    wrapper.unmount();
+    outside.remove();
   });
 });

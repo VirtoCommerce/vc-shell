@@ -194,7 +194,7 @@ import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
 import ShortcutKbd from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
-import { ref, inject, computed } from "vue";
+import { ref, inject, computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { shift } from "@floating-ui/vue";
@@ -265,18 +265,27 @@ function keepFocusOnExpandControl(): void {
   });
 }
 
+// Both entry points swap these two nodes: this header's control, and the
+// `mod+\` shortcut, which calls `toggleMaximized` on the stack and never reaches
+// the handlers below. Hooking the handoff to a handler therefore covers only one
+// of them — QA found the shortcut path still dropping focus to `<body>`
+// (VCST-5812) after the button path was fixed.
+//
+// The swap itself is the event worth reacting to, so watch the state that drives
+// it. Default `pre` flush matters: this must run while the control the user
+// activated is still focused and still mounted, which is what the guard inside
+// `keepFocusOnExpandControl` tests.
+watch(
+  () => renderingState?.value?.maximized,
+  () => keepFocusOnExpandControl(),
+);
+
 function onExpand(): void {
-  if (props.closable) {
-    keepFocusOnExpandControl();
-    emit("expand");
-  }
+  if (props.closable) emit("expand");
 }
 
 function onCollapse(): void {
-  if (props.closable) {
-    keepFocusOnExpandControl();
-    emit("collapse");
-  }
+  if (props.closable) emit("collapse");
 }
 
 function onClose(): void {

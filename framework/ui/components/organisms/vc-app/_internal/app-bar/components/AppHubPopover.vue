@@ -7,6 +7,7 @@
     max-width="calc(100vw - 24px)"
     :max-height="9999"
     :content-scrollable="false"
+    :inert="inert"
   >
     <AppHubContent
       :apps-list="appsList"
@@ -38,6 +39,8 @@ interface Props {
   anchorRef?: HTMLElement | null;
   appsList: AppDescriptor[];
   showApplications?: boolean;
+  /** Marks the panel inert while something covers it — see VcPopover's own prop. */
+  inert?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {

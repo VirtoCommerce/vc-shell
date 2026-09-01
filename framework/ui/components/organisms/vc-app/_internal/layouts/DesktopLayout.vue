@@ -83,7 +83,12 @@
     </div>
   </nav>
 
+  <!-- Both panels teleport, so they end up siblings of the <nav> that carries the
+       covering state rather than descendants of it, and `inert` does not cross a
+       Teleport. The state has to be passed explicitly (VCST-5815) — the same
+       treatment the AI agent panel and the mobile sidebar already got. -->
   <AppHubPopover
+    :inert="inertNavigation"
     :show="sidebar.isMenuOpen.value"
     :anchor-ref="appHubAnchorRef"
     :apps-list="appsList"
@@ -105,6 +110,7 @@
 
   <VcPopover
     v-model:show="isNotificationsOpen"
+    :inert="inertNavigation"
     :anchor-ref="notificationAnchorRef"
     placement="right-start"
     width="320px"

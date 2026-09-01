@@ -390,6 +390,18 @@ describe("BladeHeader expand-control focus handoff", () => {
           [IsMobileKey as symbol]: ref(false),
           [IsDesktopKey as symbol]: ref(true),
         },
+        // Same stubs as `factory` above, plus VcTooltip: focusing the expand
+        // control opens its tooltip, and the real one calls floating-ui's
+        // `computePosition` with the faked `shift` middleware mocked at the top of
+        // this file, which rejects asynchronously with "fn is not a function".
+        // The rejection lands after the assertions, so the test passes and the
+        // run still fails.
+        stubs: {
+          VcIcon: { name: "VcIcon", props: ["icon", "size"], template: '<i class="vc-icon-stub" />' },
+          VcTooltip: { name: "VcTooltip", template: "<div><slot /></div>" },
+          teleport: true,
+        },
+        mocks: { $t: (key: string) => key },
       },
     });
   }

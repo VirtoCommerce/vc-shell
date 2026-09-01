@@ -126,6 +126,7 @@
 import { ref, computed, onMounted, nextTick, inject, watch } from "vue";
 import type {
   IDashboardWidget,
+  DashboardWidgetPlacement,
   DashboardWidgetPosition,
   DashboardWidgetSize,
 } from "@shell/dashboard/draggable-dashboard/types";
@@ -222,23 +223,31 @@ const dashboard = useDashboard();
 const widgets = computed(() => dashboard.getWidgets() as IDashboardWidget[]);
 
 // Gridstack integration
-const { layout, isInitialized, initGrid, saveLayout, resetToDefaults, updateWidgetPosition, updateWidgetSize } =
-  useGridstack(widgets, {
-    resizable: props.resizable,
-    autoSave: true,
-    gridOptions: {
-      draggable: {
-        handle: props.showDragHandles ? ".vc-gridstack-dashboard__drag-handle" : ".grid-stack-item-content",
-      },
+const {
+  layout,
+  isInitialized,
+  initGrid,
+  saveLayout,
+  resetToDefaults,
+  restoreLayout,
+  updateWidgetPosition,
+  updateWidgetSize,
+} = useGridstack(widgets, {
+  resizable: props.resizable,
+  autoSave: true,
+  gridOptions: {
+    draggable: {
+      handle: props.showDragHandles ? ".vc-gridstack-dashboard__drag-handle" : ".grid-stack-item-content",
     },
-    onLayoutChange: (newLayout) => {
-      // Sync with dashboard service
-      for (const [widgetId, position] of newLayout) {
-        dashboard.updateWidgetPosition(widgetId, position);
-      }
-      announceToScreenReader("Widget positions updated");
-    },
-  });
+  },
+  onLayoutChange: (newLayout) => {
+    // Sync with dashboard service
+    for (const [widgetId, position] of newLayout) {
+      dashboard.updateWidgetPosition(widgetId, position);
+    }
+    announceToScreenReader("Widget positions updated");
+  },
+});
 
 // Helper to get widget position
 const getPosition = (widgetId: string): DashboardWidgetPosition | undefined => {
@@ -251,9 +260,15 @@ const getPosition = (widgetId: string): DashboardWidgetPosition | undefined => {
 // Enter/Space picks it up, arrows move it a cell at a time, Shift+arrows resize,
 // Enter drops, Escape restores the position it was picked up from.
 const grabbedWidgetId = ref<string | null>(null);
-const grabbedOrigin = ref<DashboardWidgetPosition | null>(null);
-// Escape has to restore the size too, now that Shift+arrows can change it.
-const grabbedOriginSize = ref<DashboardWidgetSize | null>(null);
+/**
+ * The whole layout as it stood at pick-up, not just the grabbed widget.
+ *
+ * Restoring one widget and letting compaction undo itself does not work: a move
+ * that displaced a neighbour leaves a hole, and gravity floats the widget
+ * straight back into it. Escape then announced a cancel the screen did not
+ * show (VCST-5804).
+ */
+const grabbedLayout = ref<Map<string, DashboardWidgetPlacement> | null>(null);
 
 // Mirrors gs-min-w / gs-min-h on the item.
 const MIN_WIDGET_SPAN = 2;
@@ -276,8 +291,12 @@ const widgetName = (widget: IDashboardWidget): string => widget.name || widget.i
 
 const pickUpWidget = (widget: IDashboardWidget): void => {
   grabbedWidgetId.value = widget.id;
-  grabbedOrigin.value = { ...positionOf(widget) };
-  grabbedOriginSize.value = { ...sizeOf(widget) };
+  // Built from positionOf/sizeOf rather than copied off `layout`: a widget that
+  // has not been resized yet carries no size in the map, and a snapshot missing
+  // it would restore the position while leaving the new size in place.
+  grabbedLayout.value = new Map(
+    widgets.value.map((candidate) => [candidate.id, { ...positionOf(candidate), ...sizeOf(candidate) }]),
+  );
   announceToScreenReader(
     `${widgetName(widget)} picked up. Use arrow keys to move, Shift and arrow keys to resize, Enter to drop, Escape to cancel.`,
   );
@@ -285,28 +304,19 @@ const pickUpWidget = (widget: IDashboardWidget): void => {
 
 const dropWidget = (widget: IDashboardWidget): void => {
   grabbedWidgetId.value = null;
-  grabbedOrigin.value = null;
-  grabbedOriginSize.value = null;
+  grabbedLayout.value = null;
   saveLayout();
   const { x, y } = positionOf(widget);
   announceToScreenReader(`${widgetName(widget)} dropped at column ${x + 1}, row ${y + 1}.`);
 };
 
 const cancelWidgetMove = (widget: IDashboardWidget): void => {
-  const origin = grabbedOrigin.value;
-  const originSize = grabbedOriginSize.value;
-  const current = sizeOf(widget);
-
-  if (originSize && (originSize.width !== current.width || originSize.height !== current.height)) {
-    updateWidgetSize(widget.id, originSize);
-  }
-  if (origin) {
-    updateWidgetPosition(widget.id, origin);
+  if (grabbedLayout.value) {
+    restoreLayout(grabbedLayout.value);
   }
 
   grabbedWidgetId.value = null;
-  grabbedOrigin.value = null;
-  grabbedOriginSize.value = null;
+  grabbedLayout.value = null;
   announceToScreenReader(`Move cancelled. ${widgetName(widget)} returned to its original position and size.`);
 };
 

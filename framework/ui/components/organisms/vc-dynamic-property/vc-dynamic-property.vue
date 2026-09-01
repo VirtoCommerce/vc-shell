@@ -7,9 +7,7 @@
     :model-value="value"
     :rules="computedProperty.rules"
   >
-    <template
-      v-if="computedProperty.valueType !== 'Color' && computedProperty.dictionary && !computedProperty.multivalue"
-    >
+    <template v-if="controlKind === 'dictionary'">
       <VcSelect
         v-bind="$attrs"
         v-model="value"
@@ -30,11 +28,7 @@
         @close="onClose"
       ></VcSelect>
     </template>
-    <template
-      v-else-if="
-        computedProperty.valueType === 'ShortText' && computedProperty.multivalue && !computedProperty.dictionary
-      "
-    >
+    <template v-else-if="controlKind === 'short-text-multivalue'">
       <VcMultivalue
         v-bind="$attrs"
         v-model="value"
@@ -49,11 +43,7 @@
         :current-language="currentLanguage"
       ></VcMultivalue>
     </template>
-    <template
-      v-else-if="
-        computedProperty.valueType === 'ShortText' && computedProperty.multivalue && computedProperty.dictionary
-      "
-    >
+    <template v-else-if="controlKind === 'multivalue-dictionary'">
       <VcMultivalue
         v-bind="$attrs"
         v-model="value"
@@ -74,7 +64,7 @@
         @close="onClose"
       ></VcMultivalue>
     </template>
-    <template v-else-if="computedProperty.valueType === 'ShortText'">
+    <template v-else-if="controlKind === 'short-text'">
       <VcInput
         v-bind="$attrs"
         v-model="value"
@@ -89,7 +79,7 @@
         :loading="loading"
       ></VcInput>
     </template>
-    <template v-else-if="computedProperty.valueType === 'Number' && computedProperty.multivalue">
+    <template v-else-if="controlKind === 'number-multivalue'">
       <VcMultivalue
         v-bind="$attrs"
         v-model="value"
@@ -105,7 +95,7 @@
         :options="items"
       ></VcMultivalue>
     </template>
-    <template v-else-if="computedProperty.valueType === 'Integer' && computedProperty.multivalue">
+    <template v-else-if="controlKind === 'integer-multivalue'">
       <VcMultivalue
         v-bind="$attrs"
         v-model="value"
@@ -121,7 +111,7 @@
         :options="items"
       ></VcMultivalue>
     </template>
-    <template v-else-if="computedProperty.valueType === 'Number'">
+    <template v-else-if="controlKind === 'number'">
       <VcInput
         v-bind="$attrs"
         v-model="value"
@@ -136,7 +126,7 @@
         :loading="loading"
       ></VcInput>
     </template>
-    <template v-else-if="computedProperty.valueType === 'Integer'">
+    <template v-else-if="controlKind === 'integer'">
       <VcInput
         v-bind="$attrs"
         v-model="value"
@@ -152,7 +142,7 @@
         :loading="loading"
       ></VcInput>
     </template>
-    <template v-else-if="computedProperty.valueType === 'DateTime'">
+    <template v-else-if="controlKind === 'datetime'">
       <VcInput
         v-bind="$attrs"
         v-model="value"
@@ -167,7 +157,7 @@
         clearable
       ></VcInput
     ></template>
-    <template v-else-if="computedProperty.valueType === 'LongText'">
+    <template v-else-if="controlKind === 'long-text'">
       <VcTextarea
         v-bind="$attrs"
         v-model="value"
@@ -179,7 +169,7 @@
         :current-language="currentLanguage"
       ></VcTextarea
     ></template>
-    <template v-else-if="computedProperty.valueType === 'Boolean'">
+    <template v-else-if="controlKind === 'boolean'">
       <VcSwitch
         v-bind="$attrs"
         v-model="value"
@@ -191,7 +181,7 @@
       >
       </VcSwitch>
     </template>
-    <template v-else-if="computedProperty.valueType === 'Measure'">
+    <template v-else-if="controlKind === 'measure'">
       <VcInputDropdown
         v-bind="$attrs"
         v-model="value"
@@ -222,9 +212,7 @@
         </template>
       </VcInputDropdown>
     </template>
-    <template
-      v-else-if="computedProperty.valueType === 'Color' && computedProperty.multivalue && !computedProperty.dictionary"
-    >
+    <template v-else-if="controlKind === 'color-multivalue'">
       <VcMultivalue
         v-bind="$attrs"
         v-model="value"
@@ -242,9 +230,7 @@
         option-value="value"
       ></VcMultivalue>
     </template>
-    <template
-      v-else-if="computedProperty.valueType === 'Color' && computedProperty.multivalue && computedProperty.dictionary"
-    >
+    <template v-else-if="controlKind === 'color-multivalue-dictionary'">
       <VcMultivalue
         v-bind="$attrs"
         v-model="value"
@@ -284,9 +270,7 @@
         </template>
       </VcMultivalue>
     </template>
-    <template
-      v-else-if="computedProperty.valueType === 'Color' && !computedProperty.multivalue && !computedProperty.dictionary"
-    >
+    <template v-else-if="controlKind === 'color'">
       <VcInput
         v-bind="$attrs"
         v-model="value"
@@ -297,9 +281,7 @@
         :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"
       ></VcInput>
     </template>
-    <template
-      v-else-if="computedProperty.valueType === 'Color' && computedProperty.dictionary && !computedProperty.multivalue"
-    >
+    <template v-else-if="controlKind === 'color-dictionary'">
       <VcSelect
         v-bind="$attrs"
         v-model="value"
@@ -339,6 +321,21 @@
         </template>
       </VcSelect>
     </template>
+    <template v-else>
+      <VcInput
+        v-bind="$attrs"
+        v-model="value"
+        :name="computedProperty.name"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        :placeholder="computedProperty.placeholder"
+        :required="computedProperty.required"
+        :disabled="disabled"
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+      ></VcInput>
+    </template>
   </Field>
 </template>
 
@@ -346,6 +343,7 @@
 <script lang="ts" setup generic="T extends { [x: string]: any; id?: string }">
 import { ref, onMounted, computed, watch, type Ref } from "vue";
 import { Field } from "vee-validate";
+import { resolveControlKind } from "@core/composables/useDynamicProperties/resolveControlKind";
 import { useI18n } from "vue-i18n";
 import { VcSelect } from "@ui/components/molecules/vc-select";
 import { VcInput } from "@ui/components/molecules/vc-input";
@@ -492,6 +490,11 @@ const computedProperty = computed(() => {
     placeholder: props.placeholder || propertyDisplayNameLocalized,
   };
 });
+
+// One source for which control to render, shared in precedence with
+// `resolveStrategy`. The template used to decide for itself, in a different
+// order, and the two disagreed for Measure and Boolean carrying a dictionary.
+const controlKind = computed(() => resolveControlKind(computedProperty.value));
 
 const value = computed({
   get() {

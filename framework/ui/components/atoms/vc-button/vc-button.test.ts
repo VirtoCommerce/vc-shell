@@ -73,3 +73,94 @@ describe("VcButton", () => {
     expect(w.find("button").attributes("aria-pressed")).toBeUndefined();
   });
 });
+
+/**
+ * A button that disables itself in response to its own activation — the Sign in
+ * button while the request is in flight, a dashboard range toggle while the chart
+ * reloads — takes focus down with it: a natively disabled element cannot hold
+ * focus, so it drops to <body> and the next Tab restarts at the top of the
+ * document (WCAG 2.4.3 Focus Order).
+ */
+describe("VcButton focus while disabling", () => {
+  const mountAttached = (props: Record<string, unknown> = {}) =>
+    mount(VcButton as any, {
+      props,
+      attachTo: document.body,
+      global: { stubs: { VcIcon: true } },
+    });
+
+  // Asserted as "does not carry the native attribute", not as "activeElement is
+  // still the button": jsdom does not implement the blur-on-disable rule, so the
+  // direct assertion passes with or without the fix. The rule was verified in
+  // Chrome against the framework's own Sign in button; dropping the attribute is
+  // the part that decides it, and the part a unit test can actually falsify.
+  it("does not disable itself natively while it is the focused element", async () => {
+    const wrapper = mountAttached();
+    (wrapper.find("button").element as HTMLButtonElement).focus();
+
+    await wrapper.setProps({ disabled: true });
+
+    expect(wrapper.find("button").attributes("disabled")).toBeUndefined();
+    wrapper.unmount();
+  });
+
+  it("treats loading the same way — it is the same disabled state", async () => {
+    const wrapper = mountAttached();
+    (wrapper.find("button").element as HTMLButtonElement).focus();
+
+    await wrapper.setProps({ loading: true });
+
+    expect(wrapper.find("button").attributes("disabled")).toBeUndefined();
+    wrapper.unmount();
+  });
+
+  // Focus is retained by dropping the native attribute, so the state has to be
+  // announced some other way or the button silently looks enabled to a screen reader.
+  it("announces the disabled state while it is holding focus", async () => {
+    const wrapper = mountAttached();
+    (wrapper.find("button").element as HTMLButtonElement).focus();
+
+    await wrapper.setProps({ disabled: true });
+
+    expect(wrapper.find("button").attributes("aria-disabled")).toBe("true");
+    wrapper.unmount();
+  });
+
+  it("does not activate while disabled and holding focus", async () => {
+    const wrapper = mountAttached();
+    (wrapper.find("button").element as HTMLButtonElement).focus();
+    await wrapper.setProps({ disabled: true });
+
+    await wrapper.find("button").trigger("click");
+
+    expect(wrapper.emitted("click")).toBeUndefined();
+    wrapper.unmount();
+  });
+
+  // Only the focused button is kept in the tab order. A form full of disabled
+  // buttons must not gain a tab stop each.
+  it("uses the native attribute for a button that was not focused", async () => {
+    const wrapper = mountAttached();
+
+    await wrapper.setProps({ disabled: true });
+
+    expect(wrapper.find("button").attributes("disabled")).toBeDefined();
+    expect(wrapper.find("button").attributes("aria-disabled")).toBeUndefined();
+    wrapper.unmount();
+  });
+
+  it("goes back to the native attribute once focus moves away", async () => {
+    const elsewhere = document.createElement("button");
+    document.body.appendChild(elsewhere);
+    const wrapper = mountAttached();
+    (wrapper.find("button").element as HTMLButtonElement).focus();
+    await wrapper.setProps({ disabled: true });
+
+    elsewhere.focus();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find("button").attributes("disabled")).toBeDefined();
+    wrapper.unmount();
+    elsewhere.remove();
+  });
+});

@@ -110,6 +110,8 @@ The plugin instance is resolved via `inject(PopupPluginKey)`. If called outside 
 
 Multiple popups can be open simultaneously — they stack with the most recent on top.
 
+On close, focus returns to the control that opened the popup (WCAG 2.4.3 Focus Order). When that control was never focused, or has since been removed from the page, focus goes to the app workspace instead — never left on `<body>`, which would make the next Tab restart at the top of the document. A popup that deliberately moved focus somewhere else keeps it; this repairs lost focus rather than dictating it.
+
 ## Recipe: Delete Confirmation with Notification
 
 ```vue

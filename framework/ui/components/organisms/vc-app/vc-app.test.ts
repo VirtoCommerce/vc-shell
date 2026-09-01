@@ -11,6 +11,7 @@ import { ref, defineComponent, nextTick } from "vue";
 import VcApp from "./vc-app.vue";
 import { BladeRoutesKey, ModulesLoadErrorKey, IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import { BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
+import { focusFallbackTarget } from "@core/utilities";
 import { createMockSidebarState } from "@framework/test-mock-factories";
 
 // ============================================================================
@@ -226,6 +227,21 @@ describe("vc-app", () => {
     await nextTick();
 
     expect(document.activeElement).toBe(wrapper.find("main.vc-app__workspace").element);
+    wrapper.unmount();
+  });
+
+  // `focusFallbackTarget()` lives in core/ and finds this element by selector,
+  // because core/ cannot import from ui/. That makes a rename here a silent
+  // break over there — this is the test that would catch it.
+  it("is the element core falls back to when focus has nowhere to go", async () => {
+    mockIsAppReady.value = true;
+    mockIsAuthenticated.value = true;
+    const wrapper = mountApp({ isReady: true }, { attachTo: document.body });
+
+    await nextTick();
+    await nextTick();
+
+    expect(focusFallbackTarget()).toBe(wrapper.find("main.vc-app__workspace").element);
     wrapper.unmount();
   });
 

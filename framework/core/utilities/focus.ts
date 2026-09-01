@@ -35,3 +35,20 @@ export function focusIfLoose(getTarget: () => HTMLElement | null | undefined): v
     target.focus();
   });
 }
+
+/**
+ * The region focus falls back to when nothing more specific is available —
+ * the shell's workspace, which carries `tabindex="-1"` for exactly this.
+ *
+ * Somewhere has to own "focus has nowhere to go". A dialog that was opened
+ * while focus was already loose has no opener to return it to, and leaving it
+ * on `<body>` makes the next Tab restart at the top of the document. The
+ * workspace at least resumes from the content the user was working in.
+ *
+ * Looked up by selector rather than imported: this is `core/`, and the element
+ * belongs to `ui/`. Returns null outside the shell — a popup used standalone
+ * simply has no fallback, which is the pre-existing behaviour.
+ */
+export function focusFallbackTarget(): HTMLElement | null {
+  return document.querySelector<HTMLElement>(".vc-app__workspace");
+}

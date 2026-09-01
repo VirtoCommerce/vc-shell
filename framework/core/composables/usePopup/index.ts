@@ -17,7 +17,7 @@ import type { PopupPlugin, UsePopupInternal, UsePopupProps } from "@core/composa
 import { popupPluginInstance } from "@core/composables/usePopup/singleton";
 import { getPopupPreset } from "@core/composables/usePopup/preset-registry";
 import { useI18n } from "vue-i18n";
-import { createLogger } from "@core/utilities";
+import { createLogger, focusFallbackTarget, focusIfLoose } from "@core/utilities";
 
 const logger = createLogger("use-popup");
 
@@ -156,26 +156,13 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
    * "open" and never runs the close path that would restore focus. Removing the
    * subtree therefore drops focus on `<body>`.
    *
-   * Only acts when focus was actually lost, so a popup that deliberately moved
-   * focus elsewhere (or one closed while the user was already somewhere else) is
-   * left alone.
+   * Two cases leave no opener to return to: one was never captured (the popup was
+   * opened while focus was already loose), or it was detached while the popup was
+   * open (its blade closed underneath it). Both used to end silently on `<body>`;
+   * both now fall back to the workspace.
    */
   function restoreFocusTo(opener?: HTMLElement) {
-    if (!opener || typeof opener.focus !== "function") return;
-
-    // The check has to run *after* the DOM patch, not before it. At this point the
-    // popup's own close button is usually still focused and still connected, so
-    // testing for lost focus here would always say "nothing to do" — and focus then
-    // drops to <body> a tick later, when Vue removes the subtree.
-    nextTick(() => {
-      const active = document.activeElement;
-      const focusWasLost = !active || active === document.body || active === document.documentElement;
-
-      // Something else legitimately took focus (or the opener is gone) — leave it be.
-      if (!focusWasLost || !opener.isConnected) return;
-
-      opener.focus();
-    });
+    focusIfLoose(() => (opener?.isConnected ? opener : focusFallbackTarget()));
   }
 
   /**

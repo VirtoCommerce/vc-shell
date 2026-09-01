@@ -388,6 +388,108 @@ describe("usePopup", () => {
       }
     });
 
+    // The two cases with no opener to return to. Both used to end on <body>, with
+    // the restore declining silently — the popup simply vanished and the next Tab
+    // restarted at the top of the document (VCST-5814).
+    describe("when there is no opener to return to", () => {
+      const mountWorkspace = () => {
+        const workspace = document.createElement("main");
+        workspace.className = "vc-app__workspace";
+        workspace.tabIndex = -1;
+        document.body.appendChild(workspace);
+        return workspace;
+      };
+
+      it("falls back to the workspace when the popup was opened with focus already loose", async () => {
+        vi.useFakeTimers();
+        const workspace = mountWorkspace();
+        try {
+          // No trigger is focused: this is the state VCST-5670 leaves the app in.
+          expect(document.activeElement === document.body).toBe(true);
+
+          const { result } = mountWithPopup(() =>
+            usePopup({
+              component: FakePopup as any,
+              props: { title: "Test" },
+              emits: { onConfirm: () => {}, onClose: () => {} },
+            }),
+          );
+
+          result.open();
+          await nextTick();
+
+          result.close();
+          vi.advanceTimersByTime(400);
+          await nextTick();
+
+          expect(document.activeElement).toBe(workspace);
+        } finally {
+          vi.useRealTimers();
+          workspace.remove();
+        }
+      });
+
+      it("falls back to the workspace when the opener detached while the popup was open", async () => {
+        vi.useFakeTimers();
+        const workspace = mountWorkspace();
+        const trigger = document.createElement("button");
+        document.body.appendChild(trigger);
+        try {
+          trigger.focus();
+
+          const { result } = mountWithPopup(() =>
+            usePopup({
+              component: FakePopup as any,
+              props: { title: "Test" },
+              emits: { onConfirm: () => {}, onClose: () => {} },
+            }),
+          );
+
+          result.open();
+          await nextTick();
+
+          // The blade that owned the trigger closes underneath the popup.
+          trigger.remove();
+
+          result.close();
+          vi.advanceTimersByTime(400);
+          await nextTick();
+
+          expect(document.activeElement).toBe(workspace);
+        } finally {
+          vi.useRealTimers();
+          trigger.remove();
+          workspace.remove();
+        }
+      });
+
+      // Outside the shell there is no workspace, and inventing a target would be
+      // worse than leaving focus alone.
+      it("leaves focus alone when there is no workspace either", async () => {
+        vi.useFakeTimers();
+        try {
+          const { result } = mountWithPopup(() =>
+            usePopup({
+              component: FakePopup as any,
+              props: { title: "Test" },
+              emits: { onConfirm: () => {}, onClose: () => {} },
+            }),
+          );
+
+          result.open();
+          await nextTick();
+
+          result.close();
+          vi.advanceTimersByTime(400);
+          await nextTick();
+
+          expect(document.activeElement === document.body).toBe(true);
+        } finally {
+          vi.useRealTimers();
+        }
+      });
+    });
+
     it("close() is idempotent while a popup is already closing", async () => {
       vi.useFakeTimers();
       try {

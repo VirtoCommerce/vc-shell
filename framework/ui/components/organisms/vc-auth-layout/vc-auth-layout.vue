@@ -1,6 +1,8 @@
 <template>
   <main
+    ref="rootRef"
     class="vc-auth-layout"
+    tabindex="-1"
     :style="containerStyle"
   >
     <div class="vc-auth-layout__logo-wrapper">
@@ -55,8 +57,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
+import { focusIfLoose } from "@core/utilities/focus";
 import { useRouter } from "vue-router";
+
+// Arriving here means the previous context is gone: signing out unmounts the whole
+// authenticated shell, so the route-change repair in `vc-app` has no target left and
+// correctly declines. Nothing else claims focus, and it lands on `<body>` — the next
+// Tab restarts from the top of the document (WCAG 2.4.3).
+//
+// This is the same repair the workspace and each blade already do for their own
+// context, and it covers every page built on this layout: sign-in, forgot password,
+// reset password, invitation and the forced password change.
+const rootRef = ref<HTMLElement | null>(null);
+onMounted(() => focusIfLoose(() => rootRef.value));
 
 export interface Props {
   /** Path to logo image */

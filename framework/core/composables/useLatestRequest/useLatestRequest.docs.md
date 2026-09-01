@@ -35,34 +35,36 @@ const search = useLatestRequest();
 const items = ref([]);
 
 async function load(criteria) {
-  const request = search.begin();
-  try {
-    const result = await client.search(criteria);
-    if (!request.isCurrent()) return; // a newer search already won
-    items.value = result;
-  } finally {
-    request.complete();
-  }
+  const result = await search.latest(client.search(criteria));
+  if (!result) return; // a newer search already won
+  items.value = result;
 }
 ```
 
-Two rules make it correct:
+`latest()` owns the bookkeeping: it marks the request as the newest, releases it
+when it settles — including on a throw — and hands back `undefined` if a newer
+request started meanwhile. There is no `finally` to forget.
 
-1. Check `isCurrent()` **after** the await and before writing any state.
-2. Call `complete()` in a `finally`, so a throwing request still releases `pending`.
+!!! note "When `undefined` is ambiguous"
+`undefined` means superseded. A request whose own successful result can be
+`undefined` cannot distinguish the two, and should use `begin()` below.
 
 ## API Reference
 
 ### Returns
 
-| Member       | Type                     | Description                                                                       |
-| ------------ | ------------------------ | --------------------------------------------------------------------------------- |
-| `begin`      | `() => LatestRequest`    | Starts a request and supersedes any earlier one                                   |
-| `invalidate` | `() => void`             | Supersedes the in-flight request without starting a new one                       |
-| `dispose`    | `() => void`             | Permanently supersedes everything. Runs automatically when the owning scope stops |
-| `pending`    | `Readonly<Ref<boolean>>` | `true` while the newest request is still running                                  |
+| Member       | Type                                                  | Description                                                                       |
+| ------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `latest`     | `<T>(request: Promise<T>) => Promise<T \| undefined>` | Runs a request, resolving to `undefined` if a newer one superseded it             |
+| `begin`      | `() => LatestRequest`                                 | Starts a request and supersedes any earlier one. The manual form behind `latest`  |
+| `invalidate` | `() => void`                                          | Supersedes the in-flight request without starting a new one                       |
+| `dispose`    | `() => void`                                          | Permanently supersedes everything. Runs automatically when the owning scope stops |
+| `pending`    | `Readonly<Ref<boolean>>`                              | `true` while the newest request is still running                                  |
 
 ### `LatestRequest`
+
+Returned by `begin()`, for the cases `latest()` cannot serve: the request and the
+check living in different functions, or a result that is legitimately `undefined`.
 
 | Member      | Type            | Description                                                                        |
 | ----------- | --------------- | ---------------------------------------------------------------------------------- |

@@ -8,6 +8,25 @@ export interface LatestRequest {
 }
 
 export interface UseLatestRequestReturn {
+  /**
+   * Runs a request and hands back its result only while it is still the newest.
+   * A superseded request resolves to `undefined`, so the caller returns early
+   * instead of writing a stale answer:
+   *
+   * ```ts
+   * const result = await search.latest(client.searchProducts(criteria));
+   * if (!result) return;
+   * searchResult.value = result;
+   * ```
+   *
+   * This is `begin`/`isCurrent`/`complete` with the bookkeeping folded in —
+   * there is no `finally` to forget. Reach for `begin` directly only when the
+   * request and the check cannot sit in the same function.
+   *
+   * Rejections propagate untouched. `undefined` means superseded, so a request
+   * whose own successful result is `undefined` needs `begin` instead.
+   */
+  latest<T>(request: Promise<T>): Promise<T | undefined>;
   /** Starts a request and supersedes any earlier one. */
   begin(): LatestRequest;
   /** Supersedes the in-flight request without starting a new one — e.g. on selection change. */
@@ -26,16 +45,14 @@ export interface UseLatestRequestReturn {
  * const search = useLatestRequest();
  *
  * async function load(criteria) {
- *   const request = search.begin();
- *   try {
- *     const result = await api.search(criteria);
- *     if (!request.isCurrent()) return;   // a newer search won
- *     items.value = result;
- *   } finally {
- *     request.complete();
- *   }
+ *   const result = await search.latest(api.search(criteria));
+ *   if (!result) return;              // a newer search won
+ *   items.value = result;
  * }
  * ```
+ *
+ * `begin` is the same thing with the bookkeeping exposed, for the cases where
+ * the request and the check cannot sit in the same function.
  *
  * This discards the late result rather than cancelling the request: the
  * generated API clients build their own `RequestInit` and take no `AbortSignal`,
@@ -66,6 +83,16 @@ export function useLatestRequest(): UseLatestRequestReturn {
     };
   }
 
+  async function latest<T>(request: Promise<T>): Promise<T | undefined> {
+    const tracked = begin();
+    try {
+      const result = await request;
+      return tracked.isCurrent() ? result : undefined;
+    } finally {
+      tracked.complete();
+    }
+  }
+
   function invalidate(): void {
     sequence++;
     pending.value = false;
@@ -80,6 +107,7 @@ export function useLatestRequest(): UseLatestRequestReturn {
   if (getCurrentScope()) onScopeDispose(dispose);
 
   return {
+    latest,
     begin,
     invalidate,
     dispose,

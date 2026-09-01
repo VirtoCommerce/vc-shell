@@ -49,7 +49,7 @@ function mountLayout(props: Record<string, unknown> = {}) {
         },
         AppHubPopover: {
           name: "AppHubPopover",
-          props: ["show", "anchorRef", "appsList", "showApplications"],
+          props: ["show", "anchorRef", "appsList", "showApplications", "inert"],
           template: '<div class="stub-app-hub" />',
         },
         NotificationDropdown: {
@@ -58,7 +58,7 @@ function mountLayout(props: Record<string, unknown> = {}) {
         },
         VcPopover: {
           name: "VcPopover",
-          props: ["show", "anchorRef", "placement", "width", "contentScrollable"],
+          props: ["show", "anchorRef", "placement", "width", "contentScrollable", "inert"],
           template: '<div class="stub-popover"><slot /></div>',
         },
       },
@@ -142,5 +142,25 @@ describe("DesktopLayout", () => {
     const wrapper = mountLayout();
     expect(wrapper.find(".desktop-layout__wrap--collapsed").exists()).toBe(true);
     expect(wrapper.find(".desktop-layout__wrap--expanded").exists()).toBe(false);
+  });
+
+  /**
+   * Both panels teleport out of the <nav> that carries the covering state, so
+   * they cannot inherit it — `inert` does not cross a Teleport. Asserting the
+   * prop arrives is the point: the panels' own rendering is their tests' job,
+   * and what broke here was the layout never telling them (VCST-5815).
+   */
+  it("tells the teleported panels they are covered too", () => {
+    const wrapper = mountLayout({ inertNavigation: true });
+
+    expect(wrapper.findComponent({ name: "AppHubPopover" }).props("inert")).toBe(true);
+    expect(wrapper.findComponent({ name: "VcPopover" }).props("inert")).toBe(true);
+  });
+
+  it("leaves the panels alone while nothing covers navigation", () => {
+    const wrapper = mountLayout();
+
+    expect(wrapper.findComponent({ name: "AppHubPopover" }).props("inert")).toBeFalsy();
+    expect(wrapper.findComponent({ name: "VcPopover" }).props("inert")).toBeFalsy();
   });
 });

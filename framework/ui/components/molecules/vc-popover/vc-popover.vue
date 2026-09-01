@@ -5,6 +5,7 @@
         v-if="show"
         ref="floatingRef"
         class="vc-popover"
+        :inert="inert || undefined"
         :style="[floatingStyle, panelStyle]"
         :role="role"
         :aria-label="ariaLabel"
@@ -96,6 +97,15 @@ interface Props {
   role?: string;
   /** Accessible name used with the optional semantic role */
   ariaLabel?: string;
+  /**
+   * Marks the panel inert — out of the tab order and out of the accessibility
+   * tree — for when something covers it, such as a maximized blade.
+   *
+   * It has to be a prop rather than a fallthrough attribute: the panel is
+   * teleported, so it is a sibling of whatever carries the covering state
+   * rather than a descendant, and `inert` does not cross a Teleport.
+   */
+  inert?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -90,3 +90,36 @@ describe("VcPopover", () => {
     expect(wrapper.find(".vc-popover__content--scrollable").exists()).toBe(false);
   });
 });
+
+describe("VcPopover inert", () => {
+  const mountComponent = (props: Record<string, unknown> = {}) =>
+    mount(VcPopover as any, {
+      props: { show: true, ...props },
+      global: { stubs: { VcIcon: true, Teleport: true } },
+    });
+
+  /**
+   * The panel is teleported, so it lands as a sibling of whatever carries the
+   * covering state rather than a descendant. `inert` does not cross a Teleport
+   * and attribute fallthrough does not reach the real root, so the state has to
+   * arrive as a prop (VCST-5815).
+   */
+  it("marks the panel inert when told it is covered", () => {
+    const wrapper = mountComponent({ inert: true });
+
+    expect(wrapper.find(".vc-popover").attributes("inert")).toBeDefined();
+  });
+
+  // `inert="false"` is still inert in HTML — the attribute has to be absent.
+  it("leaves the attribute off entirely when it is not covered", () => {
+    const wrapper = mountComponent({ inert: false });
+
+    expect(wrapper.find(".vc-popover").attributes("inert")).toBeUndefined();
+  });
+
+  it("leaves the attribute off when nothing was said", () => {
+    const wrapper = mountComponent();
+
+    expect(wrapper.find(".vc-popover").attributes("inert")).toBeUndefined();
+  });
+});

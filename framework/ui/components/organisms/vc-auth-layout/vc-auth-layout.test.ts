@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 
 // Mock vue-router
 vi.mock("vue-router", () => ({
@@ -108,5 +108,54 @@ describe("VcAuthLayout", () => {
     expect(img.classes()).not.toContain("vc-auth-layout__logo--loaded");
     await img.trigger("load");
     expect(img.classes()).toContain("vc-auth-layout__logo--loaded");
+  });
+});
+
+describe("VcAuthLayout focus", () => {
+  /**
+   * Signing out unmounts the authenticated shell, so `vc-app`'s route-change
+   * repair has no target and correctly declines. Nothing else claims focus and it
+   * lands on `<body>`, making the next Tab restart from the top of the document.
+   *
+   * Mounting must attach to the document: `focusIfLoose` refuses a target that is
+   * not connected, which is the whole point of the helper.
+   */
+  it("takes focus when it mounts with focus loose", async () => {
+    const wrapper = mount(VcAuthLayout, {
+      attachTo: document.body,
+      global: { mocks: { $isMobile: ref(false), $isDesktop: ref(true), $t: (k: string) => k } },
+    });
+    await nextTick();
+    await nextTick();
+
+    expect(document.activeElement).toBe(wrapper.element);
+    wrapper.unmount();
+  });
+
+  // It repairs lost focus; it does not dictate focus. A page that autofocuses its
+  // first field, or a user who has already moved on, must not be interrupted.
+  it("leaves focus alone when something already holds it", async () => {
+    const holder = document.createElement("input");
+    document.body.appendChild(holder);
+    holder.focus();
+
+    const wrapper = mount(VcAuthLayout, {
+      attachTo: document.body,
+      global: { mocks: { $isMobile: ref(false), $isDesktop: ref(true), $t: (k: string) => k } },
+    });
+    await nextTick();
+    await nextTick();
+
+    expect(document.activeElement).toBe(holder);
+    wrapper.unmount();
+    holder.remove();
+  });
+
+  it("is focusable without being a tab stop", () => {
+    const wrapper = mount(VcAuthLayout, {
+      global: { mocks: { $isMobile: ref(false), $isDesktop: ref(true), $t: (k: string) => k } },
+    });
+
+    expect(wrapper.element.getAttribute("tabindex")).toBe("-1");
   });
 });

@@ -31,6 +31,12 @@ const applyMockWidgetPosition = (id: string, position: { x: number; y: number })
   mockLayout.value = new Map(mockLayout.value).set(id, { ...previous, ...position });
 };
 const mockUpdateWidgetPosition = vi.fn(applyMockWidgetPosition);
+// Writes the snapshot back, the way the real restoreLayout does — a mock that
+// only recorded the call could not tell a whole-layout restore from a
+// single-widget one, which is the entire subject of VCST-5804.
+const mockRestoreLayout = vi.fn((snapshot: Map<string, { x: number; y: number }>) => {
+  mockLayout.value = new Map([...snapshot].map(([id, placement]) => [id, { ...placement }]));
+});
 const mockUpdateWidgetSize = vi.fn((id: string, size: { width: number; height: number }) => {
   const previous = mockLayout.value.get(id) ?? { x: 0, y: 0 };
   mockLayout.value = new Map(mockLayout.value).set(id, { ...previous, ...size });
@@ -45,6 +51,7 @@ vi.mock("@shell/dashboard/draggable-dashboard/composables/useGridstack", () => (
     resetToDefaults: mockResetToDefaults,
     updateWidgetPosition: mockUpdateWidgetPosition,
     updateWidgetSize: mockUpdateWidgetSize,
+    restoreLayout: mockRestoreLayout,
   })),
 }));
 
@@ -369,6 +376,37 @@ describe("GridstackDashboard", () => {
       expect(mockLayout.value.get("a")).toMatchObject({ x: 2, y: 3 });
     });
 
+    /**
+     * Cancelling restored only the grabbed widget, so gravity re-floated it into
+     * the hole the displaced neighbour had left — the announcement said the move
+     * was cancelled while the screen showed otherwise (VCST-5804).
+     *
+     * The displacement itself is gridstack's doing; it reaches the component
+     * through `layout`, so the test writes it there the way the change handler
+     * would.
+     */
+    it("restores a neighbour that the move displaced", async () => {
+      mockLayout.value = new Map([
+        ["products", { x: 0, y: 0 }],
+        ["offers", { x: 0, y: 3 }],
+      ]);
+      const wrapper = mountGridstack({ resizable: true }, [
+        { id: "products", name: "Products", component: markRaw(WidgetA), size: { width: 6, height: 6 } },
+        { id: "offers", name: "Offers", component: markRaw(WidgetA), size: { width: 6, height: 6 } },
+      ]);
+      const items = wrapper.findAll(".grid-stack-item");
+
+      await items[1].trigger("keydown", { key: "Enter" });
+      await items[1].trigger("keydown", { key: "ArrowUp" });
+      // Gridstack pushes products down to make room, and reports it back.
+      mockLayout.value = new Map(mockLayout.value).set("products", { x: 0, y: 6 });
+
+      await items[1].trigger("keydown", { key: "Escape" });
+
+      expect(mockLayout.value.get("offers")).toMatchObject({ x: 0, y: 3 });
+      expect(mockLayout.value.get("products")).toMatchObject({ x: 0, y: 0 });
+    });
+
     it("puts every widget in the tab order", () => {
       expect(item(mountWithWidget()).attributes("tabindex")).toBe("0");
     });
@@ -444,11 +482,10 @@ describe("GridstackDashboard", () => {
       const wrapper = mountWithWidget();
       await item(wrapper).trigger("keydown", { key: "Enter" });
       await item(wrapper).trigger("keydown", { key: "ArrowRight", shiftKey: true });
-      mockUpdateWidgetSize.mockClear();
 
       await item(wrapper).trigger("keydown", { key: "Escape" });
 
-      expect(mockUpdateWidgetSize).toHaveBeenLastCalledWith("a", { width: 6, height: 6 });
+      expect(mockLayout.value.get("a")).toMatchObject({ width: 6, height: 6 });
     });
 
     it("announces the row the widget actually landed in, not the one requested", async () => {
@@ -470,11 +507,10 @@ describe("GridstackDashboard", () => {
       await item(wrapper).trigger("keydown", { key: "Enter" });
       await item(wrapper).trigger("keydown", { key: "ArrowRight" });
       await item(wrapper).trigger("keydown", { key: "ArrowDown" });
-      mockUpdateWidgetPosition.mockClear();
 
       await item(wrapper).trigger("keydown", { key: "Escape" });
 
-      expect(mockUpdateWidgetPosition).toHaveBeenLastCalledWith("a", { x: 2, y: 3 });
+      expect(mockLayout.value.get("a")).toMatchObject({ x: 2, y: 3 });
     });
 
     it("marks the picked-up widget so the state is visible, and clears it on drop", async () => {

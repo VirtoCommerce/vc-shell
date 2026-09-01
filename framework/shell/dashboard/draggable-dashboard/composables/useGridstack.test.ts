@@ -246,6 +246,44 @@ describe("useGridstack — layout management", () => {
     expect(loadStored()).toContainEqual({ id: "a", x: 5, y: 6, w: 3, h: 2 });
   });
 
+  it("restoreLayout puts every widget back and pushes it to the grid in one batch", () => {
+    const widgets = ref([makeWidget("a"), makeWidget("b")]);
+    const { api } = withGridstack(widgets);
+    api().initGrid(document.createElement("div"));
+    for (const id of ["a", "b"]) {
+      const el = document.createElement("div");
+      el.setAttribute("gs-id", id);
+      document.body.appendChild(el);
+    }
+    api().layout.value.set("a", { x: 9, y: 9 });
+    mockGrid.batchUpdate.mockClear();
+
+    api().restoreLayout(
+      new Map([
+        ["a", { x: 1, y: 2 }],
+        ["b", { x: 3, y: 4 }],
+      ]),
+    );
+
+    expect(api().layout.value.get("a")).toEqual({ x: 1, y: 2 });
+    expect(api().layout.value.get("b")).toEqual({ x: 3, y: 4 });
+    expect(mockGrid.batchUpdate).toHaveBeenCalled();
+  });
+
+  // The caller keeps its snapshot across the restore, so it must not be handed
+  // the live map to mutate.
+  it("restoreLayout copies the snapshot rather than adopting it", () => {
+    const widgets = ref([makeWidget("a")]);
+    const { api } = withGridstack(widgets);
+    api().initGrid(document.createElement("div"));
+    const snapshot = new Map([["a", { x: 1, y: 2 }]]);
+
+    api().restoreLayout(snapshot);
+    api().layout.value.get("a")!.x = 7;
+
+    expect(snapshot.get("a")).toEqual({ x: 1, y: 2 });
+  });
+
   it("batchUpdate wraps the callback in grid batching", () => {
     const widgets = ref([makeWidget("a")]);
     const { api } = withGridstack(widgets);

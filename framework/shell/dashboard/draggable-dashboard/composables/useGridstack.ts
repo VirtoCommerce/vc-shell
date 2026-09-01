@@ -83,6 +83,8 @@ export interface UseGridstackReturn {
   loadLayout: () => void;
   /** Reset to built-in positions */
   resetToDefaults: () => void;
+  /** Put the grid back to a layout captured earlier */
+  restoreLayout: (snapshot: Map<string, DashboardWidgetPlacement>) => void;
   /** Batch update mode (disable animations) */
   batchUpdate: (fn: () => void) => void;
 }
@@ -374,6 +376,18 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
   };
 
   /**
+   * Put the grid back to a layout captured earlier.
+   *
+   * Restoring one widget and trusting compaction to undo itself does not work:
+   * gravity re-floats it into the hole a displaced neighbour left behind. The
+   * whole map has to go back, in one batch (VCST-5804).
+   */
+  const restoreLayout = (snapshot: Map<string, DashboardWidgetPlacement>): void => {
+    layout.value = new Map([...snapshot].map(([id, placement]) => [id, { ...placement }]));
+    applyLayoutToGrid();
+  };
+
+  /**
    * Execute function in batch update mode
    */
   const batchUpdate = (fn: () => void): void => {
@@ -435,6 +449,7 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
     saveLayout,
     loadLayout,
     resetToDefaults,
+    restoreLayout,
     batchUpdate,
   };
 }

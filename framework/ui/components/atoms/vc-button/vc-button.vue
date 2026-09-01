@@ -1,12 +1,15 @@
 <template>
   <button
     v-if="!bladeLoading"
+    ref="buttonRef"
     :class="buttonClass"
     :type="type"
-    :disabled="disabled || loading"
+    :disabled="isDisabled && !holdsFocusWhileDisabled"
+    :aria-disabled="holdsFocusWhileDisabled || undefined"
     :aria-label="ariaLabel"
     :aria-busy="loading || undefined"
     :aria-pressed="selected || undefined"
+    @blur="holdsFocusWhileDisabled = false"
     @click="onClick"
   >
     <!-- Loading: spinner replaces icon; shown inline next to text -->
@@ -32,7 +35,7 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, inject, type Component } from "vue";
+import { computed, inject, ref, watch, type Component } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { ButtonGroupKey, type ButtonVariant, type ButtonSize } from "@ui/components/atoms/vc-button/types";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
@@ -85,6 +88,29 @@ const effectiveSize = computed(() => {
   return SIZE_ALIAS[raw as string] ?? raw;
 });
 
+const buttonRef = ref<HTMLButtonElement | null>(null);
+const isDisabled = computed(() => props.disabled || props.loading);
+
+/**
+ * A button that disables itself in response to its own activation — Sign in while
+ * the request is in flight, a range toggle while the chart reloads — takes focus
+ * down with it, because a natively disabled element cannot hold focus. Focus lands
+ * on `<body>` and the next Tab restarts at the top of the document (WCAG 2.4.3).
+ *
+ * So while this button is the one holding focus, say `aria-disabled` instead: same
+ * announcement, same inert behaviour via the click guard, but it stays focusable
+ * and the user is still on it when the work finishes. Every other disabled button
+ * keeps the native attribute and stays out of the tab order.
+ */
+const holdsFocusWhileDisabled = ref(false);
+
+watch(isDisabled, (disabled) => {
+  // Pre-flush, so this runs before the patch that would apply the attribute —
+  // by the time the DOM updates, focus has already moved off and the answer
+  // would always be "no".
+  holdsFocusWhileDisabled.value = disabled && buttonRef.value === document.activeElement;
+});
+
 const buttonClass = computed(() => {
   return [
     "vc-button",
@@ -93,17 +119,18 @@ const buttonClass = computed(() => {
       [`vc-button--${effectiveSize.value}`]: effectiveSize.value,
       "vc-button--selected": props.selected,
       "vc-button--text": props.text,
-      "vc-button--disabled": props.disabled || props.loading,
+      "vc-button--disabled": isDisabled.value,
       "vc-button--loading": props.loading,
     },
   ];
 });
 
 function onClick(e: Event): void {
-  if (!props.disabled && !props.loading) {
-    e.preventDefault();
-    emit("click", e);
-  }
+  // Unconditional: an aria-disabled button still receives clicks natively, and a
+  // type="submit" one would otherwise submit the form it sits in.
+  e.preventDefault();
+  if (isDisabled.value) return;
+  emit("click", e);
 }
 </script>
 

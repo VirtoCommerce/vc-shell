@@ -34,7 +34,7 @@
     "format:check": "prettier --check 'framework/**/*.{ts,vue,json,md,css,scss}' 'cli/**/*.{ts,vue,json,md}' 'configs/**/*.{ts,vue,json,md}' 'packages/**/*.{ts,vue,json,md}'",
     "stylelint": "stylelint --fix 'framework/**/*.{vue,css,scss}'",
     "stylelint:check": "stylelint 'framework/**/*.{vue,css,scss}'",
-    "typecheck": "yarn workspace @vc-shell/framework run check:types",
+    "typecheck": "yarn workspace @vc-shell/framework run check:types && yarn workspace @vc-shell/create-vc-app run check:types",
     "check": "yarn lint:check && yarn format:check && yarn stylelint:check && yarn typecheck && yarn check:locales && yarn check:circular && yarn check:layers",
     "check:locales": "tsx framework/scripts/check-locales.mts",
     "check:circular": "madge --circular framework/",

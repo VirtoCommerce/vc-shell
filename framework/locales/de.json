@@ -606,7 +606,8 @@
     "WEEK": "Woche",
     "WORK_WEEK": "Arbeitswoche",
     "ZOOM_IN": "Vergrößern",
-    "ZOOM_OUT": "Verkleinern"
+    "ZOOM_OUT": "Verkleinern",
+    "EVENT_DETAILS": "Termindetails"
   },
   "common": {
     "no_options": "Keine Optionen"

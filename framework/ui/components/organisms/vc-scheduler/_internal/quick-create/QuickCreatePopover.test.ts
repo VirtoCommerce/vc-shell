@@ -36,4 +36,14 @@ describe("QuickCreatePopover", () => {
     const w = mountQC();
     expect(w.find("[data-test='qc-save']").attributes("disabled")).toBeDefined();
   });
+
+  // The third anchored popover in the scheduler. It already moved focus to its
+  // input, but announced itself as an unnamed div like the quick-info one did
+  // (VCST-5802).
+  it("exposes the quick-create panel as a named dialog", () => {
+    const panel = mountQC().find('[role="dialog"]');
+
+    expect(panel.exists()).toBe(true);
+    expect(panel.attributes("aria-label")).toBe("VC_SCHEDULER.NEW_EVENT");
+  });
 });

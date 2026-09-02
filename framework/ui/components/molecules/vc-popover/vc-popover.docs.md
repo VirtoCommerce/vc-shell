@@ -144,7 +144,7 @@ The panel's z-index comes from the global `--z-critical-floating-panel` token an
 - Escape key dismisses the panel (configurable via `closeOnEscape`)
 - Click-outside detection uses `pointerdown` for reliable z-index handling
 - Supports nested panels via an internal anchor registry -- child panel clicks do not close parent panels
-- Exposes `close()` method via template ref
+- Exposes `close()` and `panelEl` (the teleported panel element) via template ref
 
 ## Related Components
 
@@ -158,7 +158,7 @@ The panel's z-index comes from the global `--z-critical-floating-panel` token an
 - Click-outside detection uses a `pointerdown` listener on `document` rather than a backdrop overlay. This ensures clicks on high-z-index siblings (sidebar, other teleported panels) are still caught.
 - `panelAnchorRegistry` (`panel-anchor-registry.ts`) is a `WeakMap<Element, Element | null>` that maps each open panel's DOM element to its anchor element. When `anchorRef` is a floating-ui `VirtualElement`, the registry stores its `contextElement` (the live DOM element backing the virtual reference). This is used to distinguish child panels (whose anchor lives inside this panel) from sibling/parent panels when deciding whether to close on outside click.
 - Nested VcSelect dropdowns teleported to `<body>` are exempt from click-outside via an ARIA `aria-controls` check: if the clicked `.vc-select__dropdown` has an `id` that matches an `aria-controls` attribute inside this panel, the close is suppressed.
-- The panel exposes a `close()` method via `defineExpose` for use with template refs.
+- The panel exposes `close()` and `panelEl` via `defineExpose` for use with template refs. `panelEl` is the teleported panel itself — a call site managing focus needs it to answer "is focus still inside?", and cannot reach it any other way.
 - `useTeleportTarget` resolves the teleport destination (typically `body`) respecting any custom portal container.
 
 <!-- internal:end -->

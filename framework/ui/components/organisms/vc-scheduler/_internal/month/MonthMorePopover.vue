@@ -38,10 +38,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { format } from "date-fns";
 import type { ReferenceElement } from "@floating-ui/vue";
 import { VcPopover } from "@ui/components/molecules/vc-popover";
+import { useAnchoredPanelFocus } from "../../composables/useAnchoredPanelFocus";
 import type { ISchedulerEvent } from "../../types";
 
 const props = defineProps<{
@@ -64,36 +65,14 @@ const anchorEl = computed<ReferenceElement | null>(() =>
   props.anchorRect ? { getBoundingClientRect: () => props.anchorRect as DOMRect } : null,
 );
 
-// The panel is teleported to the end of the document, so without this a keyboard user who
-// activates "+N more" would have to Tab through the rest of the page to reach its contents.
+// The panel is teleported to the end of the document, so focus has to be moved in
+// deliberately and handed back on close.
 const listRef = ref<HTMLElement | null>(null);
-let opener: HTMLElement | null = null;
 
-const focusFirstEvent = () => nextTick(() => listRef.value?.querySelector<HTMLElement>("button")?.focus());
-
-watch(
+useAnchoredPanelFocus(
   () => props.open,
-  (isOpen) => {
-    if (isOpen) {
-      opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      focusFirstEvent();
-      return;
-    }
-
-    // Checked before the DOM patch, while the panel still exists: only reclaim focus if it is
-    // inside the panel being removed. If the user clicked elsewhere, focus is where they put it.
-    const active = document.activeElement;
-    const focusIsInPanel = !!listRef.value && active instanceof Node && listRef.value.contains(active);
-    const target = opener;
-    opener = null;
-    if (!focusIsInPanel) return;
-
-    nextTick(() => {
-      if (target?.isConnected) target.focus();
-    });
-  },
-  // Mounting with `open` already true is how activating "+N more" renders it.
-  { immediate: true },
+  listRef,
+  () => listRef.value?.querySelector<HTMLElement>("button"),
 );
 </script>
 

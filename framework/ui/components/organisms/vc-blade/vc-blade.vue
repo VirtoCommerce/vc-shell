@@ -328,6 +328,20 @@ watch(showSkeleton, (skeleton) => {
 // This only repairs the case where focus was dropped on `<body>` — which happened
 // whenever the control that opened the blade was re-rendered away.
 onMounted(() => focusIfLoose(() => bladeRef.value));
+
+// Maximizing makes everything the blade covers inert, and a node that becomes inert
+// loses focus. Nobody owned repairing that: the header hands focus between its own
+// two expand controls and declines otherwise — correctly, it is not a general rescue
+// — so focus that started anywhere else, the sidebar or the app bar, died with the
+// region it was in. Restoring did not bring it back either, because nothing was
+// looking (VCST-5859).
+//
+// Repair, not seizure: a user whose focus is still somewhere live keeps it, which is
+// what leaves the header's handoff in charge of its own case.
+watch(
+  () => renderingState?.value?.maximized,
+  () => focusIfLoose(() => bladeRef.value),
+);
 </script>
 
 <style lang="scss">

@@ -23,11 +23,24 @@ import { nextTick } from "vue";
  *
  * `getTarget` is a callback because the target often does not exist yet at call time.
  */
+/**
+ * Focus is loose when nothing meaningful holds it.
+ *
+ * An element inside an `inert` subtree counts: the browser is about to blur it and
+ * it is unreachable either way, but it can still read as `activeElement` at this
+ * point — maximizing a blade inerts the sidebar, and a repair that only asked
+ * "is this `<body>`?" saw the sidebar control still focused, declined, and let the
+ * browser drop focus a moment later (VCST-5859). Asking about inert is a fact, not
+ * a guess about when the blur lands.
+ */
+function focusIsLoose(active: Element | null): boolean {
+  if (!active || active === document.body || active === document.documentElement) return true;
+  return Boolean(active.closest("[inert]"));
+}
+
 export function focusIfLoose(getTarget: () => HTMLElement | null | undefined): void {
   nextTick(() => {
-    const active = document.activeElement;
-    const focusIsLoose = !active || active === document.body || active === document.documentElement;
-    if (!focusIsLoose) return;
+    if (!focusIsLoose(document.activeElement)) return;
 
     const target = getTarget();
     if (!target?.isConnected || typeof target.focus !== "function") return;

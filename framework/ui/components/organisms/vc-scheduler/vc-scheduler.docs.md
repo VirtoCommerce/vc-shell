@@ -162,6 +162,8 @@ With `editable`, `VcScheduler` ships a complete built-in create/edit flow -- no 
 
 The editor modal additionally exposes all-day toggle, start/end date-time, and color, plus a Delete action in edit mode (commits via `event-delete`). Saving from either surface emits the public `event-create`/`event-update` event -- see [Events](#events) for the exact payloads.
 
+For an **all-day** event the editor's End field is the last day the event covers, matching what the chip and the quick-info popover announce -- so a one-day event has End equal to Start. The `end` in the emitted payload is still the exclusive midnight boundary the layout works in; the editor converts on save. An End before Start is refused rather than saved.
+
 This entire flow is internal state: no `v-model` or extra event wiring is needed to make it work, beyond `editable` and the `event-create`/`event-update`/`event-delete` handlers you already have for persisting the result.
 
 ### `editorMode`: opting out of the built-in UI

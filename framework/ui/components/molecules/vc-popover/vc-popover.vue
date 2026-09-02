@@ -259,7 +259,9 @@ onBeforeUnmount(() => {
   document.removeEventListener("keydown", handleKeydown);
 });
 
-defineExpose({ close });
+// `panelEl` is the teleported panel itself. A call site that manages focus needs
+// it to answer "is focus still inside?", and it cannot reach it any other way.
+defineExpose({ close, panelEl: floatingRef });
 </script>
 
 <style lang="scss">

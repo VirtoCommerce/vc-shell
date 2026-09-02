@@ -1,9 +1,12 @@
 <template>
   <VcPopover
+    ref="popoverRef"
     :show="open && !!event"
     :anchor-ref="anchorEl"
     placement="bottom-start"
     :content-scrollable="false"
+    role="dialog"
+    :aria-label="event?.title || $t('VC_SCHEDULER.EVENT_DETAILS')"
     @update:show="onShowChange"
   >
     <!-- Colored header band tying the popover to the event (full tint + auto-contrast ink,
@@ -98,12 +101,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { format, isSameDay } from "date-fns";
 import type { ReferenceElement } from "@floating-ui/vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcPopover } from "@ui/components/molecules/vc-popover";
+import { useAnchoredPanelFocus } from "../../composables/useAnchoredPanelFocus";
 import { autoEventColor } from "../../composables/useEventColor";
 import { describeRRule } from "../../composables/useRecurrence";
 import type { ISchedulerEvent } from "../../types";
@@ -118,6 +122,18 @@ const props = withDefaults(
     canEdit?: boolean;
   }>(),
   { canEdit: true },
+);
+
+const popoverRef = ref<InstanceType<typeof VcPopover> | null>(null);
+const panelEl = computed<HTMLElement | null>(() => popoverRef.value?.panelEl ?? null);
+
+// The panel is teleported, so focus has to be moved in deliberately and handed
+// back on close. The close control is the panel's first stop and is always
+// present, unlike the Edit/Delete row (VCST-5802).
+useAnchoredPanelFocus(
+  () => props.open && !!props.event,
+  panelEl,
+  () => panelEl.value?.querySelector<HTMLElement>(".vc-scheduler__qi-close"),
 );
 
 const emit = defineEmits<{

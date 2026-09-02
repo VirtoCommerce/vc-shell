@@ -1,17 +1,32 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
+import { defineComponent, h, nextTick, ref } from "vue";
 import MonthEventPopover from "@ui/components/organisms/vc-scheduler/_internal/month/MonthEventPopover.vue";
 
 const t = { $t: (k: string) => k };
 
 // Stub VcPopover: render its slots inline (and only when `show`) so we can assert content/emits
 // without exercising floating-ui/teleport (covered by VcPopover's own tests).
-const VcPopoverStub = {
+const VcPopoverStub = defineComponent({
   name: "VcPopover",
   props: ["show", "anchorRef", "title", "placement", "contentScrollable"],
   emits: ["update:show"],
-  template: `<div v-if="show" class="vc-popover-stub" :data-title="title"><slot name="header"/><slot/><slot name="footer"/></div>`,
-};
+  setup(props, { attrs, slots, expose }) {
+    // The real component exposes its teleported panel; call sites use it to ask
+    // whether focus is still inside. A stub without it makes focus tests vacuous.
+    const panelRef = ref<HTMLElement | null>(null);
+    expose({ close: () => undefined, panelEl: panelRef });
+
+    return () =>
+      props.show
+        ? h("div", { ...attrs, ref: panelRef, class: "vc-popover-stub", "data-title": props.title }, [
+            slots.header?.({ close: () => undefined }),
+            slots.default?.(),
+            slots.footer?.(),
+          ])
+        : null;
+  },
+});
 
 const event = {
   id: "a",
@@ -102,5 +117,90 @@ describe("MonthEventPopover", () => {
   it("shows the Edit/Delete actions when canEdit is true", () => {
     const w = mountPopover({ canEdit: true });
     expect(w.findAll("button")).toHaveLength(3);
+  });
+});
+
+describe("MonthEventPopover accessibility", () => {
+  const mountAttached = (over: Record<string, unknown> = {}) =>
+    mount(MonthEventPopover, {
+      props: { open: true, event, anchorRect: null, ...over },
+      attachTo: document.body,
+      global: {
+        mocks: t,
+        stubs: {
+          VcPopover: VcPopoverStub,
+          VcButton: { template: "<button @click=\"$emit('click')\"><slot/></button>" },
+          VcIcon: true,
+        },
+      },
+    });
+
+  // The overflow popover got this under VCST-5671; the quick-info call site was
+  // left as a bare div with no role and no name (VCST-5802).
+  it("exposes the quick-info panel as a named dialog", () => {
+    const w = mountPopover();
+    const panel = w.find('[role="dialog"]');
+
+    expect(panel.exists()).toBe(true);
+    expect(panel.attributes("aria-label")).toBe("Summer Sale");
+  });
+
+  it("names the panel generically when the event has no title", () => {
+    const w = mountPopover({ event: { ...event, title: "" } });
+
+    expect(w.find('[role="dialog"]').attributes("aria-label")).toBe("VC_SCHEDULER.EVENT_DETAILS");
+  });
+
+  // The panel is teleported to the end of the document, so a keyboard user would
+  // otherwise have to tab past the rest of the page to reach it.
+  it("moves focus into the panel when it opens", async () => {
+    const w = mountAttached();
+    try {
+      await nextTick();
+      expect(document.activeElement).toBe(w.find(".vc-scheduler__qi-close").element);
+    } finally {
+      w.unmount();
+    }
+  });
+
+  it("hands focus back to the chip that opened it", async () => {
+    const chip = document.createElement("button");
+    document.body.appendChild(chip);
+    chip.focus();
+    const w = mountAttached();
+    try {
+      await nextTick();
+      expect(document.activeElement).not.toBe(chip);
+
+      await w.setProps({ open: false });
+      await nextTick();
+
+      expect(document.activeElement).toBe(chip);
+    } finally {
+      w.unmount();
+      chip.remove();
+    }
+  });
+
+  // Focus is repaired, not dictated: a user who clicked elsewhere keeps it.
+  it("leaves focus alone when it had already moved outside the panel", async () => {
+    const chip = document.createElement("button");
+    const elsewhere = document.createElement("button");
+    document.body.append(chip, elsewhere);
+    chip.focus();
+    const w = mountAttached();
+    try {
+      await nextTick();
+      elsewhere.focus();
+
+      await w.setProps({ open: false });
+      await nextTick();
+
+      expect(document.activeElement).toBe(elsewhere);
+    } finally {
+      w.unmount();
+      chip.remove();
+      elsewhere.remove();
+    }
   });
 });

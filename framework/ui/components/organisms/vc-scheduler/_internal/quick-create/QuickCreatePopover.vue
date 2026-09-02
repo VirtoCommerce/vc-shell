@@ -5,6 +5,8 @@
     :title="$t('VC_SCHEDULER.NEW_EVENT')"
     placement="bottom-start"
     :content-scrollable="false"
+    role="dialog"
+    :aria-label="$t('VC_SCHEDULER.NEW_EVENT')"
     @update:show="onShowChange"
   >
     <div class="vc-scheduler__quick-create">

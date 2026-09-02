@@ -36,11 +36,11 @@
             @update:model-value="(v) => v && (local.start = v as Date)"
           />
           <VcDatePicker
-            :model-value="local.end"
+            :model-value="endFieldValue"
             :type="dateType"
             :label="$t('VC_SCHEDULER.END')"
             class="vc-scheduler__editor-field"
-            @update:model-value="(v) => v && (local.end = v as Date)"
+            @update:model-value="(v) => v && setEnd(v as Date)"
           />
         </div>
 
@@ -193,7 +193,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, watch } from "vue";
-import { addDays, addMonths, format, startOfWeek } from "date-fns";
+import { addDays, addMonths, format, startOfDay, startOfWeek } from "date-fns";
 import { VcPopup } from "@ui/components/organisms/vc-popup";
 import { VcInput } from "@ui/components/molecules/vc-input";
 import { VcSwitch } from "@ui/components/molecules/vc-switch";
@@ -278,7 +278,25 @@ watch(
 // All-day events only need the date part, so we drop time mode when allDay is on.
 const dateType = computed(() => (local.allDay ? "date" : "datetime-local"));
 
-const isValid = computed(() => local.title.trim().length > 0 && (local.allDay || local.end > local.start));
+/**
+ * All-day spans are stored with an **exclusive** end — midnight of the day after
+ * the last day — but the field shows the last day the event actually covers, the
+ * same day the chip and the quick-info popover announce (VCST-5678).
+ *
+ * Showing the raw stored value made "the same day as Start" mean an empty range:
+ * it saved, laid out to nothing, and the event was invisible and unreachable with
+ * no error anywhere (VCST-5803).
+ */
+const endFieldValue = computed(() => (local.allDay ? new Date(local.end.getTime() - 1) : local.end));
+
+function setEnd(value: Date) {
+  local.end = local.allDay ? startOfDay(addDays(value, 1)) : value;
+}
+
+// The all-day exemption is gone: with the field inclusive, End = Start is a
+// one-day event rather than an empty range, so there is nothing left to exempt —
+// and an End before Start is now refused instead of saved into the void.
+const isValid = computed(() => local.title.trim().length > 0 && local.end > local.start);
 
 type RecurrenceFreqModel = "none" | IRecurrenceRule["freq"];
 

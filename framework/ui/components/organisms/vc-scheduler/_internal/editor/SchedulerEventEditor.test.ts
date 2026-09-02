@@ -105,3 +105,78 @@ describe("SchedulerEventEditor", () => {
     expect(mountEditor({ allowColor: true }).find("[data-test='editor-color']").exists()).toBe(true);
   });
 });
+
+/**
+ * All-day spans are stored with an exclusive end. The editor used to bind that raw
+ * value straight to the End picker, so picking "the same day as Start" produced a
+ * zero-length range: it saved, laid out to nothing, and left an event that was
+ * invisible and unreachable with no error anywhere (VCST-5803).
+ */
+describe("SchedulerEventEditor all-day end date", () => {
+  const VcDatePickerStub = {
+    name: "VcDatePicker",
+    props: ["modelValue", "type", "label"],
+    emits: ["update:modelValue"],
+    template: `<input class="dp" :data-label="label" />`,
+  };
+
+  const mountWithPickers = (over: Partial<IEventDraft> = {}) =>
+    mount(SchedulerEventEditor, {
+      props: { open: true, draft: draft(over), mode: "create" },
+      global: {
+        mocks: t,
+        stubs: { VcPopup: VcPopupStub, VcSelect: true, VcDatePicker: VcDatePickerStub, teleport: true },
+      },
+    });
+
+  const endPicker = (w: ReturnType<typeof mountWithPickers>) => w.findAllComponents(VcDatePickerStub)[1];
+
+  const allDayDraft = {
+    title: "Summer Sale",
+    allDay: true,
+    start: new Date(2026, 6, 15),
+    // Exclusive: this is a one-day event covering 15 July.
+    end: new Date(2026, 6, 16),
+  };
+
+  it("shows the last day the event covers, not the exclusive end", () => {
+    const w = mountWithPickers(allDayDraft);
+
+    const shown = endPicker(w).props("modelValue") as Date;
+    expect(shown.getDate()).toBe(15);
+  });
+
+  it("treats End = Start as a one-day event rather than an empty range", async () => {
+    const w = mountWithPickers(allDayDraft);
+
+    endPicker(w).vm.$emit("update:modelValue", new Date(2026, 6, 15));
+    await w.find("[data-test='editor-save']").trigger("click");
+
+    const saved = w.emitted("save")![0][0] as IEventDraft;
+    // Converted back to the exclusive form the layout expects.
+    expect(saved.end).toEqual(new Date(2026, 6, 16));
+    expect(saved.end.getTime()).toBeGreaterThan(saved.start.getTime());
+  });
+
+  it("refuses an End before Start instead of saving into the void", async () => {
+    const w = mountWithPickers(allDayDraft);
+
+    endPicker(w).vm.$emit("update:modelValue", new Date(2026, 6, 14));
+    await w.vm.$nextTick();
+    await w.find("[data-test='editor-save']").trigger("click");
+
+    expect(w.emitted("save")).toBeUndefined();
+  });
+
+  // Timed events never had the exclusive-end convention; they must pass through.
+  it("leaves a timed event's end exactly as picked", async () => {
+    const w = mountWithPickers({ title: "Call", allDay: false });
+    const picked = new Date(2021, 0, 13, 11, 30);
+
+    expect(endPicker(w).props("modelValue")).toEqual(new Date(2021, 0, 13, 10, 0));
+    endPicker(w).vm.$emit("update:modelValue", picked);
+    await w.find("[data-test='editor-save']").trigger("click");
+
+    expect((w.emitted("save")![0][0] as IEventDraft).end).toEqual(picked);
+  });
+});

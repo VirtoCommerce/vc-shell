@@ -1,3 +1,15 @@
+# [2.6.0-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.5.0...v2.6.0-rc.0) (2026-09-02)
+
+### Bug Fixes
+
+- **create-vc-app:** drop an unknown property, and let the gate see it ([#341](https://github.com/VirtoCommerce/vc-shell/issues/341)) ([d25219b](https://github.com/VirtoCommerce/vc-shell/commit/d25219b74a9e87edaefc4fbb81eb1b9a05fc6f30))
+- **create-vc-app:** guard the scaffolded list against a stale response ([#337](https://github.com/VirtoCommerce/vc-shell/issues/337)) ([c3ce159](https://github.com/VirtoCommerce/vc-shell/commit/c3ce159dd0f6228804de86709b47efba32065e11))
+- **create-vc-app:** use latest() in the scaffolded list ([#340](https://github.com/VirtoCommerce/vc-shell/issues/340)) ([d98494d](https://github.com/VirtoCommerce/vc-shell/commit/d98494da3dcb645a1be8b14ede27b02f346ad2c5)), closes [#337](https://github.com/VirtoCommerce/vc-shell/issues/337) [#337](https://github.com/VirtoCommerce/vc-shell/issues/337) [#339](https://github.com/VirtoCommerce/vc-shell/issues/339) [#337](https://github.com/VirtoCommerce/vc-shell/issues/337) [#339](https://github.com/VirtoCommerce/vc-shell/issues/339)
+
+### Features
+
+- **create-vc-app:** add an opt-in Module Federation option (VM-1757) ([#318](https://github.com/VirtoCommerce/vc-shell/issues/318)) ([05e3700](https://github.com/VirtoCommerce/vc-shell/commit/05e37006b385307b06a9f3ec43d3838d15723fd1))
+
 # Changelog
 
 # [2.5.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.4.0...v2.5.0) (2026-08-19)

@@ -1,3 +1,31 @@
+# [2.6.0-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.5.0...v2.6.0-rc.0) (2026-09-02)
+
+### Bug Fixes
+
+- **a11y:** give popup focus restore a fallback when there is no opener ([#346](https://github.com/VirtoCommerce/vc-shell/issues/346)) ([896b810](https://github.com/VirtoCommerce/vc-shell/commit/896b81038a255d2304700df93e2e36166d5cffc8))
+- **a11y:** give the scheduler's anchored popovers a role, a name and focus ([#350](https://github.com/VirtoCommerce/vc-shell/issues/350)) ([d1a02a5](https://github.com/VirtoCommerce/vc-shell/commit/d1a02a5741b176b8d407addb8cfb62855f7824a5)), closes [#304](https://github.com/VirtoCommerce/vc-shell/issues/304)
+- **a11y:** hide teleported popovers behind a maximized blade ([#345](https://github.com/VirtoCommerce/vc-shell/issues/345)) ([1196a81](https://github.com/VirtoCommerce/vc-shell/commit/1196a819d1463331c6574b6d9a8d9981334214d4)), closes [#306](https://github.com/VirtoCommerce/vc-shell/issues/306)
+- **a11y:** keep focus on a button that disables itself on activation ([#347](https://github.com/VirtoCommerce/vc-shell/issues/347)) ([3f614e2](https://github.com/VirtoCommerce/vc-shell/commit/3f614e2dc66cd4251f641173629cd4d104af1c73))
+- **a11y:** stop the dashboard grid announcing a pointer-only instruction ([#348](https://github.com/VirtoCommerce/vc-shell/issues/348)) ([d28b53d](https://github.com/VirtoCommerce/vc-shell/commit/d28b53d86d225d780bb02c4ebae38ff80591608d)), closes [#272](https://github.com/VirtoCommerce/vc-shell/issues/272) [#272](https://github.com/VirtoCommerce/vc-shell/issues/272)
+- **auth:** sign out on a 401 that arrives outside /api/ ([#333](https://github.com/VirtoCommerce/vc-shell/issues/333)) ([68250ab](https://github.com/VirtoCommerce/vc-shell/commit/68250ab429bedf28c0a3d02098fa89207a0d707b))
+- **blade-header:** hand off expand focus on the state change, not the click (VCST-5812) ([#344](https://github.com/VirtoCommerce/vc-shell/issues/344)) ([83ca915](https://github.com/VirtoCommerce/vc-shell/commit/83ca915c232770246dfd0b78f0523eb18703e7e7)), closes [#286](https://github.com/VirtoCommerce/vc-shell/issues/286)
+- **blade-navigation:** correct five URL and query defects in the legacy adapter (VM-1777) ([#321](https://github.com/VirtoCommerce/vc-shell/issues/321)) ([b08e392](https://github.com/VirtoCommerce/vc-shell/commit/b08e39250bd92842cbfcb9d6dfe7d83809259217))
+- **blade-navigation:** drop adapter URL sync tests that [#317](https://github.com/VirtoCommerce/vc-shell/issues/317) made obsolete ([#320](https://github.com/VirtoCommerce/vc-shell/issues/320)) ([5c35752](https://github.com/VirtoCommerce/vc-shell/commit/5c3575289513b38841fbac0d45dd131933ab820b)), closes [#313](https://github.com/VirtoCommerce/vc-shell/issues/313) [#313](https://github.com/VirtoCommerce/vc-shell/issues/313)
+- **blade-navigation:** make the blade stack own URL sync (VM-1761) ([#317](https://github.com/VirtoCommerce/vc-shell/issues/317)) ([1a1eecf](https://github.com/VirtoCommerce/vc-shell/commit/1a1eecf5c42eead1c328b1f4721dfee6dff8ffa6))
+- **blade-navigation:** sync the URL only after a mutation that happened (VM-1784) ([#325](https://github.com/VirtoCommerce/vc-shell/issues/325)) ([dfc7bc1](https://github.com/VirtoCommerce/vc-shell/commit/dfc7bc1211912bf0921e06075b0c971e8b1bb8f1))
+- **dashboard:** make Escape revert a keyboard move that displaced a neighbour ([#349](https://github.com/VirtoCommerce/vc-shell/issues/349)) ([b62eeef](https://github.com/VirtoCommerce/vc-shell/commit/b62eeef90715a7a7dd516bd6f8da7626ecc4d3fe)), closes [#303](https://github.com/VirtoCommerce/vc-shell/issues/303)
+- **scheduler:** stop an all-day event with End = Start saving into the void ([#351](https://github.com/VirtoCommerce/vc-shell/issues/351)) ([9cf874d](https://github.com/VirtoCommerce/vc-shell/commit/9cf874d09865f9d2124d1702eb6a1228e2f4372b))
+- **vc-auth-layout:** give the unauthenticated pages a focus target (VCST-5813) ([#343](https://github.com/VirtoCommerce/vc-shell/issues/343)) ([87b4bc0](https://github.com/VirtoCommerce/vc-shell/commit/87b4bc09c2050812b2bcbcdc7a3f2eb347eaa892)), closes [#286](https://github.com/VirtoCommerce/vc-shell/issues/286)
+- **vc-blade:** arm the skeleton latch after mount so the first load shows skeletons ([#328](https://github.com/VirtoCommerce/vc-shell/issues/328)) ([e9e29aa](https://github.com/VirtoCommerce/vc-shell/commit/e9e29aa0e64ec457b903040ddcb3eeb0e73e90f9)), closes [#301](https://github.com/VirtoCommerce/vc-shell/issues/301) [#301](https://github.com/VirtoCommerce/vc-shell/issues/301)
+- **vc-blade:** show an overlay once content exists, skeletons only before it ([#330](https://github.com/VirtoCommerce/vc-shell/issues/330)) ([6bdc42b](https://github.com/VirtoCommerce/vc-shell/commit/6bdc42b57485d857cb1d9c39489e6f2bb0acb16e)), closes [#301](https://github.com/VirtoCommerce/vc-shell/issues/301) [#329](https://github.com/VirtoCommerce/vc-shell/issues/329)
+- **vc-data-table:** export useCellRegistry and register built-in cells once (VM-1756) ([#316](https://github.com/VirtoCommerce/vc-shell/issues/316)) ([2b4e004](https://github.com/VirtoCommerce/vc-shell/commit/2b4e004402ddd1488a18387f7d2c98e0fd940700))
+- **vc-dynamic-property:** pick the control the value strategy agrees with (VM-1774) ([#342](https://github.com/VirtoCommerce/vc-shell/issues/342)) ([2f3e810](https://github.com/VirtoCommerce/vc-shell/commit/2f3e8103b5cd87aa89dfa45105780d2f8feea2f4))
+- **vc-editor:** connect the error message to the editable region (VM-1782) ([#338](https://github.com/VirtoCommerce/vc-shell/issues/338)) ([07e2c5e](https://github.com/VirtoCommerce/vc-shell/commit/07e2c5ec11d2a6c58c73b87b28c069dc39ede363))
+
+### Features
+
+- **useLatestRequest:** add latest(), so callers stop writing the bookkeeping ([#339](https://github.com/VirtoCommerce/vc-shell/issues/339)) ([2fa73b7](https://github.com/VirtoCommerce/vc-shell/commit/2fa73b7339af65494d11e34bbf841f708fdf4584)), closes [vendor-portal#151](https://github.com/vendor-portal/issues/151) [#337](https://github.com/VirtoCommerce/vc-shell/issues/337)
+
 # Changelog
 
 # [2.5.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.4.0...v2.5.0) (2026-08-19)

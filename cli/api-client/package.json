@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/api-client-generator",
   "description": "Tool for API clients generation",
-  "version": "2.5.0",
+  "version": "2.6.0-rc.0",
   "type": "module",
   "bin": "./dist/api-client-generator.js",
   "files": [

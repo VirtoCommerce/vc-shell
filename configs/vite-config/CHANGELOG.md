@@ -1,3 +1,9 @@
+# [2.6.0-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.5.0...v2.6.0-rc.0) (2026-09-02)
+
+### Bug Fixes
+
+- **vite-config:** decide the framework source alias from resolution, not layout ([#327](https://github.com/VirtoCommerce/vc-shell/issues/327)) ([883ca4b](https://github.com/VirtoCommerce/vc-shell/commit/883ca4bdf362477507659600ae9083b7a1999b79))
+
 # Changelog
 
 # [2.5.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.4.0...v2.5.0) (2026-08-19)

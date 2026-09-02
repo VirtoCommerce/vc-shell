@@ -44,9 +44,35 @@ The `createBladeStack` / `createBladeMessaging` factories are internal (not re-e
 
 The blade stack state machine. Manages an ordered array of `BladeDescriptor` objects.
 
-### Factory: `createBladeStack(bladeRegistry, hasAccess?)`
+### Factory: `createBladeStack(bladeRegistry, hasAccess?, urlSink?)`
 
 Creates a new stack instance. Called once by the navigation plugin.
+
+`urlSink` is where the stack writes the address bar. It defaults to a no-op, so a
+stack created without one (Storybook, standalone mounts, unit tests) simply never
+touches the URL. The plugin passes the router-backed sink.
+
+### The stack owns the URL
+
+Every navigation action syncs the URL itself, with the verb the action implies.
+Callers mutate the stack and nothing else — there is no "and now sync the URL"
+step to forget.
+
+| Action                | Verb      | When                                   |
+| --------------------- | --------- | -------------------------------------- |
+| `openWorkspace`       | `push`    | the resulting active blade has a `url` |
+| `openBlade`           | `push`    | the resulting active blade has a `url` |
+| `coverCurrentBlade`   | `push`    | the resulting active blade has a `url` |
+| `replaceCurrentBlade` | `replace` | the resulting active blade has a `url` |
+| `closeBlade`          | `replace` | the close was not prevented by a guard |
+| `closeChildren`       | `replace` | always                                 |
+
+Everything else — `updateBladeQuery`, `setBladeTitle`, `setBladeError`,
+`_restoreStack` — never writes the URL.
+
+The router guard restores the stack **from** the URL, so it suppresses the sink
+for the duration of the navigation (`RouterUrlSink.suppressWhile`): during
+resolution the URL is the source, and writing back would re-enter the guard.
 
 ### API
 
@@ -162,6 +188,7 @@ The plain data object stored in the stack for each blade:
 - Close guards return `true` to PREVENT closing (opposite of the legacy convention where `false` prevented closing). The adapter handles the inversion.
 - `replaceCurrentBlade` destroys the current blade and creates a new one at the same index with the same `parentId`. Use `coverCurrentBlade` to hide instead of destroy — the covering blade's `callParent` reaches the hidden blade's exposed methods.
 - URL sync only updates the address bar for blades that have a `url` segment. Third-level detail panels without URLs leave the previous URL intact.
+- The stack writes the URL, not the caller. `createUrlSync` remains for the two writes that are not stack mutations: the post-restore reconcile in `VcBladeNavigation` and the debounced table-query-state writer.
 - `useBladeNavigation()` requires the navigation plugin to be installed. It throws if called before plugin initialization.
 
 ## Related

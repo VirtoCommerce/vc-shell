@@ -79,7 +79,7 @@ VcApp orchestrates several internal systems:
 1. **Layout** -- switches between `DesktopLayout` (sidebar) and `MobileLayout` (top bar) based on viewport width. The breakpoint is managed by the framework's responsive detection system.
 2. **Blade Navigation** -- renders `VcBladeNavigation` for the stacked panel workspace. Blades open to the right and scroll horizontally.
 3. **Module Loading** -- consumes `DynamicModulesKey` for runtime module registration; shows error notifications on failure. Modules declare routes, menu items, and services.
-4. **Services** -- bootstraps shell services (Menu, Toolbar, Settings, Dashboard, GlobalSearch, etc.) via `useShellBootstrap`. These services are available to all child components through provide/inject.
+4. **Services** -- provides the shell-scoped services via `useShellBootstrap`: dashboard, app bar mobile buttons, and the AI agent when configured. Menu, toolbar, widget and settings services are provided earlier, by the framework install. All are reachable from child components through provide/inject.
 
 <!-- internal:end -->
 

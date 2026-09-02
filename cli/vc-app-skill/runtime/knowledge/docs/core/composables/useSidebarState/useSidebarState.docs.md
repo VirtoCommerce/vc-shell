@@ -8,8 +8,6 @@ group: ui-state
 
 Controls the sidebar (left navigation panel) expansion, pinning, hover, and mobile menu state. This composable exposes a unified API for reading and toggling all sidebar states from any component within the VcApp tree. The sidebar has three independent dimensions: **pinned** (user explicitly locked it open, persisted to localStorage), **hover-expanded** (mouse is hovering over the collapsed sidebar on desktop), and **mobile menu** (overlay drawer on small screens). The derived `isExpanded` computed combines pinned and hover states for convenience.
 
-Internally, it delegates to `useMenuExpanded()` to share reactive state with other components like `UserDropdownButton` that also need to know the sidebar state.
-
 ## When to Use
 
 - Toggle or read sidebar expanded/collapsed state from any component inside VcApp
@@ -82,6 +80,20 @@ provideSidebarState();
 
 <!-- internal:end -->
 
+## Storage key
+
+The pinned state lives in `localStorage` under an app-scoped key -- the first segment of the URL path, so several vc-shell apps on one domain keep independent sidebars. `sidebarStorageKey()` returns that key, so tests and stories can seed the state before `VcApp` mounts instead of hard-coding the string:
+
+```typescript
+import { sidebarStorageKey } from "@vc-shell/framework";
+
+// Served from "/operations/catalog" -> "VC_APP_MENU_EXPANDED_operations"
+localStorage.setItem(sidebarStorageKey(), "true");
+
+// Or name the app explicitly
+localStorage.setItem(sidebarStorageKey("operations"), "false");
+```
+
 ## Recipe: Auto-Close Mobile Menu After Navigation
 
 ```vue
@@ -138,10 +150,9 @@ const contentClass = computed(() => (isExpanded.value ? "tw-ml-64" : "tw-ml-16")
 ## Tips
 
 - **Hover delay prevents flicker.** The 200ms delay on `setHoverExpanded(true)` means that quickly passing the mouse over the sidebar does not cause it to flash open. Closing is instant so the sidebar feels responsive.
-- **`isPinned` is persisted to localStorage.** If a user pins the sidebar, it stays pinned across page reloads and browser sessions. The key is managed internally by `useMenuExpanded`.
+- **`isPinned` is persisted to localStorage.** If a user pins the sidebar, it stays pinned across page reloads and browser sessions. The key is app-scoped -- `sidebarStorageKey()` returns it.
 - **Do not call outside VcApp.** If you call `useSidebarState()` in a component that is not a descendant of VcApp (e.g., in a standalone dialog or a separate Vue app instance), it will throw an error.
 
 ## Related
 
-- `useMenuExpanded` -- lower-level composable that manages pinned/hover state and localStorage persistence
 - `VcApp` -- the root component that calls `provideSidebarState()`

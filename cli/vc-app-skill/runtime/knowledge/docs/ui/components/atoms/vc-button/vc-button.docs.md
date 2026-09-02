@@ -315,6 +315,7 @@ All visual properties are customizable through CSS custom properties. Each varia
 - `aria-pressed` reflects the `selected` prop for toggle buttons
 - Icon-only buttons **must** include `ariaLabel` for screen reader users
 - Disabled buttons use `pointer-events: none` and `opacity: 0.5` to prevent interaction
+- A button that becomes disabled **while it holds focus** keeps the focus: it switches to `aria-disabled` instead of the native attribute, since a natively disabled element cannot be focused and focus would fall to `<body>` (WCAG 2.4.3). It stays inert, and the user is still on it when the work finishes. Every other disabled button keeps the native attribute and stays out of the tab order.
 - The `click` event calls `e.preventDefault()` -- use `type="submit"` for form submissions
 
 ## Related Components

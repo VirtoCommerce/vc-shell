@@ -127,7 +127,18 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, inject, provide, computed, getCurrentInstance, onMounted, useAttrs, watch, watchEffect } from "vue";
+import {
+  ref,
+  inject,
+  provide,
+  computed,
+  getCurrentInstance,
+  onMounted,
+  onUnmounted,
+  useAttrs,
+  watch,
+  watchEffect,
+} from "vue";
 import { focusIfLoose } from "@core/utilities/focus";
 import { IBladeToolbar } from "@core/types";
 import { useBladeStack } from "@core/blade-navigation";
@@ -207,12 +218,39 @@ const bladeDescriptor = inject(BladeDescriptorKey, undefined);
 // an early close costs an overlay instead of skeletons, and nothing is unmounted
 // once content exists, so focus survives (WCAG 2.4.3 Focus Order).
 const hasLoadedOnce = ref(false);
+let pendingLatch: number | undefined;
+
+const cancelLatch = () => {
+  if (pendingLatch === undefined) return;
+  cancelAnimationFrame(pendingLatch);
+  pendingLatch = undefined;
+};
 
 watch([() => Boolean(props.loading), () => bladeDescriptor?.value.param], ([loading, param], previous) => {
   // A different entity in the same blade instance has nothing rendered for it.
-  if (previous?.length && param !== previous[1]) hasLoadedOnce.value = false;
-  if (!loading && previous?.[0]) hasLoadedOnce.value = true;
+  if (previous?.length && param !== previous[1]) {
+    cancelLatch();
+    hasLoadedOnce.value = false;
+  }
+  if (loading || !previous?.[0]) return;
+
+  // The falling edge alone does not mean content exists. A page that loads in two
+  // steps — the order blade fetches its state machines, then the order — drops
+  // `loading` between them, and nothing has rendered at that point. Closing the
+  // latch there left the real fetch showing an overlay over an empty blade instead
+  // of skeletons.
+  //
+  // So confirm across a frame: if a new load starts before the browser paints, the
+  // user never saw content and the latch stays open. Measured against the running
+  // app, that gap is under 8ms — comfortably inside one frame.
+  cancelLatch();
+  pendingLatch = requestAnimationFrame(() => {
+    pendingLatch = undefined;
+    if (!props.loading) hasLoadedOnce.value = true;
+  });
 });
+
+onUnmounted(cancelLatch);
 
 const showSkeleton = computed(() => Boolean(props.loading) && !hasLoadedOnce.value);
 const showBusyOverlay = computed(() => Boolean(props.loading) && hasLoadedOnce.value);

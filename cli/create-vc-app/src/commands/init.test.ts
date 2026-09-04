@@ -467,7 +467,6 @@ describe("template rendering leaves no EJS whitespace artifacts", () => {
       const data = buildTemplateData({
         projectName: "demo",
         packageName: "demo",
-        projectType: "standalone",
         moduleName: "Orders",
         basePath: "/apps/demo/",
         tenantRoutes,

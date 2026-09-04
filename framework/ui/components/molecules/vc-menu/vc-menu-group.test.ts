@@ -48,7 +48,44 @@ describe("VcMenuGroup", () => {
     });
   });
 
+  describe("default variant", () => {
+    const mountDefault = (props: Record<string, unknown> = {}) => mountComponent(props);
+
+    // The state belongs on the element that carries the role and the click, not
+    // on VcMenuItem's outer wrapper: a bare div reports nothing to a screen
+    // reader, and the wrapper is not what toggles the group.
+    const header = (wrapper: ReturnType<typeof mountComponent>) => wrapper.find(".vc-menu-item__content");
+
+    it("reports its collapsed state to assistive technology", () => {
+      expect(header(mountDefault({ open: false })).attributes("aria-expanded")).toBe("false");
+    });
+
+    it("reports its expanded state to assistive technology", () => {
+      expect(header(mountDefault({ open: true })).attributes("aria-expanded")).toBe("true");
+    });
+
+    it("points assistive technology at the children it controls", () => {
+      const wrapper = mountDefault({ open: true });
+      const controls = header(wrapper).attributes("aria-controls");
+      expect(controls).toBeTruthy();
+      expect(wrapper.find(`#${controls}`).classes()).toContain("vc-menu-group__children-wrapper");
+    });
+
+    it("flips the reported state when toggled", async () => {
+      const wrapper = mountDefault({ open: false });
+      await header(wrapper).trigger("click");
+      expect(header(wrapper).attributes("aria-expanded")).toBe("true");
+    });
+  });
+
   it("renders children in the default variant", () => {
     expect(mountComponent().find(".child-item").exists()).toBe(true);
+  });
+
+  // A group and one of its children can carry the same data-test-id (a
+  // "Products" group holding a "Products" item), so the group needs an
+  // identifier of its own that reaches the DOM.
+  it("exposes its group id for unambiguous addressing", () => {
+    expect(mountComponent().attributes("data-group-id")).toBe("catalog");
   });
 });

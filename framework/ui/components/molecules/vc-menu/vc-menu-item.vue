@@ -18,6 +18,8 @@
         }"
         :aria-current="active ? 'page' : undefined"
         :aria-label="menuExpanded ? undefined : title"
+        :aria-expanded="expandedState"
+        :aria-controls="ariaControls"
         @click="$emit('click')"
       >
         <!-- Icon -->
@@ -87,12 +89,22 @@ interface VcMenuItemProps {
   nested?: boolean;
   badge?: VcMenuItemBadge;
   expanded?: boolean | null;
+  /**
+   * Disclosure state, for callers that use the item as the header of a
+   * collapsible region (see VcMenuGroup). Declared as props rather than left to
+   * attribute fallthrough, which would land them on the outer wrapper instead
+   * of the button that carries the role and handles the click. `null` (the
+   * default) means the item controls nothing and reports no state.
+   */
+  ariaExpanded?: boolean | null;
+  ariaControls?: string;
 }
 
 const props = withDefaults(defineProps<VcMenuItemProps>(), {
   active: false,
   nested: false,
   expanded: null,
+  ariaExpanded: null,
 });
 
 defineEmits<{
@@ -112,6 +124,13 @@ const injectedExpanded = inject(VcMenuExpandedKey, undefined);
 const menuExpanded = computed(() => {
   if (props.expanded != null) return props.expanded;
   return injectedExpanded?.value ?? true;
+});
+
+// Serialised to a string on purpose: a collapsed disclosure must render
+// aria-expanded="false", not lose the attribute the way a boolean one would.
+const expandedState = computed<"true" | "false" | undefined>(() => {
+  if (props.ariaExpanded == null) return undefined;
+  return props.ariaExpanded ? "true" : "false";
 });
 
 const abbreviation = computed(() => {

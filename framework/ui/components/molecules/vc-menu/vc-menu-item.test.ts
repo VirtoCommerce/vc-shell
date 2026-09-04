@@ -46,6 +46,26 @@ describe("VcMenuItem", () => {
     expect(content.attributes("aria-current")).toBeUndefined();
   });
 
+  // Callers that use the item as a disclosure header (VcMenuGroup) need the
+  // state on the button itself; plain attribute fallthrough would land it on
+  // the outer wrapper, which has no role and does not handle the click.
+  it("puts a caller-supplied expanded state on the button", () => {
+    const content = mountComponent({ ariaExpanded: false, ariaControls: "children-1" }).find(".vc-menu-item__content");
+    expect(content.attributes("aria-expanded")).toBe("false");
+    expect(content.attributes("aria-controls")).toBe("children-1");
+  });
+
+  it("serialises an expanded state rather than dropping the attribute", () => {
+    const content = mountComponent({ ariaExpanded: true }).find(".vc-menu-item__content");
+    expect(content.attributes("aria-expanded")).toBe("true");
+  });
+
+  it("stays silent about expansion when it controls nothing", () => {
+    const content = mountComponent().find(".vc-menu-item__content");
+    expect(content.attributes("aria-expanded")).toBeUndefined();
+    expect(content.attributes("aria-controls")).toBeUndefined();
+  });
+
   it("keeps an accessible name when collapsed to an icon", () => {
     // Collapsed items hide the title text visually, so the name must survive.
     const content = mountComponent({ icon: "lucide-box", expanded: false }).find(".vc-menu-item__content");

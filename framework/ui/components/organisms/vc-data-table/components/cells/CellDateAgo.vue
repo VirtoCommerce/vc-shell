@@ -42,10 +42,12 @@ const agoText = computed(() => {
 <style lang="scss">
 .vc-table-cell-date-ago {
   @apply tw-truncate;
-  color: var(--neutrals-400);
+  // -600 rather than -500: this text also lands on the selected-row tint, where
+  // -500 is 3.94:1. -600 clears AA on both (7.81:1 on white, 6.49:1 selected).
+  color: var(--neutrals-600);
 
   &--not-set {
-    color: var(--neutrals-400);
+    color: var(--neutrals-600);
   }
 }
 </style>

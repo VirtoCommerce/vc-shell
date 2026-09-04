@@ -98,7 +98,9 @@ const imageHandler = computed(() => {
   &__role {
     @apply tw-truncate tw-text-left tw-w-full tw-max-w-[250px];
     font-size: 11px;
-    color: var(--neutrals-400, #a3a3a3);
+    // -400 is the palette's muted/disabled ink and measures 2.41:1 here; -500 is
+    // the one it documents as secondary text, and clears AA at 4.54:1.
+    color: var(--neutrals-500, #737373);
   }
 }
 

@@ -8,6 +8,7 @@
       :class="buttonClass"
       :data-test-id="id ?? 'vc-blade-toolbar-button'"
       :aria-keyshortcuts="ariaKeyshortcuts"
+      :aria-disabled="isInert || undefined"
       v-bind="$attrs"
       @click="handleClick"
     >
@@ -42,6 +43,7 @@
     class="vc-blade-toolbar-base-button"
     :class="buttonClass"
     :data-test-id="id ?? 'vc-blade-toolbar-button'"
+    :aria-disabled="isInert || undefined"
     v-bind="$attrs"
     @click="handleClick"
   >
@@ -90,8 +92,20 @@ const { isMac } = useKeyboardShortcuts();
 const isWaiting = ref(false);
 const isDisabled = computed(() => resolveReactiveBoolean(props.disabled));
 
+/**
+ * Not actionable — either the host disabled it, or its own click is still running.
+ *
+ * Announced with `aria-disabled` rather than the native attribute, so the control
+ * stays focusable: this is a toolbar, where a keyboard user should still be able to
+ * reach a button and be told it is unavailable, instead of having it vanish from the
+ * tab order. `handleClick` already refuses, so nothing happens if it is pressed.
+ * The state used to live only in a CSS class, which said nothing to assistive tech
+ * (VCST-5861).
+ */
+const isInert = computed(() => isDisabled.value || isWaiting.value);
+
 const buttonClass = computed(() => ({
-  "vc-blade-toolbar-base-button--disabled": isDisabled.value || isWaiting.value,
+  "vc-blade-toolbar-base-button--disabled": isInert.value,
   "vc-blade-toolbar-base-button--with-separator-left": props.separator === "left",
   "vc-blade-toolbar-base-button--with-separator-right": props.separator === "right",
   "vc-blade-toolbar-base-button--with-separator-both": props.separator === "both",

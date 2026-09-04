@@ -93,3 +93,64 @@ describe("ToolbarBaseButton", () => {
     expect(wrapper.get("button").attributes("aria-keyshortcuts")).toBeUndefined();
   });
 });
+
+/**
+ * The state used to live only in a CSS modifier class, so assistive tech was told
+ * these were ordinary actionable buttons while they did nothing (VCST-5861).
+ */
+describe("ToolbarBaseButton disabled state", () => {
+  it("announces a disabled button as unavailable", () => {
+    const wrapper = mount(ToolbarBaseButton as any, {
+      props: { icon: "lucide-plus", title: "Save", disabled: true },
+    });
+
+    expect(wrapper.find("button").attributes("aria-disabled")).toBe("true");
+  });
+
+  it("says nothing when the button is actionable", () => {
+    const wrapper = mount(ToolbarBaseButton as any, {
+      props: { icon: "lucide-plus", title: "Save" },
+    });
+
+    expect(wrapper.find("button").attributes("aria-disabled")).toBeUndefined();
+  });
+
+  // A toolbar button stays reachable so a keyboard user can find it and be told it
+  // is unavailable, rather than having it disappear from the tab order.
+  it("stays in the tab order while disabled", () => {
+    const wrapper = mount(ToolbarBaseButton as any, {
+      props: { icon: "lucide-plus", title: "Save", disabled: true },
+    });
+
+    expect(wrapper.find("button").attributes("disabled")).toBeUndefined();
+    expect(wrapper.find("button").attributes("tabindex")).not.toBe("-1");
+  });
+
+  it("announces the in-flight state of its own click too", async () => {
+    let finish: (() => void) | undefined;
+    const wrapper = mount(ToolbarBaseButton as any, {
+      props: {
+        icon: "lucide-plus",
+        title: "Save",
+        onClick: () => new Promise<void>((resolve) => (finish = resolve)),
+      },
+    });
+
+    await wrapper.find("button").trigger("click");
+    expect(wrapper.find("button").attributes("aria-disabled")).toBe("true");
+
+    finish?.();
+    await nextTick();
+    await nextTick();
+    expect(wrapper.find("button").attributes("aria-disabled")).toBeUndefined();
+  });
+
+  it("announces it on the shortcut variant, which renders a separate button", () => {
+    const wrapper = mount(ToolbarBaseButton as any, {
+      props: { icon: "lucide-save", title: "Save", disabled: true, shortcut: { mod: true, key: "s" } },
+      global: { stubs: { VcTooltip: { template: "<div><slot /><slot name='tooltip' /></div>" } } },
+    });
+
+    expect(wrapper.find("button").attributes("aria-disabled")).toBe("true");
+  });
+});

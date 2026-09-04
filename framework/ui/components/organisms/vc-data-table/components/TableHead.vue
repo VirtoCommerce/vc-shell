@@ -229,7 +229,9 @@ const handleDrop = (event: DragEvent) => {
   }
 
   &--sorted {
-    color: var(--primary-700);
+    // On the sorted header's own -50 background, -700 measures 4.41:1 — just under
+    // AA. -800 is the next step on the same scale and clears it.
+    color: var(--primary-800);
   }
 
   &-content {

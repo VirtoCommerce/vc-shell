@@ -240,7 +240,31 @@ describe("hideLabel", () => {
     expect(w.findComponent({ name: "VcInput" }).props("placeholder")).toBe("Add value");
   });
 
-  it("keeps name so VcSelect can fall back to it", () => {
+  it("names the DateTime control, which delegates to VcDatePicker", () => {
+    const w = factory({
+      hideLabel: true,
+      property: { ...baseProperty, valueType: "DateTime" },
+      valueType: "DateTime",
+    });
+    const input = w.findComponent({ name: "VcInput" });
+    expect(input.props("type")).toBe("datetime-local");
+    expect(input.props("label")).toBe("");
+    expect(input.props("ariaLabel")).toBe("testProp");
+  });
+
+  it("names the Color control, which delegates to VcColorInput", () => {
+    const w = factory({
+      hideLabel: true,
+      property: { ...baseProperty, valueType: "Color" },
+      valueType: "Color",
+    });
+    const input = w.findComponent({ name: "VcInput" });
+    expect(input.props("type")).toBe("color");
+    expect(input.props("label")).toBe("");
+    expect(input.props("ariaLabel")).toBe("testProp");
+  });
+
+  it("keeps name for the VcSelect popup listbox label", () => {
     const w = factory({
       hideLabel: true,
       property: { ...baseProperty, dictionary: true },

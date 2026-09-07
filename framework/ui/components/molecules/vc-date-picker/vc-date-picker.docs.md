@@ -294,26 +294,27 @@ const date = ref<Date | null>(new Date("2025-01-15"));
 
 ## Props
 
-| Prop                | Type                         | Default          | Description                                                  |
-| ------------------- | ---------------------------- | ---------------- | ------------------------------------------------------------ |
-| `modelValue`        | `Date \| string \| null`     | `undefined`      | Bound value via `v-model`                                    |
-| `type`              | `"date" \| "datetime-local"` | `"date"`         | Date only or date + time mode                                |
-| `label`             | `string`                     | --               | Label text above the field                                   |
-| `placeholder`       | `string`                     | auto (localized) | Placeholder text; auto-generated from locale if not provided |
-| `hint`              | `string`                     | --               | Helper text below the field                                  |
-| `tooltip`           | `string`                     | --               | Tooltip on the label info icon                               |
-| `clearable`         | `boolean`                    | `false`          | Shows a clear button when a date is selected                 |
-| `loading`           | `boolean`                    | `false`          | Shows a spinning loader icon                                 |
-| `size`              | `"default" \| "small"`       | `"default"`      | Field height variant                                         |
-| `required`          | `boolean`                    | `false`          | Shows a required indicator                                   |
-| `error`             | `boolean`                    | `false`          | Enables error styling                                        |
-| `errorMessage`      | `string`                     | --               | Error message below the field                                |
-| `disabled`          | `boolean`                    | `false`          | Disables the date picker                                     |
-| `autofocus`         | `boolean`                    | `false`          | Focus the field on mount                                     |
-| `name`              | `string`                     | `"Field"`        | HTML name attribute                                          |
-| `multilanguage`     | `boolean`                    | `false`          | Shows language badge on the label                            |
-| `currentLanguage`   | `string`                     | --               | Language code for the badge                                  |
-| `datePickerOptions` | `VueDatePickerProps`         | --               | Pass-through options to VueDatePicker                        |
+| Prop                | Type                         | Default          | Description                                                                                                                     |
+| ------------------- | ---------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `modelValue`        | `Date \| string \| null`     | `undefined`      | Bound value via `v-model`                                                                                                       |
+| `type`              | `"date" \| "datetime-local"` | `"date"`         | Date only or date + time mode                                                                                                   |
+| `label`             | `string`                     | --               | Label text above the field                                                                                                      |
+| `ariaLabel`         | `string`                     | --               | Accessible name for the date input when no visible `label` is provided; applied through the library's `ariaLabels.input` option |
+| `placeholder`       | `string`                     | auto (localized) | Placeholder text; auto-generated from locale if not provided                                                                    |
+| `hint`              | `string`                     | --               | Helper text below the field                                                                                                     |
+| `tooltip`           | `string`                     | --               | Tooltip on the label info icon                                                                                                  |
+| `clearable`         | `boolean`                    | `false`          | Shows a clear button when a date is selected                                                                                    |
+| `loading`           | `boolean`                    | `false`          | Shows a spinning loader icon                                                                                                    |
+| `size`              | `"default" \| "small"`       | `"default"`      | Field height variant                                                                                                            |
+| `required`          | `boolean`                    | `false`          | Shows a required indicator                                                                                                      |
+| `error`             | `boolean`                    | `false`          | Enables error styling                                                                                                           |
+| `errorMessage`      | `string`                     | --               | Error message below the field                                                                                                   |
+| `disabled`          | `boolean`                    | `false`          | Disables the date picker                                                                                                        |
+| `autofocus`         | `boolean`                    | `false`          | Focus the field on mount                                                                                                        |
+| `name`              | `string`                     | `"Field"`        | HTML name attribute                                                                                                             |
+| `multilanguage`     | `boolean`                    | `false`          | Shows language badge on the label                                                                                               |
+| `currentLanguage`   | `string`                     | --               | Language code for the badge                                                                                                     |
+| `datePickerOptions` | `VueDatePickerProps`         | --               | Pass-through options to VueDatePicker                                                                                           |
 
 ## Events
 

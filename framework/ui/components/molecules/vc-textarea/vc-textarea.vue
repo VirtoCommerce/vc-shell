@@ -61,7 +61,7 @@
         :aria-required="ariaRequired"
         :aria-describedby="ariaDescribedBy"
         :aria-labelledby="label ? labelId : undefined"
-        :aria-label="!label ? ariaLabel || resolvedName : undefined"
+        :aria-label="!label ? ariaLabel : undefined"
         tabindex="0"
         @input="onInput"
         @focus="isFocused = true"
@@ -145,7 +145,6 @@ const {
   hintId,
   invalid,
   resolvedDisabled,
-  resolvedName,
   ariaRequired,
   ariaDescribedBy,
 } = useFormField(props);

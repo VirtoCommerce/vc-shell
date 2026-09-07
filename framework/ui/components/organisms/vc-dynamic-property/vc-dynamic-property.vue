@@ -7,6 +7,7 @@
     :model-value="value"
     :rules="computedProperty.rules"
   >
+    <!-- In VcSelect/VcMultivalue `name` reaches the popup listbox label, not the focusable trigger. -->
     <template v-if="controlKind === 'dictionary'">
       <VcSelect
         v-bind="$attrs"
@@ -408,8 +409,16 @@ const props = withDefaults(
     /**
      * Hides the control's own visible label. The consumer is expected to render
      * its own label row (e.g. to place an action next to the property name).
-     * The validation label, the placeholder fallback and `name` are unaffected,
-     * and the display name is forwarded to the control as an accessible name.
+     * The validation label, the placeholder fallback and `name` are unaffected.
+     *
+     * The display name is forwarded as the control's accessible name for eight
+     * control families: short text, number, integer, long text, boolean, datetime,
+     * colour, and the fallback used for an unrecognized `valueType`.
+     *
+     * Not covered: dictionary and multivalue properties (rendered through VcSelect
+     * and VcMultivalue) and `Measure` properties (rendered through VcInputDropdown).
+     * Their focusable triggers carry no accessible name, so those properties still
+     * need a visible label.
      */
     hideLabel?: boolean;
   }>(),

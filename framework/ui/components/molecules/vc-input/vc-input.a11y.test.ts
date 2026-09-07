@@ -62,9 +62,11 @@ describe("VcInput a11y", () => {
     expect(input.attributes("aria-labelledby")).toBeUndefined();
   });
 
-  it("falls back to name when neither label nor ariaLabel is given", () => {
-    const w = mountInput({ name: "thread_count" });
-    expect(w.find("input.vc-input__input").attributes("aria-label")).toBe("thread_count");
+  it("leaves a placeholder-only input unnamed so assistive tech falls back to the placeholder", () => {
+    const w = mountInput({ placeholder: "Search keywords" });
+    const input = w.find("input.vc-input__input");
+    expect(input.attributes("aria-label")).toBeUndefined();
+    expect(input.attributes("aria-labelledby")).toBeUndefined();
   });
 
   it("prefers the visible label over ariaLabel", () => {
@@ -72,6 +74,16 @@ describe("VcInput a11y", () => {
     const input = w.find("input.vc-input__input");
     expect(input.attributes("aria-label")).toBeUndefined();
     expect(input.attributes("aria-labelledby")).toBeTruthy();
+  });
+
+  it("forwards ariaLabel to the delegated date input", () => {
+    const w = mountInput({ modelValue: null, type: "datetime-local", ariaLabel: "starts_at" });
+    expect(w.find("input.dp__input").attributes("aria-label")).toBe("starts_at");
+  });
+
+  it("forwards ariaLabel to the delegated color input", () => {
+    const w = mountInput({ modelValue: null, type: "color", ariaLabel: "brand_colour" });
+    expect(w.find("input.vc-color-input__input").attributes("aria-label")).toBe("brand_colour");
   });
 
   it("has no a11y violations when named only by ariaLabel", async () => {

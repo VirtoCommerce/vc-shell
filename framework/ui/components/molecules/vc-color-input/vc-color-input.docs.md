@@ -50,15 +50,16 @@ const color = ref<string | null>(null);
 
 ## Key Props
 
-| Prop                     | Type                   | Default     | Description                                              |
-| ------------------------ | ---------------------- | ----------- | -------------------------------------------------------- |
-| `modelValue`             | `string \| null`       | `undefined` | Color value via `v-model` (hex string or CSS color name) |
-| `label`                  | `string`               | --          | Label text above the field                               |
-| `placeholder`            | `string`               | --          | Placeholder text                                         |
-| `clearable`              | `boolean`              | `false`     | Shows a clear button when a value is present             |
-| `size`                   | `"default" \| "small"` | `"default"` | Field height variant                                     |
-| `error` / `errorMessage` | `boolean` / `string`   | --          | Error styling and validation message                     |
-| `disabled`               | `boolean`              | `false`     | Disables the input and color picker                      |
+| Prop                     | Type                   | Default     | Description                                                            |
+| ------------------------ | ---------------------- | ----------- | ---------------------------------------------------------------------- |
+| `modelValue`             | `string \| null`       | `undefined` | Color value via `v-model` (hex string or CSS color name)               |
+| `label`                  | `string`               | --          | Label text above the field                                             |
+| `ariaLabel`              | `string`               | --          | Accessible name for the text input when no visible `label` is provided |
+| `placeholder`            | `string`               | --          | Placeholder text                                                       |
+| `clearable`              | `boolean`              | `false`     | Shows a clear button when a value is present                           |
+| `size`                   | `"default" \| "small"` | `"default"` | Field height variant                                                   |
+| `error` / `errorMessage` | `boolean` / `string`   | --          | Error styling and validation message                                   |
+| `disabled`               | `boolean`              | `false`     | Disables the input and color picker                                    |
 
 ## Events
 

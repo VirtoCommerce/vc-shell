@@ -67,6 +67,7 @@
             :aria-required="ariaRequired"
             :aria-describedby="ariaDescribedBy"
             :aria-labelledby="label ? labelId : undefined"
+            :aria-label="!label ? ariaLabel : undefined"
             class="vc-color-input__input"
             tabindex="0"
             @blur="handleBlur"
@@ -161,6 +162,8 @@ import type { ITextFieldProps } from "@ui/types";
 
 export interface VcColorInputProps extends ITextFieldProps {
   modelValue?: string | null;
+  /** Accessible name for the text input when no visible `label` is provided. */
+  ariaLabel?: string;
 }
 
 export interface VcColorInputEmits {

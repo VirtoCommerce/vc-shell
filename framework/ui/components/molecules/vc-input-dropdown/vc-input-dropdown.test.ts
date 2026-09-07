@@ -32,6 +32,7 @@ describe("VcInputDropdown", () => {
             ],
           },
           VcInput: {
+            name: "VcInput",
             template: '<div class="stub-input"><slot name="append-inner" /></div>',
             props: [
               "placeholder",
@@ -48,6 +49,7 @@ describe("VcInputDropdown", () => {
               "errorMessage",
               "maxlength",
               "type",
+              "ariaLabel",
             ],
           },
           VcButton: true,
@@ -79,5 +81,15 @@ describe("VcInputDropdown", () => {
   it("renders with custom label", () => {
     const wrapper = mountComponent({ label: "Currency" });
     expect(wrapper.find(".vc-input-dropdown").exists()).toBe(true);
+  });
+
+  it("forwards ariaLabel to the value input when there is no visible label", () => {
+    const wrapper = mountComponent({ ariaLabel: "Weight" });
+    expect(wrapper.findComponent({ name: "VcInput" }).props("ariaLabel")).toBe("Weight");
+  });
+
+  it("suppresses ariaLabel on the value input when a visible label is set", () => {
+    const wrapper = mountComponent({ label: "Currency", ariaLabel: "Weight" });
+    expect(wrapper.findComponent({ name: "VcInput" }).props("ariaLabel")).toBeUndefined();
   });
 });

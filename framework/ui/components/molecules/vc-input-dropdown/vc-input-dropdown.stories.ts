@@ -226,6 +226,14 @@ const meta = {
         defaultValue: { summary: "false" },
       },
     },
+    ariaLabel: {
+      description: "Accessible name for the value input when no visible `label` is provided",
+      control: "text",
+      table: {
+        category: "Accessibility",
+        type: { summary: "string" },
+      },
+    },
     // Slots
     control: {
       description: "Slot for custom input control",

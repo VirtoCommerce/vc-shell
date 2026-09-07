@@ -268,6 +268,7 @@ Replace the default dropdown toggle with a custom element using the `button` slo
 | `name`            | `string`                                                                                                             | --        | HTML name attribute for the input                                                 |
 | `multilanguage`   | `boolean`                                                                                                            | `false`   | Enable multilanguage editing (forwarded to VcSelect)                              |
 | `currentLanguage` | `string`                                                                                                             | --        | Active language for multilanguage mode (forwarded to VcSelect)                    |
+| `ariaLabel`       | `string`                                                                                                             | --        | Accessible name for the value input when no visible `label` is provided           |
 
 ## Events
 

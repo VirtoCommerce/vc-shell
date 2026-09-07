@@ -205,6 +205,7 @@
         :multilanguage="multilanguage"
         :current-language="currentLanguage"
         :label="controlLabel"
+        :aria-label="controlAriaLabel"
         :placeholder="computedProperty.placeholder"
         :required="computedProperty.required"
         :disabled="disabled"
@@ -411,14 +412,13 @@ const props = withDefaults(
      * its own label row (e.g. to place an action next to the property name).
      * The validation label, the placeholder fallback and `name` are unaffected.
      *
-     * The display name is forwarded as the control's accessible name for eight
+     * The display name is forwarded as the control's accessible name for nine
      * control families: short text, number, integer, long text, boolean, datetime,
-     * colour, and the fallback used for an unrecognized `valueType`.
+     * colour, Measure, and the fallback used for an unrecognized `valueType`.
      *
-     * Not covered: dictionary and multivalue properties (rendered through VcSelect
-     * and VcMultivalue) and `Measure` properties (rendered through VcInputDropdown).
-     * Their focusable triggers carry no accessible name, so those properties still
-     * need a visible label.
+     * Not covered: dictionary and multivalue properties, rendered through VcSelect
+     * and VcMultivalue. Their focusable triggers carry no accessible name, so
+     * those properties still need a visible label.
      */
     hideLabel?: boolean;
   }>(),

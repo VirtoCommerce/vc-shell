@@ -91,7 +91,7 @@ function factory(propOverrides: Record<string, unknown> = {}) {
         },
         VcInputDropdown: {
           name: "VcInputDropdown",
-          props: ["modelValue", "options", "label"],
+          props: ["modelValue", "options", "label", "ariaLabel"],
           template: '<div class="vc-input-dropdown-stub"></div>',
         },
         Field: {
@@ -260,6 +260,17 @@ describe("hideLabel", () => {
     });
     const input = w.findComponent({ name: "VcInput" });
     expect(input.props("type")).toBe("color");
+    expect(input.props("label")).toBe("");
+    expect(input.props("ariaLabel")).toBe("testProp");
+  });
+
+  it("names the Measure control, which renders VcInputDropdown", () => {
+    const w = factory({
+      hideLabel: true,
+      property: { ...baseProperty, valueType: "Measure" },
+      valueType: "Measure",
+    });
+    const input = w.findComponent({ name: "VcInputDropdown" });
     expect(input.props("label")).toBe("");
     expect(input.props("ariaLabel")).toBe("testProp");
   });

@@ -57,6 +57,7 @@
         :error-message="errorMessage"
         :maxlength="maxlength"
         :type="inputType"
+        :aria-label="!label ? ariaLabel : undefined"
         class="vc-input-dropdown__input"
         @update:model-value="$emit('update:model-value', $event)"
         @blur="$emit('blur', $event)"
@@ -194,6 +195,10 @@ export interface VcInputDropdownProps extends ITextFieldProps {
    * Default: text
    */
   inputType?: "text" | "password" | "email" | "tel" | "number" | "integer" | "url" | "time" | "date" | "datetime-local";
+  /**
+   * Accessible name for the value input when no visible `label` is provided.
+   */
+  ariaLabel?: string;
 }
 
 export interface VcInputDropdownEmits {

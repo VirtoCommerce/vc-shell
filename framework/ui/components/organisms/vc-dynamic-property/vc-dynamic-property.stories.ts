@@ -170,7 +170,7 @@ const meta = {
     },
     hideLabel: {
       description:
-        "Hides the control's own visible label so the consumer can render its own label row. The display name is forwarded as the accessible name for short text, number, integer, long text, boolean, datetime, colour and the unrecognized-valueType fallback. Dictionary and multivalue properties (VcSelect, VcMultivalue) and Measure properties (VcInputDropdown) are not covered and still need a visible label.",
+        "Hides the control's own visible label so the consumer can render its own label row. The display name is forwarded as the accessible name for short text, number, integer, long text, boolean, datetime, colour, Measure and the unrecognized-valueType fallback. Dictionary and multivalue properties (VcSelect, VcMultivalue) are not covered and still need a visible label.",
       control: "boolean",
       table: {
         type: { summary: "boolean" },

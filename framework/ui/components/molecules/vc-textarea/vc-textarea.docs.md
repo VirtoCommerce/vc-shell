@@ -251,6 +251,7 @@ const description = ref<string>("");
 | `name`            | `string`  | `"Field"`   | Field name used for validation/id generation (not applied as an HTML name attribute on the textarea) |
 | `multilanguage`   | `boolean` | `false`     | Shows language badge on the label                                                                    |
 | `currentLanguage` | `string`  | --          | Language code displayed in the badge                                                                 |
+| `ariaLabel`       | `string`  | --          | Accessible name used when no visible `label` is provided; falls back to `name`                       |
 
 ## Events
 

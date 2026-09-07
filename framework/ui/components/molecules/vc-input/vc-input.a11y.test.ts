@@ -54,4 +54,29 @@ describe("VcInput a11y", () => {
     const results = await axe.run(w.element as HTMLElement);
     expect(results).toHaveNoViolations();
   });
+
+  it("names the input from ariaLabel when there is no visible label", () => {
+    const w = mountInput({ ariaLabel: "color" });
+    const input = w.find("input.vc-input__input");
+    expect(input.attributes("aria-label")).toBe("color");
+    expect(input.attributes("aria-labelledby")).toBeUndefined();
+  });
+
+  it("falls back to name when neither label nor ariaLabel is given", () => {
+    const w = mountInput({ name: "thread_count" });
+    expect(w.find("input.vc-input__input").attributes("aria-label")).toBe("thread_count");
+  });
+
+  it("prefers the visible label over ariaLabel", () => {
+    const w = mountInput({ label: "Colour", ariaLabel: "color" });
+    const input = w.find("input.vc-input__input");
+    expect(input.attributes("aria-label")).toBeUndefined();
+    expect(input.attributes("aria-labelledby")).toBeTruthy();
+  });
+
+  it("has no a11y violations when named only by ariaLabel", async () => {
+    const w = mountInput({ ariaLabel: "color" });
+    const results = await axe.run(w.element as HTMLElement);
+    expect(results).toHaveNoViolations();
+  });
 });

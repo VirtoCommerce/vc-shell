@@ -165,6 +165,7 @@
                 :aria-required="ariaRequired"
                 :aria-describedby="ariaDescribedBy"
                 :aria-labelledby="label ? labelId : undefined"
+                :aria-label="!label ? ariaLabel || resolvedName : undefined"
                 class="vc-input__input"
                 tabindex="0"
                 @keydown="onKeyDown"
@@ -338,6 +339,14 @@ export interface Props extends ITextFieldProps {
    * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete
    */
   autocomplete?: string;
+  /**
+   * Accessible name for the input when no visible `label` is provided.
+   *
+   * Needs to be a prop rather than a passthrough attribute: the component sets
+   * `inheritAttrs: false` and binds the leftover attrs to its root element, so
+   * `aria-label` written on the component would land on the wrapping div.
+   */
+  ariaLabel?: string;
   /**
    * VueDatePicker options
    *

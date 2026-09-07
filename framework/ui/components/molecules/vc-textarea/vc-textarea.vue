@@ -61,6 +61,7 @@
         :aria-required="ariaRequired"
         :aria-describedby="ariaDescribedBy"
         :aria-labelledby="label ? labelId : undefined"
+        :aria-label="!label ? ariaLabel || resolvedName : undefined"
         tabindex="0"
         @input="onInput"
         @focus="isFocused = true"
@@ -115,6 +116,8 @@ export interface Props extends IFormFieldProps {
   maxlength?: string;
   multilanguage?: boolean;
   currentLanguage?: string;
+  /** Accessible name for the textarea when no visible `label` is provided. */
+  ariaLabel?: string;
 }
 
 export interface Emits {
@@ -142,6 +145,7 @@ const {
   hintId,
   invalid,
   resolvedDisabled,
+  resolvedName,
   ariaRequired,
   ariaDescribedBy,
 } = useFormField(props);

@@ -11,9 +11,10 @@
       <VcSelect
         v-bind="$attrs"
         v-model="value"
+        :name="computedProperty.name"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
         :required="computedProperty.required"
         :placeholder="computedProperty.placeholder"
         :options="items"
@@ -35,7 +36,7 @@
         :name="computedProperty.name"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
         :required="computedProperty.required"
         :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
@@ -47,9 +48,10 @@
       <VcMultivalue
         v-bind="$attrs"
         v-model="value"
+        :name="computedProperty.name"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
         :required="computedProperty.required"
         :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
@@ -70,10 +72,11 @@
         v-model="value"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
+        :aria-label="controlAriaLabel"
         clearable
         :required="computedProperty.required"
-        :placeholder="computedProperty.displayName || $t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
+        :placeholder="computedProperty.placeholder || $t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
         :current-language="currentLanguage"
         :loading="loading"
@@ -83,7 +86,8 @@
       <VcMultivalue
         v-bind="$attrs"
         v-model="value"
-        :label="computedProperty.displayName"
+        :name="computedProperty.name"
+        :label="controlLabel"
         :required="computedProperty.required"
         :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
@@ -99,7 +103,8 @@
       <VcMultivalue
         v-bind="$attrs"
         v-model="value"
-        :label="computedProperty.displayName"
+        :name="computedProperty.name"
+        :label="controlLabel"
         :required="computedProperty.required"
         :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
@@ -117,7 +122,8 @@
         v-model="value"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
+        :aria-label="controlAriaLabel"
         clearable
         type="number"
         :required="computedProperty.required"
@@ -132,7 +138,8 @@
         v-model="value"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
+        :aria-label="controlAriaLabel"
         clearable
         type="integer"
         step="1"
@@ -148,7 +155,8 @@
         v-model="value"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
+        :aria-label="controlAriaLabel"
         type="datetime-local"
         :required="computedProperty.required"
         :placeholder="computedProperty.placeholder"
@@ -162,7 +170,8 @@
         v-bind="$attrs"
         v-model="value"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
+        :aria-label="controlAriaLabel"
         :required="computedProperty.required"
         :placeholder="computedProperty.placeholder"
         :disabled="disabled"
@@ -177,7 +186,8 @@
         :required="computedProperty.required"
         :disabled="disabled"
         :name="computedProperty.name"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
+        :aria-label="controlAriaLabel"
       >
       </VcSwitch>
     </template>
@@ -193,7 +203,7 @@
         input-type="number"
         :multilanguage="multilanguage"
         :current-language="currentLanguage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
         :placeholder="computedProperty.placeholder"
         :required="computedProperty.required"
         :disabled="disabled"
@@ -220,7 +230,7 @@
         :name="computedProperty.name"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
         :required="computedProperty.required"
         :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"
         :disabled="disabled"
@@ -234,9 +244,10 @@
       <VcMultivalue
         v-bind="$attrs"
         v-model="value"
+        :name="computedProperty.name"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
         :required="computedProperty.required"
         :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.ADD')"
         :disabled="disabled"
@@ -275,7 +286,8 @@
         v-bind="$attrs"
         v-model="value"
         type="color"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
+        :aria-label="controlAriaLabel"
         :error="!!errors.length"
         :error-message="errorMessage"
         :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"
@@ -285,9 +297,10 @@
       <VcSelect
         v-bind="$attrs"
         v-model="value"
+        :name="computedProperty.name"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
         :required="computedProperty.required"
         :placeholder="computedProperty.placeholder"
         :options="items"
@@ -328,7 +341,8 @@
         :name="computedProperty.name"
         :error="!!errors.length"
         :error-message="errorMessage"
-        :label="computedProperty.displayName"
+        :label="controlLabel"
+        :aria-label="controlAriaLabel"
         :placeholder="computedProperty.placeholder"
         :required="computedProperty.required"
         :disabled="disabled"
@@ -391,6 +405,13 @@ const props = withDefaults(
     };
     disabled?: boolean;
     placeholder?: string;
+    /**
+     * Hides the control's own visible label. The consumer is expected to render
+     * its own label row (e.g. to place an action next to the property name).
+     * The validation label, the placeholder fallback and `name` are unaffected,
+     * and the display name is forwarded to the control as an accessible name.
+     */
+    hideLabel?: boolean;
   }>(),
   {
     optionsValue: "id",
@@ -490,6 +511,9 @@ const computedProperty = computed(() => {
     placeholder: props.placeholder || propertyDisplayNameLocalized,
   };
 });
+
+const controlLabel = computed(() => (props.hideLabel ? "" : computedProperty.value.displayName));
+const controlAriaLabel = computed(() => (props.hideLabel ? computedProperty.value.displayName : undefined));
 
 // One source for which control to render, shared in precedence with
 // `resolveStrategy`. The template used to decide for itself, in a different

@@ -1,3 +1,16 @@
+# [2.6.0-rc.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.0-rc.0...v2.6.0-rc.1) (2026-09-08)
+
+### Bug Fixes
+
+- **a11y:** bring the reported colour-contrast failures up to AA ([#356](https://github.com/VirtoCommerce/vc-shell/issues/356)) ([477cb52](https://github.com/VirtoCommerce/vc-shell/commit/477cb529900c9db4504710d52ab098eb84047594))
+- **a11y:** make blade-toolbar buttons announce that they are unavailable ([#355](https://github.com/VirtoCommerce/vc-shell/issues/355)) ([8f5c54f](https://github.com/VirtoCommerce/vc-shell/commit/8f5c54f4349683a82fe48557f5da0461844756f2)), closes [#347](https://github.com/VirtoCommerce/vc-shell/issues/347)
+- **a11y:** rescue focus when maximizing a blade inerts the region holding it ([#353](https://github.com/VirtoCommerce/vc-shell/issues/353)) ([7418348](https://github.com/VirtoCommerce/vc-shell/commit/741834890eb2d765f280408e5719b4e07f505377)), closes [#344](https://github.com/VirtoCommerce/vc-shell/issues/344) [#306](https://github.com/VirtoCommerce/vc-shell/issues/306)
+- **vc-blade:** keep skeletons up when a second load starts before a paint ([#352](https://github.com/VirtoCommerce/vc-shell/issues/352)) ([bf43467](https://github.com/VirtoCommerce/vc-shell/commit/bf43467775961364acd1377960ba7ef655f34b39)), closes [#330](https://github.com/VirtoCommerce/vc-shell/issues/330)
+
+### Features
+
+- **framework:** let consumers own a dynamic property's label row (VM-1795) ([#357](https://github.com/VirtoCommerce/vc-shell/issues/357)) ([371aa8e](https://github.com/VirtoCommerce/vc-shell/commit/371aa8ec59e2cd88d583e2686afaea15dcd02aeb))
+
 # [2.6.0-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.5.0...v2.6.0-rc.0) (2026-09-02)
 
 ### Bug Fixes

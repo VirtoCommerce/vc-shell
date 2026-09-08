@@ -35,9 +35,13 @@ describe("VcDatePicker a11y", () => {
         plugins: [i18n],
         stubs: {
           VcIcon: true,
-          // Stub the heavy VueDatePicker third-party component
+          // Stub the heavy VueDatePicker third-party component. It names its own
+          // input from `ariaLabels.input`, defaulting to a generic label.
           VueDatePicker: {
-            template: '<input type="text" aria-label="Date picker input" class="vc-date-picker__stub" />',
+            name: "VueDatePicker",
+            props: ["ariaLabels"],
+            template:
+              '<input type="text" :aria-label="ariaLabels?.input ?? \'Datepicker input\'" class="vc-date-picker__stub" />',
           },
         },
         config: {
@@ -68,5 +72,27 @@ describe("VcDatePicker a11y", () => {
     const w = mountDatePicker({ label: "End date", error: true, errorMessage: "Date is required" });
     const results = await axe.run(w.element as HTMLElement);
     expect(results).toHaveNoViolations();
+  });
+
+  it("names the date input from ariaLabel when there is no visible label", () => {
+    const w = mountDatePicker({ ariaLabel: "starts_at" });
+    expect(w.find("input.vc-date-picker__stub").attributes("aria-label")).toBe("starts_at");
+  });
+
+  it("prefers the visible label over ariaLabel", () => {
+    const w = mountDatePicker({ label: "Start date", ariaLabel: "starts_at" });
+    expect(w.find("input.vc-date-picker__stub").attributes("aria-label")).toBe("Datepicker input");
+  });
+
+  it("keeps consumer-provided ariaLabels while overriding the input label", () => {
+    const w = mountDatePicker({
+      ariaLabel: "starts_at",
+      datePickerOptions: { ariaLabels: { menu: "Dates", input: "ignored" } },
+    });
+    expect(w.find("input.vc-date-picker__stub").attributes("aria-label")).toBe("starts_at");
+    expect(w.findComponent({ name: "VueDatePicker" }).props("ariaLabels")).toMatchObject({
+      menu: "Dates",
+      input: "starts_at",
+    });
   });
 });

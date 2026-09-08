@@ -31,4 +31,20 @@ describe("VcColorInput", () => {
       expect(wrapper.emitted("update:modelValue")).toBeTruthy();
     });
   });
+
+  describe("accessible name", () => {
+    it("names the text input from ariaLabel when there is no visible label", () => {
+      const wrapper = mountColorInput({ ariaLabel: "brand_colour" });
+      const input = wrapper.find("input.vc-color-input__input");
+      expect(input.attributes("aria-label")).toBe("brand_colour");
+      expect(input.attributes("aria-labelledby")).toBeUndefined();
+    });
+
+    it("prefers the visible label over ariaLabel", () => {
+      const wrapper = mountColorInput({ label: "Brand colour", ariaLabel: "brand_colour" });
+      const input = wrapper.find("input.vc-color-input__input");
+      expect(input.attributes("aria-label")).toBeUndefined();
+      expect(input.attributes("aria-labelledby")).toBeTruthy();
+    });
+  });
 });

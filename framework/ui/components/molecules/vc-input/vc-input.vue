@@ -41,6 +41,7 @@
     :multilanguage="multilanguage"
     :current-language="currentLanguage"
     :name="name"
+    :aria-label="ariaLabel"
     @update:model-value="(v) => emit('update:modelValue', (v ?? null) as Date | string | null)"
     @blur="(v: Event) => emit('blur', v)"
     @focus="emit('focus')"
@@ -65,6 +66,7 @@
     :multilanguage="multilanguage"
     :current-language="currentLanguage"
     :name="name"
+    :aria-label="ariaLabel"
     @update:model-value="(v: string | null) => emit('update:modelValue', v)"
     @blur="(v: Event) => emit('blur', v)"
     @focus="emit('focus')"
@@ -165,6 +167,7 @@
                 :aria-required="ariaRequired"
                 :aria-describedby="ariaDescribedBy"
                 :aria-labelledby="label ? labelId : undefined"
+                :aria-label="!label ? ariaLabel : undefined"
                 class="vc-input__input"
                 tabindex="0"
                 @keydown="onKeyDown"
@@ -338,6 +341,14 @@ export interface Props extends ITextFieldProps {
    * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete
    */
   autocomplete?: string;
+  /**
+   * Accessible name for the input when no visible `label` is provided.
+   *
+   * Needs to be a prop rather than a passthrough attribute: the component sets
+   * `inheritAttrs: false` and binds the leftover attrs to its root element, so
+   * `aria-label` written on the component would land on the wrapping div.
+   */
+  ariaLabel?: string;
   /**
    * VueDatePicker options
    *

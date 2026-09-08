@@ -41,4 +41,23 @@ describe("VcTextarea a11y", () => {
     const results = await axe.run(w.element as HTMLElement);
     expect(results).toHaveNoViolations();
   });
+
+  it("names the textarea from ariaLabel when there is no visible label", () => {
+    const w = mountTextarea({ ariaLabel: "description" });
+    const textarea = w.find("textarea");
+    expect(textarea.attributes("aria-label")).toBe("description");
+    expect(textarea.attributes("aria-labelledby")).toBeUndefined();
+  });
+
+  it("prefers the visible label over ariaLabel", () => {
+    const w = mountTextarea({ label: "Description", ariaLabel: "description" });
+    expect(w.find("textarea").attributes("aria-label")).toBeUndefined();
+  });
+
+  it("leaves a placeholder-only textarea unnamed so assistive tech falls back to the placeholder", () => {
+    const w = mountTextarea({ placeholder: "Search keywords" });
+    const textarea = w.find("textarea");
+    expect(textarea.attributes("aria-label")).toBeUndefined();
+    expect(textarea.attributes("aria-labelledby")).toBeUndefined();
+  });
 });

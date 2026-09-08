@@ -79,6 +79,7 @@
             :teleport-center="isMobile"
             :is24="isBrowserLocale24h"
             v-bind="resolvedDatePickerOptions"
+            :aria-labels="resolvedAriaLabels"
             :teleport="isDesktop ? 'body' : undefined"
             :aria-invalid="invalid || undefined"
             :aria-required="ariaRequired"
@@ -162,6 +163,13 @@ import type { ITextFieldProps } from "@ui/types";
 export interface VcDatePickerProps extends ITextFieldProps {
   modelValue?: ModelValue;
   type?: "date" | "datetime-local";
+  /**
+   * Accessible name for the date input when no visible `label` is provided.
+   *
+   * VueDatePicker names its own input from `ariaLabels.input` and ignores a plain
+   * `aria-label` attribute, so this is applied through that option.
+   */
+  ariaLabel?: string;
   datePickerOptions?: VueDatePickerProps;
 }
 
@@ -234,6 +242,15 @@ const resolvedDatePickerOptions = computed(() => {
   } as (typeof opts)["textInput"];
 
   return opts;
+});
+
+// The library's default input label is a generic "Datepicker input", so a field
+// without a visible label is announced by that instead of its own name.
+const resolvedAriaLabels = computed(() => {
+  const consumerLabels = props.datePickerOptions?.ariaLabels;
+  if (props.label || !props.ariaLabel) return consumerLabels;
+
+  return { ...consumerLabels, input: props.ariaLabel };
 });
 
 const formatDateWithLocale = (date: Date | Date[]) => {

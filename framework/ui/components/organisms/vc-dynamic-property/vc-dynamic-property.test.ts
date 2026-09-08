@@ -45,6 +45,7 @@ function factory(propOverrides: Record<string, unknown> = {}) {
           props: [
             "modelValue",
             "label",
+            "ariaLabel",
             "type",
             "disabled",
             "clearable",
@@ -63,6 +64,7 @@ function factory(propOverrides: Record<string, unknown> = {}) {
             "modelValue",
             "options",
             "label",
+            "name",
             "disabled",
             "required",
             "placeholder",
@@ -79,17 +81,17 @@ function factory(propOverrides: Record<string, unknown> = {}) {
         },
         VcTextarea: {
           name: "VcTextarea",
-          props: ["modelValue", "label", "disabled", "required", "placeholder", "errorMessage"],
+          props: ["modelValue", "label", "ariaLabel", "disabled", "required", "placeholder", "errorMessage"],
           template: '<textarea class="vc-textarea-stub"></textarea>',
         },
         VcSwitch: {
           name: "VcSwitch",
-          props: ["modelValue", "label", "disabled", "required", "name", "errorMessage"],
+          props: ["modelValue", "label", "ariaLabel", "disabled", "required", "name", "errorMessage"],
           template: '<div class="vc-switch-stub"></div>',
         },
         VcInputDropdown: {
           name: "VcInputDropdown",
-          props: ["modelValue", "options", "label"],
+          props: ["modelValue", "options", "label", "ariaLabel"],
           template: '<div class="vc-input-dropdown-stub"></div>',
         },
         Field: {
@@ -212,5 +214,73 @@ describe("VcDynamicProperty", () => {
   it("renders with disabled=true", () => {
     const wrapper = factory({ disabled: true });
     expect(wrapper.find(".vc-input-stub").exists()).toBe(true);
+  });
+});
+
+describe("hideLabel", () => {
+  it("passes the display name as the control label by default", () => {
+    const w = factory();
+    expect(w.findComponent({ name: "VcInput" }).props("label")).toBe("testProp");
+  });
+
+  it("blanks the control label but keeps the accessible name", () => {
+    const w = factory({ hideLabel: true });
+    const input = w.findComponent({ name: "VcInput" });
+    expect(input.props("label")).toBe("");
+    expect(input.props("ariaLabel")).toBe("testProp");
+  });
+
+  it("keeps the validation label on the vee-validate Field", () => {
+    const w = factory({ hideLabel: true });
+    expect(w.findComponent({ name: "Field" }).props("label")).toBe("testProp");
+  });
+
+  it("keeps an explicit placeholder intact", () => {
+    const w = factory({ hideLabel: true, placeholder: "Add value" });
+    expect(w.findComponent({ name: "VcInput" }).props("placeholder")).toBe("Add value");
+  });
+
+  it("names the DateTime control, which delegates to VcDatePicker", () => {
+    const w = factory({
+      hideLabel: true,
+      property: { ...baseProperty, valueType: "DateTime" },
+      valueType: "DateTime",
+    });
+    const input = w.findComponent({ name: "VcInput" });
+    expect(input.props("type")).toBe("datetime-local");
+    expect(input.props("label")).toBe("");
+    expect(input.props("ariaLabel")).toBe("testProp");
+  });
+
+  it("names the Color control, which delegates to VcColorInput", () => {
+    const w = factory({
+      hideLabel: true,
+      property: { ...baseProperty, valueType: "Color" },
+      valueType: "Color",
+    });
+    const input = w.findComponent({ name: "VcInput" });
+    expect(input.props("type")).toBe("color");
+    expect(input.props("label")).toBe("");
+    expect(input.props("ariaLabel")).toBe("testProp");
+  });
+
+  it("names the Measure control, which renders VcInputDropdown", () => {
+    const w = factory({
+      hideLabel: true,
+      property: { ...baseProperty, valueType: "Measure" },
+      valueType: "Measure",
+    });
+    const input = w.findComponent({ name: "VcInputDropdown" });
+    expect(input.props("label")).toBe("");
+    expect(input.props("ariaLabel")).toBe("testProp");
+  });
+
+  it("keeps name for the VcSelect popup listbox label", () => {
+    const w = factory({
+      hideLabel: true,
+      property: { ...baseProperty, dictionary: true },
+      dictionary: true,
+    });
+    expect(w.findComponent({ name: "VcSelect" }).props("name")).toBe("testProp");
   });
 });

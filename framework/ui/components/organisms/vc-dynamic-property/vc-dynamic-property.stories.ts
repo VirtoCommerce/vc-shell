@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { ref } from "vue";
 
 import VcDynamicProperty from "./vc-dynamic-property.vue";
+import { VcLabel } from "@ui/components/atoms/vc-label";
 
 /**
  * `VcDynamicProperty` renders a VirtoCommerce platform dynamic property based on its value type.
@@ -164,6 +165,16 @@ const meta = {
       control: "text",
       table: {
         type: { summary: "string" },
+        category: "Appearance",
+      },
+    },
+    hideLabel: {
+      description:
+        "Hides the control's own visible label so the consumer can render its own label row. The display name is forwarded as the accessible name for short text, number, integer, long text, boolean, datetime, colour, Measure and the unrecognized-valueType fallback. Dictionary and multivalue properties (VcSelect, VcMultivalue) are not covered and still need a visible label.",
+      control: "boolean",
+      table: {
+        type: { summary: "boolean" },
+        defaultValue: { summary: "false" },
         category: "Appearance",
       },
     },
@@ -744,6 +755,57 @@ export const Accessibility: Story = {
       description: {
         story:
           "Dynamic properties inherit accessibility from their underlying input components (VcInput, VcSelect, VcSwitch, etc.). Labels are associated with inputs, required fields are marked, and keyboard navigation is fully supported.",
+      },
+    },
+  },
+};
+
+/**
+ * Consumer-owned label row, with the control's own label hidden.
+ */
+export const HideLabel: Story = {
+  args: {
+    property: { id: "prop-11", name: "sellerNote" },
+    name: "Seller Note",
+    valueType: "ShortText",
+    hideLabel: true,
+    modelValue: "",
+  },
+  render: (args) => ({
+    components: { VcDynamicProperty, VcLabel },
+    setup() {
+      const value = ref(args.modelValue || "");
+      const onUpdate = (data: any) => {
+        value.value = data.value;
+        updateAction(data);
+      };
+      return { args, value, onUpdate };
+    },
+    template: `
+      <div class="tw-p-4 tw-max-w-md">
+        <VcLabel>
+          {{ args.name }}
+          <button
+            type="button"
+            class="tw-ml-1 tw-inline-flex tw-items-center tw-border-0 tw-bg-transparent tw-p-0 tw-cursor-pointer tw-text-[color:var(--neutrals-400)]"
+            title="Edit property"
+          >
+            ✎
+          </button>
+        </VcLabel>
+        <VcDynamicProperty
+          v-bind="args"
+          :model-value="value"
+          @update:model-value="onUpdate"
+        />
+      </div>
+    `,
+  }),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "When `hideLabel` is true, the control renders without its own visible label so the consumer can own the label row instead — here to place an edit action next to the property name. The display name is still forwarded to the control as its accessible name.",
       },
     },
   },

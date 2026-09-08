@@ -54,4 +54,41 @@ describe("VcInput a11y", () => {
     const results = await axe.run(w.element as HTMLElement);
     expect(results).toHaveNoViolations();
   });
+
+  it("names the input from ariaLabel when there is no visible label", () => {
+    const w = mountInput({ ariaLabel: "color" });
+    const input = w.find("input.vc-input__input");
+    expect(input.attributes("aria-label")).toBe("color");
+    expect(input.attributes("aria-labelledby")).toBeUndefined();
+  });
+
+  it("leaves a placeholder-only input unnamed so assistive tech falls back to the placeholder", () => {
+    const w = mountInput({ placeholder: "Search keywords" });
+    const input = w.find("input.vc-input__input");
+    expect(input.attributes("aria-label")).toBeUndefined();
+    expect(input.attributes("aria-labelledby")).toBeUndefined();
+  });
+
+  it("prefers the visible label over ariaLabel", () => {
+    const w = mountInput({ label: "Colour", ariaLabel: "color" });
+    const input = w.find("input.vc-input__input");
+    expect(input.attributes("aria-label")).toBeUndefined();
+    expect(input.attributes("aria-labelledby")).toBeTruthy();
+  });
+
+  it("forwards ariaLabel to the delegated date input", () => {
+    const w = mountInput({ modelValue: null, type: "datetime-local", ariaLabel: "starts_at" });
+    expect(w.find("input.dp__input").attributes("aria-label")).toBe("starts_at");
+  });
+
+  it("forwards ariaLabel to the delegated color input", () => {
+    const w = mountInput({ modelValue: null, type: "color", ariaLabel: "brand_colour" });
+    expect(w.find("input.vc-color-input__input").attributes("aria-label")).toBe("brand_colour");
+  });
+
+  it("has no a11y violations when named only by ariaLabel", async () => {
+    const w = mountInput({ ariaLabel: "color" });
+    const results = await axe.run(w.element as HTMLElement);
+    expect(results).toHaveNoViolations();
+  });
 });

@@ -4,32 +4,32 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import NotificationDropdown from "@shell/components/notification-dropdown/notification-dropdown.vue";
 import { NotificationTemplate } from "@shell/components/notification-template";
 import { useNotifications } from "@core/composables/useNotifications";
-import { PushNotification } from "@core/api/platform";
+import type { PushNotification } from "@core/api/platform";
 
+// `PushNotification` is an interface in the generated platform client, so it has no
+// constructor. This story called `new PushNotification(...)` and could never have run
+// — nothing noticed because the whole `framework/shell` folder was outside the
+// Storybook glob until now.
 function seedStoryNotifications() {
   const { addNotification } = useNotifications();
 
-  addNotification(
-    new PushNotification({
-      id: "story-notification-1",
-      notifyType: "OfferCreatedDomainEvent",
-      title: "Offer #1024 changed status",
-      description: "Published successfully",
-      isNew: false,
-      created: new Date(Date.now() - 1000 * 60 * 3),
-    }),
-  );
+  addNotification({
+    id: "story-notification-1",
+    notifyType: "OfferCreatedDomainEvent",
+    title: "Offer #1024 changed status",
+    description: "Published successfully",
+    isNew: false,
+    created: new Date(Date.now() - 1000 * 60 * 3),
+  } satisfies PushNotification);
 
-  addNotification(
-    new PushNotification({
-      id: "story-notification-2",
-      notifyType: "SystemMessage",
-      title: "Catalog synchronization finished",
-      description: "12 products were updated.",
-      isNew: false,
-      created: new Date(Date.now() - 1000 * 60 * 40),
-    }),
-  );
+  addNotification({
+    id: "story-notification-2",
+    notifyType: "SystemMessage",
+    title: "Catalog synchronization finished",
+    description: "12 products were updated.",
+    isNew: false,
+    created: new Date(Date.now() - 1000 * 60 * 40),
+  } satisfies PushNotification);
 }
 
 const OfferNotificationTemplate = defineComponent({

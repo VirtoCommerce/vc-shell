@@ -145,24 +145,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      # This job carries a full workspace build, the Playwright browsers and a
-      # browser-mode vitest run, and it ran the runner out of disk on the merge
-      # of #359 — which failed the job with "No space left on device" rather than
-      # a test result. A starved runner also kills the browser mid-run, which
-      # surfaces as "Browser connection was closed"; that had been seen twice and
-      # written off as flake.
-      #
-      # Removing toolchains this job never uses reclaims roughly 30 GB. Inline
-      # rather than a third-party action: it is a handful of deletions and keeps
-      # CI free of another supply-chain dependency. `df` on both sides so the next
-      # disk failure is diagnosable from the log instead of guessed at.
-      - name: Free runner disk
-        run: |
-          echo "before:"; df -h / | tail -1
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android \
-                      /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
-          echo "after:"; df -h / | tail -1
-
       - name: Setup Node 22
         uses: actions/setup-node@v7
         with:
@@ -210,14 +192,26 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: yarn playwright install-deps chromium
 
-      # The #359 failure on main reported "No space left on device", which is
-      # why this line is here. It has not reproduced since — the runner shows
-      # ~87 GB free — so the next disk failure should be read off the log
-      # rather than guessed at again.
+      # Two shards, sequentially, in one job. Not for speed — each invocation
+      # launches a fresh browser, and that is the point. The browser does not
+      # give memory back between story files, so a single 95-file run dies of
+      # its own accumulation near the end: "Browser connection was closed",
+      # around file 84, on whichever file happened to be in flight. Halving
+      # the concurrency only moved it to file 93. Halving the files each
+      # browser sees is what actually keeps it under the ceiling.
+      #
+      # Sharding by job would duplicate the build; sharding here does not.
+      # The #359 failure on main reported "No space left on device". It has not
+      # reproduced since — the runner shows ~87 GB free — so if it returns it
+      # should be read off the log rather than theorised about a second time.
       - name: Show free disk
         run: df -h /
-      - name: Run story tests
-        run: yarn test:storybook
+      - name: Run story tests (shard 1/2)
+        run: yarn test:storybook --shard=1/2
+        env:
+          NODE_OPTIONS: "--max-old-space-size=6144"
+      - name: Run story tests (shard 2/2)
+        run: yarn test:storybook --shard=2/2
         env:
           NODE_OPTIONS: "--max-old-space-size=6144"
 

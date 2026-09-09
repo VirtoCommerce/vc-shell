@@ -36,13 +36,6 @@ export default defineProject({
       headless: true,
       instances: [{ browser: "chromium" }],
     },
-    // One browser context per CPU is the default, and on a 4-core CI runner
-    // four Chromium contexts each holding a full Storybook page is enough to
-    // get the browser killed: the run dies with "Browser connection was
-    // closed" around 80 of 95 files, on a different file every time. Two
-    // contexts keeps the suite under the runner's memory and costs a few
-    // minutes of wall time.
-    maxWorkers: 2,
     setupFiles: ["./.storybook/vitest.setup.ts"],
     coverage: {
       provider: "v8",

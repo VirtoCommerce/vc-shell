@@ -210,6 +210,12 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: yarn playwright install-deps chromium
 
+      # The #359 failure on main reported "No space left on device", which is
+      # why this line is here. It has not reproduced since — the runner shows
+      # ~87 GB free — so the next disk failure should be read off the log
+      # rather than guessed at again.
+      - name: Show free disk
+        run: df -h /
       - name: Run story tests
         run: yarn test:storybook
         env:

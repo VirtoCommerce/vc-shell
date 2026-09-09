@@ -202,13 +202,23 @@ const columnsRef = computed(() => props.columns);
 const { mobileLayout, hasMobileColumns } = useMobileCardLayout({ columns: columnsRef });
 
 // Selection helpers
-const hasSelection = computed(() => (props.selection?.length ?? 0) > 0);
+const selectedKeys = computed(() => new Set((props.selection ?? []).map((s) => s[props.dataKey])));
 
 function isItemSelected(item: T): boolean {
-  if (!props.selection) return false;
-  const itemKey = item[props.dataKey];
-  return props.selection.some((s) => s[props.dataKey] === itemKey);
+  return selectedKeys.value.has(item[props.dataKey]);
 }
+
+/**
+ * Whether the cards should be in selection mode — which decides whether a tap
+ * opens a row or ticks it, and whether checkboxes are drawn at all.
+ *
+ * Deliberately "is a selected row on screen", not "is the selection array
+ * non-empty". Deleting the only selected row leaves its ghost in the parent's
+ * selection, and reading the array length there pinned every remaining card
+ * into selection mode with nothing left to untick — the rows simply stopped
+ * opening. Search, filters and paging can hide a selected row the same way.
+ */
+const hasSelection = computed(() => props.items.some((item) => selectedKeys.value.has(item[props.dataKey])));
 
 function isItemSelectable(item: T): boolean {
   if (!props.isRowSelectable) return true;

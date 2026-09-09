@@ -11,7 +11,7 @@ import { provideSettingsMenu } from "@core/composables/useSettingsMenu";
 import { provideSidebarState } from "@core/composables/useSidebarState";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { useRouter } from "vue-router";
-import { IdentityResult, SecurityResult } from "@core/api/platform";
+import type { IdentityResult, SecurityResult } from "@core/api/platform";
 
 const MENU_ITEM_IDS = [
   "story-user-theme-selector",

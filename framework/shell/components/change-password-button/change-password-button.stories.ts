@@ -4,7 +4,7 @@ import ChangePasswordButton from "@shell/components/change-password-button/chang
 import { VcPopupContainer } from "@shell/_internal/popup";
 import { CloseSettingsMenuKey } from "@framework/injection-keys";
 import { useUserManagement } from "@core/composables/useUserManagement";
-import { IdentityResult, SecurityResult } from "@core/api/platform";
+import type { IdentityResult, SecurityResult } from "@core/api/platform";
 
 function patchUserManagement() {
   const userManagement = useUserManagement();

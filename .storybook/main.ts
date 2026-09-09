@@ -77,6 +77,7 @@ export default {
     "../framework/ui/components/**/*.stories.ts",
     "../framework/shared/components/**/*.stories.ts",
     "../framework/shared/pages/**/*.stories.ts",
+    "../framework/shell/**/*.stories.ts",
   ],
 
   addons: [

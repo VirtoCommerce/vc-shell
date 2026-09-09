@@ -111,17 +111,24 @@ describe("NotificationTemplate", () => {
     expect(wrapper.find(".vc-notification-template__time").text()).toBe("");
   });
 
-  it("applies mobile class when on mobile", () => {
-    const mobileConfig = {
-      provide: {
-        [IsMobileKey as symbol]: ref(true),
-        [IsDesktopKey as symbol]: ref(false),
-      },
-    };
-    const wrapper = mount(NotificationTemplate, {
-      props: { title: "Test", notification: baseNotification },
-      global: { stubs, ...mobileConfig },
-    });
-    expect(wrapper.find(".vc-notification-template__container--mobile").exists()).toBe(true);
+  it("keeps the icon beside the text on mobile", () => {
+    const container = (isMobile: boolean) =>
+      mount(NotificationTemplate, {
+        props: { title: "Test", notification: baseNotification },
+        global: {
+          stubs,
+          provide: {
+            [IsMobileKey as symbol]: ref(isMobile),
+            [IsDesktopKey as symbol]: ref(!isMobile),
+          },
+        },
+      }).find(".vc-notification-template__container");
+
+    // Mobile used to reverse the column, which sent the icon -- the first child
+    // -- below the text. Layout is the same on both, so any modifier here is
+    // that bug coming back; jsdom cannot resolve flex direction to catch it
+    // any closer than this.
+    expect(container(true).classes()).toEqual(container(false).classes());
+    expect(container(true).element.firstElementChild?.className).toContain("vc-notification-template__icon-container");
   });
 });

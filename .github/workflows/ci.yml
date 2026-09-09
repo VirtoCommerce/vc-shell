@@ -145,6 +145,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      # This job carries a full workspace build, the Playwright browsers and a
+      # browser-mode vitest run, and it ran the runner out of disk on the merge
+      # of #359 — which failed the job with "No space left on device" rather than
+      # a test result. A starved runner also kills the browser mid-run, which
+      # surfaces as "Browser connection was closed"; that had been seen twice and
+      # written off as flake.
+      #
+      # Removing toolchains this job never uses reclaims roughly 30 GB. Inline
+      # rather than a third-party action: it is a handful of deletions and keeps
+      # CI free of another supply-chain dependency. `df` on both sides so the next
+      # disk failure is diagnosable from the log instead of guessed at.
+      - name: Free runner disk
+        run: |
+          echo "before:"; df -h / | tail -1
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android \
+                      /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          echo "after:"; df -h / | tail -1
+
       - name: Setup Node 22
         uses: actions/setup-node@v7
         with:

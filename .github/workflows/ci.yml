@@ -192,8 +192,26 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: yarn playwright install-deps chromium
 
-      - name: Run story tests
-        run: yarn test:storybook
+      # Two shards, sequentially, in one job. Not for speed — each invocation
+      # launches a fresh browser, and that is the point. The browser does not
+      # give memory back between story files, so a single 95-file run dies of
+      # its own accumulation near the end: "Browser connection was closed",
+      # around file 84, on whichever file happened to be in flight. Halving
+      # the concurrency only moved it to file 93. Halving the files each
+      # browser sees is what actually keeps it under the ceiling.
+      #
+      # Sharding by job would duplicate the build; sharding here does not.
+      # The #359 failure on main reported "No space left on device". It has not
+      # reproduced since — the runner shows ~87 GB free — so if it returns it
+      # should be read off the log rather than theorised about a second time.
+      - name: Show free disk
+        run: df -h /
+      - name: Run story tests (shard 1/2)
+        run: yarn test:storybook --shard=1/2
+        env:
+          NODE_OPTIONS: "--max-old-space-size=6144"
+      - name: Run story tests (shard 2/2)
+        run: yarn test:storybook --shard=2/2
         env:
           NODE_OPTIONS: "--max-old-space-size=6144"
 

@@ -3,12 +3,7 @@
     class="vc-notification-template"
     @click="$emit('click')"
   >
-    <div
-      class="vc-notification-template__container"
-      :class="{
-        'vc-notification-template__container--mobile': isMobile,
-      }"
-    >
+    <div class="vc-notification-template__container">
       <div
         class="vc-notification-template__icon-container"
         :style="{ backgroundColor: color ?? 'var(--primary-500)' }"
@@ -58,7 +53,7 @@ export interface Emits {
 
 const props = defineProps<Props>();
 const _emit = defineEmits<Emits>();
-const { isMobile, isDesktop } = useResponsive();
+const { isDesktop } = useResponsive();
 
 const locale = window.navigator.language;
 
@@ -109,14 +104,6 @@ const pushTime = computed(() => {
 
   &__container {
     @apply tw-flex tw-flex-row tw-grow tw-basis-0;
-
-    &--mobile {
-      @apply tw-flex-col-reverse;
-    }
-  }
-
-  &__left {
-    @apply tw-flex tw-items-center;
   }
 
   &__icon-container {
@@ -128,14 +115,6 @@ const pushTime = computed(() => {
     @apply tw-text-[color:var(--notification-template-text-color)] tw-text-xs tw-leading-[19px]
       tw-font-medium tw-m-0 tw-text-wrap;
     word-break: break-word;
-  }
-
-  &__right {
-    @apply tw-flex tw-shrink-0;
-
-    &--mobile {
-      @apply tw-mb-2 tw-justify-end;
-    }
   }
 
   &__content {

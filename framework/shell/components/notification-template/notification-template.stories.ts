@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import { ref } from "vue";
+import { IsMobileKey } from "@framework/injection-keys";
 import type { IPushNotification } from "@core/api/platform";
 import NotificationTemplate from "@shell/components/notification-template/notification-template.vue";
 
@@ -95,4 +97,18 @@ export const WithoutCreatedDate: Story = {
       created: undefined,
     }),
   },
+};
+
+/**
+ * The mobile branch, which the shell reaches by providing IsMobileKey — narrowing
+ * the viewport does not trigger it, so it needs its own story. The icon belongs to
+ * the left of the text here exactly as on desktop; it once rendered underneath.
+ */
+export const Mobile: Story = {
+  decorators: [
+    () => ({
+      provide: { [IsMobileKey as symbol]: ref(true) },
+      template: "<story />",
+    }),
+  ],
 };

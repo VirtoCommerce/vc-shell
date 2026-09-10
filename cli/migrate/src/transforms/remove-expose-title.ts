@@ -3,15 +3,12 @@ import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
 import type { Transform } from "./types.js";
 
 /**
- * Remove `title` property from `exposeToChildren({...})` calls.
+ * Remove `title` from `exposeToChildren({...})` calls.
  *
- * In v2, exposeToChildren is function-only — it registers callable methods in
- * the blade messaging system. Passing a reactive `title` (ComputedRef<string>)
- * trips the TS signature `(...args: any[]) => any` check, and the value is no
- * longer used by the blade chrome anyway.
+ * v2 exposeToChildren is function-only. A reactive `title` trips the
+ * `(...args: any[]) => any` signature check, and the blade chrome no longer reads it.
  *
- * If `title` is the only property, the entire exposeToChildren() call is
- * removed. Otherwise, only the `title` key is stripped.
+ * Removes the whole call when `title` is its only property, otherwise just the key.
  */
 
 function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {

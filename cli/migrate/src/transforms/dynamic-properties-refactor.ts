@@ -3,18 +3,11 @@ import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
 import type { Transform } from "./types.js";
 
 /**
- * Migrate useDynamicProperties consumers from positional args to options object.
- *
- * Before:
- *   useDynamicProperties<A, B, C, D, E>(searchFn, PropertyValueFactory, PropertyDictionaryItemFactory, measureFn)
- *
- * After:
- *   useDynamicProperties({ searchDictionary: searchFn, searchMeasurements: measureFn })
- *
- * Also removes:
- *   - class PropertyValueFactory { ... }
- *   - class PropertyDictionaryItemFactory { ... }
- *   - Generic type parameters from the call
+ * Migrate useDynamicProperties consumers from positional args to an options object:
+ * `useDynamicProperties<A, B, C, D, E>(searchFn, PropertyValueFactory,
+ * PropertyDictionaryItemFactory, measureFn)` becomes `useDynamicProperties({
+ * searchDictionary: searchFn, searchMeasurements: measureFn })`. Also removes the two
+ * factory class declarations and the call's generic type parameters.
  */
 
 const FACTORY_CLASS_NAMES = new Set(["PropertyValueFactory", "PropertyDictionaryItemFactory"]);

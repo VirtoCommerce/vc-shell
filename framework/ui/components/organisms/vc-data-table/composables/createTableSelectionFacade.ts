@@ -13,11 +13,9 @@ export interface TableSelectionHandlers<T extends Record<string, unknown>> {
 }
 
 /**
- * Deep, intention-revealing surface for row selection. Wraps the raw
- * `useTableSelectionV2` instance (hidden implementation) plus the two
- * emit-owning handlers, so VcDataTable's template and children consume a single
- * `selection` object instead of the 17-member composable and loose handlers.
- * Members map 1:1 to the implementation; behaviour is unchanged.
+ * Row-selection surface for VcDataTable: wraps the raw `useTableSelectionV2` instance and
+ * the two emit-owning handlers, so the template and children consume one `selection`
+ * object instead of a 17-member composable and loose handlers. Behaviour is unchanged.
  */
 export interface TableSelectionFacade<T extends Record<string, unknown>> {
   /** Currently selected items (loaded rows). Maps `internalSelection`. */

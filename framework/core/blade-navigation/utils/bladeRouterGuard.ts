@@ -5,11 +5,8 @@ import { parseBladeUrl, buildUrlFromStack } from "@core/blade-navigation/utils/u
 import { restoreFromUrl } from "@core/blade-navigation/utils/restoreFromUrl";
 
 /**
- * Result of the blade router guard.
- *
- * - `undefined` — allow navigation (no redirect)
- * - `false` — cancel navigation (e.g. beforeClose guard prevented closing)
- * - `{ path, query, replace }` — redirect to cleaned-up URL
+ * Result of the blade router guard: `undefined` allows the navigation, `false` cancels it
+ * (a beforeClose guard refused), and `{ path, query, replace }` redirects to a cleaned URL.
  */
 export type BladeGuardResult = undefined | false | { path: string; query: Record<string, string>; replace: true };
 
@@ -39,16 +36,11 @@ async function clearBladeStackRespectingGuards(bladeStack: IBladeStack): Promise
 /**
  * Router guard that syncs URL navigation with the BladeStack.
  *
- * Determines whether a navigation target is a real Vue Router page
- * or a blade URL handled by the catch-all route:
+ * A real child route ("Platform", "Dashboard") clears open blades and lets Vue Router
+ * render the page. The blade catch-all route instead parses the URL segments and restores
+ * the stack (workspace plus optional child).
  *
- * - **Real child routes** (e.g. "Platform", "Dashboard"): clears any open
- *   blades and lets Vue Router render the page.
- * - **Blade catch-all route**: parses URL segments and restores the
- *   blade stack (workspace + optional child blade).
- *
- * The catch-all route is identified by `meta.bladeCatchAll`, which is set
- * by the BladeNavigationPlugin when it registers the catch-all.
+ * The catch-all is identified by `meta.bladeCatchAll`, set by BladeNavigationPlugin.
  */
 export async function bladeRouterGuard(
   to: RouteLocationNormalized,

@@ -6,12 +6,9 @@ import { createNotificationStore, NotificationStore } from "../store";
 let _singleton: NotificationStore | null = null;
 
 /**
- * Returns the shared NotificationStore singleton.
- *
- * Resolution order:
- * 1. Vue inject() — works inside component setup() or app.runWithContext()
- * 2. Module-level singleton — ensures all plugin install() calls and
- *    remote microfrontend modules share the same store instance
+ * The shared NotificationStore singleton. Resolved through inject() inside setup() or
+ * app.runWithContext(), otherwise through the module-level singleton, which keeps plugin
+ * install() calls and remote microfrontend modules on the same instance.
  */
 export function useNotificationStore(): NotificationStore {
   if (getCurrentInstance()) {

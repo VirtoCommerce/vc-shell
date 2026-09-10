@@ -92,15 +92,11 @@ const buttonRef = ref<HTMLButtonElement | null>(null);
 const isDisabled = computed(() => props.disabled || props.loading);
 
 /**
- * A button that disables itself in response to its own activation — Sign in while
- * the request is in flight, a range toggle while the chart reloads — takes focus
- * down with it, because a natively disabled element cannot hold focus. Focus lands
- * on `<body>` and the next Tab restarts at the top of the document (WCAG 2.4.3).
- *
- * So while this button is the one holding focus, say `aria-disabled` instead: same
- * announcement, same inert behaviour via the click guard, but it stays focusable
- * and the user is still on it when the work finishes. Every other disabled button
- * keeps the native attribute and stays out of the tab order.
+ * A button that disables itself on its own activation drops focus to `<body>`, since a
+ * natively disabled element cannot hold focus, and the next Tab restarts at the top of the
+ * document (WCAG 2.4.3). While this button holds focus it says `aria-disabled` instead:
+ * same announcement, still inert via the click guard, but it stays focusable. Every other
+ * disabled button keeps the native attribute.
  */
 const holdsFocusWhileDisabled = ref(false);
 

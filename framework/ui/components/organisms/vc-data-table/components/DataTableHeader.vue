@@ -157,18 +157,9 @@
 
 <script setup lang="ts">
 /**
- * DataTableHeader - Reusable header rendering component for VcDataTable
- *
- * Extracts header rendering logic from VcDataTable.vue to provide
- * a single, unified component for rendering table headers.
- *
- * Features:
- * - Selection column (checkbox for select-all in multiple mode)
- * - Column headers with sort indicators
- * - Column filters
- * - Resize handles
- * - Reorder drag handles
- * - Custom header slots from VcColumn
+ * DataTableHeader - header rendering for VcDataTable: the select-all column, sort
+ * indicators, column filters, resize and reorder handles, and the custom header slots
+ * coming from VcColumn.
  */
 import { computed, ref } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";

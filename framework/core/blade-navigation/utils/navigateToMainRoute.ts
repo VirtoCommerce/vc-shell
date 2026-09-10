@@ -1,14 +1,11 @@
 import type { RouteRecordNormalized, Router } from "vue-router";
 
 /**
- * Resolve the application's main (root) route — the one marked `meta.root`,
- * preferring its alias when one exists.
+ * Resolve the application's main route — the one marked `meta.root` — preferring its alias.
  *
- * Returns `undefined` when no route declares `meta.root`. The alias lookup is
- * deliberately guarded on that: with `mainRoute` undefined the predicate reads
- * `r.aliasOf?.path === undefined`, which is true for every route without an
- * alias, so `find` would hand back whatever was registered first — Login, on a
- * typical app.
+ * Returns `undefined` when no route declares `meta.root`. The alias lookup is guarded on
+ * that: with `mainRoute` undefined the predicate reads `r.aliasOf?.path === undefined`,
+ * true for every route without an alias, so `find` would return whatever registered first.
  */
 export function resolveMainRoute(router: Router): RouteRecordNormalized | undefined {
   const routes = router.getRoutes();

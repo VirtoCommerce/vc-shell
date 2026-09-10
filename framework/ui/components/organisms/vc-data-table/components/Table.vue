@@ -53,11 +53,10 @@ provide(TableContextKey, context);
 
 <style lang="scss">
 .vc-table-composition {
-  // Key styles for layout:
   // - h-full: inherit parent height constraint
   // - flex-col: stack header, body, footer vertically
-  // - overflow: hidden: columns shrink to fit; horizontal scroll is not used
-  // - min-h-0: critical for nested flex containers to enable scrolling
+  // - overflow hidden: columns shrink to fit; horizontal scroll is not used
+  // - min-h-0: required for nested flex containers to scroll
   @apply tw-relative tw-box-border tw-w-full tw-h-full tw-flex tw-flex-col tw-overflow-hidden;
   min-height: 0;
 

@@ -370,13 +370,10 @@
 
 <script setup lang="ts" generic="T extends Record<string, any>">
 /**
- * VcDataTable - Declarative DataTable component with VcColumn support
+ * VcDataTable - declarative DataTable with VcColumn support.
  *
- * Refactored to use composables for better code organization.
- * Inspired by PrimeVue DataTable architecture.
- *
- * Orchestration logic (sub-composable wiring, watchers, event handlers, derived
- * computeds) is extracted into useDataTableOrchestrator for independent testability.
+ * Orchestration (sub-composable wiring, watchers, event handlers, derived computeds)
+ * lives in useDataTableOrchestrator so it can be tested on its own.
  */
 import { ref, computed, provide, watch, watchEffect, onBeforeUnmount, useSlots, type VNode } from "vue";
 import { useElementSize } from "@vueuse/core";
@@ -1045,13 +1042,10 @@ const addRowIcon = computed(() => props.addRow?.icon ?? "lucide-plus");
 // ============================================================================
 // Row Hover for Actions
 // ============================================================================
-// Note: Row hover state for action visibility is managed by Table.vue's own
-// tableContext provide (selectedRowIndex + setSelectedRowIndex). TableRow.vue
-// calls setSelectedRowIndex on mouseenter/mouseleave, and TableRowActions.vue
-// injects from the same context. No duplicate provide needed here.
+// Hover state lives in Table.vue's tableContext (selectedRowIndex): TableRow sets it,
+// TableRowActions injects it. No duplicate provide here.
 
-// Handlers kept as no-ops to satisfy template bindings from DataTableBody.
-// The actual hover state flows through Table.vue → TableRow → TableRowActions.
+// No-ops, kept only to satisfy DataTableBody's template bindings.
 const handleRowMouseEnter = (_index: number) => {};
 const handleRowMouseLeave = () => {};
 
@@ -1063,12 +1057,10 @@ const showGlobalFiltersPanel = ref(false);
 const globalFilterValues = ref<Record<string, unknown>>({});
 const globalFiltersButtonRef = ref<InstanceType<typeof GlobalFiltersButton> | null>(null);
 
-// Wrap the component ref as a floating-ui VirtualElement so the anchor is resolved
-// lazily on every position update. `$el` of a Vue component instance is NOT reactive —
-// when `VcButton`'s inner `v-if="!bladeLoading"` swaps the DOM root after the blade
-// finishes loading, a plain `computed(() => ref.value?.$el)` keeps a stale detached
-// node. Reading `$el` inside `getBoundingClientRect()` (called per autoUpdate frame)
-// always picks up the live element instead.
+// floating-ui VirtualElement so the anchor resolves lazily on every position update.
+// `$el` is not reactive: when VcButton's `v-if="!bladeLoading"` swaps the DOM root,
+// a `computed(() => ref.value?.$el)` holds a stale detached node. Reading `$el`
+// inside getBoundingClientRect() picks up the live element.
 const globalFiltersButtonEl = computed<VirtualElement | null>(() => {
   const inst = globalFiltersButtonRef.value;
   if (!inst) return null;
@@ -1249,31 +1241,16 @@ onBeforeUnmount(() => {
   // to escape the container bounds. The inner __content element handles scrolling.
   @apply tw-relative tw-flex tw-flex-col tw-grow tw-basis-0 tw-flex-auto tw-h-full tw-overflow-visible;
 
-  // Break the content-inflation feedback loop. The table measures its own inner
-  // wrapper to size columns; if that wrapper is ever wider than its allotted box,
-  // the engine bakes oversized column widths, which keeps the wrapper wide — a
-  // self-reinforcing loop that never recovers (the ResizeObserver sees no further
-  // size change). It happens because every flex ancestor up to the nearest scroll
-  // viewport defaults to `min-width: auto`, so a momentarily-unconstrained table
-  // (long cell content, no column widths yet on a cold mount / view switch / reset)
-  // stretches the whole subtree — including ancestors the framework doesn't own.
-  //
-  // `contain: inline-size` makes this element's width independent of its content,
-  // so the subtree can never push past its allotted width and the wrapper
-  // measurement is always correct. It is size containment only (not layout/paint),
-  // so it does NOT establish a containing block for the absolutely positioned row
-  // actions above, and it constrains the inline axis only — block height/scrolling
-  // are untouched.
+  // Break the content-inflation loop: flex ancestors default to `min-width: auto`, so a
+  // momentarily unconstrained table (no column widths yet on cold mount, view switch or
+  // reset) stretches the subtree and the engine bakes those oversized widths in for good.
+  // Size containment only, so it establishes no containing block for the absolutely
+  // positioned row actions and leaves the block axis alone.
   contain: inline-size;
 
-  // Confine the table's internal stacking context. The sticky header row
-  // (position: sticky + z-index) and other internal layers create stacking
-  // contexts; without an isolated table root they leak to the app-root level and
-  // paint over teleported overlays (e.g. a VcSelect dropdown opened above the
-  // table). `isolation: isolate` scopes all internal z-index inside the table
-  // without touching their relative order, so app-level overlays always sit on top.
-  // Teleported panels (dropdowns, filters, tooltips) escape the DOM subtree and are
-  // unaffected. Must be on the root — isolating only __content is not enough.
+  // Scope internal z-index (sticky header and other layers) to the table root, so it
+  // cannot paint over teleported overlays such as a VcSelect dropdown opened above the
+  // table. Must sit on the root; isolating only __content is not enough.
   isolation: isolate;
 
   &__header {

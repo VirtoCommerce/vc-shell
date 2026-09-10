@@ -4,21 +4,10 @@ import { isColorProperty, isDictionaryProperty, isMeasureProperty } from "./util
 /**
  * Which control `VcDynamicProperty` renders for a property.
  *
- * This exists because the choice was encoded twice: once here in effect, as a
- * chain of sixteen ordered `v-else-if` conditions in the template, and once in
- * `resolveStrategy`, which decides how the value is read and written. The two
- * chains had opposite precedence — the template tested `dictionary` first,
- * `resolveStrategy` tests `Measure` first — so they disagreed.
- *
- * A `Measure` property carrying a dictionary got the dictionary `VcSelect`,
- * while `measureStrategy` read `values[0].value` and wrote
- * `{ value, unitOfMeasureId }`. The select works in `valueId`, so it showed
- * nothing selected and stored no dictionary reference, and the unit could not
- * be set at all. `Boolean` with a dictionary diverged the same way.
- *
- * Precedence here mirrors `resolveStrategy` exactly. The strategy is the data
- * contract — non-UI code reads through it — so the control follows it, not the
- * other way round.
+ * Precedence mirrors `resolveStrategy` exactly — the strategy is the data
+ * contract, so the control follows it, not the template's old `v-else-if`
+ * chain, which tested `dictionary` first and left Measure properties with a
+ * dictionary unable to store a unit.
  */
 export type ControlKind =
   | "dictionary"
@@ -56,10 +45,7 @@ export function resolveControlKind(property: IBaseProperty): ControlKind {
 
   // A dictionary constrains the allowed values whatever the underlying type is,
   // and `resolveStrategy` routes every dictionary property to dictionaryStrategy.
-  // The old chain only had a dictionary control for the single-value case and
-  // for multivalue ShortText, so Number, Integer, LongText and DateTime with a
-  // multivalue dictionary rendered a plain input while their value was read and
-  // written by valueId.
+  // The old chain missed multivalue Number, Integer, LongText and DateTime.
   if (dictionary) return multivalue ? "multivalue-dictionary" : "dictionary";
 
   switch (property.valueType) {

@@ -1,15 +1,12 @@
 /**
- * ColumnCollector - Utility for collecting VcColumn instances from slots
- *
- * This is inspired by PrimeVue's HelperSet pattern.
- * VcColumn components register themselves via inject/provide when mounted.
+ * ColumnCollector - collects VcColumn instances from slots. VcColumn components
+ * register themselves via inject/provide when mounted. Inspired by PrimeVue's
+ * HelperSet pattern.
  *
  * Usage in VcDataTable:
  * ```ts
  * const columnCollector = new ColumnCollector();
  * provide('$columns', columnCollector);
- *
- * // Get collected columns
  * const columns = computed(() => columnCollector.getColumns());
  * ```
  */

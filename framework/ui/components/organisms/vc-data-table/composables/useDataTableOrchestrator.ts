@@ -1,17 +1,10 @@
 /**
  * @internal
- * Wires all VcDataTable sub-composables together.
+ * Wires all VcDataTable sub-composables together: every sub-composable call, the
+ * watchers between them, the derived computeds and the event handlers.
  *
- * This composable owns:
- * - All sub-composable calls (selection, sort, editing, expansion, row grouping,
- *   inline edit, state persistence, columns, resize, reorder, row reorder, filters)
- * - Inter-composable watchers
- * - Derived computed properties (displayItems, effectiveSelectionMode, etc.)
- * - Event handlers (handleSort, handleSelectAllChange, handleRowSelectionChange,
- *   handleRowClick, handleAddRow, handleRemoveRow, handleColumnVisibilityChange)
- *
- * VcDataTable.vue retains: template, props/emits, defineSlots, slot extraction,
- * all provide() calls, DOM refs, and UI-state refs (showGlobalFiltersPanel, etc.).
+ * VcDataTable.vue keeps the template, props/emits, defineSlots, slot extraction,
+ * provide() calls, DOM refs and UI-state refs.
  */
 
 import { ref, computed, watch, toRef, type Ref, type ComputedRef } from "vue";
@@ -219,11 +212,8 @@ export interface VcDataTableOrchestratorReturn<T extends Record<string, unknown>
 
 /**
  * @internal
- * Wires all VcDataTable sub-composables together.
- *
- * Called once in VcDataTable's `<script setup>`. Receives reactive inputs from
- * the component and returns all the reactive state and handlers the template
- * needs. The component itself retains provide() calls, DOM refs, and UI state.
+ * Wires all VcDataTable sub-composables together. Called once in VcDataTable's
+ * `<script setup>`; the component keeps provide() calls, DOM refs and UI state.
  */
 /** SortableJS `handle` selector matching the desktop row and mobile card drag handles. */
 const ROW_REORDER_HANDLE_SELECTOR = ".vc-table-composition__row-drag-handle, .vc-data-table-mobile-card__drag-handle";
@@ -415,15 +405,11 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   let cachedWrapper: HTMLElement | null = null;
 
   /**
-   * Measures available width for data columns directly from the DOM.
+   * Measures available width for data columns from the DOM. Reads the transition-wrapper
+   * width (already excludes row padding, drag handles and gap) and subtracts the special
+   * cells inside it. No hardcoded pixel constants.
    *
-   * Reads the transition-wrapper width (already excludes row padding,
-   * drag handles, row-level gap) and subtracts special cells rendered
-   * inside the wrapper (implicit selection checkbox, VcColumn-based
-   * selection/expander/rowReorder/rowEditor). No hardcoded pixel constants.
-   *
-   * When wrapper is not mounted yet, returns 0 — callers treat this as
-   * "defer until DOM is ready" to avoid a first-frame column jump.
+   * Returns 0 before the wrapper mounts; callers defer rather than jump on first frame.
    */
   const measureAvailableWidth = (): number => {
     if (!cachedWrapper || !cachedWrapper.isConnected) {

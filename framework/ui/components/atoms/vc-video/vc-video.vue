@@ -51,9 +51,8 @@ import { VcLabel } from "@ui/components/atoms/vc-label";
 
 /**
  * Embed hosts that need their own origin to bootstrap a player. Cross-origin by
- * definition, so `allow-same-origin` cannot be used to reach the parent frame:
- * the Same-Origin Policy blocks that. It only lets the framed page use its own
- * storage, which YouTube requires before it can build the player.
+ * definition, so `allow-same-origin` cannot reach the parent frame — the Same-Origin
+ * Policy blocks that. It only grants the framed page its own storage, which YouTube needs.
  */
 const TRUSTED_EMBED_HOSTS = ["youtube.com", "youtube-nocookie.com", "youtu.be", "vimeo.com"];
 
@@ -74,13 +73,11 @@ export interface Props {
   tooltip?: string;
   source?: string;
   /**
-   * Additional iframe sandbox tokens to append to the resolved sandbox.
-   * Space-separated.
+   * Extra iframe sandbox tokens appended to the resolved sandbox, space-separated.
    *
-   * The base is `allow-scripts allow-presentation`, plus `allow-same-origin`
-   * when `source` points at a known video host. Adding `allow-same-origin`
-   * yourself for a source on the app's own origin lets the framed page remove
-   * its sandbox and reach the parent DOM — do not do it for user-supplied URLs.
+   * The base is `allow-scripts allow-presentation`, plus `allow-same-origin` for known
+   * video hosts. Adding `allow-same-origin` for a source on the app's own origin lets the
+   * framed page drop its sandbox and reach the parent DOM — never for user-supplied URLs.
    */
   additionalSandbox?: string;
 }

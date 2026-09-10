@@ -60,15 +60,12 @@ const router = useRouter();
 
 const { syncUrlReplace } = createUrlSync(router, bladeStack);
 
-// ── Post-restore URL reconcile ──────────────────────────────────────────────
-// On a fresh load, restoreFromUrl reopens only the workspace + the deepest
-// routable blade. Non-routable blades and intermediate (off-path) blades are
-// NOT reopened, yet their table query params still sit in the address bar.
-// Once the restored blades have mounted, their tables hydrate their own query
-// into the blade descriptors (table-query-state service). Rebuilding the URL
-// from the present descriptors then drops any query owned by an absent blade.
-// Child `mounted` hooks run before this parent's `onMounted`, so the present
-// blades' descriptors are already hydrated here; `nextTick` covers stragglers.
+// Post-restore URL reconcile. On a fresh load restoreFromUrl reopens only the workspace
+// and the deepest routable blade, yet the table query params of the blades it skipped are
+// still in the address bar. Once the restored blades mount, their tables hydrate their own
+// query into the descriptors, so rebuilding the URL from the present descriptors drops any
+// query owned by an absent blade. Child `mounted` runs before this parent's `onMounted`,
+// and `nextTick` covers stragglers.
 onMounted(() => {
   if (bladeStack.blades.value.length === 0) return;
   void nextTick(() => {

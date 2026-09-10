@@ -5,19 +5,11 @@ import { useLanguages } from "@core/composables/useLanguages";
 const PLATFORM_LOCALE_STORAGE_KEY = "NG_TRANSLATE_LANG_KEY";
 
 /**
- * One-way reactive bridge from the VirtoCommerce platform's locale key
- * (`NG_TRANSLATE_LANG_KEY`) to the shell's language service.
- *
- * Intended for embedded mode only. Call from `useShellBootstrap` when
- * `options.isEmbedded === true`.
- *
- * Behaviour:
- * - Applies the current platform value on setup (if non-empty).
- * - Watches the key and applies subsequent changes (including cross-tab
- *   `storage` events, handled by VueUse).
- * - Skips empty values so platform clearing the key does not blank the shell.
- * - Skips values equal to `currentLocale` to avoid redundant
- *   vee-validate reconfiguration.
+ * One-way reactive bridge from the platform locale key (`NG_TRANSLATE_LANG_KEY`) to the
+ * shell's language service. Embedded mode only: call from `useShellBootstrap` when
+ * `options.isEmbedded === true`. Applies the current value on setup and every later change
+ * (cross-tab `storage` events included), skipping empty values so a cleared key does not
+ * blank the shell, and values equal to `currentLocale` to avoid vee-validate churn.
  */
 export function usePlatformLocaleSync(): void {
   const { setLocale, currentLocale } = useLanguages();

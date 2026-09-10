@@ -9,9 +9,8 @@ export interface LatestRequest {
 
 export interface UseLatestRequestReturn {
   /**
-   * Runs a request and hands back its result only while it is still the newest.
-   * A superseded request resolves to `undefined`, so the caller returns early
-   * instead of writing a stale answer:
+   * Runs a request and returns its result only while it is still the newest. A superseded
+   * request resolves to `undefined`, so the caller returns early:
    *
    * ```ts
    * const result = await search.latest(client.searchProducts(criteria));
@@ -19,12 +18,10 @@ export interface UseLatestRequestReturn {
    * searchResult.value = result;
    * ```
    *
-   * This is `begin`/`isCurrent`/`complete` with the bookkeeping folded in —
-   * there is no `finally` to forget. Reach for `begin` directly only when the
-   * request and the check cannot sit in the same function.
+   * `begin`/`isCurrent`/`complete` folded together, with no `finally` to forget.
    *
-   * Rejections propagate untouched. `undefined` means superseded, so a request
-   * whose own successful result is `undefined` needs `begin` instead.
+   * Rejections propagate untouched. `undefined` means superseded, so a request whose own
+   * successful result is `undefined` needs `begin`.
    */
   latest<T>(request: Promise<T>): Promise<T | undefined>;
   /** Starts a request and supersedes any earlier one. */
@@ -38,26 +35,19 @@ export interface UseLatestRequestReturn {
 }
 
 /**
- * Latest-wins sequencing: lets a caller drop a response that a newer request
- * already superseded.
+ * Latest-wins sequencing: lets a caller drop a response a newer request superseded.
  *
  * ```ts
- * const search = useLatestRequest();
- *
- * async function load(criteria) {
- *   const result = await search.latest(api.search(criteria));
- *   if (!result) return;              // a newer search won
- *   items.value = result;
- * }
+ * const result = await search.latest(api.search(criteria));
+ * if (!result) return;              // a newer search won
+ * items.value = result;
  * ```
  *
- * `begin` is the same thing with the bookkeeping exposed, for the cases where
- * the request and the check cannot sit in the same function.
+ * `begin` is the same with the bookkeeping exposed, for when the request and the check
+ * cannot sit in one function.
  *
- * This discards the late result rather than cancelling the request: the
- * generated API clients build their own `RequestInit` and take no `AbortSignal`,
- * so there is nothing to cancel through. Aborting would additionally save the
- * round trip and belongs with a client that accepts a signal.
+ * Discards the late result rather than cancelling: the generated API clients build their
+ * own `RequestInit` and take no `AbortSignal`.
  */
 export function useLatestRequest(): UseLatestRequestReturn {
   const pending = ref(false);

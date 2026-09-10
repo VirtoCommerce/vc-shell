@@ -58,11 +58,9 @@
 
 <script setup lang="ts">
 /**
- * VcPopover - Reusable anchored floating panel (popover)
- *
- * A Teleported floating panel positioned relative to an anchor element.
- * Features: document-level click-outside close, Escape key close, header with title + close button,
- * scrollable content, optional footer. Built on @floating-ui/vue.
+ * VcPopover - teleported floating panel anchored to an element, built on @floating-ui/vue.
+ * Closes on document click-outside and Escape; header with title and close button,
+ * scrollable content, optional footer.
  */
 import { ref, computed, watch, onBeforeUnmount, nextTick } from "vue";
 import { offset, flip, shift, size, type Placement, type ReferenceElement } from "@floating-ui/vue";
@@ -98,12 +96,9 @@ interface Props {
   /** Accessible name used with the optional semantic role */
   ariaLabel?: string;
   /**
-   * Marks the panel inert — out of the tab order and out of the accessibility
-   * tree — for when something covers it, such as a maximized blade.
-   *
-   * It has to be a prop rather than a fallthrough attribute: the panel is
-   * teleported, so it is a sibling of whatever carries the covering state
-   * rather than a descendant, and `inert` does not cross a Teleport.
+   * Marks the panel inert (out of the tab order and the accessibility tree) for when
+   * something covers it, such as a maximized blade. A prop rather than a fallthrough
+   * attribute: the panel is teleported, and `inert` does not cross a Teleport.
    */
   inert?: boolean;
 }

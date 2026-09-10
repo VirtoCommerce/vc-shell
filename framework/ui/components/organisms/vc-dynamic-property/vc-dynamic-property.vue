@@ -408,17 +408,12 @@ const props = withDefaults(
     disabled?: boolean;
     placeholder?: string;
     /**
-     * Hides the control's own visible label. The consumer is expected to render
-     * its own label row (e.g. to place an action next to the property name).
+     * Hides the control's own visible label; the consumer renders its own label row.
      * The validation label, the placeholder fallback and `name` are unaffected.
      *
-     * The display name is forwarded as the control's accessible name for nine
-     * control families: short text, number, integer, long text, boolean, datetime,
-     * colour, Measure, and the fallback used for an unrecognized `valueType`.
-     *
-     * Not covered: dictionary and multivalue properties, rendered through VcSelect
-     * and VcMultivalue. Their focusable triggers carry no accessible name, so
-     * those properties still need a visible label.
+     * The display name becomes the accessible name for every control family except
+     * dictionary and multivalue: their VcSelect / VcMultivalue triggers carry no
+     * accessible name, so those properties still need a visible label.
      */
     hideLabel?: boolean;
   }>(),

@@ -185,11 +185,10 @@ const variantMeta: Record<Exclude<PopupVariant, "default">, { icon: string; clas
   info: { icon: "lucide-info", className: "vc-popup__icon--info" },
 };
 
-// Opened imperatively through usePopup there is no modelValue, so visibility is
-// driven by the instance context instead: `closing` flips to true first, the leave
-// transition runs, and `@after-leave` tells the container to unmount us. Without
-// that sequence the dialog was torn out of the DOM instantly and Headless UI never
-// restored focus to the opener (VCST-5632).
+// Opened imperatively through usePopup there is no modelValue, so the instance context
+// drives visibility: `closing` flips first, the leave transition runs, `@after-leave`
+// tells the container to unmount. Without that the dialog was torn out instantly and
+// Headless UI never restored focus to the opener (VCST-5632).
 const popupInstance = inject(PopupInstanceKey, undefined);
 
 const isVisible = computed(() => {

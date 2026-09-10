@@ -7,10 +7,9 @@
 import type { VcColumnProps } from "@ui/components/organisms/vc-data-table/types";
 
 /**
- * A "special" column is one that's infrastructural (selection checkbox,
- * row reorder handle, row expander, row editor) rather than a data column.
- *
- * Special columns have hardcoded widths and are NOT part of the width engine.
+ * A "special" column is infrastructural (selection checkbox, row reorder handle,
+ * row expander, row editor) rather than a data column. Special columns have
+ * hardcoded widths and are not part of the width engine.
  */
 export function isSpecialColumn(col: VcColumnProps): boolean {
   return !!(col.selectionMode || col.rowReorder || col.expander || col.rowEditor);

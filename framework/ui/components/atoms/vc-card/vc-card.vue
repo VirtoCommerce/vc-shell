@@ -226,11 +226,10 @@ $variants: success, danger;
       grid-template-rows: 0fr;
     }
 
-    // Fill mode: absorb remaining height of the card's flex column so that
-    // body content (e.g. VcDataTable) is bounded and can manage its own scroll.
-    // `minmax(0, 1fr)` is required — plain `1fr` resolves to `minmax(auto, 1fr)`,
-    // whose `auto` minimum lets the grid row expand past the card under
-    // tall content, pushing footer elements (pagination) outside the card.
+    // Fill mode: absorb the remaining height of the card's flex column so body content
+    // (e.g. VcDataTable) is bounded and manages its own scroll. `minmax(0, 1fr)`, not plain
+    // `1fr`, which resolves to `minmax(auto, 1fr)` — its auto minimum lets the row grow
+    // past the card under tall content and pushes the pagination footer outside it.
     &--fill {
       @apply tw-grow tw-min-h-0;
       grid-template-rows: minmax(0, 1fr);

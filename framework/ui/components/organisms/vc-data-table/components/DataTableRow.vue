@@ -131,19 +131,9 @@
 
 <script setup lang="ts" generic="T extends Record<string, any>">
 /**
- * DataTableRow - Reusable row rendering component for VcDataTable
- *
- * Extracts duplicated row rendering logic from VcDataTable.vue to provide
- * a single, unified component for rendering both grouped and non-grouped rows.
- *
- * Features:
- * - Selection (checkbox for multiple, radio for single)
- * - Cell rendering via DataTableCellRenderer
- * - Row actions slot
- * - Row reorder drag handles
- * - Row expansion support
- * - Inline editing support
- * - Group header/footer rendering (when grouping is enabled)
+ * Row rendering for VcDataTable — one component for grouped and non-grouped rows.
+ * Covers selection, cell rendering, the row-actions slot, reorder handles, expansion,
+ * inline editing and group header/footer.
  */
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 import type { VcColumnProps } from "@ui/components/organisms/vc-data-table/types";

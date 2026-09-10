@@ -4,17 +4,8 @@ import type { Transform } from "./types.js";
 
 /**
  * Replaces manual sortField/sortOrder/sortExpression boilerplate with useDataTableSort().
- *
- * Before:
- *   const sortField = ref("createdDate");
- *   const sortOrder = ref<1 | -1 | 0>(-1);
- *   const sortExpression = computed(() => { ... });
- *
- * After:
- *   const { sortField, sortOrder, sortExpression } = useDataTableSort({
- *     initialField: "createdDate",
- *     initialDirection: "DESC",
- *   });
+ * The `ref("createdDate")` / `ref<1 | -1 | 0>(-1)` / sortExpression computed trio becomes
+ * `useDataTableSort({ initialField: "createdDate", initialDirection: "DESC" })`.
  */
 
 function orderToDirection(order: number): string | undefined {

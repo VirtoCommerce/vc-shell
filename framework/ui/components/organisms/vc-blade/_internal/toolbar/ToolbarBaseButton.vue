@@ -93,14 +93,12 @@ const isWaiting = ref(false);
 const isDisabled = computed(() => resolveReactiveBoolean(props.disabled));
 
 /**
- * Not actionable — either the host disabled it, or its own click is still running.
+ * Not actionable — the host disabled it, or its own click is still running.
  *
- * Announced with `aria-disabled` rather than the native attribute, so the control
- * stays focusable: this is a toolbar, where a keyboard user should still be able to
- * reach a button and be told it is unavailable, instead of having it vanish from the
- * tab order. `handleClick` already refuses, so nothing happens if it is pressed.
- * The state used to live only in a CSS class, which said nothing to assistive tech
- * (VCST-5861).
+ * Announced with `aria-disabled`, not the native attribute, so the control stays
+ * focusable: a keyboard user should reach a toolbar button and be told it is unavailable
+ * rather than have it vanish from the tab order. `handleClick` already refuses. The state
+ * used to live only in a CSS class, invisible to assistive tech (VCST-5861).
  */
 const isInert = computed(() => isDisabled.value || isWaiting.value);
 

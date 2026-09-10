@@ -1,9 +1,7 @@
 /**
- * Module augmentation for @vue/runtime-core.
- *
- * This file is a module (has top-level imports) so `declare module` statements
- * are augmentations that extend existing modules — exactly what we need for
- * adding custom properties to Vue's ComponentCustomProperties.
+ * Module augmentation for @vue/runtime-core. The file has top-level imports, so `declare
+ * module` extends the existing module rather than replacing it — which is what adding to
+ * ComponentCustomProperties needs.
  */
 
 import type { CoreBladeAdditionalSettings } from "@vc-shell/framework";

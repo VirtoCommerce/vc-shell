@@ -45,17 +45,12 @@ export interface UseDataTablePaginationReturn {
   /**
    * The page seeded from the blade URL at setup, or `undefined` when nothing was restored.
    *
-   * A restore deliberately does not fire `onPageChange` — that would cause a duplicate load —
-   * so without this the consumer had no way to know it happened, and an unconditional first
-   * load at `skip: 0` left the paginator on page N showing page 1's rows (VCST-5664).
+   * A restore does not fire `onPageChange` — that would double-load — so a first load at
+   * `skip: 0` left the paginator on page N showing page 1's rows (VCST-5664). Read it, or
+   * always pass `skip` to the first load.
    *
-   * Read it, or simply always pass `skip` to the first load, which is correct either way.
-   *
-   * Optional on purpose: consumers build this interface by hand to re-expose a nested
-   * pagination (a facade over two views, say), and a required property would break every one
-   * of them at compile time. Our own composable always provides it.
+   * Optional because consumers hand-build this interface to re-expose a nested pagination.
    */
-  readonly restoredPage?: number;
 }
 
 export function useDataTablePagination(options: UseDataTablePaginationOptions): UseDataTablePaginationReturn {
@@ -104,19 +99,12 @@ export function useDataTablePagination(options: UseDataTablePaginationOptions): 
     }
   }
 
-  // Exposed as a writable computed rather than the raw ref so a direct assignment can be called
-  // out. `reactive()` unwraps both the same way, so reading is unchanged for every consumer.
+  // A writable computed rather than the raw ref so a direct assignment can be called out.
+  // Assignment skips `onPageChange`, so the paginator moves to page N while the table
+  // keeps page 1's rows — the VCST-5664 symptom without a URL restore.
   //
-  // Assignment behaves exactly like `setPage` — the URL slice is still written, because that
-  // watch fires on any change to the ref — so the only thing it skips is `onPageChange`. That
-  // makes it a silently-different duplicate of a public method: the paginator moves to page N
-  // while the table keeps page 1's rows, which is the same symptom as VCST-5664 but with no URL
-  // restore involved.
-  //
-  // Warn instead of making it readonly: in a production build Vue drops a write to a readonly
-  // reactive property SILENTLY, so an existing consumer would just stop being able to change the
-  // page, with no error and no failing test. Turning that into a hard error belongs in a major.
-  // Internal callers use the raw ref, so they never trip this.
+  // Warn rather than make it readonly: a production build drops a write to a readonly
+  // reactive property silently. Internal callers use the raw ref.
   const currentPageModel = computed({
     get: () => currentPage.value,
     set: (page: number) => {

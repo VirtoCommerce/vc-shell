@@ -4,13 +4,9 @@ import { useNotificationStore } from "./useNotificationStore";
 import type { BladeNotificationOptions, BladeNotificationReturn } from "../types";
 
 /**
- * Blade-level notification subscription.
- *
- * Level 2 (additive): provides blade-specific behavior on top of
- * the always-on module config (Level 1). When the blade unmounts,
- * only blade-specific behavior stops — dropdown and toasts continue.
- *
- * Must be called within a component setup or effectScope.
+ * Blade-level notification subscription: blade-specific behavior added on top of the
+ * always-on module config. Unmounting the blade stops only that behavior, while the
+ * dropdown and toasts continue. Must be called within a component setup or effectScope.
  */
 export function useBladeNotifications<T extends PushNotification = PushNotification>(
   options: BladeNotificationOptions<T>,

@@ -2,17 +2,12 @@ import type { API, FileInfo, Options } from "jscodeshift";
 import type { Transform } from "./types.js";
 
 /**
- * Diagnostic-only: detect files that still compute pagination manually and
- * should migrate to `useDataTablePagination()`.
+ * Diagnostic-only: find files that still compute pagination by hand and should move to
+ * `useDataTablePagination()`.
  *
- * Flags two complementary signatures:
- * - Data composables (.ts) that return a `totalCount` / `pages` / `currentPage`
- *   computed triple (manual pagination boilerplate).
- * - Blade pages (.vue) with `@pagination-click="onPaginationClick"` handlers
- *   that wire pagination by hand.
- *
- * Rewrites are cross-file (composable + consumer blade) so automation is
- * unreliable — the migration-agent handles the actual code change.
+ * Flags data composables (.ts) returning a `totalCount`/`pages`/`currentPage` triple, and
+ * blade pages (.vue) wiring `@pagination-click`. The rewrite spans composable and
+ * consumer, so the migration agent makes the change, not this transform.
  *
  * See: migration/41-use-data-table-pagination.md
  */

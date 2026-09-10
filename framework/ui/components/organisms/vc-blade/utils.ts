@@ -2,11 +2,8 @@ import { isRef, toValue } from "vue";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
 
 /**
- * Resolves a visibility value that can be:
- * - `undefined` → defaults to `true` (visible)
- * - `boolean` → used directly
- * - `Ref<boolean>` or `ComputedRef<boolean>` → unwrapped
- * - `(blade?: BladeDescriptor) => boolean` → called with blade context
+ * Resolves a visibility value: `undefined` defaults to visible, a boolean is used as is,
+ * a ref or computed is unwrapped, and a function is called with the blade context.
  */
 export function resolveVisibility(
   isVisible: boolean | ((...args: any[]) => boolean | undefined) | { value: boolean | undefined } | undefined,

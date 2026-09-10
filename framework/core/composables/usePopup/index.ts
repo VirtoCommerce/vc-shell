@@ -22,18 +22,17 @@ import { createLogger, focusFallbackTarget, focusIfLoose } from "@core/utilities
 const logger = createLogger("use-popup");
 
 /**
- * How long to wait for a closing popup to report its finished leave transition
- * before unmounting it regardless. Comfortably above the 150ms transition in
- * `vc-popup`, and only reached by popup components that render no transition.
+ * How long to wait for a closing popup to report its leave transition before unmounting
+ * regardless. Above the 150ms transition in `vc-popup`; only reached by popups that
+ * render no transition.
  */
 const CLOSE_TRANSITION_FALLBACK_MS = 400;
 
 export interface PopupMessageOptions {
   /**
-   * Render the message as HTML instead of text. Off by default: messages are
-   * built by interpolating server data into a translation, and as markup an
-   * entity name can restyle or add links to a dialog the user is meant to
-   * trust. Opt in only for markup you author yourself.
+   * Render the message as HTML instead of text. Off by default: messages interpolate
+   * server data into a translation, and as markup an entity name can restyle or add
+   * links to a dialog the user is meant to trust. Opt in only for markup you author.
    */
   html?: boolean;
 }
@@ -151,30 +150,25 @@ export function usePopup<T extends Component = Component>(options?: MaybeRef<Use
   /**
    * Returns focus to the control that opened the popup (WCAG 2.4.3 Focus Order).
    *
-   * Headless UI has its own RestoreFocus, but it does not fire here: visibility is
-   * driven by the surrounding `TransitionRoot`, so its `Dialog` is permanently
-   * "open" and never runs the close path that would restore focus. Removing the
-   * subtree therefore drops focus on `<body>`.
+   * Headless UI's RestoreFocus does not fire here: visibility is driven by the
+   * surrounding `TransitionRoot`, so its `Dialog` stays "open" and never runs the close
+   * path. Removing the subtree drops focus on `<body>`.
    *
-   * Two cases leave no opener to return to: one was never captured (the popup was
-   * opened while focus was already loose), or it was detached while the popup was
-   * open (its blade closed underneath it). Both used to end silently on `<body>`;
-   * both now fall back to the workspace.
+   * With no opener to return to — never captured, or detached while the popup was open
+   * — fall back to the workspace.
    */
   function restoreFocusTo(opener?: HTMLElement) {
     focusIfLoose(() => (opener?.isConnected ? opener : focusFallbackTarget()));
   }
 
   /**
-   * Closes in two phases: mark the instance as closing, let the popup play its
-   * leave transition, and only then unmount it.
+   * Closes in two phases: mark the instance closing, let the leave transition play,
+   * then unmount.
    *
-   * Unmounting straight away — which is what this used to do — tore the dialog out
-   * of the DOM before it could run its own close sequence, so Headless UI never
-   * restored focus to the element that opened the popup and the leave animation
-   * never played (VCST-5632). The popup reports the end of its transition through
-   * `PopupInstanceKey.finalize`; the timer is the fallback for popup components
-   * that render no transition at all.
+   * Unmounting straight away tore the dialog out before it could run its close
+   * sequence, so Headless UI never restored focus and the animation never played
+   * (VCST-5632). The popup reports the transition end via `PopupInstanceKey.finalize`;
+   * the timer covers popups that render no transition.
    */
   function close(customInstance?: UsePopupProps) {
     const instanceToClose = resolveInstance(customInstance) as (UsePopupProps & UsePopupInternal) | undefined;

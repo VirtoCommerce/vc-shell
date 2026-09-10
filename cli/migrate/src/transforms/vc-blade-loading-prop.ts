@@ -3,19 +3,11 @@ import type { API, FileInfo, Options } from "jscodeshift";
 import type { Transform } from "./types.js";
 
 /**
- * Convert `<VcBlade v-loading="X">` to `<VcBlade :loading="X">`.
- *
- * Details/list blades should use the VcBlade built-in `:loading` prop instead
- * of the global `v-loading` directive. The prop renders the blade's built-in
- * skeleton/spinner and coordinates with the form lifecycle; `v-loading` just
- * overlays a generic spinner.
- *
- * Only touches `<VcBlade>` opening tags — `v-loading` on other elements
- * (inner widgets, cards, sections) is left alone.
- *
- * If, after the rewrite, `v-loading` is no longer used anywhere in the
- * template, the `vLoading` specifier is also removed from the
- * `@vc-shell/framework/ui` import (best-effort cleanup).
+ * Convert `<VcBlade v-loading="X">` to `<VcBlade :loading="X">`. The prop renders the
+ * blade's own skeleton and coordinates with the form lifecycle, where `v-loading` only
+ * overlays a generic spinner. Only `<VcBlade>` opening tags are touched. When no
+ * `v-loading` is left in the template, the `vLoading` specifier is also dropped from the
+ * `@vc-shell/framework/ui` import (best effort).
  */
 
 // Match a single <VcBlade ...> opening tag (self-closing allowed). Non-greedy

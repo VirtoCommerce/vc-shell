@@ -3,12 +3,9 @@ import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
 import type { Transform } from "./types.js";
 
 /**
- * Replace openBlade({ ..., replaceCurrentBlade: true }) → coverWith({ ... })
- *
- * The old replaceCurrentBlade option in openBlade() is now a separate coverWith() method.
- * If replaceWith() is already used — don't touch it (already migrated).
- *
- * Also adds coverWith to useBlade() destructuring if needed.
+ * Replace openBlade({ ..., replaceCurrentBlade: true }) with coverWith({ ... }), adding
+ * coverWith to the useBlade() destructuring when needed. Files already using replaceWith()
+ * are left alone.
  */
 
 function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {

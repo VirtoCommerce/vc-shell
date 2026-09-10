@@ -3,9 +3,8 @@ import { TableQueryStateKey, type TableQueryPatch } from "./types";
 
 export interface UseTableQueryStateReturn {
   /**
-   * Read the table view state (sort/search/page) restored from the URL for this
-   * table. Returns an empty patch when no persistence service is provided (a
-   * standalone table or a non-URL blade), so callers can use it unconditionally.
+   * Table view state (sort/search/page) restored from the URL. Returns an empty patch when
+   * no persistence service is provided, so callers can use it unconditionally.
    */
   read(): TableQueryPatch;
 }

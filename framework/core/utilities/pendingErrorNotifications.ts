@@ -1,13 +1,10 @@
 /**
- * Shared WeakMap that allows useAsync to register a deferred toast notification,
- * and ErrorInterceptor to cancel it when the same error is caught for blade banner display.
+ * Shared WeakMap letting useAsync register a deferred toast and ErrorInterceptor cancel it
+ * when the same error is shown as a blade banner. Neither module imports the other.
  *
- * This decouples the two modules — neither imports the other directly.
- *
- * IMPORTANT: This module must NOT have top-level imports from @core/notifications
- * because it is transitively imported by useAsync (in the @core/composables barrel),
- * and @core/notifications may pull in @ui/components which imports from
- * @core/composables — creating a circular dependency.
+ * Must have no top-level imports from @core/notifications: useAsync pulls this in through
+ * the @core/composables barrel, and @core/notifications can reach back to that barrel via
+ * @ui/components, which would close a cycle.
  */
 
 interface PendingNotification {

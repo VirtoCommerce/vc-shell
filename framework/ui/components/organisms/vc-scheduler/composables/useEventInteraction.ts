@@ -27,12 +27,9 @@ export interface ClickDiscriminatorOptions {
 
 export interface ClickDiscriminator {
   /**
-   * Register one resolved click on the given target key (e.g. a cell date or slot start time).
-   * A second call on the SAME key before the delay elapses cancels the timer and resolves
-   * "double" for that key. A second call on a DIFFERENT key immediately flushes the pending
-   * click as "single" (for the original key) and starts a fresh single-click timer for the
-   * new key — two clicks on different targets are always two independent singles, never a
-   * double.
+   * Register one click on the given target key. A second call on the same key before the
+   * delay resolves "double"; a call on a different key flushes the pending click as
+   * "single" and starts a fresh timer, so two targets are never a double.
    */
   click: (key: string) => void;
   /** Discard a pending single-click timer (e.g. the gesture turned into a drag). */
@@ -40,12 +37,10 @@ export interface ClickDiscriminator {
 }
 
 /**
- * Single/double click disambiguator: a lone click resolves to "single" only after `delay` ms;
- * a second click within that window on the SAME target key cancels the pending timer and
- * resolves "double" instead. A second click on a DIFFERENT key never forms a double — the
- * pending click is flushed as its own "single" immediately, then a fresh timer starts for the
- * new key. Callers decide what "the same target" means (the key) and are responsible for
- * calling `cancel()` when a drag starts instead of a click.
+ * Single/double click disambiguator. A lone click resolves to "single" after `delay` ms; a
+ * second click on the same target key within that window resolves "double" instead. A
+ * click on a different key flushes the pending one as "single" and starts a fresh timer.
+ * Callers define the key and must call `cancel()` when a drag starts.
  */
 export function useClickDiscriminator(opts: ClickDiscriminatorOptions): ClickDiscriminator {
   const delay = opts.delay ?? DEFAULT_CLICK_DELAY;

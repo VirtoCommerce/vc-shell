@@ -14,9 +14,9 @@ import {
 let _idCounter = 0;
 
 /**
- * What a close attempt did. The public `closeBlade` collapses this back to the
- * legacy "prevented" boolean, but the URL sync needs to tell a real close from
- * a refusal (unknown id, or the workspace blade, which cannot be closed).
+ * What a close attempt did. Public `closeBlade` collapses this to the legacy "prevented"
+ * boolean, but URL sync needs to tell a real close from a refusal (unknown id, or the
+ * workspace blade, which cannot be closed).
  */
 type CloseOutcome = "closed" | "prevented" | "refused";
 
@@ -331,13 +331,10 @@ export function createBladeStack(
     return true;
   }
 
-  // ── URL sync ──────────────────────────────────────────────────────────────
-  // The sink resolves the location from this stack, so it must run after the
-  // mutation. Opens sync only when the resulting blade has a URL segment: a
-  // blade without one (e.g. a third-level detail panel) leaves the address bar
-  // on the previous blade. An action that changed nothing never syncs — writing
-  // the URL for a navigation that did not happen grows the history with
-  // duplicate entries.
+  // URL sync. The sink resolves the location from this stack, so it runs after the
+  // mutation. Opens sync only when the resulting blade has a URL segment; one without
+  // leaves the address bar on the previous blade. An action that changed nothing never
+  // syncs, or the history fills with duplicate entries.
 
   function _syncOpened(verb: "push" | "replace"): void {
     if (activeBlade.value?.url) urlSink[verb]();

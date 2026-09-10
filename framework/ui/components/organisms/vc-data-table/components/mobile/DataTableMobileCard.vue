@@ -255,13 +255,9 @@
 
 <script setup lang="ts" generic="T extends Record<string, any>">
 /**
- * DataTableMobileCard - Individual mobile card with iOS-style swipe
- *
- * Features:
- * - Spring physics animation for natural swipe feel
- * - Shows max 2 actions + "More" button for 3+
- * - Selection via long-press (checkboxes hidden by default, shown when selection active)
- * - Alternating row colors
+ * Mobile card with iOS-style swipe: spring physics, at most two actions plus a "More"
+ * button, selection by long-press with checkboxes hidden until selection is active, and
+ * alternating row colours.
  */
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
@@ -789,15 +785,12 @@ onBeforeUnmount(() => {
   }
 
   &__expansion {
-    // Deliberately no padding and no separator: the slot content owns its own
-    // spacing (it usually already carries some), and screen width is scarce on a
-    // phone — adding any here would just inset the content twice.
+    // No padding and no separator: the slot content owns its spacing, and phone width is
+    // scarce, so anything here insets it twice.
     //
-    // Expansion content comes from a consumer slot and is often laid out for
-    // desktop widths. The card root clips (it has to, for the swipe-actions
-    // strip), so without this the overflowing part would be unreachable on a
-    // phone. `pan-x` lets a horizontal drag scroll here instead of being taken
-    // by the card's swipe gesture.
+    // Expansion content is often laid out for desktop widths, and the card root clips for
+    // the swipe-actions strip, so the overflow would be unreachable. `pan-x` lets a
+    // horizontal drag scroll here instead of triggering the card's swipe.
     overflow-x: auto;
     touch-action: pan-x pan-y;
   }

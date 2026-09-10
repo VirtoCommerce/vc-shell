@@ -42,9 +42,8 @@ export const BUILTIN_CELL_TYPES: readonly CellType[] = Object.freeze(BUILTIN_CEL
 /**
  * Register the built-in cell components in the shared cell registry.
  *
- * Idempotent and non-destructive: a type that is already registered — by an
- * earlier call or by application code — is left alone, so custom cells always
- * win over the built-ins regardless of import order.
+ * Idempotent: an already-registered type is left alone, so custom cells win over
+ * the built-ins regardless of import order.
  */
 export function registerBuiltinCells(): void {
   const { register, has } = useCellRegistry();

@@ -1,10 +1,8 @@
 /**
  * Ambient module declaration for .vue files.
- *
- * IMPORTANT: This file MUST remain a script (no top-level import/export).
- * A top-level import would turn it into a module, making `declare module "*.vue"`
- * an augmentation (which does nothing for wildcard modules) instead of an
- * ambient declaration.
+ * Keep this file a script, with no top-level import or export: that would turn it into a
+ * module, making `declare module "*.vue"` an augmentation, which does nothing for wildcard
+ * modules.
  */
 
 declare module "*.vue" {

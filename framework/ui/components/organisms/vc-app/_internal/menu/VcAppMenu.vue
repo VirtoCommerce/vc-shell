@@ -103,11 +103,10 @@ const { t } = useI18n();
 const { menuItems, menuBadges } = useMenuService();
 const { hasAccess } = usePermissions();
 
-// Remote modules register their menu items on install, which can lag the shell
-// mount (manifest fetch + remote load). While they load, show a few placeholder
-// rows so the menu does not render a gap. Count is fixed — the number of modules
-// that will add a menu item is not known until each installs. `modulesReady` is
-// provided by the MF host (@vc-shell/mf-host); defaults to ready when no host is present.
+// Remote modules register their menu items on install, which can lag the shell mount
+// (manifest fetch + remote load), so show placeholder rows meanwhile. The count is fixed:
+// how many modules will add an item is unknown until each installs. `modulesReady` comes
+// from the MF host (@vc-shell/mf-host) and defaults to ready when there is none.
 const modulesReady = inject(ModulesReadyKey, ref(true));
 const placeholderCount = 3;
 const skeletonWidths = [92, 70, 104];

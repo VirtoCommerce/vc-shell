@@ -208,15 +208,12 @@ const instanceUid = getCurrentInstance()?.uid ?? 0;
 const bladeTitleId = `blade-title-${instanceUid}`;
 const bladeDescriptor = inject(BladeDescriptorKey, undefined);
 
-// Same two-state treatment VcDataTable already uses (VcDataTable.vue:667-680):
-// a skeleton stands in for content that has never rendered, and every later
-// `loading` shows an overlay over the content that is already there.
+// Same two-state treatment as VcDataTable: a skeleton for content that has never
+// rendered, an overlay over content that already exists.
 //
-// The overlay is what makes the latch safe. Closing it early used to leave the
-// blade with no indication at all for the rest of the load, which is how a save
-// also came to unmount the focused control — there was nothing else to show. Now
-// an early close costs an overlay instead of skeletons, and nothing is unmounted
-// once content exists, so focus survives (WCAG 2.4.3 Focus Order).
+// The overlay is what makes the latch safe. Closing it early once left the blade with no
+// indication at all, which is how a save came to unmount the focused control. Now an
+// early close costs an overlay and nothing is unmounted, so focus survives (WCAG 2.4.3).
 const hasLoadedOnce = ref(false);
 let pendingLatch: number | undefined;
 
@@ -234,15 +231,12 @@ watch([() => Boolean(props.loading), () => bladeDescriptor?.value.param], ([load
   }
   if (loading || !previous?.[0]) return;
 
-  // The falling edge alone does not mean content exists. A page that loads in two
-  // steps — the order blade fetches its state machines, then the order — drops
-  // `loading` between them, and nothing has rendered at that point. Closing the
-  // latch there left the real fetch showing an overlay over an empty blade instead
-  // of skeletons.
+  // The falling edge alone does not mean content exists: a page that loads in two steps
+  // drops `loading` between them with nothing rendered, and closing the latch there
+  // showed an overlay over an empty blade instead of skeletons.
   //
-  // So confirm across a frame: if a new load starts before the browser paints, the
-  // user never saw content and the latch stays open. Measured against the running
-  // app, that gap is under 8ms — comfortably inside one frame.
+  // So confirm across a frame — a new load before the browser paints keeps the latch
+  // open. Measured against the running app that gap is under 8ms.
   cancelLatch();
   pendingLatch = requestAnimationFrame(() => {
     pendingLatch = undefined;
@@ -348,11 +342,9 @@ watchEffect(() => {
 const bladeRef = ref<HTMLElement | null>(null);
 const contentRef = ref<HTMLElement | null>(null);
 
-// Seatbelt, not a correctness mechanism. `loading` is supposed to mean "nothing to
-// show yet", when nothing inside the blade can hold focus. A blade that raises it
-// for a save anyway would unmount whatever the user has focused and drop focus to
-// <body>, so the next Tab restarts from the top of the document (WCAG 2.4.3 Focus
-// Order). Park focus on the blade instead, so Tab resumes from here.
+// Seatbelt. `loading` should mean "nothing to show yet", but a blade that raises it for
+// a save unmounts the focused control and drops focus to <body>, so the next Tab restarts
+// from the top (WCAG 2.4.3). Park focus on the blade so Tab resumes from here.
 watch(showSkeleton, (skeleton) => {
   const root = bladeRef.value;
   if (!skeleton || !root) return;
@@ -360,22 +352,17 @@ watch(showSkeleton, (skeleton) => {
     root.focus({ preventScroll: true });
   }
 });
-// A blade that just opened is the user's new context, but claiming focus is
-// deliberately conditional: clicking a table row leaves focus on that row, which is a
-// sensible place to continue from, and a blade that autofocuses a field keeps it.
-// This only repairs the case where focus was dropped on `<body>` — which happened
-// whenever the control that opened the blade was re-rendered away.
+// A new blade is the user's new context, but claiming focus is conditional: a click on
+// a table row is a sensible place to continue from, and a blade that autofocuses a field
+// keeps it. This only repairs focus dropped on `<body>`.
 onMounted(() => focusIfLoose(() => bladeRef.value));
 
-// Maximizing makes everything the blade covers inert, and a node that becomes inert
-// loses focus. Nobody owned repairing that: the header hands focus between its own
-// two expand controls and declines otherwise — correctly, it is not a general rescue
-// — so focus that started anywhere else, the sidebar or the app bar, died with the
-// region it was in. Restoring did not bring it back either, because nothing was
-// looking (VCST-5859).
+// Maximizing makes everything the blade covers inert, and an inert node loses focus.
+// Nobody owned repairing that: the header only hands focus between its own two expand
+// controls, so focus that started in the sidebar or app bar died with its region and
+// restoring did not bring it back (VCST-5859).
 //
-// Repair, not seizure: a user whose focus is still somewhere live keeps it, which is
-// what leaves the header's handoff in charge of its own case.
+// Repair, not seizure: focus that is still somewhere live stays put.
 watch(
   () => renderingState?.value?.maximized,
   () => focusIfLoose(() => bladeRef.value),
@@ -488,15 +475,11 @@ watch(
   @apply tw-m-0 tw-rounded-none;
 }
 
-// The mobile widget bar is a fixed 80px band at the bottom of the viewport, so
-// the blade's scroll viewport has to end where the bar begins.
-//
-// `margin-bottom` and not `padding-bottom`: page content is commonly taller than
-// `__main` (which is `h-full`) and scrolls by overflowing it. A scroll container's
-// end padding is only reliably added to the scrollable area for in-flow content —
-// with an overflowing descendant it gets partly swallowed, leaving the last rows
-// stranded under the bar at maximum scroll. Shrinking the scroll viewport instead
-// is independent of how the content inside produces its overflow.
+// The mobile widget bar is a fixed 80px band, so the scroll viewport must end where
+// it begins. `margin-bottom` and not `padding-bottom`: with an overflowing descendant
+// a scroll container's end padding is partly swallowed, stranding the last rows under
+// the bar at maximum scroll. Shrinking the viewport does not depend on how the content
+// produces its overflow.
 .vc-blade--mobile:has(.vc-widget-container-mobile) {
   .vc-blade__content {
     margin-bottom: var(--blade-toolbar-widgets-mobile-height);

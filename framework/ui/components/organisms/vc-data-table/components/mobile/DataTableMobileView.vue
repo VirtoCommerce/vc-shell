@@ -209,14 +209,13 @@ function isItemSelected(item: T): boolean {
 }
 
 /**
- * Whether the cards should be in selection mode — which decides whether a tap
- * opens a row or ticks it, and whether checkboxes are drawn at all.
+ * Whether the cards are in selection mode, which decides whether a tap opens a row or
+ * ticks it, and whether checkboxes are drawn.
  *
- * Deliberately "is a selected row on screen", not "is the selection array
- * non-empty". Deleting the only selected row leaves its ghost in the parent's
- * selection, and reading the array length there pinned every remaining card
- * into selection mode with nothing left to untick — the rows simply stopped
- * opening. Search, filters and paging can hide a selected row the same way.
+ * Deliberately "a selected row is on screen", not "the selection array is non-empty": a
+ * deleted row leaves a ghost in the parent's selection, which pinned every card into
+ * selection mode with nothing left to untick. Search, filters and paging hide rows the
+ * same way.
  */
 const hasSelection = computed(() => props.items.some((item) => selectedKeys.value.has(item[props.dataKey])));
 

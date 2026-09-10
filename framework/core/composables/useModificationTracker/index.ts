@@ -2,10 +2,9 @@ import { ref, watch, Ref, computed, DeepReadonly, unref, isRef } from "vue";
 import { cloneDeep, isEqualWith } from "lodash-es";
 
 /**
- * Custom comparator for deep equality that treats null, undefined, and ""
- * as semantically equivalent "empty" values.
- * This prevents false modification detection when APIs return null
- * but local state uses undefined or empty strings (common with language switching).
+ * Deep-equality comparator that treats null, undefined and "" as the same empty value, so
+ * an API returning null does not read as a modification against local undefined or ""
+ * (common when switching language).
  */
 function isEmpty(value: unknown): boolean {
   return value === null || value === undefined || value === "";

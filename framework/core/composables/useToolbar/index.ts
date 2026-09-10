@@ -36,10 +36,9 @@ const registry = createServiceRegistry<IToolbarService>({
 /**
  * Provides the toolbar service to the current component tree.
  *
- * Redundant inside a shell app: `VirtoShellFramework` already provides it via
- * `createAndProvideServices`, so this returns the existing instance. Use it when
- * bootstrapping an isolated tree (stories, tests) that has not installed the framework,
- * the same way as `provideWidgetService` and `provideDashboardService`.
+ * Redundant inside a shell app — `VirtoShellFramework` already provides it, so this
+ * returns the existing instance. Use it when bootstrapping an isolated tree (stories,
+ * tests), the same way as `provideWidgetService` and `provideDashboardService`.
  */
 export function provideToolbarService(): IToolbarService {
   return registry.provide();

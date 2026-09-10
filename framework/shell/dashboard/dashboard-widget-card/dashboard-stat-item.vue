@@ -35,11 +35,9 @@ defineProps<DashboardStatItemProps>();
   &__value {
     @apply tw-text-lg tw-font-semibold tw-leading-tight tw-text-[var(--dashboard-stat-item-value-color)] tw-truncate tw-max-w-full;
 
-    // Shades chosen per colour as the lightest that clears AA on the widget card in
-    // both themes, measured rather than picked: -600 fails in light for all three
-    // (4.13 / 2.01 / 3.80) and danger fails in dark too (4.33). Amber needs a
-    // deeper step than the others — that is a property of amber, not an
-    // inconsistency.
+    // Lightest shade per colour that clears AA on the widget card in both themes,
+    // measured: -600 fails in light for all three (4.13 / 2.01 / 3.80) and danger fails in
+    // dark too (4.33). Amber needs a deeper step, which is a property of amber.
     &--success {
       // light 6.88, dark 9.45
       @apply tw-text-[var(--success-700)];

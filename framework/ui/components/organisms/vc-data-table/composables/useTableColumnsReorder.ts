@@ -7,12 +7,10 @@ export interface UseTableColumnsReorderOptions {
 }
 
 /**
- * Composable for table column reordering with drag & drop
- * Features:
- * - Live reordering (columns swap during drag)
- * - 50% threshold (swap only when crossing middle of target column)
- * - Smooth transitions
- * - Throttling for performance
+ * Table column reordering with drag & drop.
+ * - live reordering (columns swap during drag)
+ * - 50% threshold (swap only when crossing the middle of the target column)
+ * - throttled for performance
  */
 export function useTableColumnsReorder(options: UseTableColumnsReorderOptions) {
   const { columnState, onReorderEnd } = options;

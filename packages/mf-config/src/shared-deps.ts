@@ -6,13 +6,10 @@ export interface SharedDepConfig {
 }
 
 /**
- * Base shared dependency definitions for Module Federation.
- * Both host and remote use the same dep list with singleton negotiation.
- *
- * Subpath entries (e.g. "@vc-shell/framework/ui") are required because Module
- * Federation matches `shared` by exact import specifier — without them, every
- * `from "@vc-shell/framework/ui"` import gets bundled into the remote chunk,
- * producing duplicate framework copies and breaking provide/inject DI.
+ * Base shared dependency definitions for Module Federation; host and remote use the same
+ * list with singleton negotiation. Subpath entries (e.g. "@vc-shell/framework/ui") are
+ * required because Module Federation matches `shared` by exact import specifier: without
+ * them those imports land in the remote chunk, duplicating the framework and breaking DI.
  */
 export const SHARED_DEPS_BASE: Record<string, Omit<SharedDepConfig, "import">> = {
   vue: { singleton: true, requiredVersion: "^3.4.0" },

@@ -9,17 +9,8 @@
 
 <script setup lang="ts">
 /**
- * DraggableDashboard Component
- *
- * A flexible dashboard powered by Gridstack.js that allows widgets to be
- * dragged and arranged in a grid layout.
- *
- * Features:
- * - Drag and drop interface for arranging widgets
- * - Automatic layout persistence in localStorage
- * - Support for built-in widget positions
- * - Accessibility support (a11y)
- * - Optional widget resizing
+ * Dashboard powered by Gridstack.js: widgets are dragged into a grid, the layout persists
+ * to localStorage, built-in widget positions are honoured, and resizing is optional.
  */
 import { ref } from "vue";
 import GridstackDashboard from "@shell/dashboard/draggable-dashboard/GridstackDashboard.vue";

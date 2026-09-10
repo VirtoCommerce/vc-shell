@@ -5,9 +5,8 @@ import { ComputedRef, Ref } from "vue";
 // ============================================
 
 /**
- * Context type for AI agent - determines UI behavior in chatbot
- * - 'list': Multiple selected items from a list blade (shows "X items selected" badge)
- * - 'details': Single item being edited in details blade (shows suggestions UI)
+ * Context type for the AI agent: `list` shows an "X items selected" badge, `details` shows
+ * the suggestions UI.
  */
 export type AiAgentContextType = "list" | "details";
 
@@ -32,13 +31,9 @@ export interface ISuggestion {
  */
 export interface UseAiAgentContextOptions<T = Record<string, unknown>> {
   /**
-   * Ref with data - accepts both formats:
-   * - Ref<T> for DETAILS blade (single object, will be wrapped in array internally)
-   * - Ref<T[]> for LIST blade (array of selected objects)
-   *
-   * When AI agent sends changes back, they will be applied to:
-   * - The object directly (for single-object refs)
-   * - The first item in array (for array refs)
+   * Data ref. `Ref<T>` for a details blade (wrapped in an array internally) or `Ref<T[]>`
+   * for a list blade. Changes from the agent are applied to the object itself, or to the
+   * first item of an array.
    */
   dataRef: Ref<T> | Ref<T[]>;
 
@@ -74,10 +69,9 @@ export interface IAiAgentConfig {
    */
   allowedOrigins?: string[];
   /**
-   * Explicit parent origin required for *outbound* embedded-mode postMessage.
-   * No default — must be set by the embedder. When absent or `"*"`, outbound
-   * messages to the parent frame are dropped to avoid leaking data (including
-   * access tokens) to arbitrary origins.
+   * Parent origin for outbound embedded-mode postMessage. No default. When absent or
+   * `"*"`, outbound messages are dropped rather than leak data — including access tokens
+   * — to arbitrary origins.
    */
   parentOrigin?: string;
 }

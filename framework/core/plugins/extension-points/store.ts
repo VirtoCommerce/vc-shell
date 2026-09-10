@@ -26,11 +26,9 @@ export function declarePoint(name: string, options: ExtensionPointOptions): void
 }
 
 /**
- * Get reactive state for an extension point.
- * Creates an undeclared entry if it doesn't exist (plugin registering before host).
- * Registering before declaration is a supported flow: plugins register in module
- * `install()` at app startup, while hosts declare lazily in page/component setup —
- * so an undeclared entry here is not an error.
+ * Reactive state for an extension point, creating an undeclared entry if missing.
+ * Registering before declaration is supported: plugins register in module `install()` at
+ * startup, hosts declare lazily in setup.
  */
 export function getPoint(name: string): ExtensionPointState {
   if (!registry[name]) {

@@ -326,11 +326,9 @@ export function selectTransforms(currentVersion: string, targetVersion: string):
 
     const afterCurrent = semver.lt(currentVersion, t.introducedIn);
 
-    // When current is a prerelease (e.g. 2.0.0-alpha.28), include transforms
-    // introduced in earlier prereleases of the same release (e.g. 2.0.0-alpha.5).
-    // Users may not have run the migrator at every alpha bump, so these transforms
-    // could still be unapplied. The transforms are idempotent (return null if
-    // nothing to change), so re-running is safe.
+    // For a prerelease current (2.0.0-alpha.28), include transforms introduced in earlier
+    // prereleases of the same release: users may not have run the migrator at every alpha
+    // bump. Transforms are idempotent, so re-running is safe.
     const isPrereleaseRetrofit =
       !afterCurrent &&
       current.prerelease.length > 0 &&

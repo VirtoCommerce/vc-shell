@@ -1,11 +1,9 @@
 /**
  * Backend registry primitive.
  *
- * Core modules define an interface and call `get()` lazily; the shell registers
- * the concrete implementation during plugin install. This is the "core defines
- * the interface, shell provides the backend" seam used by notifications and
- * popup. Keeps the registration wiring in one typed place instead of a
- * hand-rolled module-scoped `let` per consumer.
+ * Core modules define an interface and call `get()` lazily; the shell registers the
+ * implementation during plugin install. Used by notifications and popup, it keeps
+ * the wiring in one typed place instead of a module-scoped `let` per consumer.
  */
 
 export interface BackendRegistry<T> {

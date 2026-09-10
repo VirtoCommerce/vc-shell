@@ -33,17 +33,8 @@
 
 <script setup lang="ts">
 /**
- * PullToRefresh - Pull-to-refresh component with spring animation
- *
- * Provides iOS-like pull-to-refresh functionality for mobile views.
- * Uses spring physics animation for natural feel.
- *
- * Features:
- * - Spring physics animation (matching swipe actions)
- * - Icon rotates 180° when threshold passed
- * - Only active on mobile
- * - Disabled when content is scrolled down (scrollTop > 0)
- * - Disabled when refreshing=true
+ * Pull-to-refresh with spring physics. Mobile only. The icon rotates 180° past the
+ * threshold. Inactive while `refreshing` or when the content is scrolled (scrollTop > 0).
  */
 import { ref, computed, watch, onUnmounted } from "vue";
 import { useI18n } from "vue-i18n";
@@ -303,19 +294,14 @@ defineExpose({
 
 .vc-pull-to-refresh {
   @apply tw-relative;
-  // Clip horizontally only. Clipping BOTH axes made this element the boundary of
-  // its content's overflow, so the card list (which is far taller than the
-  // available height) was silently cut off and the scroll container above —
-  // `.vc-data-table__content`, `overflow-y: auto` — saw nothing to scroll:
-  // the mobile table could not be scrolled at all, by wheel or by touch.
-  // Vertical overflow must stay visible so it propagates to that scroller.
-  // `clip` + `visible` is a legal pair (unlike `hidden` + `visible`, where
-  // `visible` would be coerced to `auto` and trap the scroll here).
+  // Clip horizontally only. Clipping both axes made this element the boundary of its
+  // content's overflow, so the card list was cut off and `.vc-data-table__content`
+  // (`overflow-y: auto`) saw nothing to scroll — the mobile table would not scroll at
+  // all. Vertical overflow must stay visible to reach that scroller. `clip` + `visible`
+  // is legal, unlike `hidden` + `visible`, where `visible` is coerced to `auto`.
   //
-  // Side effect, accepted: while a pull is held, the content's translateY adds
-  // that many px to the scroller's scrollable extent. It is invisible (the user
-  // is pinned at scrollTop 0 and the growth is below the fold) and reverts
-  // exactly when the spring returns.
+  // Accepted side effect: a held pull adds its translateY to the scrollable extent,
+  // below the fold, and reverts when the spring returns.
   overflow-x: clip;
   overflow-y: visible;
   // Fill the available height of the scroll container so the mobile card view

@@ -55,9 +55,9 @@ export function parseRRule(rrule: string, dtstart: Date): IRecurrenceRule {
 const isoKey = (d: Date) => d.toISOString();
 
 /**
- * Human-readable one-line summary of an RRULE, e.g. "every week on Monday, Wednesday for
- * 8 times". Uses rrule's own toText(); returns "" if the rule can't be described. English
- * phrasing (rrule's default) — localization of the phrase is a follow-up.
+ * Human-readable one-line summary of an RRULE via rrule's toText(), e.g. "Every week on
+ * Monday, Wednesday for 8 times". Returns "" if the rule can't be described. English
+ * only; localization is a follow-up.
  */
 export function describeRRule(rrule: string): string {
   try {
@@ -69,12 +69,9 @@ export function describeRRule(rrule: string): string {
   }
 }
 
-// rrule.js expands entirely in UTC: it reads a date's UTC calendar fields, applies the rule,
-// and returns occurrences whose UTC fields hold the "naive" recurrence wall-time. Feeding a
-// local date directly means, in any non-UTC zone, the UTC day/weekday can differ from the local
-// one -- a local-midnight start in a UTC+ zone lands on the previous UTC day, so BYDAY matching
-// picks the wrong weekday and every occurrence shifts. Convert local -> UTC-naive before
-// expansion and back afterwards so the rule sees (and returns) the intended wall-clock fields.
+// rrule.js expands entirely in UTC, reading a date's UTC calendar fields. A local-midnight
+// start in a UTC+ zone lands on the previous UTC day, so BYDAY matches the wrong weekday and
+// every occurrence shifts. Convert local -> UTC-naive before expansion and back afterwards.
 const toUtcNaive = (d: Date): Date =>
   new Date(
     Date.UTC(
@@ -99,10 +96,9 @@ const fromUtcNaive = (d: Date): Date =>
   );
 
 /**
- * Expands recurring master events into concrete occurrences within `window`, skipping
- * `exceptionDates` and substituting any override event (matched by recurrenceId +
- * originalStart) in place of the synthesized occurrence. Plain (non-recurring,
- * non-override) events pass through unchanged. Never mutates the input events.
+ * Expands recurring masters into occurrences within `window`, skipping `exceptionDates`
+ * and substituting override events (matched by recurrenceId + originalStart). Plain
+ * events pass through unchanged. Never mutates the input.
  */
 export function expandEvents(events: ISchedulerEvent[], window: { start: Date; end: Date }): ISchedulerEvent[] {
   const masters = events.filter((e) => e.recurrence && !e.recurrenceId);

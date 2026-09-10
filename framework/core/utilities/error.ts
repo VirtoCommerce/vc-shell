@@ -36,12 +36,10 @@ export function parseError(errorToParse: unknown): DisplayableError {
     return errorToParse;
   }
 
-  // This is the ONLY error shape this framework's own API layer produces — see `ApiException`
-  // in core/api/platform.ts. It must therefore be matched before the generic `response` branch
-  // below, which handled it wrongly: `response` is a raw body STRING, so that branch recursed
-  // into the string branch and a body that is not JSON (an ASP.NET developer exception page, an
-  // HTML error page from a proxy) became the entire short `message` — which modules and
-  // `useAsync` render straight to the user (VCST-5663).
+  // The only error shape this framework's API layer produces (`ApiException` in
+  // core/api/platform.ts), so it must be matched before the generic `response` branch:
+  // `response` is a raw body string, and a non-JSON body (an ASP.NET exception page, a proxy
+  // error page) became the entire `message` that modules render to the user (VCST-5663).
   //
   // A JSON body is delegated unchanged, so the platform's own message still wins.
   if (isApiExceptionWithStringBody(errorToParse)) {
@@ -54,13 +52,9 @@ export function parseError(errorToParse: unknown): DisplayableError {
     }
   }
 
-  // An Error wrapping a response OBJECT. Nothing in this repo produces that shape — it was
-  // written for Axios, which is not a dependency here and is imported nowhere (it reaches
-  // yarn.lock only transitively, via @module-federation/dts-plugin and @vueuse/integrations).
-  // Believing otherwise is what let the real shape above fall through for so long.
-  //
-  // Kept because `parseError` is public API and a consuming module may use its own HTTP client.
-  // Do not treat it as the path our own API errors take.
+  // An Error wrapping a response object. Nothing here produces that shape — it was written
+  // for Axios, which is not a dependency. Kept because `parseError` is public API and a
+  // consuming module may use its own HTTP client. Not the path our own API errors take.
   if (errorToParse instanceof Error && "response" in errorToParse && errorToParse.response) {
     // Delegate to parse the nested response object.
     return parseError(errorToParse.response);

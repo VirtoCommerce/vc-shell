@@ -23,16 +23,10 @@
 
 <script setup lang="ts">
 /**
- * HeaderTitle - default column header title with a "truncation tooltip".
- *
- * The title text is clipped with an ellipsis when the column is too narrow.
- * To let users read the full name without widening the column, a styled
- * VcTooltip is shown on hover — but only while the text is actually truncated.
- *
- * Truncation is detected reactively via ResizeObserver (compares scrollWidth
- * vs clientWidth), so it stays correct as columns are resized. This avoids the
- * race that an on-hover check would have with VcTooltip's own mouseenter, which
- * reads the `disabled` prop synchronously.
+ * HeaderTitle - column header title with a truncation tooltip: the full name shows on
+ * hover, but only while the text is actually clipped. Truncation is tracked with a
+ * ResizeObserver (scrollWidth vs clientWidth) rather than checked on hover, which would
+ * race VcTooltip's mouseenter reading the `disabled` prop synchronously.
  */
 import { ref, watch } from "vue";
 import { useResizeObserver } from "@vueuse/core";

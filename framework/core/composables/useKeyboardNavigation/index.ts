@@ -89,9 +89,11 @@ export function useKeyboardNavigation(options: UseKeyboardNavigationOptions = {}
         }
         break;
       case "Escape":
-        // Closing the menu or cancellation
+        // Closing the menu or cancellation. Acting on the key means owning it: a
+        // sidebar or dialog listening on document must not close behind the overlay.
         if (onEscape) {
           event.preventDefault();
+          event.stopPropagation();
           onEscape();
         }
         break;

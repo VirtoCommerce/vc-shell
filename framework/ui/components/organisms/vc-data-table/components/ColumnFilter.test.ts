@@ -27,6 +27,31 @@ function factory(props: Record<string, unknown> = {}) {
 }
 
 describe("ColumnFilter", () => {
+  // The popover sits inside a VcSidebar on mobile, which closes on Escape from a
+  // document listener. Handling the key here has to stop it reaching that listener.
+  it("Escape closes the overlay without reaching the layers behind it", async () => {
+    const w = mount(ColumnFilter, {
+      props: { field: "name", filterType: "text" },
+      global: { stubs, mocks: { $t: (k: string) => k } },
+      attachTo: document.body,
+    });
+
+    await w.find(".vc-column-filter__trigger").trigger("click");
+    const overlay = document.querySelector(".vc-column-filter__overlay") as HTMLElement;
+    expect(overlay).not.toBeNull();
+
+    const behind = vi.fn();
+    document.addEventListener("keydown", behind);
+    overlay.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
+    document.removeEventListener("keydown", behind);
+    await w.vm.$nextTick();
+
+    expect(behind).not.toHaveBeenCalled();
+    expect(document.querySelector(".vc-column-filter__overlay")).toBeNull();
+
+    w.unmount();
+  });
+
   it("renders without errors", () => {
     const w = factory();
     expect(w.exists()).toBe(true);

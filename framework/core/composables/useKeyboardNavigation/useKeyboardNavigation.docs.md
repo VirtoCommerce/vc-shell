@@ -71,13 +71,13 @@ function openMenu() {
 
 ### Parameters (Options Object)
 
-| Parameter           | Type                        | Default            | Description                                                                                                      |
-| ------------------- | --------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `containerSelector` | `string`                    | `'[role="menu"]'`  | CSS selector to auto-find the container on mount. Set to empty string to disable auto-attach.                    |
-| `itemSelector`      | `string`                    | `'[tabindex="0"]'` | CSS selector for focusable items inside the container.                                                           |
-| `onEnter`           | `(el: HTMLElement) => void` | `undefined`        | Called when Enter or Space is pressed on a focused item. Falls back to `el.click()` if not provided.             |
-| `onEscape`          | `() => void`                | `undefined`        | Called when Escape is pressed. Typically used to close the menu or popover.                                      |
-| `loop`              | `boolean`                   | `true`             | When `true`, pressing ArrowDown on the last item wraps to the first, and ArrowUp on the first wraps to the last. |
+| Parameter           | Type                        | Default            | Description                                                                                                           |
+| ------------------- | --------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `containerSelector` | `string`                    | `'[role="menu"]'`  | CSS selector to auto-find the container on mount. Set to empty string to disable auto-attach.                         |
+| `itemSelector`      | `string`                    | `'[tabindex="0"]'` | CSS selector for focusable items inside the container.                                                                |
+| `onEnter`           | `(el: HTMLElement) => void` | `undefined`        | Called when Enter or Space is pressed on a focused item. Falls back to `el.click()` if not provided.                  |
+| `onEscape`          | `() => void`                | `undefined`        | Called when Escape is pressed, and makes the composable consume the key. Typically used to close the menu or popover. |
+| `loop`              | `boolean`                   | `true`             | When `true`, pressing ArrowDown on the last item wraps to the first, and ArrowUp on the first wraps to the last.      |
 
 ### Returns
 
@@ -101,7 +101,7 @@ The composable listens for `keydown` events on the container element and handles
 - **ArrowDown / Tab**: Move focus to the next item (`focusNextElement`)
 - **ArrowUp / Shift+Tab**: Move focus to the previous item (`focusPreviousElement`)
 - **Enter / Space**: Activate the focused item (calls `onEnter` callback, or `el.click()`)
-- **Escape**: Call `onEscape` callback
+- **Escape**: Call `onEscape` callback. When a callback is given the event is consumed (`preventDefault` + `stopPropagation`), so a sidebar or dialog listening on `document` does not also close behind the overlay. With no `onEscape`, the key passes through untouched.
 
 On each key event, the composable re-queries the container for matching items (`itemSelector`), so it naturally handles dynamic lists where items are added or removed. The focused index is validated against the current item count before every operation to prevent stale-index bugs.
 

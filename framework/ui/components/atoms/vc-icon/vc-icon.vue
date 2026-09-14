@@ -57,14 +57,12 @@ export type IconVariant = "warning" | "danger" | "success";
 
 export interface Props {
   /**
-   * Icon to display. Can be a string identifier or a component instance.
-   * For string identifiers, use the following format:
-   * - "fa-*" or "fas fa-*" for Font Awesome icons (e.g. "fa-home")
-   * - "bi-*" for Bootstrap icons (e.g. "bi-house")
-   * - "material-*" for Material icons (e.g. "material-home")
-   * - "lucide-*" for Lucide icons (e.g. "lucide-home")
-   * - "svg:path/to/icon.svg" for SVG icons
-   * All icons must use the corresponding prefix to determine their type.
+   * Icon to display: a component instance, or a prefixed string identifier.
+   * - "fa-*" / "fas fa-*" — Font Awesome (e.g. "fa-home")
+   * - "bi-*" — Bootstrap (e.g. "bi-house")
+   * - "material-*" — Material (e.g. "material-home")
+   * - "lucide-*" — Lucide (e.g. "lucide-home")
+   * - "svg:path/to/icon.svg" — SVG
    */
   icon?: string | Component;
 

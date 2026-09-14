@@ -38,12 +38,9 @@ withDefaults(defineProps<Props>(), {
   line-height: 1;
   font-weight: 700;
   /**
-   * The label's ink. Defaults to the theme's surface colour — white in light,
-   * near-black in dark — which is what the neutral variant and an unmodified
-   * banner need: that grey background is too dark for black (4.43:1) and the
-   * theme-following token clears AA in both (4.74:1 and 4.72:1).
-   *
-   * The coloured variants override it below.
+   * The label's ink. Defaults to the theme's surface colour, which is what the neutral
+   * variant needs: its grey is too dark for black (4.43:1), and the theme-following token
+   * clears AA in both (4.74:1 and 4.72:1). The coloured variants override it below.
    */
   color: var(--environment-banner-text-color, var(--additional-50));
   pointer-events: none;
@@ -55,16 +52,12 @@ withDefaults(defineProps<Props>(), {
   }
 
   /**
-   * Black on every accent background, measured across all seven variants in both
-   * themes: white ranges 1.70:1 to 3.32:1 in light and fails on primary and danger
-   * in dark, while black clears AA everywhere (4.56:1 on the worst, dark danger,
-   * to 12.33:1 on light amber).
+   * Black on every accent background, measured across all seven variants in both themes:
+   * white ranges 1.70:1 to 3.32:1 in light and fails on primary and danger in dark, while
+   * black clears AA everywhere (4.56:1 worst, dark danger).
    *
-   * A fixed value rather than a token because the palette has none that fits:
-   * every candidate flips with the theme — `--additional-950` is #000000 in light
-   * but #ebebeb in dark — while these backgrounds stay mid-tone in both, so a
-   * flipping ink fails in one of them. The backgrounds themselves are untouched;
-   * each variant keeps the colour it was designed with.
+   * Fixed rather than a token: every candidate flips with the theme (`--additional-950`
+   * is #000000 in light, #ebebeb in dark) while these backgrounds stay mid-tone in both.
    */
   &--primary {
     --environment-banner-color: var(--primary-500);

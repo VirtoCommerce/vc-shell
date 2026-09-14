@@ -37,13 +37,11 @@ import PopupInstanceProvider from "@shell/_internal/popup/components/vc-popup-co
 const popupPlugin = getPopupPlugin();
 
 /**
- * Second phase of closing: the popup has finished its leave transition, so the
- * instance can go.
+ * Second phase of closing: the leave transition finished, so the instance can go.
  *
  * Delegates to the instance's own `finalize` rather than splicing here. Removing it
- * locally is what made the first attempt at VCST-5632 fail: this path always wins
- * the race against the fallback timer in `usePopup`, so the focus restore attached
- * to that timer never ran. One removal path, one place that restores focus.
+ * locally made the first attempt at VCST-5632 fail: this path always wins the race
+ * against the fallback timer in `usePopup`, so the focus restore on that timer never ran.
  */
 function finalize(popup: { finalize?: () => void }): void {
   popup.finalize?.();

@@ -29,11 +29,9 @@ export interface UseAssetsManagerReturn {
 }
 
 /**
- * Normalizes a list's `sortOrder`: orders items by their current `sortOrder`
- * (items without one are kept stable at the end) and reassigns a clean
- * sequential `sortOrder` (0..n). Guarantees every item has a `sortOrder` on
- * load — the source may arrive without it. Idempotent: normalizing an
- * already-normalized list yields the same order and values.
+ * Normalizes a list's `sortOrder`: orders by the current value (items without one stay
+ * stable at the end) and reassigns 0..n, so every item has one even when the source
+ * arrives without. Idempotent.
  */
 function normalizeSortOrder(list: AssetLike[]): AssetLike[] {
   return list

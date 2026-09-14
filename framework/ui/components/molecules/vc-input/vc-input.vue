@@ -343,10 +343,8 @@ export interface Props extends ITextFieldProps {
   autocomplete?: string;
   /**
    * Accessible name for the input when no visible `label` is provided.
-   *
-   * Needs to be a prop rather than a passthrough attribute: the component sets
-   * `inheritAttrs: false` and binds the leftover attrs to its root element, so
-   * `aria-label` written on the component would land on the wrapping div.
+   * Must be a prop: `inheritAttrs: false` binds leftover attrs to the root element,
+   * so `aria-label` written on the component would land on the wrapping div.
    */
   ariaLabel?: string;
   /**
@@ -361,8 +359,8 @@ export interface Props extends ITextFieldProps {
 
 export interface Emits {
   /**
-   * Emitted when the component needs to change the model; Is also used by v-model
-   * Type of value depends on input type:
+   * Emitted when the component needs to change the model; also used by v-model.
+   * Value type follows the input type:
    * - string inputs: string | null
    * - number inputs: number | null
    * - date inputs: Date

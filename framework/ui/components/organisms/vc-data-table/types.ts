@@ -162,8 +162,8 @@ export interface DateRangeFilterConfig {
 
 /**
  * Declarative filter configuration for VcColumn's `filter` prop.
- * - `true` — text filter using column id as field name
- * - `"fieldName"` — text filter using the specified field name
+ * - `true` — text filter keyed by column id
+ * - `"fieldName"` — text filter on that field
  * - `SelectFilterConfig` — dropdown filter
  * - `DateRangeFilterConfig` — date range picker
  */
@@ -282,11 +282,11 @@ export interface VcColumnProps {
    */
   mobilePosition?: "status" | "image" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
   /**
-   * Mobile card role — determines how column is displayed on mobile.
-   * - `"title"`: Primary identifier, displayed at top (full width, bold)
-   * - `"image"`: Visual element, displayed on left side
-   * - `"field"`: Data with label, auto-distributed in 2x2 grid (max 4)
-   * - `"status"`: Status badge, displayed at bottom (multiple allowed)
+   * How the column is displayed on a mobile card.
+   * - `"title"`: primary identifier, top, full width, bold
+   * - `"image"`: visual element, left side
+   * - `"field"`: labelled data, auto-distributed in a 2x2 grid (max 4)
+   * - `"status"`: status badge, bottom (multiple allowed)
    */
   mobileRole?: MobileCardRole;
   /** Whether column is visible on mobile (default: `false` — hidden unless `mobileRole` is specified) */
@@ -544,9 +544,9 @@ export interface VcDataTableExtendedProps<T = any> extends VcDataTableProps<T> {
   globalFilters?: GlobalFilterConfig[];
   /**
    * Show column visibility switcher in the toolbar.
-   * - `true` or `'auto'` — show declared VcColumns + auto-discovered columns from `items` keys
-   * - `'defined'` — only show declared VcColumns (no auto-discovery)
-   * - `false` — no column switcher
+   * - `true` / `'auto'` — declared VcColumns plus columns discovered from `items` keys
+   * - `'defined'` — declared VcColumns only
+   * - `false` — no switcher
    */
   columnSwitcher?: boolean | "auto" | "defined";
   /** Show search bar above the table */
@@ -901,10 +901,9 @@ export interface PersistedStateV2 {
   hiddenColumnIds?: string[];
   shownColumnIds?: string[];
   /**
-   * True when `weights` were produced by a user resize (directly, or carried
-   * over from a state that had one). Without it, restored weights are treated
-   * as declarative and re-derived from VcColumn props at the current width —
-   * auto-saved weights from an untouched table must not freeze column sizing.
+   * True when `weights` came from a user resize. Without it, restored weights are
+   * re-derived from VcColumn props at the current width — auto-saved weights from
+   * an untouched table must not freeze column sizing.
    */
   userSized?: boolean;
 }

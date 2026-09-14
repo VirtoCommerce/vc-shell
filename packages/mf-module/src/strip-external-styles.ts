@@ -5,12 +5,11 @@ import { resolve } from "node:path";
 import { realpathSync } from "node:fs";
 
 /**
- * Strips CSS/style from shared dependencies and files outside the module root.
- * Remote MF modules should not emit CSS from shared deps (framework, vue, etc.)
- * because the host app already provides all base styles, component CSS, and fonts.
+ * Strips CSS from shared dependencies and files outside the module root: the host app
+ * already provides base styles, component CSS and fonts.
  *
- * Uses SHARED_DEP_NAMES as the single source of truth — the same list that
- * controls JS sharing also controls CSS exclusion.
+ * SHARED_DEP_NAMES is the single source of truth — the list that controls JS sharing also
+ * controls CSS exclusion.
  */
 export function stripExternalStyles(): Plugin {
   let normalizedRoot: string;

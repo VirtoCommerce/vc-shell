@@ -14,15 +14,12 @@ const LOGIN_PATH_PATTERN = /(^|\/)(login|signin|sign-in|account\/login|connect\/
 /**
  * Detects a dead session that no status code reveals.
  *
- * Some platform configurations answer an unauthenticated API call with a redirect
- * to the login page instead of a 401. `fetch` follows that redirect transparently,
- * so the interceptor sees a 200 carrying HTML: the caller then parses a login page
- * as data and the UI silently renders "nothing found" while the session is gone.
+ * Some platforms answer an unauthenticated API call with a redirect to the login page.
+ * `fetch` follows it, so the interceptor sees a 200 carrying HTML and the caller parses
+ * a login page as data.
  *
- * HTML alone is not the signal — an endpoint may legitimately serve a rendered
- * template or an export. It counts only when the request was also redirected away
- * from the endpoint that was asked. A login-shaped final URL is conclusive on its
- * own, for platforms that omit the content type.
+ * HTML alone is not the signal — an endpoint may legitimately serve a template. It counts
+ * only when the request was also redirected away, or the final URL is login-shaped.
  */
 function looksLikeLoginPage(response: Response): boolean {
   let pathname: string;
@@ -123,18 +120,11 @@ export function registerInterceptors(router: Router) {
       /**
        * Act on a response that says the session is gone.
        *
-       * A 401 on a session we still believe is alive means the cookie died under us.
-       * Flagging it before the response reaches the caller suppresses the data-load
-       * errors it triggers (blade banners + toasts on the page that was mid-navigation)
-       * in favour of a single clean redirect to login.
-       *
-       * The flag doubles as an "already handling it" latch: concurrent 401s from the
-       * same dead session are suppressed by it but skip this branch, so sign-out,
-       * redirect and toast happen exactly once. It is deliberately not set when we
-       * are not signed in — a 401 we don't act on must not silence the whole app.
-       *
-       * A 403 is deliberately excluded — authenticated-but-unauthorized is not an
-       * expired session, and signing the user out over it would be wrong.
+       * Flagging a 401 before it reaches the caller suppresses the data-load errors it
+       * would trigger in favour of one redirect to login. The flag doubles as an
+       * "already handling it" latch, so concurrent 401s sign out and redirect once.
+       * Not set when signed out: a 401 we do not act on must not silence the app.
+       * 403 is excluded — authenticated-but-unauthorized is not an expired session.
        */
       function handleSessionDeath(sessionDied: boolean): void {
         if (!sessionDied || isSessionExpired() || !isAuthenticated.value) return;
@@ -151,17 +141,12 @@ export function registerInterceptors(router: Router) {
           });
       }
 
-      // Timeout, offline refusal and slow-request tracking are hardening for the
-      // platform API and stay scoped to it. A dead session is not: the cookie is
-      // global, and the request that first reveals it need not be an API call.
-      // SignalR negotiates against /pushNotificationHub, so its 401 arrives outside
-      // /api/ — and when the API answers the same dead session with a 403 (which is
-      // deliberately not treated as expiry) that hub 401 is the only unambiguous
-      // signal there is. Returning it unexamined left the app logged in forever.
-      //
-      // Only the status counts here. The login-page heuristic below stays API-only:
-      // an endpoint under /api/ has no business returning a rendered login page,
-      // while a non-API same-origin request may serve HTML perfectly legitimately.
+      // Timeout, offline and slow-request handling stay scoped to the platform API.
+      // A dead session does not: the cookie is global, and SignalR negotiates against
+      // /pushNotificationHub, so its 401 arrives outside /api/ — and when the API
+      // answers the same dead session with a 403 that hub 401 is the only signal there
+      // is. The login-page heuristic below stays API-only: a non-API same-origin
+      // request may serve HTML legitimately.
       if (!isApiRequest(resource)) {
         if (!isSameOrigin(resource)) {
           return originalFetch(...args);
@@ -204,19 +189,11 @@ export function registerInterceptors(router: Router) {
         const isLoginPageResponse = response.ok && looksLikeLoginPage(response);
         handleSessionDeath(response.status === 401 || isLoginPageResponse);
 
-        // A 200 that is really the login page must not reach the caller — it would be parsed
-        // as data. On a concurrent burst every request then raised its own
-        // "Unexpected token '<', "<!DOCTYPE "..." on a page already redirecting to login,
-        // burying the one message that says what happened (VCST-5688). Failing the request is
-        // the honest answer: it returned no data. All of them fail with the same error, so a
-        // consumer that does surface it shows one message, not one per request.
-        //
-        // Gated on the expiry flag, which the branch above has just set for the first response
-        // of the burst: while nobody is signed in a login page is an expected answer, not a
-        // session death, and failing those requests would break the pre-auth flow.
-        //
-        // A 401 is still returned unchanged: its body is not a document, so nothing tries to
-        // parse markup, and callers may legitimately branch on the status themselves.
+        // A 200 carrying the login page would be parsed as data, and on a burst every
+        // request raised its own "Unexpected token '<'" instead of the one message that
+        // explains it (VCST-5688). Failing them all with the same error is the honest
+        // answer. Gated on the expiry flag so a login page before sign-in stays valid.
+        // A 401 passes through: its body is not a document and callers may branch on it.
         if (isLoginPageResponse && isSessionExpired()) {
           throw new SessionExpiredError();
         }

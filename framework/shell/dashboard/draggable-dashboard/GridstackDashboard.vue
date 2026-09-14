@@ -111,17 +111,8 @@
 
 <script setup lang="ts">
 /**
- * GridstackDashboard Component
- *
- * A flexible dashboard powered by Gridstack.js that allows widgets to be
- * dragged and arranged in a grid layout.
- *
- * Features:
- * - Drag and drop interface for arranging widgets
- * - Optional widget resizing
- * - Automatic layout persistence in localStorage
- * - Support for built-in widget positions
- * - Accessibility support
+ * Dashboard powered by Gridstack.js: widgets are dragged and optionally resized into a
+ * grid, and the layout is persisted in localStorage.
  */
 import { ref, computed, onMounted, nextTick, inject, watch } from "vue";
 import type {
@@ -198,11 +189,9 @@ const props = withDefaults(defineProps<Props>(), {
 const gridRef = ref<HTMLElement | null>(null);
 const liveAnnouncement = ref("");
 
-// Gate dashboard rendering until remote modules finish installing.
-// Without this, widgets preregistered during loadRemote() can mount before
-// their owning module's `defineAppModule.install` runs `mergeLocaleMessage`,
-// causing missing translations. Fallback `ref(true)` keeps tests/stories and
-// hosts without MF working unchanged.
+// Gate rendering until remote modules finish installing: widgets preregistered during
+// loadRemote() would otherwise mount before their module's install runs mergeLocaleMessage
+// and lose translations. The `ref(true)` fallback covers tests, stories and non-MF hosts.
 const modulesReady = inject(ModulesReadyKey, ref(true));
 
 // Skeleton placeholders shown until modules finish loading. Pulled from the last
@@ -254,19 +243,14 @@ const getPosition = (widgetId: string): DashboardWidgetPosition | undefined => {
   return layout.value.get(widgetId);
 };
 
-// --- Keyboard reordering (WCAG 2.5.7: dragging must have a non-drag alternative) ---
-//
-// Gridstack only offers pointer dragging, so the widget itself becomes the control:
-// Enter/Space picks it up, arrows move it a cell at a time, Shift+arrows resize,
-// Enter drops, Escape restores the position it was picked up from.
+// Keyboard reordering (WCAG 2.5.7: dragging needs a non-drag alternative).
+// Gridstack only supports pointer dragging, so the widget is the control: Enter/Space
+// picks up, arrows move a cell, Shift+arrows resize, Enter drops, Escape restores.
 const grabbedWidgetId = ref<string | null>(null);
 /**
- * The whole layout as it stood at pick-up, not just the grabbed widget.
- *
- * Restoring one widget and letting compaction undo itself does not work: a move
- * that displaced a neighbour leaves a hole, and gravity floats the widget
- * straight back into it. Escape then announced a cancel the screen did not
- * show (VCST-5804).
+ * The whole layout as it stood at pick-up, not just the grabbed widget: restoring one
+ * widget lets gravity float it straight back into the hole left by a displaced
+ * neighbour, so Escape announced a cancel the screen never showed (VCST-5804).
  */
 const grabbedLayout = ref<Map<string, DashboardWidgetPlacement> | null>(null);
 

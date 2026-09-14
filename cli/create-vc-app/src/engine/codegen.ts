@@ -2,15 +2,11 @@ import fs from "node:fs";
 import { toPascalCase, toKebabCase, toScreamingSnakeCase } from "./helpers.js";
 
 /**
- * Replace the contents of comments — and, unless `strings` is false, of strings
- * and template literals — with spaces, keeping every offset intact.
- *
- * Structural scanning runs against the mask while text is sliced from the
- * original source, so a brace, parenthesis or semicolon inside a string can
- * never be mistaken for syntax. Pass `strings: false` when the pattern itself
- * needs to see string contents, such as a module specifier. Regex literals are
- * not masked; an unbalanced brace inside one (`/[{]/`) would still confuse the
- * scan, which no template we generate contains.
+ * Replace the contents of comments — and, unless `strings` is false, of strings and
+ * template literals — with spaces, keeping every offset intact, so a brace, parenthesis
+ * or semicolon inside a string is never mistaken for syntax. Pass `strings: false` when
+ * the pattern must see string contents, such as a module specifier. Regex literals are
+ * not masked: an unbalanced brace inside one (`/[{]/`) would still confuse the scan.
  */
 function maskLiterals(code: string, { strings = true }: { strings?: boolean } = {}): string {
   const out = code.split("");
@@ -108,8 +104,8 @@ function findCalls(mask: string, name: string): { start: number; end: number }[]
 
 /**
  * Offset just past the last import statement, or -1 when there are none.
- * Scanning to the terminating `;` is what makes multi-line imports safe — a
- * line-based match would land inside the braces of `import {\n  a,\n} from "x"`.
+ * Scanning to the terminating `;` keeps multi-line imports safe: a line-based match
+ * would land inside the braces of `import {\n  a,\n} from "x"`.
  */
 function endOfLastImport(mask: string): number {
   const re = /^[ \t]*import(?=[\s{"'])/gm;
@@ -141,9 +137,8 @@ function applyInsertions(code: string, insertions: { at: number; text: string }[
 
 /**
  * Add a module import and its `app.use()` registration to main.ts.
- *
- * Throws when either anchor is missing, so the caller can tell the user what to
- * add by hand rather than reporting a change it did not make.
+ * Throws when either anchor is missing, so the caller can tell the user what to add by
+ * hand rather than reporting a change it did not make.
  */
 export function addModuleToMain(mainTsPath: string, moduleName: string): void {
   const code = fs.readFileSync(mainTsPath, "utf-8");

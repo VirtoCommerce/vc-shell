@@ -241,10 +241,9 @@ function normalizeExportPath(filePath: string): string {
 }
 
 /**
- * Extracts module information (prefix and core name) from a path or module name string.
- * e.g., "./dist/virtocommerce.myModule.d.ts" -> { prefix: "virtocommerce", coreName: "myModule", fullName: "virtocommerce.myModule" }
- * e.g., "./opus.myModule" -> { prefix: "opus", coreName: "myModule", fullName: "opus.myModule" }
- * e.g., "myModule.ts" -> { prefix: undefined, coreName: "myModule", fullName: "myModule" }
+ * Extracts module information (prefix and core name) from a path or module name.
+ * "./dist/virtocommerce.myModule.d.ts" -> { prefix: "virtocommerce", coreName: "myModule", fullName: "virtocommerce.myModule" }
+ * "myModule.ts" -> { prefix: undefined, coreName: "myModule", fullName: "myModule" }
  */
 function parseModuleName(nameOrPath: string): { prefix?: string; coreName: string; fullName: string } {
   // Normalize path and strip extensions first
@@ -635,9 +634,9 @@ function handlePackageJson(packageJsonPath: string, generatedModules: string[], 
 }
 
 /**
- * Detects the type style used in existing generated API client files.
- * Scans .ts files in the target directory for `export class` patterns (NSwag-generated DTO classes).
- * Returns "Class" if class-based DTOs are found, "Interface" if only interfaces exist, or undefined if no files found.
+ * Detects the type style of already generated API client files by scanning .ts files for
+ * `export class` (NSwag DTO classes). "Class" when those are found, "Interface" when only
+ * interfaces exist, undefined when the directory holds no files.
  */
 function detectExistingTypeStyle(apiClientDirectory: string): "Class" | "Interface" | undefined {
   const targetDir = path.resolve(process.cwd(), apiClientDirectory);
@@ -1130,12 +1129,9 @@ function buildPackage(config: ResolvedConfig, generatedFiles: string[]): void {
 
 /**
  * Main orchestrator: parses args, generates clients, optionally builds as npm package.
- *
- * Behavior:
- * - Default: generates only .ts files via NSwag (simple mode)
- * - If package.json exists in target dir OR --PACKAGE flag is set: full pipeline
- *   (tsconfig + TypeScript compilation + package.json generation/update)
- * - SKIP_BUILD=true overrides package mode — skips compilation and package.json
+ * - Default: only .ts files via NSwag (simple mode)
+ * - package.json in the target dir or --PACKAGE: full pipeline (tsconfig + tsc + package.json)
+ * - SKIP_BUILD=true overrides package mode
  */
 async function generateApiClient(): Promise<void> {
   try {

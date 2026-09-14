@@ -7,13 +7,10 @@ const RENAME_MAP: Record<string, string> = {
 };
 
 /**
- * Detect which useAssets() usage pattern is present and provide specific guidance.
- *
- * Known patterns:
- * 1. "handler-object" — destructure useAssets() + build assetsHandler/defaultImageHandlers object
- * 2. "single-image"   — useAssets() for a single image (iconUrl, logo, photo), often with computed get/set
- * 3. "injectable"     — Props accept custom imageHandlers with fallback to default
- * 4. "composable"     — useAssets() inside a composable (not a .vue file)
+ * Detect which useAssets() pattern a file uses and give guidance for it:
+ * "handler-object" (destructure + build assetsHandler), "single-image" (one image, often
+ * with a computed get/set), "injectable" (props accept custom imageHandlers), and
+ * "composable" (useAssets() outside a .vue file).
  */
 function detectPattern(source: string, filePath: string): string {
   const isVue = filePath.endsWith(".vue");

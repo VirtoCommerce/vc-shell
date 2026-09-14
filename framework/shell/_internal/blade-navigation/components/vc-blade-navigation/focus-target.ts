@@ -7,15 +7,14 @@ interface BladeLike {
 }
 
 /**
- * Picks the blade a keyboard shortcut should act on: the one holding focus,
- * falling back to the stack's active (topmost visible) blade.
+ * Picks the blade a keyboard shortcut acts on: the one holding focus, else the stack's
+ * active blade.
  *
- * The fallback is not an edge case — focus sits on `<body>` after sign-in,
- * Maximize and Save (VCST-5670), and there the topmost blade is the only
- * sensible target.
+ * The fallback is not an edge case — focus sits on `<body>` after sign-in, Maximize and
+ * Save (VCST-5670).
  *
- * Kept separate from `useBladeStack.activeBlade`, which also decides the parent
- * of a newly opened blade; making that focus-dependent would re-parent blades.
+ * Separate from `useBladeStack.activeBlade`, which also decides the parent of a newly
+ * opened blade; making that focus-dependent would re-parent blades.
  */
 export function resolveShortcutTargetBlade<T extends BladeLike>(
   blades: readonly T[],

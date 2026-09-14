@@ -1,11 +1,8 @@
 /**
  * useTableColumns - Composable for column-related logic
  *
- * Uses the weight-based column width engine for deterministic
- * width computation: sum(widths) + filler === availableWidth.
- *
- * Available width is measured directly from the DOM transition-wrapper
- * element — no hardcoded constants for row padding, drag handles, etc.
+ * Weight-based width engine: sum(widths) + filler === availableWidth.
+ * Available width is measured from the DOM transition-wrapper element.
  */
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
@@ -111,13 +108,9 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     const w = engineOutput.value.widths[col.id];
     if (w !== undefined && w > 0) return `${w}px`;
     // Engine hasn't computed yet (first paint — availableWidth not measurable).
-    // Fall back to the column's DECLARED width so the first frame already matches
-    // the engine's fixed/auto layout: TableHead renders `flex: 0 0 <declared>` for
-    // fixed/percent columns and `flex: 1 1 0` for auto columns. For px/auto this is
-    // identical to the engine's result; for percent columns it can differ by a few
-    // px on the first frame (CSS resolves % against the wrapper width, which still
-    // includes special cells, vs the engine's special-cell-excluded availableWidth),
-    // corrected on the first recompute. This eliminates the equal-distribution flash.
+    // Fall back to the declared width so the first frame matches the engine's
+    // layout. Percent columns can be a few px off until the first recompute:
+    // CSS resolves % against the wrapper width, which still includes special cells.
     const declared = parseColumnWidth(col.width, 0);
     if (declared.type === "px") return `${declared.desiredPx}px`;
     if (declared.type === "percent" && typeof col.width === "string") return col.width.trim();
@@ -226,10 +219,9 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   }
 
   /**
-   * Initialize weights and specs for all currently-visible regular columns
-   * from their declared props (`width`, `minWidth`, `maxWidth`).
-   * Skips the columnState write when nothing actually changed, so pristine
-   * re-derivation on every ResizeObserver tick doesn't churn watchers.
+   * Initialize weights and specs for visible regular columns from declared props.
+   * Skips the columnState write when nothing changed, so re-derivation on every
+   * ResizeObserver tick doesn't churn watchers.
    */
   function applyInitFromProps(availableWidth: number): void {
     const regularCols = visibleColumns.value.filter((c) => !isSpecialColumn(c.props));
@@ -268,13 +260,10 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     if (changed) columnState.value = { order, specs };
   }
 
-  // While false, column sizing is purely declarative: weights are a cache of
-  // "declared props × current width" and are re-derived on every recompute. This
-  // is what heals the transient first measurement — blades animate `width` for
-  // ~300ms, so weights built mid-animation would otherwise freeze a declared
-  // 60px column at weight 60/transientWidth and blow it up at the final width.
-  // Once true, weights ARE the user's data (resize / restored user sizing):
-  // frozen and scaled proportionally with the container.
+  // While false, weights are a cache of "declared props × current width",
+  // re-derived on every recompute. Blades animate `width` for ~300ms, so weights
+  // frozen mid-animation would blow up a declared 60px column at the final width.
+  // Once true, weights are the user's data: frozen, scaled with the container.
   let sizingCustomized = false;
 
   /**

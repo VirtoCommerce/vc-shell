@@ -24,14 +24,9 @@ function collectFiles(target: string, acc: string[] = []): string[] {
 }
 
 /**
- * Format generated sources in place.
- *
- * Templates are `.ejs`, so neither Prettier nor ESLint can check them directly —
- * EJS control tags and the regex splicing in `codegen.ts` both emit code whose
- * shape depends on runtime data. Running Prettier over the *output* is the only
- * point where the result can be normalised.
- *
- * Formatting is best-effort: a file Prettier cannot parse is left untouched
+ * Format generated sources in place. Templates are `.ejs`, so neither Prettier nor ESLint
+ * can check them directly; running Prettier over the output is the only point where the
+ * result can be normalised. Best effort: a file Prettier cannot parse is left untouched
  * rather than failing the scaffold.
  */
 export async function formatGenerated(targets: string[]): Promise<number> {

@@ -33,16 +33,12 @@ export interface DynamicModuleOptions extends UserConfig {
   appId?: string;
 
   /**
-   * Absolute path to the .NET module root (the folder containing
-   * module.manifest). Used with `appId` to compute the final outDir.
-   * Defaults to `process.cwd()` — correct when vite.config.ts sits
-   * directly at the .NET module root.
+   * Absolute path to the .NET module root (the folder holding module.manifest). Combined
+   * with `appId` to compute outDir. Defaults to `process.cwd()`, correct when
+   * vite.config.ts sits at the module root.
    *
-   * For multi-plugin .NET modules where vite.config.ts is in a subfolder:
+   * When vite.config.ts is in a subfolder:
    * ```ts
-   * import { fileURLToPath } from "node:url";
-   * import path from "node:path";
-   * const __dirname = path.dirname(fileURLToPath(import.meta.url));
    * moduleRoot: path.resolve(__dirname, "..");
    * ```
    */

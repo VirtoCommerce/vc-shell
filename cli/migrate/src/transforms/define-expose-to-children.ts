@@ -3,13 +3,9 @@ import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
 import type { Transform } from "./types.js";
 
 /**
- * Replace defineExpose({...}) with exposeToChildren({...}) from useBlade() in blade pages.
- *
- * defineExpose is a Vue macro for parent→child component access.
- * In the blade system, parent→child communication uses exposeToChildren()
- * from useBlade(), which registers methods in the blade messaging system.
- *
- * Only transforms files that have defineOptions/defineBlade (blade pages).
+ * Replace defineExpose({...}) with exposeToChildren({...}) from useBlade() in blade pages:
+ * parent→child communication there goes through the blade messaging system rather than the
+ * Vue macro. Only files with defineOptions/defineBlade are transformed.
  */
 
 function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {

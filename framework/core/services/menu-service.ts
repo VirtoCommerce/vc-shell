@@ -34,11 +34,9 @@ export function addMenuItem(item: MenuItem): void {
 }
 
 /**
- * Removes a previously registered menu item from the bus store and all live services.
- * Works both before and after the service is initialized.
- *
- * The caller must provide the same identity fields used during registration
- * (typically routeId, or url, or explicit id).
+ * Removes a registered menu item from the bus store and all live services, before
+ * or after initialization. The caller must pass the same identity fields used at
+ * registration (typically routeId, url, or explicit id).
  */
 export function removeRegisteredMenuItem(item: MenuItem): void {
   menuServiceBus.removePreregistered((stored) => isSameMenuItem(stored, item));
@@ -103,12 +101,9 @@ const DEFAULT_PRIORITY = Infinity;
 const DEFAULT_GROUP_PRIORITY = Infinity;
 
 /**
- * Checks if two menu items represent the same logical item.
- * Derived from menuItemIdentity — single source of truth.
- *
- * Note: This is symmetric — both items are compared by their
- * highest-priority identity field. Passing a partial item (e.g. only url)
- * will only match items whose highest-priority field is also url.
+ * Checks if two menu items represent the same logical item, via menuItemIdentity.
+ * Symmetric: both are compared by their highest-priority identity field, so a
+ * partial item (e.g. only url) matches only items whose top field is also url.
  */
 function isSameMenuItem(left: MenuItem, right: MenuItem): boolean {
   return menuItemIdentity(left) === menuItemIdentity(right);
@@ -193,10 +188,9 @@ function addItemToGroup(item: MenuItem, groups: Map<string, MenuItem>): void {
 }
 
 /**
- * Builds the finalized menu tree from raw items. Pure function — no side effects.
- *
- * Internally uses Maps for dedup (groups by groupId, standalone by identity key).
- * When duplicate items exist in the input, last registration wins.
+ * Builds the finalized menu tree from raw items. Pure function.
+ * Dedups groups by groupId and standalone items by identity key;
+ * last registration wins.
  */
 function buildMenuTree(rawItems: MenuItem[]): MenuItem[] {
   const groups = new Map<string, MenuItem>();

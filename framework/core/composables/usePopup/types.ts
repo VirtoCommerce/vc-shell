@@ -10,16 +10,15 @@ export interface UsePopupInternal {
   open: () => void;
   close: () => void;
   /**
-   * Set by `close()` to start the closing phase. The instance stays mounted until
-   * the popup reports its leave transition finished (or the safety timer fires),
-   * so the dialog can run its own close sequence — which is what restores focus
-   * to the element that opened it.
+   * Set by `close()` to start the closing phase. The instance stays mounted until the popup
+   * reports its leave transition finished (or the safety timer fires), so the dialog can run
+   * its own close sequence, which is what restores focus to the opener.
    */
   closing: boolean;
   /**
-   * The control that had focus when the popup was opened. Focus returns here once
-   * the popup is gone, provided focus was lost to `<body>` in the meantime
-   * (WCAG 2.4.3). Kept raw — this is a DOM node, not reactive state.
+   * The control that had focus when the popup was opened. Focus returns here once the popup
+   * is gone, provided focus was lost to `<body>` in the meantime (WCAG 2.4.3).
+   * Kept raw: a DOM node, not reactive state.
    */
   opener?: HTMLElement;
   /**
@@ -30,11 +29,9 @@ export interface UsePopupInternal {
 }
 
 /**
- * Per-popup context handed to the rendered popup through provide/inject.
- *
- * Injected rather than passed as a prop because the container renders an
- * arbitrary component: writing `modelValue` into it would collide with popups
- * that own that prop themselves.
+ * Per-popup context handed to the rendered popup through provide/inject. Injected rather
+ * than passed as a prop because the container renders an arbitrary component, so writing
+ * `modelValue` into it would collide with popups that own that prop themselves.
  */
 export interface PopupInstanceContext {
   /** True once closing has started and the leave transition should run. */

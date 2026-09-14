@@ -1,9 +1,7 @@
 /**
- * The asset upload transport, shared by `useAssets` and `useAssetsManager`.
- *
- * The two composables differ only in who owns the resulting array — the caller
- * or the composable — but each carried its own copy of the POST, the sortOrder
- * assignment and the batching. One endpoint with two places to change it.
+ * The asset upload transport, shared by `useAssets` and `useAssetsManager`. The two differ
+ * only in who owns the resulting array, so the POST, the sortOrder assignment and the
+ * batching live here once instead of in both.
  */
 
 /** Default number of uploads in flight at once. */
@@ -65,11 +63,9 @@ async function uploadOne<T extends UploadedAsset>(
 }
 
 /**
- * Upload `files`, preserving their order in the returned array.
- *
- * Files are sent in batches of `concurrency`. A file the endpoint answers
- * without a body is dropped from the result rather than failing the batch — a
- * partial upload is reported by returning fewer assets than files.
+ * Upload `files`, preserving their order in the returned array. They are sent in batches of
+ * `concurrency`. A file the endpoint answers without a body is dropped from the result
+ * rather than failing the batch, so a partial upload returns fewer assets than files.
  */
 export async function uploadAssets<T extends UploadedAsset>(
   files: FileList | File[],

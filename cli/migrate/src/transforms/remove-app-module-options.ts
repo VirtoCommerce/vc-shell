@@ -2,16 +2,12 @@ import type { API, FileInfo, Options } from "jscodeshift";
 import type { Transform } from "./types.js";
 
 /**
- * Remove `{ router }` second argument from `.use(SomeAppModule, { router })`.
+ * Remove the `{ router }` second argument from `.use(SomeAppModule, { router })`.
+ * `defineAppModule()` in v2 returns `{ install(app: App): void }` and takes no
+ * options, so the legacy argument now causes a TS2769 overload error.
  *
- * `defineAppModule()` in v2 returns `{ install(app: App): void }` — it takes
- * NO options. The legacy `{ router }` argument is a leftover from the older
- * module shape and now causes a TS2769 overload error.
- *
- * Narrow match: only when the second argument is an ObjectExpression with a
- * single property named `router` (shorthand or explicit). This avoids
- * touching framework-style calls like `.use(VirtoShellFramework, { router, i18n: {...} })`
- * which legitimately accept multi-key options.
+ * Narrow match: second argument is an ObjectExpression with a single `router`
+ * property, so `.use(VirtoShellFramework, { router, i18n: {...} })` is left alone.
  */
 
 const transform: Transform = (fileInfo: FileInfo, api: API, _options: Options): string | null => {

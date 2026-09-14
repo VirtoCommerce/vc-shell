@@ -408,13 +408,11 @@ export function _createInternalUserLogic(): IUserInternalAPI {
   };
 }
 
-// Single shared instance across the entire application.
-// All callers of useUser()/useUserManagement() observe the same internals.
-// NOTE: createSharedComposable reference-counts subscribers via tryOnScopeDispose and
-// disposes the factory when the count drops to zero. Our app bootstrap calls
-// useUserManagement() from the interceptor registration (outside any component scope),
-// which pins the singleton: a no-scope subscriber is never decremented, so the
-// instance survives component mount/unmount cycles for the lifetime of the app.
+// Single shared instance across the application: all callers of useUser() and
+// useUserManagement() observe the same internals. createSharedComposable
+// reference-counts subscribers via tryOnScopeDispose, but bootstrap calls
+// useUserManagement() outside any component scope, and that no-scope subscriber is
+// never decremented, so the singleton survives for the lifetime of the app.
 /** @internal — shared singleton behind useUser/useUserManagement. Not public API. */
 export const _sharedInternalUserLogic = createSharedComposable(_createInternalUserLogic);
 

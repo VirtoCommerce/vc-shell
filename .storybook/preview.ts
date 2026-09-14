@@ -89,20 +89,15 @@ const preview: Preview = {
     a11y: {
       // Fail stories (and the Vitest a11y run) on any violation.
       test: "error",
-      // Axe run options — mirrors scripts/a11y-audit.mjs exactly (see
-      // framework/ui/ACCESSIBILITY.md).
-      // NOTE: rule overrides must live HERE (run options), not in `config.rules`:
-      // `runOnly` re-enables every rule carrying the listed tags, overriding
-      // `axe.configure`-level disables — only run-option `rules` win over it.
+      // Axe run options — mirrors scripts/a11y-audit.mjs (see framework/ui/ACCESSIBILITY.md).
+      // Rule overrides must live here, not in `config.rules`: `runOnly` re-enables every
+      // rule carrying the listed tags, and only run-option `rules` win over it.
       options: {
-        // Scope checks to the documented WCAG 2.2 A/AA target. Axe
-        // "best-practice" rules (landmark-unique, empty-table-header, …) are
-        // intentionally out of scope.
+        // Scope checks to WCAG 2.2 A/AA. Axe "best-practice" rules are out of scope.
         //
-        // The 2.2 tags matter: with only the 2.1 tags a run reports clean while
-        // the whole 2.2 class (target-size, dragging-movements) is never
-        // evaluated — a green gate that means "accessible at 2.1", not
-        // "accessible". Keep this list and scripts/a11y-audit.mjs identical.
+        // The 2.2 tags matter: with only the 2.1 tags a run reports clean while the whole
+        // 2.2 class (target-size, dragging-movements) is never evaluated. Keep this list
+        // and scripts/a11y-audit.mjs identical.
         runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22a", "wcag22aa"] },
         rules: {
           // Storybook decorators add extra wrapper elements that break landmark rules

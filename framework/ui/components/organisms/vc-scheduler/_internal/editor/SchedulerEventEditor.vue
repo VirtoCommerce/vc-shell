@@ -279,13 +279,11 @@ watch(
 const dateType = computed(() => (local.allDay ? "date" : "datetime-local"));
 
 /**
- * All-day spans are stored with an **exclusive** end — midnight of the day after
- * the last day — but the field shows the last day the event actually covers, the
- * same day the chip and the quick-info popover announce (VCST-5678).
- *
- * Showing the raw stored value made "the same day as Start" mean an empty range:
- * it saved, laid out to nothing, and the event was invisible and unreachable with
- * no error anywhere (VCST-5803).
+ * All-day spans are stored with an exclusive end — midnight of the day after the
+ * last day — but the field shows the last day the event covers, matching the chip
+ * and the quick-info popover (VCST-5678). Showing the raw stored value made "same
+ * day as Start" an empty range that saved, laid out to nothing and left the event
+ * invisible with no error (VCST-5803).
  */
 const endFieldValue = computed(() => (local.allDay ? new Date(local.end.getTime() - 1) : local.end));
 

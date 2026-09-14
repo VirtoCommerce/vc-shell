@@ -19,10 +19,9 @@ export interface UseAsyncOptions {
   /**
    * Show error notification on failure. Default: true.
    *
-   * Notifications are deferred via setTimeout(0) so that ErrorInterceptor
-   * can cancel them when it catches the same error for blade banner display.
-   * This prevents duplicate toast+banner for load errors while still
-   * showing toasts for save/delete errors caught by module try/catch.
+   * Notifications are deferred via setTimeout(0) so ErrorInterceptor can cancel them
+   * when it catches the same error for the blade banner — no duplicate toast+banner
+   * on load errors, while save/delete errors still get a toast.
    */
   notify?: boolean;
   /** Notification timeout in ms. Default: 8000 */

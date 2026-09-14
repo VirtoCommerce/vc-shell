@@ -2,10 +2,9 @@ import { parse as parseSFC } from "@vue/compiler-sfc";
 import type { Transform } from "../transforms/types.js";
 
 /**
- * Wraps a script-only jscodeshift transform to handle Vue SFC files.
- * For .ts files: passes through directly.
- * For .vue files: extracts <script setup> or <script> content, transforms it,
- * then reconstructs the SFC using offset-based splicing.
+ * Wraps a script-only jscodeshift transform so it also handles Vue SFCs. A .ts file passes
+ * through; a .vue file has its <script setup> or <script> content extracted, transformed
+ * and spliced back by offset.
  */
 export function wrapForSFC(coreTransform: Transform): Transform {
   return (fileInfo, api, options) => {

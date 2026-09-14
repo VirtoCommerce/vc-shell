@@ -1,8 +1,7 @@
 /**
- * Pure layout math for the toast stack. No Vue imports — deterministic given
- * the toast ids, their measured heights, and the expanded flag. Extracted from
- * NotificationContainer so the geometry can be unit-tested in isolation and the
- * component is left with only wiring + render.
+ * Pure layout math for the toast stack: deterministic given the toast ids, their measured
+ * heights and the expanded flag. Split from NotificationContainer so the geometry can be
+ * unit-tested on its own.
  */
 
 export const GAP = 14;

@@ -2,12 +2,10 @@ import type { IBladeStack, IBladeMessaging, BladeNavigationPlugin } from "@core/
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 
 /**
- * Module-level singletons — accessible without inject().
- * Shell's blade-navigation plugin calls the setters during install().
- * Core composables (useBlade, useBladeNavigationAdapter) read via exported variables.
+ * Module-level singletons, readable without inject(). Shell's blade-navigation plugin
+ * calls the setters during install(); core composables read the exported variables.
  *
- * Limitation: only one Vue app per JS context is supported.
- * Call _resetBladeNavigationSingletons() in test teardown.
+ * Only one Vue app per JS context. Call _resetBladeNavigationSingletons() in test teardown.
  */
 
 export let bladeNavigationInstance: BladeNavigationPlugin | undefined;

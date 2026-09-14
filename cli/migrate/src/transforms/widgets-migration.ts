@@ -3,11 +3,9 @@ import { wrapForSFC } from "../utils/vue-sfc-wrapper.js";
 import type { Transform } from "./types.js";
 
 /**
- * Diagnostic-only: detect useWidgets() usage and report manual migration needed.
- *
- * The old useWidgets() API (registerWidget, clearBladeWidgets, updateActiveWidget)
- * is completely replaced by the new declarative useBladeWidgets(widgets[]) API.
- * This cannot be mechanically migrated — it requires manual rewrite.
+ * Diagnostic-only: report useWidgets() usage as needing manual migration. The old API
+ * (registerWidget, clearBladeWidgets, updateActiveWidget) is replaced by the declarative
+ * useBladeWidgets(widgets[]), which cannot be rewritten mechanically.
  */
 
 function coreTransform(fileInfo: FileInfo, api: API, _options: Options): string | null {

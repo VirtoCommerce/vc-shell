@@ -20,12 +20,9 @@ export interface UseTableColumnsResizeOptions {
 }
 
 /**
- * Column resizing via weight manipulation.
- *
- * On drag start, snapshots current weights.
- * During drag, converts pixel delta to weight delta and redistributes
- * among right neighbors. On end, commits to columnState.
- * Container resize calls recompute() immediately on the first tick, then rAF-throttled.
+ * Column resizing by weight. Drag start snapshots the weights, the drag converts a pixel
+ * delta into a weight delta redistributed among right neighbours, and the end commits to
+ * columnState. Container resize recomputes on the first tick, then rAF-throttled.
  */
 export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   const {
@@ -239,19 +236,10 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     },
   });
 
-  // --- Container ResizeObserver: recompute on container resize ---
-  //
-  // Flow:
-  //   1. First tick (mount / blade-open): compute immediately so exact px widths
-  //      land on the first frame. The proportional CSS fallback in
-  //      getEffectiveColumnWidth makes the initial paint correct; this just locks
-  //      in exact px values without any artificial delay.
-  //   2. Subsequent ticks → rAF-throttled to at most one recompute per frame.
-  //      Prevents layout thrash during continuous animations (blade open/close
-  //      takes ~300ms, ~18 ticks).
-  //
-  // `recompute()` queries DOM (getBoundingClientRect) and runs the engine;
-  // calling it on every tick after the first would cause visible jank.
+  // Container ResizeObserver. The first tick computes immediately so exact px widths land
+  // on the first frame; later ticks are rAF-throttled to one recompute per frame, because
+  // `recompute()` reads getBoundingClientRect and runs the engine, and a blade open/close
+  // fires roughly 18 ticks over ~300ms.
 
   let resizeObserver: ResizeObserver | null = null;
   let settled = false;
@@ -273,11 +261,9 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     resizeObserver = new ResizeObserver(() => {
       if (isResizing.value) return;
       if (!settled) {
-        // First observed tick: compute immediately so exact px widths land on the
-        // first frame. The proportional CSS fallback in getEffectiveColumnWidth
-        // already makes the initial paint correct; computing now just locks exact
-        // px without the previous 100ms delay. Weights are proportional, so even a
-        // mid-animation width scales correctly and refines on subsequent ticks.
+        // First observed tick: compute immediately so exact px widths land on the first
+        // frame. Weights are proportional, so a mid-animation width still scales correctly
+        // and refines on later ticks.
         settled = true;
         recompute();
         return;

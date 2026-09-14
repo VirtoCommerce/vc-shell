@@ -128,9 +128,8 @@ export interface RouterUrlSink extends UrlSink {
   /**
    * Run `fn` with URL writes disabled.
    *
-   * The router guard restores the blade stack from the URL: there the URL is
-   * the source, and writing back from inside `beforeEach` would re-enter the
-   * guard. Reference-counted, so nested and overlapping windows are safe;
+   * The router guard restores the stack from the URL, so writing back from inside
+   * `beforeEach` would re-enter it. Reference-counted, so nested windows are safe;
    * releases even if `fn` throws.
    */
   suppressWhile<T>(fn: () => Promise<T>): Promise<T>;

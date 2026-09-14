@@ -1,16 +1,8 @@
 /**
- * useTableSelectionV2 - Enhanced selection composable for VcDataTable
+ * Selection for VcDataTable: single and multiple modes, an `isRowSelectable` callback,
+ * Set-based O(1) lookups, and select-all filtered by selectability.
  *
- * Features:
- * - Single and multiple selection modes
- * - isRowSelectable callback for disabling selection on specific rows
- * - Efficient Set-based lookup for O(1) selection checks
- * - Select all with selectability filtering
- *
- * This is an enhanced version for VcDataTable.
- * The original useTableSelection is kept for VcTableComposition compatibility.
- *
- * Inspired by PrimeVue DataTable selection patterns.
+ * The original useTableSelection stays for VcTableComposition compatibility.
  */
 import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
 

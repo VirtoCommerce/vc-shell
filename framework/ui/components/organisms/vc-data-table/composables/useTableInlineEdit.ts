@@ -71,12 +71,10 @@ export function useTableInlineEdit<T extends Record<string, any>>(options: UseTa
   // Snapshot of original values before editing started (deep clone)
   let snapshot: T[] = [];
 
-  // VeeValidate form context:
-  // If a parent form exists (e.g. blade's useForm), reuse it so <Field>
-  // components register with the parent — blade.meta.valid then reflects
-  // table cell errors. Only create own form when no parent exists.
-  // Use inject() with a default instead of useFormContext() to avoid
-  // Vue "injection not found" warning when no parent form exists.
+  // Reuse a parent VeeValidate form when there is one, so <Field> registers with it and
+  // blade.meta.valid reflects table cell errors; create our own only when there is none.
+  // inject() with a default rather than useFormContext(), which warns when no parent form
+  // exists.
   const parentForm = inject(PublicFormContextKey, undefined);
   const ownForm = parentForm ? undefined : useForm();
   const activeForm = (parentForm ?? ownForm)!;

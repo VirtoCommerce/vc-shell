@@ -27,13 +27,10 @@ defineProps<Props>();
   /**
    * -600 rather than the palette's -500 "secondary text".
    *
-   * A hint is secondary text by definition, so it lands on whatever surface its
-   * host uses — including tinted ones. A table row highlighted by hover or
-   * selection is painted --primary-100, which costs roughly 0.8 of contrast and
-   * drops -500 below AA there: 3.94:1 in light, 4.23:1 in dark. Lightening that
-   * tint cannot recover it, so the ink carries the margin instead. -600 clears AA
-   * on both the page and the tint in both themes (7.81 / 6.49 and 5.76 / 5.16)
-   * and still reads far lighter than body text (15.13).
+   * A hint lands on whatever surface its host uses, including tinted ones. A hovered or
+   * selected table row is painted --primary-100, which costs about 0.8 of contrast and
+   * drops -500 below AA there (3.94:1 light, 4.23:1 dark). -600 clears AA on page and tint
+   * in both themes (7.81 / 6.49 and 5.76 / 5.16) and still reads lighter than body text.
    */
   --hint-color: var(--neutrals-600);
   --hint-error-color: var(--danger-500);

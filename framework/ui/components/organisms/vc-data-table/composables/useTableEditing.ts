@@ -1,14 +1,6 @@
 /**
- * useTableEditing - Composable for cell and row editing (PrimeVue-style)
- *
- * Supports two editing modes:
- * - cell: Click on a cell to edit it inline
- * - row: Edit/Save/Cancel buttons per row
- *
- * This is different from useTableInlineEdit which handles bulk editing mode.
- * Extracted from VcDataTable.vue for better modularity.
- *
- * Inspired by PrimeVue DataTable editMode patterns.
+ * Cell and row editing, PrimeVue-style: `cell` edits inline on click, `row` uses
+ * Edit/Save/Cancel buttons. Bulk editing lives in useTableInlineEdit instead.
  */
 import { ref, watch, toRaw, type Ref } from "vue";
 
@@ -121,9 +113,8 @@ export function useTableEditing<T extends Record<string, any>>(
   const editingCell = ref<{ rowIndex: number; field: string } | null>(null);
 
   /**
-   * Editing metadata - stores copies of rows being edited.
-   * Key is rowIndex, value is { data: copy of row, fields: array of fields being edited }
-   * This prevents re-renders when user types - they edit the copy, not the original.
+   * Copies of the rows being edited, keyed by rowIndex. Editing the copy rather than the
+   * original keeps typing from re-rendering the table.
    */
   const editingMeta = ref<Record<number, EditingMeta<T>>>({}) as Ref<Record<number, EditingMeta<T>>>;
 
@@ -194,9 +185,8 @@ export function useTableEditing<T extends Record<string, any>>(
   };
 
   /**
-   * Get the editing data for a row.
-   * Returns the copy from editingMeta if editing, otherwise the original item.
-   * This is what should be passed to editor slot - edits go to the copy, not the original.
+   * The editing copy for a row, or the original when not editing. This is what the editor
+   * slot receives, so edits land on the copy.
    */
   const getEditingRowData = (item: T, rowIndex: number): T => {
     const meta = editingMeta.value[rowIndex];

@@ -9,12 +9,9 @@ interface UseMultivalueInputOptions<T> {
 }
 
 /**
- * Handles manual text input mode (multivalue=false):
- * - Input value state
- * - Enter key to add
- * - Blur to add
- * - Key filtering for number/integer types
- * - Color name → hex conversion for color type
+ * Manual text input mode (multivalue=false): input value state, Enter or blur to
+ * add, key filtering for number and integer types, and color name → hex
+ * conversion for the color type.
  */
 export function useMultivalueInput<T>(options: UseMultivalueInputOptions<T>) {
   const inputValue = ref<string>();

@@ -1,11 +1,9 @@
-// Deterministic auto-coloring for scheduler events. A color is derived from a stable
-// seed (the event title by default) so the same input always yields the same color —
-// nothing needs to be stored on the event or the backend, and recurring occurrences
-// (which share the master's title) stay visually consistent. An explicit `event.color`
-// always wins; this is only the fallback.
+// Deterministic auto-coloring for scheduler events: the color is derived from a stable
+// seed (the event title by default), so nothing is stored on the event or the backend and
+// recurring occurrences stay consistent. An explicit `event.color` always wins.
 //
-// Palette is intentionally mid/dark (≈600-level). Bar ink is chosen per fill by
-// readableInk() below, so a lighter member (green) still gets a legible label.
+// The palette is mid/dark (≈600-level); readableInk() picks the ink per fill, so a lighter
+// member still gets a legible label.
 const AUTO_PALETTE = [
   "#2563eb", // blue
   "#16a34a", // green
@@ -61,10 +59,9 @@ const contrast = (a: number, b: number) => (Math.max(a, b) + 0.05) / (Math.min(a
 const DARK_LUM = relLuminance(parseColor(INK_DARK)!);
 
 /**
- * Legible text color (near-white or near-black) for text laid over `fill`, chosen by
- * whichever gives higher WCAG contrast. Only hex/rgb() fills can be measured; a CSS-var
- * or unknown fill can't be resolved at runtime, so it falls back to white — the historical
- * default, safe for the framework's mid-tone token fills.
+ * Legible text color (near-white or near-black) over `fill`, by WCAG contrast.
+ * Only hex/rgb() fills can be measured; a CSS-var or unknown fill falls back to white,
+ * which is safe for the framework's mid-tone token fills.
  */
 export function readableInk(fill: string | undefined | null): string {
   if (!fill) return INK_LIGHT;
@@ -76,9 +73,8 @@ export function readableInk(fill: string | undefined | null): string {
 
 /**
  * Inline background + text color for an event surface (bar/chip/popover header).
- * A past event renders as a pale tint of its fill with dark text: de-emphasized, but
- * high-contrast (AA) — unlike a wash-to-white dim (opacity/desaturate), which pushes the
- * tighter palette colors below AA once faded.
+ * A past event is a pale tint of its fill with dark text: de-emphasized but still AA,
+ * unlike an opacity/desaturate dim, which drops the tighter palette colors below AA.
  */
 export function eventSurfaceStyle(fill: string, isPast: boolean): { background: string; color: string } {
   if (isPast) {

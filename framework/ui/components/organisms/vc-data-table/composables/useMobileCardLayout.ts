@@ -84,12 +84,11 @@ function isServiceColumn(col: ColumnInstance): boolean {
 }
 
 /**
- * Build a default mobile layout when no explicit mobile configuration is provided.
- * Strategy (legacy-friendly):
- * - First text-like column => title
- * - First image column => image block
- * - All status/status-icon columns => statuses row
- * - Next regular columns (up to 4) => fields grid
+ * Default mobile layout when no explicit configuration is given:
+ * - first text-like column => title
+ * - first image column => image block
+ * - all status columns => statuses row
+ * - next regular columns, up to 4 => fields grid
  */
 function createDefaultMobileConfigs(columns: ColumnInstance[]): MobileColumnConfig[] {
   const configs: MobileColumnConfig[] = [];

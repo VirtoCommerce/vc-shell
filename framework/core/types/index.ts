@@ -128,11 +128,9 @@ export interface IFilterOption {
 
 /**
  * Column filter configuration.
- * - `true` — text filter, backend field = column.id
- * - `"fieldName"` — text filter, backend field = fieldName
- * - `{ options: [...] }` — select filter (single), backend field = column.id
- * - `{ options: [...], multiple: true }` — select filter (multi), backend field = column.id
- * - `{ field: "x", options: [...] }` — select filter, backend field = x
+ * - `true` / `"fieldName"` — text filter on column.id, or on the named backend field
+ * - `{ options, multiple? }` — select filter on column.id
+ * - `{ field, options, multiple? }` — select filter on the named backend field
  * - `{ range: ["startDate", "endDate"] }` — date range filter
  */
 export type IColumnFilterConfig =

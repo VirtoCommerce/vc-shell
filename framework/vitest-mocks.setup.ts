@@ -1,12 +1,8 @@
 /**
- * Global mock setup for all framework tests.
+ * Global mock setup for all framework tests. Centralizes frequently-mocked
+ * dependencies so a change of mock strategy touches one file instead of 45+.
  *
- * Centralizes frequently-mocked dependencies so that changing a mock strategy
- * (e.g. vue-i18n async importOriginal pattern) requires editing ONE file
- * instead of 45+.
- *
- * Individual test files can still override these mocks with their own
- * vi.mock() — per-file mocks take precedence over setup-file mocks.
+ * Per-file vi.mock() still takes precedence over these.
  */
 import { vi } from "vitest";
 import { ref } from "vue";

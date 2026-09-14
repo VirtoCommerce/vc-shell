@@ -457,10 +457,9 @@ function findOverrideEvent(recurrenceId: string, originalStart: Date): ISchedule
 }
 
 /**
- * Shared "delete this occurrence" semantics, used by both the scope-dialog delete+"this"
- * path and the editor's own Delete button when editing a "this"-scope occurrence: park the
- * date on the master's exceptionDates (so expandEvents stops resynthesizing it on the next
- * render) and drop the override event, if one exists.
+ * "delete this occurrence", shared by the scope dialog and the editor's Delete button:
+ * park the date on the master's exceptionDates so expandEvents stops resynthesizing it,
+ * and drop the override event if one exists.
  */
 function deleteRecurringOccurrence(master: ISchedulerEvent, originalStart: Date) {
   emit("event-update", {
@@ -746,12 +745,10 @@ provide(SchedulerCalendarContextKey, {
   display: flex;
   flex-direction: column;
   height: 100%;
-  // The component draws its own border and radius, so it presents as a card and has to paint
-  // its own surface. The day cells always painted theirs, but the toolbar and the weekday
-  // header have no background of their own, so they fell through to whatever sat behind the
-  // component. On a themed host surface that looks right; on a plain page in dark theme it left
-  // the dark-theme (near-white) foreground on a white backdrop (VCST-5677). Same token the day
-  // cells use, so the whole card stays one surface in both themes.
+  // The component draws its own border and radius, so it must paint its own surface. Day
+  // cells did; the toolbar and weekday header did not, so on a plain page in dark theme
+  // the near-white foreground sat on a white backdrop (VCST-5677). Same token as the day
+  // cells, so the card is one surface in both themes.
   background: var(--scheduler-surface-color);
   // One rounded frame around the whole component (toolbar + active view). The
   // toolbar's own border-bottom is now purely an internal divider — the outer

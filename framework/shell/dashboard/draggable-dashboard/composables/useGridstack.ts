@@ -248,16 +248,11 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
   };
 
   /**
-   * Records where a widget actually ended up after a programmatic update.
-   *
-   * Reads the values back off the Gridstack node rather than trusting the ones we
-   * asked for: Gridstack clamps to the grid edges and compacts the rows, so the
-   * requested cell and the resulting cell often differ. Writing the requested
-   * values instead is what made the layout state — and every announcement derived
-   * from it — disagree with the DOM.
-   *
-   * `requested` is the fallback for environments where the node is not exposed
-   * (notably unit tests with a stubbed grid).
+   * Records where a widget actually ended up after a programmatic update: the values come
+   * off the Gridstack node, not the request, because Gridstack clamps to the grid edges and
+   * compacts rows. Trusting the request left layout state, and the announcements derived
+   * from it, disagreeing with the DOM. `requested` is the fallback where the node is not
+   * exposed, notably unit tests with a stubbed grid.
    */
   const recordPlacementFromNode = (
     widgetId: string,
@@ -376,11 +371,9 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
   };
 
   /**
-   * Put the grid back to a layout captured earlier.
-   *
-   * Restoring one widget and trusting compaction to undo itself does not work:
-   * gravity re-floats it into the hole a displaced neighbour left behind. The
-   * whole map has to go back, in one batch (VCST-5804).
+   * Put the grid back to a layout captured earlier. Restoring one widget and trusting
+   * compaction to undo itself does not work: gravity re-floats it into the hole a
+   * displaced neighbour left behind, so the whole map goes back in one batch (VCST-5804).
    */
   const restoreLayout = (snapshot: Map<string, DashboardWidgetPlacement>): void => {
     layout.value = new Map([...snapshot].map(([id, placement]) => [id, { ...placement }]));

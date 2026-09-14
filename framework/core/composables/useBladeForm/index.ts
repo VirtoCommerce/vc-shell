@@ -40,17 +40,13 @@ function semanticEqual(a: unknown, b: unknown): boolean {
 }
 
 /**
- * Unified form state management for blades.
+ * Unified form state management for blades: vee-validate form, modification
+ * tracking, browser unload guard and blade close guard in one composable.
  *
- * Encapsulates vee-validate form, modification tracking, browser unload guard,
- * and blade close guard into a single composable with lifecycle-based API.
+ * Must be called from component setup() — uses provide() internally.
  *
- * **Must be called from component setup()** — uses provide() internally.
- *
- * Unlike useModificationTracker (which creates a separate currentValue clone),
- * this composable tracks changes directly on the passed `data` ref.
- * The template binds to `data` via v-model — edits go straight into
- * the ref and are detected by a deep watcher against a pristine snapshot.
+ * Unlike useModificationTracker there is no separate currentValue clone: the
+ * template writes into `data`, and a deep watcher compares it to a pristine snapshot.
  */
 export function useBladeForm<T>(options: UseBladeFormOptions<T>): UseBladeFormReturn {
   const {
@@ -103,14 +99,10 @@ export function useBladeForm<T>(options: UseBladeFormOptions<T>): UseBladeFormRe
   }
 
   /**
-   * Mark the form as ready without resetting the pristine snapshot.
-   *
-   * Unlike `setBaseline()`, this does NOT overwrite the pristine snapshot.
-   * Instead it compares current `data` against the snapshot taken at setup time
-   * and sets `trackerIsModified` accordingly.
-   *
-   * Use when data was programmatically pre-filled (e.g. "create from template")
-   * and should appear as modified immediately so the save button is enabled.
+   * Mark the form as ready without resetting the pristine snapshot: compares
+   * current `data` against the setup-time snapshot instead. Use when data was
+   * pre-filled programmatically (e.g. "create from template") and should appear
+   * modified so the save button is enabled.
    */
   function markReady(): void {
     isReady.value = true;

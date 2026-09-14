@@ -242,18 +242,15 @@ const { floatingStyle } = useFloatingPosition(tooltipIconRef, tooltipRef, {
 const controlsRef = ref<HTMLElement | null>(null);
 
 /**
- * Maximize and Restore are two separate nodes swapped by `v-if`, so activating one
- * unmounts it and focus falls to `<body>` (WCAG 2.4.3). Move focus to whichever
- * control replaced it.
+ * Maximize and Restore are two nodes swapped by `v-if`, so activating one unmounts it
+ * and focus falls to `<body>` (WCAG 2.4.3). Move focus to whichever control replaced it.
  *
- * This is a deliberate handoff, not a repair, so it does not use `focusIfLoose`: the
- * user pressed this control, and its replacement is where focus belongs. Waiting for
- * "focus looks lost" would be wrong twice over — at `nextTick` the old button is often
- * still focused and still in the DOM, so the check says "nothing to fix" and the
- * button disappears a frame later.
+ * A deliberate handoff, not a repair, so not `focusIfLoose`: at `nextTick` the old button
+ * is often still focused and mounted, so a "focus looks lost" check would decline and the
+ * button would disappear a frame later.
  *
- * Runs on the next animation frame rather than `nextTick`: collapsing re-lays-out the
- * blade stack, which can push the swap past the microtask queue.
+ * Runs on the next animation frame, not `nextTick`: collapsing re-lays-out the blade
+ * stack, which can push the swap past the microtask queue.
  */
 function keepFocusOnExpandControl(): void {
   // Skip when focus is elsewhere: a mouse user who clicked something else should not
@@ -265,16 +262,12 @@ function keepFocusOnExpandControl(): void {
   });
 }
 
-// Both entry points swap these two nodes: this header's control, and the
-// `mod+\` shortcut, which calls `toggleMaximized` on the stack and never reaches
-// the handlers below. Hooking the handoff to a handler therefore covers only one
-// of them — QA found the shortcut path still dropping focus to `<body>`
-// (VCST-5812) after the button path was fixed.
+// Two entry points swap these nodes: this control, and the `mod+\` shortcut, which calls
+// `toggleMaximized` on the stack and never reaches the handlers below. Hooking a handler
+// covers only one — QA found the shortcut path still dropping focus (VCST-5812).
 //
-// The swap itself is the event worth reacting to, so watch the state that drives
-// it. Default `pre` flush matters: this must run while the control the user
-// activated is still focused and still mounted, which is what the guard inside
-// `keepFocusOnExpandControl` tests.
+// So watch the state that drives the swap. Default `pre` flush matters: this must run
+// while the activated control is still focused and mounted.
 watch(
   () => renderingState?.value?.maximized,
   () => keepFocusOnExpandControl(),

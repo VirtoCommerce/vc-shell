@@ -209,13 +209,9 @@
 
 <script setup lang="ts">
 /**
- * GlobalFiltersPanel - Responsive filter panel
- *
- * Desktop: floating VcPopover anchored to the filter button.
- * Mobile: VcSidebar bottom sheet with drag-to-dismiss.
- *
- * Supports text, select (single/multi), and dateRange filter types.
- * Custom filter UI can be provided via named slots.
+ * GlobalFiltersPanel - responsive filter panel: a floating VcPopover anchored to the filter
+ * button on desktop, a VcSidebar bottom sheet with drag-to-dismiss on mobile. Supports
+ * text, select (single/multi) and dateRange filters; custom filter UI via named slots.
  */
 import { ref, computed, watch } from "vue";
 import { VcPopover, VcInput, VcSelect } from "@ui/components/molecules";

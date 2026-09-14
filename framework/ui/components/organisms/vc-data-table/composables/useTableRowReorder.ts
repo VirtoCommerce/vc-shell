@@ -12,17 +12,11 @@ interface UseTableRowReorderOptions<T> {
 }
 
 /**
- * Row reordering for VcDataTable, powered by SortableJS.
- *
- * Works on both desktop rows and mobile cards (touch + mouse) because SortableJS
- * runs in fallback mode (`forceFallback: true`). Dragging is restricted to the
- * `handle` selector so row click, swipe and long-press gestures are preserved.
- *
- * The composable keeps an internal `reorderedItems` copy. On drop it commits
- * optimistically into that copy (so the consuming table can render the new order
- * immediately and stay the single source of DOM truth — this also hides
- * SortableJS's raw DOM mutation), then calls `onReorder`. When the parent later
- * updates `items`, the watcher resyncs and clears `pendingReorder`.
+ * Row reordering for VcDataTable via SortableJS. `forceFallback: true` covers desktop rows
+ * and mobile cards alike (touch + mouse), and dragging is restricted to the `handle`
+ * selector so row click, swipe and long-press survive. On drop it commits into an internal
+ * `reorderedItems` copy and calls `onReorder`; the watcher resyncs and clears
+ * `pendingReorder` once the parent updates `items`.
  */
 export function useTableRowReorder<T extends TableItem | string>(
   listEl: Ref<HTMLElement | undefined>,
@@ -68,11 +62,10 @@ export function useTableRowReorder<T extends TableItem | string>(
         const newIndex = evt.newIndex;
         if (oldIndex == null || newIndex == null || oldIndex === newIndex) return;
 
-        // SortableJS mutates the DOM directly. Undo that move so the real DOM
-        // matches the order Vue last rendered — otherwise Vue's keyed patch and
-        // SortableJS's mutation desync and the rows snap back to their original
-        // positions (the reactive `items` update is correct, only the DOM is wrong).
-        // Vue then re-renders the new order from a known baseline. (vuedraggable pattern.)
+        // SortableJS mutates the DOM directly. Undo the move so the DOM matches the order
+        // Vue last rendered; otherwise Vue's keyed patch and SortableJS desync and the rows
+        // snap back (the `items` update is correct, only the DOM is wrong). vuedraggable
+        // pattern.
         const parent = evt.from;
         const dragged = evt.item;
         if (parent && dragged && dragged.parentElement === parent) {

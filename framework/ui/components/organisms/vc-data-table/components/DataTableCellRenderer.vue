@@ -268,11 +268,8 @@ const fieldName = computed(() => props.column.props.field || props.column.props.
 // Unique field name for VeeValidate (includes row index to prevent conflicts)
 const uniqueFieldName = computed(() => `${fieldName.value}_${props.index}`);
 
-// Check if this cell should be in inline editing mode
-// This is true when:
-// 1. Cell-level editing (isCellEditing) OR
-// 2. Row-level editing (isRowEditing) AND column is marked as editable
-// AND no custom editor slot is provided (custom editors handle their own rendering)
+// Inline editing applies to cell-level edits, and to row-level edits on an editable
+// column. A custom editor slot handles its own rendering, so it opts out.
 const isInlineEditing = computed(() => {
   if (props.column.slots.editor) return false; // Custom editor handles its own rendering
   return props.isCellEditing || (props.isRowEditing && props.column.props.editable);

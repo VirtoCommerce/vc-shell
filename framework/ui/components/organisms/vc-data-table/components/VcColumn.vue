@@ -1,11 +1,8 @@
 <script lang="ts">
 /**
- * VcColumn - Renderless column definition component for VcDataTable
+ * Renderless column definition for VcDataTable: renders no DOM, registers itself with the
+ * parent through provide/inject.
  *
- * This component does not render any DOM elements. Instead, it registers itself
- * with the parent VcDataTable via inject/provide pattern.
- *
- * Usage:
  * ```vue
  * <VcDataTable :items="data">
  *   <VcColumn id="name" field="name" title="Name" sortable />

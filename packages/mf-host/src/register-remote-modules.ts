@@ -115,17 +115,14 @@ function resolvePlugins(exports: unknown): Plugin[] {
 // --- Main function ---
 
 /**
- * Discover and load remote MF modules from the platform's backoffice
- * modularity manifest endpoint.
+ * Discover and load remote MF modules from the platform's modularity manifest.
  *
- * Call this in your app's main.ts BEFORE app.mount():
+ * Call in main.ts before app.mount():
  * ```ts
- * import { registerRemoteModules } from "@vc-shell/mf-host";
  * registerRemoteModules(app, { router, appName: "my-app" });
  * ```
  *
- * The function is fire-and-forget (async internally). It provides
- * `ModulesReadyKey` and `ModulesLoadErrorKey` refs via `app.provide()` so
+ * Fire-and-forget. Provides `ModulesReadyKey` and `ModulesLoadErrorKey` refs so
  * components can react to loading state.
  */
 export function registerRemoteModules(app: App, options: RegisterRemoteModulesOptions): void {
@@ -201,11 +198,9 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
         shared,
       });
 
-      // 4 + 5. Load each remote in parallel and install it the moment IT resolves,
-      // rather than waiting for the whole batch behind a Promise.allSettled barrier.
-      // Otherwise the slowest remote (e.g. a cold dev-server compilation of the shared
-      // framework graph) holds back every other module's menu items and routes, so
-      // nothing appears until all remotes have loaded.
+      // 4 + 5. Install each remote the moment it resolves rather than behind a
+      // Promise.allSettled barrier: otherwise the slowest remote holds back every other
+      // module's menu items and routes.
       const failed: { entry: ModuleRegistryEntry; error: unknown }[] = [];
       await Promise.allSettled(
         entries.map(async (e) => {

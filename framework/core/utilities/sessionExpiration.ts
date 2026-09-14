@@ -1,26 +1,22 @@
 /**
- * Shared flag signalling that the session was involuntarily invalidated — the server
- * returned 401 for a platform API call — and the app is redirecting to the login page.
+ * Shared flag: the session was involuntarily invalidated (401 from the platform API) and
+ * the app is redirecting to login.
  *
- * Auth is cookie-based, so the client only learns the session died when an /api/ request
- * comes back 401. By then the user may have already navigated to a new page whose blades
- * fired their data loads. Without this flag every one of those failed loads surfaces its
- * own error (blade banner + toast), burying the redirect under a cascade of
- * "failed to load data" messages. While the flag is set, useAsync and ErrorInterceptor
- * suppress those data-load errors so the user gets a single clean redirect to login.
+ * Auth is cookie-based, so the client only learns the session died when a request comes
+ * back 401 — by then the blades of a new page have fired their data loads. While the flag
+ * is set, useAsync and ErrorInterceptor suppress those errors so the user gets one clean
+ * redirect instead of a cascade of "failed to load data".
  *
- * Kept as a plain module with NO imports (same circular-dependency constraint documented
- * in pendingErrorNotifications.ts): it is read from useAsync — reachable via the
- * @core/composables barrel — and from the fetch interceptor.
+ * A plain module with NO imports (same circular-dependency constraint as
+ * pendingErrorNotifications.ts): read from useAsync and from the fetch interceptor.
  */
 
 let sessionExpired = false;
 
 /**
- * Mark the session as expired. Called by the fetch interceptor on the first 401 that
- * kills a session we believed was alive. Idempotent, and the interceptor also reads the
- * flag back as an "already handling it" latch so concurrent 401s don't stack up
- * duplicate sign-outs, redirects and toasts.
+ * Mark the session expired. Called by the fetch interceptor on the first 401 that kills
+ * a live session. Idempotent; the interceptor reads the flag back as an "already handling
+ * it" latch so concurrent 401s do not stack up sign-outs, redirects and toasts.
  */
 export function markSessionExpired(): void {
   sessionExpired = true;
@@ -42,13 +38,11 @@ export function resetSessionExpired(): void {
 /**
  * Rejection handed to callers whose request landed on the login page instead of data.
  *
- * The alternative was to pass the login page's HTML back, which every caller then tried to
- * `JSON.parse` — so a concurrent burst produced one "Unexpected token '<'" per request on a
- * page that was already redirecting to login, burying the message that explains what
- * happened. Failing the request is the honest answer: it returned no data.
+ * Passing the HTML back made every caller `JSON.parse` it, so a burst produced one
+ * "Unexpected token '<'" per request, burying the message that explains it.
  *
- * Detect it by `name`, not `instanceof`: this module is duplicated per bundle in a Module
- * Federation setup, so the class identity is not shared across remotes.
+ * Detect by `name`, not `instanceof`: Module Federation duplicates this module per
+ * bundle, so the class identity is not shared across remotes.
  */
 export class SessionExpiredError extends Error {
   constructor(message = "The session has expired, so this request was not completed.") {

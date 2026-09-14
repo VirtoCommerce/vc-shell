@@ -31,17 +31,11 @@ function localName(spec: string): string {
 }
 
 /**
- * Pure text/regex based deduplication of import specifiers.
+ * Text/regex deduplication of import specifiers: duplicates within one declaration, and
+ * multiple declarations from the same source merged into the first.
  *
- * Handles two cases:
- * 1. Duplicate specifiers within a single import declaration.
- * 2. Multiple import declarations from the same source module — merges them
- *    into the first declaration and removes subsequent ones.
- *
- * Imports from different sources are left completely independent (even if they
- * bind the same local name, which is a real semantic conflict — not our problem).
- *
- * Returns the original source string unchanged if no modifications are needed.
+ * Different sources stay independent even when they bind the same local name. Returns
+ * the source unchanged when nothing needs modifying.
  */
 function textDedup(source: string): { result: string; modified: boolean } {
   const lines = source.split("\n");
@@ -148,15 +142,12 @@ function textDedup(source: string): { result: string; modified: boolean } {
 }
 
 /**
- * Remove duplicate import specifiers within each ImportDeclaration,
- * and merge specifiers from duplicate ImportDeclarations with the same source.
+ * Remove duplicate specifiers within each ImportDeclaration and merge declarations that
+ * share a source. Must receive the same jscodeshift instance (with parser) the transform
+ * used.
  *
- * Must receive the same jscodeshift instance (with parser) that the transform used.
- *
- * Strategy:
- * - Phase 1: Pure text/regex deduplication (handles AST-unparseable duplicates).
- * - Phase 2: AST pass via jscodeshift for any remaining cross-declaration merges
- *   and to normalise output formatting when changes were made.
+ * Phase 1 is text/regex, which reaches AST-unparseable duplicates; phase 2 is an AST pass
+ * for the remaining cross-declaration merges and output formatting.
  */
 export function deduplicateImportSpecifiers(source: string, j: JSCodeshift): string {
   // Phase 1: text-level dedup (handles syntax-invalid inputs that parsers reject)

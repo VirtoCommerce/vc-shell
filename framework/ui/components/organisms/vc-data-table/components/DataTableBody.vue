@@ -110,23 +110,12 @@
 
 <script setup lang="ts">
 /**
- * DataTableBody - Reusable body rendering component for VcDataTable
+ * DataTableBody - body rendering for VcDataTable: empty/loading states, rows, groups,
+ * reorder drag & drop, and the action/expansion/group slots.
  *
- * Extracts body rendering logic from VcDataTable.vue to provide
- * a single, unified component for rendering table body content.
- *
- * Note: This is an internal sub-component of VcDataTable. It does NOT declare
- * its own generic — instead it uses Record<string, any> for item types.
- * Type safety is enforced at the VcDataTable level (which has generic="T").
- * This avoids vue-tsc generic unification issues between parent and child.
- *
- * Features:
- * - Empty and loading states
- * - Unified row loop for both grouped and non-grouped modes
- * - Group context (header/footer) passed as props to DataTableRow
- * - Row click, selection, editing events
- * - Drag & drop for row reorder
- * - Slots for actions, expansion, group header/footer
+ * Internal sub-component. It declares no generic and types items as Record<string, any>;
+ * type safety comes from VcDataTable's `generic="T"`. A generic here trips vue-tsc
+ * unification between parent and child.
  */
 import { computed, ref, type ComponentPublicInstance } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
@@ -137,10 +126,9 @@ import TableEmpty from "@ui/components/organisms/vc-data-table/components/TableE
 import TableSkeletonRows from "@ui/components/organisms/vc-data-table/components/_internal/TableSkeletonRows.vue";
 
 /**
- * Base item type — actual generic enforcement happens in VcDataTable.
- * Uses `any` (not Record<string, any>) because TypeScript doesn't allow
- * Record<string, any> → T assignment even when T extends Record<string, any>.
- * This is safe: DataTableBody is an internal sub-component only used by VcDataTable.
+ * Base item type; the generic is enforced in VcDataTable.
+ * `any` rather than Record<string, any>, because TypeScript rejects
+ * Record<string, any> → T even when T extends Record<string, any>.
  */
 
 type Item = any;
@@ -336,10 +324,10 @@ const listEl = computed<HTMLElement | undefined>(() => {
 });
 
 /**
- * Exposed for SortableJS attachment (row reorder). This is the live rows-container element.
- * Consumers MUST `watch` it (not read once) — the `<TransitionGroup>` is recreated when the
- * body toggles between rows/empty/loading states, so the element changes and SortableJS must
- * be re-attached. `useTableRowReorder` already handles this via a `watch(listEl, …)`.
+ * Live rows-container element, exposed for SortableJS attachment (row reorder).
+ * Watch it instead of reading once: the `<TransitionGroup>` is recreated whenever the body
+ * toggles between rows/empty/loading, so SortableJS has to re-attach. useTableRowReorder
+ * already does this.
  */
 defineExpose({ listEl });
 </script>

@@ -175,11 +175,10 @@ export interface ParsedBladeUrl {
 /**
  * Where the blade stack writes the URL after a navigation action.
  *
- * The stack decides *when* to sync and *which verb* to use; the sink resolves
- * the location from the stack and talks to the router. That split keeps the
- * router (and the tenant prefix, which only the router knows) out of the stack.
- *
- * `createRouterUrlSink` in `utils/urlSync.ts` is the router-backed implementation.
+ * The stack decides when to sync and which verb to use; the sink resolves the
+ * location and talks to the router, keeping the router (and the tenant prefix
+ * only it knows) out of the stack. `createRouterUrlSink` in `utils/urlSync.ts`
+ * is the router-backed implementation.
  */
 export interface UrlSink {
   /** Push a history entry for the stack's current URL (blade opened). */
@@ -221,11 +220,8 @@ export interface IBladeStack {
   /**
    * Register a before-close guard for a blade.
    *
-   * Guard semantics (NEW API): return `true` to PREVENT close, `false` to ALLOW.
-   *
-   * **Note**: The legacy `onBeforeClose` callback has INVERTED semantics:
-   * return `false` to prevent, `undefined`/`true` to allow.
-   * The adapter in `useBladeNavigationAdapter.ts` handles this inversion.
+   * Return `true` to prevent close, `false` to allow. The legacy `onBeforeClose`
+   * callback is inverted; `useBladeNavigationAdapter.ts` handles that.
    */
   registerBeforeClose(bladeId: string, guard: () => Promise<boolean>): void;
   /** Unregister a before-close guard */
@@ -240,10 +236,9 @@ export interface IBladeStack {
   setBladeTitle(bladeId: string, title: string | undefined): void;
 
   /**
-   * Breadcrumb trail for a blade: its visible ancestors, outermost first, each
-   * carrying the real blade id and its runtime title (falling back to the blade
-   * name). Reads `blades`, so call it inside a computed to stay reactive.
-   * Clicking a crumb closes everything opened after that blade.
+   * Breadcrumb trail for a blade: visible ancestors, outermost first, with blade id
+   * and runtime title (falling back to the blade name). Reads `blades`, so call it
+   * inside a computed. Clicking a crumb closes everything opened after that blade.
    */
   trailFor(bladeId: string): Breadcrumbs[];
 

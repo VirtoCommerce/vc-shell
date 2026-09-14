@@ -38,13 +38,11 @@ export function findFiles(dir: string, extensions: string[], excludes: string[])
   return results;
 }
 
-// Scan src/modules/{module}/ to build a mapping of notifyType event names
-// to notification template file names, keyed by module directory.
-//
-// Discovery strategy (in order):
-// 1. Scan notification template .vue files for notifyType in defineOptions/defineBlade
-// 2. Scan blade pages for notifyType and cross-reference with notification barrel
-// 3. Fall back to barrel export names as event names (convention: export name = event name)
+// Scan src/modules/{module}/ to map notifyType event names to notification template
+// file names, keyed by module directory. Discovery order:
+// 1. notification template .vue files with notifyType in defineOptions/defineBlade
+// 2. blade pages with notifyType, cross-referenced with the notification barrel
+// 3. barrel export names (convention: export name = event name)
 export function collectNotifyTypeMap(srcDir: string): Map<string, Record<string, Record<string, string>>> {
   const result = new Map<string, Record<string, Record<string, string>>>();
   const modulesDir = join(srcDir, "modules");

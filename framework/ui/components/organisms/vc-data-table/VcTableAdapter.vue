@@ -506,17 +506,11 @@ function mapMobilePosition(
 // Event Handlers
 // ============================================================================
 
-// Sort → headerClick: find the column, emit legacy event.
-// When sort is removed (3rd click), event.sortField is undefined — fall back to
-// the current prop value which still holds the previously sorted column (parent
-// hasn't updated yet). This lets the parent advance its own asc→desc→none cycle.
-//
-// IMPORTANT: We encode VcDataTable's sort direction into the column ID so the
-// parent's handleSortChange receives e.g. "name:DESC" and sets the direction
-// directly instead of independently cycling its own asc→desc→none state.
-// Without this, both VcDataTable and the parent advance their sort cycles
-// independently on each click, causing a one-step misalignment between the
-// displayed sort icon and the actual data sort order.
+// Sort → headerClick: find the column, emit the legacy event. On sort removal
+// (3rd click) event.sortField is undefined, so fall back to the prop, which still
+// holds the previously sorted column. The direction is encoded into the column id
+// ("name:DESC") so the parent sets it directly instead of cycling its own
+// asc→desc→none, which would drift a step out of sync with the sort icon.
 function handleSort(event: { sortField?: string; sortOrder?: number }) {
   // Remember the last sorted field so we can identify it during sort removal
   // (when event.sortField is undefined on the 3rd click).

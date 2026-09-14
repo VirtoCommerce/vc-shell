@@ -1,13 +1,11 @@
 /**
- * Centralized typed mock factories for framework-wide test doubles.
+ * Typed mock factories for framework-wide test doubles.
  *
- * Import via: import { ... } from "@framework/test-mock-factories"
+ * Each factory returns the exact interface the real module exports, with vi.fn() for
+ * functions, ref() for Refs and computed() for ComputedRefs. Pass Partial overrides per
+ * test.
  *
- * Each factory returns the exact interface the real module exports,
- * with vi.fn() for functions, ref() for Refs, computed() for ComputedRefs.
- * Pass Partial overrides to customize defaults per test.
- *
- * @internal — for test files only; not part of the public framework API
+ * @internal — test files only; not part of the public API
  */
 import { vi } from "vitest";
 import { ref, computed } from "vue";

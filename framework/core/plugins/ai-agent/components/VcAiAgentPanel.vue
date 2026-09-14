@@ -71,12 +71,10 @@ const expandPanel = () => aiAgentService?.expandPanel();
 const collapsePanel = () => aiAgentService?.collapsePanel();
 const panelRef = ref<HTMLElement | null>(null);
 
-// Consume Escape while the panel is open so the blade-nav shortcut dispatcher
-// (which bails on defaultPrevented) does not close the blade behind it.
-// Listening on document's bubble phase still runs before the dispatcher's
-// window bubble-phase listener (target -> ... -> document -> window), while
-// deferring to any overlay above the panel (dropdown/popover/modal) that
-// consumes Escape earlier in the bubble chain.
+// Consume Escape while the panel is open so the blade-nav shortcut dispatcher (which bails
+// on defaultPrevented) does not close the blade behind it. A document bubble-phase listener
+// still runs before the dispatcher's window listener, while deferring to any overlay above
+// the panel that consumes Escape earlier in the chain.
 useEventListener(document, "keydown", (event: KeyboardEvent) => {
   if (!isOpen.value) return;
   if (event.isComposing) return;

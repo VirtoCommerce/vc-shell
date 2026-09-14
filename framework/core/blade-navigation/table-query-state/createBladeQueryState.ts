@@ -49,11 +49,9 @@ export function createBladeQueryState(deps: CreateBladeQueryStateDeps): ITableQu
     const decoded = decodeQueryState(ns, router.currentRoute.value.query);
 
     // Hydrate the descriptor so it matches the URL. On reload, restoreFromUrl
-    // reopens blades WITHOUT their query, leaving descriptor.query empty while
-    // the address bar still holds the params. If we don't seed it now, the next
-    // syncUrlReplace (from any table write or blade open/close) would rebuild
-    // the URL from the empty descriptor and wipe the restored state. No URL
-    // replace is needed here — the address bar already holds these values.
+    // reopens blades without their query, so the next syncUrlReplace would rebuild
+    // the URL from an empty descriptor and wipe the restored state. No URL replace
+    // is needed here — the address bar already holds these values.
     if (Object.keys(decoded).length > 0) {
       bladeStack.updateBladeQuery(descriptor.value.id, encodeQueryState(ns, decoded));
     }

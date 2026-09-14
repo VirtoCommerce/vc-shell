@@ -147,11 +147,9 @@ export interface Props {
   showSearch?: boolean;
   searchPlaceholder?: string;
   /**
-   * Removes the sidebar from the tab order and the accessibility tree while a blade
-   * is maximized over it (WCAG 2.4.3 / 4.1.2).
-   *
-   * A prop rather than a plain `inert` attribute on the component: this layout has
-   * two root nodes, so Vue cannot fall an attribute through to one of them.
+   * Removes the sidebar from the tab order and the accessibility tree while a blade is
+   * maximized over it (WCAG 2.4.3 / 4.1.2). A prop rather than a plain `inert` attribute:
+   * this layout has two root nodes, so Vue cannot fall an attribute through to one of them.
    */
   inertNavigation?: boolean;
 }
@@ -293,12 +291,10 @@ const handleSwitchApp = (app: AppDescriptor) => {
   width: var(--app-bar-width);
   background-color: var(--app-bar-background);
   z-index: var(--z-layout-sidebar);
-  // Persistent right divider between the sidebar and the blade content. Rendered
-  // as a box-shadow (not a border) so it sits flush at the right edge, takes no
-  // layout space, and follows the animated width on collapse/expand. Kept on the
-  // base element so it is visible in both pinned and collapsed states — previously
-  // it was only on `--collapsed`, so the divider vanished when the sidebar was
-  // pinned open.
+  // Persistent right divider between the sidebar and the blade content. A box-shadow
+  // rather than a border, so it sits flush at the right edge, takes no layout space and
+  // follows the animated width on collapse/expand. Kept on the base element so it stays
+  // visible in both the pinned and the collapsed state.
   box-shadow: 1px 0 0 0 var(--app-bar-border);
 
   // Show collapse button on hover

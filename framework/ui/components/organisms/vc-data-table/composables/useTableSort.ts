@@ -55,11 +55,9 @@ export function useTableSort(options: UseTableSortOptions): UseTableSortReturn {
   const internalSortOrder = ref<number>(sortOrder.value ?? 0);
   const internalMultiSortMeta = ref<SortMeta[]>([...(multiSortMeta.value || [])]);
 
-  // Sync internal state when props change from the parent.
-  // This is critical for adapter/controlled usage where the parent manages
-  // the sort cycle independently (e.g. VcTableAdapter + legacy onHeaderClick).
-  // Without these watchers, VcDataTable's internal sort state drifts from the
-  // parent's props since both advance their own cycle on each click.
+  // Sync internal state when the props change. Needed for controlled usage where the
+  // parent runs its own sort cycle (VcTableAdapter + legacy onHeaderClick): without these
+  // watchers both sides advance a cycle per click and drift apart.
   watch(
     () => [sortField.value, sortOrder.value, multiSortMeta.value] as const,
     ([field, order, meta]) => {

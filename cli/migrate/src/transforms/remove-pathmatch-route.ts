@@ -2,16 +2,11 @@ import type { API, FileInfo, Options } from "jscodeshift";
 import type { Transform } from "./types.js";
 
 /**
- * Remove the catch-all `/:pathMatch(.*)*` route entry from router/routes.ts.
- * The framework now handles this internally.
+ * Remove the catch-all `/:pathMatch(.*)*` route from router/routes.ts — the framework
+ * handles it internally now.
  *
- * Targets:
  * ```ts
- * {
- *   path: "/:pathMatch(.*)*",
- *   component: App,
- *   beforeEnter: async (to) => { ... },
- * }
+ * { path: "/:pathMatch(.*)*", component: App, beforeEnter: async (to) => { ... } }
  * ```
  */
 

@@ -26,17 +26,12 @@ export {
 } from "@core/blade-navigation/singletons";
 
 /**
- * New Blade Navigation Plugin (v2).
+ * Blade navigation plugin (v2). Sets up the BladeStack state machine and BladeMessaging,
+ * registers the catch-all route under the root route, and installs the beforeEach guard
+ * that restores the stack from the URL.
  *
- * Sets up:
- * - BladeStack state machine (provided via BladeStackKey)
- * - BladeMessaging for inter-blade communication (provided via BladeMessagingKey)
- * - Auto catch-all route under the root route (safety net for blade URLs)
- * - Router beforeEach guard for URL → blade stack restoration
- *
- * Vue Router serves as the URL sync layer only. BladeStack is the source of truth.
- * Back/forward is handled natively by Vue Router — beforeEach fires on popstate
- * and restores BladeStack from the URL.
+ * Vue Router is the URL sync layer only; BladeStack is the source of truth. Back/forward
+ * works natively — beforeEach fires on popstate.
  */
 export const VcBladeNavigationComponent = {
   install(app: App, args: { router: Router }) {
@@ -100,13 +95,10 @@ export const VcBladeNavigationComponent = {
       });
     }
 
-    // ── Router guard for URL → blade stack restoration ──────────────────────
-    // Fires on: direct URL entry, deep links, back/forward (popstate)
-    // The adapter's router.push()/replace() also triggers this, but
-    // restoreFromUrl is idempotent — if stack already matches URL, it's a no-op.
-    // Writes are suppressed for the duration: the guard restores the stack FROM
-    // the URL, and letting the stack write back from inside beforeEach would
-    // re-enter the guard. The guard returns its own redirect when it needs one.
+    // Router guard for URL → blade stack restoration. Fires on direct entry, deep links,
+    // back/forward, and the adapter's own push/replace — restoreFromUrl is idempotent.
+    // Writes are suppressed for its duration: the guard restores the stack from the URL,
+    // and a write-back from inside beforeEach would re-enter it.
     router.beforeEach((to) =>
       urlSink.suppressWhile(() => bladeRouterGuard(to, bladeStack, bladeRegistry, hasAccess, router)),
     );

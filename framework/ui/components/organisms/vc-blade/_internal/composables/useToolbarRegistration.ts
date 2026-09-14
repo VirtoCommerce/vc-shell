@@ -12,11 +12,10 @@ const PROP_ITEM_ID_PREFIX = "prop_toolbar_item_";
 
 /**
  * Manages the lifecycle of toolbar items:
- * - Converts `IBladeToolbar[]` props to `IToolbarItem[]` for the ToolbarService
- * - Registers/unregisters items as props or blade ID change
- * - Filters by permissions, visibility, and disabled-on-mobile
- * - Sorts by priority
- * - Cleans up on unmount
+ * - converts `IBladeToolbar[]` props to `IToolbarItem[]` for the ToolbarService
+ * - registers/unregisters items as props or blade id change
+ * - filters by permissions, visibility and disabled-on-mobile, sorts by priority
+ * - cleans up on unmount
  */
 export function useToolbarRegistration(items: Ref<IBladeToolbar[]>) {
   const { hasAccess } = usePermissions();

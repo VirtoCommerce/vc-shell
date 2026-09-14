@@ -2,19 +2,14 @@ import type { API, FileInfo, Options } from "jscodeshift";
 import type { Transform } from "./types.js";
 
 /**
- * Diagnostic-only: detect VcDataTable list blades / composables that do NOT yet
- * persist the table view (sort, search, page) to the blade URL query.
+ * Diagnostic-only: detect VcDataTable list blades / composables that do not persist
+ * the table view (sort, search, page) to the blade URL query via the opt-in
+ * `stateKey` option (`<key>_sort` / `_search` / `_page`). Flags:
+ * - the deprecated `useTableQueryState` / `useTableQueryPersistence`
+ * - `useDataTableSort` / `useDataTablePagination` / `useTableSearch` without `stateKey`
+ * - a searchable VcDataTable whose keyword is not owned by `useTableSearch`
  *
- * The state composables accept an opt-in `stateKey` option that restores from and
- * writes to the URL (`<key>_sort` / `_search` / `_page`). This audit flags files that:
- * - use the deprecated preview API (`useTableQueryState` / `useTableQueryPersistence`), or
- * - use `useDataTableSort` / `useDataTablePagination` / `useTableSearch` without any
- *   `stateKey`, or
- * - render a searchable VcDataTable whose keyword is not owned by `useTableSearch`.
- *
- * The rewrite is cross-file (blade + composable) and behavioural (page reset on search),
- * so automation is unreliable — the migration-agent applies the change.
- *
+ * The rewrite is cross-file and behavioural, so the migration-agent applies it.
  * See: migration/50-table-url-state.md
  */
 

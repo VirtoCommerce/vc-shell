@@ -1,12 +1,10 @@
 /**
- * Mirror of configs/peer-versions.json's `versions` map.
+ * Mirror of configs/peer-versions.json's `versions` map. Not a direct import: the
+ * migrator is a published package (@vc-shell/migrate) whose dist/ must be
+ * self-contained and cannot reach configs/peer-versions.json.
  *
- * Why a mirror, not a direct import: the migrator is a published npm package
- * (@vc-shell/migrate) and its dist/ must be self-contained. The published
- * artifact does not have access to configs/peer-versions.json.
- *
- * Maintenance: when configs/peer-versions.json changes, copy the same keys
- * and values here in the same commit. See spec section "Migration guidance".
+ * When configs/peer-versions.json changes, copy the same keys and values here in
+ * the same commit.
  */
 export const BASELINE_VERSIONS: Record<string, string> = {
   "@commitlint/cli": "^20.4.1",

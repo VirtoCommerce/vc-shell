@@ -3,10 +3,9 @@ import { defineComponent, type PropType, type VNode } from "vue";
 /**
  * Stable wrapper for rendering slot functions without recreating the component tree.
  *
- * When VcColumn slots are captured at setup time, they become static function references.
- * Passing them directly as children would cause Vue to diff them as new VNodes on every
- * parent re-render, destroying and recreating the subtree. SlotProxy wraps the function
- * in a stable component instance so Vue can reuse the existing DOM.
+ * VcColumn slots are captured at setup as static function references. Passed directly as
+ * children, Vue diffs them as new VNodes on every parent re-render and rebuilds the
+ * subtree. Wrapping them in a stable component instance lets Vue reuse the DOM.
  */
 export const SlotProxy = defineComponent({
   name: "SlotProxy",

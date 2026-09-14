@@ -60,9 +60,8 @@ export interface MenuItemConfig {
    */
   group?: string;
   /**
-   * Group configuration for creating or updating a group when adding this menu item.
-   * This allows creating a group and adding an item to it in one step.
-   * If a group with the specified ID already exists, it will be updated with the provided properties.
+   * Group to create or update while adding this item. An existing group with the same id
+   * is updated with these properties.
    */
   groupConfig?: {
     id: string;

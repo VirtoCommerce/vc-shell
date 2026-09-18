@@ -224,6 +224,154 @@ describe("useSelectDataSource", () => {
     });
   });
 
+  describe("loadMore() with an active search (VCST-6028)", () => {
+    // Pages a different result set per keyword, like the Platform member search
+    // behind the Sales Rep "Served organizations" picker.
+    function createKeywordLoader(sets: Record<string, any[]>, pageSize = 20) {
+      return vi.fn(async (keyword?: string, skip?: number) => {
+        const set = sets[keyword ?? ""] ?? [];
+        const start = skip ?? 0;
+        return { results: set.slice(start, start + pageSize), totalCount: set.length };
+      });
+    }
+
+    function makeItems(prefix: string, count: number) {
+      return Array.from({ length: count }, (_, i) => ({ id: `${prefix}${i + 1}`, name: `${prefix} ${i + 1}` }));
+    }
+
+    it("pages the rendered search results, not the unfiltered cache", async () => {
+      const browse = makeItems("o", 152);
+      // One match also sits in the unfiltered first page — the overlap that used
+      // to stall a cursor derived from the deduplicated cache length.
+      const matches = [browse[9], ...makeItems("a", 42)];
+      const loader = createKeywordLoader({ "": browse, AGENT: matches });
+      const ds = createDataSource({ options: () => loader, debounce: () => 0 });
+
+      await ds.open();
+      ds.onInput({ target: { value: "AGENT" } } as unknown as Event);
+      await flushPromises();
+
+      expect(ds.displayItems.value).toHaveLength(20);
+      expect(ds.hasMore.value).toBe(true);
+
+      await ds.loadMore();
+      expect(loader).toHaveBeenLastCalledWith("AGENT", 20);
+      expect(ds.displayItems.value).toHaveLength(40);
+
+      await ds.loadMore();
+      expect(loader).toHaveBeenLastCalledWith("AGENT", 40);
+      // Every match is reachable, and paging converges.
+      expect(ds.displayItems.value).toEqual(matches);
+      expect(ds.hasMore.value).toBe(false);
+    });
+
+    it("terminates when the source keeps returning already-seen items", async () => {
+      const page = makeItems("a", 20);
+      // Over-reports the total and never advances. With a deduplicated cursor
+      // this paged forever against a frozen skip.
+      const loader = vi.fn(async () => ({ results: page, totalCount: 43 }));
+      const ds = createDataSource({ options: () => loader, debounce: () => 0 });
+
+      await ds.open();
+      ds.onInput({ target: { value: "AGENT" } } as unknown as Event);
+      await flushPromises();
+
+      let calls = 0;
+      while (ds.hasMore.value && calls < 20) {
+        await ds.loadMore();
+        calls++;
+      }
+
+      expect(ds.hasMore.value).toBe(false);
+      expect(calls).toBeLessThan(20);
+      expect(ds.displayItems.value).toHaveLength(20);
+    });
+
+    it("stops paging when a page comes back empty", async () => {
+      const first = makeItems("a", 20);
+      const loader = vi
+        .fn()
+        .mockResolvedValueOnce({ results: first, totalCount: 20 })
+        .mockResolvedValueOnce({ results: first, totalCount: 100 })
+        .mockResolvedValueOnce({ results: [], totalCount: 100 });
+      const ds = createDataSource({ options: () => loader, debounce: () => 0 });
+
+      await ds.open();
+      ds.onInput({ target: { value: "x" } } as unknown as Event);
+      await flushPromises();
+      expect(ds.hasMore.value).toBe(true);
+
+      await ds.loadMore();
+
+      expect(ds.hasMore.value).toBe(false);
+      expect(loader).toHaveBeenCalledTimes(3);
+    });
+
+    it("clearing the search leaves browse paging intact", async () => {
+      const browse = makeItems("o", 152);
+      const loader = createKeywordLoader({ "": browse, AGENT: makeItems("a", 43) });
+      const ds = createDataSource({ options: () => loader, debounce: () => 0 });
+
+      await ds.open();
+      ds.onInput({ target: { value: "AGENT" } } as unknown as Event);
+      await flushPromises();
+      ds.clearSearch();
+
+      // The browse stream still knows there are 152 items, not just the 20 loaded.
+      expect(ds.displayItems.value).toHaveLength(20);
+      expect(ds.hasMore.value).toBe(true);
+
+      await ds.loadMore();
+
+      expect(loader).toHaveBeenLastCalledWith(undefined, 20);
+      expect(ds.displayItems.value).toHaveLength(40);
+    });
+
+    it("a slower earlier keystroke does not overwrite a newer search", async () => {
+      const slow = makeItems("slow", 5);
+      const fast = makeItems("fast", 3);
+      let releaseSlow: (value: any) => void = () => {};
+      const loader = vi
+        .fn()
+        .mockResolvedValueOnce({ results: [], totalCount: 0 })
+        .mockImplementationOnce(
+          () =>
+            new Promise((resolve) => {
+              releaseSlow = resolve;
+            }),
+        )
+        .mockResolvedValueOnce({ results: fast, totalCount: 3 });
+      const ds = createDataSource({ options: () => loader, debounce: () => 0 });
+
+      await ds.open();
+      ds.onInput({ target: { value: "AG" } } as unknown as Event);
+      ds.onInput({ target: { value: "AGENT" } } as unknown as Event);
+      await flushPromises();
+
+      // The later keyword has landed — now let the earlier request resolve.
+      releaseSlow({ results: slow, totalCount: 5 });
+      await flushPromises();
+
+      expect(ds.displayItems.value).toEqual(fast);
+      expect(ds.filterString.value).toBe("AGENT");
+    });
+
+    it("a static array never pages, with or without a search", async () => {
+      const items = makeItems("a", 50);
+      const ds = createDataSource({ options: () => items });
+
+      await ds.open();
+      expect(ds.displayItems.value).toHaveLength(50);
+      expect(ds.hasMore.value).toBe(false);
+
+      ds.onInput({ target: { value: "a 1" } } as unknown as Event);
+      await nextTick();
+
+      expect(ds.hasMore.value).toBe(false);
+      expect(ds.displayItems.value.length).toBeGreaterThan(0);
+    });
+  });
+
   describe("resolve()", () => {
     it("fetches uncached IDs via loader", async () => {
       const loader = vi.fn().mockResolvedValue({

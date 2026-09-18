@@ -156,6 +156,44 @@ describe("useKeyboardNavigation", () => {
       wrapper.unmount();
     });
 
+    // An overlay that acts on Escape owns the key: a sidebar or dialog listening on
+    // document must not also close behind it.
+    it("Escape it handles does not reach the layers behind", () => {
+      const onEscape = vi.fn();
+      const container = createContainer(3);
+      document.body.appendChild(container);
+      const { result, wrapper } = mountWithSetup(() => useKeyboardNavigation({ containerSelector: "", onEscape }));
+      result.initKeyboardNavigation(container);
+
+      const behind = vi.fn();
+      document.addEventListener("keydown", behind);
+      dispatchKeyDown(container, "Escape");
+      document.removeEventListener("keydown", behind);
+
+      expect(onEscape).toHaveBeenCalled();
+      expect(behind).not.toHaveBeenCalled();
+
+      container.remove();
+      wrapper.unmount();
+    });
+
+    it("Escape it does not handle still reaches the layers behind", () => {
+      const container = createContainer(3);
+      document.body.appendChild(container);
+      const { result, wrapper } = mountWithSetup(() => useKeyboardNavigation({ containerSelector: "" }));
+      result.initKeyboardNavigation(container);
+
+      const behind = vi.fn();
+      document.addEventListener("keydown", behind);
+      dispatchKeyDown(container, "Escape");
+      document.removeEventListener("keydown", behind);
+
+      expect(behind).toHaveBeenCalled();
+
+      container.remove();
+      wrapper.unmount();
+    });
+
     it("cleanupKeyboardNavigation removes event listener", () => {
       const { result, wrapper, container } = setup();
       result.cleanupKeyboardNavigation();

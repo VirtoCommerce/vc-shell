@@ -297,6 +297,10 @@ const closeOverlay = () => {
 // Focus trap: cycle Tab within overlay, Escape closes
 const handleOverlayKeydown = (event: KeyboardEvent) => {
   if (event.key === "Escape") {
+    // Acting on the key means owning it: on mobile this popover sits inside a
+    // VcSidebar that closes on Escape from a document listener.
+    event.preventDefault();
+    event.stopPropagation();
     closeOverlay();
     return;
   }

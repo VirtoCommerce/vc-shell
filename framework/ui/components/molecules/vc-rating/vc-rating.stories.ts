@@ -370,6 +370,36 @@ export const ComparisonTable: Story = {
  * Skeleton state shown when blade is loading. Uses `provide(BladeLoadingKey, ref(true))`
  * to simulate the blade loading context.
  */
+export const WithError: Story = {
+  args: {
+    modelValue: 0,
+    max: 5,
+    variant: "stars",
+    label: "Overall rating",
+    placeholder: "Not rated yet",
+    errorMessage: "A rating is required before publishing",
+  },
+  render: (args) => ({
+    components: { VcRating },
+    setup() {
+      const rating = ref(args.modelValue);
+      return { args, rating };
+    },
+    template: `
+      <div style="max-width: 300px;">
+        <VcRating
+          v-model="rating"
+          :max="args.max"
+          :variant="args.variant"
+          :label="args.label"
+          :placeholder="args.placeholder"
+          :error-message="args.errorMessage"
+        />
+      </div>
+    `,
+  }),
+};
+
 export const Skeleton: Story = {
   render: (args) => ({
     components: { VcRating },

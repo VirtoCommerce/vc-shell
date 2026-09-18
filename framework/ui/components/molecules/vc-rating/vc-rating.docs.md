@@ -234,20 +234,23 @@ Use the `"star-and-text"` or `"text"` variant in table cell slots for a compact 
 
 ## Props
 
-| Prop          | Type                                   | Default   | Description                              |
-| ------------- | -------------------------------------- | --------- | ---------------------------------------- |
-| `modelValue`  | `number`                               | --        | Current rating value to display          |
-| `max`         | `number`                               | `5`       | Maximum rating value (defines the scale) |
-| `variant`     | `"stars" \| "star-and-text" \| "text"` | `"stars"` | Display variant                          |
-| `label`       | `string`                               | --        | Field label text above the rating        |
-| `tooltip`     | `string`                               | --        | Tooltip shown on the label               |
-| `placeholder` | `string`                               | --        | Text shown when `modelValue` is falsy    |
+| Prop           | Type                                   | Default   | Description                                                             |
+| -------------- | -------------------------------------- | --------- | ----------------------------------------------------------------------- |
+| `modelValue`   | `number`                               | --        | Current rating value to display                                         |
+| `max`          | `number`                               | `5`       | Maximum rating value (defines the scale)                                |
+| `variant`      | `"stars" \| "star-and-text" \| "text"` | `"stars"` | Display variant                                                         |
+| `label`        | `string`                               | --        | Field label text above the rating                                       |
+| `tooltip`      | `string`                               | --        | Tooltip shown on the label                                              |
+| `placeholder`  | `string`                               | --        | Text shown when `modelValue` is falsy                                   |
+| `error`        | `boolean`                              | --        | Marks the field invalid without a message                               |
+| `errorMessage` | `string`                               | --        | Validation message shown below the rating; also marks the field invalid |
 
 ## Slots
 
-| Slot      | Scope | Description                                                                            |
-| --------- | ----- | -------------------------------------------------------------------------------------- |
-| `details` | --    | Additional content below the rating (available in `star-and-text` and `text` variants) |
+| Slot      | Scope | Description                                                                                                                             |
+| --------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `details` | --    | Additional content below the rating (available in `star-and-text` and `text` variants)                                                  |
+| `error`   | --    | Replaces the default validation message element. Keep the slotted element's `id`, or the control's `aria-describedby` points at nothing |
 
 ## CSS Variables
 
@@ -266,6 +269,8 @@ Use the `"star-and-text"` or `"text"` variant in table cell slots for a compact 
 - When no value is present, the `aria-label` falls back to the placeholder text or "No rating".
 - The label is rendered via `VcLabel` with optional tooltip, maintaining consistent label semantics.
 - Star icons are decorative and do not receive focus since the component is display-only.
+- A validation message is rendered below the rating and referenced from the control through `aria-describedby`, so a screen reader is told what is wrong rather than only that something is.
+- Invalid state comes from `useFormField`, so it reflects a surrounding `VcInputGroup` as well as the component's own `error` / `errorMessage`.
 
 ## Related Components
 

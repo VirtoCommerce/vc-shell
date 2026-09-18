@@ -34,6 +34,8 @@
       class="vc-rating__content"
       role="img"
       :aria-label="modelValue ? `Rating: ${modelValue} out of ${max}` : placeholder || 'No rating'"
+      :aria-invalid="invalid || undefined"
+      :aria-describedby="ariaDescribedBy"
     >
       <template v-if="modelValue">
         <template v-if="variant === 'stars'">
@@ -68,6 +70,24 @@
         <span class="vc-rating__placeholder">{{ placeholder }}</span>
       </template>
     </div>
+
+    <!-- Validation error, referenced by the control through aria-describedby -->
+    <Transition
+      name="slide-up"
+      mode="out-in"
+    >
+      <div v-if="invalid && errorMessage">
+        <slot name="error">
+          <VcHint
+            :id="errorId"
+            class="vc-rating__error"
+            :error="true"
+          >
+            {{ errorMessage }}
+          </VcHint>
+        </slot>
+      </div>
+    </Transition>
   </div>
 </template>
 <script lang="ts" setup>
@@ -78,6 +98,8 @@ import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 const bladeLoading = useBladeLoading();
 import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { VcHint } from "@ui/components/atoms/vc-hint";
+import { useFormField } from "@ui/composables/useFormField";
 import type { IFormFieldProps } from "@ui/types/form-field";
 
 export interface VcRatingProps extends IFormFieldProps {
@@ -87,10 +109,15 @@ export interface VcRatingProps extends IFormFieldProps {
   variant?: "stars" | "star-and-text" | "text";
 }
 
-withDefaults(defineProps<VcRatingProps>(), { max: 5, variant: "stars" });
+const props = withDefaults(defineProps<VcRatingProps>(), { max: 5, variant: "stars" });
+
+// The same source of ids and invalid state every other form control uses, so a
+// group-level invalid reaches the rating and the error element can be referenced.
+const { errorId, invalid, ariaDescribedBy } = useFormField(props);
 
 defineSlots<{
   details: (props: Record<string, never>) => VNode[];
+  error: (props: Record<string, never>) => VNode[];
 }>();
 </script>
 
@@ -144,6 +171,10 @@ defineSlots<{
 
   &__label {
     @apply tw-mb-1;
+  }
+
+  &__error {
+    @apply tw-mt-1;
   }
 }
 </style>

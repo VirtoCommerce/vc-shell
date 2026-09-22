@@ -11,6 +11,17 @@ const logger = createLogger("interceptors");
 // Paths a platform redirects an unauthenticated request to.
 const LOGIN_PATH_PATTERN = /(^|\/)(login|signin|sign-in|account\/login|connect\/authorize)(\/|$)/i;
 
+// Methods a retry can repeat without a second side effect. A mutation's duration is the
+// operator's uplink as often as it is the server, so counting one towards slow-network
+// detection would have every large upload claim the network is slow.
+const IDEMPOTENT_METHODS = new Set(["GET", "HEAD"]);
+
+/** The method the request will actually be sent with, matching what `fetch` resolves. */
+function methodOf(resource: RequestInfo | URL, init?: RequestInit): string {
+  const method = init?.method ?? (resource instanceof Request ? resource.method : undefined);
+  return (method ?? "GET").toUpperCase();
+}
+
 /**
  * Detects a dead session that no status code reveals.
  *
@@ -161,30 +172,21 @@ export function registerInterceptors(router: Router) {
         return Promise.reject(new Error(i18n.global.t("CORE.ERRORS.NETWORK_UNAVAILABLE")));
       }
 
+      // The interceptor imposes no deadline of its own (VCST-6045). A request that takes
+      // a long time is not the same as a request that failed: an export, a reindex or a
+      // 20 MB upload legitimately outlast any cap worth setting, and aborting one throws
+      // away work the server may already have committed. Only the caller knows when its
+      // own request stopped being worth waiting for, so cancellation stays theirs —
+      // `init.signal` is passed through untouched. The slow-network signal at 10s is what
+      // tells the operator the wait is real.
       const requestId = String(++requestCounter);
-      trackRequest(requestId);
-
-      // Always enforce timeout, but preserve external cancellation semantics
-      const controller = new AbortController();
-      let didTimeout = false;
-      const timeoutId = setTimeout(() => {
-        didTimeout = true;
-        controller.abort();
-      }, 30000);
-
-      const externalSignal = init?.signal;
-      const abortFromExternal = () => controller.abort();
-      if (externalSignal?.aborted) {
-        abortFromExternal();
-      } else if (externalSignal) {
-        externalSignal.addEventListener("abort", abortFromExternal, { once: true });
+      const tracked = IDEMPOTENT_METHODS.has(methodOf(resource, init));
+      if (tracked) {
+        trackRequest(requestId);
       }
 
       try {
-        const response = await originalFetch(resource, {
-          ...(init || {}),
-          signal: controller.signal,
-        });
+        const response = await originalFetch(...args);
 
         const isLoginPageResponse = response.ok && looksLikeLoginPage(response);
         handleSessionDeath(response.status === 401 || isLoginPageResponse);
@@ -199,16 +201,9 @@ export function registerInterceptors(router: Router) {
         }
 
         return response;
-      } catch (e) {
-        if (didTimeout) {
-          throw new Error(i18n.global.t("CORE.ERRORS.REQUEST_TIMED_OUT"));
-        }
-        throw e;
       } finally {
-        untrackRequest(requestId);
-        clearTimeout(timeoutId);
-        if (externalSignal) {
-          externalSignal.removeEventListener("abort", abortFromExternal);
+        if (tracked) {
+          untrackRequest(requestId);
         }
       }
     }

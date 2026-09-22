@@ -16,10 +16,13 @@ vi.mock("@core/composables/useUserManagement", () => ({
   }),
 }));
 
+const trackRequest = vi.fn();
+const untrackRequest = vi.fn();
+
 vi.mock("@core/composables/useSlowNetworkDetection", () => ({
   useSlowNetworkDetection: () => ({
-    trackRequest: vi.fn(),
-    untrackRequest: vi.fn(),
+    trackRequest,
+    untrackRequest,
   }),
 }));
 
@@ -511,19 +514,21 @@ describe("registerInterceptors — external cancellation", () => {
     resetSessionExpired();
   });
 
-  it("passes a signal of its own to the underlying fetch", async () => {
+  // The interceptor adds no signal of its own, so a caller that passed none keeps none:
+  // wrapping every request in an AbortController it never fires would only give the
+  // request a way to be cancelled by nobody.
+  it("leaves a request without a caller signal unsignalled", async () => {
     const impl = vi.fn().mockResolvedValue({ status: 200 });
     window.fetch = impl as unknown as typeof window.fetch;
 
     const patched = registerInterceptors(createRouter());
     await patched("/api/platform/test");
 
-    expect(impl.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+    expect(impl.mock.calls[0][1]?.signal).toBeUndefined();
   });
 
-  // The caller's signal has to reach the request that is actually in flight,
-  // which is not the caller's — the interceptor makes its own to enforce the
-  // timeout, and links the two.
+  // The caller's own signal reaches the request in flight, because it is the one handed
+  // to fetch — nothing is composed on top of it.
   it("aborts the in-flight request when the caller's signal fires", async () => {
     let seen: AbortSignal | undefined;
     window.fetch = vi.fn((_url: unknown, init: RequestInit) => {
@@ -567,6 +572,96 @@ describe("registerInterceptors — external cancellation", () => {
     const patched = registerInterceptors(createRouter());
 
     await expect(patched("/api/platform/test", { signal: new AbortController().signal })).rejects.toThrow("Aborted");
+  });
+});
+
+// The interceptor imposes no deadline: a long request is not a failed one, and aborting
+// a mutation throws away work the server may already have committed (VCST-6045). Only
+// slow-network tracking still distinguishes methods, so an upload does not read as a
+// slow link.
+describe("registerInterceptors — no deadline of its own", () => {
+  let originalFetch: typeof window.fetch;
+
+  /** A fetch that never settles, standing in for a request the server is still working on. */
+  function hangingFetch() {
+    return vi.fn(() => new Promise(() => {}));
+  }
+
+  function settlesWithin(promise: Promise<unknown>) {
+    let done = false;
+    promise.then(
+      () => (done = true),
+      () => (done = true),
+    );
+    return () => done;
+  }
+
+  beforeEach(() => {
+    originalFetch = window.fetch;
+    authenticated = true;
+    resetSessionExpired();
+    trackRequest.mockClear();
+    untrackRequest.mockClear();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    window.fetch = originalFetch;
+    resetSessionExpired();
+  });
+
+  // A report, an export or a reindex legitimately outlasts any cap worth setting.
+  it("leaves a long GET running", async () => {
+    window.fetch = hangingFetch() as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    const settled = settlesWithin(patched("/api/catalog/export"));
+
+    await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+
+    expect(settled()).toBe(false);
+  });
+
+  it("leaves a long POST running", async () => {
+    window.fetch = hangingFetch() as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    const settled = settlesWithin(patched("/api/assets?folderUrl=/x", { method: "POST" }));
+
+    await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
+
+    expect(settled()).toBe(false);
+  });
+
+  it("counts a GET towards slow-network detection", async () => {
+    window.fetch = vi.fn().mockResolvedValue({ status: 200 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    await patched("/api/platform/test");
+
+    expect(trackRequest).toHaveBeenCalledTimes(1);
+    expect(untrackRequest).toHaveBeenCalledTimes(1);
+  });
+
+  // Otherwise every upload slower than 10s would claim the network is slow.
+  it("keeps a POST out of slow-network detection", async () => {
+    window.fetch = vi.fn().mockResolvedValue({ status: 200 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    await patched("/api/assets?folderUrl=/x", { method: "POST" });
+
+    expect(trackRequest).not.toHaveBeenCalled();
+    expect(untrackRequest).not.toHaveBeenCalled();
+  });
+
+  it("reads the method off a Request object", async () => {
+    window.fetch = vi.fn().mockResolvedValue({ status: 200 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    await patched(new Request(`${window.location.origin}/api/assets`, { method: "POST" }));
+
+    expect(trackRequest).not.toHaveBeenCalled();
   });
 });
 

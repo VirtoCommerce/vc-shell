@@ -16,7 +16,10 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
   // --- Internal state ---
   const cachedItems = ref<T[]>([]) as Ref<T[]>;
   const searchResults = ref<T[] | null>(null) as Ref<T[] | null>;
-  const totalCount = ref(0);
+  const browseTotal = ref(0);
+  const searchTotal = ref(0);
+  const browseExhausted = ref(false);
+  const searchExhausted = ref(false);
   const loading = ref(false);
   const searchLoading = ref(false);
   const filterString = ref<string | undefined>();
@@ -24,6 +27,15 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
   const defaultOptionLoading = ref(false);
   const resolveCache = new Map<string, T>();
   let isLoaded = false;
+
+  // How many items the loader has returned so far, per stream. Paging offsets
+  // advance by this, never by the deduplicated collection length: a page made
+  // entirely of duplicates must still move the cursor forward.
+  let browseOffset = 0;
+  let searchOffset = 0;
+  // Discriminates search responses so a slow earlier keystroke cannot overwrite
+  // the result of a later one.
+  let searchSeq = 0;
 
   // --- Debounce state ---
   let debounceTimer: ReturnType<typeof setTimeout> | undefined;
@@ -33,8 +45,13 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
     return searchResults.value ?? cachedItems.value;
   });
 
+  // Each stream is measured against its own total. While a search is active the
+  // rendered collection is searchResults, so browse state must not gate it.
   const hasMore = computed(() => {
-    return cachedItems.value.length < totalCount.value;
+    if (searchResults.value !== null) {
+      return !searchExhausted.value && searchResults.value.length < searchTotal.value;
+    }
+    return !browseExhausted.value && cachedItems.value.length < browseTotal.value;
   });
 
   // --- Helper: populate resolveCache from items ---
@@ -42,6 +59,23 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
     for (const item of items) {
       const key = String(opts.getOptionValue.value(item));
       resolveCache.set(key, item);
+    }
+  }
+
+  // --- Helper: drop the search stream, leaving the browse stream intact ---
+  function resetSearchState(): void {
+    searchResults.value = null;
+    // The bump below orphans any in-flight search, so its finally block will not
+    // clear this — dropping the stream has to release the flag itself.
+    searchLoading.value = false;
+    filterString.value = undefined;
+    searchTotal.value = 0;
+    searchOffset = 0;
+    searchExhausted.value = false;
+    searchSeq++;
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+      debounceTimer = undefined;
     }
   }
 
@@ -58,47 +92,82 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
       try {
         loading.value = true;
         const data = await optionsSource(undefined, 0);
-        cachedItems.value = (data?.results as T[]) ?? [];
-        totalCount.value = data?.totalCount ?? 0;
+        const results = (data?.results as T[]) ?? [];
+        cachedItems.value = results;
+        browseTotal.value = data?.totalCount ?? 0;
+        browseOffset = results.length;
+        browseExhausted.value = results.length === 0 || browseOffset >= browseTotal.value;
         populateResolveCache(cachedItems.value);
         isLoaded = true;
       } catch (e) {
         console.error("useSelectDataSource: error loading options", e);
         cachedItems.value = [];
-        totalCount.value = 0;
+        browseTotal.value = 0;
+        browseOffset = 0;
+        browseExhausted.value = true;
       } finally {
         loading.value = false;
       }
     } else if (Array.isArray(optionsSource)) {
       cachedItems.value = [...optionsSource] as T[];
-      totalCount.value = cachedItems.value.length;
+      browseTotal.value = cachedItems.value.length;
+      browseOffset = cachedItems.value.length;
+      // A static array is fully in memory — there is never a next page.
+      browseExhausted.value = true;
       populateResolveCache(cachedItems.value);
       isLoaded = true;
     }
   }
 
   function close(): void {
-    searchResults.value = null;
-    filterString.value = undefined;
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
-      debounceTimer = undefined;
-    }
+    resetSearchState();
   }
 
   async function loadMore(): Promise<void> {
     const optionsSource = opts.options();
-    if (typeof optionsSource !== "function" || loading.value) return;
+    if (typeof optionsSource !== "function" || loading.value || !hasMore.value) return;
+
+    const isSearch = searchResults.value !== null;
+    const seq = searchSeq;
+    // The collection this page is being fetched for. executeSearch() replaces it
+    // wholesale, and it bumps searchSeq synchronously on entry — so a loadMore()
+    // that starts after that bump carries a seq that still matches. Identity is
+    // what separates them: a page requested at the previous keyword's offset must
+    // not be appended to a newer keyword's first page.
+    const stream = searchResults.value;
 
     try {
       loading.value = true;
-      const data = await optionsSource(filterString.value, cachedItems.value.length);
-      const existingIds = new Set(cachedItems.value.map((item) => String(opts.getOptionValue.value(item))));
-      const newItems = ((data?.results as T[]) ?? []).filter(
-        (item) => !existingIds.has(String(opts.getOptionValue.value(item))),
-      );
-      cachedItems.value = [...cachedItems.value, ...newItems];
-      totalCount.value = data?.totalCount ?? totalCount.value;
+      const data = await optionsSource(filterString.value, isSearch ? searchOffset : browseOffset);
+
+      // The search was cleared or replaced while this page was in flight.
+      if (isSearch && (searchResults.value !== stream || seq !== searchSeq)) return;
+
+      const results = (data?.results as T[]) ?? [];
+
+      if (isSearch) searchOffset += results.length;
+      else browseOffset += results.length;
+
+      if (results.length === 0) {
+        // The source has nothing left, whatever totalCount claims.
+        if (isSearch) searchExhausted.value = true;
+        else browseExhausted.value = true;
+        return;
+      }
+
+      const target = isSearch ? (searchResults.value as T[]) : cachedItems.value;
+      const existingIds = new Set(target.map((item) => String(opts.getOptionValue.value(item))));
+      const newItems = results.filter((item) => !existingIds.has(String(opts.getOptionValue.value(item))));
+
+      if (isSearch) {
+        searchResults.value = [...target, ...newItems];
+        searchTotal.value = data?.totalCount ?? searchTotal.value;
+        if (searchOffset >= searchTotal.value) searchExhausted.value = true;
+      } else {
+        cachedItems.value = [...target, ...newItems];
+        browseTotal.value = data?.totalCount ?? browseTotal.value;
+        if (browseOffset >= browseTotal.value) browseExhausted.value = true;
+      }
       populateResolveCache(newItems);
     } catch (e) {
       console.error("useSelectDataSource: error loading more", e);
@@ -114,24 +183,38 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
     const optionsSource = opts.options();
 
     if (typeof optionsSource === "function") {
+      const seq = ++searchSeq;
       try {
         searchLoading.value = true;
         const data = await optionsSource(keyword);
-        searchResults.value = (data?.results as T[]) ?? [];
-        totalCount.value = data?.totalCount ?? 0;
-        populateResolveCache(searchResults.value);
+        // A newer keystroke already owns the search stream.
+        if (seq !== searchSeq) return;
+        const results = (data?.results as T[]) ?? [];
+        searchResults.value = results;
+        searchTotal.value = data?.totalCount ?? 0;
+        searchOffset = results.length;
+        searchExhausted.value = results.length === 0 || searchOffset >= searchTotal.value;
+        populateResolveCache(results);
       } catch (e) {
+        if (seq !== searchSeq) return;
         console.error("useSelectDataSource: error searching", e);
         searchResults.value = [];
+        searchTotal.value = 0;
+        searchOffset = 0;
+        searchExhausted.value = true;
       } finally {
-        searchLoading.value = false;
+        if (seq === searchSeq) searchLoading.value = false;
       }
     } else {
-      // Client-side filter
-      searchResults.value = cachedItems.value.filter((item) => {
+      // Client-side filter — the whole set is already in memory, so it is complete.
+      const filtered = cachedItems.value.filter((item) => {
         const label = opts.getOptionLabel.value(item);
         return String(label).toLowerCase().includes(keyword.toLowerCase());
       });
+      searchResults.value = filtered;
+      searchTotal.value = filtered.length;
+      searchOffset = filtered.length;
+      searchExhausted.value = true;
     }
   }
 
@@ -154,14 +237,7 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
   }
 
   function clearSearch(): void {
-    searchResults.value = null;
-    filterString.value = undefined;
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
-      debounceTimer = undefined;
-    }
-    // Restore totalCount from cached data
-    totalCount.value = cachedItems.value.length;
+    resetSearchState();
   }
 
   // --- Resolve ---
@@ -219,8 +295,10 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
 
   async function refresh(): Promise<void> {
     cachedItems.value = [];
-    searchResults.value = null;
-    totalCount.value = 0;
+    browseTotal.value = 0;
+    browseOffset = 0;
+    browseExhausted.value = false;
+    resetSearchState();
     resolveCache.clear();
     resolvedDefaults.value = [];
     isLoaded = false;
@@ -232,8 +310,10 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
     opts.options,
     async () => {
       cachedItems.value = [];
-      searchResults.value = null;
-      totalCount.value = 0;
+      browseTotal.value = 0;
+      browseOffset = 0;
+      browseExhausted.value = false;
+      resetSearchState();
       resolveCache.clear();
       isLoaded = false;
 
@@ -241,7 +321,9 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
       const optionsSource = opts.options();
       if (Array.isArray(optionsSource)) {
         cachedItems.value = [...optionsSource] as T[];
-        totalCount.value = cachedItems.value.length;
+        browseTotal.value = cachedItems.value.length;
+        browseOffset = cachedItems.value.length;
+        browseExhausted.value = true;
         populateResolveCache(cachedItems.value);
         isLoaded = true;
 

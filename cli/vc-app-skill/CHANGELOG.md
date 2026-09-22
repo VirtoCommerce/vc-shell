@@ -1,14 +1,10 @@
-# [2.6.0-rc.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.0-rc.0...v2.6.0-rc.1) (2026-09-08)
+# Changelog
 
-**Note:** Version bump only for package @vc-shell/vc-app-skill
-
-# [2.6.0-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.5.0...v2.6.0-rc.0) (2026-09-02)
+# [2.6.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.5.0...v2.6.0) (2026-09-22)
 
 ### Features
 
-- **create-vc-app:** add an opt-in Module Federation option (VM-1757) ([#318](https://github.com/VirtoCommerce/vc-shell/issues/318)) ([05e3700](https://github.com/VirtoCommerce/vc-shell/commit/05e37006b385307b06a9f3ec43d3838d15723fd1))
-
-# Changelog
+- **create-vc-app:** add an opt-in Module Federation option (VM-1757) (#318) ([05e3700](https://github.com/VirtoCommerce/vc-shell/commit/05e37006b385307b06a9f3ec43d3838d15723fd1)), closes [#318](https://github.com/VirtoCommerce/vc-shell/issues/318)
 
 # [2.5.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.4.0...v2.5.0) (2026-08-19)
 

@@ -1,6 +1,5 @@
 import { computed, ref, watch, type Ref } from "vue";
 import { createLogger } from "@core/utilities";
-import { notification } from "@core/notifications/notification";
 import { useConnectionStatus } from "@core/composables/useConnectionStatus";
 
 const logger = createLogger("slow-network");
@@ -8,21 +7,23 @@ const SLOW_REQUEST_THRESHOLD_MS = 10000;
 const SLOW_EFFECTIVE_TYPES = ["slow-2g", "2g"];
 let _connectionHandler: (() => void) | null = null;
 
-const SLOW_NETWORK_NOTIFICATION_ID = "vc-framework-slow-network";
+/**
+ * A slow network is a state, not an event, so it is published as a class on the document
+ * rather than as a toast. A toast could only take one of two shapes here, and both were
+ * wrong: a dismissable one reappeared on every action that outran the threshold, and a
+ * sticky one sat on the screen for the whole session on a 2g connection (VCST-6045).
+ * `useConnectionStatus` marks the offline state the same way, with `vc-offline`.
+ */
+const SLOW_NETWORK_CLASS = "vc-slow-network";
 const DISMISS_DELAY_MS = 3000;
-// TODO: move to i18n locale files when useConnectionStatus also migrates to i18n
-const SLOW_NETWORK_MESSAGE = "Your network is slow or the server is taking longer than usual. Please be patient.";
 let _dismissTimer: ReturnType<typeof setTimeout> | null = null;
 
-function showSlowNotification() {
-  notification.warning(SLOW_NETWORK_MESSAGE, {
-    notificationId: SLOW_NETWORK_NOTIFICATION_ID,
-    timeout: false,
-  });
+function markSlowNetwork() {
+  document.documentElement.classList.add(SLOW_NETWORK_CLASS);
 }
 
-function hideSlowNotification() {
-  notification.remove(SLOW_NETWORK_NOTIFICATION_ID);
+function clearSlowNetwork() {
+  document.documentElement.classList.remove(SLOW_NETWORK_CLASS);
 }
 
 // ── Module-level singleton state ────────────────────────────────────
@@ -89,13 +90,13 @@ export function useSlowNetworkDetection(): UseSlowNetworkDetectionReturn {
           _dismissTimer = null;
         }
         if (isOnline.value) {
-          logger.info("Slow network detected — showing notification");
-          showSlowNotification();
+          logger.info("Slow network detected");
+          markSlowNetwork();
         }
       } else {
         _dismissTimer = setTimeout(() => {
-          logger.info("Network recovered — hiding notification");
-          hideSlowNotification();
+          logger.info("Network recovered");
+          clearSlowNetwork();
           _dismissTimer = null;
         }, DISMISS_DELAY_MS);
       }
@@ -107,9 +108,9 @@ export function useSlowNetworkDetection(): UseSlowNetworkDetectionReturn {
           clearTimeout(_dismissTimer);
           _dismissTimer = null;
         }
-        hideSlowNotification();
+        clearSlowNetwork();
       } else if (isSlowNetwork.value) {
-        showSlowNotification();
+        markSlowNetwork();
       }
     });
   }
@@ -133,6 +134,7 @@ export const _resetForTest: (() => void) | undefined = import.meta.env.VITEST
         clearTimeout(_dismissTimer);
         _dismissTimer = null;
       }
+      clearSlowNetwork();
       _isSetup.value = false;
       _slowRequestCount.value = 0;
       _isSlowEffectiveType.value = false;

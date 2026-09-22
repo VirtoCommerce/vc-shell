@@ -164,40 +164,50 @@ describe("useSlowNetworkDetection", () => {
     });
   });
 
-  describe("notification management", () => {
+  // The slow state is published as a class on <html>, the way useConnectionStatus
+  // publishes `vc-offline` — never as a toast (VCST-6045).
+  describe("document state", () => {
+    const isMarked = () => document.documentElement.classList.contains("vc-slow-network");
+
     beforeEach(() => {
       mockIsOnline.value = true;
       mockNotification.warning.mockClear();
       mockNotification.remove.mockClear();
+      document.documentElement.classList.remove("vc-slow-network");
     });
 
-    it("shows notification when isSlowNetwork becomes true", async () => {
+    it("marks the document when isSlowNetwork becomes true", async () => {
       const { trackRequest } = useSlowNetworkDetection();
       trackRequest("req-1");
       vi.advanceTimersByTime(10000);
       await nextTick();
-      expect(mockNotification.warning).toHaveBeenCalledWith(
-        expect.stringContaining("slow"),
-        expect.objectContaining({
-          notificationId: "vc-framework-slow-network",
-          timeout: false,
-        }),
-      );
+      expect(isMarked()).toBe(true);
     });
 
-    it("removes notification with 3s delay when isSlowNetwork becomes false", async () => {
+    it("never raises a notification", async () => {
+      const { trackRequest, untrackRequest } = useSlowNetworkDetection();
+      trackRequest("req-1");
+      vi.advanceTimersByTime(10000);
+      await nextTick();
+      untrackRequest("req-1");
+      vi.advanceTimersByTime(3000);
+      expect(mockNotification.warning).not.toHaveBeenCalled();
+      expect(mockNotification.remove).not.toHaveBeenCalled();
+    });
+
+    it("unmarks with a 3s delay when isSlowNetwork becomes false", async () => {
       const { trackRequest, untrackRequest } = useSlowNetworkDetection();
       trackRequest("req-1");
       vi.advanceTimersByTime(10000);
       await nextTick();
       untrackRequest("req-1");
       await nextTick();
-      expect(mockNotification.remove).not.toHaveBeenCalled();
+      expect(isMarked()).toBe(true);
       vi.advanceTimersByTime(3000);
-      expect(mockNotification.remove).toHaveBeenCalledWith("vc-framework-slow-network");
+      expect(isMarked()).toBe(false);
     });
 
-    it("cancels dismiss if slow again within 3s window", async () => {
+    it("cancels the unmark if slow again within the 3s window", async () => {
       const { trackRequest, untrackRequest } = useSlowNetworkDetection();
       // Start req-2 early so it crosses threshold during the dismiss window
       trackRequest("req-2");
@@ -209,42 +219,40 @@ describe("useSlowNetworkDetection", () => {
       await nextTick();
       // isSlowNetwork is still true (req-2 still slow) — no dismiss timer started
       vi.advanceTimersByTime(3000);
-      expect(mockNotification.remove).not.toHaveBeenCalled();
+      expect(isMarked()).toBe(true);
     });
 
-    it("does not show slow notification when offline", async () => {
+    it("does not mark the document when offline", async () => {
       mockIsOnline.value = false;
       const { trackRequest } = useSlowNetworkDetection();
       trackRequest("req-1");
       vi.advanceTimersByTime(10000);
       await nextTick();
-      expect(mockNotification.warning).not.toHaveBeenCalled();
+      expect(isMarked()).toBe(false);
     });
 
-    it("removes slow notification when going offline", async () => {
+    it("unmarks immediately when going offline", async () => {
       const { trackRequest } = useSlowNetworkDetection();
       trackRequest("req-1");
       vi.advanceTimersByTime(10000);
       await nextTick();
-      expect(mockNotification.warning).toHaveBeenCalled();
+      expect(isMarked()).toBe(true);
       mockIsOnline.value = false;
       await nextTick();
-      expect(mockNotification.remove).toHaveBeenCalledWith("vc-framework-slow-network");
+      expect(isMarked()).toBe(false);
     });
 
-    it("notification persists for 3s after recovery", async () => {
+    it("keeps the mark for 3s after recovery", async () => {
       const { trackRequest, untrackRequest } = useSlowNetworkDetection();
       trackRequest("req-1");
       vi.advanceTimersByTime(10000);
       await nextTick();
-      expect(mockNotification.warning).toHaveBeenCalled();
       untrackRequest("req-1");
       await nextTick();
-      expect(mockNotification.remove).not.toHaveBeenCalled();
       vi.advanceTimersByTime(2999);
-      expect(mockNotification.remove).not.toHaveBeenCalled();
+      expect(isMarked()).toBe(true);
       vi.advanceTimersByTime(1);
-      expect(mockNotification.remove).toHaveBeenCalledWith("vc-framework-slow-network");
+      expect(isMarked()).toBe(false);
     });
   });
 });

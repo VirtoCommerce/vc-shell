@@ -16,10 +16,13 @@ vi.mock("@core/composables/useUserManagement", () => ({
   }),
 }));
 
+const trackRequest = vi.fn();
+const untrackRequest = vi.fn();
+
 vi.mock("@core/composables/useSlowNetworkDetection", () => ({
   useSlowNetworkDetection: () => ({
-    trackRequest: vi.fn(),
-    untrackRequest: vi.fn(),
+    trackRequest,
+    untrackRequest,
   }),
 }));
 
@@ -567,6 +570,105 @@ describe("registerInterceptors — external cancellation", () => {
     const patched = registerInterceptors(createRouter());
 
     await expect(patched("/api/platform/test", { signal: new AbortController().signal })).rejects.toThrow("Aborted");
+  });
+});
+
+// A timeout aborts work the server may already have committed, and an upload's duration
+// is the operator's uplink rather than a stalled server — so both the abort and the
+// slow-request counter are limited to the methods a retry can safely repeat (VCST-6045).
+describe("registerInterceptors — the timeout applies to idempotent methods only", () => {
+  let originalFetch: typeof window.fetch;
+
+  /** A fetch that never settles on its own, and rejects the way a real one does on abort. */
+  function hangingFetch() {
+    return vi.fn(
+      (_url: unknown, init: RequestInit) =>
+        new Promise((_resolve, reject) => {
+          init.signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), {
+            once: true,
+          });
+        }),
+    );
+  }
+
+  beforeEach(() => {
+    originalFetch = window.fetch;
+    authenticated = true;
+    resetSessionExpired();
+    trackRequest.mockClear();
+    untrackRequest.mockClear();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    window.fetch = originalFetch;
+    resetSessionExpired();
+  });
+
+  it("aborts a GET that outruns the timeout", async () => {
+    const impl = hangingFetch();
+    window.fetch = impl as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    const inFlight = patched("/api/platform/test");
+    inFlight.catch(() => undefined);
+
+    await vi.advanceTimersByTimeAsync(30000);
+
+    expect(impl.mock.calls[0][1].signal.aborted).toBe(true);
+    await expect(inFlight).rejects.toThrow();
+  });
+
+  it("leaves a POST running past the timeout", async () => {
+    const impl = hangingFetch();
+    window.fetch = impl as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    let settled = false;
+    void patched("/api/assets?folderUrl=/x", { method: "POST" }).then(
+      () => (settled = true),
+      () => (settled = true),
+    );
+
+    await vi.advanceTimersByTimeAsync(60000);
+
+    expect(impl.mock.calls[0][1].signal.aborted).toBe(false);
+    expect(settled).toBe(false);
+  });
+
+  it("reads the method off a Request object", async () => {
+    const impl = hangingFetch();
+    window.fetch = impl as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    const request = new Request(`${window.location.origin}/api/assets`, { method: "POST" });
+    void patched(request).catch(() => undefined);
+
+    await vi.advanceTimersByTimeAsync(60000);
+
+    expect(impl.mock.calls[0][1].signal.aborted).toBe(false);
+  });
+
+  it("counts a GET towards slow-network detection", async () => {
+    window.fetch = vi.fn().mockResolvedValue({ status: 200 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    await patched("/api/platform/test");
+
+    expect(trackRequest).toHaveBeenCalledTimes(1);
+    expect(untrackRequest).toHaveBeenCalledTimes(1);
+  });
+
+  // Otherwise every upload slower than 10s would claim the network is slow.
+  it("keeps a POST out of slow-network detection", async () => {
+    window.fetch = vi.fn().mockResolvedValue({ status: 200 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    await patched("/api/assets?folderUrl=/x", { method: "POST" });
+
+    expect(trackRequest).not.toHaveBeenCalled();
+    expect(untrackRequest).not.toHaveBeenCalled();
   });
 });
 

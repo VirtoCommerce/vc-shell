@@ -11,6 +11,18 @@ const logger = createLogger("interceptors");
 // Paths a platform redirects an unauthenticated request to.
 const LOGIN_PATH_PATTERN = /(^|\/)(login|signin|sign-in|account\/login|connect\/authorize)(\/|$)/i;
 
+const API_TIMEOUT_MS = 30000;
+
+// Methods whose request a retry can repeat without a second side effect, which is what
+// makes aborting one safe.
+const IDEMPOTENT_METHODS = new Set(["GET", "HEAD"]);
+
+/** The method the request will actually be sent with, matching what `fetch` resolves. */
+function methodOf(resource: RequestInfo | URL, init?: RequestInit): string {
+  const method = init?.method ?? (resource instanceof Request ? resource.method : undefined);
+  return (method ?? "GET").toUpperCase();
+}
+
 /**
  * Detects a dead session that no status code reveals.
  *
@@ -161,16 +173,26 @@ export function registerInterceptors(router: Router) {
         return Promise.reject(new Error(i18n.global.t("CORE.ERRORS.NETWORK_UNAVAILABLE")));
       }
 
-      const requestId = String(++requestCounter);
-      trackRequest(requestId);
+      // Aborting a mutation cancels work the server may already have committed, and an
+      // upload's duration is the operator's uplink, not a stalled server — so the timeout
+      // and the slow-request counter cover only the methods a retry is safe for
+      // (VCST-6045). The 10s slow-network signal stays the feedback for the rest.
+      const isIdempotent = IDEMPOTENT_METHODS.has(methodOf(resource, init));
 
-      // Always enforce timeout, but preserve external cancellation semantics
+      const requestId = String(++requestCounter);
+      if (isIdempotent) {
+        trackRequest(requestId);
+      }
+
+      // Enforce the timeout where it applies, preserving external cancellation semantics
       const controller = new AbortController();
       let didTimeout = false;
-      const timeoutId = setTimeout(() => {
-        didTimeout = true;
-        controller.abort();
-      }, 30000);
+      const timeoutId = isIdempotent
+        ? setTimeout(() => {
+            didTimeout = true;
+            controller.abort();
+          }, API_TIMEOUT_MS)
+        : undefined;
 
       const externalSignal = init?.signal;
       const abortFromExternal = () => controller.abort();
@@ -205,7 +227,9 @@ export function registerInterceptors(router: Router) {
         }
         throw e;
       } finally {
-        untrackRequest(requestId);
+        if (isIdempotent) {
+          untrackRequest(requestId);
+        }
         clearTimeout(timeoutId);
         if (externalSignal) {
           externalSignal.removeEventListener("abort", abortFromExternal);

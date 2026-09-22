@@ -51,6 +51,7 @@ export interface UseDataTablePaginationReturn {
    *
    * Optional because consumers hand-build this interface to re-expose a nested pagination.
    */
+  readonly restoredPage?: number;
 }
 
 export function useDataTablePagination(options: UseDataTablePaginationOptions): UseDataTablePaginationReturn {

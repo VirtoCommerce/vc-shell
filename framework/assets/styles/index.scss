@@ -106,3 +106,39 @@ html.vc-offline .vc-app {
   filter: grayscale(30%);
   transition: filter 0.3s ease;
 }
+
+// Visual hint when the network is slow (class toggled by useSlowNetworkDetection).
+// A sweep along the top edge: the operator has to be able to tell why the UI is
+// waiting, without the hint taking a place in the layout or covering a control.
+// It sits above a modal, because a slow network is just as true while one is open.
+html.vc-slow-network .vc-app::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: 2px;
+  z-index: var(--z-critical-network-status);
+  pointer-events: none;
+  background-image: linear-gradient(90deg, transparent, var(--warning-500), transparent);
+  background-repeat: no-repeat;
+  background-size: 45% 100%;
+  animation: vc-slow-network-sweep 1.6s linear infinite;
+}
+
+@keyframes vc-slow-network-sweep {
+  from {
+    background-position: -50% 0;
+  }
+
+  to {
+    background-position: 150% 0;
+  }
+}
+
+// The sweep carries the meaning, so without motion the bar has to stand on its own.
+@media (prefers-reduced-motion: reduce) {
+  html.vc-slow-network .vc-app::before {
+    animation: none;
+    background-image: none;
+    background-color: var(--warning-500);
+  }
+}

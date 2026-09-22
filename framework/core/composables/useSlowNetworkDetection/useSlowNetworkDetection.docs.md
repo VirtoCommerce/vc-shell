@@ -7,7 +7,7 @@ internal: true
 
 # useSlowNetworkDetection
 
-Detects slow network conditions and publishes them as the `vc-slow-network` class on `<html>`, so an app can explain an unresponsive UI in its own layout. Two detection channels work together: a **proactive** channel reads `navigator.connection.effectiveType` to catch weak connections before any request is made, and a **reactive** channel flags idempotent API requests that have been pending for more than 10 seconds. The class is removed with a 3-second delay after conditions clear, preventing flicker. When the browser goes fully offline, the class is dropped in favor of the offline notification from `useConnectionStatus`.
+Detects slow network conditions and publishes them as the `vc-slow-network` class on `<html>`, which the framework renders as a 2px sweep along the top edge of the viewport. Two detection channels work together: a **proactive** channel reads `navigator.connection.effectiveType` to catch weak connections before any request is made, and a **reactive** channel flags idempotent API requests that have been pending for more than 10 seconds. The class is removed with a 3-second delay after conditions clear, preventing flicker. When the browser goes fully offline, the class is dropped in favor of the offline notification from `useConnectionStatus`.
 
 A slow network is a state, not an event, so it is never announced as a toast: a dismissable one reappears on every action that outruns the threshold, and a sticky one sits on the screen for the whole session on a 2g connection (VCST-6045).
 
@@ -82,7 +82,7 @@ The fetch interceptor in `framework/core/interceptors/index.ts` calls `trackRequ
 
 ### Class lifecycle
 
-1. `isSlowNetwork` becomes `true` → add `vc-slow-network` to `<html>`
+1. `isSlowNetwork` becomes `true` → add `vc-slow-network` to `<html>`, and the bar appears
 2. `isSlowNetwork` becomes `false` → start a 3-second removal timer
 3. If `isSlowNetwork` goes back to `true` within those 3 seconds → cancel removal, the class stays
 4. If the browser goes offline → remove the class at once (the offline notification takes over)
@@ -136,7 +136,7 @@ async function fetchFromExternalApi(url: string) {
 - **Singleton by design.** Multiple calls to `useSlowNetworkDetection()` share the same state. No overhead from calling it in many components.
 - **The state cannot stack.** A class is present or it is not, so concurrent slow requests read as one state.
 - **The 3-second removal delay prevents flicker.** Without it, a burst of requests completing one-by-one would toggle the class on and off rapidly.
-- **Style it like `vc-offline`.** `framework/assets/styles/index.scss` already dims `.vc-app` while offline; a slow-network hint belongs next to it.
+- **The bar lives in one CSS rule.** `framework/assets/styles/index.scss` draws it next to the `html.vc-offline` rule, so an app can restyle or suppress it without touching the composable. Under `prefers-reduced-motion` it becomes a static line.
 - **`navigator.connection` has limited support.** Only Chromium-based browsers support it. Firefox and Safari users will only get the request-timer channel, which is still effective.
 - **The composable does not block requests.** Unlike the offline guard in the interceptor, slow-network detection is purely informational — it never prevents or delays a fetch.
 
@@ -175,4 +175,4 @@ trackRequest("my-request-2");
 
 - [`useConnectionStatus`](../useConnectionStatus/useConnectionStatus.docs.md) — offline detection (binary online/offline)
 - [`registerInterceptors`](https://github.com/VirtoCommerce/vc-shell/blob/main/framework/core/interceptors/index.ts) — the fetch wrapper that calls `trackRequest`/`untrackRequest`
-- `framework/assets/styles/index.scss` — where `html.vc-offline` is styled, and where a `html.vc-slow-network` rule belongs
+- `framework/assets/styles/index.scss` — the top-edge sweep this class renders as, alongside the `html.vc-offline` rule

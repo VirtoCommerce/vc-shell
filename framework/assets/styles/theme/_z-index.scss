@@ -39,5 +39,6 @@
   --z-critical-modal: 9200; // modal dialogs, sidebar overlays (above popup)
   --z-critical-floating-panel: 9300; // teleported dropdown (works inside modals)
   --z-critical-tooltip: 9400; // tooltips (informational, always visible)
+  --z-critical-network-status: 9450; // slow-network bar (readable over a modal, below notifications)
   --z-critical-notification: 9500; // notifications (topmost — user must see)
 }

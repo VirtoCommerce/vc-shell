@@ -356,6 +356,55 @@ describe("useSelectDataSource", () => {
       expect(ds.filterString.value).toBe("AGENT");
     });
 
+    it("releases the search spinner when the dropdown closes mid-request", async () => {
+      let release: (value: any) => void = () => {};
+      const loader = vi
+        .fn()
+        .mockResolvedValueOnce({ results: [], totalCount: 0 })
+        .mockImplementationOnce(() => new Promise((resolve) => (release = resolve)));
+      const ds = createDataSource({ options: () => loader, debounce: () => 0 });
+
+      await ds.open();
+      ds.onInput({ target: { value: "AGENT" } } as unknown as Event);
+      await flushPromises();
+      expect(ds.searchLoading.value).toBe(true);
+
+      // Escape or a click outside while the request is still in flight.
+      ds.close();
+      release({ results: makeItems("a", 3), totalCount: 3 });
+      await flushPromises();
+
+      // A stuck flag would pin the trigger spinner and unmount the load-more
+      // sentinel, so paging would stay dead until the component remounts.
+      expect(ds.searchLoading.value).toBe(false);
+    });
+
+    it("discards a page requested for the previous keyword", async () => {
+      const ag = makeItems("ag", 200);
+      const agent = makeItems("agent", 200);
+      const loader = createKeywordLoader({ "": [], AG: ag, AGENT: agent });
+      const ds = createDataSource({ options: () => loader, debounce: () => 0 });
+
+      await ds.open();
+      ds.onInput({ target: { value: "AG" } } as unknown as Event);
+      await flushPromises();
+      await ds.loadMore();
+      expect(ds.displayItems.value).toHaveLength(40);
+
+      // The sentinel fires while the newer search is still in flight: this page
+      // is requested at the AG offset but under the AGENT keyword.
+      ds.onInput({ target: { value: "AGENT" } } as unknown as Event);
+      const inFlight = ds.loadMore();
+      await flushPromises();
+      await inFlight;
+      await flushPromises();
+
+      // Whatever is rendered must be a contiguous prefix of the AGENT set —
+      // a gap in the middle is unreachable and cannot be selected.
+      const ids = ds.displayItems.value.map((item: any) => item.id);
+      expect(ids).toEqual(agent.slice(0, ids.length).map((item) => item.id));
+    });
+
     it("a static array never pages, with or without a search", async () => {
       const items = makeItems("a", 50);
       const ds = createDataSource({ options: () => items });

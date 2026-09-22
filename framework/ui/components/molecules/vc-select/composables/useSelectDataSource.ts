@@ -65,6 +65,9 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
   // --- Helper: drop the search stream, leaving the browse stream intact ---
   function resetSearchState(): void {
     searchResults.value = null;
+    // The bump below orphans any in-flight search, so its finally block will not
+    // clear this — dropping the stream has to release the flag itself.
+    searchLoading.value = false;
     filterString.value = undefined;
     searchTotal.value = 0;
     searchOffset = 0;
@@ -126,13 +129,19 @@ export function useSelectDataSource<T>(opts: UseSelectDataSourceOptions<T>) {
 
     const isSearch = searchResults.value !== null;
     const seq = searchSeq;
+    // The collection this page is being fetched for. executeSearch() replaces it
+    // wholesale, and it bumps searchSeq synchronously on entry — so a loadMore()
+    // that starts after that bump carries a seq that still matches. Identity is
+    // what separates them: a page requested at the previous keyword's offset must
+    // not be appended to a newer keyword's first page.
+    const stream = searchResults.value;
 
     try {
       loading.value = true;
       const data = await optionsSource(filterString.value, isSearch ? searchOffset : browseOffset);
 
       // The search was cleared or replaced while this page was in flight.
-      if (isSearch && (searchResults.value === null || seq !== searchSeq)) return;
+      if (isSearch && (searchResults.value !== stream || seq !== searchSeq)) return;
 
       const results = (data?.results as T[]) ?? [];
 

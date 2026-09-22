@@ -514,19 +514,21 @@ describe("registerInterceptors — external cancellation", () => {
     resetSessionExpired();
   });
 
-  it("passes a signal of its own to the underlying fetch", async () => {
+  // The interceptor adds no signal of its own, so a caller that passed none keeps none:
+  // wrapping every request in an AbortController it never fires would only give the
+  // request a way to be cancelled by nobody.
+  it("leaves a request without a caller signal unsignalled", async () => {
     const impl = vi.fn().mockResolvedValue({ status: 200 });
     window.fetch = impl as unknown as typeof window.fetch;
 
     const patched = registerInterceptors(createRouter());
     await patched("/api/platform/test");
 
-    expect(impl.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+    expect(impl.mock.calls[0][1]?.signal).toBeUndefined();
   });
 
-  // The caller's signal has to reach the request that is actually in flight,
-  // which is not the caller's — the interceptor makes its own to enforce the
-  // timeout, and links the two.
+  // The caller's own signal reaches the request in flight, because it is the one handed
+  // to fetch — nothing is composed on top of it.
   it("aborts the in-flight request when the caller's signal fires", async () => {
     let seen: AbortSignal | undefined;
     window.fetch = vi.fn((_url: unknown, init: RequestInit) => {
@@ -573,22 +575,25 @@ describe("registerInterceptors — external cancellation", () => {
   });
 });
 
-// A timeout aborts work the server may already have committed, and an upload's duration
-// is the operator's uplink rather than a stalled server — so both the abort and the
-// slow-request counter are limited to the methods a retry can safely repeat (VCST-6045).
-describe("registerInterceptors — the timeout applies to idempotent methods only", () => {
+// The interceptor imposes no deadline: a long request is not a failed one, and aborting
+// a mutation throws away work the server may already have committed (VCST-6045). Only
+// slow-network tracking still distinguishes methods, so an upload does not read as a
+// slow link.
+describe("registerInterceptors — no deadline of its own", () => {
   let originalFetch: typeof window.fetch;
 
-  /** A fetch that never settles on its own, and rejects the way a real one does on abort. */
+  /** A fetch that never settles, standing in for a request the server is still working on. */
   function hangingFetch() {
-    return vi.fn(
-      (_url: unknown, init: RequestInit) =>
-        new Promise((_resolve, reject) => {
-          init.signal?.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), {
-            once: true,
-          });
-        }),
+    return vi.fn(() => new Promise(() => {}));
+  }
+
+  function settlesWithin(promise: Promise<unknown>) {
+    let done = false;
+    promise.then(
+      () => (done = true),
+      () => (done = true),
     );
+    return () => done;
   }
 
   beforeEach(() => {
@@ -606,48 +611,27 @@ describe("registerInterceptors — the timeout applies to idempotent methods onl
     resetSessionExpired();
   });
 
-  it("aborts a GET that outruns the timeout", async () => {
-    const impl = hangingFetch();
-    window.fetch = impl as unknown as typeof window.fetch;
+  // A report, an export or a reindex legitimately outlasts any cap worth setting.
+  it("leaves a long GET running", async () => {
+    window.fetch = hangingFetch() as unknown as typeof window.fetch;
 
     const patched = registerInterceptors(createRouter());
-    const inFlight = patched("/api/platform/test");
-    inFlight.catch(() => undefined);
+    const settled = settlesWithin(patched("/api/catalog/export"));
 
-    await vi.advanceTimersByTimeAsync(30000);
+    await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
 
-    expect(impl.mock.calls[0][1].signal.aborted).toBe(true);
-    await expect(inFlight).rejects.toThrow();
+    expect(settled()).toBe(false);
   });
 
-  it("leaves a POST running past the timeout", async () => {
-    const impl = hangingFetch();
-    window.fetch = impl as unknown as typeof window.fetch;
+  it("leaves a long POST running", async () => {
+    window.fetch = hangingFetch() as unknown as typeof window.fetch;
 
     const patched = registerInterceptors(createRouter());
-    let settled = false;
-    void patched("/api/assets?folderUrl=/x", { method: "POST" }).then(
-      () => (settled = true),
-      () => (settled = true),
-    );
+    const settled = settlesWithin(patched("/api/assets?folderUrl=/x", { method: "POST" }));
 
-    await vi.advanceTimersByTimeAsync(60000);
+    await vi.advanceTimersByTimeAsync(5 * 60 * 1000);
 
-    expect(impl.mock.calls[0][1].signal.aborted).toBe(false);
-    expect(settled).toBe(false);
-  });
-
-  it("reads the method off a Request object", async () => {
-    const impl = hangingFetch();
-    window.fetch = impl as unknown as typeof window.fetch;
-
-    const patched = registerInterceptors(createRouter());
-    const request = new Request(`${window.location.origin}/api/assets`, { method: "POST" });
-    void patched(request).catch(() => undefined);
-
-    await vi.advanceTimersByTimeAsync(60000);
-
-    expect(impl.mock.calls[0][1].signal.aborted).toBe(false);
+    expect(settled()).toBe(false);
   });
 
   it("counts a GET towards slow-network detection", async () => {
@@ -669,6 +653,15 @@ describe("registerInterceptors — the timeout applies to idempotent methods onl
 
     expect(trackRequest).not.toHaveBeenCalled();
     expect(untrackRequest).not.toHaveBeenCalled();
+  });
+
+  it("reads the method off a Request object", async () => {
+    window.fetch = vi.fn().mockResolvedValue({ status: 200 }) as unknown as typeof window.fetch;
+
+    const patched = registerInterceptors(createRouter());
+    await patched(new Request(`${window.location.origin}/api/assets`, { method: "POST" }));
+
+    expect(trackRequest).not.toHaveBeenCalled();
   });
 });
 

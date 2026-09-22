@@ -11,10 +11,9 @@ const logger = createLogger("interceptors");
 // Paths a platform redirects an unauthenticated request to.
 const LOGIN_PATH_PATTERN = /(^|\/)(login|signin|sign-in|account\/login|connect\/authorize)(\/|$)/i;
 
-const API_TIMEOUT_MS = 30000;
-
-// Methods whose request a retry can repeat without a second side effect, which is what
-// makes aborting one safe.
+// Methods a retry can repeat without a second side effect. A mutation's duration is the
+// operator's uplink as often as it is the server, so counting one towards slow-network
+// detection would have every large upload claim the network is slow.
 const IDEMPOTENT_METHODS = new Set(["GET", "HEAD"]);
 
 /** The method the request will actually be sent with, matching what `fetch` resolves. */
@@ -173,40 +172,21 @@ export function registerInterceptors(router: Router) {
         return Promise.reject(new Error(i18n.global.t("CORE.ERRORS.NETWORK_UNAVAILABLE")));
       }
 
-      // Aborting a mutation cancels work the server may already have committed, and an
-      // upload's duration is the operator's uplink, not a stalled server — so the timeout
-      // and the slow-request counter cover only the methods a retry is safe for
-      // (VCST-6045). The 10s slow-network signal stays the feedback for the rest.
-      const isIdempotent = IDEMPOTENT_METHODS.has(methodOf(resource, init));
-
+      // The interceptor imposes no deadline of its own (VCST-6045). A request that takes
+      // a long time is not the same as a request that failed: an export, a reindex or a
+      // 20 MB upload legitimately outlast any cap worth setting, and aborting one throws
+      // away work the server may already have committed. Only the caller knows when its
+      // own request stopped being worth waiting for, so cancellation stays theirs —
+      // `init.signal` is passed through untouched. The slow-network signal at 10s is what
+      // tells the operator the wait is real.
       const requestId = String(++requestCounter);
-      if (isIdempotent) {
+      const tracked = IDEMPOTENT_METHODS.has(methodOf(resource, init));
+      if (tracked) {
         trackRequest(requestId);
       }
 
-      // Enforce the timeout where it applies, preserving external cancellation semantics
-      const controller = new AbortController();
-      let didTimeout = false;
-      const timeoutId = isIdempotent
-        ? setTimeout(() => {
-            didTimeout = true;
-            controller.abort();
-          }, API_TIMEOUT_MS)
-        : undefined;
-
-      const externalSignal = init?.signal;
-      const abortFromExternal = () => controller.abort();
-      if (externalSignal?.aborted) {
-        abortFromExternal();
-      } else if (externalSignal) {
-        externalSignal.addEventListener("abort", abortFromExternal, { once: true });
-      }
-
       try {
-        const response = await originalFetch(resource, {
-          ...(init || {}),
-          signal: controller.signal,
-        });
+        const response = await originalFetch(...args);
 
         const isLoginPageResponse = response.ok && looksLikeLoginPage(response);
         handleSessionDeath(response.status === 401 || isLoginPageResponse);
@@ -221,18 +201,9 @@ export function registerInterceptors(router: Router) {
         }
 
         return response;
-      } catch (e) {
-        if (didTimeout) {
-          throw new Error(i18n.global.t("CORE.ERRORS.REQUEST_TIMED_OUT"));
-        }
-        throw e;
       } finally {
-        if (isIdempotent) {
+        if (tracked) {
           untrackRequest(requestId);
-        }
-        clearTimeout(timeoutId);
-        if (externalSignal) {
-          externalSignal.removeEventListener("abort", abortFromExternal);
         }
       }
     }

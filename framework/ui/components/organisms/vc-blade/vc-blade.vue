@@ -367,6 +367,15 @@ watch(
   () => renderingState?.value?.maximized,
   () => focusIfLoose(() => bladeRef.value),
 );
+
+// A save leaves focus nowhere when the toolbar re-renders and the control the user
+// activated stops existing. Until now only a blade that happened to remount recovered
+// from that, through the mount repair above — so the transition passed by accident and
+// would have failed silently the day it stopped remounting (VCST-5670).
+watch(
+  () => Boolean(props.loading),
+  () => focusIfLoose(() => bladeRef.value),
+);
 </script>
 
 <style lang="scss">

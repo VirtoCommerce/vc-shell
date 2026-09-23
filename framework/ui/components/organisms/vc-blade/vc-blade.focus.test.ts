@@ -39,6 +39,7 @@ vi.mock("@core/blade-navigation/utils/urlSync", () => ({
 }));
 
 const maximized = ref(false);
+const loading = ref(false);
 
 function mountBlade() {
   const Wrapper = defineComponent({
@@ -63,7 +64,7 @@ function mountBlade() {
         computed<BladeDescriptor>(() => ({ id: "b", name: "TestBlade", visible: true }) as never),
       );
 
-      return () => h(VcBlade as never, { title: "Order" }, { default: () => h("div", "body") });
+      return () => h(VcBlade as never, { title: "Order", loading: loading.value }, { default: () => h("div", "body") });
     },
   });
 
@@ -142,6 +143,57 @@ describe("VcBlade focus across maximize", () => {
       maximized.value = false;
       w.unmount();
       elsewhere.remove();
+    }
+  });
+});
+
+/**
+ * Saving re-renders the toolbar, and the control the user activated can stop existing.
+ * A blade that remounts on save recovered from that through the mount repair, which is
+ * an accident of the consumer's implementation rather than a guarantee — these pin the
+ * guarantee to the load transition itself (VCST-5670).
+ */
+describe("VcBlade focus across a save", () => {
+  it("takes focus when the save left it nowhere", async () => {
+    const w = mountBlade();
+    try {
+      await nextTick();
+      await nextTick();
+
+      // What a re-rendered toolbar does to the button that triggered the save.
+      loading.value = true;
+      await nextTick();
+      (document.activeElement as HTMLElement | null)?.blur?.();
+
+      loading.value = false;
+      await nextTick();
+      await nextTick();
+
+      expect(document.activeElement).toBe(w.find(".vc-blade").element);
+    } finally {
+      loading.value = false;
+      w.unmount();
+    }
+  });
+
+  it("leaves focus alone when the control survived the save", async () => {
+    const survivor = document.createElement("button");
+    document.body.appendChild(survivor);
+    const w = mountBlade();
+    try {
+      survivor.focus();
+
+      loading.value = true;
+      await nextTick();
+      loading.value = false;
+      await nextTick();
+      await nextTick();
+
+      expect(document.activeElement).toBe(survivor);
+    } finally {
+      loading.value = false;
+      w.unmount();
+      survivor.remove();
     }
   });
 });

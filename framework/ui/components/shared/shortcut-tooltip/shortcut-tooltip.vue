@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
-import ShortcutKbd from "@ui/components/shared/ShortcutKbd.vue";
+import { ShortcutKbd } from "@ui/components/shared/shortcut-kbd";
 import { formatShortcut, useKeyboardShortcuts } from "@core/composables/useKeyboardShortcuts";
 import type { ShortcutDefinition } from "@core/types";
 

@@ -31,7 +31,7 @@
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import ShortcutTooltip from "@ui/components/shared/ShortcutTooltip.vue";
+import { ShortcutTooltip } from "@ui/components/shared/shortcut-tooltip";
 import { hotkey } from "@core/composables/useKeyboardShortcuts";
 
 const props = defineProps<{

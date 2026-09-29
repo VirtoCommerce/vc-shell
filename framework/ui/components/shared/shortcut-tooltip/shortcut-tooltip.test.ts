@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { h } from "vue";
 import { mount } from "@vue/test-utils";
-import ShortcutTooltip from "./ShortcutTooltip.vue";
+import ShortcutTooltip from "./shortcut-tooltip.vue";
 import { hotkey } from "@core/composables/useKeyboardShortcuts";
 
 describe("ShortcutTooltip", () => {

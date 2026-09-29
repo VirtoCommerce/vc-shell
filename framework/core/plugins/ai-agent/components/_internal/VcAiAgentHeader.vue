@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import VcVirtoOzLogo from "@core/plugins/ai-agent/components/_internal/VcVirtoOzLogo.vue";
-import HeaderControls from "@ui/components/shared/HeaderControls.vue";
+import { HeaderControls } from "@ui/components/shared/header-controls";
 
 defineProps<{
   title?: string;

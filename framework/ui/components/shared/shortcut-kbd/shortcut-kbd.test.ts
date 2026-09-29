@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import ShortcutKbd from "./ShortcutKbd.vue";
+import ShortcutKbd from "./shortcut-kbd.vue";
 
 describe("ShortcutKbd", () => {
   it("renders one kbd per part", () => {

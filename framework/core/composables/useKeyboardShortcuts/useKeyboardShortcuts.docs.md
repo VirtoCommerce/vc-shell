@@ -102,12 +102,12 @@ const { parts } = formatShortcut(hotkey.mod.s);
 // isMac === false → parts = ["Ctrl", "S"]   → tooltip renders "Ctrl+S" (with separator)
 ```
 
-The toolbar button itself (`ToolbarBaseButton`) already does this for you: it calls `formatShortcut` internally and renders the result through the `ShortcutKbd` chip component inside a tooltip. `isMac` also determines `matchesEvent`'s runtime resolution of `mod` -- the same flag drives both what the user sees and what actually fires.
+The toolbar button itself (`ToolbarBaseButton`) already does this for you: it calls `formatShortcut` internally and renders the result through the internal `ShortcutTooltip` (`ShortcutKbd` chips inside a `VcTooltip`). The blade and AI panel header controls use the same component. `isMac` also determines `matchesEvent`'s runtime resolution of `mod` -- the same flag drives both what the user sees and what actually fires.
 
 ## Accessibility
 
 - **`aria-keyshortcuts`.** Set automatically on the button element whenever `shortcut` is present, using the canonical `aria` string from `formatShortcut` (for example `aria-keyshortcuts="Meta+S"`). No shortcut, no attribute -- it's never rendered empty.
-- **Tooltip discovery.** A sighted user discovers the shortcut through the `<kbd>` chips shown on hover/focus of the toolbar button (`ShortcutKbd`, wrapped in `VcTooltip`). This is the only visual affordance; there is no separate "shortcuts list" surface in v1.
+- **Tooltip discovery.** A sighted user discovers the shortcut through the `<kbd>` chips shown on hover/focus of the toolbar button, after a 500ms delay (`ShortcutTooltip`). This is the only visual affordance; there is no separate "shortcuts list" surface in v1.
 - **No button, no discovery.** Both `aria-keyshortcuts` and the tooltip are properties of the rendered toolbar button -- they exist only because `shortcut` lives on an `IBladeToolbar` item that renders as a button. There is currently no way to advertise a shortcut that isn't attached to a visible button (see [Common mistakes](#common-mistakes)).
 - **Accessible name still comes from the title.** `shortcut` does not change how the button's accessible name is computed -- it still comes from the visible `title` text. Keep `title` non-empty; `shortcut` is additive, not a substitute for a labeled button.
 - **Suppressed behind a modal.** Blade shortcuts (toolbar and built-in) do not fire while a modal (`aria-modal="true"`) is open, so a shortcut never acts on a blade hidden behind it.

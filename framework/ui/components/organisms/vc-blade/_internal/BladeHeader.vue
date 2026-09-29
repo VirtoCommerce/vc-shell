@@ -102,89 +102,13 @@
         </div>
       </div>
 
-      <div
+      <HeaderControls
         v-if="!isMobile && closable"
-        ref="controlsRef"
-        class="vc-blade-header__controls"
-      >
-        <VcTooltip
-          v-if="renderingState?.maximized"
-          placement="bottom"
-        >
-          <div
-            class="vc-blade-header__button"
-            role="button"
-            tabindex="0"
-            data-blade-expand-control
-            :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.RESTORE')"
-            :aria-keyshortcuts="expandAria"
-            @click="onCollapse"
-            @keydown.enter.prevent="onCollapse"
-            @keydown.space.prevent="onCollapse"
-          >
-            <VcIcon icon="lucide-minus" />
-          </div>
-          <template #tooltip>
-            <span class="tw-inline-flex tw-items-center tw-gap-2">
-              {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.RESTORE") }}
-              <ShortcutKbd
-                :parts="expandFmt.parts"
-                :separated="!isMac"
-              />
-            </span>
-          </template>
-        </VcTooltip>
-        <VcTooltip
-          v-else
-          placement="bottom"
-        >
-          <div
-            class="vc-blade-header__button"
-            role="button"
-            tabindex="0"
-            data-blade-expand-control
-            :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.MAXIMIZE')"
-            :aria-keyshortcuts="expandAria"
-            @click="onExpand"
-            @keydown.enter.prevent="onExpand"
-            @keydown.space.prevent="onExpand"
-          >
-            <VcIcon icon="lucide-panel-top" />
-          </div>
-          <template #tooltip>
-            <span class="tw-inline-flex tw-items-center tw-gap-2">
-              {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.MAXIMIZE") }}
-              <ShortcutKbd
-                :parts="expandFmt.parts"
-                :separated="!isMac"
-              />
-            </span>
-          </template>
-        </VcTooltip>
-        <VcTooltip placement="bottom">
-          <div
-            class="vc-blade-header__button"
-            role="button"
-            tabindex="0"
-            :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.CLOSE')"
-            :aria-keyshortcuts="escapeAria"
-            @click="onClose"
-            @keydown.enter.prevent="onClose"
-            @keydown.space.prevent="onClose"
-          >
-            <VcIcon icon="lucide-x" />
-          </div>
-          <template #tooltip>
-            <span class="tw-inline-flex tw-items-center tw-gap-2">
-              {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.CLOSE") }}
-              <ShortcutKbd
-                :parts="escapeFmt.parts"
-                :separated="!isMac"
-              />
-            </span>
-          </template>
-        </VcTooltip>
-      </div>
+        :maximized="!!renderingState?.maximized"
+        @expand="onExpand"
+        @collapse="onCollapse"
+        @close="onClose"
+      />
     </div>
   </div>
 </template>
@@ -192,15 +116,12 @@
 <script lang="ts" setup>
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
-import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
-import ShortcutKbd from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
-import { ref, inject, computed, watch } from "vue";
-import { useI18n } from "vue-i18n";
+import { HeaderControls } from "@ui/components/shared/header-controls";
+import { ref, inject } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { shift } from "@floating-ui/vue";
 import { BladeRenderingStateKey } from "@core/blade-navigation/types";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
-import { hotkey, formatShortcut, useKeyboardShortcuts } from "@core/composables/useKeyboardShortcuts";
 
 export interface Props {
   closable?: boolean;
@@ -221,13 +142,6 @@ const emit = defineEmits<{
   collapse: [];
 }>();
 
-const { t } = useI18n();
-const { isMac } = useKeyboardShortcuts();
-const escapeFmt = computed(() => formatShortcut(hotkey.escape, isMac));
-const expandFmt = computed(() => formatShortcut(hotkey.mod.backslash, isMac));
-const escapeAria = computed(() => escapeFmt.value.aria);
-const expandAria = computed(() => expandFmt.value.aria);
-
 const { isMobile } = useResponsive();
 const renderingState = inject(BladeRenderingStateKey, undefined);
 const tooltipVisible = ref(false);
@@ -238,40 +152,6 @@ const { floatingStyle } = useFloatingPosition(tooltipIconRef, tooltipRef, {
   placement: "bottom-start",
   middleware: () => [shift()],
 });
-
-const controlsRef = ref<HTMLElement | null>(null);
-
-/**
- * Maximize and Restore are two nodes swapped by `v-if`, so activating one unmounts it
- * and focus falls to `<body>` (WCAG 2.4.3). Move focus to whichever control replaced it.
- *
- * A deliberate handoff, not a repair, so not `focusIfLoose`: at `nextTick` the old button
- * is often still focused and mounted, so a "focus looks lost" check would decline and the
- * button would disappear a frame later.
- *
- * Runs on the next animation frame, not `nextTick`: collapsing re-lays-out the blade
- * stack, which can push the swap past the microtask queue.
- */
-function keepFocusOnExpandControl(): void {
-  // Skip when focus is elsewhere: a mouse user who clicked something else should not
-  // have focus yanked into the header.
-  if (!controlsRef.value?.contains(document.activeElement)) return;
-
-  requestAnimationFrame(() => {
-    controlsRef.value?.querySelector<HTMLElement>("[data-blade-expand-control]")?.focus();
-  });
-}
-
-// Two entry points swap these nodes: this control, and the `mod+\` shortcut, which calls
-// `toggleMaximized` on the stack and never reaches the handlers below. Hooking a handler
-// covers only one — QA found the shortcut path still dropping focus (VCST-5812).
-//
-// So watch the state that drives the swap. Default `pre` flush matters: this must run
-// while the activated control is still focused and mounted.
-watch(
-  () => renderingState?.value?.maximized,
-  () => keepFocusOnExpandControl(),
-);
 
 function onExpand(): void {
   if (props.closable) emit("expand");
@@ -383,19 +263,6 @@ function onClose(): void {
 
   &__subtitle {
     @apply tw-text-[color:var(--blade-header-subtitle-color)] tw-text-xs tw-mt-1;
-  }
-
-  &__controls {
-    @apply tw-flex tw-items-center;
-  }
-
-  &__button {
-    @apply tw-text-[color:var(--blade-header-button-color)] tw-ml-2.5 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)];
-    // Without a minimum box the hit area is just the ~18px icon, under the 24px
-    // WCAG 2.2 SC 2.5.8 target. Centering keeps the icon visually unchanged.
-    @apply tw-flex tw-items-center tw-justify-center;
-    min-width: var(--blade-header-button-target-size);
-    min-height: var(--blade-header-button-target-size);
   }
 }
 </style>

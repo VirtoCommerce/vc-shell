@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.0...v2.6.1) (2026-09-29)
+
+### Bug Fixes
+
+- **ui:** blank shell at 1024px, clipped VcSelect hint, shortcut tooltip delay (#373) ([ce26475](https://github.com/VirtoCommerce/vc-shell/commit/ce26475280da7e5be90bd96bd23e89a30d2d7146)), closes [#373](https://github.com/VirtoCommerce/vc-shell/issues/373)
+- **vc-blade:** give a save a focus target of its own (VCST-5670) (#370) ([9977ed6](https://github.com/VirtoCommerce/vc-shell/commit/9977ed6338c9ec068421ba317b4f7df1eeec9f72)), closes [#370](https://github.com/VirtoCommerce/vc-shell/issues/370) [#353](https://github.com/VirtoCommerce/vc-shell/issues/353) [#355](https://github.com/VirtoCommerce/vc-shell/issues/355) [#353](https://github.com/VirtoCommerce/vc-shell/issues/353) [#355](https://github.com/VirtoCommerce/vc-shell/issues/355)
+- **vc-data-table:** label the page range from pageSize (#372) ([83e47d2](https://github.com/VirtoCommerce/vc-shell/commit/83e47d244395ef85ca069aaad988a58e47bc6146)), closes [#372](https://github.com/VirtoCommerce/vc-shell/issues/372)
+
 # [2.6.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.5.0...v2.6.0) (2026-09-22)
 
 ### Features

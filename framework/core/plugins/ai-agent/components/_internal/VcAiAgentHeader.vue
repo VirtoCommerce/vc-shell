@@ -17,100 +17,72 @@
     </div>
 
     <div class="vc-ai-agent-header__controls">
-      <VcTooltip
+      <ShortcutTooltip
         v-if="isExpanded"
-        placement="bottom"
-        :delay="SHORTCUT_TOOLTIP_DELAY"
+        v-slot="{ aria }"
+        :shortcut="hotkey.mod.backslash"
+        :label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.RESTORE')"
       >
         <div
           class="vc-ai-agent-header__button"
           role="button"
           tabindex="0"
           :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.RESTORE')"
-          :aria-keyshortcuts="expandAria"
+          :aria-keyshortcuts="aria"
           @click="$emit('collapse')"
           @keydown.enter.prevent="$emit('collapse')"
           @keydown.space.prevent="$emit('collapse')"
         >
           <VcIcon icon="lucide-minus" />
         </div>
-        <template #tooltip>
-          <span class="tw-inline-flex tw-items-center tw-gap-2">
-            {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.RESTORE") }}
-            <ShortcutKbd
-              :parts="expandFmt.parts"
-              :separated="!isMac"
-            />
-          </span>
-        </template>
-      </VcTooltip>
-      <VcTooltip
+      </ShortcutTooltip>
+      <ShortcutTooltip
         v-else
-        placement="bottom"
-        :delay="SHORTCUT_TOOLTIP_DELAY"
+        v-slot="{ aria }"
+        :shortcut="hotkey.mod.backslash"
+        :label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.MAXIMIZE')"
       >
         <div
           class="vc-ai-agent-header__button"
           role="button"
           tabindex="0"
           :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.MAXIMIZE')"
-          :aria-keyshortcuts="expandAria"
+          :aria-keyshortcuts="aria"
           @click="$emit('expand')"
           @keydown.enter.prevent="$emit('expand')"
           @keydown.space.prevent="$emit('expand')"
         >
           <VcIcon icon="lucide-panel-top" />
         </div>
-        <template #tooltip>
-          <span class="tw-inline-flex tw-items-center tw-gap-2">
-            {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.MAXIMIZE") }}
-            <ShortcutKbd
-              :parts="expandFmt.parts"
-              :separated="!isMac"
-            />
-          </span>
-        </template>
-      </VcTooltip>
-      <VcTooltip
-        placement="bottom"
-        :delay="SHORTCUT_TOOLTIP_DELAY"
+      </ShortcutTooltip>
+      <ShortcutTooltip
+        v-slot="{ aria }"
+        :shortcut="hotkey.escape"
+        :label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.CLOSE')"
       >
         <div
           class="vc-ai-agent-header__button"
           role="button"
           tabindex="0"
           :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE_HEADER.CLOSE')"
-          :aria-keyshortcuts="escapeAria"
+          :aria-keyshortcuts="aria"
           @click="$emit('close')"
           @keydown.enter.prevent="$emit('close')"
           @keydown.space.prevent="$emit('close')"
         >
           <VcIcon icon="lucide-x" />
         </div>
-        <template #tooltip>
-          <span class="tw-inline-flex tw-items-center tw-gap-2">
-            {{ t("COMPONENTS.ORGANISMS.VC_BLADE_HEADER.CLOSE") }}
-            <ShortcutKbd
-              :parts="escapeFmt.parts"
-              :separated="!isMac"
-            />
-          </span>
-        </template>
-      </VcTooltip>
+      </ShortcutTooltip>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import VcVirtoOzLogo from "@core/plugins/ai-agent/components/_internal/VcVirtoOzLogo.vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
-import ShortcutKbd, {
-  SHORTCUT_TOOLTIP_DELAY,
-} from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
-import { hotkey, formatShortcut, useKeyboardShortcuts } from "@core/composables/useKeyboardShortcuts";
+import ShortcutTooltip from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutTooltip.vue";
+import { hotkey } from "@core/composables/useKeyboardShortcuts";
 
 defineProps<{
   title?: string;
@@ -125,11 +97,6 @@ defineEmits<{
 }>();
 
 const { t } = useI18n();
-const { isMac } = useKeyboardShortcuts();
-const escapeFmt = computed(() => formatShortcut(hotkey.escape, isMac));
-const expandFmt = computed(() => formatShortcut(hotkey.mod.backslash, isMac));
-const escapeAria = computed(() => escapeFmt.value.aria);
-const expandAria = computed(() => expandFmt.value.aria);
 </script>
 
 <style lang="scss">

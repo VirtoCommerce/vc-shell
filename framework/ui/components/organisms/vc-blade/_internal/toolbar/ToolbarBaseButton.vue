@@ -1,14 +1,14 @@
 <template>
-  <VcTooltip
+  <ShortcutTooltip
     v-if="shortcut"
-    placement="bottom"
-    :delay="SHORTCUT_TOOLTIP_DELAY"
+    v-slot="{ aria }"
+    :shortcut="shortcut"
   >
     <button
       class="vc-blade-toolbar-base-button"
       :class="buttonClass"
       :data-test-id="id ?? 'vc-blade-toolbar-button'"
-      :aria-keyshortcuts="ariaKeyshortcuts"
+      :aria-keyshortcuts="aria"
       :aria-disabled="isInert || undefined"
       v-bind="$attrs"
       @click="handleClick"
@@ -31,13 +31,7 @@
         </span>
       </div>
     </button>
-    <template #tooltip>
-      <ShortcutKbd
-        :parts="shortcutFormat.parts"
-        :separated="!isMac"
-      />
-    </template>
-  </VcTooltip>
+  </ShortcutTooltip>
 
   <button
     v-else
@@ -71,12 +65,8 @@
 <script lang="ts" setup>
 import { computed, isRef, ref, toValue } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
-import ShortcutKbd, {
-  SHORTCUT_TOOLTIP_DELAY,
-} from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
+import ShortcutTooltip from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutTooltip.vue";
 import { resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
-import { useKeyboardShortcuts, formatShortcut } from "@core/composables/useKeyboardShortcuts";
 import type { Props } from "@ui/components/organisms/vc-blade/_internal/toolbar/toolbar-button-props";
 
 const props = withDefaults(defineProps<Props>(), {
@@ -89,8 +79,6 @@ const props = withDefaults(defineProps<Props>(), {
 defineOptions({
   inheritAttrs: false,
 });
-
-const { isMac } = useKeyboardShortcuts();
 
 const isWaiting = ref(false);
 const isDisabled = computed(() => resolveReactiveBoolean(props.disabled));
@@ -111,11 +99,6 @@ const buttonClass = computed(() => ({
   "vc-blade-toolbar-base-button--with-separator-right": props.separator === "right",
   "vc-blade-toolbar-base-button--with-separator-both": props.separator === "both",
 }));
-
-const shortcutFormat = computed(() =>
-  props.shortcut ? formatShortcut(props.shortcut, isMac) : { parts: [], aria: "" },
-);
-const ariaKeyshortcuts = computed(() => (props.shortcut ? shortcutFormat.value.aria : undefined));
 
 const resolvedTitle = computed(() => {
   if (isRef(props.title)) {

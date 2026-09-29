@@ -14,11 +14,6 @@
   </span>
 </template>
 
-<script lang="ts">
-/** Hover delay for tooltips that show a shortcut, so they don't pop up on every pass of the cursor. */
-export const SHORTCUT_TOOLTIP_DELAY = 500;
-</script>
-
 <script lang="ts" setup>
 withDefaults(
   defineProps<{

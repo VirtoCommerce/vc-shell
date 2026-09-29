@@ -510,7 +510,7 @@ export interface DataTablePagination {
   currentPage: number;
   /** Total number of pages */
   pages: number;
-  /** Items per page — informational, for future "Showing 1-20 of 500" */
+  /** Items per page, for the "21–40 of 45" range. Derived from totalCount / pages when omitted, which is exact only when totalCount divides evenly. */
   pageSize?: number;
   /** Visual variant passed to VcPagination */
   variant?: "default" | "minimal";

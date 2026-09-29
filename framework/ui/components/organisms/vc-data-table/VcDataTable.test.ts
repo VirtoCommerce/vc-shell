@@ -359,6 +359,25 @@ describe("VcDataTable", () => {
     expect(wrapper.find(".vc-data-table__pagination").exists()).toBe(false);
   });
 
+  it("labels the page range from pageSize when the total does not divide evenly", () => {
+    const wrapper = mountTable({
+      items: Array.from({ length: 20 }, (_, i) => ({ id: i })),
+      totalCount: 45,
+      pagination: { currentPage: 2, pages: 3, pageSize: 20 },
+    });
+    // Derived from total / pages this would be 15 a page, and read "16–35".
+    expect(wrapper.find(".vc-data-table__page-info").text()).toMatch(/^21–40 /);
+  });
+
+  it("labels the last, shorter page from pageSize", () => {
+    const wrapper = mountTable({
+      items: Array.from({ length: 5 }, (_, i) => ({ id: i })),
+      totalCount: 45,
+      pagination: { currentPage: 3, pages: 3, pageSize: 20 },
+    });
+    expect(wrapper.find(".vc-data-table__page-info").text()).toMatch(/^41–45 /);
+  });
+
   it("passes stateKey to orchestrator", async () => {
     const { useDataTableOrchestrator } =
       await import("@ui/components/organisms/vc-data-table/composables/useDataTableOrchestrator");

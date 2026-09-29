@@ -20,6 +20,7 @@
       <VcTooltip
         v-if="isExpanded"
         placement="bottom"
+        :delay="SHORTCUT_TOOLTIP_DELAY"
       >
         <div
           class="vc-ai-agent-header__button"
@@ -46,6 +47,7 @@
       <VcTooltip
         v-else
         placement="bottom"
+        :delay="SHORTCUT_TOOLTIP_DELAY"
       >
         <div
           class="vc-ai-agent-header__button"
@@ -69,7 +71,10 @@
           </span>
         </template>
       </VcTooltip>
-      <VcTooltip placement="bottom">
+      <VcTooltip
+        placement="bottom"
+        :delay="SHORTCUT_TOOLTIP_DELAY"
+      >
         <div
           class="vc-ai-agent-header__button"
           role="button"
@@ -102,7 +107,9 @@ import { useI18n } from "vue-i18n";
 import VcVirtoOzLogo from "@core/plugins/ai-agent/components/_internal/VcVirtoOzLogo.vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
-import ShortcutKbd from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
+import ShortcutKbd, {
+  SHORTCUT_TOOLTIP_DELAY,
+} from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
 import { hotkey, formatShortcut, useKeyboardShortcuts } from "@core/composables/useKeyboardShortcuts";
 
 defineProps<{

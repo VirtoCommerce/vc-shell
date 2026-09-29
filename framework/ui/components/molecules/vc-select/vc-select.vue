@@ -654,7 +654,7 @@ watch(
   }
 
   &__field-wrapper {
-    @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-truncate tw-rounded-[var(--select-border-radius)]
+    @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-whitespace-nowrap tw-rounded-[var(--select-border-radius)]
       tw-border tw-border-solid tw-border-[color:var(--select-border-color)]
       tw-bg-[color:var(--select-background-color)]
       tw-shadow-sm tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out;
@@ -759,7 +759,7 @@ watch(
   }
 
   &__hint-error {
-    @apply tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-5;
+    @apply tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-5 tw-whitespace-normal;
   }
 
   &__error-message {

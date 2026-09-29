@@ -2,6 +2,7 @@
   <VcTooltip
     v-if="shortcut"
     placement="bottom"
+    :delay="SHORTCUT_TOOLTIP_DELAY"
   >
     <button
       class="vc-blade-toolbar-base-button"
@@ -71,7 +72,9 @@
 import { computed, isRef, ref, toValue } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
-import ShortcutKbd from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
+import ShortcutKbd, {
+  SHORTCUT_TOOLTIP_DELAY,
+} from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
 import { resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
 import { useKeyboardShortcuts, formatShortcut } from "@core/composables/useKeyboardShortcuts";
 import type { Props } from "@ui/components/organisms/vc-blade/_internal/toolbar/toolbar-button-props";

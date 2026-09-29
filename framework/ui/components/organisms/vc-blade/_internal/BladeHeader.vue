@@ -110,6 +110,7 @@
         <VcTooltip
           v-if="renderingState?.maximized"
           placement="bottom"
+          :delay="SHORTCUT_TOOLTIP_DELAY"
         >
           <div
             class="vc-blade-header__button"
@@ -137,6 +138,7 @@
         <VcTooltip
           v-else
           placement="bottom"
+          :delay="SHORTCUT_TOOLTIP_DELAY"
         >
           <div
             class="vc-blade-header__button"
@@ -161,7 +163,10 @@
             </span>
           </template>
         </VcTooltip>
-        <VcTooltip placement="bottom">
+        <VcTooltip
+          placement="bottom"
+          :delay="SHORTCUT_TOOLTIP_DELAY"
+        >
           <div
             class="vc-blade-header__button"
             role="button"
@@ -193,7 +198,9 @@
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { VcTooltip } from "@ui/components/atoms/vc-tooltip";
-import ShortcutKbd from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
+import ShortcutKbd, {
+  SHORTCUT_TOOLTIP_DELAY,
+} from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutKbd.vue";
 import { ref, inject, computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";

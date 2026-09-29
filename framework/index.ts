@@ -144,7 +144,7 @@ function setupBreakpoints(app: App) {
   app.config.globalProperties.$isPhone = bp.smaller("phone");
   app.config.globalProperties.$isTablet = bp.between("phone", "desktop");
   app.config.globalProperties.$isMobile = bp.smaller("desktop");
-  app.config.globalProperties.$isDesktop = bp.greater("desktop");
+  app.config.globalProperties.$isDesktop = bp.greaterOrEqual("desktop");
   app.config.globalProperties.$isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
   // Typed Symbol keys (internal framework use)

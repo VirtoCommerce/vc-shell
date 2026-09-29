@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <BladeHeaderControls
+    <HeaderControls
       :maximized="isExpanded"
       @expand="$emit('expand')"
       @collapse="$emit('collapse')"
@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import VcVirtoOzLogo from "@core/plugins/ai-agent/components/_internal/VcVirtoOzLogo.vue";
-import BladeHeaderControls from "@ui/components/organisms/vc-blade/_internal/BladeHeaderControls.vue";
+import HeaderControls from "@ui/components/shared/HeaderControls.vue";
 
 defineProps<{
   title?: string;

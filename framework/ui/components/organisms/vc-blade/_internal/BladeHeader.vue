@@ -102,7 +102,7 @@
         </div>
       </div>
 
-      <BladeHeaderControls
+      <HeaderControls
         v-if="!isMobile && closable"
         :maximized="!!renderingState?.maximized"
         @expand="onExpand"
@@ -116,7 +116,7 @@
 <script lang="ts" setup>
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
-import BladeHeaderControls from "@ui/components/organisms/vc-blade/_internal/BladeHeaderControls.vue";
+import HeaderControls from "@ui/components/shared/HeaderControls.vue";
 import { ref, inject } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { shift } from "@floating-ui/vue";

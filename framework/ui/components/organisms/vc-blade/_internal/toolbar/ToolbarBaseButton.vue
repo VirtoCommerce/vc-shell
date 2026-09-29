@@ -65,7 +65,7 @@
 <script lang="ts" setup>
 import { computed, isRef, ref, toValue } from "vue";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import ShortcutTooltip from "@ui/components/organisms/vc-blade/_internal/toolbar/ShortcutTooltip.vue";
+import ShortcutTooltip from "@ui/components/shared/ShortcutTooltip.vue";
 import { resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
 import type { Props } from "@ui/components/organisms/vc-blade/_internal/toolbar/toolbar-button-props";
 

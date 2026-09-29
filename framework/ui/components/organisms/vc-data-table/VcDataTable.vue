@@ -681,7 +681,9 @@ const paginationRangeText = computed(() => {
   if (!p) return "";
   const total = props.totalCount;
   if (total != null && p.pages > 0) {
-    const pageSize = Math.ceil(total / p.pages);
+    // Derived only when pageSize is not given: total / pages rounds, so 45 rows over 3 pages
+    // would read as 15 a page and label page 2 as 16–35 instead of 21–40.
+    const pageSize = p.pageSize ?? Math.ceil(total / p.pages);
     const start = (p.currentPage - 1) * pageSize + 1;
     const end = Math.min(start + props.items.length - 1, total);
     return `${start}\u2013${end} ${t("COMPONENTS.ORGANISMS.VC_TABLE.OF", {}, "of")} ${total}`;

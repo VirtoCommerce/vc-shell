@@ -220,7 +220,7 @@ defineExpose({
   }
 
   &__desc {
-    @apply tw-text-[color:var(--textarea-placeholder-color)] tw-text-sm tw-mt-1;
+    @apply tw-text-[color:var(--textarea-placeholder-color)] tw-mt-1;
   }
 
   &__field {

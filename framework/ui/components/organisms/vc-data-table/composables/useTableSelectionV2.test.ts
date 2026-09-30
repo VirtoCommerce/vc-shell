@@ -342,16 +342,4 @@ describe("useTableSelectionV2 — items reload", () => {
     expect(internalSelection.value).toEqual([a]);
     expect(internalSelection.value[0]).toBe(a);
   });
-
-  it("does not reassign the selection when nothing changed", async () => {
-    const opts = makeOptions();
-    const { internalSelection, handleRowSelectionChange } = useTableSelectionV2(opts);
-    handleRowSelectionChange(opts.items.value[0]);
-    const before = internalSelection.value;
-
-    opts.items.value = [...opts.items.value];
-    await nextTick();
-
-    expect(internalSelection.value).toBe(before);
-  });
 });

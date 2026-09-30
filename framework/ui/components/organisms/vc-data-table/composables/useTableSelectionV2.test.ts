@@ -309,3 +309,37 @@ describe("useTableSelectionV2 — external modelValue sync", () => {
     expect(internalSelection.value[0].id).toBe("a");
   });
 });
+
+describe("useTableSelectionV2 — items reload", () => {
+  it("swaps selected rows for the fresh objects when items are reloaded", async () => {
+    const opts = makeOptions();
+    const { internalSelection, handleRowSelectionChange } = useTableSelectionV2(opts);
+    handleRowSelectionChange(opts.items.value[0]);
+    handleRowSelectionChange(opts.items.value[2]);
+
+    // reload(): same rows, new objects, updated data
+    opts.items.value = [
+      { id: "a", price: 11, selectable: true },
+      { id: "b", price: 20, selectable: false },
+      { id: "c", price: 33, selectable: true },
+    ];
+    await nextTick();
+
+    expect(internalSelection.value).toEqual([opts.items.value[0], opts.items.value[2]]);
+    expect(internalSelection.value[0]).toBe(opts.items.value[0]);
+    expect(internalSelection.value[1]).toBe(opts.items.value[2]);
+  });
+
+  it("keeps selected rows that are not in the reloaded items", async () => {
+    const opts = makeOptions();
+    const { internalSelection, handleRowSelectionChange } = useTableSelectionV2(opts);
+    const a = opts.items.value[0];
+    handleRowSelectionChange(a);
+
+    opts.items.value = [{ id: "c", price: 30, selectable: true }];
+    await nextTick();
+
+    expect(internalSelection.value).toEqual([a]);
+    expect(internalSelection.value[0]).toBe(a);
+  });
+});

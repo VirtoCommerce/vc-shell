@@ -126,6 +126,12 @@ export function useTableSelectionV2<T extends Record<string, any>>(
     { immediate: true },
   );
 
+  watch(items, (newItems) => {
+    if (!internalSelection.value.length) return;
+    const fresh = new Map(newItems.map((item) => [getItemKey(item, -1), item]));
+    internalSelection.value = internalSelection.value.map((item) => fresh.get(getItemKey(item, -1)) ?? item);
+  });
+
   // Sync selectAllActive with external prop
   watch(
     () => selectAllActive?.value,

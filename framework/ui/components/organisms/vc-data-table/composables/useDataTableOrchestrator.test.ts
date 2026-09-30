@@ -7,7 +7,7 @@
  * sub-composables).
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createApp, ref, computed } from "vue";
+import { createApp, ref, computed, reactive, nextTick } from "vue";
 import type { Ref } from "vue";
 import { useDataTableOrchestrator } from "./useDataTableOrchestrator";
 import type { VcDataTableOrchestratorOptions } from "./useDataTableOrchestrator";
@@ -290,6 +290,39 @@ describe("useDataTableOrchestrator", () => {
 
     try {
       expect(result.computedVariant.value).toBe("striped");
+    } finally {
+      app.unmount();
+    }
+  });
+
+  it("emits the reloaded objects in update:selection after items are replaced", async () => {
+    const options = buildOptions();
+    options.props = reactive({
+      ...options.props,
+      items: [
+        { id: "a", name: "A" },
+        { id: "b", name: "B" },
+      ],
+      selectionMode: "multiple",
+    }) as typeof options.props;
+    const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));
+
+    try {
+      result.selection.onSelectAll(true);
+      await nextTick();
+
+      const reloaded = [
+        { id: "a", name: "A (renamed)" },
+        { id: "b", name: "B" },
+      ];
+      options.props.items = reloaded;
+      await nextTick();
+
+      const selectionEmits = (options.emit as ReturnType<typeof vi.fn>).mock.calls.filter(
+        ([event]) => event === "update:selection",
+      );
+      const last = selectionEmits.at(-1)![1] as TestItem[];
+      expect(last.map((item) => item.name)).toEqual(["A (renamed)", "B"]);
     } finally {
       app.unmount();
     }

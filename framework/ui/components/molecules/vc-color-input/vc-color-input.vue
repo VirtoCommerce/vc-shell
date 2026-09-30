@@ -397,7 +397,7 @@ defineExpose({ focus });
   }
 
   &__desc {
-    @apply tw-text-[color:var(--input-placeholder-color)] tw-text-sm tw-mt-1;
+    @apply tw-text-[color:var(--input-placeholder-color)] tw-mt-1;
   }
 
   &--skeleton {

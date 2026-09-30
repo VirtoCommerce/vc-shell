@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.6.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.1...v2.6.2) (2026-09-30)
+
+### Bug Fixes
+
+- consistent hint size in form fields, refresh VcDataTable selection on reload (#374) ([2c6aeac](https://github.com/VirtoCommerce/vc-shell/commit/2c6aeace39ff66af59513f2b46cac875518a4487)), closes [#374](https://github.com/VirtoCommerce/vc-shell/issues/374)
+
 ## [2.6.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.0...v2.6.1) (2026-09-29)
 
 ### Bug Fixes

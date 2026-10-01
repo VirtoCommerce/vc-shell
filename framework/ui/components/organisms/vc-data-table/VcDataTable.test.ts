@@ -386,4 +386,22 @@ describe("VcDataTable", () => {
     const callArgs = (useDataTableOrchestrator as ReturnType<typeof vi.fn>).mock.calls[0][0];
     expect(callArgs.props.stateKey).toBe("my-unique-key");
   });
+
+  // The orchestrator hides newly discovered columns in a watcher. Until it runs, the column
+  // width engine must not see them, or it sizes every data key of the row as a column.
+  it("keeps data-discovered columns out of visibleColumns until they are turned on", async () => {
+    mountTable({ columnSwitcher: "auto", items: [{ id: "1", name: "A", internalKey: "x" }] });
+    const { useDataTableOrchestrator } =
+      await import("@ui/components/organisms/vc-data-table/composables/useDataTableOrchestrator");
+    const options = (useDataTableOrchestrator as ReturnType<typeof vi.fn>).mock.calls.at(-1)![0];
+    const visibleIds = () => options.visibleColumns.value.map((c: { props: { id: string } }) => c.props.id);
+
+    expect(options.dataDiscoveredColumns.value.map((c: { props: { id: string } }) => c.props.id)).toContain(
+      "internalKey",
+    );
+    expect(visibleIds()).not.toContain("internalKey");
+
+    options.shownDataDiscoveredColumnIds.value = new Set(["internalKey"]);
+    expect(visibleIds()).toContain("internalKey");
+  });
 });

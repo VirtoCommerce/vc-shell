@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { ref, nextTick } from "vue";
 import { useTableColumns } from "@ui/components/organisms/vc-data-table/composables/useTableColumns";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
@@ -377,5 +377,44 @@ describe("useTableColumns — pristine re-derivation (initial-open transient wid
     recompute();
 
     expect(columnState.value.order).toEqual(["c", "a", "b"]);
+  });
+});
+
+// A blade opening animates its width, so the table measures a narrow width for a few frames.
+describe("useTableColumns — column width crisis warning", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  function setup() {
+    vi.useFakeTimers();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    let width = 60; // three columns need 3 x 40px
+    const { recompute } = useTableColumns({
+      visibleColumns: ref([makeColumn("a"), makeColumn("b"), makeColumn("c")]),
+      getAvailableWidth: () => width,
+    });
+    return { warn, recompute, setWidth: (w: number) => (width = w) };
+  }
+
+  const crisisWarnings = (warn: ReturnType<typeof vi.spyOn>) =>
+    warn.mock.calls.filter(([msg]) => String(msg).includes("Column width crisis"));
+
+  it("does not warn when the shortage is gone once the layout settles", () => {
+    const { warn, recompute, setWidth } = setup();
+    recompute();
+    setWidth(1000);
+    recompute();
+    vi.advanceTimersByTime(1000);
+    expect(crisisWarnings(warn)).toHaveLength(0);
+  });
+
+  it("warns once when the shortage persists", () => {
+    const { warn, recompute } = setup();
+    recompute();
+    recompute();
+    vi.advanceTimersByTime(1000);
+    expect(crisisWarnings(warn)).toHaveLength(1);
   });
 });

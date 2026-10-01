@@ -678,7 +678,7 @@ After initialization the column lives in the weight model. Container resizes rec
 
 - `minWidth` and `maxWidth` are enforced by the engine on every computation pass.
 - Default `minWidth` is 40 px when not specified.
-- In crisis (sum of all `minWidth` values exceeds available width), the engine squeezes columns below their minimums and emits a console warning rather than breaking layout.
+- In crisis (sum of all `minWidth` values exceeds available width), the engine squeezes columns below their minimums rather than breaking layout. A console warning is logged only if the shortage lasts beyond 500 ms, so a blade's opening animation does not trigger it.
 
 ### Column Switcher
 

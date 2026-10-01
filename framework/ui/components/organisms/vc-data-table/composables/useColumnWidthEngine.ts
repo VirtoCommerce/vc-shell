@@ -161,10 +161,6 @@ function distributeShrink(columns: EngineInput["columns"], clamped: number[], de
 }
 
 function crisisSqueeze(columns: EngineInput["columns"], clamped: number[], availableWidth: number): void {
-  console.warn(
-    `[VcDataTable] Column width crisis: sum(minPx)=${columns.reduce((s, c) => s + c.spec.minPx, 0)}px > availableWidth=${availableWidth}px. Columns will be squeezed below their minimum widths.`,
-  );
-
   // Proportional distribution of available space, ignoring minPx
   const totalWeight = columns.reduce((s, c) => s + c.spec.weight, 0) || columns.length;
   for (let i = 0; i < columns.length; i++) {

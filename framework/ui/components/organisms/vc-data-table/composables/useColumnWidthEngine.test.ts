@@ -1,5 +1,5 @@
 // useColumnWidthEngine.test.ts
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import {
   computeColumnWidths,
   parseColumnWidth,
@@ -138,8 +138,8 @@ describe("computeColumnWidths", () => {
   });
 
   // Test 8: Crisis -- sum(minPx) > available
-  it("squeezes below minPx with warning when sum(min) > available", () => {
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  // The warning lives in useTableColumns, which waits for the layout to settle.
+  it("squeezes below minPx when sum(min) > available", () => {
     const input: EngineInput = {
       availableWidth: 100,
       columns: [
@@ -152,8 +152,6 @@ describe("computeColumnWidths", () => {
     expect(sumWidths(result.widths)).toBe(100);
     expect(result.widths["a"]).toBeGreaterThan(0);
     expect(result.widths["b"]).toBeGreaterThan(0);
-    expect(warnSpy).toHaveBeenCalled();
-    warnSpy.mockRestore();
   });
 
   // Test 9: Rounding determinism

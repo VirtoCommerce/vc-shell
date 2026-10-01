@@ -843,8 +843,12 @@ const visibleColumns = computed<ColumnInstance[]>(() => {
     return true;
   });
 
-  // Data-discovered columns — only those explicitly enabled by user (not in hiddenColumnIds)
-  const discovered = dataDiscoveredColumns.value.filter((col) => !hiddenColumnIds.value.has(col.props.id));
+  // Data-discovered columns — only those the user turned on. Checked here rather than left
+  // to the orchestrator's watcher that hides new ones: until it runs, the width engine
+  // would size every data key as a column.
+  const discovered = dataDiscoveredColumns.value.filter(
+    (col) => shownDataDiscoveredColumnIds.value.has(col.props.id) && !hiddenColumnIds.value.has(col.props.id),
+  );
 
   return [...declared, ...discovered];
 });

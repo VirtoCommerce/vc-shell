@@ -94,7 +94,8 @@ provide(TableContextKey, context);
   --table-mobile-border-color: var(--secondary-200);
 
   &--striped {
-    .vc-table-composition__row:nth-child(even) {
+    // Each row sits alone in its row wrapper, so count the wrappers.
+    .vc-data-table__row-wrapper:nth-child(even) > .vc-table-composition__row {
       background-color: var(--table-row-bg-even);
     }
   }

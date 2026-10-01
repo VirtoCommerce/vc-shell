@@ -397,7 +397,12 @@ import {
 import { VcPagination } from "@ui/components/molecules";
 import { useDataTableOrchestrator } from "@ui/components/organisms/vc-data-table/composables/useDataTableOrchestrator";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
-import { ColumnCollectorKey, FillerWidthKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-data-table/keys";
+import {
+  ColumnCollectorKey,
+  FillerWidthKey,
+  IsColumnReorderingKey,
+  MobileCellEditKey,
+} from "@ui/components/organisms/vc-data-table/keys";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type {
@@ -838,8 +843,12 @@ const visibleColumns = computed<ColumnInstance[]>(() => {
     return true;
   });
 
-  // Data-discovered columns — only those explicitly enabled by user (not in hiddenColumnIds)
-  const discovered = dataDiscoveredColumns.value.filter((col) => !hiddenColumnIds.value.has(col.props.id));
+  // Data-discovered columns — only those the user turned on. Checked here rather than left
+  // to the orchestrator's watcher that hides new ones: until it runs, the width engine
+  // would size every data key as a column.
+  const discovered = dataDiscoveredColumns.value.filter(
+    (col) => shownDataDiscoveredColumnIds.value.has(col.props.id) && !hiddenColumnIds.value.has(col.props.id),
+  );
 
   return [...declared, ...discovered];
 });
@@ -973,6 +982,15 @@ provide(
 
 // Provide column reordering state so TableRow enables FLIP animation only during drag
 provide(IsColumnReorderingKey, isColumnReordering);
+
+provide(MobileCellEditKey, {
+  enabled: () => props.editMode === "cell",
+  isCellEditing: editing.isCellEditing,
+  getEditingRowData: editing.getEditingRowData,
+  start: handleCellClick,
+  complete: handleCellEditComplete,
+  cancel: handleCellEditCancel,
+});
 
 // ============================================================================
 // Pagination handler (UI-level, stays in component)

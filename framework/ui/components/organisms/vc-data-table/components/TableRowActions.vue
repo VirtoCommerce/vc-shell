@@ -519,6 +519,13 @@ onBeforeUnmount(() => {
   transform: scale(1) translateY(0);
 }
 
+// The overlay sits on top of the last cells, so an open cell editor would take clicks meant
+// for its own controls (a password toggle, say) and hand them to the actions instead.
+.vc-table-composition__row:has(.vc-cell-renderer__editor-wrapper)
+  .vc-table-row-actions:not(.vc-table-row-actions--column) {
+  display: none;
+}
+
 // Syncs row-actions bg with row hover transition (150ms ease from tw-transition-colors).
 // Animation works despite v-show (display:none→flex) because keyframes define their own "from" state.
 @keyframes row-actions-bg-to-hover {

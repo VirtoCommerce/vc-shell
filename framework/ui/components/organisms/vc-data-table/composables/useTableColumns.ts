@@ -4,7 +4,7 @@
  * Weight-based width engine: sum(widths) + filler === availableWidth.
  * Available width is measured from the DOM transition-wrapper element.
  */
-import { ref, computed, watch, type Ref, type ComputedRef } from "vue";
+import { ref, computed, watch, getCurrentScope, onScopeDispose, type Ref, type ComputedRef } from "vue";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 import { isSpecialColumn, SPECIAL_COLUMN_WIDTHS } from "@ui/components/organisms/vc-data-table/utils/columnHelpers";
 import type {
@@ -291,7 +291,24 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
   // Engine recomputation
   // ============================================================================
 
+  // Squeezing columns below their minimums is fine for a moment: a blade opening animates
+  // its width, so the table measures narrow for a few frames. Warn only when the shortage
+  // outlasts that.
+  let crisisTimer: ReturnType<typeof setTimeout> | undefined;
+  if (getCurrentScope()) onScopeDispose(() => clearTimeout(crisisTimer));
+
+  const reportCrisis = (cols: { spec: ColumnSpec }[], availableWidth: number) => {
+    const minSum = cols.reduce((sum, c) => sum + c.spec.minPx, 0);
+    if (minSum <= availableWidth) return;
+    crisisTimer = setTimeout(() => {
+      console.warn(
+        `[VcDataTable] Column width crisis: sum(minPx)=${minSum}px > availableWidth=${availableWidth}px. Columns will be squeezed below their minimum widths.`,
+      );
+    }, 500);
+  };
+
   const recompute = () => {
+    clearTimeout(crisisTimer);
     const availableWidth = options.getAvailableWidth();
     if (availableWidth <= 0) return;
 
@@ -310,6 +327,7 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
 
     if (cols.length === 0) return;
     engineOutput.value = computeColumnWidths({ availableWidth, columns: cols, mode: fitMode });
+    reportCrisis(cols, availableWidth);
   };
 
   // ============================================================================

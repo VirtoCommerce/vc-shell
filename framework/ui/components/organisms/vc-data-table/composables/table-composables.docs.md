@@ -84,7 +84,7 @@ interface EngineOutput {
 }
 ```
 
-In crisis (when `sum(minPx) > availableWidth`), the engine squeezes columns proportionally below their minimums (`crisisSqueeze`) and emits a `console.warn`.
+In crisis (when `sum(minPx) > availableWidth`), the engine squeezes columns proportionally below their minimums (`crisisSqueeze`). `useTableColumns` logs a `console.warn` if the shortage is still there 500 ms after the last recompute.
 
 #### `parseColumnWidth(value: string | number | undefined, availableWidth: number): ParsedWidth`
 

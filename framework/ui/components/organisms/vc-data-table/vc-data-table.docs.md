@@ -514,6 +514,8 @@ The pagination bar renders below the table with page numbers, and a "Showing X-Y
 
 Three editing modes are available, set via the `edit-mode` prop.
 
+On mobile the table renders cards. With `edit-mode="cell"` a tap on an editable field opens its editor (built-in or `#editor`) in the card; `edit-mode="inline"` shows the built-in editors in every card. `row` mode is desktop-only.
+
 ### Cell Editing
 
 Click any editable cell to activate its editor. Press Enter or click away to commit, Escape to cancel.
@@ -612,6 +614,8 @@ For complex editors, use the `#editor` slot:
 </VcColumn>
 ```
 
+The editor opens focused on its first focusable element. It closes on Enter, Escape, Tab out, or a click outside it; a click inside a popup the editor opened (linked by `aria-controls`, as VcSelect's dropdown is) keeps it open.
+
 ---
 
 ## Column Management
@@ -674,7 +678,7 @@ After initialization the column lives in the weight model. Container resizes rec
 
 - `minWidth` and `maxWidth` are enforced by the engine on every computation pass.
 - Default `minWidth` is 40 px when not specified.
-- In crisis (sum of all `minWidth` values exceeds available width), the engine squeezes columns below their minimums and emits a console warning rather than breaking layout.
+- In crisis (sum of all `minWidth` values exceeds available width), the engine squeezes columns below their minimums rather than breaking layout. A console warning is logged only if the shortage lasts beyond 500 ms, so a blade's opening animation does not trigger it.
 
 ### Column Switcher
 

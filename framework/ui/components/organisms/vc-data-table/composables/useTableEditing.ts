@@ -66,10 +66,16 @@ export interface EditingMeta<T> {
   fields: string[];
 }
 
+export interface EditingCell<T> {
+  rowIndex: number;
+  field: string;
+  item: T;
+}
+
 export interface UseTableEditingReturn<T> {
   // State
   /** Currently editing cell (for cell mode) */
-  editingCell: Ref<{ rowIndex: number; field: string } | null>;
+  editingCell: Ref<EditingCell<T> | null>;
   /** Internal array of rows being edited (for row mode) */
   internalEditingRows: Ref<T[]>;
   /** Snapshot of row data before editing (for cancel) */
@@ -109,8 +115,8 @@ export function useTableEditing<T extends Record<string, any>>(
   // Cell Editing State
   // ============================================================================
 
-  /** Currently editing cell: { rowIndex, field } */
-  const editingCell = ref<{ rowIndex: number; field: string } | null>(null);
+  /** Currently editing cell: { rowIndex, field, item } */
+  const editingCell = ref(null) as Ref<EditingCell<T> | null>;
 
   /**
    * Copies of the rows being edited, keyed by rowIndex. Editing the copy rather than the
@@ -161,7 +167,7 @@ export function useTableEditing<T extends Record<string, any>>(
       return { data: item, field, index: rowIndex };
     }
 
-    editingCell.value = { rowIndex, field };
+    editingCell.value = { rowIndex, field, item };
 
     // Create or update editingMeta for this row (PrimeVue pattern)
     const meta = editingMeta.value[rowIndex];

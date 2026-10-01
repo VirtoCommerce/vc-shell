@@ -328,6 +328,83 @@ describe("useDataTableOrchestrator", () => {
     }
   });
 
+  describe("cell editing", () => {
+    const editableCol = { props: { id: "key", field: "key", editable: true }, slots: {} } as unknown as ColumnInstance;
+
+    function cellEditOptions() {
+      const options = buildOptions();
+      options.props = reactive({
+        ...options.props,
+        editMode: "cell",
+        items: [
+          { id: "a", name: "A" },
+          { id: "b", name: "B" },
+          { id: "c", name: "C" },
+        ],
+      }) as typeof options.props;
+      return options;
+    }
+
+    const emitted = (options: VcDataTableOrchestratorOptions<TestItem>, event: string) =>
+      (options.emit as ReturnType<typeof vi.fn>).mock.calls.filter(([name]) => name === event);
+
+    it("ignores a second complete or cancel for a cell that is already closed", () => {
+      const options = cellEditOptions();
+      const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));
+      const [a, b] = options.props.items as TestItem[];
+
+      try {
+        // Escape: cancel, then the unmount focusout tries to complete.
+        result.handleCellClick(a, "key", 0, editableCol);
+        result.handleCellEditCancel(a, "key", 0);
+        result.handleCellEditComplete(a, "key", 0, "A");
+        // Enter: complete, then the unmount focusout completes again.
+        result.handleCellClick(b, "key", 1, editableCol);
+        result.handleCellEditComplete(b, "key", 1, "B");
+        result.handleCellEditComplete(b, "key", 1, "B");
+
+        expect(emitted(options, "cell-edit-cancel")).toHaveLength(1);
+        expect(emitted(options, "cell-edit-complete").map(([, e]) => e.index)).toEqual([1]);
+      } finally {
+        app.unmount();
+      }
+    });
+
+    it("completes the open cell before starting another", () => {
+      const options = cellEditOptions();
+      const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));
+      const [, b, c] = options.props.items as TestItem[];
+
+      try {
+        result.handleCellClick(b, "key", 1, editableCol);
+        result.handleCellClick(c, "key", 2, editableCol);
+
+        expect(emitted(options, "cell-edit-complete").map(([, e]) => e.index)).toEqual([1]);
+        expect(result.editing.editingMeta.value[1]).toBeUndefined();
+        expect(result.editing.isCellEditing(2, "key")).toBe(true);
+      } finally {
+        app.unmount();
+      }
+    });
+
+    it("drops the open edit when items are replaced", async () => {
+      const options = cellEditOptions();
+      const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));
+      const [, b] = options.props.items as TestItem[];
+
+      try {
+        result.handleCellClick(b, "key", 1, editableCol);
+        options.props.items = (options.props.items as TestItem[]).slice(1);
+        await nextTick();
+
+        expect(result.editing.editingCell.value).toBeNull();
+        expect(result.editing.editingMeta.value).toEqual({});
+      } finally {
+        app.unmount();
+      }
+    });
+  });
+
   describe("cross-page select-all is opt-in (showSelectAllChoice gating)", () => {
     function multiSelectOptions() {
       const options = buildOptions();

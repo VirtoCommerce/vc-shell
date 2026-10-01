@@ -514,6 +514,8 @@ The pagination bar renders below the table with page numbers, and a "Showing X-Y
 
 Three editing modes are available, set via the `edit-mode` prop.
 
+On mobile the table renders cards. Cards are editable only with `edit-mode="inline"` and the built-in column editors; `cell` and `row` modes and the `#editor` slot are desktop-only.
+
 ### Cell Editing
 
 Click any editable cell to activate its editor. Press Enter or click away to commit, Escape to cancel.
@@ -611,6 +613,8 @@ For complex editors, use the `#editor` slot:
   </template>
 </VcColumn>
 ```
+
+The editor opens focused on its first focusable element. It closes on Enter, Escape, Tab out, or a click outside it; a click inside a popup the editor opened (linked by `aria-controls`, as VcSelect's dropdown is) keeps it open.
 
 ---
 

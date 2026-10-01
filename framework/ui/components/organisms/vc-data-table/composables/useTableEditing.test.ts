@@ -27,7 +27,7 @@ describe("useTableEditing — cell mode", () => {
     const { result } = setup("cell");
     const item = { id: "1", name: "A", price: 10 };
     result.startCellEdit(item, "name", 0);
-    expect(result.editingCell.value).toEqual({ rowIndex: 0, field: "name" });
+    expect(result.editingCell.value).toEqual({ rowIndex: 0, field: "name", item });
     expect(result.isCellEditing(0, "name")).toBe(true);
     expect(result.isCellEditing(0, "price")).toBe(false);
   });

@@ -75,6 +75,7 @@
   <!-- Editor slot (when cell or row is being edited) -->
   <template v-else-if="column.slots.editor && (isCellEditing || (isRowEditing && column.props.editable))">
     <div
+      ref="editorWrapperRef"
       class="vc-cell-renderer__editor-wrapper"
       @focusout="handleEditorFocusOut"
       @keydown="handleEditorKeyDown"
@@ -134,8 +135,9 @@
  * Handles all cell types and special columns (selection, expander, rowEditor, rowReorder).
  * Extracted from VcDataTable.vue to reduce template complexity.
  */
-import { computed } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { get } from "lodash-es";
+import { onClickOutside } from "@vueuse/core";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 import TableCheckbox from "@ui/components/organisms/vc-data-table/components/TableCheckbox.vue";
 import { VcRadioButton } from "@ui/components/molecules/vc-radio-button";
@@ -230,6 +232,35 @@ const cancelEdit = () => {
   emit("edit-cancel");
 };
 
+const isInOwnedPopup = (wrapper: HTMLElement, target: HTMLElement) =>
+  Array.from(wrapper.querySelectorAll("[aria-controls]")).some((el) =>
+    document.getElementById(el.getAttribute("aria-controls")!)?.contains(target),
+  );
+
+const editorWrapperRef = ref<HTMLElement | null>(null);
+let stopClickOutside: (() => void) | undefined;
+
+// Open the cell editor focused, so typing lands in it and Enter/Escape reach handleEditorKeyDown.
+// A popup that drops focus when it closes (VcSelect after a pick) leaves no focusout behind,
+// so a click outside closes the editor too. Listen only while this cell is open: every
+// cell renders this component.
+watch(
+  editorWrapperRef,
+  (wrapper) => {
+    stopClickOutside?.();
+    stopClickOutside = undefined;
+    if (!wrapper || !props.isCellEditing) return;
+
+    wrapper.querySelector<HTMLElement>("input, textarea, select, button, [tabindex]:not([tabindex='-1'])")?.focus();
+    stopClickOutside = onClickOutside(wrapper, (event) => {
+      if (!isInOwnedPopup(wrapper, event.target as HTMLElement)) completeEdit();
+    });
+  },
+  { flush: "post" },
+);
+
+onBeforeUnmount(() => stopClickOutside?.());
+
 /**
  * Handle focusout from editor wrapper.
  * Completes editing when focus leaves the editor.
@@ -239,8 +270,9 @@ const handleEditorFocusOut = (event: FocusEvent) => {
   const wrapper = event.currentTarget as HTMLElement;
   const relatedTarget = event.relatedTarget as HTMLElement | null;
 
-  // If focus is staying within the wrapper, don't complete
-  if (relatedTarget && wrapper.contains(relatedTarget)) {
+  // If focus is staying within the wrapper, or moving into a popup the editor opened
+  // (VcSelect teleports its listbox out of the wrapper), don't complete
+  if (relatedTarget && (wrapper.contains(relatedTarget) || isInOwnedPopup(wrapper, relatedTarget))) {
     return;
   }
 

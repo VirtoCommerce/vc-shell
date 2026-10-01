@@ -796,18 +796,36 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     }
   };
 
+  // The open edit is keyed by row index, which a new items array no longer matches.
+  watch(
+    () => props.items,
+    () => {
+      editing.editingCell.value = null;
+      editing.editingMeta.value = {};
+    },
+  );
+
   const handleCellClick = (item: T, field: string, rowIndex: number, col: ColumnInstance) => {
     if (
       props.editMode === "cell" &&
       (col.slots.editor || col.props.editable) &&
       !editing.isCellEditing(rowIndex, field)
     ) {
+      // Close the open cell the way a blur would. Left open, its copy leaks into whichever
+      // row later takes its index.
+      const open = editing.editingCell.value;
+      if (open) handleCellEditComplete(open.item, open.field, open.rowIndex, undefined);
+
       const event = editing.startCellEdit(item, field, rowIndex);
       emit("cell-edit-init", event);
     }
   };
 
   const handleCellEditComplete = (item: T, field: string, rowIndex: number, newValue: unknown) => {
+    // Closing the editor unmounts it, and the browser fires one more focusout from the
+    // removed input. Only the cell that is still open may complete.
+    if (props.editMode === "cell" && !editing.isCellEditing(rowIndex, field)) return;
+
     // Close the editor and emit the event
     // This is called from focusout on the editor wrapper or Enter key
     const event = editing.completeCellEdit(item, field, rowIndex, newValue);
@@ -820,6 +838,8 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   };
 
   const handleCellEditCancel = (item: T, field: string, rowIndex: number) => {
+    if (props.editMode === "cell" && !editing.isCellEditing(rowIndex, field)) return;
+
     // Cancel editing - discard changes
     editing.cancelCellEdit(item, field, rowIndex);
     emit("cell-edit-cancel", { data: item, field, index: rowIndex });

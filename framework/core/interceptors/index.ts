@@ -16,6 +16,9 @@ const LOGIN_PATH_PATTERN = /(^|\/)(login|signin|sign-in|account\/login|connect\/
 // detection would have every large upload claim the network is slow.
 const IDEMPOTENT_METHODS = new Set(["GET", "HEAD"]);
 
+/** Asked before signing out on a 401: only a 401 here too means the session is gone. */
+const CURRENT_USER_PATH = "/api/platform/security/currentuser";
+
 /** The method the request will actually be sent with, matching what `fetch` resolves. */
 function methodOf(resource: RequestInfo | URL, init?: RequestInit): string {
   const method = init?.method ?? (resource instanceof Request ? resource.method : undefined);
@@ -65,6 +68,21 @@ export function registerInterceptors(router: Router) {
   const { signOut, isAuthenticated } = useUserManagement();
   const { trackRequest, untrackRequest } = useSlowNetworkDetection();
   let requestCounter = 0;
+
+  // One check for a burst of 401s; cleared once answered, so a later 401 asks afresh.
+  let sessionCheck: Promise<boolean> | null = null;
+  function sessionAlive(): Promise<boolean> {
+    sessionCheck ??= originalFetch(CURRENT_USER_PATH, { credentials: "same-origin" })
+      .then(
+        (response) => response.status !== 401 && !(response.ok && looksLikeLoginPage(response)),
+        // An unreachable platform says nothing about the session; signing out would be a guess.
+        () => true,
+      )
+      .finally(() => {
+        sessionCheck = null;
+      });
+    return sessionCheck;
+  }
 
   const patched = (async (...args: Parameters<typeof window.fetch>) => {
     /**
@@ -128,6 +146,16 @@ export function registerInterceptors(router: Router) {
         }
       }
 
+      function isCurrentUserRequest(input: RequestInfo | URL): boolean {
+        const raw = typeof input === "string" ? input : input instanceof Request ? input.url : input.toString();
+
+        try {
+          return new URL(raw, window.location.origin).pathname === CURRENT_USER_PATH;
+        } catch {
+          return false;
+        }
+      }
+
       /**
        * Act on a response that says the session is gone.
        *
@@ -137,8 +165,15 @@ export function registerInterceptors(router: Router) {
        * Not set when signed out: a 401 we do not act on must not silence the app.
        * 403 is excluded — authenticated-but-unauthorized is not an expired session.
        */
-      function handleSessionDeath(sessionDied: boolean): void {
-        if (!sessionDied || isSessionExpired() || !isAuthenticated.value) return;
+      async function handleSessionDeath(unauthorized: boolean, loginPage = false): Promise<void> {
+        if ((!unauthorized && !loginPage) || isSessionExpired() || !isAuthenticated.value) return;
+
+        // A login page is the platform saying so outright. A 401 can be one endpoint refusing
+        // one request on a live session, so the platform is asked before the user is signed out —
+        // unless the 401 came from that very question.
+        if (!loginPage && !isCurrentUserRequest(resource) && (await sessionAlive())) return;
+        // Another request may have finished signing out while this one waited for the answer.
+        if (isSessionExpired()) return;
 
         markSessionExpired();
 
@@ -163,7 +198,7 @@ export function registerInterceptors(router: Router) {
           return originalFetch(...args);
         }
         const response = await originalFetch(...args);
-        handleSessionDeath(response.status === 401);
+        await handleSessionDeath(response.status === 401);
         return response;
       }
 
@@ -189,7 +224,7 @@ export function registerInterceptors(router: Router) {
         const response = await originalFetch(...args);
 
         const isLoginPageResponse = response.ok && looksLikeLoginPage(response);
-        handleSessionDeath(response.status === 401 || isLoginPageResponse);
+        await handleSessionDeath(response.status === 401, isLoginPageResponse);
 
         // A 200 carrying the login page would be parsed as data, and on a burst every
         // request raised its own "Unexpected token '<'" instead of the one message that

@@ -514,7 +514,7 @@ The pagination bar renders below the table with page numbers, and a "Showing X-Y
 
 Three editing modes are available, set via the `edit-mode` prop.
 
-On mobile the table renders cards. Cards are editable only with `edit-mode="inline"` and the built-in column editors; `cell` and `row` modes and the `#editor` slot are desktop-only.
+On mobile the table renders cards. With `edit-mode="cell"` a tap on an editable field opens its editor (built-in or `#editor`) in the card; `edit-mode="inline"` shows the built-in editors in every card. `row` mode is desktop-only.
 
 ### Cell Editing
 

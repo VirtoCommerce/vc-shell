@@ -397,7 +397,12 @@ import {
 import { VcPagination } from "@ui/components/molecules";
 import { useDataTableOrchestrator } from "@ui/components/organisms/vc-data-table/composables/useDataTableOrchestrator";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
-import { ColumnCollectorKey, FillerWidthKey, IsColumnReorderingKey } from "@ui/components/organisms/vc-data-table/keys";
+import {
+  ColumnCollectorKey,
+  FillerWidthKey,
+  IsColumnReorderingKey,
+  MobileCellEditKey,
+} from "@ui/components/organisms/vc-data-table/keys";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import type {
@@ -973,6 +978,15 @@ provide(
 
 // Provide column reordering state so TableRow enables FLIP animation only during drag
 provide(IsColumnReorderingKey, isColumnReordering);
+
+provide(MobileCellEditKey, {
+  enabled: () => props.editMode === "cell",
+  isCellEditing: editing.isCellEditing,
+  getEditingRowData: editing.getEditingRowData,
+  start: handleCellClick,
+  complete: handleCellEditComplete,
+  cancel: handleCellEditCancel,
+});
 
 // ============================================================================
 // Pagination handler (UI-level, stays in component)

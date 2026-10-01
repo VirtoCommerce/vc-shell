@@ -111,6 +111,7 @@
   <!-- Type-specific cell formatters with inline editing support -->
   <DynamicCellRenderer
     v-else
+    ref="builtinEditorRef"
     :type="column.props.type || 'text'"
     :value="cellValue"
     :editable="isInlineEditing"
@@ -135,7 +136,7 @@
  * Handles all cell types and special columns (selection, expander, rowEditor, rowReorder).
  * Extracted from VcDataTable.vue to reduce template complexity.
  */
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch, type ComponentPublicInstance } from "vue";
 import { get } from "lodash-es";
 import { onClickOutside } from "@vueuse/core";
 import type { ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
@@ -238,22 +239,33 @@ const isInOwnedPopup = (wrapper: HTMLElement, target: HTMLElement) =>
   );
 
 const editorWrapperRef = ref<HTMLElement | null>(null);
+const builtinEditorRef = ref<ComponentPublicInstance | null>(null);
 let stopClickOutside: (() => void) | undefined;
+
+// The open cell editor: the #editor wrapper, or a built-in editor. Built-in cells render a
+// fragment (vee-validate's Field has no element), so their $el is a text anchor; take the
+// element that holds it.
+const openEditorEl = computed<HTMLElement | null>(() => {
+  if (!props.isCellEditing) return null;
+  if (editorWrapperRef.value) return editorWrapperRef.value;
+  const el: Node | undefined = builtinEditorRef.value?.$el;
+  return el instanceof HTMLElement ? el : (el?.parentElement ?? null);
+});
 
 // Open the cell editor focused, so typing lands in it and Enter/Escape reach handleEditorKeyDown.
 // A popup that drops focus when it closes (VcSelect after a pick) leaves no focusout behind,
 // so a click outside closes the editor too. Listen only while this cell is open: every
 // cell renders this component.
 watch(
-  editorWrapperRef,
-  (wrapper) => {
+  openEditorEl,
+  (editor) => {
     stopClickOutside?.();
     stopClickOutside = undefined;
-    if (!wrapper || !props.isCellEditing) return;
+    if (!editor) return;
 
-    wrapper.querySelector<HTMLElement>("input, textarea, select, button, [tabindex]:not([tabindex='-1'])")?.focus();
-    stopClickOutside = onClickOutside(wrapper, (event) => {
-      if (!isInOwnedPopup(wrapper, event.target as HTMLElement)) completeEdit();
+    editor.querySelector<HTMLElement>("input, textarea, select, button, [tabindex]:not([tabindex='-1'])")?.focus();
+    stopClickOutside = onClickOutside(editor, (event) => {
+      if (!isInOwnedPopup(editor, event.target as HTMLElement)) completeEdit();
     });
   },
   { flush: "post" },

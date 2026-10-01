@@ -141,5 +141,41 @@ describe("DataTableCellRenderer", () => {
       popup.remove();
       outside.remove();
     });
+
+    // Built-in editors (no #editor slot) open the same way.
+    it("focuses a built-in editor and completes it on a click outside", async () => {
+      const outside = document.createElement("button");
+      document.body.appendChild(outside);
+      const w = mount(DataTableCellRenderer, {
+        attachTo: document.body,
+        props: {
+          column: {
+            instance: {},
+            props: { id: "name", field: "name", type: "text", editable: true },
+            slots: {},
+          } as never,
+          item: { name: "Test" },
+          editingRowData: { name: "Test" },
+          index: 0,
+          isCellEditing: true,
+        },
+        global: {
+          stubs: {
+            ...stubs,
+            DynamicCellRenderer: { template: '<div class="builtin-editor"><input class="builtin-input" /></div>' },
+          },
+          provide: { [ColumnCollectorKey as symbol]: { columns: [] } },
+        },
+      });
+      await nextTick();
+      expect(document.activeElement).toBe(w.find(".builtin-input").element);
+
+      outside.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true }));
+      outside.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      expect(w.emitted("edit-complete")).toHaveLength(1);
+
+      w.unmount();
+      outside.remove();
+    });
   });
 });

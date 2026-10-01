@@ -1,3 +1,10 @@
+## [2.6.3-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.2...v2.6.3-rc.0) (2026-10-01)
+
+### Bug Fixes
+
+- **auth:** confirm the session is gone before signing out on a 401 ([#377](https://github.com/VirtoCommerce/vc-shell/issues/377)) ([7212169](https://github.com/VirtoCommerce/vc-shell/commit/72121692c3dac5ab7463f6b8c4f266cf37a47d44)), closes [#333](https://github.com/VirtoCommerce/vc-shell/issues/333)
+- **vc-data-table:** cell editing, mobile cell editing, width warning, striped rows ([#376](https://github.com/VirtoCommerce/vc-shell/issues/376)) ([f6ff5f1](https://github.com/VirtoCommerce/vc-shell/commit/f6ff5f1f81973a3abc4295bd9659cbc9ea28be81))
+
 # Changelog
 
 ## [2.6.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.1...v2.6.2) (2026-09-30)

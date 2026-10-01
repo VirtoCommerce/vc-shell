@@ -1,5 +1,6 @@
 import { Router } from "vue-router";
 import { useUserManagement } from "@core/composables/useUserManagement";
+import { ApiException, SecurityClient } from "@core/api/platform";
 import { notification } from "@core/notifications/notification";
 import { createLogger } from "@core/utilities";
 import { i18n } from "@core/plugins/i18n";
@@ -65,6 +66,28 @@ export function registerInterceptors(router: Router) {
   const { signOut, isAuthenticated } = useUserManagement();
   const { trackRequest, untrackRequest } = useSlowNetworkDetection();
   let requestCounter = 0;
+
+  // Asks the platform whether the session is alive, through the unpatched fetch so the question
+  // is not itself intercepted. Wrapped, because the generated client calls `this.http.fetch` and a
+  // bare `fetch` must be called on `window`.
+  const sessionClient = new SecurityClient(undefined, { fetch: (url, init) => originalFetch(url, init) });
+
+  // One check for a burst of 401s; cleared once answered, so a later 401 asks afresh.
+  let sessionCheck: Promise<boolean> | null = null;
+  function sessionAlive(): Promise<boolean> {
+    sessionCheck ??= sessionClient
+      .getCurrentUser()
+      .then(
+        () => true,
+        // Only a 401 answers the question. Anything else — an unreachable platform, a 5xx — says
+        // nothing about the session, and signing out on it would be a guess.
+        (error: unknown) => !(ApiException.isApiException(error) && error.status === 401),
+      )
+      .finally(() => {
+        sessionCheck = null;
+      });
+    return sessionCheck;
+  }
 
   const patched = (async (...args: Parameters<typeof window.fetch>) => {
     /**
@@ -137,8 +160,14 @@ export function registerInterceptors(router: Router) {
        * Not set when signed out: a 401 we do not act on must not silence the app.
        * 403 is excluded — authenticated-but-unauthorized is not an expired session.
        */
-      function handleSessionDeath(sessionDied: boolean): void {
-        if (!sessionDied || isSessionExpired() || !isAuthenticated.value) return;
+      async function handleSessionDeath(unauthorized: boolean, loginPage = false): Promise<void> {
+        if ((!unauthorized && !loginPage) || isSessionExpired() || !isAuthenticated.value) return;
+
+        // A login page is the platform saying so outright. A 401 can be one endpoint refusing
+        // one request on a live session, so the platform is asked before the user is signed out.
+        if (!loginPage && (await sessionAlive())) return;
+        // Another request may have finished signing out while this one waited for the answer.
+        if (isSessionExpired()) return;
 
         markSessionExpired();
 
@@ -163,7 +192,7 @@ export function registerInterceptors(router: Router) {
           return originalFetch(...args);
         }
         const response = await originalFetch(...args);
-        handleSessionDeath(response.status === 401);
+        await handleSessionDeath(response.status === 401);
         return response;
       }
 
@@ -189,7 +218,7 @@ export function registerInterceptors(router: Router) {
         const response = await originalFetch(...args);
 
         const isLoginPageResponse = response.ok && looksLikeLoginPage(response);
-        handleSessionDeath(response.status === 401 || isLoginPageResponse);
+        await handleSessionDeath(response.status === 401, isLoginPageResponse);
 
         // A 200 carrying the login page would be parsed as data, and on a burst every
         // request raised its own "Unexpected token '<'" instead of the one message that

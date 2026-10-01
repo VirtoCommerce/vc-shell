@@ -42,6 +42,22 @@ vi.mock("@core/utilities", () => ({
   }),
 }));
 
+// The session check asks the platform through the API client, never through a path of its own.
+// Every test starts with a platform that no longer knows the user, as a dead session answers.
+const getCurrentUser = vi.fn();
+vi.mock("@core/api/platform", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@core/api/platform")>()),
+  SecurityClient: class {
+    getCurrentUser = getCurrentUser;
+  },
+}));
+
+import { ApiException } from "@core/api/platform";
+const unauthorized = () => new ApiException("Unauthorized", 401, "", {}, null);
+beforeEach(() => {
+  getCurrentUser.mockReset().mockRejectedValue(unauthorized());
+});
+
 import { registerInterceptors } from "./index";
 import { isSessionExpired, resetSessionExpired } from "@core/utilities/sessionExpiration";
 
@@ -157,6 +173,79 @@ describe("registerInterceptors — 401 handling", () => {
     expect(signOut).not.toHaveBeenCalled();
     expect(router.push).not.toHaveBeenCalled();
     expect(notificationError).not.toHaveBeenCalled();
+  });
+});
+
+// A 401 is not proof the session is gone: an endpoint can refuse one request with a 401 while
+// the session cookie is perfectly alive. Before signing out the interceptor asks the platform
+// for the current user, and only a 401 there too ends the session.
+describe("registerInterceptors — a 401 the session survives", () => {
+  let originalFetch: typeof window.fetch;
+
+  beforeEach(() => {
+    originalFetch = window.fetch;
+    window.fetch = vi.fn().mockResolvedValue({ status: 401 }) as unknown as typeof window.fetch;
+    signOut.mockReset();
+    notificationError.mockReset();
+    authenticated = true;
+    resetSessionExpired();
+  });
+
+  afterEach(() => {
+    window.fetch = originalFetch;
+    resetSessionExpired();
+  });
+
+  it("does not sign out when the platform still knows the user", async () => {
+    getCurrentUser.mockResolvedValue({ userName: "seller" });
+    const router = createRouter();
+
+    const response = await registerInterceptors(router)("/api/vcmp/some/endpoint");
+    await flushMicrotasks();
+
+    expect(response.status).toBe(401);
+    expect(isSessionExpired()).toBe(false);
+    expect(signOut).not.toHaveBeenCalled();
+    expect(router.push).not.toHaveBeenCalled();
+  });
+
+  it("does not sign out when the check fails for any reason but a 401", async () => {
+    getCurrentUser.mockRejectedValue(new TypeError("Failed to fetch"));
+    const router = createRouter();
+
+    await registerInterceptors(router)("/api/vcmp/some/endpoint");
+    await flushMicrotasks();
+
+    expect(signOut).not.toHaveBeenCalled();
+  });
+
+  it("asks once for a burst of 401s", async () => {
+    getCurrentUser.mockResolvedValue({ userName: "seller" });
+    const patched = registerInterceptors(createRouter());
+
+    await Promise.all([patched("/api/vcmp/a"), patched("/api/vcmp/b"), patched("/api/vcmp/c")]);
+
+    expect(getCurrentUser).toHaveBeenCalledOnce();
+  });
+
+  it("signs out when the check answers 401 too", async () => {
+    signOut.mockResolvedValue(undefined);
+    const router = createRouter();
+
+    await registerInterceptors(router)("/api/vcmp/some/endpoint");
+    await flushMicrotasks();
+
+    expect(signOut).toHaveBeenCalledOnce();
+    expect(router.push).toHaveBeenCalledWith("/login");
+  });
+
+  it("does not sign out on a hub 401 the session survives", async () => {
+    getCurrentUser.mockResolvedValue({ userName: "seller" });
+
+    await registerInterceptors(createRouter())("/pushNotificationHub/negotiate");
+    await flushMicrotasks();
+
+    expect(signOut).not.toHaveBeenCalled();
   });
 });
 

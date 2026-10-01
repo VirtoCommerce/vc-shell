@@ -1,5 +1,6 @@
 import { Router } from "vue-router";
 import { useUserManagement } from "@core/composables/useUserManagement";
+import { ApiException, SecurityClient } from "@core/api/platform";
 import { notification } from "@core/notifications/notification";
 import { createLogger } from "@core/utilities";
 import { i18n } from "@core/plugins/i18n";
@@ -15,9 +16,6 @@ const LOGIN_PATH_PATTERN = /(^|\/)(login|signin|sign-in|account\/login|connect\/
 // operator's uplink as often as it is the server, so counting one towards slow-network
 // detection would have every large upload claim the network is slow.
 const IDEMPOTENT_METHODS = new Set(["GET", "HEAD"]);
-
-/** Asked before signing out on a 401: only a 401 here too means the session is gone. */
-const CURRENT_USER_PATH = "/api/platform/security/currentuser";
 
 /** The method the request will actually be sent with, matching what `fetch` resolves. */
 function methodOf(resource: RequestInfo | URL, init?: RequestInit): string {
@@ -69,14 +67,21 @@ export function registerInterceptors(router: Router) {
   const { trackRequest, untrackRequest } = useSlowNetworkDetection();
   let requestCounter = 0;
 
+  // Asks the platform whether the session is alive, through the unpatched fetch so the question
+  // is not itself intercepted. Wrapped, because the generated client calls `this.http.fetch` and a
+  // bare `fetch` must be called on `window`.
+  const sessionClient = new SecurityClient(undefined, { fetch: (url, init) => originalFetch(url, init) });
+
   // One check for a burst of 401s; cleared once answered, so a later 401 asks afresh.
   let sessionCheck: Promise<boolean> | null = null;
   function sessionAlive(): Promise<boolean> {
-    sessionCheck ??= originalFetch(CURRENT_USER_PATH, { credentials: "same-origin" })
+    sessionCheck ??= sessionClient
+      .getCurrentUser()
       .then(
-        (response) => response.status !== 401 && !(response.ok && looksLikeLoginPage(response)),
-        // An unreachable platform says nothing about the session; signing out would be a guess.
         () => true,
+        // Only a 401 answers the question. Anything else — an unreachable platform, a 5xx — says
+        // nothing about the session, and signing out on it would be a guess.
+        (error: unknown) => !(ApiException.isApiException(error) && error.status === 401),
       )
       .finally(() => {
         sessionCheck = null;
@@ -146,16 +151,6 @@ export function registerInterceptors(router: Router) {
         }
       }
 
-      function isCurrentUserRequest(input: RequestInfo | URL): boolean {
-        const raw = typeof input === "string" ? input : input instanceof Request ? input.url : input.toString();
-
-        try {
-          return new URL(raw, window.location.origin).pathname === CURRENT_USER_PATH;
-        } catch {
-          return false;
-        }
-      }
-
       /**
        * Act on a response that says the session is gone.
        *
@@ -169,9 +164,8 @@ export function registerInterceptors(router: Router) {
         if ((!unauthorized && !loginPage) || isSessionExpired() || !isAuthenticated.value) return;
 
         // A login page is the platform saying so outright. A 401 can be one endpoint refusing
-        // one request on a live session, so the platform is asked before the user is signed out —
-        // unless the 401 came from that very question.
-        if (!loginPage && !isCurrentUserRequest(resource) && (await sessionAlive())) return;
+        // one request on a live session, so the platform is asked before the user is signed out.
+        if (!loginPage && (await sessionAlive())) return;
         // Another request may have finished signing out while this one waited for the answer.
         if (isSessionExpired()) return;
 

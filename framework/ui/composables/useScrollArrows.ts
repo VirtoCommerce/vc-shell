@@ -6,6 +6,17 @@ export interface UseScrollArrowsOptions {
   speed?: number;
 }
 
+/**
+ * Whether a scroll container has reached its end. Under a fractional zoom an exact comparison
+ * never sees it: scrollHeight and clientHeight are rounded to whole CSS pixels, and the scroll
+ * position stops on a whole device pixel, which is more than one CSS pixel when zoomed out
+ * (1.49 at 67%). The slack covers both — a pixel for the rounding, a device pixel for the stop.
+ */
+export function isScrolledToEnd(el: HTMLElement): boolean {
+  const devicePixel = 1 / (window.devicePixelRatio || 1);
+  return el.scrollTop + el.clientHeight >= el.scrollHeight - 1 - devicePixel;
+}
+
 export function useScrollArrows(viewportRef: Ref<HTMLElement | null>, options: UseScrollArrowsOptions = {}) {
   const { speed = 2 } = options;
 
@@ -21,7 +32,7 @@ export function useScrollArrows(viewportRef: Ref<HTMLElement | null>, options: U
       return;
     }
     canScrollUp.value = el.scrollTop > 0;
-    canScrollDown.value = Math.ceil(el.scrollTop) < el.scrollHeight - el.clientHeight;
+    canScrollDown.value = !isScrolledToEnd(el);
   }
 
   function startScroll(direction: "up" | "down") {

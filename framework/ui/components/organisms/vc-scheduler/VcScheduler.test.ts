@@ -632,3 +632,79 @@ describe("VcScheduler recurrence scope routing", () => {
     expect(w.emitted("event-create")).toBeFalsy();
   });
 });
+
+/**
+ * Closing the editor is not instant — the popup runs a leave transition, so its Save button
+ * stays in the DOM and clickable while it plays. An ordinary double-click put the second press
+ * in that window and created a second event (VCST-5676, reproduced 4/4 in Chromium and Firefox).
+ */
+describe("VcScheduler double-submit", () => {
+  const start = new Date(2026, 6, 15, 9, 0);
+  const end = new Date(2026, 6, 15, 10, 0);
+
+  it("creates one event when the editor's Save is pressed twice", async () => {
+    const w = mount(VcScheduler, {
+      props: { events, date: start, editable: true },
+      global: { mocks: t },
+    });
+    await w
+      .findComponent({ name: "SchedulerMonthView" })
+      .vm.$emit("create-intent", { start, end, allDay: false, anchorRect: null, kind: "double" });
+
+    const editor = w.findComponent({ name: "SchedulerEventEditor" });
+    const draft = { title: "Twice", start, end, allDay: false } as IEventDraft;
+    editor.vm.$emit("save", draft);
+    editor.vm.$emit("save", draft);
+    await w.vm.$nextTick();
+
+    expect(w.emitted("event-create")).toHaveLength(1);
+  });
+
+  it("updates once when the editor's Save is pressed twice in edit mode", async () => {
+    const w = mount(VcScheduler, {
+      props: { events, date: start, editable: true },
+      global: { mocks: t },
+    });
+    await w.findComponent({ name: "SchedulerMonthView" }).vm.$emit("edit-intent", events[0]);
+
+    const editor = w.findComponent({ name: "SchedulerEventEditor" });
+    const draft = { id: "a", title: "Renamed", start, end, allDay: true } as IEventDraft;
+    editor.vm.$emit("save", draft);
+    editor.vm.$emit("save", draft);
+    await w.vm.$nextTick();
+
+    expect(w.emitted("event-update")).toHaveLength(1);
+  });
+
+  it("deletes once when the editor's Delete is pressed twice", async () => {
+    const w = mount(VcScheduler, {
+      props: { events, date: start, editable: true },
+      global: { mocks: t },
+    });
+    await w.findComponent({ name: "SchedulerMonthView" }).vm.$emit("edit-intent", events[0]);
+
+    const editor = w.findComponent({ name: "SchedulerEventEditor" });
+    editor.vm.$emit("delete", { id: "a" });
+    editor.vm.$emit("delete", { id: "a" });
+    await w.vm.$nextTick();
+
+    expect(w.emitted("event-delete")).toHaveLength(1);
+  });
+
+  it("creates one event when quick-create's Save is pressed twice", async () => {
+    const w = mount(VcScheduler, {
+      props: { events, date: start, editable: true },
+      global: { mocks: t },
+    });
+    await w
+      .findComponent({ name: "SchedulerMonthView" })
+      .vm.$emit("create-intent", { start, end, allDay: false, anchorRect: null, kind: "single" });
+
+    const quick = w.findComponent({ name: "QuickCreatePopover" });
+    quick.vm.$emit("save", { title: "Flash" });
+    quick.vm.$emit("save", { title: "Flash" });
+    await w.vm.$nextTick();
+
+    expect(w.emitted("event-create")).toHaveLength(1);
+  });
+});

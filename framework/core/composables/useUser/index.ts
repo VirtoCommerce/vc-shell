@@ -44,6 +44,7 @@ export interface IUserInternalAPI {
   getLoginType: () => Promise<LoginType[]>;
   getAccessToken: () => Promise<string | null>;
   isAuthenticated: ComputedRef<boolean>;
+  authState: ComputedRef<AuthState>;
 }
 
 export interface UseUserReturn {
@@ -87,6 +88,25 @@ function clearAuthData(): void {
   } catch (e) {
     logger.error("Failed to clear auth data:", e);
   }
+}
+
+/**
+ * What the app knows about the session.
+ *
+ * - `authenticated` / `anonymous` — the platform answered: `currentuser` returned a user, returned
+ *   no user (it is `[AllowAnonymous]`), or refused with 401/403.
+ * - `unknown` — no answer yet, or the last load failed without one (a 5xx, a dropped connection).
+ *
+ * Only `anonymous` may send the user to Login. Treating a failed load as "not signed in" is what
+ * ended live sessions on a server blip (VM-1829); the platform's own admin UI makes the same
+ * distinction — a `currentuser` error changes nothing there, only a 401 or an empty user does.
+ */
+export type AuthState = "unknown" | "authenticated" | "anonymous";
+
+/** A 401/403: the platform's own answer that this session is not signed in. */
+export function isAuthenticationFailure(error: unknown): boolean {
+  const status = (error as { status?: unknown } | null)?.status;
+  return status === 401 || status === 403;
 }
 
 // Direct fetch to /connect/token endpoint
@@ -145,6 +165,12 @@ export function _createInternalUserLogic(): IUserInternalAPI {
   const securityClient = new SecurityClient();
 
   const isAuthenticated = computed(() => user.value?.userName != null);
+  // False until the platform has answered about the session — see AuthState.
+  const sessionResolved = ref(false);
+  const authState = computed<AuthState>(() => {
+    if (!sessionResolved.value) return "unknown";
+    return isAuthenticated.value ? "authenticated" : "anonymous";
+  });
 
   async function validateToken(userId: string, token: string): Promise<boolean> {
     let result = false;
@@ -212,6 +238,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
       const userInfo = await securityClient.getCurrentUser();
       if (userInfo) {
         user.value = userInfo;
+        sessionResolved.value = true;
         return result;
       }
 
@@ -240,6 +267,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
     logger.debug("signOut - Entry point");
 
     user.value = undefined;
+    sessionResolved.value = true;
 
     // Clear stored auth data
     clearAuthData();
@@ -267,16 +295,23 @@ export function _createInternalUserLogic(): IUserInternalAPI {
         loading.value = true;
         performance.mark("vc:auth-start");
 
-        // getCurrentUser() and getAccessToken() have no data dependency.
-        // getAccessToken() reads from localStorage (sync ~0ms) or refreshes via /connect/token.
-        // Running in parallel saves one sequential round-trip on token refresh paths.
-        const [userDetail] = await Promise.all([securityClient.getCurrentUser(), getAccessToken()]);
+        // Only the user is loaded here. The access token is not part of the session check — its one
+        // consumer (the AI agent's tokenGetter) asks getAccessToken() itself when it needs it.
+        const userDetail = await securityClient.getCurrentUser();
 
         user.value = userDetail;
+        sessionResolved.value = true;
         performance.mark("vc:auth-done");
         logger.debug("User details loaded:", user.value);
       } catch (e: any) {
         logger.error("loadUser failed:", e);
+        if (isAuthenticationFailure(e)) {
+          // The platform's answer: not signed in.
+          user.value = undefined;
+          sessionResolved.value = true;
+        }
+        // Any other failure (5xx, dropped connection) says nothing about the session: the state is
+        // left as it was, so a load that could not reach the platform never signs anyone out.
       } finally {
         loading.value = false;
         loadUserPromise = null;
@@ -395,6 +430,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
     loading: computed(() => loading.value),
     isAdministrator: computed(() => user.value?.isAdministrator),
     isAuthenticated,
+    authState,
     loadUser,
     signIn,
     signOut,

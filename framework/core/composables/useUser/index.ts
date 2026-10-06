@@ -34,7 +34,11 @@ export interface IUserInternalAPI {
   loading: ComputedRef<boolean>;
   isAdministrator: ComputedRef<boolean | undefined>;
   loadUser: () => Promise<UserDetail>;
-  signIn: (username: string, password: string) => Promise<SignInResult | { succeeded: boolean; error?: any }>;
+  signIn: (
+    username: string,
+    password: string,
+    rememberMe?: boolean,
+  ) => Promise<SignInResult | { succeeded: boolean; error?: any }>;
   signOut: () => Promise<void>;
   validateToken: (userId: string, token: string) => Promise<boolean>;
   validatePassword: (password: string) => Promise<IdentityResult>;
@@ -198,9 +202,17 @@ export function _createInternalUserLogic(): IUserInternalAPI {
     } as ResetPasswordConfirmRequest);
   }
 
+  /**
+   * Signs in with a login and password.
+   *
+   * `rememberMe` is passed to the platform's cookie login: `true` gets a persistent session cookie
+   * that survives closing the browser (the platform admin UI's "Remember me"), `false` — the
+   * default — a session cookie that ends with the browser session.
+   */
   async function signIn(
     username: string,
     password: string,
+    rememberMe = false,
   ): Promise<SignInResult | { succeeded: boolean; error?: any; status?: number }> {
     logger.debug("signIn - Entry point");
     try {
@@ -211,7 +223,7 @@ export function _createInternalUserLogic(): IUserInternalAPI {
       resetSessionExpired();
 
       // First do the standard login to set cookies/session
-      const result = await securityClient.login({ userName: username, password } as LoginRequest);
+      const result = await securityClient.login({ userName: username, password, rememberMe } as LoginRequest);
       logger.debug("signIn - Cookie login completed:", result);
 
       if (!result.succeeded) {

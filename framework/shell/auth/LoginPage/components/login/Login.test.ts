@@ -125,4 +125,34 @@ describe("Login.vue", () => {
     expect(sharedRouterPushMock).toHaveBeenCalledWith("/");
     expect(localStorage.getItem("redirectAfterLogin")).toBeNull();
   });
+  // ── Remember me ──────────────────────────────────────────────────────────
+  // The flag is the platform cookie login's rememberMe: a persistent session cookie when set, a
+  // browser-session cookie otherwise — off by default, as in the platform admin UI.
+
+  it("renders an unchecked Remember me checkbox", () => {
+    const wrapper = mountLogin();
+    const checkbox = wrapper.find('[data-test-id="login-remember-me"] input[type="checkbox"]');
+
+    expect(checkbox.exists()).toBe(true);
+    expect((checkbox.element as HTMLInputElement).checked).toBe(false);
+  });
+
+  it("signs in with rememberMe false when the box is left unchecked", async () => {
+    const wrapper = mountLogin();
+
+    await wrapper.findAll("button")[0].trigger("click");
+    await flushPromises();
+
+    expect(mockUserMgmt.signIn).toHaveBeenCalledWith(expect.any(String), expect.any(String), false);
+  });
+
+  it("signs in with rememberMe true when the box is checked", async () => {
+    const wrapper = mountLogin();
+
+    await wrapper.find('[data-test-id="login-remember-me"] input[type="checkbox"]').setValue(true);
+    await wrapper.findAll("button")[0].trigger("click");
+    await flushPromises();
+
+    expect(mockUserMgmt.signIn).toHaveBeenCalledWith(expect.any(String), expect.any(String), true);
+  });
 });

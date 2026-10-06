@@ -378,6 +378,9 @@
         "LABEL": "Passwort",
         "PLACEHOLDER": "Geben Sie Ihr Passwort ein"
       },
+      "REMEMBER_ME": {
+        "LABEL": "Angemeldet bleiben"
+      },
       "FORGOT_PASSWORD": {
         "TITLE": "Passwort vergessen",
         "LABEL": "E-Mail",

@@ -76,6 +76,14 @@
           />
         </Field>
 
+        <VcCheckbox
+          v-model="form.rememberMe"
+          name="rememberMe"
+          data-test-id="login-remember-me"
+        >
+          {{ $t("LOGIN.FIELDS.REMEMBER_ME.LABEL") }}
+        </VcCheckbox>
+
         <VcButton
           variant="primary"
           class="tw-w-full"
@@ -129,7 +137,7 @@ import { resolveSafeRedirectPath, formatSignInError } from "@shell/auth/utils";
 import { useI18n } from "vue-i18n";
 import { ExtensionPoint } from "@core/plugins/extension-points";
 import { createLogger } from "@core/utilities";
-import { VcAuthLayout, VcButton, VcForm, VcHint, VcInput } from "@ui/components";
+import { VcAuthLayout, VcButton, VcCheckbox, VcForm, VcHint, VcInput } from "@ui/components";
 
 const logger = createLogger("login-page");
 
@@ -167,13 +175,15 @@ const customization = computed(() => ({
 const form = reactive({
   username: "",
   password: "",
+  // Off by default, as in the platform admin UI: a session cookie unless the user asks to be remembered.
+  rememberMe: false,
 });
 
 const login = async () => {
   if (!isValid.value) return;
 
   signInResult.value.error = "";
-  signInResult.value = (await signIn(form.username, form.password)) as SignInResult & {
+  signInResult.value = (await signIn(form.username, form.password, form.rememberMe)) as SignInResult & {
     status?: number;
     error?: any;
   };

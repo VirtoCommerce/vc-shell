@@ -7,6 +7,7 @@ import { expectNoVueWarnings } from "@framework/test-helpers";
 // These live at module scope so the SecurityClient mock factory can close over them.
 // Each test configures getCurrentUser behavior via mockImplementationOnce / mockResolvedValueOnce.
 const mockGetCurrentUser = vi.fn();
+const mockLogin = vi.fn();
 const mockPerformanceMark = vi.fn();
 
 import { createMockExternalProvider } from "@framework/test-mock-factories";
@@ -24,7 +25,7 @@ vi.mock("@core/api/platform", () => ({
   SecurityClient: vi.fn(function () {
     return {
       getCurrentUser: mockGetCurrentUser,
-      login: vi.fn(),
+      login: mockLogin,
       logout: vi.fn(),
       validatePasswordResetToken: vi.fn(),
       validatePassword: vi.fn(),
@@ -53,6 +54,7 @@ beforeEach(() => {
   // Do NOT call vi.restoreAllMocks() — it also restores vi.mock()-created mocks
   // (including SecurityClient), breaking them for subsequent tests.
   mockGetCurrentUser.mockReset();
+  mockLogin.mockReset();
   mockPerformanceMark.mockReset();
 
   // Fresh localStorage per test
@@ -251,6 +253,29 @@ describe("isAuthenticationFailure()", () => {
 
   it("does not treat an error with no status (a dropped connection) as one", () => {
     expect(isAuthenticationFailure(new TypeError("Failed to fetch"))).toBe(false);
+  });
+});
+
+// ── signIn() - Remember me ───────────────────────────────────────────────────
+
+describe("signIn() - rememberMe", () => {
+  it("sends rememberMe: false to the platform login by default", async () => {
+    // A failed login returns before the token and user requests, so only the login call matters.
+    mockLogin.mockResolvedValueOnce({ succeeded: false });
+
+    const logic = _createInternalUserLogic();
+    await logic.signIn("seller@vc.com", "secret");
+
+    expect(mockLogin).toHaveBeenCalledWith(expect.objectContaining({ userName: "seller@vc.com", rememberMe: false }));
+  });
+
+  it("sends rememberMe: true when asked to remember the user", async () => {
+    mockLogin.mockResolvedValueOnce({ succeeded: false });
+
+    const logic = _createInternalUserLogic();
+    await logic.signIn("seller@vc.com", "secret", true);
+
+    expect(mockLogin).toHaveBeenCalledWith(expect.objectContaining({ userName: "seller@vc.com", rememberMe: true }));
   });
 });
 

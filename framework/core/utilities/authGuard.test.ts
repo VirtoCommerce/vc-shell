@@ -70,10 +70,11 @@ describe("authGuard (VM-1829)", () => {
     await expect(authGuard(route(true), d)).resolves.toEqual({ name: "Login" });
   });
 
-  it("cancels the navigation and reports, but never sends to Login, when the session still cannot be checked", async () => {
+  it("reports and lets the navigation through, never to Login, when the session still cannot be checked", async () => {
     const d = deps("unknown", "unknown");
 
-    await expect(authGuard(route(true), d)).resolves.toBe(false);
+    // Not cancelled: cancelling the initial navigation rejects router.isReady() and the app never mounts.
+    await expect(authGuard(route(true), d)).resolves.toBeUndefined();
     expect(d.onSessionCheckFailed).toHaveBeenCalledTimes(1);
     expect(localStorage.getItem("redirectAfterLogin")).toBeNull();
   });

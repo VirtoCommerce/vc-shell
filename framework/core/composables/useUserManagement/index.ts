@@ -1,5 +1,5 @@
 import { ComputedRef } from "vue";
-import { _sharedInternalUserLogic } from "@core/composables/useUser";
+import { _sharedInternalUserLogic, type AuthState } from "@core/composables/useUser";
 import { SecurityResult, IdentityResult, LoginType, UserDetail, SignInResult } from "@core/api/platform";
 import type { RequestPasswordResult } from "@core/types";
 
@@ -9,6 +9,8 @@ export interface UseUserManagementReturn {
   loading: ComputedRef<boolean>;
   isAdministrator: ComputedRef<boolean | undefined>;
   isAuthenticated: ComputedRef<boolean>;
+  /** What the app knows about the session; only `anonymous` means "not signed in". See AuthState. */
+  authState: ComputedRef<AuthState>;
   // Methods specific to user management
   validateToken: (userId: string, token: string) => Promise<boolean>;
   validatePassword: (password: string) => Promise<IdentityResult>;
@@ -32,6 +34,7 @@ export const useUserManagement = (): UseUserManagementReturn => {
     loading: internals.loading,
     isAdministrator: internals.isAdministrator,
     isAuthenticated: internals.isAuthenticated,
+    authState: internals.authState,
     validateToken: internals.validateToken,
     validatePassword: internals.validatePassword,
     resetPasswordByToken: internals.resetPasswordByToken,

@@ -13,6 +13,7 @@ import { AssetsManagerModule } from "@modules/assets-manager";
 import { registerInterceptors } from "@core/interceptors";
 import { usePermissions } from "@core/composables/usePermissions";
 import { useUserManagement } from "@core/composables/useUserManagement";
+import { authGuard } from "@core/utilities/authGuard";
 import Vue3TouchEvents from "vue3-touch-events";
 import * as locales from "@locales";
 import {
@@ -266,20 +267,15 @@ function setupRouterGuards(router: Router) {
 
   // Check if user is authenticated and redirect to login page if not.
   // TODO add check if app has login page
-  router.beforeEach(async (to) => {
-    const { isAuthenticated } = useUserManagement();
-
-    if (to.meta.root === true) {
-      try {
-        if (!isAuthenticated.value) {
-          localStorage.setItem("redirectAfterLogin", to.fullPath);
-          return { name: "Login" };
-        }
-      } catch (_e) {
-        localStorage.setItem("redirectAfterLogin", to.fullPath);
-        return { name: "Login" };
-      }
-    }
+  // Only a definitive "not signed in" leads to Login — see authGuard (VM-1829).
+  router.beforeEach((to) => {
+    const { authState, loadUser } = useUserManagement();
+    return authGuard(to, {
+      authState,
+      loadUser,
+      onSessionCheckFailed: () =>
+        notification.error(i18n.global.t("CORE.ERRORS.SESSION_CHECK_FAILED"), { timeout: 5000 }),
+    });
   });
 
   // Check if user has access to the page and redirect to previous path if not.

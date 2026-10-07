@@ -43,7 +43,7 @@ vi.mock("@core/api/platform", () => ({
 }));
 
 // Import after mocks are registered
-import { _createInternalUserLogic } from "./index";
+import { _createInternalUserLogic, isAuthenticationFailure } from "./index";
 
 // Use a single store reference accessible across tests for localStorage mock
 let localStorageStore: Record<string, string> = {};
@@ -123,7 +123,7 @@ describe("loadUser() - parallelization", () => {
   });
 
   it("Test 4: loadUser() catches errors from getCurrentUser() and does not throw", async () => {
-    mockGetCurrentUser.mockRejectedValueOnce(new Error("Network error"));
+    mockGetCurrentUser.mockRejectedValueOnce(apiError(401));
 
     const logic = _createInternalUserLogic();
 
@@ -132,7 +132,7 @@ describe("loadUser() - parallelization", () => {
   });
 
   it("Test 5: loadUser() resets loading to false in finally block — even after error", async () => {
-    mockGetCurrentUser.mockRejectedValueOnce(new Error("Server error"));
+    mockGetCurrentUser.mockRejectedValueOnce(apiError(401));
 
     const logic = _createInternalUserLogic();
     await logic.loadUser();
@@ -157,6 +157,100 @@ describe("loadUser() - parallelization", () => {
     expect(startIdx).toBeGreaterThanOrEqual(0);
     expect(doneIdx).toBeGreaterThanOrEqual(0);
     expect(startIdx).toBeLessThan(doneIdx);
+  });
+});
+
+/** An error shaped like the API client's `ApiException`: the status is what `loadUser` reads. */
+function apiError(status: number): Error & { status: number } {
+  return Object.assign(new Error(`HTTP ${status}`), { status });
+}
+
+// ── authState (VM-1829) ──────────────────────────────────────────────────────
+// The router guard sends only an `anonymous` session to Login. These pin that a failed load which
+// says nothing about the session (a 5xx, a dropped connection) never becomes `anonymous`.
+
+describe("authState", () => {
+  it("is unknown before the platform has answered", () => {
+    const logic = _createInternalUserLogic();
+    expect(logic.authState.value).toBe("unknown");
+  });
+
+  it("is authenticated once currentuser returns a user", async () => {
+    mockGetCurrentUser.mockResolvedValueOnce({ userName: "seller@vc.com", isAdministrator: false });
+
+    const logic = _createInternalUserLogic();
+    await logic.loadUser();
+
+    expect(logic.authState.value).toBe("authenticated");
+  });
+
+  it("is anonymous when currentuser answers with no user (the endpoint allows anonymous calls)", async () => {
+    mockGetCurrentUser.mockResolvedValueOnce({});
+
+    const logic = _createInternalUserLogic();
+    await logic.loadUser();
+
+    expect(logic.authState.value).toBe("anonymous");
+  });
+
+  it.each([401, 403])("is anonymous when currentuser answers %i", async (status) => {
+    mockGetCurrentUser.mockRejectedValueOnce(apiError(status));
+
+    const logic = _createInternalUserLogic();
+    await logic.loadUser();
+
+    expect(logic.authState.value).toBe("anonymous");
+  });
+
+  it.each([
+    ["a 500", apiError(500)],
+    ["a 503", apiError(503)],
+    ["a dropped connection", new TypeError("Failed to fetch")],
+  ])("stays unknown after %s — the failure says nothing about the session", async (_label, error) => {
+    mockGetCurrentUser.mockRejectedValueOnce(error);
+
+    const logic = _createInternalUserLogic();
+    await logic.loadUser();
+
+    expect(logic.authState.value).toBe("unknown");
+    expect(mockGetCurrentUser).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps a signed-in session when a later reload fails with a 5xx", async () => {
+    mockGetCurrentUser
+      .mockResolvedValueOnce({ userName: "seller@vc.com", isAdministrator: false })
+      .mockRejectedValueOnce(apiError(500));
+
+    const logic = _createInternalUserLogic();
+    await logic.loadUser();
+    await logic.loadUser();
+
+    expect(logic.authState.value).toBe("authenticated");
+    expect(logic.user.value?.userName).toBe("seller@vc.com");
+  });
+
+  it("becomes anonymous after a sign-out", async () => {
+    mockGetCurrentUser.mockResolvedValueOnce({ userName: "seller@vc.com", isAdministrator: false });
+
+    const logic = _createInternalUserLogic();
+    await logic.loadUser();
+    await logic.signOut();
+
+    expect(logic.authState.value).toBe("anonymous");
+  });
+});
+
+describe("isAuthenticationFailure()", () => {
+  it.each([401, 403])("treats status %i as the platform's 'not signed in'", (status) => {
+    expect(isAuthenticationFailure(apiError(status))).toBe(true);
+  });
+
+  it.each([400, 404, 408, 429, 500, 503])("does not treat status %i as one", (status) => {
+    expect(isAuthenticationFailure(apiError(status))).toBe(false);
+  });
+
+  it("does not treat an error with no status (a dropped connection) as one", () => {
+    expect(isAuthenticationFailure(new TypeError("Failed to fetch"))).toBe(false);
   });
 });
 

@@ -2,7 +2,8 @@
   "CORE": {
     "ERRORS": {
       "SESSION_EXPIRED": "Zugriff verweigert: Ihre Sitzung ist abgelaufen oder Sie verfügen nicht über die erforderlichen Berechtigungen.\nBitte melden Sie sich erneut an oder wenden Sie sich an den Administrator.",
-      "NETWORK_UNAVAILABLE": "Keine Netzwerkverbindung. Bitte prüfen Sie Ihre Verbindung."
+      "NETWORK_UNAVAILABLE": "Keine Netzwerkverbindung. Bitte prüfen Sie Ihre Verbindung.",
+      "SESSION_CHECK_FAILED": "Ihre Sitzung konnte nicht überprüft werden. Bitte versuchen Sie es erneut."
     },
     "THEMES": {
       "LIGHT": "Hell",

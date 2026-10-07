@@ -2,7 +2,8 @@
   "CORE": {
     "ERRORS": {
       "SESSION_EXPIRED": "Access Denied: Your session has expired or you do not have the necessary permissions.\nPlease log in again or contact the administrator for assistance.",
-      "NETWORK_UNAVAILABLE": "Network unavailable. Please check your connection."
+      "NETWORK_UNAVAILABLE": "Network unavailable. Please check your connection.",
+      "SESSION_CHECK_FAILED": "Could not verify your session. Please try again."
     },
     "THEMES": {
       "LIGHT": "Light",

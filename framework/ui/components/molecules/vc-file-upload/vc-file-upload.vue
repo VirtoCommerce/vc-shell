@@ -203,12 +203,20 @@ function toggleUploader() {
   }
 }
 
-function onDrop(event: DragEvent) {
+async function onDrop(event: DragEvent) {
   if (resolvedDisabled.value) return;
   dragLeave();
-  const fileList = event.dataTransfer?.files;
+  const transfer = event.dataTransfer;
+  const fileList = transfer?.files;
 
-  if (fileList && fileList.length) {
+  if (!transfer || !fileList || !fileList.length) return;
+
+  // The same check a picked file goes through in `upload`: the file rules read `value.files`, which a
+  // DataTransfer carries just as the file input does.
+  await handleChange(transfer);
+  const isValid = await validate();
+
+  if (isValid.valid) {
     emit("upload", fileList);
   }
 }

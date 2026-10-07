@@ -156,6 +156,8 @@
                 :id="inputId"
                 ref="inputRef"
                 v-model="handleValue"
+                v-bind="inputAttrs"
+                :step="step"
                 :placeholder="placeholder"
                 :type="internalTypeComputed"
                 :disabled="resolvedDisabled"
@@ -328,6 +330,8 @@ export interface Props extends ITextFieldProps {
   maxlength?: string | number;
   /**
    * The step attribute is a number that specifies the granularity that the value must adhere to.
+   * Set on the native input only when given: a default step of 1 would mark every decimal value of a
+   * number input invalid.
    */
   step?: string;
   /**
@@ -378,14 +382,25 @@ const props = withDefaults(defineProps<Props>(), {
   type: "text",
   name: "Field",
   maxlength: "1024",
-  step: "1",
   size: "default",
 });
 
 const attrs = useAttrs();
+/**
+ * Native constraint and keyboard-hint attributes that only mean something on the `<input>` itself.
+ * With `inheritAttrs: false` every leftover attribute is bound to the root element, where these would
+ * be ignored — so they are split off and bound to the input instead. Everything else (`data-test-id`,
+ * `id`, `style`, listeners…) stays on the root.
+ */
+const NATIVE_INPUT_ATTRS = new Set(["min", "max", "minlength", "pattern", "inputmode"]);
+
+const inputAttrs = computed(() =>
+  Object.fromEntries(Object.entries(attrs).filter(([key]) => NATIVE_INPUT_ATTRS.has(key.toLowerCase()))),
+);
+
 const rootAttrs = computed(() => {
   const { class: _class, ...rest } = attrs;
-  return rest;
+  return Object.fromEntries(Object.entries(rest).filter(([key]) => !NATIVE_INPUT_ATTRS.has(key.toLowerCase())));
 });
 
 const emit = defineEmits<Emits>();

@@ -144,4 +144,40 @@ describe("VcInput", () => {
       expect(wrapper.emitted("update:modelValue")?.[0]).toEqual(["typed text"]);
     });
   });
+  describe("native input attributes", () => {
+    it("puts min, max, minlength, pattern and inputmode on the input, not on the wrapper", () => {
+      const wrapper = mount(VcInput, {
+        props: { modelValue: "", type: "number" },
+        attrs: { min: "1", max: "10", minlength: "2", pattern: "[0-9]+", inputmode: "numeric" },
+      });
+      const input = wrapper.find("input");
+
+      expect(input.attributes("min")).toBe("1");
+      expect(input.attributes("max")).toBe("10");
+      expect(input.attributes("minlength")).toBe("2");
+      expect(input.attributes("pattern")).toBe("[0-9]+");
+      expect(input.attributes("inputmode")).toBe("numeric");
+      expect(wrapper.find(".vc-input").attributes("min")).toBeUndefined();
+      expect(wrapper.find(".vc-input").attributes("inputmode")).toBeUndefined();
+    });
+
+    it("keeps data-test-id and other attributes on the wrapper", () => {
+      const wrapper = mount(VcInput, {
+        props: { modelValue: "" },
+        attrs: { "data-test-id": "my-field", min: "1" },
+      });
+
+      // The template's root is a fragment (a comment, then the element), so the root is found by class.
+      expect(wrapper.find(".vc-input").attributes("data-test-id")).toBe("my-field");
+      expect(wrapper.find("input").attributes("data-test-id")).toBeUndefined();
+    });
+
+    it("sets step on the input only when it is given", () => {
+      const withStep = mount(VcInput, { props: { modelValue: 0, type: "number", step: "0.01" } });
+      const withoutStep = mount(VcInput, { props: { modelValue: 0, type: "number" } });
+
+      expect(withStep.find("input").attributes("step")).toBe("0.01");
+      expect(withoutStep.find("input").attributes("step")).toBeUndefined();
+    });
+  });
 });

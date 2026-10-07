@@ -7,7 +7,7 @@ vi.mock("@vueuse/core", () => ({
   useResizeObserver: vi.fn(),
 }));
 
-import { useScrollArrows } from "./useScrollArrows";
+import { isScrolledToEnd, useScrollArrows } from "./useScrollArrows";
 
 describe("useScrollArrows", () => {
   beforeEach(() => {
@@ -50,6 +50,21 @@ describe("useScrollArrows", () => {
     result.updateScrollState();
 
     // scrollTop(100) >= scrollHeight(300) - clientHeight(200) = 100
+    expect(result.canScrollDown.value).toBe(false);
+  });
+
+  // Measured in a browser at 90% and 67% zoom with the list scrolled as far as it goes: the
+  // position stops a fraction short of scrollHeight - clientHeight, which are rounded.
+  it.each([
+    ["90% zoom", 0.9, { scrollTop: 1710, scrollHeight: 1921, clientHeight: 210 }],
+    ["67% zoom", 0.67, { scrollTop: 431.34, scrollHeight: 641, clientHeight: 208 }],
+  ])("updateScrollState hides the down arrow at the end under %s", (_zoom, dpr, metrics) => {
+    vi.spyOn(window, "devicePixelRatio", "get").mockReturnValue(dpr);
+    const viewportRef = ref<HTMLElement | null>(metrics as HTMLElement);
+
+    const { result } = mountWithSetup(() => useScrollArrows(viewportRef));
+    result.updateScrollState();
+
     expect(result.canScrollDown.value).toBe(false);
   });
 
@@ -159,5 +174,16 @@ describe("useScrollArrows", () => {
     result.startScroll("down");
 
     expect(window.requestAnimationFrame).not.toHaveBeenCalled();
+  });
+});
+
+describe("isScrolledToEnd", () => {
+  it.each([
+    [{ scrollTop: 100, scrollHeight: 300, clientHeight: 200 }, true],
+    [{ scrollTop: 99.4, scrollHeight: 300, clientHeight: 200 }, true],
+    [{ scrollTop: 97, scrollHeight: 300, clientHeight: 200 }, false],
+    [{ scrollTop: 0, scrollHeight: 200, clientHeight: 200 }, true],
+  ])("reads %o as at the end: %s", (metrics, expected) => {
+    expect(isScrolledToEnd(metrics as HTMLElement)).toBe(expected);
   });
 });

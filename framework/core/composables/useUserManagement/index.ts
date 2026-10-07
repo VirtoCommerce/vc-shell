@@ -20,7 +20,12 @@ export interface UseUserManagementReturn {
   requestPasswordReset: (loginOrEmail: string) => Promise<RequestPasswordResult>;
   changeUserPassword: (oldPassword: string, newPassword: string) => Promise<SecurityResult | undefined>;
 
-  signIn: (username: string, password: string) => Promise<SignInResult | { succeeded: boolean; error?: any }>;
+  /** `rememberMe` asks the platform for a persistent session cookie — see useUser's signIn. */
+  signIn: (
+    username: string,
+    password: string,
+    rememberMe?: boolean,
+  ) => Promise<SignInResult | { succeeded: boolean; error?: any }>;
   signOut: () => Promise<void>;
 }
 

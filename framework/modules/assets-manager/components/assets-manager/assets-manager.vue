@@ -1,5 +1,6 @@
 <template>
   <VcBlade
+    data-test-id="assets-manager-blade"
     :title="bladeTitle"
     :toolbar-items="bladeToolbar"
     width="70%"

@@ -1,6 +1,7 @@
 <template>
   <div
     class="vc-menu-group"
+    :data-group-id="groupId"
     :class="{
       'vc-menu-group--section': variant === 'section',
       'vc-menu-group--open': isOpen,
@@ -41,6 +42,8 @@
       :title="title"
       :badge="badge"
       :active="active"
+      :aria-expanded="isOpen"
+      :aria-controls="childrenId"
       @click="toggle"
     >
       <template #suffix>

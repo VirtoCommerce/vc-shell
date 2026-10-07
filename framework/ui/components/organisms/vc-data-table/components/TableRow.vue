@@ -10,8 +10,8 @@
     }"
     :tabindex="isClickable ? 0 : undefined"
     @click="handleClick"
-    @keydown.enter.prevent="isClickable && handleClick($event as unknown as MouseEvent)"
-    @keydown.space.prevent="handleSpacePress($event)"
+    @keydown.enter.self.prevent="isClickable && handleClick($event as unknown as MouseEvent)"
+    @keydown.space.self.prevent="handleSpacePress($event)"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >

@@ -107,7 +107,7 @@ import { vOnClickOutside } from "@vueuse/components";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcScrollableContainer } from "@ui/components/atoms/vc-scrollable-container";
 import { useI18n } from "vue-i18n";
-import { useTeleportTarget } from "@ui/composables";
+import { isScrolledToEnd, useTeleportTarget } from "@ui/composables";
 
 const props = defineProps<{
   isOpened: boolean;
@@ -156,7 +156,7 @@ function onDropdownWheel(event: WheelEvent) {
 
   if (isInViewport) {
     const atTop = el.scrollTop <= 0 && event.deltaY < 0;
-    const atBottom = Math.ceil(el.scrollTop) >= el.scrollHeight - el.clientHeight && event.deltaY > 0;
+    const atBottom = isScrolledToEnd(el) && event.deltaY > 0;
     if (atTop || atBottom) {
       event.preventDefault();
     }

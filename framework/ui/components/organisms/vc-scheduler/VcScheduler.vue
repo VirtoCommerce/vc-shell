@@ -540,7 +540,12 @@ function onScopeClose() {
   scope.event = null;
 }
 
+// Closing is not instant: the editor runs a leave transition, so its Save button stays in
+// the DOM and clickable for as long as that takes. An ordinary double-click lands the second
+// press in that window and emitted a second event (VCST-5676). The open flag is the one piece
+// of state that is already false by then, so it is what the save and delete paths gate on.
 function onQuickSave({ title }: { title: string }) {
+  if (!quick.open) return;
   if (quick.draft) {
     const { start, end, allDay, color } = quick.draft;
     emit("event-create", { start, end, allDay, title, color });
@@ -564,6 +569,7 @@ function onQuickClose() {
 }
 
 function onEditorSave(draft: IEventDraft) {
+  if (!editor.open) return;
   const recurrenceEdit = editor.recurrenceEdit;
   if (recurrenceEdit) {
     if (recurrenceEdit.scope === "all") {
@@ -620,6 +626,7 @@ function onEditorSave(draft: IEventDraft) {
 }
 
 function onEditorDelete(p: { id: string }) {
+  if (!editor.open) return;
   // The editor's own Delete button must route through the same recurrence-scope semantics
   // as the scope-dialog delete path, not a raw passthrough — otherwise a "this"-scope edit
   // with no override yet deletes `undefined`, and one with an override leaves the master's

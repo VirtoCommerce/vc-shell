@@ -93,7 +93,7 @@
 import { ref, watch, onBeforeUnmount, nextTick } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { useTeleportTarget } from "@ui/composables";
+import { isScrolledToEnd, useTeleportTarget } from "@ui/composables";
 
 const props = defineProps<{
   isOpened: boolean;
@@ -133,7 +133,7 @@ function updateScrollState() {
     return;
   }
   canScrollUp.value = el.scrollTop > 0;
-  canScrollDown.value = Math.ceil(el.scrollTop) < el.scrollHeight - el.clientHeight;
+  canScrollDown.value = !isScrolledToEnd(el);
 }
 
 function startScroll(direction: "up" | "down") {
@@ -168,7 +168,7 @@ function onDropdownWheel(event: WheelEvent) {
     // Native scroll handles viewport scrolling.
     // Only prevent page scroll at boundaries.
     const atTop = el.scrollTop <= 0 && event.deltaY < 0;
-    const atBottom = Math.ceil(el.scrollTop) >= el.scrollHeight - el.clientHeight && event.deltaY > 0;
+    const atBottom = isScrolledToEnd(el) && event.deltaY > 0;
     if (atTop || atBottom) {
       event.preventDefault();
     }

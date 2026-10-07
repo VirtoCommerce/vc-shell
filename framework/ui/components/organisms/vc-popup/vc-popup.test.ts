@@ -8,6 +8,7 @@ vi.mock("@headlessui/vue", () => ({
   TransitionRoot: {
     name: "TransitionRoot",
     props: ["show", "appear", "as"],
+    emits: ["after-leave"],
     template: '<div v-if="show"><slot /></div>',
   },
   TransitionChild: {
@@ -167,5 +168,67 @@ describe("VcPopup", () => {
     // The panel should have the custom width class
     const panel = wrapper.find(".vc-popup__panel");
     expect(panel.exists()).toBe(true);
+  });
+});
+
+/**
+ * The dialog is named by the element `aria-labelledby` points at, so a button inside that
+ * element contributed its own label to the name and every modal announced itself as
+ * "<title> Close" (VCST-5676).
+ */
+describe("VcPopup accessible name", () => {
+  it("keeps the close button out of the element that names the dialog", () => {
+    const wrapper = factory({ closable: true, title: "New event" });
+
+    expect(wrapper.find(".vc-popup__close-btn").exists()).toBe(true);
+    expect(wrapper.find(".vc-popup__title .vc-popup__close-btn").exists()).toBe(false);
+    expect(wrapper.find(".vc-popup__title").text()).toBe("New event");
+  });
+});
+
+/**
+ * Headless UI restores focus only when it owns the unmount, which is not the case on the
+ * `v-model` path: the dialog closed and focus was left on `<body>` (WCAG 2.4.3). Restoring
+ * has to wait for the leave transition — before it, the dialog still holds focus.
+ */
+describe("VcPopup focus restore", () => {
+  it("returns focus to the opener once the dialog has finished leaving", async () => {
+    const opener = document.createElement("button");
+    document.body.appendChild(opener);
+    opener.focus();
+
+    const wrapper = factory({ modelValue: true }, {});
+    try {
+      (document.activeElement as HTMLElement | null)?.blur?.();
+      await wrapper.setProps({ modelValue: false });
+      wrapper.findComponent({ name: "TransitionRoot" }).vm.$emit("after-leave");
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(document.activeElement).toBe(opener);
+    } finally {
+      wrapper.unmount();
+      opener.remove();
+    }
+  });
+
+  it("leaves focus alone when something else already took it", async () => {
+    const opener = document.createElement("button");
+    const elsewhere = document.createElement("button");
+    document.body.append(opener, elsewhere);
+    opener.focus();
+
+    const wrapper = factory({ modelValue: true }, {});
+    try {
+      await wrapper.setProps({ modelValue: false });
+      elsewhere.focus();
+      wrapper.findComponent({ name: "TransitionRoot" }).vm.$emit("after-leave");
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(document.activeElement).toBe(elsewhere);
+    } finally {
+      wrapper.unmount();
+      opener.remove();
+      elsewhere.remove();
+    }
   });
 });

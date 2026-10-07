@@ -3,7 +3,7 @@
     appear
     :show="isVisible"
     as="template"
-    @after-leave="popupInstance?.finalize()"
+    @after-leave="onAfterLeave"
   >
     <Dialog
       as="div"
@@ -53,12 +53,17 @@
                 modalWidth,
               ]"
             >
-              <DialogTitle
-                :id="popupTitleId"
-                as="h3"
-                class="vc-popup__title"
-              >
-                <slot name="header">{{ title }}</slot>
+              <!-- The Close button sits beside the title, not inside it: the dialog is named
+                   by `popupTitleId`, so a button inside that element appended its own label to
+                   the name and every modal announced itself as "<title> Close" (VCST-5676). -->
+              <div class="vc-popup__header">
+                <DialogTitle
+                  :id="popupTitleId"
+                  as="h3"
+                  class="vc-popup__title"
+                >
+                  <slot name="header">{{ title }}</slot>
+                </DialogTitle>
 
                 <button
                   v-if="closable"
@@ -80,7 +85,7 @@
                     />
                   </svg>
                 </button>
-              </DialogTitle>
+              </div>
 
               <div class="vc-popup__content">
                 <VcIcon
@@ -128,8 +133,9 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, inject, getCurrentInstance } from "vue";
+import { computed, ref, inject, getCurrentInstance, watch } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { focusFallbackTarget, focusIfLoose } from "@core/utilities/focus";
 import { PopupInstanceKey } from "@core/composables/usePopup/keys";
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
@@ -195,6 +201,34 @@ const isVisible = computed(() => {
   if (props.modelValue !== undefined) return props.modelValue;
   return !popupInstance?.closing.value;
 });
+// Headless UI restores focus only when it owns the unmount, which is not the case on the
+// `v-model` path: the dialog closed and focus was left on `<body>`, so the next Tab restarted
+// at the top of the document (WCAG 2.4.3, measured on VcScheduler's editor for VCST-5676).
+// `usePopup` already does this for imperative popups; this covers the declarative ones.
+let opener: HTMLElement | null = null;
+
+watch(
+  isVisible,
+  (visible) => {
+    if (!visible) return;
+    const active = document.activeElement;
+    opener = active instanceof HTMLElement && active !== document.body ? active : null;
+  },
+  // A popup can be mounted already open, in which case there is no transition to false→true
+  // to listen for and the opener would never be captured.
+  { immediate: true },
+);
+
+// Only once the leave transition has unmounted the panel: before that the dialog still holds
+// focus, and `focusIfLoose` would correctly decline and leave nothing behind it.
+function onAfterLeave(): void {
+  popupInstance?.finalize();
+
+  const target = opener;
+  opener = null;
+  focusIfLoose(() => (target?.isConnected ? target : focusFallbackTarget()));
+}
+
 const canCloseOnOverlay = computed(() => props.closeOnOverlay ?? props.closable);
 const canCloseOnEscape = computed(() => props.closeOnEscape ?? props.closable);
 
@@ -328,8 +362,14 @@ function handleDialogDismiss(): void {
     }
   }
 
+  &__header {
+    @apply tw-flex tw-items-center tw-gap-4 tw-px-6 tw-py-5;
+  }
+
+  // Keeps its own flex row so a #header slot with several children lays out as it did
+  // when the title element was the header.
   &__title {
-    @apply tw-text-lg tw-font-semibold tw-leading-5 tw-text-[var(--popup-header-color)] tw-flex tw-items-center tw-gap-4 tw-px-6 tw-py-5;
+    @apply tw-text-lg tw-font-semibold tw-leading-5 tw-text-[var(--popup-header-color)] tw-flex tw-min-w-0 tw-items-center tw-gap-4;
   }
 
   &__close-btn {

@@ -116,11 +116,13 @@ export function useAdaptiveItems<T>(options: {
     const hidden: T[] = [];
     const gap = containerGap.value;
 
+    // Once an item doesn't fit, it and everything after it overflow: a smaller later item never jumps ahead of it,
+    // so the visible items and the "more" menu both keep the original order.
     for (const item of itemsToCheck) {
       const itemWidth = getItemWidth(item);
       const gapBefore = visible.length > 0 ? gap : 0;
 
-      if (currentWidth + gapBefore + itemWidth <= availableWidth) {
+      if (!hidden.length && currentWidth + gapBefore + itemWidth <= availableWidth) {
         visible.push(item);
         currentWidth += gapBefore + itemWidth;
       } else {
@@ -310,24 +312,30 @@ export function useAdaptiveItems<T>(options: {
     }
   });
 
+  /**
+   * Render every item, then observe and measure them all and redistribute.
+   * Only rendered items get measured: an item that first rendered after the measuring
+   * pass would keep the initialItemWidth guess, so toolbars overflowed with no "more".
+   */
+  const measureAllItems = () => {
+    visibleItems.value = [...items.value];
+    hiddenItems.value = [];
+    nextTick(() => {
+      setupElementsObserver();
+    });
+  };
+
   // Shallow watch: react to item count / identity changes, not deep property changes
   watch(
     () => items.value.map(getItemKey).join("\0"),
     () => {
       cleanupSizeCache();
-      nextTick(() => {
-        setupElementsObserver();
-      });
+      measureAllItems();
     },
   );
 
   // Initialize when mounted
-  onMounted(() => {
-    nextTick(() => {
-      measureElementSizes();
-      setupElementsObserver();
-    });
-  });
+  onMounted(measureAllItems);
 
   // Cleanup resources when unmounted
   onBeforeUnmount(() => {

@@ -120,3 +120,30 @@ describe("DataTableMobileCard — expandable rows", () => {
     expect(expanded.find(".cfg-items").text()).toBe("Configuration items");
   });
 });
+
+describe("DataTableMobileCard — selection checkbox", () => {
+  // VcCheckbox wraps its input in a <label>, so a tap on the box also clicks the input
+  const LabelledCheckbox = { template: '<label class="box"><input type="checkbox" /><span class="mark" /></label>' };
+
+  it("selects once for a tap on the box", async () => {
+    const onSelect = vi.fn();
+    const Wrapper = defineComponent({
+      setup() {
+        provideTableSwipe();
+        return () =>
+          h(DataTableMobileCard as any, { ...baseProps, anySelected: true, selectionMode: "multiple", onSelect });
+      },
+    });
+    const wrapper = mount(Wrapper, {
+      attachTo: document.body,
+      global: {
+        stubs: { MobileCellRenderer: true, MobileActionSheet: true, VcCheckbox: LabelledCheckbox, VcIcon: true },
+      },
+    });
+
+    (wrapper.find(".mark").element as HTMLElement).click();
+
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    wrapper.unmount();
+  });
+});

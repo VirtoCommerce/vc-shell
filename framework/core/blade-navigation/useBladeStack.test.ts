@@ -512,6 +512,39 @@ describe("createBladeStack", () => {
       const stack = createBladeStack(createMockRegistry());
       expect(stack.getMaximizedRef("blade-1")).toBe(stack.getMaximizedRef("blade-1"));
     });
+
+    it.each([
+      ["openBlade", (s: IBladeStack) => s.openBlade({ name: "ProductDetails" })],
+      ["replaceCurrentBlade", (s: IBladeStack) => s.replaceCurrentBlade({ name: "ProductDetails" })],
+      ["coverCurrentBlade", (s: IBladeStack) => s.coverCurrentBlade({ name: "ProductDetails" })],
+    ])("un-maximizes the stack when %s opens a blade, so it is not hidden", async (_, open) => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "1" });
+      const [workspace, details] = stack.blades.value;
+      // the ref a blade slot holds must be reset, not swapped for a new one
+      const workspaceRef = stack.getMaximizedRef(workspace.id);
+      const detailsRef = stack.getMaximizedRef(details.id);
+      stack.setMaximized(workspace.id, true);
+      stack.setMaximized(details.id, true);
+
+      await open(stack);
+
+      expect(workspaceRef.value).toBe(false);
+      expect(detailsRef.value).toBe(false);
+      expect(stack.blades.value.some((b) => stack.isMaximized(b.id))).toBe(false);
+    });
+
+    it("can maximize a blade again after a child was opened and closed", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      const workspaceId = stack.blades.value[0].id;
+      stack.setMaximized(workspaceId, true);
+      await stack.openBlade({ name: "OrderDetails" });
+      await stack.closeBlade(stack.blades.value[1].id);
+
+      stack.toggleMaximized(workspaceId);
+
+      expect(stack.isMaximized(workspaceId)).toBe(true);
+    });
   });
 
   // ── trailFor ───────────────────────────────────────────────────────────────

@@ -78,7 +78,8 @@ export function registerInterceptors(router: Router) {
     sessionCheck ??= sessionClient
       .getCurrentUser()
       .then(
-        () => true,
+        // The VirtoCommerce platform answers a caller without a session with 200 and an empty user, not a 401.
+        (user) => Boolean(user?.userName),
         // Only a 401 answers the question. Anything else — an unreachable platform, a 5xx — says
         // nothing about the session, and signing out on it would be a guess.
         (error: unknown) => !(ApiException.isApiException(error) && error.status === 401),
@@ -247,6 +248,8 @@ function redirect(router: Router) {
   // redirect to login page if it exists
   if (router && router.getRoutes().some((route) => route.path === "/login" || route.name === "Login")) {
     if (router.currentRoute.value.path !== "/login") {
+      // the login page returns here after sign-in, as it does for a deep link (authGuard)
+      localStorage.setItem("redirectAfterLogin", router.currentRoute.value.fullPath);
       router.push("/login");
     }
   } else {

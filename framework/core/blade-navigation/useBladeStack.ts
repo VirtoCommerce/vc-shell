@@ -119,6 +119,14 @@ export function createBladeStack(
     }
   }
 
+  /**
+   * A maximized blade covers the rest of the stack, so a blade opened next to it
+   * would stay hidden behind it. Reset in place: blade slots hold these refs.
+   */
+  function _unmaximizeAll(): void {
+    for (const maximized of _maximized.values()) maximized.value = false;
+  }
+
   // ── Actions ───────────────────────────────────────────────────────────────
 
   /** @returns true when the workspace was actually opened. */
@@ -183,6 +191,7 @@ export function createBladeStack(
 
     // Cleanup closing blades
     _closeBladesCleanup(bladesToClose);
+    _unmaximizeAll();
 
     // Create new blade descriptor
     const descriptor = createChildDescriptor(event, parentId, _descriptorCtx);
@@ -258,6 +267,7 @@ export function createBladeStack(
     const descriptor = createReplacementDescriptor(event, current.parentId, _descriptorCtx);
 
     // Destroy old blade and put new one at the same index
+    _unmaximizeAll();
     _closeBladesCleanup([current]);
     const updated = [..._blades.value.slice(0, currentIndex), descriptor, ..._blades.value.slice(currentIndex + 1)];
     _blades.value = updated;
@@ -299,6 +309,7 @@ export function createBladeStack(
     const descriptor = createCoveringDescriptor(event, current.id, _descriptorCtx);
 
     // Hide current blade (don't destroy it) and append new blade after it
+    _unmaximizeAll();
     const updated: BladeDescriptor[] = _blades.value.slice(0, currentIndex);
     updated.push({ ...current, visible: false });
     updated.push(descriptor);

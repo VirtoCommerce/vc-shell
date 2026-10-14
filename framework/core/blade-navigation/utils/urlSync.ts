@@ -1,5 +1,6 @@
 import type { Router } from "vue-router";
 import type { BladeDescriptor, IBladeStack, ParsedBladeUrl, UrlSink } from "@core/blade-navigation/types";
+import { bladeRegistryInstance } from "@core/blade-navigation/singletons";
 
 /**
  * Build a URL path from the current blade stack.
@@ -25,10 +26,11 @@ export function buildUrlFromStack(
   const workspace = stack[0];
   const wsUrl = normalizeSegment(workspace.url);
 
-  // Find the last visible child blade (not the workspace)
+  // Find the last visible child blade (not the workspace) that a reload can restore. A non-routable blade
+  // (its subject comes only through options) is passed over, so the URL names its routable parent instead.
   let activeBlade: BladeDescriptor | undefined;
   for (let i = stack.length - 1; i >= 1; i--) {
-    if (stack[i].visible) {
+    if (stack[i].visible && bladeRegistryInstance?.getBlade(stack[i].name)?.routable !== false) {
       activeBlade = stack[i];
       break;
     }

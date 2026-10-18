@@ -388,13 +388,13 @@ function dismissBanner(banner: IBladeBanner) {
   // ── Shared structural classes ───────────────────────────────────────
 
   &__accent {
-    @apply tw-absolute tw-left-0 tw-top-0 tw-bottom-0;
+    @apply tw-absolute tw-start-0 tw-top-0 tw-bottom-0;
     width: 3px;
   }
 
   &__header {
     @apply tw-flex tw-items-center tw-select-none;
-    @apply tw-py-2 tw-pl-3 tw-pr-3;
+    @apply tw-py-2 tw-ps-3 tw-pe-3;
   }
 
   &__header--clickable {
@@ -402,7 +402,7 @@ function dismissBanner(banner: IBladeBanner) {
   }
 
   &__icon {
-    @apply tw-shrink-0 tw-mr-2;
+    @apply tw-shrink-0 tw-me-2;
   }
 
   &__text {
@@ -410,16 +410,16 @@ function dismissBanner(banner: IBladeBanner) {
   }
 
   &__chevron {
-    @apply tw-shrink-0 tw-ml-2;
+    @apply tw-shrink-0 tw-ms-2;
   }
 
   &__action {
-    @apply tw-shrink-0 tw-ml-2 tw-text-xs tw-font-medium tw-border-0 tw-bg-transparent tw-cursor-pointer tw-underline;
+    @apply tw-shrink-0 tw-ms-2 tw-text-xs tw-font-medium tw-border-0 tw-bg-transparent tw-cursor-pointer tw-underline;
     @apply tw-p-0;
   }
 
   &__dismiss {
-    @apply tw-shrink-0 tw-ml-2 tw-flex tw-rounded tw-border-0 tw-cursor-pointer;
+    @apply tw-shrink-0 tw-ms-2 tw-flex tw-rounded tw-border-0 tw-cursor-pointer;
     @apply tw-bg-transparent;
     color: inherit;
     opacity: 0.5;
@@ -445,7 +445,7 @@ function dismissBanner(banner: IBladeBanner) {
   }
 
   &__error-details-text {
-    @apply tw-text-[11px] tw-leading-relaxed tw-p-3 tw-pr-9;
+    @apply tw-text-[11px] tw-leading-relaxed tw-p-3 tw-pe-9;
     @apply tw-whitespace-pre-wrap tw-break-words tw-overflow-y-auto;
     @apply tw-m-0;
     max-height: 120px;
@@ -454,7 +454,7 @@ function dismissBanner(banner: IBladeBanner) {
   }
 
   &__error-copy {
-    @apply tw-absolute tw-top-2 tw-right-2 tw-p-1 tw-rounded;
+    @apply tw-absolute tw-top-2 tw-end-2 tw-p-1 tw-rounded;
     @apply tw-border-0 tw-cursor-pointer;
     background: var(--neutrals-100);
     color: var(--neutrals-500);

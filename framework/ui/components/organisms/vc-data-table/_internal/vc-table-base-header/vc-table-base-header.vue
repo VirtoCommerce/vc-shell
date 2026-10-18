@@ -116,15 +116,15 @@ const { isMobile, isDesktop } = useResponsive();
   }
 
   &__filter-mobile {
-    @apply tw-mr-3;
+    @apply tw-me-3;
   }
 
   &__filter-desktop {
-    @apply tw-ml-3;
+    @apply tw-ms-3;
   }
 
   &__column-switcher {
-    @apply tw-ml-3;
+    @apply tw-ms-3;
   }
 
   &__search-input {

@@ -243,6 +243,7 @@ import { useBladeStack } from "@core/blade-navigation";
 import { UserDropdownButton } from "@shell/components/user-dropdown-button";
 import { useSidebarState } from "@core/composables/useSidebarState";
 import { useAppBarWidget } from "@core/composables";
+import { isRtlElement } from "@core/composables/useTextDirection";
 import SidebarHeader from "@ui/components/organisms/vc-app/_internal/sidebar/SidebarHeader.vue";
 import AppBarMobileActions from "@ui/components/organisms/vc-app/_internal/app-bar/components/AppBarMobileActions.vue";
 import MenuSidebar from "@ui/components/organisms/vc-app/_internal/app-bar/components/MenuSidebar.vue";
@@ -326,6 +327,8 @@ const gestureState = ref<"idle" | "pending" | "horizontal" | "vertical">("idle")
 let touchStartX = 0;
 let touchStartY = 0;
 let lastTouchX = 0;
+// 1 left to right, -1 right to left: the tabs run along the line, so a finger's move is read along it too
+let inlineSign = 1;
 let touchStartTime = 0;
 
 const sliderStyle = computed(() => {
@@ -335,13 +338,13 @@ const sliderStyle = computed(() => {
   if (isDragging.value && viewportWidth > 0) {
     const dragTranslate = (dragOffsetX.value / viewportWidth) * 50;
     return {
-      transform: `translateX(${baseTranslate + dragTranslate}%)`,
+      transform: `translateX(calc(${baseTranslate + dragTranslate}% * var(--vc-inline-sign, 1)))`,
       transition: "none",
     };
   }
 
   return {
-    transform: `translateX(${baseTranslate}%)`,
+    transform: `translateX(calc(${baseTranslate}% * var(--vc-inline-sign, 1)))`,
     transition: SLIDER_TRANSITION,
   };
 });
@@ -352,7 +355,7 @@ const indicatorStyle = computed(() => {
   const progress = Math.max(0, Math.min(1, activeIndex.value + dragProgress));
 
   return {
-    transform: `translateX(${progress * 100}%)`,
+    transform: `translateX(calc(${progress * 100}% * var(--vc-inline-sign, 1)))`,
     transition: isDragging.value ? "none" : SLIDER_TRANSITION,
   };
 });
@@ -401,9 +404,10 @@ function onTouchStart(event: TouchEvent) {
   }
 
   const touch = event.touches[0];
-  touchStartX = touch.clientX;
+  inlineSign = isRtlElement(sliderViewportRef.value) ? -1 : 1;
+  touchStartX = touch.clientX * inlineSign;
   touchStartY = touch.clientY;
-  lastTouchX = touch.clientX;
+  lastTouchX = touchStartX;
   touchStartTime = Date.now();
   dragOffsetX.value = 0;
   isDragging.value = false;
@@ -416,7 +420,7 @@ function onTouchMove(event: TouchEvent) {
   }
 
   const touch = event.touches[0];
-  const deltaX = touch.clientX - touchStartX;
+  const deltaX = touch.clientX * inlineSign - touchStartX;
   const deltaY = touch.clientY - touchStartY;
   const absDeltaX = Math.abs(deltaX);
   const absDeltaY = Math.abs(deltaY);
@@ -443,7 +447,7 @@ function onTouchMove(event: TouchEvent) {
     event.preventDefault();
   }
 
-  lastTouchX = touch.clientX;
+  lastTouchX = touch.clientX * inlineSign;
   dragOffsetX.value = getDragOffset(deltaX);
 }
 
@@ -460,7 +464,7 @@ function onTouchEnd(event: TouchEvent) {
     return;
   }
 
-  const endX = touch?.clientX ?? lastTouchX;
+  const endX = touch ? touch.clientX * inlineSign : lastTouchX;
   const deltaX = endX - touchStartX;
   const duration = Math.max(Date.now() - touchStartTime, 1);
   const velocity = Math.abs(deltaX) / duration;
@@ -573,7 +577,7 @@ const handleSwitchApp = (app: AppDescriptor) => {
   }
 
   &__tab-indicator {
-    @apply tw-absolute tw-bottom-0 tw-left-0 tw-h-0.5 tw-w-1/2 tw-pointer-events-none;
+    @apply tw-absolute tw-bottom-0 tw-start-0 tw-h-0.5 tw-w-1/2 tw-pointer-events-none;
     background-color: var(--app-bar-burger);
   }
 
@@ -592,8 +596,8 @@ const handleSwitchApp = (app: AppDescriptor) => {
 
     .vc-scrollable-container__viewport {
       @apply tw-pt-2;
-      padding-left: var(--app-bar-padding);
-      padding-right: var(--app-bar-padding);
+      padding-inline-start: var(--app-bar-padding);
+      padding-inline-end: var(--app-bar-padding);
     }
 
     // Make nested containers transparent — VcScrollableContainer is the sole scroll owner

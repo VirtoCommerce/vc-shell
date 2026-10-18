@@ -350,16 +350,16 @@ onBeforeUnmount(() => {
 
 <style lang="scss">
 .vc-table-row-actions {
-  @apply tw-absolute tw-flex tw-right-0 tw-px-2 tw-items-center tw-gap-1;
+  @apply tw-absolute tw-flex tw-end-0 tw-px-2 tw-items-center tw-gap-1;
   // Theme-aware row background (NOT hardcoded white) so dark theme doesn't flash white
   background: var(--table-row-bg-odd);
-  box-shadow: -8px 0 8px var(--table-row-bg-odd);
+  box-shadow: calc(-8px * var(--vc-inline-sign, 1)) 0 8px var(--table-row-bg-odd);
   z-index: var(--z-local-sticky);
 
   // Selected row: match selected background (class toggle, no timing issue)
   .vc-table-composition__row--selected & {
     background: var(--table-row-bg-selected);
-    box-shadow: -8px 0 8px var(--table-row-bg-selected);
+    box-shadow: calc(-8px * var(--vc-inline-sign, 1)) 0 8px var(--table-row-bg-selected);
   }
 
   // Hovered clickable row: animate bg in sync with row's tw-transition-colors (150ms).
@@ -531,11 +531,11 @@ onBeforeUnmount(() => {
 @keyframes row-actions-bg-to-hover {
   from {
     background: var(--table-row-bg-odd);
-    box-shadow: -8px 0 8px var(--table-row-bg-odd);
+    box-shadow: calc(-8px * var(--vc-inline-sign, 1)) 0 8px var(--table-row-bg-odd);
   }
   to {
     background: var(--table-row-bg-hover);
-    box-shadow: -8px 0 8px var(--table-row-bg-hover);
+    box-shadow: calc(-8px * var(--vc-inline-sign, 1)) 0 8px var(--table-row-bg-hover);
   }
 }
 </style>

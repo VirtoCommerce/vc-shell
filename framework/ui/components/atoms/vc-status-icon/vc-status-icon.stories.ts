@@ -118,7 +118,7 @@ export const InContext: Story = {
           >
             <span>{{ item.name }}</span>
             <div class="tw-flex tw-items-center">
-              <span class="tw-mr-2 tw-text-sm">{{ item.status ? 'Online' : 'Offline' }}</span>
+              <span class="tw-me-2 tw-text-sm">{{ item.status ? 'Online' : 'Offline' }}</span>
               <vc-status-icon :status="item.status"></vc-status-icon>
             </div>
           </div>

@@ -93,7 +93,7 @@ useAnchoredPanelFocus(
   width: 100%;
   font: inherit;
   color: inherit;
-  text-align: left;
+  text-align: start;
   padding: 0.25rem 0.375rem;
   border-radius: 0.25rem;
   cursor: pointer;

@@ -597,15 +597,15 @@ defineExpose({
     max-height: 100dvh;
 
     &--left {
-      @apply tw-left-0 tw-top-0 tw-bottom-0;
+      @apply tw-start-0 tw-top-0 tw-bottom-0;
     }
 
     &--right {
-      @apply tw-right-0 tw-top-0 tw-bottom-0;
+      @apply tw-end-0 tw-top-0 tw-bottom-0;
     }
 
     &--bottom {
-      @apply tw-left-0 tw-right-0 tw-bottom-0 tw-top-auto;
+      @apply tw-start-0 tw-end-0 tw-bottom-0 tw-top-auto;
       border-radius: var(--vc-sidebar-radius) var(--vc-sidebar-radius) 0 0;
       border-bottom-width: 0;
       max-height: 96dvh;
@@ -651,20 +651,20 @@ defineExpose({
     &--inset.vc-sidebar__panel--left {
       top: var(--vc-sidebar-inset-gap);
       bottom: var(--vc-sidebar-inset-gap);
-      left: var(--vc-sidebar-inset-gap);
+      inset-inline-start: var(--vc-sidebar-inset-gap);
       border-radius: var(--vc-sidebar-radius);
     }
 
     &--inset.vc-sidebar__panel--right {
       top: var(--vc-sidebar-inset-gap);
       bottom: var(--vc-sidebar-inset-gap);
-      right: var(--vc-sidebar-inset-gap);
+      inset-inline-end: var(--vc-sidebar-inset-gap);
       border-radius: var(--vc-sidebar-radius);
     }
 
     &--inset.vc-sidebar__panel--bottom {
-      left: var(--vc-sidebar-inset-gap);
-      right: var(--vc-sidebar-inset-gap);
+      inset-inline-start: var(--vc-sidebar-inset-gap);
+      inset-inline-end: var(--vc-sidebar-inset-gap);
       bottom: var(--vc-sidebar-inset-gap);
       border-radius: var(--vc-sidebar-radius);
       border-bottom-width: 1px;
@@ -765,13 +765,13 @@ defineExpose({
 
 .vc-sidebar-panel-right-enter-from,
 .vc-sidebar-panel-right-leave-to {
-  transform: translateX(24px);
+  transform: translateX(calc(24px * var(--vc-inline-sign, 1)));
   opacity: 0;
 }
 
 .vc-sidebar-panel-left-enter-from,
 .vc-sidebar-panel-left-leave-to {
-  transform: translateX(-24px);
+  transform: translateX(calc(-24px * var(--vc-inline-sign, 1)));
   opacity: 0;
 }
 

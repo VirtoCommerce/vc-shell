@@ -436,7 +436,7 @@ export const CustomSelectedItemDisplay: Story = {
               <span class="tw-bg-primary-100 tw-text-primary-700 tw-px-1 tw-rounded">{{ item.id }}</span>
               <span>{{ value }}</span>
               <button
-                class="tw-text-xs tw-ml-1 tw-px-1 tw-bg-gray-200 tw-rounded hover:tw-bg-gray-300"
+                class="tw-text-xs tw-ms-1 tw-px-1 tw-bg-gray-200 tw-rounded hover:tw-bg-gray-300"
                 @click="remove"
               >
                 ✕

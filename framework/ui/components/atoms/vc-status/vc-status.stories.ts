@@ -152,7 +152,7 @@ export const DotOnly: Story = {
       return { args };
     },
     template: `
-      <div class="tw-space-x-2">
+      <div class="tw-space-x-2 rtl:tw-space-x-reverse">
         <vc-status v-bind="args" variant="info"></vc-status>
         <vc-status v-bind="args" variant="success"></vc-status>
         <vc-status v-bind="args" variant="warning"></vc-status>
@@ -179,7 +179,7 @@ export const Extended: Story = {
     template: `
       <vc-status v-bind="args">
         <div class="tw-flex tw-flex-row tw-items-center">
-          <VcIcon icon="lucide-triangle-alert" size="xl" variant="danger" class="tw-mr-3" />
+          <VcIcon icon="lucide-triangle-alert" size="xl" variant="danger" class="tw-me-3" />
           <div>
             <h3 class="tw-font-bold">Error Status</h3>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque tortor id lacus viverra, ut mollis libero auctor.</p>
@@ -223,7 +223,7 @@ export const AllVariants: Story = {
       <div class="tw-space-y-4">
         <div v-for="variant in variants" :key="variant" class="tw-space-y-2">
           <h3 class="tw-font-medium tw-text-sm">{{ variant }}</h3>
-          <div class="tw-space-x-2">
+          <div class="tw-space-x-2 rtl:tw-space-x-reverse">
             <vc-status :variant="variant">Standard</vc-status>
             <vc-status :variant="variant" extend>Extended</vc-status>
             <vc-status :variant="variant" dot></vc-status>

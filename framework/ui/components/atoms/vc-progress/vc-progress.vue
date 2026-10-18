@@ -12,7 +12,7 @@
   >
     <div
       class="vc-progress__value"
-      :style="{ transform: `translateX(-${100 - clampedValue}%)` }"
+      :style="{ transform: `translateX(calc(-${100 - clampedValue}% * var(--vc-inline-sign, 1)))` }"
     ></div>
   </div>
 </template>

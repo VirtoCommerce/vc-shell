@@ -176,7 +176,7 @@ nextTick(recalculate);
   }
 
   &__expand-button {
-    @apply tw-mr-1 tw-border-solid tw-rounded-[3px] tw-text-[color:var(--breadcrumbs-expand-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--breadcrumbs-expand-button-color-hover)];
+    @apply tw-me-1 tw-border-solid tw-rounded-[3px] tw-text-[color:var(--breadcrumbs-expand-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--breadcrumbs-expand-button-color-hover)];
   }
 }
 </style>

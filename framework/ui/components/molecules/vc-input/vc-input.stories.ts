@@ -727,7 +727,7 @@ export const CustomErrorSlot: Story = {
         >
           <template #error>
             <div class="tw-flex tw-items-center tw-mt-1 tw-text-red-600">
-              <VcIcon icon="lucide-circle-alert" class="tw-mr-1" />
+              <VcIcon icon="lucide-circle-alert" class="tw-me-1" />
               <span>This is a custom error message with an icon</span>
             </div>
           </template>
@@ -761,7 +761,7 @@ export const CustomHintSlot: Story = {
         >
           <template #hint>
             <div class="tw-flex tw-items-center tw-mt-1 tw-text-gray-600">
-              <VcIcon icon="lucide-info" class="tw-mr-1" />
+              <VcIcon icon="lucide-info" class="tw-me-1" />
               <span>Username must be at least 5 characters long</span>
             </div>
           </template>
@@ -899,7 +899,7 @@ export const InputTypes: Story = {
           <br>
           <br>
           <strong>Special notes:</strong>
-          <ul class="tw-list-disc tw-pl-5 tw-mt-1">
+          <ul class="tw-list-disc tw-ps-5 tw-mt-1">
             <li>The <code>integer</code> type only allows whole numbers to be entered</li>
             <li>Date and datetime types use a built-in date picker component</li>
             <li>Password type includes a visibility toggle</li>
@@ -993,7 +993,7 @@ export const Accessibility: Story = {
 
         <div class="tw-p-3 tw-bg-blue-50 tw-rounded tw-text-blue-700 tw-text-sm">
           <strong>Inspect the DOM to verify:</strong>
-          <ul class="tw-list-disc tw-pl-5 tw-mt-1">
+          <ul class="tw-list-disc tw-ps-5 tw-mt-1">
             <li><code>aria-labelledby</code> on input matches the label's <code>id</code></li>
             <li><code>aria-describedby</code> on input matches the hint/error <code>id</code></li>
             <li><code>aria-invalid="true"</code> appears on the error input</li>

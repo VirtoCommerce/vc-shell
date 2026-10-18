@@ -154,15 +154,15 @@ async function handleClick(): Promise<void> {
   }
 
   &--with-separator-left {
-    @apply tw-border-l tw-border-solid tw-border-[var(--blade-toolbar-base-button-separator-color)];
+    @apply tw-border-s tw-border-solid tw-border-[var(--blade-toolbar-base-button-separator-color)];
   }
 
   &--with-separator-right {
-    @apply tw-border-r tw-border-solid tw-border-[var(--blade-toolbar-base-button-separator-color)];
+    @apply tw-border-e tw-border-solid tw-border-[var(--blade-toolbar-base-button-separator-color)];
   }
 
   &--with-separator-both {
-    @apply tw-border-l tw-border-r tw-border-solid tw-border-[var(--blade-toolbar-base-button-separator-color)];
+    @apply tw-border-s tw-border-e tw-border-solid tw-border-[var(--blade-toolbar-base-button-separator-color)];
   }
 
   &:hover:not(&--disabled) {

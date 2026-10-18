@@ -236,7 +236,7 @@ export const ActionMenu: Story = {
           <template #item="{ item, click }">
             <button
               type="button"
-              class="tw-flex tw-w-[320px] tw-items-center tw-justify-between tw-gap-3 tw-border-0 tw-bg-transparent tw-px-2 tw-py-1.5 tw-text-left"
+              class="tw-flex tw-w-[320px] tw-items-center tw-justify-between tw-gap-3 tw-border-0 tw-bg-transparent tw-px-2 tw-py-1.5 tw-text-start"
               @click="click"
             >
               <div class="tw-flex tw-items-center tw-gap-2">
@@ -312,7 +312,7 @@ export const WorkspaceSwitcher: Story = {
           <template #item="{ item, click }">
             <button
               type="button"
-              class="tw-flex tw-w-[280px] tw-items-center tw-justify-between tw-border-0 tw-bg-transparent tw-px-2 tw-py-1.5 tw-text-left"
+              class="tw-flex tw-w-[280px] tw-items-center tw-justify-between tw-border-0 tw-bg-transparent tw-px-2 tw-py-1.5 tw-text-start"
               @click="click"
             >
               <div>
@@ -380,7 +380,7 @@ export const ScrollableList: Story = {
           </template>
 
           <template #item="{ item }">
-            <div class="tw-flex tw-w-[260px] tw-items-center tw-justify-between tw-px-2 tw-py-1.5 tw-text-left">
+            <div class="tw-flex tw-w-[260px] tw-items-center tw-justify-between tw-px-2 tw-py-1.5 tw-text-start">
               <div>
                 <p class="tw-text-sm tw-text-neutrals-900">{{ item.title }}</p>
                 <p class="tw-text-xs tw-text-neutrals-500">{{ item.description }}</p>

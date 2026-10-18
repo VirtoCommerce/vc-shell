@@ -97,7 +97,34 @@
         "CLEAR": "Farbe löschen"
       },
       "VC_DATE_PICKER": {
-        "CLEAR": "Datum löschen"
+        "CLEAR": "Datum löschen",
+        "ARIA": {
+          "TOGGLE_OVERLAY": "Auswahl ein- oder ausblenden",
+          "MENU": "Menü der Datumsauswahl",
+          "INPUT": "Datumseingabe",
+          "OPEN_TIME_PICKER": "Zeitauswahl öffnen",
+          "CLOSE_TIME_PICKER": "Zeitauswahl schließen",
+          "INCREMENT": "{unit} erhöhen",
+          "DECREMENT": "{unit} verringern",
+          "OPEN_TIME_OVERLAY": "{unit} wählen",
+          "AM_PM": "AM/PM umschalten",
+          "OPEN_YEARS": "Jahr wählen",
+          "OPEN_MONTHS": "Monat wählen",
+          "NEXT_MONTH": "Nächster Monat",
+          "PREV_MONTH": "Vorheriger Monat",
+          "NEXT_YEAR": "Nächstes Jahr",
+          "PREV_YEAR": "Vorheriges Jahr",
+          "CALENDAR_ICON": "Kalender öffnen",
+          "TIME_PICKER": "Zeitauswahl",
+          "MONTH_PICKER": "Monatsauswahl",
+          "YEAR_PICKER": "Jahresauswahl",
+          "TIME_OVERLAY": "Auswahl: {unit}",
+          "UNITS": {
+            "hours": "Stunden",
+            "minutes": "Minuten",
+            "seconds": "Sekunden"
+          }
+        }
       },
       "VC_SLIDER": {
         "PREVIOUS": "Vorherige Folie",

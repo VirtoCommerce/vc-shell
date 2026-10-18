@@ -521,7 +521,7 @@ function isBadgeActive(widget: AppBarWidget): boolean {
       }
 
       .app-hub-content__section--apps {
-        @apply tw-border-r-0 tw-border-b tw-border-solid;
+        @apply tw-border-e-0 tw-border-b tw-border-solid;
         border-color: var(--app-hub-divider-color);
       }
 
@@ -545,7 +545,7 @@ function isBadgeActive(widget: AppBarWidget): boolean {
     @apply tw-flex tw-flex-col tw-min-h-0 tw-overflow-hidden;
 
     &--apps {
-      @apply tw-border-r tw-border-solid;
+      @apply tw-border-e tw-border-solid;
       border-color: var(--app-hub-divider-color);
     }
 
@@ -604,7 +604,7 @@ function isBadgeActive(widget: AppBarWidget): boolean {
   }
 
   &__item {
-    @apply tw-w-full tw-flex tw-items-center tw-gap-1.5 tw-rounded-md tw-px-1.5 tw-py-1.5 tw-text-left tw-transition-colors tw-duration-150;
+    @apply tw-w-full tw-flex tw-items-center tw-gap-1.5 tw-rounded-md tw-px-1.5 tw-py-1.5 tw-text-start tw-transition-colors tw-duration-150;
 
     &:hover {
       background: var(--app-hub-item-bg-hover);
@@ -680,7 +680,7 @@ function isBadgeActive(widget: AppBarWidget): boolean {
   }
 
   &__widget-badge {
-    @apply tw-absolute -tw-right-[2px] -tw-top-[2px] tw-w-[6px] tw-h-[6px] tw-rounded-full;
+    @apply tw-absolute -tw-end-[2px] -tw-top-[2px] tw-w-[6px] tw-h-[6px] tw-rounded-full;
     background-color: var(--danger-500);
   }
 

@@ -247,11 +247,11 @@ const resolvedBadges = computed(() => {
 
 <style lang="scss">
 .vc-app-menu {
-  @apply tw-pl-3;
+  @apply tw-ps-3;
   transition: padding var(--app-bar-transition-duration, 200ms) var(--app-bar-hover-transition-timing-function, ease);
 
   &--collapsed {
-    @apply tw-pl-1 tw-pr-1;
+    @apply tw-ps-1 tw-pe-1;
   }
 
   &__skeleton-item {

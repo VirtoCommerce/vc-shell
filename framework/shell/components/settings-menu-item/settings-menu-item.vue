@@ -195,7 +195,7 @@ defineExpose({ triggerRef });
     @apply tw-mx-1 tw-px-2 tw-py-[7px] tw-rounded-md tw-text-sm tw-text-[color:var(--menu-item-text-color)]
       tw-bg-[color:var(--menu-item-bg)] tw-flex tw-flex-row tw-items-center
       tw-transition-colors tw-duration-150
-      tw-border-none tw-text-left;
+      tw-border-none tw-text-start;
     // The trigger renders as a <button> by default — reset the UA font so it
     // keeps inheriting the shell's type scale.
     font: inherit;
@@ -234,11 +234,11 @@ defineExpose({ triggerRef });
   }
 
   &__value {
-    @apply tw-text-[color:var(--menu-item-value-color)] tw-text-xs tw-shrink-0 tw-ml-auto;
+    @apply tw-text-[color:var(--menu-item-value-color)] tw-text-xs tw-shrink-0 tw-ms-auto;
   }
 
   &__chevron {
-    @apply tw-text-[color:var(--menu-item-chevron-color)] tw-text-[10px] tw-shrink-0 tw-ml-1
+    @apply tw-text-[color:var(--menu-item-chevron-color)] tw-text-[10px] tw-shrink-0 tw-ms-1
       tw-transition-transform tw-duration-200;
 
     &--rotated {
@@ -251,7 +251,7 @@ defineExpose({ triggerRef });
   }
 
   &__submenu-content {
-    @apply tw-py-1 tw-pl-6 tw-pr-1;
+    @apply tw-py-1 tw-ps-6 tw-pe-1;
   }
 }
 </style>

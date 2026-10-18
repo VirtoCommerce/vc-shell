@@ -338,7 +338,7 @@ export const RichContent: Story = {
             <div>
               <div class="tw-font-semibold tw-mb-1 tw-text-neutrals-900">Need help?</div>
               <p class="tw-mb-1.5 tw-text-neutrals-500">Here are some helpful tips:</p>
-              <ul class="tw-list-disc tw-pl-4 tw-text-neutrals-600 tw-space-y-0.5">
+              <ul class="tw-list-disc tw-ps-4 tw-text-neutrals-600 tw-space-y-0.5">
                 <li>Make sure all fields are filled</li>
                 <li>Check for validation errors</li>
                 <li>Contact support if issues persist</li>

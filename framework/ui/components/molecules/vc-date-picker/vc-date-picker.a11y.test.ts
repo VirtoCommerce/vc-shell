@@ -15,7 +15,18 @@ const i18n = createI18n({
   messages: {
     en: {
       COMPONENTS: {
-        MOLECULES: { VC_INPUT: { DATE_TIME_PLACEHOLDER: "Select date & time", DATE_PLACEHOLDER: "Select date" } },
+        MOLECULES: {
+          VC_INPUT: { DATE_TIME_PLACEHOLDER: "Select date & time", DATE_PLACEHOLDER: "Select date" },
+          VC_DATE_PICKER: {
+            CLEAR: "Clear date",
+            ARIA: {
+              INPUT: "Date input",
+              NEXT_MONTH: "Next month",
+              INCREMENT: "Increase {unit}",
+              UNITS: { hours: "hours" },
+            },
+          },
+        },
       },
     },
   },
@@ -81,7 +92,14 @@ describe("VcDatePicker a11y", () => {
 
   it("prefers the visible label over ariaLabel", () => {
     const w = mountDatePicker({ label: "Start date", ariaLabel: "starts_at" });
-    expect(w.find("input.vc-date-picker__stub").attributes("aria-label")).toBe("Datepicker input");
+    expect(w.find("input.vc-date-picker__stub").attributes("aria-label")).toBe("Date input");
+  });
+
+  it("passes the library labels in the user's language", () => {
+    const w = mountDatePicker({ label: "Start date" });
+    const labels = w.findComponent({ name: "VueDatePicker" }).props("ariaLabels");
+    expect(labels).toMatchObject({ nextMonth: "Next month", clearInput: "Clear date" });
+    expect(labels.incrementValue("hours")).toBe("Increase hours");
   });
 
   it("keeps consumer-provided ariaLabels while overriding the input label", () => {

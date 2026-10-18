@@ -111,12 +111,12 @@ const ariaLabel = computed(() => {
     box-shadow 150ms ease-out,
     filter 150ms ease-out;
   &--continues-left {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
   }
   &--continues-right {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
   }
   // Past state is a pale tint + dark ink applied inline (see eventSurfaceStyle) so it stays
   // AA-legible; no wash-to-white filter here.
@@ -152,10 +152,10 @@ const ariaLabel = computed(() => {
   cursor: col-resize;
   opacity: 0;
   &--start {
-    left: 0;
+    inset-inline-start: 0;
   }
   &--end {
-    right: 0;
+    inset-inline-end: 0;
   }
 }
 .vc-scheduler__event-bar:hover .vc-scheduler__event-bar-handle,

@@ -169,7 +169,7 @@ defineExpose({
 
   // Chevron transition (shared by both variants)
   &__chevron {
-    @apply tw-text-[color:var(--vc-menu-item-icon-color)] tw-ml-auto tw-shrink-0;
+    @apply tw-text-[color:var(--vc-menu-item-icon-color)] tw-ms-auto tw-shrink-0;
     transition: transform var(--vc-menu-group-animation-duration) ease;
 
     &--open {
@@ -197,7 +197,7 @@ defineExpose({
     @apply tw-overflow-hidden tw-min-h-0 tw-flex tw-flex-col;
   }
 
-  // In collapsed mode, allow overflow for active indicators (::after at left: -4px)
+  // In collapsed mode, allow overflow for active indicators (::after at inset-inline-start: -4px)
   &__children-wrapper--collapsed > &__children {
     @apply tw-overflow-visible;
   }
@@ -209,23 +209,25 @@ defineExpose({
     &::before {
       content: "";
       @apply tw-absolute tw-top-0 tw-bottom-0;
-      left: 1px;
+      inset-inline-start: 1px;
       width: 1px;
       background: var(--neutrals-200);
     }
   }
 
-  // Active group header: border-radius left only + wider right padding (Figma spec)
+  // Active group header: border-radius on the start side only + wider end padding (Figma spec)
   // Applies when group has explicit `active` prop
   > .vc-menu-item .vc-menu-item__content--active {
-    border-radius: var(--vc-menu-group-active-radius) 0 0 var(--vc-menu-group-active-radius);
-    padding-right: 10px;
+    border-radius: 0;
+    border-start-start-radius: var(--vc-menu-group-active-radius);
+    border-end-start-radius: var(--vc-menu-group-active-radius);
+    padding-inline-end: 10px;
   }
 
   // ── Section variant (L1) ──────────────────────────────────
   &--section {
     // Container-level indent (separates "group padding" from "item padding")
-    padding-left: var(--vc-menu-section-padding-left);
+    padding-inline-start: var(--vc-menu-section-padding-left);
 
     // Section chevron inherits section text color, not item icon color
     .vc-menu-group__chevron {
@@ -243,7 +245,8 @@ defineExpose({
     @apply tw-flex tw-items-center tw-w-full tw-cursor-pointer
       tw-border-none tw-bg-transparent tw-select-none tw-outline-none;
     height: var(--vc-menu-section-height);
-    padding: 0 10px 0 var(--vc-menu-item-padding-x, 6px);
+    padding-block: 0;
+    padding-inline: var(--vc-menu-item-padding-x, 6px) 10px;
     gap: 8px;
 
     &--hidden {
@@ -256,7 +259,7 @@ defineExpose({
   }
 
   &__section-title {
-    @apply tw-flex-1 tw-text-left tw-uppercase tw-font-normal tw-truncate;
+    @apply tw-flex-1 tw-text-start tw-uppercase tw-font-normal tw-truncate;
     font-size: var(--vc-menu-section-font-size);
     line-height: 16px;
     color: var(--vc-menu-section-text-color);

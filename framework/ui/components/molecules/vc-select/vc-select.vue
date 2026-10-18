@@ -643,21 +643,27 @@ watch(
     @apply tw-flex tw-flex-nowrap tw-items-start tw-relative tw-rounded-[var(--select-border-radius)];
   }
 
+  // The field and its hint below it. Each level may shrink below its content (min-width: 0), so a long value is cut
+  // inside the field instead of widening the column.
+  &__trigger {
+    @apply tw-flex tw-flex-col tw-flex-auto tw-min-w-0;
+  }
+
   &__dropdown-toggle {
-    @apply tw-flex tw-flex-auto tw-text-left tw-max-w-full;
+    @apply tw-flex tw-flex-auto tw-text-start tw-max-w-full tw-min-w-0;
   }
 
   &__control {
-    @apply tw-relative tw-flex tw-flex-auto tw-text-left tw-max-w-full;
+    @apply tw-relative tw-flex tw-flex-auto tw-text-start tw-max-w-full tw-min-w-0;
   }
 
   &__prepend,
   &__append {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-pr-3;
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-pe-3;
   }
 
   &__field-wrapper {
-    @apply tw-relative tw-flex tw-flex-auto tw-overflow-x-clip tw-whitespace-nowrap tw-rounded-[var(--select-border-radius)]
+    @apply tw-relative tw-flex tw-flex-auto tw-min-w-0 tw-overflow-x-clip tw-whitespace-nowrap tw-rounded-[var(--select-border-radius)]
       tw-border tw-border-solid tw-border-[color:var(--select-border-color)]
       tw-bg-[color:var(--select-background-color)]
       tw-shadow-sm tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out;
@@ -672,7 +678,7 @@ watch(
   }
 
   &__field {
-    @apply tw-truncate tw-relative tw-box-border tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch tw-text-[color:var(--select-text-color)];
+    @apply tw-truncate tw-relative tw-box-border tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-min-w-0 tw-items-stretch tw-text-[color:var(--select-text-color)];
   }
 
   &__field-inner {
@@ -685,16 +691,16 @@ watch(
 
   &__prepend-inner,
   &__append-inner {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-pr-3;
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-pe-3;
   }
 
   &__field-main {
-    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-truncate;
+    @apply tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-truncate tw-min-w-0;
   }
 
   &__prefix,
   &__suffix {
-    @apply tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none tw-text-sm;
+    @apply tw-flex tw-items-center tw-flex-wrap tw-pe-3 tw-pointer-events-none tw-text-sm;
   }
 
   &__input {
@@ -724,7 +730,12 @@ watch(
   &__multiple-item {
     @apply tw-bg-[color:var(--select-multiple-options-background-color)] tw-border tw-border-solid
       tw-border-[color:var(--select-multiple-options-border-color)] tw-rounded-[4px]
-      tw-flex tw-items-center tw-h-6 tw-box-border tw-px-2 tw-text-xs tw-gap-1;
+      tw-flex tw-items-center tw-h-6 tw-box-border tw-px-2 tw-text-xs tw-gap-1 tw-max-w-full tw-min-w-0;
+
+    // a long chosen value is cut too rather than widening the field
+    > span {
+      @apply tw-truncate tw-min-w-0;
+    }
   }
 
   &__loading {
@@ -744,15 +755,15 @@ watch(
   }
 
   &__clear {
-    @apply tw-cursor-pointer tw-flex tw-items-center tw-pl-3 tw-text-[color:var(--select-clear-color)] hover:tw-text-[color:var(--select-clear-color-hover)];
+    @apply tw-cursor-pointer tw-flex tw-items-center tw-ps-3 tw-text-[color:var(--select-clear-color)] hover:tw-text-[color:var(--select-clear-color-hover)];
   }
 
   &__loading-icon {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-loading-color)];
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-ps-3 tw-text-[color:var(--select-loading-color)];
   }
 
   &__chevron-container {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-cursor-pointer;
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-ps-3 tw-cursor-pointer;
   }
 
   &__chevron {
@@ -761,8 +772,9 @@ watch(
       hover:tw-text-[color:var(--select-chevron-color-hover)] hover:tw-opacity-100;
   }
 
+  // In the flow below the field, like VcInput's hint: a hint of several lines takes its height
   &__hint-error {
-    @apply tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-5 tw-whitespace-normal;
+    @apply tw-whitespace-normal tw-min-w-0;
   }
 
   &__error-message {
@@ -817,7 +829,7 @@ watch(
 
   &__option {
     @apply tw-flex tw-items-center tw-min-h-8 tw-box-border
-      tw-py-1.5 tw-pr-8 tw-pl-2
+      tw-py-1.5 tw-pe-8 tw-ps-2
       tw-rounded-[4px]
       tw-cursor-pointer tw-text-sm tw-relative tw-select-none
       hover:tw-bg-[color:var(--select-option-background-color-hover)];
@@ -829,7 +841,7 @@ watch(
   }
 
   &__check-icon {
-    @apply tw-absolute tw-right-2 tw-flex tw-items-center tw-justify-center
+    @apply tw-absolute tw-end-2 tw-flex tw-items-center tw-justify-center
       tw-text-[color:var(--select-option-check-color)];
   }
 
@@ -837,7 +849,7 @@ watch(
     @apply tw-flex tw-items-center tw-justify-center tw-p-2 tw-text-sm tw-text-[color:var(--select-text-color)];
 
     span {
-      @apply tw-mr-2;
+      @apply tw-me-2;
     }
   }
 
@@ -876,8 +888,8 @@ watch(
       tw-outline-none;
   }
 
-  &.vc-select--has-hint-or-error {
-    @apply tw-pb-5;
+  &.vc-select--has-hint-or-error .vc-select__hint-error {
+    @apply tw-min-h-5;
   }
 }
 

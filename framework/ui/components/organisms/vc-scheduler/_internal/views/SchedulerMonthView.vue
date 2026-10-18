@@ -134,6 +134,7 @@ import { useMonthLayout } from "../../composables/useMonthLayout";
 import { autoEventColor } from "../../composables/useEventColor";
 import { useEventInteraction, useClickDiscriminator, type ICreateIntent } from "../../composables/useEventInteraction";
 import type { ISchedulerEvent } from "../../types";
+import { isRtlElement } from "@core/composables/useTextDirection";
 
 const props = defineProps<{
   events: ISchedulerEvent[];
@@ -181,7 +182,9 @@ function dayFromPoint(clientX: number, clientY: number): Date | null {
   if (!el) return null;
   const rect = el.getBoundingClientRect();
   if (rect.width <= 0 || rect.height <= 0) return null;
-  const col = Math.floor(((clientX - rect.left) / rect.width) * 7);
+  const fromLeft = Math.floor(((clientX - rect.left) / rect.width) * 7);
+  // the week runs right to left on a right-to-left page
+  const col = isRtlElement(el) ? 6 - fromLeft : fromLeft;
   const row = Math.floor(((clientY - rect.top) / rect.height) * 6);
   if (col < 0 || col > 6 || row < 0 || row > 5) return null;
   return addDays(monthRange.value.start, row * 7 + col);

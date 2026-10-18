@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useTextDirection } from "@core/composables/useTextDirection";
 
 const props = defineProps<{
   /**
@@ -35,7 +36,7 @@ const props = defineProps<{
   /**
    * Text alignment
    */
-  align?: "left" | "center" | "right";
+  align?: "start" | "center" | "end" | "left" | "right";
   /**
    * Custom CSS class from column config
    */
@@ -71,13 +72,23 @@ const contentClasses = computed(() => {
   return {};
 });
 
+const { isRtl } = useTextDirection();
+
+// On a right-to-left page the column's side is given in physical terms. The data in a cell reads in its own direction
+// (unicode-bidi: plaintext, see the style below), and such a block would read "start" as its own text's start: an
+// English name would go to the left of an Arabic table.
+const textAlign = computed(() => {
+  if (!isRtl.value || props.align === "center") return props.align;
+  return props.align === "end" || props.align === "right" ? "left" : "right";
+});
+
 // Outer cell: handles flex sizing, alignment, padding
 const cellStyle = computed(() => {
   return {
     width: props.width,
     minWidth: props.minWidth || undefined,
     maxWidth: props.maxWidth,
-    textAlign: props.align,
+    textAlign: textAlign.value,
     // Engine-provided widths are fixed. Before first compute, keep cells
     // evenly distributed to match headers and avoid initial left-pack flash.
     flex: props.width ? `0 0 ${props.width}` : "1 1 0px",
@@ -113,6 +124,13 @@ const contentStyle = computed(() => {
 .vc-table-composition__cell-content {
   flex: 1 1 0;
   min-width: 0;
+}
+
+// Data whose direction is its own (emails, codes, versions, URLs, amounts) reads left to right inside a right-to-left
+// table, from its first letter, and keeps the column's side (the cell's physical text-align, set in the script).
+[dir="rtl"] .vc-table-composition__cell-content :is(div, span, a, p):not(:has(*)) {
+  text-align: match-parent;
+  unicode-bidi: plaintext;
 }
 
 // Ensure inner renderers (including custom slot roots) can shrink with the cell.

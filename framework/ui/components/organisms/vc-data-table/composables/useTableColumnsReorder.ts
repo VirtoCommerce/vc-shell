@@ -1,5 +1,6 @@
 import { ref, type Ref, onBeforeUnmount } from "vue";
 import type { ColumnState } from "../types";
+import { isRtlElement } from "@core/composables/useTextDirection";
 
 export interface UseTableColumnsReorderOptions {
   columnState: Ref<ColumnState>;
@@ -79,18 +80,22 @@ export function useTableColumnsReorder(options: UseTableColumnsReorderOptions) {
     const rect = (header as HTMLElement).getBoundingClientRect();
     const middleX = rect.left + rect.width / 2;
     const mouseX = event.clientX;
+    // the columns run right to left in a right-to-left table: the start half of a column is its right half
+    const rtl = isRtlElement(header);
+    const inStartHalf = rtl ? mouseX > middleX : mouseX < middleX;
+    const inEndHalf = rtl ? mouseX < middleX : mouseX > middleX;
 
     const order = columnState.value.order;
     const dragIndex = order.indexOf(draggedColumnId);
     const dropIndex = order.indexOf(hoveredColumnId);
 
     // Only swap if:
-    // 1. Moving left and cursor is past the left half of target
-    // 2. Moving right and cursor is past the right half of target
-    const movingLeft = dragIndex > dropIndex;
-    const movingRight = dragIndex < dropIndex;
+    // 1. Moving toward the start and cursor is past the start half of target
+    // 2. Moving toward the end and cursor is past the end half of target
+    const movingToStart = dragIndex > dropIndex;
+    const movingToEnd = dragIndex < dropIndex;
 
-    const shouldSwap = (movingLeft && mouseX < middleX) || (movingRight && mouseX > middleX);
+    const shouldSwap = (movingToStart && inStartHalf) || (movingToEnd && inEndHalf);
 
     if (shouldSwap && dragIndex !== -1 && dropIndex !== -1 && dragIndex !== dropIndex) {
       const newOrder = [...order];

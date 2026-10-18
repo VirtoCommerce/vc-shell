@@ -227,8 +227,8 @@ logger.debug("Init login-page");
 
   &__separator-line {
     @apply tw-flex tw-items-center tw-text-center tw-text-xs tw-text-[color:var(--login-separator-text)]
-      before:tw-content-[''] before:tw-flex-1 before:tw-border-b before:tw-border-b-[color:var(--login-separator)] before:tw-mr-3
-      after:tw-content-[''] after:tw-flex-1 after:tw-border-b after:tw-border-b-[color:var(--login-separator)] after:tw-ml-3;
+      before:tw-content-[''] before:tw-flex-1 before:tw-border-b before:tw-border-b-[color:var(--login-separator)] before:tw-me-3
+      after:tw-content-[''] after:tw-flex-1 after:tw-border-b after:tw-border-b-[color:var(--login-separator)] after:tw-ms-3;
     @apply tw-my-4;
   }
 }

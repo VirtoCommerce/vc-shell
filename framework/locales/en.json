@@ -97,7 +97,34 @@
         "CLEAR": "Clear color"
       },
       "VC_DATE_PICKER": {
-        "CLEAR": "Clear date"
+        "CLEAR": "Clear date",
+        "ARIA": {
+          "TOGGLE_OVERLAY": "Show or hide the picker",
+          "MENU": "Date picker menu",
+          "INPUT": "Date input",
+          "OPEN_TIME_PICKER": "Open time picker",
+          "CLOSE_TIME_PICKER": "Close time picker",
+          "INCREMENT": "Increase {unit}",
+          "DECREMENT": "Decrease {unit}",
+          "OPEN_TIME_OVERLAY": "Choose {unit}",
+          "AM_PM": "Switch AM/PM",
+          "OPEN_YEARS": "Choose a year",
+          "OPEN_MONTHS": "Choose a month",
+          "NEXT_MONTH": "Next month",
+          "PREV_MONTH": "Previous month",
+          "NEXT_YEAR": "Next year",
+          "PREV_YEAR": "Previous year",
+          "CALENDAR_ICON": "Open calendar",
+          "TIME_PICKER": "Time picker",
+          "MONTH_PICKER": "Month picker",
+          "YEAR_PICKER": "Year picker",
+          "TIME_OVERLAY": "{unit} picker",
+          "UNITS": {
+            "hours": "hours",
+            "minutes": "minutes",
+            "seconds": "seconds"
+          }
+        }
       },
       "VC_SLIDER": {
         "PREVIOUS": "Previous slide",

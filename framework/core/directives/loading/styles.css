@@ -17,9 +17,9 @@
   position: absolute;
   z-index: var(--v-loading-z-index, var(--z-critical-loading));
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   background-color: var(--v-loading-bg);
   backdrop-filter: blur(3px);
 }
@@ -40,11 +40,11 @@
   width: var(--v-loading-spinner-size, var(--v-loading-spinner-size-medium));
   height: var(--v-loading-spinner-size, var(--v-loading-spinner-size-medium));
   border: 4px solid var(--v-loading-spinner-color);
-  border-right-color: transparent;
+  border-inline-end-color: transparent;
   animation: 0.75s linear infinite v-loading;
   border-radius: 50%;
   top: calc(50% - var(--v-loading-spinner-size, var(--v-loading-spinner-size-medium)) / 2);
-  left: calc(50% - var(--v-loading-spinner-size, var(--v-loading-spinner-size-medium)) / 2);
+  inset-inline-start: calc(50% - var(--v-loading-spinner-size, var(--v-loading-spinner-size-medium)) / 2);
   display: inline-block;
 }
 

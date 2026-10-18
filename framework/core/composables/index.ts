@@ -31,6 +31,7 @@ export * from "@core/composables/useModificationTracker";
 export * from "@core/composables/usePopup";
 export * from "@core/composables/useResponsive";
 export * from "@core/composables/useEnvironmentName";
+export * from "@core/composables/useTextDirection";
 export * from "@core/composables/useKeyboardShortcuts";
 // Note: useConnectionStatus is NOT re-exported here to avoid circular
 // dependency. Import directly from "@core/composables/useConnectionStatus".

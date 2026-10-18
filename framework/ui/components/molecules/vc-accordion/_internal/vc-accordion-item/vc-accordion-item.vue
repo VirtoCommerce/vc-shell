@@ -162,7 +162,7 @@ watch(
 
   &__header {
     @apply tw-flex tw-items-center tw-justify-between tw-w-full;
-    @apply tw-border-none tw-outline-none tw-select-none tw-text-left;
+    @apply tw-border-none tw-outline-none tw-select-none tw-text-start;
     padding: var(--accordion-item-header-padding);
     gap: var(--accordion-item-header-gap);
     background: var(--accordion-item-header-background);
@@ -199,7 +199,7 @@ watch(
   }
 
   &__icon {
-    margin-left: var(--accordion-item-icon-margin-left);
+    margin-inline-start: var(--accordion-item-icon-margin-left);
     transition: transform var(--accordion-item-transition-duration) ease;
     flex-shrink: 0;
 
@@ -217,8 +217,8 @@ watch(
       content: "";
       position: absolute;
       bottom: 0;
-      left: 0;
-      right: 0;
+      inset-inline-start: 0;
+      inset-inline-end: 0;
       height: var(--accordion-item-fade-height);
       background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, var(--accordion-item-content-background) 100%);
       pointer-events: none;

@@ -213,8 +213,8 @@ function onDelete() {
   gap: 0.5rem;
   width: 100%;
   padding: 0.625rem 0.75rem;
-  border-top-left-radius: inherit;
-  border-top-right-radius: inherit;
+  border-start-start-radius: inherit;
+  border-start-end-radius: inherit;
 }
 .vc-scheduler__qi-dot {
   flex: none;

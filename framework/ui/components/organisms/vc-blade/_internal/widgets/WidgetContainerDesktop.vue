@@ -166,7 +166,7 @@ const showMoreButton = computed(() => props.widgets.length > 3);
       }
 
       .vc-widget__content {
-        @apply tw-ml-0;
+        @apply tw-ms-0;
       }
 
       .vc-widget__title {

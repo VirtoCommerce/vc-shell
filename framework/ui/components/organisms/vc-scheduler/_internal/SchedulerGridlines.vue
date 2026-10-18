@@ -8,7 +8,7 @@
       :key="t.x"
       class="vc-scheduler__gridline"
       :class="{ 'vc-scheduler__gridline--weekend': isWeekend(t.date) }"
-      :style="{ transform: `translateX(${t.x}px)` }"
+      :style="{ transform: `translateX(calc(${t.x}px * var(--vc-inline-sign, 1)))` }"
     />
   </div>
 </template>

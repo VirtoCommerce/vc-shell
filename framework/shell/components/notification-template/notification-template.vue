@@ -108,7 +108,7 @@ const pushTime = computed(() => {
 
   &__icon-container {
     @apply tw-w-[41px] tw-h-[41px] tw-rounded-full tw-text-[color:var(--notification-template-icon-color)]
-      tw-mr-4 tw-flex tw-items-center tw-justify-center tw-shrink-0;
+      tw-me-4 tw-flex tw-items-center tw-justify-center tw-shrink-0;
   }
 
   &__title {

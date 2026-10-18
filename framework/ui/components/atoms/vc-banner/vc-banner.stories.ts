@@ -264,7 +264,7 @@ export const CollapsibleContent: Story = {
       <vc-banner v-bind="args" class="tw-max-w-lg">
         <template #title>Error Details</template>
         <p>The following validation errors were found during processing:</p>
-        <ul class="tw-list-disc tw-pl-4 tw-mt-1 tw-space-y-1">
+        <ul class="tw-list-disc tw-ps-4 tw-mt-1 tw-space-y-1">
           <li>Product SKU is required and must be unique</li>
           <li>Price must be a positive number greater than zero</li>
           <li>At least one product image is required for listing</li>

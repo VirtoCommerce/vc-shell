@@ -203,7 +203,7 @@ const _props = defineProps<{
   /** Function to get effective column width */
   getColumnWidth: (colProps: VcColumnProps) => string | undefined;
   /** Function to get header alignment */
-  getHeaderAlign: (colProps: VcColumnProps) => "left" | "center" | "right" | undefined;
+  getHeaderAlign: (colProps: VcColumnProps) => "start" | "center" | "end" | undefined;
   /** Function to get header style */
   getHeaderStyle: (colProps: VcColumnProps) => Record<string, string> | object | undefined;
   /** Function to check if column is resizable */
@@ -321,7 +321,7 @@ const handleFilterClear = (col: ColumnInstance) => {
 <style lang="scss">
 .vc-col-switcher-trigger {
   position: absolute;
-  right: 0;
+  inset-inline-end: 0;
   top: 50%;
   z-index: var(--z-local-header);
 
@@ -330,14 +330,15 @@ const handleFilterClear = (col: ColumnInstance) => {
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: 16px 0 0 16px;
+  border-start-start-radius: 16px;
+  border-end-start-radius: 16px;
 
   background: var(--neutrals-200);
-  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: calc(-4px * var(--vc-inline-sign, 1)) 0 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
 
-  // Idle: shifted right, ~14px visible — subtle peek
-  transform: translateY(-50%) translateX(60%);
+  // Idle: shifted toward the end, ~14px visible — subtle peek
+  transform: translateY(-50%) translateX(calc(60% * var(--vc-inline-sign, 1)));
   transition:
     transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
     background-color 0.2s ease;
@@ -376,7 +377,7 @@ const handleFilterClear = (col: ColumnInstance) => {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding-left: 3px;
+    padding-inline-start: 3px;
     color: var(--neutrals-500);
     opacity: 1;
     transition: opacity 0.2s ease;

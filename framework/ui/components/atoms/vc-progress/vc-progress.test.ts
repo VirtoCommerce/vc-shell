@@ -21,13 +21,18 @@ describe("VcProgress", () => {
     it("defaults to 0", () => {
       const wrapper = mountComponent();
       expect(wrapper.attributes("aria-valuenow")).toBe("0");
-      expect(wrapper.find(".vc-progress__value").attributes("style")).toContain("translateX(-100%)");
+      // moved toward the start of the line by the missing part (the sign flips it on a right-to-left page)
+      expect(wrapper.find(".vc-progress__value").attributes("style")).toContain(
+        "translateX(calc(-100% * var(--vc-inline-sign, 1)))",
+      );
     });
 
     it("sets progress to given value", () => {
       const wrapper = mountComponent({ value: 50 });
       expect(wrapper.attributes("aria-valuenow")).toBe("50");
-      expect(wrapper.find(".vc-progress__value").attributes("style")).toContain("translateX(-50%)");
+      expect(wrapper.find(".vc-progress__value").attributes("style")).toContain(
+        "translateX(calc(-50% * var(--vc-inline-sign, 1)))",
+      );
     });
 
     it("sets 100% progress", () => {
@@ -35,7 +40,7 @@ describe("VcProgress", () => {
       expect(wrapper.attributes("aria-valuenow")).toBe("100");
       // 100 - 100 = 0, rendered as -0% by the template
       const style = wrapper.find(".vc-progress__value").attributes("style") || "";
-      expect(style).toMatch(/translateX\(-?0%\)/);
+      expect(style).toMatch(/translateX\(calc\(-?0% \* var\(--vc-inline-sign, 1\)\)\)/);
     });
 
     it("clamps value below 0 to 0", () => {

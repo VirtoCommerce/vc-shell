@@ -274,7 +274,7 @@ onBeforeUnmount(() => {
 /* ---------- Header ---------- */
 .vc-gallery-preview {
   &__header {
-    @apply tw-flex tw-items-center tw-gap-2 tw-min-w-0 tw-mr-2;
+    @apply tw-flex tw-items-center tw-gap-2 tw-min-w-0 tw-me-2;
   }
 
   &__header-icon {
@@ -351,11 +351,11 @@ onBeforeUnmount(() => {
     z-index: var(--z-local-above);
 
     &--prev {
-      @apply tw-left-4;
+      @apply tw-start-4;
     }
 
     &--next {
-      @apply tw-right-4;
+      @apply tw-end-4;
     }
 
     &:hover {

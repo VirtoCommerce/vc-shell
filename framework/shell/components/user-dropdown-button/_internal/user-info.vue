@@ -90,13 +90,13 @@ const imageHandler = computed(() => {
   }
 
   &__name {
-    @apply tw-font-semibold tw-truncate tw-w-full tw-text-left tw-max-w-[250px];
+    @apply tw-font-semibold tw-truncate tw-w-full tw-text-start tw-max-w-[250px];
     font-size: 13px;
     color: var(--neutrals-800, #262626);
   }
 
   &__role {
-    @apply tw-truncate tw-text-left tw-w-full tw-max-w-[250px];
+    @apply tw-truncate tw-text-start tw-w-full tw-max-w-[250px];
     font-size: 11px;
     // -400 is the palette's muted/disabled ink and measures 2.41:1 here; -500 is
     // the one it documents as secondary text, and clears AA at 4.54:1.

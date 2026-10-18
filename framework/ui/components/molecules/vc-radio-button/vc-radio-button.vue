@@ -171,7 +171,7 @@ function onChange() {
       position: absolute;
       left: 50%;
       top: 50%;
-      margin-left: calc(var(--radio-dot-size) / -2);
+      margin-inline-start: calc(var(--radio-dot-size) / -2);
       margin-top: calc(var(--radio-dot-size) / -2);
       transition:
         transform 200ms cubic-bezier(0.2, 0.85, 0.32, 1.2),

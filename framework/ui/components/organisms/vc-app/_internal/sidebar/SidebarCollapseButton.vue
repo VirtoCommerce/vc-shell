@@ -26,7 +26,7 @@ defineEmits<{
 
 <style lang="scss">
 .sidebar-collapse-button {
-  @apply tw-absolute tw-right-[-13px] tw-top-[50%] tw-translate-y-[-50%]
+  @apply tw-absolute tw-end-[-13px] tw-top-[50%] tw-translate-y-[-50%]
     tw-flex tw-items-center tw-justify-center tw-cursor-pointer tw-z-[var(--z-local-header)];
   width: var(--app-bar-collapse-button-width);
   height: var(--app-bar-collapse-button-height);

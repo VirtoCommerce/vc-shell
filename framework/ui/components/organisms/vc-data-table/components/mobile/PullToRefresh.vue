@@ -309,7 +309,7 @@ defineExpose({
   @apply tw-flex tw-flex-col tw-flex-1 tw-min-h-0;
 
   &__indicator {
-    @apply tw-absolute tw-left-0 tw-right-0 tw-top-0 tw-flex tw-items-center tw-justify-center;
+    @apply tw-absolute tw-start-0 tw-end-0 tw-top-0 tw-flex tw-items-center tw-justify-center;
     @apply tw-bg-[var(--ptr-indicator-bg)] tw-text-[var(--ptr-indicator-text)];
     height: 60px;
     z-index: var(--z-local-sticky);

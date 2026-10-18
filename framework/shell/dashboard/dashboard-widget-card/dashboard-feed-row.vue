@@ -9,7 +9,7 @@
     </div>
     <div
       v-if="$slots.trailing"
-      class="tw-flex tw-items-center tw-gap-3 tw-flex-shrink-0 tw-ml-3"
+      class="tw-flex tw-items-center tw-gap-3 tw-flex-shrink-0 tw-ms-3"
     >
       <slot name="trailing" />
     </div>

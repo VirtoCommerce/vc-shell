@@ -543,7 +543,7 @@ export const Interactive: Story = {
             >
               <div class="tw-p-4">
                 <p class="tw-m-0 tw-text-sm">Try these interactions:</p>
-                <ul class="tw-mt-2 tw-mb-0 tw-pl-5 tw-text-sm tw-flex tw-flex-col tw-gap-1">
+                <ul class="tw-mt-2 tw-mb-0 tw-ps-5 tw-text-sm tw-flex tw-flex-col tw-gap-1">
                   <li>Click outside to close</li>
                   <li>Press Escape to close</li>
                   <li>Click the X button in the header</li>

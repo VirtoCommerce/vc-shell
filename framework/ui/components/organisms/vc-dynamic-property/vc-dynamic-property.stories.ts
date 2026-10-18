@@ -787,7 +787,7 @@ export const HideLabel: Story = {
           {{ args.name }}
           <button
             type="button"
-            class="tw-ml-1 tw-inline-flex tw-items-center tw-border-0 tw-bg-transparent tw-p-0 tw-cursor-pointer tw-text-[color:var(--neutrals-400)]"
+            class="tw-ms-1 tw-inline-flex tw-items-center tw-border-0 tw-bg-transparent tw-p-0 tw-cursor-pointer tw-text-[color:var(--neutrals-400)]"
             title="Edit property"
           >
             ✎

@@ -1,227 +1,232 @@
 <template>
-  <div
-    ref="toggleRef"
-    class="vc-select__dropdown-toggle"
-  >
-    <slot
-      name="control"
-      :toggle-handler="toggleDropdown"
-      :is-opened="isOpened"
+  <div class="vc-select__trigger">
+    <div
+      ref="toggleRef"
+      class="vc-select__dropdown-toggle"
     >
-      <div class="vc-select__control">
-        <div
-          v-if="$slots['prepend']"
-          class="vc-select__prepend"
-        >
-          <slot name="prepend"></slot>
-        </div>
-        <div
-          class="vc-select__field-wrapper"
-          :class="{
-            'vc-select__field-wrapper--default': size === 'default',
-            'vc-select__field-wrapper--small': size === 'small',
-          }"
-        >
-          <div class="vc-select__field">
-            <div class="vc-select__field-inner">
-              <div class="vc-select__field-content">
-                <div
-                  v-if="$slots['prepend-inner']"
-                  class="vc-select__prepend-inner"
-                >
-                  <slot name="prepend-inner"></slot>
-                </div>
-                <div class="vc-select__field-main">
+      <slot
+        name="control"
+        :toggle-handler="toggleDropdown"
+        :is-opened="isOpened"
+      >
+        <div class="vc-select__control">
+          <div
+            v-if="$slots['prepend']"
+            class="vc-select__prepend"
+          >
+            <slot name="prepend"></slot>
+          </div>
+          <div
+            class="vc-select__field-wrapper"
+            :class="{
+              'vc-select__field-wrapper--default': size === 'default',
+              'vc-select__field-wrapper--small': size === 'small',
+            }"
+          >
+            <div class="vc-select__field">
+              <div class="vc-select__field-inner">
+                <div class="vc-select__field-content">
                   <div
-                    v-if="prefix"
-                    class="vc-select__prefix"
+                    v-if="$slots['prepend-inner']"
+                    class="vc-select__prepend-inner"
                   >
-                    {{ prefix }}
+                    <slot name="prepend-inner"></slot>
                   </div>
-                  <div
-                    data-test-id="dropdown-toggle"
-                    class="vc-select__input"
-                    role="combobox"
-                    tabindex="0"
-                    :aria-expanded="isOpened"
-                    aria-haspopup="listbox"
-                    :aria-controls="isOpened ? listboxId : undefined"
-                    :aria-labelledby="label ? labelId : undefined"
-                    :aria-describedby="ariaDescribedBy"
-                    :aria-required="ariaRequired"
-                    :aria-invalid="error || undefined"
-                    @click.stop="toggleDropdown"
-                    @keydown.enter.stop="toggleDropdown"
-                    @keydown.space.stop="toggleDropdown"
-                    @focus="$emit('focus')"
-                    @blur="$emit('blur')"
-                  >
+                  <div class="vc-select__field-main">
                     <div
-                      v-if="!hasValue"
-                      class="vc-select__placeholder"
+                      v-if="prefix"
+                      class="vc-select__prefix"
                     >
-                      <template v-if="placeholder">{{ placeholder }}</template>
-                      <template v-else>{{ t("COMPONENTS.MOLECULES.VC_SELECT.CLICK_TO_SELECT") }}</template>
+                      {{ prefix }}
                     </div>
-                    <template v-else-if="selectedScope && selectedScope.length && hasValue">
-                      <div class="vc-select__selected">
-                        <div
-                          v-for="(item, i) in selectedScope"
-                          :key="i"
-                          class="vc-select__selected-item"
-                        >
-                          <template v-if="multiple">
-                            <slot
-                              name="selected-item"
-                              v-bind="item"
-                            >
-                              <div class="vc-select__multiple-item">
-                                <template v-if="loading">
-                                  <span class="vc-select__loading">{{
-                                    t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
-                                  }}</span>
-                                </template>
-                                <template v-else>
-                                  <span>{{ getOptionLabel(item.opt) }}</span>
-                                </template>
-                                <button
-                                  v-if="!disabled"
-                                  type="button"
-                                  class="vc-select__chip-remove"
-                                  :aria-label="`Remove ${getOptionLabel(item.opt) || ''}`"
-                                  tabindex="0"
-                                  @click.stop="$emit('removeAtIndex', item.index)"
-                                  @keydown.enter.stop.prevent="$emit('removeAtIndex', item.index)"
-                                >
-                                  <VcIcon
-                                    class="vc-select__icon-remove"
-                                    icon="lucide-x"
-                                    size="xs"
-                                  />
-                                </button>
-                              </div>
-                            </slot>
-                          </template>
-                          <template v-else-if="!multiple">
-                            <template v-if="loading">
-                              <span class="vc-select__loading">{{ t("COMPONENTS.MOLECULES.VC_SELECT.LOADING") }}</span>
-                            </template>
-                            <template v-else>
+                    <div
+                      data-test-id="dropdown-toggle"
+                      class="vc-select__input"
+                      role="combobox"
+                      tabindex="0"
+                      :aria-expanded="isOpened"
+                      aria-haspopup="listbox"
+                      :aria-controls="isOpened ? listboxId : undefined"
+                      :aria-labelledby="label ? labelId : undefined"
+                      :aria-describedby="ariaDescribedBy"
+                      :aria-required="ariaRequired"
+                      :aria-invalid="error || undefined"
+                      @click.stop="toggleDropdown"
+                      @keydown.enter.stop="toggleDropdown"
+                      @keydown.space.stop="toggleDropdown"
+                      @focus="$emit('focus')"
+                      @blur="$emit('blur')"
+                    >
+                      <div
+                        v-if="!hasValue"
+                        class="vc-select__placeholder"
+                      >
+                        <template v-if="placeholder">{{ placeholder }}</template>
+                        <template v-else>{{ t("COMPONENTS.MOLECULES.VC_SELECT.CLICK_TO_SELECT") }}</template>
+                      </div>
+                      <template v-else-if="selectedScope && selectedScope.length && hasValue">
+                        <div class="vc-select__selected">
+                          <div
+                            v-for="(item, i) in selectedScope"
+                            :key="i"
+                            class="vc-select__selected-item"
+                          >
+                            <template v-if="multiple">
                               <slot
                                 name="selected-item"
                                 v-bind="item"
                               >
-                                {{
-                                  loading
-                                    ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
-                                    : getEmittingOptionValue(item.opt)
-                                }}
+                                <div class="vc-select__multiple-item">
+                                  <template v-if="loading">
+                                    <span class="vc-select__loading">{{
+                                      t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
+                                    }}</span>
+                                  </template>
+                                  <template v-else>
+                                    <span>{{ getOptionLabel(item.opt) }}</span>
+                                  </template>
+                                  <button
+                                    v-if="!disabled"
+                                    type="button"
+                                    class="vc-select__chip-remove"
+                                    :aria-label="`Remove ${getOptionLabel(item.opt) || ''}`"
+                                    tabindex="0"
+                                    @click.stop="$emit('removeAtIndex', item.index)"
+                                    @keydown.enter.stop.prevent="$emit('removeAtIndex', item.index)"
+                                  >
+                                    <VcIcon
+                                      class="vc-select__icon-remove"
+                                      icon="lucide-x"
+                                      size="xs"
+                                    />
+                                  </button>
+                                </div>
                               </slot>
                             </template>
-                          </template>
+                            <template v-else-if="!multiple">
+                              <template v-if="loading">
+                                <span class="vc-select__loading">{{
+                                  t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
+                                }}</span>
+                              </template>
+                              <template v-else>
+                                <slot
+                                  name="selected-item"
+                                  v-bind="item"
+                                >
+                                  {{
+                                    loading
+                                      ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING")
+                                      : getEmittingOptionValue(item.opt)
+                                  }}
+                                </slot>
+                              </template>
+                            </template>
+                          </div>
                         </div>
-                      </div>
-                    </template>
+                      </template>
+                    </div>
+                    <div
+                      v-if="suffix"
+                      class="vc-select__suffix"
+                    >
+                      {{ suffix }}
+                    </div>
+                    <div
+                      v-if="clearable && hasValue && !disabled"
+                      class="vc-select__clear"
+                      role="button"
+                      :aria-label="$t('COMPONENTS.CONTROLS.CLEAR_SELECTION')"
+                      tabindex="0"
+                      @click="$emit('reset')"
+                      @keydown.enter="$emit('reset')"
+                      @keydown.space="$emit('reset')"
+                    >
+                      <VcIcon
+                        size="xs"
+                        icon="lucide-x"
+                      ></VcIcon>
+                    </div>
                   </div>
                   <div
-                    v-if="suffix"
-                    class="vc-select__suffix"
+                    v-if="$slots['append-inner']"
+                    class="vc-select__append-inner"
                   >
-                    {{ suffix }}
+                    <slot name="append-inner"></slot>
                   </div>
+                  <!-- Loading-->
                   <div
-                    v-if="clearable && hasValue && !disabled"
-                    class="vc-select__clear"
+                    v-if="loading || listLoading || defaultOptionLoading"
+                    class="vc-select__loading-icon"
+                  >
+                    <VcIcon
+                      icon="lucide-loader-2"
+                      class="tw-animate-spin"
+                      size="m"
+                    ></VcIcon>
+                  </div>
+                  <!-- Select chevron-->
+                  <div
+                    v-if="!disabled"
+                    class="vc-select__chevron-container"
                     role="button"
-                    :aria-label="$t('COMPONENTS.CONTROLS.CLEAR_SELECTION')"
+                    :aria-label="$t('COMPONENTS.CONTROLS.TOGGLE_DROPDOWN')"
                     tabindex="0"
-                    @click="$emit('reset')"
-                    @keydown.enter="$emit('reset')"
-                    @keydown.space="$emit('reset')"
+                    @click.stop="toggleDropdown"
+                    @keydown.enter.stop="toggleDropdown"
+                    @keydown.space.stop="toggleDropdown"
                   >
-                    <VcIcon
-                      size="xs"
-                      icon="lucide-x"
-                    ></VcIcon>
-                  </div>
-                </div>
-                <div
-                  v-if="$slots['append-inner']"
-                  class="vc-select__append-inner"
-                >
-                  <slot name="append-inner"></slot>
-                </div>
-                <!-- Loading-->
-                <div
-                  v-if="loading || listLoading || defaultOptionLoading"
-                  class="vc-select__loading-icon"
-                >
-                  <VcIcon
-                    icon="lucide-loader-2"
-                    class="tw-animate-spin"
-                    size="m"
-                  ></VcIcon>
-                </div>
-                <!-- Select chevron-->
-                <div
-                  v-if="!disabled"
-                  class="vc-select__chevron-container"
-                  role="button"
-                  :aria-label="$t('COMPONENTS.CONTROLS.TOGGLE_DROPDOWN')"
-                  tabindex="0"
-                  @click.stop="toggleDropdown"
-                  @keydown.enter.stop="toggleDropdown"
-                  @keydown.space.stop="toggleDropdown"
-                >
-                  <div class="vc-select__chevron">
-                    <VcIcon
-                      size="s"
-                      icon="lucide-chevron-down"
-                    ></VcIcon>
+                    <div class="vc-select__chevron">
+                      <VcIcon
+                        size="s"
+                        icon="lucide-chevron-down"
+                      ></VcIcon>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="vc-select__hint-error">
-            <Transition
-              name="slide-up"
-              mode="out-in"
-            >
-              <div v-if="error && errorMessage">
-                <slot name="error">
-                  <VcHint
-                    :id="errorId"
-                    class="vc-select__error-message"
-                    :error="true"
-                  >
-                    {{ errorMessage }}
-                  </VcHint>
-                </slot>
-              </div>
-              <div v-else>
-                <slot name="hint">
-                  <VcHint
-                    v-if="hint"
-                    :id="hintId"
-                    class="vc-select__hint"
-                  >
-                    {{ hint }}
-                  </VcHint>
-                </slot>
-              </div>
-            </Transition>
+
+          <div
+            v-if="$slots['append']"
+            class="vc-select__append"
+          >
+            <slot name="append"></slot>
           </div>
         </div>
-
-        <div
-          v-if="$slots['append']"
-          class="vc-select__append"
-        >
-          <slot name="append"></slot>
+      </slot>
+    </div>
+    <!-- Below the field, in the flow (not inside the bordered wrapper): a hint of several lines pushes the next field down -->
+    <div class="vc-select__hint-error">
+      <Transition
+        name="slide-up"
+        mode="out-in"
+      >
+        <div v-if="error && errorMessage">
+          <slot name="error">
+            <VcHint
+              :id="errorId"
+              class="vc-select__error-message"
+              :error="true"
+            >
+              {{ errorMessage }}
+            </VcHint>
+          </slot>
         </div>
-      </div>
-    </slot>
+        <div v-else>
+          <slot name="hint">
+            <VcHint
+              v-if="hint"
+              :id="hintId"
+              class="vc-select__hint"
+            >
+              {{ hint }}
+            </VcHint>
+          </slot>
+        </div>
+      </Transition>
+    </div>
   </div>
 </template>
 

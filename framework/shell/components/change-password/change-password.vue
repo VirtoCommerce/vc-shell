@@ -20,7 +20,7 @@
               <VcIcon
                 icon="lucide-lightbulb"
                 size="l"
-                class="tw-mr-3"
+                class="tw-me-3"
               />
               <div>
                 <p>{{ t("COMPONENTS.CHANGE_PASSWORD.FORCED.LABEL") }}</p>
@@ -106,7 +106,7 @@
         ></span> -->
           <VcButton
             variant="secondary"
-            class="tw-mr-3"
+            class="tw-me-3"
             @click="cancelChange"
           >
             {{ t("COMPONENTS.CHANGE_PASSWORD.CANCEL") }}

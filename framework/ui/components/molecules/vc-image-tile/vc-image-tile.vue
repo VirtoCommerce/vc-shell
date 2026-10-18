@@ -224,7 +224,7 @@ function deactivate() {
 
   // ── Top bar: name + drag handle ──
   &__topbar {
-    @apply tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-z-[var(--z-local-above)]
+    @apply tw-absolute tw-top-0 tw-start-0 tw-end-0 tw-z-[var(--z-local-above)]
       tw-flex tw-items-center tw-gap-1 tw-px-1.5 tw-py-1
       -tw-translate-y-full tw-transition-transform tw-duration-200 tw-ease-out;
     background: var(--image-tile-tray-bg);
@@ -232,13 +232,13 @@ function deactivate() {
   }
 
   &__name {
-    @apply tw-truncate tw-text-[10px] tw-leading-tight tw-ml-auto;
+    @apply tw-truncate tw-text-[10px] tw-leading-tight tw-ms-auto;
     color: var(--image-tile-action-color);
   }
 
   // ── Bottom tray: action buttons ──
   &__tray {
-    @apply tw-absolute tw-bottom-0 tw-left-0 tw-right-0
+    @apply tw-absolute tw-bottom-0 tw-start-0 tw-end-0
       tw-flex tw-items-center tw-justify-center tw-gap-1 tw-px-2 tw-py-1.5
       tw-translate-y-full tw-transition-transform tw-duration-200 tw-ease-out;
     background: var(--image-tile-tray-bg);

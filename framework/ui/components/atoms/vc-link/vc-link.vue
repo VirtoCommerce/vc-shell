@@ -48,7 +48,7 @@ function onClickFn(): void {
   @apply tw-text-[color:var(--link-text-color)] tw-no-underline tw-cursor-pointer tw-transition tw-duration-200 tw-max-w-full hover:tw-text-[color:var(--link-text-color-hover)] hover:tw-underline
     focus-visible:tw-outline-none focus-visible:tw-ring-[3px] focus-visible:tw-ring-[color:var(--link-focus-ring-color)] focus-visible:tw-rounded-sm;
   /* Reset button styles for link appearance */
-  @apply tw-bg-transparent tw-border-none tw-p-0 tw-text-left;
+  @apply tw-bg-transparent tw-border-none tw-p-0 tw-text-start;
 
   &--active {
     @apply tw-text-[color:var(--link-text-color-active)] tw-no-underline hover:tw-text-[color:var(--link-text-color-active)] hover:tw-no-underline;

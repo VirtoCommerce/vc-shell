@@ -519,7 +519,7 @@ defineExpose({
   &__drag-handle {
     position: absolute;
     top: 8px;
-    right: 8px;
+    inset-inline-end: 8px;
     z-index: var(--z-local-sticky);
     width: 24px;
     height: 24px;

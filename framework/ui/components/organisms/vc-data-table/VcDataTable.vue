@@ -1326,7 +1326,7 @@ onBeforeUnmount(() => {
   }
 
   &__group-count {
-    @apply tw-text-sm tw-ml-2;
+    @apply tw-text-sm tw-ms-2;
     color: var(--neutrals-500);
   }
 

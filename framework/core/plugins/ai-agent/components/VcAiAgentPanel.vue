@@ -139,7 +139,7 @@ onUnmounted(() => {
 
 .ai-panel-slide-enter-from,
 .ai-panel-slide-leave-to {
-  transform: translateX(100%);
+  transform: translateX(calc(100% * var(--vc-inline-sign, 1)));
 }
 
 .vc-ai-agent-panel {

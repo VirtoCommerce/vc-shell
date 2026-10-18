@@ -667,7 +667,7 @@ async function handleImageSelection(event: Event) {
   }
 
   &__header-actions {
-    margin-left: auto;
+    margin-inline-start: auto;
     display: flex;
     gap: 0.25rem;
   }
@@ -694,13 +694,15 @@ async function handleImageSelection(event: Event) {
   }
 
   &__split-editor .ProseMirror {
-    border-radius: 0 0 0 6px;
-    border-right: none;
+    border-radius: 0;
+    border-end-start-radius: 6px;
+    border-inline-end: none;
   }
 
   &__split-preview .ProseMirror {
-    border-radius: 0 0 6px 0;
-    border-left: none;
+    border-radius: 0;
+    border-end-end-radius: 6px;
+    border-inline-start: none;
   }
 
   &--side-by-side {
@@ -722,7 +724,7 @@ async function handleImageSelection(event: Event) {
 
     p.is-editor-empty:first-child::before {
       content: attr(data-placeholder);
-      float: left;
+      float: inline-start;
       color: var(--vc-editor-text-muted);
       pointer-events: none;
       height: 0;
@@ -771,8 +773,8 @@ async function handleImageSelection(event: Event) {
     }
 
     blockquote {
-      padding-left: 1rem;
-      border-left: 2px solid var(--vc-editor-separator);
+      padding-inline-start: 1rem;
+      border-inline-start: 2px solid var(--vc-editor-separator);
       color: var(--vc-editor-text-secondary);
     }
 
@@ -792,7 +794,7 @@ async function handleImageSelection(event: Event) {
     th {
       border: 1px solid var(--vc-editor-separator);
       padding: 0.5rem;
-      text-align: left;
+      text-align: start;
     }
 
     th {
@@ -858,7 +860,7 @@ async function handleImageSelection(event: Event) {
   &__char-count {
     font-size: 0.75rem;
     color: var(--vc-editor-text-secondary);
-    text-align: right;
+    text-align: end;
     padding: 0.25rem 0.5rem;
     border: 1px solid var(--vc-editor-border);
     border-top: none;
@@ -878,7 +880,7 @@ async function handleImageSelection(event: Event) {
   &--fullscreen {
     position: fixed;
     top: 0;
-    left: 0;
+    inset-inline-start: 0;
     width: 100vw;
     height: 100vh;
     background-color: var(--vc-editor-surface);

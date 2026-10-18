@@ -10,7 +10,7 @@
     >
       <span
         v-if="isEditing && required"
-        class="tw-text-danger-500 tw-mr-0.5"
+        class="tw-text-danger-500 tw-me-0.5"
         aria-hidden="true"
         >*</span
       >{{ title }}</span

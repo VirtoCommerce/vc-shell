@@ -124,8 +124,18 @@ jobs:
 
       - name: Set URLs
         id: urls
+        env:
+          BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           echo "DOCKER_URL=${{ env.DOCKER_REPOSITORY }}/${GITHUB_REPOSITORY_OWNER,,}/${{ env.DOCKER_IMAGE }}:" >> $GITHUB_OUTPUT
+          # The floating tag, as the platform images get it: linux-latest from main, <branch>-linux-latest from any
+          # other branch (feat/redesign -> feat_redesign-linux-latest), so a branch build never moves the main tag.
+          if [ "$BRANCH" = 'main' ]; then
+            FLOATING_TAG='linux-latest'
+          else
+            FLOATING_TAG="$(printf '%s' "$BRANCH" | tr -c 'A-Za-z0-9_.-' '_')-linux-latest"
+          fi
+          echo "FLOATING_TAG=$FLOATING_TAG" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -143,7 +153,7 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feat/redesign' || inputs.event_name == 'pull_request' }}
           context: .
           file: .storybook/Dockerfile
-          tags: ${{ steps.urls.outputs.DOCKER_URL }}${{ env.DOCKER_TAG }},${{ steps.urls.outputs.DOCKER_URL }}${{ inputs.event_name != 'pull_request' && (github.ref == 'refs/heads/dev' && 'dev-latest' || github.ref == 'refs/heads/feat/redesign' && 'redesign-latest') || 'latest'}}
+          tags: ${{ steps.urls.outputs.DOCKER_URL }}${{ env.DOCKER_TAG }},${{ steps.urls.outputs.DOCKER_URL }}${{ steps.urls.outputs.FLOATING_TAG }}
 
       - name: Parse Jira Keys from All Commits
         uses: VirtoCommerce/.github/actions/get-jira-keys@v3.1000.1

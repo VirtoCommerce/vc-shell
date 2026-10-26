@@ -79,7 +79,11 @@ export function registerInterceptors(router: Router) {
       .getCurrentUser()
       .then(
         // The VirtoCommerce platform answers a caller without a session with 200 and an empty user, not a 401.
-        (user) => Boolean(user?.userName),
+        (user) => {
+          if (user?.userName) return true;
+          logger.warn("Session check: currentuser returned no user, treating the session as expired");
+          return false;
+        },
         // Only a 401 answers the question. Anything else — an unreachable platform, a 5xx — says
         // nothing about the session, and signing out on it would be a guess.
         (error: unknown) => !(ApiException.isApiException(error) && error.status === 401),

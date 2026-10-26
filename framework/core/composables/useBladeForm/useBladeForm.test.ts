@@ -289,6 +289,18 @@ describe("useBladeForm", () => {
       expect(isModified.value).toBe(false);
     });
 
+    it("an Invalid Date kept as is is NOT considered modified", async () => {
+      const data = ref({ startDate: new Date("not a date"), note: "a" });
+      const { setBaseline, isModified } = useBladeForm({ data });
+      setBaseline();
+
+      data.value.note = "b";
+      await nextTick();
+      data.value.note = "a";
+      await nextTick();
+      expect(isModified.value).toBe(false);
+    });
+
     it("a date replaced by an object IS considered modified", async () => {
       const data = ref<{ startDate: Date | Record<string, never> }>({ startDate: new Date("2026-01-01T00:00:00Z") });
       const { setBaseline, isModified } = useBladeForm({ data });

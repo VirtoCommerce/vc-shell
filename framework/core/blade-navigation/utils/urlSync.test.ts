@@ -95,9 +95,16 @@ describe("buildUrlFromStack", () => {
       const stack = [
         makeDescriptor({ id: "ws", name: "Definitions", url: "/definitions" }),
         makeDescriptor({ id: "c1", name: "DefinitionDetails", url: "/definition", param: "def-1", parentId: "ws" }),
-        makeDescriptor({ id: "c2", name: "StateEditor", url: "/state", param: "state-1", parentId: "c1" }),
+        makeDescriptor({
+          id: "c2",
+          name: "StateEditor",
+          url: "/state",
+          param: "state-1",
+          parentId: "c1",
+          query: { "state.search": "x" },
+        }),
       ];
-      expect(buildUrlFromStack("", stack).path).toBe("/definitions/definition/def-1");
+      expect(buildUrlFromStack("", stack)).toEqual({ path: "/definitions/definition/def-1", query: {} });
       // only the workspace left to name
       expect(buildUrlFromStack("", [stack[0], { ...stack[2], parentId: "ws" }]).path).toBe("/definitions");
     } finally {

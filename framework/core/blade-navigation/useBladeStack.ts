@@ -123,8 +123,10 @@ export function createBladeStack(
    * A maximized blade covers the rest of the stack, so a blade opened next to it
    * would stay hidden behind it. Reset in place: blade slots hold these refs.
    */
-  function _unmaximizeAll(): void {
-    for (const maximized of _maximized.values()) maximized.value = false;
+  function _unmaximizeAll(exceptId?: string): void {
+    for (const [id, maximized] of _maximized) {
+      if (id !== exceptId) maximized.value = false;
+    }
   }
 
   // ── Actions ───────────────────────────────────────────────────────────────
@@ -308,8 +310,9 @@ export function createBladeStack(
     // so callParent from the covering blade reaches the hidden blade's methods.
     const descriptor = createCoveringDescriptor(event, current.id, _descriptorCtx);
 
-    // Hide current blade (don't destroy it) and append new blade after it
-    _unmaximizeAll();
+    // Hide current blade (don't destroy it) and append new blade after it.
+    // A hidden blade covers nothing, so it keeps its maximize for when the cover closes.
+    _unmaximizeAll(current.id);
     const updated: BladeDescriptor[] = _blades.value.slice(0, currentIndex);
     updated.push({ ...current, visible: false });
     updated.push(descriptor);

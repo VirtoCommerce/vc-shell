@@ -252,8 +252,9 @@ describe("registerInterceptors — a 401 the session survives", () => {
   });
 
   // the VirtoCommerce platform answers a caller without a session with 200 and an empty user, not a 401
-  it("signs out when the check answers without a user", async () => {
-    getCurrentUser.mockResolvedValue({});
+  // the generated client gives null for an empty 200 body
+  it.each([[{}], [null], [{ userName: "" }]])("signs out when the check answers without a user: %j", async (user) => {
+    getCurrentUser.mockResolvedValue(user);
     signOut.mockResolvedValue(undefined);
     const router = createRouter();
 
@@ -262,6 +263,7 @@ describe("registerInterceptors — a 401 the session survives", () => {
 
     expect(signOut).toHaveBeenCalledOnce();
     expect(router.push).toHaveBeenCalledWith("/login");
+    expect(loggerWarn).toHaveBeenCalledWith(expect.stringContaining("currentuser returned no user"));
   });
 
   it("does not sign out on a hub 401 the session survives", async () => {

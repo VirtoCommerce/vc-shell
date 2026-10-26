@@ -19,13 +19,13 @@
   /* Top right */
   &[data-position="top-right"] {
     top: 1em;
-    right: 1em;
+    inset-inline-end: 1em;
   }
 
   /* Top left */
   &[data-position="top-left"] {
     top: 1em;
-    left: 1em;
+    inset-inline-start: 1em;
   }
 
   /* Bottom center */
@@ -38,13 +38,13 @@
   /* Bottom right */
   &[data-position="bottom-right"] {
     bottom: 1em;
-    right: 1em;
+    inset-inline-end: 1em;
   }
 
   /* Bottom left */
   &[data-position="bottom-left"] {
     bottom: 1em;
-    left: 1em;
+    inset-inline-start: 1em;
   }
 
   /* Mobile styles */
@@ -54,12 +54,12 @@
 
     &[data-position="top-left"],
     &[data-position="bottom-left"] {
-      left: 5%;
+      inset-inline-start: 5%;
     }
 
     &[data-position="top-right"],
     &[data-position="bottom-right"] {
-      right: 5%;
+      inset-inline-end: 5%;
     }
   }
 }

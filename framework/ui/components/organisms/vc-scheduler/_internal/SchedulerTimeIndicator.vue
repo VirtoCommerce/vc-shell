@@ -2,7 +2,7 @@
   <div
     v-if="x >= 0"
     class="vc-scheduler__now"
-    :style="{ transform: `translateX(${x}px)` }"
+    :style="{ transform: `translateX(calc(${x}px * var(--vc-inline-sign, 1)))` }"
   >
     <span class="vc-scheduler__now-cap" />
   </div>
@@ -25,7 +25,7 @@ defineProps<{ x: number }>();
 .vc-scheduler__now-cap {
   position: absolute;
   top: -3px;
-  left: -3px;
+  inset-inline-start: -3px;
   width: 8px;
   height: 8px;
   border-radius: 50%;

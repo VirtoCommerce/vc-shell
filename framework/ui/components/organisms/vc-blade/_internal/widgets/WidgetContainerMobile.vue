@@ -155,7 +155,7 @@ const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>(
 }
 
 .vc-widget-container-mobile {
-  @apply tw-fixed tw-bottom-0 tw-left-0 tw-right-0 tw-w-full tw-z-[var(--z-layout-widget)];
+  @apply tw-fixed tw-bottom-0 tw-start-0 tw-end-0 tw-w-full tw-z-[var(--z-layout-widget)];
   height: var(--blade-toolbar-widgets-mobile-height);
   background-color: var(--blade-toolbar-widgets-bg-color-mobile);
 
@@ -169,7 +169,7 @@ const { visibleItems, showMoreButton, hiddenItems } = useAdaptiveItems<IWidget>(
   }
 
   &__more {
-    @apply tw-flex tw-items-center tw-justify-center tw-px-2 tw-h-full tw-cursor-pointer tw-ml-auto;
+    @apply tw-flex tw-items-center tw-justify-center tw-px-2 tw-h-full tw-cursor-pointer tw-ms-auto;
     color: var(--blade-toolbar-icon-color);
 
     &:hover,

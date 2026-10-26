@@ -461,6 +461,7 @@ Explore all components interactively: **[Storybook](https://vc-shell-storybook.g
 | [create-vc-app README](./cli/create-vc-app/README.md) | Scaffolder usage and flags                   |
 | [vc-app-skill README](./cli/vc-app-skill/README.md)   | AI skill commands for app/module generation  |
 | [ACCESSIBILITY.md](./framework/ui/ACCESSIBILITY.md)   | Accessibility standards and known exceptions |
+| [RTL.md](./framework/ui/RTL.md)                       | Right-to-left languages: setup and rules     |
 | [Storybook README](./.storybook/README.md)            | Story conventions and the story standard     |
 | [docs-sync README](./cli/docs-sync/README.md)         | How `*.docs.md` is transformed and published |
 | [WHATS_NEW.md](./WHATS_NEW.md)                        | v2.0.0 feature highlights                    |

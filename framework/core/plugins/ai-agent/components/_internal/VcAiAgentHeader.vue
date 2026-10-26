@@ -54,7 +54,7 @@ defineEmits<{
   }
 
   &__icon {
-    @apply tw-mr-3;
+    @apply tw-me-3;
     color: var(--primary-500);
   }
 
@@ -73,7 +73,7 @@ defineEmits<{
   }
 
   &__badge {
-    @apply tw-ml-2 tw-text-xs tw-font-medium tw-px-1.5 tw-py-0.5 tw-rounded-full;
+    @apply tw-ms-2 tw-text-xs tw-font-medium tw-px-1.5 tw-py-0.5 tw-rounded-full;
     background-color: var(--ai-panel-badge-bg);
     color: var(--ai-panel-badge-color);
   }

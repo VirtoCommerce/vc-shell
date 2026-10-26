@@ -54,7 +54,7 @@ const emit = defineEmits<{
 
 const isPast = computed(() => props.bar.end.getTime() < Date.now());
 const barStyle = computed(() => ({
-  transform: `translate(${props.x}px, ${props.top}px)`,
+  transform: `translate(calc(${props.x}px * var(--vc-inline-sign, 1)), ${props.top}px)`,
   width: `${Math.max(props.width, 4)}px`,
   height: `${props.height}px`,
   ...eventSurfaceStyle(props.bar.color ?? "var(--primary-500)", isPast.value),
@@ -68,7 +68,7 @@ const ariaLabel = computed(
 .vc-scheduler__bar {
   position: absolute;
   top: 0;
-  left: 0;
+  inset-inline-start: 0;
   display: flex;
   align-items: center;
   border-radius: 0.375rem;
@@ -110,10 +110,10 @@ const ariaLabel = computed(
   opacity: 0;
   transition: opacity 150ms ease-out;
   &--start {
-    left: 0;
+    inset-inline-start: 0;
   }
   &--end {
-    right: 0;
+    inset-inline-end: 0;
   }
 }
 .vc-scheduler__bar:hover .vc-scheduler__bar-handle,

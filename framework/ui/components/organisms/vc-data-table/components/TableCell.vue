@@ -2,7 +2,7 @@
   <div
     role="cell"
     class="vc-table-composition__cell"
-    :class="cellClass"
+    :class="[cellClass, alignClass]"
     :style="cellStyle"
     :data-column-id="columnId"
   >
@@ -35,7 +35,7 @@ const props = defineProps<{
   /**
    * Text alignment
    */
-  align?: "left" | "center" | "right";
+  align?: "start" | "center" | "end" | "left" | "right";
   /**
    * Custom CSS class from column config
    */
@@ -71,13 +71,15 @@ const contentClasses = computed(() => {
   return {};
 });
 
-// Outer cell: handles flex sizing, alignment, padding
+// Alignment is a class, not an inline style, so the right-to-left rule below can turn it physical (see the style).
+const alignClass = computed(() => `vc-table-composition__cell--align-${props.align ?? "start"}`);
+
+// Outer cell: handles flex sizing, padding
 const cellStyle = computed(() => {
   return {
     width: props.width,
     minWidth: props.minWidth || undefined,
     maxWidth: props.maxWidth,
-    textAlign: props.align,
     // Engine-provided widths are fixed. Before first compute, keep cells
     // evenly distributed to match headers and avoid initial left-pack flash.
     flex: props.width ? `0 0 ${props.width}` : "1 1 0px",
@@ -113,6 +115,40 @@ const contentStyle = computed(() => {
 .vc-table-composition__cell-content {
   flex: 1 1 0;
   min-width: 0;
+}
+
+.vc-table-composition__cell--align-start {
+  text-align: start;
+}
+.vc-table-composition__cell--align-center {
+  text-align: center;
+}
+.vc-table-composition__cell--align-end {
+  text-align: end;
+}
+.vc-table-composition__cell--align-left {
+  text-align: left;
+}
+.vc-table-composition__cell--align-right {
+  text-align: right;
+}
+
+// In a right-to-left table the column's side is physical. The data in a cell reads in its own direction
+// (unicode-bidi: plaintext, below), and such a block would read "start" as its own text's start: an English name
+// would go to the left of an Arabic column. :dir() follows the nearest dir attribute, so a table in a container
+// with its own direction gets the side of that container, not the page's.
+.vc-table-composition__cell--align-start:dir(rtl) {
+  text-align: right;
+}
+.vc-table-composition__cell--align-end:dir(rtl) {
+  text-align: left;
+}
+
+// Data whose direction is its own (emails, codes, versions, URLs, amounts) reads left to right inside a right-to-left
+// table, from its first letter, and keeps the column's side (the cell's physical text-align above).
+.vc-table-composition__cell:dir(rtl) .vc-table-composition__cell-content :is(div, span, a, p):not(:has(*)) {
+  text-align: match-parent;
+  unicode-bidi: plaintext;
 }
 
 // Ensure inner renderers (including custom slot roots) can shrink with the cell.

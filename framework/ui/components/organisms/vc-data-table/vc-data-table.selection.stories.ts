@@ -84,7 +84,7 @@ export const ActiveItemHighlight: Story = {
     template: `
     <div style="height: 400px">
       <p class="tw-mb-2">Active row ID: {{ activeId ?? 'None' }}
-        <button class="tw-ml-2 tw-text-sm tw-underline" @click="activeId = undefined">Clear</button>
+        <button class="tw-ms-2 tw-text-sm tw-underline" @click="activeId = undefined">Clear</button>
       </p>
       <VcDataTable
         :items="products"

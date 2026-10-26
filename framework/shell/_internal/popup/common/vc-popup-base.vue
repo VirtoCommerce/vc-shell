@@ -124,7 +124,7 @@ function handleConfirm(close: () => void): void {
   }
 
   &__single {
-    @apply tw-ml-auto;
+    @apply tw-ms-auto;
   }
 
   &__confirm {

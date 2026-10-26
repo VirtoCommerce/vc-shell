@@ -232,7 +232,7 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent | KeyboardEvent) {
   border: 0;
   border-radius: 0.375rem;
   background: transparent;
-  text-align: left;
+  text-align: start;
   font: inherit;
   cursor: pointer;
   &:hover {

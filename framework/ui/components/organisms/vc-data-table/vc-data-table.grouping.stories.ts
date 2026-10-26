@@ -134,7 +134,7 @@ export const WithRowGrouping: Story = {
 
         <template #groupheader="{ data }">
           <span
-            class="tw-inline-block tw-w-3 tw-h-3 tw-rounded-full tw-mr-2"
+            class="tw-inline-block tw-w-3 tw-h-3 tw-rounded-full tw-me-2"
             :class="{
               'tw-bg-success-500': data.status === 'In Stock',
               'tw-bg-danger-500': data.status === 'Out of Stock',
@@ -192,7 +192,7 @@ export const WithRowGroupingFooter: Story = {
 
         <template #groupheader="{ data }">
           <span
-            class="tw-inline-block tw-w-3 tw-h-3 tw-rounded-full tw-mr-2"
+            class="tw-inline-block tw-w-3 tw-h-3 tw-rounded-full tw-me-2"
             :class="{
               'tw-bg-success-500': data.status === 'In Stock',
               'tw-bg-danger-500': data.status === 'Out of Stock',
@@ -246,7 +246,7 @@ export const WithRowGroupingNonExpandable: Story = {
 
         <template #groupheader="{ data }">
           <span
-            class="tw-inline-block tw-w-3 tw-h-3 tw-rounded-full tw-mr-2"
+            class="tw-inline-block tw-w-3 tw-h-3 tw-rounded-full tw-me-2"
             :class="{
               'tw-bg-success-500': data.status === 'In Stock',
               'tw-bg-danger-500': data.status === 'Out of Stock',

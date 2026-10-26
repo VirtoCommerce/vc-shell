@@ -82,7 +82,7 @@ const titleClassName = computed(() => {
     }
 
     &--main-expanded {
-      @apply tw-flex tw-w-[46px] tw-h-[46px] tw-bg-[var(--blade-toolbar-circle-button-main-bg-color)] tw-ml-0;
+      @apply tw-flex tw-w-[46px] tw-h-[46px] tw-bg-[var(--blade-toolbar-circle-button-main-bg-color)] tw-ms-0;
     }
   }
 

@@ -106,7 +106,7 @@ function _close() {
 }
 
 .vc-table-column-switcher {
-  @apply tw-relative tw-w-min tw-float-right tw-mr-4 tw-h-full;
+  @apply tw-relative tw-w-min tw-float-end tw-me-4 tw-h-full;
 
   &__item {
     @apply tw-flex tw-text-sm tw-items-center tw-box-border tw-cursor-pointer;
@@ -119,7 +119,7 @@ function _close() {
   }
 
   &__item-title {
-    @apply tw-ml-2;
+    @apply tw-ms-2;
   }
 }
 </style>

@@ -104,7 +104,7 @@ const props = defineProps<{
   /**
    * Text alignment
    */
-  align?: "left" | "center" | "right";
+  align?: "start" | "center" | "end" | "left" | "right";
   /**
    * Whether this is the last resizable column (offsets resizer from scrollbar)
    */
@@ -206,8 +206,8 @@ const handleDrop = (event: DragEvent) => {
 .vc-table-composition__head {
   @apply tw-relative tw-flex tw-items-center tw-gap-1 tw-font-medium tw-text-sm tw-h-[60px];
   // Horizontal padding from shared variable — matches TableCell exactly.
-  padding-left: var(--table-cell-padding-x);
-  padding-right: var(--table-cell-padding-x);
+  padding-inline-start: var(--table-cell-padding-x);
+  padding-inline-end: var(--table-cell-padding-x);
   transition: color 0.2s ease;
   min-width: 0;
   // Clip internal overflow (sort icon, content) so it doesn't extend the parent's
@@ -255,15 +255,15 @@ const handleDrop = (event: DragEvent) => {
 
   // AG Grid / TanStack style resizer
   &-resizer {
-    @apply tw-absolute tw-top-0 tw-right-0 tw-h-full tw-w-1 tw-cursor-col-resize tw-z-[var(--z-local-sticky)];
+    @apply tw-absolute tw-top-0 tw-end-0 tw-h-full tw-w-1 tw-cursor-col-resize tw-z-[var(--z-local-sticky)];
     @apply tw-flex tw-items-center tw-justify-center;
-    margin-right: -2px; // Center on border
+    margin-inline-end: -2px; // Center on border
 
     // Hit area - wider invisible zone for easier grabbing
     &::before {
       content: "";
       @apply tw-absolute tw-inset-0 tw-w-[10px];
-      transform: translateX(-4px); // Center the hit area
+      transform: translateX(calc(-4px * var(--vc-inline-sign, 1))); // Center the hit area
     }
 
     &-line {
@@ -286,8 +286,8 @@ const handleDrop = (event: DragEvent) => {
 
     // Last resizable column — no offset needed, resizer stays at edge
     &--last {
-      right: 0;
-      margin-right: -2px;
+      inset-inline-end: 0;
+      margin-inline-end: -2px;
     }
   }
 

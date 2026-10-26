@@ -161,12 +161,12 @@ $banner-variants: (
 );
 
 .vc-banner {
-  @apply tw-relative tw-flex tw-items-start tw-gap-3 tw-overflow-hidden tw-rounded-md tw-border tw-border-solid tw-py-3 tw-pr-3 tw-pl-4;
+  @apply tw-relative tw-flex tw-items-start tw-gap-3 tw-overflow-hidden tw-rounded-md tw-border tw-border-solid tw-py-3 tw-pe-3 tw-ps-4;
   --vc-banner-accent: var(--info-500);
 
   &::before {
     content: "";
-    @apply tw-absolute tw-left-0 tw-top-0 tw-bottom-0;
+    @apply tw-absolute tw-start-0 tw-top-0 tw-bottom-0;
     width: 3px;
     background-color: var(--vc-banner-accent);
   }
@@ -208,7 +208,7 @@ $banner-variants: (
 
     &::after {
       content: "";
-      @apply tw-pointer-events-none tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-8;
+      @apply tw-pointer-events-none tw-absolute tw-bottom-0 tw-start-0 tw-end-0 tw-h-8;
       background: linear-gradient(to bottom, rgb(250 250 250 / 0), var(--neutrals-50));
       opacity: 0;
       transition: opacity 0.2s ease;

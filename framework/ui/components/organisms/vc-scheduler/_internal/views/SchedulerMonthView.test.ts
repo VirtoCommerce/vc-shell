@@ -2,6 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import SchedulerMonthView from "@ui/components/organisms/vc-scheduler/_internal/views/SchedulerMonthView.vue";
 
+const rtl = vi.hoisted(() => ({ value: false }));
+vi.mock("@core/composables/useTextDirection", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  isRtlElement: () => rtl.value,
+}));
+
 const events = [
   {
     id: "a",
@@ -182,6 +188,27 @@ describe("SchedulerMonthView — create-intent disambiguation", () => {
       vi.advanceTimersByTime(1000);
       expect(w.emitted("create-intent")).toHaveLength(1);
       vi.useRealTimers();
+    });
+
+    // the week runs right to left, so the left edge of the first row is its last day
+    it("reads the day under the pointer from the right on a right-to-left page", async () => {
+      rtl.value = true;
+      try {
+        const w = mountView();
+        const cell = w.findAll(".vc-scheduler__day-cell")[0];
+        await cell.trigger("pointerdown", { clientX: 650, clientY: 10 });
+        const move = new Event("pointermove");
+        Object.assign(move, { clientX: 50, clientY: 10 });
+        window.dispatchEvent(move);
+        window.dispatchEvent(new Event("pointerup"));
+
+        const [intent] = (w.emitted("create-intent") ?? [])[0] as [{ kind: string; start: Date; end: Date }];
+        expect(intent.kind).toBe("drag");
+        // the whole first row: its first day to its last, end exclusive
+        expect(Math.round((intent.end.getTime() - intent.start.getTime()) / 86_400_000)).toBe(7);
+      } finally {
+        rtl.value = false;
+      }
     });
   });
 });

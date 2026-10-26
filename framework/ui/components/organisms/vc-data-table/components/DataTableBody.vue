@@ -157,7 +157,7 @@ export interface RowProps<T> {
   hasActions: boolean;
   actionsPosition: "overlay" | "column";
   getColumnWidth: (colProps: VcColumnProps) => string | undefined;
-  getCellAlign: (colProps: VcColumnProps) => "left" | "center" | "right" | undefined;
+  getCellAlign: (colProps: VcColumnProps) => "start" | "center" | "end" | undefined;
   getCellStyle: (colProps: VcColumnProps) => Record<string, string> | object | undefined;
   rowClass?: string | Record<string, boolean> | (string | Record<string, boolean> | undefined)[];
 }
@@ -346,7 +346,7 @@ defineExpose({ listEl });
 }
 
 .vc-data-table__group-count {
-  @apply tw-ml-1 tw-text-neutrals-500;
+  @apply tw-ms-1 tw-text-neutrals-500;
 }
 
 .vc-data-table__group-footer {

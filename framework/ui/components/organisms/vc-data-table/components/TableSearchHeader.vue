@@ -4,7 +4,7 @@
       v-if="visible"
       class="vc-table-search-header"
     >
-      <!-- Toolbar row: actions + filters on the left, search on the right -->
+      <!-- Toolbar row: actions + filters at the start, search at the end -->
       <div class="vc-table-search-header__toolbar">
         <div
           v-if="$slots.actions"

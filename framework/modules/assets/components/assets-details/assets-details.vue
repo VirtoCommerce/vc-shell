@@ -196,7 +196,7 @@ const assetType = computed(() => defaultAsset.value?.typeId);
 
 .assets-details__meta {
   @apply tw-flex tw-flex-col tw-gap-3;
-  @apply tw-ml-6 tw-min-w-0 tw-flex-1;
+  @apply tw-ms-6 tw-min-w-0 tw-flex-1;
   @apply tw-overflow-hidden;
 }
 

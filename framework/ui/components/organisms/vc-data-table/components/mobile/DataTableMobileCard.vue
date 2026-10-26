@@ -20,7 +20,7 @@
     <div
       ref="cardRef"
       class="vc-data-table-mobile-card__content"
-      :style="{ transform: `translateX(${translateX}px)` }"
+      :style="{ transform: `translateX(calc(${translateX}px * var(--vc-inline-sign, 1)))` }"
     >
       <!-- Drag handle (left) -->
       <div
@@ -271,6 +271,7 @@ import MobileCellRenderer from "@ui/components/organisms/vc-data-table/component
 import MobileActionSheet from "@ui/components/organisms/vc-data-table/components/mobile/MobileActionSheet.vue";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
+import { isRtlElement } from "@core/composables/useTextDirection";
 
 const props = withDefaults(
   defineProps<{
@@ -381,7 +382,8 @@ function handleLongPressEnd() {
   isLongPressing.value = false;
 }
 
-// Swipe state
+// Swipe state. The offset is along the line: negative moves the card toward the start of the line (left, or right on a
+// right-to-left page), uncovering the actions at its end.
 const translateX = ref(0);
 const actionsWidth = ref(0);
 const isAnimating = ref(false);
@@ -395,6 +397,8 @@ const startTranslateX = ref(0);
 const velocity = ref(0);
 const lastTime = ref(0);
 const lastX = ref(0);
+// 1 left to right, -1 right to left: turns the finger's moves into moves along the line
+const inlineSign = ref(1);
 // Direction lock: once determined, the gesture is either "horizontal" (swipe) or "vertical" (scroll).
 // null = undetermined, "horizontal" = swipe (we handle), "vertical" = scroll (browser handles).
 const directionLock = ref<"horizontal" | "vertical" | null>(null);
@@ -484,12 +488,13 @@ function handleTouchStart(e: TouchEvent) {
   if (isAnimating.value || visibleActions.value.length === 0) return;
 
   const touch = e.touches[0];
-  startX.value = touch.clientX;
+  inlineSign.value = isRtlElement(containerRef.value) ? -1 : 1;
+  startX.value = touch.clientX * inlineSign.value;
   startY.value = touch.clientY;
   startTranslateX.value = translateX.value;
   velocity.value = 0;
   lastTime.value = Date.now();
-  lastX.value = touch.clientX;
+  lastX.value = touch.clientX * inlineSign.value;
   directionLock.value = null;
 
   setActiveSwipe(String(itemId.value));
@@ -500,7 +505,7 @@ function handleTouchMove(e: TouchEvent) {
   if (activeSwipeId.value !== String(itemId.value)) return;
 
   const touch = e.touches[0];
-  const currentX = touch.clientX;
+  const currentX = touch.clientX * inlineSign.value;
   const deltaX = currentX - startX.value;
   const deltaY = touch.clientY - startY.value;
 
@@ -707,16 +712,16 @@ onBeforeUnmount(() => {
   }
 
   &__checkbox {
-    @apply tw-absolute tw-left-0 tw-top-0 tw-bottom-0 tw-flex tw-items-center tw-px-3 tw-z-[var(--z-local-sticky)];
+    @apply tw-absolute tw-start-0 tw-top-0 tw-bottom-0 tw-flex tw-items-center tw-px-3 tw-z-[var(--z-local-sticky)];
   }
 
   // When a drag handle is present, the checkbox sits to the right of it.
   &--reorderable &__checkbox {
-    left: 2.5rem;
+    inset-inline-start: 2.5rem;
   }
 
   &__drag-handle {
-    @apply tw-absolute tw-left-0 tw-top-0 tw-bottom-0 tw-flex tw-items-center tw-justify-center tw-w-10 tw-z-[var(--z-local-sticky)];
+    @apply tw-absolute tw-start-0 tw-top-0 tw-bottom-0 tw-flex tw-items-center tw-justify-center tw-w-10 tw-z-[var(--z-local-sticky)];
     color: var(--table-drag-handle-color, var(--neutrals-400));
     cursor: grab;
     touch-action: none;
@@ -731,7 +736,7 @@ onBeforeUnmount(() => {
 
     // Selection-only (non-reorderable) card: make room for the absolute checkbox.
     &--with-checkbox {
-      @apply tw-pl-12;
+      @apply tw-ps-12;
     }
   }
 
@@ -740,11 +745,11 @@ onBeforeUnmount(() => {
   // shorthand — an equal-specificity body modifier can lose to the shorthand,
   // leaving content to slide under the absolutely-positioned handle.
   &--reorderable &__body {
-    @apply tw-pl-12; // 48px — clear the 40px handle
+    @apply tw-ps-12; // 48px — clear the 40px handle
   }
 
   &--reorderable &__body--with-handle-and-checkbox {
-    @apply tw-pl-20; // 80px — 40px handle + 40px checkbox
+    @apply tw-ps-20; // 80px — 40px handle + 40px checkbox
   }
 
   &__image {
@@ -839,7 +844,7 @@ onBeforeUnmount(() => {
 
   // Swipe actions
   &__actions {
-    @apply tw-absolute tw-top-0 tw-bottom-0 tw-right-0 tw-flex tw-flex-row tw-rounded-r-lg tw-overflow-hidden;
+    @apply tw-absolute tw-top-0 tw-bottom-0 tw-end-0 tw-flex tw-flex-row tw-rounded-e-lg tw-overflow-hidden;
     will-change: width;
   }
 
@@ -850,7 +855,7 @@ onBeforeUnmount(() => {
 
     // Round corners on last action button
     &:last-child {
-      @apply tw-rounded-r-lg;
+      @apply tw-rounded-e-lg;
     }
 
     &:active {
@@ -885,5 +890,19 @@ onBeforeUnmount(() => {
   &__action-title {
     @apply tw-mt-1 tw-text-xs tw-text-center;
   }
+}
+
+// Data whose direction is its own (emails, codes, amounts) reads left to right inside a right-to-left card, from its
+// first letter, and stays on the card's right side. The side is physical: a plaintext block reads "start" as its own
+// text's start.
+[dir="rtl"] :is(.vc-data-table-mobile-card__title, .vc-data-table-mobile-card__fields) {
+  text-align: right;
+}
+
+[dir="rtl"]
+  :is(.vc-data-table-mobile-card__title, .vc-data-table-mobile-card__fields)
+  :is(div, span, a, p):not(:has(*)) {
+  text-align: match-parent;
+  unicode-bidi: plaintext;
 }
 </style>

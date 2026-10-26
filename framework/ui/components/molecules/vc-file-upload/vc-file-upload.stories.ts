@@ -316,7 +316,7 @@ export const MultipleFiles: Story = {
         />
         <div v-if="uploadedFiles.length" class="tw-mt-4">
           <h4 class="tw-text-sm tw-font-medium tw-mb-1">Uploaded files:</h4>
-          <ul class="tw-text-sm tw-text-gray-600 tw-list-disc tw-pl-5">
+          <ul class="tw-text-sm tw-text-gray-600 tw-list-disc tw-ps-5">
             <li v-for="file in uploadedFiles" :key="file">{{ file }}</li>
           </ul>
         </div>

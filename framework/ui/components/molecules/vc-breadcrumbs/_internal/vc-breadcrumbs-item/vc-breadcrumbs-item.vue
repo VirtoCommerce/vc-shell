@@ -85,7 +85,7 @@ function onClick(): void {
   @apply tw-transition-colors tw-duration-300;
 
   &--current {
-    @apply tw-text-[color:var(--breadcrumbs-item-color-current)] tw-cursor-default tw-mr-0;
+    @apply tw-text-[color:var(--breadcrumbs-item-color-current)] tw-cursor-default tw-me-0;
   }
 
   &--light {
@@ -93,7 +93,7 @@ function onClick(): void {
   }
 
   &__icon {
-    @apply tw-mr-2 tw-text-[color:var(--breadcrumbs-item-icon-color)];
+    @apply tw-me-2 tw-text-[color:var(--breadcrumbs-item-icon-color)];
   }
 
   &__title {

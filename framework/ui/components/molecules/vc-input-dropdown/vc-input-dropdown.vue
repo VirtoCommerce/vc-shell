@@ -282,7 +282,7 @@ const bladeLoading = useBladeLoading();
   }
 
   &__toggle-button-icon {
-    @apply tw-text-[color:var(--input-dropdown-toggle-color)] tw-ml-3;
+    @apply tw-text-[color:var(--input-dropdown-toggle-color)] tw-ms-3;
   }
 }
 </style>

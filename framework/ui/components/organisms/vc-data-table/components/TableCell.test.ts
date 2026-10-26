@@ -43,9 +43,15 @@ describe("TableCell", () => {
     expect(style).toContain("flex: 1 1 0px");
   });
 
-  it("applies text alignment", () => {
-    const w = factory({ align: "center" });
-    expect(w.find(".vc-table-composition__cell").attributes("style")).toContain("text-align: center");
+  // alignment is a class, so the stylesheet can make it physical in a right-to-left table
+  it.each([
+    ["center", "center"],
+    ["end", "end"],
+    [undefined, "start"],
+  ] as const)("applies text alignment %s as a class", (align, side) => {
+    const cell = factory({ align }).find(".vc-table-composition__cell");
+    expect(cell.classes()).toContain(`vc-table-composition__cell--align-${side}`);
+    expect(cell.attributes("style") ?? "").not.toContain("text-align");
   });
 
   it("applies truncate class for lineClamp=1", () => {

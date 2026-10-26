@@ -42,7 +42,7 @@
             <!-- Nested children -->
             <div
               v-if="item.children"
-              class="tw-flex tw-flex-col tw-gap-1 tw-pl-3"
+              class="tw-flex tw-flex-col tw-gap-1 tw-ps-3"
             >
               <div
                 v-for="(child, cIdx) in item.children"
@@ -130,7 +130,7 @@ const skeletonSections = [
   }
 
   &__skeleton {
-    @apply tw-flex tw-flex-col tw-gap-5 tw-py-2 tw-pr-2;
+    @apply tw-flex tw-flex-col tw-gap-5 tw-py-2 tw-pe-2;
   }
 
   &__skeleton-section + &__skeleton-section {

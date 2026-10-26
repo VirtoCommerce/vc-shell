@@ -109,7 +109,7 @@ function handleActionClick(action: MobileSwipeAction<T>) {
   }
 
   &__action {
-    @apply tw-w-full tw-flex tw-items-center tw-gap-3 tw-px-5 tw-py-4 tw-text-left
+    @apply tw-w-full tw-flex tw-items-center tw-gap-3 tw-px-5 tw-py-4 tw-text-start
            tw-border-b tw-border-[var(--action-sheet-border)] tw-transition-colors tw-bg-transparent tw-border-x-0 tw-border-t-0 tw-cursor-pointer
            hover:tw-bg-[var(--action-sheet-action-hover)]
            active:tw-bg-[var(--action-sheet-action-hover)];

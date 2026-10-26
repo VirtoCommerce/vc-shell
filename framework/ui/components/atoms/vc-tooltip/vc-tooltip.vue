@@ -60,7 +60,8 @@ import {
   type Placement,
 } from "@floating-ui/vue";
 import { computed, onBeforeUnmount, ref, useId } from "vue";
-import { useTeleportTarget } from "@ui/composables";
+import { mirrorPlacement, useTeleportTarget } from "@ui/composables";
+import { useTextDirection } from "@core/composables/useTextDirection";
 
 export type TooltipPlacement =
   | "top"
@@ -120,6 +121,7 @@ let showTimeout: ReturnType<typeof setTimeout> | null = null;
 const ARROW_SIZE = 8;
 
 const { teleportTarget } = useTeleportTarget();
+const { isRtl } = useTextDirection();
 
 const middleware = computed(() => {
   const mw = [
@@ -141,7 +143,10 @@ const {
   placement: resolvedPlacement,
   middlewareData,
 } = useFloating(tooltipCompRef, tooltipRef, {
-  placement: computed(() => props.placement as Placement),
+  // a right-to-left page opens a "right" tooltip on the left (the reading direction's end)
+  placement: computed(() =>
+    isRtl.value ? mirrorPlacement(props.placement as Placement) : (props.placement as Placement),
+  ),
   whileElementsMounted: autoUpdate,
   middleware,
 });

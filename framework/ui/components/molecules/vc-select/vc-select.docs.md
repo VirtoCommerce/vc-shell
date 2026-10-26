@@ -284,6 +284,8 @@ The `#selected-item` slot lets you change how chips look in multiple mode:
 
 VcSelect **does not contain built-in validation**. For validation, use the `Field` wrapper from vee-validate, which manages the error state and passes it to VcSelect through the `error` and `error-message` props.
 
+The hint and the error message sit in the flow below the field, as in VcInput, so a message of several lines pushes the content below it down instead of overlapping it. Earlier versions laid them over the space under the field, so a layout that reserved that space with a bottom margin can drop it now.
+
 ### Basic Pattern — Field + VcSelect
 
 ```vue

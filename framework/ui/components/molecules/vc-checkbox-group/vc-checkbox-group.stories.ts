@@ -254,7 +254,7 @@ export const Accessibility: Story = {
 
         <div class="tw-p-3 tw-bg-blue-50 tw-rounded tw-text-blue-700 tw-text-sm">
           <strong>Inspect in DOM:</strong>
-          <ul class="tw-list-disc tw-pl-5 tw-mt-1">
+          <ul class="tw-list-disc tw-ps-5 tw-mt-1">
             <li>container is a semantic <code>fieldset</code></li>
             <li><code>legend</code> labels the whole checkbox set</li>
             <li>checkboxes share group <code>name</code></li>

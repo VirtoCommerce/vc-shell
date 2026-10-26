@@ -218,7 +218,8 @@ function onInput(e: Event) {
       background-color: var(--switch-active-color);
 
       &::before {
-        @apply [transform:translateX(var(--switch-translate))_translateY(-50%)];
+        @apply [transform:translateX(var(--switch-translate))_translateY(-50%)]
+          rtl:[transform:translateX(calc(-1*var(--switch-translate)))_translateY(-50%)];
       }
     }
 
@@ -250,7 +251,7 @@ function onInput(e: Event) {
     transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
 
     &::before {
-      @apply tw-absolute tw-left-[2px] tw-top-1/2 tw-rounded-full tw-w-[var(--switch-thumb-size)] tw-h-[var(--switch-thumb-size)] [content:''] [transform:translateX(0)_translateY(-50%)];
+      @apply tw-absolute tw-start-[2px] tw-top-1/2 tw-rounded-full tw-w-[var(--switch-thumb-size)] tw-h-[var(--switch-thumb-size)] [content:''] [transform:translateX(0)_translateY(-50%)];
       background-color: var(--switch-thumb-color);
       box-shadow: var(--switch-thumb-shadow);
       transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);

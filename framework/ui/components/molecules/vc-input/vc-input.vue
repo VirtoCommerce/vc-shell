@@ -645,7 +645,7 @@ function handleFocus() {
 
   &__prepend,
   &__append {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-pr-3 tw-pl-3;
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-pe-3 tw-ps-3;
   }
 
   &__field-wrapper {
@@ -674,11 +674,11 @@ function handleFocus() {
   }
 
   &__append-inner {
-    @apply tw-pl-3;
+    @apply tw-ps-3;
   }
 
   &__prepend-inner {
-    @apply tw-pr-3;
+    @apply tw-pe-3;
   }
 
   &__field {
@@ -691,16 +691,16 @@ function handleFocus() {
   }
 
   &__prefix {
-    @apply tw-pr-3;
+    @apply tw-pe-3;
   }
 
   &__suffix {
-    @apply tw-pl-3;
+    @apply tw-ps-3;
   }
 
   &__clear,
   &__showhide {
-    @apply tw-cursor-pointer tw-pl-3;
+    @apply tw-cursor-pointer tw-ps-3;
   }
 
   // Adornment buttons: the icon is 12-14px, so without a minimum box the hit
@@ -716,7 +716,7 @@ function handleFocus() {
   }
 
   &__loading {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-pl-3;
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-ps-3;
   }
 
   &__loading-icon {

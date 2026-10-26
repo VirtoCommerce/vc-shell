@@ -239,15 +239,15 @@ export const BottomSheet: Story = {
 
         <VcSidebar v-bind="args" :model-value="opened" @update:modelValue="opened = $event">
           <div class="tw-grid tw-grid-cols-1 tw-gap-2 tw-p-4 md:tw-grid-cols-2">
-            <button class="tw-rounded-lg tw-border tw-border-solid tw-border-neutrals-200 tw-bg-transparent tw-p-4 tw-text-left hover:tw-bg-primary-50">
+            <button class="tw-rounded-lg tw-border tw-border-solid tw-border-neutrals-200 tw-bg-transparent tw-p-4 tw-text-start hover:tw-bg-primary-50">
               <p class="tw-text-sm tw-font-semibold">Duplicate</p>
               <p class="tw-text-xs tw-text-neutrals-600">Create a copy of this entry</p>
             </button>
-            <button class="tw-rounded-lg tw-border tw-border-solid tw-border-neutrals-200 tw-bg-transparent tw-p-4 tw-text-left hover:tw-bg-primary-50">
+            <button class="tw-rounded-lg tw-border tw-border-solid tw-border-neutrals-200 tw-bg-transparent tw-p-4 tw-text-start hover:tw-bg-primary-50">
               <p class="tw-text-sm tw-font-semibold">Archive</p>
               <p class="tw-text-xs tw-text-neutrals-600">Hide from active lists</p>
             </button>
-            <button class="tw-rounded-lg tw-border tw-border-solid tw-border-neutrals-200 tw-bg-transparent tw-p-4 tw-text-left hover:tw-bg-primary-50">
+            <button class="tw-rounded-lg tw-border tw-border-solid tw-border-neutrals-200 tw-bg-transparent tw-p-4 tw-text-start hover:tw-bg-primary-50">
               <p class="tw-text-sm tw-font-semibold tw-text-danger-600">Delete</p>
               <p class="tw-text-xs tw-text-neutrals-600">Permanently remove this entry</p>
             </button>

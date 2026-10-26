@@ -61,18 +61,18 @@ const groupClass = computed(() => [
       // First slot: left rounding
       > *:first-child .vc-button,
       > .vc-button:first-child {
-        @apply tw-rounded-l-[var(--button-border-radius)];
+        @apply tw-rounded-s-[var(--button-border-radius)];
       }
 
       // Last slot: right rounding
       > *:last-child .vc-button,
       > .vc-button:last-child {
-        @apply tw-rounded-r-[var(--button-border-radius)];
+        @apply tw-rounded-e-[var(--button-border-radius)];
       }
 
       // Avoid double borders — negative margin on the flex child (wrapper or direct button)
       > *:not(:first-child) {
-        @apply tw--ml-px;
+        @apply tw--ms-px;
       }
     }
 

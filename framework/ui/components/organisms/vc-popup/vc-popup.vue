@@ -344,7 +344,7 @@ function handleDialogDismiss(): void {
   }
 
   &__panel {
-    @apply tw-w-full tw-transform tw-overflow-hidden tw-text-left tw-align-middle tw-transition-all;
+    @apply tw-w-full tw-transform tw-overflow-hidden tw-text-start tw-align-middle tw-transition-all;
     border-radius: var(--vc-popup-border-radius);
     background: var(--popup-bg);
     box-shadow: var(--vc-popup-shadow);
@@ -373,7 +373,7 @@ function handleDialogDismiss(): void {
   }
 
   &__close-btn {
-    @apply tw-h-[26px] tw-w-[26px] tw-bg-[var(--popup-close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ml-auto tw-shrink-0 hover:tw-bg-[var(--popup-close-btn-bg-hover)] tw-outline-none tw-ring-offset-2 tw-ring-offset-transparent focus-visible:tw-ring-2 focus-visible:tw-ring-[var(--primary-300)];
+    @apply tw-h-[26px] tw-w-[26px] tw-bg-[var(--popup-close-btn-bg)] tw-rounded-[4px] tw-inline-flex tw-items-center tw-justify-center tw-ms-auto tw-shrink-0 hover:tw-bg-[var(--popup-close-btn-bg-hover)] tw-outline-none tw-ring-offset-2 tw-ring-offset-transparent focus-visible:tw-ring-2 focus-visible:tw-ring-[var(--primary-300)];
   }
 
   &__content {
@@ -414,7 +414,7 @@ function handleDialogDismiss(): void {
   }
 
   &__close-button {
-    @apply tw-ml-auto;
+    @apply tw-ms-auto;
   }
 
   &__icon {

@@ -33,7 +33,7 @@ const ariaLabel = computed(() => format(props.date, "PPPP"));
   // without spilling into a vertical scrollbar.
   min-height: 5rem;
   padding: 0.25rem;
-  border-right: 1px solid var(--scheduler-border-color, var(--neutrals-300));
+  border-inline-end: 1px solid var(--scheduler-border-color, var(--neutrals-300));
   border-bottom: 1px solid var(--scheduler-border-color, var(--neutrals-300));
   background: var(--additional-50, #fff);
   // Rapid single/double clicks on the empty cell drive create-intent disambiguation;

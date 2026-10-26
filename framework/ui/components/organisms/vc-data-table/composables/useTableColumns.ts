@@ -22,6 +22,9 @@ import {
   type EngineOutput,
 } from "./useColumnWidthEngine";
 
+/** Text alignment of a column, along the line: "end" is right, or left on a right-to-left page. */
+export type CellAlign = "start" | "center" | "end";
+
 export interface UseTableColumnsOptions {
   visibleColumns: Ref<ColumnInstance[]> | ComputedRef<ColumnInstance[]>;
   resizableColumns?: boolean;
@@ -68,8 +71,8 @@ export interface UseTableColumnsReturn {
   isColumnReorderable: (col: VcColumnProps) => boolean;
   isLastResizableColumn: (col: VcColumnProps) => boolean;
   getEffectiveColumnWidth: (col: VcColumnProps) => string | undefined;
-  getHeaderAlign: (col: VcColumnProps) => "left" | "center" | "right" | undefined;
-  getCellAlign: (col: VcColumnProps) => "left" | "center" | "right" | undefined;
+  getHeaderAlign: (col: VcColumnProps) => CellAlign | undefined;
+  getCellAlign: (col: VcColumnProps) => CellAlign | undefined;
   getHeaderStyle: (col: VcColumnProps) => object | undefined;
   getCellStyle: (col: VcColumnProps) => object | undefined;
   getSortField: (col: VcColumnProps) => string;
@@ -117,21 +120,15 @@ export function useTableColumns(options: UseTableColumnsOptions): UseTableColumn
     return undefined;
   };
 
-  const getHeaderAlign = (col: VcColumnProps): "left" | "center" | "right" | undefined => {
+  // start/end stay logical: an "end" column (amounts) aligns right, or left on a right-to-left page
+  const getHeaderAlign = (col: VcColumnProps): CellAlign | undefined => {
     if (isSpecialColumn(col)) return "center";
-    const align = col.headerAlign || col.align;
-    if (!align) return undefined;
-    if (align === "start") return "left";
-    if (align === "end") return "right";
-    return align;
+    return col.headerAlign || col.align || undefined;
   };
 
-  const getCellAlign = (col: VcColumnProps): "left" | "center" | "right" | undefined => {
+  const getCellAlign = (col: VcColumnProps): CellAlign | undefined => {
     if (isSpecialColumn(col)) return "center";
-    if (!col.align) return undefined;
-    if (col.align === "start") return "left";
-    if (col.align === "end") return "right";
-    return col.align;
+    return col.align || undefined;
   };
 
   const getHeaderStyle = (col: VcColumnProps): object | undefined => {

@@ -358,7 +358,7 @@ defineExpose({ focus });
   }
 
   &__color-square {
-    @apply tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-ml-2
+    @apply tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-ms-2
       tw-border tw-border-solid tw-bg-transparent tw-p-0 tw-outline-none;
     width: var(--color-input-swatch-size);
     height: var(--color-input-swatch-size);
@@ -379,13 +379,13 @@ defineExpose({ focus });
   }
 
   &__clear {
-    @apply tw-cursor-pointer tw-pl-3 tw-text-[color:var(--input-clear-color)]
+    @apply tw-cursor-pointer tw-ps-3 tw-text-[color:var(--input-clear-color)]
       hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center
       tw-border-none tw-bg-transparent tw-outline-none tw-p-0;
   }
 
   &__loading {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-pl-3;
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-ps-3;
   }
 
   &__loading-icon {

@@ -163,7 +163,7 @@ const hasBar = (cell: number) => BAR_CELLS.has(cell);
   gap: 0.375rem;
   min-height: 3.5rem;
   padding: 0.375rem;
-  border-right: 1px solid var(--scheduler-border-color);
+  border-inline-end: 1px solid var(--scheduler-border-color);
   border-bottom: 1px solid var(--scheduler-border-color);
 }
 
@@ -180,14 +180,14 @@ const hasBar = (cell: number) => BAR_CELLS.has(cell);
   flex: none;
   width: 3.5rem;
   padding: 0.5rem 0.375rem;
-  border-right: 1px solid var(--scheduler-border-color);
+  border-inline-end: 1px solid var(--scheduler-border-color);
 }
 .vc-scheduler__sk-tg-headcol {
   flex: 1 1 0;
   display: flex;
   justify-content: center;
   padding: 0.5rem 0;
-  border-left: 1px solid var(--scheduler-border-color);
+  border-inline-start: 1px solid var(--scheduler-border-color);
 }
 .vc-scheduler__sk-tg-body {
   display: flex;
@@ -198,7 +198,7 @@ const hasBar = (cell: number) => BAR_CELLS.has(cell);
 .vc-scheduler__sk-tg-col {
   flex: 1 1 0;
   padding: 0.5rem 0.375rem;
-  border-left: 1px solid var(--scheduler-border-color);
+  border-inline-start: 1px solid var(--scheduler-border-color);
 }
 
 // -- Agenda --

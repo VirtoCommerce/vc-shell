@@ -95,7 +95,7 @@ $variants: info, warning, danger, success, light-danger, info-dark, primary;
       @apply tw-border-[color:var(--status-border-color)] #{!important};
 
       &::before {
-        @apply tw-content-[''] tw-bg-[color:var(--status-#{$variant}-main-color)] tw-w-2 tw-h-2 tw-rounded-full tw-mr-2 tw-shrink-0;
+        @apply tw-content-[''] tw-bg-[color:var(--status-#{$variant}-main-color)] tw-w-2 tw-h-2 tw-rounded-full tw-me-2 tw-shrink-0;
       }
 
       &.vc-status--dot {

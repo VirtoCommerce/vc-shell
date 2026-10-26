@@ -39,7 +39,7 @@
     </swiper>
     <!-- Navigation buttons-->
     <div v-show="navigation">
-      <div class="vc-slider__prev tw-left-0">
+      <div class="vc-slider__prev tw-start-0">
         <slot name="prevBtn">
           <button
             type="button"
@@ -53,7 +53,7 @@
           </button>
         </slot>
       </div>
-      <div class="vc-slider__next tw-right-0">
+      <div class="vc-slider__next tw-end-0">
         <slot name="nextBtn">
           <button
             type="button"

@@ -14,6 +14,7 @@
         'vc-icon',
         `vc-icon--${size}`,
         variant ? `vc-icon--${variant}` : '',
+        { 'vc-icon--rtl-mirror': mirrorsInRtl },
         !isCustomIcon && !isMaterialIcon && !isLucideIcon && !isBootstrapIcon && !isFontAwesomeIcon
           ? (icon as string).toLowerCase()
           : '',
@@ -30,6 +31,7 @@
       'vc-icon',
       `vc-icon--${size}`,
       variant ? `vc-icon--${variant}` : '',
+      { 'vc-icon--rtl-mirror': mirrorsInRtl },
       !isCustomIcon && !isMaterialIcon && !isLucideIcon && !isBootstrapIcon && !isFontAwesomeIcon
         ? (icon as string).toLowerCase()
         : '',
@@ -183,6 +185,34 @@ const normalizedIconName = computed(() => {
   }
 
   return props.icon;
+});
+
+// Icons that point the way of reading (chevrons and arrows to a side, log in/out, panels, undo/redo, reply) turn
+// around on a right-to-left page (the rule is in assets/styles/index.scss). Up/down and diagonal arrows stay.
+const RTL_MIRRORED = new RegExp(
+  [
+    // chevron-left, arrow-right-from-line, arrow-big-left, box-arrow-in-right, panel-left-open, caret-right...
+    // (not arrow-left-right: it reads the same both ways)
+    "^(?:chevrons?|arrow(?:-big)?|caret|angles?|angle-double|circle-(?:arrow|chevron)|square-(?:arrow|chevron)|corner-(?:up|down)|panel|box-arrow(?:-in)?|keyboard-arrow|long-arrow|step|skip)-(?:left|right)(?!-(?:left|right)$)(?:$|-)",
+    // log-in, sign-out-alt, right-from-bracket, undo-2, reply-all, Material's arrow_back / navigate_next / logout
+    "^(?:log|sign)-?(?:in|out)(?:-alt)?$",
+    "^(?:arrow-)?right-(?:from|to)-bracket$",
+    "^(?:undo|redo|reply)(?:-|$)",
+    "^(?:forward|arrow-back|arrow-forward|arrow-back-ios(?:-new)?|arrow-forward-ios|navigate-next|navigate-before|first-page|last-page|login|logout)$",
+  ].join("|"),
+);
+
+const mirrorsInRtl = computed(() => {
+  if (typeof props.icon !== "string") return false;
+  const name = props.icon
+    .replace(/^(?:fa[a-z-]*\s+)?fa-/, "")
+    .replace(/^(?:lucide|bi|material)-/, "")
+    .replace(/-(?:outlined|rounded|sharp|fill)$/, "")
+    .replace(/Icon$/, "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/_/g, "-")
+    .toLowerCase();
+  return RTL_MIRRORED.test(name);
 });
 
 // Check if icon is a Material Design symbol

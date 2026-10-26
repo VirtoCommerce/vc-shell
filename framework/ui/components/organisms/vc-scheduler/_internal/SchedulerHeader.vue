@@ -8,7 +8,7 @@
         v-for="t in coarseTicks"
         :key="`c-${t.x}`"
         class="vc-scheduler__tick vc-scheduler__tick--coarse"
-        :style="{ transform: `translateX(${t.x}px)` }"
+        :style="{ transform: `translateX(calc(${t.x}px * var(--vc-inline-sign, 1)))` }"
       >
         {{ t.label }}
       </div>
@@ -18,7 +18,7 @@
         v-for="t in fineTicks"
         :key="`f-${t.x}`"
         class="vc-scheduler__tick vc-scheduler__tick--fine"
-        :style="{ transform: `translateX(${t.x}px)` }"
+        :style="{ transform: `translateX(calc(${t.x}px * var(--vc-inline-sign, 1)))` }"
       >
         <slot
           name="header-cell"
@@ -75,11 +75,11 @@ function formatFine(date: Date): string {
 .vc-scheduler__tick {
   position: absolute;
   top: 0;
-  padding-left: 0.25rem;
+  padding-inline-start: 0.25rem;
   font-size: 0.75rem;
   color: var(--neutrals-600);
   white-space: nowrap;
-  border-left: 0; // borders live on gridlines, not ticks (avoid side-stripe)
+  border-inline-start: 0; // borders live on gridlines, not ticks (avoid side-stripe)
 }
 .vc-scheduler__tick--coarse {
   font-weight: 600;

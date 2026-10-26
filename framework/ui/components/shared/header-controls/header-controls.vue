@@ -111,7 +111,7 @@ watch(
   }
 
   &__button {
-    @apply tw-text-[color:var(--blade-header-button-color)] tw-ml-2.5 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)];
+    @apply tw-text-[color:var(--blade-header-button-color)] tw-ms-2.5 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)];
     // Without a minimum box the hit area is just the ~18px icon, under the 24px
     // WCAG 2.2 SC 2.5.8 target. Centering keeps the icon visually unchanged.
     @apply tw-flex tw-items-center tw-justify-center;

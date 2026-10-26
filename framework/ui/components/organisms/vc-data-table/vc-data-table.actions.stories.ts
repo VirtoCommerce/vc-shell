@@ -436,7 +436,7 @@ export const WithRowActionsInlineColumn: Story = {
         Actions are always visible in a dedicated column — no hover needed.
       </p>
       <div class="tw-mb-2">
-        <span v-for="(event, i) in eventLog" :key="i" class="tw-text-sm tw-mr-2">{{ event }}</span>
+        <span v-for="(event, i) in eventLog" :key="i" class="tw-text-sm tw-me-2">{{ event }}</span>
       </div>
       <VcDataTable
         :items="products"

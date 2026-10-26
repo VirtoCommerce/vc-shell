@@ -54,21 +54,26 @@ defineProps<Props>();
   &__bar-fill {
     position: absolute;
     top: 0;
-    left: 0;
+    inset-inline-start: 0;
     height: 100%;
     width: 40%;
     border-radius: 9999px;
-    background: linear-gradient(90deg, var(--loading-bar-track), var(--loading-bar-color));
+    background: linear-gradient(to right, var(--loading-bar-track), var(--loading-bar-color));
     animation: vc-bar-sweep 1.5s ease-in-out infinite;
+
+    // the bar sweeps toward the end of the line, its bright head first
+    [dir="rtl"] & {
+      background: linear-gradient(to left, var(--loading-bar-track), var(--loading-bar-color));
+    }
   }
 }
 
 @keyframes vc-bar-sweep {
   0% {
-    left: -40%;
+    inset-inline-start: -40%;
   }
   100% {
-    left: 100%;
+    inset-inline-start: 100%;
   }
 }
 </style>

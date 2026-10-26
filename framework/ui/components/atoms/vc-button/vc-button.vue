@@ -272,7 +272,7 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
   }
 
   &__icon + &__title {
-    @apply tw-ml-2 tw-text-left;
+    @apply tw-ms-2 tw-text-start;
   }
 
   &--loading {
@@ -355,7 +355,7 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
       }
 
       .vc-button--icon + .vc-button__title {
-        @apply tw-ml-1;
+        @apply tw-ms-1;
       }
     }
   }

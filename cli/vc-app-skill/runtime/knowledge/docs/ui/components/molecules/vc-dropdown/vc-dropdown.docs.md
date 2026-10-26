@@ -314,6 +314,7 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 | `emptyText`           | `string`                                       | `""`                            | Text shown when items array is empty                           |
 | `itemText`            | `(item: T) => string`                          | --                              | Maps an item to display text (default renderer only)           |
 | `isItemActive`        | `(item: T) => boolean`                         | --                              | Marks the currently active item (highlighted state)            |
+| `isItemDisabled`      | `(item: T) => boolean`                         | --                              | Marks an item `aria-disabled`: focusable, cannot be chosen     |
 | `itemKey`             | `(item: T, index: number) => string \| number` | index                           | Unique key function for items                                  |
 | `floating`            | `boolean`                                      | `false`                         | Enable floating positioning via `@floating-ui`                 |
 | `teleport`            | `boolean`                                      | --                              | Force teleport to body (defaults to match `floating`)          |

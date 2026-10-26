@@ -122,6 +122,8 @@ When `expanded` is `false`, the menu shows only icons and letter abbreviations. 
 - When the menu is collapsed to icons the visible title is hidden, so the button carries `aria-label` with the item title; expanded items rely on their visible text instead and set no `aria-label`
 - Icons and letter abbreviations are `aria-hidden="true"` — they are decorative next to the accessible name
 - `VcMenuGroup` with `variant="section"` renders a native button that reports `aria-expanded` and points `aria-controls` at the children wrapper it toggles
+- The default `VcMenuGroup` variant reports the same state: its `VcMenuItem` header button carries `aria-expanded="true|false"` and `aria-controls`, so a collapsed group is announced as collapsed rather than as items with no state. `VcMenuItem` takes these as the `aria-expanded` / `aria-controls` props and renders them on the button itself; an item that omits them stays silent about expansion
+- `VcMenuGroup` renders `data-group-id` with the `group-id` it was given, so a group can be addressed unambiguously even when it and one of its children share a `data-test-id`
 - Collapsed mode shows tooltips for discoverability (in addition to, not instead of, the accessible name)
 
 ## Related Components

@@ -1,11 +1,24 @@
-## [2.6.3-rc.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.2...v2.6.3-rc.0) (2026-10-01)
+# Changelog
+
+# [2.7.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.2...v2.7.0) (2026-10-26)
+
+### Features
+
+- **auth:** add Remember me to the login form (VM-1822) (#381) ([99beccf](https://github.com/VirtoCommerce/vc-shell/commit/99beccf04b8d9071c15d361a27ca6e5ddc39cbfb)), closes [#381](https://github.com/VirtoCommerce/vc-shell/issues/381) [#380](https://github.com/VirtoCommerce/vc-shell/issues/380)
+- **framework:** right-to-left layout for Arabic, Hebrew, Persian and Urdu (#387) ([519a541](https://github.com/VirtoCommerce/vc-shell/commit/519a5413c0a647da016f513040b4431f3889b5d6)), closes [#387](https://github.com/VirtoCommerce/vc-shell/issues/387)
 
 ### Bug Fixes
 
-- **auth:** confirm the session is gone before signing out on a 401 ([#377](https://github.com/VirtoCommerce/vc-shell/issues/377)) ([7212169](https://github.com/VirtoCommerce/vc-shell/commit/72121692c3dac5ab7463f6b8c4f266cf37a47d44)), closes [#333](https://github.com/VirtoCommerce/vc-shell/issues/333)
-- **vc-data-table:** cell editing, mobile cell editing, width warning, striped rows ([#376](https://github.com/VirtoCommerce/vc-shell/issues/376)) ([f6ff5f1](https://github.com/VirtoCommerce/vc-shell/commit/f6ff5f1f81973a3abc4295bd9659cbc9ea28be81))
-
-# Changelog
+- **auth:** confirm the session is gone before signing out on a 401 (#377) ([7212169](https://github.com/VirtoCommerce/vc-shell/commit/72121692c3dac5ab7463f6b8c4f266cf37a47d44)), closes [#377](https://github.com/VirtoCommerce/vc-shell/issues/377) [#333](https://github.com/VirtoCommerce/vc-shell/issues/333)
+- **auth:** send only a definitive 'not signed in' to Login (VM-1829) (#380) ([1d1169f](https://github.com/VirtoCommerce/vc-shell/commit/1d1169fba3ab528bbf8375aec3e82fbae6257a30)), closes [#380](https://github.com/VirtoCommerce/vc-shell/issues/380)
+- expose menu group state and an AssetsManager test id for automation (#382) ([c8be107](https://github.com/VirtoCommerce/vc-shell/commit/c8be10700571a22b3a1ad3893fbb418530ea3f54)), closes [#382](https://github.com/VirtoCommerce/vc-shell/issues/382)
+- session expiry return path and blade, toolbar, date and table fixes for module hosts (VCST-6327) (#386) ([57f06b8](https://github.com/VirtoCommerce/vc-shell/commit/57f06b823eac9e830a6232c2f06cf2b83f75209e)), closes [#386](https://github.com/VirtoCommerce/vc-shell/issues/386)
+- **vc-data-table:** cell editing, mobile cell editing, width warning, striped rows (#376) ([f6ff5f1](https://github.com/VirtoCommerce/vc-shell/commit/f6ff5f1f81973a3abc4295bd9659cbc9ea28be81)), closes [#376](https://github.com/VirtoCommerce/vc-shell/issues/376)
+- **vc-data-table:** leave Space and Enter from cell controls to the controls (VM-1839) (#383) ([673a733](https://github.com/VirtoCommerce/vc-shell/commit/673a733817fa2930935de161d10b08992e0afcf4)), closes [#383](https://github.com/VirtoCommerce/vc-shell/issues/383)
+- **vc-file-upload:** check dropped files against the rules too (VM-1832) (#385) ([386bac1](https://github.com/VirtoCommerce/vc-shell/commit/386bac18be966e5ebf976eda22dd523d55299291)), closes [#385](https://github.com/VirtoCommerce/vc-shell/issues/385)
+- **vc-input:** put native input attributes on the input, not the wrapper (VM-1833) (#384) ([96c25bc](https://github.com/VirtoCommerce/vc-shell/commit/96c25bc77e2e9691b70a930e060eb3a800961d19)), closes [#384](https://github.com/VirtoCommerce/vc-shell/issues/384)
+- **vc-scheduler:** stop a double-clicked Save creating two events (VCST-5676) (#379) ([d1d8c8b](https://github.com/VirtoCommerce/vc-shell/commit/d1d8c8b1258ab05e522a69dfdbd7109d0bef2355)), closes [#379](https://github.com/VirtoCommerce/vc-shell/issues/379)
+- **vc-select:** keep paging, scroll arrows and the search field right under browser zoom (#378) ([3924cc5](https://github.com/VirtoCommerce/vc-shell/commit/3924cc573befacfab8d9712d986e85aca4f4cb61)), closes [#378](https://github.com/VirtoCommerce/vc-shell/issues/378)
 
 ## [2.6.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.1...v2.6.2) (2026-09-30)
 

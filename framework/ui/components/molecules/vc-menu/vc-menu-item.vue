@@ -153,7 +153,6 @@ const badgeVisible = computed(() => {
 :root {
   --vc-menu-item-height: 28px;
   --vc-menu-item-padding-x: 6px;
-  --vc-menu-item-border-radius: 6px 0 0 6px;
   --vc-menu-item-icon-size: 18px;
   --vc-menu-item-icon-gap: 6px;
   --vc-menu-item-text-color: var(--neutrals-700);
@@ -171,8 +170,12 @@ const badgeVisible = computed(() => {
   --vc-menu-subitem-bg-inset: 8px;
 }
 
-// the item's rounded side is its start: the right one on a right-to-left page
-[dir="rtl"] {
+// The item's rounded side is its start: the right one on a right-to-left page. Both defaults have zero specificity
+// (:where), so an app's own `:root { --vc-menu-item-border-radius }` wins on either page, whatever the stylesheet order.
+:where(:root) {
+  --vc-menu-item-border-radius: 6px 0 0 6px;
+}
+:where([dir="rtl"]) {
   --vc-menu-item-border-radius: 0 6px 6px 0;
 }
 

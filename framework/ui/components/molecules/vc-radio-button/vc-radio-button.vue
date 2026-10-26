@@ -169,9 +169,10 @@ function onChange() {
       content: "";
       display: block;
       position: absolute;
+      // centering stays physical: the margin must pull against `left`, whatever the direction
       left: 50%;
       top: 50%;
-      margin-inline-start: calc(var(--radio-dot-size) / -2);
+      margin-left: calc(var(--radio-dot-size) / -2);
       margin-top: calc(var(--radio-dot-size) / -2);
       transition:
         transform 200ms cubic-bezier(0.2, 0.85, 0.32, 1.2),

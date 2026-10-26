@@ -117,7 +117,9 @@
           "CALENDAR_ICON": "Open calendar",
           "TIME_PICKER": "Time picker",
           "MONTH_PICKER": "Month picker",
+          "MONTH_PICKER_OVERLAY": "Month list",
           "YEAR_PICKER": "Year picker",
+          "YEAR_PICKER_OVERLAY": "Year list",
           "TIME_OVERLAY": "{unit} picker",
           "UNITS": {
             "hours": "hours",

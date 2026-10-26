@@ -273,8 +273,9 @@ const translatedAriaLabels = computed((): AriaLabels => {
     clearInput: t("COMPONENTS.MOLECULES.VC_DATE_PICKER.CLEAR"),
     calendarIcon: t(`${ARIA}.CALENDAR_ICON`),
     timePicker: t(`${ARIA}.TIME_PICKER`),
-    monthPicker: () => t(`${ARIA}.MONTH_PICKER`),
-    yearPicker: () => t(`${ARIA}.YEAR_PICKER`),
+    // the library names both the toggle button (overlay = false) and the grid it opens (overlay = true)
+    monthPicker: (overlay) => t(overlay ? `${ARIA}.MONTH_PICKER_OVERLAY` : `${ARIA}.MONTH_PICKER`),
+    yearPicker: (overlay) => t(overlay ? `${ARIA}.YEAR_PICKER_OVERLAY` : `${ARIA}.YEAR_PICKER`),
     timeOverlay: (name) => t(`${ARIA}.TIME_OVERLAY`, { unit: unit(name) }),
   };
 });

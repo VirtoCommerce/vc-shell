@@ -49,7 +49,7 @@ function mountToolbar(props: Record<string, unknown> = {}) {
         },
         VcDropdown: {
           name: "VcDropdown",
-          props: ["modelValue", "items", "floating", "placement", "variant"],
+          props: ["modelValue", "items", "floating", "placement", "variant", "isItemDisabled"],
           template: '<div class="vc-dropdown-stub"><slot name="trigger" :isActive="false" /></div>',
         },
         VcIcon: {
@@ -103,6 +103,10 @@ describe("ToolbarDesktop", () => {
     mockOverflow.hidden = [disabled, enabled];
     try {
       const dropdown = mountToolbar({ items: [] }).findComponent({ name: "VcDropdown" });
+      // the menu marks it aria-disabled, as the bar button is disabled
+      expect(dropdown.props("isItemDisabled")?.(disabled)).toBe(true);
+      expect(dropdown.props("isItemDisabled")?.(enabled)).toBe(false);
+
       dropdown.vm.$emit("item-click", disabled);
       dropdown.vm.$emit("item-click", enabled);
 

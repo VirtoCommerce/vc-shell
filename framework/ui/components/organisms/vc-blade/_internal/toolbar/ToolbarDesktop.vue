@@ -23,6 +23,7 @@
         floating
         placement="bottom-end"
         variant="secondary"
+        :is-item-disabled="(item) => !!toValue(item.disabled)"
         @item-click="handleItemClick"
         @update:model-value="isMenuOpen = $event"
       >

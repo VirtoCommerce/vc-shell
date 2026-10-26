@@ -137,6 +137,7 @@ import { resolveSafeRedirectPath, formatSignInError } from "@shell/auth/utils";
 import { useI18n } from "vue-i18n";
 import { ExtensionPoint } from "@core/plugins/extension-points";
 import { createLogger } from "@core/utilities";
+import { takeRedirectAfterLogin } from "@core/utilities/redirectAfterLogin";
 import { VcAuthLayout, VcButton, VcCheckbox, VcForm, VcHint, VcInput } from "@ui/components";
 
 const logger = createLogger("login-page");
@@ -194,8 +195,7 @@ const login = async () => {
   }
 
   if (signInResult.value.succeeded) {
-    const redirectTo = resolveSafeRedirectPath(localStorage.getItem("redirectAfterLogin"));
-    localStorage.removeItem("redirectAfterLogin");
+    const redirectTo = resolveSafeRedirectPath(takeRedirectAfterLogin());
     await router.push(redirectTo);
     return;
   }

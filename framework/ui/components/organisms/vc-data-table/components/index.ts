@@ -10,7 +10,6 @@ export { default as TableEmpty } from "@ui/components/organisms/vc-data-table/co
 export { default as TableColumnSwitcher } from "@ui/components/organisms/vc-data-table/components/TableColumnSwitcher.vue";
 export { default as TableRowActions } from "@ui/components/organisms/vc-data-table/components/TableRowActions.vue";
 export { default as TableCheckbox } from "@ui/components/organisms/vc-data-table/components/TableCheckbox.vue";
-// TableResizeHandle — not used (resize is handled inline in TableHead.vue)
 // TableActions — deprecated (use TableRowActions instead)
 export { default as TableSelectAllBar } from "@ui/components/organisms/vc-data-table/components/TableSelectAllBar.vue";
 export { default as TableSearchHeader } from "@ui/components/organisms/vc-data-table/components/TableSearchHeader.vue";

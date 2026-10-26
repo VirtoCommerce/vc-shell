@@ -268,6 +268,48 @@ describe("useBladeForm", () => {
       await nextTick();
       expect(isModified.value).toBe(false);
     });
+
+    it("a changed date IS considered modified", async () => {
+      const data = ref({ startDate: new Date("2026-01-01T00:00:00Z") });
+      const { setBaseline, isModified } = useBladeForm({ data });
+      setBaseline();
+
+      data.value.startDate = new Date("2026-02-01T00:00:00Z");
+      await nextTick();
+      expect(isModified.value).toBe(true);
+    });
+
+    it("the same instant in a new Date is NOT considered modified", async () => {
+      const data = ref({ startDate: new Date("2026-01-01T00:00:00Z") });
+      const { setBaseline, isModified } = useBladeForm({ data });
+      setBaseline();
+
+      data.value.startDate = new Date("2026-01-01T00:00:00Z");
+      await nextTick();
+      expect(isModified.value).toBe(false);
+    });
+
+    it("an Invalid Date kept as is is NOT considered modified", async () => {
+      const data = ref({ startDate: new Date("not a date"), note: "a" });
+      const { setBaseline, isModified } = useBladeForm({ data });
+      setBaseline();
+
+      data.value.note = "b";
+      await nextTick();
+      data.value.note = "a";
+      await nextTick();
+      expect(isModified.value).toBe(false);
+    });
+
+    it("a date replaced by an object IS considered modified", async () => {
+      const data = ref<{ startDate: Date | Record<string, never> }>({ startDate: new Date("2026-01-01T00:00:00Z") });
+      const { setBaseline, isModified } = useBladeForm({ data });
+      setBaseline();
+
+      data.value.startDate = {};
+      await nextTick();
+      expect(isModified.value).toBe(true);
+    });
   });
 
   // ---- autoBeforeClose ----

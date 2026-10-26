@@ -70,7 +70,7 @@ function createRouter() {
   return {
     push,
     getRoutes: () => [{ path: "/login", name: "Login" }],
-    currentRoute: { value: { path: "/dashboard" } },
+    currentRoute: { value: { path: "/dashboard", fullPath: "/dashboard?tab=2" } },
   } as any;
 }
 
@@ -138,6 +138,18 @@ describe("registerInterceptors — 401 handling", () => {
     expect(loggerError).not.toHaveBeenCalled();
     expect(router.push).toHaveBeenCalledWith("/login");
     expect(notificationError).toHaveBeenCalledOnce();
+  });
+
+  it("remembers the screen, so signing in again returns to it", async () => {
+    signOut.mockResolvedValue(undefined);
+    sessionStorage.removeItem("redirectAfterLogin");
+    window.fetch = vi.fn().mockResolvedValue({ status: 401 }) as unknown as typeof window.fetch;
+
+    await registerInterceptors(createRouter())("/api/platform/test");
+    await flushMicrotasks();
+
+    expect(sessionStorage.getItem("redirectAfterLogin")).toBe("/dashboard?tab=2");
+    sessionStorage.removeItem("redirectAfterLogin");
   });
 
   it("handles concurrent 401s from the same dead session exactly once", async () => {
@@ -237,6 +249,21 @@ describe("registerInterceptors — a 401 the session survives", () => {
 
     expect(signOut).toHaveBeenCalledOnce();
     expect(router.push).toHaveBeenCalledWith("/login");
+  });
+
+  // the VirtoCommerce platform answers a caller without a session with 200 and an empty user, not a 401
+  // the generated client gives null for an empty 200 body
+  it.each([[{}], [null], [{ userName: "" }]])("signs out when the check answers without a user: %j", async (user) => {
+    getCurrentUser.mockResolvedValue(user);
+    signOut.mockResolvedValue(undefined);
+    const router = createRouter();
+
+    await registerInterceptors(router)("/api/vcmp/some/endpoint");
+    await flushMicrotasks();
+
+    expect(signOut).toHaveBeenCalledOnce();
+    expect(router.push).toHaveBeenCalledWith("/login");
+    expect(loggerWarn).toHaveBeenCalledWith(expect.stringContaining("currentuser returned no user"));
   });
 
   it("does not sign out on a hub 401 the session survives", async () => {

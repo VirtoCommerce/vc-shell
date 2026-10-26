@@ -5,6 +5,7 @@ import { notification } from "@core/notifications/notification";
 import { createLogger } from "@core/utilities";
 import { i18n } from "@core/plugins/i18n";
 import { isSessionExpired, markSessionExpired, SessionExpiredError } from "@core/utilities/sessionExpiration";
+import { rememberRedirectAfterLogin } from "@core/utilities/redirectAfterLogin";
 import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const logger = createLogger("interceptors");
@@ -78,7 +79,12 @@ export function registerInterceptors(router: Router) {
     sessionCheck ??= sessionClient
       .getCurrentUser()
       .then(
-        () => true,
+        // The VirtoCommerce platform answers a caller without a session with 200 and an empty user, not a 401.
+        (user) => {
+          if (user?.userName) return true;
+          logger.warn("Session check: currentuser returned no user, treating the session as expired");
+          return false;
+        },
         // Only a 401 answers the question. Anything else — an unreachable platform, a 5xx — says
         // nothing about the session, and signing out on it would be a guess.
         (error: unknown) => !(ApiException.isApiException(error) && error.status === 401),
@@ -247,6 +253,8 @@ function redirect(router: Router) {
   // redirect to login page if it exists
   if (router && router.getRoutes().some((route) => route.path === "/login" || route.name === "Login")) {
     if (router.currentRoute.value.path !== "/login") {
+      // the login page returns here after sign-in, as it does for a deep link (authGuard)
+      rememberRedirectAfterLogin(router.currentRoute.value.fullPath);
       router.push("/login");
     }
   } else {

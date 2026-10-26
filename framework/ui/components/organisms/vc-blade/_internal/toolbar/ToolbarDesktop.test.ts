@@ -2,13 +2,16 @@ import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import type { IBladeToolbar } from "@core/types";
 
+// items a test puts into the "more" menu
+const mockOverflow = vi.hoisted(() => ({ hidden: [] as IBladeToolbar[] }));
+
 vi.mock("@ui/composables/useAdaptiveItems", () => ({
   useAdaptiveItems: (opts: Record<string, unknown>) => {
     const items = opts.items as { value: IBladeToolbar[] };
     return {
       visibleItems: items,
-      hiddenItems: { value: [] },
-      showMoreButton: { value: false },
+      hiddenItems: { value: mockOverflow.hidden },
+      showMoreButton: { value: mockOverflow.hidden.length > 0 },
       recalculate: vi.fn(),
       updateObserver: vi.fn(),
     };
@@ -46,7 +49,7 @@ function mountToolbar(props: Record<string, unknown> = {}) {
         },
         VcDropdown: {
           name: "VcDropdown",
-          props: ["modelValue", "items", "floating", "placement", "variant"],
+          props: ["modelValue", "items", "floating", "placement", "variant", "isItemDisabled"],
           template: '<div class="vc-dropdown-stub"><slot name="trigger" :isActive="false" /></div>',
         },
         VcIcon: {
@@ -92,5 +95,25 @@ describe("ToolbarDesktop", () => {
   it("renders no buttons when items is empty", () => {
     const wrapper = mountToolbar({ items: [] });
     expect(wrapper.findAll(".toolbar-base-button-stub")).toHaveLength(0);
+  });
+
+  it("ignores a click on a disabled command in the more menu", () => {
+    const disabled = createToolbarItem({ id: "delete", disabled: true, clickHandler: vi.fn() });
+    const enabled = createToolbarItem({ id: "refresh", clickHandler: vi.fn() });
+    mockOverflow.hidden = [disabled, enabled];
+    try {
+      const dropdown = mountToolbar({ items: [] }).findComponent({ name: "VcDropdown" });
+      // the menu marks it aria-disabled, as the bar button is disabled
+      expect(dropdown.props("isItemDisabled")?.(disabled)).toBe(true);
+      expect(dropdown.props("isItemDisabled")?.(enabled)).toBe(false);
+
+      dropdown.vm.$emit("item-click", disabled);
+      dropdown.vm.$emit("item-click", enabled);
+
+      expect(disabled.clickHandler).not.toHaveBeenCalled();
+      expect(enabled.clickHandler).toHaveBeenCalledOnce();
+    } finally {
+      mockOverflow.hidden = [];
+    }
   });
 });

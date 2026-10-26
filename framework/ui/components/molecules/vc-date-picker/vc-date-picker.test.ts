@@ -40,7 +40,8 @@ describe("VcDatePicker", () => {
           VueDatePicker: {
             template:
               '<div class="dp__main"><input class="dp__input" :value="modelValue" @change="$emit(\'update:modelValue\', $event.target.value)" /></div>',
-            props: ["modelValue"],
+            name: "VueDatePicker",
+            props: ["modelValue", "format"],
             emits: ["update:modelValue"],
           },
         },
@@ -67,6 +68,24 @@ describe("VcDatePicker", () => {
       await nextTick();
       // No error thrown — component gracefully handles null modelValue
       expect(wrapper.find(".vc-date-picker").exists()).toBe(true);
+    });
+  });
+
+  describe("format", () => {
+    const getFormat = () =>
+      mountDatePicker().findComponent({ name: "VueDatePicker" }).props("format") as (date: unknown) => string;
+
+    it("formats a valid date", () => {
+      expect(getFormat()(new Date(2024, 0, 15))).toBe(
+        new Intl.DateTimeFormat(navigator.language).format(new Date(2024, 0, 15)),
+      );
+    });
+
+    // Without a textInput format, VueDatePicker parses pasted text by calling `format` with the raw string
+    it("returns an empty string instead of throwing for free text or an invalid date", () => {
+      const format = getFormat();
+      expect(format("garbage")).toBe("");
+      expect(format(new Date(NaN))).toBe("");
     });
   });
 });

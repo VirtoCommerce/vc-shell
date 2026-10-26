@@ -24,6 +24,12 @@ function semanticEqual(a: unknown, b: unknown): boolean {
   if (typeof a !== typeof b) return false;
   if (typeof a !== "object" || a === null || b === null) return false;
 
+  // a Date has no own keys, so compared key by key every two dates would be equal
+  if (a instanceof Date || b instanceof Date) {
+    // Object.is, so two Invalid Dates (NaN) compare equal
+    return a instanceof Date && b instanceof Date && Object.is(a.getTime(), b.getTime());
+  }
+
   if (Array.isArray(a) || Array.isArray(b)) {
     if (!Array.isArray(a) || !Array.isArray(b)) return false;
     if (a.length !== b.length) return false;

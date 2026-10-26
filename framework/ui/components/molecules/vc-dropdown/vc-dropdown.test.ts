@@ -75,4 +75,34 @@ describe("VcDropdown", () => {
 
     wrapper.unmount();
   });
+
+  it("announces a disabled item and does not choose it by click or by key", async () => {
+    const items = [
+      { id: "1", title: "One", disabled: true },
+      { id: "2", title: "Two" },
+    ];
+
+    const wrapper = mount(VcDropdown as any, {
+      props: {
+        modelValue: true,
+        items,
+        itemText: (item: { title: string }) => item.title,
+        isItemDisabled: (item: { disabled?: boolean }) => !!item.disabled,
+      },
+      attachTo: document.body,
+    });
+
+    const [disabled, enabled] = wrapper.findAll(".vc-dropdown__item");
+    expect(disabled.attributes("aria-disabled")).toBe("true");
+    expect(enabled.attributes("aria-disabled")).toBeUndefined();
+
+    await disabled.trigger("click");
+    await wrapper.find(".vc-dropdown__dropdown").trigger("keydown", { key: "Enter" });
+    expect(wrapper.emitted("item-click")).toBeUndefined();
+
+    await enabled.trigger("click");
+    expect(wrapper.emitted("item-click")).toEqual([[items[1]]]);
+
+    wrapper.unmount();
+  });
 });

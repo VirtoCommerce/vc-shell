@@ -142,14 +142,14 @@ describe("registerInterceptors — 401 handling", () => {
 
   it("remembers the screen, so signing in again returns to it", async () => {
     signOut.mockResolvedValue(undefined);
-    localStorage.removeItem("redirectAfterLogin");
+    sessionStorage.removeItem("redirectAfterLogin");
     window.fetch = vi.fn().mockResolvedValue({ status: 401 }) as unknown as typeof window.fetch;
 
     await registerInterceptors(createRouter())("/api/platform/test");
     await flushMicrotasks();
 
-    expect(localStorage.getItem("redirectAfterLogin")).toBe("/dashboard?tab=2");
-    localStorage.removeItem("redirectAfterLogin");
+    expect(sessionStorage.getItem("redirectAfterLogin")).toBe("/dashboard?tab=2");
+    sessionStorage.removeItem("redirectAfterLogin");
   });
 
   it("handles concurrent 401s from the same dead session exactly once", async () => {

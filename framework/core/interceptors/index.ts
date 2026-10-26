@@ -5,6 +5,7 @@ import { notification } from "@core/notifications/notification";
 import { createLogger } from "@core/utilities";
 import { i18n } from "@core/plugins/i18n";
 import { isSessionExpired, markSessionExpired, SessionExpiredError } from "@core/utilities/sessionExpiration";
+import { rememberRedirectAfterLogin } from "@core/utilities/redirectAfterLogin";
 import { useSlowNetworkDetection } from "@core/composables/useSlowNetworkDetection";
 
 const logger = createLogger("interceptors");
@@ -253,7 +254,7 @@ function redirect(router: Router) {
   if (router && router.getRoutes().some((route) => route.path === "/login" || route.name === "Login")) {
     if (router.currentRoute.value.path !== "/login") {
       // the login page returns here after sign-in, as it does for a deep link (authGuard)
-      localStorage.setItem("redirectAfterLogin", router.currentRoute.value.fullPath);
+      rememberRedirectAfterLogin(router.currentRoute.value.fullPath);
       router.push("/login");
     }
   } else {

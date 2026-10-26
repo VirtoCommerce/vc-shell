@@ -26,7 +26,7 @@ let store: Record<string, string>;
 describe("authGuard (VM-1829)", () => {
   beforeEach(() => {
     store = {};
-    vi.stubGlobal("localStorage", {
+    vi.stubGlobal("sessionStorage", {
       getItem: (key: string) => store[key] ?? null,
       setItem: (key: string, value: string) => {
         store[key] = value;
@@ -52,7 +52,7 @@ describe("authGuard (VM-1829)", () => {
     const d = deps("anonymous");
 
     await expect(authGuard(route(true, "/orders/42"), d)).resolves.toEqual({ name: "Login" });
-    expect(localStorage.getItem("redirectAfterLogin")).toBe("/orders/42");
+    expect(sessionStorage.getItem("redirectAfterLogin")).toBe("/orders/42");
     expect(d.loadUser).not.toHaveBeenCalled();
   });
 
@@ -76,7 +76,7 @@ describe("authGuard (VM-1829)", () => {
     // Not cancelled: cancelling the initial navigation rejects router.isReady() and the app never mounts.
     await expect(authGuard(route(true), d)).resolves.toBeUndefined();
     expect(d.onSessionCheckFailed).toHaveBeenCalledTimes(1);
-    expect(localStorage.getItem("redirectAfterLogin")).toBeNull();
+    expect(sessionStorage.getItem("redirectAfterLogin")).toBeNull();
   });
 
   it("leaves non-root routes alone, whatever the session", async () => {

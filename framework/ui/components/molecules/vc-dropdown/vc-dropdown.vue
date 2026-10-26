@@ -75,6 +75,7 @@
                   }"
                   :role="itemRole"
                   :aria-selected="role === 'listbox' ? !!isItemActive?.(item) : undefined"
+                  :aria-disabled="isItemDisabled?.(item) || undefined"
                   @click="selectItem(item, index)"
                 >
                   <slot
@@ -118,6 +119,8 @@ export interface VcDropdownProps<T> {
   emptyText?: string;
   itemText?: (item: T) => string;
   isItemActive?: (item: T) => boolean;
+  /** A disabled item stays in the list and reachable by the arrow keys, but cannot be chosen. */
+  isItemDisabled?: (item: T) => boolean;
   itemKey?: (item: T, index: number) => string | number;
   floating?: boolean;
   teleport?: boolean;
@@ -307,6 +310,7 @@ function toggle() {
 }
 
 function selectItem(item: T, index: number) {
+  if (props.isItemDisabled?.(item)) return;
   focusedIndex.value = index;
   emit("item-click", item);
 

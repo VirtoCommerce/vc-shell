@@ -301,7 +301,10 @@ const formatDateWithLocale = (date: Date | Date[]) => {
     options.hour12 = !isBrowserLocale24h;
   }
 
-  const formatSingleDate = (d: Date) => new Intl.DateTimeFormat(locale, options).format(d);
+  // Without a textInput format VueDatePicker also calls this to parse pasted text, passing
+  // the raw string; "" reads as "not a date" there instead of Intl throwing a RangeError.
+  const formatSingleDate = (d: Date) =>
+    d instanceof Date && !isNaN(d.getTime()) ? new Intl.DateTimeFormat(locale, options).format(d) : "";
 
   if (Array.isArray(date)) {
     // Use " - " separator matching textInput.rangeSeparator so the text input

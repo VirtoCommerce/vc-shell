@@ -1,6 +1,7 @@
 import type { RouteLocationNormalized, RouteLocationRaw } from "vue-router";
 import type { Ref } from "vue";
 import type { AuthState } from "@core/composables/useUser";
+import { rememberRedirectAfterLogin } from "@core/utilities/redirectAfterLogin";
 
 export interface AuthGuardDeps {
   /** What the app knows about the session — see AuthState. */
@@ -40,7 +41,7 @@ export async function authGuard(to: RouteLocationNormalized, deps: AuthGuardDeps
   }
 
   if (deps.authState.value === "anonymous") {
-    localStorage.setItem("redirectAfterLogin", to.fullPath);
+    rememberRedirectAfterLogin(to.fullPath);
     return { name: "Login" };
   }
 

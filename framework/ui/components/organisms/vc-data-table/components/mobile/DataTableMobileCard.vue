@@ -61,11 +61,11 @@
         </svg>
       </div>
 
-      <!-- Selection checkbox -->
+      <!-- Selection checkbox; prevent: VcCheckbox's label would click its input too, selecting a second time -->
       <div
         v-if="showCheckbox"
         class="vc-data-table-mobile-card__checkbox"
-        @click.stop="handleSelect"
+        @click.stop.prevent="handleSelect"
       >
         <VcCheckbox
           :model-value="isSelected"

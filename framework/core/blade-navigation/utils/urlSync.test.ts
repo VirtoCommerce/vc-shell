@@ -11,6 +11,7 @@ import {
 import type { BladeDescriptor, IBladeStack } from "@core/blade-navigation/types";
 import { createBladeStack } from "@core/blade-navigation/useBladeStack";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
+import { _resetBladeNavigationSingletons, setBladeRegistryInstance } from "@core/blade-navigation/singletons";
 
 // ── Helper ──────────────────────────────────────────────────────────────────────
 
@@ -84,6 +85,31 @@ describe("buildUrlFromStack", () => {
     ];
     const result = buildUrlFromStack("", stack);
     expect(result.path).toBe("/orders/new/new-id");
+  });
+
+  it("skips non-routable blades, so a reload restores their routable parent", () => {
+    setBladeRegistryInstance({
+      getBlade: (name: string) => (name === "StateEditor" ? { routable: false } : { routable: true }),
+    } as unknown as IBladeRegistry);
+    try {
+      const stack = [
+        makeDescriptor({ id: "ws", name: "Definitions", url: "/definitions" }),
+        makeDescriptor({ id: "c1", name: "DefinitionDetails", url: "/definition", param: "def-1", parentId: "ws" }),
+        makeDescriptor({
+          id: "c2",
+          name: "StateEditor",
+          url: "/state",
+          param: "state-1",
+          parentId: "c1",
+          query: { "state.search": "x" },
+        }),
+      ];
+      expect(buildUrlFromStack("", stack)).toEqual({ path: "/definitions/definition/def-1", query: {} });
+      // only the workspace left to name
+      expect(buildUrlFromStack("", [stack[0], { ...stack[2], parentId: "ws" }]).path).toBe("/definitions");
+    } finally {
+      _resetBladeNavigationSingletons();
+    }
   });
 
   it("normalizes URLs with leading/trailing slashes", () => {

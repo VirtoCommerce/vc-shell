@@ -54,7 +54,7 @@ describe("Login.vue", () => {
     resetSharedAuthDependencyMocks();
     mockLoading.value = false;
     mockUser.value = { passwordExpired: false };
-    localStorage.removeItem("redirectAfterLogin");
+    sessionStorage.removeItem("redirectAfterLogin");
   });
 
   it("renders the component", () => {
@@ -105,25 +105,25 @@ describe("Login.vue", () => {
   });
 
   it("redirects to safe internal path after successful login", async () => {
-    localStorage.setItem("redirectAfterLogin", "/orders/123");
+    sessionStorage.setItem("redirectAfterLogin", "/orders/123");
     const wrapper = mountLogin();
 
     await wrapper.findAll("button")[0].trigger("click");
     await flushPromises();
 
     expect(sharedRouterPushMock).toHaveBeenCalledWith("/orders/123");
-    expect(localStorage.getItem("redirectAfterLogin")).toBeNull();
+    expect(sessionStorage.getItem("redirectAfterLogin")).toBeNull();
   });
 
   it("falls back to root path for unsafe redirect after successful login", async () => {
-    localStorage.setItem("redirectAfterLogin", "https://evil.example/phishing");
+    sessionStorage.setItem("redirectAfterLogin", "https://evil.example/phishing");
     const wrapper = mountLogin();
 
     await wrapper.findAll("button")[0].trigger("click");
     await flushPromises();
 
     expect(sharedRouterPushMock).toHaveBeenCalledWith("/");
-    expect(localStorage.getItem("redirectAfterLogin")).toBeNull();
+    expect(sessionStorage.getItem("redirectAfterLogin")).toBeNull();
   });
   // ── Remember me ──────────────────────────────────────────────────────────
   // The flag is the platform cookie login's rememberMe: a persistent session cookie when set, a

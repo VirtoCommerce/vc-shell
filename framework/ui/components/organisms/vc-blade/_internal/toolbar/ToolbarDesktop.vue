@@ -23,6 +23,7 @@
         floating
         placement="bottom-end"
         variant="secondary"
+        :is-item-disabled="(item) => !!toValue(item.disabled)"
         @item-click="handleItemClick"
         @update:model-value="isMenuOpen = $event"
       >
@@ -47,6 +48,7 @@
           <VcDropdownItem
             :title="toValue(item.title) ?? ''"
             :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
+            :disabled="!!toValue(item.disabled)"
           />
         </template>
       </VcDropdown>
@@ -80,6 +82,8 @@ const { visibleItems, hiddenItems, showMoreButton, recalculate, updateObserver }
 });
 
 function handleItemClick(item: IBladeToolbar) {
+  // a disabled command in the "more" menu stays disabled, as it is on the bar
+  if (toValue(item.disabled)) return;
   item.clickHandler?.();
   isMenuOpen.value = false;
 }

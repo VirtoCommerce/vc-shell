@@ -386,7 +386,7 @@ function onSearch(event: Event) {
   }
 
   &__chip-wrapper {
-    @apply tw-ml-2 tw-flex tw-items-center tw-py-1;
+    @apply tw-ms-2 tw-flex tw-items-center tw-py-1;
   }
 
   &__chip {
@@ -421,7 +421,7 @@ function onSearch(event: Event) {
       tw-border-none tw-bg-transparent
       tw-text-xs tw-text-[color:var(--multivalue-clear-icon-color)]
       tw-cursor-pointer tw-select-none tw-whitespace-nowrap
-      tw-rounded-[4px] tw-h-6 tw-my-auto tw-ml-1
+      tw-rounded-[4px] tw-h-6 tw-my-auto tw-ms-1
       tw-transition-colors tw-duration-150
       hover:tw-text-[color:var(--multivalue-text-color)]
       hover:tw-bg-[color:var(--multivalue-chip-background-color)]
@@ -541,7 +541,7 @@ function onSearch(event: Event) {
   // Color square
   &__color-square {
     @apply tw-w-5 tw-h-5 tw-rounded tw-border tw-border-solid tw-border-neutrals-300
-      tw-cursor-pointer tw-mr-2 tw-flex-shrink-0 tw-relative;
+      tw-cursor-pointer tw-me-2 tw-flex-shrink-0 tw-relative;
   }
 
   &__color-picker-hidden {

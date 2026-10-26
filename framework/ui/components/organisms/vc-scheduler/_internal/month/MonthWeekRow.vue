@@ -122,8 +122,8 @@ const emit = defineEmits<{
 }
 .vc-scheduler__week-lanes {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   top: 1.75rem; /* below day badge */
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -145,7 +145,7 @@ const emit = defineEmits<{
   align-items: center;
   width: 100%;
   font: inherit;
-  text-align: left;
+  text-align: start;
   font-size: 0.6875rem;
   color: var(--neutrals-600);
   cursor: pointer;

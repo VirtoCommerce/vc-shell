@@ -193,13 +193,13 @@ const hasUnread = inject(ShellIndicatorsKey, ref(false));
   }
 
   &__accent {
-    @apply tw-block tw-absolute tw-right-0 tw-top-0
+    @apply tw-block tw-absolute tw-end-0 tw-top-0
       tw-w-[5px] tw-h-[5px] tw-rounded-full tw-z-[var(--z-local-above)]
       tw-bg-[var(--app-bar-accent-color,var(--danger-500))];
   }
 
   &__accent--logo {
-    @apply tw-right-[-7px] tw-top-[-5px];
+    @apply tw-end-[-7px] tw-top-[-5px];
   }
 
   &__toolbar {

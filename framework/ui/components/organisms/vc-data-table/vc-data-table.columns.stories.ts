@@ -70,10 +70,10 @@ export const ExpandableRows: Story = {
               <table class="tw-w-full tw-text-sm tw-border tw-border-neutrals-200">
                 <thead class="tw-bg-neutrals-100">
                   <tr>
-                    <th class="tw-px-3 tw-py-2 tw-text-left tw-font-medium">Order ID</th>
-                    <th class="tw-px-3 tw-py-2 tw-text-left tw-font-medium">Date</th>
-                    <th class="tw-px-3 tw-py-2 tw-text-left tw-font-medium">Customer</th>
-                    <th class="tw-px-3 tw-py-2 tw-text-right tw-font-medium">Quantity</th>
+                    <th class="tw-px-3 tw-py-2 tw-text-start tw-font-medium">Order ID</th>
+                    <th class="tw-px-3 tw-py-2 tw-text-start tw-font-medium">Date</th>
+                    <th class="tw-px-3 tw-py-2 tw-text-start tw-font-medium">Customer</th>
+                    <th class="tw-px-3 tw-py-2 tw-text-end tw-font-medium">Quantity</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -81,7 +81,7 @@ export const ExpandableRows: Story = {
                     <td class="tw-px-3 tw-py-2 tw-font-mono tw-text-primary-600">{{ order.orderId }}</td>
                     <td class="tw-px-3 tw-py-2">{{ order.date }}</td>
                     <td class="tw-px-3 tw-py-2">{{ order.customer }}</td>
-                    <td class="tw-px-3 tw-py-2 tw-text-right">{{ order.quantity }}</td>
+                    <td class="tw-px-3 tw-py-2 tw-text-end">{{ order.quantity }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -185,7 +185,7 @@ export const ExpandableRowsCustomIcons: Story = {
         <VcColumn id="status" field="status" title="Status" />
 
         <template #expansion="{ data, index }">
-          <div class="tw-p-4 tw-bg-success-50 tw-border-l-4 tw-border-success-400">
+          <div class="tw-p-4 tw-bg-success-50 tw-border-s-4 tw-border-success-400">
             <p class="tw-font-medium">Row #{{ index + 1 }}: {{ data.name }}</p>
             <p class="tw-text-sm tw-text-neutrals-600 tw-mt-1">
               This product has {{ data.orders?.length || 0 }} orders with a total stock of {{ data.stock }} units.
@@ -244,16 +244,16 @@ export const ConditionalExpandableRows: Story = {
             <table class="tw-w-full tw-text-sm tw-border tw-border-neutrals-200">
               <thead class="tw-bg-neutrals-100">
                 <tr>
-                  <th class="tw-p-2 tw-text-left">Order ID</th>
-                  <th class="tw-p-2 tw-text-left">Date</th>
-                  <th class="tw-p-2 tw-text-right">Qty</th>
+                  <th class="tw-p-2 tw-text-start">Order ID</th>
+                  <th class="tw-p-2 tw-text-start">Date</th>
+                  <th class="tw-p-2 tw-text-end">Qty</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="order in data.orders" :key="order.orderId" class="tw-border-t tw-border-neutrals-200">
                   <td class="tw-p-2">{{ order.orderId }}</td>
                   <td class="tw-p-2">{{ order.date }}</td>
-                  <td class="tw-p-2 tw-text-right">{{ order.quantity }}</td>
+                  <td class="tw-p-2 tw-text-end">{{ order.quantity }}</td>
                 </tr>
               </tbody>
             </table>

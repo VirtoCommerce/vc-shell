@@ -149,6 +149,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useFormField } from "@ui/composables/useFormField";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
@@ -188,6 +189,7 @@ const props = withDefaults(defineProps<VcDatePickerProps>(), {
 const emit = defineEmits<VcDatePickerEmits>();
 
 const bladeLoading = useBladeLoading();
+const { t } = useI18n({ useScope: "global" });
 const { isMobile, isDesktop } = useResponsive();
 const { labelId, errorId, hintId, invalid, resolvedDisabled, ariaRequired, ariaDescribedBy } = useFormField(props);
 
@@ -244,13 +246,46 @@ const resolvedDatePickerOptions = computed(() => {
   return opts;
 });
 
-// The library's default input label is a generic "Datepicker input", so a field
-// without a visible label is announced by that instead of its own name.
-const resolvedAriaLabels = computed(() => {
-  const consumerLabels = props.datePickerOptions?.ariaLabels;
-  if (props.label || !props.ariaLabel) return consumerLabels;
+type AriaLabels = NonNullable<VueDatePickerProps["ariaLabels"]>;
+type TimeUnit = Parameters<NonNullable<AriaLabels["incrementValue"]>>[0];
 
-  return { ...consumerLabels, input: props.ariaLabel };
+// The library's own labels (buttons, overlays, the time picker) are fixed English; these follow the user's language.
+// Labels passed in datePickerOptions.ariaLabels win.
+const ARIA = "COMPONENTS.MOLECULES.VC_DATE_PICKER.ARIA";
+const translatedAriaLabels = computed((): AriaLabels => {
+  const unit = (name: TimeUnit) => t(`${ARIA}.UNITS.${name}`);
+  return {
+    toggleOverlay: t(`${ARIA}.TOGGLE_OVERLAY`),
+    menu: t(`${ARIA}.MENU`),
+    input: t(`${ARIA}.INPUT`),
+    openTimePicker: t(`${ARIA}.OPEN_TIME_PICKER`),
+    closeTimePicker: t(`${ARIA}.CLOSE_TIME_PICKER`),
+    incrementValue: (name) => t(`${ARIA}.INCREMENT`, { unit: unit(name) }),
+    decrementValue: (name) => t(`${ARIA}.DECREMENT`, { unit: unit(name) }),
+    openTpOverlay: (name) => t(`${ARIA}.OPEN_TIME_OVERLAY`, { unit: unit(name) }),
+    amPmButton: t(`${ARIA}.AM_PM`),
+    openYearsOverlay: t(`${ARIA}.OPEN_YEARS`),
+    openMonthsOverlay: t(`${ARIA}.OPEN_MONTHS`),
+    nextMonth: t(`${ARIA}.NEXT_MONTH`),
+    prevMonth: t(`${ARIA}.PREV_MONTH`),
+    nextYear: t(`${ARIA}.NEXT_YEAR`),
+    prevYear: t(`${ARIA}.PREV_YEAR`),
+    clearInput: t("COMPONENTS.MOLECULES.VC_DATE_PICKER.CLEAR"),
+    calendarIcon: t(`${ARIA}.CALENDAR_ICON`),
+    timePicker: t(`${ARIA}.TIME_PICKER`),
+    // the library names both the toggle button (overlay = false) and the grid it opens (overlay = true)
+    monthPicker: (overlay) => t(overlay ? `${ARIA}.MONTH_PICKER_OVERLAY` : `${ARIA}.MONTH_PICKER`),
+    yearPicker: (overlay) => t(overlay ? `${ARIA}.YEAR_PICKER_OVERLAY` : `${ARIA}.YEAR_PICKER`),
+    timeOverlay: (name) => t(`${ARIA}.TIME_OVERLAY`, { unit: unit(name) }),
+  };
+});
+
+// The input is named by the field's own name when it has no visible label (the library would say "Date input").
+const resolvedAriaLabels = computed((): AriaLabels => {
+  const labels = { ...translatedAriaLabels.value, ...props.datePickerOptions?.ariaLabels };
+  if (props.label || !props.ariaLabel) return labels;
+
+  return { ...labels, input: props.ariaLabel };
 });
 
 const formatDateWithLocale = (date: Date | Date[]) => {
@@ -381,13 +416,13 @@ function handleFocus() {
   }
 
   &__clear {
-    @apply tw-cursor-pointer tw-pl-3 tw-text-[color:var(--input-clear-color)]
+    @apply tw-cursor-pointer tw-ps-3 tw-text-[color:var(--input-clear-color)]
       hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center
       tw-border-none tw-bg-transparent tw-outline-none tw-p-0;
   }
 
   &__loading {
-    @apply tw-flex tw-items-center tw-flex-nowrap tw-pl-3;
+    @apply tw-flex tw-items-center tw-flex-nowrap tw-ps-3;
   }
 
   &__loading-icon {

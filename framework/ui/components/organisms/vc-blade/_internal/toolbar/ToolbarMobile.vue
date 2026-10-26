@@ -192,7 +192,7 @@ $touch-min: 44px;
   &__menu {
     position: fixed;
     bottom: calc(#{$fab-bottom} + #{$touch-min} + 8px);
-    right: $fab-right;
+    inset-inline-end: $fab-right;
     z-index: var(--z-layout-toolbar);
     display: flex;
     flex-direction: column;
@@ -219,7 +219,8 @@ $touch-min: 44px;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 4px 4px 4px 16px;
+    padding-block: 4px;
+    padding-inline: 16px 4px;
     min-height: $touch-min;
     border: 1px solid var(--surface-border);
     border-radius: 28px;
@@ -274,7 +275,7 @@ $touch-min: 44px;
     @supports (bottom: env(safe-area-inset-bottom)) {
       bottom: calc(#{$fab-bottom} + env(safe-area-inset-bottom));
     }
-    right: $fab-right;
+    inset-inline-end: $fab-right;
     z-index: var(--z-layout-toolbar);
     display: flex;
     align-items: center;
@@ -307,7 +308,7 @@ $touch-min: 44px;
     @supports (bottom: env(safe-area-inset-bottom)) {
       bottom: calc(#{$fab-bottom} + env(safe-area-inset-bottom));
     }
-    right: $fab-right;
+    inset-inline-end: $fab-right;
     z-index: var(--z-layout-toolbar);
     display: flex;
     align-items: stretch;
@@ -351,7 +352,7 @@ $touch-min: 44px;
     min-width: $touch-min;
     padding: 0 12px;
     border: none;
-    border-left: 1px solid rgba(255, 255, 255, 0.24);
+    border-inline-start: 1px solid rgba(255, 255, 255, 0.24);
     background: transparent;
     color: var(--blade-toolbar-mobile-toggle-icon-color);
     cursor: pointer;

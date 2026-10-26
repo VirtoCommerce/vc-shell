@@ -152,7 +152,7 @@ export const InteractiveProgress: Story = {
       <div class="tw-w-full tw-space-y-4">
         <div class="tw-flex tw-justify-between tw-items-center">
           <span class="tw-text-sm tw-font-medium">Progress: {{ progress }}%</span>
-          <div class="tw-space-x-2">
+          <div class="tw-space-x-2 rtl:tw-space-x-reverse">
             <button
               @click="decrement"
               class="tw-px-3 tw-py-1 tw-bg-gray-200 tw-rounded"

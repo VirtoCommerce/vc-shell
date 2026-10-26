@@ -174,7 +174,7 @@ onUnmounted(() => {
   &__menu {
     position: absolute;
     top: 100%;
-    left: 0;
+    inset-inline-start: 0;
     z-index: var(--z-overlay-dropdown);
     min-width: 160px;
     max-height: 240px;

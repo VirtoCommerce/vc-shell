@@ -462,7 +462,7 @@ export const WithObjectOptions: Story = {
               @click.stop.prevent="toggleHandler"
             >
               <span>{{ selectedOption.label }}</span>
-              <VcIcon icon="lucide-chevron-down" size="s" class="tw-ml-1" />
+              <VcIcon icon="lucide-chevron-down" size="s" class="tw-ms-1" />
             </button>
           </template>
         </VcInputDropdown>
@@ -551,7 +551,7 @@ export const CurrencyInput: Story = {
               @click.stop.prevent="toggleHandler"
             >
               <span>{{ currentCurrency.symbol }} {{ currency }}</span>
-              <VcIcon icon="lucide-chevron-down" size="s" class="tw-ml-1" />
+              <VcIcon icon="lucide-chevron-down" size="s" class="tw-ms-1" />
             </button>
           </template>
         </VcInputDropdown>
@@ -655,7 +655,7 @@ export const WithCustomInput: Story = {
               <input
                 v-model="date"
                 :placeholder="placeholder"
-                class="tw-w-full tw-p-2 tw-pl-8 tw-border tw-border-solid tw-border-gray-300 tw-rounded tw-text-sm tw-outline-none"
+                class="tw-w-full tw-p-2 tw-ps-8 tw-border tw-border-solid tw-border-gray-300 tw-rounded tw-text-sm tw-outline-none"
                 @blur="formatDate"
               />
 

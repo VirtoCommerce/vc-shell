@@ -153,7 +153,6 @@ const badgeVisible = computed(() => {
 :root {
   --vc-menu-item-height: 28px;
   --vc-menu-item-padding-x: 6px;
-  --vc-menu-item-border-radius: 6px 0 0 6px;
   --vc-menu-item-icon-size: 18px;
   --vc-menu-item-icon-gap: 6px;
   --vc-menu-item-text-color: var(--neutrals-700);
@@ -169,6 +168,15 @@ const badgeVisible = computed(() => {
   --vc-menu-subitem-height: 28px;
   --vc-menu-subitem-icon-size: 16px;
   --vc-menu-subitem-bg-inset: 8px;
+}
+
+// The item's rounded side is its start: the right one on a right-to-left page. Both defaults have zero specificity
+// (:where), so an app's own `:root { --vc-menu-item-border-radius }` wins on either page, whatever the stylesheet order.
+:where(:root) {
+  --vc-menu-item-border-radius: 6px 0 0 6px;
+}
+:where([dir="rtl"]) {
+  --vc-menu-item-border-radius: 0 6px 6px 0;
 }
 
 .vc-menu-item {
@@ -190,7 +198,7 @@ const badgeVisible = computed(() => {
 
   &__content {
     @apply tw-flex tw-items-center tw-w-full tw-border-none tw-bg-transparent tw-flex-nowrap
-      tw-box-border tw-cursor-pointer tw-relative tw-select-none tw-text-left;
+      tw-box-border tw-cursor-pointer tw-relative tw-select-none tw-text-start;
     font: inherit;
     height: var(--vc-menu-item-height);
 
@@ -199,7 +207,8 @@ const badgeVisible = computed(() => {
       // Ring must not be clipped by the item's own overflow-hidden children.
       z-index: var(--z-local-above);
     }
-    padding: 0 10px 0 var(--vc-menu-item-padding-x);
+    padding-block: 0;
+    padding-inline: var(--vc-menu-item-padding-x) 10px;
     gap: var(--vc-menu-item-icon-gap);
     border-radius: var(--vc-menu-item-border-radius);
     transition:
@@ -240,14 +249,16 @@ const badgeVisible = computed(() => {
       &.vc-menu-item__content--active {
         border-radius: 6px;
 
-        // Active indicator: accent bar on the left
+        // Active indicator: accent bar on the start side
         &::after {
           content: "";
-          @apply tw-absolute tw-left-[-4px] tw-top-1/2;
+          @apply tw-absolute tw-start-[-4px] tw-top-1/2;
           transform: translateY(-50%);
           width: 3px;
           height: 18px;
-          border-radius: 0 3px 3px 0;
+          border-radius: 0;
+          border-start-end-radius: 3px;
+          border-end-end-radius: 3px;
           background: var(--primary-500);
         }
       }
@@ -255,11 +266,11 @@ const badgeVisible = computed(() => {
 
     &--nested {
       // Structural offset via margin — separates item from track zone
-      margin-left: calc(var(--vc-menu-track-offset, 7px) + var(--vc-menu-subitem-bg-inset, 8px));
+      margin-inline-start: calc(var(--vc-menu-track-offset, 7px) + var(--vc-menu-subitem-bg-inset, 8px));
       width: calc(100% - var(--vc-menu-track-offset, 7px) - var(--vc-menu-subitem-bg-inset, 8px));
       height: var(--vc-menu-subitem-height);
       // Inner padding — same as regular items, controls bg-to-icon distance
-      padding-left: var(--vc-menu-item-padding-x);
+      padding-inline-start: var(--vc-menu-item-padding-x);
 
       .vc-menu-item__icon {
         width: var(--vc-menu-subitem-icon-size);
@@ -276,7 +287,7 @@ const badgeVisible = computed(() => {
           position: absolute;
           top: 0;
           bottom: 0;
-          left: calc(-1 * (var(--vc-menu-track-offset, 7px) + var(--vc-menu-subitem-bg-inset, 8px)));
+          inset-inline-start: calc(-1 * (var(--vc-menu-track-offset, 7px) + var(--vc-menu-subitem-bg-inset, 8px)));
           width: 3px;
           border-radius: 1px;
           background: var(--secondary-300);
@@ -287,7 +298,7 @@ const badgeVisible = computed(() => {
       // Collapsed + nested: behave like a regular collapsed item
       &.vc-menu-item__content--collapsed {
         @apply tw-justify-center;
-        margin-left: 0;
+        margin-inline-start: 0;
         width: 100%;
         padding: 0;
         gap: 0;
@@ -303,11 +314,13 @@ const badgeVisible = computed(() => {
 
           &::after {
             content: "";
-            @apply tw-absolute tw-left-[-4px] tw-top-1/2;
+            @apply tw-absolute tw-start-[-4px] tw-top-1/2;
             transform: translateY(-50%);
             width: 3px;
             height: 14px;
-            border-radius: 0 3px 3px 0;
+            border-radius: 0;
+            border-start-end-radius: 3px;
+            border-end-end-radius: 3px;
             background: var(--primary-500);
           }
         }
@@ -349,7 +362,7 @@ const badgeVisible = computed(() => {
   }
 
   &__badge {
-    @apply tw-shrink-0 tw-ml-auto;
+    @apply tw-shrink-0 tw-ms-auto;
   }
 }
 

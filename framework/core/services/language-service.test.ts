@@ -43,7 +43,7 @@ vi.mock("@core/plugins/i18n", () => ({
   i18n: {
     global: {
       locale: mocks.localeValue,
-      availableLocales: ["en", "fr", "de"],
+      availableLocales: ["en", "fr", "de", "ar-sa"],
       getLocaleMessage: vi.fn(() => ({ messages: { required: "Required" } })),
     },
   },
@@ -110,6 +110,14 @@ describe("createLanguageService", () => {
       const service = createLanguageService();
       service.setLocale("xx-unknown");
       expect(document.documentElement.getAttribute("lang")).toBe("en");
+    });
+
+    it("sets the reading direction with the language, and back", () => {
+      const service = createLanguageService();
+      service.setLocale("ar-sa");
+      expect(document.documentElement.getAttribute("dir")).toBe("rtl");
+      service.setLocale("de");
+      expect(document.documentElement.getAttribute("dir")).toBe("ltr");
     });
   });
 

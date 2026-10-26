@@ -106,11 +106,11 @@ defineSlots<{
   }
 
   &__required {
-    @apply tw-text-[color:var(--label-required-color)] tw-ml-0.5;
+    @apply tw-text-[color:var(--label-required-color)] tw-ms-0.5;
   }
 
   &__tooltip {
-    @apply tw-grow-0 tw-basis-0 tw-ml-1 tw-relative tw-mr-auto;
+    @apply tw-grow-0 tw-basis-0 tw-ms-1 tw-relative tw-me-auto;
   }
 
   &__tooltip-icon {

@@ -173,7 +173,7 @@ export const WithOverlay: Story = {
       <div class="tw-p-4" style="width: 160px;">
         <VcImageTile v-bind="args">
           <template #overlay>
-            <div class="tw-absolute tw-top-1 tw-left-1 tw-p-0.5 tw-rounded tw-cursor-move" style="color: var(--secondary-400);">
+            <div class="tw-absolute tw-top-1 tw-start-1 tw-p-0.5 tw-rounded tw-cursor-move" style="color: var(--secondary-400);">
               <VcIcon icon="lucide-grip-vertical" size="s" />
             </div>
           </template>

@@ -14,6 +14,12 @@
   body {
     @apply tw-text-sm tw-text-additional-950;
   }
+
+  // Text whose direction is its own: a typed email, code, URL or amount reads left to right inside a right-to-left page,
+  // from its first letter (like dir="auto"). In the base layer, so an app's own rule wins.
+  [dir="rtl"] :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]), textarea) {
+    unicode-bidi: plaintext;
+  }
 }
 
 h1,
@@ -140,5 +146,60 @@ html.vc-slow-network .vc-app::before {
     animation: none;
     background-image: none;
     background-color: var(--warning-500);
+  }
+}
+
+// Right-to-left pages (<html dir="rtl">: Arabic, Hebrew, Persian, Urdu). vc-shell's layout uses logical properties
+// (margin-inline-start, inset-inline-end, text-align: start...), so it mirrors by itself; what a logical property
+// can't express lives here.
+
+// The sign of the reading direction along the line, for horizontal moves: translateX(calc(8px * var(--vc-inline-sign)))
+// moves toward the end of the line in both directions.
+:root,
+[dir="ltr"] {
+  --vc-inline-sign: 1;
+}
+
+[dir="rtl"] {
+  --vc-inline-sign: -1;
+}
+
+// Icons that point the way of reading (forward, back, open, log in/out) turn around. VcIcon marks them itself
+// (vc-icon--rtl-mirror); the Lucide classes cover an icon component used directly. `scale` composes with a
+// component's own transform, so a chevron turned for an open node keeps its turn.
+[dir="rtl"] {
+  .vc-icon--rtl-mirror,
+  :is(
+    .lucide-chevron-left,
+    .lucide-chevron-right,
+    .lucide-chevrons-left,
+    .lucide-chevrons-right,
+    .lucide-arrow-left,
+    .lucide-arrow-right,
+    .lucide-arrow-left-from-line,
+    .lucide-arrow-right-from-line,
+    .lucide-arrow-left-to-line,
+    .lucide-arrow-right-to-line,
+    .lucide-corner-down-left,
+    .lucide-corner-down-right,
+    .lucide-corner-up-left,
+    .lucide-corner-up-right,
+    .lucide-log-in,
+    .lucide-log-out,
+    .lucide-panel-left,
+    .lucide-panel-left-open,
+    .lucide-panel-left-close,
+    .lucide-panel-right,
+    .lucide-panel-right-open,
+    .lucide-panel-right-close,
+    .lucide-undo,
+    .lucide-undo-2,
+    .lucide-redo,
+    .lucide-redo-2,
+    .lucide-reply,
+    .lucide-reply-all,
+    .lucide-forward
+  ) {
+    scale: -1 1;
   }
 }

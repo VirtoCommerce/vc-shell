@@ -326,11 +326,11 @@ onMounted(() => {
   &__text {
     @apply tw-text-sm tw-leading-[21px];
     color: var(--checkbox-text-color);
-    margin-left: var(--checkbox-text-margin);
+    margin-inline-start: var(--checkbox-text-margin);
   }
 
   &__required {
-    @apply tw-ml-1;
+    @apply tw-ms-1;
     color: var(--checkbox-required-color);
   }
 

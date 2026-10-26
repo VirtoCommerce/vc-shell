@@ -10,6 +10,7 @@ import {
   type Strategy,
 } from "@floating-ui/vue";
 import { computed, toValue, type MaybeRefOrGetter, type Ref } from "vue";
+import { useTextDirection } from "@core/composables/useTextDirection";
 
 export interface FloatingOffset {
   mainAxis?: number;
@@ -29,6 +30,16 @@ export interface UseFloatingPositionOptions {
 }
 
 /**
+ * A placement for a right-to-left page: a panel set to open on the "right" (the reading direction's end) opens on the
+ * left. The `-start`/`-end` alignments of top and bottom placements follow the direction in floating-ui already.
+ */
+export function mirrorPlacement(placement: Placement): Placement {
+  if (placement.startsWith("left")) return placement.replace("left", "right") as Placement;
+  if (placement.startsWith("right")) return placement.replace("right", "left") as Placement;
+  return placement;
+}
+
+/**
  * Shared floating-ui adapter with reactive placement/offset defaults.
  */
 export function useFloatingPosition(
@@ -36,7 +47,11 @@ export function useFloatingPosition(
   floatingEl: Ref<HTMLElement | null>,
   options: UseFloatingPositionOptions = {},
 ) {
-  const resolvedPlacement = computed<Placement>(() => toValue(options.placement) ?? "bottom");
+  const { isRtl } = useTextDirection();
+  const resolvedPlacement = computed<Placement>(() => {
+    const placement = toValue(options.placement) ?? "bottom";
+    return isRtl.value ? mirrorPlacement(placement) : placement;
+  });
   const resolvedStrategy = computed<Strategy>(() => toValue(options.strategy) ?? "absolute");
 
   const resolvedMiddleware = computed<Middleware[]>(() => {

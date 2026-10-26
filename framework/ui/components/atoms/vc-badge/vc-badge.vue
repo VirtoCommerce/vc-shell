@@ -222,7 +222,7 @@ $sizes: small, medium;
         height: var(--badge-size-#{$size});
         min-width: var(--badge-size-#{$size});
         top: var(--badge-distance-top-#{$size});
-        right: var(--badge-distance-right-#{$size});
+        inset-inline-end: var(--badge-distance-right-#{$size});
 
         &.vc-badge__badge--dot {
           height: var(--badge-dot-size-#{$size});
@@ -317,7 +317,7 @@ $sizes: small, medium;
 
 // Inline mode - relative positioning, no wrapper
 .vc-badge__badge--inline {
-  @apply tw-relative tw-top-0 tw-right-0;
+  @apply tw-relative tw-top-0 tw-end-0;
 }
 
 .vc-badge__badge--inline-small {

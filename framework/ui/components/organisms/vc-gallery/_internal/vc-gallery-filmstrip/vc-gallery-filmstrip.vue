@@ -194,7 +194,7 @@ watch(
       }
 
       .swiper-slide {
-        margin-right: 0 !important;
+        margin-inline-end: 0 !important;
         margin-top: 0 !important;
       }
     }
@@ -222,11 +222,11 @@ watch(
     }
 
     &--prev {
-      @apply tw-left-0 -tw-translate-x-1/2;
+      @apply tw-start-0 -tw-translate-x-1/2 rtl:tw-translate-x-1/2;
     }
 
     &--next {
-      @apply tw-right-0 tw-translate-x-1/2;
+      @apply tw-end-0 tw-translate-x-1/2 rtl:-tw-translate-x-1/2;
     }
 
     &.swiper-button-disabled {

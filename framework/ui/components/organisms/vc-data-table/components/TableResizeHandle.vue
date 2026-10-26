@@ -12,6 +12,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { isRtlElement } from "@core/composables/useTextDirection";
 
 const props = defineProps<{
   /**
@@ -33,6 +34,8 @@ const handleRef = ref<HTMLElement>();
 const isResizing = ref(false);
 let startX = 0;
 let currentX = 0;
+// a right-to-left table grows a column by dragging its end edge to the left
+let inlineSign = 1;
 
 const handleMouseDown = (event: MouseEvent) => {
   startResize(event.pageX);
@@ -40,7 +43,7 @@ const handleMouseDown = (event: MouseEvent) => {
   const handleMouseMove = (e: MouseEvent) => {
     if (isResizing.value) {
       currentX = e.pageX;
-      const delta = currentX - startX;
+      const delta = (currentX - startX) * inlineSign;
       emit("resizeMove", delta);
     }
   };
@@ -63,7 +66,7 @@ const handleTouchStart = (event: TouchEvent) => {
     if (isResizing.value) {
       const touch = e.touches[0];
       currentX = touch.pageX;
-      const delta = currentX - startX;
+      const delta = (currentX - startX) * inlineSign;
       emit("resizeMove", delta);
     }
   };
@@ -80,6 +83,7 @@ const handleTouchStart = (event: TouchEvent) => {
 
 const startResize = (pageX: number) => {
   isResizing.value = true;
+  inlineSign = isRtlElement(handleRef.value) ? -1 : 1;
   startX = pageX;
   currentX = pageX;
   document.body.style.cursor = "col-resize";
@@ -97,12 +101,12 @@ const endResize = () => {
 
 <style lang="scss">
 .vc-table-composition__resize-handle {
-  @apply tw-absolute tw-top-0 tw-right-0 tw-h-full tw-cursor-col-resize tw-z-[var(--z-local-sticky)];
+  @apply tw-absolute tw-top-0 tw-end-0 tw-h-full tw-cursor-col-resize tw-z-[var(--z-local-sticky)];
   @apply tw-flex tw-items-center tw-justify-center;
 
   // Wider hit area for easier interaction (8px total)
   width: 8px;
-  margin-right: -4px;
+  margin-inline-end: -4px;
 
   &:hover &-bar,
   &--resizing &-bar {

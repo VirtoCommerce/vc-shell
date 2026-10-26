@@ -349,7 +349,7 @@ function onPointerUp(e: PointerEvent) {
   border-color: var(--notification-border-color);
   border-radius: var(--notification-border-radius);
   box-shadow: var(--notification-shadow);
-  border-left: var(--notification-accent-width) solid var(--notification-info);
+  border-inline-start: var(--notification-accent-width) solid var(--notification-info);
 
   /* Sonner: absolute positioning, transform via --y variable */
   position: absolute;
@@ -447,19 +447,19 @@ function onPointerUp(e: PointerEvent) {
 
   /* Type-specific left accent border */
   &--success {
-    border-left-color: var(--notification-success);
+    border-inline-start-color: var(--notification-success);
   }
 
   &--error {
-    border-left-color: var(--notification-error);
+    border-inline-start-color: var(--notification-error);
   }
 
   &--warning {
-    border-left-color: var(--notification-warning);
+    border-inline-start-color: var(--notification-warning);
   }
 
   &--default {
-    border-left-color: var(--notification-info);
+    border-inline-start-color: var(--notification-info);
   }
 
   &__content-wrapper {
@@ -477,7 +477,7 @@ function onPointerUp(e: PointerEvent) {
   }
 
   &__dismiss-button {
-    @apply tw-cursor-pointer tw-ml-2
+    @apply tw-cursor-pointer tw-ms-2
       tw-border-none tw-bg-transparent tw-outline-none tw-p-1 tw-rounded tw-flex tw-items-center tw-justify-center;
     @apply tw-transition-colors tw-duration-150;
     color: var(--notification-dismiss-color);
@@ -496,7 +496,7 @@ function onPointerUp(e: PointerEvent) {
   &[data-expanded="true"]::after {
     content: "";
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     height: calc(var(--gap, 14px) + 1px);
     bottom: 100%;
     width: 100%;
@@ -518,8 +518,8 @@ function onPointerUp(e: PointerEvent) {
   &[data-swiping="true"]::before {
     content: "";
     position: absolute;
-    left: -100%;
-    right: -100%;
+    inset-inline-start: -100%;
+    inset-inline-end: -100%;
     height: 100%;
     z-index: var(--z-local-below);
   }

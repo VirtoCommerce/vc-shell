@@ -402,7 +402,7 @@ watch(
   }
 
   &__back-button {
-    @apply tw-mr-[14px];
+    @apply tw-me-[14px];
     flex: none;
   }
 
@@ -415,7 +415,7 @@ watch(
   }
 
   &--maximized {
-    @apply tw-absolute tw-z-[var(--z-local-above)] tw-top-0 tw-bottom-0 tw-left-0 tw-shrink !important;
+    @apply tw-absolute tw-z-[var(--z-local-above)] tw-top-0 tw-bottom-0 tw-start-0 tw-shrink !important;
     width: -webkit-fill-available !important;
     width: -moz-available !important;
     width: stretch !important;
@@ -462,7 +462,7 @@ watch(
   }
 
   &__breadcrumbs {
-    @apply tw-mr-[10px];
+    @apply tw-me-[10px];
 
     &-button {
       @apply tw-text-[color:var(--blade-header-breadcrumbs-button-color)] tw-cursor-pointer hover:tw-text-[color:var(--blade-header-breadcrumbs-button-color-hover)] !important;

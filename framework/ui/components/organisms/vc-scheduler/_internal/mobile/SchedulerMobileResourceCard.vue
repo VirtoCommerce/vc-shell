@@ -69,7 +69,7 @@ function miniStyle(b: ISchedulerBar) {
   const span = max - min;
   const left = ((b.start.getTime() - min) / span) * 100;
   const width = ((b.end.getTime() - b.start.getTime()) / span) * 100;
-  return { left: `${left}%`, width: `${Math.max(width, 2)}%`, background: b.color ?? "var(--primary-500)" };
+  return { insetInlineStart: `${left}%`, width: `${Math.max(width, 2)}%`, background: b.color ?? "var(--primary-500)" };
 }
 
 function statusClass(b: ISchedulerBar) {

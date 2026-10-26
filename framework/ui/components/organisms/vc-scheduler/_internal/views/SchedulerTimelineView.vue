@@ -239,7 +239,7 @@ function eventStyle(rect: TimedRect) {
   return {
     top: `${rect.top}px`,
     height: `${rect.height}px`,
-    left: `calc(${rect.leftPct}% + 1px)`,
+    insetInlineStart: `calc(${rect.leftPct}% + 1px)`,
     width: `calc(${rect.widthPct}% - 2px)`,
     ...eventSurfaceStyle(fill, rect.past),
   };
@@ -249,7 +249,7 @@ function allDayStyle(seg: AllDaySegment) {
   const fill = seg.event.color ?? autoEventColor(seg.event.title);
   return {
     top: `${seg.row * ALLDAY_ROW + 2}px`,
-    left: `calc(${(seg.startCol / grid.dayCount.value) * 100}% + 1px)`,
+    insetInlineStart: `calc(${(seg.startCol / grid.dayCount.value) * 100}% + 1px)`,
     width: `calc(${(seg.span / grid.dayCount.value) * 100}% - 2px)`,
     ...eventSurfaceStyle(fill, seg.past),
   };
@@ -345,7 +345,7 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent) {
 .vc-scheduler__tg-gutter-spacer {
   flex: none;
   width: var(--tg-gutter-w);
-  border-right: 1px solid var(--scheduler-border-color);
+  border-inline-end: 1px solid var(--scheduler-border-color);
 }
 .vc-scheduler__tg-head {
   display: flex;
@@ -361,7 +361,7 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent) {
   flex: 1 1 0;
   min-width: 0;
   padding: 0.375rem 0.5rem;
-  border-left: 1px solid var(--scheduler-border-color);
+  border-inline-start: 1px solid var(--scheduler-border-color);
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--neutrals-800);
@@ -370,7 +370,7 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent) {
   overflow: hidden;
   text-overflow: ellipsis;
   &:first-child {
-    border-left: 0;
+    border-inline-start: 0;
   }
   &--today {
     color: var(--accent-600);
@@ -388,7 +388,8 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent) {
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
-  padding: 0.25rem 0.375rem 0 0;
+  padding-block: 0.25rem 0;
+  padding-inline: 0 0.375rem;
   font-size: 0.625rem;
   color: var(--neutrals-500);
   text-transform: lowercase;
@@ -408,17 +409,17 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent) {
   border: 0;
   border-radius: 0.25rem;
   font-size: 0.75rem;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   overflow: hidden;
   transition: filter 150ms ease-out;
   &--l {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
   }
   &--r {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
   }
   &:hover {
     filter: brightness(1.05);
@@ -441,11 +442,11 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent) {
   position: relative;
   flex: none;
   width: var(--tg-gutter-w);
-  border-right: 1px solid var(--scheduler-border-color);
+  border-inline-end: 1px solid var(--scheduler-border-color);
 }
 .vc-scheduler__tg-hour-label {
   position: absolute;
-  right: 0.375rem;
+  inset-inline-end: 0.375rem;
   transform: translateY(-0.5em);
   font-size: 0.6875rem;
   color: var(--neutrals-600);
@@ -460,9 +461,9 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent) {
   position: relative;
   flex: 1 1 0;
   min-width: 0;
-  border-left: 1px solid var(--scheduler-border-color);
+  border-inline-start: 1px solid var(--scheduler-border-color);
   &:first-child {
-    border-left: 0;
+    border-inline-start: 0;
   }
   &--today {
     background: var(--accent-50);
@@ -473,15 +474,15 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent) {
 }
 .vc-scheduler__tg-gridline {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   border-top: 1px solid var(--scheduler-border-color);
   pointer-events: none;
 }
 .vc-scheduler__tg-now {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   height: 0;
   border-top: 2px solid var(--danger-500);
   pointer-events: none;
@@ -489,7 +490,7 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent) {
   &::before {
     content: "";
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     top: -4px;
     width: 7px;
     height: 7px;
@@ -510,7 +511,7 @@ function onSelect(event: ISchedulerEvent, ev: MouseEvent) {
   border-radius: 0.375rem;
   font-size: 0.75rem;
   line-height: 1.2;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   overflow: hidden;
   transition: filter 150ms ease-out;

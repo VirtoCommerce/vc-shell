@@ -26,11 +26,11 @@ defineProps<{ resources: ISchedulerResource[]; rowHeight: (id: string) => number
 <style lang="scss">
 .vc-scheduler__resource-panel {
   position: sticky;
-  left: 0;
+  inset-inline-start: 0;
   z-index: var(--z-local-sticky);
   flex: 0 0 auto;
   background: var(--neutrals-50);
-  border-right: 1px solid var(--scheduler-border-color, var(--neutrals-200));
+  border-inline-end: 1px solid var(--scheduler-border-color, var(--neutrals-200));
 }
 .vc-scheduler__resource-cell {
   display: flex;

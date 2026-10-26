@@ -1,6 +1,7 @@
 import { ref, watch, type Ref, onBeforeUnmount } from "vue";
 import type { ColumnState, ColumnSpec } from "../types";
 import { DEFAULT_MIN_COLUMN_PX, type EngineOutput } from "./useColumnWidthEngine";
+import { isRtlElement } from "@core/composables/useTextDirection";
 
 export interface UseTableColumnsResizeOptions {
   columnState: Ref<ColumnState>;
@@ -40,6 +41,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
   const isResizing = ref(false);
 
   let startX = 0;
+  let inlineSign = 1;
   let rafId = 0;
   let initialSpecs: Record<string, ColumnSpec> = {};
   let draggedId = "";
@@ -106,6 +108,8 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
     if (!start(columnId)) return;
 
     startX = event.pageX;
+    // a right-to-left table grows a column by dragging its end edge to the left
+    inlineSign = isRtlElement(event.target as Element) ? -1 : 1;
     document.body.style.cursor = "col-resize";
     document.body.style.userSelect = "none";
     document.addEventListener("mousemove", handleResizeMove);
@@ -205,7 +209,7 @@ export function useTableColumnsResize(options: UseTableColumnsResizeOptions) {
 
   const handleResizeMove = (event: MouseEvent) => {
     if (!isResizing.value || !draggedId) return;
-    const rawDelta = event.pageX - startX;
+    const rawDelta = (event.pageX - startX) * inlineSign;
     if (rafId) cancelAnimationFrame(rafId);
     rafId = requestAnimationFrame(() => {
       update(rawDelta);

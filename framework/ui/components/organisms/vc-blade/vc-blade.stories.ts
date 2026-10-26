@@ -742,7 +742,7 @@ export const BannerWithRenderFunction: Story = {
       <VcBlade v-bind="args">
         <div class="tw-p-6">
           <p class="tw-text-sm tw-text-gray-600">Banners using render() functions for rich custom content:</p>
-          <ul class="tw-text-sm tw-text-gray-600 tw-mt-2 tw-list-disc tw-pl-5 tw-space-y-1">
+          <ul class="tw-text-sm tw-text-gray-600 tw-mt-2 tw-list-disc tw-ps-5 tw-space-y-1">
             <li>Formatted text with bold and colored spans</li>
             <li>Inline clickable links</li>
             <li>Badge-style pill elements</li>

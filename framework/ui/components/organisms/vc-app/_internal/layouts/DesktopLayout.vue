@@ -286,7 +286,7 @@ const handleSwitchApp = (app: AppDescriptor) => {
   @apply tw-relative tw-flex tw-flex-col;
   position: fixed;
   top: 0;
-  left: 0;
+  inset-inline-start: 0;
   bottom: 0;
   width: var(--app-bar-width);
   background-color: var(--app-bar-background);
@@ -295,7 +295,7 @@ const handleSwitchApp = (app: AppDescriptor) => {
   // rather than a border, so it sits flush at the right edge, takes no layout space and
   // follows the animated width on collapse/expand. Kept on the base element so it stays
   // visible in both the pinned and the collapsed state.
-  box-shadow: 1px 0 0 0 var(--app-bar-border);
+  box-shadow: calc(1px * var(--vc-inline-sign, 1)) 0 0 0 var(--app-bar-border);
 
   // Show collapse button on hover
   &:hover .sidebar-collapse-button {

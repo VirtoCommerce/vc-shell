@@ -114,7 +114,7 @@ function toggleContent() {
 
   &::after {
     content: "";
-    @apply tw-absolute tw-left-0 tw-bottom-0 tw-w-full
+    @apply tw-absolute tw-start-0 tw-bottom-0 tw-w-full
         tw-border-b-[2px]
         tw-border-[color:var(--app-bar-button-border-color)]
         tw-opacity-0 tw-transition-opacity tw-duration-200 tw-z-[var(--z-local-above)];
@@ -125,7 +125,7 @@ function toggleContent() {
   }
 
   &__button {
-    @apply tw-flex tw-text-left tw-w-full tw-box-border tw-relative tw-w-[var(--app-bar-button-width)];
+    @apply tw-flex tw-text-start tw-w-full tw-box-border tw-relative tw-w-[var(--app-bar-button-width)];
   }
 
   &__button-container {

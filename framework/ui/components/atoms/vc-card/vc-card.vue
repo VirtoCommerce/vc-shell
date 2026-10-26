@@ -14,7 +14,7 @@
           variant="circle"
           :width="22"
           :height="22"
-          class="tw-mr-3"
+          class="tw-me-3"
         />
         <VcSkeleton
           variant="block"
@@ -204,11 +204,11 @@ $variants: success, danger;
   }
 
   &__icon {
-    @apply tw-text-[color:var(--card-header-color)] tw-mr-3;
+    @apply tw-text-[color:var(--card-header-color)] tw-me-3;
   }
 
   &__collapse {
-    @apply tw-text-[color:var(--card-header-color)] tw-ml-3
+    @apply tw-text-[color:var(--card-header-color)] tw-ms-3
       tw-transition-transform tw-duration-200;
 
     &--rotated {

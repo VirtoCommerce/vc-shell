@@ -203,7 +203,7 @@ const props = defineProps<{
   /** Function to get effective column width */
   getColumnWidth: (colProps: VcColumnProps) => string | undefined;
   /** Function to get cell alignment */
-  getCellAlign: (colProps: VcColumnProps) => "left" | "center" | "right" | undefined;
+  getCellAlign: (colProps: VcColumnProps) => "start" | "center" | "end" | undefined;
   /** Function to get cell style */
   getCellStyle: (colProps: VcColumnProps) => Record<string, string> | object | undefined;
 

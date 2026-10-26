@@ -166,7 +166,7 @@ defineSlots<{
   }
 
   &__rating {
-    @apply tw-mr-1;
+    @apply tw-me-1;
   }
 
   &__label {

@@ -102,11 +102,11 @@ const truncateCount = computed(() => formatBadgeCount(props.value));
     @apply tw-flex-row tw-gap-2;
 
     .vc-widget__content {
-      @apply tw-ml-1;
+      @apply tw-ms-1;
     }
 
     .vc-widget__title {
-      @apply tw-mt-0 tw-text-left tw-whitespace-nowrap;
+      @apply tw-mt-0 tw-text-start tw-whitespace-nowrap;
     }
   }
 

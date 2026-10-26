@@ -124,7 +124,7 @@ watch([() => route.fullPath, () => props.isSidebarMode], () => {
   }
 
   &__badge {
-    @apply tw-absolute tw-right-0 tw-top-0 tw-w-[5px] tw-h-[5px] tw-rounded-full tw-z-[var(--z-local-above)] tw-pointer-events-none;
+    @apply tw-absolute tw-end-0 tw-top-0 tw-w-[5px] tw-h-[5px] tw-rounded-full tw-z-[var(--z-local-above)] tw-pointer-events-none;
     background-color: var(--app-bar-accent-color, var(--danger-500));
   }
 }

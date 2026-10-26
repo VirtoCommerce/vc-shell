@@ -317,8 +317,8 @@ defineExpose({ close, panelEl: floatingRef });
     @apply tw-border-t tw-border-solid;
     border-color: var(--vc-popover-border-color);
     background-color: var(--vc-popover-footer-bg);
-    border-bottom-left-radius: var(--vc-popover-border-radius);
-    border-bottom-right-radius: var(--vc-popover-border-radius);
+    border-end-start-radius: var(--vc-popover-border-radius);
+    border-end-end-radius: var(--vc-popover-border-radius);
   }
 }
 

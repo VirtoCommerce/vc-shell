@@ -70,7 +70,7 @@
               class="tw-animate-spin"
               size="m"
             />
-            <span class="tw-ml-1">
+            <span class="tw-ms-1">
               {{
                 optionsListLength > 0
                   ? t("COMPONENTS.MOLECULES.VC_SELECT.LOADING_MORE")

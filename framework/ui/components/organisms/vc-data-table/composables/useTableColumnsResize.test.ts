@@ -5,6 +5,12 @@ import { useTableColumnsResize } from "./useTableColumnsResize";
 import type { ColumnState } from "../types";
 import type { EngineOutput } from "./useColumnWidthEngine";
 
+const rtl = vi.hoisted(() => ({ value: false }));
+vi.mock("@core/composables/useTextDirection", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  isRtlElement: () => rtl.value,
+}));
+
 /**
  * Build a ColumnState with equal weights for the given column IDs.
  */
@@ -146,6 +152,28 @@ describe("weight-based resize behavior", () => {
     expect(columnState.value.specs["a"].weight).toBeGreaterThan(initialWeightA);
     // Right neighbors should have decreased
     expect(columnState.value.specs["b"].weight).toBeLessThan(initialWeightB);
+  });
+
+  // a right-to-left table puts a column's end edge on its left, so dragging left grows it
+  it("growing a column in a right-to-left table takes a drag to the left", () => {
+    const state = makeColumnStateFromWidths({ a: 300, b: 250, c: 250, d: 200 });
+    const engineOut = makeEngineOutput({ a: 300, b: 250, c: 250, d: 200 });
+    const { result, columnState } = setup(state, engineOut, { availableWidth: 1000 });
+    const initialWeightA = columnState.value.specs["a"].weight;
+
+    rtl.value = true;
+    try {
+      result.handleResizeStart("a", { pageX: 700 } as MouseEvent);
+    } finally {
+      rtl.value = false;
+    }
+    const moveEvent = new MouseEvent("mousemove", { clientX: 600 });
+    Object.defineProperty(moveEvent, "pageX", { value: 600 });
+    document.dispatchEvent(moveEvent);
+    flushRAF();
+    document.dispatchEvent(new MouseEvent("mouseup"));
+
+    expect(columnState.value.specs["a"].weight).toBeGreaterThan(initialWeightA);
   });
 
   it("shrinking a column decreases its weight and increases right neighbor weights", () => {

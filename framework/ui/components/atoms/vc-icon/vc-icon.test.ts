@@ -105,6 +105,36 @@ describe("VcIcon", () => {
     });
   });
 
+  // the class turns the icon around on a right-to-left page; up/down, diagonal and two-way arrows stay
+  describe("RTL mirroring", () => {
+    it.each([
+      "lucide-chevron-left",
+      "lucide-arrow-right-from-line",
+      "lucide-arrow-big-left",
+      "lucide-arrow-big-right-dash",
+      "bi-box-arrow-right",
+      "bi-box-arrow-in-right",
+      "material-arrow_back_ios_new",
+      "material-keyboard_arrow_right",
+      "fas fa-right-from-bracket",
+      "lucide-log-out",
+      "lucide-undo-2",
+    ])("mirrors %s", (icon) => {
+      expect(mountComponent({ icon }).find(".vc-icon").classes()).toContain("vc-icon--rtl-mirror");
+    });
+
+    it.each([
+      "lucide-arrow-up",
+      "lucide-arrow-big-up",
+      "lucide-arrow-left-right",
+      "bi-box-arrow-up-right",
+      "bi-box-arrow-in-up-right",
+      "lucide-home",
+    ])("keeps %s", (icon) => {
+      expect(mountComponent({ icon }).find(".vc-icon").classes()).not.toContain("vc-icon--rtl-mirror");
+    });
+  });
+
   describe("accessibility", () => {
     it("sets aria-hidden=true by default (decorative)", () => {
       const wrapper = mountComponent({ icon: "lucide-home" });

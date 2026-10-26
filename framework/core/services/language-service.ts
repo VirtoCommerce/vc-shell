@@ -15,6 +15,9 @@ export interface ILanguageService {
   getCountryCode: (language: string) => string;
 }
 
+// Languages written right to left. A list, not Intl.Locale#getTextInfo, which Firefox lacks.
+const RTL_LANGUAGES = new Set(["ar", "arc", "ckb", "dv", "fa", "he", "iw", "ps", "sd", "ug", "ur", "yi"]);
+
 /**
  * Language service implementation
  * Handles locale management, validation, and language utilities
@@ -65,8 +68,11 @@ export function createLanguageService(): ILanguageService {
     // Assistive technology picks its pronunciation dictionary from <html lang>.
     // index.html can only carry a static default, so the language switch is the
     // only place that can keep it truthful (WCAG 3.1.1 Language of Page).
+    // <html dir> is what vc-shell's styles and useTextDirection follow.
     if (typeof document !== "undefined") {
       document.documentElement.setAttribute("lang", resolvedLocale);
+      const language = resolvedLocale.split("-")[0].toLowerCase();
+      document.documentElement.setAttribute("dir", RTL_LANGUAGES.has(language) ? "rtl" : "ltr");
     }
   }
 

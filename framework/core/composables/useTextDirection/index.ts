@@ -29,7 +29,7 @@ function watchDocument() {
  * The page's reading direction for the few places that place things from script (floating panels, swipe gestures,
  * drawers). Styles don't need it: vc-shell's CSS uses logical properties and follows `<html dir>` by itself.
  *
- * The app sets the direction: `document.documentElement.dir = "rtl"` for a right-to-left language.
+ * The language switch sets the direction with `<html lang>`; an app that sets `dir` itself can still do so after it.
  */
 export function useTextDirection(): UseTextDirectionReturn {
   watchDocument();

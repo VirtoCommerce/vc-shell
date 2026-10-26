@@ -191,14 +191,14 @@ const normalizedIconName = computed(() => {
 // around on a right-to-left page (the rule is in assets/styles/index.scss). Up/down and diagonal arrows stay.
 const RTL_MIRRORED = new RegExp(
   [
-    // chevron-left, arrow-right-from-line, corner-down-left, panel-left-open, caret-right, angles-left...
+    // chevron-left, arrow-right-from-line, arrow-big-left, box-arrow-in-right, panel-left-open, caret-right...
     // (not arrow-left-right: it reads the same both ways)
-    "^(?:chevrons?|arrow|caret|angles?|angle-double|circle-(?:arrow|chevron)|square-(?:arrow|chevron)|corner-(?:up|down)|panel|box-arrow|keyboard-arrow|long-arrow|step|skip)-(?:left|right)(?!-(?:left|right)$)(?:$|-)",
+    "^(?:chevrons?|arrow(?:-big)?|caret|angles?|angle-double|circle-(?:arrow|chevron)|square-(?:arrow|chevron)|corner-(?:up|down)|panel|box-arrow(?:-in)?|keyboard-arrow|long-arrow|step|skip)-(?:left|right)(?!-(?:left|right)$)(?:$|-)",
     // log-in, sign-out-alt, right-from-bracket, undo-2, reply-all, Material's arrow_back / navigate_next / logout
     "^(?:log|sign)-?(?:in|out)(?:-alt)?$",
     "^(?:arrow-)?right-(?:from|to)-bracket$",
     "^(?:undo|redo|reply)(?:-|$)",
-    "^(?:forward|arrow-back|arrow-forward|arrow-back-ios|arrow-forward-ios|navigate-next|navigate-before|first-page|last-page|login|logout)$",
+    "^(?:forward|arrow-back|arrow-forward|arrow-back-ios(?:-new)?|arrow-forward-ios|navigate-next|navigate-before|first-page|last-page|login|logout)$",
   ].join("|"),
 );
 

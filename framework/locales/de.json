@@ -247,11 +247,10 @@
           "CUSTOMIZE": "Anpassen",
           "DONE": "Fertig",
           "RESET": "Zurücksetzen",
-          "NOT_ON_BLADE": "Nicht im Blade",
+          "NOT_ON_BLADE": "Ausgeblendete Widgets",
           "ON_BLADE": "Im Blade · bis zu {max}",
-          "ALL_ON_BLADE": "Alle Widgets sind im Blade",
+          "ALL_ON_BLADE": "Widget hierher ziehen, um es auszublenden",
           "STRIP_FULL": "Bis zu {max} Widgets im Blade. Entfernen Sie eines, um hinzuzufügen.",
-          "DRAG_HINT": "Ziehen, um die Reihenfolge zu ändern",
           "REMOVE": "{title} aus dem Blade entfernen",
           "ADD": "{title} zum Blade hinzufügen",
           "REORDER": "{title} verschieben"

@@ -411,8 +411,12 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
       background-color: var(--neutrals-600);
     }
 
-    &--remove:hover .vc-widget-container-mobile__edit-btn-icon {
+    &--remove .vc-widget-container-mobile__edit-btn-icon {
       background-color: var(--danger-500);
+    }
+
+    &--remove:hover .vc-widget-container-mobile__edit-btn-icon {
+      background-color: var(--danger-600);
     }
 
     &--add .vc-widget-container-mobile__edit-btn-icon {

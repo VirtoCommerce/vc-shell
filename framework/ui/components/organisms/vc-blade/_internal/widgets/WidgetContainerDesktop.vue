@@ -11,8 +11,16 @@
           v-for="widget in strip"
           :key="widget.id"
           class="vc-widget-container-desktop__item"
+          :class="{ 'vc-widget-container-desktop__item--editing': editing }"
           :data-widget-id="widget.id"
         >
+          <VcIcon
+            v-if="editing"
+            icon="lucide-grip-vertical"
+            size="xs"
+            class="vc-widget-container-desktop__grip vc-widget-container-desktop__grip--corner"
+            aria-hidden="true"
+          />
           <WidgetItem
             :widget="widget"
             :editing="editing"
@@ -66,19 +74,17 @@
           <div class="vc-widget-container-desktop__menu">
             <div
               v-if="editing"
-              class="vc-widget-container-desktop__hint"
-            >
-              {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.DRAG_HINT") }}
-            </div>
-            <div
-              v-if="editing"
               class="vc-widget-container-desktop__menu-title"
             >
               {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.NOT_ON_BLADE") }}
             </div>
+            <!-- Stays mounted while empty in edit mode: it is the drop target for hiding a widget -->
             <div
+              v-show="editing || overflowItems.length"
               ref="overflowEl"
               class="vc-widget-container-desktop__list"
+              :class="{ 'vc-widget-container-desktop__list--drop-zone': editing && !overflowItems.length }"
+              :data-empty-text="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ALL_ON_BLADE')"
               data-widget-list="overflow"
               @keydown="onOverflowKeydown"
             >
@@ -88,6 +94,13 @@
                 class="vc-widget-container-desktop__row"
                 :data-widget-id="widget.id"
               >
+                <VcIcon
+                  v-if="editing"
+                  icon="lucide-grip-vertical"
+                  size="xs"
+                  class="vc-widget-container-desktop__grip"
+                  aria-hidden="true"
+                />
                 <WidgetItem
                   :widget="widget"
                   :editing="editing"
@@ -110,12 +123,6 @@
               </div>
             </div>
             <div
-              v-if="editing && !overflowItems.length"
-              class="vc-widget-container-desktop__empty"
-            >
-              {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ALL_ON_BLADE") }}
-            </div>
-            <div
               v-if="editing && !canAddToStrip && overflowItems.length"
               class="vc-widget-container-desktop__empty"
             >
@@ -125,6 +132,7 @@
             <div
               v-if="editing || canCustomize"
               class="vc-widget-container-desktop__footer"
+              :class="{ 'vc-widget-container-desktop__footer--alone': !editing && !overflowItems.length }"
             >
               <template v-if="editing">
                 <button
@@ -262,11 +270,25 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
 
   &__item {
     @apply tw-relative tw-flex tw-shrink-0;
+
+    // Dashed tile marks the widget as draggable while customizing
+    &--editing {
+      @apply tw-rounded;
+      outline: 1px dashed var(--neutrals-400);
+      outline-offset: -2px;
+    }
   }
 
-  &__hint {
-    @apply tw-px-3 tw-pt-2 tw-text-xs tw-whitespace-nowrap;
-    color: var(--neutrals-500);
+  &__grip {
+    @apply tw-shrink-0 tw-ms-2;
+    color: var(--neutrals-400);
+
+    &--corner {
+      @apply tw-absolute tw-ms-0 tw-pointer-events-none;
+      inset-block-start: 4px;
+      inset-inline-start: 2px;
+      z-index: var(--z-local-above);
+    }
   }
 
   &__edit-btn {
@@ -277,8 +299,12 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
     color: var(--additional-50);
     background-color: var(--neutrals-600);
 
-    &--remove:hover {
+    &--remove {
       background-color: var(--danger-500);
+
+      &:hover {
+        background-color: var(--danger-600);
+      }
     }
 
     &--add {
@@ -314,6 +340,17 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
 
   &__list {
     @apply tw-flex tw-flex-col tw-py-1;
+
+    // Empty overflow while customizing: a visible place to drop a widget
+    &--drop-zone {
+      @apply tw-mx-3 tw-my-1 tw-py-3 tw-px-2 tw-rounded tw-text-xs tw-text-center;
+      color: var(--neutrals-500);
+      border: 1px dashed var(--neutrals-300);
+
+      &:empty::before {
+        content: attr(data-empty-text);
+      }
+    }
   }
 
   &__row {
@@ -364,6 +401,11 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
   &__footer {
     @apply tw-flex tw-items-center tw-justify-between tw-gap-2 tw-px-3 tw-py-2;
     border-block-start: 1px solid var(--neutrals-200);
+
+    // Nothing above it: no separator
+    &--alone {
+      border-block-start: 0;
+    }
   }
 
   &__link {

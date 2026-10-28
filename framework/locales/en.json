@@ -247,11 +247,10 @@
           "CUSTOMIZE": "Customize",
           "DONE": "Done",
           "RESET": "Reset",
-          "NOT_ON_BLADE": "Not on blade",
+          "NOT_ON_BLADE": "Hidden widgets",
           "ON_BLADE": "On blade · up to {max}",
-          "ALL_ON_BLADE": "All widgets are on the blade",
+          "ALL_ON_BLADE": "Drag a widget here to hide it",
           "STRIP_FULL": "Up to {max} widgets on the blade. Remove one to add.",
-          "DRAG_HINT": "Drag to change the order",
           "REMOVE": "Remove {title} from the blade",
           "ADD": "Add {title} to the blade",
           "REORDER": "Reorder {title}"

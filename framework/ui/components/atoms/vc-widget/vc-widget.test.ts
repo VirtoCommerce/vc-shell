@@ -1,5 +1,7 @@
-import { describe, expect, it } from "vitest";
-import { shallowMount } from "@vue/test-utils";
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { computed, nextTick, ref } from "vue";
+import { mount, shallowMount } from "@vue/test-utils";
+import { WidgetRenderStateKey } from "@ui/components/organisms/vc-blade/_internal/widgets/widget-render-state";
 import VcWidget from "@ui/components/atoms/vc-widget/vc-widget.vue";
 
 describe("VcWidget", () => {
@@ -120,5 +122,112 @@ describe("VcWidget", () => {
   it("does not render icon when icon prop is not provided", () => {
     const wrapper = mountComponent();
     expect(wrapper.find(".vc-widget__icon").exists()).toBe(false);
+  });
+});
+
+describe("VcWidget render state", () => {
+  const mountWith = (state: Record<string, unknown> | null, props = {}) =>
+    mount(VcWidget as any, {
+      props,
+      global: { provide: state ? { [WidgetRenderStateKey as symbol]: state } : {} },
+    });
+
+  it("renders no dot or highlight without injected state", () => {
+    const wrapper = mountWith(null, { icon: "x", value: 2 });
+    expect(wrapper.find(".vc-widget__alert-dot").exists()).toBe(false);
+    expect(wrapper.find(".vc-widget__badge--changed").exists()).toBe(false);
+  });
+
+  it("renders a dot variant mapped from severity", () => {
+    const wrapper = mountWith({ alertSeverity: computed(() => "error"), editing: ref(false) });
+    expect(wrapper.find(".vc-widget__icon-container .vc-widget__alert-dot--danger").exists()).toBe(true);
+  });
+
+  it("hides badge and dot while editing", () => {
+    const wrapper = mountWith({ alertSeverity: computed(() => "warning"), editing: ref(true) }, { value: 4 });
+    expect(wrapper.find(".vc-widget__alert-dot").exists()).toBe(false);
+    expect(wrapper.find(".vc-badge__badge").exists()).toBe(false);
+  });
+
+  it("shows the badge when not editing", () => {
+    const wrapper = mountWith({ alertSeverity: computed(() => undefined), editing: ref(false) }, { value: 4 });
+    expect(wrapper.find(".vc-badge__badge").exists()).toBe(true);
+  });
+
+  it("exposes alerts to assistive tech", () => {
+    const wrapper = mountWith(
+      {
+        alertSeverity: computed(() => "warning"),
+        alertsDescription: computed(() => "2 need attention"),
+        alertsOpen: ref(false),
+        editing: ref(false),
+      },
+      { title: "Orders" },
+    );
+    const root = wrapper.find(".vc-widget");
+    expect(root.attributes("aria-label")).toBe("Orders");
+    expect(root.attributes("aria-haspopup")).toBe("dialog");
+    expect(root.attributes("aria-expanded")).toBe("false");
+    const describedBy = root.attributes("aria-describedby");
+    expect(describedBy).toBeTruthy();
+    expect(wrapper.find(`[id="${describedBy}"]`).text()).toBe("2 need attention");
+  });
+
+  it("reflects the open popup in aria-expanded", () => {
+    const wrapper = mountWith({
+      alertSeverity: computed(() => "info"),
+      alertsDescription: computed(() => "1 need attention"),
+      alertsOpen: ref(true),
+      editing: ref(false),
+    });
+    expect(wrapper.find(".vc-widget").attributes("aria-expanded")).toBe("true");
+  });
+
+  it("adds no popup attributes without alerts or while editing", () => {
+    for (const state of [
+      { alertsDescription: computed(() => undefined), editing: ref(false) },
+      { alertsDescription: computed(() => "1 need attention"), editing: ref(true) },
+      null,
+    ]) {
+      const wrapper = mountWith(
+        state && { alertSeverity: computed(() => undefined), alertsOpen: ref(false), ...state },
+        { title: "T" },
+      );
+      const root = wrapper.find(".vc-widget");
+      expect(root.attributes("aria-haspopup")).toBeUndefined();
+      expect(root.attributes("aria-expanded")).toBeUndefined();
+      expect(root.attributes("aria-describedby")).toBeUndefined();
+    }
+  });
+
+  describe("badge change highlight", () => {
+    beforeEach(() => vi.useFakeTimers());
+    afterEach(() => vi.useRealTimers());
+
+    const blade = () => ({ alertSeverity: computed(() => undefined), editing: ref(false) });
+
+    it("marks a changed value for 1.5s inside a blade, after the first load", async () => {
+      const wrapper = mountWith(blade(), { value: 0 });
+      await wrapper.setProps({ value: 2 });
+      expect(wrapper.find(".vc-widget__badge--changed").exists()).toBe(false);
+      await wrapper.setProps({ value: 3 });
+      expect(wrapper.find(".vc-widget__badge--changed").exists()).toBe(true);
+      vi.advanceTimersByTime(1500);
+      await nextTick();
+      expect(wrapper.find(".vc-widget__badge--changed").exists()).toBe(false);
+    });
+
+    it("does not mark the first value", async () => {
+      const wrapper = mountWith(blade(), {});
+      await wrapper.setProps({ value: 2 });
+      expect(wrapper.find(".vc-widget__badge--changed").exists()).toBe(false);
+    });
+
+    it("never pulses outside a blade", async () => {
+      const wrapper = mountWith(null, { value: 2 });
+      await wrapper.setProps({ value: 3 });
+      await wrapper.setProps({ value: 4 });
+      expect(wrapper.find(".vc-widget__badge--changed").exists()).toBe(false);
+    });
   });
 });

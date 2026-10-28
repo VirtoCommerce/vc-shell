@@ -238,7 +238,24 @@
         "MORE": "Mehr",
         "TOOLBAR": "Toolbar-Aktionen",
         "CLOSE_MENU": "Menü schließen",
-        "PANEL": "Panel"
+        "PANEL": "Panel",
+        "WIDGETS": {
+          "ALERTS_TITLE": "{title}: erfordert Aufmerksamkeit",
+          "ALERTS_COUNT": "Hinweise, die Aufmerksamkeit erfordern: {count}",
+          "MORE_WIDGETS": "Weitere Widgets",
+          "MORE_WIDGETS_ALERTS": "Weitere Widgets, Hinweise, die Aufmerksamkeit erfordern: {count}",
+          "CUSTOMIZE": "Anpassen",
+          "DONE": "Fertig",
+          "RESET": "Zurücksetzen",
+          "NOT_ON_BLADE": "Nicht im Blade",
+          "ON_BLADE": "Im Blade · bis zu {max}",
+          "ALL_ON_BLADE": "Alle Widgets sind im Blade",
+          "STRIP_FULL": "Bis zu {max} Widgets im Blade. Entfernen Sie eines, um hinzuzufügen.",
+          "DRAG_HINT": "Ziehen, um die Reihenfolge zu ändern",
+          "REMOVE": "{title} aus dem Blade entfernen",
+          "ADD": "{title} zum Blade hinzufügen",
+          "REORDER": "{title} verschieben"
+        }
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Hat ungespeicherte Änderungen",

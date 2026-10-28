@@ -257,3 +257,25 @@ export const BottomSheet: Story = {
     `,
   }),
 };
+
+export const ForceMount: Story = {
+  render: (args) => ({
+    components: { VcSidebar, VcButton },
+    setup() {
+      const opened = ref(false);
+      const mountedAt = ref(new Date().toLocaleTimeString());
+      return { args, opened, mountedAt };
+    },
+    template: `
+      <div class="tw-min-h-screen tw-bg-neutrals-100 tw-p-10">
+        <VcButton @click="opened = true">Open sidebar</VcButton>
+
+        <VcSidebar v-bind="args" force-mount :model-value="opened" @update:modelValue="opened = $event">
+          <p class="tw-p-4 tw-text-sm">
+            Content mounted at {{ mountedAt }}. It stays mounted while the sidebar is closed.
+          </p>
+        </VcSidebar>
+      </div>
+    `,
+  }),
+};

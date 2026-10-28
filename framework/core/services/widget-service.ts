@@ -1,5 +1,6 @@
 import { Component, ComputedRef, Ref } from "vue";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
+import type { Severity } from "@core/types/severity";
 import { cloneDeep } from "lodash-es";
 import { createBladeScopedRegistry, createPreregistrationBus } from "@core/services/_internal";
 
@@ -13,6 +14,27 @@ export interface IExposedWidget {
   id?: string;
   [key: string]: unknown;
 }
+
+export interface IWidgetAlertAction {
+  label: string;
+  run: () => void | Promise<void>;
+}
+
+export interface IWidgetAlert {
+  id: string;
+  severity: Severity;
+  /** Already translated */
+  text: string;
+  /** Secondary line: time, reason */
+  meta?: string;
+  /** Row click */
+  onOpen?: () => void;
+  action?: IWidgetAlertAction;
+  /** Called when the popup closes after it showed this alert for at least 300 ms */
+  onSeen?: () => void;
+}
+
+type AlertsSource = Ref<IWidgetAlert[]> | ComputedRef<IWidgetAlert[]>;
 
 export interface IWidgetScope {
   /** Register trigger contract (onRefresh, onClick, badge) */
@@ -32,6 +54,8 @@ export interface IWidgetTrigger {
   onRefresh?: () => void | Promise<void>;
   /** Disabled state — static or reactive */
   disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
+  /** Live alerts shown in the widget's popup */
+  alerts?: AlertsSource;
 }
 
 /** Fields present only on headless widgets (when `headless` is set on IWidget) */
@@ -42,6 +66,7 @@ export interface IHeadlessWidgetFields {
   disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
   onClick?: () => void;
   onRefresh?: () => void | Promise<void>;
+  alerts?: AlertsSource;
 }
 
 export interface IWidget {

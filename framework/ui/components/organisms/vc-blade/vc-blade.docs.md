@@ -449,6 +449,23 @@ Four variants are available: `danger`, `warning`, `info`, `success`. System bann
 
 On mobile, width is forced to `100%`. When `expanded` is `true`, the blade fills all available space.
 
+## Widgets
+
+Registered widgets (see [`useBladeWidgets`](../../../../core/composables/useBladeWidgets/index.docs.md)) are shown in a strip in the blade header on desktop and in a bottom bar on mobile.
+
+- Clicking a widget always opens its blade.
+- A widget with alerts shows a dot on its icon. Hovering it (desktop), long-pressing it (touch) or pressing ArrowDown on it shows the alerts popup. Widgets without alerts show no popup. Screen readers hear the alert count on the widget and on the chevron when hidden widgets have alerts.
+- The strip holds up to 5 widgets. The rest go to the dropdown behind the chevron (a sheet on mobile). The chevron is always visible, because it also holds Customize.
+- Widgets hidden in the dropdown or sheet stay mounted, so their badges, alerts and refresh keep working.
+
+### Customizing the layout
+
+Choose Customize in the dropdown (sheet on mobile) to edit which widgets are on the blade and in what order: the minus and plus buttons move a widget off or onto the strip (plus is disabled while the strip is full), drag changes the order, and arrow keys reorder the focused widget. Reset restores the default layout, Done leaves edit mode. Closing the dropdown or sheet while editing (outside click, the chevron, or Escape) saves the changes too: there is no cancel.
+
+A widget you remove stays in the dropdown. A dropdown widget moves up on its own only to fill the slot of a strip widget that is not shown right now (for example hidden by a permission), and goes back when that widget shows again. New widgets that were never saved fill free strip slots.
+
+The layout is stored per blade in `localStorage` under `VC_BLADE_WIDGETS_${bladeName.toUpperCase()}`. Blades without a `name` cannot be customized.
+
 ## Recipes
 
 ### Master-Detail (List + Details)

@@ -1,105 +1,157 @@
 <template>
   <div class="vc-widget-container-desktop">
     <div class="vc-widget-container-desktop__content">
-      <template
-        v-for="widget in displayedItems"
-        :key="widget.id"
+      <div
+        ref="stripEl"
+        class="vc-widget-container-desktop__strip"
+        data-widget-list="strip"
+        @keydown="onStripKeydown"
       >
-        <!-- Headless: framework renders VcWidget from config -->
         <div
-          v-if="widget.headless && resolveLoading(widget)"
-          class="vc-widget-container-desktop__widget-skeleton"
+          v-for="widget in strip"
+          :key="widget.id"
+          class="vc-widget-container-desktop__item"
+          :data-widget-id="widget.id"
         >
-          <VcSkeleton
-            variant="circle"
-            :width="18"
-            :height="18"
+          <WidgetItem
+            :widget="widget"
+            :editing="editing"
           />
-          <VcSkeleton
-            variant="block"
-            :width="36"
-            :height="10"
-            class="tw-mt-1"
-          />
+          <button
+            v-if="editing"
+            type="button"
+            class="vc-widget-container-desktop__edit-btn vc-widget-container-desktop__edit-btn--remove"
+            :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.REMOVE', { title: titleOf(widget) })"
+            @click="moveToOverflow(widget.id)"
+          >
+            <VcIcon
+              icon="lucide-minus"
+              size="xs"
+            />
+          </button>
         </div>
-        <VcWidget
-          v-else-if="widget.headless"
-          :icon="widget.headless?.icon"
-          :title="resolveTitle(widget)"
-          :value="resolveBadge(widget)"
-          :disabled="resolveDisabled(widget)"
-          :widget-id="widget.id"
-          @click="handleHeadlessClick(widget)"
-        />
-
-        <!-- Component-based: external widgets / legacy -->
-        <WidgetScope
-          v-else
-          :widget-id="widget.id"
-        >
-          <component
-            :is="widget.component"
-            v-bind="widget.props || {}"
-            :widget-id="widget.id"
-            v-on="widget.events || {}"
-          />
-        </WidgetScope>
-      </template>
+      </div>
 
       <VcDropdown
-        v-if="showMoreButton"
-        :model-value="showToolbar"
-        :items="overflowItems"
+        :model-value="menuOpen"
         floating
+        force-mount
         placement="bottom-end"
         variant="secondary"
-        @update:model-value="showToolbar = $event"
+        :padded="false"
+        :close-on-click-outside="!editing"
+        @update:model-value="onMenuToggle"
       >
-        <template #trigger="{ isActive }">
-          <div
+        <template #trigger="{ isActive, toggle }">
+          <button
+            type="button"
             class="vc-widget-container-desktop__more"
             :class="{ 'vc-widget-container-desktop__more--active': isActive }"
-            @click="showToolbar = !showToolbar"
+            :aria-label="moreLabel"
+            :aria-expanded="isActive"
+            aria-haspopup="true"
+            @click="toggle"
           >
             <VcIcon icon="lucide-chevron-down" />
-          </div>
+            <span
+              v-if="moreDot && !editing"
+              class="vc-widget-container-desktop__more-dot"
+              :class="`vc-widget-container-desktop__more-dot--${moreDot}`"
+              aria-hidden="true"
+            />
+          </button>
         </template>
 
-        <template #item="{ item }">
-          <VcSkeleton
-            v-if="item.headless && resolveLoading(item)"
-            variant="block"
-            width="100%"
-            :height="32"
-          />
-          <VcWidget
-            v-else-if="item.headless"
-            class="tw-w-full"
-            :icon="item.headless?.icon"
-            :title="resolveTitle(item)"
-            :value="resolveBadge(item)"
-            :disabled="resolveDisabled(item)"
-            :widget-id="item.id"
-            horizontal
-            @click="
-              handleHeadlessClick(item);
-              showToolbar = false;
-            "
-          />
-          <WidgetScope
-            v-else
-            :widget-id="item.id"
-          >
-            <component
-              :is="item.component"
-              class="tw-w-full"
-              v-bind="item.props || {}"
-              horizontal
-              :widget-id="item.id"
-              v-on="item.events || {}"
-              @click="showToolbar = false"
-            />
-          </WidgetScope>
+        <template #items-container>
+          <div class="vc-widget-container-desktop__menu">
+            <div
+              v-if="editing"
+              class="vc-widget-container-desktop__hint"
+            >
+              {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.DRAG_HINT") }}
+            </div>
+            <div
+              v-if="editing"
+              class="vc-widget-container-desktop__menu-title"
+            >
+              {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.NOT_ON_BLADE") }}
+            </div>
+            <div
+              ref="overflowEl"
+              class="vc-widget-container-desktop__list"
+              data-widget-list="overflow"
+              @keydown="onOverflowKeydown"
+            >
+              <div
+                v-for="widget in overflowItems"
+                :key="widget.id"
+                class="vc-widget-container-desktop__row"
+                :data-widget-id="widget.id"
+              >
+                <WidgetItem
+                  :widget="widget"
+                  :editing="editing"
+                  horizontal
+                  @click="onRowClick"
+                />
+                <button
+                  v-if="editing"
+                  type="button"
+                  class="vc-widget-container-desktop__edit-btn vc-widget-container-desktop__edit-btn--add"
+                  :disabled="!canAddToStrip"
+                  :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ADD', { title: titleOf(widget) })"
+                  @click="moveToStrip(widget.id)"
+                >
+                  <VcIcon
+                    icon="lucide-plus"
+                    size="xs"
+                  />
+                </button>
+              </div>
+            </div>
+            <div
+              v-if="editing && !overflowItems.length"
+              class="vc-widget-container-desktop__empty"
+            >
+              {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ALL_ON_BLADE") }}
+            </div>
+            <div
+              v-if="editing && !canAddToStrip && overflowItems.length"
+              class="vc-widget-container-desktop__empty"
+            >
+              {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.STRIP_FULL", { max: WIDGET_STRIP_MAX }) }}
+            </div>
+
+            <div
+              v-if="editing || canCustomize"
+              class="vc-widget-container-desktop__footer"
+            >
+              <template v-if="editing">
+                <button
+                  type="button"
+                  class="vc-widget-container-desktop__link"
+                  @click="reset"
+                >
+                  {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.RESET") }}
+                </button>
+                <button
+                  type="button"
+                  class="vc-widget-container-desktop__done"
+                  @click="finishEdit"
+                >
+                  {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.DONE") }}
+                </button>
+              </template>
+              <button
+                v-else
+                type="button"
+                class="vc-widget-container-desktop__link"
+                @click="startEdit"
+              >
+                {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.CUSTOMIZE") }}
+              </button>
+            </div>
+          </div>
         </template>
       </VcDropdown>
     </div>
@@ -107,27 +159,86 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
-import { IWidget } from "@core/services/widget-service";
+import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import type { IWidget } from "@core/services/widget-service";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
-import { VcWidget } from "@ui/components/atoms/vc-widget";
-import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
-import WidgetScope from "./WidgetScope.vue";
+import WidgetItem from "./WidgetItem.vue";
+import { useWidgetLayout, WIDGET_STRIP_MAX } from "./useWidgetLayout";
+import { useWidgetEditReorder } from "./useWidgetEditReorder";
 import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
+import { resolveAlerts, highestSeverity, sortAlertsFirst, SEVERITY_DOT_VARIANT } from "./widget-alerts";
 
 interface Props {
   widgets: IWidget[];
   bladeId: string;
+  bladeName?: string;
 }
 
-const props = defineProps<Props>();
-const showToolbar = ref(false);
-const { resolveBadge, resolveLoading, resolveDisabled, resolveTitle, handleHeadlessClick } = useHeadlessWidgetHelpers();
+const props = withDefaults(defineProps<Props>(), { bladeName: "" });
+const { t } = useI18n();
+const { resolveTitle } = useHeadlessWidgetHelpers();
 
-const displayedItems = computed(() => props.widgets.slice(0, 3));
-const overflowItems = computed(() => props.widgets.slice(3));
-const showMoreButton = computed(() => props.widgets.length > 3);
+const layout = useWidgetLayout(
+  () => props.bladeName,
+  () => props.widgets,
+);
+const { strip, overflow, editing, canAddToStrip, startEdit: beginEdit, commit, reset: resetLayout } = layout;
+
+const menuOpen = ref(false);
+// An unnamed blade would share one storage key, so it cannot be customized
+const canCustomize = computed(() => !!props.bladeName);
+
+const titleOf = (widget: IWidget) => resolveTitle(widget);
+
+// Edit mode keeps the draft order so list indices stay meaningful
+const overflowItems = computed(() => (editing.value ? overflow.value : sortAlertsFirst(overflow.value)));
+
+const hiddenAlerts = computed(() => overflow.value.flatMap(resolveAlerts));
+const moreDot = computed(() => {
+  const severity = highestSeverity(hiddenAlerts.value);
+  return severity ? SEVERITY_DOT_VARIANT[severity] : undefined;
+});
+const moreLabel = computed(() =>
+  hiddenAlerts.value.length && !editing.value
+    ? t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.MORE_WIDGETS_ALERTS", { count: hiddenAlerts.value.length })
+    : t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.MORE_WIDGETS"),
+);
+
+function startEdit() {
+  if (canCustomize.value) beginEdit();
+}
+
+function finishEdit() {
+  commit();
+  menuOpen.value = false;
+}
+
+function reset() {
+  resetLayout();
+}
+
+function onMenuToggle(open: boolean) {
+  menuOpen.value = open;
+  if (!open && editing.value) commit();
+}
+
+function onRowClick() {
+  if (!editing.value) menuOpen.value = false;
+}
+
+// ── Drag and keyboard reorder ───────────────────────────────────────────────
+
+const stripEl = ref<HTMLElement>();
+const overflowEl = ref<HTMLElement>();
+const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWidgetEditReorder({
+  layout,
+  stripEl,
+  overflowEl,
+  stripAxis: "horizontal",
+  controlSelector: ".vc-widget-container-desktop__edit-btn",
+});
 </script>
 
 <style lang="scss">
@@ -142,12 +253,82 @@ const showMoreButton = computed(() => props.widgets.length > 3);
   background-color: var(--blade-toolbar-widgets-bg-color);
 
   &__content {
+    @apply tw-flex tw-flex-row tw-items-stretch tw-gap-1;
+  }
+
+  &__strip {
     @apply tw-flex tw-flex-row tw-gap-1;
   }
 
-  // Style widgets inside dropdown to match VcDropdownItem appearance
-  .vc-dropdown__item {
-    // Suppress widget's own hover — the dropdown item wrapper provides hover feedback
+  &__item {
+    @apply tw-relative tw-flex tw-shrink-0;
+  }
+
+  &__hint {
+    @apply tw-px-3 tw-pt-2 tw-text-xs tw-whitespace-nowrap;
+    color: var(--neutrals-500);
+  }
+
+  &__edit-btn {
+    @apply tw-absolute tw-flex tw-items-center tw-justify-center tw-w-4 tw-h-4 tw-rounded-full tw-cursor-pointer;
+    inset-block-start: 2px;
+    inset-inline-end: 2px;
+    z-index: var(--z-local-above);
+    color: var(--additional-50);
+    background-color: var(--neutrals-600);
+
+    &--remove:hover {
+      background-color: var(--danger-500);
+    }
+
+    &--add {
+      position: static;
+      @apply tw-shrink-0 tw-w-5 tw-h-5 tw-me-2;
+      background-color: var(--primary-500);
+
+      &:hover:not(:disabled) {
+        background-color: var(--primary-600);
+      }
+
+      &:disabled {
+        @apply tw-cursor-not-allowed;
+        color: var(--neutrals-400);
+        background-color: var(--neutrals-200);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--primary-500);
+      outline-offset: 1px;
+    }
+  }
+
+  &__menu {
+    @apply tw-flex tw-flex-col tw-min-w-[12rem];
+  }
+
+  &__menu-title {
+    @apply tw-px-3 tw-pt-2 tw-pb-1 tw-text-xs tw-font-medium;
+    color: var(--neutrals-500);
+  }
+
+  &__list {
+    @apply tw-flex tw-flex-col tw-py-1;
+  }
+
+  &__row {
+    @apply tw-flex tw-items-center;
+
+    // The widget takes the free width, so the +/- button stays inside the row
+    > .vc-widget-item {
+      @apply tw-flex-1 tw-min-w-0;
+    }
+
+    &:hover {
+      background-color: var(--neutrals-100);
+    }
+
+    // Suppress widget's own hover, the row provides hover feedback
     --widget-bg-hover-color: transparent;
     --widget-bg-color: transparent;
     --widget-icon-hover-color: var(--widget-icon-color);
@@ -175,18 +356,61 @@ const showMoreButton = computed(() => props.widgets.length > 3);
     }
   }
 
-  &__widget-skeleton {
-    @apply tw-shrink-0 tw-px-2 tw-py-1.5 tw-flex tw-flex-col tw-items-center tw-justify-center;
+  &__empty {
+    @apply tw-px-3 tw-py-2 tw-text-xs;
+    color: var(--neutrals-500);
+  }
+
+  &__footer {
+    @apply tw-flex tw-items-center tw-justify-between tw-gap-2 tw-px-3 tw-py-2;
+    border-block-start: 1px solid var(--neutrals-200);
+  }
+
+  &__link {
+    @apply tw-text-xs tw-cursor-pointer;
+    color: var(--primary-600);
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__done {
+    @apply tw-text-xs tw-font-medium tw-px-3 tw-py-1 tw-rounded tw-cursor-pointer tw-ms-auto;
+    color: var(--additional-50);
+    background-color: var(--primary-500);
+
+    &:hover {
+      background-color: var(--primary-600);
+    }
   }
 
   &__more {
-    @apply tw-flex tw-items-center tw-justify-center tw-px-2 tw-h-full tw-cursor-pointer;
+    @apply tw-relative tw-flex tw-items-center tw-justify-center tw-px-2 tw-h-full tw-cursor-pointer;
     color: var(--blade-toolbar-icon-color);
 
     &:hover,
     &--active {
       color: var(--blade-toolbar-icon-hover-color);
       background-color: var(--blade-toolbar-widgets-bg-hover-color);
+    }
+  }
+
+  &__more-dot {
+    @apply tw-absolute tw-w-2 tw-h-2 tw-rounded-full;
+    inset-block-start: 6px;
+    inset-inline-end: 4px;
+
+    &--danger {
+      background-color: var(--danger-500);
+    }
+
+    &--warning {
+      background-color: var(--warning-500);
+    }
+
+    &--info {
+      background-color: var(--info-500);
     }
   }
 }

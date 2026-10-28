@@ -33,10 +33,12 @@
         appear
       >
         <div
-          v-if="isOpen"
+          v-if="isOpen || forceMount"
+          v-show="isOpen"
           :id="panelId"
           ref="floatingEl"
           v-on-click-outside="outsideClickBinding"
+          :inert="!isOpen || undefined"
           class="vc-dropdown__dropdown"
           :style="{
             maxHeight: normalizedMaxHeight,
@@ -140,6 +142,8 @@ export interface VcDropdownProps<T> {
   padded?: boolean;
   /** Accessible name for the dropdown panel (menu/listbox). Required for a named listbox. */
   ariaLabel?: string;
+  /** Keep the panel content mounted (hidden and inert) while closed. */
+  forceMount?: boolean;
 }
 
 const props = withDefaults(defineProps<VcDropdownProps<T>>(), {
@@ -161,6 +165,7 @@ const props = withDefaults(defineProps<VcDropdownProps<T>>(), {
   autoFocusPanel: true,
   zIndex: 9300,
   padded: true,
+  forceMount: false,
 });
 
 const emit = defineEmits<{
@@ -204,7 +209,10 @@ const isOpen = computed({
   set: (value: boolean) => emit("update:modelValue", value),
 });
 
-const { x, y, resolvedPlacement, resolvedStrategy } = useFloatingPosition(referenceEl, floatingEl, {
+// A closed force-mounted panel stays in the DOM; hiding it from floating-ui stops autoUpdate until it opens
+const positionedEl = computed(() => (props.forceMount && !isOpen.value ? null : floatingEl.value));
+
+const { x, y, resolvedPlacement, resolvedStrategy, update } = useFloatingPosition(referenceEl, positionedEl, {
   placement: computed(() => props.placement),
   strategy: computed(() => (props.floating ? "fixed" : "absolute")),
   offset: computed(() => props.offset),
@@ -254,7 +262,7 @@ const activeDescendantId = computed(() => {
 
 const outsideClickBinding: [() => void, { ignore: Array<Ref<HTMLElement | null>> }] = [
   () => {
-    if (props.closeOnClickOutside) {
+    if (props.closeOnClickOutside && isOpen.value) {
       closeByReason("outside");
     }
   },
@@ -399,6 +407,11 @@ watch(
 
     if (opened) {
       syncFocusedIndex();
+
+      // A force-mounted panel was measured while display:none
+      if (props.forceMount) {
+        nextTick(() => update());
+      }
 
       if (props.closeOnEscape) {
         document.addEventListener("keydown", onDocumentEscapeKeydown);

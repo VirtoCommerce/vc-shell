@@ -238,7 +238,24 @@
         "MORE": "More",
         "TOOLBAR": "Toolbar actions",
         "CLOSE_MENU": "Close menu",
-        "PANEL": "Panel"
+        "PANEL": "Panel",
+        "WIDGETS": {
+          "ALERTS_TITLE": "{title}: needs attention",
+          "ALERTS_COUNT": "Alerts needing attention: {count}",
+          "MORE_WIDGETS": "More widgets",
+          "MORE_WIDGETS_ALERTS": "More widgets, alerts needing attention: {count}",
+          "CUSTOMIZE": "Customize",
+          "DONE": "Done",
+          "RESET": "Reset",
+          "NOT_ON_BLADE": "Not on blade",
+          "ON_BLADE": "On blade · up to {max}",
+          "ALL_ON_BLADE": "All widgets are on the blade",
+          "STRIP_FULL": "Up to {max} widgets on the blade. Remove one to add.",
+          "DRAG_HINT": "Drag to change the order",
+          "REMOVE": "Remove {title} from the blade",
+          "ADD": "Add {title} to the blade",
+          "REORDER": "Reorder {title}"
+        }
       },
       "VC_BLADE_HEADER": {
         "UNSAVED_CHANGES": "Has unsaved changes",

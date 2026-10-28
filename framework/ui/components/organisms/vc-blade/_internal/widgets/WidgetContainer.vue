@@ -3,11 +3,13 @@
     v-if="visibleWidgets.length > 0 && isMobile"
     :widgets="visibleWidgets"
     :blade-id="normalizedBladeId"
+    :blade-name="rawBladeName"
   />
   <WidgetContainerDesktop
     v-else-if="visibleWidgets.length > 0"
     :widgets="visibleWidgets"
     :blade-id="normalizedBladeId"
+    :blade-name="rawBladeName"
   />
 </template>
 
@@ -37,6 +39,7 @@ const descriptor = inject(BladeDescriptorKey, undefined);
 
 // ── External widget auto-resolution ─────────────────────────────────────────
 
+const rawBladeName = computed(() => descriptor?.value.name ?? "");
 const bladeName = computed(() => descriptor?.value.name?.toLowerCase() ?? "");
 const registeredExternalWidgetIds = new Set<string>();
 

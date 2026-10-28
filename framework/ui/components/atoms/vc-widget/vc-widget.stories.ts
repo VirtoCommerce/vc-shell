@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcWidget } from "@ui/components/atoms/vc-widget";
 import { provideWidgetService } from "@core/composables/useWidgets";
+import { WidgetRenderStateKey } from "@ui/components/organisms/vc-blade/_internal/widgets/widget-render-state";
+import { computed, defineComponent, provide, ref } from "vue";
+import type { Severity } from "@core/types/severity";
 
 /**
  * `VcWidget` is a component that represents a clickable widget with an icon, title, and optional badge.
@@ -280,5 +283,61 @@ export const SidebarLayout: Story = {
         console.log(`Widget ${widget.title} clicked`);
       },
     },
+  }),
+};
+
+/**
+ * Alert dot shown when the blade provides an alert severity
+ */
+export const WithAlertDot: Story = {
+  render: () => ({
+    components: { VcWidget },
+    setup() {
+      const Provider = defineComponent({
+        props: { severity: { type: String, required: true } },
+        setup(props, { slots }) {
+          provide(WidgetRenderStateKey, {
+            alertSeverity: computed(() => props.severity as Severity),
+            alertsDescription: computed(() => "1 need attention"),
+            alertsOpen: ref(false),
+            editing: ref(false),
+          });
+          return () => slots.default?.();
+        },
+      });
+      return { Provider, severities: ["info", "warning", "error"] };
+    },
+    template: `
+      <div class="tw-bg-gray-100 tw-p-4 tw-inline-flex tw-gap-4">
+        <component :is="Provider" v-for="s in severities" :key="s" :severity="s">
+          <vc-widget icon="lucide-bell" :title="s" :value="3" />
+        </component>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Badge pulses when the value changes inside a blade (render state provided), not on the first change
+ */
+export const BadgeChanged: Story = {
+  render: () => ({
+    components: { VcWidget },
+    setup() {
+      const count = ref(1);
+      provide(WidgetRenderStateKey, {
+        alertSeverity: computed(() => undefined),
+        alertsDescription: computed(() => undefined),
+        alertsOpen: ref(false),
+        editing: ref(false),
+      });
+      return { count };
+    },
+    template: `
+      <div class="tw-bg-gray-100 tw-p-4 tw-inline-flex tw-gap-4 tw-items-center">
+        <vc-widget icon="lucide-mail" title="Messages" :value="count" />
+        <button class="tw-border tw-px-2" @click="count++">Increment</button>
+      </div>
+    `,
   }),
 };

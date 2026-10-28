@@ -188,6 +188,21 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 </VcDropdown>
 ```
 
+### Keeping Content Mounted
+
+By default the panel is unmounted while closed. Set `forceMount` to keep it in the DOM, hidden with `display: none` and `inert`, so content inside it (data loads, subscriptions) stays alive. Outside-click and Escape handling only run while the dropdown is open, and a floating panel is repositioned each time it opens.
+
+```vue
+<VcDropdown v-model="isOpen" force-mount>
+  <template #trigger="{ toggle }">
+    <VcButton @click="toggle">Menu</VcButton>
+  </template>
+  <template #items-container>
+    <LiveStatusList />
+  </template>
+</VcDropdown>
+```
+
 ## Recipes
 
 ### Confirmation Dropdown
@@ -331,6 +346,7 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 | `autoFocusPanel`      | `boolean`                                      | `true`                          | Focus the panel element when opened                            |
 | `padded`              | `boolean`                                      | `true`                          | Apply compact padding and rounded item backgrounds             |
 | `zIndex`              | `number`                                       | `9300`                          | Z-index for the floating panel                                 |
+| `forceMount`          | `boolean`                                      | `false`                         | Keep the panel content mounted (hidden, inert) while closed    |
 
 ## Events
 

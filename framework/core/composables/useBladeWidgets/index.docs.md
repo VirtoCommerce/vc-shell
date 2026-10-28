@@ -93,6 +93,29 @@ Inline `useBladeWidgets([...])` is fine for one-off widgets, but extracting beco
 | `isVisible` | `ComputedRef<boolean> \| Ref<boolean> \| boolean`        | No       | Toggle visibility                         |
 | `onClick`   | `() => void`                                             | No       | Action when widget is clicked             |
 | `onRefresh` | `() => void \| Promise<void>`                            | No       | Called by `refresh(id)` or `refreshAll()` |
+| `alerts`    | `Ref<IWidgetAlert[]> \| ComputedRef<IWidgetAlert[]>`     | No       | Live alerts shown in the widget popup     |
+
+### Alerts
+
+A widget with a non-empty `alerts` list shows a dot on its icon, colored by the highest severity. Hovering the widget (desktop) or long-pressing it (touch) opens a popup with the alerts; clicking the widget still opens the blade. Widgets without alerts show no popup.
+
+```typescript
+const alerts = computed<IWidgetAlert[]>(() => (outOfStock.value ? [{ id: "stock", severity: "warning", text: t("OFFERS.OUT_OF_STOCK") }] : []));
+
+useBladeWidgets([{ id: "OffersWidget", icon: "lucide-tag", title: "OFFERS.TITLE", alerts }]);
+```
+
+| `IWidgetAlert` field | Type                                           | Required | Description                                           |
+| -------------------- | ---------------------------------------------- | -------- | ----------------------------------------------------- |
+| `id`                 | `string`                                       | Yes      | Unique within the widget                              |
+| `severity`           | `"info" \| "warning" \| "error" \| "critical"` | Yes      | Drives the dot color and row icon                     |
+| `text`               | `string`                                       | Yes      | Already translated                                    |
+| `meta`               | `string`                                       | No       | Secondary line (time, reason)                         |
+| `onOpen`             | `() => void`                                   | No       | Called on row click                                   |
+| `action`             | `{ label: string; run: () => void }`           | No       | Inline action button                                  |
+| `onSeen`             | `() => void`                                   | No       | Called when the popup closes after showing this alert |
+
+Alerts computed from loaded data stay while the problem exists. For alerts driven by push notifications, use [`useWidgetPushAlerts`](../useWidgetPushAlerts/useWidgetPushAlerts.docs.md); they are independent from the notification bell.
 
 ### Returns
 
@@ -124,6 +147,7 @@ useWidgetTrigger({ onRefresh: loadData });
 | `onClick`   | `() => void`                  | No       | Handler called when widget is clicked in dropdown |
 | `onRefresh` | `() => void \| Promise<void>` | No       | Handler called to refresh widget data             |
 | `disabled`  | `Ref<boolean> \| boolean`     | No       | Disabled state                                    |
+| `alerts`    | `Ref<IWidgetAlert[]>`         | No       | Live alerts shown in the widget popup (see above) |
 
 ### How It Works
 

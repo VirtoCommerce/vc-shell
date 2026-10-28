@@ -1,7 +1,8 @@
 import { Component, ComputedRef, InjectionKey } from "vue";
 import { PushNotification } from "@core/api/platform";
+import type { Severity } from "@core/types/severity";
 
-export type Severity = "info" | "warning" | "error" | "critical";
+export type { Severity };
 
 export interface ToastConfig {
   mode: "auto" | "progress" | "silent";

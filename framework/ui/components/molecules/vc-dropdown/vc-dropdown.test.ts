@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { nextTick } from "vue";
+import { defineComponent, h, nextTick, onMounted } from "vue";
 import VcDropdown from "@ui/components/molecules/vc-dropdown/vc-dropdown.vue";
 
 describe("VcDropdown", () => {
@@ -104,5 +104,71 @@ describe("VcDropdown", () => {
     expect(wrapper.emitted("item-click")).toEqual([[items[1]]]);
 
     wrapper.unmount();
+  });
+
+  describe("forceMount", () => {
+    function mountWithProbe(props: Record<string, unknown>) {
+      const onProbeMounted = vi.fn();
+      const Probe = defineComponent({
+        setup() {
+          onMounted(() => onProbeMounted());
+          return () => h("span", { class: "probe" }, "probe");
+        },
+      });
+      const wrapper = mount(VcDropdown as any, {
+        props: { items: [{ id: "1" }], ...props },
+        slots: { item: () => h(Probe) },
+        attachTo: document.body,
+      });
+      return { wrapper, onProbeMounted };
+    }
+
+    it("keeps content mounted while closed", async () => {
+      const { wrapper, onProbeMounted } = mountWithProbe({ forceMount: true, modelValue: false });
+      await nextTick();
+
+      const panel = wrapper.find(".vc-dropdown__dropdown");
+      expect(panel.exists()).toBe(true);
+      expect((panel.element as HTMLElement).style.display).toBe("none");
+      expect(panel.attributes()).toHaveProperty("inert");
+      expect(onProbeMounted).toHaveBeenCalledTimes(1);
+
+      await wrapper.setProps({ modelValue: true });
+      expect((wrapper.find(".vc-dropdown__dropdown").element as HTMLElement).style.display).not.toBe("none");
+      expect(wrapper.find(".vc-dropdown__dropdown").attributes()).not.toHaveProperty("inert");
+
+      await wrapper.setProps({ modelValue: false });
+      await wrapper.setProps({ modelValue: true });
+      expect(onProbeMounted).toHaveBeenCalledTimes(1);
+
+      wrapper.unmount();
+    });
+
+    it("default unmounts when closed", () => {
+      const { wrapper, onProbeMounted } = mountWithProbe({ modelValue: false });
+
+      expect(wrapper.find(".vc-dropdown__dropdown").exists()).toBe(false);
+      expect(onProbeMounted).not.toHaveBeenCalled();
+
+      wrapper.unmount();
+    });
+
+    it("hidden panel is not focusable and ignores outside click and Escape", async () => {
+      const { wrapper } = mountWithProbe({ forceMount: true, modelValue: false, autoFocusPanel: true });
+      await nextTick();
+
+      const panel = wrapper.find(".vc-dropdown__dropdown");
+      expect(document.activeElement).not.toBe(panel.element);
+      expect(panel.attributes()).toHaveProperty("inert");
+
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+      document.body.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true }));
+      document.body.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      await nextTick();
+      expect(wrapper.emitted("close")).toBeUndefined();
+      expect(wrapper.emitted("update:modelValue")).toBeUndefined();
+
+      wrapper.unmount();
+    });
   });
 });

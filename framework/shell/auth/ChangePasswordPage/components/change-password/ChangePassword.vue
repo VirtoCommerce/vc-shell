@@ -22,7 +22,7 @@
         v-slot="{ field, errorMessage, errors }"
         :label="t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
         name="current"
-        rules="required|min:6"
+        rules="required"
         :model-value="form.currentPassword"
       >
         <VcInput

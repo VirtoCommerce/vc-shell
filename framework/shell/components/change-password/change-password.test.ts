@@ -25,6 +25,7 @@ vi.mock("vee-validate", () => ({
   useIsFormValid: () => ref(true),
   useIsFormDirty: () => ref(true),
   Field: {
+    name: "Field",
     template: '<div><slot :field="{}" :errorMessage="undefined" :errors="[]" /></div>',
     props: ["label", "name", "rules", "modelValue"],
   },
@@ -107,5 +108,12 @@ describe("ChangePassword", () => {
     // Without new-password on the last two, a manager can fill the current
     // password into them and offer to save the old one back.
     expect(tokens).toEqual(["current-password", "new-password", "new-password"]);
+  });
+
+  it("doesn't hold the current password to the new-password length rule", () => {
+    const w = factory();
+    const rules = w.findAllComponents({ name: "Field" }).map((field) => field.props("rules"));
+    // An older or administrator-set password can be shorter than the policy for new ones.
+    expect(rules).toEqual(["required", "required|min:6", "required|min:6"]);
   });
 });

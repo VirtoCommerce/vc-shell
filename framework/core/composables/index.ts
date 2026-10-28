@@ -26,7 +26,6 @@ export * from "@core/composables/useBlade";
 export * from "@core/composables/useSidebarState";
 export * from "@core/composables/useWebVitals";
 export * from "@core/composables/useBladeWidgets";
-export * from "@core/composables/useWidgetPushAlerts";
 export * from "@core/composables/bladeContext";
 export * from "@core/composables/useModificationTracker";
 export * from "@core/composables/usePopup";

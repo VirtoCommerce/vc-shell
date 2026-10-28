@@ -79,6 +79,7 @@
     <WidgetAlertsPopover
       v-if="alerts.length && !editing"
       :alerts="alerts"
+      :content="alertsComponent"
       :anchor="rootEl"
       :show="popoverOpen"
       :focus-on-open="openedByKeyboard"
@@ -115,6 +116,8 @@ const { resolveBadge, resolveLoading, resolveDisabled, resolveTitle, handleHeadl
 
 const { t } = useI18n();
 const alerts = computed(() => resolveAlerts(props.widget));
+// Component widgets set it through useWidgetTrigger, headless ones in their declaration
+const alertsComponent = computed(() => props.widget.trigger?.alertsComponent ?? props.widget.headless?.alertsComponent);
 const popoverOpen = ref(false);
 
 // Reads the live widget so a trigger set later by a component widget is picked up
@@ -127,9 +130,12 @@ const renderState: IWidgetRenderState = {
   ),
   alertsOpen: popoverOpen,
   editing: toRef(props, "editing"),
+  renderedTitle: ref<string>(),
 };
 const popoverTitle = computed(() =>
-  t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ALERTS_TITLE", { title: resolveTitle(props.widget) }),
+  t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ALERTS_TITLE", {
+    title: resolveTitle(props.widget) || renderState.renderedTitle.value || "",
+  }),
 );
 
 const OPEN_DELAY_MS = 300;

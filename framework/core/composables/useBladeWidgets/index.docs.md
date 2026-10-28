@@ -82,18 +82,19 @@ Inline `useBladeWidgets([...])` is fine for one-off widgets, but extracting beco
 
 ### HeadlessWidgetDeclaration
 
-| Field       | Type                                                     | Required | Description                               |
-| ----------- | -------------------------------------------------------- | -------- | ----------------------------------------- |
-| `id`        | `string`                                                 | Yes      | Unique widget identifier                  |
-| `icon`      | `string`                                                 | Yes      | Icon name (e.g., `"lucide-tag"`)          |
-| `title`     | `string`                                                 | Yes      | i18n key or display title                 |
-| `badge`     | `Ref<number \| string> \| ComputedRef<number \| string>` | No       | Badge counter value                       |
-| `loading`   | `Ref<boolean> \| ComputedRef<boolean>`                   | No       | Show loading indicator                    |
-| `disabled`  | `Ref<boolean> \| boolean`                                | No       | Disable the widget                        |
-| `isVisible` | `ComputedRef<boolean> \| Ref<boolean> \| boolean`        | No       | Toggle visibility                         |
-| `onClick`   | `() => void`                                             | No       | Action when widget is clicked             |
-| `onRefresh` | `() => void \| Promise<void>`                            | No       | Called by `refresh(id)` or `refreshAll()` |
-| `alerts`    | `Ref<IWidgetAlert[]> \| ComputedRef<IWidgetAlert[]>`     | No       | Live alerts shown in the widget popup     |
+| Field             | Type                                                     | Required | Description                               |
+| ----------------- | -------------------------------------------------------- | -------- | ----------------------------------------- |
+| `id`              | `string`                                                 | Yes      | Unique widget identifier                  |
+| `icon`            | `string`                                                 | Yes      | Icon name (e.g., `"lucide-tag"`)          |
+| `title`           | `string`                                                 | Yes      | i18n key or display title                 |
+| `badge`           | `Ref<number \| string> \| ComputedRef<number \| string>` | No       | Badge counter value                       |
+| `loading`         | `Ref<boolean> \| ComputedRef<boolean>`                   | No       | Show loading indicator                    |
+| `disabled`        | `Ref<boolean> \| boolean`                                | No       | Disable the widget                        |
+| `isVisible`       | `ComputedRef<boolean> \| Ref<boolean> \| boolean`        | No       | Toggle visibility                         |
+| `onClick`         | `() => void`                                             | No       | Action when widget is clicked             |
+| `onRefresh`       | `() => void \| Promise<void>`                            | No       | Called by `refresh(id)` or `refreshAll()` |
+| `alerts`          | `Ref<IWidgetAlert[]> \| ComputedRef<IWidgetAlert[]>`     | No       | Live alerts shown in the widget popup     |
+| `alertsComponent` | `Component`                                              | No       | Popup content instead of the default rows |
 
 ### Alerts
 
@@ -105,17 +106,65 @@ const alerts = computed<IWidgetAlert[]>(() => (outOfStock.value ? [{ id: "stock"
 useBladeWidgets([{ id: "OffersWidget", icon: "lucide-tag", title: "OFFERS.TITLE", alerts }]);
 ```
 
-| `IWidgetAlert` field | Type                                           | Required | Description                                           |
-| -------------------- | ---------------------------------------------- | -------- | ----------------------------------------------------- |
-| `id`                 | `string`                                       | Yes      | Unique within the widget                              |
-| `severity`           | `"info" \| "warning" \| "error" \| "critical"` | Yes      | Drives the dot color and row icon                     |
-| `text`               | `string`                                       | Yes      | Already translated                                    |
-| `meta`               | `string`                                       | No       | Secondary line (time, reason)                         |
-| `onOpen`             | `() => void`                                   | No       | Called on row click                                   |
-| `action`             | `{ label: string; run: () => void }`           | No       | Inline action button                                  |
-| `onSeen`             | `() => void`                                   | No       | Called when the popup closes after showing this alert |
+| `IWidgetAlert` field | Type                                           | Required | Description                       |
+| -------------------- | ---------------------------------------------- | -------- | --------------------------------- |
+| `id`                 | `string`                                       | Yes      | Unique within the widget          |
+| `severity`           | `"info" \| "warning" \| "error" \| "critical"` | Yes      | Drives the dot color and row icon |
+| `text`               | `string`                                       | Yes      | Already translated                |
+| `meta`               | `string`                                       | No       | Secondary line (time, reason)     |
+| `onOpen`             | `() => void`                                   | No       | Called on row click               |
+| `action`             | `{ label: string; run: () => void }`           | No       | Inline action button              |
 
-Alerts computed from loaded data stay while the problem exists. For alerts driven by push notifications, use [`useWidgetPushAlerts`](../useWidgetPushAlerts/useWidgetPushAlerts.docs.md); they are independent from the notification bell.
+Alerts are data: compute them from what the widget has loaded, and they stay exactly as long as the problem does. When a push means the data changed, refetch it; the alerts follow, together with the badge. A component widget passes the same `alerts` through `useWidgetTrigger`.
+
+```typescript
+const unread = ref<Message[]>([]);
+const load = async () => {
+  unread.value = await api.searchUnread({ entityId: entityId.value });
+};
+
+// A push for this entity: refetch, and the badge and alerts update together
+useBladeNotifications<MessagePush>({
+  types: ["MessagePushNotification"],
+  filter: (m) => m.entityId === entityId.value,
+  onMessage: load,
+});
+
+const alerts = computed<IWidgetAlert[]>(() => unread.value.map((m) => ({ id: m.id!, severity: "info", text: m.content ?? "", onOpen: openMessenger })));
+useWidgetTrigger({ onRefresh: load, alerts });
+```
+
+Widget alerts are independent from the notification bell: the bell lists notifications, the widget lists what is unresolved in its data.
+
+### Custom popup content
+
+The popup shows one row per alert by default. To draw it yourself (message previews, an offer card), pass `alertsComponent`. The alerts still decide the dot and whether the popup opens; the component decides what it shows. It receives `IWidgetAlertsComponentProps`: the `alerts` and a `close()` to call after it opens a blade.
+
+```vue
+<!-- MessagesPreview.vue -->
+<script setup lang="ts">
+import type { IWidgetAlertsComponentProps } from "@vc-shell/framework";
+defineProps<IWidgetAlertsComponentProps>();
+</script>
+
+<template>
+  <div class="tw-p-3">
+    <p
+      v-for="a in alerts"
+      :key="a.id"
+    >
+      {{ a.meta }}: {{ a.text }}
+    </p>
+    <button @click="close()">Open conversation</button>
+  </div>
+</template>
+```
+
+```typescript
+useWidgetTrigger({ onRefresh: load, alerts, alertsComponent: MessagesPreview });
+```
+
+Keyboard opening moves focus to the first button, link or input in the component, so put the main action first or make it a real `<button>`.
 
 ### Returns
 
@@ -139,15 +188,16 @@ useWidgetTrigger({ onRefresh: loadData });
 
 ### IWidgetTrigger
 
-| Field       | Type                          | Required | Description                                       |
-| ----------- | ----------------------------- | -------- | ------------------------------------------------- |
-| `icon`      | `string`                      | No       | Lucide icon name for dropdown rendering           |
-| `title`     | `string`                      | No       | Display title (fallback: widget's title)          |
-| `badge`     | `Ref<number \| string>`       | No       | Reactive badge value                              |
-| `onClick`   | `() => void`                  | No       | Handler called when widget is clicked in dropdown |
-| `onRefresh` | `() => void \| Promise<void>` | No       | Handler called to refresh widget data             |
-| `disabled`  | `Ref<boolean> \| boolean`     | No       | Disabled state                                    |
-| `alerts`    | `Ref<IWidgetAlert[]>`         | No       | Live alerts shown in the widget popup (see above) |
+| Field             | Type                          | Required | Description                                           |
+| ----------------- | ----------------------------- | -------- | ----------------------------------------------------- |
+| `icon`            | `string`                      | No       | Lucide icon name for dropdown rendering               |
+| `title`           | `string`                      | No       | Display title (fallback: widget's title)              |
+| `badge`           | `Ref<number \| string>`       | No       | Reactive badge value                                  |
+| `onClick`         | `() => void`                  | No       | Handler called when widget is clicked in dropdown     |
+| `onRefresh`       | `() => void \| Promise<void>` | No       | Handler called to refresh widget data                 |
+| `disabled`        | `Ref<boolean> \| boolean`     | No       | Disabled state                                        |
+| `alerts`          | `Ref<IWidgetAlert[]>`         | No       | Live alerts shown in the widget popup (see above)     |
+| `alertsComponent` | `Component`                   | No       | Popup content instead of the default rows (see above) |
 
 ### How It Works
 

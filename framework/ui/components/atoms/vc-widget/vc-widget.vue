@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onBeforeUnmount, ref, useId, watch } from "vue";
+import { computed, inject, onBeforeUnmount, ref, useId, watch, watchEffect } from "vue";
 import { WidgetRenderStateKey } from "@ui/components/organisms/vc-blade/_internal/widgets/widget-render-state";
 import { SEVERITY_DOT_VARIANT } from "@core/types/severity";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
@@ -102,19 +102,29 @@ const alertsDescription = computed(() => (editing.value ? undefined : renderStat
 const alertsOpen = computed(() => renderState?.alertsOpen?.value ?? false);
 const alertsDescriptionId = `vc-widget-alerts-${useId()}`;
 
+// Lets the strip name the alerts popup of a component widget, which has no title in its registration
+if (renderState?.renderedTitle) {
+  watchEffect(() => {
+    renderState.renderedTitle.value = props.title;
+  });
+}
+
 const CHANGED_MS = 1500;
 const changed = ref(false);
 let changedTimer: ReturnType<typeof setTimeout> | undefined;
 
-// Pulses only inside blades, and not for the first change (the initial load)
+// Pulses only inside blades. A first change soon after mount is the initial load, not news;
+// a later one (a widget that loaded early, then got a push) does pulse.
+const LOAD_WINDOW_MS = 2000;
+const mountedAt = Date.now();
 let firstChange = true;
 watch(
   () => props.value,
   (next, prev) => {
-    if (!renderState || firstChange) {
-      firstChange = false;
-      return;
-    }
+    if (!renderState) return;
+    const isInitialLoad = firstChange && Date.now() - mountedAt < LOAD_WINDOW_MS;
+    firstChange = false;
+    if (isInitialLoad) return;
     if (prev === undefined || next === undefined) return;
     changed.value = true;
     clearTimeout(changedTimer);

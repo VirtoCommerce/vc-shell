@@ -8,7 +8,9 @@ import { createWidgetService, type IWidget } from "@core/services/widget-service
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import WidgetItem from "./WidgetItem.vue";
 
-vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (k: string) => k }) }));
+vi.mock("vue-i18n", () => ({
+  useI18n: () => ({ t: (k: string, p?: { title?: string }) => (p?.title !== undefined ? `${p.title}|${k}` : k) }),
+}));
 vi.mock("@ui/composables/useTeleportTarget", () => ({ useTeleportTarget: () => ({ teleportTarget: "body" }) }));
 
 const alert = (severity: "warning" | "error") => ({ id: "a", severity, text: "t" });
@@ -141,6 +143,49 @@ describe("WidgetItem", () => {
       const wrapper = mountItem({ id: "w", title: "W", headless: { icon: "x" } });
       expect(wrapper.find(".vc-widget").attributes("aria-haspopup")).toBeUndefined();
       expect(wrapper.find(".vc-widget").attributes("aria-expanded")).toBeUndefined();
+    });
+
+    it("names the popup after the VcWidget title of a component widget", async () => {
+      const Comp = defineComponent({
+        setup() {
+          useWidgetTrigger({ alerts: ref([alert("warning")]) });
+          return () => h(VcWidget, { icon: "x", title: "Messages" });
+        },
+      });
+      const widget = reactive<IWidget>({ id: "w", component: Comp });
+      const service = {
+        updateWidget: ({ widget: patch }: { widget: Partial<IWidget> }) => Object.assign(widget, patch),
+      };
+      const wrapper = mountItem(widget as IWidget, {}, service);
+      await wrapper.vm.$nextTick();
+      await wrapper.find(".vc-widget").trigger("keydown", { key: "ArrowDown" });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent({ name: "WidgetAlertsPopover" }).props("title")).toBe(
+        "Messages|COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ALERTS_TITLE",
+      );
+    });
+
+    it("renders the alertsComponent a component widget passes to useWidgetTrigger", async () => {
+      const Preview = defineComponent({
+        props: { alerts: { type: Array, required: true }, close: { type: Function, required: true } },
+        setup: (p) => () => h("div", { class: "preview" }, `${p.alerts.length} new`),
+      });
+      const Comp = defineComponent({
+        setup() {
+          useWidgetTrigger({ alerts: ref([alert("warning")]), alertsComponent: Preview });
+          return () => h(VcWidget, { icon: "x", title: "Messages" });
+        },
+      });
+      const widget = reactive<IWidget>({ id: "w", component: Comp });
+      const service = {
+        updateWidget: ({ widget: patch }: { widget: Partial<IWidget> }) => Object.assign(widget, patch),
+      };
+      const wrapper = mountItem(widget as IWidget, {}, service);
+      await wrapper.vm.$nextTick();
+      await wrapper.find(".vc-widget").trigger("keydown", { key: "ArrowDown" });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(".preview").text()).toBe("1 new");
+      expect(wrapper.find(".vc-widget-alerts__row").exists()).toBe(false);
     });
 
     it("never opens without alerts", async () => {

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { defineComponent, h, type PropType } from "vue";
 import { mount } from "@vue/test-utils";
 import WidgetAlertsPopover from "./WidgetAlertsPopover.vue";
 import type { IWidgetAlert } from "@core/services/widget-service";
@@ -52,15 +53,6 @@ describe("WidgetAlertsPopover", () => {
     expect(wrapper.find("button button").exists()).toBe(false);
   });
 
-  it("does not call onSeen when unmounted before 300 ms", () => {
-    const onSeen = vi.fn();
-    const wrapper = mountPopover([{ id: "a", severity: "info", text: "A", onSeen }]);
-    vi.advanceTimersByTime(100);
-    wrapper.unmount();
-    vi.advanceTimersByTime(1000);
-    expect(onSeen).not.toHaveBeenCalled();
-  });
-
   it("focuses the first row on keyboard open and returns focus on close", async () => {
     const trigger = document.createElement("button");
     document.body.appendChild(trigger);
@@ -96,48 +88,50 @@ describe("WidgetAlertsPopover", () => {
     expect(document.activeElement).toBe(document.body);
     wrapper.unmount();
   });
-
-  it("calls onSeen on close after at least 300 ms open, not while open", async () => {
-    const onSeen = vi.fn();
-    const wrapper = mountPopover([{ id: "a", severity: "info", text: "A", onSeen }]);
-    vi.advanceTimersByTime(1000);
-    expect(onSeen).not.toHaveBeenCalled();
-    await wrapper.setProps({ show: false });
-    expect(onSeen).toHaveBeenCalledTimes(1);
-  });
-
-  it("calls onSeen on unmount after at least 300 ms open", () => {
-    const onSeen = vi.fn();
-    const wrapper = mountPopover([{ id: "a", severity: "info", text: "A", onSeen }]);
-    vi.advanceTimersByTime(301);
-    expect(onSeen).not.toHaveBeenCalled();
-    wrapper.unmount();
-    expect(onSeen).toHaveBeenCalledTimes(1);
-  });
-
-  it("an alert added while open counts only after its own 300 ms", async () => {
-    const first = vi.fn();
-    const late = vi.fn();
-    const wrapper = mountPopover([{ id: "a", severity: "info", text: "A", onSeen: first }]);
-    vi.advanceTimersByTime(400);
-    await wrapper.setProps({
-      alerts: [
-        { id: "b", severity: "info", text: "B", onSeen: late },
-        { id: "a", severity: "info", text: "A", onSeen: first },
-      ],
+  describe("custom content", () => {
+    const Custom = defineComponent({
+      props: {
+        alerts: { type: Array as PropType<IWidgetAlert[]>, required: true },
+        close: { type: Function as PropType<() => void>, required: true },
+      },
+      setup(props) {
+        return () =>
+          h("div", { class: "custom" }, [
+            h("span", { class: "custom__count" }, String(props.alerts.length)),
+            h("button", { class: "custom__done", onClick: props.close }, "Done"),
+          ]);
+      },
     });
-    vi.advanceTimersByTime(100);
-    await wrapper.setProps({ show: false });
-    expect(first).toHaveBeenCalledTimes(1);
-    expect(late).not.toHaveBeenCalled();
-  });
 
-  it("does not call onSeen when closed at 100 ms", async () => {
-    const onSeen = vi.fn();
-    const wrapper = mountPopover([{ id: "a", severity: "info", text: "A", onSeen }]);
-    vi.advanceTimersByTime(100);
-    await wrapper.setProps({ show: false });
-    vi.advanceTimersByTime(1000);
-    expect(onSeen).not.toHaveBeenCalled();
+    it("renders the widget's component with the alerts instead of the rows", () => {
+      const wrapper = mountPopover([{ id: "a", severity: "info", text: "A" }], { content: Custom });
+      expect(wrapper.find(".custom__count").text()).toBe("1");
+      expect(wrapper.find(".vc-widget-alerts").exists()).toBe(false);
+    });
+
+    it("close from the component closes the popup", async () => {
+      const wrapper = mountPopover([{ id: "a", severity: "info", text: "A" }], { content: Custom });
+      await wrapper.find(".custom__done").trigger("click");
+      expect(wrapper.emitted("update:show")?.at(-1)).toEqual([false]);
+    });
+
+    it("keyboard open focuses the first focusable element of the component", async () => {
+      const wrapper = mount(WidgetAlertsPopover, {
+        props: {
+          alerts: [{ id: "a", severity: "info", text: "A" }],
+          content: Custom,
+          anchor: null,
+          show: false,
+          title: "T",
+          focusOnOpen: true,
+        },
+        attachTo: document.body,
+        global: { stubs: { Teleport: true, VcIcon: true }, mocks: { $t: (k: string) => k } },
+      });
+      await wrapper.setProps({ show: true });
+      await wrapper.vm.$nextTick();
+      expect(document.activeElement).toBe(wrapper.find(".custom__done").element);
+      wrapper.unmount();
+    });
   });
 });

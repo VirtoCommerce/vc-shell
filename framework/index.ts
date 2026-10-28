@@ -439,4 +439,5 @@ export type {
   IWidgetTrigger,
   IWidgetAlert,
   IWidgetAlertAction,
+  IWidgetAlertsComponentProps,
 } from "@core/services/widget-service";

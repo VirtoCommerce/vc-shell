@@ -30,11 +30,16 @@ export interface IWidgetAlert {
   /** Row click */
   onOpen?: () => void;
   action?: IWidgetAlertAction;
-  /** Called when the popup closes after it showed this alert for at least 300 ms */
-  onSeen?: () => void;
 }
 
 type AlertsSource = Ref<IWidgetAlert[]> | ComputedRef<IWidgetAlert[]>;
+
+/** Props of a custom alerts popup component (`alertsComponent`) */
+export interface IWidgetAlertsComponentProps {
+  alerts: IWidgetAlert[];
+  /** Closes the popup, e.g. after opening a blade from it */
+  close: () => void;
+}
 
 export interface IWidgetScope {
   /** Register trigger contract (onRefresh, onClick, badge) */
@@ -56,6 +61,8 @@ export interface IWidgetTrigger {
   disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
   /** Live alerts shown in the widget's popup */
   alerts?: AlertsSource;
+  /** Renders the popup content instead of the default rows; receives IWidgetAlertsComponentProps */
+  alertsComponent?: Component;
 }
 
 /** Fields present only on headless widgets (when `headless` is set on IWidget) */
@@ -67,6 +74,7 @@ export interface IHeadlessWidgetFields {
   onClick?: () => void;
   onRefresh?: () => void | Promise<void>;
   alerts?: AlertsSource;
+  alertsComponent?: Component;
 }
 
 export interface IWidget {

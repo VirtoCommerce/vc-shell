@@ -451,6 +451,89 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
     }
   }
 
+  // While dragging, SortableJS moves the node into the other list before Vue re-renders it,
+  // and a floating copy follows the pointer. Both take the shape of the list they are over.
+  [data-widget-list="overflow"] > &__item,
+  &__item.sortable-fallback[data-over-list="overflow"] {
+    @apply tw-flex tw-items-center tw-w-full tw-rounded-none;
+    outline: none;
+
+    > .vc-widget-item {
+      @apply tw-flex-1 tw-min-w-0;
+    }
+
+    .vc-widget-container-desktop__grip--corner {
+      @apply tw-static tw-ms-2;
+    }
+
+    .vc-widget-container-desktop__edit-btn--remove {
+      @apply tw-hidden;
+    }
+
+    .vc-widget {
+      @apply tw-flex-row tw-justify-start tw-gap-2 tw-w-full tw-px-2 tw-py-[6px];
+    }
+
+    .vc-widget__icon {
+      font-size: 14px;
+    }
+
+    .vc-widget__content {
+      @apply tw-w-auto tw-ms-0;
+    }
+
+    .vc-widget__title {
+      @apply tw-mt-0 tw-text-start tw-font-normal tw-whitespace-nowrap;
+    }
+  }
+
+  [data-widget-list="strip"] > &__row,
+  &__row.sortable-fallback[data-over-list="strip"] {
+    @apply tw-relative tw-shrink-0 tw-rounded;
+    outline: 1px dashed var(--neutrals-400);
+    outline-offset: -2px;
+
+    > .vc-widget-item {
+      @apply tw-flex-none tw-w-auto;
+    }
+
+    .vc-widget-container-desktop__grip {
+      @apply tw-absolute tw-ms-0;
+      inset-block-start: 4px;
+      inset-inline-start: 2px;
+      z-index: var(--z-local-above);
+    }
+
+    .vc-widget-container-desktop__edit-btn--add {
+      @apply tw-hidden;
+    }
+
+    .vc-widget--horizontal {
+      @apply tw-flex-col tw-justify-center tw-gap-0 tw-w-max tw-px-2 tw-py-1.5;
+
+      .vc-widget__icon {
+        font-size: var(--icon-size-m);
+      }
+
+      .vc-widget__title {
+        @apply tw-mt-1 tw-text-center tw-font-medium;
+      }
+    }
+  }
+
+  // The floating copy is sized inline from where the drag started; let a reshaped copy size itself
+  &__item.sortable-fallback[data-over-list="overflow"],
+  &__row.sortable-fallback[data-over-list="strip"] {
+    width: auto !important;
+    height: auto !important;
+    background-color: var(--additional-50);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
+  }
+
+  &__item.sortable-fallback[data-over-list="overflow"] {
+    min-width: 12rem;
+  }
+
   &__more-dot {
     @apply tw-absolute tw-w-2 tw-h-2 tw-rounded-full;
     inset-block-start: 6px;

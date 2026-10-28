@@ -3,13 +3,21 @@
     ref="popoverRef"
     :show="show"
     :anchor-ref="anchor"
-    :title="title"
     placement="bottom-start"
     role="dialog"
     :aria-label="title"
     @update:show="emit('update:show', $event)"
   >
-    <ul class="vc-widget-alerts">
+    <component
+      :is="content"
+      v-if="content"
+      :alerts="alerts"
+      :close="close"
+    />
+    <ul
+      v-else
+      class="vc-widget-alerts"
+    >
       <li
         v-for="alert in alerts"
         :key="alert.id"
@@ -47,15 +55,18 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, ref, watch } from "vue";
+import { type Component, ref, watch } from "vue";
 import type { IWidgetAlert } from "@core/services/widget-service";
 import { VcPopover } from "@ui/components/molecules/vc-popover";
 import { SEVERITY_DOT_VARIANT } from "./widget-alerts";
 
 interface Props {
   alerts: IWidgetAlert[];
+  /** Widget's own popup content (`alertsComponent`); the default rows otherwise */
+  content?: Component;
   anchor: HTMLElement | null;
   show: boolean;
+  /** Accessible name only; the panel has no visible header, the hovered widget already names it */
   title: string;
   /** Move focus to the first row once the panel is shown (keyboard open) */
   focusOnOpen?: boolean;
@@ -70,43 +81,17 @@ const emit = defineEmits<{
   (event: "hover", value: boolean): void;
 }>();
 
-const SEEN_DELAY_MS = 300;
-let seenTimers: ReturnType<typeof setTimeout>[] = [];
-// Alerts shown for the delay; their onSeen runs on close so the open panel keeps its rows
-const seen = new Set<IWidgetAlert>();
-
-function clearSeenTimers() {
-  seenTimers.forEach(clearTimeout);
-  seenTimers = [];
+function close() {
+  emit("update:show", false);
 }
-
-function flushSeen() {
-  clearSeenTimers();
-  const alerts = [...seen];
-  seen.clear();
-  for (const alert of alerts) alert.onSeen?.();
-}
-
-// A pass-through hover must not clear alerts: only a panel open for the delay counts
-watch(
-  [() => props.show, () => props.alerts],
-  ([shown]) => {
-    if (!shown) {
-      flushSeen();
-      return;
-    }
-    const shownNow = props.alerts;
-    seenTimers.push(setTimeout(() => shownNow.forEach((alert) => seen.add(alert)), SEEN_DELAY_MS));
-  },
-  { immediate: true },
-);
-
-onBeforeUnmount(flushSeen);
 
 function open(alert: IWidgetAlert) {
   alert.onOpen?.();
-  emit("update:show", false);
+  close();
 }
+
+const FOCUSABLE =
+  "button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])";
 
 const popoverRef = ref<{ panelEl: HTMLElement | null } | null>(null);
 
@@ -121,7 +106,7 @@ watch(
     prev?.removeEventListener("mouseleave", onLeave);
     el?.addEventListener("mouseenter", onEnter);
     el?.addEventListener("mouseleave", onLeave);
-    if (el && props.focusOnOpen) el.querySelector<HTMLElement>(".vc-widget-alerts__open")?.focus();
+    if (el && props.focusOnOpen) el.querySelector<HTMLElement>(FOCUSABLE)?.focus();
   },
   { flush: "post" },
 );

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { ref, computed, provide, h, defineComponent, type PropType } from "vue";
+import { ref, computed, provide, h, defineComponent, markRaw, type Component, type PropType } from "vue";
 import { VcBlade } from "@ui/components/organisms/vc-blade";
 import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
 import { VcInput } from "@ui/components/molecules/vc-input";
@@ -864,6 +864,7 @@ const WidgetsRegistrar = defineComponent({
   props: {
     count: { type: Number, default: 4 },
     alerts: { type: Array as PropType<IWidgetAlert[]>, default: undefined },
+    alertsComponent: { type: Object as PropType<Component>, default: undefined },
   },
   setup(props) {
     const alerts = computed(() => props.alerts ?? []);
@@ -872,9 +873,11 @@ const WidgetsRegistrar = defineComponent({
         id: `widget-${i + 1}`,
         icon: WIDGET_ICONS[i % WIDGET_ICONS.length],
         title: `Widget ${i + 1}`,
-        badge: ref(i + 1),
+        // A widget with alerts counts them, so a new one is visible on the badge right away
+        badge: i === 0 && props.alerts ? computed(() => alerts.value.length) : ref(i + 1),
         onClick: () => console.log(`[Widget] ${i + 1} clicked`),
         alerts: i === 0 ? alerts : undefined,
+        alertsComponent: i === 0 ? props.alertsComponent : undefined,
       })),
     );
     return () => null;
@@ -884,8 +887,9 @@ const WidgetsRegistrar = defineComponent({
 /**
  * Widgets with live alerts. Hover (desktop) or long-press (touch) a widget with
  * alerts to see the popup; the highest severity colors the dot on its icon.
- * The button simulates a push alert arriving for the first widget. Like `useWidgetPushAlerts`,
- * a pushed alert is removed when the popup that showed it closes.
+ * Alerts are computed from data: the button stands for a push after which the module
+ * refetches its data and gets one more unread message. Opening a row marks it read,
+ * so it leaves the data and the popup.
  */
 export const WidgetsWithAlerts: Story = {
   args: { title: "Order Details", subtitle: "ORD-12345", icon: "lucide-file-text", width: 600 },
@@ -893,17 +897,27 @@ export const WidgetsWithAlerts: Story = {
     components: { VcBlade, WidgetsRegistrar },
     setup() {
       provideMockBladeContext({ name: "StoryAlertsBlade" }, { active: true });
-      const alerts = ref<IWidgetAlert[]>([
+      const problems: IWidgetAlert[] = [
         { id: "a1", severity: "info", text: "Shipment label created", meta: "2 min ago" },
         { id: "a2", severity: "warning", text: "Address needs confirmation", meta: "10 min ago" },
         { id: "a3", severity: "error", text: "Payment declined", meta: "1 h ago" },
+      ];
+      const unread = ref<{ id: string; text: string }[]>([]);
+      const markRead = (id: string) => (unread.value = unread.value.filter((m) => m.id !== id));
+      const alerts = computed<IWidgetAlert[]>(() => [
+        ...problems,
+        ...unread.value.map((m) => ({
+          id: m.id,
+          severity: "info" as const,
+          text: m.text,
+          meta: "just now",
+          onOpen: () => markRead(m.id),
+        })),
       ]);
       let n = 0;
       const simulatePush = () => {
         n += 1;
-        const id = `push-${n}`;
-        const onSeen = () => (alerts.value = alerts.value.filter((a) => a.id !== id));
-        alerts.value = [...alerts.value, { id, severity: "info", text: `New message #${n}`, meta: "just now", onSeen }];
+        unread.value = [...unread.value, { id: `msg-${n}`, text: `New message #${n}` }];
       };
       return { args, alerts, simulatePush };
     },
@@ -911,8 +925,70 @@ export const WidgetsWithAlerts: Story = {
       <VcBlade v-bind="args">
         <WidgetsRegistrar :count="3" :alerts="alerts" />
         <div class="tw-p-6">
-          <button type="button" class="tw-text-sm tw-underline" @click="simulatePush">Simulate push alert</button>
+          <button type="button" class="tw-text-sm tw-underline" @click="simulatePush">Simulate a new message</button>
         </div>
+      </VcBlade>
+    `,
+  }),
+};
+
+/** Popup content a module draws itself: gets `{ alerts, close }` from the strip. */
+const MessagesPreview = defineComponent({
+  props: {
+    alerts: { type: Array as PropType<IWidgetAlert[]>, required: true },
+    close: { type: Function as PropType<() => void>, required: true },
+  },
+  setup(props) {
+    return () =>
+      h("div", { class: "tw-flex tw-flex-col tw-gap-2 tw-p-3 tw-w-72" }, [
+        ...props.alerts.map((a) =>
+          h("div", { key: a.id, class: "tw-flex tw-gap-2 tw-items-start" }, [
+            h(
+              "span",
+              {
+                class:
+                  "tw-size-7 tw-shrink-0 tw-rounded-full tw-bg-[var(--primary-100)] tw-text-xs tw-flex tw-items-center tw-justify-center",
+              },
+              (a.meta ?? "?").slice(0, 1),
+            ),
+            h("div", { class: "tw-flex tw-flex-col tw-min-w-0" }, [
+              h("span", { class: "tw-text-xs tw-text-[var(--neutrals-500)]" }, a.meta),
+              h("span", { class: "tw-text-sm tw-truncate" }, a.text),
+            ]),
+          ]),
+        ),
+        h(
+          "button",
+          {
+            type: "button",
+            class: "tw-self-end tw-text-xs tw-text-[var(--primary-600)] hover:tw-underline",
+            onClick: props.close,
+          },
+          "Open conversation",
+        ),
+      ]);
+  },
+});
+
+/**
+ * A widget with its own popup content (`alertsComponent`). The alerts still drive the
+ * dot and whether the popup opens; the module decides what it shows.
+ */
+export const WidgetsCustomAlertsContent: Story = {
+  args: { title: "Order Details", subtitle: "ORD-12345", icon: "lucide-file-text", width: 600 },
+  render: (args) => ({
+    components: { VcBlade, WidgetsRegistrar },
+    setup() {
+      provideMockBladeContext({ name: "StoryCustomAlertsBlade" }, { active: true });
+      const alerts: IWidgetAlert[] = [
+        { id: "m1", severity: "info", text: "Can you ship it tomorrow?", meta: "Anna, 10:42" },
+        { id: "m2", severity: "info", text: "Updated the invoice address", meta: "Bob, 09:15" },
+      ];
+      return { args, alerts, MessagesPreview: markRaw(MessagesPreview) };
+    },
+    template: `
+      <VcBlade v-bind="args">
+        <WidgetsRegistrar :count="3" :alerts="alerts" :alerts-component="MessagesPreview" />
       </VcBlade>
     `,
   }),

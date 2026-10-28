@@ -1,4 +1,4 @@
-import { type ComputedRef, type Ref, onMounted, onUnmounted, inject } from "vue";
+import { type Component, type ComputedRef, type Ref, onMounted, onUnmounted, inject } from "vue";
 import { WidgetServiceKey, WidgetScopeKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import type { IWidget, IHeadlessWidgetFields, IWidgetTrigger, IWidgetAlert } from "@core/services/widget-service";
@@ -17,6 +17,8 @@ export interface HeadlessWidgetDeclaration {
   onClick?: () => void;
   onRefresh?: () => void | Promise<void>;
   alerts?: Ref<IWidgetAlert[]> | ComputedRef<IWidgetAlert[]>;
+  /** Popup content instead of the default alert rows; receives `{ alerts, close }` */
+  alertsComponent?: Component;
 }
 
 export interface UseBladeWidgetsReturn {
@@ -128,6 +130,7 @@ function buildWidget(decl: HeadlessWidgetDeclaration): IWidget {
     onClick: decl.onClick,
     onRefresh: decl.onRefresh,
     alerts: decl.alerts,
+    alertsComponent: decl.alertsComponent,
   };
 
   return {

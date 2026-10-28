@@ -9,6 +9,8 @@ export interface IWidgetRenderState {
   /** Whether the alerts popup is open */
   alertsOpen: Ref<boolean>;
   editing: Ref<boolean>;
+  /** Title the rendered VcWidget shows; component widgets have no title in their registration */
+  renderedTitle: Ref<string | undefined>;
 }
 
 export const WidgetRenderStateKey: InjectionKey<IWidgetRenderState> = Symbol("WidgetRenderState");

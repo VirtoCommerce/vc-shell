@@ -223,6 +223,13 @@ describe("VcWidget render state", () => {
       expect(wrapper.find(".vc-widget__badge--changed").exists()).toBe(false);
     });
 
+    it("marks a first change that comes well after mount (loaded early, then a push)", async () => {
+      const wrapper = mountWith(blade(), { value: 3 });
+      vi.advanceTimersByTime(2500);
+      await wrapper.setProps({ value: 4 });
+      expect(wrapper.find(".vc-widget__badge--changed").exists()).toBe(true);
+    });
+
     it("never pulses outside a blade", async () => {
       const wrapper = mountWith(null, { value: 2 });
       await wrapper.setProps({ value: 3 });

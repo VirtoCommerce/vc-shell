@@ -42,6 +42,13 @@ export function useWidgetSortable(el: Ref<HTMLElement | undefined>, opts: IUseWi
       forceFallback: true,
       fallbackTolerance: 3,
       disabled: !opts.enabled.value,
+      // Tag the floating copy with the list under the pointer so CSS can give it that list's shape
+      onStart: () => {
+        if (Sortable.ghost) Sortable.ghost.dataset.overList = listName(target);
+      },
+      onMove: (evt) => {
+        if (Sortable.ghost) Sortable.ghost.dataset.overList = listName(evt.to);
+      },
       onEnd: (evt) => {
         const item = evt.item;
         const id = item.dataset.widgetId;

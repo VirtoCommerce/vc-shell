@@ -4,6 +4,8 @@
       <div
         ref="stripEl"
         class="vc-widget-container-desktop__strip"
+        :class="{ 'vc-widget-container-desktop__strip--drop-zone': editing && !strip.length }"
+        :data-empty-text="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.STRIP_EMPTY')"
         data-widget-list="strip"
         @keydown="onStripKeydown"
       >
@@ -266,6 +268,17 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
 
   &__strip {
     @apply tw-flex tw-flex-row tw-gap-1;
+
+    // Every widget hidden while customizing: keep a place to drop one back
+    &--drop-zone {
+      @apply tw-items-center tw-justify-center tw-m-1 tw-px-3 tw-rounded tw-text-xs tw-whitespace-nowrap;
+      color: var(--neutrals-500);
+      border: 1px dashed var(--neutrals-400);
+
+      &:empty::before {
+        content: attr(data-empty-text);
+      }
+    }
   }
 
   &__item {

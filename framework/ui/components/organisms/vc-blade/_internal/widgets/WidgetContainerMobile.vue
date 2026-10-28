@@ -73,6 +73,8 @@
         <div
           ref="stripEl"
           class="vc-widget-container-mobile__list"
+          :class="{ 'vc-widget-container-mobile__list--drop-zone': !strip.length }"
+          :data-empty-text="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.STRIP_EMPTY')"
           data-widget-list="strip"
           @keydown="onStripKeydown"
         >
@@ -122,6 +124,8 @@
         <div
           ref="overflowEl"
           class="vc-widget-container-mobile__list"
+          :class="{ 'vc-widget-container-mobile__list--drop-zone': !overflow.length }"
+          :data-empty-text="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ALL_ON_BLADE')"
           data-widget-list="overflow"
           @keydown="onOverflowKeydown"
         >
@@ -166,13 +170,7 @@
           </div>
         </div>
         <div
-          v-if="!overflow.length"
-          class="vc-widget-container-mobile__empty"
-        >
-          {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ALL_ON_BLADE") }}
-        </div>
-        <div
-          v-else-if="!canAddToStrip"
+          v-if="overflow.length && !canAddToStrip"
           class="vc-widget-container-mobile__empty"
         >
           {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.STRIP_FULL", { max: WIDGET_STRIP_MAX }) }}
@@ -375,6 +373,17 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
 
   &__list {
     @apply tw-flex tw-flex-col;
+
+    // An empty list stays a visible drop target
+    &--drop-zone {
+      @apply tw-mx-4 tw-my-1 tw-py-4 tw-px-2 tw-rounded tw-text-xs tw-text-center;
+      color: var(--neutrals-500);
+      border: 1px dashed var(--neutrals-300);
+
+      &:empty::before {
+        content: attr(data-empty-text);
+      }
+    }
   }
 
   &__row {

@@ -23,17 +23,12 @@ describe("computeWidgetLayout", () => {
     expect(computeWidgetLayout(ids("abcde"), saved)).toEqual({ strip: ids("abc"), overflow: ids("de") });
   });
 
-  it("never-saved ids still fill free room after promotion", () => {
+  it("never-saved ids go to the overflow end once the user customized the strip", () => {
     const saved = { strip: ids("ab"), overflow: ["c"] };
-    expect(computeWidgetLayout(ids("abcxy"), saved)).toEqual({ strip: ids("abxy"), overflow: ["c"] });
-  });
-
-  it("unknown goes to strip end if room, else overflow end", () => {
-    const saved = { strip: ids("abcde"), overflow: ["f"] };
-    expect(computeWidgetLayout(ids("abcdefg"), saved)).toEqual({ strip: ids("abcde"), overflow: ["f", "g"] });
+    expect(computeWidgetLayout(ids("abcxy"), saved)).toEqual({ strip: ids("ab"), overflow: ids("cxy") });
     expect(computeWidgetLayout(ids("abcdg"), { strip: ids("abc"), overflow: [] })).toEqual({
-      strip: ids("abcdg"),
-      overflow: [],
+      strip: ids("abc"),
+      overflow: ids("dg"),
     });
   });
 
@@ -90,15 +85,57 @@ describe("useWidgetLayout", () => {
     expect(() => api.commit()).not.toThrow();
   });
 
-  it("commit keeps non-rendered saved ids", async () => {
-    localStorage.setItem(KEY, JSON.stringify({ strip: ["a", "x"], overflow: ["y"] }));
+  it("commit keeps non-rendered saved ids at their old places", async () => {
+    localStorage.setItem(KEY, JSON.stringify({ strip: ["a", "x"], overflow: ["y", "b", "c"] }));
     const { api } = setup("Order", mk("abc"));
+    // b takes the slot of the hidden x
+    expect(stripIds(api)).toEqual(["a", "b"]);
     api.startEdit();
     api.moveToStrip("c");
     api.commit();
     await nextTick();
-    expect(JSON.parse(localStorage.getItem(KEY)!)).toEqual({ strip: ["a", "b", "c", "x"], overflow: ["y"] });
+    expect(JSON.parse(localStorage.getItem(KEY)!)).toEqual({ strip: ["a", "x", "b", "c"], overflow: ["y"] });
     expect(api.editing.value).toBe(false);
+  });
+
+  it("a hidden strip widget goes to the overflow when the edited strip is full", async () => {
+    localStorage.setItem(KEY, JSON.stringify({ strip: ids("habcd"), overflow: ["e"] }));
+    const widgets = ref(mk("abcde"));
+    const { api } = setup("Order", widgets);
+    api.startEdit();
+    api.reorder("strip", 0, 1);
+    api.commit();
+    await nextTick();
+    const stored = JSON.parse(localStorage.getItem(KEY)!);
+    expect(stored.strip).toHaveLength(WIDGET_STRIP_MAX);
+    expect(stored.overflow).toContain("h");
+    widgets.value = mk("habcde");
+    expect(stripIds(api)).toEqual(stored.strip);
+  });
+
+  it("keeps positions right when a widget stops rendering during the edit", () => {
+    const widgets = ref(mk("abcde"));
+    const { api } = setup("Order", widgets);
+    api.startEdit();
+    widgets.value = mk("abde");
+    expect(api.canAddToStrip.value).toBe(true);
+    api.reorder("strip", 2, 3);
+    expect(stripIds(api)).toEqual(ids("abed"));
+    api.moveToOverflow("a");
+    api.moveToStrip("a", 1);
+    expect(stripIds(api)).toEqual(ids("baed"));
+  });
+
+  it("cancel leaves edit mode without saving", async () => {
+    const setItem = vi.spyOn(Storage.prototype, "setItem");
+    const { api } = setup("Order", mk("abcdefg"));
+    api.startEdit();
+    api.moveToOverflow("a");
+    api.cancel();
+    await nextTick();
+    expect(api.editing.value).toBe(false);
+    expect(stripIds(api)).toEqual(ids("abcde"));
+    expect(setItem).not.toHaveBeenCalled();
   });
 
   it("nothing is written until commit", async () => {

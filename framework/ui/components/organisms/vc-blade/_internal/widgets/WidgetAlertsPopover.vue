@@ -51,6 +51,18 @@
         </button>
       </li>
     </ul>
+    <div
+      v-if="openLabel"
+      class="vc-widget-alerts__footer"
+    >
+      <button
+        type="button"
+        class="vc-widget-alerts__open-widget"
+        @click="emit('open')"
+      >
+        {{ openLabel }}
+      </button>
+    </div>
   </VcPopover>
 </template>
 
@@ -72,6 +84,8 @@ interface Props {
   focusOnOpen?: boolean;
   /** Receives focus on close when focus was inside the panel or lost */
   returnFocusTo?: HTMLElement | null;
+  /** Shows a button that opens the widget itself (touch, where a tap opened the panel instead) */
+  openLabel?: string;
 }
 
 const props = defineProps<Props>();
@@ -79,6 +93,8 @@ const emit = defineEmits<{
   (event: "update:show", value: boolean): void;
   /** Pointer entered or left the panel, so the owner can keep it open while hovered */
   (event: "hover", value: boolean): void;
+  /** The Open button was pressed */
+  (event: "open"): void;
 }>();
 
 function close() {
@@ -178,6 +194,17 @@ watch(
     &:hover {
       background-color: var(--secondary-100);
     }
+  }
+
+  &__footer {
+    @apply tw-p-2;
+    border-block-start: 1px solid var(--neutrals-200);
+  }
+
+  &__open-widget {
+    @apply tw-w-full tw-min-h-9 tw-rounded tw-border-0 tw-text-sm tw-font-medium tw-cursor-pointer;
+    color: var(--additional-50);
+    background-color: var(--primary-500);
   }
 }
 </style>

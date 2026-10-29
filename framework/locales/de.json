@@ -241,6 +241,7 @@
         "PANEL": "Panel",
         "WIDGETS": {
           "ALERTS_TITLE": "{title}: erfordert Aufmerksamkeit",
+          "OPEN": "Öffnen",
           "ALERTS_COUNT": "Hinweise, die Aufmerksamkeit erfordern: {count}",
           "MORE_WIDGETS": "Weitere Widgets",
           "MORE_WIDGETS_ALERTS": "Weitere Widgets, Hinweise, die Aufmerksamkeit erfordern: {count}",

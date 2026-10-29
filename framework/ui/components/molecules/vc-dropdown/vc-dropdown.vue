@@ -111,6 +111,7 @@ import { vOnClickOutside } from "@vueuse/components";
 import { useFloatingPosition, type FloatingOffset, useTeleportTarget } from "@ui/composables";
 import type { Placement } from "@floating-ui/vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { panelAnchorRegistry } from "@ui/components/molecules/vc-popover/panel-anchor-registry";
 
 export type DropdownRole = "menu" | "listbox";
 export type DropdownCloseReason = "outside" | "escape" | "action";
@@ -260,8 +261,17 @@ const activeDescendantId = computed(() => {
   return itemId(focusedIndex.value);
 });
 
-const outsideClickBinding: [() => void, { ignore: Array<Ref<HTMLElement | null>> }] = [
-  () => {
+// A popover opened from inside this panel is teleported out of it, yet belongs to it
+const isChildPopover = (panel: Element) => {
+  const anchor = panelAnchorRegistry.get(panel);
+  return !!anchor && !!floatingEl.value?.contains(anchor);
+};
+const hasOpenChildPopover = () => Array.from(document.querySelectorAll(".vc-popover")).some(isChildPopover);
+
+const outsideClickBinding: [(event: Event) => void, { ignore: Array<Ref<HTMLElement | null>> }] = [
+  (event) => {
+    const popover = (event.target as Element | null)?.closest?.(".vc-popover");
+    if (popover && isChildPopover(popover)) return;
     if (props.closeOnClickOutside && isOpen.value) {
       closeByReason("outside");
     }
@@ -376,7 +386,7 @@ function onPanelKeydown(event: KeyboardEvent) {
       break;
     }
     case "Escape": {
-      if (!props.closeOnEscape) {
+      if (!props.closeOnEscape || hasOpenChildPopover()) {
         return;
       }
 
@@ -391,7 +401,8 @@ function onPanelKeydown(event: KeyboardEvent) {
 }
 
 function onDocumentEscapeKeydown(event: KeyboardEvent) {
-  if (!props.closeOnEscape || !isOpen.value || event.key !== "Escape") {
+  // An open child popover takes this Escape; the next one closes the dropdown
+  if (!props.closeOnEscape || !isOpen.value || event.key !== "Escape" || hasOpenChildPopover()) {
     return;
   }
 

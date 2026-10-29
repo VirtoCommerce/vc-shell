@@ -62,7 +62,7 @@
 
 <script lang="ts" setup>
 import { computed, inject, onBeforeUnmount, ref, useId, watch, watchEffect } from "vue";
-import { WidgetRenderStateKey } from "@ui/components/organisms/vc-blade/_internal/widgets/widget-render-state";
+import { WidgetRenderStateKey } from "@ui/components/atoms/vc-widget/widget-render-state";
 import { SEVERITY_DOT_VARIANT } from "@core/types/severity";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcBadge } from "@ui/components/atoms/vc-badge";

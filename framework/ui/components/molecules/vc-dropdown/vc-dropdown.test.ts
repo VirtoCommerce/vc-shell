@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { defineComponent, h, nextTick, onMounted } from "vue";
 import VcDropdown from "@ui/components/molecules/vc-dropdown/vc-dropdown.vue";
+import { panelAnchorRegistry } from "@ui/components/molecules/vc-popover/panel-anchor-registry";
 
 describe("VcDropdown", () => {
   it("emits close reason and model update on Escape", async () => {
@@ -25,6 +26,36 @@ describe("VcDropdown", () => {
     expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([false]);
     expect(wrapper.emitted("close")?.[0]).toEqual(["escape"]);
 
+    wrapper.unmount();
+  });
+
+  it("keeps open for a click in, or Escape to, a popover opened from inside its panel", async () => {
+    const wrapper = mount(VcDropdown as any, {
+      props: { modelValue: true, items: [{ id: "1", title: "One" }], itemText: (i: { title: string }) => i.title },
+      attachTo: document.body,
+    });
+    await nextTick();
+    const anchor = document.createElement("span");
+    document.querySelector(".vc-dropdown__dropdown")!.appendChild(anchor);
+    const popover = document.createElement("div");
+    popover.className = "vc-popover";
+    const button = popover.appendChild(document.createElement("button"));
+    document.body.appendChild(popover);
+    panelAnchorRegistry.set(popover, anchor);
+
+    button.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true }));
+    button.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+    await nextTick();
+    expect(wrapper.emitted("close")).toBeUndefined();
+
+    // Once the popover closed, Escape reaches the dropdown again
+    panelAnchorRegistry.delete(popover);
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+    await nextTick();
+    expect(wrapper.emitted("close")?.[0]).toEqual(["escape"]);
+
+    popover.remove();
     wrapper.unmount();
   });
 

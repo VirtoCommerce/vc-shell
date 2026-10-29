@@ -173,7 +173,7 @@ describe("WidgetContainerDesktop", () => {
     });
   });
 
-  it("commits exactly once on Escape and on chevron toggle", async () => {
+  it("Escape and the chevron discard the edit; only Done saves", async () => {
     const spy = vi.spyOn(Storage.prototype, "setItem");
     const writes = () => spy.mock.calls.filter(([k]) => k === KEY).length;
     mountContainer(make(7));
@@ -183,13 +183,33 @@ describe("WidgetContainerDesktop", () => {
     await byLabel(/REMOVE:W1/)[0].trigger("click");
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     await wrapper.vm.$nextTick();
-    expect(writes()).toBe(1);
+    expect(writes()).toBe(0);
+    expect(strip()).toContain("w1");
     await chevron().trigger("click");
     await byLabel(/\.CUSTOMIZE$/)[0].trigger("click");
     await byLabel(/REMOVE:W2/)[0].trigger("click");
     await chevron().trigger("click");
-    expect(writes()).toBe(2);
+    expect(writes()).toBe(0);
+    await chevron().trigger("click");
+    await byLabel(/\.CUSTOMIZE$/)[0].trigger("click");
+    await byLabel(/REMOVE:W2/)[0].trigger("click");
+    await byLabel(/\.DONE$/)[0].trigger("click");
+    expect(writes()).toBe(1);
+    expect(strip()).not.toContain("w2");
     spy.mockRestore();
+  });
+
+  it("shows no chevron on an unnamed blade whose widgets all fit the strip", () => {
+    const other = mount(WidgetContainerDesktop, {
+      props: { widgets: make(3), bladeId: "c", bladeName: "" },
+      global: {
+        provide: { [WidgetServiceKey as symbol]: { updateWidget: vi.fn() } },
+        stubs: { Teleport: true },
+        mocks: { $t: (k: string) => k },
+      },
+    });
+    expect(other.find(".vc-widget-container-desktop__more").exists()).toBe(false);
+    other.unmount();
   });
 
   it("restores focus inside its own container when two blades share widget ids", async () => {

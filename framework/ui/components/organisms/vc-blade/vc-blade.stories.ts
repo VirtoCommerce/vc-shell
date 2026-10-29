@@ -885,7 +885,7 @@ const WidgetsRegistrar = defineComponent({
 });
 
 /**
- * Widgets with live alerts. Hover (desktop) or long-press (touch) a widget with
+ * Widgets with live alerts. Hover (desktop) or tap (touch) a widget with
  * alerts to see the popup; the highest severity colors the dot on its icon.
  * Alerts are computed from data: the button stands for a push after which the module
  * refetches its data and gets one more unread message. Opening a row marks it read,

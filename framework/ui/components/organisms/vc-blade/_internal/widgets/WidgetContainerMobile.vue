@@ -16,6 +16,7 @@
       />
 
       <button
+        v-if="showMore"
         type="button"
         data-more-button
         class="vc-widget-container-mobile__more"
@@ -38,7 +39,7 @@
     <VcSidebar
       :model-value="showOverflow"
       position="bottom"
-      size="sm"
+      height="auto"
       draggable
       drag-handle
       force-mount
@@ -49,7 +50,7 @@
     >
       <!-- Stays mounted while editing: a component widget loads data and subscribes once per mount -->
       <div
-        v-show="!editing"
+        v-show="!editing && sheetItems.length"
         class="vc-widget-container-mobile__sheet-list"
       >
         <WidgetItem
@@ -63,9 +64,11 @@
         />
       </div>
 
+      <!-- A drag in the edit lists belongs to SortableJS, not to the sheet's swipe-to-dismiss -->
       <div
         v-if="editing"
         class="vc-widget-container-mobile__edit"
+        @touchstart.stop
       >
         <div class="vc-widget-container-mobile__title">
           {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ON_BLADE", { max: WIDGET_STRIP_MAX }) }}
@@ -266,6 +269,8 @@ const { visibleItems, hiddenItems } = useAdaptiveItems<IWidget>({
 });
 
 const sheetItems = computed(() => [...hiddenItems.value, ...sortAlertsFirst(barOverflow.value)]);
+// Without hidden widgets or Customize the sheet would open empty
+const showMore = computed(() => canCustomize.value || sheetItems.value.length > 0);
 
 const hiddenAlerts = computed(() => [...hiddenItems.value, ...barOverflow.value].flatMap(resolveAlerts));
 const moreDot = computed(() => {
@@ -291,6 +296,7 @@ function finishEdit() {
 
 function onSheetToggle(open: boolean) {
   showOverflow.value = open;
+  // Swiping the sheet down is how a touch user finishes, so it saves like Done
   if (!open && editing.value) commit();
 }
 
@@ -453,7 +459,6 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
 
   &__footer {
     @apply tw-flex tw-items-center tw-justify-between tw-gap-2 tw-px-4 tw-py-3;
-    border-block-start: 1px solid var(--neutrals-200);
   }
 
   &__link {

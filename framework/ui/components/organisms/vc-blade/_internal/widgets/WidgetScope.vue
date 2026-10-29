@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { provide, inject } from "vue";
 import { WidgetServiceKey, WidgetScopeKey } from "@framework/injection-keys";
-import { WidgetRenderStateKey, type IWidgetRenderState } from "./widget-render-state";
+import { WidgetRenderStateKey, type IWidgetRenderState } from "@ui/components/atoms/vc-widget/widget-render-state";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import type { IWidgetTrigger, IWidgetScope } from "@core/services/widget-service";
 

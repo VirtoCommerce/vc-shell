@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { computed, nextTick, ref } from "vue";
 import { mount, shallowMount } from "@vue/test-utils";
-import { WidgetRenderStateKey } from "@ui/components/organisms/vc-blade/_internal/widgets/widget-render-state";
+import { WidgetRenderStateKey } from "@ui/components/atoms/vc-widget/widget-render-state";
 import VcWidget from "@ui/components/atoms/vc-widget/vc-widget.vue";
 
 describe("VcWidget", () => {

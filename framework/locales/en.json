@@ -241,6 +241,7 @@
         "PANEL": "Panel",
         "WIDGETS": {
           "ALERTS_TITLE": "{title}: needs attention",
+          "OPEN": "Open",
           "ALERTS_COUNT": "Alerts needing attention: {count}",
           "MORE_WIDGETS": "More widgets",
           "MORE_WIDGETS_ALERTS": "More widgets, alerts needing attention: {count}",

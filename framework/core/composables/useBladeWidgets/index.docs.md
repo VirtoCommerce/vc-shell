@@ -98,7 +98,7 @@ Inline `useBladeWidgets([...])` is fine for one-off widgets, but extracting beco
 
 ### Alerts
 
-A widget with a non-empty `alerts` list shows a dot on its icon, colored by the highest severity. Hovering the widget (desktop) or long-pressing it (touch) opens a popup with the alerts; clicking the widget still opens the blade. Widgets without alerts show no popup.
+A widget with a non-empty `alerts` list shows a dot on its icon, colored by the highest severity. Hovering the widget (desktop) opens a popup with the alerts; clicking the widget still opens the blade. On touch screens the first tap on a widget with alerts opens the popup, which then has an Open button; a second tap on the widget also opens the blade. Widgets without alerts show no popup.
 
 ```typescript
 const alerts = computed<IWidgetAlert[]>(() => (outOfStock.value ? [{ id: "stock", severity: "warning", text: t("OFFERS.OUT_OF_STOCK") }] : []));

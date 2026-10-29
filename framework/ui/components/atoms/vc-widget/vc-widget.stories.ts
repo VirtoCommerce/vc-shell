@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcWidget } from "@ui/components/atoms/vc-widget";
 import { provideWidgetService } from "@core/composables/useWidgets";
-import { WidgetRenderStateKey } from "@ui/components/organisms/vc-blade/_internal/widgets/widget-render-state";
+import { WidgetRenderStateKey } from "@ui/components/atoms/vc-widget/widget-render-state";
 import { computed, defineComponent, provide, ref } from "vue";
 import type { Severity } from "@core/types/severity";
 

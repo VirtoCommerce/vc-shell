@@ -289,36 +289,54 @@ describe("WidgetItem", () => {
       expect(wrapper.find(".vc-widget-alerts__row").exists()).toBe(false);
     });
 
-    it("suppresses the release click after a long press with touchmoves", async () => {
+    const tap = async (wrapper: ReturnType<typeof mountItem>) => {
+      await wrapper.find(".vc-widget-item").trigger("touchstart");
+      await wrapper.find(".vc-widget").trigger("click");
+    };
+
+    it("first tap on a widget with alerts opens the popup, the second opens the widget", async () => {
       const onClick = vi.fn();
       const wrapper = mountItem(withAlerts(onClick));
-      const root = wrapper.find(".vc-widget-item");
-      await root.trigger("touchstart", { touches: [{ clientX: 10, clientY: 10 }] });
-      for (let i = 0; i < 4; i++) {
-        vi.advanceTimersByTime(100);
-        await root.trigger("touchmove", { touches: [{ clientX: 11, clientY: 11 }] });
-      }
-      vi.advanceTimersByTime(200);
-      await wrapper.vm.$nextTick();
+      await tap(wrapper);
       expect(wrapper.find(".vc-widget-alerts__row").exists()).toBe(true);
-      vi.advanceTimersByTime(300);
-      await root.trigger("touchend");
-      vi.advanceTimersByTime(100);
-      await wrapper.find(".vc-widget").trigger("click");
       expect(onClick).not.toHaveBeenCalled();
+      expect(wrapper.emitted("click")).toBeUndefined();
+      await tap(wrapper);
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(wrapper.emitted("click")).toHaveLength(1);
+      expect(wrapper.find(".vc-widget-alerts__row").exists()).toBe(false);
     });
 
-    it("long press opens and suppresses the following click once", async () => {
+    it("the popup opened by a tap has an Open button that opens the widget", async () => {
       const onClick = vi.fn();
       const wrapper = mountItem(withAlerts(onClick));
-      const root = wrapper.find(".vc-widget-item");
-      await root.trigger("touchstart");
-      vi.advanceTimersByTime(500);
+      await tap(wrapper);
+      const open = wrapper.find(".vc-widget-alerts__open-widget");
+      expect(open.text()).toBe("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.OPEN");
+      // Vue drops an event stamped no later than its listener was attached; frozen fake time would
+      // stamp the replayed click with the same moment
+      vi.advanceTimersByTime(10);
+      await open.trigger("click");
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(wrapper.emitted("click")).toHaveLength(1);
+      expect(wrapper.find(".vc-widget-alerts__row").exists()).toBe(false);
+    });
+
+    it("a tap on a widget without alerts opens it at once", async () => {
+      const onClick = vi.fn();
+      const wrapper = mountItem({ id: "w", title: "W", headless: { icon: "x", onClick } });
+      await tap(wrapper);
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it("a mouse click opens the widget even with alerts, and hover shows no Open button", async () => {
+      const onClick = vi.fn();
+      const wrapper = mountItem(withAlerts(onClick));
+      await wrapper.find(".vc-widget-item").trigger("mouseenter");
+      vi.advanceTimersByTime(300);
       await wrapper.vm.$nextTick();
       expect(wrapper.find(".vc-widget-alerts__row").exists()).toBe(true);
-      await root.trigger("touchend");
-      await wrapper.find(".vc-widget").trigger("click");
-      expect(onClick).not.toHaveBeenCalled();
+      expect(wrapper.find(".vc-widget-alerts__open-widget").exists()).toBe(false);
       await wrapper.find(".vc-widget").trigger("click");
       expect(onClick).toHaveBeenCalledTimes(1);
     });

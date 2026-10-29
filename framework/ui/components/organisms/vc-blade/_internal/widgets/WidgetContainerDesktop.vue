@@ -43,6 +43,7 @@
       </div>
 
       <VcDropdown
+        v-if="showMore"
         :model-value="menuOpen"
         floating
         force-mount
@@ -194,11 +195,13 @@ const layout = useWidgetLayout(
   () => props.bladeName,
   () => props.widgets,
 );
-const { strip, overflow, editing, canAddToStrip, startEdit: beginEdit, commit, reset: resetLayout } = layout;
+const { strip, overflow, editing, canAddToStrip, startEdit: beginEdit, commit, cancel, reset: resetLayout } = layout;
 
 const menuOpen = ref(false);
 // An unnamed blade would share one storage key, so it cannot be customized
 const canCustomize = computed(() => !!props.bladeName);
+// Without hidden widgets or Customize the menu would open empty
+const showMore = computed(() => canCustomize.value || overflow.value.length > 0);
 
 const titleOf = (widget: IWidget) => resolveTitle(widget);
 
@@ -231,7 +234,8 @@ function reset() {
 
 function onMenuToggle(open: boolean) {
   menuOpen.value = open;
-  if (!open && editing.value) commit();
+  // Escape or the chevron backs out of an edit; only Done saves it
+  if (!open && editing.value) cancel();
 }
 
 function onRowClick() {

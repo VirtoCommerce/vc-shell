@@ -10,9 +10,6 @@
     @mouseleave="scheduleClose"
     @keydown="onKeydown"
     @touchstart.passive="onTouchStart"
-    @touchend="onTouchEnd"
-    @touchmove.passive="onTouchMove"
-    @touchcancel="onTouchEnd"
   >
     <!-- Headless: framework renders VcWidget from config -->
     <template v-if="widget.headless">
@@ -85,7 +82,9 @@
       :focus-on-open="openedByKeyboard"
       :return-focus-to="keyboardTrigger"
       :title="popoverTitle"
+      :open-label="openedByTap ? t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.OPEN') : undefined"
       @update:show="setOpen"
+      @open="openWidget"
       @hover="onPopoverHover"
     />
   </div>
@@ -95,7 +94,7 @@
 import { computed, onBeforeUnmount, ref, toRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import type { IWidget } from "@core/services/widget-service";
-import type { IWidgetRenderState } from "./widget-render-state";
+import type { IWidgetRenderState } from "@ui/components/atoms/vc-widget/widget-render-state";
 import { VcWidget } from "@ui/components/atoms/vc-widget";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import WidgetScope from "./WidgetScope.vue";
@@ -140,36 +139,34 @@ const popoverTitle = computed(() =>
 
 const OPEN_DELAY_MS = 300;
 const CLOSE_DELAY_MS = 200;
-const LONG_PRESS_MS = 500;
-const SUPPRESS_WINDOW_MS = 500;
 const EMULATED_MOUSE_MS = 1000;
-const MOVE_TOLERANCE_PX = 10;
 
 const rootEl = ref<HTMLElement | null>(null);
 // Set when the panel was opened from the keyboard: focus moves in and comes back to this element
 const keyboardTrigger = ref<HTMLElement | null>(null);
 const openedByKeyboard = computed(() => keyboardTrigger.value !== null);
+// Touch has no hover: a tap opened the panel, so it offers an explicit Open button
+const openedByTap = ref(false);
 let lastTouchAt = -Infinity;
-let touchStart: { x: number; y: number } | null = null;
 let openTimer: ReturnType<typeof setTimeout> | undefined;
 let closeTimer: ReturnType<typeof setTimeout> | undefined;
-let pressTimer: ReturnType<typeof setTimeout> | undefined;
-let suppressTimer: ReturnType<typeof setTimeout> | undefined;
-// Set by a long press so the click the browser fires on release is swallowed once
-let suppressNextClick = false;
+// Set while the panel's Open button replays the widget's own click
+let passNextClick = false;
 
 const canOpen = () => !props.editing && alerts.value.length > 0;
 
 function clearTimers() {
   clearTimeout(openTimer);
   clearTimeout(closeTimer);
-  clearTimeout(pressTimer);
 }
 
 function setOpen(value: boolean, trigger: HTMLElement | null = null) {
   clearTimers();
   const open = value && canOpen();
-  if (open && !popoverOpen.value) keyboardTrigger.value = trigger;
+  if (open && !popoverOpen.value) {
+    keyboardTrigger.value = trigger;
+    openedByTap.value = false;
+  }
   popoverOpen.value = open;
 }
 
@@ -193,45 +190,29 @@ function onPopoverHover(hovered: boolean) {
   else scheduleClose();
 }
 
+const widgetTrigger = () => {
+  const el = rootEl.value?.firstElementChild;
+  return el instanceof HTMLElement ? el : null;
+};
+
 // Only the widget's own trigger opens the panel, not an input or select inside a component widget
 function onKeydown(event: KeyboardEvent) {
   if (event.key !== "ArrowDown" || !canOpen()) return;
-  const trigger = rootEl.value?.firstElementChild;
-  if (!(trigger instanceof HTMLElement) || event.target !== trigger) return;
+  const trigger = widgetTrigger();
+  if (!trigger || event.target !== trigger) return;
   event.preventDefault();
   setOpen(true, trigger);
 }
 
-function onTouchStart(event: TouchEvent) {
+function onTouchStart() {
   lastTouchAt = Date.now();
-  clearTimeout(pressTimer);
-  clearTimeout(suppressTimer);
-  suppressNextClick = false;
-  const point = event.touches?.[0];
-  touchStart = point ? { x: point.clientX, y: point.clientY } : null;
-  if (!canOpen()) return;
-  pressTimer = setTimeout(() => {
-    suppressNextClick = true;
-    setOpen(true);
-  }, LONG_PRESS_MS);
 }
 
-// Only real movement cancels the long press; the release-click suppression is left alone
-function onTouchMove(event: TouchEvent) {
-  lastTouchAt = Date.now();
-  const point = event.touches?.[0];
-  if (!point || !touchStart) return;
-  if (Math.hypot(point.clientX - touchStart.x, point.clientY - touchStart.y) > MOVE_TOLERANCE_PX) {
-    clearTimeout(pressTimer);
-  }
-}
-
-function onTouchEnd() {
-  lastTouchAt = Date.now();
-  clearTimeout(pressTimer);
-  // The release click follows at once; if none comes, drop the flag so it cannot eat a later tap
-  clearTimeout(suppressTimer);
-  if (suppressNextClick) suppressTimer = setTimeout(() => (suppressNextClick = false), SUPPRESS_WINDOW_MS);
+function openWidget() {
+  setOpen(false);
+  passNextClick = true;
+  widgetTrigger()?.click();
+  passNextClick = false;
 }
 
 watch(
@@ -241,20 +222,21 @@ watch(
   },
 );
 
-onBeforeUnmount(() => {
-  clearTimers();
-  clearTimeout(suppressTimer);
-});
+onBeforeUnmount(clearTimers);
 
-// Edit mode: swallow clicks and Enter/Space before they reach the widget's own handlers
+// Swallows clicks and Enter/Space before they reach the widget's own handlers: all of them in edit
+// mode, and the first tap on a widget with alerts, which shows the alerts instead of opening it
 function onCapture(event: Event) {
-  if (suppressNextClick && event.type === "click") {
-    suppressNextClick = false;
-  } else if (!props.editing) {
-    return;
-  }
+  if (passNextClick) return;
+  const firstTap =
+    event.type === "click" && Date.now() - lastTouchAt < EMULATED_MOUSE_MS && canOpen() && !popoverOpen.value;
+  if (!props.editing && !firstTap) return;
   event.stopPropagation();
   event.preventDefault();
+  if (firstTap) {
+    setOpen(true);
+    openedByTap.value = true;
+  }
 }
 
 function onKeydownCapture(event: KeyboardEvent) {
@@ -268,6 +250,7 @@ function onHeadlessClick() {
 
 // Component widgets handle their own click; the wrapper only reports it
 function onClick() {
+  setOpen(false);
   if (!props.widget.headless) emit("click");
 }
 </script>

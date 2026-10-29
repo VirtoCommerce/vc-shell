@@ -53,7 +53,8 @@ export function computeWidgetLayout(
   const fromOverflow = savedOverflow.slice(0, Math.max(0, freedSlots));
   strip.push(...fromOverflow);
 
-  const fromUnknown = unknown.slice(0, Math.max(0, max - strip.length));
+  // A strip the user customized is theirs: widgets registered later wait in the overflow
+  const fromUnknown = saved ? [] : unknown.slice(0, max);
   strip.push(...fromUnknown);
 
   overflow.push(...savedOverflow.slice(fromOverflow.length), ...unknown.slice(fromUnknown.length));
@@ -82,7 +83,15 @@ export function useWidgetLayout(bladeName: MaybeRefOrGetter<string>, widgets: Ma
 
   const strip = computed(() => resolve(current.value.strip));
   const overflow = computed(() => resolve(current.value.overflow));
-  const canAddToStrip = computed(() => draft.value.strip.length < WIDGET_STRIP_MAX);
+  // Edits take positions in the lists as shown; the draft can also hold ids that stopped rendering
+  // during the edit, so positions are mapped onto it by id
+  const shownIds = (list: keyof IWidgetLayoutState) => (list === "strip" ? strip : overflow).value.map((w) => w.id);
+  const canAddToStrip = computed(() => shownIds("strip").length < WIDGET_STRIP_MAX);
+
+  function draftIndex(list: keyof IWidgetLayoutState, shownIndex: number) {
+    const anchor = shownIds(list)[shownIndex];
+    return anchor === undefined ? draft.value[list].length : draft.value[list].indexOf(anchor);
+  }
 
   function startEdit() {
     draft.value = { strip: [...layout.value.strip], overflow: [...layout.value.overflow] };
@@ -94,9 +103,9 @@ export function useWidgetLayout(bladeName: MaybeRefOrGetter<string>, widgets: Ma
     const from = to === "strip" ? "overflow" : "strip";
     if (!draft.value[from].includes(id)) return;
     if (to === "strip" && !canAddToStrip.value) return;
+    const at = draftIndex(to, index ?? Infinity);
     draft.value[from] = draft.value[from].filter((x) => x !== id);
-    const target = draft.value[to];
-    target.splice(index ?? target.length, 0, id);
+    draft.value[to].splice(at, 0, id);
   }
 
   const moveToStrip = (id: string, index?: number) => move(id, "strip", index);
@@ -104,21 +113,42 @@ export function useWidgetLayout(bladeName: MaybeRefOrGetter<string>, widgets: Ma
 
   function reorder(list: "strip" | "overflow", from: number, to: number) {
     if (!editing.value) return;
+    const shown = shownIds(list);
+    if (from < 0 || from >= shown.length || to < 0 || to >= shown.length || from === to) return;
     const target = draft.value[list];
-    if (from < 0 || from >= target.length || to < 0 || to >= target.length) return;
-    const [id] = target.splice(from, 1);
-    target.splice(to, 0, id);
+    target.splice(target.indexOf(shown[from]), 1);
+    // Moving down lands after the widget now at `to`, moving up lands before it
+    target.splice(target.indexOf(shown[to]) + (to > from ? 1 : 0), 0, shown[from]);
   }
 
+  // A widget not rendered now (hidden on this record, or gone during the edit) keeps its old place,
+  // and moves to the overflow only when the edited strip is full
   function commit() {
     if (!editing.value) return;
     const present = new Set(renderedIds.value);
-    const keepStrip = (saved.value?.strip ?? []).filter((id) => !present.has(id));
-    const keepOverflow = (saved.value?.overflow ?? []).filter((id) => !present.has(id));
-    saved.value = {
-      strip: [...draft.value.strip, ...keepStrip],
-      overflow: [...draft.value.overflow, ...keepOverflow],
+    const next: IWidgetLayoutState = {
+      strip: draft.value.strip.filter((id) => present.has(id)),
+      overflow: draft.value.overflow.filter((id) => present.has(id)),
     };
+    const placed = new Set([...next.strip, ...next.overflow]);
+    const sources = [draft.value, saved.value ?? { strip: [], overflow: [] }];
+    // The draft first: a widget moved during the edit and then gone keeps the draft's choice
+    for (const source of sources) {
+      for (const list of ["strip", "overflow"] as const) {
+        source[list].forEach((id, index) => {
+          if (placed.has(id)) return;
+          placed.add(id);
+          const target = list === "strip" && next.strip.length < WIDGET_STRIP_MAX ? next.strip : next.overflow;
+          target.splice(Math.min(index, target.length), 0, id);
+        });
+      }
+    }
+    saved.value = next;
+    editing.value = false;
+  }
+
+  /** Leaves edit mode without saving the draft */
+  function cancel() {
     editing.value = false;
   }
 
@@ -138,6 +168,7 @@ export function useWidgetLayout(bladeName: MaybeRefOrGetter<string>, widgets: Ma
     moveToOverflow,
     reorder,
     commit,
+    cancel,
     reset,
   };
 }

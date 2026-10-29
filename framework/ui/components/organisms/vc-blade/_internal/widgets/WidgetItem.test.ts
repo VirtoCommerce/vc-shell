@@ -322,6 +322,26 @@ describe("WidgetItem", () => {
       expect(wrapper.find(".vc-widget-alerts__row").exists()).toBe(false);
     });
 
+    it("Open reaches a VcWidget that a component widget wraps", async () => {
+      const onClick = vi.fn();
+      const Comp = defineComponent({
+        setup() {
+          useWidgetTrigger({ alerts: ref([alert("warning")]) });
+          return () => h("div", { class: "wrapper" }, [h(VcWidget, { icon: "x", onClick })]);
+        },
+      });
+      const widget = reactive<IWidget>({ id: "w", component: Comp });
+      const service = {
+        updateWidget: ({ widget: patch }: { widget: Partial<IWidget> }) => Object.assign(widget, patch),
+      };
+      const wrapper = mountItem(widget as IWidget, {}, service);
+      await wrapper.vm.$nextTick();
+      await tap(wrapper);
+      vi.advanceTimersByTime(10);
+      await wrapper.find(".vc-widget-alerts__open-widget").trigger("click");
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
     it("a tap on a widget without alerts opens it at once", async () => {
       const onClick = vi.fn();
       const wrapper = mountItem({ id: "w", title: "W", headless: { icon: "x", onClick } });

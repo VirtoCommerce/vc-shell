@@ -190,8 +190,9 @@ function onPopoverHover(hovered: boolean) {
   else scheduleClose();
 }
 
+// The rendered VcWidget; a component widget may wrap it, so its root is only the fallback
 const widgetTrigger = () => {
-  const el = rootEl.value?.firstElementChild;
+  const el = rootEl.value?.querySelector(".vc-widget") ?? rootEl.value?.firstElementChild;
   return el instanceof HTMLElement ? el : null;
 };
 

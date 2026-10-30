@@ -429,7 +429,7 @@ export * from "@shell/_internal/blade-navigation";
 
 // Pre-registration functions (used by external modules before provide/inject tree exists)
 export { registerExternalWidget, registerWidget } from "@core/composables/useWidgets";
-export { registerToolbarItem } from "@core/services/toolbar-service";
+export { registerToolbarItem, registerExternalToolbarItem } from "@core/services/toolbar-service";
 export { addMenuItem } from "@core/services/menu-service";
 export { addAppBarWidget } from "@core/services/app-bar-menu-service";
 export { addSettingsMenuItem } from "@core/services/settings-menu-service";

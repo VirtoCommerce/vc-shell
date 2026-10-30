@@ -121,7 +121,7 @@ const dispatchShortcut = createShortcutDispatcher({
       bladeStack.activeBlade.value,
       typeof document !== "undefined" ? document.activeElement : null,
     ),
-  getToolbarItems: (bladeId) => getToolbarItems(bladeId),
+  getToolbarItems: (bladeId, bladeName) => getToolbarItems(bladeId, bladeName),
   isMobile: () => isMobile.value,
   isEnabled: (item) =>
     hasAccess(item.permissions) && resolveVisibility(item.isVisible) && !resolveReactiveBoolean(item.disabled),

@@ -1,4 +1,6 @@
-import { ref, nextTick } from "vue";
+import { ref, nextTick, defineComponent, h } from "vue";
+import { mount } from "@vue/test-utils";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { mountWithSetup } from "@framework/test-helpers";
 
 const mockRegisteredItems = ref<any[]>([]);
@@ -105,5 +107,20 @@ describe("useToolbarRegistration", () => {
       }),
       "test-blade",
     );
+  });
+
+  it("passes the blade name so items registered by name are included", () => {
+    const items = ref<any[]>([]);
+    const Test = defineComponent({
+      setup() {
+        void useToolbarRegistration(items).visibleItems.value;
+        return () => h("div");
+      },
+    });
+    mount(Test, {
+      global: { provide: { [BladeDescriptorKey as symbol]: ref({ id: "test-blade", name: "Products" }) } },
+    });
+
+    expect(mockGetItems).toHaveBeenCalledWith("test-blade", "Products");
   });
 });

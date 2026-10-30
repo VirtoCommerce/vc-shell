@@ -20,7 +20,7 @@ export interface UseToolbarReturn {
   registerToolbarItem: (toolbarItem: IToolbarItem, targetBladeId?: string) => void;
   unregisterToolbarItem: (toolbarItemId: string, targetBladeId?: string) => void;
   updateToolbarItem: (id: string, toolbarItem: Partial<IToolbarItem>, targetBladeId?: string) => void;
-  getToolbarItems: (targetBladeId?: string) => IToolbarItem[];
+  getToolbarItems: (targetBladeId?: string, bladeName?: string) => IToolbarItem[];
   clearBladeToolbarItems: (targetBladeId?: string) => void;
   isToolbarItemRegistered: IToolbarService["isToolbarItemRegistered"];
   registeredToolbarItems: IToolbarService["registeredToolbarItems"];
@@ -91,8 +91,8 @@ export function useToolbar(options: UseToolbarOptions = {}): UseToolbarReturn {
     service.updateToolbarItem({ id, bladeId: resolveBladeId(targetBladeId), toolbarItem });
   };
 
-  const getToolbarItems = (targetBladeId?: string) => {
-    return service.getToolbarItems(resolveBladeId(targetBladeId));
+  const getToolbarItems = (targetBladeId?: string, bladeName?: string) => {
+    return service.getToolbarItems(resolveBladeId(targetBladeId), bladeName);
   };
 
   const clearBladeToolbarItems = (targetBladeId?: string) => {

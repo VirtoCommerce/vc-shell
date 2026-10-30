@@ -67,6 +67,23 @@ function registerExternalWidgets() {
       logger.error(`Failed to register external widget '${externalWidget.id}':`, error);
     }
   });
+
+  // Widgets registered by blade name (`registerWidget(widget, "OrderDetails")`) get a
+  // per-instance copy, so triggers and refresh stay scoped to this blade instance.
+  if (bladeName.value === normalizedBladeId.value) return;
+
+  const ownWidgetIds = new Set(widgetService.getWidgets(normalizedBladeId.value).map((w) => w.id));
+
+  widgetService.getWidgets(bladeName.value).forEach((widget) => {
+    if (ownWidgetIds.has(widget.id) || registeredExternalWidgetIds.has(widget.id)) return;
+
+    try {
+      widgetService.registerWidget({ ...widget }, normalizedBladeId.value);
+      registeredExternalWidgetIds.add(widget.id);
+    } catch (error) {
+      logger.error(`Failed to register widget '${widget.id}' for blade '${bladeName.value}':`, error);
+    }
+  });
 }
 
 function unregisterExternalWidgets() {

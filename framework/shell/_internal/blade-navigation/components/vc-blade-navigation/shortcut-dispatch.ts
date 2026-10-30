@@ -10,13 +10,14 @@ import {
 
 interface ActiveBladeLike {
   id: string;
+  name?: string;
   parentId?: string;
 }
 
 export interface ShortcutDispatchDeps {
   isMac: boolean;
   getActiveBlade: () => ActiveBladeLike | undefined;
-  getToolbarItems: (bladeId: string) => IBladeToolbar[];
+  getToolbarItems: (bladeId: string, bladeName?: string) => IBladeToolbar[];
   isMobile: () => boolean;
   /** Resolves permissions + isVisible + disabled for a toolbar item. */
   isEnabled: (item: IBladeToolbar) => boolean;
@@ -108,7 +109,7 @@ export function createShortcutDispatcher(deps: ShortcutDispatchDeps) {
     const closable = active.parentId !== undefined;
 
     // 1. Toolbar shortcuts (explicit; win over built-ins).
-    const items = deps.getToolbarItems(bladeId);
+    const items = deps.getToolbarItems(bladeId, active.name);
     if (import.meta.env.DEV) warnShortcutIssues(bladeId, items, deps.isMac);
     for (const item of items) {
       const def = item.shortcut;

@@ -94,7 +94,9 @@ export function useAdaptiveItems<T>(options: {
     if (!containerRef.value) return;
     const el = containerRef.value.querySelector("[data-more-button]") as HTMLElement | null;
     if (el) {
-      const width = measureNaturalWidth(el);
+      // Border box only: an auto margin that pushes the button to the end resolves to the free space,
+      // which grows with every hidden item and would hide them all
+      const width = el.offsetWidth;
       if (width > 0) {
         measuredMoreWidth.value = width;
       }

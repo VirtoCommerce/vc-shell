@@ -1,4 +1,5 @@
-import { type Ref, computed, onBeforeUnmount, ref, watch } from "vue";
+import { type Ref, computed, inject, onBeforeUnmount, ref, watch } from "vue";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { useBlade } from "@core/composables/useBlade";
 import { usePermissions } from "@core/composables/usePermissions";
 import { useToolbar } from "@core/composables/useToolbar";
@@ -25,6 +26,9 @@ export function useToolbarRegistration(items: Ref<IBladeToolbar[]>) {
 
   const { id: currentBladeId } = useBlade();
   const bladeId = computed(() => (currentBladeId.value ?? FALLBACK_BLADE_ID).toLowerCase());
+  // Read the descriptor directly: useBlade().name throws outside a blade context.
+  const descriptor = inject(BladeDescriptorKey, undefined);
+  const bladeName = computed(() => descriptor?.value?.name);
 
   const { isMobile } = useResponsive();
 
@@ -79,7 +83,7 @@ export function useToolbarRegistration(items: Ref<IBladeToolbar[]>) {
   const visibleItems = computed(() => {
     // getToolbarItems reads from reactive registry (blade-scoped + global "*"),
     // so Vue automatically tracks changes to toolbar items for this blade.
-    return getToolbarItems(registrationBladeId.value)
+    return getToolbarItems(registrationBladeId.value, bladeName.value)
       .filter(
         (item) =>
           hasAccess(item.permissions) &&

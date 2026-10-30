@@ -71,6 +71,11 @@ withDefaults(defineProps<Props>(), {
     @apply tw-w-3.5 tw-shrink-0;
   }
 
+  // The placeholder only aligns titles with sibling icons; a list without any keeps no gutter
+  .vc-dropdown__items-container:not(:has(.vc-dropdown-item__icon)) &__icon-placeholder {
+    @apply tw-hidden;
+  }
+
   &__title {
     @apply tw-truncate;
   }

@@ -409,8 +409,8 @@ By default the panel is unmounted while closed. Set `forceMount` to keep it in t
 - Floating positioning uses `useFloatingPosition` (a thin wrapper around `@floating-ui/vue`) with `autoUpdate: true` when `floating` is enabled — the panel recalculates its position on scroll/resize.
 - Teleport target is determined by `useTeleportTarget`. When `floating` is `true`, the panel is teleported to avoid z-index stacking context issues.
 - Keyboard navigation (`ArrowDown`, `ArrowUp`, `Home`, `End`, `Enter`/`Space`, `Escape`) is handled in `onPanelKeydown`. Escape also attaches a document-level listener when the dropdown is open to catch events that bubble past the panel.
-- `syncFocusedIndex` is called on open to pre-focus the active item (via `isItemActive`) or the first item.
-- The `VcDropdownItem` internal sub-component (in `_internal/VcDropdownItem.vue`) is used by `VcBreadcrumbs` for its overflow menu items.
+- `syncFocusedIndex` is called on open to pre-focus the active item (via `isItemActive`) or the first item. That cursor is painted only while the panel is `:focus-visible`, so a mouse-opened menu shows no pre-highlighted item.
+- The `VcDropdownItem` internal sub-component (in `_internal/VcDropdownItem.vue`) is used by `VcBreadcrumbs` for its overflow menu items. Its icon placeholder keeps titles aligned only when some item in the list has an icon or check; a list with none renders no icon gutter.
 - Default `zIndex` is `9300` (matches the CSS custom property `--z-critical-floating-panel`).
 
 <!-- internal:end -->

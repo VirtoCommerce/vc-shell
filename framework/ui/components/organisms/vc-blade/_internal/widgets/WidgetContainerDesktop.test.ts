@@ -1,12 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { defineComponent, h, markRaw, onMounted, ref } from "vue";
-import { mount, type VueWrapper } from "@vue/test-utils";
+import { defineComponent, h, markRaw, nextTick, onMounted, ref } from "vue";
+import { flushPromises, mount, type VueWrapper } from "@vue/test-utils";
 import { WidgetServiceKey } from "@framework/injection-keys";
 import { createWidgetService, type IWidget } from "@core/services/widget-service";
 import { useWidgetTrigger } from "@core/composables/useBladeWidgets";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import WidgetContainerDesktop from "./WidgetContainerDesktop.vue";
 
+// jsdom has no layout: width 0 means "not measured yet" and shows the whole strip
+const stripWidth = ref(0);
+vi.mock("@vueuse/core", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@vueuse/core")>()),
+  useElementSize: () => ({ width: stripWidth, height: ref(0) }),
+}));
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({ t: (k: string, p?: Record<string, unknown>) => (p?.title ? `${k}:${p.title}` : k) }),
 }));
@@ -45,14 +51,53 @@ const byLabel = (re: RegExp) =>
   wrapper.findAll("button").filter((b) => re.test(b.attributes("aria-label") ?? b.text()));
 
 describe("WidgetContainerDesktop", () => {
-  beforeEach(() => localStorage.clear());
+  beforeEach(() => {
+    localStorage.clear();
+    stripWidth.value = 0;
+  });
   afterEach(() => {
     wrapper?.unmount();
     document.documentElement.dir = "";
+    vi.unstubAllGlobals();
   });
 
-  it("puts 5 widgets in the strip and the rest in the dropdown", () => {
+  it("on a narrow blade shows the strip widgets that fit and puts the rest first in the dropdown", async () => {
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+      },
+    );
+    const offsetWidth = vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      return this.hasAttribute("data-item-key") ? 100 : 0;
+    });
+    mountContainer(make(7), "");
+    await flushPromises();
+    // Sized to the whole strip, so a wider blade brings the widgets back
+    expect(wrapper.find("[data-widget-list=strip]").attributes("style")).toContain("width: 500px");
+
+    stripWidth.value = 250;
+    await new Promise((r) => setTimeout(r, 60));
+    await nextTick();
+    expect(strip()).toEqual(["w1", "w2"]);
+    expect(overflow()).toEqual(["w3", "w4", "w5", "w6", "w7"]);
+    // Nothing is saved: the layout is the same, only the room changed
+    expect(localStorage.getItem(KEY)).toBeNull();
+
+    stripWidth.value = 600;
+    await new Promise((r) => setTimeout(r, 60));
+    await nextTick();
+    expect(strip()).toEqual(["w1", "w2", "w3", "w4", "w5"]);
+    offsetWidth.mockRestore();
+  });
+
+  it("puts 5 widgets in the strip and the rest in the dropdown", async () => {
     mountContainer(make(7));
+    await nextTick();
     expect(strip()).toEqual(["w1", "w2", "w3", "w4", "w5"]);
     expect(overflow()).toEqual(["w6", "w7"]);
   });
@@ -77,7 +122,7 @@ describe("WidgetContainerDesktop", () => {
     expect(wrapper.text()).not.toContain("CUSTOMIZE");
   });
 
-  it("shows the chevron dot and mounts an overflow widget while closed, alerted first", () => {
+  it("shows the chevron dot and mounts an overflow widget while closed, alerted first", async () => {
     const mounted = vi.fn();
     const Comp = defineComponent({
       setup() {
@@ -90,6 +135,7 @@ describe("WidgetContainerDesktop", () => {
     });
     widgets[5] = { id: "w6", title: "W6", component: Comp } as IWidget;
     mountContainer(widgets);
+    await nextTick();
     expect(wrapper.find(".vc-widget-container-desktop__more-dot--danger").exists()).toBe(true);
     expect(mounted).toHaveBeenCalled();
     expect(overflow()).toEqual(["w7", "w6"]);
@@ -279,6 +325,7 @@ describe("WidgetContainerDesktop", () => {
   it("runs a widget click handler outside edit mode", async () => {
     const onClick = vi.fn();
     mountContainer(make(2, { w1: { headless: { icon: "x", onClick } as IWidget["headless"] } }));
+    await nextTick();
     await wrapper.find("[data-widget-id=w1] .vc-widget").trigger("click");
     expect(onClick).toHaveBeenCalled();
   });

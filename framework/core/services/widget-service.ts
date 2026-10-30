@@ -1,4 +1,4 @@
-import { Component, ComputedRef, Ref } from "vue";
+import { Component, ComputedRef, Ref, shallowReactive } from "vue";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
 import type { Severity } from "@core/types/severity";
 import { cloneDeep } from "lodash-es";
@@ -121,7 +121,8 @@ export interface IWidgetService {
 
 // --- External widgets (module-level, independent of service instances) ---
 
-const externalWidgets = new Map<string, IExternalWidgetRegistration>();
+// Reactive: a module that loads after a blade opened still reaches that blade
+const externalWidgets = shallowReactive(new Map<string, IExternalWidgetRegistration>());
 
 function normalizeTargetBlades(targetBlades?: string[]): string[] | undefined {
   return targetBlades?.map((bladeId) => bladeId.toLowerCase());

@@ -45,19 +45,15 @@ export function computeWidgetLayout(
   const known = new Set([...(saved?.strip ?? []), ...(saved?.overflow ?? [])]);
   const unknown = renderedIds.filter((id) => !known.has(id));
 
+  // A strip the user customized is theirs: a strip widget that is hidden or not loaded yet leaves
+  // its slot empty, and widgets registered later wait in the overflow
   const strip = savedStrip.slice(0, max);
   const overflow = savedStrip.slice(max);
 
-  // Saved-overflow ids move up only into slots of saved-strip ids that are not rendered now.
-  const freedSlots = Math.min(max, new Set(saved?.strip ?? []).size) - strip.length;
-  const fromOverflow = savedOverflow.slice(0, Math.max(0, freedSlots));
-  strip.push(...fromOverflow);
-
-  // A strip the user customized is theirs: widgets registered later wait in the overflow
   const fromUnknown = saved ? [] : unknown.slice(0, max);
   strip.push(...fromUnknown);
 
-  overflow.push(...savedOverflow.slice(fromOverflow.length), ...unknown.slice(fromUnknown.length));
+  overflow.push(...savedOverflow, ...unknown.slice(fromUnknown.length));
   return { strip, overflow };
 }
 

@@ -4,17 +4,22 @@
       <div
         ref="stripEl"
         class="vc-widget-container-desktop__strip"
-        :class="{ 'vc-widget-container-desktop__strip--drop-zone': editing && !strip.length }"
+        :class="{
+          'vc-widget-container-desktop__strip--drop-zone': editing && !strip.length,
+          'vc-widget-container-desktop__strip--editing': editing,
+        }"
+        :style="editing ? undefined : { width: `${naturalWidth}px` }"
         :data-empty-text="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.STRIP_EMPTY')"
         data-widget-list="strip"
         @keydown="onStripKeydown"
       >
         <div
-          v-for="widget in strip"
+          v-for="widget in shownStrip"
           :key="widget.id"
           class="vc-widget-container-desktop__item"
           :class="{ 'vc-widget-container-desktop__item--editing': editing }"
           :data-widget-id="widget.id"
+          :data-item-key="widget.id"
         >
           <VcIcon
             v-if="editing"
@@ -170,7 +175,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import type { IWidget } from "@core/services/widget-service";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
@@ -179,6 +184,7 @@ import WidgetItem from "./WidgetItem.vue";
 import { useWidgetLayout, WIDGET_STRIP_MAX } from "./useWidgetLayout";
 import { useWidgetEditReorder } from "./useWidgetEditReorder";
 import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
+import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
 import { resolveAlerts, highestSeverity, sortAlertsFirst, SEVERITY_DOT_VARIANT } from "./widget-alerts";
 
 interface Props {
@@ -200,15 +206,31 @@ const { strip, overflow, editing, canAddToStrip, startEdit: beginEdit, commit, c
 const menuOpen = ref(false);
 // An unnamed blade would share one storage key, so it cannot be customized
 const canCustomize = computed(() => !!props.bladeName);
+
+// A narrow blade shows only the strip widgets that fit; the rest wait at the top of the menu.
+// The saved layout does not change, and the edit shows the whole strip.
+const stripEl = ref<HTMLElement>();
+const { visibleItems, hiddenItems, naturalWidth } = useAdaptiveItems<IWidget>({
+  containerRef: stripEl as Ref<HTMLElement | null>,
+  items: strip,
+  getItemKey: (item) => item.id,
+  moreButtonWidth: 0,
+  initialItemWidth: 80,
+});
+const shownStrip = computed(() => (editing.value ? strip.value : visibleItems.value));
+const notFitting = computed(() => (editing.value ? [] : hiddenItems.value));
+
 // Without hidden widgets or Customize the menu would open empty
-const showMore = computed(() => canCustomize.value || overflow.value.length > 0);
+const showMore = computed(() => canCustomize.value || overflow.value.length > 0 || notFitting.value.length > 0);
 
 const titleOf = (widget: IWidget) => resolveTitle(widget);
 
 // Edit mode keeps the draft order so list indices stay meaningful
-const overflowItems = computed(() => (editing.value ? overflow.value : sortAlertsFirst(overflow.value)));
+const overflowItems = computed(() =>
+  editing.value ? overflow.value : [...notFitting.value, ...sortAlertsFirst(overflow.value)],
+);
 
-const hiddenAlerts = computed(() => overflow.value.flatMap(resolveAlerts));
+const hiddenAlerts = computed(() => [...notFitting.value, ...overflow.value].flatMap(resolveAlerts));
 const moreDot = computed(() => {
   const severity = highestSeverity(hiddenAlerts.value);
   return severity ? SEVERITY_DOT_VARIANT[severity] : undefined;
@@ -244,7 +266,6 @@ function onRowClick() {
 
 // ── Drag and keyboard reorder ───────────────────────────────────────────────
 
-const stripEl = ref<HTMLElement>();
 const overflowEl = ref<HTMLElement>();
 const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWidgetEditReorder({
   layout,
@@ -262,16 +283,27 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
 }
 
 .vc-widget-container-desktop {
-  @apply tw-relative tw-flex tw-select-none tw-shrink-0;
+  @apply tw-relative tw-flex tw-select-none tw-min-w-0;
   width: fit-content;
   background-color: var(--blade-toolbar-widgets-bg-color);
 
   &__content {
-    @apply tw-flex tw-flex-row tw-items-stretch tw-gap-1;
+    @apply tw-flex tw-flex-row tw-items-stretch tw-gap-1 tw-min-w-0;
+
+    // The chevron never shrinks, the strip gives way first; VcDropdown is full width by default
+    > :not(.vc-widget-container-desktop__strip) {
+      @apply tw-shrink-0 tw-w-auto;
+    }
   }
 
+  // Sized to all its widgets and allowed to shrink, so it measures the room it has
+  // rather than the widgets that happen to fit now
   &__strip {
-    @apply tw-flex tw-flex-row tw-gap-1;
+    @apply tw-flex tw-flex-row tw-gap-1 tw-min-w-0 tw-overflow-hidden;
+
+    &--editing {
+      @apply tw-overflow-x-auto;
+    }
 
     // Every widget hidden while customizing: keep a place to drop one back
     &--drop-zone {

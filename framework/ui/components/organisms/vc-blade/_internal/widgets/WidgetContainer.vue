@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, onUnmounted } from "vue";
+import { computed, inject, onMounted, onUnmounted, watch } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useWidgets } from "@core/composables/useWidgets";
 import WidgetContainerDesktop from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerDesktop.vue";
@@ -84,6 +84,8 @@ function unregisterExternalWidgets() {
 }
 
 onMounted(registerExternalWidgets);
+// Remote modules can register their widgets after the blade opened
+watch(() => widgetService.getAllExternalWidgets().length, registerExternalWidgets);
 onUnmounted(unregisterExternalWidgets);
 
 // ── Standard widget rendering ───────────────────────────────────────────────

@@ -17,9 +17,9 @@ describe("computeWidgetLayout", () => {
     expect(computeWidgetLayout(ids("abc"), saved)).toEqual({ strip: ["c", "a"], overflow: ["b"] });
   });
 
-  it("promotes saved overflow only into slots of non-rendered saved strip ids", () => {
+  it("leaves the slot of a non-rendered strip widget empty", () => {
     const saved = { strip: ids("abc"), overflow: ids("de") };
-    expect(computeWidgetLayout(ids("acde"), saved)).toEqual({ strip: ids("acd"), overflow: ["e"] });
+    expect(computeWidgetLayout(ids("acde"), saved)).toEqual({ strip: ids("ac"), overflow: ids("de") });
     expect(computeWidgetLayout(ids("abcde"), saved)).toEqual({ strip: ids("abc"), overflow: ids("de") });
   });
 
@@ -30,6 +30,12 @@ describe("computeWidgetLayout", () => {
       strip: ids("abc"),
       overflow: ids("dg"),
     });
+  });
+
+  it("a strip widget that loads late gets its own slot back, removing the one shown does not refill it", () => {
+    const saved = { strip: ["msg"], overflow: ids("ab") };
+    expect(computeWidgetLayout(ids("ab"), saved)).toEqual({ strip: [], overflow: ids("ab") });
+    expect(computeWidgetLayout(["a", "b", "msg"], saved)).toEqual({ strip: ["msg"], overflow: ids("ab") });
   });
 
   it("caps a saved strip longer than max", () => {
@@ -56,7 +62,7 @@ describe("useWidgetLayout", () => {
     const setItem = vi.spyOn(Storage.prototype, "setItem");
     const widgets = ref(mk("abdef"));
     const { api } = setup("Order", widgets);
-    expect(stripIds(api)).toEqual(ids("abdef"));
+    expect(stripIds(api)).toEqual(ids("abde"));
     widgets.value = mk("abcdef");
     expect(stripIds(api)).toEqual(ids("abcde"));
     expect(api.overflow.value.map((w) => w.id)).toEqual(["f"]);
@@ -88,13 +94,12 @@ describe("useWidgetLayout", () => {
   it("commit keeps non-rendered saved ids at their old places", async () => {
     localStorage.setItem(KEY, JSON.stringify({ strip: ["a", "x"], overflow: ["y", "b", "c"] }));
     const { api } = setup("Order", mk("abc"));
-    // b takes the slot of the hidden x
-    expect(stripIds(api)).toEqual(["a", "b"]);
+    expect(stripIds(api)).toEqual(["a"]);
     api.startEdit();
     api.moveToStrip("c");
     api.commit();
     await nextTick();
-    expect(JSON.parse(localStorage.getItem(KEY)!)).toEqual({ strip: ["a", "x", "b", "c"], overflow: ["y"] });
+    expect(JSON.parse(localStorage.getItem(KEY)!)).toEqual({ strip: ["a", "x", "c"], overflow: ["y", "b"] });
     expect(api.editing.value).toBe(false);
   });
 
@@ -103,11 +108,11 @@ describe("useWidgetLayout", () => {
     const widgets = ref(mk("abcde"));
     const { api } = setup("Order", widgets);
     api.startEdit();
-    api.reorder("strip", 0, 1);
+    api.moveToStrip("e");
     api.commit();
     await nextTick();
     const stored = JSON.parse(localStorage.getItem(KEY)!);
-    expect(stored.strip).toHaveLength(WIDGET_STRIP_MAX);
+    expect(stored.strip).toEqual(ids("abcde"));
     expect(stored.overflow).toContain("h");
     widgets.value = mk("habcde");
     expect(stripIds(api)).toEqual(stored.strip);
